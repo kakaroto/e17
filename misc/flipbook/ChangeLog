@@ -20,3 +20,11 @@ Mon Dec 27 10:30:44 PST 1999
 
 finally added the graphics for all the play/pause/etc buttons.  Still have
 more cleaning to do in here.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 13:47:19 PST 1999
+(Mandrake)
+
+Hooked in all the menus correctly now.  Need to fix the preferences box to
+actually work correctly, too.

@@ -12,6 +12,9 @@
 #include "interface.h"
 #include "support.h"
 
+extern GtkTooltips *tooltips;
+extern GtkAccelGroup *accel_group;
+
 int main(int argc, char *argv[])
 {
 	GtkWidget *VA_Flipbook;
@@ -20,6 +23,9 @@ int main(int argc, char *argv[])
 
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
+
+	tooltips = gtk_tooltips_new();
+	accel_group = gtk_accel_group_new();
 
 	add_pixmap_directory(PACKAGE_DATA_DIR "/pixmaps");
 	add_pixmap_directory(PACKAGE_SOURCE_DIR "/pixmaps");
