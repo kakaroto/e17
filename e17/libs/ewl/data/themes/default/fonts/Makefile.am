@@ -1,7 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-themedir = $(pkgdatadir)/themes/default/fonts
-theme_DATA = Vera.ttf \
+FONTS = Vera.ttf \
 	     VeraBI.ttf \
 	     VeraBd.ttf \
 	     VeraIt.ttf \
@@ -13,3 +12,8 @@ theme_DATA = Vera.ttf \
 	     VeraSeBd.ttf \
 	     nationff.ttf \
 	     univers-condensed.ttf
+
+themedir = $(pkgdatadir)/themes/default/fonts
+theme_DATA = $(FONTS)
+
+EXTRA_DIST = $(FONTS)

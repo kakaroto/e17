@@ -1,4 +1,4 @@
-SUBDIRS = default
+SUBDIRS = default skeleton
 MAINTAINERCLEANFILES = Makefile.in
 
 EDCS =  default.edc skeleton.edc
