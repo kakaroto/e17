@@ -181,7 +181,7 @@ process_read( Ewler_Form *form )
 						exit( 1 );
 					}
 					if( parent ) {
-						ewl_container_append_child( EWL_CONTAINER(parent), cur );
+						ewl_container_child_append( EWL_CONTAINER(parent), cur );
 					}
 					
 					if( !cur ) {

@@ -43,7 +43,7 @@ __layout_realize_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 	ecore_list_goto_first( cl );
 
 	while( (cw = ecore_list_remove( cl )) )
-		ewl_container_append_child( EWL_CONTAINER(w), cw );
+		ewl_container_child_append( EWL_CONTAINER(w), cw );
 
 	ecore_list_destroy( cl );
 
@@ -60,7 +60,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 
 	if( s == form->overlay ) {
 		if( form->layout ) {
-			ewl_box_set_orientation( EWL_BOX(form->layout), orientation );
+			ewl_box_orientation_set( EWL_BOX(form->layout), orientation );
 		} else {
 			Ecore_List *cl = ecore_list_new();
 			Ecore_List *pl = EWL_CONTAINER(form->overlay)->children;
@@ -79,7 +79,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 
 			form->layout = ewl_box_new(orientation);
 			widget_create_info( form->layout, "Ewl_Box", widget_name );
-			ewl_box_set_orientation( EWL_BOX(form->layout), orientation );
+			ewl_box_orientation_set( EWL_BOX(form->layout), orientation );
 
 			ewl_object_position_request( EWL_OBJECT(form->layout), 0, 0 );
 			ewl_object_fill_policy_set( EWL_OBJECT(form->layout),
@@ -89,7 +89,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 			ewl_callback_append( form->layout, EWL_CALLBACK_REALIZE,
 													 __layout_realize_cb, cl );
 
-			ewl_container_append_child( EWL_CONTAINER(form->overlay), form->layout );
+			ewl_container_child_append( EWL_CONTAINER(form->overlay), form->layout );
 			form_add_widget( form, widget_name, form->layout );
 			ewl_widget_show( form->layout );
 
@@ -104,7 +104,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 	} else if( ecore_list_nodes( form->selected ) == 1 &&
 						 (c_w = ewler_selected_get(EWLER_SELECTED(s))) &&
 						 widget_is_type( c_w, "Ewl_Box" ) ) {
-		ewl_box_set_orientation( EWL_BOX(c_w), orientation );
+		ewl_box_orientation_set( EWL_BOX(c_w), orientation );
 	} else {
 		Ecore_List *cl = ecore_list_new();
 
@@ -124,7 +124,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 
 		box = ewl_box_new(orientation);
 		widget_create_info( box, "Ewl_Box", widget_name );
-		ewl_box_set_orientation( EWL_BOX(box), orientation );
+		ewl_box_orientation_set( EWL_BOX(box), orientation );
 
 		s = ecore_list_goto_first( form->selected );
 
@@ -134,7 +134,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 		ewl_object_maximum_size_set( EWL_OBJECT(box), 100000, 100000 );
 		ewl_callback_append( box, EWL_CALLBACK_REALIZE, __layout_realize_cb, cl );
 
-		ewl_container_append_child( EWL_CONTAINER(parent), box );
+		ewl_container_child_append( EWL_CONTAINER(parent), box );
 		form_add_widget( form, widget_name, box );
 		ewl_widget_show( box );
 
@@ -208,7 +208,7 @@ break_layout( Ewler_Form *form )
 	ecore_list_goto_first( cl );
 
 	while( (cw = ecore_list_remove( cl )) ) {
-		ewl_container_append_child( EWL_CONTAINER(np), cw );
+		ewl_container_child_append( EWL_CONTAINER(np), cw );
 		x = CURRENT_X(cw);
 		y = CURRENT_Y(cw);
 

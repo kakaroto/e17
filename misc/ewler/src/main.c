@@ -26,7 +26,7 @@ main( int argc, char *argv[] )
 	widgets_load( PACKAGE_DATA_DIR"/schemas/widgets.xml" );
 
 	main_win = ewl_window_new();
-	ewl_window_set_title( EWL_WINDOW(main_win), "Ewler" );
+	ewl_window_title_set( EWL_WINDOW(main_win), "Ewler" );
 	ewl_callback_append( main_win, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_main_window, NULL );
 	ewl_object_fill_policy_set( EWL_OBJECT(main_win), EWL_FLAG_FILL_SHRINK );
@@ -36,7 +36,7 @@ main( int argc, char *argv[] )
 
 	main_layout = ewl_vbox_new();
 	ewl_object_fill_policy_set( EWL_OBJECT(main_layout), EWL_FLAG_FILL_SHRINK );
-	ewl_container_append_child( EWL_CONTAINER(main_win), main_layout );
+	ewl_container_child_append( EWL_CONTAINER(main_win), main_layout );
 	ewl_widget_show( main_layout );
 
 	ewler_menu_init( main_layout );

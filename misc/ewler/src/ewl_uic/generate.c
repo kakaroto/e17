@@ -124,7 +124,7 @@ gen_sets( Ecore_List *w, char *name, char *parent )
 	 * callbacks to enter here
 	 */
 	if( parent ) {
-		fprintf( fout, "\tewl_container_append_child( EWL_CONTAINER(%s), %s );\n",
+		fprintf( fout, "\tewl_container_child_append( EWL_CONTAINER(%s), %s );\n",
 						 parent, name );
 		fprintf( fout, "\tewl_widget_show( %s );\n\n", name );
 	} else {

@@ -61,12 +61,12 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	if (!ewl_box_init(EWL_BOX(s), EWL_ORIENTATION_VERTICAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	ewl_widget_appearance_set(sw, "selected");
-	ewl_theme_data_set_str(sw, "/selected/file",
+	ewl_theme_data_str_set(sw, "/selected/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
-	ewl_theme_data_set_str(sw, "/selected/group", "selected");
+	ewl_theme_data_str_set(sw, "/selected/group", "selected");
 	ewl_widget_layer_set( sw, 0 );
 
-	ewl_container_insert_child(parent, sw, index);
+	ewl_container_child_insert(parent, sw, index);
 	ewl_object_geometry_request(EWL_OBJECT(s),
 															CURRENT_X(w), CURRENT_Y(w),
 															CURRENT_W(w), CURRENT_H(w));
@@ -159,7 +159,7 @@ ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
 		ewl_widget_state_set( w, "deselect" );
 	}
 
-	ewl_container_append_child(EWL_CONTAINER(s), s->selected);
+	ewl_container_child_append(EWL_CONTAINER(s), s->selected);
 
 	if( ewl_widget_data_get( s->selected, "unsizable" ) )
 		return;
@@ -244,7 +244,7 @@ ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	s = EWLER_SELECTED(w);
 
-	ewl_container_nointercept_callback(EWL_CONTAINER(s), EWL_CALLBACK_MOUSE_DOWN);
+	ewl_container_callback_nointercept(EWL_CONTAINER(s), EWL_CALLBACK_MOUSE_DOWN);
 	ewl_object_current_geometry_get(EWL_OBJECT(s), &x, &y, &width, &height);
 	ewl_object_geometry_request(EWL_OBJECT(s->selected),
 															x, y, width, height);
@@ -264,7 +264,7 @@ ewler_selected_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	evas_object_layer_set(w->theme_object, 1000);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 											ewler_selected_mouse_down_cb, NULL);
-	ewl_container_intercept_callback(EWL_CONTAINER(w), EWL_CALLBACK_MOUSE_DOWN);
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_MOUSE_DOWN);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -307,7 +307,7 @@ ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewl_Event_Mouse_Move *ev = ev_data;
 	Ewler_Selected *s = EWLER_SELECTED(w);
 
-	embed = ewl_embed_find_by_widget(w);
+	embed = ewl_embed_widget_find(w);
 
 	evas_event_feed_mouse_move(embed->evas, ev->x, ev->y);
 
@@ -362,24 +362,24 @@ ewler_selected_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	if( ev->button == 1 ) {
 		form_set_widget_dragging( s->selected, ev );
-		embed = ewl_embed_find_by_widget(w);
+		embed = ewl_embed_widget_find(w);
 
 		evas_event_feed_mouse_down(embed->evas, ev->button);
 
 		if( !form_widget_created() ) {
-			ewl_container_nointercept_callback(EWL_CONTAINER(s),
+			ewl_container_callback_nointercept(EWL_CONTAINER(s),
 																				 EWL_CALLBACK_MOUSE_DOWN);
 			form_clear_widget_selected();
 
 			ecore_list_prepend( w_stack, s );
-			ewl_embed_feed_mouse_down(embed, ev->button, ev->clicks,
+			ewl_embed_mouse_down_feed(embed, ev->button, ev->clicks,
 																ev->x, ev->y, ev->modifiers);
 			ecore_list_remove_first( w_stack );
 
 			ewl_callback_del_type(w, EWL_CALLBACK_MOUSE_DOWN);
 			ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 													ewler_selected_mouse_down_cb, NULL);
-			ewl_container_intercept_callback(EWL_CONTAINER(s),
+			ewl_container_callback_intercept(EWL_CONTAINER(s),
 																			 EWL_CALLBACK_MOUSE_DOWN);
 
 			form_set_widget_selected();
@@ -396,7 +396,7 @@ ewler_selected_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewl_Embed *embed;
 	Ewl_Event_Mouse_Up *ev = ev_data;
 
-	embed = ewl_embed_find_by_widget(w);
+	embed = ewl_embed_widget_find(w);
 
 	evas_event_feed_mouse_move(embed->evas, ev->x, ev->y);
 	evas_event_feed_mouse_up(embed->evas, ev->button);

@@ -35,7 +35,7 @@ ewler_inspector_init( void )
 
 	inspector_win = ewl_window_new();
 
-	ewl_window_set_title( EWL_WINDOW(inspector_win), "Inspector" );
+	ewl_window_title_set( EWL_WINDOW(inspector_win), "Inspector" );
 	ewl_callback_append( inspector_win, EWL_CALLBACK_DELETE_WINDOW,
 											 __hide_inspector_cb, NULL );
 	ewl_object_preferred_inner_size_set( EWL_OBJECT(inspector_win), 200, 400 );
@@ -43,7 +43,7 @@ ewler_inspector_init( void )
 	ewl_object_fill_policy_set( EWL_OBJECT(inspector_win), EWL_FLAG_FILL_ALL );
 
 	inspector_tree = ewl_tree_new( 2 );
-	ewl_tree_set_headers( EWL_TREE(inspector_tree), headers );
+	ewl_tree_headers_set( EWL_TREE(inspector_tree), headers );
 	ewl_object_fill_policy_set( EWL_OBJECT(inspector_tree), EWL_FLAG_FILL_ALL );
 	ewl_widget_show( inspector_tree );
 
@@ -51,19 +51,19 @@ ewler_inspector_init( void )
 	ewl_widget_show( inspector_callback_editor );
 
 	inspector_notebook = ewl_notebook_new();
-	ewl_container_append_child( EWL_CONTAINER(inspector_win),
+	ewl_container_child_append( EWL_CONTAINER(inspector_win),
 															inspector_notebook );
 	ewl_object_fill_policy_set( EWL_OBJECT(inspector_notebook),
 															EWL_FLAG_FILL_ALL );
 
 	tab = ewl_text_new( "Properties" );
 	ewl_widget_show( tab );
-	ewl_notebook_append_page( EWL_NOTEBOOK(inspector_notebook),
+	ewl_notebook_page_append( EWL_NOTEBOOK(inspector_notebook),
 														tab, inspector_tree );
 
 	tab = ewl_text_new( "Callbacks" );
 	ewl_widget_show( tab );
-	ewl_notebook_append_page( EWL_NOTEBOOK(inspector_notebook),
+	ewl_notebook_page_append( EWL_NOTEBOOK(inspector_notebook),
 														tab, inspector_callback_editor );
 
 	ewl_widget_show( inspector_notebook );
@@ -215,7 +215,7 @@ __populate_combo_cb( void *val )
 	Ewl_Widget *text;
 
 	text = ewl_menu_item_new( NULL, node->key );
-	ewl_container_append_child( EWL_CONTAINER(t_combo), text );
+	ewl_container_child_append( EWL_CONTAINER(t_combo), text );
 	ewl_widget_show( text );
 }
 
@@ -274,7 +274,7 @@ __populate_tree( void *val )
 			break;
 	}
 
-	row = ewl_tree_add_row( EWL_TREE(inspector_tree), EWL_ROW(prow), row_elems );
+	row = ewl_tree_row_add( EWL_TREE(inspector_tree), EWL_ROW(prow), row_elems );
 	ewl_callback_del_type( row->parent, EWL_CALLBACK_CLICKED );
 	ewl_widget_show( row );
 
@@ -298,18 +298,18 @@ inspector_subupdate( Ewl_Container *c )
 
 	ewl_container_child_iterate_begin( c );
 
-	while( (row = ewl_container_next_child(c)) != EWL_TREE_NODE(c)->row )
+	while( (row = ewl_container_child_next(c)) != EWL_TREE_NODE(c)->row )
 		;
 
 	row = EWL_TREE_NODE(c)->row;
 
-	cell = ewl_row_get_column( EWL_ROW(row), 1 );
+	cell = ewl_row_column_get( EWL_ROW(row), 1 );
 
 	if( cell ) {
 		
 		ewl_container_child_iterate_begin( EWL_CONTAINER(cell) );
 
-		entry = ewl_container_next_child( EWL_CONTAINER(cell) );
+		entry = ewl_container_child_next( EWL_CONTAINER(cell) );
 
 		if( entry ) {
 			static char buf[16];
@@ -328,7 +328,7 @@ inspector_subupdate( Ewl_Container *c )
 		}
 	}
 
-	while( (node = ewl_container_next_child(c)) )
+	while( (node = ewl_container_child_next(c)) )
 		inspector_subupdate( EWL_CONTAINER(node) );
 }
 
@@ -339,7 +339,7 @@ inspector_update( void )
 
 	ewl_container_child_iterate_begin( EWL_CONTAINER(inspector_tree) );
 
-	while( (node = ewl_container_next_child( EWL_CONTAINER(inspector_tree))) )
+	while( (node = ewl_container_child_next( EWL_CONTAINER(inspector_tree))) )
 		inspector_subupdate( EWL_CONTAINER(node) );
 }
 
@@ -371,8 +371,8 @@ inspector_reset( void )
 	scroll = EWL_SCROLLPANE(EWL_TREE(inspector_tree)->scrollarea);
 
 	ewl_container_reset( EWL_CONTAINER(inspector_tree) );
-	ewl_scrollpane_set_vscrollbar_value( scroll, 0.0 );
-	ewl_scrollpane_set_hscrollbar_value( scroll, 0.0 );
+	ewl_scrollpane_vscrollbar_value_set( scroll, 0.0 );
+	ewl_scrollpane_hscrollbar_value_set( scroll, 0.0 );
 	
 	if( w ) {
 		info = widget_get_info(w);

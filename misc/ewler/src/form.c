@@ -260,7 +260,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 					ewl_callback_append( nw, EWL_CALLBACK_DESTROY,
 															 __destroy_widget, form );
 					ewl_object_position_request( EWL_OBJECT(nw), ev->x, ev->y );
-					ewl_container_append_child( EWL_CONTAINER(widget_container), nw );
+					ewl_container_child_append( EWL_CONTAINER(widget_container), nw );
 					ewl_widget_show( nw );
 
 					s = ewler_selected_new( nw );
@@ -288,7 +288,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 			form->popup = ewl_imenu_new(NULL, "Configure");
 			ewl_object_position_request(EWL_OBJECT(form->popup), ev->x, ev->y);
 			ewl_object_fill_policy_set(EWL_OBJECT(form->popup), EWL_FLAG_FILL_NONE);
-			ewl_container_append_child(EWL_CONTAINER(form->overlay), form->popup);
+			ewl_container_child_append(EWL_CONTAINER(form->overlay), form->popup);
 			ewl_widget_show(form->popup);
 			ewl_callback_call(form->popup, EWL_CALLBACK_SELECT);
 
@@ -297,7 +297,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 													 layout_horizontal_cb, form );
 			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 													 __destroy_popup, form );
-			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
 			menu_item = ewl_menu_item_new(NULL, "Lay Out Vertically");
@@ -305,7 +305,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 													 layout_vertical_cb, form );
 			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 													 __destroy_popup, form );
-			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
 			menu_item = ewl_menu_item_new(NULL, "Break Layout");
@@ -313,15 +313,15 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 													 layout_break_cb, form );
 			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 													 __destroy_popup, form );
-			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
 			menu_item = EWL_WIDGET(ewl_menu_separator_new());
-			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
 			menu_item = ewl_menu_item_new(NULL, "Edit Callbacks");
-			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 													 __destroy_popup, form );
 #if 0
@@ -420,7 +420,7 @@ form_new( void )
 	project_add_file( form->filename );
 
 	form->window = ewl_window_new();
-	ewl_window_set_title( EWL_WINDOW(form->window), form->filename );
+	ewl_window_title_set( EWL_WINDOW(form->window), form->filename );
 	ewl_callback_append( form->window, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_form, form );
 	ewl_object_preferred_inner_size_set( EWL_OBJECT(form->window), 800, 600 );
@@ -433,9 +433,9 @@ form_new( void )
 	form->overlay = ewl_overlay_new();
 
 	ewl_widget_appearance_set(form->overlay, "background");
-	ewl_theme_data_set_str(form->overlay, "/background/file",
+	ewl_theme_data_str_set(form->overlay, "/background/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
-	ewl_theme_data_set_str(form->overlay, "/background/group", "background");
+	ewl_theme_data_str_set(form->overlay, "/background/group", "background");
 
 	ewl_object_fill_policy_set( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_ALL );
 	widget_create_info( form->overlay, "Ewl_Overlay", strdup( buf ) );
@@ -449,7 +449,7 @@ form_new( void )
 											 __mouse_move_widget, form );
 	ewl_callback_append( form->overlay, EWL_CALLBACK_KEY_DOWN,
 											 __key_down_form, form );
-	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
+	ewl_container_child_append( EWL_CONTAINER(form->window), form->overlay );
 	ewl_widget_data_set( form->overlay, "unsizable", (void *) 1 );
 	ewl_widget_show( form->overlay );
 
@@ -487,7 +487,7 @@ __save_form_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 			form->filename = strdup( filename );
 
 			form->has_been_saved = 1;
-			ewl_window_set_title( EWL_WINDOW(form->window), title );
+			ewl_window_title_set( EWL_WINDOW(form->window), title );
 			form_save_file( form, 0 );
 			ewl_widget_destroy( w->parent );
 		} else
@@ -517,7 +517,7 @@ form_save_file( Ewler_Form *form, int save_as )
 			if( (path = project_get_path()) )
 				ewl_filedialog_set_directory( EWL_FILEDIALOG(dialog), path );
 
-			ewl_container_append_child( EWL_CONTAINER(window), dialog );
+			ewl_container_child_append( EWL_CONTAINER(window), dialog );
 			ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
 													 __save_form_cb, form );
 			ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,
@@ -546,7 +546,7 @@ form_open_file( char *filename )
 	form->filename = strdup( filename );
 
 	form->window = ewl_window_new();
-	ewl_window_set_title( EWL_WINDOW(form->window), form->filename );
+	ewl_window_title_set( EWL_WINDOW(form->window), form->filename );
 	ewl_callback_append( form->window, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_form, form );
 	ewl_object_preferred_inner_size_set( EWL_OBJECT(form->window), 800, 600 );
@@ -572,9 +572,9 @@ form_open_file( char *filename )
 	ewl_object_fill_policy_set( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_FILL );
 
 	ewl_widget_appearance_set(form->overlay, "background");
-	ewl_theme_data_set_str(form->overlay, "/background/file",
+	ewl_theme_data_str_set(form->overlay, "/background/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
-	ewl_theme_data_set_str(form->overlay, "/background/group", "background");
+	ewl_theme_data_str_set(form->overlay, "/background/group", "background");
 
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_MOUSE_DOWN );
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_MOUSE_UP );
@@ -590,7 +590,7 @@ form_open_file( char *filename )
 											 __mouse_move_widget, form );
 	ewl_callback_append( form->overlay, EWL_CALLBACK_KEY_DOWN,
 											 __key_down_form, form );
-	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
+	ewl_container_child_append( EWL_CONTAINER(form->window), form->overlay );
 
 	form->selected = ecore_list_new();
 	form->has_been_saved = 1;

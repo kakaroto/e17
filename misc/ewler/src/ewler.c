@@ -67,7 +67,7 @@ __open_form( Ewl_Widget *w, void *ev_data, void *user_data )
 	ewl_widget_show( window );
 
 	dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );
-	ewl_container_append_child( EWL_CONTAINER(window), dialog );
+	ewl_container_child_append( EWL_CONTAINER(window), dialog );
 	ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
 											 __open_form_cb, window );
 	ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,
@@ -120,90 +120,90 @@ ewler_menu_init( Ewl_Widget *main_layout )
 
 	menu_layout = ewl_hbox_new();
 	ewl_object_fill_policy_set( EWL_OBJECT(menu_layout), EWL_FLAG_FILL_HFILL );
-	ewl_container_append_child( EWL_CONTAINER(main_layout), menu_layout );
+	ewl_container_child_append( EWL_CONTAINER(main_layout), menu_layout );
 	ewl_widget_show( menu_layout );
 
 	separator = ewl_hseparator_new();
-	ewl_container_append_child( EWL_CONTAINER(main_layout), separator );
+	ewl_container_child_append( EWL_CONTAINER(main_layout), separator );
 	ewl_widget_show( separator );
 
 	menu = ewl_imenu_new( NULL, "File" );
 	ewl_object_fill_policy_set( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
-	ewl_container_append_child( EWL_CONTAINER(menu_layout), menu );
+	ewl_container_child_append( EWL_CONTAINER(menu_layout), menu );
 	ewl_widget_show( menu );
 
 	menu_item = ewl_menu_item_new( PACKAGE_DATA_DIR"/images/form.png",
 																 "New Form" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __create_new_form, NULL );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "New Project" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __create_new_project, NULL );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Open" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __open_form, NULL );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Open Project" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __open_project, NULL );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Project Options..." );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __project_options, NULL );
 	ewl_widget_show( menu_item );
 
 	menu_item = EWL_WIDGET(ewl_menu_separator_new());
 	ewl_object_fill_policy_set( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Save" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __save, (void *) 0 );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Save As" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __save, (void *) 1 );
 	ewl_widget_show( menu_item );
 
 	menu_item = EWL_WIDGET(ewl_menu_separator_new());
 	ewl_object_fill_policy_set( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Quit" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __destroy_main_window, NULL );
 	ewl_widget_show( menu_item );
 
 	menu = ewl_imenu_new( NULL, "Window" );
 	ewl_object_fill_policy_set( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
-	ewl_container_append_child( EWL_CONTAINER(menu_layout), menu );
+	ewl_container_child_append( EWL_CONTAINER(menu_layout), menu );
 	ewl_widget_show( menu );
 
 	menu_item = ewl_menu_item_new( NULL, "Inspector" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __toggle_inspector, NULL );
 	ewl_widget_show( menu_item );
 
 	menu_item = ewl_menu_item_new( NULL, "Project Overview" );
-	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_container_child_append( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __toggle_projects, NULL );
 	ewl_widget_show( menu_item );
@@ -218,7 +218,7 @@ tool_get_name( void )
 void
 tool_set_name( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	active_tool = ewl_button_get_label( EWL_BUTTON(w) );
+	active_tool = ewl_button_label_get( EWL_BUTTON(w) );
 }
 
 void
@@ -232,7 +232,7 @@ ewler_tools_init( Ewl_Widget *main_layout )
 {
 	tool_tree = ewl_tree_new( 1 );
 	ewl_object_fill_policy_set( EWL_OBJECT(tool_tree), EWL_FLAG_FILL_SHRINK );
-	ewl_container_append_child( EWL_CONTAINER(main_layout), tool_tree );
+	ewl_container_child_append( EWL_CONTAINER(main_layout), tool_tree );
 
 	ewler_populate_tools();
 	ewl_widget_show( tool_tree );
@@ -260,9 +260,9 @@ add_tools_with_parent( const char *parent, Ewl_Widget *prow )
 			ewl_object_fill_policy_set( EWL_OBJECT(text[0]), EWL_FLAG_FILL_NONE );
 			ewl_widget_show( text[0] );
 
-			row = ewl_tree_add_row( EWL_TREE(tool_tree), EWL_ROW(prow), text );
+			row = ewl_tree_row_add( EWL_TREE(tool_tree), EWL_ROW(prow), text );
 			ewl_object_fill_policy_set( EWL_OBJECT(row->parent), EWL_FLAG_FILL_FILL );
-			ewl_tree_set_row_expand( EWL_ROW(row), EWL_TREE_NODE_EXPANDED );
+			ewl_tree_row_expand_set( EWL_ROW(row), EWL_TREE_NODE_EXPANDED );
 
 			add_tools_with_parent( class, row );
 			ewl_widget_show( row );
@@ -278,7 +278,7 @@ ewler_populate_tools( void )
 	char *tool_header[] = { "Tools", NULL };
 
 	ewl_container_reset( EWL_CONTAINER(tool_tree) );
-	ewl_tree_set_headers( EWL_TREE(tool_tree), tool_header );
+	ewl_tree_headers_set( EWL_TREE(tool_tree), tool_header );
 	
 	add_tools_with_parent( NULL, NULL );
 }
@@ -291,7 +291,7 @@ ewler_error_dialog( const char *fmt, ... )
 	va_list ap;
 
 	dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
-	ewl_window_set_title( EWL_WINDOW(dialog), "Error" );
+	ewl_window_title_set( EWL_WINDOW(dialog), "Error" );
 	ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_dialog, dialog );
 
@@ -301,10 +301,10 @@ ewler_error_dialog( const char *fmt, ... )
 
 	text = ewl_text_new( buf );
 	ewl_object_padding_set( EWL_OBJECT(text), 5, 5, 5, 5 );
-	ewl_container_prepend_child( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
+	ewl_container_child_prepend( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
 	ewl_widget_show( text );
 
-	button = ewl_dialog_add_button( EWL_DIALOG(dialog),
+	button = ewl_dialog_button_add( EWL_DIALOG(dialog),
 																	EWL_STOCK_OK, EWL_RESPONSE_OK );
 	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
 											 __destroy_dialog, dialog );
@@ -321,7 +321,7 @@ ewler_yesno_dialog( Ewl_Callback_Function yes_cb, Ewl_Callback_Function no_cb,
 	va_list ap;
 
 	dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
-	ewl_window_set_title( EWL_WINDOW(dialog), "ewler" );
+	ewl_window_title_set( EWL_WINDOW(dialog), "ewler" );
 	ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_dialog, dialog );
 	if( no_cb )
@@ -333,17 +333,17 @@ ewler_yesno_dialog( Ewl_Callback_Function yes_cb, Ewl_Callback_Function no_cb,
 
 	text = ewl_text_new( buf );
 	ewl_object_padding_set( EWL_OBJECT(text), 5, 5, 5, 5 );
-	ewl_container_prepend_child( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
+	ewl_container_child_prepend( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
 	ewl_widget_show( text );
 
-	button = ewl_dialog_add_button( EWL_DIALOG(dialog),
+	button = ewl_dialog_button_add( EWL_DIALOG(dialog),
 																	EWL_STOCK_OK, EWL_RESPONSE_OK );
 	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
 											 __destroy_dialog, dialog );
 	if( yes_cb )
 		ewl_callback_append( button, EWL_CALLBACK_CLICKED, yes_cb, user_data );
 
-	button = ewl_dialog_add_button( EWL_DIALOG(dialog),
+	button = ewl_dialog_button_add( EWL_DIALOG(dialog),
 																	EWL_STOCK_CANCEL, EWL_RESPONSE_CANCEL );
 	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
 											 __destroy_dialog, dialog );

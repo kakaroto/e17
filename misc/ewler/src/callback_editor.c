@@ -83,21 +83,21 @@ ewler_callback_editor_init(Ewler_Callback_Editor *ce)
 	hbox = ewl_hbox_new();
 	ewl_widget_internal_set(hbox, TRUE);
 	ewl_object_insets_set(EWL_OBJECT(hbox), 5, 5, 0, 0);
-	ewl_box_set_spacing(EWL_BOX(hbox), 5);
+	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
 														 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
-	ewl_container_append_child(EWL_CONTAINER(ce), hbox);
+	ewl_container_child_append(EWL_CONTAINER(ce), hbox);
 	ewl_widget_show(hbox);
 
 	label = ewl_text_new( "Callback" );
 	ewl_widget_internal_set(label, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(hbox), label);
+	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
 	ce->cb_combo = ewl_combo_new( "" );
 	ewl_widget_internal_set(ce->cb_combo, TRUE);
-	ewl_container_append_child(EWL_CONTAINER(hbox), ce->cb_combo);
+	ewl_container_child_append(EWL_CONTAINER(hbox), ce->cb_combo);
 	ewl_object_fill_policy_set(EWL_OBJECT(ce->cb_combo), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(ce->cb_combo);
 
@@ -105,57 +105,57 @@ ewler_callback_editor_init(Ewler_Callback_Editor *ce)
 
 	while( *cb_ptr != NULL ) {
 		menu_item = ewl_menu_item_new(NULL, *cb_ptr++);
-		ewl_container_append_child(EWL_CONTAINER(ce->cb_combo), menu_item);
+		ewl_container_child_append(EWL_CONTAINER(ce->cb_combo), menu_item);
 		ewl_widget_show(menu_item);
 	}
 
 	hbox = ewl_hbox_new();
 	ewl_widget_internal_set(hbox, TRUE);
 	ewl_object_insets_set(EWL_OBJECT(hbox), 5, 5, 5, 5);
-	ewl_box_set_spacing(EWL_BOX(hbox), 5);
+	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
 														 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
-	ewl_container_append_child(EWL_CONTAINER(ce), hbox);
+	ewl_container_child_append(EWL_CONTAINER(ce), hbox);
 	ewl_widget_show(hbox);
 	
 	label = ewl_text_new( "Handler" );
 	ewl_widget_internal_set(label, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(hbox), label);
+	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
 	ce->handler_entry = ewl_entry_new( "" );
 	ewl_widget_internal_set(ce->handler_entry, TRUE);
-	ewl_container_append_child(EWL_CONTAINER(hbox), ce->handler_entry);
+	ewl_container_child_append(EWL_CONTAINER(hbox), ce->handler_entry);
 	ewl_widget_show(ce->handler_entry);
 
 	hbox = ewl_hbox_new();
 	ewl_widget_internal_set(hbox, TRUE);
-	ewl_box_set_spacing(EWL_BOX(hbox), 5);
+	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_RIGHT);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
 														 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
-	ewl_container_append_child(EWL_CONTAINER(ce), hbox);
+	ewl_container_child_append(EWL_CONTAINER(ce), hbox);
 	ewl_widget_show(hbox);
 	
 	button = ewl_button_new( "Add" );
 	ewl_widget_internal_set(ce->handler_entry, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-	ewl_container_append_child(EWL_CONTAINER(hbox), button);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_widget_show(button);
 
 	separator = ewl_separator_new(EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_internal_set(separator, TRUE);
-	ewl_container_append_child(EWL_CONTAINER(ce), separator);
+	ewl_container_child_append(EWL_CONTAINER(ce), separator);
 	ewl_widget_show(separator);
 
 	ce->tree = ewl_tree_new(2);
 	ewl_widget_internal_set(ce->tree, TRUE);
 	ewl_widget_appearance_set(EWL_TREE(ce->tree)->scrollarea, "entry" );
-	ewl_tree_set_headers(EWL_TREE(ce->tree), headers);
+	ewl_tree_headers_set(EWL_TREE(ce->tree), headers);
 	ewl_object_fill_policy_set(EWL_OBJECT(ce->tree), EWL_FLAG_FILL_ALL );
-	ewl_container_append_child(EWL_CONTAINER(ce), ce->tree);
+	ewl_container_child_append(EWL_CONTAINER(ce), ce->tree);
 	ewl_widget_show(ce->tree);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
