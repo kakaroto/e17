@@ -143,30 +143,22 @@ void cb_repeat_mode_toggle(ePlayer *player, Evas_Object *obj,
 	player->cfg.repeat = !player->cfg.repeat;
 }
 
-/**
- * Scrolls the playlist containers.
- *
- * @param player
- * @param direction 1 (up) or -1 (down).
- */
-static void playlist_scroll(ePlayer *player, int direction) {
-	int i, val;
-
-	for (i = 0; i < 2; i++) {
-		/* it's * 3 because we're scrolling 3 elements at once */
-		val = player->gui.playlist_font_size[i] * 3 * direction;
-		e_container_scroll(player->gui.playlist_col[i], val);
-	}
-}
-
 void cb_playlist_scroll_up(void *udata, Evas_Object *obj,
                            const char *emission, const char *src) {
-	playlist_scroll(udata, 1);	
+	ePlayer *player = udata;
+
+	/* it's * 3 because we're scrolling 3 elements at once */
+	e_container_scroll(player->gui.playlist,
+	                   player->gui.playlist_font_size * 3);
 }
 
 void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
                              const char *emission, const char *src) {
-	playlist_scroll(udata, -1);
+	ePlayer *player = udata;
+
+	/* it's * 3 because we're scrolling 3 elements at once */
+	e_container_scroll(player->gui.playlist,
+	                   player->gui.playlist_font_size * -3);
 }
 
 void cb_seek_forward(void *udata, Evas_Object *obj,

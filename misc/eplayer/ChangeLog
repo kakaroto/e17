@@ -4,6 +4,8 @@ $Id$
         * src/interface.c: Fixed playlist scrolling
         * src/interface.c, src/callbacks.c, data/README:
           Added repeat mode stuff
+        * src/interface.c, src/callbacks.c, data/eplayer.edc,
+          data/README: Simplified playlist code
 
 2003-11-14 Tilman Sauerbeck <tilman@¢ode-monkey.de>
         * src/playlist.c, src/eplayer.c, src/interface.c:

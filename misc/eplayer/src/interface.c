@@ -77,16 +77,6 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 	ecore_evas_resize(ee, (int) edje_w, (int) edje_h);
 	ecore_evas_show(ee);
 
-	/* add the playlist container */
-	player->gui.playlist = e_container_new(player->gui.evas);
-	e_container_direction_set(player->gui.playlist, 0);
-	e_container_spacing_set(player->gui.playlist, 0);
-	e_container_fill_policy_set(player->gui.playlist,
-	                            CONTAINER_FILL_POLICY_FILL_Y);
-	
-	edje_object_part_swallow(player->gui.edje, "playlist",
-	                         player->gui.playlist);
-
 	/*** Edje Callbacks ***************************/
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAY_PREVIOUS", "previous_button",
@@ -125,51 +115,16 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 	return 1;
 }
 
-static Evas_Object *playlist_column_add(ePlayer *player,
-                                        double width, double height,
-                                        Container_Alignment align) {
-	Evas_Object *o = e_container_new(player->gui.evas);
-
-	e_container_direction_set(o, 1);
-	e_container_spacing_set(o, 0);
-	e_container_alignment_set(o, align);
-	e_container_fill_policy_set(o, CONTAINER_FILL_POLICY_FILL_X);
-
-	evas_object_resize(o, width, height);
-
-	return o;
-}
-
 static void setup_playlist(ePlayer *player) {
-	Evas_Object *o;
-	double w, h;
-	int i;
+	/* add the playlist container */
+	player->gui.playlist = e_container_new(player->gui.evas);
+	e_container_direction_set(player->gui.playlist, 1);
+	e_container_spacing_set(player->gui.playlist, 0);
+	e_container_fill_policy_set(player->gui.playlist,
+	                            CONTAINER_FILL_POLICY_FILL_X);
 	
-	for (i = 0; i < 2; i++) {
-		/* instantiate the edje object first, to get the width/height */
-		o = edje_object_add(player->gui.evas);
-
-		edje_object_file_set(o, DATA_DIR "/themes/eplayer.eet",
-		                     "playlist_item_title");
-		
-		w = h = 0;
-		edje_object_size_min_get(o, &w, &h);
-		evas_object_del(o);
-
-		/* now add the columns */
-		evas_object_geometry_get(player->gui.playlist,
-		                         NULL, NULL, NULL, &h);
-
-	
-		player->gui.playlist_col[i] = 
-			playlist_column_add(player, w, h,
-			                    i ? CONTAINER_ALIGN_RIGHT
-			                    : CONTAINER_ALIGN_LEFT);
-
-		e_container_element_append(player->gui.playlist,
-		                           player->gui.playlist_col[i]);
-	}
-	
+	edje_object_part_swallow(player->gui.edje, "playlist",
+	                         player->gui.playlist);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAYLIST_SCROLL_DOWN", "playlist",
 	                                cb_playlist_scroll_down, player);
@@ -181,48 +136,45 @@ static void setup_playlist(ePlayer *player) {
 void show_playlist_item(PlayListItem *pli, void *data) {
 	ePlayer *player = data;
 	Evas_Object *o;
-	char *title, len[32];
-	char *name[] = {"playlist_item_title", "playlist_item_length"};
-	double w, h;
-	int i, duration;
+	char len[32];
+	double w = 0, h = 0;
+	int i, j;
+	char *part[] = {"title", "length"};
+	char *signal[] = {"PLAYLIST_SCROLL_UP", "PLAYLIST_SCROLL_DOWN"};
+	void (*cb[])(void *data, Evas_Object *o, const char *emission,
+	                const char *source) = {cb_playlist_scroll_up,
+	                                       cb_playlist_scroll_down};
 
-	/* get the information we want to display */
-	title = pli->comment[COMMENT_ID_TITLE];
-	duration = pli->duration;
+	/* add the item to the container */
+	o = edje_object_add(player->gui.evas);
 
-	snprintf(len, sizeof(len), "%i:%02i", duration / 60,
-	         duration % 60);
+	edje_object_file_set(o, DATA_DIR "/themes/eplayer.eet",
+	                     "playlist_item");
+
+	/* set parts text */
+	snprintf(len, sizeof(len), "%i:%02i", pli->duration / 60,
+	         pli->duration % 60);
+	edje_object_part_text_set(o, "length", len);
+	edje_object_part_text_set(o, "title",
+	                          pli->comment[COMMENT_ID_TITLE]);
+
+	/* set parts dimensions */
+	edje_object_size_min_get(o, &w, &h);
+	evas_object_resize(o, w, h);
+	
+	/* store font size, we need it later for scrolling
+	 * FIXME: we're assuming that the objects minimal height
+	 * equals the text size
+	 */
+	player->gui.playlist_font_size = h;
+
+	e_container_element_append(player->gui.playlist, o);
 		
-	/* add the title/length items to the container */
-	for (i = 0; i < 2; i++) {
-		o = edje_object_add(player->gui.evas);
-
-		edje_object_file_set(o, DATA_DIR "/themes/eplayer.eet",
-		                     name[i]);
-			
-		edje_object_part_text_set(o, "text", i ? len : title);
-
-		w = h = 0;
-		edje_object_size_min_get(o, &w, &h);
-		evas_object_resize(o, w, h);
-
-		e_container_element_append(player->gui.playlist_col[i], o);
-		
-		/* add playlist callbacks */
-		edje_object_signal_callback_add(o,
-		                                "PLAYLIST_SCROLL_UP", "text",
-		                                cb_playlist_scroll_up,
-		                                player);
-		edje_object_signal_callback_add(o,
-		                                "PLAYLIST_SCROLL_DOWN", "text",
-		                                cb_playlist_scroll_down,
-		                                player);
-
-		/* FIXME: we're assuming that the objects minimal height
-		 * equals the text size
-		 */
-		player->gui.playlist_font_size[i] = h;
-	}
+	/* add playlist item callbacks */
+	for (i = 0; i < 2; i++)
+		for (j = 0; j < 2; j++)
+			edje_object_signal_callback_add(o, signal[i], part[j],
+			                                cb[i], player);
 }
 
 int refresh_volume(void *udata) {

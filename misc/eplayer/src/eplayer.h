@@ -22,8 +22,8 @@ typedef struct {
 	Evas *evas;
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
-	Evas_Object *playlist_col[2];
-	int playlist_font_size[2]; /* 0 -> title, 1 -> length */
+	//Evas_Object *playlist_col[2];
+	int playlist_font_size; /* 0 -> title, 1 -> length */
 } Gui;
 
 typedef struct {

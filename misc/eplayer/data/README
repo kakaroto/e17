@@ -1,10 +1,8 @@
 ######## EPLAYER EDJE GUIDE #########
 
-An ePlayer theme consists of several Edjes:
+An ePlayer theme consists of two Edjes:
  * The main Edje, called "eplayer"
- * Two Edjes for the playlist entries:
-   "playlist_item_title" is used for the title,
-   "playlist_item_length" is used for the title's length.
+ * The playlist item Edje, called "playlist_item"
 
 The "eplayer" Edje emits the following signals:
 
@@ -20,6 +18,9 @@ The "eplayer" Edje emits the following signals:
 	action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "time_text";
 	action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
 
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "playlist";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "playlist";
+
 It provides the following parts for text display:
 
 	Part: "title"            -> Window Title
@@ -30,13 +31,14 @@ It provides the following parts for text display:
 	Part: "vol_display_text" -> Current Volume Level (0 - 100)
 
 
-The "playlist_item_title" and "playlist_item_length" Edjes both contain
-a "text" part, which holds the actual values.
+The "playlist_item" Edje contains a "title" and a "length" part.
 
-The "text" parts emit the following signals:
+These parts emit the following signals:
 
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "text";
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "text";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "title";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "title";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "length";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "length";
 
 
 ---------------------------------------------------------

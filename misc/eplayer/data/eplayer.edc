@@ -1466,18 +1466,20 @@ collections {
 	} /* Close Group */
 
  	group {
-		name, "playlist_item_title";
-		min, 150 12;
+		name, "playlist_item";
+		min, 200 12;
 		max, 9999 9999;
 		
 		parts {
 			part {
-				name, "text";
+				name, "title";
 				type, TEXT;
 				mouse_events, 1;
 
 				description {
 					color, 181 247 255 255;
+					align, 0.0 0.0;
+					max, 150 12;
 
 					text {
 						text, "Dummy";
@@ -1487,33 +1489,9 @@ collections {
 					}
 				}
 			}
-		}
 
-		programs {
-			program {
-				name, "text_scroll_up";
-				signal, "mouse,wheel,0,-1";
-				source, "text";
-				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "text";
-			}
-			
-			program {
-				name, "text_scroll_down";
-				signal, "mouse,wheel,0,1";
-				source, "text";
-				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "text";
-			}
-		}
-	}
-	
-	group {
-		name, "playlist_item_length";
-		min, 50 12;
-		max, 9999 9999;
-
-		parts {
 			part {
-				name, "text";
+				name, "length";
 				type, TEXT;
 				mouse_events, 1;
 
@@ -1524,7 +1502,7 @@ collections {
 						text, "2:55";
 						font, "redensek";
 						size, 12;
-						align, 0.0 0.0;
+						align, 1.0 0.0;
 					}
 				}
 			}
@@ -1532,17 +1510,31 @@ collections {
 
 		programs {
 			program {
-				name, "length_scroll_up";
+				name, "playlist_scroll_up_title";
 				signal, "mouse,wheel,0,-1";
-				source, "text";
-				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "text";
+				source, "title";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "title";
 			}
 			
 			program {
-				name, "length_scroll_down";
+				name, "playlist_scroll_down_title";
 				signal, "mouse,wheel,0,1";
-				source, "text";
-				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "text";
+				source, "title";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "title";
+			}
+			
+			program {
+				name, "playlist_scroll_up_length";
+				signal, "mouse,wheel,0,-1";
+				source, "length";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "length";
+			}
+			
+			program {
+				name, "playlist_scroll_down_length";
+				signal, "mouse,wheel,0,1";
+				source, "length";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "length";
 			}
 		}
 	}
