@@ -3,7 +3,7 @@
 
 #include <Ecore.h>
 #include <Ecore_Con.h>
-#include <Esmart/Esmart_Trans.h>
+#include <Esmart/Esmart_Trans_X11.h>
 #include <Esmart/Esmart_Container.h>
 #include <Etox.h>
 #include <math.h>
