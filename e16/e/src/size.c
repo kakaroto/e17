@@ -26,9 +26,10 @@
 #define MAX_HOR 0x1
 #define MAX_VER 0x2
 
-#define MAX_ABSOLUTE     0
-#define MAX_AVAILABLE    1
-#define MAX_CONSERVATIVE 2
+#define MAX_ABSOLUTE     0	/* Fill screen */
+#define MAX_AVAILABLE    1	/* Expand until don't cover */
+#define MAX_CONSERVATIVE 2	/* Expand until something */
+#define MAX_XINERAMA     3	/* Fill Xinerama screen */
 
 static void
 MaxSizeHV(EWin * ewin, char *resize_type, int direction)
@@ -51,22 +52,27 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 	goto exit;
      }
 
-   if ((resize_type) && (!strcmp(resize_type, "available")))
-      type = MAX_AVAILABLE;
-   else if ((resize_type) && (!strcmp(resize_type, "conservative")))
-      type = MAX_CONSERVATIVE;
-   else
+   type = MAX_ABSOLUTE;		/* Select default */
+   if (!resize_type)
+      ;
+   else if (!strcmp(resize_type, "absolute"))
       type = MAX_ABSOLUTE;
+   else if (!strcmp(resize_type, "available"))
+      type = MAX_AVAILABLE;
+   else if (!strcmp(resize_type, "conservative"))
+      type = MAX_CONSERVATIVE;
+   else if (!strcmp(resize_type, "xinerama"))
+      type = MAX_XINERAMA;
 
    /* Default is no change */
    y = ewin->y;
-   h = ewin->h;
    x = ewin->x;
-   w = ewin->w;
+   h = ewin->client.h;
+   w = ewin->client.w;
 
    switch (type)
      {
-     case MAX_ABSOLUTE:
+     case MAX_XINERAMA:
 	if (direction & MAX_HOR)
 	  {
 	     x = 0;
@@ -81,12 +87,9 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 	  }
 	break;
 
-     case MAX_CONSERVATIVE:
+     case MAX_ABSOLUTE:
      case MAX_AVAILABLE:
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	if (!lst)
-	   break;
-
+     case MAX_CONSERVATIVE:
 	ScreenGetGeometry(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
 	x2 += x1;
 	y2 += y1;
@@ -105,6 +108,17 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 	  }
 #endif
 
+	if (type == MAX_ABSOLUTE)
+	  {
+	     /* Simply ignore all windows */
+	     lst = NULL;
+	     num = 0;
+	  }
+	else
+	  {
+	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	  }
+
 	if (direction & MAX_VER)
 	  {
 	     for (i = 0; i < num; i++)
@@ -116,7 +130,7 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 		      pe->ignorearrange ||
 		      (ewin->desktop != pe->desktop && !pe->sticky) ||
 		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && pe->never_use_area) ||
+		      (type == MAX_AVAILABLE && !pe->never_use_area) ||
 		      !SPANS_COMMON(x, w, pe->x, pe->w))
 		     continue;
 
@@ -141,7 +155,7 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 		      pe->ignorearrange ||
 		      (ewin->desktop != pe->desktop && !pe->sticky) ||
 		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && pe->never_use_area) ||
+		      (type == MAX_AVAILABLE && !pe->never_use_area) ||
 		      !SPANS_COMMON(y, h, pe->y, pe->h))
 		     continue;
 
@@ -155,7 +169,8 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 			    ewin->border->border.right);
 	  }
 
-	Efree(lst);
+	if (lst)
+	   Efree(lst);
 	break;
      }
 

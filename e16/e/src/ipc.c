@@ -285,7 +285,7 @@ IPCStruct           IPCArray[] = {
     "win_op <windowid> annihilate\n  win_op <windowid> iconify\n  "
     "win_op <windowid> shade\n  win_op <windowid> stick\n  "
     "win_op <windowid> toggle_<width/height/size> "
-    "<conservative/available>\n          (or none for absolute)\n  "
+    "<conservative/available/xinerama>\n          (or none for absolute)\n  "
     "win_op <windowid> border <BORDERNAME>\n  win_op <windowid> "
     "desk <desktochangeto/next/prev>\n  win_op <windowid> "
     "area <x> <y>\n  win_op <windowid> <raise/lower>\n  "
