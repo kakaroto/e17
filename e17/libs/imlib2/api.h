@@ -1,12 +1,12 @@
 #ifndef __IMLIB_API_H
-#define __IMLIB_API_H 1
+# define __IMLIB_API_H 1
 
-#ifndef DATA64
-#define DATA64 u_int64_t
-#define DATA32 u_int32_t
-#define DATA16 u_int16_t
-#define DATA8  u_int8_t
-#endif
+# ifndef DATA64
+#  define DATA64 u_int64_t
+#  define DATA32 u_int32_t
+#  define DATA16 u_int16_t
+#  define DATA8  u_int8_t
+# endif
 
 /* data types - guess what - no transparent datatypes - all hidden */
 typedef void * Imlib_Image;
@@ -313,54 +313,37 @@ void imlib_apply_color_modifier(Imlib_Image image,
 				Imlib_Color_Modifier color_modifier);
 
 
-#if 0
+# if 0
+void imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x1, int y2,
+			   Imlib_Color *color, Imlib_Operation operation);
+
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
 				     Imlib_Image image_destination,
 				     int x, int y);
 void imlib_image_scroll_rect(Imlib_Image image, int x, int y, 
 			     int width, int height, int delta_x,
 			     int delta_y);
-void imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x1, int y2,
-			   Imlib_Color *color, Imlib_Channel_Mask, 
-			   Imlib_Operation operation);
 void imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
 				int height, Imlib_Color *color, 
-				Imlib_Channel_Mask, Imlib_Operation operation);
+				Imlib_Operation operation);
 void imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
 				int height, Imlib_Color *color, 
-				Imlib_Channel_Mask, Imlib_Operation operation);
-void imlib_image_fill_rectangle_gradient(Imlib_Image image, 
-					 int x, int y, int width, int height, 
-					 Imlib_Color *top_left_color, 
-					 Imlib_Color *top_right_color, 
-					 Imlib_Color *bottom_left_color, 
-					 Imlib_Color *bottom_right_color,
-					 Imlib_Channel_Mask mask,
-					 Imlib_Operation operation);
-void imlib_font_set_tab_size(Imlib_Font font, int size);
-Imlib_Rectangle *imlib_get_text_in_text_size_and_position(Imlib_font font, 
-							  Imlib_Text_Direction direction, 
-							  int width, int height,
-							  char *text,
-							  int text_start_index,
-							  int text_length,
-							  int *num_rectangles_return);
-int imlib_get_character_index_and_location_in_text(Imlib_font font, 
-						   Imlib_Text_Direction direction, 
-						   int width, int height,
-						   char *text, char wrap,
-						   int *x_return,
-						   int *y_return,
-						   int *width_return,
-						   int *height_return);
-
+				Imlib_Operation operation);
+Imlib_Color_Range imlib_create_color_range(void);
+void imlib_free_color_range(Imlib_Color_Range color_range);
+void imlib_add_color_to_color_range(Imlib_Color_Range color_range,
+				    Imlib_Color *color,
+				    int distance_away);
+void imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y, 
+					    int width, int height,
+					    Imlib_Color_Range color_range,
+					    double angle, double spread,
+					    Imlib_Operation operation);
 /* FIXME: have to figure out generic saving mechanism that lets savers have */
 /* options like quality, color , compression etc. */
 
 /* image saving functions */
 void imlib_save_image(Imlib_Image image, char *filename);
-
-
 #endif
 
 #endif
