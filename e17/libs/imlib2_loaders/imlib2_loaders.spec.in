@@ -7,12 +7,13 @@ Summary: Additional image loaders for Imlib2
 Name: %{name}
 Version: %{ver}
 Release: %{rel}
-Copyright: BSD
+Copyright: Mixed
 Group: System/Libraries
 Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{ver}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Mark Bainter <mark-e@cymry.org>
-URL: http://www.rasterman.com/raster/imlib.html
+Vendor: The Enlightenment Development Team
+URL: http://www.enlightenment.org/pages/imlib2.html
 Requires: imlib2 edb
 Prefix: %{prefix}
 
@@ -55,8 +56,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{prefix}/lib/loaders/image/*
 
 %changelog
-* Sun Aug 21 2001 Tom Gilbert <tom@linuxbrit.co.uk>
+* Sun Aug 12 2001 Tom Gilbert <tom@linuxbrit.co.uk>
 - Added db loader.
+* Sat Aug 11 2001 Mark Bainter <mark-e@cymry.org>
+- Corrected web URL.  
+- Changed Copyright to mixed, since not all items
+  in this package will be BSD Licensed.
 * Wed Jul 04 2001 Mark Bainter <mark-e@cymry.org>
 - Corrected ftp location.
 * Wed Jun 28 2001 Mark Bainter <mark-e@cymry.org>
