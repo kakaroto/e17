@@ -84,7 +84,7 @@ main(int argc, char *argv[])
   win_h = 580;
    
   method = RENDER_METHOD_ALPHA_SOFTWARE;
-  if (argv > 1)
+  if (argc > 1)
     {
        if (!strcmp(argv[1], "x11")) method = RENDER_METHOD_BASIC_HARDWARE;
        if (!strcmp(argv[1], "soft")) method = RENDER_METHOD_ALPHA_SOFTWARE;
