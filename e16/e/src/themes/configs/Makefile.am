@@ -16,7 +16,10 @@ menus.cfg \
 keybindings.gmc.cfg \
 keybindings.nogmc.cfg \
 control.kde.cfg \
-control.nokde.cfg
+control.nokde.cfg \
+control.rh.cfg \
+keybindings.rh.cfg \
+menus.rh.cfg
 
 if FSSTD
 configdatadir = $(prefix)/share/enlightenment/config
