@@ -30,8 +30,6 @@
 
 #define IDENT "EMBRACE_POP3_PLUGIN"
 #define MAX_INTERVAL 300
-#define MIN(x, y) ((x) < (y)) ? (x) : (y)
-#define MAX(x, y) ((x) > (y)) ? (x) : (y)
 
 static int on_server_add (void *udata, int type, void *event)
 {
