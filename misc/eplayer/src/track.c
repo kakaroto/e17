@@ -75,9 +75,10 @@ void track_close(ePlayer *player) {
  * @param player
  */
 void track_open(ePlayer *player) {
-	PlayListItem *pli = playlist_current_item_get(player->playlist);
-
-	assert(pli);
+	PlayListItem *pli;
+	
+	if (!(pli = playlist_current_item_get(player->playlist)))
+		return;
 
 	pli->current_pos = 0;
 	pli->plugin->open(pli->file);

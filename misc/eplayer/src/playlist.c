@@ -94,11 +94,17 @@ void playlist_current_item_set(PlayList *pl, PlayListItem *pli) {
 }
 
 bool playlist_current_item_has_next(PlayList *pl) {
-	return pl ? !!pl->cur_item->next : false;
+	if (!pl || !pl->cur_item)
+		return false;
+
+	return !!pl->cur_item->next;
 }
 
 bool playlist_current_item_has_prev(PlayList *pl) {
-	return pl ? !!pl->cur_item->prev : false;
+	if (!pl || !pl->cur_item)
+		return false;
+
+	return !!pl->cur_item->prev;
 }
 
 /**
@@ -108,7 +114,7 @@ bool playlist_current_item_has_prev(PlayList *pl) {
  * @return true if the current item has been set to the beginning, else false
  */
 bool playlist_current_item_next(PlayList *pl) {
-	if (!pl)
+	if (!pl || !pl->cur_item)
 		return false;
 	
 	if (pl->cur_item->next) {
@@ -121,7 +127,7 @@ bool playlist_current_item_next(PlayList *pl) {
 }
 
 bool playlist_current_item_prev(PlayList *pl) {
-	if (!pl)
+	if (!pl || !pl->cur_item)
 		return false;
 
 	if (playlist_current_item_has_prev(pl)) {
