@@ -83,12 +83,12 @@ e_string_cat_n(char *str, char *cat, int start, int len)
    strncat(str, &(cat[start]), len);
 }
 
-char *
+char               *
 e_string_escape(char *str)
 {
-   char buf[8192];
-   int i, j, len;
-   
+   char                buf[8192];
+   int                 i, j, len;
+
    e_string_clear(buf);
    len = e_string_length(str);
    for (i = 0, j = 0; i < len; i++)
@@ -127,14 +127,15 @@ e_string_escape(char *str)
    return e_string_dup(buf);
 }
 
-char *
+char               *
 e_string_build(char *format, char **rep_list, int rep_num)
 {
-   char buf[16384], *s;
-   int i;
-   
+   char                buf[16384], *s;
+   int                 i;
+
    e_string_clear(buf);
-   s = format; i= 0;
+   s = format;
+   i = 0;
    while (*s)
      {
 	if (s[0] == '%')
@@ -143,14 +144,14 @@ e_string_build(char *format, char **rep_list, int rep_num)
 		e_string_cat(buf, "%");
 	     else
 	       {
-		  int j;
-		  
+		  int                 j;
+
 		  for (j = 0; j < rep_num; j += 2)
 		    {
 		       if (s[1] == rep_list[j][0])
 			 {
-			    char *ss;
-			    
+			    char               *ss;
+
 			    ss = e_string_escape(rep_list[j + 1]);
 			    e_string_cat(buf, ss);
 			    FREE(ss);

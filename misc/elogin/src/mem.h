@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MEMCPY(src, dst, type, num) memcpy(dst, src, sizeof(type) * (num)) 
+#define MEMCPY(src, dst, type, num) memcpy(dst, src, sizeof(type) * (num))
 
 #if 1
 #define NEW(dat, num) malloc(sizeof(dat) * (num))
@@ -31,26 +31,35 @@
 #define REALLOC_PTR(dat, num) {dat = realloc(dat, sizeof(void *) * (num));}
 
 #else
-static void *_NEW(int size, int num){
-   void *dat;
-   
+static void        *
+_NEW(int size, int num)
+{
+   void               *dat;
+
    dat = malloc(size * num);
    printf("NEW(%i) = %p\n", size * num, dat);
    return dat;
 }
-static void *_NEW_PTR(int num){
-   void *dat;
-   
+static void        *
+_NEW_PTR(int num)
+{
+   void               *dat;
+
    dat = malloc(sizeof(void *) * num);
    printf("NEW(%i) = %p\n", sizeof(void *) * num, dat);
+
    return dat;
 }
-static void _IF_FREE(void *dat){
+static void
+_IF_FREE(void *dat)
+{
    printf("IF_FREE(%p)\n", dat);
    if (dat)
       free(dat);
 }
-static void _FREE(void *dat){
+static void
+_FREE(void *dat)
+{
    printf("FREE(%p)\n", dat);
    free(dat);
 }
@@ -64,4 +73,3 @@ static void _FREE(void *dat){
 
 #endif
 #endif
-

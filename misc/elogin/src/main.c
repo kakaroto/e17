@@ -28,31 +28,28 @@
 int
 main()
 {
-//	wx =(DisplayWidth(disp, DefaultScreen(disp)) - 500) / 2;
-//	wy = (DisplayHeight(disp, DefaultScreen(disp)) - (350)) / 2;
+//      wx =(DisplayWidth(disp, DefaultScreen(disp)) - 500) / 2;
+//      wy = (DisplayHeight(disp, DefaultScreen(disp)) - (350)) / 2;
 
 /*	root = XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, depth,
 		InputOutput, vis, CWOverrideRedirect |
               CWSaveUnder | CWBackingStore | CWColormap |
               CWBackPixmap | CWBorderPixel, &attr);
 */
-		
-	/* Get this puppy centered! */
 
-//	Elogin_XineramaCheck();
-	
-	
+   /* Get this puppy centered! */
 
-//	XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
-//		ButtonMotionMask | PointerMotionMask | ExposureMask);
-	
- 	
-//	Elogin_LoadConfigs ();
-	e_display_init(NULL);
-//	Elogin_LoadAll();
-//	Elogin_ViewNew();
-	Elogin_EventLoop();
-	Elogin_Display();
+//      Elogin_XineramaCheck();
 
-	 return 0;
+//      XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
+//              ButtonMotionMask | PointerMotionMask | ExposureMask);
+
+//      Elogin_LoadConfigs ();
+   e_display_init(NULL);
+//      Elogin_LoadAll();
+//      Elogin_ViewNew();
+   Elogin_Display();
+   Elogin_EventLoop();
+
+   return 0;
 }

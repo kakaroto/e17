@@ -41,32 +41,32 @@
 #define XEV_IN_OUT            EnterWindowMask | LeaveWindowMask
 #define XEV_MOUSE_MOVE		PointerMotionMask
 
+int                 default_depth;
+Window              default_root;
+Elogin_View        *main_view;
 
-int				default_depth;
-Window			default_root;
-Elogin_View	*	main_view;
-
-void			e_sync(void);
-void			e_flush(void);
-void			e_window_destroy(Window win);
-Window			e_window_new(Window parent);
-void			e_window_show(Window win);
-Pixmap			e_pixmap_new(Window win, int w, int h, int dep);
-void			e_pixmap_free(Pixmap pmap);
-void			e_window_set_background_pixmap(Window win, Pixmap pmap);
-void			e_window_clear(Window win);
-void			e_pointer_xy(Window win, int *x, int *y);
-void			e_pointer_xy_set(int x, int y);
-void			e_pointer_xy_get(int *x, int *y);
-void			e_window_set_events(Window win, long mask);
-void			e_window_add_events(Window win, long mask);
-void			e_window_resize(Window win, int w, int h);
-int				e_x_get_fd(void);
-void			e_display_init(char *display);
-int				e_events_pending(void);
-Atom			e_atom_get(char *name);
-void			e_window_property_set(Window win, Atom type, Atom format, int size, void *data, int number);
-void			e_get_next_event(XEvent *event);
+void                e_sync(void);
+void                e_flush(void);
+void                e_window_destroy(Window win);
+Window              e_window_new(Window parent);
+void                e_window_show(Window win);
+Pixmap              e_pixmap_new(Window win, int w, int h, int dep);
+void                e_pixmap_free(Pixmap pmap);
+void                e_window_set_background_pixmap(Window win, Pixmap pmap);
+void                e_window_clear(Window win);
+void                e_pointer_xy(Window win, int *x, int *y);
+void                e_pointer_xy_set(int x, int y);
+void                e_pointer_xy_get(int *x, int *y);
+void                e_window_set_events(Window win, long mask);
+void                e_window_add_events(Window win, long mask);
+void                e_window_resize(Window win, int w, int h);
+int                 e_x_get_fd(void);
+void                e_display_init(char *display);
+int                 e_events_pending(void);
+Atom                e_atom_get(char *name);
+void                e_window_property_set(Window win, Atom type, Atom format,
+					  int size, void *data, int number);
+void                e_get_next_event(XEvent * event);
 
 #define E_ATOM(atom, name) \
 if (!atom) atom = e_atom_get(name);

@@ -17,40 +17,38 @@
 #ifndef E_EVENTS_H
 #define E_EVENTS_H 1
 
-
 #include "x.h"
 
-typedef struct _eev			Eevent;
+typedef struct _eev Eevent;
 
 enum _eev_type
 {
-	EV_MOUSE_MOVE,
-	EV_MOUSE_IN,
-	EV_MOUSE_OUT,
-	EV_MOUSE_DOWN
+   EV_MOUSE_MOVE,
+   EV_MOUSE_IN,
+   EV_MOUSE_OUT,
+   EV_MOUSE_DOWN
 };
 
-typedef enum _eev_type		Eevent_Type;
+typedef enum _eev_type Eevent_Type;
 
 struct _eev
 {
-	Eevent_Type	type;
-	void         *event;
-	void        (*ev_free) (void *evnt);
-	Eevent       *next;
+   Eevent_Type         type;
+   void               *event;
+   void                (*ev_free) (void *evnt);
+   Eevent             *next;
 };
 
-typedef struct _ev_mouse_down		Ev_Mouse_Down;
+typedef struct _ev_mouse_down Ev_Mouse_Down;
 
 struct _ev_mouse_down
 {
-	Window		root, win;
-	int			button;
-	int			x, y;
-	int			rx, ry;
+   Window              root, win;
+   int                 button;
+   int                 x, y;
+   int                 rx, ry;
 };
 
-void Elogin_EventLoop(void);
+void                Elogin_EventLoop(void);
 
 #endif
-
