@@ -100,18 +100,18 @@ WarpFocus(int delta)
 	     for (i = num0 - 1; i >= 0; --i)
 	       {
 		  ewin = lst0[i];
-		  if (((ewin->sticky) || (ewin->desktop == desks.current))
-		      && (ewin->x + ewin->w > 0) && (ewin->x < root.w)
-		      && (ewin->y + ewin->h > 0) && (ewin->y < root.h)
-		      && (!ewin->skipfocus) && !(ewin->shaded
-						 && !conf.warplist.warpshaded)
-		      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
-							      && !conf.warplist.
-							      warpsticky)
-		      && (!ewin->ibox) && !(ewin->iconified
-					    && !conf.warplist.warpiconified)
-		      /*&& (ewin->client.mwm_decor_title) &&
-		       * (ewin->client.mwm_decor_border) */
+		  if (		/* Either visible or iconified */
+			((EwinIsOnScreen(ewin)) || (ewin->iconified))
+			/* Exclude windows that explicitely say so */
+			&& (!ewin->skipfocus)
+			/* Keep shaded windows if conf say so */
+			&& ((!ewin->shaded) || (conf.warplist.warpshaded))
+			/* Keep sticky windows if conf say so */
+			&& ((!ewin->sticky) || (conf.warplist.warpsticky))
+			/* Keep iconified windows if conf say so */
+			&& ((!ewin->iconified) || (conf.warplist.warpiconified))
+			/*&& (ewin->client.mwm_decor_title) &&
+			 * (ewin->client.mwm_decor_border) */
 		     )
 		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
 	       }
