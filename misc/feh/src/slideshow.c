@@ -125,7 +125,7 @@ feh_reload_image(winwidget w)
          feh_draw_filename(w);
    }
    else
-      eprintf("Couldn't reload image. Is it still there?");
+      weprintf("Couldn't reload image. Is it still there?");
 
    D_RETURN_;
 }

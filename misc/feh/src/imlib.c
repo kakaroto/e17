@@ -234,10 +234,13 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       D_RETURN(0);
    }
 
+   D(("progress is %d\n", percent));
+
    /* Is this the first progress return for a new image? */
    /* If so, we have some stuff to set up... */
-   if (percent == PROGRESS_GRANULARITY)
+   if (progwin->im_w == 0)
    {
+      D(("First progress load. setting stuff up\n"));
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
       progwin->zoom = 1.0;
@@ -246,22 +249,24 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {
+         D(("Need to create a window for the image\n"));
          winwidget_create_window(progwin, progwin->im_w, progwin->im_h);
          winwidget_show(progwin);
       }
       else if (!opt.full_screen)
       {
+         D(("Resizing the window\n"));
          winwidget_clear_background(progwin);
          winwidget_resize(progwin, progwin->im_w, progwin->im_h);
       }
-         
+
       winwidget_setup_pixmaps(progwin);
 
       if (!opt.full_screen)
          feh_draw_checks(progwin);
-      
+
       XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
-      
+
       if (opt.full_screen)
          XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
       else
