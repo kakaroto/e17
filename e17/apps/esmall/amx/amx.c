@@ -201,9 +201,7 @@ static ucell *aligncell(ucell * v)
 
 	/* swap two bytes */
 	t = s[0];
-
 	s[0] = s[1];
-
 	s[1] = t;
 
 #else							/*  */
@@ -211,16 +209,12 @@ static ucell *aligncell(ucell * v)
 
 	/* swap outer two bytes */
 	t = s[0];
-
 	s[0] = s[3];
-
 	s[3] = t;
 
 	/* swap inner two bytes */
 	t = s[1];
-
 	s[1] = s[2];
-
 	s[2] = t;
 
 #endif							/*  */
@@ -256,15 +250,10 @@ int amx_Callback(AMX * amx, cell index, cell * result, cell * params)
 {
 
 	AMX_HEADER *hdr = (AMX_HEADER *) amx->base;
-
 	AMX_FUNCSTUB *func = (AMX_FUNCSTUB *) (amx->base + (int) hdr->natives + (int) index * sizeof(AMX_FUNCSTUB));
-
 	AMX_NATIVE f = (AMX_NATIVE) func->address;
-
 	assert(f != NULL);
-
 	assert(index < hdr->num_natives);
-
 
 	/* Note:
 	 *   params[0] == number of parameters passed to the native function
@@ -273,7 +262,6 @@ int amx_Callback(AMX * amx, cell index, cell * result, cell * params)
 	 */
 
 	amx->error = AMX_ERR_NONE;
-
 	*result = f(amx, params);
 
 	return amx->error;
@@ -303,510 +291,291 @@ static int amx_BrowseRelocate(AMX * amx)
 {
 
 	AMX_HEADER *hdr;
-
 	uchar *code;
-
 	cell cip;
-
 	long codesize;
-
 	OPCODE op;
-
 	int debug;
 
 #if !defined NODBGCALLS
 	int last_sym_global = 0;
-
 #endif							/*  */
 #if defined __GNUC__ || defined ASM32 || defined JIT
 	ucell **opcode_list;
-
 #endif							/*  */
 #if defined JIT
 	int opcode_count = 0;
-
 	int reloc_count = 0;
-
 #endif							/*  */
 
-
 	hdr = (AMX_HEADER *) amx->base;
-
 	code = amx->base + (int) hdr->cod;
-
 	codesize = hdr->dat - hdr->cod;
-
 
 	/* sanity checks */
 	assert(OP_PUSH_PRI == 36);
-
 	assert(OP_PROC == 46);
-
 	assert(OP_SHL == 65);
-
 	assert(OP_SMUL == 72);
-
 	assert(OP_EQ == 95);
-
 	assert(OP_INC_PRI == 107);
-
 	assert(OP_MOVS == 117);
-
 	assert(OP_SYMBOL == 126);
-
 
 #if !defined NODBGCALLS
 	amx->dbgcode = DBG_INIT;
-
 	assert(amx->flags == 0);
-
 	amx->flags = AMX_FLAG_BROWSE;
-
 	debug = amx->debug(amx) == AMX_ERR_NONE;
-
 	if (debug)
 		amx->flags = AMX_FLAG_DEBUG | AMX_FLAG_BROWSE;
-
 #endif							/*  */
 
 #if defined __GNUC__ || defined ASM32 || defined JIT
 	amx_Exec(NULL, (cell *) & opcode_list, 0, 0);
-
 #endif							/*  */
 
 	/* start browsing code */
 	for (cip = 0; cip < codesize;) {
-
 		op = (OPCODE) * (ucell *) (code + (int) cip);
-
 		assert(op > 0 && op < OP_NUM_OPCODES);
-
 		if (op >= 256)
 			return AMX_ERR_INVINSTR;
-
 #if defined __GNUC__ || defined ASM32 || defined JIT
 		/* relocate symbol */
 		*(ucell **) (code + (int) cip) = opcode_list[op];
-
 #endif							/*  */
 #if defined JIT
 		opcode_count++;
-
 #endif							/*  */
 		cip += sizeof(cell);
-
 		switch (op) {
-
 			case OP_LOAD_PRI:	/* instructions with 1 parameter */
-
 			case OP_LOAD_ALT:
-
 			case OP_LOAD_S_PRI:
-
 			case OP_LOAD_S_ALT:
-
 			case OP_LREF_PRI:
-
 			case OP_LREF_ALT:
-
 			case OP_LREF_S_PRI:
-
 			case OP_LREF_S_ALT:
-
 			case OP_LODB_I:
-
 			case OP_CONST_PRI:
-
 			case OP_CONST_ALT:
-
 			case OP_ADDR_PRI:
-
 			case OP_ADDR_ALT:
-
 			case OP_STOR_PRI:
-
 			case OP_STOR_ALT:
-
 			case OP_STOR_S_PRI:
-
 			case OP_STOR_S_ALT:
-
 			case OP_SREF_PRI:
-
 			case OP_SREF_ALT:
-
 			case OP_SREF_S_PRI:
-
 			case OP_SREF_S_ALT:
-
 			case OP_STRB_I:
-
 			case OP_LIDX_B:
-
 			case OP_IDXADDR_B:
-
 			case OP_ALIGN_PRI:
-
 			case OP_ALIGN_ALT:
-
 			case OP_LCTRL:
-
 			case OP_SCTRL:
-
 			case OP_PUSH_R:
-
 			case OP_PUSH_C:
-
 			case OP_PUSH:
-
 			case OP_PUSH_S:
-
 			case OP_STACK:
-
 			case OP_HEAP:
-
 			case OP_JREL:
-
 			case OP_SHL_C_PRI:
-
 			case OP_SHL_C_ALT:
-
 			case OP_SHR_C_PRI:
-
 			case OP_SHR_C_ALT:
-
 			case OP_ADD_C:
-
 			case OP_SMUL_C:
-
 			case OP_ZERO:
-
 			case OP_ZERO_S:
-
 			case OP_EQ_C_PRI:
-
 			case OP_EQ_C_ALT:
-
 			case OP_INC:
-
 			case OP_INC_S:
-
 			case OP_DEC:
-
 			case OP_DEC_S:
-
 			case OP_MOVS:
-
 			case OP_CMPS:
-
 			case OP_FILL:
-
 			case OP_HALT:
-
 			case OP_BOUNDS:
-
 			case OP_SYSREQ_C:
-
 				cip += sizeof(cell);
-
 				break;
-
 
 			case OP_LOAD_I:	/* instructions without parameters */
-
 			case OP_STOR_I:
-
 			case OP_LIDX:
-
 			case OP_IDXADDR:
-
 			case OP_MOVE_PRI:
-
 			case OP_MOVE_ALT:
-
 			case OP_XCHG:
-
 			case OP_PUSH_PRI:
-
 			case OP_PUSH_ALT:
-
 			case OP_POP_PRI:
-
 			case OP_POP_ALT:
-
 			case OP_PROC:
-
 			case OP_RET:
-
 			case OP_RETN:
-
 			case OP_CALL_PRI:
-
 			case OP_SHL:
-
 			case OP_SHR:
-
 			case OP_SSHR:
-
 			case OP_SMUL:
-
 			case OP_SDIV:
-
 			case OP_SDIV_ALT:
-
 			case OP_UMUL:
-
 			case OP_UDIV:
-
 			case OP_UDIV_ALT:
-
 			case OP_ADD:
-
 			case OP_SUB:
-
 			case OP_SUB_ALT:
-
 			case OP_AND:
-
 			case OP_OR:
-
 			case OP_XOR:
-
 			case OP_NOT:
-
 			case OP_NEG:
-
 			case OP_INVERT:
-
 			case OP_ZERO_PRI:
-
 			case OP_ZERO_ALT:
-
 			case OP_SIGN_PRI:
-
 			case OP_SIGN_ALT:
-
 			case OP_EQ:
-
 			case OP_NEQ:
-
 			case OP_LESS:
-
 			case OP_LEQ:
-
 			case OP_GRTR:
-
 			case OP_GEQ:
-
 			case OP_SLESS:
-
 			case OP_SLEQ:
-
 			case OP_SGRTR:
-
 			case OP_SGEQ:
-
 			case OP_INC_PRI:
-
 			case OP_INC_ALT:
-
 			case OP_INC_I:
-
 			case OP_DEC_PRI:
-
 			case OP_DEC_ALT:
-
 			case OP_DEC_I:
-
 			case OP_SYSREQ_PRI:
-
 			case OP_JUMP_PRI:
-
 				break;
-
 
 			case OP_CALL:		/* opcodes that need relocation */
-
 			case OP_JUMP:
-
 			case OP_JZER:
-
 			case OP_JNZ:
-
 			case OP_JEQ:
-
 			case OP_JNEQ:
-
 			case OP_JLESS:
-
 			case OP_JLEQ:
-
 			case OP_JGRTR:
-
 			case OP_JGEQ:
-
 			case OP_JSLESS:
-
 			case OP_JSLEQ:
-
 			case OP_JSGRTR:
-
 			case OP_JSGEQ:
-
 			case OP_SWITCH:
-
 #if defined JIT
 				reloc_count++;
-
 #endif							/*  */
 				*(ucell *) (code + (int) cip) += (ucell) code;
-
 				cip += sizeof(cell);
-
 				break;
 
-
-			case OP_FILE:{
-
-							 cell num;
-
-							 DBGPARAM(num);
-
-							 DBGPARAM(amx->curfile);
-
-							 amx->dbgcode = DBG_FILE;
-
-							 amx->dbgname = (char *) (code + (int) cip);
-
-							 cip += num - sizeof(cell);
-
+			case OP_FILE:
+				{
+					cell num;
+					DBGPARAM(num);
+					DBGPARAM(amx->curfile);
+					amx->dbgcode = DBG_FILE;
+					amx->dbgname = (char *) (code + (int) cip);
+					cip += num - sizeof(cell);
 #if !defined NODBGCALLS
-							 if (debug) {
-
-								 assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
-
-								 amx->debug(amx);
-
-							 }			/* if */
+					if (debug) {
+						assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
+						amx->debug(amx);
+					}			/* if */
 #endif
-							 break;
-
-						 }				/* case */
+					break;
+				}				/* case */
 
 			case OP_LINE:
-
-						 amx->dbgcode = DBG_LINE;
-
-						 DBGPARAM(amx->curline);
-
-						 DBGPARAM(amx->curfile);
-
+				amx->dbgcode = DBG_LINE;
+				DBGPARAM(amx->curline);
+				DBGPARAM(amx->curfile);
 #if !defined NODBGCALLS
-						 if (debug) {
-
-							 assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
-
-							 amx->debug(amx);
-
-						 }				/* if */
+				if (debug) {
+					assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
+					amx->debug(amx);
+				}				/* if */
 #endif
-						 break;
+				break;
 
-			case OP_SYMBOL:{
-
-							   cell num;
-
-							   DBGPARAM(num);
-
-							   DBGPARAM(amx->dbgaddr);
-
-							   DBGPARAM(amx->dbgparam);
-
-							   amx->dbgcode = DBG_SYMBOL;
-
-							   amx->dbgname = (char *) (code + (int) cip);
-
-							   cip += num - 2 * sizeof(cell);
-
+			case OP_SYMBOL:
+				{
+					cell num;
+					DBGPARAM(num);
+					DBGPARAM(amx->dbgaddr);
+					DBGPARAM(amx->dbgparam);
+					amx->dbgcode = DBG_SYMBOL;
+					amx->dbgname = (char *) (code + (int) cip);
+					cip += num - 2 * sizeof(cell);
 #if !defined NODBGCALLS
-							   last_sym_global = (amx->dbgparam >> 8) == 0;
-
-							   if (debug && last_sym_global) {		/* do global symbols only */
-
-								   assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
-
-								   amx->debug(amx);
-
-							   }			/* if */
+					last_sym_global = (amx->dbgparam >> 8) == 0;
+					if (debug && last_sym_global) {	/* do global symbols only */
+						assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
+						amx->debug(amx);
+					}			/* if */
 #endif
-							   break;
-
-						   }				/* case */
+					break;
+				}				/* case */
 
 			case OP_SRANGE:
-
-						   DBGPARAM(amx->dbgaddr);		/* dimension level */
-
-						   DBGPARAM(amx->dbgparam);	/* length */
-
-						   amx->dbgcode = DBG_SRANGE;
-
+				DBGPARAM(amx->dbgaddr);		/* dimension level */
+				DBGPARAM(amx->dbgparam);	/* length */
+				amx->dbgcode = DBG_SRANGE;
 #if !defined NODBGCALLS
-						   if (debug && last_sym_global) {		/* do global symbols only */
-
-							   assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
-
-							   amx->debug(amx);
-
-						   }				/* if */
+				if (debug && last_sym_global) {		/* do global symbols only */
+					assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
+					amx->debug(amx);
+				}				/* if */
 #endif
-						   break;
+				break;
 
-			case OP_CASETBL:{
+			case OP_CASETBL:
+				{
+					cell num;
+					int i;
 
-								cell num;
-
-								int i;
-
-								DBGPARAM(num);	/* number of records follows the opcode */
-
-								for (i = 0; i <= num; i++) {
-
-									*(ucell *) (code + (int) cip + 2 * i * sizeof(cell)) += (ucell) code;
-
+					DBGPARAM(num);	/* number of records follows the opcode */
+					for (i = 0; i <= num; i++) {
+						*(ucell *) (code + (int) cip + 2 * i * sizeof(cell)) += (ucell) code;
 #if defined JIT
-									reloc_count++;
-
+						reloc_count++;
 #endif							/*  */
-								}			/* for */
-
-								cip += (2 * num + 1) * sizeof(cell);
-
-								break;
-
-							}				/* case */
+					}			/* for */
+					cip += (2 * num + 1) * sizeof(cell);
+					break;
+				}				/* case */
 
 			default:
-
-							return AMX_ERR_INVINSTR;
-
+				return AMX_ERR_INVINSTR;
 		}						/* switch */
-
 	}							/* for */
-
 
 #if defined JIT
 	amx->code_size = getMaxCodeSize() * opcode_count + hdr->cod
 		+ (hdr->stp - hdr->dat) + 4;
-
 	amx->reloc_size = 2 * sizeof(cell) * reloc_count;
-
 #endif							/*  */
-
 	amx->flags |= AMX_FLAG_RELOC;
 
 	return AMX_ERR_NONE;
-
 }
 
 
@@ -814,7 +583,6 @@ int amx_Init(AMX * amx, void *program)
 {
 
 	AMX_HEADER *hdr;
-
 
 	hdr = (AMX_HEADER *) program;
 
