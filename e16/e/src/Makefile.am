@@ -24,7 +24,6 @@ enlightenment_SOURCES = \
 	backgrounds.c		\
 	borders.c		\
 	buttons.c		\
-	clone.c                 \
 	cmclass.c		\
 	comms.c			\
 	conf.h			\

@@ -1433,14 +1433,6 @@ typedef struct _PixImg
 }
 PixImg;
 
-typedef struct _Clone
-{
-   char               *name;
-   Window              win;
-   EWin               *ewin;
-}
-Clone;
-
 #ifdef DECLARE_STRUCT_ICONBOX
 struct _iconbox
 {
@@ -1759,10 +1751,6 @@ int                 ButtonsEventMouseDown(XEvent * ev);
 int                 ButtonsEventMouseUp(XEvent * ev);
 int                 ButtonsEventMouseIn(XEvent * ev);
 int                 ButtonsEventMouseOut(XEvent * ev);
-
-/* clone.c */
-void                RemoveClones(void);
-void                CloneDesktop(int d);
 
 /* cmclass.c */
 void                CreateCurve(ModCurve * c);

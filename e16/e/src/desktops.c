@@ -929,7 +929,6 @@ RaiseDesktop(int desk)
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
-   CloneDesktop(desks.order[0]);
    desks.desk[desk].viewable = 1;
    RefreshDesktop(desk);
    MoveToDeskTop(desk);
@@ -947,7 +946,6 @@ RaiseDesktop(int desk)
    StackDesktop(desks.current);
    FocusNewDesk();
    FX_DeskChange();
-   RemoveClones();
    RedrawPagersForDesktop(desk, 3);
    ForceUpdatePagersForDesktop(desk);
    UpdatePagerSel();
@@ -968,7 +966,6 @@ LowerDesktop(int desk)
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
-   CloneDesktop(desk);
    MoveToDeskBottom(desk);
    UncoverDesktop(desks.order[0]);
    HideDesktop(desk);
@@ -978,7 +975,6 @@ LowerDesktop(int desk)
    StackDesktop(desks.current);
    FocusNewDesk();
    FX_DeskChange();
-   RemoveClones();
    RedrawPagersForDesktop(desks.order[0], 3);
    ForceUpdatePagersForDesktop(desks.order[0]);
    UpdatePagerSel();
