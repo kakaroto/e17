@@ -73,12 +73,14 @@ a.qindex:visited
  text-decoration: none;
  color: #666666;
  font-weight: normal;
+ font-size: small;
 }
 a.qindex:hover
 {
  text-decoration: none;
  color: #000000;
  font-weight: normal;
+ font-size: small;
 }   
 td
 {

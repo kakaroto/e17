@@ -1,4 +1,4 @@
-<strong class="qindex">Information:</strong> &nbsp;
+<strong class="qsindex">Information:</strong> &nbsp;
 <a class="qindex" href="news.html">News</a> &nbsp;
 <a class="qindex" href="faq.html">FAQs</a> &nbsp;
 <a class="qindex" href="features-0.16.html">Features</a> &nbsp;
@@ -7,7 +7,7 @@
 <a class="qindex" href="team.html">Team</a> &nbsp;
 <a class="qindex" href="mail.html#links">Links</a><br />
 
-<strong class="qindex">Downloads:</strong> &nbsp;
+<strong class="qsindex">Downloads:</strong> &nbsp;
 <a class="qindex" href="download.html">Requirements</a> &nbsp;
 <a class="qindex" href="download.html">DR16-Binaries</a> &nbsp;
 <a class="qindex" href="http://sourceforge.net/project/showfiles.php?group_id=2">Libraries</a> &nbsp;
@@ -26,7 +26,7 @@
 <a class="qindex" href="ewl.html">Ewl</a> &nbsp;
 <a class="qindex" href="http://www.rephorm.com/rephorm/code/eprog/">Eprog</a><br />
 
-<strong class="qindex">Apps:</strong> &nbsp;
+<strong class="qsindex">Apps:</strong> &nbsp;
 <a class="qindex" href="etcher.html">Etcher</a> &nbsp;
 <a class="qindex" href="ebony.html">Ebony</a> &nbsp;
 <a class="qindex" href="http://evidence.sourceforge.net/">Evidence</a> &nbsp;
