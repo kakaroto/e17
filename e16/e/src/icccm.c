@@ -167,7 +167,7 @@ ICCCM_Delete(EWin * ewin)
 	if (ewin->pager)
 	  {
 	     HideEwin(ewin);
-	     ev.xunmap.window = ewin->pager->win;
+	     ev.xunmap.window = PagerGetWin(ewin->pager);
 	     HandleUnmap(&ev);
 	  }
 	if (ewin->ibox)

@@ -70,12 +70,14 @@ GrabButtonGrabs(EWin * ewin)
    ActionClass        *ac;
    int                 j;
    Action             *a;
+   Window              pager_hi_win;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
 				 LIST_TYPE_ACLASS);
 
    if (ac)
      {
+	pager_hi_win = PagerGetHiWin(ewin->pager);
 	ac->ref_count++;
 	for (j = 0; j < ac->num; j++)
 	  {
@@ -85,7 +87,6 @@ GrabButtonGrabs(EWin * ewin)
 		     || (a->event == EVENT_MOUSE_UP)))
 	       {
 		  unsigned int        mod, button, mask;
-		  int                 i;
 
 		  mod = 0;
 		  button = 0;
@@ -100,8 +101,8 @@ GrabButtonGrabs(EWin * ewin)
 		  mask = ButtonPressMask | ButtonReleaseMask;
 		  if (mod == AnyModifier)
 		    {
-		       if ((ewin->pager) && (ewin->pager->hi_win))
-			  XGrabButton(disp, button, mod, ewin->pager->hi_win,
+		       if (pager_hi_win)
+			  XGrabButton(disp, button, mod, pager_hi_win,
 				      False, mask, GrabModeSync, GrabModeAsync,
 				      None, None);
 		       XGrabButton(disp, button, mod, ewin->win, False, mask,
@@ -109,12 +110,14 @@ GrabButtonGrabs(EWin * ewin)
 		    }
 		  else
 		    {
+		       int                 i;
+
 		       for (i = 0; i < 8; i++)
 			 {
-			    if ((ewin->pager) && (ewin->pager->hi_win))
+			    if (pager_hi_win)
 			       XGrabButton(disp, button,
 					   mod | mask_mod_combos[i],
-					   ewin->pager->hi_win, False, mask,
+					   pager_hi_win, False, mask,
 					   GrabModeSync, GrabModeAsync, None,
 					   None);
 			    XGrabButton(disp, button, mod | mask_mod_combos[i],
@@ -133,12 +136,14 @@ UnGrabButtonGrabs(EWin * ewin)
    ActionClass        *ac;
    int                 j;
    Action             *a;
+   Window              pager_hi_win;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
 				 LIST_TYPE_ACLASS);
 
    if (ac)
      {
+	pager_hi_win = PagerGetHiWin(ewin->pager);
 	ac->ref_count--;
 	for (j = 0; j < ac->num; j++)
 	  {
@@ -161,8 +166,8 @@ UnGrabButtonGrabs(EWin * ewin)
 		     button = a->button;
 		  if (mod == AnyModifier)
 		    {
-		       if ((ewin->pager) && (ewin->pager->hi_win))
-			  XUngrabButton(disp, button, mod, ewin->pager->hi_win);
+		       if (pager_hi_win)
+			  XUngrabButton(disp, button, mod, pager_hi_win);
 		       XUngrabButton(disp, button, mod, ewin->win);
 		    }
 		  else
@@ -171,10 +176,10 @@ UnGrabButtonGrabs(EWin * ewin)
 
 		       for (i = 0; i < 8; i++)
 			 {
-			    if ((ewin->pager) && (ewin->pager->hi_win))
+			    if (pager_hi_win)
 			       XUngrabButton(disp, button,
 					     mod | mask_mod_combos[i],
-					     ewin->pager->hi_win);
+					     pager_hi_win);
 			    XUngrabButton(disp, button,
 					  mod | mask_mod_combos[i], ewin->win);
 			 }

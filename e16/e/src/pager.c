@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_PAGER
 #include "E.h"
 
 static void         PagerUpdateTimeout(int val, void *data);
@@ -232,12 +233,14 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
       return;
    if (dh > root.h * 2)
       return;
+
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = XCreateGC(disp, src, GCSubwindowMode, &gcv);
 	gc2 = XCreateGC(disp, src, 0, &gcv);
      }
+
    if (HIQ)
       p_grab = ECreatePixImg(src, sw, dh * 2);
    else
@@ -516,6 +519,7 @@ CreatePager(void)
 
    if (!mode.show_pagers)
       return NULL;
+
    if ((!did_dialog) && (SNAP))
      {
 	if (pImlibData->x.shm)
@@ -616,6 +620,7 @@ PagerResize(Pager * p, int w, int h)
       return;
    if ((w == p->w) && (h == p->h))
       return;
+
    GetAreaSize(&ax, &ay);
    EFreePixmap(disp, p->pmap);
    EFreePixmap(disp, p->bgpmap);
@@ -667,11 +672,13 @@ PagerShow(Pager * p)
 
    if (!mode.show_pagers)
       return;
+
    if (p->ewin)
      {
 	ShowEwin(p->ewin);
 	return;
      }
+
    Esnprintf(s, sizeof(s), "%i", p->desktop);
    xch = XAllocClassHint();
    xch->res_name = s;
@@ -774,6 +781,7 @@ PagersForDesktop(int d, int *num)
 
    if (!mode.show_pagers)
       return NULL;
+
    *num = 0;
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
    if (pl)
@@ -800,6 +808,7 @@ RedrawPagersForDesktop(int d, char newbg)
 
    if (!mode.show_pagers)
       return;
+
    pl = PagersForDesktop(d, &num);
    if (pl)
      {
@@ -817,6 +826,7 @@ ForceUpdatePagersForDesktop(int d)
 
    if (!mode.show_pagers)
       return;
+
    pl = PagersForDesktop(d, &num);
    if (pl)
      {
@@ -833,6 +843,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    if (!mode.show_pagers)
       return;
+
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
@@ -899,6 +910,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
      }
    if (!mode.show_pagers)
       return;
+
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
@@ -1161,6 +1173,7 @@ PagerReArea(void)
 
    if (!mode.show_pagers)
       return;
+
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
    GetAreaSize(&ax, &ay);
    if (pl)
@@ -1193,6 +1206,7 @@ PagerEwinOutsideAreaUpdate(EWin * ewin)
 {
    if (!mode.show_pagers)
       return;
+
    if (ewin->sticky)
      {
 	int                 i;
@@ -1221,6 +1235,7 @@ EwinInPagerAt(Pager * p, int x, int y)
 
    if (!mode.show_pagers)
       return NULL;
+
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
@@ -1249,6 +1264,7 @@ PagerAreaAt(Pager * p, int x, int y, int *ax, int *ay)
 
    if (!mode.show_pagers)
       return;
+
    GetAreaSize(&asx, &asy);
    *ax = x / (p->w / asx);
    *ay = y / (p->h / asy);
@@ -1265,6 +1281,7 @@ PagerShowMenu(Pager * p, int x, int y)
 
    if (!mode.show_pagers)
       return;
+
    ewin = EwinInPagerAt(p, x, y);
    if (ewin)
      {
@@ -1344,6 +1361,7 @@ PagerTitle(Pager * p, char *title)
 
    if (!mode.show_pagers)
       return;
+
    xtp.encoding = XA_STRING;
    xtp.format = 8;
    xtp.value = (unsigned char *)(title);
@@ -1361,6 +1379,7 @@ UpdatePagerSel(void)
 
    if (!mode.show_pagers)
       return;
+
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
    if (pl)
      {
@@ -1394,6 +1413,7 @@ PagerHideAllHi(void)
 
    if (!mode.show_pagers)
       return;
+
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
    if (pl)
      {
@@ -1673,6 +1693,7 @@ PagerHandleMotion(Pager * p, Window win, int x, int y)
 
    if (!mode.show_pagers)
       return;
+
    if (!p)
      {
 	PagerHideAllHi();
@@ -1727,23 +1748,12 @@ NewPagerForDesktop(int desk)
 void
 EnableSinglePagerForDesktop(int desk)
 {
-   Pager              *p;
    Pager             **pl;
-   char                s[1024];
    int                 num;
 
    pl = PagersForDesktop(desk, &num);
    if (!pl)
-     {
-	p = CreatePager();
-	if (p)
-	  {
-	     p->desktop = desk;
-	     Esnprintf(s, sizeof(s), "%i", desk);
-	     PagerTitle(p, s);
-	     PagerShow(p);
-	  }
-     }
+      NewPagerForDesktop(desk);
    else
       Efree(pl);
 }
@@ -1878,4 +1888,41 @@ PagerSetSnap(char onoff)
 	  }
 	Efree(pl);
      }
+}
+
+Window
+PagerGetWin(Pager * p)
+{
+   return (p) ? p->win : 0;
+}
+
+Window
+PagerGetHiWin(Pager * p)
+{
+   return (p) ? p->hi_win : 0;
+}
+
+Pager              *
+FindPager(Window win)
+{
+   Pager              *p, *pr = NULL;
+   Pager             **ps;
+   int                 i, num;
+
+   EDBUG(6, "FindDialog");
+
+   ps = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
+   for (i = 0; i < num; i++)
+     {
+	p = ps[i];
+	if ((p->win == win) || (p->hi_win == win))
+	  {
+	     pr = p;
+	     break;
+	  }
+     }
+   if (ps)
+      Efree(ps);
+
+   EDBUG_RETURN(pr);
 }

@@ -587,26 +587,3 @@ FindEwinSpawningMenu(Menu * m)
       Efree(ewins);
    EDBUG_RETURN(NULL);
 }
-
-Pager              *
-FindPager(Window win)
-{
-   Pager              *p;
-   Pager             **ps;
-   int                 i, num;
-
-   EDBUG(6, "FindDialog");
-   ps = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
-   for (i = 0; i < num; i++)
-     {
-	if ((ps[i]->win == win) || (ps[i]->hi_win == win))
-	  {
-	     p = ps[i];
-	     Efree(ps);
-	     EDBUG_RETURN(p);
-	  }
-     }
-   if (ps)
-      Efree(ps);
-   EDBUG_RETURN(NULL);
-}

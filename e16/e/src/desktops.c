@@ -145,39 +145,13 @@ ChangeNumberOfDesktops(int quantity)
      }
    if (mode.numdesktops > pnum)
      {
-	Pager              *p;
-	char                s[1024];
-
 	for (i = pnum; i < mode.numdesktops; i++)
-	  {
-	     p = CreatePager();
-	     if (p)
-	       {
-		  p->desktop = i;
-		  Esnprintf(s, sizeof(s), "%i", i);
-		  PagerTitle(p, s);
-		  PagerShow(p);
-	       }
-	  }
+	   NewPagerForDesktop(i);
      }
    else if (mode.numdesktops < pnum)
      {
-	Pager             **pl;
-	int                 j, num;
-
-	for (j = mode.numdesktops; j < pnum; j++)
-	  {
-	     pl = PagersForDesktop(j, &num);
-	     if (pl)
-	       {
-		  for (i = 0; i < num; i++)
-		    {
-		       if (pl[i]->ewin)
-			  ICCCM_Delete(pl[i]->ewin);
-		    }
-		  Efree(pl);
-	       }
-	  }
+	for (i = mode.numdesktops; i < pnum; i++)
+	   DisablePagersForDesktop(i);
      }
    if (desks.current >= mode.numdesktops)
       GotoDesktop(mode.numdesktops - 1);

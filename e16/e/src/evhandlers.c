@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_PAGER
 #include "E.h"
 
 static ToolTip     *ttip = NULL;
@@ -37,7 +38,6 @@ static char         sentpress = 0;
 static Window       click_was_in = 0;
 static Time         last_time = 0;
 static int          last_button = 0;
-static int          pgd_x = 0, pgd_y = 0;
 
 static void
 ToolTipTimeout(int val, void *data)
@@ -902,6 +902,7 @@ HandleMotion(XEvent * ev)
 		  MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
 			   (y * root.h * ay) / p->h);
 	       }
+
 	     gwins =
 		ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
 					   mode.nogroup, &num);
@@ -1547,7 +1548,6 @@ HandleExpose(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-static int          pwin_px, pwin_py;
 static int         *gwin_px, *gwin_py;
 
 void
@@ -1561,7 +1561,7 @@ HandleMouseDown(XEvent * ev)
    ActionClass        *ac;
    Menu               *m;
    MenuItem           *mi;
-   int                 desk_click = -1;
+   int                 desk_click;
    char                double_click = 0;
    float               mode_double_click_time = 0.25;
 
@@ -1570,6 +1570,7 @@ HandleMouseDown(XEvent * ev)
    /* DON'T handle clicks whilst moving/resizing things unless doing manual placement */
    if (mode.mode != MODE_NONE)
       EDBUG_RETURN_;
+
    if ((mode.cur_menu_mode) && (!clickmenu))
      {
 	unsigned int        bmask = 0, evmask;
@@ -1594,6 +1595,7 @@ HandleMouseDown(XEvent * ev)
 	     EDBUG_RETURN_;
 	  }
      }
+
    if (ttip)
       HideToolTip(ttip);
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
@@ -1613,6 +1615,8 @@ HandleMouseDown(XEvent * ev)
    mode.y = ev->xbutton.y_root;
 
    mode.context_win = win;
+
+   desk_click = -1;
    for (i = 0; i < mode.numdesktops; i++)
      {
 	if (win == desks.desk[i].win)
@@ -1635,6 +1639,7 @@ HandleMouseDown(XEvent * ev)
 	  }
 	EDBUG_RETURN_;
      }
+
    m = FindMenuItem(click_was_in, &mi);
    if ((!m) && ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK)))
      {
@@ -1692,6 +1697,7 @@ HandleMouseDown(XEvent * ev)
 	  }
 	EDBUG_RETURN_;
      }
+
    if (double_click)
       ev->xbutton.time = 0;
 
@@ -1725,6 +1731,7 @@ HandleMouseDown(XEvent * ev)
 	  }
 	Efree(ewins);
      }
+
    if (win)
      {
 	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
@@ -1760,6 +1767,7 @@ HandleMouseDown(XEvent * ev)
 	if (buttons)
 	   Efree(buttons);
      }
+
    {
       Dialog             *d;
       int                 bnum;
@@ -1826,6 +1834,7 @@ HandleMouseDown(XEvent * ev)
 	     }
 	}
    }
+
    ewin = FindEwinByBase(ev->xbutton.window);
    if (ewin)
      {
@@ -1846,6 +1855,7 @@ HandleMouseDown(XEvent * ev)
 	     mode.borderpartpress = 0;
 	  }
      }
+
    {
       Pager              *p;
 
@@ -1890,6 +1900,8 @@ HandleMouseDown(XEvent * ev)
 		ewin = EwinInPagerAt(p, ev->xbutton.x, ev->xbutton.y);
 		if ((ewin) && (!ewin->pager))
 		  {
+		     static int          pgd_x = 0, pgd_y = 0;
+		     static int          pwin_px, pwin_py;
 		     Window              dw;
 		     int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
 
@@ -1920,6 +1932,7 @@ HandleMouseDown(XEvent * ev)
 	     }
 	}
    }
+
    EDBUG_RETURN_;
 }
 
@@ -2664,9 +2677,6 @@ HandleMouseIn(XEvent * ev)
    EWin              **ewins;
    int                 i, j, num;
    Button            **buttons;
-   Menu               *m;
-   MenuItem           *mi;
-   static struct _mdata mdata;
 
    EDBUG(5, "HandleMouseIn");
 
@@ -2678,8 +2688,12 @@ HandleMouseIn(XEvent * ev)
 
    EdgeHandleEnter(ev);
    win = ev->xcrossing.window;
-
    mode.context_win = win;
+
+   {
+      Menu               *m;
+      MenuItem           *mi;
+      static struct _mdata mdata;
 
    m = FindMenuItem(win, &mi);
    if (m)
@@ -2687,7 +2701,8 @@ HandleMouseIn(XEvent * ev)
 	int                 j;
 
 	PagerHideAllHi();
-	if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
+	   if ((win == mi->icon_win) &&
+	       (ev->xcrossing.detail == NotifyAncestor))
 	   EDBUG_RETURN_;
 	if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
 	   EDBUG_RETURN_;
@@ -2699,8 +2714,8 @@ HandleMouseIn(XEvent * ev)
 	  {
 	     if (mode.cur_menu[i] == m)
 	       {
-		  if ((!mi->child)
-		      || ((mi->child) && (mode.cur_menu[i + 1] != mi->child)))
+		     if ((!mi->child) ||
+			 ((mi->child) && (mode.cur_menu[i + 1] != mi->child)))
 		    {
 		       for (j = i + 1; j < mode.cur_menu_depth; j++)
 			  HideMenu(mode.cur_menu[j]);
@@ -2723,6 +2738,8 @@ HandleMouseIn(XEvent * ev)
 	  }
 	EDBUG_RETURN_;
      }
+   }
+
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    for (i = 0; i < num; i++)
      {
@@ -2755,6 +2772,7 @@ HandleMouseIn(XEvent * ev)
      }
    if (ewins)
       Efree(ewins);
+
    if (win)
      {
 	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
@@ -2780,6 +2798,7 @@ HandleMouseIn(XEvent * ev)
 	if (buttons)
 	   Efree(buttons);
      }
+
    {
       Dialog             *d;
       int                 bnum;
@@ -2825,9 +2844,6 @@ HandleMouseOut(XEvent * ev)
    Window              win;
    EWin              **ewins;
    int                 i, j, num;
-   Button            **buttons;
-   Menu               *m;
-   MenuItem           *mi;
 
    EDBUG(5, "HandleMouseOut");
 
@@ -2840,13 +2856,17 @@ HandleMouseOut(XEvent * ev)
    EdgeHandleLeave(ev);
 
    win = ev->xcrossing.window;
-
    mode.context_win = win;
+
+   {
+      Menu               *m;
+      MenuItem           *mi;
 
    m = FindMenuItem(win, &mi);
    if (m)
      {
-	if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
+	   if ((win == mi->icon_win) &&
+	       (ev->xcrossing.detail == NotifyAncestor))
 	   EDBUG_RETURN_;
 	if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
 	   EDBUG_RETURN_;
@@ -2854,6 +2874,8 @@ HandleMouseOut(XEvent * ev)
 	DrawMenuItem(m, mi, 1);
 	EDBUG_RETURN_;
      }
+   }
+
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    ICCCM_Cmap(NULL);
    for (i = 0; i < num; i++)
@@ -2888,8 +2910,11 @@ HandleMouseOut(XEvent * ev)
      }
    if (ewins)
       Efree(ewins);
+
    if (win)
      {
+	Button            **buttons;
+
 	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
 	for (i = 0; i < num; i++)
 	  {
@@ -2912,6 +2937,7 @@ HandleMouseOut(XEvent * ev)
 	if (buttons)
 	   Efree(buttons);
      }
+
    {
       Dialog             *d;
       int                 bnum;

@@ -1705,6 +1705,7 @@ struct _iconbox
 
 };
 
+#ifdef DECLARE_STRUCT_PAGER
 struct _pager
 {
    char               *name;
@@ -1723,6 +1724,7 @@ struct _pager
    Window              hi_win;
    EWin               *hi_ewin;
 };
+#endif
 
 typedef struct _drawqueue
 {
@@ -2859,8 +2861,6 @@ void                PagerHandleMotion(Pager * p, Window win, int x, int y);
 void                EnableAllPagers(void);
 void                DisableAllPagers(void);
 void                PagerHideHi(Pager * p);
-void                PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w,
-				int h);
 void                PagerSetHiQ(char onoff);
 void                PagerSetSnap(char onoff);
 void                PagerHideAllHi(void);
@@ -2868,6 +2868,8 @@ void                NewPagerForDesktop(int desk);
 void                EnableSinglePagerForDesktop(int desk);
 int                 PagerForDesktop(int desk);
 void                DisablePagersForDesktop(int desk);
+Window              PagerGetWin(Pager * p);
+Window              PagerGetHiWin(Pager * p);
 
 int                 CompareNetVersion(int major, int minor, int patchlevel,
 				      char *date);

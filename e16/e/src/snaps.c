@@ -1235,7 +1235,7 @@ MatchToSnapInfoPager(Pager * p)
    char                buf[1024];
    Snapshot           *sn = NULL;
 
-   if ((!XGetClassHint(disp, p->win, &hint)))
+   if ((!XGetClassHint(disp, PagerGetWin(p), &hint)))
       return;
    if ((hint.res_name) && (hint.res_class))
      {
@@ -1249,7 +1249,7 @@ MatchToSnapInfoPager(Pager * p)
    if (!sn)
       return;
    if (sn->use_xy)
-      EMoveWindow(disp, p->win, sn->x, sn->y);
+      EMoveWindow(disp, PagerGetWin(p), sn->x, sn->y);
    if (sn->use_wh)
       PagerResize(p, sn->w, sn->h);
 }
