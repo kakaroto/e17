@@ -77,6 +77,9 @@ void __ewl_widget_configure(Ewl_Widget * w, void *event_data,
 void __ewl_widget_theme_update(Ewl_Widget * w, void *event_data,
 			       void *user_data);
 void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
+void ewl_widget_enable(Ewl_Widget * w);
+void ewl_widget_disable(Ewl_Widget * w);
+
 
 #define REALIZED(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_REALIZED)
 #define VISIBLE(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_SHOWN)

@@ -24,7 +24,7 @@ Ewl_FX_Proto glow = {
 	fx_stop,
 	EWL_FX_MODIFIES_ALPHA_CHANNEL,
 	create_about_dialog,
-	create_settings_dialog,
+	NULL,
 	"glow",
 	NULL
 };

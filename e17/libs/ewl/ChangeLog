@@ -1,3 +1,15 @@
+Sat Nov  10 21:23:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a mouse out ecore event handler, which calls focus out on any
+	  widgets in focus (if any).
+	* Added two new states to the Ewl_State enum
+	  	EWL_STATE_NORMAL,
+		EWL_STATE_DISABLED
+	  a widget by default allways has the state normal unless you call
+	  ewl_widget_disable() on it, this will switch to the state "disabled"
+	  in ebits, and prevent it from recieving any events except for
+	  configure. Just call ewl_widget_enable() on the widget again to
+	  make it normal. I also added matching callbacks for theese.
+
 Fri Nov  09 00:22:08 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Removed the Ewl_Widget_Type enum, instead im gonna use the
 	  Ewl_Widget->appearance to identify widgets.

@@ -1,6 +1,7 @@
 
 #include <Ewl.h>
 
+
 Ewl_Widget *last_selected = NULL;
 Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
@@ -10,12 +11,13 @@ static void ewl_ev_window_expose(Ecore_Event * _ev);
 static void ewl_ev_window_configure(Ecore_Event * _ev);
 static void ewl_ev_window_delete(Ecore_Event * _ev);
 
-/*static void ewl_ev_window_reparent(Ecore_Event * _ev);*/
 static void ewl_ev_key_down(Ecore_Event * _ev);
 static void ewl_ev_key_up(Ecore_Event * _ev);
 static void ewl_ev_mouse_down(Ecore_Event * _ev);
 static void ewl_ev_mouse_up(Ecore_Event * _ev);
 static void ewl_ev_mouse_move(Ecore_Event * _ev);
+static void ewl_ev_mouse_out(Ecore_Event * _ev);
+
 
 /**
  * ewl_ev_init - initialize the event handlers for dispatching to proper widgets
@@ -34,7 +36,6 @@ ewl_ev_init(void)
 	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_DELETE,
 				       ewl_ev_window_delete);
 
-/*	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_REPARENT, ewl_ev_window_reparent);*/
 	ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN, ewl_ev_key_down);
 	ecore_event_filter_handler_add(ECORE_EVENT_KEY_UP, ewl_ev_key_up);
 	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN,
@@ -42,6 +43,8 @@ ewl_ev_init(void)
 	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_UP, ewl_ev_mouse_up);
 	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,
 				       ewl_ev_mouse_move);
+	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_OUT,
+				       ewl_ev_mouse_out);
 
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
@@ -107,23 +110,6 @@ ewl_ev_window_configure(Ecore_Event * _ev)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-/*
- * FIXME: We probably need to do some work here.
- *
-static void
-ewl_ev_window_reparent(Ecore_Event * _ev)
-{
-	Ecore_Event_Window_Reparent *ev = _ev->event;
-	Ewl_Window *window;
-
-	window = ewl_window_find_window(ev->win);
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
-
-	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_REPARENT);
-}
- */
 
 /**
  * ewl_ev_window_delete - handles delete events that occur to windows
@@ -279,7 +265,7 @@ ewl_ev_mouse_down(Ecore_Event * _ev)
 					      EWL_CALLBACK_DESELECT);
 		    }
 
-		  if (widget)
+		  if (widget && !(widget->state & EWL_STATE_DISABLED))
 		    {
 			    widget->state |= EWL_STATE_SELECTED;
 			    ewl_callback_call(widget, EWL_CALLBACK_SELECT);
@@ -290,7 +276,7 @@ ewl_ev_mouse_down(Ecore_Event * _ev)
 	 * While the mouse is down the widget has a pressed state, the widget
 	 * is notified in this change of state.
 	 */
-	if (widget)
+	if (widget && !(widget->state & EWL_STATE_DISABLED))
 	  {
 		  widget->state |= EWL_STATE_PRESSED;
 		  ewl_callback_call_with_event_data(widget,
@@ -328,7 +314,7 @@ ewl_ev_mouse_up(Ecore_Event * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	if (last_selected)
+	if (last_selected && !(last_selected->state & EWL_STATE_DISABLED))
 	  {
 		  last_selected->state &= ~EWL_STATE_PRESSED;
 		  ewl_callback_call_with_event_data(last_selected,
@@ -365,7 +351,7 @@ ewl_ev_mouse_move(Ecore_Event * _ev)
 	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
 						      ev->x, ev->y);
 
-	if (widget)
+	if (widget && !(widget->state & EWL_STATE_DISABLED))
 	  {
 		  widget->state |= EWL_STATE_HILITED;
 		  if (last_focused != widget)
@@ -397,7 +383,24 @@ ewl_ev_mouse_move(Ecore_Event * _ev)
 	else
 		dnd_widget = NULL;
 
-	last_focused = widget;
+	if (!(widget->state & EWL_STATE_DISABLED))
+		last_focused = widget;
+	else
+		last_focused = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_ev_mouse_out(Ecore_Event * _ev)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (last_focused)
+	  {
+		  ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+		  last_focused = NULL;
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

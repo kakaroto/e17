@@ -18,6 +18,9 @@ void __ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
 					void *user_data);
 void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data);
+
 
 /**
  * ewl_widget_init - initialize a widgets to default values and callbacks
@@ -38,6 +41,8 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	 * Set up the necessary theme structures 
 	 */
 	ewl_theme_init_widget(w);
+
+	w->state = EWL_STATE_NORMAL;
 
 	/*
 	 * The base appearance is used for updating the appearance of the
@@ -66,6 +71,10 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_widget_reparent,
 			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
+			    __ewl_widget_enable, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
+			    __ewl_widget_disable, NULL);
 
 	/*
 	 * Set size fields on the object 
@@ -419,6 +428,40 @@ ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_widget_enable(Ewl_Widget * w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!(w->state & EWL_STATE_DISABLED))
+		return;
+	else
+	  {
+		  w->state |= EWL_STATE_NORMAL | ~EWL_STATE_DISABLED;
+		  ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
+	  }
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_widget_disable(Ewl_Widget * w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (w->state & EWL_STATE_DISABLED)
+		return;
+	else
+	  {
+		  w->state |= EWL_STATE_DISABLED | ~EWL_STATE_NORMAL;
+		  ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
+	  }
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * Perform the series of operations common to every widget when
  * they are destroyed. This should ALWAYS be the the last callback
@@ -654,6 +697,10 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		  if (w->fx_clip_box)
 			  ebits_set_clip(w->ebits_object, w->fx_clip_box);
 		  ebits_show(w->ebits_object);
+
+		  if (w->state & EWL_STATE_DISABLED)
+			  ebits_set_named_bit_state(w->ebits_object, "Base",
+						    "disabled");
 	  }
 
 	FREE(key);
@@ -695,6 +742,29 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+void
+__ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_widget_update_appearance(w, "normal");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_widget_update_appearance(w, "disabled");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

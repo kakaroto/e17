@@ -108,7 +108,7 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	w->evas_window = evas_get_window(w->evas);
 	ecore_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
 				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
-				XEV_MOUSE_MOVE);
+				XEV_MOUSE_MOVE | XEV_FOCUS);
 
 	window->bg_rect = evas_add_rectangle(w->evas);
 	evas_set_color(w->evas, window->bg_rect, 0, 0, 0, 255);

@@ -357,6 +357,9 @@ main(int argc, char **argv)
 							fxp->
 							create_settings_dialog,
 							NULL);
+			    else
+				    ewl_widget_disable(settings_button);
+
 			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
 					     settings_button, 2, 2, i, i);
 			    ewl_widget_show(settings_button);
@@ -374,6 +377,9 @@ main(int argc, char **argv)
 							fxp->
 							create_about_dialog,
 							NULL);
+			    else
+				    ewl_widget_disable(about_button);
+
 			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
 					     about_button, 3, 3, i, i);
 			    ewl_widget_show(about_button);

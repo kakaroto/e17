@@ -96,6 +96,7 @@ main(int argc, char **argv)
 	button[4] = ewl_button_new("Ewl_List");
 	ewl_object_set_custom_size(EWL_OBJECT(button[4]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[4]);
+	ewl_widget_disable(button[4]);
 
 	button[5] = ewl_button_new("Ewl_Notebook");
 	ewl_object_set_custom_size(EWL_OBJECT(button[5]), 100, 17);

@@ -72,11 +72,13 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	entry[0] = ewl_entry_new();
 	ewl_entry_set_text(entry[0], "Play with me ?");
+	ewl_object_set_padding(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
 	ewl_container_append_child(EWL_CONTAINER(entry_win), entry[0]);
 	ewl_widget_show(entry[0]);
 
 	entry[1] = ewl_entry_new();
 	ewl_entry_set_text(entry[1], "E W L ! ! !");
+	ewl_object_set_padding(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
 	ewl_container_append_child(EWL_CONTAINER(entry_win), entry[1]);
 	ewl_widget_show(entry[1]);
 

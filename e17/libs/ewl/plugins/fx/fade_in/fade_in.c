@@ -25,7 +25,7 @@ Ewl_FX_Proto fade_in = {
 	fx_stop,
 	EWL_FX_MODIFIES_ALPHA_CHANNEL,
 	create_about_dialog,
-	create_settings_dialog,
+	NULL,
 	"fade_in",
 	NULL
 };
