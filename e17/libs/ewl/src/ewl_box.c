@@ -206,23 +206,20 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 			    continue;
 		    }
 
-/*
 		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < CURRENT_W(c))
 			  REQUEST_W(c) = MAXIMUM_W(c);
 		  else if (MINIMUM_W(c) && MINIMUM_W(c) > CURRENT_W(c))
 			  REQUEST_W(c) = MINIMUM_W(c);
 		  else
 			  REQUEST_W(c) = CURRENT_W(c);
-*/
 
-/*
 		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < CURRENT_H(c))
 			  REQUEST_H(c) = MAXIMUM_H(c);
 		  else if (MINIMUM_H(c) && MINIMUM_H(c) > CURRENT_H(c))
 			  REQUEST_H(c) = MINIMUM_H(c);
 		  else
 			  REQUEST_H(c) = CURRENT_H(c);
-*/
+
 		  *rh -= REQUEST_H(c) + box->spacing;
 		  *rh -= c->object.padd.t + c->object.padd.b;
 	  }
