@@ -41,7 +41,7 @@
 	  
 	  // variable that defines whether the menu emulates the behaviour of
 	  // Windows Explorer
-	  var MTMEmulateWE = false;
+	  var MTMEmulateWE = true;
 	  
 	  // Directory of menu images/icons
 	  var MTMenuImageDirectory = "menu-images/";
@@ -65,7 +65,7 @@
 	  
 	  // All options regarding the root text and it's icon
 	  var MTMRootIcon = "menu_new_root.gif";
-	  var MTMenuText = "Site contents:";
+	  var MTMenuText = "Filetypes:";
 	  var MTMRootColor = "#0000a0";
 	  var MTMRootFont = "helvetica, arial";
 	  var MTMRootCSSize = "10pt";
@@ -190,11 +190,28 @@
   <xsl:template match="mtest">
     <xsl:text>ms.push(new MTMenuItem("</xsl:text>
     <xsl:value-of select="descr"/>
-    <xsl:text>", "table-</xsl:text><xsl:value-of select="$letter"/><xsl:text>.html", "text"));</xsl:text>
+    <xsl:text>", "table-</xsl:text>
+    <xsl:value-of select="$letter"/>
+    <xsl:text>.html#</xsl:text>
+    <xsl:value-of select="@id"/>
+    <xsl:text>", "text"));</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>ms.pop();</xsl:text>
   </xsl:template>    
 
+<!--
+  <xsl:template match="mtest">
+    <xsl:text>ms.push(new MTMenuItem("</xsl:text>
+    <xsl:value-of select="descr"/>
+    <xsl:text>", "table-</xsl:text>
+    <xsl:value-of select="$letter"/>
+    <xsl:text>.html#</xsl:text>
+    <xsl:value-of select="@id"/>
+    <xsl:text>", "text"));</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>ms.pop();</xsl:text>
+  </xsl:template>    
+-->
   <xsl:template match="*">
   </xsl:template>
 

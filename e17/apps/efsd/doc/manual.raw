@@ -1364,7 +1364,21 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
       Notice that &efsd; must be running when starting &efsdsh;, it does not do that for you.
     </para>
   </chapter>
-  
+
+  <chapter id="filetypesdb">
+    <title>&efsd;'s Filetype Database</title>
+    <para>
+      &efsd; uses a comprehensive set of file magic tests to determine a file's type. This set
+      is stored in an XML file and loaded and interpreted when &efsd; starts. It therefore is not a
+      database in the usual sense where access to a large file on disk is optimized.
+    </para>
+    <para>
+      There's an HTML browser for the filetypes which can be used for looking up file magic
+      values, offsets etc. If you're looking at an HTML version of the manual, you can go
+      to the browser <ulink url="./filetypes/index.html">here</ulink>.
+    </para>
+  </chapter>	  
+
   <chapter id="summary">
     <title>Summary, TODO list</title>
     <para>

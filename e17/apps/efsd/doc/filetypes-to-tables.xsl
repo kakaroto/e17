@@ -28,6 +28,8 @@
   
   <xsl:template match="mtest">
     <xsl:variable name="mask" select="mask"/>
+
+    <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
     
     <table border="0" width="600">
       <tr>
@@ -58,6 +60,9 @@
 
     <p>
     </p>
+
+    <xsl:apply-templates/>
+
   </xsl:template>    
   
   <xsl:template match="*">
