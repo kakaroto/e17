@@ -67,6 +67,12 @@ struct _estyle {
 	int length;
 
 	/*
+	 * Count of spaces at end of string to determine what was duplicated
+	 * for sizing workaround.
+	 */
+	int spaces;
+
+	/*
 	 * Callbacks.
 	 */
 	Evas_List *callbacks;

@@ -17,9 +17,9 @@
 #define OBST_X 100.0
 #define OBST_Y 100.0
 
-char string1[] = "This text should\ntest the basic styles";
+char string1[] = "This text should\ntest the basic styles ";
 
-char string2[] = "This is the alternate text to test";
+char string2[] = "This is the alternate text to test ";
 char *last = string1;
 
 int obstacle_w = -1, obstacle_h = -1, obstacle_x, obstacle_y;

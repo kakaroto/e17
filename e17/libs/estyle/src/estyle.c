@@ -49,8 +49,7 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
 	 * Create the Evas_Object and set the default font and font size.
 	 */
 	es->bit = evas_object_text_add(es->evas);
-	evas_object_text_font_set(es->bit,DEFAULT_FONT,DEFAULT_SIZE);
-	evas_object_text_text_set(es->bit,text);
+	evas_object_text_font_set(es->bit, DEFAULT_FONT, DEFAULT_SIZE);
 
 	/*
 	 * Set some default colors, font, and font size.
@@ -66,16 +65,7 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
 	if (es->style)
 		_estyle_style_draw(es, text);
 
-	/*
-	 * Set length and dimensions.
-	 */
-	es->length = strlen(text);
-	__estyle_update_dimensions(es);
-
-	/*
-	 * move to (0,0) by default. (is this necessary? -redalb)
-	 */
-	/* estyle_move(es, 0, 0); */
+	estyle_set_text(es, text);
 
 	return es;
 }
@@ -326,15 +316,25 @@ void estyle_set_style(Estyle *es, char *name)
  */
 char *estyle_get_text(Estyle * es)
 {
-	const char *ret;
+	int scount, i;
+	const char *text;
+	char *temp = NULL;
 
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
-	ret = evas_object_text_text_get(es->bit);
-	if (ret)
-		ret = strdup(ret);
+	text = evas_object_text_text_get(es->bit);
+	if (text) {
+		temp = calloc(es->length + 1, sizeof(char));
+		if (temp) {
+			scount = es->length - es->spaces;
+			memmove(temp, text, scount);
 
-	return (char *)ret;
+			for (i = 0; i < es->spaces; i++)
+				temp[scount + i] = text[scount + (2 * i)];
+		}
+	}
+
+	return temp;
 }
 
 /**
@@ -347,9 +347,39 @@ char *estyle_get_text(Estyle * es)
  */
 void estyle_set_text(Estyle *es, char *text)
 {
+	int i, scount;
+	char *temp;
+
 	CHECK_PARAM_POINTER("es", es);
 
-	evas_object_text_text_set(es->bit, text);
+	/*
+	 * Wheee!! what fun, to get the sizing right when spaces end the
+	 * string we need to duplicate them. Start by counting the extra
+	 * characters needed.
+	 */
+	scount = es->length = strlen(text);
+	while (--scount > 0 && isspace(text[scount]));
+
+	scount++;
+	es->spaces = es->length - scount;
+
+	/*
+	 * Now copy in the starting string byte-by-byte, followed by the
+	 * doubled spaces.
+	 */
+	temp = calloc(es->length + es->spaces + 1, sizeof(char));
+	memmove(temp, text, scount);
+	for (i = 0; i < es->spaces; i++) {
+		temp[scount + (2 * i)] = text[scount + i];
+		temp[scount + (2 * i) + 1] = text[scount + i];
+	}
+
+	/*
+	 * Null terminate that sucka
+	 */
+	temp[scount + (2 * i)] = '\0';
+	evas_object_text_text_set(es->bit, temp);
+	FREE(temp);
 
 	/*
 	 * Set the text for the style bits.
@@ -360,7 +390,6 @@ void estyle_set_text(Estyle *es, char *text)
 	/*
 	 * Set new length and dimensions.
 	 */
-	es->length = strlen(text);
 	__estyle_update_dimensions(es);
 }
 
