@@ -1555,6 +1555,7 @@ SettingsAudio(void)
 #else
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
 			 gettext("Audio not available since EsounD was not\n"
