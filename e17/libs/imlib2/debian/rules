@@ -19,7 +19,7 @@ INSTALL=/usr/bin/install
 
 configure: configure-stamp
 configure-stamp:
-	./configure --prefix=/usr
+	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
 	touch configure-stamp
 
 

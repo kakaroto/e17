@@ -26,7 +26,7 @@ build-stamp:
 	# Add here commands to compile the package.
 	#$(MAKE)
 
-	./configure ${cfg}
+	./autogen.sh ${cfg} || ./configure ${cfg}
 	$(MAKE)
 
 	touch build-stamp
