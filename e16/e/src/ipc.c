@@ -650,7 +650,6 @@ IPC_Remember(char *params, Client * c)
 		  else if (!strcmp((char *)params, "dialog"))
 		     SnapshotEwinDialog(ewin);
 		  SaveSnapInfo();
-		  Esnprintf(buf, sizeof(buf), "params %s", params);
 	       }
 	     else
 		Esnprintf(buf, sizeof(buf), "Error: no parameter");

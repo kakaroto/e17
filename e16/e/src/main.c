@@ -43,6 +43,7 @@ runDocBrowser(void)
 int
 main(int argc, char **argv)
 {
+   char                restarting = 0;
    int                 i, num;
    Button            **lst;
    Background         *bg;
@@ -136,6 +137,7 @@ main(int argc, char **argv)
 	     }
 	   else if ((!strcmp("-ext_init_win", argv[j])) && (argc - j > 1))
 	     {
+		restarting = 1;
 		init_win_ext = atoi(argv[++j]);
 	     }
 	   else if (!strcmp("-no_overwrite", argv[j]))
@@ -266,8 +268,6 @@ main(int argc, char **argv)
    if (mode.mapslide)
       CreateStartupDisplay(0);
    MapUnmap(1);
-   if (!init_win_ext)
-      SpawnSnappedCmds();
    /* set some more stuff for gnome */
    GNOME_SetCurrentArea();
    desks.current = 0;
@@ -382,8 +382,12 @@ main(int argc, char **argv)
 	   );
      }
    if (mode.firsttime)
+      runDocBrowser();
+   if (!restarting)
      {
-	runDocBrowser();
+	mode.startup = 1;
+	SpawnSnappedCmds();
+	mode.startup = 0;
      }
 
    BadThemeDialog();
