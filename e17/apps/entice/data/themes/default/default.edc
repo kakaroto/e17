@@ -2378,6 +2378,22 @@ collections
 		    rel1
 		    {
 			relative, 0.0 0.0;
+			offset, 3 3;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -3 -3;
+		    }
+		    color, 255 255 255 128;
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
 			offset, 0 0;
 		    }
 		    rel2
@@ -2385,7 +2401,7 @@ collections
 			relative, 1.0 1.0;
 			offset, 0 0;
 		    }
-		    color, 255 255 255 128;
+		    color, 255 255 255 255;
 		}
 	    }
 	}
@@ -2396,7 +2412,7 @@ collections
 		name, "ShowThumb";
 		signal, "mouse,in";
 		source, "EnticeThumb";
-		in, 	0.23 0.35;
+		in, 	0.15 0.0;
 		action, SIGNAL_EMIT "EnticeThumbPreview" "";
 	    }
 	    program
@@ -2410,7 +2426,7 @@ collections
 	    program
 	    {
 		name, "SelectThumb";
-		signal, "mouse,up,1";
+		signal, "mouse,clicked,1";
 		source, "EnticeThumb";
 		action, SIGNAL_EMIT "EnticeThumbLoad" "";
 	    }
@@ -2422,6 +2438,7 @@ collections
 		action, STATE_SET "selected" 0.0;
 		transition, SINUSOIDAL 0.3;
 		target, "ThumbClip";
+		target, "EnticeThumb";
 	    }
 	    program
 	    {
@@ -2431,6 +2448,7 @@ collections
 		action, STATE_SET "default" 0.0;
 		transition, SINUSOIDAL 0.3;
 		target, "ThumbClip";
+		target, "EnticeThumb";
 	    }
 	}
     }
