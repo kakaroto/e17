@@ -110,7 +110,7 @@ type				{ KEYWORD_RETURN(TYPE); }
 visible				{ KEYWORD_RETURN(VISIBLE); }
 x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
-\"[^\"]*\"            { STRING_RETURN(); }
+(\"[^\"]*\")*       { STRING_RETURN(); }
 {floating_constant} { FLOAT_RETURN(); }
 \}                  { KEYWORD_RETURN(CLOSE_BRACE); }
 \{                  { KEYWORD_RETURN(OPEN_BRACE); }
