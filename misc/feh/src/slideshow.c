@@ -270,6 +270,7 @@ slideshow_change_image(winwidget winwid, int change)
             if ((winwid->im_w != feh_imlib_image_get_width(winwid->im))
                 || (winwid->im_h != feh_imlib_image_get_height(winwid->im)))
                winwid->had_resize = 1;
+            winwidget_reset_image(winwid);
             winwid->im_w = feh_imlib_image_get_width(winwid->im);
             winwid->im_h = feh_imlib_image_get_height(winwid->im);
             winwidget_render_image(winwid, 1, 1);
