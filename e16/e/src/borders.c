@@ -708,7 +708,7 @@ AddInternalToFamily(Window win, char *bname, int type, void *ptr,
       ewin->desktop = desks.current;
    else
       ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
-   DesktopAddEwinToTop(ewin);
+   ConformEwinToDesktop(ewin);
 
    if (init)
       init(ewin, ptr);		/* Type specific initialisation */

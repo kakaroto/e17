@@ -23,6 +23,7 @@
 #define DECLARE_STRUCT_MENU 1
 #include "E.h"
 
+static void         MenuRedraw(Menu * m);
 static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);
 
 static void         FileMenuUpdate(int val, void *data);
@@ -137,7 +138,6 @@ MenuHide(Menu * m)
    EDBUG_RETURN_;
 }
 
-void                MenuRedraw(Menu * m);
 static void
 MenuMoveResize(EWin * ewin, int resize)
 {
@@ -146,7 +146,8 @@ MenuMoveResize(EWin * ewin, int resize)
    if (!m)
       return;
 
-   if (conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
+   if ((!m->style->use_item_bg && m->pmm.pmap == 0) ||
+       conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
       MenuRedraw(m);
 }
 
@@ -824,7 +825,7 @@ MenuRealize(Menu * m)
    EDBUG_RETURN_;
 }
 
-void
+static void
 MenuRedraw(Menu * m)
 {
    int                 i, w, h;
