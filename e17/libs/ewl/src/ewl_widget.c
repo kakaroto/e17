@@ -40,6 +40,10 @@ static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
  */
 
+void __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t,
+		int *b);
+void __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t,
+		int *b);
 static inline void __ewl_widget_theme_destroy(Ewl_Widget *w);
 static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w);
 
@@ -723,9 +727,15 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	/*
+	 * Get and save the current insets and padding of the widget, this
+	 * will be used to calculate any added at runtime.
+	 */
 	if (w->theme_object) {
+		__ewl_widget_get_theme_insets(w, &i_l, &i_r, &i_t, &i_b);
+		__ewl_widget_get_theme_padding(w, &p_l, &p_r, &p_t, &p_b);
+
 		/* FIXME: No edje equivalent yet.
-		ebits_get_insets(w->theme_object, &i_l, &i_r, &i_t, &i_b);
 		ebits_get_padding(w->theme_object, &p_l, &p_r, &p_t, &p_b);
 		*/
 	}
@@ -797,6 +807,7 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		/* FIXME: More edje growing pains
 		ebits_get_insets(w->theme_object, &l, &r, &t, &b);
 		*/
+		__ewl_widget_get_theme_insets(w, &l, &r, &t, &b);
 		ewl_object_set_insets(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
 				b + i_b);
 
@@ -804,6 +815,7 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * FIXME: More edje growing pains
 		ebits_get_padding(w->theme_object, &l, &r, &t, &b);
 		*/
+		__ewl_widget_get_theme_padding(w, &l, &r, &t, &b);
 		ewl_object_set_padding(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
 				b + p_b);
 
@@ -960,6 +972,72 @@ static inline void __ewl_widget_theme_destroy(Ewl_Widget *w)
 		evas_object_clip_unset(w->theme_object);
 		evas_object_del(w->theme_object);
 		w->theme_object = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
+{
+	const char *key;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Read in the padding values from the edje file
+	 */
+	key = edje_object_data_get(w->theme_object, "pad/left");
+	if (key && l) {
+		*l = atoi(key);
+	}
+
+	key = edje_object_data_get(w->theme_object, "pad/right");
+	if (key && r) {
+		*r = atoi(key);
+	}
+
+	key = edje_object_data_get(w->theme_object, "pad/top");
+	if (key && t) {
+		*t = atoi(key);
+	}
+
+	key = edje_object_data_get(w->theme_object, "pad/bottom");
+	if (key && b) {
+		*b = atoi(key);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t, int *b)
+{
+	const char *key;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Read in the inset values from the edje file
+	 */
+	key = edje_object_data_get(w->theme_object, "inset/left");
+	if (key && l) {
+		*l = atoi(key);
+	}
+
+	key = edje_object_data_get(w->theme_object, "inset/right");
+	if (key && r) {
+		*r = atoi(key);
+	}
+
+	key = edje_object_data_get(w->theme_object, "inset/top");
+	if (key && t) {
+		*t = atoi(key);
+	}
+
+	key = edje_object_data_get(w->theme_object, "inset/bottom");
+	if (key && b) {
+		*b = atoi(key);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
