@@ -14,12 +14,12 @@ static void focus_mouse_autoraise_window(GtkWidget *, gpointer);
 static void
 focus_mouse_focus_type_cb(GtkWidget * w, gpointer data)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    gchar *button;
 
    if (!w)
       return;
-   snprintf(buf, 4096, "%s/.e/behavior/settings.db", getenv("HOME"));
+   snprintf(buf, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
 
    button = gtk_widget_get_name(GTK_WIDGET(w));
 
@@ -27,14 +27,14 @@ focus_mouse_focus_type_cb(GtkWidget * w, gpointer data)
    {
       if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
       {
-         E_DB_INT_SET(buf, "/focus/mode", 0) e_db_flush();
+         E_DB_INT_SET(buf, "/window/focus/mode", 0) e_db_flush();
       }
    }
    else if (!strcmp(button, "follow_click"))
    {
       if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
       {
-         E_DB_INT_SET(buf, "/focus/mode", 2) e_db_flush();
+         E_DB_INT_SET(buf, "/window/focus/mode", 2) e_db_flush();
       }
    }
    else
@@ -49,11 +49,11 @@ focus_mouse_focus_type_cb(GtkWidget * w, gpointer data)
 static void
 focus_mouse_autoraise_window(GtkWidget * w, gpointer data)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
    if (!w)
       return;
-   snprintf(buf, 4096, "%s/.e/behavior/settings.db", getenv("HOME"));
+   snprintf(buf, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
 
    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
    {
@@ -71,14 +71,14 @@ focus_mouse_autoraise_window(GtkWidget * w, gpointer data)
 static void
 focus_autoraise_timeout_cb(GtkWidget * w, gpointer data)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    float f = 0.000;
 
    if (!w)
       return;
    f = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
 
-   snprintf(buf, 4096, "%s/.e/behavior/settings.db", getenv("HOME"));
+   snprintf(buf, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
    E_DB_FLOAT_SET(buf, "/window/raise/delay", f) e_db_flush();
 
    return;
@@ -88,7 +88,7 @@ focus_autoraise_timeout_cb(GtkWidget * w, gpointer data)
 static void
 focus_guides_location_change_cb(GtkWidget * w, gpointer data)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    float _f = 0.000, f = 0.000;
    float scale = 100.00;
    char *wname;
@@ -100,7 +100,7 @@ focus_guides_location_change_cb(GtkWidget * w, gpointer data)
 
    _f = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
    f = (_f / scale);
-   snprintf(buf, 4096, "%s/.e/behavior/settings.db", getenv("HOME"));
+   snprintf(buf, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
    if (!strcmp(wname, "horiz_guide"))
    {
       E_DB_FLOAT_SET(buf, "/guides/display/x", f) e_db_flush();
@@ -140,11 +140,11 @@ add_focus_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    GtkObject *guide_x_adj, *guide_y_adj;
    GtkWidget *guide_x, *guide_y, *guide_x_label, *guide_y_label;
 
-   char buf[4096];
+   char buf[PATH_MAX];
    int current_val = 0, ok = 0;
    float flot = 0.00, _flot = 0.00;
 
-   snprintf(buf, 4096, "%s/.e/behavior/settings.db", getenv("HOME"));
+   snprintf(buf, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
 
    tab_label = gtk_label_new("Focus");
 
@@ -179,7 +179,7 @@ add_focus_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_table_attach(GTK_TABLE(table), follow_clicks, 0, 1, 1, 2, GTK_FILL, 0,
                     2, 2);
 
-   E_DB_INT_GET(buf, "/focus/mode", current_val, ok) if (ok)
+   E_DB_INT_GET(buf, "/window/focus/mode", current_val, ok) if (ok)
    {
       switch (current_val)
       {
@@ -225,15 +225,15 @@ add_focus_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    else
       raise_adj = gtk_adjustment_new(0.00, 0.00, 5.00, 0.02, 1.0, 0);
    raise_gauge = gtk_spin_button_new(GTK_ADJUSTMENT(raise_adj), 0.05, 3);
-   gtk_table_attach(GTK_TABLE(table), raise_gauge, 0, 1, 5, 6, GTK_FILL, 0, 2,
+   gtk_table_attach(GTK_TABLE(table), raise_gauge, 0, 1, 5, 6, 0, 0, 2,
                     2);
    gtk_signal_connect(GTK_OBJECT(raise_gauge), "changed",
                       GTK_SIGNAL_FUNC(focus_autoraise_timeout_cb), NULL);
    /* */
 
    hsep2 = gtk_hseparator_new();
-   gtk_table_attach(GTK_TABLE(table), hsep2, 0, 2, 6, 7, GTK_FILL | GTK_EXPAND,
-                    0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table), hsep2, 0, 2, 6, 7,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
    /* End Mouse Focus */
 
    /* Start Guide frame */
@@ -250,7 +250,8 @@ add_focus_notebook(GtkWidget * w, GtkWidget * note, int sheet)
                     "100 right most) ");
    gtk_table_attach(GTK_TABLE(table2), guide_x_label, 0, 1, 0, 1, GTK_FILL, 0,
                     2, 2);
-   E_DB_FLOAT_GET(buf, "/guides/display/x", _flot, ok) flot = (_flot * 100.00);
+   E_DB_FLOAT_GET(buf, "/guides/display/x", _flot, ok) flot =
+      (_flot * 100.00);
    if (ok)
       guide_x_adj = gtk_adjustment_new(flot, 0.00, 100.00, 0.5, 3.0, 0);
    else
@@ -258,7 +259,8 @@ add_focus_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    guide_x = gtk_spin_button_new(GTK_ADJUSTMENT(guide_x_adj), 0.50, 2);
    gtk_widget_set_name(GTK_WIDGET(guide_x), "horiz_guide");
-   gtk_table_attach(GTK_TABLE(table2), guide_x, 0, 1, 1, 2, GTK_FILL, 0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table2), guide_x, 0, 1, 1, 2, 0, 0, 2,
+                    2);
    gtk_signal_connect(GTK_OBJECT(guide_x), "changed",
                       GTK_SIGNAL_FUNC(focus_guides_location_change_cb), NULL);
 
@@ -269,14 +271,16 @@ add_focus_notebook(GtkWidget * w, GtkWidget * note, int sheet)
                     2, 2);
 
    _flot = 0.00;
-   E_DB_FLOAT_GET(buf, "/guides/display/y", _flot, ok) flot = (_flot * 100.00);
+   E_DB_FLOAT_GET(buf, "/guides/display/y", _flot, ok) flot =
+      (_flot * 100.00);
    if (ok)
       guide_y_adj = gtk_adjustment_new(flot, 0.00, 100.00, 0.5, 3.0, 0);
    else
       guide_y_adj = gtk_adjustment_new(50.0, 0.00, 100.00, 0.5, 3.0, 0);
    guide_y = gtk_spin_button_new(GTK_ADJUSTMENT(guide_y_adj), 0.05, 2);
    gtk_widget_set_name(GTK_WIDGET(guide_y), "vert_guide");
-   gtk_table_attach(GTK_TABLE(table2), guide_y, 1, 2, 1, 2, GTK_FILL, 0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table2), guide_y, 1, 2, 1, 2, 0, 0, 2,
+                    2);
    gtk_signal_connect(GTK_OBJECT(guide_y), "changed",
                       GTK_SIGNAL_FUNC(focus_guides_location_change_cb), NULL);
    /* End Guide Frame */

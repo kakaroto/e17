@@ -8,12 +8,14 @@
  * Contains: 
  * - functions to modify the global action_container
  *- eaction_item modifier functions
+ * September 21, 2002 - Migrated away from Ewd Lists in favor of evas lists
  *************************************************************************/
 #ifndef __E_ACTINOS_DB__
 #define __E_ACTINOS_DB__
 
 #include<Edb.h>
-#include<Ewd.h>
+#include<Evas.h>
+#include"ebindings.h"
 
 /* data representation of what e17 needs to know for an action */
 struct _eaction_item
@@ -35,8 +37,8 @@ void eaction_item_free(eaction_item *);
  * contained at parse time so we can nuke it before we write */
 struct
 {
-   Ewd_List *keys;
-   Ewd_List *focus;
+   Evas_List *keys;
+   Evas_List *focus;
 }
 action_container;
 

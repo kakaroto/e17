@@ -244,7 +244,8 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    /* Row 3 */
    action_l = gtk_label_new("Action Request: ");
-   gtk_table_attach(GTK_TABLE(table), action_l, 0, 1, 2, 3, GTK_FILL, 0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table), action_l, 0, 1, 2, 3, GTK_FILL, 0, 2,
+                    2);
 
    o_menu = gtk_option_menu_new();
    gtk_widget_ref(o_menu);
@@ -271,14 +272,17 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    /* Row 4 */
    button_l = gtk_label_new("Button Pressed: ");
-   gtk_table_attach(GTK_TABLE(table), button_l, 0, 1, 3, 4, GTK_FILL, 0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table), button_l, 0, 1, 3, 4, GTK_FILL, 0, 2,
+                    2);
 
    button_e = gtk_entry_new();
    gtk_entry_set_editable(GTK_ENTRY(button_e), FALSE);
-   gtk_table_attach(GTK_TABLE(table), button_e, 1, 2, 3, 4, GTK_FILL, 0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table), button_e, 1, 2, 3, 4, GTK_FILL, 0, 2,
+                    2);
 
    button_b = gtk_button_new_with_label("Change");
-   gtk_table_attach(GTK_TABLE(table), button_b, 2, 3, 3, 4, GTK_FILL, 0, 2, 2);
+   gtk_table_attach(GTK_TABLE(table), button_b, 2, 3, 3, 4, GTK_FILL, 0, 2,
+                    2);
    gtk_signal_connect(GTK_OBJECT(button_b), "clicked",
                       GTK_SIGNAL_FUNC(event_change_button_cb), clist);
 
@@ -357,8 +361,7 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_box_pack_start(GTK_BOX(hbox), saveb, TRUE, TRUE, 2);
 
    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
-   /* vbox is setup and added to the hbox, which is going to the right pane 
-    */
+   /* vbox is setup and added to the hbox, which is going to the right pane */
 
    gtk_paned_pack2(GTK_PANED(hpaned), vbox, FALSE, FALSE);
 
@@ -638,8 +641,8 @@ event_save_button_cb(GtkWidget * w, gpointer data)
 
    action_container_focus_reinit();
    l = action_container.focus;
-   /* clear out the focus list, give it a local pointer val that's easier
-      to read */
+   /* clear out the focus list, give it a local pointer val that's easier to
+      read */
 
    for (i = 0; i < row_count; i++)
    {

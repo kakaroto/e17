@@ -3,7 +3,7 @@
 INCLUDES = \
 	@BONUS_INCS@ \
 	@GTK_CFLAGS@ \
-	@ewd_cflags@ \
+	@evas_cflags@ \
 	@edb_cflags@
 
 bin_PROGRAMS = ebindings
@@ -15,13 +15,13 @@ ebindings_SOURCES = \
 	menu_interface.c menu_interface.h \
 	keybind_interface.c keybind_interface.h \
 	focus_interface.c focus_interface.h \
-	action_extra.c action_extra.h \
 	callbacks.c callbacks.h \
 	interface.c interface.h \
+	desktops.c desktops.h \
 	main.c
 
 ebindings_LDADD = \
 	@BONUS_LIBS@ \
 	@GTK_LIBS@ \
-	@ewd_libs@ \
+	@evas_libs@ \
 	@edb_libs@

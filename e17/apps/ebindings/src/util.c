@@ -3,9 +3,9 @@
  * Project: Ebindings
  * Programmer: Corey Donohoe<atmos@atmos.org>
  * Date: October 10, 2001
- * Description: DB Utility functions.  Parsing of menu dbs to a and Ewd_List
+ * Description: DB Utility functions.  Parsing of menu dbs to a and Evas_List
  *  of defined structure, emenu_item,  from emenu_item.h.  Parsing is also
- *  done of the user's actions db.  And an Ewd_List with nodes of a defined
+ *  done of the user's actions db.  And an Evas_List with nodes of a defined
  *  type, eaction_item, from ekeybindings.h.  Reading and writing to the
  *  database for both actions and menus is done here.
  *************************************************************************/
@@ -29,13 +29,13 @@ int
 parse_user_actions_db(void)
 {
    E_DB_File *db;
-   char dbname[1024];
+   char dbname[PATH_MAX];
    int num, i;
    eaction_item *item;
 
    action_container_init();
    /* setup the two lists and their cbs */
-   snprintf(dbname, 1024, "%s/.e/behavior/actions.db", getenv("HOME"));
+   snprintf(dbname, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
    /* This could be back if user export HOME wrong, snprintf it */
    db = e_db_open_read(dbname);
    if (!db)
@@ -50,30 +50,32 @@ parse_user_actions_db(void)
    e_db_int_get(db, "/actions/count", &num);
    for (i = 0; i < num; i++)
    {
-      char buf[1024];
+      char buf[PATH_MAX];
 
       item = eaction_item_new();
 
-      sprintf(buf, "/actions/%i/name", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/name", i);
       item->name = e_db_str_get(db, buf);
-      sprintf(buf, "/actions/%i/action", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/action", i);
       item->action = e_db_str_get(db, buf);
-      sprintf(buf, "/actions/%i/params", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/params", i);
       item->params = e_db_str_get(db, buf);
-      sprintf(buf, "/actions/%i/key", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/key", i);
       item->key = e_db_str_get(db, buf);
 
-      sprintf(buf, "/actions/%i/modifiers", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/modifiers", i);
       e_db_int_get(db, buf, &item->modifiers);
-      sprintf(buf, "/actions/%i/button", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/button", i);
       e_db_int_get(db, buf, &item->button);
-      sprintf(buf, "/actions/%i/event", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/event", i);
       e_db_int_get(db, buf, &item->event);
 
       if ((item->key) && (strlen(item->key) > 0))
-         ewd_list_append(action_container.keys, item);
+         action_container.keys =
+            evas_list_append(action_container.keys, item);
       else
-         ewd_list_append(action_container.focus, item);
+         action_container.focus =
+            evas_list_append(action_container.focus, item);
    }
    e_db_close(db);
    return 0;
@@ -86,15 +88,15 @@ int
 write_user_actions_db(void)
 {
    E_DB_File *db;
-   char dbname[1024];
-   char buf[4096];
-   char **keys;
-   int i, key_count;
+   Evas_List *l;
+   char dbname[PATH_MAX];
+   char buf[PATH_MAX];
+   int i = 0;
    eaction_item *item;
 
-   snprintf(dbname, 4096, "%s/.e/behavior/actions.db", getenv("HOME"));
+   snprintf(dbname, PATH_MAX, "%s/.e/behavior/behavior.db", getenv("HOME"));
+   /* unlink(dbname); */
    db = e_db_open(dbname);
-
    if (!db)
    {
       fprintf(stderr,
@@ -103,64 +105,49 @@ write_user_actions_db(void)
               "environmental variable HOME set wrong?.\n", dbname);
       return 1;
    }
-   keys = e_db_dump_key_list(dbname, &key_count);
-   if (keys)
-   {
-      int j;
 
-      for (j = 0; j < key_count; j++)
-      {
-         e_db_data_del(db, keys[j]);
-         free(keys[j]);
-      }
-      free(keys);
-   }
-   /* clear out the old stuff first */
-   ewd_list_goto_first(action_container.keys);
-   ewd_list_goto_first(action_container.focus);
-   /* make sure we start at the beginning of our lists */
-
-   for (i = 0; (item = (eaction_item *) ewd_list_next(action_container.focus));
-        i++)
-      /* write non keybind actions first */
+   /* write non keybind actions first */
+   for (i = 0, l = action_container.focus; l; l = l->next, i++)
    {
-      sprintf(buf, "/actions/%i/name", i);
+      item = (eaction_item *) l->data;
+      snprintf(buf, PATH_MAX, "/actions/%i/name", i);
       e_db_str_set(db, buf, item->name);
-      sprintf(buf, "/actions/%i/action", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/action", i);
       e_db_str_set(db, buf, item->action);
-      sprintf(buf, "/actions/%i/params", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/params", i);
       if (item->params)
          e_db_str_set(db, buf, item->params);
-      sprintf(buf, "/actions/%i/key", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/key", i);
       if (item->key)
          e_db_str_set(db, buf, item->key);
 
-      sprintf(buf, "/actions/%i/modifiers", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/modifiers", i);
       e_db_int_set(db, buf, item->modifiers);
-      sprintf(buf, "/actions/%i/button", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/button", i);
       e_db_int_set(db, buf, item->button);
-      sprintf(buf, "/actions/%i/event", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/event", i);
       e_db_int_set(db, buf, item->event);
    }
-   for (; (item = (eaction_item *) ewd_list_next(action_container.keys)); i++)
+   /* write keybinds next */
+   for (l = action_container.keys; l; l = l->next, i++)
    {
-      /* write keybinds next */
-      sprintf(buf, "/actions/%i/name", i);
+      item = (eaction_item *) l->data;
+      snprintf(buf, PATH_MAX, "/actions/%i/name", i);
       e_db_str_set(db, buf, item->name);
-      sprintf(buf, "/actions/%i/action", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/action", i);
       e_db_str_set(db, buf, item->action);
-      sprintf(buf, "/actions/%i/params", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/params", i);
       if (item->params)
          e_db_str_set(db, buf, item->params);
-      sprintf(buf, "/actions/%i/key", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/key", i);
       if (item->key)
          e_db_str_set(db, buf, item->key);
 
-      sprintf(buf, "/actions/%i/modifiers", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/modifiers", i);
       e_db_int_set(db, buf, item->modifiers);
-      sprintf(buf, "/actions/%i/button", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/button", i);
       e_db_int_set(db, buf, item->button);
-      sprintf(buf, "/actions/%i/event", i);
+      snprintf(buf, PATH_MAX, "/actions/%i/event", i);
       e_db_int_set(db, buf, item->event);
    }
    e_db_int_set(db, "/actions/count", i);
@@ -177,18 +164,18 @@ write_user_actions_db(void)
 /* read_emenu_from_db: recursive function to read menu dbs
  * db: a E_DB_File open in read only mode, it doesn't try to write to it,
  * 	but if we're only retrieving data it's no big deal anways.
- * _l: an Ewd_List of emenu_items
+ * _l: an Evas_List of emenu_items
  * :menu_count: parameter used in the recursive call to specify which submenu
  * 	should be parsed.
  */
-static void
-read_emenu_from_db(E_DB_File * db, Ewd_List * _l, int menu_count)
+static Evas_List *
+read_emenu_from_db(E_DB_File * db, Evas_List * _l, int menu_count)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    emenu_item *current = NULL;
    int j = 0, max, ok, submenu, seperator;
 
-   sprintf(buf, "/menu/%d/count", menu_count);
+   snprintf(buf, PATH_MAX, "/menu/%d/count", menu_count);
    e_db_int_get(db, buf, &max);
 
    for (j = 0; j < max; j++)
@@ -196,7 +183,7 @@ read_emenu_from_db(E_DB_File * db, Ewd_List * _l, int menu_count)
       submenu = seperator = ok = 0;
       current = emenu_item_new();
 
-      sprintf(buf, "/menu/%i/%i/separator", menu_count, j);
+      snprintf(buf, PATH_MAX, "/menu/%i/%i/separator", menu_count, j);
       ok = e_db_int_get(db, buf, &seperator);
       if (ok)
       {
@@ -205,49 +192,53 @@ read_emenu_from_db(E_DB_File * db, Ewd_List * _l, int menu_count)
       /* if it's a seperator we just append it */
       else
       {
-         sprintf(buf, "/menu/%i/%i/command", menu_count, j);
+         snprintf(buf, PATH_MAX, "/menu/%i/%i/command", menu_count, j);
          current->exec = e_db_str_get(db, buf);
-         sprintf(buf, "/menu/%i/%i/icon", menu_count, j);
+         snprintf(buf, PATH_MAX, "/menu/%i/%i/icon", menu_count, j);
          current->icon = e_db_str_get(db, buf);
-         sprintf(buf, "/menu/%i/%i/text", menu_count, j);
+         snprintf(buf, PATH_MAX, "/menu/%i/%i/text", menu_count, j);
          current->text = e_db_str_get(db, buf);
 
-         sprintf(buf, "/menu/%i/%i/submenu", menu_count, j);
+         snprintf(buf, PATH_MAX, "/menu/%i/%i/submenu", menu_count, j);
          ok = e_db_int_get(db, buf, &submenu);
          if (ok)
          {
             current->type = E_MENU_SUBMENU;
-            read_emenu_from_db(db, current->children, submenu);
+            current->children =
+               read_emenu_from_db(db, current->children, submenu);
          }
 
          /* handle scripts */
-         sprintf(buf, "/menu/%i/%i/script", menu_count, j);
+         snprintf(buf, PATH_MAX, "/menu/%i/%i/script", menu_count, j);
          ok = e_db_int_get(db, buf, &submenu);
          if (ok)
          {
             current->type = E_MENU_SCRIPT;
-            sprintf(buf, "/menu/%i/%i/script", menu_count, j);
+            snprintf(buf, PATH_MAX, "/menu/%i/%i/script", menu_count, j);
             current->exec = e_db_str_get(db, buf);
          }
       }
-      ewd_list_append(_l, current);
+      _l = evas_list_append(_l, current);
    }
+   return (_l);
 }
 
 /* recursive write function call */
 static void
-write_emenu_to_db_with_ewd_list(E_DB_File * db, Ewd_List * l, int menu_level)
+write_emenu_to_db_with_evas_list(E_DB_File * db, Evas_List * l,
+                                 int menu_level)
 {
+   Evas_List *ll;
    emenu_item *e;
-   char buf[4096];
+   char buf[PATH_MAX];
    int i;
 
    if (!l)
       return;
-   ewd_list_goto_first(l);
 
-   for (i = 0; (e = (emenu_item *) ewd_list_next(l)); i++)
+   for (i = 0, ll = l; ll; ll = ll->next, i++)
    {
+      e = (emenu_item *) ll->data;
       if (!e)
          continue;
       if (!e->text && e->type != E_MENU_SEPARATOR)
@@ -258,63 +249,63 @@ write_emenu_to_db_with_ewd_list(E_DB_File * db, Ewd_List * l, int menu_level)
       switch (e->type)
       {
         case E_MENU_SCRIPT:
-           sprintf(buf, "/menu/%i/%i/script", menu_level, i);
+           snprintf(buf, PATH_MAX, "/menu/%i/%i/script", menu_level, i);
            e_db_str_set(db, buf, e->exec);
-           sprintf(buf, "/menu/%i/%i/text", menu_level, i);
+           snprintf(buf, PATH_MAX, "/menu/%i/%i/text", menu_level, i);
            e_db_str_set(db, buf, e->text);
            if (e->icon && (strlen(e->icon) > 0))
            {
-              sprintf(buf, "/menu/%i/%i/icon", menu_level, i);
+              snprintf(buf, PATH_MAX, "/menu/%i/%i/icon", menu_level, i);
               e_db_str_set(db, buf, e->icon);
            }
            break;
         case E_MENU_SEPARATOR:
-           sprintf(buf, "/menu/%i/%i/separator", menu_level, i);
+           snprintf(buf, PATH_MAX, "/menu/%i/%i/separator", menu_level, i);
            e_db_int_set(db, buf, 1);
            break;
         case E_MENU_SUBMENU:
-           sprintf(buf, "/menu/%i/%i/submenu", menu_level, i);
+           snprintf(buf, PATH_MAX, "/menu/%i/%i/submenu", menu_level, i);
            e_db_int_set(db, buf, ++menu_count);
 
            if (e->icon && (strlen(e->icon) > 0))
            {
-              sprintf(buf, "/menu/%i/%i/icon", menu_level, i);
+              snprintf(buf, PATH_MAX, "/menu/%i/%i/icon", menu_level, i);
               e_db_str_set(db, buf, e->icon);
            }
            if (e->text)
            {
-              sprintf(buf, "/menu/%i/%i/text", menu_level, i);
+              snprintf(buf, PATH_MAX, "/menu/%i/%i/text", menu_level, i);
               e_db_str_set(db, buf, e->text);
            }
-           write_emenu_to_db_with_ewd_list(db, e->children, menu_count);
+           write_emenu_to_db_with_evas_list(db, e->children, menu_count);
            break;
         default:
-           sprintf(buf, "/menu/%i/%i/command", menu_level, i);
+           snprintf(buf, PATH_MAX, "/menu/%i/%i/command", menu_level, i);
            e_db_str_set(db, buf, e->exec);
-           sprintf(buf, "/menu/%i/%i/text", menu_level, i);
+           snprintf(buf, PATH_MAX, "/menu/%i/%i/text", menu_level, i);
            e_db_str_set(db, buf, e->text);
            if (e->icon && (strlen(e->icon) > 0))
            {
-              sprintf(buf, "/menu/%i/%i/icon", menu_level, i);
+              snprintf(buf, PATH_MAX, "/menu/%i/%i/icon", menu_level, i);
               e_db_str_set(db, buf, e->icon);
            }
            break;
       }
       e = NULL;
    }
-   sprintf(buf, "/menu/%i/count", menu_level);
+   snprintf(buf, PATH_MAX, "/menu/%i/count", menu_level);
    e_db_int_set(db, buf, i);
    e_db_int_set(db, "/menu/count", menu_count + 1);
 }
 
-/* Populates the user's menu db to this Ewd_List pass to it. */
-int
-read_user_menu_db_into_ewd_list(Ewd_List * l)
+/* Populates the user's menu db to this Evas_List pass to it. */
+Evas_List *
+read_user_menu_db_into_evas_list(Evas_List * l)
 {
    E_DB_File *db;
-   char dbname[1024];
+   char dbname[PATH_MAX];
 
-   snprintf(dbname, 1024, "%s/.e/behavior/apps_menu.db", getenv("HOME"));
+   snprintf(dbname, PATH_MAX, "%s/.e/behavior/apps_menu.db", getenv("HOME"));
    /* This could be back if user export HOME wrong, snprintf it */
 
    db = e_db_open_read(dbname);
@@ -324,22 +315,22 @@ read_user_menu_db_into_ewd_list(Ewd_List * l)
               "ERROR: Unable to read your menu database.\n"
               "%s is the file I'm looking for\nIs the "
               "environmental variable HOME set wrong?.\n", dbname);
-      return 1;
+      return (NULL);
    }
 
-   read_emenu_from_db(db, l, 0);
+   l = read_emenu_from_db(db, l, 0);
    e_db_close(db);
-   return 0;
+   return (l);
 }
 
-/* writes the user's menu db from the Ewd_List passed to it. */
+/* writes the user's menu db from the Evas_List passed to it. */
 int
-write_user_menu_db_with_ewd_list(Ewd_List * l)
+write_user_menu_db_with_evas_list(Evas_List * l)
 {
    E_DB_File *db;
-   char dbname[1024];
+   char dbname[PATH_MAX];
 
-   sprintf(dbname, "%s/.e/behavior/apps_menu.db", getenv("HOME"));
+   snprintf(dbname, PATH_MAX, "%s/.e/behavior/apps_menu.db", getenv("HOME"));
 
    db = e_db_open(dbname);
    if (!db)
@@ -371,7 +362,7 @@ write_user_menu_db_with_ewd_list(Ewd_List * l)
       }
 
       menu_count = 0;
-      write_emenu_to_db_with_ewd_list(db, l, menu_count);
+      write_emenu_to_db_with_evas_list(db, l, menu_count);
       e_db_close(db);
       e_db_flush();
       return 0;

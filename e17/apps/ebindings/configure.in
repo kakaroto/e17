@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/main.c)
-AM_INIT_AUTOMAKE(ebindings, 0.1)
+AM_INIT_AUTOMAKE(ebindings, 0.2)
 AM_CONFIG_HEADER(src/config.h)
 
 AC_PROG_CC
@@ -21,8 +21,8 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])
 
-AC_ARG_WITH(ewd,
-	[ --with-ewd=DIR		use ewd in <DIR>],
+AC_ARG_WITH(evas,
+	[ --with-evas=DIR		use evas in <DIR>],
 	[ CFLAGS="$CFLAGS -I$withval/include" 
 		LIBS="-L$withval/lib $LIBS"])
 AC_ARG_WITH(edb,
@@ -30,14 +30,14 @@ AC_ARG_WITH(edb,
 	[ CFLAGS="$CFLAGS -I$withval/include"
 	LIBS="-L$withval/lib $LIBS"])
 
-AC_PATH_GENERIC(ewd, 0.0.1, [
-	AC_SUBST(ewd_libs)
-	AC_SUBST(ewd_cflags) ],
-	AC_MSG_ERROR(Cannot find ewd: Is ewd-config in path?))
-ewd_libs=`ewd-config --libs`
-ewd_cflags=`ewd-config --cflags`
-AC_SUBST(ewd_libs)
-AC_SUBST(ewd_cflags)
+AC_PATH_GENERIC(evas, 1.0.0, [
+	AC_SUBST(evas_libs)
+	AC_SUBST(evas_cflags) ],
+	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
+evas_libs=`evas-config --libs`
+evas_cflags=`evas-config --cflags`
+AC_SUBST(evas_libs)
+AC_SUBST(evas_cflags)
 
 
 AC_PATH_GENERIC(edb, 1.0.3, [

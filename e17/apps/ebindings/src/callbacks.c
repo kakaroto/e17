@@ -24,7 +24,8 @@ void
 status_bar_message(gchar * message, gint delay)
 {
    gtk_statusbar_push(GTK_STATUSBAR(ebindings_statusbar), 1, message);
-   gtk_timeout_add(delay, (GtkFunction) status_bar_clear, ebindings_statusbar);
+   gtk_timeout_add(delay, (GtkFunction) status_bar_clear,
+                   ebindings_statusbar);
    return;
    UN(delay);
    UN(message);

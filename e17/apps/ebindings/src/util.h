@@ -3,9 +3,9 @@
  * Project: Ebindings
  * Programmer: Corey Donohoe<atmos@atmos.org>
  * Date: October 10, 2001
- * Description: Utility functions.  Parsing of menu dbs to a and Ewd_List
+ * Description: Utility functions.  Parsing of menu dbs to a and Evas_List
  *  of defined structure, emenu_item,  from emenu_item.h.  Parsing is also
- *  done of the user's actions db.  And an Ewd_List with nodes of a defined
+ *  done of the user's actions db.  And an Evas_List with nodes of a defined
  *  type, eaction_item, from ekeybindings.h. Reading and Writing to the
  *  actions and menu dbs is done here
  *************************************************************************/
@@ -13,7 +13,8 @@
 #ifndef __E_DB_PARSING_ROUTINES_
 #define __E_DB_PARSING_ROUTINES_
 
-#include <Ewd.h>
+#include <Evas.h>
+#include <unistd.h>
 #include "emenu_item.h"
 #include "eaction_item.h"
 
@@ -32,8 +33,8 @@ int parse_user_actions_db(void);
  */
 int write_user_actions_db(void);
 
-int write_user_menu_db_with_ewd_list(Ewd_List *);
-int read_user_menu_db_into_ewd_list(Ewd_List *);
+int write_user_menu_db_with_evas_list(Evas_List *);
+Evas_List *read_user_menu_db_into_evas_list(Evas_List *);
 
 /* wrapper to open and start recursive call */
 

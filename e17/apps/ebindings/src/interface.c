@@ -80,6 +80,7 @@ create_main_ebindings_window(void)
    add_menu_notebook(win, notebook, 0);
    add_keybinds_notebook(win, notebook, 1);
    add_focus_notebook(win, notebook, 2);
+   add_desks_notebook(win, notebook, 3);
 
    gtk_box_pack_start(GTK_BOX(vbox), menu_bar, FALSE, FALSE, 1);
    gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 1);

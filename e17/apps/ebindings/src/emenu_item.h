@@ -8,9 +8,9 @@
 #ifndef __E_MENU_ITEM_
 #define __E_MENU_ITEM_
 
-#include<Edb.h>
-#include<Ewd.h>
-
+#include <Edb.h>
+#include <Evas.h>
+#include "ebindings.h"
 /* 
  * enumerated type to represent the differnt types of menuitems that exist
  */
@@ -26,7 +26,7 @@ struct __emenu_item
 {
    char *text, *icon, *exec;
    enum _e_menu_type type;
-   Ewd_List *children;
+   Evas_List *children;
    /* submenus */
 };
 typedef struct __emenu_item emenu_item;

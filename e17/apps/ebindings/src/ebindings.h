@@ -7,13 +7,15 @@
 #ifndef __EBINDINGS_H_
 #define __EBINDINGS_H_
 
-#include <Ewd.h>
-#include <gtk/gtk.h>
-#include <string.h>
-#include "callbacks.h"
+#include <Evas.h>
+#include <stdio.h>
 #include "config.h"
+#include <string.h>
+#include <stdlib.h>
+#include <gtk/gtk.h>
+#include "callbacks.h"
 
 #define UN(_ptr) _ptr = 0
 #define MOD_STR_MAX 16
-
+#define IF_FREE(_ptr) if(_ptr) free(_ptr)
 #endif

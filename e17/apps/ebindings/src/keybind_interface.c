@@ -17,8 +17,8 @@ static struct
 k_entry;
 
 static void keybind_option_menu_modified(GtkWidget *, gpointer);
-static void keybind_clist_row_select(GtkWidget *, gint, gint, GdkEventButton *,
-                                     gpointer);
+static void keybind_clist_row_select(GtkWidget *, gint, gint,
+                                     GdkEventButton *, gpointer);
 static void keybind_parameter_entry_changed(GtkWidget *, gpointer);
 static void keybind_capture_key_cb(GtkWidget *, gpointer);
 static void keybind_save_button_clicked(GtkWidget *, gpointer);
@@ -87,6 +87,7 @@ add_keybinds_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    GtkWidget *table;
    int i;
    eaction_item *e;
+   Evas_List *l;
 
    GtkWidget *newb, *delb, *saveb, *changeb;
    GtkWidget *keyl, *modl, *paraml;
@@ -173,7 +174,8 @@ add_keybinds_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_table_attach(GTK_TABLE(table), e_param, 1, 3, 2, 3, GTK_FILL, 0, 2, 2);
 
    gtk_signal_connect(GTK_OBJECT(e_param), "changed",
-                      GTK_SIGNAL_FUNC(keybind_parameter_entry_changed), clist);
+                      GTK_SIGNAL_FUNC(keybind_parameter_entry_changed),
+                      clist);
    /* Row 4 */
    scroller = gtk_scrolled_window_new(NULL, NULL);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller),
@@ -233,8 +235,7 @@ add_keybinds_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_box_pack_start(GTK_BOX(hbox), saveb, TRUE, TRUE, 2);
 
    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
-   /* vbox is setup and added to the hbox, which is going to the right pane 
-    */
+   /* vbox is setup and added to the hbox, which is going to the right pane */
 
    gtk_paned_pack2(GTK_PANED(hpaned), vbox, FALSE, FALSE);
 
@@ -271,24 +272,26 @@ add_keybinds_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_widget_show(tab_label);
 
    parse_user_actions_db();
-   ewd_list_goto_first(action_container.keys);
-   while ((e = (eaction_item *) ewd_list_next(action_container.keys)))
+
+
+   for (l = action_container.keys; l; l = l->next)
    {
+      e = (eaction_item *) l->data;
       key_fields[0] = g_strdup(mod_str[e->modifiers]);
       key_fields[1] = g_strdup(e->key);
       key_fields[2] = g_strdup(e->action);
-      if(e->params)
-	key_fields[3] = g_strdup(e->params);
+      if (e->params)
+         key_fields[3] = g_strdup(e->params);
       else
-	key_fields[3] = g_strdup("");
+         key_fields[3] = g_strdup("");
 
       gtk_clist_append(GTK_CLIST(clist), key_fields);
       k_entry.count++;
 
-      FREE(key_fields[0]);
-      FREE(key_fields[1]);
-      FREE(key_fields[2]);
-      FREE(key_fields[3]);
+      IF_FREE(key_fields[0]);
+      IF_FREE(key_fields[1]);
+      IF_FREE(key_fields[2]);
+      IF_FREE(key_fields[3]);
       if (!e->name)
          e->name = strdup("Key_Binding");
       /* this is needed later */
@@ -392,7 +395,8 @@ keybind_clist_row_select(GtkWidget * w, gint row, gint column,
       /* setup the specified key */
 
       gtk_clist_get_text(GTK_CLIST(w), row, 2, &temp);
-      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp)) || (!strcmp("Desktop_Relative",temp)))
+      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp))
+          || (!strcmp("Desktop_Relative", temp)))
       {
          gtk_entry_set_editable(GTK_ENTRY(k_entry.p), TRUE);
          gtk_clist_get_text(GTK_CLIST(w), row, 3, &params);
@@ -420,7 +424,8 @@ keybind_clist_row_select(GtkWidget * w, gint row, gint column,
 
       gtk_clist_get_text(GTK_CLIST(w), row, 0, &temp);
 
-      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp)) || (!strcmp("Desktop_Relative",temp)))
+      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp))
+          || (!strcmp("Desktop_Relative", temp)))
       {
          gtk_entry_set_editable(GTK_ENTRY(k_entry.p), TRUE);
       }
@@ -473,7 +478,8 @@ keybind_save_button_clicked(GtkWidget * w, gpointer data)
       tmp = NULL;
 
       gtk_clist_get_text(GTK_CLIST(k_entry.list), i, 3, &tmp);
-      if ((!strcmp("Execute", e->action)) || (!strcmp("Desktop", e->action)) || (!strcmp("Desktop_Relative", e->action)))
+      if ((!strcmp("Execute", e->action)) || (!strcmp("Desktop", e->action))
+          || (!strcmp("Desktop_Relative", e->action)))
       {
          if (tmp)
             e->params = strdup(tmp);
@@ -501,7 +507,7 @@ keybind_save_button_clicked(GtkWidget * w, gpointer data)
       e->event = 8;
       /* keybinds are event 8 */
 
-      ewd_list_append(action_container.keys, (void *) e);
+      action_container.keys = evas_list_append(action_container.keys, e);
    }
    written = write_user_actions_db();
    /* write the changes now =) */

@@ -16,10 +16,7 @@ emenu_item_new(void)
    emenu_item *result;
 
    result = malloc(sizeof(emenu_item));
-   result->text = result->icon = result->exec = NULL;
-
-   result->children = ewd_list_new();
-   ewd_list_set_free_cb(result->children, _emenu_item_free);
+   memset(result, 0, sizeof(emenu_item));
 
    result->type = E_MENU_EXECUTABLE;
 
@@ -37,14 +34,17 @@ _emenu_item_free(void *data)
 void
 emenu_item_free(emenu_item * m)
 {
+   Evas_List *l;
+
    if (!m)
       return;
 
    IF_FREE(m->exec);
    IF_FREE(m->icon);
    IF_FREE(m->text);
-   /* we get IF_FREE from Ewd Macros =) */
 
-   ewd_list_destroy(m->children);
+   for (l = m->children; l; l = l->next)
+      emenu_item_free((emenu_item *) l->data);
+
    free(m);
 }

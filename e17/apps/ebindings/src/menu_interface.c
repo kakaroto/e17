@@ -25,10 +25,10 @@ static void populate_menu_ctree_with_menu_data(GtkWidget * tree);
 
 /* callbacks for saving */
 static void menu_ctree_dump_and_save(GtkWidget *);
-static void gnode_to_menu_item_ewd_list(Ewd_List *, GNode *);
+static Evas_List *gnode_to_menu_item_evas_list(Evas_List *, GNode *);
 static void write_emenu_from_ctree(GtkCTree *);
-static void menu_ctree_recursive_check_for_submenus(GtkCTree *, GtkCTreeNode *,
-                                                    gpointer);
+static void menu_ctree_recursive_check_for_submenus(GtkCTree *,
+                                                    GtkCTreeNode *, gpointer);
 
 /* menu ctree row callbacks */
 static void menu_ctree_select_row_cb(GtkCTree *, GList *, gint, gpointer);
@@ -255,8 +255,9 @@ menu_change_icon_button_cb(GtkWidget * w, gpointer data)
                       "clicked", GTK_SIGNAL_FUNC(icon_selection_fs_cancel),
                       (gpointer) fs);
 
-   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button), "clicked",
-                      GTK_SIGNAL_FUNC(icon_selection_fs_ok), (gpointer) fs);
+   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
+                      "clicked", GTK_SIGNAL_FUNC(icon_selection_fs_ok),
+                      (gpointer) fs);
 
    gtk_widget_show(fs);
    return;
@@ -373,8 +374,8 @@ menu_type_button_clicked(GtkWidget * w, gpointer data)
     */
    gchar *button_name = NULL;
 
-   /* button_name: the name of the button widget that is set when the
-      button is originally setup */
+   /* button_name: the name of the button widget that is set when the button
+      is originally setup */
    GtkCTreeNode *node = NULL, *node_data = NULL;
 
    if (!data)
@@ -391,26 +392,26 @@ menu_type_button_clicked(GtkWidget * w, gpointer data)
 
       if (!strcmp(button_name, "exec_button"))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 3,
-                                 "Executable");
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 3, "Executable");
 
       }
       else if (!strcmp(button_name, "script_button"))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 3,
-                                 "Script");
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 3, "Script");
 
       }
       else if (!strcmp(button_name, "separator_button"))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 0,
-                                 "-(SEPARATOR)-");
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 1,
-                                 "");
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 2,
-                                 "");
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 3,
-                                 "Separator");
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 0, "-(SEPARATOR)-");
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 1, "");
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 2, "");
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 3, "Separator");
       }
       else
       {
@@ -460,18 +461,18 @@ menu_entry_value_changed(GtkWidget * w, gpointer data)
       wname = gtk_widget_get_name(w);
       if (!strcmp(wname, "desc_entry"))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 0,
-                                 new_val);
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 0, new_val);
       }
       else if (!strcmp(wname, "icon_entry"))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 1,
-                                 new_val);
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 1, new_val);
       }
       else if (!strcmp(wname, "exec_entry"))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data), 2,
-                                 new_val);
+         gtk_ctree_node_set_text(GTK_CTREE(data), GTK_CTREE_NODE(node_data),
+                                 2, new_val);
       }
       else
       {
@@ -515,8 +516,8 @@ menu_ctree_insert_new_row_relative_to_selected(GtkWidget * w)
          newp = gtk_ctree_node_nth(GTK_CTREE(w), 0);
 
       newnode =
-         gtk_ctree_insert_node(GTK_CTREE(w), newp, news, fields, 0, NULL, NULL,
-                               NULL, NULL, FALSE, FALSE);
+         gtk_ctree_insert_node(GTK_CTREE(w), newp, news, fields, 0, NULL,
+                               NULL, NULL, NULL, FALSE, FALSE);
       gtk_ctree_select(GTK_CTREE(w), newnode);
 
       for (i = 0; i < 4; i++)
@@ -570,9 +571,7 @@ menu_ctree_delete_row_selected(GtkWidget * w)
 
 /* ctree_to_emenu_item_gnode:
  *  When a save request is sent, the data must be dumped from the ctree to a
- *  GNode, and (currently) export the GNode to an Ewl_List.  Writing
- *  straight from the GNode is completely possible, but I want to eventually
- *  move ebindings to ewl, and ewd has lots of nice things =)
+ *  GNode, and (currently) export the GNode to an Evas_List.  
  * description: Dumps data from a row in a ctree to ->data of a GNode
  * 		Function is never explicity called by us, gtk uses it.
  */
@@ -650,15 +649,15 @@ ctree_to_emenu_item_gnode(GtkCTree * tree, guint depth, GNode * node,
    UN(data);
 }
 
-/* gnode_to_menu_item_ewl_list:
- * description: Takes a pointer to an already initialized ewd_list.
- * Extracts the node pointer from the GNode, and populates the ewd list.  
+/* gnode_to_menu_item_evas_list:
+ * description: Extracts the node pointer from the GNode, and populates the
+ * evas list.  
  * 
- * @param l: Ewd_List that has been created with ewd_list_new()
+ * @param l: Evas_List NULL is ok
  * @param node: GNode that is the result of a gtk_ctree_export_to_gnode
  */
-static void
-gnode_to_menu_item_ewd_list(Ewd_List * l, GNode * node)
+static Evas_List *
+gnode_to_menu_item_evas_list(Evas_List * l, GNode * node)
 {
    emenu_item *e = NULL;
    GNode *ptr = NULL;
@@ -666,10 +665,12 @@ gnode_to_menu_item_ewd_list(Ewd_List * l, GNode * node)
    for (ptr = node; ptr; ptr = ptr->next)
    {
       e = (emenu_item *) ptr->data;
-      ewd_list_append(l, e);
+      l = evas_list_append(l, e);
       if (ptr->children)
-         gnode_to_menu_item_ewd_list(e->children, ptr->children);
+         e->children =
+            gnode_to_menu_item_evas_list(e->children, ptr->children);
    }
+   return (l);
 }
 
 /* write_emenu_from_ctree:
@@ -680,7 +681,7 @@ static void
 write_emenu_from_ctree(GtkCTree * tree)
 {
    GNode *items;
-   Ewd_List *l;
+   Evas_List *l = NULL;
    int written = 0;
 
    items =
@@ -694,21 +695,16 @@ write_emenu_from_ctree(GtkCTree * tree)
       return;
    }
    items = items->children;
-   l = ewd_list_new();
-   ewd_list_set_free_cb(l, _emenu_item_free);
 
-   gnode_to_menu_item_ewd_list(l, items);
+   l = gnode_to_menu_item_evas_list(l, items);
    g_node_destroy(items);
 
-   written = write_user_menu_db_with_ewd_list(l);
+   written = write_user_menu_db_with_evas_list(l);
    if (written)
       status_bar_message("Error Saving your Menus", 3000);
    else
       status_bar_message("Menus Saved Successfully ...", 3000);
 
-   /* see util.c for this function */
-
-   ewd_list_destroy(l);
 }
 
 /* - checks to make sure we don't apply filter rules to the root of the ctree.
@@ -729,13 +725,14 @@ menu_ctree_recursive_check_for_submenus(GtkCTree * tree, GtkCTreeNode * node,
    if (GTK_CTREE_ROW(node)->children)
    {
       gtk_ctree_get_node_info(GTK_CTREE(tree), GTK_CTREE_NODE(node),
-                              &description, NULL, NULL, NULL, NULL, NULL, NULL,
-                              NULL);
+                              &description, NULL, NULL, NULL, NULL, NULL,
+                              NULL, NULL);
 
       /* be sure it's not the root !!! =) */
       if (strcmp(buf, description) || (!description))
       {
-         gtk_ctree_node_set_text(GTK_CTREE(tree), GTK_CTREE_NODE(node), 2, "");
+         gtk_ctree_node_set_text(GTK_CTREE(tree), GTK_CTREE_NODE(node), 2,
+                                 "");
          gtk_ctree_node_set_text(GTK_CTREE(tree), GTK_CTREE_NODE(node), 3,
                                  "Submenu");
       }
@@ -759,16 +756,17 @@ menu_ctree_dump_and_save(GtkWidget * w)
    write_emenu_from_ctree(GTK_CTREE(w));
 }
 
-/* enables recursive calls on the Ewd_List to populate a ctree with a
+/* enables recursive calls on the Evas_List to populate a ctree with a
  * pre-established parent
  * @param l: a Ewl_List populated with the info from apps_menu.db
  * @param tree: pointer to the tree we're populating
  * @param parent: parent node in the tree to attach new ones to
  */
 static void
-populate_menu_ctree_recursive(Ewd_List * l, GtkWidget * tree,
+populate_menu_ctree_recursive(Evas_List * l, GtkWidget * tree,
                               GtkCTreeNode * parent)
 {
+   Evas_List *ll;
    emenu_item *e;
    GtkCTreeNode *node;
    gchar *fields[4] = {
@@ -777,18 +775,15 @@ populate_menu_ctree_recursive(Ewd_List * l, GtkWidget * tree,
    int i;
 
    if (!l)
-   {
-      fprintf(stderr, "No list supplied for menu ctree dump\n");
       return;
-   }
    else if (!tree)
       return;
    else if (!parent)
       return;
 
-   ewd_list_goto_first(l);
-   while ((e = (emenu_item *) ewd_list_next(l)))
+   for (ll = l; ll; ll = ll->next)
    {
+      e = ll->data;
 
       if ((e->text) && (strlen(e->text) > 0))
          fields[0] = g_strdup(e->text);
@@ -848,27 +843,24 @@ populate_menu_ctree_recursive(Ewd_List * l, GtkWidget * tree,
 static void
 populate_menu_ctree_with_menu_data(GtkWidget * tree)
 {
-   Ewd_List *l;
+   Evas_List *l = NULL;
    GtkCTreeNode *root;
    char buf[1024];
    gchar *fields[4] = {
       "", "", "", ""
    };
 
-   l = ewd_list_new();
-   ewd_list_set_free_cb(l, _emenu_item_free);
-
-   read_user_menu_db_into_ewd_list(l);
-   ewd_list_goto_first(l);
+   l = read_user_menu_db_into_evas_list(l);
 
    sprintf(buf, "%s/.e/behavior/apps_menu.db", getenv("HOME"));
 
    fields[0] = g_strdup(buf);
 
    root =
-      gtk_ctree_insert_node(GTK_CTREE(tree), NULL, NULL, fields, 5, NULL, NULL,
-                            NULL, NULL, FALSE, TRUE);
-   gtk_ctree_node_set_selectable(GTK_CTREE(tree), GTK_CTREE_NODE(root), FALSE);
+      gtk_ctree_insert_node(GTK_CTREE(tree), NULL, NULL, fields, 5, NULL,
+                            NULL, NULL, NULL, FALSE, TRUE);
+   gtk_ctree_node_set_selectable(GTK_CTREE(tree), GTK_CTREE_NODE(root),
+                                 FALSE);
 
    populate_menu_ctree_recursive(l, tree, root);
 
@@ -878,6 +870,4 @@ populate_menu_ctree_with_menu_data(GtkWidget * tree)
       /* select the first child of the root */
    }
 
-   ewd_list_destroy(l);
-   /* clean up */
 }

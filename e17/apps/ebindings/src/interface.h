@@ -13,6 +13,7 @@
 #include "keybind_interface.h"
 #include "action_extra.h"
 #include "focus_interface.h"
+#include "desktops.h"
 
 GtkWidget *create_main_ebindings_window(void);
 
