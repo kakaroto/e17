@@ -93,7 +93,7 @@ main(int argc, char **argv)
 	{
 	   for (i = 0; i < num; i++)
 	     {
-		printf("key %u : %s\n", i, keys[i]);
+		printf("key %lu : %s\n", i, keys[i]);
 	     }
 	   for (i = 0; i < num; i++)
 	     {
