@@ -12,7 +12,8 @@ all: clean $(OBJS)
 
 clean:
 	rm -f *~ *.o elogin elogind test
-
+	rm -fr data/.xvpics
+	
 object.o:
 	$(CC) $(FLAGS) -c object.c
 box.o:
