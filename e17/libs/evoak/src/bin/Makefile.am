@@ -41,7 +41,6 @@ evoak_client_test_rect.c
 evoak_client_test_rect_LDADD = \
 $(top_builddir)/src/lib/libevoak.la
 
-evoak_client_test_rect_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 ###### TEXT
 evoak_client_test_text_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 
@@ -51,7 +50,6 @@ evoak_client_test_text.c
 evoak_client_test_text_LDADD = \
 $(top_builddir)/src/lib/libevoak.la
 
-evoak_client_test_text_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 ###### GRAD
 evoak_client_test_grad_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 
@@ -61,7 +59,6 @@ evoak_client_test_grad.c
 evoak_client_test_grad_LDADD = \
 $(top_builddir)/src/lib/libevoak.la
 
-evoak_client_test_grad_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 ###### POLY
 evoak_client_test_poly_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 
@@ -71,7 +68,6 @@ evoak_client_test_poly.c
 evoak_client_test_poly_LDADD = \
 $(top_builddir)/src/lib/libevoak.la
 
-evoak_client_test_poly_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 ###### LINE
 evoak_client_test_line_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 
@@ -81,7 +77,6 @@ evoak_client_test_line.c
 evoak_client_test_line_LDADD = \
 $(top_builddir)/src/lib/libevoak.la
 
-evoak_client_test_line_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 ###### EDJE
 evoak_client_test_edje_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 
@@ -91,7 +86,6 @@ evoak_client_test_edje.c
 evoak_client_test_edje_LDADD = \
 $(top_builddir)/src/lib/libevoak.la
 
-evoak_client_test_edje_DEPENDENCIES = $(top_builddir)/src/lib/libevoak.la
 ###
 
 evoak_bg_set_test_SOURCES = \
