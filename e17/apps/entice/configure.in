@@ -73,7 +73,7 @@ if [ test -z $ESMART_CONFIG ]; then
   exit -1;
 fi
 esmart_cflags=`$ESMART_CONFIG --cflags`
-esmart_libs=`$ESMART_CONFIG --libs`
+esmart_libs="`$ESMART_CONFIG --libs` -lesmart_container -lesmart_draggies -lesmart_thumb -lesmart_trans_x11"
 AC_SUBST(esmart_cflags)
 AC_SUBST(esmart_libs)
 

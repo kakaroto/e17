@@ -10,7 +10,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_Job.h>
-#include <Esmart/Esmart_Trans.h>
+#include <Esmart/Esmart_Trans_X11.h>
 #include <limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -10,7 +10,7 @@
 #include <limits.h>
 #include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Thumb.h>
-#include <Esmart/Esmart_Trans.h>
+#include <Esmart/Esmart_Trans_X11.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Epsilon.h>
 #include <string.h>
