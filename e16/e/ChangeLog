@@ -2709,3 +2709,16 @@ Thu Apr 15 22:08:25 CEST 2004
 Attempt to set event masks consistently.
 Change some event debug printouts.
 Highlight only the focused window.
+
+-------------------------------------------------------------------------------
+
+Wed Apr 21 23:03:22 CEST 2004
+(Kim)
+
+Dialog windows do need the KeyPress and Expose events.
+Change context window from mouse-over to focus window.
+In focus list, show iconified window names in brackets (as suggested by Fletch).
+A few notes on installing the split distribution.
+De-couple the man page from dox MAIN page.
+Delete themes and online docs, these are now in separate packages.
+Another attempt at fixing the "losing windows" bug, adjust event masks.
