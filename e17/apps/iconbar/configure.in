@@ -139,7 +139,7 @@ AC_SUBST(ewl_libs)
 
 have_esmart_trans="no"
 dnl Make sure the esmart header/lib is available
-AC_CHECK_HEADER( Esmart/Esmart_Trans.h, 
+AC_CHECK_HEADER( Esmart/Esmart_Trans_X11.h, 
   [ AC_DEFINE(HAVE_TRANS_BG, [], [Esmart Pseudo-transparency support]) 
     have_esmart_trans="yes"  
   ])
