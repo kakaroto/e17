@@ -275,6 +275,11 @@ int                 ecore_x_window_prop_xid_list_get(Ecore_X_Window win,
 						     Ecore_X_Atom atom,
 						     Ecore_X_Atom type,
 						     Ecore_X_ID ** plst);
+void                ecore_x_window_prop_xid_list_change(Ecore_X_Window win,
+							Ecore_X_Atom atom,
+							Ecore_X_Atom type,
+							Ecore_X_ID item,
+							int op);
 void                ecore_x_window_prop_atom_set(Ecore_X_Window win,
 						 Ecore_X_Atom atom,
 						 Ecore_X_Atom * val,

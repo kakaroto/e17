@@ -51,9 +51,9 @@
                    (unsigned char *)p_val, cnt)
 
 /* Window property change actions (must match _NET_WM_STATE_... ones) */
-#define _PROP_CHANGE_REMOVE    0
-#define _PROP_CHANGE_ADD       1
-#define _PROP_CHANGE_TOGGLE    2
+#define ECORE_X_PROP_LIST_REMOVE    0
+#define ECORE_X_PROP_LIST_ADD       1
+#define ECORE_X_PROP_LIST_TOGGLE    2
 
 #ifdef USE_ECORE_X
 
@@ -397,6 +397,55 @@ ecore_x_window_prop_xid_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 }
 
 /*
+ * Remove/add/toggle X ID list item.
+ */
+void
+ecore_x_window_prop_xid_list_change(Ecore_X_Window win, Ecore_X_Atom atom,
+				    Ecore_X_Atom type, Ecore_X_ID item, int op)
+{
+   Ecore_X_ID         *lst;
+   int                 i, num;
+
+   num = ecore_x_window_prop_xid_list_get(win, atom, type, &lst);
+   if (num < 0)
+      return;			/* Error - assuming invalid window */
+
+   /* Is it there? */
+   for (i = 0; i < num; i++)
+     {
+	if (lst[i] == item)
+	   break;
+     }
+
+   if (i < num)
+     {
+	/* Was in list */
+	if (op == ECORE_X_PROP_LIST_ADD)
+	   goto done;
+	/* Remove it */
+	num--;
+	for (; i < num; i++)
+	   lst[i] = lst[i + 1];
+     }
+   else
+     {
+	/* Was not in list */
+	if (op == ECORE_X_PROP_LIST_REMOVE)
+	   goto done;
+	/* Add it */
+	num++;
+	lst = realloc(lst, num * sizeof(Ecore_X_ID));
+	lst[i] = item;
+     }
+
+   ecore_x_window_prop_xid_set(win, atom, type, lst, num);
+
+ done:
+   if (lst)
+      free(lst);
+}
+
+/*
  * Set Atom (array) property
  */
 void
@@ -437,52 +486,13 @@ ecore_x_window_prop_atom_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 }
 
 /*
- * Remove/add/toggle (0/1/2) atom list item.
+ * Remove/add/toggle atom list item.
  */
 void
 ecore_x_window_prop_atom_list_change(Ecore_X_Window win, Ecore_X_Atom atom,
 				     Ecore_X_Atom item, int op)
 {
-   Ecore_X_Atom       *alst;
-   int                 i, num;
-
-   num = ecore_x_window_prop_atom_list_get(win, atom, &alst);
-   if (num < 0)
-      return;			/* Error - assuming invalid window */
-
-   /* Is it there? */
-   for (i = 0; i < num; i++)
-     {
-	if (alst[i] == item)
-	   break;
-     }
-
-   if (i < num)
-     {
-	/* Was in list */
-	if (op == _PROP_CHANGE_ADD)
-	   goto done;
-	/* Remove it */
-	num--;
-	for (; i < num; i++)
-	   alst[i] = alst[i + 1];
-     }
-   else
-     {
-	/* Was not in list */
-	if (op == _PROP_CHANGE_REMOVE)
-	   goto done;
-	/* Add it */
-	num++;
-	alst = realloc(alst, num * sizeof(Ecore_X_Atom));
-	alst[i] = item;
-     }
-
-   ecore_x_window_prop_atom_set(win, atom, alst, num);
-
- done:
-   if (alst)
-      free(alst);
+   ecore_x_window_prop_xid_list_change(win, atom, XA_ATOM, item, op);
 }
 
 /*
