@@ -7,10 +7,10 @@ installed_headersdir = $(prefix)/include/Esmart/
 noinst_LTLIBRARIES = libecore_evas_dragable.la
 
 installed_headers_DATA = \
-	dragable.h 
+	Esmart_Draggies.h 
 
 libecore_evas_dragable_la_SOURCES = \
-	dragable.c dragable.h
+	Esmart_Draggies.c Esmart_Draggies.h
 
 libecore_evas_dragable_la_LIBADD = @evas_libs@ @ecore_cflags@
 libecore_evas_dragable_la_LDFLAGS = -version-info 1:0:0

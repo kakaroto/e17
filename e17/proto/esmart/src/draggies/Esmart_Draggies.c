@@ -2,7 +2,7 @@
  * draggies.c : a rectangle to add to your borderless/shaped ecore_evas app
  * that will handle moving the ecore evas, as if it were a border.
  ***************************************************************************/
-#include "dragable.h"
+#include "Esmart_Draggies.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
