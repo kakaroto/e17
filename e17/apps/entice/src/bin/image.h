@@ -1,46 +1,64 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
+#ifndef ENTICE_IMAGE_H
+#define ENTICE_IMAGE_H
 
-void                image_add_from_ipc(char *item);
+/**
+ * Entice_Image - goal is to make a zoomable evas image that keeps aspect
+ * for easy swallowing into an edje with an api that allows us to modify it
+ * externally.
+ */
+#include <Evas.h>
+#include <Ecore.h>
 
-void                image_create_list(int argc, char **argv);
-void                image_create_list_dir(char *dir);
-void                image_destroy_list(void);
+typedef struct _Entice_Image Entice_Image;
+typedef enum _Entice_Image_Scroll_Direction Entice_Scroll_Direction;
 
-void                image_create_thumbnails(void);
+enum _Entice_Image_Scroll_Direction
+{
+   ENTICE_SCROLL_NORTH = 0,
+   ENTICE_SCROLL_EAST,
+   ENTICE_SCROLL_SOUTH,
+   ENTICE_SCROLL_WEST
+};
 
-Image              *e_image_new(char *file);
-void                e_image_free(Image * im);
-void                image_delete(Image * im);
+struct _Entice_Image
+{
+   int fit;
+   double zoom;                 /* the current zoom percentage */
+   struct
+   {
+      Ecore_Timer *timer;
+      double velocity, start_time, x, y;
+      Entice_Scroll_Direction direction;
+   } scroll;
+   char *filename;              /* we need to keep track of this */
+   int x, y, w, h, iw, ih;      /* geometry */
+   Evas_Object *obj;            /* the image object */
+   Evas_Object *clip;           /* clip to this area when we swallow */
+};
 
-void                e_rotate_r_current_image(void);
-void                e_rotate_l_current_image(void);
 
-void                e_turntable_l_current_image(void);
-void                e_turntable_r_current_image(void);
-void		    e_turntable_reset(void);
+/* entice_image_new - generate a new image from an existing thumb
+ * @o - an E_Thumb object
+ * we can get all the image info we'll need from o
+ */
+Evas_Object *entice_image_new(Evas_Object * o);
 
-void		    e_zoom_in(int x, int y);
-void		    e_zoom_out(int x, int y);
-void		    e_zoom_normal(void);
-void		    e_zoom_full(void);
-void                e_flip_h_current_image(void);
-void                e_flip_v_current_image(void);
+/*
+void entice_image_free(Entice_Image *im);
+*/
 
-void                e_delete_current_image(void);
-void                e_load_prev_image(void);
-void                e_load_next_image(void);
-void                e_save_current_image(void);
-void                e_display_current_image(void);
+int entice_image_zoom_fit_get(Evas_Object * o);
+void entice_image_zoom_fit(Evas_Object * o);
+void entice_image_zoom_reset(Evas_Object * o);
+void entice_image_zoom_in(Evas_Object * o);
+void entice_image_zoom_out(Evas_Object * o);
+double entice_image_zoom_get(Evas_Object * o);
+void entice_image_zoom_set(Evas_Object * o, double zoom);
+void entice_image_zoom_focused_set(Evas_Object * o, double zoom, double x,
+                                   double y);
+void entice_image_scroll_stop(Evas_Object * o);
+void entice_image_scroll_start(Evas_Object * o, Entice_Scroll_Direction d);
+void entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val);
+const char *entice_image_file_get(Evas_Object * o);
 
-void                next_image(void *data, Evas * e, Evas_Object * obj,
-			       void *event_info);
-
-void                next_image_up(void *data, Evas * e, Evas_Object * obj,
-				  void *event_info);
-void                next_image_move(void *data, Evas * e, Evas_Object * obj,
-				    void *event_info);
-void                next_image_wheel(void *data, Evas * e, Evas_Object * obj,
-				    void *event_info);
-
-#endif /* __IMAGE_H__ */
+#endif

@@ -1,931 +1,668 @@
-#include "entice.h"
+/**
+ * Corey Donohoe <atmos@atmos.org>
+ * Filename: entice_image.c
+ * Smart Object: ;
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <limits.h>
+#include <Ecore.h>
+#include "image.h"
 
-#define DEFAULT_FORMAT "png"
+#define DEBUG 0
 
-int turntable_rotation = 0;
-
-void
-image_add_from_ipc(char *item)
-{
-   DIR                *d;
-   struct dirent      *dent;
-   Image              *im;
-   char                buf[4096];
-
-   if (item==NULL)
-     return;
-   printf("adding new image: %s\n", item);
-   if (e_file_is_dir(item))
-     {
-	d = opendir(item);
-	while ((dent = readdir(d)) != NULL)
-	  {
-	     if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
-		 || dent->d_name[0] == '.')
-		continue;
-
-	     sprintf(buf, "%s/%s", item, dent->d_name);
-	     im = e_image_new(buf);
-	     im->subst = 1;
-	     images = evas_list_append(images, im);
-	  }
-	closedir(d);
-     }
-   else
-     {
-	im = e_image_new(item);
-	im->subst = 1;
-	images = evas_list_append(images, im);
-     }
-   need_thumbs = 1;
-   // e_display_current_image();
-   return;
-}
+static void entice_image_resize(Evas_Object * o, double w, double h);
+static int _entice_image_scroll_timer(void *data);
 
 void
-image_create_list(int argc, char **argv)
+entice_image_file_set(Evas_Object * o, char *filename)
 {
-   int                 i;
-   if (argc==2 && e_file_is_dir(argv[1])) {
-     printf("taking argument to be directory name: %s\n", argv[1]);
-      image_create_list_dir(argv[1]);
-      return;
-   }
-
-   for (i = 1; i < argc; i++)
-     {
-	Image              *im;
-	/*
-	char                buf[4096];
-
-	buf = e_file_full_name(argv[i]);
-	printf("%s\n",buf);
-	*/
-	im = e_image_new(e_file_full_name(argv[i]));
-	images = evas_list_append(images, im);
-     }
-   current_image = images;
-}
-
-void
-image_create_list_dir(char *dir)
-{
-   DIR                *d;
-   struct dirent      *dent;
-   Image              *im;
-
-   dir = e_file_full_name(dir);
-
-   d = opendir(dir);
-
-   while ((dent = readdir(d)) != NULL)
-      // while( readdir_r(d,dent,&dent) )
-     {
-       char buf[4096];
-	/* skip these */
-	if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
-	    || dent->d_name[0] == '.')
-	   continue;
-
-	snprintf(buf, 4096, "%s/%s", dir, dent->d_name);
-	im = e_image_new(buf);
-	images = evas_list_append(images, im);
-     }
-   closedir(d);
-
-   current_image = images;
-}
-
-void
-image_create_thumbnails(void)
-{
-   Evas_List          *l;
-   int                 i;
-
-   i = 1;
-   for (l = images; l; l = l->next, i++)
-     {
-	Image              *im;
-
-	im = l->data;
-
-	if (im->o_thumb) return;
-	im->o_thumb = evas_object_image_add(evas);
-	evas_object_image_file_set(im->o_thumb, IM "thumb.png", NULL);
-	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_MOVE,
-				       e_list_item_drag, l);
-	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_DOWN,
-				       e_list_item_click, l);
-	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_UP,
-				       e_list_item_select, l);
-	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_IN,
-				       e_list_item_in, l);
-	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_OUT,
-				       e_list_item_out, l);
-	im->subst = 1;
-	evas_object_image_border_set(im->o_thumb, 4, 4, 4, 4);
-	evas_object_move(im->o_thumb, 2, 2 + ((48 + 2) * (i - 1)));
-	evas_object_resize(im->o_thumb, 48, 48);
-	evas_object_image_fill_set(im->o_thumb, 0, 0, 48, 48);
-	evas_object_layer_set(im->o_thumb, 249);
-	evas_object_show(im->o_thumb);
-     }
-}
-
-void
-image_destroy_list(void)
-{
-   Evas_List          *l;
-   Image              *im;
-
-   for (l = images; l; l = l->next)
-     {
-	im = l->data;
-
-	evas_object_event_callback_del(im->o_thumb, EVAS_CALLBACK_MOUSE_DOWN,
-				       e_list_item_click);
-	evas_object_event_callback_del(im->o_thumb, EVAS_CALLBACK_MOUSE_IN,
-				       e_list_item_in);
-	evas_object_event_callback_del(im->o_thumb, EVAS_CALLBACK_MOUSE_OUT,
-				       e_list_item_out);
-
-	evas_object_del(im->o_thumb);
-
-	e_image_free(im);
-     }
-
-   images = evas_list_free(images);
-}
-
-Image              *
-e_image_new(char *file)
-{
-   Image              *im;
-
-   im = malloc(sizeof(Image));
-   im->file = strdup(file);
-   im->generator = 0;
-   im->thumb = NULL;
-   im->o_thumb = NULL;
-   im->subst = 0;
-   return im;
-}
-
-void
-e_image_free(Image * im)
-{
-   if (im->file)
-      free(im->file);
-   if (im->thumb)
-      free(im->thumb);
-   free(im);
-}
-
-void
-image_delete(Image * im)
-{
-   if (im)
-     {
-	if (current_image && im == current_image->data) {
-	  if (current_image->next)
-	    current_image = current_image->next;
-	  else if (current_image->prev)
-	    current_image = current_image->prev;
-	  else
-	    current_image = NULL;
-	  e_display_current_image();
-	}
-	if (im->o_thumb)
-	   evas_object_del(im->o_thumb);
-
-	images = evas_list_remove(images, (void *)im);
-	e_image_free(im);
-     }
-}
-
-static void
-e_flip_object(Evas_Object *obj, int direction)
-{
-   int w;
-   int h;
-   DATA32 *image_data;
-   Imlib_Image image;
-
-   if (!obj)
-       return;
-
-   /* Get image data from Evas */
-   evas_object_image_size_get(obj, &w, &h);
-   image_data = evas_object_image_data_get(obj, 0);
-   if (!image_data)
-     {
-         evas_object_image_data_set(obj, image_data);
-         return;
-     }
-
-   /* Set up imlib image */
-   image = imlib_create_image_using_copied_data(w, h, image_data);
-   evas_object_image_data_set(obj, image_data);
-   imlib_context_set_image(image);
-
-   /* Flip image */
-   if (direction==1)
-         imlib_image_flip_horizontal();
-   else
-         imlib_image_flip_vertical();
-
-   /* Get image data from Imlib */
-   image_data = imlib_image_get_data_for_reading_only();
-
-   /* Set Evas Image Data */
-   evas_object_image_size_set(obj, w, h);
-   evas_object_image_data_copy_set(obj, image_data);
-
-   /* Free Imlib image */
-   imlib_image_put_back_data(image_data);
-   imlib_free_image();
-}
-
-static void
-e_flip_current_image(int direction)
-{
-   Image *im;
-
-   if (!current_image || !current_image->data)
-       return;
-
-   im = (Image *) (current_image->data);
-
-   /* Flip image */
-   e_flip_object(o_image, direction);
-   e_flip_object(o_mini_image, direction);
-   im->modified = 1;
-   e_flip_object(im->o_thumb, direction);
-
-   /* Update Display */
-   e_turntable_reset();
-   e_handle_resize();
-   e_fix_icons();
-   e_scroll_list(NULL);
-   e_fade_scroller_in((void *)1);
-
-}
-
-void
-e_flip_h_current_image(void)
-{
-	e_flip_current_image(1);
-}
-
-void
-e_flip_v_current_image(void)
-{
-	e_flip_current_image(2);
-}
-
-static void
-e_rotate_object(Evas_Object *obj, int rotation)
-{
-   int w;
-   int h;
-   DATA32 *image_data;
-   Imlib_Image image;
-
-   if (!obj)
-       return;
-
-   /* Get image data from Evas */
-   evas_object_image_size_get(obj, &w, &h);
-   image_data = evas_object_image_data_get(obj, 0);
-   if (!image_data)
-     {
-         evas_object_image_data_set(obj, image_data);
-         return;
-     }
-
-   /* Set up imlib image */
-   image = imlib_create_image_using_copied_data(w, h, image_data);
-   evas_object_image_data_set(obj, image_data);
-   imlib_context_set_image(image);
-
-   /* Rotate image */
-   imlib_image_orientate(rotation);
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
-
-   /* Get image data from Imlib */
-   image_data = imlib_image_get_data_for_reading_only();
-
-   /* Set Evas Image Data */
-   evas_object_image_size_set(obj, w, h);
-   evas_object_image_data_copy_set(obj, image_data);
-
-   /* Free Imlib image */
-   imlib_image_put_back_data(image_data);
-   imlib_free_image();
-}
-
-static void
-e_rotate_current_image(int rotation)
-{
-   Image *im;
-
-   if (!current_image || !current_image->data)
-       return;
-
-   im = (Image *) (current_image->data);
-
-   /* Rotate image */
-   e_rotate_object(o_image, rotation);
-   e_rotate_object(o_mini_image, rotation);
-   im->modified = 1;
-   e_rotate_object(im->o_thumb, rotation);
-
-   /* Update Display */
-   e_turntable_reset();
-   e_handle_resize();
-   e_fix_icons();
-   e_scroll_list(NULL);
-   e_fade_scroller_in((void *)1);
-
-}
-
-void
-e_rotate_r_current_image(void)
-{
-	e_rotate_current_image(1);
-}
-
-void
-e_rotate_l_current_image(void)
-{
-	e_rotate_current_image(3);
-}
-
-#define TURNTABLE_COUNT 30
-Imlib_Image turntable_image[TURNTABLE_COUNT];
-int turntable_image_no = -1;
-
-void
-e_turntable_object_init(Evas_Object *obj)
-{
-   int i;
-   int w;
-   int h;
-   double angle;
-   DATA32 *image_data;
-   Imlib_Image image;
-
-   if (!obj || turntable_image_no >= 0)
-       return;
-
-   	/* Get image data from Evas */
-   evas_object_image_size_get(obj, &w, &h);
-   image_data = evas_object_image_data_get(obj, 0);
-   if (!image_data)
-     {
-         evas_object_image_data_set(obj, image_data);
-         return;
-     }
-
-   /* Set up imlib image */
-   image = imlib_create_image_using_copied_data(w, h, image_data);
-   evas_object_image_data_set(obj, image_data);
-
-   angle = 0;
-   for(i = 0 ; i < TURNTABLE_COUNT ; i ++) {
-	angle = i * 360 * acos(0) / 90 / TURNTABLE_COUNT;
-   	imlib_context_set_image(image);
-   	turntable_image[i] = imlib_create_rotated_image(angle);
-   	imlib_context_set_image(turntable_image[i]);
-   }
-	
-  /* Free Imlib image */
-  imlib_context_set_image(image);
-  imlib_free_image();
-
-  turntable_image_no = 0;
-}
-
-void
-e_turntable_reset()
-{
-   int i;
-
-   if (turntable_image_no < 0)
-       return;
-
-   turntable_image_no = -1;
-
-   for(i = 0 ; i < TURNTABLE_COUNT ; i ++) {
-   	imlib_context_set_image(turntable_image[i]);
-	imlib_free_image();
+   char buf[PATH_MAX];
+   Entice_Image *im = NULL;
+
+   if ((filename) && (im = evas_object_smart_data_get(o)))
+   {
+      snprintf(buf, PATH_MAX, "%s", filename);
+      if (im->filename)
+         free(im->filename);
+      im->filename = strdup(buf);
    }
 }
-
-static void
-e_turntable_object_next(Evas_Object *obj)
+const char *
+entice_image_file_get(Evas_Object * o)
 {
-   int w;
-   int h;
-   DATA32 *image_data;
+   Entice_Image *im = NULL;
 
-   if (!obj)
-       return;
-
-   e_turntable_object_init(obj);
-
-   if (turntable_rotation == 1) {
-      if(++turntable_image_no >= TURNTABLE_COUNT) {
-	   turntable_image_no = 0;
-      }
-   }
-   else {
-      if(--turntable_image_no < 0) {
-	   turntable_image_no = TURNTABLE_COUNT - 1;
-      }
-   }
-
-   /* Get image data from Imlib */
-   imlib_context_set_image(turntable_image[turntable_image_no]);
-   image_data = imlib_image_get_data_for_reading_only();
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
-
-   /* Set Evas Image Data */
-   evas_object_image_size_set(obj, w, h);
-   evas_object_image_data_set(obj, image_data);
-
-  imlib_image_put_back_data(image_data);
-
+   if ((im = evas_object_smart_data_get(o)))
+      return (im->filename);
+   return (NULL);
 }
 
+/**
+ * entice_image_zoom_fit_get - find out whether we're fitting this obj
+ * @o - the Entice_Image object
+ * Return 1 if it is being fitted, 0 if it's not
+ */
 int
-e_turntable_object(void *data)
+entice_image_zoom_fit_get(Evas_Object * o)
 {
-   Evas_Object* obj;
-   obj = (Evas_Object *) data;
-   if (turntable_image_no < 0)
-	 return 0;
+   int result = 0;
+   Entice_Image *im = NULL;
 
-   e_turntable_object_next(obj);
-
-   /* Update Display */
-   e_handle_resize();
-   return 1;
+   if ((im = evas_object_smart_data_get(o)))
+      result = im->fit;
+   return (result);
 }
 
-static void
-e_turntable_current_image(int rotation)
-{
-   int w;
-   int h;
-   if (!current_image || !current_image->data)
-       return;
-
-   evas_object_image_size_get(o_image, &w, &h);
-   if (turntable_image_no < 0 && w * h * 4 > 1048576)
-      return;
-
-   turntable_rotation = rotation;
-   ecore_timer_add((double) 60 / (double) 33 / (double) TURNTABLE_COUNT, e_turntable_object, (void *) o_image);
-
-}
-
+/**
+ * entice_image_scroll_stop - stop scrolling in any direction
+ * @o - the Entice_Image object
+ */
 void
-e_turntable_r_current_image(void)
+entice_image_scroll_stop(Evas_Object * o)
 {
-	e_turntable_current_image(1);
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if (im->scroll.timer)
+         ecore_timer_del(im->scroll.timer);
+      im->scroll.timer = NULL;
+   }
 }
 
+/**
+ * entice_image_scroll_start - start scrolling in a given direction
+ * @o - the Entice_Image object
+ * @d - the Entice_Image_Scroll_Direction
+ */
 void
-e_turntable_l_current_image(void)
+entice_image_scroll_start(Evas_Object * o, Entice_Scroll_Direction d)
 {
-	e_turntable_current_image(2);
-}
+   Entice_Image *im = NULL;
 
-void
-e_zoom_in(int x, int y)
-{
-  if (!o_image) return;
-  scale /= 1.414;
-  if (scale < 0.03125)
-    scale = 0.03125;
-  /*
-  scroll_x = ((double)(scroll_x + win_w/2 - x))*1.414;
-  scroll_y = ((double)(scroll_y + win_h/2 - y))*1.414;
-  */
-  if (x == -1)
-    scroll_x *= 1.414;
-  else
-    scroll_x = scroll_x*1.414 + (win_w/2 - x)*(0.414);
-  if (y == -1)
-    scroll_y *= 1.414;
-  else
-    scroll_y = scroll_y*1.414 + (win_w/2 - x)*(0.414);
-  //printf("scroll_x: %i, scroll_y: %i\n", scroll_x, scroll_y);
-  e_handle_resize();
-}
-
-void
-e_zoom_out(int x, int y)
-{
-  if (!o_image) return;
-  scale *= 1.414;
-  /*
-  scroll_x = ((double)(scroll_x + win_w/2 - x))/1.414;
-  scroll_y = ((double)(scroll_y + win_h/2 - y))/1.414;
-  */
-  if (x == -1)
-    scroll_x /= 1.414;
-  else
-    scroll_x = scroll_x/1.414 - (win_w/2 - x)*(0.293);
-  if (y == -1)
-    scroll_y /= 1.414;
-  else
-    scroll_y = scroll_y/1.414 - (win_w/2 - x)*(0.293);
-  //printf("scroll_x: %i, scroll_y: %i\n", scroll_x, scroll_y);
-  e_handle_resize();
-}
-
-void
-e_zoom_normal(void)
-{
-  if (!o_image) return;
-  scale = 1.0;
-  e_handle_resize();
-}
-  
-void
-e_zoom_full(void)
-{
-  double              sh, sv;
-  int                 w, h;
-
-  if (!o_image) return;
-  evas_object_image_size_get(o_image, &w, &h);
-  sh = (double)w / (double)win_w;
-  sv = (double)h / (double)win_h;
-  if (sh > sv)
-    scale = sh;
-  else
-    scale = sv;
-  e_handle_resize();
-}
-
-void
-e_delete_current_image(void)
-{
-   Evas_List          *l = NULL;
-
-   Image              *im;
-
-   if (!current_image || !current_image->data)
-	return;
-
-   im = (Image *) (current_image->data);
-
-   if (im->file)
-      unlink(im->file);
-   if (im->thumb)
-      unlink(im->thumb);
-   if (current_image->next)
-      l = current_image->next;
-   else if (current_image->prev)
-      l = current_image->prev;
-   else
-      l = NULL;
-
-   if (im->o_thumb)
-      evas_object_del(im->o_thumb);
-   e_image_free((Image *) current_image->data);
-   images = evas_list_remove(images, current_image->data);
-
-   current_image = l;
-
-   e_display_current_image();
-}
-
-static void
-_e_save_image(Evas_Object *obj, const char *path)
-{
-   int w;
-   int h;
-   DATA32 *image_data;
-   Imlib_Image image;
-   int alpha_team; /* Speed Racer! */
-   const char *format;
-
-   if (!obj || !path)
-       return;
-
-   /* Get image data from Evas */
-   evas_object_image_size_get(obj, &w, &h);
-   image_data = evas_object_image_data_get(obj, 0);
-   if (!image_data)
-     {
-         evas_object_image_data_set(obj, image_data);
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if (im->scroll.timer)
          return;
-     }
-
-   /* Set up imlib image */
-   image = imlib_create_image_using_copied_data(w, h, image_data);
-   evas_object_image_data_set(obj, image_data);
-   imlib_context_set_image(image);
-
-   alpha_team = evas_object_image_alpha_get(obj);
-   format = strrchr(path, '.') + 1;
-
-   if(!*format)
-	   format = DEFAULT_FORMAT;
-
-   /* Save Image */
-   imlib_image_set_format(format);
-   imlib_image_set_has_alpha(alpha_team);  /* Go Speed, Go */
-   imlib_save_image(path);
-
-
-   /* Free Imlib image */
-   imlib_free_image();
+      im->scroll.direction = d;
+      im->scroll.velocity = 1.0 * im->zoom;
+      im->scroll.start_time = ecore_time_get();
+      im->scroll.timer = ecore_timer_add(0.03, _entice_image_scroll_timer, o);
+   }
 }
 
-
+/**
+ * entice_image_scroll - scrolling in a given direction, a given value
+ * @o - the Entice_Image object
+ * @d - the Entice_Image_Scroll_Direction
+ * @val - the number of pixels to scroll
+ */
 void
-e_save_current_image(void)
+entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val)
 {
-   Image *im;
+   Entice_Image *im = NULL;
 
-   if (!current_image || !current_image->data || !o_image)
-       return;
-
-   im = (Image *) (current_image->data);
-
-   _e_save_image(o_image, im->file);
-   if(im->modified)
-      _e_save_image(im->o_thumb, im->thumb);
-   im->modified = 0;
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      switch (d)
+      {
+        case ENTICE_SCROLL_NORTH:
+           if (im->scroll.y > 0)
+              im->scroll.y -= val;
+           if (im->scroll.y < 0)
+              im->scroll.y = 0;
+           break;
+        case ENTICE_SCROLL_EAST:
+           if (im->scroll.x > 0)
+              im->scroll.x += val;
+           if (im->scroll.x < 0)
+              im->scroll.x = 0;
+           break;
+        case ENTICE_SCROLL_SOUTH:
+           if (im->scroll.y > 0)
+              im->scroll.y += val;
+           if (im->scroll.y < 0)
+              im->scroll.y = 0;
+           break;
+        case ENTICE_SCROLL_WEST:
+           if (im->scroll.x > 0)
+              im->scroll.x -= val;
+           if (im->scroll.x < 0)
+              im->scroll.x = 0;
+           break;
+        default:
+#if DEBUG
+           fprintf(stderr, "SCrolling WTF\n");
+#endif
+           break;
+      }
+      entice_image_resize(o, im->w, im->h);
+   }
 }
 
+/**
+ * entice_image_zoom_get - get the current zoom value for the image
+ * @o - The Entice_Image we're curious about
+ */
+double
+entice_image_zoom_get(Evas_Object * o)
+{
+   double result = 1.0;
+   Entice_Image *im = NULL;
 
+   if ((im = evas_object_smart_data_get(o)))
+      result = im->zoom;
+   return (result);
+}
+
+/**
+ * entice_image_zoom_set - set the current zoom value for the image
+ * @o - The Entice_Image we're curious about
+ * @val - the new zoom value for our Image
+ */
+void
+entice_image_zoom_set(Evas_Object * o, double val)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      im->zoom = val;
+      evas_object_resize(o, im->w, im->h);
+   }
+}
+
+/**
+ * entice_image_zoom_fit - fit the current image to the clip
+ * @o - The Entice_Image we're fitting
+ */
+void
+entice_image_zoom_fit(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if (im->iw > im->ih)
+         im->zoom = ((double) (im->iw) / (double) im->w);
+      else
+         im->zoom = ((double) (im->ih) / (double) im->h);
+      entice_image_resize(o, im->w, im->h);
+   }
+}
+
+/**
+ * entice_image_zoom_reset - set the scale to be 1:1
+ * @o - The Entice_Image we're resetting zoom for
+ */
+void
+entice_image_zoom_reset(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      im->zoom = 1.0;
+      entice_image_resize(o, im->w, im->h);
+   }
+}
+
+/**
+ * entice_image_zoom_out - zoom out by a factor of zoom *= 1.414
+ * @o - The Entice_Image we're zooming
+ */
+void
+entice_image_zoom_out(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+#if DEBUG
+      fprintf(stderr, "Zooming Out!! %0.2f\n", im->zoom);
+#endif
+      im->zoom *= 1.414;
+      entice_image_resize(o, im->w, im->h);
+   }
+
+}
+
+/**
+ * entice_image_zoom_in - zoom in by a factor of zoom *= 1.414
+ * @o - The Entice_Image we're zooming
+ */
+void
+entice_image_zoom_in(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+#if DEBUG
+      fprintf(stderr, "Zooming In!! %0.2f\n", im->zoom);
+#endif
+      im->zoom /= 1.414;
+      if (im->zoom < 0.03125)
+         im->zoom = 0.03125;
+      entice_image_resize(o, im->w, im->h);
+   }
+}
+
+/**
+ * _entice_image_scroll_timer - our ecore timer to do continuous
+ * scrolling
+ * @data - a pointer to the object we're scrolling
+ * Returns 1 until the image's boundaries are reached, or the timer is
+ * manually deleted elsewhere
+ */
+static int
+_entice_image_scroll_timer(void *data)
+{
+   Entice_Image *im = NULL;
+   int ok = 1;
+
+   if (data && ((im = evas_object_smart_data_get((Evas_Object *) data))))
+   {
+      double dt, dx;
+      double ix, iy, iw, ih;
+      double offset;
+
+      dt = ecore_time_get() - im->scroll.start_time;
+      dx = 10 * (1 - exp(-dt));
+      offset = dx * im->scroll.velocity;
+
+      evas_object_geometry_get(im->obj, &ix, &iy, &iw, &ih);
+
+
+      switch (im->scroll.direction)
+      {
+        case ENTICE_SCROLL_NORTH:
+           if (ih > im->h)
+           {
+              iy += offset;
+              im->scroll.y += offset;
+              if (im->scroll.y > ((ih - im->h) / 2))
+              {
+                 im->scroll.y = ((ih - im->h) / 2);
+                 ok = 0;
+              }
+           }
+           break;
+        case ENTICE_SCROLL_SOUTH:
+           if (ih > im->h)
+           {
+              iy -= offset;
+              im->scroll.y -= offset;
+              if (im->scroll.y < -((ih - im->h) / 2))
+              {
+                 im->scroll.y = -((ih - im->h) / 2);
+                 ok = 0;
+              }
+
+           }
+           break;
+        case ENTICE_SCROLL_EAST:
+           if (iw > im->w)
+           {
+              ix -= offset;
+              im->scroll.x -= offset;
+              if (im->scroll.x < -((iw - im->w) / 2))
+              {
+                 im->scroll.x = -((iw - im->w) / 2);
+                 ok = 0;
+              }
+           }
+           break;
+        case ENTICE_SCROLL_WEST:
+           if (iw > im->w)
+           {
+              ix += offset;
+              im->scroll.x += offset;
+              if (im->scroll.x > ((iw - im->w) / 2))
+              {
+                 im->scroll.x = ((iw - im->w) / 2);
+                 ok = 0;
+              }
+           }
+           break;
+        default:
+#if DEBUG
+           fprintf(stderr, "Scrolling\n");
+#endif
+           break;
+      }
+      evas_object_resize((Evas_Object *) data, im->w, im->h);
+      if (!ok)
+      {
+         ecore_timer_del(im->scroll.timer);
+         im->scroll.timer = NULL;
+      }
+      /* 
+         evas_object_move(im->obj, ix, iy); */
+   }
+   return (ok);
+}
+
+/*=========================================================================
+ * Entice_Image smart object definitions
+ *=======================================================================*/
 static void
-e_update_thumb(void)
+entice_image_add(Evas_Object * o)
 {
-   Image *im;
+   Entice_Image *im = NULL;
 
-   if (!current_image)
-      return;
+   im = (Entice_Image *) malloc(sizeof(Entice_Image));
+   memset(im, 0, sizeof(Entice_Image));
+   im->zoom = 1.0;
 
-   im = (Image *) (current_image->data);
+   im->clip = evas_object_rectangle_add(evas_object_evas_get(o));
+   evas_object_color_set(im->clip, 255, 255, 255, 255);
+   evas_object_layer_set(im->clip, 0);
+   im->zoom = 1.0;
+   im->fit = 1;
+   evas_object_smart_data_set(o, im);
+}
+static void
+entice_image_del(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
 
-   if(!im->modified)
-      return;
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if (im->filename)
+         free(im->filename);
+      evas_object_del(im->obj);
+      free(im);
+   }
+}
+static void
+entice_image_layer_set(Evas_Object * o, int layer)
+{
+   Entice_Image *im = NULL;
 
-   evas_object_image_file_set(im->o_thumb, im->thumb, NULL);
-   evas_object_image_reload(im->o_thumb);
-   im->modified = 0;
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_layer_set(im->obj, layer);
+   }
+}
+static void
+entice_image_raise(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_raise(im->obj);
+   }
+}
+static void
+entice_image_lower(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_lower(im->obj);
+   }
+}
+static void
+entice_image_stack_above(Evas_Object * o, Evas_Object * above)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_stack_above(im->obj, above);
+   }
+}
+static void
+entice_image_stack_below(Evas_Object * o, Evas_Object * below)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_stack_below(im->obj, below);
+   }
+}
+static void
+entice_image_move(Evas_Object * o, double x, double y)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_move(im->clip, x, y);
+      im->x = x;
+      im->y = y;
+   }
+}
+static void
+entice_image_resize(Evas_Object * o, double w, double h)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      double ww = 0.0, hh = 0.0;
+
+      im->w = w;
+      im->h = h;
+      evas_object_resize(im->clip, im->w, im->h);
+
+      if (w < 5 || h < 5)
+         return;
+      if (im->zoom > w || im->zoom > h)
+         im->zoom = w < h ? w : h;
+
+      ww = (int) ((double) im->iw / im->zoom);
+      hh = (int) ((double) im->ih / im->zoom);
+
+      if (ww > w)
+      {
+         if (im->scroll.x > ((ww - w) / 2))
+            im->scroll.x = ((ww - w) / 2);
+         else if (im->scroll.x < -((ww - w + 1) / 2))
+            im->scroll.x = -((ww - w + 1) / 2);
+      }
+      else
+         im->scroll.x = 0;
+      if (hh > h)
+      {
+         if (im->scroll.y > ((hh - h) / 2))
+            im->scroll.y = ((hh - h) / 2);
+         else if (im->scroll.y < -((hh - h + 1) / 2))
+            im->scroll.y = -((hh - h + 1) / 2);
+      }
+      else
+         im->scroll.y = 0;
+      evas_object_move(im->obj, im->scroll.x + im->x + (im->w - ww) / 2,
+                       im->scroll.y + im->y + (im->h - hh) / 2);
+      evas_object_resize(im->obj, ww, hh);
+      evas_object_image_fill_set(im->obj, 0, 0, ww, hh);
+   }
+}
+static void
+entice_image_show(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_show(im->clip);
+   }
+}
+static void
+entice_image_hide(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_hide(im->clip);
+   }
+}
+static void
+entice_image_color_set(Evas_Object * o, int r, int g, int b, int a)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_color_set(im->clip, r, g, b, a);
+   }
+}
+static void
+entice_image_clip_set(Evas_Object * o, Evas_Object * clip)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_clip_set(im->clip, clip);
+   }
+}
+static void
+entice_image_clip_unset(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_clip_unset(im->clip);
+   }
+}
+static Evas_Smart *
+entice_image_get(void)
+{
+   Evas_Smart *s = NULL;
+
+   s = evas_smart_new("EnticeImage", entice_image_add, entice_image_del,
+                      entice_image_layer_set, entice_image_raise,
+                      entice_image_lower, entice_image_stack_above,
+                      entice_image_stack_below, entice_image_move,
+                      entice_image_resize, entice_image_show,
+                      entice_image_hide, entice_image_color_set,
+                      entice_image_clip_set, entice_image_clip_unset, NULL);
+   return (s);
 }
 
-
-void
-e_load_next_image(void)
+Evas_Object *
+entice_image_new(Evas_Object * image)
 {
-   e_update_thumb();
-   if (!current_image)
-      current_image = images;
-   else if (current_image->next)
-      current_image = current_image->next;
-   e_display_current_image();
+   int w, h;
+   Evas_Object *o = NULL;
+   Entice_Image *im = NULL;
+
+   if (image)
+   {
+      o = evas_object_smart_add(evas_object_evas_get(image),
+                                entice_image_get());
+
+      im = evas_object_smart_data_get(o);
+      im->obj = image;
+      evas_object_image_size_get(im->obj, &w, &h);
+      evas_object_clip_set(im->obj, im->clip);
+      evas_object_show(im->obj);
+      im->iw = w;
+      im->ih = h;
+   }
+   return (o);
 }
 
+/*==========================================================================
+ * Test app for entice_image by itself
+ * #define TESTING to 1 at the top of the file
+ *========================================================================*/
+#if TESTING
+#include<Ecore.h>
+#include<Ecore_Evas.h>
 
-void
-e_load_prev_image(void)
+static Evas_Object *bg = NULL;
+
+/**
+ * exit_cb - called when the app exits(window is killed)
+ * @ev_type -
+ * @ev - 
+ * @data -
+ */
+static int
+exit_cb(int ev_type, void *ev, void *data)
 {
-   e_update_thumb();
-   if (!current_image)
-      current_image = images;
-   else if (current_image->prev)
-      current_image = current_image->prev;
-   e_display_current_image();
+   ecore_main_loop_quit();
+   return (0);
 }
 
-
-void
-e_display_current_image(void)
+/**
+ * window_resize_cb - when the ecore_evas is resized by the user
+ * @ee - the Ecore_Evas that was resized 
+ */
+static void
+window_resize_cb(Ecore_Evas * ee)
 {
-   Imlib_Image im;
-   DATA32 *data;
-   int mustUseImlib = 0;
+   int w, h;
 
-   e_turntable_reset();
-   if (o_mini_image)
-     {
-	evas_object_del(o_mini_image);
-	o_mini_image = NULL;
-     }
-   if (current_image)
-     {
-	char                title[4096];
-
-	if (o_image)
-	  {
-	    evas_object_del(o_image);
-	    o_image = NULL;
-	  }
-	o_image = evas_object_image_add(evas);
-	evas_object_image_file_set(o_image,
-				   ((Image *) (current_image->data))->file,
-				   NULL);
-	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_DOWN,
-				       next_image, NULL);
-	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_UP,
-				       next_image_up, NULL);
-	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_MOVE,
-				       next_image_move, NULL);
-	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_WHEEL,
-				       next_image_wheel, NULL);
-	evas_object_show(o_image);
-	// if evas can't load the thing...
-	if (evas_object_image_load_error_get(o_image) != EVAS_LOAD_ERROR_NONE)
-	  {
-	    // try Imlib
-
-	    mustUseImlib = 1;
-	    im = imlib_load_image(((Image *)(current_image->data))->file);
-	    if (im) {
-	      int w, h;
-	      enum active_state command = active_out;
-	      
-	      e_fade_logo(&command);
-	      imlib_context_set_image(im);
-	      w = imlib_image_get_width();
-	      h = imlib_image_get_height();
-	      data = imlib_image_get_data_for_reading_only();
-	      evas_object_image_size_set(o_image, w, h);
-	      evas_object_image_data_set(o_image, data);
-	    } else { // we really can't load it
-	     enum active_state command = active_in;
-
-	     e_fade_logo(&command);
-	     sprintf(txt_info[0], "Error Loading File: %s",
-		     ((Image *) (current_image->data))->file);
-	     *txt_info[1] = '\0';
-	     sprintf(title, "Entice (Error Loading): %s",
-		     ((Image *) (current_image->data))->file);
-	     ecore_evas_title_set(ecore_evas, title);
-	     evas_object_del(o_image);
-	     o_image = NULL;
-	    }
-	  }
-	else
-	  {
-	     int                 w, h;
-	     enum active_state command = active_out;
-
-	     e_fade_logo(&command);
-	     evas_object_image_size_get(o_image, &w, &h);
-	     sprintf(txt_info[0], "File: %s",
-		     ((Image *) (current_image->data))->file);
-	     sprintf(txt_info[1], "Size: %ix%i", w, h);
-	     e_fade_info_in(NULL);
-
-	     sprintf(title, "Entice: %s",
-		     ((Image *) (current_image->data))->file);
-	     ecore_evas_title_set(ecore_evas, title);
-	  }
-     }
-   else
-     {
-	ecore_evas_title_set(ecore_evas, "Entice (No Image)");
-          {
-	     enum active_state command = active_in;
-	     evas_object_del(o_image);
-	     o_image = NULL;
-	     e_fade_logo(&command);
-	  }
-     }
-   if ((o_image) && (current_image))
-     {
-	o_mini_image = evas_object_image_add(evas);
-	evas_object_image_smooth_scale_set(o_mini_image, 0);
-	if (mustUseImlib) {
-	  evas_object_image_data_set(o_mini_image, data);
-	  imlib_image_put_back_data(data);
-	} else {
-	  evas_object_image_file_set(o_mini_image,
-				      ((Image *) (current_image->data))->file,
-				      NULL);
-	}
-	evas_object_show(o_mini_image);
-
-     }
-   e_handle_resize();
-   e_fix_icons();
-   e_scroll_list(NULL);
-   e_fade_scroller_in((void *)1);
+   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+   evas_object_resize(bg, (double) w, (double) h);
 }
 
-void
-next_image(void *data, Evas * e, Evas_Object * obj, void *event_info)
+/**
+ * window_del_cb - callback for when the ecore_evas is deleted
+ * @ee - the Ecore_Evas that was deleted
+ */
+static void
+window_del_cb(Ecore_Evas * ee)
 {
-   Evas_Event_Mouse_Down *ev;
-
-   ev = event_info;
-
-   down_x = ev->output.x;
-   down_y = ev->output.y;
-   down_sx = scroll_x;
-   down_sy = scroll_y;
-   e_fade_scroller_in(NULL);
+   ecore_main_loop_quit();
 }
 
-void
-next_image_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
+/**
+ * main - your C apps start here, duh.
+ * @argc - unused
+ * @argv - unused
+ */
+int
+main(int argc, const char *argv[])
 {
-   Evas_Event_Mouse_Up *ev;
+   Evas *evas = NULL;
+   Ecore_Evas *e = NULL;
+   Evas_Object *o = NULL, *oo = NULL;
 
-   ev = event_info;
-   if (((ev->output.x - down_x) * (ev->output.x - down_x)) +
-       ((ev->output.y - down_y) * (ev->output.y - down_y)) > 9)
-     {
-	e_fade_scroller_out(NULL);
-	return;
-     }
-   if ((obj == o_showpanel) && (panel_active))
-      return;
-   if (!current_image)
-     {
-        current_image = images;
-        e_display_current_image();
-     }
-   else
-     {
-	if (ev->button == 1)
-	   e_load_next_image();
-	else if (ev->button == 3)
-	   e_load_prev_image();
-     }
+   if (argc < 2)
+      return (1);
+   ecore_init();
+   ecore_app_args_set(argc, argv);
+
+   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
+
+   if (ecore_evas_init())
+   {
+      e = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 120);
+      ecore_evas_title_set(e, "Entice Image Test");
+      ecore_evas_callback_delete_request_set(e, window_del_cb);
+      ecore_evas_callback_resize_set(e, window_resize_cb);
+
+      evas = ecore_evas_get(e);
+      bg = evas_object_rectangle_add(evas);
+      evas_object_move(bg, 0, 0);
+      evas_object_resize(bg, 300, 120);
+      evas_object_color_set(bg, 89, 94, 97, 255);
+      evas_object_layer_set(bg, 0);
+      evas_object_show(bg);
+
+      o = evas_object_image_add(evas);
+      evas_object_image_file_set(o, argv[1], NULL);
+
+      oo = entice_image_new(o);
+      evas_object_move(oo, 0, 0);
+      evas_object_resize(oo, 300, 120);
+      evas_object_show(oo);
+      ecore_evas_show(e);
+   }
+   ecore_main_loop_begin();
+   return (0);
 }
-
-void
-next_image_move(void *data, Evas * e, Evas_Object * obj, void *event_info)
-{
-   Evas_Event_Mouse_Move *ev;
-
-   ev = event_info;
-   if (ev->buttons != 0 && o_image)
-     {
-        int w,h;
-        evas_object_image_size_get(o_image, &w, &h);
-	w = (int)((double)w / scale);
-	h = (int)((double)h / scale);
-	scroll_x = ev->cur.output.x - down_x + down_sx;
-	scroll_y = ev->cur.output.y - down_y + down_sy;
-	if (w > win_w)
-	  {
-	     if (scroll_x > ((w - win_w) / 2))
-		scroll_x = ((w - win_w) / 2);
-	     if (scroll_x < -((w - win_w + 1) / 2))
-		scroll_x = -((w - win_w + 1) / 2);
-	  }
-	else
-	   scroll_x = 0;
-	if (h > win_h)
-	  {
-	     if (scroll_y > ((h - win_h) / 2))
-		scroll_y = ((h - win_h) / 2);
-	     if (scroll_y < -((h - win_h + 1) / 2))
-		scroll_y = -((h - win_h + 1) / 2);
-	  }
-	else
-	   scroll_y = 0;
-
-	/*
-	if (scroll_x > w / 2)
-	  scroll_x = w / 2;
-	else if (scroll_x < -w / 2)
-	  scroll_x = -w / 2;
-	if (scroll_y > h / 2)
-	  scroll_y = h / 2;
-	else if (scroll_y < -h / 2)
-	  scroll_y = -h / 2;
-	*/
-	//printf("sx: %i, sy: %i\n", scroll_x, scroll_y);
-
-	e_handle_resize();
-     }
-}
-
-void
-next_image_wheel(void *data, Evas * e, Evas_Object * obj, void *event_info)
-{
-  Evas_Event_Mouse_Wheel *ev;
-
-  ev = event_info;
-  // printf("x: %i, y: %i\n", ev->output.x, ev->output.y);
-  if (ev->z > 0) {
-    e_zoom_out(ev->output.x, ev->output.y);
-  } else {
-    e_zoom_in(ev->output.x, ev->output.y);
-  }
-}
+#endif

@@ -2,35 +2,28 @@
 
 INCLUDES = \
 	-I../lib \
-	@imlib2_cflags@ @evas_cflags@ @edb_cflags@ @ecore_cflags@
+	@esmart_cflags@ \
+	@evas_cflags@ \
+	@edb_cflags@ \
+	@ecore_cflags@ \
+	@edje_cflags@
 
 bin_PROGRAMS = entice
 
 entice_SOURCES = \
-buttons.c \
-entice_ipc.c \
-event.c \
-fade.c \
-file.c \
-handler.c \
-image.c \
-list.c \
-main.c \
-misc.c \
-panel.c \
-thumb.c \
-buttons.h \
-entice_ipc.h \
-entice.h \
-event.h \
-fade.h \
-file.h \
-globals.h \
-handler.h \
-image.h \
-list.h \
-misc.h \
-panel.h \
-thumb.h
+entice.c entice.h \
+image.c image.h \
+ipc.c ipc.h \
+keys.c keys.h \
+prefs.c prefs.h \
+signals_image.c signals_image.h \
+signals_thumb.c signals_thumb.h \
+main.c
 
-entice_LDADD = @imlib2_libs@ @evas_libs@ @edb_libs@ @ecore_libs@ -lm -lc
+entice_LDADD = \
+@esmart_libs@ \
+@evas_libs@ \
+@edb_libs@ \
+@ecore_libs@ \
+@edje_libs@ \
+-lm -lc

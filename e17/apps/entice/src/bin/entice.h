@@ -1,73 +1,65 @@
-#ifndef __ENTICE_H__
-#define __ENTICE_H__
+/**
+ * Filename: entice.h
+ * Corey Donohoe <atmos@atmos.org>
+ * October 11, 2003
+ * Description: entice.h is the function declarations for wrapping
+ * functionality in entice.  Any functionality entice offers should have a
+ * void function with no args and a sane name representing what
+ * functionality it does offer.
+ */
+#ifndef ENTICE_H
+#define ENTICE_H
 
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <string.h>
-#include <dirent.h>
+#include<Edje.h>
+#include<Ecore.h>
+#include<Ecore_Evas.h>
 
-#include <Evas.h>
-#include <Ecore.h>
-#include <Ecore_X.h>
-#include <Ecore_Evas.h>
-#define X_DISPLAY_MISSING
-#include <Imlib2.h>
-#undef X_DISPLAY_MISSING
+struct _Entice
+{
+   struct
+   {
+      Evas_Hash *hash;          /* filename -> E_Thumb Mapping */
+      Evas_List *list;          /* List of E_Thumbs */
+      Evas_List *current;       /* Current Image's list item */
+   } thumb;
 
-#include <config.h>
+   Ecore_Evas *ee;              /* the evas window */
+   Evas_Object *edje;           /* Main Edje_Object(theme) */
+   Evas_Object *current;        /* Object currently visible */
+   Evas_Object *preview;        /* E_Thumb */
+   Evas_Object *scroller;       /* E_Thumb */
+   Evas_Object *container;      /* thumbnail container the edje swallows */
+};
+typedef struct _Entice Entice;
 
-#ifdef WITH_DMALLOC
-#include <dmalloc.h>
+void entice_init(Ecore_Evas * ee);
+void entice_free(void);
+void entice_resize(int w, int h);
+
+int entice_file_add(const char *file);
+int entice_file_del(const char *file);
+int entice_file_del_from_fs(const char *file);
+int entice_current_image_set(const char *file);
+void entice_file_add_job_cb(void *data);
+
+void entice_thumbs_scroll_next_start(void);
+void entice_thumbs_scroll_prev_start(void);
+void entice_thumbs_scroll_stop(void);
+
+void entice_main_image_scroll_east_start(void);
+void entice_main_image_scroll_west_start(void);
+void entice_main_image_scroll_north_start(void);
+void entice_main_image_scroll_south_start(void);
+void entice_main_image_scroll_stop(void);
+
+void entice_load_next(void);
+void entice_load_prev(void);
+void entice_zoom_in(void);
+void entice_zoom_fit(void);
+void entice_zoom_out(void);
+void entice_zoom_reset(void);
+void entice_fullscreen_toggle(void);
+
+void entice_preview_thumb(Evas_Object * o);
+
 #endif
-
-#define MAX_EVAS_COLORS (216)
-#define MAX_FONT_CACHE  (512 * 1024)
-#define MAX_IMAGE_CACHE (16 * (1024 * 1024))
-#define FONT_DIRECTORY  PACKAGE_DATA_DIR"/data/fonts/"
-#define IMAGE_DIRECTORY PACKAGE_DATA_DIR"/data/images/"
-#define FN              FONT_DIRECTORY
-#define IM              IMAGE_DIRECTORY
-#define W               400
-#define H               300
-#define RENDER_ENGINE   RENDER_METHOD_ALPHA_SOFTWARE
-/* #define RENDER_ENGINE   RENDER_METHOD_BASIC_HARDWARE */
-/* #define RENDER_ENGINE   RENDER_METHOD_3D_HARDWARE */
-
-typedef struct _image Image;
-
-struct _image
-{
-   char               *file;
-   pid_t               generator;
-   char               *thumb;
-   Evas_Object        *o_thumb;
-   int                 modified;
-   int                 subst;
-};
-
-enum active_state 
-{
-   active_out       = 0,
-   active_in        = 1,
-   active_force_out = 2,
-   active_force_in  = 3,
-   active_running   = 4
-};
-
-#include "buttons.h"
-#include "event.h"
-#include "fade.h"
-#include "file.h"
-#include "globals.h"
-#include "handler.h"
-#include "image.h"
-#include "list.h"
-#include "misc.h"
-#include "panel.h"
-#include "thumb.h"
-
-#endif /* __ENTICE_H__ */
