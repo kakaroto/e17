@@ -13,7 +13,7 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/libs/imlib2-%{ver}.tar.gz
 BuildRoot: /var/tmp/imlib-root
 Packager: Term <kempler@utdallas.edu>
 URL: http://www.rasterman.com/raster/imlib.html
-Requires: freetype >= 1.1
+Requires: freetype >= 1.2
 Requires: libpng 
 Requires: libjpeg
 Requires: zlib 
