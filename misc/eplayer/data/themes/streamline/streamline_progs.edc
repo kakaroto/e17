@@ -93,10 +93,17 @@
                         }
 
                         program {
-                                name,       "seekback_click";
+                                name,       "seekback_start";
+                                signal,     "mouse,down,1";
+                                source,     "seekback_button";
+                                action,     SIGNAL_EMIT "SEEK_BACK_START" "seekback_button";
+                        }
+
+                        program {
+                                name,       "seekback_stop";
                                 signal,     "mouse,up,1";
                                 source,     "seekback_button";
-                                action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
+                                action,     SIGNAL_EMIT "SEEK_BACK_STOP" "seekback_button";
                         }
 
 
@@ -212,10 +219,17 @@
                         }
 
                         program {
-                                name,       "seekforward_signal";
+                                name,       "seekforward_start";
+                                signal,     "mouse,down,1";
+                                source,     "seekforward_button";
+                                action,     SIGNAL_EMIT "SEEK_FORWARD_START" "seekforward_button";
+                        }
+
+                        program {
+                                name,       "seekforward_stop";
                                 signal,     "mouse,up,1";
                                 source,     "seekforward_button";
-                                action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
+                                action,     SIGNAL_EMIT "SEEK_FORWARD_STOP" "seekforward_button";
                         }
 
 
