@@ -1,26 +1,19 @@
 
-#define FADERS(pin, pout, pinsource, poutsource, ptarget) \
-	    program { name, pin; signal, "mouse,in"; source, pinsource; \
+#define FADERS(pin, pout, psource, ptarget) \
+	    program { name, pin; signal, "mouse,in"; source, psource; \
 	    action, ACTION_STOP; target, pout; } \
-	    program { name, pin; signal, "mouse,in"; source, pinsource; \
+	    program { name, pin; signal, "mouse,in"; source, psource; \
 	    action, STATE_SET "visible" 1.0; target, ptarget; \
 	    transition, ACCELERATE 0.3; } \
-	    program { name, pin; signal, "mouse,in"; source, pinsource; \
-	    action, STATE_SET "visible" 0.0; target, pinsource; \
-	    target, poutsource; transition, ACCELERATE 0.3; } \
-	    program { name, pout; signal, "mouse,out"; source, poutsource; \
+	    program { name, pout; signal, "mouse,out"; source, psource; \
 	    action, ACTION_STOP; target, pin; } \
-	    program { name, pout; signal, "mouse,out"; source, poutsource; \
+	    program { name, pout; signal, "mouse,out"; source, psource; \
 	    action, STATE_SET "visible" 0.0; target, ptarget; \
 	    transition, DECELERATE 0.3; } \
-	    program { name, pin; signal, "mouse,out"; source, poutsource; \
-	    action, STATE_SET "default" 0.0; target, pinsource; \
-	    target, poutsource; transition, ACCELERATE 0.3; } 
 
 FADERS("session_fade_in", "session_fade_out",
-"entrance_session_mouse_area", "entrance_session_mouse_area_mutex",
-"session_list_clip")
-FADERS("user_fade_in", "user_fade_out", "user_mouse_area",
-"user_mouse_area_mutex", "user_list_clip")
-FADERS("login_fade_in", "login_fade_out", "login_mouse_area",
-"login_mouse_area_mutex", "login_area_clip")
+"entrance_session_mouse_area", "session_list_clip")
+FADERS("user_fade_in", "user_fade_out", 
+"user_area_mouse_area", "user_list_clip")
+FADERS("login_fade_in", "login_fade_out", 
+"login_area_mouse_area", "login_area_clip")

@@ -1,6 +1,6 @@
 	    part
 	    {
-		name, "EntranceSessionIcon";
+		name, "EntranceUserIcon";
 		type, RECT;
 		mouse_events, 1;
 		description
@@ -9,20 +9,20 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, -44 -22;
+			relative, 0.0 0.0;
+			offset, 0 0;
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, -2 22;
+			relative, 1.0 1.0;
+			offset, 0 0;
 		    }
 		    color, 255 255 255 0;
 		}
 	    }
 	    part
 	    {
-		name, "EntranceSessionTitle";
+		name, "EntranceUserName";
 		type, TEXT;
 		mouse_events, 1;
 		effect, OUTLINE_SOFT_SHADOW;
@@ -32,15 +32,13 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.0;
-			offset, -250 0;
-			to, "EntranceSessionIcon";
+			relative, 0.0 1.0;
+			offset, 0 -30;
 		    }
 		    rel2
 		    {
-			relative, 0.0 1.0;
+			relative, 1.0 1.0;
 			offset, 0 0;
-			to, "EntranceSessionIcon";
 		    }
 		    color, 255 255 255 192;
 		    color2, 0 0 0 128;
@@ -50,7 +48,7 @@
 			text, "Doesn't Matter";
 			font, "luxisr";
 			size, 13;
-			align, 1.0 0.5;
+			align, 0.0 1.0;
 			fit, 0 0;
 		    }
 		}
@@ -60,15 +58,13 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.0;
-			offset, -250 0;
-			to, "EntranceSessionIcon";
+			relative, 0.0 1.0;
+			offset, 0 -30;
 		    }
 		    rel2
 		    {
-			relative, 0.0 1.0;
+			relative, 1.0 1.0;
 			offset, 0 0;
-			to, "EntranceSessionIcon";
 		    }
 		    color, 255 255 255 255;
 		    color2, 0 0 0 255;
@@ -78,7 +74,7 @@
 			text, "Doesn't Matter";
 			font, "luxisr";
 			size, 13;
-			align, 1.0 0.5;
+			align, 0.0 1.0;
 			fit, 0 0;
 		    }
 		}

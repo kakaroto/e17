@@ -194,4 +194,24 @@ collections {
 #include "programs/session_group_programs.edc"
 	}
     }
+    group
+    {
+	name, "User";
+	parts
+	{
+/**
+ * provides the EntranceUserIcon and EntranceUserName parts
+ */
+#include "parts/user_group.edc"
+	}
+	programs
+	{
+/**
+ * emit the following signals to entrance, 
+ * UserSelected and
+ * UserUnSelected
+ */
+#include "programs/user_group_programs.edc"
+	}
+    }
 }
