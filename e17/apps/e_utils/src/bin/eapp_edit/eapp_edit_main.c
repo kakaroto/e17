@@ -16,6 +16,7 @@ Ewl_Widget *name, *info, *comments, *exe, *wname, *wclass, *start, *wait;
 Ewl_Widget *icon, *dialog, *dialog_win;
 
 char *file, *lang, *icon_file;
+char *new_win_class;
 
 static void
 _eapp_edit_quit(Ewl_Widget *w, void *ev, void *data) {
@@ -226,16 +227,26 @@ main(int argc, char **argv) {
   dialog_win = NULL;
   /* handle some command-line parameters */
   for (i = 1; i < argc; i++) {
-    if ((!strcmp(argv[i], "-lang")) && (i < (argc - 1))) {
-	    i++;
-	    lang = argv[i];
-	  } else if ((!strcmp(argv[i], "-h")) ||
+    if (!strcmp(argv[i], "-l") || !strcmp(argv[i], "--lang")) {
+      if (i < (argc - 1)) {
+        lang = argv[++i];
+      } else {
+        printf("missing argument for -lang\n");
+      }
+    } else if (!strcmp(argv[i], "-c") || 
+        !strcmp(argv[i], "--win-class")) {
+      if (i < (argc - 1)) {
+        new_win_class = argv[++i];
+      } else {
+        printf("missing argument for -win-class\n");
+      }
+    } else if ((!strcmp(argv[i], "-h")) ||
         (!strcmp(argv[i], "-help")) ||
         (!strcmp(argv[i], "--h")) ||
         (!strcmp(argv[i], "--help"))) {
       _eapp_edit_help();
       exit(0);
-    }	else
+    } else
       file = argv[i];
   }
   if (!file) {
@@ -278,6 +289,8 @@ main(int argc, char **argv) {
   exe = _eapp_edit_read(ef, "app/info/exe", NULL, "Executable", grid, 6, 0);
   wname = _eapp_edit_read(ef, "app/window/name", NULL, "Window name", grid, 7, 0);
   wclass = _eapp_edit_read(ef, "app/window/class", NULL, "Window class", grid, 8, 0);
+  if (new_win_class)
+    ewl_entry_text_set(EWL_ENTRY(wclass), new_win_class);
   start = _eapp_edit_read(ef, "app/info/startup_notify", NULL, "Startup notify", grid, 9, 1);
   wait = _eapp_edit_read(ef, "app/info/wait_exit", NULL, "Wait exit", grid, 10, 1);
    
@@ -325,6 +338,10 @@ main(int argc, char **argv) {
 static void
 _eapp_edit_help(void) {
   printf("USAGE:\n"
-      "e_util_eapp_edit file.eapp\n\n"
-      "if file.eapp does not exist a new icon file will be created\n");
+      "e_util_eapp_edit [options] file.eapp\n\n"
+      "if file.eapp does not exist a new icon file will be created\n\n"
+      "options:\n"
+      "  -h --help	View this screen\n"
+      "  -l --lang [str]	Set laguage for meta data\n"
+      "  -c --win-class [str]	Set the window class to use (used by window managers\n");
 }
