@@ -17,6 +17,7 @@ GtkWidget *txt_description;
 GtkWidget *txt_icon;
 GtkWidget *txt_exec;
 GtkWidget *ctree;
+GtkWidget *lbl_params;
 
 void
 load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
@@ -71,7 +72,7 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
 	      current = gtk_ctree_insert_node (GTK_CTREE (ctree), my_parent,
 					       NULL, text, 5, NULL, NULL,
 					       NULL, NULL, FALSE, FALSE);
-	      if (!strcmp (act, "menu"))
+	      if (!strcasecmp (act, "menu"))
 		{
 		  load_new_menu_from_disk (params, current);
 		}
@@ -129,11 +130,9 @@ load_menus_from_disk (void)
 
 	      txt = field (s, 0);
 	      text[0] = txt;
-	      if (!txt2)
-		txt2 = duplicate ("");
+	      txt2 = duplicate ("");
 	      text[1] = txt2;
-	      if (!txt3)
-		txt3 = duplicate ("");
+	      txt3 = duplicate (buf);
 	      text[2] = txt3;
 
 	      parent = gtk_ctree_insert_node (GTK_CTREE (ctree), NULL, NULL,
@@ -149,7 +148,6 @@ load_menus_from_disk (void)
 		free (txt3);
 
 	      first = 0;
-
 	    }
 	  else
 	    {
@@ -230,15 +228,9 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
   gtk_entry_set_text (GTK_ENTRY (txt_icon), col2);
   gtk_entry_set_text (GTK_ENTRY (txt_exec), col3);
   if (GTK_CTREE_ROW (last_node)->children)
-    {
-      gtk_entry_set_editable (GTK_ENTRY (txt_exec), FALSE);
-      gtk_widget_set_sensitive (txt_exec, FALSE);
-    }
+    gtk_label_set_text (GTK_LABEL (lbl_params), "Submenu");
   else
-    {
-      gtk_entry_set_editable (GTK_ENTRY (txt_exec), TRUE);
-      gtk_widget_set_sensitive (txt_exec, TRUE);
-    }
+    gtk_label_set_text (GTK_LABEL (lbl_params), "Executes");
 }
 
 GtkWidget *
@@ -362,10 +354,10 @@ create_main_window (void)
 
   alignment = gtk_alignment_new (1.0, 0.5, 0, 0);
   gtk_widget_show (alignment);
-  label = gtk_label_new ("Executes:");
-  gtk_widget_show (label);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
-  gtk_container_add (GTK_CONTAINER (alignment), label);
+  lbl_params = gtk_label_new ("Executes:");
+  gtk_widget_show (lbl_params);
+  gtk_label_set_justify (GTK_LABEL (lbl_params), GTK_JUSTIFY_RIGHT);
+  gtk_container_add (GTK_CONTAINER (alignment), lbl_params);
   gtk_table_attach (GTK_TABLE (table), alignment, 0, 1, 2, 3,
 		    GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
@@ -530,8 +522,11 @@ save_menus (GtkWidget * widget, gpointer user_data)
 
   g_free (buf);
 
-  destroy_node_data (node);
-  g_node_destroy (node);
+  if (node)
+    {
+      destroy_node_data (node);
+      g_node_destroy (node);
+    }
   return;
   widget = NULL;
   user_data = NULL;
@@ -575,13 +570,32 @@ tree_to_gnode (GtkCTree * ctree,
 {
   struct entry_data *edata;
   gchar *col1, *col2, *col3;
-  edata = g_malloc (sizeof (struct entry_data));
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode), 1,
 			   &col2);
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode), 2,
 			   &col3);
   gtk_ctree_get_node_info (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode),
 			   &col1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  if ((col1 == NULL) || col1[0] == '\0')
+    {
+      printf ("e16keyedit ERROR\n");
+      printf ("Entry with description %s, icon %s, and parameters %s\n", col1,
+	      col2, col3);
+      printf ("You can't have a description-less entry!\n"
+	      "That just won't do. I'm omitting this entry.\n");
+      return FALSE;
+    }
+  else if ((col3 == NULL) || (col3[0] == '\0'))
+    {
+      printf ("e16keyedit ERROR\n");
+      printf ("Entry with description %s, icon %s, and parameters %s\n", col1,
+	      col2, col3);
+      printf ("You can't have an entry with no parameters!\n"
+	      "If it's a submenu, you *must* specify a file to "
+	      "store the submenu in.\nI'm omitting this entry.\n");
+      return FALSE;
+    }
+  edata = g_malloc (sizeof (struct entry_data));
   edata->desc = duplicate (col1);
   edata->icon = duplicate (col2);
   edata->params = duplicate (col3);
@@ -592,10 +606,12 @@ tree_to_gnode (GtkCTree * ctree,
 }
 
 /* Next two functions are co-recursing */
-gint write_menu (GNode * node, gchar * file)
+gint
+write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
+  gchar *realfile;
   if (!(node && file))
     {
       printf ("either node or file is null\n");
@@ -604,13 +620,12 @@ gint write_menu (GNode * node, gchar * file)
 
   if (file[0] != '/')
     {
-      gchar *temp;
       /* Tarnation! A relative path */
-      temp =
+      realfile =
 	g_strjoin ("/", homedir (getuid ()), ".enlightenment", file, NULL);
-      g_free (file);
-      file = temp;
     }
+  else
+    realfile = duplicate (file);
 
   if ((fp = fopen (file, "w")) == NULL)
     {
@@ -618,7 +633,7 @@ gint write_menu (GNode * node, gchar * file)
       return 1;
     }
 
-  g_free (file);
+  g_free (realfile);
   write_menu_title (node, fp);
   node = node->children;
   for (ptr = node; ptr; ptr = ptr->next)
@@ -632,7 +647,8 @@ gint write_menu (GNode * node, gchar * file)
   return 0;
 }
 
-gint write_menu_entry (GNode * node, FILE * fp)
+gint
+write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
 
@@ -643,7 +659,7 @@ gint write_menu_entry (GNode * node, FILE * fp)
       fprintf (fp, "\"%s\"\t%s\texec\t\"%s\"\n",
 	       dat->desc[0] == '\0' ? "NULL" : dat->desc,
 	       dat->icon[0] == '\0' ? "NULL" : dat->icon,
-	       dat->params ? dat->params : "");
+	       dat->params[0] == '\0' ? "" : dat->params);
     }
   else
     {
@@ -651,7 +667,7 @@ gint write_menu_entry (GNode * node, FILE * fp)
       fprintf (fp, "\"%s\"\t%s\tmenu\t\"%s\"\n",
 	       dat->desc[0] == '\0' ? "NULL" : dat->desc,
 	       dat->icon[0] == '\0' ? "NULL" : dat->icon,
-	       dat->params ? dat->params : "");
+	       dat->params[0] == '\0' ? "" : dat->params);
       if (write_menu (node, dat->params))
 	{
 	  printf ("error writing menu\n");
@@ -667,7 +683,7 @@ write_menu_title (GNode * node, FILE * fp)
 {
   fprintf (fp, "# Automatically generated by e16keyedit. "
 	   "Hold on to your butt.\n");
-  fprintf (fp, "%s\n", ((struct entry_data *) (node->data))->desc);
+  fprintf (fp, "\"%s\"\n", ((struct entry_data *) (node->data))->desc);
 }
 
 void
