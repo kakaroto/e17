@@ -206,6 +206,7 @@ data/themes/BlueCrystal/Makefile
 data/themes/matrix0/Makefile
 data/themes/default/Makefile
 data/themes/Nebulous/Makefile
+data/themes/taillights/Makefile
 ])
 
 echo
