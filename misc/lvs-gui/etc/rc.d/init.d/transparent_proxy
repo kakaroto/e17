@@ -49,6 +49,7 @@ case "$1" in
         ipchains -F input
         for i in $TRANSPARENT_ADDRESSES; do
           ipchains -A input -i REDIRECT -d $i -p tcp
+          ipchains -A input -i REDIRECT -d $i -p udp
         done
         echo_success
 	echo

@@ -3,6 +3,14 @@ Change Log
 
 ----------------------------------------------------------------------
 
+4th January 2000
+(Raster & Horms)
+
+    * Version 0.0.1
+    Transparent proxy script did not set up transparent proxying for UDP
+
+----------------------------------------------------------------------
+
 3rd January 2000
 (Raster & Horms)
 
