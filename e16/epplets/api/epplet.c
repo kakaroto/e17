@@ -138,6 +138,8 @@ static void         Epplet_handle_child(int num);
 static void         Epplet_textbox_handle_keyevent(XEvent * ev,
 
 						   Epplet_gadget g);
+static void         Epplet_textbox_textsize(Epplet_gadget gadget, int *w,
+					    int *h, char *s);
 static void         Epplet_find_instance(char *name);
 
 ImlibData          *
@@ -289,9 +291,10 @@ Epplet_Init(char *name,
    msg = ECommsWaitForMessage();
    if (!msg || strstr(msg, "not"))
      {
-       Epplet_dialog_ok("Epplet Error:  Your theme does not contain the imageclasses needed to run epplets.");
-       ESYNC;
-       exit(1);
+	Epplet_dialog_ok
+	   ("Epplet Error:  Your theme does not contain the imageclasses needed to run epplets.");
+	ESYNC;
+	exit(1);
      }
    free(msg);
 
@@ -1437,7 +1440,8 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    attr.background_pixel = 0;
    attr.save_under = False;
    attr.event_mask =
-      EnterWindowMask | LeaveWindowMask | KeyPressMask | KeyReleaseMask;
+      EnterWindowMask | LeaveWindowMask | ButtonPressMask | ButtonReleaseMask |
+      KeyPressMask | KeyReleaseMask;
    g->general.visible = 0;
    g->win = XCreateWindow(disp, win, x, y, g->w, g->h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
@@ -1480,7 +1484,8 @@ void
 Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 {
    GadTextBox         *g;
-   int                 len;
+   int                 len, w, h;
+   char               *s;
 
    if (!new_contents || ((len = strlen(new_contents)) == 0))
      {
@@ -1494,10 +1499,36 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
    else if (g->contents != NULL)
       free(g->contents);
 
-   g->contents = Estrdup(new_contents);
+   if (strchr(new_contents, '\n'))
+     {
+	s = strchr(new_contents, '\n');
+	*s = 0;
 
-   g->cursor_pos = strlen(new_contents);
-   g->text_offset = 0;
+	s = (char *)malloc(sizeof(char) * len + 1);
+
+	strcpy(s, new_contents);
+	g->contents = Estrdup(new_contents);
+	Epplet_draw_textbox(eg);
+	if (g->func)
+	   (*(g->func)) (g->data);
+     }
+   else
+     {
+
+	Epplet_textbox_textsize(g, &w, &h, new_contents);
+
+	g->text_offset = 0;
+
+	while (w > g->w)
+	  {
+	     Epplet_textbox_textsize(g, &w, &h,
+				     (new_contents + g->text_offset));
+	     g->text_offset++;
+	  }
+
+	g->cursor_pos = strlen(new_contents);
+	g->contents = Estrdup(new_contents);
+     }
 
    Epplet_draw_textbox(eg);
 }
@@ -1547,7 +1578,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
 
    if (g->contents)
      {
-	int                 x, y, w, h;
+	int                 x, y, h;
 	char               *s, *s2, temp;
 
 	s = &g->contents[g->text_offset];
@@ -1558,42 +1589,26 @@ Epplet_draw_textbox(Epplet_gadget eg)
 
 	x = 2;
 
+	Epplet_textbox_textsize(eg, &to_cursor, &h, s2);
+	y = (g->h - h) / 2;
+
 	switch (g->size)
 	  {
 	  case 0:
-	     Epplet_textclass_get_size("EPPLET_BUTTON", &w, &h, s);
-	     Epplet_textclass_get_size("EPPLET_BUTTON", &to_cursor, &h, s2);
-
-	     y = (g->h - h) / 2;
 	     Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, s);
 	     break;
 	  case 1:
-	     Epplet_textclass_get_size("EPPLET_TEXT_TINY", &w, &h, s);
-	     Epplet_textclass_get_size("EPPLET_TEXT_TINY", &to_cursor, &h, s2);
-
-	     y = (g->h - h) / 2;
 	     Epplet_textclass_draw("EPPLET_TEXT_TINY", state, g->pmap, x, y, s);
 	     break;
 	  case 2:
-	     Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &w, &h,
-				       g->contents);
-	     Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &to_cursor, &h,
-				       s2);
-
-	     y = (g->h - h) / 2;
 	     Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", state, g->pmap, x, y,
 				   s);
 	     break;
 	  case 3:
-	     Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &w, &h, s);
-	     Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &to_cursor, &h, s2);
-
-	     y = (g->h - h) / 2;
 	     Epplet_textclass_draw("EPPLET_TEXT_LARGE", state, g->pmap, x, y,
 				   s);
 	     break;
 	  }
-
 	free(s2);
      }
 
@@ -1607,7 +1622,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
    gc = XCreateGC(disp, g->win, gc_valuemask, &gc_values);
    XSetForeground(disp, gc, Epplet_get_color(0, 0, 0));
 
-   if (to_cursor + 2 >= g->w - 5)
+   if (to_cursor >= g->w)
      {
 	if (g->hilited)
 	   XFillRectangle(disp, g->win, gc, g->w - 5, 2, 5, g->h - 4);
@@ -1622,6 +1637,30 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	   XDrawRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
      }
 
+}
+
+static void
+Epplet_textbox_textsize(Epplet_gadget gadget, int *w, int *h, char *s)
+{
+   GadTextBox         *g;
+
+   g = (GadTextBox *) gadget;
+
+   switch (g->size)
+     {
+     case 0:
+	Epplet_textclass_get_size("EPPLET_BUTTON", w, h, s);
+	break;
+     case 1:
+	Epplet_textclass_get_size("EPPLET_TEXT_TINY", w, h, s);
+	break;
+     case 2:
+	Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", w, h, s);
+	break;
+     case 3:
+	Epplet_textclass_get_size("EPPLET_TEXT_LARGE", w, h, s);
+	break;
+     }
 }
 
 static void
@@ -1679,29 +1718,8 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 	g->cursor_pos++;
      }
 
-   switch (g->size)
-     {
-     case 0:
-	Epplet_textclass_get_size("EPPLET_BUTTON", &char_width, &h, kbuf);
-	Epplet_textclass_get_size("EPPLET_BUTTON", &text_width, &h,
-				  g->contents);
-	break;
-     case 1:
-	Epplet_textclass_get_size("EPPLET_TEXT_TINY", &char_width, &h, kbuf);
-	Epplet_textclass_get_size("EPPLET_TEXT_TINY", &text_width, &h,
-				  g->contents);
-	break;
-     case 2:
-	Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &char_width, &h, kbuf);
-	Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &text_width, &h,
-				  g->contents);
-	break;
-     case 3:
-	Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &char_width, &h, kbuf);
-	Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &text_width, &h,
-				  g->contents);
-	break;
-     }
+   Epplet_textbox_textsize(g, &char_width, &h, kbuf);
+   Epplet_textbox_textsize(g, &text_width, &h, g->contents);
 
    if ((text_width + char_width) > g->w + 1)
      {
@@ -3203,6 +3221,29 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		   (*(g->func)) (g->data);
 	     }
 	     break;
+	  case E_TEXTBOX:
+	     {
+		GadTextBox         *g;
+		char               *s;
+		int                 nbytes_return;
+
+		g = (GadTextBox *) gadget;
+
+		if (ev->xbutton.button == 2)
+		  {
+		     s = (char *)malloc(sizeof(char) * 1024);
+
+		     if (s)
+		       {
+			  s = XFetchBuffer(disp, &nbytes_return, 0);
+			  Epplet_change_textbox(g, s);
+			  free(s);
+		       }
+		     else
+			printf("Couldn't allocate memory\n");
+		  }
+	     }
+	     break;
 	  case E_HSLIDER:
 	     {
 		GadHSlider         *g;
@@ -4229,7 +4270,8 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), EBIN "/dox " EROOT "/epplet_data/%s/%s.ABOUT", name, name);
+   Esnprintf(s, sizeof(s), EBIN "/dox " EROOT "/epplet_data/%s/%s.ABOUT", name,
+	     name);
    Epplet_spawn_command(s);
 }
 
