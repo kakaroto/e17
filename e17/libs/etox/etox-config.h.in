@@ -1,19 +1,24 @@
-/* etox-config.h.in.  Generated automatically from configure.ac by autoheader.  */
+/* etox-config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
 #undef PACKAGE_DATA_DIR
 #undef PACKAGE_LOCALE_DIR
 #undef PACKAGE_SOURCE_DIR
 
-/* Define if you have the <dlfcn.h> header file. */
+/* Define if you have the <dlfcn.h> header file.  */
 #undef HAVE_DLFCN_H
 
 /* Name of package */
 #undef PACKAGE
 
-/* Define if you have the ANSI C header files. */
-#undef STDC_HEADERS
-
 /* Version number of package */
 #undef VERSION
 
-/* Define to empty if `const' does not conform to ANSI C. */
-#undef const
