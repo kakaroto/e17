@@ -84,6 +84,19 @@ create_image(w, h)
 	OUTPUT:
 	RETVAL
 
+Imlib2::Imlib_Image
+create_image_from_drawable(mask,x,y,w,h,grab_x)
+	Imlib2::Pixmap mask
+	int x
+	int y
+	int w
+	int h
+	char grab_x
+	CODE:
+	RETVAL = imlib_create_image_from_drawable(mask,x,y,w,h,grab_x);
+	OUTPUT:
+	RETVAL
+	
 void
 render_pixmaps_for_whole_image()
 	PPCODE:		
@@ -543,3 +556,4 @@ set_format(format)
 	char *format
 	CODE:
 	imlib_image_set_format(format);
+
