@@ -664,9 +664,11 @@ RenderPage(Window win, int page_num, int w, int h)
 		  int                 spaceflag, oldwc=0;
 
 		  wd[0] = 0;
+#ifdef HAVE_WCTYPE_H
 		  if ( MB_CUR_MAX > 1 )                 /* If multibyte locale,... */
 		    word_mb(txt, wc, wd, &spaceflag);
 		  else
+#endif
 		    {
 		      word(txt, wc, wd);
 		      spaceflag = 1;
@@ -696,9 +698,11 @@ RenderPage(Window win, int page_num, int w, int h)
 			  link_link[0] = '\0';
 			  link = 0;
 			  wc = oldwc;
+#ifdef HAVE_WCTYPE_H
 			  if ( MB_CUR_MAX > 1 )
 			    word_mb(txt, wc - 1, wd, &spaceflag);
 			  else
+#endif
 			    {
 			      word(txt, wc - 1, wd);
 			      spaceflag = 1;

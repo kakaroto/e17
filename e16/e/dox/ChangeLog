@@ -70,3 +70,11 @@ Thu Mar 30 17:15:19 PST 2000
 (Mandrake)
 
 Makes dox recognize xinerama to pop up centered on the current head.
+
+-----------------------------------------------------------------
+
+Thu Jun 29 12:46:26 PDT 2000
+(KainX)
+
+Silly foreigners.  This should fix dox for BSD people who don't
+have wctype.h.

@@ -21,8 +21,10 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *  */
 
-#include <wctype.h>
 #include "dox.h"
+#ifdef HAVE_WCTYPE_H
+# include <wctype.h>
+#endif
 
 #ifdef __EMX__
 #define chdir	_chdir2
@@ -609,6 +611,7 @@ word(char *s, int num, char *wd)
    return;
 }
 
+#ifdef HAVE_WCTYPE_H
 void
 word_mb(char *s, int num, char *wd, int *spaceflag)
 {
@@ -623,11 +626,11 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 #ifdef linux
 	/* Will be supported on glibc 2.1.3 or later */
 	{"jspace"}, {"jhira"}, {"jkata"}, {"jkanji"}, {"jdigit"},/* Japanese */
-	{"hangul"}, {"hanja"},                                   /* Koren    */
-	/* {"?????"}, {"?????"},*/                               /* Chiese   */
+	{"hangul"}, {"hanja"},                                   /* Korean    */
+	/* {"?????"}, {"?????"},*/                               /* Chinese   */
 #endif
 #ifdef sgi
-	  /* SGI IRIX (Japanese, Chinese, Koren, etc..) */
+	  /* SGI IRIX (Japanese, Chinese, Korean, etc..) */
 	  {"special"}, {"phonogram"}, {"ideogram"},
 #endif
 #ifdef sun
@@ -741,6 +744,7 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
      }
    return;
 }
+#endif
 
 int
 canread(char *s)
