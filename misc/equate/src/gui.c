@@ -211,7 +211,7 @@ do_key(char *data, int action)
    while (bc-- > 0) {
       if (!strcmp(data, but->cmd)) {
          E(4, "Pressing button %s\n", but->text);
-         ewl_callback_call(but->button, action);
+         ewl_callback_call_with_event_data(but->button, action, "");
          break;
       }
       but++;
