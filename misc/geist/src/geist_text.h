@@ -18,6 +18,7 @@ struct __geist_text
    Imlib_Font fn;
    Imlib_Image im;
    int r, g, b, a;
+   int wordwrap;
 };
 
 geist_object *geist_text_new(void);

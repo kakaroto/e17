@@ -48,6 +48,10 @@ static void geist_save_fill_xml(geist_fill * fill, xmlNodePtr parent,
 
                                 xmlNsPtr ns);
 
+/* Utility functions */
+int geist_xml_read_int(xmlNodePtr cur, char *key, int def);
+void geist_xml_write_int(xmlNodePtr cur, char *key, int val);
+
 /***********/
 /* LOADING */
 /***********/
@@ -130,8 +134,8 @@ geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
 
    D_ENTER(3);
 
-   w = atoi(xmlGetProp(cur, "width"));
-   h = atoi(xmlGetProp(cur, "height"));
+   w = geist_xml_read_int(cur, "Width", 500);
+   h = geist_xml_read_int(cur, "Height", 500);
 
    ret = geist_document_new(w, h);
    ret->filename = estrdup(filename);
@@ -168,10 +172,10 @@ geist_fill_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 
    D_ENTER(3);
 
-   a = atoi(xmlGetProp(cur, "A"));
-   r = atoi(xmlGetProp(cur, "R"));
-   g = atoi(xmlGetProp(cur, "G"));
-   b = atoi(xmlGetProp(cur, "B"));
+   a = geist_xml_read_int(cur, "A", 255);
+   r = geist_xml_read_int(cur, "R", 255);
+   g = geist_xml_read_int(cur, "G", 255);
+   b = geist_xml_read_int(cur, "B", 255);
 
    ret = geist_fill_new_coloured(r, g, b, a);
 
@@ -214,10 +218,10 @@ geist_layer_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    ret = geist_layer_new();
    ret->doc = parent;
 
-   ret->alpha = atoi(xmlGetProp(cur, "Alpha"));
-   ret->x_offset = atoi(xmlGetProp(cur, "X_Offset"));
-   ret->y_offset = atoi(xmlGetProp(cur, "Y_Offset"));
-   ret->visible = atoi(xmlGetProp(cur, "Visible"));
+   ret->alpha = geist_xml_read_int(cur, "Alpha", 255);
+   ret->x_offset = geist_xml_read_int(cur, "X_Offset", 0);
+   ret->y_offset = geist_xml_read_int(cur, "Y_Offset", 0);
+   ret->visible = geist_xml_read_int(cur, "Visible", 0);
 
    cur = cur->childs;
 
@@ -311,17 +315,17 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    }
 
    ret->layer = parent;
-   ret->alpha = atoi(xmlGetProp(cur, "Alpha"));
-   ret->x = atoi(xmlGetProp(cur, "X"));
-   ret->y = atoi(xmlGetProp(cur, "Y"));
-   ret->w = atoi(xmlGetProp(cur, "W"));
-   ret->h = atoi(xmlGetProp(cur, "H"));
-   ret->alias = atoi(xmlGetProp(cur, "Alias"));
-   if (atoi(xmlGetProp(cur, "Visible")))
+   ret->alpha = geist_xml_read_int(cur, "Alpha", 255);
+   ret->x = geist_xml_read_int(cur, "X", 0);
+   ret->y = geist_xml_read_int(cur, "Y", 0);
+   ret->w = geist_xml_read_int(cur, "W", 10);
+   ret->h = geist_xml_read_int(cur, "H", 10);
+   ret->alias = geist_xml_read_int(cur, "Alias", 0);
+
+   if (geist_xml_read_int(cur, "Visible", 1))
       geist_object_show(ret);
    else
       geist_object_hide(ret);
-   ret->alias = atoi(xmlGetProp(cur, "Alias"));
 
    cur = cur->childs;
    while (cur != NULL)
@@ -356,10 +360,10 @@ geist_parse_rect_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 
    D_ENTER(3);
 
-   a = atoi(xmlGetProp(cur, "A"));
-   r = atoi(xmlGetProp(cur, "R"));
-   g = atoi(xmlGetProp(cur, "G"));
-   b = atoi(xmlGetProp(cur, "B"));
+   a = geist_xml_read_int(cur, "A", 255);
+   r = geist_xml_read_int(cur, "R", 255);
+   g = geist_xml_read_int(cur, "G", 255);
+   b = geist_xml_read_int(cur, "B", 255);
 
    ret = geist_rect_new_of_size(0, 0, 10, 10, a, r, g, b);
 
@@ -374,14 +378,16 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    char *fontname = NULL;
    int fontsize = 0;
    char *text = NULL;
+   int wordwrap = 0;
 
    D_ENTER(3);
 
-   a = atoi(xmlGetProp(cur, "A"));
-   r = atoi(xmlGetProp(cur, "R"));
-   g = atoi(xmlGetProp(cur, "G"));
-   b = atoi(xmlGetProp(cur, "B"));
-   fontsize = atoi(xmlGetProp(cur, "Fontsize"));
+   a = geist_xml_read_int(cur, "A", 255);
+   r = geist_xml_read_int(cur, "R", 255);
+   g = geist_xml_read_int(cur, "G", 255);
+   b = geist_xml_read_int(cur, "B", 255);
+   fontsize = geist_xml_read_int(cur, "Fontsize", 12);
+   wordwrap = geist_xml_read_int(cur, "Wordwrap", 0);
 
    cur = cur->childs;
    while (cur != NULL)
@@ -431,7 +437,6 @@ geist_document_save_xml(geist_document * document, char *filename)
    xmlNodePtr tree, subtree;
    xmlNsPtr ns;
    geist_list *kids;
-   char *buf;
 
    D_ENTER(3);
 
@@ -444,13 +449,8 @@ geist_document_save_xml(geist_document * document, char *filename)
    /* Document properties */
    xmlNewTextChild(tree, ns, "Name", document->name);
 
-   buf = g_strdup_printf("%d", document->w);
-   xmlNewProp(tree, "width", buf);
-   efree(buf);
-
-   buf = g_strdup_printf("%d", document->h);
-   xmlNewProp(tree, "height", buf);
-   efree(buf);
+   geist_xml_write_int(tree, "Width", document->w);
+   geist_xml_write_int(tree, "Height", document->h);
 
    /* Bg Fill */
    geist_save_fill_xml(document->bg_fill, tree, ns);
@@ -477,34 +477,16 @@ geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent, xmlNsPtr ns)
    /* recursive */
    xmlNodePtr newlayer, subtree = NULL;
    geist_list *kids;
-   gchar *buf;
 
    D_ENTER(3);
 
    newlayer = xmlNewChild(parent, ns, "Layer", NULL);
 
-   /* NAME */
    xmlNewTextChild(newlayer, ns, "Name", layer->name);
-
-   /* ALPHA */
-   buf = g_strdup_printf("%d", layer->alpha);
-   xmlNewProp(newlayer, "Alpha", buf);
-   efree(buf);
-
-   /* X_OFFSET */
-   buf = g_strdup_printf("%d", layer->x_offset);
-   xmlNewProp(newlayer, "X_Offset", buf);
-   efree(buf);
-
-   /* Y_OFFSET */
-   buf = g_strdup_printf("%d", layer->y_offset);
-   xmlNewProp(newlayer, "Y_Offset", buf);
-   efree(buf);
-
-   /* VISIBLE */
-   buf = g_strdup_printf("%d", layer->visible);
-   xmlNewProp(newlayer, "Visible", buf);
-   efree(buf);
+   geist_xml_write_int(newlayer, "Alpha", layer->alpha);
+   geist_xml_write_int(newlayer, "X_Offset", layer->x_offset);
+   geist_xml_write_int(newlayer, "Y_Offset", layer->y_offset);
+   geist_xml_write_int(newlayer, "Visible", layer->visible);
 
    /* Other properties go here */
 
@@ -525,63 +507,27 @@ static void
 geist_save_object_xml(geist_object * obj, xmlNodePtr parent, xmlNsPtr ns)
 {
    xmlNodePtr newobject;
-   gchar *buf;
 
    D_ENTER(3);
 
    newobject = xmlNewChild(parent, ns, "Object", NULL);
 
-   /* TYPE */
    xmlNewTextChild(newobject, ns, "Type", geist_object_get_type_string(obj));
-
-   /* NAME */
    xmlNewTextChild(newobject, ns, "Name", obj->name);
-
-   /* ALPHA */
-   buf = g_strdup_printf("%d", obj->alpha);
-   xmlNewProp(newobject, "Alpha", buf);
-   efree(buf);
-
-   /* X */
-   buf = g_strdup_printf("%d", obj->x);
-   xmlNewProp(newobject, "X", buf);
-   efree(buf);
-
-   /* Y */
-   buf = g_strdup_printf("%d", obj->y);
-   xmlNewProp(newobject, "Y", buf);
-   efree(buf);
-
-   /* W */
-   buf = g_strdup_printf("%d", obj->w);
-   xmlNewProp(newobject, "W", buf);
-   efree(buf);
-
-   /* H */
-   buf = g_strdup_printf("%d", obj->h);
-   xmlNewProp(newobject, "H", buf);
-   efree(buf);
-
-   /* ALIAS */
-   buf = g_strdup_printf("%d", obj->alias);
-   xmlNewProp(newobject, "Alias", buf);
-   efree(buf);
-
-   /* VISIBLE */
-   buf = g_strdup_printf("%ld", geist_object_get_state(obj, VISIBLE));
-   xmlNewProp(newobject, "Visible", buf);
-   efree(buf);
-
-   /* SIZEMODE */
+   geist_xml_write_int(newobject, "Alpha", obj->alpha);
+   geist_xml_write_int(newobject, "X", obj->x);
+   geist_xml_write_int(newobject, "Y", obj->y);
+   geist_xml_write_int(newobject, "W", obj->w);
+   geist_xml_write_int(newobject, "H", obj->h);
+   geist_xml_write_int(newobject, "Alias", obj->alias);
+   geist_xml_write_int(newobject, "Visible",
+                       geist_object_get_state(obj, VISIBLE));
    xmlNewTextChild(newobject, ns, "Sizemode",
                    geist_object_get_sizemode_string(obj));
-
-   /* ALIGNMENT */
    xmlNewTextChild(newobject, ns, "Alignment",
                    geist_object_get_alignment_string(obj));
 
    /* Other generic object properties go here */
-
 
 
    /* Type-specific properties */
@@ -597,7 +543,7 @@ geist_save_object_xml(geist_object * obj, xmlNodePtr parent, xmlNsPtr ns)
         geist_save_rect_xml(GEIST_RECT(obj), newobject, ns);
         break;
      default:
-        printf("IMLEMENT ME!\n");
+        printf("IMPLEMENT ME!\n");
         break;
    }
    D_RETURN_(3);
@@ -618,68 +564,30 @@ geist_save_image_xml(geist_image * img, xmlNodePtr parent, xmlNsPtr ns)
 static void
 geist_save_text_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
 {
-   char *buf;
-
    D_ENTER(3);
-   /* FONTNAME */
+
    xmlNewTextChild(parent, ns, "Fontname", txt->fontname);
-
-   /* FONTSIZE */
-   buf = g_strdup_printf("%d", txt->fontsize);
-   xmlNewProp(parent, "Fontsize", buf);
-   efree(buf);
-
-   /* TEXT */
+   geist_xml_write_int(parent, "Fontsize", txt->fontsize);
    xmlNewTextChild(parent, ns, "Text", txt->text);
+   geist_xml_write_int(parent, "R", txt->r);
+   geist_xml_write_int(parent, "G", txt->g);
+   geist_xml_write_int(parent, "B", txt->b);
+   geist_xml_write_int(parent, "A", txt->a);
+   geist_xml_write_int(parent, "Wordwrap", txt->wordwrap);
 
-   /* R */
-   buf = g_strdup_printf("%d", txt->r);
-   xmlNewProp(parent, "R", buf);
-   efree(buf);
-
-   /* G */
-   buf = g_strdup_printf("%d", txt->g);
-   xmlNewProp(parent, "G", buf);
-   efree(buf);
-
-   /* B */
-   buf = g_strdup_printf("%d", txt->b);
-   xmlNewProp(parent, "B", buf);
-   efree(buf);
-
-   /* A */
-   buf = g_strdup_printf("%d", txt->a);
-   xmlNewProp(parent, "A", buf);
-   efree(buf);
    D_RETURN_(3);
 }
 
 static void
 geist_save_rect_xml(geist_rect * rect, xmlNodePtr parent, xmlNsPtr ns)
 {
-   gchar *buf;
-
    D_ENTER(3);
 
-   /* R */
-   buf = g_strdup_printf("%d", rect->r);
-   xmlNewProp(parent, "R", buf);
-   efree(buf);
+   geist_xml_write_int(parent, "R", rect->r);
+   geist_xml_write_int(parent, "G", rect->g);
+   geist_xml_write_int(parent, "B", rect->b);
+   geist_xml_write_int(parent, "A", rect->a);
 
-   /* G */
-   buf = g_strdup_printf("%d", rect->g);
-   xmlNewProp(parent, "G", buf);
-   efree(buf);
-
-   /* B */
-   buf = g_strdup_printf("%d", rect->b);
-   xmlNewProp(parent, "B", buf);
-   efree(buf);
-
-   /* A */
-   buf = g_strdup_printf("%d", rect->a);
-   xmlNewProp(parent, "A", buf);
-   efree(buf);
    D_RETURN_(3);
 
 }
@@ -688,30 +596,45 @@ static void
 geist_save_fill_xml(geist_fill * fill, xmlNodePtr parent, xmlNsPtr ns)
 {
    xmlNodePtr newfill;
-   gchar *buf;
 
    D_ENTER(3);
 
    newfill = xmlNewChild(parent, ns, "Fill", NULL);
 
-   /* R */
-   buf = g_strdup_printf("%d", fill->r);
-   xmlNewProp(newfill, "R", buf);
-   efree(buf);
+   geist_xml_write_int(newfill, "R", fill->r);
+   geist_xml_write_int(newfill, "G", fill->g);
+   geist_xml_write_int(newfill, "B", fill->b);
+   geist_xml_write_int(newfill, "A", fill->a);
 
-   /* G */
-   buf = g_strdup_printf("%d", fill->g);
-   xmlNewProp(newfill, "G", buf);
-   efree(buf);
-
-   /* B */
-   buf = g_strdup_printf("%d", fill->b);
-   xmlNewProp(newfill, "B", buf);
-   efree(buf);
-
-   /* A */
-   buf = g_strdup_printf("%d", fill->a);
-   xmlNewProp(newfill, "A", buf);
-   efree(buf);
    D_RETURN_(3);
+}
+
+int
+geist_xml_read_int(xmlNodePtr cur, char *key, int def)
+{
+   int i;
+   char *prop;
+
+   D_ENTER(5);
+
+   prop = xmlGetProp(cur, key);
+   if (prop)
+      i = atoi(prop);
+   else
+      i = def;
+
+   D_RETURN(5, i);
+}
+
+void
+geist_xml_write_int(xmlNodePtr cur, char *key, int val)
+{
+   char buf[20];
+
+   D_ENTER(5);
+
+   snprintf(buf, sizeof(buf), "%d", val);
+   xmlNewProp(cur, key, buf);
+
+   D_RETURN_(5);
 }
