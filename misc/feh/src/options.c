@@ -55,6 +55,7 @@ init_parse_options(int argc, char **argv)
    opt.thumb_h = 60;
    opt.progress_gran = 10;
    opt.menu_font = estrdup("20thcent/12");
+   opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
 
    D(("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
@@ -317,6 +318,7 @@ feh_parse_option_array(int argc, char **argv)
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
+      {"menu-bg", 1, 0, ')'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -489,6 +491,10 @@ feh_parse_option_array(int argc, char **argv)
            opt.progress_gran = atoi(optarg);
            if (opt.progress_gran > 100)
               opt.progress_gran = 100;
+           break;
+        case ')':
+           free(opt.menu_bg);
+           opt.menu_bg = estrdup(optarg);
            break;
         case 'D':
            opt.slideshow_delay = atoi(optarg);
@@ -711,6 +717,7 @@ show_usage(void)
            "                            get image name, size and dimensions\n"
            "      --fontpath PATH       Specify an extra directory to look in for fonts\n"
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
+           "      --menu-bg BG          Use BG for the background image in menus.\n"
            "  -N, --no-menus            Don't load or show any menus.\n"
            " FORMAT SPECIFIERS\n"
            "                            %%f image path/filename\n"

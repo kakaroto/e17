@@ -15,7 +15,7 @@ utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h \
 events.c events.h feh_imlib2.h feh_imlib2.c
 feh_LDADD         = -lX11
 
-images_DATA = about.png
+images_DATA = about.png menubg.png
 imagesdir=$(prefix)/share/feh/images
 EXTRA_DIST = $(images_DATA)
 

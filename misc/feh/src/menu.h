@@ -104,6 +104,7 @@ struct _feh_menu
    feh_menu_item *items;
    feh_menu *next;
    Imlib_Updates updates;
+   Imlib_Image bg;
    int needs_redraw;
    void *data;
    int calc;

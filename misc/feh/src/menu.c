@@ -71,6 +71,7 @@ feh_menu_new(void)
    feh_menu *m;
    XSetWindowAttributes attr;
    feh_menu_list *l;
+   static Imlib_Image bg = NULL;
 
    D_ENTER;
 
@@ -108,11 +109,18 @@ feh_menu_new(void)
    m->func_free = NULL;
    m->data = NULL;
    m->calc = 0;
+   m->bg = NULL;
 
    l = emalloc(sizeof(feh_menu_list));
    l->menu = m;
    l->next = menus;
    menus = l;
+
+   imlib_context_set_progress_function(NULL);
+   if (!bg)
+      feh_load_image_char(&bg, opt.menu_bg);
+   if (bg)
+      m->bg = feh_imlib_clone_image(bg);
 
    D_RETURN(m);
 }
@@ -544,6 +552,27 @@ feh_menu_calc_size(feh_menu * m)
    }
    D(("menu size calculated. w=%d h=%d\n", m->w, m->h));
 
+   /* Make sure bg is same size */
+   if (m->bg)
+   {
+      int bg_w, bg_h;
+
+      bg_w = feh_imlib_image_get_width(m->bg);
+      bg_h = feh_imlib_image_get_height(m->bg);
+
+      if (m->w != bg_w || m->h != bg_h)
+      {
+         Imlib_Image newim = imlib_create_image(m->w, m->h);
+
+         D(("resizing bg to %dx%d\n", m->w, m->h));
+
+         feh_imlib_blend_image_onto_image(newim, m->bg, 0, 0, 0, bg_w, bg_h,
+                                          0, 0, m->w, m->h, 0, 0, 1);
+         feh_imlib_free_image_and_decache(m->bg);
+         m->bg = newim;
+      }
+   }
+
    D_RETURN_;
 }
 
@@ -622,8 +651,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->h
-                                                - FEH_MENUITEM_PAD_TOP -
+                                             (((i->
+                                                h - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -638,8 +667,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -650,8 +679,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -695,6 +724,7 @@ feh_menu_redraw(feh_menu * m)
          imlib_updates_get_coordinates(u, &x, &y, &w, &h);
          D(("update coords %d,%d %d*%d\n", x, y, w, h));
          im = imlib_create_image(w, h);
+         feh_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 0);
          if (im)
          {
             feh_menu_draw_to_buf(m, im, x, y);
@@ -731,7 +761,9 @@ feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy)
    D_ENTER;
    w = feh_imlib_image_get_width(im);
    h = feh_imlib_image_get_height(im);
+
    feh_menu_draw_menu_bg(m, im, ox, oy);
+
    for (i = m->items; i; i = i->next)
    {
       if (RECTS_INTERSECT(i->x, i->y, i->w, i->h, ox, oy, w, h))
@@ -749,10 +781,14 @@ feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy)
 
    w = feh_imlib_image_get_width(im);
    h = feh_imlib_image_get_height(im);
-   feh_imlib_image_fill_rectangle(im, 0, 0, w, h, 255, 253, 226, 255);
+
+   if (m->bg)
+      feh_imlib_blend_image_onto_image(im, m->bg, 0, ox, oy, w, h, 0, 0, w, h,
+                                       0, 0, 0);
+   else
+      feh_imlib_image_fill_rectangle(im, 0, 0, w, h, 205, 203, 176, 255);
+
    D_RETURN_;
-   m = NULL;
-   ox = oy = 0;
 }
 
 void
@@ -794,11 +830,8 @@ feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst, int ox,
    D_ENTER;
    imlib_context_set_image(dst);
    if (selected)
-      feh_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 155, 153, 226,
-                                     255);
-   else
-      feh_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 255, 253, 226,
-                                     255);
+      feh_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 255, 255, 255,
+                                     178);
    D_RETURN_;
 }
 

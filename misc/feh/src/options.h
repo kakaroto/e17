@@ -70,6 +70,7 @@ struct __fehoptions
    char *filelistfile;
    char *menu_font;
    char *customlist;
+   char *menu_bg;
 
    int thumb_w;
    int thumb_h;
