@@ -2,6 +2,7 @@
 #include <X11/extensions/XShm.h>
 #include "common.h"
 #include "image.h"
+#include "blend.h"
 #include "rend.h"
 #include "draw.h"
 
@@ -43,7 +44,8 @@ __imlib_CreatePixmapsForImage(Display *d, Drawable w, Visual *v, int depth,
 	*m = mask;
      }
    __imlib_RenderImage(d, im, pmap, mask, v, cm, depth, sx, sy, sw, sh, 0, 0, 
-		       dw, dh, anitalias, hiq, 0, dither_mask, cmod);
+		       dw, dh, anitalias, hiq, 0, dither_mask, cmod, 
+		       OP_COPY);
    return 1;
 }
 

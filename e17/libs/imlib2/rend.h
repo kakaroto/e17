@@ -7,5 +7,5 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    int sx, int sy, int sw, int sh,
 		    int dx, int dy, int dw, int dh,
 		    char anitalias, char hiq, char blend, char dither_mask,
-		    ImlibColorModifier *cmod);
+		    ImlibColorModifier *cmod, ImlibOp op);
 #endif

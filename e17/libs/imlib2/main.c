@@ -36,7 +36,7 @@ progress(Imlib_Image *im, char percent,
 					       update_w, update_h,
 					       update_x, update_y,
 					       update_w, update_h,
-					       NULL);
+					       NULL, IMLIB_OP_COPY);
 }
 
 #if 1
@@ -59,6 +59,7 @@ int main (int argc, char **argv)
    int loop = 0;
    int blend = 1;
    int interactive = 1;
+   int blendtest = 0;
    
    for (i = 1; i < argc; i++)
      {
@@ -73,6 +74,11 @@ int main (int argc, char **argv)
 	  }
 	else if (!strcmp(argv[i], "-blend"))
 	   blend = 1;
+	else if (!strcmp(argv[i], "-blendtest"))
+	  {
+	     blendtest = 1;
+	     interactive = 0;
+	  }
 	else if (!strcmp(argv[i], "-dither"))
 	   dith = 1;
 	else if (!strcmp(argv[i], "-scale"))
@@ -110,11 +116,8 @@ int main (int argc, char **argv)
 	     printf("load fialed\n");
 	     exit(0);
 	  }
-	if (w < 0)
-	  {
-	     w = imlib_image_get_width(im);
-	     h = imlib_image_get_height(im);   
-	  }
+	w = imlib_image_get_width(im);
+	h = imlib_image_get_height(im);   
      }
    if (!root)
      {
@@ -144,8 +147,25 @@ int main (int argc, char **argv)
 						    aa, dith, blend, 
 						    0, 0,
 						    w - i, (((w - i) * h) / w),
-						    NULL);
+						    NULL, IMLIB_OP_COPY);
 	     pixels += (w - i) * (((w - i) * h) / w);
+	  }
+     }
+   else if (blendtest)
+     {
+	Imlib_Image im2;
+
+	im2 = imlib_create_image(w, h);
+	w = imlib_image_get_width(im);
+	h = imlib_image_get_height(im);   
+	printf("%i %i\n", w, h);
+	for (i = 0; i < 1024; i++)
+	  {
+             imlib_blend_image_onto_image(im, im2,
+					  0, 0, 0,
+					  0, 0, w, h,
+					  0, 0, w, h, NULL, IMLIB_OP_COPY);
+	     pixels += (w * h);	     
 	  }
      }
    else if (interactive)
@@ -187,14 +207,15 @@ int main (int argc, char **argv)
 	     imlib_blend_image_onto_image(im_bg, im, 
 					  0, 0, 0,
 					  0, 0, w, h, 
-					  0, 0, w, h);
-	     for (j = 0; j < 10; j++)
+					  0, 0, w, h,
+					  NULL, IMLIB_OP_COPY);
+	     for (j = 0; j < 32; j++)
 	       {
-		  for (i = 0; i < 10; i++)
+		  for (i = 0; i < 32; i++)
 		    {
 		       int ic, iw, ih, ww, hh;
 		       
-		       ic = ((j * 10) + i) % 13;
+		       ic = ((j * 32) + i) % 13;
 		       iw = imlib_image_get_width(im_ic[ic]);
 		       ih = imlib_image_get_height(im_ic[ic]);
 		       ww = iw;
@@ -202,24 +223,26 @@ int main (int argc, char **argv)
 		       imlib_blend_image_onto_image(im_ic[ic], im, 
 						    aa, blend, 0,
 						    0, 0, iw, ih, 
-						    x + (i * ww), y + (j * hh), 
-						    ww, hh);
+						    x + (i * iw), y + (j * ih), 
+						    ww, hh,
+						    NULL, IMLIB_OP_COPY);
 		    }
 	       }
 	     imlib_blend_image_onto_image(im_sh1, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
-					  0, 0, 50, 50);
+					  0, 0, 50, 50, NULL, IMLIB_OP_COPY);
 	     imlib_blend_image_onto_image(im_sh2, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
-					  50, 0, w - 50, 50);
+					  50, 0, w - 50, 50, NULL, IMLIB_OP_COPY);
 	     imlib_blend_image_onto_image(im_sh3, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
-					  0, 50, 50, h - 50);
+					  0, 50, 50, h - 50, NULL, IMLIB_OP_COPY);
 	     imlib_render_image_on_drawable(im, disp, win, vis, 
-					    cm, depth, dith, 1, 0, 0, NULL);
+					    cm, depth, dith, 1, 0, 0, NULL,
+					    IMLIB_OP_COPY);
 	     imlib_free_image(im_sh1);
 	     imlib_free_image(im_sh2);
 	     imlib_free_image(im_sh3);
@@ -239,7 +262,7 @@ int main (int argc, char **argv)
 						    aa, dith, blend, 
 						    0, 0,
 						    w, h,
-						    NULL);
+						    NULL, IMLIB_OP_COPY);
 	     pixels += w * h;
 	  }
      }

@@ -7,7 +7,8 @@
 void
 __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst, 
 			int dst_w, int dst_h, int sx, int sy, int dx, int dy,
-			int w, int h, char dalpha)
+			int w, int h, char dalpha, ImlibColorModifier *cm, 
+			ImlibOp op)
 {
    if (sx < 0)
      {
@@ -78,17 +79,6 @@ __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 	     a =  (*p1 >> 24) & 0xff;
 	     if (a < 255)
 	       {
-/* funny - i cant tell much of a speed diff between these 2 */
-#if 0
-/* this one over time leads to rounding errors :( */	  
-		  r = 255 - a;
-		  *p2 = 
-		     ((((*p1 & 0x00ff00ff) * a) >> 8) & 0x00ff00ff) + 
-		     ((((*p1 >> 8) & 0x00ff00ff) * a) & 0xff00ff00) +
-		     ((((*p2 & 0x00ff00ff) * r) >> 8) & 0x00ff00ff) + 
-		     ((((*p2 >> 8) & 0x00ff00ff) * r) & 0xff00ff00);
-#else
-/* this is more accurate - but slower ? doesnt seem to be :) */
 		  b =  (*p1      ) & 0xff;
 		  g =  (*p1 >> 8 ) & 0xff;
 		  r =  (*p1 >> 16) & 0xff;
@@ -104,7 +94,6 @@ __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  tmp = (b - bb) * a;
 		  nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		  *p2 = ((nr & 0xff) << 16) | ((ng & 0xff) << 8) | (nb & 0xff);
-#endif
 	       }
 	     else
 		*p2 = *p1;	  
@@ -208,7 +197,8 @@ void
 __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 			  char aa, char blend, char merge_alpha, 
 			  int ssx, int ssy, int ssw, int ssh,
-			  int ddx, int ddy, int ddw, int ddh)
+			  int ddx, int ddy, int ddw, int ddh, 
+			   ImlibColorModifier *cm, ImlibOp op)
 {
    if ((!(im_src->data)) && (im_src->loader))
       im_src->loader->load(im_src, NULL, 0, 1);
@@ -233,13 +223,13 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 					im_dst->data, im_dst->w, im_dst->h,
 					ssx, ssy,
 					ddx, ddy,
-					ssw, ssh, 1);
+					ssw, ssh, 1, cm, op);
 	     else
 		__imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 					im_dst->data, im_dst->w, im_dst->h,
 					ssx, ssy,
 					ddx, ddy,
-					ssw, ssh, 3);
+					ssw, ssh, 3, cm, op);
 	  }
 	else
 	  {
@@ -248,13 +238,13 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 					im_dst->data, im_dst->w, im_dst->h,
 					ssx, ssy,
 					ddx, ddy,
-					ssw, ssh, 0);
+					ssw, ssh, 0, cm, op);
 	     else
 		__imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 					im_dst->data, im_dst->w, im_dst->h,
 					ssx, ssy,
 					ddx, ddy,
-					ssw, ssh, 2);
+					ssw, ssh, 2, cm, op);
 	  }
      }
    else
@@ -424,12 +414,14 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 		     __imlib_BlendRGBAToData(buf, dw, hh,
 					     im_dst->data, im_dst->w,
 					     im_dst->h,
-					     0, 0, dx, dy + y, dw, dh, 1);
+					     0, 0, dx, dy + y, dw, dh, 1, 
+					     cm, op);
 		  else
 		     __imlib_BlendRGBAToData(buf, dw, hh,
 					     im_dst->data, im_dst->w,
 					     im_dst->h,
-					     0, 0, dx, dy + y, dw, dh, 3);
+					     0, 0, dx, dy + y, dw, dh, 3,
+					     cm, op);
 	       }
 	     else
 	       {
@@ -437,12 +429,14 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 		     __imlib_BlendRGBAToData(buf, dw, hh,
 					     im_dst->data, im_dst->w,
 					     im_dst->h,
-					     0, 0, dx, dy + y, dw, dh, 0);
+					     0, 0, dx, dy + y, dw, dh, 0,
+					     cm, op);
 		  else
 		     __imlib_BlendRGBAToData(buf, dw, hh,
 					     im_dst->data, im_dst->w,
 					     im_dst->h,
-					     0, 0, dx, dy + y, dw, dh, 2);
+					     0, 0, dx, dy + y, dw, dh, 2,
+					     cm, op);
 	       }
 	     h -= LINESIZE;
 	  }

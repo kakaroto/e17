@@ -2,13 +2,13 @@
 #include "common.h"
 #include "scale.h"
 #include "image.h"
-#include "rend.h"
 #include "context.h"
 #include "rgba.h"
 #include "color.h"
 #include "file.h"
 #include "grab.h"
 #include "blend.h"
+#include "rend.h"
 #include "draw.h"
 #include "api.h"
 
@@ -294,7 +294,8 @@ imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 			       char dithered_rendering,
 			       char alpha_blending,
 			       int x, int y,
-			       Imlib_Color_Modifier color_modifier)
+			       Imlib_Color_Modifier color_modifier,
+			       Imlib_Operation operation)
 {
    ImlibImage *im;
    ImlibColorModifier *cm;
@@ -308,7 +309,7 @@ imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 		       0,
 		       dithered_rendering,
 		       alpha_blending, 0, 
-		       cm);
+		       cm, (ImlibOp)operation);
 }
 
 void
@@ -319,7 +320,8 @@ imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 				       char dithered_rendering,
 				       char alpha_blending,
 				       int x, int y, int width, int height,
-				       Imlib_Color_Modifier color_modifier)
+				       Imlib_Color_Modifier color_modifier,
+				       Imlib_Operation operation)
 {
    ImlibImage *im;
    ImlibColorModifier *cm;
@@ -333,7 +335,7 @@ imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 		       anti_aliased_scaling,
 		       dithered_rendering,
 		       alpha_blending, 0, 
-		       cm);
+		       cm, (ImlibOp)operation);
 }
 
 void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *display,
@@ -345,7 +347,8 @@ void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *dis
 						 int source_x, int source_y,
 						 int source_width, int source_height,
 						 int x, int y, int width, int height,
-						 Imlib_Color_Modifier color_modifier)
+						 Imlib_Color_Modifier color_modifier,
+						 Imlib_Operation operation)
 {
    ImlibImage *im;
    ImlibColorModifier *cm;
@@ -360,7 +363,7 @@ void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *dis
 		       anti_aliased_scaling,
 		       dithered_rendering,
 		       alpha_blending, 0, 
-		       cm);
+		       cm, (ImlibOp)operation);
 }
 
 void 
@@ -370,19 +373,23 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 			     int source_x, int source_y,
 			     int source_width, int source_height,
 			     int destination_x, int destination_y,
-			     int destination_width, int destination_height)
+			     int destination_width, int destination_height,
+			     Imlib_Color_Modifier color_modifier,
+			     Imlib_Operation operation)
 {
    ImlibImage *im_src, *im_dst;
-   char anitalias = 1;
+   ImlibColorModifier *cm;
    
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, destination_image);
+   cm = (ImlibColorModifier *)color_modifier;
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    __imlib_BlendImageToImage(im_src, im_dst, antialias, blend, merge_alpha,
 			     source_x, source_y, source_width, source_height,
 			     destination_x, destination_y, 
-			     destination_width, destination_height);
+			     destination_width, destination_height,
+			     cm, (ImlibOp)operation);
 }
 
 Imlib_Image 
@@ -538,7 +545,7 @@ imlib_create_cropped_image(Imlib_Image image, int x, int y, int width,
    im->data = malloc(width * height *sizeof(DATA32));
    __imlib_BlendImageToImage(im_old, im, 0, 0, 0,
 			     x, y, width, height,
-			     0, 0, width, height);
+			     0, 0, width, height, NULL, IMLIB_OP_COPY);
    return (Imlib_Image)im;
 }
 
@@ -557,7 +564,8 @@ imlib_create_cropped_scaled_image(Imlib_Image image, char antialias,
    im->data = malloc(destination_width * destination_height *sizeof(DATA32));
    __imlib_BlendImageToImage(im_old, im, antialias, 0, 0,
 			     source_x, source_y, source_width, source_height,
-			     0, 0, destination_width, destination_height);
+			     0, 0, destination_width, destination_height,
+			     NULL, IMLIB_OP_COPY);
    return (Imlib_Image)im;
 }
 

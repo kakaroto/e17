@@ -5,11 +5,11 @@
 #include "image.h"
 #include "ximage.h"
 #include "context.h"
-#include "rend.h"
 #include "rgba.h"
 #include "color.h"
 #include "grab.h"
 #include "blend.h"
+#include "rend.h"
 
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
@@ -28,7 +28,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    int sx, int sy, int sw, int sh, 
 		    int dx, int dy, int dw, int dh, 
 		    char anitalias, char hiq, char blend, char dither_mask,
-		    ImlibColorModifier *cmod)
+		    ImlibColorModifier *cmod, ImlibOp op)
 {
    XImage   *xim, *mxim;
    Context *ct;

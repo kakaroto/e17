@@ -12,10 +12,19 @@
 typedef void * Imlib_Image;
 typedef void * Imlib_Color_Modifier;
 typedef struct _imlib_border Imlib_Border;
+typedef enum _imlib_operation Imlib_Operation;
 
 struct _imlib_border
 {
    int left, right, top, bottom;
+};
+
+enum _imlib_operation
+{
+   IMLIB_OP_COPY,
+   IMLIB_OP_ADD,
+   IMLIB_OP_SUBTRACT,
+   IMLIB_OP_RESHADE
 };
 
 typedef void (*Imlib_Progress_Function)(Imlib_Image *im, char percent,
@@ -83,7 +92,8 @@ void imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 				    char dithered_rendering,
 				    char alpha_blending,
 				    int x, int y,
-				    Imlib_Color_Modifier color_modifier);
+				    Imlib_Color_Modifier color_modifier,
+				    Imlib_Operation operation);
 void imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 					    Drawable drawable, Visual *visual,
 					    Colormap colormap, int depth,
@@ -91,7 +101,8 @@ void imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 					    char dithered_rendering,
 					    char alpha_blending,
 					    int x, int y, int width, int height,
-					    Imlib_Color_Modifier color_modifier);
+					    Imlib_Color_Modifier color_modifier,
+					    Imlib_Operation operation);
 void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *display,
 						 Drawable drawable, Visual *visual,
 						 Colormap colormap, int depth,
@@ -101,7 +112,8 @@ void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *dis
 						 int source_x, int source_y,
 						 int source_width, int source_height,
 						 int x, int y, int width, int height,
-						 Imlib_Color_Modifier color_modifier);
+						 Imlib_Color_Modifier color_modifier,
+						 Imlib_Operation operation);
 /* rgba space ops */
 void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  Imlib_Image destination_image,
@@ -109,7 +121,9 @@ void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  int source_x, int source_y, 
 				  int source_width, int source_height,
 				  int destination_x, int destination_y,
-				  int destination_width, int destination_height);
+				  int destination_width, int destination_height,
+				  Imlib_Color_Modifier color_modifier,
+				  Imlib_Operation operation);
 
 #if 0
 
