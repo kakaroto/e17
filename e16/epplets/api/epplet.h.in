@@ -239,9 +239,10 @@ void            Epplet_add_popup_entry(Epplet_gadget gadget, char *label,
 				       void (*func) (void *data), void *data);
 /* remove an entry from a popup gadget */
 /* If entry num is positive or zero then it is relateive to elements */
-/* most recently added to the popup gadget, zero is the emement most */
-/* recently added. If entry_num is negative then is is relateive to */
-/* elements least recently added, -1 is the elemet first added to the popup*/
+/* least recently added to the popup gadget, zero is the element first */
+/* added to the list. If entry_num is negative then is is relateive to */
+/* elements most recently added, -1 is the elemet most recently */
+/* added to the popup*/
 void            Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num);
 /* creates an image widget of the file image at (x,y) of size (w x h) */
 Epplet_gadget   Epplet_create_image(int x, int y, int w, int h, char *image);

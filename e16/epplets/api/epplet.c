@@ -2318,7 +2318,7 @@ Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num)
      return;
 
    if(entry_num<0)
-     entry_num=g->entry_num-entry_num;
+     entry_num=g->entry_num+entry_num;
    if(g->entry_num<entry_num)
      return;
 
