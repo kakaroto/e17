@@ -26,7 +26,7 @@ init_index_mode (void)
 {
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
-  int w, h, i, ww, hh, www, hhh, xxx, yyy;
+  int w = 800, h = 600, i, ww, hh, www, hhh, xxx, yyy;
   int x = 0, y = 0;
   int bg_w = 0, bg_h = 0;
   winwidget winwid;
