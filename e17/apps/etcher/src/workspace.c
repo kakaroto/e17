@@ -1781,8 +1781,8 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 				 widget->allocation.width,
 				 widget->allocation.height);
 
-	evas_object_font_cache_set(ws.view_evas, 1 * 1024 * 1024);
-	evas_object_image_cache_set(ws.view_evas, 8 * 1024 * 1024);
+	evas_font_cache_set(ws.view_evas, 1 * 1024 * 1024);
+	evas_image_cache_set(ws.view_evas, 8 * 1024 * 1024);
 
 	ws.obj.bg_rect = evas_object_rectangle_add(ws.view_evas);
 	evas_object_layer_set(ws.obj.bg_rect, -9999);

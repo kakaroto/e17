@@ -149,7 +149,7 @@ view_scroll_info(gpointer data)
    if (!o_info1)
      {
 	val = 0;
-	evas_object_font_path_append(splash_evas, PACKAGE_DATA_DIR "/pixmaps");
+	evas_font_path_append(splash_evas, PACKAGE_DATA_DIR "/pixmaps");
 	o_info1 = e_evas_add_text(splash_evas, "nationff", 20,
 				_("Copyright (C) The Rasterman 2000"));
 	o_info2 = e_evas_add_text(splash_evas, "nationff", 20, _("Version 1.0-Evas2"));

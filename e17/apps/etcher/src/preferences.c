@@ -126,7 +126,7 @@ on_pref_da_expose_event2(GtkWidget * widget,
 	evas_output_viewport_set(pref.pref_evas, 0, 0,
 				 widget->allocation.width,
 				 widget->allocation.height);
-	evas_object_image_cache_set(pref.pref_evas, 8 * 1024 * 1024);
+	evas_image_cache_set(pref.pref_evas, 8 * 1024 * 1024);
 	gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
 	file = gtk_entry_get_text(GTK_ENTRY
 				  (gtk_object_get_data
