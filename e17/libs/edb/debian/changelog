@@ -1,6 +1,6 @@
-libedb (1.0.5-0cvs20040626) unstable; urgency=low
+libedb (1.0.6-0cvs20050129) unstable; urgency=low
 
-  * Initial Release.
+  * A CVS release.
 
- -- Sytse Wielinga <s.b.wielinga@student.utwente.nl>  Sat, 26 Jun 2004 00:05:33 +0200
+ -- Sytse Wielinga <s.b.wielinga@student.utwente.nl>  Sat, 29 Jan 2005 19:00:11 +0100
 

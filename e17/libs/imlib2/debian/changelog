@@ -1,5 +1,5 @@
-imlib2 (1.1.2-0cvs20040918) unstable; urgency=low
+imlib2 (1.2.1-0cvs20050129) unstable; urgency=low
 
   * a CVS release
   
- -- Sytse Wielinga <s.b.wielinga@student.utwente.nl>  Sat, 18 Sep 2004 12:48:44 +0200
+ -- Sytse Wielinga <s.b.wielinga@student.utwente.nl>  Sat, 29 Jan 2005 18:33:57 +0100

@@ -16,7 +16,7 @@ Description: Imlib2 demo's
 Package: imlib2-test
 Architecture: any
 Section: graphics
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, imlib2-demo (= ${Source-Version})
 Description: Imlib2 test programs
  This package contains some, not generally usable, test programs
  for Imlib2.

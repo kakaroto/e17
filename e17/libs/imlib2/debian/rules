@@ -69,8 +69,11 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
+ifeq (,$(findstring fail-on-missing,$(DEB_BUILD_OPTIONS)))
 	dh_install --sourcedir=debian/tmp --list-missing
-
+else
+	dh_install --sourcedir=debian/tmp --fail-missing
+endif
 	dh_installdocs AUTHORS README
 	dh_installchangelogs
 	dh_link
