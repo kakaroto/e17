@@ -1160,14 +1160,15 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			evas_object_show(bit);
 
 			*walk = '\t';
-			text = walk + 1;
+			walk++;
+			text = walk;
 			t = *text;
 
 			/*
 			 * Make a bit for the tab character
 			 */
-			*text = '\0';
-			bit = etox_style_new(et->evas, walk, et->context->style);
+			bit = etox_style_new(et->evas, "        ",
+					     et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
 					      et->context->g, et->context->b,
@@ -1175,9 +1176,9 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			evas_object_clip_set(bit, et->clip);
 			etox_style_set_font(bit, et->context->font,
 					et->context->font_size);
+			etox_style_set_type(bit, ETOX_BIT_TYPE_TAB);
 			etox_line_append(line, bit);
 			evas_object_show(bit);
-			*text = t;
 
 			break;
 

@@ -23,7 +23,8 @@ enum _etox_bit_type
 {
 	ETOX_BIT_TYPE_TEXT = 0,
 	ETOX_BIT_TYPE_OBSTACLE = 1,
-	ETOX_BIT_TYPE_WRAP_MARKER = 2
+	ETOX_BIT_TYPE_WRAP_MARKER = 2,
+	ETOX_BIT_TYPE_TAB = 3
 };
 typedef enum _etox_bit_type Etox_Bit_Type;
 

@@ -373,19 +373,22 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	 * line.
 	 */
 	for (l = line->bits; l; l = l->next) {
+		int t;
 		es = l->data;
 
 		sum += etox_style_length(es);
 
-		if (etox_style_get_type(es) == ETOX_BIT_TYPE_WRAP_MARKER)
-		  continue;
-
-		temp = etox_style_get_text(es);
+		t = etox_style_get_type(es);
+		if (t == ETOX_BIT_TYPE_WRAP_MARKER)
+			continue;
+		else if (t == ETOX_BIT_TYPE_TAB)
+			temp = "\t";
+		else
+			temp = etox_style_get_text(es);
 		strcat(buf, temp);
 		free(temp);
 	}
 	line->length = sum;
-
 }
 
 int
@@ -527,13 +530,15 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 		/* remove any wrap marker bits */
 		ll = line->bits;
 		while (ll) {
+			int t;
 			marker = ll->data;
 
 			ll = ll->next;
 
-			if (etox_style_get_type(marker) == 
-			  ETOX_BIT_TYPE_WRAP_MARKER) {
-				line->bits = evas_list_remove(line->bits, marker);
+			t = etox_style_get_type(marker);
+			if (t == ETOX_BIT_TYPE_WRAP_MARKER) {
+				line->bits = evas_list_remove(line->bits,
+							      marker);
 			}
 		}
 
