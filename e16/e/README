@@ -1,16 +1,37 @@
 -------------------------------------------------------------------------------
- E N L I G H T E N M E N T - CVS VERSION IN DEVELOPMENT.
+ E N L I G H T E N M E N T   V E R S I O N   0 . 1 6 . 0
 -------------------------------------------------------------------------------
 
+Thank you for downloading the 0.16.0 release of the Enlightenment Window
+Manager.  This README file should not be considered a substitute for the real
+documentation, which can be found (once you have started Enlightenment) by
+middle-clicking on the desktop and selecting "Help" from the menu.
 
+Information on how to install Enlightenment on your system is contained in the
+INSTALL file.  Please consult the INSTALL file for information on how to get
+Enlightenment compiled and running on your system.
 
-this is a test.
-Welcome to Enlightenment 0.16.
+Information on the copyright, and your rights as a user of enlightenment can be
+found in the file COPYING, which is also contained in this directory.
+Enlightenment is free software, and you should know that you are entitled to
+many rights as a user.
 
-This version is currently only available via CVS, and thus there isn't
-any help available.  try asking for help online in #E on EFNet (irc)
+Curious about who wrote the application?  Check out the AUTHORS file for more
+information.  For patches, we try to remember who submitted what patch so you
+know who to thank for particular features.  If you like a feature, send them
+some email - they'll probably appreciate it.
 
-the current CVSROOT is
-:pserver:anonymous@cvs.on.openprojects.net:/cvs/enlightenment
+The primary Enlightenment distribution site is located at:
+http://www.enlightenment.org 
+   and
+ftp://ftp.enlightenment.org
 
-the password is blank (just hit return when prompted)
+IF you would like to join Enlightenment-related mailing lists, you can find out
+more information on these lists at:
+http://www.enlightenment.org/mail.html
+
+Thanks for taking the time to read the README file.  We hope you enjoy this
+software as much as we have enjoyed writing it for you.
+
+-Raster   (raster@rasterman.com)          -Mandrake (mandrake@mandrake.net) 
+
