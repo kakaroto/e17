@@ -3265,3 +3265,33 @@ Hungarian translation update (Horák Gyuri).
 Prevent shading windows from going off-screen.
 Improve sliding.
 
+
+-------------------------------------------------------------------------------
+
+Thu Feb 10 20:14:48 CET 2005
+(Kim)
+
+--- 0.16.8 0.04 --- 
+Fix closing message boxes when re-generating menus.
+Attempt to improve badly behaving client handling.
+Fix pager update after desk switch.
+Bye bye EDBUG/EDBUG_RETURN.
+Add simple background load command.
+Optionally bypass logout dialog, optionally add reboot/halt to logout dialog.
+Render text into pixmaps for borders and buttons, avoiding expose events.
+Add/fix some default keybindings.
+Fix some dragbar ops.
+Deuglify fullscreen windows not filling available space.
+Handle screen resizing (xrandr). Event handling tweaks.
+Don't shade iconified windows.
+IPC - backward compatibility stuff, warp command.
+Workaround for image cache stuff on NFS mounts for linux (Jan Nordholz).
+Do not pass disp around everywhere.
+Add command to reload keybindings.
+Enable using named pixmap (debug option for now).
+Enable RandR support by default.
+Enable running scripts on startup/restart.
+Optionally show icons in focus list (Andreas Volz).
+Inhibit tooltips while showing focus list or menus.
+Systray fixes.      
+
