@@ -1891,3 +1891,13 @@ Tue Jan 25 15:55:11 CST 2000
 Added Epplet_default_bind_GL, a quick and dirty default binding for people
 to use if the new Epplet_bind_double_GL confuses the hell out of em and they
 dont need Epplet_bind_double_GL various buffer settings.
+
+-------------------------------------------------------------------------------
+
+Thu Jan 27 15:10:15 CST 2000
+(thebard)
+
+Added basic texture mapping for the cube. It does not take lighting into
+effect, and the damn texture is pixilating as it spins, but it works :P I'll
+fix the pixilating and add light and alpha blending in in a bit.
+

@@ -33,13 +33,13 @@
 #include "epplet.h"
 
 Epplet_gadget da, b_close, b_help, b_config;
-Epplet_gadget gObjectPopupButton, gLightingPopupButton;
+Epplet_gadget gObjectPopupButton, gLightingPopupButton, gTexturingPopupButton;
 Window	win;
 Display *dpy;
 
 static GLfloat gSpin = 0.0;
-GLuint gObjectList;
-int	gWhichRotate=2, gLighting=0;
+static GLuint gObjectList, gTextureObject;
+int	gWhichRotate=2, gLighting=0, gTexturing=0;
 
 static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
@@ -49,6 +49,7 @@ static void cb_help(void *data);
 static void cb_config(void *data);
 static void cb_set_object(void *data);
 static void cb_set_lighting(void *data);
+static void cb_set_texturing(void *data);
 static void save_conf(void);
 static void load_conf(void);
 static void setup_rotating_square(void);
@@ -119,7 +120,7 @@ setup_rotating_cube(void)
 	-x, y, z, x, y, z, x, y, -z, -x, y, -z, /* top */
 	-x, -y, z, -x, -y, -z, x, -y, -z, x, -y, z}; /* bottom */
 	
-	GLfloat cubeNormals[] = {
+	static GLfloat cubeNormals[] = {
 	-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
 	1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 	0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
@@ -127,7 +128,7 @@ setup_rotating_cube(void)
 	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 	0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 };
 
-	GLfloat cubeColors[] = {
+	static GLfloat cubeColors[] = {
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
@@ -135,20 +136,36 @@ setup_rotating_cube(void)
 	1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
 	0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1};
 
+	static GLfloat cubeTexCords[] = {
+	0, 0, 0, 1, 1, 1, 1, 0,
+	0, 0, 0, 1, 1, 1, 1, 0,
+	0, 0, 0, 1, 1, 1, 1, 0,
+	0, 0, 0, 1, 1, 1, 1, 0,
+	0, 0, 0, 1, 1, 1, 1, 0,
+	0, 0, 0, 1, 1, 1, 1, 0};
+
 	gObjectList = glGenLists(1);
 	glNewList(gObjectList, GL_COMPILE);
 
+	if(gTexturing == 1)
+		glEnable(GL_TEXTURE_2D);
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glBindTexture(GL_TEXTURE_2D, gTextureObject);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
 	glNormalPointer(GL_FLOAT, 0, cubeNormals);
 	glColorPointer(3, GL_FLOAT, 0, cubeColors);
+	glTexCoordPointer(2, GL_FLOAT, 0, cubeTexCords);
   glDrawArrays(GL_QUADS, 0, 24);
   glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glEndList();
 }
@@ -192,7 +209,7 @@ draw_rotating(void)
 	/* If we have lights on, set the light position */
 	if(gLighting)
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
+	
 	glPushMatrix();
 	glRotatef(gSpin, 1, 1, .1); 
 	glCallList(gObjectList);
@@ -261,6 +278,7 @@ cb_config(void *data)
 	data = NULL;
 	Epplet_gadget_show(gObjectPopupButton);
 	Epplet_gadget_show(gLightingPopupButton);
+	Epplet_gadget_show(gTexturingPopupButton);
 }
 
 static void
@@ -274,6 +292,7 @@ cb_set_object(void *data)
 	save_conf();
 	Epplet_gadget_hide(gObjectPopupButton);
 	Epplet_gadget_hide(gLightingPopupButton);
+	Epplet_gadget_hide(gTexturingPopupButton);
 	
 	if(gWhichRotate == SQUARE) {
 		if(gLighting) {
@@ -297,7 +316,7 @@ cb_set_lighting(void *data)
 		gLighting = OFF;
 		disable_lighting();
 	}
-	else if(!gLighting && *newLighting && (gWhichRotate != SQUARE)) { /* Lighting was off, turn it on */
+	else if(!gLighting && *newLighting && (gWhichRotate = CUBE)) { /* Lighting was off, turn it on */
 		gLighting = ON;
 		enable_lighting();
 	}
@@ -305,6 +324,30 @@ cb_set_lighting(void *data)
 	save_conf();
 	Epplet_gadget_hide(gObjectPopupButton);
 	Epplet_gadget_hide(gLightingPopupButton);
+	Epplet_gadget_hide(gTexturingPopupButton);
+}
+
+static void
+cb_set_texturing(void *data)
+{
+  int *newTexturing;
+
+  newTexturing = (int *)data;
+
+  if(gTexturing && !*(newTexturing)) { /* Texturing was on, turn it off */
+    gTexturing= OFF;
+		if(gWhichRotate == CUBE)
+    	setup_rotating_cube();
+  }
+  else if(!gTexturing && *newTexturing && (gWhichRotate == CUBE)) { /* Texturing  was off, turn it on */
+    gTexturing = ON;
+		setup_rotating_cube();
+  }
+
+  save_conf();
+  Epplet_gadget_hide(gObjectPopupButton);
+  Epplet_gadget_hide(gLightingPopupButton);
+	Epplet_gadget_hide(gTexturingPopupButton);
 }
 
 static void
@@ -316,6 +359,8 @@ save_conf(void)
 	Epplet_modify_config("gWhichRotate", s);
 	Esnprintf(s, sizeof(s), "%i", gLighting);
 	Epplet_modify_config("gLighting", s);
+	Esnprintf(s, sizeof(s), "%i", gTexturing);
+  Epplet_modify_config("gTexturing", s);
 
 	Epplet_save_config();
 }
@@ -329,14 +374,18 @@ load_conf(void)
 	sscanf(str, "%i", &gWhichRotate);
 	str = Epplet_query_config_def("gLighting", "0");
 	sscanf(str, "%i", &gLighting);
+	str = Epplet_query_config_def("gTexturing", "0");
+  sscanf(str, "%i", &gTexturing);
 }
 
 int
 main(int argc, char **argv)
 {
 	GLXContext cx;
-	int prio;
-	Epplet_gadget objectPopup, lightingPopup;
+	int prio, hold;
+	Epplet_gadget objectPopup, lightingPopup, texturePopup;
+	FILE *textureFile;
+	GLubyte textureArray[3*64*64];
 
 	prio = getpriority(PRIO_PROCESS, getpid());
 	setpriority(PRIO_PROCESS, getpid(), prio + 10);
@@ -375,6 +424,14 @@ main(int argc, char **argv)
 	gLightingPopupButton = Epplet_create_popupbutton("Lights", NULL,
 		13, 31, 38, 14, NULL, lightingPopup);
 
+	texturePopup = Epplet_create_popup();
+  Epplet_add_popup_entry(texturePopup, "Off", NULL, cb_set_texturing,
+    (void *)(&(lighting_type_table[0])));
+  Epplet_add_popup_entry(texturePopup, "On", NULL, cb_set_texturing,
+    (void *)(&(lighting_type_table[1])));
+  gTexturingPopupButton = Epplet_create_popupbutton("Textures", NULL,
+    9, 46, 46, 14, NULL, texturePopup);
+
   Epplet_register_focus_in_handler(cb_in, NULL);
   Epplet_register_focus_out_handler(cb_out, NULL);
 	
@@ -401,6 +458,26 @@ main(int argc, char **argv)
 	glClearColor(0,0,0,0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
+
+	/* Lets load teh texture */
+  if((textureFile = fopen("/home/thebard/workb/test.RGB", "rb")) == NULL)
+	printf("Heh dipshitm it didnt work!\n");
+	else {
+		hold = fread(textureArray, sizeof(GLubyte), 3*64*64, textureFile);
+		printf("Size=%i\n", hold);
+		fclose(textureFile);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glGenTextures(1, &gTextureObject);
+		glBindTexture(GL_TEXTURE_2D, gTextureObject);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE,
+			textureArray);
+	}
 
 	Epplet_show();
 
