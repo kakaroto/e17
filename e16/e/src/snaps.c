@@ -823,6 +823,8 @@ LoadSnapInfo(void)
    f = fopen(buf, "r");
    if (!f)
       return;
+   res_w = root.w;
+   res_h = root.h;
    while (fgets(buf, sizeof(buf), f))
      {
 	/* nuke \n */
