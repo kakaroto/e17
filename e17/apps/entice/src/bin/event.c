@@ -162,12 +162,15 @@ e_key_down(Ecore_Event * ev)
 	scale = 1.0;
 	e_handle_resize();
      }
-   else if (!strcmp(e->symbol, "minus"))
+   else if ((!strcmp(e->symbol, "minus")) ||
+	    (!strcmp(e->key, "o")))
      {
 	scale += 0.5;
 	e_handle_resize();
      }
-   else if (!strcmp(e->symbol, "plus"))
+   else if ((!strcmp(e->symbol, "plus")) ||
+	    (!strcmp(e->key, "equal")) ||
+	    (!strcmp(e->key, "i")))
      {
 	scale -= 0.5;
 	if (scale < 0.5)
