@@ -17,10 +17,7 @@ print_usage(void)
    printf("Display modes:\n");
    printf("  -b, --basic             Use Equate in basic mode (default)\n");
    printf("  -s, --scientific        Use Equate in scientific mode\n");
-   printf("                          (currently ignored if using --edje)\n");
-   printf("Interface types:\n");
-   printf("  -G, --edje              Use Edje (themable) interface (default)\n");
-   printf("  -g, --ewl               Use Ewl (E look) interface\n");
+   printf("  -t, --theme       [str] Use themed (edje) mode and load specified theme\n");
    exit(0);
 }
 
@@ -61,7 +58,6 @@ main(int argc, char *argv[], char *env[])
    Ecore_Config_Server *conf_srv;
 
    equate.conf.mode = DEFAULT;
-   equate.conf.type = DEF;
 
    while (nextarg < argc) {
       arg = argv[nextarg];
@@ -69,10 +65,10 @@ main(int argc, char *argv[], char *env[])
          equate.conf.mode = SCI;
       else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b"))
          equate.conf.mode = BASIC;
-      else if (!strcmp(arg, "--edje") || !strcmp(arg, "-G"))
-         equate.conf.type = EDJE;
-      else if (!strcmp(arg, "--ewl") || !strcmp(arg, "-g"))
-         equate.conf.type = EWL;
+      else if (!strcmp(arg, "--theme") || !strcmp(arg, "-t")) {
+         equate.conf.mode = EDJE;
+         equate.conf.theme = argv[++nextarg];
+      }
       else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
          exec(argv[++nextarg]);
       
@@ -97,13 +93,13 @@ main(int argc, char *argv[], char *env[])
 
       if (equate.conf.mode == DEFAULT)
          equate.conf.mode = ecore_config_get_int(props, "/settings/mode");
-      if (equate.conf.type == DEF)
-         equate.conf.type = ecore_config_get_int(props, "/settings/type");
+      if ((equate.conf.mode == EDJE) && (!equate.conf.theme))
+         equate.conf.theme = ecore_config_get_string(props, "/settings/theme");
    }
    if (equate.conf.mode == DEFAULT)
       equate.conf.mode = BASIC;
-   if (equate.conf.type == DEF)
-      equate.conf.type = EWL;
+   if ((equate.conf.mode == EDJE) && (!equate.conf.theme))
+      equate.conf.theme = "equate";
 
    equate_init(&equate);
 

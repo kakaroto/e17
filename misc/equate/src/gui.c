@@ -210,7 +210,7 @@ init_gui(Equate * equate, int argc, char **argv)
 {
    if (equate) {
       calc_mode = equate->conf.mode;
-      switch (equate->conf.type) {
+      switch (calc_mode) {
       case EDJE:
          if (ecore_init()) {
             ecore_app_args_set(argc, (const char **) argv);
@@ -219,8 +219,9 @@ init_gui(Equate * equate, int argc, char **argv)
          }
          break;
          /*
-          * case DEF:
-          * case EWL:
+          * case DEFAULT:
+          * case BASIC:
+          * case SCI:
           */
       default:
          ewl_init(&argc, argv);

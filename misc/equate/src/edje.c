@@ -347,6 +347,7 @@ equate_edje_init(Equate * eq)
    Evas           *evas = NULL;
    Evas_Object    *o = NULL;
    Evas_Coord      mw, mh;
+   char            theme[PATH_MAX];
 
    eq->gui.ee = NULL;
    eq->gui.edje = NULL;
@@ -374,7 +375,8 @@ equate_edje_init(Equate * eq)
 
       o = edje_object_add(evas);
       evas_object_move(o, 0, 0);
-      if (edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/equate.eet", "Main")) {
+      snprintf(theme, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", eq->conf.theme);
+      if (edje_object_file_set(o, theme, "Main")) {
          evas_object_name_set(o, "edje");
          edje_object_size_min_get(o, &mw, &mh);
          ecore_evas_size_min_set(eq->gui.ee, (int) mw, (int) mh);
@@ -387,7 +389,7 @@ equate_edje_init(Equate * eq)
          edje_callback_define(o);
          evas_object_show(o);
       } else {
-         fprintf(stderr, "Unable to open %s for edje theme", PACKAGE_DATA_DIR "/themes/equate.eet");
+         fprintf(stderr, "Unable to open %s for edje theme", theme);
          ecore_evas_shutdown();
          return;
       }
