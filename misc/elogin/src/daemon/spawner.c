@@ -70,7 +70,8 @@ int
 main(int argc, char **argv)
 {
    int c;
-
+    
+   putenv("DISPLAY");
    /* get command line arguments */
    while (1)
    {
@@ -89,6 +90,7 @@ main(int argc, char **argv)
     
    if(!getenv("DISPLAY"))
        setenv("DISPLAY", X_DISP, 1);
+
    fork_and_exit();
    /* register child signal handler */
    signal(SIGCHLD, elogin_exit);

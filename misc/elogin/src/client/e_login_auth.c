@@ -253,16 +253,14 @@ e_login_auth_setup_environment(E_Login_Auth e)
 {
    extern char **environ;
    int size;
-   char *mail, buf[PATH_MAX];
+   char *mail;
 
-   environ = e->env;
-   snprintf(buf, PATH_MAX, "/bin:/usr/bin:/usr/local/bin:%s", getenv("PATH"));
+   e->env = environ;
    setenv("TERM", "vt100", 0);  // TERM=linux?
    setenv("HOME", e->pam.pw->pw_dir, 1);
    setenv("SHELL", e->pam.pw->pw_shell, 1);
    setenv("USER", e->pam.pw->pw_name, 1);
    setenv("LOGNAME", e->pam.pw->pw_name, 1);
-   setenv("PATH", buf, 1);
 
    size = (strlen(_PATH_MAILDIR) + strlen(e->pam.pw->pw_name) + 2);
    mail = (char *) malloc(sizeof(char) * size);

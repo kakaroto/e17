@@ -83,7 +83,7 @@ ecore_cflags=`ecore-config --cflags`
 AC_SUBST(ecore_libs)
 AC_SUBST(ecore_cflags)
 
-AC_PATH_GENERIC(evas, 0.6.0, [
+AC_PATH_GENERIC(evas, 1.0.0, [
 	AC_SUBST(evas_libs)
 	AC_SUBST(evas_cflags) ],
 	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
@@ -92,7 +92,7 @@ evas_cflags=`evas-config --cflags`
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
 
-AC_PATH_GENERIC(ebg, 0.0.1, [
+AC_PATH_GENERIC(ebg, 1.0.0, [
 	AC_SUBST(ebg_libs)
 	AC_SUBST(ebg_cflags) ],
 	AC_MSG_ERROR(Cannot find ebg: Is ebg-config in path?))

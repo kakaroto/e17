@@ -22,7 +22,6 @@ main(int argc, char *argv[])
          printf("Cannot initialize default display:\n");
          printf("DISPLAY=%s\n", getenv("DISPLAY"));
       }
-
       else
       {
          printf("No DISPLAY variable set!\n");

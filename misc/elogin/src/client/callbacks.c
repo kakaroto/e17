@@ -60,6 +60,7 @@ elogin_start_x(E_Login_Session e)
    int tmp;
 
    e_login_auth_setup_environment(e->auth);
+
 #if X_TESTING
    snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 #else
@@ -69,7 +70,6 @@ elogin_start_x(E_Login_Session e)
    ecore_sync();
    XCloseDisplay(ecore_display_get());
    /* Tell PAM that session has begun */
-   
    if ((tmp = pam_open_session(e->auth->pam.handle, 0)) != PAM_SUCCESS)
    {
       fprintf(stderr, "Unable to open PAM session. Aborting.\n");
@@ -83,6 +83,5 @@ elogin_start_x(E_Login_Session e)
       fprintf(stderr, "Unable to set user id\n");
 
    e_login_auth_free(e->auth);
-   
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
 }

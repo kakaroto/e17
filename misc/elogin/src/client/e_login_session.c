@@ -1,5 +1,6 @@
 #include"e_login_session.h"
 #include"callbacks.h"
+#include <Evas_Engine_Software_X11.h>
 
 extern void intro_init(E_Login_Session e);
 
@@ -34,7 +35,7 @@ e_login_session_free(E_Login_Session e)
    {
       e_login_auth_free(e->auth);
       e_login_config_free(e->config);
-      evas_del_object(e->evas, e->pointer);
+      evas_object_del(e->pointer);
       e_bg_free(e->bg);
       evas_free(e->evas);
       ecore_window_destroy(e->main_win);
@@ -49,8 +50,12 @@ e_login_session_free(E_Login_Session e)
 void
 e_login_session_init(E_Login_Session e)
 {
+   Evas_Engine_Info_Software_X11 *einfo;
+   XSetWindowAttributes att;
+   Window window;
+   Display *disp;
    Window win, ewin;
-   Evas evas;
+   Evas *evas;
    int iw, ih;
 
    if (!e)
@@ -69,23 +74,49 @@ e_login_session_init(E_Login_Session e)
 #endif
 
    ecore_window_move(win, 0, 0);
-   evas =
-      evas_new_all(ecore_display_get(), win, 0, 0, e->geom.w, e->geom.h,
-                   RENDER_METHOD, 215, (1024 * 1024) * 4, (1024 * 1024) * 6,
-                   PACKAGE_DATA_DIR "/data/fonts/");
 
-   ewin = evas_get_window(evas);
+   evas = evas_new();
+   evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
+   evas_output_size_set(evas, e->geom.w, e->geom.h);
+   evas_output_viewport_set(evas, 0, 0, e->geom.w, e->geom.h);
 
+
+   /* the following is specific to the engine */
+   einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(evas);
+   disp = ecore_display_get();
+
+   einfo->info.display = disp;
+   einfo->info.visual = DefaultVisual(disp, DefaultScreen(disp));
+   einfo->info.colormap = DefaultColormap(disp, DefaultScreen(disp));
+   att.background_pixmap = None;
+   att.colormap = DefaultColormap(disp, DefaultScreen(disp));
+   att.border_pixel = 0;
+   att.event_mask = 0;
+   window =
+      XCreateWindow(disp, win, 0, 0, e->geom.w, e->geom.h, 0,
+                    DefaultDepth(disp, DefaultScreen(disp)), InputOutput,
+                    einfo->info.visual,
+                    CWColormap | CWBorderPixel | CWEventMask | CWBackPixmap,
+                    &att);
+
+   einfo->info.drawable = window;
+   einfo->info.depth = DefaultDepth(disp, DefaultScreen(disp));
+   einfo->info.rotation = 0;
+   einfo->info.debug = 0;
+   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+
+   ewin = einfo->info.drawable;
    ecore_window_set_events(ewin,
-                           XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE | XEV_KEY
-                           | XEV_IN_OUT);
+                           XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE |
+                           XEV_KEY);
+
+   evas_object_image_cache_set(evas, 0);
+   evas_object_font_cache_set(evas, 0);
+   evas_object_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts/");
 
    ecore_window_show(ewin);
    ecore_window_show(win);
    ecore_set_blank_pointer(win);
-
-   e->main_win = win;
-   e->evas = evas;
 
    /* try config */
    if ((e->config) && (e->config->bg))
@@ -95,19 +126,24 @@ e_login_session_init(E_Login_Session e)
    if (!e->bg)
       e->bg = e_bg_new();
 
-   e_bg_add_to_evas(e->bg, e->evas);
+   e_bg_add_to_evas(e->bg, evas);
    e_bg_resize(e->bg, e->geom.w, e->geom.h);
    e_bg_set_layer(e->bg, 0);
    e_bg_show(e->bg);
 
-   e->pointer =
-      evas_add_image_from_file(evas,
-                               PACKAGE_DATA_DIR "/data/images/pointer.png");
-   evas_get_image_size(evas, e->pointer, &iw, &ih);
-   evas_resize(evas, e->pointer, iw, ih);
-   evas_set_image_fill(evas, e->pointer, 0.0, 0.0, (double) iw, (double) ih);
-   evas_set_layer(evas, e->pointer, 2000);
-   evas_show(evas, e->pointer);
+   e->pointer = evas_object_image_add(evas);
+   evas_object_image_file_set(e->pointer,
+                              PACKAGE_DATA_DIR "/data/images/pointer.png",
+                              NULL);
+   evas_object_image_size_get(e->pointer, &iw, &ih);
+   evas_object_resize(e->pointer, iw, ih);
+   evas_object_image_fill_set(e->pointer, 0.0, 0.0, (double) iw, (double) ih);
+   evas_object_layer_set(e->pointer, 2000);
+   evas_object_show(e->pointer);
+
+   e->evas = evas;
+   e->ewin = ewin;
+   e->main_win = win;
    intro_init(e);
 }
 

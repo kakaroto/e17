@@ -14,7 +14,7 @@ typebuffer;
 extern void set_text_entry_text(int is_pass, char *txt);
 
 static E_Login_Session e_session = NULL;
-static Evas evas = NULL;
+static Evas *evas = NULL;
 
 static void e_idle(void *data);
 static void e_window_expose(Ecore_Event * e);
@@ -53,9 +53,9 @@ e_window_expose(Ecore_Event * ev)
    Ecore_Event_Window_Expose *e;
 
    e = (Ecore_Event_Window_Expose *) ev->event;
-   if ((e->win != evas_get_window(evas)))
+   if ((e->win != e_session->ewin))
       return;
-   evas_update_rect(evas, e->x, e->y, e->w, e->h);
+   evas_damage_rectangle_add(evas, e->x, e->y, e->w, e->h);
 
 }
 
@@ -67,10 +67,10 @@ e_mouse_move(Ecore_Event * ev)
 
    e = (Ecore_Event_Mouse_Move *) ev->event;
 
-   if ((e->win != evas_get_window(evas)))
+   if ((e->win != e_session->ewin))
       return;
-   evas_event_move(evas, e->x, e->y);
-   evas_move(evas, e_session->pointer, e->x, e->y);
+   evas_event_feed_mouse_move(evas, e->x, e->y);
+   evas_object_move(e_session->pointer, e->x, e->y);
 }
 
 static void
@@ -79,9 +79,9 @@ e_mouse_down(Ecore_Event * ev)
    Ecore_Event_Mouse_Down *e;
 
    e = (Ecore_Event_Mouse_Down *) ev->event;
-   if ((e->win != evas_get_window(evas)))
+   if ((e->win != e_session->ewin))
       return;
-   evas_event_button_down(evas, e->x, e->y, e->button);
+   evas_event_feed_mouse_down(evas, e->button);
 }
 
 static void
@@ -90,9 +90,9 @@ e_mouse_up(Ecore_Event * ev)
    Ecore_Event_Mouse_Up *e;
 
    e = (Ecore_Event_Mouse_Up *) ev->event;
-   if ((e->win != evas_get_window(evas)))
+   if ((e->win != e_session->ewin))
       return;
-   evas_event_button_up(evas, e->x, e->y, e->button);
+   evas_event_feed_mouse_up(evas, e->button);
 }
 
 static void
@@ -105,7 +105,7 @@ e_key_down(Ecore_Event * ev)
    e = ev->event;
 
 
-#if 0
+#if ELOGIN_DEBUG
    fprintf(stderr, "typebuffer.index is %d\n", typebuffer.index);
    fprintf(stderr, "e->key is %s\n", e->key);
    fprintf(stderr, "e->compose is %s\n", e->compose);

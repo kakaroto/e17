@@ -3,7 +3,6 @@
 
 #include<Ebg.h>
 #include<Evas.h>
-#include<Ebits.h>
 #include<Ecore.h>
 #include<stdio.h>
 #include<limits.h>
@@ -17,12 +16,12 @@
 
 struct _E_Login_Session
 {
-   Evas evas;                   /* the evas being used in the X session */
-   Evas_Object pointer;         /* object for the pointer in the evas */
+   Evas *evas;                  /* the evas being used in the X session */
+   Evas_Object *pointer;        /* object for the pointer in the evas */
    E_Background bg;             /* ebg in the evas */
    E_Login_Auth auth;           /* encapsulated auth shit */
    E_Login_Config config;       /* configuration options */
-   Window main_win;             /* window ids */
+   Window main_win, ewin;       /* window ids */
 
    struct
    {
@@ -30,7 +29,7 @@ struct _E_Login_Session
    }
    geom;                        /* the height/width of the evas */
 
-   Evas_List users;             /* recent users */
+   Evas_List *users;            /* recent users */
    /* find a way to have plugins running */
 };
 typedef struct _E_Login_Session *E_Login_Session;
