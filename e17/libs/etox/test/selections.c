@@ -145,10 +145,14 @@ _test_sel1(Evas_Object *etox)
 {
   Etox_Selection *sel;
   Etox_Context *cont;
+  int i = 0;
 
 
   printf("style: %s\n", etox_context_get_style(etox_get_context(etox)));
-  sel = etox_select_index(etox, 10, 120);
+//  printf("before: %s\n", etox_get_text(etox));
+  sel = etox_select_index(etox, 4, 8);
+//  printf("after: %s\n", etox_get_text(etox));
+  //sel = etox_select_str(etox, "Etox", NULL);
 
   cont = etox_context_save(etox);
 
@@ -161,6 +165,27 @@ _test_sel1(Evas_Object *etox)
   sel = etox_select_index(etox, 50, 200);
   etox_context_set_color(cont, 200, 102, 10, 255);
   etox_selection_apply_context(sel, cont);
+
+  {
+    Etox_Rect *rects;
+    int num, i;
+
+    rects = etox_selection_get_geometry(sel, &num);
+
+    for (i=0; i<num; i++)
+    {
+      Etox_Rect *geom = rects + i;
+      Evas_Object *r;
+
+      printf("***(%f, %f) %f x %f\n", geom->x, geom->y, geom->w, geom->h);
+      r = evas_object_rectangle_add(evas);
+      evas_object_move(r, geom->x, geom->y);
+      evas_object_resize(r, geom->w, geom->h);
+      evas_object_layer_set(r, 2000);
+      evas_object_color_set(r, 255, 255, 255, 128);
+      evas_object_show(r);
+    }
+  }
 
   printf("style: %s\n", etox_context_get_style(etox_get_context(etox)));
   etox_append_text(etox, " Blah. Blah. Blum de dum.");
