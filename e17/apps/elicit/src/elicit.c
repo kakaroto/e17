@@ -42,6 +42,8 @@ main (int argc, char **argv)
     printf("ERROR: can't create a software X11 Ecore_Evas.\n");
     return 1;
   }
+  ecore_evas_title_set(el->ee, "Elicit");
+  ecore_evas_name_class_set(el->ee, "Elicit", "Elicit");
 
   edje_init();
   edje_frametime_set(1.0 / 60.0);
