@@ -179,7 +179,11 @@ SetupX()
    master_pid = getpid();
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
-   disp = XOpenDisplay(NULL);
+   if (!dstr)
+      dstr = getenv("DISPLAY");
+   if (!dstr)
+      dstr = ":0";
+   disp = XOpenDisplay(dstr);
    /* if cannot connect to display */
    if (!disp)
      {
@@ -236,7 +240,8 @@ SetupX()
 			       *dispstr = '\0';
 			 }
 		       Esnprintf(subdisplay + strlen(subdisplay), 255, ".%d", i);
-		       disp = XOpenDisplay(subdisplay);
+		       dstr = duplicate(subdisplay);
+		       disp = XOpenDisplay(dstr);
 		       root.scr = i;
 		       /* Terminate the loop as I am the child process... */
 		       break;

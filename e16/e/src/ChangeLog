@@ -2599,3 +2599,12 @@ Thu Sep 30 23:07:48 PDT 1999
 (Raster)
 
 flim! :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 01:16:46 PDT 1999
+(Raster)
+
+fix windowmatch border sige-effect for starting the firts time
+
+fix start/restart/logout on multihead 

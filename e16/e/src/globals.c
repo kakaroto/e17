@@ -43,3 +43,4 @@ int                 numlock_mask = 0;
 int                 scrollock_mask = 0;
 int                 mask_mod_combos[8];
 Group              *current_group;
+char               *dstr = NULL;

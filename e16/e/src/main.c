@@ -71,6 +71,10 @@ main(int argc, char **argv)
 	     {
 		SetEDir(argv[++j]);
 	     }
+	   else if ((!strcmp("-display", argv[j])) && (argc - j > 1))
+	     {
+		dstr = argv[++j];
+	     }
 	   else if (!strcmp("-single", argv[j]))
 	     {
 		single_screen_mode = 1;
@@ -108,7 +112,8 @@ main(int argc, char **argv)
 		       "\t-smfile file                              \n"
 		       "\t-ext_init_win window_id                   \n"
 		       "\t-no_overwrite                             \n"
-		       "\t[-v | -version | --version]               \n");
+		       "\t[-v | -version | --version]               \n"
+		       "\t-display display_name                     \n");
 		exit(0);
 	     }
 	   else if ((!strcmp("-v", argv[j])) ||

@@ -513,81 +513,55 @@ doSMExit(void *params)
 	  }
 	if (!strcmp(s, "restart"))
 	  {
-	     if (master_flag)
-	       {
-		  AUDIO_PLAY("SOUND_WAIT");
-		  if (sound_fd >= 0)
-		     close(sound_fd);
-		  w = MakeExtInitWin();
-		  XCloseDisplay(disp);
-		  disp = NULL;
+	     AUDIO_PLAY("SOUND_WAIT");
+	     if (sound_fd >= 0)
+		close(sound_fd);
+	     w = MakeExtInitWin();
+	     XCloseDisplay(disp);
+	     disp = NULL;
 
-		  if (themepath[0] != 0)
-		    {
-		       Esnprintf(sss, sizeof(sss),
-				 "exec %s -ext_init_win %i -theme %s", command,
-				 w, themename);
-		       execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
-		    }
-		  else
-		    {
-		       Esnprintf(sss, sizeof(sss),
-				 "exec %s -ext_init_win %i", command, w);
-		       execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
-		    }
-	       }
-	     else
+	     if (themepath[0] != 0)
 	       {
-		  CommsSendToMasterWM("restart");
-		  do_master_kill = 0;
-	       }
-	  }
-	else if (!strcmp(s, "restart_theme"))
-	  {
-	     if (master_flag)
-	       {
-		  AUDIO_PLAY("SOUND_WAIT");
-		  if (sound_fd >= 0)
-		     close(sound_fd);
-		  w = MakeExtInitWin();
-		  XCloseDisplay(disp);
-		  disp = NULL;
-		  sscanf(params, "%*s %1000s", s);
 		  Esnprintf(sss, sizeof(sss),
-			 "exec %s -ext_init_win %i -theme %s", command, w, s);
+		     "exec %s -single -ext_init_win %i -theme %s -display %s",
+			    command, w, themename, dstr);
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	     else
 	       {
-		  if (sound_fd >= 0)
-		     close(sound_fd);
-		  CommsSendToMasterWM("restart_theme");
-		  do_master_kill = 0;
+		  Esnprintf(sss, sizeof(sss),
+			    "exec %s -single -ext_init_win %i -display %s",
+			    command, w, dstr);
+		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
+	  }
+	else if (!strcmp(s, "restart_theme"))
+	  {
+	     AUDIO_PLAY("SOUND_WAIT");
+	     if (sound_fd >= 0)
+		close(sound_fd);
+	     w = MakeExtInitWin();
+	     XCloseDisplay(disp);
+	     disp = NULL;
+	     sscanf(params, "%*s %1000s", s);
+	     Esnprintf(sss, sizeof(sss),
+		     "exec %s -single -ext_init_win %i -theme %s -display %s",
+		       command, w, s, dstr);
+	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	  }
 	else if (!strcmp(s, "restart_wm"))
 	  {
-	     if (master_flag)
-	       {
-		  AUDIO_PLAY("SOUND_EXIT");
-		  if (sound_fd >= 0)
-		     close(sound_fd);
-		  XCloseDisplay(disp);
-		  disp = NULL;
-		  if (atword(params, 2))
-		     strncpy(s, atword(params, 2), 1000);
-		  real_exec = (char *)Emalloc(strlen(s) + 6);
-		  sprintf(real_exec, "exec %s", s);
-		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec",
-			real_exec, NULL);
-	       }
-	     else
-	       {
-		  if (sound_fd >= 0)
-		     close(sound_fd);
-		  CommsSendToMasterWM("restart_wm");
-		  do_master_kill = 0;
-	       }
+	     AUDIO_PLAY("SOUND_EXIT");
+	     if (sound_fd >= 0)
+		close(sound_fd);
+	     XCloseDisplay(disp);
+	     disp = NULL;
+	     if (atword(params, 2))
+		strncpy(s, atword(params, 2), 1000);
+	     real_exec = (char *)Emalloc(strlen(s) + 6);
+	     sprintf(real_exec, "exec %s -display %s", s, dstr);
+	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec",
+		   real_exec, NULL);
 	  }
 	else if (!strcmp(s, "logout"))
 	  {
@@ -615,11 +589,7 @@ doSMExit(void *params)
 	     return;
 	  }
      }
-
    AUDIO_PLAY("SOUND_EXIT");
-   if ((!master_flag) && (do_master_kill))
-      kill(master_pid, SIGTERM);
-
    EExit(0);
 }
 #else /* HAVE_SM */
@@ -1126,53 +1096,8 @@ doSMExit(void *params)
    if (mode.kde_support)
       KDE_Shutdown();
 
-   if (master_pid != getpid())
-     {
-	if (!restarting)
-	  {
-	     if (disp)
-	       {
-		  if (!params)
-		    {
-		       /* We could use SIGTERM instead */
-		       CommsSendToMasterWM("exit");
-		    }
-		  else
-		    {
-		       CommsSendToMasterWM(params);
-		    }
-	       }
-	     /* Save state when E intends to restart immediately */
-	     if (sm_conn && params &&
-		 (!strcmp((char *)params, "restart") ||
-		  !strcmp((char *)params, "restart_theme")))
-	       {
-		  SmcRequestSaveYourself(sm_conn, SmSaveLocal, False,
-					 SmInteractStyleNone, False, False);
-	       }
-	     else
-	       {
-		  callback_die(sm_conn, NULL);
-	       }
-	  }
-	restarting = True;
-	return;
-     }
    restarting = True;
 
-   if (disp)
-     {
-	if (!params)
-	  {
-	     /* If we remembered the PIDs then SIGTERM could be used */
-	     CommsBroadcastToSlaveWMs("exit");
-	  }
-	else
-	  {
-	     /* If we remembered the PIDs then SIGHUP could be used */
-	     CommsBroadcastToSlaveWMs(params);
-	  }
-     }
    s[0] = 0;
    if (params)
       sscanf(params, "%1000s", s);
@@ -1208,20 +1133,12 @@ doSMExit(void *params)
      }
    else if (!strcmp(s, "restart_wm"))
      {
-	if (master_flag)
-	  {
-	     AUDIO_PLAY("SOUND_WAIT");
-	     XCloseDisplay(disp);
-	     disp = NULL;
-	     Esnprintf(s, sizeof(s), "exec %s", atword(params, 2));
-	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
-	  }
-	else
-	  {
-	     if (disp)
-		CommsSendToMasterWM("restart_wm");
-	     do_master_kill = 0;
-	  }
+	AUDIO_PLAY("SOUND_WAIT");
+	XCloseDisplay(disp);
+	disp = NULL;
+	Esnprintf(s, sizeof(s), "exec %s -display %s",
+		  atword(params, 2), dstr);
+	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp(s, "restart"))
      {
@@ -1229,81 +1146,43 @@ doSMExit(void *params)
 	if (disp)
 	   init_win_ext = MakeExtInitWin();
 
-	  /********* Ummmmm disabled - doesnt work
-       if (sm_conn)
-       SmcRequestSaveYourself(sm_conn, SmSaveLocal, False,
-			      SmInteractStyleNone, False, False);
-       else
-       */
-	{
-	   if (disp)
-	     {
-		XCloseDisplay(disp);
-		disp = NULL;
-	     }
-	   if (themepath[0] != 0)
-	     {
-		if (sm_client_id)
-		  {
-		     if (single_screen_mode)
-		       {
-			  Esnprintf(s, sizeof(s),
-				 "exec %s -single -ext_init_win %i -theme %s "
-				    "-smfile %s -smid %s",
-				    command, init_win_ext, themename,
-				    sm_file, sm_client_id);
-		       }
-		     else
-		       {
-			  Esnprintf(s, sizeof(s),
-				    "exec %s -ext_init_win %i -theme %s "
-				    "-smfile %s -smid %s",
-				    command, init_win_ext, themename,
-				    sm_file, sm_client_id);
-		       }
-		  }
-		else
-		  {
-		     if (single_screen_mode)
-		       {
-			  Esnprintf(s, sizeof(s),
-				 "exec %s -single -ext_init_win %i -theme %s "
-				    "-smfile %s",
-				    command, init_win_ext, themename,
-				    sm_file);
-		       }
-		     else
-		       {
-			  Esnprintf(s, sizeof(s),
-				    "exec %s -ext_init_win %i -theme %s "
-				    "-smfile %s",
-				    command, init_win_ext, themename,
-				    sm_file);
-		       }
-		  }
-		execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
-	     }
-	   else
-	     {
-		if (single_screen_mode)
-		  {
-		     Esnprintf(s, sizeof(s),
-			       "exec %s -single -ext_init_win %i "
-			       "-smfile %s -smid %s",
-			       command, init_win_ext,
-			       sm_file, sm_client_id);
-		  }
-		else
-		  {
-		     Esnprintf(s, sizeof(s),
-			       "exec %s -ext_init_win %i "
-			       "-smfile %s -smid %s",
-			       command, init_win_ext,
-			       sm_file, sm_client_id);
-		  }
-		execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
-	     }
-	}
+	if (disp)
+	  {
+	     XCloseDisplay(disp);
+	     disp = NULL;
+	  }
+	if (themepath[0] != 0)
+	  {
+	     if (sm_client_id)
+		Esnprintf(s, sizeof(s),
+			  "exec %s -single -ext_init_win %i -theme %s "
+			  "-smfile %s -smid %s -display %s",
+			  command, init_win_ext, themename,
+			  sm_file, sm_client_id, dstr);
+	     else
+		Esnprintf(s, sizeof(s),
+			  "exec %s -single -ext_init_win %i -theme %s "
+			  "-smfile %s -display %s",
+			  command, init_win_ext, themename,
+			  sm_file, dstr);
+	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
+	  }
+	else
+	  {
+	     if (sm_client_id)
+		Esnprintf(s, sizeof(s),
+			  "exec %s -single -ext_init_win %i "
+			  "-smfile %s -smid %s -display %s",
+			  command, init_win_ext,
+			  sm_file, sm_client_id, dstr);
+	     else
+		Esnprintf(s, sizeof(s),
+			  "exec %s -single -ext_init_win %i"
+			  "-smfile %s -display %s",
+			  command, init_win_ext,
+			  sm_file, dstr);
+	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
+	  }
      }
    else if (!strcmp((char *)s, "restart_theme"))
      {
@@ -1314,68 +1193,31 @@ doSMExit(void *params)
 	     sscanf(params, "%*s %1000s", s);
 	     SetSMUserThemePath(s);
 	  }
-	  /********* Ummmmm disabled - doesnt work
-       if (sm_conn)
-       SmcRequestSaveYourself(sm_conn, SmSaveLocal, False,
-			      SmInteractStyleNone, False, False);
-       else
-       */
-	{
-	   if (disp)
-	      XCloseDisplay(disp);
-	   if (sm_client_id)
-	     {
-		if (single_screen_mode)
-		  {
-		     Esnprintf(s, sizeof(s),
-			       "exec %s -single -ext_init_win %i -theme %s "
-			       "-smfile %s -smid %s",
-			       command, init_win_ext, userthemepath,
-			       sm_file, sm_client_id);
-		  }
-		else
-		  {
-		     Esnprintf(s, sizeof(s),
-			       "exec %s -ext_init_win %i -theme %s "
-			       "-smfile %s -smid %s",
-			       command, init_win_ext, userthemepath,
-			       sm_file, sm_client_id);
-		  }
-	     }
-	   else
-	     {
-		if (single_screen_mode)
-		  {
-		     Esnprintf(s, sizeof(s),
-			       "exec %s -single -ext_init_win %i -theme %s "
-			       "-smfile %s",
-			       command, init_win_ext, userthemepath,
-			       sm_file);
-		  }
-		else
-		  {
-		     Esnprintf(s, sizeof(s),
-			       "exec %s -ext_init_win %i -theme %s "
-			       "-smfile %s",
-			       command, init_win_ext, userthemepath,
-			       sm_file);
-		  }
-	     }
-	   execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
-	}
+	if (disp)
+	  {
+	     XCloseDisplay(disp);
+	     disp = NULL;
+	  }
+	if (sm_client_id)
+	   Esnprintf(s, sizeof(s),
+		     "exec %s -single -ext_init_win %i -theme %s "
+		     "-smfile %s -smid %s -display %s",
+		     command, init_win_ext, userthemepath,
+		     sm_file, sm_client_id, dstr);
+	else
+	   Esnprintf(s, sizeof(s),
+		     "exec %s -ext_init_win %i -theme %s "
+		     "-smfile %s -single -display %s",
+		     command, init_win_ext, userthemepath,
+		     sm_file, dstr);
+	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp((char *)s, "error"))
-     {
-	if ((!master_flag) && (do_master_kill))
-	   kill(master_pid, SIGTERM);
-	EExit(0);
-     }
+      EExit(0);
+
    restarting = False;
    SaveSession(1);
-   if (master_flag)
-      AUDIO_PLAY("SOUND_EXIT");
-   if ((!master_flag) && (do_master_kill))
-      kill(master_pid, SIGTERM);
+   AUDIO_PLAY("SOUND_EXIT");
    EExit(0);
 }
 #endif /* HAVE_SM */
