@@ -151,7 +151,7 @@ bool ui_init(ePlayer *player) {
 	return ui_init_edje(player, "eplayer");
 }
 
-void ui_deinit_edje(ePlayer *player) {
+void ui_shutdown_edje(ePlayer *player) {
 	if (player->gui.playlist) {
 		edje_object_part_unswallow(player->gui.edje,
 		                           player->gui.playlist);
@@ -165,12 +165,12 @@ void ui_deinit_edje(ePlayer *player) {
 	}
 }
 
-void ui_deinit(ePlayer *player) {
+void ui_shutdown(ePlayer *player) {
 	assert(player);
 
-	ui_deinit_edje(player);
+	ui_shutdown_edje(player);
 
-	ewl_deinit();
+	ewl_shutdown();
 	edje_shutdown();
 	ecore_evas_shutdown();
 	ecore_shutdown();

@@ -20,7 +20,7 @@ BUTTON_PROG("edit", "")
 
       program {                 
         name, "play-started"; 
-        signal, "PLAYBACK_STARTED"; 
+        signal, "PLAYBACK_STATE_PLAYING"; 
         source, "*"; 
         action, STATE_SET "toggled" 0.0; 
         transition, LINEAR 0.0; 
@@ -29,7 +29,7 @@ BUTTON_PROG("edit", "")
       } 
       program {                 
         name, "play-stopped"; 
-        signal, "PLAYBACK_STOPPED"; 
+        signal, "PLAYBACK_STATE_STOPPED"; 
         source, "*"; 
         action, STATE_SET "default" 0.0; 
         transition, LINEAR 0.0; 

@@ -41,11 +41,13 @@ collapsed/expanded states etc.
 
 ePlayer itself also emits signals:
 
-    action,     SIGNAL_EMIT "PLAYBACK_STARTED" "ePlayer";
-    action,     SIGNAL_EMIT "PLAYBACK_STOPPED" "ePlayer";
+    action,     SIGNAL_EMIT "PLAYBACK_STATE_PLAYING" "ePlayer";
+    action,     SIGNAL_EMIT "PLAYBACK_STATE_PAUSED"  "ePlayer";
+    action,     SIGNAL_EMIT "PLAYBACK_STATE_STOPPED" "ePlayer";
 
-The first signal is emitted whenever ePlayer starts playing a track,
-the second signal is emitted when playback is stopped.
+The first signal is emitted to indicate ePlayer is currently playing
+a track, the second signal is emitted to indicate playback is paused,
+and the third signal is emitted to indicate playback is stopped.
 
 The Edje provides the following parts for text display, etc:
 

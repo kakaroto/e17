@@ -128,7 +128,7 @@ static void eplayer_free(ePlayer *player) {
 	pthread_mutex_destroy(&player->playback_stop_mutex);
 	pthread_mutex_destroy(&player->playback_next_mutex);
 
-	ui_deinit(player);
+	ui_shutdown(player);
 
 	free(player);
 }
@@ -216,9 +216,6 @@ void eplayer_playback_stop(ePlayer *player) {
 	pthread_mutex_unlock(&player->playback_stop_mutex);
 
 	pthread_join(player->playback_thread, NULL);
-
-	edje_object_signal_emit(player->gui.edje, "PLAYBACK_STOPPED",
-	                        "ePlayer");
 }
 
 static int check_playback_next(void *udata) {
@@ -264,9 +261,6 @@ bool eplayer_playback_start(ePlayer *player, bool rewind_track) {
 
 	pthread_create(&player->playback_thread, NULL,
 	               (void *) &track_play_chunk, player);
-
-	edje_object_signal_emit(player->gui.edje, "PLAYBACK_STARTED",
-	                        "ePlayer");
 
 	return true;
 }

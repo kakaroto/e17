@@ -10,8 +10,8 @@
 bool ui_init(ePlayer *player);
 bool ui_init_edje(ePlayer *player, const char *name);
 
-void ui_deinit_edje(ePlayer *player);
-void ui_deinit(ePlayer *player);
+void ui_shutdown_edje(ePlayer *player);
+void ui_shutdown(ePlayer *player);
 
 void ui_fill_track_info(ePlayer *player);
 void ui_fill_playlist(ePlayer *player);

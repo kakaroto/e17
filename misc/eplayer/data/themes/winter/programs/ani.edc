@@ -61,7 +61,7 @@
       } \
       program {  \
         name, "ani"NUM".playlist-play"; \
-        signal, "PLAYBACK_STARTED";  \
+        signal, "PLAYBACK_STATE_PLAYING";  \
         source, "*";  \
         after, "ani"NUM".1"; \
       } \
