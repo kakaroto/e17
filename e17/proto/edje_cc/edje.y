@@ -47,8 +47,19 @@ edjes: /* blank */ |
        ;
 collections:  COLLECTIONS OPEN_BRACE group CLOSE_BRACE
 	;
-fonts:  FONTS OPEN_BRACE statement CLOSE_BRACE
+
+fonts:  FONTS OPEN_BRACE font_statement CLOSE_BRACE
 	;
+
+font_statement: font
+	| font font_statement
+	;
+
+font: FONT COLON QUOTE STRING QUOTE QUOTE STRING QUOTE SEMICOLON {
+		printf("got font '%s' named (%s)\n", $4, $7);
+	}
+	;
+
 images:  IMAGES OPEN_BRACE image_statement CLOSE_BRACE
 	;
 

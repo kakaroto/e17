@@ -43,7 +43,7 @@ exponent_part [eE][-+]?[0-9]+
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
 floating_constant ((({start_part}{fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|({start_part}[0-9][0-9]*)
 
-string [a-zA-Z_][a-zA-Z_0-9]*
+string [a-zA-Z_][a-zA-Z_0-9.]*
 
 %%
 action				{ KEYWORD_RETURN(ACTION); }
