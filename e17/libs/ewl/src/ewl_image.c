@@ -1,13 +1,16 @@
 
 #include <Ewl.h>
 
-static void __ewl_image_realize(Ewl_Widget * w, void *ev_data,
-				void *user_data);
-static void __ewl_image_configure(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data);
+static void     __ewl_image_realize(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
+static void     __ewl_image_configure(Ewl_Widget * w, void *ev_data,
+				      void *user_data);
+void            __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
+void            __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+void            __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
 
 static Ewl_Image_Type __ewl_image_get_type(const char *i);
 
@@ -18,10 +21,10 @@ static Ewl_Image_Type __ewl_image_get_type(const char *i);
  * Returns a pointer to the newly allocated image widget on success, NULL on
  * failure.
  */
-Ewl_Widget *
+Ewl_Widget     *
 ewl_image_load(const char *i)
 {
-	Ewl_Image *image;
+	Ewl_Image      *image;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i", i, NULL);
@@ -34,6 +37,9 @@ ewl_image_load(const char *i)
 	ZERO(image, Ewl_Image, 1);
 	ewl_image_init(image);
 
+	/*
+	 * Determine the type of image to be loaded.
+	 */
 	image->type = __ewl_image_get_type(i);
 	image->path = strdup(i);
 
@@ -51,8 +57,9 @@ ewl_image_load(const char *i)
 void
 ewl_image_set_file(Ewl_Image * i, const char *im)
 {
-	Ewl_Widget *w;
-	int ww = 0, hh = 0;
+	int             old_type;
+	Ewl_Widget     *w;
+	Ewl_Window     *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
@@ -64,53 +71,41 @@ ewl_image_set_file(Ewl_Image * i, const char *im)
 
 	i->path = strdup(im);
 
-	if (i->image)
-	  {
-		  switch (i->type)
-		    {
-		    case EWL_IMAGE_TYPE_NORMAL:
-			    evas_hide(w->evas, i->image);
-			    evas_unset_clip(w->evas, i->image);
-			    evas_del_object(w->evas, i->image);
-			    break;
-		    case EWL_IMAGE_TYPE_EBITS:
-			    ebits_hide(i->image);
-			    ebits_unset_clip(i->image);
-			    ebits_free(i->image);
-			    break;
-		    default:
-			    break;
-		    }
+	win = ewl_window_find_window_by_widget(w);
 
-		  i->image = NULL;
-	  }
-
+	old_type = i->type;
 	i->type = __ewl_image_get_type(i->path);
 
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  i->image = evas_add_image_from_file(w->evas, i->path);
-		  evas_set_layer(w->evas, i->image, LAYER(w));
-		  evas_set_clip(w->evas, i->image, w->fx_clip_box);
-		  evas_get_image_size(w->evas, i->image, &ww, &hh);
-		  evas_show(w->evas, i->image);
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  i->image = ebits_load(i->path);
-		  ebits_add_to_evas(i->image, w->evas);
-		  ebits_set_layer(i->image, LAYER(w));
-		  ebits_set_clip(i->image, w->fx_clip_box);
-		  ebits_show(i->image);
-		  break;
-	  default:
-		  break;
-	  }
+	/*
+	 * Load the new image if widget has been realized
+	 */
+	if (REALIZED(w)) {
+		/*
+		 * Free the image if it had been loaded.
+		 */
+		if (i->image) {
 
-	if (ww || hh)
-		ewl_object_request_size(EWL_OBJECT(w), ww, hh);
+			/*
+			 * Type is important for using the correct free calls.
+			 */
+			if (old_type == EWL_IMAGE_TYPE_EBITS) {
+				ebits_hide(i->image);
+				ebits_unset_clip(i->image);
+				ebits_free(i->image);
+			} else {
+				evas_hide(win->evas, i->image);
+				evas_unset_clip(win->evas, i->image);
+				evas_del_object(win->evas, i->image);
+			}
 
-	ewl_widget_configure(w);
+			i->image = NULL;
+		}
+
+		/*
+		 * Now draw the new 
+		 */
+		__ewl_image_realize(w, NULL, NULL);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -125,7 +120,7 @@ ewl_image_set_file(Ewl_Image * i, const char *im)
 void
 ewl_image_init(Ewl_Image * i)
 {
-	Ewl_Widget *w;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
@@ -134,8 +129,10 @@ ewl_image_init(Ewl_Image * i)
 
 	ewl_widget_init(w, NULL);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize,
-			    NULL);
+	/*
+	 * Append necessary callbacks.
+	 */
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_image_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
@@ -151,35 +148,38 @@ ewl_image_init(Ewl_Image * i)
 static void
 __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Image *i;
-	int ww = 0, hh = 0;
+	Ewl_Image      *i;
+	Ewl_Window     *win;
+	int             ww = 0, hh = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
 
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  i->image = evas_add_image_from_file(w->evas, i->path);
-		  evas_set_layer(w->evas, i->image, LAYER(w));
-		  evas_set_clip(w->evas, i->image, w->fx_clip_box);
-		  evas_get_image_size(w->evas, i->image, &ww, &hh);
-		  evas_show(w->evas, i->image);
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  i->image = ebits_load(i->path);
-		  ebits_add_to_evas(i->image, w->evas);
-		  ebits_set_layer(i->image, LAYER(w));
-		  ebits_set_clip(i->image, w->fx_clip_box);
-		  ebits_show(i->image);
-		  break;
-	  default:
-		  break;
-	  }
+	if (!i->path)
+		DRETURN(DLEVEL_STABLE);
 
-	ewl_object_request_size(EWL_OBJECT(w), ww, hh);
+	win = ewl_window_find_window_by_widget(w);
+
+	/*
+	 * Load the image based on the type.
+	 */
+	if (i->type == EWL_IMAGE_TYPE_EBITS) {
+		i->image = ebits_load(i->path);
+		ebits_add_to_evas(i->image, win->evas);
+		ebits_set_layer(i->image, LAYER(w));
+		ebits_set_clip(i->image, w->fx_clip_box);
+		ebits_show(i->image);
+	} else {
+		i->image = evas_add_image_from_file(win->evas, i->path);
+		evas_set_layer(win->evas, i->image, LAYER(w));
+		evas_set_clip(win->evas, i->image, w->fx_clip_box);
+		evas_get_image_size(win->evas, i->image, &ww, &hh);
+		evas_show(win->evas, i->image);
+	}
+
+	ewl_object_set_preferred_size(EWL_OBJECT(w), ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -187,47 +187,43 @@ __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Image *i;
+	Ewl_Image      *i;
+	Ewl_Window     *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
+	win = ewl_window_find_window_by_widget(w);
 
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  evas_move(w->evas, i->image, CURRENT_X(w), CURRENT_Y(w));
-		  evas_resize(w->evas, i->image, CURRENT_W(w), CURRENT_H(w));
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  ebits_move(i->image, CURRENT_X(w), CURRENT_Y(w));
-		  ebits_resize(i->image, CURRENT_W(w), CURRENT_H(w));
-		  break;
-	  default:
-		  break;
-	  }
+	/*
+	 * Move the image into place based on type.
+	 */
+	if (i->type == EWL_IMAGE_TYPE_EBITS) {
+		ebits_move(i->image, CURRENT_X(w), CURRENT_Y(w));
+		ebits_resize(i->image, CURRENT_W(w), CURRENT_H(w));
+	} else {
+		evas_move(win->evas, i->image, CURRENT_X(w), CURRENT_Y(w));
+		evas_resize(win->evas, i->image, CURRENT_W(w), CURRENT_H(w));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Determine the type of the file based on the filename.
+ */
 static Ewl_Image_Type
 __ewl_image_get_type(const char *i)
 {
-	char str[8];
-	int j, k, l;
+	int             l;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i", i, -1);
 
-	k = 0;
 	l = strlen(i);
-	memset(&str, 0, sizeof(char) * 8);
 
-	for (j = l - 8; j < l; j++)
-		str[k++] = i[j];
-
-	if (!strncasecmp(str, ".bits.db", 8))
+	if (l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
 		return EWL_IMAGE_TYPE_EBITS;
 
 	return EWL_IMAGE_TYPE_NORMAL;
@@ -237,25 +233,19 @@ __ewl_image_get_type(const char *i)
 void
 __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Image *i;
+	Ewl_Image      *i;
+	Ewl_Window     *win;
 	Ecore_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
+	win = ewl_window_find_window_by_widget(w);
 	ev = ev_data;
 
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  evas_event_button_down(w->evas, ev->x, ev->y, ev->button);
-		  break;
-	  default:
-		  break;
-	  }
+	if (i->type == EWL_IMAGE_TYPE_EBITS)
+		evas_event_button_down(win->evas, ev->x, ev->y, ev->button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -263,25 +253,19 @@ __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Image *i;
+	Ewl_Image      *i;
+	Ewl_Window     *win;
 	Ecore_Event_Mouse_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
+	win = ewl_window_find_window_by_widget(w);
 	ev = ev_data;
 
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  evas_event_button_up(w->evas, ev->x, ev->y, ev->button);
-		  break;
-	  default:
-		  break;
-	  }
+	if (i->type == EWL_IMAGE_TYPE_EBITS)
+		evas_event_button_up(win->evas, ev->x, ev->y, ev->button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -289,25 +273,19 @@ __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Image *i;
+	Ewl_Image      *i;
+	Ewl_Window     *win;
 	Ecore_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
+	win = ewl_window_find_window_by_widget(w);
 	ev = ev_data;
 
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  evas_event_move(w->evas, ev->x, ev->y);
-		  break;
-	  default:
-		  break;
-	  }
+	if (i->type == EWL_IMAGE_TYPE_EBITS)
+		evas_event_move(win->evas, ev->x, ev->y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

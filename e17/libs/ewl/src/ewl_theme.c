@@ -5,7 +5,7 @@
 #include "ewl-config.h"
 #endif
 
-static char theme_path[PATH_LEN];
+static char     theme_path[PATH_LEN];
 
 static E_DB_File *theme_db = NULL;
 
@@ -20,10 +20,10 @@ static Ewd_Hash *def_theme_data = NULL;
 int
 ewl_theme_init(void)
 {
-	struct stat st;
-	char *theme_name;
-	char theme_db_path[PATH_LEN];
-	char *home;
+	struct stat     st;
+	char           *theme_name;
+	char            theme_db_path[PATH_LEN];
+	char           *home;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -41,49 +41,42 @@ ewl_theme_init(void)
 		theme_name = strdup("default");
 
 	home = getenv("HOME");
-	if (!home)
-	  {
-		  DERROR("Environment variable HOME not defined\n"
-			 "Try export HOME=/home/user in a bash like environemnt or\n"
-			 "setenv HOME=/home/user in a sh like environment.\n");
-		  exit(-1);
-	  }
+	if (!home) {
+		DERROR("Environment variable HOME not defined\n"
+		       "Try export HOME=/home/user in a bash like environemnt or\n"
+		       "setenv HOME=/home/user in a sh like environment.\n");
+		exit(-1);
+	}
 
-	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home,
-		 theme_name);
+	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, theme_name);
 
-	if (((stat(theme_path, &st)) == 0) || S_ISDIR(st.st_mode))
-	  {
-		  snprintf(theme_db_path, PATH_LEN, "%s/theme.db",
-			   theme_path);
+	if (((stat(theme_path, &st)) == 0) || S_ISDIR(st.st_mode)) {
+		snprintf(theme_db_path, PATH_LEN, "%s/theme.db", theme_path);
 
-		  theme_db = e_db_open_read(theme_db_path);
-	  }
+		theme_db = e_db_open_read(theme_db_path);
+	}
 
-	if (!theme_db)
-	  {
+	if (!theme_db) {
 
-		  /*
-		   * Theme dir is ok, now get the specified theme's path 
-		   */
-		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
-			   "/themes/%s", theme_name);
-		  stat(theme_path, &st);
+		/*
+		 * Theme dir is ok, now get the specified theme's path 
+		 */
+		snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
+			 "/themes/%s", theme_name);
+		stat(theme_path, &st);
 
-		  if (S_ISDIR(st.st_mode))
-		    {
-			    snprintf(theme_db_path, PATH_LEN, "%s/theme.db",
-				     theme_path);
+		if (S_ISDIR(st.st_mode)) {
+			snprintf(theme_db_path, PATH_LEN, "%s/theme.db",
+				 theme_path);
 
-			    theme_db = e_db_open_read(theme_db_path);
-		    }
+			theme_db = e_db_open_read(theme_db_path);
+		}
 
-		  if (!theme_db)
-		    {
-			    DERROR("No theme dir =( exiting....");
-			    exit(-1);
-		    }
-	  }
+		if (!theme_db) {
+			DERROR("No theme dir =( exiting....");
+			exit(-1);
+		}
+	}
 
 	IF_FREE(theme_name);
 
@@ -135,7 +128,7 @@ ewl_theme_deinit_widget(Ewl_Widget * w)
 }
 
 /* Return the path of the current theme */
-char *
+char           *
 ewl_theme_path()
 {
 	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
@@ -147,23 +140,22 @@ ewl_theme_path()
  *
  * Returns the font path associated with widget @w on success, NULL on failure.
  */
-char *
+char           *
 ewl_theme_font_path()
 {
-	static char *font_path = NULL;
+	static char    *font_path = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * No font path specified yet, so build it up 
 	 */
-	if (!font_path)
-	  {
-		  font_path = NEW(char, PATH_LEN);
+	if (!font_path) {
+		font_path = NEW(char, PATH_LEN);
 
-		  snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
-			   theme_path);
-	  }
+		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
+			 theme_path);
+	}
 
 	DRETURN_PTR(font_path, DLEVEL_STABLE);
 }
@@ -175,12 +167,12 @@ ewl_theme_font_path()
  *
  * Returns the path associated with image key @k on success, NULL on failure.
  */
-char *
+char           *
 ewl_theme_image_get(Ewl_Widget * w, char *k)
 {
-	char *path;
-	char *data;
-	struct stat st;
+	char           *path;
+	char           *data;
+	struct stat     st;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -191,15 +183,13 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	if (!data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!strncmp(data, "/appearance", 11))
-	  {
-		  path = NEW(char, PATH_LEN);
+	if (!strncmp(data, "/appearance", 11)) {
+		path = NEW(char, PATH_LEN);
 
-		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
+		snprintf(path, PATH_LEN, "%s%s", theme_path, data);
 
-		  FREE(data);
-	  }
-	else			/* Absolute path given, so return it */
+		FREE(data);
+	} else			/* Absolute path given, so return it */
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
@@ -216,11 +206,11 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
  *
  * Returns the string associated with key @k on success, NULL on failure.
  */
-char *
+char           *
 ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
-	char *ret = NULL;
-	char *ret2 = NULL;
+	char           *ret = NULL;
+	char           *ret2 = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
@@ -234,19 +224,17 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	if (!ret && ewl_config.theme.cache && cached_theme_data)
 		ret = ewd_hash_get(cached_theme_data, k);
 
-	if (!ret && theme_db)
-	  {
-		  ret = e_db_str_get(theme_db, k);
+	if (!ret && theme_db) {
+		ret = e_db_str_get(theme_db, k);
 
-		  if (ret && ewl_config.theme.cache)
-		    {
-			    if (!cached_theme_data)
-				    cached_theme_data =
-					    ewd_hash_new(ewd_str_hash,
-							 ewd_str_compare);
-			    ewd_hash_set(cached_theme_data, k, strdup(ret));
-		    }
-	  }
+		if (ret && ewl_config.theme.cache) {
+			if (!cached_theme_data)
+				cached_theme_data =
+					ewd_hash_new(ewd_str_hash,
+						     ewd_str_compare);
+			ewd_hash_set(cached_theme_data, k, strdup(ret));
+		}
+	}
 
 	if (ret)
 		ret2 = strdup(ret);
@@ -264,7 +252,7 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 int
 ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 {
-	int ret = 0;
+	int             ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);

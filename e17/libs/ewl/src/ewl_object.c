@@ -13,48 +13,23 @@ ewl_object_init(Ewl_Object * o)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	MINIMUM_W(o) = 1;
-	MINIMUM_H(o) = 1;
-	MAXIMUM_W(o) = 1 << 30;
-	MAXIMUM_H(o) = 1 << 30;
+	/*
+	 * Set the default minimum sizes.
+	 */
+	MINIMUM_W(o) = EWL_OBJECT_MIN_SIZE;
+	MINIMUM_H(o) = EWL_OBJECT_MIN_SIZE;
 
-	CURRENT_W(o) = REQUEST_W(o) = 100;
-	CURRENT_H(o) = REQUEST_H(o) = 100;
+	/*
+	 * Set the default maximum sizes.
+	 */
+	MAXIMUM_W(o) = EWL_OBJECT_MAX_SIZE;
+	MAXIMUM_H(o) = EWL_OBJECT_MAX_SIZE;
 
+	/*
+	 * Set the default fill policy and alignment for the object.
+	 */
 	o->fill_policy = EWL_FILL_POLICY_NORMAL;
 	o->alignment = EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
-}
-
-/**
- * ewl_object_set_current_geometry - set the current size and posiiton of object
- * @o: the object to change
- * @x: the new x coordinate of the object
- * @y: the new y coordinate of the object
- * @w: the new width of the object
- * @h: the new height of the object
- *
- * Returns no value. Sets the geometry of @o to the size and position
- * specified.
- */
-void
-ewl_object_set_current_geometry(Ewl_Object * o, int x, int y, int w, int h)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	CURRENT_X(o) = x;
-	CURRENT_Y(o) = y;
-	CURRENT_W(o) = w;
-	CURRENT_H(o) = h;
-
-	if (CURRENT_W(o) < MINIMUM_W(o))
-		CURRENT_W(o) = MINIMUM_W(o);
-	else if (w > MAXIMUM_W(o))
-		CURRENT_W(o) = MAXIMUM_W(o);
-
-	if (CURRENT_H(o) < MINIMUM_H(o))
-		CURRENT_H(o) = MINIMUM_H(o);
-	else if (w > MAXIMUM_H(o))
-		CURRENT_H(o) = MAXIMUM_H(o);
 }
 
 /**
@@ -69,42 +44,18 @@ ewl_object_set_current_geometry(Ewl_Object * o, int x, int y, int w, int h)
  * integers pointed to by the parameters @x, @y, @w, and @h.
  */
 void
-ewl_object_get_current_geometry(Ewl_Object * o,
-				int *x, int *y, int *w, int *h)
+ewl_object_get_current_geometry(Ewl_Object * o, int *x, int *y, int *w, int *h)
 {
 	DCHECK_PARAM_PTR("o", o);
 
 	if (x)
-		*x = o->current.x;
+		*x = CURRENT_X(o);
 	if (y)
-		*y = o->current.y;
+		*y = CURRENT_Y(o);
 	if (w)
-		*w = o->current.w;
+		*w = CURRENT_W(o);
 	if (h)
-		*h = o->current.h;
-}
-
-/**
- * ewl_object_set_current_size - set the current size of the object
- * @o: the object to change size
- * @w: the new width of the object
- * @h: the new height of the object
- *
- * Returns no value. The dimensions of the object @o are set to the values of
- * the parameters @w, and @h unless these values are greater than the objects
- * maximum value or smaller than the objects minimum value. If they are
- * outside these bounds, the size is not altered.
- */
-void
-ewl_object_set_current_size(Ewl_Object * o, int w, int h)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	if (w >= MINIMUM_W(o) && w <= MAXIMUM_W(o))
-		o->current.w = w;
-
-	if (h >= MINIMUM_H(o) && h <= MAXIMUM_H(o))
-		o->current.h = h;
+		*h = CURRENT_H(o);
 }
 
 /**
@@ -122,9 +73,191 @@ ewl_object_get_current_size(Ewl_Object * o, int *w, int *h)
 	DCHECK_PARAM_PTR("o", o);
 
 	if (w)
-		*w = o->current.w;
+		*w = CURRENT_W(o);
 	if (h)
-		*h = o->current.h;
+		*h = CURRENT_H(o);
+}
+
+/**
+ * ewl_object_get_current_w - get the current width of the object
+ * @ob: the object to retrieve the current width
+ *
+ * Returns the current width of the object @ob.
+ */
+int
+ewl_object_get_current_w(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(CURRENT_W(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_get_current_h - get the current height of the object
+ * @ob: the object to retrieve the current height
+ *
+ * Returns the current height of the object @ob.
+ */
+int
+ewl_object_get_current_h(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(CURRENT_H(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_set_preferred_size - set the preferred size of the object
+ * @o: the object to change size
+ * @w: the new width of the object
+ * @h: the new height of the object
+ *
+ * Returns no value. The dimensions of the object @o are set to the values of
+ * the parameters @w, and @h unless these values are greater than the objects
+ * maximum value or smaller than the objects minimum value. If they are
+ * outside these bounds, the size is not altered.
+ */
+void
+ewl_object_set_preferred_size(Ewl_Object * o, int w, int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("o", o);
+
+	ewl_object_set_preferred_w(o, w);
+	ewl_object_set_preferred_h(o, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_set_preferred_w - set the preferred width of the object
+ * @o: the object to change preferred width
+ *
+ * Returns no value. Sets the preferred of @o width to @w or as close as
+ * possible according to the bounds.
+ */
+void
+ewl_object_set_preferred_w(Ewl_Object * o, int w)
+{
+	int             old_size;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("o", o);
+
+	w += INSET_LEFT(o) + INSET_RIGHT(o);
+
+	if (w == o->preferred.w)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Store the previous size.
+	 */
+	old_size = o->preferred.w;
+
+	/*
+	 * Set the current size to the new preferred size.
+	 */
+	o->preferred.w = w;
+
+	/*
+	 * Now update the widgets parent of the change in size.
+	 */
+	ewl_container_resize_child(EWL_WIDGET(o),
+				   o->preferred.w - old_size,
+				   EWL_ORIENTATION_HORIZONTAL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_set_preferred_h - set the preferred height of the object
+ * @o: the object to change preferred height 
+ *
+ * Returns no value. Sets the preferred of @o height to @w or as close as
+ * possible according to the bounds.
+ */
+void
+ewl_object_set_preferred_h(Ewl_Object * o, int h)
+{
+	int             old_size;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("o", o);
+
+	h += INSET_TOP(o) + INSET_BOTTOM(o);
+
+	if (h == o->preferred.h)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Store the previous size
+	 */
+	old_size = o->preferred.h;
+
+	/*
+	 * Set the current size to the new preferred size
+	 */
+	o->preferred.h = h;
+
+	/*
+	 * Notify the parent widgets of the change in size.
+	 */
+	ewl_container_resize_child(EWL_WIDGET(o),
+				   o->preferred.h - old_size,
+				   EWL_ORIENTATION_VERTICAL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_get_preferred_size - retrieve the preferred size of an object
+ * @o: the object to retrieve size information
+ * @w: a pointer to the integer to store the width of the object
+ * @h: a pointer to the integer to store the height of the object
+ *
+ * Returns no value. Stores the width and height of object @o into @w and @h
+ * respectively.
+ */
+void
+ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	if (w)
+		*w = o->preferred.w;
+	if (h)
+		*h = o->preferred.h;
+}
+
+/**
+ * ewl_object_get_preferred_w - get the preferred width of the object
+ * @ob: the object to retrieve the preferred width
+ *
+ * Returns the preferred width of the object @ob.
+ */
+int
+ewl_object_get_preferred_w(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(o->preferred.w, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_get_preferred_h - get the preferred height of the object
+ * @ob: the object to retrieve the preferred height
+ *
+ * Returns the preferred height of the object @ob.
+ */
+int
+ewl_object_get_preferred_h(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(o->preferred.h, DLEVEL_STABLE);
 }
 
 /**
@@ -136,18 +269,17 @@ ewl_object_get_current_size(Ewl_Object * o, int *w, int *h)
  * @h: the height to request be applied to the object
  *
  * Returns no value. The given geometry is requested to be applied to the
- * object @o at a later time. This is the usual method for requesting a new
- * geometry for an object.
+ * object @o. This is the usual method for requesting a new geometry for an
+ * object.
  */
 void
 ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w, int h)
 {
-	DCHECK_PARAM_PTR("o", o);
-
-	o->request.x = x;
-	o->request.y = y;
-	o->request.w = w;
-	o->request.h = h;
+	/*
+	 * Pass the parameters on to the appropriate object request functions.
+	 */
+	ewl_object_request_position(o, x, y);
+	ewl_object_request_size(o, w, h);
 }
 
 
@@ -164,15 +296,13 @@ ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w, int h)
 void
 ewl_object_request_size(Ewl_Object * o, int w, int h)
 {
-	DCHECK_PARAM_PTR("o", o);
-
-	o->request.w = w;
-	o->request.h = h;
+	ewl_object_request_w(o, w);
+	ewl_object_request_h(o, h);
 }
 
 
 /**
- * ewl_object_request_size - request a new position be applied to an object
+ * ewl_object_request_position - request a new position be applied to an object
  * @o: the object to request a new size
  * @x: the x coordinate to request be applied to the object
  * @y: the y coordinate to request be applied to the object
@@ -184,10 +314,8 @@ ewl_object_request_size(Ewl_Object * o, int w, int h)
 void
 ewl_object_request_position(Ewl_Object * o, int x, int y)
 {
-	DCHECK_PARAM_PTR("o", o);
-
-	o->request.x = x;
-	o->request.y = y;
+	ewl_object_request_x(o, x);
+	ewl_object_request_y(o, y);
 }
 
 /**
@@ -203,7 +331,7 @@ ewl_object_request_x(Ewl_Object * o, int x)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	o->request.x = x;
+	CURRENT_X(o) = x;
 }
 
 
@@ -220,7 +348,7 @@ ewl_object_request_y(Ewl_Object * o, int y)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	o->request.y = y;
+	CURRENT_Y(o) = y;
 }
 
 
@@ -232,12 +360,28 @@ ewl_object_request_y(Ewl_Object * o, int y)
  * Returns no value. The given width is stored to be applied to the
  * object @o at a later time.
  */
-inline void
+void
 ewl_object_request_w(Ewl_Object * o, int w)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	o->request.w = w;
+	/*
+	 * Bound the width by the preferred size first.
+	 */
+	if ((w < o->preferred.w && !(o->fill_policy & EWL_FILL_POLICY_HSHRINK))
+	    || (w > o->preferred.w
+		&& !(o->fill_policy & EWL_FILL_POLICY_HFILL)))
+		w = o->preferred.w;
+
+	/*
+	 * Now bound it by the min's and max's to achieve the desired size.
+	 */
+	if (w < MINIMUM_W(o))
+		CURRENT_W(o) = MINIMUM_W(o);
+	else if (w > MAXIMUM_W(o))
+		CURRENT_W(o) = MAXIMUM_W(o);
+	else
+		CURRENT_W(o) = w;
 }
 
 
@@ -249,59 +393,28 @@ ewl_object_request_w(Ewl_Object * o, int w)
  * Returns no value. The given height is stored to be applied to the
  * object @o at a later time.
  */
-inline void
+void
 ewl_object_request_h(Ewl_Object * o, int h)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	o->request.h = h;
-}
+	/*
+	 * Bound the width by the preferred size first.
+	 */
+	if ((h < o->preferred.h && !(o->fill_policy & EWL_FILL_POLICY_VSHRINK))
+	    || (h > o->preferred.h
+		&& !(o->fill_policy & EWL_FILL_POLICY_VFILL)))
+		h = o->preferred.h;
 
-/**
- * ewl_object_requested_geometry - retrieve an objects requested geometry
- * @o: the object to query for requested geometry
- * @x: a pointer to the integer to store the requested x coordinate
- * @y: a pointer to the integer to store the requested y coordinate
- * @w: a pointer to the integer to store the requested width
- * @h: a pointer to the integer to store the requested height
- *
- * Returns no value. The requested geometry of the object @o is stored in the
- * the integers pointed to by @x, @y, @w, and @h.
- */
-void
-ewl_object_requested_geometry(Ewl_Object * o, int *x, int *y, int *w, int *h)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	if (x)
-		*x = o->request.x;
-	if (y)
-		*y = o->request.y;
-	if (w)
-		*w = o->request.w;
-	if (h)
-		*h = o->request.h;
-}
-
-
-/**
- * ewl_object_requested_size - retrieve an objects requested size
- * @o: the object to query for requested size
- * @w: a pointer to the integer to store the requested width
- * @h: a pointer to the integer to store the requested height
- *
- * Returns no value. The requested size of the object @o is stored in the
- * the integers pointed to by @w and @h.
- */
-void
-ewl_object_requested_size(Ewl_Object * o, int *w, int *h)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	if (w)
-		*w = REQUEST_W(o);
-	if (h)
-		*h = REQUEST_H(o);
+	/*
+	 * Now bound it by the min's and max's to achieve the desired size.
+	 */
+	if (h < MINIMUM_H(o))
+		CURRENT_H(o) = MINIMUM_H(o);
+	else if (h > MAXIMUM_H(o))
+		CURRENT_H(o) = MAXIMUM_H(o);
+	else
+		CURRENT_H(o) = h;
 }
 
 /**
@@ -320,8 +433,8 @@ ewl_object_set_minimum_size(Ewl_Object * o, int w, int h)
 	DCHECK_PARAM_PTR("o", o);
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	o->minimum.w = w;
-	o->minimum.h = h;
+	ewl_object_set_minimum_width(o, w);
+	ewl_object_set_minimum_height(o, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -343,11 +456,12 @@ ewl_object_set_minimum_width(Ewl_Object * o, int w)
 	DCHECK_PARAM_PTR("o", o);
 
 	o->minimum.w = w;
-	if (CURRENT_W(o) < w)
-		CURRENT_W(o) = w;
 
 	if (MAXIMUM_W(o) < w)
 		MAXIMUM_W(o) = w;
+
+	if (CURRENT_W(o) < w)
+		CURRENT_W(o) = w;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -369,13 +483,44 @@ ewl_object_set_minimum_height(Ewl_Object * o, int h)
 	DCHECK_PARAM_PTR("o", o);
 
 	o->minimum.h = h;
-	if (CURRENT_H(o) < h)
-		CURRENT_H(o) = h;
 
 	if (MAXIMUM_H(o) < h)
 		MAXIMUM_H(o) = h;
 
+	if (CURRENT_H(o) < h)
+		CURRENT_H(o) = h;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_get_minimum_width - get the minimum width of an object
+ * @o: the object to get the minimum width
+ *
+ * Returns the minimum width of the object @o.
+ */
+inline int
+ewl_object_get_minimum_width(Ewl_Object * o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(MINIMUM_W(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_get_minimum_height - get the minimum height of an object
+ * @o: the object to get the minimum height
+ *
+ * Returns the minimum height of the object @o.
+ */
+inline int
+ewl_object_get_minimum_height(Ewl_Object * o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(MINIMUM_H(o), DLEVEL_STABLE);
 }
 
 /**
@@ -393,9 +538,9 @@ ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h)
 	DCHECK_PARAM_PTR("o", o);
 
 	if (w)
-		*w = o->minimum.w;
+		*w = MINIMUM_W(o);
 	if (h)
-		*h = o->minimum.h;
+		*h = MINIMUM_H(o);
 }
 
 
@@ -415,19 +560,8 @@ ewl_object_set_maximum_size(Ewl_Object * o, int w, int h)
 	DCHECK_PARAM_PTR("o", o);
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	o->maximum.w = w;
-	if (w < MINIMUM_W(o))
-		o->minimum.w = w;
-
-	if (CURRENT_W(o) > w)
-		CURRENT_W(o) = w;
-
-	o->maximum.h = h;
-	if (h < MINIMUM_H(o))
-		o->minimum.h = h;
-
-	if (CURRENT_H(o) > h)
-		CURRENT_H(o) = h;
+	ewl_object_set_maximum_width(o, w);
+	ewl_object_set_maximum_height(o, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -450,6 +584,12 @@ ewl_object_set_maximum_width(Ewl_Object * o, int w)
 
 	o->maximum.w = w;
 
+	if (CURRENT_W(o) > w)
+		CURRENT_W(o) = w;
+
+	if (MINIMUM_W(o) > w)
+		MINIMUM_W(o) = w;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -470,6 +610,12 @@ ewl_object_set_maximum_height(Ewl_Object * o, int h)
 	DCHECK_PARAM_PTR("o", o);
 
 	o->maximum.h = h;
+
+	if (MINIMUM_H(o) > h)
+		o->minimum.h = h;
+
+	if (CURRENT_H(o) > h)
+		CURRENT_H(o) = h;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -512,10 +658,10 @@ ewl_object_set_padding(Ewl_Object * o, int l, int r, int t, int b)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	o->padd.l = l;
-	o->padd.r = r;
-	o->padd.t = t;
-	o->padd.b = b;
+	o->pad.l = l;
+	o->pad.r = r;
+	o->pad.t = t;
+	o->pad.b = b;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -538,15 +684,182 @@ ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t, int *b)
 	DCHECK_PARAM_PTR("o", o);
 
 	if (l)
-		*l = o->padd.l;
+		*l = o->pad.l;
 	if (r)
-		*r = o->padd.r;
+		*r = o->pad.r;
 	if (t)
-		*t = o->padd.t;
+		*t = o->pad.t;
 	if (b)
-		*b = o->padd.b;
+		*b = o->pad.b;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_top_padding - get the top padding for the object
+ * @o: the ewl object to retrieve the top padding
+ *
+ * Returns the top padding for the object @o.
+ */
+int
+ewl_object_top_padding(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(PADDING_TOP(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_bottom_padding - get the bottom padding for the object
+ * @o: the ewl object to retrieve the bottom padding
+ *
+ * Returns the bottom padding for the object @o.
+ */
+int
+ewl_object_bottom_padding(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(PADDING_BOTTOM(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_left_padding - get the left padding for the object
+ * @o: the ewl object to retrieve the left padding
+ *
+ * Returns the left padding for the object @o.
+ */
+int
+ewl_object_left_padding(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(PADDING_LEFT(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_right_padding - get the right padding for the object
+ * @o: the ewl object to retrieve the right padding
+ *
+ * Returns the right padding for the object @o.
+ */
+int
+ewl_object_right_padding(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(PADDING_RIGHT(o), DLEVEL_STABLE);
+}
+
+
+/**
+ * ewl_object_set_insets - set the insets around an objects edges
+ * @o: the object to change the insets
+ * @l: the new insets along the left side of the object
+ * @r: the new insets along the right side of the object
+ * @t: the new insets along the top side of the object
+ * @b: the new insets along the bottom side of the object
+ *
+ * Returns no value. Stores the values of @l, @r, @t and @b into the object to
+ * be used for distancing it's edges from other widgets when laying out.
+ */
+void
+ewl_object_set_insets(Ewl_Object * o, int l, int r, int t, int b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
+
+	o->insets.l = l;
+	o->insets.r = r;
+	o->insets.t = t;
+	o->insets.b = b;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_get_insets - retrieve the edge insets of an object
+ * @o: the object to retrieve insets
+ * @l: a pointer to an integer that will receive the insets of the left side
+ * @r: a pointer to an integer that will receive the insets of the right side
+ * @t: a pointer to an integer that will receive the insets of the top side
+ * @b: a pointer to an integer that will receive the insets of the bottom side
+ *
+ * Returns no value. Stores the edge insets of the object @o into the integer
+ * pointer parameters passed in.
+ */
+void
+ewl_object_get_insets(Ewl_Object * o, int *l, int *r, int *t, int *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
+
+	if (l)
+		*l = o->insets.l;
+	if (r)
+		*r = o->insets.r;
+	if (t)
+		*t = o->insets.t;
+	if (b)
+		*b = o->insets.b;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_top_insets - get the top insets for the object
+ * @o: the ewl object to retrieve the top insets
+ *
+ * Returns the top insets for the object @o.
+ */
+int
+ewl_object_top_insets(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(INSET_TOP(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_bottom_insets - get the bottom insets for the object
+ * @o: the ewl object to retrieve the bottom insets
+ *
+ * Returns the bottom insets for the object @o.
+ */
+int
+ewl_object_bottom_insets(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(INSET_BOTTOM(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_left_insets - get the left insets for the object
+ * @o: the ewl object to retrieve the left insets
+ *
+ * Returns the left insets for the object @o.
+ */
+int
+ewl_object_left_insets(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(INSET_LEFT(o), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_object_right_insets - get the right insets for the object
+ * @o: the ewl object to retrieve the right insets
+ *
+ * Returns the right insets for the object @o.
+ */
+int
+ewl_object_right_insets(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(INSET_RIGHT(o), DLEVEL_STABLE);
 }
 
 /**
@@ -564,7 +877,6 @@ ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align)
 
 	o->alignment = align;
 }
-
 
 /**
  * ewl_object_set_fill_policy - change the fill policy of the specified object

@@ -1,26 +1,28 @@
 
 #include <Ewl.h>
 
-Ewd_List *ewl_window_list = NULL;
+Ewd_List       *ewl_window_list = NULL;
 
-static void __ewl_window_realize(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-static void __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_window_hide(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_window_destroy(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-static void __ewl_window_configure(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
+static void     __ewl_window_realize(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+static void     __ewl_window_show(Ewl_Widget * w, void *ev_data,
+				  void *user_data);
+static void     __ewl_window_hide(Ewl_Widget * w, void *ev_data,
+				  void *user_data);
+static void     __ewl_window_destroy(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+static void     __ewl_window_configure(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
 
 /**
  * ewl_window_new - allocate and initialize a new window
  *
  * Returns a new window on success, or NULL on failure.
  */
-Ewl_Widget *
+Ewl_Widget     *
 ewl_window_new()
 {
-	Ewl_Window *w;
+	Ewl_Window     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -41,10 +43,10 @@ ewl_window_new()
  * Returns the found ewl window on success, NULL on failure to find the
  * window.
  */
-Ewl_Window *
+Ewl_Window     *
 ewl_window_find_window(Window window)
 {
-	Ewl_Window *retwin;
+	Ewl_Window     *retwin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
@@ -64,23 +66,40 @@ ewl_window_find_window(Window window)
  *
  * Returns the found window on success, NULL on failure to find the window.
  */
-Ewl_Window *
+Ewl_Window     *
 ewl_window_find_window_by_evas_window(Window window)
 {
-	Ewl_Window *retwin;
+	Ewl_Window     *retwin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((retwin = ewd_list_next(ewl_window_list)) != NULL)
-	  {
-		  if (EWL_WIDGET(retwin)->evas_window == window)
-			  return retwin;
-	  }
+	while ((retwin = ewd_list_next(ewl_window_list)) != NULL) {
+		if (retwin->evas_window == window)
+			return retwin;
+	}
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_window_find_window_by_widget - find an ewl window by a widget inside
+ * @w: the widget to search for its window
+ *
+ * Returns the found window on success, NULL on failure to find the window.
+ */
+Ewl_Window     *
+ewl_window_find_window_by_widget(Ewl_Widget * w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	while (w->parent)
+		w = w->parent;
+
+	DRETURN_PTR(EWL_WINDOW(w), DLEVEL_STABLE);
 }
 
 /**
@@ -95,14 +114,14 @@ ewl_window_find_window_by_evas_window(Window window)
 void
 ewl_window_resize(Ewl_Widget * widget, int w, int h)
 {
-	Ewl_Window *win;
+	Ewl_Window     *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
 	win = EWL_WINDOW(widget);
 
-	ewl_object_set_current_size(EWL_OBJECT(widget), w, h);
+	ewl_object_request_size(EWL_OBJECT(widget), w, h);
 
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
@@ -193,7 +212,7 @@ ewl_window_get_geometry(Ewl_Window * win, int *x, int *y, int *w, int *h)
  * Returns no value. Changes the current size and position of the window.
  */
 void
-ewl_window_set_geometry(Ewl_Widget *widget, int x, int y, int w, int h)
+ewl_window_set_geometry(Ewl_Widget * widget, int x, int y, int w, int h)
 {
 	DCHECK_PARAM_PTR("widget", widget);
 
@@ -215,11 +234,10 @@ ewl_window_set_title(Ewl_Widget * w, char *title)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (strcmp(EWL_WINDOW(w)->title, title))
-	  {
-		  IF_FREE(EWL_WINDOW(w)->title);
-		  EWL_WINDOW(w)->title = strdup(title);
-	  }
+	if (strcmp(EWL_WINDOW(w)->title, title)) {
+		IF_FREE(EWL_WINDOW(w)->title);
+		EWL_WINDOW(w)->title = strdup(title);
+	}
 
 	if (!REALIZED(w))
 		return;
@@ -236,7 +254,7 @@ ewl_window_set_title(Ewl_Widget * w, char *title)
  * Returns a pointer to a newly allocated copy of the title, NULL on failure.
  * The returned title should be freed.
  */
-char *
+char           *
 ewl_window_get_title(Ewl_Widget * widget)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -278,15 +296,15 @@ ewl_window_set_borderless(Ewl_Widget * w)
 void
 ewl_window_move(Ewl_Widget * w, int x, int y)
 {
-	Ewl_Window *win;
+	Ewl_Window     *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	win = EWL_WINDOW(w);
 
-	REQUEST_X(w) = x;
-	REQUEST_Y(w) = y;
+	CURRENT_X(w) = x;
+	CURRENT_Y(w) = y;
 
 	CURRENT_X(w) = x;
 	CURRENT_Y(w) = y;
@@ -298,90 +316,27 @@ ewl_window_move(Ewl_Widget * w, int x, int y)
 }
 
 /**
- * ewl_window_floater_add - add a floating widget to a window
- * @w: the window to add a floating widget
- * @f: the floating widget to be added to the window
+ * ewl_window_get_child_at - find the child at given coordinates
+ * @win: the window to search for a child
+ * @x: the x coordinate to look for an intersecting child
+ * @y: the y coordinate to look for an intersecting child
  *
- * Returns no value. Adds a floating widget @f to the list of available floating
- * widgets for the window @w. 
+ * Returns the child found at the given coordinates @x, @y in the window @win.
  */
-void
-ewl_window_floater_add(Ewl_Window *w, Ewl_Floater *f)
+Ewl_Widget     *
+ewl_window_get_child_at(Ewl_Window * win, int x, int y)
 {
-	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("f", f);
-
-	if (!w->floaters)
-		w->floaters = ewd_list_new();
-
-	LAYER(f) = w->float_layer;
-	w->float_layer++;
-
-	ewd_list_prepend(w->floaters, f);
-
-	ewl_widget_configure(EWL_WIDGET(w));
-
-	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
-}
-
-/**
- * ewl_window_floater_remove - remove a floater from a window
- * @w: the window that contains the floater
- * @f: the floater to be removed
- *
- * Returns no value. Removes the floating widget from the window.
- */
-void
-ewl_window_floater_remove(Ewl_Window *w, Ewl_Floater *f)
-{
-	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("f", f);
-
-	if (!w->floaters)
-		DRETURN(DLEVEL_UNSTABLE);
-
-	ewd_list_goto(w->floaters, f);
-	ewd_list_remove(w->floaters);
-
-	ewl_widget_configure(EWL_WIDGET(w));
-
-	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
-}
-
-Ewl_Widget *
-ewl_window_get_child_at(Ewl_Window *win, int x, int y)
-{
-	Ewl_Widget *widget = NULL;
+	Ewl_Widget     *widget = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
 
 	/*
-	 * First check the window for any floaters that intersect
+	 * Do a recursive search in the window for a child at the given
+	 * coordinates.
 	 */
-	if (win->floaters) {
-		Ewl_Container *f;
-
-		ewd_list_goto_first(win->floaters);
-		while (!widget && (f = ewd_list_next(win->floaters))) {
-			widget = ewl_container_get_child_at_recursive(
-					EWL_CONTAINER(f), x, y);
-			if (widget == EWL_WIDGET(f))
-				widget = NULL;
-		}
-	}
-
-	/*
-	 * If no floating widgets matched, then find it in the normal layout
-	 */
-	if (!widget)
-		widget = ewl_container_get_child_at_recursive(
-				EWL_CONTAINER(win), x, y);
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(win), x, y);
 
 	DRETURN_PTR(widget, DLEVEL_STABLE);
 }
@@ -402,10 +357,9 @@ ewl_window_init(Ewl_Window * w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_widget_set_appearance(EWL_WIDGET(w),
-				  "/appearance/window/default");
-	ewl_object_set_current_size(EWL_OBJECT(w), 256, 256);
+	ewl_container_init(EWL_CONTAINER(w), "/appearance/window/default",
+			   NULL, NULL);
+	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 
 	w->title = strdup("EWL!");
@@ -426,7 +380,6 @@ ewl_window_init(Ewl_Window * w)
 			     __ewl_window_configure, NULL);
 
 	LAYER(w) = -1000;
-	w->float_layer = 1000;
 
 	ewd_list_append(ewl_window_list, w);
 
@@ -436,8 +389,8 @@ ewl_window_init(Ewl_Window * w)
 static void
 __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window *window;
-	char *font_path;
+	Ewl_Window     *window;
+	char           *font_path;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -456,40 +409,26 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	font_path = ewl_theme_font_path();
 
-	w->evas = evas_new_all(ecore_display_get(),
-			       window->window, 0, 0,
-			       CURRENT_W(w),
-			       CURRENT_H(w),
-			       ewl_config_get_render_method(),
-			       216, 1024 * 1024 * 2,
-			       1024 * 1024 * 5, font_path);
+	window->evas = evas_new_all(ecore_display_get(),
+				    window->window, 0, 0,
+				    CURRENT_W(w),
+				    CURRENT_H(w),
+				    ewl_config_get_render_method(),
+				    216, 1024 * 1024 * 2,
+				    1024 * 1024 * 5, font_path);
 
-	w->evas_window = evas_get_window(w->evas);
-	ecore_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
+	window->evas_window = evas_get_window(window->evas);
+	ecore_window_set_events(window->evas_window, XEV_KEY | XEV_BUTTON |
 				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
 				XEV_MOUSE_MOVE | XEV_FOCUS);
 
-	window->bg_rect = evas_add_rectangle(w->evas);
-	evas_set_color(w->evas, window->bg_rect, 0, 0, 0, 255);
-	evas_set_layer(w->evas, window->bg_rect, LAYER(w) - 1000);
-	evas_show(w->evas, window->bg_rect);
+	window->bg_rect = evas_add_rectangle(window->evas);
+	evas_set_color(window->evas, window->bg_rect, 0, 0, 0, 255);
+	evas_set_layer(window->evas, window->bg_rect, LAYER(w) - 1000);
+	evas_show(window->evas, window->bg_rect);
 
 	if (window->borderless)
 		ecore_window_hint_set_borderless(window->window);
-
-	/*
-	 * Reparent and realize floating widgets
-	 */
-	if (window->floaters) {
-		Ewl_Widget *f;
-
-		ewd_list_goto_first(window->floaters);
-		while ((f = EWL_WIDGET(ewd_list_next(window->floaters)))) {
-			ewl_widget_set_parent(f, w);
-			if (VISIBLE(f))
-				ewl_widget_realize(f);
-		}
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -507,7 +446,7 @@ __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
 		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
 
 	ecore_window_show(EWL_WINDOW(w)->window);
-	ecore_window_show(w->evas_window);
+	ecore_window_show(EWL_WINDOW(w)->evas_window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -518,7 +457,7 @@ __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
-	ecore_window_hide(widget->evas_window);
+	ecore_window_hide(EWL_WINDOW(widget)->evas_window);
 	ecore_window_hide(EWL_WINDOW(widget)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -527,7 +466,7 @@ __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 static void
 __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window *win;
+	Ewl_Window     *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -536,17 +475,13 @@ __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(win->title);
 
-	ecore_window_hide(w->evas_window);
+	ecore_window_hide(win->evas_window);
 	ecore_window_hide(win->window);
 
-	ecore_window_destroy(w->evas_window);
+	ecore_window_destroy(win->evas_window);
 	ecore_window_destroy(win->window);
 
 	IF_FREE(win->title);
-
-	if (win->floaters)
-		ewd_list_for_each(win->floaters,
-				EWD_FOR_EACH(ewl_widget_destroy));
 
 	if (ewd_list_goto(ewl_window_list, w))
 		ewd_list_remove(ewl_window_list);
@@ -557,28 +492,43 @@ __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window *win;
+	Ewl_Window     *win;
+	Ewl_Object     *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	win = EWL_WINDOW(w);
-	ewl_object_apply_requested(EWL_OBJECT(w));
 
-	if (win->bg_rect)
-	  {
-		  evas_move(w->evas, win->bg_rect, 0, 0);
-		  evas_resize(w->evas, win->bg_rect, CURRENT_W(w),
-			      CURRENT_H(w));
-	  }
+	if (win->bg_rect) {
+		evas_move(win->evas, win->bg_rect, 0, 0);
+		evas_resize(win->evas, win->bg_rect, CURRENT_W(w),
+			    CURRENT_H(w));
+	}
 
-	ecore_window_resize(w->evas_window, CURRENT_W(w), CURRENT_H(w));
-	evas_set_output_size(w->evas, CURRENT_W(w), CURRENT_H(w));
-	evas_set_output_viewport(w->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
+	ecore_window_resize(win->evas_window, CURRENT_W(w), CURRENT_H(w));
+	evas_set_output_size(win->evas, CURRENT_W(w), CURRENT_H(w));
+	evas_set_output_viewport(win->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
 
-	if (win->floaters)
-		ewd_list_for_each(win->floaters,
-				EWD_FOR_EACH(ewl_widget_configure));
+	/*
+	 * Configure each of the child widgets.
+	 */
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+		/*
+		 * Try to give the child the full size of the window from it's
+		 * base position. The object will constrict it based on the
+		 * fill policy.
+		 */
+		ewl_object_request_size(child,
+					CURRENT_W(w) - CURRENT_X(child),
+					CURRENT_H(w) - CURRENT_Y(child));
+
+		/*
+		 * Now configure the widget.
+		 */
+		ewl_widget_configure(EWL_WIDGET(child));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

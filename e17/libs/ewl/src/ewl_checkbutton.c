@@ -2,18 +2,19 @@
 #include <Ewl.h>
 
 
-void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
+void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
 
-void __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-void __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
-void __ewl_checkbutton_update_check(Ewl_Widget * w);
+void            __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data,
+					    void *user_data);
+void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+void            __ewl_checkbutton_update_check(Ewl_Widget * w);
 
-void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
+void            __ewl_box_configure(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
-void ewl_button_init(Ewl_Button * b, char *l);
+void            __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
+					       void *user_data);
+void            ewl_button_init(Ewl_Button * b, char *l);
 
 /**
  * ewl_checkbutton_new - allocate and initialize a new check button
@@ -21,7 +22,7 @@ void ewl_button_init(Ewl_Button * b, char *l);
  *
  * Returns the newly allocated checkbutton on success, NULL on failure.
  */
-Ewl_Widget *
+Ewl_Widget     *
 ewl_checkbutton_new(char *label)
 {
 	Ewl_CheckButton *b;
@@ -121,8 +122,8 @@ ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 void
 ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 {
-	Ewl_Button *b;
-	Ewl_Widget *w;
+	Ewl_Button     *b;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -131,6 +132,8 @@ ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_button_init(b, label);
 	ewl_widget_set_appearance(w, "/appearance/button/check");
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
+	ewl_object_set_preferred_size(EWL_OBJECT(w), 20, 20);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
@@ -148,7 +151,7 @@ ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 void
 __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Button *b;
+	Ewl_Button     *b;
 	Ewl_CheckButton *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -157,52 +160,48 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	b = EWL_BUTTON(w);
 	cb = EWL_CHECKBUTTON(w);
 
-	if (b->label_object)
-	  {
-		  if (MINIMUM_H(b->label_object) > CURRENT_H(w))
-		    {
-			    REQUEST_Y(b->label_object) = CURRENT_Y(w) + 17;
-			    MINIMUM_H(w) = MINIMUM_H(b->label_object);
-			    MAXIMUM_H(w) = MINIMUM_H(b->label_object);
-		    }
-		  else
-		    {
-			    REQUEST_Y(b->label_object) = CURRENT_Y(w);
-			    REQUEST_Y(b->label_object) +=
-				    (CURRENT_H(w) / 2) -
-				    (CURRENT_H(b->label_object) / 2);
-			    MINIMUM_H(w) = 17;
-			    MAXIMUM_H(w) = 17;
-		    }
+	if (b->label_object) {
+		if (MINIMUM_H(b->label_object) > CURRENT_H(w)) {
+			CURRENT_Y(b->label_object) = CURRENT_Y(w) + 17;
+			ewl_object_set_minimum_height(EWL_OBJECT(w),
+						      MINIMUM_H(b->
+								label_object));
+			ewl_object_set_maximum_height(EWL_OBJECT(w),
+						      MINIMUM_H(b->
+								label_object));
+		} else {
+			CURRENT_Y(b->label_object) = CURRENT_Y(w);
+			CURRENT_Y(b->label_object) += (CURRENT_H(w) / 2) -
+				(CURRENT_H(b->label_object) / 2);
+			MINIMUM_H(w) = 17;
+			MAXIMUM_H(w) = 17;
+		}
 
-		  MINIMUM_W(w) = 17 + CURRENT_W(b->label_object);
-		  MAXIMUM_W(w) = 17 + CURRENT_W(b->label_object);
+		MINIMUM_W(w) = 17 + CURRENT_W(b->label_object);
+		MAXIMUM_W(w) = 17 + CURRENT_W(b->label_object);
 
-		  if (cb->label_position == EWL_POSITION_LEFT)
-			  REQUEST_X(b->label_object) = REQUEST_X(w);
-		  else
-			  REQUEST_X(b->label_object) = CURRENT_X(w) + 17;
+		if (cb->label_position == EWL_POSITION_LEFT)
+			CURRENT_X(b->label_object) = CURRENT_X(w);
+		else
+			CURRENT_X(b->label_object) = CURRENT_X(w) + 17;
 
-		  ewl_widget_configure(b->label_object);
+		ewl_widget_configure(b->label_object);
 
-		  if (w->ebits_object)
-		    {
-			    if (cb->label_position == EWL_POSITION_LEFT)
-				    ebits_move(w->ebits_object,
-					       REQUEST_X(w) +
-					       CURRENT_W(b->label_object),
-					       REQUEST_Y(w));
-			    else
-				    ebits_move(w->ebits_object, REQUEST_X(w),
-					       REQUEST_Y(w));
+		if (w->ebits_object) {
+			if (cb->label_position == EWL_POSITION_LEFT)
+				ebits_move(w->ebits_object,
+					   CURRENT_X(w) +
+					   CURRENT_W(b->label_object),
+					   CURRENT_Y(w));
+			else
+				ebits_move(w->ebits_object, CURRENT_X(w),
+					   CURRENT_Y(w));
 
-		    }
-	  }
-	else
-	  {
-		  MAXIMUM_W(w) = 17;
-		  MAXIMUM_H(w) = 17;
-	  }
+		}
+	} else {
+		MAXIMUM_W(w) = 17;
+		MAXIMUM_H(w) = 17;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -211,7 +210,7 @@ void
 __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *cb;
-	int oc;
+	int             oc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -238,15 +237,14 @@ __ewl_checkbutton_update_check(Ewl_Widget * w)
 
 	cb = EWL_CHECKBUTTON(w);
 
-	if (w->ebits_object)
-	  {
-		  if (cb->checked)
-			  ebits_set_named_bit_state(w->ebits_object, "Check",
-						    "clicked");
-		  else
-			  ebits_set_named_bit_state(w->ebits_object, "Check",
-						    "normal");
-	  }
+	if (w->ebits_object) {
+		if (cb->checked)
+			ebits_set_named_bit_state(w->ebits_object, "Check",
+						  "clicked");
+		else
+			ebits_set_named_bit_state(w->ebits_object, "Check",
+						  "normal");
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

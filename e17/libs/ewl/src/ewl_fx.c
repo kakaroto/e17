@@ -8,12 +8,13 @@ static inline void __ewl_fx_func_start(Ewl_Widget * w, void *ev_data,
 static inline void __ewl_fx_func_stop(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 
-void __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
-					void *user_data);
+void            __ewl_fx_widget_appearance_changed(Ewl_Widget * w,
+						   void *ev_data,
+						   void *user_data);
 
 static Ewd_Hash *fx_protos = NULL;
 static Ewd_Hash *fx_timers = NULL;
-static int fx_group_id = -1;
+static int      fx_group_id = -1;
 
 
 /**
@@ -25,32 +26,42 @@ static int fx_group_id = -1;
 int
 ewl_fx_init(void)
 {
-	int count;
+	int             count;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/*
+	 * Create hash tables for tracking fx prototypes and timers.
+	 */
 	fx_protos = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 	fx_timers = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 
+	/*
+	 * Create a path group for searching for fx modules.
+	 */
 	fx_group_id = ewd_path_group_new("fx");
 
+	/*
+	 * Determine the number of paths that need to be added.
+	 */
 	count = ewl_config_get_int("system", "/fx/paths/count");
 
-	if (count)
-	  {
-		  char key[PATH_LEN];
-		  char *path;
-		  int i;
+	if (count) {
+		char            key[PATH_LEN];
+		char           *path;
+		int             i;
 
-		  for (i = 0; i < count; i++)
-		    {
-			    snprintf(key, PATH_LEN, "/fx/paths/%i", i);
+		/*
+		 * Loop through and add each path to the modules.
+		 */
+		for (i = 0; i < count; i++) {
+			snprintf(key, PATH_LEN, "/fx/paths/%i", i);
 
-			    path = ewl_config_get_str("system", key);
+			path = ewl_config_get_str("system", key);
 
-			    ewd_path_group_add(fx_group_id, path);
-		    }
-	  }
+			ewd_path_group_add(fx_group_id, path);
+		}
+	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -80,71 +91,109 @@ ewl_fx_deinit(void)
 void
 ewl_fx_init_widget(Ewl_Widget * w)
 {
-	char wname[PATH_LEN];
-	char key[PATH_LEN];
-	int count, i;
+	char            wname[PATH_LEN];
+	char            key[PATH_LEN];
+	int             count, i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	/*
+	 * Need to be notified when the widget changes appearance so that we
+	 * can reload the fx as needed.
+	 */
 	ewl_callback_append(w, EWL_CALLBACK_APPEARANCE_CHANGED,
 			    __ewl_fx_widget_appearance_changed, NULL);
 
-	if (!w->appearance)
-	  {
-		  D(DLEVEL_STABLE,
-		    "Widget %p does not have a appearance string\n", w);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * The appearance string is necessary for determining which fx apply
+	 * to this widget.
+	 */
+	if (!w->appearance) {
+		D(DLEVEL_STABLE,
+		  "Widget %p does not have a appearance string\n", w);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	if (strncmp(w->appearance, "/appearance/", 12))
-	  {
-		  D(DLEVEL_STABLE,
-		    "Widget %p has this:\n\n\t%s\n\nWierd appearance string\n",
-		    w, w->appearance);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * Check for an error in the appearance string.
+	 */
+	if (strncmp(w->appearance, "/appearance/", 12)) {
+		D(DLEVEL_STABLE,
+		  "Widget %p has this:\n\n\t%s\n\nWierd appearance string\n",
+		  w, w->appearance);
+		DRETURN(DLEVEL_STABLE);
+	}
 
+	/*
+	 * Determine the key for fx to load for this widget.
+	 */
 	sscanf(w->appearance, "/appearance/%[^/]/", wname);
 
+	/*
+	 * Now determine how many fx to apply to this widget.
+	 */
 	snprintf(key, PATH_LEN, "/user/%s/count", wname);
-
 	count = ewl_config_get_int("fx", key);
 
-	if (!count)
-	  {
-		  D(DLEVEL_STABLE, "No effects for widget %s", wname);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * No fx to apply, so our work is done.
+	 */
+	if (!count) {
+		D(DLEVEL_STABLE, "No effects for widget %s", wname);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	for (i = 0; i < count; i++)
-	  {
-		  char *name;
-		  int start, end;
-		  int cb_count, j;
+	/*
+	 * Load all of the fx for this widget.
+	 */
+	for (i = 0; i < count; i++) {
+		char           *name;
+		int             start, end;
+		int             cb_count, j;
 
-		  snprintf(key, PATH_LEN, "/user/%s/%i/name", wname, i);
-		  name = ewl_config_get_str("fx", key);
+		/*
+		 * Determine the name of the fx module to load.
+		 */
+		snprintf(key, PATH_LEN, "/user/%s/%i/name", wname, i);
+		name = ewl_config_get_str("fx", key);
 
-		  snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count",
-			   wname, i);
-		  cb_count = ewl_config_get_int("fx", key);
+		/*
+		 * Now determine the number of callbacks for that specific
+		 * effect.
+		 */
+		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count",
+			 wname, i);
+		cb_count = ewl_config_get_int("fx", key);
 
-		  for (j = 0; j < cb_count; j++)
-		    {
-			    snprintf(key, PATH_LEN,
-				     "/user/%s/%i/callbacks/%i/cb_start",
-				     wname, i, j);
-			    start = ewl_config_get_int("fx", key);
+		/*
+		 * Read in and setup each of the callbacks for the specified
+		 * effect module.
+		 */
+		for (j = 0; j < cb_count; j++) {
+			/*
+			 * Determine the starting event.
+			 */
+			snprintf(key, PATH_LEN,
+				 "/user/%s/%i/callbacks/%i/cb_start",
+				 wname, i, j);
+			start = ewl_config_get_int("fx", key);
 
-			    snprintf(key, PATH_LEN,
-				     "/user/%s/%i/callbacks/%i/cb_stop",
-				     wname, i, j);
-			    end = ewl_config_get_int("fx", key);
+			/*
+			 * Determine the ending event.
+			 */
+			snprintf(key, PATH_LEN,
+				 "/user/%s/%i/callbacks/%i/cb_stop",
+				 wname, i, j);
+			end = ewl_config_get_int("fx", key);
 
-			    ewl_fx_add(w, name, start, end);
-		    }
-	  }
+			/*
+			 * Now add the effect to the widget with the
+			 * correct name, starting event, and ending event.
+			 */
+			ewl_fx_add(w, name, start, end);
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -181,26 +230,37 @@ ewl_fx_add_proto(char *name,
 		 Ewl_FX_Timer_Function fx_cont,
 		 Ewl_FX_Function fx_stop, Ewl_FX_Modifies modifies)
 {
-	Ewl_FX_Proto *fxp;
+	Ewl_FX_Proto   *fxp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("name", name, -1);
 
+	/*
+	 * Make sure this effect prototype has not already been added.
+	 */
 	fxp = ewd_hash_get(fx_protos, name);
-
 	if (fxp)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
+	/*
+	 * Allocate a new effect prototype.
+	 */
 	fxp = NEW(Ewl_FX_Proto, 1);
 	ZERO(fxp, Ewl_FX_Proto, 1);
 
+	/*
+	 * Setup the prototype fields for the effect
+	 */
 	fxp->fx_start = fx_start;
 	fxp->fx_cont = fx_cont;
 	fxp->fx_stop = fx_stop;
 	fxp->modifies = modifies;
-	fxp->name = name;
+	fxp->name = strdup(name);
 
-	ewd_hash_set(fx_protos, name, fxp);
+	/*
+	 * Add it to the prototype table.
+	 */
+	ewd_hash_set(fx_protos, fxp->name, fxp);
 
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
@@ -226,14 +286,17 @@ ewl_fx_del_proto(char *name)
  *
  * Returns a pointer to the found fx prototype on success, NULL on failure.
  */
-Ewl_FX_Proto *
+Ewl_FX_Proto   *
 ewl_fx_proto_get(char *name)
 {
-	Ewl_FX_Proto *fxp;
+	Ewl_FX_Proto   *fxp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
+	/*
+	 * Find the prototype in the global table.
+	 */
 	fxp = ewd_hash_get(fx_protos, name);
 
 	DRETURN_PTR(fxp, DLEVEL_STABLE);
@@ -253,37 +316,53 @@ int
 ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	   Ewl_Callback_Type cb_stop)
 {
-	Ewl_FX_Proto *fxp;
+	Ewl_FX_Proto   *fxp;
 	Ewl_FX_Pending *pend;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, -1);
 	DCHECK_PARAM_PTR_RET("name", name, -1);
 
+	/*
+	 * Retrieve any prototypes for this effect.
+	 */
 	fxp = ewd_hash_get(fx_protos, name);
 
+	/*
+	 * Load the plugin if it hasn't already been loaded.
+	 */
 	if (!fxp)
 		fxp = ewl_fx_plugin_load(name);
 
+	/*
+	 * An error occurred loading the plugin.
+	 */
 	if (!fxp)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
+	/*
+	 * If the fx list hasn't been created, then create it.
+	 */
 	if (!w->fx)
 		w->fx = ewd_list_new();
-	else
-	  {
-		  ewd_list_goto_first(w->fx);
+	else {
+		ewd_list_goto_first(w->fx);
 
-		  while ((pend = ewd_list_next(w->fx)) != NULL)
-		    {
-			    if (!strcmp(pend->name, name) &&
-				pend->cb_start == cb_start &&
-				pend->cb_stop == cb_stop)
-				    DRETURN_INT(0, DLEVEL_STABLE);
+		/*
+		 * Loop through the list of fx and return if it's already on
+		 * the list.
+		 */
+		while ((pend = ewd_list_next(w->fx))) {
+			if (!strcmp(pend->name, name) &&
+			    pend->cb_start == cb_start &&
+			    pend->cb_stop == cb_stop)
+				DRETURN_INT(0, DLEVEL_STABLE);
+		}
+	}
 
-		    }
-	  }
-
+	/*
+	 * Allocate and setup the new fx pending structure.
+	 */
 	pend = NEW(Ewl_FX_Pending, 1);
 	ZERO(pend, Ewl_FX_Pending, 1);
 
@@ -293,12 +372,18 @@ ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 
 	ewd_list_append(w->fx, pend);
 
+	/*
+	 * Add the callback for for the start and stop functions.
+	 */
 	if (cb_start != EWL_CALLBACK_NONE)
 		ewl_callback_append(w, cb_start, __ewl_fx_func_start, pend);
 
 	if (cb_stop != EWL_CALLBACK_NONE)
 		ewl_callback_append(w, cb_stop, __ewl_fx_func_stop, pend);
 
+	/*
+	 * Stop the effect before the widget gets destroyed.
+	 */
 	if (cb_stop != EWL_CALLBACK_DESTROY)
 		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 				     __ewl_fx_func_stop, pend);
@@ -328,47 +413,66 @@ ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	DCHECK_PARAM_PTR_RET("w", w, -1);
 	DCHECK_PARAM_PTR_RET("name", name, -1);
 
+	/*
+	 * If there aren't any fx just return before doing anything.
+	 */
 	if (!w->fx || ewd_list_is_empty(w->fx))
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	ewd_list_goto_first(w->fx);
 
-	while ((pend = ewd_list_current(w->fx)) != NULL)
-	  {
-		  if (pend->name && !strcmp(pend->name, name) &&
-		      pend->cb_start == cb_start && pend->cb_stop == cb_stop)
-		    {
-			    ewd_list_remove(w->fx);
-			    break;
-		    }
+	/*
+	 * Search the list for the desired effect.
+	 */
+	while ((pend = ewd_list_current(w->fx)) != NULL) {
+		/*
+		 * If the effect is found remove it from the list.
+		 */
+		if (pend->name && !strcmp(pend->name, name) &&
+		    pend->cb_start == cb_start && pend->cb_stop == cb_stop) {
+			ewd_list_remove(w->fx);
+			break;
+		}
 
-		  ewd_list_next(w->fx);
-	  }
+		ewd_list_next(w->fx);
+	}
 
+	/*
+	 * No pending effect found, so return without further work.
+	 */
 	if (!pend)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
+	/*
+	 * Stop the effect if it's executing.
+	 */
 	if (pend->pending)
 		ewl_fx_stop(w, pend);
 
-	if (pend->qued)
-	  {
-		  Ewl_FX_Pending *pend2;
+	/*
+	 * Find any queued instances of this effect and remove them.
+	 */
+	if (pend->queued) {
+		Ewl_FX_Pending *pend2;
 
-		  ewd_list_goto_first(w->fx_ques);
+		ewd_list_goto_first(w->fx_queues);
 
-		  while ((pend2 = ewd_list_current(w->fx_ques)) != NULL)
-		    {
-			    if (pend2 == pend)
-			      {
-				      ewd_list_remove(w->fx_ques);
-				      break;
-			      }
+		/*
+		 * Remove all instances, as their may be multiple.
+		 */
+		while ((pend2 = ewd_list_current(w->fx_queues)) != NULL) {
+			if (pend2 == pend) {
+				ewd_list_remove(w->fx_queues);
+				break;
+			}
 
-			    ewd_list_next(w->fx_ques);
-		    }
-	  }
+			ewd_list_next(w->fx_queues);
+		}
+	}
 
+	/*
+	 * Free the data used by the effect.
+	 */
 	IF_FREE(pend->name);
 	FREE(pend);
 
@@ -379,7 +483,8 @@ ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
  * ewd_fx_del_all - remove all fx from the specified widget
  * @w: the widget to remove fx
  *
- * Returns no value. Any fx currently running are stopped.
+ * Returns no value. Any fx currently running are stopped and all fx are
+ * deleted from the widget.
  */
 void
 ewl_fx_del_all(Ewl_Widget * w)
@@ -389,29 +494,34 @@ ewl_fx_del_all(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->fx_ques)
-	  {
-		  ewd_list_destroy(w->fx_ques);
+	/*
+	 * Destroy the queues of fx.
+	 */
+	if (w->fx_queues) {
+		ewd_list_destroy(w->fx_queues);
+		w->fx_queues = NULL;
+	}
 
-		  w->fx_ques = NULL;
-	  }
+	/*
+	 * Remove all pending fx from the widget.
+	 */
+	if (w->fx && !ewd_list_is_empty(w->fx)) {
+		while ((pend = ewd_list_remove_last(w->fx))) {
+			/*
+			 * Delete the callbacks associated with the fx.
+			 */
+			if (pend->cb_start != EWL_CALLBACK_NONE)
+				ewl_callback_del(w, pend->cb_start,
+						 __ewl_fx_func_start);
 
-	if (w->fx && !ewd_list_is_empty(w->fx))
-	  {
-		  while ((pend = ewd_list_remove_last(w->fx)) != NULL)
-		    {
-			    if (pend->cb_start != EWL_CALLBACK_NONE)
-				    ewl_callback_del(w, pend->cb_start,
-						     __ewl_fx_func_start);
+			if (pend->cb_stop != EWL_CALLBACK_NONE)
+				ewl_callback_del(w, pend->cb_stop,
+						 __ewl_fx_func_stop);
+		}
 
-			    if (pend->cb_stop != EWL_CALLBACK_NONE)
-				    ewl_callback_del(w, pend->cb_stop,
-						     __ewl_fx_func_stop);
-		    }
-
-		  ewd_list_destroy(w->fx);
-		  w->fx = NULL;
-	  }
+		ewd_list_destroy(w->fx);
+		w->fx = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -432,40 +542,48 @@ void
 ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 		 int value_span, void *data)
 {
-	Ewl_FX_Timer *timer;
+	Ewl_FX_Timer   *timer;
 	Ewl_FX_Pending *pend = NULL;
-	Ewl_FX_Proto *fxp;
-	int l, ufps;
+	Ewl_FX_Proto   *fxp;
+	int             l, ufps;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("name", name);
 
+	/*
+	 * Find the prototype for this effect. This is necessary to go any
+	 * further.
+	 */
 	fxp = ewd_hash_get(fx_protos, name);
 
-	if (!fxp)
-	  {
-		  D(DLEVEL_STABLE,
-		    "Can't add timer since fx proto %s does not exist.\n",
-		    name);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	if (!fxp) {
+		D(DLEVEL_STABLE,
+		  "Can't add timer since fx proto %s does not exist.\n", name);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	if (!w->fx || ewd_list_is_empty(w->fx))
-	  {
-		  D(DLEVEL_STABLE,
-		    "Trying to add effect to a widget which doesnt"
-		    "want have info about the effect %s\n", name);
-	  }
-	else
-	  {
-		  ewd_list_goto_first(w->fx);
+	/*
+	 * Make sure the widget has been initialized.
+	 */
+	if (!w->fx || ewd_list_is_empty(w->fx)) {
+		D(DLEVEL_STABLE,
+		  "Trying to add effect to a widget which doesnt"
+		  "want have info about the effect %s\n", name);
+	} else {
+		/*
+		 * Find the specified effect on the fx list.
+		 */
+		ewd_list_goto_first(w->fx);
 
-		  while ((pend = ewd_list_next(w->fx)) != NULL)
-			  if (!strcmp(pend->name, name))
-				  break;
-	  }
+		while ((pend = ewd_list_next(w->fx)) != NULL)
+			if (!strcmp(pend->name, name))
+				break;
+	}
 
+	/*
+	 * Allocate a timer for performing the effect.
+	 */
 	timer = NEW(Ewl_FX_Timer, 1);
 	ZERO(timer, Ewl_FX_Timer, 1);
 
@@ -477,22 +595,31 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 	if (ufps && ufps < fps)
 		fps = ufps;
 
+	/*
+	 * Prepare the timer for use by the Ecore timer loop.
+	 */
 	timer->widget = w;
 	timer->func = fxp->fx_cont;
-	timer->interval = 1 / (float)fps;
+	timer->interval = 1 / (float) fps;
 	timer->count = 0;
 	timer->hits = timeout * fps;
-	timer->step = (float)value_span / (timer->hits + 0.5);
+	timer->step = (float) value_span / (timer->hits + 0.5);
 	timer->data = data;
 	timer->pend = pend;
 
+	/*
+	 * Give the timer a name that is unique to the widget. In this case,
+	 * the name of the effect concatenated with the address of the widget.
+	 */
 	l = strlen(name);
 	l += 20;
-
 	timer->name = NEW(char, l);
 
 	snprintf(timer->name, l, "%s%p", name, w);
 
+	/*
+	 * Start the timer and add it to the table of timers.
+	 */
 	ecore_add_event_timer(timer->name, timer->interval,
 			      __ewl_fx_timer_func, 0, timer);
 
@@ -511,8 +638,8 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 void
 ewl_fx_timer_del(Ewl_Widget * w, char *name)
 {
-	Ewl_FX_Timer *timer;
-	char name2[PATH_LEN];
+	Ewl_FX_Timer   *timer;
+	char            name2[PATH_LEN];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -522,25 +649,27 @@ ewl_fx_timer_del(Ewl_Widget * w, char *name)
 
 	D(DLEVEL_STABLE, "attempting to remove %s", name2);
 
+	/*
+	 * Check to see if the timer is on the table. If not, then we can't
+	 * remove it.
+	 */
 	timer = ewd_hash_remove(fx_timers, name2);
+	if (!timer) {
+		D(DLEVEL_STABLE,
+		  "Can't remove timer %s since it does not exists\n", name2);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	if (!timer)
-	  {
-		  D(DLEVEL_STABLE,
-		    "Can't remove timer %s since it does not exists\n",
-		    name2);
-		  DRETURN(DLEVEL_STABLE);
-	  }
-
+	/*
+	 * Stop the timer from running.
+	 */
 	ecore_del_event_timer(timer->name);
 
-	timer->widget = NULL;
-	timer->func = NULL;
-	timer->step = 0.0;
-	timer->interval = 0.0;
-	timer->count = 0;
-	timer->data = NULL;
+	/*
+	 * Free the memory used by the timer.
+	 */
 	FREE(timer->name);
+	FREE(timer);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -559,22 +688,28 @@ ewl_fx_timer_del(Ewl_Widget * w, char *name)
 void
 ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 {
+	Ewl_Window     *win;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->evas && w->fx_clip_box)
-		evas_get_color(w->evas, w->fx_clip_box, r, g, b, a);
-	else
-	  {
-		  if (r)
-			  *r = -1;
-		  if (g)
-			  *g = -1;
-		  if (b)
-			  *b = -1;
-		  if (a)
-			  *a = -1;
-	  }
+	win = ewl_window_find_window_by_widget(w);
+
+	/*
+	 * Once the widget is realized, grab the color of it's fx clip box.
+	 */
+	if (win->evas && w->fx_clip_box)
+		evas_get_color(win->evas, w->fx_clip_box, r, g, b, a);
+	else {
+		if (r)
+			*r = -1;
+		if (g)
+			*g = -1;
+		if (b)
+			*b = -1;
+		if (a)
+			*a = -1;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -593,11 +728,18 @@ ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 void
 ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 {
+	Ewl_Window     *win;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->evas && w->fx_clip_box)
-		evas_set_color(w->evas, w->fx_clip_box, r, g, b, a);
+	win = ewl_window_find_window_by_widget(w);
+
+	/*
+	 * Change the color of the fx clip box if the widget is realized.
+	 */
+	if (win->evas && w->fx_clip_box)
+		evas_set_color(win->evas, w->fx_clip_box, r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -608,36 +750,49 @@ ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
  *
  * Returns a pointer to the fx prototype on success, NULL on failure.
  */
-Ewl_FX_Proto *
+Ewl_FX_Proto   *
 ewl_fx_plugin_load(char *name)
 {
-	Ewd_Plugin *plugin;
+	Ewd_Plugin     *plugin;
 	Ewl_FX_Load_Function load;
-	Ewl_FX_Proto *fxp = NULL;
+	Ewl_FX_Proto   *fxp = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
+	/*
+	 * Search the fx_group_id paths to find the plugin, if not found, then
+	 * we can't start it.
+	 */
 	plugin = ewd_plugin_load(fx_group_id, name);
 
-	if (!plugin)
-	  {
-		  DWARNING("Could not load fx plugin %s.\n", name);
-		  DRETURN_INT(0, DLEVEL_STABLE);
-	  }
+	if (!plugin) {
+		DWARNING("Could not load fx plugin %s.\n", name);
+		DRETURN_INT(0, DLEVEL_STABLE);
+	}
 
+	/*
+	 * Attempt to find the load function from that plugin, and call it to
+	 * get the prototype for the effect..
+	 */
 	load = ewd_plugin_call(plugin, "load");
 
 	if (load)
 		fxp = load();
 
-	if (!fxp)
-	  {
-		  DWARNING("Symbol load() failed to be called in plugin %s\n"
-			   "Please contact the author.\n", name);
-		  DRETURN_INT(0, DLEVEL_STABLE);
-	  }
+	/*
+	 * If no prototype was returned, or no load function was found, stop
+	 * trying to use this effect.
+	 */
+	if (!fxp) {
+		DWARNING("Symbol load() failed to be called in plugin %s\n"
+			 "Please contact the author.\n", name);
+		DRETURN_INT(0, DLEVEL_STABLE);
+	}
 
+	/*
+	 * Add the prototype plugin to the hash table.
+	 */
 	fxp->plugin = plugin;
 	ewd_hash_set(fx_protos, name, fxp);
 
@@ -650,13 +805,16 @@ ewl_fx_plugin_load(char *name)
  *
  * Returns a list of available plugins on success, NULL on failure.
  */
-Ewd_List *
+Ewd_List       *
 ewl_fx_get_available(void)
 {
-	Ewd_List *avail;
+	Ewd_List       *avail;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/*
+	 * Get a list of all available paths in fx_group_id.
+	 */
 	avail = ewd_path_group_available(fx_group_id);
 
 	DRETURN_PTR(avail, DLEVEL_STABLE);
@@ -673,63 +831,68 @@ void
 ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
 {
 	Ewl_FX_Pending *pend2;
-	Ewl_FX_Proto *proto, *proto2;
+	Ewl_FX_Proto   *proto, *proto2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("pend", pend);
 
-	/* We don't wan't to start the effect if :
+	/*
+	 * We don't wan't to start the effect if :
 	 * a) It's pending allready.
-	 * b) It's qued allready.
+	 * b) It's queued allready.
 	 */
 	if (!w->fx || ewd_list_is_empty(w->fx) || pend->pending)
 		DRETURN(DLEVEL_STABLE);
 
-	/* Fetch the requested effect proto */
+	/*
+	 * Fetch the requested effect proto
+	 */
 	proto = ewd_hash_get(fx_protos, pend->name);
 
 	ewd_list_goto_first(w->fx);
 
-	/* Now find out what other effects are pending
-	 * if we allready have similiar effects pending we want
+	/*
+	 * Now find out what other effects are pending
+	 * if we already have similiar effects pending we want
 	 * to que this one to start after the other one(s) stops.
 	 */
-	while ((pend2 = ewd_list_next(w->fx)) != NULL)
-	  {
-		  proto2 = ewd_hash_get(fx_protos, pend2->name);
+	while ((pend2 = ewd_list_next(w->fx)) != NULL) {
+		proto2 = ewd_hash_get(fx_protos, pend2->name);
 
-		  if (!pend2->pending)
-			  continue;
+		if (!pend2->pending)
+			continue;
 
-		  if (!(proto->modifies & proto2->modifies))
-			  continue;
+		if (!(proto->modifies & proto2->modifies))
+			continue;
 
-		  /* The current effect is either :
-		   * a) pending.
-		   * b) qued, if this is the case we know there are allready
-		   *    a pending effect that wants to modify the same thing
-		   *    and there is no longer any reason traversing the list
-		   *    anymore, just add it to the que.
-		   */
-		  pend->qued = 1;
+		/*
+		 * The current effect is either :
+		 * a) pending.
+		 * b) queued, if this is the case we know there is already
+		 *    a pending effect that wants to modify the same thing
+		 *    and there is no longer any reason to traverse the list,
+		 *    just add it to the que.
+		 */
+		pend->queued = 1;
 
-		  if (!w->fx_ques)
-			  w->fx_ques = ewd_list_new();
+		if (!w->fx_queues)
+			w->fx_queues = ewd_list_new();
 
-		  ewd_list_append(w->fx_ques, pend);
-		  break;
-	  }
+		ewd_list_append(w->fx_queues, pend);
+		break;
+	}
 
-	/* Ok traversing the list of effects we didn't find any effect
+	/*
+	 * Ok traversing the list of effects we didn't find any effect
 	 * that would interfear with this effect, so just now just start it
-	 * and mark it pending */
-	if (!pend->qued)
-	  {
-		  pend->pending = 1;
+	 * and mark it pending
+	 */
+	if (!pend->queued) {
+		pend->pending = 1;
 
-		  proto->fx_start(w);
-	  }
+		proto->fx_start(w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -740,211 +903,273 @@ ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
  * @pend: the pending effect to stop.
  *
  * Returns no value. Here we stop the pending effect and search through
- * qued effects and start matching effects and remove them from the que list.
+ * queued effects and start matching effects and remove them from the que list.
  */
 void
 ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend)
 {
 	Ewl_FX_Pending *pend2, *pend3;
-	Ewl_FX_Proto *proto, *proto2, *proto3;
+	Ewl_FX_Proto   *proto, *proto2, *proto3;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("pend", pend);
 
+	/*
+	 * Make sure all the necessary data structures have been setup,
+	 * otherwise it's pointless to be here.
+	 */
 	if (!w->fx || ewd_list_is_empty(w->fx) ||
-	    (!pend->pending && !pend->qued))
+	    (!pend->pending && !pend->queued))
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Retrieve the prototype for this pending effect.
+	 */
 	pend->pending = 0;
-
 	proto = ewd_hash_get(fx_protos, pend->name);
 
-	if (!proto)		/* bad bad */
+	if (!proto)
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Call the stop function for that particular prototype.
+	 */
 	proto->fx_stop(w);
 
-	if (!w->fx_ques || ewd_list_is_empty(w->fx_ques))
+	/*
+	 * If there aren't any queued fx, our job is done.
+	 */
+	if (!w->fx_queues || ewd_list_is_empty(w->fx_queues))
 		DRETURN(DLEVEL_STABLE);
 
-	if (pend->qued && ewd_list_goto(w->fx_ques, pend))
-	  {
-		  ewd_list_remove(w->fx_ques);
-		  pend->qued = 0;
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * Remove pend from the already queued fx if it is on the queue.
+	 */
+	if (pend->queued && ewd_list_goto(w->fx_queues, pend)) {
+		ewd_list_remove(w->fx_queues);
+		pend->queued = 0;
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	ewd_list_goto_first(w->fx_ques);
+	/*
+	 * Search all of the fx queues for the deleted prototype.
+	 */
+	ewd_list_goto_first(w->fx_queues);
+	while ((pend2 = ewd_list_current(w->fx_queues)) != NULL) {
+		proto2 = ewd_hash_get(fx_protos, pend2->name);
 
-	while ((pend2 = ewd_list_current(w->fx_ques)) != NULL)
-	  {
-		  proto2 = ewd_hash_get(fx_protos, pend2->name);
+		/*
+		 * If they modify same thing it may be possible this
+		 * can be the one we should start.
+		 * Otherwise continue searching.
+		 */
+		if (proto->modifies & proto2->modifies) {
+			ewd_list_goto_first(w->fx);
 
-		  /* If they modify same thing it may be possible this
-		   * can be the one we should start.
-		   * Otherwise continue searching.*/
-		  if (proto->modifies & proto2->modifies)
-		    {
-			    ewd_list_goto_first(w->fx);
+			while ((pend3 = ewd_list_next(w->fx)) != NULL) {
+				if (!pend3->pending || pend3 == pend)
+					continue;
 
-			    while ((pend3 = ewd_list_next(w->fx)) != NULL)
-			      {
-				      if (!pend3->pending || pend3 == pend)
-					      continue;
+				proto3 = ewd_hash_get(fx_protos, pend3->name);
 
-				      proto3 = ewd_hash_get(fx_protos,
-							    pend3->name);
+				/* If they match we do not want to
+				 * start the queued effect because they interfear*/
+				if (proto3->modifies & proto2->modifies)
+					continue;
 
-				      /* If they match we do not want to
-				       * start the qued effect because they interfear*/
-				      if (proto3->modifies & proto2->modifies)
-					      continue;
+				/* Reaching this far means we don't
+				 * interfear with any other effects pending
+				 * next step is to remove the effect from the
+				 * que and start it.
+				 */
+				break;
+			}
 
-				      /* Reaching this far means we don't
-				       * interfear with any other effects pending
-				       * next step is to remove the effect from the
-				       * que and start it.
-				       */
-				      break;
-			      }
+			/* Remove the effect from the que and start it. */
+			if (pend3) {
+				ewd_list_remove(w->fx_queues);
 
-			    /* Remove the effect from the que and start it. */
-			    if (pend3)
-			      {
-				      ewd_list_remove(w->fx_ques);
+				pend2->queued = 0;
 
-				      pend2->qued = 0;
+				ewl_fx_start(w, pend2);
 
-				      ewl_fx_start(w, pend2);
+				break;
+			}
+		}
 
-				      break;
-			      }
-		    }
-
-		  ewd_list_next(w->fx_ques);
-	  }
+		ewd_list_next(w->fx_queues);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
+/*
+ * The timer function determines when to stop the timer or add the ecore timer
+ * again when needed.
+ */
 static inline void
 __ewl_fx_timer_func(int val, void *data)
 {
-	Ewl_FX_Timer *timer;
+	Ewl_FX_Timer   *timer;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
 	timer = data;
 
+	/*
+	 * Do nothing if no function for the timer.
+	 */
 	if (!timer->func)
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Add the timer again if the number of times it's been executed has
+	 * not reached the total needed.
+	 */
 	if (!timer->hits || timer->count <= timer->hits)
 		ecore_add_event_timer(timer->name, timer->interval,
 				      __ewl_fx_timer_func, ++timer->count,
 				      timer);
 
+	/*
+	 * Execute the timer function.
+	 */
 	timer->func(timer);
 
+	/*
+	 * Stop the fx now that the number of hits has been reached.
+	 */
 	if (timer->hits && timer->count > timer->hits)
 		ewl_fx_stop(timer->widget, timer->pend);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Start the fx timer on the specified event.
+ */
 static inline void
 __ewl_fx_func_start(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
 
 	ewl_fx_start(w, user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Stop the fx timer on the specified event.
+ */
 static inline void
 __ewl_fx_func_stop(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
 
 	ewl_fx_stop(w, user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Change the appearance of the widget.
+ */
 void
 __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 				   void *user_data)
 {
-	char wname[PATH_LEN];
-	char key[PATH_LEN];
-	int count, i;
+	char            wname[PATH_LEN];
+	char            key[PATH_LEN];
+	int             count, i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ewl_fx_del_all(w);
 
-	if (!w->appearance)
-	  {
-		  DWARNING("Widget %p does not have a appearance string\n",
-			   w);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * Check for a blank appearance string which will cause a segfault
+	 * later.
+	 */
+	if (!w->appearance) {
+		DWARNING("Widget %p does not have a appearance string\n", w);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	if (strncmp(w->appearance, "/appearance/", 12))
-	  {
-		  DWARNING("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n", w, w->appearance);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * Check for a valid appearance string.
+	 */
+	if (strncmp(w->appearance, "/appearance/", 12)) {
+		DWARNING("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n", w, w->appearance);
+		DRETURN(DLEVEL_STABLE);
+	}
 
+	/*
+	 * Determine the number of fx that need to be setup for the widgets.
+	 */
 	sscanf(w->appearance, "/appearance/%[^/]/", wname);
 	snprintf(key, PATH_LEN, "/user/%s/count", wname);
-
 	count = ewl_config_get_int("fx", key);
 
-	if (!count)
-	  {
-		  D(DLEVEL_STABLE, "No effects for widget %s", wname);
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	/*
+	 * If no fx for this widget then return.
+	 */
+	if (!count) {
+		D(DLEVEL_STABLE, "No effects for widget %s", wname);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	for (i = 0; i < count; i++)
-	  {
-		  char *name;
-		  int start, end;
-		  int cb_count, j;
+	/*
+	 * Load each of the fx in the db.
+	 */
+	for (i = 0; i < count; i++) {
+		char           *name;
+		int             start, end;
+		int             cb_count, j;
 
-		  snprintf(key, PATH_LEN, "/user/%s/%i/name", wname, i);
-		  name = ewl_config_get_str("fx", key);
+		/*
+		 * Determine the name of the current effect being loaded.
+		 */
+		snprintf(key, PATH_LEN, "/user/%s/%i/name", wname, i);
+		name = ewl_config_get_str("fx", key);
 
-		  snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count",
-			   wname, i);
-		  cb_count = ewl_config_get_int("fx", key);
+		/*
+		 * Determine the number of callbacks for this effect.
+		 */
+		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count",
+			 wname, i);
+		cb_count = ewl_config_get_int("fx", key);
 
-		  for (j = 0; j < cb_count; j++)
-		    {
-			    snprintf(key, PATH_LEN,
-				     "/user/%s/%i/callbacks/%i/cb_start",
-				     wname, i, j);
-			    start = ewl_config_get_int("fx", key);
+		/*
+		 * For each count of the callbacks load them for the
+		 * widgets.
+		 */
+		for (j = 0; j < cb_count; j++) {
+			/*
+			 * Determine the event that starts this effect.
+			 */
+			snprintf(key, PATH_LEN,
+				 "/user/%s/%i/callbacks/%i/cb_start",
+				 wname, i, j);
+			start = ewl_config_get_int("fx", key);
 
-			    snprintf(key, PATH_LEN,
-				     "/user/%s/%i/callbacks/%i/cb_stop",
-				     wname, i, j);
-			    end = ewl_config_get_int("fx", key);
+			/*
+			 * Determine the event that stops this effect.
+			 */
+			snprintf(key, PATH_LEN,
+				 "/user/%s/%i/callbacks/%i/cb_stop",
+				 wname, i, j);
+			end = ewl_config_get_int("fx", key);
 
-			    ewl_fx_add(w, name, start, end);
-		    }
-	  }
+			/*
+			 * Register the effect for execution.
+			 */
+			ewl_fx_add(w, name, start, end);
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

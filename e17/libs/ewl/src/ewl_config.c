@@ -8,13 +8,13 @@
 
 static E_DB_File *config_db = NULL;
 
-static void __create_user_config(void);
-static void __create_fx_config(void);
+static void     __create_user_config(void);
+static void     __create_fx_config(void);
 
-static int __open_config_db(const char *name);
-static void __close_config_db(void);
+static int      __open_config_db(const char *name);
+static void     __close_config_db(void);
 
-static int __config_exists(char *name);
+static int      __config_exists(char *name);
 
 extern Ewd_List *ewl_window_list;
 
@@ -128,19 +128,18 @@ ewl_config_set_float(char *config, char *k, float v)
  * Returns the string value associated with key @k in the configuration
  * database on success, NULL on failure.
  */
-char *
+char           *
 ewl_config_get_str(char *config, char *k)
 {
-	char *ret = NULL;
+	char           *ret = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__open_config_db(config))
-	  {
-		  ret = e_db_str_get(config_db, k);
+	if (__open_config_db(config)) {
+		ret = e_db_str_get(config_db, k);
 
-		  __close_config_db();
-	  }
+		__close_config_db();
+	}
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -157,17 +156,16 @@ ewl_config_get_str(char *config, char *k)
 int
 ewl_config_get_int(char *config, char *k)
 {
-	int ret = -1;
-	int v;
+	int             ret = -1;
+	int             v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__open_config_db(config))
-	  {
-		  ret = e_db_int_get(config_db, k, &v);
+	if (__open_config_db(config)) {
+		ret = e_db_int_get(config_db, k, &v);
 
-		  __close_config_db();
-	  }
+		__close_config_db();
+	}
 
 	if (!ret)
 		DRETURN_INT(ret, DLEVEL_STABLE);
@@ -186,17 +184,16 @@ ewl_config_get_int(char *config, char *k)
 float
 ewl_config_get_float(char *config, char *k)
 {
-	int ret = -1;
-	float v = 0.0;
+	int             ret = -1;
+	float           v = 0.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__open_config_db(config))
-	  {
-		  ret = e_db_float_get(config_db, k, &v);
+	if (__open_config_db(config)) {
+		ret = e_db_float_get(config_db, k, &v);
 
-		  __close_config_db();
-	  }
+		__close_config_db();
+	}
 
 	if (!ret)
 		DRETURN_FLOAT(ret, DLEVEL_STABLE);
@@ -213,23 +210,22 @@ Evas_Render_Method
 ewl_config_get_render_method()
 {
 	Evas_Render_Method method = RENDER_METHOD_ALPHA_SOFTWARE;
-	char *str = NULL;
+	char           *str = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	str = ewl_config_get_str("system", "/evas/render_method");
 
-	if (str)
-	  {
-		  if (!strncasecmp(str, "software", 8))
-			  method = RENDER_METHOD_ALPHA_SOFTWARE;
-		  else if (!strncasecmp(str, "hardware", 8))
-			  method = RENDER_METHOD_3D_HARDWARE;
-		  else if (!strncasecmp(str, "x11", 3))
-			  method = RENDER_METHOD_BASIC_HARDWARE;
+	if (str) {
+		if (!strncasecmp(str, "software", 8))
+			method = RENDER_METHOD_ALPHA_SOFTWARE;
+		else if (!strncasecmp(str, "hardware", 8))
+			method = RENDER_METHOD_3D_HARDWARE;
+		else if (!strncasecmp(str, "x11", 3))
+			method = RENDER_METHOD_BASIC_HARDWARE;
 
-		  FREE(str);
-	  }
+		FREE(str);
+	}
 
 	DRETURN_INT(method, DLEVEL_STABLE);
 }
@@ -243,47 +239,41 @@ ewl_config_get_render_method()
 void
 ewl_config_reread_and_apply(void)
 {
-	Ewl_Config nc;
+	Ewl_Config      nc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	nc.debug.enable = ewl_config_get_int("system", "/debug/enable");
 	nc.debug.level = ewl_config_get_int("system", "/debug/level");
 	nc.evas.font_cache = ewl_config_get_int("system", "/evas/font_cache");
-	nc.evas.image_cache =
-		ewl_config_get_int("system", "/evas/image_cache");
+	nc.evas.image_cache = ewl_config_get_int("system", "/evas/image_cache");
 	nc.evas.render_method =
 		ewl_config_get_str("system", "/evas/render_method");
 	nc.theme.name = ewl_config_get_str("system", "/theme/name");
 	nc.theme.cache = ewl_config_get_int("system", "/theme/cache");
 
-	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list))
-	  {
-		  Ewl_Widget *w;
+	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list)) {
+		Ewl_Window     *w;
 
-		  ewd_list_goto_first(ewl_window_list);
+		ewd_list_goto_first(ewl_window_list);
 
-		  while ((w = ewd_list_next(ewl_window_list)) != NULL)
-		    {
-			    if (!w->evas)
-				    continue;
+		while ((w = ewd_list_next(ewl_window_list)) != NULL) {
+			if (!w->evas)
+				continue;
 
-			    if (nc.evas.font_cache)
-			      {
-				      evas_flush_font_cache(w->evas);
-				      evas_set_font_cache(w->evas,
-							  nc.evas.font_cache);
-			      }
+			if (nc.evas.font_cache) {
+				evas_flush_font_cache(w->evas);
+				evas_set_font_cache(w->evas,
+						    nc.evas.font_cache);
+			}
 
-			    if (nc.evas.image_cache)
-			      {
-				      evas_flush_image_cache(w->evas);
-				      evas_set_image_cache(w->evas,
-							   nc.evas.
-							   image_cache);
-			      }
-		    }
-	  }
+			if (nc.evas.image_cache) {
+				evas_flush_image_cache(w->evas);
+				evas_set_image_cache(w->evas,
+						     nc.evas.image_cache);
+			}
+		}
+	}
 
 	IF_FREE(ewl_config.evas.render_method);
 	IF_FREE(ewl_config.theme.name);
@@ -302,18 +292,17 @@ ewl_config_reread_and_apply(void)
 static void
 __create_user_config(void)
 {
-	char *home;
-	char pe[256];
+	char           *home;
+	char            pe[256];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	home = getenv("HOME");
 
-	if (!home)
-	  {
-		  DWARNING("Failed to fetch environment variable HOME\n");
-		  DRETURN(DLEVEL_STABLE);
-	  }
+	if (!home) {
+		DWARNING("Failed to fetch environment variable HOME\n");
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	snprintf(pe, PATH_LEN, "%s/.e", home);
 	mkdir(pe, 0755);
@@ -360,18 +349,17 @@ __create_fx_config(void)
 static int
 __open_config_db(const char *name)
 {
-	char *home;
-	char path[PATH_LEN];
+	char           *home;
+	char            path[PATH_LEN];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	home = getenv("HOME");
 
-	if (!home)
-	  {
-		  DWARNING("Failed to fetch environment variable HOME\n");
-		  DRETURN_INT(FALSE, DLEVEL_STABLE);
-	  }
+	if (!home) {
+		DWARNING("Failed to fetch environment variable HOME\n");
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	snprintf(path, PATH_LEN, "%s/.e/ewl/config/%s.db", home, name);
 
@@ -401,19 +389,18 @@ __close_config_db()
 static int
 __config_exists(char *name)
 {
-	char *home;
-	char path[PATH_LEN];
-	struct stat st;
+	char           *home;
+	char            path[PATH_LEN];
+	struct stat     st;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	home = getenv("HOME");
 
-	if (!home)
-	  {
-		  DWARNING("Failed to fetch environment variable HOME\n");
-		  DRETURN_INT(FALSE, DLEVEL_STABLE);
-	  }
+	if (!home) {
+		DWARNING("Failed to fetch environment variable HOME\n");
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	snprintf(path, PATH_LEN, "%s/.e/ewl/config/%s.db", home, name);
 

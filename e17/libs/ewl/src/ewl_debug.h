@@ -6,6 +6,8 @@
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
 
+inline void     ewl_print_warning();
+
 #define DENTER_FUNCTION(lvl) \
 { \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= lvl)) \
@@ -76,16 +78,16 @@
 
 #define DERROR(fmt, args...) \
 { \
-	fprintf(stderr, "***** Ewl Error ***** :\n" \
-			"\tIn function:\n\n" \
+	ewl_print_warning(); \
+	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __FUNCTION__); \
 	fprintf(stderr, fmt, ## args); \
 }
 
 #define DWARNING(fmt, args...) \
 { \
-	fprintf(stderr, "***** Ewl Warning ***** :\n" \
-			"\tIn function:\n\n" \
+	ewl_print_warning(); \
+	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __FUNCTION__); \
 	fprintf(stderr, fmt, ## args); \
 }
@@ -94,8 +96,8 @@
 { \
 	if (!ptr) \
 	  { \
-		fprintf(stderr, "***** Ewl Developer Warning ***** :\n" \
-				"\tThis program is calling:\n\n" \
+		ewl_print_warning(); \
+		fprintf(stderr, "\tThis program is calling:\n\n" \
 				"\t%s();\n\n" \
 				"\tWith the parameter:\n\n" \
 				"\t%s\n\n" \
@@ -109,8 +111,8 @@
 { \
 	if (!ptr) \
 	  { \
-		fprintf(stderr, "***** Ewl Developer Warning ***** :\n" \
-				"\tThis program is calling:\n\n" \
+		ewl_print_warning(); \
+		fprintf(stderr, "\tThis program is calling:\n\n" \
 				"\t%s();\n\n" \
 				"\tWith the parameter:\n\n" \
 				"\t%s\n\n" \

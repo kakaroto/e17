@@ -2,41 +2,40 @@
 #include <Ewl.h>
 
 
-struct _ewl_list_selection
-{
-	Ebits_Object *ebits_object;
-	int row;
+struct _ewl_list_selection {
+	Ebits_Object   *ebits_object;
+	int             row;
 };
 
 typedef struct _ewl_list_selection Ewl_List_Selection;
 
-static void __ewl_list_init(Ewl_List * list);
-static void __ewl_list_realize(Ewl_Widget * widget, void *ev_data,
-			       void *user_data);
-static void __ewl_list_show(Ewl_Widget * widget, void *ev_data,
-			    void *user_data);
-static void __ewl_list_hide(Ewl_Widget * widget, void *ev_data,
-			    void *user_data);
-static void __ewl_list_configure(Ewl_Widget * widget, void *ev_data,
-				 void *user_data);
-static void __ewl_list_key_down(Ewl_Widget * widget, void *ev_data,
+static void     __ewl_list_init(Ewl_List * list);
+static void     __ewl_list_realize(Ewl_Widget * widget, void *ev_data,
+				   void *user_data);
+static void     __ewl_list_show(Ewl_Widget * widget, void *ev_data,
 				void *user_data);
+static void     __ewl_list_hide(Ewl_Widget * widget, void *ev_data,
+				void *user_data);
+static void     __ewl_list_configure(Ewl_Widget * widget, void *ev_data,
+				     void *user_data);
+static void     __ewl_list_key_down(Ewl_Widget * widget, void *ev_data,
+				    void *user_data);
 
-static void __ewl_list_select_row(Ewl_Widget * l, int row);
-static void __ewl_list_unselect_row(Ewl_Widget * l, int row);
-static void __ewl_list_move_up_selection(Ewl_Widget * l, int multiple);
-static void __ewl_list_move_down_selection(Ewl_Widget * l, int multiple);
-static int __ewl_list_check_selected(Ewl_Widget * l, int row);
-static void __ewl_list_unselect_all(Ewl_Widget * l);
-static void __ewl_list_selection_hilit(Ewl_Widget * l, int row);
-static void __ewl_list_selection_unhilit(Ewl_Widget * l, int row);
+static void     __ewl_list_select_row(Ewl_Widget * l, int row);
+static void     __ewl_list_unselect_row(Ewl_Widget * l, int row);
+static void     __ewl_list_move_up_selection(Ewl_Widget * l, int multiple);
+static void     __ewl_list_move_down_selection(Ewl_Widget * l, int multiple);
+static int      __ewl_list_check_selected(Ewl_Widget * l, int row);
+static void     __ewl_list_unselect_all(Ewl_Widget * l);
+static void     __ewl_list_selection_hilit(Ewl_Widget * l, int row);
+static void     __ewl_list_selection_unhilit(Ewl_Widget * l, int row);
 
 
-Ewl_Widget *
+Ewl_Widget     *
 ewl_list_new(int columns)
 {
-	Ewl_List *list;
-	Ewl_Widget *table;
+	Ewl_List       *list;
+	Ewl_Widget     *table;
 
 	list = NEW(Ewl_List, 1);
 	if (!list)
@@ -57,10 +56,10 @@ ewl_list_new(int columns)
 	return EWL_WIDGET(list);
 }
 
-Ewl_Widget *
+Ewl_Widget     *
 ewl_list_new_all(int columns, char *titles[])
 {
-	Ewl_Widget *widget;
+	Ewl_Widget     *widget;
 
 	widget = ewl_list_new(columns);
 
@@ -72,8 +71,8 @@ ewl_list_new_all(int columns, char *titles[])
 void
 ewl_list_append_text(Ewl_Widget * l, char *text[])
 {
-	Ewl_Widget *table;
-	int i;
+	Ewl_Widget     *table;
+	int             i;
 
 	DCHECK_PARAM_PTR("l", l);
 
@@ -83,13 +82,12 @@ ewl_list_append_text(Ewl_Widget * l, char *text[])
 			 EWL_TABLE(table)->columns);
 
 	{
-		Ewl_Widget *text_widgets[EWL_TABLE(table)->columns];
+		Ewl_Widget     *text_widgets[EWL_TABLE(table)->columns];
 
-		for (i = 0; i < EWL_TABLE(table)->columns; i++)
-		  {
-			  text_widgets[i] = ewl_text_new();
-			  ewl_text_set_text(EWL_TEXT(text_widgets[i]), text[i]);
-			  ewl_text_set_font_size(EWL_TEXT(text_widgets[i]), 8);
+		for (i = 0; i < EWL_TABLE(table)->columns; i++) {
+			text_widgets[i] = ewl_text_new();
+			ewl_text_set_text(EWL_TEXT(text_widgets[i]), text[i]);
+			ewl_text_set_font_size(EWL_TEXT(text_widgets[i]), 8);
 
 /*			  ewl_table_attach(table, text_widgets[i],
 					   EWL_ALIGNMENT_LEFT,
@@ -97,8 +95,8 @@ ewl_list_append_text(Ewl_Widget * l, char *text[])
 					   i + 1, EWL_TABLE(table)->rows,
 					   EWL_TABLE(table)->rows);
 					   */
-			  ewl_widget_show(text_widgets[i]);
-		  }
+			ewl_widget_show(text_widgets[i]);
+		}
 	}
 }
 
@@ -134,30 +132,29 @@ ewl_list_insert_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[], int row)
 void
 ewl_list_set_titles(Ewl_Widget * widget, char *titles[])
 {
-	Ewl_Widget *table;
+	Ewl_Widget     *table;
 
 	DCHECK_PARAM_PTR("widget", widget);
 
 	table = EWL_CONTAINER(widget)->children->first->data;
 
 	{
-		Ewl_Widget *button[EWL_TABLE(table)->columns];
-		int i;
+		Ewl_Widget     *button[EWL_TABLE(table)->columns];
+		int             i;
 
-		for (i = 0; i < EWL_TABLE(table)->columns; i++)
-		  {
-			  button[i] = ewl_button_new(titles[i]);
-			  ewl_callback_append(button[i],
-					      EWL_CALLBACK_KEY_DOWN,
-					      __ewl_list_key_down, widget);
+		for (i = 0; i < EWL_TABLE(table)->columns; i++) {
+			button[i] = ewl_button_new(titles[i]);
+			ewl_callback_append(button[i],
+					    EWL_CALLBACK_KEY_DOWN,
+					    __ewl_list_key_down, widget);
 
 /*			  ewl_table_attach(table, button[i],
 					   EWL_ALIGNMENT_LEFT,
 					   EWL_FILL_POLICY_FILL, i + 1,
 					   i + 1, 1, 1);
 					   */
-			  ewl_widget_show(button[i]);
-		  }
+			ewl_widget_show(button[i]);
+		}
 	}
 }
 
@@ -170,7 +167,7 @@ ewl_list_select_row(Ewl_Widget * list, int row)
 static void
 __ewl_list_init(Ewl_List * list)
 {
-	Ewl_Widget *w;
+	Ewl_Widget     *w;
 
 	DCHECK_PARAM_PTR("list", list);
 
@@ -179,10 +176,10 @@ __ewl_list_init(Ewl_List * list)
 	/*
 	 * Initialize the list widget
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "/appearance/list/default");
+	ewl_container_init(EWL_CONTAINER(w), "/appearance/list/default",
+			   NULL, NULL);
 
-	ewl_callback_append(w,
-			    EWL_CALLBACK_REALIZE, __ewl_list_realize, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_list_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_list_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_list_hide, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
@@ -193,14 +190,18 @@ __ewl_list_init(Ewl_List * list)
 static void
 __ewl_list_realize(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
+	Ewl_Window     *win;
+
 	DCHECK_PARAM_PTR("widget", widget);
 
-	evas_set_clip(widget->evas, widget->fx_clip_box,
+	win = ewl_window_find_window_by_widget(widget);
+
+	evas_set_clip(win->evas, widget->fx_clip_box,
 		      EWL_CONTAINER(widget->parent)->clip_box);
 
 	EWL_CONTAINER(widget)->clip_box = widget->fx_clip_box;
 
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
+	evas_set_color(win->evas, widget->fx_clip_box, 255, 255, 255, 255);
 
 	ewl_widget_realize(EWL_CONTAINER(widget)->children->first->data);
 }
@@ -208,11 +209,15 @@ __ewl_list_realize(Ewl_Widget * widget, void *ev_data, void *user_data)
 static void
 __ewl_list_show(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
+	Ewl_Window     *win;
+
 	DCHECK_PARAM_PTR("widget", widget);
+
+	win = ewl_window_find_window_by_widget(widget);
 
 	ewl_widget_show(EWL_CONTAINER(widget)->children->first->data);
 
-	evas_show(widget->evas, widget->fx_clip_box);
+	evas_show(win->evas, widget->fx_clip_box);
 
 	if (EWL_LIST(widget)->titles)
 		ewl_list_set_titles(widget, EWL_LIST(widget)->titles);
@@ -221,52 +226,43 @@ __ewl_list_show(Ewl_Widget * widget, void *ev_data, void *user_data)
 static void
 __ewl_list_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
+	Ewl_Window     *win;
+
 	DCHECK_PARAM_PTR("widget", widget);
 
-	evas_hide(widget->evas, widget->fx_clip_box);
+	win = ewl_window_find_window_by_widget(widget);
+
+	evas_hide(win->evas, widget->fx_clip_box);
 }
 
 static void
 __ewl_list_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
-	Ewl_Widget *table;
-	Ewl_Widget *title;
-	int i, w;
+	Ewl_Widget     *table;
+	Ewl_Widget     *title;
+	int             i, w;
 
 	DCHECK_PARAM_PTR("widget", widget);
-
-	EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
-	EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
-	EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
-	EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
 
 	ewd_list_goto_first(EWL_CONTAINER(widget)->children);
 	table = ewd_list_current(EWL_CONTAINER(widget)->children);
 
-	EWL_OBJECT(table)->request.x = EWL_OBJECT(widget)->current.x;
-	EWL_OBJECT(table)->request.y = EWL_OBJECT(widget)->current.y;
-	EWL_OBJECT(table)->request.w = EWL_OBJECT(widget)->current.w;
-	EWL_OBJECT(table)->request.h = EWL_OBJECT(widget)->current.h;
-
 	ewl_widget_configure(table);
 
-	for (i = 0; i < EWL_TABLE(table)->columns + 1; i++)
-	  {
-		  title = ewl_table_get_child(EWL_TABLE(table), 1, i + 1);
-		  if (title)
-		    {
-			    w = ewl_table_get_column_width(EWL_TABLE(table),
-							   i + 1);
-			    ewl_widget_configure(title);
-		    }
-	  }
+	for (i = 0; i < EWL_TABLE(table)->columns + 1; i++) {
+		title = ewl_table_get_child(EWL_TABLE(table), 1, i + 1);
+		if (title) {
+			w = ewl_table_get_column_width(EWL_TABLE(table), i + 1);
+			ewl_widget_configure(title);
+		}
+	}
 }
 
 static void
 __ewl_list_key_down(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ecore_Event_Key_Down *ev;
-	int multiple = 0;
+	int             multiple = 0;
 
 	DCHECK_PARAM_PTR("widget", widget);
 
@@ -275,25 +271,25 @@ __ewl_list_key_down(Ewl_Widget * widget, void *ev_data, void *user_data)
 	if (ev->mods & ECORE_EVENT_KEY_MODIFIER_SHIFT)
 		multiple = TRUE;
 
-	if (!strcmp(ev->key, "Up"))
-	  {
-		  __ewl_list_move_up_selection(widget, multiple);
-	  }
-	else if (!strcmp(ev->key, "Down"))
-	  {
-		  __ewl_list_move_down_selection(widget, multiple);
-	  }
+	if (!strcmp(ev->key, "Up")) {
+		__ewl_list_move_up_selection(widget, multiple);
+	} else if (!strcmp(ev->key, "Down")) {
+		__ewl_list_move_down_selection(widget, multiple);
+	}
 }
 
 static void
 __ewl_list_select_row(Ewl_Widget * l, int row)
 {
+	Ewl_Window     *win;
 	Ewl_List_Selection *sel;
-	Ewl_Table *t;
-	char *image;
-	int x, y, w, h;
+	Ewl_Table      *t;
+	char           *image;
+	int             x, y, w, h;
 
 	DCHECK_PARAM_PTR("l", l);
+
+	win = ewl_window_find_window_by_widget(l);
 
 	ewd_list_goto_first(EWL_CONTAINER(l)->children);
 	t = ewd_list_current(EWL_CONTAINER(l)->children);
@@ -308,14 +304,13 @@ __ewl_list_select_row(Ewl_Widget * l, int row)
 
 	sel->ebits_object = ebits_load(image);
 	FREE(image);
-	ebits_add_to_evas(sel->ebits_object, l->evas);
+	ebits_add_to_evas(sel->ebits_object, win->evas);
 	ebits_set_layer(sel->ebits_object, l->layer + 5);
 	ebits_set_clip(sel->ebits_object, l->fx_clip_box);
 	ewl_table_get_row_geometry(t, row + 1, &x, &y, &w, &h);
 	ebits_move(sel->ebits_object, x, y - 1);
 	ebits_resize(sel->ebits_object, w, h + 1);
-	ebits_set_color_class(sel->ebits_object, "Menu BG", 100, 200, 255,
-			      255);
+	ebits_set_color_class(sel->ebits_object, "Menu BG", 100, 200, 255, 255);
 	ebits_show(sel->ebits_object);
 
 	ewd_list_append(EWL_LIST(l)->selections, sel);
@@ -333,18 +328,16 @@ __ewl_list_unselect_row(Ewl_Widget * l, int row)
 
 	ewd_list_goto_first(EWL_LIST(l)->selections);
 
-	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL)
-	  {
-		  if (sel->row == row)
-		    {
-			    ebits_hide(sel->ebits_object);
-			    ebits_unset_clip(sel->ebits_object);
-			    ebits_free(sel->ebits_object);
-			    ewd_list_remove(EWL_LIST(l)->selections);
-			    FREE(sel);
-			    break;
-		    }
-	  }
+	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL) {
+		if (sel->row == row) {
+			ebits_hide(sel->ebits_object);
+			ebits_unset_clip(sel->ebits_object);
+			ebits_free(sel->ebits_object);
+			ewd_list_remove(EWL_LIST(l)->selections);
+			FREE(sel);
+			break;
+		}
+	}
 }
 
 static void
@@ -358,15 +351,12 @@ __ewl_list_move_up_selection(Ewl_Widget * l, int multiple)
 	if (!multiple)
 		__ewl_list_unselect_all(l);
 
-	if (__ewl_list_check_selected(l, EWL_LIST(l)->current_selected - 1))
-	  {
-		  __ewl_list_selection_unhilit(l,
-					       EWL_LIST(l)->current_selected);
-		  EWL_LIST(l)->current_selected--;
-		  __ewl_list_selection_hilit(l,
-					     EWL_LIST(l)->current_selected);
-		  return;
-	  }
+	if (__ewl_list_check_selected(l, EWL_LIST(l)->current_selected - 1)) {
+		__ewl_list_selection_unhilit(l, EWL_LIST(l)->current_selected);
+		EWL_LIST(l)->current_selected--;
+		__ewl_list_selection_hilit(l, EWL_LIST(l)->current_selected);
+		return;
+	}
 
 	__ewl_list_selection_unhilit(l, EWL_LIST(l)->current_selected);
 	__ewl_list_select_row(l, --EWL_LIST(l)->current_selected);
@@ -385,15 +375,12 @@ __ewl_list_move_down_selection(Ewl_Widget * l, int multiple)
 	if (!multiple)
 		__ewl_list_unselect_all(l);
 
-	if (__ewl_list_check_selected(l, EWL_LIST(l)->current_selected + 1))
-	  {
-		  __ewl_list_selection_unhilit(l,
-					       EWL_LIST(l)->current_selected);
-		  EWL_LIST(l)->current_selected++;
-		  __ewl_list_selection_hilit(l,
-					     EWL_LIST(l)->current_selected);
-		  return;
-	  }
+	if (__ewl_list_check_selected(l, EWL_LIST(l)->current_selected + 1)) {
+		__ewl_list_selection_unhilit(l, EWL_LIST(l)->current_selected);
+		EWL_LIST(l)->current_selected++;
+		__ewl_list_selection_hilit(l, EWL_LIST(l)->current_selected);
+		return;
+	}
 
 	__ewl_list_selection_unhilit(l, EWL_LIST(l)->current_selected);
 	__ewl_list_select_row(l, ++EWL_LIST(l)->current_selected);
@@ -409,11 +396,10 @@ __ewl_list_check_selected(Ewl_Widget * l, int row)
 
 	ewd_list_goto_first(EWL_LIST(l)->selections);
 
-	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL)
-	  {
-		  if (sel->row == row)
-			  return TRUE;
-	  }
+	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL) {
+		if (sel->row == row)
+			return TRUE;
+	}
 
 	return FALSE;
 }
@@ -431,13 +417,12 @@ __ewl_list_unselect_all(Ewl_Widget * l)
 
 	ewd_list_goto_first(EWL_LIST(l)->selections);
 
-	while ((sel = ewd_list_remove_last(EWL_LIST(l)->selections)) != NULL)
-	  {
-		  ebits_hide(sel->ebits_object);
-		  ebits_unset_clip(sel->ebits_object);
-		  ebits_free(sel->ebits_object);
-		  FREE(sel);
-	  }
+	while ((sel = ewd_list_remove_last(EWL_LIST(l)->selections)) != NULL) {
+		ebits_hide(sel->ebits_object);
+		ebits_unset_clip(sel->ebits_object);
+		ebits_free(sel->ebits_object);
+		FREE(sel);
+	}
 }
 
 static void
@@ -449,12 +434,11 @@ __ewl_list_selection_hilit(Ewl_Widget * l, int row)
 
 	ewd_list_goto_first(EWL_LIST(l)->selections);
 
-	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL)
-	  {
-		  if (sel->row == row)
-			  ebits_set_color_class(sel->ebits_object, "Menu BG",
-						100, 200, 255, 255);
-	  }
+	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL) {
+		if (sel->row == row)
+			ebits_set_color_class(sel->ebits_object, "Menu BG",
+					      100, 200, 255, 255);
+	}
 }
 
 static void
@@ -466,10 +450,9 @@ __ewl_list_selection_unhilit(Ewl_Widget * l, int row)
 
 	ewd_list_goto_first(EWL_LIST(l)->selections);
 
-	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL)
-	  {
-		  if (sel->row == row)
-			  ebits_set_color_class(sel->ebits_object, "Menu BG",
-						255, 255, 255, 255);
-	  }
+	while ((sel = ewd_list_next(EWL_LIST(l)->selections)) != NULL) {
+		if (sel->row == row)
+			ebits_set_color_class(sel->ebits_object, "Menu BG",
+					      255, 255, 255, 255);
+	}
 }

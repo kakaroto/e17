@@ -2,23 +2,23 @@
 #include <Ewl.h>
 
 
-void ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
+void            ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
 
-void __ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
-void __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
-void __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void __ewl_radiobutton_theme_update(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-void __ewl_radiobutton_update_check(Ewl_Widget * w);
+void            __ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+void            __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
+					     void *user_data);
+void            __ewl_radiobutton_theme_update(Ewl_Widget * w, void *ev_data,
+					       void *user_data);
+void            __ewl_radiobutton_update_check(Ewl_Widget * w);
 
-void __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
+void            __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
+					     void *user_data);
 
 
-void ewl_checkbutton_init(Ewl_CheckButton * b, char *l);
+void            ewl_checkbutton_init(Ewl_CheckButton * b, char *l);
 
 
 /**
@@ -27,7 +27,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * b, char *l);
  *
  * Returns a pointer to the new radio button on success, NULL on failure.
  */
-Ewl_Widget *
+Ewl_Widget     *
 ewl_radiobutton_new(char *label)
 {
 	Ewl_RadioButton *b;
@@ -67,22 +67,19 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	/*
 	 * If a chain doesnt exist, create one 
 	 */
-	if (!crb->chain)
-	  {
-		  crb->chain = ewd_list_new();
+	if (!crb->chain) {
+		crb->chain = ewd_list_new();
 
-		  rb->chain = crb->chain;
+		rb->chain = crb->chain;
 
-		  ewd_list_append(crb->chain, w);
-		  ewd_list_append(crb->chain, c);
-	  }
-	else
-	  {
-		  rb->chain = crb->chain;
+		ewd_list_append(crb->chain, w);
+		ewd_list_append(crb->chain, c);
+	} else {
+		rb->chain = crb->chain;
 
-		  if (!ewd_list_goto(crb->chain, w))
-			  ewd_list_append(crb->chain, w);
-	  }
+		if (!ewd_list_goto(crb->chain, w))
+			ewd_list_append(crb->chain, w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -159,7 +156,7 @@ void
 ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 {
 	Ewl_CheckButton *cb;
-	Ewl_Widget *w;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -183,7 +180,7 @@ __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *cb;
 	Ewl_RadioButton *rb;
-	int oc;
+	int             oc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -192,19 +189,17 @@ __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	rb = EWL_RADIOBUTTON(w);
 	oc = cb->checked;
 
-	if (rb->chain && !ewd_list_is_empty(rb->chain))
-	  {
-		  Ewl_CheckButton *c;
+	if (rb->chain && !ewd_list_is_empty(rb->chain)) {
+		Ewl_CheckButton *c;
 
-		  ewd_list_goto_first(rb->chain);
+		ewd_list_goto_first(rb->chain);
 
-		  while ((c = ewd_list_next(rb->chain)) != NULL)
-		    {
-			    c->checked = 0;
+		while ((c = ewd_list_next(rb->chain)) != NULL) {
+			c->checked = 0;
 
-			    __ewl_radiobutton_update_check(EWL_WIDGET(c));
-		    }
-	  }
+			__ewl_radiobutton_update_check(EWL_WIDGET(c));
+		}
+	}
 
 	cb->checked = 1;
 
@@ -226,15 +221,14 @@ __ewl_radiobutton_update_check(Ewl_Widget * w)
 
 	cb = EWL_CHECKBUTTON(w);
 
-	if (w->ebits_object)
-	  {
-		  if (cb->checked)
-			  ebits_set_named_bit_state(w->ebits_object, "Check",
-						    "clicked");
-		  else
-			  ebits_set_named_bit_state(w->ebits_object, "Check",
-						    "normal");
-	  }
+	if (w->ebits_object) {
+		if (cb->checked)
+			ebits_set_named_bit_state(w->ebits_object, "Check",
+						  "clicked");
+		else
+			ebits_set_named_bit_state(w->ebits_object, "Check",
+						  "normal");
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -1,26 +1,30 @@
 #include <Ewl.h>
 
-void __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation);
-void __ewl_seeker_realize(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
-void __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w,
-				     void *ev_data, void *user_data);
-void __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w,
-				   void *ev_data, void *user_data);
-void __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w,
-				     void *ev_data, void *user_data);
-void __ewl_seeker_dragbar_theme_update(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_seeker_focus_in(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_seeker_focus_out(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_seeker_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y);
-void __ewl_seeker_value_to_position(Ewl_Widget * w);
-void __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
+void            __ewl_seeker_realize(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
+void            __ewl_seeker_configure(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
+void            __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+void            __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data,
+						void *user_data);
+void            __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data,
+					      void *user_data);
+void            __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data,
+						void *user_data);
+void            __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data,
+					void *user_data);
+void            __ewl_seeker_focus_in(Ewl_Widget * w, void *ev_data,
+				      void *user_data);
+void            __ewl_seeker_focus_out(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
+void            __ewl_seeker_mouse_move(Ewl_Widget * w, void *ev_data,
+					void *user_data);
+void            __ewl_seeker_position_to_value(Ewl_Seeker * s, int in_x,
+					       int in_y);
+void            __ewl_seeker_value_to_position(Ewl_Seeker * s);
+void            __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
+						void *user_data);
 
 /**
  * ewl_seeker_new - allocate and initialize a new seeker with orientation
@@ -29,10 +33,10 @@ void __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
  *
  * Returns NULL on failure, or a pointer to the new seeker on success.
  */
-Ewl_Widget *
+Ewl_Widget     *
 ewl_seeker_new(Ewl_Orientation o)
 {
-	Ewl_Seeker *s;
+	Ewl_Seeker     *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -42,13 +46,97 @@ ewl_seeker_new(Ewl_Orientation o)
 
 	ZERO(s, Ewl_Seeker, 1);
 
-	s->dragbar = ewl_button_new(NULL);
-
-	__ewl_seeker_init(s, o);
+	ewl_seeker_init(s, o);
 
 	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_seeker_init - initialize the seeker to some sane starting values
+ * @s: the seeker to be initialized
+ * @orientation: the orientation of the seeker
+ *
+ * Returns no value. Initializes the seeker @s to the orientation @orientation
+ * to default values and callbacks.
+ */
+void
+ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
+{
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	w = EWL_WIDGET(s);
+
+	s->dragbar = ewl_button_new(NULL);
+
+	/*
+	 * Initialize the widget fields and set appropriate orientation and
+	 * type
+	 */
+	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
+		ewl_container_init(EWL_CONTAINER(w),
+				   "/appearance/seeker/horizontal", NULL, NULL);
+
+		/*
+		 * Override the buttons default appearance
+		 */
+		ewl_widget_set_appearance(s->dragbar,
+					  "/appearance/seeker/horizontal/dragbar");
+		ewl_object_set_custom_height(EWL_OBJECT(w), 16);
+		ewl_object_set_preferred_h(EWL_OBJECT(w), 16);
+	} else {
+		ewl_container_init(EWL_CONTAINER(w),
+				   "/appearance/seeker/vertical", NULL, NULL);
+
+		/*
+		 * Override the buttons default appearance
+		 */
+		ewl_widget_set_appearance(s->dragbar,
+					  "/appearance/seeker/vertical/dragbar");
+		ewl_object_set_custom_width(EWL_OBJECT(w), 16);
+		ewl_object_set_preferred_w(EWL_OBJECT(w), 16);
+	}
+
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
+
+	/*
+	 * Set the starting orientation, range and values
+	 */
+	s->orientation = orientation;
+	s->range = 100.0;
+	s->value = 0.0;
+	s->step = 5.0;
+
+	/*
+	 * Add necessary configuration callbacks
+	 */
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_seeker_realize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_seeker_configure,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
+			    __ewl_seeker_theme_update, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_seeker_mouse_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_APPEARANCE_CHANGED,
+			    __ewl_seeker_appearance_changed, NULL);
+
+	/*
+	 * Append a callback for catching mouse movements on the dragbar and
+	 * add the dragbar to the seeker
+	 */
+	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_seeker_dragbar_mouse_down, NULL);
+	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_UP,
+			    __ewl_seeker_dragbar_mouse_up, NULL);
+	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_MOVE,
+			    __ewl_seeker_dragbar_mouse_move, NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -106,7 +194,7 @@ ewl_seeker_get_value(Ewl_Seeker * s)
 void
 ewl_seeker_set_range(Ewl_Seeker * s, double r)
 {
-	int new_val;
+	int             new_val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -121,7 +209,7 @@ ewl_seeker_set_range(Ewl_Seeker * s, double r)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
+/**
  * ewl_seeker_get_range - retrieve the range of values represented by the seeker
  *
  * @s: the seeker to return the range of values
@@ -137,6 +225,14 @@ ewl_seeker_get_range(Ewl_Seeker * s)
 	DRETURN_FLOAT(s->range, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_seeker_set_step - set the steps between increments
+ * @s: the seeker to change step
+ * @step: the new step value for the seeker
+ *
+ * Returns no value. Changes the amount that each increment or decrement
+ * changes the value of the seeker @s.
+ */
 void
 ewl_seeker_set_step(Ewl_Seeker * s, double step)
 {
@@ -201,86 +297,6 @@ ewl_seeker_decrease(Ewl_Seeker * s)
 }
 
 /*
- * Initialize the seeker to some sane starting values
- */
-void
-__ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
-{
-	Ewl_Widget *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-
-	w = EWL_WIDGET(s);
-
-	/*
-	 * Initialize the widget fields and set appropriate orientation and
-	 * type
-	 */
-	if (orientation == EWL_ORIENTATION_HORIZONTAL)
-	  {
-		  ewl_container_init(EWL_CONTAINER(w),
-				     "/appearance/seeker/horizontal");
-
-		  /*
-		   * Override the buttons default appearance
-		   */
-		  ewl_widget_set_appearance(s->dragbar,
-					    "/appearance/seeker/horizontal/dragbar");
-	  }
-	else
-	  {
-		  ewl_container_init(EWL_CONTAINER(w),
-				     "/appearance/seeker/vertical");
-
-		  /*
-		   * Override the buttons default appearance
-		   */
-		  ewl_widget_set_appearance(s->dragbar,
-					    "/appearance/seeker/vertical/dragbar");
-	  }
-
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
-
-	/*
-	 * Set the starting orientation, range and values
-	 */
-	s->orientation = orientation;
-	s->range = 100;
-	s->value = 0;
-	s->step = 5;
-
-	/*
-	 * Add necessary configuration callbacks
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_seeker_realize,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_seeker_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
-			    __ewl_seeker_theme_update, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_seeker_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_APPEARANCE_CHANGED,
-			    __ewl_seeker_appearance_changed, NULL);
-
-	/*
-	 * Append a callback for catching mouse movements on the dragbar and
-	 * add the dragbar to the seeker
-	 */
-	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_seeker_dragbar_mouse_down, NULL);
-	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_seeker_dragbar_mouse_up, NULL);
-	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_MOVE,
-			    __ewl_seeker_dragbar_mouse_move, NULL);
-	ewl_callback_append(s->dragbar, EWL_CALLBACK_THEME_UPDATE,
-			    __ewl_seeker_dragbar_theme_update, NULL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
  * Draw the representation of the seeker
  */
 void
@@ -302,7 +318,7 @@ __ewl_seeker_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Seeker *s;
+	Ewl_Seeker     *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -318,19 +334,18 @@ __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!s->dragbar)
 		DRETURN(DLEVEL_STABLE);
 
-	__ewl_seeker_value_to_position(s->dragbar);
+	__ewl_seeker_value_to_position(s);
 	ewl_widget_configure(EWL_WIDGET(s->dragbar));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data,
-				void *user_data)
+__ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_Event_Mouse_Down *ev;
-	Ewl_Seeker *s;
-	int xx, yy, ww, hh;
+	Ewl_Seeker     *s;
+	int             xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -365,8 +380,7 @@ __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
  * Move the cursor to the correct position
  */
 void
-__ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data,
-				void *user_data)
+__ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_Event_Mouse_Move *ev;
 
@@ -386,92 +400,85 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data,
 
 	ev = ev_data;
 
-	__ewl_seeker_position_to_value(w, ev->x, ev->y);
+	__ewl_seeker_position_to_value(EWL_SEEKER(w->parent), ev->x, ev->y);
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
+__ewl_seeker_position_to_value(Ewl_Seeker * s, int in_x, int in_y)
 {
-	Ewl_Seeker *s;
-	double val = 0.0, old_val;
-	int xx, yy, ww, hh;
-	int req_x, req_y;
-	int l, r, t, b;
+	Ewl_Widget     *w;
+	double          val = 0.0, old_val;
+	int             xx, yy, ww, hh;
+	int             req_x, req_y;
 
-	s = EWL_SEEKER(w->parent);
+	w = s->dragbar;
 
 	ewl_object_get_current_geometry(EWL_OBJECT(s), &xx, &yy, &ww, &hh);
-
-	if (EWL_WIDGET(s)->ebits_object)
-		ebits_get_insets(EWL_WIDGET(s)->ebits_object, &l, &r, &t, &b);
 
 	/*
 	 * Adjust the width and height to fit within the insets of the bit
 	 */
-	xx += l;
-	yy += t;
-	ww -= l + r;
-	hh -= t + b;
+	xx += INSET_LEFT(w);
+	yy += INSET_TOP(w);
+	ww -= INSET_LEFT(w) + INSET_RIGHT(w);
+	hh -= INSET_TOP(w) + INSET_BOTTOM(w);
 
 	/*
 	 * The direction of the dragbar move depends on the orientation of the
 	 * parent seeker.
 	 */
-	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
-	  {
-		  if (CURRENT_W(w) >= ww)
-			  goto end;
-		  /*
-		   * Use the current x value along with the starting drag
-		   * position to determine the new position
-		   */
-		  req_x = in_x - s->dragstart;
-		  /*
-		   * Check the boundaries to make sure we're not off the end of
-		   * the bar
-		   */
-		  if (req_x < xx)
-			  req_x = xx;
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
+		if (CURRENT_W(w) >= ww)
+			goto end;
+		/*
+		 * Use the current x value along with the starting drag
+		 * position to determine the new position
+		 */
+		req_x = in_x - s->dragstart;
+		/*
+		 * Check the boundaries to make sure we're not off the end of
+		 * the bar
+		 */
+		if (req_x < xx)
+			req_x = xx;
 
-		  if (req_x + CURRENT_W(w) > xx + ww)
-			  req_x = xx + ww - CURRENT_W(w);
+		if (req_x + CURRENT_W(w) > xx + ww)
+			req_x = xx + ww - CURRENT_W(w);
 
-		  /*
-		   * Calculate the new value for the seeker
-		   */
-		  val = 1.0 -
-			  (((double) (req_x - xx) /
-			    (double) (ww - CURRENT_W(w))));
+		/*
+		 * Calculate the new value for the seeker
+		 */
+		val = 1.0 -
+			(((double) (req_x - xx) /
+			  (double) (ww - CURRENT_W(w))));
 
-	  }
-	else
-	  {
-		  if (CURRENT_H(w) >= hh)
-			  goto end;
-		  /*
-		   * Use the current y value along with the starting drag
-		   * position to determine the new position
-		   */
-		  req_y = in_y - s->dragstart;
+	} else {
+		if (CURRENT_H(w) >= hh)
+			goto end;
+		/*
+		 * Use the current y value along with the starting drag
+		 * position to determine the new position
+		 */
+		req_y = in_y - s->dragstart;
 
-		  /*
-		   * Check the boundaries to make sure we're not off the end of
-		   * the bar
-		   */
-		  if (req_y < yy)
-			  req_y = yy;
+		/*
+		 * Check the boundaries to make sure we're not off the end of
+		 * the bar
+		 */
+		if (req_y < yy)
+			req_y = yy;
 
-		  if (req_y + CURRENT_H(w) > yy + hh)
-			  req_y = yy + hh - CURRENT_H(w);
+		if (req_y + CURRENT_H(w) > yy + hh)
+			req_y = yy + hh - CURRENT_H(w);
 
-		  /*
-		   * Calculate the new value for the seeker
-		   */
-		  val = (double) (req_y - yy) / (double) (hh - CURRENT_H(w));
-	  }
+		/*
+		 * Calculate the new value for the seeker
+		 */
+		val = (double) (req_y - yy) / (double) (hh - CURRENT_H(w));
+	}
 
       end:
 	/*
@@ -484,68 +491,63 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 	if (s->value > s->range)
 		s->value = s->range;
 
-	__ewl_seeker_value_to_position(w);
+	__ewl_seeker_value_to_position(s);
 
 	if (old_val != s->value)
 		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 }
 
+/*
+ * Map the seeker's value to a position.
+ */
 void
-__ewl_seeker_value_to_position(Ewl_Widget * w)
+__ewl_seeker_value_to_position(Ewl_Seeker * s)
 {
-	Ewl_Seeker *s;
-	int xx, yy, ww, hh;
-	int req_x, req_y;
-	int l, r, t, b;
+	Ewl_Widget     *w;
+	int             xx, yy, ww, hh;
+	int             req_x, req_y;
 
-	s = EWL_SEEKER(w->parent);
+	w = s->dragbar;
 
 	ewl_object_get_current_geometry(EWL_OBJECT(s), &xx, &yy, &ww, &hh);
-
-	if (EWL_WIDGET(s)->ebits_object)
-		ebits_get_insets(EWL_WIDGET(s)->ebits_object, &l, &r, &t, &b);
 
 	/*
 	 * Adjust the width and height to fit within the insets of the bit
 	 */
-	xx += l;
-	yy += t;
-	ww -= l + r;
-	hh -= t + b;
+	xx += INSET_LEFT(w);
+	yy += INSET_TOP(w);
+	ww -= INSET_LEFT(w) + INSET_RIGHT(w);
+	hh -= INSET_TOP(w) + INSET_BOTTOM(w);
 
 	/*
 	 * The direction of the dragbar move depends on the orientation of the
 	 * parent seeker.
 	 */
-	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
-	  {
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 
-		  /*
-		   * Use the current value along with the range to determine the
-		   * new position
-		   */
-		  req_x = xx + ww -
-			  (int) (floor
-				 ((double) (ww - CURRENT_W(w)) *
-				  ((s->range - s->value) / s->range))) -
-			  CURRENT_W(w);
+		/*
+		 * Use the current value along with the range to determine the
+		 * new position
+		 */
+		req_x = xx + ww - (int) (floor((double) (ww - CURRENT_W(w)) *
+					       ((s->range -
+						 s->value) / s->range))) -
+			CURRENT_W(w);
 
-		  req_y = yy;
-	  }
-	else
-	  {
+		req_y = yy;
+	} else {
 
-		  /*
-		   * Use the current value along with the range to determine the
-		   * new position
-		   */
-		  req_y = yy + hh - (int) (floor((double)
-						 (hh - CURRENT_H(w)) *
-						 (s->value / s->range))) -
-			  CURRENT_H(w);
+		/*
+		 * Use the current value along with the range to determine the
+		 * new position
+		 */
+		req_y = yy + hh - (int) (floor((double)
+					       (hh - CURRENT_H(w)) *
+					       (s->value / s->range))) -
+			CURRENT_H(w);
 
-		  req_x = xx;
-	  }
+		req_x = xx;
+	}
 
 	ewl_object_request_position(EWL_OBJECT(w), req_x, req_y);
 }
@@ -553,9 +555,9 @@ __ewl_seeker_value_to_position(Ewl_Widget * w)
 void
 __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Seeker *s;
+	Ewl_Seeker     *s;
 	Ecore_Event_Mouse_Down *ev;
-	int xx, yy, ww, hh;
+	int             xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -568,39 +570,49 @@ __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_get_current_geometry(EWL_OBJECT(s->dragbar),
 					&xx, &yy, &ww, &hh);
 
-	switch (s->orientation)
-	  {
-	  case EWL_ORIENTATION_HORIZONTAL:
-		  if (ev->x < xx)
-			  s->value -= s->step;
-		  else if (ev->x > xx + ww)
-			  s->value += s->step;
-		  break;
-	  case EWL_ORIENTATION_VERTICAL:
-		  if (ev->y < yy)
-			  s->value += s->step;
-		  else if (ev->y > yy + hh)
-			  s->value -= s->step;
-		  break;
-	  default:
-		  break;
-	  }
+	switch (s->orientation) {
+	case EWL_ORIENTATION_HORIZONTAL:
+		if (ev->x < xx)
+			s->value -= s->step;
+		else if (ev->x > xx + ww)
+			s->value += s->step;
+		break;
+	case EWL_ORIENTATION_VERTICAL:
+		if (ev->y < yy)
+			s->value += s->step;
+		else if (ev->y > yy + hh)
+			s->value -= s->step;
+		break;
+	default:
+		break;
+	}
 
-	if (!s->value)
+	if (s->value < 0.0)
 		s->value = 0.0;
 	else if (s->value > s->range)
 		s->value = s->range;
 
-	__ewl_seeker_value_to_position(s->dragbar);
+	/*
+	 * Determine the new position of the dragbar and configure it.
+	 */
+	__ewl_seeker_value_to_position(s);
 	ewl_widget_configure(s->dragbar);
+
+	/*
+	 * Now signal that the value of the seeker has changed.
+	 */
+	ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Update the theme for the dragbar.
+ */
 void
 __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Seeker *s;
+	Ewl_Seeker     *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -609,58 +621,14 @@ __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_theme_update(s->dragbar);
 
-	if (w->ebits_object)
-	  {
-		  int maw, mah;
-		  int miw, mih;
-
-		  maw = 1 << 30;
-		  mah = 1 << 30;
-		  miw = 0;
-		  mih = 0;
-
-		  ebits_get_max_size(w->ebits_object, &maw, &mah);
-		  ebits_get_min_size(w->ebits_object, &miw, &mih);
-
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), maw, mah);
-		  ewl_object_set_minimum_size(EWL_OBJECT(w), miw, mih);
-	  }
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_seeker_dragbar_theme_update(Ewl_Widget * w, void *ev_data,
-				  void *user_data)
+__ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	if (w->ebits_object)
-	  {
-		  int maw, mah, miw, mih;
-
-		  maw = 1 << 30;
-		  mah = 1 << 30;
-		  miw = 0;
-		  mih = 0;
-
-		  ebits_get_max_size(w->ebits_object, &maw, &mah);
-		  ebits_get_min_size(w->ebits_object, &miw, &mih);
-
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), maw, mah);
-		  ewl_object_set_minimum_size(EWL_OBJECT(w), miw, mih);
-	  }
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-__ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
-				void *user_data)
-{
-	Ewl_Seeker *s;
-	char appearance[PATH_LEN];
+	Ewl_Seeker     *s;
+	char            appearance[PATH_LEN];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

@@ -1,30 +1,46 @@
 #include <Ewl.h>
 #include "ewl_floater.h"
 
+/*
+ * Local callbacks used for acting based on events to parent widgets.
+ */
+static void     __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data,
+					       void *user_data);
 
-void __ewl_floater_configure(Ewl_Widget * parent, void * ev_data, void * user_data);
-void __ewl_floater_realize(Ewl_Widget * parent, void * ev_data, void * user_data);
-void __ewl_floater_destroy(Ewl_Widget * parent, void * ev_data, void * user_data);
+/*
+ * Local callbacks for events that occur to the floaters.
+ */
+static void     __ewl_floater_configure(Ewl_Widget * parent, void *ev_data,
+					void *user_data);
+static void     __ewl_floater_realize(Ewl_Widget * parent, void *ev_data,
+				      void *user_data);
+static void     __ewl_floater_destroy(Ewl_Widget * parent, void *ev_data,
+				      void *user_data);
+static void     __ewl_floater_reparent(Ewl_Widget * parent, void *ev_data,
+				       void *user_data);
 
+extern void     __ewl_widget_reparent(Ewl_Widget * parent, void *ev_data,
+				      void *user_data);
 
 /**
  * ewl_floater_new - allocate a new floater widget
  * @parent: the parent widget to follow if desired
  *
  * Returns NULL on failure, or a pointer to the newly allocated floater
- * widget on success.
+ * widget on success. The @parent widget should be either a widget to follow
+ * relative too, or a window for absolute positioning.
  */
-Ewl_Widget * 
-ewl_floater_new (Ewl_Widget * parent)
+Ewl_Widget     *
+ewl_floater_new(Ewl_Widget * parent)
 {
-	Ewl_Widget * f;
+	Ewl_Widget     *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-  
+
 	f = NEW(Ewl_Floater, 1);
 	if (!f)
-		DRETURN_PTR (NULL, DLEVEL_STABLE);
-  
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	memset(f, 0, sizeof(Ewl_Floater));
 
 	ewl_floater_init(EWL_FLOATER(f), parent);
@@ -43,13 +59,14 @@ ewl_floater_new (Ewl_Widget * parent)
  * defaults.
  */
 void
-ewl_floater_init (Ewl_Floater * f, Ewl_Widget * parent)
+ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 {
-	Ewl_Widget * w;
+	Ewl_Widget     *w;
+	Ewl_Window     *window;
 
-  
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
+	DCHECK_PARAM_PTR("parent", parent);
 
 	w = EWL_WIDGET(f);
 
@@ -58,18 +75,48 @@ ewl_floater_init (Ewl_Floater * f, Ewl_Widget * parent)
 	 * normal, and the widget to follow.
 	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy (EWL_OBJECT(w), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NORMAL);
+	ewl_widget_set_appearance(w, "/appearance/floater");
 	f->follows = parent;
 
+	window = ewl_window_find_window_by_widget(parent);
+
 	/*
-	 * Setup the basic callbacks for special events.
+	 * Need to add callbacks to the window that contains it as well the
+	 * widget it follows, if they are not the same.
 	 */
-	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_floater_configure,
-			NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_REALIZE, __ewl_floater_realize,
-			NULL);
+	ewl_callback_append(EWL_WIDGET(window), EWL_CALLBACK_CONFIGURE,
+			    __ewl_floater_parent_configure, w);
+
+
+	/*
+	 * Setup the basic callbacks for special events. 
+	 */
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE,
+			     __ewl_floater_configure, NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_REALIZE,
+			     __ewl_floater_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_floater_destroy,
-			NULL);
+			    NULL);
+	ewl_callback_insert_after(w, EWL_CALLBACK_REPARENT,
+				  __ewl_floater_reparent, window,
+				  __ewl_widget_reparent, NULL);
+
+
+	/* 
+	 * add the floater to the window 
+	 */
+	ewl_container_append_child(EWL_CONTAINER(window), w);
+
+	/*
+	 * Set the layer for this floater and increment the windows layering
+	 * for the floaters.
+	 */
+	LAYER(w) = LAYER(window) + 3000;
+	LAYER(window)++;
+
+	f->x = CURRENT_X(EWL_OBJECT(parent));
+	f->y = CURRENT_Y(EWL_OBJECT(parent));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -82,7 +129,7 @@ ewl_floater_init (Ewl_Floater * f, Ewl_Widget * parent)
  *
  * Returns no value
  */
-void 
+void
 ewl_floater_set_position(Ewl_Floater * f, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
@@ -110,32 +157,26 @@ ewl_floater_set_position(Ewl_Floater * f, int x, int y)
  * position of the widget @w.
  */
 void
-ewl_floater_set_relative(Ewl_Floater *f, Ewl_Widget *w)
+ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 
 	DCHECK_PARAM_PTR("f", f);
 
+	if (f->follows == w)
+		return;
+
 	/*
 	 * Remove the callback attached to the configure event for the
 	 * followed widget.
 	 */
-	if (f->follows)
-		ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
-				__ewl_floater_configure);
+	ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
+			 __ewl_floater_configure);
 
 	/*
 	 * Set the widget that the floater follows.
 	 */
 	f->follows = w;
-
-	/*
-	 * Now attach a callback to the configure event for the followed
-	 * widget.
-	 */
-	if (f->follows)
-		ewl_callback_append(f->follows, EWL_CALLBACK_CONFIGURE,
-				__ewl_floater_configure, NULL);
 
 	ewl_widget_configure(EWL_WIDGET(f));
 
@@ -143,14 +184,41 @@ ewl_floater_set_relative(Ewl_Floater *f, Ewl_Widget *w)
 }
 
 /*
+ * Use this to ensure the floater gets configured when the parent/window is.
+ */
+static void
+__ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
+
+	ewl_widget_configure(EWL_WIDGET(user_data));
+
+}
+
+static void
+__ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
+
+
+	LAYER(w) = LAYER(user_data) + 3000;
+
+	if (REALIZED(w))
+		ewl_widget_theme_update(w);
+
+}
+
+/*
  * Configure the floater so that the positioning is relative to a followed
  * widget if appropriate.
  */
-void
-__ewl_floater_configure(Ewl_Widget * w, void * ev_data, void * user_data)
+static void
+__ewl_floater_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int align, x, y;
-	Ewl_Floater * f;
+	int             align, x, y;
+	Ewl_Floater    *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -161,10 +229,9 @@ __ewl_floater_configure(Ewl_Widget * w, void * ev_data, void * user_data)
 	 * positioning.
 	 */
 	if (f->follows) {
-		x = REQUEST_X(f->follows) + f->x;
-		y = REQUEST_Y(f->follows) + f->y;
-	}
-	else {
+		x = CURRENT_X(f->follows) + f->x;
+		y = CURRENT_Y(f->follows) + f->y;
+	} else {
 		x = f->x;
 		y = f->y;
 	}
@@ -179,20 +246,18 @@ __ewl_floater_configure(Ewl_Widget * w, void * ev_data, void * user_data)
 	 * Determine the horizontal placement of the widget based on alignment
 	 */
 	if (align & EWL_ALIGNMENT_RIGHT) {
-		x -= REQUEST_W(w);
-	}
-	else if (!(align & EWL_ALIGNMENT_LEFT)) {
-		x -= REQUEST_W(w) / 2;
+		x -= CURRENT_W(w);
+	} else if (!(align & EWL_ALIGNMENT_LEFT)) {
+		x -= CURRENT_W(w) / 2;
 	}
 
 	/*
 	 * Determine the vertical placement of the widget based on alignment
 	 */
 	if (align & EWL_ALIGNMENT_BOTTOM) {
-		y -= REQUEST_H(w);
-	}
-	else if (!(align & EWL_ALIGNMENT_TOP)) {
-		y -= REQUEST_H(w) / 2;
+		y -= CURRENT_H(w);
+	} else if (!(align & EWL_ALIGNMENT_TOP)) {
+		y -= CURRENT_H(w) / 2;
 	}
 
 	/*
@@ -206,24 +271,29 @@ __ewl_floater_configure(Ewl_Widget * w, void * ev_data, void * user_data)
 /*
  * Grab some necessary information from the parent when realizing this widget
  */
-void
-__ewl_floater_realize(Ewl_Widget * w, void * ev_data, void * user_data)
+static void
+__ewl_floater_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	w->evas = w->parent->evas;
-	w->evas_window = w->parent->evas_window;
-	/* evas_set_color(w->evas, w->fx_clip_box, 255, 0, 0, 255); */
+	Ewl_Floater    *f;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	f = EWL_FLOATER(w);
+
+	ewl_object_request_size(EWL_OBJECT(w), CURRENT_W(f->follows), 45);
+
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
  * Be sure to remove the floater from the parent windows list of floaters when
  * it gets destroyed.
  */
-void
-__ewl_floater_destroy(Ewl_Widget * w, void * ev_data, void * user_data)
+static void
+__ewl_floater_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_window_floater_remove(EWL_WINDOW(w->parent), EWL_FLOATER(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

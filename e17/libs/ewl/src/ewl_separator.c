@@ -1,7 +1,7 @@
 #include <Ewl.h>
 
-static void __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
+static void     __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
+					void *user_data);
 
 /**
  * ewl_separator_new - allocate a new separator widget
@@ -10,10 +10,10 @@ static void __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
  * Returns a pointer to the newly alloacted separator widget on success, NULL
  * on failure.
  */
-Ewl_Widget *
+Ewl_Widget     *
 ewl_separator_new(Ewl_Orientation o)
 {
-	Ewl_Separator *s;
+	Ewl_Separator  *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -25,10 +25,18 @@ ewl_separator_new(Ewl_Orientation o)
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_separator_init - initialize the separator and inherited fields
+ * @s: the separator to initialize
+ * @o: the orientation of the separator to be initialized
+ *
+ * Returns no value. Clears the contents of the separator and stores the
+ * default values along with the orientation specified by @o.
+ */
 void
 ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 {
-	Ewl_Widget *w;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -50,20 +58,23 @@ ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Setup the ewl object's maximum size based on the max size of the ebits
+ * object.
+ */
 static void
 __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->ebits_object)
-	  {
-		  int ww, hh;
+	if (w->ebits_object) {
+		int             ww, hh;
 
-		  ebits_get_max_size(w->ebits_object, &ww, &hh);
+		ebits_get_max_size(w->ebits_object, &ww, &hh);
 
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
-	  }
+		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

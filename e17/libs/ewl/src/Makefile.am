@@ -19,10 +19,12 @@ installed_headers_DATA = \
 	ewl_entry.h \
 	ewl_enums.h \
 	ewl_events.h \
+	ewl_fileselector.h \
 	ewl_floater.h \
 	ewl_fx.h \
+	ewl_grid.h \
 	ewl_image.h \
-	ewl_list.h \
+	ewl_imenu.h \
 	ewl_macros.h \
 	ewl_misc.h \
 	ewl_notebook.h \
@@ -32,6 +34,8 @@ installed_headers_DATA = \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
 	ewl_selection.h \
+	ewl_selectionbar.h \
+	ewl_selectionbook.h \
 	ewl_separator.h \
 	ewl_spinner.h \
 	ewl_text.h \
@@ -51,10 +55,12 @@ libewl_la_SOURCES = \
 	ewl_cursor.c \
 	ewl_entry.c \
 	ewl_events.c \
+	ewl_fileselector.c \
 	ewl_floater.c \
 	ewl_fx.c \
+	ewl_grid.c \
 	ewl_image.c \
-	ewl_list.c \
+	ewl_imenu.c \
 	ewl_misc.c \
 	ewl_notebook.c \
 	ewl_object.c \
@@ -63,6 +69,8 @@ libewl_la_SOURCES = \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
 	ewl_selection.c \
+	ewl_selectionbar.c \
+	ewl_selectionbook.c \
 	ewl_separator.c \
 	ewl_spinner.c \
 	ewl_table.c \

@@ -2,13 +2,13 @@
 #include <Ewl.h>
 
 
-void ewl_selection_init(Ewl_Selection * s);
+void            ewl_selection_init(Ewl_Selection * s);
 
 
-Ewl_Widget *
+Ewl_Widget     *
 ewl_selection_new(void)
 {
-	Ewl_Selection *s;
+	Ewl_Selection  *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -24,7 +24,7 @@ ewl_selection_new(void)
 void
 ewl_selection_set_covered(Ewl_Widget * w, int s, int e)
 {
-	Ewl_Selection *se;
+	Ewl_Selection  *se;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -42,7 +42,7 @@ ewl_selection_set_covered(Ewl_Widget * w, int s, int e)
 void
 ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e)
 {
-	Ewl_Selection *se;
+	Ewl_Selection  *se;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -60,7 +60,7 @@ ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e)
 void
 ewl_selection_expand(Ewl_Widget * w, int p)
 {
-	Ewl_Selection *se;
+	Ewl_Selection  *se;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -82,7 +82,7 @@ ewl_selection_expand(Ewl_Widget * w, int p)
 void
 ewl_selection_init(Ewl_Selection * s)
 {
-	Ewl_Widget *w;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
