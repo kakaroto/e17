@@ -1156,3 +1156,10 @@ fixed alert box form trying to run commands it cant find form rememberd states
 on startup
 fixed group null setting.
 I flimmed.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 12:53:23 PDT 1999
+(Mandrake)
+
+Added a bug to TODO list.
