@@ -224,3 +224,8 @@ classes themselves.
 Also rearranged some header stuff and created a few new helper macros
 for object declarations.
 ----------------------------------------------------------------------
+Wed May 22 00:16:31 2002                        Michael Jennings (mej)
+
+Brought the performance tests up to date and cleaned up some memory
+leaks in them.
+----------------------------------------------------------------------

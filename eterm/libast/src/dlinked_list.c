@@ -64,7 +64,7 @@ static spif_bool_t spif_dlinked_list_reverse(spif_dlinked_list_t);
 static spif_obj_t *spif_dlinked_list_to_array(spif_dlinked_list_t);
 
 /* *INDENT-OFF* */
-static spif_const_class_t dli_class = {
+static SPIF_CONST_TYPE(class) dli_class = {
     SPIF_DECL_CLASSNAME(dlinked_list_item),
     (spif_func_t) spif_dlinked_list_item_new,
     (spif_func_t) spif_dlinked_list_item_init,
@@ -75,7 +75,7 @@ static spif_const_class_t dli_class = {
     (spif_func_t) spif_dlinked_list_item_dup,
     (spif_func_t) spif_dlinked_list_item_type
 };
-spif_class_t SPIF_CLASS_VAR(dlinked_list_item) = &dli_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(dlinked_list_item) = &dli_class;
 
 static spif_const_listclass_t dl_class = {
     {

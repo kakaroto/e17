@@ -64,7 +64,7 @@ static spif_bool_t spif_linked_list_reverse(spif_linked_list_t);
 static spif_obj_t *spif_linked_list_to_array(spif_linked_list_t);
 
 /* *INDENT-OFF* */
-static spif_const_class_t lli_class = {
+static SPIF_CONST_TYPE(class) lli_class = {
     SPIF_DECL_CLASSNAME(linked_list_item),
     (spif_func_t) spif_linked_list_item_new,
     (spif_func_t) spif_linked_list_item_init,
@@ -75,7 +75,7 @@ static spif_const_class_t lli_class = {
     (spif_func_t) spif_linked_list_item_dup,
     (spif_func_t) spif_linked_list_item_type
 };
-spif_class_t SPIF_CLASS_VAR(linked_list_item) = &lli_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(linked_list_item) = &lli_class;
 
 static spif_const_listclass_t ll_class = {
     {
@@ -263,6 +263,9 @@ spif_linked_list_show(spif_linked_list_t self, spif_charptr_t name, spif_str_t b
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n", SPIF_CAST_C(unsigned long) self->len);
+    spif_str_append_from_ptr(buff, tmp);
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
         spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj));

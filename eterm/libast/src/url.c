@@ -30,7 +30,7 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-static spif_const_class_t u_class = {
+static SPIF_CONST_TYPE(class) u_class = {
     SPIF_DECL_CLASSNAME(url),
     (spif_func_t) spif_url_new,
     (spif_func_t) spif_url_init,
@@ -41,7 +41,7 @@ static spif_const_class_t u_class = {
     (spif_func_t) spif_url_dup,
     (spif_func_t) spif_url_type
 };
-spif_class_t SPIF_CLASS_VAR(url) = &u_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(url) = &u_class;
 /* *INDENT-ON* */
 
 static spif_bool_t spif_url_parse(spif_url_t, spif_str_t);

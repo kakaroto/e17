@@ -30,7 +30,7 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-static spif_const_class_t t_class = {
+static SPIF_CONST_TYPE(class) t_class = {
     SPIF_DECL_CLASSNAME(tok),
     (spif_func_t) spif_tok_new,
     (spif_func_t) spif_tok_init,
@@ -41,7 +41,7 @@ static spif_const_class_t t_class = {
     (spif_func_t) spif_tok_dup,
     (spif_func_t) spif_tok_type
 };
-spif_class_t SPIF_CLASS_VAR(tok) = &t_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(tok) = &t_class;
 /* *INDENT-ON* */
 
 spif_tok_t

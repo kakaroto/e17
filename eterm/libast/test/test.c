@@ -67,6 +67,18 @@ test_macros(void)
     TEST_FAIL_IF(sl2 != 0x98765432);
     TEST_PASS();
 
+    TEST_BEGIN("BINSWAP() macro");
+    BINSWAP(sc1, sc2);
+    BINSWAP(si1, si2);
+    BINSWAP(sl1, sl2);
+    TEST_FAIL_IF(sc1 != 'X');
+    TEST_FAIL_IF(sc2 != 'K');
+    TEST_FAIL_IF(si1 != 472);
+    TEST_FAIL_IF(si2 != 8786345);
+    TEST_FAIL_IF(sl1 != 0x98765432);
+    TEST_FAIL_IF(sl2 != 0xffeeddff);
+    TEST_PASS();
+
     TEST_BEGIN("BEG_STRCASECMP() macro");
     TEST_FAIL_IF(!BEG_STRCASECMP("this", "this is a test"));
     TEST_FAIL_IF(!BEG_STRCASECMP("thx", "this is another test"));
@@ -895,12 +907,12 @@ test_list(void)
 
         TEST_BEGIN("SPIF_LIST_REMOVE() macro");
         s = spif_str_new_from_ptr("MOO");
-        s2 = SPIF_LIST_REMOVE(testlist, s);
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE(testlist, s);
         TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
         spif_str_del(s2);
         spif_str_done(s);
         spif_str_init_from_ptr(s, "GRIN");
-        s2 = SPIF_LIST_REMOVE(testlist, s);
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE(testlist, s);
         TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
         spif_str_del(s2);
         spif_str_del(s);
@@ -923,9 +935,9 @@ test_list(void)
         TEST_PASS();
 
         TEST_BEGIN("SPIF_LIST_REMOVE_AT() macro");
-        s2 = SPIF_LIST_REMOVE_AT(testlist, 6);
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 6);
         spif_str_del(s2);
-        s2 = SPIF_LIST_REMOVE_AT(testlist, 3);
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 3);
         spif_str_del(s2);
 
         s = spif_str_new_from_ptr("0");

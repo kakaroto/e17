@@ -35,7 +35,7 @@ static spif_sockport_t spif_url_get_portnum(spif_url_t);
 static spif_bool_t spif_socket_get_proto(spif_socket_t);
 
 /* *INDENT-OFF* */
-static spif_const_class_t o_class = {
+static SPIF_CONST_TYPE(class) o_class = {
     SPIF_DECL_CLASSNAME(socket),
     (spif_func_t) spif_socket_new,
     (spif_func_t) spif_socket_init,
@@ -46,7 +46,7 @@ static spif_const_class_t o_class = {
     (spif_func_t) spif_socket_dup,
     (spif_func_t) spif_socket_type
 };
-spif_class_t SPIF_CLASS_VAR(socket) = &o_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(socket) = &o_class;
 /* *INDENT-ON* */
 
 spif_socket_t

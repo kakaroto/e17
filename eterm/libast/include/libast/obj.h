@@ -38,8 +38,8 @@
 #define SPIF_NULLOBJ(obj)                ((spif_nullobj_t) (obj))
 
 /* Typecase macros for classes */
-#define SPIF_CLASS(cls)                  ((SPIF_TYPE(class)) (cls))
-#define SPIF_CONST_CLASS(cls)            ((SPIF_CONST_TYPE(class)) (cls))
+#define SPIF_CLASS(cls)                  (SPIF_CAST(class) (cls))
+#define SPIF_CONST_CLASS(cls)            (SPIF_CONST_CAST(class) (cls))
 
 /* Assembles the name of the object class variable. */
 #define SPIF_CLASS_VAR(type)             spif_ ## type ## _class

@@ -24,20 +24,16 @@
 #ifndef _LIBAST_PERF_H_
 #  define _LIBAST_PERF_H_
 
+#  define PERF_ITERATIONS      100000
 #  define TDIFF(t1, t2)        (((t2).tv_sec + ((double) (t2).tv_usec / 1000000.0)) \
                                  - ((t1).tv_sec + ((double) (t1).tv_usec / 1000000.0)))
-
-#  define PERF_ITERATIONS      100000
-
 #  define PERF_BEGIN(s)        do { \
                                    tnum = 0; \
                                    printf("Profiling " s "..."); \
                                    fflush(stdout); \
                                    gettimeofday(&time1, NULL); \
                                    for (prof_counter = 0; prof_counter < PERF_ITERATIONS; prof_counter++) { 
-
 #  define PERF_TEST(x)             do { tnum++; x ; } while (0)
-
 #  define PERF_END()               } \
                                    gettimeofday(&time2, NULL); \
                                    time_diff = TDIFF(time1, time2); \
@@ -45,5 +41,6 @@
                                           tnum, time_diff, time_diff / tnum); \
                                } while (0)
 #  define PERF_ENDED(s)        printf(s " profiling done.\n\n"); return 0;
+#  define PERF_NOTICE(s)       printf("%s\n", s)
 
 #endif

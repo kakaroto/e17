@@ -30,7 +30,7 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-static spif_const_class_t s_class = {
+static SPIF_CONST_TYPE(class) s_class = {
     SPIF_DECL_CLASSNAME(str),
     (spif_func_t) spif_str_new,
     (spif_func_t) spif_str_init,
@@ -41,7 +41,7 @@ static spif_const_class_t s_class = {
     (spif_func_t) spif_str_dup,
     (spif_func_t) spif_str_type
 };
-spif_class_t SPIF_CLASS_VAR(str) = &s_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(str) = &s_class;
 /* *INDENT-ON* */
 
 const size_t buff_inc = 4096;
@@ -99,6 +99,7 @@ spif_str_new_from_fd(int fd)
 spif_bool_t
 spif_str_del(spif_str_t self)
 {
+    D_OBJ(("Deleting string %8p\n", self));
     spif_str_done(self);
     SPIF_DEALLOC(self);
     return TRUE;
@@ -504,8 +505,8 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  { \"%s\", len %lu, size %lu }\n",
-             name, self->s, (unsigned long) self->len, (unsigned long) self->mem);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  %8p { \"%s\", len %lu, size %lu }\n",
+             name, self, self->s, (unsigned long) self->len, (unsigned long) self->mem);
 
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);

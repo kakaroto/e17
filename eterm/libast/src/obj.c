@@ -30,7 +30,7 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-static spif_const_class_t o_class = {
+static SPIF_CONST_TYPE(class) o_class = {
     SPIF_DECL_CLASSNAME(obj),
     (spif_func_t) spif_obj_new,
     (spif_func_t) spif_obj_init,
@@ -41,7 +41,7 @@ static spif_const_class_t o_class = {
     (spif_func_t) spif_obj_dup,
     (spif_func_t) spif_obj_type
 };
-spif_class_t SPIF_CLASS_VAR(obj) = &o_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(obj) = &o_class;
 /* *INDENT-ON* */
 
 spif_nullobj_t
@@ -88,6 +88,7 @@ spif_obj_new(void)
 spif_bool_t
 spif_obj_del(spif_obj_t self)
 {
+    D_OBJ(("Deleting object %8p\n", self));
     spif_obj_done(self);
     SPIF_DEALLOC(self);
     return TRUE;
