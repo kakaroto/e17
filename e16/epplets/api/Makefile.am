@@ -10,4 +10,4 @@ libepplet_la_LDFLAGS = -version-info 1:0:1
 INCLUDES = -I. -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-EXTRA_DIST = epplet.h
+EXTRA_DIST = epplet.h.in
