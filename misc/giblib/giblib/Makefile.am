@@ -21,6 +21,6 @@ libgiblib_la_SOURCES = \
     gib_utils.c gib_utils.h
 
 libgiblib_la_LIBADD = @IMLIB_LIBS@
-libgiblib_la_DEPENDENCIES = $(top_builddir)/config.h
+libgiblib_la_DEPENDENCIES = giblib_config.h
 libgiblib_la_LDFLAGS = -version-info 1:0:1
 
