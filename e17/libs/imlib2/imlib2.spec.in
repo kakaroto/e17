@@ -1,16 +1,17 @@
+%define	name	 imlib2
 %define ver      @VERSION@
 %define rel      1
 %define prefix   /usr
 
 Summary: Powerful image loading and rendering library
-Name: imlib2
-Version: %ver
-Release: %rel
+Name: %{name}
+Version: %{ver}
+Release: %{rel}
 Copyright: BSD
-Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/imlib2-%{ver}.tar.gz
-BuildRoot: /var/tmp/imlib2-root
-Packager: The Rasterman <raster@rasterman.com>
+Group: System/Libraries
+Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{ver}.tar.bz2
+BuildRoot: %{_tmppath}/%{name}-root
+Packager: Lyle Kempler <term@kempler.net>, Joakim Bodin <bodin@dreamhosted.com>
 URL: http://www.rasterman.com/raster/imlib.html
 Requires: freetype >= 1.2
 Requires: XFree86
@@ -18,7 +19,11 @@ Requires: imlib2-loader_jpeg
 Requires: imlib2-loader_png
 Requires: imlib2-loader_db
 Requires: imlib2-loader_argb
-Docdir: %{prefix}/doc
+BuildRequires: libjpeg-devel
+BuildRequires: libpng-devel
+BuildRequires: edb-devel
+BuildRequires: XFree86-devel
+BuildRequires: freetype-devel >= 1.2
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
 provides many more features with much greater flexibility and speed than
@@ -27,88 +32,108 @@ rendering and blending, dynamic binary filters, scripting, and more.
 
 %package devel
 Summary: Imlib2 headers, static libraries and documentation
-Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
+Group: System/Libraries
+Requires: %{name} = %{PACKAGE_VERSION}
 %description devel
 Headers, static libraries and documentation for Imlib2.
 
 %package filters
 Summary: Imlib2 basic plugin filters set
-Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
+Group: System/Libraries
+Requires: %{name} = %{PACKAGE_VERSION}
 %description filters
 Basic set of plugin filters that come with Imlib2
 
 %package loader_jpeg
 Summary: Imlib2 JPEG loader
-Group: System Environment/Libraries
+Group: System/Libraries
 Requires: libjpeg
+BuildRequires: libjpeg-devel
 %description loader_jpeg
 JPEG image loader/saver for Imlib2
 
 %package loader_png
 Summary: Imlib2 PNG loader
-Group: System Environment/Libraries
+Group: System/Libraries
 Requires: libpng
 Requires: zlib
+BuildRequires: libpng-devel
+BuildRequires: zlib-devel
 %description loader_png
 PNG image loader/saver for Imlib2
 
 %package loader_db
 Summary: Imlib2 DB loader
-Group: System Environment/Libraries
+Group: System/Libraries
 Requires: edb
+BuildRequires: edb-devel
 %description loader_db
 DB image loader/saver for Imlib2
 
 %package loader_argb
 Summary: Imlib2 ARGB loader
-Group: System Environment/Libraries
+Group: System/Libraries
 %description loader_argb
 ARGB image loader/saver for Imlib2
 
 %package loader_bmp
 Summary: Imlib2 BMP loader
-Group: System Environment/Libraries
+Group: System/Libraries
 %description loader_bmp
 BMP image loader/saver for Imlib2
 
 %package loader_gif
 Summary: Imlib2 GIF loader
-Group: System Environment/Libraries
+Group: System/Libraries
+Requires: libungif
+BuildRequires: libungif-devel
 %description loader_gif
 GIF image loader/saver for Imlib2
 
 %package loader_pnm
 Summary: Imlib2 PNM loader
-Group: System Environment/Libraries
+Group: System/Libraries
 %description loader_pnm
 PNM image loader/saver for Imlib2
 
 %package loader_tga
 Summary: Imlib2 TGA loader
-Group: System Environment/Libraries
+Group: System/Libraries
 %description loader_tga
 TGA image loader/saver for Imlib2
 
 %package loader_tiff
 Summary: Imlib2 TIFF loader
-Group: System Environment/Libraries
+Group: System/Libraries
 Requires: libtiff
+BuildRequires: libtiff-devel
 %description loader_tiff
 TIFF image loader/saver for Imlib2
 
 %package loader_xpm
 Summary: Imlib2 XPM loader
-Group: System Environment/Libraries
+Group: System/Libraries
 %description loader_xpm
 XPM image loader/saver for Imlib2
 
 %prep
-%setup
+rm -rf $RPM_BUILD_ROOT
+
+%setup -q
 
 %build
-./configure --prefix=%prefix
+
+if [ -f configure ]
+then
+  %configure
+#./configure --prefix=%prefix
+else
+  # can't build as root? gah. ;)
+  sed <autogen.sh 's@$USER@ANNOYING@' >autogen.sh1
+  mv -f autogen.sh1 autogen.sh
+  chmod 0700 autogen.sh
+  ./autogen.sh --prefix=%prefix
+fi
 
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
@@ -117,9 +142,13 @@ else
   make
 fi
 
+%make
+
 %install
 rm -rf $RPM_BUILD_ROOT
 make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+#%makeinstall
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -129,42 +158,58 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,0755)
 %doc AUTHORS README COPYING ChangeLog doc/index.html doc/imlib2.gif doc/blank.gif
-%attr(755,root,root) %{prefix}/lib/lib*.so.*
-%{prefix}/bin/*
+%{_libdir}/lib*.so.*
+%{_bindir}/*
 
 %files devel
-%defattr(-,root,root)
-%{prefix}/lib/libImlib2.so
-%{prefix}/lib/*.a
-%{prefix}/include/*
+%defattr(-,root,root,0755)
+%{_libdir}/libImlib2.so
+%{_libdir}/*.a
+%{_includedir}/*
 
 %files filters
-%attr(755,root,root) %{prefix}/lib/loaders/filter/*
+%attr(755,root,root) %{_libdir}/loaders/filter/*
 
 %files loader_jpeg
-%attr(755,root,root) %{prefix}/lib/loaders/image/jpeg.*
+%attr(755,root,root) %{_libdir}/loaders/image/jpeg.*
+
 %files loader_png
-%attr(755,root,root) %{prefix}/lib/loaders/image/png.*
+%attr(755,root,root) %{_libdir}/loaders/image/png.*
+
 %files loader_db
-%attr(755,root,root) %{prefix}/lib/loaders/image/db.*
+%attr(755,root,root) %{_libdir}/loaders/image/db.*
+
 %files loader_argb
-%attr(755,root,root) %{prefix}/lib/loaders/image/argb.*
+%attr(755,root,root) %{_libdir}/loaders/image/argb.*
+
 %files loader_bmp
-%attr(755,root,root) %{prefix}/lib/loaders/image/bmp.*
+%attr(755,root,root) %{_libdir}/loaders/image/bmp.*
+
 %files loader_gif
-%attr(755,root,root) %{prefix}/lib/loaders/image/gif.*
+%attr(755,root,root) %{_libdir}/loaders/image/gif.*
+
 %files loader_pnm
-%attr(755,root,root) %{prefix}/lib/loaders/image/pnm.*
+%attr(755,root,root) %{_libdir}/loaders/image/pnm.*
+
 %files loader_tga
-%attr(755,root,root) %{prefix}/lib/loaders/image/tga.*
+%attr(755,root,root) %{_libdir}/loaders/image/tga.*
+
 %files loader_tiff
-%attr(755,root,root) %{prefix}/lib/loaders/image/tiff.*
+%attr(755,root,root) %{_libdir}/loaders/image/tiff.*
+
 %files loader_xpm
-%attr(755,root,root) %{prefix}/lib/loaders/image/xpm.*
+%attr(755,root,root) %{_libdir}/loaders/image/xpm.*
 
 %changelog
+* Sat Sep 30 2000 Lyle Kempler <term@kempler.net>
+- Bring back building imlib2 as root via autogen.sh for the lazy (me)
+- Some minor changes
+
+* Sat Sep 30 2000 Joakim Bodin <bodin@dreamhosted.com>
+- Linux-Mandrake:ise the spec file
+
 * Tue Sep 12 2000 The Rasterman <raster@rasterman.com>
 - Redo spec file
 
