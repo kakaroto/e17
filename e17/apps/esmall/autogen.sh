@@ -28,11 +28,6 @@ if test "$DIE" -eq 1; then
         exit 1
 fi
 
-(test -d src && test -d dox) || {
-        echo "You must run this script in the top-level Enlightenment directory"
-        exit 1
-}
-
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
         echo "to pass any to it, please specify them on the $0 command line."

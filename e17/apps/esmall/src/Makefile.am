@@ -9,7 +9,7 @@ small_SOURCES = \
 	sc6.c \
 	sc7.c \
 	scvars.c \
-	sc.h \
+	sc.h
 
 LDADD = -lm
 
