@@ -36,6 +36,8 @@ typedef struct _rc_config {
 	char *browser;
 	char *proxy;
 	int proxy_port;
+	char *enc_from;
+	char *enc_to;
 } Rc_Config;
 
 int parse_rc_file ();

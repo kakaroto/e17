@@ -11,5 +11,9 @@ vg.cfg \
 groklaw.cfg \
 handyande.cfg \
 itavisen.cfg \
-kuro5hin.cfg
+kuro5hin.cfg \
+theregister.cfg \
+freshmeat.cfg \
+cnetnews.cfg \
+newsforge.cfg
 

@@ -18,11 +18,12 @@ NOTE:
 If the slashdot.cfg is not working try HandyAndE's mirror (handyande.cfg).
 
 For testing you can use the config files named radius.cfg.
-(You risk getting banned if you hammer /. every 5th min for a period of time)
+(You risk getting banned if you hammer slashdot or any other highvolumesite 
+every 5th min for a period of time)
 
 You can find lots of feeds here, just make config files for them:
 http://blogs.law.harvard.edu/tech/directory/5/feeds
 
+
 If you do make a config for a feed and want to share it with us
 please e-mail Martin Sarajervi <ms@klmoberg.no>
-

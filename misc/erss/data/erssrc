@@ -14,3 +14,9 @@ Leave blank if none!
 -->
 <proxy></proxy>
 <proxy_port>80</proxy_port>
+
+<!--
+Define what encoding to use.
+-->
+<enc_to>iso-8859-1</enc_to>
+<enc_from>utf8</enc_from>

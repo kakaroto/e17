@@ -116,7 +116,7 @@ void parse_data (char *buf)
 	char *c;
 	char *text;
 	int i;
-
+	
 	/* 
 	 * Some of the feeds may have "garbage" in their titles
 	 * we want to remove it.
@@ -125,7 +125,7 @@ void parse_data (char *buf)
 		"<![CDATA[",
 		"]]>"
 	};
-
+	
 	if (!buf || !*buf)
 		return;
 
@@ -168,40 +168,38 @@ void parse_data (char *buf)
 
 	if ((c = get_element (&buf, cfg->item_title)) != NULL)
 	{
-
 		for (i = 0; i < 2; i++)
 			c = remove_garbage (c, garbage[i]);
-
-		c = ecore_txt_convert ("iso-8859-1", "utf8", c);
-
+		
+		c = ecore_txt_convert (rc->enc_to, rc->enc_from, c);
+		
 		i = strlen(c) + 3 + strlen(cfg->prefix);
-
 		text = malloc (i);
-
+		
 		snprintf (text, i, " %s %s", cfg->prefix, c);
-
+		
 		item->obj = edje_object_add (evas);
 		edje_object_file_set (item->obj, 
 				cfg->theme, "erss_item");
-
+		
 		if (text)
 			edje_object_part_text_set (item->obj, "article", text);
-
+		
 		evas_object_show (item->obj);
-
+		
 		evas_object_event_callback_add (item->obj,
 				EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, NULL);
 		evas_object_event_callback_add (item->obj,
 				EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, NULL);
-
+		
 		e_container_element_append(cont, item->obj);
-
+		
 		free (c);
 		free (text);
-
+		
 		return; 
 	}
-
+	
 	if ((c = get_element (&buf, cfg->item_url)) != NULL)
 	{
 		item->url = strdup (c);
@@ -214,7 +212,7 @@ void parse_data (char *buf)
 		free (c);
 		return;
 	}
-
+	
 	if ((c = get_element (&buf, cfg->item_description)) != NULL)
 	{
 		item->description = strdup (c);
@@ -222,7 +220,6 @@ void parse_data (char *buf)
 		free (c);
 		return;
 	}
-
 	
 }
 
@@ -276,8 +273,6 @@ int parse_rc_file ()
 	
 	fp = fopen (file, "r");
 
-	if (!fp)
-		return FALSE;
 
 	while (fp && (line = get_next_line (fp)) != NULL)
 	{
@@ -305,6 +300,18 @@ int parse_rc_file ()
 			continue;
 		}
 
+		if ((c = get_element (&line, "enc_from")) != NULL)
+		{
+			rc->enc_from = strdup (c);
+			continue;
+		}
+
+		if ((c = get_element (&line, "enc_to")) != NULL)
+		{
+			rc->enc_to = strdup (c);
+			continue;
+		}
+
 		if ((c = get_element (&line, "proxy_port")) != NULL)
 		{
 			rc->proxy_port = atoi (c);
@@ -313,8 +320,6 @@ int parse_rc_file ()
 		free(line);
 	}
 
-	if (fp)
-		fclose (fp);
 
 	/*
 	 * Set sane defaults for unspecified config options.
@@ -328,6 +333,19 @@ int parse_rc_file ()
 		rc->browser = strdup(getenv("BROWSER"));
 	if (!rc->browser)
 		rc->browser = strdup("mozilla");
+
+	if (!rc->enc_from)
+		rc->enc_from = strdup("utf8");
+	if (!rc->enc_to)
+		rc->enc_from = strdup("iso-8859-1");
+	
+	/* 
+	 * If there is no rc file return false for us to know
+	 */
+	if (!fp)
+		return FALSE;
+	
+	fclose (fp);
 
 	return TRUE;
 }

@@ -504,10 +504,8 @@ int main (int argc, char * const argv[])
 				
 	}
 
-	if (parse_rc_file ()) {
-		printf ("Found the rc file\n");
+	if (parse_rc_file ()) 
 		got_rc_file = TRUE;
-	}
 		
 	if(!got_config_file) {
 		
@@ -580,13 +578,13 @@ int main (int argc, char * const argv[])
 
 
 	width = 300;
-	height = 15 * cfg->num_stories;
+	height = 16 * cfg->num_stories;
 
 	if (cfg->header)
-		height += 25;
+		height += 26;
 	
 	if (cfg->clock)
-		height += 25;
+		height += 26;
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
 
