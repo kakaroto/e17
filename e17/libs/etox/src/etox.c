@@ -511,6 +511,7 @@ void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 		etox_line_remove(idx, bit);
 		evas_list_remove(et->lines, idx);
 		etox_line_free(idx);
+		et->length -= len;
 
 	}
 	else if (idx->length > len) {
