@@ -582,21 +582,19 @@ main(int argc, char *argv[])
    char *theme = NULL;
    char *config = NULL;
    int fs_en = 1;
+   pid_t server_pid = 0;
 
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
    ecore_app_args_set(argc, (const char **) argv);
 
-   if (!entrance_ipc_init(argc, (const char **) argv))
-      return (-1);
-
    /* Parse command-line options */
    while (1)
    {
       char *t;
 
-      c = getopt_long(argc, argv, "hd:g:t:Tc:", d_opt, NULL);
+      c = getopt_long(argc, argv, "hd:g:t:Tc:z:", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
@@ -653,10 +651,16 @@ main(int argc, char *argv[])
         case 'c':
            config = strdup(optarg);
            break;
+        case 'z':
+           server_pid = (pid_t) atoi(optarg);
+           break;
         default:
            entrance_help(argv);
       }
    }
+
+   if (!entrance_ipc_init(server_pid))
+      return -1;
 
    session = entrance_session_new(config);
    if (config)

@@ -3,10 +3,9 @@
  *========================================================================*/
 #include "entrance_ipc.h"
 
-#define IPC_TITLE "entrance_ipc"
 static Ecore_Ipc_Server *server = NULL;
-
 static Entrance_Session *_session = NULL;
+static char *ipc_title = NULL;
 
 /**
  * _entrance_ipc_server_add - when we connect to the ipc daemon
@@ -127,23 +126,21 @@ _entrance_ipc_client_data(void *data, int type, void *event)
    return TRUE;
 }
 
-/**
- * entrance_ipc_init - returns 1 if the app should continue, 0 if a process
- * already is running
- * @argc - the number of arguments passed to entrance
- * @argv - the string arguments passed to entrance
- * Basically it tries to connect to an already running entrance ipc server.
- * If it successfully connects, it sends the filenames to the current entrance
- * daemon and should exit.  If it does not successfully connect it registers
- * itself as the server and the app should then start up.
- */
 int
-entrance_ipc_init(int argc, const char **argv)
+entrance_ipc_init(pid_t server_pid)
 {
+   char buf[80];
+
    /* we definitely fail if we can't connect to ecore_ipc */
    if (ecore_ipc_init() < 1)
       return FALSE;
 
+   memset(buf, 0, sizeof(buf));
+   snprintf(buf, 80, "%s_%d", IPC_TITLE, server_pid);
+   if (ipc_title)
+      free(ipc_title);
+   ipc_title = strdup(buf);
+   
    if ((server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL)))
    {

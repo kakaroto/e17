@@ -132,6 +132,8 @@ is_valid_theme_eet(Evas_Object * o, const char *file)
    }
    return (result);
 }
+
+#if 0
 static int
 is_valid_avatar_theme_eet(Evas_Object * o, const char *file)
 {
@@ -148,6 +150,7 @@ is_valid_avatar_theme_eet(Evas_Object * o, const char *file)
    return (result);
 
 }
+#endif
 
 /**
  * when Enter is hit on the keyboard we end up here
