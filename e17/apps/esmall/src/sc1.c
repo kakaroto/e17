@@ -6,7 +6,6 @@
  *  This file may be freely used. No warranties of any kind.
  */
 #include <assert.h>
-#include <conio.h>
 #include <ctype.h>
 #include <sys/io.h>
 #include <limits.h>
@@ -214,7 +213,7 @@ int sc_addtag(char *name)
 
   if (name==NULL) {
     /* no tagname was given, check for one */
-    if (lex(&val,&name)!=__label) {
+    if (lex(&val,&name)!=__labelX) {
       lexpush();
       return 0;         /* untagged */
     } /* if */
@@ -558,28 +557,28 @@ static void parse(void)
     case 0:
       /* ignore zero's */
       break;
-    case __new:
-    case __static:
+    case __newX:
+    case __staticX:
       declglb();
       break;
-    case __const:
+    case __constX:
       decl_const(_global);
       break;
-    case __enum:
+    case __enumX:
       decl_enum(_global);
       break;
-    case __public:
+    case __publicX:
       newfunc(_yes);
       break;
-    case __label:
-    case __symbol:
+    case __labelX:
+    case __symbolX:
       lexpush();
       newfunc(_no);
       break;
-    case __native:
+    case __nativeX:
       funcstub(_yes);           /* create a dummy function */
       break;
-    case __forward:
+    case __forwardX:
       funcstub(_no);
       break;
     case '}':
@@ -668,7 +667,7 @@ static void declglb(void)
     numdim=0;           /* no dimensions */
     ident=_variable;
     tag=sc_addtag(NULL);
-    if (lex(&val,&str)!=__symbol)       /* read in (new) token */
+    if (lex(&val,&str)!=__symbolX)       /* read in (new) token */
       error(20,str);                    /* invalid symbol name */
     strcpy(name,str);                   /* save symbol name */
     if (findglb(name) || findconst(name))
@@ -704,7 +703,7 @@ static void declglb(void)
         symbolrange(level,dim[level]);
     glb_declared+=(int)size;    /* add total number of cells */
   } while (matchtoken(',')); /* enddo */   /* more? */
-  needtoken(__term);    /* if not comma, must be semicolumn */
+  needtoken(__termX);    /* if not comma, must be semicolumn */
 }
 
 /*  declloc     - declare local symbols
@@ -734,7 +733,7 @@ static int declloc(int isstatic)
     size=1;
     numdim=0;           /* no dimensions */
     tag=sc_addtag(NULL);
-    if (lex(&val,&str)!=__symbol)       /* read in (new) token */
+    if (lex(&val,&str)!=__symbolX)       /* read in (new) token */
       error(20,str);                    /* invalid symbol name */
     strcpy(name,str);                   /* save symbol name */
     /* Note: block locals may be named identical to locals at higher
@@ -843,7 +842,7 @@ static int declloc(int isstatic)
       } /* if */
     } /* if */
   } while (matchtoken(',')); /* enddo */   /* more? */
-  needtoken(__term);    /* if not comma, must be semicolumn */
+  needtoken(__termX);    /* if not comma, must be semicolumn */
   return ident;
 }
 
@@ -988,7 +987,7 @@ static cell init(int ident,int *tag)
 {
   cell i = 0;
 
-  if (matchtoken(__string)){
+  if (matchtoken(__stringX)){
     /* lex() automatically stores strings in the literal table (and
      * increases "litidx") */
     if (ident==_variable)
@@ -1031,12 +1030,12 @@ static void decl_const(int vclass)
   int tag;
 
   tag=sc_addtag(NULL);
-  if (lex(&val,&str)!=__symbol)         /* read in (new) token */
+  if (lex(&val,&str)!=__symbolX)         /* read in (new) token */
     error(20,str);                      /* invalid symbol name */
   strcpy(constname,str);                /* save symbol name */
   needtoken('=');
   constexpr(&val,NULL);                 /* get value */
-  needtoken(__term);
+  needtoken(__termX);
   /* add_constant() checks for duplicate definitions */
   add_constant(constname,val,vclass,tag);
 }
@@ -1051,7 +1050,7 @@ static void decl_enum(int vclass)
   char *str;
   int tag;
 
-  if (lex(&val,&str)==__symbol) {       /* read in (new) token */
+  if (lex(&val,&str)==__symbolX) {       /* read in (new) token */
     strcpy(enumname,str);               /* save enum name (last constant) */
     tag=sc_addtag(enumname);
   } else {
@@ -1067,7 +1066,7 @@ static void decl_enum(int vclass)
       lexpush();
       break;
     } /* if */
-    if (lex(&val,&str)!=__symbol)       /* read in (new) token */
+    if (lex(&val,&str)!=__symbolX)       /* read in (new) token */
       error(20,str);                    /* invalid symbol name */
     strcpy(constname,str);              /* save symbol name */
     size=1;                             /* default increment of 'val' */
@@ -1166,13 +1165,13 @@ static void funcstub(int native)
   tag=sc_addtag(NULL);
   tok=lex(&val,&str);
   if (native) {
-    if (tok==__public || tok==__symbol && *str==PUBLIC_CHAR)
+    if (tok==__publicX || tok==__symbolX && *str==PUBLIC_CHAR)
       error(42);                /* invalid combination of class specifiers */
   } else {
-    if (tok==__public)
+    if (tok==__publicX)
       tok=lex(&val,&str);
   } /* if */
-  if (tok!=__symbol)
+  if (tok!=__symbolX)
     error(10);                  /* illegal function or declaration */
   strcpy(symbolname,str);
   needtoken('(');               /* only functions may be native/forward */
@@ -1190,7 +1189,7 @@ static void funcstub(int native)
   #endif
   /* "declargs()" found the ")". A native declaration must be a prototype,
    * so the next token must be a semicolon */
-  needtoken(__term);
+  needtoken(__termX);
   litidx=0;                     /* clear the literal pool */
   delete_symbols(&loctab,0,_yes);/* clear local variables queue */
 }
@@ -1220,9 +1219,9 @@ static void newfunc(int fpublic)
 
   tag=sc_addtag(NULL);
   tok=lex(&val,&str);
-  if (tok==__native)
+  if (tok==__nativeX)
     error(42);                  /* invalid combination of class specifiers */
-  else if (tok!=__symbol && freading)
+  else if (tok!=__symbolX && freading)
     error(10);          /* illegal function or declaration */
   funcline=fline;       /* save line at which the function is defined */
   strcpy(symbolname,str);
@@ -1274,7 +1273,7 @@ static void newfunc(int fpublic)
   statement(NULL);
   if ((rettype & _retvalue)!=0)
     sym->usage|=_retvalue;
-  if ((lastst!=__return) && (lastst!=__goto)){
+  if ((lastst!=__returnX) && (lastst!=__gotoX)){
     const1(0);
     ffret();
     if ((sym->usage & _retvalue)!=0)
@@ -1349,10 +1348,10 @@ static int declargs(symbol *sym)
           error(1,"-identifier-","&");
         ident=_reference;
         break;
-      case __label:
+      case __labelX:
         tag=sc_addtag(st);
         break;
-      case __symbol:
+      case __symbolX:
         if (argcnt>=_maxargs)
           error(45);            /* too many function arguments */
         strcpy(name,st);        /* save symbol name */
@@ -1395,7 +1394,7 @@ static int declargs(symbol *sym)
       default:
         error(10);      /* illegal function or declaration */
       } /* switch */
-    } while (tok=='&' || tok==__label
+    } while (tok=='&' || tok==__labelX
              || tok!=__ellips && matchtoken(',')); /* more? */
     /* if the next token is not ",", it should be ")" */
     needtoken(')');
@@ -1658,13 +1657,13 @@ static void statement(int *lastindent)
   case 0:
     /* nothing */
     break;
-  case __new:
+  case __newX:
     declloc(_no);
-    lastst=__new;
+    lastst=__newX;
     break;
-  case __static:
+  case __staticX:
     declloc(_yes);
-    lastst=__new;
+    lastst=__newX;
     break;
   case '{':
     if (!matchtoken('}'))       /* {} is the empty statement */
@@ -1674,67 +1673,67 @@ static void statement(int *lastindent)
   case ';':
     error(36);                  /* empty statement */
     break;
-  case __if:
+  case __ifX:
     doif();
-    lastst=__if;
+    lastst=__ifX;
     break;
-  case __while:
+  case __whileX:
     dowhile();
-    lastst=__while;
+    lastst=__whileX;
     break;
-  case __do:
+  case __doX:
     dodo();
-    lastst=__do;
+    lastst=__doX;
     break;
-  case __for:
+  case __forX:
     dofor();
-    lastst=__for;
+    lastst=__forX;
     break;
-  case __switch:
+  case __switchX:
     doswitch();
-    lastst=__switch;
+    lastst=__switchX;
     break;
-  case __case:
-  case __default:
+  case __caseX:
+  case __defaultX:
     error(14);     /* not in switch */
     break;
-  case __goto:
+  case __gotoX:
     dogoto();
-    lastst=__goto;
+    lastst=__gotoX;
     break;
-  case __label:
+  case __labelX:
     dolabel();
-    lastst=__label;
+    lastst=__labelX;
     break;
-  case __return:
+  case __returnX:
     doreturn();
-    lastst=__return;
+    lastst=__returnX;
     break;
-  case __break:
+  case __breakX:
     dobreak();
-    lastst=__break;
+    lastst=__breakX;
     break;
-  case __continue:
+  case __continueX:
     docont();
-    lastst=__continue;
+    lastst=__continueX;
     break;
-  case __exit:
+  case __exitX:
     doexit();
     break;
-  case __assert:
+  case __assertX:
     doassert();
     break;
-  case __const:
+  case __constX:
     decl_const(_local);
     break;
-  case __enum:
+  case __enumX:
     decl_enum(_local);
     break;
   default:          /* non-empty expression */
     lexpush();      /* analyze token later */
     doexpr(_yes,_yes,_yes,NULL);
-    needtoken(__term);
-    lastst=__expr;
+    needtoken(__termX);
+    lastst=__exprX;
   } /* switch */
   return;
 }
@@ -1754,7 +1753,7 @@ static void compound(void)
       statement(&indent);       /* do a statement */
     } /* if */
   } /* while */
-  if ((lastst!=__return) && (lastst!=__goto))
+  if ((lastst!=__returnX) && (lastst!=__gotoX))
     modstk((int)(declared-save_decl)*sizeof(cell));  /* delete local variable space */
   testsymbols(&loctab,ncmp,_no,_yes);   /* look for unused block locals */
   declared=save_decl;
@@ -1875,7 +1874,7 @@ static void doif(void)
   flab1=getlabel();     /* get label number for false branch */
   test(flab1,_yes,_no); /* get expression and branch to flab1 if false */
   statement(NULL);      /* if true, do a statement */
-  if (matchtoken(__else)==0){  /* if...else ? */
+  if (matchtoken(__elseX)==0){  /* if...else ? */
     setlabel(flab1);    /* no, simple if..., print false label */
   } else {
     /* to avoid the "dangling else" error, we want a warning if the "else"
@@ -1883,7 +1882,7 @@ static void doif(void)
     if (stmtindent<ifindent)
       error(217);       /* loose indentation */
     flab2=getlabel();
-    if ((lastst!=__return) && (lastst!=__goto))
+    if ((lastst!=__returnX) && (lastst!=__gotoX))
       jumplabel(flab2);
     setlabel(flab1);    /* print false label */
     statement(NULL);    /* do "else" clause */
@@ -1916,13 +1915,13 @@ static void dodo(void)
   top=getlabel();         /* make a label first */
   setlabel(top);          /* loop label */
   statement(NULL);
-  needtoken(__while);
+  needtoken(__whileX);
   setlabel(wq[_wqloop]);  /* "continue" always jumps to WQLOOP. */
   test(wq[_wqexit],_yes,_no);
   jumplabel(top);
   setlabel(wq[_wqexit]);
   delwhile();
-  needtoken(__term);
+  needtoken(__termX);
 }
 
 static void dofor(void)
@@ -1941,7 +1940,7 @@ static void dofor(void)
   needtoken('(');
   if (matchtoken(';')==0) {
     /* new variable declarations are allowed here */
-    if (matchtoken(__new)) {
+    if (matchtoken(__newX)) {
       /* The variable in expr1 of the for loop is at a
        * 'compound statement' level of it own.
        */
@@ -2027,7 +2026,7 @@ static void doswitch(void)
   do {
     tok=lex(&val,&str);         /* read in (new) token */
     switch (tok) {
-    case __case:
+    case __caseX:
       if (swdefault!=_no)
         error(15);      /* "default" case must be last in switch statement */
       lbl_case=getlabel();
@@ -2081,7 +2080,7 @@ static void doswitch(void)
       statement(NULL);
       jumplabel(lbl_exit);
       break;
-    case __default:
+    case __defaultX:
       if (swdefault!=_no)
         error(16);      /* multiple defaults in switch */
       lbl_case=getlabel();
@@ -2127,7 +2126,7 @@ static void doswitch(void)
 
   setlabel(lbl_exit);
   delete_consttable(&caselist); /* clear list of case labels */
-  lastst=__switch;
+  lastst=__switchX;
 }
 
 static void doassert(void)
@@ -2152,7 +2151,7 @@ static void doassert(void)
     } while (matchtoken(',')); /* do */
     stgset(_no);                /* stop staging */
   } /* if */
-  needtoken(__term);
+  needtoken(__termX);
 }
 
 static void dogoto(void)
@@ -2161,14 +2160,14 @@ static void dogoto(void)
   cell val;
   symbol *sym;
 
-  if (lex(&val,&st)==__symbol) {
+  if (lex(&val,&st)==__symbolX) {
     sym=fetchlab(st);
     jumplabel((int)sym->addr);
     sym->usage|=_refer; /* set "_refer" bit */
   } else {
     error(20,st);       /* illegal symbol name */
   } /* if */
-  needtoken(__term);
+  needtoken(__termX);
 }
 
 static void dolabel(void)
@@ -2218,11 +2217,11 @@ static symbol *fetchlab(char *name)
 static void doreturn(void)
 {
   int tag;
-  if (matchtoken(__term)==0){
+  if (matchtoken(__termX)==0){
     if ((rettype & _retnone)!=0)
       error(208);                       /* mix "return;" and "return value;" */
     doexpr(_yes,_no,_no,&tag);
-    needtoken(__term);
+    needtoken(__termX);
     rettype|=_retvalue;                 /* function returns a value */
     /* check tagname with function tagname */
     assert(curfunc!=NULL);
@@ -2245,7 +2244,7 @@ static void dobreak(void)
   int *ptr;
 
   ptr=readwhile();      /* readwhile() gives an error if not in loop */
-  needtoken(__term);
+  needtoken(__termX);
   if (ptr==NULL)
     return;
   modstk(((int)declared-ptr[_wqbr])*sizeof(cell));
@@ -2257,7 +2256,7 @@ static void docont(void)
   int *ptr;
 
   ptr=readwhile();      /* readwhile() gives an error if not in loop */
-  needtoken(__term);
+  needtoken(__termX);
   if (ptr==NULL)
     return;
   modstk(((int)declared-ptr[_wqcont])*sizeof(cell));
@@ -2266,9 +2265,9 @@ static void docont(void)
 
 static void doexit(void)
 {
-  if (matchtoken(__term)==0){
+  if (matchtoken(__termX)==0){
     doexpr(_yes,_no,_no,NULL);
-    needtoken(__term);
+    needtoken(__termX);
   } /* if */
   ffabort(_exit);
 }

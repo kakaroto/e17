@@ -60,7 +60,7 @@ typedef struct {        /* function argument info */
  *      label           generated hexadecimal number
  *      function        offset into code segment
  */
-typedef struct __symbol {
+typedef struct __symbolX {
   char name[_namemax+1];
   cell addr;            /* address or offset (or value for constant) */
   char vclass;          /* _local if "addr" refers to a local symbol */
@@ -79,8 +79,8 @@ typedef struct __symbol {
       short level;      /* number of dimensions below this level */
     } array;
   } dim;                /* for 'dimension', both functions and arrays */
-  struct __symbol *parent;  /* hierarchical types (multi-dimensional arrays) */
-  struct __symbol *next;
+  struct __symbolX *parent;  /* hierarchical types (multi-dimensional arrays) */
+  struct __symbolX *next;
 } symbol;
 
 
@@ -204,49 +204,49 @@ typedef struct __s_linebuffer {
 #define __ellips 278    /* ... */
 #define __dbldot 279    /* .. */
 /* reserved words (statements) */
-#define __assert  280
-#define __break   281
-#define __case    282
-#define __char    283
-#define __const   284
-#define __continue 285
-#define __default 286
-#define __defined 287
-#define __do      288
-#define __else    289
-#define __enum    290
-#define __exit    291
-#define __for     292
-#define __forward 293
-#define __goto    294
-#define __if      295
-#define __native  296
-#define __new     297
-#define __public  298
-#define __return  299
-#define __sizeof  300
-#define __static  301
-#define __switch  302
-#define __while   303
+#define __assertX  280
+#define __breakX   281
+#define __caseX    282
+#define __charX    283
+#define __constX   284
+#define __continueX 285
+#define __defaultX 286
+#define __definedX 287
+#define __doX      288
+#define __elseX    289
+#define __enumX    290
+#define __exitX    291
+#define __forX     292
+#define __forwardX 293
+#define __gotoX    294
+#define __ifX      295
+#define __nativeX  296
+#define __newX     297
+#define __publicX  298
+#define __returnX  299
+#define __sizeofX  300
+#define __staticX  301
+#define __switchX  302
+#define __whileX   303
 /* compiler directives */
-#define __assert_p 304  /* #assert */
-#define __define  305
-#define __else_p  306   /* #else */
-#define __emit_p  307
-#define __endif   308
-#define __endinput 309
-#define __endscrpt 310
-#define __if_p    311   /* #if */
-#define __include 312
-#define __pragma  313
+#define __assert_pX 304  /* #assert */
+#define __defineX  305
+#define __else_pX  306   /* #else */
+#define __emit_pX  307
+#define __endifX   308
+#define __endinputX 309
+#define __endscrptX 310
+#define __if_pX    311   /* #if */
+#define __includeX 312
+#define __pragmaX  313
 /* semicolon is a special case, because it can be optional */
-#define __term   314    /* semicolon or newline */
+#define __termX   314    /* semicolon or newline */
 /* other recognized tokens */
-#define __number 315
-#define __symbol 316
-#define __label  317
-#define __string 318
-#define __expr   319    /* for assigment to "lastst" only */
+#define __numberX 315
+#define __symbolX 316
+#define __labelX  317
+#define __stringX 318
+#define __exprX   319    /* for assigment to "lastst" only */
 
 /* (reversed) evaluation of staging buffer */
 #define _startreorder 1
@@ -464,3 +464,4 @@ extern int indent_nowarn;   /* skip warning "217 loose indentation" */
 extern FILE *inpf;          /* file read from */
 extern FILE *outf;          /* file written to */
 
+char * strlwr(char * str);

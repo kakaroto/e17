@@ -669,16 +669,16 @@ static int hier2(value *lval)
     neg();              /* arithmic negation */
     lval->constval=-lval->constval;
     return 0;
-  case __label:         /* tagname override */
+  case __labelX:         /* tagname override */
     tag=sc_addtag(st);
     if (hier2(lval))
       rvalue(lval);
     lval->tag=tag;
     return 0;
-  case __defined:
+  case __definedX:
     paranthese= matchtoken('(');
     tok=lex(&val,&st);
-    if (tok!=__symbol)
+    if (tok!=__symbolX)
       return error(20,st);      /* illegal symbol name */
     lval->ident=_constexpr;
     lval->constval= findconst(st)!=NULL || findloc(st)!=NULL || findglb(st)!=NULL;
@@ -686,10 +686,10 @@ static int hier2(value *lval)
     if (paranthese)
       needtoken(')');
     return 0;
-  case __sizeof:
+  case __sizeofX:
     paranthese= matchtoken('(');
     tok=lex(&val,&st);
-    if (tok!=__symbol)
+    if (tok!=__symbolX)
       return error(20,st);      /* illegal symbol name */
     sym=findloc(st);
     if (sym==NULL)
@@ -726,7 +726,7 @@ static int hier2(value *lval)
       dec(lval);        /* decrease variable afterwards */
       sideeffect=_yes;
       return 0;
-    case __char:                /*  char (compute required # of cells */
+    case __charX:                /*  char (compute required # of cells */
       if (lval->ident==_constexpr) {
         lval->constval *= charbits/8;   /* from char to bytes */
         lval->constval = (lval->constval + sizeof(cell)-1) / sizeof(cell);
@@ -920,7 +920,7 @@ static int primary(value *lval)
   lval->constval=0;
   lval->tag=0;
   tok=lex(&val,&st);
-  if (tok==__symbol && !findconst(st)) {
+  if (tok==__symbolX && !findconst(st)) {
     /* first look for a local variable */
     if ((sym=findloc(st))!=0) {
       if (sym->ident==_label) {
@@ -1016,7 +1016,7 @@ static void callfunction(symbol *sym)
         if (!namedparams && nargs>0)
           error(44);            /* mixing named and positional parameters */
         namedparams=_yes;
-        needtoken(__symbol);
+        needtoken(__symbolX);
         tokeninfo(&lexval,&lexstr);
         argpos=findnamedarg(arg,lexstr);
         if (argpos<0) {
@@ -1258,17 +1258,17 @@ static int constant(value *lval)
   symbol *sym;
 
   tok=lex(&val,&st);
-  if (tok==__symbol && (sym=findconst(st))!=0){
+  if (tok==__symbolX && (sym=findconst(st))!=0){
     lval->constval=sym->addr;
     const1(lval->constval);
     lval->ident=_constexpr;
     lval->tag=sym->tag;
     sym->usage |= _read;
-  } else if (tok==__number) {
+  } else if (tok==__numberX) {
     lval->constval=val;
     const1(lval->constval);
     lval->ident=_constexpr;
-  } else if (tok==__string) {
+  } else if (tok==__stringX) {
     /* lex() stores starting index of string in the literal table in 'val' */
     const1((val+glb_declared)*sizeof(cell));
     lval->ident=_array;         /* pretend this is a global array */

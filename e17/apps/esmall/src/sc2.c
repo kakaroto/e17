@@ -430,7 +430,7 @@ static int command(void)
   tok=lex(&val,&str);
   ret=1;                        /* preset 'ret' to 1 (most common case) */
   switch (tok) {
-  case __if_p:                  /* conditional compilation */
+  case __if_pX:                  /* conditional compilation */
     iflevel+=1;
     if (skiplevel)
       break;                    /* break out of switch */
@@ -439,7 +439,7 @@ static int command(void)
       skiplevel=iflevel;
     check_empty(lptr);
     break;
-  case __else_p:
+  case __else_pX:
     if (iflevel==0 && skiplevel==0) {
       error(26);                /* no matching #if */
       errflag=0;
@@ -450,7 +450,7 @@ static int command(void)
     } /* if */
     check_empty(lptr);
     break;
-  case __endif:
+  case __endifX:
     if (iflevel==0 && skiplevel==0){
       error(26);
       errflag=0;
@@ -461,14 +461,14 @@ static int command(void)
     } /* if */
     check_empty(lptr);
     break;
-  case __include:               /* #include directive */
+  case __includeX:               /* #include directive */
     if (skiplevel==0)
       doinclude();
     break;
 #if !defined NO_DEFINE
-  case __define:
+  case __defineX:
       if (skiplevel==0) {
-        if (lex(&val,&str)==__symbol) {
+        if (lex(&val,&str)==__symbolX) {
           char name[_namemax+1];
           strcpy(name,str);
           while (*lptr<=' ' && *lptr!='\0')
@@ -485,7 +485,7 @@ static int command(void)
       } /* if */
     break;
 #endif
-  case __assert_p:
+  case __assert_pX:
     if (skiplevel==0 && (debug & _chkbounds)!=0) {
       preproc_expr(&val);       /* get constant expression (or 0 on error) */
       if (!val)
@@ -493,11 +493,11 @@ static int command(void)
       check_empty(lptr);
     } /* if */
     break;
-  case __pragma:
+  case __pragmaX:
     if (skiplevel==0) {
-      if (lex(&val,&str)==__symbol) {
+      if (lex(&val,&str)==__symbolX) {
         if (strcmp(str,"ctrlchar")==0) {
-          if (lex(&val,&str)!=__number)
+          if (lex(&val,&str)!=__numberX)
             error(27);          /* invalid character constant */
           ctrlchar=(char)val;
         } else if (strcmp(str,"dynamic")==0) {
@@ -539,15 +539,15 @@ static int command(void)
       check_empty(lptr);
     } /* if */
     break;
-  case __endinput:
-  case __endscrpt:
+  case __endinputX:
+  case __endscrptX:
     if (skiplevel==0) {
       check_empty(lptr);
       fclose(inpf);
       inpf=NULL;
     } /* if */
     break;
-  case __emit_p: {
+  case __emit_pX: {
     /* write opcode to output file */
     char name[30];
     int i;
@@ -567,11 +567,11 @@ static int command(void)
       symbol *sym;
       tok=lex(&val,&str);
       switch (tok) {
-      case __number:
+      case __numberX:
         outval(val,_yes);
         code_idx+=opargs(1);
         break;
-      case __symbol:
+      case __symbolX:
         sym=findloc(str);
         if (sym==NULL)
           sym=findglb(str);
@@ -584,7 +584,7 @@ static int command(void)
         } /* if */
         break;
       default:
-        error(1,__symbol,tok);
+        error(1,__symbolX,tok);
         break;
       } /* switch */
       check_empty(lptr);
@@ -666,14 +666,14 @@ static char *packedstring(char *lptr)
  *  these tokens have been assigned numbers above 255.
  *
  *  Some tokens have "attributes":
- *     __number         the value of the number is return in "lexvalue".
- *     __symbol         the first _namemax characters of the symbol are
+ *     __numberX         the value of the number is return in "lexvalue".
+ *     __symbolX         the first _namemax characters of the symbol are
  *                      stored in a buffer, a pointer to this buffer is
  *                      returned in "lexsym".
- *     __label          the first _namemax characters of the label are
+ *     __labelX          the first _namemax characters of the label are
  *                      stored in a buffer, a pointer to this buffer is
  *                      returned in "lexsym".
- *     __string         the string is stored in the literal pool, the index
+ *     __stringX         the string is stored in the literal pool, the index
  *                      in the literal pool to this string is stored in
  *                      "lexvalue".
  *
@@ -774,14 +774,14 @@ int lex(cell *lexvalue,char **lexsym)
   } /* while */
 
   if ((i=number(&_lexval,lptr))!=0){   /* number */
-    _lextok=__number;
+    _lextok=__numberX;
     *lexvalue=_lexval;
     lptr+=i;
   } else if (alpha(*lptr)){     /* symbol or label */
     /*  Note: only _namemax characters are significant. The compiler
      *        generates a warning if a symbol exceeds this length.
      */
-    _lextok=__symbol;
+    _lextok=__symbolX;
     i=0;
     toolong=0;
     while (alphanum(*lptr)){
@@ -800,11 +800,11 @@ int lex(cell *lexvalue,char **lexsym)
     } else if (_lexstr[0]=='_' && _lexstr[1]=='\0') {
       _lextok='_';      /* '_' by itself is not a symbol, it is a placeholder */
     } else if (*lptr==':') {
-      _lextok=__label;  /* it wasn't a normal symbol, it was a label/tagname */
+      _lextok=__labelX;  /* it wasn't a normal symbol, it was a label/tagname */
       lptr+=1;          /* skip colon */
     } /* if */
   } else if (*lptr=='\"'){      /* unpacked string literal */
-    _lextok=__string;
+    _lextok=__stringX;
     *lexvalue=_lexval=litidx;
     lptr+=1;            /* skip double quote */
     lptr=packstr ? packedstring(lptr) : unpackedstring(lptr);
@@ -813,7 +813,7 @@ int lex(cell *lexvalue,char **lexsym)
     else
       error(37);        /* invalid (non-terminated) string */
   } else if (*lptr=='!' && *(lptr+1)=='\"') {      /* packed string literal */
-    _lextok=__string;
+    _lextok=__stringX;
     *lexvalue=_lexval=litidx;
     lptr+=2;            /* skip exclamation point and double quote */
     lptr=packstr ? unpackedstring(lptr) : packedstring(lptr);
@@ -823,7 +823,7 @@ int lex(cell *lexvalue,char **lexsym)
       error(37);        /* invalid (non-terminated) string */
   } else if (*lptr=='\''){      /* character literal */
     lptr+=1;            /* skip quote */
-    _lextok=__number;
+    _lextok=__numberX;
     *lexvalue=_lexval=litchar(&lptr);
     if (*lptr=='\'')
       lptr+=1;          /* skip final quote */
@@ -881,9 +881,9 @@ int matchtoken(int token)
   int tok;
 
   tok=lex(&val,&str);
-  if (tok==token || token==__term && tok==';') {
+  if (tok==token || token==__termX && tok==';') {
     return 1;
-  } else if (!needsemicolon && token==__term && _lexnewline) {
+  } else if (!needsemicolon && token==__termX && _lexnewline) {
     lexpush();  /* push "tok" back, we use the "hidden" newline token */
     return 1;
   } else {

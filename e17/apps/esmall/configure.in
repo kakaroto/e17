@@ -35,7 +35,7 @@ if test "x$x_includes" = "x"; then
   x_includes="/usr/include"
 fi
 
-CPPFLAGS="$CPPFLAGS -I$includedir -I$prefix/include"
+CPPFLAGS="$CPPFLAGS -I$includedir -I../amx -I$prefix/include"
 
 SUPPORT_LIBS="-lm"
 

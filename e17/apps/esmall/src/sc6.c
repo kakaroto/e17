@@ -517,7 +517,7 @@ static int findopcode(char *instr,int maxlen)
   str[maxlen]='\0';     /* make sure the string is zero terminated */
   strlwr(str);
   /* look up the instruction */
-  for (i=1; opcodelist[i].name!=NULL && stricmp(opcodelist[i].name,str)!=0; i++)
+  for (i=1; opcodelist[i].name!=NULL && strcasecmp(opcodelist[i].name,str)!=0; i++)
     /* nothing */;
   return i;
 }

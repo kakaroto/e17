@@ -9,4 +9,5 @@ small_SOURCES = \
 	sc6.c \
 	sc7.c \
 	scvars.c \
+	extra.c \
 	sc.h
