@@ -383,7 +383,6 @@ _note_face_init (Note_Face *nf)
    e_gadman_client_max_size_set(nf->gmc, 512, 512);
    e_gadman_client_auto_size_set(nf->gmc, 320, 240);
    e_gadman_client_align_set(nf->gmc, 0.0, 1.0);
-   e_gadman_client_aspect_set(nf->gmc, 1.0, 1.0);
    e_gadman_client_resize(nf->gmc, 40, 40);
    e_gadman_client_change_func_set(nf->gmc, _note_face_cb_gmc_change, nf);
    e_gadman_client_load(nf->gmc);
@@ -425,6 +424,9 @@ _note_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chang
 static void
 _note_face_free(Note_Face *nf)
 {
+    e_gadman_client_save(nf->gmc);
+    e_object_del(E_OBJECT(nf->gmc));
+
    evas_object_del (nf->note_object);
    _note_count--;
    free (nf);
