@@ -2165,3 +2165,10 @@ Attempt to fix segfaults caused by draw queue trouble.
 Added missing title on Epplets menu.
 Don't show dialog at startup when effects (ripples/waves) are enabled,
 move control of the effects to the FX settings dialog.
+
+-------------------------------------------------------------------------------
+
+Thu Oct  2 20:52:59 CEST 2003
+(Kim)
+
+Enable focusing on dock type windows (yet another time), and make them sticky.
