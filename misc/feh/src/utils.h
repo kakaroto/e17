@@ -1,4 +1,4 @@
-/* multiwindow.c
+/* utils.h
  *
  * Copyright (C) 1999 Tom Gilbert
  *
@@ -18,29 +18,8 @@
  * USA
  */
 
-#include "feh.h"
-
-void
-init_multiwindow_mode (void)
-{
-  int i;
-  winwidget w = NULL;
-
-  D (("In init_multiwindow_mode\n"));
-
-  for (i = 0; i < file_num; i++)
-    {
-      char *s = NULL;
-      int len = 0;
-      len = strlen (PACKAGE " - ") + strlen (files[i]) + 1;
-      s = emalloc (len);
-      snprintf (s, len, PACKAGE " - %s", files[i]);
-
-      if ((w = winwidget_create_from_file (files[i], s)) != NULL)
-	{
-	  if (!opt.progressive)
-	    winwidget_show (w);
-	}
-      free (s);
-    }
-}
+void eprintf(char *fmt,...);
+void weprintf(char *fmt,...);
+char *estrdup(char *s);
+void *emalloc(size_t n);
+void *erealloc(void *ptr, size_t n);

@@ -62,7 +62,7 @@ main_loop (void)
 
   D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
-	exit (0);
+    exit (0);
 
   for (;;)
     {
@@ -120,6 +120,25 @@ main_loop (void)
 		      XFlush (disp);
 		    }
 		  break;
+		case 4:
+		  D (("Button 4 Press event\n"));
+		  if (opt.slideshow)
+		    {
+		      winwid = winwidget_get_from_window (ev.xbutton.window);
+		      if (winwid != NULL)
+			slideshow_change_image (winwid, SLIDE_PREV);
+		    }
+		  break;
+		case 5:
+		  D (("Button 5 Press event\n"));
+		  if (opt.slideshow)
+		    {
+		      winwid = winwidget_get_from_window (ev.xbutton.window);
+		      if (winwid != NULL)
+			slideshow_change_image (winwid, SLIDE_NEXT);
+		    }
+		  break;
+
 		default:
 		  D (("Recieved other ButtonPress event\n"));
 		  break;

@@ -33,7 +33,9 @@
 #include <sys/time.h>
 #include <errno.h>
 #include <dirent.h>
-#include "Imlib2.h"
+#include <stdarg.h>
+#include <Imlib2.h>
+#include "utils.h"
 
 #if 0
 #define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \

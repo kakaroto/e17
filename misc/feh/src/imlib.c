@@ -26,10 +26,7 @@ init_x_and_imlib (void)
   D (("In init_x_and_imlib\n"));
   disp = XOpenDisplay (NULL);
   if (!disp)
-    {
-      fprintf (stderr, "Cannot open display\n");
-      exit (1);
-    }
+      eprintf ("Cannot open display");
   vis = DefaultVisual (disp, DefaultScreen (disp));
   depth = DefaultDepth (disp, DefaultScreen (disp));
   cm = DefaultColormap (disp, DefaultScreen (disp));
@@ -124,7 +121,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   D (("In progressive loading callback\n"));
   if (!progwin)
     {
-      fprintf (stderr, "progwin does not exist\n");
+      weprintf ("progwin does not exist");
       return;
     }
 

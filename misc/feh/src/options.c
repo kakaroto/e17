@@ -155,10 +155,8 @@ check_options (void)
 {
   if (opt.montage && opt.index)
     {
-      fprintf (stderr,
-	       PACKAGE
-	       " - you can't use montage mode and index mode together.\n"
-	       "   Montage mode has been disabled\n");
+      weprintf ("you can't use montage mode and index mode together.\n"
+	       "   Montage mode has been disabled");
       opt.montage = 0;
     }
 
@@ -166,10 +164,8 @@ check_options (void)
     {
       if (opt.font || opt.title_font)
 	{
-	  fprintf (stderr,
-		   PACKAGE
-		   " - you can't use fonts without montage or index mode.\n"
-		   "   The fonts you specified will be ignored\n");
+	  weprintf ("you can't use fonts without montage or index mode.\n"
+		   "   The fonts you specified will be ignored");
 	  opt.font = opt.title_font = NULL;
 	}
     }

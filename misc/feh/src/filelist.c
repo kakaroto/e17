@@ -27,9 +27,9 @@ add_file_to_filelist (char *file)
   D (("In add_file_to_filelist\n"));
   file_num++;
   if (files)
-    files = realloc (files, file_num * sizeof (char *));
+    files = erealloc (files, file_num * sizeof (char *));
   else
-    files = malloc (file_num * sizeof (char *));
+    files = emalloc (file_num * sizeof (char *));
   files[file_num - 1] = file;
 }
 

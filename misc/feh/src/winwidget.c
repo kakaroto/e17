@@ -26,8 +26,7 @@ winwidget_allocate (void)
 {
   winwidget ret = NULL;
 
-  if ((ret = malloc (sizeof (_winwidget))) == NULL)
-    exit (1);
+  ret = emalloc (sizeof (_winwidget));
 
   ret->win = 0;
   ret->w = 0;
@@ -70,9 +69,9 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   winwidget_create_blank_bg (ret);
 
   if (name)
-    ret->name = strdup (name);
+    ret->name = estrdup (name);
   else
-    ret->name = strdup (PACKAGE);
+    ret->name = estrdup (PACKAGE);
 
   winwidget_create_window (ret, ret->w, ret->h);
   winwidget_render_image (ret);
@@ -92,9 +91,9 @@ winwidget_create_from_file (char *filename, char *name)
 
   ret = winwidget_allocate ();
   if (name)
-    ret->name = strdup (name);
+    ret->name = estrdup (name);
   else
-    ret->name = strdup (filename);
+    ret->name = estrdup (filename);
 
   if (opt.progressive)
     {
@@ -254,10 +253,6 @@ winwidget_destroy (winwidget winwid)
   if (winwid->win)
     XDestroyWindow (disp, winwid->win);
   winwidget_unregister (winwid);
-  /*
-     if (winwid->visible)
-     winwidget_hide (winwid);
-   */
   if (winwid->bg_pmap)
     XFreePixmap (disp, winwid->bg_pmap);
   if (winwid->name)
@@ -283,7 +278,7 @@ winwidget_destroy_all (void)
   D (("In winwidget_destroy_all\n"));
 
   /* Have to DESCEND the list here, 'cos of the way _unregister works.
-   * I'll re-implement the list at some point. A singly-linked list
+   * I'll re-implement the list at some point. A linked list
    * beckons :) */
   for (i = window_num - 1; i >= 0; i--)
     winwidget_destroy (windows[i]);
@@ -302,13 +297,11 @@ winwidget_show (winwidget winwid)
 {
   XEvent ev;
 
-  D (("Got Here\n"));
   XMapWindow (disp, winwid->win);
   /* wait for the window to map */
   D (("In winwidget_show: Waiting for window to map\n"));
   XMaskEvent (disp, StructureNotifyMask, &ev);
   D (("In winwidget_show: Window mapped\n"));
-  D (("Got Here\n"));
   winwid->visible = 1;
 }
 
@@ -326,9 +319,9 @@ winwidget_register (winwidget win)
   D (("In winwidget_register\n"));
   window_num++;
   if (windows)
-    windows = realloc (windows, window_num * sizeof (winwidget));
+    windows = erealloc (windows, window_num * sizeof (winwidget));
   else
-    windows = malloc (window_num * sizeof (winwidget));
+    windows = emalloc (window_num * sizeof (winwidget));
   windows[window_num - 1] = win;
 }
 
@@ -346,7 +339,7 @@ winwidget_unregister (winwidget win)
 	    windows[j] = windows[j + 1];
 	  window_num--;
 	  if (window_num > 0)
-	    windows = realloc (windows, window_num * sizeof (winwidget));
+	    windows = erealloc (windows, window_num * sizeof (winwidget));
 	  else
 	    {
 	      free (windows);

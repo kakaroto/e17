@@ -1,3 +1,9 @@
+Mon Dec 20 15:22:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Added some utility functions, so I don't have to write
+	if((s=malloc(blah))==NULL){fprintf("oops\n");exit(2);}
+	15 million times. It really bugs me ;-)
+
 Mon Dec 20 12:53:28 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Hehe. I like slideshow mode so much its now the default :)

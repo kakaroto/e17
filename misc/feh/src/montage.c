@@ -111,12 +111,10 @@ init_montage_mode (void)
 	      if (file_num % rec_im_per_row)
 		rec_h += opt.thumb_h;
 	    }
-	  fprintf (stderr,
-		   PACKAGE
-		   " - WARNING! The image size you requested (%d by %d) is"
+	  weprintf ("The image size you requested (%d by %d) is"
 		   " NOT big\n      enough to fit the number of thumbnails specified"
 		   " (%d).\nNot all images will be shown (only %d). May I recommend a"
-		   " size of %d by %d?\n",
+		   " size of %d by %d?",
 		   w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
 	}
     }
@@ -160,10 +158,7 @@ init_montage_mode (void)
   im_main = imlib_create_image (w, h);
 
   if (!im_main)
-    {
-      fprintf (stderr, "Imlib error creating image\n");
-      exit (2);
-    }
+      eprintf ("Imlib error creating image");
 
   imlib_context_set_image (im_main);
   imlib_context_set_blend (0);

@@ -8,7 +8,8 @@ $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
 
 bin_PROGRAMS      = feh
 feh_SOURCES       = main.c main.h feh.h options.c winwidget.c winwidget.h \
-filelist.c filelist.h multiwindow.c montage.c imlib.c index.c slideshow.c
+filelist.c filelist.h multiwindow.c montage.c imlib.c index.c slideshow.c \
+utils.c utils.h
 feh_LDADD         = -lX11 -lImlib2
 
 test:

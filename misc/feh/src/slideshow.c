@@ -20,7 +20,7 @@
 
 #include "feh.h"
 
-static int actual_file_num=0;
+static int actual_file_num = 0;
 
 void
 init_slideshow_mode (void)
@@ -31,7 +31,7 @@ init_slideshow_mode (void)
 
   D (("In init_slideshow_mode\n"));
 
-  actual_file_num=file_num;
+  actual_file_num = file_num;
 
   for (opt.cur_slide = 0; opt.cur_slide < file_num; opt.cur_slide++)
     {
@@ -45,13 +45,10 @@ init_slideshow_mode (void)
 	  break;
 	}
       else
-	  free (s);
+	free (s);
     }
   if (!success)
-    {
-      fprintf (stderr, "Error. No valid images found for loading\n");
-      exit (2);
-    }
+      eprintf ("No valid images found for loading");
 }
 
 void
@@ -60,11 +57,13 @@ slideshow_change_image (winwidget winwid, int change)
   int i;
   int success = 0;
 
-  D(("In slideshow_change_image\n"));
-  
-  if(actual_file_num<2)
-	return;
-  
+  D (("In slideshow_change_image\n"));
+
+  /* Without this, clicking a one-image slideshow reloads it. Not very
+   * intelligent behaviour :-) */
+  if (actual_file_num < 2)
+    return;
+
   /* Ok. I do this in such an odd way to ensure that if the last or first
    * image is not loadable, it will go through in the right direction to
    * find the correct one. Otherwise SLIDE_LAST would try the last file,
@@ -86,7 +85,8 @@ slideshow_change_image (winwidget winwid, int change)
       if (winwid->im)
 	{
 	  /* I would leave these in the cache, but its a big mem 
-	   * penalty for large slideshows. */
+	   * penalty for large slideshows. (In fact it brought down
+	   * ljlane's box ;-) */
 	  imlib_context_set_image (winwid->im);
 	  imlib_free_image_and_decache ();
 	}
@@ -106,6 +106,8 @@ slideshow_change_image (winwidget winwid, int change)
       D (("file_num %d, currently %d\n", file_num, opt.cur_slide));
       if (opt.progressive)
 	{
+	  /* Yeah, we have to do this stuff for progressive loading, so
+	   * the callback knows it's got to create a new image... */
 	  progwin = winwid;
 	  imlib_context_set_progress_function (progress);
 	  imlib_context_set_progress_granularity (10);
@@ -140,8 +142,7 @@ slideshow_change_image (winwidget winwid, int change)
     {
       /* We didn't manage to load any files. Maybe the last one in the
        * show was deleted? */
-      fprintf (stderr, PACKAGE " - No more slides in show\n");
-      exit (0);
+      eprintf ("No more slides in show");
     }
 }
 
@@ -151,10 +152,7 @@ slideshow_create_name (char *filename)
   char *s = NULL;
   int len = 0;
   len = strlen (PACKAGE " [slideshow mode] - ") + strlen (filename) + 1;
-  if ((s = malloc (len)) == NULL)
-    {
-      fprintf (stderr, "Out of memory. Blargh.\n");
-    }
+  s = emalloc (len);
   snprintf (s, len, PACKAGE " [%d of %d] - %s", opt.cur_slide + 1,
 	    file_num, filename);
   return s;
@@ -189,10 +187,14 @@ handle_keypress_event (XEvent * ev, Window win)
       break;
     case XK_Delete:
       /* I could do with some confirmation here */
-      unlink (files[opt.cur_slide]);
-      files[opt.cur_slide] = NULL;
-      actual_file_num--;
-      slideshow_change_image (winwid, SLIDE_NEXT);
+      /* How about holding ctrl? */
+      if (kev->state & ControlMask)
+	{
+	  unlink (files[opt.cur_slide]);
+	  files[opt.cur_slide] = NULL;
+	  actual_file_num--;
+	  slideshow_change_image (winwid, SLIDE_NEXT);
+	}
       break;
     case XK_Home:
     case XK_KP_Home:

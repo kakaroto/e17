@@ -73,10 +73,7 @@ init_index_mode (void)
     title_fn = imlib_load_font ("20thcent/24");
 
   if ((!fn) || (!title_fn))
-    {
-      fprintf (stderr, "Error loading font\n");
-      exit (1);
-    }
+      eprintf ("Error loading fonts");
   imlib_context_set_font (fn);
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
@@ -155,12 +152,10 @@ init_index_mode (void)
 	      if (file_num % rec_im_per_row)
 		rec_h += tot_thumb_h;
 	    }
-	  fprintf (stderr,
-		   PACKAGE
-		   " - WARNING! The image size you requested (%d by %d) is"
+	  weprintf ( "The image size you requested (%d by %d) is"
 		   " NOT big\n      enough to fit the number of thumbnails specified"
 		   " (%d).\nNot all images will be shown (only %d). May I recommend a"
-		   " size of %d by %d?\n",
+		   " size of %d by %d?",
 		   w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
 	}
     }
@@ -200,10 +195,7 @@ init_index_mode (void)
   im_main = imlib_create_image (w, h + title_area_h);
 
   if (!im_main)
-    {
-      fprintf (stderr, "Imlib error creating image\n");
-      exit (2);
-    }
+      eprintf ("Imlib error creating image");
 
   imlib_context_set_image (im_main);
   imlib_context_set_blend (0);
