@@ -470,11 +470,11 @@ examine_client_set_val(examine_prop * target)
   switch (target->type) {
   case PT_INT:
     valstr = malloc(1000);      /* ### FIXME */
-    sprintf(valstr, "%d", target->value.val);
+    snprintf(valstr, sizeof(valstr)-1, "%d", target->value.val);
     break;
   case PT_FLT:
     valstr = malloc(1000);      /* ### FIXME */
-    sprintf(valstr, "%f", target->value.fval);
+    snprintf(valstr, sizeof(valstr)-1, "%f", target->value.fval);
     break;
   default:                     /* PT_STR, PT_RGB */
     valstr = target->value.ptr;

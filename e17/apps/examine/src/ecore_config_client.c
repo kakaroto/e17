@@ -111,15 +111,15 @@ ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
     return ECORE_CONFIG_ERR_IGNORED;
 
   if ((p = getenv("HOME"))) {   /* debug-only ### FIXME */
-    sprintf(str, "%s/.ecore/%s/.global", p, pipe_name);
+    snprintf(str, PATH_MAX -1, "%s/.ecore/%s/.global", p, pipe_name);
     if (stat(str, &st))
       global = FALSE;
 
     else
       global = TRUE;
 
-    sprintf(str, "%s/.ecore/%s/", p, pipe_name);
-    snprintf(buf, PATH_MAX, str);
+    snprintf(str, PATH_MAX -1, "%s/.ecore/%s/", p, pipe_name);
+    snprintf(buf, PATH_MAX -1, str);
 
     if ((dir = opendir(buf))) {
       connected = 0;
