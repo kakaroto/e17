@@ -67,8 +67,8 @@ typedef struct _feh_menu_list feh_menu_list;
 
 #define FEH_MENUITEM_PAD_LEFT 2
 #define FEH_MENUITEM_PAD_RIGHT 2
-#define FEH_MENUITEM_PAD_TOP 2
-#define FEH_MENUITEM_PAD_BOTTOM 2
+#define FEH_MENUITEM_PAD_TOP 1
+#define FEH_MENUITEM_PAD_BOTTOM 1
 
 #define FEH_MENU_SEP_MAX_H 5
 
@@ -78,9 +78,6 @@ typedef struct _feh_menu_list feh_menu_list;
 #define FEH_MENU_TOGGLE_H 7
 #define FEH_MENU_TOGGLE_W 7
 #define FEH_MENU_TOGGLE_PAD 3
-
-#define FEH_MENU_FONT_SHADOW_OFF_X 2
-#define FEH_MENU_FONT_SHADOW_OFF_Y 2
 
 typedef void (*menu_func) (feh_menu * m, feh_menu_item * i, void *data);
 typedef feh_menu *(*menuitem_func_gen) (feh_menu * m, feh_menu_item * i,

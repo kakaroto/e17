@@ -57,6 +57,8 @@ init_parse_options(int argc, char **argv)
    opt.font = estrdup(DEFAULT_FONT);
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
    opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
+   opt.menu_border = 4;
+
    opt.next_button = 1;
    opt.zoom_button = 2;
    opt.menu_button = 3;
@@ -67,6 +69,7 @@ init_parse_options(int argc, char **argv)
    opt.no_rotate_ctrl_mask = 0;
    opt.blur_button = 1;
    opt.no_blur_ctrl_mask = 0;
+
 
    opt.builtin_http = 0;
 
@@ -386,6 +389,7 @@ feh_parse_option_array(int argc, char **argv)
       {"zoom", 1, 0, 205},
       {"xinerama", 1, 0, 206},
       {"screen-clip", 1, 0, 207},
+      {"menu-border", 1, 0, 208},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -659,8 +663,13 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 206:
            opt.xinerama = atoi(optarg);
+           break;
         case 207:
            opt.screen_clip = atoi(optarg);
+           break;
+        case 208:
+           opt.menu_border = atoi(optarg);
+           break; 
         default:
            break;
       }
@@ -903,6 +912,9 @@ show_usage(void)
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
            "      --menu-style FILE     Use FILE as the style descriptor for menu text.\n"
            "      --menu-bg BG          Use BG for the background image in menus.\n"
+           "      --menu-border INT     Specify number of pixels that define the menu\n"
+           "                            background's border. Borders are not stretched\n"
+           "                            when images are scaled.\n"
            "  -N, --no-menus            Don't load or show any menus.\n"
            "  -1, --next-button B       Use button B to advance to the next image in any\n"
            "                            mode (defaults to 1, usually the left button).\n"

@@ -160,6 +160,7 @@ feh_menu_new(void)
   XSetWindowAttributes attr;
   feh_menu_list *l;
   static Imlib_Image bg = NULL;
+  Imlib_Border border;
 
   D_ENTER(4);
 
@@ -204,8 +205,18 @@ feh_menu_new(void)
   l->next = menus;
   menus = l;
 
-  if (!bg)
+  if (!bg) {
     feh_load_image_char(&bg, opt.menu_bg);
+    if (bg) {
+      border.left = opt.menu_border;
+      border.right = opt.menu_border;
+      border.top = opt.menu_border;
+      border.bottom = opt.menu_border;
+      imlib_context_set_image(bg);
+      imlib_image_set_border(&border);
+    }
+  }
+
   if (bg)
     m->bg = gib_imlib_clone_image(bg);
 

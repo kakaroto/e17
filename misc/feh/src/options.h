@@ -107,6 +107,7 @@ struct __fehoptions
    int geom_w;
    int geom_h;
    int default_zoom;
+   int menu_border;
    unsigned char adjust_reload;
    unsigned int start_list_at;
    
