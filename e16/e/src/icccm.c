@@ -396,28 +396,27 @@ ICCCM_Configure(EWin * ewin)
 }
 
 void
-ICCCM_AdoptStart(EWin * ewin, Window win)
+ICCCM_AdoptStart(EWin * ewin)
 {
+   Window              win = ewin->client.win;
+
    EDBUG(6, "ICCCM_AdoptStart");
    if (!ewin->internal)
-     {
-	XAddToSaveSet(disp, win);
-     }
+      XAddToSaveSet(disp, win);
    EDBUG_RETURN_;
 }
 
 void
-ICCCM_Adopt(EWin * ewin, Window win)
+ICCCM_Adopt(EWin * ewin)
 {
    static Atom         a = 0;
+   Window              win = ewin->client.win;
    unsigned long       c[2];
    XWindowAttributes   att;
 
    EDBUG(6, "ICCCM_Adopt");
    if (!ewin->internal)
-     {
-	XSetWindowBorderWidth(disp, win, 0);
-     }
+      XSetWindowBorderWidth(disp, win, 0);
    EReparentWindow(disp, win, ewin->win_container, 0, 0);
    XGetWindowAttributes(disp, win, &att);
    XSelectInput(disp, win,

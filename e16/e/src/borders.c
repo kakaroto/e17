@@ -1264,7 +1264,7 @@ Adopt(Window win)
    GrabX();
    ewin = CreateEwin();
    ewin->client.win = win;
-   ICCCM_AdoptStart(ewin, win);
+   ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
    ICCCM_GetHints(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
@@ -1286,7 +1286,7 @@ Adopt(Window win)
 
    SetEwinToBorder(ewin, b);
    ICCCM_MatchSize(ewin);
-   ICCCM_Adopt(ewin, win);
+   ICCCM_Adopt(ewin);
    HintsSetWindowState(ewin);
    UngrabX();
    if (ewin->shaded)
@@ -1329,7 +1329,7 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 	break;
      }
 
-   ICCCM_AdoptStart(ewin, win);
+   ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetShapeInfo(ewin);
@@ -1368,7 +1368,7 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
    SetEwinToBorder(ewin, b);
 
    ICCCM_MatchSize(ewin);
-   ICCCM_Adopt(ewin, win);
+   ICCCM_Adopt(ewin);
    HintsSetWindowState(ewin);
    UngrabX();
    if (ewin->shaded)
