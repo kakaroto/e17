@@ -55,7 +55,8 @@ libewl_la_SOURCES = \
 	ewl_theme.c \
 	ewl_widget.c \
 	ewl_window.c \
-	getopt.c
+	getopt.c \
+	getopt1.c
 
 libewl_la_LIBADD = @ebits_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @imlib2_libs@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0
