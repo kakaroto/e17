@@ -71,6 +71,7 @@ main(int argc, char **argv)
 	static test_set       tests[] = {
 		{ "Box",         __create_box_test_window,         "ewl_box_test.c" },
 		{ "Button",      __create_button_test_window,      "ewl_button_test.c" },
+		{ "ColorPicker", __create_colorpicker_test_window, "ewl_colorpicker_test.c" },
 		{ "Combo",       __create_combo_test_window,       "ewl_combo_test.c" },
 		{ "Entry",       __create_entry_test_window,       "ewl_entry_test.c" },
 		{ "Filedialog",  __create_filedialog_test_window,  "ewl_filedialog_test.c" },

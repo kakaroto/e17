@@ -19,7 +19,7 @@ __destroy_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
+__combo_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *text = ev_data;
 
@@ -77,7 +77,7 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(combo1, EWL_CALLBACK_CONFIGURE,
 			    __combo_configure, NULL);
 	ewl_callback_append(combo1, EWL_CALLBACK_VALUE_CHANGED,
-											__value_changed, NULL);
+											__combo_value_changed, NULL);
 	ewl_widget_show(combo1);
 
 	/*
