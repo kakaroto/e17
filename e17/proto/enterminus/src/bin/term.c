@@ -9,9 +9,9 @@ term_tcanvas_fg_color_set(Term *term, int c)
    Term_TGlyph *gl;
    int pos;
 
-   pos = term->tcanvas->scroll_region_start + term->cur_row;
-   if (pos >= term->tcanvas->scroll_size)
-      pos -= term->tcanvas->scroll_size;
+   pos = term->tcanvas->pos + term->cur_row;
+   if (pos >= term->tcanvas->size)
+      pos -= term->tcanvas->size;
 
    gl = &term->tcanvas->grid[pos][term->cur_col];
    gl->changed = 1;
@@ -26,9 +26,9 @@ term_tcanvas_bg_color_set(Term *term, int c)
    Term_TGlyph *gl;
    int pos;
 
-   pos = term->tcanvas->scroll_region_start + term->cur_row;
-   if (pos >= term->tcanvas->scroll_size)
-      pos -= term->tcanvas->scroll_size;
+   pos = term->tcanvas->pos + term->cur_row;
+   if (pos >= term->tcanvas->size)
+      pos -= term->tcanvas->size;
 
    gl = &term->tcanvas->grid[pos][term->cur_col];
    gl->changed = 1;
@@ -44,9 +44,9 @@ term_tcanvas_glyph_push(Term *term, char c)
    int j;
    int pos;
 
-   pos = term->tcanvas->scroll_region_start + term->cur_row;
-   if (pos >= term->tcanvas->scroll_size)
-      pos -= term->tcanvas->scroll_size;
+   pos = term->tcanvas->pos + term->cur_row;
+   if (pos >= term->tcanvas->size)
+      pos -= term->tcanvas->size;
 
    gl = &term->tcanvas->grid[pos][term->cur_col];
    gl->changed = 1;
@@ -56,17 +56,17 @@ term_tcanvas_glyph_push(Term *term, char c)
    term->tcanvas->changed_rows[pos] = 1;
    term->cur_col++;
 
-   if (term->cur_col > term->tcanvas->cols) {
+   if (term->cur_col >= term->cols) {
       term->cur_col = 0;
       term->cur_row++;
-      if (term->cur_row >= term->tcanvas->rows) {
+      if (term->cur_row >= term->rows) {
 	 term_scroll_up(term, 1);
-	 term->cur_row = term->tcanvas->rows - 1;
-      }
-      for (j = 0; j < term->tcanvas->cols; j++) {
-	 gl = &term->tcanvas->grid[pos][j];
-	 gl->c = ' ';
-	 gl->changed = 1;
+	 term->cur_row = term->rows - 1;
+	 for (j = 0; j < term->cols; j++) {
+	    gl = &term->tcanvas->grid[pos][j];
+	    gl->c = ' ';
+	    gl->changed = 1;
+	 }
       }
    }
 
@@ -99,6 +99,9 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 	       break;
 	    case '\010': /* backspace */
 	       term->cur_col--;
+	       /* FIXME!!! */
+	       if (term->cur_col < 0)
+		  term->cur_col = 0;
 	       //term_tcanvas_glyph_push(term, ' ');
 	       break;
 	    case '\011': /* tab */
@@ -109,20 +112,20 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 	    case '\n': /* newline */
 	       term->cur_col = 0;
 	       term->cur_row++;
-	       if (term->cur_row >= term->tcanvas->rows) {
+	       if (term->cur_row >= term->rows) {
 		  term_scroll_up(term, 1);
-		  term->cur_row = term->tcanvas->rows - 1;
+		  term->cur_row = term->rows - 1;
 	       }
 	       {
 		  Term_TGlyph *gl;
 		  int j;
 		  int pos;
 
-		  pos = term->tcanvas->scroll_region_start + term->cur_row;
-		  if (pos >= term->tcanvas->scroll_size)
-		     pos -= term->tcanvas->scroll_size;
+		  pos = term->tcanvas->pos + term->cur_row;
+		  if (pos >= term->tcanvas->size)
+		     pos -= term->tcanvas->size;
 
-		  for (j = 0; j < term->tcanvas->cols; j++) {
+		  for (j = 0; j < term->cols; j++) {
 		     gl = &term->tcanvas->grid[pos][j];
 		     gl->c = ' ';
 		     gl->changed = 1;
@@ -143,8 +146,8 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 }
 
 /* Create a new text canvas */
-Term_TCanvas
-*term_tcanvas_new()
+Term_TCanvas *
+term_tcanvas_new(Term *term)
 {
 
    int i, j;
@@ -152,25 +155,20 @@ Term_TCanvas
    Term_TCanvas *canvas = malloc(sizeof(Term_TCanvas));
 
    canvas->canvas_id = 1; /* change later */
-   canvas->rows = 24; /* number of rows to show */
-   canvas->cols = 80;
-   canvas->scroll_size = 500; /* number of rows to keep */
-   canvas->grid = calloc(canvas->scroll_size, sizeof(Term_TGlyph *));
-   canvas->grid[0] = calloc(canvas->scroll_size * canvas->cols, sizeof(Term_TGlyph));
-   canvas->changed_rows = calloc(canvas->scroll_size, sizeof(int));
+   canvas->size = 500; /* number of rows to keep */
+   canvas->grid = calloc(canvas->size, sizeof(Term_TGlyph *));
+   canvas->changed_rows = calloc(canvas->size, sizeof(int));
 
-   for (i = 0; i < canvas->scroll_size; i++) {
-      if (i > 0)
-	 canvas->grid[i] = &canvas->grid[i - 1][canvas->cols];
-      for (j = 0; j < canvas->cols; j++) {
+   for (i = 0; i < canvas->size; i++) {
+      canvas->grid[i] = calloc(term->cols, sizeof(Term_TGlyph));
+      for (j = 0; j < term->cols; j++) {
 	 gl = &canvas->grid[i][j];
 	 gl->c = '\0';
 	 gl->changed = 0;
       }
    }
 
-   canvas->scroll_region_start = 0;
-   canvas->scroll_region_end = canvas->rows;
+   canvas->pos = 0;
 
    if (canvas->grid == NULL || canvas->changed_rows == NULL) {
       fprintf(stderr, "Could not allocate memory for grid!");
@@ -226,23 +224,23 @@ Term
    evas = evas_object_evas_get(o);
    term->term_id = 0;
    term->evas = evas;
-   term->tcanvas = term_tcanvas_new();
+   term->rows = 24;
+   term->cols = 80;
    term->cur_row = 0;
    term->cur_col = 0;
+   term->tcanvas = term_tcanvas_new(term);
 
-   term->grid = calloc(term->tcanvas->rows, sizeof(Term_EGlyph *));
-   term->grid[0] = calloc(term->tcanvas->rows * term->tcanvas->cols, sizeof(Term_EGlyph));
-   for (x = 0; x < term->tcanvas->rows; x++) {
+   term->grid = calloc(term->rows, sizeof(Term_EGlyph *));
+   term->grid[0] = calloc(term->rows * term->cols, sizeof(Term_EGlyph));
+   for (x = 0; x < term->rows; x++) {
       if (x > 0)
-	 term->grid[x] = &term->grid[x - 1][term->tcanvas->cols];
-      for (y = 0; y < term->tcanvas->cols; y++) {
+	 term->grid[x] = &term->grid[x - 1][term->cols];
+      for (y = 0; y < term->cols; y++) {
 	 gl = &term->grid[x][y];
 	 gl->text = evas_object_text_add(term->evas);
-	 /*
-	 gl->bg = evas_object_rectangle_add(term->evas);
-	 */
 	 evas_object_layer_set(gl->text, 2);
 	 /*
+	 gl->bg = evas_object_rectangle_add(term->evas);
 	 evas_object_layer_set(gl->bg, 1);
 	 */
       }
@@ -255,15 +253,15 @@ Term
    term->data_ptr = 0;
    term->font.width = term_font_get_width(term);
    term->font.height = term_font_get_height(term);
-   term->title = NULL;     
-   
+   term->title = NULL;
+
    evas_font_path_append(term->evas, term->font.path);
    ecore_timer_add(0.01, term_redraw, term);
    ecore_timer_add(0.095, term_cursor_anim, term);
    execute_command(term);//, argc, argv);
    term->cursor.shape = evas_object_rectangle_add(term->evas);
    evas_object_resize(term->cursor.shape, term->font.width, term->font.height);
-   evas_object_color_set(term->cursor.shape, 100, 100, 100, 255);	      
+   evas_object_color_set(term->cursor.shape, 100, 100, 100, 255);
    evas_object_layer_set(term->cursor.shape, 5);
    evas_object_show(term->cursor.shape);
    term->cursor.last_reset = ecore_time_get();
@@ -271,8 +269,8 @@ Term
 						   ECORE_FD_READ,
 						   term_tcanvas_data, term,
 						   NULL, NULL);
-   term->w = term->font.width * term->tcanvas->cols;
-   term->h = term->font.height * term->tcanvas->rows;
+   term->w = term->font.width * term->cols;
+   term->h = term->font.height * term->rows;
    term_term_bg_set(term, DATADIR"black.png");
 
    return term;

@@ -68,18 +68,16 @@ typedef struct _Term_TGlyph Term_TGlyph;
 
 struct _Term_TCanvas {
    int           canvas_id;
+   /*
    int           rows;
    int           cols;
+   */
    int           cur_fg;
    int           cur_bg;
    int          *changed_rows;
-   int           saved_cursor_x;
-   int           saved_cursor_y;
    int           app_keypad_mode;
-   int           scroll_region_start;
-   int           scroll_region_end;
-   int           scroll_in_region;
-   int           scroll_size;
+   int           size;
+   int           pos;
    Term_TGlyph **grid;
 };
 typedef struct _Term_TCanvas Term_TCanvas;
@@ -103,7 +101,7 @@ typedef struct _Term_EGlyph Term_EGlyph;
 
 struct _Term_Cursor {
    Evas_Object *shape;
-   int          last_reset;
+   double       last_reset;
 };
 typedef struct _Term_Cursor Term_Cursor;
 
@@ -111,30 +109,40 @@ struct _Term {
    int            term_id;
    pid_t          pid;
    Ecore_Evas    *ee;
-   Term_TCanvas  *tcanvas;
-   Term_EGlyph  **grid;
+   Evas          *evas;
    Evas_Object   *bg;
+   Term_TCanvas  *tcanvas;
    Term_Cursor    cursor;
    Term_Font      font;
-   Evas          *evas;
+   Term_EGlyph  **grid;
+
    Term_Fd        cmd_fd;
    Term_Fd        slave;
    char           data[512];
    int            data_ptr;
    int            data_len;  
-   int            font_width;
-   int            font_height;
+
    char          *title;
-   int            w;
-   int            h;
+
+   int            cols;
+   int            rows;
    int            cur_col;
    int            cur_row;
+   int            w;
+   int            h;
+
+   int            scroll_in_region;
+   int            scroll_region_start;
+   int            scroll_region_end;
+
+   int            saved_cursor_x;
+   int            saved_cursor_y;
 };
 typedef struct _Term Term;
 
 Evas_Object    *term_new(Evas *evas);
 Term           *term_init(Evas_Object *o);
-Term_TCanvas   *term_tcanvas_new();
+Term_TCanvas   *term_tcanvas_new(Term *term);
 int             term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler);
 void            term_tcanvas_glyph_push(Term *term, char c);
 void            term_tcanvas_fg_color_set(Term *term, int c);

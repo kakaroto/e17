@@ -1,10 +1,13 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>3
+ */
 #include "term.h"
 
 struct winsize *get_font_dim(Term *term)
 {
    static struct winsize w;
-   w.ws_row = term->tcanvas->rows;
-   w.ws_col = term->tcanvas->cols;
+   w.ws_row = term->rows;
+   w.ws_col = term->cols;
    w.ws_xpixel = w.ws_ypixel = 0;
    return &w;
 }
@@ -15,7 +18,7 @@ int get_pty(Term *term)
    /* extern char *ptsname(); */
    int fd;
    char *ptydev;
-   
+
    if((fd = getpt()) >= 0)
      {
 	if(grantpt(fd) == 0 && unlockpt(fd) == 0)
@@ -62,7 +65,7 @@ int get_tty(Term *term)
 
 void sigchld_handler(int a) {
    int status = 0;
-      
+
    if(waitpid(pid, &status, 0) < 0) {
       fprintf(stderr, "Waiting for pid %hd failed: %m\n", pid);
       exit(1);
@@ -136,7 +139,7 @@ int execute_command(Term *term)//, int argc, const char **argv)
    /* parent */
    close(term->slave.sys);
    signal(SIGCHLD, sigchld_handler);
-   
+
    return 0;
 }
 

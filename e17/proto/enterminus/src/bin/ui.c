@@ -95,22 +95,23 @@ term_redraw(void *data) {
    /* loop over all rows, see what has changed */
    /* the general idea is to only inspect as many rows from the tcanvas
     * as we have in the term->grid. We loop that man times, which is
-    * term->tcanvas->rows times, and look for changed flags in each row.
+    * term->rows times, and look for changed flags in each row.
     * Since i (0 -> rows) cant be used to subscript the current rows, we
     * start it from scroll_region_start.
     */
-   for (i1 = term->tcanvas->scroll_region_start, i2 = 0;
-	 i2 < term->tcanvas->rows; i1++, i2++) {
-      if (term->tcanvas->changed_rows[i1] != 1)
+   for (i1 = 0, i2 = term->tcanvas->pos;
+	i1 < term->rows; i1++, i2++) {
+
+      if (i2 >= term->tcanvas->size)
+	 i2 = 0;
+
+      if (term->tcanvas->changed_rows[i2] != 1)
 	 continue;
 
-      if (i1 >= term->tcanvas->scroll_size)
-	 i1 = 0;
-
       /* fetch the text glyph */
-      for (j = 0; j < term->tcanvas->cols; j++) {
-	 tgl = &term->tcanvas->grid[i1][j];
-	 gl = &term->grid[i2][j];
+      for (j = 0; j < term->cols; j++) {
+	 tgl = &term->tcanvas->grid[i2][j];
+	 gl = &term->grid[i1][j];
 	 if (tgl->changed != 1)
 	    continue;
 
@@ -120,14 +121,14 @@ term_redraw(void *data) {
 	    continue;
 	 }
 
-	 term_update_glyph(term, tgl, gl, i2, j);
+	 term_update_glyph(term, tgl, gl, i1, j);
       }
-      term->tcanvas->changed_rows[i1] = 0;
+      term->tcanvas->changed_rows[i2] = 0;
    }
    /* display cursor, note: this is still sort of a hack */
    evas_object_move(term->cursor.shape,
-		    term->cur_col*term->font.width,
-		    term->cur_row*term->font.height);   
+		    term->cur_col * term->font.width,
+		    term->cur_row * term->font.height);
    return 1;
 }
 
@@ -146,8 +147,8 @@ int
 term_cursor_move_down(Term *term, int n)
 {
    term->cur_row += n;
-   if (term->cur_row >= term->tcanvas->rows)
-      term->cur_row = term->tcanvas->rows - 1;
+   if (term->cur_row >= term->rows)
+      term->cur_row = term->rows - 1;
    return term->cur_row;
 }
 
@@ -166,8 +167,8 @@ int
 term_cursor_move_right(Term *term, int n)
 {
    term->cur_col += n - 1;
-   if(term->cur_col >= term->tcanvas->cols)
-      term->cur_col = term->tcanvas->cols - 1;
+   if(term->cur_col >= term->cols)
+      term->cur_col = term->cols - 1;
    return term->cur_col;
 }
 
@@ -178,8 +179,8 @@ term_cursor_move_col(Term *term, int n)
    term->cur_col = n - 1;
    if (term->cur_col < 0)
       term->cur_col = 0;
-   if (term->cur_col >= term->tcanvas->cols)
-      term->cur_col = term->tcanvas->cols - 1;
+   if (term->cur_col >= term->cols)
+      term->cur_col = term->cols - 1;
    return term->cur_col;
 }
 
@@ -190,8 +191,8 @@ term_cursor_move_row(Term *term, int n)
    term->cur_row = n - 1;
    if (term->cur_row < 0)
       term->cur_row = 0;
-   if (term->cur_row >= term->tcanvas->rows)
-      term->cur_row = term->tcanvas->rows - 1;
+   if (term->cur_row >= term->rows)
+      term->cur_row = term->rows - 1;
    return term->cur_row;
 }
 
@@ -203,12 +204,12 @@ term_cursor_goto(Term *term, int x, int y)
    term->cur_row = y - 1;
    if (term->cur_col < 0)
       term->cur_col = 0;
-   if (term->cur_col >= term->tcanvas->cols)
-      term->cur_col = term->tcanvas->cols - 1;
+   if (term->cur_col >= term->cols)
+      term->cur_col = term->cols - 1;
    if (term->cur_row < 0)
       term->cur_row = 0;
-   if (term->cur_row >= term->tcanvas->rows)
-      term->cur_row = term->tcanvas->rows - 1;
+   if (term->cur_row >= term->rows)
+      term->cur_row = term->rows - 1;
 }
 
 /* Move cursor again to last saved [x,y] */
@@ -252,22 +253,19 @@ term_clear_area(Term *term, int x1, int y1, int x2, int y2)
    x1--; y1--; x2--; y2--;
 
    if (x1 < 0) x1 = 0;
-   if (x1 > term->tcanvas->cols) x1 = term->tcanvas->cols;
+   if (x1 >= term->cols) x1 = term->cols - 1;
    if (y1 < 0) y1 = 0;
-   if (y1 > term->tcanvas->rows) y1 = term->tcanvas->rows;
-   y1 += term->tcanvas->scroll_region_start;
+   if (y1 >= term->rows) y1 = term->rows - 1;
    if (x2 < 0) x2 = 0;
-   if (x2 > term->tcanvas->cols) x2 = term->tcanvas->cols;
+   if (x2 >= term->cols) x2 = term->cols - 1;
    if (y2 < 0) y2 = 0;
-   if (y2 > term->tcanvas->rows) y2 = term->tcanvas->rows;
-   y2 += term->tcanvas->scroll_region_start;
+   if (y2 >= term->rows) y2 = term->rows - 1;
 
    DPRINT((stderr, "Clearing: %d %d, %d %d\n", x1, y1, x2, y2));
-   for (i = y1; i <= y2; i++) {
+   for (i = y1, x = y1 + term->tcanvas->pos; i <= y2; i++, x++) {
       for (j = x1; j <= x2; j++) {
-	 x = i;
-	 if (x >= term->tcanvas->scroll_size)
-	    x -= term->tcanvas->scroll_size;
+	 if (x >= term->tcanvas->size)
+	    x = 0;
 	 tgl = &term->tcanvas->grid[x][j];
 	 if (tgl->c != ' ') {
 	    tgl->c = ' ';
@@ -282,25 +280,25 @@ term_clear_area(Term *term, int x1, int y1, int x2, int y2)
 void
 term_scroll_up(Term *term, int rows)
 {
-   int i, j;
+   int i, j, x;
    Term_TGlyph *gl;
 
-   if (term->tcanvas->scroll_in_region) {
+   if (term->scroll_in_region) {
       /* TODO: implement this */
       DPRINT((stderr,"Scrolling: in region between %d and %d\n",
-	      term->tcanvas->scroll_region_start,
-	      term->tcanvas->scroll_region_end));
+	      term->scroll_region_start,
+	      term->scroll_region_end));
    } else {
       DPRINT((stderr, "Scrolling: window\n"));
-      term->tcanvas->scroll_region_end += rows;
-      if (term->tcanvas->scroll_region_end >= term->tcanvas->scroll_size) {
+      term->tcanvas->pos += rows;
+      if (term->tcanvas->pos >= term->tcanvas->size) {
 	 /* Going past the virtual scroll buffer, we need to wrap  */
 	 DPRINT((stderr, "End gone past max scroll buffer, wrapping\n"));
-	 term->tcanvas->scroll_region_end -= term->tcanvas->scroll_size;
+	 term->tcanvas->pos -= term->tcanvas->size;
 	 /* we're going back to the top, clear the rows we want to overwrite */
-	 for (i = 0; i < term->tcanvas->scroll_region_end; i++) {
+	 for (i = 0; i < term->tcanvas->pos; i++) {
 	    term->tcanvas->changed_rows[i] = 1;
-	    for (j = 0; j < term->tcanvas->cols; j++) {
+	    for (j = 0; j < term->cols; j++) {
 	       gl = &term->tcanvas->grid[i][j];
 	       gl->c = ' ';
 	       gl->changed = 1;
@@ -308,41 +306,14 @@ term_scroll_up(Term *term, int rows)
 	 }
       }
 
-      term->tcanvas->scroll_region_start += rows;
-      if (term->tcanvas->scroll_region_start >= term->tcanvas->scroll_size) {
-	 /* Start pointer going past virtual scroll buffer */
-	 DPRINT((stderr,"Start gone past scroll area max, going back to start\n"));
-	 term->tcanvas->scroll_region_start -= term->tcanvas->scroll_size;
-      }
-
       /* set changed flags on chars */
-      /* if start and end are havent gone past virtual scroll buffer */
-      if (term->tcanvas->scroll_region_start < term->tcanvas->scroll_region_end) {
-	 for (i = term->tcanvas->scroll_region_start; i < term->tcanvas->scroll_region_end; i++) {
-	    term->tcanvas->changed_rows[i] = 1;
-	    for (j = 0; j < term->tcanvas->cols; j++) {
-	       gl = &term->tcanvas->grid[i][j];
-	       gl->changed = 1;
-	    }
-	 }
-      } else {
-	 /* we now have two areas to modify:
-	  * the first being at the end of the virtual scroll buffer
-	  * the second being at the start
-	  */
-	 for (i = 0; i < term->tcanvas->scroll_region_end; i++) {
-	    term->tcanvas->changed_rows[i] = 1;
-	    for(j = 0; j < term->tcanvas->cols; j++) {
-	       gl = &term->tcanvas->grid[i][j];
-	       gl->changed = 1;
-	    }
-	    for (i = term->tcanvas->scroll_region_start; i < term->tcanvas->scroll_size; i++) {
-	       term->tcanvas->changed_rows[i] = 1;
-	       for(j = 0; j < term->tcanvas->cols; j++) {
-		  gl = &term->tcanvas->grid[i][j];
-		  gl->changed = 1;
-	       }
-	    }
+      for (i = 0, x = term->tcanvas->pos; i < term->rows; i++, x++) {
+	 if (x >= term->tcanvas->size)
+	    x = 0;
+	 term->tcanvas->changed_rows[x] = 1;
+	 for (j = 0; j < term->cols; j++) {
+	    gl = &term->tcanvas->grid[x][j];
+	    gl->changed = 1;
 	 }
       }
    }
@@ -352,7 +323,7 @@ term_scroll_up(Term *term, int rows)
 void
 term_scroll_down(Term *term, int rows)
 {
-   if (term->tcanvas->scroll_in_region) {
+   if (term->scroll_in_region) {
 
    } else {
 
@@ -361,18 +332,18 @@ term_scroll_down(Term *term, int rows)
 
 int term_cursor_anim(Term *term) {
    int a;
-   a = 162 + 73 * cos((ecore_time_get () - term->cursor.last_reset) * 2);
+   a = 162 + 73 * cos((ecore_time_get() - term->cursor.last_reset) * 2);
    evas_object_color_set(term->cursor.shape, 100, 100, 100, a);
    return 1;
 }
 
 void term_delete_lines(Term *term, int lines) {
    int a, b;
-   a = term->tcanvas->scroll_region_start;
-   b = term->tcanvas->scroll_in_region;
-   term->tcanvas->scroll_region_start = term->cur_row;
-   term->tcanvas->scroll_in_region = 0;
+   a = term->scroll_region_start;
+   b = term->scroll_in_region;
+   term->scroll_region_start = term->cur_row;
+   term->scroll_in_region = 0;
    term_scroll_up(term, lines);
-   term->tcanvas->scroll_region_start = a;
-   term->tcanvas->scroll_in_region = b;
+   term->scroll_region_start = a;
+   term->scroll_in_region = b;
 }
