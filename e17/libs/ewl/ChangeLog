@@ -1,20 +1,20 @@
-Mon Nov 12 20:28:57 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Nov 12 20:28:57 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a Ewl_ScrollBar_Flags enum.
 	* Wrote a Ewl_TextArea widget.
 
-Sun Nov 11 23:29:50 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sun Nov 11 23:29:50 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Ewl_Scrollbar fixes.
 	* Ewl_Seeker cleanups and, i also added two new calls
 	  	ewl_seeker_decrease()
 		ewl_seeker_increase()
 	* Wrote a Ewl_ScrollPane widget.
 
-Sun Nov  11 00:38:40 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sun Nov  11 00:38:40 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Now ewl_container_get_child_at_recursive() returns the last
 	  container found if no widget with the recursive flag set was found.
 	* Ewl_Seeker cleanups.
 
-Sat Nov  10 21:23:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Nov  10 21:23:10 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a mouse out ecore event handler, which calls focus out on any
 	  widgets in focus (if any).
 	* Added two new states to the Ewl_State enum
@@ -26,7 +26,7 @@ Sat Nov  10 21:23:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	  configure. Just call ewl_widget_enable() on the widget again to
 	  make it normal. I also added matching callbacks for theese.
 
-Sat Nov  10 00:22:08 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Nov  10 00:22:08 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Removed the Ewl_Widget_Type enum, instead im gonna use the
 	  Ewl_Widget->appearance to identify widgets.
 	* Added a callback called EWL_CALLBACK_APPEARANCE_CHANGED
@@ -37,7 +37,7 @@ Sat Nov  10 00:22:08 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	  similiar effects pending and ques it or adds it right away if it
 	  wont interfear with any other pending effects.
 
-Sun Nov  04 22:33:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sun Nov  04 22:33:44 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Rewrote ewl_fx.* the old ones were only temporary solutions.
 	  Effects are now pluginable, this is very basic but still powerful.
 	* /theme/author, /theme/licence, /theme/name keys now exist in the
@@ -55,32 +55,32 @@ Sun Nov  04 22:33:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Changed the FX page in ewl_config to match the new fx code.
 	* Added a ZERO macro.
 
-Wed Oct  24 13:13:00 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Wed Oct  24 13:13:00 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* More Ewl_Table cleanups.
 	* Ewl_Spinner was calling atoi when deselecting it instead of atof.
 	  Which made it imposible to change values with digits for users.
 
-Tue Oct  23 16:43:48 2001 Christopher Rosendahl	<crosendahl@northernwatch.com>
+Tue Oct  23 16:43:48 2001 Christopher Rosendahl	<crosendahl@trustlab.com>
 	* Fixed much unwanted behaviour in the ewl_config program.
 	* ewl_config.c had some "typos".
 	* Made the Ewl_Spinner accept '.'and '-' as input.
 	* Ewl_Table now operates better.
 
-Mon Oct  22 20:25:16 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Oct  22 20:25:16 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Made Ewl_Table layout its children correctly.
 	* Some cleanups in the ewl_test program.
 
-Sun Oct  21 18:24:57 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sun Oct  21 18:24:57 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* The Ewl_Window now inherits from Ewl_Box.
 	* Ewl_Scrollbar cleanups.
 
-Tue Oct  09 09:37:56 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Oct  09 09:37:56 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Now move to the page after the one removed by
 	  ewl_notebook_remove_visible() instead of just jumping to the first
 	  page.
 	* Made the notebook use its special .bits.db.
 
-Tue Oct  09 07:49:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Oct  09 07:49:30 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* When a widget is destroyed it now removes itself from it's parent
 	  list of children.
 	* It is now possible to remove pages from a Ewl_Notebook.
@@ -91,14 +91,14 @@ Tue Oct  09 07:49:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed segv in __ewl_text_destroy, etox_free got called even the
 	  Ewl_Text hadn't been realized.
 
-Mon Oct  08 02:58:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Oct  08 02:58:33 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* I've fixed known bugs in the cursor behaviour in Ewl_Entry.
 	* Re-worked the whole selection algorithm in Ewl_Entry. At the
 	  moment it only displays the selection when you select text, it
 	  doesn't copy anything to the clip board. I need to think about
 	  what more features would be nice to have before i go any further.
 
-Thu Oct  04 06:22:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Oct  04 06:22:44 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed nasty bug in Ewl_Entry, when you do mouse_down after the
 	  text, it would set the cursor pos to be to high, this
 	  triggered bug when pressing delete/backspace, which could
@@ -107,44 +107,44 @@ Thu Oct  04 06:22:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	  is @ end. Before it didn't show up at all.
 	* Fixed memleak in __ewl_entry_delete_to_right.
 
-Thu Oct  04 00:47:42 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Oct  04 00:47:42 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Now all theme data is read from the current theme's theme.db.
 	* Fixed some more unwanted behaviour in Ewl_Table.
 	* Made it possible to cache theme data keys & values.
 	  You can turn this on & off in ewl_config.
 
-Wed Oct  03 14:56:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Wed Oct  03 14:56:33 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Reolved lot's of possible segv's in the Ewl_Table code.          
 	  Also made it lay out children correctly, still nedds lots of
 	  work, but it's a start.
 
-Wed Oct  03 06:13:14 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Wed Oct  03 06:13:14 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed some really unwanted behaviour in the Ewl_Box code.
 	  When some of the children with EWL_FILL_POLICY_FILL had a custom
 	  size set, it would calculate the size of the other children with
 	  that fill policy wrong.
 
-Tue Oct  02 07:13:20 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Oct  02 07:13:20 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Made the font cache and image cache spinner in ewl_config
 	  actually display kilobytes.
 
-Tue Oct  02 06:25:20 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Oct  02 06:25:20 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a confirm dialog to ewl_config, that pops up when you exit
 	  and have unsaved changes.
 
-Tue Oct  02 05:22:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Oct  02 05:22:30 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed segv in __ewl_widget_destroy.
 	* Fixed memleaks in the ewl_test program.
 	* Made ewl_config exit nicely.
 	* Spiffed up the notebook tab button bits.db's.
 
-Tue Oct  02 03:45:39 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Oct  02 03:45:39 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added functions to change the position and alignment of the tabs in
 	  a Ewl_Notebook.
 	* Made ewl_main_quit only exit the ecore event loop.
 	  We don't destroy all widgets or call exit() anymore.
 
-Sun Sep  30 03:38:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sun Sep  30 03:38:44 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a padd structure to the Ewl_Object.
 	* Made the Ewl_Box make use of the new padding in the Ewl_Object, and
 	  get rid of the old x_padding/y_padding.
@@ -160,14 +160,14 @@ Sun Sep  30 03:38:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Made the Ewl_Image call evas events on mouse down, mouse up and
 	  mouse move when the image is a ebits.
 
-Sat Sep  29 07:37:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Sep  29 07:37:45 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a Ewl_Position enum.
 	* Made it possible to set the label position on Ewl_CheckButton's &
 	  Ewl_RadioButton's.
 	* Read the user config before it had been created in ewl_config when
 	  running it for the first time.
 
-Fri Sep  28 23:53:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 23:53:19 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed memleak in ewl_config_get_render_method().
 	* Added a ewl_config_reread_and_apply(), which rereads the user config
 	  and apply the changed settings.
@@ -177,78 +177,78 @@ Fri Sep  28 23:53:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Made the test program use ewl_config_set_* and ewl_config_get_*
 	  instead of duplicating code.
 
-Fri Sep  28 20:56:15 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 20:56:15 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed ewl_config, Needed to create ~/.e/ewl/config if it doesnt exist.
 	* Fixed segv in ewl_config when the user config did not exist.
 	* Fixed some autoconf/automake magic.
 
-Fri Sep  28 17:28:42 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 17:28:42 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Forgot to configure the entry when deleting to left & right, fixed.
 	* Now it's only possible to entry numbers in a Ewl_Spinner,
 	  and when you change em, the value updates when you deselect the
 	  spinner.
 	* Spiffed up the Ewl_CheckButton & Ewl_RadioButton graphics.
 
-Fri Sep  28 08:51:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 08:51:10 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Created a ewl_config application under tools/ewl_config, which you
 	  can setup ewl in a easy way with.
 	* Added a ewl_radiobutton_set_checked, and a ewl_radiobutton_is_checked.
 	* Added a ewl_checkbutton_set_checked, and a ewl_checkbutton_is_checked.
 
-Fri Sep  28 05:14:06 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 05:14:06 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Forgot to add a destroy callback to free Ewl_Notebook->pages.
 
-Fri Sep  28 04:42:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 04:42:45 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a Ewl_Notebook widget.
 	* Created a Ewl_Notebook test section in the test program.
 
-Thu Sep  27 18:25:12 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Sep  27 18:25:12 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Converted the Ewl_Spinner to match the new code.
 	* I set the default Ewl_Entry font size to 10.
 	* Added a Ewl_Spinner test section to the test application.
 
-Thu Sep  20 13:57:55 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Sep  20 13:57:55 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added a Ewl_Separator.
 
-Sat Sep  15 04:42:27 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Sep  15 04:42:27 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed bug in Ewl_Entry, when calling ewl_text_set_text the cursor
 	  appeared even if the entry wasn't selected.
 	* Added a Ewl_Selection widget for selections in the Ewl_Entry and
 	  the future Ewl_TextArea.
 
-Sat Sep  15 18:59:40 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Sep  15 18:59:40 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Renamed the callback EWL_CALLBACK_UNSELECT to EWL_CALLBACK_DESELECT.
 	* Made the cursor in the Ewl_Entry widget only appear when the entry
 	  is selected.
 
-Thu Sep  13 01:26:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Sep  13 01:26:30 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Some minor fixed in the Ewl_Entry code.
 	* Extended the Ewl_Entry section in the test program.
 	* Removed MIN_W, MIN_H, MAX_W, and MAX_H from ewl_object.h, now we use
 	  MINIMUM_W, MINIMUM_H, MAXIMUM_W, and MAXIMUM_H only instead.
 
-Wed Sep  11 17:35:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Wed Sep  11 17:35:33 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Rewrote the Ewl_Entry widget to match the new code.
 	* Some minor fixes in the Ewl_Widget code.
 	* Added a Ewl_Cursor widget, that will be used in the Ewl_Entry widget
 	  and the future Ewl_TextArea widget.
 
-Thu Sep  06 16:22:54 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Sep  06 16:22:54 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Changed a few function calls to match raster's changes to ebits.
 
-Thu Sep  06 04:36:46 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Sep  06 04:36:46 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added
 	    void ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	  to set which chain the radio button should belong to.
 	* Made the Ewl_CheckButton & Ewl_RadioButton call
 	    EWL_CALLBACK_VALUE_CHANGED when the checked state has changed.
 
-Thu Sep  06 03:01:56 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Thu Sep  06 03:01:56 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Made the Ewl_CheckButton & Ewl_RadioButton use  Nathan's new code.
 	* Created new ebits for the Ewl_Button, Ewl_CheckButton &
 	  Ewl_RadioButton to work with Nathan's code.
 
-Wed Sep  05 14:30:22 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Wed Sep  05 14:30:22 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed some minor bugs from Nathan's changes. They were mostly typos.
 
 Tue Sep  04 00:00:00 2001 Nathan Ingersoll <ningerso@d.umn.edu>
@@ -257,14 +257,14 @@ Tue Sep  04 00:00:00 2001 Nathan Ingersoll <ningerso@d.umn.edu>
           the methods as well as the data structures.
         * Ripped out large amounts of now redundant code.
 
-Tue Aug  21 20:41:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Aug  21 20:41:10 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed minor bug in the Ewl_Callbck code.
 	* Cleaned up the test program a bit.
 
-Tue Aug  21 18:46:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Aug  21 18:46:45 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed some unwanted behaviour in the Ewl_Box code.
 
-Tue Aug  21 16:17:49 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Aug  21 16:17:49 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Improved __ewl_button_update_label a bit.
 	* Made the size of the Ewl_Text etox area allways be the actual size
 	  of it without breaking rows.
@@ -272,7 +272,7 @@ Tue Aug  21 16:17:49 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed some minor bugs in the Ewl_CheckButton & Ewl_RadioButton
 	  widget.
 
-Tue Aug  21 02:18:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Tue Aug  21 02:18:19 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Some more typos fixed in the box code.
 	* Extended the box test program to be able to change child alignments
 	  dynamically.
@@ -280,21 +280,21 @@ Tue Aug  21 02:18:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	  and Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o)
 	  to be able to query the alignment & fill_policy.
 
-Mon Aug  20 23:05:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Aug  20 23:05:19 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Fixed _LOTS_ of typos in the box widget whiched caused very odd
 	  behaviour.
 	* Started writing a test program, the Ewl_Box widget test is the
 	  only one implemented right now.
 
-Mon Aug  20 17:26:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Aug  20 17:26:19 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Added x & y padding policy ability to the box children.
 	* Some minor fixes in the box code.
 
-Mon Aug  20 16:30:28 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Aug  20 16:30:28 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Re-imported an old ewl_box.c and integrated it with all new stuff.
 	* Cleaned up some paramenter names in some code.
 
-Mon Aug  20 01:48:07 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Mon Aug  20 01:48:07 2001 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Started the ChangeLog.
 	* Fixed memleak in __ewl_button_theme_update.
 	* Cleaned up Ewl_Entry to work with the new text widget and add a
