@@ -124,14 +124,20 @@ void
 destroy_main_window(Ewl_Widget * main_win, void *ev_data, void *user_data)
 {
    ewl_widget_destroy(main_win);
-   ewl_main_quit();
+   equate_quit();
    return;
 }
 
 void
 key_press(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-   do_key(ev_data, EWL_CALLBACK_MOUSE_DOWN);
+   Ecore_X_Event_Key_Down *ev;
+   ev = ev_data;
+
+   if (!strcmp(ev->key_compose, "q"))
+     equate_quit();
+   else
+     do_key(ev_data, EWL_CALLBACK_MOUSE_DOWN);
 }
 
 void

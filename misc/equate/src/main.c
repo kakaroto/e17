@@ -34,6 +34,12 @@ equate_init(Equate * equate)
    math_init();
 }
 
+void
+equate_quit(void)
+{
+   ewl_main_quit();
+}
+
 int
 main(int argc, char *argv[], char *env[])
 {

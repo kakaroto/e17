@@ -619,9 +619,9 @@ case 1:
 YY_RULE_SETUP
 #line 15 "calc.l"
 {
-            printf( "An integer: %s (%d)\n", yytext,
-                    atoi( yytext ) );
-            yylval.val= atoi( yytext );
+            printf( "An integer: %s (%g)\n", yytext,
+                    atof( yytext ) );
+            yylval.val= atof( yytext );
             return NUM;
             }
 	YY_BREAK

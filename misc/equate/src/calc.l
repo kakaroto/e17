@@ -13,9 +13,9 @@ ID       [a-z][a-z0-9]*
 %%
 
 {DIGIT}+    {
-            printf( "An integer: %s (%d)\n", yytext,
-                    atoi( yytext ) );
-            yylval.val= atoi( yytext );
+            printf( "An integer: %s (%g)\n", yytext,
+                    atof( yytext ) );
+            yylval.val= atof( yytext );
             return NUM;
             }
 

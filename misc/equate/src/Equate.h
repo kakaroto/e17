@@ -43,3 +43,4 @@ typedef struct {
 } Equate;
 
 void            equate_init(Equate * equate);
+void            equate_quit();
