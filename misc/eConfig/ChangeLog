@@ -173,3 +173,10 @@ Wed Nov  3 12:04:41 PST 1999
 cleaning out api.c - now there should be no FIXME: notes left in that file.
 eConfigStoreData() and eConfigStoreDataToFirstAvailablePath() should both
 work, too.
+
+-------------------------------------------------------------------------------
+
+Wed Nov  3 13:06:15 PST 1999
+(Mandrake)
+
+Starting to clean up a few portability issues.

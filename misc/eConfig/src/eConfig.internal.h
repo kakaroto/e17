@@ -28,6 +28,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/resource.h>
+#include <netinet/in.h>
 
 #define FILEPATH_LEN_MAX 4096
 #include "../config.h"

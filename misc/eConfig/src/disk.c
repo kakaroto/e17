@@ -44,7 +44,7 @@ _econf_finddatapointerinpath(char *path,char *loc, unsigned long *position,
 		if(!strcmp(tableentry.loc,loc)) {
 			fclose(FAT_TABLE);
 			*position = tableentry.position;
-			*timestamp = tableentry.updated_on;
+			*timestamp = ntohl(tableentry.updated_on);
 			return tableentry.length;
 	    }
 	}
