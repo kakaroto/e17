@@ -139,6 +139,6 @@ extern unsigned char reset_output;
 extern int call_level;
 extern feh_menu *menu_main;
 extern feh_menu *menu_close;
-extern char *mode;				/* label for the current mode */
+extern char *mode; /* label for the current mode */
 
 #endif
