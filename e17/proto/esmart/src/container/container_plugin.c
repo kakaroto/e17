@@ -107,9 +107,7 @@ _container_layout_plugin_free(Container_Layout_Plugin *p)
 
   if (p->shutdown)
   {
-    printf("shutdown\n");
     p->shutdown();
-    printf("ok\n");
   }
   
   if (p->handle)

@@ -263,7 +263,6 @@ void _default_scroll_to(Container *cont, Container_Element *el)
 void
 _default_shutdown()
 {
-  printf("default_shutdown");
   return;
 }
 
