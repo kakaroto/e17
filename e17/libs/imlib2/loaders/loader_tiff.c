@@ -75,66 +75,66 @@ put_separate_and_raster(TIFFRGBAImage* img, uint32* rast,
 
 static void
 raster(TIFFRGBAImage_Extra *img, uint32* rast,
-    uint32 x, uint32 y, uint32 w, uint32 h)
+       uint32 x, uint32 y, uint32 w, uint32 h)
 {
-	uint32		image_width, image_height;
-	uint32	   	*pixel, pixel_value;
-	int			i, j, dy, rast_offset;
-	DATA32		*buffer_pixel, *buffer = img->image->data;
-
-	image_width = img->image->w;
-	image_height = img->image->h;
+   uint32		image_width, image_height;
+   uint32	   	*pixel, pixel_value;
+   int			i, j, dy, rast_offset;
+   DATA32		*buffer_pixel, *buffer = img->image->data;
+   
+   image_width = img->image->w;
+   image_height = img->image->h;
+   
+   dy = h > y ? -1 : y - h; 
+   
+   /* rast seems to point to the beginning of the last strip processed */
+   /* so you need use negative offsets. Bizzare. Someone please check this */
+   /* I don't understand why, but that seems to be what's going on. */
+   /* libtiff needs better docs! */
+   
+   for (i = y, rast_offset = 0; i > dy; i--, rast_offset--)
+     {
+	pixel = rast + (rast_offset * image_width);
+	buffer_pixel = buffer + ((((image_height - 1) - i) * image_width) + x);
 	
-	dy = h > y ? -1 : y - h; 
+	for (j = 0; j < w; j++)
+	  {
+	     pixel_value = (*(pixel++));
+	     (*(buffer_pixel++)) = 
+		(TIFFGetA(pixel_value) << 24) | 
+		(TIFFGetR(pixel_value) << 16) | (TIFFGetG(pixel_value) << 8) |
+		TIFFGetB(pixel_value);
+	  }
+     }
+   
+   if (img->progress)
+     {
+	char		per;
+	uint32		real_y = (image_height - 1) - y;
 	
-	/* rast seems to point to the beginning of the last strip processed */
-	/* so you need use negative offsets. Bizzare. Someone please check this */
-	/* I don't understand why, but that seems to be what's going on. */
-	/* libtiff needs better docs! */
-	
-	for (i = y, rast_offset = 0; i > dy; i--, rast_offset--)
-	{
-		pixel = rast + (rast_offset * image_width);
-		buffer_pixel = buffer + ((((image_height - 1) - i) * image_width) + x);
-		
-		for (j = 0; j < w; j++)
-		{
-			pixel_value = (*(pixel++));
-			(*(buffer_pixel++)) = 
-				(TIFFGetA(pixel_value) << 24) | 
-				(TIFFGetR(pixel_value) << 16) | (TIFFGetG(pixel_value) << 8) |
-				TIFFGetB(pixel_value);
-		}
-	}
-
-	if (img->progress)
-	{
-		char		per;
-		uint32		real_y = (image_height - 1) - y;
-		
-		if (w >= image_width)
-		{
-			per = (char)(((real_y + h - 1) * 100)/image_height);
-			
-			if (((per - img->pper) >= img->progress_granularity) ||
-				(real_y + h) >= image_height)
-			{
-				(*img->progress)(img->image, per, 0, img->py, w, 
-								 (real_y + h) - img->py);
-				img->py = real_y + h;
-				img->pper = per;
-			}
-		}
-		else
-		{
-			/* for tile based images, we just progress each tile because */
-			/* of laziness. Couldn't think of a good way to do this */
-			per = (char)((w * h * 100) / img->num_pixels);
-			img->pper += per;
-			(*img->progress)(img->image, img->pper, x,  
-							 (image_height - 1) - y, w, h);
-		}
-	}
+	if (w >= image_width)
+	  {
+	     per = (char)(((real_y + h - 1) * 100)/image_height);
+	     
+	     if (((per - img->pper) >= img->progress_granularity) ||
+		 (real_y + h) >= image_height)
+	       {
+		  (*img->progress)(img->image, per, 0, img->py, w, 
+				   (real_y + h) - img->py);
+		  img->py = real_y + h;
+		  img->pper = per;
+	       }
+	  }
+	else
+	  {
+	     /* for tile based images, we just progress each tile because */
+	     /* of laziness. Couldn't think of a good way to do this */
+	     per = (char)((w * h * 100) / img->num_pixels);
+	     img->pper += per;
+	     (*img->progress)(img->image, img->pper, x,  
+			      (image_height - 1) - y, w, h);
+	  }
+     }
 }
 
 
@@ -142,131 +142,131 @@ char
 load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
-	TIFF				*tif = NULL;
-	FILE				*file;
-	int					fd;
-	uint16				magic_number;
-	TIFFRGBAImage_Extra	rgba_image;
-	uint32				*rast = NULL;
-	uint32				width, height, num_pixels;
-	
-	if (im->data)
-		return 0;
-	
-	file = fopen(im->file, "rb");
-
-	if (!file)
-		return 0;
-
-	fread(&magic_number, sizeof(uint16), 1, file);
-	rewind(file);
-
-	if ((magic_number != TIFF_BIGENDIAN) /* Checks if actually tiff file */
-		&& (magic_number != TIFF_LITTLEENDIAN))
-	{
-		fclose(file);
-		return 0;
-	}
-
-	fd = fileno(file);
-	fd = dup(fd);
+   TIFF				*tif = NULL;
+   FILE				*file;
+   int					fd;
+   uint16				magic_number;
+   TIFFRGBAImage_Extra	rgba_image;
+   uint32				*rast = NULL;
+   uint32				width, height, num_pixels;
+   
+   if (im->data)
+      return 0;
+   
+   file = fopen(im->file, "rb");
+   
+   if (!file)
+      return 0;
+   
+   fread(&magic_number, sizeof(uint16), 1, file);
+   rewind(file);
+   
+   if ((magic_number != TIFF_BIGENDIAN) /* Checks if actually tiff file */
+       && (magic_number != TIFF_LITTLEENDIAN))
+     {
 	fclose(file);
-	
-	tif = TIFFFdOpen(fd, im->file, "r");
-	
-	if (!tif)
-		return 0;
-	
-	if ((!TIFFRGBAImageOK(tif, "Cannot be processed by libtiff")) 
-		|| (!TIFFRGBAImageBegin((TIFFRGBAImage *) &rgba_image, tif, 0, 
-					   "Error reading tiff")))
-	{
-		TIFFClose(tif);
-		return 0;
-	}
-	
-	rgba_image.image = im;
-	im->w = width = rgba_image.rgba.width;
-	im->h = height = rgba_image.rgba.height;
-	rgba_image.num_pixels = num_pixels = width * height;
-	if (rgba_image.rgba.alpha != EXTRASAMPLE_UNSPECIFIED)
-		SET_FLAG(im->flags, F_HAS_ALPHA);
-	else
-		UNSET_FLAG(im->flags, F_HAS_ALPHA);
-	if (!im->format)
-		im->format = strdup("tiff");
-	
-	if ((im->loader) || (immediate_load) || (progress))
-	{ 
-		rgba_image.progress = progress;
-		rgba_image.pper = rgba_image.py = 0;
-		rgba_image.progress_granularity = progress_granularity;
-		rast = (uint32 *) _TIFFmalloc(sizeof(uint32) * num_pixels);
-		im->data = (DATA32 *) malloc(sizeof(DATA32) * num_pixels);
-		
-		if ((!rast) || (!im->data))	/* Error checking */
-		{
-			fprintf(stderr, "imlib2-tiffloader: Out of memory\n");
-
-			if (!rast)
-				_TIFFfree(rast);
-			if (!im->data)
-			{
-				free(im->data);
-				im->data = NULL;
-			}
-
-			TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
-			TIFFClose(tif);
-
-			return 0;
-		}
-		
-		if (rgba_image.rgba.put.any == NULL)
-		{
-			fprintf(stderr, "imlib2-tiffloader: No put function");
-			
-			_TIFFfree(rast);
-			free(im->data);
-			im->data = NULL;
-			TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
-			TIFFClose(tif);
-
-			return 0;
-		}
-		else
-		{
-			if (rgba_image.rgba.isContig)
-			{
-				rgba_image.put_contig = rgba_image.rgba.put.contig;
-				rgba_image.rgba.put.contig = put_contig_and_raster;
-			}
-			else
-			{
-				rgba_image.put_separate = rgba_image.rgba.put.separate;
-				rgba_image.rgba.put.separate = put_separate_and_raster;
-			}
-		}
-	
-		if (!TIFFRGBAImageGet((TIFFRGBAImage *) &rgba_image,
-							 rast, width, height))
-		{
-			_TIFFfree(rast);
-			free(im->data);
-			im->data = NULL;
-			TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
-			TIFFClose(tif);
-
-			return 0;
-		}
-		
-		_TIFFfree(rast);
-	}
-	
-	TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+	return 0;
+     }
+   
+   fd = fileno(file);
+   fd = dup(fd);
+   fclose(file);
+   
+   tif = TIFFFdOpen(fd, im->file, "r");
+   
+   if (!tif)
+      return 0;
+   
+   if ((!TIFFRGBAImageOK(tif, "Cannot be processed by libtiff")) 
+       || (!TIFFRGBAImageBegin((TIFFRGBAImage *) &rgba_image, tif, 0, 
+			       "Error reading tiff")))
+     {
 	TIFFClose(tif);
-
-	return 1;
+	return 0;
+     }
+   
+   rgba_image.image = im;
+   im->w = width = rgba_image.rgba.width;
+   im->h = height = rgba_image.rgba.height;
+   rgba_image.num_pixels = num_pixels = width * height;
+   if (rgba_image.rgba.alpha != EXTRASAMPLE_UNSPECIFIED)
+      SET_FLAG(im->flags, F_HAS_ALPHA);
+   else
+      UNSET_FLAG(im->flags, F_HAS_ALPHA);
+   if (!im->format)
+      im->format = strdup("tiff");
+   
+   if ((im->loader) || (immediate_load) || (progress))
+     { 
+	rgba_image.progress = progress;
+	rgba_image.pper = rgba_image.py = 0;
+	rgba_image.progress_granularity = progress_granularity;
+	rast = (uint32 *) _TIFFmalloc(sizeof(uint32) * num_pixels);
+	im->data = (DATA32 *) malloc(sizeof(DATA32) * num_pixels);
+	
+	if ((!rast) || (!im->data))	/* Error checking */
+	  {
+	     fprintf(stderr, "imlib2-tiffloader: Out of memory\n");
+	     
+	     if (!rast)
+		_TIFFfree(rast);
+	     if (!im->data)
+	       {
+		  free(im->data);
+		  im->data = NULL;
+	       }
+	     
+	     TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+	     TIFFClose(tif);
+	     
+	     return 0;
+	  }
+	
+	if (rgba_image.rgba.put.any == NULL)
+	  {
+	     fprintf(stderr, "imlib2-tiffloader: No put function");
+	     
+	     _TIFFfree(rast);
+	     free(im->data);
+	     im->data = NULL;
+	     TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+	     TIFFClose(tif);
+	     
+	     return 0;
+	  }
+	else
+	  {
+	     if (rgba_image.rgba.isContig)
+	       {
+		  rgba_image.put_contig = rgba_image.rgba.put.contig;
+		  rgba_image.rgba.put.contig = put_contig_and_raster;
+	       }
+	     else
+	       {
+		  rgba_image.put_separate = rgba_image.rgba.put.separate;
+		  rgba_image.rgba.put.separate = put_separate_and_raster;
+	       }
+	  }
+	
+	if (!TIFFRGBAImageGet((TIFFRGBAImage *) &rgba_image,
+			      rast, width, height))
+	  {
+	     _TIFFfree(rast);
+	     free(im->data);
+	     im->data = NULL;
+	     TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+	     TIFFClose(tif);
+	     
+	     return 0;
+	  }
+	
+	_TIFFfree(rast);
+     }
+   
+   TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+   TIFFClose(tif);
+   
+   return 1;
 }
 
 /* this seems to work, except the magic number isn't written. I'm guessing */
@@ -276,109 +276,109 @@ char
 save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
-	TIFF		*tif = NULL;
-	uint8		*buf = NULL;
-	DATA32		pixel, *data = im->data;
-	double		alpha_factor;
-	uint32		x, y;
-	uint8		r, g, b, a;
-	int			has_alpha = IMAGE_HAS_ALPHA(im);
-	int			i = 0, pl = 0;
-	char		pper = 0;
-	
-	if (!im->data)
-		return 0;
-
-	tif = TIFFOpen(im->file, "w");
-	
-	if (!tif)
-		return 0;
-
-	/* None of the TIFFSetFields are checked for errors, but since they */
-	/* shouldn't fail, this shouldn't be a problem */
-
-	TIFFSetField(tif, TIFFTAG_IMAGELENGTH, im->h);
-	TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, im->w);
-	TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
-	TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-	TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
-	TIFFSetField(tif, TIFFTAG_RESOLUTIONUNIT, RESUNIT_NONE);
-	TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
-	if (has_alpha)
-	{
-		TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 4);
-		TIFFSetField(tif, TIFFTAG_EXTRASAMPLES, EXTRASAMPLE_ASSOCALPHA);
-	}
-	else
-	{
-		TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 3);
-	}
-	TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
-	TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(tif, 0));
-
-	buf = (uint8 *) _TIFFmalloc(TIFFScanlineSize(tif));
-
-	if (!buf)
-	{
-		TIFFClose(tif);
-		return 0;
-	}
-
-	for (y = 0; y < im->h; y++)
-	{
-		i = 0;
-		for (x = 0; x < im->w; x++)
-		{
-			pixel = data[(y * im->w) + x];
-			
-			r = (pixel >> 16) & 0xff;
-			g = (pixel >> 8) & 0xff;
-			b = pixel & 0xff;
-			if (has_alpha)
-			{
-				/* TIFF makes you pre-mutiply the rgb components by alpha */
-				a = (pixel >> 24) & 0xff;
-				alpha_factor = ((double) a / 255.0);
-				r *= alpha_factor;
-				g *= alpha_factor;
-				b *= alpha_factor;
-			}
-			
-			/* This might be endian dependent */
-			buf[i++] = r;
-			buf[i++] = g;
-			buf[i++] = b;
-			if (has_alpha)
-				buf[i++] = a;
-		}
-		
-		if (!TIFFWriteScanline(tif, buf, y, 0))
-		{
-			_TIFFfree(buf);
-			TIFFClose(tif);
-			return 0;
-		}
-
-		if (progress)
-		{
-			char	per;
-			int 	l;
-	     
-			per = (char)((100 * y) / im->h);
-			if ((per - pper) >= progress_granularity)
-			{
-				l = y - pl;
-				(*progress)(im, per, 0, (y - l), im->w, l);
-				pper = per;
-				pl = y;
-			}
-		}
-	}
-	
-	_TIFFfree(buf);
+   TIFF		*tif = NULL;
+   uint8		*buf = NULL;
+   DATA32		pixel, *data = im->data;
+   double		alpha_factor;
+   uint32		x, y;
+   uint8		r, g, b, a;
+   int			has_alpha = IMAGE_HAS_ALPHA(im);
+   int			i = 0, pl = 0;
+   char		pper = 0;
+   
+   if (!im->data)
+      return 0;
+   
+   tif = TIFFOpen(im->file, "w");
+   
+   if (!tif)
+      return 0;
+   
+   /* None of the TIFFSetFields are checked for errors, but since they */
+   /* shouldn't fail, this shouldn't be a problem */
+   
+   TIFFSetField(tif, TIFFTAG_IMAGELENGTH, im->h);
+   TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, im->w);
+   TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+   TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+   TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+   TIFFSetField(tif, TIFFTAG_RESOLUTIONUNIT, RESUNIT_NONE);
+   TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+   if (has_alpha)
+     {
+	TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 4);
+	TIFFSetField(tif, TIFFTAG_EXTRASAMPLES, EXTRASAMPLE_ASSOCALPHA);
+     }
+   else
+     {
+	TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 3);
+     }
+   TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
+   TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(tif, 0));
+   
+   buf = (uint8 *) _TIFFmalloc(TIFFScanlineSize(tif));
+   
+   if (!buf)
+     {
 	TIFFClose(tif);
-
-	return 1;
+	return 0;
+     }
+   
+   for (y = 0; y < im->h; y++)
+     {
+	i = 0;
+	for (x = 0; x < im->w; x++)
+	  {
+	     pixel = data[(y * im->w) + x];
+	     
+	     r = (pixel >> 16) & 0xff;
+	     g = (pixel >> 8) & 0xff;
+	     b = pixel & 0xff;
+	     if (has_alpha)
+	       {
+		  /* TIFF makes you pre-mutiply the rgb components by alpha */
+		  a = (pixel >> 24) & 0xff;
+		  alpha_factor = ((double) a / 255.0);
+		  r *= alpha_factor;
+		  g *= alpha_factor;
+		  b *= alpha_factor;
+	       }
+	     
+	     /* This might be endian dependent */
+	     buf[i++] = r;
+	     buf[i++] = g;
+	     buf[i++] = b;
+	     if (has_alpha)
+		buf[i++] = a;
+	  }
+	
+	if (!TIFFWriteScanline(tif, buf, y, 0))
+	  {
+	     _TIFFfree(buf);
+	     TIFFClose(tif);
+	     return 0;
+	  }
+	
+	if (progress)
+	  {
+	     char	per;
+	     int 	l;
+	     
+	     per = (char)((100 * y) / im->h);
+	     if ((per - pper) >= progress_granularity)
+	       {
+		  l = y - pl;
+		  (*progress)(im, per, 0, (y - l), im->w, l);
+		  pper = per;
+		  pl = y;
+	       }
+	  }
+     }
+   
+   _TIFFfree(buf);
+   TIFFClose(tif);
+   
+   return 1;
 }
 
 /* fills the ImlibLoader struct with a strign array of format file */
@@ -394,7 +394,7 @@ formats (ImlibLoader *l)
    /* this is the only bit you have to change... */
    char *list_formats[] = 
      { "tiff", "tif" };
-
+   
    /* don't bother changing any of this - it just reads this in and sets */
    /* the struct values and makes copies */
      {
