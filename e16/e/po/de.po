@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
-"POT-Creation-Date: 2000-05-02 21:04+0200\n"
+"POT-Creation-Date: 2000-05-22 15:37-0700\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -3241,7 +3241,7 @@ msgstr ""
 "dem er auch nie Zugriff hatte.\n"
 
 # src/setup.c:633
-#: src/setup.c:638
+#: src/setup.c:639
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -3253,7 +3253,7 @@ msgstr ""
 "Bitte entfernen Sie diese Datei.\n"
 
 # src/setup.c:639
-#: src/setup.c:644
+#: src/setup.c:645
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -3267,7 +3267,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:647
-#: src/setup.c:652
+#: src/setup.c:653
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -3281,7 +3281,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:655
-#: src/setup.c:660
+#: src/setup.c:661
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
