@@ -2,9 +2,15 @@
 #define __CALLBACKS_H
 
 #include <Evas.h>
+#include <Ewl.h>
+
+typedef void (*EdjeCb)(void *udata, Evas_Object *o,
+                       const char *emission, const char *src);
+
+struct _ePlayer;
 
 #define EDJE_CB(name) \
-	void cb_##name(ePlayer *player, Evas_Object *obj, \
+	void cb_##name(struct _ePlayer *player, Evas_Object *obj, \
 	               const char *emission, const char *src)
 
 EDJE_CB(play);

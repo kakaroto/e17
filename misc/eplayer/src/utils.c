@@ -5,7 +5,30 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <limits.h>
+#include <stdlib.h>
 #include "utils.h"
+
+/**
+ * Finds the filename for the theme @name.
+ * Looks in: ~/.e/apps/eplayer/themes
+ *           $prefix/share/eplayer/themes
+ */
+char *find_theme(const char *name) {
+	static char eet[PATH_MAX + 1];
+	struct stat st;
+
+	snprintf(eet, sizeof(eet),
+	         "%s/.e/apps/" PACKAGE "/" "themes/%s.eet",
+	         getenv("HOME"), name);
+	
+	if (!stat(eet, &st))
+		return eet;
+
+	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet", name);
+	
+	return stat(eet, &st) ? NULL : eet;
+}
 
 bool is_dir(const char *dir) {
 	struct stat st;

@@ -170,8 +170,6 @@ static ePlayer *eplayer_new(const char **args) {
 
 	load_input_plugins(player);
 
-	player->playlist = playlist_new(player->input_plugins);
-
 	if (!load_output_plugin(player)) {
 		debug(DEBUG_LEVEL_CRITICAL, "Cannot load %s output plugin!\n",
 		      player->cfg.output_plugin);
@@ -267,14 +265,17 @@ static int load_playlist(void *data) {
 	ePlayer *player = data;
 	int i;
 
+	player->playlist = playlist_new(player->gui.evas,
+	                                player->input_plugins,
+	                                player->gui.playlist,
+	                                player->cfg.theme);
+	assert(player->playlist);
+
 	for (i = 1; player->args[i]; i++)
 		playlist_load_any(player->playlist, player->args[i], i > 1);
 
 	debug(DEBUG_LEVEL_INFO, "Got %i playlist entries\n",
 	      player->playlist->num);
-
-	/* update the ui */
-	ui_fill_playlist(player);
 
 	if (player->playlist->num)
 		track_open(player);

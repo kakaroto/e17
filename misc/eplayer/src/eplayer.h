@@ -26,7 +26,7 @@ typedef struct {
 	Ecore_Evas *ee;
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
-	int playlist_font_size;
+	/*int playlist_font_size;*/
 } Gui;
 
 typedef struct {
@@ -35,7 +35,7 @@ typedef struct {
 	int seek_dir;
 } Flags;
 
-typedef struct {
+typedef struct _ePlayer {
 	const char **args;
 
 	PlayList *playlist;

@@ -8,6 +8,7 @@ typedef enum {
 	DEBUG_LEVEL_NUM
 } DebugLevel;
 
+char *find_theme(const char *name);
 bool is_dir(const char *dir);
 char *strstrip(char *str);
 

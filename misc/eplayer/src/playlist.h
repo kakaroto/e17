@@ -2,26 +2,7 @@
 #define __PLAYLIST_H
 
 #include <Evas.h>
-#include <limits.h>
-#include <pthread.h>
-#include "plugin.h"
-
-typedef struct {
-	char file[PATH_MAX + 1];
-
-	char comment[COMMENT_ID_NUM][MAX_COMMENT_LEN];
-
-	int duration;
-	int channels; /* number of channels */
-	long sample_rate; /* sample rate */
-
-	int current_pos;
-	pthread_mutex_t pos_mutex;
-
-	InputPlugin *plugin; /* plugin that's used for this item */
-} PlayListItem;
-
-typedef void (*ItemAddCallback) (PlayListItem *pli, void *data);
+#include "playlist_item.h"
 
 typedef struct {
 	int num; /* number of entries */
@@ -30,10 +11,15 @@ typedef struct {
 	Evas_List *cur_item;
 
 	Evas_List *plugins; /* lists all available plugins */
+	Evas *evas;
+	Evas_Object *container;
+	const char *theme;
 } PlayList;
 
-PlayList *playlist_new(Evas_List *plugins);
-void playlist_free();
+PlayList *playlist_new(Evas *evas, Evas_List *plugins,
+                       Evas_Object *container,
+                       const char *theme);
+void playlist_free(PlayList *pl);
 
 bool playlist_load_file(PlayList *pl, const char *file, bool append);
 bool playlist_load_dir(PlayList *pl, const char *dir, bool append);

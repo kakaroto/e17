@@ -4,80 +4,9 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <assert.h>
 #include "playlist.h"
 #include "utils.h"
-
-/**
- * Fills a PlayListItem's comments/info fields.
- *
- * @param pli The PlayListItem to store the comments/info stuff in.
- */
-static void playlist_item_get_info(PlayListItem *pli) {
-	int i;
-	
-	pli->sample_rate = pli->plugin->get_sample_rate();
-	pli->channels = pli->plugin->get_channels();
-	pli->duration = pli->plugin->get_duration();
-	pli->sample_rate = pli->plugin->get_sample_rate();
-	
-	for (i = 0; i < COMMENT_ID_NUM; i++)
-		snprintf(pli->comment[i], MAX_COMMENT_LEN, "%s",
-		         pli->plugin->get_comment(i));
-}
-
-/**
- * Frees a PlayListItem object.
- *
- * @param pli
- */
-void playlist_item_free(PlayListItem *pli) {
-	if (!pli)
-		return;
-	
-	pthread_mutex_destroy(&pli->pos_mutex);
-	free(pli);
-}
-
-/**
- * Creates a new PlayListItem object.
- *
- * @param file File to load.
- * @return The new PlayListItem object.
- */
-PlayListItem *playlist_item_new(Evas_List *plugins, const char *file) {
-	PlayListItem *pli;
-	Evas_List *l;
-	InputPlugin *ip;
-
-	if (!(pli = malloc(sizeof(PlayListItem))))
-		return NULL;
-	
-	memset(pli, 0, sizeof(PlayListItem));
-
-	pthread_mutex_init(&pli->pos_mutex, NULL);
-
-	/* find the plugin for this file */
-	for (l = plugins; l; l = l->next) {
-		ip = l->data;
-
-		if (ip->open(file)) {
-			pli->plugin = ip;
-			break;
-		}
-	}
-
-	if (!pli->plugin) {
-		debug(DEBUG_LEVEL_WARNING, "No plugin found for %s!\n", file);
-
-		playlist_item_free(pli);
-		return NULL;
-	}
-
-	snprintf(pli->file, sizeof(pli->file), "%s", file);
-	playlist_item_get_info(pli);
-
-	return pli;
-}
 
 /**
  * Creates a new PlayList object.
@@ -85,15 +14,20 @@ PlayListItem *playlist_item_new(Evas_List *plugins, const char *file) {
  * @param plugins
  * @return The newly created PlayList.
  */
-PlayList *playlist_new(Evas_List *plugins) {
+PlayList *playlist_new(Evas *evas, Evas_List *plugins, Evas_Object *container,
+                       const char *theme) {
 	PlayList *pl;
 
-	if (!(pl = malloc(sizeof(PlayList))))
+	if (!(pl = calloc(1, sizeof(PlayList))))
 		return NULL;
 
-	memset(pl, 0, sizeof(PlayList));
+	pl->num = pl->duration = 0;
+	pl->items = pl->cur_item = NULL;
 
+	pl->evas = evas;
 	pl->plugins = plugins;
+	pl->container = container;
+	pl->theme = theme;
 
 	return pl;
 }
@@ -228,8 +162,11 @@ void playlist_free(PlayList *pl) {
  */
 bool playlist_load_file(PlayList *pl, const char *file, bool append) {
 	PlayListItem *pli;
+
+	assert(pl);
 	
-	if (!pl || !(pli = playlist_item_new(pl->plugins, file)))
+	if (!(pli = playlist_item_new(file, pl->evas, pl->plugins, pl->container,
+	                              pl->theme)))
 		return false;
 
 	if (!append)
@@ -324,7 +261,8 @@ bool playlist_load_m3u(PlayList *pl, const char *file, bool append) {
 			ptr = path;
 		}
 
-		if ((pli = playlist_item_new(pl->plugins, ptr))) {
+		if ((pli = playlist_item_new(ptr, pl->evas, pl->plugins, pl->container,
+		                             pl->theme))) {
 			tmp = evas_list_prepend(tmp, pli);
 			pl->num++;
 			pl->duration += pli->duration;

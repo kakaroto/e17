@@ -189,15 +189,19 @@ EDJE_CB(repeat_mode_toggle) {
 }
 
 EDJE_CB(playlist_scroll_up) {
+	int size = (int) evas_object_data_get(player->gui.playlist,
+	                                      "PlaylistFontSize");
+
 	/* it's * 3 because we're scrolling 3 elements at once */
-	e_container_scroll(player->gui.playlist,
-	                   player->gui.playlist_font_size * 3);
+	e_container_scroll(player->gui.playlist, size * 3);
 }
 
 EDJE_CB(playlist_scroll_down) {
+	int size = (int) evas_object_data_get(player->gui.playlist,
+	                                      "PlaylistFontSize");
+
 	/* it's * 3 because we're scrolling 3 elements at once */
-	e_container_scroll(player->gui.playlist,
-	                   player->gui.playlist_font_size * -3);
+	e_container_scroll(player->gui.playlist, size * -3);
 }
 
 EDJE_CB(playlist_item_play) {

@@ -10,8 +10,6 @@
 #include "utils.h"
 #include "interface.h"
 
-typedef void (*EdjeCb)(void *udata, Evas_Object *o,
-                       const char *emission, const char *source);
 typedef struct {
 	char *name;
 	char *src;
@@ -130,6 +128,8 @@ bool ui_init(ePlayer *player) {
 
 	evas_font_path_append(player->gui.evas, buf);
 	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
+	evas_font_path_append(player->gui.evas, "/usr/X11R6/lib/X11/fonts");
+	evas_font_path_append(player->gui.evas, "/usr/share/fonts");
 
 	if (!ui_init_dragger(player))
 		return false;
@@ -157,27 +157,6 @@ void ui_fill_track_info(ePlayer *player) {
 	                          pli->comment[COMMENT_ID_ARTIST]);
 	edje_object_part_text_set(player->gui.edje, "album_name",
 	                          pli->comment[COMMENT_ID_ALBUM]);
-}
-
-/**
- * Finds the filename for the theme @name.
- * Looks in: ~/.e/apps/eplayer/themes
- *           $prefix/share/eplayer/themes
- */
-static char *find_theme(const char *name) {
-	static char eet[PATH_MAX + 1];
-	struct stat st;
-
-	snprintf(eet, sizeof(eet),
-	         "%s/.e/apps/" PACKAGE "/" "themes/%s.eet",
-	         getenv("HOME"), name);
-	
-	if (!stat(eet, &st))
-		return eet;
-
-	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet", name);
-	
-	return stat(eet, &st) ? NULL : eet;
 }
 
 bool ui_init_edje(ePlayer *player, const char *name) {
@@ -212,8 +191,6 @@ bool ui_init_edje(ePlayer *player, const char *name) {
 	ecore_evas_resize(player->gui.ee, (int) edje_w, (int) edje_h);
 	
 	setup_playlist(player);
-	ui_fill_playlist(player);
-	ui_fill_track_info(player);
 	ui_refresh_volume(player);
 
 	register_callbacks(player);
@@ -279,9 +256,17 @@ static void register_callbacks(ePlayer *player) {
 	
 }
 
+/**
+ * Add the playlist container.
+ *
+ * @param player
+ */
 static void setup_playlist(ePlayer *player) {
-	/* add the playlist container */
 	player->gui.playlist = e_container_new(player->gui.evas);
+	assert(player->gui.playlist);
+
+	evas_object_data_set(player->gui.playlist, "ePlayer", player);
+
 	e_container_direction_set(player->gui.playlist, 1);
 	e_container_spacing_set(player->gui.playlist, 0);
 	e_container_fill_policy_set(player->gui.playlist,
@@ -289,61 +274,6 @@ static void setup_playlist(ePlayer *player) {
 	
 	edje_object_part_swallow(player->gui.edje, "playlist",
 	                         player->gui.playlist);
-}
-
-static void show_playlist_item(ePlayer *player, PlayListItem *pli) {
-	Evas_Object *o;
-	char len[32];
-	double w = 0, h = 0;
-
-	/* add the item to the container */
-	o = edje_object_add(player->gui.evas);
-
-	edje_object_file_set(o, find_theme(player->cfg.theme),
-	                     "playlist_item");
-
-	/* set parts text */
-	snprintf(len, sizeof(len), "%i:%02i", pli->duration / 60,
-	         pli->duration % 60);
-	edje_object_part_text_set(o, "length", len);
-	edje_object_part_text_set(o, "title",
-	                          pli->comment[COMMENT_ID_TITLE]);
-
-	/* set parts dimensions */
-	edje_object_size_min_get(o, &w, &h);
-	evas_object_resize(o, w, h);
-	
-	evas_object_data_set(o, "PlayListItem", pli);
-
-	/* store font size, we need it later for scrolling
-	 * FIXME: we're assuming that the objects minimal height
-	 * equals the text size
-	 */
-	player->gui.playlist_font_size = h;
-
-	e_container_element_append(player->gui.playlist, o);
-	
-	/* add playlist item callbacks */
-	edje_object_signal_callback_add(o, "PLAYLIST_SCROLL_UP", "",
-			                        (EdjeCb) cb_playlist_scroll_up, player);
-	edje_object_signal_callback_add(o, "PLAYLIST_SCROLL_DOWN", "",
-			                        (EdjeCb) cb_playlist_scroll_down, player);
-	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_PLAY", "",
-			                        (EdjeCb) cb_playlist_item_play, player);
-	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_SELECTED", "",
-	                                (EdjeCb) cb_playlist_item_selected, player);
-	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_REMOVE", "",
-	                                (EdjeCb) cb_playlist_item_remove, player);
-}
-
-void ui_fill_playlist(ePlayer *player) {
-	Evas_List *l;
-
-	assert (player);
-	assert (player->playlist);
-
-	for (l = player->playlist->items; l; l = l->next)
-		show_playlist_item(player, l->data);
 }
 
 int ui_refresh_volume(void *udata) {

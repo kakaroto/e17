@@ -9,9 +9,5 @@ echo "Running aclocal..."; aclocal $ACLOCAL_FLAGS -I m4 \
 && echo "Running libtoolize..."; libtoolize --automake \
 && echo "Running automake..."; automake --add-missing --copy --gnu
 
-echo
-echo "Bootstrap complete, running ./configure $@"
-echo
-
 ###  If you want this, uncomment it.
 #./configure "$@"
