@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
-"POT-Creation-Date: 2000-04-02 05:02+0200\n"
-"PO-Revision-Date: 2000-04-02 19:22+0100\n"
+"POT-Creation-Date: 2000-04-05 00:20+0200\n"
+"PO-Revision-Date: 2000-04-05 13:14+0100\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -113,12 +113,14 @@ msgstr "Om Enlightenment %s"
 msgid "Welcome to the "
 msgstr "Välkommen till "
 
+#. finish remember window
 #: src/actions.c:3320 src/dialog.c:304 src/groups.c:694 src/settings.c:309
 #: src/settings.c:575 src/settings.c:740 src/settings.c:917
 #: src/settings.c:1151 src/settings.c:1254 src/settings.c:1355
 #: src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 #: src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
-#: src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
+#: src/settings.c:4048 src/settings.c:4186 src/settings.c:4345 src/snaps.c:547
+#: src/sound.c:262
 msgid "OK"
 msgstr "Ok"
 
@@ -126,7 +128,7 @@ msgstr "Ok"
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
 
-#: src/actions.c:3824
+#: src/actions.c:3829
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -146,23 +148,23 @@ msgstr ""
 "  Välj en annan grupp som fönstret skall tillhöra här:  \n"
 "\n"
 
-#: src/actions.c:3858
+#: src/actions.c:3863
 msgid "   Select the group to remove the window from.  "
 msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
 
-#: src/actions.c:3883
+#: src/actions.c:3888
 msgid "  Select the group to break  "
 msgstr "  Välj den grupp som skall brytas upp  "
 
-#: src/actions.c:3911
+#: src/actions.c:3916
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Du har blivit varnad om farorna med Zoom mode\n"
 
-#: src/actions.c:3914
+#: src/actions.c:3919
 msgid "Warning !!!"
 msgstr "Varning !!!"
 
-#: src/actions.c:3916
+#: src/actions.c:3921
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -1183,11 +1185,11 @@ msgstr "Stäng ikonlåda"
 msgid "Create New Iconbox"
 msgstr "Skapa ny ikonlåda"
 
-#: src/ipc.c:4737
+#: src/ipc.c:4746
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC kommando hjälp"
 
-#: src/ipc.c:4741 src/ipc.c:4780
+#: src/ipc.c:4750 src/ipc.c:4789
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1195,7 +1197,7 @@ msgstr ""
 "\n"
 "kommandon som nu är tillgängliga:\n"
 
-#: src/ipc.c:4743
+#: src/ipc.c:4752
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1205,15 +1207,15 @@ msgstr ""
 "använd \"help <kommando>\" för en individuell beskrivning\n"
 "\n"
 
-#: src/ipc.c:4781
+#: src/ipc.c:4790
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "använd \"help <kommando>\" för en individuell beskrivning\n"
 
-#: src/ipc.c:4783
+#: src/ipc.c:4792
 msgid "<command> : <description>\n"
 msgstr "<kommando> : <beskrivning>\n"
 
-#: src/ipc.c:4890
+#: src/ipc.c:4899
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1413,24 +1415,24 @@ msgstr ""
 "Pekarens värde var %x.\n"
 "Felet uppstod vid %s, rad %d.\n"
 
-#: src/menus.c:1952
+#: src/menus.c:1989
 msgid "Go to this Desktop"
 msgstr "Gå till detta skrivbord"
 
-#: src/menus.c:1969
+#: src/menus.c:2006
 #, c-format
 msgid "Desktop %i"
 msgstr "Skrivbord %i"
 
-#: src/menus.c:2032
+#: src/menus.c:2069
 msgid "Show/Hide this group"
 msgstr "Visa/gömma denna grupp"
 
-#: src/menus.c:2036
+#: src/menus.c:2073
 msgid "Iconify this group"
 msgstr "Ikonifiera denna grupp"
 
-#: src/menus.c:2049
+#: src/menus.c:2086
 #, c-format
 msgid "Group %i"
 msgstr "Grupp %i"
@@ -1872,7 +1874,7 @@ msgstr "Mus knapp för att visa sidväxlare meny"
 #: src/settings.c:1152 src/settings.c:1255 src/settings.c:1356
 #: src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
 #: src/settings.c:2013 src/settings.c:3406 src/settings.c:3751
-#: src/settings.c:4049 src/settings.c:4187 src/snaps.c:548
+#: src/settings.c:4049 src/settings.c:4187 src/settings.c:4346 src/snaps.c:548
 msgid "Apply"
 msgstr "Använd"
 
@@ -2458,6 +2460,14 @@ msgstr "Spegla Skymd/Ikonifiera/Klibba"
 msgid "Default Group Control Settings"
 msgstr "Förvalt Gruppkontrolls val"
 
+#: src/settings.c:4331
+msgid "Remembered Settings..."
+msgstr "Ihågkommna tillval..."
+
+#: src/settings.c:4347 src/snaps.c:549
+msgid "Cancel"
+msgstr "Avbryt"
+
 #: src/setup.c:222
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
@@ -2660,10 +2670,6 @@ msgstr "Starta om applikation vid inloggning"
 #: src/snaps.c:536
 msgid "Remember this window's group(s)"
 msgstr "Kom ihåg detta fönsters grupp(er)"
-
-#: src/snaps.c:549
-msgid "Cancel"
-msgstr "Avbryt"
 
 #: src/snaps.c:925
 msgid "Error saving snaps file\n"
