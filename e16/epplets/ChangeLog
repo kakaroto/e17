@@ -609,3 +609,14 @@ Wed Nov 17 21:46:41 EST 1999
 Made most of the functions in epplets/cloak.c non-static so that they can be 
 accessed by other epplets. Also Added E-NetGraph, a wmnet wannabe epplet.
 
+-------------------------------------------------------------------------------
+
+Thu Nov 18 11:57:17 EST 1999
+(StriderZ)
+
+Ok, added the *real* E-NetGraph to cvs. Coded by Daniel Erat 
+(http://www2.ucsc.edu/~erat/). I had no idea this existed, it rocks. It takes 
+hella command-line options, but I modified it to use a config file too. It may 
+not run at first if your net device is not ppp0 and you don't specify. This 
+will be changed. 
+

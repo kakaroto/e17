@@ -108,8 +108,7 @@ E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-E_NetGraph_epplet_SOURCES = \
-E-NetGraph.c cloak.c cloak.h
+E_NetGraph_epplet_SOURCES = E-NetGraph.c
 E_NetGraph_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_NetGraph_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 

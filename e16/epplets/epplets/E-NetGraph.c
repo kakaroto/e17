@@ -1,203 +1,366 @@
-#include <stdio.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <errno.h>
+/* E-Netgraph v0.2 - Oct. 27, 1999
+ * Written by Daniel Erat, a.k.a. hunchback
+ * erat@cats.ucsc.edu, danerat@mindspring.com
+ * http://www2.ucsc.edu/~erat/
+ * You can also occasionally find me on efnet #e as hunchback. 
+ * Modified by Rahsheen Porter (StriderZ) */
+
 #include <epplet.h>
-#include "cloak.h"
 
-double bands[] = 
-{1000000000, 100000000, 10000000, 2000000, 1540000, 1000000, 512000, 256000,
-   144000, 128000, 64000, 56000, 33600, 28800, 14400, 9600, 4800, 2400, 300, 75
-};
-
+// global variables
 RGB_buf buf;
+Window win;
+unsigned char *rgb_pointer_start = NULL;
 
-double upstream_max = 1540000;
-double downstream_max = 1540000;
-int up_val = 0;
-int down_val = 0;
-double up_last = 0;
-double down_last = 0;
-Epplet_gadget load_up;
-Epplet_gadget load_down;
-Epplet_gadget net_graph;
+Epplet_gadget close_button;
 
-static void cb_timer(void *data);
-static void cb_close(void *data);
-static void cb_set_upstream(void *data);
-static void cb_set_downstream(void *data);
-static void save_conf(void);
-static void load_conf(void);
+long total_bytes_in = 0;
+long total_bytes_out = 0;
+int old_in_y = 0, old_out_y = 39;
+struct timeval last_time;
 
-static void
-cb_timer(void *data)
+char *device_string = NULL;
+long max_bytes_in_per_sec = 8192;
+long max_bytes_out_per_sec = 8192;
+int in_color[3];
+int out_color[3];
+int bg_color[3];
+int log_scale = 0;
+
+// functions
+static void timer_draw (void *data)
 {
-   static FILE *f;
-   unsigned char *rgb, *rptr;
+	char *stupid_pointer = NULL;
+	char line[256];
+	long new_bytes_in, new_bytes_out;
+	long new_total_bytes_in, new_total_bytes_out;
+	static FILE *stats;
+	unsigned char *rgb_pointer_dynamic = NULL;
+	int found_device = 0;
+	int i, j;
+	int new_in_y, new_out_y;
+	float intensity;
+	long elapsed_microseconds;
+	struct timeval current_time;
 
-   f = fopen("/proc/net/dev", "r");
-   if (f)
-     {
-	char s[256], ss[32];
-	double val, val2, dval, dval2;
-	char ok = 1;
+	stats = fopen ("/proc/net/dev", "r");
+
+	if (!stats)
+	{
+		fprintf (stderr, "unable to open /proc/net/dev.. aborting.\n");
+		exit (1);
+	}
+
+	fgets (line, 256, stats);
+	fgets (line, 256, stats);
+
+	while (fgets (line, 256, stats))
+	{
+		stupid_pointer = line;
+		while (*stupid_pointer != ':') stupid_pointer++;
+		*stupid_pointer = '\0';
+
+		if (strstr (line, device_string))
+		{
+			found_device = 1;
+			stupid_pointer++;
+			sscanf (stupid_pointer, "%ld %*s %*s %*s %*s %*s %*s %*s %ld",
+				&new_total_bytes_in, &new_total_bytes_out);
+			if (total_bytes_in == 0) total_bytes_in = new_total_bytes_in;
+			if (total_bytes_out == 0) total_bytes_out = new_total_bytes_out;
+			new_bytes_in = new_total_bytes_in - total_bytes_in;
+			new_bytes_out = new_total_bytes_out - total_bytes_out;
+			total_bytes_in = new_total_bytes_in;
+			total_bytes_out = new_total_bytes_out;
+			break;
+		}
+	}
+
+	fclose (stats);
+
+	if (!found_device)
+	{
+		fprintf
+			(stderr, "could not find device %s in /proc/net/dev.. "
+			"aborting.\n", device_string);
+		exit (1);
+	}
+
+	// find out how long it's been since our last calculation
+	gettimeofday (&current_time, NULL);
+	elapsed_microseconds =
+		(current_time.tv_sec * 1000000L + current_time.tv_usec) -
+		(last_time.tv_sec * 1000000L + last_time.tv_usec);
+	last_time = current_time;
+
+	// calculate the percentage of the max, averaging with the last pct
+	if (log_scale)
+	{
+		new_in_y = (int) (0.5 * old_in_y + 0.5 * 39 *
+			(1 + log10 (0.1 + (float) new_bytes_in /
+			((float) max_bytes_in_per_sec *
+			((float) elapsed_microseconds / 1000000)))));
+		new_out_y = 39 - (int) (0.5 * (39 - old_out_y) + 0.5 * 39 *
+			(1 + log10 (0.1 + (float) new_bytes_out /
+			((float) max_bytes_out_per_sec *
+			((float) elapsed_microseconds / 1000000)))));
+	}
+	else
+	{
+		new_in_y = (int) (0.5 * old_in_y + 0.5 * 39 *
+			(float) new_bytes_in /
+			((float) max_bytes_in_per_sec *
+			((float) elapsed_microseconds / 1000000)));
+		new_out_y = 39 - (int) (0.5 * (39 - old_out_y) + 0.5 * 39 *
+			(float) new_bytes_out /
+			((float) max_bytes_out_per_sec *
+			((float) elapsed_microseconds / 1000000)));
+	}
+
+	// whee.. shift the buffer one pixel to the left
+    for (i = 0; i <= 39; i++)
+    {
+        for (rgb_pointer_dynamic = rgb_pointer_start + (i * 120);
+            rgb_pointer_dynamic <= rgb_pointer_start + (i * 120) + 114;
+            rgb_pointer_dynamic += 3)
+        {
+			for (j = 0; j <= 2; j++)
+				rgb_pointer_dynamic[j] = rgb_pointer_dynamic[j+3];
+        }
+    }
+
+	// clear the line on the right, and draw the new data
+	for (i = 1; i <= 38; i++)
+	{
+		rgb_pointer_dynamic = rgb_pointer_start
+			+ (i * 120) + 114;
+
+		for (j = 0; j <= 2; j++)
+			rgb_pointer_dynamic[j] = bg_color[j];
+
+		intensity = 0;
+
+		if (i >= old_out_y)
+		{
+			if (old_out_y >= new_out_y || i >= new_out_y)
+				intensity = ((float) (39 - i) / (float) (39 - old_out_y));
+			else
+				intensity = 1 - ((float) (new_out_y - i) / (float)
+					(new_out_y - old_out_y));
+		}
+		else if (i >= new_out_y)
+			intensity = 1 - ((float) (old_out_y - i) / (float)
+				(old_out_y - new_out_y));
+
+		if (intensity != 0)
+			for (j = 0; j <= 2; j++)
+				rgb_pointer_dynamic[j] = intensity * out_color[j] +
+					(1 - intensity) * rgb_pointer_dynamic[j];
+
+		intensity = 0;
+
+		if (i <= old_in_y)
+		{
+			if (old_in_y <= new_in_y || i <= new_in_y)
+				intensity = ((float) i / (float) old_in_y);
+			else
+				intensity = 1 - ((float) (i - new_in_y) / (float)
+					(old_in_y - new_in_y));
+		}
+		else if (i <= new_in_y)
+			intensity = 1 - ((float) (i - old_in_y) / (float)
+				(new_in_y - old_in_y));
+
+		if (intensity != 0)
+			for (j = 0; j <= 2; j++)
+				rgb_pointer_dynamic[j] = intensity * in_color[j] +
+					(1 - intensity) * rgb_pointer_dynamic[j];
+	}
+
+	old_in_y = new_in_y;
+	old_out_y = new_out_y;
+
+	Epplet_paste_buf (buf, win, 0, 0);
+	Esync ();
+	Epplet_timer (timer_draw, NULL, 0.1, "timer_draw");
+}
+
+static void cb_close (void *data)
+{
+	Epplet_unremember ();
+	Esync ();
+	Epplet_cleanup ();
+	exit (0);
+}
+
+static void cb_in (void *data, Window w)
+{
+	Epplet_gadget_show (close_button);
+	return;
+}
+
+static void cb_out (void *data, Window w)
+{
+	Epplet_gadget_hide (close_button);
+	return;
+}
+
+static void load_config(void)
+{
+	device_string = Epplet_query_config_def("device", "ppp0");
+	max_bytes_in_per_sec = atoi(Epplet_query_config_def("max_in", "150000"));
+	max_bytes_out_per_sec = atoi(Epplet_query_config_def("max_out", "150000"));
+	if(strlen(Epplet_query_config_def("log_scale", "")))
+		log_scale = 1;
+}
+
+int main (int argc, char **argv)
+{
+	Epplet_gadget drawingarea;
+	unsigned int in_color_hex = 0x0040c0;
+	unsigned int out_color_hex = 0xc000c0;
+	unsigned int bg_color_hex = 0x000000;
 	
-	fgets(s, 255, f);
-	fgets(s, 255, f);
+	int i = 1;
 
-	while(ok)
-	  {
-	     if (!fgets(s, 255, f))
-		ok = 0;
-	     else
-	       {
-		  char *sp, s1[64],  s2[64];
-		  
-		  sp = strchr(s, ':');
-		  if (sp)
-		     *sp = ' ';
-		  val = 0;
-		  val2 = 0;
-		  sscanf(s, "%s %s %*s %*s %*s %*s %*s %*s %*s %s %*s %*s %*s %*s %*s %*s %*s", 
-			 ss, s1, s2);
-		  val = atof(s1);
-		  val2 = atof(s2);
-		  if (!strcmp(ss, "eth0"))
-		    {
-		       dval2 = val2 - down_last;
-		       dval = val - up_last;
-		       down_last = val2;
-		       up_last = val;
-		       down_val = (int)((dval2 * 800 * 3) / downstream_max);
-		       up_val = (int)((dval * 800 * 3) / upstream_max);
-		       if (down_val > 40)
-			  down_val = 40;
-		       if (up_val > 40)
-			  up_val = 40;
-//		       Epplet_gadget_data_changed(load_up);
-//		       Epplet_gadget_data_changed(load_down);
-		       ok = 0;
-		    }
-	       }
-	  }
-	fclose(f);
+	Epplet_Init ("E-Netgraph", "0.2",
+		"Enlightenment Network Activity epplet", 3, 3, argc, argv, 0);
 
-	scroll_buf();
-	aa_line(39, 39, 39, 39-up_val, 255, 255, 0, 0);
-	aa_line(39, 0, 39, down_val, 255, 128, 128, 128);
-	Epplet_paste_buf(buf, Epplet_get_drawingarea_window(net_graph), 0, 0);
+	Epplet_load_config();
+	load_config();
+	
+	while (i < argc)
+	{
+		if (argv[i][0] == '-')
+		{
+			switch (argv[i][1])
+			{
+				case 'd':
+						if (i+1 < argc)
+							device_string = strdup (argv[i+1]);
+						else
+						{
+							fprintf (stderr, "missing device "
+								"string -- aborting\n");
+							exit (1);
+						}
+					i += 2;
+					break;
+				case 'i':
+					if (i+1 < argc)
+						sscanf (argv[i+1], "%x", &in_color_hex);
+					else
+					{
+						fprintf (stderr, "missing incoming color "
+							"string ignored -- aborting\n");
+						exit (1);
+					}
+					i += 2;
+					break;
+				case 'o':
+					if (i+1 < argc)
+						sscanf (argv[i+1], "%x", &out_color_hex);
+					else
+					{
+						fprintf (stderr, "missing outgoing color "
+							"string ignored -- aborting\n");
+						exit (1);
+					}
+					i += 2;
+					break;
+				case 'b':
+					if (i+1 < argc)
+						sscanf (argv[i+1], "%x", &bg_color_hex);
+					else
+					{
+						fprintf (stderr, "missing background color "
+							"string ignored -- aborting\n");
+						exit (1);
+					}
+					i += 2;
+					break;
+				case 'r':
+					if (i+1 < argc)
+						max_bytes_in_per_sec = atoi (argv[i+1]);
+					else
+					{
+						fprintf (stderr, "missing maximum incoming bytes "
+							"per second value -- aborting\n");
+						exit (1);
+					}
+					i += 2;
+					break;
+				case 't':
+					if (i+1 < argc)
+						max_bytes_out_per_sec = atoi (argv[i+1]);
+					else
+					{
+						fprintf (stderr, "missing maximum outgoing bytes "
+							"per second value -- aborting\n");
+						exit (1);
+					}
+					i += 2;
+					break;
+				case 'l':
+					log_scale = 1;
+					i++;
+					break;
+				case 'h':
+					printf ("usage: E-Netgraph.epplet [OPTION] [OPTION] ..\n"
+						"  -d <string>      defines device to monitor "
+						"[default = ppp0]\n"
+						"  -i <hex number>  defines color to use for "
+						"incoming bytes [default = #0040c0]\n"
+						"  -o <hex number>  defines color to use for "
+						"outgoing bytes [default = #c000c0]\n"
+						"  -b <hex number>  defines color to use for "
+						"background [default = #000000]\n"
+						"  -r <number>      defines max. "
+						"incoming bytes per second [default = 8192]\n"
+						"  -t <number>      defines max. "
+						"outgoing bytes per second [default = 8192]\n"
+						"  -l               enables logarithmic mode "
+						"(for high-bandwidth connections)\n"
+						"  -h               displays this screen\n");
+					exit (0);
+				default:
+					fprintf (stderr, "invalid option %c -- use -h for help\n",
+						argv[i][1]);
+					exit (1);
+			}
+		}
+		else
+			i++;
+	}
 
-	Esync();
-	Epplet_timer(cb_timer, NULL, 0.09, "TIMER");
-     }
-   data = NULL;
-}
+	in_color[0] = in_color_hex / 65536;
+	in_color[1] = (in_color_hex / 256) % 256;
+	in_color[2] = in_color_hex % 4096;
+	out_color[0] = out_color_hex / 65536;
+	out_color[1] = (out_color_hex / 256) % 256;
+	out_color[2] = out_color_hex % 4096;
+	bg_color[0] = bg_color_hex / 65536;
+	bg_color[1] = (bg_color_hex / 256) % 256;
+	bg_color[2] = bg_color_hex % 256;
 
-static void
-save_conf(void)
-{
-   char s[1024];
+	Epplet_gadget_show (drawingarea = Epplet_create_drawingarea (2, 2,
+		44, 44));
 
-   sprintf(s, "%f", upstream_max);
-   Epplet_modify_config("upstream_max", s);
-   sprintf(s, "%f", downstream_max);
-   Epplet_modify_config("downstream_max", s);
-   Epplet_save_config();
-}
+	buf = Epplet_make_rgb_buf (40, 40);
+    win = Epplet_get_drawingarea_window (drawingarea);
+	rgb_pointer_start = Epplet_get_rgb_pointer (buf);
 
-static void
-load_conf(void)
-{
-   char *s;
+	close_button = Epplet_create_button (NULL, NULL, 0, 0, 0, 0, "CLOSE",
+		win, NULL, cb_close, NULL);
+	Epplet_register_focus_in_handler (cb_in, NULL);
+	Epplet_register_focus_out_handler (cb_out, NULL);
+	
+	gettimeofday (&last_time, NULL);
 
-   s = Epplet_query_config_def("upstream_max", "1540000");
-   upstream_max = (double) atof(s);
+	Epplet_timer (timer_draw, NULL, 0.0, "timer_draw");
 
-   s = Epplet_query_config_def("downstream_max", "1540000");
-   downstream_max = (double) atof(s);
-}
+	Epplet_show ();
+	Epplet_Loop ();
 
-static void
-cb_set_upstream(void *data)
-{
-   upstream_max = *((double *)data);
-   save_conf();
-}
-
-static void
-cb_set_downstream(void *data)
-{
-   downstream_max = *((double *)data);
-   save_conf();
-}
-
-static void
-cb_close(void *data)
-{
-   Epplet_unremember();
-   Epplet_cleanup();
-   Esync();
-   data = NULL;
-   exit(0);
-}
-
-static void
-got_focus(void *data, Window win)
-{
-  Epplet_gadget *g;
-
-  g = (Epplet_gadget *)data;
-
-  Epplet_gadget_show(*g);
-  return;
-}
-
-static void
-lost_focus(void *data, Window win)
-{
-  Epplet_gadget *g;
-
-  g = (Epplet_gadget *)data;
-
-  Epplet_gadget_hide(*g);
-}
-
-int
-main(int argc, char **argv)
-{
-  Epplet_gadget p1, p2, close_button;   
-   int prio;
-
-   prio = getpriority(PRIO_PROCESS, getpid());
-   setpriority(PRIO_PROCESS, getpid(), prio + 10);
-   
-   atexit(Epplet_cleanup);
-   
-   Epplet_Init("E-NetGraph", "0.1", "Another Enlightenment Network Load Epplet",
-	       3, 3, argc, argv, 0);
-   Epplet_load_config();
-   load_conf();
-
-   buf = Epplet_make_rgb_buf(40, 40);
-   Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
-
-   Epplet_gadget_show(net_graph = Epplet_create_drawingarea(2, 2, 44, 44));
-   
-   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, 
-				       "CLOSE", 0, NULL, cb_close, NULL);
-
-   Epplet_register_focus_in_handler(got_focus, &close_button);
-   Epplet_register_focus_out_handler(lost_focus, &close_button);
-   
-  
-
-   //Epplet_gadget_show(load_up = Epplet_create_vbar(2, 19, 12, 46, 1, &up_val));
-   //Epplet_gadget_show(load_down = Epplet_create_vbar(16, 19, 12, 46, 0, &down_val));
-   //Epplet_gadget_show(Epplet_create_popupbutton("In", NULL, 1, 64, 16, 12, NULL, p1));
-   //Epplet_gadget_show(Epplet_create_popupbutton("Out", NULL, 17, 64, 16, 12, NULL, p2));
-   Epplet_show();
-   Epplet_Loop();
-   return 0;
+	return (0);
 }
