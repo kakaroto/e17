@@ -91,25 +91,18 @@ ApplyECursor(Window win, ECursor * ec)
    if (!ec)
       return;
    XDefineCursor(disp, win, ec->cursor);
-
-   return;
 }
 
 void
 FreeECursor(ECursor * ec)
 {
-
    if (!ec)
       return;
 
    if (ec->ref_count > 0)
      {
-	char                stuff[255];
-
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  ec->ref_count);
-	DIALOG_OK(_("ECursor Error!"), stuff);
-
+	DialogOK(_("ECursor Error!"), _("%u references remain\n"),
+		 ec->ref_count);
 	return;
      }
 
@@ -120,6 +113,4 @@ FreeECursor(ECursor * ec)
    if (ec->file)
       Efree(ec->file);
    Efree(ec);
-
-   return;
 }

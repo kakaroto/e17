@@ -277,11 +277,8 @@ RemoveActionClass(ActionClass * ActionClassToRemove)
 
    if (ActionClassToRemove->ref_count > 0)
      {
-	char                stuff[255];
-
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  ActionClassToRemove->ref_count);
-	DIALOG_OK(_("ActionClass Error!"), stuff);
+	DialogOK(_("ActionClass Error!"), _("%u references remain\n"),
+		 ActionClassToRemove->ref_count);
 	EDBUG_RETURN_;
      }
    while (RemoveItemByPtr(ActionClassToRemove, LIST_TYPE_ACLASS));
@@ -3199,7 +3196,7 @@ doAbout(void *params)
 	ShowDialog(d);
 	EDBUG_RETURN(0);
      }
-   d = CreateDialog("ABOUT_ENLIGHTENMENT");
+   d = DialogCreate("ABOUT_ENLIGHTENMENT");
    {
       char                stuff[255];
 
@@ -3829,17 +3826,17 @@ doZoom(void *params)
 		     ("You have been warned about the dangers of Zoom mode\n"));
 	     fclose(f);
 	  }
-	DIALOG_OK(_("Warning !!!"),
-		  _("This feature is heavily reliant on a feature of your\n"
-		    "X Server called the Vid Mode Extension. This feature exists\n"
-		    "in XFree86 Servers, but is not a heavily used part of the\n"
-		    "Server and thus isn't tested much.\n\n"
-		    "It is possible your X Server does not deal well with being\n"
-		    "asked to switch modes quickly and it may hang, glitch,\n"
-		    "display artefacts or perhaps simply refuse to work.\n\n"
-		    "This is a warning and will only be displayed this one time.\n"
-		    "If your Server does not behave well then you will probably\n"
-		    "have to avoid using this feature.\n"));
+	DialogOK(_("Warning !!!"),
+		 _("This feature is heavily reliant on a feature of your\n"
+		   "X Server called the Vid Mode Extension. This feature exists\n"
+		   "in XFree86 Servers, but is not a heavily used part of the\n"
+		   "Server and thus isn't tested much.\n\n"
+		   "It is possible your X Server does not deal well with being\n"
+		   "asked to switch modes quickly and it may hang, glitch,\n"
+		   "display artefacts or perhaps simply refuse to work.\n\n"
+		   "This is a warning and will only be displayed this one time.\n"
+		   "If your Server does not behave well then you will probably\n"
+		   "have to avoid using this feature.\n"));
 	EDBUG_RETURN(0);
      }
    ewin = GetFocusEwin();

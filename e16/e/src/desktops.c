@@ -369,7 +369,6 @@ RemoveImagesFromBG(Background * bg)
 void
 FreeDesktopBG(Background * bg)
 {
-
    EDBUG(6, "FreeDesktopBG");
 
    if (!bg)
@@ -377,12 +376,8 @@ FreeDesktopBG(Background * bg)
 
    if (bg->ref_count > 0)
      {
-	char                stuff[255];
-
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  bg->ref_count);
-	DIALOG_OK(_("Background Error!"), stuff);
-
+	DialogOK(_("Background Error!"), _("%u references remain\n"),
+		 bg->ref_count);
 	EDBUG_RETURN_;
      }
 

@@ -114,10 +114,10 @@ BuildWindowGroup(EWin ** ewins, int num)
 	   AddEwinToGroup(ewins[i], g);
 	else
 	  {
-	     DIALOG_OK(_("Cannot comply"),
-		       _("Iconboxes and Pagers are disallowed from being\n"
-			 "members of a group. You cannot add these windows\n"
-			 "to a group.\n"));
+	     DialogOK(_("Cannot comply"),
+		      _("Iconboxes and Pagers are disallowed from being\n"
+			"members of a group. You cannot add these windows\n"
+			"to a group.\n"));
 	  }
      }
 }
@@ -146,10 +146,10 @@ AddEwinToGroup(EWin * ewin, Group * g)
 	  }
 	else
 	  {
-	     DIALOG_OK(_("Cannot comply"),
-		       _("Iconboxes and Pagers are disallowed from being\n"
-			 "members of a group. You cannot add these windows\n"
-			 "to a group.\n"));
+	     DialogOK(_("Cannot comply"),
+		      _("Iconboxes and Pagers are disallowed from being\n"
+			"members of a group. You cannot add these windows\n"
+			"to a group.\n"));
 	  }
      }
 }
@@ -592,26 +592,26 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    if ((num_groups == 0)
        && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
      {
-	DIALOG_OK(_("Window Group Error"),
-		  _
-		  ("\n  This window currently does not belong to any groups.  \n"
-		   "  You can only destroy groups or remove windows from groups  \n"
-		   "  through a window that actually belongs to at least one group.\n\n"));
+	DialogOK(_("Window Group Error"),
+		 _
+		 ("\n  This window currently does not belong to any groups.  \n"
+		  "  You can only destroy groups or remove windows from groups  \n"
+		  "  through a window that actually belongs to at least one group.\n\n"));
 	return;
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
      {
-	DIALOG_OK(_("Window Group Error"),
-		  _("\n  Currently, no groups exist or this window  \n"
-		    "  already belongs to all existing groups.  \n"
-		    "  You have to start other groups first.  \n\n"));
+	DialogOK(_("Window Group Error"),
+		 _("\n  Currently, no groups exist or this window  \n"
+		   "  already belongs to all existing groups.  \n"
+		   "  You have to start other groups first.  \n\n"));
 	return;
      }
    if (!tmp_groups)
      {
-	DIALOG_OK(_("Window Group Error"),
-		  _
-		  ("\n  Currently, no groups exist. You have to start a group first.\n\n"));
+	DialogOK(_("Window Group Error"),
+		 _
+		 ("\n  Currently, no groups exist. You have to start a group first.\n\n"));
 	return;
      }
 
@@ -625,7 +625,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      }
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
-   d = CreateDialog("GROUP_SELECTION");
+   d = DialogCreate("GROUP_SELECTION");
    DialogSetTitle(d, _("Window Group Selection"));
 
    table = DialogInitItem(d);

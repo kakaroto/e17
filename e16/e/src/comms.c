@@ -2057,13 +2057,10 @@ HandleComms(XClientMessageEvent * ev)
 	if (!s2)
 	   s2 = sunknown;
 	{
-	   char                buf[FILEPATH_LEN_MAX];
-
-	   Esnprintf(buf, sizeof(buf),
-		     _("Received Unknown Client Message.\n"
-		       "Client Name:    %s\n" "Client Version: %s\n"
-		       "Message Contents:\n\n" "%s\n"), s1, s2, s);
-	   DIALOG_OK(_("E IPC Error"), buf);
+	   DialogOK(_("E IPC Error"),
+		    _("Received Unknown Client Message.\n"
+		      "Client Name:    %s\n" "Client Version: %s\n"
+		      "Message Contents:\n\n" "%s\n"), s1, s2, s);
 	   AUDIO_PLAY("SOUND_ERROR_IPC");
 	}
      }

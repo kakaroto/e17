@@ -2191,13 +2191,10 @@ FreeBorder(Border * b)
 
    if (b->ref_count > 0)
      {
-	char                stuff[255];
-
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  b->ref_count);
-	DIALOG_OK(_("Border Error!"), stuff);
+	DialogOK(_("Border Error!"), _("%u references remain\n"), b->ref_count);
 	EDBUG_RETURN_;
      }
+
    while (RemoveItemByPtr(b, LIST_TYPE_BORDER));
 
    for (i = 0; i < b->num_winparts; i++)

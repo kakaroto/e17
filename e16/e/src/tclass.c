@@ -66,11 +66,8 @@ DeleteTclass(TextClass * t)
 
    if (t->ref_count > 0)
      {
-	char                stuff[255];
-
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  t->ref_count);
-	DIALOG_OK(_("TextClass Error!"), stuff);
+	DialogOK(_("TextClass Error!"), _("%u references remain\n"),
+		 t->ref_count);
 	EDBUG_RETURN_;
      }
    if (t->name)

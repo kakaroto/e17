@@ -50,13 +50,11 @@ LoadWav(char *file)
    find = FindFile(file);
    if (!find)
      {
-	DIALOG_PARAM_OK(_("Error finding sound file"));
-	DIALOG_PARAM        _("Warning!  Enlightenment was unable "
-			      "to load the\nfollowing sound file:\n%s\n"
-			      "Enlightenment will continue to operate, but you\n"
-			      "may wish to check your configuration settings.\n"),
-	   file DIALOG_PARAM_END;
-
+	DialogOK(_("Error finding sound file"),
+		 _("Warning!  Enlightenment was unable to load the\n"
+		   "following sound file:\n%s\n"
+		   "Enlightenment will continue to operate, but you\n"
+		   "may wish to check your configuration settings.\n"), file);
 	EDBUG_RETURN(NULL);
      }
    in_file = afOpenFile(find, "r", NULL);

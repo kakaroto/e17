@@ -62,13 +62,11 @@ CreateCurve(ModCurve * c)
      }
 
    EDBUG_RETURN_;
-
 }
 
 void
 FreeModCurve(ModCurve * c)
 {
-
    EDBUG(6, "FreeModCurve");
 
    if (!c)
@@ -78,13 +76,11 @@ FreeModCurve(ModCurve * c)
    Efree(c->py);
 
    EDBUG_RETURN_;
-
 }
 
 void
 FreeCMClass(ColorModifierClass * cm)
 {
-
    EDBUG(5, "FreeCmClass");
 
    if (!cm)
@@ -92,14 +88,9 @@ FreeCMClass(ColorModifierClass * cm)
 
    if (cm->ref_count > 0)
      {
-	char                stuff[255];
-
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  cm->ref_count);
-	DIALOG_OK(_("ColorModClass Error!"), stuff);
-
+	DialogOK(_("ColorModClass Error!"), _("%u references remain\n"),
+		 cm->ref_count);
 	EDBUG_RETURN_;
-
      }
 
    while (RemoveItemByPtr(cm, LIST_TYPE_COLORMODIFIER));
@@ -110,7 +101,6 @@ FreeCMClass(ColorModifierClass * cm)
    FreeModCurve(&(cm->blue));
 
    EDBUG_RETURN_;
-
 }
 
 ColorModifierClass *
@@ -180,7 +170,6 @@ CreateCMClass(char *name, int rnum, unsigned char *rpx,
    CreateCurve(&(cm->blue));
 
    EDBUG_RETURN(cm);
-
 }
 
 void
@@ -260,5 +249,4 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
    CreateCurve(&(cm->blue));
 
    EDBUG_RETURN_;
-
 }

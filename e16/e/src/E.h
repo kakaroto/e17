@@ -224,34 +224,6 @@ if (__xim) XDestroyImage(__xim);}
 
 #define AUDIO_PLAY(sclass) \
 ApplySclass(FindItem((sclass), 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
-/************************************************************************/
-/* dialog macro convenience funcs                                       */
-/************************************************************************/
-
-#define DIALOG_OK(title, text) \
-{ \
-  Dialog *__d; \
-  __d = CreateDialog("DIALOG"); \
-  DialogSetTitle(__d, title); \
-  DialogSetText(__d, text); \
-  DialogAddButton(__d, _("OK"), NULL, 1); \
-  ShowDialog(__d); \
-}
-
-#define DIALOG_PARAM_OK(title) \
-{ \
-  Dialog *__d; \
-  __d = CreateDialog("DIALOG"); \
-  DialogSetTitle(__d, title);
-
-#define DIALOG_PARAM \
-DialogSetParamText(__d,
-
-#define DIALOG_PARAM_END \
-  ); \
-  DialogAddButton(__d, _("OK"), NULL, 1); \
-  ShowDialog(__d); \
-}
 
 /************************************************************************/
 
@@ -2621,29 +2593,24 @@ void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 
 /* dialog.c */
-Dialog             *CreateDialog(char *name);
+Dialog             *DialogCreate(char *name);
+void                DialogDestroy(Dialog * d);
 void                DialogBindKey(Dialog * d, char *key,
 				  void (*func) (int val, void *data), int val,
 				  void *data);
-void                FreeDialog(Dialog * d);
 void                DialogSetText(Dialog * d, char *text);
 void                DialogSetTitle(Dialog * d, char *title);
-void                DialogAddButton(Dialog * d, char *text,
-				    void (*func) (int val, void *data),
-				    char close);
-void                DialogDrawButton(Dialog * d, int bnum);
-void                DialogActivateButton(Window win, int inclick);
-void                DialogDraw(Dialog * d);
-void                DialogDrawArea(Dialog * d, int x, int y, int w, int h);
+void                DialogSetExitFunction(Dialog * d,
+					  void (*func) (int val, void *data),
+					  int val, void *data);
 void                DialogRedraw(Dialog * d);
 void                DialogMove(Dialog * d);
 void                ShowDialog(Dialog * d);
 void                DialogClose(Dialog * d);
-void                DialogSetParamText(Dialog * d, char *fmt, ...);
-void                DialogAlert(char *fmt, ...);
-void                DialogAlertOK(char *fmt, ...);
-void                DialogRestart(int val, void *data);
-void                DialogQuit(int val, void *data);
+
+void                DialogAddButton(Dialog * d, char *text,
+				    void (*func) (int val, void *data),
+				    char close);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 DItem              *DialogItem(Dialog * d);
@@ -2657,10 +2624,8 @@ void                DialogItemSetPadding(DItem * di, int left, int right,
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
 void                DialogItemCallCallback(DItem * di);
-void                DialogRealizeItem(Dialog * d, DItem * di);
 void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
 				    int h);
-void                DialogItemsRealize(Dialog * d);
 void                DialogItemButtonSetText(DItem * di, char *text);
 void                DialogItemCheckButtonSetText(DItem * di, char *text);
 void                DialogItemTextSetText(DItem * di, char *text);
@@ -2677,18 +2642,13 @@ void                DialogItemSeparatorSetOrientation(DItem * di,
 						      char horizontal);
 void                DialogItemImageSetFile(DItem * di, char *image);
 void                DialogFreeItem(DItem * di);
-DItem              *DialogItemFindWindow(DItem * di, Window win);
 void                DialogItemSetRowSpan(DItem * di, int row_span);
 void                DialogItemSetColSpan(DItem * di, int col_span);
-void                DialogSetExitFunction(Dialog * d,
-					  void (*func) (int val, void *data),
-					  int val, void *data);
 void                DialogItemRadioButtonSetText(DItem * di, char *text);
 void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
 void                DialogItemRadioButtonGroupSetValPtr(DItem * di,
 							int *val_ptr);
 void                DialogItemRadioButtonGroupSetVal(DItem * di, int val);
-void                MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 
 void                DialogItemSliderSetVal(DItem * di, int val);
 void                DialogItemSliderSetBounds(DItem * di, int lower, int upper);
@@ -2707,6 +2667,14 @@ Window              DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
 					       void (*func) (int val,
 							     void *data));
+
+void                DialogOK(const char *title, const char *fmt, ...);
+void                DialogOKstr(const char *title, const char *txt);
+void                DialogRestart(int val, void *data);
+void                DialogQuit(int val, void *data);
+void                DialogAlert(const char *fmt, ...);
+void                DialogAlertOK(const char *fmt, ...);
+
 int                 DialogEventKeyPress(XEvent * ev);
 int                 DialogEventMotion(XEvent * ev);
 int                 DialogEventExpose(XEvent * ev);

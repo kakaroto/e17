@@ -344,16 +344,13 @@ FindTheme(char *theme)
 void
 BadThemeDialog(void)
 {
-   char                s[1024];
-
    if (!badtheme)
       return;
 
-   Esnprintf(s, sizeof(s),
-	     _("The theme:\n" "%s\n"
-	       "Is a badly formed theme package and is thus not being used.\n"
-	       "Enlightenment has fallen back to using the DEFAULT theme.\n"
-	       "\n" "The reason this theme is bad is:\n" "%s"), badtheme,
-	     badreason);
-   DIALOG_OK(_("Bad Theme"), s);
+   DialogOK(_("Bad Theme"),
+	    _("The theme:\n" "%s\n"
+	      "Is a badly formed theme package and is thus not being used.\n"
+	      "Enlightenment has fallen back to using the DEFAULT theme.\n"
+	      "\n" "The reason this theme is bad is:\n" "%s"),
+	    badtheme, badreason);
 }

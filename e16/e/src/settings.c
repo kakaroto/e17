@@ -123,7 +123,7 @@ SettingsPager(void)
       tmp_pager_do_scan = 1;
    tmp_pager_scan_speed = mode.pager_scanspeed;
 
-   d = pager_settings_dialog = CreateDialog("CONFIGURE_PAGER");
+   d = pager_settings_dialog = DialogCreate("CONFIGURE_PAGER");
    DialogSetTitle(d, _("Pager Settings"));
 
    table = DialogInitItem(d);
@@ -413,7 +413,7 @@ SettingsFocus(void)
 #endif /* WITH_TARTY_WARP */
    tmp_clickalways = mode.clickalways;
 
-   d = CreateDialog("CONFIGURE_FOCUS");
+   d = DialogCreate("CONFIGURE_FOCUS");
    DialogSetTitle(d, _("Focus Settings"));
 
    table = DialogInitItem(d);
@@ -798,7 +798,7 @@ SettingsMoveResize(void)
    tmp_resize = mode.resizemode;
    tmp_geominfo = mode.geominfomode;
 
-   d = CreateDialog("CONFIGURE_MOVERESIZE");
+   d = DialogCreate("CONFIGURE_MOVERESIZE");
    DialogSetTitle(d, _("Move & Resize Settings"));
 
    table = DialogInitItem(d);
@@ -981,7 +981,7 @@ SettingsMoveResize(void)
    ShowDialog(d);
 
    /*
-    * dexp = CreateDialog("CONFIGURE_MOVERESIZE_EXAMPLE");
+    * dexp = DialogCreate("CONFIGURE_MOVERESIZE_EXAMPLE");
     * DialogSetTitle(dexp, _("Move & Resize Settings Example"));
     */
 
@@ -1118,7 +1118,7 @@ SettingsDesktops(void)
    tmp_desktops = mode.numdesktops;
    tmp_desktop_wraparound = mode.desktop_wraparound;
 
-   d = tmp_desk_dialog = CreateDialog("CONFIGURE_DESKTOPS");
+   d = tmp_desk_dialog = DialogCreate("CONFIGURE_DESKTOPS");
    DialogSetTitle(d, _("Multiple Desktop Settings"));
 
    table = DialogInitItem(d);
@@ -1318,7 +1318,7 @@ SettingsArea(void)
    GetAreaSize(&tmp_area_x, &tmp_area_y);
    tmp_area_y = 9 - tmp_area_y;
 
-   d = tmp_area_dialog = CreateDialog("CONFIGURE_AREA");
+   d = tmp_area_dialog = DialogCreate("CONFIGURE_AREA");
    DialogSetTitle(d, _("Virtual Desktop Settings"));
 
    table = DialogInitItem(d);
@@ -1496,7 +1496,7 @@ SettingsPlacement(void)
    tmp_extra_head = mode.extra_head;
 #endif
 
-   d = CreateDialog("CONFIGURE_PLACEMENT");
+   d = DialogCreate("CONFIGURE_PLACEMENT");
    DialogSetTitle(d, _("Window Placement Settings"));
 
    table = DialogInitItem(d);
@@ -1626,7 +1626,7 @@ SettingsAutoRaise(void)
    tmp_autoraise = mode.autoraise;
    tmp_autoraisetime = (int)(mode.autoraisetime * 100);
 
-   d = CreateDialog("CONFIGURE_AUTORAISE");
+   d = DialogCreate("CONFIGURE_AUTORAISE");
    DialogSetTitle(d, _("Autoraise Settings"));
 
    table = DialogInitItem(d);
@@ -1727,7 +1727,7 @@ SettingsTooltips(void)
    tmp_tooltiptime = (int)(mode.tiptime * 100);
    tmp_roottip = mode.showroottooltip;
 
-   d = CreateDialog("CONFIGURE_TOOLTIPS");
+   d = DialogCreate("CONFIGURE_TOOLTIPS");
    DialogSetTitle(d, _("Tooltip Settings"));
 
    table = DialogInitItem(d);
@@ -1829,7 +1829,7 @@ SettingsMiscellaneous(void)
 
    tmp_dialog_headers = mode.dialog_headers;
 
-   d = CreateDialog("CONFIGURE_MISCELLANEOUS");
+   d = DialogCreate("CONFIGURE_MISCELLANEOUS");
    DialogSetTitle(d, _("Miscellaneous Settings"));
 
    table = DialogInitItem(d);
@@ -1912,7 +1912,7 @@ SettingsAudio(void)
 
    tmp_audio = mode.sound;
 
-   d = CreateDialog("CONFIGURE_AUDIO");
+   d = DialogCreate("CONFIGURE_AUDIO");
    DialogSetTitle(d, _("Audio Settings"));
 
    table = DialogInitItem(d);
@@ -2072,7 +2072,7 @@ SettingsSpecialFX(void)
    tmp_effect_ripples = FX_IsOn("ripples");
    tmp_effect_waves = FX_IsOn("waves");
 
-   d = CreateDialog("CONFIGURE_FX");
+   d = DialogCreate("CONFIGURE_FX");
    DialogSetTitle(d, _("Special FX Settings"));
 
    table = DialogInitItem(d);
@@ -3301,7 +3301,7 @@ SettingsBackground(Background * bg)
    tmp_userbg = mode.user_bg;
    tmp_bg_timeout = mode.desktop_bg_timeout;
 
-   d = bg_sel_dialog = CreateDialog("CONFIGURE_BG");
+   d = bg_sel_dialog = DialogCreate("CONFIGURE_BG");
    DialogSetTitle(d, _("Desktop Background Settings"));
 
    table = DialogInitItem(d);
@@ -3770,7 +3770,7 @@ SettingsIconbox(char *name)
       Efree(tmp_ib_name);
    tmp_ib_name = duplicate(name);
 
-   d = CreateDialog("CONFIGURE_ICONBOX");
+   d = DialogCreate("CONFIGURE_ICONBOX");
    DialogSetTitle(d, _("Iconbox Settings"));
 
    table = DialogInitItem(d);
@@ -4143,9 +4143,9 @@ SettingsGroups(EWin * ewin)
       return;
    if (ewin->num_groups == 0)
      {
-	DIALOG_OK(_("Window Group Error"),
-		  _
-		  ("\n  This window currently does not belong to any groups.  \n\n"));
+	DialogOK(_("Window Group Error"),
+		 _
+		 ("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
@@ -4167,7 +4167,7 @@ SettingsGroups(EWin * ewin)
    for (i = 0; i < ewin->num_groups; i++)
       CopyGroupConfig(&(ewin->groups[i]->cfg), &(tmp_cfgs[i]));
 
-   d = CreateDialog("CONFIGURE_GROUP");
+   d = DialogCreate("CONFIGURE_GROUP");
    DialogSetTitle(d, _("Window Group Settings"));
 
    table = DialogInitItem(d);
@@ -4371,7 +4371,7 @@ SettingsDefaultGroupControl(void)
    CopyGroupConfig(&(mode.group_config), &tmp_group_cfg);
    tmp_group_swap = mode.group_swapmove;
 
-   d = CreateDialog("CONFIGURE_DEFAULT_GROUP_CONTROL");
+   d = DialogCreate("CONFIGURE_DEFAULT_GROUP_CONTROL");
    DialogSetTitle(d, _("Default Group Control Settings"));
 
    table = DialogInitItem(d);
@@ -4619,7 +4619,7 @@ SettingsRemember()
      }
    AUDIO_PLAY("SOUND_SETTINGS_REMEMBER");
 
-   d = CreateDialog("REMEMBER_WINDOW");
+   d = DialogCreate("REMEMBER_WINDOW");
    DialogSetTitle(d, _("Remembered Windows Settings"));
 
    table = DialogInitItem(d);

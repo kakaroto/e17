@@ -2232,9 +2232,7 @@ IPC_DialogOK(char *params, Client * c)
    buf[0] = 0;
 
    if (params)
-     {
-	DIALOG_OK(_("Message"), params);
-     }
+      DialogOKstr(_("Message"), params);
    else
       Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified");
 

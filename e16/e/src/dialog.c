@@ -22,17 +22,7 @@
  */
 #include "E.h"
 
-typedef struct _ditembutton DItemButton;
-typedef struct _ditemcheckbutton DItemCheckButton;
-typedef struct _ditemtext DItemText;
-typedef struct _ditemimage DItemImage;
-typedef struct _ditemseparator DItemSeparator;
-typedef struct _ditemtable DItemTable;
-typedef struct _ditemradiobutton DItemRadioButton;
-typedef struct _ditemslider DItemSlider;
-typedef struct _ditemarea DItemArea;
-
-struct _ditemslider
+typedef struct
 {
    char                horizontal;
 
@@ -67,45 +57,45 @@ struct _ditemslider
    Window              base_win;
    Window              knob_win;
    Window              border_win;
-};
+} DItemSlider;
 
-struct _ditemarea
+typedef struct
 {
    Window              area_win;
    int                 w, h;
    void                (*event_func) (int val, void *data);
-};
+} DItemArea;
 
-struct _ditembutton
+typedef struct
 {
    char               *text;
-};
+} DItemButton;
 
-struct _ditemcheckbutton
+typedef struct
 {
    char               *text;
    Window              check_win;
    int                 check_orig_w, check_orig_h;
    char                onoff;
    char               *onoff_ptr;
-};
+} DItemCheckButton;
 
-struct _ditemtext
+typedef struct
 {
    char               *text;
-};
+} DItemText;
 
-struct _ditemimage
+typedef struct
 {
    char               *image;
-};
+} DItemImage;
 
-struct _ditemseparator
+typedef struct
 {
    char                horizontal;
-};
+} DItemSeparator;
 
-struct _ditemtable
+typedef struct
 {
    int                 num_columns;
    char                border;
@@ -113,9 +103,9 @@ struct _ditemtable
    char                homogenous_v;
    int                 num_items;
    DItem             **items;
-};
+} DItemTable;
 
-struct _ditemradiobutton
+typedef struct
 {
    char               *text;
    Window              radio_win;
@@ -126,7 +116,7 @@ struct _ditemradiobutton
    DItem              *next;
    DItem              *first;
    void                (*event_func) (int val, void *data);
-};
+} DItemRadioButton;
 
 struct _ditem
 {
@@ -204,6 +194,9 @@ struct _dialog
    int                 num_bindings;
    DKeyBind           *keybindings;
 };
+
+static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
+static void         DialogItemsRealize(Dialog * d);
 
 static ImageClass  *d_ic_default = NULL;
 static TextClass   *d_tc_default = NULL;
@@ -306,7 +299,7 @@ DialogBindKey(Dialog * d, char *key, void (*func) (int val, void *data),
 }
 
 Dialog             *
-CreateDialog(char *name)
+DialogCreate(char *name)
 {
    Dialog             *d;
 
@@ -360,7 +353,7 @@ FreeDButton(DButton * db)
 }
 
 void
-FreeDialog(Dialog * d)
+DialogDestroy(Dialog * d)
 {
    int                 i;
 
@@ -383,60 +376,6 @@ FreeDialog(Dialog * d)
    if (d->keybindings)
       Efree(d->keybindings);
    Efree(d);
-}
-
-void
-DialogRestart(int val, void *data)
-{
-   doExit("restart");
-   val = 0;
-   data = NULL;
-}
-
-void
-DialogQuit(int val, void *data)
-{
-   doExit("error");
-   val = 0;
-   data = NULL;
-}
-
-void
-DialogAlert(char *fmt, ...)
-{
-   char                text[10240];
-   va_list             ap;
-
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
-   Alert(text);
-}
-
-void
-DialogAlertOK(char *fmt, ...)
-{
-   char                text[10240];
-   va_list             ap;
-
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
-   ASSIGN_ALERT(_("Attention !!!"), _("OK"), " ", " ");
-   Alert(text);
-   RESET_ALERT;
-}
-
-void
-DialogSetParamText(Dialog * d, char *fmt, ...)
-{
-   char                text[10240];
-   va_list             ap;
-
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
-   DialogSetText(d, text);
 }
 
 void
@@ -523,7 +462,7 @@ DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
 		ButtonReleaseMask | ExposureMask);
 }
 
-void
+static void
 DialogDrawButton(Dialog * d, int bnum)
 {
    int                 state;
@@ -548,7 +487,7 @@ DialogDrawButton(Dialog * d, int bnum)
 	       d->button[bnum]->tclass, d->button[bnum]->text);
 }
 
-void
+static void
 DialogActivateButton(Window win, int inclick)
 {
    Dialog             *d;
@@ -576,7 +515,7 @@ DialogActivateButton(Window win, int inclick)
       DialogClose(d);
 }
 
-void
+static void
 DialogDraw(Dialog * d)
 {
    if ((!d->tclass) || (!d->iclass))
@@ -593,7 +532,7 @@ DialogDraw(Dialog * d)
      }
 }
 
-void
+static void
 DialogDrawArea(Dialog * d, int x, int y, int w, int h)
 {
    if ((!d->tclass) || (!d->iclass))
@@ -766,7 +705,7 @@ DialogClose(Dialog * d)
    if (d->exit_func)
       (d->exit_func) (d->exit_val, d->exit_data);
    RemoveItem(NULL, d->win, LIST_FINDBY_ID, LIST_TYPE_DIALOG);
-   FreeDialog(d);
+   DialogDestroy(d);
 }
 
 DItem              *
@@ -1016,7 +955,7 @@ DialogItemCallCallback(DItem * di)
       di->func(di->val, di->data);
 }
 
-void
+static void
 DialogRealizeItem(Dialog * d, DItem * di)
 {
    char               *def = NULL;
@@ -1596,7 +1535,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
      }
 }
 
-void
+static void
 MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
 {
    int                 i;
@@ -1844,7 +1783,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
      }
 }
 
-void
+static void
 DialogItemsRealize(Dialog * d)
 {
    char                pq;
@@ -2124,7 +2063,7 @@ DialogFreeItem(DItem * di)
    Efree(di);
 }
 
-DItem              *
+static DItem       *
 DialogItemFindWindow(DItem * di, Window win)
 {
    DItem              *dii = NULL;
@@ -2154,6 +2093,78 @@ DItem              *
 DialogItem(Dialog * d)
 {
    return d->item;
+}
+
+/*
+ * Predefined dialogs
+ */
+
+void
+DialogOK(const char *title, const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             ap;
+
+   va_start(ap, fmt);
+   Evsnprintf(text, sizeof(text), fmt, ap);
+   va_end(ap);
+
+   DialogOKstr(title, text);
+}
+
+void
+DialogOKstr(const char *title, const char *txt)
+{
+   Dialog             *d;
+
+   d = DialogCreate("DIALOG");
+   DialogSetTitle(d, title);
+   DialogSetText(d, txt);
+
+   DialogAddButton(d, _("OK"), NULL, 1);
+   ShowDialog(d);
+}
+
+void
+DialogRestart(int val, void *data)
+{
+   doExit("restart");
+   val = 0;
+   data = NULL;
+}
+
+void
+DialogQuit(int val, void *data)
+{
+   doExit("error");
+   val = 0;
+   data = NULL;
+}
+
+void
+DialogAlert(const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             ap;
+
+   va_start(ap, fmt);
+   Evsnprintf(text, 10240, fmt, ap);
+   va_end(ap);
+   Alert(text);
+}
+
+void
+DialogAlertOK(const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             ap;
+
+   va_start(ap, fmt);
+   Evsnprintf(text, 10240, fmt, ap);
+   va_end(ap);
+   ASSIGN_ALERT(_("Attention !!!"), _("OK"), " ", " ");
+   Alert(text);
+   RESET_ALERT;
 }
 
 /*

@@ -280,7 +280,7 @@ SnapshotEwinDialog(EWin * ewin)
 	ShowDialog(d);
 	return;
      }
-   d = CreateDialog("SNAPSHOT_WINDOW");
+   d = DialogCreate("SNAPSHOT_WINDOW");
    DialogSetTitle(d, _("Remembered Application Attributes"));
 
    table = DialogInitItem(d);
