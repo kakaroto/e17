@@ -54,6 +54,7 @@ create_main (void)
   GtkWidget *alignment2;
   GtkWidget *vbox3;
   GtkWidget *toolbar3;
+  GtkWidget *tmp_toolbar_icon;
   GtkWidget *new_image;
   GtkWidget *new_icon;
   GtkWidget *new_text;
@@ -457,80 +458,87 @@ create_main (void)
   gtk_box_pack_start (GTK_BOX (vbox3), toolbar3, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (toolbar3), 2);
 
+  tmp_toolbar_icon = create_pixmap (main, "image.xpm");
   new_image = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Image"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_image);
   gtk_object_set_data_full (GTK_OBJECT (main), "new_image", new_image,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_image);
 
+  tmp_toolbar_icon = create_pixmap (main, "icon.xpm");
   new_icon = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Icon"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_icon);
   gtk_object_set_data_full (GTK_OBJECT (main), "new_icon", new_icon,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_icon);
   gtk_widget_set_sensitive (new_icon, FALSE);
 
+  tmp_toolbar_icon = create_pixmap (main, "text.xpm");
   new_text = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Text"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_text);
   gtk_object_set_data_full (GTK_OBJECT (main), "new_text", new_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_text);
   gtk_widget_set_sensitive (new_text, FALSE);
 
+  tmp_toolbar_icon = create_pixmap (main, "raise.xpm");
   raise = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Raise"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (raise);
   gtk_object_set_data_full (GTK_OBJECT (main), "raise", raise,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (raise);
 
+  tmp_toolbar_icon = create_pixmap (main, "lower.xpm");
   lower = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Lower"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (lower);
   gtk_object_set_data_full (GTK_OBJECT (main), "lower", lower,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lower);
 
+  tmp_toolbar_icon = create_pixmap (main, "delete.xpm");
   delete = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Delete"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (delete);
   gtk_object_set_data_full (GTK_OBJECT (main), "delete", delete,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (delete);
 
+  tmp_toolbar_icon = create_pixmap (main, "reset.xpm");
   reset = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Reset"),
                                 NULL, NULL,
-                                NULL, NULL, NULL);
+                                tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (reset);
   gtk_object_set_data_full (GTK_OBJECT (main), "reset", reset,
                             (GtkDestroyNotify) gtk_widget_unref);

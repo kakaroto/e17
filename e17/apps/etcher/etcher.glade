@@ -320,6 +320,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:42:50 GMT</last_modification_time>
 	      </signal>
 	      <label>Image</label>
+	      <icon>image.xpm</icon>
 	    </widget>
 
 	    <widget>
@@ -333,6 +334,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:42:56 GMT</last_modification_time>
 	      </signal>
 	      <label>Icon</label>
+	      <icon>icon.xpm</icon>
 	    </widget>
 
 	    <widget>
@@ -346,6 +348,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:43:01 GMT</last_modification_time>
 	      </signal>
 	      <label>Text</label>
+	      <icon>text.xpm</icon>
 	    </widget>
 
 	    <widget>
@@ -358,6 +361,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:43:09 GMT</last_modification_time>
 	      </signal>
 	      <label>Raise</label>
+	      <icon>raise.xpm</icon>
 	    </widget>
 
 	    <widget>
@@ -370,6 +374,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:43:17 GMT</last_modification_time>
 	      </signal>
 	      <label>Lower</label>
+	      <icon>lower.xpm</icon>
 	    </widget>
 
 	    <widget>
@@ -382,6 +387,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:43:23 GMT</last_modification_time>
 	      </signal>
 	      <label>Delete</label>
+	      <icon>delete.xpm</icon>
 	    </widget>
 
 	    <widget>
@@ -394,6 +400,7 @@
 		<last_modification_time>Sun, 20 Aug 2000 19:43:29 GMT</last_modification_time>
 	      </signal>
 	      <label>Reset</label>
+	      <icon>reset.xpm</icon>
 	    </widget>
 	  </widget>
 
