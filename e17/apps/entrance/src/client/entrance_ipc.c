@@ -1,110 +1,110 @@
 /*==========================================================================
  * Filename: entrance_ipc.c
  *========================================================================*/
-#include<Ecore.h>
-#include<Ecore_Ipc.h>
-#include<limits.h>
-#include<stdio.h>
+#include <Ecore.h>
+#include <Ecore_Ipc.h>
+#include <limits.h>
+#include <stdio.h>
 
-#define IPC_TITLE "entrance"
+#define IPC_TITLE "entrance_ipc"
 static Ecore_Ipc_Server *server = NULL;
 
 /**
- * ipc_server_add - when we connect to the ipc daemon
+ * _entrance_ipc_server_add - when we connect to the ipc daemon
  * @data -
  * @type - 
  * @event -
  */
 static int
-ipc_server_add(void *data, int type, void *event)
+_entrance_ipc_server_add(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Add *e;
 
    e = (Ecore_Ipc_Event_Server_Add *) event;
-   fprintf(stderr, "Server add\n");
-   return (1);
+   fprintf(stderr, "_entrance_ipc_server_add: Received event\n");
+   return TRUE;
 }
 
 /**
- * ipc_server_del - when we disconnect from the ipc daemon
+ * _entrance_ipc_server_del - when we disconnect from the ipc daemon
  * @data -
  * @type - 
  * @event -
  */
 static int
-ipc_server_del(void *data, int type, void *event)
+_entrance_ipc_server_del(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Del *e;
 
    e = (Ecore_Ipc_Event_Server_Del *) event;
-   fprintf(stderr, "Server delete\n");
-   return (1);
+   fprintf(stderr, "_entrance_ipc_server_del: Received event\n");
+   return TRUE;
 }
 
 /**
- * ipc_server_del - when we disconnect from the ipc daemon
+ * _entrance_ipc_server_del - when we disconnect from the ipc daemon
  * @data -
  * @type - 
  * @event -
  */
 static int
-ipc_server_data(void *data, int type, void *event)
+_entrance_ipc_server_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
 
    e = (Ecore_Ipc_Event_Server_Data *) event;
-   printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
+   printf("_entrance_ipc_server_data: Received [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
           e->size, (char *) e->data);
-   return (1);
+   return TRUE;
 }
 
 /**
- * ipc_client_add - 
+ * _entrance_ipc_client_add - 
  * @data -
  * @type - 
  * @event -
  */
 static int
-ipc_client_add(void *data, int type, void *event)
+_entrance_ipc_client_add(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Add *e;
 
    e = (Ecore_Ipc_Event_Client_Add *) event;
-   fprintf(stderr, "Client Connected!!!\n");
-   return (1);
+   fprintf(stderr, "_entrance_ipc_client_add: Received event\n");
+   return TRUE;
 }
 
 /**
- * ipc_client_del - 
+ * _entrance_ipc_client_del - 
  * @data -
  * @type - 
  * @event -
  */
 static int
-ipc_client_del(void *data, int type, void *event)
+_entrance_ipc_client_del(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e;
 
    e = (Ecore_Ipc_Event_Client_Del *) event;
-   fprintf(stderr, "Client Disconnected!!!\n");
-   return (1);
+   fprintf(stderr, "_entrance_ipc_client_del: Received event\n");
+   return TRUE;
 }
 
 /**
- * ipc_client_data - 
+ * _entrance_ipc_client_data - 
  * @data -
  * @type - 
  * @event -
  */
 static int
-ipc_client_data(void *data, int type, void *event)
+_entrance_ipc_client_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Data *e;
 
    e = (Ecore_Ipc_Event_Client_Data *) event;
-   printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
+   printf("_entrance_ipc_client_data: Sent [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
           e->size, (char *) e->data);
-   return (1);
+   return TRUE;
 }
 
 /**
@@ -122,26 +122,36 @@ entrance_ipc_init(int argc, const char **argv)
 {
    /* we definitely fail if we can't connect to ecore_ipc */
    if (ecore_ipc_init() < 1)
-      return (0);
+      return FALSE;
 
    if ((server =
-        ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL)))
+        ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL)))
    {
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_client_add,
-                              NULL);
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, ipc_client_del,
-                              NULL);
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
-                              NULL);
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data,
-                              NULL);
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, ipc_server_add,
-                              NULL);
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, ipc_server_del,
-                              NULL);
-      fprintf(stderr, "Listener Started\n");
-   }
-   return (1);
+      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, 
+                              _entrance_ipc_client_add, NULL);
+      
+      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL,
+                              _entrance_ipc_client_del, NULL);
+      
+      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA,
+                              _entrance_ipc_client_data, NULL);
+      
+      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
+                              _entrance_ipc_server_data, NULL);
+      
+      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
+                              _entrance_ipc_server_add, NULL);
+      
+      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
+                              _entrance_ipc_server_del, NULL);
+      
+      
+      fprintf(stderr, "entrance_ipc_init: Success\n");
+   } 
+   else
+      fprintf(stderr, "entrance_ipc_init: connect to daemon failed.\n");
+   
+   return TRUE;
 }
 
 void
@@ -151,4 +161,5 @@ entrance_ipc_shutdown(void)
       ecore_ipc_server_del(server);
    server = NULL;
    ecore_ipc_shutdown();
+   fprintf(stderr, "entrance_ipc_shutdown: Success\n");
 }

@@ -98,13 +98,25 @@ entrance_session_free(Entrance_Session * e)
    if (e)
    {
       if (e->auth)
+      {
          entrance_auth_free(e->auth);
+         e->auth = NULL;
+      }
       if (e->config)
+      {
          entrance_config_free(e->config);
+         e->config = NULL;
+      }
       if (e->ee)
+      {
          ecore_evas_free(e->ee);
+         e->ee = NULL;
+      }
       if (e->session)
+      {
          free(e->session);
+         e->config = NULL;
+      }
 
       closelog();
 
@@ -298,8 +310,11 @@ entrance_session_start_user_session(Entrance_Session * e)
 
    syslog(LOG_CRIT, "Executing %s", buf);
 
-   ecore_evas_free(e->ee);
-   e->ee = NULL;
+   if(e->ee)
+   {
+      ecore_evas_free(e->ee);
+      e->ee = NULL;
+   }
    ecore_evas_shutdown();
    ecore_x_sync();
 
