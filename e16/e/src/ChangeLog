@@ -2093,3 +2093,10 @@ Mon Sep 20 20:14:35 PDT 1999
 (Mandrake)
 
 removed todo item, added new TODO item
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 21:30:28 PDT 1999
+(Mandrake)
+
+fixed the desktop changing bug in kde support.  (oops)

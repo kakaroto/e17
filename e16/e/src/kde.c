@@ -77,7 +77,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+void 
 KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 {
 
@@ -100,7 +100,7 @@ KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 
 }
 
-void
+void 
 KDE_ClientTextMessage(Window win, Atom atom, char *data)
 {
 
@@ -122,7 +122,7 @@ KDE_ClientTextMessage(Window win, Atom atom, char *data)
 
 }
 
-void
+void 
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -141,7 +141,7 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void
+void 
 KDE_UpdateFocusedWindow(void)
 {
 
@@ -173,7 +173,7 @@ KDE_UpdateFocusedWindow(void)
      }
    else
      {
-	if (*(getSimpleHint(root.win, KDE_ACTIVE_WINDOW)))
+	if (getSimpleHint(root.win, KDE_ACTIVE_WINDOW))
 	   deleteHint(root.win, KDE_ACTIVE_WINDOW);
      }
 
@@ -190,7 +190,7 @@ KDE_UpdateFocusedWindow(void)
 
 }
 
-void
+void 
 KDE_NewWindow(EWin * ewin)
 {
 
@@ -239,12 +239,11 @@ KDE_NewWindow(EWin * ewin)
 	     KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->client.win);
 	  }
      }
-
    EDBUG_RETURN_;
 
 }
 
-void
+void 
 KDE_RemoveWindow(EWin * ewin)
 {
 
@@ -265,7 +264,7 @@ KDE_RemoveWindow(EWin * ewin)
 
 }
 
-void
+void 
 KDE_AddModule(Window win)
 {
 
@@ -398,7 +397,7 @@ KDE_AddModule(Window win)
 
 }
 
-void
+void 
 KDE_RemoveModule(Window win)
 {
 
@@ -453,7 +452,7 @@ KDE_RemoveModule(Window win)
 
 }
 
-void
+void 
 KDE_Init(void)
 {
    /*
@@ -574,7 +573,7 @@ KDE_Init(void)
 
 }
 
-void
+void 
 KDE_Shutdown(void)
 {
 
@@ -644,7 +643,7 @@ KDE_Shutdown(void)
 
 }
 
-void
+void 
 KDE_ClientInit(Window win)
 {
 
@@ -677,7 +676,7 @@ KDE_ClientInit(Window win)
 
 }
 
-void
+void 
 KDE_ClientChange(Window win, Atom a)
 {
 
@@ -760,7 +759,7 @@ KDE_ClientChange(Window win, Atom a)
 
 }
 
-void
+void 
 KDE_GetDecorationHint(Window win, long *dechints)
 {
 
@@ -830,7 +829,7 @@ KDE_GetDecorationHint(Window win, long *dechints)
 
 }
 
-void
+void 
 KDE_CheckClientHints(Window win)
 {
 
@@ -853,7 +852,7 @@ KDE_CheckClientHints(Window win)
 
 }
 
-int
+int 
 KDE_WindowCommand(EWin * ewin, char *cmd)
 {
 
@@ -909,7 +908,7 @@ KDE_WindowCommand(EWin * ewin, char *cmd)
 
 }
 
-void
+void 
 KDE_Command(char *cmd, XClientMessageEvent * event)
 {
 
@@ -988,7 +987,7 @@ KDE_Command(char *cmd, XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ProcessClientMessage(XClientMessageEvent * event)
 {
 
@@ -1052,7 +1051,7 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ModuleAssert(Window win)
 {
 
@@ -1066,7 +1065,7 @@ KDE_ModuleAssert(Window win)
 
 }
 
-void
+void 
 KDE_PrepModuleEvent(Window win, KMessage msg)
 {
 
@@ -1115,7 +1114,7 @@ KDE_PrepModuleEvent(Window win, KMessage msg)
 
 }
 
-void
+void 
 KDE_SetRootArea(void)
 {
 
@@ -1134,7 +1133,7 @@ KDE_SetRootArea(void)
 
 }
 
-void
+void 
 KDE_SetNumDesktops(void)
 {
 
@@ -1170,7 +1169,7 @@ KDE_SetNumDesktops(void)
    EDBUG_RETURN_;
 }
 
-void
+void 
 KDE_HintChange(Atom a)
 {
 
@@ -1194,7 +1193,7 @@ KDE_HintChange(Atom a)
 
 }
 
-void
+void 
 KDE_UpdateClient(EWin * ewin)
 {
 

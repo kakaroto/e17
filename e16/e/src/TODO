@@ -4,7 +4,6 @@ cK:		keeping the groups file in sync with the existing groups that need to be re
 cK		some groups stuff, like groups on multiple desktops, hammering on this whole raise/lower/raiselower stuff etc.
 mandrake:   kontrol-center seems to crash E when you click on desktop. needs fixing
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
-mandrake:   with kde support enabled, don't close the last window on a desktop and change desktops (BUG)
 
 FEATURES:
 raster: 	add dnd to iconbox
