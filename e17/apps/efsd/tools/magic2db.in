@@ -79,7 +79,7 @@ sub do_it;
 	  }
       }
     
-    if (scalar(@command) > 10000)
+    if (scalar(@command) > 4000)
       {
 	system(@command) == 0
 	  or die "edb_ed call failed: $?";
