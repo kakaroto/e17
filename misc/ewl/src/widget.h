@@ -142,6 +142,7 @@ int             *ewl_widget_get_padding(EwlWidget *widget);
 void             ewl_widget_set_padding(EwlWidget *widget,
                                         int *left,  int *top,
                                         int *right, int *bottom);
+int             *ewl_widget_get_full_padding(EwlWidget *widget);
 
 /* widget evas routines */
 Evas             ewl_widget_get_evas(EwlWidget *widget);

@@ -697,7 +697,6 @@ void   ewl_widget_render_onto_parent(EwlWidget *w)
 
 int             *ewl_widget_get_padding(EwlWidget *w)
 {
-	EwlWidget *tw = w;
 	int    i=0, *pad = NULL;
 	FUNC_BGN("ewl_widget_get_padding");
 	if (!w)	{
@@ -708,13 +707,38 @@ int             *ewl_widget_get_padding(EwlWidget *w)
 			ewl_debug("ewl_widget_get_padding", EWL_NULL_ERROR, "pad");
 		} else {
 			for (i=0; i<4; i++)
-				pad[i] = 0;
-			for (tw=w; tw; tw=tw->parent)
-				for (i=0; i<4; i++)
-					pad[i] += tw->padding[i];
+				pad[i] = w->padding[i];
 		}
 	}
-	FUNC_END("ewl_widget_set_padding");
+	FUNC_END("ewl_widget_get_padding");
+	return pad;
+}
+
+int             *ewl_widget_get_full_padding(EwlWidget *w)
+{
+	EwlWidget *tw = w;
+	int    i=0, *pad = NULL, cp[4];
+	FUNC_BGN("ewl_widget_get_full_padding");
+	if (!w)	{
+		ewl_debug("ewl_widget_get_full_padding",
+		          EWL_NULL_WIDGET_ERROR, "w");
+	} else {
+		pad = ewl_widget_get_padding(w);
+		if (!pad)	{
+			ewl_debug("ewl_widget_get_full_padding",
+			          EWL_NULL_ERROR, "pad");
+		} else {
+			for (tw=w->parent; tw; tw=tw->parent)	{
+				ewl_container_get_child_padding(tw,
+				                                &cp[0], &cp[1],
+				                                &cp[2], &cp[3]);
+				for (i=0; i<4; i++)	{
+					pad[i] += tw->padding[i]+cp[i];
+				}
+			}
+		}
+	}
+	FUNC_END("ewl_widget_get_full_padding");
 	return pad;
 }
 

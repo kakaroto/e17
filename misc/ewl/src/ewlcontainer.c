@@ -460,16 +460,16 @@ EwlBool      _cb_ewl_container_resize_children(EwlLL *node, EwlData *data)
 	EwlWidget    *tw        = NULL;
 	EwlContainer *container = (EwlContainer*) widget->parent;
 	EwlRect      *rect      = NULL;
-	int           x, y, w, h;
+	int           x, y, w, h, *fp;
 	
 	if (ewl_widget_get_flag(widget, VISIBLE) /*&&
 	    ewl_widget_get_flag(widget, CAN_RESIZE)*/) {
 		
 		/* x and y are WRONG -- htey need to be built recursively
 		   from the parent tree -- this will fixe the offset problem */
-
-		x = container->child_padding[EWL_PADDING_LEFT];
-		y = container->child_padding[EWL_PADDING_TOP];
+		fp = ewl_widget_get_full_padding(widget);
+		x = fp[0];
+		y = fp[1];
 		w = widget->parent->layout->rect->w      -
 		    container->child_padding[EWL_PADDING_LEFT] -
 		    container->child_padding[EWL_PADDING_RIGHT];
@@ -500,7 +500,7 @@ EwlBool      _cb_ewl_container_resize_children(EwlLL *node, EwlData *data)
 			          ewl_widget_get_background(widget), w, h);
 			evas_set_image_fill(ewl_widget_get_evas(widget),
 			                    ewl_widget_get_background(widget),
-			                    x, y, w, h);
+			                    0, 0, w, h);
 		}
 	} else {
 		if (ewl_debug_is_active())

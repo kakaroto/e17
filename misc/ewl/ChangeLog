@@ -1081,3 +1081,13 @@ addition to child padding. is this the rigth thing to do?  This is
 broken atm -- it needs to get parent's child_padding as well.  Anyways,
 you can see  apretty button now. :)
 
+-----
+20000911-1626-PDT, pabs
+
+- added ewl_widget_get_full_padding(), and changed ewl_widget_get_padding()
+to just return it's own padding again. 
+- changed EwlContainer resize callbacks to use full_padding() func. 
+- button should render correctly now -- the code is a bit messy still,
+but it appears to work as advertised now. :)
+
+
