@@ -50,8 +50,8 @@ HandleDrawQueue()
 	break;
      }
 
-   p_queue = queue_up;
-   queue_up = 0;
+   p_queue = Mode.queue_up;
+   Mode.queue_up = 0;
    num = 0;
    /* find all DRAW queue entries most recent first and add them to the */
    /* end of the draw list array if there are no previous entries for that */
@@ -254,7 +254,7 @@ HandleDrawQueue()
 	Efree(lst);
      }
 
-   queue_up = p_queue;
+   Mode.queue_up = p_queue;
    EDBUG_RETURN_;
 }
 
@@ -1382,8 +1382,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      }
    pw = w;
    ph = h;
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    switch (md)
      {
      case 0:
@@ -1773,7 +1773,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      }
 
  done:
-   queue_up = pq;
+   Mode.queue_up = pq;
    EDBUG_RETURN_;
 }
 
@@ -1816,7 +1816,7 @@ PropagateShapes(Window win)
    XWindowAttributes   att;
 
    EDBUG(6, "PropagateShapes");
-   if (queue_up)
+   if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 

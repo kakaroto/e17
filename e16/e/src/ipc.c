@@ -1425,12 +1425,12 @@ IPC_TextClass(const char *params, Client * c)
 		       else if (!strcmp(param3, "disabled"))
 			  state = STATE_DISABLED;
 		       txt = atword(params, 7);
-		       pq = queue_up;
-		       queue_up = 0;
+		       pq = Mode.queue_up;
+		       Mode.queue_up = 0;
 		       if (txt)
 			  TextDraw(t, win, 0, 0, state, txt, x, y, 99999, 99999,
 				   17, 0);
-		       queue_up = pq;
+		       Mode.queue_up = pq;
 		    }
 	       }
 	     else if (!strcmp(param2, "query_size"))
@@ -1764,10 +1764,10 @@ IPC_ImageClass(const char *params, Client * c)
 					    0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
-		       pq = queue_up;
-		       queue_up = 0;
+		       pq = Mode.queue_up;
+		       Mode.queue_up = 0;
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
-		       queue_up = pq;
+		       Mode.queue_up = pq;
 		    }
 	       }
 	     else if (!strcmp(param2, "apply_copy"))
@@ -1805,11 +1805,11 @@ IPC_ImageClass(const char *params, Client * c)
 			    w = (int)strtol(atword(params, 5), (char **)NULL,
 					    0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
-			    pq = queue_up;
-			    queue_up = 0;
+			    pq = Mode.queue_up;
+			    Mode.queue_up = 0;
 			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmm,
 					    1);
-			    queue_up = pq;
+			    Mode.queue_up = pq;
 			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x",
 				      (unsigned)pmm.pmap, (unsigned)pmm.mask);
 /*			    FreePmapMask(&pmm);		??? */

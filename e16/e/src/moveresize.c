@@ -271,7 +271,7 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
 	FX_Pause();
 	GrabX();
      }
-   queue_up = 0;
+   Mode.queue_up = 0;
    SoundPlay("SOUND_RESIZE_START");
    UnGrabTheButtons();
    GrabConfineThePointer(root.win);
@@ -347,7 +347,7 @@ ActionResizeEnd(EWin * ewin)
 	ForceUpdatePagersForDesktop(desks.current);
 	EDBUG_RETURN(0);
      }
-   queue_up = DRAW_QUEUE_ENABLE;
+   Mode.queue_up = DRAW_QUEUE_ENABLE;
    Mode.mode = MODE_NONE;
    Mode.firstlast = 2;
    DrawEwinShape(ewin, Conf.resizemode, ewin->x, ewin->y, ewin->client.w,

@@ -752,8 +752,8 @@ MenuRealize(Menu * m)
    r = 0;
    mmw = 0;
    mmh = 0;
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
 
    for (i = 0; i < m->num; i++)
      {
@@ -826,7 +826,7 @@ MenuRealize(Menu * m)
      }
    EResizeWindow(disp, m->win, mmw, mmh);
 
-   queue_up = pq;
+   Mode.queue_up = pq;
    EDBUG_RETURN_;
 }
 
@@ -866,8 +866,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    PmapMask           *mi_pmm;
 
    EDBUG(5, "MenuDrawItem");
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
    if (Conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
@@ -964,7 +964,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    if ((shape) && (m->style->use_item_bg))
       PropagateShapes(m->win);
 
-   queue_up = pq;
+   Mode.queue_up = pq;
    EDBUG_RETURN_;
 }
 

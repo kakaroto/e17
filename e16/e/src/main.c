@@ -275,9 +275,9 @@ main(int argc, char **argv)
    if (Conf.pagers.enable)
      {
 	Conf.pagers.enable = 0;
-	queue_up = 0;
+	Mode.queue_up = 0;
 	EnableAllPagers();
-	queue_up = DRAW_QUEUE_ENABLE;
+	Mode.queue_up = DRAW_QUEUE_ENABLE;
      }
 
    /* Kill the E process owning the "init window" */
@@ -289,7 +289,7 @@ main(int argc, char **argv)
 
    /* sync just to make sure */
    XSync(disp, False);
-   queue_up = DRAW_QUEUE_ENABLE;
+   Mode.queue_up = DRAW_QUEUE_ENABLE;
 
    /* hello!  we don't have a resizemode of 5! */
    if (Conf.resizemode == 5)

@@ -93,13 +93,13 @@ SetProgressbar(Progressbar * p, int progress)
    if (w > p->w)
       w = p->w;
    Esnprintf(s, sizeof(s), "%i%%", p->value);
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    TclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
 	       p->tnc, s);
    IclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0);
    EResizeWindow(disp, p->p_win, w, p->h);
-   queue_up = pq;
+   Mode.queue_up = pq;
    XFlush(disp);
 
    EDBUG_RETURN_;
@@ -117,8 +117,8 @@ ShowProgressbar(Progressbar * p)
       w = 1;
    if (w > p->w)
       w = p->w;
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    IclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0);
    IclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0);
    IclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0);
@@ -128,7 +128,7 @@ ShowProgressbar(Progressbar * p)
    XSync(disp, False);
    TclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
 	       p->tc, p->name);
-   queue_up = pq;
+   Mode.queue_up = pq;
    EDBUG_RETURN_;
 }
 

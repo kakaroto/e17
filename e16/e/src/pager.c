@@ -212,12 +212,12 @@ PagerCreate(void)
    p->ewin = NULL;
    p->border_name = NULL;
    p->sel_win = ECreateWindow(p->win, 0, 0, p->w / ax, p->h / ay, 0);
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (ic)
       IclassApply(ic, p->sel_win, p->w / ax, p->h / ay, 0, 0, STATE_NORMAL, 0);
-   queue_up = pq;
+   Mode.queue_up = pq;
    return p;
 }
 
@@ -264,8 +264,8 @@ PagerEwinMoveResize(EWin * ewin, int resize)
 	p->ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
 	p->ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
      }
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (ic)
      {
@@ -275,7 +275,7 @@ PagerEwinMoveResize(EWin * ewin, int resize)
 			  p->dh);
 	IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0);
      }
-   queue_up = pq;
+   Mode.queue_up = pq;
 
    lst = EwinListGetForDesktop(p->desktop, &num);
    for (i = 0; i < num; i++)
@@ -335,8 +335,8 @@ PagerShow(Pager * p)
    xch->res_class = (char *)"Enlightenment_Pager";
    XSetClassHint(disp, p->win, xch);
    XFree(xch);
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    MatchToSnapInfoPager(p);
    ewin = AddInternalToFamily(p->win, (p->border_name) ? p->border_name :
 			      "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
@@ -393,7 +393,7 @@ PagerShow(Pager * p)
 	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
      }
 
-   queue_up = pq;
+   Mode.queue_up = pq;
 }
 
 void
@@ -602,7 +602,7 @@ PagerRedraw(Pager * p, char newbg)
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
-   if (queue_up)
+   if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 
@@ -771,7 +771,7 @@ PagerForceUpdate(Pager * p)
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
-   if (queue_up)
+   if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 
@@ -1124,7 +1124,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
    if (Mode.cur_menu_depth)	/* Don't show HiWin when menu is up */
       return;
 
-   pq = queue_up;
+   pq = Mode.queue_up;
 
    p->hi_win_w = 2 * w;
    p->hi_win_h = 2 * h;
@@ -1209,7 +1209,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
      {
 	int                 xx, yy, ww, hh, i;
 
-	queue_up = 0;
+	Mode.queue_up = 0;
 	if (w > h)
 	  {
 	     for (i = w; i < (w * 2); i++)
@@ -1336,7 +1336,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
    p->hi_ewin = ewin;
 
  done:
-   queue_up = pq;
+   Mode.queue_up = pq;
 }
 
 static void

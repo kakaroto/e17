@@ -51,7 +51,6 @@ Window              init_win2 = 0;
 Window              init_win_ext = 0;
 char                themepath[FILEPATH_LEN_MAX];
 
-char                queue_up;
 char                no_overwrite = 0;
 char                clickmenu = 0;
 int                 child_count = 0;

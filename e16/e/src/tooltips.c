@@ -125,8 +125,8 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    if (!tt)
       EDBUG_RETURN_;
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
 
    /* if we get an actionclass, look for tooltip action texts */
    if (ac)
@@ -617,7 +617,7 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	  }
      }
 
-   queue_up = pq;
+   Mode.queue_up = pq;
    tt->visible = 1;
    if (heights)
       Efree(heights);

@@ -97,11 +97,11 @@ SetCoords(EWin * ewin)
       EMapWindow(disp, c_win);
    XRaiseWindow(disp, c_win);
    EMoveResizeWindow(disp, c_win, cx, cy, cw, ch);
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    IclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0);
    TclassApply(ic, c_win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
-   queue_up = pq;
+   Mode.queue_up = pq;
    XFlush(disp);
    coords_visible = 1;
 }

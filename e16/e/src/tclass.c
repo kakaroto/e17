@@ -197,7 +197,7 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if ((!iclass) || (!tclass) || (!win) || (w < 1) || (h < 1))
       EDBUG_RETURN_;
 
-   if (queue_up)
+   if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 

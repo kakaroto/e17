@@ -2619,13 +2619,13 @@ doBackgroundSet(EWin * edummy, const void *params)
 	DesktopAccounting();
 	desks.desk[desk].viewable = view;
 	BGSettingsGoTo(bg);
-	pq = queue_up;
-	queue_up = 0;
+	pq = Mode.queue_up;
+	Mode.queue_up = 0;
 	SetDesktopBg(desk, bg);
 	RefreshDesktop(desk);
 	RedrawPagersForDesktop(desk, 2);
 	ForceUpdatePagersForDesktop(desk);
-	queue_up = pq;
+	Mode.queue_up = pq;
      }
    autosave();
 

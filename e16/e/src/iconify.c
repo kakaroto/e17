@@ -584,8 +584,8 @@ IconboxShow(Iconbox * ib)
    XTextProperty       xtp;
    char                pq;
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    xtp.encoding = XA_STRING;
    xtp.format = 8;
    xtp.value = (unsigned char *)("Iconbox");
@@ -626,7 +626,7 @@ IconboxShow(Iconbox * ib)
 
 	ShowEwin(ewin);
      }
-   queue_up = pq;
+   Mode.queue_up = pq;
 }
 
 void
@@ -2058,8 +2058,8 @@ IconboxRedraw(Iconbox * ib)
    if (was_shaded)
       ShadeEwin(ib->ewin);
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
 
    IB_CalcMax(ib);
    IB_FixPos(ib);
@@ -2209,7 +2209,7 @@ IconboxRedraw(Iconbox * ib)
    ICCCM_GetShapeInfo(ib->ewin);
    PropagateShapes(ib->ewin->win);
 
-   queue_up = pq;
+   Mode.queue_up = pq;
 }
 
 static void

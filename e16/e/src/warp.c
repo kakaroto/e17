@@ -185,8 +185,8 @@ WarpFocusShowTitle(EWin * ewin)
    if (!warpFocusTitleWindow)
       warpFocusTitleWindow = ECreateWindow(root.win, 0, 0, 1, 1, 1);
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    XRaiseWindow(disp, warpFocusTitleWindow);
 
    if (!warpFocusTitleShowing)
@@ -263,7 +263,7 @@ WarpFocusShowTitle(EWin * ewin)
      }
 
    PropagateShapes(warpFocusTitleWindow);
-   queue_up = pq;
+   Mode.queue_up = pq;
    XFlush(disp);
    warpFocusTitleShowing = 1;
 }

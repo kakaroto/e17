@@ -1242,6 +1242,8 @@ typedef struct
 EConf;
 
 /* State parameters */
+#define DRAW_QUEUE_ENABLE 1
+
 typedef struct
 {
    struct
@@ -1299,6 +1301,7 @@ typedef struct
    Window              last_bpress;
    int                 last_button;
    Time                last_time;
+   char                queue_up;
 }
 EMode;
 
@@ -2785,8 +2788,6 @@ extern Window       init_win_ext;
 #define FILEPATH_LEN_MAX 4096
 extern char         themepath[FILEPATH_LEN_MAX];
 
-#define DRAW_QUEUE_ENABLE 1
-extern char         queue_up;
 extern char         no_overwrite;
 extern char         clickmenu;
 extern int          child_count;

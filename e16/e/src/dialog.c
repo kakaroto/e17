@@ -680,8 +680,8 @@ ShowDialog(Dialog * d)
    d->h = h;
    EResizeWindow(disp, d->win, w, h);
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
 
    ewin = AddInternalToFamily(d->win, NULL, EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
@@ -713,7 +713,7 @@ ShowDialog(Dialog * d)
 
    XSync(disp, False);
    DialogRedraw(d);
-   queue_up = pq;
+   Mode.queue_up = pq;
 }
 
 void
@@ -1622,7 +1622,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 {
    int                 state;
 
-   if (queue_up)
+   if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 
@@ -1811,10 +1811,10 @@ DialogItemsRealize(Dialog * d)
    if (!d->item)
       return;
    DialogRealizeItem(d, d->item);
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
-   queue_up = pq;
+   Mode.queue_up = pq;
    d->w = d->item->w + d->iclass->padding.left + d->iclass->padding.right;
    d->h = d->item->h + d->iclass->padding.top + d->iclass->padding.bottom;
 }

@@ -563,11 +563,11 @@ AddToFamily(Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->iconified)
      {
-	pq = queue_up;
-	queue_up = 0;
+	pq = Mode.queue_up;
+	Mode.queue_up = 0;
 	DrawEwin(ewin);
 	PropagateShapes(ewin->win);
-	queue_up = pq;
+	Mode.queue_up = pq;
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -596,12 +596,12 @@ AddToFamily(Window win)
 	ewin->client.already_placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
-	pq = queue_up;
-	queue_up = 0;
+	pq = Mode.queue_up;
+	Mode.queue_up = 0;
 	DrawEwin(ewin);
 	ICCCM_Configure(ewin);
 	PropagateShapes(ewin->win);
-	queue_up = pq;
+	Mode.queue_up = pq;
 	MoveEwinToDesktop(ewin, ewin->desktop);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, x, y);
@@ -640,11 +640,11 @@ AddToFamily(Window win)
 	     fx = root.w;
 	     fy = (rand() % (root.h)) - ewin->h;
 	  }
-	pq = queue_up;
-	queue_up = 0;
+	pq = Mode.queue_up;
+	Mode.queue_up = 0;
 	DrawEwin(ewin);
 	PropagateShapes(ewin->win);
-	queue_up = pq;
+	Mode.queue_up = pq;
 	MoveEwinToDesktop(ewin, ewin->desktop);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, fx, fy);
@@ -654,11 +654,11 @@ AddToFamily(Window win)
      }
    else
      {
-	pq = queue_up;
-	queue_up = 0;
+	pq = Mode.queue_up;
+	Mode.queue_up = 0;
 	DrawEwin(ewin);
 	PropagateShapes(ewin->win);
-	queue_up = pq;
+	Mode.queue_up = pq;
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -704,11 +704,11 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 
    ICCCM_Configure(ewin);
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    DrawEwin(ewin);
    PropagateShapes(ewin->win);
-   queue_up = pq;
+   Mode.queue_up = pq;
 
    UngrabX();
 
@@ -1093,10 +1093,10 @@ CalcEwinSizes(EWin * ewin)
 	  {
 	     char                pq;
 
-	     pq = queue_up;
-	     queue_up = 0;
+	     pq = Mode.queue_up;
+	     Mode.queue_up = 0;
 	     PropagateShapes(ewin->win);
-	     queue_up = pq;
+	     Mode.queue_up = pq;
 	  }
 	else
 	   PropagateShapes(ewin->win);
@@ -2365,8 +2365,8 @@ InstantShadeEwin(EWin * ewin, int force)
    if (ewin->shaded && !force)
       EDBUG_RETURN_;
 
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    switch (ewin->border->shadedir)
      {
      case 0:
@@ -2425,7 +2425,7 @@ InstantShadeEwin(EWin * ewin, int force)
 	break;
      }
    PropagateShapes(ewin->win);
-   queue_up = pq;
+   Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    if (Mode.mode == MODE_NONE)
      {
@@ -2447,8 +2447,8 @@ InstantUnShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    if (!ewin->shaded)
       EDBUG_RETURN_;
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    switch (ewin->border->shadedir)
      {
      case 0:
@@ -2503,7 +2503,7 @@ InstantUnShadeEwin(EWin * ewin)
 	break;
      }
    PropagateShapes(ewin->win);
-   queue_up = pq;
+   Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    if (Mode.mode == MODE_NONE)
      {
@@ -2535,8 +2535,8 @@ ShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       EDBUG_RETURN_;
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    speed = Conf.shadespeed;
    spd = 32;
    min = 2;
@@ -2766,7 +2766,7 @@ ShadeEwin(EWin * ewin)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
-   queue_up = pq;
+   Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    if (Mode.mode == MODE_NONE)
      {
@@ -2792,8 +2792,8 @@ UnShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    if (!ewin->shaded)
       EDBUG_RETURN_;
-   pq = queue_up;
-   queue_up = 0;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
    speed = Conf.shadespeed;
    spd = 32;
    min = 2;
@@ -3032,7 +3032,7 @@ UnShadeEwin(EWin * ewin)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
-   queue_up = pq;
+   Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    if (Mode.mode == MODE_NONE)
      {

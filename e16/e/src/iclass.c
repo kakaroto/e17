@@ -729,7 +729,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if ((w < 0) || (h < 0))
       EDBUG_RETURN_;
 
-   if (queue_up)
+   if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 

@@ -211,11 +211,11 @@ CreateStartupDisplay(char start)
 	EMapRaised(disp, b1);
 	EMapRaised(disp, b2);
 
-	pq = queue_up;
-	queue_up = 0;
+	pq = Mode.queue_up;
+	Mode.queue_up = 0;
 	IclassApply(ic, b1, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
 	IclassApply(ic, b2, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
-	queue_up = pq;
+	Mode.queue_up = pq;
 	SetBackgroundTo(win1, bg, 1);
 	SetBackgroundTo(win2, bg, 1);
 	if (bg->pmap)
