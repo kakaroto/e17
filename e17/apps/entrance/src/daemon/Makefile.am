@@ -6,7 +6,7 @@ sbin_PROGRAMS = entranced
 bin_SCRIPTS = entrance_wrapper
 
 entranced_SOURCES = \
-	spawner.c spawner.h    
+	spawner.c spawner.h md5.c md5.h auth.c
 
 entranced_LDADD = @ecore_libs@ @edb_libs@
 
