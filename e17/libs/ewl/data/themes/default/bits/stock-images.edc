@@ -1,0 +1,5 @@
+image, "stock-ok.png"     LOSSY 98;
+image, "stock-apply.png"  LOSSY 98;
+image, "stock-cancel.png" LOSSY 98;
+image, "stock-open.png"   LOSSY 98;
+image, "stock-save.png"   LOSSY 98;
