@@ -1,7 +1,8 @@
-#include <Esmart/Esmart_Trans.h>
-#include <Ecore_Evas.h>
 #include <Ecore.h>
+#include <Ecore_X.h>
+#include <Ecore_Evas.h>
 #include <Edje.h>
+#include <Esmart/Esmart_Trans.h>
 
 #include <unistd.h>
 #include <string.h>
@@ -37,7 +38,7 @@ typedef struct {
 } Elapse;
 
 /* gui.c */
-void elapse_gui_init(Elapse *elapse);
+void elapse_gui_init(Elapse *elapse, int argc, const char **argv);
 void elapse_cb_window_move(Ecore_Evas *ee);
 
 /* main.c */

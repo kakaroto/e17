@@ -1,22 +1,27 @@
 #include "Elapse.h"
 
-void elapse_gui_init(Elapse *elapse)
+void elapse_gui_init(Elapse *elapse, int argc, const char **argv)
 {
 	double iw, ih;
 	int x, y, w, h;
+	Ecore_X_Window win;
 	debug(DEBUG_INFO, elapse, "elapse_gui_init()");
 
 	debug(DEBUG_INFO, elapse, "ecore_init()");
 	ecore_init();
+	ecore_app_args_set(argc, argv);
 
 	debug(DEBUG_INFO, elapse, "ecore_evas_init()");
 	ecore_evas_init();
 	elapse->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
 	ecore_evas_title_set(elapse->ee, "Elapse");
-	ecore_evas_borderless_set(elapse->ee, 0);
+	ecore_evas_borderless_set(elapse->ee, 1);
+	win = ecore_evas_software_x11_window_get(elapse->ee);
+	ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
+	ecore_x_window_prop_sticky_set(win, 1);
 	
 	elapse->evas = ecore_evas_get(elapse->ee);
-
+	
 	debug(DEBUG_INFO, elapse, "esmart_trans_x11_new()");
 	elapse->smart = esmart_trans_x11_new(elapse->evas);
 	evas_object_move(elapse->smart, 0, 0);
@@ -68,14 +73,3 @@ void elapse_cb_window_move(Ecore_Evas *ee)
 
 	esmart_trans_x11_freshen(o, x, y, w, h);
 }
-
-
-
-
-
-
-
-
-
-
-	

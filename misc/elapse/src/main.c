@@ -1,7 +1,7 @@
 #include "Elapse.h"
 #include "config.h"
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
 	Elapse elapse;
 	int i = 0;
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 		if (!strcmp(argv[i], "-f") ||
 		    !strcmp(argv[i], "--format")) {
 		    	if (!argv[++i]) show_help();
-			elapse.conf.format = malloc(sizeof(argv[i]));
+			elapse.conf.format = malloc(strlen(argv[i]) + 1);
 			strcpy(elapse.conf.format, argv[i]);
 		}
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	elapse_gui_init(&elapse);
+	elapse_gui_init(&elapse, argc, argv);
 
 	debug(DEBUG_INFO, &elapse, "ecore_timer_add()");
 	elapse.timer = ecore_timer_add(1, (void *)elapse_time_set, &elapse);
