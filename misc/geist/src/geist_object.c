@@ -39,8 +39,10 @@ geist_object_init(geist_object * obj)
    obj->click_is_selection = geist_object_int_click_is_selection;
 	obj->update_position_relative = geist_object_int_update_position_relative;
 	obj->update_dimensions_relative = geist_object_int_update_dimensions_relative;
+    obj->update_positioning = geist_object_int_update_positioning;
    obj->get_updates = geist_object_int_get_updates;
    obj->name = estrdup("Untitled Object");
+   obj->alias = TRUE;
 
    D_RETURN_(5);
 }
@@ -659,6 +661,24 @@ geist_object_resize_object(geist_object * obj, int x, int y)
    D_RETURN_(3);
 }
 
+void geist_object_update_positioning(geist_object *obj)
+{
+   D_ENTER(3);
+
+   obj->update_positioning(obj);
+   
+   D_RETURN_(3);
+}
+
+void geist_object_int_update_positioning(geist_object * obj)
+{
+   D_ENTER(3);
+   
+   geist_object_update_sizemode(obj);
+   geist_object_update_alignment(obj);
+   
+   D_RETURN_(3);
+}
 
 void
 geist_object_update_sizemode(geist_object * obj)

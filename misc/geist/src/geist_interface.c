@@ -930,7 +930,7 @@ refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
       obj->sizemode =
          geist_object_get_sizemode_from_string(gtk_entry_get_text
                                                (GTK_ENTRY(widget)));
-      geist_object_update_sizemode(obj);
+      geist_object_update_positioning(obj);
       geist_object_dirty(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
@@ -956,7 +956,7 @@ refresh_alignment_cb(GtkWidget * widget, gpointer * data)
       obj->alignment =
          geist_object_get_alignment_from_string(gtk_entry_get_text
                                                 (GTK_ENTRY(widget)));
-      geist_object_update_alignment(obj);
+      geist_object_update_positioning(obj);
       geist_object_dirty(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));

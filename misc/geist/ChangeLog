@@ -1,3 +1,15 @@
+Wed Aug 23 21:23:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Image resizing :-) It seems to actually work too ;-)
+	* "Zoom" mode maintains the aspect ratio of the image, "Stretch"
+	mode doesn't, and "None" leaves the image as it was.
+	* This actally seems to work right now, but let me know if you
+	come across a buglet :)
+	* Currently hardwired to resize with antialiasing, there will
+	later be options never to AA an image, and eventually we will do
+	the feh-style "no AA during resize, but apply once resize has
+	finished".
+
 Wed Aug 23 17:14:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Upgrade to libxml2. You'd better have it. As far as I know,

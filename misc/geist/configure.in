@@ -23,7 +23,7 @@ dnl         [CFLAGS="$CFLAGS -I$withval/include"
 dnl         LIBS="-L$withval/lib $LIBS"])
 
 dnl AC_CHECK_LIB(Imlib2, imlib_load_image, , [
-dnl echo "ERROR:  You need libImlib2 to build feh.";
+dnl echo "ERROR:  You need libImlib2 to build geist.";
 dnl              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
 
 AC_PATH_GENERIC(imlib2, , [

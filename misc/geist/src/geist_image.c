@@ -33,7 +33,7 @@ geist_image_init(geist_image * img)
 
    D_ENTER(5);
    memset(img, 0, sizeof(geist_image));
-   obj = (geist_object *) img;
+   obj = GEIST_OBJECT(img);
    geist_object_init(obj);
    obj->free = geist_image_free;
    obj->render = geist_image_render;
@@ -41,12 +41,13 @@ geist_image_init(geist_image * img)
    obj->get_rendered_image = geist_image_get_rendered_image;
    obj->duplicate = geist_image_duplicate;
    obj->resize_event = geist_image_resize;
+   obj->update_positioning = geist_image_update_positioning;
    geist_object_set_type(obj, GEIST_TYPE_IMAGE);
    obj->sizemode = SIZEMODE_ZOOM;
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
-	img->opacity = FULL_OPACITY;
-	
+   img->opacity = FULL_OPACITY;
+
 
    D_RETURN_(5);
 }
@@ -199,7 +200,8 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -250,6 +252,7 @@ geist_image_resize(geist_object * obj, int x, int y)
 
    D(5, ("resize to %d,%d\n", x, y));
    geist_object_resize_object(obj, x, y);
+   geist_object_update_positioning(obj);
 
    D_RETURN_(5);
 }
@@ -299,7 +302,8 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean
+geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -386,40 +390,163 @@ geist_image_display_props(geist_object * obj)
 }
 
 void
-geist_image_change_opacity(geist_object * obj, int op)
+geist_image_apply_image_mods(geist_object * obj)
 {
-   geist_image *im = NULL;
+   geist_image *img;
+   int has_resized = 0;
    int w, h, i;
    double ra, ha;
    DATA8 atab[256];
 
    D_ENTER(3);
 
+   img = GEIST_IMAGE(obj);
+
+   w = geist_imlib_image_get_width(img->im);
+   h = geist_imlib_image_get_height(img->im);
+
+   if ((obj->rendered_w != w) || (obj->rendered_h != h)
+       || (img->orig_im
+           && ((geist_imlib_image_get_width(img->orig_im) != obj->rendered_w)
+               || (geist_imlib_image_get_height(img->orig_im) !=
+                   obj->rendered_h)) && img->opacity != FULL_OPACITY))
+   {
+      /* need to resize */
+      if (!img->orig_im)
+      {
+         img->orig_im = geist_imlib_clone_image(img->im);
+      }
+      else
+      {
+         w = geist_imlib_image_get_width(img->orig_im);
+         h = geist_imlib_image_get_height(img->orig_im);
+      }
+      has_resized = 1;
+      geist_imlib_free_image_and_decache(img->im);
+      img->im =
+         geist_imlib_create_cropped_scaled_image(img->orig_im, 0, 0, w, h,
+                                                 obj->rendered_w,
+                                                 obj->rendered_h, obj->alias);
+   }
+
+   if (img->opacity != FULL_OPACITY)
+   {
+      /* need to apply opacity */
+      if (!has_resized)
+      {
+         if (!img->orig_im)
+         {
+            img->orig_im = geist_imlib_clone_image(img->im);
+         }
+         else
+         {
+            geist_imlib_free_image_and_decache(img->im);
+            img->im = geist_imlib_clone_image(img->orig_im);
+         }
+      }
+      w = geist_imlib_image_get_width(img->im);
+      h = geist_imlib_image_get_height(img->im);
+
+      geist_imlib_image_set_has_alpha(img->im, 1);
+
+      for (i = 0; i < 256; i++)
+      {
+         if (
+             (ra =
+              modf((double) (i) * ((double) img->opacity / (double) 100),
+                   &ha)) > 0.5)
+            ha++;
+         atab[i] = (DATA8) (ha);
+      }
+
+      geist_imlib_apply_color_modifier_to_rectangle(img->im, 0, 0, w, h, NULL,
+                                                    NULL, NULL, atab);
+   }
+
+   D_RETURN_(3);
+}
+
+void
+geist_image_change_opacity(geist_object * obj, int op)
+{
+   geist_image *im = NULL;
+
+   D_ENTER(3);
+
    im = GEIST_IMAGE(obj);
-   if (!im->orig_im)
-   {
-      im->orig_im = geist_imlib_clone_image(im->im);
-   }
-   else
-   {
-      geist_imlib_free_image_and_decache(im->im);
-      im->im = geist_imlib_clone_image(im->orig_im);
-   }
-   w = geist_imlib_image_get_width(im->im);
-   h = geist_imlib_image_get_height(im->im);
-
-   geist_imlib_image_set_has_alpha(im->im, 1);
-
-   for (i = 0; i < 256; i++)
-   {
-      if ((ra = modf((double) (i) * ((double) op / (double) 100), &ha)) > 0.5)
-         ha++;
-      atab[i] = (DATA8) (ha);
-   }
-
-   geist_imlib_apply_color_modifier_to_rectangle(im->im, 0, 0, w, h, NULL,
-                                                 NULL, NULL, atab);
    im->opacity = op;
+   geist_image_apply_image_mods(obj);
 
    D_RETURN_(5);
+}
+
+void
+geist_image_update_sizemode(geist_object * obj)
+{
+   double ratio = 0.0;
+   int ww, hh, www, hhh;
+   geist_image *img;
+
+   D_ENTER(3);
+
+   img = GEIST_IMAGE(obj);
+
+   switch (obj->sizemode)
+   {
+     case SIZEMODE_NONE:
+        if (img->orig_im)
+        {
+           ww = geist_imlib_image_get_width(img->orig_im);
+           hh = geist_imlib_image_get_height(img->orig_im);
+        }
+        else
+        {
+           ww = geist_imlib_image_get_width(img->im);
+           hh = geist_imlib_image_get_height(img->im);
+        }
+        obj->rendered_w = ww;
+        obj->rendered_h = hh;
+        break;
+     case SIZEMODE_STRETCH:
+        obj->rendered_w = obj->w;
+        obj->rendered_h = obj->h;
+        break;
+     case SIZEMODE_ZOOM:
+        www = obj->w;
+        hhh = obj->h;
+        if (img->orig_im)
+        {
+           ww = geist_imlib_image_get_width(img->orig_im);
+           hh = geist_imlib_image_get_height(img->orig_im);
+        }
+        else
+        {
+           ww = geist_imlib_image_get_width(img->im);
+           hh = geist_imlib_image_get_height(img->im);
+        }
+        ratio = ((double) ww / hh) / ((double) www / hhh);
+        if (ratio > 1.0)
+           hhh = obj->h / ratio;
+        else if (ratio != 1.0)
+           www = obj->w * ratio;
+        obj->rendered_w = www;
+        obj->rendered_h = hhh;
+        break;
+     default:
+        printf("implement me!\n");
+        break;
+   }
+   D_RETURN_(3);
+}
+
+void
+geist_image_update_positioning(geist_object * obj)
+{
+   D_ENTER(3);
+
+   geist_image_update_sizemode(obj);
+   geist_object_update_alignment(obj);
+
+   geist_image_apply_image_mods(obj);
+   D_RETURN_(3);
 }

@@ -61,8 +61,7 @@ geist_document_load(void)
    D_RETURN_(3);
 }
 
-gboolean
-file_load_ok_cb(GtkWidget * widget, gpointer * data)
+gboolean file_load_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
    geist_document *doc;
@@ -110,15 +109,16 @@ geist_document_save_as(geist_document * doc)
                              "clicked", (GtkSignalFunc) gtk_widget_destroy,
                              GTK_OBJECT(fs));
 
-   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), "test.xml");
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs),
+                                   doc->filename ? doc->
+                                   filename : "test.xml");
    gtk_object_set_data(GTK_OBJECT(fs), "doc", current_doc);
    gtk_widget_show(fs);
 
    D_RETURN_(3);
 }
 
-gboolean
-file_save_ok_cb(GtkWidget * widget, gpointer * data)
+gboolean file_save_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
    geist_document *doc;

@@ -332,8 +332,9 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
         break;
    }
 
+   if(ret)
+   {
    ret->layer = parent;
-   ret->alpha = geist_xml_read_int(cur, "Alpha", 255);
    ret->x = geist_xml_read_int(cur, "X", 0);
    ret->y = geist_xml_read_int(cur, "Y", 0);
    ret->w = geist_xml_read_int(cur, "W", 10);
@@ -373,9 +374,8 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
 
       cur = cur->next;
    }
-   geist_object_update_alignment(ret);
-   geist_object_update_sizemode(ret);
-
+   geist_object_update_positioning(ret);
+   }
    D_RETURN(3, ret);
 }
 
@@ -586,7 +586,6 @@ geist_save_object_xml(geist_object * obj, xmlNodePtr parent, xmlNsPtr ns)
 
    xmlNewTextChild(newobject, ns, "Type", geist_object_get_type_string(obj));
    xmlNewTextChild(newobject, ns, "Name", obj->name);
-   geist_xml_write_int(newobject, "Alpha", obj->alpha);
    geist_xml_write_int(newobject, "X", obj->x);
    geist_xml_write_int(newobject, "Y", obj->y);
    geist_xml_write_int(newobject, "W", obj->w);

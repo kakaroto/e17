@@ -68,7 +68,6 @@ struct __geist_object
    geist_object_type type;
    char *name;
    geist_layer *layer;
-   int alpha;
    int alias;
    /* Object position/size */
    int x;
@@ -113,6 +112,7 @@ struct __geist_object
      Imlib_Updates(*get_updates) (geist_object * obj);
 	void (*update_dimensions_relative) (geist_object *obj, int w, int h);
 	void (*update_position_relative) (geist_object *obj, int x, int y);
+    void (*update_positioning)(geist_object * obj);
 };
 
 /* allocation functions */
@@ -202,6 +202,9 @@ void geist_object_update_position_relative(geist_object *obj, int x, int y);
 void geist_object_update_dimensions_relative(geist_object *obj, int w, int h);
 void geist_object_int_update_position_relative(geist_object *obj, int x, int y);
 void geist_object_int_update_dimensions_relative(geist_object *obj, int w, int h);
+void geist_object_update_sizemode(geist_object * obj);
+void geist_object_int_update_positioning(geist_object * obj);
+void geist_object_update_positioning(geist_object *obj);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)
