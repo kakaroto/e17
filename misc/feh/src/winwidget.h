@@ -57,18 +57,18 @@
 /* Motif window hints */
 typedef struct _mwmhints
 {
-  CARD32 flags;
-  CARD32 functions;
-  CARD32 decorations;
-  INT32 input_mode;
-  CARD32 status;
+   CARD32 flags;
+   CARD32 functions;
+   CARD32 decorations;
+   INT32 input_mode;
+   CARD32 status;
 }
 MWMHints;
 
 
-static void winwidget_unregister (winwidget win);
-static void winwidget_register (winwidget win);
-static winwidget winwidget_allocate (void);
+static void winwidget_unregister(winwidget win);
+static void winwidget_register(winwidget win);
+static winwidget winwidget_allocate(void);
 
-int window_num = 0;		/* For window list */
-winwidget *windows = NULL;	/* List of windows to loop though */
+int window_num = 0;             /* For window list */
+winwidget *windows = NULL;      /* List of windows to loop though */

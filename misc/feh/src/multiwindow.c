@@ -43,19 +43,19 @@ init_multiwindow_mode(void)
 
       if ((w = winwidget_create_from_file(file, s)) != NULL)
       {
-	 w->file = file;
-	 if (opt.draw_filename)
-	    feh_draw_filename(w);
-	 if (!opt.progressive)
-	    winwidget_show(w);
-	 if (opt.reload > 0)
-	    feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+         w->file = file;
+         if (opt.draw_filename)
+            feh_draw_filename(w);
+         if (!opt.progressive)
+            winwidget_show(w);
+         if (opt.reload > 0)
+            feh_add_unique_timer(cb_reload_timer, w, opt.reload);
       }
       else
       {
-	 D(
-	   ("EEEK. Couldn't load image in multiwindow mode. "
-	    "I 'm not sure if this is a problem\n"));
+         D(
+           ("EEEK. Couldn't load image in multiwindow mode. "
+            "I 'm not sure if this is a problem\n"));
       }
       free(s);
    }

@@ -25,77 +25,77 @@
 #include "feh.h"
 
 void
-init_list_mode (void)
+init_list_mode(void)
 {
-  feh_file *file;
-  int j = 0;
+   feh_file *file;
+   int j = 0;
 
-  D_ENTER;
+   D_ENTER;
 
-  if (opt.longlist)
-    printf
-      ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
-  else
-    printf ("NUM\tFORMAT\tWIDTH\tHEIGHT\tSIZE(bytes)\tALPHA\tNAME\n");
+   if (opt.longlist)
+      printf
+         ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
+   else
+      printf("NUM\tFORMAT\tWIDTH\tHEIGHT\tSIZE(bytes)\tALPHA\tNAME\n");
 
-  for (file = filelist; file; file = file->next)
-    {
+   for (file = filelist; file; file = file->next)
+   {
       if (opt.longlist)
-	printf ("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
-		file->info->width, file->info->height, file->info->pixels,
-		file->info->size, file->info->has_alpha ? 'X' : '-',
-		file->filename);
+         printf("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
+                file->info->width, file->info->height, file->info->pixels,
+                file->info->size, file->info->has_alpha ? 'X' : '-',
+                file->filename);
       else
-	printf ("%d\t%s\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
-		file->info->width, file->info->height, file->info->size,
-		file->info->has_alpha ? 'X' : '-', file->name);
-    }
-  exit (0);
+         printf("%d\t%s\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
+                file->info->width, file->info->height, file->info->size,
+                file->info->has_alpha ? 'X' : '-', file->name);
+   }
+   exit(0);
 }
 
 void
-init_loadables_mode (void)
+init_loadables_mode(void)
 {
-  D_ENTER;
-  real_loadables_mode (1);
-  D_RETURN_;
+   D_ENTER;
+   real_loadables_mode(1);
+   D_RETURN_;
 }
 
 void
-init_unloadables_mode (void)
+init_unloadables_mode(void)
 {
-  D_ENTER;
-  real_loadables_mode (0);
-  D_RETURN_;
+   D_ENTER;
+   real_loadables_mode(0);
+   D_RETURN_;
 }
 
 
 void
-real_loadables_mode (int loadable)
+real_loadables_mode(int loadable)
 {
-  feh_file *file;
+   feh_file *file;
 
-  D_ENTER;
-  opt.quiet = 1;
+   D_ENTER;
+   opt.quiet = 1;
 
-  for (file = filelist; file; file = file->next)
-    {
+   for (file = filelist; file; file = file->next)
+   {
       Imlib_Image *im = NULL;
 
-      if (feh_load_image (&im, file))
-	{
-	  /* loaded ok */
-	  if (loadable)
-	    fprintf (stdout, "%s\n", file->filename);
-	  imlib_context_set_image (im);
-	  imlib_free_image_and_decache ();
-	}
+      if (feh_load_image(&im, file))
+      {
+         /* loaded ok */
+         if (loadable)
+            fprintf(stdout, "%s\n", file->filename);
+         imlib_context_set_image(im);
+         imlib_free_image_and_decache();
+      }
       else
-	{
-	  /* Oh dear. */
-	  if (!loadable)
-	    fprintf (stdout, "%s\n", file->filename);
-	}
-    }
-  exit (0);
+      {
+         /* Oh dear. */
+         if (!loadable)
+            fprintf(stdout, "%s\n", file->filename);
+      }
+   }
+   exit(0);
 }
