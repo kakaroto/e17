@@ -1,7 +1,7 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
-void                image_add_from_dnd(char *item);
+// void                image_add_from_dnd(char *item);
 
 void                image_create_list(int argc, char **argv);
 void                image_create_list_dir(char *dir);

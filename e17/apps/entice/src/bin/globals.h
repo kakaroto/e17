@@ -40,6 +40,7 @@ extern Evas_List   *current_image;
 extern Image       *generating_image;
 
 extern Evas        *evas;
+extern Ecore_Evas  *ecore_evas;
 extern int          render_method;
 extern int          max_colors;
 extern int          smoothness;
@@ -47,8 +48,8 @@ extern int          win_w;
 extern int          win_h;
 extern int          win_x;
 extern int          win_y;
-extern Window       main_win;
-extern Window       ewin;
+extern Ecore_X_Window       main_win;
+extern Ecore_X_Window       ewin;
 
 extern int          icon_x;
 extern int          icon_y;

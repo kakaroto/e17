@@ -51,10 +51,10 @@ void                bt_zoom_out_down(void *data, Evas * e, Evas_Object * obj,
 void                bt_zoom_out_up(void *data, Evas * e, Evas_Object * obj,
 				   void *event_info);
 
-void                e_slide_buttons_in(int v, void *data);
-void                e_slide_buttons_out(int v, void *data);
-
+int		    e_slide_buttons(void *data);
 void                show_buttons(void *data, Evas * e, Evas_Object * obj,
+				 void *event_info);
+void                hide_buttons(void *data, Evas * e, Evas_Object * obj,
 				 void *event_info);
 
 #endif /* __BUTTONS_H__ */

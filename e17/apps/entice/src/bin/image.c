@@ -2,6 +2,9 @@
 
 #define DEFAULT_FORMAT "png"
 
+int turntable_rotation = 0;
+
+/* XXX
 void
 image_add_from_dnd(char *item)
 {
@@ -45,11 +48,15 @@ image_add_from_dnd(char *item)
    e_display_current_image();
    return;
 }
-
+*/
 void
 image_create_list(int argc, char **argv)
 {
    int                 i;
+   if (argc==2 && e_file_is_dir(argv[1])) {
+      image_create_list_dir(argv[1]);
+      return;
+   }
 
    for (i = 1; i < argc; i++)
      {
@@ -99,10 +106,12 @@ image_create_list_dir(char *dir)
 
 	/* CS */
 	/* printf("%s\n",dent->d_name); */
-
-	im = e_image_new(dent->d_name);
-	images = evas_list_append(images, im);
-
+	if (e_file_is_dir(dent->d_name)) {
+	    // do nothing for now: FIXME
+	} else {
+	  im = e_image_new(dent->d_name);
+	  images = evas_list_append(images, im);
+	}
 	/* CS */
 	/* printf("%p\n",images); */
      }
@@ -287,8 +296,8 @@ e_flip_current_image(int direction)
    e_turntable_reset();
    e_handle_resize();
    e_fix_icons();
-   e_scroll_list(0, NULL);
-   e_fade_scroller_in(0, (void *)1);
+   e_scroll_list(NULL);
+   e_fade_scroller_in((void *)1);
 
 }
 
@@ -366,8 +375,8 @@ e_rotate_current_image(int rotation)
    e_turntable_reset();
    e_handle_resize();
    e_fix_icons();
-   e_scroll_list(0, NULL);
-   e_fade_scroller_in(0, (void *)1);
+   e_scroll_list(NULL);
+   e_fade_scroller_in((void *)1);
 
 }
 
@@ -445,7 +454,7 @@ e_turntable_reset()
 }
 
 static void
-e_turntable_object_next(Evas_Object *obj, int rotation)
+e_turntable_object_next(Evas_Object *obj)
 {
    int w;
    int h;
@@ -456,7 +465,7 @@ e_turntable_object_next(Evas_Object *obj, int rotation)
 
    e_turntable_object_init(obj);
 
-   if (rotation == 1) {
+   if (turntable_rotation == 1) {
       if(++turntable_image_no >= TURNTABLE_COUNT) {
 	   turntable_image_no = 0;
       }
@@ -467,7 +476,7 @@ e_turntable_object_next(Evas_Object *obj, int rotation)
       }
    }
 
-   /* Get image data from Imblib */
+   /* Get image data from Imlib */
    imlib_context_set_image(turntable_image[turntable_image_no]);
    image_data = imlib_image_get_data_for_reading_only();
    w = imlib_image_get_width();
@@ -481,19 +490,19 @@ e_turntable_object_next(Evas_Object *obj, int rotation)
 
 }
 
-static void
-e_turntable_object(int rotation, Evas_Object *obj)
+int
+e_turntable_object(void *data)
 {
+   Evas_Object* obj;
+   obj = (Evas_Object *) data;
    if (turntable_image_no < 0)
-	 return;
+	 return 0;
 
-   e_turntable_object_next(obj, rotation);
-   ecore_add_event_timer("e_turntable_object()", 
-		   (double)60/(double)33/(double)TURNTABLE_COUNT, 
-		   e_turntable_object, rotation, o_image);
+   e_turntable_object_next(obj);
 
    /* Update Display */
    e_handle_resize();
+   return 1;
 }
 
 static void
@@ -508,8 +517,8 @@ e_turntable_current_image(int rotation)
    if (turntable_image_no < 0 && w * h * 4 > 1048576)
       return;
 
-   e_turntable_object_init(o_image);
-   e_turntable_object(rotation, o_image);
+   turntable_rotation = rotation;
+   ecore_timer_add((double) 60 / (double) 33 / (double) TURNTABLE_COUNT, e_turntable_object, (void *) o_image);
 
 }
 
@@ -703,7 +712,7 @@ e_display_current_image(void)
 	     *txt_info[1] = '\0';
 	     sprintf(title, "Entice (Error Loading): %s",
 		     ((Image *) (current_image->data))->file);
-	     ecore_window_set_title(main_win, title);
+	     ecore_evas_title_set(ecore_evas, title);
 	     evas_object_del(o_image);
 	     o_image = NULL;
 	  }
@@ -715,16 +724,16 @@ e_display_current_image(void)
 	     sprintf(txt_info[0], "File: %s",
 		     ((Image *) (current_image->data))->file);
 	     sprintf(txt_info[1], "Size: %ix%i", w, h);
-	     e_fade_info_in(0, NULL);
+	     e_fade_info_in(NULL);
 
 	     sprintf(title, "Entice: %s",
 		     ((Image *) (current_image->data))->file);
-	     ecore_window_set_title(main_win, title);
+	     ecore_evas_title_set(ecore_evas, title);
 	  }
      }
    else
      {
-	ecore_window_set_title(main_win, "Entice (No Image)");
+	ecore_evas_title_set(ecore_evas, "Entice (No Image)");
           {
 	     evas_object_del(o_image);
 	     o_image = NULL;
@@ -740,8 +749,8 @@ e_display_current_image(void)
      }
    e_handle_resize();
    e_fix_icons();
-   e_scroll_list(0, NULL);
-   e_fade_scroller_in(0, (void *)1);
+   e_scroll_list(NULL);
+   e_fade_scroller_in((void *)1);
 }
 
 void
@@ -755,7 +764,7 @@ next_image(void *data, Evas * e, Evas_Object * obj, void *event_info)
    down_y = ev->output.y;
    down_sx = scroll_x;
    down_sy = scroll_y;
-   e_fade_scroller_in(0, NULL);
+   e_fade_scroller_in(NULL);
 }
 
 void
@@ -769,7 +778,7 @@ next_image_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
      {
 	scroll_x = scroll_sx;
 	scroll_y = scroll_sy;
-	e_fade_scroller_out(0, NULL);
+	e_fade_scroller_out(NULL);
 	return;
      }
    if ((obj == o_showpanel) && (panel_active))

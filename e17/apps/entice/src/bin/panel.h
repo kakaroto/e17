@@ -1,8 +1,9 @@
 #ifndef __PANEL_H__
 #define __PANEL_H__
 
-void                e_slide_panel_in(int v, void *data);
-void                e_slide_panel_out(int v, void *data);
+int		   e_slide_panel(void *data);
+int                e_slide_panel_in(void *data);
+int                e_slide_panel_out(void *data);
 
 void                show_panel(void *data, Evas * e, Evas_Object * obj,
 			       void *event_info);

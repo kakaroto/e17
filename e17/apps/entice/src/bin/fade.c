@@ -1,15 +1,20 @@
 #include "entice.h"
 
-void
-e_fade_info_in(int v, void *data)
+Ecore_Timer * fade_timer;
+
+int
+e_fade_info_in(void *data)
 {
    int                 i, j;
+   static int	       v=0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
-   if (v == 0)
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_info_in, data);
+   }
    val = (get_time() - start) / duration;
    if (val > 1.0)
       val = 1.0;
@@ -40,23 +45,28 @@ e_fade_info_in(int v, void *data)
 	  }
      }
 
-   if (val < 1.0)
-      ecore_add_event_timer("e_fade_info_in()", 0.05, e_fade_info_in, v + 1,
-			    data);
-   else
-      e_fade_info_out(0, NULL);
+   if (val < 1.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
 }
 
-void
-e_fade_info_out(int v, void *data)
+int
+e_fade_info_out(void *data)
 {
    int                 i, j;
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 8.0;
    double              val;
 
-   if (v == 0)
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_info_out, data);
+   }
    val = (get_time() - start) / duration;
    if (val > 1.0)
       val = 1.0;
@@ -91,21 +101,28 @@ e_fade_info_out(int v, void *data)
 	  }
      }
 
-   if (val < 1.0)
-      ecore_add_event_timer("e_fade_info_in()", 0.05, e_fade_info_out, v + 1,
-			    NULL);
+   if (val > 0.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
 }
 
-void
-e_fade_scroller_in(int v, void *data)
+int
+e_fade_scroller_in(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
-   if (v == 0)
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_scroller_in, data);
+   }
    val = (get_time() - start) / duration;
    if (val > 1.0)
       val = 1.0;
@@ -114,66 +131,30 @@ e_fade_scroller_in(int v, void *data)
          evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
    evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
 
-   if (val < 1.0)
-      ecore_add_event_timer("e_fade_logo_in()", 0.05, e_fade_scroller_in, v + 1,
-			    data);
+   if (val < 1.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
    if (data)
-      e_fade_scroller_out(0, NULL);
+      e_fade_scroller_out(NULL);
 }
 
-void
-e_fade_trash_in(int v, void *data)
-{
-   static double       start = 0.0;
-   double              duration = 0.5;
-   double              val;
-
-   if (v == 0)
-      start = get_time();
-   val = (get_time() - start) / duration;
-   if (val > 1.0)
-      val = 1.0;
-
-   evas_object_color_set(o_trash, 255, 255, 255, (val * 175));
-   evas_object_color_set(o_trash_can, 255, 255, 255, (val * 255));
-
-   if (val < 1.0)
-      ecore_add_event_timer("e_fade_trash_in()", 0.02, e_fade_trash_in, v + 1,
-			    NULL);
-}
-
-void
-e_fade_trash_out(int v, void *data)
-{
-   static double       start = 0.0;
-   double              duration = 0.5;
-   double              val;
-
-   if (v == 0)
-      start = get_time();
-   val = (get_time() - start) / duration;
-   if (val > 1.0)
-      val = 1.0;
-   val = 1.0 - val;
-
-   evas_object_color_set(o_trash, 255, 255, 255, (val * 175));
-   evas_object_color_set(o_trash_can, 255, 255, 255, (val * 255));
-
-   if (val > 0.0)
-      ecore_add_event_timer("e_fade_trash_out()", 0.02, e_fade_trash_out, v + 1,
-			    NULL);
-}
-
-void
-e_fade_scroller_out(int v, void *data)
+int
+e_fade_scroller_out(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 2.0;
    double              val;
 
-   if (v == 0)
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_scroller_out, data);
+   }
    val = (get_time() - start) / duration;
    if (val > 1.0)
       val = 1.0;
@@ -182,250 +163,350 @@ e_fade_scroller_out(int v, void *data)
          evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
    evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
 
-   if (val < 1.0)
-      ecore_add_event_timer("e_fade_logo_in()", 0.05, e_fade_scroller_out,
-			    v + 1, NULL);
+   if (val > 0.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
 }
 
-void
-e_fade_logo_in(int v, void *data)
+int
+e_fade_trash_in(void *data)
+{
+   static int	       v = 0;
+   static double       start = 0.0;
+   double              duration = 0.5;
+   double              val;
+
+   if (v == 0) {
+      start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_trash_in, data);
+   }
+   val = (get_time() - start) / duration;
+   if (val > 1.0)
+      val = 1.0;
+
+   evas_object_color_set(o_trash, 255, 255, 255, (val * 175));
+   evas_object_color_set(o_trash_can, 255, 255, 255, (val * 255));
+
+   if (val < 1.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
+}
+
+int
+e_fade_trash_out(void *data)
+{
+   static int	       v = 0;
+   static double       start = 0.0;
+   double              duration = 0.5;
+   double              val;
+
+   if (v == 0) {
+      start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_trash_out, data);
+   }
+   val = (get_time() - start) / duration;
+   if (val > 1.0)
+      val = 1.0;
+   val = 1.0 - val;
+
+   evas_object_color_set(o_trash, 255, 255, 255, (val * 175));
+   evas_object_color_set(o_trash_can, 255, 255, 255, (val * 255));
+
+   if (val > 0.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
+}
+
+int
+e_fade_logo_in(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 1.0;
    double              val;
 
-   if (v == 0)
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_logo_in, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_logo, 255, 255, 255, (val * 255));
 
-   if (val < 1.0)
-      ecore_add_event_timer("e_fade_logo_in()", 0.05, e_fade_logo_in, v + 1,
-			    NULL);
+   if (val < 1.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
 }
 
-void
-e_fade_l_arrow_in(int v, void *data)
+int
+e_fade_l_arrow_in(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_l == 2)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_l_arrow_in, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_l, 255, 255, 255, (int)(val * 255));
 
-   if (val < 1.0)
-     {
-	ecore_add_event_timer("e_fade_l_arrow_in()", 0.05, e_fade_l_arrow_in,
-			      v + 1, NULL);
-	arrow_l = 1;
-     }
-   else
+   if (val < 1.0) {
+      arrow_l = 1;
+      v++;
+      evas_object_show(o_arrow_l);
+      return 1;
+   } else {
       arrow_l = 2;
-   evas_object_show(o_arrow_l);
+      v = 0;
+      evas_object_show(o_arrow_l);
+      return 0;
+   }
 }
 
-void
-e_fade_l_arrow_out(int v, void *data)
+int
+e_fade_l_arrow_out(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_l == 0)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_l_arrow_out, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_l, 255, 255, 255, ((1.0 - val) * 255));
 
    if (val < 1.0)
      {
-	ecore_add_event_timer("e_fade_l_arrow_out()", 0.05, e_fade_l_arrow_out,
-			      v + 1, NULL);
 	arrow_l = 1;
+	v++;
+	return 1;
      }
    else
      {
 	evas_object_hide(o_arrow_l);
 	arrow_l = 0;
+	return 0;
      }
 }
 
-void
-e_fade_r_arrow_in(int v, void *data)
+int
+e_fade_r_arrow_in(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_r == 2)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_r_arrow_in, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_r, 255, 255, 255, (int)(val * 255));
 
-   if (val < 1.0)
-     {
-	ecore_add_event_timer("e_fade_r_arrow_in()", 0.05, e_fade_r_arrow_in,
-			      v + 1, NULL);
-	arrow_r = 1;
-     }
-   else
+   if (val < 1.0) {
+      v++;
+      arrow_r = 1;
+      evas_object_show(o_arrow_r);
+      return 1;
+   } else {
       arrow_r = 2;
-   evas_object_show(o_arrow_r);
+      v = 0;
+      evas_object_show(o_arrow_r);
+      return 0;
+   }
 }
 
-void
-e_fade_r_arrow_out(int v, void *data)
+int
+e_fade_r_arrow_out(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_r == 0)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_r_arrow_out, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_r, 255, 255, 255, ((1.0 - val) * 255));
 
-   if (val < 1.0)
-     {
-	ecore_add_event_timer("e_fade_r_arrow_out()", 0.05, e_fade_r_arrow_out,
-			      v + 1, NULL);
-	arrow_r = 1;
-     }
-   else
-     {
-	evas_object_hide(o_arrow_r);
-	arrow_r = 0;
-     }
+   if (val < 1.0) {
+      v++;
+      arrow_r = 1;
+      return 1;
+   } else {
+      evas_object_hide(o_arrow_r);
+      arrow_r = 0;
+      v = 0;
+      return 0;
+   }
 }
 
-void
-e_fade_t_arrow_in(int v, void *data)
+int
+e_fade_t_arrow_in(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_t == 2)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_t_arrow_in, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_t, 255, 255, 255, (int)(val * 255));
 
-   if (val < 1.0)
-     {
-	ecore_add_event_timer("e_fade_t_arrow_in()", 0.05, e_fade_t_arrow_in,
-			      v + 1, NULL);
-	arrow_t = 1;
-     }
-   else
+   if (val < 1.0) {
+      v++;
+      arrow_t = 1;
+      evas_object_show(o_arrow_t);
+      return 1;
+   } else {
+      v = 0;
       arrow_t = 2;
-   evas_object_show(o_arrow_t);
+      evas_object_show(o_arrow_t);
+      return 0;
+   }
 }
 
-void
-e_fade_t_arrow_out(int v, void *data)
+int
+e_fade_t_arrow_out(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_t == 0)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_t_arrow_out, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_t, 255, 255, 255, ((1.0 - val) * 255));
 
-   if (val < 1.0)
-     {
-	ecore_add_event_timer("e_fade_t_arrow_out()", 0.05, e_fade_t_arrow_out,
-			      v + 1, NULL);
-	arrow_t = 1;
-     }
-   else
-     {
-	evas_object_hide(o_arrow_t);
-	arrow_t = 0;
-     }
+   if (val < 1.0) {
+      v++;
+      arrow_t = 1;
+      return 1;
+   } else {
+      evas_object_hide(o_arrow_t);
+      arrow_t = 0;
+      v = 0;
+      return 0;
+   }
 }
 
-void
-e_fade_b_arrow_in(int v, void *data)
+int
+e_fade_b_arrow_in(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_b == 2)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_b_arrow_in, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_b, 255, 255, 255, (int)(val * 255));
 
-   if (val < 1.0)
-     {
-	ecore_add_event_timer("e_fade_b_arrow_in()", 0.05, e_fade_b_arrow_in,
-			      v + 1, NULL);
-	arrow_b = 1;
-     }
-   else
+   if (val < 1.0) {
+      arrow_b = 1;
+      v++;
+      evas_object_show(o_arrow_b);
+      return 1;
+   } else {
       arrow_b = 2;
-   evas_object_show(o_arrow_b);
+      v = 0;
+      evas_object_show(o_arrow_b);
+      return 0;
+   }
 }
 
-void
-e_fade_b_arrow_out(int v, void *data)
+int
+e_fade_b_arrow_out(void *data)
 {
    /* int i; */
+   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
    double              val;
 
    if (arrow_b == 0)
-      return;
-   if (v == 0)
+      return 0;
+   if (v == 0) {
       start = get_time();
+      fade_timer = ecore_timer_add(0.05, e_fade_b_arrow_out, data);
+   }
    val = (get_time() - start) / duration;
 
    evas_object_color_set(o_arrow_b, 255, 255, 255, ((1.0 - val) * 255));
 
    if (val < 1.0)
      {
-	ecore_add_event_timer("e_fade_b_arrow_out()", 0.05, e_fade_b_arrow_out,
-			      v + 1, NULL);
 	arrow_b = 1;
+	v++;
+	return 1;
      }
    else
      {
 	evas_object_hide(o_arrow_b);
 	arrow_b = 0;
+	return 0;
      }
 }

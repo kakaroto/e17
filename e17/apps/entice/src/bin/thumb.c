@@ -1,4 +1,5 @@
 #include "entice.h"
+#include <limits.h>
 
 void
 e_do_thumb(char *file, char *thumb)
@@ -55,7 +56,11 @@ void
 e_generate_thumb(Image * im)
 {
    static int          initted = 0;
+#ifdef PATH_MAX
+   char		       buf[PATH_MAX];
+#else
    char                buf[4096];
+#endif
 
    if (generating_image)
       return;
@@ -64,7 +69,7 @@ e_generate_thumb(Image * im)
 
    if (!initted)
      {
-	ecore_event_filter_handler_add(ECORE_EVENT_CHILD, e_child);
+	ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, e_child, NULL);
 	initted = 1;
      }
    sprintf(buf, "%s/.entice/thumbs/%s._.png", e_file_home(), im->file);

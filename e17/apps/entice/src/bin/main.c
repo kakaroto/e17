@@ -39,13 +39,14 @@ Evas_List          *current_image = NULL;
 Image              *generating_image = NULL;
 
 Evas               *evas;
+Ecore_Evas	   *ecore_evas;
 int                 render_method = 0;
 int                 max_colors = MAX_EVAS_COLORS;
 int                 smoothness = 1;
 int                 win_w = W, win_h = H;
 int                 win_x = 0, win_y = 0;
-Window              main_win;
-Window              ewin;
+Ecore_X_Window      main_win;
+Ecore_X_Window      ewin;
 
 int                 icon_x = 0;
 int                 icon_y = 0;
@@ -66,24 +67,26 @@ int                 dnd_num_files;
 char              **dnd_files = NULL;
 
 /*****************************************************************************/
-
-Window
-find_current_rep(Window win, Atom atom)
+/*
+Ecore_X_Window
+find_current_rep(Ecore_X_Window win, Ecore_X_Atom atom)
 {
-   Window             *wlist;
+   Ecore_X_Window             *wlist;
    int                 i, n;
+   Ecore_X_Atom	       string;
 
    wlist = ecore_window_get_children(win, &n);
    if (wlist)
      {
+	string = ecore_x_atom_get("XA_STRING");
 	for (i = 0; i < n; i++)
 	  {
 	     void               *data;
 	     int                 size;
-	     Window              w;
+	     Ecore_X_Window      w;
 
 	     w = wlist[i];
-	     data = ecore_window_property_get(w, atom, XA_STRING, &size);
+	     data = ecore_x_window_prop_property_get(w, atom, string, &size);
 	     if (data)
 	       {
 		  free(data);
@@ -92,7 +95,7 @@ find_current_rep(Window win, Atom atom)
 	       }
 	     else
 	       {
-		  Window              ww;
+		  Ecore_X_Window ww;
 
 		  ww = find_current_rep(w, atom);
 		  if (ww)
@@ -110,20 +113,21 @@ find_current_rep(Window win, Atom atom)
 void
 find_current(void)
 {
-   Atom                a_entice;
-   Atom                a_entice_newfiles;
-   Window              win;
+   Ecore_X_Atom        a_entice;
+   Ecore_X_Atom        a_entice_newfiles;
+   Ecore_X_Atom	       string;
+   Ecore_X_Window      win;
    Evas_List          *l;
    int                 size;
    char               *files;
 
    if (!images)
       return;
-   a_entice = ecore_atom_get("_ENTICE_APP_WINDOW");
+   a_entice = ecore_x_atom_get("_ENTICE_APP_WINDOW");
    win = find_current_rep(0, a_entice);
    if (!win)
       return;
-   a_entice_newfiles = ecore_atom_get("_ENTICE_NEWFILES");
+   a_entice_newfiles = ecore_x_atom_get("_ENTICE_NEWFILES");
    size = 0;
    for (l = images; l; l = l->next)
      {
@@ -142,13 +146,19 @@ find_current(void)
 	strcat(files, im->file);
 	strcat(files, "\n");
      }
-   ecore_window_property_set(win, a_entice_newfiles, XA_STRING, 8, files, size);
+   string = ecore_x_atom_get("XA_STRING");
+   ecore_x_window_prop_property_set(win, a_entice_newfiles, string, 8, files, size);
    ecore_sync();
    ecore_sync();
    exit(0);
 }
-
+*/
 /*****************************************************************************/
+
+static int  main_signal_exit(void *data, int ev_type, void *ev)
+{
+   ecore_main_loop_quit();
+}
 
 int
 main(int argc, char **argv)
@@ -203,8 +213,15 @@ main(int argc, char **argv)
      }
    else
       image_create_list(argc, argv);
+   /* initialise Ecore */
+   if (!ecore_init()) {
+     printf("Maximal evil: unable to init Ecore!\n");
+     return -1;
+   }
+   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, main_signal_exit, NULL);
+   
    /* init X */
-   if (!ecore_display_init(NULL))
+   if (!ecore_evas_init())
      {
 	if (getenv("DISPLAY"))
 	  {
@@ -218,15 +235,9 @@ main(int argc, char **argv)
 	printf("Exit.\n");
 	exit(-1);
      }
-   /* setup handlers for system signals */
-   ecore_event_signal_init();
-   /* setup the event filter */
-   ecore_event_filter_init();
-   /* setup the X event internals */
-   ecore_event_x_init();
 
    /* find if another entice is running... if it is .. message it. */
-   find_current();
+   //find_current(); // XXX
 
    /* program does its data setup here */
    setup();
@@ -236,10 +247,11 @@ main(int argc, char **argv)
    icon_x = -100;
    e_fix_icons();
    /* call the animator once to start it up */
-   e_fade_logo_in(0, NULL);
-   e_fade_scroller_in(0, (void *)1);
+   e_fade_logo_in(NULL);
+   e_fade_scroller_in((void *)1);
    /* and now loop forever handling events */
-   ecore_event_loop();
-
+   ecore_main_loop_begin();
+   ecore_evas_shutdown();
+   ecore_shutdown();
    return(0);
 }

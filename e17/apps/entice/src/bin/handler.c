@@ -9,28 +9,28 @@ e_handle_arrows(void)
 
 	evas_object_geometry_get(o_image, &ix, &iy, &iw, &ih);
 	if (ix < 0)
-	   e_fade_l_arrow_in(0, NULL);
+	   e_fade_l_arrow_in(NULL);
 	else
-	   e_fade_l_arrow_out(0, NULL);
+	   e_fade_l_arrow_out(NULL);
 	if (iy < 0)
-	   e_fade_t_arrow_in(0, NULL);
+	   e_fade_t_arrow_in(NULL);
 	else
-	   e_fade_t_arrow_out(0, NULL);
+	   e_fade_t_arrow_out(NULL);
 	if (iw + ix > win_w)
-	   e_fade_r_arrow_in(0, NULL);
+	   e_fade_r_arrow_in(NULL);
 	else
-	   e_fade_r_arrow_out(0, NULL);
+	   e_fade_r_arrow_out(NULL);
 	if (ih + iy > win_h)
-	   e_fade_b_arrow_in(0, NULL);
+	   e_fade_b_arrow_in(NULL);
 	else
-	   e_fade_b_arrow_out(0, NULL);
+	   e_fade_b_arrow_out(NULL);
      }
    else
      {
-	e_fade_l_arrow_out(0, NULL);
-	e_fade_r_arrow_out(0, NULL);
-	e_fade_t_arrow_out(0, NULL);
-	e_fade_b_arrow_out(0, NULL);
+	e_fade_l_arrow_out(NULL);
+	e_fade_r_arrow_out(NULL);
+	e_fade_t_arrow_out(NULL);
+	e_fade_b_arrow_out(NULL);
      }
 }
 
@@ -39,6 +39,7 @@ e_handle_resize(void)
 {
    int                 w, h;
 
+   ecore_evas_geometry_get(ecore_evas, NULL, NULL, &win_w, &win_h);
    evas_object_move(o_bg, 0, 0);
    evas_object_resize(o_bg, win_w, win_h);
    evas_object_layer_set(o_bg, 0);
@@ -46,42 +47,39 @@ e_handle_resize(void)
    evas_object_image_size_get(o_logo, &w, &h);
    evas_object_move(o_logo, (win_w - w) / 2, (win_h - h) / 2);
    evas_object_resize(o_logo, w, h);
-   evas_object_layer_set(o_logo, 100);
+   evas_object_layer_set(o_logo, 80);
 
    evas_object_image_size_get(o_panel, &w, NULL);
-   if (!panel_active)
+   if (panel_active == active_out || panel_active == active_force_out)
       evas_object_move(o_panel, -w, 0);
    evas_object_resize(o_panel, w, win_h);
-   evas_object_layer_set(o_panel, 200);
+   evas_object_layer_set(o_panel, 240);
    evas_object_layer_set(o_panel_arrow_u, 250);
    evas_object_layer_set(o_panel_arrow_d, 250);
 
    evas_object_move(o_showpanel, 0, 0);
    evas_object_resize(o_showpanel, 64, win_h);
-   if (panel_active)
-      evas_object_layer_set(o_showpanel, 180);
-   else
-      evas_object_layer_set(o_showpanel, 1000);
-   {
-      double              px = 0;
-
-      if (buttons_active)
-	 px = win_w - 288;
-      else
-	 px = win_w;
-      evas_object_move(o_bt_prev, px + 0, 0);
-      evas_object_move(o_bt_next, px + 32, 0);
-      evas_object_move(o_bt_zoom_normal, px + 64, 0);
-      evas_object_move(o_bt_zoom_in, px + 96, 0);
-      evas_object_move(o_bt_zoom_out, px + 128, 0);
-      evas_object_move(o_bt_expand, px + 160, 0);
-      evas_object_move(o_bt_full, px + 192, 0);
-      evas_object_move(o_bt_delete, px + 224, 0);
-      evas_object_move(o_bt_close, px + 256, 0);
+   evas_object_layer_set(o_showpanel, 300);
+   evas_object_repeat_events_set(o_showpanel, 1);
+   evas_object_move(o_hidepanel, 128, 0);
+   evas_object_resize(o_hidepanel, win_w - 128, win_h);
+   evas_object_layer_set(o_hidepanel, 400);
+   // make sure buttons aren't left hanging mid-window
+   if (buttons_active == active_out || buttons_active == active_force_out) {
+      evas_object_move(o_bt_prev, win_w + 0, 0);
+      evas_object_move(o_bt_next, win_w + 32, 0);
+      evas_object_move(o_bt_zoom_normal, win_w + 64, 0);
+      evas_object_move(o_bt_zoom_in, win_w + 96, 0);
+      evas_object_move(o_bt_zoom_out, win_w + 128, 0);
+      evas_object_move(o_bt_expand, win_w + 160, 0);
+      evas_object_move(o_bt_full, win_w + 192, 0);
+      evas_object_move(o_bt_delete, win_w + 224, 0);
+      evas_object_move(o_bt_close, win_w + 256, 0);
    }
-   evas_object_move(o_showbuttons, win_w - 256, 0);
-   evas_object_resize(o_showbuttons, 256, 32);
-   evas_object_layer_set(o_showbuttons, 1100);
+   evas_object_move(o_showbuttons, win_w - 288, 0);
+   evas_object_resize(o_showbuttons, 288, 32);
+   evas_object_layer_set(o_showbuttons, 1500);
+   evas_object_repeat_events_set(o_showbuttons, 1);
    evas_object_layer_set(o_bt_close, 1300);
    evas_object_layer_set(o_bt_delete, 1300);
    evas_object_layer_set(o_bt_expand, 1300);
@@ -91,10 +89,6 @@ e_handle_resize(void)
    evas_object_layer_set(o_bt_zoom_in, 1300);
    evas_object_layer_set(o_bt_zoom_normal, 1300);
    evas_object_layer_set(o_bt_zoom_out, 1300);
-
-   evas_object_move(o_hidepanel, 128, 0);
-   evas_object_resize(o_hidepanel, win_w - 128, win_h);
-   evas_object_layer_set(o_hidepanel, 1000);
 
    if (o_image)
      {
@@ -125,6 +119,23 @@ e_handle_resize(void)
 	  }
 	else
 	   sy = 0;
+
+	evas_object_move(o_image,
+			 sx + ((win_w - w) / 2), sy + ((win_h - h) / 2));
+	evas_object_image_fill_set(o_image, 0, 0, w, h);
+	evas_object_resize(o_image, w, h);
+	evas_object_layer_set(o_image, 100);
+
+	scroll_sx = sx;
+	scroll_sy = sy;
+
+	if ((win_w <= w) && (win_h <= h) &&
+	    (!evas_object_image_alpha_get(o_image)))
+	   evas_object_hide(o_bg);
+	else
+	   evas_object_show(o_bg);
+	evas_object_hide(o_logo);
+
 	if (o_trash)
 	  {
 	     int                 dw, dh, r;
@@ -183,27 +194,12 @@ e_handle_resize(void)
 	     evas_object_show(o_mini_image);
 	     evas_object_show(o_mini_select);
 	  }
-	evas_object_move(o_image,
-			 sx + ((win_w - w) / 2), sy + ((win_h - h) / 2));
-	evas_object_image_fill_set(o_image, 0, 0, w, h);
-	evas_object_resize(o_image, w, h);
-	evas_object_layer_set(o_image, 100);
-
-	scroll_sx = sx;
-	scroll_sy = sy;
-
-	if ((win_w <= w) && (win_h <= h) &&
-	    (!evas_object_image_alpha_get(o_image)))
-	   evas_object_hide(o_bg);
-	else
-	   evas_object_show(o_bg);
-	evas_object_hide(o_logo);
      }
    else
      {
 	evas_object_show(o_bg);
 	evas_object_show(o_logo);
-	e_fade_logo_in(0, NULL);
+	e_fade_logo_in(NULL);
      }
    evas_object_image_size_get(o_arrow_l, &w, &h);
    evas_object_move(o_arrow_l, 0, (win_h - h) / 2);
@@ -219,9 +215,9 @@ e_handle_resize(void)
    evas_object_layer_set(o_arrow_b, 230);
 
    e_handle_arrows();
-   e_scroll_list(0, NULL);
+   e_scroll_list(NULL);
 }
-
+/* XXX
 void
 e_handle_dnd(void)
 {
@@ -237,3 +233,4 @@ e_handle_dnd(void)
      }
    return;
 }
+*/

@@ -1,9 +1,15 @@
 #include "entice.h"
 
-void
-e_scroll_list(int v, void *data)
+int scroll_up_counter = 0;
+Ecore_Timer * scroll_up_timer = NULL;
+int scroll_down_counter = 0;
+Ecore_Timer * scroll_down_timer = NULL;
+
+int
+e_scroll_list(void *data)
 {
    int                 dd, d, fp;
+   static int v = 0;
 
    fp = (int)focus_pos - (win_h / 2);
    dd = d = fp + icon_y;
@@ -11,9 +17,12 @@ e_scroll_list(int v, void *data)
       dd = -dd;
    icon_y -= (d / 4);
    e_fix_icons();
-   if (dd > 3)
-      ecore_add_event_timer("e_scroll_list()", 0.05, e_scroll_list, v + 1,
-			    NULL);
+   if (dd > 3) {
+      if (v == 0)
+         ecore_timer_add(0.05, e_scroll_list, data);
+      return 1;
+   }
+   return 0;
 }
 
 void
@@ -66,8 +75,8 @@ e_list_item_drag(void *data, Evas * e, Evas_Object * obj, void *event_info)
 	if (!dragging)
 	  {
 	     dragging = 1;
-	     e_list_item_zoom(-1, data);
-	     e_fade_trash_in(0, (void *)1);
+	     e_list_item_zoom(NULL);
+	     e_fade_trash_in((void *)1);
 	  }
 
 	evas_object_image_size_get(icon_drag, &iw, &ih);
@@ -94,7 +103,7 @@ e_list_item_select(void *data, Evas * e, Evas_Object * obj, void *event_info)
 
    if (dragging)
      {
-	e_fade_trash_out(0, NULL);
+	e_fade_trash_out(NULL);
 	dragging = 0;
      }
 
@@ -122,7 +131,7 @@ e_list_item_select(void *data, Evas * e, Evas_Object * obj, void *event_info)
 	evas_object_geometry_get(o_trash, &x, &y, &w, &h);
 	if ((ev->cur.output.x > (int)x) && (ev->cur.output.y > (int)y))
 	  {
-	     e_list_item_zoom(-1, data);
+	     e_list_item_zoom(NULL);
 	     image_delete(im);
 	     e_display_current_image();
 	  }
@@ -134,33 +143,36 @@ e_list_item_select(void *data, Evas * e, Evas_Object * obj, void *event_info)
      }
 }
 
-void
-e_list_item_zoom(int v, void *data)
+int
+e_list_item_zoom(void *data)
 {
+   static int	       v = 0;
    Evas_List          *l;
    Image              *im;
    static Evas_Object *zo = NULL;
    static double       t_start = 0.0;
    double              t;
 
-   l = data;
-   im = l->data;
-   if (v == -1)
+   if (data == NULL)
      {
 	evas_object_del(zo);
 	zo = NULL;
 	return;
      }
+
+   l = data;
+   im = l->data;
    if (v == 0)
      {
-	t_start = ecore_get_time();
+	t_start = ecore_time_get();
+	ecore_timer_add(0.02, e_list_item_zoom, data);
 	if ((im->thumb) && (im->file))
 	  {
 	     zo = evas_object_image_add(evas);
 	     evas_object_image_file_set(zo, im->thumb, NULL);
 	  }
      }
-   t = (ecore_get_time() - t_start) * 2;
+   t = (ecore_time_get() - t_start) * 2;
    if (t > 1.0)
       t = 1.0;
    if (zo)
@@ -181,9 +193,13 @@ e_list_item_zoom(int v, void *data)
 	evas_object_show(zo);
      }
 
-   if (t < 1.0)
-      ecore_add_event_timer("e_list_item_zoom()", 0.02, e_list_item_zoom, v + 1,
-			    data);
+   if (t < 1.0) {
+      v++;
+      return 1;
+   } else {
+      v = 0;
+      return 0;
+   }
 }
 
 void
@@ -197,10 +213,10 @@ e_list_item_in(void *data, Evas * e, Evas_Object * obj, void *event_info)
 	txt_info[0][0] = '\0';
 	txt_info[1][0] = '\0';
 	sprintf(txt_info[0], "Directory: %s", im->file);
-	e_fade_info_in(0, NULL);
+	e_fade_info_in(NULL);
      }
    else
-      e_list_item_zoom(0, data);
+      e_list_item_zoom(data);
 }
 
 void
@@ -211,64 +227,68 @@ e_list_item_out(void *data, Evas * e, Evas_Object * obj, void *event_info)
 
    if (e_file_is_dir(im->file))
      {
-	e_fade_info_out(0, NULL);
+	e_fade_info_out(NULL);
      }
    else
-      e_list_item_zoom(-1, data);
+      e_list_item_zoom(NULL);
 }
 
-void
-e_list_scroll_up_timer(int v, void *data)
+int
+e_list_scroll_up_timer(void *data)
 {
    int                 vv;
 
-   vv = v / 5;
+   vv = scroll_up_counter++ / 5;
    if (vv > 15)
       vv = 15;
    icon_y -= 1 + vv;
    e_fix_icons();
-   ecore_add_event_timer("e_list_scroll_up_timer()", 0.02,
-			 e_list_scroll_up_timer, v + 1, NULL);
+   return 1;
 }
 
-void
-e_list_scroll_down_timer(int v, void *data)
+int
+e_list_scroll_down_timer(void *data)
 {
    int                 vv;
 
-   vv = v / 5;
+   vv = scroll_down_counter++ / 5;
    if (vv > 15)
       vv = 15;
    icon_y += 1 + vv;
    e_fix_icons();
-   ecore_add_event_timer("e_list_scroll_down_timer()", 0.02,
-			 e_list_scroll_down_timer, v + 1, NULL);
+   return 1;
 }
 
 void
 list_scroll_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   e_list_scroll_down_timer(0, NULL);
+   scroll_down_counter = 0;
+   e_list_scroll_down_timer(NULL);
+   scroll_down_timer = ecore_timer_add(0.02, e_list_scroll_down_timer, NULL);
    evas_object_image_file_set(obj, IM "list_arrow_u_2.png", NULL);
 }
 
 void
 list_scroll_up_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   ecore_del_event_timer("e_list_scroll_down_timer()");
+   ecore_timer_del(scroll_down_timer);
+   scroll_down_timer = NULL;
    evas_object_image_file_set(obj, IM "list_arrow_u_1.png", NULL);
 }
 
 void
 list_scroll_down(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   e_list_scroll_up_timer(0, NULL);
+   scroll_up_counter = 0;
+   e_list_scroll_up_timer(NULL);
+   scroll_up_timer = ecore_timer_add(0.02, e_list_scroll_up_timer, NULL);
    evas_object_image_file_set(obj, IM "list_arrow_d_2.png", NULL);
 }
 
 void
 list_scroll_down_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   ecore_del_event_timer("e_list_scroll_up_timer()");
+   ecore_timer_del(scroll_up_timer);
+   scroll_up_timer = NULL;
    evas_object_image_file_set(obj, IM "list_arrow_d_1.png", NULL);
 }

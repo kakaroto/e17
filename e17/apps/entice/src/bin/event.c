@@ -1,6 +1,6 @@
 #include "entice.h"
 
-void
+int
 e_idle(void *data)
 {
    if (need_thumbs)
@@ -74,110 +74,125 @@ e_idle(void *data)
 	e_fix_icons();
      }
    evas_render(evas);
+   return 1;
 }
 
-void
-e_window_expose(Ecore_Event * ev)
+/* legacy code
+int
+e_window_damage(void* data, int ev_type, Ecore_Event * ev)
 {
-   Ecore_Event_Window_Expose *e;
+   Ecore_X_Event_Window_Damage *e;
 
-   e = (Ecore_Event_Window_Expose *) ev->event;
+   e = (Ecore_X_Event_Window_Damage *) ev;
    if (e->win != ewin)
-      return;
+      return 1;
    evas_damage_rectangle_add(evas, e->x, e->y, e->w, e->h);
+   return 1;
 }
 
-void
-e_mouse_move(Ecore_Event * ev)
+int
+e_mouse_move(void* data, int ev_type, Ecore_Event * ev)
 {
-   Ecore_Event_Mouse_Move *e;
+   Ecore_X_Event_Mouse_Move *e;
 
-   e = (Ecore_Event_Mouse_Move *) ev->event;
+   e = (Ecore_X_Event_Mouse_Move *) ev;
    if (e->win != ewin)
-      return;
+      return 1;
    evas_event_feed_mouse_move(evas, e->x, e->y);
+   return 1;
 }
 
-void
-e_mouse_down(Ecore_Event * ev)
+int
+e_mouse_down(void* data, int ev_type, Ecore_Event * ev)
 {
-   Ecore_Event_Mouse_Down *e;
+   Ecore_X_Event_Mouse_Button_Down *e;
 
-   e = (Ecore_Event_Mouse_Down *) ev->event;
+   e = (Ecore_X_Event_Mouse_Button_Down *) ev;
    if (e->win != ewin)
-      return;
+      return 1;
    evas_event_feed_mouse_move(evas, e->x, e->y);
    evas_event_feed_mouse_down(evas, e->button);
+   return 1;
 }
 
-void
-e_mouse_up(Ecore_Event * ev)
+int
+e_mouse_up(void* data, int ev_type, Ecore_Event * ev)
 {
-   Ecore_Event_Mouse_Up *e;
+   Ecore_X_Event_Mouse_Button_Up *e;
 
-   e = (Ecore_Event_Mouse_Up *) ev->event;
+   e = (Ecore_X_Event_Mouse_Button_Up *) ev;
    if (e->win != ewin)
-      return;
+      return 1;
    evas_event_feed_mouse_move(evas, e->x, e->y);
    evas_event_feed_mouse_up(evas, e->button);
+   return 1;
 }
 
-void
-e_window_configure(Ecore_Event * ev)
+int
+e_window_configure(void* data, int ev_type, Ecore_Event * ev)
 {
-   Ecore_Event_Window_Configure *e;
+   Ecore_X_Event_Window_Configure *e;
+   enum active_state command;
 
-   e = (Ecore_Event_Window_Configure *) ev->event;
+   e = (Ecore_X_Event_Window_Configure *) ev;
    if (e->win == main_win)
      {
 	win_w = e->w;
 	win_h = e->h;
-	if (e->wm_generated)
+	if (e->from_wm)
 	  {
 	     win_x = e->x;
 	     win_y = e->y;
 	  }
-	ecore_window_resize(ewin, win_w, win_h);
+	ecore_evas_resize(ecore_evas, win_w, win_h);
 	evas_output_viewport_set(evas, 0, 0, win_w, win_h);
 	evas_output_size_set(evas, win_w, win_h);
 	e_handle_resize();
-	if (panel_active == active_in)
-	   e_slide_panel_out(0, NULL);
+	if (panel_active == active_in) {
+	   command = active_out;
+	   e_slide_panel(&command);
+	}
 	if (buttons_active == active_in)
-	   e_slide_buttons_out(0, NULL);
+	   command = active_out;
+	   e_slide_buttons(&command);
      }
+   return 1;
+}
+*/
+void
+e_window_resize(Ecore_Evas *ee)
+{
+   e_handle_resize();
 }
 
 void
-e_key_down(Ecore_Event * ev)
+e_key_down(void* data, Evas * unused, Evas_Object *obj, void *event_info)
 {
-   Ecore_Event_Key_Down *e;
+   Evas_Event_Key_Down *e;
 
-   e = ev->event;
-   if (e->win != ewin)
-      return;
+   e = event_info;
 
-   if (!strcmp(e->key, "n"))
+   if (!strcmp(e->keyname, "n"))
      {
 	scale = 1.0;
 	e_handle_resize();
      }
-   else if ((!strcmp(e->symbol, "minus")) ||
-	    (!strcmp(e->key, "o")))
+   else if ((!strcmp(e->keyname, "minus")) ||
+	    (!strcmp(e->keyname, "o")))
      {
 	scale += 0.5;
 	e_handle_resize();
      }
-   else if ((!strcmp(e->symbol, "plus")) ||
-	    (!strcmp(e->key, "equal")) ||
-	    (!strcmp(e->key, "i")))
+   else if ((!strcmp(e->keyname, "plus")) ||
+	    (!strcmp(e->keyname, "equal")) ||
+	    (!strcmp(e->keyname, "i")))
      {
 	scale -= 0.5;
 	if (scale < 0.5)
 	   scale = 0.5;
 	e_handle_resize();
      }
-   else if (!strcmp(e->symbol, "w"))
+   else if (!strcmp(e->keyname, "w"))
      {
 	int                 w, h;
 
@@ -194,134 +209,137 @@ e_key_down(Ecore_Event * ev)
 	     e_handle_resize();
 	  }
      }
-   else if (!strcmp(e->symbol, "f"))
+   else if (!strcmp(e->keyname, "f"))
      {
 	e_toggle_fullscreen();
      }
-   else if (!strcmp(e->symbol, "i"))
+   else if (!strcmp(e->keyname, "i"))
      {
-	e_fade_info_in(0, NULL);
+	e_fade_info_in(NULL);
      }
-   else if (!strcmp(e->symbol, "?"))
+   else if (!strcmp(e->keyname, "?"))
      {
 	/* FIXME: display help */
      }
-   else if (!strcmp(e->symbol, "q"))
+   else if (!strcmp(e->keyname, "q"))
      {
 	exit(0);
      }
-   else if (!strcmp(e->symbol, "r"))
+   else if (!strcmp(e->keyname, "r"))
      {
 	e_rotate_r_current_image();
      }
-   else if (!strcmp(e->symbol, "l"))
+   else if (!strcmp(e->keyname, "l"))
      {
 	e_rotate_l_current_image();
      }
-   else if (!strcmp(e->symbol, "h"))
+   else if (!strcmp(e->keyname, "h"))
      {
 	e_flip_h_current_image();
      }
-   else if (!strcmp(e->symbol, "v"))
+   else if (!strcmp(e->keyname, "v"))
      {
 	e_flip_v_current_image();
      }
-   else if (!strcmp(e->symbol, "p"))
+   else if (!strcmp(e->keyname, "p"))
      {
-	int force = 1;
 	if (panel_active == active_in || panel_active == active_force_in) {
+	   enum active_state command = active_out;
            panel_active = active_in;
-	   e_slide_panel_out(0, NULL);
+	   e_slide_panel(&command);
 	}
 	else {
-	   e_slide_panel_in(0, &force);
+	   enum active_state command = active_in;
+	   e_slide_panel(&command);
 	}
      }
-   else if (!strcmp(e->symbol, "b"))
+   else if (!strcmp(e->keyname, "b"))
      {
-	int force = 1;
 	if (buttons_active == active_in || buttons_active == active_force_in) {
+	   enum active_state command = active_out;
 	   buttons_active = active_in;
-	   e_slide_buttons_out(0, NULL);
+	   e_slide_buttons(&command);
 	}
 	else {
-	   e_slide_buttons_in(0, &force);
+	   enum active_state command = active_in;
+	   e_slide_buttons(&command);
 	}
      }
-   else if (!strcmp(e->symbol, "d"))
+   else if (!strcmp(e->keyname, "d"))
      {
 	e_delete_current_image();
      }
-   else if (!strcmp(e->symbol, "s"))
+   else if (!strcmp(e->keyname, "s"))
      {
 	e_save_current_image();
      }
-   else if (!strcmp(e->symbol, "t"))
+   else if (!strcmp(e->keyname, "t"))
      {
         e_turntable_l_current_image();
      }
-   else if (!strcmp(e->symbol, "e"))
+   else if (!strcmp(e->keyname, "e"))
      {
         e_size_match();
      }
-   else if (!strcmp(e->symbol, "Escape"))
+   else if (!strcmp(e->keyname, "Escape"))
      {
 	exit(0);
      }
-   else if (!strcmp(e->symbol, "Return"))
+   else if (!strcmp(e->keyname, "Return"))
      {
 	e_display_current_image();
      }
-   else if (!strcmp(e->symbol, "space"))
+   else if (!strcmp(e->keyname, "space"))
      {
 	e_load_next_image();
      }
-   else if (!strcmp(e->symbol, "BackSpace"))
+   else if (!strcmp(e->keyname, "BackSpace"))
      {
 	e_load_prev_image();
      }
-   else if (!strcmp(e->symbol, "Up"))
+   else if (!strcmp(e->keyname, "Up"))
      {
 	icon_y += 8;
 	e_fix_icons();
      }
-   else if (!strcmp(e->symbol, "Down"))
+   else if (!strcmp(e->keyname, "Down"))
      {
 	icon_y -= 8;
 	e_fix_icons();
      }
+   return;
 }
 
 void
-e_key_up(Ecore_Event * ev)
+e_key_up(void* data, Evas *unused, Evas_Object *obj, void* event_info)
 {
-   Ecore_Event_Key_Down *e;
+   Evas_Event_Key_Up *e;
 
-   e = ev->event;
-   if (e->win != ewin)
-      return;
-   if (!strcmp(e->symbol, "t"))
+   e = event_info;
+
+   if (!strcmp(e->keyname, "t"))
      {
         e_turntable_r_current_image();
      }
+   return;
 }
-
-void
-e_property(Ecore_Event * ev)
+/*
+int
+e_property(void* data, int ev_type, Ecore_Event * ev)
 {
-   Ecore_Event_Window_Property *e;
-   Atom                a_entice_newfiles = 0;
+   Ecore_X_Event_Window_Property *e;
+   Ecore_X_Atom        a_entice_newfiles = 0, xa_string;
    char               *files;
    int                 size;
 
-   e = (Ecore_Event_Window_Property *) ev->event;
+   e = (Ecore_X_Event_Window_Property *) ev;
    if (e->win != main_win)
-      return;
-   if (!a_entice_newfiles)
-      a_entice_newfiles = ecore_atom_get("_ENTICE_NEWFILES");
+      return 1;
+   a_entice_newfiles = ecore_atom_get("_ENTICE_NEWFILES");
    if (e->atom != a_entice_newfiles)
-      return;
-   files = ecore_window_property_get(e->win, e->atom, XA_STRING, &size);
+      return 1;
+   xa_string = ecore_x_atom_get("XA_STRING");
+   files = ecore_x_window_prop_property_get(e->win, e->atom, xa_string, &size);
    if (files)
      {
 	char                file[4096], *p, *pp;
@@ -388,4 +406,6 @@ e_property(Ecore_Event * ev)
 	e_fix_icons();
 	e_display_current_image();
      }
+   return 1;
 }
+*/

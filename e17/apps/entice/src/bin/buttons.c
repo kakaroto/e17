@@ -175,31 +175,36 @@ bt_zoom_out_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
    e_handle_resize();
 }
 
-void
-e_slide_buttons_in(int v, void *data)
+int
+e_slide_buttons(void * data)
 {
-   /* int i; */
-   static double       start = 0.0;
-   double              duration = 0.5;
-   double              val;
-   double              px;
-   int                *force;
+   static double start;
+   double duration = 1.0; // soon-to-be-configurable time taken to slide
+   double val = 0.0;
+   double delay = 0.05; // soon-to-be-configurable time between frames
+   static enum active_state action;
+   static Ecore_Timer *timer = NULL;
+   int px;
 
-   force = (int *)data;
 
-   if(buttons_active == active_force_out && !(force && *force))
-      return;
-
-   if(force && *force)
-      buttons_active = active_force_in;
+   if (data) { // not called by timer
+      if (!timer) { // we are starting afresh
+         start = get_time();
+      } else { // there is a slide already going on
+	 start = 2*get_time() - duration - start;
+	 ecore_timer_del(timer);
+      }
+      timer = ecore_timer_add(delay, e_slide_buttons, NULL);
+      action = *(enum active_state *)data;
+      buttons_active = action;
+      return 1;
+   } else
+      val = (get_time() - start) / duration;
+   if (val > 1.0) val = 1.0;
+   if (action == active_in || action == active_force_in)
+      px = win_w - (288 * sin(val * 0.5 * 3.141592654));
    else
-      buttons_active = active_in;
-
-   if (v == 0)
-      start = get_time();
-   val = (get_time() - start) / duration;
-
-   px = win_w - 288 - ((288 * sin(val * 0.5 * 3.141592654)) - 288);
+      px = win_w - (288 * sin((1.0 - val) * 0.5 * 3.141592654));
 
    evas_object_move(o_bt_prev, px + 0, 0);
    evas_object_move(o_bt_next, px + 32, 0);
@@ -211,55 +216,23 @@ e_slide_buttons_in(int v, void *data)
    evas_object_move(o_bt_delete, px + 224, 0);
    evas_object_move(o_bt_close, px + 256, 0);
 
-   if (val < 1.0)
-      ecore_add_event_timer("e_slide_buttons()", 0.05, e_slide_buttons_in,
-			    v + 1, force);
-}
-
-void
-e_slide_buttons_out(int v, void *data)
-{
-   /* int i; */
-   static double       start = 0.0;
-   double              duration = 0.5;
-   double              val;
-   double              px;
-   int                 *force;
-
-   force = (int *)data;
-
-   if(buttons_active == active_force_in && !(force && *force))
-      return;
-
-   if (v == 0)
-      start = get_time();
-   val = (get_time() - start) / duration;
-
-   px = win_w - 288 - ((288 * sin((1.0 - val) * 0.5 * 3.141592654)) - 288);
-
-   evas_object_move(o_bt_prev, px + 0, 0);
-   evas_object_move(o_bt_next, px + 32, 0);
-   evas_object_move(o_bt_zoom_normal, px + 64, 0);
-   evas_object_move(o_bt_zoom_in, px + 96, 0);
-   evas_object_move(o_bt_zoom_out, px + 128, 0);
-   evas_object_move(o_bt_expand, px + 160, 0);
-   evas_object_move(o_bt_full, px + 192, 0);
-   evas_object_move(o_bt_delete, px + 224, 0);
-   evas_object_move(o_bt_close, px + 256, 0);
-
-   if (val < 1.0)
-      ecore_add_event_timer("e_slide_buttons()", 0.05, e_slide_buttons_out,
-			    v + 1, force);
-   else
-      if(force && *force)
-         buttons_active = active_force_out;
-      else
-         buttons_active = active_out;
+   if (val < 0.99) // keep going
+      return 1;
+   else { // stick a fork in us, we're done
+      timer = NULL;
+      return 0;
+   }
 }
 
 void
 show_buttons(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   if (buttons_active == active_out || buttons_active == active_force_out)
-      e_slide_buttons_in(0, NULL);
+   enum active_state command = active_in;
+   e_slide_buttons(&command);
+}
+
+void hide_buttons(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   enum active_state command = active_out;
+   e_slide_buttons(&command);
 }

@@ -1,1 +1,17 @@
-Entice 0.5.0
+Entice 0.6.0
+
+Entice is in the process of being ported to Ecore2. It will currently compile,
+and run with the same functionality as the old entice, minus a few features:
+
+* DND support is not in Ecore2 yet
+* window properties have not been sorted out
+* does not search for existing entice windows on startup
+* BUG: minor drawing problem with panel
+* maybe one or two more I forgot about
+
+However, a few minor bugs have been fixed. On the TODO list at present are:
+* building a file list from a directory rather than having to be passed names on
+  the command line
+
+Any bugs not mentioned here should be raised on Edevel, in #edevelop, or to
+dh286@cam.ac.uk (or to raster@rasterman.com).
