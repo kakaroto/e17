@@ -38,7 +38,8 @@ struct Ewl_Embed
 	Evas           *evas; /**< Evas where drawing takes place. */
 	Ecore_X_Window  evas_window; /**< The window holding the evas. */
 
-	Evas_Object *smart; /**< Object to manipulate Ewl_Embed from evas */
+	Evas_Object    *smart; /**< Object to manipulate Ewl_Embed from evas */
+	Ewd_List       *tab_order; /**< Order of widgets to send focus on tab */
 };
 
 Ewl_Widget     *ewl_embed_new(void);
@@ -48,6 +49,9 @@ Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas,
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(Ecore_X_Window win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
+void            ewl_embed_next_tab_order(Ewl_Embed *e);
+void            ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w);
+void            ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w);
 
 /*
  * Internally used callbacks, override at your own risk.

@@ -24,22 +24,25 @@ Ewl_Widget     *ewl_entry_new(char *text)
 /**
  * @param e: the entry widget to initialize
  * @param text: the initial text to display in the widget
- * @return Returns no value.
+ * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize an entry widget to default values
  *
  * Initializes the entry widget @a e to it's default values and callbacks.
  */
-void ewl_entry_init(Ewl_Entry * e, char *text)
+int ewl_entry_init(Ewl_Entry * e, char *text)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
 
 	w = EWL_WIDGET(e);
 
-	ewl_container_init(EWL_CONTAINER(w), "entry", ewl_entry_child_add_cb,
-			ewl_entry_child_resize_cb, NULL);
+	if (!ewl_container_init(EWL_CONTAINER(w), "entry",
+				ewl_entry_child_add_cb,
+				ewl_entry_child_resize_cb, NULL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 			EWL_FLAG_FILL_HFILL);
 	ewl_container_intercept_callback(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
@@ -68,8 +71,9 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 			    NULL);
 
 	ewl_entry_set_editable(e, TRUE);
+	ewl_widget_push_tab_order(EWL_WIDGET(e));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

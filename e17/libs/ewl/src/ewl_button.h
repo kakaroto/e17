@@ -39,7 +39,7 @@ struct Ewl_Button
 };
 
 Ewl_Widget     *ewl_button_new(char *l);
-void            ewl_button_init(Ewl_Button * b, char *label);
+int             ewl_button_init(Ewl_Button * b, char *label);
 void            ewl_button_set_label(Ewl_Button * b, char *l);
 char           *ewl_button_get_label(Ewl_Button *b);
 

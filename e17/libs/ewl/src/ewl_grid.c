@@ -34,16 +34,17 @@ Ewl_Widget     *ewl_grid_new(int cols, int rows)
  * Returns no value. Responsible for setting up default values and
  * callbacks within a grid structure
  */
-void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
+int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
+	DCHECK_PARAM_PTR_RET("g", g, FALSE);
 
 	/*
 	 * Initialize the grids inherited fields
 	 */
-	ewl_container_init(EWL_CONTAINER(g), "vbox", ewl_grid_add_cb,
-			   ewl_grid_auto_resize_cb, NULL);
+	if (!ewl_container_init(EWL_CONTAINER(g), "vbox", ewl_grid_add_cb,
+				ewl_grid_auto_resize_cb, NULL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
 	 * Initialize the lists that keep track of the
@@ -51,12 +52,12 @@ void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	 */
 	g->col_size = NEW(Ewl_Grid_Info, cols);
 	if (!g->col_size)
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	g->row_size = NEW(Ewl_Grid_Info, rows);
 	if (!g->row_size) {
 		FREE(g->col_size);
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	/*
@@ -75,7 +76,7 @@ void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_CONFIGURE,
 			    ewl_grid_configure_cb, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

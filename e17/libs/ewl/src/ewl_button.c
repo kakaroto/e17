@@ -28,29 +28,34 @@ Ewl_Widget     *ewl_button_new(char *label)
  *
  * Initializes a button to default values and callbacks.
  */
-void ewl_button_init(Ewl_Button * b, char *label)
+int ewl_button_init(Ewl_Button * b, char *label)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
 
 	w = EWL_WIDGET(b);
 
-	ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
+	if (!ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_set_appearance(w, "button");
 
 	/*
 	 * Create and setup the label for the button if it's desired.
 	 */
-	if (label) {
+	if (label)
 		b->label_object = ewl_text_new(label);
+
+	if (b->label_object) {
 		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
 					 EWL_FLAG_ALIGN_CENTER);
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
 		ewl_widget_show(b->label_object);
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

@@ -20,18 +20,17 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
 /**
  * @struct Ewl_Filedialog
  * Creates a floating widget with different filedialog components.
- *
  */
 struct Ewl_Filedialog
 {
-	Ewl_Floater     box;        /* the box container */
-	Ewl_Filedialog_Type type;   /* define what type of filedialog */
+	Ewl_Floater     box;        /**< the box container */
+	Ewl_Filedialog_Type type;   /**< define what type of filedialog */
 	
-	Ewl_Widget     *selector;	  /* Ewl_Fileselector */
-	Ewl_Widget     *path_label; /* label to display current path */
-	Ewl_Widget     *entry;      /* entry for manual input or current selected */
+	Ewl_Widget     *selector;   /**< Ewl_Fileselector */
+	Ewl_Widget     *path_label; /**< label to display current path */
+	Ewl_Widget     *entry;      /**< entry for manual input or current selected */
 	
-	void           *dialog;	    /* open or save dialog */
+	void           *dialog;	    /**< open or save dialog */
 };
 
 /**

@@ -26,12 +26,12 @@ Ewl_Widget     *ewl_notebook_new(void)
  *
  * Returns no value. Sets the fields and callbacks of @n to their defaults.
  */
-void ewl_notebook_init(Ewl_Notebook * n)
+int ewl_notebook_init(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
+	DCHECK_PARAM_PTR_RET("n", n, FALSE);
 
 	w = EWL_WIDGET(n);
 
@@ -39,8 +39,10 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * Initialize the container portion of the notebook and set the fill
 	 * policy to fill the area available.
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "tnotebook", ewl_notebook_add_cb,
-			ewl_notebook_resize_cb, ewl_notebook_add_cb);
+	if (!ewl_container_init(EWL_CONTAINER(w), "tnotebook",
+				ewl_notebook_add_cb, ewl_notebook_resize_cb,
+				ewl_notebook_add_cb))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
@@ -54,12 +56,18 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * notebook.
 	 */
 	n->tab_box = ewl_hbox_new();
-	ewl_widget_set_internal(n->tab_box, TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box), EWL_FLAG_FILL_NONE);
-	ewl_object_set_alignment(EWL_OBJECT(n->tab_box), EWL_FLAG_ALIGN_LEFT |
-			EWL_FLAG_ALIGN_TOP);
-	ewl_container_append_child(EWL_CONTAINER(n), n->tab_box);
-	ewl_widget_show(n->tab_box);
+	if (n->tab_box) {
+		ewl_widget_set_internal(n->tab_box, TRUE);
+		ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+					   EWL_FLAG_FILL_NONE);
+		ewl_object_set_alignment(EWL_OBJECT(n->tab_box),
+					 EWL_FLAG_ALIGN_LEFT |
+					 EWL_FLAG_ALIGN_TOP);
+		ewl_container_append_child(EWL_CONTAINER(n), n->tab_box);
+		ewl_widget_show(n->tab_box);
+	}
+	else
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
 	 * Attach the necessary callbacks for the notebook
@@ -67,7 +75,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_notebook_configure_top_cb, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

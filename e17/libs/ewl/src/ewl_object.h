@@ -91,7 +91,7 @@ struct Ewl_Object
 	unsigned int flags; /**< Bitmask indicating fill policy and alignment */
 };
 
-void            ewl_object_init(Ewl_Object * o);
+int             ewl_object_init(Ewl_Object * o);
 void            ewl_object_get_current_geometry(Ewl_Object * o, int *x, int *y,
 						int *w, int *h);
 

@@ -41,7 +41,7 @@ struct Ewl_Entry
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
-void            ewl_entry_init(Ewl_Entry * e, char *text);
+int             ewl_entry_init(Ewl_Entry * e, char *text);
 void            ewl_entry_set_text(Ewl_Entry * e, char *t);
 char           *ewl_entry_get_text(Ewl_Entry * e);
 void            ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit);

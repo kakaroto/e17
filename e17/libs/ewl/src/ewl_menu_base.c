@@ -80,17 +80,19 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
  * Initializes a menu item to default values and adds the
  * image pointed to by the path @a image, and adds the text in @a text.
  */
-void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
+int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DCHECK_PARAM_PTR("item", item);
+	DCHECK_PARAM_PTR_RET("item", item, FALSE);
 
 	/*
 	 * Initialize the inherited container fields.
 	 */
-	ewl_container_init(EWL_CONTAINER(item), "menuitem",
-			ewl_menu_item_add_cb, ewl_menu_item_resize_cb, NULL);
+	if (!ewl_container_init(EWL_CONTAINER(item), "menuitem",
+				ewl_menu_item_add_cb, ewl_menu_item_resize_cb,
+				NULL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
@@ -133,19 +135,25 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
 		ewl_widget_show(item->icon);
 	}
+	else
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
 	 * Create the text object for the menu item.
 	 */
-	if (text) {
+	if (text)
 		item->text = ewl_text_new(text);
+
+	if (item->text) {
 		ewl_container_append_child(EWL_CONTAINER(item), item->text);
 		ewl_object_set_alignment(EWL_OBJECT(item->text),
 				EWL_FLAG_ALIGN_LEFT);
 		ewl_widget_show(item->text);
 	}
+	else
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

@@ -7,27 +7,29 @@
  * @param add: the function to call when children added to container
  * @param remove: the function to call when children removed from container
  * @param rs: the function to call when children of container are resized
- * @return Returns no value.
+ * @return Returns TRUE on success, otherwise FALSE.
  * @brief Initialize a containers default fields and callbacks
  *
  * Initializes the default values of the container, this also sets up the
  * widget fields of the container, so the @a appearance string is necessary.
  */
-void
+int 
 ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 		   Ewl_Child_Resize rs, Ewl_Child_Remove remove)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR_RET("c", c, FALSE);
 
 	w = EWL_WIDGET(c);
 
 	/*
 	 * Initialize the fields inherited from the widget class
 	 */
-	ewl_widget_init(w, appearance);
+	if (!ewl_widget_init(w, appearance))
+		DRETURN_INT(0, DLEVEL_STABLE);
+
 	ewl_object_set_recursive(EWL_OBJECT(w), TRUE);
 
 	/*
@@ -51,7 +53,7 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
 			    ewl_container_reparent_cb, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
 /**

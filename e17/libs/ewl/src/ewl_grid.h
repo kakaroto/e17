@@ -40,7 +40,8 @@ struct _ewl_grid {
 
 
 typedef struct _ewl_grid_child Ewl_Grid_Child;
-struct _ewl_grid_child {
+struct _ewl_grid_child
+{
 	int             start_col;
 	int             start_row;
 
@@ -49,7 +50,7 @@ struct _ewl_grid_child {
 };
 
 Ewl_Widget     *ewl_grid_new(int cols, int rows);
-void            ewl_grid_init(Ewl_Grid * g, int cols, int rows);
+int             ewl_grid_init(Ewl_Grid * g, int cols, int rows);
 
 void            ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 			     int start_col, int end_col, int start_row,

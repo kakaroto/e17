@@ -16,7 +16,7 @@ struct Ewl_Notebook
 };
 
 Ewl_Widget     *ewl_notebook_new(void);
-void            ewl_notebook_init(Ewl_Notebook * n);
+int             ewl_notebook_init(Ewl_Notebook * n);
 void            ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * c,
 					 Ewl_Widget * l);
 void            ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * c,

@@ -35,21 +35,25 @@ int ewl_theme_init(void)
 	 * Alloacte and clear the default theme 
 	 */
 	def_theme_data = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+	if (!def_theme_data)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
 	 * Setup a string with the path to the users theme dir 
 	 */
 	theme_name = ewl_config_get_str("system", "/theme/name");
-
 	if (!theme_name)
 		theme_name = strdup("default");
+
+	if (!theme_name)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	home = getenv("HOME");
 	if (!home) {
 		DERROR("Environment variable HOME not defined\n"
 		       "Try export HOME=/home/user in a bash like environemnt or\n"
 		       "setenv HOME=/home/user in a csh like environment.\n");
-		exit(-1);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	snprintf(theme_path, PATH_MAX, "%s/.e/ewl/themes/%s", home, theme_name);
@@ -77,8 +81,8 @@ int ewl_theme_init(void)
 		}
 
 		if (!theme_db) {
-			DERROR("No theme db =( exiting....");
-			exit(-1);
+			DERROR("No theme db =( ....");
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
 		}
 	}
 
@@ -122,19 +126,19 @@ static void ewl_theme_init_font_path()
 
 /**
  * @param w: the widget to initialize theme information
- * @return Returns no value.
+ * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize a widgets theme information to the default
  *
  * Sets the widget @a w's theme information to the default values.
  */
-void ewl_theme_init_widget(Ewl_Widget * w)
+int ewl_theme_init_widget(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 
 	w->theme = def_theme_data;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

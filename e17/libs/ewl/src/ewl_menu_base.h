@@ -76,7 +76,7 @@ struct Ewl_Menu_Base
 };
 
 Ewl_Widget     *ewl_menu_item_new(char *image, char *title);
-void            ewl_menu_item_init(Ewl_Menu_Item * menu, char *image,
+int             ewl_menu_item_init(Ewl_Menu_Item * menu, char *image,
 				   char *title);
 
 Ewl_Menu_Separator *ewl_menu_separator_new(void);

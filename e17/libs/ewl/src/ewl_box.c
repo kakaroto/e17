@@ -105,12 +105,18 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	/*
 	 * Initialize the container portion of the box
 	 */
-	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_container_init(EWL_CONTAINER(b), "hbox", ewl_box_add_cb,
-				ewl_box_child_resize_cb, ewl_box_remove_cb);
-	else
-		ewl_container_init(EWL_CONTAINER(b), "vbox", ewl_box_add_cb,
-				ewl_box_child_resize_cb, ewl_box_remove_cb);
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		if (!ewl_container_init(EWL_CONTAINER(b), "hbox",
+					ewl_box_add_cb, ewl_box_child_resize_cb,
+					ewl_box_remove_cb))
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+	else {
+		if (!ewl_container_init(EWL_CONTAINER(b), "vbox",
+					ewl_box_add_cb, ewl_box_child_resize_cb,
+					ewl_box_remove_cb))
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
 			NULL);

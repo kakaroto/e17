@@ -35,8 +35,9 @@ int ewl_cell_init(Ewl_Cell *cell)
 
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(cell), "cell", ewl_cell_add_cb,
-			ewl_cell_child_resize_cb, NULL);
+	if (!ewl_container_init(EWL_CONTAINER(cell), "cell", ewl_cell_add_cb,
+			ewl_cell_child_resize_cb, NULL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			ewl_cell_configure_cb, NULL);

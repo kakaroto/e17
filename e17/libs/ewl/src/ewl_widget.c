@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 
@@ -7,6 +6,7 @@ Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;
 
+static void ewl_widget_rebuild_appearance(Ewl_Widget *w);
 static void ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
 static void ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r,
@@ -15,30 +15,30 @@ static void ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r,
 /**
  * @param w: the widget to initialize
  * @param appearance: the key for the widgets theme appearance
- *
- * @return No value.
+ * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize a widget to default values and callbacks
  *
  * The widget w is initialized to default values and is
  * assigned the default callbacks. The appearance key is assigned for easy
  * access to theme information.
  */
-void ewl_widget_init(Ewl_Widget * w, char *appearance)
+int ewl_widget_init(Ewl_Widget * w, char *appearance)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	DCHECK_PARAM_PTR("appearance", appearance);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_PARAM_PTR_RET("appearance", appearance, FALSE);
 
 	/*
 	 * Set size fields on the object 
 	 */
-	ewl_object_init(EWL_OBJECT(w));
+	if (!ewl_object_init(EWL_OBJECT(w)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
 	 * Set up the necessary theme structures 
 	 */
-	ewl_theme_init_widget(w);
+	if (!ewl_theme_init_widget(w))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_object_remove_state(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 	LAYER(w) = 10;
@@ -75,7 +75,7 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 
 	ewl_widget_set_appearance(w, appearance);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -648,28 +648,25 @@ int ewl_widget_get_layer_sum(Ewl_Widget *w)
 	DRETURN_INT(sum, DLEVEL_STABLE);
 }
 
-void ewl_widget_rebuild_appearance(Ewl_Widget *w)
+/**
+ * @param w: the widget to be moved to the front of the focus list
+ * @return Returns no value.
+ * @brief Changes the order in the embed so @a w receives focus first on tab.
+ *
+ * This moves the widget @a w to the front of the tab order list in the embed
+ * that holds it. This is the recommended method for manipulating tab order,
+ * The embed versions should only be accessed internally if you understand
+ * their ramifications.
+ */
+void ewl_widget_push_tab_order(Ewl_Widget *w)
 {
-	char *base;
-	char path[PATH_MAX];
+	Ewl_Embed *e;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("w->appearance", w->appearance);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	base = strrchr(w->appearance, '/');
-	if (base) {
-		*base = '\0';
-		base++;
-	}
-	else
-		base = w->appearance;
-
-	snprintf(path, PATH_MAX, "%s/%s",
-			(w->parent ? w->parent->appearance : ""), base);
-
-	FREE(w->appearance);
-	w->appearance = strdup(path);
+	e = ewl_embed_find_by_widget(w);
+	ewl_embed_push_tab_order(EWL_EMBED(e), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -809,6 +806,11 @@ unsigned int ewl_widget_is_clipped(Ewl_Widget *w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param w: the widget to receive keyboard focus
+ * @return Returns no value.
+ * @brief Changes the keyboard focus to the widget @a w.
+ */
 void ewl_widget_send_focus(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -818,11 +820,41 @@ void ewl_widget_send_focus(Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns the currnetly focused widget.
+ * @brief Retrieve the currently focused widget.
+ */
 Ewl_Widget *ewl_widget_get_focused()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DRETURN_PTR(last_key, DLEVEL_STABLE);
+}
+
+static void ewl_widget_rebuild_appearance(Ewl_Widget *w)
+{
+	char *base;
+	char path[PATH_MAX];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("w->appearance", w->appearance);
+
+	base = strrchr(w->appearance, '/');
+	if (base) {
+		*base = '\0';
+		base++;
+	}
+	else
+		base = w->appearance;
+
+	snprintf(path, PATH_MAX, "%s/%s",
+			(w->parent ? w->parent->appearance : ""), base);
+
+	FREE(w->appearance);
+	w->appearance = strdup(path);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -832,16 +864,10 @@ Ewl_Widget *ewl_widget_get_focused()
  */
 void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
 {
-	Ewl_Embed      *emb;
 	Ewd_List       *destroy_cbs;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-
-	/*
-	 * First find it's parent embed so we can destroy the evas objects.
-	 */
-	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * First remove the parents reference to this widget to avoid bad
@@ -1067,8 +1093,16 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Embed      *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * First find it's parent embed so we can destroy the evas objects.
+	 */
+	emb = ewl_embed_find_by_widget(w);
+	ewl_embed_remove_tab_order(emb, w);
 
 	/*
 	 * Destroy the clip box used for fx.

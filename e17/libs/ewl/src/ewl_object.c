@@ -11,9 +11,10 @@
  * widget instead. The separation is really just a convenience factor, a
  * Widget really is the lowest common class.
  */
-void ewl_object_init(Ewl_Object * o)
+int ewl_object_init(Ewl_Object * o)
 {
-	DCHECK_PARAM_PTR("o", o);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, FALSE);
 
 	/*
 	 * Set the default minimum sizes.
@@ -32,6 +33,8 @@ void ewl_object_init(Ewl_Object * o)
 	 */
 	o->flags = EWL_FLAG_FILL_NORMAL | EWL_FLAG_ALIGN_LEFT |
 		   EWL_FLAG_ALIGN_TOP;
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

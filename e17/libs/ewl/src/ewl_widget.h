@@ -46,7 +46,7 @@ struct Ewl_Widget
 /*
  * Initialize a widget to it's default values
  */
-void            ewl_widget_init(Ewl_Widget * w, char *appearance);
+int             ewl_widget_init(Ewl_Widget * w, char *appearance);
 
 /*
  * Signal the widget that it's parent has changed.
@@ -136,7 +136,6 @@ void            ewl_widget_disable(Ewl_Widget * w);
 /*
  * Notify a widget to rebuild it's appearance string.
  */
-void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
 void            ewl_widget_print_tree(Ewl_Widget *w);
 void            ewl_widget_print(Ewl_Widget *w);
 
@@ -152,6 +151,7 @@ unsigned int    ewl_widget_is_clipped(Ewl_Widget *w);
 
 void            ewl_widget_send_focus(Ewl_Widget *w);
 Ewl_Widget     *ewl_widget_get_focused(void);
+void            ewl_widget_push_tab_order(Ewl_Widget *w);
 
 /**
  * @def LAYER(w)

@@ -81,9 +81,11 @@ int ewl_embed_init(Ewl_Embed * w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "embed",
-			   ewl_embed_child_add_cb, ewl_embed_child_resize_cb,
-			   NULL);
+	if (!ewl_container_init(EWL_CONTAINER(w), "embed",
+				ewl_embed_child_add_cb,
+				ewl_embed_child_resize_cb, NULL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_set_toplevel(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
 
@@ -102,6 +104,8 @@ int ewl_embed_init(Ewl_Embed * w)
 	LAYER(w) = -1000;
 
 	ewd_list_append(ewl_embed_list, w);
+
+	w->tab_order = ewd_list_new();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -269,6 +273,70 @@ Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
 	DRETURN_PTR(EWL_EMBED(w), DLEVEL_STABLE);
 }
 
+/**
+ * @param e: the embed that holds widgets to change tab order
+ * @param w: the widget that will be moved to the front of the tab order list
+ * @return Returns no value.
+ * @brief Moves the widget @a w to the front of the tab order list.
+ */
+void ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!ewl_container_parent_of(EWL_WIDGET(e), w))
+		DRETURN(DLEVEL_STABLE);
+
+	if (ewd_list_goto(e->tab_order, w))
+		ewd_list_remove(e->tab_order);
+
+	ewd_list_prepend(e->tab_order, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed containing a widget to remove from the tab order
+ * @param w: the widget to remove from the tab order list
+ * @return Returns no value.
+ * @brief Removes the widget @a w from the tab order list for @a e.
+ */
+void ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (ewd_list_goto(e->tab_order, w))
+		ewd_list_remove(e->tab_order);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed to change focus of it's contained widgets
+ * @return Returns no value.
+ * @brief Changes focus to the next widget in the circular tab order list.
+ */
+void ewl_embed_next_tab_order(Ewl_Embed *e)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (!(w = ewd_list_next(e->tab_order))) {
+		ewd_list_goto_first(e->tab_order);
+		w = ewd_list_next(e->tab_order);
+	}
+
+	if (w)
+		ewl_widget_send_focus(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Object *o;
@@ -323,6 +391,9 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (ewd_list_goto(ewl_embed_list, w))
 		ewd_list_remove(ewl_embed_list);
+
+	ewd_list_destroy(emb->tab_order);
+	emb->tab_order = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
