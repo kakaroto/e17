@@ -61,32 +61,35 @@ handle_keypress_event(XEvent * ev, Window win)
            slideshow_change_image(winwid, SLIDE_JUMP_FWD);
         break;
      case XK_Delete:
-        /* I could do with some confirmation here */
-        /* How about holding ctrl? */
-        if (kev->state & ControlMask)
+        /* Holding ctrl gets you a filesystem deletion and removal from the
+         * filelist. Just DEL gets you filelist removal only. */
+        if (opt.slideshow)
         {
-           if (opt.slideshow)
-           {
-              feh_file *doomed;
+           feh_file *doomed;
 
-              doomed = current_file;
-              slideshow_change_image(winwid, SLIDE_NEXT);
+           doomed = current_file;
+           slideshow_change_image(winwid, SLIDE_NEXT);
+           if (kev->state & ControlMask)
               filelist = feh_file_rm_and_free(filelist, doomed);
-              if (!filelist)
-              {
-                 /* No more images. Game over ;-) */
-                 winwidget_destroy(winwid);
-              }
-              if (winwid->name)
-                 free(winwid->name);
-              winwid->name = slideshow_create_name(winwid->file->filename);
-              winwidget_update_title(winwid);
-           }
-           else if (opt.multiwindow)
+           else
+              filelist = filelist_remove_file(filelist, doomed);
+           if (!filelist)
            {
-              filelist = feh_file_rm_and_free(filelist, winwid->file);
+              /* No more images. Game over ;-) */
               winwidget_destroy(winwid);
            }
+           if (winwid->name)
+              free(winwid->name);
+           winwid->name = slideshow_create_name(winwid->file->filename);
+           winwidget_update_title(winwid);
+        }
+        else if (opt.multiwindow)
+        {
+           if (kev->state & ControlMask)
+              filelist = feh_file_rm_and_free(filelist, winwid->file);
+           else
+              filelist = filelist_remove_file(filelist, winwid->file);
+           winwidget_destroy(winwid);
         }
         break;
      case XK_Home:
