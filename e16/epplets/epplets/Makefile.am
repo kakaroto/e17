@@ -8,7 +8,7 @@ E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet E-Toolbox.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ @PLAYCD_PROGS@ \
 E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet \
-E-LoadMeter.epplet
+E-LoadMeter.epplet E-GtkRc.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
                  Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet E-SD.epplet
@@ -145,6 +145,11 @@ E_UrlWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
 E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
+E_GtkRc_epplet_SOURCES = E-GtkRc.c
+E_GtkRc_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_GtkRc_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
+E_GtkRc_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
+
 E_Areas_epplet_SOURCES = E-Areas.c
 E_Areas_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
@@ -168,7 +173,9 @@ E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
 Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
-E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png
+E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png \
+E-GtkRc.ABOUT/MAIN bg.png
+
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
 ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon icons/E-Disk.icon \
@@ -177,7 +184,7 @@ icons/E-Mountbox.icon icons/E-Net.icon icons/E-NetFlame.icon icons/E-Power.icon 
 icons/E-SD.icon icons/E-ScreenSave.icon icons/E-ScreenShoot.icon \
 icons/E-Slides.icon icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon \
 icons/Emix.icon icons/E-UrlWatch.icon icons/E-Magic.icon icons/E-PlayCD.icon \
-icons/E-OpenGL-Demo.icon
+icons/E-OpenGL-Demo.icon icons/E-GtkRc.icon
 
 # DATA_FILES = `(cd epplets && ls -1d *-data/* 2>/dev/null | grep -v CVS)`
 
@@ -234,8 +241,8 @@ E-Toolbox-data/sample.cfg E-Toolbox-data/popup-sample.cfg E-Toolbox-data/default
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo
+NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc
+NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc
 BG_SRC = E-Cpu.ABOUT/bg.png
 FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
 
