@@ -644,28 +644,18 @@ void exml_mem_free(EXML *xml, void *ptr)
 		xmlBufferFree( buf );
 }
 
-/* temp val for callback */
-static xmlTextWriter *t_writer;
-
-static void _exml_write_attribute( void *val )
-{
-	Ecore_Hash_Node *node;
-
-	node = val;
-
-	xmlTextWriterWriteAttribute( t_writer, node->key, node->value );
-}
-
 static void _exml_write_element(EXML_Node *node,
 																		 xmlTextWriter *writer)
 {
 	EXML_Node *child;
+	Ecore_Hash_Node *hash_node;
 
 	xmlTextWriterStartElement( writer, node->tag );
 
-	t_writer = writer;
-	ecore_hash_for_each_node( node->attributes, _exml_write_attribute );
-	t_writer = NULL;
+	ecore_hash_goto_first( node->attributes );
+
+	while( (hash_node = ecore_hash_next( node->attributes )) )
+		xmlTextWriterWriteAttribute( writer, hash_node->key, hash_node->value );
 
 	if( node->value )
 		xmlTextWriterWriteString( writer, node->value );
