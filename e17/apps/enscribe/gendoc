@@ -1,0 +1,12 @@
+#!/bin/sh
+cp ./enscribe.c.in ./enscribe.c
+for I in `find ./src/lib -name "enscribe.h" -print`; do
+  cat $I >> ./enscribe.c
+done
+#for I in `find ./src/lib -name "*.c" -print`; do
+#  cat $I >> ./enscribe.c
+#done
+rm -rf ./doc/html ./doc/latex ./doc/man
+doxygen
+cp doc/img/*.png doc/html/
+exit 0

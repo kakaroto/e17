@@ -1,0 +1,22 @@
+/** 
+@file
+@brief enscribe
+ 
+These routines are used for enscribe.
+*/
+
+/**
+
+@mainpage enscribe Documentation
+@image html  enscribe.png
+@version 0.0.4
+@author CodeWarrior <hisham@hisham.cc>
+@date 2003-2004
+
+@section intro What is enscribe?
+
+An image slideshow program.
+
+@todo Complete documentation
+
+*/
