@@ -275,6 +275,50 @@ char *ewl_text_style_get(Ewl_Text *ta)
 	DRETURN_PTR(style, DLEVEL_STABLE);
 }
 
+/**
+ * @param ta: the text widget to change alignment
+ * @param align: the new alignment of the text widget
+ * @brief Changes the currently applied alignment of the text to specified value
+ * @return Returns no value.
+ */
+void ewl_text_align_set(Ewl_Text *ta, unsigned int align)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_align_new(ta, align);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to get the current alignment
+ * @brief Retrieves the currently used text alignment from a text widget.
+ * @return Returns the currently used text alignment.
+ */
+unsigned int ewl_text_align_get(Ewl_Text *ta)
+{
+	unsigned int align = 0;
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Align *opa;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+
+	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
+	opa = (Ewl_Text_Op_Align *)op;
+	if (opa) {
+		align = opa->align;
+	}
+
+	DRETURN_INT(align, DLEVEL_STABLE);
+}
+
 static Ewl_Text_Op *
 ewl_text_op_relevant_find(Ewl_Text *ta, Ewl_Text_Op_Type type)
 {
