@@ -2700,3 +2700,12 @@ Simplify background code.
 Refresh the desktop backgrounds when transparency is enabled (re-generate
 non full-sized ones).
 Shuffle around some window event configuration code (no functional changes).
+
+-------------------------------------------------------------------------------
+
+Thu Apr 15 22:08:25 CEST 2004
+(Kim)
+
+Attempt to set event masks consistently.
+Change some event debug printouts.
+Highlight only the focused window.
