@@ -105,7 +105,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             imlib_context_set_drawable(*((Ecore_X_Pixmap *) data));
 
             /* Check if the trans object will fit within the pixmap's boundaries */
-            if ((x >= px) && (y >= py) && ((x + w) <= (py + ((signed int) pw))) 
+            if ((x >= px) && (y >= py) && ((x + w) <= (px + ((signed int) pw))) 
                   && ((y + h) <= (py + ((signed int) ph))))
             {
                im = imlib_create_image_from_drawable(0, x, y, w, h, 1);
