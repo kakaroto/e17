@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
 #include <dirent.h>
+#include <unistd.h>
 #include "epplet.h"
 
 #if 0
@@ -43,6 +45,8 @@ dirscan(char *dir, unsigned long *num)
   DIR *dirp;
   char **names;
   struct dirent *dp;
+  struct stat filestat;
+  char fullname[256];
 
   D(("dirscan(\"%s\", %8p) called.\n", dir, num));
 
@@ -72,16 +76,34 @@ dirscan(char *dir, unsigned long *num)
 
   rewinddir(dirp);
   for (i = 0; (dp = readdir(dirp)) != NULL;) {
-    if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, ".."))) {
-      D((" -> Adding name \"%s\" at index %d (%8p)\n", dp->d_name, i, names + i));
-      names[i] = strdup(dp->d_name);
-      i++;
-    }
+      if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, ".."))) {
+	  strcpy(fullname,dir);
+	  strcat(fullname,"/");
+	  strcat(fullname,dp->d_name);
+	  D((" -> About to stat() %s\n",fullname));
+          if (stat (fullname, &filestat)) {
+              D(("Couldn't stat() file %s\n", dp->d_name));
+              exit(2);
+          } else {
+	      if(!S_ISDIR(filestat.st_mode)) {
+		  D((" -> Adding name \"%s\" at index %d (%8p)\n", dp->d_name, i, names + i));
+		  names[i] = strdup(dp->d_name);
+		  i++;
+	      }
+          }
+      }
   }
 
   if (i < dirlen) {
     dirlen = i;
   }
+
+  if (!dirlen) {
+    closedir(dirp);
+    *num = 0;
+    return ((char **) NULL);
+  }
+  
   closedir(dirp);
   *num = dirlen;
   names = (char **) realloc(names, dirlen * sizeof(char *));
@@ -245,16 +267,7 @@ main(int argc, char **argv) {
   Epplet_Init("E-Slides", "0.2", "Enlightenment Slideshow Epplet", 3, 3, argc, argv, 0);
   Epplet_load_config();
   parse_config();
-  filenames = dirscan(path, &image_cnt);
-  if (image_cnt == 0) {
-    char err[255];
-
-    Esnprintf(err, sizeof(err), "Unable to find any files in %s, nothing to do!", path);
-    Epplet_dialog_ok(err);
-    exit(-1);
-  }
-  chdir(path);
-
+  
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
@@ -263,10 +276,21 @@ main(int argc, char **argv) {
   next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
   picture = Epplet_create_image(3, 3, 42, 42, "/dev/null");
   Epplet_show();
-
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
+  
+  filenames = dirscan(path, &image_cnt);
+  if (image_cnt == 0) {
+    char err[255];
+
+    Esnprintf(err, sizeof(err), "Unable to find any files in %s, nothing to do!", path);
+    Epplet_dialog_ok(err);
+  }
+  else {
+  chdir(path);
   change_image(NULL);  /* Set everything up */
+  }
+  
   Epplet_Loop();
 
   return 0;

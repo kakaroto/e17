@@ -355,3 +355,20 @@ Wed Nov 10 20:49:04 PST 1999
 
 Oh my goodness.  This should resolve all the textbox silliness.  (At least all
 that I've run across so far....)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 18:50:07 GMT 1999
+(gilbertt)
+
+*Hopes KainX doesn't kill him*
+
+Fixed a couple of things.
+o No longer tries to open subdirectories as images (my
+.enlightenment/backgrounds directory contains only two subdirs, tiled and
+fullscreen, previously it dumped core trying to open these as images).
+o If there are no images in the dir, the Epplet_dialog_ok was never shown,
+as it was followed by an exit(-1). It must be followed (at some point) by
+Epplet_loop() to work.
+
+KainX: If I broke it, you can kill me :)
