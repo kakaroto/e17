@@ -1700,3 +1700,15 @@ Thu Feb 17 11:11:46 PST 2000
 (Mandrake)
 
 removed some warnings, still a few left in dox/file.c
+
+-------------------------------------------------------------------------------
+
+Tue Mar 14 22:32:08 GMT 2000
+(gilbertt)
+
+Patches from Bob Arendt <rdarendt@cwcom.net> to enable a user-configurable
+cache-dir. Solves some preformance problems on NFS-mounted home directories.
+Also fixes a couple of bugs with the current -econfdir option.
+
+Patches here for scripts and stuff.
+

@@ -679,8 +679,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					    ic->norm.normal->im->rgb_height);
 			       PastePixmap(disp, tt->win,
 					   Imlib_copy_image(id,
-							    ic->norm.
-							    normal->im),
+							    ic->norm.normal->
+							    im),
 					   Imlib_copy_mask(id,
 							   ic->norm.normal->im),
 					   x, y);
@@ -702,12 +702,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							       ic->norm.
-							       normal->im),
+							       ic->norm.normal->
+							       im),
 					      Imlib_copy_mask(id,
-							      ic->norm.
-							      normal->im), x,
-					      y);
+							      ic->norm.normal->
+							      im), x, y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -723,12 +722,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							       ic->norm.
-							       normal->im),
+							       ic->norm.normal->
+							       im),
 					      Imlib_copy_mask(id,
-							      ic->norm.
-							      normal->im), x,
-					      y);
+							      ic->norm.normal->
+							      im), x, y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -744,12 +742,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							       ic->norm.
-							       normal->im),
+							       ic->norm.normal->
+							       im),
 					      Imlib_copy_mask(id,
-							      ic->norm.
-							      normal->im), x,
-					      y);
+							      ic->norm.normal->
+							      im), x, y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -765,12 +762,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							       ic->norm.
-							       normal->im),
+							       ic->norm.normal->
+							       im),
 					      Imlib_copy_mask(id,
-							      ic->norm.
-							      normal->im), x,
-					      y);
+							      ic->norm.normal->
+							      im), x, y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -786,12 +782,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							       ic->norm.
-							       normal->im),
+							       ic->norm.normal->
+							       im),
 					      Imlib_copy_mask(id,
-							      ic->norm.
-							      normal->im), x,
-					      y);
+							      ic->norm.normal->
+							      im), x, y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -811,8 +806,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -834,8 +829,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -857,8 +852,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -880,8 +875,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -903,8 +898,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -926,8 +921,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -949,8 +944,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.
@@ -972,8 +967,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
 						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->
-						 im->rgb_height);
+						 ic->norm.normal->im->
+						 rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
 								 ic->norm.

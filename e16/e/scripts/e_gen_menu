@@ -27,7 +27,7 @@
 PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin:"$EBIN
 export PATH
 
-OUT_DIR=$HOME"/.enlightenment"
+OUT_DIR=$ECONFDIR
 OUT=$OUT_DIR"/file.menu"
 
 eesh -e "dialog_ok Menus are being generated... Please Wait."
