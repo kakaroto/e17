@@ -1854,7 +1854,7 @@ Epplet_textbox_contents(Epplet_gadget eg)
 
    g = (GadTextBox *) eg;
 
-   return g->contents;
+   return ((g->contents) ? (g->contents) : "");
 }
 
 void

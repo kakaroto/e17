@@ -397,7 +397,7 @@ apply_config(void)
   }
 
   strcpy(buff, Epplet_textbox_contents(cfg_tb_path));
-  if (strcasecmp(path, buff)) {
+  if (strcmp(path, buff)) {
     if (get_images(buff)) {
       free(path);
       path = strdup(buff);
@@ -410,6 +410,8 @@ apply_config(void)
   strcpy(buff, Epplet_textbox_contents(cfg_tb_delay));
   if ((delay = atof(buff)) != 0.0) {
     Epplet_modify_config("delay", buff);
+  } else {
+    delay = atof(Epplet_query_config_def("delay", "2.0"));
   }
 
   zoom_cmd = strdup(Epplet_textbox_contents(cfg_tb_zoom));
