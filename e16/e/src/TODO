@@ -27,6 +27,7 @@ need to lock .enlightenment dir for multiple logins etc.
 add dnd from iconbox out to otherthings...
 something like that 'virtual desktop hovering' thing that fvwm has, i.e. continuous dragging of the desktop areas. Maybe something like a 'supergroup' that every window belongs to, and then moving that group ...
 need to write some code to un-override redirect kfm and kpanel so I can manage them easier -- this causes kfm and kpanel to exist over/under/etc apps and not have the arrange code know where the windows are.
+There should be a way to click on a pinned menu in the titlebar to make it sticky.
 
 THOUGHTS/IDEAS/UNFIXABLE?:
 cK: 		Some of the group dialogs could work with check- instead of radiobuttons.  Like the one for breaking groups, for example.
