@@ -1,6 +1,7 @@
 SUBDIRS =
 
-EDCS = selected-groups.edc selected-programs.edc \
+EDCS = select-fg-groups.edc select-fg-programs.edc \
+			 select-bg-groups.edc select-bg-programs.edc \
 			 background-groups.edc background-images.edc
 
 EETS = $(EDCS:%.edc=%.eet)

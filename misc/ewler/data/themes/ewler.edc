@@ -7,6 +7,7 @@ images {
 }
 
 collections {
-#include "ewler/bits/selected-groups.edc"
+#include "ewler/bits/select-fg-groups.edc"
+#include "ewler/bits/select-bg-groups.edc"
 #include "ewler/bits/background-groups.edc"
 }
