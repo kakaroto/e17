@@ -28,7 +28,7 @@ void term_tcanvas_glyph_push(Term *term, char c) {
    gl->fg = term->tcanvas->cur_fg;
    gl->bg = term->tcanvas->cur_bg;   
    term->tcanvas->changed_rows[term->tcanvas->cur_row] = 1;
-   term->tcanvas->cur_col++;
+   term->tcanvas->cur_col++;  
    
    if(term->tcanvas->cur_col > term->tcanvas->cols) {
       term->tcanvas->cur_col = 0;
@@ -101,7 +101,7 @@ Term_TCanvas *term_tcanvas_new() {
    canvas->canvas_id = 1; /* change later */
    canvas->rows = 24; /* multiply by a number or scrollback */  
    canvas->cols = 80;
-   canvas->scroll_size = 50; /* this means rows * 3 total rows */
+   canvas->scroll_size = 3; /* this means rows * 3 total rows */
    canvas->cur_row = 0;   /* between 0 and rows-1 */
    canvas->cur_col = 0;
    canvas->grid = calloc(canvas->cols * 

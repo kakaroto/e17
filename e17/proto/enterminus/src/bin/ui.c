@@ -43,23 +43,26 @@ void term_term_bg_set(Term *term, char *img, Ecore_Evas *ee) {
 
 /* see what changed chars we have, redraw */
 void term_redraw(void *data) {
-   int i,j;
-   int ig = 0, jg = 0;
+   int i,i2,j;
+   int ig = 0;
    char c[2];
    Term *term = data;
    Evas_Object *ob;
    Term_EGlyph *gl;
    Term_TGlyph *tgl;   
+      
+   i2 = term->tcanvas->scroll_region_start;
    
-   for(i = 0; i < term->tcanvas->rows; i++) {      
-      if(term->tcanvas->changed_rows[i] != 1) {
+   for(i = 0; i < term->tcanvas->rows; i++) {
+      if(term->tcanvas->changed_rows[i2] != 1) {
+	 i2++;
 	 continue;
       }
-      //printf("Rendering c-row %d  g-row %d\n",i+ term->tcanvas->scroll_region_start,i);
+      /* printf("Rendering c-row %d  g-row %d\n",i2,i); */
       for(j = 0; j < term->tcanvas->cols; j++) {	 
 	 tgl = &term->tcanvas->grid[j + 
 				    (term->tcanvas->cols * 
-				     (i+ term->tcanvas->scroll_region_start)
+				     (i2)
 				     )];	 
 	 if(tgl->changed != 1) {
 	    continue;
@@ -69,8 +72,6 @@ void term_redraw(void *data) {
 	    continue;
 	 }
 	 
-	 //printf("i=%d term->tcanvas->scroll_region_start=%d term->tcanvas->rows=%d term->tcanvas->scroll_size=%d\n",i,term->tcanvas->scroll_region_start,term->tcanvas->rows,term->tcanvas->scroll_size);
-
 	 if(i + term->tcanvas->scroll_region_start + 1 < (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
 	    gl = &term->grid[j + (term->tcanvas->cols * i)];
 	 } else {	    
@@ -81,7 +82,8 @@ void term_redraw(void *data) {
 	 c[0] = tgl->c;
 	 c[1] = '\0';
 	 evas_object_text_text_set(gl->text, c);
-	 	 
+	 	
+	 /* this is just temp, move it into its own function later */
 	 switch(tgl->fg) {
 	  case 0:
 	    evas_object_color_set(gl->text, COLOR0, 255);
@@ -122,6 +124,7 @@ void term_redraw(void *data) {
 	 printf("Overflowing: [cur_row=%d] [start: %d, end: %d] [ig=%d]\n",term->tcanvas->cur_row,term->tcanvas->scroll_region_start,term->tcanvas->scroll_region_end,ig);
 	 ig++;
       }
+      i2++;
       term->tcanvas->changed_rows[i] = 0;
    }
 }
