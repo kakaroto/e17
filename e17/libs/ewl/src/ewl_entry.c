@@ -547,32 +547,38 @@ void ewl_entry_insert_text(Ewl_Entry * e, char *s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("s", s);
 
 	s2 = ewl_entry_get_text(e);
 	l = strlen(s);
-	l2 = strlen(s2);
+
+	if (s2)
+		l2 = strlen(s2);
+	else
+		l2 = 0;
 
 	sp = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 
 	s3 = NEW(char, l + 1 + l2);
 	if (!s3) {
-		FREE(s2);
+		IF_FREE(s2);
 		DRETURN(DLEVEL_STABLE);
 	}
 
 	s3[0] = 0;
-	strncat(s3, s2, sp - 1);
+	if (s2)
+		strncat(s3, s2, sp - 1);
 	strcat(s3, s);
 
 	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 	if (!ep || (sp != ep))
 		ep++;
-	strcat(s3, &(s2[ep - 1]));
+	if (s2) strcat(s3, &(s2[ep - 1]));
 
 	ewl_entry_set_text(e, s3);
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), ep);
 
-	FREE(s2);
+	IF_FREE(s2);
 	FREE(s3);
 
 	sp++;
@@ -594,6 +600,9 @@ void ewl_entry_delete_to_left(Ewl_Entry * e)
 	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
 	s = ewl_entry_get_text(e);
+	if (!s)
+		DRETURN(DLEVEL_STABLE);
+
 	if (!strlen(s) || (sp == ep && sp < 2)) {
 		FREE(s);
 		DRETURN(DLEVEL_STABLE);
@@ -628,6 +637,8 @@ void ewl_entry_delete_to_right(Ewl_Entry * e)
 	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
 	s = ewl_entry_get_text(e);
+	if (!s)
+		DRETURN(DLEVEL_STABLE);
 
 	if (!strlen(s) || ep == strlen(s) + 1)
 		DRETURN(DLEVEL_STABLE);
