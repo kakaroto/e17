@@ -1,0 +1,3 @@
+#!/bin/sh
+export WINDOW_MANAGER=enlightenment
+exec gnome-session
