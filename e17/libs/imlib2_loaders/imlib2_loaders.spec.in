@@ -1,7 +1,7 @@
-%define	name	 imlib2_loaders
-%define ver      0.0.1
-%define rel      1
-%define prefix   /usr
+%define name    imlib2_loaders
+%define ver     @VERSION@
+%define rel     1
+%define prefix  /usr
 
 Summary: Additional image loaders for Imlib2
 Name: %{name}
@@ -9,45 +9,44 @@ Version: %{ver}
 Release: %{rel}
 Copyright: BSD
 Group: System/Libraries
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{ver}.tar.gz
+Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{ver}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
-Packager: Christian Kreibich <cK@whoop.org>
+Packager: Mark Bainter <mark-e@cymry.org>
 URL: http://www.rasterman.com/raster/imlib.html
 Requires: imlib2
+Prefix: %{prefix}
+
 %description
 This package contains additional image loaders for Imlib2,
 which for some reason (such as license issues) are not
 distributed with Imlib2 directly.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
 
 %setup -q
 
 %build
 
-if [ -f configure ]
-then
-  %configure
-#./configure --prefix=%prefix
+if [ -f configure ]; then
+   ./configure --prefix=%{prefix}
 else
   # can't build as root? gah. ;)
   sed <autogen.sh 's@$USER@ANNOYING@' >autogen.sh1
   mv -f autogen.sh1 autogen.sh
   chmod 0700 autogen.sh
-  ./autogen.sh --prefix=%prefix
+  ./autogen.sh --prefix=%{prefix}
 fi
 
 if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
+  (make "MAKE=make -j $SMP"; exit 0)
   make
 else
   make
 fi
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %makeinstall
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -57,7 +56,14 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files
-%attr(755,root,root) %{_libdir}/loaders/filter/*
+%attr(755,root,root) %{prefix}/lib/loaders/image/*
+
 %changelog
+* Wed Jul 04 2001 Mark Bainter <mark-e@cymry.org>
+- Corrected ftp location.
+* Wed Jun 28 2001 Mark Bainter <mark-e@cymry.org>
+- Made package relocateable.
+* Wed Jun 13 2001 Mark Bainter <mark-e@cymry.org>
+- Cleanup and adjustments to reflect new ownership
 * Tue May 22 2001 Christian Kreibich <cK@whoop.org>
 - Initial spec file

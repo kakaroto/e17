@@ -24,4 +24,5 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 debian/Makefile
+imlib2_loaders.spec
 ])

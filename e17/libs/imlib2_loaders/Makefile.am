@@ -6,3 +6,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = src debian
+
+EXTRA_DIST = \
+imlib2_loaders.spec.in \
+imlib2_loaders.spec
