@@ -339,9 +339,17 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	/*
 	 * Use the widget's appearance string to build a relative theme key.
 	 */
-	if (w)
-		snprintf(key, PATH_MAX, "%s/%s", w->appearance, k);
-	else
+	if (w) {
+		char *tmp;
+
+		tmp = ewl_widget_appearance_get(w);
+		if (tmp) {
+			snprintf(key, PATH_MAX, "%s/%s", tmp, k);
+			FREE(tmp);
+		} else
+			snprintf(key, PATH_MAX, "%s", k);
+
+	} else
 		snprintf(key, PATH_MAX, "%s", k);
 
 	if (ewl_config.theme.print_keys) 
@@ -399,9 +407,16 @@ int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
 	/*
 	 * Use the widget's appearance string to build a relative theme key.
 	 */
-	if (w)
-		snprintf(key, PATH_MAX, "%s/%s", w->appearance, k);
-	else
+	if (w) {
+		char *tmp;
+
+		tmp = ewl_widget_appearance_get(w);
+		if (tmp) {
+			snprintf(key, PATH_MAX, "%s/%s", tmp, k);
+			FREE(tmp);
+		} else 
+			snprintf(key, PATH_MAX, "%s", k);
+	} else
 		snprintf(key, PATH_MAX, "%s", k);
 
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {

@@ -6,7 +6,6 @@ Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;
 
-static void ewl_widget_appearance_rebuild(Ewl_Widget *w);
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
@@ -396,20 +395,11 @@ void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("appearance", appearance);
 
-	/*
-	 * Only continue if the appearance has changed.
-	 */
-	if (w->appearance) {
-		current = strrchr(w->appearance, '/');
-		if (current) {
-			current++;
-			if (!strcmp(current, appearance))
-				DRETURN(DLEVEL_STABLE);
-		}
+	/* make sure we have something to do */
+	if (!strcmp(appearance, w->appearance))
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
-		FREE(w->appearance);
-	}
-
+	IF_FREE(w->appearance);
 	al = strlen(appearance) + 1;
 
 	/*
@@ -438,10 +428,8 @@ void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 	}
 
 	/*
-	 * Regenerate the entire path of widgets in the heirarchy, and
-	 * recreate the visible components of the widget if necessary.
+	 * Recreate the visible components of the widget if necessary.
 	 */
-	ewl_widget_appearance_rebuild(w);
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
 		ewl_widget_realize(w);
@@ -456,14 +444,28 @@ void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
  * failure.
  * @brief Retrieve the appearance key of the widget
  */
-char           *ewl_widget_appearance_get(Ewl_Widget * w)
+char *ewl_widget_appearance_get(Ewl_Widget * w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+	char *ret = NULL, *tmp;
+	int len;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
-	DRETURN_PTR(w->appearance ? strdup(w->appearance) : NULL,
-		    DLEVEL_STABLE);
+	if (w->parent)
+		tmp = ewl_widget_appearance_get(w->parent);
+	else
+		tmp = strdup("");
+
+	len = strlen(tmp) + 2; /* one for the / one for the \0 */
+	len += (w->appearance ? strlen(w->appearance) : 0);
+
+	ret = malloc(sizeof(char) * len);
+	snprintf(ret, len, "%s/%s", tmp, 
+			(w->appearance ? w->appearance : ""));
+	FREE(tmp);
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -887,32 +889,6 @@ Ewl_Widget *ewl_widget_focused_get()
 	DRETURN_PTR(last_key, DLEVEL_STABLE);
 }
 
-static void ewl_widget_appearance_rebuild(Ewl_Widget *w)
-{
-	char *base;
-	char path[PATH_MAX];
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("w->appearance", w->appearance);
-
-	base = strrchr(w->appearance, '/');
-	if (base) {
-		*base = '\0';
-		base++;
-	}
-	else
-		base = w->appearance;
-
-	snprintf(path, PATH_MAX, "%s/%s",
-			(w->parent ? w->parent->appearance : ""), base);
-
-	FREE(w->appearance);
-	w->appearance = strdup(path);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 /*
  * Perform the series of operations common to every widget when
  * they are destroyed. This should ALWAYS be the the last callback
@@ -1234,8 +1210,6 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	pc = EWL_CONTAINER(w->parent);
-
-	ewl_widget_appearance_rebuild(w);
 
 	/*
 	 * If the new parent is on a different evas, we must re-realize it.
