@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 #include <giblib/giblib.h>
 
+#include "config.h"
 #include "structs.h"
 #include "utils.h"
 #include "getopt.h"
