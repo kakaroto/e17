@@ -117,7 +117,6 @@ exp_gui_idler_before(void *data)
         exp->changes.active_conv = 1;
       }
     }
-    exp->active_conversation = NULL;
   }
   while(removals)
   {
