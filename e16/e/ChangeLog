@@ -2722,3 +2722,16 @@ A few notes on installing the split distribution.
 De-couple the man page from dox MAIN page.
 Delete themes and online docs, these are now in separate packages.
 Another attempt at fixing the "losing windows" bug, adjust event masks.
+
+-------------------------------------------------------------------------------
+
+Sun Apr 25 20:56:22 CEST 2004
+(Kim)
+
+Fix segv on menu reload.
+Adjust event masks, add some EWin debug.
+Enable dock applets of size other than 64x64 (patch from Jonas Aaberg
+ <cja@gmx.net>).
+Portability fixes and auto* cleanups.
+Trivial fixes for compilation with imlib1.
+Avoid trashing the configuration.
