@@ -107,6 +107,43 @@ handle_keypress_event(XEvent * ev, Window win)
            }
         }
         break;
+     case XK_KP_Left:
+        winwid->im_x = winwid->im_x - 10;
+        winwidget_render_image(winwid, 0, 0);
+        break;
+     case XK_KP_Right:
+        winwid->im_x = winwid->im_x + 10;
+        winwidget_render_image(winwid, 0, 0);
+        break;
+     case XK_KP_Up:
+        winwid->im_y = winwid->im_y - 10;
+        winwidget_render_image(winwid, 0, 0);
+        break;
+     case XK_KP_Down:
+        winwid->im_y = winwid->im_y + 10;
+        winwidget_render_image(winwid, 0, 0);
+        break;
+     case XK_KP_Add:
+        /* winwid->mode = MODE_ZOOM; */
+        winwid->zoom = winwid->zoom * 1.25;
+        winwidget_render_image(winwid, 0, 0);
+        break;
+     case XK_KP_Subtract:
+        /* winwid->mode = MODE_ZOOM; */
+        winwid->zoom = winwid->zoom * 0.75;
+        winwidget_render_image(winwid, 0, 0);
+	break;
+     case XK_KP_Multiply:
+        /* winwid->mode = MODE_ZOOM; */
+        winwid->zoom = 1;
+        winwidget_render_image(winwid, 0, 0);
+	break;
+     case XK_KP_Divide:
+        /* winwid->mode = MODE_ZOOM; */
+        /* feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, scr->width, scr->height); */
+        feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+        winwidget_render_image(winwid, 0, 0);
+	break;
      default:
         break;
    }

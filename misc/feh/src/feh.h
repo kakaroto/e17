@@ -69,10 +69,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define XY_IN_RECT(x, y, rx, ry, rw, rh) \
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) < ((rx) + (rw))) && ((y) < ((ry) + (rh))))
 
-#define DEFAULT_FONT "helmetr/10"
-#define DEFAULT_MENU_FONT "helmetr/10"
-#define DEFAULT_FONT_BIG "helmetr/14"
-#define DEFAULT_FONT_TITLE "helmetr/22"
+#define DEFAULT_FONT "yudit/10"
+#define DEFAULT_MENU_FONT "yudit/10"
+#define DEFAULT_FONT_BIG "yudit/12"
+#define DEFAULT_FONT_TITLE "yudit/14"
 
 enum mode_type
 { MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM, MODE_ROTATE, MODE_BLUR, MODE_NEXT };

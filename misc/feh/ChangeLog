@@ -1,3 +1,12 @@
+Wed Sep 11 19:44:25 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Release 1.2.1
+
+Wed Sep 11 19:43:24 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Panagiotis Issaris <takis.issaris@skynet.be>
+    - adds support for using the numeric keypad to scroll and zoom the image.
+
 Wed Jul 31 22:31:21 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Fixed --draw-filename (was --draw_filename but not documented as such -

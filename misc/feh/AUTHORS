@@ -25,6 +25,9 @@ Eric Dorland <dorland@lords.com>
 Omar Harriott <omar.harriott@csun.edu>
     - fix filelist handling for filenames with spaces.
 
+Panagiotis Issaris <takis.issaris@skynet.be>
+    - keypad buttonpresses
+
 Thanks to:
 Michael Jennings <mej@eterm.org>
     - Makefile Fixes, moral support
