@@ -7,79 +7,58 @@
 
 #include "engage.h"
 
-/* name of the config file with directory to show in the tree */
-#define engage_conf "/.e/apps/engage/applinks"
-#define engage_mappings "/.e/apps/engage/mappings"
+E_App *od_unmatched_app;
 
 static void
-userconfig_mappings_load(FILE * fp)
+userconfig_mappings_load(char* fp)
 {
-  char           *line = NULL;
-  size_t          len = 0;
-  size_t          read = 0;
-  char           *name = NULL;
-  char           *class = NULL;
-  char           *icon = NULL;
+  E_App          *maplist;
+  Evas_List      *l;
 
-  while ((read = getline(&line, &len, fp)) != -1) {
-    if (*line == '#' || *line == '\n')
-      continue;
-    /* stripping line return */
-    line[strlen(line) - 1] = 0;
-    /* split of the line */
-    class = (char *) strtok(line, "|");
-    name = (char *) strtok(NULL, "|");
-    icon = (char *) strtok(NULL, "|");
-
-#if 0
-    printf("line [%s]\n", line);
-#endif
-
-    if (class != NULL && name != NULL && icon != NULL) {
-      od_icon_mapping_add(class, name, icon);
-    }
+  od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eet", 0);
+  if (!od_unmatched_app) {
+    printf("ERROR, you must make install\n");
+    ecore_main_loop_quit();
+    exit(1);
   }
-  /* cleaning memory */
-  if (line)
-    free(line);
-  line = NULL;
+
+  maplist = e_app_new(fp, 1);
+  if (!maplist) {
+    printf("You should _really_ create %s and populate it\n", fp);
+    return;
+  }
+
+  /*FIXME: only 1 level deep... */
+  l = maplist->subapps;
+  while(l) {
+    E_App *ptr = l->data;
+
+    od_icon_mapping_add(ptr);
+    l = l->next;
+  }
+
 }
 
 static void
-userconfig_applinks_load(FILE * fp)
+userconfig_applinks_load(char* fp)
 {
-  char           *line = NULL;
-  size_t          len = 0;
-  size_t          read = 0;
-  char           *exe = NULL;
-  char           *name = NULL;
-  char           *icon = NULL;
+  E_App          *applist;
+  Evas_List      *l;
 
-  while ((read = getline(&line, &len, fp)) != -1) {
-    if (*line == '#' || *line == '\n')
-      continue;
-    /* stripping line return */
-    line[strlen(line) - 1] = 0;
-    /* split of the line */
-    exe = (char *) strtok(line, "|");
-    name = (char *) strtok(NULL, "|");
-    icon = (char *) strtok(NULL, "|");
-
-#if 0
-    printf("line [%s]\n", line);
-#endif
-
-    if (exe != NULL && name != NULL && exe[strlen(exe) - 1] != '#') {
-      od_dock_add_applnk(od_icon_new_applnk(exe, name));
-    } else if (exe != NULL && name != NULL && icon != NULL &&
-               exe[strlen(exe) - 1] == '#') {
-      exe[strlen(exe) - 1] = 0;
-      od_dock_add_dicon(od_icon_new_dicon(exe, name, icon));
-    }
+  applist = e_app_new(fp, 0);
+  if (!applist) {
+    printf("You should _really_ create %s and populate it\n", fp);
+    return;
   }
-  /* cleaning memory */
-  if (line)
-    free(line);
+  e_app_subdir_scan(applist, 0);
+  
+  l = applist->subapps;
+  while(l) {
+    E_App *ptr = l->data;
+
+    od_dock_add_applnk(od_icon_new_applnk(ptr, NULL, NULL));
+    l = l->next;
+  }
 }
 
 static void
@@ -90,7 +69,7 @@ userconfig_sysicons_load(void)
   DIR            *dp;
   char           *file_title, *file_path;
   int             title_len;
-
+  
   snprintf(path, PATH_MAX, "%s/.e/apps/engage/sysicons", getenv("HOME"));
   dp = opendir((const char *) path);
 
@@ -110,7 +89,7 @@ userconfig_sysicons_load(void)
     strncpy(file_title, next->d_name, title_len);
     *(file_title + title_len) = '\0';
 
-    od_dock_add_sysicon(od_icon_new_sysicon(""/*file_title*/, file_path, NULL));
+    od_dock_add_sysicon(od_icon_new_sysicon("", file_path));
 
     free(file_path);
     free(file_title);
@@ -122,19 +101,13 @@ userconfig_sysicons_load(void)
 int
 userconfig_load()
 {
-  FILE           *fd = NULL;
   char            filename[PATH_MAX];
 
-  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/mappings", getenv("HOME"));
-  if ((fd = fopen(filename, "r"))) {
-    userconfig_mappings_load(fd);
-    fclose(fd);
-  }
-  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/applinks", getenv("HOME"));
-  if ((fd = fopen(filename, "r"))) {
-    userconfig_applinks_load(fd);
-    fclose(fd);
-  }
+  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/mapping", getenv("HOME"));
+  userconfig_mappings_load(filename);
+
+  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/launcher", getenv("HOME"));
+  userconfig_applinks_load(filename);
 
   userconfig_sysicons_load();
   /* nothing special */

@@ -1,0 +1,289 @@
+images {
+  image,  "arrow.png" LOSSY 95;
+  image,  "eterm.png" LOSSY 95;
+}
+
+collections {
+  group {
+    name, "Terminal";
+
+    parts {
+      part {
+        name,   "background";
+        type,   RECT;
+        mouse_events, 1;
+
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, 255 255 255 0;
+
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+        }
+      }
+      part {
+        name,   "EngageIcon";
+        type,   IMAGE;
+        mouse_events, 0;
+
+        description {
+          state, "default" 0.0;
+          align, 0.5 0.5;
+
+          color, 255 255 255 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+            to, "background";
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+            to, "background";
+          } 
+          image {
+            normal, "eterm.png";
+          }
+        }
+      } 
+    }
+  }
+  group {
+    name, "Main";
+    min, 32 32;
+    max, 256 256;
+
+    parts {
+      part {
+        name,   "background";
+        type,   RECT;
+        mouse_events, 1;
+
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, 255 255 255 0;
+
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+        }
+      }
+      part {
+        name,   "EngageIcon";
+        type,   RECT;
+        mouse_events, 0;
+
+        description {
+          state, "default" 0.0;
+          align, 0.5 0.5;
+
+          color, 255 255 255 0;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+            to, "background";
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+            to, "background";
+          } 
+        }
+      } 
+      part {
+        name,   "EngageName";
+        type,   TEXT;
+        mouse_events, 0;
+        effect, SOFT_SHADOW;
+        clip_to, "name_clip";
+        description {
+          state, "default" 0.0;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+            to, "name_clip";
+          } rel2 {
+            relative, 1.0 1.0;
+            offset, 0 0;
+            to, "name_clip";
+          }
+          color, 255 255 255 255;
+          color3, 0 0 0 20;
+          text {
+            text, "";
+            font, "VeraBd";
+            size, 7;
+            fit, 0 0;
+            align, 0.5 1.0;
+          }
+        }
+      }
+      part {
+        name, "name_clip";
+        type, RECT;
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          min, 400 25;
+          max, 400 25;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 -30;
+          } rel2 {
+            relative, 1.0 0.0;
+            offset, 0 -5;
+          }
+          color, 255 255 255 0;
+        }
+        description {
+          state, "visible" 0.0;
+          min, 400 25;
+          max, 400 25;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 -30;
+          } rel2 {
+            relative, 1.0 0.0;
+            offset, 0 -5;
+          }
+          color, 255 255 255 255;
+        }
+      }
+      part {
+        name, "arrow.image";
+        type, IMAGE;
+        mouse_events, 0;
+        clip_to, "arrow.image.clip";
+        description {
+          state, "default" 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, -2 2;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, 2 6;
+          }
+          image {
+            normal, "arrow.png";
+          }
+        }
+      }	    
+      part {
+        name, "arrow.image.clip";
+        type, RECT;
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          color, 255 255 255 0;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+            to, "arrow.image";
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+            to, "arrow.image";
+          }
+        }
+        description {
+          state, "visible" 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+            to, "arrow.image";
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, 0 0;
+            to, "arrow.image";
+          }
+        }
+      }	    
+    } /* Close Parts */
+    programs {
+      program {
+        name, "engage_icon_mouse_down";
+        signal, "mouse,down,1";
+        source, "background";
+        action, SIGNAL_EMIT "engage,window,raise" "";
+        in, 0.15 0.0;
+      }
+      program {
+        name, "engage_icon_mouse_down";
+        signal, "mouse,clicked,3";
+        source, "background";
+        action, SIGNAL_EMIT "engage,window,minimize" "";
+      }
+      program {
+        name, "engage_icon_mouse_down";
+        signal, "mouse,up,1";
+        source, "background";
+        action, ACTION_STOP;
+        target, "engage_icon_mouse_down";
+      }
+      program {
+        name, "engage_icon_mouse_clicked";
+        signal, "mouse,down,1";
+        source, "background";
+        action, SIGNAL_EMIT "engage,app,open" "";
+      }
+      program {
+        name, "engage_icon_mouse_in";
+        signal, "mouse,in";
+        source, "background";
+        action, STATE_SET "visible" 0.0;
+        target, "name_clip";
+        transition, ACCELERATE 0.0;
+        in, 0.05 0.0;
+      }
+      program {
+        name, "engage_icon_mouse_in_kill";
+        signal, "mouse,out";
+        source, "background";
+        action, ACTION_STOP;
+        target, "engage_icon_mouse_in";
+      }
+      program {
+        name, "engage_icon_mouse_out";
+        signal, "mouse,out";
+        source, "background";
+        action, STATE_SET "default" 0.0;
+        target, "name_clip";
+        transition, DECELERATE 0.3;
+      }
+      program {
+        name, "engage_arrow_show";
+        signal, "engage,app,opened";
+        source, "";
+        action, STATE_SET "visible" 0.0;
+        transition, SINUSOIDAL 0.75;
+        target, "arrow.image.clip";
+      }
+      program {
+        name, "engage_arrow_hide";
+        signal, "engage,app,closed";
+        source, "";
+        action, STATE_SET "default" 0.0;
+        transition, SINUSOIDAL 0.75;
+        target, "arrow.image.clip";
+      }
+    } /* Close Programs */
+  } /* Close Group */
+} /* Close Coll */

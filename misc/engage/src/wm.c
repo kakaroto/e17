@@ -294,7 +294,8 @@ od_sync_clients(void *data)
       if ((owd = evas_hash_find(clients_hash, buf))) {
         dirty = evas_list_remove(dirty, owd);
         if (!owd->minwin && od_wm_iconified(owd->id)) {
-          owd->minwin = od_icon_new_minwin(owd->id);
+          owd->minwin = od_icon_new_minwin(owd->id, od_wm_get_title(owd->id),
+                                           od_wm_get_winclass(owd->id));
           od_dock_add_minwin(owd->minwin);
         } else if (owd->minwin && !od_wm_iconified(owd->id)) {
           od_dock_del_icon(owd->minwin);
@@ -361,7 +362,6 @@ od_sync_clients(void *data)
 
       while (item) {
         OD_Icon        *applnk = (OD_Icon *) item->data;
-
         if (strcmp(applnk->data.applnk.winclass, winclass) == 0) {
           owd->applnk = applnk;
           break;
@@ -369,14 +369,14 @@ od_sync_clients(void *data)
         item = item->next;
       }
       if (!owd->applnk) {
-        owd->applnk = od_icon_new_applnk("", winclass);
+        owd->applnk = od_icon_new_applnk(od_icon_mapping_get(winclass), title, winclass);
         od_dock_add_applnk(owd->applnk);
       }
       owd->applnk->data.applnk.count++;
       if (owd->applnk->data.applnk.count == 1)
         od_icon_arrow_show(owd->applnk);
       if (od_wm_iconified(owd->id)) {
-        owd->minwin = od_icon_new_minwin(owd->id);
+        owd->minwin = od_icon_new_minwin(owd->id, title, winclass);
         od_dock_add_minwin(owd->minwin);
       }
 #ifdef HAVE_IMLIB

@@ -287,10 +287,6 @@ handle_mouse_down(void *data, Evas * e, Evas_Object * obj, void *event)
         item = evas_list_next(item);
       }
     }
-  } else if (icon->type == docked_icon) {
-    if (ev->button == 1) {
-      system(icon->data.dicon.command);
-    }
   } else if (icon->type == minimised_window) {
     if (ev->button == 1) {
       od_wm_activate_window(icon->data.minwin.window);

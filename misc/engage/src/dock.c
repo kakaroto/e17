@@ -23,7 +23,7 @@ od_dock_init()
   int             y;
   int             i;
 
-  dock.icons = dock.applnks = dock.dicons = dock.sysicons = dock.minwins = NULL;
+  dock.icons = dock.applnks = dock.sysicons = dock.minwins = NULL;
   dock.state = unzoomed;
   dock.zoom = 1.0;
   dock.x = 400.0;
@@ -81,12 +81,12 @@ od_dock_reposition()
       width += options.size * icon->scale + options.spacing;
       item = item->next;
     }
-    if (dock.dicons || dock.minwins)
+    if (dock.minwins)
       width += options.spacing + 1.0;   // separator
     if (dock.sysicons)
       width += options.spacing + 1.0;   // another spacer
   }
-  width += tray_width + 4;
+  width += tray_width + 8;
 
 #define POSITION(__icons) \
 		{ \
@@ -107,7 +107,6 @@ od_dock_reposition()
   x += 0.5 * options.spacing;
   dock.middle_pos = x;
   x += 1.0 + 0.5 * options.spacing;
-  POSITION(dock.dicons);
   POSITION(dock.minwins);
   x += 0.5 * options.spacing; 
   dock.middle2_pos = x;
@@ -185,7 +184,7 @@ od_dock_redraw(Ecore_Evas * ee)
                      options.height - options.size - 2.0 * options.arrow_size);
     evas_object_move(dock.background[OD_BG_RIGHT], dock.right_end,
                      options.height - options.size - 2.0 * options.arrow_size);
-    if (dock.dicons || dock.minwins) {
+    if (dock.minwins) {
       evas_object_move(dock.background[OD_BG_MIDDLE], middle,
                        options.height - options.size -
                        2.0 * options.arrow_size);
@@ -258,15 +257,6 @@ od_dock_add_applnk(OD_Icon * applnk)
   dock.applnks = evas_list_append(dock.applnks, applnk);
   applnk->state |= OD_ICON_STATE_USEABLE;
   applnk->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, applnk);
-}
-
-void
-od_dock_add_dicon(OD_Icon * dicon)
-{
-  dock.icons = evas_list_append(dock.icons, dicon);
-  dock.dicons = evas_list_append(dock.dicons, dicon);
-  dicon->state |= OD_ICON_STATE_USEABLE;
-  dicon->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, dicon);
 }
 
 void
@@ -385,9 +375,6 @@ od_dock_icon_disappear(void *data)
     switch (icon->type) {
     case application_link:
       dock.applnks = evas_list_remove(dock.applnks, icon);
-      break;
-    case docked_icon:
-      dock.dicons = evas_list_remove(dock.dicons, icon);
       break;
     case system_icon:
       dock.sysicons = evas_list_remove(dock.sysicons, icon);

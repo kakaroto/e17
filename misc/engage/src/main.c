@@ -39,6 +39,7 @@ main(int argc, char **argv)
     ecore_shutdown();
     exit(0);
   }
+  e_app_init();
 
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
   ecore_evas_init();
@@ -66,6 +67,7 @@ main(int argc, char **argv)
   edje_shutdown();
   ewl_shutdown();
   ecore_evas_shutdown();
+  e_app_shutdown();
   ecore_config_save();
   ecore_config_shutdown();
   ecore_x_shutdown();

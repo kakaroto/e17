@@ -1,4 +1,4 @@
-THEMES = gentoo
+THEMES = gentoo none
 EDCS = $(THEMES:%=%.edc)
 EETS = $(THEMES:%=%.eet)
 SUFFIXES = .edc .eet
@@ -12,6 +12,6 @@ theme_DATA = $(EETS)
 all: $(EDCS)
 
 .edc.eet:
-	edje_cc -v -id $(THEMES)/images $< $@
+	edje_cc -v -id $(<:%.edc=%)/images $< $@
 
 

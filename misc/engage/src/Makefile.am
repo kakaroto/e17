@@ -21,7 +21,10 @@ icon.c \
 wm.c \
 window.c \
 tray.c \
-userconfig.c
+userconfig.c \
+e17_tmp/e_object.c \
+e17_tmp/e_file.c \
+e17_tmp/e_apps.c
 
 
 engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @ewl_libs@ \

@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "e17_tmp/e.h"
+
 typedef enum { false = 0, true = 1 } bool;
 typedef struct _OD_Options OD_Options;
 typedef struct _OD_Window OD_Window;
@@ -30,6 +32,8 @@ extern Ecore_X_Window od_window;
 extern bool     need_redraw;
 extern int      tray_width;
 
+extern E_App   *od_unmatched_app;
+
 int             od_config_init();
 void            od_config_menu_draw(Evas_Coord x, Evas_Coord y);
 
@@ -39,7 +43,6 @@ void            od_window_unhide();
 
 void            od_dock_init();
 void            od_dock_add_applnk(OD_Icon * applnk);
-void            od_dock_add_dicon(OD_Icon * dicon);
 void            od_dock_add_minwin(OD_Icon * minwin);
 void            od_dock_del_icon(OD_Icon * icon);
 void            od_dock_redraw(Ecore_Evas * ee);
@@ -49,14 +52,11 @@ void            od_dock_zoom_out();
 void            od_tray_init();
 void            od_tray_move(double x);
 
-void            od_icon_mapping_add(const char *winclass, const char *name,
-                                    const char *icon_name);
-OD_Icon        *od_icon_new_applnk(const char *command, const char *winclass);
-OD_Icon        *od_icon_new_dicon(const char *command, const char *name,
-                                  const char *icon_name);
-OD_Icon        *od_icon_new_sysicon(const char *name, const char *icon_path,
-                                    Ecore_X_Window win);
-OD_Icon        *od_icon_new_minwin(Ecore_X_Window win);
+void            od_icon_mapping_add(E_App *app);
+E_App          *od_icon_mapping_get(const char *winclass);
+OD_Icon        *od_icon_new_applnk(E_App *app, char *name_override, char *class_override);
+OD_Icon        *od_icon_new_sysicon(const char *name, const char *icon_path);
+OD_Icon        *od_icon_new_minwin(Ecore_X_Window win, char *name_override, char *class_override);
 
 void            od_icon_grab(OD_Icon * icon, Ecore_X_Window win);
 void            od_icon_reload(OD_Icon * in);
@@ -108,7 +108,7 @@ struct _OD_Window {
 #define OD_BG_MIDDLE 3
 #define OD_BG_MIDDLE2 4
 struct _OD_Dock {
-  Evas_List      *icons, *applnks, *dicons, *minwins, *sysicons;
+  Evas_List      *icons, *applnks, *minwins, *sysicons;
   enum { unzoomed, zooming, zoomed, unzooming } state;
   double          zoom;
   double          x;            // current pointer x position
@@ -130,16 +130,13 @@ struct _OD_Icon {
   double          scale;
   double          start_time;
   Ecore_Timer    *appear_timer;
-  enum { application_link, docked_icon, minimised_window, system_icon } type;
+  enum { application_link, minimised_window, system_icon } type;
   union {
     struct {
       char           *command;
       char           *winclass;
       int             count;
     } applnk;
-    struct {
-      char           *command;
-    } dicon;
     struct {
       Ecore_X_Window  window;
     } minwin;

@@ -11,10 +11,20 @@ Then to compile:
 To install (run this as root, or the user who handles installs):
     make install
 
-you must then copy engageapplinks to ~/.e/apps/engage/applinks
-and engagemappings to ~/.e/apps/engage/mappings
+you need to make ~/.e/apps/engage/launcher/ and ~/.e/apps/engage/mapping/
+use the build_icon.sh script to build icon files to populate the two directories.
+These icons are compatible with the upcoming e17 e_app icons with some
+modifications agreed with raster.
 
-you may wish to edit those two files to your liking
+The launcher directory should have icons placed in it that will always appear
+on the bar. the mapping directory should contain icons for mapping application
+windows to icons on the bar.
+
+Unmatched windows will pick up the xapp.eet in the shared directory which has
+no icon - _unless_ the theme overrides this icon!
+
+Try using the "none" theme to start with and the "gentoo" theme for a nice
+effect (both included) use "engage -t gentoo".
 
 for animations such as a clock create a directory called
 ~/.e/apps/engage/sysicons and put in this your favourite animations
