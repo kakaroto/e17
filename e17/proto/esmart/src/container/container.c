@@ -77,12 +77,31 @@ void e_container_padding_get(Evas_Object *container, double *l, double *r,
 void e_container_scroll(Evas_Object *container, int val)
 {
   Container *cont;
+  double size, length, pad, max_scroll;
   
-  if((cont = _container_fetch(container)))
-  {
-      cont->scroll_offset += val; 
-      _container_elements_fix(cont);
-  }
+  if(!(cont = _container_fetch(container)))
+    return;
+
+  length = e_container_elements_length_get(container);
+  size = cont->direction ? cont->h : cont->w;
+
+  /* don't scroll unless the elements exceed the size of the container */
+  if (length <= size)
+    return;
+
+  pad = cont->direction ? cont->padding.t + cont->padding.b :
+                              cont->padding.l + cont->padding.r;
+  max_scroll = size - length - pad;
+
+  cont->scroll_offset += val;
+  
+  /* don't scroll beyond the top/bottom */
+  if (cont->scroll_offset < max_scroll)
+    cont->scroll_offset = max_scroll;
+  else if (cont->scroll_offset > 0)
+    cont->scroll_offset = 0;
+  
+  _container_elements_fix(cont);
 }
 
 void e_container_scroll_offset_set(Evas_Object *container, int scroll_offset)
