@@ -626,8 +626,8 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	node = EWL_TREE_NODE(c);
 
-	if (!ecore_list_nodes(c->children))
-		node->row = w;
+	if (ecore_list_nodes(c->children) > 1)
+		ewl_widget_set_state(EWL_WIDGET(c), "expandable");
 
 	if (node->expanded || w == node->row) {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
@@ -651,6 +651,9 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	node = EWL_TREE_NODE(c);
+
+	if (ecore_list_nodes(c->children) < 2)
+		ewl_widget_set_state(EWL_WIDGET(c), "flat");
 
 	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) -
 				   ewl_object_get_preferred_h(EWL_OBJECT(w)));

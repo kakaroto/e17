@@ -11,6 +11,7 @@ images {
 #include "default/bits/misc-images.edc"
 #include "default/bits/progressbar-images.edc"
 #include "default/bits/scrollbar-images.edc"
+#include "default/bits/tree-images.edc"
 #include "default/bits/window-images.edc"
 }
 
@@ -53,6 +54,7 @@ data {
 	item, "/theme/name" "winter";
 	item, "/tooltip/group" "dialog";
 	item, "/tree/group" "tree";
+	item, "/node/group" "treenode";
 	item, "/vscrollbar/button_decrement/group" "vscroll-down";
 	item, "/vscrollbar/button_increment/group" "vscroll-up";
 	item, "/vseeker/group" "vtrough";
@@ -75,7 +77,7 @@ collections {
 #include "default/bits/button-groups.edc"
 #include "default/bits/menu-groups.edc"
 #include "default/bits/checkbox-groups.edc"
-#if 1
+#include "default/bits/tree-groups.edc"
 #include "default/bits/entry-groups.edc"
 #include "default/bits/filedialog-groups.edc"
 #include "default/bits/misc-groups.edc"
@@ -83,5 +85,4 @@ collections {
 #include "default/bits/radio-groups.edc"
 #include "default/bits/scrollbar-groups.edc"
 #include "default/bits/window-groups.edc"
-#endif
 }
