@@ -1015,6 +1015,20 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      {
 	switch (event->data.l[2])
 	  {
+	  case _NET_WM_MOVERESIZE_SIZE_TOPLEFT:
+	  case _NET_WM_MOVERESIZE_SIZE_TOP:
+	  case _NET_WM_MOVERESIZE_SIZE_TOPRIGHT:
+	  case _NET_WM_MOVERESIZE_SIZE_RIGHT:
+	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT:
+	  case _NET_WM_MOVERESIZE_SIZE_BOTTOM:
+	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT:
+	  case _NET_WM_MOVERESIZE_SIZE_LEFT:
+	     ActionsCall(ACTION_RESIZE, ewin, NULL);
+	     break;
+	  case _NET_WM_MOVERESIZE_MOVE:
+	     ActionsCall(ACTION_MOVE, ewin, NULL);
+	     break;
+
 	  case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:
 	     /* doResize(NULL); */
 	     break;
