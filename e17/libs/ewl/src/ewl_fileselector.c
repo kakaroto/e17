@@ -286,10 +286,10 @@ char *ewl_fileselector_path_up_get(char *path)
 	char *new_path;
 	int l;
 
-	if ((!path) || (strlen(path) == 0))
+	if (!path || (l = strlen(path)) == 0)
 		return NULL;
 
-	l = strlen(path) - 1;
+	l--;
 	if (path[l] == '/')
 		l--;
 

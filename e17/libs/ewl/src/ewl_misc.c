@@ -252,6 +252,8 @@ int ewl_idle_render(void *data)
 	if (ecore_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+	edje_freeze();
+
 	/*
 	 * Clean out the unused widgets first, to avoid them being drawn or
 	 * unnecessary work done from configuration. Then display new widgets,
@@ -285,11 +287,8 @@ int ewl_idle_render(void *data)
 		if (REALIZED(emb) && emb->evas) {
 			evas_event_thaw(emb->evas);
 			evas_render(emb->evas);
-			evas_event_freeze(emb->evas);
 		}
 	}
-
-	edje_freeze();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 	data = NULL;
