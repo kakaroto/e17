@@ -1,5 +1,5 @@
 %define	name	edb
-%define	ver	1.0.2
+%define	ver	1.0.3
 %define	rel	1
 %define prefix  /usr
 
