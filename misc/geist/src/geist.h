@@ -28,7 +28,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-
+#include "config.h"
 #include "debug.h"
 #include "structs.h"
 #include "utils.h"

@@ -17,15 +17,6 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* Handle the case that config.h wasn't generated */
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#else
-#  define PACKAGE "geist"
-#  define VERSION "unknown"
-#  define PACKAGE_LOCALE_DIR PREFIX"/share/locale"
-#endif
-
 #include <gtk/gtk.h>
 
 #include "utils.h"

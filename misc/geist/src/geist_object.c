@@ -21,7 +21,6 @@ void geist_object_init(geist_object *obj)
    memset(obj, 0, sizeof(geist_object));
    obj->free = geist_object_int_free;
    obj->render = geist_object_render;
-   obj->type = TYPE_OBJECT;
    obj->sizemode = SIZEMODE_ZOOM; 
    
    D_RETURN_(5);
