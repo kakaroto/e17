@@ -1,11 +1,10 @@
 BUGS:
 kainx: translucent and group window moves if move != opaque - fix :)
+raster: handling exposes during move and resize modes > 0 (dont do it)
+raster: all buttons that launch menus done unpress
 raster: must update dox docs fully
 raster: group properties are not remembered :(
-raster: double "close sound" playing atthe moment - fix.
-raster: all buttons that launch menus done unpress
 raster: in E-docs interactive.sh gets hosed on make clean
-raster: handling exposes during move and resize modes > 0 (dont do it)
 mark: grab cursor and confine to root window when moving windows / resizing.
 
 FEATURES:

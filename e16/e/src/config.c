@@ -3,6 +3,31 @@
 
 static char         is_autosave = 0;
 
+static void         SkipTillEnd(FILE * ConfigFile);
+
+#define SKIP_If_EXISTS(name, type) \
+if (FindItem(name, 0, LIST_FINDBY_NAME, type)) \
+{\
+SkipTillEnd(ConfigFile);\
+return;\
+}
+
+static void
+SkipTillEnd(FILE * ConfigFile)
+{
+   char                s[FILEPATH_LEN_MAX];
+   int                 i1, i2, fields;
+
+   while (GetLine(s, sizeof(s), ConfigFile))
+     {
+	fields = sscanf(s, "%i %i", &i1, &i2);
+	if (i1 == CONFIG_CLOSE)
+	   return;
+	if (i2 == CONFIG_OPEN)
+	   SkipTillEnd(ConfigFile);
+     }
+}
+
 char               *
 GetLine(char *s, int size, FILE * f)
 {
@@ -172,7 +197,6 @@ Config_Text(FILE * ConfigFile)
    TextState          *ts = NULL;
    int                 fields;
 
-   tc = CreateTclass();
    while (GetLine(s, sizeof(s), ConfigFile))
      {
 	s2[0] = 0;
@@ -203,8 +227,8 @@ Config_Text(FILE * ConfigFile)
 	     AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
 	     return;
 	  case CONFIG_CLASSNAME:
-	     if (tc->name)
-		Efree(tc->name);
+	     SKIP_If_EXISTS(s2, LIST_TYPE_TCLASS);
+	     tc = CreateTclass();
 	     tc->name = duplicate(s2);
 	     break;
 	  case TEXT_ORIENTATION:
@@ -279,6 +303,7 @@ Config_Text(FILE * ConfigFile)
 	     ts->fontname = duplicate(s2);
 	     ts->style.mode = MODE_VERBATIM;
 	     break;
+
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
 	     tc->sticky_active.clicked = ts = CreateTextState();
 	     ts->fontname = duplicate(s2);
@@ -1171,6 +1196,7 @@ Config_Border(FILE * ConfigFile)
 		  break;
 	       case CONFIG_CLASSNAME:
 	       case BORDER_NAME:
+		  SKIP_If_EXISTS(s2, LIST_TYPE_BORDER);
 		  b = CreateBorder(s2);
 		  break;
 	       case BORDER_GROUP_NAME:
@@ -1725,6 +1751,7 @@ Config_ECursor(FILE * ConfigFile)
 		Efree(file);
 	     return;
 	  case CONFIG_CLASSNAME:
+	     SKIP_If_EXISTS(s2, LIST_TYPE_ECURSOR);
 	     if (name)
 		Efree(name);
 	     name = duplicate(s2);
@@ -2192,6 +2219,7 @@ Config_ImageClass(FILE * ConfigFile)
 	     break;
 	  case CONFIG_CLASSNAME:
 	  case ICLASS_NAME:
+	     SKIP_If_EXISTS(s2, LIST_TYPE_ICLASS);
 	     ic = CreateIclass();
 	     ic->name = duplicate(s2);
 	     break;
@@ -2370,6 +2398,7 @@ Config_ColorModifier(FILE * ConfigFile)
 
 	     return;
 	  case CONFIG_CLASSNAME:
+	     SKIP_If_EXISTS(s2, LIST_TYPE_COLORMODIFIER);
 	     name = duplicate(s2);
 	     break;
 	  case COLORMOD_RED:
@@ -2610,6 +2639,7 @@ Config_ToolTip(FILE * ConfigFile)
 		AddItem(tt, tt->name, 0, LIST_TYPE_TOOLTIP);
 	     return;
 	  case CONFIG_CLASSNAME:
+	     SKIP_If_EXISTS(s2, LIST_TYPE_TOOLTIP);
 	     name = duplicate(s2);
 	     break;
 	  case TOOLTIP_DRAWICLASS:
@@ -2958,7 +2988,7 @@ FILE               *
 OpenConfigFileForReading(char *path, char preprocess)
 {
    /* This function will open a file at location path for */
-   /* reading.  If the file is executable it will execute the file */
+   /* reading. */
    /* All output is passed through epp for preprocessing however. */
    FILE               *fpin /*, *fpout */ ;
    char                execline[FILEPATH_LEN_MAX];
@@ -2967,47 +2997,7 @@ OpenConfigFileForReading(char *path, char preprocess)
    EDBUG(5, "OpenConfigFileForReading");
    if (!path)
       EDBUG_RETURN(0);
-/* FIXME: DISABLED - seems to be giving lots of people problems  
- * if ((canexec(path)) &&
- * ((owner(path) == (int)getuid()) || (owner(path) == owner(command)) ||
- * (owner(path) == 0)))
- * {
- * {
- * if ((fpin = popen(path, "r")) == NULL)
- * Alert("The config file:\n"
- * "%s\n"
- * "Is executable but an error occurred whilst attempting\n"
- * "to execute it and read its output.\n"
- * "Enlightenment will skip reading this file.\n", path);
- * else
- * {
- * Esnprintf(newfile, sizeof(newfile),
- * "/tmp/e_temp_theme_%i-%i-%i-%i-%i",
- * rand(), time(NULL), getpid(), getppid());
- * if ((fpout = fopen(newfile, "w")) == NULL)
- * Alert("Enlightenment is attempting to write to a temporary file:\n"
- * "%s\n"
- * "There was an error trying to write to it.\n"
- * "Enlightenment will not read this file now.\n", newfile);
- * else
- * {
- * while (GetLine(line, FILEPATH_LEN_MAX, fpin) != NULL)
- * {
- * if (fputs(line, fpout) == EOF)
- * Alert("Enlightenment is attempting to write to a temporary file:\n"
- * "%s\n"
- * "There was an error trying to write to it.\n"
- * "Enlightenment will not read this file now.\n", newfile);
- * }
- * }
- * cfg_tmpfile = duplicate(newfile);
- * pclose(fpin);
- * fclose(fpout);
- * path = newfile;
- * }
- * }
- * }
- */
+
    if (preprocess)
      {
 	char               *def_home, *def_user, *def_shell, *s;
@@ -3117,25 +3107,15 @@ LoadConfigFile(char *f)
    Esnprintf(s, sizeof(s), "cached/cfg/%s.preparsed", s2);
 
    if (strstr(f, "control.cfg"))
-     {
-	notheme = 1;
-     }
+      notheme = 1;
    else if (strstr(f, "menus.cfg"))
-     {
-	notheme = 1;
-     }
+      notheme = 1;
    else if (strstr(f, "keybindings.cfg"))
-     {
-	notheme = 1;
-     }
+      notheme = 1;
    if (notheme)
-     {
-	ppfile = FindNoThemeFile(s);
-     }
+      ppfile = FindNoThemeFile(s);
    else
-     {
-	ppfile = FindFile(s);
-     }
+      ppfile = FindFile(s);
 
    if (!ppfile)
      {
@@ -3145,9 +3125,7 @@ LoadConfigFile(char *f)
 	   file = FindFile(f);
      }
    if ((ppfile) && (exists(ppfile)) && (moddate(file) < moddate(ppfile)))
-     {
-	ConfigFile = OpenConfigFileForReading(ppfile, 0);
-     }
+      ConfigFile = OpenConfigFileForReading(ppfile, 0);
    else
       ConfigFile = OpenConfigFileForReading(file, 1);
    if (ppfile)
@@ -3473,17 +3451,23 @@ LoadEConfig(char *themelocation)
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",
+	 "backup-textclasses.cfg",
 	 "colormodifiers.cfg",
+	 "backup-colormodifiers.cfg",
 	 "imageclasses.cfg",
+	 "backup-imageclasses.cfg",
 	 "sound.cfg",
 	 "desktops.cfg",
 	 "actionclasses.cfg",
 	 "cursors.cfg",
+	 "backup-cursors.cfg",
 	 "buttons.cfg",
 	 "slideouts.cfg",
 	 "borders.cfg",
+	 "backup-borders.cfg",
 	 "windowmatches.cfg",
 	 "tooltips.cfg",
+	 "backup-tooltips.cfg",
 	 "menustyles.cfg",
 	 "keybindings.cfg",
 	 "...e_autosave.cfg",
@@ -3632,99 +3616,55 @@ SaveUserControlConfig(FILE * autosavefile)
 		       /* modifier */
 		       mod = 0;
 		       if (aa->modifiers == (ControlMask))
-			 {
-			    mod = 902;
-			 }
+			  mod = 902;
 		       else if (aa->modifiers == (Mod1Mask))
-			 {
-			    mod = 903;
-			 }
+			  mod = 903;
 		       else if (aa->modifiers == (Mod2Mask))
-			 {
-			    mod = 904;
-			 }
+			  mod = 904;
 		       else if (aa->modifiers == (Mod3Mask))
-			 {
-			    mod = 905;
-			 }
+			  mod = 905;
 		       else if (aa->modifiers == (Mod4Mask))
-			 {
-			    mod = 906;
-			 }
+			  mod = 906;
 		       else if (aa->modifiers == (Mod5Mask))
-			 {
-			    mod = 907;
-			 }
+			  mod = 907;
 		       else if (aa->modifiers == (ShiftMask))
-			 {
-			    mod = 900;
-			 }
+			  mod = 900;
 		       else if (aa->modifiers == (ControlMask | Mod1Mask))
-			 {
-			    mod = 910;
-			 }
+			  mod = 910;
 		       else if (aa->modifiers == (ShiftMask | ControlMask))
-			 {
-			    mod = 911;
-			 }
+			  mod = 911;
 		       else if (aa->modifiers == (ShiftMask | Mod1Mask))
-			 {
-			    mod = 912;
-			 }
+			  mod = 912;
 		       else if (aa->modifiers == (ShiftMask | ControlMask
 						  | Mod1Mask))
-			 {
-			    mod = 913;
-			 }
+			  mod = 913;
 		       else if (aa->modifiers == (ControlMask | Mod4Mask))
-			 {
-			    mod = 914;
-			 }
+			  mod = 914;
 		       else if (aa->modifiers == (ShiftMask | Mod4Mask))
-			 {
-			    mod = 915;
-			 }
+			  mod = 915;
 		       else if (aa->modifiers == (ControlMask | ShiftMask
 						  | Mod4Mask))
-			 {
-			    mod = 916;
-			 }
+			  mod = 916;
 		       else if (aa->modifiers == (ControlMask | Mod5Mask))
-			 {
-			    mod = 917;
-			 }
+			  mod = 917;
 		       else if (aa->modifiers == (ShiftMask | Mod5Mask))
-			 {
-			    mod = 918;
-			 }
+			  mod = 918;
 		       else if (aa->modifiers == (ControlMask | ShiftMask
 						  | Mod5Mask))
-			 {
-			    mod = 919;
-			 }
+			  mod = 919;
 		       else if (aa->modifiers == (Mod2Mask | ShiftMask))
-			 {
-			    mod = 920;
-			 }
+			  mod = 920;
 		       else if (aa->modifiers == (Mod2Mask | ControlMask))
-			 {
-			    mod = 921;
-			 }
+			  mod = 921;
 		       else if (aa->modifiers == (Mod2Mask | Mod1Mask))
-			 {
-			    mod = 922;
-			 }
+			  mod = 922;
 		       fprintf(autosavefile, "101 %i\n", mod);
 		       /* action */
 		       if (aa->action->params)
-			 {
-			    fprintf(autosavefile, "104 %i %s\n", aa->action->Type,
-				    (char *)aa->action->params);
-			 }
+			  fprintf(autosavefile, "104 %i %s\n", aa->action->Type,
+				  (char *)aa->action->params);
 		       else
-			 {
-			    fprintf(autosavefile, "104 %i\n", aa->action->Type);
-			 }
+			  fprintf(autosavefile, "104 %i\n", aa->action->Type);
 		    }
 	       }
 	     fprintf(autosavefile, "1000\n");

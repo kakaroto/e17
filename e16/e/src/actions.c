@@ -1359,7 +1359,6 @@ doKill(void *params)
    int                 num, i;
 
    EDBUG(6, "doKill");
-
    if (params)
       ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
 		      LIST_TYPE_EWIN);
@@ -1367,18 +1366,17 @@ doKill(void *params)
       ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
-
-   AUDIO_PLAY("SOUND_WINDOW_CLOSE");
-
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, &num);
-   for (i = 0; i < num; i++)
+   if (gwins)
      {
-	RemoveEwinFromGroup(gwins[i]);
-	ICCCM_Delete(gwins[i]);
-	ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0,
-			     LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	for (i = 0; i < num; i++)
+	  {
+	     RemoveEwinFromGroup(gwins[i]);
+	     ICCCM_Delete(gwins[i]);
+	     AUDIO_PLAY("SOUND_WINDOW_CLOSE");
+	  }
+	Efree(gwins);
      }
-   Efree(gwins);
    EDBUG_RETURN(0);
 }
 
