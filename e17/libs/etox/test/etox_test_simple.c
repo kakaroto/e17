@@ -9,7 +9,6 @@
 #define MAX_EVAS_COLORS (216)
 #define MAX_FONT_CACHE (512 * 1024)
 #define MAX_IMAGE_CACHE (1 * (1024 * 1024))
-#define FONT_DIRECTORY "./fnt/"
 #define RENDER_ENGINE RENDER_METHOD_ALPHA_SOFTWARE
 
 /* the obstacle's coords */
@@ -55,7 +54,7 @@ void setup(void)
 
   evas = evas_new_all(e_display_get(), win, 0, 0, 400, 400, render_method,
 		      MAX_EVAS_COLORS, MAX_FONT_CACHE, MAX_IMAGE_CACHE,
-		      FONT_DIRECTORY);
+		      PACKAGE_DATA_DIR"/fnt");
 
   ewin = evas_get_window(evas);
 
@@ -141,7 +140,7 @@ main(int argc, char *argv[])
   etox_resize(e, 380, 380);
   etox_set_font(e, "notepad", 10);
 
-  etox_style_add_path(PACKAGE_DATA_DIR"/etox/style");
+  etox_style_add_path(PACKAGE_DATA_DIR"/style");
   etox_style_add_path("./style");
 
   s = etox_style_new("plain");
@@ -154,8 +153,14 @@ main(int argc, char *argv[])
   etox_color_set_member(c, "sh", 70, 90, 80, 255);
   etox_color_set_member(c, "ol", 70, 90, 80, 255);
 
-  etox_set_text(e, ET_TEXT("This is just a test string.. some lame "
-	"copied stuff actually..\n\n "), ET_STYLE(s),
+  /* Remeber, this is a _test_ program, not an example program.
+   * You should keep the amount of ET_TEXT's as low as possible in 
+   * a real prog..
+   */
+
+  etox_set_text(e, 
+    ET_TEXT("This is just a test string.. some lame "
+    "copied stuff actually..\n\n "), ET_STYLE(s),
     ET_ALIGN(ETOX_ALIGN_TYPE_CENTER, ETOX_ALIGN_TYPE_RIGHT),
     ET_TEXT("As a result of meeting requests from users, Enlightenment over "),
     ET_TEXT("time has done some nasty hacks, but now for the development of "),
@@ -172,6 +177,7 @@ main(int argc, char *argv[])
 
   etox_show(e);
 
+  /* this is useless.. just for testing.. */
   etox_set_alpha(e, 255);
 
   printf("Text: %s\n", etox_get_text(e));

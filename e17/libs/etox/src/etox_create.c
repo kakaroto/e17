@@ -1,6 +1,9 @@
 #include "Etox_private.h"
 #include "Etox.h"
 
+int __check_if_fits(Etox e, Etox_Font font, char *str, double w,
+                    double offset);
+
 static void
 __create_etox_objects(Etox e, Etox_All_Bits bits,
                       double *x, double *y, double *w, double *h);
@@ -12,9 +15,21 @@ __create_etox_objects(Etox e, Etox_All_Bits bits,
                       double *x, double *y, double *w, double *h)
 {
   Etox_Object et_obj;
-  char *todo, *p;
+  char *todo, *p, *q;
 
   todo = strdup(bits->text->str);
+
+  /* If the first word doesn't fit in the etox, then nothing will.. */
+  p = etox_str_remove_beginning_spaces(todo);
+  q = p;
+  if (strstr(p, " "))
+    for ( ; *q != ' '; *q++);
+  if (!__check_if_fits(e, bits->font, q, *w, bits->style->offset_w))
+    {
+      IF_FREE(p);
+      IF_FREE(todo);   
+      return;
+    }
 
   et_obj = _etox_object_new(*x, *y, bits);
   et_obj->str = strdup(todo);
@@ -282,7 +297,7 @@ _etox_create_etox_objects(Etox e)
 	      __create_etox_objects(e, &bits, &x, &y, &w, &h);
 	      break;
 	    default:
-	      D_PRINT("Error while creating (1)..\n");
+	      D_PRINT("Error while creating (1) [bit->type %d]..\n", bit->type);
 	      break;
 	    }
 	}
@@ -311,7 +326,7 @@ _etox_create_etox_objects(Etox e)
 	      bits.style = e->def.style;
 	      break;
 	    default:
-	      D_PRINT("Error while creating (2)..\n");
+	      D_PRINT("Error while creating (2) [bit->type %d]..\n", bit->type);
 	      break;
 	    }
 	}

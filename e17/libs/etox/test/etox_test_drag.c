@@ -110,7 +110,7 @@ main(int argc, char *argv[])
 	       PointerMotionMask | ExposureMask | StructureNotifyMask);
   XMapWindow(disp, win);
 
-  etox_style_add_path(PACKAGE_DATA_DIR"/etox/style");
+  etox_style_add_path(STLDIR);
   etox_style_add_path("./style");
 
   o[0] = evas_add_rectangle(e);

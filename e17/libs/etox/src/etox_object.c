@@ -1,10 +1,10 @@
 #include "Etox_private.h"
 #include "Etox.h"
 
-static int __check_if_fits(Etox e, Etox_Font font, char *str, double w,
-                           double offset);
+int __check_if_fits(Etox e, Etox_Font font, char *str, double w,
+                    double offset);
 
-static int
+int
 __check_if_fits(Etox e, Etox_Font font, char *str, double w, double
 offset)
 {
