@@ -1,3 +1,8 @@
+Thu Oct 26 20:37:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Patch from richlowe to show countdown with delay (-c,
+	--count). Cheers bud.
+
 Thu Oct 26 15:22:22 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -d, --delay option to wait before shooting.

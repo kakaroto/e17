@@ -48,11 +48,12 @@ init_parse_options(int argc, char **argv)
 static void
 feh_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "d:e:hv+:";
+   static char stropts[] = "d:e:hcv+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
       {"version", 0, 0, 'v'},               /* okay */
+      {"count", 0, 0, 'c'},
       /* toggles */
       {"delay", 1, 0, 'd'},
       {"exec", 1, 0, 'e'},
@@ -85,6 +86,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '+':
            opt.debug_level = atoi(optarg);
+           break;
+        case 'c':
+           opt.countdown = 1;
            break;
         default:
            break;
@@ -136,6 +140,7 @@ show_usage(void)
            PACKAGE " for more details\n"
            "  -h, --help                display this help and exit\n"
            "  -v, --version             output version information and exit\n"
+           "  -c, --count               show a countdown before taking the shot\n"
            "  -d, --delay NUM           wait NUM seconds before taking a shot\n"
            "  -e, --exec APP            run APP on the resulting screenshot\n"
            "\n"

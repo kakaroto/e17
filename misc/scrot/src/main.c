@@ -42,8 +42,22 @@ main(int argc, char **argv)
    if(!opt.output_file)
       show_mini_usage();
 
-   if(opt.delay)
-      sleep(opt.delay);
+   if(opt.delay) {
+      if(opt.countdown) {
+         int i;
+         printf("Taking shot in %d.. ", opt.delay);
+         fflush(stdout);
+         sleep(1);
+         for(i = opt.delay - 1; i > 0; i--) {
+            printf("%d.. ", i);
+            fflush(stdout);
+            sleep(1);
+         }
+         printf("0.\n");
+      } else {
+         sleep(opt.delay);
+      }
+   }
 
    image = scrot_grab_shot();
 

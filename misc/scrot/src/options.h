@@ -30,6 +30,7 @@ struct __scrotoptions
 {
    int debug_level;
    int delay;
+   int countdown;
 
    char *output_file;
    char *exec;
