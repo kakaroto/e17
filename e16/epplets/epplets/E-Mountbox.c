@@ -272,6 +272,8 @@ Callback_ConfigAdd(void *data)
     {
       ConfigShowMore();
     }
+  ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
+		       Epplet_textbox_contents(tbox_file));
   AddMountPointType(NULL, NULL);
   current_type = types;
   Epplet_reset_textbox(tbox_key);
