@@ -1,7 +1,8 @@
-images
+/* images
 {
     image, "regan_kireilis_photo.jpg"	LOSSY 90;
 }
+*/
 
 collections
 {
@@ -31,10 +32,11 @@ collections
 			relative, 1.0 1.0;
 			offset, 0 0;
 		    }
-		    image
+/*		    image
 		    {
 			normal, "regan_kireilis_photo.jpg";
 		    }
+*/
 		}
 	    }
 	}
