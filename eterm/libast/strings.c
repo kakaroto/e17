@@ -145,7 +145,7 @@ regexp_match(register const char *str, register const char *pattern)
   if (pattern) {
     if ((result = regcomp(rexp, pattern, REG_EXTENDED)) != 0) {
       regerror(result, rexp, errbuf, 256);
-      fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+      print_error("Unable to compile regexp %s -- %s.\n", pattern, errbuf);
       return (FALSE);
     }
   }
@@ -153,7 +153,7 @@ regexp_match(register const char *str, register const char *pattern)
   if (((result = regexec(rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))
        != 0) && (result != REG_NOMATCH)) {
     regerror(result, rexp, errbuf, 256);
-    fprintf(stderr, "Error testing input string %s -- %s.\n", str, errbuf);
+    print_error("Error testing input string %s -- %s.\n", str, errbuf);
     return (FALSE);
   }
   return (!result);
@@ -173,7 +173,7 @@ regexp_match_r(register const char *str, register const char *pattern, register 
   if (pattern) {
     if ((result = regcomp(*rexp, pattern, REG_EXTENDED)) != 0) {
       regerror(result, *rexp, errbuf, 256);
-      fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+      print_error("Unable to compile regexp %s -- %s.\n", pattern, errbuf);
       FREE(*rexp);
       return (FALSE);
     }
@@ -182,7 +182,7 @@ regexp_match_r(register const char *str, register const char *pattern, register 
   if (((result = regexec(*rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))
        != 0) && (result != REG_NOMATCH)) {
     regerror(result, *rexp, errbuf, 256);
-    fprintf(stderr, "Error testing input string %s -- %s.\n", str, errbuf);
+    print_error("Error testing input string %s -- %s.\n", str, errbuf);
     return (FALSE);
   }
   return (!result);
@@ -204,21 +204,20 @@ split(const char *delim, const char *str)
 
   REQUIRE_RVAL(str != NULL, (char **) NULL);
 
-  if ((slist = (char **) MALLOC(1)) == NULL) {
+  if ((slist = (char **) MALLOC(sizeof(char *))) == NULL) {
     print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
     return ((char **) NULL);
   }
 
   /* Before we do anything, skip leading "whitespace." */
-  for (; IS_DELIM(*pstr); pstr++);
+  for (pstr = str; *pstr && IS_DELIM(*pstr); pstr++);
 
   /* The outermost for loop is where we traverse the string.  Each new
      word brings us back to the top where we resize our string list. */
-  for (pstr = str; *pstr; cnt++) {
-
+  for (; *pstr; cnt++) {
     /* First, resize the list to two bigger than our count.  Why two?
        One for the string we're about to do, and one for a trailing NULL. */
-    if ((slist = (char **) REALLOC(slist, cnt + 2)) == NULL) {
+    if ((slist = (char **) REALLOC(slist, sizeof(char *) * (cnt + 2))) == NULL) {
       print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
       return ((char **) NULL);
     }
@@ -227,15 +226,22 @@ split(const char *delim, const char *str)
        of the string we have yet to parse, so allocate that much space to start. */
     len = strlen(pstr) + 1;
     if ((slist[cnt] = (char *) MALLOC(len)) == NULL) {
-      fprintf(stderr, "split():  Unable to allocate memory -- %s.\n", strerror(errno));
+      print_error("split():  Unable to allocate memory -- %s.\n", strerror(errno));
       return ((char **) NULL);
     }
     pdest = slist[cnt];
 
-    for (; *pstr && !IS_QUOTE(*pstr) && !IS_DELIM(*pstr); pdest++, pstr++) {
+    /* This for loop is where we process each character. */
+    for (; *pstr && (quote || !IS_DELIM(*pstr));) {
       if (*pstr == '\"' || *pstr == '\'') {
+        /* It's a quote character, so set or reset the quote variable. */
         if (quote) {
-          quote = 0;
+          if (quote == *pstr) {
+            quote = 0;
+          } else {
+            /* It's a single quote inside double quotes, or vice versa.  Leave it alone. */
+            *pdest++ = *pstr++;
+          }
         } else {
           quote = *pstr;
         }
@@ -247,15 +253,20 @@ split(const char *delim, const char *str)
              below will copy the next character to the new token, no questions asked. */
           pstr++;
         }
-        *pdest = *pstr;
+        *pdest++ = *pstr++;
       }
     }
+    /* Add the trailing \0 to terminate the new string. */
     *pdest = 0;
 
-    len = strlen(pdest) + 1;
-    slist[cnt] = (char *) REALLOC(pdest, len);
-    for (; IS_DELIM(*pstr); pstr++);
+    /* Reallocate the new string to be just the right size. */
+    len = strlen(slist[cnt]) + 1;
+    slist[cnt] = (char *) REALLOC(slist[cnt], len);
+
+    /* Move past any trailing "whitespace." */
+    for (; *pstr && IS_DELIM(*pstr); pstr++);
   }
+  /* The last element of slist[] should be NULL. */
   slist[cnt] = 0;
   return slist;
 }
@@ -279,7 +290,7 @@ get_word(unsigned long index, const char *str)
 
   k = strlen(str) + 1;
   if ((tmpstr = (char *) MALLOC(k)) == NULL) {
-    fprintf(stderr, "get_word(%lu, %s):  Unable to allocate memory -- %s.\n",
+    print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n",
 	    index, str, strerror(errno));
     return ((char *) NULL);
   }
@@ -656,19 +667,19 @@ hex_dump(void *buff, register size_t count)
   register unsigned char *ptr;
   unsigned char buffr[9];
 
-  fprintf(stderr, " Address |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
-  fprintf(stderr, "---------+--------+---------+-------------------------+---------\n");
+  print_error(" Address |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
+  print_error("---------+--------+---------+-------------------------+---------\n");
   for (ptr = (unsigned char *) buff, j = 0; j < count; j += 8) {
-    fprintf(stderr, " %8p | %06lu | %07x | ", buff, (unsigned long) count, (unsigned int) j);
+    print_error(" %8p | %06lu | %07x | ", buff, (unsigned long) count, (unsigned int) j);
     l = ((count - j < 8) ? (count - j) : (8));
     memset(buffr, 0, 9);
     memcpy(buffr, ptr + j, l);
     for (k = 0; k < l; k++) {
-      fprintf(stderr, "%02x ", buffr[k]);
+      print_error("%02x ", buffr[k]);
     }
     for (; k < 8; k++) {
-      fprintf(stderr, "   ");
+      print_error("   ");
     }
-    fprintf(stderr, "| %-8s\n", safe_str((char *) buffr, l));
+    print_error("| %-8s\n", safe_str((char *) buffr, l));
   }
 }

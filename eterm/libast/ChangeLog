@@ -30,3 +30,15 @@ Tue Jan  2 18:22:25 PST 2001	Michael Jennings <mej@eterm.org>
 	systems, they will be addressed here.
 	
 -------------------------------------------------------------------------------
+Mon May  7 19:08:45 PDT 2001	Michael Jennings <mej@eterm.org>
+
+	I have created a testbed for libast.  You can now run "make test" to
+	run a series of tests which will test some of the functionality of the
+	library.  I didn't finish all the tests I'll eventually have; I just
+	wanted to get the stuff that's immediately important.
+
+	I also added a new split() function, which functions somewhat like its
+	Perl counterpart, although there are differences.  This function will
+	be used in the remaining Eterm work I must do before release.
+	
+-------------------------------------------------------------------------------

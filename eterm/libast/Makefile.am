@@ -11,7 +11,7 @@ libast_la_SOURCES = debug.c file.c mem.c msgs.c strings.c snprintf.c libast.h li
 
 LIBS = -lm
 
-libast_la_LDFLAGS = -version-info 1:0:0
+libast_la_LDFLAGS = -version-info 1:1:0
 
 EXTRA_DIST = README
 
