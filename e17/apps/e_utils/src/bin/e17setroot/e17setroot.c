@@ -67,12 +67,13 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	{"noload", 0, 0, E_BG_NO_LOAD},
 	{0,        0, 0, 0}
    };
-
+      
    while((c = getopt_long (argc, argv, options, long_options, NULL)) != -1) {
       switch (c) {
 	 /* tile */
        case E_BG_TILE:	   
        case 't':	    
+	 IF_FREE(esetroot_opt);
 	 e_bg_type = E_BG_TILE;
 	 esetroot_opt = strdup(" ");
 	 break;
@@ -80,6 +81,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 /* scale */
        case E_BG_SCALE:
        case 's':
+	 IF_FREE(esetroot_opt);
 	 e_bg_type = E_BG_SCALE;
 	 esetroot_opt = strdup(" -s ");
 	 break;
@@ -87,6 +89,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 /* center */
        case E_BG_CENTER:
        case 'c':
+	 IF_FREE(esetroot_opt);
 	 e_bg_type = E_BG_CENTER;
 	 esetroot_opt = strdup(" -c ");	 
 	 break;
@@ -94,12 +97,14 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 /* fit */
        case E_BG_FIT:
        case 'f':
+	 IF_FREE(esetroot_opt);
 	 esetroot_opt = strdup(" -f ");
 	 break;
 
 	 /* get current bg */
        case E_BG_GET:
        case 'g':
+	 IF_FREE(esetroot_opt);
          e_bg_type = E_BG_GET;
 	 break;
 	 
