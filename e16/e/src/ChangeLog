@@ -2145,3 +2145,10 @@ fixed iconified startup bugs for clients that ask to be iconified on start
 fixed icon pixmap bugs
 
 took my iguana for a walk around the block
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 19:51:51 PDT 1999
+(Raster)
+
+get rid of 2 warnings

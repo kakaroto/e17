@@ -2494,6 +2494,7 @@ Menu               *CreateMenuFromDesktopEWins(char *name, MenuStyle * ms,
 Menu               *CreateMenuFromDesktops(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromThemes(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromBorders(char *name, MenuStyle * ms);
+int                 BorderNameCompare(Border * b1, Border * b2);
 void                ShowMenuMasker(Menu * m);
 void                HideMenuMasker(void);
 void                RepackMenu(Menu * m);
