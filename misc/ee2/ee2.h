@@ -24,6 +24,7 @@ void LoadImage(char *imagetoload);
 
 void DrawChecks(void);
 void Checks(int image_h, int image_w);
+void DrawImage(Imlib_Image *im, int w, int h);
 
 void ShowAbout(GtkWidget *widget, gpointer data);
 void HideAbout(GtkWidget *widget, gpointer data);
