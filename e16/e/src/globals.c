@@ -57,7 +57,6 @@ int                 deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 char                themepath[FILEPATH_LEN_MAX];
 char                themename[FILEPATH_LEN_MAX];
 char               *command;
-char                mustdel;
 char                queue_up;
 char                no_overwrite = 0;
 char                clickmenu = 0;
@@ -68,8 +67,6 @@ int                 scrollock_mask = 0;
 int                 mask_mod_combos[8];
 Group              *current_group;
 char               *dstr = NULL;
-char               *badtheme = NULL;
-char               *badreason = NULL;
 char               *e_machine_name = NULL;
 
 #ifdef DEBUG

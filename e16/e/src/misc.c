@@ -202,17 +202,7 @@ EExit(void *code)
 
 	exitcode = (long)code;
 	SoundExit();
-	if (mustdel)
-	  {
-	     char                sss[FILEPATH_LEN_MAX];
-
-#ifndef __EMX__
-	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
-#else
-	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
-#endif
-	     system(sss);
-	  }
+	ThemeCleanup();
 	for (i = 0; i < child_count; i++)
 	   kill(e_children[i], SIGINT);
      }
@@ -411,108 +401,6 @@ EdgeTimeout(int val, void *data)
       dy = 0;
    XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
    data = NULL;
-}
-
-/* be paranoid and check for files being in theme */
-char
-SanitiseThemeDir(char *dir)
-{
-   char                s[4096];
-
-   return 1;
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "borders.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a borders.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "buttons.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a buttons.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "colormodifiers.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a colormodifiers.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "cursors.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a cursors.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "desktops.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a desktops.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "imageclasses.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a imageclasses.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "init.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a init.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "menustyles.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a menustyles.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "slideouts.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a slideouts.cfg file\n");
-	return 0;
-     }
-#ifndef __EMX__			/* OS/2 Team will compile ESound after XMMS project */
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a sound.cfg file\n");
-	return 0;
-     }
-#endif
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a tooltips.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "windowmatches.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a windowmatches.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "menus.cfg");
-   if (isfile(s))
-     {
-	badreason = _("Theme contains a menus.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "control.cfg");
-   if (isfile(s))
-     {
-	badreason = _("Theme contains a control.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "keybindings.cfg");
-   if (isfile(s))
-     {
-	badreason = _("Theme contains a keybindings.cfg file\n");
-	return 0;
-     }
-   return 1;
 }
 
 /* This is a general quicksort algorithm, using median-of-three strategy.

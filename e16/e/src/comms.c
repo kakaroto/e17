@@ -425,7 +425,7 @@ HandleComms(XClientMessageEvent * ev)
      {
 	char               *buf;
 
-	buf = GetDefaultTheme();
+	buf = ThemeGetDefault();
 	if (buf)
 	  {
 	     CommsSend(c, buf);
@@ -441,7 +441,7 @@ HandleComms(XClientMessageEvent * ev)
 	word(s, 2, buf);
 	if (exists(buf))
 	  {
-	     SetDefaultTheme(buf);
+	     ThemeSetDefault(buf);
 	     Esnprintf(sss, sizeof(sss), "restart_theme %s", buf);
 	     SessionExit(sss);
 	  }

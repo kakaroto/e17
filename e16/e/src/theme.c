@@ -21,17 +21,133 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+
 #ifdef __EMX__
 #include <process.h>
 extern char        *__XOS2RedirRoot(const char *);
-
 #endif
 
-char               *
+#define ENABLE_THEME_SANITY_CHECKING 0
+
+static char        *badtheme = NULL;
+static char        *badreason = NULL;
+static char         mustdel = 0;
+
+#if ENABLE_THEME_SANITY_CHECKING
+
+/* be paranoid and check for files being in theme */
+static char
+SanitiseThemeDir(char *dir)
+{
+   char                s[4096];
+
+   return 1;
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "borders.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a borders.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "buttons.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a buttons.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "colormodifiers.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a colormodifiers.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "cursors.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a cursors.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "desktops.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a desktops.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "imageclasses.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a imageclasses.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "init.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a init.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "menustyles.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a menustyles.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "slideouts.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a slideouts.cfg file\n");
+	return 0;
+     }
+#ifndef __EMX__			/* OS/2 Team will compile ESound after XMMS project */
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a sound.cfg file\n");
+	return 0;
+     }
+#endif
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a tooltips.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "windowmatches.cfg");
+   if (!isfile(s))
+     {
+	badreason = _("Theme does not contain a windowmatches.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "menus.cfg");
+   if (isfile(s))
+     {
+	badreason = _("Theme contains a menus.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "control.cfg");
+   if (isfile(s))
+     {
+	badreason = _("Theme contains a control.cfg file\n");
+	return 0;
+     }
+   Esnprintf(s, sizeof(s), "%s/%s", dir, "keybindings.cfg");
+   if (isfile(s))
+     {
+	badreason = _("Theme contains a keybindings.cfg file\n");
+	return 0;
+     }
+   return 1;
+}
+
+#else
+
+#define SanitiseThemeDir(dir) 1
+
+#endif /* ENABLE_THEME_SANITY_CHECKING */
+
+static char        *
 append_merge_dir(char *dir, char ***list, int *count)
 {
-   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], **str =
-      NULL, *def = NULL;
+   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
+   char              **str = NULL, *def = NULL;
    char                already, *tmp, *tmp2, ok;
    int                 i, j, num;
 
@@ -140,7 +256,7 @@ ListThemes(int *number)
 }
 
 char               *
-GetDefaultTheme(void)
+ThemeGetDefault(void)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
    char               *def = NULL;
@@ -195,7 +311,7 @@ GetDefaultTheme(void)
 }
 
 void
-SetDefaultTheme(char *theme)
+ThemeSetDefault(const char *theme)
 {
 #ifndef __EMX__
 /* os2 has no symlink,
@@ -211,91 +327,96 @@ SetDefaultTheme(char *theme)
 #endif
 }
 
-char               *
-ExtractTheme(char *theme)
+static char        *
+ThemeExtract(const char *theme)
 {
    char                s[FILEPATH_LEN_MAX];
    char                th[FILEPATH_LEN_MAX];
    FILE               *f;
    unsigned char       buf[320];
+   const char         *oktheme = NULL;
+   char               *name;
 
-   EDBUG(7, "ExtractTheme");
+   EDBUG(7, "ThemeExtract");
+
    mustdel = 0;
+
    /* its a directory - just use it "as is" */
    if (isdir(theme))
      {
-	if (SanitiseThemeDir(theme))
-	  {
-	     EDBUG_RETURN(duplicate(theme));
-	  }
-	else
-	  {
-	     EDBUG_RETURN(NULL);
-	  }
+	oktheme = theme;
+	goto exit;
      }
+
    /* its a file - check its type */
    if (isfile(theme))
      {
 	f = fopen(theme, "r");
-	if (f)
+	if (!f)
+	   goto exit;
+
+	fread(buf, 1, 320, f);
+	fclose(f);
+
+	/* make the temp dir */
+	name = fileof(theme);
+	Esnprintf(th, sizeof(th), "%s/themes/%s", UserEDir(), name);
+	Efree(name);
+	md(th);
+
+	/* check magic numbers */
+	if ((buf[0] == 31) && (buf[1] == 139))
 	  {
-	     char               *themename;
-
-	     fread(buf, 1, 320, f);
-	     fclose(f);
-	     /* make the temp dir */
-
-	     themename = fileof(theme);
-	     Esnprintf(th, sizeof(th), "%s/themes/%s", UserEDir(), themename);
-	     Efree(themename);
-	     md(th);
-	     /* check magic numbers */
-	     if ((buf[0] == 31) && (buf[1] == 139))
-	       {
-		  /*gzipped tarball */
-		  Esnprintf(s, sizeof(s),
-			    "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
-	       }
-	     else if ((buf[257] == 'u') && (buf[258] == 's')
-		      && (buf[259] == 't') && (buf[260] == 'a')
-		      && (buf[261] == 'r'))
-	       {
-		  /*vanilla tarball */
-		  Esnprintf(s, sizeof(s), "(cd %s ; tar -xf %s)", th, theme);
-	       }
-	     /* exec the untar if tarred */
-	     system(s);
-	     /* we made a temp dir - flag for deletion */
-	     if (SanitiseThemeDir(th))
-	       {
-		  EDBUG_RETURN(duplicate(th));
-	       }
-	     else if (mustdel)
-	       {
-		  char                sss[FILEPATH_LEN_MAX];
-
-#ifndef __EMX__
-		  Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
-#else
-		  Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
-#endif
-		  system(sss);
-		  mustdel = 0;
-		  EDBUG_RETURN(NULL);
-	       }
+	     /* gzipped tarball */
+	     Esnprintf(s, sizeof(s),
+		       "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
 	  }
+	else if ((buf[257] == 'u') && (buf[258] == 's')
+		 && (buf[259] == 't') && (buf[260] == 'a') && (buf[261] == 'r'))
+	  {
+	     /* vanilla tarball */
+	     Esnprintf(s, sizeof(s), "(cd %s ; tar -xf %s)", th, theme);
+	  }
+
+	/* exec the untar if tarred */
+	system(s);
+
+	oktheme = th;
      }
+
+ exit:
+   if (oktheme && SanitiseThemeDir(oktheme))
+      EDBUG_RETURN(duplicate(oktheme));
+
+   /* failed */
+   ThemeCleanup();
+
    EDBUG_RETURN(NULL);
 }
 
+void
+ThemeCleanup(void)
+{
+   if (!mustdel)
+      return;
+
+   /* We don't ever get here because mustdel is never set */
+#if 0
+   rmrf(themepath);
+#endif
+}
+
 char               *
-FindTheme(char *theme)
+FindTheme(const char *theme)
 {
    char                s[FILEPATH_LEN_MAX];
    char               *ret = NULL;
 
    EDBUG(6, "FindTheme");
+
+   strcpy(themename, theme);
    badreason = _("Unknown\n");
+
    if (!theme[0])
      {
 #ifndef __EMX__
@@ -306,17 +427,18 @@ FindTheme(char *theme)
 #endif
 	EDBUG_RETURN(duplicate(s));
      }
+
 #ifndef __EMX__
    if (theme[0] == '/')
 #else
    if (_fnisabs(theme))
 #endif
-      ret = ExtractTheme(theme);
+      ret = ThemeExtract(theme);
    if (!ret)
      {
 	Esnprintf(s, sizeof(s), "%s/themes/%s", UserEDir(), theme);
 	if (exists(s))
-	   ret = ExtractTheme(s);
+	   ret = ThemeExtract(s);
 	else
 	   badreason = _("Theme file/directory does not exist\n");
 	if (!ret)
@@ -328,12 +450,12 @@ FindTheme(char *theme)
 		       __XOS2RedirRoot(ENLIGHTENMENT_ROOT), theme);
 #endif
 	     if (exists(s))
-		ret = ExtractTheme(s);
+		ret = ThemeExtract(s);
 	     else
 		badreason = _("Theme file/directory does not exist\n");
 	     if (!ret)
 	       {
-		  ret = GetDefaultTheme();
+		  ret = ThemeGetDefault();
 		  badtheme = duplicate(theme);
 	       }
 	  }
@@ -342,7 +464,7 @@ FindTheme(char *theme)
 }
 
 void
-BadThemeDialog(void)
+ThemeBadDialog(void)
 {
    if (!badtheme)
       return;

@@ -27,7 +27,6 @@
 #define chdir	_chdir2
 #define getcwd	_getcwd2
 extern char        *__XOS2RedirRoot(const char *);
-
 #endif
 
 char               *
@@ -59,7 +58,7 @@ Etmp(char *s)
 }
 
 void
-md(char *s)
+md(const char *s)
 {
    EDBUG(9, "md");
    if ((!s) || (!*s))
@@ -69,7 +68,7 @@ md(char *s)
 }
 
 int
-exists(char *s)
+exists(const char *s)
 {
    struct stat         st;
 
@@ -82,7 +81,7 @@ exists(char *s)
 }
 
 void
-mkdirs(char *s)
+mkdirs(const char *s)
 {
    char                ss[FILEPATH_LEN_MAX];
    int                 i, ii;
@@ -105,7 +104,7 @@ mkdirs(char *s)
 }
 
 int
-isfile(char *s)
+isfile(const char *s)
 {
    struct stat         st;
 
@@ -120,7 +119,7 @@ isfile(char *s)
 }
 
 int
-isdir(char *s)
+isdir(const char *s)
 {
    struct stat         st;
 
@@ -135,7 +134,7 @@ isdir(char *s)
 }
 
 char              **
-ls(char *dir, int *num)
+ls(const char *dir, int *num)
 {
    int                 i, dirlen;
    int                 done = 0;
@@ -216,7 +215,7 @@ freestrlist(char **l, int num)
 }
 
 void
-rm(char *s)
+rm(const char *s)
 {
    EDBUG(9, "rm");
    if ((!s) || (!*s))
@@ -226,7 +225,7 @@ rm(char *s)
 }
 
 void
-mv(char *s, char *ss)
+mv(const char *s, const char *ss)
 {
    EDBUG(9, "mv");
    if ((!s) || (!ss) || (!*s) || (!*ss))
@@ -236,7 +235,7 @@ mv(char *s, char *ss)
 }
 
 void
-cp(char *s, char *ss)
+cp(const char *s, const char *ss)
 {
    int                 i;
    FILE               *f, *ff;
@@ -265,7 +264,7 @@ cp(char *s, char *ss)
 }
 
 time_t
-moddate(char *s)
+moddate(const char *s)
 {
    struct stat         st;
 
@@ -280,7 +279,7 @@ moddate(char *s)
 }
 
 int
-filesize(char *s)
+filesize(const char *s)
 {
    struct stat         st;
 
@@ -293,7 +292,7 @@ filesize(char *s)
 }
 
 int
-fileinode(char *s)
+fileinode(const char *s)
 {
 #ifndef __EMX__
    struct stat         st;
@@ -310,7 +309,7 @@ fileinode(char *s)
 }
 
 int
-filedev(char *s)
+filedev(const char *s)
 {
    struct stat         st;
 
@@ -323,7 +322,7 @@ filedev(char *s)
 }
 
 void
-cd(char *s)
+cd(const char *s)
 {
    EDBUG(9, "cd");
    if ((!s) || (!*s))
@@ -345,7 +344,7 @@ cwd(void)
 }
 
 int
-permissions(char *s)
+permissions(const char *s)
 {
    struct stat         st;
 
@@ -358,7 +357,7 @@ permissions(char *s)
 }
 
 int
-owner(char *s)
+owner(const char *s)
 {
    struct stat         st;
 
@@ -371,7 +370,7 @@ owner(char *s)
 }
 
 int
-group(char *s)
+group(const char *s)
 {
    struct stat         st;
 
@@ -787,7 +786,7 @@ fillfield(char *s, int field, char *buf)
 }
 
 int
-canread(char *s)
+canread(const char *s)
 {
    EDBUG(9, "canread");
    if ((!s) || (!*s))
@@ -800,7 +799,7 @@ canread(char *s)
 }
 
 int
-canwrite(char *s)
+canwrite(const char *s)
 {
    EDBUG(9, "canwrite");
    if ((!s) || (!*s))
@@ -813,7 +812,7 @@ canwrite(char *s)
 }
 
 int
-canexec(char *s)
+canexec(const char *s)
 {
    EDBUG(9, "canexec");
    if ((!s) || (!*s))
@@ -826,7 +825,7 @@ canexec(char *s)
 }
 
 char               *
-fileof(char *s)
+fileof(const char *s)
 {
    char                ss[1024];
    int                 i, p1, p2;
@@ -855,7 +854,7 @@ fileof(char *s)
 }
 
 char               *
-fullfileof(char *s)
+fullfileof(const char *s)
 {
    char                ss[1024];
    int                 i, p1, p2;
@@ -878,7 +877,7 @@ fullfileof(char *s)
 }
 
 char               *
-pathtoexec(char *file)
+pathtoexec(const char *file)
 {
    char               *p, *cp, *ep;
    char               *s;
@@ -994,7 +993,7 @@ pathtoexec(char *file)
 }
 
 char               *
-pathtofile(char *file)
+pathtofile(const char *file)
 {
    char               *p, *cp, *ep;
    char               *s;
@@ -1116,3 +1115,18 @@ findLocalizedFile(char *fname)
 
    return 0;
 }
+
+#if 0 /* Not used */
+void
+rmrf(const char *path)
+{
+   char                s[FILEPATH_LEN_MAX];
+
+#ifndef __EMX__
+   Esnprintf(s, sizeof(s), "/bin/rm -rf %s", path);
+#else
+   Esnprintf(s, sizeof(s), "rm.exe -rf %s", path);
+#endif
+   system(s);
+}
+#endif

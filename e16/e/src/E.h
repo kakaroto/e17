@@ -2016,25 +2016,25 @@ void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
 /* file.c */
 void                Etmp(char *s);
-void                md(char *s);
-int                 exists(char *s);
-void                mkdirs(char *s);
-int                 isfile(char *s);
-int                 isdir(char *s);
-char              **ls(char *dir, int *num);
+void                md(const char *s);
+int                 exists(const char *s);
+void                mkdirs(const char *s);
+int                 isfile(const char *s);
+int                 isdir(const char *s);
+char              **ls(const char *dir, int *num);
 void                freestrlist(char **l, int num);
-void                rm(char *s);
-void                mv(char *s, char *ss);
-void                cp(char *s, char *ss);
-time_t              moddate(char *s);
-int                 filesize(char *s);
-int                 fileinode(char *s);
-int                 filedev(char *s);
-void                cd(char *s);
+void                rm(const char *s);
+void                mv(const char *s, const char *ss);
+void                cp(const char *s, const char *ss);
+time_t              moddate(const char *s);
+int                 filesize(const char *s);
+int                 fileinode(const char *s);
+int                 filedev(const char *s);
+void                cd(const char *s);
 char               *cwd(void);
-int                 permissions(char *s);
-int                 owner(char *s);
-int                 group(char *s);
+int                 permissions(const char *s);
+int                 owner(const char *s);
+int                 group(const char *s);
 char               *username(int uid);
 char               *homedir(int uid);
 char               *usershell(int uid);
@@ -2042,18 +2042,19 @@ char               *atword(char *s, int num);
 char               *atchar(char *s, char c);
 char               *getword(char *s, int num);
 void                word(char *s, int num, char *wd);
-int                 canread(char *s);
-int                 canwrite(char *s);
-int                 canexec(char *s);
-char               *fileof(char *s);
-char               *fullfileof(char *s);
-char               *pathtoexec(char *file);
-char               *pathtofile(char *file);
+int                 canread(const char *s);
+int                 canwrite(const char *s);
+int                 canexec(const char *s);
+char               *fileof(const char *s);
+char               *fullfileof(const char *s);
+char               *pathtoexec(const char *file);
+char               *pathtofile(const char *file);
 char               *FileExtension(char *file);
 char               *field(char *s, int field);
 int                 fillfield(char *s, int field, char *buf);
 void                fword(char *s, int num, char *wd);
 int                 findLocalizedFile(char *fname);
+void                rmrf(const char *s);
 
 /* finders.c */
 EWin               *FindEwinByBase(Window win);
@@ -2335,7 +2336,6 @@ int                 IsEdgeWin(Window win);
 void                EdgeHandleEnter(XEvent * ev);
 void                EdgeHandleLeave(XEvent * ev);
 void                EdgeHandleMotion(XEvent * ev);
-char                SanitiseThemeDir(char *dir);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 
@@ -2541,13 +2541,12 @@ void                TextDraw(TextClass * tclass, Window win, int active,
 			     int w, int h, int fsize, int justification);
 
 /* theme.c */
-char               *append_merge_dir(char *dir, char ***list, int *count);
+char               *ThemeGetDefault(void);
+void                ThemeSetDefault(const char *theme);
+void                ThemeCleanup(void);
+void                ThemeBadDialog(void);
 char              **ListThemes(int *number);
-char               *GetDefaultTheme(void);
-void                SetDefaultTheme(char *theme);
-void                BadThemeDialog(void);
-char               *FindTheme(char *theme);
-char               *ExtractTheme(char *theme);
+char               *FindTheme(const char *theme);
 
 /* timers.c */
 double              GetTime(void);
@@ -2730,7 +2729,6 @@ extern int          deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 extern char         themepath[FILEPATH_LEN_MAX];
 extern char         themename[FILEPATH_LEN_MAX];
 extern char        *command;
-extern char         mustdel;
 
 #define DRAW_QUEUE_ENABLE 1
 extern char         queue_up;
@@ -2743,8 +2741,6 @@ extern int          scrollock_mask;
 extern int          mask_mod_combos[8];
 extern Group       *current_group;
 extern char        *dstr;
-extern char        *badtheme;
-extern char        *badreason;
 extern char        *e_machine_name;
 
 #ifdef HAS_XINERAMA

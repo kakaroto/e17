@@ -217,7 +217,7 @@ main(int argc, char **argv)
 	  {
 	     char               *def;
 
-	     def = GetDefaultTheme();
+	     def = ThemeGetDefault();
 	     if (def)
 	       {
 		  Esnprintf(themepath, sizeof(themepath), "%s", def);
@@ -369,7 +369,7 @@ main(int argc, char **argv)
    SpawnSnappedCmds();
    mode.startup = 0;
 
-   BadThemeDialog();
+   ThemeBadDialog();
    /* The primary event loop */
    for (;;)
       WaitEvent();

@@ -3671,7 +3671,6 @@ LoadEConfig(char *themelocation)
    FILE               *f;
 
    EDBUG(5, "LoadEConfig");
-   mustdel = 0;
 
    Esnprintf(s, sizeof(s), "%s/", UserEDir());
 #if USE_FNLIB
@@ -3703,7 +3702,7 @@ LoadEConfig(char *themelocation)
 		  "This may be due to lack of disk space, quota or\n"
 		  "filesystem permissions.\n"), ss);
      }
-   strcpy(themename, themelocation);
+
    theme = FindTheme(themelocation);
    if (!theme)
      {

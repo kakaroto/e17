@@ -4375,7 +4375,7 @@ IPC_DefaultTheme(char *params, Client * c)
 
    if (!strcmp(params, "?"))
      {
-	Esnprintf(buf, sizeof(buf), "%s", GetDefaultTheme());
+	Esnprintf(buf, sizeof(buf), "%s", ThemeGetDefault());
      }
    else
      {
@@ -4383,7 +4383,7 @@ IPC_DefaultTheme(char *params, Client * c)
 	  {
 	     char                restartcommand[FILEPATH_LEN_MAX];
 
-	     SetDefaultTheme(params);
+	     ThemeSetDefault(params);
 	     Esnprintf(restartcommand, sizeof(restartcommand),
 		       "restart_theme %s", params);
 	     SessionExit(restartcommand);
@@ -4391,7 +4391,7 @@ IPC_DefaultTheme(char *params, Client * c)
 	else
 	  {
 	     Esnprintf(buf, sizeof(buf), "Could not find theme: %s",
-		       GetDefaultTheme());
+		       ThemeGetDefault());
 	  }
      }
 

@@ -1133,15 +1133,8 @@ doSMExit(void *params)
 	setsid();
 #endif
 	sscanf(params, "%1000s", s);
-	if (mustdel)
-	  {
-#ifndef __EMX__
-	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
-#else
-	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
-#endif
-	     system(sss);
-	  }
+	ThemeCleanup();
+
 	if (!strcmp(s, "restart"))
 	  {
 	     SoundPlay("SOUND_WAIT");
