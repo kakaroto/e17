@@ -66,9 +66,17 @@ sub select_clist {
 	}
 	if($orientations{$text}) {
 		$menu_items{"$orientations{$text}"}->activate;
+		if($orientations{$text} eq "Top->Bottom") {
+			$omenu->set_history(1);
+		} elsif ($orientations{$text} eq "Bottom->Top") {
+			$omenu->set_history(2);
+		} else {
+			$omenu->set_history(0);
+		}
 		$menu->reposition;
 	} else {
 		$menu_items{"Left->Right"}->activate;
+		$omenu->set_history(0);
 		$menu->reposition;
 	}
 	$do_not_edit = 0;
