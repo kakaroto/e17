@@ -77,7 +77,6 @@ GtkWidget *
 	GTK_WIDGET_SET_FLAGS(VA_Flipbook, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS(VA_Flipbook, GTK_CAN_DEFAULT);
 	gtk_window_set_title(GTK_WINDOW(VA_Flipbook), "VA Flipbook (Main Window)");
-	gtk_window_set_modal(GTK_WINDOW(VA_Flipbook), TRUE);
 
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(vbox1);
@@ -147,6 +146,8 @@ GtkWidget *
 			   	GTK_SIGNAL_FUNC (on_choose_movie_segment1_activate), NULL);
 		menuitem = CreateMenuItem(view1,"Movie Info","",
 				"Information about the current Movie", NULL, "movie info");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_movie_info), NULL);
 	}
 
 
@@ -302,7 +303,6 @@ create_open_template(void)
 		   	"Open Movie Using Template");
 	GTK_WIDGET_SET_FLAGS(open_template, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS(open_template, GTK_CAN_DEFAULT);
-	gtk_window_set_modal(GTK_WINDOW(open_template), TRUE);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
@@ -367,6 +367,57 @@ create_open_template(void)
 	return open_template;
 }
 
+GtkWidget *
+create_movie_info(void)
+{
+
+	GtkWidget *movie_info;
+	GtkWidget *vbox;
+	GtkWidget *label;
+	GtkWidget *button;
+
+	movie_info = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_container_set_border_width(GTK_CONTAINER(movie_info),5);
+	gtk_object_set_data(GTK_OBJECT(movie_info), "movie_info",
+		   	movie_info);
+	gtk_window_set_title(GTK_WINDOW(movie_info), "Current Movie Info");
+	GTK_WIDGET_SET_FLAGS(movie_info, GTK_CAN_FOCUS);
+	GTK_WIDGET_SET_FLAGS(movie_info, GTK_CAN_DEFAULT);
+
+	vbox = gtk_vbox_new(FALSE,0);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(movie_info), vbox);
+
+	label = gtk_label_new("Opened From File: xxxxxxxxxxxxxxxxxx");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
+
+	label = gtk_label_new("xxxxxxxxxxxxxxxxxxxx Frames in Movie");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
+
+	label = gtk_label_new("Width: XXXX              Height XXXX");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
+
+	label = gtk_label_new("xxxxxx :     Megs Resident in Memory");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
+
+	label = gtk_label_new("xxxxxx :     Megs Total in Movie    ");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
+
+	button = gtk_button_new_with_label("Okay");
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+				            GTK_SIGNAL_FUNC (on_movie_info_close), NULL);
+
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+
+	return movie_info;
+
+}
 
 GtkWidget *
  create_choose_segment(void)
@@ -390,7 +441,6 @@ GtkWidget *
 	gtk_window_set_title(GTK_WINDOW(choose_segment), "Choose Movie Segment");
 	GTK_WIDGET_SET_FLAGS(choose_segment, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS(choose_segment, GTK_CAN_DEFAULT);
-	gtk_window_set_modal(GTK_WINDOW(choose_segment), TRUE);
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(vbox2);
@@ -519,7 +569,6 @@ GtkWidget *
 		   	Preferences_Window);
 	GTK_WIDGET_SET_FLAGS(Preferences_Window, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS(Preferences_Window, GTK_CAN_DEFAULT);
-	gtk_window_set_modal(GTK_WINDOW(Preferences_Window), TRUE);
 
 
 	gtk_window_set_title(GTK_WINDOW(Preferences_Window),

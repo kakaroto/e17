@@ -27,6 +27,7 @@ GtkWidget *create_VA_Flipbook(void);
 GtkWidget *create_open_template(void);
 GtkWidget *create_choose_segment(void);
 GtkWidget *create_Preferences_Window(void);
+GtkWidget *create_movie_info(void);
 
 
 GtkTooltips *tooltips;

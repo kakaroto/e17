@@ -37,6 +37,7 @@
 GtkWidget *Preferences_Window=NULL;
 GtkWidget *choose_segment=NULL;
 GtkWidget *open_template=NULL;
+GtkWidget *movie_info=NULL;
 extern GtkWidget *file_selector;
 
 void on_open_from_file(GtkWidget *widget, gpointer user_data) {
@@ -160,8 +161,35 @@ void on_open_from_template(GtkWidget *widget, gpointer user_data) {
 				GTK_SIGNAL_FUNC (on_open_template_close), NULL);
 		gtk_signal_connect (GTK_OBJECT (open_template), "delete_event",
 				GTK_SIGNAL_FUNC (on_open_template_close), NULL);
+	}
+
+}
+
+void on_movie_info_close(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	gtk_widget_destroy (GTK_WIDGET(movie_info));
+	movie_info=NULL;
+
+}
 
 
+void on_movie_info(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	if(!movie_info) {
+		movie_info = create_movie_info();
+		gtk_widget_show(movie_info);
+		gtk_signal_connect (GTK_OBJECT (movie_info), "destroy",
+				GTK_SIGNAL_FUNC (on_movie_info_close), NULL);
+		gtk_signal_connect (GTK_OBJECT (movie_info), "delete_event",
+				GTK_SIGNAL_FUNC (on_movie_info_close), NULL);
 	}
 
 }
