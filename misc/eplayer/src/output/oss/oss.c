@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <assert.h>
+#include <pthread.h>
+#include <time.h>
 #include <config.h>
 #include "../../plugin.h"
 
@@ -13,6 +15,7 @@
 #endif
 
 static int fd = -1;
+static pthread_cond_t cond;
 
 void oss_shutdown() {
 	if (fd != -1) {
@@ -135,12 +138,42 @@ int oss_volume_set(int left, int right) {
 	return (ret != -1);
 }
 
+static void *thread_open(char *file) {
+	fd = open(file, O_WRONLY);
+	pthread_cond_signal(&cond);
+	pthread_exit(NULL);
+}
+
+static void open_device () {
+	struct timespec ts;
+	pthread_mutex_t mutex;
+	pthread_t thread;
+
+	/* Set up our time structure */
+	ts.tv_sec = time(NULL) + 5; /* Wait 5 seconds */
+	ts.tv_nsec = 0;
+
+	/* Spawn and try to open */
+	pthread_mutex_init(&mutex, NULL);
+	pthread_cond_init(&cond, NULL);
+	pthread_create(&thread, NULL, (void *) thread_open, "/dev/dsp");
+
+	/* wait until either thread_open() returns or the timeout occurs */
+	if (pthread_cond_timedwait(&cond, &mutex, &ts))
+		pthread_cancel(thread); /* timeout -> kill the thread */
+
+	pthread_mutex_destroy(&mutex);
+	pthread_cond_destroy(&cond);
+}
+
 int plugin_init(OutputPlugin *op) {
 	op->configure = oss_configure;
 	op->play = oss_play;
 	op->volume_get = oss_volume_get;
 	op->volume_set = oss_volume_set;
 	op->shutdown = oss_shutdown;
+	
+	open_device();
 
-	return ((fd = open("/dev/dsp", O_WRONLY, 0)) != -1);
+	return (fd != -1);
 }
