@@ -286,6 +286,12 @@ geist_imlib_text_draw(Imlib_Image im, Imlib_Font fn, int x, int y, char *text,
    imlib_text_draw(x, y, text);
 }
 
+char **geist_imlib_list_fonts(int *num)
+{
+	return imlib_list_fonts(num);
+}
+
+
 void
 geist_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
                           Imlib_Text_Direction dir)

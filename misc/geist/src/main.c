@@ -27,6 +27,18 @@ gint obj_text_handler;
 GtkWidget *obj_vis;
 gint obj_vis_handler;
 
+typedef struct _addtext_ok_data addtext_ok_data;
+struct _addtext_ok_data {
+	GtkWidget *win;
+	GtkWidget *text;
+	GtkWidget *font;
+	GtkWidget *size;
+	GtkWidget *cr;
+	GtkWidget *cg;
+	GtkWidget *cb;
+	GtkWidget *ca;
+};
+
 gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
 
                            gpointer user_data);
@@ -52,6 +64,8 @@ gboolean obj_vis_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_name_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_text_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data);
+gboolean obj_addtext_ok_cb(GtkWidget *widget, gpointer *data);
+gboolean obj_addtext_cb(GtkWidget *widget, gpointer *data);
 
 int
 main(int argc, char *argv[])
@@ -142,9 +156,14 @@ main(int argc, char *argv[])
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(obj_scroll),
                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
    obj_btn_hbox = gtk_hbox_new(FALSE, 0);
-   obj_btn = gtk_button_new_with_label("Add...");
+   obj_btn = gtk_button_new_with_label("Add Image");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_add_cb), NULL);
+   gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
+   gtk_widget_show(obj_btn);
+   obj_btn = gtk_button_new_with_label("Add Text");
+   gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
+                      GTK_SIGNAL_FUNC(obj_addtext_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
    obj_btn = gtk_button_new_with_label("Copy");
@@ -758,4 +777,133 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
    }
 
    D_RETURN(3, TRUE);
+}
+
+gboolean obj_addtext_ok_cb(GtkWidget *widget, gpointer *data)
+{
+	char *buf = malloc(1024);
+	addtext_ok_data *ok_data = (addtext_ok_data*) data;
+	sprintf(buf,"%s/%d",gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry)), atoi(gtk_entry_get_text(GTK_ENTRY(ok_data->size)))?atoi(gtk_entry_get_text(GTK_ENTRY(ok_data->size))):12);
+
+	geist_document_add_object(
+	      doc,
+	      geist_text_new_with_text(0,0, buf,
+                gtk_entry_get_text(GTK_ENTRY(ok_data->text)),
+                atoi(gtk_entry_get_text(GTK_ENTRY(ok_data->ca))),
+                atoi(gtk_entry_get_text(GTK_ENTRY(ok_data->cr))),
+                atoi(gtk_entry_get_text(GTK_ENTRY(ok_data->cg))),
+                atoi(gtk_entry_get_text(GTK_ENTRY(ok_data->cb))) ));
+	free(ok_data);
+	gtk_widget_destroy(ok_data->win);
+	return TRUE;
+}
+
+gboolean obj_addtext_cb(GtkWidget *widget, gpointer *data)
+{
+	addtext_ok_data *ok_data = NULL;
+	GtkWidget   *table, *text_l, *font_l, *size_l, *hbox,
+	            *cr_l, *cg_l, *cb_l, *ca_l,*ok;
+	int          i, num;
+	char       **fonts;
+	GList       *list = g_list_alloc();
+
+	ok_data = malloc(sizeof(addtext_ok_data));
+	if (!ok_data)
+		return TRUE;
+	fonts = geist_imlib_list_fonts(&num);
+	ok_data->win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	table = gtk_table_new(2,4,FALSE);
+	gtk_container_set_border_width(GTK_CONTAINER(ok_data->win),5);
+	gtk_container_add(GTK_CONTAINER(ok_data->win),table);
+
+	text_l = gtk_label_new("Text:");
+	gtk_misc_set_alignment(GTK_MISC(text_l),1.0,0.5);
+	gtk_table_attach(GTK_TABLE(table), text_l, 0, 1, 0, 1,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(text_l);
+
+	ok_data->text = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), ok_data->text, 1, 2, 0, 1,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(ok_data->text);
+
+	font_l = gtk_label_new("Font:");
+	gtk_misc_set_alignment(GTK_MISC(font_l),1.0,0.5);
+	gtk_table_attach(GTK_TABLE(table), font_l, 0, 1, 1, 2,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(font_l);
+
+	ok_data->font = gtk_combo_new();
+	gtk_table_attach(GTK_TABLE(table), ok_data->font, 1, 2, 1, 2,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	for (i=0; i<num; i++)
+		list = g_list_append(list, (gpointer) fonts[i]);
+	gtk_combo_set_popdown_strings(GTK_COMBO(ok_data->font), list);
+	gtk_widget_show(ok_data->font);
+
+	size_l = gtk_label_new("Size:");
+	gtk_misc_set_alignment(GTK_MISC(size_l),1.0,0.5);
+	gtk_table_attach(GTK_TABLE(table), size_l, 0, 1, 2, 3,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(size_l);
+
+	ok_data->size = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), ok_data->size, 1, 2, 2, 3,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(ok_data->size);
+
+	hbox = gtk_hbox_new(FALSE,0);
+
+	cr_l = gtk_label_new("R:");
+	gtk_misc_set_alignment(GTK_MISC(cr_l),1.0,0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), cr_l, TRUE, FALSE, 2);
+	gtk_widget_show(cr_l);
+	ok_data->cr = gtk_entry_new();
+	gtk_widget_set_usize(GTK_WIDGET(ok_data->cr), 25, -1);
+	gtk_box_pack_start(GTK_BOX(hbox), ok_data->cr, TRUE, FALSE, 2);
+	gtk_widget_show(ok_data->cr);
+	
+	cg_l = gtk_label_new("G:");
+	gtk_misc_set_alignment(GTK_MISC(cg_l),1.0,0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), cg_l, TRUE, FALSE, 2);
+	gtk_widget_show(cg_l);
+	ok_data->cg = gtk_entry_new();
+	gtk_widget_set_usize(GTK_WIDGET(ok_data->cg), 25, -1);
+	gtk_box_pack_start(GTK_BOX(hbox), ok_data->cg, TRUE, FALSE, 2);
+	gtk_widget_show(ok_data->cg);
+	
+	cb_l = gtk_label_new("B:");
+	gtk_misc_set_alignment(GTK_MISC(cb_l),1.0,0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), cb_l, TRUE, FALSE, 2);
+	gtk_widget_show(cb_l);
+	ok_data->cb = gtk_entry_new();
+	gtk_widget_set_usize(GTK_WIDGET(ok_data->cb), 25, -1);
+	gtk_box_pack_start(GTK_BOX(hbox), ok_data->cb, TRUE, FALSE, 2);
+	gtk_widget_show(ok_data->cb);
+	
+	ca_l = gtk_label_new("A:");
+	gtk_misc_set_alignment(GTK_MISC(ca_l),1.0,0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), ca_l, TRUE, FALSE, 2);
+	gtk_widget_show(ca_l);
+	ok_data->ca = gtk_entry_new();
+	gtk_widget_set_usize(GTK_WIDGET(ok_data->ca), 25, -1);
+	gtk_box_pack_start(GTK_BOX(hbox), ok_data->ca, TRUE, FALSE, 2);
+	gtk_widget_show(ok_data->ca);
+	
+	gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 3, 4,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(hbox);
+
+	ok= gtk_button_new_with_label("Ok");
+	gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 4, 5,
+	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
+	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
+	                   GTK_SIGNAL_FUNC(obj_addtext_ok_cb),
+	                   (gpointer) ok_data);
+	gtk_widget_show(ok);
+
+	gtk_widget_show(table);
+	gtk_widget_show(ok_data->win);
+	
+	return TRUE;
 }

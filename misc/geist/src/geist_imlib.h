@@ -82,6 +82,7 @@ void geist_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
                              Imlib_Text_Direction dir);
 Imlib_Image geist_imlib_clone_image(Imlib_Image im);
 char *geist_imlib_image_format(Imlib_Image im);
+char **geist_imlib_list_fonts(int *num);
 void geist_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im,
                                                 int x, int y, int w, int h,
                                                 char dither, char blend,
