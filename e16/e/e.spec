@@ -64,9 +64,6 @@ rm -rf $RPM_BUILD_ROOT
 
 make prefix=$RPM_BUILD_ROOT%{prefix} install
 
-cd $RPM_BUILD_ROOT%{prefix}/
-chown -R 0.0 *
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
