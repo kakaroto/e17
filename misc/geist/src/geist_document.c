@@ -82,36 +82,15 @@ geist_document_get_selected_list(geist_document * doc)
    D_RETURN(3, ret);
 }
 
-void geist_document_unselect_all(geist_document * doc)
-{
-   geist_list *sl, *l;
-   D_ENTER(3);
-
-   sl = geist_document_get_selected_list(doc);
-   D(3,("selected items count: %d\n", geist_list_length(sl)));
-   if (sl)
-   {  
-      geist_object *obj;
-      
-      for (l = sl; l; l = l->next)
-      {  
-         obj = GEIST_OBJECT(l->data);
-         geist_object_unset_state(obj, SELECTED);
-      }
-   }
-   
-   D_RETURN_(3);
-}
-
 void
-geist_document_render_selection(geist_document * doc)
+geist_document_unselect_all(geist_document * doc)
 {
    geist_list *sl, *l;
 
    D_ENTER(3);
 
    sl = geist_document_get_selected_list(doc);
-      D(3,("selected items count: %d\n", geist_list_length(sl)));
+   D(3, ("selected items count: %d\n", geist_list_length(sl)));
    if (sl)
    {
       geist_object *obj;
@@ -119,8 +98,37 @@ geist_document_render_selection(geist_document * doc)
       for (l = sl; l; l = l->next)
       {
          obj = GEIST_OBJECT(l->data);
-         obj->render_selected(obj, doc->im, FALSE);
+         geist_object_unset_state(obj, SELECTED);
       }
+      geist_list_free(sl);
+   }
+
+   D_RETURN_(3);
+}
+
+void
+geist_document_render_selection(geist_document * doc)
+{
+   geist_list *sl, *l;
+   int sel_count;
+
+   D_ENTER(3);
+
+   sl = geist_document_get_selected_list(doc);
+   D(3, ("selected items count: %d\n", geist_list_length(sl)));
+
+   if (sl)
+   {
+      geist_object *obj;
+
+      sel_count = geist_list_length(sl);
+
+      for (l = sl; l; l = l->next)
+      {
+         obj = GEIST_OBJECT(l->data);
+         obj->render_selected(obj, doc->im, (sel_count > 1) ? TRUE : FALSE);
+      }
+      geist_list_free(sl);
    }
 
    D_RETURN_(3);

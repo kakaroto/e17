@@ -7,7 +7,7 @@
 #define GEIST_OBJECT(O) ((geist_object *) O)
 
 typedef enum __geist_object_state
-{ SELECTED = 0x00000001, HILITED = 0x00000002, DRAG = 0x00000004 }
+{ SELECTED = 1UL << 0, HILITED = 1UL << 1, DRAG = 1UL << 2 }
 geist_object_state;
 
 struct __geist_object
@@ -20,7 +20,7 @@ struct __geist_object
    int clicked_x;
    int clicked_y;
    int visible;
-   long int state;
+   unsigned long int state;
    enum
    { SIZEMODE_ZOOM, SIZEMODE_STRETCH, SIZEMODE_CENTER, SIZEMODE_LEFT,
       SIZEMODE_RIGHT
@@ -49,5 +49,6 @@ void geist_object_int_render_partial(geist_object *obj, Imlib_Image dest, int x,
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))
 #define geist_object_get_state(o, s) (o->state & s)
+#define geist_object_toggle_state(o, s) ((o->state & s) ? (o->state &= ~(s)) : (o->state |=  s))
 
 #endif
