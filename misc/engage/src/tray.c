@@ -11,6 +11,8 @@
 
 #define XEMBED_EMBEDDED_NOTIFY      0
 
+int tray_count = 0;
+
 /*
  * This or something similar should probably go into ecore_x
  */
@@ -65,6 +67,8 @@ od_tray_msg_cb(void *data, int type, void *event)
       od_icon_grab(new, ev->data.l[2]);
       od_dock_add_sysicon(new);
 #endif
+XReparentWindow (display, ev->data.l[2], od_window, 24 * tray_count++, 0);
+      
       /* Map the window (will go top-level until reparented) */
       ecore_x_window_show(ev->data.l[2]);
 
@@ -78,8 +82,9 @@ od_tray_msg_cb(void *data, int type, void *event)
   } else if (type == ECORE_X_EVENT_WINDOW_DESTROY ||
              type == ECORE_X_EVENT_WINDOW_HIDE) {
     /* FIXME - WHY are we never called???? */
-    printf("need to remove");
+    printf("need to remove\n");
   }
+
   return 1;
 
 }

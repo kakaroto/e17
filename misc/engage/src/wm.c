@@ -248,7 +248,8 @@ od_dock_icons_update_begin()
 {
   od_sync_clients(NULL);
   ecore_x_event_mask_set(DefaultRootWindow(ecore_x_display_get()),
-                         ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+                         ECORE_X_EVENT_MASK_WINDOW_PROPERTY | 
+                         ECORE_X_EVENT_MASK_WINDOW_MANAGE);
   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, window_prop_change_cb,
                           NULL);
 }
