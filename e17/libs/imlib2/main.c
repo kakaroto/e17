@@ -199,7 +199,11 @@ int main (int argc, char **argv)
 	/* "TIMES/30" "badacid/30" "bajoran/30" "bigfish/30" */
 	__imlib_add_font_path("./ttfonts");
 	if (fon)
-	   fn = __imlib_load_font(fon);
+	  {
+	     fn = __imlib_load_font(fon);
+	     if (!fn) 
+		fon = NULL;
+	  }
 	
 	if (file)
 	   im_bg = imlib_load_image(file);
