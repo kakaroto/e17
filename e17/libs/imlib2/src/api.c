@@ -4253,3 +4253,20 @@ imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
                               0);
    return __imlib_polygon_contains_point(poly, x, y);
 }
+
+void
+imlib_clear_image(void)
+{
+   ImlibImage *im;
+
+   if (!ctx) ctx = imlib_context_new();
+   CHECK_PARAM_POINTER("imlib_fill_ellipse", "image", ctx->image);
+   CAST_IMAGE(im, ctx->image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   memset(im->data, 0, im->w * im->h * sizeof(DATA32));   
+}

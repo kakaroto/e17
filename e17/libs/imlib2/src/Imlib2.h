@@ -465,6 +465,8 @@ extern "C"
 
    void imlib_apply_filter(char *script, ...);
 
+   void imlib_clear_image(void);
+
 #ifdef __cplusplus
 }
 #endif
