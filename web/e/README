@@ -1,2 +1,22 @@
-to build the site when you make changes, from this directory run:
+*** READ THIS ***
+
+if you make changes to page content make changes to:
+data/[file].html
+
+if you need new html files put them in data/
+if you create new images put them in pages/img/
+if you can put the xcf files there too.
+
+when you have made changes run:
 s/make
+
+remember to cvs add the new html files in pages/ and data/
+ie:
+cvs add data/*.html pages/*.html
+
+also remember to cvs add any new images files
+ie:
+cvs add -kb pages/img/*.png pages/img/*.xcf pages/img/*.gif pages/img/*.jpg
+
+when you'd finished adding. cvs commit will commit the changes. ie:
+cvs commit
