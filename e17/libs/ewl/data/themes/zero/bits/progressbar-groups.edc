@@ -12,7 +12,7 @@ group {
 }
 
 group {
-    name, "bar";
+    name, "progressbar_bar";
     min, 1 10;
     parts {
         BUTTON_C(180, 180, 180, 255)
