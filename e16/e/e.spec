@@ -13,10 +13,10 @@ Source: ftp://www.rasterman.com/pub/enlightenment/enlightenment-%{ver}.tar.gz
 BuildRoot: /tmp/e-%{ver}-root
 Packager: The Rasterman <raster@redhat.com>
 URL: http://www.rasterman.com/
-Requires: imlib >= 1.9.5
-Requires: fnlib >= 0.4
+Requires: imlib >= 1.9.8
+Requires: fnlib >= 0.5
 Requires: freetype >= 1.1
-Requires: esound >= 0.2.12
+Requires: esound >= 0.2.13
 
 Docdir: %{prefix}/doc
 
