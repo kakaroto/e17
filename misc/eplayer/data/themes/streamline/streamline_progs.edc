@@ -1,0 +1,354 @@
+
+                        /* Quit Handlers */
+                        program {
+                                name, "quit_button_in";
+                                signal, "mouse,in";
+                                source, "quit";
+                                action, STATE_SET "active" 0.0;
+                                target, "quit";
+                                transition, LINEAR 0.5;
+                        }
+                        program {
+                                name, "quit_button_out";
+                                signal, "mouse,out";
+                                source, "quit";
+                                action, STATE_SET "default" 0.0;
+                                target, "quit";
+                                transition, LINEAR 0.5;
+                        }
+                        program {
+                                name, "quit_button_click";
+                                signal, "mouse,clicked,1";
+                                source, "quit";
+                                action, SIGNAL_EMIT "QUIT" "quit";
+                        }
+
+                        /* switch to "small" mode */
+                        program {
+                                name, "titlebar_dbl_click";
+                                signal, "mouse,down,1,double";
+                                source, "titlebar";
+                                action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer_small";
+                        }
+
+                        program {
+                                name, "titlebar_click";
+                                signal, "mouse,clicked,1";
+                                source, "titlebar";
+                                action, SIGNAL_EMIT "RAISE", "titlebar";
+                        }
+
+                        /* Previous File */
+                        program {
+                                name,       "previous_click";
+                                signal,     "mouse,down,1";
+                                source,     "previous_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "previous_button";
+                        }
+                        program {
+                                name,       "previous_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "previous_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "previous_button";
+                        }
+
+                        program {
+                                name,       "previous_click";
+                                signal,     "mouse,up,1";
+                                source,     "previous_button";
+                                /* Emit signal to handler "previous file", from part/sender "previous_button" */
+                                /* Catch with the following Edje code in your app */
+                                /* edje_object_signal_callback_add(edje, "PLAY_PREVIOUS", "previous_button", function) */
+                                action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
+                        }
+
+                        program {
+                                name, "time_text_click";
+                                signal, "mouse,up,1";
+                                source, "time_text";
+                                action, SIGNAL_EMIT, "TOGGLE_TIME_DISPLAY_MODE", "time_text";
+                        }
+
+                        /* Seek Backwards */
+
+                        program {
+                                name,       "seekback_click";
+                                signal,     "mouse,down,1";
+                                source,     "seekback_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "seekback_button";
+                        }
+                        program {
+                                name,       "seekback_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "seekback_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "seekback_button";
+                        }
+
+                        program {
+                                name,       "seekback_click";
+                                signal,     "mouse,up,1";
+                                source,     "seekback_button";
+                                action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
+                        }
+
+
+                        /* Play */
+                        program {
+                                name,       "play_click";
+                                signal,     "mouse,down,1";
+                                source,     "play_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "play_button";
+                                //after,      "play_blink";
+                        }
+
+                        program {
+                                name,       "play_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "play_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "play_button";
+                                //after,      "pause_unblink";
+                        }
+
+                        /* Stop Pause Blinker */
+                        /* When using the action STOP, the target is the program to be stopped */
+                        program {
+                                name,       "pause_unblink";
+                                source,     "*";
+                                action,     ACTION_STOP "pause_blink" 0.0;
+                                target,     "pause_blink";
+                                after,      "play_blink";
+                        }
+
+
+                        /* Loop Play Blinker */
+                        program {
+                                name,       "play_blink";
+                                source,     "*";
+                                action,     STATE_SET "blink" 0.0;
+                                transition, LINEAR, 1.0;
+                                target,     "play_button";
+                                after,      "play_blink";
+                        }
+
+                        program {
+                                name,       "play_click";
+                                signal,     "mouse,up,1";
+                                source,     "play_button";
+                                action,     SIGNAL_EMIT "PLAY" "play_button";
+                        }
+                        /**************** Pause ****************/
+                        program {
+                                name,       "pause_click";
+                                signal,     "mouse,down,1";
+                                source,     "pause_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.2;
+                                target,     "pause_button";
+                                //after,            "pause_blink";
+                        }
+
+                        program {
+                                name,       "pause_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "pause_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.2;
+                                target,     "pause_button";
+                                //after,      "play_unblink";
+                        }
+
+                        program {
+                                name,       "play_unblink";
+                                source,     "*";
+                                action,     ACTION_STOP "play_blink" 0.0;
+                                target,     "play_blink";
+                                after,      "pause_blink";
+                        }
+
+                        program {
+                                name,       "pause_blink";
+                                source,     "*";
+                                action,     STATE_SET "blink" 0.0;
+                                transition, LINEAR, 1.0;
+                                target,     "pause_button";
+                                after,      "pause_blink";
+                        }
+
+                        program {
+                                name,       "pause_click";
+                                signal,     "mouse,up,1";
+                                source,     "pause_button";
+                                action,     SIGNAL_EMIT "PAUSE" "pause_button";
+                        }
+
+                        /**************** Seek Forward ********************/
+                        program {
+                                name,       "seekforward_click";
+                                signal,     "mouse,down,1";
+                                source,     "seekforward_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "seekforward_button";
+                        }
+                        program {
+                                name,       "seekforward_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "seekforward_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "seekforward_button";
+                        }
+
+                        program {
+                                name,       "seekforward_signal";
+                                signal,     "mouse,up,1";
+                                source,     "seekforward_button";
+                                action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
+                        }
+
+
+                        /* Next File */
+                        program {
+                                name,       "next_click";
+                                signal,     "mouse,down,1";
+                                source,     "next_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "next_button";
+                        }
+                        program {
+                                name,       "next_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "next_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "next_button";
+                        }
+                        program {
+                                name,       "next_click";
+                                signal,     "mouse,up,1";
+                                source,     "next_button";
+                                action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
+                        }
+
+                        /* Volume Button Proggies */
+                        /* Raise Volume */
+                        program {
+                                name,       "volplus_click";
+                                signal,     "mouse,down,1";
+                                source,     "vol_incr_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "vol_incr_button";
+                        }
+                        program {
+                                name,       "volplus_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "vol_incr_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "vol_incr_button";
+                        }
+
+                        program {
+                                name,       "vol_incr_sig_wheel1";
+                                signal,     "mouse,wheel,0,-1";
+                                source,     "vol_incr_button";
+                                action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
+                        }
+
+                        program {
+                                name,       "vol_incr_sig_wheel2";
+                                signal,     "mouse,wheel,0,1";
+                                source,     "vol_incr_button";
+                                action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
+                        }
+
+
+                        /** NOTES: All programs MUST have AT LEAST, a NAME, SOURCE (even if "*";), and an ACTION **/
+
+                        program {
+                                name,       "vol_incr_sig";
+                                //signal,           "*";
+                                //source,     "volplus_click";
+                                signal,     "mouse,up,1";
+                                source,     "vol_incr_button";
+                                action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
+                        }
+
+                        /* Lower Volume */
+                        program {
+                                name,       "volminus_click";
+                                signal,     "mouse,down,1";
+                                source,     "vol_decr_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "vol_decr_button";
+                        }
+                        program {
+                                name,       "volminus_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "vol_decr_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "vol_decr_button";
+                        }
+                        program {
+                                name,       "vol_decr_sig";
+                                signal,     "mouse,up,1";
+                                source,     "vol_decr_button";
+                                action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
+                        }
+
+                        program {
+                                name,       "vol_decr_sig_wheel1";
+                                signal,     "mouse,wheel,0,-1";
+                                source,     "vol_decr_button";
+                                action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
+                        }
+
+                        program {
+                                name,       "vol_decr_sig_wheel2";
+                                signal,     "mouse,wheel,0,1";
+                                source,     "vol_decr_button";
+                                action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
+                        }
+
+                        program {
+                                name, "repeat_toggle_activated";
+                                signal, "mouse,clicked,1";
+                                source, "repeat_toggle_disabled_img";
+                                action, STATE_SET "disabled" 0.0;
+                                target, "repeat_toggle_disabled_img";
+                                action, STATE_SET "enabled" 0.0;
+                                target, "repeat_toggle_enabled_img";
+                                after, "repeat_toggle_signal";
+                        }
+
+                        program {
+                                name, "repeat_toggle_deactivated";
+                                signal, "mouse,clicked,1";
+                                source, "repeat_toggle_enabled_img";
+                                action, STATE_SET "default" 0.0;
+                                target, "repeat_toggle_enabled_img";
+                                action, STATE_SET "default" 0.0;
+                                target, "repeat_toggle_disabled_img";
+                                after, "repeat_toggle_signal";
+                        }
+
+                        program {
+                                name, "repeat_toggle_signal";
+                                action, SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
+                        }
