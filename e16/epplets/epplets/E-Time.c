@@ -143,6 +143,8 @@ apply_config(void)
     Epplet_gadget_show(label2 = Epplet_create_label(4 * just, 15, "", 1));
     Epplet_gadget_show(label3 = Epplet_create_label(4 * just, 26, "", 1));
     Epplet_gadget_show(label4 = Epplet_create_label(4 * just, 36, "", 1));
+    Esnprintf(buff, sizeof(buff), "%d", just);
+    Epplet_modify_config("just", buff);
   }
 
   strcpy(buff, NONULL(Epplet_textbox_contents(cfg_tb_line1)));

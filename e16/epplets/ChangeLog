@@ -1578,3 +1578,10 @@ All fallbacks failed.
 messages. I have just used a NULL parameter instead, which I believe is
 correct.
 
+-------------------------------------------------------------------------------
+
+Sun Dec 12 16:33:12 GMT 1999
+(gilbertt)
+
+E-Time wasn't saving its justification setting. Fixed.
+
