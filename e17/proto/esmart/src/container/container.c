@@ -336,7 +336,6 @@ _container_element_new(Container *cont, Evas_Object *obj)
 void
 _container_elements_fix(Container *cont)
 {
-  printf("layout\n");
   if (cont->plugin && cont->plugin->layout)
     cont->plugin->layout(cont);
 }

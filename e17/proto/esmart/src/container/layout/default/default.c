@@ -236,7 +236,7 @@ void _default_scroll_start(Container *cont, double velocity)
     printf(" length smaller than size\n");
     return;
   }
-  printf("continue\n");
+  //printf("continue\n");
   data = calloc(1, sizeof(Scroll_Data));
   data->velocity = velocity;
   data->start_time = ecore_time_get();
