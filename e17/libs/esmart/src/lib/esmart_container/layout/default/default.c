@@ -128,29 +128,24 @@ _default_layout(Container *cont)
     {
       if (cont->fill & CONTAINER_FILL_POLICY_FILL)
       {
-        //printf("fill\n");
         ih = ah;
         
         if (cont->fill & CONTAINER_FILL_POLICY_HOMOGENOUS)
           iw = (aw - cont->spacing * (num - 1) ) / num;
         else
         {
-          //printf("nonhomog\n");
           iw = el->orig_w * (aw - cont->spacing * (num - 1) ) / L;
         }
       }
       else if (cont->fill & CONTAINER_FILL_POLICY_FILL_X)
       {
-        //printf("fill x\n");
 
         if (cont->fill & CONTAINER_FILL_POLICY_HOMOGENOUS)
         {
-          //printf ("homog\n");
           iw = (aw - cont->spacing * (num - 1) ) / num;
         }
         else
         {
-          //printf("nonhomog - L: %f, ew: %f\n", L, ew);
           iw = el->orig_w * (aw - cont->spacing * (num - 1) ) / L;
         }
 
@@ -228,10 +223,8 @@ void _default_scroll_start(Container *cont, double velocity)
 
   /* don't scroll unless the elements exceed the size of the container */
   if (length <= size)
-  {
-    printf(" length smaller than size\n");
     return;
-  }
+  
   data = calloc(1, sizeof(Scroll_Data));
   data->velocity = velocity;
   data->start_time = ecore_time_get();
