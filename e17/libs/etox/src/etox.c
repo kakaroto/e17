@@ -110,6 +110,8 @@ void etox_free(Evas_Object * obj)
 		l = evas_list_remove(l, obst);
 		FREE(obst);
 	}
+
+	FREE(et);
 }
 
 /**
