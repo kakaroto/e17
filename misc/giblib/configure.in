@@ -29,12 +29,12 @@ AC_SUBST(IMLIB_CFLAGS)
 LIBS="$LIBS -lm"
 CFLAGS="$CFLAGS -Wall"
 
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(src/giblib_config.h)
 
 AC_OUTPUT([
 Makefile
 giblib-config
-src/Makefile
+giblib/Makefile
 ], [
 chmod +x giblib-config
 ])

@@ -1,4 +1,4 @@
-/* gib_utils.h
+/* debug.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,23 +23,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef GIB_UTILS_H
-#define GIB_UTILS_H
+#ifndef DDEBUG_H
+#define DDEBUG_H
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "config.h"
+#include <giblib/giblib_config.h>
 
-void eprintf(char *fmt, ...);
-void weprintf(char *fmt, ...);
-char *_estrdup(char *s);
-void *_emalloc(size_t n);
-void _efree(void *p);
-void *_erealloc(void *ptr, size_t n);
-char *stroflen(char c, int l);
+#ifdef WITH_DMALLOC
+#include <dmalloc.h>
+#define emalloc(a) malloc(a)
+#define efree(a) free(a)
+#define estrdup(a) strdup(a)
+#define erealloc(a,b) realloc(a,b)
+#else
+#define emalloc(a) _emalloc(a)
+#define efree(a) _efree(a)
+#define estrdup(a) _estrdup(a)
+#define erealloc(a,b) _erealloc(a,b)
+#endif
 
 #endif

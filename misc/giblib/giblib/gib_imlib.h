@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdarg.h>
-#include "config.h"
+#include <giblib/giblib_config.h>
 
 #define GIBCLIP(x, y, w, h, xx, yy, ww, hh) \
 { \

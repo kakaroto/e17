@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src
+SUBDIRS = giblib
 
 docs_DATA = README AUTHORS ChangeLog TODO
 docsdir = $(prefix)/doc/giblib

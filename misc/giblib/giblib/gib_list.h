@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef GIB_LIST_H
 #define GIB_LIST_H
 
-#include "config.h"
+#include <giblib/giblib_config.h>
 
 enum __direction
 { FORWARD, BACK };
