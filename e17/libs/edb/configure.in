@@ -1,6 +1,6 @@
 AC_INIT(src/Edb.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(edb, 0.0.1)
+AM_INIT_AUTOMAKE(edb, 1.0.0)
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_C_CONST
@@ -10,26 +10,10 @@ if test X"$enable_shared" = Xyes; then
   DLLDFLAGS=-export-dynamic
   AC_SUBST(DLLDFLAGS)
 fi
+AM_WITH_DMALLOC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_C_BIGENDIAN
-
-#db_lib=db
-#AC_SUBST(db_lib)
-#
-#AC_CHECK_HEADER(db.h,
-#AC_CHECK_LIB(db, db_open, ,[
-#echo ""
-#echo "ERROR: db library needed"
-#echo ""
-#AC_MSG_ERROR([Fatal Error: no db detected.]); exit], -L/usr/local/lib -ldb)
-#)
-#
-#db_ldflags="-ldb"
-#db_cflags=""
-#
-#AC_SUBST(db_ldflags)
-#AC_SUBST(db_cflags)
 
 ##################### DB stuff
 

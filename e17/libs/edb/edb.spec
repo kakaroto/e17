@@ -1,25 +1,25 @@
 %define	name	edb
-%define	ver	0.0.1
+%define	ver	1.0.0
 %define	rel	1
 %define prefix  /usr
 
-Summary: Enlightened Database Access Library
+Summary: Enlightenment Database Access Library
 Name: %{name}
 Version: %{ver}
 Release: %{rel}
 Copyright: BSD
-Group: User Interface/X
+Group: System Environment/Libraries
 URL: http://www.enlightenment.org/efm.html
-Packager: Term <kempler@utdallas.edu>
+Packager: The Rasterman <raster@rasterman.com>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root
 
 %description
-Edb is a simple, clean high-level wrapper to ndbm.
+Edb is a simple, clean high-level db access/storage library.
 
 %package devel
-Summary: Enlightened Database Access Library headers and development libraries.
+Summary: Enlightenment Database Access Library headers and development libraries.
 Group: Development/Libraries
 Requires: %{name} = %{ver}
 
