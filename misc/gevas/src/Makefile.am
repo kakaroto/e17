@@ -41,7 +41,9 @@ gevasobj.h \
 gevastext.h \
 gevastwin.h \
 gevasevh_selectable.h \
-gevasevh_group_selector.h
+gevasevh_group_selector.h \
+gevas_obj_collection.h \
+gevas_sprite.h
 
 
 libgevas_la_SOURCES   = \
