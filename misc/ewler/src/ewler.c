@@ -115,6 +115,7 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_widget_show( separator );
 
 	menu = ewl_imenu_new( NULL, "File" );
+	ewl_object_set_fill_policy( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_container_append_child( EWL_CONTAINER(menu_layout), menu );
 	ewl_widget_show( menu );
 
@@ -171,6 +172,7 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_widget_show( menu_item );
 
 	menu = ewl_imenu_new( NULL, "Window" );
+	ewl_object_set_fill_policy( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_container_append_child( EWL_CONTAINER(menu_layout), menu );
 	ewl_widget_show( menu );
 
