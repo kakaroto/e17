@@ -12,7 +12,7 @@ LIBS_ALL             = @EDB_LIBS@ @EET_LIBS@ @IMLIB2_LIBS@
 INCLUDES             = @EDB_CFLAGS@ @EET_CFLAGS@ @IMLIB2_CFLAGS@ \
                        $(CFLAGS_EXTRA) $(X_CFLAGS)
 
-pkgdir		     = $(libdir)/imlib2_loaders/image
+pkgdir		     = $(libdir)/loaders/image
 
 if XCF_LOADER
 XCF_L               = xcf.la
