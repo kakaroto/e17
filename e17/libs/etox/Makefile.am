@@ -9,6 +9,6 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in
 
-SUBDIRS		     = src
+SUBDIRS		     = src debian
 
 EXTRA_DIST = README AUTHORS COPYING etox.spec

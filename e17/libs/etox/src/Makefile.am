@@ -30,8 +30,7 @@ Etox.h \
 etox.c \
 loadfile.h \
 loadfile.c \
-font_style.c \
-font_style.h
+font_style.c
 
 
 libetox_la_LIBADD       = $(LIBS_ALL)
