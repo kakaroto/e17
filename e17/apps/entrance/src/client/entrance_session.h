@@ -34,11 +34,13 @@ struct _Entrance_Session
 
    int authed;                  /* whether or not the user has authenticated
                                    * or not */
+   int testing;                 /* whether we're in X testing or not */
 };
 
 typedef struct _Entrance_Session Entrance_Session;
 
-Entrance_Session *entrance_session_new(const char *config, char *display);
+Entrance_Session *entrance_session_new(const char *config, char *display,
+                                       int testing);
 void entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee);
 void entrance_session_free(Entrance_Session * e);
 void entrance_session_run(Entrance_Session * e);

@@ -19,7 +19,6 @@
 #define WINH 600
 
 static Entrance_Session *session = NULL;
-int _entrance_test_en = 0;
 
 /**
  * get the hostname of the machine, surrounded by the before and after
@@ -365,7 +364,7 @@ static void
 reboot_cb(void *data, Evas_Object * o, const char *emission,
           const char *source)
 {
-   if (session->config->reboot)
+   if ((session->config->reboot) && (!session->testing))
    {
       pid_t pid;
 
@@ -390,6 +389,10 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
            exit(EXITCODE);
       }
    }
+   else if (session->testing)
+   {
+      syslog(LOG_INFO, "Reboot Unsupported in testing mode");
+   }
 }
 
 /**
@@ -405,7 +408,7 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
 {
    pid_t pid;
 
-   if (session->config->halt)
+   if ((session->config->halt) && (!session->testing))
    {
       entrance_session_free(session);
       session = NULL;
@@ -427,6 +430,10 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
            syslog(LOG_INFO, "The system is being shut down");
            exit(EXITCODE);
       }
+   }
+   else if (session->testing)
+   {
+      syslog(LOG_INFO, "Shutdown Unsupported in testing mode");
    }
 }
 
@@ -569,8 +576,9 @@ main(int argc, char *argv[])
    int g_x = WINW, g_y = WINH;
    char *theme = NULL;
    char *config = NULL;
-   int fs_en = 1;
+   int fullscreen = 1;
    pid_t server_pid = 0;
+   int testing = 0;
 
    /* Basic ecore initialization */
    if (!ecore_init())
@@ -612,7 +620,7 @@ main(int argc, char *argv[])
                         optarg);
                  return (-1);
               }
-              fs_en = 0;
+              fullscreen = 0;
            }
            break;
         case 't':
@@ -633,8 +641,8 @@ main(int argc, char *argv[])
            }
            break;
         case 'T':
-           _entrance_test_en = 1;
-           fs_en = 0;
+           testing = 1;
+           fullscreen = 0;
            break;
         case 'c':
            config = strdup(optarg);
@@ -651,7 +659,7 @@ main(int argc, char *argv[])
    if (!entrance_ipc_init(server_pid))
       return -1;
 
-   session = entrance_session_new(config, display);
+   session = entrance_session_new(config, display, testing);
 
    if (config)
       free(config);
@@ -698,7 +706,7 @@ main(int argc, char *argv[])
       }
 
       ew = ecore_evas_software_x11_window_get(e);
-      if (_entrance_test_en)
+      if (session->testing)
          ecore_evas_title_set(e, "Entrance - Testing Mode");
       else
          ecore_evas_title_set(e, "Entrance");
@@ -839,13 +847,10 @@ main(int argc, char *argv[])
       /* set focus to user input by default */
       edje_object_signal_emit(edje, "In", "EntranceUserEntry");
 
-#if (X_TESTING == 0)
-      ecore_evas_resize(e, g_x, g_y);
-      if (fs_en)
+      if (fullscreen)
          ecore_evas_fullscreen_set(e, 1);
-#elif (X_TESTING == 1)
-      ecore_evas_resize(e, g_x, g_y);
-#endif
+      else
+         ecore_evas_resize(e, g_x, g_y);
 
       entrance_session_ecore_evas_set(session, e);
       entrance_ipc_session_set(session);

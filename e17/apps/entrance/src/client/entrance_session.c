@@ -14,8 +14,6 @@
 @brief Variables and Data relating to an instance of the application as a whole
 
 */
-extern int _entrance_test_en;
-
 extern void session_item_selected_cb(void *data, Evas_Object * o,
                                      const char *emission,
                                      const char *source);
@@ -29,11 +27,12 @@ static void _entrance_session_user_list_fix(Entrance_Session * e);
  * entrance_session_new: allocate a new  Entrance_Session
  * @param config Parse this config file instead of the normal system one
  * @param config The display this session will be running on
+ * @param testing Whether we're a real login app, or a test window
  * @return a valid Entrance_Session
  * Also Allocates the auth, and parse the config struct 
  */
 Entrance_Session *
-entrance_session_new(const char *config, char *display)
+entrance_session_new(const char *config, char *display, int testing)
 {
    Entrance_Session *e;
    char *db;
@@ -58,7 +57,7 @@ entrance_session_new(const char *config, char *display)
       exit(1);
    }
    e->session = strdup("");
-
+   e->testing = testing;
    free(db);
    return (e);
 }
@@ -359,7 +358,7 @@ entrance_session_start_user_session(Entrance_Session * e)
       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
    }
 
-   if (_entrance_test_en)
+   if (e->testing)
       snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 
    syslog(LOG_CRIT, "Executing %s", buf);
