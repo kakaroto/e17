@@ -54,7 +54,7 @@ void            ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
  */
 #define ewl_radiobutton_is_checked(r) \
 	ewl_checkbutton_is_checked(EWL_CHECKBUTTON(r))
-void            ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c);
+void            ewl_radiobutton_set_chain(Ewl_RadioButton * w, Ewl_RadioButton * c);
 
 /*
  * Internally used callbacks, override at your own risk.

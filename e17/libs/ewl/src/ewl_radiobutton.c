@@ -30,16 +30,11 @@ Ewl_Widget     *ewl_radiobutton_new(char *label)
  * Associates @a w with the same chain as @a c, in order to
  * ensure that only one radio button of that group is checked at any time.
  */
-void ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
+void ewl_radiobutton_set_chain(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
 {
-	Ewl_RadioButton *rb, *crb;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("c", c);
-
-	rb = EWL_RADIOBUTTON(w);
-	crb = EWL_RADIOBUTTON(c);
+	DCHECK_PARAM_PTR("rb", rb);
+	DCHECK_PARAM_PTR("crb", crb);
 
 	/*
 	 * If a chain doesnt exist, create one 
@@ -47,12 +42,12 @@ void ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	if (!crb->chain) {
 		crb->chain = ewd_list_new();
 
-		ewd_list_append(crb->chain, w);
-		ewd_list_append(crb->chain, c);
+		ewd_list_append(crb->chain, rb);
+		ewd_list_append(crb->chain, crb);
 	} else {
 
-		if (!ewd_list_goto(crb->chain, w))
-			ewd_list_append(crb->chain, w);
+		if (!ewd_list_goto(crb->chain, rb))
+			ewd_list_append(crb->chain, rb);
 	}
 
 	rb->chain = crb->chain;
