@@ -6,7 +6,9 @@ EET = $(EDC:%.edc=%.eet)
 SUFFIXES = .edc .eet
 
 CLEANFILES = $(EET)
-EXTRA_DIST = $(EDC)
+EXTRA_DIST = $(EDC) default_images.edc default_parts.edc \
+             default_playlist_parts.edc default_playlist_progs.edc \
+             default_progs.edc default_small_parts.edc default_small_progs.edc
 
 themedir = $(pkgdatadir)/themes
 theme_DATA = $(EET)
