@@ -540,6 +540,21 @@ static EwlBool _cb_ewl_widget_render_layers(EwlLL *node, EwlData *data)
 	return 1;
 }
 
+Evas             ewl_widget_get_evas(EwlWidget *widget)
+{
+	EwlWidget *w = NULL;
+	Evas evas = NULL;
+	FUNC_BGN("ewl_widget_get_evas");
+	if (!widget)	{
+		ewl_debug("ewl_widget_get_evas", EWL_NULL_WIDGET_ERROR, "widget");
+	} else {
+		for (w=widget;w->parent;w=w->parent);
+		evas = ewl_window_get_evas(w->parent);
+	}
+	FUNC_END("ewl_widget_get_evas");
+	return evas;
+}
+
 void   ewl_widget_render(EwlWidget *w)
 {
 	int width  = 0,

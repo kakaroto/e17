@@ -590,3 +590,33 @@ void	ewl_window_moveresize(EwlWidget *widget, int x, int y, int w, int h)
 	return;
 }
 
+
+Evas     ewl_window_get_evas(EwlWidget *widget)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	Evas evas = NULL;
+	FUNC_BGN("ewl_window_get_evas");
+	if (!window)	{
+		ewl_debug("ewl_widnow_get_evas", EWL_NULL_WIDGET_ERROR, "window");
+	} else {
+		evas = window->evas;
+	} 
+	FUNC_BGN("ewl_window_get_evas");
+	return evas;
+}
+
+void     ewl_window_set_evas(EwlWidget *widget, Evas evas)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	FUNC_BGN("ewl_window_set_evas");
+	if (!window)	{
+		ewl_debug("ewl_widnow_set_evas", EWL_NULL_WIDGET_ERROR, "window");
+	} else if (!evas) {
+		ewl_debug("ewl_widnow_set_evas", EWL_NULL_ERROR, "evas");
+	} else {
+		window->evas = evas;
+	} 
+	FUNC_BGN("ewl_window_set_evas");
+	return;
+}
+

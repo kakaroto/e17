@@ -52,6 +52,8 @@ struct _EwlWindow	{
 	
 	XClassHint      *xclass_hint;
 	MWMHints         mwmhints;
+
+	Evas             evas;
 };
 
 EwlWidget   *ewl_window_new(EwlWindowType type);
@@ -84,6 +86,8 @@ void     ewl_window_moveresize(EwlWidget *widget,
                                int x, int y, int w, int h);
 EwlRect *ewl_window_get_rect(EwlWidget *widget);
 
+Evas     ewl_window_get_evas(EwlWidget *widget);
+void     ewl_window_set_evas(EwlWidget *widget, Evas evas);
 
 /* private */
 void	 ewl_window_set_render_context(EwlWidget *widget);

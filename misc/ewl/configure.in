@@ -38,9 +38,9 @@ AC_ARG_WITH(evas,
         [CFLAGS="$CFLAGS -Wall -ansi -pedantic -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
 
-AC_CHECK_LIB(Evas, evas_new, , [
+AC_CHECK_LIB(evas, evas_new, , [
 echo "ERROR:  You need libEvas to build EWL.";
-             AC_MSG_ERROR([Fatal:  libEvas not found.])], -lm)
+             AC_MSG_ERROR([Fatal:  libevas not found.])], -lm)
 LIBS="$LIBS -lm"
 
 

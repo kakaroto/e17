@@ -885,3 +885,12 @@ blame this one on Mr Giblet.
 - added initial Evas dependency to src/Makefile.am
 - added test evas code.
 
+-----
+20000902-0531-PDT, pabs
+
+- added ewl_window_get/set_evas() and ewl_widget_get_evas() (recurses
+up to it's toplevel window parent and gets it's evas.. mainly for internal
+use).  Yes, this means i'm gonna have to impliment a realize/unrealize
+system for widgets.  Fuck you Tom. ;)
+- fixed configure.in so it actually finds evas...hmm, imagine that.
+

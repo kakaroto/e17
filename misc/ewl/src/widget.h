@@ -26,6 +26,9 @@ extern void  ewl_event_queue(EwlEvent *ev);
 /* defined in ewlcontainer.h */
 extern void ewl_container_render_children(EwlWidget *w);
 
+/* defined in ewlwindow.h */
+extern Evas ewl_window_get_evas(EwlWidget *widget);
+
 
 struct _EwlEvCbLL	{
 	EwlLL                ll;
@@ -84,7 +87,7 @@ struct _EwlWidget	{
 	Imlib_Image    *rendered;
 	Imlib_Image    *bg;
 
-	Evas_Object     obj;
+	Evas_Object     evas_object;
 };
 
 /* allocation functions */
@@ -152,7 +155,10 @@ int             *ewl_widget_get_padding(EwlWidget *w);
 void             ewl_widget_set_padding(EwlWidget *w, int *left, int *top,
                                         int *right, int *bottom);
 
-/* widget imlayer handling functions */
+/* widget evas routines */
+Evas             ewl_widget_get_evas(EwlWidget *widget);
+
+/* DEPRICATED widget imlayer handling functions */
 void             ewl_widget_set_background(EwlWidget *w, Imlib_Image im);
 void             ewl_widget_imlayer_insert(EwlWidget *w, EwlImLayer *l);
 void             ewl_widget_imlayer_remove(EwlWidget *w, EwlImLayer *l);
