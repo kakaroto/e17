@@ -68,9 +68,52 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 			EWL_FILL_POLICY_HFILL);
 
 	tree->ncols = columns;
-	tree->colw = NEW(int, columns);
+	tree->colbases = NEW(int, columns);
+	tree->colbounds = NEW(int, columns);
+
+	ewl_tree_set_headers(tree, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_tree_set_headers
+ */
+void ewl_tree_set_headers(Ewl_Tree *tree, Ewl_Widget **headers)
+{
+	unsigned short i;
+	Ewl_Widget *row;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+
+	row = ewl_row_new();
+	if (headers) {
+		for (i = 0; i < tree->ncols; i++) {
+			ewl_container_append_child(EWL_CONTAINER(row),
+					headers[i]);
+
+			tree->colbases[i] = &CURRENT_X(headers[i]);
+			tree->colbounds[i] = &CURRENT_W(headers[i]);
+		}
+	}
+	else {
+		Ewl_Widget *button;
+
+		for (i = 0; i < tree->ncols; i++) {
+			button = ewl_button_new(NULL);
+			ewl_container_append_child(EWL_CONTAINER(row), button);
+			ewl_widget_show(button);
+
+			tree->colbases[i] = &CURRENT_X(button);
+			tree->colbounds[i] = &CURRENT_W(button);
+		}
+	}
+
+	ewl_container_append_child(EWL_CONTAINER(tree), row);
+	ewl_widget_show(row);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -112,6 +155,8 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
+	ewl_row_set_column_bounds(EWL_ROW(row), tree->ncols, tree->colbases,
+			tree->colbounds);
 	ewl_widget_show(row);
 
 	EWL_TREE_NODE(node)->tree = tree;

@@ -68,7 +68,7 @@ int ewl_row_init(Ewl_Row *row)
  * is given it's preferred size.
  */
 void
-ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int *base,
+ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int **base,
 		unsigned int **bounds)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -113,8 +113,10 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (row->bounds) {
 		int i = 0;
 		while ((child = ewd_list_next(c->children))) {
+			ewl_object_request_position(child, x, CURRENT_Y(w));
 			ewl_object_request_w(child,
-					*row->base + *row->bounds[i] - x);
+					*row->base[i] + *row->bounds[i] - x);
+			ewl_object_request_h(child, CURRENT_H(w));
 			x = ewl_object_get_current_x(child) +
 				ewl_object_get_current_w(child);
 			i++;
@@ -140,8 +142,7 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_request_position(child, x, CURRENT_Y(w));
 			ewl_object_request_w(child, portion);
 
-			ewl_object_request_h(child,
-					ewl_object_get_preferred_h(EWL_OBJECT(w)));
+			ewl_object_request_h(child, CURRENT_H(w));
 			x = ewl_object_get_current_x(child) +
 				ewl_object_get_current_w(child);
 

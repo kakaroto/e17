@@ -84,7 +84,6 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 
 	e->cursor = ewl_cursor_new();
 	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
-	ewl_widget_show(e->cursor);
 
 	pos = ewl_text_get_length(EWL_TEXT(e->text)) + 1;
 	ewl_cursor_set_position(EWL_CURSOR(e->cursor), pos, pos);

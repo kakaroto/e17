@@ -16,11 +16,9 @@ struct _ewl_tree
 	unsigned short ncols;
 	unsigned short nrows;
 
-	unsigned int *colw;
-	unsigned int *rowh;
-
 	unsigned int **colbases;
 	unsigned int **colbounds;
+	Ewl_Widget *header;
 };
 
 typedef struct _ewl_tree_node Ewl_Tree_Node;
@@ -45,6 +43,7 @@ void ewl_tree_node_expand(Ewl_Tree_Node *tree);
 
 Ewl_Widget *ewl_tree_new(unsigned short columns);
 int ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
+void ewl_tree_set_headers(Ewl_Tree *tree, Ewl_Widget **headers);
 void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns);
 Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children);
 void ewl_tree_set_row_expanded(Ewl_Row *row, int expanded);

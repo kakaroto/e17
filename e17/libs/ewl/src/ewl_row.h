@@ -12,13 +12,13 @@ struct _ewl_row
 	Ewl_Container container;
 	Ewl_Object *max;
 
-	unsigned int *base;
+	unsigned int **base;
 	unsigned int **bounds;
 };
 
 Ewl_Widget *ewl_row_new();
 int ewl_row_init(Ewl_Row *row);
-void ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int *base,
+void ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int **base,
 		unsigned int **bounds);
 
 #endif
