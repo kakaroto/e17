@@ -4375,3 +4375,12 @@ redoing libXinerama support.  If you use xinerama, try using the "xinerama"
 command.  ALSO - you have to make sure you installed libXinerama.a in the
 right place as well as Xinerama.h -- still lots more hacking to do (trying to
 do a cleaner implementation than my last hack)
+
+-------------------------------------------------------------------------------
+
+Thu Mar 23 22:10:29 PST 2000
+(Mandrake)
+
+minor update to tell you that xinerama is not active on your box if it isn't
+turned on but you have xinerama support in your server.
+
