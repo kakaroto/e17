@@ -270,3 +270,12 @@ Fri Nov  5 10:44:18 PST 1999
 The zoom button works now.  It executes an arbitrary command and replaces an
 occurance of %s in the string with the current image filename.  The default
 is "ee %s".
+
+-------------------------------------------------------------------------------
+
+Fri Nov  5 16:36:55 PST 1999
+(KainX)
+
+E-Xss, an xscreensaver epplet.  Unfortunately, xscreensaver crashes my X
+server on a regular basis, so I'll have to continue development for this at
+home.  It currently has...issues.
