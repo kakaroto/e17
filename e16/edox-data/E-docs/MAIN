@@ -940,7 +940,7 @@ have individual configurations, as detailed on the next page.
 <p>
 You can _move(movemode) the Iconbox around the screen using Alt-Leftclick
 on the window, and then moving it to the desired location on the screen.  You
-can _resize(movemode) the Iconbox by alt-middleclicking on the window and
+can _resize(resizemode) the Iconbox by alt-middleclicking on the window and
 then adjusting the size  as described in the _Mouse_Bindings(mousebind)
 section.
 <p>
