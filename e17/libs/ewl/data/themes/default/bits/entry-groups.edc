@@ -50,7 +50,7 @@
 
    group {
       name, "cursor";
-      min, 1 99;
+      min, 2 2;
       max, 2 99;
       parts {
 	 part {
