@@ -1259,16 +1259,16 @@ imlib_updates_append_updates(Imlib_Updates updates,
       return (Imlib_Updates)u;
    if (!u)
       return (Imlib_Updates)uu;
-   while(u)
+   while (u)
      {
-	if (!u->next)
+	if (!(u->next))
 	  {
 	     u->next = uu;
-	     return u;
+	     return updates;
 	  }
 	u = u->next;
      }
-   return u;
+   return (Imlib_Updates)u;
 }
 
 void 

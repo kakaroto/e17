@@ -41,7 +41,10 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h, int hgapmax)
    if (!u->next)
      {
 	CLIP(u->x, u->y, u->w, u->h, 0, 0, w, h);
-	return u;
+	if ((u->w > 0) && (u->h > 0))
+	   return u;
+	__imlib_FreeUpdates(u);
+	return NULL;
      }
    tw = w >> TB;
    if (w & TM)

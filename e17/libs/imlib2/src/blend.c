@@ -62,29 +62,41 @@
 
 /* COPY OPS */
 
+static DATA8 mmx_data[] = 
+{ 
+   0,  0,  0,  0,  0,  0,  0,  0, /* zero */
+   255,0,  0,  0,  0,  0,  0,  0, /* mask_red */
+   0,  0,255,  0,  0,  0,  0,  0, /* mask_green */
+   0,  0,  0,  0,  255,0,  0,  0, /* mask_blue  */
+   0,  0,  0,  255,0,  0,  0,  0, /* mask_alpha */
+   255,255,255,255,255,255,0,  0  /* mask */
+};
+   
 static void
 __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
 		       int w, int h, ImlibColorModifier *cm)
 {
+#if 1
+   int y;
+   
+   __imlib_toggle_mmx();
+   for (y = 0; y < h; y++)
+     {
+	__imlib_asm_blend_rgba_to_rgb(src, dst, w, mmx_data);
+	src += w + src_jump;
+	dst += w + dst_jump;
+     }
+   __imlib_toggle_mmx();
+#else
    LOOP_START_2
 
-#if 0
-   __asm__ __volatile__(
-			"punpcklbw (%0), %%mm7\n" /* move source pixel to mm7 */
-			"pmovq     %%mm7, %%mm6\n" /* copy source pixel to mm6 */
-			"\n" /* move alpha byte to lower byte */
-			"\n" /* multiply ... */
-			: :
-			"r" (p1),
-			"r" (p2)
-		    };
-#else
    a = A_VAL(p1);
    BLEND_COLOR(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    BLEND_COLOR(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    BLEND_COLOR(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-#endif   
+   
    LOOP_END_WITH_INCREMENT
+#endif   
 }
 
 static void
