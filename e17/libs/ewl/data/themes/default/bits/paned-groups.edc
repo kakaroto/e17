@@ -15,7 +15,7 @@ group {
 
 group {
 	name, "vgrabber";
-	min, 0 0;
+	min, 0 6;
 	max, 99999 6;
 
 	parts {
@@ -25,7 +25,7 @@ BUTTON()
 
 group {
 	name, "hgrabber";
-	min, 0 0;
+	min, 6 0;
 	max, 6 99999;
 
 	parts {

@@ -30,7 +30,7 @@ ewl_paned_new(Ewl_Orientation orient)
 	if (!ewl_paned_init(pane, orient)) {
 		ewl_widget_destroy(EWL_WIDGET(pane));
 		pane = NULL;
-    	}
+	}
 
 	DRETURN_PTR(pane, DLEVEL_STABLE);
 }
@@ -97,12 +97,18 @@ ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient)
 	ewl_widget_appearance_set(EWL_WIDGET(p->first), "first");
 	ewl_widget_appearance_set(EWL_WIDGET(p->second), "second");
 
-	if (orient == EWL_ORIENTATION_HORIZONTAL)
+	if (orient == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_widget_appearance_set(EWL_WIDGET(p->grabber),
 					"grabber_horizontal");
-	else
+		ewl_object_fill_policy_set(EWL_OBJECT(p), 
+				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+
+	} else {
 		ewl_widget_appearance_set(EWL_WIDGET(p->grabber),
 					"grabber_vertical");
+		ewl_object_fill_policy_set(EWL_OBJECT(p), 
+				EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
