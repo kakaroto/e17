@@ -181,7 +181,7 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			 * Attempt to divvy up remaining space equally among
 			 * remaining children.
 			 */
-			portion = MIN(ewl_object_get_preferred_w(child),
+			portion = MAX(ewl_object_get_preferred_w(child),
 					remains / nodes);
 			ewl_object_request_position(child, x, CURRENT_Y(w));
 			ewl_object_request_w(child, portion);
@@ -190,11 +190,11 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			x = ewl_object_get_current_x(child) +
 				ewl_object_get_current_w(child);
 
-			remains = CURRENT_X(w) + CURRENT_W(w) - x;
+			remains -= CURRENT_W(child);
 			nodes--;
 		}
 
-		if (remains > 0 &&(child = ewd_list_goto_last(c->children)))
+		if (remains > 0 && (child = ewd_list_goto_last(c->children)))
 			ewl_object_request_w(child,
 					ewl_object_get_current_w(child) +
 					remains);
