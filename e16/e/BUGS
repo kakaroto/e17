@@ -19,9 +19,16 @@ Known bugs
 ! May be impossible to fix due to limitations in X (vidmode extension, mouse
   grabs).
 
+- Language/font handling is broken when using FT fonts.
+
 
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
+
+- Various segv's.
+  Please provide directions to reproduce.
+
+- Multiple Iconboxes don't work.
 
 - Dragging from one virtual desk to another (via edge flip) is broken.
 

@@ -21,9 +21,7 @@ Root Window Properties (and Related Messages)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] _NET_SUPPORTED
 [+] _NET_CLIENT_LIST
-    The list is not in strict mapping order.
 [+] _NET_CLIENT_LIST_STACKING
-    Only the windows on the current desktop are in strict stacking order.
 [+] _NET_NUMBER_OF_DESKTOPS
 [+] _NET_DESKTOP_GEOMETRY
 [+] _NET_DESKTOP_VIEWPORT
@@ -34,7 +32,8 @@ Root Window Properties (and Related Messages)
 [+] _NET_SUPPORTING_WM_CHECK
 [+] _NET_VIRTUAL_ROOTS
 [ ] _NET_DESKTOP_LAYOUT
-[-] _NET_SHOWING_DESKTOP
+[/] _NET_SHOWING_DESKTOP
+    The client message does nothing but set the root window property.
     
 Other Root Window Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,11 +97,6 @@ In case of ambiguities the EWMH specification takes precedence.
 
 KDE Compliance (KWM_... hints)
 ---------------------------------
-
-If support is enabled (configure --enable-hints-kde) Enlightenment may be KDE(1)
-compliant :)
-
-In case of ambiguities the EWMH specification takes precedence.
 
 These hints are considered obsolete and support has been removed after the
 0.16.6 release.
