@@ -1585,3 +1585,14 @@ Sun Dec 12 16:33:12 GMT 1999
 
 E-Time wasn't saving its justification setting. Fixed.
 
+-------------------------------------------------------------------------------
+
+Sun Dec 12 23:47:03 EST 1999
+(StriderZ)
+
+Editing support for textboxes is bad^H^H^Hgoood....mmmmkay?
+
+Still a little quirky, but I figured it was good enough to commit for now...
+
+
+

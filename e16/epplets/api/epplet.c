@@ -6,6 +6,9 @@
 #include <sys/utsname.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <X11/keysym.h>
+
+#define CRSR_WDTH 2
 
 typedef struct epplet_window
 {
@@ -472,12 +475,14 @@ Epplet_internal_create_window(int w, int h, char *title, char vertical,
    return ret->win;
 }
 
-Window Epplet_create_window(int w, int h, char *title, char vertical)
+Window
+Epplet_create_window(int w, int h, char *title, char vertical)
 {
    return Epplet_internal_create_window(w, h, title, vertical, 1);
 }
 
-Window Epplet_create_window_borderless(int w, int h, char *title, char vertical)
+Window
+Epplet_create_window_borderless(int w, int h, char *title, char vertical)
 {
    return Epplet_internal_create_window(w, h, title, vertical, 0);
 }
@@ -640,7 +645,8 @@ Epplet_window_push_context(Window newwin)
    context_win = win;
 }
 
-Window Epplet_window_pop_context(void)
+Window
+Epplet_window_pop_context(void)
 {
    Epplet_window       ret;
 
@@ -803,7 +809,8 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window Epplet_get_main_window(void)
+Window
+Epplet_get_main_window(void)
 {
    return mainwin->win;
 }
@@ -1801,7 +1808,7 @@ typedef struct
 {
    GadGeneral          general;
    int                 x, y, w, h, x_offset;
-   unsigned int        cursor_pos;
+   unsigned int        cursor_pos, to_cursor;
    char               *image;
    char               *contents;
    char                hilited;
@@ -1820,6 +1827,7 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
 {
    GadTextBox         *g;
    XSetWindowAttributes attr;
+   int                 contents_w, contents_h;
 
    g = malloc(sizeof(GadTextBox));
    g->general.type = E_TEXTBOX;
@@ -1828,6 +1836,15 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    g->y = y;
    g->contents = Estrdup(contents);
    g->cursor_pos = contents ? strlen(contents) : 0;
+
+   if (contents)
+     {
+	Epplet_textbox_textsize(g, &contents_w, &contents_h, contents);
+	g->to_cursor = contents_w;
+     }
+   else
+      g->to_cursor = 0;
+
    g->x_offset = 0;
    g->w = w;
    g->h = h;
@@ -1942,7 +1959,7 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
 
    if (w > g->w)
      {
-	g->x_offset -= w - g->w - 5;
+	g->x_offset -= w - g->w - CRSR_WDTH;
 	/*
 	 * Epplet_textbox_textsize(g, &w, &h, (g->contents + g->text_offset));
 	 * g->text_offset++;
@@ -2000,7 +2017,7 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 
    if (w > g->w)
      {
-	g->x_offset = w - g->w - 5;
+	g->x_offset = w - g->w - CRSR_WDTH;
 	/*
 	 * Epplet_textbox_textsize(g, &w, &h, (new_contents + g->text_offset));
 	 * g->text_offset++;
@@ -2020,7 +2037,6 @@ Epplet_draw_textbox(Epplet_gadget eg)
 {
    GadTextBox         *g;
    char               *state;
-   int                 to_cursor = 0;
    unsigned long       gc_valuemask = 0;
    XGCValues           gc_values;
    GC                  gc;
@@ -2075,7 +2091,10 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	g->contents[g->cursor_pos] = temp;
 
 	/* Get the position in pixels to the cursor */
-	Epplet_textbox_textsize(eg, &to_cursor, &h, s);
+	Epplet_textbox_textsize(eg, &(g->to_cursor), &h, s);
+
+	if (h == 0)
+	   Epplet_textbox_textsize(eg, &x, &h, "X");
 
 	x = 2 + g->x_offset;
 	y = (g->h - h) / 2;
@@ -2111,21 +2130,29 @@ Epplet_draw_textbox(Epplet_gadget eg)
    gc = XCreateGC(disp, g->win, gc_valuemask, &gc_values);
    XSetForeground(disp, gc, Epplet_get_color(0, 0, 0));
 
-   if ((to_cursor + 5) >= g->w)
-     {
-	if ((last_gadget == g) || (g->hilited))
-	   XFillRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
-	else
-	   XDrawRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
-     }
-   else
-     {
-	if ((last_gadget == g) || (g->hilited))
-	   XFillRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
-	else
-	   XDrawRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
-     }
+   /*
+    * if ((to_cursor + 5) >= g->w)
+    * {
+    * if ((last_gadget == g) || (g->hilited))
+    * XFillRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
+    * else
+    * XDrawRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
+    * }
+    * else
+    * {
+    * if ((last_gadget == g) || (g->hilited))
+    * XFillRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
+    * else
+    * XDrawRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
+    * }
+    */
 
+   if ((last_gadget == g) || (g->hilited))
+      XFillRectangle(disp, g->win, gc, g->to_cursor + g->x_offset + 2, 2,
+		     CRSR_WDTH, g->h - 4);
+   else
+      XDrawRectangle(disp, g->win, gc, g->to_cursor + g->x_offset + 2, 2,
+		     CRSR_WDTH, g->h - 4);
 }
 
 static void
@@ -2172,6 +2199,105 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 	kbuf[0] = (keysym & 0xff);
      }
 
+   switch (keysym)
+     {
+     case XK_Left:
+	{
+	   char                s[2];
+
+	   if (g->cursor_pos > 0)
+	     {
+		--g->cursor_pos;
+
+		if (g->contents && *(g->contents) && (g->x_offset < 0))
+		  {
+		     if (g->contents[strlen(g->contents) - 1] == ' ')
+		       {
+			  char               *s1 = "Z Z";
+			  char               *s2 = "ZZ";
+			  int                 size1, size2;
+
+			  Epplet_textbox_textsize(g, &size1, &h, s1);
+			  Epplet_textbox_textsize(g, &size2, &h, s2);
+
+			  char_width = size1 - size2;
+		       }
+		     else
+		       {
+			  s[0] = *(g->contents + g->cursor_pos - 1);
+			  s[1] = '\0';
+
+			  Epplet_textbox_textsize(g, &char_width, &h, s);
+		       }
+
+		     if (((int)g->to_cursor + g->x_offset) <= 2)
+		       {
+			  printf("bam");
+			  g->x_offset += char_width;
+		       }
+		  }
+	     }
+	   return;
+	   break;
+	}
+     case XK_Right:
+	{
+	   char                s[2];
+
+	   if (g->contents && (g->cursor_pos < strlen(g->contents)))
+	      ++g->cursor_pos;
+
+	   Epplet_textbox_textsize(g, &text_width, &h, g->contents);
+
+	   if ((g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH))
+	     {
+
+		s[0] = *(g->contents + g->cursor_pos + 1);
+		s[1] = '\0';
+
+		if (s[0] == ' ')
+		  {
+		     char               *s1 = "Z Z";
+		     char               *s2 = "ZZ";
+		     int                 size1, size2;
+
+		     Epplet_textbox_textsize(g, &size1, &h, s1);
+		     Epplet_textbox_textsize(g, &size2, &h, s2);
+
+		     char_width = size1 - size2;
+		  }
+		else
+		   Epplet_textbox_textsize(g, &char_width, &h, s);
+
+		if (((int)g->to_cursor + g->x_offset) >=
+		    (g->w - (2 + CRSR_WDTH)))
+		   g->x_offset -= char_width;
+	     }
+	   return;
+	   break;
+	}
+     case XK_Delete:
+	{
+	   if (g->contents && *(g->contents)
+	       && (g->cursor_pos < strlen(g->contents)))
+	     {
+		int                 contents_len;
+
+		contents_len = strlen(g->contents) - 1;
+		memmove((g->contents + g->cursor_pos),
+			(g->contents + g->cursor_pos + 1),
+			strlen(g->contents + g->cursor_pos + 1));
+
+		g->contents = (char *)realloc(g->contents, strlen(g->contents));
+		*(g->contents + contents_len) = '\0';
+	     }
+	   return;
+	   break;
+	}
+     default:
+	break;
+     }
+
    if (len <= 0 || len > (int)sizeof(kbuf))
       return;
    kbuf[len] = 0;
@@ -2183,22 +2309,25 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
      }
    else if (*kbuf == '\b')
      {
-	if (g->contents && *(g->contents))
+	if (g->contents && *(g->contents) && (g->cursor_pos > 0))
 	  {
-	     /*
-	      * len = strlen(g->contents) - 1;
-	      * g->contents[len] = 0;
-	      * g->cursor_pos--;
-	      */
+	     char               *s;
 
-	     len = strlen(g->contents) - 1;
-	     g->contents = (char *)realloc(g->contents, strlen(g->contents));
-	     g->contents[len] = 0;
-	     g->cursor_pos--;
+	     s = (char *)malloc(strlen(g->contents));
+
+	     *(g->contents + g->cursor_pos - 1) = '\0';
+	     sprintf(s, "%s%s", g->contents, (g->contents + g->cursor_pos));
+	     free(g->contents);
+	     g->contents = s;
+
+	     if (g->cursor_pos >= 0)
+		g->cursor_pos--;
 	  }
      }
    else
      {
+	char                temp_char, *s;
+
 	if (g->contents != NULL)
 	  {
 	     g->contents =
@@ -2206,11 +2335,20 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 	  }
 	else
 	  {
+	     if (!strcmp(kbuf, " "))
+		return;
+
 	     g->contents = (char *)malloc(len + 1);
-	     *(g->contents) = 0;
+	     *(g->contents) = '\0';
 	  }
 
-	strcat(g->contents, kbuf);
+	len = strlen(g->contents) + 1;
+	memmove((g->contents + g->cursor_pos + 1),
+		(g->contents + g->cursor_pos),
+		strlen(g->contents + g->cursor_pos));
+	*(g->contents + g->cursor_pos) = *kbuf;
+	*(g->contents + len) = '\0';
+
 	g->cursor_pos++;
      }
 
@@ -2234,7 +2372,7 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
      {
 	if (g->x_offset < 0)
 	  {
-	     if (g->contents[strlen(g->contents) - 1] == ' ')
+	     if (*(g->contents + strlen(g->contents)) == ' ')
 	       {
 		  char               *s1 = "Z Z";
 		  char               *s2 = "ZZ";
@@ -2250,13 +2388,10 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 					&g->contents[strlen(g->contents) - 1]);
 
 	     g->x_offset += char_width;
-	     if (g->x_offset > 0)
-		g->x_offset = 0;
 	  }
      }
-   else if (text_width > (g->w - 8))
+   else if ((g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH))
       g->x_offset -= char_width;
-
 }
 
 Epplet_gadget
@@ -2602,7 +2737,8 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget
+Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
@@ -2854,7 +2990,8 @@ typedef struct
 }
 GadHBar;
 
-Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -2923,7 +3060,8 @@ typedef struct
 }
 GadVBar;
 
-Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -2989,7 +3127,8 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget
+Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
@@ -3058,7 +3197,8 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget
+Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
@@ -3218,7 +3358,8 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
-Epplet_gadget Epplet_create_popup(void)
+Epplet_gadget
+Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
@@ -3679,7 +3820,8 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
       Epplet_draw_label(gadget, 0);
 }
 
-Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window
+Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -4745,7 +4887,8 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
    XFreeGC(disp, gc);
 }
 
-RGB_buf Epplet_make_rgb_buf(int w, int h)
+RGB_buf
+Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;
