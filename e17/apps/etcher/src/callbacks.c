@@ -203,6 +203,42 @@ update_selection_from_widget(void)
 		   selected_state->normal.image = NULL;
 		}
 	  }
+	if (      (selected_state->description->hilited.image) &&
+	                                                     (prev_i1) &&
+	   (strcmp(selected_state->description->hilited.image, prev_i1)))
+	  {
+	     selected_state->hilited.saved = 0;
+	     if (selected_state->hilited.image) 
+		{
+		   imlib_context_set_image(selected_state->hilited.image);
+		   imlib_free_image();
+		   selected_state->hilited.image = NULL;
+		}
+	  }
+	if (      (selected_state->description->clicked.image) &&
+	                                                     (prev_i1) &&
+	   (strcmp(selected_state->description->clicked.image, prev_i1)))
+	  {
+	     selected_state->clicked.saved = 0;
+	     if (selected_state->clicked.image) 
+		{
+		   imlib_context_set_image(selected_state->clicked.image);
+		   imlib_free_image();
+		   selected_state->clicked.image = NULL;
+		}
+	  }
+	if (      (selected_state->description->disabled.image) &&
+	                                                     (prev_i1) &&
+	   (strcmp(selected_state->description->disabled.image, prev_i1)))
+	  {
+	     selected_state->disabled.saved = 0;
+	     if (selected_state->disabled.image) 
+		{
+		   imlib_context_set_image(selected_state->disabled.image);
+		   imlib_free_image();
+		   selected_state->disabled.image = NULL;
+		}
+	  }
 	_ebits_evaluate(selected_state);
 	
 	if (prev_i1) g_free(prev_i1);
