@@ -5,7 +5,7 @@
   <td valign="top" align="center" width="100%">
 
 <ul class="navsection"><p class="navtitle">Project</p>
-<li><a class="navelement" href="main.html">Main</a>
+<li><a class="navelement" href="main.html">Overview</a>
 <li><a class="navelement" href="news.html"><b>News</b></a>
 <li><a class="navelement" href="faq.html">FAQ</a>
 <li><a class="navelement" href="docs.html">Documentation</a>
@@ -39,6 +39,7 @@
 <!--
 <li><a class="navelement" href="epeg.html">EPEG</a>
 <li><a class="navelement" href="epsilon.html">Epsilon</a>
+<li><a class="navelement" href="embryo.html">Embryo</a>
 -->
 <li><a class="navelement" href="ewd.html">EWD</a>
 <li><a class="navelement" href="estyle.html">Estyle</a>
