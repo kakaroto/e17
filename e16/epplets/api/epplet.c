@@ -1991,6 +1991,42 @@ Epplet_del_gad(Epplet_gadget gadget)
 
 }
 
+int
+Epplet_gadget_get_x(Epplet_gadget gad)
+{
+  GadImage *g; /* Lowest common denominator */
+
+  g = (GadImage *) gad;
+  return (g->x);
+}
+
+int
+Epplet_gadget_get_y(Epplet_gadget gad)
+{
+  GadImage *g; /* Lowest common denominator */
+
+  g = (GadImage *) gad;
+  return (g->y);
+}
+
+int
+Epplet_gadget_get_width(Epplet_gadget gad)
+{
+  GadImage *g; /* Lowest common denominator */
+
+  g = (GadImage *) gad;
+  return (g->w);
+}
+
+int
+Epplet_gadget_get_height(Epplet_gadget gad)
+{
+  GadImage *g; /* Lowest common denominator */
+
+  g = (GadImage *) gad;
+  return (g->h);
+}
+
 Epplet_gadget
 Epplet_create_textbox(char *image, char *contents, int x, int y,
 		      int w, int h, char size, void (*func) (void *data),

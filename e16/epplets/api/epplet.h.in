@@ -111,6 +111,12 @@ Display            *Epplet_get_display(void);
 /* return the ImlibData pointer being used */
 ImlibData          *Epplet_get_imlib_data(void);
 
+/* Get locations and sizes of gadgets */
+int Epplet_gadget_get_x(Epplet_gadget gad);
+int Epplet_gadget_get_y(Epplet_gadget gad);
+int Epplet_gadget_get_width(Epplet_gadget gad);
+int Epplet_gadget_get_height(Epplet_gadget gad);
+
 /****************************************************************************/
 /* IPC calls                                                                */
 /****************************************************************************/
