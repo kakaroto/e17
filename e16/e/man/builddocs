@@ -25,11 +25,8 @@ else
   exit 1
 fi
 # ============= e2mp ==============
-if test -f 'e2mp' && test "$first_param" != -c; then
-  $echo 'x -' SKIPPING 'e2mp' '(file already exists)'
-else
-  $echo 'x -' extracting 'e2mp' '(text)'
-  sed 's/^X//' << 'SHAR_EOF' > 'e2mp' &&
+$echo 'x -' extracting 'e2mp' '(text)'
+sed 's/^X//' << 'SHAR_EOF' > 'e2mp' &&
 X#!/usr/bin/perl
 X
 Xprint "=pod\n\n";
@@ -80,13 +77,10 @@ X    return $_;
 X} 
 SHAR_EOF
   : || $echo 'restore of' 'e2mp' 'failed'
-fi
+
 # ============= enlightenment.pod ==============
-if test -f 'enlightenment.pod' && test "$first_param" != -c; then
-  $echo 'x -' SKIPPING 'enlightenment.pod' '(file already exists)'
-else
-  $echo 'x -' extracting 'enlightenment.pod' '(text)'
-  sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.pod' &&
+$echo 'x -' extracting 'enlightenment.pod' '(text)'
+sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.pod' &&
 X=pod
 X
 X
@@ -1252,17 +1246,17 @@ Xfails, you might try someone on the irc channel
 X
 SHAR_EOF
   : || $echo 'restore of' 'enlightenment.pod' 'failed'
-fi
+
 # ============= enlightenment.1 ==============
-if test -f 'enlightenment.1' && test "$first_param" != -c; then
-  $echo 'x -' SKIPPING 'enlightenment.1' '(file already exists)'
-else
   $echo 'x -' extracting 'enlightenment.1' '(text)'
   sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.1' &&
 X.rn '' }`
 X''' $RCSfile$$Revision$$Date$
 X'''
 X''' $Log$
+X''' Revision 1.4  1999/10/20 17:21:42  mandrake
+X''' more man page updates.
+X'''
 X''' Revision 1.3  1999/10/20 16:02:31  mandrake
 X''' Now we have an enlightenment Man Page.
 X''' Of course, it's not the world's best man page quite yet, but give it time...
@@ -2632,7 +2626,7 @@ X.IX Header "Frequently Asked Questions: Page 4"
 X
 SHAR_EOF
   : || $echo 'restore of' 'enlightenment.1' 'failed'
-fi
+
 rm -fr _sh32021
 exit 0
 
