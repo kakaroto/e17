@@ -3372,13 +3372,13 @@ void imlib_rotate_image_from_buffer(double angle,
    if (!ctx)
       ctx = imlib_context_new();
    // source image (to rotate)
-   CHECK_PARAM_POINTER_RETURN("imlib_rotate_image_from_buffer", "source_image",
-                              source_image, NULL);
+   CHECK_PARAM_POINTER("imlib_rotate_image_from_buffer", "source_image",
+		       source_image);
    CAST_IMAGE(im_old, source_image);
 
    // current context image
-   CHECK_PARAM_POINTER_RETURN("imlib_rotate_image_from_buffer", "image",
-                              ctx->image, NULL);
+   CHECK_PARAM_POINTER("imlib_rotate_image_from_buffer", "image",
+		       ctx->image);
    CAST_IMAGE(im, ctx->image);
 
    if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
