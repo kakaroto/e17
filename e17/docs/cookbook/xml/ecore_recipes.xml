@@ -58,7 +58,7 @@ Introduction to Ecore_Config
     <surname>sinclair</surname>
     <email>zero@perplexity.org</email>
   </author>
-  <date>25 May 2004</date>
+  <date>25 April 2004</date>
 </sectioninfo>
 
 <title>Recipe: Ecore Config Introduction</title>
@@ -101,7 +101,7 @@ int main(int argc, char ** argv) {
 
     free(str);
 
-    ecore_config_exit();
+    ecore_config_shutdown();
     return 0;
 }
 </programlisting>
@@ -127,7 +127,7 @@ that corresponds to the function call name.
 </para>
 
 <para>
-ecore_config_exit is then called to shutdown the Ecore_Config system before the program exits.
+ecore_config_shutdown is then called to shutdown the Ecore_Config system before the program exits.
 </para>
 
 <example>
