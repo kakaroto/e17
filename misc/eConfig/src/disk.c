@@ -28,3 +28,23 @@ int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length) {
 	return 0;
 
 }
+
+void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
+
+	char **paths;
+	int num;
+
+
+	if((paths = eConfigPaths(&num))) {
+		int i;
+
+		for(i=0;i<num;i++) {
+
+
+		}
+	}
+
+	*length = 0;
+	return NULL;
+
+}
