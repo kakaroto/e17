@@ -663,6 +663,7 @@ test/Makefile
 src/db.h
 src/db_int.h
 src/db_185.h
+debian/Makefile
 edb-config],
 [
 chmod +x edb-config

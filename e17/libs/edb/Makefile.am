@@ -9,7 +9,7 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in
 
-SUBDIRS		     = src test tools
+SUBDIRS		     = src test tools debian
 
 bin_SCRIPTS = edb-config
 
