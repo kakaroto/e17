@@ -186,8 +186,6 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	int             hs_height = 0;
 	int             content_w, content_h;
 
-	/* Ewl_ScrollBar_Flags hf, vf; */
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
@@ -223,8 +221,20 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * A rare case where we need to know the preferred size over the
 	 * minimum size.
 	 */
-	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
-	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
+	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box)) - content_w;
+	if (b_width < 0)
+		b_width = 0;
+	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box)) - content_h;
+	if (b_height < 0)
+		b_height = 0;
+
+	/*
+	 * Adjust the scrollbar internal stepping to match the contents.
+	 */
+	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->vscrollbar),
+			b_width / content_w);
+	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->vscrollbar),
+			b_height / content_h);
 
 	b_width = (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar)) *
 					      (double)(b_width));

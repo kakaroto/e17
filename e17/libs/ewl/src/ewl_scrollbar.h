@@ -28,6 +28,9 @@ void            ewl_scrollbar_init(Ewl_Scrollbar * s,
 double          ewl_scrollbar_get_value(Ewl_Scrollbar * s);
 void            ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v);
 
+double          ewl_scrollbar_get_step(Ewl_Scrollbar *s);
+void            ewl_scrollbar_set_step(Ewl_Scrollbar * s, double v);
+
 void            ewl_scrollbar_set_flag(Ewl_Scrollbar * s,
 				       Ewl_ScrollBar_Flags f);
 Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s);

@@ -266,6 +266,40 @@ void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
 }
 
 /**
+ * ewl_scrollbar_get_step - get the current step size of the scrollbar
+ * @s: the scrollbar to retrieve step size
+ *
+ * Returns the current step size of the scrollbar.
+ */
+double
+ewl_scrollbar_get_step(Ewl_Scrollbar *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	DRETURN_INT(ewl_seeker_get_step(EWL_SEEKER(s->seeker)), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_scrollbar_set_step - change the step size of a scrollbar
+ * @s: the scrollbar to change step size
+ * @v: the new step size of the scrollbar
+ *
+ * Returns no value. Changes the step size of the scrollbar @s to @v.
+ */
+void ewl_scrollbar_set_step(Ewl_Scrollbar *s, double v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("s", s);
+
+	ewl_seeker_set_step(EWL_SEEKER(s->seeker), v);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * ewl_scrollbar_set_flag - set the flag mask for a scrollbar
  * @s: the scrollbar to set the flags
  * @f: the flags to set for the scrollbar

@@ -606,7 +606,7 @@ inline unsigned int ewl_object_get_minimum_w(Ewl_Object * o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	if (o->flags & EWL_FILL_POLICY_HSHRINK)
+	if (o->flags & EWL_FILL_POLICY_HSHRINK || MINIMUM_W(o) > PREFERRED_W(o))
 		val = MINIMUM_W(o);
 	else
 		val = PREFERRED_W(o);
@@ -628,7 +628,7 @@ inline unsigned int ewl_object_get_minimum_h(Ewl_Object * o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	if (o->flags & EWL_FILL_POLICY_VSHRINK)
+	if (o->flags & EWL_FILL_POLICY_VSHRINK || MINIMUM_H(o) > PREFERRED_H(o))
 		val = MINIMUM_H(o);
 	else
 		val = PREFERRED_H(o);
