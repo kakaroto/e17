@@ -45,7 +45,7 @@ $project = 'e';
 $from_email = 'enlightenment-cvs@lists.sourceforge.net';
 
 # Mail all reports to this address.
-$dest_email = 'cia@navi.cx';
+$dest_email = 'cia@cia.navi.cx';
 
 # If using XML-RPC, connect to this URI.
 $rpc_uri = 'http://cia.navi.cx/RPC2';
