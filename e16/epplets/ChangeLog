@@ -322,3 +322,10 @@ Wed Nov 10 19:13:17 GMT 1999
 
 Added E-Mixer. Probably b0rked the configure.in and Makefile.am, but it
 compiles on my box (tm).
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 19:48:22 GMT 1999
+(gilbertt)
+
+Added E-SD. I don't think I screwed anything up in the process.
