@@ -40,7 +40,7 @@ main (int argc, char **argv)
     init_index_mode ();
   else if (opt.multiwindow)
     init_multiwindow_mode ();
-  else if(opt.list)
+  else if(opt.list || opt.longlist)
     init_list_mode();
   else
     {

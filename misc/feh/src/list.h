@@ -18,8 +18,7 @@
  * USA
  */
 
-typedef struct __feh_file_info _feh_file_info;
-typedef _feh_file_info *feh_file_info;
+typedef struct __feh_file_info feh_file_info;
 
 struct __feh_file_info
 {
@@ -30,18 +29,24 @@ struct __feh_file_info
   int size;
   int pixels;
   int has_alpha;
-  char *type;
+  char *format;
   char *extension;
-  feh_file_info next;
-  feh_file_info prev;
+  feh_file_info *next;
+  feh_file_info *prev;
 };
 
-feh_file_info feh_fileinfo_create (feh_file file);
-void feh_fileinfo_free (feh_file_info info);
-feh_file_info feh_fileinfo_addtofront (feh_file_info root, feh_file_info newinfo);
-int feh_fileinfo_length (feh_file_info info);
-feh_file_info feh_fileinfo_last (feh_file_info info);
-feh_file_info feh_fileinfo_first (feh_file_info info);
-feh_file_info feh_filelinfo_reverse (feh_file_info list);
-feh_file_info feh_fileinfo_remove_info (feh_file_info list, feh_file_info info);
+typedef int (feh_compare_fn)(feh_file_info *info1, feh_file_info *info2);
 
+feh_file_info *feh_fileinfo_create (feh_file file);
+void feh_fileinfo_free (feh_file_info * info);
+feh_file_info *feh_fileinfo_addtofront (feh_file_info * root,
+					feh_file_info * newinfo);
+int feh_fileinfo_length (feh_file_info * info);
+feh_file_info *feh_fileinfo_last (feh_file_info * info);
+feh_file_info *feh_fileinfo_first (feh_file_info * info);
+feh_file_info *feh_filelinfo_reverse (feh_file_info * list);
+feh_file_info *feh_fileinfo_remove_info (feh_file_info * list,
+					 feh_file_info * info);
+feh_file_info *feh_list_sort (feh_file_info * list, feh_compare_fn cmp);
+feh_file_info *feh_list_sort_merge (feh_file_info * l1,
+				    feh_file_info * l2, feh_compare_fn cmp);

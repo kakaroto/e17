@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:iklmo:O:PqrR:stTvVwW:xy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:PqrR:stTvVwW:xy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -47,6 +47,7 @@ init_parse_options (int argc, char **argv)
     {"ignoreaspect", 0, 0, 'A'},
     {"draw_filename", 0, 0, 'd'},
     {"list", 0, 0, 'l'},
+    {"longlist", 0, 0, 'L'},
     {"quiet", 0, 0, 'q'},
     /* options with values */
     {"output", 1, 0, 'o'},
@@ -101,6 +102,9 @@ init_parse_options (int argc, char **argv)
 	  break;
 	case 'l':
 	  opt.list = 1;
+	  break;
+	case 'L':
+	  opt.longlist=1;
 	  break;
 	case 't':
 	  opt.thumbs = 1;

@@ -166,6 +166,7 @@ typedef struct cmdlineoptions
   unsigned char full_screen:1;
   unsigned char draw_filename:1;
   unsigned char list:1;
+  unsigned char longlist:1;
   unsigned char quiet:1;
 
   char *output_file;
@@ -181,6 +182,7 @@ typedef struct cmdlineoptions
   int reload;
 }
 fehoptions;
+
 
 void show_usage (void);
 void show_version (void);
