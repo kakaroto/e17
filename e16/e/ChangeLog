@@ -3120,3 +3120,13 @@ Remove unused files.
 Remove leftover debug stuff. Pointed out by Vadik Mironov <vadikmironoff@mtu-net.ru>.
 Fix potential problems in multihead startup.
 Eliminate getword().
+
+-------------------------------------------------------------------------------
+
+Sun Sep 19 12:58:19 CEST 2004
+(Kim)
+
+--- 0.16.7.2 0.04 ---
+Attempt to fix various sliding effects.
+Bulgarian translation by Viktor Kojouharov <vkojouharov@gmail.com>).
+Initial showing desktop support.
