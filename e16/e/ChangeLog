@@ -2772,3 +2772,16 @@ Sun May  2 21:40:02 CEST 2004
 Fix menu auto-regeneration when theme transparency is off.
 Fix iconbox images for apps that are iconified at startup and have no icons.
 Enable navigating the menus with the keyboard.
+
+-------------------------------------------------------------------------------
+
+Sat May  8 01:09:58 CEST 2004
+(Kim)
+
+Add X_CFLAGS to INCLUDES. Rename root to VRoot to avoid warnings with -Wshadow.
+Add hooks for _NET_SHOWING_DESKTOP.
+Improve on poor menu/keyboard navigation.
+Clear blocked signals at startup and exit.
+Set EDBUG_COREDUMP to get core dump in stead of GSOD.
+No longer use the DEFAULT theme link.
+Put the usual root menus on Ctrl-Shift-F1,2,3.

@@ -23,6 +23,8 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
+- Dragging from one virtual desk to another (via edge flip) is broken.
+
 - Border parts are rendered too often/with incorrect transparent background.
 
 ? eesh/libedit ?
