@@ -1,3 +1,4 @@
+#include "config.h"
 #include "epplet.h"
 #include <errno.h>
 #include <sys/utsname.h>

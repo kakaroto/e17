@@ -28,6 +28,9 @@
  * 
  * so workaround...
  */
+
+#include "config.h"
+
 #ifdef __sgi
 #ifdef _NO_ANSIMODE
 #undef _NO_ANSIMODE
