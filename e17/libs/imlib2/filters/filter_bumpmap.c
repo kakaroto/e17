@@ -231,13 +231,17 @@ bump_map_point(Imlib_Image im, pIFunctionParam par)
 void
 init(struct imlib_filter_info *info)
 {
-	char *filters[] = { "bump_map_point", "bump_map" };
-	int i = (sizeof(filters) / sizeof(*filters));
-	info->num_filters = i;
-	info->filters = malloc(sizeof(char *) * i);
-	while (--i >= 0)
-		info->filters[i] = strdup(filters[i]);
-
+   char *filters[] = { "bump_map_point", "bump_map" };
+   int i = (sizeof(filters) / sizeof(*filters));
+   
+   info->name = strdup( "Bump Mapping" );
+   info->author = strdup( "Willem Monsuwe (willem@stack.nl)" );
+   info->description = strdup( "Provides bumpmapping to a point and bumpmapping from an infinite light source. *very* cool." );
+   info->num_filters = i;
+   info->filters = malloc(sizeof(char *) * i);
+   while (--i >= 0)
+     info->filters[i] = strdup(filters[i]);
+   
 }
 
 void

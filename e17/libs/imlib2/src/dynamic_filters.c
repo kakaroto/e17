@@ -62,7 +62,10 @@ pImlibExternalFilter __imlib_LoadFilter( char *file )
    ptr->init_filter( info );
    ptr->num_filters = info->num_filters;
    ptr->filters = info->filters;
-
+   ptr->name = info->name;
+   ptr->author = info->author;
+   ptr->description = info->description;
+   
    free( info );
    
 #ifdef FDEBUG   

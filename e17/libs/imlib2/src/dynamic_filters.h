@@ -5,6 +5,9 @@
 
 struct imlib_filter_info
 {
+   char *name;
+   char *author;
+   char *description;
    char **filters;
    int num_filters;
 };
@@ -13,6 +16,9 @@ typedef struct _imlib_external_filter ImlibExternalFilter;
 typedef struct _imlib_external_filter *pImlibExternalFilter;
 struct _imlib_external_filter
 {
+   char *name;
+   char *author;
+   char *description;
    int    num_filters;
    char  *filename;
    void  *handle;

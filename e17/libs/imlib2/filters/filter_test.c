@@ -18,10 +18,13 @@ void  *exec( char *filter, void *im, pIFunctionParam params );
 
 void init( struct imlib_filter_info *info )
 {
-   char *filters[] = { "tint", "cool_text" };
+   char *filters[] = { "tint", "cool_text", "gradient" };
    int i = 0;
-   
-   info->num_filters = 2;
+
+   info->name = strdup( "Test Filter" );
+   info->author = strdup( "Chris Ross - Boris - chris@darkrock.co.uk" );
+   info->description = strdup( "This filter is used to show that the imlib2 filter system works!" );
+   info->num_filters = 3;
    info->filters = malloc(sizeof(char *)*2);
    for (i = 0; i < info->num_filters; i++)
       info->filters[i] = strdup(filters[i]);
@@ -89,12 +92,20 @@ void *exec( char *filter, void *im, pIFunctionParam params )
       imlib_free_image_and_decache();
       imlib_context_set_image(imge);
   
-
       return imge;
    }
    
    if( strcmp( filter, "cool_text" ) == 0 )
    {
+      return imge;
+   }  
+   if( strcmp( filter, "gradient" ) == 0 )
+   {
+      int angle = 0;
+      for( ptr = params; ptr != NULL; ptr = ptr->next )
+      {
+	 ASSIGN_INT( "angle", angle );
+      }
       return imge;
    }  
 }
