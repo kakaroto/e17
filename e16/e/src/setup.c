@@ -236,11 +236,12 @@ SetupX(const char *dstr)
 	attr.background_pixel = 0;
 	attr.save_under = True;
 	VRoot.win = XCreateWindow(disp, RRoot.win, 0, 0, VRoot.w, VRoot.h, 0,
-				  VRoot.depth, InputOutput, VRoot.vis,
+				  CopyFromParent, InputOutput, CopyFromParent,
 				  CWOverrideRedirect | CWSaveUnder |
 				  CWBackingStore | CWColormap | CWBackPixel |
 				  CWBorderPixel, &attr);
 	ERegisterWindow(VRoot.win);
+	EMapWindow(VRoot.win);
 
 	xtp.encoding = XA_STRING;
 	xtp.format = 8;
