@@ -61,6 +61,7 @@ static call     calls[] = {
 
   {IPC_NONE, "prop", P_HELPONLY},
   {IPC_PROP_LIST, "prop-list", P_SERIAL},
+  {IPC_GLOBAL_PROP_LIST, "global-prop-list", P_SERIAL},
   {IPC_PROP_DESC, "prop-describe", P_SERIAL | P_KEY},
   {IPC_PROP_GET, "prop-get", P_SERIAL | P_KEY},
   {IPC_PROP_SET, "prop-set", P_SERIAL | P_KEY | P_VALUE},

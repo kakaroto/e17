@@ -13,6 +13,8 @@
 
 #include "examine_client.h"
 
+char          *client_name;
+
 typedef enum Examine_Callback_Type {
   EX_DATA_SET = 0,
   EX_DATA_GET = 1,
@@ -168,7 +170,11 @@ examine_client_list_props(void)
     return;
   }
 
-  c = find_call("prop-list");
+  if (!strcmp(client_name, ECORE_CONFIG_GLOBAL_ID))
+    c = find_call("global-prop-list");
+  else
+    c = find_call("prop-list");
+  
   examine_client_send(c, NULL, NULL);
 
   expected_type = EX_DATA_LIST;
@@ -426,6 +432,7 @@ examine_client_set_val(examine_prop * target)
 int
 examine_client_init(char *pipe_name, connstate * cs)
 {
+  client_name = strdup(pipe_name);
   return ecore_config_ipc_init(&examine_client_server, pipe_name, cs);
 }
 
