@@ -299,6 +299,8 @@ CreateIconbox(char *name)
 		ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
    XSelectInput(disp, ib->scroll_win, EnterWindowMask | LeaveWindowMask |
 		ButtonPressMask | ButtonReleaseMask);
+   XSelectInput(disp, ib->cover_win, EnterWindowMask | LeaveWindowMask |
+		ButtonPressMask | ButtonReleaseMask);
    XSelectInput(disp, ib->arrow1_win, EnterWindowMask | LeaveWindowMask |
 		ButtonPressMask | ButtonReleaseMask);
    XSelectInput(disp, ib->arrow2_win, EnterWindowMask | LeaveWindowMask |
@@ -2270,6 +2272,11 @@ IconboxHandleEvent(XEvent * ev)
 		    }
 	       }
 	     IB_DrawScroll(ib[i]);
+	  }
+	else if (ev->xany.window == ib[i]->cover_win)
+	  {
+	     if (ev->type == ButtonPress)
+		IB_ShowMenu(ib[i], ev->xbutton.x, ev->xbutton.y);
 	  }
 	else if (ev->xany.window == ib[i]->arrow1_win)
 	  {
