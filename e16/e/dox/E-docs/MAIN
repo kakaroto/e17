@@ -291,7 +291,7 @@ _How_To_Edit_Menus(editmenus)<br>
 _How_To_Change_Keybindings(editkeys)<br>
 _Themes(themes)<br>
 _Extra_Eyecandy(eyecandy)<br>
-_Maintainance_Scripts(maint)<br>
+_Maintenance_Scripts(maint)<br>
 
 
 
@@ -1568,13 +1568,13 @@ enabled it through.
 <img src=E_maint_menu.png x=265 y=60>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Included Maintainance Scripts
+Included Maintenance Scripts
 <font face=aircut3/12 color=#ffffff>
 <p>
 Enlightenment comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
 maintenance on the files that enlightenment creates automatically for you.
-When you select "Maintainance" you should get a menu that looks something like
+When you select "Maintenance" you should get a menu that looks something like
 the one above-right.  You can also rebuild the _KDE_and_GNOME(deskenv) menus
 enlightenment uses from here<p>
 As a warning, when you purge configuration information, the next time you
