@@ -8,11 +8,11 @@ EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d);
 EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d);
 
 EwlWidget *win;
+
 int main(int argc, char *argv[])
 {
 	EwlWidget *box;
 	EwlWidget *btn;
-	int        t = 0;
 
 	/* declare command line options */
 	ewl_option_add("t", "test", "This is a test option.",cb_test_option);
@@ -23,28 +23,25 @@ int main(int argc, char *argv[])
 	ewl_set_application_name("ewltest");
 
 	/* initialize widgets  */
-	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "EWL Text",
-									320, 240);
+	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL,
+	                                 "EWL Test Application",
+	                                 320, 240);
 	box = ewl_hbox_new(FALSE);
 	btn = ewl_button_new_with_label("Test Button");
 
-	/* connect callbacks, adjust widgtes */
-	ewl_callback_add(win, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
-	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
-	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
-	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
-
-	ewl_window_move(win,800,600);
+	/* set up window attributes */
+	ewl_window_move(win,320,240);
 	ewl_window_resize(win,640,480);
 	ewl_window_set_class_hints(win,"blah", "blah");
 	ewl_window_set_decoration_hint(win, TRUE);
 
-	/* pack widget(s) into container */
-	box = ewl_vbox_new(FALSE);
-	btn = ewl_button_new_with_label("Test Button");
+	/* connect callbacks, adjust widgtes -- notice how you can chain
+	   callbacks */
 	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
-	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
 	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
+
+	/* pack widget(s) into container */
 	ewl_box_pack_end(box,btn);
 	ewl_widget_show(btn);
 
@@ -74,20 +71,68 @@ char cb_test_option(int argc, char *argv[])
 EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d)
 {
 	char evtype[8] = "";
+	double wid, hgt;
 
-	if (ev->type==EWL_EVENT_MOUSEDOWN)
+	evas_get_geometry(ewl_widget_get_evas(w),
+	                  ewl_widget_get_background(w),
+	                  0, 0, &wid, &hgt);
+	switch (ev->type)	{
+	case EWL_EVENT_MOUSEDOWN:
+		evas_set_image_file(ewl_widget_get_evas(w),
+			                ewl_widget_get_background(w),
+	   		                ewl_theme_find_file(
+		                      ewl_theme_get_string(
+		                        "/EwlButton/images/clicked")));
+		evas_set_image_fill(ewl_widget_get_evas(w),
+		                    ewl_widget_get_background(w),
+		                    0, 0, wid, hgt);
+		evas_resize(ewl_widget_get_evas(w),
+		            ewl_widget_get_background(w),
+		            wid, hgt);
 		sprintf(evtype,"down");
-	else if (ev->type==EWL_EVENT_MOUSEUP)
+		break;
+	case EWL_EVENT_MOUSEUP:
+		evas_set_image_file(ewl_widget_get_evas(w),
+			                ewl_widget_get_background(w),
+	   		                ewl_theme_find_file(
+		                      ewl_theme_get_string(
+		                        "/EwlButton/images/normal")));
+		evas_set_image_fill(ewl_widget_get_evas(w),
+		                    ewl_widget_get_background(w),
+		                    0, 0, wid, hgt);
+		evas_resize(ewl_widget_get_evas(w),
+		            ewl_widget_get_background(w),
+		            wid, hgt);
 		sprintf(evtype,"up");
-	else if (ev->type==EWL_EVENT_MOUSEMOVE)
-		sprintf(evtype,"move");
-
-	if (w->type==EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEDOWN) {
-		ewl_widget_imlayer_show(w, "clicked");
-		fprintf(stderr,"showing imlayer\n");
-	} else if (w->type==EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEUP) {
-		ewl_widget_imlayer_hide(w, "clicked");
-		fprintf(stderr,"hiding imlayer\n");
+		break;
+	/*case EWL_EVENT_FOCUSIN:
+		evas_set_image_file(ewl_widget_get_evas(w),
+			                ewl_widget_get_background(w),
+	   		                ewl_theme_find_file(
+		                      ewl_theme_get_string(
+		                        "/EwlButton/images/hilited")));
+		evas_set_image_fill(ewl_widget_get_evas(w),
+		                    ewl_widget_get_background(w),
+		                    0, 0, wid, hgt);
+		evas_resize(ewl_widget_get_evas(w),
+		            ewl_widget_get_background(w),
+		            wid, hgt);
+		sprintf(evtype,"enter");
+	case EWL_EVENT_FOCUSOUT:
+		evas_set_image_file(ewl_widget_get_evas(w),
+			                ewl_widget_get_background(w),
+	   		                ewl_theme_find_file(
+		                      ewl_theme_get_string(
+		                        "/EwlButton/images/normal")));
+		evas_set_image_fill(ewl_widget_get_evas(w),
+		                    ewl_widget_get_background(w),
+		                    0, 0, wid, hgt);
+		evas_resize(ewl_widget_get_evas(w),
+		            ewl_widget_get_background(w),
+		            wid, hgt);
+		sprintf(evtype,"leave");*/
+	default:
+		break;
 	}
 
 	fprintf(stderr,"mouse%s in widget 0x%08x\n", evtype, (unsigned int) w);
@@ -106,10 +151,10 @@ EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d)
 	EwlEventMouseup *mev = (EwlEventMouseup*) ev;
 	switch (mev->button) {
 	case 1:
-		ewl_window_resize(win,50,50);
+		/*ewl_window_resize(win,160,120);*/
 		break;
 	case 2:
-		ewl_window_move(win,20,20);
+		/*ewl_window_move(win,320,240);*/
 		break;
 	case 3:
 		ewl_quit();

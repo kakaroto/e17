@@ -1091,3 +1091,16 @@ to just return it's own padding again.
 but it appears to work as advertised now. :)
 
 
+-----
+20000911-1755-PDT, pabs
+
+
+
+-----
+20000911-1843-PDT, pabs
+
+- added some new images for ewlbuttons -- you'll have to run the update
+script in order to see them.
+- updated the bg to so you can see the transparency.
+- just for fun, i made it so mouse clicking hilites the button.
+
