@@ -2642,3 +2642,11 @@ Imlib1. Try to adjust so themes don't break.
 Fix IclassApplyCopy with transparency and shaped images (fixes ugly 
 transparent menus).
 Play with event handling :)
+
+-------------------------------------------------------------------------------
+
+Wed Apr  7 17:09:42 CEST 2004
+(Kim)
+
+Shuffle around/clean up some master/slave state vars.
+Fix focus window selection when focused window is unmapped.
