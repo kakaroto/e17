@@ -125,7 +125,7 @@ int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 }
 
 
-int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
+int _econf_save_data_to_disk(void *data, char *loc, unsigned long length, char local) {
 
 	/* This function is supposed to save data out to disk.  it really needs to
 	 * be slapped since it really isn't doing what I think it should be doing.
@@ -211,8 +211,16 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 			sprintf(tableentry.loc,"dirty");
 			tableentry.length = 0;
 			tableentry.position = 0;
-			fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
+			if(fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE) <
+					sizeof(eConfigFAT)) {
+				/* this is probably not a good error here either, it means our
+				 * write failed.  need to have a handler here, too.
+				 */
+				fclose(FAT_TABLE);
+				return 0;
+			}
 			fclose(FAT_TABLE);
+			return 1;
 	    }
 		index++;
 	}
