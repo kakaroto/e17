@@ -1223,11 +1223,11 @@ remote_cp(char *machine1, char *file1, char *machine2, char *file2)
    extern options_t opt;
    
    if ((machine1) && (machine2))
-      g_snprintf(s, sizeof(s), "%s %s@%s:%s root@%s:%s", opt.rcp_command,
-         opt.user, machine1, file1, machine2, file2);
+      g_snprintf(s, sizeof(s), "%s %s@%s:%s %s@%s:%s", opt.rcp_command,
+         opt.user, machine1, file1, opt.user, machine2, file2);
    else if ((!machine1) && (machine2))
       g_snprintf(s, sizeof(s), "%s %s %s@%s:%s",  opt.rcp_command,
-         opt.user, file1, machine2, file2);
+         file1, opt.user, machine2, file2);
    else if ((machine1) && (!machine2))
       g_snprintf(s, sizeof(s), "%s %s@%s:%s %s",  opt.rcp_command,
          opt.user, machine1, file1, file2);

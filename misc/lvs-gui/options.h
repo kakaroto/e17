@@ -54,7 +54,7 @@ typedef u_int32_t flag_t;
   "/etc/sysconfig/transparent_proxy"
 #define DEFAULT_TRANSPARENT_PROXY_INIT_SCRIPT \
   "/etc/rc.d/init.d/transparent_proxy"
-#define DEFAULT_RSH_COMMAND                    "ssh -q"
+#define DEFAULT_RSH_COMMAND                    "ssh -q -x -a"
 #define DEFAULT_RCP_COMMAND                    "scp -q"
 #define DEFAULT_RC_FILE                        ".lvs-gui.rc"
 #define DEFAULT_USER                           "root"

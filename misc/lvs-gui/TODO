@@ -1,1 +1,9 @@
 * Update README
+* Make the following configurable from the GUI
+  and update gui_write_config accodingly
+  IPVS Init Script
+  Transparent Proxy Init Script
+  RSH Command
+  RCP Command
+  User
+
