@@ -5,6 +5,9 @@
 #include <time.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <unistd.h>
+#include <getopt.h>
+#include <string.h>
 #include <Edje.h>
 #include <Esmart/container.h>
 #include "entrance.h"
@@ -15,6 +18,7 @@
 #define WINH 600
 
 static Entrance_Session *session = NULL;
+int _entrance_test_en = 0;
 
 /* Callbacks for entrance */
 static char *
@@ -430,6 +434,31 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
    }
 }
 
+static void
+entrance_help(char **argv)
+{
+   printf("Entrance - The Enlightened Display Manager\n");
+   printf("Usage: %s [OPTION]...\n\n", argv[0]);
+   printf("---------------------------------------------------------------------------\n");
+   printf("  -d, --display=DISPLAY        Specify which display Entrance should use\n");
+   printf("  -h, --help                   Display this help message\n");
+   printf("  -g, --geometry=WIDTHxHEIGHT  Specify the size of the Entrance window.\n");
+   printf("                               Use of this option disables fullscreen mode.\n");
+   printf("  -t, --theme=THEME            Specify the theme to load. You may specify\n");
+   printf("                               either the name of an installed theme, or an\n");
+   printf("                               arbitrary path to an eet file (use ./ for\n");
+   printf("                               the current directory).\n");
+   printf("  -T, --test                   Enable testing mode. This will cause xterm\n");
+   printf("                               to be executed instead of the selected\n");
+   printf("                               session upon authentication, and uses a\n");
+   printf("                               geometry of 800x600 (-g overrides this)\n");
+   printf("===========================================================================\n\n");
+   printf("Note: To automatically launch an X server that will be managed, please use\n");
+   printf("      entranced instead of entrance. Entrance requires an existing X server\n");
+   printf("      to run. Run entranced --help for more information.\n\n");
+   exit(0);
+}
+         
 /**
  * timer_cb - we handle this iteration outside of the theme
  */
@@ -455,6 +484,7 @@ main(int argc, char *argv[])
    int i = 0;
    char buf[PATH_MAX];
    char *str = NULL;
+   char *display = NULL;
    Ecore_X_Window ew;
    Evas *evas = NULL;
    Ecore_Evas *e = NULL;
@@ -463,18 +493,92 @@ main(int argc, char *argv[])
    Evas_Coord x, y, w, h;
    char *entries[] = { "EntranceUserEntry", "EntrancePassEntry" };
    int entries_count = 2;
+   int c;
+   struct option d_opt[] = {
+      {"help", 0, 0, 'h'},
+      {"display", 1, 0, 'd'},
+      {"geometry", 1, 0, 'g'},
+      {"theme", 1, 0, 't'},
+      {"test", 0, 0, 'T'},
+      {0, 0, 0, 0}
+   };
+   int g_x = WINW, g_y = WINH;
+   char *theme = NULL;
+   int fs_en = 1;
 
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
-   if (argv[1])
-      snprintf(buf, PATH_MAX, "%s", argv[1]);
+/*   if (argv[1])
+      snprintf(buf, PATH_MAX, "%s", argv[1]);*/
+   
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
    ecore_app_args_set(argc, (const char **) argv);
-#if 1
-   if (!ecore_x_init(NULL))
+
+   /* Parse command-line options */
+   while (1)
    {
-      if ((str = getenv("DISPLAY")))
+      char *t;
+      c = getopt_long(argc, argv, "hd:g:t:T", d_opt, NULL);
+      if (c == -1)
+         break;
+      switch (c)
+      {
+         case 'h':
+            entrance_help(argv);
+         case 'd':
+            display = strdup(optarg);
+            break;
+         case 'g':
+            t = strchr((const char *) optarg, 'x');
+            if(!t || t >= (optarg + strlen(optarg)))
+            {
+               syslog(LOG_CRIT, "Invalid argument '%s' given for geometry. Exiting.", optarg);
+               return (-1);
+            }
+            else
+            {
+               g_x = atoi((const char *) optarg);
+               g_y = atoi((const char *) (t + 1));
+               if (!g_x || !g_y)
+               {
+                  syslog(LOG_CRIT, "Invalid argument '%s' given for geometry. Exiting.", optarg);
+                  return (-1);
+               }
+               fs_en = 0;
+            }
+            break;
+         case 't':
+            /* Allow arbitrary paths to theme files */
+            t = strchr((const char *) optarg, '/');
+            if (t)
+               theme = strdup(optarg);
+            else
+            {
+               theme = calloc(1, PATH_MAX);
+               t = strrchr((const char *) optarg, '.');
+               if (t && !strcmp(t, ".eet"))
+                  snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR, optarg);
+               else
+                  snprintf(theme, PATH_MAX, "%s/themes/%s.eet", PACKAGE_DATA_DIR, optarg);
+            }
+            break;
+         case 'T':
+            _entrance_test_en = 1;
+            fs_en = 0;
+            break;
+         default:
+            entrance_help(argv);
+      }
+   }
+   
+#if 1
+   if (!ecore_x_init(display))
+   {
+      if (display)
+         syslog(LOG_CRIT,
+                "Cannot initialize requested display \"%s\". Exiting.", display);
+      else if ((str = getenv("DISPLAY")))
          syslog(LOG_CRIT,
                 "Cannot initialize default display \"%s\". Exiting.", str);
       else
@@ -496,20 +600,23 @@ main(int argc, char *argv[])
          specified in config. On systems with * hardware acceleration, GL
          should improve performance appreciably */
       if (!strcmp(session->config->engine, "software"))
-         e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+         e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
 #ifdef HAVE_ECORE_GL_X11
       else if (!strcmp(session->config->engine, "gl"))
-         e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, WINW, WINH);
+         e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, g_x, g_y);
 #endif
       else
       {
          fprintf(stderr,
                  "Warning: Invalid Evas engine specified in config. Defaulting to software engine.\n");
-         e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+         e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
       }
 
       ew = ecore_evas_software_x11_window_get(e);
-      ecore_evas_title_set(e, "Entrance");
+      if(_entrance_test_en)
+         ecore_evas_title_set(e, "Entrance - Testing Mode");
+      else
+         ecore_evas_title_set(e, "Entrance");
       ecore_evas_callback_delete_request_set(e, window_del_cb);
       ecore_evas_callback_resize_set(e, window_resize_cb);
       ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0);
@@ -530,15 +637,18 @@ main(int argc, char *argv[])
 
       /* Load our theme as an edje */
       edje = edje_object_add(evas);
-      snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
-               session->config->theme);
+      if (!theme)
+         snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
+                  session->config->theme);
+      else
+         snprintf(buf, PATH_MAX, "%s", theme);
       if (!edje_object_file_set(edje, buf, "Main"))
       {
-         fprintf(stderr, "Failed to set %s\n", buf);
+         syslog(LOG_CRIT, "Failed to load theme %s\n", theme);
          exit(1);
       }
       evas_object_move(edje, 0, 0);
-      evas_object_resize(edje, WINW, WINH);
+      evas_object_resize(edje, g_x, g_y);
       evas_object_name_set(edje, "ui");
       evas_object_layer_set(edje, 0);
       entrance_session_edje_object_set(session, edje);
@@ -621,10 +731,11 @@ main(int argc, char *argv[])
       edje_object_signal_emit(edje, "In", "EntranceUserEntry");
 
 #if (X_TESTING == 0)
-      ecore_evas_resize(e, WINW, WINH);
-      ecore_evas_fullscreen_set(e, 1);
+      ecore_evas_resize(e, g_x, g_y);
+      if(fs_en)
+         ecore_evas_fullscreen_set(e, 1);
 #elif (X_TESTING == 1)
-      ecore_evas_resize(e, WINW, WINH);
+      ecore_evas_resize(e, g_x, g_y);
 #endif
 
       entrance_session_ecore_evas_set(session, e);

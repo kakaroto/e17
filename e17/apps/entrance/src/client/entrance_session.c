@@ -21,6 +21,8 @@ static Evas_Object *_entrance_session_load_session(Entrance_Session * e,
 static Evas_Object *_entrance_session_user_load(Entrance_Session * e,
                                                 char *key);
 
+extern int _entrance_test_en;
+
 /**
  * entrance_session_new: allocate a new  Entrance_Session
  * Returns a valid Entrance_Session
@@ -241,9 +243,8 @@ entrance_session_start_user_session(Entrance_Session * e)
    /* If a path was specified for the session, use that path instead of
       passing the session name to Xsession */
 
-#if (X_TESTING == 1)
-   snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
-#endif
+   if (_entrance_test_en)
+      snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 
    syslog(LOG_CRIT, "Executing %s", buf);
 
