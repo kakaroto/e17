@@ -2258,3 +2258,14 @@ Wed Sep 22 20:17:22 PDT 1999
 (Raster)
 
 get rid of printf.......
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 16:46:10 EST 1999
+(Christian)
+
+Ok, groups behave inconsistent if you use them over
+multiple desktops and via the titlebar or the menu,
+so group effects are limited to the current desktop
+for now.
+

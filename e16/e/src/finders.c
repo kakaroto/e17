@@ -315,17 +315,24 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 	     if (!daddy_says_no_no)
 	       {
 		  gwins = Erealloc(gwins, sizeof(EWin *) * (*num + ewin->groups[i]->num_members));
+		  /* Check if a window is not already in the group */
 		  for (k = 0; k < ewin->groups[i]->num_members; k++)
 		    {
-		       inlist = 0;
-		       for (j = 0; j < (*num); j++)
+		       /* To get consistent behaviour, limit groups to a single desktop for now: */
+		       if (ewin->groups[i]->members[k]->desktop == ewin->desktop)
 			 {
-			    if (gwins[j] == ewin->groups[i]->members[k])
-			       inlist = 1;
+			    inlist = 0;
+			    for (j = 0; j < (*num); j++)
+			      {
+				 if (gwins[j] == ewin->groups[i]->members[k])
+				    inlist = 1;
+			      }
+			    /* If we do not have this one yet, add it to the result */
+			    if (!inlist)
+			       gwins[(*num)++] = ewin->groups[i]->members[k];
 			 }
-		       if (!inlist)
-			  gwins[(*num)++] = ewin->groups[i]->members[k];
 		    }
+		  /* and shrink the result to the correct size. */
 		  gwins = Erealloc(gwins, sizeof(EWin *) * (*num));
 	       }
 	  }
@@ -335,7 +342,6 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 	     gwins = Emalloc(sizeof(EWin *));
 	     gwins[0] = ewin;
 	     *num = 1;
-	     return gwins;
 	  }
 	EDBUG_RETURN(gwins);
      }
