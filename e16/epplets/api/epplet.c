@@ -169,7 +169,6 @@ static void         Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void         Epplet_prune_events(XEvent * ev, int num);
 static void         Epplet_handle_child(int num);
 static void         Epplet_textbox_handle_keyevent(XEvent * ev,
-
 						   Epplet_gadget g);
 static void         Epplet_refresh_backgrounds(void);
 static void         Epplet_textbox_textsize(Epplet_gadget gadget, int *w,
@@ -1300,13 +1299,13 @@ Epplet_handle_event(XEvent * ev)
 			 (XPointer *) & g) == XCNOENT)
 	   g = NULL;
 	if (g)
-	   Epplet_event(g, ev);
+	  Epplet_event(g, ev);
 	else
 	  {
 	     if (buttonpress_func)
-		(*buttonpress_func) (buttonpress_data, ev->xbutton.window,
-				     ev->xbutton.x, ev->xbutton.y,
-				     ev->xbutton.button);
+	       (*buttonpress_func) (buttonpress_data, ev->xbutton.window,
+				    ev->xbutton.x, ev->xbutton.y,
+				    ev->xbutton.button);
 	  }
 	break;
      case ButtonRelease:
@@ -3952,6 +3951,75 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     }
 	     break;
 	  case E_POPUP:
+	     break;
+	  case E_TEXTBOX:
+	     {
+	        GadTextBox         *g;
+		int                 tmp_x, tmp_y, width, length, index,
+		                    last_index, text_w, text_h, text_wl, text_wr;
+		Window              dummy;
+		char                buf, left=1, right=1;
+		float               delta;
+
+		g = (GadTextBox *) gadget;
+		
+		XTranslateCoordinates(disp, g->win, root, 0, 0, &tmp_x, &tmp_y, &dummy); 
+		width = rx - tmp_x;
+		length = strlen(g->contents);
+		index = last_index = length/2;
+		delta = last_index/2;
+
+		while (delta >= 1.0)
+		  {
+		    index = last_index;
+		    buf = g->contents[index];
+		    g->contents[index] = 0;
+		    Epplet_textbox_textsize(g, &text_w, &text_h, g->contents);
+		    g->contents[index] = buf; 
+		    if (text_w <= width)
+		      last_index += rint(delta);
+		    else
+		      last_index -= rint(delta);
+		    delta /= 2.0;
+		  }
+		
+		while (1)
+		  {
+		    if (left)
+		      {
+			buf = g->contents[index-1];
+			g->contents[index-1] = 0;
+			Epplet_textbox_textsize(g, &text_wl, &text_h, g->contents);
+			g->contents[index-1] = buf; 
+		      }
+		    if (right)
+		      {
+			buf = g->contents[index+1];
+			g->contents[index+1] = 0;
+			Epplet_textbox_textsize(g, &text_wr, &text_h, g->contents);
+			g->contents[index+1] = buf; 
+		      }
+
+		    if (abs(text_wl - width) < abs(text_w - width))
+		      {
+			right = 0;
+			text_wr = text_w;
+			text_w = text_wl;
+			index--;
+		      }
+		    else if (abs(text_wr - width) < abs(text_w - width))
+		      {
+			left = 0;
+			text_wl = text_w;
+			text_w = text_wr;
+			index++;
+		      }
+		    else
+		      break;
+		  }
+		g->cursor_pos = index;
+		Epplet_draw_textbox(g);
+	     }
 	     break;
 	  default:
 	     break;
