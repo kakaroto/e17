@@ -88,7 +88,7 @@ have_ecore_evas=no
 AC_CHECK_HEADER(Ecore_Evas.h,,
    AC_MSG_ERROR([Ecore_Evas.h not found! Did you compile Ecore with Evas support?]))
 
-AC_CHECK_LIB(ecore_evas, main, [
+AC_CHECK_LIB(ecore_evas, ecore_evas_init, [
 	have_ecore_evas=yes],
    AC_MSG_ERROR([Cannot find Ecore_Evas!]))
 
