@@ -430,9 +430,9 @@ main(int argc, char **argv)
   Epplet_gadget_show(nomail);
 
   if (show_total) {
-    cnt_label = Epplet_create_label(-3, 36, "- / -", 1);
+    cnt_label = Epplet_create_label(-5, 36, "- / -", 1);
   } else {
-    cnt_label = Epplet_create_label(-3, 36, "-", 1);
+    cnt_label = Epplet_create_label(-5, 36, "-", 1);
   }
   Epplet_gadget_show(cnt_label);
 
