@@ -397,8 +397,8 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		index = estyle_text_at_position(bit, et->x + et->w, y + (h / 2),
 				NULL, NULL, NULL, NULL);
 
-	/* if we have an index */
-	if (index != -1) {
+	/* if we have an index and there is more than one char on the line */
+        if (index != -1){
 		char *tmp;
 
 		/* don't start a new line with a space */
@@ -415,7 +415,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		/* create a marker bit. */
 		marker = estyle_new(et->evas, et->context->marker.text,
 				et->context->marker.style);
-		evas_object_smart_member_add(et->smart_obj, marker);
+		evas_object_smart_member_add(marker, et->smart_obj);
 		evas_object_color_set(marker, et->context->marker.r,
 				et->context->marker.g,
 				et->context->marker.b,
@@ -525,6 +525,8 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 
 		l = prevline->next;
 	}
+        
+//        etox_line_minimize(line);
 }
 
 Evas_Object *

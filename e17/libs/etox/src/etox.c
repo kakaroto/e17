@@ -1038,7 +1038,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			bit =
 			    estyle_new(et->evas, text, et->context->style);
-			evas_object_smart_member_add(et->smart_obj, bit);
+			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_clip_set(bit, et->clip);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
@@ -1057,7 +1057,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			*text = '\0';
 			bit =
 			    estyle_new(et->evas, walk, et->context->style);
-			evas_object_smart_member_add(et->smart_obj, bit);
+			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
@@ -1082,7 +1082,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			bit =
 			    estyle_new(et->evas, text, et->context->style);
-			evas_object_smart_member_add(et->smart_obj, bit);
+			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
@@ -1114,7 +1114,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 	 */
 	if (*text) {
 		bit = estyle_new(et->evas, text, et->context->style);
-		evas_object_smart_member_add(et->smart_obj, bit);
+		evas_object_smart_member_add(bit, et->smart_obj);
 		evas_object_color_set(bit, et->context->r, et->context->g,
 				 et->context->b, et->context->a);
 		evas_object_clip_set(bit, et->clip);

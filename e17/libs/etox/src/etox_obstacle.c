@@ -25,7 +25,7 @@ Etox_Obstacle *etox_obstacle_new(Etox * et, int x, int y, int w, int h)
 	if (obst) {
 		obst->et = et;
 		obst->bit = estyle_new(et->evas, "", NULL);
-		evas_object_smart_member_add(et->smart_obj, obst->bit);
+		evas_object_smart_member_add(obst->bit, et->smart_obj);
 		estyle_fix_geometry(obst->bit, x, y, w, h);
 	}
 

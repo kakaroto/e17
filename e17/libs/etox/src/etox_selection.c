@@ -46,7 +46,7 @@ etox_split_bit(Etox_Line *line, Evas_Object *bit, int index)
 	 */
 	if (index && index < estyle_length(bit)) {
 		point = estyle_split(bit, index);
-		evas_object_smart_member_add(line->et->smart_obj, point);
+		evas_object_smart_member_add(point, line->et->smart_obj);
 		line->bits = evas_list_append_relative(line->bits, point, bit);
 
 		l = active_selections;
