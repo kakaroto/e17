@@ -362,7 +362,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
          free(path);
          D_RETURN_;
       }
-      else if (opt.filelistfile && (path[0] != '/'))
+      else if (opt.filelistfile)
       {
          char *newpath = feh_absolute_path(path);
 
@@ -812,8 +812,13 @@ feh_absolute_path(char *path)
    char fullpath[PATH_MAX];
    char temp[PATH_MAX];
    char *ret;
+
    D_ENTER;
 
+   if (!path)
+      D_RETURN(NULL);
+   if (path[0] == '/')
+      D_RETURN(path);
    /* This path is not relative. We're gonna convert it, so that a
       filelist file can be saved anywhere and feh will still find the
       images */
