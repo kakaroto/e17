@@ -97,7 +97,7 @@ HandleDrawQueue()
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if ((lst[i]->d == dq->d) && (dq->d->item) &&
+		  if ((lst[i]->d == dq->d) && DialogItem(dq->d) &&
 		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
 		    {
 		       if (dq->x < lst[i]->x)

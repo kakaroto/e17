@@ -550,6 +550,7 @@ int                 Esnprintf(va_alist);
 
 typedef struct _menu Menu;
 typedef struct _dialog Dialog;
+typedef struct _ditem DItem;
 typedef struct _pager Pager;
 typedef struct _snapshot Snapshot;
 typedef struct _iconbox Iconbox;
@@ -1439,113 +1440,7 @@ struct _snapshot
    char                neverfocus;
 };
 
-typedef struct _ditembutton DItemButton;
-typedef struct _ditemcheckbutton DItemCheckButton;
-typedef struct _ditemtext DItemText;
-typedef struct _ditemimage DItemImage;
-typedef struct _ditemseparator DItemSeparator;
-typedef struct _ditemtable DItemTable;
-typedef struct _ditemradiobutton DItemRadioButton;
-typedef struct _ditemslider DItemSlider;
-typedef struct _ditemarea DItemArea;
-typedef struct _ditem DItem;
-
-struct _ditemslider
-{
-   char                horizontal;
-
-   char                numeric;
-   char                numeric_side;
-
-   int                 upper;
-   int                 lower;
-   int                 unit;
-   int                 jump;
-   int                 val;
-   int                *val_ptr;
-
-   int                 min_length;
-
-   int                 base_orig_w, base_orig_h;
-   int                 knob_orig_w, knob_orig_h;
-   int                 border_orig_w, border_orig_h;
-
-   int                 base_x, base_y, base_w, base_h;
-   int                 knob_x, knob_y, knob_w, knob_h;
-   int                 border_x, border_y, border_w, border_h;
-   int                 numeric_x, numeric_y, numeric_w, numeric_h;
-
-   ImageClass         *ic_base;
-   ImageClass         *ic_knob;
-   ImageClass         *ic_border;
-
-   char                in_drag;
-   int                 wanted_val;
-
-   Window              base_win;
-   Window              knob_win;
-   Window              border_win;
-};
-
-struct _ditemarea
-{
-   Window              area_win;
-   int                 w, h;
-   void                (*event_func) (int val, void *data);
-};
-
-struct _ditembutton
-{
-   char               *text;
-};
-
-struct _ditemcheckbutton
-{
-   char               *text;
-   Window              check_win;
-   int                 check_orig_w, check_orig_h;
-   char                onoff;
-   char               *onoff_ptr;
-};
-
-struct _ditemtext
-{
-   char               *text;
-};
-
-struct _ditemimage
-{
-   char               *image;
-};
-
-struct _ditemseparator
-{
-   char                horizontal;
-};
-
-struct _ditemtable
-{
-   int                 num_columns;
-   char                border;
-   char                homogenous_h;
-   char                homogenous_v;
-   int                 num_items;
-   DItem             **items;
-};
-
-struct _ditemradiobutton
-{
-   char               *text;
-   Window              radio_win;
-   int                 radio_orig_w, radio_orig_h;
-   char                onoff;
-   int                 val;
-   int                *val_ptr;
-   DItem              *next;
-   DItem              *first;
-   void                (*event_func) (int val, void *data);
-};
-
+/* Dialog items */
 #define DITEM_NONE         0
 #define DITEM_BUTTON       1
 #define DITEM_CHECKBUTTON  2
@@ -1556,83 +1451,6 @@ struct _ditemradiobutton
 #define DITEM_RADIOBUTTON  7
 #define DITEM_SLIDER       8
 #define DITEM_AREA         9
-
-struct _ditem
-{
-   int                 type;
-   void                (*func) (int val, void *data);
-   int                 val;
-   void               *data;
-   ImageClass         *iclass;
-   TextClass          *tclass;
-   ImlibBorder         padding;
-   char                fill_h;
-   char                fill_v;
-   int                 align_h;
-   int                 align_v;
-   int                 row_span;
-   int                 col_span;
-
-   int                 x, y, w, h;
-   char                hilited;
-   char                clicked;
-   Window              win;
-   union
-   {
-      DItemButton         button;
-      DItemCheckButton    check_button;
-      DItemText           text;
-      DItemTable          table;
-      DItemImage          image;
-      DItemSeparator      separator;
-      DItemRadioButton    radio_button;
-      DItemSlider         slider;
-      DItemArea           area;
-   }
-   item;
-};
-
-typedef struct _dbutton
-{
-   char               *text;
-   void                (*func) (int val, void *data);
-   Window              win;
-   int                 x, y, w, h;
-   char                hilited;
-   char                clicked;
-   char                close;
-   TextClass          *tclass;
-   ImageClass         *iclass;
-}
-DButton;
-
-typedef struct _Dkeybind
-{
-   KeyCode             key;
-   int                 val;
-   void               *data;
-   void                (*func) (int val, void *data);
-}
-DKeyBind;
-
-struct _dialog
-{
-   char               *name;
-   char               *title;
-   char               *text;
-   int                 num_buttons;
-   Window              win;
-   DButton           **button;
-   TextClass          *tclass;
-   ImageClass         *iclass;
-   int                 w, h;
-   DItem              *item;
-   void                (*exit_func) (int val, void *data);
-   int                 exit_val;
-   void               *exit_data;
-   int                 num_bindings;
-   DKeyBind           *keybindings;
-};
 
 typedef struct _PixImg
 {
@@ -2726,7 +2544,6 @@ Dialog             *CreateDialog(char *name);
 void                DialogBindKey(Dialog * d, char *key,
 				  void (*func) (int val, void *data), int val,
 				  void *data);
-void                FreeDButton(DButton * db);
 void                FreeDialog(Dialog * d);
 void                DialogSetText(Dialog * d, char *text);
 void                DialogSetTitle(Dialog * d, char *title);
@@ -2747,6 +2564,7 @@ void                DialogRestart(int val, void *data);
 void                DialogQuit(int val, void *data);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
+DItem              *DialogItem(Dialog * d);
 void                DialogItemSetCallback(DItem * di,
 					  void (*func) (int val, void *data),
 					  int val, char *data);
@@ -2756,6 +2574,7 @@ void                DialogItemSetPadding(DItem * di, int left, int right,
 					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
+void                DialogItemCallCallback(DItem * di);
 void                DialogRealizeItem(Dialog * d, DItem * di);
 void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
 				    int h);
@@ -2788,6 +2607,7 @@ void                DialogItemRadioButtonGroupSetValPtr(DItem * di,
 							int *val_ptr);
 void                DialogItemRadioButtonGroupSetVal(DItem * di, int val);
 void                MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
+
 void                DialogItemSliderSetVal(DItem * di, int val);
 void                DialogItemSliderSetBounds(DItem * di, int lower, int upper);
 void                DialogItemSliderSetUnits(DItem * di, int units);
@@ -2795,12 +2615,23 @@ void                DialogItemSliderSetJump(DItem * di, int jump);
 void                DialogItemSliderSetMinLength(DItem * di, int min);
 void                DialogItemSliderSetValPtr(DItem * di, int *val_ptr);
 void                DialogItemSliderSetOrientation(DItem * di, char horizontal);
+int                 DialogItemSliderGetVal(DItem * di);
+void                DialogItemSliderGetBounds(DItem * di, int *lower,
+					      int *upper);
+
 void                DialogItemAreaSetSize(DItem * di, int w, int h);
 void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
 Window              DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
 					       void (*func) (int val,
 							     void *data));
+void                DialogEventKeyPress(XEvent * ev);
+void                DialogEventMotion(XEvent * ev);
+void                DialogEventExpose(XEvent * ev);
+void                DialogEventMouseDown(XEvent * ev);
+void                DialogEventMouseUp(XEvent * ev, Window click_was_in);
+void                DialogEventMouseIn(XEvent * ev);
+void                DialogEventMouseOut(XEvent * ev);
 
 /* fx.c exportable functions */
 #define FX_OP_START  1

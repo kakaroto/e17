@@ -2603,6 +2603,57 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    val = 0;
 }
 
+static void
+BG_DoDialog(void)
+{
+   char               *stmp;
+   char                s[1024];
+
+   if (tmp_bg->bg.file)
+      tmp_bg_image = 1;
+   else
+      tmp_bg_image = 0;
+
+   KeepBGimages(tmp_bg, 1);
+
+   if (tmp_bg->bg.file)
+      stmp = fullfileof(tmp_bg->bg.file);
+   else
+      stmp = duplicate(_("-NONE-"));
+   Esnprintf(s, sizeof(s),
+	     _("Background definition information:\nName: %s\nFile: %s\n"),
+	     tmp_bg->name, stmp);
+   Efree(stmp);
+   DialogItemTextSetText(bg_filename, s);
+   DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
+
+   tmp_bg_r = tmp_bg->bg.solid.r;
+   tmp_bg_g = tmp_bg->bg.solid.g;
+   tmp_bg_b = tmp_bg->bg.solid.b;
+   tmp_bg_tile = tmp_bg->bg.tile;
+   tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
+   tmp_bg_xjust = tmp_bg->bg.xjust;
+   tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+   tmp_bg_xperc = tmp_bg->bg.xperc;
+   tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
+   DialogItemSliderSetVal(tmp_w[0], tmp_bg_r);
+   DialogItemCheckButtonSetState(tmp_w[1], tmp_bg_image);
+   DialogItemSliderSetVal(tmp_w[2], tmp_bg_g);
+   DialogItemCheckButtonSetState(tmp_w[3], tmp_bg_keep_aspect);
+   DialogItemSliderSetVal(tmp_w[4], tmp_bg_b);
+   DialogItemCheckButtonSetState(tmp_w[5], tmp_bg_tile);
+   DialogItemSliderSetVal(tmp_w[6], tmp_bg_xjust);
+   DialogItemSliderSetVal(tmp_w[7], tmp_bg_yjust);
+   DialogItemSliderSetVal(tmp_w[8], tmp_bg_yperc);
+   DialogItemSliderSetVal(tmp_w[9], tmp_bg_xperc);
+   if (tbg)
+     {
+	FreeDesktopBG(tbg);
+	tbg = NULL;
+     }
+   CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+}
+
 static void         CB_ConfigureNewBG(int val, void *data);
 static void
 CB_ConfigureNewBG(int val, void *data)
@@ -2610,6 +2661,7 @@ CB_ConfigureNewBG(int val, void *data)
    char                s[1024];
    ImlibColor          icl;
    Background         *bg;
+   int                 lower, upper;
 
    Esnprintf(s, sizeof(s), "__NEWBG_%i\n", time(NULL));
    icl.r = tmp_bg_r;
@@ -2624,10 +2676,10 @@ CB_ConfigureNewBG(int val, void *data)
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
    tmp_bg = bg;
    desks.desk[desks.current].bg = bg;
-   bg_sel_slider->item.slider.upper += 4;
-   bg_sel_slider->item.slider.val = 0;
-   if (bg_sel_slider->item.slider.val_ptr)
-      *(bg_sel_slider->item.slider.val_ptr) = 0;
+   DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
+   upper += 4;
+   DialogItemSliderSetBounds(bg_sel_slider, lower, upper);
+   DialogItemSliderSetVal(bg_sel_slider, 0);
    DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
    RefreshCurrentDesktop();
    RedrawPagersForDesktop(desks.current, 2);
@@ -2648,14 +2700,15 @@ CB_ConfigureRemBG(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if ((bglist) && (num > 1))
      {
-	bg_sel_slider->item.slider.upper -= 4;
-	if (bg_sel_slider->item.slider.val > bg_sel_slider->item.slider.upper)
-	  {
-	     bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.upper;
-	     if (bg_sel_slider->item.slider.val_ptr)
-		*(bg_sel_slider->item.slider.val_ptr) =
-		   bg_sel_slider->item.slider.val;
-	  }
+	int                 slider, lower, upper;
+
+	DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
+	slider = DialogItemSliderGetVal(bg_sel_slider);
+	upper -= 4;
+	DialogItemSliderSetBounds(bg_sel_slider, lower, upper);
+	if (slider > upper)
+	   DialogItemSliderSetVal(bg_sel_slider, upper);
+
 	for (i = 0; i < num; i++)
 	  {
 	     if (bglist[i] == tmp_bg)
@@ -2669,54 +2722,7 @@ CB_ConfigureRemBG(int val, void *data)
 		  i = num;
 		  if (bg)
 		     FreeDesktopBG(bg);
-		  if (tmp_bg->bg.file)
-		     tmp_bg_image = 1;
-		  else
-		     tmp_bg_image = 0;
-		  KeepBGimages(tmp_bg, 1);
-
-		  {
-		     char               *stmp;
-		     char                s[1024];
-
-		     if (tmp_bg->bg.file)
-			stmp = fullfileof(tmp_bg->bg.file);
-		     else
-			stmp = duplicate(_("-NONE-"));
-		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
-			       tmp_bg->name, stmp);
-		     Efree(stmp);
-		     DialogItemTextSetText(bg_filename, s);
-		     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
-				     99999);
-		  }
-		  tmp_bg_r = tmp_bg->bg.solid.r;
-		  tmp_bg_g = tmp_bg->bg.solid.g;
-		  tmp_bg_b = tmp_bg->bg.solid.b;
-		  tmp_bg_tile = tmp_bg->bg.tile;
-		  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-		  tmp_bg_xjust = tmp_bg->bg.xjust;
-		  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-		  tmp_bg_xperc = tmp_bg->bg.xperc;
-		  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-		  tmp_w[0]->item.slider.val = tmp_bg_r;
-		  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-		  tmp_w[2]->item.slider.val = tmp_bg_g;
-		  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-		  tmp_w[4]->item.slider.val = tmp_bg_b;
-		  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-		  tmp_w[6]->item.slider.val = tmp_bg_xjust;
-		  tmp_w[7]->item.slider.val = tmp_bg_yjust;
-		  tmp_w[8]->item.slider.val = tmp_bg_yperc;
-		  tmp_w[9]->item.slider.val = tmp_bg_xperc;
-		  if (tbg)
-		    {
-		       FreeDesktopBG(tbg);
-		       tbg = NULL;
-		    }
-		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+		  BG_DoDialog();
 	       }
 	  }
 	desks.desk[desks.current].bg = tmp_bg;
@@ -2745,14 +2751,15 @@ CB_ConfigureDelBG(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if ((bglist) && (num > 1))
      {
-	bg_sel_slider->item.slider.upper -= 4;
-	if (bg_sel_slider->item.slider.val > bg_sel_slider->item.slider.upper)
-	  {
-	     bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.upper;
-	     if (bg_sel_slider->item.slider.val_ptr)
-		*(bg_sel_slider->item.slider.val_ptr) =
-		   bg_sel_slider->item.slider.val;
-	  }
+	int                 slider, lower, upper;
+
+	DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
+	slider = DialogItemSliderGetVal(bg_sel_slider);
+	upper -= 4;
+	DialogItemSliderSetBounds(bg_sel_slider, lower, upper);
+	if (slider > upper)
+	   DialogItemSliderSetVal(bg_sel_slider, upper);
+
 	for (i = 0; i < num; i++)
 	  {
 	     if (bglist[i] == tmp_bg)
@@ -2790,54 +2797,7 @@ CB_ConfigureDelBG(int val, void *data)
 			 }
 		       FreeDesktopBG(bg);
 		    }
-		  if (tmp_bg->bg.file)
-		     tmp_bg_image = 1;
-		  else
-		     tmp_bg_image = 0;
-		  KeepBGimages(tmp_bg, 1);
-
-		  {
-		     char               *stmp;
-		     char                s[1024];
-
-		     if (tmp_bg->bg.file)
-			stmp = fullfileof(tmp_bg->bg.file);
-		     else
-			stmp = duplicate(_("-NONE-"));
-		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
-			       tmp_bg->name, stmp);
-		     Efree(stmp);
-		     DialogItemTextSetText(bg_filename, s);
-		     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
-				     99999);
-		  }
-		  tmp_bg_r = tmp_bg->bg.solid.r;
-		  tmp_bg_g = tmp_bg->bg.solid.g;
-		  tmp_bg_b = tmp_bg->bg.solid.b;
-		  tmp_bg_tile = tmp_bg->bg.tile;
-		  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-		  tmp_bg_xjust = tmp_bg->bg.xjust;
-		  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-		  tmp_bg_xperc = tmp_bg->bg.xperc;
-		  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-		  tmp_w[0]->item.slider.val = tmp_bg_r;
-		  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-		  tmp_w[2]->item.slider.val = tmp_bg_g;
-		  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-		  tmp_w[4]->item.slider.val = tmp_bg_b;
-		  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-		  tmp_w[6]->item.slider.val = tmp_bg_xjust;
-		  tmp_w[7]->item.slider.val = tmp_bg_yjust;
-		  tmp_w[8]->item.slider.val = tmp_bg_yperc;
-		  tmp_w[9]->item.slider.val = tmp_bg_xperc;
-		  if (tbg)
-		    {
-		       FreeDesktopBG(tbg);
-		       tbg = NULL;
-		    }
-		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+		  BG_DoDialog();
 	       }
 	  }
 	desks.desk[desks.current].bg = tmp_bg;
@@ -3004,21 +2964,17 @@ static void         CB_BGScan(int val, void *data);
 static void
 CB_BGScan(int val, void *data)
 {
+   int                 slider, lower, upper;
+
    AUDIO_PLAY("SOUND_WAIT");
 
-   bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.lower;
-   if (bg_sel_slider->item.slider.val_ptr)
-      *(bg_sel_slider->item.slider.val_ptr) = bg_sel_slider->item.slider.val;
+   DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
 
-   while (bg_sel_slider->item.slider.val <= bg_sel_slider->item.slider.upper)
+   for (slider = lower; slider <= upper; slider += 8)
      {
+	DialogItemSliderSetVal(bg_sel_slider, slider);
 	DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
-	if (bg_sel_slider->func)
-	   (bg_sel_slider->func) (bg_sel_slider->val, bg_sel_slider->data);
-	bg_sel_slider->item.slider.val += 8;
-	if (bg_sel_slider->item.slider.val_ptr)
-	   *(bg_sel_slider->item.slider.val_ptr) =
-	      bg_sel_slider->item.slider.val;
+	DialogItemCallCallback(bg_sel_slider);
      }
    val = 0;
    data = NULL;
@@ -3048,53 +3004,7 @@ CB_BGAreaEvent(int val, void *data)
 	  {
 	     KeepBGimages(tmp_bg, 0);
 	     tmp_bg = bglist[tmp_bg_selected];
-	     if (tmp_bg->bg.file)
-		tmp_bg_image = 1;
-	     else
-		tmp_bg_image = 0;
-	     KeepBGimages(tmp_bg, 1);
-
-	     {
-		char               *stmp;
-		char                s[1024];
-
-		if (tmp_bg->bg.file)
-		   stmp = fullfileof(tmp_bg->bg.file);
-		else
-		   stmp = duplicate(_("-NONE-"));
-		Esnprintf(s, sizeof(s),
-			  _
-			  ("Background definition information:\nName: %s\nFile: %s\n"),
-			  tmp_bg->name, stmp);
-		Efree(stmp);
-		DialogItemTextSetText(bg_filename, s);
-		DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
-	     }
-	     tmp_bg_r = tmp_bg->bg.solid.r;
-	     tmp_bg_g = tmp_bg->bg.solid.g;
-	     tmp_bg_b = tmp_bg->bg.solid.b;
-	     tmp_bg_tile = tmp_bg->bg.tile;
-	     tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-	     tmp_bg_xjust = tmp_bg->bg.xjust;
-	     tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-	     tmp_bg_xperc = tmp_bg->bg.xperc;
-	     tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-	     tmp_w[0]->item.slider.val = tmp_bg_r;
-	     tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-	     tmp_w[2]->item.slider.val = tmp_bg_g;
-	     tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-	     tmp_w[4]->item.slider.val = tmp_bg_b;
-	     tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-	     tmp_w[6]->item.slider.val = tmp_bg_xjust;
-	     tmp_w[7]->item.slider.val = tmp_bg_yjust;
-	     tmp_w[8]->item.slider.val = tmp_bg_yperc;
-	     tmp_w[9]->item.slider.val = tmp_bg_xperc;
-	     if (tbg)
-	       {
-		  FreeDesktopBG(tbg);
-		  tbg = NULL;
-	       }
-	     CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+	     BG_DoDialog();
 	     desks.desk[desks.current].bg = tmp_bg;
 	     RedrawPagersForDesktop(desks.current, 2);
 	     ForceUpdatePagersForDesktop(desks.current);
@@ -3144,6 +3054,7 @@ BGSettingsGoTo(Background * bg)
 
    if (!(bgd = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
       return;
+
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
@@ -3151,74 +3062,14 @@ BGSettingsGoTo(Background * bg)
 	  {
 	     if (bglist[i] == bg)
 	       {
-		  bg_sel_slider->item.slider.val = (4 * i);
-		  if (bg_sel_slider->item.slider.lower >
-		      bg_sel_slider->item.slider.val)
-		     bg_sel_slider->item.slider.val =
-			bg_sel_slider->item.slider.lower;
-		  if (bg_sel_slider->item.slider.upper <
-		      bg_sel_slider->item.slider.val)
-		     bg_sel_slider->item.slider.val =
-			bg_sel_slider->item.slider.upper;
-		  if (bg_sel_slider->item.slider.val_ptr)
-		     *(bg_sel_slider->item.slider.val_ptr) =
-			bg_sel_slider->item.slider.val;
+		  DialogItemSliderSetVal(bg_sel_slider, 4 * i);
 		  DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999,
 				  99999);
-		  if (bg_sel_slider->func)
-		     (bg_sel_slider->func) (bg_sel_slider->val,
-					    bg_sel_slider->data);
+		  DialogItemCallCallback(bg_sel_slider);
 		  tmp_bg_selected = i;
 		  KeepBGimages(tmp_bg, 0);
 		  tmp_bg = bglist[tmp_bg_selected];
-		  if (tmp_bg->bg.file)
-		     tmp_bg_image = 1;
-		  else
-		     tmp_bg_image = 0;
-		  KeepBGimages(tmp_bg, 1);
-
-		  {
-		     char               *stmp;
-		     char                s[1024];
-
-		     if (tmp_bg->bg.file)
-			stmp = fullfileof(tmp_bg->bg.file);
-		     else
-			stmp = duplicate(_("-NONE-"));
-		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
-			       tmp_bg->name, stmp);
-		     Efree(stmp);
-		     DialogItemTextSetText(bg_filename, s);
-		     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
-				     99999);
-		  }
-		  tmp_bg_r = tmp_bg->bg.solid.r;
-		  tmp_bg_g = tmp_bg->bg.solid.g;
-		  tmp_bg_b = tmp_bg->bg.solid.b;
-		  tmp_bg_tile = tmp_bg->bg.tile;
-		  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-		  tmp_bg_xjust = tmp_bg->bg.xjust;
-		  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-		  tmp_bg_xperc = tmp_bg->bg.xperc;
-		  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-		  tmp_w[0]->item.slider.val = tmp_bg_r;
-		  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-		  tmp_w[2]->item.slider.val = tmp_bg_g;
-		  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-		  tmp_w[4]->item.slider.val = tmp_bg_b;
-		  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-		  tmp_w[6]->item.slider.val = tmp_bg_xjust;
-		  tmp_w[7]->item.slider.val = tmp_bg_yjust;
-		  tmp_w[8]->item.slider.val = tmp_bg_yperc;
-		  tmp_w[9]->item.slider.val = tmp_bg_xperc;
-		  if (tbg)
-		    {
-		       FreeDesktopBG(tbg);
-		       tbg = NULL;
-		    }
-		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+		  BG_DoDialog();
 		  BG_RedrawView(0);
 		  for (x = 0; x < 10; x++)
 		     DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999,

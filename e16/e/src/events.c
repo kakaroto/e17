@@ -224,21 +224,8 @@ DebugEvent(XEvent * ev)
 static void
 HKeyPress(XEvent * ev)
 {
-   Dialog             *d;
-
    EDBUG(7, "HKeyPress");
-   d = FindDialog(ev->xkey.window);
-   if (d)
-     {
-	int                 i;
-
-	for (i = 0; i < d->num_bindings; i++)
-	  {
-	     if (ev->xkey.keycode == d->keybindings[i].key)
-		(d->keybindings[i].func) (d->keybindings[i].val,
-					  d->keybindings[i].data);
-	  }
-     }
+   DialogEventKeyPress(ev);
    EDBUG_RETURN_;
 }
 
