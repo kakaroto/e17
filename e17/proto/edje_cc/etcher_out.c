@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdarg.h>
 #include "Etcher.h"
 
 void etcher_file_output(Etcher_File *etcher_file, char *path);
@@ -8,6 +9,7 @@ static void _etcher_output_part(Etcher_Part *part, FILE *out);
 static void _etcher_output_program(Etcher_Program *program, FILE *out);
 static void _etcher_output_state(Etcher_Part *part, Etcher_Part_State *state, FILE *out);
 
+static int level = 0;
 
 char *_image_type_string[ETCHER_IMAGE_TYPE_NUM] = {
         "RAW",
@@ -58,6 +60,53 @@ char *_aspect_preference_string[ETCHER_ASPECT_PREFERENCE_NUM] = {
 	"BOTH"
         };
 
+static char *
+etcher_output_mk_tabs(void)
+{
+    char *buf = (char *)calloc(level + 1, sizeof(char));
+    int i = 0;
+    for(i = 0; i < level; i++)
+        buf[i] = '\t';
+    return buf;
+}
+
+static void
+etcher_out_start(FILE *out, char *type)
+{
+    char *buf = etcher_output_mk_tabs();
+    fprintf(out, "%s%s {\n", buf, type);
+    free(buf);
+
+    level ++;
+}
+
+static void
+etcher_out_end(FILE *out)
+{
+    char *buf = NULL;
+
+    level--;
+    buf = etcher_output_mk_tabs();
+    fprintf(out, "%s}\n", buf);
+    free(buf);
+
+}
+
+static void
+etcher_out_data(FILE *out, char *name, char *fmt, ...)
+{
+    va_list ap;
+    char *fmt_new = (char *)calloc(strlen(fmt) + strlen(name) + level + 5, sizeof(char));
+    char *buf = etcher_output_mk_tabs();
+
+    sprintf(fmt_new, "%s%s: %s;\n", buf, name, fmt);
+    va_start(ap, fmt);
+    vfprintf(out, fmt_new, ap);
+    va_end(ap);
+
+    free(buf);
+}
+
 void
 etcher_file_output(Etcher_File *etcher_file, char *path)
 {
@@ -75,54 +124,54 @@ etcher_file_output(Etcher_File *etcher_file, char *path)
   }
 
   /* fonts */
-  fprintf(out, "fonts {\n");
+  etcher_out_start(out, "fonts");
   for (l = etcher_file->fonts; l; l = l->next)
   {
     Etcher_Font *font = l->data;
     if (font)
-      fprintf(out, "\tfont: \"%s\" \"%s\";\n", font->file, font->name);
+      etcher_out_data(out, "font", "\"%s\" \"%s\"", font->file, font->name);
   }
-  fprintf(out, "}\n");
+  etcher_out_end(out);
 
   /* images */
-  fprintf(out, "images {\n");
+  etcher_out_start(out, "images");
   for (l = etcher_file->images; l; l = l->next)
   {
     Etcher_Image *image = l->data;
     if (image)
     {
       if (image->type == ETCHER_IMAGE_TYPE_LOSSY)
-        fprintf(out, "\timage: \"%s\" %s %.2f;\n", image->name,
+        etcher_out_data(out, "image", "\"%s\" %s %.2f", image->name,
                 _image_type_string[image->type],
                 image->value);
       else
-        fprintf(out, "\timage: \"%s\" %s;\n", image->name,
+        etcher_out_data(out, "image", "\"%s\" %s", image->name,
                 _image_type_string[image->type]);
     }
   }
-  fprintf(out, "}\n");
+  etcher_out_end(out);
 
   /* data */
-  fprintf(out, "data {\n");
+  etcher_out_start(out, "data");
   for (l = etcher_file->data; l; l = l->next)
   {
     Etcher_Data *data = l->data;
     if (data)
     {
-        fprintf(out, "\titem: \"%s\" \"%s\";\n",
+        etcher_out_data(out, "item", "\"%s\" \"%s\"",
                 data->key, data->value);
     }
   }
-  fprintf(out, "}\n");
+  etcher_out_end(out);
 
-  /* groups */
-  fprintf(out, "collections {\n");
+  /* collections */
+  etcher_out_start(out, "collections");
   for (l = etcher_file->groups; l; l = l->next)
   {
     Etcher_Group *group = l->data;
     if (group) _etcher_output_group(group, out);
   }
-  fprintf(out, "}\n");
+  etcher_out_end(out);
 
   fclose(out);
 
@@ -133,57 +182,60 @@ _etcher_output_group(Etcher_Group *group, FILE *out)
 {
   Evas_List *l;
 
-  fprintf(out, "\tgroup {\n");
+  etcher_out_start(out, "group");
+
   /* FIXME max is 0 by default, this is bad... */
-  fprintf(out, "\t\tname: \"%s\";\n", group->name);
-          
+  etcher_out_data(out, "name", "\"%s\"", group->name);
 
   if (group->min.w != 0 || group->min.h != 0)
-    fprintf(out, "\t\tmin: %d %d;\n", group->min.w, group->min.h);
+    etcher_out_data(out, "min", "%d %d", group->min.w, group->min.h);
 
   if(group->max.w >= 0 || group->max.h >= 0)
-    fprintf(out, "\t\tmax: %d %d;\n", group->max.w, group->max.h);
+    etcher_out_data(out, "max", "%d %d", group->max.w, group->max.h);
     
   /* data */
   if (group->data)
   {
-    fprintf(out, "\t\tdata {\n");
+    etcher_out_start(out, "data");
     for (l = group->data; l; l = l->next)
     {
       Etcher_Data *data = l->data;
       if (data)
       {
-          fprintf(out, "\t\t\titem: \"%s\" \"%s\";\n",
+          etcher_out_data(out, "item", "\"%s\" \"%s\"",
                   data->key, data->value);
       }
     }
-    fprintf(out, "\t\t}\n");
+    etcher_out_end(out);
   }
 
   /* script */
-  if (group->script)
-    fprintf(out, "\t\tscript {%s\t\t}\n", group->script);
+  if (group->script) {
+    etcher_out_start(out, "script");
+    /* FIXME scripts are wierd... */
+    fprintf(out, "%s", group->script);
+    etcher_out_end(out);
+  }
 
   /* parts */
-  fprintf(out, "\t\tparts {\n");
+  etcher_out_start(out, "parts");
   for (l = group->parts; l; l = l->next)
   {
     Etcher_Part *part = l->data;
     if (part) _etcher_output_part(part, out);
   }
-  fprintf(out, "\t\t}\n");
+  etcher_out_end(out);
 
   /* programs */
-  fprintf(out, "\t\tprograms {\n");
+  etcher_out_start(out, "programs");
   for (l = group->programs; l; l = l->next)
   {
     Etcher_Program *program = l->data;
     if (program) _etcher_output_program(program, out);
   }
-  fprintf(out, "\t\t}\n");
+  etcher_out_end(out);
 
-
-  fprintf(out, "\t}\n");
+  etcher_out_end(out);   /* group */
 }
 
 void
@@ -191,37 +243,34 @@ _etcher_output_part(Etcher_Part *part, FILE *out)
 {
   Evas_List *l;
 
-  fprintf(out, "\t\t\tpart {\n");
+  etcher_out_start(out, "part");
 
-  fprintf(out, "\t\t\t\tname: \"%s\";\n", part->name);
-  fprintf(out, "\t\t\t\ttype: %s;\n", _part_type_string[part->type]); 
+  etcher_out_data(out, "name", "\"%s\"", part->name);
+  etcher_out_data(out, "type", "%s", _part_type_string[part->type]);
 
   if (!part->mouse_events)
-    fprintf(out, "\t\t\t\tmouse_events: %d;\n", part->mouse_events);
+    etcher_out_data(out, "mouse_events", "%d", part->mouse_events);
 
   if (part->repeat_events)
-  fprintf(out, "\t\t\t\trepeat_events: %d;\n", part->repeat_events);
+    etcher_out_data(out, "repeat_events", "%d", part->repeat_events);
 
   if (part->effect)
-    fprintf(out, "\t\t\t\teffect: %s;\n", _text_effect_string[part->effect]);
+    etcher_out_data(out, "effect", "%s", _text_effect_string[part->effect]);
 
   if (part->clip_to)
-    fprintf(out, "\t\t\t\tclip_to: \"%s\";\n", part->clip_to);
+    etcher_out_data(out, "clip_to", "\"%s\"", part->clip_to);
 
   if (part->dragable.x || part->dragable.y)
   {
-    fprintf(out, "\t\t\t\tdragable {\n");
-    fprintf(out, "\t\t\t\t\tx: %d %d %d;\n\t\t\t\t\ty: %d %d %d;\n",
-            part->dragable.x,
-            part->dragable.step.x,
-            part->dragable.count.x,
-            part->dragable.y,
-            part->dragable.step.y,
-            part->dragable.count.y
-            );
+    etcher_out_start(out, "dragable");
+    etcher_out_data(out, "x", "%d %d %d", part->dragable.x,
+                            part->dragable.step.x, part->dragable.count.x);
+    etcher_out_data(out, "y", "%d %d %d", part->dragable.y,
+                            part->dragable.step.y, part->dragable.count.y);
     if (part->dragable.confine)
-      fprintf(out, "\t\t\t\t\tconfine: \"%s\";\n", part->dragable.confine);
-    fprintf(out, "\t\t\t\t}\n");
+      etcher_out_data(out, "confine", "\"%s\"", part->dragable.confine);
+
+    etcher_out_end(out);
   }
   for (l = part->states; l; l = l->next)
   {
@@ -229,8 +278,7 @@ _etcher_output_part(Etcher_Part *part, FILE *out)
     if (state) _etcher_output_state(part, state, out);
   }
 
-
-  fprintf(out, "\t\t\t}\n");
+  etcher_out_end(out);
 }
 
 
@@ -239,43 +287,42 @@ _etcher_output_program(Etcher_Program *program, FILE *out)
 {
   Evas_List *l;
 
-  fprintf(out, "\t\t\tprogram {\n");
+  etcher_out_start(out, "program");
 
-  fprintf(out, "\t\t\t\tname: \"%s\";\n\t\t\t\tsignal: \"%s\";\n\t\t\t\tsource: \"%s\";\n",
-          program->name,
-          program->signal,
-          program->source
-          );
+  etcher_out_data(out, "name", "\"%s\"", program->name);
+  etcher_out_data(out, "signal", "\"%s\"", program->signal);
+  etcher_out_data(out, "source", "\"%s\"", program->source);
 
   if(program->action == ETCHER_ACTION_STOP)
   {
-    fprintf(out, "\t\t\t\taction: %s;\n", _action_string[program->action]);
+    etcher_out_data(out, "action", "%s", _action_string[program->action]);
   }
   else if (program->action == ETCHER_ACTION_DRAG_VAL_SET ||
            program->action == ETCHER_ACTION_DRAG_VAL_STEP ||
            program->action == ETCHER_ACTION_DRAG_VAL_PAGE)
   {
-    fprintf(out, "\t\t\t\taction: %s %.2f %.2f;\n",
-            _action_string[program->action],
+    etcher_out_data(out, "action", "%s %.2f %.2f",
+            _action_string[program->action], 
             program->value,
             program->value2
             );
   }
   else if (program->action == ETCHER_ACTION_STATE_SET)
   {
-    fprintf(out, "\t\t\t\taction: %s \"%s\" %.2f;\n",
+    etcher_out_data(out, "action", "%s \"%s\" %.2f",
             _action_string[program->action],
             program->state ? program->state : "",
             program->value
             );
-    fprintf(out, "\t\t\t\ttransition: %s %.2f;\n",
+
+    etcher_out_data(out, "transition", "%s %.2f",
             _transition_string[program->transition],
             program->duration
             );
   }
   else if (program->action == ETCHER_ACTION_SIGNAL_EMIT)
   {
-    fprintf(out, "\t\t\t\taction: %s \"%s\" \"%s\";\n",
+    etcher_out_data(out, "action", "%s \"%s\" \"%s\"",
             _action_string[program->action],
             program->state,
             program->state2
@@ -284,25 +331,31 @@ _etcher_output_program(Etcher_Program *program, FILE *out)
   else if(program->action == ETCHER_ACTION_SCRIPT) 
   {
     if (program->script)
-      fprintf(out, "\t\t\t\tscript {%s\t\t\t\t}\n", program->script);
+    {
+      etcher_out_start(out, "script");
+      /* FIXME scripts are wierd ... */
+      fprintf(out, "%s", program->script);
+      etcher_out_end(out);
+    }
   }
 
   if (program->in.from || program->in.range)
-    fprintf(out, "\t\t\t\tin: %.2f %.2f;\n",
+    etcher_out_data(out, "in", "%.2f %.2f",
             program->in.from,
             program->in.range
             );
 
   for (l = program->targets; l; l = l->next)
   {
-    fprintf(out, "\t\t\t\ttarget: \"%s\";\n", (char *)l->data);
+    etcher_out_data(out, "target", "\"%s\"", (char *)l->data);
   }
 
   for (l = program->afters; l; l = l->next)
   {
-    fprintf(out, "\t\t\t\tafter: \"%s\";\n", (char *)l->data);
+    etcher_out_data(out, "after", "\"%s\"", (char *)l->data);
   }
-  fprintf(out, "\t\t\t}\n");
+
+  etcher_out_end(out);
 }
 
 
@@ -313,135 +366,138 @@ _etcher_output_state(Etcher_Part *part, Etcher_Part_State *state, FILE *out)
   
   /* NB: many are only written if different from defaults (to save space) */
 
-  fprintf(out, "\t\t\t\tdescription {\n");
+  etcher_out_start(out, "description");
 
-  fprintf(out, "\t\t\t\t\tstate: \"%s\" %.2f;\n", state->name, state->value);
-
-  fprintf(out, "\t\t\t\t\tvisible: %d;\n", state->visible);
+  etcher_out_data(out, "state", "\"%s\" %.2f", state->name, state->value);
+  etcher_out_data(out, "visible", "%d", state->visible);
 
   if (state->align.x != .5 || state->align.y != .5)
-    fprintf(out, "\t\t\t\t\talign: %.2f %.2f;\n",
-            state->align.x, state->align.y);
+    etcher_out_data(out, "align", "%.2f %.2f", state->align.x, state->align.y);
 
   if (state->step.x || state->step.y)
-    fprintf(out, "\t\t\t\t\tstep: %.2f %.2f;\n", state->step.x, state->step.y);
+    etcher_out_data(out, "step", "%.2f %.2f", state->step.x, state->step.y);
 
   if (state->min.w > 0 || state->min.h > 0)
-    fprintf(out, "\t\t\t\t\tmin: %d %d;\n", state->min.w, state->min.h);
+    etcher_out_data(out, "min", "%d %d", state->min.w, state->min.h);
 
   if (state->max.w >= 0 || state->max.h >= 0)
-    fprintf(out, "\t\t\t\t\tmax: %d %d;\n", state->max.w, state->max.h);
+    etcher_out_data(out, "max", "%d %d", state->max.w, state->max.h);
 
   if (state->aspect.w || state->aspect.h)
-    fprintf(out, "\t\t\t\t\taspect: %.2f %.2f;\n",
+    etcher_out_data(out, "aspect", "%.2f %.2f", 
             state->aspect.w, state->aspect.h);
 
   if (state->aspect.prefer)
-    fprintf(out, "\t\t\t\t\taspect_preference: %s;\n",
+    etcher_out_data(out, "aspect_preference", "%s",
             _aspect_preference_string[state->aspect.prefer]);
   
   /* rel 1 */ 
-  fprintf(out, "\t\t\t\t\trel1 {\n");
-  fprintf(out, "\t\t\t\t\t\trelative: %.2f %.2f;\n",
+  etcher_out_start(out, "rel1");
+  etcher_out_data(out, "relative", "%.2f %.2f",
           state->rel1.relative.x, state->rel1.relative.y);
-  fprintf(out, "\t\t\t\t\t\toffset: %d %d;\n",
+  etcher_out_data(out, "offset", "%d %d",
           state->rel1.offset.x, state->rel1.offset.y);
+
   if ( state->rel1.to_x || state->rel1.to_y)
   {
     if (!strcmp(state->rel1.to_x, state->rel1.to_y))
     {
-      fprintf(out, "\t\t\t\t\t\tto: \"%s\";\n", state->rel1.to_x);
+      etcher_out_data(out, "to", "\"%s\"", state->rel1.to_x);
     }
     else
     {
-      fprintf(out, "\t\t\t\t\t\tto_x: \"%s\";\n", state->rel1.to_x);
-      fprintf(out, "\t\t\t\t\t\tto_y: \"%s\";\n", state->rel1.to_y);
+      etcher_out_data(out, "to_x", "\"%s\"", state->rel1.to_x);
+      etcher_out_data(out, "to_y", "\"%s\"", state->rel1.to_y);
     }
   }
-  fprintf(out, "\t\t\t\t\t}\n");
+  etcher_out_end(out);
 
   /* rel 2 */ 
-  fprintf(out, "\t\t\t\t\trel2 {\n");
-  fprintf(out, "\t\t\t\t\t\trelative: %.2f %.2f;\n",
+  etcher_out_start(out, "rel2");
+  etcher_out_data(out, "relative", "%.2f %.2f",
           state->rel2.relative.x, state->rel2.relative.y);
-  fprintf(out, "\t\t\t\t\t\toffset: %d %d;\n",
+  etcher_out_data(out, "offset", "%d %d",
           state->rel2.offset.x, state->rel2.offset.y);
+
   if ( state->rel2.to_x || state->rel2.to_y)
   {
     if (!strcmp(state->rel2.to_x, state->rel2.to_y))
     {
-      fprintf(out, "\t\t\t\t\t\tto: \"%s\";\n", state->rel2.to_x);
+      etcher_out_data(out, "to", "\"%s\"", state->rel2.to_x);
     }
     else
     {
-      fprintf(out, "\t\t\t\t\t\tto_x: \"%s\";\n", state->rel2.to_x);
-      fprintf(out, "\t\t\t\t\t\tto_y: \"%s\";\n", state->rel2.to_y);
+      etcher_out_data(out, "to_x", "\"%s\"", state->rel2.to_x);
+      etcher_out_data(out, "to_y", "\"%s\"", state->rel2.to_y);
     }
   }
-  fprintf(out, "\t\t\t\t\t}\n");
+  etcher_out_end(out);
 
   if (state->color_class)
-    fprintf(out, "\t\t\t\t\tcolor_class: \"%s\";\n", state->color_class);
+    etcher_out_data(out, "color_class", "\"%s\"", state->color_class);
 
   if (state->border.l || state->border.r || state->border.t || state->border.b)
-    fprintf(out, "\t\t\t\t\tborder: %d %d %d %d;\n",
+    etcher_out_data(out, "border", "%d %d %d %d", 
             state->border.l, state->border.r, state->border.t, state->border.b);
 
   if (state->color.r != 255 || state->color.g != 255 ||
       state->color.b != 255 || state->color.a != 255)
-    fprintf(out, "\t\t\t\t\tcolor: %d %d %d %d;\n",
+    etcher_out_data(out, "color", "%d %d %d %d", 
             state->color.r, state->color.g, state->color.b, state->color.a);
 
   if (state->color2.r != 0 || state->color2.g != 0 ||
       state->color2.b != 0 || state->color2.a != 255)
-    fprintf(out, "\t\t\t\t\tcolor2: %d %d %d %d;\n",
+    etcher_out_data(out, "color2", "%d %d %d %d",
             state->color2.r, state->color2.g, state->color2.b, state->color2.a);
 
   if (state->color3.r != 0 || state->color3.g != 0 ||
       state->color3.b != 0 || state->color3.a != 128)
-    fprintf(out, "\t\t\t\t\tcolor3: %d %d %d %d;\n",
+    etcher_out_data(out, "color3", "%d %d %d %d", 
             state->color3.r, state->color3.g, state->color3.b, state->color3.a);
 
   if (part->type == ETCHER_PART_TYPE_IMAGE && state->image.normal )
   {
-    fprintf(out, "\t\t\t\t\timage {\n");
-    fprintf(out, "\t\t\t\t\t\tnormal: \"%s\";\n", state->image.normal->name);
+    etcher_out_start(out, "image");
+    etcher_out_data(out, "normal", "\"%s\"", state->image.normal->name);
     for (l = state->image.tween; l; l = l->next)
     {
       Etcher_Image *tw = l->data;
-      fprintf(out, "\t\t\t\t\t\ttween: \"%s\";\n", tw->name);
+      etcher_out_data(out, "tween", "\"%s\"", tw->name);
     }
-    fprintf(out, "\t\t\t\t\t}\n");
+    etcher_out_end(out);
   }
   else if (part->type == ETCHER_PART_TYPE_TEXT)
   {
-    fprintf(out, "\t\t\t\t\ttext {\n");
+    etcher_out_start(out, "text");
+
     if (state->text.text)
-      fprintf(out, "\t\t\t\t\t\ttext: \"%s\";\n", state->text.text);
+      etcher_out_data(out, "text", "\"%s\"", state->text.text);
     
     if (state->text.text_class)
-      fprintf(out, "\t\t\t\t\t\ttext_class: \"%s\";\n", state->text.text_class);
+      etcher_out_data(out, "text_class", "\"%s\"", state->text.text_class);
 
     if (state->text.font)
-      fprintf(out, "\t\t\t\t\t\tfont: \"%s\";\n", state->text.font);
+      etcher_out_data(out, "font", "\"%s\"", state->text.font);
     
     if (state->text.size)
-      fprintf(out, "\t\t\t\t\t\tsize: %d;\n", state->text.size);
+      etcher_out_data(out, "size", "%d", state->text.size);
 
     if (state->text.fit.x || state->text.fit.y)
-      fprintf(out, "\t\t\t\t\t\tfit: %d %d;\n",
+      etcher_out_data(out, "fit", "%d %d", 
               state->text.fit.x, state->text.fit.y);
   
     if (state->text.min.x || state->text.min.y)
-      fprintf(out, "\t\t\t\t\t\tmin: %d %d;\n",
+      etcher_out_data(out, "min", "%d %d",
               state->text.min.x, state->text.min.y);
 
     if (state->text.align.x || state->text.align.y)
-      fprintf(out, "\t\t\t\t\t\talign: %.2f %.2f;\n",
+      etcher_out_data(out, "align", "%.2f %.2f",
               state->text.align.x, state->text.align.y);
 
-    fprintf(out, "\t\t\t\t\t}\n");
+    etcher_out_end(out);
   }
 
-  fprintf(out, "\t\t\t\t}\n");
+  etcher_out_end(out);
 }
+
+
