@@ -1042,8 +1042,9 @@ main_initialize(char *appname)
   signal(SIGSEGV,   main_crash_sighandler);
   signal(SIGFPE,    main_crash_sighandler);
   signal(SIGILL,    main_crash_sighandler);
+#ifdef SIGSYS
   signal(SIGSYS,    main_crash_sighandler);
-
+#endif
   atexit(efsd_misc_remove_socket_file);
   efsd_misc_create_efsd_dir();
   getcwd(app_cmd, MAXPATHLEN);
