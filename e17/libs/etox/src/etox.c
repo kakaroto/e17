@@ -22,15 +22,19 @@ char etox_set_text(Etox *e, char *new_text) {
 	strcpy(e->text,new_text);
 	return 1;
 
-
 }
 
-char etox_set_font_style(E_Font_Style *font_style) {
+char etox_set_font_style(Etox *e, E_Font_Style *font_style) {
 
 	if(!font_style)
 		return 0;
 
-	return 1;
+	e->font_style = font_style;
+
+/* if(e->rendered)
+ * 	etox_render(e);
+ */
+
 }
 
 char etox_clip_rect_new(Etox *e, int x, int y, int w,int h) {
@@ -83,6 +87,7 @@ Etox *etox_new(char *name) {
 
 	e->rect_list = NULL;
 	e->num_rects = 0;
+	e->rendered = 0;
 
 	return e;
 

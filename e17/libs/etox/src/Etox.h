@@ -47,6 +47,7 @@ typedef struct {
 
 	E_Clip_Rect **rect_list;
 	int num_rects;
+	char rendered;
 
 
 } Etox;
@@ -56,8 +57,8 @@ extern "C"
 {
 #endif
 
-	char etox_set_font_style(E_Font_Style *font_style);
 	E_Font_Style *E_load_font_style(char *path);
+	char etox_set_font_style(E_Font_Style *font_style);
 	char etox_clip_rect_new(Etox *e, int x, int y, int w,int h);
 	char *etox_get_text(Etox *e);
 	char etox_set_text(Etox *e, char *new_text);
