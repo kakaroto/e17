@@ -1,1 +1,13 @@
 This is a module that contains perl extention to Imlib2.
+--
+
+To render on Gtk drawables, you must patch Gtk::Perl until the patch I sent
+gets in Gtk::Perl official distribution to do so
+get http://www.muhri.net/pronto/gnome-perl.tar.gz
+untar gnome-perl.tar.gz
+cd gnome-perl/Gtk/xs
+cat gtk-perl-patch | patch
+
+then compile Gtk::Perl and you'll ahve the changes and the examples should
+work ...
+

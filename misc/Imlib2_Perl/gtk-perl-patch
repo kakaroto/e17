@@ -1,0 +1,54 @@
+Index: Gtk.xs
+===================================================================
+RCS file: /cvs/gnome/gnome-perl/Gtk/xs/Gtk.xs,v
+retrieving revision 1.28
+diff -u -r1.28 Gtk.xs
+--- Gtk.xs	2000/08/16 13:08:38	1.28
++++ Gtk.xs	2000/10/13 18:20:37
+@@ -3099,6 +3099,15 @@
+ 	OUTPUT:
+ 	RETVAL
+ 
++unsigned int
++XDISPLAY(window)
++	Gtk::Gdk::Window	window
++	CODE:
++	RETVAL = GDK_WINDOW_XDISPLAY(window);
++	OUTPUT:
++	RETVAL
++
++	
+  #DESC: Get the type of the drawable.
+ Gtk::Gdk::WindowType
+ gdk_window_get_type(window)
+@@ -3331,6 +3340,14 @@
+ 	OUTPUT:
+ 	RETVAL
+ 
++unsigned int
++XCOLORMAP(cmap)
++	Gtk::Gdk::Colormap	cmap
++	CODE:
++	RETVAL = GDK_COLORMAP_XCOLORMAP(cmap);
++	OUTPUT:
++	RETVAL
++
+  #DESC: Get the system colormap.
+ Gtk::Gdk::Colormap
+ gdk_colormap_get_system(Class=0)
+@@ -3950,6 +3967,15 @@
+ 	RETVAL = newSVGdkVisualType(gdk_visual_get_best_type());
+ 	OUTPUT:
+ 	RETVAL
++
++unsigned int
++XVISUAL(visual)
++	Gtk::Gdk::Visual	visual
++	CODE:
++	RETVAL = GDK_VISUAL_XVISUAL(visual);
++	OUTPUT:
++	RETVAL
++	
+ 
+ Gtk::Gdk::Visual
+ best(Class=0, depth=0, type=0)
