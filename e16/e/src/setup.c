@@ -391,11 +391,20 @@ SetupX()
    /* Now we're going to set a bunch of default settings in E - in case we
     * don't ever get to load a config file for some odd reason. */
    memset(&conf, 0, sizeof(EConf));
+   conf.areas.nx = 2;
+   conf.areas.ny = 1;
    conf.areas.wraparound = 0;
    conf.autoraise.enable = 0;
    conf.autoraise.delay = 0.5;
-   conf.desks.numdesktops = 2;
+   conf.desks.num = 2;
    conf.desks.wraparound = 0;
+   conf.desks.dragdir = 2;
+   conf.desks.dragbar_width = 16;
+   conf.desks.dragbar_ordering = 1;
+   conf.desks.dragbar_length = 0;
+   conf.desks.slidein = 1;
+   conf.desks.slidespeed = 6000;
+   conf.desks.hiqualitybg = 1;
    conf.dialogs.headers = 0;
    conf.dock.dirmode = DOCK_DOWN;
    conf.dock.startx = 0;
@@ -470,16 +479,6 @@ SetupX()
    conf.user_bg = 1;
    conf.manual_placement = 0;
    conf.edge_flip_resistance = 15;
-
-   desks.dragdir = 2;
-   desks.dragbar_width = 16;
-   desks.dragbar_ordering = 1;
-   desks.dragbar_length = 0;
-   desks.slidein = 1;
-   desks.slidespeed = 6000;
-   desks.hiqualitybg = 1;
-
-   SetAreaSize(2, 1);
 
    ScreenInit();
 

@@ -114,8 +114,8 @@ SetAreaSize(int aw, int ah)
       aw = 1;
    if (ah < 1)
       ah = 1;
-   area_w = aw;
-   area_h = ah;
+   conf.areas.nx = area_w = aw;
+   conf.areas.ny = area_h = ah;
    HintsSetViewportConfig();
    PagerReArea();
    EDBUG_RETURN_;
@@ -278,7 +278,7 @@ SetCurrentArea(int ax, int ay)
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
-	if (desks.slidein)
+	if (conf.desks.slidein)
 	  {
 	     int                 wnum = 0;
 	     Window             *wl = NULL;
@@ -313,7 +313,7 @@ SetCurrentArea(int ax, int ay)
 				 -(root.h *
 				   (ay -
 				    desks.desk[desks.current].current_area_y)),
-				 desks.slidespeed);
+				 conf.desks.slidespeed);
 		  Efree(wl);
 	       }
 	     /* move the windows to their final positions */

@@ -541,7 +541,7 @@ HandleComms(XClientMessageEvent * ev)
 			    DesktopAccounting();
 			    desks.desk[i].viewable = view;
 			    desks.desk[i].bg = bg;
-			    if (i < conf.desks.numdesktops)
+			    if (i < conf.desks.num)
 			      {
 				 if (desks.desk[i].viewable)
 				    RefreshDesktop(i);
@@ -581,7 +581,7 @@ HandleComms(XClientMessageEvent * ev)
 		       DesktopAccounting();
 		       desks.desk[i].viewable = view;
 		       desks.desk[i].bg = NULL;
-		       if (i < conf.desks.numdesktops)
+		       if (i < conf.desks.num)
 			 {
 			    if (desks.desk[i].viewable)
 			       RefreshDesktop(i);
@@ -1337,45 +1337,45 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "DRAGDIR:"))
 	       {
 		  word(s, wd, w);
-		  if (desks.dragdir != atoi(w))
+		  if (conf.desks.dragdir != atoi(w))
 		     dragbar_change = 1;
-		  desks.dragdir = atoi(w);
+		  conf.desks.dragdir = atoi(w);
 	       }
 	     else if (!strcmp(w, "DRAGBARWIDTH:"))
 	       {
 		  word(s, wd, w);
-		  if (desks.dragbar_width != atoi(w))
+		  if (conf.desks.dragbar_width != atoi(w))
 		     dragbar_change = 1;
-		  desks.dragbar_width = atoi(w);
+		  conf.desks.dragbar_width = atoi(w);
 	       }
 	     else if (!strcmp(w, "DRAGBARORDERING:"))
 	       {
 		  word(s, wd, w);
-		  if (desks.dragbar_ordering != atoi(w))
+		  if (conf.desks.dragbar_ordering != atoi(w))
 		     dragbar_change = 1;
-		  desks.dragbar_ordering = atoi(w);
+		  conf.desks.dragbar_ordering = atoi(w);
 	       }
 	     else if (!strcmp(w, "DRAGBARLENGTH:"))
 	       {
 		  word(s, wd, w);
-		  if (desks.dragbar_length != atoi(w))
+		  if (conf.desks.dragbar_length != atoi(w))
 		     dragbar_change = 1;
-		  desks.dragbar_length = atoi(w);
+		  conf.desks.dragbar_length = atoi(w);
 	       }
 	     else if (!strcmp(w, "DESKSLIDEIN:"))
 	       {
 		  word(s, wd, w);
-		  desks.slidein = atoi(w);
+		  conf.desks.slidein = atoi(w);
 	       }
 	     else if (!strcmp(w, "DESKSLIDESPEED:"))
 	       {
 		  word(s, wd, w);
-		  desks.slidespeed = atoi(w);
+		  conf.desks.slidespeed = atoi(w);
 	       }
 	     else if (!strcmp(w, "HIQUALITYBG:"))
 	       {
 		  word(s, wd, w);
-		  desks.hiqualitybg = atoi(w);
+		  conf.desks.hiqualitybg = atoi(w);
 	       }
 	     else if (!strcmp(w, "TRANSIENTSFOLLOWLEADER:"))
 	       {
@@ -1528,10 +1528,11 @@ HandleComms(XClientMessageEvent * ev)
 		  conf.memory_paranoia, conf.tooltips.enable,
 		  conf.tooltips.delay, conf.autoraise.enable,
 		  conf.autoraise.delay, conf.dock.startx, conf.dock.starty,
-		  conf.save_under, conf.menuslide, conf.desks.numdesktops,
-		  desks.dragdir, desks.dragbar_width, desks.dragbar_ordering,
-		  desks.dragbar_length, desks.slidein, desks.slidespeed,
-		  desks.hiqualitybg, conf.focus.transientsfollowleader,
+		  conf.save_under, conf.menuslide, conf.desks.num,
+		  conf.desks.dragdir, conf.desks.dragbar_width,
+		  conf.desks.dragbar_ordering, conf.desks.dragbar_length,
+		  conf.desks.slidein, conf.desks.slidespeed,
+		  conf.desks.hiqualitybg, conf.focus.transientsfollowleader,
 		  conf.focus.switchfortransientmap, a, b,
 		  conf.focus.all_new_windows_get_focus,
 		  conf.focus.new_transients_get_focus,
@@ -1562,7 +1563,7 @@ HandleComms(XClientMessageEvent * ev)
 
 	     buf[0] = 0;
 	     Esnprintf(buf, sizeof(buf), "Number of desks is %d\n",
-		       conf.desks.numdesktops);
+		       conf.desks.num);
 	     CommsSend(c, buf);
 	  }
 	else
@@ -1570,23 +1571,23 @@ HandleComms(XClientMessageEvent * ev)
 	     int                 i, num;
 	     EWin              **lst;
 
-	     conf.desks.numdesktops = atoi(w);
-	     if (conf.desks.numdesktops <= 0)
-		conf.desks.numdesktops = 1;
-	     else if (conf.desks.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-		conf.desks.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+	     conf.desks.num = atoi(w);
+	     if (conf.desks.num <= 0)
+		conf.desks.num = 1;
+	     else if (conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+		conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
 	     if (lst)
 	       {
 		  for (i = 0; i < num; i++)
 		    {
-		       if (lst[i]->desktop >= conf.desks.numdesktops)
-			  MoveEwinToDesktop(lst[i], conf.desks.numdesktops - 1);
+		       if (lst[i]->desktop >= conf.desks.num)
+			  MoveEwinToDesktop(lst[i], conf.desks.num - 1);
 		    }
 		  Efree(lst);
 	       }
-	     if (desks.current >= conf.desks.numdesktops)
-		GotoDesktop(conf.desks.numdesktops - 1);
+	     if (desks.current >= conf.desks.num)
+		GotoDesktop(conf.desks.num - 1);
 	  }
      }
    else if (!strcmp(w, "get_client_info"))

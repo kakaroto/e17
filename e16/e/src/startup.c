@@ -209,16 +209,16 @@ CreateStartupDisplay(char start)
 	EMapWindow(disp, win1);
 	EMapWindow(disp, win2);
 
-	b1 = ECreateWindow(w1, 0, root.h - desks.dragbar_width, root.w,
-			   desks.dragbar_width, 0);
-	b2 = ECreateWindow(w2, 0, 0, root.w, desks.dragbar_width, 0);
+	b1 = ECreateWindow(w1, 0, root.h - conf.desks.dragbar_width, root.w,
+			   conf.desks.dragbar_width, 0);
+	b2 = ECreateWindow(w2, 0, 0, root.w, conf.desks.dragbar_width, 0);
 	EMapRaised(disp, b1);
 	EMapRaised(disp, b2);
 
 	pq = queue_up;
 	queue_up = 0;
-	IclassApply(ic, b1, root.w, desks.dragbar_width, 0, 0, 0, 0);
-	IclassApply(ic, b2, root.w, desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b1, root.w, conf.desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b2, root.w, conf.desks.dragbar_width, 0, 0, 0, 0);
 	queue_up = pq;
 	SetBackgroundTo(win1, bg, 1);
 	SetBackgroundTo(win2, bg, 1);

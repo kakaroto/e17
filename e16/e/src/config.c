@@ -36,6 +36,7 @@ extern char        *__XOS2RedirRoot(const char *);
 static char         is_autosave = 0;
 
 static void         SkipTillEnd(FILE * ConfigFile);
+static void         RecoverUserConfig(void);
 
 #define SKIP_If_EXISTS(name, type) \
 if (FindItem(name, 0, LIST_FINDBY_NAME, type)) \
@@ -625,15 +626,11 @@ Config_Control(FILE * ConfigFile)
 	     conf.menuslide = i2;
 	     break;
 	  case CONTROL_NUMDESKTOPS:
-	     conf.desks.numdesktops = i2;
-	     if (conf.desks.numdesktops <= 0)
-	       {
-		  conf.desks.numdesktops = 1;
-	       }
-	     else if (conf.desks.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-	       {
-		  conf.desks.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-	       }
+	     conf.desks.num = i2;
+	     if (conf.desks.num <= 0)
+		conf.desks.num = 1;
+	     else if (conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+		conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 	     break;
 	  case CONTROL_MEMORYPARANOIA:
 	     conf.memory_paranoia = i2;
@@ -669,8 +666,7 @@ Config_Control(FILE * ConfigFile)
 	     conf.focus.raise_after_next_focus = i2;
 	     break;
 	  case CONTROL_DISPLAY_WARP:
-	     if (conf.warplist.enable >= 0)
-		conf.warplist.enable = i2;
+	     conf.warplist.enable = i2;
 	     break;
 	  case CONTROL_WARP_ON_NEXT_FOCUS:
 	     conf.focus.warp_on_next_focus = i2;
@@ -723,22 +719,22 @@ Config_Control(FILE * ConfigFile)
 	     conf.group_swapmove = i2;
 	     break;
 	  case DESKTOP_DRAGDIR:
-	     desks.dragdir = i2;
+	     conf.desks.dragdir = i2;
 	     break;
 	  case DESKTOP_DRAGBAR_WIDTH:
-	     desks.dragbar_width = i2;
+	     conf.desks.dragbar_width = i2;
 	     break;
 	  case DESKTOP_DRAGBAR_ORDERING:
-	     desks.dragbar_ordering = i2;
+	     conf.desks.dragbar_ordering = i2;
 	     break;
 	  case DESKTOP_DRAGBAR_LENGTH:
-	     desks.dragbar_length = i2;
+	     conf.desks.dragbar_length = i2;
 	     break;
 	  case DESKTOP_SLIDEIN:
-	     desks.slidein = i2;
+	     conf.desks.slidein = i2;
 	     break;
 	  case DESKTOP_SLIDESPEED:
-	     desks.slidespeed = i2;
+	     conf.desks.slidespeed = i2;
 	     break;
 	  case CONTROL_SHADESPEED:
 	     conf.shadespeed = i2;
@@ -765,11 +761,12 @@ Config_Control(FILE * ConfigFile)
 	     conf.warplist.warpfocused = i2;
 	     break;
 	  case DESKTOP_HIQUALITYBG:
-	     desks.hiqualitybg = i2;
+	     conf.desks.hiqualitybg = i2;
 	     break;
 	  case DESKTOP_AREA_SIZE:
 	     sscanf(s, "%i %i %i", &i1, &i2, &i3);
-	     SetAreaSize(i2, i3);
+	     conf.areas.nx = i2;
+	     conf.areas.ny = i3;
 	     break;
 	  case CONTROL_AREA_WRAPAROUND:
 	     conf.areas.wraparound = i2;
@@ -3827,7 +3824,7 @@ SaveUserControlConfig(FILE * autosavefile)
    ActionClass        *ac;
    Action             *aa;
    int                 i, num, flags, j;
-   int                 a, b, r, g;
+   int                 b, r, g;
 
    EDBUG(5, "SaveUserControlConfig");
    if (autosavefile)
@@ -3845,13 +3842,13 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "317 %i\n", (int)conf.slidespeedcleanup);
 	fprintf(autosavefile, "320 %i\n", (int)conf.desktop_bg_timeout);
 	fprintf(autosavefile, "321 %i\n", (int)conf.button_move_resistance);
-	fprintf(autosavefile, "400 %i\n", (int)desks.dragdir);
-	fprintf(autosavefile, "401 %i\n", (int)desks.dragbar_width);
-	fprintf(autosavefile, "402 %i\n", (int)desks.dragbar_ordering);
-	fprintf(autosavefile, "403 %i\n", (int)desks.dragbar_length);
-	fprintf(autosavefile, "404 %i\n", (int)desks.slidein);
-	fprintf(autosavefile, "405 %i\n", (int)desks.slidespeed);
-	fprintf(autosavefile, "406 %i\n", (int)desks.hiqualitybg);
+	fprintf(autosavefile, "400 %i\n", (int)conf.desks.dragdir);
+	fprintf(autosavefile, "401 %i\n", (int)conf.desks.dragbar_width);
+	fprintf(autosavefile, "402 %i\n", (int)conf.desks.dragbar_ordering);
+	fprintf(autosavefile, "403 %i\n", (int)conf.desks.dragbar_length);
+	fprintf(autosavefile, "404 %i\n", (int)conf.desks.slidein);
+	fprintf(autosavefile, "405 %i\n", (int)conf.desks.slidespeed);
+	fprintf(autosavefile, "406 %i\n", (int)conf.desks.hiqualitybg);
 	fprintf(autosavefile, "1370 %i\n", (int)conf.dockapp_support);
 	fprintf(autosavefile, "325 %i\n", (int)conf.dock.dirmode);
 	fprintf(autosavefile, "326 %i\n", (int)conf.shadespeed);
@@ -3864,13 +3861,13 @@ SaveUserControlConfig(FILE * autosavefile)
 		(int)conf.dock.starty);
 	fprintf(autosavefile, "334 %i\n", (int)conf.memory_paranoia);
 	fprintf(autosavefile, "332 %i\n", (int)conf.menuslide);
-	fprintf(autosavefile, "333 %i\n", (int)conf.desks.numdesktops);
+	fprintf(autosavefile, "333 %i\n", (int)conf.desks.num);
 	fprintf(autosavefile, "335 %i\n",
 		(int)conf.focus.transientsfollowleader);
 	fprintf(autosavefile, "336 %i\n",
 		(int)conf.focus.switchfortransientmap);
-	GetAreaSize(&a, &b);
-	fprintf(autosavefile, "407 %i %i\n", a, b);
+	fprintf(autosavefile, "407 %i %i\n", (int)conf.areas.nx,
+		(int)conf.areas.ny);
 	fprintf(autosavefile, "340 %i\n",
 		(int)conf.focus.all_new_windows_get_focus);
 	fprintf(autosavefile, "341 %i\n",
@@ -4216,7 +4213,7 @@ SaveUserControlConfig(FILE * autosavefile)
    EDBUG_RETURN_;
 }
 
-void
+static void
 RecoverUserConfig(void)
 {
    if (is_autosave)

@@ -1838,7 +1838,7 @@ MenuCreateFromDesktops(char *name, MenuStyle * ms)
    m = MenuCreate(name);
    m->style = ms;
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (j = 0; j < conf.desks.numdesktops; j++)
+   for (j = 0; j < conf.desks.num; j++)
      {
 	mm = MenuCreate("__SUBMENUDESK_E");
 	mm->style = ms;

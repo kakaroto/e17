@@ -1116,7 +1116,7 @@ SettingsDesktops(void)
      }
    SoundPlay("SOUND_SETTINGS_DESKTOPS");
 
-   tmp_desktops = conf.desks.numdesktops;
+   tmp_desktops = conf.desks.num;
    tmp_desktop_wraparound = conf.desks.wraparound;
 
    d = tmp_desk_dialog = DialogCreate("CONFIGURE_DESKTOPS");
@@ -2001,29 +2001,29 @@ CB_ConfigureFX(int val, void *data)
 	conf.menusonscreen = tmp_menusonscreen;
 	conf.mapslide = tmp_map_slide;
 	conf.cleanupslide = tmp_cleanup_slide;
-	desks.slidein = tmp_desktop_slide;
+	conf.desks.slidein = tmp_desktop_slide;
 	conf.animate_shading = tmp_animate_shading;
 	conf.shadespeed = tmp_shade_speed;
 	conf.slidemode = tmp_slide_mode;
 	conf.slidespeedmap = tmp_map_slide_speed;
 	conf.slidespeedcleanup = tmp_cleanup_slide_speed;
-	desks.slidespeed = tmp_desktop_slide_speed;
+	conf.desks.slidespeed = tmp_desktop_slide_speed;
 
 	FX_Op("raindrops", tmp_effect_raindrops ? FX_OP_START : FX_OP_STOP);
 	FX_Op("ripples", tmp_effect_ripples ? FX_OP_START : FX_OP_STOP);
 	FX_Op("waves", tmp_effect_waves ? FX_OP_START : FX_OP_STOP);
 
-	if ((desks.dragdir != tmp_dragdir) ||
-	    ((tmp_dragbar) && (desks.dragbar_width < 1)) ||
-	    ((!tmp_dragbar) && (desks.dragbar_width > 0)))
+	if ((conf.desks.dragdir != tmp_dragdir) ||
+	    ((tmp_dragbar) && (conf.desks.dragbar_width < 1)) ||
+	    ((!tmp_dragbar) && (conf.desks.dragbar_width > 0)))
 	  {
 	     Button             *b;
 
 	     if (tmp_dragbar)
-		desks.dragbar_width = 16;
+		conf.desks.dragbar_width = 16;
 	     else
-		desks.dragbar_width = -1;
-	     desks.dragdir = tmp_dragdir;
+		conf.desks.dragbar_width = -1;
+	     conf.desks.dragdir = tmp_dragdir;
 	     while ((b =
 		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BUTTON)))
@@ -2056,18 +2056,18 @@ SettingsSpecialFX(void)
    tmp_menusonscreen = conf.menusonscreen;
    tmp_map_slide = conf.mapslide;
    tmp_cleanup_slide = conf.cleanupslide;
-   tmp_desktop_slide = desks.slidein;
+   tmp_desktop_slide = conf.desks.slidein;
    tmp_animate_shading = conf.animate_shading;
-   if (desks.dragbar_width < 1)
+   if (conf.desks.dragbar_width < 1)
       tmp_dragbar = 0;
    else
       tmp_dragbar = 1;
-   tmp_dragdir = desks.dragdir;
+   tmp_dragdir = conf.desks.dragdir;
    tmp_slide_mode = conf.slidemode;
    tmp_map_slide_speed = conf.slidespeedmap;
    tmp_shade_speed = conf.shadespeed;
    tmp_cleanup_slide_speed = conf.slidespeedcleanup;
-   tmp_desktop_slide_speed = desks.slidespeed;
+   tmp_desktop_slide_speed = conf.desks.slidespeed;
 
    tmp_effect_raindrops = FX_IsOn("raindrops");
    tmp_effect_ripples = FX_IsOn("ripples");
@@ -2460,7 +2460,7 @@ CB_ConfigureBG(int val, void *data)
    if (val < 2)
      {
 	conf.desktop_bg_timeout = tmp_bg_timeout;
-	desks.hiqualitybg = tmp_hiq;
+	conf.desks.hiqualitybg = tmp_hiq;
 	conf.user_bg = tmp_userbg;
 	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
@@ -3298,7 +3298,7 @@ SettingsBackground(Background * bg)
    tmp_bg_yjust = 1024 - bg->bg.yjust;
    tmp_bg_xperc = bg->bg.xperc;
    tmp_bg_yperc = 1024 - bg->bg.yperc;
-   tmp_hiq = desks.hiqualitybg;
+   tmp_hiq = conf.desks.hiqualitybg;
    tmp_userbg = conf.user_bg;
    tmp_bg_timeout = conf.desktop_bg_timeout;
 

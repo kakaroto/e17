@@ -66,53 +66,48 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 
    EDBUG(5, "DetermineEwinFloat");
 
-   if ((ewin->desktop != 0) && (ewin->floating < 2)
-       && ((desks.desk[ewin->desktop].x != 0)
-	   || (desks.desk[ewin->desktop].y != 0)
-	   || (desks.current != ewin->desktop)))
+   if ((ewin->desktop != 0) && (ewin->floating < 2) &&
+       ((desks.desk[ewin->desktop].x != 0) ||
+	(desks.desk[ewin->desktop].y != 0) || (desks.current != ewin->desktop)))
      {
-	if ((desks.dragdir == 0)
-	    && (((ewin->x + dx < 0) || ((ewin->x + dx + ewin->w <= root.w)
-					&&
-					((DesktopAt
-					  (desks.desk[ewin->desktop].x +
-					   ewin->x + dx + ewin->w - 1,
-					   desks.desk[ewin->desktop].y) !=
-					  ewin->desktop))))))
-	   dofloat = 1;
-	if ((desks.dragdir == 1)
-	    && (((ewin->x + dx + ewin->w > root.w) || ((ewin->x + dx >= 0)
-						       &&
-						       ((DesktopAt
-							 (desks.desk
-							  [ewin->desktop].x +
-							  ewin->x + dx,
-							  desks.
-							  desk[ewin->desktop].
-							  y) !=
-							 ewin->desktop))))))
-	   dofloat = 1;
-	if ((desks.dragdir == 2)
-	    &&
-	    (((ewin->
-	       y + dy < 0) || ((ewin->y + dy + ewin->h <= root.h)
-			       &&
-			       ((DesktopAt
-				 (desks.desk[ewin->desktop].x,
-				  desks.desk[ewin->desktop].y + ewin->y + dy +
-				  ewin->h - 1) != ewin->desktop))))))
-	   dofloat = 1;
-	if ((desks.dragdir == 3)
-	    && (((ewin->y + dy + ewin->h > root.h) || ((ewin->y + dy >= 0)
-						       &&
-						       ((DesktopAt
-							 (desks.desk
-							  [ewin->desktop].x,
-							  desks.
-							  desk[ewin->desktop].y
-							  + ewin->y + dy) !=
-							 ewin->desktop))))))
-	   dofloat = 1;
+	switch (conf.desks.dragdir)
+	  {
+	  case 0:
+	     if (((ewin->x + dx < 0) ||
+		  ((ewin->x + dx + ewin->w <= root.w) &&
+		   ((DesktopAt
+		     (desks.desk[ewin->desktop].x + ewin->x + dx + ewin->w - 1,
+		      desks.desk[ewin->desktop].y) != ewin->desktop)))))
+		dofloat = 1;
+	     break;
+	  case 1:
+	     if (((ewin->x + dx + ewin->w > root.w) ||
+		  ((ewin->x + dx >= 0) &&
+		   ((DesktopAt
+		     (desks.desk[ewin->desktop].x + ewin->x + dx,
+		      desks.desk[ewin->desktop].y) != ewin->desktop)))))
+		dofloat = 1;
+	     break;
+	  case 2:
+	     if (((ewin->y + dy < 0) ||
+		  ((ewin->y + dy + ewin->h <= root.h) &&
+		   ((DesktopAt
+		     (desks.desk[ewin->desktop].x,
+		      desks.desk[ewin->desktop].y + ewin->y + dy + ewin->h -
+		      1) != ewin->desktop)))))
+		dofloat = 1;
+	     break;
+	  case 3:
+	     if (((ewin->y + dy + ewin->h > root.h) ||
+		  ((ewin->y + dy >= 0) &&
+		   ((DesktopAt
+		     (desks.desk[ewin->desktop].x,
+		      desks.desk[ewin->desktop].y + ewin->y + dy) !=
+		     ewin->desktop)))))
+		dofloat = 1;
+	     break;
+	  }
+
 	if (dofloat)
 	   FloatEwinAt(ewin, ewin->x + desks.desk[ewin->desktop].x,
 		       ewin->y + desks.desk[ewin->desktop].y);

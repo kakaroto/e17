@@ -595,7 +595,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		       int                 dsk;
 
 		       dsk = ewin->desktop;
-		       if ((dsk < 0) || (dsk >= conf.desks.numdesktops))
+		       if ((dsk < 0) || (dsk >= conf.desks.num))
 			  dsk = desks.current;
 		       ewin->client.x -= desks.desk[dsk].x;
 		       ewin->client.y -= desks.desk[dsk].y;

@@ -329,7 +329,7 @@ PagerShow(Pager * p)
 	  {
 	     /* no snapshots ? first time ? make a row on the bottom left up */
 	     MoveResizeEwin(ewin, 0,
-			    root.h - (conf.desks.numdesktops -
+			    root.h - (conf.desks.num -
 				      p->desktop) * ewin->h, ewin->client.w,
 			    ewin->client.h);
 	  }
@@ -827,7 +827,7 @@ PagerEwinOutsideAreaUpdate(EWin * ewin)
      {
 	int                 i;
 
-	for (i = 0; i < conf.desks.numdesktops; i++)
+	for (i = 0; i < conf.desks.num; i++)
 	   RedrawPagersForDesktop(i, 0);
 	ForceUpdatePagersForDesktop(ewin->desktop);
 	return;
@@ -1393,7 +1393,7 @@ EnableAllPagers(void)
    if (!conf.pagers.enable)
      {
 	conf.pagers.enable = 1;
-	for (i = 0; i < conf.desks.numdesktops; i++)
+	for (i = 0; i < conf.desks.num; i++)
 	   EnableSinglePagerForDesktop(i);
 	UpdatePagerSel();
      }
@@ -1438,7 +1438,7 @@ DisableAllPagers(void)
 
    if (conf.pagers.enable)
      {
-	for (i = 0; i < conf.desks.numdesktops; i++)
+	for (i = 0; i < conf.desks.num; i++)
 	   DisablePagersForDesktop(i);
 	conf.pagers.enable = 0;
      }

@@ -584,7 +584,7 @@ spawnMenu(EWin * ewin, void *params)
    if (mode.cur_menu_depth > 0)
       EDBUG_RETURN(0);
 
-   for (i = 0; i < conf.desks.numdesktops; i++)
+   for (i = 0; i < conf.desks.num; i++)
      {
 	if (mode.context_win == desks.desk[i].win)
 	  {
@@ -965,7 +965,7 @@ ActionsHandleMotion(void)
      case MODE_DESKDRAG:
 	dx = mode.x - mode.px;
 	dy = mode.y - mode.py;
-	switch (desks.dragdir)
+	switch (conf.desks.dragdir)
 	  {
 	  case 0:
 	     if ((desks.desk[mode.deskdrag].x + dx) < 0)
@@ -1903,16 +1903,16 @@ doDragdirSet(EWin * edummy, void *params)
    int                 i;
 
    EDBUG(6, "doDragdirSet");
-   pd = desks.dragdir;
+   pd = conf.desks.dragdir;
    if (params)
-      desks.dragdir = atoi((char *)params);
+      conf.desks.dragdir = atoi((char *)params);
    else
      {
-	desks.dragdir++;
-	if (desks.dragdir > 3)
-	   desks.dragdir = 0;
+	conf.desks.dragdir++;
+	if (conf.desks.dragdir > 3)
+	   conf.desks.dragdir = 0;
      }
-   if (pd != desks.dragdir)
+   if (pd != conf.desks.dragdir)
      {
 	GotoDesktop(desks.current);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
@@ -1937,16 +1937,16 @@ doDragbarOrderSet(EWin * edummy, void *params)
    Button             *b;
 
    EDBUG(6, "doDragbarOrderSet");
-   pd = desks.dragbar_ordering;
+   pd = conf.desks.dragbar_ordering;
    if (params)
-      desks.dragbar_ordering = atoi((char *)params);
+      conf.desks.dragbar_ordering = atoi((char *)params);
    else
      {
-	desks.dragbar_ordering++;
-	if (desks.dragbar_ordering > 5)
-	   desks.dragbar_ordering = 0;
+	conf.desks.dragbar_ordering++;
+	if (conf.desks.dragbar_ordering > 5)
+	   conf.desks.dragbar_ordering = 0;
      }
-   if (pd != desks.dragbar_ordering)
+   if (pd != conf.desks.dragbar_ordering)
      {
 	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
@@ -1965,10 +1965,10 @@ doDragbarWidthSet(EWin * edummy, void *params)
    Button             *b;
 
    EDBUG(6, "doDragbarWidthSet");
-   pd = desks.dragbar_width;
+   pd = conf.desks.dragbar_width;
    if (params)
-      desks.dragbar_width = atoi((char *)params);
-   if (pd != desks.dragbar_width)
+      conf.desks.dragbar_width = atoi((char *)params);
+   if (pd != conf.desks.dragbar_width)
      {
 	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
@@ -1987,10 +1987,10 @@ doDragbarLengthSet(EWin * edummy, void *params)
    Button             *b;
 
    EDBUG(6, "doDragbarLengthSet");
-   pd = desks.dragbar_length;
+   pd = conf.desks.dragbar_length;
    if (params)
-      desks.dragbar_length = atoi((char *)params);
-   if (pd != desks.dragbar_length)
+      conf.desks.dragbar_length = atoi((char *)params);
+   if (pd != conf.desks.dragbar_length)
      {
 	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
@@ -2007,13 +2007,13 @@ doDeskSlideSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskSlideSet");
    if (params)
-      desks.slidein = atoi((char *)params);
+      conf.desks.slidein = atoi((char *)params);
    else
      {
-	if (desks.slidein)
-	   desks.slidein = 0;
+	if (conf.desks.slidein)
+	   conf.desks.slidein = 0;
 	else
-	   desks.slidein = 1;
+	   conf.desks.slidein = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2024,7 +2024,7 @@ doDeskSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskSlideSpeedSet");
    if (params)
-      desks.slidespeed = atoi((char *)params);
+      conf.desks.slidespeed = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2034,13 +2034,13 @@ doHiQualityBgSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doHiQualityBgSet");
    if (params)
-      desks.hiqualitybg = atoi((char *)params);
+      conf.desks.hiqualitybg = atoi((char *)params);
    else
      {
-	if (desks.hiqualitybg)
-	   desks.hiqualitybg = 0;
+	if (conf.desks.hiqualitybg)
+	   conf.desks.hiqualitybg = 0;
 	else
-	   desks.hiqualitybg = 1;
+	   conf.desks.hiqualitybg = 1;
      }
    autosave();
    EDBUG_RETURN(0);

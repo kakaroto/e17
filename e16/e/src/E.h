@@ -356,7 +356,7 @@ int                 Esnprintf(va_alist);
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 /* the cast is so -1 will == UINT_MAX */
 #define DESKTOPS_WRAP_NUM(x) \
- (((unsigned int) (x)) % conf.desks.numdesktops)
+ (((unsigned int) (x)) % conf.desks.num)
 
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
@@ -1107,13 +1107,6 @@ typedef struct _desktops
 {
    int                 current;
    Desk                desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-   int                 dragdir;
-   int                 dragbar_width;
-   int                 dragbar_ordering;
-   int                 dragbar_length;
-   char                slidein;
-   int                 slidespeed;
-   char                hiqualitybg;
 }
 Desktops;
 
@@ -1141,6 +1134,8 @@ typedef struct
 {
    struct
    {
+      int                 nx;
+      int                 ny;
       char                wraparound;
    } areas;
    struct
@@ -1150,8 +1145,15 @@ typedef struct
    } autoraise;
    struct
    {
+      int                 num;
       char                wraparound;
-      char                numdesktops;
+      int                 dragdir;
+      int                 dragbar_width;
+      int                 dragbar_ordering;
+      int                 dragbar_length;
+      char                slidein;
+      int                 slidespeed;
+      char                hiqualitybg;
    } desks;
    struct
    {
@@ -1207,7 +1209,7 @@ typedef struct
    } tooltips;
    struct
    {
-      signed char         enable;
+      char                enable;
       char                warpsticky;
       char                warpshaded;
       char                warpiconified;
@@ -2156,7 +2158,6 @@ char               *FindFile(const char *file);
 int                 LoadConfigFile(const char *file);
 int                 LoadEConfig(char *themelocation);
 void                SaveUserControlConfig(FILE * autosavefile);
-void                RecoverUserConfig(void);
 
 /* theme.c functions */
 void                BadThemeDialog(void);

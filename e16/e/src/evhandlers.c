@@ -67,7 +67,7 @@ ToolTipTimeout(int val, void *data)
 	     int                 i;
 	     int                 show = 1;
 
-	     for (i = 0; i < conf.desks.numdesktops; i++)
+	     for (i = 0; i < conf.desks.num; i++)
 	       {
 		  if (win == desks.desk[i].win)
 		     show = 0;
@@ -778,7 +778,7 @@ HandleMouseDown(XEvent * ev)
    mode.y = ev->xbutton.y_root;
 
    desk_click = -1;
-   for (i = 0; i < conf.desks.numdesktops; i++)
+   for (i = 0; i < conf.desks.num; i++)
      {
 	if (win == desks.desk[i].win)
 	  {

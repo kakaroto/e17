@@ -3180,15 +3180,15 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "on"))
 	       {
-		  desks.slidein = 1;
+		  conf.desks.slidein = 1;
 	       }
 	     else if (!strcmp(word2, "off"))
 	       {
-		  desks.slidein = 0;
+		  conf.desks.slidein = 0;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (desks.slidein)
+		  if (conf.desks.slidein)
 		     Esnprintf(buf, sizeof(buf), "deskslide: on");
 		  else
 		     Esnprintf(buf, sizeof(buf), "deskslide: off");
@@ -3296,51 +3296,51 @@ IPC_FX(char *params, Client * c)
 	     move = 0;
 	     if (!strcmp(word2, "off"))
 	       {
-		  desks.dragbar_width = 0;
+		  conf.desks.dragbar_width = 0;
 		  move = 1;
 	       }
 	     else if (!strcmp(word2, "on"))
 	       {
-		  desks.dragbar_width = 16;
+		  conf.desks.dragbar_width = 16;
 		  move = 1;
 	       }
 	     else if (!strcmp(word2, "bottom"))
 	       {
-		  desks.dragbar_width = 16;
-		  desks.dragdir = 3;
+		  conf.desks.dragbar_width = 16;
+		  conf.desks.dragdir = 3;
 		  move = 1;
 	       }
 	     else if (!strcmp(word2, "right"))
 	       {
-		  desks.dragbar_width = 16;
-		  desks.dragdir = 1;
+		  conf.desks.dragbar_width = 16;
+		  conf.desks.dragdir = 1;
 		  move = 1;
 	       }
 	     else if (!strcmp(word2, "left"))
 	       {
-		  desks.dragbar_width = 16;
-		  desks.dragdir = 0;
+		  conf.desks.dragbar_width = 16;
+		  conf.desks.dragdir = 0;
 		  move = 1;
 	       }
 	     else if (!strcmp(word2, "top"))
 	       {
-		  desks.dragbar_width = 16;
-		  desks.dragdir = 2;
+		  conf.desks.dragbar_width = 16;
+		  conf.desks.dragdir = 2;
 		  move = 1;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (desks.dragbar_width)
+		  if (conf.desks.dragbar_width)
 		    {
-		       if (desks.dragdir == 1)
+		       if (conf.desks.dragdir == 1)
 			 {
 			    Esnprintf(buf, sizeof(buf), "Dragbar: right");
 			 }
-		       else if (desks.dragdir == 2)
+		       else if (conf.desks.dragdir == 2)
 			 {
 			    Esnprintf(buf, sizeof(buf), "Dragbar: top");
 			 }
-		       else if (desks.dragdir == 3)
+		       else if (conf.desks.dragdir == 3)
 			 {
 			    Esnprintf(buf, sizeof(buf), "Dragbar: bottom");
 			 }
@@ -4105,8 +4105,7 @@ IPC_NumDesks(char *params, Client * c)
      {
 	if (!strcmp(params, "?"))
 	  {
-	     Esnprintf(buf, sizeof(buf), "Number of Desks: %d",
-		       conf.desks.numdesktops);
+	     Esnprintf(buf, sizeof(buf), "Number of Desks: %d", conf.desks.num);
 	  }
 	else
 	  {

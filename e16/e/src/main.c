@@ -249,6 +249,7 @@ main(int argc, char **argv)
    desks.desk[0].viewable = 0;
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);
+   SetAreaSize(conf.areas.nx, conf.areas.ny);
 
    desks.desk[0].viewable = 1;
    RefreshDesktop(0);
@@ -314,19 +315,19 @@ main(int argc, char **argv)
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
-   if (desks.current < (conf.desks.numdesktops - 1))
+   if (desks.current < (conf.desks.num - 1))
      {
 	char                ps = 0;
 
 	if (!conf.mapslide)
 	  {
-	     ps = desks.slidein;
-	     desks.slidein = 0;
+	     ps = conf.desks.slidein;
+	     conf.desks.slidein = 0;
 	  }
 	GotoDesktop(desks.current + 1);
 	GotoDesktop(desks.current - 1);
 	if (!conf.mapslide)
-	   desks.slidein = ps;
+	   conf.desks.slidein = ps;
      }
    else if (desks.current > 0)
      {
@@ -334,13 +335,13 @@ main(int argc, char **argv)
 
 	if (!conf.mapslide)
 	  {
-	     ps = desks.slidein;
-	     desks.slidein = 0;
+	     ps = conf.desks.slidein;
+	     conf.desks.slidein = 0;
 	  }
 	GotoDesktop(desks.current - 1);
 	GotoDesktop(desks.current + 1);
 	if (!conf.mapslide)
-	   desks.slidein = ps;
+	   conf.desks.slidein = ps;
      }
    XSync(disp, False);
 
