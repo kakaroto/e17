@@ -24,6 +24,20 @@ static void cb_ee_post_render(Ecore_Evas *ee) {
 	edje_freeze();
 }
 
+/**
+ * Resizes the Edje to the size of our Ecore Evas
+ *
+ * @param ee
+ */
+static void cb_ee_resize(Ecore_Evas *ee) {
+	Evas *evas = ecore_evas_get(ee);
+	Evas_Object *edje = evas_object_name_find(evas, "main_edje");
+	int w = 0, h = 0;
+
+	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+	evas_object_resize(edje, (Evas_Coord) w, (Evas_Coord) h);
+}
+
 int setup_gui(ePlayer *player) {
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
@@ -38,7 +52,6 @@ int setup_gui(ePlayer *player) {
 	else
 		player->gui.ee = ecore_evas_software_x11_new(NULL, 0,  0, 0,
 		                                             500, 500);
-
 
 	if (!player->gui.ee) {
 		debug(DEBUG_LEVEL_CRITICAL,
@@ -58,6 +71,7 @@ int setup_gui(ePlayer *player) {
 	                                   cb_ee_pre_render);
 	ecore_evas_callback_post_render_set(player->gui.ee,
 	                                    cb_ee_post_render);
+	ecore_evas_callback_resize_set(player->gui.ee, cb_ee_resize);
 
 	ecore_evas_show(player->gui.ee);
 
@@ -79,6 +93,7 @@ int setup_edje(ePlayer *player, const char *name) {
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
 
 	player->gui.edje = edje_object_add(player->gui.evas);
+	evas_object_name_set(player->gui.edje, "main_edje");
 	
 	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet",
 	         player->cfg.theme);
@@ -90,16 +105,26 @@ int setup_edje(ePlayer *player, const char *name) {
 	}
 	
 	evas_object_move(player->gui.edje, 0, 0);
-	edje_object_size_min_get(player->gui.edje, &edje_w, &edje_h);
-	evas_object_resize(player->gui.edje, edje_w, edje_h);
 	evas_object_show(player->gui.edje);
 
-	ecore_evas_resize(player->gui.ee, (int) edje_w, (int) edje_h);
+	/* set max size */
+	edje_object_size_max_get(player->gui.edje, &edje_w, &edje_h);
+	ecore_evas_size_max_set(player->gui.ee, edje_w, edje_h);
 
+	/* set min size */
+	edje_object_size_min_get(player->gui.edje, &edje_w, &edje_h);
+	ecore_evas_size_min_set(player->gui.ee, edje_w, edje_h);
+	
+	/* resize to the min size */
+	ecore_evas_resize(player->gui.ee, (int) edje_w, (int) edje_h);
+	
 	/*** Edje Callbacks ***************************/
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "QUIT", "quit",
 	                                cb_eplayer_quit, player);
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "RAISE", "*",
+	                                cb_eplayer_raise, player);
 	
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAY_PREVIOUS", "previous_button",

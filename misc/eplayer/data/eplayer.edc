@@ -2210,10 +2210,17 @@ collections {
 
 			/* switch to "small" mode */
 			program {
-				name, "titlebar_click";
+				name, "titlebar_dbl_click";
 				signal, "mouse,down,1,double";
 				source, "*";
 				action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer_small";
+			}
+
+			program {
+				name, "titlebar_click";
+				signal, "mouse,clicked,1";
+				source, "*";
+				action, SIGNAL_EMIT "RAISE", "titlebar";
 			}
 			
 			/* Previous File */

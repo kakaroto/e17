@@ -223,6 +223,13 @@ void cb_eplayer_quit(void *udata, Evas_Object *obj,
 	ecore_main_loop_quit();
 }
 
+void cb_eplayer_raise(void *udata, Evas_Object *obj,
+                      const char *emission, const char *src) {
+	ePlayer *player = udata;
+
+	ecore_evas_raise(player->gui.ee);
+}
+
 void cb_switch_group(void *udata, Evas_Object *obj,
                      const char *emission, const char *src) {
 	ePlayer *player = udata;
