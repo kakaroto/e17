@@ -28,6 +28,8 @@
 
 static char         mode_action_destroy = 0;
 
+static int          handleAction(ActionType * Action);
+
 ActionClass        *
 CreateAclass(char *name)
 {
@@ -359,7 +361,7 @@ EventAclass(XEvent * ev, ActionClass * a)
    {
       EWin               *ewin;
 
-      ewin = GetEwin();
+      ewin = mode.ewin;
       if ((mode.movemode == 0) && (ewin) && (mode.mode == MODE_MOVE))
 	 DetermineEwinFloat(ewin, 0, 0);
    }
@@ -483,7 +485,7 @@ EventAclass(XEvent * ev, ActionClass * a)
    EDBUG_RETURN(val);
 }
 
-int
+static int
 handleAction(ActionType * Action)
 {
 

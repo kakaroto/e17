@@ -187,13 +187,6 @@ GetEwinPointerInClient()
 }
 
 EWin               *
-GetEwin(void)
-{
-   EDBUG(4, "GetEwin");
-   EDBUG_RETURN(mode.ewin);
-}
-
-EWin               *
 GetFocusEwin(void)
 {
    EDBUG(4, "GetFocusEwin");
@@ -218,7 +211,7 @@ GetFocusEwin(void)
 	  }
      }
    if (mode.mode != MODE_NONE)
-      EDBUG_RETURN(GetEwin());
+      EDBUG_RETURN(mode.ewin);
 
    if (mode.focuswin)
       EDBUG_RETURN(mode.focuswin);

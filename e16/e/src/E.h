@@ -1779,7 +1779,6 @@ void                WaitEvent(void);
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 void                SetEInfoOnAll(void);
 EWin               *GetEwinPointerInClient(void);
-EWin               *GetEwin(void);
 EWin               *GetFocusEwin(void);
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed);
@@ -1940,7 +1939,6 @@ void                RemoveActionClass(ActionClass * ActionToRemove);
 void                AddToAction(Action * act, int id, void *params);
 void                AddAction(ActionClass * a, Action * act);
 int                 EventAclass(XEvent * ev, ActionClass * a);
-int                 handleAction(ActionType * Action);
 int                 spawnMenu(void *params);
 int                 hideMenu(void *params);
 int                 doNothing(void *params);
@@ -2108,7 +2106,6 @@ void                AddE(void);
 void                CreateStartupDisplay(char start);
 
 /* tclass.c */
-
 TextClass          *CreateTclass(void);
 void                FreeTextState(TextState * ts);
 void                DeleteTclass(TextClass * t);

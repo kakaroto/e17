@@ -1561,7 +1561,7 @@ HandleMouseUp(XEvent * ev)
 
    if ((mode.place) && (mode.mode == MODE_MOVE))
      {
-	ewin = GetEwin();
+	ewin = mode.ewin;
 	if (ewin)
 	  {
 	     gwins =
@@ -1616,7 +1616,7 @@ HandleMouseUp(XEvent * ev)
 	wasmovres = 1;
 	break;
      case MODE_MOVE:
-	ewin = GetEwin();
+	ewin = mode.ewin;
 	if (ewin)
 	  {
 	     gwins =
