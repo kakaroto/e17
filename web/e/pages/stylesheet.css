@@ -1,8 +1,11 @@
 body {
-	background-image: url("img/Ebanner.png");
+	//background-image: url("img/Ebanner.png");
+	background-image: url("img/background-logo-grad.jpg");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
+	//background-attachment: scroll;
+	background-attachment: fixed;
+	//background-position: left top;
+	background-position: right bottom;
 	//background-color: #dddddd;
 	background-color: #ffffff;
 	color: #000000;
@@ -11,7 +14,7 @@ body {
 	font-size: 12px; 
 	padding: 0px;
 	margin: 0px;
-	margin-top: 140px;
+	//margin-top: 140px;
 }
 
 h1 {
@@ -72,7 +75,7 @@ div.navbar {
         //border: thin solid #888888;
         border-right: thin solid #888888;
         //background-color: #eeeeee;
-        margin-top: 80px;
+        margin-top: 30px;
         padding: 4px;
         text-align: left;
         vertical-align: center;
@@ -127,7 +130,7 @@ td {
 }
 
 div.fragment {
-	background-image: url("i/hilite.png");
+	//background-image: url("i/hilite.png");
 	background-repeat: no-repeat;
 	background-position: left top;
 	border: thin solid #888888;
@@ -175,7 +178,7 @@ tr.team-dark {
 } 
 
 td.newstitle {
-	background-image: url("i/hilite.png");
+	//background-image: url("i/hilite.png");
 	background-repeat: no-repeat;
 	background-position: left top;
 	border: thin solid #888888;
@@ -222,6 +225,11 @@ p.manager {
 img.logo {
 	margin-left: 30%;
 }	
+
+img.banner {
+	padding: 0px;
+	margin: 0px;
+}
 
 a.lite {
 	color: white;
