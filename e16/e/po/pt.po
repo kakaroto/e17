@@ -62,7 +62,7 @@ msgstr ""
 "Este programa não pode ser executado.\n"
 "Não sei ao certo o porque de o não poder fazer. O ficheiro existe,\n"
 "é um ficheiro, e esta autorizado a executa-lo. Sugiro que veja este\n"
-"problema com mais profundidade.\"
+"problema com mais profundidade.\n"
 
 #: src/actions.c:703
 #, c-format
@@ -138,6 +138,7 @@ msgid ""
 "  Pick another group that the window will belong to here:  \n"
 "\n"
 msgstr ""
+"\n"
 " Não existe nenhum grupo neste momento.  \n"
 " O grupo actual é o ultimo que criou, e existe  \n"
 " até que crie um novo ou remova o ultimo.  \n"
@@ -233,7 +234,7 @@ msgstr "Erro no IPC do E"
 #: src/config.c:2965 src/config.c:3066 src/config.c:3389
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: a ignorar dados extra em \"%s\"n"
+msgstr "CONFIG: a ignorar dados extra em \"%s\"\n"
 
 #: src/config.c:248 src/config.c:483 src/config.c:565 src/config.c:837
 #: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1435
@@ -344,7 +345,7 @@ msgstr ""
 
 #: src/config.c:1948
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr "Ovo de Pascoa! Caixa de Icones ainda não está implementada."
+msgstr "Ovo de Pascoa! Caixa de Icones ainda não está implementada.\n"
 
 #: src/config.c:1980
 msgid ""
@@ -553,16 +554,16 @@ msgid ""
 "a while and this theme takes advantages of new\n"
 "features in Enlightenment in new versions.\n"
 msgstr ""
-"ERRO:\n"       #primeiro pensei em por revisão da configuração mas acabei por por só versão                              
+"ERRO:\n"
 "\n"
-"A configuração para o theme que está a usar é\n"               #usamos theme ou tema?
+"A configuração para o theme que está a usar é\n"
 "incompativel. A versão da configuração é %i.  É necessário\n"
 "que a versão seja %i\n"
 "\n"
 "Por favor contacte o autor do theme ou o maintainer e\n"
 "informe-os que de maneira a que o theme funcione com esta\n"
 "versão do Enlightenment, é necessário actualizar-lo para as\n"
-"definições actuais, e então igualar a versão.\n"                   #esta parte não tá lá grande coisa
+"definições actuais, e então igualar a versão.\n"
   
 #: src/config.c:3441
 msgid "User Config Version ERROR"
@@ -682,7 +683,7 @@ msgstr ""
 "Prima o botão direito do rato para uma lista\n"
 "de todos os Desktops e respectivas aplicações.\n"
 "Prima o botão do meio do rato para uma lista\n"
-"de todas as aplicações a correr.\n" <---- isto soa-me a estupido mas ...
+"de todas as aplicações a correr.\n"
 
 #: src/desktops.c:1122
 msgid ""
@@ -699,7 +700,7 @@ msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
-"Prima aqui para elevar este desktop\n"  <--- põe-se Click ou Prima ou outra coisa?
+"Prima aqui para elevar este desktop\n"
 "para o topo.\n"
 
 #: src/desktops.c:1160
@@ -707,7 +708,7 @@ msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
-"Prima aqui para mover este desktop\n" <---- problemas com esta tradução q leva a erros na anterior? que é q achas?
+"Prima aqui para mover este desktop\n"
 "para o fundo.\n"
 
 #: src/dialog.c:304
@@ -737,9 +738,9 @@ msgstr ""
 "Se olhar com atenção para o background do seu desktop, e se\n"
 "este não tiver uma cor solida (ie se tiver como background\n"
 "uma textura ou uma imagem), verá em baixo no seu ecrã água\n"
-"que ira refletir tudo acima e \"ondular"\.\n"
+"que ira refletir tudo acima e \"ondular\".\n"
 "\n"
-"Para terminar este efeito, basta seleciona-lo novamente.\n"  <--- teminar ou desligar?
+"Para terminar este efeito, basta seleciona-lo novamente.\n"
 
 #: src/fx.c:386 src/fx.c:405
 msgid "Unable to display raindrops"
@@ -782,7 +783,7 @@ msgstr ""
 
 #: src/fx.c:422
 msgid "Starting up Raindrops FX..."
-msgstr "Iniciando Efeito de Gotas de Água..."       <--- pareçe estupido mas acho melhor traduzir tudo o que der e não pareça estupido
+msgstr "Iniciando Efeito de Gotas de Água..."
 
 #: src/fx.c:423
 msgid ""
@@ -802,9 +803,9 @@ msgstr ""
 "\n"
 "Se olhar com atenção para o background do seu desktop, e se\n"
 "este não for uma cor solida (ie se tiver como background uma\n"
-"textura ou uma imagem), verá \"gotas de água"\" cairem no seu\n"
+"textura ou uma imagem), verá \"gotas de água\" cairem no seu\n"
 "background e fazer pequenos salpicos. Este efeito pode utilizar\n"
-"muito do seu CPU.\n"                               <--- CPU ou processador?
+"muito do seu CPU.\n"
 "\n"
 "Para terminar este efeito, basta seleciona-lo novamente.\n"
 
@@ -831,13 +832,13 @@ msgstr ""
 "Se olhar com atenção para o background do seu desktop, e se\n"
 "este não tiver uma cor solida (ie se tiver como background\n"
 "uma textura ou uma imagem), verá em baixo no seu ecrã água\n"
-"que ira refletir tudo acima com \"ondas"\.\n"
+"que ira refletir tudo acima com \"ondas\".\n"
 "\n"
 "Para terminar este efeito, basta seleciona-lo novamente.\n"
 
 #: src/fx.c:883
 msgid "Starting up imagespinners FX..."
-msgstr "Iniciando imagespinners FX..."       <--- rotação de imagens??
+msgstr "Iniciando imagespinners FX..."
 
 #: src/fx.c:884
 msgid ""
@@ -847,9 +848,11 @@ msgid ""
 "To disable this effect just select this option again to toggle\n"
 "it off.\n"
 msgstr ""
+"\n"
 "Acabou de inicializar o Efeito imagespinners.\n"
 "\n"
-"Para terminar este efeito, basta seleciona-lo novamente\
+"Para terminar este efeito, basta seleciona-lo novamente\n"
+"\n"
 
 #: src/groups.c:117 src/groups.c:150
 msgid "Cannot comply"
@@ -940,7 +943,7 @@ msgstr ""
 "Por favor obtenha o pacote adequado ao seu sistema, ou\n"
 "recompile o Enlightenment e possivelmente algumas das\n"
 "libraries de suporte que tenha obtido como binário para\n"
-"correr o Enlightenment.\"
+"correr o Enlightenment.\n"
 
 #: src/handlers.c:87
 msgid ""
@@ -980,12 +983,12 @@ msgid ""
 msgstr ""
 "Enlightenment causou um Erro de Bus.\n"
 "\n"
-"É aconselhavel que verifique o seu hardware e instalação do OS.\n"  <-- pomos OS ou SO talvez SO seja melhor
+"É aconselhavel que verifique o seu hardware e instalação do OS.\n"
 "É muito raro causar Erros de Bus em hardware em uso\n"
 
 #: src/handlers.c:215
 msgid "Another Window Manager is already running"
-msgstr "Outro Gestor de Janelas está em uso"  <--- gestor ou gerenciador? acho q ja ouvi a 2ª em algum lado
+msgstr "Outro Gestor de Janelas está em uso"
 
 #: src/handlers.c:216
 msgid "OK (edit file)"
@@ -1090,12 +1093,12 @@ msgid ""
 "Enlightenment Version : %s\n"
 "code is current to    : %s\n"
 msgstr ""
-"Versão do Enlightenment : %s\n"   <-- alterei
+"Versão do Enlightenment : %s\n"
 "data do actual código   : %s\n"
 
 #. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
-msgid "Enlightenment Message Dialog" <-- acho que aqui Dialog é tipo uma caixa/janela com as msg
+msgid "Enlightenment Message Dialog"
 msgstr ""
 
 #: src/main.c:90 src/memory.c:196 src/memory.c:278 src/memory.c:298
@@ -1186,7 +1189,7 @@ msgstr ""
 
 #: src/memory.c:379
 msgid "Error in freeing memory that hasn't been allocated"
-msgstr "Erro ao libertar memória que não foi alocada"  <---- freeing libertar? que tal?
+msgstr "Erro ao libertar memória que não foi alocada"
 
 #: src/memory.c:383
 #, c-format
@@ -1307,7 +1310,7 @@ msgstr ""
 
 #: src/misc.c:422
 msgid "Theme does not contain a borders.cfg file\n"
-msgstr "O Theme não contêm o ficheiro borders.cfg"
+msgstr "O Theme não contêm o ficheiro borders.cfg\n"
 
 #: src/misc.c:428
 msgid "Theme does not contain a buttons.cfg file\n"
@@ -1323,7 +1326,7 @@ msgstr "O Theme não contêm o ficheiro cursors.cfg\n"
 
 #: src/misc.c:447
 msgid "Theme does not contain a desktops.cfg file\n"
-msgstr "O Theme não contêm o ficheiro desktops.cfg"
+msgstr "O Theme não contêm o ficheiro desktops.cfg\n"
 
 #: src/misc.c:453
 msgid "Theme does not contain a imageclasses.cfg file\n"
@@ -1371,7 +1374,7 @@ msgstr "Módulo já está carregado\n"
 
 #: src/modules.c:140
 msgid "Module Failed During Load.\n"
-msgstr "Módulo falhou ao ser carregado\n" <--- load , caregado ? 
+msgstr "Módulo falhou ao ser carregado\n"
 
 #: src/modules.c:142
 msgid "Module Unload Failed.\n"
@@ -1379,11 +1382,11 @@ msgstr ""
 
 #: src/modules.c:144
 msgid "Module is not Loaded.\n"
-msgstr "Módulo não está carregado"
+msgstr "Módulo não está carregado\n"
 
 #: src/modules.c:146
 msgid "Unknown Module Error.\n"
-msgstr "Erro de Módulo Desconhecido"
+msgstr "Erro de Módulo Desconhecido\n"
 
 #: src/pager.c:527 src/pager.c:543 src/pager.c:558
 msgid "Warning!"
@@ -1459,7 +1462,7 @@ msgstr ""
 
 #: src/pager.c:1310
 msgid "Snapshotting On"
-msgstr ""             <--- as duas hipoteses mais viaveis são miniaturizar , ou "reproduzir desktop" mas acho q fica muito grande 
+msgstr ""
 
 #: src/pager.c:1315
 msgid "Snapshotting Off"
@@ -1512,7 +1515,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"   Têm a certeza que quer sair ?   \n" <-- pomos sair ,ou, terminar sessão ,ou, fazer log out ...  
+"   Têm a certeza que quer sair ?   \n"
 "\n"
 "\n"
 
@@ -1600,27 +1603,27 @@ msgstr "Definições de Focus"
 
 #: src/settings.c:410
 msgid "Focus follows pointer"
-msgstr "Focus segue ponteiro" <--- pomos ponteiro ou rato?
+msgstr "Focus segue ponteiro"
 
 #: src/settings.c:418
 msgid "Focus follows pointer sloppily"
-msgstr "Focus segue pouco o ponteiro" <-- esta é lixada hehehe
+msgstr "Focus segue pouco o ponteiro"
 
 #: src/settings.c:426
 msgid "Focus follows mouse clicks"
-msgstr "Focus segue click do rato" <--- segue pressão do rato hahaha
+msgstr "Focus segue click do rato"
 
 #: src/settings.c:443
 msgid "Clicking in a window always raises it"
-msgstr "Clickar numa janela levanta-a sempre" <-------- hummm levantar elevar ...
+msgstr "Clickar numa janela levanta-a sempre"
 
 #: src/settings.c:458
 msgid "All new windows first get the focus"
-msgstr "Todas as novas janelas ficam com o focus"  <--- traduzimos focus? e get pomos ficam ou ganham
+msgstr "Todas as novas janelas ficam com o focus"
 
 #: src/settings.c:468
 msgid "Only new dialog windows get the focus"
-msgstr "Apenas novas janelas de dialogo ganham focus" <--- talvez ganham seja mais intuitivo
+msgstr "Apenas novas janelas de dialogo ganham focus"
 
 #: src/settings.c:478
 msgid "Only new dialogs whose owner is focused get the focus"
@@ -1698,7 +1701,7 @@ msgstr "Definições de Desktops Multiplos"
 
 #: src/settings.c:848
 msgid "Number of virtual desktops:\n"
-msgstr "Numero de desktops virtuais"
+msgstr "Numero de desktops virtuais:\n"
 
 #: src/settings.c:971 src/settings.c:1035
 #, c-format
@@ -1719,7 +1722,7 @@ msgstr "Definições para Desktops Virtuais"
 
 #: src/settings.c:1029
 msgid "Virtual Desktop size:\n"
-msgstr "Tamanho do Desktop Virtual:\n"   <-- acho que ecrã virtual é melhor, que achas?
+msgstr "Tamanho do Desktop Virtual:\n"
 
 #: src/settings.c:1083
 msgid "Enable edge flip"
@@ -1795,7 +1798,7 @@ msgid ""
 "present at the time of compilation."
 msgstr ""
 "Audio não disponivel ja que o Esound não\n"
-estava presente quando foi efectuada a compilação\n"
+"estava presente quando foi efectuada a compilação."
 
 #: src/settings.c:1667
 msgid "Special FX Settings"
@@ -1839,7 +1842,7 @@ msgstr "Mostrar barra de arasto de desktop"
 
 #: src/settings.c:1823
 msgid "Drag bar position:"
-msgstr "Posição da Barra de arrasto" <--- barra de arrasto heheheh pareçe coisas de pesca hehe
+msgstr "Posição da Barra de arrasto"
 
 #: src/settings.c:1834
 msgid "Top"
