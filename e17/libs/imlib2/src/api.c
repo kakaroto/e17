@@ -2142,7 +2142,7 @@ Imlib_Image
 imlib_create_rotated_image(double angle)
 {
    ImlibImage *im, *im_old;
-   DATA32 *data, *tmp;
+   DATA32 *data;
    int x, y, dx, dy, sz;
    double x1, y1, d;
    
@@ -2165,14 +2165,6 @@ imlib_create_rotated_image(double angle)
    dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
    dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
    
-   if (ctxt_anti_alias) 
-     {
-	tmp = __imlib_AddTransBorders(im_old,
-				      0, 0, im_old->w, im_old->h);
-	x += _ROTATE_PREC_MAX;
-	y += _ROTATE_PREC_MAX;
-     }
-   
    im = __imlib_CreateImage(sz, sz, NULL);
    im->data = calloc(sz * sz, sizeof(DATA32));
    if (!(im->data)) 
@@ -2183,10 +2175,8 @@ imlib_create_rotated_image(double angle)
    
    if (ctxt_anti_alias) 
      {
-	__imlib_RotateAA(tmp, im->data, im_old->w + 2,
-			 im_old->w + 2, im_old->h + 2,
-			 im->w, sz, sz, x, y, dx, dy);
-	free(tmp);
+	__imlib_RotateAA(im_old->data, im->data, im_old->w,
+			 im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
      } else 
      {
 	__imlib_RotateSample(im_old->data, im->data, im_old->w,

@@ -2,37 +2,58 @@
 #include "rotate.h"
 #include "blend.h"
 
-/*\ I have no idea which of these two is faster..
-|*| The first one doesn't branch, the second one doesn't multiply..
-|*| Tests are inconclusive so far..
-|*| Maybe some kind of table lookup would be quicker ?? 
-\*/
-#if 1
-# define RENORM_X_Y_SRC \
+#define RENORM_X_Y_SRC \
 src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow); \
 x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
-#else
-# define RENORM_X_Y_SRC \
-while (x > _ROTATE_PREC_BITS) { \
-x -= _ROTATE_PREC_BITS; \
-src++;   \
-}    \
-while (x < 0) { \
-x += _ROTATE_PREC_BITS; \
-src--;   \
-}    \
-while (y > _ROTATE_PREC_BITS) { \
-y -= _ROTATE_PREC_BITS; \
-src += sow;  \
-}    \
-while (y < 0) { \
-y += _ROTATE_PREC_BITS; \
-src -= sow;  \
-}
-#endif
+
+/*\ Linear interpolation functions \*/
+/*\ Between two values \*/
+#define INTERP(v1, v2, f) \
+	((v1) * (_ROTATE_PREC_MAX - (f)) + (v2) * (f))
+
+/*\ Between two colour bytes \*/
+#define INTERP_VAL1(x_VAL, dest, l, r, x) \
+	x_VAL(dest) = (INTERP(x_VAL(l), x_VAL(r), (x)) >> _ROTATE_PREC)
+
+/*\ Alpha channel: between two values and two zeroes \*/
+#define INTERP_VAL1_A0(dest, v1, v2, f1, f2) \
+	A_VAL(dest) = ((INTERP(A_VAL(v1), A_VAL(v2), (f1)) *	\
+			(f2)) >> (2 * _ROTATE_PREC))
+
+/*\ Between four values \*/
+#define INTERP_VAL2(x_VAL, dest, ul, ur, ll, lr, x, y) \
+	x_VAL(dest) = (INTERP(INTERP(x_VAL(ul), x_VAL(ur), (x)),	\
+			      INTERP(x_VAL(ll), x_VAL(lr), (x)),	\
+			     (y)) >> (2 * _ROTATE_PREC))
+
+/*\ Functions used in rotation routines.
+|*| The do { } while(0) construction is to make it one statement.
+\*/
+/*\ Between four colours \*/
+#define INTERP_ARGB(dest, ul, ur, ll, lr, x, y) do { \
+	INTERP_VAL2(R_VAL, dest, ul, ur, ll, lr, x, y);	\
+	INTERP_VAL2(G_VAL, dest, ul, ur, ll, lr, x, y);	\
+	INTERP_VAL2(B_VAL, dest, ul, ur, ll, lr, x, y);	\
+	INTERP_VAL2(A_VAL, dest, ul, ur, ll, lr, x, y);	\
+	} while (0)
+
+/*\ Between two colours, alpha between two values and zeroes \*/
+#define INTERP_RGB_A0(dest, v1, v2, f, f2) do { \
+	INTERP_VAL1(R_VAL, dest, v1, v2, f);	\
+	INTERP_VAL1(G_VAL, dest, v1, v2, f);	\
+	INTERP_VAL1(B_VAL, dest, v1, v2, f);	\
+	INTERP_VAL1_A0(dest, v1, v2, f, f2);	\
+	} while (0)
+
+/*\ One colour, alpha between one value and three zeroes \*/
+#define INTERP_A000(dest, v, f1, f2) do {	\
+	dest = v;				\
+	A_VAL(dest) = (A_VAL(dest) *		\
+		(f1) * (f2)) >> (2 * _ROTATE_PREC);	\
+	} while (0)
 
 /*\ Rotate by pixel sampling only, target inside source \*/
-void
+static void
 __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 			   int dw, int dh, int x, int y, int dx, int dy)
 {
@@ -40,10 +61,10 @@ __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
    
    if ((dw < 1) || (dh < 1)) return;
    
-   i = 0;
    src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
    x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
    while (1) {
+      i = dw - 1;
       do {
 	 *dest = *src;
 	 /*\ RIGHT; \*/
@@ -51,88 +72,18 @@ __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 	 y += dy;
 	 RENORM_X_Y_SRC;
 	 dest++;
-	 i++;
-      } while (i < dw);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
+      } while (--i >= 0);
+      if (--dh <= 0) break;
+      /*\ DOWN/LEFT; \*/
+      x += -dy - dw * dx;
+      y += dx - dw * dy;
       RENORM_X_Y_SRC;
-      dest += dow;
-      do {
-	 /*\ LEFT; \*/
-	 x -= dx;
-	 y -= dy;
-	 RENORM_X_Y_SRC;
-	 dest--;
-	 *dest = *src;
-	 i--;
-      } while (i > 0);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
-      RENORM_X_Y_SRC;
-      dest += dow;
+      dest += (dow - dw);
    }
 }
 
-/*\ Testing shows this version to be 10% (!!!) faster (overall speed)
-|*| So I think we can live with its ugliness..
-|*| It's still a bottleneck, with it's 24 MULs per call..
-\*/
-
-/*\ bigendian and littleendian byte-from-int macro's \*/
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-# define R_VAL(x) (*(((DATA8 *)&(x))+(0)))
-# define G_VAL(x) (*(((DATA8 *)&(x))+(1)))
-# define B_VAL(x) (*(((DATA8 *)&(x))+(2)))
-# define A_VAL(x) (*(((DATA8 *)&(x))+(3)))
-#elif __BYTE_ORDER == __BIG_ENDIAN
-# define A_VAL(x) (*(((DATA8 *)&(x))+(0)))
-# define B_VAL(x) (*(((DATA8 *)&(x))+(1)))
-# define G_VAL(x) (*(((DATA8 *)&(x))+(2)))
-# define R_VAL(x) (*(((DATA8 *)&(x))+(3)))
-#elif __BYTE_ORDER == __PDP_ENDIAN
-# define B_VAL(x) (*(((DATA8 *)&(x))+(0)))
-# define A_VAL(x) (*(((DATA8 *)&(x))+(1)))
-# define R_VAL(x) (*(((DATA8 *)&(x))+(2)))
-# define G_VAL(x) (*(((DATA8 *)&(x))+(3)))
-#else
-#error Unknown byte endianness.
-#endif
-static inline DATA32
-Interp_ARGB(DATA32 ul, DATA32 ur, DATA32 ll, DATA32 lr, int x, int y)
-{
-   DATA32 rv;
-   
-   R_VAL(rv) = ((((R_VAL(ul)) * (_ROTATE_PREC_MAX - x) +
-		  (R_VAL(ur)) * x) * (_ROTATE_PREC_MAX - y) +
-		 ((R_VAL(ll)) * (_ROTATE_PREC_MAX - x) +
-		  (R_VAL(lr)) * x) * y) >> (2 * _ROTATE_PREC));
-   
-   G_VAL(rv) = ((((G_VAL(ul)) * (_ROTATE_PREC_MAX - x) +
-		  (G_VAL(ur)) * x) * (_ROTATE_PREC_MAX - y) +
-		 ((G_VAL(ll)) * (_ROTATE_PREC_MAX - x) +
-		  (G_VAL(lr)) * x) * y) >> (2 * _ROTATE_PREC));
-   
-   B_VAL(rv) = ((((B_VAL(ul)) * (_ROTATE_PREC_MAX - x) +
-		  (B_VAL(ur)) * x) * (_ROTATE_PREC_MAX - y) +
-		 ((B_VAL(ll)) * (_ROTATE_PREC_MAX - x) +
-		  (B_VAL(lr)) * x) * y) >> (2 * _ROTATE_PREC));
-   
-   A_VAL(rv) = ((((A_VAL(ul)) * (_ROTATE_PREC_MAX - x) +
-		  (A_VAL(ur)) * x) * (_ROTATE_PREC_MAX - y) +
-		 ((A_VAL(ll)) * (_ROTATE_PREC_MAX - x) +
-		  (A_VAL(lr)) * x) * y) >> (2 * _ROTATE_PREC));
-   
-   return rv;
-}
-
 /*\ Same as last function, but with antialiasing \*/
-void
+static void
 __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 		       int dw, int dh, int x, int y, int dx, int dy)
 {
@@ -140,44 +91,25 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
    
    if ((dw < 1) || (dh < 1)) return;
    
-   i = 0;
    src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
    x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
    while (1) {
+      i = dw - 1;
       do {
-	 *dest = Interp_ARGB(src[0], src[1],
-			     src[sow], src[sow + 1], x, y);
+	 INTERP_ARGB(*dest, src[0], src[1],
+		     src[sow], src[sow + 1], x, y);
 	 /*\ RIGHT; \*/
 	 x += dx;
 	 y += dy;
 	 RENORM_X_Y_SRC;
 	 dest++;
-	 i++;
-      } while (i < dw);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
+      } while (--i >= 0);
+      if (--dh <= 0) break;
+      /*\ DOWN/LEFT; \*/
+      x += -dy - dw * dx;
+      y += dx - dw * dy;
       RENORM_X_Y_SRC;
-      dest += dow;
-      do {
-	 /*\ LEFT; \*/
-	 x -= dx;
-	 y -= dy;
-	 RENORM_X_Y_SRC;
-	 --dest;
-	 *dest = Interp_ARGB(src[0], src[1],
-			     src[sow], src[sow + 1], x, y);
-	 --i;
-      } while (i > 0);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
-      RENORM_X_Y_SRC;
-      dest += dow;
+      dest += (dow - dw);
    }
 }
 
@@ -221,12 +153,12 @@ __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
       
    }
    
-   i = 0;
    st = src; sb = src + sh * sow;
    xp = x >> _ROTATE_PREC;
    src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
    x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
    while (1) {
+      i = dw - 1;
       do {
 	 if ((xp >= 0) && (xp < sw) &&
 	     (src >= st) && (src < sb))
@@ -237,43 +169,25 @@ __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 	 xp += (x >> _ROTATE_PREC);
 	 RENORM_X_Y_SRC;
 	 dest++;
-	 i++;
 	 
-      } while (i < dw);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
+      } while (--i >= 0);
+      if (--dh <= 0) break;
+      /*\ DOWN/LEFT; \*/
+      x += -dy - dw * dx;
+      y += dx - dw * dy;
       xp += (x >> _ROTATE_PREC);
       RENORM_X_Y_SRC;
-      dest += dow;
-      do {
-	 /*\ LEFT; \*/
-	 x -= dx;
-	 y -= dy;
-	 xp += (x >> _ROTATE_PREC);
-	 RENORM_X_Y_SRC;
-	 --dest;
-	 if ((xp >= 0) && (xp < sw) &&
-	     (src >= st) && (src < sb))
-	    *dest = *src;
-	 --i;
-	 
-      } while (i > 0);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
-      xp += (x >> _ROTATE_PREC);
-      RENORM_X_Y_SRC;
-      dest += dow;
+      dest += (dow - dw);
       
    }
 }
 
-/*\ With antialiasing \*/
+/*\ With antialiasing.
+|*| NB: The function 'sees' a transparent border around the source,
+|*|     with colour channels matching the edge, so there is no need to do
+|*|     anything special, but remember to account for this when calculating
+|*|     the bounding box.
+\*/
 void
 __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 		 int dow, int dw, int dh, int x, int y, int dx, int dy)
@@ -291,110 +205,94 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
       
    }
    
-   i = 0;
    st = src; sb = src + (sh - 1) * sow;
    xp = x >> _ROTATE_PREC;
    src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
    x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
    while (1) {
+      i = dw - 1;
       do {
-	 if ((xp >= 0) && (xp < (sw - 1)) &&
-	     (src >= st) && (src < sb))
-	    *dest = Interp_ARGB(src[0], src[1],
-				src[sow], src[sow + 1], x, y);
+	 if (xp >= 0) {
+	    if (xp < (sw - 1)) {
+	       if (src >= st) {
+		  if (src < sb) {
+		     /*\  12
+		     |*|  34
+		     \*/
+		     INTERP_ARGB(*dest, src[0], src[1],
+				 src[sow], src[sow + 1], x, y);
+		  } else if (src < (sb + sow)) {
+		     /*\  12
+		     |*|  ..
+		     \*/
+		     INTERP_RGB_A0(*dest, src[0], src[1], x,
+				   (_ROTATE_PREC_MAX - y));
+		  }
+	       } else if (src >= (st - sow)) {
+		  /*\  ..
+		  |*|  34
+		  \*/
+		  INTERP_RGB_A0(*dest, src[sow], src[sow + 1], x, y);
+	       }
+	    } else if (xp < sw) {
+	       if (src >= st) {
+		  if (src < sb) {
+		     /*\  1.
+		     |*|  3.
+		     \*/
+		     INTERP_RGB_A0(*dest, src[0], src[sow], y,
+				   (_ROTATE_PREC_MAX - x));
+		  } else if (src < (sb + sow)) {
+		     /*\  1.
+		     |*|  ..
+		     \*/
+		     INTERP_A000(*dest, src[0], (_ROTATE_PREC_MAX - x),
+				 (_ROTATE_PREC_MAX - y));
+		  }
+	       } else if (src >= (st - sow)) {
+		  /*\  ..
+		  |*|  3.
+		  \*/
+		  INTERP_A000(*dest, src[sow], (_ROTATE_PREC_MAX - x), y);
+	       }
+	    }
+	 } else if (xp >= -1) {
+	    if (src >= (st - 1)) {
+	       if (src < (sb - 1)) {
+		  /*\  .2
+		  |*|  .4
+		  \*/
+		  INTERP_RGB_A0(*dest, src[1], src[sow + 1], y, x);
+	       } else if (src < ((sb - 1) + sow)) {
+		  /*\  .2
+		  |*|  ..
+		  \*/
+		  INTERP_A000(*dest, src[1], x, (_ROTATE_PREC_MAX - y));
+	       }
+	    } else if (src >= ((st - 1) - sow)) {
+	       /*\  ..
+	       |*|  .4
+	       \*/
+	       INTERP_A000(*dest, src[sow + 1], x, y);
+	    }
+	 }
 	 /*\ RIGHT; \*/
 	 x += dx;
 	 y += dy;
 	 xp += (x >> _ROTATE_PREC);
 	 RENORM_X_Y_SRC;
 	 dest++;
-	 i++;
 	 
-      } while (i < dw);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
+      } while (--i >= 0);
+      if (--dh <= 0) break;
+      /*\ DOWN/LEFT; \*/
+      x += -dy - dw * dx;
+      y += dx - dw * dy;
       xp += (x >> _ROTATE_PREC);
       RENORM_X_Y_SRC;
-      dest += dow;
-      do {
-	 /*\ LEFT; \*/
-	 x -= dx;
-	 y -= dy;
-	 xp += (x >> _ROTATE_PREC);
-	 RENORM_X_Y_SRC;
-	 --dest;
-	 if ((xp >= 0) && (xp < (sw - 1)) &&
-	     (src >= st) && (src < sb))
-	    *dest = Interp_ARGB(src[0], src[1],
-				src[sow], src[sow + 1], x, y);
-	 --i;	 
-      } while (i > 0);
-      dh--;
-      if (dh <= 0) break;
-      /*\ DOWN; \*/
-      x -= dy;
-      y += dx;
-      xp += (x >> _ROTATE_PREC);
-      RENORM_X_Y_SRC;
-      dest += dow;      
-   }   
-}
+      dest += (dow - dw);
 
-/*\ Helper: Expand an image in all directions with transparent borders
- |*|  Creates a new image, no caching (TODO)
-\*/
-DATA32 *
-__imlib_AddTransBorders(ImlibImage *im, int ssx, int ssy, int ssw, int ssh)
-{
-   DATA32 *data;
-   int i, w, h;
-   DATA32 *p;
-   
-   if ((ssx < 0) || (ssy < 0) || (ssw < 0) || (ssh < 0) ||
-       ((ssw + ssx) > im->w) || ((ssh + ssy) > im->h))
-      return NULL;
-   data = malloc((ssw + 2) * (ssh + 2) * sizeof(DATA32));
-   
-   for (i = ssh; --i >= 0; ) {
-      memcpy(data + 1 + ((1 + i) * (ssw + 2)),
-	     im->data + ssx + ((i + ssy) * im->w),
-	     ssw * sizeof(DATA32));
-      
-   }
-   
-   p = data + 1;
-   for (i = ssw; --i >= 0; ) {
-      p[0] = p[(ssw + 2)];
-      A_VAL(p[0]) = 0;
-      p++;
-      
-   }
-   p = data + 1 + (((ssh + 2) - 1) * (ssw + 2));
-   for (i = ssw; --i >= 0; ) {
-      p[0] = p[-(ssw + 2)];
-      A_VAL(p[0]) = 0;
-      p++;
-      
-   }
-   p = data;
-   for (i = ssh + 2; --i >= 0; ) {
-      p[0] = p[1];
-      A_VAL(p[0]) = 0;
-      p += (ssw + 2);
-      
-   }
-   p = data + ssw + 1;
-   for (i = ssh + 2; --i >= 0; ) {
-      p[0] = p[-1];
-      A_VAL(p[0]) = 0;
-      p += (ssw + 2);
-      
-   }
-   return data;
-   
+   }   
 }
 
 /*\ Should this be in blend.c ?? \*/
@@ -465,18 +363,13 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
    if ((ssh + ssy) > im_src->h) ssh = im_src->h - ssy;
    
    src = im_src->data + ssx + ssy * im_src->w;
+   data = malloc(im_dst->w * LINESIZE * sizeof(DATA32));
+   if (!data)
+      return;
    if (aa) {
-      src = __imlib_AddTransBorders(im_src, ssx, ssy, ssw, ssh);
-      if (!src) return;
+      /*\ Account for virtual transparent border \*/
       x += _ROTATE_PREC_MAX;
       y += _ROTATE_PREC_MAX;
-      
-   }
-   data = malloc(im_dst->w * LINESIZE * sizeof(DATA32));
-   if (!data) {
-      if (aa) free(src);
-      return;
-      
    }
    for (i = 0; i < im_dst->h; i += LINESIZE) {
       int x2, y2, w, h, l, r;
@@ -488,27 +381,54 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       
       w = ssw << _ROTATE_PREC;
       h = ssh << _ROTATE_PREC;
+      if (aa) {
+	 /*\ Account for virtual transparent border \*/
+	 w += 2 << _ROTATE_PREC;
+	 h += 2 << _ROTATE_PREC;
+      }
       /*\ Pretty similar code \*/
       if (dx > 0) {
 	 if (dy > 0) {
 	    l = MAX(-y2 / dy, -x / dx);
 	    r = MIN((h - y) / dy, (w - x2) / dx);
-	    
-	 } else {
+
+	 } else if (dy < 0) {
 	    l = MAX(-x2 / dx, (h - y) / dy);
 	    r = MIN(-y2 / dy, (w - x) / dx);
-	    
+
+	 } else {
+	    l = -x / dx;
+	    r = (w - x) / dx;
+
 	 }
-	 
-      } else {
+      } else if (dx < 0) {
 	 if (dy > 0) {
 	    l = MAX(-y / dy, (w - x2) / dx);
 	    r = MIN(-x / dx, (h - y2) / dy);
-	    
-	 } else {
+
+	 } else if (dy < 0) {
 	    l = MAX((h - y2) / dy, (w - x) / dx);
 	    r = MIN(-y / dy, -x2 / dx);
-	    
+
+	 } else {
+	    l = (w - x) / dx;
+	    r = -x / dx;
+
+	 }
+
+      } else {
+	 if (dy > 0) {
+	    l = -y / dy;
+	    r = (h - y) / dy;
+
+	 } else if (dy < 0) {
+	    l = (h - y) / dy;
+	    r = -y / dy;
+
+	 } else {
+	    l = 0;
+	    r = 0;
+
 	 }
 	 
       }
@@ -527,9 +447,8 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       x += l * dx;
       y += l * dy;
       if (aa) {
-	 __imlib_RotateAA(src, data,
-			  ssw + 2, ssw + 2, ssh + 2, w,
-			  w, h, x, y, dx, dy);
+	 __imlib_RotateAA(src, data, im_src->w, ssw, ssh, w, w, h,
+			  x - _ROTATE_PREC_MAX, y - _ROTATE_PREC_MAX, dx, dy);
 	 
       } else {
 	 __imlib_RotateSample(src, data, im_src->w,
@@ -542,6 +461,5 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       x = x2; y = y2;
       
    }
-   if (aa) free(src);
    free(data);
 }

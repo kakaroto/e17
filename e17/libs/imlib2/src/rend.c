@@ -207,7 +207,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	if (h < LINESIZE)
 	   hh = h;
 	/* if we're scaling it */
-	if (buf)
+	if (ypoints)
 	  {
 	     /* scale the imagedata for this LINESIZE lines chunk of image data */
 	     if (anitalias)
@@ -237,8 +237,10 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     if (cmod)
 	       {
 		  if (!buf)
-		     buf = malloc(dw * LINESIZE * sizeof(DATA32));
-		  __imlib_DataCmodApply(buf, dw, hh, 0, cmod);
+		     buf = malloc(im->w * LINESIZE * sizeof(DATA32));
+		  memcpy(buf, im->data + ((y + sy) * im->w) + sx,
+		  	im->w * hh * sizeof(DATA32));
+		  __imlib_DataCmodApply(buf, dw, hh, im->w - dw, cmod);
 		  pointer = buf;
 		  jump = 0;
 	       }
