@@ -288,7 +288,9 @@ static void register_callbacks(Euphoria *e) {
 		{"PLAYLIST_ADD", "*",
 		 (EdjeCb) on_edje_playlist_add},
 		{"PLAYLIST_DEL", "*",
-		 (EdjeCb) on_edje_playlist_del}};
+		 (EdjeCb) on_edje_playlist_del},
+		{"PLAYLIST_SHUFFLE", "*", 
+		 (EdjeCb)on_edje_playlist_shuffle}};
 
 	for (i = 0; i < sizeof (cb) / sizeof (EdjeCallback); i++)
 		edje_object_signal_callback_add(o, cb[i].name, cb[i].src,
