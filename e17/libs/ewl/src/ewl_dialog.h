@@ -82,8 +82,6 @@ Ewl_Widget *ewl_dialog_add_button      (Ewl_Dialog *dialog,
 Ewl_Widget *ewl_dialog_add_button_left (Ewl_Dialog *dialog, 
 					char       *button_text,
 					int         response_id);
-Ewl_Widget *ewl_dialog_set_button      (char       *button_text,
-					int         response_id);
 
 unsigned int ewl_dialog_get_has_separator (Ewl_Dialog *dialog);
 void         ewl_dialog_set_has_separator (Ewl_Dialog *dialog,

@@ -226,35 +226,6 @@ ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
 }
 
 /**
- * @param button_text: the text of the button or a stock Id.
- * @param response_id: The Id that will be retured when clicking on the button.
- * @return Returns a button, or NULL on failure.
- * @brief Convenient function to create a (stock) button. To add this
- * button in the action_area of a dialog, just use
- * ewl_container_child_append(dialog, button) or 
- * ewl_container_child_append(dialog, button). Use this way to add
- * buttons, instead of ewl_dialog_add_button() or
- * ewl_dialog_add_button_left().
- */
-Ewl_Widget *
-ewl_dialog_set_button (char *button_text,
-		       int response_id)
-{
-  Ewl_Widget *button;
-  
-  DENTER_FUNCTION(DLEVEL_STABLE);
-
-  button = ewl_button_stock_new (button_text);
-  ewl_object_padding_set(EWL_OBJECT (button), 0, 3, 3, 3);
-  ewl_object_fill_policy_set(EWL_OBJECT (button),
-			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
-
-  EWL_BUTTON_STOCK (button)->response_id = response_id;
-  
-  DRETURN_PTR(button, DLEVEL_STABLE);
-}
-
-/**
  * @param dialog: the dialog to add the button in.
  * @param button_text: the text of the button or a stock Id.
  * @param response_id: The Id that will be retured when clicking on the button.

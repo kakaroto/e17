@@ -61,15 +61,18 @@ typedef struct _Ewl_Button_Stock Ewl_Button_Stock;
  */
 struct _Ewl_Button_Stock
 {
-  Ewl_Button  button; /* Inherit from the button */
+  Ewl_Button  button;       /* Inherit from the button */
   Ewl_Widget *image_object; /* Here is the image */
 
   int         response_id;  /* the response Id */
 };
 
-Ewl_Widget *ewl_button_stock_new (char *stock_id);
-int         ewl_button_stock_init(Ewl_Button_Stock *b, 
-				  char *stock_id);
+Ewl_Widget *ewl_button_stock_new         (char *stock_id);
+Ewl_Widget *ewl_button_stock_new_with_id (char *stock_id,
+					  int   response_id);
+
+int         ewl_button_stock_init        (Ewl_Button_Stock *b, 
+					  char *stock_id);
 
 /**
  * @}
