@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	-I$(top_srcdir)/intl \
 	-I../lib \
 	@imlib2_cflags@ @evas_cflags@ @edb_cflags@ @ecore_cflags@
 
@@ -28,7 +27,8 @@ globals.h \
 handler.h \
 image.h \
 list.h \
+misc.h \
 panel.h \
 thumb.h
 
-entice_LDADD = @imlib2_libs@ @evas_libs@ @edb_libs@ @ecore_libs@ -lm -lc $(INTLLIBS)
+entice_LDADD = @imlib2_libs@ @evas_libs@ @edb_libs@ @ecore_libs@ -lm -lc

@@ -16,6 +16,10 @@
 
 #include <config.h>
 
+#ifdef WITH_DMALLOC
+#include <dmalloc.h>
+#endif
+
 #define MAX_EVAS_COLORS (216)
 #define MAX_FONT_CACHE  (512 * 1024)
 #define MAX_IMAGE_CACHE (16 * (1024 * 1024))
@@ -33,11 +37,11 @@ typedef struct _image Image;
 
 struct _image
 {
-  char *file;
-  pid_t generator;
-  char *thumb;
-  Evas_Object o_thumb;
-  int subst;
+   char               *file;
+   pid_t               generator;
+   char               *thumb;
+   Evas_Object        *o_thumb;
+   int                 subst;
 };
 
 #include "buttons.h"

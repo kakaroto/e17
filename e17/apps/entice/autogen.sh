@@ -7,7 +7,7 @@ abort () {
 }
 
 srcdir=`dirname $0`
-PKG_NAME="the package."
+PKG_NAME="ebony"
 
 DIE=0
 

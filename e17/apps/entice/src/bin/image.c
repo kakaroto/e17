@@ -1,347 +1,398 @@
 #include "entice.h"
 
-void image_add_from_dnd(char *item)
+void
+image_add_from_dnd(char *item)
 {
-    DIR *d;
-    struct dirent *dent;
-    Image *im;
-    Evas_List l;
-    char buf[4096];
+   DIR                *d;
+   struct dirent      *dent;
+   Image              *im;
+   Evas_List          *l;
+   char                buf[4096];
 
-    if (e_file_is_dir(item))
-    {
+   if (e_file_is_dir(item))
+     {
 	d = opendir(item);
-	while( ( dent=readdir(d) )!=NULL )
-	{
-	    if( !strcmp(dent->d_name,".") || !strcmp(dent->d_name,"..")
-		|| dent->d_name[0]=='.' )
+	while ((dent = readdir(d)) != NULL)
+	  {
+	     if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
+		 || dent->d_name[0] == '.')
 		continue;
-	    
-	    sprintf(buf, "%s/%s", item, dent->d_name);
-	    if (e_file_is_dir(buf))
+
+	     sprintf(buf, "%s/%s", item, dent->d_name);
+	     if (e_file_is_dir(buf))
 		image_add_from_dnd(buf);
-	    else {
-		im = e_image_new(buf);
-		im->subst = 1;
-		images = evas_list_prepend_relative(images, im, current_image->data);
-		current_image = current_image->prev; }
-	}
+	     else
+	       {
+		  im = e_image_new(buf);
+		  im->subst = 1;
+		  images =
+		     evas_list_prepend_relative(images, im,
+						current_image->data);
+		  current_image = current_image->prev;
+	       }
+	  }
 	closedir(d);
-    }
-    else
-    {
+     }
+   else
+     {
 	im = e_image_new(item);
 	im->subst = 1;
 	images = evas_list_prepend_relative(images, im, current_image->data);
 	current_image = current_image->prev;
-    }
-    need_thumbs = 1;
-    e_display_current_image();
-    return;
+     }
+   need_thumbs = 1;
+   e_display_current_image();
+   return;
 }
 
-void image_create_list(int argc, char **argv)
+void
+image_create_list(int argc, char **argv)
 {
-  int i;
+   int                 i;
 
-  for (i = 1; i < argc; i++)
-    {
-      Image *im;
+   for (i = 1; i < argc; i++)
+     {
+	Image              *im;
 
-      if (argv[i][0] == '/')
-	{
-	  /* CS */
-	  /* printf("%s\n",argv[i]); */
+	if (argv[i][0] == '/')
+	  {
+	     /* CS */
+	     /* printf("%s\n",argv[i]); */
 
-	  im = e_image_new(argv[i]);
-	}
-      else
-	{
-	  char buf[4096];
-	  char wd[4096];
+	     im = e_image_new(argv[i]);
+	  }
+	else
+	  {
+	     char                buf[4096];
+	     char                wd[4096];
 
-	  getcwd(wd, sizeof(wd));
-	  sprintf(buf, "%s/%s", wd, argv[i]);
+	     getcwd(wd, sizeof(wd));
+	     sprintf(buf, "%s/%s", wd, argv[i]);
 
-	  /* CS */
-	  /* printf("%s\n",buf); */
+	     /* CS */
+	     /* printf("%s\n",buf); */
 
-	  im = e_image_new(buf);
-	}
-      images = evas_list_append(images, im);
-    }
-  current_image = images;
+	     im = e_image_new(buf);
+	  }
+	images = evas_list_append(images, im);
+     }
+   current_image = images;
 }
 
-void image_create_list_dir(char *dir)
+void
+image_create_list_dir(char *dir)
 {
-  DIR *d;
-  struct dirent *dent;
-  Image *im;
-  Evas_List l;
+   DIR                *d;
+   struct dirent      *dent;
+   Image              *im;
+   Evas_List          *l;
 
-  d=opendir(dir);
+   d = opendir(dir);
 
-  while( ( dent=readdir(d) )!=NULL )
-  // while( readdir_r(d,dent,&dent) )
-    {
-      /* skip these */
-      if( !strcmp(dent->d_name,".") || !strcmp(dent->d_name,"..")
-	  || dent->d_name[0]=='.' )
-	continue;
+   while ((dent = readdir(d)) != NULL)
+      // while( readdir_r(d,dent,&dent) )
+     {
+	/* skip these */
+	if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
+	    || dent->d_name[0] == '.')
+	   continue;
 
-      /* CS */
-      /* printf("%s\n",dent->d_name); */
+	/* CS */
+	/* printf("%s\n",dent->d_name); */
 
-      im = e_image_new(dent->d_name);
-      images = evas_list_append(images, im);
+	im = e_image_new(dent->d_name);
+	images = evas_list_append(images, im);
 
-      /* CS */
-      /* printf("%p\n",images); */
-    }
-  closedir(d);
+	/* CS */
+	/* printf("%p\n",images); */
+     }
+   closedir(d);
 
-  current_image=images;
-  /* CS */
-  /* printf("%p\n",current_image); */
+   current_image = images;
+   /* CS */
+   /* printf("%p\n",current_image); */
 
-  /* CS */
-  /*
-  for(l=images ; l ; l=l->next)
-    {
-      im=(Image*)l->data;
-      printf("%s\n",im->file);
-      printf("%p\n",l);
-      printf("%p\n\n",im);
-    }
-  */
+   /* CS */
+   /*
+    * for(l=images ; l ; l=l->next)
+    * {
+    * im=(Image*)l->data;
+    * printf("%s\n",im->file);
+    * printf("%p\n",l);
+    * printf("%p\n\n",im);
+    * }
+    */
 }
 
-void image_create_thumbnails(void)
+void
+image_create_thumbnails(void)
 {
-  Evas_List l;
-  int i;
-	
-  i = 1;
-  for (l = images; l; l = l->next, i++)
-    {
-      Image *im;
-	     
-      im = l->data;
+   Evas_List          *l;
+   int                 i;
 
-      /* CS */
-      /* printf("%s\n",im->file); */
+   i = 1;
+   for (l = images; l; l = l->next, i++)
+     {
+	Image              *im;
 
-      im->o_thumb = evas_add_image_from_file(evas, IM"thumb.png");
-      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_MOVE, e_list_item_drag, l);
-      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_DOWN, e_list_item_click, l);
-      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_UP, e_list_item_select, l);
-      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_IN, e_list_item_in, l);
-      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_OUT, e_list_item_out, l);
-      im->subst = 1;
-      evas_set_image_border(evas, im->o_thumb, 4, 4, 4, 4);
-      evas_move(evas, im->o_thumb, 2, 2 + ((48 + 2) * (i - 1)));
-      evas_resize(evas, im->o_thumb, 48, 48);
-      evas_set_image_fill(evas, im->o_thumb, 0, 0, 48, 48);
-      evas_set_layer(evas, im->o_thumb, 210);
-      evas_show(evas, im->o_thumb);
-    }
+	im = l->data;
+
+	/* CS */
+	/* printf("%s\n",im->file); */
+
+	im->o_thumb = evas_object_image_add(evas);
+	evas_object_image_file_set(im->o_thumb, IM "thumb.png", NULL);
+	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_MOVE,
+				       e_list_item_drag, l);
+	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_DOWN,
+				       e_list_item_click, l);
+	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_UP,
+				       e_list_item_select, l);
+	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_IN,
+				       e_list_item_in, l);
+	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_OUT,
+				       e_list_item_out, l);
+	im->subst = 1;
+	evas_object_image_border_set(im->o_thumb, 4, 4, 4, 4);
+	evas_object_move(im->o_thumb, 2, 2 + ((48 + 2) * (i - 1)));
+	evas_object_resize(im->o_thumb, 48, 48);
+	evas_object_image_fill_set(im->o_thumb, 0, 0, 48, 48);
+	evas_object_layer_set(im->o_thumb, 210);
+	evas_object_show(im->o_thumb);
+     }
 }
 
-void image_destroy_list(void)
+void
+image_destroy_list(void)
 {
-  Evas_List l;
-  Image *im;
+   Evas_List          *l;
+   Image              *im;
 
-  for (l = images; l; l = l->next)
-    {
-      im=l->data;
+   for (l = images; l; l = l->next)
+     {
+	im = l->data;
 
-      evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_DOWN );
-      evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_IN   );
-      evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_OUT  );
+	evas_object_event_callback_del(im->o_thumb, EVAS_CALLBACK_MOUSE_DOWN,
+				       e_list_item_click);
+	evas_object_event_callback_del(im->o_thumb, EVAS_CALLBACK_MOUSE_IN,
+				       e_list_item_in);
+	evas_object_event_callback_del(im->o_thumb, EVAS_CALLBACK_MOUSE_OUT,
+				       e_list_item_out);
 
-      evas_del_object(evas,im->o_thumb);
+	evas_object_del(im->o_thumb);
 
-      e_image_free(im);
-    }
+	e_image_free(im);
+     }
 
-  images=evas_list_free(images);
+   images = evas_list_free(images);
 }
 
-Image *e_image_new(char *file)
+Image              *
+e_image_new(char *file)
 {
-  Image *im;
-   
-  im = malloc(sizeof(Image));
-  im->file = strdup(file);
-  im->generator = 0;
-  im->thumb = NULL;
-  im->o_thumb = NULL;
-  im->subst = 0;
-  return im;
+   Image              *im;
+
+   im = malloc(sizeof(Image));
+   im->file = strdup(file);
+   im->generator = 0;
+   im->thumb = NULL;
+   im->o_thumb = NULL;
+   im->subst = 0;
+   return im;
 }
 
-void e_image_free(Image *im)
+void
+e_image_free(Image * im)
 {
-  if (im->file) free(im->file);
-  if (im->thumb) free(im->thumb);
-  free(im);
+   if (im->file)
+      free(im->file);
+   if (im->thumb)
+      free(im->thumb);
+   free(im);
 }
 
-void image_delete(Image *im)
+void
+image_delete(Image * im)
 {
-    if (im) {
-	if (im->o_thumb) 
-	    evas_del_object(evas, im->o_thumb); 
+   if (im)
+     {
+	if (im->o_thumb)
+	   evas_object_del(im->o_thumb);
 
 	images = evas_list_remove(images, (void *)im);
-	e_image_free(im); }
+	e_image_free(im);
+     }
 }
 
-void e_delete_current_image(void)
+void
+e_delete_current_image(void)
 {
-    Evas_List l = NULL;
+   Evas_List          *l = NULL;
 
-    Image *im;
+   Image              *im;
 
-    if (current_image && current_image->data)
-    {
-	im = (Image *)(current_image->data);
-	 
+   if (current_image && current_image->data)
+     {
+	im = (Image *) (current_image->data);
+
+	if (im->file)
+	   unlink(im->file);
+	if (im->thumb)
+	   unlink(im->thumb);
 	if (current_image->next)
-	    l = current_image->next;
+	   l = current_image->next;
 	else if (current_image->prev)
-	    l = current_image->prev;
+	   l = current_image->prev;
 	else
-	    l = NULL;
+	   l = NULL;
 
-	if (l != NULL) {
-	    if (im->o_thumb) {
-		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_UP );
-		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_MOVE );
-		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_DOWN );
-		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_IN   );
-		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_OUT  );
-
-		evas_del_object(evas, im->o_thumb); }
-	    images = evas_list_remove(images, current_image->data);
-	    e_image_free((Image *)current_image->data); }
-	
 	if (l != NULL)
-	    current_image = l;
+	  {
+	     if (im->o_thumb)
+		evas_object_del(im->o_thumb);
+	     e_image_free((Image *) current_image->data);
+	     images = evas_list_remove(images, current_image->data);
+	  }
+
+	if (l != NULL)
+	   current_image = l;
 
 	e_display_current_image();
-    }
-}
-	   
-void e_display_current_image(void)
-{
-  scroll_x = 0;
-  scroll_y = 0;
-  scroll_sx = 0;
-  scroll_sy = 0;
-
-  if (o_mini_image)
-    {
-      evas_del_object(evas, o_mini_image);
-      o_mini_image = NULL;
-    }
-  if (current_image)
-    {
-      char title[4096];
-	
-      if (o_image)
-	{
-	  evas_del_object(evas, o_image);
-	  o_image = NULL;
-	}
-      o_image = evas_add_image_from_file(evas, 
-					 ((Image *)(current_image->data))->file);
-      evas_callback_add(evas, o_image, CALLBACK_MOUSE_DOWN, next_image, NULL);
-      evas_callback_add(evas, o_image, CALLBACK_MOUSE_UP, next_image_up, NULL);
-      evas_callback_add(evas, o_image, CALLBACK_MOUSE_MOVE, next_image_move, NULL);
-      evas_show(evas, o_image);
-      if (evas_get_image_load_error(evas, o_image) != IMLIB_LOAD_ERROR_NONE)
-	{
-	  sprintf(txt_info[0], "Error LoadingFile: %s", ((Image *)(current_image->data))->file);
-	  sprintf(txt_info[1], "");
-	  sprintf(title, "Entice (Error Loading): %s",
-		  ((Image *)(current_image->data))->file);
-	  ecore_window_set_title(main_win, title);
-	  evas_del_object(evas, o_image);
-	  o_image = NULL;
-	}
-      else
-	{
-	  int w, h;
-	     
-	  evas_get_image_size(evas, o_image, &w, &h);
-	  sprintf(txt_info[0], "File: %s", ((Image *)(current_image->data))->file);
-	  sprintf(txt_info[1], "Size: %ix%i", w, h);
-	  e_fade_info_in(0, NULL);
-	     
-	  sprintf(title, "Entice: %s",
-		  ((Image *)(current_image->data))->file);
-	  ecore_window_set_title(main_win, title);	     
-	}
-    }
-  else
-    {
-      ecore_window_set_title(main_win, "Entice (No Image)");
-      evas_del_object(evas, o_image);
-      o_image = NULL;	
-    }
-  if ((o_image) && (current_image))
-    {
-      o_mini_image = evas_add_image_from_file(evas,
-					      ((Image *)(current_image->data))->file);
-    }
-  e_handle_resize();
-  e_fix_icons();
-  e_scroll_list(0, NULL);
-  e_fade_scroller_in(0, (void *)1);
+     }
 }
 
-void next_image(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+void
+e_display_current_image(void)
 {
-  down_x = _x;
-  down_y = _y;
-  down_sx = scroll_x;
-  down_sy = scroll_y;
-  e_fade_scroller_in(0, NULL);
+   scroll_x = 0;
+   scroll_y = 0;
+   scroll_sx = 0;
+   scroll_sy = 0;
+
+   if (o_mini_image)
+     {
+	evas_object_del(o_mini_image);
+	o_mini_image = NULL;
+     }
+   if (current_image)
+     {
+	char                title[4096];
+
+	if (o_image)
+	  {
+	     evas_object_del(o_image);
+	     o_image = NULL;
+	  }
+	o_image = evas_object_image_add(evas);
+	evas_object_image_file_set(o_image,
+				   ((Image *) (current_image->data))->file,
+				   NULL);
+	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_DOWN,
+				       next_image, NULL);
+	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_UP,
+				       next_image_up, NULL);
+	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_MOVE,
+				       next_image_move, NULL);
+	evas_object_show(o_image);
+	if (evas_object_image_load_error_get(o_image) != EVAS_LOAD_ERROR_NONE)
+	  {
+	     sprintf(txt_info[0], "Error LoadingFile: %s",
+		     ((Image *) (current_image->data))->file);
+	     sprintf(txt_info[1], "");
+	     sprintf(title, "Entice (Error Loading): %s",
+		     ((Image *) (current_image->data))->file);
+	     ecore_window_set_title(main_win, title);
+	     evas_object_del(o_image);
+	     o_image = NULL;
+	  }
+	else
+	  {
+	     int                 w, h;
+
+	     evas_object_image_size_get(o_image, &w, &h);
+	     sprintf(txt_info[0], "File: %s",
+		     ((Image *) (current_image->data))->file);
+	     sprintf(txt_info[1], "Size: %ix%i", w, h);
+	     e_fade_info_in(0, NULL);
+
+	     sprintf(title, "Entice: %s",
+		     ((Image *) (current_image->data))->file);
+	     ecore_window_set_title(main_win, title);
+	  }
+     }
+   else
+     {
+	ecore_window_set_title(main_win, "Entice (No Image)");
+	evas_object_del(o_image);
+	o_image = NULL;
+     }
+   if ((o_image) && (current_image))
+     {
+	o_mini_image = evas_object_image_add(evas);
+	evas_object_image_smooth_scale_set(o_mini_image, 0);
+	evas_object_image_file_set(o_mini_image,
+				   ((Image *) (current_image->data))->file,
+				   NULL);
+     }
+   e_handle_resize();
+   e_fix_icons();
+   e_scroll_list(0, NULL);
+   e_fade_scroller_in(0, (void *)1);
 }
 
-void next_image_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+void
+next_image(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-  if (((_x - down_x) * (_x - down_x)) +
-      ((_y - down_y) * (_y - down_y)) > 9)
-    {
-      scroll_x = scroll_sx;
-      scroll_y = scroll_sy;
-      e_fade_scroller_out(0, NULL);
+   Evas_Event_Mouse_Down *ev;
+
+   ev = event_info;
+
+   down_x = ev->output.x;
+   down_y = ev->output.y;
+   down_sx = scroll_x;
+   down_sy = scroll_y;
+   e_fade_scroller_in(0, NULL);
+}
+
+void
+next_image_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
+{
+   Evas_Event_Mouse_Up *ev;
+
+   ev = event_info;
+   if (((ev->output.x - down_x) * (ev->output.x - down_x)) +
+       ((ev->output.y - down_y) * (ev->output.y - down_y)) > 9)
+     {
+	scroll_x = scroll_sx;
+	scroll_y = scroll_sy;
+	e_fade_scroller_out(0, NULL);
+	return;
+     }
+   if ((obj == o_showpanel) && (panel_active))
       return;
-    }
-  if ((_o == o_showpanel) && (panel_active)) return;
-  if (!current_image)
-    current_image = images;
-  else
-    {
-      if ((_b == 1) && (current_image->next))
-	current_image = current_image->next;
-      else if (_b == 3)
-	current_image = current_image->prev;
-    }
-  e_display_current_image();
+   if (!current_image)
+      current_image = images;
+   else
+     {
+	if ((ev->button == 1) && (current_image->next))
+	   current_image = current_image->next;
+	else if (ev->button == 3)
+	   current_image = current_image->prev;
+     }
+   e_display_current_image();
 }
 
-void next_image_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+void
+next_image_move(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-  if (_b != 0)
-    {
-      scroll_x = _x - down_x + down_sx;
-      scroll_y = _y - down_y + down_sy;
-	
-      e_handle_resize();
-    }
+   Evas_Event_Mouse_Move *ev;
+
+   ev = event_info;
+   if (ev->buttons != 0)
+     {
+	scroll_x = ev->cur.output.x - down_x + down_sx;
+	scroll_y = ev->cur.output.y - down_y + down_sy;
+
+	e_handle_resize();
+     }
 }
