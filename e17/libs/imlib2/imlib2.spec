@@ -8,10 +8,6 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Lyle Kempler <term@twistedpath.org>, Joakim Bodin <bodin@dreamhosted.com>
 URL: http://www.rasterman.com/raster/imlib.html
-BuildRequires: libjpeg-devel
-BuildRequires: libpng-devel
-BuildRequires: XFree86-devel
-BuildRequires: freetype2-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}
