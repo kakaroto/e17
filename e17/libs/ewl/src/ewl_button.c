@@ -1,7 +1,6 @@
 
 #include <Ewl.h>
 
-void ewl_button_init(Ewl_Button * b, char *label);
 void __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_button_remove_label(Ewl_Button * b);
 void __ewl_button_update_label(Ewl_Button * b);
@@ -39,6 +38,7 @@ ewl_button_new(char *label)
 /**
  * ewl_button_init - initialize a button to starting values
  * @b: the button to initialize
+ * @label: set the label of the button @b to @label
  *
  * Returns no value. Initializes a button to default values and callbacks.
  */

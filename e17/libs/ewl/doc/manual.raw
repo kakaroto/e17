@@ -54,18 +54,19 @@
 	furnished to do so, subject to the following conditions:
       </para>
       <para>
-	The above copyright notice and this permission notice shall be included in
-	all copies of the Software and its documentation and acknowledgment shall be
-	given in the documentation and software packages that this Software was
-	used.
+	The above copyright notice and this permission notice shall be included
+	in all copies of the Software and its documentation and acknowledgment
+	shall be given in the documentation and software packages that this
+	Software was used.
       </para>
       <para>
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-	THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+	DEALINGS IN THE SOFTWARE.
       </para>
     </legalnotice>
 
@@ -76,44 +77,49 @@
   <chapter id="introduction">
     <title>Introduction</title>
     <para>
-      EWL is a widget library based on the <ulink url="http://docbook.org">
-      Enlightenment</ulink> subsystem libraries.
+	EWL is a widget library based on the <ulink
+	url="http://www.enlightenment.org"> Enlightenment</ulink> subsystem
+	libraries.
     </para>
   </chapter>
 
   <chapter id="basic">
     <title id="basic.title">Basic Classes and Utility Functions</title>
 
-    <section><title>Object Class</title>
-!Isrc/ewl_object.c
-    </section>
-
-    <section><title>Widget Class</title>
-!Isrc/ewl_widget.c
-    </section>
-
-    <section><title>Container Class</title>
-!Isrc/ewl_container.c
-    </section>
-
     <section><title>Callback Functions</title>
 !Isrc/ewl_callback.c
-    </section>
-
-    <section><title>Event Functions</title>
-!Isrc/ewl_events.c
     </section>
 
     <section><title>Configuration Functions</title>
 !Isrc/ewl_config.c
     </section>
 
-    <section><title>Theme Functions</title>
-!Isrc/ewl_theme.c
+    <section><title>Container Class</title>
+!Isrc/ewl_container.c
+    </section>
+
+    <section><title>Event Functions</title>
+!Isrc/ewl_events.c
     </section>
 
     <section><title>Special FX</title>
 !Isrc/ewl_fx.c
+    </section>
+
+    <section><title>Misc Functions</title>
+!Isrc/ewl_misc.c
+    </section>
+
+    <section><title>Object Class</title>
+!Isrc/ewl_object.c
+    </section>
+
+    <section><title>Theme Functions</title>
+!Isrc/ewl_theme.c
+    </section>
+
+    <section><title>Widget Class</title>
+!Isrc/ewl_widget.c
     </section>
 
   </chapter>
@@ -130,6 +136,10 @@
 !Isrc/ewl_box.c
     </section>
 
+    <section><title>Ewl_Notebook</title>
+!Isrc/ewl_notebook.c
+    </section>
+
     <section><title>Ewl_Table</title>
 !Isrc/ewl_table.c
     </section>
@@ -142,6 +152,10 @@
 
   <chapter id="buttons">
     <title id="buttons.title">Button Widgets</title>
+    <para>
+      Ewl provides a few different types of button widgets for developing
+      interactive user interfaces.
+    </para>
 
     <section><title>Ewl_Button</title>
 !Isrc/ewl_button.c
@@ -153,6 +167,67 @@
 
     <section><title>Ewl_RadioButton</title>
 !Isrc/ewl_radiobutton.c
+    </section>
+
+  </chapter>
+
+  <chapter id="text">
+    <title id="text.title">Text Widgets</title>
+    <para>
+      Ewl provides a two different types of text widgets for displaying and
+      inputing text data to ewl. Ewl_Text is a simple one line display of
+      text, while Ewl_TextArea provides facilities for multi-line text
+      including scrollbars if applicable.
+    </para>
+
+    <section><title>Ewl_Text</title>
+!Isrc/ewl_text.c
+    </section>
+
+    <section><title>Ewl_TextArea</title>
+!Isrc/ewl_textarea.c
+    </section>
+
+  </chapter>
+
+  <chapter id="data">
+    <title id="data.title">Data Manipulation Widgets</title>
+    <para>
+       Included in ewl are a few different widgets for interactively
+       manipulating data items.
+    </para>
+
+    <section><title>Ewl_Scrollbar</title>
+!Isrc/ewl_scrollbar.c
+    </section>
+
+    <section><title>Ewl_Seeker</title>
+!Isrc/ewl_seeker.c
+    </section>
+
+    <section><title>Ewl_Spinner</title>
+!Isrc/ewl_spinner.c
+    </section>
+
+  </chapter>
+
+  <chapter id="display">
+    <title id="display.title">Display Widgets</title>
+    <para>
+       Some of the widgets in Ewl are used for simply manipulating and
+       beatifying the display.
+    </para>
+
+    <section><title>Ewl_Image</title>
+!Isrc/ewl_image.c
+    </section>
+
+    <section><title>Ewl_Scrollpane</title>
+!Isrc/ewl_scrollpane.c
+    </section>
+
+    <section><title>Ewl_Separator</title>
+!Isrc/ewl_separator.c
     </section>
 
   </chapter>

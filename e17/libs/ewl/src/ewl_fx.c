@@ -420,9 +420,9 @@ ewl_fx_del_all(Ewl_Widget * w)
  * ewl_fx_timer_add - add a timer for the specified fx on the a widget
  * @w: the widget to add the fx timer
  * @name: the name of the fx to add the timer
- * @interval: the interval between timer notifications
- * @step: FIXME what does this do? the only references to it just calculate it
- * @count: the number of times to execute the timer
+ * @timeout: the time until the effect has stepped to it's maximum value
+ * @fps: the number of frames per second that will be displayed
+ * @value_span: the range of values that will be stepped through
  * @data: user specified data to pass to the timer function
  *
  * Returns no value. Sets up a timer to be executed at regular intervals to

@@ -25,7 +25,11 @@ void __ewl_container_configure_clip_box(Ewl_Widget * w, void *event_data,
 Ewl_NotebookPage *__ewl_notebook_page_create(Ewl_Notebook * n,
 					     Ewl_Widget * c, Ewl_Widget * l);
 
-
+/**
+ * ewl_notebook_new - create a new notebook
+ * 
+ * Returns a newly allocated notebook on success, NULL on failure.
+ */
 Ewl_Widget *
 ewl_notebook_new(void)
 {
@@ -36,27 +40,32 @@ ewl_notebook_new(void)
 	n = NEW(Ewl_Notebook, 1);
 	ZERO(n, Ewl_Notebook, 1);
 
-	n->tab_box = ewl_hbox_new();
-
-	ewl_widget_set_appearance(n->tab_box, "/appearance/notebook/tab_box");
-
-	__ewl_notebook_init(n);
+	ewl_notebook_init(n);
 
 	DRETURN_PTR(EWL_WIDGET(n), DLEVEL_TESTING);
 }
 
+/**
+ * ewl_notebook_append_page - append a page to the notebook
+ * @n: the notebook to append the page
+ * @c: the tab of the new page added
+ * @l: the contents of the page added
+ *
+ * Returns no value. Appends a page to the list of available pages that will
+ * be available for display.
+ */
 void
-ewl_notebook_append_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l)
+ewl_notebook_append_page(Ewl_Notebook *n, Ewl_Widget * c, Ewl_Widget * l)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("n", n);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("l", l);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = __ewl_notebook_page_create(n, c, l);
 
 	ewl_container_append_child(EWL_CONTAINER(w), np->page);
@@ -72,18 +81,27 @@ ewl_notebook_append_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_prepend_page - prepend a page to the notebook
+ * @n: the notebook to prepend the page
+ * @c: the tab of the new page added
+ * @l: the contents of the page added
+ *
+ * Returns no value. Prepends a page to the list of available pages that will
+ * be available for display.
+ */
 void
-ewl_notebook_prepend_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l)
+ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * c, Ewl_Widget * l)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("n", n);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("l", l);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = __ewl_notebook_page_create(n, c, l);
 
 	ewl_container_prepend_child(EWL_CONTAINER(w), np->page);
@@ -99,19 +117,29 @@ ewl_notebook_prepend_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_insert_page - insert a page to the notebook
+ * @n: the notebook to insert the page
+ * @c: the tab of the new page added
+ * @l: the contents of the page added
+ * @p: the position in the list of tabs to add the page
+ *
+ * Returns no value. Insert a page to the list of available pages that will
+ * be available for display.
+ */
 void
-ewl_notebook_insert_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l,
+ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * c, Ewl_Widget * l,
 			 int p)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("n", n);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("l", l);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = __ewl_notebook_page_create(n, c, l);
 
 	ewl_container_insert_child(EWL_CONTAINER(w), np->page, p);
@@ -128,19 +156,25 @@ ewl_notebook_insert_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_remove_first_page - remove the first page from the notebook
+ * @n: the notebook to remove the first page
+ *
+ * Returns a pointer to the removed page on success, NULL on failure.
+ */
 Ewl_NotebookPage *
-ewl_notebook_remove_first_page(Ewl_Widget * w)
+ewl_notebook_remove_first_page(Ewl_Notebook * n)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 	Ewl_NotebookPage *nnp;
 	Ewl_Widget *tab;
 	Ewl_Widget *page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("n", n, NULL);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = NULL;
 
 	if (!n->pages || ewd_list_is_empty(n->pages))
@@ -178,19 +212,25 @@ ewl_notebook_remove_first_page(Ewl_Widget * w)
 	DRETURN_PTR(nnp, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_remove_first_page - remove the last page from the notebook
+ * @n: the notebook to remove the last page
+ *
+ * Returns a pointer to the removed page on success, NULL on failure.
+ */
 Ewl_NotebookPage *
-ewl_notebook_remove_last_page(Ewl_Widget * w)
+ewl_notebook_remove_last_page(Ewl_Notebook * n)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 	Ewl_NotebookPage *nnp;
 	Ewl_Widget *tab;
 	Ewl_Widget *page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("n", n, NULL);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = NULL;
 
 	if (!n->pages || ewd_list_is_empty(n->pages))
@@ -228,19 +268,26 @@ ewl_notebook_remove_last_page(Ewl_Widget * w)
 	DRETURN_PTR(nnp, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_remove_page - remove the specified page from the notebook
+ * @n: the notebook to remove the specified page
+ * @i: the position in the list of pages to remove from @n
+ *
+ * Returns a pointer to the removed page on success, NULL on failure.
+ */
 Ewl_NotebookPage *
-ewl_notebook_remove_page(Ewl_Widget * w, int i)
+ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 	Ewl_NotebookPage *nnp;
 	Ewl_Widget *tab;
 	Ewl_Widget *page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("n", n, NULL);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = NULL;
 
 	if (!n->pages || ewd_list_is_empty(n->pages))
@@ -278,19 +325,25 @@ ewl_notebook_remove_page(Ewl_Widget * w, int i)
 	DRETURN_PTR(nnp, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_remove_visible - remove the visible page from the notebook
+ * @n: the notebook to remove the visible page
+ *
+ * Returns a pointer to the removed page on success, NULL on failure.
+ */
 Ewl_NotebookPage *
-ewl_notebook_remove_visible(Ewl_Widget * w)
+ewl_notebook_remove_visible(Ewl_Notebook * n)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 	Ewl_NotebookPage *nnp;
 	Ewl_Widget *tab;
 	Ewl_Widget *page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("n", n, NULL);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 	np = NULL;
 
 	if (!n->pages || ewd_list_is_empty(n->pages))
@@ -334,15 +387,23 @@ ewl_notebook_remove_visible(Ewl_Widget * w)
 	DRETURN_PTR(nnp, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_set_tabs_alignment - set the alignment of a notebooks tabs
+ * @n: the notebook to change tab alignment
+ * @a: the new alignment for the tabs of @n
+ *
+ * Returns no value. Changes the alignment of the tabs on @n to @a, and
+ * updates the display.
+ */
 void
-ewl_notebook_set_tabs_alignment(Ewl_Widget * w, Ewl_Alignment a)
+ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, Ewl_Alignment a)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("n", n);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 
 	ewl_object_set_alignment(EWL_OBJECT(n->tab_box), a);
 
@@ -351,31 +412,45 @@ ewl_notebook_set_tabs_alignment(Ewl_Widget * w, Ewl_Alignment a)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_get_tabs_alignment - get the alignment of a notebooks tabs
+ * @n: the notebook to get tab alignment
+ *
+ * Returns the tab alignment of the notebook @n on success, 0 on failure.
+ */
 Ewl_Alignment
-ewl_notebook_get_tabs_alignment(Ewl_Widget * w)
+ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("n", n, 0);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 
 	DRETURN_INT(ewl_object_get_alignment(EWL_OBJECT(n->tab_box)),
 		    DLEVEL_TESTING);
 }
 
+/**
+ * ewl_notebook_set_tabs_position - set a notebooks tab position
+ * @n: the notebook to change tab position
+ * @p: the new position for the tabs of @n
+ *
+ * Returns no value. Changes the tab position of @n to @p and updates the
+ * display.
+ */
 void
-ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p)
+ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 	Ewl_NotebookPage *np;
 	char file[PATH_LEN];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("n", n);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 
 	n->tabs_position = p;
 
@@ -431,28 +506,41 @@ ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_get_tabs_position - get the position of a notebooks tabs
+ * @n: the notebook to retrieve the tab position
+ *
+ * Returns the position of the tabs in @n on success, 0 on failure.
+ */
 Ewl_Position
-ewl_notebook_get_tabs_position(Ewl_Widget * w)
+ewl_notebook_get_tabs_position(Ewl_Notebook * n)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("n", n, 0);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 
 	DRETURN_INT(n->tabs_position, DLEVEL_TESTING);
 }
 
+/**
+ * ewl_notebook_set_flags - set the flags for a notebook
+ * @n: the notebook to change flags
+ * @flags: the new flags for the notebook @n
+ *
+ * Returns no value. Sets the flags for the notebook @n to @flags.
+ */
 void
-ewl_notebook_set_flags(Ewl_Widget * w, Ewl_Notebook_Flags flags)
+ewl_notebook_set_flags(Ewl_Notebook * n, Ewl_Notebook_Flags flags)
 {
-	Ewl_Notebook *n;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("n", n);
 
-	n = EWL_NOTEBOOK(w);
+	w = EWL_WIDGET(n);
 
 	n->flags = flags;
 
@@ -462,8 +550,14 @@ ewl_notebook_set_flags(Ewl_Widget * w, Ewl_Notebook_Flags flags)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_notebook_init - initialize a notebook to default values and callbacks
+ * @n: the notebook to initialize
+ *
+ * Returns no value. Sets the fields and callbacks of @n to their defaults.
+ */
 void
-__ewl_notebook_init(Ewl_Notebook * n)
+ewl_notebook_init(Ewl_Notebook * n)
 {
 	Ewl_Widget *w;
 
@@ -472,24 +566,45 @@ __ewl_notebook_init(Ewl_Notebook * n)
 
 	w = EWL_WIDGET(n);
 
+	/*
+	 * Initialize the container portion of the notebook and set the fill
+	 * policy to fill the area available.
+	 */
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/notebook/default");
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
+	/*
+	 * Create the box to hold tabs and make the box fill the area of the
+	 * notebook.
+	 */
+	n->tab_box = ewl_hbox_new();
+	ewl_widget_set_appearance(n->tab_box, "/appearance/notebook/tab_box");
+	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+			EWL_FILL_POLICY_FILL);
+
+	/*
+	 * Attach the necessary callbacks for the notebook
+	 */
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_notebook_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_notebook_configure, NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 			     __ewl_notebook_destroy, NULL);
-
-	ewl_callback_append(n->tab_box, EWL_CALLBACK_CONFIGURE,
-			    __ewl_notebook_tab_box_configure, NULL);
-
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
 			 __ewl_container_configure_clip_box);
 
-	n->pages = ewd_list_new();
+	/*
+	 * Attach a necessary callback for the tab box
+	 */
+	ewl_callback_append(n->tab_box, EWL_CALLBACK_CONFIGURE,
+			    __ewl_notebook_tab_box_configure, NULL);
 
+	/*
+	 * Create a list to keep track of the pages in the notebook and set
+	 * the default position of the tabs.
+	 */
+	n->pages = ewd_list_new();
 	n->tabs_position = EWL_POSITION_TOP;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

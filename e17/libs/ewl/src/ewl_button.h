@@ -20,6 +20,7 @@ struct _ewl_button
 };
 
 Ewl_Widget *ewl_button_new(char *l);
+void ewl_button_init(Ewl_Button * b, char *label);
 void ewl_button_set_label(Ewl_Button * b, char *l);
 
 #endif /* __EWL_BUTTON_H__ */

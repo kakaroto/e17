@@ -13,7 +13,14 @@ static void ewl_parse_option_array(int argc, char **argv);
 
 void ewl_reread_config(int val, void *data);
 
-
+/**
+ * ewl_init - initialize the internal variables of ewl to begin the program
+ * @argc: the argc passed into the main function
+ * @argv: the argv passed into the main function
+ *
+ * Returns no value. Sets up necessary internal variables for executing ewl
+ * functions. This should be called before any other ewl functions are used.
+ */
 void
 ewl_init(int argc, char **argv)
 {
@@ -63,6 +70,12 @@ ewl_init(int argc, char **argv)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_main - the main execution loop of ewl
+ * 
+ * Returns no value. This is the  main execution loop of ewl. It dispatches
+ * incoming events and renders updates to the evas's used by ewl.
+ */
 void
 ewl_main(void)
 {
@@ -76,6 +89,12 @@ ewl_main(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_idle_render - renders updates during idle times of the main loop
+ * @data: this is only necessary for registering this function with ecore
+ *
+ * Returns no value. Renders updates to the evas's during idle event times.
+ */
 void
 ewl_idle_render(void *data)
 {
@@ -115,6 +134,12 @@ ewl_idle_render(void *data)
 	data = NULL;
 }
 
+/**
+ * ewl_main_quit - notifies ewl to quit at the end of this pass of the main loop
+ *
+ * Returns no value. Sets ewl to exit the main execution loop after this time
+ * through the loop has been completed.
+ */
 void
 ewl_main_quit(void)
 {
@@ -125,6 +150,14 @@ ewl_main_quit(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_init_parse_options - parse the options passed to ewl_init
+ * @argc: the argc passed to the main function
+ * @argv: the argv passed to the main function
+ *
+ * Returns no value. Parses the arguments of the program into sections that
+ * ewl knows how to deal with.
+ */
 static void
 ewl_init_parse_options(int argc, char **argv)
 {
@@ -135,6 +168,14 @@ ewl_init_parse_options(int argc, char **argv)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_parse_option_array - parses the argument arrays into options
+ * @argc: the argc passed to the main function
+ * @argv: the argv passed to the main function
+ *
+ * Returns no value. Parses the options passed to the main program and
+ * processes any ewl related options.
+ */
 static void
 ewl_parse_option_array(int argc, char **argv)
 {
@@ -167,6 +208,13 @@ ewl_parse_option_array(int argc, char **argv)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_reread_config - a timer function used to reread the config options
+ * @val: dummy variable used for compatibility with ecore's timers
+ * @data: dummy variable used for compatibility with ecore's timers
+ *
+ * Returns no value. Sets up a timer loop for rereading the config data.
+ */
 void
 ewl_reread_config(int val, void *data)
 {
