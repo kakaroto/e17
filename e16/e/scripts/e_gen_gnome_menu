@@ -35,6 +35,9 @@ else
   if [ ! -d "$DIR" ]; then
     DIR=/opt/gnome/share/apps
   fi
+  if [ ! -d "$DIR" ]; then
+    DIR=/opt/gnome/share/gnome/apps
+  fi
 fi
 
 # if the apps dir doesn't exist in the end then exit
