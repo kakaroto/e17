@@ -3130,3 +3130,18 @@ Sun Sep 19 12:58:19 CEST 2004
 Attempt to fix various sliding effects.
 Bulgarian translation by Viktor Kojouharov <vkojouharov@gmail.com>).
 Initial showing desktop support.
+
+-------------------------------------------------------------------------------
+
+Mon Oct 11 23:09:11 CEST 2004
+(Kim)
+
+--- 0.16.7.2 0.05 ---
+Fix remembered settings for slave WM's.
+Fix mapping a window requesting fullscreen mode.
+Try (again) to fix sliding effects.
+Improve KDE menu generation. Suggested by Sandy Weicks <sw98234@hotmail.com>.
+Remove unused scripts.
+Make "e_cache_clean all" clean all cache dirs (img/ too).
+Added option to raise fullscreen windows.
+Fix _XROOT... hack.
