@@ -197,8 +197,35 @@
 /**
  * Define the get/set methods of a "property" of an object.
  *
- * This macro is used to define (i.e., create, i.e. insert the code
- * for) the get/set methods of an object property.
+ * This macro is identical to SPIF_DEFINE_PROPERTY_FUNC(), except that
+ * the property is treated as a non-object (i.e., its current value is
+ * not checked, so no destructor is called for the current value).
+ * Use this for spif_*_t types that are not objects, such as
+ * spif_int32_t and spif_sockport_t.
+ *
+ * @param otype The type of the object.
+ * @param vtype The type of the property variable.
+ * @param name  The name of the property.
+ *
+ * @see DOXGRP_OBJ, SPIF_DEFINE_PROPERTY_FUNC()
+ */
+#define SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(otype, vtype, name)  \
+  SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
+    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self-> ## name) : (SPIF_CAST(vtype) (0))); } \
+  SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, SPIF_TYPE(vtype) new_ ## name) \
+    { \
+        if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
+            return FALSE; \
+        } \
+        self-> ## name = new_ ## name; \
+        return TRUE; \
+    }
+
+/**
+ * Define the get/set methods of a "property" of an object.
+ *
+ * This macro is identical to SPIF_DEFINE_PROPERTY_FUNC(), except that
+ * a native C type is used.
  *
  * @param otype The type of the object.
  * @param vtype The C type of the property variable.

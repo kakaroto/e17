@@ -443,3 +443,12 @@ variable with corresponding get/set methods.
 
 I'll probably flesh this out more as I use it more.
 ----------------------------------------------------------------------
+Fri Oct 31 15:21:53 2003                        Michael Jennings (mej)
+
+Fixes to string class find/splice routines.
+
+Added SPIF_DEFINE_PROPERTY_FUNC_NONOBJ() macro for defining get/set
+methods of a property which is not an object.  It should be used in
+place of SPIF_DEFINE_PROPERTY_FUNC() for spif_*_t types that are not
+objects, such as spif_int32_t and spif_sockport_t.
+----------------------------------------------------------------------

@@ -308,27 +308,51 @@ spif_str_ncasecmp_with_ptr(spif_str_t self, spif_charptr_t other, size_t cnt)
 size_t
 spif_str_index(spif_str_t self, spif_char_t c)
 {
-    return (size_t) ((long) (index(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c)) - (long) (SPIF_STR_STR(self)));
+    char *tmp = index(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c);
+
+    if (tmp) {
+        return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
+    } else {
+        return SPIF_CAST_C(size_t) (self->len);
+    }
 }
 
 size_t
 spif_str_rindex(spif_str_t self, spif_char_t c)
 {
-    return (size_t) ((long) (rindex(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c)) - (long) (SPIF_STR_STR(self)));
+    char *tmp = rindex(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c);
+
+    if (tmp) {
+        return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
+    } else {
+        return SPIF_CAST_C(size_t) (self->len);
+    }
 }
 
 size_t
 spif_str_find(spif_str_t self, spif_str_t other)
 {
-    return (size_t) ((long) (strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
-                                    SPIF_CONST_CAST_C(char *) SPIF_STR_STR(other))) - (long) (SPIF_STR_STR(self)));
+    char *tmp = strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
+                       SPIF_CONST_CAST_C(char *) SPIF_STR_STR(other));
+
+    if (tmp) {
+        return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
+    } else {
+        return SPIF_CAST_C(size_t) (self->len);
+    }
 }
 
 size_t
 spif_str_find_from_ptr(spif_str_t self, spif_charptr_t other)
 {
-    return (size_t) ((long) (strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
-                                    SPIF_CONST_CAST_C(char *) other)) - (long) (SPIF_STR_STR(self)));
+    char *tmp = strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
+                       SPIF_CONST_CAST_C(char *) other);
+
+    if (tmp) {
+        return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
+    } else {
+        return SPIF_CAST_C(size_t) (self->len);
+    }
 }
 
 spif_str_t
@@ -430,10 +454,12 @@ spif_str_splice(spif_str_t self, size_t idx, size_t cnt, spif_str_t other)
     spif_charptr_t tmp, ptmp;
     size_t newsize;
 
-    newsize = self->len + ((SPIF_OBJ_ISNULL(other)) ? (0) : (other->len)) - cnt + 1;
+    newsize = self->len + ((SPIF_STR_ISNULL(other)) ? (0) : (other->len)) - cnt + 1;
     ptmp = tmp = SPIF_CAST(charptr) MALLOC(newsize);
-    memcpy(tmp, self->s, idx);
-    ptmp += idx;
+    if (idx > 0) {
+        memcpy(tmp, self->s, idx);
+        ptmp += idx;
+    }
     if (!SPIF_OBJ_ISNULL(other)) {
         memcpy(ptmp, other->s, other->len);
         ptmp += other->len;
@@ -458,8 +484,10 @@ spif_str_splice_from_ptr(spif_str_t self, size_t idx, size_t cnt, spif_charptr_t
     len = (other ? strlen(SPIF_CONST_CAST_C(char *) other) : 0);
     newsize = self->len + len - cnt + 1;
     ptmp = tmp = SPIF_CAST(charptr) MALLOC(newsize);
-    memcpy(tmp, self->s, idx);
-    ptmp += idx;
+    if (idx > 0) {
+        memcpy(tmp, self->s, idx);
+        ptmp += idx;
+    }
     if (len) {
         memcpy(ptmp, other, len);
         ptmp += len;
