@@ -9,6 +9,7 @@ static void __ewl_filedialog_file_clicked (Ewl_Widget * w, void *ev_data,
 		void *user_data);
 void __ewl_filedialog_directory_clicked (Ewl_Widget * w, void *ev_data, 
 		void *user_data);
+int ewl_fileselector_alphasort(const struct dirent **a, const struct dirent **b);
 
 
 
@@ -56,13 +57,16 @@ int scandir(const char *dir, struct dirent ***namelist,
   return(i);
 }
 
-int alphasort(const struct dirent **a, const struct dirent **b)
-{
-  return(strcmp((*a)->d_name, (*b)->d_name));
-}
 
 #endif
 /* *************************************** */
+
+
+
+int ewl_fileselector_alphasort(const struct dirent **a, const struct dirent **b)
+{
+  return(strcmp((*b)->d_name, (*a)->d_name));
+}
 
 
 /**
@@ -163,7 +167,8 @@ void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	fs = EWL_FILESELECTOR(w);
 	home = getenv("HOME");
 
-	ewl_filedialog_process_directory(fs, home);
+	if (home)
+		ewl_filedialog_process_directory(fs, home);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -223,7 +228,7 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 
 	strncpy (dir, directory, PATH_MAX);
 
-	if ((num = scandir (dir, &dentries, 0, alphasort)) < 0) {
+	if ((num = scandir (dir, &dentries, 0, ewl_fileselector_alphasort)) < 0) {
 		perror("ewl_filedialog_process_directory - scandir");
 		return;
 	}
@@ -238,6 +243,14 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 			perror("ewl_filedialog_process_directory - stat 1");
 			continue;
 		}
+
+		if (!strcmp (dentries[num]->d_name, ".") || 
+				!strcmp (dentries[num]->d_name, "..")) {
+			
+		} else if (dentries[num]->d_name[0] == '.')
+				continue;
+
+		printf ("%s\n", dentries[num]->d_name);
 
 		items[0] = ewl_text_new (dentries[num]->d_name);
 		ewl_widget_show (items[0]);
