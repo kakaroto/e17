@@ -1614,9 +1614,8 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
    return accept;
 }
 
-ImlibOutCode
-__imlib_comp_outcode(double x, double y, double xmin, double xmax,
-                     double ymin, double ymax)
+ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
+                                  double xmax, double ymin, double ymax)
 {
    ImlibOutCode code = 0;
 
@@ -1631,7 +1630,8 @@ __imlib_comp_outcode(double x, double y, double xmin, double xmax,
    return code;
 }
 
-ImlibPoly __imlib_polygon_new(int type)
+ImlibPoly
+__imlib_polygon_new()
 {
    ImlibPoly poly;
 
@@ -1639,19 +1639,6 @@ ImlibPoly __imlib_polygon_new(int type)
    if (!poly)
       return NULL;
    memset(poly, 0, sizeof(_ImlibPoly));
-   switch (type)
-   {
-     case P_OPEN:
-        break;
-     case P_CLOSED:
-        poly->closed = 1;
-        break;
-     case P_FILLED:
-        poly->filled = 1;
-        break;
-     default:
-        break;
-   }
    return poly;
 }
 
@@ -1677,19 +1664,13 @@ __imlib_polygon_free(ImlibPoly poly)
 
 
 void
-__imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
-                     DATA8 b, DATA8 a, ImlibOp op)
+__imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, unsigned char closed,
+                     DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
    int i;
 
    if (!poly || !poly->points || (poly->pointcount < 2))
       return;
-
-   if (poly->filled)
-   {
-      __imlib_draw_polygon_filled(im, poly, r, g, b, a, op);
-      return;
-   }
 
    for (i = 0; i < poly->pointcount; i++)
    {
@@ -1697,7 +1678,7 @@ __imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
          __imlib_draw_line(im, poly->points[i].x, poly->points[i].y,
                            poly->points[i + 1].x, poly->points[i + 1].y, r, g,
                            b, a, op, 0);
-      else if (poly->closed)
+      else if (closed)
          __imlib_draw_line(im, poly->points[i].x, poly->points[i].y,
                            poly->points[0].x, poly->points[0].y, r, g, b, a,
                            op, 0);
@@ -1707,7 +1688,8 @@ __imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
 }
 
 void
-__imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
+__imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly,
+                             unsigned char closed, int clip_xmin,
                              int clip_xmax, int clip_ymin, int clip_ymax,
                              DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
@@ -1715,14 +1697,6 @@ __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 
    if (!poly || !poly->points || (poly->pointcount < 2))
       return;
-
-   if (poly->filled)
-   {
-      __imlib_draw_polygon_filled_clipped(im, poly, clip_xmin, clip_xmax,
-                                          clip_ymin, clip_ymax, r, g, b, a,
-                                          op);
-      return;
-   }
 
    for (i = 0; i < poly->pointcount; i++)
    {
@@ -1732,7 +1706,7 @@ __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
                                    poly->points[i + 1].y, clip_xmin,
                                    clip_xmax, clip_ymin, clip_ymax, r, g, b,
                                    a, op, 0);
-      else if (poly->closed)
+      else if (closed)
          __imlib_draw_line_clipped(im, poly->points[i].x, poly->points[i].y,
                                    poly->points[0].x, poly->points[0].y,
                                    clip_xmin, clip_xmax, clip_ymin, clip_ymax,

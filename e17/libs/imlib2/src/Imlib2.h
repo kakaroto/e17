@@ -245,10 +245,11 @@ void imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x, i
 void imlib_image_copy_rect(int x, int y, int width, int height, int new_x,int new_y);
 
 /* polygons */
-ImlibPolygon imlib_polygon_new(int type);
+ImlibPolygon imlib_polygon_new(void);
 void imlib_polygon_free(ImlibPolygon poly);
 void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);
-void imlib_image_draw_polygon(ImlibPolygon poly);
+void imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed);
+void imlib_image_fill_polygon(ImlibPolygon poly);
 void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2, int *py2);
 
 /* ellipses */

@@ -44,14 +44,13 @@ typedef _ImlibPoly * ImlibPoly;
 
 struct _imlib_polygon
 {
-   unsigned char closed, filled;
    ImlibPoint *points;
    int pointcount;
 };
 
 void __imlib_polygon_free(ImlibPoly poly);
 void __imlib_polygon_add_point(ImlibPoly poly, int x, int y);
-ImlibPoly __imlib_polygon_new(int type);
+ImlibPoly __imlib_polygon_new(void);
 
 typedef unsigned int ImlibOutCode;
 enum
@@ -76,7 +75,7 @@ void __imlib_copy_alpha_data(ImlibImage *src, ImlibImage *dst, int x, int y, int
 ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin, double xmax,
                                   double ymin, double ymax);
 void
-__imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
+__imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, unsigned char closed, DATA8 r, DATA8 g,
                  DATA8 b, DATA8 a, ImlibOp op);
 ImlibUpdate        *
 __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
@@ -89,7 +88,7 @@ __imlib_draw_box_clipped(ImlibImage * im, int x, int y, int w, int h,
                          int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
                          ImlibOp op);
 void
-__imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
+__imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, unsigned char closed, int clip_xmin,
    int clip_xmax, int clip_ymin, int clip_ymax, DATA8 r, DATA8 g,  DATA8 b,
    DATA8 a, ImlibOp op);
 void __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2, int *py2);

@@ -2762,9 +2762,9 @@ imlib_apply_filter(char *script, ...)
 }
 
 ImlibPolygon
-imlib_polygon_new(int type)
+imlib_polygon_new(void)
 {
-   return (ImlibPolygon) __imlib_polygon_new(type);
+   return (ImlibPolygon) __imlib_polygon_new();
 }
 
 void
@@ -2782,7 +2782,7 @@ imlib_polygon_free(ImlibPolygon poly)
 }
 
 void
-imlib_image_draw_polygon(ImlibPolygon poly)
+imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
 {
    ImlibImage *im;
 
@@ -2796,7 +2796,7 @@ imlib_image_draw_polygon(ImlibPolygon poly)
    __imlib_DirtyPixmapsForImage(im);
    if (ctxt_cliprect.w)
    {
-      __imlib_draw_polygon_clipped(im, poly, ctxt_cliprect.x,
+      __imlib_draw_polygon_clipped(im, poly, closed, ctxt_cliprect.x,
                                    ctxt_cliprect.x + ctxt_cliprect.w,
                                    ctxt_cliprect.y,
                                    ctxt_cliprect.y + ctxt_cliprect.h,
@@ -2806,10 +2806,41 @@ imlib_image_draw_polygon(ImlibPolygon poly)
    }
    else
    {
-      __imlib_draw_polygon(im, poly, ctxt_color.red, ctxt_color.green,
+      __imlib_draw_polygon(im, poly, closed, ctxt_color.red, ctxt_color.green,
                            ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
    }
 }
+
+void
+imlib_image_fill_polygon(ImlibPolygon poly)
+{
+   ImlibImage *im;
+
+   CHECK_PARAM_POINTER("imlib_image_fill_polygon", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   if (ctxt_cliprect.w)
+   {
+      __imlib_draw_polygon_filled_clipped(im, poly, ctxt_cliprect.x,
+                                   ctxt_cliprect.x + ctxt_cliprect.w,
+                                   ctxt_cliprect.y,
+                                   ctxt_cliprect.y + ctxt_cliprect.h,
+                                   ctxt_color.red, ctxt_color.green,
+                                   ctxt_color.blue, ctxt_color.alpha,
+                                   ctxt_operation);
+   }
+   else
+   {
+      __imlib_draw_polygon_filled(im, poly, ctxt_color.red, ctxt_color.green,
+                           ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
+   }
+}
+
 
 void
 imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2,
