@@ -937,16 +937,20 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 		/*
 		 * Estimate the average width and height of the line.
 		 */
-		*w = line->w / line->length;
-		*h = line->h;
+		if (w)
+			*w = line->w / line->length;
+		if (h)
+			*h = line->h;
 
 		/*
 		 * Now position it based on the total width of the line, and
 		 * the starting position of the bits.
 		 */
 		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
-		*x = tx + line->w;
-		*y = line->y;
+		if (x)
+			*x = tx + line->w;
+		if (y)
+			*y = line->y;
 	} else {
 
 		/*
