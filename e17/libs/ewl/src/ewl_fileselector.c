@@ -101,13 +101,15 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 	w = EWL_WIDGET(fs);
 
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
+				                  EWL_FLAG_FILL_FILL);
 
 	/* 
 	 * Create the vbox that should contain the directories tree
 	 */
 	fs->dbox = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(fs->dbox), EWL_FLAG_FILL_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(fs->dbox), EWL_FLAG_FILL_SHRINK |
+							 EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->dbox);
 	ewl_widget_show(fs->dbox);
 
@@ -206,7 +208,7 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 	char                 file[PATH_MAX];
 	struct stat          statbuf;
 	Ewl_Widget           *items[1];
-	Ewl_Widget           *row;
+	Ewl_Widget           *row = NULL;
 	Ewl_Fileselector_Row *f_row;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);

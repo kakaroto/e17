@@ -142,7 +142,7 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	fd->selector = ewl_fileselector_new(cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),
-				   EWL_FLAG_FILL_SHRINK);
+				   EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd->selector);
 	ewl_callback_append (EWL_WIDGET (fd->selector),
 			EWL_CALLBACK_VALUE_CHANGED, ewl_filedialog_change_labels, fd);
