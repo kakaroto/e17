@@ -311,7 +311,7 @@ int main(int argc, char **argv)
    _e_bg_bg_parseargs(argc, argv);
 
    if (!e_bg_no_load) {
-      if (!e_init(":0.0")) {
+      if (!e_init(getenv("DISPLAY"))) {
          printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
          return 0;
       }
