@@ -272,8 +272,6 @@ int ewl_idle_render(void *data)
 			evas_event_freeze(emb->evas);
 	}
 
-	edje_freeze();
-
 	if (!ecore_list_is_empty(configure_list))
 		ewl_configure_queue();
 
@@ -287,8 +285,11 @@ int ewl_idle_render(void *data)
 		if (REALIZED(emb) && emb->evas) {
 			evas_event_thaw(emb->evas);
 			evas_render(emb->evas);
+			evas_event_freeze(emb->evas);
 		}
 	}
+
+	edje_freeze();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 	data = NULL;

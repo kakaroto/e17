@@ -106,13 +106,16 @@ void ewl_notebook_page_append(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 	b = ewl_button_new(NULL);
 	if (t)
 		ewl_container_child_append(EWL_CONTAINER(b), t);
-	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_click_cb,
-			    p);
+	ewl_callback_append(b, EWL_CALLBACK_CLICKED, 
+					ewl_notebook_tab_click_cb, p);
 	ewl_widget_show(b);
 
 	ewl_container_child_append(EWL_CONTAINER(n->tab_box), b);
 	ewl_container_child_append(EWL_CONTAINER(w), p);
 	ewl_widget_data_set(p, n, b);
+
+	ewl_callback_append(p, EWL_CALLBACK_REPARENT, 
+			    ewl_notebook_page_reparent_cb, n);
 
 	if (!n->visible_page)
 		n->visible_page = p;
@@ -143,13 +146,16 @@ void ewl_notebook_page_prepend(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 	b = ewl_button_new(NULL);
 	if (t)
 		ewl_container_child_append(EWL_CONTAINER(b), t);
-	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_click_cb,
-                            p);
+	ewl_callback_append(b, EWL_CALLBACK_CLICKED, 
+					ewl_notebook_tab_click_cb, p);
 	ewl_widget_show(b);
 
 	ewl_container_child_prepend(EWL_CONTAINER(n->tab_box), b);
 	ewl_container_child_prepend(EWL_CONTAINER(w), p);
 	ewl_widget_data_set(p, n, b);
+
+	ewl_callback_append(p, EWL_CALLBACK_REPARENT, 
+			    ewl_notebook_page_reparent_cb, n);
 
 	if (!n->visible_page)
 		n->visible_page = p;
@@ -183,13 +189,16 @@ ewl_notebook_page_insert(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
 	b = ewl_button_new(NULL);
 	if (t)
 		ewl_container_child_append(EWL_CONTAINER(b), t);
-	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_click_cb,
-			    p);
+	ewl_callback_append(b, EWL_CALLBACK_CLICKED, 
+					ewl_notebook_tab_click_cb, p);
 	ewl_widget_show(b);
 
 	ewl_container_child_insert(EWL_CONTAINER(n->tab_box), b, pos);
 	ewl_container_child_insert(EWL_CONTAINER(w), p, pos);
 	ewl_widget_data_set(p, n, b);
+
+	ewl_callback_append(p, EWL_CALLBACK_REPARENT, 
+			    ewl_notebook_page_reparent_cb, n);
 
 	if (!n->visible_page)
 		n->visible_page = p;
@@ -576,7 +585,8 @@ void ewl_notebook_visible_page_set(Ewl_Notebook *n, int t)
 
 	c = EWL_CONTAINER(n);
 
-	if (!ecore_list_nodes(c->children) || t > ecore_list_nodes(c->children))
+	if (!c->children || !ecore_list_nodes(c->children) 
+			|| t > ecore_list_nodes(c->children))
 		DRETURN(DLEVEL_STABLE);
 
 	i = 0;
@@ -860,3 +870,32 @@ ewl_notebook_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+void
+ewl_notebook_page_reparent_cb(Ewl_Widget *w, void *ev_data, void *user_data) 
+{
+	Ewl_Notebook *n = NULL;
+	Ewl_Widget *tab = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
+
+	n = EWL_NOTEBOOK(user_data);
+
+	if (EWL_WIDGET(ev_data) == EWL_WIDGET(n))
+		DRETURN(DLEVEL_STABLE);
+
+	tab = ewl_widget_data_get(w, n);
+	if (tab)
+		ewl_widget_destroy(tab);
+
+	if (n->visible_page == w) {
+		n->visible_page = NULL;
+		ewl_notebook_visible_page_set(n, 1);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+

@@ -61,6 +61,8 @@ void            ewl_notebook_configure_left_cb(Ewl_Widget * w, void *ev_data,
 					       void *user_data);
 void            ewl_notebook_configure_right_cb(Ewl_Widget * w, void *ev_data,
 					        void *user_data);
+void            ewl_notebook_page_reparent_cb(Ewl_Widget *w, void *ev_data, 
+					      void *user_data);
 void            ewl_notebook_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
 void            ewl_notebook_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 				       int size, Ewl_Orientation o);
