@@ -27,7 +27,7 @@ dnl Checks for library functions.
 dnl Checks for Additional stuffs.
 
 dnl Checks for gettext
-AC_PROG_INTLTOOL([0.23])
+#AC_PROG_INTLTOOL([0.23])
 
 GETTEXT_PACKAGE=e16menuedit2
 AC_SUBST(GETTEXT_PACKAGE)
@@ -36,9 +36,10 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 
 dnl Languages which your application supports
 ALL_LINGUAS="de en"
-AM_GNU_GETTEXT
+AM_GLIB_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.10.40)
 #AM_GNU_GETTEXT_VERSION(0.12.1)
+AC_PROG_INTLTOOL
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -104,7 +105,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_HELP_DIR, "${packageprefix}/${packagehelpdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_MENU_DIR, "${packageprefix}/${packagemenudir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
 
-AC_OUTPUT([
+AC_OUTPUT([ 
 Makefile
 intl/Makefile
 po/Makefile.in

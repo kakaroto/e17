@@ -3,7 +3,7 @@
 ## If you don't want it to overwrite it,
 ## 	Please disable it in the Anjuta project configuration
 
-SUBDIRS = intl po src pixmaps
+SUBDIRS = po src pixmaps
 
 e16menuedit2docdir = ${prefix}/doc/e16menuedit2
 e16menuedit2doc_DATA = \
@@ -26,3 +26,5 @@ dist-hook:
 		fi \
 	done
 
+
+ACLOCAL_AMFLAGS = -I m4
