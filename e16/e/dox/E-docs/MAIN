@@ -43,9 +43,8 @@ have just upgraded to a new version. Congratulations. Now it's time to take
 you on a quick tour of the desktop you will have before you.
 <p>
 Please remember that if you use a _theme(themes) other than the default
-(Brushed Metal)
-that it may look slightly or completely different to the contents of this
-User Documenation. Some behavior may also vary.
+(Brushed Metal) that it may look slightly or completely different to the 
+contents of this User Documenation. Some behavior may also vary.
 <p>
 To relaunch this Help Browser at any time, middle click on your
 _desktop(desktops) and select the "Help" Item.  The documentation should come
@@ -342,7 +341,7 @@ else is your desktop background.
 Using Menus
 <font face=aircut3/12 color=#ffffff>
 When you click with your left mouse button on the desktop _background(backgrounds) you will
-see an "Applications" menu appear (example displayed on the right here). 
+see an "User Menus" menu appear (example displayed on the right here). 
 Applications you may have installed will appear in this menu. To launch one 
 of them simply select it from the menu.
 <p>
