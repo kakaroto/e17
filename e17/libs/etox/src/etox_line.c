@@ -384,7 +384,7 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 		if (t == ETOX_BIT_TYPE_WRAP_MARKER)
 			continue;
 		else if (t == ETOX_BIT_TYPE_TAB)
-			temp = "\t";
+			temp = strdup("\t");
 		else
 			temp = etox_style_get_text(es);
 		tlen = strlen(temp);
