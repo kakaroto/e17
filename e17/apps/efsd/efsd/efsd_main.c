@@ -629,6 +629,11 @@ main_handle_connections(void)
 	  clilen = sizeof(cli_sun);
 	  if ( (sock_fd = accept(listen_fd, (struct sockaddr *)&cli_sun, &clilen)) < 0)
 	    {
+	      /* FIXME -- Are Unix Domain Sockets susceptible to the same
+		 race condition as in TCP/IP where accept() may block after
+		 select() returned an fd as readable, when the client
+		 immediately sent a RST? */
+
 	      perror("Error:");
 	      fprintf(stderr, "Could not accept connection -- exiting.\n");
 	      exit(-1);
@@ -656,7 +661,7 @@ main_handle_connections(void)
 }
 
 
-static void 
+static void
 main_cleanup_signal_callback(int signal)
 {
   D_ENTER;

@@ -9,21 +9,21 @@ MAINTAINERCLEANFILES = Makefile.in Makefile magic.db pattern.db magic2db efsdsh
 INCLUDES = -I$(top_srcdir)/efsd
 
 efsdsh_SOURCES = efsdsh.c
-efsdsh_LDADD = -L$(top_srcdir)/efsd/.libs -lefsd
+efsdsh_LDADD = -L$(top_builddir)/efsd/.libs -lefsd
 
 
 all-local: magic.db pattern.db
 
-magic.db: magic.txt magic2db
-	chmod 755 magic2db
+magic.db: $(top_srcdir)/tools/magic.txt magic2db
+	chmod +x magic2db
 	if test -e magic.db; then \
 	  rm -f magic.db; \
 	fi
-	./magic2db magic.txt magic.db
+	./magic2db $(top_srcdir)/tools/magic.txt magic.db
 
-pattern.db: build_pattern_db.sh
-	chmod 755 build_pattern_db.sh
-	./build_pattern_db.sh pattern.db
+pattern.db: $(top_srcdir)/tools/build_pattern_db
+	chmod +x build_pattern_db
+	./build_pattern_db pattern.db
 
 distclean-local:
 	rm -f magic.db
@@ -47,4 +47,4 @@ install-data-local:
 	  $(INSTALL) pattern.db $(DESTDIR)$(pkgdatadir)/pattern.db; \
 	fi
 
-EXTRA_DIST = magic.txt build_pattern_db.sh
+EXTRA_DIST = magic.txt

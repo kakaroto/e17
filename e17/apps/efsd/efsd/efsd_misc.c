@@ -45,6 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fam.h>
 #include <efsd_globals.h>
 #include <efsd_macros.h>
+#include <efsd_meta.h>
 #include <efsd_misc.h>
 #include <efsd_statcache.h>
 

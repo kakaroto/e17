@@ -1,6 +1,6 @@
 #! /bin/sh
 
-DB="edb_ed $1 add"
+DB="@EDB_ED@ $1 add"
 STR="str"
 
 $DB "*.ppm"     $STR "image/ppm"

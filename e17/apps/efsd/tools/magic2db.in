@@ -217,6 +217,10 @@ sub do_it {
 
   $dropped_level = 1000000;
 
+  # Make stdout unbuffered:
+  select(STDOUT);
+  $| = 1; 
+
   while ($line = <MAGIC>)
     {     
       unless (($line =~ /^#.*/m) || ($line =~ /^$/m))
@@ -415,6 +419,11 @@ sub do_it {
 
 	     write_magic(\@indices, $level, \%magic);
 	     $num_tests++;
+	     if (($num_tests % 100) == 0)
+	       {
+		 print ".";	  
+	       }
+
 	   }
 	 else
 	   {
@@ -426,7 +435,7 @@ sub do_it {
 
   e_db_command_add_remaining();
 
-  print $num_tests . " tests written to db.\n";
+  print "\n" . $num_tests . " tests written to db.\n";
 }
 
 

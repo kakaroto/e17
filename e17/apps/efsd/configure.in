@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(efsd, 1.0)
+AM_INIT_AUTOMAKE(efsd, 0.1)
 AM_CONFIG_HEADER(config.h)
 
 AC_ISC_POSIX
@@ -144,6 +144,7 @@ efsd/Makefile
 demo/Makefile
 tools/Makefile
 tools/magic2db
+tools/build_pattern_db
 ], [
 chmod +x efsd-config
 ])
