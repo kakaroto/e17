@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BUTTON
 #include "E.h"
 #include <sys/time.h>
 
@@ -337,7 +338,8 @@ AddButtonToSlideout(Slideout * s, Button * b)
    b->default_show = 0;
    b->flags |= FLAG_FIXED;
    b->used = 1;
-   ShowButton(b);
+   b->ref_count++;
+   ButtonShow(b);
    CalcSlideoutSize(s);
 
    EDBUG_RETURN_;

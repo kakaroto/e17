@@ -1467,10 +1467,9 @@ HandleComms(XClientMessageEvent * ev)
 	  {
 	     Button             *b;
 
-	     while ((b =
-		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BUTTON)))
-		DestroyButton(b);
+	     while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+				    LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+		ButtonDestroy(b);
 	     InitDesktopControls();
 	     ShowDesktopControls();
 	  }

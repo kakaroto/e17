@@ -43,8 +43,7 @@ runDocBrowser(void)
 int
 main(int argc, char **argv)
 {
-   int                 i, num;
-   Button            **blst;
+   int                 i;
    Background         *bg;
    ECursor            *ec = NULL;
    struct utsname      ubuf;
@@ -264,18 +263,8 @@ main(int argc, char **argv)
      }
    /* toss down the dragbar and related */
    InitDesktopControls();
-
    /* then draw all the buttons that belong on the desktop */
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((!blst[i]->internal) && (blst[i]->default_show))
-		ShowButton(blst[i]);
-	  }
-	Efree(blst);
-     }
+   ShowDesktopButtons();
 
    HintsInit();
    SessionInit();

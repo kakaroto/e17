@@ -683,8 +683,7 @@ HandleMotion(XEvent * ev)
 	  {
 	     if (mode.button)
 	       {
-		  MovebuttonToCoord(mode.button, mode.button->x + dx,
-				    mode.button->y + dy);
+		  ButtonMoveRelative(mode.button, dx, dy);
 		  if (mode.deskmode == MODE_DESKRAY)
 		    {
 		       MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
@@ -1346,22 +1345,8 @@ HandleExpose(XEvent * ev)
    if (ewin)
       Efree(ewin);
 
-   {
-      Button            **button;
-
-      button = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-      for (i = 0; i < num; i++)
-	{
-	   if (win == button[i]->win)
-	     {
-		DrawButton(button[i]);
-		Efree(button);
-		EDBUG_RETURN_;
-	     }
-	}
-      if (button)
-	 Efree(button);
-   }
+   if (ButtonsEventExpose(ev))
+      EDBUG_RETURN_;
 
    DialogEventExpose(ev);
 
@@ -1375,8 +1360,6 @@ HandleMouseDown(XEvent * ev)
    EWin               *ewin;
    EWin              **ewins;
    int                 i, j, num;
-   Button            **buttons;
-   ActionClass        *ac;
    Menu               *m;
    MenuItem           *mi;
    int                 desk_click;
@@ -1458,7 +1441,7 @@ HandleMouseDown(XEvent * ev)
 	EDBUG_RETURN_;
      }
 
-   m = FindMenuItem(click_was_in, &mi);
+   m = FindMenuItem(win, &mi);
    if ((!m) && ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK)))
      {
 	ewin = FindEwinByChildren(win);
@@ -1550,41 +1533,8 @@ HandleMouseDown(XEvent * ev)
 	Efree(ewins);
      }
 
-   if (win)
-     {
-	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
-	       {
-		  GrabThePointer(win);
-		  if (buttons[i]->inside_win)
-		    {
-		       Window              id;
-
-		       id = ev->xany.window;
-		       ev->xany.window = buttons[i]->inside_win;
-		       XSendEvent(disp, buttons[i]->inside_win, False,
-				  ButtonPressMask, ev);
-		       ev->xany.window = id;
-		    }
-
-		  mode.button = buttons[i];
-		  buttons[i]->state = STATE_CLICKED;
-		  DrawButton(buttons[i]);
-		  ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_ACLASS);
-		  if (ac)
-		     EventAclass(ev, ac);
-		  if (buttons[i]->aclass)
-		     EventAclass(ev, buttons[i]->aclass);
-		  Efree(buttons);
-		  EDBUG_RETURN_;
-	       }
-	  }
-	if (buttons)
-	   Efree(buttons);
-     }
+   if (ButtonsEventMouseDown(ev))
+      goto exit;
 
    DialogEventMouseDown(ev);
 
@@ -1611,6 +1561,7 @@ HandleMouseDown(XEvent * ev)
 
    PagersEventMouseDown(ev);
 
+ exit:
    EDBUG_RETURN_;
 }
 
@@ -1621,7 +1572,6 @@ HandleMouseUp(XEvent * ev)
    EWin               *ewin;
    EWin              **ewins;
    int                 i, j, num;
-   Button            **buttons;
    char                wasdrag;
    char                wasmovres;
    char                justclicked = 0;
@@ -1639,6 +1589,7 @@ HandleMouseUp(XEvent * ev)
 	if ((int)last_button != (int)ev->xbutton.button)
 	   EDBUG_RETURN_;
      }
+
    if (ttip)
       HideToolTip(ttip);
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
@@ -1674,9 +1625,6 @@ HandleMouseUp(XEvent * ev)
 	mode.place = 0;
 	EDBUG_RETURN_;
      }
-   wasdrag = 0;
-   wasmovres = 0;
-   pslideout = mode.slideout;
 
    if ((last_bpress) && (last_bpress != win))
      {
@@ -1700,6 +1648,7 @@ HandleMouseUp(XEvent * ev)
 	  }
 	last_bpress = 0;
      }
+
    wasdrag = 0;
    wasmovres = 0;
    switch (mode.mode)
@@ -1891,45 +1840,9 @@ HandleMouseUp(XEvent * ev)
      }
    if (ewins)
       Efree(ewins);
-   if (click_was_in)
-     {
-	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     if ((click_was_in == buttons[i]->win)
-		 || (click_was_in == buttons[i]->event_win))
-	       {
-		  if ((buttons[i]->inside_win) && (!wasmovres))
-		    {
-		       Window              id = ev->xany.window;
 
-		       ev->xany.window = buttons[i]->inside_win;
-		       XSendEvent(disp, buttons[i]->inside_win, False,
-				  ButtonReleaseMask, ev);
-		       ev->xany.window = id;
-		    }
-		  mode.button = buttons[i];
-		  if ((buttons[i]->state == STATE_CLICKED)
-		      && (!buttons[i]->left))
-		     buttons[i]->state = STATE_HILITED;
-		  else
-		     buttons[i]->state = STATE_NORMAL;
-		  buttons[i]->left = 0;
-		  DrawButton(buttons[i]);
-		  if ((buttons[i]->aclass) && (!wasdrag) && (!wasmovres))
-		     EventAclass(ev, buttons[i]->aclass);
-		  mode.destroy = 0;
-		  if ((mode.slideout) && (pslideout))
-		     HideSlideout(mode.slideout, mode.context_win);
-		  Efree(buttons);
-		  click_was_in = 0;
-		  last_bpress = 0;
-		  EDBUG_RETURN_;
-	       }
-	  }
-	if (buttons)
-	   Efree(buttons);
-     }
+   if (ButtonsEventMouseUp(ev, wasmovres, wasdrag))
+      goto exit;
 
    DialogEventMouseUp(ev, click_was_in);
 
@@ -1961,6 +1874,7 @@ HandleMouseUp(XEvent * ev)
 
    mode.destroy = 0;
 
+ exit:
    if ((mode.slideout) && (pslideout))
       HideSlideout(mode.slideout, mode.context_win);
 
@@ -2049,7 +1963,6 @@ HandleMouseIn(XEvent * ev)
    EWin               *ewin;
    EWin              **ewins;
    int                 i, j, num;
-   Button            **buttons;
 
    EDBUG(5, "HandleMouseIn");
 
@@ -2147,33 +2060,12 @@ HandleMouseIn(XEvent * ev)
    if (ewins)
       Efree(ewins);
 
-   if (win)
-     {
-	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
-	       {
-		  mode.button = buttons[i];
-		  if (buttons[i]->state == STATE_CLICKED)
-		     buttons[i]->left = 0;
-		  else
-		    {
-		       buttons[i]->state = STATE_HILITED;
-		       DrawButton(buttons[i]);
-		       if (buttons[i]->aclass)
-			  EventAclass(ev, buttons[i]->aclass);
-		    }
-		  Efree(buttons);
-		  EDBUG_RETURN_;
-	       }
-	  }
-	if (buttons)
-	   Efree(buttons);
-     }
+   if (ButtonsEventMouseIn(ev))
+      goto exit;
 
    DialogEventMouseIn(ev);
 
+ exit:
    EDBUG_RETURN_;
 }
 
@@ -2253,34 +2145,11 @@ HandleMouseOut(XEvent * ev)
    if (ewins)
       Efree(ewins);
 
-   if (win)
-     {
-	Button            **buttons;
-
-	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	for (i = 0; i < num; i++)
-	  {
-	     if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
-	       {
-		  mode.button = NULL;
-		  if (buttons[i]->state == STATE_CLICKED)
-		     buttons[i]->left = 1;
-		  else
-		    {
-		       buttons[i]->state = STATE_NORMAL;
-		       DrawButton(buttons[i]);
-		       if (buttons[i]->aclass)
-			  EventAclass(ev, buttons[i]->aclass);
-		    }
-		  Efree(buttons);
-		  EDBUG_RETURN_;
-	       }
-	  }
-	if (buttons)
-	   Efree(buttons);
-     }
+   if (ButtonsEventMouseOut(ev))
+      goto exit;
 
    DialogEventMouseOut(ev);
 
+ exit:
    EDBUG_RETURN_;
 }

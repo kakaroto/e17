@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BUTTON
 #include "E.h"
 #include <sys/time.h>
 
@@ -170,7 +171,7 @@ ShowDesktopControls()
    if ((blst) && (num > 0))
      {
 	for (i = 0; i < num; i++)
-	   ShowButton(blst[i]);
+	   ButtonShow(blst[i]);
 	Efree(blst);
 	StackDesktops();
      }
@@ -186,7 +187,7 @@ ShowDesktopTabs()
    if ((blst) && (num > 0))
      {
 	for (i = 0; i < num; i++)
-	   ShowButton(blst[i]);
+	   ButtonShow(blst[i]);
 	Efree(blst);
 	StackDesktops();
      }
@@ -195,16 +196,34 @@ ShowDesktopTabs()
 void
 HideDesktopTabs()
 {
-   Button            **lst;
+   Button            **blst;
    int                 num, i;
 
-   lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   if ((lst) && (num > 0))
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
+   if ((blst) && (num > 0))
      {
 	for (i = 0; i < num; i++)
-	   HideButton(lst[i]);
-	Efree(lst);
+	   ButtonHide(blst[i]);
+	Efree(blst);
 	StackDesktops();
+     }
+}
+
+void
+ShowDesktopButtons(void)
+{
+   Button            **blst;
+   int                 i, num;
+
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+   if (blst)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     if ((!blst[i]->internal) && (blst[i]->default_show))
+		ButtonShow(blst[i]);
+	  }
+	Efree(blst);
      }
 }
 
@@ -1002,15 +1021,15 @@ InitDesktopControls()
 
 	if (desks.dragbar_width > 0)
 	  {
-	     b = CreateButton("_DESKTOP_DRAG_CONTROL", ic2, ac2, NULL, NULL, -1,
+	     b = ButtonCreate("_DESKTOP_DRAG_CONTROL", ic2, ac2, NULL, NULL, -1,
 			      FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[0], 0,
 			      y[0], 0, 0, w[0], 0, h[0], 0, i, 0);
 	     AddItem(b, b->name, 1, LIST_TYPE_BUTTON);
-	     b = CreateButton("_DESKTOP_DRAG_CONTROL", ic3, ac3, NULL, NULL, -1,
+	     b = ButtonCreate("_DESKTOP_DRAG_CONTROL", ic3, ac3, NULL, NULL, -1,
 			      FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[1], 0,
 			      y[1], 0, 0, w[1], 0, h[1], 0, i, 0);
 	     AddItem(b, b->name, 1, LIST_TYPE_BUTTON);
-	     b = CreateButton("_DESKTOP_DRAG_CONTROL", ic, ac, NULL, NULL, -1,
+	     b = ButtonCreate("_DESKTOP_DRAG_CONTROL", ic, ac, NULL, NULL, -1,
 			      FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[2], 0,
 			      y[2], 0, 0, w[2], 0, h[2], 0, i, 0);
 	     AddItem(b, b->name, 1, LIST_TYPE_BUTTON);
@@ -1019,14 +1038,14 @@ InitDesktopControls()
 	  {
 	     if (desks.dragdir == 0)
 	       {
-		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
+		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     else if (desks.dragdir == 1)
 	       {
-		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
+		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 				   99999, 0, 0,
 				   desks.desk[i].x + root.w -
@@ -1035,14 +1054,14 @@ InitDesktopControls()
 	       }
 	     else if (desks.dragdir == 2)
 	       {
-		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
+		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     else
 	       {
-		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
+		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y + root.h -
@@ -1453,10 +1472,8 @@ MoveDesktop(int num, int x, int y)
    EMoveWindow(disp, desks.desk[num].win, x, y);
 
    if (desks.desk[num].tag)
-     {
-	MovebuttonToCoord(desks.desk[num].tag, desks.desk[num].tag->x + dx,
-			  desks.desk[num].tag->y + dy);
-     }
+      ButtonMoveRelative(desks.desk[num].tag, dx, dy);
+
    desks.desk[num].x = x;
    desks.desk[num].y = y;
 

@@ -2026,7 +2026,7 @@ CB_ConfigureFX(int val, void *data)
 	     while ((b =
 		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BUTTON)))
-		DestroyButton(b);
+		ButtonDestroy(b);
 	     InitDesktopControls();
 	     ShowDesktopControls();
 	  }

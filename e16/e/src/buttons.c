@@ -20,10 +20,11 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BUTTON
 #include "E.h"
 
 Button             *
-CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
+ButtonCreate(char *name, ImageClass * iclass, ActionClass * aclass,
 	     TextClass * tclass, char *label, char ontop, int flags,
 	     int minw, int maxw, int minh, int maxh, int xo, int yo,
 	     int xa, int xr, int ya, int yr, int xsr, int xsa, int ysr,
@@ -31,7 +32,7 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
 {
    Button             *b;
 
-   EDBUG(5, "CreateButton");
+   EDBUG(5, "ButtonCreate");
 
    b = Emalloc(sizeof(Button));
 
@@ -111,9 +112,9 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
 }
 
 void
-DestroyButton(Button * b)
+ButtonDestroy(Button * b)
 {
-   EDBUG(5, "DestroyButton");
+   EDBUG(5, "ButtonDestroy");
 
    if (!b)
       EDBUG_RETURN_;
@@ -154,13 +155,13 @@ DestroyButton(Button * b)
    EDBUG_RETURN_;
 }
 
-void
-CalcButton(Button * b)
+static void
+ButtonCalc(Button * b)
 {
    int                 w, h, x, y, xo, yo;
    Imlib_Image        *im;
 
-   EDBUG(4, "CalcButton");
+   EDBUG(4, "ButtonCalc");
    x = 0;
    y = 0;
    w = 32;
@@ -219,13 +220,13 @@ CalcButton(Button * b)
 }
 
 void
-ShowButton(Button * b)
+ButtonShow(Button * b)
 {
    char                move, resize;
 
-   EDBUG(4, "ShowButton");
+   EDBUG(4, "ButtonShow");
 
-   CalcButton(b);
+   ButtonCalc(b);
 
    move = 0;
    resize = 0;
@@ -243,7 +244,7 @@ ShowButton(Button * b)
    if (b->sticky)
       XRaiseWindow(disp, b->win);
 
-   DrawButton(b);
+   ButtonDraw(b);
    b->visible = 1;
    EMapWindow(disp, b->win);
    b->cx = b->x;
@@ -255,9 +256,9 @@ ShowButton(Button * b)
 }
 
 void
-MoveButtonToDesktop(Button * b, int num)
+ButtonMoveToDesktop(Button * b, int num)
 {
-   EDBUG(3, "MoveButtonToDesktop");
+   EDBUG(3, "ButtonMoveToDesktop");
 
    if (b->sticky)
      {
@@ -276,9 +277,9 @@ MoveButtonToDesktop(Button * b, int num)
 }
 
 void
-HideButton(Button * b)
+ButtonHide(Button * b)
 {
-   EDBUG(3, "HideButton");
+   EDBUG(3, "ButtonHide");
 
    EUnmapWindow(disp, b->win);
    b->visible = 0;
@@ -287,22 +288,25 @@ HideButton(Button * b)
 }
 
 void
-ToggleButton(Button * b)
+ButtonToggle(Button * b)
 {
-   EDBUG(3, "ToggleButton");
+   EDBUG(3, "ButtonToggle");
+
+   if (b->used)
+      EDBUG_RETURN_;
 
    if (b->visible)
-      HideButton(b);
+      ButtonHide(b);
    else
-      ShowButton(b);
+      ButtonShow(b);
 
    EDBUG_RETURN_;
 }
 
 void
-DrawButton(Button * b)
+ButtonDraw(Button * b)
 {
-   EDBUG(3, "DrawButton");
+   EDBUG(3, "ButtonDraw");
 
    IclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0);
 
@@ -313,12 +317,19 @@ DrawButton(Button * b)
 }
 
 void
-MovebuttonToCoord(Button * b, int x, int y)
+ButtonDrawWithState(Button * b, int state)
+{
+   b->state = state;
+   ButtonDraw(b);
+}
+
+void
+ButtonMoveToCoord(Button * b, int x, int y)
 {
    int                 rx, ry, relx, rely, absx, absy;
    char                move, resize;
 
-   EDBUG(3, "MovebuttonToCoord");
+   EDBUG(3, "ButtonMoveToCoord");
    if (b->flags & FLAG_FIXED)
       EDBUG_RETURN_;
 
@@ -350,7 +361,7 @@ MovebuttonToCoord(Button * b, int x, int y)
 	b->geom.yabs = absy;
 	b->geom.yrel = rely;
      }
-   CalcButton(b);
+   ButtonCalc(b);
    move = 0;
    resize = 0;
    if ((b->x != b->cx) || (b->y != b->cy))
@@ -373,13 +384,92 @@ MovebuttonToCoord(Button * b, int x, int y)
    EDBUG_RETURN_;
 }
 
+void
+ButtonMoveRelative(Button * b, int dx, int dy)
+{
+   ButtonMoveToCoord(b, b->x + dx, b->y + dy);
+}
+
+void
+ButtonIncRefcount(Button * b)
+{
+   b->ref_count++;
+}
+
+void
+ButtonDecRefcount(Button * b)
+{
+   b->ref_count--;
+}
+
+const char         *
+ButtonGetName(Button * b)
+{
+   return b->name;
+}
+
 int
-EmbedWindowIntoButton(Button * ButtonToUse, Window WindowToEmbed)
+ButtonGetRefcount(Button * b)
+{
+   return b->ref_count;
+}
+
+int
+ButtonGetDesktop(Button * b)
+{
+   return b->desktop;
+}
+
+void
+ButtonGetGeometry(Button * b, int *x, int *y, unsigned int *w, unsigned int *h)
+{
+   if (x)
+      *x = b->x;
+   if (y)
+      *y = b->y;
+   if (w)
+      *w = b->w;
+   if (h)
+      *h = b->h;
+}
+
+int
+ButtonGetInfo(Button * b, RectBox * r, int desk)
+{
+   if (!b->visible || b->internal)
+      return -1;
+   if (!b->sticky && (b->desktop != desk))
+      return -1;
+
+   r->data = NULL;
+   r->x = b->x;
+   r->y = b->y;
+   r->w = b->w;
+   r->h = b->h;
+   r->p = b->sticky;
+
+   return 0;
+}
+
+ActionClass        *
+ButtonGetAClass(Button * b)
+{
+   return b->aclass;
+}
+
+int
+ButtonIsFixed(Button * b)
+{
+   return b->flags & FLAG_FIXED;
+}
+
+int
+ButtonEmbedWindow(Button * ButtonToUse, Window WindowToEmbed)
 {
 
    unsigned int        w, h;
 
-   EDBUG(4, "EmbedWindowIntoButton");
+   EDBUG(4, "ButtonEmbedWindow");
    EReparentWindow(disp, WindowToEmbed, ButtonToUse->win, 0, 0);
    ButtonToUse->inside_win = WindowToEmbed;
    GetWinWH(WindowToEmbed, &w, &h);
@@ -399,7 +489,7 @@ EmbedWindowIntoButton(Button * ButtonToUse, Window WindowToEmbed)
 }
 
 void
-FindEmptySpotForButton(Button * bt, char *listname, char dirtomove)
+ButtonFindEmptySpotFor(Button * bt, char *listname, char dirtomove)
 {
 
    Button            **blst;
@@ -440,7 +530,227 @@ FindEmptySpotForButton(Button * bt, char *listname, char dirtomove)
 	  }
 	Efree(blst);
      }
-   MovebuttonToCoord(bt, bt->x, bt->y);
+   ButtonMoveToCoord(bt, bt->x, bt->y);
 
    EDBUG_RETURN_;
+}
+
+/*
+ * Functions operating on all buttons
+ */
+
+Button             *
+FindButton(Window win)
+{
+   Button             *b;
+   Button            **buttons;
+   int                 i, num;
+
+   EDBUG(6, "FindButton");
+
+   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   for (i = 0; i < num; i++)
+     {
+	if ((win == buttons[i]->win) || (win == buttons[i]->inside_win)
+	    || (win == buttons[i]->event_win))
+	  {
+	     b = buttons[i];
+	     Efree(buttons);
+	     EDBUG_RETURN(b);
+	  }
+     }
+   if (buttons)
+      Efree(buttons);
+   EDBUG_RETURN(NULL);
+}
+
+/*
+ * Button event handlers
+ */
+
+int
+ButtonsEventExpose(XEvent * ev)
+{
+   int                 used = 0;
+   int                 i, num;
+   Button            **buttons;
+   Window              win = ev->xexpose.window;
+
+   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   if (buttons == NULL)
+      return 0;
+
+   for (i = 0; i < num; i++)
+     {
+	if (win != buttons[i]->win)
+	   continue;
+
+	ButtonDraw(buttons[i]);
+	used = 1;
+	break;
+     }
+   Efree(buttons);
+
+   return used;
+}
+
+int
+ButtonsEventMouseDown(XEvent * ev)
+{
+   int                 used = 0;
+   int                 i, num;
+   Button            **buttons;
+   Window              win = ev->xbutton.window;
+   ActionClass        *ac;
+
+   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   if (buttons == NULL)
+      return 0;
+
+   for (i = 0; i < num; i++)
+     {
+	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
+	   continue;
+
+	GrabThePointer(win);
+	if (buttons[i]->inside_win)
+	  {
+	     Window              id = ev->xany.window;	/* ??? */
+
+	     ev->xany.window = buttons[i]->inside_win;
+	     XSendEvent(disp, buttons[i]->inside_win, False,
+			ButtonPressMask, ev);
+	     ev->xany.window = id;
+	  }
+
+	mode.button = buttons[i];
+	buttons[i]->state = STATE_CLICKED;
+	ButtonDraw(buttons[i]);
+	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
+		      LIST_TYPE_ACLASS);
+	if (ac)
+	   EventAclass(ev, ac);
+	if (buttons[i]->aclass)
+	   EventAclass(ev, buttons[i]->aclass);
+	used = 1;
+	break;
+     }
+   Efree(buttons);
+
+   return used;
+}
+
+int
+ButtonsEventMouseUp(XEvent * ev, int wasmovres, int wasdrag)
+{
+   int                 used = 0;
+   int                 i, num;
+   Button            **buttons;
+   Window              win = ev->xbutton.window;
+
+   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   if (buttons == NULL)
+      return 0;
+
+   for (i = 0; i < num; i++)
+     {
+	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
+	   continue;
+
+	if ((buttons[i]->inside_win) && (!wasmovres))
+	  {
+	     Window              id = ev->xany.window;	/* ??? */
+
+	     ev->xany.window = buttons[i]->inside_win;
+	     XSendEvent(disp, buttons[i]->inside_win, False,
+			ButtonReleaseMask, ev);
+	     ev->xany.window = id;
+	  }
+	mode.button = buttons[i];
+	if ((buttons[i]->state == STATE_CLICKED) && (!buttons[i]->left))
+	   buttons[i]->state = STATE_HILITED;
+	else
+	   buttons[i]->state = STATE_NORMAL;
+	buttons[i]->left = 0;
+	ButtonDraw(buttons[i]);
+	if ((buttons[i]->aclass) && (!wasdrag) && (!wasmovres))
+	   EventAclass(ev, buttons[i]->aclass);
+	mode.destroy = 0;
+	last_bpress = 0;
+	used = 1;
+	break;
+     }
+   Efree(buttons);
+
+   return used;
+}
+
+int
+ButtonsEventMouseIn(XEvent * ev)
+{
+   int                 used = 0;
+   int                 i, num;
+   Button            **buttons;
+   Window              win = ev->xcrossing.window;
+
+   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   if (buttons == NULL)
+      return 0;
+
+   for (i = 0; i < num; i++)
+     {
+	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
+	   continue;
+
+	mode.button = buttons[i];
+	if (buttons[i]->state == STATE_CLICKED)
+	   buttons[i]->left = 0;
+	else
+	  {
+	     buttons[i]->state = STATE_HILITED;
+	     ButtonDraw(buttons[i]);
+	     if (buttons[i]->aclass)
+		EventAclass(ev, buttons[i]->aclass);
+	  }
+	used = 1;
+	break;
+     }
+   Efree(buttons);
+
+   return used;
+}
+
+int
+ButtonsEventMouseOut(XEvent * ev)
+{
+   int                 used = 0;
+   int                 i, num;
+   Button            **buttons;
+   Window              win = ev->xcrossing.window;
+
+   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   if (buttons == NULL)
+      return 0;
+
+   for (i = 0; i < num; i++)
+     {
+	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
+	   continue;
+
+	mode.button = NULL;
+	if (buttons[i]->state == STATE_CLICKED)
+	   buttons[i]->left = 1;
+	else
+	  {
+	     buttons[i]->state = STATE_NORMAL;
+	     ButtonDraw(buttons[i]);
+	     if (buttons[i]->aclass)
+		EventAclass(ev, buttons[i]->aclass);
+	  }
+	used = 1;
+	break;
+     }
+   Efree(buttons);
+
+   return used;
 }

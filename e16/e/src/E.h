@@ -664,6 +664,8 @@ typedef struct _pager Pager;
 typedef struct _snapshot Snapshot;
 typedef struct _iconbox Iconbox;
 typedef struct _group Group;
+typedef struct _button Button;
+typedef struct _buttoncontainer Container;
 
 typedef struct
 {
@@ -1090,6 +1092,7 @@ typedef struct _awaiticlass
 }
 AwaitIclass;
 
+#ifdef DECLARE_STRUCT_BUTTON
 typedef struct _bgeometry
 {
    Constraints         width, height;
@@ -1102,7 +1105,7 @@ typedef struct _bgeometry
 }
 BGeometry;
 
-typedef struct _button
+struct _button
 {
    char               *name;
    BGeometry           geom;
@@ -1129,10 +1132,10 @@ typedef struct _button
    char                destroy_inside_win;
    char                left;
    unsigned int        ref_count;
-}
-Button;
+};
+#endif /* DECLARE_STRUCT_BUTTON */
 
-typedef struct _buttoncontainer
+struct _buttoncontainer
 {
    char               *name;
    ImageClass         *iclass;
@@ -1144,8 +1147,7 @@ typedef struct _buttoncontainer
    char                orientation;
    Button            **ButtonList;
    int                 numofbuttonsinlist;
-}
-Container;
+};
 
 typedef struct
 {
@@ -2075,6 +2077,7 @@ void                ChangeNumberOfDesktops(int quantity);
 void                ShowDesktopControls(void);
 void                ShowDesktopTabs(void);
 void                HideDesktopTabs(void);
+void                ShowDesktopButtons(void);
 void                MoveToDeskTop(int num);
 void                MoveToDeskBottom(int num);
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
@@ -2184,25 +2187,42 @@ void                DestroyContainer(Container * bc);
 void                RemoveContainer(Container * bc);
 
 /* buttons.c functions */
-Button             *CreateButton(char *name, ImageClass * iclass,
+Button             *ButtonCreate(char *name, ImageClass * iclass,
 				 ActionClass * aclass, TextClass * tclass,
 				 char *label, char ontop, int flags, int minw,
 				 int maxw, int minh, int maxh, int xo, int yo,
 				 int xa, int xr, int ya, int yr, int xsr,
 				 int xsa, int ysr, int ysa, char simg, int desk,
 				 char sticky);
-void                DestroyButton(Button * b);
-void                CalcButton(Button * b);
-void                ShowButton(Button * b);
-void                MoveButtonToDesktop(Button * b, int num);
-void                HideButton(Button * b);
-void                ToggleButton(Button * b);
-void                DrawButton(Button * b);
-void                MovebuttonToCoord(Button * b, int x, int y);
-int                 EmbedWindowIntoButton(Button * ButtonToUse,
-					  Window WindowToEmbed);
-void                FindEmptySpotForButton(Button * bt, char *listname,
+void                ButtonDestroy(Button * b);
+void                ButtonShow(Button * b);
+void                ButtonHide(Button * b);
+void                ButtonToggle(Button * b);
+void                ButtonDraw(Button * b);
+void                ButtonDrawWithState(Button * b, int state);
+void                ButtonMoveToDesktop(Button * b, int num);
+void                ButtonMoveToCoord(Button * b, int x, int y);
+void                ButtonMoveRelative(Button * b, int dx, int dy);
+void                ButtonIncRefcount(Button * b);
+void                ButtonDecRefcount(Button * b);
+const char         *ButtonGetName(Button * b);
+int                 ButtonGetRefcount(Button * b);
+int                 ButtonGetDesktop(Button * b);
+void                ButtonGetGeometry(Button * b, int *x, int *y,
+				      unsigned int *w, unsigned int *h);
+int                 ButtonGetInfo(Button * b, RectBox * r, int desk);
+ActionClass        *ButtonGetAClass(Button * b);
+int                 ButtonIsFixed(Button * b);
+int                 ButtonEmbedWindow(Button * ButtonToUse,
+				      Window WindowToEmbed);
+void                ButtonFindEmptySpotFor(Button * bt, char *listname,
 					   char dirtomove);
+int                 ButtonsEventExpose(XEvent * ev);
+int                 ButtonsEventMouseDown(XEvent * ev);
+int                 ButtonsEventMouseUp(XEvent * ev, int wasmovres,
+					int wasdrag);
+int                 ButtonsEventMouseIn(XEvent * ev);
+int                 ButtonsEventMouseOut(XEvent * ev);
 
 /* atoms.c functions */
 void               *AtomGet(Window win, Atom to_get, Atom type, int *size);

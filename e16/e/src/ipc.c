@@ -1028,7 +1028,7 @@ IPC_Button(char *params, Client * c)
 		  b = (Button *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BUTTON);
 		  if (b)
-		     DestroyButton(b);
+		     ButtonDestroy(b);
 	       }
 	     else if (!strcmp(param2, "modify"))
 	       {
@@ -1041,7 +1041,7 @@ IPC_Button(char *params, Client * c)
 					  LIST_TYPE_BUTTON);
 		  if (b)
 		     Esnprintf(buf, sizeof(buf), "%u references remain",
-			       b->ref_count);
+			       ButtonGetRefcount(b));
 	       }
 	     else
 	       {
@@ -2159,7 +2159,7 @@ IPC_ListClassMembers(char *params, Client * c)
 	     for (i = 0; i < num; i++)
 	       {
 		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", ButtonGetName(lst[i]));
 		  if (buf)
 		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
 		  else
@@ -3345,11 +3345,11 @@ IPC_FX(char *params, Client * c)
 		  while ((b =
 			  RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 				     LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-		     DestroyButton(b);
+		     ButtonDestroy(b);
 		  while ((b =
 			  RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0,
 				     LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-		     DestroyButton(b);
+		     ButtonDestroy(b);
 		  InitDesktopControls();
 		  ShowDesktopControls();
 	       }

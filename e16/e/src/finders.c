@@ -106,31 +106,6 @@ FindEwinByDecoration(Window win)
    EDBUG_RETURN(NULL);
 }
 
-Button             *
-FindButton(Window win)
-{
-   Button             *b;
-   Button            **buttons;
-   int                 i, num;
-
-   EDBUG(6, "FindButton");
-
-   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-   for (i = 0; i < num; i++)
-     {
-	if ((win == buttons[i]->win) || (win == buttons[i]->inside_win)
-	    || (win == buttons[i]->event_win))
-	  {
-	     b = buttons[i];
-	     Efree(buttons);
-	     EDBUG_RETURN(b);
-	  }
-     }
-   if (buttons)
-      Efree(buttons);
-   EDBUG_RETURN(NULL);
-}
-
 ActionClass        *
 FindActionClass(Window win)
 {
@@ -139,9 +114,11 @@ FindActionClass(Window win)
    int                 i;
 
    EDBUG(6, "FindActionClass");
+
    b = FindButton(win);
    if (b)
-      EDBUG_RETURN(b->aclass);
+      EDBUG_RETURN(ButtonGetAClass(b));
+
    ewin = FindEwinByDecoration(win);
    if (ewin)
      {
@@ -149,6 +126,7 @@ FindActionClass(Window win)
 	   if (win == ewin->bits[i].win)
 	      EDBUG_RETURN(ewin->border->part[i].aclass);
      }
+
    for (i = 0; i < mode.numdesktops; i++)
      {
 	ActionClass        *ac;
@@ -160,6 +138,7 @@ FindActionClass(Window win)
 	     EDBUG_RETURN(ac);
 	  }
      }
+
    EDBUG_RETURN(NULL);
 }
 

@@ -883,18 +883,9 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	     fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
 	     for (i = 0; i < num; i++)
 	       {
-		  Button             *b = blst[i];
-
-		  if (!b->visible || b->internal)
-		     continue;
-		  if (!b->sticky && (b->desktop != ewin->desktop))
+		  if (ButtonGetInfo(blst[i], &fixed[j], ewin->desktop))
 		     continue;
 
-		  fixed[j].data = NULL;
-		  fixed[j].x = b->x;
-		  fixed[j].y = b->y;
-		  fixed[j].w = b->w;
-		  fixed[j].h = b->h;
 		  if (fixed[j].x < 0)
 		    {
 		       fixed[j].w += fixed[j].x;
@@ -912,7 +903,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 		  if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
 		     continue;
 
-		  if (b->sticky)
+		  if (fixed[j].p)	/* Sticky */
 		     fixed[j].p = 1;
 		  else
 		     fixed[j].p = 0;

@@ -288,8 +288,7 @@ ShowMenu(Menu * m, char noshow)
 
 	if ((button = FindButton(mode.context_win)))
 	  {
-	     button->state = STATE_NORMAL;
-	     DrawButton(button);
+	     ButtonDrawWithState(button, STATE_NORMAL);
 	  }
 	else if ((ewin99 = FindEwinByDecoration(mode.context_win)))
 	  {
@@ -317,8 +316,7 @@ ShowMenu(Menu * m, char noshow)
 	    && FindItem((char *)mode.button, 0, LIST_FINDBY_POINTER,
 			LIST_TYPE_BUTTON))
 	  {
-	     mode.button->state = STATE_NORMAL;
-	     DrawButton(mode.button);
+	     ButtonDrawWithState(mode.button, STATE_NORMAL);
 	  }
 	RaiseEwin(ewin);
 	EDBUG_RETURN_;
@@ -442,8 +440,7 @@ ShowMenu(Menu * m, char noshow)
 
       if ((button = FindButton(mode.context_win)))
 	{
-	   button->state = STATE_NORMAL;
-	   DrawButton(button);
+	   ButtonDrawWithState(button, STATE_NORMAL);
 	}
       else if ((ewin99 = FindEwinByDecoration(mode.context_win)))
 	{

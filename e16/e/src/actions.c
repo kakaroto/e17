@@ -1065,7 +1065,7 @@ doMoveImpl(void *params, char constrained)
 {
    EWin              **gwins;
    EWin               *ewin;
-   int                 xo, yo, i, num;
+   int                 i, num;
 
    EDBUG(6, "doMove");
    if (InZoom())
@@ -1102,8 +1102,6 @@ doMoveImpl(void *params, char constrained)
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
    start_move_desk = ewin->desktop;
-   xo = desks.desk[ewin->desktop].x;
-   yo = desks.desk[ewin->desktop].y;
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup
 				      || mode.swapmovemode, &num);
@@ -1439,18 +1437,9 @@ doCleanup(void *params)
 	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k));
 	     for (i = 0; i < num; i++)
 	       {
-		  Button             *b = blst[i];
-
-		  if (!b->visible || b->internal)
-		     continue;
-		  if (!b->sticky && (b->desktop != desks.current))
+		  if (ButtonGetInfo(blst[i], &fixed[k], desks.current))
 		     continue;
 
-		  fixed[k].data = NULL;
-		  fixed[k].x = blst[i]->x;
-		  fixed[k].y = blst[i]->y;
-		  fixed[k].w = blst[i]->w;
-		  fixed[k].h = blst[i]->h;
 		  if (fixed[k].x < 0)
 		    {
 		       fixed[k].x += fixed[k].w;
@@ -1468,7 +1457,7 @@ doCleanup(void *params)
 		  if ((fixed[k].w <= 0) || (fixed[k].h <= 0))
 		     continue;
 
-		  if (blst[i]->sticky)
+		  if (fixed[k].p)	/* Sticky */
 		     fixed[k].p = 50;
 		  else
 		     fixed[k].p = 0;
@@ -1907,8 +1896,7 @@ doInplaceDesktop(void *params)
 int
 doDragButtonStart(void *params)
 {
-   Button             *button;
-   int                 xo, yo;
+   Button             *b;
 
    EDBUG(6, "doDragButtonStart");
 
@@ -1918,26 +1906,23 @@ doDragButtonStart(void *params)
        || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
       EDBUG_RETURN(0);
 
-   button = mode.button;
-   if (button->flags & FLAG_FIXED)
+   b = mode.button;
+   if (!b)
+      EDBUG_RETURN(0);
+
+   if (ButtonIsFixed(b))
      {
 	mode.button = NULL;
 	EDBUG_RETURN(0);
      }
-   if (!button)
-      EDBUG_RETURN(0);
 
    GrabThePointer(root.win);
    mode.mode = MODE_BUTTONDRAG;
    mode.button_move_pending = 1;
    mode.start_x = mode.x;
    mode.start_y = mode.y;
-   mode.win_x = button->x;
-   mode.win_y = button->y;
+   ButtonGetGeometry(b, &mode.win_x, &mode.win_y, NULL, NULL);
    mode.firstlast = 0;
-   xo = desks.desk[button->desktop].x;
-   yo = desks.desk[button->desktop].y;
-   params = NULL;
 
    EDBUG_RETURN(0);
 }
@@ -1945,25 +1930,27 @@ doDragButtonStart(void *params)
 int
 doDragButtonEnd(void *params)
 {
-   Button             *button;
+   Button             *b;
    int                 d;
 
    EDBUG(6, "doDragButtonEnd");
-   button = mode.button;
-   if (!button)
+
+   b = mode.button;
+   if (!b)
       EDBUG_RETURN(0);
+
    mode.mode = MODE_NONE;
    UnGrabTheButtons();
    if (!mode.button_move_pending)
      {
 	d = DesktopAt(mode.x, mode.y);
-	MoveButtonToDesktop(button, d);
-	MovebuttonToCoord(button, button->x - desks.desk[button->desktop].x,
-			  button->y - desks.desk[button->desktop].y);
+	ButtonMoveToDesktop(b, d);
+	d = ButtonGetDesktop(b);
+	ButtonMoveRelative(b, -desks.desk[d].x, -desks.desk[d].y);
      }
    else
       mode.button_move_pending = 0;
-   params = NULL;
+
    autosave();
 
    EDBUG_RETURN(0);
@@ -2203,14 +2190,12 @@ doDragdirSet(void *params)
 	GotoDesktop(desks.current);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	   MoveDesktop(i, 0, 0);
-	while ((b =
-		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
-	while ((b =
-		RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+	   ButtonDestroy(b);
+	while ((b = RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0,
+			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+	   ButtonDestroy(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2236,10 +2221,9 @@ doDragbarOrderSet(void *params)
      }
    if (pd != desks.dragbar_ordering)
      {
-	while ((b =
-		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+	   ButtonDestroy(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2259,10 +2243,9 @@ doDragbarWidthSet(void *params)
       desks.dragbar_width = atoi((char *)params);
    if (pd != desks.dragbar_width)
      {
-	while ((b =
-		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+	   ButtonDestroy(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2282,10 +2265,9 @@ doDragbarLengthSet(void *params)
       desks.dragbar_length = atoi((char *)params);
    if (pd != desks.dragbar_length)
      {
-	while ((b =
-		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+	   ButtonDestroy(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2448,8 +2430,8 @@ doHideShowButton(void *params)
 	  {
 	     sscanf((char *)params, "%*s %1000s", s);
 	     b = (Button *) FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
-	     if ((b) && (!b->used))
-		ToggleButton(b);
+	     if (b)
+		ButtonToggle(b);
 	  }
 	else if (!strcmp(s, "buttons"))
 	  {
@@ -2461,12 +2443,11 @@ doHideShowButton(void *params)
 		    {
 		       for (i = 0; i < num; i++)
 			 {
-			    if (matchregexp(ss, lst[i]->name))
+			    if (matchregexp(ss, ButtonGetName(lst[i])))
 			      {
-				 if ((strcmp(lst[i]->name,
-					     "_DESKTOP_DESKRAY_DRAG_CONTROL")
-				      && (!lst[i]->used)))
-				    ToggleButton(lst[i]);
+				 if (strcmp(ButtonGetName(lst[i]),
+					    "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+				    ButtonToggle(lst[i]);
 			      }
 			 }
 		    }
@@ -2482,12 +2463,11 @@ doHideShowButton(void *params)
 		    {
 		       for (i = 0; i < num; i++)
 			 {
-			    if (!matchregexp(ss, lst[i]->name))
+			    if (!matchregexp(ss, ButtonGetName(lst[i])))
 			      {
-				 if ((strcmp(lst[i]->name,
-					     "_DESKTOP_DESKRAY_DRAG_CONTROL")
-				      && (!lst[i]->used)))
-				    ToggleButton(lst[i]);
+				 if (strcmp(ButtonGetName(lst[i]),
+					    "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+				    ButtonToggle(lst[i]);
 			      }
 			 }
 		    }
@@ -2500,10 +2480,10 @@ doHideShowButton(void *params)
 	       {
 		  for (i = 0; i < num; i++)
 		    {
-		       if ((strcmp
-			    (lst[i]->name, "_DESKTOP_DESKRAY_DRAG_CONTROL")
-			    && (!lst[i]->used)))
-			  ToggleButton(lst[i]);
+		       if (strcmp
+			   (ButtonGetName(lst[i]),
+			    "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+			  ButtonToggle(lst[i]);
 		    }
 	       }
 	  }
@@ -2515,8 +2495,7 @@ doHideShowButton(void *params)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (!lst[i]->used)
-		     ToggleButton(lst[i]);
+		  ButtonToggle(lst[i]);
 	       }
 	  }
      }

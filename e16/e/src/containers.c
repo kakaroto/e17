@@ -73,7 +73,7 @@ AddButtonToContainer(Container * bc, Button * b)
 		    (bc->numofbuttonsinlist + 1) * sizeof(Container *));
      }
    bc->ButtonList[bc->numofbuttonsinlist++] = b;
-   b->ref_count++;
+   ButtonIncRefcount(b);
 
    EDBUG_RETURN_;
 }
@@ -120,7 +120,7 @@ RemoveButtonFromContainer(Container * bc, Button * b)
 	bc->numofbuttonsinlist = 0;
      }
    Efree(MyButtonList);
-   b->ref_count--;
+   ButtonDecRefcount(b);
    EDBUG_RETURN_;
 }
 

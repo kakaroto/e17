@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BUTTON
 #define DECLARE_STRUCT_ICONBOX
 #include "E.h"
 #include "conf.h"
@@ -526,10 +527,7 @@ Config_Slideout(FILE * ConfigFile)
 		b = (Button *) FindItem(s2, 0, LIST_FINDBY_NAME,
 					LIST_TYPE_BUTTON);
 		if (b)
-		  {
-		     AddButtonToSlideout(slideout, b);
-		     b->ref_count++;
-		  }
+		   AddButtonToSlideout(slideout, b);
 	     }
 	     break;
 	  default:
@@ -1496,7 +1494,7 @@ Config_Button(FILE * ConfigFile)
 	  case CONFIG_CLOSE:
 	     if ((!pbt) && (!is_autosave))
 	       {
-		  bt = CreateButton(name, ic, ac, tc, label, ontop, flags,
+		  bt = ButtonCreate(name, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr,
 				    ya, yr, xsr, xsa, ysr, ysa, simg, desk,
 				    sticky);
