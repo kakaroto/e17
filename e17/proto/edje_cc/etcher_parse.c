@@ -57,8 +57,8 @@ etcher_parse_group()
   group = (Etcher_Group *)calloc(1, sizeof(Etcher_Group));
 
   /* defaults */
-  group->max.w = 0x7fffffff;
-  group->max.h = 0x7fffffff;
+  group->max.w = -1;
+  group->max.h = -1;
   
   etcher_file->groups = evas_list_append(etcher_file->groups, group);
   return;
@@ -929,6 +929,7 @@ etcher_parse_program_script(char *script)
 
   if(program->script) free(program->script);
   program->script = (char *)strdup(script);
+  program->action = ETCHER_ACTION_SCRIPT;
 }
 
 void
