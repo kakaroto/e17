@@ -15,21 +15,9 @@ __create_etox_objects(Etox e, Etox_All_Bits bits,
                       double *x, double *y, double *w, double *h)
 {
   Etox_Object et_obj;
-  char *todo, *p, *q;
+  char *todo = NULL, *p, *q;
 
   todo = strdup(bits->text->str);
-
-  /* If the first word doesn't fit in the etox, then nothing will.. */
-  p = etox_str_remove_beginning_spaces(todo);
-  q = p;
-  if (strstr(p, " "))
-    for ( ; *q != ' '; *q++);
-  if (!__check_if_fits(e, bits->font, q, *w, bits->style->offset_w))
-    {
-      IF_FREE(p);
-      IF_FREE(todo);   
-      return;
-    }
 
   et_obj = _etox_object_new(*x, *y, bits);
   et_obj->str = strdup(todo);
@@ -68,6 +56,7 @@ __create_etox_objects(Etox e, Etox_All_Bits bits,
       _etox_object_move(e, et_obj);
     }
 
+  IF_FREE(todo);
 }
 
 static void

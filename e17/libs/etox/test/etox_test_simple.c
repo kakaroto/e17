@@ -182,6 +182,7 @@ main(int argc, char *argv[])
 
   printf("Text: %s\n", etox_get_text(e));
 
+
   {
     double x, y, w, h;
     Evas_Object real_rect;
@@ -195,6 +196,17 @@ main(int argc, char *argv[])
     evas_move(evas, real_rect, x, y);
     evas_resize(evas, real_rect, w, h);
     evas_show(evas, real_rect);
+  }
+
+  {
+    Evas_Object clip_rect;
+
+    clip_rect = evas_add_rectangle(evas);
+    evas_set_color(evas, clip_rect, 255, 255, 255, 255);
+    evas_move(evas, clip_rect, 20, 20);
+    evas_resize(evas, clip_rect, 360, 360);
+    evas_show(evas, clip_rect);
+    etox_set_clip(e, clip_rect);
   }
 
   e_event_loop();
