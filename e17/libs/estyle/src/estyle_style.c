@@ -325,7 +325,7 @@ void _estyle_style_move(Estyle *es)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while (ptr_list && 
+	while (ptr_list && info->layers &&
 		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
 		(ob = ptr_list->data) != NULL) {
 		
