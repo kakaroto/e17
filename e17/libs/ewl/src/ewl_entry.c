@@ -161,7 +161,8 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	int ll = 0, rr = 0, tt = 0, bb = 0;
 	int xx, yy, ww, hh;
 	double xx2, yy2, ww2, hh2;
-	int c_pos;
+	int c_pos, l;
+	char *str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -189,10 +190,21 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_text_get_letter_geometry(e->text, --c_pos, &xx2, &yy2, &ww2,
 				     &hh2);
 
-	xx += xx2;
-	yy += yy2;
-	ww = ww2;
-	hh = CURRENT_H(w) - tt - bb;
+	str = EWL_TEXT(e->text)->text;
+
+	if (str && (l = strlen(str)) && c_pos >= l)
+	  {
+		  xx += CURRENT_W(e->text);
+		  ww = 5;
+		  hh = CURRENT_H(w) - tt - bb;
+	  }
+	else
+	  {
+		  xx += xx2;
+		  yy += yy2;
+		  ww = ww2;
+		  hh = CURRENT_H(w) - tt - bb;
+	  }
 
 	ewl_object_request_geometry(EWL_OBJECT(e->cursor), xx, yy, ww, hh);
 	ewl_widget_configure(e->cursor);
@@ -307,7 +319,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 		  str = ewl_entry_get_text(w);
 
 		  if (str)
-			  index = strlen(str) + 1;
+			  index = strlen(str);
 	  }
 	else
 		ewl_text_get_index_at(e->text, (double) (ev->x),

@@ -1,3 +1,12 @@
+Thu Oct  04 06:22:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed nasty bug in Ewl_Entry, when you do mouse_down after the
+	  text, it would set the cursor pos to be to high, this
+	  triggered bug when pressing delete/backspace, which could
+	  result in a SEGV.
+	* Also made the cursor show up after the text when cursor pos
+	  is @ end. Before it didn't show up at all.
+	* Fixed memleak in __ewl_entry_delete_to_right.
+
 Thu Oct  04 00:47:42 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Now all theme data is read from the current theme's theme.db.
 	* Fixed some more unwanted behaviour in Ewl_Table.
