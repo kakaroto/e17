@@ -10,13 +10,13 @@
 		    rel1
 		    {
 			relative, 1.0 1.0;
-			offset, -70 -70;
+			offset, 20 20;
 			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -10 -10;
+			offset, 40 40;
 			to, "bg";
 		    }
 		}

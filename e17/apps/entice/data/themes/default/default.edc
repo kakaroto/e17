@@ -55,8 +55,8 @@ collections
 		    }
 		}
 	    }
-#include "parts/enticeimage.edc"
 #include "parts/enticeimagescroller.edc"
+#include "parts/enticeimage.edc"
 #include "parts/panel.edc"
 #include "parts/buttons.edc"
 #include "parts/tooltip.edc"

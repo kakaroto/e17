@@ -28,18 +28,18 @@
 	description {			\
 	  state, "default" 0.0;		\
 	  color, 255 255 255 255;	\
-	  min, 20 20;			\
+	  min, 10 10;			\
 	  max, 9999 9999;		\
 	  align, 0.5 0.0;		\
 	  rel1 {			\
 	    to, NAME"_rect";		\
 	    relative, 0.0 0.0;		\
-	    offset, 5 5;		\
+	    offset, 0 0;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME"_rect";		\
 	    relative, 1.0 1.0;		\
-	    offset, -5 -5;		\
+	    offset, 0 0;		\
 	  }				\
 	  image {			\
 	      normal, "border-bevel.png"; \
@@ -78,23 +78,23 @@
 	  rel1 {			\
 	    to, NAME".scrollbar";	\
 	    relative, 0.5 0.5;		\
-	    offset, -12 -12;		\
+	    offset, -11 -11;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME".scrollbar";	\
 	    relative, 0.5 0.5;		\
-	    offset, 12 12;		\
+	    offset, 10 10;		\
 	  }				\
 	  image {			\
 	      normal, "bt_dragable.png"; \
 	  } 				\
-	  border, 3 3 3 3;		\
+	  border, 4 4 4 4;		\
 	}				\
       }					
 #define HSLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
       REL2_TO, REL2_REL, REL2_OFF, CLIPTO) \
     SLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
-	    REL2_TO, REL2_REL, REL2_OFF, 12 12 3 3, CLIPTO) \
+	    REL2_TO, REL2_REL, REL2_OFF, 12 12 1 1, CLIPTO) \
       part {				\
         name, NAME".scrollbar";		\
 	clip_to, CLIPTO;		\
@@ -107,7 +107,7 @@
 	}				\
 	description {			\
 	  state, "default" 0.0;		\
-	  min, 16 16;			\
+	  min, 12 12;			\
 	  align, 0.0 0.5;		\
 	  color, 255 255 255 96;	\
 	  rel1 {			\
@@ -126,7 +126,7 @@
 	}				\
 	description {			\
 	  state, "down" 0.0;		\
-	  min, 16 16;			\
+	  min, 12 12;			\
 	  align, 0.0 0.5;		\
 	  color, 255 255 255 255;	\
 	  rel1 {			\
@@ -181,18 +181,18 @@
 	}				\
 	description {			\
 	  state, "default" 0.0;		\
-	  min, 16 16;			\
+	  min, 12 12;			\
 	  align, 0.0 0.5;		\
 	  color, 255 255 255 96;	\
 	  rel1 {			\
 	    to, NAME"_scrollbar_trough";\
 	    relative, 0.5 0.5;		\
-	    offset, 0 0;		\
+	    offset, -7 -6;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME"_scrollbar_trough";\
 	    relative, 0.5 0.5;		\
-	    offset, 0 0;		\
+	    offset, 5 6;		\
 	  }				\
 	  image {			\
 	      normal, "bt_dragable.png"; \
@@ -200,18 +200,18 @@
 	}				\
 	description {			\
 	  state, "down" 0.0;		\
-	  min, 16 16;			\
+	  min, 12 12;			\
 	  align, 0.0 0.5;		\
 	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, NAME"_scrollbar_trough";\
 	    relative, 0.5 0.5;		\
-	    offset, 0 0;		\
+	    offset, -7 -6;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME"_scrollbar_trough";\
 	    relative, 0.5 0.5;		\
-	    offset, 0 0;		\
+	    offset, 5 6;		\
 	  }				\
 	  image {			\
 	      normal, "bt_dragable.png"; \
