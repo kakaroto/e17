@@ -2196,3 +2196,11 @@ Wed Sep 22 13:39:22 PDT 1999
 (Raster)
 
 get rid of fprintf debug messags
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 15:37:25 PDT 1999
+(Mandrake)
+
+fixed a bug in kde support that caused E to potentially crash on property
+events upon deletion by a window.
