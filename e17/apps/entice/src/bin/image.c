@@ -51,14 +51,14 @@ int
 entice_image_rotate(Evas_Object * o, int orientation)
 {
    int iw, ih;
-   double w, h;
+   double w, h, x, y;
    Entice_Image *im = NULL;
    Imlib_Image imlib_im = NULL;
 
    if ((im = evas_object_smart_data_get(o)))
    {
       evas_object_image_size_get(im->obj, &iw, &ih);
-      evas_object_geometry_get(o, NULL, NULL, &w, &h);
+      evas_object_geometry_get(o, &x, &y, &w, &h);
 
       if (imlib_im =
           imlib_create_image_using_copied_data(iw, ih,
@@ -78,6 +78,7 @@ entice_image_rotate(Evas_Object * o, int orientation)
          /* if we're fitting, it'll need to be recalculated */
          if (entice_image_zoom_fit_get(o))
             entice_image_zoom_fit(o);
+         evas_damage_rectangle_add(evas_object_evas_get(o), x, y, w, h);
          imlib_free_image();
          return (1);
       }
@@ -94,14 +95,14 @@ int
 entice_image_flip(Evas_Object * o, int orientation)
 {
    int iw, ih;
-   double w, h;
+   double w, h, x, y;
    Entice_Image *im = NULL;
    Imlib_Image imlib_im = NULL;
 
    if ((im = evas_object_smart_data_get(o)))
    {
       evas_object_image_size_get(im->obj, &iw, &ih);
-      evas_object_geometry_get(o, NULL, NULL, &w, &h);
+      evas_object_geometry_get(o, &x, &y, &w, &h);
 
       if (imlib_im =
           imlib_create_image_using_copied_data(iw, ih,
@@ -125,6 +126,7 @@ entice_image_flip(Evas_Object * o, int orientation)
          /* if we're fitting, it'll need to be recalculated */
          if (entice_image_zoom_fit_get(o))
             entice_image_zoom_fit(o);
+         evas_damage_rectangle_add(evas_object_evas_get(o), x, y, w, h);
          imlib_free_image();
          return (1);
       }
