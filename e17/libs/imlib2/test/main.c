@@ -746,9 +746,9 @@ int main (int argc, char **argv)
 		  
 	       }
 	     if( bump_map_to_point )
-	       imlib_apply_filter("bump_map_to_point(x=[],y=[],map=test_images/bulb.png);", &x, &y, NULL);
+	       imlib_apply_filter("bump_map_point(x=[],y=[],map=test_images/bulb.png);", &x, &y );
 	     else
-	       imlib_apply_filter("bump_map(x=[],y=[],map=test_images/bulb.png);", &x, &y, NULL);
+	       imlib_apply_filter("bump_map(x=[],y=[],map=test_images/bulb.png);", &x, &y );
 										 
 	     up = imlib_update_append_rect(up, 0, 0,
 					   imlib_image_get_width(),
@@ -844,8 +844,7 @@ int main (int argc, char **argv)
 	       }
 	     imlib_apply_filter( "tint(x=200,y=200,w=300,h=100,alpha=100,red=155,green=25,blue=25);"\
                                  "tint(green=20,red=20,blue=20,alpha=200,x=30,y=30);" \
-                                 "tint(green=40,red=40,blue=240,alpha=60,x=50,y=150,h=200);",
-				NULL );
+                                 "tint(green=40,red=40,blue=240,alpha=60,x=50,y=150,h=200);" );
 	     
 	     imlib_blend_image_onto_image(im_sh1, 0, 0, 0, 50, 50, 0, 0, 50, 50);
 	     up = imlib_update_append_rect(up, 0, 0, 50, 50);

@@ -2442,7 +2442,6 @@ void imlib_apply_filter( char *script, ... )
    __imlib_dynamic_filters_init();
    CAST_IMAGE(im, ctxt_image);   
    va_start( param_list, script );
-   func = __imlib_script_parse( im, script, param_list );
+   __imlib_script_parse( im, script, param_list );
    va_end( param_list );
-   __imlib_script_tidyup( func );
 }

@@ -27,6 +27,17 @@ struct _imlib_function
    pIFunction        next;
 };
 
-pIFunction   __imlib_script_parse( Imlib_Image im, char *script, va_list );
-void         __imlib_script_tidyup( IFunction *func );
+typedef struct _imlib_variable
+{
+   void                   *ptr;
+   struct _imlib_variable *next;
+} IVariable;
+
+Imlib_Image     __imlib_script_parse( Imlib_Image im, char *script, va_list );
+IFunctionParam *__imlib_script_parse_parameters( Imlib_Image im, char *parameters );
+Imlib_Image     __imlib_script_parse_function( Imlib_Image im, char *function );
+void            __imlib_script_tidyup();
+void           *__imlib_script_get_next_var();
+void            __imlib_script_add_var( void *ptr );
+
 #endif /* _FUNCTION_H_ */
