@@ -439,12 +439,20 @@ void ewl_configure_queue()
 	 * Configure any widgets that need it.
 	 */
 	while ((w = ewd_list_remove_first(configure_list))) {
+		if (ewl_object_get_flags(EWL_OBJECT(w),
+					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
+			ewl_object_request_size(EWL_OBJECT(w),
+				ewl_object_get_current_w(EWL_OBJECT(w)),
+				ewl_object_get_current_h(EWL_OBJECT(w)));
+		}
+
 		/*
 		 * Remove the flag that the widget is scheduled for
 		 * configuration.
 		 */
 		ewl_object_remove_queued(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_CSCHEDULED);
+
 		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 	}
 }

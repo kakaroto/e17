@@ -271,9 +271,12 @@ Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
 
 void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	Ewl_Object *o;
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	o = EWL_OBJECT(w);
 
 	printf("EWL Embedded Object configured at (%d, %d) and %d x %d\n",
 			ewl_object_get_current_x(EWL_OBJECT(w)),

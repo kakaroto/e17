@@ -237,13 +237,6 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	window = EWL_WINDOW(w);
 	o = EWL_OBJECT(w);
 
-	/*
-	 * FIXME: This needs to be explored a bit, the size should come down
-	 * from a configure event, but need to double check.
-	 */
-	ewl_object_request_size(EWL_OBJECT(w), ewl_object_get_current_w(o),
-			ewl_object_get_current_h(o));
-
 	window->window = ecore_x_window_new(0, window->x, window->y,
 			ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));

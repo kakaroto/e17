@@ -494,11 +494,11 @@ void ewl_object_request_w(Ewl_Object * o, int w)
 	 * Now bound it by the min's and max's to achieve the desired size.
 	 */
 	if (w < MINIMUM_W(o))
-		CURRENT_W(o) = MINIMUM_W(o);
+		w = MINIMUM_W(o);
 	else if (w > MAXIMUM_W(o))
-		CURRENT_W(o) = MAXIMUM_W(o);
-	else
-		CURRENT_W(o) = w;
+		w = MAXIMUM_W(o);
+
+	CURRENT_W(o) = w;
 	ewl_widget_configure(EWL_WIDGET(o));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -536,11 +536,11 @@ void ewl_object_request_h(Ewl_Object * o, int h)
 	 * Now bound it by the min's and max's to achieve the desired size.
 	 */
 	if (h < MINIMUM_H(o))
-		CURRENT_H(o) = MINIMUM_H(o);
+		h = MINIMUM_H(o);
 	else if (h > MAXIMUM_H(o))
-		CURRENT_H(o) = MAXIMUM_H(o);
-	else
-		CURRENT_H(o) = h;
+		h = MAXIMUM_H(o);
+
+	CURRENT_H(o) = h;
 	ewl_widget_configure(EWL_WIDGET(o));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
