@@ -282,7 +282,7 @@ eject_cd (void *data)
 void
 prev_track (void *data)
 {
-  //eplaycd_cd_stat(cd_desc, &DiscInfo);
+  /* eplaycd_cd_stat(cd_desc, &DiscInfo); */
 
   if (!cd_desc)
     return;
@@ -305,7 +305,7 @@ prev_track (void *data)
 void
 next_track (void *data)
 {
-  //eplaycd_cd_stat(cd_desc, &DiscInfo);
+  /* eplaycd_cd_stat(cd_desc, &DiscInfo); */
 
   if (!cd_desc)
     return;
