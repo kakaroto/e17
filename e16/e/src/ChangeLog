@@ -3802,3 +3802,11 @@ Wed Oct 27 16:11:27 PDT 1999
 (Raster)
 
 fix translucent move for 24bpp packed.. ugly.. ergh.. code is slow... but works
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 23:03:16 PDT 1999
+(Mandrake)
+
+fixes for Tru64 unix.  I may end up wanting to do an 0.16.2 release just for
+them (regular folks won't have to upgrade)
