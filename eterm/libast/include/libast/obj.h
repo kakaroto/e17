@@ -199,10 +199,10 @@
         if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
             return FALSE; \
         } \
-        if (!SPIF_OBJ_ISNULL(self-> ## name)) { \
-            SPIF_OBJ_DEL(self-> ## name); \
+        if (!SPIF_OBJ_ISNULL(self->name)) { \
+            SPIF_OBJ_DEL(self->name); \
         } \
-        self-> ## name = new_ ## name; \
+        self->name = new_ ## name; \
         return TRUE; \
     }
 
@@ -229,7 +229,7 @@
         if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
             return FALSE; \
         } \
-        self-> ## name = new_ ## name; \
+        self->name = new_ ## name; \
         return TRUE; \
     }
 
