@@ -32,15 +32,15 @@ init_x_and_imlib (void)
   depth = DefaultDepth (disp, DefaultScreen (disp));
   cm = DefaultColormap (disp, DefaultScreen (disp));
   root = RootWindow (disp, DefaultScreen (disp));
-  xid_context = XUniqueContext();
-  
+  xid_context = XUniqueContext ();
+
   imlib_context_set_display (disp);
   imlib_context_set_visual (vis);
   imlib_context_set_colormap (cm);
   imlib_context_set_color_modifier (NULL);
   imlib_context_set_operation (IMLIB_OP_COPY);
   wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
-  imlib_context_set_dither(0);
+  imlib_context_set_dither (0);
   imlib_context_set_blend (0);
 
   checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
@@ -70,13 +70,28 @@ int
 feh_load_image (Imlib_Image ** im, char *filename)
 {
   Imlib_Load_Error err;
+  char *tmpname = NULL;
 
   D (("In feh_load_image: filename %s\n", filename));
 
   if (!filename)
     return 0;
 
-  *im = imlib_load_image_with_error_return (filename, &err);
+  /* Url stuff */
+  if (!strncmp (filename, "http://", 7))
+    {
+      tmpname = http_load_image (filename);
+      if (tmpname == NULL)
+	return 0;
+      *im = imlib_load_image_with_error_return (tmpname, &err);
+      unlink (tmpname);
+      free (tmpname);
+    }
+
+  else
+    {
+      *im = imlib_load_image_with_error_return (filename, &err);
+    }
 
   if ((err) || (!im))
     {
@@ -173,7 +188,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
 	XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
 		       depth);
       imlib_context_set_drawable (progwin->bg_pmap);
-      feh_draw_checks(progwin);
+      feh_draw_checks (progwin);
       XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
       if (exists)
 	XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
@@ -201,4 +216,40 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   XFlush (disp);
   return;
   percent = 0;
+}
+
+char *
+http_load_image (char *url)
+{
+  int pid;
+  int status;
+  char *tmpname;
+
+  tmpname = tempnam ("/tmp", NULL);
+  if (tmpname == NULL)
+    eprintf ("Error creating unique filename:");
+
+  if ((pid = fork ()) < 0)
+    {
+      weprintf ("open url: fork failed:");
+      free (tmpname);
+      return NULL;
+    }
+  else if (pid == 0)
+    {
+      execlp ("wget", "wget", url, "-O", tmpname, NULL);
+      eprintf ("url: exec failed: wget:");
+    }
+  else
+    {
+      waitpid (pid, &status, 0);
+
+      if (!WIFEXITED (status) || WEXITSTATUS (status) != 0)
+	{
+	  weprintf ("url: wget exited abnormally on URL %s\n", url);
+	  free (tmpname);
+	  return NULL;
+	}
+    }
+  return tmpname;
 }

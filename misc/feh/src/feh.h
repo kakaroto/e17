@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <stdarg.h>
+#include <sys/wait.h>
 #include <Imlib2.h>
 #include "utils.h"
 
@@ -203,6 +204,8 @@ void feh_remove_timer (char *name);
 void feh_add_timer (void (*func) (void *data), void *data, double in,
 		    char *name);
 void cb_slide_timer(void *data);
+char *http_load_image (char *url);
+
 
 
 /* Imlib stuff */

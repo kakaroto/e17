@@ -206,6 +206,7 @@ show_usage (void)
 	   " [OPTION]... FILE...\n"
 	   "  Where FILE is an imlib 2 readable image file.\n"
 	   "  Multiple files are supported.\n"
+	   "  Urls are supported. They must begin with htpp:// and you must have wget\n"
 	   "  -h, --help                display this help and exit\n"
 	   "  -v, --version             output version information and exit\n"
 	   "  -V, --verbose             output useful information, progress bars, etc\n"

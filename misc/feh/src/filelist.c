@@ -50,6 +50,15 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	path[len - 1] = '\0';
     }
 
+  if(!strncmp(path,"http://",7))
+  {
+      /* Its a url */
+      D(("A url was requested\n"));
+      D (("Adding url %s to filelist\n", path));
+      add_file_to_filelist (path);
+      return;
+  }
+
   if (stat (path, &st))
     {
       weprintf ("%s does not exist, or you do not have permission to open it", path);
