@@ -303,9 +303,6 @@ int                 Esnprintf(va_alist);
 #ifndef ENLIGHTENMENT_ROOT
 #define ENLIGHTENMENT_ROOT           "/usr/local/enlightenment"
 #endif
-#define ENLIGHTENMENT_SYSTEM_CONFIG  ENLIGHTENMENT_ROOT"/system_config"
-#define ENLIGHTENMENT_SYSTEM_THEMES  ENLIGHTENMENT_ROOT"/themes"
-#define ENLIGHTENMENT_SYSTEM_BGS     ENLIGHTENMENT_ROOT"/backgrounds"
 
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 /* the cast is so -1 will == UINT_MAX */

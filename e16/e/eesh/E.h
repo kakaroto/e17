@@ -51,9 +51,6 @@
 #ifndef ENLIGHTENMENT_ROOT
 #define ENLIGHTENMENT_ROOT           "/usr/local/enlightenment"
 #endif
-#define ENLIGHTENMENT_SYSTEM_CONFIG  ENLIGHTENMENT_ROOT"/system_config"
-#define ENLIGHTENMENT_SYSTEM_THEMES  ENLIGHTENMENT_ROOT"/themes"
-#define ENLIGHTENMENT_SYSTEM_BGS     ENLIGHTENMENT_ROOT"/backgrounds"
 
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
