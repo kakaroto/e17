@@ -299,7 +299,6 @@ int                 Esnprintf(va_alist);
 #define N_(String) (String)
 #endif
 
-#define TT_VALID( handle )  ( ( handle ).z != NULL )
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif

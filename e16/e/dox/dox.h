@@ -170,7 +170,6 @@ extern Drawable     vIcDrw;
 #define DEFAULT_LINKCOLOR_G 50
 #define DEFAULT_LINKCOLOR_B 160
 
-#define TT_VALID( handle )  ( ( handle ).z != NULL )
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif

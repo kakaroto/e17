@@ -119,6 +119,8 @@ Efont_extents(Efont * f, char *text, int *font_ascent_return,
 
 #else /* USE_IMLIB1 */
 
+#define TT_VALID( handle )  ( ( handle ).z != NULL )
+
 #if TEST_TTFONT
 #undef XSync
 #undef IC_RenderDepth
