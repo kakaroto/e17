@@ -236,14 +236,20 @@ http_load_image (char *url)
   int status;
   char *tmp;
   char *tmpname;
-  char pref[] = "feh_";
-
-  tmp = tempnam ("/tmp", pref);
+  char num[10];
+  static long int i=1;
+  
+  snprintf(num, sizeof(num),"%04ld_",i++);
+  /* Massive paranoia ;) */
+  if(i>9999)
+	i=1;
+  
+  tmp = tempnam ("/tmp", num);
   if (tmp == NULL)
     eprintf ("Error creating unique filename:");
 
   /* Modify tempname to make it a little more useful... */
-  tmpname = strjoin ("", tmp, "_", strrchr (url, '/') + 1, NULL);
+  tmpname = strjoin ("", tmp, "_feh_", strrchr (url, '/') + 1, NULL);
   free(tmp);
 
   if ((pid = fork ()) < 0)

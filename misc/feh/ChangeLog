@@ -1,3 +1,9 @@
+Tue Jan 11 21:11:11 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Hrm. Just so you know what order they come in, the images are
+	  now saved in /tmp (actually whatever tempdir is set up on your
+	  system) in the format "number"_"unique bit"_"original filename"
+
 Tue Jan 11 20:52:19 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Okay. The cached images are now deleted. The filenames are no
