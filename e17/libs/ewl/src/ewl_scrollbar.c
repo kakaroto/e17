@@ -2,17 +2,10 @@
 #include <Ewl.h>
 
 
-void            __ewl_scrollbar_realize(Ewl_Widget * s, void *ev_data,
-					void *user_data);
 void            __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
 void            __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
-void            __ewl_scrollbar_seeker_configure(Ewl_Widget * w, void *ev_data,
-						 void *user_data);
-void            __ewl_scrollbar_seeker_value_changed(Ewl_Widget * w,
-						     void *ev_data,
-						     void *user_data);
 
 
 /**
@@ -68,19 +61,25 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	s->button_decrement = ewl_button_new(NULL);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
 			EWL_ALIGNMENT_CENTER);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrement),
+				   EWL_FILL_POLICY_NONE);
+	ewl_widget_show(s->button_decrement);
+
+	/*
+	 * Create the increment button.
+	 */
 	s->button_increment = ewl_button_new(NULL);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
 			EWL_ALIGNMENT_CENTER);
-	s->seeker = ewl_seeker_new(orientation);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increment),
+				   EWL_FILL_POLICY_NONE);
+	ewl_widget_show(s->button_increment);
 
 	/*
-	 * Append callbacks for the scrollbars basic functions.
+	 * Setup the seeker portion
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_scrollbar_realize, NULL);
-
-	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_scrollbar_decrement, s);
+	s->seeker = ewl_seeker_new(orientation);
+	ewl_widget_show(s->seeker);
 
 	/*
 	 * Attach callbacks to the buttons and seeker to handle the various
@@ -88,16 +87,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	ewl_callback_append(s->button_increment, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_scrollbar_increment, s);
-	ewl_callback_append(s->seeker, EWL_CALLBACK_CONFIGURE,
-			    __ewl_scrollbar_seeker_configure, s);
-
-	/*
-	 * Set the default fill policies for the buttons and the seeker
-	 */
-	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrement),
-				   EWL_FILL_POLICY_NONE);
-	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increment),
-				   EWL_FILL_POLICY_NONE);
+	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_scrollbar_decrement, s);
 
 	/*
 	 * Set the default alignment for the buttons.
@@ -116,8 +107,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Append a value change callback to the seeker to catch when it
 	 * moves.
 	 */
-	ewl_callback_append(s->seeker, EWL_CALLBACK_VALUE_CHANGED,
-			    __ewl_scrollbar_seeker_value_changed, s);
+	ewl_container_notify_callback(EWL_CONTAINER(s),
+			EWL_CALLBACK_VALUE_CHANGED);
 
 	/*
 	 * Define the maximum value that the seeker can reach, and the
@@ -154,7 +145,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 			ewl_container_append_child(EWL_CONTAINER(s),
 						   s->button_increment);
 			ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
-		} else if (s->buttons_alignment & EWL_ALIGNMENT_RIGHT) {
+		}
+		else if (s->buttons_alignment & EWL_ALIGNMENT_RIGHT) {
 
 			/*
 			 * Place in seeker, decrement, increment order.
@@ -164,7 +156,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 						   s->button_decrement);
 			ewl_container_append_child(EWL_CONTAINER(s),
 						   s->button_increment);
-		} else {
+		}
+		else {
 
 			/*
 			 * Place in decrement, seeker, increment order.
@@ -183,7 +176,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		ewl_widget_set_appearance(w, "hscrollbar");
 		ewl_object_set_fill_policy(EWL_OBJECT(s),
 				EWL_FILL_POLICY_HFILL);
-	} else {
+	}
+	else {
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_TOP) {
 
@@ -195,7 +189,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 			ewl_container_append_child(EWL_CONTAINER(s),
 						   s->button_decrement);
 			ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
-		} else if (s->buttons_alignment & EWL_ALIGNMENT_BOTTOM) {
+		}
+		else if (s->buttons_alignment & EWL_ALIGNMENT_BOTTOM) {
 
 			/*
 			 * Place in seeker, increment, decrement order.
@@ -205,7 +200,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 						   s->button_increment);
 			ewl_container_append_child(EWL_CONTAINER(s),
 						   s->button_decrement);
-		} else {
+		}
+		else {
 
 			/*
 			 * Place in increment, seeker, decrement order.
@@ -230,60 +226,6 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 }
 
 /**
- * ewl_scrollbar_set_fill_percentage - set the percentage filled by drag button
- * @s: the scrollbar to change fill percentage
- * @fp: the percentage of the scrollbar filled by the drag button
- *
- * Returns no value. Changes the area of the scrollbar that is filled by the
- * drag button.
- */
-void ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-
-	/*
-	 * Perform a bounds check on the fill percentage.
-	 */
-	if (fp < 0)
-		fp = 0;
-	else if (fp > 1)
-		fp = 1;
-
-	/*
-	 * Set the fill percentage on the seeker.
-	 */
-	s->fill_percentage = fp;
-
-	/*
-	 * Adjust the step based on the fill percentage.
-	 */
-	if (fp == 1 || fp == 0)
-		ewl_seeker_set_step(EWL_SEEKER(s->seeker), 0.05);
-	else
-		ewl_seeker_set_step(EWL_SEEKER(s->seeker), 1.0 - fp);
-
-	ewl_widget_configure(EWL_WIDGET(s));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * ewl_scrollbar_get_fill_percentage - get the percentage filled by drag button
- * @s: the scrollbar to retrieve fill percentage
- *
- * Returns the percentage of the scrollbar that the drag button fills on
- * success, -1 on failure.
- */
-double ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, -1);
-
-	DRETURN_FLOAT(s->fill_percentage, DLEVEL_STABLE);
-}
-
-/**
  * ewl_scrollbar_get_value - get the current value of the dragbar
  * @s: the scrollbar to get the current value
  *
@@ -301,10 +243,26 @@ double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
 		v = 1.0 - v;
 
-	if (s->fill_percentage == 1.0)
-		v = 0.0;
-
 	DRETURN_FLOAT(v, DLEVEL_UNSTABLE);
+}
+
+/**
+ * ewl_scrollbar_set_value - set the current value of the dragbar
+ * @s: the scrollbar to set the current value
+ *
+ * Returns no value. Sets the current value of the scrollbar @s.
+ */
+void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
+		v = 1.0 - v;
+
+	ewl_seeker_set_value(EWL_SEEKER(s->seeker), v);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -320,6 +278,7 @@ void ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
 	DCHECK_PARAM_PTR("s", s);
 
 	s->flag = f;
+	ewl_widget_configure(EWL_WIDGET(s));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -338,35 +297,6 @@ Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
 	DRETURN_INT(s->flag, DLEVEL_STABLE);
 }
 
-
-/*
- * Make sure that we show all the parts of the scrollbar
- */
-void __ewl_scrollbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Scrollbar  *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SCROLLBAR(w);
-
-	ewl_widget_realize(s->button_decrement);
-	ewl_widget_realize(s->seeker);
-	ewl_widget_realize(s->button_increment);
-
-	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_object_set_preferred_h(EWL_OBJECT(s), MINIMUM_H(s->seeker));
-		MINIMUM_H(s) = MINIMUM_H(s->seeker);
-		MAXIMUM_H(s) = MAXIMUM_H(s->seeker);
-	} else {
-		ewl_object_set_preferred_w(EWL_OBJECT(s), MINIMUM_W(s->seeker));
-		MINIMUM_W(s) = MINIMUM_W(s->seeker);
-		MAXIMUM_W(s) = MAXIMUM_W(s->seeker);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
 
 /*
  * Decrement the value of the scrollbar's seeker portion
@@ -420,54 +350,6 @@ void __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data, void *user_data)
 		v = 1.0;
 
 	ewl_seeker_set_value(EWL_SEEKER(s->seeker), v);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-__ewl_scrollbar_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Scrollbar  *sc;
-	Ewl_Seeker     *se;
-	int             req_w = 0, req_h = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-
-	sc = user_data;
-	se = EWL_SEEKER(w);
-
-	req_w = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w));
-	req_h = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w));
-
-	/*
-	 * Adjust the size of the scrollbar based on the fill percentage and
-	 * orientation.
-	 */
-	if (EWL_BOX(sc)->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		req_w *= sc->fill_percentage;
-	} else {
-		req_h *= sc->fill_percentage;
-	}
-
-	/*
-	 * Request the new size for the dragbar.
-	 */
-	ewl_object_request_size(EWL_OBJECT(se->dragbar), req_w, req_h);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-__ewl_scrollbar_seeker_value_changed(Ewl_Widget * w, void *ev_data,
-				     void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-
-	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

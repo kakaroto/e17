@@ -25,7 +25,6 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
-	ewl_object_set_fill_policy(EWL_OBJECT(menu), EWL_FILL_POLICY_NONE);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    __ewl_menu_base_expand, NULL);
@@ -103,6 +102,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 */
 	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_set_appearance(EWL_WIDGET(item), "menuitem");
+	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FILL_POLICY_NONE);
 
 	ewl_container_notify_callback(EWL_CONTAINER(item),
 			EWL_CALLBACK_CLICKED);
@@ -120,14 +120,15 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	/*
 	 * Create the icon if one is requested.
 	 */
-	if (image) {
+	if (image)
 		item->icon = ewl_image_new(image);
-		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
-		ewl_object_set_alignment(EWL_OBJECT(item->icon),
-				EWL_ALIGNMENT_CENTER);
-		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
-		ewl_widget_show(item->icon);
-	}
+	else
+		item->icon = ewl_spacer_new();
+
+	ewl_object_set_alignment(EWL_OBJECT(item->icon), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
+	ewl_container_append_child(EWL_CONTAINER(item), item->icon);
+	ewl_widget_show(item->icon);
 
 	/*
 	 * Create the text object for the menu item.

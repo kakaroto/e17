@@ -56,7 +56,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	ewl_container_init(EWL_CONTAINER(s), "scrollpane", __ewl_scrollpane_add,
 			__ewl_scrollpane_child_resize, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_ALL);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
 
 	/*
 	 * Create the container to hold the contents and it's configure
@@ -180,7 +180,7 @@ Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
  */
 void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int b_width, b_height;
+	int             b_width, b_height;
 	Ewl_ScrollPane *s;
 	int             vs_width = 0;
 	int             hs_height = 0;
@@ -220,26 +220,25 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 				    vs_width, content_h);
 
 	/*
-	 * Update the fill percentage on the scrollbars based on available space
-	 * for the content.
+	 * A rare case where we need to know the preferred size over the
+	 * minimum size.
 	 */
 	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
 	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
-	ewl_scrollbar_set_fill_percentage(EWL_SCROLLBAR(s->hscrollbar),
-					  (double) content_w /
-					  (double) b_width);
-	ewl_scrollbar_set_fill_percentage(EWL_SCROLLBAR(s->vscrollbar),
-					  (double) content_h /
-					  (double) b_width);
+
+	b_width = (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar)) *
+					      (double)(b_width));
+	b_height= (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->vscrollbar)) *
+					      (double)(b_height));
 
 	/*
 	 * Now move the box into position. For the scrollpane to work we move
 	 * the box relative to the scroll value.
 	 */
 	ewl_object_request_geometry(EWL_OBJECT(s->box),
-				    CURRENT_X(w),
-				    CURRENT_Y(w),
-				    content_w, content_h);
+				    CURRENT_X(w) - b_width,
+				    CURRENT_Y(w) - b_height,
+				    content_w + b_width, content_h + b_height);
 
 	/*
 	 * Configure the parts of the scrollpane.
@@ -320,10 +319,11 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 	/*
 	 * Update the preferred size of the scrollpane to that of the box.
 	 */
-	if (o == EWL_ORIENTATION_HORIZONTAL)
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_set_preferred_w(EWL_OBJECT(parent),
 				ewl_object_get_minimum_w(EWL_OBJECT(s->box)) +
 				ewl_object_get_minimum_w(EWL_OBJECT(s->vscrollbar)));
+	}
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(parent),
 				ewl_object_get_minimum_h(EWL_OBJECT(s->box)) +

@@ -25,10 +25,8 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation);
 void            ewl_scrollbar_init(Ewl_Scrollbar * s,
 				   Ewl_Orientation orientation);
 
-void            ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp);
-double          ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s);
-
 double          ewl_scrollbar_get_value(Ewl_Scrollbar * s);
+void            ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v);
 
 void            ewl_scrollbar_set_flag(Ewl_Scrollbar * s,
 				       Ewl_ScrollBar_Flags f);
