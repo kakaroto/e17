@@ -684,14 +684,20 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
    int                 maxw = 48, maxh = 48;
    int                 justx = 512, justy = 512;
 
-   Esnprintf(thumb, thlen, "%s/cached/img/%s", EDirUserCache(), bgid);
-
    bg = FindItem(bgid, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
 
-   if (bg && exists(thumb) && moddate(thumb) > moddate(file))
-      return bg;
-
-   /* The thumbnail is gone or outdated - regererate */
+   if (thumb)
+     {
+	Esnprintf(thumb, thlen, "%s/cached/img/%s", EDirUserCache(), bgid);
+	if (bg && exists(thumb) && moddate(thumb) > moddate(file))
+	   return bg;
+	/* The thumbnail is gone or outdated - regererate */
+     }
+   else
+     {
+	if (bg)
+	   return bg;
+     }
 
    im = imlib_load_image(file);
    if (!im)
@@ -700,19 +706,23 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
    imlib_context_set_image(im);
    width = imlib_image_get_width();
    height = imlib_image_get_height();
-   h2 = maxh;
-   w2 = (width * h2) / height;
-   if (w2 > maxw)
+
+   if (thumb)
      {
-	w2 = maxw;
-	h2 = (height * w2) / width;
+	h2 = maxh;
+	w2 = (width * h2) / height;
+	if (w2 > maxw)
+	  {
+	     w2 = maxw;
+	     h2 = (height * w2) / width;
+	  }
+	im2 = imlib_create_cropped_scaled_image(0, 0, width, height, w2, h2);
+	imlib_free_image_and_decache();
+	imlib_context_set_image(im2);
+	imlib_image_set_format("png");
+	imlib_save_image(thumb);
+	imlib_free_image_and_decache();
      }
-   im2 = imlib_create_cropped_scaled_image(0, 0, width, height, w2, h2);
-   imlib_free_image_and_decache();
-   imlib_context_set_image(im2);
-   imlib_image_set_format("png");
-   imlib_save_image(thumb);
-   imlib_free_image_and_decache();
 
    /* Quit if the background itself already exists */
    if (bg)
@@ -2550,6 +2560,18 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	if (lst)
 	   Efree(lst);
      }
+   else if (!strncmp(cmd, "load", 2))
+     {
+	bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	if (bg)
+	  {
+	     IpcPrintf("Background already defined\n");
+	  }
+	else
+	  {
+	     bg = BrackgroundCreateFromImage(prm, p, NULL, 0);
+	  }
+     }
    else if (!strncmp(cmd, "xset", 2))
      {
 	BackgroundSet1(prm, p);
@@ -2663,6 +2685,7 @@ IpcItem             BackgroundsIpcArray[] = {
     "  background cfg                   Configure backgrounds\n"
     "  background del <name>            Delete background\n"
     "  background list                  Show all background\n"
+    "  background load <name> <file>    Load new wallpaper from file\n"
     "  background set <name> ...        Set background parameters\n"
     "  background show <name>           Show background info\n"
     "  background use <name> <desks...> Switch to background <name>\n"
