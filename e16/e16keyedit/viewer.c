@@ -521,6 +521,13 @@ on_exit_application(GtkWidget * widget, gpointer user_data)
 
 }
 
+void
+on_save_and_exit_application(GtkWidget * widget, gpointer user_data)
+{
+	on_save_data(widget, user_data);
+	on_exit_application(widget, user_data);
+}
+
 GtkWidget *
 create_list_window(void)
 {
@@ -567,6 +574,8 @@ create_list_window(void)
 				GTK_SIGNAL_FUNC(on_save_data),NULL);
 		menuitem = CreateMenuItem(menu,"Save & Quit","",
 				"Save Current Data & Quit Application",NULL, "save quit");
+		gtk_signal_connect(GTK_OBJECT(menuitem),"activate",
+				GTK_SIGNAL_FUNC(on_save_and_exit_application),NULL);
 		menuitem = CreateMenuItem(menu,"Quit","","Quit Without Saving",NULL,
 				"quit program");
 		gtk_signal_connect(GTK_OBJECT(menuitem),"activate",
