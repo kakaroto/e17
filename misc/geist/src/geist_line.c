@@ -165,10 +165,10 @@ geist_line_duplicate(geist_object * obj)
    ret =
       geist_line_new_from_to(line->start.x, line->start.y, line->end.x,
                              line->end.y, line->a, line->r, line->g, line->b);
-   ret->w = obj->w;
-   ret->h = obj->h;
    if (ret)
    {
+      ret->x = obj->x;
+      ret->y = obj->y;
       ret->alias = obj->alias;
       ret->state = obj->state;
       ret->name =
@@ -493,8 +493,7 @@ geist_line_render_selected(geist_object * obj, Imlib_Image dest,
    }
 }
 
-Imlib_Updates
-geist_line_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_line_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
    int clip_x0, clip_y0, clip_x1, clip_y1;

@@ -189,7 +189,7 @@ geist_image_load_file(geist_image * img, char *filename)
    {
       obj = (geist_object *) img;
 
-      if(img->orig_im)
+      if (img->orig_im)
          geist_imlib_free_image(img->orig_im);
       obj->w = obj->rendered_w = geist_imlib_image_get_width(img->im);
       obj->h = obj->rendered_h = geist_imlib_image_get_height(img->im);
@@ -198,8 +198,7 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image
-geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -224,7 +223,7 @@ geist_image_duplicate(geist_object * obj)
       ret->h = obj->h;
       ret->w = obj->w;
       GEIST_IMAGE(ret)->opacity = img->opacity;
-      if(GEIST_IMAGE(ret)->opacity != FULL_OPACITY)
+      if (GEIST_IMAGE(ret)->opacity != FULL_OPACITY)
          geist_image_change_opacity(ret, GEIST_IMAGE(ret)->opacity);
       ret->state = obj->state;
       ret->alias = obj->alias;
@@ -299,8 +298,7 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean
-geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -393,9 +391,10 @@ geist_image_change_opacity(geist_object * obj, int op)
    int w, h, i;
    double ra, ha;
    DATA8 atab[256];
+
    D_ENTER(3);
 
-   im = (geist_image *) obj;
+   im = GEIST_IMAGE(obj);
    if (!im->orig_im)
    {
       im->orig_im = geist_imlib_clone_image(im->im);
@@ -405,9 +404,8 @@ geist_image_change_opacity(geist_object * obj, int op)
       geist_imlib_free_image_and_decache(im->im);
       im->im = geist_imlib_clone_image(im->orig_im);
    }
-
-   w = geist_imlib_image_get_width(im->orig_im);
-   h = geist_imlib_image_get_height(im->orig_im);
+   w = geist_imlib_image_get_width(im->im);
+   h = geist_imlib_image_get_height(im->im);
 
    geist_imlib_image_set_has_alpha(im->im, 1);
 
