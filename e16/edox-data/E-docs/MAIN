@@ -82,7 +82,7 @@ at least can have fun playing around with what we have created.
 <page columns=1 padding=16 name=copyright background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
-Copyright (C) 1997-2004 _The_Enlightenment_Development_Team(credits)
+Copyright (C) 1997-2005 _The_Enlightenment_Development_Team(credits)
 <font face=aircut3/11 color=#ffffff>
 <p>
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -619,11 +619,11 @@ CTRL+ALT+R - Shade/Unshade the currently focused window
 <br>
 CTRL+ALT+S - Stick/Unstick the currently focused window
 <br>
+CTRL+ALT+M - Maximize/unmaximize the currently focused window
+<br>
+CTRL+ALT+F - Toggle fullscreen mode of the currently focused window
+<br>
 CTRL+ALT+(F1 - F12) - Go directly to desktops 0 - 11
-<br>
-ALT+Tab - Switch focus to the next window
-<br>
-ALT+Enter - Zoom/Unzoom the currently focused window
 <br>
 <font face=aircut3/12 color=#ffffff>
 (more on next page ...)
@@ -635,6 +635,10 @@ ALT+Enter - Zoom/Unzoom the currently focused window
 <page columns=1 padding=16 name=tut11 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#112222>
 <p>
+ALT+Tab - Switch focus to the next window
+<br>
+ALT+Enter - Zoom/Unzoom the currently focused window
+<br>
 SHIFT+ALT+Left-Arrow - Move to the virtual desktop on the left if there is one
 <br>
 SHIFT+ALT+Right-Arrow - Move to the virtual desktop on the right if there is 
