@@ -180,7 +180,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    /* If the slideout is associated with an ewin,
     * put it on the same virtual desktop. */
    dw = VRoot.win;
-   if (ewin && EwinWinpartIndex(ewin, win) >= 0 &&
+   if (ewin && BorderWinpartIndex(ewin, win) >= 0 &&
        !ewin->floating /* && !ewin->sticky */ )
      {
 	int                 desk = EwinGetDesk(ewin);

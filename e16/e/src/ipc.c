@@ -3230,7 +3230,7 @@ IPC_WinOps(const char *params, Client * c)
 
 		       strcpy(ewin->icccm.wm_name, ptr);
 		       XStoreName(disp, ewin->client.win, ewin->icccm.wm_name);
-		       EwinBorderDraw(ewin, 0, 0);
+		       EwinBorderUpdateInfo(ewin);
 		    }
 	       }
 	     else

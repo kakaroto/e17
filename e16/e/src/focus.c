@@ -178,7 +178,7 @@ static void
 FocusEwinSetActive(EWin * ewin, int active)
 {
    ewin->active = active;
-   EwinBorderDraw(ewin, 0, 0);
+   EwinBorderUpdateState(ewin);
 
    FocusEwinSetGrabs(ewin);
 }

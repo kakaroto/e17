@@ -1765,11 +1765,9 @@ EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 void                HonorIclass(char *s, int id);
 void                EwinWithdraw(EWin * ewin);
 void                SyncBorderToEwin(EWin * ewin);
-void                UpdateBorderInfo(EWin * ewin);
-void                RealiseEwinWinpart(EWin * ewin, int i);
-void                ChangeEwinWinpart(EWin * ewin, int i);
-void                EwinBorderDraw(EWin * ewin, int do_shape, int queue_off);
-int                 ChangeEwinWinpartContents(EWin * ewin, int i);
+void                BorderWinpartChange(EWin * ewin, int i);
+void                EwinBorderUpdateInfo(EWin * ewin);
+void                EwinBorderUpdateState(EWin * ewin);
 void                EwinEventDestroy(EWin * ewin);
 void                EwinEventMap(EWin * ewin);
 void                EwinEventUnmap(EWin * ewin);
@@ -1780,7 +1778,7 @@ int                 EwinGetDesk(const EWin * ewin);
 const char         *EwinGetTitle(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
 int                 EwinIsOnScreen(EWin * ewin);
-int                 EwinWinpartIndex(EWin * ewin, Window win);
+int                 BorderWinpartIndex(EWin * ewin, Window win);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinChangesStart(EWin * ewin);
