@@ -15,9 +15,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/aclass.c:183
-#, fuzzy
 msgid "ActionClass Error!"
-msgstr "TextClass Грешка!"
+msgstr "ActionClass Грешка!"
 
 #: src/aclass.c:183 src/backgrounds.c:213 src/borders.c:727 src/buttons.c:168
 #: src/cmclass.c:82 src/cursors.c:117 src/iclass.c:236 src/tclass.c:91
@@ -425,13 +424,13 @@ msgstr ""
 "%s\n"
 
 #: src/config.c:179
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Предупреждение:  Конфигурацията завърши преди да\n"
-"завърши зареждането на блока Menu.  Резултатът е съмнителен...\n"
+"Предупреждение:  Конфигурационна грешка в %s блок.\n"
+"Резултатът е съмнителен...\n"
 
 #: src/config.c:196
 #, c-format
@@ -500,7 +499,7 @@ msgstr ""
 
 #: src/config.c:317
 msgid "Image class"
-msgstr "ImageClass Грешка!"
+msgstr "Image клас"
 
 #: src/config.c:322
 msgid "Tooltip"
@@ -512,7 +511,7 @@ msgstr "Шрифт"
 
 #: src/config.c:332
 msgid "Text class"
-msgstr "TextClass Грешка!"
+msgstr "Text клас"
 
 #: src/config.c:337
 msgid "Menu style"
@@ -536,7 +535,7 @@ msgstr "Подобни прозорци"
 
 #: src/config.c:367
 msgid "Action class"
-msgstr "ActionClass Грешка!"
+msgstr "Action клас"
 
 #: src/config.c:372
 msgid "Slideout"
@@ -1225,27 +1224,24 @@ msgid "Create New Iconbox"
 msgstr "Създай нов Iconbox"
 
 #: src/iconify.c:2022
-#, fuzzy
 msgid "Systray Options"
-msgstr "Опции за олето"
+msgstr "Опции за системната табла"
 
 #: src/iconify.c:2025
-#, fuzzy
 msgid "Systray Settings..."
-msgstr "Настройки за автоматично вдигане ..."
+msgstr "Настройки за системната табла..."
 
 #: src/iconify.c:2029
 msgid "Close Systray"
-msgstr ""
+msgstr "Затвори системната табла"
 
 #: src/iconify.c:2468
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
 #: src/iconify.c:2470
-#, fuzzy
 msgid "Systray Settings"
-msgstr "Настройки за автоматично вдигане"
+msgstr "Настройки за системната табла"
 
 #: src/iconify.c:2488
 msgid ""
@@ -1261,7 +1257,7 @@ msgstr "Прозрачен фон"
 
 #: src/iconify.c:2506
 msgid "Hide inner border"
-msgstr ""
+msgstr "Скрии вътрешната рамка"
 
 #: src/iconify.c:2515
 msgid "Show icon names"
@@ -1666,9 +1662,8 @@ msgid "Menu"
 msgstr "Менюта:"
 
 #: src/menus-misc.c:657
-#, fuzzy
 msgid "Go to this Desktop"
-msgstr "Отиди едно поле назад"
+msgstr "Отиди на това поле"
 
 #: src/menus-misc.c:669 src/menus-misc.c:691
 #, c-format
@@ -1710,12 +1705,10 @@ msgid "Changes Might Require Restart:"
 msgstr "Промените може да изискват рестартиране:"
 
 #: src/mod-trans.c:164
-#, fuzzy
 msgid "Borders:"
 msgstr "Рамки:"
 
 #: src/mod-trans.c:171
-#, fuzzy
 msgid "Menus:"
 msgstr "Менюта:"
 
@@ -1732,7 +1725,6 @@ msgid "E Dialogs:"
 msgstr "E Диалози:"
 
 #: src/mod-trans.c:199
-#, fuzzy
 msgid "Tooltips:"
 msgstr "Съвети:"
 
@@ -1899,18 +1891,16 @@ msgstr ""
 "\n"
 
 #: src/session.c:970
-#, fuzzy
 msgid "  Yes, Shut Down  "
-msgstr "  Да, излизам  "
+msgstr "  Да, изключи компютъра  "
 
 #: src/session.c:972
-#, fuzzy
 msgid "  Yes, Reboot  "
-msgstr "  Да, излизам  "
+msgstr "  Да, рестартирай компютъра "
 
 #: src/session.c:975
 msgid "  Yes, Log Out  "
-msgstr "  Да, излизам  "
+msgstr "  Да, излез  "
 
 #: src/session.c:977
 msgid "  No  "
@@ -1993,19 +1983,17 @@ msgid "Send mouse pointer to window after focus switch"
 msgstr "Показалецът на мишката се праща при прозореца след смяна на фокуса"
 
 #: src/settings.c:296
-#, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
-msgstr ""
-"Поведение на имената на икони\n"
-"(ако едната операция не успее, опитай следващата):"
+msgstr "Поведение на картините във Фокусната листа\n"
+"(ако едната операция се провали, да се пробва със следващата):"
 
 #: src/settings.c:302
 msgid "First E Icon, then App Icon"
-msgstr ""
+msgstr "Първо Е икони, после икони на програмата"
 
 #: src/settings.c:310
 msgid "First App Icon, then E Icon"
-msgstr ""
+msgstr "Първо икони на програмата, после Е икони"
 
 #: src/settings.c:524
 msgid "Move & Resize Settings"
@@ -2142,18 +2130,16 @@ msgid "Enable Dialog Headers"
 msgstr "Разрешавай header-и за диалози"
 
 #: src/settings.c:1074
-#, fuzzy
 msgid "Enable Button Images"
-msgstr "Включи звукове"
+msgstr "Разрешавай картини на бутоните"
 
 #: src/settings.c:1082
-#, fuzzy
 msgid "Enable Logout Dialog"
-msgstr "Разрешавай header-и за диалози"
+msgstr "Разрешавай Изходен Диалог"
 
 #: src/settings.c:1090
 msgid "Enable Reboot/Halt on Logout"
-msgstr ""
+msgstr "Разрешавай Рестартиране/Изключване при Изход"
 
 #: src/settings.c:1176
 msgid "Special FX Settings"
@@ -2347,7 +2333,7 @@ msgstr "Команда:"
 
 #: src/snaps.c:717
 msgid "Track Changes"
-msgstr ""
+msgstr "Следи промени"
 
 #: src/snaps.c:725
 msgid "Location"
@@ -2383,12 +2369,11 @@ msgstr "Лист за пропускане на прозорци"
 
 #: src/snaps.c:790
 msgid "Opacity"
-msgstr ""
+msgstr "Плътност"
 
 #: src/snaps.c:798
-#, fuzzy
 msgid "Shadowing"
-msgstr "Навиване"
+msgstr "Сенки"
 
 #: src/snaps.c:808
 msgid "Never Focus"
@@ -2415,9 +2400,8 @@ msgstr ""
 "Диалог за настройки\n"
 
 #: src/snaps.c:994
-#, fuzzy
 msgid "Delete"
-msgstr "Изтрий файла\n"
+msgstr "Изтрий\n"
 
 #: src/snaps.c:1027
 msgid "Remembered Settings..."
@@ -2425,7 +2409,7 @@ msgstr "Запомнени настройки..."
 
 #: src/snaps.c:1036
 msgid "Unused"
-msgstr ""
+msgstr "Неизползван(и)"
 
 #: src/snaps.c:1052
 msgid "There are no active windows with remembered attributes."
