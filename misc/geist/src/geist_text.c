@@ -139,10 +139,14 @@ geist_text_new_with_text(int x, int y, char *fontname, int fontsize,
       D_RETURN(5, NULL);
    }
 
+   txt->r = r;
+   txt->g = g;
+   txt->b = b;
+   txt->a = a;
    txt->style = geist_style_new("Default");
    txt->style->bits =
       geist_list_add_end(txt->style->bits,
-                         geist_style_bit_new(0, 0, r, g, b, a));
+                         geist_style_bit_new(0, 0, 0, 0, 0, 0));
 
    txt->justification = justification;
    txt->wordwrap = wordwrap;
@@ -372,17 +376,17 @@ geist_text_create_image(geist_text * txt)
         case JUST_LEFT:
            x = 0;
            geist_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
-                                 IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 0);
+                                 IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_CENTER:
            x = (w - ww) / 2;
            geist_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
-                                 IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 0);
+                                 IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_RIGHT:
            x = w - ww;
            geist_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
-                                 IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 0);
+                                 IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
 
            break;
         case JUST_BLOCK:
@@ -417,8 +421,7 @@ geist_text_create_image(geist_text * txt)
                     int wordw;
 
                     geist_imlib_text_draw(im, txt->fn, txt->style, x + offset,
-                                          y, pp, IMLIB_TEXT_TO_RIGHT, 0, 0, 0,
-                                          0);
+                                          y, pp, IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
                     geist_imlib_get_text_size(txt->fn, pp, txt->style, &wordw,
                                               NULL, IMLIB_TEXT_TO_RIGHT);
                     offset += (wordw + space_width + word_spacing);
@@ -610,6 +613,10 @@ geist_text_duplicate(geist_object * obj)
       GEIST_TEXT(ret)->justification = txt->justification;
       GEIST_TEXT(ret)->wordwrap = txt->wordwrap;
       GEIST_TEXT(ret)->style = geist_style_dup(txt->style);
+      GEIST_TEXT(ret)->r = txt->r;
+      GEIST_TEXT(ret)->g = txt->g;
+      GEIST_TEXT(ret)->b = txt->b;
+      GEIST_TEXT(ret)->a = txt->a;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
@@ -638,7 +645,6 @@ geist_text_resize(geist_object * obj, int x, int y)
 
    D_RETURN_(5);
 }
-
 
 
 void
@@ -727,9 +733,7 @@ void
 refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   ((geist_style_bit
-     *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->r =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   GEIST_TEXT(obj)->r = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
@@ -738,9 +742,7 @@ void
 refresh_g_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   ((geist_style_bit
-     *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->g =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   GEIST_TEXT(obj)->g = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
@@ -749,9 +751,7 @@ void
 refresh_b_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   ((geist_style_bit
-     *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->b =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   GEIST_TEXT(obj)->b = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
@@ -760,9 +760,7 @@ void
 refresh_a_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   ((geist_style_bit
-     *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->a =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   GEIST_TEXT(obj)->a = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
@@ -923,21 +921,13 @@ geist_text_display_props(geist_object * obj)
                                 GEIST_TEXT(obj)->wordwrap);
 
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cr),
-                             ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->
-                                                   style->bits)->data))->r);
+                             GEIST_TEXT(obj)->r);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cg),
-                             ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->
-                                                   style->bits)->data))->g);
+                             GEIST_TEXT(obj)->g);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cb),
-                             ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->
-                                                   style->bits)->data))->b);
+                             GEIST_TEXT(obj)->b);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->ca),
-                             ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->
-                                                   style->bits)->data))->a);
+                             GEIST_TEXT(obj)->a);
 
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry),
                       GEIST_TEXT(obj)->fontname);
@@ -1171,7 +1161,6 @@ spinner_changed_cb(gpointer data)
    render_style(working_copy);
 
    D_RETURN_(3);
-
 }
 
 

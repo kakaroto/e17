@@ -57,6 +57,7 @@ struct __geist_text
    int wordwrap;
    int justification;
    geist_style *style;
+   int r,g,b,a;
 };
 
 geist_object *geist_text_new(void);

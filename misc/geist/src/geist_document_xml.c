@@ -549,11 +549,16 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    int wordwrap = 0;
    int justification = 0;
    geist_style *style = NULL;
+   int r,g,b,a;
 
    D_ENTER(3);
 
    fontsize = geist_xml_read_int(cur, "Fontsize", 12);
    wordwrap = geist_xml_read_int(cur, "Wordwrap", 1);
+         a = geist_xml_read_int(cur, "A", 255);
+         r = geist_xml_read_int(cur, "R", 255);
+         g = geist_xml_read_int(cur, "G", 255);
+         b = geist_xml_read_int(cur, "B", 255);
 
    cur = cur->children;
    while (cur != NULL)
@@ -581,6 +586,10 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          geist_text_new_with_text(0, 0, fontname, fontsize, text,
                                   justification, wordwrap, 0, 0, 0, 0);
       GEIST_TEXT(ret)->style = style;
+      GEIST_TEXT(ret)->r = r;
+      GEIST_TEXT(ret)->g = g;
+      GEIST_TEXT(ret)->b = b;
+      GEIST_TEXT(ret)->a = a;
       geist_text_update_image(GEIST_TEXT(ret), FALSE);
    }
 
@@ -840,6 +849,10 @@ geist_save_text_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
    xmlNewTextChild(parent, ns, "Fontname", txt->fontname);
    geist_xml_write_int(parent, "Fontsize", txt->fontsize);
    geist_xml_write_int(parent, "Wordwrap", txt->wordwrap);
+   geist_xml_write_int(parent, "R", txt->r);
+   geist_xml_write_int(parent, "G", txt->g);
+   geist_xml_write_int(parent, "B", txt->b);
+   geist_xml_write_int(parent, "A", txt->a);
    xmlNewTextChild(parent, ns, "Text", txt->text);
    xmlNewTextChild(parent, ns, "Justification",
                    geist_text_get_justification_string(txt->justification));

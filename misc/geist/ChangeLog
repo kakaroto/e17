@@ -1,3 +1,14 @@
+Fri Oct 27 01:15:13 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Changed style format slightly to make styles independant of the
+	colour of the text having a style applied (before that too was
+	defined in the style). Now text objects have their r,g,b,a values
+	back, and these are applied to any style bit with r=g=b=a=0. This
+	also means you can have a style defining that the main coloured
+	layer is behind another layer, for glow effects etc. A style can
+	exist without a r=g=b=a=0 bit, but it's rather silly, as the
+	actual text colour would never be applied ;-)
+
 Wed Oct 26 00:05:49 2000  Till Adam  <till@adam-lilienthal.de>
         
 	*font style editor. it renders to the document in realtime, but

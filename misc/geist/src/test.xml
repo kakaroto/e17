@@ -237,7 +237,7 @@
 <geist:Alignment>Center Both</geist:Alignment>
 <geist:Filename>/usr/local/share/geist/images/mush.png</geist:Filename>
 </geist:Object>
-<geist:Object X="225" Y="9" W="252" H="34" Alias="1" Visible="16" Fontsize="25" Wordwrap="1">
+<geist:Object X="225" Y="9" W="252" H="34" Alias="1" Visible="16" Fontsize="25" Wordwrap="1" R="255" G="100" B="100" A="255">
 <geist:Type>Text</geist:Type>
 <geist:Name>New text</geist:Name>
 <geist:Sizemode>None</geist:Sizemode>
@@ -257,11 +257,11 @@
 <geist:Bit X_Offset="1" Y_Offset="-1" R="0" G="0" B="0" A="64"/>
 <geist:Bit X_Offset="-1" Y_Offset="-1" R="0" G="0" B="0" A="64"/>
 <geist:Bit X_Offset="-1" Y_Offset="1" R="0" G="0" B="0" A="64"/>
-<geist:Bit X_Offset="0" Y_Offset="0" R="255" G="100" B="100" A="255"/>
+<geist:Bit X_Offset="0" Y_Offset="0" R="0" G="0" B="0" A="0"/>
 </geist:Bits>
 </geist:Style>
 </geist:Object>
-<geist:Object X="5" Y="412" W="237" H="15" Alias="1" Visible="16" Fontsize="12" Wordwrap="1">
+<geist:Object X="5" Y="412" W="237" H="15" Alias="1" Visible="16" Fontsize="12" Wordwrap="1" R="40" G="50" B="255" A="255">
 <geist:Type>Text</geist:Type>
 <geist:Name>New text</geist:Name>
 <geist:Sizemode>None</geist:Sizemode>
@@ -272,7 +272,7 @@
 <geist:Style>
 <geist:Name>Default</geist:Name>
 <geist:Bits>
-<geist:Bit X_Offset="0" Y_Offset="0" R="40" G="50" B="255" A="255"/>
+<geist:Bit X_Offset="0" Y_Offset="0" R="0" G="0" B="0" A="0"/>
 </geist:Bits>
 </geist:Style>
 </geist:Object>

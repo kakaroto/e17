@@ -7,7 +7,7 @@
 <geist:Layer Alpha="0" X_Offset="0" Y_Offset="0" Visible="1">
 <geist:Name>New layer</geist:Name>
 <geist:Objects>
-<geist:Object X="12" Y="13" W="464" H="432" Alias="1" Visible="16" Fontsize="20" Wordwrap="1">
+<geist:Object X="12" Y="13" W="464" H="432" Alias="1" Visible="16" Fontsize="20" Wordwrap="1" R="40" G="50" B="255" A="255">
 <geist:Type>Text</geist:Type>
 <geist:Name>New text</geist:Name>
 <geist:Sizemode>None</geist:Sizemode>
@@ -24,7 +24,7 @@ Let me know if it behaves oddly.</geist:Text>
 <geist:Style>
 <geist:Name>Default</geist:Name>
 <geist:Bits>
-<geist:Bit X_Offset="0" Y_Offset="0" R="40" G="50" B="255" A="255"/>
+<geist:Bit X_Offset="0" Y_Offset="0" R="0" G="0" B="0" A="0"/>
 </geist:Bits>
 </geist:Style>
 </geist:Object>
