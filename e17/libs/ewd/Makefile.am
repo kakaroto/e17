@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src test
+SUBDIRS = src test doc
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess ewd-config.h.in \
 			config.sub configure install-sh ltconfig ltmain.sh \
@@ -15,6 +15,14 @@ dist-hook:
 	    fi \
 	  done \
 	fi
+
+docs:
+	$(MAKE) -C $(top_srcdir)/doc docs
+
+if HAVE_JADE
+html-docs:
+	$(MAKE) -C $(top_srcdir)/doc html-docs
+endif
 
 bin_SCRIPTS = ewd-config
 

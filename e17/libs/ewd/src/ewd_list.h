@@ -99,7 +99,7 @@ int ewd_dlist_insert(Ewd_DList * _e_dlist, void *_data);
 /* Info about list's state */
 void *ewd_dlist_current(Ewd_DList *list);
 int ewd_dlist_index(Ewd_DList *list);
-int ewd_dlist_nodes(Ewd_DList *list);
+#define ewd_dlist_nodes(list) ewd_list_nodes(EWD_LIST(list))
 
 /* Removing items from the list */
 void *ewd_dlist_remove(Ewd_DList * _e_dlist);
@@ -107,7 +107,8 @@ void *ewd_dlist_remove_first(Ewd_DList * _e_dlist);
 void *ewd_dlist_remove_last(Ewd_DList * _e_dlist);
 
 /* Traversing the list */
-int ewd_dlist_for_each(Ewd_DList *list, Ewd_For_Each function);
+#define ewd_dlist_for_each(list, function) \
+				ewd_list_for_each(EWD_LIST(list), function)
 inline void *ewd_dlist_goto_first(Ewd_DList * _e_dlist);
 inline void *ewd_dlist_goto_last(Ewd_DList * _e_dlist);
 inline void *ewd_dlist_goto_index(Ewd_DList * _e_dlist, int index);

@@ -28,10 +28,10 @@ static void *_ewd_dlist_previous(Ewd_DList * list);
 static void *_ewd_dlist_remove_first(Ewd_DList *list);
 static void *_ewd_dlist_goto_index(Ewd_DList *list, int index);
 
-/* 
- * Description: Create and initialize a new list.
- * Parameters: None
- * Returns: Returns a new initialized list.
+/**
+ * ewd_list_new - create and initialize a new list.
+ *
+ * Returns a new initialized list on success, NULL on failure.
  */
 Ewd_List *ewd_list_new()
 {
@@ -51,10 +51,11 @@ Ewd_List *ewd_list_new()
 	return list;
 }
 
-/* 
- * Description: Initialize a list to some sane starting values.
- * Parameters: 1. list - the list to initialize
- * Returns: FALSE if an error occurs, TRUE if successful
+/**
+ * ewd_list_init - initialize a list to some sane starting values.
+ * @list: the list to initialize
+ *
+ * Returns FALSE if an error occurs, TRUE if successful
  */
 int ewd_list_init(Ewd_List *list)
 {
@@ -67,10 +68,11 @@ int ewd_list_init(Ewd_List *list)
 	return TRUE;
 }
 
-/* 
- * Description: Free a list and all of it's nodes.
- * Parameters: 1. list - the list to be free'd
- * Returns: None
+/**
+ * ewd_list_destroy - Free a list and all of it's nodes.
+ * @list: the list to be freed
+ *
+ * Returns no value
  */
 void ewd_list_destroy(Ewd_List * list)
 {
@@ -92,14 +94,12 @@ void ewd_list_destroy(Ewd_List * list)
 	FREE(list);
 }
 
-/*
- * Description: Add a function that will be called at node destroy time, the
- * 		function will be passed the value of the node to be destroyed.
- * Parameters: 1. list - the list that will use this function when nodes are
- *                       destroyed.
- *             2. free_func - the function that will be passed the value of
- *                            the node being freed.
- * Returns: TRUE on successful set, FALSE otherwise.
+/**
+ * ewd_list_set_free_cb - set the function for freeing data
+ * @list: the list that will use this function when nodes are destroyed.
+ * @free_func: the function that will free the key data
+ *
+ * Returns TRUE on successful set, FALSE otherwise.
  */
 int ewd_list_set_free_cb(Ewd_List * list, Ewd_Free_Cb free_func)
 {
@@ -114,10 +114,11 @@ int ewd_list_set_free_cb(Ewd_List * list, Ewd_Free_Cb free_func)
 	return TRUE;
 }
 
-/*
- * Description: Checks the list for any nodes.
- * Parameters: 1. list - the list to check
- * Returns: TRUE if no nodes in list, FALSE if the list contains nodes
+/**
+ * ewd_list_is_empty - checks the list for any nodes.
+ * @list: the list to check for nodes
+ *
+ * Returns TRUE if no nodes in list, FALSE if the list contains nodes
  */
 int ewd_list_is_empty(Ewd_List * list)
 {
@@ -135,10 +136,11 @@ int ewd_list_is_empty(Ewd_List * list)
 	return ret;
 }
 
-/*
- * Description: Returns the number of the current node
- * Parameters: 1. list - the list to return the number of the current node
- * Returns: The number of the current node in the list.
+/**
+ * ewd_list_index - returns the number of the current node
+ * @list: the list to return the number of the current node
+ *
+ * Returns the number of the current node in the list.
  */
 int ewd_list_index(Ewd_List * list)
 {
@@ -155,10 +157,11 @@ int ewd_list_index(Ewd_List * list)
 	return ret;
 }
 
-/*
- * Description: Find the number of nodes in the list.
- * Parameters: 1. list - the list to find the number of nodes
- * Returns: The number of nodes in the list.
+/**
+ * ewd_list_nodes - find the number of nodes in the list.
+ * @list: the list to find the number of nodes
+ *
+ * Returns the number of nodes in the list.
  */
 int ewd_list_nodes(Ewd_List * list)
 {
@@ -175,11 +178,12 @@ int ewd_list_nodes(Ewd_List * list)
 	return ret;
 }
 
-/*
- * Description: Append data to the list.
- * Parameters: 1. list - the list to append the data
- *             2. data - the data to append to the list.
- * Returns: FALSE if an error occurs, TRUE if the data is appended successfully
+/**
+ * ewd_list_append - append data to the list.
+ * @list: the list to append @data
+ * @data: the data to append to @list.
+ *
+ * Returns FALSE if an error occurs, TRUE if @data is appended successfully
  */
 inline int ewd_list_append(Ewd_List * list, void *data)
 {
@@ -221,11 +225,12 @@ static int _ewd_list_append(Ewd_List * list, Ewd_List_Node *end)
 	return TRUE;
 }
 
-/*
- * Description: Prepend data to the beginning of the list
- * Parameters: 1. list - the list to prepend the data
- *             2. data - the data to prepend to the list
- * Returns: FALSE if an error occurs, TRUE if data prepended successfully
+/**
+ * ewd_list_prepend - prepend data to the beginning of the list
+ * @list: the list to prepend @data
+ * @data: the data to prepend to @list
+ *
+ * Returns FALSE if an error occurs, TRUE if data prepended successfully
  */
 inline int ewd_list_prepend(Ewd_List * list, void *data)
 {
@@ -268,11 +273,12 @@ static int _ewd_list_prepend(Ewd_List * list, Ewd_List_Node *start)
 	return TRUE;
 }
 
-/*
- * Description: Insert data at the current point in the list
- * Parameters: 1. list - the list to hold the inserted data
- *             2. data - the data to insert into the list
- * Returns: FALSE on an error, TRUE on success
+/**
+ * ewd_list_insert - insert data at the current point in the list
+ * @list: the list to hold the inserted @data
+ * @data: the data to insert into @list
+ *
+ * Returns FALSE on an error, TRUE on success
  */
 inline int ewd_list_insert(Ewd_List * list, void *data)
 {
@@ -330,10 +336,11 @@ static int _ewd_list_insert(Ewd_List * list, Ewd_List_Node *new_node)
 	return TRUE;
 }
 
-/*
- * Description: Remove the current item from the list.
- * Parameters: 1. list - the list to remove the current item
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_remove - remove the current item from the list.
+ * @list: the list to remove the current item
+ *
+ * Returns a pointer to the removed data on success, NULL on failure.
  */
 inline void *ewd_list_remove(Ewd_List * list)
 {
@@ -392,10 +399,11 @@ static void *_ewd_list_remove(Ewd_List * list)
 	return ret;
 }
 
-/*
- * Description: Remove and destroy the data in the list at current position
- * Parameters: 1. list - the list to remove the data from
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_remove_destroy - remove and free the data in lists current position
+ * @list: the list to remove and free the current item
+ *
+ * Returns TRUE on success, FALSE on error
  */
 int ewd_list_remove_destroy(Ewd_List *list)
 {
@@ -413,10 +421,11 @@ int ewd_list_remove_destroy(Ewd_List *list)
 	return TRUE;
 }
 
-/*
- * Description: Remove the first item from the list.
- * Parameters: 1. list - the list to remove the current item
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_remove_first - remove the first item from the list.
+ * @list: the list to remove the current item
+ *
+ * Returns a pointer to the removed data on success, NULL on failure.
  */
 inline void *ewd_list_remove_first(Ewd_List * list)
 {
@@ -471,10 +480,11 @@ static void *_ewd_list_remove_first(Ewd_List * list)
 	return ret;
 }
 
-/*
- * Description: Remove the last item from the list.
- * Parameters: 1. list - the list to remove the last node from
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_remove_first - remove the last item from the list.
+ * @list: the list to remove the last node from
+ *
+ * Returns a pointer to the removed data on success, NULL on failure.
  */
 inline void *ewd_list_remove_last(Ewd_List * list)
 {
@@ -531,11 +541,12 @@ static void *_ewd_list_remove_last(Ewd_List * list)
 	return ret;
 }
 
-/* 
- * Description: Move the current item to the index number
- * Parameters: 1. list - the list to move the current item
- *             2. index - the position to move the current item
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_goto_index - move the current item to the index number
+ * @list: the list to move the current item
+ * @index: the position to move the current item
+ *
+ * Returns a pointer to the new current item on success, NULL on failure.
  */
 inline void *ewd_list_goto_index(Ewd_List * list, int index)
 {
@@ -574,11 +585,12 @@ static void *_ewd_list_goto_index(Ewd_List *list, int index)
 	return list->current->data;
 }
 
-/*
- * Description: Move the current item to the node that contains data
- * Parameters: 1. list - the list to move the current item in
- *             2. data - the data to find and set the current item to
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_goto - move the current item to the node that contains data
+ * @list: the list to move the current item in
+ * @data: the data to find and set the current item to
+ *
+ * Returns a pointer to @data on success, NULL on failure.
  */
 inline void *ewd_list_goto(Ewd_List * list, void *data)
 {
@@ -631,10 +643,11 @@ static void *_ewd_list_goto(Ewd_List * list, void *data)
 	return list->current;
 }
 
-/*
- * Description: Move the current pointer to the first item in the list
- * Parameters: 1. list - the list to move the current pointer in
- * Returns: TRUE on success, FALSE on an error
+/**
+ * ewd_list_goto_first - move the current pointer to the first item in the list
+ * @list: the list to move the current pointer in
+ *
+ * Returns a pointer to the first item on success, NULL on failure
  */
 inline void *ewd_list_goto_first(Ewd_List *list)
 {
@@ -663,10 +676,11 @@ static void *_ewd_list_goto_first(Ewd_List * list)
 	return list->current->data;
 }
 
-/*
- * Description: Move the pointer to current to the last item in the list
- * Parameters: 1. list - the list to move the current pointer in
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_goto_last - move the pointer to current to the last item in the list
+ * @list: the list to move the current pointer in
+ *
+ * Returns a pointer to the last item on success, NULL on failure.
  */
 inline void *ewd_list_goto_last(Ewd_List * list)
 {
@@ -693,10 +707,12 @@ static void *_ewd_list_goto_last(Ewd_List * list)
 	return list->current->data;
 }
 
-/*
- * Description: Retrieve the data in the current node
- * Parameters: 1. list - the list to retrieve the current data from
- * Returns: NULL on error, the data in current on success
+/**
+ * ewd_list_current - retrieve the data in the current node
+ * @list: the list to retrieve the current data from
+ *
+ * Returns the data at the current position on success, NULL on failure or if
+ * no current item set.
  */
 inline void *ewd_list_current(Ewd_List * list)
 {
@@ -724,10 +740,11 @@ static void *_ewd_list_current(Ewd_List * list)
 	return ret;
 }
 
-/*
- * Description: Retrieve the data at the current node and move to the next
- * Parameters: 1. list - the list to move to the next item
- * Returns: NULL on error or empty list, data in current node on success
+/**
+ * ewd_list_next - retrieve the data at the current node and move to the next
+ * @list: the list to move to the next item
+ *
+ * Returns the current item in the list on success, NULL on failure.
  */
 inline void *ewd_list_next(Ewd_List * list)
 {
@@ -767,10 +784,12 @@ static void *_ewd_list_next(Ewd_List * list)
 	return data;
 }
 
-/* 
- * Description: Remove all nodes from the list
- * Parameters: 1. list - the list that will have it's nodes removed
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_list_clear - remove all nodes from the list
+ * @list: the list that will have it's nodes removed
+ *
+ * Returns TRUE on success, FALSE on error. The data for each item on the list
+ * is not freed by ewd_list_clear.
  */
 int ewd_list_clear(Ewd_List * list)
 {
@@ -795,11 +814,12 @@ int ewd_list_clear(Ewd_List * list)
 	return TRUE;
 }
 
-/*
- * Description: Execute function for each node in the list.
- * Parameters: 1. list - The list to retrieve nodes from.
- *             2. function - The function to pass each node from the list to.
- * Returns: FALSE if there is an error, TRUE otherwise.
+/**
+ * ewd_list_for_each - execute function for each node in the list.
+ * @list: the list to retrieve nodes from.
+ * @function: The function to pass each node from the list to.
+ *
+ * Returns TRUE on success, FALSE on failure.
  */
 int ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 {
@@ -876,10 +896,10 @@ int ewd_list_node_destroy(Ewd_List_Node * node, Ewd_Free_Cb free_func)
 	return TRUE;
 }
 
-/* 
- * Description: Create and initialize a new list.
- * Parameters: None
- * Returns: Returns a new initialized list.
+/**
+ * ewd_dlist_new - create and initialize a new list.
+ *
+ * Returns a new initialized list on success, NULL on failure.
  */
 Ewd_DList *ewd_dlist_new()
 {
@@ -897,10 +917,11 @@ Ewd_DList *ewd_dlist_new()
 	return list;
 }
 
-/* 
- * Description: Initialize a list to some sane starting values.
- * Parameters: 1. list - the list to initialize
- * Returns: FALSE if an error occurs, TRUE if successful
+/**
+ * ewd_dlist_init - initialize a list to some sane starting values.
+ * @list: the list to initialize
+ *
+ * Returns FALSE if an error occurs, TRUE if successful
  */
 int ewd_dlist_init(Ewd_DList *list)
 {
@@ -913,10 +934,11 @@ int ewd_dlist_init(Ewd_DList *list)
 	return TRUE;
 }
 
-/* 
- * Description: Free a list and all of it's nodes.
- * Parameters: 1. list - the list to be free'd
- * Returns: None
+/**
+ * ewd_dlist_destroy - free a list and all of it's nodes.
+ * @list: the list to be freed
+ *
+ * Returns no value
  */
 void ewd_dlist_destroy(Ewd_DList * list)
 {
@@ -937,14 +959,12 @@ void ewd_dlist_destroy(Ewd_DList * list)
 	FREE(list);
 }
 
-/*
- * Description: Add a function that will be called at node destroy time, the
- * 		function will be passed the value of the node to be destroyed.
- * Parameters: 1. list - the list that will use this function when nodes are
- *                       destroyed.
- *             2. free_func - the function that will be passed the value of
- *                            the node being freed.
- * Returns: TRUE on successful set, FALSE otherwise.
+/**
+ * ewd_dlist_set_free_cb - set the function for freeing data
+ * @list: the list that will use this function when nodes are destroyed.
+ * @free_func: the function that will free the key data
+ *
+ * Returns TRUE on success, FALSE on failure.
  */
 int ewd_dlist_set_free_cb(Ewd_DList * list, Ewd_Free_Cb free_func)
 {
@@ -953,10 +973,11 @@ int ewd_dlist_set_free_cb(Ewd_DList * list, Ewd_Free_Cb free_func)
 	return ewd_list_set_free_cb(EWD_LIST(list), free_func);
 }
 
-/*
- * Description: Checks the list for any nodes.
- * Parameters: 1. list - the list to check
- * Returns: TRUE if no nodes in list, FALSE if the list contains nodes
+/**
+ * ewd_dlist_is_empty - checks the list for any nodes.
+ * @list: the list to check for nodes
+ *
+ * Returns TRUE if no nodes in list, FALSE if the list contains nodes
  */
 int ewd_dlist_is_empty(Ewd_DList * list)
 {
@@ -965,35 +986,25 @@ int ewd_dlist_is_empty(Ewd_DList * list)
 	return ewd_list_is_empty(EWD_LIST(list));
 }
 
-/*
- * Description: Returns the number of the current node
- * Parameters: 1. list - the list to return the number of the current node
- * Returns: The number of the current node in the list.
+/**
+ * ewd_dlist_index - returns the number of the current node
+ * @list: the list to return the number of the current node
+ *
+ * Returns the number of the current node in the list.
  */
-int ewd_dlist_index(Ewd_DList * list)
+inline int ewd_dlist_index(Ewd_DList * list)
 {
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
 	return ewd_list_index(EWD_LIST(list));
 }
 
-/*
- * Description: Find the number of nodes in the list.
- * Parameters: 1. list - the list to find the number of nodes
- * Returns: The number of nodes in the list.
- */
-int ewd_dlist_nodes(Ewd_DList * list)
-{
-	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
-
-	return ewd_list_nodes(EWD_LIST(list));
-}
-
-/*
- * Description: Append data to the list.
- * Parameters: 1. list - the list to append the data
- *             2. data - the data to append to the list.
- * Returns: FALSE if an error occurs, TRUE if the data is appended successfully
+/**
+ * ewd_dlist_append - append data to the list.
+ * @list: the list to append @data
+ * @data: the data to append to @list
+ *
+ * Returns FALSE if an error occurs, TRUE if the data is appended successfully
  */
 int ewd_dlist_append(Ewd_DList * list, void *data)
 {
@@ -1019,11 +1030,12 @@ int ewd_dlist_append(Ewd_DList * list, void *data)
 	return ret;
 }
 
-/*
- * Description: Prepend data to the beginning of the list
- * Parameters: 1. list - the list to prepend the data
- *             2. data - the data to prepend to the list
- * Returns: FALSE if an error occurs, TRUE if data prepended successfully
+/**
+ * ewd_dlist_prepend - prepend data to the beginning of the list
+ * @list: the list to prepend @data
+ * @data: the data to prepend to @list
+ *
+ * Returns FALSE if an error occurs, TRUE if data prepended successfully
  */
 int ewd_dlist_prepend(Ewd_DList * list, void *data)
 {
@@ -1048,11 +1060,12 @@ int ewd_dlist_prepend(Ewd_DList * list, void *data)
 	return ret;
 }
 
-/*
- * Description: Insert data at the current point in the list
- * Parameters: 1. list - the list to hold the inserted data
- *             2. data - the data to insert into the list
- * Returns: FALSE on an error, TRUE on success
+/**
+ * ewd_dlist_insert - insert data at the current point in the list
+ * @list: the list to hold the inserted @data
+ * @data: the data to insert into @list
+ *
+ * Returns FALSE on an error, TRUE on success
  */
 int ewd_dlist_insert(Ewd_DList * list, void *data)
 {
@@ -1091,10 +1104,11 @@ int ewd_dlist_insert(Ewd_DList * list, void *data)
 	return ret;
 }
 
-/*
- * Description: Remove the current item from the list.
- * Parameters: 1. list - the list to remove the current item
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_dlist_remove - remove the current item from the list.
+ * @list: the list to remove the current item
+ *
+ * Returns a pointer to the removed data on success, NULL on failure.
  */
 void *ewd_dlist_remove(Ewd_DList * list)
 {
@@ -1117,10 +1131,11 @@ void *ewd_dlist_remove(Ewd_DList * list)
 	return ret;
 }
 
-/*
- * Description: Remove the first item from the list.
- * Parameters: 1. list - the list to remove the current item
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_dlist_remove_first - remove the first item from the list.
+ * @list: the list to remove the current item
+ *
+ * Returns a pointer to the removed data on success, NULL on failure.
  */
 void *ewd_dlist_remove_first(Ewd_DList * list)
 {
@@ -1135,10 +1150,11 @@ void *ewd_dlist_remove_first(Ewd_DList * list)
 	return ret;
 }
 
-/*
- * Description: Remove and destroy the data in the list at current position
- * Parameters: 1. list - the list to remove the data from
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_dlist_remove_destroy - remove and free the data at the current position
+ * @list: the list to remove the data from
+ *
+ * Returns TRUE on success, FALSE on error
  */
 int ewd_dlist_remove_destroy(Ewd_DList *list)
 {
@@ -1161,10 +1177,11 @@ static void *_ewd_dlist_remove_first(Ewd_DList *list)
 	return ret;
 }
 
-/*
- * Description: Remove the last item from the list.
- * Parameters: 1. list - the list to remove the last node from
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_dlist_remove_last - remove the last item from the list
+ * @list: the list to remove the last node from
+ *
+ * Returns a pointer to the removed data on success, NULL on failure.
  */
 void *ewd_dlist_remove_last(Ewd_DList * list)
 {
@@ -1179,11 +1196,12 @@ void *ewd_dlist_remove_last(Ewd_DList * list)
 	return ret;
 }
 
-/* 
- * Description: Move the current item to the index number
- * Parameters: 1. list - the list to move the current item
- *             2. index - the position to move the current item
- * Returns: node at specified index on success, NULL on error
+/**
+ * ewd_dlist_goto_index - move the current item to the index number
+ * @list: the list to move the current item
+ * @index: the position to move the current item
+ *
+ * Returns node at specified index on success, NULL on error
  */
 void *ewd_dlist_goto_index(Ewd_DList * list, int index)
 {
@@ -1231,11 +1249,12 @@ static void *_ewd_dlist_goto_index(Ewd_DList *list, int index)
 	return _ewd_list_current(list);
 }
 
-/*
- * Description: Move the current item to the node that contains data
- * Parameters: 1. list - the list to move the current item in
- *             2. data - the data to find and set the current item to
- * Returns: specified data on success, NULL on error
+/**
+ * ewd_dlist_goto - move the current item to the node that contains data
+ * @list: the list to move the current item in
+ * @data: the data to find and set the current item to
+ *
+ * Returns specified data on success, NULL on error
  */
 void *ewd_dlist_goto(Ewd_DList * list, void *data)
 {
@@ -1250,10 +1269,11 @@ void *ewd_dlist_goto(Ewd_DList * list, void *data)
 	return ret;
 }
 
-/*
- * Description: Move the current pointer to the first item in the list
- * Parameters: 1. list - the list to change the current to the first item
- * Returns: TRUE if successful, FALSE if error occurs
+/**
+ * ewd_dlist_goto_first - move the current pointer to the first item in the list
+ * @list: the list to change the current to the first item
+ *
+ * Returns a pointer to the first item on success, NULL on failure.
  */
 void *ewd_dlist_goto_first(Ewd_DList *list)
 {
@@ -1268,10 +1288,11 @@ void *ewd_dlist_goto_first(Ewd_DList *list)
 	return ret;
 }
 
-/*
- * Description: Move the pointer to the current list item to the last item
- * Parameters: 1. list - the list to move the current item pointer to the last
- * Returns: specified node on success, NULL on an error
+/**
+ * ewd_dlist_goto_last - move the pointer to the current item to the last item
+ * @list: the list to move the current item pointer to the last
+ *
+ * Returns a pointer to the last item in the list on success, NULL on failure.
  */
 void *ewd_dlist_goto_last(Ewd_DList * list)
 {
@@ -1286,10 +1307,11 @@ void *ewd_dlist_goto_last(Ewd_DList * list)
 	return ret;
 }
 
-/*
- * Description: Return the data in the current list item
- * Parameters: 1. list - the list to the return the current data
- * Returns: value of the current data item, NULL if no current item
+/**
+ * ewd_dlist_current - return the data in the current list item
+ * @list: the list to the return the current data
+ *
+ * Returns value of the current data item, NULL if no current item
  */
 void *ewd_dlist_current(Ewd_DList * list)
 {
@@ -1302,10 +1324,11 @@ void *ewd_dlist_current(Ewd_DList * list)
 	return ret;
 }
 
-/*
- * Description: Move to the next item in the list and return current item
- * Parameters: 1. list - the list to move to the next item in.
- * Returns: data in the current list node, or NULL on error
+/**
+ * ewd_dlist_next - move to the next item in the list and return current item
+ * @list: the list to move to the next item in.
+ *
+ * Returns data in the current list node, or NULL on error
  */
 void *ewd_dlist_next(Ewd_DList * list)
 {
@@ -1318,10 +1341,11 @@ void *ewd_dlist_next(Ewd_DList * list)
 	return data;
 }
 
-/*
- * Description: Move to the previous item in the list and return current item
- * Parameters: 1. list - the list to move to the previous item in.
- * Returns: data in the current list node, or NULL on error
+/**
+ * ewd_dlist_previous - move to the previous item and return current item
+ * @list: the list to move to the previous item in.
+ *
+ * Returns data in the current list node, or NULL on error
  */
 void *ewd_dlist_previous(Ewd_DList * list)
 {
@@ -1353,25 +1377,19 @@ static void *_ewd_dlist_previous(Ewd_DList * list)
 	return data;
 }
 
-/*
- * Description: Execute function for each node in the list.
- * Parameters: 1. list - The list to retrieve nodes from.
- *             2. function - The function to pass each node from the list to.
- * Returns: FALSE if there is an error, TRUE otherwise.
+/**
+ * ewd_dlist_clear - remove all nodes from the list.
+ * @list: the list to remove all nodes from
+ *
+ * Returns TRUE on success, FALSE on errors
  */
-int ewd_dlist_for_each(Ewd_DList *list, Ewd_For_Each function)
+int ewd_dlist_clear(Ewd_DList * list)
 {
-	int ret;
-
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_READ_LOCK(list);
+	ewd_list_clear(EWD_LIST(list));
 
-	ret = _ewd_list_for_each(list, function);
-
-	EWD_READ_UNLOCK(list);
-
-	return ret;
+	return TRUE;
 }
 
 /*
@@ -1390,20 +1408,6 @@ int ewd_dlist_node_init(Ewd_DList_Node * node)
 		node->previous = NULL;
 
 	return ret;
-}
-
-/*
- * Description: Remove all nodes from the list.
- * Parameters: 1. list - the list to remove all nodes from
- * Returns: TRUE on success, FALSE on errors
- */
-int ewd_dlist_clear(Ewd_DList * list)
-{
-	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
-
-	ewd_list_clear(EWD_LIST(list));
-
-	return TRUE;
 }
 
 /*

@@ -1,0 +1,145 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!ENTITY ewd "<function>ewd</function>">
+]>
+
+
+<book id="ewd-api-documentation">
+  <bookinfo>
+    <title>EWD API</title>
+    
+    <authorgroup>
+
+      <author>
+	<firstname>Nathan</firstname>
+	<othername>"RbdPngn"</othername>
+	<surname>Ingersoll</surname>
+	<affiliation>
+	  <address>
+	    <email>ningerso@d.umn.edu</email>
+	  </address>
+	</affiliation>
+      </author>
+
+      <author>
+	<firstname>Christopher</firstname>
+	<othername>"smugg"</othername>
+	<surname>Rosendahl</surname>
+	<affiliation>
+	  <address>
+	    <email>crosendahl@northernwatch.com</email>
+	  </address>
+	</affiliation>
+      </author>
+
+    </authorgroup>
+
+    <releaseinfo>
+        The EWD API is currently under heavy development. If this document
+        does not match your copy of EWD, please check for updates.
+    </releaseinfo>
+
+    <copyright>
+      <year>2001</year>
+      <holder>Nathan Ingersoll</holder>
+      <holder>Christopher Rosendahl</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to
+	deal in the Software without restriction, including without limitation the
+	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	sell copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+      </para>
+      <para>
+	The above copyright notice and this permission notice shall be included in
+	all copies of the Software and its documentation and acknowledgment shall be
+	given in the documentation and software packages that this Software was
+	used.
+      </para>
+      <para>
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+      </para>
+    </legalnotice>
+
+  </bookinfo>
+
+  <toc></toc>
+
+  <chapter id="introduction">
+    <title>Introduction</title>
+    <para>
+      EWD is a data structures library used by some of the
+      <ulink url="http://www.enlightenment.org"> Enlightenment</ulink>
+      subsystems. It contains implementations for singly and doubly linked
+      lists, AVL trees, hash tables, and plugin manipulation.
+    </para>
+  </chapter>
+
+  <chapter id="structures">
+    <title id="structures.title">Data Structure</title>
+
+    <section><title>List Implementations</title>
+!Isrc/ewd_list.c
+    </section>
+
+    <section><title>Hash Table Implementation</title>
+!Isrc/ewd_hash.c
+    </section>
+
+    <section><title>AVL Tree Implementation</title>
+!Isrc/ewd_tree.c
+    </section>
+
+  </chapter>
+
+  <chapter id="util">
+    <title id="util.title">Utility Components</title>
+    <para>
+        The parts that fall into utility components ease the daily labors of
+        programmers when handling common tasks.
+    </para>
+
+    <section><title>Plugin Loading and Manipulation</title>
+       <para>
+          The plugin functions enable programmers to easily load plugins from
+          desired search paths without the work of accessing the file system
+          and path searching.
+       </para>
+!Isrc/ewd_plugin.c
+    </section>
+
+    <section><title>Value Relation</title>
+       <para>
+          The value functions are intended to abstract common hashing and
+          comparison routines.
+       </para>
+!Isrc/ewd_value.c
+    </section>
+
+  </chapter>
+
+  <bibliography>
+
+    <biblioentry id="bib-efsd">
+      <bookbiblio>
+	<author>	  
+	  <firstname>Christian</firstname>
+	  <surname>Kreibich</surname>
+	</author>
+	<title>The EFSD Programming Manual</title>
+	<date>2001</date>
+      </bookbiblio>
+    </biblioentry>	
+
+  </bibliography>
+      
+</book>
+

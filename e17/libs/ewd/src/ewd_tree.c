@@ -44,11 +44,11 @@ int tree_for_each_node(Ewd_Tree_Node * node, Ewd_For_Each for_each_func);
 int tree_for_each_node_value(Ewd_Tree_Node * node,
 			     Ewd_For_Each for_each_func);
 
-/*
- * Description: Allocate a new tree structure.
- * Parameters:  1. compare_func - function used to compare the two values, most
- *                                likely NULL is what you want.
- * Returns: NULL if the operation fails, otherwise a pointer to the new tree
+/**
+ * ewd_tree_new - allocate a new tree structure.
+ * @compare_func: function used to compare the two values
+ *
+ * Returns NULL if the operation fails, otherwise a pointer to the new tree
  */
 Ewd_Tree *ewd_tree_new(Ewd_Compare_Cb compare_func)
 {
@@ -66,13 +66,12 @@ Ewd_Tree *ewd_tree_new(Ewd_Compare_Cb compare_func)
 	return new_tree;
 }
 
-/*
- * Description: Initialize a tree structure to some sane initial values
- * Parameters: 1. new_tree - the new tree structure to be initialized
- *             2. compare_func - the function used to compare node keys, this is
- *                               usually NULL since a direct comparison is
- *                               most common
- * Returns: TRUE on successful initialization, FALSE on an error
+/**
+ * ewd_tree_init - initialize a tree structure to some sane initial values
+ * @new_tree: the new tree structure to be initialized
+ * @compare_func: the function used to compare node keys
+ *
+ * Returns TRUE on successful initialization, FALSE on an error
  */
 int ewd_tree_init(Ewd_Tree * new_tree, Ewd_Compare_Cb compare_func)
 {
@@ -91,13 +90,11 @@ int ewd_tree_init(Ewd_Tree * new_tree, Ewd_Compare_Cb compare_func)
 }
 
 /*
- * Description: Add a function that will be called at node destroy time, the
- * 		function will be passed the value of the node to be destroyed.
- * Parameters: 1. tree - the tree that will use this function when nodes are
- *                       destroyed.
- *             2. free_func - the function that will be passed the value of
- *                            the node being freed.
- * Returns: TRUE on successful set, FALSE otherwise.
+ * ewd_tree_set_free_cb - add a function to be called at node destroy time
+ * @tree: the tree that will use this function when nodes are destroyed
+ * @free_func - the function that will be passed the node being freed
+ *
+ * Returns TRUE on successful set, FALSE otherwise.
  */
 int ewd_tree_set_free_cb(Ewd_Tree * tree, Ewd_Free_Cb free_func)
 {
@@ -111,9 +108,9 @@ int ewd_tree_set_free_cb(Ewd_Tree * tree, Ewd_Free_Cb free_func)
 }
 
 /*
- * Description: Initialize a new tree node
- * Parameters: None.
- * Returns: FALSE if the operation fails, otherwise TRUE
+ * ewd_tree_node_init - initialize a new tree node
+ *
+ * Returns FALSE if the operation fails, otherwise TRUE
  */
 int ewd_tree_node_init(Ewd_Tree_Node * new_node)
 {
@@ -178,10 +175,11 @@ int ewd_tree_node_destroy(Ewd_Tree_Node * node, Ewd_Free_Cb data_free)
 }
 
 /*
- * Description: Set the value of the node to value
- * Parameters: 1. node - the node to be set
- *             2. value - the value to set the node to.
- * Returns: TRUE if the node is set successfully, FALSE if not.
+ * ewd_tree_node_value_set - set the value of the node to value
+ * @node: the node to be set
+ * @value: the value to set the node to.
+ *
+ * Returns TRUE if the node is set successfully, FALSE if not.
  */
 int ewd_tree_node_value_set(Ewd_Tree_Node * node, void *value)
 {
@@ -213,10 +211,11 @@ void *ewd_tree_node_value_get(Ewd_Tree_Node * node)
 }
 
 /*
- * Description: Set the value of the node's key  to key
- * Parameters: 1. node - the node to be set
- *             2. key - the value to set it's key to.
- * Returns: TRUE if the node is set successfully, FALSE if not.
+ * ewd_tree_node_key_set - set the value of the node's key  to key
+ * @node: the node to be set
+ * @key: the value to set it's key to.
+ *
+ * Returns TRUE if the node is set successfully, FALSE if not.
  */
 int ewd_tree_node_key_set(Ewd_Tree_Node * node, void *key)
 {
@@ -230,9 +229,10 @@ int ewd_tree_node_key_set(Ewd_Tree_Node * node, void *key)
 }
 
 /*
- * Description: Get the value of the node's key 
- * Parameters: 1. node - the node that contains the desired key
- * Returns: NULL if an error occurs, otherwise the key is returned
+ * ewd_tree_node_key_get - get the value of the node's key 
+ * @node: the node that contains the desired key
+ *
+ * Returns NULL if an error occurs, otherwise the key is returned
  */
 void *ewd_tree_node_key_get(Ewd_Tree_Node * node)
 {
@@ -246,10 +246,11 @@ void *ewd_tree_node_key_get(Ewd_Tree_Node * node)
 	return ret;
 }
 
-/*
- * Description: Free a tree
- * Parameters: 1. tree - the tree to destroy
- * Returns: TRUE if tree destroyed successfully, FALSE if not.
+/**
+ * ewd_tree_destroy - free the tree and it's stored data
+ * @tree: the tree to destroy
+ *
+ * Returns TRUE if tree destroyed successfully, FALSE if not.
  */
 int ewd_tree_destroy(Ewd_Tree * tree)
 {
@@ -266,10 +267,13 @@ int ewd_tree_destroy(Ewd_Tree * tree)
 	return TRUE;
 }
 
-/* Description: Return the node corresponding to key
- * Parameters: 1. tree - the tree to search
- *             2. key - the key to search for in the tree
- * Returns: The node corresponding to the key if found, otherwise NULL. */
+/**
+ * ewd_tree_get_node - return the node corresponding to key
+ * @tree: the tree to search
+ * @key: the key to search for in the tree
+ *
+ * Returns the node corresponding to the key if found, otherwise NULL.
+ */
 Ewd_Tree_Node *ewd_tree_get_node(Ewd_Tree * tree, void *key)
 {
 	Ewd_Tree_Node *ret;
@@ -283,10 +287,13 @@ Ewd_Tree_Node *ewd_tree_get_node(Ewd_Tree * tree, void *key)
 	return ret;
 }
 
-/* Description: Return the value corresponding to key
- * Parameters: 1. tree - the tree to search
- *             2. key - the key to search for in tree
- * Returns: The value corresponding to the key if found, otherwise NULL. */
+/**
+ * ewd_tree_get - return the value corresponding to key
+ * @tree: the tree to search
+ * @key: the key to search for in @tree
+ *
+ * Returns the value corresponding to the key if found, otherwise NULL.
+ */
 void *ewd_tree_get(Ewd_Tree * tree, void *key)
 {
 	void *ret;
@@ -305,10 +312,13 @@ void *ewd_tree_get(Ewd_Tree * tree, void *key)
 	return ret;
 }
 
-/* Description: Find the closest value greater than or equal to key
- * Parameters: 1. tree - the tree to search 
- *             2. key - the key to search for in tree
- * Returns: NULL if no valid nodes, otherwise the node >= key */
+/**
+ * ewd_tree_get_closest_larger - find the closest value greater >= key
+ * @tree: the tree to search 
+ * @key: the key to search for in @tree
+ *
+ * Returns NULL if no valid nodes, otherwise the node >= key
+ */
 void *ewd_tree_get_closest_larger(Ewd_Tree * tree, void *key)
 {
 	Ewd_Tree_Node *node;
@@ -339,10 +349,13 @@ void *ewd_tree_get_closest_larger(Ewd_Tree * tree, void *key)
 	return node;
 }
 
-/* Description: Find the closest value less than or equal to key
- * Parameters: 1. tree - the tree to search
- *             2. key - the key to search for in tree
- * Returns: NULL if no valid nodes, otherwise the node <= key */
+/**
+ * ewd_tree_get_closest_smaller - find the closest value <= key
+ * @tree: the tree to search
+ * @key: the key to search for in tree
+ *
+ * Returns NULL if no valid nodes, otherwise the node <= key
+ */
 void *ewd_tree_get_closest_smaller(Ewd_Tree * tree, void *key)
 {
 	Ewd_Tree_Node *node;
@@ -366,11 +379,14 @@ void *ewd_tree_get_closest_smaller(Ewd_Tree * tree, void *key)
 	return node;
 }
 
-/* Description: Set key to value
- * Parameters: 1. tree - the tree that contains the key/value pair
- *             2. key - the key to identify which node to set a value
- *             3. value - value to set the found node
- * Returns: TRUE if successful, FALSE if not. */
+/**
+ * ewd_tree_set - set the value associated with key to @value
+ * @tree: the tree that contains the key/value pair
+ * @key: the key to identify which node to set a value
+ * @value: value to set the found node
+ *
+ * Returns TRUE if successful, FALSE if not.
+ */
 int ewd_tree_set(Ewd_Tree * tree, void *key, void *value)
 {
 	Ewd_Tree_Node *node = NULL;
@@ -397,10 +413,13 @@ int ewd_tree_set(Ewd_Tree * tree, void *key, void *value)
 	return TRUE;
 }
 
-/* Description: Place a node in the tree
- * Parameters: 1. tree - the tree to add the node
- *             2. node - the node to add
- * Returns: TRUE on a successful add, FALSE otherwise. */
+/**
+ * ewd_tree_add_node - place a node in the tree
+ * @tree: the tree to add @node
+ * @node: the node to add to @tree
+ *
+ * Returns TRUE on a successful add, FALSE otherwise.
+ */
 int ewd_tree_add_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 {
 	Ewd_Tree_Node *travel = NULL;
@@ -430,10 +449,13 @@ int ewd_tree_add_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 }
 
 
-/* Description: Remove the node from the tree
- * Parameters: 1. tree - the tree to remove from
- *             2. node - the node to remove.
- * Returns: TRUE on a successful remove, FALSE otherwise. */
+/**
+ * ewd_tree_remove_node - remove the node from the tree
+ * @tree: the tree to remove @node
+ * @node: the node to remove from @tree
+ *
+ * Returns TRUE on a successful remove, FALSE otherwise.
+ */
 int ewd_tree_remove_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 {
 	Ewd_Tree_Node *traverse;
@@ -492,10 +514,13 @@ int ewd_tree_remove_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 	return TRUE;
 }
 
-/* Description: Remove the key from the tree
- * Parameters: 1. tree - the tree to remove from
- *             2. key - the key to search for and remove the found node.
- * Returns: TRUE on a successful remove, FALSE otherwise. */
+/**
+ * ewd_tree_remove - remove the key from the tree
+ * @tree: the tree to remove @key
+ * @key: the key to remove from @tree
+ *
+ * Returns TRUE on a successful remove, FALSE otherwise.
+ */
 int ewd_tree_remove(Ewd_Tree * tree, void *key)
 {
 	Ewd_Tree_Node *node;
@@ -518,10 +543,11 @@ int ewd_tree_remove(Ewd_Tree * tree, void *key)
 	return TRUE;
 }
 
-/*
- * Description: Test to see if the tree has any nodes
- * Parameters: 1. tree - the tree to check
- * Returns: TRUE if no nodes exist, FALSE otherwise
+/**
+ * ewd_tree_is_empty - test to see if the tree has any nodes
+ * @tree: the tree to check for nodes
+ *
+ * Returns TRUE if no nodes exist, FALSE otherwise
  */
 int ewd_tree_is_empty(Ewd_Tree * tree)
 {
@@ -533,13 +559,12 @@ int ewd_tree_is_empty(Ewd_Tree * tree)
 	return FALSE;
 }
 
-/*
- * Description: Execute the function for each node in the tree, passing in
- *              the value of each node.
- * Parameters: 1. tree - the tree to traverse
- *             2. for_each_func - the function to execute for each node of the
- *                                tree
- * Returns: No return value.
+/**
+ * ewd_tree_for_each_node_value - execute function for each value in the tree
+ * @tree: the tree to traverse
+ * @for_each_func: the function to execute for each value in the tree
+ *
+ * Returns TRUE on success, FALSE on failure.
  */
 int ewd_tree_for_each_node_value(Ewd_Tree * tree,
 				 Ewd_For_Each for_each_func)
@@ -553,11 +578,12 @@ int ewd_tree_for_each_node_value(Ewd_Tree * tree,
 	return tree_for_each_node_value(tree->tree, for_each_func);
 }
 
-/*
- * Description: Execute the function for each node in the tree.
- * Parameters: 1. tree - the tree to traverse
- *             2. for_each_func - the function to execute for each node
- * Returns: The value returned by tree_for_each_node
+/**
+ * ewd_tree_for_each_node - execute the function for each node in the tree
+ * @tree: the tree to traverse
+ * @for_each_func: the function to execute for each node
+ *
+ * Returns TRUE on success, FALSE on failure.
  */
 int ewd_tree_for_each_node(Ewd_Tree * tree, Ewd_For_Each for_each_func)
 {

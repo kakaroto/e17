@@ -31,13 +31,23 @@ const unsigned int ewd_prime_table[] = { 17, 31, 61, 127, 257, 509, 1021,
 	2097143, 4194301, 8388617, 16777213 
 };
 
-/* Direct Hash function, just casts the key to an unsigned int */
+/**
+ * ewd_direct_hash - just casts the key to an unsigned int
+ * @key: the key to return compute a hash value
+ *
+ * Returns the key cast to an unsigned int.
+ */
 unsigned int ewd_direct_hash(void *key)
 {
 	return ((unsigned int) key);
 }
 
-/* String hash function, needs some work */
+/**
+ * ewd_str_hash - compute the hash value of a string
+ * @key: a pointer to the string to compute a hash value
+ *
+ * Returns a computed hash value for @key.
+ */
 unsigned int ewd_str_hash(void *key)
 {
 	int i;
@@ -58,8 +68,13 @@ unsigned int ewd_str_hash(void *key)
 	return value;
 }
 
-/* Perform a direct comparison of two keys values, return a strcmp style
- * value to indicate the larger key */
+/**
+ * ewd_direct_compare - perform a direct comparison of two keys values
+ * @key1: the first key to compare
+ * @key2: the second key to compare
+ *
+ * Return a strcmp style value to indicate the larger key
+ */
 int ewd_direct_compare(void *key1, void *key2)
 {
 	unsigned int k1, k2;
@@ -76,7 +91,13 @@ int ewd_direct_compare(void *key1, void *key2)
 	return 0;
 }
 
-/* Perform a string comparison */
+/**
+ * ewd_direct_compare - perform a string comparison of two keys values
+ * @key1: the first key to compare
+ * @key2: the second key to compare
+ *
+ * Return a strcmp style value to indicate the larger key
+ */
 int ewd_str_compare(void *key1, void *key2)
 {
 	char *k1, *k2;

@@ -19,16 +19,14 @@ ewd_plugin_group_new(char *group_name)
 
 	CHECK_PARAM_POINTER_RETURN("group_name", group_name, -1);
 
-	if (!group_list)
-	  {
+	if (!group_list) {
 		  group_list = ewd_list_new();
-	  }
-	else
-	  {
+	}
+	else {
 		  group = __ewd_plugin_group_find(group_name);
 		  if (group)
 			  return -1;
-	  }
+	}
 
 	group = (Ewd_Plugin_Group *) malloc(sizeof(Ewd_Plugin_Group));
 	memset(group, 0, sizeof(Ewd_Plugin_Group));
@@ -123,70 +121,77 @@ ewd_plugin_path_del(int group_id, char *path)
 	/*
 	 * If the path is found, remove and free it
 	 */
-	if (found)
-	  {
+	if (found) {
 		  ewd_list_remove(group->paths);
 		  free(found);
-	  }
+	}
 }
 
 /**
  * ewd_plugin_load - load the specified plugin from the specified group
  * @group_id: the group to search for the plugin to load
- * @plugin: the name of the plugin to load
+ * @plugin_name: the name of the plugin to load
  *
  * Returns a pointer to the newly loaded plugin on success, NULL on failure.
  */
 Ewd_Plugin *
-ewd_plugin_load(int group_id, char *plugin)
+ewd_plugin_load(int group_id, char *plugin_name)
 {
+	char *p;
+	char path[1024];
+	struct stat st;
+
 	Ewd_Plugin_Group *group;
-	Ewd_Plugin *plugin2;
+	Ewd_Plugin *plugin;
 	void *handle = NULL;
 
-	CHECK_PARAM_POINTER_RETURN("plugin", plugin, NULL);
+	CHECK_PARAM_POINTER_RETURN("plugin_name", plugin_name, NULL);
 
+	/*
+	 * Make sure we have a plugin group that matches the specified id
+	 */
 	group = __ewd_plugin_group_find_id(group_id);
 	
 	if (!group || !group->paths)
 		return NULL;
 
+	/*
+	 * Search the paths of the plugin group for the specified plugin name
+	 */
 	ewd_list_goto_first(group->paths);
+	while ((p = ewd_list_next(group->paths)) != NULL) {
 
-	  {
-		char *p;
-		char path[1024];
-		struct stat st;
+		snprintf(path, 1024, "%s/%s.so", p, plugin_name);
+		stat(path, &st);
 
-		ewd_list_goto_first(group->paths);
+		/*
+		 * If we've found a valid plugin, open it and stop searching
+		 */
+		if (S_ISREG(st.st_mode)) {
+			handle = dlopen(path, RTLD_LAZY);
+			break;
+		}
+	}
 
-		while ((p = ewd_list_next(group->paths)) != NULL)
-		  {
-			snprintf(path, 1024, "%s/%s.so", p, plugin);
+	/*
+	 * Allocate the new plugin and initialize it's fields
+	 */
+	plugin = malloc(sizeof(Ewd_Plugin));
+	memset(plugin, 0, sizeof(Ewd_Plugin));
 
-			stat(path, &st);
+	plugin->group = group_id;
+	plugin->name = strdup(plugin_name);
+	plugin->handle = handle;
 
-			if (S_ISREG(st.st_mode))
-			  {
-				handle = dlopen(path, RTLD_LAZY);
-				break;
-			  }
-		  }
-	  }
-
-	plugin2 = malloc(sizeof(Ewd_Plugin));
-	memset(plugin2, 0, sizeof(Ewd_Plugin));
-
-	plugin2->group = group_id;
-	plugin2->name = strdup(plugin);
-	plugin2->handle = handle;
-
+	/*
+	 * Now add it to the list of the groups loaded plugins
+	 */
 	if (!group->loaded_plugins)
 		group->loaded_plugins = ewd_list_new();
 
-	ewd_list_append(group->loaded_plugins, plugin2);
+	ewd_list_append(group->loaded_plugins, plugin);
 
-	return plugin2;
+	return plugin;
 }
 
 /**

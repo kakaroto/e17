@@ -21,6 +21,21 @@ AC_ARG_ENABLE(pthreads,
 ]
 )
 
+
+dnl Checking for Perl:
+AC_PATH_PROG(PERL,perl,0)
+AC_SUBST(PERL)
+
+
+dnl Look for jade for sgml translations.
+AC_ARG_WITH(dbsheets,
+       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
+       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
+AC_SUBST(DB_STYLESHEETS)
+AC_PATH_PROG(JADE, jade)
+AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
+
+
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
@@ -71,7 +86,11 @@ ewd-config
 src/Makefile
 test/Makefile
 src/ewd_config.h
+doc/Makefile
+doc/kernel-doc
+doc/html-customizations.dsl
 ], [
 chmod +x ewd-config
+chmod +x doc/kernel-doc
 ]
 )

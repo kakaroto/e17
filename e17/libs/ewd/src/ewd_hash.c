@@ -53,8 +53,9 @@ Ewd_Hash *ewd_hash_new(Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 
 /**
  * ewd_hash_init - initialize a hash to some sane starting values
- * @hash - the hash table to initialize
- * @compare - the function for comparing node keys
+ * @hash: the hash table to initialize
+ * @hash_func: the function for hashing node keys
+ * @compare: the function for comparing node keys
  *
  * Returns TRUE on success, FALSE on an error.
  */
@@ -145,7 +146,7 @@ int ewd_hash_set(Ewd_Hash *hash, void *key, void *value)
 
 /**
  * ewd_hash_destroy - free the hash table and the data contained inside it
- * @hash - the hash table to destroy
+ * @hash: the hash table to destroy
  *
  * Returns TRUE on success, FALSE on error
  */
@@ -220,8 +221,6 @@ _ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
 	/* Check to see if the hash needs to be resized */
 	if (EWD_HASH_INCREASE(hash))
 		_ewd_hash_increase(hash);
-	else if (EWD_HASH_REDUCE(hash))
-		_ewd_hash_decrease(hash);
 
 	/* Compute the position in the table */
 	if (!hash->hash_func)
@@ -242,11 +241,12 @@ _ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
 	return TRUE;
 }
 
-/*
- * Description: Retrieve the value associated with key
- * Parameters: 1. hash - the hash table to search for the key
- *             2. key - the key to search for in the hash table
- * Returns: NULL on error, value corresponding to key on success
+/**
+ * ewd_hash_get - retrieve the value associated with key
+ * @hash: the hash table to search for the key
+ * @key: the key to search for in the hash table
+ *
+ * Returns NULL on error, value corresponding to key on success
  */
 void *ewd_hash_get(Ewd_Hash *hash, void *key)
 {
@@ -267,11 +267,12 @@ void *ewd_hash_get(Ewd_Hash *hash, void *key)
 }
 
 
-/*
- * Description: Remove the value associated with key
- * Parameters: 1. hash - the hash table to remove the key from
- *             2. key - the key to search for in the hash table
- * Returns: NULL on error, value corresponding to key on success
+/**
+ * ewd_hash_remove - remove the value associated with key
+ * @hash: the hash table to remove the key from
+ * @key: the key to search for in the hash table
+ *
+ * Returns NULL on error, value corresponding to key on success
  */
 void *ewd_hash_remove(Ewd_Hash *hash, void *key)
 {
@@ -312,14 +313,16 @@ void *ewd_hash_remove(Ewd_Hash *hash, void *key)
 				ewd_list_next(list);
 		}
 
-		if (node)
-		  {
+		if (node) {
 			ewd_list_remove(list);
 
 			ret = node->value;
 			FREE(node);
-		  }
+		}
 	}
+
+	if (EWD_HASH_REDUCE(hash))
+		_ewd_hash_decrease(hash);
 
 	EWD_WRITE_UNLOCK(hash);
 
