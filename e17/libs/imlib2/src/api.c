@@ -498,6 +498,17 @@ imlib_image_get_height(void)
    return im->h;
 }
 
+const char *
+imlib_image_get_filename(void)
+{
+   ImlibImage *im;
+
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_filename", "image", ctxt_image, 0);
+   CAST_IMAGE(im, ctxt_image);
+   /* strdup() the returned value if you want to alter it! */
+   return (const char *) (im->file);
+}
+
 DATA32 *
 imlib_image_get_data(void)
 {

@@ -116,21 +116,22 @@ Imlib_Image imlib_load_image_with_error_return(const char *file, Imlib_Load_Erro
 void        imlib_free_image(void);
 void        imlib_free_image_and_decache(void);
 
-int     imlib_image_get_width(void);
-int     imlib_image_get_height(void);
-DATA32 *imlib_image_get_data(void);
-DATA32 *imlib_image_get_data_for_reading_only(void);
-void    imlib_image_put_back_data(DATA32 *data);
-char    imlib_image_has_alpha(void);
-void    imlib_image_set_never_changes_on_disk(Imlib_Image image);
-void    imlib_image_get_border(Imlib_Border *border);
-void    imlib_image_set_border(Imlib_Border *border);
-void    imlib_image_set_format(const char *format);
-void    imlib_image_set_irrelevant_format(char irrelevant);
-void    imlib_image_set_irrelevant_border(char irrelevant);
-void    imlib_image_set_irrelevant_alpha(char irrelevant);
-char   *imlib_image_format(void);
-void    imlib_image_set_has_alpha(char has_alpha);
+int         imlib_image_get_width(void);
+int         imlib_image_get_height(void);
+const char *imlib_image_get_filename(void);
+DATA32     *imlib_image_get_data(void);
+DATA32     *imlib_image_get_data_for_reading_only(void);
+void        imlib_image_put_back_data(DATA32 *data);
+char        imlib_image_has_alpha(void);
+void        imlib_image_set_never_changes_on_disk(Imlib_Image image);
+void        imlib_image_get_border(Imlib_Border *border);
+void        imlib_image_set_border(Imlib_Border *border);
+void        imlib_image_set_format(const char *format);
+void        imlib_image_set_irrelevant_format(char irrelevant);
+void        imlib_image_set_irrelevant_border(char irrelevant);
+void        imlib_image_set_irrelevant_alpha(char irrelevant);
+char       *imlib_image_format(void);
+void        imlib_image_set_has_alpha(char has_alpha);
 
 void        imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return, Pixmap *mask_return, char create_dithered_mask);
 void        imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return, Pixmap *mask_return, char create_dithered_mask, int width, int height);
