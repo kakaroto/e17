@@ -58,15 +58,15 @@ typedef struct _GtkgEvasEvHGroupSelectorClass GtkgEvasEvHGroupSelectorClass;
 struct _GtkgEvasEvHGroupSelector 
 {
 	GtkgEvasEvH evh_obj;
-	GtkgEvasObj *mark;	// object that we are attaching to
+	GtkgEvasObj *mark;	/* object that we are attaching to*/
 
-	gint	tracking;	// Are we tracking the mouse move.?
-	gint	tracking_ix;	// initial location of click that started tracking.
+	gint	tracking;	/* Are we tracking the mouse move.?*/
+	gint	tracking_ix;	/* initial location of click that started tracking.*/
 	gint	tracking_iy;
 	GtkgEvasObj* rect;
 
-	Evas_List selected_objs;		// the current selection
-	GtkgEvasEvHSelectable* selected_objs_lastadded;	// Last object added to selected_objs;
+	Evas_List selected_objs;		/* the current selection*/
+	GtkgEvasEvHSelectable* selected_objs_lastadded;	/* Last object added to selected_objs;*/
 };
 
 struct _GtkgEvasEvHGroupSelectorClass {
@@ -77,11 +77,11 @@ struct _GtkgEvasEvHGroupSelectorClass {
 guint gevasevh_group_selector_get_type(void);
 GtkObject *gevasevh_group_selector_new(void);
 
-//public
+/*public*/
 void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj );
 Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev );
 
-//package
+/*package*/
 void gevasevh_group_selector_addtosel( 
 	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
 void gevasevh_group_selector_floodtosel( 

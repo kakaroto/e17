@@ -101,20 +101,20 @@ extern "C" {
 struct _GtkgEvas {
 	GtkWidget widget;
 
-	Evas evas;		// the evas we are using to render stuff with.
-	GdkRectangle evas_r; 	// we keep a cache of the expose event's size.
+	Evas evas;		/* the evas we are using to render stuff with.*/
+	GdkRectangle evas_r; 	/* we keep a cache of the expose event's size.*/
 
-	gboolean show_checked_bg;// Are we showing a checked bg? (mainly for testing)
-	Evas_Object checked_bg;	// Object for the bg.
+	gboolean show_checked_bg;/* Are we showing a checked bg? (mainly for testing)*/
+	Evas_Object checked_bg;	/* Object for the bg.*/
 
 
-	gint size_request_x;	// Size to request
-	gint size_request_y;	//
+	gint size_request_x;	/* Size to request*/
+	gint size_request_y;	/**/
 
 	Evas_Render_Method render_method;
-	guint current_idle;		// handles queue render callback
+	guint current_idle;		/* handles queue render callback*/
 
-	GdkEvent *current_event;	// so that evas callbacks can get the gdk event.
+	GdkEvent *current_event;	/* so that evas callbacks can get the gdk event.*/
 
 	/** Handles the middle button gimp style scroll option */
 	/*
@@ -124,20 +124,20 @@ struct _GtkgEvas {
 	 * you will want to set middleb_scrolls_pgate_event==1 so that middle button
 	 * clicks are propergated through evas.
 	 */
-	gboolean middleb_scrolls;			// Is middle buttons scroll feature enabled 
-	gboolean middleb_scrolls_pgate_event;// should the gdk event to propergated still?
-	GtkAdjustment* middleb_scrolls_xplane;// The adjustment to update for xplane scroll
-	GtkAdjustment* middleb_scrolls_yplane;// The adjustment to update for yplane scroll
-	gboolean scrolling;					// Is the middle button down now?
-	gint scrolling_x;					// keep the last x ord so dx can be made
-	gint scrolling_y;					// keep the last y ord so dy can be made
+	gboolean middleb_scrolls;			/* Is middle buttons scroll feature enabled */
+	gboolean middleb_scrolls_pgate_event;/* should the gdk event to propergated still?*/
+	GtkAdjustment* middleb_scrolls_xplane;/* The adjustment to update for xplane scroll*/
+	GtkAdjustment* middleb_scrolls_yplane;/* The adjustment to update for yplane scroll*/
+	gboolean scrolling;					/* Is the middle button down now?*/
+	gint scrolling_x;					/* keep the last x ord so dx can be made*/
+	gint scrolling_y;					/* keep the last y ord so dy can be made*/
 	
 	/** Keeping track of all the GtkgEvasObj* items added to us **/
-		GHashTable *gevasobjs;	// (lookup Evas_Object -> GtkgEvasObj*)
-		GSList *gevasobjlist;	// simple collection of each GtkgEvas in a list.
+		GHashTable *gevasobjs;	/* (lookup Evas_Object -> GtkgEvasObj*)*/
+		GSList *gevasobjlist;	/* simple collection of each GtkgEvas in a list.*/
 
 
-    // A reference to the scrolledwindow the canvas is embedded in OR 0
+    /* A reference to the scrolledwindow the canvas is embedded in OR 0*/
     GtkWidget*   scrolledwindow; 
     GtkViewport* scrolledwindow_viewport;
     
@@ -161,9 +161,9 @@ struct _GtkgEvasClass {
 
 /** public **/
 
-    // Creates a gevas that is optimized in rendering for a scrolled viewport.
-    // Both gevas and scrolledwindow are assigned to new objects with this
-    // constructor call.
+    /* Creates a gevas that is optimized in rendering for a scrolled viewport.*/
+    /* Both gevas and scrolledwindow are assigned to new objects with this*/
+    /* constructor call.*/
     void gevas_new_gtkscrolledwindow(GtkgEvas** gevas, GtkWidget** scrolledwindow );
     void gevas_add_fontpath(GtkgEvas * ev, const gchar * path);
     void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path);

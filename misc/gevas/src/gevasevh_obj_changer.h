@@ -75,7 +75,7 @@ extern "C" {
 		GtkgEvasObj *cold;
 		GtkgEvasObj *hot;
 		GtkgEvasObj *hot_clicked[5];
-		GtkgEvasObj *current;	// what are we showing, state machine
+		GtkgEvasObj *current;	/* what are we showing, state machine*/
 		int old_layer;
 
 	};

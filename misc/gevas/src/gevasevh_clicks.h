@@ -58,7 +58,7 @@ extern "C" {
 		GtkgEvasEvH evh_obj;
 		gint dclick_millis;
 
-		// state maintain between clicks //
+		/* state maintain between clicks */
 		gint32 last_time;
 		GtkObject *last_obj;
 		gint last_button;

@@ -56,8 +56,8 @@ extern "C" {
 	struct _GtkgEvasEvHAlpha {
 		GtkgEvasEvH evh_obj;
 
-		gint hot_value;			// what alpha value to give the object on mouse over.
-		gint cold_value;		// cache for the old value for mouse_out
+		gint hot_value;			/* what alpha value to give the object on mouse over.*/
+		gint cold_value;		/* cache for the old value for mouse_out*/
 	};
 
 	struct _GtkgEvasEvHAlphaClass {

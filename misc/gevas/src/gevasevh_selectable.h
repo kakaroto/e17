@@ -61,8 +61,8 @@ struct _GtkgEvasEvHSelectable
 	GtkgEvasObj *normal;
 	GtkgEvasObj *selected;
 
-	gboolean tracking;		// Are we tracking the mouse movement
-	gint32 tracking_x;		// The x,y of the mouse on mouse down
+	gboolean tracking;		/* Are we tracking the mouse movement*/
+	gint32 tracking_x;		/* The x,y of the mouse on mouse down*/
 	gint32 tracking_y;
 
 	GtkObject* evh_selector;
@@ -82,7 +82,7 @@ guint gevasevh_selectable_get_type(void);
 GtkObject *gevasevh_selectable_new(void);
 
 
-// public
+/* public*/
 void gevasevh_selectable_set_normal_gevasobj(
 	GtkgEvasEvHSelectable* ev, 
 	GtkgEvasObj* nor );
@@ -91,7 +91,7 @@ void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* ev
 
 
 
-// package:
+/* package:*/
 void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s );
 void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy );
 #define GEVASEVH_SELECTABLE_KEY		"GEVASEVH_SELECTABLE_KEY"

@@ -50,14 +50,14 @@ extern "C" {
 
 enum _GEVASEV_HANDLER_RET {
 	GEVASEV_HANDLER_RET_NEXT,
-	GEVASEV_HANDLER_RET_CHOMP	// event is eaten.
+	GEVASEV_HANDLER_RET_CHOMP	/* event is eaten.*/
 };
 typedef enum _GEVASEV_HANDLER_RET GEVASEV_HANDLER_RET;
 
-//
-// Higher values are called first.
-// 
-// FIXME: only HI is done, any other value == lower than HI
+/**/
+/* Higher values are called first.*/
+/* */
+/* FIXME: only HI is done, any other value == lower than HI*/
 #define GEVASEV_HANDLER_PRIORITY_HIGHEST	 10000
 #define GEVASEV_HANDLER_PRIORITY_HI		 100
 #define GEVASEV_HANDLER_PRIORITY_NORMAL 	 0
@@ -98,7 +98,7 @@ struct _GtkgEvasEvHClass {
 		int _x, int _y);
 
 
-	// package //
+	/* package */
 	GEVASEV_HANDLER_PRIORITY (*get_priority)( GtkgEvasEvH* evh );
 };
 
