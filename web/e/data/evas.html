@@ -128,6 +128,15 @@ Out result would be something like this:
 @:para@
 <a href=evas_image_eg_2.html><img src=img/evas_image_eg_2_thumb.png width=80 height=80 border=1></a>
 @:para@
+You may think "I can do this just as easily with norml X drawing primitievas
+and a little extra sugar thrown in" but Evas does a whole lot mroe for you.
+You never need to know how to render the objects or handle re-rendering
+them. Evas does this and optimizes it for you. it handles layering and
+resizing, it optimizes everything to minimize CPU effort with a dynamic set of
+objects. It handles the work to the point where ALL you need to do is
+create, destory, show, hide, move, resize etc. objects and Evas does the
+rest of the nasty work for you.
+@:para@
 As you can see - the program has to know and do very little. There are many
 powerful things you can do, like fade images in and out, re-color them so
 they look tinted, have them rendered only within a certain area of the
