@@ -164,6 +164,40 @@ filelist_first(feh_file * file)
 }
 
 feh_file *
+filelist_jump(feh_file * list, feh_file * file, int direction, int num)
+{
+   int i;
+   feh_file *ret = NULL;
+
+   D_ENTER;
+   if (!list)
+      D_RETURN(NULL);
+   if (!file)
+      D_RETURN(list);
+
+   ret = file;
+
+   for (i = 0; i < num; i++)
+   {
+      if (direction == FORWARD)
+      {
+         if (ret->next)
+            ret = ret->next;
+         else
+            ret = list;
+      }
+      else
+      {
+         if (ret->prev)
+            ret = ret->prev;
+         else
+            ret = filelist_last(ret);
+      }
+   }
+   D_RETURN(ret);
+}
+
+feh_file *
 filelist_reverse(feh_file * list)
 {
    feh_file *last;

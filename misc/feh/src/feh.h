@@ -174,10 +174,14 @@ enum winwidget_type
 
 enum slide_change
 { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
-      SLIDE_JUMP_BACK };
+   SLIDE_JUMP_BACK
+};
 
-enum filelist_recuse
+enum filelist_recurse
 { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
+
+enum filelist_jump
+{ FORWARD, BACK };
 
 enum sort_type
 { SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH, SORT_HEIGHT, SORT_PIXELS,
@@ -334,6 +338,9 @@ void feh_file_free(feh_file * file);
 int filelist_length(feh_file * file);
 feh_file *filelist_last(feh_file * file);
 feh_file *filelist_first(feh_file * file);
+feh_file *filelist_jump(feh_file * list, feh_file * file, int direction,
+
+                        int num);
 feh_file *feh_file_rm_and_free(feh_file * list, feh_file * file);
 int filelist_num(feh_file * list, feh_file * file);
 feh_file *filelist_reverse(feh_file * list);
