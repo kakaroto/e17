@@ -1,0 +1,84 @@
+// --- Summer theme for elicit --- //
+// Author: Rephorm
+// Created: Aug '04
+//
+
+#define TEXT_COLOR 150 155 149
+
+#include "macros/button.inc"
+#include "macros/tabs.inc"
+
+fonts
+{
+  font, "fonts/Vera.ttf" "Vera";
+}
+
+
+images
+{
+  image, "base-left.png" LOSSY 98;
+  image, "base-right.png" LOSSY 98;
+  image, "dropper1.png" LOSSY 98;
+  image, "dropper2.png" LOSSY 98;
+  image, "inset.png" LOSSY 98;
+  image, "mag1.png" LOSSY 98;
+  image, "mag2.png" LOSSY 98;
+  image, "minus1.png" LOSSY 98;
+  image, "minus2.png" LOSSY 98;
+  image, "panel.png" LOSSY 98;
+  image, "plus1.png" LOSSY 98;
+  image, "plus2.png" LOSSY 98;
+  image, "x1.png" LOSSY 98;
+  image, "x2.png" LOSSY 98;
+
+  image, "tabs-trough.png" LOSSY 98;
+  image, "cont-trough.png" LOSSY 98;
+  image, "tab-about.png" LOSSY 98;
+  image, "tab-color.png" LOSSY 98;
+  image, "tab-shots.png" LOSSY 98;
+  image, "tab-theme.png" LOSSY 98;
+  image, "tab-unsel.png" LOSSY 98;
+  image, "tab-sel.png" LOSSY 98;
+
+  image, "sun.png" LOSSY 98;
+
+  image, "swatch-shadow.png" LOSSY 98;
+  image, "roundedbox.png" LOSSY 98;
+
+  image, "sep.png" LOSSY 98;
+  image, "scrollbox.png" LOSSY 98;
+
+  image, "arrow-up.png" LOSSY 98;
+  image, "arrow-dn.png" LOSSY 98;
+
+}
+
+collections {
+  group {
+    name, "elicit";
+    min, 210 96;
+
+    data
+    {
+      item, "swatches.direction" "h";
+      item, "shots.direction" "h";
+    }
+
+    parts {
+#include "parts/main.edc"
+#include "parts/insets.edc"
+#include "parts/panel.edc"
+    }
+
+    programs {
+#include "programs/main.edc"
+#include "programs/panel.edc"
+    }
+
+  } /* end group elicit */
+
+#include "groups/swatch.edc"
+#include "groups/shot.edc"
+#include "groups/theme.edc"
+}
+

@@ -1,4 +1,4 @@
-THEME = winter
+THEME = summer
 EDC = $(THEME).edc
 EET = $(EDC:%.edc=%.eet)
 SUFFIXES = .edc .eet
@@ -15,5 +15,5 @@ all: $(EDC)
 	edje_cc -v -id $(top_builddir)/data/themes/$(<:%.edc=%)/img -fd $(top_builddir)/data/themes/$(<:%.edc=%)/fonts $< $@
 
 preview: $(EET)
-	edje $(EET)
+	edje $(EET) 
 

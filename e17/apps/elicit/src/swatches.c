@@ -6,17 +6,50 @@ void _elicit_swatches_update_scroll_bar(Elicit *el);
 int
 elicit_swatches_init(Elicit *el)
 {
-  el->swatches.cont = esmart_container_new(el->evas); 
-  esmart_container_direction_set(el->swatches.cont, CONTAINER_DIRECTION_VERTICAL);
-  esmart_container_spacing_set(el->swatches.cont, 3);
-  esmart_container_padding_set(el->swatches.cont, 5, 5, 5, 5);
-  evas_object_show(el->swatches.cont);
-  edje_object_part_swallow(el->gui, "swatch.container", el->swatches.cont);
-  edje_object_part_drag_value_set(el->gui, "swatch.scroll.bar", 0.001, 0.001);
+  if (edje_object_part_exists(el->gui, "swatch.container"))
+  {
+    char *dir;
+    
+    el->swatches.cont = esmart_container_new(el->evas); 
 
-  elicit_swatches_load(el);
+    dir = (char *)edje_object_data_get(el->gui, "swatches.direction");
+    if (dir && (dir[0] == 'h' || dir[0] == 'H'))
+      el->swatches.dir = CONTAINER_DIRECTION_HORIZONTAL;
+    else
+      el->swatches.dir = CONTAINER_DIRECTION_VERTICAL;
+    esmart_container_direction_set(el->swatches.cont, el->swatches.dir);
 
-  ecore_idle_enterer_add(elicit_swatches_scroll_idler, el);
+    esmart_container_spacing_set(el->swatches.cont, 3);
+    esmart_container_padding_set(el->swatches.cont, 5, 5, 5, 5);
+    evas_object_show(el->swatches.cont);
+    edje_object_part_swallow(el->gui, "swatch.container", el->swatches.cont);
+    edje_object_part_drag_value_set(el->gui, "swatch.scroll.bar", 0.001, 0.001);
+  
+    elicit_swatches_load(el);
+  
+    ecore_idle_enterer_add(elicit_swatches_scroll_idler, el);
+  }
+}
+
+void
+elicit_swatches_shutdown(Elicit *el)
+{
+  Evas_List *l;
+  
+  if (el->swatches.cont)
+  {
+    for (l = esmart_container_elements_get(el->swatches.cont); l; l = l->next)
+    {
+      Evas_Object *o = l->data;
+      Elicit_Swatch *sw = evas_object_data_get(o, "swatch");
+      elicit_swatch_free(sw);
+    }
+    /*
+    edje_object_part_unswallow(el->gui, el->swatches.cont);
+    evas_object_del(el->swatches.cont);
+    el->swatches.cont = NULL;
+    */
+  }
 }
 
 void
@@ -150,7 +183,11 @@ elicit_swatches_load(Elicit *el)
 void
 elicit_swatch_free(Elicit_Swatch *sw)
 {
-  if (sw->rect) evas_object_del(sw->rect);
+  if (sw->rect)
+  {
+    edje_object_part_unswallow(sw->obj, sw->rect);
+    evas_object_del(sw->rect);
+  }
   if (sw->obj) evas_object_del(sw->obj);
   if (sw->name) free(sw->name);
 }
@@ -162,7 +199,7 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   Elicit_Swatch *sw;
   Evas_Coord mw, mh;
   double length;
-  Evas_Coord h;
+  Evas_Coord w, h;
 
   sw = calloc(1, sizeof(Elicit_Swatch));
 
@@ -199,8 +236,14 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   /* scroll to the end of the list */
   length = esmart_container_elements_length_get(el->swatches.cont);
   el->swatches.length = length;
-  evas_object_geometry_get(el->swatches.cont, NULL, NULL, NULL, &h);
-  if (length > h)
+  evas_object_geometry_get(el->swatches.cont, NULL, NULL, &w, &h);
+  if (el->swatches.dir == CONTAINER_DIRECTION_HORIZONTAL && length > w)
+  {
+    esmart_container_scroll_offset_set(el->swatches.cont,
+                                       w - length - 10 );
+    _elicit_swatches_update_scroll_bar(el);
+  }
+  else if (el->swatches.dir == CONTAINER_DIRECTION_VERTICAL && length > h)
   {
     esmart_container_scroll_offset_set(el->swatches.cont,
                                        h - length - 10 );
@@ -231,7 +274,7 @@ elicit_swatch_del_cb(void *data, Evas_Object *o, const char *emission, const cha
 {
   Elicit *el;
   Elicit_Swatch *sw;
-  Evas_Coord h;
+  Evas_Coord w, h;
   int offset;
 
   el = evas_object_data_get(o, "elicit");
@@ -242,12 +285,17 @@ elicit_swatch_del_cb(void *data, Evas_Object *o, const char *emission, const cha
 
   el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
 
-  evas_object_geometry_get(el->swatches.cont, NULL, NULL, NULL, &h);
+  evas_object_geometry_get(el->swatches.cont, NULL, NULL, &w, &h);
   offset = esmart_container_scroll_offset_get(el->swatches.cont);
-  if (offset < h - el->swatches.length - 10 && el->swatches.length > h)
+  if (el->swatches.dir == CONTAINER_DIRECTION_VERTICAL && offset < h - el->swatches.length - 10 && el->swatches.length > h)
   {
     esmart_container_scroll_offset_set(el->swatches.cont,
                                        h - el->swatches.length - 10);
+  }
+  else if (el->swatches.dir == CONTAINER_DIRECTION_HORIZONTAL && offset < w - el->swatches.length - 10 && el->swatches.length > w)
+  {
+    esmart_container_scroll_offset_set(el->swatches.cont,
+                                       w - el->swatches.length - 10);
   }
   _elicit_swatches_update_scroll_bar(el);
 

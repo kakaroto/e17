@@ -5,18 +5,52 @@ void _elicit_shots_update_scroll_bar(Elicit *el);
 int
 elicit_shots_init(Elicit *el)
 {
-  el->shots.cont = esmart_container_new(el->evas); 
-  esmart_container_direction_set(el->shots.cont, CONTAINER_DIRECTION_VERTICAL);
-  esmart_container_spacing_set(el->shots.cont, 3);
-  esmart_container_padding_set(el->shots.cont, 5, 5, 5, 5);
-  evas_object_show(el->shots.cont);
-  edje_object_part_swallow(el->gui, "shot.container", el->shots.cont);
-  edje_object_part_drag_value_set(el->gui, "shot.scroll.bar", 0.001, 0.001);
+  if (edje_object_part_exists(el->gui, "shot.container"))
+  {
+    char *dir;
 
-  elicit_shots_load(el);
+    el->shots.cont = esmart_container_new(el->evas); 
+  
+    dir = (char *)edje_object_data_get(el->gui, "swatches.direction");
+    if (dir && (dir[0] == 'h' || dir[0] == 'H'))
+      el->shots.dir = CONTAINER_DIRECTION_HORIZONTAL;
+    else
+      el->shots.dir = CONTAINER_DIRECTION_VERTICAL;
+      
+    esmart_container_direction_set(el->shots.cont, el->shots.dir);
 
-  ecore_idle_enterer_add(elicit_shots_scroll_idler, el);
+    esmart_container_spacing_set(el->shots.cont, 3);
+    esmart_container_padding_set(el->shots.cont, 5, 5, 5, 5);
+    evas_object_show(el->shots.cont);
+    edje_object_part_swallow(el->gui, "shot.container", el->shots.cont);
+    edje_object_part_drag_value_set(el->gui, "shot.scroll.bar", 0.001, 0.001);
+  
+    elicit_shots_load(el);
+  
+    ecore_idle_enterer_add(elicit_shots_scroll_idler, el);
+  }
 }
+
+void
+elicit_shots_shutdown(Elicit *el)
+{
+  Evas_List *l;
+
+  if (el->shots.cont){
+    for (l = esmart_container_elements_get(el->shots.cont); l; l = l->next)
+    {
+      Evas_Object *o = l->data;
+      Elicit_Shot *sh = evas_object_data_get(o, "shot");
+      elicit_shot_free(sh);
+    }
+    /*
+    edje_object_part_unswallow(el->gui, el->shots.cont);
+    evas_object_del(el->shots.cont);
+    el->shots.cont = NULL;
+    */
+  }
+}
+
 
 void
 elicit_shots_save(Elicit *el)
@@ -166,7 +200,11 @@ elicit_shots_load(Elicit *el)
 void
 elicit_shot_free(Elicit_Shot *sh)
 {
-  if (sh->shot) evas_object_del(sh->shot);
+
+  if (sh->shot) {
+    edje_object_part_unswallow(sh->obj, sh->shot);
+    evas_object_del(sh->shot);
+  }
   if (sh->obj) evas_object_del(sh->obj);
   if (sh->name) free(sh->name);
 }
@@ -179,7 +217,7 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   int iw, ih;
   Evas_Coord mw, mh;
   double length;
-  Evas_Coord h;
+  Evas_Coord w, h;
 
   /* don't save an empty shot */
   if (!el->flags.shot_taken) return;
@@ -217,8 +255,14 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   /* scroll to the end of the list */
   length = esmart_container_elements_length_get(el->shots.cont);
   el->shots.length = length;
-  evas_object_geometry_get(el->shots.cont, NULL, NULL, NULL, &h);
-  if (length > h)
+  evas_object_geometry_get(el->shots.cont, NULL, NULL, &w, &h);
+  if (el->shots.dir == CONTAINER_DIRECTION_HORIZONTAL && length > w)
+  {
+    esmart_container_scroll_offset_set(el->shots.cont,
+                                       w - length - 10 );
+    _elicit_shots_update_scroll_bar(el);
+  }
+  else if (el->shots.dir == CONTAINER_DIRECTION_VERTICAL && length > h)
   {
     esmart_container_scroll_offset_set(el->shots.cont,
                                        h - length - 10 );
@@ -254,7 +298,7 @@ elicit_shot_del_cb(void *data, Evas_Object *o, const char *emission, const char 
 {
   Elicit *el;
   Elicit_Shot *sh;
-  Evas_Coord h;
+  Evas_Coord w, h;
   int offset;
 
   el = evas_object_data_get(o, "elicit");
@@ -265,12 +309,17 @@ elicit_shot_del_cb(void *data, Evas_Object *o, const char *emission, const char 
   
   el->shots.length = esmart_container_elements_length_get(el->shots.cont);
 
-  evas_object_geometry_get(el->shots.cont, NULL, NULL, NULL, &h);
+  evas_object_geometry_get(el->shots.cont, NULL, NULL, &w, &h);
   offset = esmart_container_scroll_offset_get(el->shots.cont);
-  if (offset < h - el->shots.length - 10 && el->shots.length > h)
+  if (el->shots.dir == CONTAINER_DIRECTION_VERTICAL && offset < h - el->shots.length - 10 && el->shots.length > h)
   {
     esmart_container_scroll_offset_set(el->shots.cont,
                                        h - el->shots.length - 10);
+  }
+  if (el->shots.dir == CONTAINER_DIRECTION_HORIZONTAL && offset < w - el->shots.length - 10 && el->shots.length > w)
+  {
+    esmart_container_scroll_offset_set(el->shots.cont,
+                                       w - el->shots.length - 10);
   }
   _elicit_shots_update_scroll_bar(el);
 

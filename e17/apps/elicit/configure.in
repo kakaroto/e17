@@ -149,5 +149,6 @@ data/Makefile
 data/themes/Makefile
 data/themes/winter/Makefile
 data/themes/spring/Makefile
+data/themes/summer/Makefile
 ])
 

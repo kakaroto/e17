@@ -4,6 +4,7 @@
 #include <Edb.h>
 
 int elicit_swatches_init(Elicit *el);
+void elicit_swatches_shutdown(Elicit *el);
 void elicit_swatches_load(Elicit *el);
 void elicit_swatches_save(Elicit *el);
 

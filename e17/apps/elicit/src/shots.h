@@ -2,6 +2,7 @@
 #define ELICIT_SHOTS_H
 
 int elicit_shots_init(Elicit *el);
+void elicit_shots_shutdown(Elicit *el);
 void elicit_shots_save(Elicit *el);
 void elicit_shots_load(Elicit *el);
 

@@ -15,5 +15,5 @@ all: $(EDC)
 	edje_cc -v -id $(top_builddir)/data/themes/$(<:%.edc=%)/img -fd $(top_builddir)/data/themes/$(<:%.edc=%)/fonts $< $@
 
 preview: $(EET)
-	edje $(EET) eplayer
+	edje $(EET)
 

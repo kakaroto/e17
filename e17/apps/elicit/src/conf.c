@@ -108,7 +108,7 @@ elicit_config_listener(const char *key, const Ecore_Config_Type type, const int 
     case ELICIT_CONF_TAG_THEME:
       if (el->gui)
       {
-        elicit_ui_theme_set(el, ecore_config_theme_get(key), "elicit");
+//        elicit_ui_theme_set(el, ecore_config_theme_get(key), "elicit");
       }
       break;
   }

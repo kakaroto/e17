@@ -66,6 +66,7 @@ struct _Elicit
     Evas_Object *cont;
     double length;
     int scrolling;
+    int dir;
   } swatches, shots, themes;
 
   Ecore_Timer *change_timer;

@@ -147,7 +147,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
     return;
   }
   /* update the config */
-  //elicit_config_theme_set(theme);
+  elicit_config_theme_set(theme);
 
   /* set the default window size */
   edje_object_size_min_get(el->gui, &mw, &mh);
@@ -193,6 +193,9 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
 
   edje_object_signal_callback_add(el->gui, "drag", "shot.scroll.bar", elicit_shot_scroll_cb, el);
   edje_object_signal_callback_add(el->gui, "elicit,shot,scroll,*", "*", elicit_shot_scroll_cb, el);
+
+  edje_object_signal_callback_add(el->gui, "drag", "theme.scroll.bar", elicit_theme_scroll_cb, el);
+  edje_object_signal_callback_add(el->gui, "elicit,theme,scroll,*", "*", elicit_theme_scroll_cb, el);
 
   evas_object_hide(el->gui);
   evas_object_show(el->gui);

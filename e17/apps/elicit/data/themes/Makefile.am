@@ -1,1 +1,1 @@
-SUBDIRS = winter spring
+SUBDIRS = winter spring summer
