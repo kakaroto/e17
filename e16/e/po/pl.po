@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-22 15:09-0400\n"
+"POT-Creation-Date: 2003-05-30 21:54+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2215 src/buttons.c:126 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2216 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1021
 #, c-format
@@ -113,16 +113,16 @@ msgstr ""
 "Nie mo¿na uruchomiæ programu.\n"
 "Ten plik nie jest plikiem zwyk³ym.\n"
 
-#: src/actions.c:3309
+#: src/actions.c:3265
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "O Enlightenment %s"
 
-#: src/actions.c:3325
+#: src/actions.c:3281
 msgid "Welcome to the "
 msgstr "Witamy w "
 
-#: src/actions.c:3325
+#: src/actions.c:3281
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -136,7 +136,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3335
+#: src/actions.c:3291
 msgid ""
 "\n"
 "\n"
@@ -146,7 +146,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3340 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3296 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -156,11 +156,11 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3496
+#: src/actions.c:3452
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Wybierz grupê, do której bêdzie nale¿eæ okno:\n"
 
-#: src/actions.c:3851
+#: src/actions.c:3807
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -180,23 +180,23 @@ msgstr ""
 "  Wybierz inn± grupê, do której bêdzie nale¿eæ okno:  \n"
 "\n"
 
-#: src/actions.c:3884
+#: src/actions.c:3840
 msgid "   Select the group to remove the window from.  "
 msgstr "   Wybierz grupê, z której mam usun±æ okno.  "
 
-#: src/actions.c:3908
+#: src/actions.c:3864
 msgid "  Select the group to break  "
 msgstr "  Wybierz grupê, któr± mam rozbiæ  "
 
-#: src/actions.c:3936
+#: src/actions.c:3892
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Ostrze¿ono Ciê przed niebezpieczeñstwami trybu Powiêkszenia \n"
 
-#: src/actions.c:3939
+#: src/actions.c:3895
 msgid "Warning !!!"
 msgstr "Ostrze¿enie !"
 
-#: src/actions.c:3940
+#: src/actions.c:3896
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -241,11 +241,11 @@ msgstr "Uruchom ponownie"
 msgid "Exit"
 msgstr "Wyj¶cie"
 
-#: src/borders.c:2217
+#: src/borders.c:2218
 msgid "Border Error!"
 msgstr "B³±d sekcji Border"
 
-#: src/buttons.c:128
+#: src/buttons.c:127
 msgid "Button Error!"
 msgstr "B³±d sekcji Button"
 
@@ -1296,6 +1296,7 @@ msgstr ""
 "Wersja Enlightenment : %s\n"
 "kod jest aktualny na : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Okno wiadomo¶ci Enlightenment"

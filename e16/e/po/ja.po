@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-22 15:09-0400\n"
+"POT-Creation-Date: 2003-05-30 21:54+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2215 src/buttons.c:126 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2216 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1021
 #, c-format
@@ -117,16 +117,16 @@ msgstr ""
 "このプログラムは実行できません。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:3309
+#: src/actions.c:3265
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s について"
 
-#: src/actions.c:3325
+#: src/actions.c:3281
 msgid "Welcome to the "
 msgstr ""
 
-#: src/actions.c:3325
+#: src/actions.c:3281
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -140,7 +140,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3335
+#: src/actions.c:3291
 msgid ""
 "\n"
 "\n"
@@ -150,7 +150,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3340 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3296 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -160,11 +160,11 @@ msgstr ""
 msgid "OK"
 msgstr "了解"
 
-#: src/actions.c:3496
+#: src/actions.c:3452
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " このウィンドウが属するグループを選択してください:  \n"
 
-#: src/actions.c:3851
+#: src/actions.c:3807
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -184,23 +184,23 @@ msgstr ""
 "  このウィンドウが属する別のグループを選択してください :\n"
 "\n"
 
-#: src/actions.c:3884
+#: src/actions.c:3840
 msgid "   Select the group to remove the window from.  "
 msgstr " このグループからとりのぞくウィンドウを選択してください。"
 
-#: src/actions.c:3908
+#: src/actions.c:3864
 msgid "  Select the group to break  "
 msgstr " 破棄するグループを選択してください。 "
 
-#: src/actions.c:3936
+#: src/actions.c:3892
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Zoom モードの危険性は以前に警告してあります。\n"
 
-#: src/actions.c:3939
+#: src/actions.c:3895
 msgid "Warning !!!"
 msgstr ""
 
-#: src/actions.c:3940
+#: src/actions.c:3896
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -244,11 +244,11 @@ msgstr "再起動"
 msgid "Exit"
 msgstr "終了"
 
-#: src/borders.c:2217
+#: src/borders.c:2218
 msgid "Border Error!"
 msgstr "border エラー"
 
-#: src/buttons.c:128
+#: src/buttons.c:127
 msgid "Button Error!"
 msgstr "button エラー"
 
@@ -1301,6 +1301,7 @@ msgstr ""
 "Enlightenment バージョン: %s\n"
 "コードバージョン        : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment メッセージダイアログ"
