@@ -86,7 +86,7 @@ emblem_ui_init(Emblem *em)
 
     o = edje_object_add(evas);
     if (!edje_object_file_set(o,
-                PACKAGE_DATA_DIR"/emblem/default.eet", "Main"))
+                PACKAGE_DATA_DIR"/data/emblem/default.eet", "Main"))
     {
         printf("Unable to locate theme\n");
         return 0;

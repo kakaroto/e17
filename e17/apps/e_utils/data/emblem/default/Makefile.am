@@ -8,7 +8,7 @@ EDJE_FLAGS = \
 -id $(top_srcdir)/data/emblem/$(NAME)/images \
 -fd $(top_srcdir)/data/emblem/fonts
 
-filesdir = $(pkgdatadir)/emblem
+filesdir = $(pkgdatadir)/data/emblem
 files_DATA = $(NAME).eet
 
 $(NAME).eet: Makefile $(NAME).edc
