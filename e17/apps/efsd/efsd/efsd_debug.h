@@ -29,17 +29,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <efsd_globals.h>
 
-void efsd_debug_print_timestamp(void);
-
 #ifdef DEBUG
-#define D(msg) \
+
+void efsd_debug_output_start(void);
+void efsd_debug_output_end(void);
+
+#define D(fmt, args...) \
 { \
   if (opt_debug) \
     { \
-       printf("efsd [%i]: ", getpid()); \
-       efsd_debug_print_timestamp(); \
-       printf msg; \
-       fflush(stdout); \
+      efsd_debug_output_start(); \
+      printf(fmt, ## args); \
+      efsd_debug_output_end(); \
     } \
 }
 #else
@@ -48,45 +49,28 @@ void efsd_debug_print_timestamp(void);
 
 #ifdef DEBUG_NEST
 
-extern int efsd_debug_nest_level;
-void efsd_debug_whitespace(int num);
+void efsd_debug_enter(const char *file, const char *func);
+void efsd_debug_return(const char *file, const char *func);
 
 #define D_ENTER \
 { \
   if (opt_nesting) \
-    { \
-       efsd_debug_nest_level++; \
-       printf("ENTER  "); \
-       efsd_debug_print_timestamp(); \
-       efsd_debug_whitespace(efsd_debug_nest_level); \
-       printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
-       fflush(stdout); \
-    } \
+    { efsd_debug_enter(__FILE__, __FUNCTION__); } \
 }
+
 #define D_RETURN \
 { \
   if (opt_nesting) \
-    { \
-       printf("RETURN "); \
-       efsd_debug_print_timestamp(); \
-       efsd_debug_whitespace(efsd_debug_nest_level); \
-       printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
-       fflush(stdout); \
-       efsd_debug_nest_level--; \
-    } \
+    { efsd_debug_return(__FILE__, __FUNCTION__); } \
+\
   return; \
 }
+
 #define D_RETURN_(x) \
 { \
   if (opt_nesting) \
-    { \
-      printf("RETURN "); \
-      efsd_debug_print_timestamp(); \
-      efsd_debug_whitespace(efsd_debug_nest_level); \
-      printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
-      fflush(stdout); \
-      efsd_debug_nest_level--; \
-    } \
+    { efsd_debug_return(__FILE__, __FUNCTION__); } \
+\
   return x; \
 }
 #else

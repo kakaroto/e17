@@ -14,6 +14,17 @@ AC_C_BIGENDIAN
 AC_STRUCT_ST_BLKSIZE
 AC_STRUCT_ST_BLOCKS
 
+dnl Check for statfs call or other alternatives.
+AC_CHECK_FUNC(statfs, , have_statfs="no")
+if test "$have_statfs" = "no"; then
+   AC_CHECK_FUNC(statvfs, have_statvfs="yes")
+   if test "$have_stavtfs" = "yes"; then
+      AC_DEFINE(HAVE_STATVFS, 1)
+   fi
+else
+   AC_DEFINE(HAVE_STATFS, 1)
+fi
+  
 
 dnl Check for fam.
 AC_ARG_WITH(fam,
@@ -65,9 +76,9 @@ EOF
       AC_DEFINE(USE_THREADS, 1)
       AM_CONDITIONAL(USE_THREADS_FILES, true)
       if test "$PTHREAD_LIB" = "-pthread"; then
-         PTHREAD_CFLAGS="-D_THREAD_SAFE -D_REENTRANT"
+         PTHREAD_CFLAGS="-D_THREAD_SAFE -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
       else
-         PTHREAD_CFLAGS="-D_REENTRANT"
+         PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
       fi
       CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
       LIBS="$LIBS $PTHREAD_LIB"

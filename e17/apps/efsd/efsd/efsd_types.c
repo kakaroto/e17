@@ -70,22 +70,26 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
   switch (ec_src->type)
     {
     case EFSD_CMD_REMOVE:
-    case EFSD_CMD_LISTDIR:
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_CHMOD:
-    case EFSD_CMD_STARTMON:
+    case EFSD_CMD_STARTMON_FILE:
+    case EFSD_CMD_STARTMON_DIR:
     case EFSD_CMD_STOPMON:
+    case EFSD_CMD_LISTDIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_GETFILETYPE:
     case EFSD_CMD_READLINK:
-      ec_dst->efsd_file_cmd.file = strdup(ec_src->efsd_file_cmd.file);
-      break;
     case EFSD_CMD_MOVE:
     case EFSD_CMD_COPY:
     case EFSD_CMD_SYMLINK:
-      ec_dst->efsd_2file_cmd.file1 = strdup(ec_src->efsd_2file_cmd.file1);
-      ec_dst->efsd_2file_cmd.file2 = strdup(ec_src->efsd_2file_cmd.file1);
+      {
+	int i;
+	
+	ec_dst->efsd_file_cmd.files = malloc(sizeof(char*) * ec_src->efsd_file_cmd.num_files);
+	for (i = 0; i < ec_src->efsd_file_cmd.num_files; i++)
+	  ec_dst->efsd_file_cmd.files[i] = strdup(ec_src->efsd_file_cmd.files[i]);
+      }      
       break;
     case EFSD_CMD_SETMETA:
       ec_dst->efsd_set_metadata_cmd.data = malloc(ec_src->efsd_set_metadata_cmd.data_len);
@@ -190,19 +194,27 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_REMOVE:
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_CHMOD:
-    case EFSD_CMD_STARTMON:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_GETFILETYPE:
     case EFSD_CMD_READLINK:
-      FREE(ec->efsd_file_cmd.file);
-      break;
     case EFSD_CMD_LISTDIR:
+    case EFSD_CMD_STARTMON_DIR:
+    case EFSD_CMD_STARTMON_FILE:
+    case EFSD_CMD_COPY:
+    case EFSD_CMD_MOVE:
+    case EFSD_CMD_SYMLINK:
       {
 	int i;
 
-	FREE(ec->efsd_file_cmd.file);
+	for (i = 0; i < ec->efsd_file_cmd.num_files; i++)
+	  {
+	    FREE(ec->efsd_file_cmd.files[i]);
+	  }
+	
+	FREE(ec->efsd_file_cmd.files);
+
 	if (ec->efsd_file_cmd.num_options > 0)
 	  {
 	    for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
@@ -211,26 +223,6 @@ efsd_cmd_cleanup(EfsdCommand *ec)
 	      }
 	  }
 	FREE(ec->efsd_file_cmd.options);
-	ec->efsd_file_cmd.options = NULL;
-      }
-      break;
-    case EFSD_CMD_COPY:
-    case EFSD_CMD_MOVE:
-    case EFSD_CMD_SYMLINK:
-      {
-	int i;
-
-	FREE(ec->efsd_2file_cmd.file1);
-	FREE(ec->efsd_2file_cmd.file2);
-	if (ec->efsd_2file_cmd.num_options > 0)
-	  {
-	    for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
-	      {
-		efsd_option_cleanup(&(ec->efsd_2file_cmd.options[i]));
-	      }
-	  }
-	FREE(ec->efsd_2file_cmd.options);
-	ec->efsd_2file_cmd.options = NULL;
       }
       break;
     case EFSD_CMD_SETMETA:

@@ -32,8 +32,8 @@ typedef enum
 }
 EfsdFsOps;
 
-int efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops);
-int efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops);
+int efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops);
+int efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops);
 int efsd_fs_rm(char *path, EfsdFsOps ops);
 
 #endif

@@ -73,7 +73,8 @@ typedef enum efsd_command_type
   EFSD_CMD_CHMOD,
   EFSD_CMD_SETMETA, 
   EFSD_CMD_GETMETA, 
-  EFSD_CMD_STARTMON,
+  EFSD_CMD_STARTMON_FILE,
+  EFSD_CMD_STARTMON_DIR,
   EFSD_CMD_STOPMON, 
   EFSD_CMD_STAT, 
   EFSD_CMD_LSTAT, 
@@ -127,32 +128,20 @@ EfsdOption;
 
 /* Commands, sent from client to daemon. */
 
-/* General datastructure for simple commands
-   on a single file (rm, mkdir, ls ...)
+/* General datastructure for commands
+   operating on an arbitrary number of
+   files.
 */
 typedef struct efsd_file_cmd
 {
   EfsdCommandType     type;
   EfsdCmdId           id;
-  char               *file;
+  int                 num_files;
+  char              **files;
   int                 num_options;
   EfsdOption         *options;
 }
 EfsdFileCmd;
-
-/* General datastructure for simple commands
-   on 2 files (move, ln -s, ...)
-*/
-typedef struct efsd_2file_cmd
-{
-  EfsdCommandType     type;
-  EfsdCmdId           id;
-  char               *file1;
-  char               *file2;
-  int                 num_options;
-  EfsdOption         *options;
-}
-Efsd2FileCmd;
 
 /* For chmodding files, contains new mode too. */
 typedef struct efsd_chmod_cmd
@@ -200,7 +189,6 @@ typedef union efsd_command
 {
   EfsdCommandType     type;
   EfsdFileCmd         efsd_file_cmd;
-  Efsd2FileCmd        efsd_2file_cmd;
   EfsdChmodCmd        efsd_chmod_cmd;
   EfsdGetMetadataCmd  efsd_get_metadata_cmd;
   EfsdSetMetadataCmd  efsd_set_metadata_cmd;

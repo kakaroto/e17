@@ -42,7 +42,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd_misc.h>
 #include <efsd_debug.h>
-#include <efsd_fam.h>
 #include <efsd_globals.h>
 #include <efsd_macros.h>
 #include <efsd_meta.h>
@@ -184,7 +183,7 @@ efsd_misc_files_identical(char *file1, char *file2)
 
   D_ENTER;
 
-  D(("Files %s and %s equal?\n", file1, file2));
+  D("Files %s and %s equal?\n", file1, file2);
   if (realpath(file1, real1) && realpath(file2, real2))
     {
       if (!strcmp(real1, real2))
@@ -193,7 +192,7 @@ efsd_misc_files_identical(char *file1, char *file2)
       D_RETURN_(FALSE);
     }
 
-  D(("Couldn't realpath files.\n"));
+  D("Couldn't realpath files.\n");
   perror("Error:\n");
   D_RETURN_(-1);
 }
@@ -423,6 +422,27 @@ efsd_misc_get_filename_only(char *path)
 }
 
 
+int
+efsd_misc_get_path_only(const char *filename, char *path, int size)
+{
+  char *result = NULL;
+
+  if (!filename || filename[0] == '\0' || !path)
+    return(0);
+
+  if ((result = strrchr(filename, '/')) == NULL)
+    return(0);
+
+  if (result - filename + 1 > size)
+    return(0);
+
+  memcpy(path, filename, (result - filename));
+  path[result - filename] = '\0';
+
+  return(1);
+}
+
+
 void    
 efsd_misc_create_efsd_dir(void)
 {
@@ -464,12 +484,12 @@ efsd_misc_remove_socket_file(void)
     {
       if (errno != ENOENT)
 	{
-	  D(("Could not remove socket file.\n"));
+	  D("Could not remove socket file.\n");
 	}
     }
   else
     {
-      D(("Socket file removed.\n"));
+      D("Socket file removed.\n");
     }
 
   D_RETURN;

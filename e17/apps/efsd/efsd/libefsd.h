@@ -101,15 +101,9 @@ void           efsd_event_cleanup(EfsdEvent *ev);
    In case of an error, a value < 0 is returned.
 
    Filenames are internally converted to fully canonical
-   path names if not fully specified.
+   path names based on the current working directory, if not
+   fully specified.
 */
-
-EfsdCmdId      efsd_copy(EfsdConnection *ec, char *from_file, char *to_file,
-			 EfsdOptions *ops);
-EfsdCmdId      efsd_move(EfsdConnection *ec, char *from_file, char *to_file,
-			 EfsdOptions *ops);
-EfsdCmdId      efsd_remove(EfsdConnection *ec, char *filename,
-			   EfsdOptions *ops);
 
 /* Creates a symbolic link from the from_file to the
    to_file
@@ -138,10 +132,24 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
    efsd_ops_add(ops, efsd_op_get_filetype());
    efsd_listdir(ec, "/home/foo", ops);
 
-   You do NOT need to free the EfsdOptions pointer.
+   You do NOT need to free the EfsdOptions pointer. It is cleaned up
+   by the time the function returns. 
 */
 EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname,
 			    EfsdOptions *ops);
+
+/* cp, mv, rm. You can multiple files through the FILES array, pass the
+   length of the array in NUM_FILES. For mv and cp, if the number of
+   files is > 2, the last file must be a directory, or the command will
+   fail. If you want to remove only one file, simply pass the address
+   of the char* of the file to be removed.
+
+   Apply options as desired -- see above.
+*/
+
+EfsdCmdId      efsd_copy(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops);
+EfsdCmdId      efsd_move(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops);
+EfsdCmdId      efsd_remove(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops);
 
 /* Create a directory. Behaves like "mkdir -p", i.e. it can
    create directories recursively. Multiple slashes are
@@ -193,8 +201,10 @@ void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
 /* Start/stop a FAM monitor for a given file or directory.
    Add options as desired, like with efsd_listdir().
  */
-EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename,
-				  EfsdOptions *ops);
+EfsdCmdId      efsd_start_monitor_file(EfsdConnection *ec, char *filename,
+				       EfsdOptions *ops);
+EfsdCmdId      efsd_start_monitor_dir(EfsdConnection *ec, char *filename,
+				       EfsdOptions *ops);
 
 EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
 

@@ -39,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 
 #include <efsd_debug.h>
-#include <efsd_fam.h>
+#include <efsd_monitor.h>
 #include <efsd_commands.h>
 #include <efsd_fs.h>
 #include <efsd_globals.h>
@@ -68,6 +68,7 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   if (sockfd < 0)
     D_RETURN_(-1);
 
+  memset(&ee, 0, sizeof(EfsdEvent));
   ee.type = EFSD_EVENT_REPLY;
   ee.efsd_reply_event.command = *cmd;
   ee.efsd_reply_event.status = status;
@@ -100,6 +101,8 @@ efsd_command_remove(EfsdCommand *cmd, int client)
 
   D_ENTER;
 
+  /* OR together the various possible options: */
+  
   for (i = 0; i < cmd->efsd_file_cmd.num_options; i++)
     {
       switch (cmd->efsd_file_cmd.options[i].type)
@@ -111,13 +114,18 @@ efsd_command_remove(EfsdCommand *cmd, int client)
 	  options |= EFSD_FS_OP_RECURSIVE;
 	  break;
 	default:
-	  D(("Warning -- useless remove option %i\n",
-	     cmd->efsd_file_cmd.options[i].type));
+	  D("Warning -- useless remove option %i\n",
+	     cmd->efsd_file_cmd.options[i].type);
 	}
     }
 
-  if (efsd_fs_rm(cmd->efsd_file_cmd.file, options) < 0)
-    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  /* ... and now go through the files and remove: */
+
+  for (i = 0; i < cmd->efsd_file_cmd.num_files; i++)
+    {
+      if (efsd_fs_rm(cmd->efsd_file_cmd.files[i], options) < 0)
+	D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    }
 
   D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
@@ -130,9 +138,9 @@ efsd_command_move(EfsdCommand *cmd, int client)
 
   D_ENTER;
 
-  for (i = 0; i < cmd->efsd_2file_cmd.num_options; i++)
+  for (i = 0; i < cmd->efsd_file_cmd.num_options; i++)
     {
-      switch (cmd->efsd_2file_cmd.options[i].type)
+      switch (cmd->efsd_file_cmd.options[i].type)
 	{
 	case EFSD_OP_FORCE:
 	  options |= EFSD_FS_OP_FORCE;
@@ -141,13 +149,13 @@ efsd_command_move(EfsdCommand *cmd, int client)
 	  options |= EFSD_FS_OP_RECURSIVE;
 	  break;
 	default:
-	  D(("Warning -- useless copy option %i\n",
-	     cmd->efsd_2file_cmd.options[i].type));
+	  D("Warning -- useless copy option %i\n",
+	     cmd->efsd_file_cmd.options[i].type);
 	}
     }
 
-  if (efsd_fs_mv(cmd->efsd_2file_cmd.file1,
-		 cmd->efsd_2file_cmd.file2,
+  if (efsd_fs_mv(cmd->efsd_file_cmd.num_files,
+		 cmd->efsd_file_cmd.files,
 		 options) < 0)
     D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
   
@@ -162,9 +170,9 @@ efsd_command_copy(EfsdCommand *cmd, int client)
 
   D_ENTER;
 
-  for (i = 0; i < cmd->efsd_2file_cmd.num_options; i++)
+  for (i = 0; i < cmd->efsd_file_cmd.num_options; i++)
     {
-      switch (cmd->efsd_2file_cmd.options[i].type)
+      switch (cmd->efsd_file_cmd.options[i].type)
 	{
 	case EFSD_OP_FORCE:
 	  options |= EFSD_FS_OP_FORCE;
@@ -173,13 +181,13 @@ efsd_command_copy(EfsdCommand *cmd, int client)
 	  options |= EFSD_FS_OP_RECURSIVE;
 	  break;
 	default:
-	  D(("Warning -- useless copy option %i\n",
-	     cmd->efsd_2file_cmd.options[i].type));
+	  D("Warning -- useless copy option %i\n",
+	     cmd->efsd_file_cmd.options[i].type);
 	}
     }
 
-  if (efsd_fs_cp(cmd->efsd_2file_cmd.file1,
-		 cmd->efsd_2file_cmd.file2,
+  if (efsd_fs_cp(cmd->efsd_file_cmd.num_files,
+		 cmd->efsd_file_cmd.files,
 		 options) < 0)
     D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
   
@@ -192,7 +200,7 @@ efsd_command_symlink(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
-  if (symlink(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
+  if (symlink(cmd->efsd_file_cmd.files[0], cmd->efsd_file_cmd.files[1]) < 0)
     {
       D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
@@ -206,11 +214,7 @@ efsd_command_listdir(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
-  /* List directory or file by adding a FAM monitor to the
-     directory, generating a bunch of "... exists" events,
-     then removing the monitor.
-  */
-  if (efsd_fam_force_startstop_monitor(cmd, client) < 0)
+  if (efsd_monitor_force_startstop(cmd, client) < 0)
     {
       D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
     }
@@ -228,7 +232,7 @@ efsd_command_makedir(EfsdCommand *cmd, int client)
 
   D_ENTER;
 
-  path_dirs = efsd_misc_get_path_dirs(cmd->efsd_file_cmd.file, &num_dirs);
+  path_dirs = efsd_misc_get_path_dirs(cmd->efsd_file_cmd.files[0], &num_dirs);
   
   /* This is a full path, see libefsd.c */
   chdir("/");
@@ -305,13 +309,24 @@ efsd_command_get_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_command_start_monitor(EfsdCommand *cmd, int client)
+efsd_command_start_monitor_file(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
-  if (efsd_fam_start_monitor(EFSD_FAM_MONITOR_NORMAL, cmd, client) >= 0)
+  if (efsd_monitor_start(cmd, client, FALSE) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  
+  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
+}
 
+
+int 
+efsd_command_start_monitor_dir(EfsdCommand *cmd, int client)
+{
+  D_ENTER;
+
+  if (efsd_monitor_start(cmd, client, TRUE) >= 0)
+    D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
   
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
@@ -322,7 +337,7 @@ efsd_command_stop_monitor(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
-  if (efsd_fam_stop_monitor(cmd, client) >= 0)
+  if (efsd_monitor_stop(cmd, client) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
@@ -339,27 +354,27 @@ efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat)
 
   if (use_lstat)
     {
-      if (efsd_lstat(cmd->efsd_file_cmd.file, &st))
+      if (efsd_lstat(cmd->efsd_file_cmd.files[0], &st))
 	{
-	  D(("lstat suceeded, sending struct...\n"));
+	  D("lstat suceeded, sending struct...\n");
 	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
-	  D(("lstat failed, sending FAILURE.\n"));
+	  D("lstat failed, sending FAILURE.\n");
 	  result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
 	}
     }
   else
     {
-      if (efsd_stat(cmd->efsd_file_cmd.file, &st))
+      if (efsd_stat(cmd->efsd_file_cmd.files[0], &st))
 	{
-	  D(("stat suceeded, sending struct...\n"));
+	  D("stat suceeded, sending struct...\n");
 	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
-	  D(("stat failed, sending FAILURE.\n"));
+	  D("stat failed, sending FAILURE.\n");
 	  result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
 	}
     }
@@ -376,7 +391,7 @@ efsd_command_readlink(EfsdCommand *cmd, int client)
 
   D_ENTER;
 
-  if ((n = readlink(cmd->efsd_file_cmd.file, s, MAXPATHLEN)) >= 0)
+  if ((n = readlink(cmd->efsd_file_cmd.files[0], s, MAXPATHLEN)) >= 0)
     result = send_reply(cmd, SUCCESS, 0, n, s, client);
   else
     result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
@@ -386,21 +401,21 @@ efsd_command_readlink(EfsdCommand *cmd, int client)
 
 
 int  
-efsd_command_getfiletype(EfsdCommand *cmd, int client)
+efsd_command_get_filetype(EfsdCommand *cmd, int client)
 {
   char  type[MAXPATHLEN];
   int   result;
 
   D_ENTER;
 
-  if (efsd_filetype_get(cmd->efsd_file_cmd.file, type, MAXPATHLEN))
+  if (efsd_filetype_get(cmd->efsd_file_cmd.files[0], type, MAXPATHLEN))
     {
-      D(("FILE lookup succeded: %s\n", type));
+      D("FILE lookup succeded: %s\n", type);
       result = send_reply(cmd, SUCCESS, 0, strlen(type)+1, type, client);
     }
   else
     {
-      D(("FILE lookup failed -- sending FAILURE.\n"));
+      D("FILE lookup failed -- sending FAILURE.\n");
       result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
     }
 

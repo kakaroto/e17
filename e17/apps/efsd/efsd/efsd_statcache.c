@@ -33,15 +33,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/stat.h>
 
 #include <efsd_debug.h>
-#include <efsd_fam.h>
+#include <efsd_monitor.h>
 #include <efsd_hash.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
+#include <efsd_monitor.h>
 #include <efsd_lock.h>
 
 static EfsdHash  *stat_cache;
 static EfsdHash  *lstat_cache;
 EfsdLock         *stat_lock;
+
+
+/* Statcache entries, hashed by the filename: */
+typedef struct efsd_statcache_item
+{
+  /* Stat info itself: */
+  struct stat      st;
+
+  /* The monitor that is responsible for the
+     file whose stat info this entry contains: */
+  EfsdMonitor     *monitor;
+}
+EfsdStatcacheItem;
 
 static void         stat_hash_item_free(EfsdHashItem *it);
 static int          stat_internal(char *filename, struct stat *st, char use_lstat);
@@ -58,13 +72,14 @@ stat_hash_item_free(EfsdHashItem *it)
      stop the monitor. If it has already been stopped,
      the hashtable lookup will fail anyway.
   */
-  D(("Item %s falling out of statcache.\n", (char*)it->key));
-  efsd_fam_stop_monitor_internal(it->key);
+  D("Item %s falling out of statcache.\n", (char*)it->key);
+  efsd_monitor_stop_internal(it->key);
 
   /* Key is a string -- simple to free: */
   FREE(it->key);
 
-  /* Data is a struct stat -- also easy: */
+  /* Data is an EfsdStatcacheItem -- also easy,
+     the monitor is freed elsewhere: */
   FREE(it->data);
   FREE(it);
 
@@ -75,7 +90,7 @@ stat_hash_item_free(EfsdHashItem *it)
 static int
 stat_internal(char *filename, struct stat *st, char use_lstat)
 {
-  struct stat *stp;
+  EfsdStatcacheItem *it = NULL;
 
   D_ENTER;
 
@@ -84,19 +99,19 @@ stat_internal(char *filename, struct stat *st, char use_lstat)
   /* Check if info is still in cache: */
   if (use_lstat)
     {
-      D(("Looking up %s in lstat cache\n", filename));
-      stp = (struct stat*)efsd_hash_find(lstat_cache, filename);
+      D("Looking up %s in lstat cache\n", filename);
+      it = (EfsdStatcacheItem*)efsd_hash_find(lstat_cache, filename);
     }
   else
     {
-      D(("Looking up %s in stat cache\n", filename));
-      stp = (struct stat*)efsd_hash_find(stat_cache, filename);
+      D("Looking up %s in stat cache\n", filename);
+      it = (EfsdStatcacheItem*)efsd_hash_find(stat_cache, filename);
     }
 
-  if (stp)
+  if (it)
     {
-      D(("Cached stat for %s\n", filename));
-      *st = *stp;
+      D("Cached stat for %s\n", filename);
+      *st = it->st;
       efsd_lock_release_read_access(stat_lock);
       D_RETURN_(TRUE);
     }
@@ -105,49 +120,50 @@ stat_internal(char *filename, struct stat *st, char use_lstat)
 
   /* No -- we have to stat: */
 
-  stp = NEW(struct stat);
+  it = NEW(EfsdStatcacheItem);
+  memset(it, 0, sizeof(EfsdStatcacheItem));
 
   if (use_lstat)
     {
-      if (lstat(filename, stp) < 0)
+      if (lstat(filename, &(it->st)) < 0)
 	{
-	  D(("lstat() on %s failed.\n", filename));
-	  FREE(stp);
+	  D("lstat() on %s failed.\n", filename);
+	  FREE(it);
 	  D_RETURN_(FALSE);
 	}
     }
   else
     {
-      if (stat(filename, stp) < 0)
+      if (stat(filename, &(it->st)) < 0)
 	{
-	  if (lstat(filename, stp) < 0)
+	  if (lstat(filename, &(it->st)) < 0)
 	    {
-	      D(("stat and lstat() on %s failed.\n", filename));
-	      FREE(stp);
+	      D("stat and lstat() on %s failed.\n", filename);
+	      FREE(it);
 	      D_RETURN_(FALSE);
 	    }
 	}
     }
 
-  /* Insert in cache and monitor file to be
+  /* Insert item in cache and monitor file to be
      informed about updates:
   */
 
   efsd_lock_get_write_access(stat_lock);
 
   if (use_lstat)
-    efsd_hash_insert(lstat_cache, (void*)strdup(filename), (void*)stp);
+    efsd_hash_insert(lstat_cache, (void*)strdup(filename), (void*)it);
   else
-    efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)stp);
+    efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)it);
 
-  *st = *stp;
+  *st = it->st;
 
   efsd_lock_release_write_access(stat_lock);
-  efsd_fam_start_monitor_internal(filename);
+
+  it->monitor = efsd_monitor_start_internal(filename, FALSE);
 
   D_RETURN_(TRUE);
 }
-
 
 
 void         
@@ -207,42 +223,6 @@ efsd_lstat(char *filename, struct stat *st)
   result = stat_internal(filename, st, TRUE);
 
   D_RETURN_(result);
-}
-
-
-void         
-efsd_stat_update(char *filename)
-{
-  struct stat *st;
-
-  D_ENTER;
-
-  /* Make sure no cache-reads are currently in progress: */
-  efsd_lock_get_write_access(stat_lock);
-
-  if ((st = (struct stat*)efsd_hash_find(stat_cache, filename)))
-    {
-      D(("Old timestamp: %i\n", (int)st->st_mtime));
-      if (stat(filename, st) < 0)
-	{
-	  D(("stat() on %s failed.\n", filename));
-	}
-      D(("New timestamp: %i\n", (int)st->st_mtime));
-    }
-
-  if ((st = (struct stat*)efsd_hash_find(lstat_cache, filename)))
-    {
-      D(("Old timestamp: %i\n", (int)st->st_mtime));
-      if (lstat(filename, st) < 0)
-	{
-	  D(("stat() on %s failed.\n", filename));
-	}
-      D(("New timestamp: %i\n", (int)st->st_mtime));
-    }
-
-  efsd_lock_release_write_access(stat_lock);
-
-  D_RETURN;
 }
 
 

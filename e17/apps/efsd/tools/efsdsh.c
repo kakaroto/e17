@@ -45,7 +45,6 @@ void event_loop(EfsdConnection *ec)
 {
   EfsdEvent ee;
   fd_set    fdset;
-  int       fdsize;
   int       fd;
 
   fd = efsd_get_connection_fd(ec);
@@ -53,18 +52,13 @@ void event_loop(EfsdConnection *ec)
   for ( ; ; )
     {
       FD_ZERO(&fdset);
-      fdsize = 0;
-
       FD_SET(fd, &fdset);
-      if (fd > fdsize)
-	fdsize = fd;
 
       /* Wait for next event to happen ... */
-      select(fdsize+1, &fdset, NULL, NULL, NULL);
+      select(fd + 1, &fdset, NULL, NULL, NULL);
 
       if (FD_ISSET(fd, &fdset))
-	{
-	  
+	{	  
 	  while (efsd_events_pending(ec))
 	    {
 	      if (efsd_next_event(ec, &ee) >= 0)
@@ -77,6 +71,8 @@ void event_loop(EfsdConnection *ec)
 
 void handle_efsd_event(EfsdEvent *ee)
 {
+  int i;
+
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
@@ -144,34 +140,41 @@ void handle_efsd_event(EfsdEvent *ee)
       switch (ee->efsd_reply_event.command.type)
 	{
 	case EFSD_CMD_REMOVE:
-	  printf("Remove event %i\n -- removing %s\n",
-		 ee->efsd_reply_event.command.efsd_file_cmd.id,
-		 ee->efsd_reply_event.command.efsd_file_cmd.file);		 
+	  printf("Remove event %i\n -- removed ",
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+
+	  for (i = 0; i < ee->efsd_reply_event.command.efsd_file_cmd.num_files; i++)
+	    printf("%s ", ee->efsd_reply_event.command.efsd_file_cmd.files[i]);
+	  printf("\n");
 	  break;
 	case EFSD_CMD_MOVE:
-	  printf("Move event %i\n -- moving %s to %s\n",
-		 ee->efsd_reply_event.command.efsd_2file_cmd.id,
-		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
-		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
+	  printf("Move event %i\n -- moved ",
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+
+	  for (i = 0; i < ee->efsd_reply_event.command.efsd_file_cmd.num_files-1; i++)
+	    printf("%s ", ee->efsd_reply_event.command.efsd_file_cmd.files[i]);
+	  printf(" to %s.", ee->efsd_reply_event.command.efsd_file_cmd.files[ee->efsd_reply_event.command.efsd_file_cmd.num_files-1]);
 	  break;
 	case EFSD_CMD_COPY:
-	  printf("Copy event %i\n -- copying %s to %s\n",
-		 ee->efsd_reply_event.command.efsd_2file_cmd.id,
-		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
-		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
+	  printf("Copy event %i\n -- copy ",
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+
+	  for (i = 0; i < ee->efsd_reply_event.command.efsd_file_cmd.num_files-1; i++)
+	    printf("%s ", ee->efsd_reply_event.command.efsd_file_cmd.files[i]);
+	  printf(" to %s.", ee->efsd_reply_event.command.efsd_file_cmd.files[ee->efsd_reply_event.command.efsd_file_cmd.num_files-1]);
 	  break;
 	case EFSD_CMD_SYMLINK:
 	  printf("Symlink event %i\n",
-		 ee->efsd_reply_event.command.efsd_2file_cmd.id);
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_LISTDIR:
 	  printf("Listdir event %i\n",
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_MAKEDIR:
-	  printf("Mkdir event %i\n -- creating %s\n",
+	  printf("Mkdir event %i\n -- created %s\n",
 		 ee->efsd_reply_event.command.efsd_file_cmd.id,
-		 ee->efsd_reply_event.command.efsd_file_cmd.file);
+		 ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 	  break;
 	case EFSD_CMD_CHMOD:
 	  printf("Chmod event %i\n", 
@@ -221,8 +224,12 @@ void handle_efsd_event(EfsdEvent *ee)
 		}
 	    }
 	  break;
-	case EFSD_CMD_STARTMON:
-	  printf("Startmon event %i\n", 
+	case EFSD_CMD_STARTMON_FILE:
+	  printf("Startmon event for file %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_STARTMON_DIR:
+	  printf("Startmon event for dir %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_STOPMON:
@@ -235,34 +242,34 @@ void handle_efsd_event(EfsdEvent *ee)
 	    struct stat *st;
 
 	    st = (struct stat*) ee->efsd_reply_event.data;
-	    
+
 	    if (S_ISREG(st->st_mode))
 	      printf("%s is a regular file, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 	    
 	    if (S_ISLNK(st->st_mode))
 	      printf("%s is a symlink, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 	    
 	    if (S_ISDIR(st->st_mode))
 	      printf("%s is a directory, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 
 	    if (S_ISCHR(st->st_mode))
 	      printf("%s is a character device, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 
 	    if (S_ISBLK(st->st_mode))
 	      printf("%s is a block device, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 
 	    if (S_ISFIFO(st->st_mode))
 	      printf("%s is a fifo, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 
 	    if (S_ISSOCK(st->st_mode))
 	      printf("%s is a socket file, ",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+		     ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
 
 	    printf("dev %lu, ino %lu, size %lu.\n",
 		   (long unsigned int)st->st_dev, st->st_ino, st->st_size);
@@ -277,9 +284,9 @@ void handle_efsd_event(EfsdEvent *ee)
 	    }
 	  break;
 	case EFSD_CMD_GETFILETYPE:
-	  printf("Getfile event %i on %s\n", 
+	  printf("Gettype event %i on %s\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id,
-		 ee->efsd_reply_event.command.efsd_file_cmd.file);		 
+		 ee->efsd_reply_event.command.efsd_file_cmd.files[0]);		 
 	  if (ee->efsd_reply_event.status == SUCCESS)
 	    {
 	      printf("filetype is %s\n", (char*)ee->efsd_reply_event.data);
@@ -298,6 +305,7 @@ void handle_efsd_event(EfsdEvent *ee)
     }
   
   /* Cleanup memory allocated for this event */
+  
   efsd_event_cleanup(ee);
 }
 
@@ -317,7 +325,8 @@ print_help(void)
 	 "USAGE:\n\n"
 	 "You can enter the following commands:\n\n"
 	 "ls <file>                           Shows directory contents\n"
-	 "startmon <file>                     Starts monitoring file or dir\n"
+	 "mon_file <file>                     Starts monitoring file\n"
+	 "mon_dir <file>                      Starts monitoring dir\n"
 	 "stopmon <file>                      Stops monitoring file or dir\n"
 	 "gettype <file>                      Returns file type of file\n"
 	 "getstat <file>                      Returns result of stat on file.\n"
@@ -330,11 +339,11 @@ print_help(void)
 	 "                                    and type.\n"        
 	 "exit, quit                          Guess what.\n"
 	 "ln <source> <target>                Symlink source to target\n"
-	 "cp <source> <target>                Copy source to target\n"
-	 "mv <source> <target>                Move source to target\n\n"
-	 "rm <file>                           Remove file.\n\n"
+	 "cp <source files> <target>          Copy sources to target\n"
+	 "mv <source files> <target>          Move sources to target\n\n"
+	 "rm <files>                          Remove files.\n\n"
 	 "Options:\n"
-	 "For ls and startmon:\n"
+	 "For ls and mon_XXX:\n"
 	 "-a                                  All files, also those starting\n"
          "                                    with a dot.\n"
 	 "-s                                  Get stat as well.\n" 
@@ -479,6 +488,9 @@ command_line(EfsdConnection *ec)
 	      char force = 0;
 	      char rec = 0;
 	      char move = 0;
+	      char **files = NULL;
+	      int  num_files = 0;
+	      EfsdOptions *ops = NULL;
 
 	      if (!strcmp(tok, "mv"))
 		move = 1;
@@ -497,42 +509,42 @@ command_line(EfsdConnection *ec)
 		    }
 		  else
 		    {
-		      char *target;
-		      EfsdOptions *ops = NULL;
-		      
-		      if (num_options > 0)
-			{
-			  ops = efsd_ops_create(num_options);
-			  
-			  if (force) efsd_ops_add(ops, efsd_op_force());
-			  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
-			}
-		      
-		      if ((target = strtok(NULL, " \t\n")))
-			{
-			  if (move)
-			    {
-			      if ((id = efsd_move(ec, tok, target, ops)) < 0)
-				printf("Couldn't issue mv command.\n");
-			    }
-			  else
-			    {
-			      if ((id = efsd_copy(ec, tok, target, ops)) < 0)
-				printf("Couldn't issue cp command.\n");
-			    }
-			}
+		      num_files++;
+		      files = realloc(files, sizeof(char*) * num_files);
+		      files[num_files-1] = tok;
 		    }
 		}
+		      
+	      if (num_options > 0)
+		{
+		  ops = efsd_ops_create(num_options);
+		  
+		  if (force) efsd_ops_add(ops, efsd_op_force());
+		  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
+		}
+	      
+	      if (move)
+		{
+		  if ((id = efsd_move(ec, num_files, files, ops)) < 0)
+		    printf("Couldn't issue mv command.\n");
+		}
+	      else
+		{
+		  if ((id = efsd_copy(ec, num_files, files, ops)) < 0)
+		    printf("Couldn't issue cp command.\n");
+		}
 	    }
-	  else if (!strcmp(tok, "ls") || !strcmp(tok, "startmon"))
+	  else if (!strcmp(tok, "ls") || !strcmp(tok, "mon_dir") || !strcmp(tok, "mon_file"))
 	    {
-	      char startmon = 0, show_all = 0, get_type = 0;
+	      char mon_file = 0, mon_dir = 0,  show_all = 0, get_type = 0;
 	      char get_stat = 0, get_lstat = 0, get_meta = 0;
 	      char *meta_key = NULL, *meta_type = NULL;
 	      EfsdDatatype meta_datatype = 0;
 
-	      if (!strcmp(tok, "startmon"))
-		startmon = 1;
+	      if (!strcmp(tok, "mon_file"))
+		mon_file = 1;
+	      else if (!strcmp(tok, "mon_dir"))
+		mon_dir = 1;
 
 	      while ((tok = strtok(NULL, " \t\n")))
 		{
@@ -593,10 +605,15 @@ command_line(EfsdConnection *ec)
 			  if (get_meta)  efsd_ops_add(ops, efsd_op_get_metadata(meta_key, meta_datatype));
 			}
 
-		      if (startmon)
+		      if (mon_dir)
 			{
-			  if ((id = efsd_start_monitor(ec, tok, ops)) < 0)
-			    printf("Couldn't issue startmon command.\n");
+			  if ((id = efsd_start_monitor_dir(ec, tok, ops)) < 0)
+			    printf("Couldn't issue mon_dir command.\n");
+			}
+		      else if (mon_file)
+			{
+			  if ((id = efsd_start_monitor_file(ec, tok, ops)) < 0)
+			    printf("Couldn't issue mon_file command.\n");
 			}
 		      else
 			{
@@ -610,6 +627,9 @@ command_line(EfsdConnection *ec)
 	    {
 	      char force = 0;
 	      char rec   = 0;
+	      char **files = NULL;
+	      int  num_files = 0;
+	      EfsdOptions *ops = NULL;
 
 	      while ((tok = strtok(NULL, " \t\n")))
 		{
@@ -625,20 +645,22 @@ command_line(EfsdConnection *ec)
 		    }
 		  else
 		    {
-		      EfsdOptions *ops = NULL;
-
-		      if (num_options > 0)
-			{
-			  ops = efsd_ops_create(num_options);
-
-			  if (force) efsd_ops_add(ops, efsd_op_force());
-			  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
-			}
-
-		      if ((id = efsd_remove(ec, tok, ops)) < 0)
-			printf("Couldn't issue rs command.\n");
+		      num_files++;
+		      files = realloc(files, sizeof(char*) * num_files);
+		      files[num_files-1] = tok;
 		    }
 		}
+
+	      if (num_options > 0)
+		{
+		  ops = efsd_ops_create(num_options);
+		  
+		  if (force) efsd_ops_add(ops, efsd_op_force());
+		  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
+		}
+	      
+	      if ((id = efsd_remove(ec, num_files, files, ops)) < 0)
+		printf("Couldn't issue rs command.\n");
 	    }
 	  else if (!strcmp(tok, "stopmon"))
 	    {

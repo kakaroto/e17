@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if USE_THREADS
 #include <pthread.h>
 
-pthread_mutex_t fam_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t fam_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 #define LOCK    (pthread_mutex_lock(&fam_mutex))
 #define UNLOCK  (pthread_mutex_unlock(&fam_mutex))

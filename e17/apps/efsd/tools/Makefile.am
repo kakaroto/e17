@@ -16,7 +16,7 @@ all-local: magic.db pattern.db
 
 magic.db: $(top_srcdir)/tools/magic.txt magic2db
 	chmod +x magic2db
-	if test -e magic.db; then \
+	if test -f magic.db; then \
 	  rm -f magic.db; \
 	fi
 	./magic2db $(top_srcdir)/tools/magic.txt magic.db

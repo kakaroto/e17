@@ -139,19 +139,19 @@ efsd_queue_process(fd_set *fdset)
 	    {
 	      if (errno == EPIPE)
 		{
-		  D(("Client %i died -- closing connection\n", eqi->client));
+		  D("Client %i died -- closing connection\n", eqi->client);
 		  efsd_main_close_connection(eqi->client);
 		  queue = efsd_list_remove(queue, q, (EfsdFunc)queue_item_free);
 		  done++;
 		}
 	      else
 		{
-		  D(("Couldn't write queued command.\n"));
+		  D("Couldn't write queued command.\n");
 		}
 	    }
 	  else
 	    {
-	      D(("One queue item processed.\n"));
+	      D("One queue item processed.\n");
 
 	      if (q == queue_last)
 		queue_last = NULL;
@@ -178,13 +178,13 @@ efsd_queue_add_event(int sockfd, EfsdEvent *ee)
 
   if (!queue)
     {
-      D(("Creating job queue\n"));
+      D("Creating job queue\n");
       queue = efsd_list_new(queue_item_new(sockfd, ee_copy));
       queue_last = queue;
     }
   else
     {
-      D(("Appending to job queue\n"));
+      D("Appending to job queue\n");
       queue_last = efsd_list_append(queue_last, queue_item_new(sockfd, ee_copy));
     }
 

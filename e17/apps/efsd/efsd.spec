@@ -59,7 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{prefix}/bin/efsd
 %{prefix}/bin/efsdsh
-%{prefix}/lib/libefsd.so.*
+%{prefix}/bin/efsd-config
+%{prefix}/lib/libefsd.*
 %{prefix}/share/efsd/magic.db
 %{prefix}/share/efsd/pattern.db
 
@@ -72,7 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{prefix}/bin/efsd
 %{prefix}/bin/efsdsh
-%{prefix}/lib/libefsd.so.*
+%{prefix}/bin/efsd-config
+%{prefix}/lib/libefsd.*
 %{prefix}/share/efsd/magic.db
 %{prefix}/share/efsd/pattern.db
 %{prefix}/include/libefsd.h

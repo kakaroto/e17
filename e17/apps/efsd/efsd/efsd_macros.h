@@ -29,6 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
+#include <stdlib.h>
+
 #define EFSD_META_DIR_NAME  ".e_meta"
 
 #ifndef	FALSE

@@ -1,9 +1,8 @@
-For 0.0.1:
-
-* test on non-Linux platforms.
-
-For later version:
-
 * implement file information retrieval, with results
-  similar to that of file().
+  similar to that of file(), ideally with i18n.
 * implement a comprehensive test suite.
+
+FIX:
+
+* Don't see file-exists when famming dir for second time. Replace
+  with optionally alphabetically sorted file-exists events.

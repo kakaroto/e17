@@ -197,10 +197,6 @@ void handle_efsd_event(EfsdEvent *ee)
 	  printf("Symlink event %i\n",
 		 ee->efsd_reply_event.command.efsd_2file_cmd.id);
 	  break;
-	case EFSD_CMD_LISTDIR:
-	  printf("Listdir event %i\n",
-		 ee->efsd_reply_event.command.efsd_file_cmd.id);
-	  break;
 	case EFSD_CMD_MAKEDIR:
 	  printf("Mkdir event %i\n -- creating %s\n",
 		 ee->efsd_reply_event.command.efsd_file_cmd.id,
@@ -254,8 +250,12 @@ void handle_efsd_event(EfsdEvent *ee)
 		}
 	    }
 	  break;
-	case EFSD_CMD_STARTMON:
-	  printf("Startmon event %i\n", 
+	case EFSD_CMD_STARTMON_DIR:
+	  printf("Startmon_dir event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_STARTMON_FILE:
+	  printf("Startmon_file event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_STOPMON:
@@ -461,26 +461,6 @@ main(int argc, char** argv)
 
   sleep(2);
 
-  /* List contents of a directory */
-  if ((id = efsd_listdir(ec, getenv("HOME"),
-			 efsd_ops(2, efsd_op_get_stat(),
-				  efsd_op_get_filetype()))) >= 0)
-    printf("Listing directory, command ID %i\n", id);
-  else
-    printf("Couldn't issue ls command.\n");
-  
-  sleep(2);
-
-  /* List again -- this tests both the stat and filetype caches */
-  if ((id = efsd_listdir(ec, getenv("HOME"),
-			 efsd_ops(2, efsd_op_get_stat(),
-				  efsd_op_get_filetype()))) >= 0)
-    printf("Listing directory, command ID %i\n", id);
-  else
-    printf("Couldn't issue ls command.\n");
-  
-  sleep(2);
-
   /* Stat a file */
   if ((id = efsd_stat(ec, "/bin/")) >= 0)
     printf("Stat()ing file, command ID %i\n", id);
@@ -501,7 +481,7 @@ main(int argc, char** argv)
 
   /* Start monitoring home directory */
 
-  if ((id = efsd_start_monitor(ec, "/dev",
+  if ((id = efsd_start_monitor_dir(ec, "/dev",
 			       efsd_ops(1, efsd_op_get_stat()))) >= 0)
     printf("Starting monitor, command ID %i\n", id);
   else

@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd_misc.h>
 #include <efsd_debug.h>
-#include <efsd_fam.h>
+#include <efsd_monitor.h>
 #include <efsd_globals.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
@@ -51,6 +51,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 mode_t         mode_755 = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 			   S_IXGRP | S_IROTH | S_IXOTH);
+
+void 
+efsd_misc_remove_trailing_slashes(char *s)
+{
+  int len;
+
+  D_ENTER;
+
+  if (!s || s[0] == '\0' || !strcmp(s, "/"))
+    D_RETURN;
+
+  len = strlen(s);
+
+  while (len > 0 && s[len-1] == '/')
+    {
+      s[len-1] = '\0';
+      len--;
+    }
+  D_RETURN;
+}
 
 int    
 efsd_misc_file_exists(char *filename)

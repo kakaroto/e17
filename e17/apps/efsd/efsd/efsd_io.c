@@ -78,7 +78,6 @@ static int     read_string(int sockfd, char **s);
 static int     write_data(int sockfd, struct msghdr *msg);
 
 static int     read_file_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_2file_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_chmod_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
@@ -87,7 +86,6 @@ static int     read_reply_event(int sockfd, EfsdEvent *ee);
 static int     read_getmeta_op(int sockfd, EfsdOption *eo);
 
 static void    fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec);
-static void    fill_2file_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_chmod_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_set_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_get_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
@@ -259,10 +257,21 @@ read_file_cmd(int sockfd, EfsdCommand *ec)
   if ((count = read_int(sockfd, &(ec->efsd_file_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
-   
-  if ((count = read_string(sockfd, &(ec->efsd_file_cmd.file))) < 0)
+
+  if ((count = read_int(sockfd, &(ec->efsd_file_cmd.num_files))) < 0)
     D_RETURN_(-1);
   count2 += count;
+
+  ec->efsd_file_cmd.files = malloc(sizeof(char*) * ec->efsd_file_cmd.num_files);
+
+  for (i = 0; i < ec->efsd_file_cmd.num_files; i++)
+    {
+      if ((count = read_string(sockfd, &(ec->efsd_file_cmd.files[i]))) < 0)
+	D_RETURN_(-1);
+
+      count2 += count;
+      efsd_misc_remove_trailing_slashes(ec->efsd_file_cmd.files[i]);
+    }
 
   if ((count = read_int(sockfd, &(ec->efsd_file_cmd.num_options))) < 0)
     D_RETURN_(-1);
@@ -276,44 +285,6 @@ read_file_cmd(int sockfd, EfsdCommand *ec)
       for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
 	{
 	  efsd_io_read_option(sockfd, &(ec->efsd_file_cmd.options[i]));
-	}
-    }
-
-  D_RETURN_(count2);
-}
-
-
-static int     
-read_2file_cmd(int sockfd, EfsdCommand *ec)
-{
-  int count = 0, count2, i;
-   
-  D_ENTER;
-
-  if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.id))) < 0)
-    D_RETURN_(-1);
-  count2 = count;
-
-  if ((count = read_string(sockfd, &(ec->efsd_2file_cmd.file1))) < 0)
-    D_RETURN_(-1);
-  count2 += count;
-  
-  if ((count = read_string(sockfd, &(ec->efsd_2file_cmd.file2))) < 0)
-    D_RETURN_(-1);
-  count2 += count;
-  
-  if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.num_options))) < 0)
-    D_RETURN_(-1);
-  count2 += count;
-
-  if (ec->efsd_2file_cmd.num_options > 0)
-    {
-      ec->efsd_2file_cmd.options = (EfsdOption*)
-	malloc(sizeof(EfsdOption) *	ec->efsd_2file_cmd.num_options);
-      
-      for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
-	{
-	  efsd_io_read_option(sockfd, &(ec->efsd_2file_cmd.options[i]));
 	}
     }
 
@@ -502,20 +473,28 @@ fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec)
 
   D_ENTER;
 
-  iov->dat[iov->d] = strlen(ec->efsd_file_cmd.file) + 1;
-
   iov->vec[iov->v].iov_base   = &ec->type;
   iov->vec[iov->v].iov_len    = sizeof(EfsdCommandType);
   iov->vec[++iov->v].iov_base = &ec->efsd_file_cmd.id;
   iov->vec[iov->v].iov_len    = sizeof(EfsdCmdId);
-  iov->vec[++iov->v].iov_base = &(iov->dat[iov->d]);
+  iov->vec[++iov->v].iov_base = &ec->efsd_file_cmd.num_files;
   iov->vec[iov->v].iov_len    = sizeof(int);
-  iov->vec[++iov->v].iov_base = ec->efsd_file_cmd.file;
-  iov->vec[iov->v].iov_len    = iov->dat[iov->d];
+
+  for (i = 0; i < ec->efsd_file_cmd.num_files; i++)
+    {
+      iov->dat[iov->d] = strlen(ec->efsd_file_cmd.files[i]) + 1;
+
+      iov->vec[++iov->v].iov_base = &(iov->dat[iov->d]);
+      iov->vec[iov->v].iov_len    = sizeof(int);
+      iov->vec[++iov->v].iov_base = ec->efsd_file_cmd.files[i];
+      iov->vec[iov->v].iov_len    = iov->dat[iov->d];
+
+      iov->d++;
+    }
+
   iov->vec[++iov->v].iov_base = &ec->efsd_file_cmd.num_options;
   iov->vec[iov->v].iov_len    = sizeof(int);
 
-  iov->d++;
   iov->v++;
 
   /* Fill in options, if they exist */
@@ -531,57 +510,16 @@ fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec)
 }
 
 
-static void
-fill_2file_cmd(EfsdIOV *iov, EfsdCommand *ec)
-{
-  int   i;
-  
-  D_ENTER;
-  
-  iov->dat[iov->d]   = strlen(ec->efsd_2file_cmd.file1) + 1;
-  iov->dat[iov->d+1] = strlen(ec->efsd_2file_cmd.file2) + 1;
-
-  iov->vec[iov->v].iov_base   = &ec->type;
-  iov->vec[iov->v].iov_len    = sizeof(EfsdCommandType);
-  iov->vec[++iov->v].iov_base = &ec->efsd_2file_cmd.id;
-  iov->vec[iov->v].iov_len    = sizeof(EfsdCmdId);
-  iov->vec[++iov->v].iov_base = &(iov->dat[iov->d]);
-  iov->vec[iov->v].iov_len    = sizeof(int);
-  iov->vec[++iov->v].iov_base = ec->efsd_2file_cmd.file1;
-  iov->vec[iov->v].iov_len    = iov->dat[iov->d];
-  iov->vec[++iov->v].iov_base = &(iov->dat[iov->d+1]);
-  iov->vec[iov->v].iov_len    = sizeof(int);
-  iov->vec[++iov->v].iov_base = ec->efsd_2file_cmd.file2;
-  iov->vec[iov->v].iov_len    = iov->dat[iov->d+1];
-  iov->vec[++iov->v].iov_base = &ec->efsd_2file_cmd.num_options;
-  iov->vec[iov->v].iov_len    = sizeof(int);
-
-  iov->d += 2;
-  iov->v++;
-      
-  /* Fill in options, if they exist */
-  if (ec->efsd_2file_cmd.num_options > 0)
-    {
-      for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
-	{
-	  fill_option(iov, &(ec->efsd_2file_cmd.options[i]));
-	}
-    }
-
-  D_RETURN;
-}
-
-
 static void   
 fill_chmod_cmd(EfsdIOV *iov, EfsdCommand *ec)
 {
   D_ENTER;
 
-  iov->dat[iov->d] = strlen(ec->efsd_file_cmd.file) + 1;
+  iov->dat[iov->d] = strlen(ec->efsd_chmod_cmd.file) + 1;
 
   iov->vec[iov->v].iov_base   = &ec->type;
   iov->vec[iov->v].iov_len    = sizeof(EfsdCommandType);
-  iov->vec[++iov->v].iov_base = &ec->efsd_file_cmd.id;
+  iov->vec[++iov->v].iov_base = &ec->efsd_chmod_cmd.id;
   iov->vec[iov->v].iov_len    = sizeof(EfsdCmdId);
   iov->vec[++iov->v].iov_base = &(iov->dat[iov->d]);
   iov->vec[iov->v].iov_len    = sizeof(int);
@@ -756,20 +694,19 @@ fill_command(EfsdIOV *iov, EfsdCommand *ec)
   switch (ec->type)
     {
     case EFSD_CMD_REMOVE:
-    case EFSD_CMD_LISTDIR:
     case EFSD_CMD_MAKEDIR:
-    case EFSD_CMD_STARTMON:
+    case EFSD_CMD_LISTDIR:
+    case EFSD_CMD_STARTMON_FILE:
+    case EFSD_CMD_STARTMON_DIR:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_READLINK:
     case EFSD_CMD_GETFILETYPE:
-      fill_file_cmd(iov, ec);
-      break;
     case EFSD_CMD_MOVE:
     case EFSD_CMD_COPY:
     case EFSD_CMD_SYMLINK:
-      fill_2file_cmd(iov, ec);
+      fill_file_cmd(iov, ec);
       break;
     case EFSD_CMD_CHMOD:
       fill_chmod_cmd(iov, ec);
@@ -879,25 +816,26 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
   if (!ec)
     D_RETURN_(-1);  
 
+  memset(ec, 0, sizeof(EfsdCommand));
+
   if ((count = read_int(sockfd, (int*)&(ec->type))) >= 0)
     {
       switch (ec->type)
 	{
 	case EFSD_CMD_REMOVE:
-	case EFSD_CMD_LISTDIR:
 	case EFSD_CMD_MAKEDIR:
-	case EFSD_CMD_STARTMON:
+	case EFSD_CMD_LISTDIR:
+	case EFSD_CMD_STARTMON_FILE:
+	case EFSD_CMD_STARTMON_DIR:
 	case EFSD_CMD_STOPMON:
 	case EFSD_CMD_STAT:
 	case EFSD_CMD_LSTAT:
 	case EFSD_CMD_READLINK:
 	case EFSD_CMD_GETFILETYPE:
-	  result = read_file_cmd(sockfd, ec);
-	  break;
 	case EFSD_CMD_COPY:
 	case EFSD_CMD_MOVE:
 	case EFSD_CMD_SYMLINK:
-	  result = read_2file_cmd(sockfd, ec);
+	  result = read_file_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_CHMOD:
 	  result = read_chmod_cmd(sockfd, ec);
@@ -916,7 +854,6 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	}
     }
 
-  
   D_RETURN_(result + count);
 }
 
@@ -962,6 +899,8 @@ efsd_io_read_event(int sockfd, EfsdEvent *ee)
 
   if (!ee)
     D_RETURN_(-1);
+
+  memset(ee, 0, sizeof(EfsdEvent));
 
   if ((count = read_int(sockfd, (int*)&(ee->type))) >= 0)
     {

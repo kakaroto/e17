@@ -92,7 +92,7 @@ meta_db_get_file(char *filename, char *dbfile, int len)
       /* Something's wrong -- this is supposed to be
 	 a chanonical path ...
       */
-      D(("Couldn't find '/' in filename '%s'\n", filename));
+      D("Couldn't find '/' in filename '%s'\n", filename);
       D_RETURN_(FALSE);
     }
 
@@ -194,8 +194,8 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
   switch (esmc->datatype)
     {
     case EFSD_INT:
-      D(("Setting metadata key '%s' to int value %i\n",
-	 esmc->key, *((int*)esmc->data)));
+      D("Setting metadata key '%s' to int value %i\n",
+	 esmc->key, *((int*)esmc->data));
       e_db_int_set(db, esmc->key, *((int*)esmc->data));
       break;
     case EFSD_FLOAT:
@@ -208,7 +208,7 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
       e_db_data_set(db, esmc->key, esmc->data, esmc->data_len);
       break;
     default:
-      D(("Unknown data type!\n"));
+      D("Unknown data type!\n");
       e_db_close(db);
       e_db_flush();
       efsd_lock_release_write_access(meta_lock);
@@ -232,8 +232,8 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
   E_DB_File   *db;
 
   D_ENTER;
-  D(("Getting metadata %s from %s\n",
-     egmc->key, dbfile));
+  D("Getting metadata %s from %s\n",
+     egmc->key, dbfile);
 
   efsd_lock_get_read_access(meta_lock);
 
@@ -285,7 +285,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
       }
       break;
     default:
-      D(("Unknown data type!\n"));
+      D("Unknown data type!\n");
       success = FALSE;
     }
 

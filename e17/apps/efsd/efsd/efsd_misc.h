@@ -44,6 +44,7 @@ int    efsd_misc_mkdir(char *filename);
 void   efsd_misc_remove_trailing_slashes(char *path);
 int    efsd_misc_is_absolute_path(char *path);
 char  *efsd_misc_get_filename_only(char *path);
+int    efsd_misc_get_path_only(const char *filename, char *path, int size);
 char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
 
 #ifdef __EMX__  

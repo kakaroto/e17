@@ -119,7 +119,7 @@ efsd_hash_insert(EfsdHash *h, void *key, void *data)
 
   if (efsd_hash_find(h, key))
     {
-      D(("Item exists -- not inserting.\n"));
+      D("Item exists -- not inserting.\n");
       D_RETURN_(FALSE);
     }
 
@@ -133,7 +133,7 @@ efsd_hash_insert(EfsdHash *h, void *key, void *data)
     {
       EfsdList *new_last;
 
-      D(("Hash bucket overflow -- removing last item.\n"));
+      D("Hash bucket overflow -- removing last item.\n");
       
       new_last = efsd_list_prev(h->bucket_ends[index]);
       h->buckets[index] = efsd_list_remove(h->buckets[index],
@@ -170,13 +170,13 @@ efsd_hash_find(EfsdHash *h, void *key)
     {
       if (h->cmp_func(key, ((EfsdHashItem*)efsd_list_data(l))->key) == 0)
 	{
-	  /* D(("Key with hash value %i found at %i. item\n", index, i)); */
+	  /* D("Key with hash value %i found at %i. item\n", index, i); */
 	  h->buckets[index] = efsd_list_move_to_front(h->buckets[index], l);
 	  D_RETURN_(((EfsdHashItem*)efsd_list_data(l))->data);
 	}
     }
 
-  /* D(("Key with hash value %i not found.\n", index)); */
+  /* D("Key with hash value %i not found.\n", index); */
   D_RETURN_(NULL);
 }
 
@@ -185,7 +185,7 @@ void
 efsd_hash_remove(EfsdHash *h, void *key)
 {
   EfsdList     *l = NULL;
-  u_int         index;
+  uint         index;
 
   D_ENTER;
 
@@ -204,11 +204,11 @@ efsd_hash_remove(EfsdHash *h, void *key)
     {
       h->buckets[index] = efsd_list_remove(h->buckets[index], l, (EfsdFunc)h->free_func);
       h->bucket_sizes[index]--;
-      D(("Removed item hashed at %i\n", index));	  
+      D("Removed item hashed at %i\n", index);	  
     }
   else
     {
-      D(("Item hashed at %i not removed.\n", index));	  
+      D("Item hashed at %i not removed.\n", index);	  
     }
 
   D_RETURN;
@@ -219,7 +219,7 @@ void
 efsd_hash_change_key(EfsdHash *h, void *key1, void *key2)
 {
   EfsdList     *l = NULL;
-  u_int         index;
+  uint         index;
   void         *it;
 
   D_ENTER;
@@ -246,7 +246,7 @@ efsd_hash_change_key(EfsdHash *h, void *key1, void *key2)
 	{
 	  EfsdList *new_last;
 	  
-	  D(("Hash bucket overflow in re-keying -- removing last item.\n"));
+	  D("Hash bucket overflow in re-keying -- removing last item.\n");
 	  
 	  new_last = efsd_list_prev(h->bucket_ends[index]);
 	  h->buckets[index] = efsd_list_remove(h->buckets[index],
@@ -264,7 +264,7 @@ efsd_hash_change_key(EfsdHash *h, void *key1, void *key2)
     }
   else
     {
-      D(("Item hashed at %i not re-keyed.\n", index));	  
+      D("Item hashed at %i not re-keyed.\n", index);	  
     }
 
 
@@ -303,7 +303,7 @@ efsd_hash_string(EfsdHash *h, char *s)
   for (hash = 0; *s != '\0'; s++)
     hash = (64*hash + *s) % h->num_buckets;
   
-  /* D(("String '%s' hashed to %i\n", ss, hash)); */
+  /* D("String '%s' hashed to %i\n", ss, hash); */
 
   D_RETURN_(hash);
 }
