@@ -1642,3 +1642,10 @@ the middle-desktop button menu works and displays something nice.
 
 i hope all theme desginers use this to plug themselves and any comments or
 credits they want to give for their theme.
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 14:17:44 PDT 1999
+(Raster)
+
+fix minor sample loading and caching bug.. :)
