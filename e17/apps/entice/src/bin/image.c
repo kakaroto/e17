@@ -11,10 +11,25 @@
 #include <Ecore.h>
 #include "image.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 static void entice_image_resize(Evas_Object * o, double w, double h);
 static int _entice_image_scroll_timer(void *data);
+static void _entice_image_mouse_down_translate(void *data, Evas * e,
+                                               Evas_Object * obj,
+                                               void *event_info);
+static void _entice_image_mouse_in_translate(void *data, Evas * e,
+                                             Evas_Object * obj,
+                                             void *event_info);
+static void _entice_image_mouse_out_translate(void *data, Evas * e,
+                                              Evas_Object * obj,
+                                              void *event_info);
+static void _entice_image_mouse_up_translate(void *data, Evas * e,
+                                             Evas_Object * obj,
+                                             void *event_info);
+static void _entice_image_mouse_wheel_translate(void *data, Evas * e,
+                                                Evas_Object * obj,
+                                                void *event_info);
 
 const char *
 entice_image_format_get(Evas_Object * o)
@@ -404,6 +419,27 @@ entice_image_zoom_in(Evas_Object * o)
       entice_image_resize(o, im->w, im->h);
    }
 }
+void
+entice_image_edje_set(Evas_Object * o, Evas_Object * edje)
+{
+   Entice_Image *im = NULL;
+
+   if ((edje) && (im = evas_object_smart_data_get(o)))
+   {
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_IN,
+                                     _entice_image_mouse_in_translate, edje);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_OUT,
+                                     _entice_image_mouse_out_translate, edje);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_UP,
+                                     _entice_image_mouse_up_translate, edje);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_DOWN,
+                                     _entice_image_mouse_down_translate,
+                                     edje);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_WHEEL,
+                                     _entice_image_mouse_wheel_translate,
+                                     edje);
+   }
+}
 
 /**
  * _entice_image_scroll_timer - our ecore timer to do continuous
@@ -515,6 +551,7 @@ entice_image_add(Evas_Object * o)
    im->clip = evas_object_rectangle_add(evas_object_evas_get(o));
    evas_object_color_set(im->clip, 255, 255, 255, 255);
    evas_object_layer_set(im->clip, 0);
+
    im->zoom = 1.0;
    im->fit = 1;
    evas_object_smart_data_set(o, im);
@@ -718,6 +755,7 @@ entice_image_new(Evas_Object * image)
 
       im = evas_object_smart_data_get(o);
       im->obj = image;
+
       evas_object_image_size_get(im->obj, &w, &h);
       evas_object_clip_set(im->obj, im->clip);
       evas_object_show(im->obj);
@@ -820,3 +858,99 @@ main(int argc, const char *argv[])
    return (0);
 }
 #endif
+/**
+ * The following five functions translate evas mouse events into edje
+ * mouse event signal emissions
+ */
+static void
+_entice_image_mouse_wheel_translate(void *data, Evas * e, Evas_Object * obj,
+                                    void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev = NULL;
+   Evas_Object *o = NULL;
+
+   if ((ev = (Evas_Event_Mouse_Wheel *) event_info))
+   {
+      if ((o = (Evas_Object *) data))
+      {
+         evas_event_feed_mouse_wheel_data(e, ev->direction, ev->z, o);
+      }
+   }
+#if DEBUG
+   fprintf(stderr, "MouseWheel\n");
+#endif
+}
+
+static void
+_entice_image_mouse_in_translate(void *data, Evas * e, Evas_Object * obj,
+                                 void *event_info)
+{
+   Evas_Event_Mouse_In *ev = NULL;
+   Evas_Object *o = NULL;
+
+   if ((ev = (Evas_Event_Mouse_In *) event_info))
+      if ((o = (Evas_Object *) data))
+         edje_object_signal_emit(o, "mouse,in", "EnticeImage");
+#if DEBUG
+   fprintf(stderr, "MouseIn\n");
+#endif
+}
+
+static void
+_entice_image_mouse_out_translate(void *data, Evas * e, Evas_Object * obj,
+                                  void *event_info)
+{
+   Evas_Event_Mouse_Out *ev = NULL;
+   Evas_Object *o = NULL;
+
+   if ((ev = (Evas_Event_Mouse_Out *) event_info))
+      if ((o = (Evas_Object *) data))
+         edje_object_signal_emit(o, "mouse,out", "EnticeImage");
+#if DEBUG
+   fprintf(stderr, "MouseOut\n");
+#endif
+}
+
+static void
+_entice_image_mouse_up_translate(void *data, Evas * e, Evas_Object * obj,
+                                 void *event_info)
+{
+   Evas_Event_Mouse_Up *ev = NULL;
+   Evas_Object *o = NULL;
+
+   if ((ev = (Evas_Event_Mouse_Up *) event_info))
+   {
+      if ((o = (Evas_Object *) data))
+      {
+         char buf[PATH_MAX];
+
+         snprintf(buf, PATH_MAX, "mouse,up,%i", (int) ev->button);
+         edje_object_signal_emit(o, buf, "EnticeImage");
+      }
+   }
+#if DEBUG
+   fprintf(stderr, "MouseUp");
+#endif
+}
+
+static void
+_entice_image_mouse_down_translate(void *data, Evas * e, Evas_Object * obj,
+                                   void *event_info)
+{
+   Evas_Event_Mouse_Down *ev = NULL;
+   Evas_Object *o = NULL;
+
+   if ((ev = (Evas_Event_Mouse_Down *) event_info))
+   {
+      if ((o = (Evas_Object *) data))
+      {
+         char buf[PATH_MAX];
+
+         snprintf(buf, PATH_MAX, "mouse,down,%i", (int) ev->button);
+         edje_object_signal_emit(o, buf, "EnticeImage");
+      }
+   }
+#if DEBUG
+   fprintf(stderr, "MouseDown\n");
+#endif
+}

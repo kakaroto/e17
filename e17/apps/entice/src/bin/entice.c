@@ -262,6 +262,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       edje_object_part_swallow(entice->edje, "EnticeImage", new_current);
       edje_object_part_swallow(entice->edje, "EnticeImageScroller",
                                new_scroller);
+      entice_image_edje_set(new_current, entice->edje);
 
       if (should_fit)
          entice_image_zoom_fit(new_current);
@@ -307,6 +308,8 @@ entice_file_add(const char *file)
             evas_object_show(edje);
 
             e_container_element_append(entice->container, edje);
+            if (evas_list_count(entice->thumb.list) == 1)
+               _entice_thumb_load(o, NULL, NULL, NULL);
          }
          else
             result = 1;
@@ -684,8 +687,8 @@ entice_save_image(void)
    if (entice && entice->current)
    {
       edje_freeze();
-      if(entice_image_save(entice->current))
-	  fprintf(stderr, "Saving was successul\n");
+      if (entice_image_save(entice->current))
+         fprintf(stderr, "Saving was successul\n");
       /* FIXME: Emit a EnticeSaveOk or something signal */
       edje_thaw();
    }

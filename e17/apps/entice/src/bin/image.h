@@ -70,5 +70,6 @@ int entice_image_flip(Evas_Object * o, int direction);
 int entice_image_save(Evas_Object * o);
 void entice_image_file_set(Evas_Object * o, const char *filename);
 void entice_image_format_set(Evas_Object * o, const char *format);
+void entice_image_edje_set(Evas_Object * o, Evas_Object * edje);
 
 #endif
