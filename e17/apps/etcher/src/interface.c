@@ -65,6 +65,25 @@ create_main (void)
   GtkWidget *prop_apply;
   GtkWidget *prop_reset;
   GtkWidget *draft;
+  GtkWidget *frame1;
+  GtkWidget *zoom;
+  GtkWidget *notebook1;
+  GtkWidget *scrolledwindow3;
+  GtkWidget *images;
+  GtkWidget *label1;
+  GtkWidget *scrolledwindow2;
+  GtkWidget *states;
+  GtkWidget *label2;
+  GtkWidget *hbox1;
+  GtkWidget *file;
+  GtkWidget *label48;
+  GtkWidget *x;
+  GtkWidget *label49;
+  GtkWidget *y;
+  GtkWidget *label50;
+  GtkWidget *width;
+  GtkWidget *label51;
+  GtkWidget *height;
   GtkWidget *vbox2;
   GtkWidget *properties;
   GtkWidget *table5;
@@ -235,25 +254,6 @@ create_main (void)
   GtkWidget *label58;
   GtkWidget *label52;
   GtkWidget *hbuttonbox1;
-  GtkWidget *frame1;
-  GtkWidget *zoom;
-  GtkWidget *notebook1;
-  GtkWidget *scrolledwindow3;
-  GtkWidget *images;
-  GtkWidget *label1;
-  GtkWidget *scrolledwindow2;
-  GtkWidget *states;
-  GtkWidget *label2;
-  GtkWidget *hbox1;
-  GtkWidget *file;
-  GtkWidget *label48;
-  GtkWidget *x;
-  GtkWidget *label49;
-  GtkWidget *y;
-  GtkWidget *label50;
-  GtkWidget *width;
-  GtkWidget *label51;
-  GtkWidget *height;
 
   main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main), "main", main);
@@ -414,7 +414,7 @@ create_main (void)
    gtk_widget_push_colormap(gdk_cmap);
    /*******/
    
-   view = gtk_drawing_area_new ();
+  view = gtk_drawing_area_new ();
    
    /*******/
    gtk_widget_pop_visual();
@@ -569,13 +569,178 @@ create_main (void)
   gtk_container_set_border_width (GTK_CONTAINER (draft), 2);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draft), TRUE);
 
+  frame1 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame1);
+  gtk_object_set_data_full (GTK_OBJECT (main), "frame1", frame1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame1);
+  gtk_table_attach (GTK_TABLE (table1), frame1, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
+
+  zoom = gtk_drawing_area_new ();
+  gtk_widget_ref (zoom);
+  gtk_object_set_data_full (GTK_OBJECT (main), "zoom", zoom,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom);
+  gtk_container_add (GTK_CONTAINER (frame1), zoom);
+  gtk_widget_set_usize (zoom, 80, 80);
+
+  notebook1 = gtk_notebook_new ();
+  gtk_widget_ref (notebook1);
+  gtk_object_set_data_full (GTK_OBJECT (main), "notebook1", notebook1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (notebook1);
+  gtk_table_attach (GTK_TABLE (table1), notebook1, 2, 3, 0, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_usize (notebook1, 150, -2);
+  gtk_container_set_border_width (GTK_CONTAINER (notebook1), 2);
+  gtk_notebook_set_tab_hborder (GTK_NOTEBOOK (notebook1), 0);
+  gtk_notebook_set_tab_vborder (GTK_NOTEBOOK (notebook1), 0);
+
+  scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow3);
+  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow3", scrolledwindow3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow3);
+  gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow3);
+  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow3), 4);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  images = gtk_clist_new (1);
+  gtk_widget_ref (images);
+  gtk_object_set_data_full (GTK_OBJECT (main), "images", images,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (images);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow3), images);
+  gtk_clist_set_column_width (GTK_CLIST (images), 0, 80);
+  gtk_clist_column_titles_hide (GTK_CLIST (images));
+
+  label1 = gtk_label_new (_("Images"));
+  gtk_widget_ref (label1);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label1", label1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label1);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label1);
+
+  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow2);
+  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow2", scrolledwindow2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow2);
+  gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow2);
+  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow2), 4);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  states = gtk_clist_new (1);
+  gtk_widget_ref (states);
+  gtk_object_set_data_full (GTK_OBJECT (main), "states", states,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (states);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow2), states);
+  gtk_clist_set_column_width (GTK_CLIST (states), 0, 80);
+  gtk_clist_set_selection_mode (GTK_CLIST (states), GTK_SELECTION_BROWSE);
+  gtk_clist_column_titles_hide (GTK_CLIST (states));
+
+  label2 = gtk_label_new (_("States"));
+  gtk_widget_ref (label2);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label2", label2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label2);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label2);
+
+  hbox1 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox1);
+  gtk_object_set_data_full (GTK_OBJECT (main), "hbox1", hbox1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox1);
+  gtk_table_attach (GTK_TABLE (table1), hbox1, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  file = gtk_entry_new ();
+  gtk_widget_ref (file);
+  gtk_object_set_data_full (GTK_OBJECT (main), "file", file,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (file);
+  gtk_box_pack_start (GTK_BOX (hbox1), file, TRUE, TRUE, 0);
+  gtk_widget_set_usize (file, 110, -2);
+  gtk_entry_set_text (GTK_ENTRY (file), _("new_bits.db"));
+
+  label48 = gtk_label_new (_("X"));
+  gtk_widget_ref (label48);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label48", label48,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label48);
+  gtk_box_pack_start (GTK_BOX (hbox1), label48, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label48), 2, 0);
+
+  x = gtk_entry_new ();
+  gtk_widget_ref (x);
+  gtk_object_set_data_full (GTK_OBJECT (main), "x", x,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (x);
+  gtk_box_pack_start (GTK_BOX (hbox1), x, FALSE, TRUE, 0);
+  gtk_widget_set_usize (x, 40, -2);
+
+  label49 = gtk_label_new (_("Y"));
+  gtk_widget_ref (label49);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label49", label49,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label49);
+  gtk_box_pack_start (GTK_BOX (hbox1), label49, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label49), 2, 0);
+
+  y = gtk_entry_new ();
+  gtk_widget_ref (y);
+  gtk_object_set_data_full (GTK_OBJECT (main), "y", y,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (y);
+  gtk_box_pack_start (GTK_BOX (hbox1), y, FALSE, TRUE, 0);
+  gtk_widget_set_usize (y, 40, -2);
+
+  label50 = gtk_label_new (_("Width"));
+  gtk_widget_ref (label50);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label50", label50,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label50);
+  gtk_box_pack_start (GTK_BOX (hbox1), label50, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label50), 2, 0);
+
+  width = gtk_entry_new ();
+  gtk_widget_ref (width);
+  gtk_object_set_data_full (GTK_OBJECT (main), "width", width,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (width);
+  gtk_box_pack_start (GTK_BOX (hbox1), width, FALSE, TRUE, 0);
+  gtk_widget_set_usize (width, 40, -2);
+
+  label51 = gtk_label_new (_("Height"));
+  gtk_widget_ref (label51);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label51", label51,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label51);
+  gtk_box_pack_start (GTK_BOX (hbox1), label51, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label51), 2, 0);
+
+  height = gtk_entry_new ();
+  gtk_widget_ref (height);
+  gtk_object_set_data_full (GTK_OBJECT (main), "height", height,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (height);
+  gtk_box_pack_start (GTK_BOX (hbox1), height, FALSE, TRUE, 0);
+  gtk_widget_set_usize (height, 40, -2);
+
   vbox2 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox2);
   gtk_object_set_data_full (GTK_OBJECT (main), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox2);
   gtk_table_attach (GTK_TABLE (table1), vbox2, 1, 2, 2, 3,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   properties = gtk_notebook_new ();
@@ -587,7 +752,6 @@ create_main (void)
   gtk_widget_set_usize (properties, 360, -2);
   gtk_container_set_border_width (GTK_CONTAINER (properties), 2);
   gtk_notebook_set_tab_pos (GTK_NOTEBOOK (properties), GTK_POS_BOTTOM);
-  gtk_notebook_set_scrollable (GTK_NOTEBOOK (properties), TRUE);
   gtk_notebook_set_tab_hborder (GTK_NOTEBOOK (properties), 0);
   gtk_notebook_set_tab_vborder (GTK_NOTEBOOK (properties), 0);
   gtk_notebook_popup_enable (GTK_NOTEBOOK (properties));
@@ -1798,7 +1962,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label58), 7.45058e-09, 0.5);
 
-  label52 = gtk_label_new (_("Bit"));
+  label52 = gtk_label_new (_("All"));
   gtk_widget_ref (label52);
   gtk_object_set_data_full (GTK_OBJECT (main), "label52", label52,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1811,172 +1975,6 @@ create_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (vbox2), hbuttonbox1, TRUE, TRUE, 0);
-
-  frame1 = gtk_frame_new (NULL);
-  gtk_widget_ref (frame1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "frame1", frame1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame1);
-  gtk_table_attach (GTK_TABLE (table1), frame1, 2, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
-  gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
-
-  zoom = gtk_drawing_area_new ();
-  gtk_widget_ref (zoom);
-  gtk_object_set_data_full (GTK_OBJECT (main), "zoom", zoom,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom);
-  gtk_container_add (GTK_CONTAINER (frame1), zoom);
-  gtk_widget_set_usize (zoom, 80, 80);
-
-  notebook1 = gtk_notebook_new ();
-  gtk_widget_ref (notebook1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "notebook1", notebook1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (notebook1);
-  gtk_table_attach (GTK_TABLE (table1), notebook1, 2, 3, 0, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_widget_set_usize (notebook1, 150, -2);
-  gtk_container_set_border_width (GTK_CONTAINER (notebook1), 2);
-  gtk_notebook_set_tab_hborder (GTK_NOTEBOOK (notebook1), 0);
-  gtk_notebook_set_tab_vborder (GTK_NOTEBOOK (notebook1), 0);
-
-  scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow3", scrolledwindow3,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow3);
-  gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow3);
-  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow3), 4);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  images = gtk_clist_new (1);
-  gtk_widget_ref (images);
-  gtk_object_set_data_full (GTK_OBJECT (main), "images", images,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (images);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow3), images);
-  gtk_clist_set_column_width (GTK_CLIST (images), 0, 80);
-  gtk_clist_set_selection_mode (GTK_CLIST (images), GTK_SELECTION_BROWSE);
-  gtk_clist_column_titles_hide (GTK_CLIST (images));
-
-  label1 = gtk_label_new (_("Images"));
-  gtk_widget_ref (label1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label1", label1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label1);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label1);
-
-  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow2", scrolledwindow2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow2);
-  gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow2);
-  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow2), 4);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  states = gtk_clist_new (1);
-  gtk_widget_ref (states);
-  gtk_object_set_data_full (GTK_OBJECT (main), "states", states,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (states);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow2), states);
-  gtk_clist_set_column_width (GTK_CLIST (states), 0, 80);
-  gtk_clist_set_selection_mode (GTK_CLIST (states), GTK_SELECTION_BROWSE);
-  gtk_clist_column_titles_hide (GTK_CLIST (states));
-
-  label2 = gtk_label_new (_("States"));
-  gtk_widget_ref (label2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label2", label2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label2);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label2);
-
-  hbox1 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hbox1", hbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox1);
-  gtk_table_attach (GTK_TABLE (table1), hbox1, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  file = gtk_entry_new ();
-  gtk_widget_ref (file);
-  gtk_object_set_data_full (GTK_OBJECT (main), "file", file,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (file);
-  gtk_box_pack_start (GTK_BOX (hbox1), file, TRUE, TRUE, 0);
-  gtk_widget_set_usize (file, 110, -2);
-  gtk_entry_set_text (GTK_ENTRY (file), _("new_bits.db"));
-
-  label48 = gtk_label_new (_("X"));
-  gtk_widget_ref (label48);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label48", label48,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label48);
-  gtk_box_pack_start (GTK_BOX (hbox1), label48, FALSE, FALSE, 0);
-  gtk_misc_set_padding (GTK_MISC (label48), 2, 0);
-
-  x = gtk_entry_new ();
-  gtk_widget_ref (x);
-  gtk_object_set_data_full (GTK_OBJECT (main), "x", x,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (x);
-  gtk_box_pack_start (GTK_BOX (hbox1), x, TRUE, TRUE, 0);
-  gtk_widget_set_usize (x, 40, -2);
-
-  label49 = gtk_label_new (_("Y"));
-  gtk_widget_ref (label49);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label49", label49,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label49);
-  gtk_box_pack_start (GTK_BOX (hbox1), label49, FALSE, FALSE, 0);
-  gtk_misc_set_padding (GTK_MISC (label49), 2, 0);
-
-  y = gtk_entry_new ();
-  gtk_widget_ref (y);
-  gtk_object_set_data_full (GTK_OBJECT (main), "y", y,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (y);
-  gtk_box_pack_start (GTK_BOX (hbox1), y, TRUE, TRUE, 0);
-  gtk_widget_set_usize (y, 40, -2);
-
-  label50 = gtk_label_new (_("Width"));
-  gtk_widget_ref (label50);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label50", label50,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label50);
-  gtk_box_pack_start (GTK_BOX (hbox1), label50, FALSE, FALSE, 0);
-  gtk_misc_set_padding (GTK_MISC (label50), 2, 0);
-
-  width = gtk_entry_new ();
-  gtk_widget_ref (width);
-  gtk_object_set_data_full (GTK_OBJECT (main), "width", width,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (width);
-  gtk_box_pack_start (GTK_BOX (hbox1), width, TRUE, TRUE, 0);
-  gtk_widget_set_usize (width, 40, -2);
-
-  label51 = gtk_label_new (_("Height"));
-  gtk_widget_ref (label51);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label51", label51,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label51);
-  gtk_box_pack_start (GTK_BOX (hbox1), label51, FALSE, FALSE, 0);
-  gtk_misc_set_padding (GTK_MISC (label51), 2, 0);
-
-  height = gtk_entry_new ();
-  gtk_widget_ref (height);
-  gtk_object_set_data_full (GTK_OBJECT (main), "height", height,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (height);
-  gtk_box_pack_start (GTK_BOX (hbox1), height, TRUE, TRUE, 0);
-  gtk_widget_set_usize (height, 40, -2);
 
   gtk_signal_connect (GTK_OBJECT (main), "delete_event",
                       GTK_SIGNAL_FUNC (on_main_delete_event),
@@ -2078,7 +2076,7 @@ create_filesel (void)
 
   filesel = gtk_file_selection_new (_("Select File"));
   gtk_object_set_data (GTK_OBJECT (filesel), "filesel", filesel);
-  gtk_container_set_border_width (GTK_CONTAINER (filesel), 10);
+  gtk_container_set_border_width (GTK_CONTAINER (filesel), 4);
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
   gtk_window_set_modal (GTK_WINDOW (filesel), TRUE);
   gtk_window_set_wmclass (GTK_WINDOW (filesel), "Filesel", "Etcher");

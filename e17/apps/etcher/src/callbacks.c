@@ -40,16 +40,21 @@ static void handle_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _
 static void handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static gint view_shrink_logo(gpointer data);
 static gint view_scroll_logo(gpointer data);
+gint view_configure_handles(gpointer data);
 
 static void
 update_selection_from_widget(void)
 {
    GtkWidget *w;
+   Evas_List l;
    
 #define GET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); selected_state->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
 #define GET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) free(selected_state->description->val); if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "")) selected_state->description->val = NULL; else selected_state->description->val = strdup(gtk_entry_get_text(GTK_ENTRY(w)));
    if (selected_state)
      {
+	Ebits_Object_Bit_State selected;
+	
+	selected = selected_state;
         GET_SPIN("tl_abs_h", rel1.x);
 	GET_SPIN("tl_abs_v", rel1.y);
 	GET_ENTRY("tl_rel", rel1.name);
@@ -144,6 +149,24 @@ update_selection_from_widget(void)
 	   selected_state->description->tile.h = 1;
 	else if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Tile Integer"))
 	   selected_state->description->tile.h = 2;
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_freeze(GTK_CLIST(w));
+	gtk_clist_clear(GTK_CLIST(w));
+	for (l = bits->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state;
+	     gchar *text;
+	     gint row;
+	     
+	     state = l->data;
+	     text = state->description->name;
+	     if (!text) text = "";
+	     row = gtk_clist_append(GTK_CLIST(w), &text);
+	     if (state == selected)
+		gtk_clist_select_row(GTK_CLIST(w), row, 0);
+	  }
+	gtk_clist_thaw(GTK_CLIST(w));
      }
 }
 
@@ -151,11 +174,34 @@ static void
 update_widget_from_selection(void)
 {
    GtkWidget *w;
+   Evas_List l;
 
 #define SET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), selected_state->description->val);
 #define SET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) gtk_entry_set_text(GTK_ENTRY(w), selected_state->description->val); else gtk_entry_set_text(GTK_ENTRY(w), "");
    if (selected_state)
      {
+	Ebits_Object_Bit_State selected;
+	
+	selected = selected_state;
+	
+	  {
+	     GList *bitnames = NULL;
+	     
+	     for (l = bits->bits; l; l = l->next)
+	       {
+		  Ebits_Object_Bit_State state;
+		  gchar *text;
+		  
+		  state = l->data;
+		  text = state->description->name;
+		  if (!text) text = "";
+		  bitnames = g_list_append(bitnames, text);
+	       }
+	     w = gtk_object_get_data(GTK_OBJECT(main_win), "tl_rel_combo");
+	     gtk_combo_set_popdown_strings(GTK_COMBO(w), bitnames);
+	     if (bitnames) g_list_free(bitnames);
+	  }
+	
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
 	gtk_widget_set_sensitive(w, 1);
 	SET_SPIN("tl_abs_h", rel1.x);
@@ -201,6 +247,7 @@ update_widget_from_selection(void)
 	else
 	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
+
 	gtk_clist_freeze(GTK_CLIST(w));
 	gtk_clist_clear(GTK_CLIST(w));
 	  {
@@ -227,6 +274,7 @@ update_widget_from_selection(void)
 	       }
 	  }
 	gtk_clist_thaw(GTK_CLIST(w));
+	
 	SET_ENTRY("name", name);
 	SET_ENTRY("class", class);
 	SET_ENTRY("img_normal", normal.image);
@@ -251,11 +299,31 @@ update_widget_from_selection(void)
 	   gtk_entry_set_text(GTK_ENTRY(w), "Tile");
 	else if (selected_state->description->tile.h == 2)
 	   gtk_entry_set_text(GTK_ENTRY(w), "Tile Integer");
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_freeze(GTK_CLIST(w));
+	gtk_clist_clear(GTK_CLIST(w));
+	for (l = bits->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state;
+	     gchar *text;
+	     gint row;
+	     
+	     state = l->data;
+	     text = state->description->name;
+	     if (!text) text = "";
+	     row = gtk_clist_append(GTK_CLIST(w), &text);
+	     if (state == selected)
+		gtk_clist_select_row(GTK_CLIST(w), row, 0);
+	  }
+	gtk_clist_thaw(GTK_CLIST(w));
      }
    else
      {
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
 	gtk_widget_set_sensitive(w, 0);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_unselect_all(GTK_CLIST(w));	
      }
 }
 
@@ -479,8 +547,8 @@ handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
    state = _data;
    selected_state = state;
    update_visible_selection();
-   gtk_idle_add(view_redraw, NULL);
    update_widget_from_selection();
+   gtk_idle_add(view_redraw, NULL);
 }
 
 static void
@@ -559,6 +627,7 @@ view_configure_handles(gpointer data)
    gtk_entry_set_text(GTK_ENTRY(entry), buf);
    
    gtk_idle_add(view_redraw, NULL);
+   return 0;
 }
 
 gint
@@ -603,6 +672,7 @@ view_create_handles(gpointer data)
    evas_callback_add(view_evas, o_backing, CALLBACK_MOUSE_MOVE, handle_mouse_move, NULL);
 
    view_configure_handles(NULL);
+   return 0;
 }
 
 static gint
@@ -666,33 +736,104 @@ void
 on_file_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-   GtkWidget *top;
+   GtkWidget *top, *w;
    
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    if (gtk_object_get_data(GTK_OBJECT(top), "open"))
      {
+	selected_state = NULL;
 	if (bits) ebits_free(bits);
 	bits = ebits_load(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	if (bits) 
 	   {
+	      Evas_List l;
+	      
 	      ebits_add_to_evas(bits, view_evas);
+	      ebits_set_layer(bits, 5);
 	      ebits_move(bits, backing_x, backing_y);
 	      ebits_resize(bits, backing_w, backing_h);
-	      ebits_set_layer(bits, 5);
-	      if (!draft_mode)
-		 ebits_show(bits);
+	      ebits_show(bits);
+	      for (l = bits->bits; l; l = l->next)
+		{
+		   Ebits_Object_Bit_State state;
+		   
+		   state = l->data;
+		   evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_DOWN, handle_bit_mouse_down, state);
+		   evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
+		   evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
+		}
+	      w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	      gtk_clist_freeze(GTK_CLIST(w));
+	      gtk_clist_clear(GTK_CLIST(w));
+	      for (l = bits->bits; l; l = l->next)
+		{
+		   Ebits_Object_Bit_State state2;
+		   gchar *text;
+		   gint row;
+		   
+		   state2 = l->data;
+		   text = state2->description->name;
+		   if (!text) text = "";
+		   row = gtk_clist_append(GTK_CLIST(w), &text);
+		}
+	      gtk_clist_thaw(GTK_CLIST(w));
+	      update_widget_from_selection();
 	   }
 	gtk_idle_add(view_redraw, NULL);
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "new_image"))
      {
 	Ebits_Object_Bit_State state;
+	Evas_List l;
+	char buf[512];
+	int num, exists;
 	
 	state = ebits_new_bit(bits, gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_DOWN, handle_bit_mouse_down, state);
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
 	gtk_idle_add(view_redraw, NULL);
+	
+	exists = 1;
+	num = 1;
+	while (exists)
+	  {
+	     exists = 0;
+	     g_snprintf(buf, sizeof(buf),"Image_%i", num);
+	     for (l = bits->bits; l; l = l->next)
+	       {
+		  Ebits_Object_Bit_State state2;
+		  
+		  state2 = l->data;
+		  if (state2->description->name)
+		    {
+		       if (!strcmp(state2->description->name, buf))
+			 {
+			    exists = 1;
+			    num++;
+			 }
+		    }
+	       }
+	  }
+	state->description->name = strdup(buf);
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_freeze(GTK_CLIST(w));
+	gtk_clist_clear(GTK_CLIST(w));
+	for (l = bits->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state2;
+	     gchar *text;
+	     gint row;
+	     
+	     state2 = l->data;
+	     text = state2->description->name;
+	     if (!text) text = "";
+	     row = gtk_clist_append(GTK_CLIST(w), &text);
+	     if (state2 == state)
+		gtk_clist_select_row(GTK_CLIST(w), row, 0);
+	  }
+	gtk_clist_thaw(GTK_CLIST(w));
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "save"))
      {
@@ -924,6 +1065,8 @@ on_view_expose_event                   (GtkWidget       *widget,
 	
 	bits = ebits_new();
 	bits->description = ebits_new_description();
+	bits->description->file = strdup(gtk_entry_get_text(GTK_ENTRY(gtk_object_get_data(GTK_OBJECT(main_win), "file"))));
+
 	ebits_add_to_evas(bits, view_evas);
 	ebits_show(bits);
 	ebits_set_layer(bits, 50);
@@ -935,11 +1078,11 @@ on_view_expose_event                   (GtkWidget       *widget,
 	o_select_line2 = evas_add_line(view_evas);
 	o_select_line3 = evas_add_line(view_evas);
 	o_select_line4 = evas_add_line(view_evas);
-	evas_set_color(view_evas, o_select_rect, 0, 0, 0, 128);
-	evas_set_color(view_evas, o_select_line1, 255, 255, 255, 200);
-	evas_set_color(view_evas, o_select_line2, 255, 255, 255, 200);
-	evas_set_color(view_evas, o_select_line3, 255, 255, 255, 200);
-	evas_set_color(view_evas, o_select_line4, 255, 255, 255, 200);
+	evas_set_color(view_evas, o_select_rect, 255, 255, 255, 80);
+	evas_set_color(view_evas, o_select_line1, 200, 50, 50, 200);
+	evas_set_color(view_evas, o_select_line2, 200, 50, 50, 200);
+	evas_set_color(view_evas, o_select_line3, 200, 50, 50, 200);
+	evas_set_color(view_evas, o_select_line4, 200, 50, 50, 200);
 	evas_set_layer(view_evas, o_select_rect, 100);
 	evas_set_layer(view_evas, o_select_line1, 100);
 	evas_set_layer(view_evas, o_select_line2, 100);
@@ -988,8 +1131,8 @@ on_view_configure_event                (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-   if (!widget->window) return;
-   if (!view_evas) return;
+   if (!widget->window) return FALSE;
+   if (!view_evas) return FALSE;
    
    evas_set_output_size(view_evas, 
 			widget->allocation.width, 
@@ -1034,7 +1177,21 @@ on_images_select_row                   (GtkCList        *clist,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+   Evas_List l;
+   int count;
+   Ebits_Object_Bit_State selected;
 
+   selected = selected_state;
+   for (count = 0, l = bits->bits; l; l = l->next, count++)
+     {
+	if (count == row) selected_state = l->data;
+     }
+   if (selected != selected_state)
+     {
+	update_visible_selection();
+	update_widget_from_selection();
+	gtk_idle_add(view_redraw, NULL);
+     }
 }
 
 
@@ -1079,7 +1236,18 @@ void
 on_raise_clicked                       (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   if (selected_state)
+     {
+	bits->bits = evas_list_remove(bits->bits, selected_state);
+	bits->bits = evas_list_append(bits->bits, selected_state);
+	bits->description->bits = evas_list_remove(bits->description->bits, selected_state->description);
+	bits->description->bits = evas_list_append(bits->description->bits, selected_state->description);
+	if (selected_state->object) 
+	   evas_raise(selected_state->o->state.evas, selected_state->object);
+	update_widget_from_selection();
+	update_visible_selection();
+	gtk_idle_add(view_redraw, NULL);
+     }
 }
 
 
@@ -1087,7 +1255,18 @@ void
 on_lower_clicked                       (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   if (selected_state)
+     {
+	bits->bits = evas_list_remove(bits->bits, selected_state);
+	bits->bits = evas_list_prepend(bits->bits, selected_state);
+	bits->description->bits = evas_list_remove(bits->description->bits, selected_state->description);
+	bits->description->bits = evas_list_prepend(bits->description->bits, selected_state->description);
+	if (selected_state->object) 
+	   evas_lower(selected_state->o->state.evas, selected_state->object);
+	update_widget_from_selection();
+	update_visible_selection();
+	gtk_idle_add(view_redraw, NULL);
+     }
 }
 
 
@@ -1095,13 +1274,31 @@ void
 on_delete_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
+   GtkWidget *w;
+   
    if (selected_state)
      {
+	Evas_List l;
 	ebits_del_bit(bits, selected_state);
 	selected_state = NULL;
 	update_visible_selection();
 	update_widget_from_selection();
 	gtk_idle_add(view_redraw, NULL);
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_freeze(GTK_CLIST(w));
+	gtk_clist_clear(GTK_CLIST(w));
+	for (l = bits->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state;
+	     gchar *text;
+	     
+	     state = l->data;
+	     text = state->description->name;
+	     if (!text) text = "";
+	     gtk_clist_append(GTK_CLIST(w), &text);
+	  }
+	gtk_clist_thaw(GTK_CLIST(w));
      }
 }
 
@@ -1110,7 +1307,14 @@ void
 on_reset_clicked                       (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   int ew, eh;
+   
+   evas_get_drawable_size(view_evas, &ew, &eh);
+   backing_x = 32;
+   backing_y = 32;
+   backing_w = ew - 64;
+   backing_h = eh - 64;
+   view_configure_handles(NULL);
 }
 
 
@@ -1130,7 +1334,7 @@ void
 on_prop_reset_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   update_widget_from_selection();
 }
 
 
@@ -1139,14 +1343,6 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
    draft_mode = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton));
-   if (draft_mode)
-     {
-	if (bits) ebits_hide(bits);	
-     }
-   else
-     {
-	if (bits) ebits_show(bits);	
-     }
 }
 
 

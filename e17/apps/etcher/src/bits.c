@@ -419,95 +419,95 @@ _ebits_find_description(char *file)
 	     bit = malloc(sizeof(struct _Ebits_Object_Bit_Description));
 	     memset(bit, 0, sizeof(struct _Ebits_Object_Bit_Description));
 	     
-	     snprintf(key, sizeof(key), "bits/bit/%i/name", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/name", i);
 	     bit->name = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/class", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/class", i);
 	     bit->class = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/normal/image", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/normal/image", i);
 	     bit->normal.image = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/hilited/image", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/hilited/image", i);
 	     bit->hilited.image = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/clicked/image", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/clicked/image", i);
 	     bit->clicked.image = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/disabled/image", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/disabled/image", i);
 	     bit->disabled.image = e_db_str_get(db, key);
 	     
-	     snprintf(key, sizeof(key), "bits/bit/%i/border/l", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/border/l", i);
 	     e_db_int_get(db, key, &(bit->border.l));
-	     snprintf(key, sizeof(key), "bits/bit/%i/border/r", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/border/r", i);
 	     e_db_int_get(db, key, &(bit->border.r));
-	     snprintf(key, sizeof(key), "bits/bit/%i/border/t", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/border/t", i);
 	     e_db_int_get(db, key, &(bit->border.t));
-	     snprintf(key, sizeof(key), "bits/bit/%i/border/b", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/border/b", i);
 	     e_db_int_get(db, key, &(bit->border.b));
 
-	     snprintf(key, sizeof(key), "bits/bit/%i/tile/w", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/tile/w", i);
 	     e_db_int_get(db, key, &(bit->tile.w));
-	     snprintf(key, sizeof(key), "bits/bit/%i/tile/h", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/tile/h", i);
 	     e_db_int_get(db, key, &(bit->tile.h));
 	     
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/name", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/name", i);
 	     bit->rel1.name = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/x", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/x", i);
 	     e_db_int_get(db, key, &(bit->rel1.x));
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/y", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/y", i);
 	     e_db_int_get(db, key, &(bit->rel1.y));
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/rx", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/rx", i);
 	     e_db_float_get(db, key, &(f)); bit->rel1.rx = f;
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/ry", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/ry", i);
 	     e_db_float_get(db, key, &(f)); bit->rel1.ry = f;
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/ax", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/ax", i);
 	     e_db_int_get(db, key, &(bit->rel1.ax));
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel1/ay", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel1/ay", i);
 	     e_db_int_get(db, key, &(bit->rel1.ay));
      
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/name", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/name", i);
 	     bit->rel2.name = e_db_str_get(db, key);
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/x", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/x", i);
 	     e_db_int_get(db, key, &(bit->rel2.x));
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/y", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/y", i);
 	     e_db_int_get(db, key, &(bit->rel2.y));
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/rx", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/rx", i);
 	     e_db_float_get(db, key, &(f)); bit->rel2.rx = f;
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/ry", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/ry", i);
 	     e_db_float_get(db, key, &(f)); bit->rel2.ry = f;
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/ax", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/ax", i);
 	     e_db_int_get(db, key, &(bit->rel2.ax));
-	     snprintf(key, sizeof(key), "bits/bit/%i/rel2/ay", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/rel2/ay", i);
 	     e_db_int_get(db, key, &(bit->rel2.ay));
 
-	     snprintf(key, sizeof(key), "bits/bit/%i/align/w", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/align/w", i);
 	     e_db_float_get(db, key, &(f)); bit->align.w = f;
-	     snprintf(key, sizeof(key), "bits/bit/%i/align/h", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/align/h", i);
 	     e_db_float_get(db, key, &(f)); bit->align.h = f;
 
-	     snprintf(key, sizeof(key), "bits/bit/%i/aspect/x", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/aspect/x", i);
 	     e_db_int_get(db, key, &(bit->aspect.x));
-	     snprintf(key, sizeof(key), "bits/bit/%i/aspect/y", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/aspect/y", i);
 	     e_db_int_get(db, key, &(bit->aspect.y));
-	     snprintf(key, sizeof(key), "bits/bit/%i/step/x", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/step/x", i);
 	     e_db_int_get(db, key, &(bit->step.x));
-	     snprintf(key, sizeof(key), "bits/bit/%i/step/y", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/step/y", i);
 	     e_db_int_get(db, key, &(bit->step.y));
 	     
-	     snprintf(key, sizeof(key), "bits/bit/%i/min/w", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/min/w", i);
 	     e_db_int_get(db, key, &(bit->min.w));
-	     snprintf(key, sizeof(key), "bits/bit/%i/min/h", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/min/h", i);
 	     e_db_int_get(db, key, &(bit->min.h));
-	     snprintf(key, sizeof(key), "bits/bit/%i/max/w", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/max/w", i);
 	     e_db_int_get(db, key, &(bit->max.w));
-	     snprintf(key, sizeof(key), "bits/bit/%i/max/h", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/max/h", i);
 	     e_db_int_get(db, key, &(bit->max.h));
 
 	     num_sync = 0;
-	     snprintf(key, sizeof(key), "bits/bit/%i/sync/count", i);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/sync/count", i);
 	     e_db_int_get(db, key, &(num_sync));
 	     
 	     for (j = 0; j < num_sync; j++)
 	       {
 		  char *s;
 		  
-		  snprintf(key, sizeof(key), "bits/bit/%i/sync/%i", i, j);
+		  snprintf(key, sizeof(key), "/bits/bit/%i/sync/%i", i, j);
 		  s = e_db_str_get(db, key);
 		  if (s) bit->sync = evas_list_append(bit->sync, s);
 	       }
@@ -543,55 +543,14 @@ ebits_new_description(void)
 static void
 _ebits_evaluate(Ebits_Object_Bit_State state)
 {
-   char image[4096];
-   
-   if (state->normal.image)
-     {
-	imlib_context_set_image(state->normal.image);
-	imlib_free_image();
-	state->normal.image = NULL;
-     }
-   if (state->hilited.image)
-     {
-	imlib_context_set_image(state->hilited.image);
-	imlib_free_image();
-	state->hilited.image = NULL;
-     }
-   if (state->clicked.image)
-     {
-	imlib_context_set_image(state->clicked.image);
-	imlib_free_image();
-	state->clicked.image = NULL;
-     }
-   if (state->disabled.image)
-     {
-	imlib_context_set_image(state->disabled.image);
-	imlib_free_image();
-	state->disabled.image = NULL;
-     }
-   if (state->o->description->file)
-     {
-	if (state->description->normal.image)
-	  {
-	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->normal.image);
-	     state->normal.image = imlib_load_image(image);
-	  }
-	if (state->description->hilited.image)
-	  {
-	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->hilited.image);
-	     state->hilited.image = imlib_load_image(image);
-	  }
-	if (state->description->clicked.image)
-	  {
-	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->clicked.image);
-	     state->clicked.image = imlib_load_image(image);
-	  }
-	if (state->description->disabled.image)
-	  {
-	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->disabled.image);
-	     state->disabled.image = imlib_load_image(image);
-	  }
-     }
+   if (state->description->normal.image)
+      state->normal.image = imlib_load_image(state->description->normal.image);
+   if (state->description->hilited.image)
+      state->hilited.image = imlib_load_image(state->description->hilited.image);
+   if (state->description->clicked.image)
+      state->clicked.image = imlib_load_image(state->description->clicked.image);
+   if (state->description->disabled.image)
+      state->disabled.image = imlib_load_image(state->description->disabled.image);
    _ebits_object_calculate(state->o);
 }
 
@@ -600,8 +559,6 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
 {
    Evas_List l;
    
-   o->bits = evas_list_remove(o->bits, state);
-   o->description->bits = evas_list_remove(o->description->bits, state->description);
    if (state->object) evas_del_object(o->state.evas, state->object);
    if (state->normal.image)
      {
@@ -633,6 +590,8 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
    if (state->description->rel2.name) free(state->description->rel2.name);
    for (l = state->description->sync; l; l = l->next) free(l->data);
    evas_list_free(state->description->sync);
+   o->bits = evas_list_remove(o->bits, state);
+   o->description->bits = evas_list_remove(o->description->bits, state->description);
    free(state->description);
    free(state);
 }
@@ -718,31 +677,31 @@ Ebits_Object ebits_load(char *file)
 	char image[4096];
 #endif
 	
-	state = malloc(sizeof(Ebits_Object_Bit_State));
-	memset(state, 0, sizeof(Ebits_Object_Bit_State));	
 	bit = l->data;
+	state = malloc(sizeof(struct _Ebits_Object_Bit_State));
+	memset(state, 0, sizeof(struct _Ebits_Object_Bit_State));
+	o->bits = evas_list_append(o->bits, state);
 	state->o = o;
 	state->description = bit;
-	
 #ifdef EDITOR
 	if (bit->normal.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->normal.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->normal.image);
 	     state->normal.image = imlib_load_image(image);
 	  }
 	if (bit->hilited.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->hilited.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->hilited.image);
 	     state->hilited.image = imlib_load_image(image);
 	  }
 	if (bit->clicked.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->clicked.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->clicked.image);
 	     state->clicked.image = imlib_load_image(image);
 	  }
 	if (bit->disabled.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->disabled.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->disabled.image);
 	     state->disabled.image = imlib_load_image(image);
 	  }
 #endif	
@@ -825,10 +784,12 @@ void ebits_add_to_evas(Ebits_Object o, Evas e)
    for (l = o->bits; l; l = l->next)
      {
 	Ebits_Object_Bit_State state;
+	char buf[4096];
 	
 	state = l->data;
-	state->object = evas_add_image_from_file(o->state.evas, 
-						 _ebits_get_file(state->description, state->state));
+	snprintf(buf, sizeof(buf), "%s:/images/%s", o->description->file, 
+		 _ebits_get_file(state->description, state->state));
+	state->object = evas_add_image_from_file(o->state.evas, buf);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
@@ -1008,31 +969,31 @@ void ebits_save(Ebits_Object o, char *file)
 	
 	state = l->data;
 	bit = state->description;
-	
-	if ((!state->normal.image) && (bit->normal.image))
+
+	if ((state->normal.image) && (bit->normal.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->normal.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->normal.image);
 	     imlib_context_set_image(state->normal.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	  }
-	if ((!state->hilited.image) && (bit->hilited.image))
+	if ((state->hilited.image) && (bit->hilited.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->hilited.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->hilited.image);
 	     imlib_context_set_image(state->hilited.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	  }
-	if ((!state->clicked.image) && (bit->clicked.image))
+	if ((state->clicked.image) && (bit->clicked.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->clicked.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->clicked.image);
 	     imlib_context_set_image(state->clicked.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	  }
-	if ((!state->disabled.image) && (bit->disabled.image))
+	if ((state->disabled.image) && (bit->disabled.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:%s", file, bit->disabled.image);
+	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->disabled.image);
 	     imlib_context_set_image(state->disabled.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
@@ -1048,92 +1009,92 @@ void ebits_save(Ebits_Object o, char *file)
 	
 	bit = l->data;
 	
-	snprintf(key, sizeof(key), "bits/bit/%i/name", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/name", i);
 	if (bit->name) e_db_str_set(db, key, bit->name);
-	snprintf(key, sizeof(key), "bits/bit/%i/class", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/class", i);
 	if (bit->class) e_db_str_set(db, key, bit->class);
-	snprintf(key, sizeof(key), "bits/bit/%i/normal/image", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/normal/image", i);
 	if (bit->normal.image) e_db_str_set(db, key, bit->normal.image);
-	snprintf(key, sizeof(key), "bits/bit/%i/hilited/image", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/hilited/image", i);
 	if (bit->hilited.image) e_db_str_set(db, key, bit->hilited.image);
-	snprintf(key, sizeof(key), "bits/bit/%i/clicked/image", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/clicked/image", i);
 	if (bit->clicked.image) e_db_str_set(db, key, bit->clicked.image);
-	snprintf(key, sizeof(key), "bits/bit/%i/disabled/image", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/disabled/image", i);
 	if (bit->disabled.image) e_db_str_set(db, key, bit->disabled.image);
 	
-	snprintf(key, sizeof(key), "bits/bit/%i/border/l", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/border/l", i);
 	e_db_int_set(db, key, bit->border.l);
-	snprintf(key, sizeof(key), "bits/bit/%i/border/r", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/border/r", i);
 	e_db_int_set(db, key, bit->border.r);
-	snprintf(key, sizeof(key), "bits/bit/%i/border/t", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/border/t", i);
 	e_db_int_set(db, key, bit->border.t);
-	snprintf(key, sizeof(key), "bits/bit/%i/border/b", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/border/b", i);
 	e_db_int_set(db, key, bit->border.b);
 
-	snprintf(key, sizeof(key), "bits/bit/%i/tile/w", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/tile/w", i);
 	e_db_int_set(db, key, bit->tile.w);
-	snprintf(key, sizeof(key), "bits/bit/%i/tile/h", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/tile/h", i);
 	e_db_int_set(db, key, bit->tile.h);
 	
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/name", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/name", i);
 	if (bit->rel1.name) e_db_str_set(db, key, bit->rel1.name);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/x", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/x", i);
 	e_db_int_set(db, key, bit->rel1.x);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/y", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/y", i);
 	e_db_int_set(db, key, bit->rel1.y);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/rx", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/rx", i);
 	e_db_float_set(db, key, bit->rel1.rx);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/ry", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/ry", i);
 	e_db_float_set(db, key, bit->rel1.ry);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/ax", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/ax", i);
 	e_db_int_set(db, key, bit->rel1.ax);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel1/ay", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel1/ay", i);
 	e_db_int_set(db, key, bit->rel1.ay);
 
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/name", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/name", i);
 	if (bit->rel2.name) e_db_str_set(db, key, bit->rel2.name);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/x", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/x", i);
 	e_db_int_set(db, key, bit->rel2.x);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/y", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/y", i);
 	e_db_int_set(db, key, bit->rel2.y);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/rx", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/rx", i);
 	e_db_float_set(db, key, bit->rel2.rx);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/ry", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/ry", i);
 	e_db_float_set(db, key, bit->rel2.ry);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/ax", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/ax", i);
 	e_db_int_set(db, key, bit->rel2.ax);
-	snprintf(key, sizeof(key), "bits/bit/%i/rel2/ay", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/rel2/ay", i);
 	e_db_int_set(db, key, bit->rel2.ay);
 	
-	snprintf(key, sizeof(key), "bits/bit/%i/align/w", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/align/w", i);
 	e_db_float_set(db, key, bit->align.w);
-	snprintf(key, sizeof(key), "bits/bit/%i/align/h", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/align/h", i);
 	e_db_float_set(db, key, bit->align.h);
 	
-	snprintf(key, sizeof(key), "bits/bit/%i/aspect/x", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/aspect/x", i);
 	e_db_int_set(db, key, bit->aspect.x);
-	snprintf(key, sizeof(key), "bits/bit/%i/aspect/y", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/aspect/y", i);
 	e_db_int_set(db, key, bit->aspect.y);
-	snprintf(key, sizeof(key), "bits/bit/%i/step/x", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/step/x", i);
 	e_db_int_set(db, key, bit->step.x);
-	snprintf(key, sizeof(key), "bits/bit/%i/step/y", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/step/y", i);
 	e_db_int_set(db, key, bit->step.y);
 
-	snprintf(key, sizeof(key), "bits/bit/%i/min/w", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/min/w", i);
 	e_db_int_set(db, key, bit->min.w);
-	snprintf(key, sizeof(key), "bits/bit/%i/min/h", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/min/h", i);
 	e_db_int_set(db, key, bit->min.h);
-	snprintf(key, sizeof(key), "bits/bit/%i/max/w", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/max/w", i);
 	e_db_int_set(db, key, bit->max.w);
-	snprintf(key, sizeof(key), "bits/bit/%i/max/h", i);
+	snprintf(key, sizeof(key), "/bits/bit/%i/max/h", i);
 	e_db_int_set(db, key, bit->max.h);
 	
-	for (sync_count = 0, l = bit->sync; l; l = l->next, sync_count++);
-	snprintf(key, sizeof(key), "bits/bit/%i/sync/count", i);
+	for (sync_count = 0, ll = bit->sync; ll; ll = ll->next, sync_count++);
+	snprintf(key, sizeof(key), "/bits/bit/%i/sync/count", i);
 	e_db_int_set(db, key, sync_count);
 	for (j = 0, ll = bit->sync; ll; ll = ll->next, j++)
 	  {
-	     snprintf(key, sizeof(key), "bits/bit/%i/sync/%i", i, j);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/sync/%i", i, j);
 	     e_db_str_set(db, key, ll->data);
 	  }
      }
