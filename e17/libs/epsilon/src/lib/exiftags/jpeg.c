@@ -246,14 +246,15 @@ jpegscan(FILE *fp, int *mark, unsigned int *len, int first)
 	/* First time through. */
 
 	if (first && topmkr() != JPEG_M_SOI) {
+		return(FALSE);
 		/*
 		exifwarn("doesn't appear to be a JPEG file; "
 		    "searching for start of image");
-		*/
 		if (nxtmkr() != JPEG_M_SOI) {
 			exifdie("start of image not found");
 			return(FALSE);
 		}
+		*/
 	}
 
 	/* Look for interesting markers. */
