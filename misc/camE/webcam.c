@@ -37,7 +37,7 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
-#define VERSION "1.3"
+#define VERSION "1.4"
 
 void log(char *fmt,
          ...);
