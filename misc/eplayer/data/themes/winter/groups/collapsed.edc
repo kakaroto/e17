@@ -219,10 +219,28 @@
 	action, SIGNAL_EMIT "SEEKER_STOP" "";
       }
       program {
-        name, "toggle-on-playlist-play";
-        signal, "PLAYLIST_PLAY";
+        name, "toggle-playing";
+        signal, "PLAYBACK_STATE_PLAYING";
         source, "*";
         action, STATE_SET "toggled" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      }
+      program {
+        name, "toggle-stopped";
+        signal, "PLAYBACK_STATE_STOPPED";
+        source, "*";
+        action, STATE_SET "default" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      }
+      program {
+        name, "toggle-paused";
+        signal, "PLAYBACK_STATE_PAUSED";
+        source, "*";
+        action, STATE_SET "default" 0.0; 
         transition, LINEAR 0.0; 
         target, "play"; 
         target, "play-2"; 

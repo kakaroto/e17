@@ -60,10 +60,22 @@
         in, .5 .5; \
       } \
       program {  \
-        name, "ani"NUM".playlist-play"; \
+        name, "ani"NUM".playing"; \
         signal, "PLAYBACK_STATE_PLAYING";  \
         source, "*";  \
         after, "ani"NUM".1"; \
+      } \
+      program {  \
+        name, "ani"NUM".paused"; \
+        signal, "PLAYBACK_STATE_PAUSED";  \
+        source, "*";  \
+        after, "ani"NUM".stop"; \
+      } \
+      program {  \
+        name, "ani"NUM".paused"; \
+        signal, "PLAYBACK_STATE_STOPPED";  \
+        source, "*";  \
+        after, "ani"NUM".stop"; \
       } \
 
 
