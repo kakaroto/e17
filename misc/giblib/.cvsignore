@@ -27,3 +27,4 @@ stamp-h.in
 *~
 *.spec
 *.bak
+giblib-config
