@@ -49,6 +49,7 @@ int ewd_list_index(Ewd_List * list);
 int ewd_list_nodes(Ewd_List * list);
 
 /* Traversing the list */
+int ewd_list_for_each(Ewd_List *list, Ewd_For_Each function);
 inline void *ewd_list_goto_first(Ewd_List * list);
 inline void *ewd_list_goto_last(Ewd_List * list);
 inline void *ewd_list_goto_index(Ewd_List * list, int index);

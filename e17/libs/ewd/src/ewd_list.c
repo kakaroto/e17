@@ -660,13 +660,13 @@ inline void *ewd_list_goto_first(Ewd_List *list)
 /* Set the current position to the start of the list */
 static void *_ewd_list_goto_first(Ewd_List * list)
 {
-	if (!list)
+	if (!list || !list->first)
 		return NULL;
 
 	list->current = list->first;
 	list->index = 1;
 
-	return list->current;
+	return list->current->data;
 }
 
 /*
@@ -690,13 +690,13 @@ inline void *ewd_list_goto_last(Ewd_List * list)
 /* Set the current position to the end of the list */
 static void *_ewd_list_goto_last(Ewd_List * list)
 {
-	if (!list)
+	if (!list || !list->last)
 		return NULL;
 
 	list->current = list->last;
 	list->index = list->nodes;
 
-	return list->current;
+	return list->current->data;
 }
 
 /*
@@ -823,21 +823,14 @@ int ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 /* The real meat of executing the function for each data node */
 int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 {
-	int i, index;
-	int nodes;
+	void *value;
 
 	if (!list || !function)
 		return FALSE;
 
-	index = ewd_list_index(list);
-	nodes = ewd_list_nodes(list);
-	_ewd_list_goto_first(list);
-
-	for (i = 0; i < nodes; i++) {
-		function(ewd_list_next(list));
-	}
-
-	_ewd_list_goto_index(list, index);
+	for (value = _ewd_list_goto_first(list); value;
+			value = _ewd_list_next(list))
+		function(value);
 
 	return TRUE;
 }

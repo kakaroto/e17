@@ -29,7 +29,7 @@ ewd_hash_test_LDFLAGS		=	`glib-config --libs`
 
 ewd_threads_test_DEPENDENCIES	=	$(top_builddir)/src/libewd.la
 ewd_threads_test_SOURCES	=	ewd_threads_test.c
-ewd_threads_test_LDADD		=	$(top_builddir)/src/libewd.la
+ewd_threads_test_LDADD		=	$(top_builddir)/src/libewd.la @PTHREAD_LIBS@
 
 ewd_index_test_DEPENDENCIES	=	$(top_builddir)/src/libewd.la
 ewd_index_test_SOURCES	=	ewd_index_test.c
