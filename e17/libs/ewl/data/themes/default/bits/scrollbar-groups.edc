@@ -1,65 +1,16 @@
    group {
       name, "vscroll-up";
-      min, 14 12;
-      max, 14 12;
+      min, 14 14;
+      max, 14 14;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1    0;
-	       }
-	       image {
-		  normal, "vscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1    0;
-	       }
-	       image {
-		  normal, "vscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1    0;
-	       }
-	       image {
-		  normal, "vscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+BUTTON_H()
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 10 9;
-               max, 10 9;
+               min, 8 7;
+               max, 8 7;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    1;
@@ -73,34 +24,13 @@
 	       }
 	    }
 	 }
+         
       }
-
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+BUTTON_PROG()      
       }
+//#include "button-programs.edc"
+
    } // end vscroll-up
 
    group {
@@ -108,56 +38,7 @@
       min, 12 10;
       max, 12 10;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1    0;
-	       }
-	       image {
-		  normal, "vscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1    0;
-	       }
-	       image {
-		  normal, "vscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1    0;
-	       }
-	       image {
-		  normal, "vscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+	 BUTTON_H() 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
@@ -179,32 +60,9 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()
       }
-   } // end vscroll-up
+   } // end vscroll-mini-up
 
 
    group {
@@ -212,63 +70,14 @@
       min, 14 13;
       max, 14 13;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "vscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "vscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "vscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+         BUTTON_H()	 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 10 9;
-               max, 10 9;
+               min, 8 7;
+               max, 8 7;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -285,88 +94,16 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()      
       }
-   } // end vscroll-dn
+   } // end vscroll-down
 
    group {
       name, "vscroll-mini-down";
       min, 12 10;
       max, 12 10;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "vscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "vscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    -1;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "vscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+	 BUTTON_H() 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
@@ -388,95 +125,23 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()
       }
-   } // end vscroll-dn
+   } // end vscroll-mini-down
 
    group {
       name, "hscroll-left";
-      min, 12 14;
-      max, 12 14;
+      min, 13 14;
+      max, 13 14;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,    0   -1;
-	       }
-	       image {
-		  normal, "hscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,    0   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,    0   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+	 BUTTON() 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 9 10;
-               max, 9 10;
+               min, 7 8;
+               max, 7 8;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   1    0;
@@ -493,30 +158,7 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()
       }
    } // end hscroll-left
 
@@ -525,56 +167,7 @@
       min, 10 12;
       max, 10 12;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,    0   -1;
-	       }
-	       image {
-		  normal, "hscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,    0   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,    0   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+	 BUTTON() 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
@@ -596,30 +189,7 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()
       }
    } // end hscroll-left
 
@@ -629,63 +199,14 @@
       min, 13 14;
       max, 13 14;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1   0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "hscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1   0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1   0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+	 BUTTON() 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 9 10;
-               max, 9 10;
+               min, 7 8;
+               max, 7 8;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   1    0;
@@ -702,30 +223,7 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()
       }
    } // end hscroll-right
 
@@ -734,56 +232,7 @@
       min, 10 12;
       max, 10 12;
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  1;
-	    description {
-	       state,    "default" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1   0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "hscroll-button.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1   0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-over.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 2 2 2 2;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   -1   0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "hscroll-button-clicked.png";
-	       }
-	    }
-	 }
-	 
+	 BUTTON() 
 	 part {
 	    name,          "arrow";
 	    mouse_events,  1;
@@ -805,35 +254,12 @@
       }
 
       programs {
-         program {
-	     name, "normal";
-	     signal, "normal";
-	     source, "*";
-	     action, STATE_SET "default" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "hilited";
-	     signal, "hilited";
-	     source, "*";
-	     action, STATE_SET "over" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
-         program {
-	     name, "clicked";
-	     signal, "clicked";
-	     source, "*";
-	     action, STATE_SET "clicked" 0.0;
-	     transition, LINEAR, 0.0;
-	     target, "base";
-	 }
+        BUTTON_PROG()
       }
    } // end hscroll-right
 
    group {
-      name, "trough";
+      name, "htrough";
       min, 14 14;
       parts {
 	 part {
@@ -843,15 +269,83 @@
 	       state,    "default" 0.0;
 	       border, 2 2 2 2;
 	       rel1 {
+                  to, "border";
 		  relative, 0.0  0.0;
-		  offset,   0    0;
+		  offset,   1    1;
+	       }
+	       rel2 {
+                  to, "border";
+		  relative, 1.0  1.0;
+		  offset,   -2   -2;
+	       }
+	       image {
+		  normal, "gradient-dn.png";
+	       }
+	    }
+	 }
+	 part {
+	    name,          "border";
+	    mouse_events,  1;
+	    description {
+	       state,    "default" 0.0;
+	       border, 2 2 2 2;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   -1   0;
 	       }
 	       rel2 {
 		  relative, 1.0  1.0;
-		  offset,   -1   -1;
+		  offset,   0   -1;
 	       }
 	       image {
-		  normal, "scroll-trough.png";
+		  normal, "border-square.png";
+	       }
+	    }
+	 }
+      }
+   } // end trough
+
+   group {
+      name, "vtrough";
+      min, 14 14;
+      parts {
+	 part {
+	    name,          "base";
+	    mouse_events,  1;
+	    description {
+	       state,    "default" 0.0;
+	       border, 2 2 2 2;
+	       rel1 {
+                  to, "border";
+		  relative, 0.0  0.0;
+		  offset,   1    1;
+	       }
+	       rel2 {
+                  to, "border";
+		  relative, 1.0  1.0;
+		  offset,   -2   -2;
+	       }
+	       image {
+		  normal, "gradient-hor-dn.png";
+	       }
+	    }
+	 }
+	 part {
+	    name,          "border";
+	    mouse_events,  1;
+	    description {
+	       state,    "default" 0.0;
+	       border, 2 2 2 2;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    -1;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1    0;
+	       }
+	       image {
+		  normal, "border-square.png";
 	       }
 	    }
 	 }

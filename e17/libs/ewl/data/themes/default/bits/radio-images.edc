@@ -1,3 +1,4 @@
-image, "radio.png" LOSSY 98;
-image, "radio-over.png" LOSSY 98;
 image, "dot.png" LOSSY 98;
+image, "border-radio.png" LOSSY 98;
+image, "gradient-round-up.png" LOSSY 98;
+image, "gradient-round-dn.png" LOSSY 98;

@@ -11,60 +11,30 @@
           item, "pad/bottom" "0";
       }
       parts {
-	 part {
-	    name,          "base";
-	    mouse_events,  0;
-	    description {
-	       state,    "default" 0.0;
-	       border, 3 3 3 3;
-	       min, 6 6 6 6;
-	       color_class, "background";
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "button-up.png";
-	       }
-	    }
-	    description {
-	       state,    "over" 0.0;
-	       border, 3 3 3 3;
-	       color_class, "highlight";
-	       color, 200 208 216 128;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "button-up.png";
-	       }
-	    }
-	    description {
-	       state,    "clicked" 0.0;
-	       border, 3 3 3 3;
-	       min, 6 6 6 6;
-	       rel1 {
-		  relative, 0.0  0.0;
-		  offset,   0    0;
-	       }
-	       rel2 {
-		  relative, 1.0  1.0;
-		  offset,   -1   -1;
-	       }
-	       image {
-		  normal, "button-clicked.png";
-	       }
-	    }
-	 }
+BUTTON()
+      }  
+      programs {
+BUTTON_PROG()
       }
-#include "button-programs.edc"
+   }
+   
+   /* a button with horizontal gradient */
+   group {
+      name, "vbutton";
+      data {
+          item, "inset/left" "5";
+          item, "inset/right" "5";
+          item, "inset/top" "3";
+          item, "inset/bottom" "3";
+          item, "pad/left" "0";
+          item, "pad/right" "0";
+          item, "pad/top" "0";
+          item, "pad/bottom" "0";
+      }
+      parts {
+BUTTON_H()
+      }  
+      programs {
+BUTTON_PROG()
+      }
    }

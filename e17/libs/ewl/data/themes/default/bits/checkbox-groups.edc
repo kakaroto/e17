@@ -9,12 +9,12 @@
       parts {
 	 part {
 	    name,          "base";
-	    mouse_events,  0;
+	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
 	       border, 3 3 3 3;
-	       min, 10 10;
-	       max, 10 10;
+	       min, 8 8;
+	       max, 8 8;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -24,14 +24,15 @@
 		  offset,   -1   -1;
 	       }
 	       image {
-		  normal, "checkbox.png";
+		  normal, "gradient-up.png";
 	       }
 	    }
 	    description {
 	       state,    "over" 0.0;
 	       border, 3 3 3 3;
-	       min, 10 10;
-	       max, 10 10;
+               color, 229 239 255 255;
+	       min, 8 8;
+	       max, 8 8;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -41,14 +42,15 @@
 		  offset,   -1   -1;
 	       }
 	       image {
-		  normal, "checkbox-over.png";
+		  normal, "gradient-up.png";
 	       }
 	    }
 	    description {
 	       state,    "clicked" 0.0;
 	       border, 3 3 3 3;
-	       min, 10 10;
-	       max, 10 10;
+	       min, 8 8;
+	       max, 8 8;
+               color, 229 239 255 255;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -58,11 +60,32 @@
 		  offset,   -1   -1;
 	       }
 	       image {
-		  normal, "checkbox.png";
+		  normal, "gradient-dn.png";
 	       }
 	    }
 	 }
 
+	 part {
+	    name,          "border";
+	    mouse_events,  0;
+	    description {
+	       state,    "default" 0.0;
+	       border, 3 3 3 3;
+	       min, 10 10;
+               max, 10 10;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1   -1;
+	       }
+	       image {
+		  normal, "border-square.png";
+	       }
+	    }
+         }  
 
 	 part {
 	    name,          "check";

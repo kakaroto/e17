@@ -1,12 +1,15 @@
+
       programs {
+
           program {
 	      name, "normal";
 	      signal, "default";
 	      source, "*";
 	      action, STATE_SET "default" 0.0;
 	      transition, LINEAR, 0.0;
-	      target, "check";
+	      target, "dot";
 	  }
+          
           program {
 	      name, "hilited";
 	      signal, "mouse,in";
@@ -30,16 +33,16 @@
 	      action, STATE_SET "clicked" 0.0;
 	      transition, LINEAR, 0.0;
 	      target, "base";
-              target, "check";
+	      target, "dot";
 	  }
           program {
 	      name, "unclick";
 	      signal, "mouse,up,*";
 	      source, "*";
-	      action, STATE_SET "hilited" 0.0;
+	      action, STATE_SET "over" 0.0;
 	      transition, LINEAR, 0.0;
 	      target, "base";
-              target, "check";
+	      target, "dot";
 	  }
           program {
 	      name, "checked";
@@ -47,6 +50,7 @@
 	      source, "*";
 	      action, STATE_SET "checked" 0.0;
 	      transition, LINEAR, 0.0;
-	      target, "check";
+	      target, "base";
+	      target, "dot";
 	  }
       }
