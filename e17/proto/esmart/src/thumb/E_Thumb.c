@@ -76,7 +76,8 @@ e_thumb_new (Evas * evas, const char *file)
 
       if ((e = (E_Thumb *) evas_object_smart_data_get (result)))
 	{
-	  snprintf (uri, PATH_MAX, "%s", file);
+	  if(!(realpath(file, uri)))
+	    snprintf (uri, PATH_MAX, "%s", file);
 	  e->file.name = strdup (uri);
 	  snprintf (uri, PATH_MAX, "file://%s", file);
 	  e->uri = strdup (uri);
