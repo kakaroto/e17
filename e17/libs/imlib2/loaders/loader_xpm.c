@@ -54,9 +54,9 @@ xpm_parse_color(char *color, int *r, int *g, int *b)
 		}
 	     else if (len > 2)
 	       {
-		  *r >>= (len / 3) * 4;
-		  *g >>= (len / 3) * 4;
-		  *b >>= (len / 3) * 4;
+		  *r >>= (len - 2) * 4;
+		  *g >>= (len - 2) * 4;
+		  *b >>= (len - 2) * 4;
 	       }
 	  }
 	return;
