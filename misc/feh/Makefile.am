@@ -17,7 +17,7 @@ docsdir = $(prefix)/doc/feh
 EXTRA_DIST = \
 feh.spec feh.1 $(docs_DATA)
 
-SUBDIRS = src
+SUBDIRS = src cam
 
 test:
 	(cd src && $(MAKE) test)

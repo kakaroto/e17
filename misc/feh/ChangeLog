@@ -1,3 +1,7 @@
+Sat May 20 01:09:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Wired cam into the Makefile.am
+
 Fri May 19 19:21:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* You can now use --action with list or customlists too. In these
