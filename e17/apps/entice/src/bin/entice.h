@@ -35,7 +35,7 @@ struct _Entice
 typedef struct _Entice Entice;
 
 
-void entice_init(Ecore_Evas * ee);
+int entice_init(Ecore_Evas * ee);
 void entice_free(void);
 void entice_resize(int w, int h);
 

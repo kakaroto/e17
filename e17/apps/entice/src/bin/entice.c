@@ -104,9 +104,10 @@ hookup_edje_signals(Evas_Object * o)
  * ecore_evas
  * @ee - the ecore_evas we want to add entice to
  */
-void
+int
 entice_init(Ecore_Evas * ee)
 {
+   int result = 0;
    int button = 1;
    int x, y, w, h;
    Entice *e = NULL;
@@ -125,8 +126,10 @@ entice_init(Ecore_Evas * ee)
       o = edje_object_add(ecore_evas_get(ee));
       if (!edje_object_file_set(o, entice_config_theme_get(), "entice"))
       {
+         fprintf(stderr, "ERROR: Broken theme detected\n");
+         fprintf(stderr, "Unable to find default \"entice\" group\n");
          evas_object_del(o);
-         return;
+         return (result);
       }
 
       e->exiftags = entice_exif_edje_init(o);
@@ -159,24 +162,25 @@ entice_init(Ecore_Evas * ee)
       e->current = evas_object_image_add(ecore_evas_get(ee));
       e->preview = evas_object_image_add(ecore_evas_get(ee));
 
-      /* initialize container */
-      e->container = esmart_container_new(ecore_evas_get(ee));
-      esmart_container_padding_set(e->container, 4, 4, 4, 4);
-      esmart_container_spacing_set(e->container, 4);
-      esmart_container_move_button_set(e->container, 2);
-      if ((layout =
-           edje_file_data_get(entice_config_theme_get(), "container_layout")))
-      {
-         esmart_container_layout_plugin_set(e->container, layout);
-         free(layout);
-      }
-      else
-         esmart_container_layout_plugin_set(e->container, "default");
-      evas_object_layer_set(e->container, 0);
-      evas_object_color_set(e->container, 255, 255, 255, 255);
-
       if (edje_object_part_exists(e->edje, "entice.thumbnail.area"))
       {
+         /* initialize container */
+         e->container = esmart_container_new(ecore_evas_get(ee));
+         esmart_container_padding_set(e->container, 4, 4, 4, 4);
+         esmart_container_spacing_set(e->container, 4);
+         esmart_container_move_button_set(e->container, 2);
+         if ((layout =
+              edje_file_data_get(entice_config_theme_get(),
+                                 "container_layout")))
+         {
+            esmart_container_layout_plugin_set(e->container, layout);
+            free(layout);
+         }
+         else
+            esmart_container_layout_plugin_set(e->container, "default");
+         evas_object_layer_set(e->container, 0);
+         evas_object_color_set(e->container, 255, 255, 255, 255);
+
          edje_object_part_geometry_get(e->edje, "entice.thumbnail.area", NULL,
                                        NULL, &ew, &eh);
 
@@ -247,6 +251,7 @@ entice_init(Ecore_Evas * ee)
       }
    }
    entice = e;
+   return (1);
 }
 
 /**
@@ -391,18 +396,19 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          entice_image_format_set(new_current, esmart_thumb_format_get(o));
          entice_image_save_quality_set(new_current,
                                        entice_config_image_quality_get());
-
-         new_scroller =
-            esmart_thumb_new(evas_object_evas_get(o),
-                             esmart_thumb_file_get(o));
          edje_object_part_geometry_get(entice->edje, "entice.image", NULL,
                                        NULL, &w, &h);
          evas_object_resize(new_current, w, h);
          evas_object_layer_set(new_current, evas_object_layer_get(o));
          evas_object_show(new_current);
 
+         new_scroller =
+            esmart_thumb_new(evas_object_evas_get(o),
+                             esmart_thumb_file_get(o));
+
          edje_object_part_geometry_get(entice->edje, "entice.scroller", NULL,
                                        NULL, &w, &h);
+         evas_object_move(new_scroller, -9999, -9999);
          evas_object_resize(new_scroller, w, h);
          evas_object_layer_set(new_scroller, evas_object_layer_get(o));
          evas_object_show(new_scroller);
@@ -511,6 +517,7 @@ entice_file_add(const char *file)
          {
             evas_object_layer_set(o,
                                   evas_object_layer_get(entice->container));
+            evas_object_move(o, -9999, -9999);
             entice->thumb.list = evas_list_append(entice->thumb.list, o);
             evas_object_show(o);
 

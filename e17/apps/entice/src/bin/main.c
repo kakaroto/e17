@@ -254,17 +254,19 @@ main(int argc, char *argv[])
 
             evas_font_path_append(ecore_evas_get(ee),
                                   PACKAGE_DATA_DIR "/fonts");
-            entice_init(ee);
-            ecore_evas_move_resize(ee, x, y, w, h);
-            ecore_evas_show(ee);
-            if (pnum >= 0)
-            {
-               write(pnum, "ok", 2);
-               close(pnum);
-               pnum = -1;
-            }
-            ecore_main_loop_begin();
 
+            if (entice_init(ee))
+            {
+               ecore_evas_move_resize(ee, x, y, w, h);
+               ecore_evas_show(ee);
+               if (pnum >= 0)
+               {
+                  write(pnum, "ok", 2);
+                  close(pnum);
+                  pnum = -1;
+               }
+               ecore_main_loop_begin();
+            }
             entice_free();
          }
       }

@@ -54,6 +54,6 @@ hookup_entice_thumb_signals(Evas_Object * o, Evas_Object * im)
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "", funcs[i], im);
-    if((image = esmart_thumb_evas_object_image_get(im)))
-	evas_object_pass_events_set(image, 1);
+   if ((image = esmart_thumb_evas_object_image_get(im)))
+      evas_object_pass_events_set(image, 1);
 }
