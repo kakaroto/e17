@@ -1233,6 +1233,13 @@ efsd_filetype_get(char *filename)
 
   st = efsd_stat(filename);
 
+  if (!st)
+    {
+      /* Ouch -- couldn't stat the file. Testing doesn't
+	 make much sense now. */
+      D_RETURN_("document/unknown");
+    }
+
   /* If it's a link, get stat of link target instead */
   if (S_ISLNK(st->st_mode))
     {
