@@ -64,6 +64,7 @@
 #include "gevasev_handler.h"
 
 #include <gtk/gtkmain.h>
+#include <gtk/gtkselection.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -170,7 +171,7 @@ void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 
 void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path)
 {
-	evas_font_del_path(EVAS(ev), path);
+	evas_font_del_path(EVAS(ev), (char *)path);
 }
 
 
@@ -491,6 +492,16 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 	ev->current_event = event;
 	switch (event->type) {
+
+    case GDK_LEAVE_NOTIFY:
+    {
+        GdkEventCrossing* e = (GdkEventCrossing*)event;
+
+        printf("GDK_LEAVE_NOTIFY\n");
+        
+        break;
+    }
+    
 		case GDK_MOTION_NOTIFY:
 			{
 				gint x = 0, y = 0;
@@ -540,6 +551,42 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 				} else {
 					evas_event_move(ev->evas, x, y);
+
+
+                    printf("evas_event_move() x:%d y:%d \n",x,y);
+                    
+                    /*
+                    {
+                        static dr = 0;
+                        GtkTargetList *target_list;	
+                        GdkDragContext *context;
+                        enum {
+                            TARGET_URI_LIST,
+                            TARGET_TEXT_PLAIN
+                        };
+                        static GtkTargetEntry file_d_types[] = {
+                            { "text/uri-list", 0, TARGET_URI_LIST }
+                        };
+
+                        GtkAdjustment* a = 0;
+                        a = gtk_scrolled_window_get_hadjustment( ev->scrolledwindow );
+
+                        printf("moving. X:%d a->x:%d a->w:%d\n",
+                               x, a->value, a->page_size);
+                        
+                        if( x > 700 )
+                        {
+                            printf("starting a drag!\n");
+                            dr=1;
+                            target_list = gtk_target_list_new (file_d_types, 1);
+                            context = gtk_drag_begin (GTK_WIDGET (ev),
+                                                      target_list,
+                                                      GDK_ACTION_MOVE | GDK_ACTION_COPY,
+                                                      1,
+                                                      (GdkEvent *) event);
+                        }
+                    }
+                    */
 				}
 
 			}
@@ -599,8 +646,10 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 				{
 					evas_event_button_up(ev->evas, x, y, b);
 				}
-			}
 			break;
+			}
+            
+            
 		default:
 			break;
 	}
@@ -682,10 +731,12 @@ static void gevas_realize(GtkWidget * widget)
 	attributes.visual = gdk_vis;	/*gtk_widget_get_visual (widget); */
 	attributes.colormap = gdk_cmap;	/*gtk_widget_get_colormap (widget); */
 	attributes.event_mask = gtk_widget_get_events(widget) | GDK_EXPOSURE_MASK;
-	attributes.event_mask |= GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
-		| GDK_BUTTON_RELEASE_MASK | GDK_LEAVE_NOTIFY_MASK |
-		GDK_ENTER_NOTIFY_MASK | GDK_POINTER_MOTION_MASK |
-		GDK_POINTER_MOTION_HINT_MASK;
+	attributes.event_mask |= GDK_EXPOSURE_MASK
+        | GDK_BUTTON_PRESS_MASK
+        | GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
+		| GDK_BUTTON_RELEASE_MASK
+        | GDK_POINTER_MOTION_MASK
+        | GDK_POINTER_MOTION_HINT_MASK;
 /*  attributes.event_mask = GDK_ALL_EVENTS_MASK;  */
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
@@ -1061,7 +1112,7 @@ void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
     GtkBin *bin;
 
 	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-	*gevas = gevas_new();
+	*gevas = GTK_GEVAS(gevas_new());
 
 	gtk_scrolled_window_add_with_viewport(
         GTK_SCROLLED_WINDOW(*scrolledwindow), GTK_WIDGET(*gevas));

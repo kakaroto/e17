@@ -6,13 +6,13 @@ stamp-h
 config.status
 libtool
 config.cache
-config.h
+gevas-config.h
 config.log
 configure
 aclocal.m4
 ltmain.sh
 config.sub
 config.guess
-config.h.in
+gevas-config.h.in
 libltdl
 

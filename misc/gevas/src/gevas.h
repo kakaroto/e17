@@ -34,7 +34,7 @@
 #include <gtk/gtkwidget.h>
 #include <Evas.h>
 
-#include "config.h"
+#include <gevas-config.h>
 
 
 #ifdef __cplusplus

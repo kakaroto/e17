@@ -26,12 +26,13 @@
  *
  *
  */
-#include "config.h"
+#include <gevas-config.h>
 
 #include "gevas.h"
 #include "gevasimage.h"
 
 #include "gevastext.h"
+#include "gevasevh_alpha.h"
 #include "gevasevh_drag.h"
 #include "gevasevh_to_gtk_signals.h"
 #include "gevasevh_emouse_over.h"
@@ -106,6 +107,32 @@ gtk_mouse_out_cb(GtkObject * object,
 	printf("*** gtk_mouse_out_cb b:%d x:%d y:%d\n", _b, _x, _y);
 	return FALSE;
 }
+
+
+
+//////////////////////////////
+
+
+static gboolean
+gtk_bg_mouse_in_cb(GtkObject * object,
+				GtkObject * gevasobj, gint _b, gint _x, gint _y, gpointer data)
+{
+	printf("*** gtk_bg_mouse_in_cb b:%d x:%d y:%d\n", _b, _x, _y);
+	return FALSE;
+}
+
+static gboolean
+gtk_bg_mouse_out_cb(GtkObject * object,
+				 GtkObject * gevasobj, gint _b, gint _x, gint _y, gpointer data)
+{
+	printf("*** gtk_bg_mouse_out_cb b:%d x:%d y:%d\n", _b, _x, _y);
+	return FALSE;
+}
+
+
+
+//////////////////////////////
+
 
 /** Here we create / modify the menu structure before showing it */
 static gboolean
@@ -302,8 +329,8 @@ void setup_bg(GtkWidget * gevas)
 	printf(" quitely fail and look really bad!\n");
 
 	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/bg.png");
-	gevasimage_get_image_size(gevas_image, &w, &h);
-	gevasimage_set_image_fill( gevas_image, 0,0,w,h);
+	gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h);
+	gevasimage_set_image_fill(GTK_GEVASOBJ(gevas_image), 0,0,w,h);
 	gevasobj_move(GTK_GEVASOBJ(gevas_image), 0, 0);
 	gevasobj_set_layer(GTK_GEVASOBJ(gevas_image), -9999);
 	gevasobj_resize(GTK_GEVASOBJ(gevas_image), 9999,9999);
@@ -316,6 +343,16 @@ void setup_bg(GtkWidget * gevas)
 		GTK_GEVASOBJ(gevas_image));
 	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
 
+
+	/** test the evas callback to gtk+ signal connections **/
+	evh = gevasevh_to_gtk_signal_new();
+	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
+
+	gtk_signal_connect(GTK_OBJECT(evh), "mouse_in",
+					   GTK_SIGNAL_FUNC(gtk_bg_mouse_in_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(evh), "mouse_out",
+					   GTK_SIGNAL_FUNC(gtk_bg_mouse_out_cb), NULL);
+    
 }
 
 
@@ -340,7 +377,7 @@ void setup_raptor(GtkWidget * gevas)
 	}
 
 	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/raptor.png");
-	gevasimage_get_image_size(gevas_image, &w, &h);
+	gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h);
 	raptor_w = w, raptor_h = h;
 	gevasobj_move(GTK_GEVASOBJ(gevas_image), 20, 20);
 	gevasobj_set_layer(GTK_GEVASOBJ(gevas_image), 0);
@@ -449,7 +486,8 @@ void make_selectable( GtkgEvasObj* object )
 	GtkObject *evh = gevasevh_selectable_new();
 
 	gevasobj_add_evhandler(object, evh);
-	gevasevh_selectable_set_normal_gevasobj( evh, object );
+	gevasevh_selectable_set_normal_gevasobj(GTK_GEVASEVH_SELECTABLE(evh),
+											object);
 
 	ct = (GtkgEvasObj*)gevasgrad_new(gevasobj_get_gevas(
 		GTK_OBJECT(object)));
@@ -468,7 +506,8 @@ void make_selectable( GtkgEvasObj* object )
 	gevasobj_set_layer(ct, 9999);
 
 	gevasevh_selectable_set_selected_gevasobj( evh, ct );
-	gevasevh_selectable_set_selector( evh, evh_selector );
+	gevasevh_selectable_set_selector(GTK_GEVASEVH_SELECTABLE(evh),
+									 evh_selector);
 }
 
 void make_text(GtkWidget * gevas)
@@ -562,7 +601,7 @@ void make_draw_icon(GtkWidget * gevas)
 	evh_drag = gevasevh_drag_new();
 	evh_changer = gevasevh_obj_changer_new();
 
-	ct = gevasimage_new();
+	ct = GTK_GEVASOBJ(gevasimage_new());
 	gevasobj_set_gevas(ct, gevas);
 	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/drawer_closed.png");
 	gevasobj_move(ct, 440, 50);
@@ -571,7 +610,7 @@ void make_draw_icon(GtkWidget * gevas)
 	gevasobj_add_evhandler(ct, evh_drag);
 	gevasevh_obj_changer_set_cold_gevasobj(evh_changer, ct);
 
-	ct = gevasimage_new();
+	ct = GTK_GEVASOBJ(gevasimage_new());
 	gevasobj_set_gevas(ct, gevas);
 	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/drawer_open.png");
 	gevasobj_move(ct, 440, 50);
@@ -579,7 +618,7 @@ void make_draw_icon(GtkWidget * gevas)
 	gevasobj_add_evhandler(ct, evh_drag);
 	gevasevh_obj_changer_set_hot_gevasobj(evh_changer, ct);
 
-	ct = gevasimage_new();
+	ct = GTK_GEVASOBJ(gevasimage_new());
 	gevasobj_set_gevas(ct, gevas);
 	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/drawer_open_socks.png");
 	gevasobj_move(ct, 440, 50);
@@ -587,7 +626,7 @@ void make_draw_icon(GtkWidget * gevas)
 	gevasobj_add_evhandler(ct, evh_drag);
 	gevasevh_obj_changer_set_hot_click1_gevasobj(evh_changer, ct);
 
-	ct = gevasimage_new();
+	ct = GTK_GEVASOBJ(gevasimage_new());
 	gevasobj_set_gevas(ct, gevas);
 	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/delete.png");
 	gevasobj_move(ct, 440, 50);
@@ -604,7 +643,7 @@ void make_grad(GtkWidget * gevas)
 
 	evh_drag = gevasevh_drag_new();
 
-	ct = gevasgrad_new(gevas);
+	ct = GTK_GEVASOBJ(gevasgrad_new(GTK_GEVAS(gevas)));
 	gevasgrad_add_color(ct, 255, 255, 255, 255, 8);
 	gevasgrad_add_color(ct, 255, 255, 0, 200, 8);
 	gevasgrad_add_color(ct, 255, 0, 0, 150, 8);
@@ -626,7 +665,7 @@ void make_twin(GtkWidget * gevas)
 	GtkObject *evh_drag = gevasevh_drag_new();
 	GtkObject *twin;
 
-	t1 = ct = gevasimage_new();
+	t1 = ct = GTK_GEVASOBJ(gevasimage_new());
 	gevasobj_set_gevas(ct, gevas);
 	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/cd.png");
 	gevasobj_move(ct, 440, 350);
@@ -644,7 +683,7 @@ void make_twin(GtkWidget * gevas)
 	gevasobj_set_color(ct, 255, 255, 255, 255);
 	gevasobj_add_evhandler(ct, evh_drag);
 
-	twin = gevastwin_new();
+	twin = GTK_OBJECT(gevastwin_new());
 	gevastwin_set_main_obj(twin, t1);
 	gevastwin_set_aux_obj(twin, t2);
 	printf("mainobj:%ld auxobj:%ld\n", t1, t2);
@@ -660,7 +699,7 @@ int main(int argc, char *argv[])
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-    gevas_new_gtkscrolledwindow( &gevas, &wtoy );
+    gevas_new_gtkscrolledwindow(&gevas, &wtoy );
 
     /* The above line is the same as these three, except that it can give more*/
     /* speed because gevas can optimize redraws knowing that it is in a scrolled window.*/
@@ -693,7 +732,7 @@ int main(int argc, char *argv[])
 
 	gtk_widget_show_all(window);
 
-	gevas_add_fontpath(gevas, PACKAGE_DATA_DIR);
+	gevas_add_fontpath(GTK_GEVAS(gevas), PACKAGE_DATA_DIR);
 	printf("added a font path to %s\n", PACKAGE_DATA_DIR);
 
 	setup_bg(gevas);

@@ -286,7 +286,7 @@ void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 
 	if( GEVASEV_HANDLER_PRIORITY_HI == 
 		((GtkgEvasEvHClass*)(((GtkObject*)h)->klass))
-			->get_priority(h)
+			->get_priority(GTK_GEVASEVH(h))
 	  )
 	{
 		ev->ev_handlers = g_slist_prepend(ev->ev_handlers, h);
@@ -599,11 +599,11 @@ static void gevasobj_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 
 void  gevasobj_set_data( GtkgEvasObj* ev, const char* key, void* data )
 {
-	evas_put_data( EVAS(ev), EVASO(ev), key, data);
+	evas_put_data( EVAS(ev), EVASO(ev), (char *)key, data);
 }
 
 
 void* gevasobj_get_data( GtkgEvasObj* ev, const char* key )
 {
-	return evas_get_data( EVAS(ev), EVASO(ev), key);
+	return evas_get_data( EVAS(ev), EVASO(ev), (char *)key);
 }

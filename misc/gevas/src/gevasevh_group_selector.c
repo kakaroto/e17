@@ -73,6 +73,15 @@ static void
 gevasevh_group_selector_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 
+void gevas_group_selector_get_wh( 
+	GtkgEvasEvHGroupSelector *ev, 
+	gint  cx, gint cy,
+	double* x, double* y,
+	double* rw, double* rh
+	);
+
+
+
 enum {
 	ARG_0,				/* Skip 0, an invalid argument ID */
 	ARG_SELECTEDb_OBJ,
@@ -245,13 +254,31 @@ void gevasevh_group_selector_remfromsel(
 }
 
 
+static gint __gevasevh_group_selector_leave_notify_cb(
+    GtkWidget          *widget,
+    GdkEventCrossing   *event,
+    GtkgEvasEvHGroupSelector* ev
+    )
+{
+    printf("__gevasevh_group_selector_leave_notify_cb() %p %p %p\n",
+           widget, event, ev
+        );
+    
+}
+
+
 
 void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj )
 {
 	GtkgEvasEvHGroupSelector* ev = object;
-
 	object->mark = obj;
-/*	printf("gevasevh_group_selector_set_object()");*/
+
+    gtk_signal_connect(GTK_OBJECT(gevasobj_get_gevas(GTK_OBJECT(ev->mark))),
+                       "leave_notify",
+                       GTK_SIGNAL_FUNC(__gevasevh_group_selector_leave_notify_cb),
+                       ev);
+    
+//	printf("gevasevh_group_selector_set_object()");
 	if( !ev->rect ) 
 	{
 		GtkgEvasObj *ct;
