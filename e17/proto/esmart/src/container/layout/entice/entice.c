@@ -12,108 +12,206 @@ _entice_layout (Container * cont)
   Container_Element *el;
   Evas_List *center_el = NULL;
   Evas_List *l;
-  int i, im_no, list_length;
-  Evas_Coord center = cont->y + (cont->h / 2.0) + cont->padding.t;
+  double sc;
+  double space;
+  int d;
+  int i = 0, im_no = 0, list_length;
+  Evas_Coord center;
   double w, h;
-  double ey = 0.0;
+  double ey = 0.0, ex = 0.0;
 
   evas_object_color_set (cont->clipper, 255, 255, 255, 255);
   if (!(center_el = evas_list_nth_list (cont->elements, _entice_current)))
     return;
 
-  el = (Container_Element *) center_el->data;
-  w = cont->w - (cont->padding.l + cont->padding.r);
-  h = w * el->orig_h / el->orig_w;
-  evas_object_resize (el->obj, w, h);
-  evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), center - 24);
-
-
-  i = im_no = _entice_current - 1;
-  ey = center - 24;
-  for (l = center_el->prev; l && (i >= 0); l = l->prev, i--)
+  if (cont->direction)
     {
-      double sc;
-      double space;
-      int d;
-
-      el = l->data;
-      if (!el->obj)
-	continue;
-
+      center = cont->y + (cont->h / 2.0) + cont->padding.t;
+      el = (Container_Element *) center_el->data;
       w = cont->w - (cont->padding.l + cont->padding.r);
       h = w * el->orig_h / el->orig_w;
-
-      d = im_no - i;
-      if (d < 0)
-	d = -d;
-      sc = 1.0 / (1.0 + (((double) d) * 0.2));
-      if (sc < 0.333333)
-	sc = 0.333333;
-      w *= sc;
-      h *= sc;
-      space = 48 * sc;
-
       evas_object_resize (el->obj, w, h);
-      if (!strcmp (evas_object_type_get (el->obj), "image"))
-	evas_object_image_fill_set (el->obj, 0, 0, w, h);
+      evas_object_show (el->obj);
+      evas_object_move (el->obj, cont->x + ((cont->w - w) / 2),
+			center - (h / 2));
 
-      ey -= h + cont->spacing;
-      evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), ey);
 
-      if (ey < cont->y)
+      i = im_no = _entice_current - 1;
+      ey = center - (h / 2);
+      for (l = center_el->prev; l && (i >= 0); l = l->prev, i--)
 	{
-	  for (l = l->prev; l; l = l->prev)
+
+	  el = l->data;
+	  if (!el->obj)
+	    continue;
+
+	  w = cont->w - (cont->padding.l + cont->padding.r);
+	  h = w * el->orig_h / el->orig_w;
+
+	  d = im_no - i;
+	  if (d < 0)
+	    d = -d;
+	  sc = 1.0 / (1.0 + (((double) d) * 0.2));
+	  if (sc < 0.333333)
+	    sc = 0.333333;
+	  space = h * sc;
+	  w *= sc;
+	  h *= sc;
+
+	  evas_object_resize (el->obj, w, h);
+	  if (!strcmp (evas_object_type_get (el->obj), "image"))
+	    evas_object_image_fill_set (el->obj, 0, 0, w, h);
+
+	  ey -= cont->spacing + space;
+	  evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), ey);
+	  evas_object_show (el->obj);
+
+	  if (ey < cont->y)
 	    {
-	      el = (Container_Element *) l->data;
-	      evas_object_move (el->obj, -400, -400);
+	      for (l = l->prev; l; l = l->prev)
+		{
+		  el = (Container_Element *) l->data;
+		  evas_object_hide (el->obj);
+		}
+	      break;
 	    }
-	  break;
+	}
+      i = im_no = _entice_current + 1;
+      ey = center + 24;
+      list_length = evas_list_count (cont->elements);
+      for (l = center_el->next; l && (i <= list_length); l = l->next, i++)
+	{
+
+	  el = l->data;
+	  if (!el->obj)
+	    continue;
+
+	  w = cont->w - (cont->padding.l + cont->padding.r);
+	  h = w * el->orig_h / el->orig_w;
+
+	  d = i - im_no;
+	  sc = 1.0 / (1.0 + (((double) d) * 0.2));
+	  if (sc < 0.333333)
+	    sc = 0.333333;
+	  space = h * sc;
+	  w *= sc;
+	  h *= sc;
+
+	  evas_object_resize (el->obj, w, h);
+	  if (!strcmp (evas_object_type_get (el->obj), "image"))
+	    evas_object_image_fill_set (el->obj, 0, 0, w, h);
+
+	  evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), ey);
+	  evas_object_show (el->obj);
+	  ey += cont->spacing + space;
+
+	  if (ey > cont->y + cont->h)
+	    {
+	      for (l = l->next; l; l = l->next)
+		{
+		  el = (Container_Element *) l->data;
+		  evas_object_hide (el->obj);
+		}
+	      break;
+	    }
 	}
     }
-  i = im_no = _entice_current + 1;
-  ey = center + 24;
-  list_length = evas_list_count (cont->elements);
-  for (l = center_el->next; l && (i <= list_length); l = l->next, i++)
+  else
     {
-      Container_Element *el;
-      double w, h;
-      double sc;
-      double space;
-      int d;
-
-      el = l->data;
-      if (!el->obj)
-	continue;
-
-      w = cont->w - (cont->padding.l + cont->padding.r);
-      h = w * el->orig_h / el->orig_w;
-
-      d = i - im_no;
-      sc = 1.0 / (1.0 + (((double) d) * 0.2));
-      if (sc < 0.333333)
-	sc = 0.333333;
-      w *= sc;
-      h *= sc;
-      space = 48 * sc;
-
+      center = cont->x + (cont->w / 2.0) + cont->padding.l;
+      el = (Container_Element *) center_el->data;
+      h = cont->h - (cont->padding.t + cont->padding.b);
+      w = h * el->orig_w / el->orig_h;
       evas_object_resize (el->obj, w, h);
-      if (!strcmp (evas_object_type_get (el->obj), "image"))
-	evas_object_image_fill_set (el->obj, 0, 0, w, h);
+      evas_object_move (el->obj, center - (h / 2),
+			cont->y + ((cont->h - h) / 2));
+      evas_object_show (el->obj);
 
-      evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), ey);
-      ey += h + cont->spacing;
 
-      if (ey > cont->y + cont->h)
+      i = im_no = _entice_current - 1;
+      ex = center - (w / 2);
+      for (l = center_el->prev; l && (i >= 0); l = l->prev, i--)
 	{
-	  for (l = l->next; l; l = l->next)
+
+	  el = l->data;
+	  if (!el->obj)
+	    continue;
+
+	  h = cont->h - (cont->padding.t + cont->padding.b);
+	  w = h * el->orig_w / el->orig_h;
+
+	  d = im_no - i;
+	  if (d < 0)
+	    d = -d;
+	  sc = 1.0 / (1.0 + (((double) d) * 0.2));
+	  if (sc < 0.333333)
+	    sc = 0.333333;
+	  space = w * sc;
+	  w *= sc;
+	  h *= sc;
+
+	  evas_object_resize (el->obj, w, h);
+	  if (!strcmp (evas_object_type_get (el->obj), "image"))
+	    evas_object_image_fill_set (el->obj, 0, 0, w, h);
+
+	  ex -= cont->spacing + space;
+	  evas_object_move (el->obj, ex, cont->y + ((cont->h - h) / 2));
+	  evas_object_show (el->obj);
+
+	  if (ex < cont->x)
 	    {
-	      el = (Container_Element *) l->data;
-	      evas_object_move (el->obj, -400, -400);
+	      for (l = l->prev; l; l = l->prev)
+		{
+		  el = (Container_Element *) l->data;
+		  evas_object_hide (el->obj);
+		}
+	      break;
 	    }
-	  break;
+	}
+      i = im_no = _entice_current + 1;
+      center = cont->x + (cont->w / 2.0) + cont->padding.l;
+      el = (Container_Element *) center_el->data;
+      h = cont->h - (cont->padding.t + cont->padding.b);
+      w = h * el->orig_w / el->orig_h;
+      ex = center + (w / 2);
+      list_length = evas_list_count (cont->elements);
+      for (l = center_el->next; l && (i <= list_length); l = l->next, i++)
+	{
+
+	  el = l->data;
+	  if (!el->obj)
+	    continue;
+
+	  h = cont->h - (cont->padding.t + cont->padding.b);
+	  w = h * el->orig_w / el->orig_h;
+
+	  d = i - im_no;
+	  sc = 1.0 / (1.0 + (((double) d) * 0.2));
+	  if (sc < 0.333333)
+	    sc = 0.333333;
+	  space = w * sc;
+	  w *= sc;
+	  h *= sc;
+
+	  evas_object_resize (el->obj, w, h);
+	  if (!strcmp (evas_object_type_get (el->obj), "image"))
+	    evas_object_image_fill_set (el->obj, 0, 0, w, h);
+
+	  evas_object_move (el->obj, ex, cont->y + ((cont->h - h) / 2));
+	  evas_object_show (el->obj);
+	  ex += cont->spacing + space;
+
+	  if (ex > cont->x + cont->w)
+	    {
+	      for (l = l->next; l; l = l->next)
+		{
+		  el = (Container_Element *) l->data;
+		  evas_object_hide (el->obj);
+		}
+	      break;
+	    }
 	}
     }
-
 }
 
 void
