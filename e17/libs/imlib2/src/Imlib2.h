@@ -227,6 +227,7 @@ void imlib_save_image_with_error_return(const char *filename, Imlib_Load_Error *
 
 Imlib_Image imlib_create_rotated_image_test(double angle);
 Imlib_Image imlib_create_rotated_image_test2(double angle);
+Imlib_Image imlib_create_rotated_image_test3(double angle);
 
 /* need to add polygon fill code */
 

@@ -10,5 +10,9 @@ void __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
     int dw, int dh, int x, int y, int dx, int dy);
 void __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
    int dw, int dh, int x, int y, int dx, int dy);
+void __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int soh, int dow,
+   int dw, int dh, int x, int y, int dx, int dy);
+void __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int soh, int dow,
+   int dw, int dh, int x, int y, int dx, int dy);
 
 #endif

@@ -131,6 +131,11 @@ int main (int argc, char **argv)
 	     rottest = 2;
 	     interactive = 0;
 	  }
+	else if (!strcmp(argv[i], "-rotatetest3"))
+	  {
+	     rottest = 3;
+	     interactive = 0;
+	  }
 	else
 	   file = argv[i];
      }
@@ -236,6 +241,7 @@ int main (int argc, char **argv)
 	   imlib_context_set_image(im);
 	   rotim = imlib_create_rotated_image_test(ang);
 	   imlib_context_set_image(rotim);
+	   imlib_context_set_blend(0);
 	   imlib_render_image_on_drawable(x, y);
 	   pixels += imlib_image_get_width() * imlib_image_get_height();
 	   imlib_free_image_and_decache();
@@ -256,6 +262,7 @@ int main (int argc, char **argv)
 	   XResizeWindow(disp, win, x, y);
 	imlib_free_image_and_decache();
 	imlib_context_set_image(im);
+	im2 = imlib_create_cropped_scaled_image(0, 0, w, h, x, y);
 	
 	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
 	   imlib_context_set_image(im);
@@ -265,8 +272,41 @@ int main (int argc, char **argv)
 	   imlib_context_set_image(im2);
 	   imlib_blend_image_onto_image(rotim, 0, 0, 0,
 					x, y, 0, 0, x, y);
+	   imlib_context_set_blend(0);
 	   imlib_render_image_on_drawable(0, 0);
+	   imlib_context_set_image(rotim);
+	   pixels += imlib_image_get_width() * imlib_image_get_height();
 	   imlib_free_image_and_decache();
+	}
+	
+     }
+   else if (rottest == 3)
+     {
+	Imlib_Image rotim, im2;
+	double ang;
+	int x, y;
+	
+	rotim = imlib_create_rotated_image_test3(ang);
+	imlib_context_set_image(rotim);
+	x = imlib_image_get_width();
+	y = imlib_image_get_height();
+	printf("rotating inside %dx%d frame\n", x, y);
+	if (!root)
+	   XResizeWindow(disp, win, x, y);
+	imlib_free_image_and_decache();
+	imlib_context_set_image(im);
+	im2 = imlib_create_cropped_scaled_image(0, 0, w, h, x, y);
+	
+	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
+	   imlib_context_set_image(im);
+	   rotim = imlib_create_rotated_image_test3(ang);
+	   imlib_context_set_blend(1);
+	   imlib_context_set_image(im2);
+	   imlib_blend_image_onto_image(rotim, 0, 0, 0,
+					x, y, 0, 0, x, y);
+	   imlib_context_set_blend(0);
+	   imlib_render_image_on_drawable(0, 0);
+	   
 	   imlib_context_set_image(rotim);
 	   pixels += imlib_image_get_width() * imlib_image_get_height();
 	   imlib_free_image_and_decache();

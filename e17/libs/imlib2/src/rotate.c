@@ -39,10 +39,6 @@ __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 
  if ((dw < 1) || (dh < 1)) return;
 
-/*\
-fprintf(stderr, "__imlib_RotateSampleInside(src = %p, dest = %p, sow = %d, dow = %d, dw = %d, dh = %d, x = %d, y = %d, dx = %d, dy = %d)\n", src, dest, sow, dow, dw, dh, x, y, dx, dy);
-\*/
-
  i = 0;
  src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
  x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
@@ -179,6 +175,128 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
   /*\ DOWN; \*/
   x -= dy;
   y += dx;
+  RENORM_X_Y_SRC;
+  dest += dow;
+ }
+}
+
+/*\ These ones don't need the target to be inside the source \*/
+void
+__imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int soh, int dow,
+   int dw, int dh, int x, int y, int dx, int dy)
+{
+ int i;
+ DATA32 *st, *sb;
+ int xp; /*\ Check if we're inside the source \*/
+
+ if ((dw < 1) || (dh < 1)) return;
+
+ i = 0;
+ st = src; sb = src + soh * sow;
+ xp = x >> _ROTATE_PREC;
+ src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
+ x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
+ while (1) {
+  do {
+   if ((xp >= 0) && (xp < sow) &&
+       (src >= st) && (src < sb))
+    *dest = *src;
+   /*\ RIGHT; \*/
+   x += dx;
+   y += dy;
+   xp += (x >> _ROTATE_PREC);
+   RENORM_X_Y_SRC;
+   dest++;
+   i++;
+  } while (i < dw);
+  dh--;
+  if (dh <= 0) break;
+  /*\ DOWN; \*/
+  x -= dy;
+  y += dx;
+  xp += (x >> _ROTATE_PREC);
+  RENORM_X_Y_SRC;
+  dest += dow;
+  do {
+   /*\ LEFT; \*/
+   x -= dx;
+   y -= dy;
+   xp += (x >> _ROTATE_PREC);
+   RENORM_X_Y_SRC;
+   --dest;
+   if ((xp >= 0) && (xp < sow) &&
+       (src >= st) && (src < sb))
+    *dest = *src;
+   --i;
+  } while (i > 0);
+  dh--;
+  if (dh <= 0) break;
+  /*\ DOWN; \*/
+  x -= dy;
+  y += dx;
+  xp += (x >> _ROTATE_PREC);
+  RENORM_X_Y_SRC;
+  dest += dow;
+ }
+}
+
+/*\ With antialiasing \*/
+void
+__imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int soh, int dow,
+   int dw, int dh, int x, int y, int dx, int dy)
+{
+ int i;
+ DATA32 *st, *sb;
+ int xp; /*\ Check if we're inside the source \*/
+
+ if ((dw < 1) || (dh < 1)) return;
+
+ i = 0;
+ st = src; sb = src + (soh - 1) * sow;
+ xp = x >> _ROTATE_PREC;
+ src += (x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow);
+ x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
+ while (1) {
+  do {
+   if ((xp >= 0) && (xp < (sow - 1)) &&
+       (src >= st) && (src < sb))
+    *dest = Interp_ARGB(src[0], src[1],
+     src[sow], src[sow + 1], x, y);
+   /*\ RIGHT; \*/
+   x += dx;
+   y += dy;
+   xp += (x >> _ROTATE_PREC);
+   RENORM_X_Y_SRC;
+   dest++;
+   i++;
+  } while (i < dw);
+  dh--;
+  if (dh <= 0) break;
+  /*\ DOWN; \*/
+  x -= dy;
+  y += dx;
+  xp += (x >> _ROTATE_PREC);
+  RENORM_X_Y_SRC;
+  dest += dow;
+  do {
+   /*\ LEFT; \*/
+   x -= dx;
+   y -= dy;
+   xp += (x >> _ROTATE_PREC);
+   RENORM_X_Y_SRC;
+   --dest;
+   if ((xp >= 0) && (xp < (sow - 1)) &&
+       (src >= st) && (src < sb))
+    *dest = Interp_ARGB(src[0], src[1],
+     src[sow], src[sow + 1], x, y);
+   --i;
+  } while (i > 0);
+  dh--;
+  if (dh <= 0) break;
+  /*\ DOWN; \*/
+  x -= dy;
+  y += dx;
+  xp += (x >> _ROTATE_PREC);
   RENORM_X_Y_SRC;
   dest += dow;
  }
