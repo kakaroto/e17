@@ -1,3 +1,11 @@
+Sat Oct 21 23:22:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed the -k option (to save files viewed by http). It now saves
+	the files into the *current* directory, with better filenames, eg
+	feh_000001_image.jpg for a file called image.jpg.
+	* Removed the use of the evil mkstemp function, not needed any
+	more.
+
 Fri Aug 25 16:41:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* rotation wasn't reset when image changed in fullscreen mode

@@ -178,6 +178,7 @@ feh_load_image(Imlib_Image * im, feh_file * file,
            if (!opt.quiet)
               weprintf("%s - No read access to directory", file->filename);
            break;
+        case IMLIB_LOAD_ERROR_UNKNOWN:
         case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
            if (!opt.quiet)
               weprintf("%s - No Imlib2 loader for that file format",
@@ -223,12 +224,11 @@ feh_load_image(Imlib_Image * im, feh_file * file,
               weprintf("%s - Cannot write - out of disk space",
                        file->filename);
            break;
-        case IMLIB_LOAD_ERROR_UNKNOWN:
         default:
            if (!opt.quiet)
               weprintf
-                 ("While loading %s - Unknown error. Attempting to continue",
-                  file->filename);
+                 ("While loading %s - Unknown error (%d). Attempting to continue",
+                  file->filename, err);
            break;
       }
       D(3, ("Load *failed*\n"));
@@ -348,20 +348,20 @@ feh_http_load_image(char *url)
    char *newurl = NULL;
    char randnum[20];
    int rnum;
+   struct stat st;
 
    D_ENTER(4);
-   snprintf(num, sizeof(num), "%04ld_", i++);
    /* Massive paranoia ;) */
-   if (i > 9998)
+   if (i > 999998)
       i = 1;
 
-   tmp = tempnam("/tmp", num);
-   if (tmp == NULL)
-      eprintf("Error creating unique filename:");
-
-   /* Modify tempname to make it a little more useful... */
-   tmpname = estrjoin("", tmp, "_feh_", strrchr(url, '/') + 1, NULL);
-   free(tmp);
+   /* make sure file doesn't exist */
+   do
+   {
+      snprintf(num, sizeof(num), "%06ld", i++);
+      tmpname = estrjoin("", "feh_", num, "_", strrchr(url, '/') + 1, NULL);
+   }
+   while (stat(tmpname, &st) == 0);
 
    rnum = rand();
    snprintf(randnum, sizeof(randnum), "%d", rnum);
