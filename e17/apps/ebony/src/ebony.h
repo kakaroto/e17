@@ -8,6 +8,7 @@
 #include <gtk/gtk.h>
 #include <limits.h>
 #include <Evas_Engine_Software_X11.h>
+#include "../config.h"
 
 GtkWidget *ebony_status;
 GtkWidget *win_ref, *bg_ref;

@@ -2,7 +2,6 @@
 #include "callbacks.h"
 #include "gtk_util.h"
 #include <gdk/gdkx.h>
-#include <config.h>
 #include "interface.h"
 
 #include <sys/types.h>
@@ -277,6 +276,12 @@ fill_background_images(E_Background _bg)
       {
          if (!_bl->image)
             _bl->image = imlib_load_image(_bl->file);
+	 if (!_bl->image)
+	 {
+	     char buf[PATH_MAX];
+	     snprintf(buf, PATH_MAX, "%s:%s", _bg->file, _bl->file);
+	     _bl->image = imlib_load_image(buf);
+	 }
       }
    }
 }

@@ -3,7 +3,6 @@
 #include "callbacks.h"
 #include "interface.h"          /* i shouldn't have included this here =( */
 #include <gdk/gdkx.h>
-#include <config.h>
 
 static GtkWidget *recent_menu = NULL;
 
@@ -742,7 +741,15 @@ display_layer_values_for_image(E_Background_Layer _bl)
    w = gtk_object_get_data(GTK_OBJECT(win_ref), "image_file");
    if (w)
    {
-      if (_bl->file)
+      if (_bl->file && _bl->inlined)
+      {
+         char buf[PATH_MAX];
+
+         snprintf(buf, PATH_MAX, "%s:%s", bg->file, (gchar *) _bl->file);
+         gtk_entry_set_text(GTK_ENTRY(w), buf);
+      }
+
+      else if (_bl->file)
          gtk_entry_set_text(GTK_ENTRY(w), (gchar *) _bl->file);
       else
          gtk_entry_set_text(GTK_ENTRY(w), "");
