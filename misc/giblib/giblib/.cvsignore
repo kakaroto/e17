@@ -20,10 +20,9 @@ ltconfig
 ltmain.sh
 missing
 mkinstalldirs
-stamp-h
-stamp-h.in 
+stamp-h*
 macros
 *.o
 *~
 core
-giblib_config.h.in giblib_config.h
+giblib_config.h*

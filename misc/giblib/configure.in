@@ -29,6 +29,7 @@ AC_SUBST(IMLIB_CFLAGS)
 LIBS="$LIBS -lm"
 CFLAGS="$CFLAGS -Wall"
 
+AC_CONFIG_HEADER(giblib/giblib_config.h)
 AM_CONFIG_HEADER(giblib/giblib_config.h)
 
 AC_OUTPUT([
