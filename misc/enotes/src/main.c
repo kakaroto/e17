@@ -113,6 +113,10 @@ main(int argc, char *argv[])
 			autoload();
 		}
 
+		if (main_config->welcome == 1) {
+			open_welcome();
+		}
+
 		/* Begin the main loop */
 		dml("Starting Main Loop", 1);
 		ecore_main_loop_begin();

@@ -13,7 +13,7 @@
 
 #include "settings.h"
 
-Settings       *settings=NULL;
+Settings       *settings = NULL;
 
 
 /* High Level */
@@ -48,8 +48,8 @@ setup_settings_win(Settings * s)
 	char           *headers[2];
 
 	/* Setup the Window */
-	s->win=ewl_window_new();
-	ewl_window_title_set((Ewl_Window*)s->win, "E-Notes Settings");
+	s->win = ewl_window_new();
+	ewl_window_title_set((Ewl_Window *) s->win, "E-Notes Settings");
 	ewl_widget_show(s->win);
 
 	s->vbox = ewl_vbox_new();
@@ -124,6 +124,11 @@ fill_tree(void)
 		setup_settings_opt_int(settings->tree,
 				       "Autosaving [0=No 1=Yes]:",
 				       main_config->autosave);
+
+	settings->welcome =
+		setup_settings_opt_int(settings->tree,
+				       "Welcome Screen [0=No 1=Yes]:",
+				       main_config->welcome);
 
 	return;
 }
@@ -224,7 +229,7 @@ ewl_settings_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
 	ewl_widget_destroy(settings->win);
 	free(settings);
-	settings=NULL;
+	settings = NULL;
 	return;
 }
 
@@ -279,6 +284,9 @@ save_settings(void)
 	xml_write_append_entry(p, "autosave",
 			       ewl_entry_get_text((Ewl_Entry *) settings->
 						  autosave.entry));
+	xml_write_append_entry(p, "welcome",
+			       ewl_entry_get_text((Ewl_Entry *) settings->
+						  welcome.entry));
 
 	xml_write_end(p);
 

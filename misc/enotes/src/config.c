@@ -32,6 +32,7 @@ mainconfig_new(void)
 	p->intro = 0;
 	p->controlcentre = 1;
 	p->autosave = 0;
+	p->welcome = 0;
 
 	return (p);
 }
@@ -132,6 +133,8 @@ processopt(XmlEntry * info, MainConfig * p)
 		p->debug = atoi(info->value);
 	} else if (!strcmp(info->name, "autosave")) {
 		p->autosave = atoi(info->value);
+	} else if (!strcmp(info->name, "welcome")) {
+		p->welcome = atoi(info->value);
 	}
 
 	return;

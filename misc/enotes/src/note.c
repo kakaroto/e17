@@ -84,7 +84,7 @@ remove_note(Evas_List * note)
 	dml("Closing a Note", 2);
 
 	ecore_timer_del(p->timcomp);
-	p->timcomp=NULL;
+	p->timcomp = NULL;
 
 	ecore_evas_free(p->win);
 	free(p);
@@ -205,8 +205,8 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	evas_object_show(p->eo);
 
 
-	evas_object_focus_set (p->eo, TRUE);
-	ewl_embed_focus_set ((Ewl_Embed*)p->emb, TRUE);
+	evas_object_focus_set(p->eo, TRUE);
+	ewl_embed_focus_set((Ewl_Embed *) p->emb, TRUE);
 
 
 	p->vbox = ewl_vbox_new();
@@ -394,7 +394,8 @@ timer_val_compare(void *data)
 {
 	Note           *p = (Note *) data;
 
-	if (p->timcomp==NULL) return(0);
+	if (p->timcomp == NULL)
+		return (0);
 
 	if (p->txt_title != NULL) {
 		if (strcmp

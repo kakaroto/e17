@@ -13,7 +13,7 @@
 
 #include "controlcentre.h"
 
-ControlCentre *controlcentre;
+ControlCentre  *controlcentre;
 
 
 /**
@@ -27,8 +27,8 @@ setup_cc(void)
 	char           *fontpath = malloc(PATH_MAX);
 	Evas_Coord      edje_w, edje_h;
 
-	cc=malloc(sizeof(ControlCentre));
-	controlcentre=cc;
+	cc = malloc(sizeof(ControlCentre));
+	controlcentre = cc;
 
 	/* Setup the Window */
 	cc->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, 250, 250);

@@ -48,12 +48,13 @@ POSIX  |  GNU             | TYPE  | DESCRITION\n\
 -A     |  --auto-save     | INT   | Enable the autosaving and\n\
        |                  |       | loading of notes.\n\
 -i     |  --intro         | INT   | Display the Intro.\n\
+-w     |  --welcome       | INT   | Welcome You?\n\
 \
 \n"
 
 #define USAGE_VERSION "E-Notes Version:\n%s\n"
 
-#define OPTSTR "v?hc:r:t:i:R:d:A:"
+#define OPTSTR "v?hc:r:t:i:R:d:A:w:"
 
 static struct option long_options[] = {
 	{"help", 0, 0, '?'},
@@ -66,6 +67,7 @@ static struct option long_options[] = {
 	{"intro", 1, 0, 'i'},
 	{"debug", 1, 0, 'd'},
 	{"auto-save", 1, 0, 'A'},
+	{"welcome", 1, 0, 'w'},
 	{NULL, 0, 0, 0}
 };
 

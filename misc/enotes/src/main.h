@@ -28,6 +28,7 @@
 #include "storage.h"
 #include "usage.h"
 #include "debug.h"
+#include "welcome.h"
 
 
 #define MAX_TEMPLATE_SIZE 999

@@ -55,6 +55,6 @@ int             ipc_response_data_recv(void *data, int type, void *event);
 RecvMsg        *parse_message(char *msg);
 int             ipc_close_enotes(void *data);
 char           *fix_newlines(char *b);
-void            ipc_send_message_with_mysvr (char *msg);
+void            ipc_send_message_with_mysvr(char *msg);
 
 #endif

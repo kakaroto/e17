@@ -33,6 +33,7 @@ typedef struct {
 	int             intro;
 	int             debug;
 	int             autosave;
+	int             welcome;
 } MainConfig;
 
 #ifndef XMLENTRY_DEF

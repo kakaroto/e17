@@ -14,10 +14,10 @@
 #include "saveload.h"
 
 char           *saveload_selected;
-SaveLoad       *saveload=NULL;
+SaveLoad       *saveload = NULL;
 
 char           *load_selected;
-Load           *load=NULL;
+Load           *load = NULL;
 
 
 
@@ -51,8 +51,8 @@ setup_saveload_win(void)
 	Ecore_Timer    *revtim;
 
 	/* Setup the Window */
-	saveload->win=ewl_window_new();
-	ewl_window_title_set((Ewl_Window*)saveload->win, "E-Notes Save/Load");
+	saveload->win = ewl_window_new();
+	ewl_window_title_set((Ewl_Window *) saveload->win, "E-Notes Save/Load");
 	ewl_widget_show(saveload->win);
 
 	saveload->vbox = ewl_vbox_new();
@@ -91,7 +91,8 @@ setup_saveload_win(void)
 
 	saveload_setup_button(saveload->hbox, &saveload->savebtn, "Save.");
 	saveload_setup_button(saveload->hbox, &saveload->loadbtn, "Load.");
-	saveload_setup_button(saveload->hbox, &saveload->refreshbtn, "Refresh.");
+	saveload_setup_button(saveload->hbox, &saveload->refreshbtn,
+			      "Refresh.");
 	saveload_setup_button(saveload->hbox, &saveload->closebtn, "Close.");
 
 	/* EWL Callbacks */
@@ -102,7 +103,8 @@ setup_saveload_win(void)
 			    (void *) ewl_saveload_close,
 			    (void *) saveload->win);
 	ewl_callback_append(saveload->win, EWL_CALLBACK_DELETE_WINDOW,
-			    (void *) ewl_saveload_close, (void*)saveload->win);
+			    (void *) ewl_saveload_close,
+			    (void *) saveload->win);
 	ewl_callback_append(saveload->savebtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_saveload_save, NULL);
 	ewl_callback_append(saveload->loadbtn, EWL_CALLBACK_CLICKED,
@@ -207,9 +209,9 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 void
 ewl_saveload_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
-	ewl_widget_destroy (saveload->win);
+	ewl_widget_destroy(saveload->win);
 	free(saveload);
-	saveload=NULL;
+	saveload = NULL;
 	return;
 }
 
@@ -316,8 +318,8 @@ setup_load_win(void)
 	char           *headers[1];
 
 	/* Setup the Window */
-	load->win=ewl_window_new();
-	ewl_window_title_set((Ewl_Window*)load->win, "E-Notes Load");
+	load->win = ewl_window_new();
+	ewl_window_title_set((Ewl_Window *) load->win, "E-Notes Load");
 	ewl_widget_show(load->win);
 
 	load->vbox = ewl_vbox_new();
@@ -362,7 +364,7 @@ setup_load_win(void)
 	ewl_callback_append(load->closebtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_load_close, (void *) load->win);
 	ewl_callback_append(load->win, EWL_CALLBACK_DELETE_WINDOW,
-			    (void *) ewl_load_close, (void*)load->win);
+			    (void *) ewl_load_close, (void *) load->win);
 	ewl_callback_append(load->loadbtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_load_load, NULL);
 	ewl_callback_append(load->deletebtn, EWL_CALLBACK_CLICKED,
@@ -453,7 +455,7 @@ ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
 	ewl_widget_destroy(load->win);
 	free(load);
-	load=NULL;
+	load = NULL;
 	return;
 }
 
