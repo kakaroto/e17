@@ -58,17 +58,17 @@ please note that
 - You do not need to add a default session; that is added automatically.
 - You need to update the session count entry before you finish.
 
-You may also want to add images for users in the data/images/users 
+You may also want to add images for users in the appropriate
 directory so that they come up while you log in. For example, if your
 login was foo, then you would need to add "foo.png" to that directory
-for it to come up. The image also needs to be the size specified in
-the theme (in the default it is 192x223; this can be changed). Custom
-image sizes (and names in the config) is on the TODO list for now.
+for it to come up. The location of this image is now specified in config
+as either in the system directory ($PREFIX/share/entrance/data/images/users/)
+or in the user's home directory ($HOME/.e/entrance/).
 
 Take a look at buildtheme.sh in the BlueCrystal theme directory as a
 guide to the theme format.
 
-Of course, patches and improvements are always welcome. :)
+Code contributors and developers needed!
 
 Slackware Note
 --------------

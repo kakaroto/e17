@@ -59,41 +59,42 @@ update_login_face(Entrance_Session e, char *name)
    char *userimage;
    int go = 1;
    Entrance_User *eu = NULL;
-   Evas_List *el = e->EntUsers;
 
-   while (go)
+   /* Find luser in config */
+   for (el = e->EntUsers; el; el = el->next)
    {
-      eu = (Entrance_User *) malloc(sizeof(Entrance_User));
-      memset(eu, 0, sizeof(Entrance_User));
-      eu->name = ((Entrance_User *) evas_list_data(el))->name;
+      eu = (Entrance_User *) evas_list_data(el);
 
       if (!strcmp(name, eu->name))
-      {
-         eu->img = ((Entrance_User *) evas_list_data(el))->img;
-         eu->sys = ((Entrance_User *) evas_list_data(el))->sys;
+         break;
+   }
 
-         userimage = strdup(eu->img);
-         go = 0;
-      }
-      el = el->next;
-      if (!el)
-         go = 0;
-   }
-   if (!eu->sys)
+   /* Attempt to load a default image if luser not found */
+   if(!eu) 
+      snprintf(buf, PATH_MAX, 
+            PACKAGE_DATA_DIR"/data/images/users/_default.png");
+   
+   /* Luser image stored in home dir -- this will not work without nsswitch */
+   else if (!eu->sys)
    {
-      /* OK, I really dislike hardcoding "/home/foo", but I'm too lazy right
-         now to find out the correct way to do it... blame it on college
-         blues */
-      snprintf(buf, PATH_MAX, "/home/%s/.e/entrance/%s", eu->name, userimage);
+      struct passwd *pfoo;
+      if(pfoo = getpwnam(eu->name))
+         snprintf(buf, PATH_MAX, "/home/%s/.e/entrance/%s", 
+               pfoo->pw_dir, userimage);
+      else
+         snprintf(buf, PATH_MAX, "%s/%s", 
+               PACKAGE_DATA_DIR "/data/images/users",
+               userimage);
    }
+   /* Luser image specified in system config */
    else
       snprintf(buf, PATH_MAX, "%s/%s", PACKAGE_DATA_DIR "/data/images/users",
                userimage);
+   
    evas_object_image_file_set(e->face, buf, NULL);
    evas_object_image_reload(e->face);
    if (evas_object_image_load_error_get(e->face))
    {
-      printf("Could not load %s\n", buf);
       evas_object_hide(e->face_shadow);
       return;
    }
