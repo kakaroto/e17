@@ -207,7 +207,7 @@ load (ImlibImage *im,
 		    {
 		       for (x = 0; x < w; x++)
 			 {
-			    *ptr2 = 
+			    *ptr2 = 0xff000000 | 
 			       (ptr[0] << 16) | 
 			       (ptr[0] << 8) |  
 			       ptr[0];
@@ -219,7 +219,7 @@ load (ImlibImage *im,
 		    {
 		       for (x = 0; x < w; x++)
 			 {
-			    *ptr2 =
+			    *ptr2 = 0xff000000 | 
 			       (((ptr[0] * 255) / v) << 16) |
 			       (((ptr[0] * 255) / v) << 8) |
 			       ((ptr[0] * 255) / v);
@@ -264,7 +264,7 @@ load (ImlibImage *im,
 		    {
 		       for (x = 0; x < w; x++)
 			 {
-			    *ptr2 = 
+			    *ptr2 = 0xff000000 | 
 			       (ptr[0] << 16) | 
 			       (ptr[1] << 8) |  
 			       ptr[2];
@@ -276,7 +276,7 @@ load (ImlibImage *im,
 		    {
 		       for (x = 0; x < w; x++)
 			 {
-			    *ptr2 =
+			    *ptr2 = 0xff000000 | 
 			       (((ptr[0] * 255) / v) << 16) |
 			       (((ptr[1] * 255) / v) << 8) |
 			       ((ptr[2] * 255) / v);
@@ -307,6 +307,45 @@ load (ImlibImage *im,
 		  fclose(f);
 		  return 0;
 	       }
+	     ptr2 = im->data;
+	     for (y = 0; y < h; y++)
+	       {
+		  if (!fread(data, w * 1, 1, f))
+		    {
+		       free(data);
+		       fclose(f);
+		       return 1;
+		    }
+		  ptr = data;
+		  for (x = 0; x < w; x++)
+		    {
+		       int r, g, b;
+		       
+		       r = (*ptr >> 5) & 0x7;
+		       g = (*ptr >> 2) & 0x7;
+		       b = (*ptr     ) & 0x3;
+		       *ptr2 = 0xff000000 | 
+			  (((r << 21) | (r << 18) | (r << 15)) & 0xff0000) |
+			  (((g << 13) | (g << 10) | (g << 7)) & 0xff00) |
+			  ((b << 6) | (b << 4) | (b << 2) | (b << 0));
+		       ptr2++;
+		       ptr++;
+		    }
+		  if (progress)
+		    {
+		       char per;
+		       int l;
+		       
+		       per = (char)((100 * y) / im->h);
+		       if ((per - pper) >= progress_granularity)
+			 {
+			    l = y - pl;
+			    progress(im, per, 0, (y - l), im->w, l);
+			    pper = per;
+			    pl = y;
+			 }
+		    }
+	       }	     
 	     break;
 	  case '8': /* 24bit binary RGBARGBARGBA */
 	     data = malloc(4 * sizeof(DATA8) * w);
@@ -314,6 +353,55 @@ load (ImlibImage *im,
 	       {
 		  fclose(f);
 		  return 0;
+	       }
+	     ptr2 = im->data;
+	     for (y = 0; y < h; y++)
+	       {
+		  if (!fread(data, w * 4, 1, f))
+		    {
+		       free(data);
+		       fclose(f);
+		       return 1;
+		    }
+		  ptr = data;
+		  if (v == 255)
+		    {
+		       for (x = 0; x < w; x++)
+			 {
+			    *ptr2 = 0xff000000 | 
+			       (ptr[0] << 16) | 
+			       (ptr[1] << 8) |  
+			       ptr[2];
+			    ptr2++;
+			    ptr += 3;
+			 }
+		    }
+		  else
+		    {
+		       for (x = 0; x < w; x++)
+			 {
+			    *ptr2 = (((ptr[3] * 255) / v) << 24) |
+			       (((ptr[0] * 255) / v) << 16) |
+			       (((ptr[1] * 255) / v) << 8) |
+			       ((ptr[2] * 255) / v);
+			    ptr2++;
+			    ptr += 4;
+			 }		       
+		    }
+		  if (progress)
+		    {
+		       char per;
+		       int l;
+		       
+		       per = (char)((100 * y) / im->h);
+		       if ((per - pper) >= progress_granularity)
+			 {
+			    l = y - pl;
+			    progress(im, per, 0, (y - l), im->w, l);
+			    pper = per;
+			    pl = y;
+			 }
+		    }
 	       }
 	     break;
 	  default:
