@@ -64,6 +64,7 @@ static Visual                 *ctxt_visual               = NULL;
 static Colormap                ctxt_colormap             = 0;
 static int                     ctxt_depth                = 0;
 static Drawable                ctxt_drawable             = 0;
+static Pixmap                  ctxt_mask                 = 0;
 static char                    ctxt_anti_alias           = 1;
 static char                    ctxt_dither               = 0;
 static char                    ctxt_blend                = 1;
@@ -76,6 +77,7 @@ static Imlib_Color_Range       ctxt_color_range          = NULL;
 static Imlib_Image             ctxt_image                = NULL;
 static Imlib_Progress_Function ctxt_progress_func        = NULL;
 static char                    ctxt_progress_granularity = 0;
+static char                    ctxt_dither_mask          = 0;
 
 /* context setting functions */
 void
@@ -101,6 +103,18 @@ void
 imlib_context_set_drawable(Drawable drawable)
 {
    ctxt_drawable = drawable;
+}
+
+void
+imlib_context_set_mask(Pixmap mask)
+{
+   ctxt_mask = mask;
+}
+
+void
+imlib_context_set_dither_mask(char dither_mask)
+{
+   ctxt_dither_mask = dither_mask;
 }
 
 void
@@ -568,7 +582,7 @@ imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return,
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_CreatePixmapsForImage(ctxt_display, ctxt_drawable, ctxt_visual, 
+   __imlib_CreatePixmapsForImage(ctxt_display, ctxt_drawable, ctxt_visual,
 				 ctxt_depth, ctxt_colormap, im, pixmap_return, 
 				 mask_return, 0, 0, im->w, im->h, im->w, im->h,
 				 0, ctxt_dither, create_dithered_mask,
@@ -616,9 +630,9 @@ imlib_render_image_on_drawable(int x, int y)
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, 0, ctxt_visual, 
+   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, ctxt_mask, ctxt_visual, 
 		       ctxt_colormap, ctxt_depth, 0, 0, im->w, im->h, x, y, 
-		       im->w, im->h, 0, ctxt_dither, ctxt_blend, 0, 
+		       im->w, im->h, 0, ctxt_dither, ctxt_blend, ctxt_dither_mask, 
 		       ctxt_color_modifier, ctxt_operation);
 }
 
@@ -633,10 +647,10 @@ imlib_render_image_on_drawable_at_size(int x, int y, int width, int height)
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, 0, ctxt_visual, 
+   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, ctxt_mask, ctxt_visual, 
 		       ctxt_colormap, ctxt_depth, 0, 0, im->w, im->h, x, y, 
 		       width, height, ctxt_anti_alias, ctxt_dither,
-		       ctxt_blend, 0, ctxt_color_modifier, ctxt_operation);
+		       ctxt_blend, ctxt_dither_mask, ctxt_color_modifier, ctxt_operation);
 }
 
 void 

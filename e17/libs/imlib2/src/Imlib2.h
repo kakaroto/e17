@@ -81,6 +81,8 @@ void imlib_context_set_display(Display *display);
 void imlib_context_set_visual(Visual *visual);
 void imlib_context_set_colormap(Colormap colormap);
 void imlib_context_set_drawable(Drawable drawable);
+void imlib_context_set_mask(Pixmap mask);
+void imlib_context_set_dither_mask(char dither_mask);
 void imlib_context_set_anti_alias(char anti_alias);
 void imlib_context_set_dither(char dither);
 void imlib_context_set_blend(char blend);
