@@ -38,6 +38,7 @@ static Ewl_Entry_Op *ewl_entry_op_text_delete_new(Ewl_Entry *e,
 						  unsigned int len);
 static void ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 static void ewl_entry_op_text_free(void *op);
+static void ewl_entry_op_text_plaintext_parse(Evas_Object *txtobj, char *txt);
 
 static void ewl_entry_update_size(Ewl_Entry * e);
 
@@ -245,8 +246,12 @@ char *ewl_entry_text_get(Ewl_Entry * e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, NULL);
 
-	if (e->etox)
-		txt = etox_get_text(e->etox);
+	if (e->textobj) {
+		int len;
+		len = evas_object_textblock_length_get(e->textobj);
+		evas_object_textblock_cursor_pos_set(e->textobj, 0);
+		txt = evas_object_textblock_text_get(e->textobj, len);
+	}
 	else if (e->text)
 		txt = strdup(e->text);
 
@@ -485,23 +490,17 @@ char *ewl_entry_font_get(Ewl_Entry *e)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Font *opf;
-	char *font = NULL;
+	const char *font = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, NULL);
 
-	if (REALIZED(e)) {
-		int size;
-		font = etox_context_get_font(etox_get_context(e->etox), &size);
-	}
-	else {
-		op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
-		opf = (Ewl_Entry_Op_Font *)op;
-		if (opf && opf->font)
-			font = strdup(opf->font);
-	}
+	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	opf = (Ewl_Entry_Op_Font *)op;
+	if (opf && opf->font)
+		font = opf->font;
 
-	DRETURN_PTR(font, DLEVEL_STABLE);
+	DRETURN_PTR((font ? strdup(font) : NULL), DLEVEL_STABLE);
 }
 
 /**
@@ -518,18 +517,10 @@ int ewl_entry_font_size_get(Ewl_Entry *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, 1);
 
-	if (REALIZED(e)) {
-		char *font = NULL;
-		font = etox_context_get_font(etox_get_context(e->etox), &size);
-		if (font)
-			FREE(font);
-	}
-	else {
-		op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
-		opf = (Ewl_Entry_Op_Font *)op;
-		if (opf)
-			size = opf->size;
-	}
+	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	opf = (Ewl_Entry_Op_Font *)op;
+	if (opf)
+		size = opf->size;
 
 	DRETURN_INT(size, DLEVEL_STABLE);
 }
@@ -679,10 +670,12 @@ int ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, 0);
 
-	if (!e->etox)
+	if (!e->textobj)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
-	index = etox_coord_to_index(e->etox, (Evas_Coord)(x), (Evas_Coord)(y));
+	index = evas_object_textblock_char_coords_get(e->textobj,
+			(Evas_Coord)(x - CURRENT_X(e)),
+			(Evas_Coord)(y - CURRENT_Y(e)), NULL, NULL, NULL, NULL);
 	DRETURN_INT(index, DLEVEL_STABLE);
 }
 
@@ -709,10 +702,11 @@ void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	if (!e->etox)
+	if (!e->textobj)
 		DRETURN(DLEVEL_STABLE);
 
-	etox_index_to_geometry(e->etox, index, &tx, &ty, &tw, &th);
+	evas_object_textblock_char_pos_get(e->textobj, index, &tx, &ty,
+			&tw, &th);
 	if (x)
 		*x = (int)(tx);
 	if (y)
@@ -749,13 +743,18 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	hh = CURRENT_H(w);
 
 	/*
-	 * Update the etox position and size.
+	 * Update the position and size.
 	 */
-	if (e->etox) {
-		etox_set_word_wrap(e->etox, e->wrap);
-		evas_object_move(e->etox, xx, yy);
-		evas_object_resize(e->etox, ww, hh);
-		evas_object_layer_set(e->etox, ewl_widget_layer_sum_get(w));
+	if (e->textobj) {
+		if (e->wrap)
+			evas_object_textblock_format_insert(e->textobj,
+					"wrap=word");
+		else
+			evas_object_textblock_format_insert(e->textobj,
+					"wrap=off");
+		evas_object_move(e->textobj, xx, yy);
+		evas_object_resize(e->textobj, ww, hh);
+		evas_object_layer_set(e->textobj, ewl_widget_layer_sum_get(w));
 	}
 
 	if (!e->editable) {
@@ -793,9 +792,11 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char      *tmp;
-	Ewl_Entry  *e;
+	int        size;
+	char       format[PATH_MAX];
+	Ewl_Entry *e;
 	Ewl_Embed *emb;
-	int r, g, b, a;
+	int        r, g, b, a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -810,40 +811,43 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
-	 * Create the etox and save the context for future reference.
+	 * Create the evas textblock
 	 */
-	e->etox = etox_new(emb->evas);
-	e->context = etox_get_context(e->etox);
+	e->textobj = evas_object_textblock_add(emb->evas);
 
 	/*
-	 * Apply the default theme information to the context, this
+	 * Apply the default theme information to the text, this
 	 * information may be altered programmatically through the operation
 	 * queues.
 	 */
 	tmp = ewl_theme_data_str_get(w, "font");
-	etox_context_set_font(e->context, tmp,
-			      ewl_theme_data_int_get(w, "font_size"));
+	size = ewl_theme_data_int_get(w, "font_size");
+
+	snprintf(format, PATH_MAX, "source=%s font=fonts/%s size=%d",
+			ewl_theme_path_get(), tmp, size);
+	evas_object_textblock_format_insert(e->textobj, format);
 	IF_FREE(tmp);
 
+	/*
 	tmp = ewl_theme_data_str_get(w, "style");
 	etox_context_set_style(e->context, tmp);
 	IF_FREE(tmp);
+	*/
 
 	r = ewl_theme_data_int_get(w, "color/r");
 	g = ewl_theme_data_int_get(w, "color/g");
 	b = ewl_theme_data_int_get(w, "color/b");
 	a = ewl_theme_data_int_get(w, "color/a");
-	etox_context_set_color(e->context, r, g, b, a);
+	snprintf(format, PATH_MAX, "color=#%02x%02x%02x%02x", r, g, b, a);
+	evas_object_textblock_format_insert(e->textobj, format);
 
 	if (w->fx_clip_box)
-		evas_object_clip_set(e->etox, w->fx_clip_box);
-
-	ewl_entry_ops_apply(e);
+		evas_object_clip_set(e->textobj, w->fx_clip_box);
 
 	/*
-	 * Update the size of the entry
+	 * Apply previous operations and update the size of the entry
 	 */
-	ewl_entry_update_size(e);
+	ewl_entry_ops_apply(e);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -862,10 +866,9 @@ void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * if it is re-realized.
 	 */
 	ewl_entry_ops_reset(e);
-	evas_object_clip_unset(e->etox);
-	evas_object_del(e->etox);
-	e->etox = NULL;
-	e->context = NULL;
+	evas_object_clip_unset(e->textobj);
+	evas_object_del(e->textobj);
+	e->textobj = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -877,7 +880,7 @@ void ewl_entry_show_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	evas_object_show(e->etox);
+	evas_object_show(e->textobj);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -889,7 +892,7 @@ void ewl_entry_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	evas_object_hide(e->etox);
+	evas_object_hide(e->textobj);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -908,13 +911,6 @@ void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ecore_dlist_destroy(e->applied);
 	e->applied = NULL;
 
-	/*
-	 * Finished with the etox, so now would be a good time to cleanup
-	 * extra resources hanging around. FIXME: Should be called at some
-	 * regular interval too, in case the text changes, but is never freed.
-	 */
-	etox_gc_collect();
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -925,8 +921,8 @@ void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	e = EWL_ENTRY(w);
-	if (e->etox)
-		evas_object_layer_set(e->etox, ewl_widget_layer_sum_get(w));
+	if (e->textobj)
+		evas_object_layer_set(e->textobj, ewl_widget_layer_sum_get(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1707,13 +1703,22 @@ ewl_entry_op_color_new(Ewl_Entry *e, int r, int g, int b, int a)
 static void
 ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	int or, og, ob, oa;
+	int or = 0, og = 0, ob = 0, oa = 255;
+	char *format;
+	char nformat[16];
 	Ewl_Entry_Op_Color *opc = (Ewl_Entry_Op_Color *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	etox_context_get_color(e->context, &or, &og, &ob, &oa);
-	etox_context_set_color(e->context, opc->r, opc->g, opc->b, opc->a);
+	format = evas_object_textblock_format_current_get(e->textobj);
+	if (format)
+		sscanf(format, "color=#%02x%02x%02x%02x", &or, &og, &ob, &oa);
+
+	snprintf(nformat, 16, "color=#%02x%02x%02x%02x", opc->r, opc->g,
+			opc->b, opc->a);
+	evas_object_textblock_format_insert(e->textobj, nformat);
+
+	IF_FREE(format);
 
 	/*
 	 * Store the previous values for undoing.
@@ -1750,15 +1755,22 @@ ewl_entry_op_font_new(Ewl_Entry *e, char *font, int size)
 static void
 ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	char *of;
+	char of[PATH_MAX];
+	char nformat[PATH_MAX];
+	char *format;
 	int size;
 	Ewl_Entry_Op_Font *opf = (Ewl_Entry_Op_Font *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	of = etox_context_get_font(e->context, &size);
+	format = evas_object_textblock_format_current_get(e->textobj);
+	sscanf(format, "font=%s", of);
+	sscanf(format, "size=%d", &size);
 
-	etox_context_set_font(e->context, opf->font, opf->size);
+	snprintf(nformat, PATH_MAX, "font=%s size=%d", opf->font, opf->size);
+	evas_object_textblock_format_insert(e->textobj, nformat);
+
+	FREE(format);
 
 	FREE(opf->font);
 	opf->font = of;
@@ -1802,13 +1814,15 @@ ewl_entry_op_style_new(Ewl_Entry *e, char *style)
 static void
 ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	char *style;
+	char *style = NULL;
 	Ewl_Entry_Op_Style *ops = (Ewl_Entry_Op_Style *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/*
 	style = etox_context_get_style(e->context);
 	etox_context_set_style(e->context, ops->style);
+	*/
 
 	FREE(ops->style);
 	ops->style = style;
@@ -1852,12 +1866,60 @@ static void
 ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
 	unsigned int align;
+	char *format;
+	char alignment[32];
+	char nformat[64];
 	Ewl_Entry_Op_Align *opa = (Ewl_Entry_Op_Align *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	align = etox_context_get_align(e->context);
-	etox_context_set_align(e->context, opa->align);
+	format = evas_object_textblock_format_current_get(e->textobj);
+
+	sscanf(format, "align=%s", alignment);
+
+	/*
+	 * Default to left aligned. This will help with handling fully
+	 * justified text.
+	 */
+	if (!strcmp(alignment, "center"))
+		align = EWL_FLAG_ALIGN_CENTER;
+	else if (!strcmp(alignment, "right"))
+		align = EWL_FLAG_ALIGN_RIGHT;
+	else
+		align = EWL_FLAG_ALIGN_LEFT;
+
+	sscanf(format, "valign=%s", alignment);
+
+	if (!strcmp(alignment, "baseline"))
+		align |= EWL_FLAG_ALIGN_CENTER;
+	else if (!strcmp(alignment, "top"))
+		align |= EWL_FLAG_ALIGN_TOP;
+	else
+		align |= EWL_FLAG_ALIGN_BOTTOM;
+
+	FREE(format);
+
+	if (opa->align & EWL_FLAG_ALIGN_RIGHT) {
+		format = "right";
+	}
+	else if (opa->align & EWL_FLAG_ALIGN_LEFT) {
+		format = "left";
+	}
+	else {
+		format = "center";
+	}
+
+	if (opa->align & EWL_FLAG_ALIGN_TOP) {
+		snprintf(nformat, 64, "align=%s valign=top", format);
+	}
+	else if (opa->align & EWL_FLAG_ALIGN_BOTTOM) {
+		snprintf(nformat, 64, "align=%s valign=bottom", format);
+	}
+	else {
+		snprintf(nformat, 64, "align=%s valign=baseline", format);
+	}
+
+	evas_object_textblock_format_insert(e->textobj, nformat);
 
 	opa->align = align;
 
@@ -1939,7 +2001,7 @@ ewl_entry_op_text_insert_new(Ewl_Entry *e, char *text, int index)
 		op->apply = ewl_entry_op_text_apply;
 		op->free = ewl_entry_op_text_free;
 		ops->text = strdup(text);
-		ops->index = index;
+		op->position = index;
 	}
 
 	DRETURN_PTR(op, DLEVEL_STABLE);
@@ -1961,7 +2023,7 @@ ewl_entry_op_text_delete_new(Ewl_Entry *e, unsigned int start,
 		op->apply = ewl_entry_op_text_apply;
 		op->free = ewl_entry_op_text_free;
 		ops->text = NULL;
-		ops->index = start;
+		op->position = start;
 		ops->len = len;
 	}
 
@@ -1971,20 +2033,38 @@ ewl_entry_op_text_delete_new(Ewl_Entry *e, unsigned int start,
 static void
 ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
+	int len;
 	Ewl_Entry_Op_Text *opt = (Ewl_Entry_Op_Text *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (op->type == EWL_ENTRY_OP_TYPE_TEXT_SET)
-		etox_set_text(e->etox, opt->text);
-	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_APPEND)
-		etox_append_text(e->etox, opt->text);
-	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_PREPEND)
-		etox_prepend_text(e->etox, opt->text);
-	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_INSERT)
-		etox_insert_text(e->etox, opt->text, opt->index);
-	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_DELETE)
-		etox_delete_text(e->etox, opt->index, opt->len);
+	len = evas_object_textblock_length_get(e->textobj);
+	if (op->type == EWL_ENTRY_OP_TYPE_TEXT_SET) {
+		char *nf;
+		evas_object_textblock_cursor_pos_set(e->textobj, len);
+		nf = evas_object_textblock_format_current_get(e->textobj);
+		evas_object_textblock_cursor_pos_set(e->textobj, 0);
+		evas_object_textblock_text_del(e->textobj, len);
+		if (nf)
+			evas_object_textblock_format_insert(e->textobj, nf);
+		ewl_entry_op_text_plaintext_parse(e->textobj, opt->text);
+	}
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_APPEND) {
+		evas_object_textblock_cursor_pos_set(e->textobj, len);
+		ewl_entry_op_text_plaintext_parse(e->textobj, opt->text);
+	}
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_PREPEND) {
+		evas_object_textblock_cursor_pos_set(e->textobj, 0);
+		ewl_entry_op_text_plaintext_parse(e->textobj, opt->text);
+	}
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_INSERT) {
+		evas_object_textblock_cursor_pos_set(e->textobj, op->position);
+		ewl_entry_op_text_plaintext_parse(e->textobj, opt->text);
+	}
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_DELETE) {
+		evas_object_textblock_cursor_pos_set(e->textobj, op->position);
+		evas_object_textblock_text_del(e->textobj, opt->len);
+	}
 
 	ewl_entry_update_size(e);
 
@@ -1999,6 +2079,47 @@ ewl_entry_op_text_free(void *op)
 
 	IF_FREE(opt->text);
 	FREE(opt);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_text_plaintext_parse(Evas_Object *txtobj, char *txt)
+{
+	char *tmp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (!txt)
+		DRETURN(DLEVEL_STABLE);
+
+	for (tmp = txt; *tmp; tmp++) {
+		if (*tmp == '\n') {
+			*tmp = '\0';
+			evas_object_textblock_text_insert(txtobj, txt);
+			evas_object_textblock_format_insert(txtobj, "\n");
+			*tmp = '\n';
+			txt = tmp + 1;
+		}
+		else if (*tmp == '\r' && *(tmp + 1) == '\n') {
+			*tmp = '\0';
+			evas_object_textblock_text_insert(txtobj, txt);
+			evas_object_textblock_format_insert(txtobj, "\n");
+			*tmp = '\r';
+			tmp++;
+			txt = tmp + 2;
+		}
+		else if (*tmp == '\t') {
+			*tmp = '\0';
+			evas_object_textblock_text_insert(txtobj, txt);
+			evas_object_textblock_format_insert(txtobj, "\t");
+			*tmp = '\t';
+			txt = tmp + 1;
+		}
+	}
+
+	if (*txt)
+		evas_object_textblock_text_insert(txtobj, txt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2028,23 +2149,20 @@ ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, int bstart, int bend
 }
 
 /*
- * Set the size of the entry to the size of the etox.
+ * Set the size of the entry to the size of the text object
  */
 static void ewl_entry_update_size(Ewl_Entry * e)
 {
-	Evas_Coord width, height;
+	Evas_Coord width = 0, height = 0;
 
 	/*
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
-	etox_text_geometry_get(e->etox, &width, &height);
+	evas_object_textblock_native_size_get(e->textobj, &width, &height);
 
-	if (!width)
-		width = 1;
+	width += 2;
 	if (!height)
 		height = 1;
-
-	evas_object_resize(e->etox, (width), (height));
 
 	/*
 	 * Set the preferred size to the size of the etox and request that
@@ -2052,5 +2170,6 @@ static void ewl_entry_update_size(Ewl_Entry * e)
 	 */
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(e), (int)(width),
 					    (int)(height));
+	ewl_widget_configure(EWL_WIDGET(e));
 }
 

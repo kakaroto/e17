@@ -172,41 +172,6 @@ AC_ARG_WITH(ecore-config,
   fi
 ])
 
-ETOX_CONFIG="etox-config"
-AC_ARG_WITH(etox-config,
-[  --with-etox-config=FILE   etox-config script to use (eg /usr/bin/etox-config)],
-[
-   ETOX_CONFIG=$withval
-   AC_CHECK_PROG(ETOX_CONFIG_IN_PATH, $ETOX_CONFIG, yes, no)
-   if test $ETOX_CONFIG_IN_PATH = no; then
-      echo "ERROR:"
-      echo "The etox-config development script you specified:"
-      echo "$ETOX_CONFIG"
-      echo "was not found.  Please check the path and make sure "
-      echo "the script exists and is executable."
-      AC_MSG_ERROR([Fatal Error: no etox-config detected.])
-      exit;
-   fi
-   ],
-[
-  AC_CHECK_PROG(ETOX_CONFIG_IN_PATH, $ETOX_CONFIG, yes, no)
-  if test $ETOX_CONFIG_IN_PATH = no; then
-    echo "ERROR:"
-    echo "The etox-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the etox-devel (or etox-dev)"
-    echo "   packages."
-    echo "2. You may have etox installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the etox-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-etox-config."
-    AC_MSG_ERROR([Fatal Error: no etox-config detected.])
-    exit;
-  fi
-])
-
 EDJE_CONFIG="edje-config"
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=FILE   edje-config script to use (eg /usr/bin/edje-config)],
@@ -274,11 +239,6 @@ AC_SUBST(ecore_libs)
 ecore_cflags=`$ECORE_CONFIG --cflags`
 ecore_libs=`$ECORE_CONFIG --libs`
 
-AC_SUBST(etox_cflags)
-AC_SUBST(etox_libs)
-etox_cflags=`$ETOX_CONFIG --cflags`
-etox_libs=`$ETOX_CONFIG --libs`
-
 AC_SUBST(edje_cflags)
 AC_SUBST(edje_libs)
 edje_cflags=`$EDJE_CONFIG --cflags`
@@ -303,7 +263,7 @@ AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, test "$SUPPORT_EMOTION" -eq 1)
 AC_SUBST(BUILD_EMOTION_SUPPORT_TRUE)
 AC_SUBST(BUILD_EMOTION_SUPPORT_FALSE)
 
-requirements="evas ecore edb etox edje emotion"
+requirements="evas ecore edb edje emotion"
 AC_SUBST(requirements)
 
 AC_OUTPUT([

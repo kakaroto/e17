@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Ewl.h Makefile.in
 INCLUDES = \
 -I$(top_builddir) \
 -I$(top_srcdir) \
-@edje_cflags@ @ecore_cflags@ @evas_cflags@ @etox_cflags@ @emotion_cflags@
+@edje_cflags@ @ecore_cflags@ @evas_cflags@ @emotion_cflags@
 
 lib_LTLIBRARIES = libewl.la
 
@@ -138,5 +138,5 @@ libewl_la_SOURCES = \
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS) $(EWLEMOTIONHEADERS)
 
-libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @evas_libs@ @etox_libs@ @emotion_libs@ -lm
+libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0

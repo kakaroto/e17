@@ -6,7 +6,7 @@ extern Ewl_Widget     *last_focused;
 extern Ewl_Widget     *dnd_widget;
 
 Ecore_List       *ewl_embed_list = NULL;
-Evas_Smart     *embedded_smart = NULL;
+Evas_Smart       *embedded_smart = NULL;
 
 static void ewl_embed_smart_add_cb(Evas_Object *obj);
 static void ewl_embed_smart_del_cb(Evas_Object *obj);

@@ -41,7 +41,7 @@ Text wrap in the ewl_entry.
 
 0.0.3 goals
 -----------
- + Entry widget (complete)
+ + Entry widget (revision in progrss)
  + Embed widgets in pre-existing evas (complete)
  + Notebook widget (complete)
 

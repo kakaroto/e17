@@ -685,7 +685,7 @@ ewl_container_largest_prefer(Ewl_Container *c, Ewl_Orientation o)
 
 	ecore_list_goto_first(c->children);
 	while ((child = ecore_list_next(c->children))) {
-		if (VISIBLE(child)) {
+		if (VISIBLE(child) && REALIZED(child)) {
 			curr_size = get_size(child);
 			if (curr_size > max_size)
 				max_size = curr_size;
@@ -723,7 +723,7 @@ void ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o)
 
 	ecore_list_goto_first(c->children);
 	while ((child = ecore_list_next(c->children))) {
-		if (VISIBLE(child))
+		if (VISIBLE(child) && REALIZED(child))
 			curr_size += get_size(child);
 	}
 
@@ -771,8 +771,26 @@ void ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (c->child_show && VISIBLE(w) && REALIZED(w))
+	if (c->child_show && VISIBLE(w) && REALIZED(w)) {
+		Ewl_Object *tmp;
+		printf("Parent: %dx%d\n",
+			ewl_object_preferred_w_get(EWL_OBJECT(c)),
+			ewl_object_preferred_h_get(EWL_OBJECT(c)));
+
+		ecore_list_goto_first(c->children);
+		while ((tmp = ecore_list_next(c->children))) {
+			if (VISIBLE(tmp) && REALIZED(tmp))
+				printf("\tChild: %dx%d\n",
+					ewl_object_preferred_w_get(tmp),
+					ewl_object_preferred_h_get(tmp));
+		}
+
 		c->child_show(c, w);
+
+		printf("Parent: %dx%d\n",
+			ewl_object_preferred_w_get(EWL_OBJECT(c)),
+			ewl_object_preferred_h_get(EWL_OBJECT(c)));
+	}
 
 	/*
 	 * Only show it if there are visible children.

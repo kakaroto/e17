@@ -47,11 +47,11 @@
 	       }
 	       rel2 {
 		  relative, 1.0  1.0;
-		  offset,   -1   -1;
+		  offset,   6   6;
 	       }
 	       image {
 		  normal, "square-shadow.png";
-/*	       border,    3 3 3 3; */
+	          border,    8 8 8 8;
 	       }
 	    }
 	 }

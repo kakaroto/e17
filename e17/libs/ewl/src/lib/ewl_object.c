@@ -1325,10 +1325,8 @@ inline void ewl_object_alignment_set(Ewl_Object * o, unsigned int align)
 	ewl_object_flags_remove(o, EWL_FLAGS_ALIGN_MASK, EWL_FLAGS_ALIGN_MASK);
 	ewl_object_flags_add(o, align, EWL_FLAGS_ALIGN_MASK);
 
-	/*
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
-		*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1436,10 +1434,8 @@ inline void ewl_object_fill_policy_set(Ewl_Object * o, unsigned int fill)
 				PREFERRED_H(o), EWL_ORIENTATION_VERTICAL);
 	*/
 
-	/*
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
-	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

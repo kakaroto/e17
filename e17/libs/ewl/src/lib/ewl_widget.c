@@ -499,8 +499,9 @@ void ewl_widget_state_set(Ewl_Widget * w, char *state)
 	if (w->bit_state && !strcmp(w->bit_state, state))
 		DRETURN(DLEVEL_STABLE);
 
-	IF_FREE(w->bit_state);
-	w->bit_state = strdup(state);
+	if (w->bit_state)
+		ecore_string_release(w->bit_state);
+	w->bit_state = ecore_string_instance(state);
 
 	if (w->theme_object)
 		edje_object_signal_emit(w->theme_object, state, "EWL");
@@ -777,20 +778,28 @@ void ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
  */
 void ewl_widget_inherit(Ewl_Widget *widget, char *inherit)
 {
+	int len;
 	char *tmp = NULL;
+	char *tmp2 = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 	DCHECK_PARAM_PTR("inherit", inherit);
 
-	if (widget->inheritance)
-		tmp = widget->inheritance;
+	len = strlen(inherit) +  3;
+	tmp2 = widget->inheritance;
+	if (tmp2)
+		len += strlen(tmp2);
 	else
-		tmp = strdup("");
+		tmp2 = "";
 
-	widget->inheritance = malloc(sizeof(char) * 
-				(strlen(inherit) + strlen(tmp) + 3));
-	sprintf(widget->inheritance, "%s:%s:", tmp, inherit);
+	tmp = malloc(sizeof(char) * len);
+	sprintf(tmp, "%s:%s:", tmp2, inherit);
+
+	if (widget->inheritance)
+		ecore_string_release(widget->inheritance);
+	widget->inheritance = ecore_string_instance(tmp);
+
 	FREE(tmp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

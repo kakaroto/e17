@@ -162,13 +162,22 @@ static void ewl_theme_font_path_init()
 			if (*font_path == '/')
 				ecore_list_append(font_paths, font_path);
 			else {
-				snprintf(key, PATH_MAX, "%s/%s", theme_path,
-						font_path);
-				ecore_list_append(font_paths, strdup(key));
+				int len;
+				char *tmp;
 
+				len = strlen(theme_path);
+				tmp = theme_path + len - 4;
+
+				if (strcmp(tmp, ".eet"))
+					snprintf(key, PATH_MAX, "%s/%s",
+							theme_path, font_path);
+				else
+					snprintf(key, PATH_MAX, "%s",
+							theme_path);
+					
+				ecore_list_append(font_paths, strdup(key));
 				FREE(font_path);
 			}
-
 		}
 	}
 }

@@ -277,6 +277,17 @@ void ewl_box_spacing_set(Ewl_Box * b, int s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Box layout algorithm:
+ * 1. Setup variables orientation dependant pointers so that the algorithm is
+ *    independant of orientation.
+ * 2. Attempt to handout an even amount of space to all children,
+ *    simultaneously calculating the remaining or overflow space not accepted
+ *    by the children.
+ * 3. Try to coerce the children to fill or shrink to compensate for space
+ *    calculated to under or over run.
+ * 4. Layout the position of all children based on the sizes accepted.
+ */
 void
 ewl_box_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {

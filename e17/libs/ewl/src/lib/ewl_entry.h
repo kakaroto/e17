@@ -36,8 +36,7 @@ struct Ewl_Entry
 
 	char         *text;           /**< The initial text in the entry */
 	int           length;         /**< Length of the text displayed */
-	Evas_Object  *etox;           /**< Etox does the actual layout work */
-	Etox_Context *context;        /**< Contains various format settings */
+	Evas_Object  *textobj;        /**< Object does the actual layout work */
 	Ecore_DList  *ops;            /**< Series of operations to apply */
 	Ecore_DList  *applied;        /**< Applied set of operations */
 
@@ -133,6 +132,7 @@ struct Ewl_Entry_Op
 	Ewl_Entry_Op_Type type;
 	void (*apply)(Ewl_Entry *e, Ewl_Entry_Op *op);
 	void (*free)(void *);
+	int position;
 };
 
 typedef struct Ewl_Entry_Op_Color Ewl_Entry_Op_Color;
@@ -179,7 +179,6 @@ struct Ewl_Entry_Op_Text
 {
 	Ewl_Entry_Op op;
 	char *text;
-	int index;
 	int len;
 };
 
@@ -215,7 +214,7 @@ typedef struct Ewl_Entry_Selection Ewl_Entry_Selection;
 struct Ewl_Entry_Selection
 {
 	Ewl_Widget      widget;
-	Etox_Selection *select;
+	void           *select;
 	unsigned int    start;
 	unsigned int    end;
 };
