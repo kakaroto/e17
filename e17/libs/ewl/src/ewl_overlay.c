@@ -72,17 +72,18 @@ void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	 */
 	ecore_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+		int width, height;
 		/*
 		 * Try to give the child the full size of the overlay from it's
 		 * base position. The object will constrict it based on the
 		 * fill policy. Don't add the TOP and LEFT insets since
 		 * they've already been accounted for.
 		 */
-		ewl_object_size_request(child,
-					CURRENT_W(w) -
-					ewl_object_current_x_get(child),
-					CURRENT_H(w) -
-					ewl_object_current_y_get(child));
+		width = CURRENT_W(w) + CURRENT_X(w);
+	       	width -= ewl_object_current_x_get(child);
+		height = CURRENT_H(w) + CURRENT_Y(w);
+		height -= ewl_object_current_y_get(child);
+		ewl_object_size_request(child, width, height);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

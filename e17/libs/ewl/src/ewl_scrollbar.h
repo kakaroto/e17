@@ -54,7 +54,6 @@ struct Ewl_Scrollbar
 	double          fill_percentage; /**< The ratio of size for draggable */
 	double          start_time; /**< Time scrolling began */
 	Ecore_Timer    *timer; /**< Repeating timer for scrolling */
-	Ewl_ScrollBar_Flags flag; /**< Flags to indicate part visibility */
 	signed char     direction;
 };
 
@@ -79,10 +78,6 @@ void            ewl_scrollbar_value_set(Ewl_Scrollbar * s, double v);
 
 double          ewl_scrollbar_step_get(Ewl_Scrollbar *s);
 void            ewl_scrollbar_step_set(Ewl_Scrollbar * s, double v);
-
-void            ewl_scrollbar_flag_set(Ewl_Scrollbar * s,
-				       Ewl_ScrollBar_Flags f);
-Ewl_ScrollBar_Flags ewl_scrollbar_flag_get(Ewl_Scrollbar * s);
 
 /*
  * Internally used callbacks, override at your own risk.

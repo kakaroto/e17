@@ -33,24 +33,26 @@ typedef struct Ewl_ScrollPane Ewl_ScrollPane;
  */
 struct Ewl_ScrollPane
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Container         container;  /**< Inherit from Ewl_Container */
 
-	Ewl_Widget     *overlay; /**< The area displaying the enclosed widget */
-	Ewl_Widget     *box; /**< The area laying out enclosed widget */
-	Ewl_Widget     *hscrollbar; /**< Horizontal scrollbar */
-	Ewl_Widget     *vscrollbar; /**< Vertical scrollbar */
+	Ewl_Widget           *overlay;    /**< Clips the enclosed widget */
+	Ewl_Widget           *box;        /**< Lays out enclosed widget */
+	Ewl_Widget           *hscrollbar; /**< Horizontal scrollbar */
+	Ewl_Widget           *vscrollbar; /**< Vertical scrollbar */
+	Ewl_ScrollPane_Flags  hflag;      /**< Flags for horizontal scrollbar */
+	Ewl_ScrollPane_Flags  vflag;      /**< Flags for vertical scrollbar */
 };
 
 Ewl_Widget     *ewl_scrollpane_new(void);
 int             ewl_scrollpane_init(Ewl_ScrollPane * s);
 
 void            ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane * s,
-						   Ewl_ScrollBar_Flags f);
+						   Ewl_ScrollPane_Flags f);
 void            ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane * s,
-						   Ewl_ScrollBar_Flags f);
+						   Ewl_ScrollPane_Flags f);
 
-Ewl_ScrollBar_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane * s);
-Ewl_ScrollBar_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane * s);
+Ewl_ScrollPane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane * s);
+Ewl_ScrollPane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane * s);
 
 double          ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s);
 double          ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s);
@@ -66,6 +68,8 @@ double          ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s);
  */
 void            ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data,
 					    void *user_data);
+void            ewl_scrollpane_box_configure_cb(Ewl_Widget * w, void *ev_data,
+						void *user_data);
 void            ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
 void            ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data,

@@ -86,23 +86,23 @@ enum Ewl_Flags
 	 * The alignment enumeration allows for specifying how an element is
 	 * aligned within it's container.
 	 */
-	EWL_FLAG_ALIGN_CENTER = ETOX_ALIGN_CENTER, /**< Center align bit */
-	EWL_FLAG_ALIGN_LEFT = ETOX_ALIGN_LEFT, /**< Left align bit */
-	EWL_FLAG_ALIGN_RIGHT = ETOX_ALIGN_RIGHT, /**< Right align bit */
-	EWL_FLAG_ALIGN_TOP = ETOX_ALIGN_TOP, /**< Top align bit */
-	EWL_FLAG_ALIGN_BOTTOM = ETOX_ALIGN_BOTTOM, /**< Bottom align bit */
+	EWL_FLAG_ALIGN_CENTER = 0, /**< Center align bit */
+	EWL_FLAG_ALIGN_LEFT = 0x1, /**< Left align bit */
+	EWL_FLAG_ALIGN_RIGHT = 0x2, /**< Right align bit */
+	EWL_FLAG_ALIGN_TOP = 0x4, /**< Top align bit */
+	EWL_FLAG_ALIGN_BOTTOM = 0x8, /**< Bottom align bit */
 
 	/*
 	 * Fill policy identifies to containers whether child widgets should be
 	 * stretched to fill available space or keep their current size.
 	 */
 	EWL_FLAG_FILL_NONE = 0, /**< Do not fill or shrink in any direction */
-	EWL_FLAG_FILL_HSHRINK = 0x1000, /**< Horizontally shrink bit */
-	EWL_FLAG_FILL_VSHRINK = 0x2000, /**< Horizontally shrink bit */
+	EWL_FLAG_FILL_HSHRINK = 0x10, /**< Horizontally shrink bit */
+	EWL_FLAG_FILL_VSHRINK = 0x20, /**< Horizontally shrink bit */
 	EWL_FLAG_FILL_SHRINK =
 	    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VSHRINK, /**< Shrink bit */
-	EWL_FLAG_FILL_HFILL = 0x4000, /**< Horizontal fill bit */
-	EWL_FLAG_FILL_VFILL = 0x8000, /**< Vertical fill bit */
+	EWL_FLAG_FILL_HFILL = 0x40, /**< Horizontal fill bit */
+	EWL_FLAG_FILL_VFILL = 0x80, /**< Vertical fill bit */
 	EWL_FLAG_FILL_FILL = EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL, /**< Fill bit */
 	EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK, /**< Shrunk and fill bit */
 
@@ -110,32 +110,39 @@ enum Ewl_Flags
 	 * Flags identifying the visibility status of the widget
 	 */
 	EWL_FLAG_VISIBLE_HIDDEN = 0,
-	EWL_FLAG_VISIBLE_SHOWN = 0x10000,
-	EWL_FLAG_VISIBLE_REALIZED = 0x20000,
-	EWL_FLAG_VISIBLE_OBSCURED = 0x40000,
-	EWL_FLAG_VISIBLE_NOCLIP = 0x80000,
+	EWL_FLAG_VISIBLE_SHOWN = 0x100,
+	EWL_FLAG_VISIBLE_REALIZED = 0x200,
+	EWL_FLAG_VISIBLE_OBSCURED = 0x400,
+	EWL_FLAG_VISIBLE_NOCLIP = 0x800,
 
-	EWL_FLAG_PROPERTY_RECURSIVE = 0x100000,
-	EWL_FLAG_PROPERTY_TOPLEVEL = 0x200000,
-	EWL_FLAG_PROPERTY_INTERNAL = 0x400000,
+	/*
+	 * Behavior modifying properties.
+	 */
+	EWL_FLAG_PROPERTY_RECURSIVE = 0x1000,
+	EWL_FLAG_PROPERTY_TOPLEVEL = 0x2000,
+	EWL_FLAG_PROPERTY_INTERNAL = 0x4000,
 
 	/*
 	 * Flags to indicate queues this object is on.
 	 */
-	EWL_FLAG_QUEUED_CSCHEDULED = 0x800000,
-	EWL_FLAG_QUEUED_RSCHEDULED = 0x1000000,
-	EWL_FLAG_QUEUED_DSCHEDULED = 0x2000000,
+	EWL_FLAG_QUEUED_CSCHEDULED = 0x8000,
+	EWL_FLAG_QUEUED_RSCHEDULED = 0x10000,
+	EWL_FLAG_QUEUED_DSCHEDULED = 0x20000,
+
+	EWL_FLAG_QUEUED_CPROCESS = 0x40000,
+	EWL_FLAG_QUEUED_RPROCESS = 0x80000,
+	EWL_FLAG_QUEUED_DPROCESS = 0x100000,
 
 	/*
 	 * The state enum specifies the current state of a widget, ie. has it
 	 * been clicked, does it have the keyboard focus, etc.
 	 */
 	EWL_FLAG_STATE_NORMAL = 0,
-	EWL_FLAG_STATE_HILITED = 0x4000000,
-	EWL_FLAG_STATE_PRESSED = 0x8000000,
-	EWL_FLAG_STATE_SELECTED = 0x10000000,
-	EWL_FLAG_STATE_DND = 0x20000000,
-	EWL_FLAG_STATE_DISABLED = 0x40000000
+	EWL_FLAG_STATE_HILITED = 0x200000,
+	EWL_FLAG_STATE_PRESSED = 0x400000,
+	EWL_FLAG_STATE_SELECTED = 0x8000000,
+	EWL_FLAG_STATE_DND = 0x1000000,
+	EWL_FLAG_STATE_DISABLED = 0x2000000
 };
 
 #define EWL_FLAG_FILL_NORMAL (EWL_FLAG_FILL_FILL)
@@ -155,7 +162,9 @@ enum Ewl_Flags
 		EWL_FLAG_PROPERTY_TOPLEVEL | EWL_FLAG_PROPERTY_INTERNAL)
 
 #define  EWL_FLAGS_QUEUED_MASK (EWL_FLAG_QUEUED_CSCHEDULED | \
-		EWL_FLAG_QUEUED_RSCHEDULED | EWL_FLAG_QUEUED_DSCHEDULED)
+		EWL_FLAG_QUEUED_RSCHEDULED | EWL_FLAG_QUEUED_DSCHEDULED | \
+		EWL_FLAG_QUEUED_CPROCESS | EWL_FLAG_QUEUED_RPROCESS | \
+		EWL_FLAG_QUEUED_DPROCESS)
 
 #define  EWL_FLAGS_STATE_MASK (EWL_FLAG_STATE_NORMAL | \
 		EWL_FLAG_STATE_HILITED | EWL_FLAG_STATE_PRESSED | \
@@ -213,14 +222,14 @@ typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
 /**
  * @enum Ewl_Scrollbar_Flags
  */
-enum Ewl_Scrollbar_Flags
+enum Ewl_ScrollPane_Flags
 {
-	EWL_SCROLLBAR_FLAG_NONE,
-	EWL_SCROLLBAR_FLAG_AUTO_VISIBLE,
-	EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN
+	EWL_SCROLLPANE_FLAG_NONE,
+	EWL_SCROLLPANE_FLAG_AUTO_VISIBLE,
+	EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN
 };
 
-typedef enum Ewl_Scrollbar_Flags Ewl_ScrollBar_Flags;
+typedef enum Ewl_ScrollPane_Flags Ewl_ScrollPane_Flags;
 
 /**
  * @enum Ewl_Filedialog_Type

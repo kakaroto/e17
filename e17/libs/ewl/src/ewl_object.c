@@ -240,6 +240,11 @@ void ewl_object_preferred_inner_w_set(Ewl_Object * o, int w)
 		ewl_container_child_resize(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_HORIZONTAL);
 
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -288,6 +293,11 @@ void ewl_object_preferred_inner_h_set(Ewl_Object * o, int h)
 	if (resize)
 		ewl_container_child_resize(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_VERTICAL);
+
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -671,6 +681,11 @@ inline void ewl_object_minimum_w_set(Ewl_Object * o, int w)
 	if (CURRENT_W(o) < w)
 		ewl_object_w_request(o, w);
 
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -714,6 +729,11 @@ inline void ewl_object_minimum_h_set(Ewl_Object * o, int h)
 
 	if (CURRENT_H(o) < h)
 		ewl_object_h_request(o, h);
+
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -878,6 +898,11 @@ inline void ewl_object_maximum_w_set(Ewl_Object * o, int w)
 	if (CURRENT_W(o) > w)
 		ewl_object_h_request(o, w);
 
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -915,6 +940,11 @@ inline void ewl_object_maximum_h_set(Ewl_Object * o, int h)
 
 	if (CURRENT_H(o) > h)
 		ewl_object_h_request(o, h);
+
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1064,6 +1094,11 @@ void ewl_object_padding_set(Ewl_Object * o, int l, int r, int t, int b)
 	ewl_container_child_resize(EWL_WIDGET(o), dv,
 				   EWL_ORIENTATION_VERTICAL);
 
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1184,6 +1219,11 @@ void ewl_object_insets_set(Ewl_Object * o, int l, int r, int t, int b)
 	ewl_container_child_resize(EWL_WIDGET(o), dv,
 				EWL_ORIENTATION_VERTICAL);
 
+	/*
+	if (EWL_WIDGET(o)->parent)
+		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1285,8 +1325,10 @@ inline void ewl_object_alignment_set(Ewl_Object * o, unsigned int align)
 	ewl_object_flags_remove(o, EWL_FLAGS_ALIGN_MASK, EWL_FLAGS_ALIGN_MASK);
 	ewl_object_flags_add(o, align, EWL_FLAGS_ALIGN_MASK);
 
+	/*
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
+		*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1394,8 +1436,10 @@ inline void ewl_object_fill_policy_set(Ewl_Object * o, unsigned int fill)
 				PREFERRED_H(o), EWL_ORIENTATION_VERTICAL);
 	*/
 
+	/*
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
+	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

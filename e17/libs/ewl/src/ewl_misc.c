@@ -418,6 +418,9 @@ void ewl_configure_request(Ewl_Widget * w)
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS))
+		DRETURN(DLEVEL_STABLE);
+
 	emb = ewl_embed_widget_find(w);
 	if (!emb)
 		DRETURN(DLEVEL_STABLE);
@@ -595,7 +598,10 @@ void ewl_configure_queue()
 		ewl_object_queued_remove(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_CSCHEDULED);
 
+		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS);
 		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+		ewl_object_queued_remove(EWL_OBJECT(w),
+					 EWL_FLAG_QUEUED_CPROCESS);
 	}
 }
 

@@ -631,6 +631,42 @@ unsigned int ewl_entry_align_get(Ewl_Entry *e)
 }
 
 /**
+ * @param e: the entry widget to change wrapping
+ * @param wrap: a boolean that indicates wrapping
+ * @brief Changes whether the entry wraps or clips to it's available area
+ * @return Returns no value.
+ *
+ * Changes 
+ */
+void ewl_entry_wrap_set(Ewl_Entry *e, int wrap)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	/*
+	 * If the wrapping changes notify the parent to configure the entry.
+	 */
+	if (wrap != e->wrap) {
+		e->wrap = wrap;
+		if (EWL_WIDGET(e)->parent)
+			ewl_widget_configure(EWL_WIDGET(e)->parent);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to retrieve wrapping
+ * @brief Retrieves the current wrapping of the entry
+ * @return Returns TRUE if wrapping is enabled, otherwise FALSE.
+ */
+int ewl_entry_wrap_get(Ewl_Entry *e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(e->wrap, DLEVEL_STABLE);
+}
+
+/**
  * @param e: the entry widget to map a coordinate to a character index
  * @param x: the x coordinate over the desired character
  * @param y: the y coordinate over the desired character
@@ -716,8 +752,9 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Update the etox position and size.
 	 */
 	if (e->etox) {
+		etox_set_word_wrap(e->etox, e->wrap);
 		evas_object_move(e->etox, xx, yy);
-        evas_object_resize(e->etox, ww, hh);
+		evas_object_resize(e->etox, ww, hh);
 		evas_object_layer_set(e->etox, ewl_widget_layer_sum_get(w));
 	}
 

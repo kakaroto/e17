@@ -80,7 +80,7 @@ data {
 	item, "/theme/name" "winter";
 	item, "/tooltip/group" "dialog";
 	item, "/tree/group" "tree";
-	item, "/node/row/group" "treerow";
+	/* item, "/node/row/group" "treerow"; */
 	/* item, "/node/group" "treenode"; */
 	item, "/vscrollbar/button_decrement/group" "vscroll-down";
 	item, "/vscrollbar/button_increment/group" "vscroll-up";

@@ -322,39 +322,6 @@ void ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param s: the scrollbar to set the flags
- * @param f: the flags to set for the scrollbar
- * @return Returns no value.
- * @brief Set the flag mask for a scrollbar
- *
- * Sets the flags @a f for the scrollbar @a s.
- */
-void ewl_scrollbar_flag_set(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-
-	s->flag = f;
-	ewl_widget_configure(EWL_WIDGET(s));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param s: the scrollbar to retrieve the flags
- * @return Returns the flags from the scrollbars @a s.
- * @brief Retrieve the current flags of a scrollbar
- */
-Ewl_ScrollBar_Flags ewl_scrollbar_flag_get(Ewl_Scrollbar * s)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, 0);
-
-	DRETURN_INT(s->flag, DLEVEL_STABLE);
-}
-
-
 /*
  * Decrement the value of the scrollbar's seeker portion
  */

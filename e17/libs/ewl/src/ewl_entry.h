@@ -48,6 +48,7 @@ struct Ewl_Entry
 	double        start_time;     /**< Time timer started */
 	int           in_select_mode; /**< keyboard cursor movements select? */
 	int           multiline;      /**< Deal with multiple lines of text? */
+	int           wrap;           /**< Enable wrapping of the text */
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
@@ -79,6 +80,9 @@ void            ewl_entry_color_get(Ewl_Entry *e, int *r, int *g, int *b,
 
 void            ewl_entry_align_set(Ewl_Entry *e, unsigned int align);
 unsigned int    ewl_entry_align_get(Ewl_Entry *e);
+
+void            ewl_entry_wrap_set(Ewl_Entry *e, int wrap);
+int             ewl_entry_wrap_get(Ewl_Entry *e);
 
 void            ewl_entry_index_select(Ewl_Entry *e, int si, int ei);
 void            ewl_entry_coord_select(Ewl_Entry *e, int sx, int sy, int ex,
