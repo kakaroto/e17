@@ -1125,9 +1125,12 @@ filetype_cache_update(char *filename, time_t time,
 
   if (it)
     {
-      FREE(it->filetype);
-      it->filetype = strdup(filetype);
-      it->time = time;
+      if (time > it->time)
+	{
+	  FREE(it->filetype);
+	  it->filetype = strdup(filetype);
+	  it->time = time;
+	}
     }
   else
     {
@@ -1293,7 +1296,6 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   efsd_lock_get_read_access(filetype_lock);
   cached_result = filetype_cache_lookup(filename);
-  efsd_lock_release_read_access(filetype_lock);
 
   if (cached_result)
     {
@@ -1303,10 +1305,12 @@ efsd_filetype_get(char *filename, char *type, int len)
 	  /* File has not been changed -- use cached value. */
 	  D(("Using cached filetype on %s\n", filename));
 	  strncpy(type, cached_result->filetype, len);
+	  efsd_lock_release_read_access(filetype_lock);
 	  D_RETURN_(TRUE);
 	}
     }
 
+  efsd_lock_release_read_access(filetype_lock);
   D(("Calculating filetype on %s\n", filename));
 
   /* Filetype is not in cache or file has been modified, re-test: */
