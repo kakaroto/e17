@@ -1978,10 +1978,17 @@ HandleMouseUp(XEvent * ev)
 	     ww = WindowAtXY(mode.x, mode.y);
 	     if ((ewin = FindEwinByChildren(ww)))
 	       {
-		  if ((ewin->menu) && (ww != ewin->menu->win))
+		  for (i = 0; i < ewin->border->num_winparts; i++)
 		    {
-		       ewin->menu->stuck = 1;
-		       mode.context_ewin = ewin;
+		       if (ww == ewin->bits[i].win)
+			 {
+			    if (ewin->border->part[i].flags & FLAG_TITLE)
+			      {
+				 ewin->menu->stuck = 1;
+				 mode.context_ewin = ewin;
+				 i = ewin->border->num_winparts;
+			      }
+			 }
 		    }
 	       }
 	  }

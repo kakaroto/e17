@@ -1649,3 +1649,11 @@ Sat Sep 11 14:17:44 PDT 1999
 (Raster)
 
 fix minor sample loading and caching bug.. :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 15:00:52 PDT 1999
+(Raster)
+
+ad onyl allow you to stick menus if you release on the titlebar of the menu...
+much better :)
