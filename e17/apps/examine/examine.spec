@@ -61,14 +61,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{prefix}/bin/exsh
 %{prefix}/bin/examine
-
-%files devel
-%attr(755,root,root) %{prefix}/bin/examine*
 %doc AUTHORS
 %doc COPYING
 %doc README
-%doc examine_docs.tar.gz
 
 %changelog
+* Thu Dec 02 2004 Azundris <hacks@azundris.com>
+- There is are no docs at this stage, so don't package a useless docs.tgz
 * Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
 - Created spec file
