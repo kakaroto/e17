@@ -1,5 +1,5 @@
-libepplet.la
-epplet.lo
+*.la
+*.lo
 .libs
 .deps
 Makefile
