@@ -176,6 +176,47 @@ e_thumb_format_get (Evas_Object * o)
   return (result);
 }
 
+int
+e_thumb_freshen (Evas_Object * o)
+{
+  int result = EPSILON_FAIL;
+  if (o)
+    {
+      E_Thumb *e = NULL;
+      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+	{
+	  if (epsilon_exists (e->e) == EPSILON_FAIL)
+	    {
+	      if (e->image)
+		evas_object_del (e->image);
+	      if (epsilon_exists (e->e) == EPSILON_FAIL)
+		{
+		  if (epsilon_generate (e->e) == EPSILON_OK)
+		    {
+		      result = EPSILON_OK;
+		      evas_image_cache_flush (evas_object_evas_get (o));
+		      e->image =
+			evas_object_image_add (evas_object_evas_get (o));
+		      evas_object_image_file_set (e->image,
+						  epsilon_thumb_file_get (e->
+									  e),
+						  NULL);
+		      if (!evas_object_image_load_error_get (e->image))
+			{
+			  evas_object_image_size_get (e->image, &e->tw,
+						      &e->th);
+			  evas_object_repeat_events_set (e->image, 1);
+			  evas_object_show (e->image);
+			  evas_object_resize (o, e->w, e->h);
+			}
+		    }
+		}
+	    }
+	}
+    }
+  return (result);
+}
+
 /*==========================================================================
  * Smart Object Functions
  *========================================================================*/
