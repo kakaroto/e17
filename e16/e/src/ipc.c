@@ -5701,7 +5701,7 @@ EwinShowInfo1(const EWin * ewin)
 	     border->border.top, border->border.bottom,
 	     ewin->desktop,
 	     ewin->num_groups, ewin->docked, ewin->sticky,
-	     ewin->visible, ewin->iconified, ewin->shaded,
+	     ewin->shown, ewin->iconified, ewin->shaded,
 	     ewin->active, ewin->layer, ewin->never_use_area,
 	     ewin->floating, ewin->client.w, ewin->client.h,
 	     ewin->client.icon_win,
@@ -5756,7 +5756,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "NeverUseArea %i   FixedPos     %i\n"
 	     "Desktop      %i   Layer        %i\n"
 	     "Iconified    %i   Sticky       %i   Shaded       %i   Docked       %i\n"
-	     "State        %i   Visible      %i   Active       %i   Floating     %i\n"
+	     "State        %i   Shown        %i   Active       %i   Floating     %i\n"
 	     "Member of groups        %i\n",
 	     SS(ewin->icccm.wm_name),
 	     SS(ewin->icccm.wm_icon_name),
@@ -5791,7 +5791,7 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->never_use_area, ewin->fixedpos,
 	     ewin->desktop, ewin->layer,
 	     ewin->iconified, ewin->sticky, ewin->shaded, ewin->docked,
-	     ewin->state, ewin->visible, ewin->active, ewin->floating,
+	     ewin->state, ewin->shown, ewin->active, ewin->floating,
 	     ewin->num_groups);
 }
 

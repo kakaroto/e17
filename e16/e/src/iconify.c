@@ -719,7 +719,7 @@ IB_SnapEWin(EWin * ewin)
    ewin->icon_h = h;
 
    ewin->icon_pmm.pmap = ECreatePixmap(disp, ewin->win, w, h, VRoot.depth);
-   if (ewin->visible)
+   if (EwinIsMapped(ewin))
      {
 	ScaleRect(ewin->icon_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h,
 		  w, h);

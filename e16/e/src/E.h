@@ -922,6 +922,8 @@ WinClient;
 #define EWIN_TYPE_ICONBOX       0x04
 #define EWIN_TYPE_PAGER         0x08
 
+#define EwinIsMapped(ewin) (ewin->state >= EWIN_STATE_MAPPED)
+
 struct _ewin
 {
    Window              win;
@@ -945,7 +947,7 @@ struct _ewin
    int                 num_groups;
    char                docked;
    char                sticky;
-   char                visible;
+   char                shown;
    char                iconified;
    char                shaded;
    char                active;

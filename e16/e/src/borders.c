@@ -147,7 +147,7 @@ GetEwinPointerInClient(void)
 	w = ewin->w;
 	h = ewin->h;
 	if ((px >= x) && (py >= y) && (px < (x + w)) && (py < (y + h)) &&
-	    (ewin->visible) && (ewin->state == EWIN_STATE_MAPPED))
+	    EwinIsMapped(ewin))
 	   EDBUG_RETURN(ewin);
      }
 
@@ -2201,9 +2201,9 @@ ShowEwin(EWin * ewin)
 {
    EDBUG(3, "ShowEwin");
 
-   if (ewin->visible)
+   if (ewin->shown)
       EDBUG_RETURN_;
-   ewin->visible = 1;
+   ewin->shown = 1;
 
    if (ewin->client.win)
      {
@@ -2229,9 +2229,9 @@ HideEwin(EWin * ewin)
 {
    EDBUG(3, "HideEwin");
 
-   if (ewin->state != EWIN_STATE_MAPPED || !ewin->visible)
+   if (!ewin->shown || !EwinIsMapped(ewin))
       EDBUG_RETURN_;
-   ewin->visible = 0;
+   ewin->shown = 0;
 
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
@@ -3461,7 +3461,7 @@ EwinsEventsConfigure(int mode)
 
 	/* This is a hack. Maybe we should do something with expose events. */
 	if (mode == 0)
-	   if (Mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->visible)
+	   if (Mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->shown)
 	      EwinRefresh(ewin);
      }
 }
