@@ -4,7 +4,6 @@
 
 export DH_COMPAT=2
 
-pwd:=$(shell pwd)
 cfg:=--prefix=/usr
 INSTALL=/usr/bin/install
 package=libewl0
@@ -28,11 +27,13 @@ install: build
 	dh_clean -k
 	dh_installdirs
 	
-	$(MAKE) install DESTDIR=$(pwd)/debian/$(package)
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)
 	
-	$(INSTALL) -d debian/$(package)-dev/usr/{lib,bin}
+	$(INSTALL) -d debian/$(package)-dev/usr/lib \
+		      debian/$(package)-dev/usr/bin
 	mv debian/$(package)/usr/include debian/$(package)-dev/usr/
-	mv debian/$(package)/usr/lib/*.{a,la,so} debian/$(package)-dev/usr/lib
+	mv debian/$(package)/usr/lib/*.a debian/$(package)/usr/lib/*.la \
+	   debian/$(package)/usr/lib/*.so debian/$(package)-dev/usr/lib
 	mv debian/$(package)/usr/bin/ewl-config debian/$(package)-dev/usr/bin
 
 binary-indep: build install

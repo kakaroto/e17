@@ -150,27 +150,6 @@ char **__imlib_ListFilters(int *num_ret)
    int num, i, pi = 0;
    
    *num_ret = 0;
-   /* get the user's home dir */
-   home = __imlib_FileHomeDir(getuid());
-   s = (char *) malloc(strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 7 + 1);
-   sprintf(s, "%s/" USER_LOADERS_PATH "/filter", home);
-   /* list the dir contents of their loader dir */
-   l = __imlib_FileDir(s, &num);
-   /* if theres files */
-   if (num > 0)
-   {
-      /* make a list of them */
-      *num_ret += num;
-      list = malloc(sizeof(char *) * *num_ret);
-      for (i = 0; i < num; i++)
-      {
-         s = (char *) realloc(s, strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 8 + strlen(l[i]) + 1);
-	 sprintf(s, "%s/" USER_LOADERS_PATH "/filter/%s", home, l[i]);
-	 list[i] = strdup(s);
-      }
-      pi = i;
-      __imlib_FileFreeDirList(l, num);
-   }
    /* same for system loader path */
    s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 7 + 1);
    sprintf(s, SYS_LOADERS_PATH "/filter");

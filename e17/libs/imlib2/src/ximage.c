@@ -7,7 +7,7 @@
 #include "ximage.h"
 
 /* static private variables */
-static char              x_does_shm = -1;
+static signed char       x_does_shm = -1;
 static int               list_num = 0;
 static XImage          **list_xim = NULL;
 static XShmSegmentInfo **list_si = NULL;

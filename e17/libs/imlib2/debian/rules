@@ -46,20 +46,27 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	$(MAKE) install DESTDIR=$(shell pwd)/debian/$(package)/
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)/
 	
 	$(INSTALL) -d debian/$(package)-dev/usr/share/man/man1
 	$(INSTALL) -d debian/$(package)-dev/usr/lib/loaders/filter
 	$(INSTALL) -d debian/$(package)-dev/usr/lib/loaders/image
 
 	$(INSTALL) debian/imlib2-config.1 debian/$(package)-dev/usr/share/man/man1
-	mv debian/$(package)/usr/{include,bin} debian/$(package)-dev/usr
-	mv debian/$(package)/usr/lib/*.{so,la,a} debian/$(package)-dev/usr/lib/
-	mv debian/$(package)/usr/lib/loaders/filter/*.{la,a} debian/$(package)-dev/usr/lib/loaders/filter
-	mv debian/$(package)/usr/lib/loaders/image/*.{la,a} debian/$(package)-dev/usr/lib/loaders/image
+	mv debian/$(package)/usr/include debian/$(package)/usr/bin \
+	   debian/$(package)-dev/usr
+	mv debian/$(package)/usr/lib/*.so debian/$(package)/usr/lib/*.la \
+	   debian/$(package)/usr/lib/*.a debian/$(package)-dev/usr/lib/
+	mv debian/$(package)/usr/lib/loaders/filter/*.la \
+	   debian/$(package)/usr/lib/loaders/filter/*.a \
+	   debian/$(package)-dev/usr/lib/loaders/filter
+	mv debian/$(package)/usr/lib/loaders/image/*.la \
+	   debian/$(package)/usr/lib/loaders/image/*.a \
+	   debian/$(package)-dev/usr/lib/loaders/image
 
 	$(INSTALL) -d debian/$(package)-dev/usr/share/doc/$(package)-dev/html
-	$(INSTALL) -m 644 doc/*.{html,gif} debian/$(package)-dev/usr/share/doc/$(package)-dev/html
+	$(INSTALL) -m 644 doc/*.html doc/*.gif \
+		      debian/$(package)-dev/usr/share/doc/$(package)-dev/html
 
 binary-indep:
 
