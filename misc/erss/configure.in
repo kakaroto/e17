@@ -53,8 +53,6 @@ esmart_cflags=`esmart-config --cflags`
 AC_SUBST(edje_libs)
 AC_SUBST(edje_cflags)
 
-
-
 AC_PATH_GENERIC(ewd, 0.0.1, [
   AC_SUBST(ewd_libs)
 	AC_SUBST(ewd_cflags) ],
@@ -63,6 +61,16 @@ ewd_libs=`ewd-config --libs`
 ewd_cflags=`ewd-config --cflags`
 AC_SUBST(ewd_libs)
 AC_SUBST(ewd_cflags)
+
+AC_PATH_GENERIC(xml2, 2.6.0, [
+	AC_SUBST(xml2_libs)
+	AC_SUBST(xml2_cflags) ],
+	AC_MSG_ERROR(Cannot find ewd: Is xml2-config in path?))
+xml2_libs=`xml2-config --libs`
+xml2_cflags=`xml2-config --cflags`
+AC_SUBST(xml2_libs)
+AC_SUBST(xml2_cflags)
+
 
 AC_OUTPUT([
 Makefile

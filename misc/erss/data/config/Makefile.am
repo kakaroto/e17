@@ -15,5 +15,6 @@ kuro5hin.cfg \
 theregister.cfg \
 freshmeat.cfg \
 cnetnews.cfg \
-newsforge.cfg
+newsforge.cfg \
+e-cvs.cfg
 

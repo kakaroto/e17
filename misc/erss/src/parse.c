@@ -105,125 +105,118 @@ int get_end_story (char *buffer)
 		return FALSE;
 }
 
-void remove_garbage (char *c, char *garbage)
+void erss_story_new ()
 {
-	char *str, *tmp;
+		
+	item = malloc (sizeof (Article));
+  item->description = NULL;
+  item->url = NULL;
+  memset(item, 0, sizeof(Article));
+}
 
-	if (!garbage)
-		return;
+void erss_story_end ()
+{
+	ewd_list_append (list, item);
+}
 
-	str = strstr (c, garbage);
+void parse_story (xmlDocPtr doc, xmlNodePtr cur)
+{
+	char *str, *text;
+	int i;
+	
+	cur = cur->xmlChildrenNode;
 
-	if (str) {
-		tmp = strdup(str + strlen(garbage));
-		strcpy (c, tmp);
-		free (tmp);
+	while (cur != NULL) {
+		if (ewd_list_nodes (list) >= cfg->num_stories)
+			return;
+
+		if (!strcmp(cur->name, cfg->item_start)) {
+			erss_story_new ();
+			parse_story (doc, cur);
+			erss_story_end ();
+		} 
+		
+		if ((!strcmp(cur->name, cfg->item_title)) && item) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			
+			i = strlen(str) + 3 + strlen(cfg->prefix);
+			text = malloc (i);
+		
+			snprintf (text, i, " %s %s", cfg->prefix, str);
+			
+			item->obj = edje_object_add (evas);
+			edje_object_file_set (item->obj, cfg->theme, "erss_item");
+			evas_object_show (item->obj);
+
+			evas_object_event_callback_add (item->obj,
+					EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, NULL);
+			evas_object_event_callback_add (item->obj,
+					EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, NULL);
+		
+			e_container_element_append(cont, item->obj);
+			edje_object_part_text_set (item->obj, "article", text);
+
+			free (text);
+		}
+	
+		if (cfg->item_url) {
+			if (!strcmp(cur->name, cfg->item_url) && item) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				item->url = strdup (str);
+
+				edje_object_signal_callback_add (item->obj, "exec*", "*",
+						cb_mouse_out_item, item);
+				edje_object_signal_emit (item->obj, "mouse,in", "article");
+				edje_object_signal_emit (item->obj, "mouse,out", "article");
+			}
+		}
+		
+		if (cfg->item_description) {
+			if (!strcmp(cur->name, cfg->item_description)) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				item->description = strdup (str);
+			}
+		}
+
+		cur = cur->next;
 	}
 }
 
-void parse_data (char *buf)
+void parse_rss (xmlDocPtr doc)
 {
-	char *c;
-	char *text;
-	char *string;
-	int i;
+	xmlNodePtr cur;
 	
-	/* 
-	 * Some of the feeds may have "garbage" in their titles
-	 * we want to remove it.
-	 */
-	char *garbage [2] = {
-		"<![CDATA[",
-		"]]>"
-	};
-	
-	if (!buf || !*buf)
-		return;
-
-	/*
-	printf ("data: %s\n", buf);
-	*/
-
-	if (ewd_list_nodes (list) >= cfg->num_stories)
-		return;
-
-	if (get_new_story (buf))
-	{
-		/* 
-		 * We have a new story, allocate an item for it
-		 */
-		item = malloc (sizeof (Article));
-		item->description = NULL;
-		item->url = NULL;
-		memset(item, 0, sizeof(Article));
-
-		return;
+	if (doc == NULL ) {
+		fprintf(stderr, "%s warn: buffer not parsed successfully.\n", PACKAGE);
 	}
 
-	if (get_end_story (buf))
-	{
-		ewd_list_append (list, item);
-		return;
+	cur = xmlDocGetRootElement(doc);
+
+	if (cur == NULL) {
+		fprintf(stderr,"%s error: empty buffer\n", PACKAGE);
+		xmlFreeDoc(doc);
+		exit (-1);
 	}
 
-	/* If the item is not allocated then we dont have a 
-	 * real story. So return with an error
-	 */
-	if (!item)
-		return;
+	cur = cur->xmlChildrenNode;
+	while (cur != NULL) {
 
-	if ((c = get_element (&buf, cfg->item_title)) != NULL)
-	{
-		for (i = 0; i < 2; i++)
-			remove_garbage (c, garbage[i]);
+		if (cfg->item_root) {
+			if (!strcmp(cur->name, cfg->item_root)) {
+				parse_story (doc, cur);
+			}
+		} else {
+			if (!strcmp(cur->name, cfg->item_start)) {
+				erss_story_new ();
+				parse_story (doc, cur);
+				erss_story_end ();
+			}
+		}
 		
-		string = ecore_txt_convert (rc->enc_to, rc->enc_from, c);
-		
-		i = strlen(string) + 3 + strlen(cfg->prefix);
-		text = malloc (i);
-		
-		snprintf (text, i, " %s %s", cfg->prefix, string);
-		
-		item->obj = edje_object_add (evas);
-		edje_object_file_set (item->obj, cfg->theme, "erss_item");
-		evas_object_show (item->obj);
-
-		evas_object_event_callback_add (item->obj,
-				EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, NULL);
-		evas_object_event_callback_add (item->obj,
-				EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, NULL);
-		
-		e_container_element_append(cont, item->obj);
-		edje_object_part_text_set (item->obj, "article", text);
-
-		free (string);
-		free (text);
-		free (c);
-
-		return; 
+		cur = cur->next;
 	}
 	
-	if ((c = get_element (&buf, cfg->item_url)) != NULL)
-	{
-		item->url = strdup (c);
-
-		edje_object_signal_callback_add (item->obj, "exec*", "*", 
-				cb_mouse_out_item, item);
-		edje_object_signal_emit (item->obj, "mouse,in", "article");
-		edje_object_signal_emit (item->obj, "mouse,out", "article");
-
-		free (c);
-		return;
-	}
-	
-	if ((c = get_element (&buf, cfg->item_description)) != NULL)
-	{
-		item->description = strdup (c);
-		
-		free (c);
-		return;
-	}
-	
+	xmlFreeDoc(doc);
 }
 
 char *get_next_line (FILE * fp)
@@ -377,6 +370,8 @@ void parse_config_file (char *file)
 			cfg->hostname = strdup (c);
 		else if ((c = get_element (&line, "url")) != NULL)
 			cfg->url = strdup (c);
+		else if ((c = get_element (&line, "item_root")) != NULL)
+			cfg->item_root = strdup (c);
 		else if ((c = get_element (&line, "item_start")) != NULL)
 			cfg->item_start = strdup (c);
 		else if ((c = get_element (&line, "item_title")) != NULL) 
@@ -435,4 +430,6 @@ void parse_config_file (char *file)
 	if (!cfg->prefix)
 		cfg->prefix = strdup(" . ");
 
+	if (!cfg->item_title)
+		fprintf (stderr, "%s error: no <item_title> tag defined\n", PACKAGE);
 }

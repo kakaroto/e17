@@ -10,6 +10,7 @@ typedef struct _config {
 	char *hostname;
 	char *url;
 
+	char *item_root;
 	char *item_start;
 	char *item_title;
 	char *item_url;

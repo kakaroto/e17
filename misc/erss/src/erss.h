@@ -5,7 +5,6 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
-#include <Ecore_Txt.h>
 #include <Evas.h>
 #include <Edje.h>
 #include <Ewd.h>
@@ -25,7 +24,8 @@
 #include <errno.h>
 #include <time.h>
 
-#include <assert.h>
+#include <libxml2/libxml/xmlmemory.h>
+#include <libxml2/libxml/parser.h>
 
 #include "config.h"
 
@@ -39,6 +39,7 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig, const char 
 void cb_mouse_in (void *data, Evas *e, Evas_Object *obj, void *event_info);
 void cb_mouse_out (void *data, Evas *e, Evas_Object *obj, void *event_info);
 void list_config_files (int output);
+void parse_rss (xmlDocPtr doc);
 	
 
 #endif

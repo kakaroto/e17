@@ -199,7 +199,8 @@ int handler_server_del (void *data, int type, void *event)
 {
 	Ecore_Con_Event_Server_Del *e = event;
 	char *buf = main_buffer;
-	char *leader;
+	xmlDocPtr doc;
+	char *temp;
 
 	if (total_connects == 1)
 		printf ("%s info: disconnecting ...\n", PACKAGE);
@@ -208,23 +209,10 @@ int handler_server_del (void *data, int type, void *event)
 	 * Now split our buffer in each newline and then parse the line.
 	 */
 
-	while (buf != NULL)
-	{
-		char temp;
+	temp = strchr(buf, '<');
+	doc = xmlParseMemory (temp, main_bufsize - (temp - main_buffer));
 
-		leader = strchr (buf, '\n');
-		if (leader)
-		{
-			temp = *leader;
-			*leader = '\0';
-			parse_data (buf);
-			*leader = temp;
-			buf = leader + 1;
-		} else
-		{
-			buf = leader;
-		}
-	}
+	parse_rss (doc);
 
 	ecore_con_server_del (e->server);
 	server = NULL;
