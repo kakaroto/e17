@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-25 17:46+0200\n"
+"POT-Creation-Date: 2003-05-04 12:33+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2548 src/buttons.c:127 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2577 src/buttons.c:127 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
@@ -245,7 +245,7 @@ msgstr "Перезапуск"
 msgid "Exit"
 msgstr "Выход"
 
-#: src/borders.c:2550
+#: src/borders.c:2579
 msgid "Border Error!"
 msgstr ""
 

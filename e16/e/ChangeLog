@@ -1830,3 +1830,15 @@ Thu May  1 18:55:28 CEST 2003
 
 Make auto* stop whining.
 Removed obsolete po/Makefile.in.in.
+
+-------------------------------------------------------------------------------
+
+Sun May  4 12:42:42 CEST 2003
+(Kim)
+
+Set _NET_ACTIVE_WINDOW (focus window) properly.
+Include E internal windows (dialogs, menus, iconboxes, and pagers) in _NET_CLIENT_LIST.
+Use _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR to hide them as desired.
+(fixes menu's in taskbar problem).
+(Re)enable focusing of dock type windows.
+Commented out some unused code (ewin->expanded_*).
