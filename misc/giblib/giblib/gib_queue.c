@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "gib_queue.h"
+#include "gib_utils.h"
 #include "gib_debug.h"
 
 gib_queue *gib_queue_new()
