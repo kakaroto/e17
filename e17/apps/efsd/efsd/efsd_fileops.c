@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/param.h>
 #include <sys/un.h>
 #include <string.h>
 #include <unistd.h>
@@ -61,7 +62,7 @@ efsd_send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   if (sockfd < 0)
     return (-1);
 
-  ee.type = REPLY;
+  ee.type = EFSD_EVENT_REPLY;
   ee.efsd_reply_event.command = *cmd;
   ee.efsd_reply_event.status = status;
   ee.efsd_reply_event.errorcode = errorcode;
@@ -235,10 +236,24 @@ efsd_stat(EfsdCommand *cmd, int client)
   if (lstat(cmd->efsd_file_cmd.file, st) >= 0)
     result = efsd_send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
   else
-    result = efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client);
+    result = efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client);
 
-  if (st)
-    free(st);
+  FREE(st);
+
+  return result;
+}
+
+
+int  
+efsd_readlink(EfsdCommand *cmd, int client)
+{
+  char           s[MAXPATHLEN];
+  int            result, n;
+
+  if ((n = readlink(cmd->efsd_file_cmd.file, s, MAXPATHLEN)) >= 0)
+    result = efsd_send_reply(cmd, SUCCESS, 0, n, s, client);
+  else
+    result = efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client);
 
   return result;
 }

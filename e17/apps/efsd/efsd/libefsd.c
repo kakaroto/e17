@@ -51,7 +51,9 @@ struct efsd_connection
 
 static void      send_command(EfsdConnection *ec, EfsdCommand *com);
 static EfsdCmdId get_next_id(void);
-
+static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file);
+static EfsdCmdId twofile_cmd(EfsdConnection *ec, EfsdCommandType type,
+			     char *file1, char *file2);
 
 static char*
 get_full_path(char *file)
@@ -94,6 +96,49 @@ get_next_id(void)
   static EfsdCmdId id_counter = 0;
 
   return ++id_counter;
+}
+
+
+static EfsdCmdId 
+file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file)
+{
+  char        *f;
+  EfsdCommand  cmd;
+
+  if (!ec || !file || file[0] == '\0')
+    return -1;
+
+  cmd.type = type;
+  cmd.efsd_file_cmd.id = get_next_id();
+  f = get_full_path(file);
+  cmd.efsd_file_cmd.file = strdup(f);
+  free(f);
+
+  send_command(ec, &cmd);
+  return cmd.efsd_file_cmd.id;
+}
+
+
+static EfsdCmdId 
+twofile_cmd(EfsdConnection *ec, EfsdCommandType type, char *file1, char *file2)
+{
+  char        *f;
+  EfsdCommand  cmd;
+
+  if (!ec || !file1 || file1[0] == '\0' || file2 || file2[0] == '\0')
+    return -1;
+
+  cmd.type = type;
+  cmd.efsd_2file_cmd.id = get_next_id();
+  f = get_full_path(file1);
+  cmd.efsd_2file_cmd.file1 = strdup(f);
+  free(f);
+  f = get_full_path(file2);
+  cmd.efsd_2file_cmd.file2 = strdup(f);
+  free(f);
+  
+  send_command(ec, &cmd);
+  return cmd.efsd_2file_cmd.id;
 }
 
 
@@ -154,7 +199,7 @@ efsd_close(EfsdConnection *ec)
   if (!ec)
     return;
 
-  cmd.type = CLOSE;
+  cmd.type = EFSD_CMD_CLOSE;
   send_command(ec, &cmd);
 
   close(ec->fd);
@@ -210,129 +255,42 @@ efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
 EfsdCmdId      
 efsd_remove(EfsdConnection *ec, char *filename)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !filename || filename[0] == '\0')
-    return -1;
-
-  cmd.type = REMOVE;
-  cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(filename);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_file_cmd.id;
+  return (file_cmd(ec, EFSD_CMD_REMOVE, filename));
 }
 
 
 EfsdCmdId      
 efsd_move(EfsdConnection *ec, char *from_file, char *to_file)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !from_file || from_file[0] == '\0' || !to_file || to_file[0] == '\0')
-    return -1;
-
-  cmd.type = MOVE;
-  cmd.efsd_2file_cmd.id = get_next_id();
-  f = get_full_path(from_file);
-  cmd.efsd_2file_cmd.file1 = strdup(f);
-  free(f);
-  f = get_full_path(to_file);
-  cmd.efsd_2file_cmd.file2 = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_2file_cmd.id;
+  return (twofile_cmd(ec, EFSD_CMD_MOVE, from_file, to_file));
 }
 
 
 EfsdCmdId      
 efsd_copy(EfsdConnection *ec, char *from_file, char *to_file)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !from_file || from_file[0] == '\0' || !to_file || to_file[0] == '\0')
-    return -1;
-
-  cmd.type = COPY;
-  cmd.efsd_2file_cmd.id = get_next_id();
-  f = get_full_path(from_file);
-  cmd.efsd_2file_cmd.file1 = strdup(f);
-  free(f);
-  f = get_full_path(to_file);
-  cmd.efsd_2file_cmd.file2 = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_2file_cmd.id;
+  return (twofile_cmd(ec, EFSD_CMD_COPY, from_file, to_file));
 }
 
 
 EfsdCmdId      
 efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !from_file || from_file[0] == '\0' || !to_file || to_file[0] == '\0')
-    return -1;
-
-  cmd.type = SYMLINK;
-  cmd.efsd_2file_cmd.id = get_next_id();
-  f = get_full_path(from_file);
-  cmd.efsd_2file_cmd.file1 = strdup(f);
-  free(f);
-  f = get_full_path(to_file);
-  cmd.efsd_2file_cmd.file2 = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_2file_cmd.id;
+  return (twofile_cmd(ec, EFSD_CMD_SYMLINK, from_file, to_file));
 }
 
 
 EfsdCmdId      
 efsd_listdir(EfsdConnection *ec, char *dirname)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !dirname || dirname[0] == '\0')
-    return -1;
-
-  cmd.type = LISTDIR;
-  cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(dirname);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_file_cmd.id;
+  return (file_cmd(ec, EFSD_CMD_LISTDIR, dirname));
 }
 
 
 EfsdCmdId      
 efsd_makedir(EfsdConnection *ec, char *dirname)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !dirname || dirname[0] == '\0')
-    return -1;
-
-  cmd.type = MAKEDIR;
-  cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(dirname);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_file_cmd.id;
+  return (file_cmd(ec, EFSD_CMD_MAKEDIR, dirname));
 }
 
 
@@ -345,7 +303,7 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
   if (!ec || !filename || filename[0] == '\0')
     return -1;
 
-  cmd.type = CHMOD;
+  cmd.type = EFSD_CMD_CHMOD;
   cmd.efsd_chmod_cmd.id = get_next_id();
   cmd.efsd_chmod_cmd.mode = mode;
   f = get_full_path(filename);
@@ -368,7 +326,7 @@ efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
       !key || key[0] == '\0' || !data)
     return -1;
 
-  cmd.type = SETMETA;
+  cmd.type = EFSD_CMD_SETMETA;
   cmd.efsd_set_metadata_cmd.id = get_next_id();
   cmd.efsd_set_metadata_cmd.datatype = datatype;
   cmd.efsd_set_metadata_cmd.data_len = data_len;
@@ -393,7 +351,7 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename)
       || !key || key[0] == '\0')
     return -1;
 
-  cmd.type = GETMETA;
+  cmd.type = EFSD_CMD_GETMETA;
   cmd.efsd_get_metadata_cmd.id = get_next_id();
   cmd.efsd_get_metadata_cmd.key = strdup(key);
   f = get_full_path(filename);
@@ -408,58 +366,28 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename)
 EfsdCmdId      
 efsd_start_monitor(EfsdConnection *ec, char *filename)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !filename || filename[0] == '\0')
-    return -1;
-
-  cmd.type = STARTMON;
-  cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(filename);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_file_cmd.id;
+  return (file_cmd(ec, EFSD_CMD_STARTMON, filename));
 }
 
 
 EfsdCmdId      
 efsd_stop_monitor(EfsdConnection *ec, char *filename)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !filename || filename[0] == '\0')
-    return -1;
-
-  cmd.type = STOPMON;
-  cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(filename);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_file_cmd.id;
+  return (file_cmd(ec, EFSD_CMD_STOPMON, filename));
 }
 
 
 EfsdCmdId      
 efsd_stat(EfsdConnection *ec, char *filename)
 {
-  char        *f;
-  EfsdCommand  cmd;
-
-  if (!ec || !filename || filename[0] == '\0')
-    return -1;
-
-  cmd.type = STAT;
-  cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(filename);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
-
-  send_command(ec, &cmd);
-  return cmd.efsd_file_cmd.id;
+  return (file_cmd(ec, EFSD_CMD_STAT, filename));
 }
+
+
+EfsdCmdId      
+efsd_readlink(EfsdConnection *ec, char *filename)
+{
+  return (file_cmd(ec, EFSD_CMD_READLINK, filename));
+}
+
+

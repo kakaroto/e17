@@ -97,55 +97,59 @@ efsd_handle_client_command(EfsdCommand *command, int client)
   
   switch (command->type)
     {
-    case REMOVE:
+    case EFSD_CMD_REMOVE:
       D(("Handling REMOVE\n"));
       result = efsd_remove(command, client);
       break;
-    case MOVE:
+    case EFSD_CMD_MOVE:
       D(("Handling MOVE\n"));
       result = efsd_move(command, client);
       break;
-    case COPY:
+    case EFSD_CMD_COPY:
       D(("Handling COPY\n"));
       result = efsd_copy(command, client);
       break;
-    case SYMLINK:
+    case EFSD_CMD_SYMLINK:
       D(("Handling SYMLINK\n"));
       result = efsd_symlink(command, client);
       break;
-    case LISTDIR:
+    case EFSD_CMD_LISTDIR:
       D(("Handling LISTDIR\n"));
       result = efsd_listdir(command, client);
       break;
-    case MAKEDIR:
+    case EFSD_CMD_MAKEDIR:
       D(("Handling MAKEDIR\n"));
       result = efsd_makedir(command, client);
       break;
-    case CHMOD:
+    case EFSD_CMD_CHMOD:
       D(("Handling CHMOD\n"));
       result = efsd_chmod(command, client);
       break;
-    case SETMETA:
+    case EFSD_CMD_SETMETA:
       D(("Handling SETMETA\n"));
       result = efsd_set_metadata(command, client);
       break;
-    case GETMETA:
+    case EFSD_CMD_GETMETA:
       D(("Handling GETMETA\n"));
       result = efsd_get_metadata(command, client);
       break;
-    case STARTMON:
+    case EFSD_CMD_STARTMON:
       D(("Handling STARTMON\n"));
       result = efsd_start_monitor(command, client);
       break;
-    case STOPMON:
+    case EFSD_CMD_STOPMON:
       D(("Handling STOPMON\n"));
       result = efsd_stop_monitor(command, client);
       break;
-    case STAT:
+    case EFSD_CMD_STAT:
       D(("Handling STAT\n"));
       result = efsd_stat(command, client);
       break;
-    case CLOSE:
+    case EFSD_CMD_READLINK:
+      D(("Handling READLINK\n"));
+      result = efsd_readlink(command, client);
+      break;
+    case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
       result = efsd_close_connection(client);
       break;
@@ -179,8 +183,8 @@ efsd_handle_fam_events(void)
 	  m = (EfsdFamMonitor*)famev.userdata;
 
 	  bzero(&ee, sizeof(EfsdEvent));
-	  ee.type = FILECHANGE;
-	  ee.efsd_filechange_event.changecode = famev.code;
+	  ee.type = EFSD_EVENT_FILECHANGE;
+	  ee.efsd_filechange_event.changetype = (EfsdFilechangeType)famev.code;
 	  ee.efsd_filechange_event.file = strdup(famev.filename);
 	  
 	  switch(m->type)

@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fam.h>
 
 #define EFSD_CLIENTS      100
 
@@ -42,19 +41,43 @@ typedef enum efsd_status
 }
 EfsdStatus;
 
+typedef enum efsd_filechange_type
+{
+  EFSD_CHANGE_CHANGED     = 1,
+  EFSD_CHANGE_DELETED     = 2,
+  EFSD_CHANGE_START_EXEC  = 3,
+  EFSD_CHANGE_STOP_EXEC   = 4,
+  EFSD_CHANGE_CREATED     = 5,
+  EFSD_CHANGE_MOVED       = 6,
+  EFSD_CHANGE_ACKNOWLEDGE = 7,
+  EFSD_CHANGE_EXISTS      = 8,
+  EFSD_CHANGE_END_EXISTS  = 9
+}
+EfsdFilechangeType;
+
 typedef enum efsd_event_type
 {
-  FILECHANGE,
-  REPLY
+  EFSD_EVENT_FILECHANGE,
+  EFSD_EVENT_REPLY
 }
 EfsdEventType;
 
 typedef enum efsd_command_type
 {
-  REMOVE, MOVE, COPY, SYMLINK,
-  LISTDIR, MAKEDIR, CHMOD,
-  SETMETA, GETMETA, STARTMON,
-  STOPMON, STAT, CLOSE
+  EFSD_CMD_REMOVE, 
+  EFSD_CMD_MOVE, 
+  EFSD_CMD_COPY, 
+  EFSD_CMD_SYMLINK,
+  EFSD_CMD_LISTDIR, 
+  EFSD_CMD_MAKEDIR, 
+  EFSD_CMD_CHMOD,
+  EFSD_CMD_SETMETA, 
+  EFSD_CMD_GETMETA, 
+  EFSD_CMD_STARTMON,
+  EFSD_CMD_STOPMON, 
+  EFSD_CMD_STAT, 
+  EFSD_CMD_READLINK, 
+  EFSD_CMD_CLOSE
 }
 EfsdCommandType;
 
@@ -158,13 +181,13 @@ EfsdCommand;
 
 /* Events, sent from daemon to client. */
 
-/* Filechange event, generated through FAM.
+/* Filechange event.
 */
 typedef struct efsd_filechange_event
 {
   EfsdEventType       type;
   EfsdCmdId           id;
-  int                 changecode;
+  EfsdFilechangeType  changetype;
   char               *file;
 }
 EfsdFileChangeEvent;

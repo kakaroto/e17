@@ -137,10 +137,12 @@ EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename);
 EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
 
 /* Returns the full file stats in the generated reply,
-   as returned by the lstats() command.
+   as returned by the lstat() command.
  */
 EfsdCmdId      efsd_stat(EfsdConnection *ec, char *filename);
 
+/* Returns the file a symlink points to */
+EfsdCmdId      efsd_readlink(EfsdConnection *ec, char *filename);
 
 #ifdef __cplusplus
 }

@@ -42,5 +42,6 @@ int  efsd_get_metadata(EfsdCommand *cmd, int client);
 int  efsd_start_monitor(EfsdCommand *cmd, int client);
 int  efsd_stop_monitor(EfsdCommand *cmd, int client);
 int  efsd_stat(EfsdCommand *cmd, int client);
+int  efsd_readlink(EfsdCommand *cmd, int client);
 
 #endif

@@ -38,7 +38,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 
 #include <efsd_debug.h>
+#include <efsd_misc.h>
 #include <efsd_io.h>
+
 
 static int     read_data(int sockfd, void *dest, int size);
 static int     read_int(int sockfd, int *dest);
@@ -47,29 +49,19 @@ static int     write_data(int sockfd, void *data, int size);
 static int     write_int(int sockfd, int data);
 static int     write_string(int sockfd, char *s);
 
-static int     read_remove_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_move_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_listdir_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_makedir_cmd(int sockfd, EfsdCommand *cmd);
+static int     read_file_cmd(int sockfd, EfsdCommand *cmd);
+static int     read_2file_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_chmod_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_start_monitor_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_stop_monitor_cmd(int sockfd, EfsdCommand *cmd);
-static int     read_stat_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_filechange_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
 
-static int     write_remove_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_move_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_listdir_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_makedir_cmd(int sockfd, EfsdCommand *cmd);
+static int     write_file_cmd(int sockfd, EfsdCommand *cmd);
+static int     write_2file_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_chmod_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_start_monitor_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_stop_monitor_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_stat_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_filechange_event(int sockfd, EfsdEvent *ee);
 static int     write_reply_event(int sockfd, EfsdEvent *ee);
 
@@ -200,7 +192,7 @@ write_string(int sockfd, char *data)
 
 
 static int     
-read_remove_cmd(int sockfd, EfsdCommand *cmd)
+read_file_cmd(int sockfd, EfsdCommand *cmd)
 {
   int count = 0, count2;
    
@@ -221,7 +213,7 @@ read_remove_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-read_move_cmd(int sockfd, EfsdCommand *cmd)
+read_2file_cmd(int sockfd, EfsdCommand *cmd)
 {
   int count = 0, count2;
    
@@ -238,48 +230,6 @@ read_move_cmd(int sockfd, EfsdCommand *cmd)
   count2 += count;
   
   if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file2))) < 0)
-    return (-1);
-  count2 += count;
-  
-  return (count2);
-}
-
-
-static int     
-read_listdir_cmd(int sockfd, EfsdCommand *cmd)
-{
-  int count = 0, count2;
-   
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
-    return (-1);
-  count2 = count;
-
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
-    return (-1);
-  count2 += count;
-
-  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
-    return (-1);
-  count2 += count;
-
-  return (count2);
-}
-
-
-static int     
-read_makedir_cmd(int sockfd, EfsdCommand *cmd)
-{
-  int count = 0, count2;
-   
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
-    return (-1);
-  count2 = count;
-
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
-    return (-1);
-  count2 += count;
-
-  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
     return (-1);
   count2 += count;
   
@@ -367,69 +317,6 @@ read_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-read_start_monitor_cmd(int sockfd, EfsdCommand *cmd)
-{
-  int count = 0, count2;
-   
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
-    return (-1);
-  count2 = count;
-
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
-    return (-1);
-  count2 += count;
-
-  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
-    return (-1);
-  count2 += count;
-
-  return (count2);
-}
-
-
-static int     
-read_stop_monitor_cmd(int sockfd, EfsdCommand *cmd)
-{
-  int count = 0, count2;
-   
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
-    return (-1);
-  count2 = count;
-
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
-    return (-1);
-  count2 += count;
-
-  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
-    return (-1);
-  count2 += count;
-  
-  return (count2);
-}
-
-
-static int     
-read_stat_cmd(int sockfd, EfsdCommand *cmd)
-{
-  int count = 0, count2;
-   
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
-    return (-1);
-  count2 = count;
-
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
-    return (-1);
-  count2 += count;
-
-  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
-    return (-1);
-  count2 += count;
-  
-  return (count2);
-}
-
-
-static int     
 read_filechange_event(int sockfd, EfsdEvent *ee)
 {
   int count, count2;
@@ -438,7 +325,7 @@ read_filechange_event(int sockfd, EfsdEvent *ee)
     return (-1);
   count2 = count;
 
-  if ((count = read_int(sockfd, &(ee->efsd_filechange_event.changecode))) < 0)
+  if ((count = read_int(sockfd, (int*)&(ee->efsd_filechange_event.changetype))) < 0)
     return (-1);
   count2 += count;
 
@@ -490,7 +377,7 @@ read_reply_event(int sockfd, EfsdEvent *ee)
 
 
 static int     
-write_remove_cmd(int sockfd, EfsdCommand *cmd)
+write_file_cmd(int sockfd, EfsdCommand *cmd)
 {
   if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
     return (-1);
@@ -506,7 +393,7 @@ write_remove_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-write_move_cmd(int sockfd, EfsdCommand *cmd)
+write_2file_cmd(int sockfd, EfsdCommand *cmd)
 {
   if (write_int(sockfd, cmd->efsd_2file_cmd.id) < 0)
     return (-1);
@@ -518,38 +405,6 @@ write_move_cmd(int sockfd, EfsdCommand *cmd)
     return (-1);
 
   if (write_string(sockfd, cmd->efsd_2file_cmd.file2) < 0)
-    return (-1);
-
-  return (0);
-}
-
-
-static int     
-write_listdir_cmd(int sockfd, EfsdCommand *cmd)
-{
-  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    return (-1);
-
-  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    return (-1);
-  
-  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
-    return (-1);
-
-  return (0);
-}
-
-
-static int     
-write_makedir_cmd(int sockfd, EfsdCommand *cmd)
-{
-  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    return (-1);
-
-  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    return (-1);
-  
-  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
     return (-1);
 
   return (0);
@@ -617,60 +472,12 @@ write_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-write_start_monitor_cmd(int sockfd, EfsdCommand *cmd)
-{
-  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    return (-1);
-
-  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    return (-1);
-
-  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
-    return (-1);
-
-  return (0);
-}
-
-
-static int     
-write_stop_monitor_cmd(int sockfd, EfsdCommand *cmd)
-{
-  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    return (-1);
-
-  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    return (-1);
-
-  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
-    return (-1);
-
-  return (0);
-}
-
-
-static int     
-write_stat_cmd(int sockfd, EfsdCommand *cmd)
-{
-  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    return (-1);
-
-  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    return (-1);
-
-  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
-    return (-1);
-
-  return (0);
-}
-
-
-static int     
 write_filechange_event(int sockfd, EfsdEvent *ee)
 {
   if (write_int(sockfd, ee->efsd_filechange_event.id) < 0)
     return (-1);
 
-  if (write_int(sockfd, ee->efsd_filechange_event.changecode) < 0)
+  if (write_int(sockfd, ee->efsd_filechange_event.changetype) < 0)
     return (-1);
 
   if (write_string(sockfd, ee->efsd_filechange_event.file) < 0)
@@ -718,37 +525,29 @@ efsd_write_command(int sockfd, EfsdCommand *cmd)
   
   switch (cmd->type)
     {
-    case REMOVE:
-      result = write_remove_cmd(sockfd, cmd);
+    case EFSD_CMD_REMOVE:
+    case EFSD_CMD_LISTDIR:
+    case EFSD_CMD_MAKEDIR:
+    case EFSD_CMD_STARTMON:
+    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STAT:
+    case EFSD_CMD_READLINK:
+      result = write_file_cmd(sockfd, cmd);
       break;
-    case MOVE:
-      result = write_move_cmd(sockfd, cmd);
+    case EFSD_CMD_MOVE:
+    case EFSD_CMD_SYMLINK:
+      result = write_2file_cmd(sockfd, cmd);
       break;
-    case LISTDIR:
-      result = write_listdir_cmd(sockfd, cmd);
-      break;
-    case MAKEDIR:
-      result = write_makedir_cmd(sockfd, cmd);
-      break;
-    case CHMOD:
+    case EFSD_CMD_CHMOD:
       result = write_chmod_cmd(sockfd, cmd);
       break;
-    case SETMETA:
+    case EFSD_CMD_SETMETA:
       result = write_set_metadata_cmd(sockfd, cmd);
       break;
-    case GETMETA:
+    case EFSD_CMD_GETMETA:
       result = write_get_metadata_cmd(sockfd, cmd); 
       break;
-    case STARTMON:
-      result = write_start_monitor_cmd(sockfd, cmd);   
-      break;
-    case STOPMON:
-      result = write_stop_monitor_cmd(sockfd, cmd);    
-      break;
-    case STAT:
-      result = write_stat_cmd(sockfd, cmd);    
-      break;
-    case CLOSE:
+    case EFSD_CMD_CLOSE:
       result = 0;
       break;
     default:
@@ -774,37 +573,29 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
     {
       switch (cmd->type)
 	{
-	case REMOVE:
-	  result = read_remove_cmd(sockfd, cmd);
+	case EFSD_CMD_REMOVE:
+	case EFSD_CMD_LISTDIR:
+	case EFSD_CMD_MAKEDIR:
+	case EFSD_CMD_STARTMON:
+	case EFSD_CMD_STOPMON:
+	case EFSD_CMD_STAT:
+	case EFSD_CMD_READLINK:
+	  result = read_file_cmd(sockfd, cmd);
 	  break;
-	case MOVE:
-	  result = read_move_cmd(sockfd, cmd);
+	case EFSD_CMD_MOVE:
+	case EFSD_CMD_SYMLINK:
+	  result = read_2file_cmd(sockfd, cmd);
 	  break;
-	case LISTDIR:
-	  result = read_listdir_cmd(sockfd, cmd);
-	  break;
-	case MAKEDIR:
-	  result = read_makedir_cmd(sockfd, cmd);
-	  break;
-	case CHMOD:
+	case EFSD_CMD_CHMOD:
 	  result = read_chmod_cmd(sockfd, cmd);
 	  break;
-	case SETMETA:
+	case EFSD_CMD_SETMETA:
 	  result = read_set_metadata_cmd(sockfd, cmd);
 	  break;
-	case GETMETA:
+	case EFSD_CMD_GETMETA:
 	  result = read_get_metadata_cmd(sockfd, cmd); 
 	  break;
-	case STARTMON:
-	  result = read_start_monitor_cmd(sockfd, cmd);   
-	  break;
-	case STOPMON:
-	  result = read_stop_monitor_cmd(sockfd, cmd);    
-	  break;
-	case STAT:
-	  result = read_stat_cmd(sockfd, cmd);    
-	  break;
-	case CLOSE:
+	case EFSD_CMD_CLOSE:
 	  result = 0;
 	  break;
 	default:
@@ -829,10 +620,10 @@ efsd_write_event(int sockfd, EfsdEvent *ee)
 
   switch (ee->type)
     {
-    case FILECHANGE:
+    case EFSD_EVENT_FILECHANGE:
       result = write_filechange_event(sockfd, ee);    
       break;
-    case REPLY:
+    case EFSD_EVENT_REPLY:
       result = write_reply_event(sockfd, ee);    
       break;
     default:
@@ -858,10 +649,10 @@ efsd_read_event(int sockfd, EfsdEvent *ee)
     {
       switch (ee->type)
 	{
-	case FILECHANGE:
+	case EFSD_EVENT_FILECHANGE:
 	  result = read_filechange_event(sockfd, ee);    
 	  break;
-	case REPLY:
+	case EFSD_EVENT_REPLY:
 	  result = read_reply_event(sockfd, ee);    
 	  break;
 	default:
@@ -880,62 +671,31 @@ efsd_cleanup_command(EfsdCommand *ecom)
 
   switch (ecom->type)
     {
-    case REMOVE:
-    case LISTDIR:
-    case MAKEDIR:
-    case CHMOD:
-    case STARTMON:
-    case STOPMON:
-    case STAT:
-      if (ecom->efsd_file_cmd.file)
-	 {
-	    free(ecom->efsd_file_cmd.file);
-	    ecom->efsd_file_cmd.file = NULL;
-	 }
+    case EFSD_CMD_REMOVE:
+    case EFSD_CMD_LISTDIR:
+    case EFSD_CMD_MAKEDIR:
+    case EFSD_CMD_CHMOD:
+    case EFSD_CMD_STARTMON:
+    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STAT:
+    case EFSD_CMD_READLINK:
+      FREE(ecom->efsd_file_cmd.file);
       break;
-    case MOVE:
-    case SYMLINK:
-      if (ecom->efsd_2file_cmd.file2)
-	 {
-	    free(ecom->efsd_2file_cmd.file1);
-	    ecom->efsd_2file_cmd.file1 = NULL;
-	 }
-      if (ecom->efsd_2file_cmd.file2)
-	 {
-	    free(ecom->efsd_2file_cmd.file2);
-	    ecom->efsd_2file_cmd.file2 = NULL;
-	 }
+    case EFSD_CMD_MOVE:
+    case EFSD_CMD_SYMLINK:
+      FREE(ecom->efsd_2file_cmd.file1);
+      FREE(ecom->efsd_2file_cmd.file2);
       break;
-    case SETMETA:
-      if (ecom->efsd_set_metadata_cmd.data)
-	 {
-	    free(ecom->efsd_set_metadata_cmd.data);
-	    ecom->efsd_set_metadata_cmd.data = NULL;
-	 }
-      if (ecom->efsd_set_metadata_cmd.key)
-	 {
-	    free(ecom->efsd_set_metadata_cmd.key);
-	    ecom->efsd_set_metadata_cmd.key = NULL;
-	 }
-      if (ecom->efsd_set_metadata_cmd.file)
-	 {
-	    free(ecom->efsd_set_metadata_cmd.file);
-	    ecom->efsd_set_metadata_cmd.file = NULL;
-	 }
+    case EFSD_CMD_SETMETA:
+      FREE(ecom->efsd_set_metadata_cmd.data);
+      FREE(ecom->efsd_set_metadata_cmd.key);
+      FREE(ecom->efsd_set_metadata_cmd.file);
       break;
-    case GETMETA:
-      if (ecom->efsd_get_metadata_cmd.key)
-	 {
-	    free(ecom->efsd_get_metadata_cmd.key);
-	    ecom->efsd_get_metadata_cmd.key = NULL;
-	 }
-      if (ecom->efsd_get_metadata_cmd.file)
-	 {
-	    free(ecom->efsd_get_metadata_cmd.file);
-	    ecom->efsd_get_metadata_cmd.file = NULL;
-	 }
+    case EFSD_CMD_GETMETA:
+      FREE(ecom->efsd_get_metadata_cmd.key);
+      FREE(ecom->efsd_get_metadata_cmd.file);
       break;
-    case CLOSE:
+    case EFSD_CMD_CLOSE:
       break;
     default:
     }
@@ -950,19 +710,11 @@ efsd_cleanup_event(EfsdEvent *ev)
   
   switch (ev->type)
     {
-    case REPLY:
-      if (ev->efsd_reply_event.data)
-	 {
-	    free(ev->efsd_reply_event.data);
-	    ev->efsd_reply_event.data = NULL;
-	 }
+    case EFSD_EVENT_REPLY:
+      FREE(ev->efsd_reply_event.data);
       break;
-    case FILECHANGE:
-      if (ev->efsd_filechange_event.file)
-	 {
-	    free(ev->efsd_filechange_event.file);
-	    ev->efsd_filechange_event.file = NULL;
-	 }
+    case EFSD_EVENT_FILECHANGE:
+      FREE(ev->efsd_filechange_event.file);
       break;
     default:
     }     

@@ -32,7 +32,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include <libefsd.h>
+#include <fam.h>
 
 /* This one demonstrates how to read events
    from efsd in blocking mode, by calling
@@ -108,50 +110,50 @@ void handle_efsd_event(EfsdEvent *ee)
 {
   switch (ee->type)
     {
-    case FILECHANGE:
-      switch (ee->efsd_filechange_event.changecode)
+    case EFSD_EVENT_FILECHANGE:
+      switch (ee->efsd_filechange_event.changetype)
 	{
-	case FAMChanged:
+	case EFSD_CHANGE_CHANGED:
 	  printf("Filechange event for cmd %i: %s changed.\n", 
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMDeleted:
+	case EFSD_CHANGE_DELETED:
 	  printf("Filechange event for cmd %i: %s deleted.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMStartExecuting:
+	case EFSD_CHANGE_START_EXEC:
 	  printf("Filechange event for cmd %i: %s started.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMStopExecuting:
+	case EFSD_CHANGE_STOP_EXEC:
 	  printf("Filechange event for cmd %i: %s stopped.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMCreated:
+	case EFSD_CHANGE_CREATED:
 	  printf("Filechange event for cmd %i: %s created.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMMoved:
+	case EFSD_CHANGE_MOVED:
 	  printf("Filechange event for cmd %i: %s moved.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMAcknowledge:
+	case EFSD_CHANGE_ACKNOWLEDGE:
 	  printf("Filechange event for cmd %i: %s acked.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMExists:
+	case EFSD_CHANGE_EXISTS:
 	  printf("Filechange event for cmd %i: %s exists.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case FAMEndExist:
+	case EFSD_CHANGE_END_EXISTS:
 	  printf("Filechange event for cmd %i: %s end exists.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
@@ -163,54 +165,54 @@ void handle_efsd_event(EfsdEvent *ee)
 	  break;
 	}
       break;
-    case REPLY:
+    case EFSD_EVENT_REPLY:
       switch (ee->efsd_reply_event.command.type)
 	{
-	case REMOVE:
+	case EFSD_CMD_REMOVE:
 	  printf("Remove event %i\n -- removing %s\n",
 		 ee->efsd_reply_event.command.efsd_file_cmd.id,
 		 ee->efsd_reply_event.command.efsd_file_cmd.file);		 
 	  break;
-	case MOVE:
+	case EFSD_CMD_MOVE:
 	  printf("Move event %i\n -- moving %s to %s\n",
 		 ee->efsd_reply_event.command.efsd_2file_cmd.id,
 		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
 		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
 	  break;
-	case SYMLINK:
+	case EFSD_CMD_SYMLINK:
 	  printf("Symlink event %i\n",
 		 ee->efsd_reply_event.command.efsd_2file_cmd.id);
 	  break;
-	case LISTDIR:
+	case EFSD_CMD_LISTDIR:
 	  printf("Listdir event %i\n",
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
-	case MAKEDIR:
+	case EFSD_CMD_MAKEDIR:
 	  printf("Mkdir event %i\n -- creating %s\n",
 		 ee->efsd_reply_event.command.efsd_file_cmd.id,
 		 ee->efsd_reply_event.command.efsd_file_cmd.file);
 	  break;
-	case CHMOD:
+	case EFSD_CMD_CHMOD:
 	  printf("Chmod event %i\n", 
 		 ee->efsd_reply_event.command.efsd_chmod_cmd.id);
 	  break;
-	case SETMETA:
+	case EFSD_CMD_SETMETA:
 	  printf("Setmeta event %i\n", 
 		 ee->efsd_reply_event.command.efsd_set_metadata_cmd.id);
 	  break;
-	case GETMETA:
+	case EFSD_CMD_GETMETA:
 	  printf("Getmeta event %i\n", 
 		 ee->efsd_reply_event.command.efsd_get_metadata_cmd.id);
 	  break;
-	case STARTMON:
+	case EFSD_CMD_STARTMON:
 	  printf("Startmon event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
-	case STOPMON:
+	case EFSD_CMD_STOPMON:
 	  printf("Stopmon event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
-	case STAT:
+	case EFSD_CMD_STAT:
 	  {
 	    struct stat *st;
 
@@ -235,7 +237,15 @@ void handle_efsd_event(EfsdEvent *ee)
 
 	  }
 	  break;
-	case CLOSE:
+	case EFSD_CMD_READLINK:
+	  printf("Readlink event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  if (ee->efsd_reply_event.status == SUCCESS)
+	    {
+	      printf("target is %s\n", (char*)ee->efsd_reply_event.data);
+	    }
+	  break;
+	case EFSD_CMD_CLOSE:
 	  printf("Close event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
@@ -336,6 +346,12 @@ main(int argc, char** argv)
   /* Stat a file */
   id = efsd_stat(ec, "/bin/");
   printf("Stat()ing file, command ID %i\n", id);
+
+  sleep(2);
+
+  /* Readlink a file */
+  id = efsd_readlink(ec, "horms-is-flim.demo");
+  printf("Readlink file, command ID %i\n", id);
 
   sleep(2);
 
