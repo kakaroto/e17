@@ -210,6 +210,7 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
    } else {
       /* Change at the top */
       term->tcanvas->scroll_region_start += size;
+      term->cur_row -= size;
       if (term->tcanvas->scroll_region_start < 0)
 	 term->tcanvas->scroll_region_start += term->tcanvas->scroll_size;
       else if (term->tcanvas->scroll_region_start >= term->tcanvas->scroll_size)
@@ -221,8 +222,9 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 				    * sizeof(Term_TGlyph));
    for (x = 1; x < term->tcanvas->scroll_size; x++)
       term->tcanvas->grid[x] = &term->tcanvas->grid[x - 1][num_chars_w];
-   memset(term->tcanvas->grid[0], 0, num_chars_w * term->tcanvas->scroll_size * sizeof(Term_TGlyph));
    /* FIXME: Initialize new characters if we get bigger */
+   /* FIXME: Keep old text! */
+   memset(term->tcanvas->grid[0], 0, num_chars_w * term->tcanvas->scroll_size * sizeof(Term_TGlyph));
 
    /* Mark all visible characters changed */
    if (term->tcanvas->scroll_region_start < term->tcanvas->scroll_region_end) {
@@ -301,12 +303,12 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
    evas_object_layer_set(gl->bg, 1);
 #endif
 
+   term->tcanvas->cols = num_chars_w;
+   term->tcanvas->rows = num_chars_h;
+
    if (ioctl(term->cmd_fd.sys, TIOCSWINSZ, get_font_dim(term)) < 0) {
       fprintf(stderr, "Couldn't set window size: %m\n");
    }
-
-   term->tcanvas->cols = num_chars_w;
-   term->tcanvas->rows = num_chars_h;
 
    term->w = term->font.width * term->tcanvas->cols;
    term->h = term->font.height * term->tcanvas->rows;
