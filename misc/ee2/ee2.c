@@ -12,7 +12,7 @@
 GtkWidget *EventBox;
 
 GtkWidget *MainWindow, *FileSel, *SaveSel,
-			 *RootMenu, *area, *vbox1;
+			 *RootMenu, *area;
 
 GtkWidget *FileMenu, *FileItem, *FOpen, *FSave, *FSaveAs,
 			 *FSep1, *FExit;
@@ -47,7 +47,6 @@ int main(int argc, char **argv)
 	SaveSel = gtk_file_selection_new("Save Image As...");
 	RootMenu = gtk_menu_new();
 	area = gtk_drawing_area_new();
-	vbox1 = gtk_vbox_new(FALSE, 0);
 	FileMenu = gtk_menu_new();
 	FileItem = gtk_menu_item_new_with_label("File");
 	ImageMenu = gtk_menu_new();
@@ -76,8 +75,9 @@ int main(int argc, char **argv)
 	gtk_widget_set_sensitive(ISep4, FALSE);
 	IScale = gtk_menu_item_new_with_label("Scale Image");
 	
+	gtk_window_set_policy(GTK_WINDOW(MainWindow), 1, 1, 1);
 	gtk_window_set_title(GTK_WINDOW(MainWindow), "Electric Eyes 2");
-	gtk_container_add(GTK_CONTAINER(MainWindow), vbox1);
+	gtk_container_add(GTK_CONTAINER(MainWindow), EventBox);
 	
 	/* menu stuff */
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(FileItem), FileMenu);
@@ -154,9 +154,6 @@ int main(int argc, char **argv)
 	gtk_signal_connect_object(GTK_OBJECT(EventBox), "button_press_event",
 							 GTK_SIGNAL_FUNC(ButtonPressed), GTK_OBJECT(RootMenu));
 
-	/* pack into box */
-	gtk_box_pack_start(GTK_BOX(vbox1), EventBox, TRUE, TRUE, 0);
-	
 	/* pack the drawing area into the event box.  this
 	 * will allow us to bind X events to the drawing 
 	 * area... for menus and such...
@@ -200,7 +197,6 @@ int main(int argc, char **argv)
 	gtk_widget_show(ISep4);
 	gtk_widget_show(IScale);
 	gtk_widget_show(area);
-	gtk_widget_show(vbox1);
 	gtk_widget_show(MainWindow);
 
 	gtk_main();
