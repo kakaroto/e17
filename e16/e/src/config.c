@@ -2068,9 +2068,9 @@ Config_ECursor(FILE * ConfigFile)
 	     ESetColor(&xclr, r, g, b);
 	     break;
 	  case CURS_FG_RGB:
-	     EGetColor(&xclr, &r, &g, &b);
+	     EGetColor(&xclr2, &r, &g, &b);
 	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
-	     ESetColor(&xclr, r, g, b);
+	     ESetColor(&xclr2, r, g, b);
 	     break;
 	  case XBM_FILE:
 	     file = Estrdup(s2);
