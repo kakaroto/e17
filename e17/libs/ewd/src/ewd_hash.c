@@ -287,10 +287,12 @@ void *ewd_hash_remove(Ewd_Hash *hash, void *key)
 		}
 
 		if (node)
+		  {
 			ewd_list_remove(list);
 
-		ret = node->value;
-		FREE(node);
+			ret = node->value;
+			FREE(node);
+		  }
 	}
 
 	EWD_WRITE_UNLOCK(hash);
