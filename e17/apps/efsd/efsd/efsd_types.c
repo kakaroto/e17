@@ -72,8 +72,10 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
       ec_dst->efsd_2file_cmd.file2 = strdup(ec_src->efsd_2file_cmd.file1);
       break;
     case EFSD_CMD_SETMETA:
-      ec_dst->efsd_set_metadata_cmd.data =
-	efsd_misc_memdup(ec_src->efsd_set_metadata_cmd.data, ec_src->efsd_set_metadata_cmd.data_len);
+      ec_dst->efsd_set_metadata_cmd.data = malloc(ec_src->efsd_set_metadata_cmd.data_len);
+      memcpy(ec_dst->efsd_set_metadata_cmd.data,
+	     ec_src->efsd_set_metadata_cmd.data,
+	     ec_src->efsd_set_metadata_cmd.data_len);
       ec_dst->efsd_set_metadata_cmd.key  = strdup(ec_src->efsd_set_metadata_cmd.key);
       ec_dst->efsd_set_metadata_cmd.file = strdup(ec_src->efsd_set_metadata_cmd.file);
       break;

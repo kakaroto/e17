@@ -22,37 +22,12 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_misc_h
-#define __efsd_misc_h
+#ifndef __libefsd_misc_h
+#define __libefsd_misc_h
 
-int    efsd_misc_file_exists(char *filename);
-int    efsd_misc_file_is_dir(char *filename);
-int    efsd_misc_file_writeable(char *filename);
-int    efsd_misc_file_execable(char *filename);
-int    efsd_misc_file_is_dotfile(char *filename);
-
-/* Checks if file paths are identical after making
-   them chanonic -- returns < 0 on error, FALSE
-   if files differ, TRUE otherwise.
-*/
-int    efsd_misc_files_identical(char *file1, char *file2);
-
-int    efsd_misc_mkdir(char *filename);
-void   efsd_misc_remove_trailing_slashes(char *path);
-int    efsd_misc_is_absolute_path(char *path);
-char  *efsd_misc_get_filename_only(char *path);
-char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
-
-#ifdef __EMX__  
-void   efsd_slashify(char *path);
-#endif
-
-void    efsd_misc_check_dir(void);
-void    efsd_misc_remove_socket_file(void);
-int     efsd_misc_close_connection(int client);
-
-char   *efsd_misc_get_user_dir(void);
-char   *efsd_misc_get_sys_dir(void);
-char   *efsd_misc_get_socket_file(void);
+int     misc_file_exists(char *filename);
+char   *misc_get_user_dir(void);
+char   *misc_get_sys_dir(void);
+char   *misc_get_socket_file(void);
 
 #endif

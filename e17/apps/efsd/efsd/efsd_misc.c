@@ -62,7 +62,7 @@ efsd_misc_file_exists(char *filename)
   if (!filename)
     D_RETURN_(FALSE);
 
-  if ((st = efsd_stat(filename)) == NULL)
+  if ((st = efsd_lstat(filename)) == NULL)
     D_RETURN_(FALSE);
 
   D_RETURN_(TRUE);
@@ -470,24 +470,3 @@ efsd_misc_get_socket_file(void)
   s[sizeof(s)-1] = '\0';
   D_RETURN_(s);
 }
-
-
-void  *
-efsd_misc_memdup(void *data, int size)
-{
-  void *result = NULL;
-
-  D_ENTER;
-
-  if (!data)
-    {
-      D_RETURN_(NULL);
-    }
-
-  result = malloc(size);
-  memcpy(result, data, size);
-
-  D_RETURN_(result);
-}
-
-

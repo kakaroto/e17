@@ -216,7 +216,8 @@ file_copy(char *src_path, char *dst_path)
 
   D_ENTER;
 
-  if (efsd_misc_files_identical(src_path, dst_path))
+  if (efsd_misc_file_exists(dst_path) &&
+      efsd_misc_files_identical(src_path, dst_path))
     D_RETURN_(-1);
   
   D(("Copying file %s to %s\n", src_path, dst_path));
@@ -515,7 +516,8 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
       !dst_path || dst_path[0] == '\0')
     D_RETURN_(-1);
 
-  if (efsd_misc_files_identical(src_path, dst_path))
+  if (efsd_misc_file_exists(dst_path) &&
+      efsd_misc_files_identical(src_path, dst_path))
     {
       D(("src and dst are equal in copy -- doing nothing.\n"));
       

@@ -44,9 +44,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_io.h>
 #include <efsd_macros.h>
-#include <efsd_misc.h>
 #include <efsd_options.h>
 #include <efsd_types.h>
+#include <libefsd_misc.h>
 #include <libefsd.h>
 
 struct efsd_connection
@@ -216,7 +216,7 @@ efsd_open(void)
 
   memset(&cli_sun, 0, sizeof(cli_sun));
   cli_sun.sun_family = AF_UNIX;
-  strncpy(cli_sun.sun_path, efsd_misc_get_socket_file(), sizeof(cli_sun.sun_path));
+  strncpy(cli_sun.sun_path, misc_get_socket_file(), sizeof(cli_sun.sun_path));
 
   if (connect(ec->fd, (struct sockaddr*)&cli_sun, sizeof(cli_sun)) < 0)
     {
