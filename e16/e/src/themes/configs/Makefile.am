@@ -12,7 +12,11 @@ definitions \
 control.cfg \
 icondefs.cfg \
 keybindings.cfg \
-menus.cfg
+menus.cfg \
+keybindings.gmc.cfg \
+keybindings.nogmc.cfg \
+control.kde.cfg \
+control.nokde.cfg
 
 if FSSTD
 configdatadir = $(prefix)/share/enlightenment/config
