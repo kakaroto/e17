@@ -639,3 +639,7 @@ Working map implementation using the linked_list class.
 
 Added some new string functions.
 ----------------------------------------------------------------------
+Wed Mar 10 17:58:14 2004                        Michael Jennings (mej)
+
+Added array and dlinked_list implementations of the map interface.
+----------------------------------------------------------------------

@@ -1456,11 +1456,10 @@ test_map(void)
     spif_iterator_t it;
     size_t j;
 
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < 3; i++) {
         if (i == 0) {
             TEST_NOTICE("*** Testing map interface, linked_list class:");
             testmap = SPIF_MAP_NEW(linked_list);
-#if 0
         } else if (i == 1) {
             TEST_NOTICE("*** Testing map interface, dlinked_list class:");
             testmap = SPIF_MAP_NEW(dlinked_list);
@@ -1468,7 +1467,6 @@ test_map(void)
             TEST_NOTICE("*** Testing map interface, array class:");
             testmap = SPIF_MAP_NEW(array);
         } else if (i == 3) {
-#endif
         }
 
         TEST_BEGIN("SPIF_MAP_SET() macro");

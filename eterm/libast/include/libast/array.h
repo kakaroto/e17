@@ -38,5 +38,6 @@ SPIF_DECL_OBJ(array) {
 
 extern spif_listclass_t SPIF_LISTCLASS_VAR(array);
 extern spif_vectorclass_t SPIF_VECTORCLASS_VAR(array);
+extern spif_mapclass_t SPIF_MAPCLASS_VAR(array);
 
 #endif /* _LIBAST_ARRAY_H_ */

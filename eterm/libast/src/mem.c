@@ -466,7 +466,10 @@ spifmem_realloc(const char *var, const char *filename, unsigned long line, void 
 
     D_MEM(("Variable %s (%10p -> %lu) at %s:%lu\n", var, ptr, (unsigned long) size, NONULL(filename), line));
     if (ptr == NULL) {
-        temp = (void *) spifmem_malloc(__FILE__, __LINE__, size);
+        temp = (void *) spifmem_malloc(filename, line, size);
+    } else if (size == 0) {
+        spifmem_free(var, filename, line, ptr);
+        temp = NULL;
     } else {
         temp = (void *) realloc(ptr, size);
         ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
