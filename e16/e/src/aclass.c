@@ -827,34 +827,22 @@ ActionGetModifiers(Action * aa)
    return (aa) ? aa->modifiers : 0;
 }
 
-static int
+static void
 handleAction(EWin * ewin, ActionType * action)
 {
-   /* This function will handle any type of action that is passed into
-    * it.  ALL internal events should be passed through this function.
-    * No exceptions.  --Mandrake (02/26/98)
-    */
-
-   int                 error;
-
-   EDBUG(5, "handleAction");
-
    SetContextEwin(ewin);
-   error = EFunc(action->params);
+   EFunc(action->params);
    SetContextEwin(NULL);
 
    /* Did we just hose ourselves? if so, we'd best not stick around here */
    if (mode_action_destroy)
-      EDBUG_RETURN(0);
+      return;
 
    /* If there is another action in this series, (now that
     * we're sure we didn't already die) perform it
     */
-   if (!error)
-      if (action->next)
-	 error = handleAction(ewin, action->next);
-
-   EDBUG_RETURN(error);
+   if (action->next)
+      handleAction(ewin, action->next);
 }
 
 int
