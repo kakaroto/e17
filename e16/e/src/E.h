@@ -2696,6 +2696,21 @@ void               *MatchEwinByFunction(EWin * ewin,
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* x.c */
+#if INCLUDE_NEW_EVENT_DISPATCHER
+typedef void        (EventCallbackFunc) (XEvent * ev, void *prm);
+void                EventCallbackRegister(Window win, int type,
+					  EventCallbackFunc * func, void *prm);
+void                EventCallbackUnregister(Window win, int type,
+					    EventCallbackFunc * func,
+					    void *prm);
+void                EventCallbacksProcess(XEvent * ev);
+#endif /* INCLUDE_NEW_EVENT_DISPATCHER */
+Pixmap              ECreatePixmap(Display * display, Drawable d,
+				  unsigned int width, unsigned int height,
+				  unsigned depth);
+void                EFreePixmap(Display * display, Pixmap pixmap);
+Window              ECreateWindow(Window parent, int x, int y, int w, int h,
+				  int saveunder);
 void                EMoveWindow(Display * d, Window win, int x, int y);
 void                EResizeWindow(Display * d, Window win, int w, int h);
 void                EMoveResizeWindow(Display * d, Window win, int x, int y,
@@ -2729,12 +2744,6 @@ void                EConfigureWindow(Display * d, Window win, unsigned int mask,
 void                ESetWindowBackgroundPixmap(Display * d, Window win,
 					       Pixmap pmap);
 void                ESetWindowBackground(Display * d, Window win, int col);
-Pixmap              ECreatePixmap(Display * display, Drawable d,
-				  unsigned int width, unsigned int height,
-				  unsigned depth);
-void                EFreePixmap(Display * display, Pixmap pixmap);
-Window              ECreateWindow(Window parent, int x, int y, int w, int h,
-				  int saveunder);
 Window              ECreateEventWindow(Window parent, int x, int y, int w,
 				       int h);
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,

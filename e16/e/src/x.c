@@ -20,12 +20,30 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define INCLUDE_NEW_EVENT_DISPATCHER 0
 #include "E.h"
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 
+#if INCLUDE_NEW_EVENT_DISPATCHER
+typedef struct
+{
+   EventCallbackFunc  *func;
+   void               *prm;
+} EventCallbackItem;
+
+typedef struct
+{
+   int                 num;
+   EventCallbackItem  *lst;
+} EventCallbackList;
+#endif /* INCLUDE_NEW_EVENT_DISPATCHER */
+
 typedef struct _exid
 {
+#if INCLUDE_NEW_EVENT_DISPATCHER
+   EventCallbackList   cbl;
+#endif				/* INCLUDE_NEW_EVENT_DISPATCHER */
    Window              parent;
    Window              win;
    int                 x, y, w, h;
@@ -36,8 +54,7 @@ typedef struct _exid
    int                 depth;
    Pixmap              bgpmap;
    int                 bgcol;
-}
-EXID;
+} EXID;
 
 static XContext     xid_context = 0;
 
@@ -46,20 +63,7 @@ NewXID(void)
 {
    EXID               *xid;
 
-   xid = Emalloc(sizeof(EXID));
-   xid->parent = 0;
-   xid->win = 0;
-   xid->x = 0;
-   xid->y = 0;
-   xid->w = 0;
-   xid->h = 0;
-   xid->num_rect = 0;
-   xid->ord = 0;
-   xid->rects = NULL;
-   xid->depth = 0;
-   xid->mapped = 0;
-   xid->bgpmap = 0;
-   xid->bgcol = 0;
+   xid = Ecalloc(1, sizeof(EXID));
 
    return xid;
 }
@@ -122,6 +126,73 @@ SetXID(Window win, Window parent, int x, int y, int w, int h, int depth)
    return;
    depth = 0;
 }
+
+#if INCLUDE_NEW_EVENT_DISPATCHER
+void
+EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
+		      void *prm)
+{
+   EXID               *xid;
+   EventCallbackItem  *eci;
+
+   xid = FindXID(win);
+   if (xid == NULL)
+      return;
+
+   xid->cbl.num++;
+   xid->cbl.lst =
+      Erealloc(xid->cbl.lst, xid->cbl.num * sizeof(EventCallbackItem));
+   eci = xid->cbl.lst + xid->cbl.num - 1;
+   eci->func = func;
+   eci->prm = prm;
+}
+
+void
+EventCallbackUnregister(Window win, int type __UNUSED__,
+			EventCallbackFunc * func, void *prm)
+{
+   EXID               *xid;
+   EventCallbackList  *ecl;
+   EventCallbackItem  *eci;
+   int                 i;
+
+   xid = FindXID(win);
+   if (xid == NULL)
+      return;
+
+   ecl = &xid->cbl;
+   eci = ecl->lst;
+   for (i = 0; i < ecl->num; i++, eci++)
+      if (eci->func == func && eci->prm == prm)
+	{
+	   /* Well - remove it */
+	   return;
+	}
+}
+
+void
+EventCallbacksProcess(XEvent * ev)
+{
+   EXID               *xid;
+   EventCallbackList  *ecl;
+   EventCallbackItem  *eci;
+   int                 i;
+
+   xid = FindXID(ev->xany.window);
+   if (xid == NULL)
+      return;
+
+   ecl = &xid->cbl;
+   eci = ecl->lst;
+   for (i = 0; i < ecl->num; i++, eci++)
+     {
+	if (EventDebug(200))
+	   Eprintf("EventDispatch: type=%d win=%#lx func=%p prm=%p\n",
+		   ev->type, ev->xany.window, eci->func, eci->prm);
+	eci->func(ev, eci->prm);
+     }
+}
+#endif /* INCLUDE_NEW_EVENT_DISPATCHER */
 
 Pixmap
 ECreatePixmap(Display * display, Drawable d, unsigned int width,
