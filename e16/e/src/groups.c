@@ -31,6 +31,10 @@ FreeGroup(Group * g)
 	if (g->members)
 	   Efree(g->members);
 	Efree(g);
+	/* Make sure the current group isn't left out in limbo.
+	 * Would be better to default to the last used group,
+	 * or maybe the first group.  Fixes a segfault, anyway=o) */
+	current_group = 0;
      }
 }
 

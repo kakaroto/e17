@@ -1054,3 +1054,11 @@ Tue Aug 31 17:31:58 PDT 1999
 (Mandrake)
 
 some more KDE stuff.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 13:48:38 PDT 1999
+(Mandrake)
+
+applied patch from Graham A. MacDonald <graham@34southpark.freeserve.co.uk>
+that fixes a groups segfault
