@@ -50,6 +50,7 @@ enlightenment_SOURCES = \
 	iconify.c		\
 	init.c			\
 	ipc.c			\
+	lang.c			\
 	lists.c			\
 	main.c			\
 	memory.c		\

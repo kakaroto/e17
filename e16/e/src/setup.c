@@ -291,15 +291,6 @@ SetupX()
 		 "server is one the author of Enlightenment neither have\n"
 		 "access to, nor have heard of.\n"), ProtocolVersion(disp));
      }
-   /* now we'll set the locale */
-   setlocale(LC_ALL, "");
-   if (!XSupportsLocale())
-      setlocale(LC_ALL, "C");
-   XSetLocaleModifiers("");
-   setlocale(LC_ALL, NULL);
-
-   /* I dont want any internationalisation of my numeric input & output */
-   setlocale(LC_NUMERIC, "C");
 
    ICCCM_SetIconSizes();
    ICCCM_Focus(NULL);

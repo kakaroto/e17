@@ -70,13 +70,8 @@ main(int argc, char **argv)
    single_screen_mode = 0;
 /*  unsetenv("LD_PRELOAD"); */
 
-/* Part of gettext stuff */
-
-   setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   textdomain(PACKAGE);
-
-/* End of gettext stuff */
+   /* Initialise internationalisation */
+   LangInit();
 
    str = getenv("EDBUG");
    if (str)

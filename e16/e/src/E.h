@@ -2275,6 +2275,10 @@ void                SetupFallbackClasses(void);
 int                 HandleIPC(const char *params, Client * c);
 void                ButtonIPC(int val, void *data);
 
+/* lang.c */
+void                LangInit(void);
+char               *Eiconv(const char *txt, size_t len);
+
 /* lists.c */
 void               *FindItem(const char *name, int id, int find_by, int type);
 void                AddItem(void *item, const char *name, int id, int type);
