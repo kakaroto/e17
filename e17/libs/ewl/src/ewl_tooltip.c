@@ -157,9 +157,6 @@ ewl_tooltip_parent_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	t->x = e->x;
 	t->y = e->y;
 
-	printf ("X: %d Y: %d\n", e->x, e->y);
-	
-
 	if (t->timer) {
 		ecore_timer_del (t->timer);
 		t->timer = NULL;

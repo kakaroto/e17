@@ -392,8 +392,11 @@ void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
 
 	if (node && node->expanded != expanded) {
-		if (!expanded || expanded == EWL_TREE_NODE_COLLAPSED)
+		if (!expanded || expanded == EWL_TREE_NODE_COLLAPSED) {
+			if (!expanded)
+				ewl_widget_hide(node->handle);
 			ewl_tree_node_collapse(EWL_TREE_NODE(node));
+		}
 		else
 			ewl_tree_node_expand(EWL_TREE_NODE(node));
 
@@ -498,6 +501,7 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_container_append_child(EWL_CONTAINER(node), node->handle);
 	ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_tree_node_toggle_cb, node);
+	ewl_widget_show(node->handle);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
@@ -682,6 +686,9 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	if (REALIZED(node->handle) && VISIBLE(node->handle))
 		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_get_preferred_w(EWL_OBJECT(node->handle)));
+
+	if (!node->expanded)
+		ewl_widget_hide(node->handle);
 
 	ewl_widget_configure(EWL_WIDGET(c)->parent);
 

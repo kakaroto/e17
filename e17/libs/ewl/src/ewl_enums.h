@@ -195,7 +195,7 @@ enum Ewl_Tree_Node_Flags
 {
 	EWL_TREE_NODE_NOEXPAND = 0,
 	EWL_TREE_NODE_COLLAPSED = 1,
-	EWL_TREE_NODE_EXPANDED = 2
+	EWL_TREE_NODE_EXPANDED = 2,
 };
 
 typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
