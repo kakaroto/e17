@@ -660,7 +660,8 @@ BackgroundsAccounting(void)
 
 	     /* Unviewable desktop - update the virtual root hints */
 	     win = desks.desk[j].win;
-	     HintsSetRootInfo(win, 0, 0);
+	     if (!Conf.hints.set_xroot_info_on_root_window)
+		HintsSetRootInfo(win, 0, 0);
 	     XSetWindowBackground(disp, win, 0);
 	     XClearWindow(disp, win);
 	  }

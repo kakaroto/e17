@@ -4418,6 +4418,7 @@ IPC_Hints(const char *params, Client * c)
 	   Conf.hints.set_xroot_info_on_root_window = 0;
 	else if (!strncmp(param2, "root", 4))
 	   Conf.hints.set_xroot_info_on_root_window = 1;
+	autosave();
      }
 
    Esnprintf(buf, sizeof(buf), "Set _XROOT* hints: %s",

@@ -1012,6 +1012,10 @@ Config_Control(FILE * ConfigFile)
 		  break;
 	       }
 	     break;
+	  case CONTROL_HINTS_XROOT_HACK:
+	     Conf.hints.set_xroot_info_on_root_window = i2;
+	     break;
+
 	  default:
 	     RecoverUserConfig();
 	     Alert(_("Warning: unable to determine what to do with\n"
@@ -3958,6 +3962,8 @@ SaveUserControlConfig(FILE * autosavefile)
 		XKeysymToString(Conf.menukeys.escape));
 	fprintf(autosavefile, "1390 5 %s\n",
 		XKeysymToString(Conf.menukeys.ret));
+	fprintf(autosavefile, "1391 %i\n",
+		Conf.hints.set_xroot_info_on_root_window);
 #ifdef  HAS_XINERAMA
 	fprintf(autosavefile, "2013 %i\n", (int)Conf.extra_head);
 #endif

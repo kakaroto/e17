@@ -53,8 +53,6 @@ HintsInit(void)
    XChangeProperty(disp, VRoot.win, atom, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)e_wm_version, strlen(e_wm_version));
 
-   Conf.hints.set_xroot_info_on_root_window = 0;
-
    EDBUG_RETURN_;
 }
 
