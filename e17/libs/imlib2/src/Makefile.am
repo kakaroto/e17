@@ -7,6 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in loaderpath.h
 
 LDFLAGS		     = -L/usr/X11R6/lib
 INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
+		       -I$(top_builddir)/src \
                        -I$(top_srcdir)/loaders \
                        $(freetype_cflags) -I/usr/X11R6/include $(X_CFLAGS) \
                        -I$(prefix)/include -I$(includedir)
@@ -41,9 +42,3 @@ libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ \
                        $(x_libs) $(freetype_libs) $(LDFLAGS) -lm
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(X_OBJS)
 endif
-
-SYS_LOADERS_PATH = @pkglibdir@
-image.lo: loaderpath.h
-loaderpath.h: Makefile
-	@echo "#define SYS_LOADERS_PATH \"${SYS_LOADERS_PATH}\"" > $@
-	@echo "#define USER_LOADERS_PATH \".loaders\"" >> $@

@@ -355,14 +355,15 @@ AC_SUBST(dlopen_libs)
 AC_SUBST(freetype_cflags)
 AC_SUBST(freetype_libs)
 
+AC_SUBST(pkglibdir)
+
 dnl AC_SUBST(freetype_libs)
 dnl AC_SUBST(freetype_includes)
 
 AC_CONFIG_FILES([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
-          filters/Makefile demo/Makefile doc/Makefile \
+          filters/Makefile demo/Makefile doc/Makefile src/loaderpath.h \
 	  ])
 AC_CONFIG_COMMANDS([default],[[
-test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h;
 chmod +x imlib2-config
 ]],[[]])
 AC_OUTPUT

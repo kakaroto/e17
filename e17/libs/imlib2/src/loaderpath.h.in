@@ -1,0 +1,2 @@
+#define SYS_LOADERS_PATH "@pkglibdir@"
+#define USER_LOADERS_PATH ".loaders"

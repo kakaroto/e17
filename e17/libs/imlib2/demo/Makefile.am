@@ -14,5 +14,4 @@ INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
 bin_PROGRAMS         = imlib2_view imconvert
 imconvert_SOURCES    = imconvert.c
 imlib2_view_SOURCES  = view.c 
-LDADD    = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
-                       $(x_libs) -lttf $(top_builddir)/src/libImlib2.la
+LDADD    = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
