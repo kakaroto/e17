@@ -264,7 +264,7 @@ void formats(ImlibLoader *l);
 
 static void       xcf_seek_pos (int pos);
 static int        xcf_read_int32 (FILE *fp, DATA32 *data, int count);
-static int        xcf_read_float (FILE *fp, float *data, int count);
+/*static int        xcf_read_float (FILE *fp, float *data, int count);*/
 static int        xcf_read_int8 (FILE *fp, DATA8 *data, int count);
 static int        xcf_read_string (FILE *fp, char **data, int count);
 static char       xcf_load_prop (PropType *prop_type, DATA32 *prop_size);
@@ -309,6 +309,10 @@ extern void combine_pixels_mult (DATA8* src, int src_w, int src_h, DATA8* dest, 
 extern void combine_pixels_div (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 extern void combine_pixels_screen (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 extern void combine_pixels_overlay (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_hue (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_sat (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_val (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_col (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 
 
 /* ---------------------------------------------------------------------------- globals ------------ */
@@ -350,6 +354,7 @@ xcf_read_int32 (FILE     *fp,
   return total * 4;
 }
 
+/*
 static int
 xcf_read_float (FILE     *fp,
 		float    *data,
@@ -357,6 +362,7 @@ xcf_read_float (FILE     *fp,
 {
   return (xcf_read_int32(fp, (DATA32 *)((void *)data), count));
 }
+*/
 
 static int
 xcf_read_int8 (FILE     *fp,
@@ -1431,10 +1437,8 @@ flatten_image(void)
   while (l)
     {   
       /* Ok, paste each layer on top of the image, using the mode's merging type.
-	 We're moving upward through the layer stack. The code that's commented
-	 out is directly from Gimp. Right now fall through all of these
-	 and simply combine the layers.
-                                                           --cK.
+	 We're moving upward through the layer stack.
+                                                                   --cK.
       */
       if (image->single_layer_index < 0 || layer_index == image->single_layer_index)
 	{
@@ -1486,11 +1490,26 @@ flatten_image(void)
 				     l->offset_x, l->offset_y);
 	      break;
 
-	      /* These are still to be finished ... */
 	    case HUE_MODE:
+	      combine_pixels_hue(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case SATURATION_MODE:
+	      combine_pixels_sat(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case VALUE_MODE:
+	      combine_pixels_val(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case COLOR_MODE:
+	      combine_pixels_col(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case DISSOLVE_MODE:
 
 	      /* None of those is actually valid for layer blending, fall through: */
@@ -1633,6 +1652,10 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
    xcf_cleanup();
 
    return 1;
+
+   /* shut up warnings: */
+   progress_granularity = 0;
+   immediate_load = 0;
 }
 
 char 
