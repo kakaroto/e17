@@ -196,7 +196,7 @@ E-ScreenShoot-data/E-ScreenShoot_col.png E-ScreenShoot-data/E-ScreenShoot_miniti
 E-ScreenShoot-data/E-ScreenShoot_minitime2.png E-ScreenShoot-data/E-ScreenShoot_root.png \
 E-ScreenShoot-data/E-ScreenShoot_shoot.png E-ScreenShoot-data/E-ScreenShoot_time.png \
 E-ScreenShoot-data/E-ScreenShoot_win.png Emix-data/Emix.AUTHORS Emix-data/Emix.COPYING \
-Emix-data/Emix.README Emix-data/Emix.TODO
+Emix-data/Emix.README Emix-data/Emix.TODO E-UrlWatch-data/wooeep.wav
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 

@@ -886,3 +886,11 @@ configurable command (I use it to play a sound) when a new URL appears.
 Other misc cleanups have taken place, and I have very carefully hidden a
 couple of juicy bugs. Find them for me, and you win a prize ;)
 
+-------------------------------------------------------------------------------
+
+Sat Nov 26 00:48:19 GMT 1999
+(gilbertt)
+
+Added a groovy new noise for E-UrlWatch to make when a new URL is found.
+Coolness. Now supports TE ootb.
+

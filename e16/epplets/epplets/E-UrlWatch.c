@@ -98,7 +98,7 @@ load_config (void)
   opt.check_url_file = atoi (Epplet_query_config_def ("CHECK_URL_FILE", "1"));
   opt.always_show_file_urls = atoi (Epplet_query_config_def ("ALWAYS_SHOW_FILE_URLS", "0"));
   opt.do_new_url_command =
-    atoi (Epplet_query_config_def ("RUN_COMMAND_ON_NEW_URL", "0"));
+    atoi (Epplet_query_config_def ("RUN_COMMAND_ON_NEW_URL", "1"));
   if (opt.cloak_anim == 16)
     {
       opt.rand_cloak = 1;
@@ -136,7 +136,7 @@ load_config (void)
     free (opt.new_url_command);
   opt.new_url_command =
     _Strdup (Epplet_query_config_def
-	     ("NEW_URL_COMMAND", "esdplay /opt/sounds/Wooeep.wav &"));
+	     ("NEW_URL_COMMAND", "esdplay " EROOT "/epplet_data/E-UrlWatch/wooeep.wav &"));
 }
 
 static void
