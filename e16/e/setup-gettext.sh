@@ -171,32 +171,36 @@ if [ $NUMVAR -gt 0 ]; then
 fi
 
 # Okay, run the main stuff
-if [ "$GETTEXT_TOOL" = "autopoint" ]; then
+if [ $GETTEXT_MINOR_VERSION -eq 12 ]; then
+	[ $VERBOSE -eq 1 ] && echo "  autopoint --force"
+	cp configure.in .tmp-configure.in
+	sed -e "s/^AM_GNU_GETTEXT_VERSION(.*)/AM_GNU_GETTEXT_VERSION($GETTEXT_VERSION)/" < .tmp-configure.in > configure.in
+	autopoint --force || abort
+	mv .tmp-configure.in configure.in
+elif [ "$GETTEXT_TOOL" = "autopoint" ]; then
 	backup_m4
 	[ $VERBOSE -eq 1 ] && echo "  autopoint --force"
 	echo n | autopoint --force || abort
 	restore_m4
+elif [ $GETTEXT_MINOR_VERSION -eq 11 ]; then
+	backup_m4
+
+	# Gettext is pure evil. It DEMANDS that we press Return no matter
+	# what. This gets rid of their happy "feature" of doom.
+	[ $VERBOSE -eq 1 ] && \
+		echo "  gettextize --copy --force --intl --no-changelog"
+
+	sed 's:read .*< /dev/tty::' `which gettextize` > .temp-gettextize
+	chmod +x .temp-gettextize
+	echo n | ./.temp-gettextize --copy --force --intl --no-changelog || abort
+	rm .temp-gettextize
+
+	restore_files
+	restore_m4
+
+	[ -f po/Makevars.template ] && mv po/Makevars.template po/Makevars
 else
-	if [ $GETTEXT_MINOR_VERSION -eq 11 ]; then
-		backup_m4
-
-		# Gettext is pure evil. It DEMANDS that we press Return no matter
-		# what. This gets rid of their happy "feature" of doom.
-		[ $VERBOSE -eq 1 ] && \
-			echo "  gettextize --copy --force --intl --no-changelog"
-
-		sed 's:read .*< /dev/tty::' `which gettextize` > .temp-gettextize
-		chmod +x .temp-gettextize
-		echo n | ./.temp-gettextize --copy --force --intl --no-changelog || abort
-		rm .temp-gettextize
-
-		restore_files
-		restore_m4
-
-		[ -f po/Makevars.template ] && mv po/Makevars.template po/Makevars
-	else
-		[ $VERBOSE -eq 1 ] && echo "  gettextize --copy --force"
-		echo n | gettextize --copy --force || exit;
-	fi
+	[ $VERBOSE -eq 1 ] && echo "  gettextize --copy --force"
+	echo n | gettextize --copy --force || exit;
 fi
 
