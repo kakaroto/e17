@@ -592,10 +592,6 @@ ShowAlert(char *text)
 	       {
 		  ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
 		  h = rect2.width;
-		  printf("rect1: %d %d %d %d\n", rect1.x, rect1.y, rect1.width,
-			 rect1.height);
-		  printf("rect2: %d %d %d %d\n", rect2.x, rect2.y, rect2.width,
-			 rect2.height);
 		  w = 3 + (((580 - mh) * 0) / 4);
 		  DRAW_HEADER(dd, gc, b1, 5 + (mh - h) / 2, 5 - rect2.y, str1);
 		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
