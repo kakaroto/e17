@@ -22,7 +22,8 @@
 #define _GETOPT_H 1
 
 #ifdef	__cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* For communication from `getopt' to the caller.
@@ -77,7 +78,8 @@ extern "C" {
    one).  For long options that have a zero `flag' field, `getopt'
    returns the contents of the `val' field.  */
 
-	struct option {
+	struct option
+	{
 #if defined (__STDC__) && __STDC__
 		const char *name;
 #else
@@ -104,38 +106,37 @@ extern "C" {
 /* Many other libraries have conflicting prototypes for getopt, with
    differences in the consts, in stdlib.h.  To avoid compilation
    errors, only prototype getopt for the GNU C library.  */
-	extern int getopt(int argc, char *const *argv,
-			  const char *shortopts);
+	extern int getopt (int argc, char *const *argv,
+			   const char *shortopts);
 #else				/* not __GNU_LIBRARY__ */
 #ifndef __cplusplus
 
 /* C++ is more pedantic, and demands a full prototype, not this.
    Hope that stdlib.h has a prototype for `getopt'.  */
-	extern int getopt();
+	extern int getopt ();
 #endif				/* __cplusplus */
 #endif				/* __GNU_LIBRARY__ */
-	extern int getopt_long(int argc,
-			       char *const *argv,
-			       const char *shortopts,
-			       const struct option *longopts,
-			       int *longind);
-	extern int getopt_long_only(int argc, char *const *argv,
-				    const char *shortopts,
-				    const struct option *longopts,
-				    int *longind);
+	extern int getopt_long (int argc,
+				char *const *argv,
+				const char *shortopts,
+				const struct option *longopts, int *longind);
+	extern int getopt_long_only (int argc, char *const *argv,
+				     const char *shortopts,
+				     const struct option *longopts,
+				     int *longind);
 
 /* Internal only.  Users should not call this directly.  */
-	extern int _getopt_internal(int argc,
-				    char *const *argv,
-				    const char *shortopts,
-				    const struct option *longopts,
-				    int *longind, int long_only);
+	extern int _getopt_internal (int argc,
+				     char *const *argv,
+				     const char *shortopts,
+				     const struct option *longopts,
+				     int *longind, int long_only);
 #else				/* not __STDC__ */
-	extern int getopt();
-	extern int getopt_long();
-	extern int getopt_long_only();
+	extern int getopt ();
+	extern int getopt_long ();
+	extern int getopt_long_only ();
 
-	extern int _getopt_internal();
+	extern int _getopt_internal ();
 #endif				/* __STDC__ */
 
 #ifdef	__cplusplus

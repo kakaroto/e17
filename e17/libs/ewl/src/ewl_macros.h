@@ -35,4 +35,4 @@
 	if (dat) free(dat); dat = NULL; \
 }
 
-#endif				/* __EWL_MACROS_H__ */
+#endif /* __EWL_MACROS_H__ */

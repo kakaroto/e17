@@ -15,7 +15,8 @@
  */
 typedef enum _ewl_callback_type Ewl_Callback_Type;
 
-enum _ewl_callback_type {
+enum _ewl_callback_type
+{
 	EWL_CALLBACK_EXPOSE,
 	EWL_CALLBACK_REALIZE,
 	EWL_CALLBACK_SHOW,
@@ -48,7 +49,8 @@ enum _ewl_callback_type {
  */
 typedef enum _ewl_orientation Ewl_Orientation;
 
-enum _ewl_orientation {
+enum _ewl_orientation
+{
 	EWL_ORIENTATION_HORIZONTAL,
 	EWL_ORIENTATION_VERTICAL
 };
@@ -59,7 +61,8 @@ enum _ewl_orientation {
  */
 typedef enum _ewl_state Ewl_State;
 
-enum _ewl_state {
+enum _ewl_state
+{
 	EWL_STATE_HILITED = 1,
 	EWL_STATE_PRESSED = 2,
 	EWL_STATE_SELECTED = 4,
@@ -73,7 +76,8 @@ enum _ewl_state {
  */
 typedef enum _ewl_alignment Ewl_Alignment;
 
-enum _ewl_alignment {
+enum _ewl_alignment
+{
 	EWL_ALIGNMENT_CENTER = 0x0,
 	EWL_ALIGNMENT_LEFT = 0x1,
 	EWL_ALIGNMENT_RIGHT = 0x2,
@@ -87,7 +91,8 @@ enum _ewl_alignment {
  */
 typedef enum _ewl_fill_policy Ewl_Fill_Policy;
 
-enum _ewl_fill_policy {
+enum _ewl_fill_policy
+{
 	EWL_FILL_POLICY_NORMAL,
 	EWL_FILL_POLICY_FILL
 };
@@ -97,10 +102,11 @@ enum _ewl_fill_policy {
  */
 typedef enum _ewl_visibility Ewl_Visibility;
 
-enum _ewl_visibility {
+enum _ewl_visibility
+{
 	EWL_VISIBILITY_HIDDEN = 0x0,
 	EWL_VISIBILITY_SHOWN = 0x1,
 	EWL_VISIBILITY_REALIZED = 0x2
 };
 
-#endif				/* __EWL_ENUMS_H__ */
+#endif /* __EWL_ENUMS_H__ */
