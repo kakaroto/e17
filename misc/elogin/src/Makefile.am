@@ -1,8 +1,9 @@
 bin_PROGRAMS = elogin
 
-elogin_SOURCES = mem.c str.c db.c x.c im_engine.c image.c\
-				events.c main.c events.h im_engine.h db.h\
-				image.h main.h  mem.h  str.h  util.h  x.h
+#elogin_SOURCES = mem.c str.c db.c x.c im_engine.c image.c\
+#				events.c main.c events.h im_engine.h db.h\
+#				image.h main.h  mem.h  str.h  util.h  x.h
+elogin_SOURCES = elogin.c main.c main.h elogin.h
 IMAGES =
 
 ELOGIN_BIN=$(prefix)/elogin/bin
@@ -19,6 +20,6 @@ LDADD = \
     $(DL_LIBS)              \
     $(XINERAMA_LIBS)
 
-INCLUDES=-I$(top_srcdir) $(IMLIB2_CFLAGS) -I$(includedir)
+INCLUDES=-I$(top_srcdir) $(IMLIB2_CFLAGS) -I$(includedir) -I../../ewl/src
 
 CFLAGS=-W -Wall -pedantic -g -O
