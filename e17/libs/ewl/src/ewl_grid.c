@@ -203,14 +203,14 @@ ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 
 
 /**
- * ewl_grid_set_col_w - set the width of a column
+ * ewl_grid_col_w_set - set the width of a column
  * @g: the grid
  * @col: the column
  * @width: the new width
  *
  * Returns no value.
  */
-void ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
+void ewl_grid_col_w_set(Ewl_Grid * g, int col, int width)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -241,7 +241,7 @@ void ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
 
 
 /**
- * ewl_grid_get_col_w - get the width of a column
+ * ewl_grid_col_w_get - get the width of a column
  *
  * @g: the grid
  * @col: the column
@@ -249,7 +249,7 @@ void ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
  *
  * Returns no value.
  */
-void ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width)
+void ewl_grid_col_w_get(Ewl_Grid * g, int col, int *width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -261,14 +261,14 @@ void ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width)
 
 
 /**
- * ewl_grid_set_row_h - set the height of a row
+ * ewl_grid_row_h_set - set the height of a row
  * @g: the grid
  * @col: the row
  * @width: the new height
  *
  * Returns no value.
  */
-void ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
+void ewl_grid_row_h_set(Ewl_Grid * g, int row, int height)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -296,7 +296,7 @@ void ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
 }
 
 /**
- * ewl_grid_get_row_h - get the height of a row
+ * ewl_grid_row_h_get - get the height of a row
  *
  * @g: the grid
  * @row: the row
@@ -304,7 +304,7 @@ void ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
  *
  * Returns no value.
  */
-void ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height)
+void ewl_grid_row_h_get(Ewl_Grid * g, int row, int *height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);

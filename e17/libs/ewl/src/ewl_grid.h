@@ -61,11 +61,11 @@ void            ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 			     int start_col, int end_col, int start_row,
 			     int end_row);
 
-void            ewl_grid_set_col_w(Ewl_Grid * g, int col, int width);
-void            ewl_grid_set_row_h(Ewl_Grid * g, int row, int height);
+void            ewl_grid_col_w_set(Ewl_Grid * g, int col, int width);
+void            ewl_grid_row_h_set(Ewl_Grid * g, int row, int height);
 
-void            ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width);
-void            ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height);
+void            ewl_grid_col_w_get(Ewl_Grid * g, int col, int *width);
+void            ewl_grid_row_h_get(Ewl_Grid * g, int row, int *height);
 
 void            ewl_grid_reset(Ewl_Grid * g, int rows, int cols);
 
