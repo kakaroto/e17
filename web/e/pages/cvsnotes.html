@@ -137,35 +137,52 @@
   <td class="border-l" width="25"><img src="img/empty.gif" height="1" width="25" alt=""></td>
   <td class="content" valign="top" align="center" width="100%">
 
-<p class="contenttitle">E17 Build Notes</p>
-<p>After getting E17 from CVS you'll go through the length task of building each of its dependancies.  Below you'll find an ordered list that will help you build E.  Please note that when we say "build" we're talking about a four stage proccess of: autogen.sh, ./configure (if autogen.sh doesn't run it for you), make, make install.  If all goes well you should shoot right through the list.  If you have previously installed E17 and it's libs your order will be diffrent, this list if for fresh installs only.  </p>
-<br>
+<p class="contenttitle">E17 CVS Build Notes</p>
+<p>After getting E17 from CVS you'll go through the length task of building each
+of its dependancies. Below you'll find an ordered list that will help you build
+E. Please note that when we say "build" we're talking about a four stage
+process of: ./autogen.sh, ./configure (if autogen.sh doesn't run it for you),
+make, make install. If all goes well you should shoot right through the list. If
+you have previously installed E17 and its libs your order will be different,
+this list is for fresh installs only. It is generally recommended that any
+existing installations of E17 or any of its components be completely removed
+prior to a build, to avoid the problem we often see where the wrong versions of
+the libraries get linked.</p>
 
-<ol>Build Order:
-<li> Install <a href="ftp://oss.sgi.com/projects/fam/download/">FAM</a>
-<li> Build Imlib2
-<li> Build Edb
-<li> Build Imlib2_loaders
-<li> Build EVAS
-<li> Build EWD
-<li> Build Ebits
-<li> Build ECore
-<li> Build Etox
-<li> Build EWL
-<li> Build Etcher
-<li> Build Esmall
-<li> Build <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a>
-<li> Build EFSD 
-<li> Build <a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a>
-<li> Build <a href="http://www.ferite.org/?page=download">Ferite</a>
-<!--Skip Ebindings.  Not ready yet.-->
-<li> Build E.
+<p>
+E17 CVS Build Order:
+</p>
+<table border="0">
+<tr><td align="left">
+<ol>
+<li>Install <a href="ftp://oss.sgi.com/projects/fam/download/">FAM</a></li>
+<li>Build Imlib2</li>
+<li>Build Edb</li>
+<li>Build Imlib2_loaders</li>
+<li>Build EVAS</li>
+<li>Build EWD</li>
+<li>Build Ebits</li>
+<li>Build ECore</li>
+<li>Build Etox</li>
+<li>Build EWL</li>
+<li>Build Etcher</li>
+<li>Build Esmall</li>
+<li>Build <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a></li>
+<li>Build EFSD</li>
+<li>Build <a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a></li>
+<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a></li>
+<!-- Skip Ebindings.  Not ready yet. -->
+<li>Build E.</li>
 </ol>
+</td></tr>
+</table>
 
-<p>After the build is complete you should make sure FAM is running, edit your .xinitrc and startx.</p>
+<p>After the build is complete you should make sure FAM is running, edit your
+.xinitrc and startx.</p>
 
-<p>Currently the <b>only</b> place you can seek support with E17 build issues is in the #e IRC channel.
-Do <b>not</b> contact developers unless you are positive you've found a bug.</p>
+<p>Currently the <strong>only</strong> place you can seek support with E17 build
+issues is in the #e IRC channel. Don't contact the developers directly unless
+you are positive you've found a bug! Thanks.</p>
 
 </td>
 <td class="border-r" width="25"><img src="img/empty.gif" height="1" width="25" alt=""></td>
