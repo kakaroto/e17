@@ -73,10 +73,6 @@ iconbar_path_set(Evas_Object *obj, char *path)
   evas_object_resize(ib->cont, 20, 200);
   evas_object_show(ib->cont);
   edje_object_part_swallow(ib->gui, "icons", ib->cont); //was clip
-  e_container_spacing_set(ib->cont, 5);
-  e_container_alignment_set(ib->cont, CONTAINER_ALIGN_CENTER);
-  e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
-                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
   e_container_callback_order_change_set(ib->cont, write_out_order, ib);
 
   edje_object_signal_callback_add(ib->gui, "mouse,*", "*", cb_iconbar, ib);
@@ -148,9 +144,11 @@ iconbar_add(Evas_Object *o)
 
   ib->cont = e_container_new(evas);
   e_container_direction_set(ib->cont, 1);
-
-  //ib->clip = evas_object_rectangle_add(evas);
-  //evas_object_layer_set(ib->clip, 100);
+  e_container_spacing_set(ib->cont, 5);
+  e_container_alignment_set(ib->cont, CONTAINER_ALIGN_CENTER);
+  e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
+                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
+  e_container_move_button_set(ib->cont, 2);
 }
 
 
@@ -237,7 +235,6 @@ iconbar_resize(Evas_Object *o, double w, double h)
 
   if (w > h)
   {
-    printf("**** HORIZONTAL ****\n");
     e_container_direction_set(ib->cont, 0);
     e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_Y |
                                           CONTAINER_FILL_POLICY_KEEP_ASPECT);
@@ -317,7 +314,6 @@ positive_scroll_timer(void *data)
  
   ib = (Iconbar *)data;
 
-  printf("scroll pos!\n");
   if (!ib->scroll_timer)
       return(0);
     
@@ -494,7 +490,6 @@ write_out_order(Iconbar *ib)
   char buf[PATH_MAX];
   Evas_List *l, *ll;
 
-  printf("****** WRITE OUT ORDER *****\n");
   snprintf(buf, sizeof(buf), "%s/order.txt", ib->path);
  
 
@@ -580,7 +575,6 @@ cb_exec(void *data, Evas_Object *o, const char *sig, const char *src)
 {
   char *exec = (char *)(sig+5);
  
-  printf("**********exec: %s\n", exec);
   if (!exec_run_in_dir(exec, get_user_home()))
   {
     printf("Error: failed to run \"%s\"\n", exec);
@@ -604,6 +598,5 @@ clock_timer(void *data)
       edje_object_part_text_set(ib->gui, "clock", buf);
       return(1);
     }
-    printf("******** clock stop ***************");
     return(0);
 }

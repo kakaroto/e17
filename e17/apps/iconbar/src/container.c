@@ -59,9 +59,8 @@ void e_container_direction_set(Evas_Object *container, int direction)
   cont = _container_fetch(container);
   if (!cont) return;
 
-//  if (cont->direction == direction) return;
+  if (cont->direction == direction) return;
 
-  printf("*********** direction: %d\n", direction);
   cont->direction = direction;
   _container_elements_fix(cont);
 }
@@ -156,28 +155,6 @@ Container_Fill_Policy e_container_fill_policy_get(Evas_Object *container)
   return cont->fill;
 }
 
-void e_container_scroll_set(Evas_Object *container, int scroll)
-{
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return;
-
-  cont->scroll = scroll;
-
-  _container_elements_fix(cont);
-}
-
-int  e_container_scroll_get(Evas_Object *container)
-{
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return 0;
-
-  return cont->scroll;
-}
-
 void e_container_spacing_set(Evas_Object *container, int spacing)
 {
   Container *cont;
@@ -198,6 +175,28 @@ int e_container_spacing_get(Evas_Object *container)
   if (!cont) return 0;
 
   return cont->spacing;
+}
+
+void e_container_move_button_set(Evas_Object *container, int move_button)
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return;
+
+  if (cont->move_button == move_button) return;
+
+  cont->move_button = move_button;
+}
+
+int  e_container_move_button_get(Evas_Object *container)
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return 0;
+
+  return cont->move_button;
 }
 
 /*** element API ***/
@@ -694,8 +693,10 @@ _cb_element_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
   info = event_info;
   el = (Container_Element *)data;
- 
-  if (el->mouse_down && !el->dragging)
+
+  if (el->container->move_button == 0) return;
+
+  if (el->mouse_down == el->container->move_button && !el->dragging)
   {
     if (abs(info->cur.canvas.x - el->down.x) >= 3 ||
         abs(info->cur.canvas.y - el->down.y) >= 3)
