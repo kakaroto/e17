@@ -4270,3 +4270,24 @@ Mon Feb 21 21:50:20 GMT 2000
 
 and this.
 
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 14:55:54 GMT 2000
+(gilbertt)
+
+Modified the ipc remember command. It is compatible with the old one
+however.
+
+Originally, you'd do:
+remember windowid sticky
+remember windowid command
+remember windowid size
+etc
+
+Now you can also do:
+remember windowid sticky command size ...
+
+This streamlines epplets in particular, and speeds up Epplet_remember by a
+factor of 8. (Significant on certain boxen).
+

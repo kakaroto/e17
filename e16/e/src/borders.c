@@ -1163,7 +1163,8 @@ CalcEwinWinpart(EWin * ewin, int i)
 	   ewin->border->part[i].geom.topleft.x.absolute +
 	   ewin->bits[topleft].x;
 	y =
-	   ((ewin->border->part[i].geom.topleft.y.percent *
+	   ((ewin->
+	     border->part[i].geom.topleft.y.percent *
 	     ewin->bits[topleft].h) >> 10) +
 	   ewin->border->part[i].geom.topleft.y.absolute +
 	   ewin->bits[topleft].y;
@@ -1172,12 +1173,12 @@ CalcEwinWinpart(EWin * ewin, int i)
    if (bottomright == -1)
      {
 	ox =
-	   ((ewin->border->
-	     part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
+	   ((ewin->
+	     border->part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
 	oy =
-	   ((ewin->border->
-	     part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
+	   ((ewin->
+	     border->part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -1562,6 +1563,7 @@ CreateEwin()
    ewin->skiptask = 0;
    ewin->skipwinlist = 0;
    ewin->skipfocus = 0;
+   ewin->neverfocus = 0;
    ewin->focusclick = 0;
    ewin->internal = 0;
    ewin->menu = NULL;

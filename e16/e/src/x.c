@@ -40,8 +40,7 @@ EFreePixmap(Display * display, Pixmap pixmap)
    XFreePixmap(display, pixmap);
 }
 
-Window
-ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
+Window ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
 {
    EXID               *xid;
    Window              win;

@@ -486,8 +486,9 @@ int                 Esnprintf(va_alist);
 #define ACTION_SKIPFOCUS              98
 #define ACTION_SKIPTASK               99
 #define ACTION_SKIPWINLIST            100
+#define ACTION_NEVERFOCUS             101
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               101
+#define ACTION_NUMBEROF               102
 
 #define MODE_NONE                 0
 #define MODE_MOVE                 1
@@ -882,6 +883,7 @@ typedef struct _ewin
    char                skipwinlist;
    char                focusclick;
    char                internal;
+   char                neverfocus;
    Menu               *menu;
    Window              shownmenu;
    Dialog             *dialog;
@@ -1397,6 +1399,8 @@ struct _snapshot
    char                skiptask;
    char                use_skipfocus;
    char                skipfocus;
+   char                use_neverfocus;
+   char                neverfocus;
 };
 
 typedef struct _ditembutton DItemButton;
@@ -2075,6 +2079,7 @@ int                 doStick(void *params);
 int                 doSkipTask(void *params);
 int                 doSkipWinList(void *params);
 int                 doSkipFocus(void *params);
+int                 doNeverFocus(void *params);
 int                 doStickNoGroup(void *params);
 int                 doInplaceDesktop(void *params);
 int                 doDragButtonStart(void *params);
@@ -2756,9 +2761,13 @@ void                SnapshotEwinSticky(EWin * ewin);
 void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
+
+/* added by tom */
 void                SnapshotEwinSkipFocus(EWin * ewin);
 void                SnapshotEwinSkipTask(EWin * ewin);
 void                SnapshotEwinSkipWinList(EWin * ewin);
+void                SnapshotEwinNeverFocus(EWin * ewin);
+
 void                SnapshotEwinGroups(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);

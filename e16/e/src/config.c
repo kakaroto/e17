@@ -1168,7 +1168,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin = 0,
-      txp = 0,            txa = 0, typ = 0, tya = 0, borigin = 0;
+      txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 

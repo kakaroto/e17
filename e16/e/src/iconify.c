@@ -32,7 +32,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 {
    double              t1, t2, t, i, spd, ii;
    int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h, fx, fy,
-      fw, fh,             dx, dy, dw, dh;
+      fw, fh, dx, dy, dw, dh;
    GC                  gc;
    XGCValues           gcv;
 

@@ -531,9 +531,10 @@ IPCStruct           IPCArray[] = {
     "remember",
     "Remembers parameters for client window ID x",
     "usage:\n"
-    "  remember <windowid> <parameter>\n"
+    "  remember <windowid> <parameter>...\n"
     "  where parameter is one of: all, none, border, desktop, size,\n"
-    "  location, layer, sticky, icon, shade, group, dialog, command\n"},
+    "  location, layer, sticky, icon, shade, group, dialog, command\n"
+    "  Multiple parameters may be given."},
    {
     IPC_CurrentTheme,
     "current_theme",
@@ -562,6 +563,7 @@ void
 IPC_Remember(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
+   int                 i = 2;
 
    buf[0] = 0;
 
@@ -574,11 +576,14 @@ IPC_Remember(char *params, Client * c)
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
-	     params = atword(params, 2);
-	     if (params)
+	     params = atword(params, i++);
+	     while (params)
 	       {
 		  if (!strcmp((char *)params, "all"))
-		     SnapshotEwinAll(ewin);
+		    {
+		       SnapshotEwinAll(ewin);
+		       break;
+		    }
 		  else if (!strcmp((char *)params, "none"))
 		     UnsnapshotEwin(ewin);
 		  else if (!strcmp((char *)params, "border"))
@@ -603,10 +608,9 @@ IPC_Remember(char *params, Client * c)
 		     SnapshotEwinCmd(ewin);
 		  else if (!strcmp((char *)params, "dialog"))
 		     SnapshotEwinDialog(ewin);
-		  SaveSnapInfo();
+		  params = atword(params, i++);
 	       }
-	     else
-		Esnprintf(buf, sizeof(buf), "Error: no parameter");
+	     SaveSnapInfo();
 	  }
 	else
 	   Esnprintf(buf, sizeof(buf), "Error: no window found");
@@ -1692,8 +1696,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.
-						   normal->real_file);
+						   iclass->norm.normal->
+						   real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf),

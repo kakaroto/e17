@@ -980,8 +980,8 @@ HandleMotion(XEvent * ev)
 		       {
 			  di->item.slider.wanted_val += dy;
 			  di->item.slider.val = di->item.slider.lower +
-			     ((((di->item.
-				 slider.base_h - di->item.slider.knob_h -
+			     ((((di->
+				 item.slider.base_h - di->item.slider.knob_h -
 				 di->item.slider.wanted_val) *
 				(di->item.slider.upper -
 				 di->item.slider.lower)) /
@@ -2507,13 +2507,13 @@ HandleMouseUp(XEvent * ev)
 				 HideEwin(gwins[i]);
 				 MoveEwin(gwins[i], gwin_px[i] +
 					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_x) -
+					    [gwins[i]->desktop].
+					    current_area_x) -
 					   p->hi_ewin->area_x) * root.w,
 					  gwin_py[i] +
-					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_y) -
+					  ((desks.
+					    desk[gwins[i]->desktop].
+					    current_area_y) -
 					   p->hi_ewin->area_y) * root.h);
 				 if (was_shaded != gwins[i]->shaded)
 				    InstantShadeEwin(gwins[i]);
@@ -2525,7 +2525,7 @@ HandleMouseUp(XEvent * ev)
 		  else
 		    {
 		       int                 ndesk, nx, ny, base_x = 0, base_y =
-			  0,                  ax, ay;
+			  0, ax, ay;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -

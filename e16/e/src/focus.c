@@ -74,9 +74,9 @@ GetNextFocusEwin(void)
 	     ewin = lst0[i];
 	     if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
-		 (!ewin->skipfocus) && (!ewin->shaded) &&
-		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
-											 * (ewin->client.mwm_decor_border) */
+		 (!ewin->skipfocus) && (!ewin->neverfocus) && (!ewin->iconified)
+		 && (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
+												 * (ewin->client.mwm_decor_border) */
 		)
 	       {
 		  num++;
@@ -145,9 +145,9 @@ GetPrevFocusEwin(void)
 	     DetermineEwinArea(ewin);
 	     if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
-		 (!ewin->skipfocus) && (!ewin->shaded) &&
+		 (!ewin->skipfocus) && (!ewin->neverfocus) && (!ewin->shaded) &&
 		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
-											 * (ewin->client.mwm_decor_border) */
+											 * * (ewin->client.mwm_decor_border) */
 		)
 	       {
 		  num++;
@@ -264,6 +264,11 @@ FocusToEWin(EWin * ewin)
    /* Never focus a window that's not on the current desktop.  That's just dumb. -- mej */
    if ((ewin) && (ewin->desktop != desks.current && !(ewin->sticky)))
       ewin = NULL;
+   /* addition by tom */
+   if ((ewin) && (ewin->neverfocus))
+     {
+	EDBUG_RETURN_;
+     }
    if ((ewin) && (!ewin->client.need_input))
      {
 	if (mode.windowdestroy == 1)

@@ -1834,6 +1834,33 @@ doSkipWinList(void *params)
 }
 
 int
+doNeverFocus(void *params)
+{
+   EWin               *ewin;
+   char                neverfocus;
+
+   EDBUG(6, "doSkipWinList");
+
+   if (InZoom())
+      EDBUG_RETURN(0);
+   if (params)
+      ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+		      LIST_TYPE_EWIN);
+   else
+      ewin = GetFocusEwin();
+   if (!ewin)
+      EDBUG_RETURN(0);
+
+   neverfocus = ewin->neverfocus;
+
+   ewin->neverfocus = !(neverfocus);
+   params = NULL;
+   GNOME_SetHint(ewin);
+   RememberImportantInfoForEwin(ewin);
+   EDBUG_RETURN(0);
+}
+
+int
 doInplaceDesktop(void *params)
 {
    int                 d, pd;
@@ -4008,6 +4035,7 @@ initFunctionArray(void)
    ActionFunctions[ACTION_SKIPFOCUS] = (int (*)(void *))(doSkipFocus);
    ActionFunctions[ACTION_SKIPTASK] = (int (*)(void *))(doSkipTask);
    ActionFunctions[ACTION_SKIPWINLIST] = (int (*)(void *))(doSkipWinList);
+   ActionFunctions[ACTION_NEVERFOCUS] = (int (*)(void *))(doNeverFocus);
 
    EDBUG_RETURN(0);
 }
