@@ -201,15 +201,21 @@ _ebits_calculate(Ebits_Object_Bit_State state)
    if ((state->description->aspect.x > 0) && (state->description->aspect.y > 0))
      {
 	int                 hh, ww;
+	double              th, tw;
 	
-	hh = (state->w * state->description->aspect.x) / state->description->aspect.y;
-	if (hh > state->y)
+	tw = ((double)state->w / (double)state->description->aspect.x);
+	th = ((double)state->h / (double)state->description->aspect.y);
+	
+	if (tw > th)
+	  {
+	     hh = (state->w * state->description->aspect.x) / state->description->aspect.y;
+	     state->h = hh;
+	  }
+	else
 	  {
 	     ww = (state->h * state->description->aspect.x) / state->description->aspect.y;
 	     state->w = ww;
 	  }
-	else
-	   state->h = hh;
      }
    if (state->w < state->description->min.w)
       state->w = state->description->min.w;
