@@ -1878,27 +1878,58 @@ FloatEwinAt(EWin * ewin, int x, int y)
    EDBUG_RETURN_;
 }
 
-void
+/*
+ * Place particular EWin at appropriate location in the window stack
+ */
+static void
 RestackEwin(EWin * ewin)
 {
+   EWin               *const *lst;
+   int                 i, num;
+   XWindowChanges      xwc;
+   unsigned int        value_mask;
+
    EDBUG(3, "RestackEwin");
 
-   if (EventDebug(EDBUG_TYPE_RAISELOWER))
+   if (EventDebug(EDBUG_TYPE_STACKING))
       printf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
 
    if (ewin->floating)
      {
 	XRaiseWindow(disp, ewin->win);
-	EDBUG_RETURN_;
+	goto done;
      }
 
-   StackDesktop(ewin->desktop);
+   lst = EwinListGetForDesktop(ewin->desktop, &num);
+   if (num < 2)
+      goto done;
+
+   for (i = 0; i < num; i++)
+      if (lst[i] == ewin)
+	 break;
+   if (i < num - 1)
+     {
+	xwc.stack_mode = Above;
+	xwc.sibling = lst[i + 1]->win;
+     }
+   else
+     {
+	xwc.stack_mode = Below;
+	xwc.sibling = lst[i - 1]->win;
+     }
+   value_mask = CWSibling | CWStackMode;
+   if (EventDebug(EDBUG_TYPE_STACKING))
+      printf("RestackEwin %#10lx %s %#10lx\n", ewin->win,
+	     (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
+   XConfigureWindow(disp, ewin->win, value_mask, &xwc);
 
    if (Mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+
+ done:
    EDBUG_RETURN_;
 }
 
@@ -1940,7 +1971,12 @@ RaiseEwin(EWin * ewin)
 	  }
 
 	if (call_depth == 1)
-	   RestackEwin(ewin);
+	  {
+	     if (ewin->has_transients)
+		StackDesktop(ewin->desktop);	/* Do the full stacking */
+	     else
+		RestackEwin(ewin);	/* Restack this one only */
+	  }
      }
 
  done:
@@ -1980,7 +2016,12 @@ LowerEwin(EWin * ewin)
 	  }
 
 	if (call_depth == 1)
-	   RestackEwin(ewin);
+	  {
+	     if (ewin->client.transient_for)
+		StackDesktop(ewin->desktop);	/* Do the full stacking */
+	     else
+		RestackEwin(ewin);	/* Restack this one only */
+	  }
      }
 
  done:

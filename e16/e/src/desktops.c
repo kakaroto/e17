@@ -1196,8 +1196,6 @@ MoveStickyWindowsToCurrentDesk(void)
 	HintsSetWindowDesktop(ewin);
 	last_ewin = ewin;
      }
-   if (last_ewin)
-      RestackEwin(last_ewin);
 }
 
 void
@@ -1445,6 +1443,7 @@ RaiseDesktop(int desk)
    StackDesktops();
    desks.current = desk;
    MoveStickyWindowsToCurrentDesk();
+   StackDesktop(desks.current);
    FocusNewDesk();
    FX_DeskChange();
    RemoveClones();
@@ -1475,6 +1474,7 @@ LowerDesktop(int desk)
    StackDesktops();
    desks.current = desks.order[0];
    MoveStickyWindowsToCurrentDesk();
+   StackDesktop(desks.current);
    FocusNewDesk();
    FX_DeskChange();
    RemoveClones();
@@ -1661,6 +1661,12 @@ StackDesktop(int desk)
    /* The current (virtual) root window */
    _APPEND_TO_WIN_LIST(desks.desk[desk].win);
 
+   if (EventDebug(EDBUG_TYPE_STACKING))
+     {
+	printf("StackDesktop %d:\n", desk);
+	for (i = 0; i < tot; i++)
+	   printf(" win=%#10lx parent=%#10lx\n", wl[i], GetWinParent(wl[i]));
+     }
    XRestackWindows(disp, wl, tot);
    ShowEdgeWindows();
    RaiseProgressbars();

@@ -55,7 +55,7 @@ EwinListShow(const char *txt, EWinList * ewl)
 #define EwinListShow(txt, ewl)
 #endif
 
-static int
+int
 EwinListGetIndex(EWinList * ewl, EWin * ewin)
 {
    int                 i;
