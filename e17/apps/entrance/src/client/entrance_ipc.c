@@ -136,7 +136,8 @@ entrance_ipc_init(pid_t server_pid)
       return FALSE;
 
    memset(buf, 0, sizeof(buf));
-   snprintf(buf, PATH_MAX, "%s_%d", PACKAGE_STATE_DIR"/"IPC_TITLE, server_pid);
+   snprintf(buf, PATH_MAX, "%s_%d", PACKAGE_STATE_DIR "/" IPC_TITLE,
+            server_pid);
    if (ipc_title)
       free(ipc_title);
    ipc_title = strdup(buf);
@@ -196,11 +197,14 @@ void
 entrance_ipc_request_xauth(char *homedir, uid_t uid, gid_t gid)
 {
    int pid;
+
    pid = (int) getpid();
-   ecore_ipc_server_send(server, E_XAUTH_REQ, E_UID, pid, 0, (int) uid, NULL, 0);
-   ecore_ipc_server_send(server, E_XAUTH_REQ, E_GID, pid, 0, (int) gid, NULL, 0);
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_UID, pid, 0, (int) uid, NULL,
+                         0);
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_GID, pid, 0, (int) gid, NULL,
+                         0);
    ecore_ipc_server_send(server, E_XAUTH_REQ, E_HOMEDIR, pid, 0, 0, homedir,
                          strlen(homedir) + 1);
-   fprintf(stderr, "entranced: Requesting auth for uid %d (%s)\n", uid, homedir);
+   fprintf(stderr, "entranced: Requesting auth for uid %d (%s)\n", uid,
+           homedir);
 }
-

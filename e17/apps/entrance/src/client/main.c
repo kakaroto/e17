@@ -130,12 +130,12 @@ focus_swap(Evas_Object * o, int selecto)
    if (oo)
    {
       selecto ? esmart_text_entry_focus_set(oo,
-                                          0) : esmart_text_entry_focus_set(o,
-                                                                         0);
+                                            0) :
+         esmart_text_entry_focus_set(o, 0);
 
       selecto ? esmart_text_entry_focus_set(o,
-                                          1) : esmart_text_entry_focus_set(oo,
-                                                                         1);
+                                            1) :
+         esmart_text_entry_focus_set(oo, 1);
    }
 }
 
@@ -660,7 +660,7 @@ main(int argc, char *argv[])
    }
 
    if (!entrance_ipc_init(server_pid))
-      return -1; 
+      return -1;
 
    session = entrance_session_new(config, display);
 
@@ -771,7 +771,8 @@ main(int argc, char *argv[])
             evas_object_name_set(o, entries[i]);
             esmart_text_entry_edje_part_set(o, edje, entries[i]);
 
-            esmart_text_entry_return_key_callback_set(o, interp_return_key, o);
+            esmart_text_entry_return_key_callback_set(o, interp_return_key,
+                                                      o);
 
             edje_object_signal_callback_add(edje, "In", entries[i], focus, o);
 

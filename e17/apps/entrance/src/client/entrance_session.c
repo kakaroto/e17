@@ -420,7 +420,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    }
    _entrance_session_user_list_fix(e);
    /* clear users's password out of memory */
-   if(e->auth)
+   if (e->auth)
       entrance_auth_clear_pass(e->auth);
    /* this bypasses a race condition where entrance loses its x connection */
    /* before the wm gets it and x goes and resets itself */
@@ -513,13 +513,13 @@ entrance_session_list_add(Entrance_Session * e)
       if (w > h)
       {
          esmart_container_fill_policy_set(container,
-                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
          esmart_container_direction_set(container, 0);
       }
       else
       {
          esmart_container_fill_policy_set(container,
-                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
          esmart_container_direction_set(container, 1);
       }
       edje_object_file_get(e->edje, &file, NULL);
@@ -566,13 +566,13 @@ entrance_session_user_list_add(Entrance_Session * e)
       if (w > h)
       {
          esmart_container_fill_policy_set(container,
-                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
          esmart_container_direction_set(container, 0);
       }
       else
       {
          esmart_container_fill_policy_set(container,
-                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
          esmart_container_direction_set(container, 1);
       }
       edje_object_file_get(e->edje, &file, NULL);

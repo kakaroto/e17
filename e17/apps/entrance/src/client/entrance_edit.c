@@ -441,7 +441,7 @@ _key_focus_in(void *data, Evas_Object * o, const char *emission,
                                           source);
                }
                esmart_text_entry_edje_part_set(ecco.entry, ecco.edje,
-                                             (char *) str);
+                                               (char *) str);
                esmart_text_entry_text_set(ecco.entry, bstr);
                snprintf(buf, PATH_MAX, "%s-2", source);
                ecco.focus.key = strdup(buf);
@@ -569,21 +569,25 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
       evas_object_geometry_get(oo, &cx, &cy, &cw, &ch);
       if (esmart_container_direction_get(oo) > 0)
       {
-         scroll = (int) (dy * (esmart_container_elements_length_get(oo) - ch));
+         scroll =
+            (int) (dy * (esmart_container_elements_length_get(oo) - ch));
       }
       else
       {
-         scroll = (int) (dx * (esmart_container_elements_length_get(oo) - cw));
+         scroll =
+            (int) (dx * (esmart_container_elements_length_get(oo) - cw));
       }
 #if DEBUG
-      fprintf(stderr, "%d %d\n", scroll, esmart_container_scroll_offset_get(oo));
+      fprintf(stderr, "%d %d\n", scroll,
+              esmart_container_scroll_offset_get(oo));
 #endif
       esmart_container_scroll_offset_set(oo, -scroll);
    }
    else if (!strcmp(emission, "ecco,show,sessions"))
    {
       user_unselected_cb(ecco.current_user, NULL, "", "");
-      if ((l = esmart_container_elements_get(ecco.container.sessions)) == NULL)
+      if ((l =
+           esmart_container_elements_get(ecco.container.sessions)) == NULL)
       {
          ecco_sessions_list_init(ecco.container.sessions);
       }
@@ -603,14 +607,17 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
       evas_object_geometry_get(oo, &cx, &cy, &cw, &ch);
       if (esmart_container_direction_get(oo) > 0)
       {
-         scroll = (int) (dy * (esmart_container_elements_length_get(oo) - ch));
+         scroll =
+            (int) (dy * (esmart_container_elements_length_get(oo) - ch));
       }
       else
       {
-         scroll = (int) (dx * (esmart_container_elements_length_get(oo) - cw));
+         scroll =
+            (int) (dx * (esmart_container_elements_length_get(oo) - cw));
       }
 #if DEBUG
-      fprintf(stderr, "%d %d\n", scroll, esmart_container_scroll_offset_get(oo));
+      fprintf(stderr, "%d %d\n", scroll,
+              esmart_container_scroll_offset_get(oo));
 #endif
       esmart_container_scroll_offset_set(oo, -scroll);
    }
@@ -1024,7 +1031,8 @@ _scrollbar_cb(void *data, Evas_Object * o, const char *emission,
       scroll = (int) (dx * (esmart_container_elements_length_get(oo) - cw));
    }
 #if DEBUG
-   fprintf(stderr, "%0.02f %d\n", scroll, esmart_container_scroll_offset_get(oo));
+   fprintf(stderr, "%0.02f %d\n", scroll,
+           esmart_container_scroll_offset_get(oo));
 #endif
    esmart_container_scroll_offset_set(oo, -scroll);
 }
@@ -1817,8 +1825,9 @@ ecco_hashes_init(Evas_Object * o)
                evas_object_layer_set(oo, 0);
                edje_object_part_geometry_get(o, str, NULL, NULL, &cw, &ch);
                esmart_container_fill_policy_set(oo,
-                                           CONTAINER_FILL_POLICY_KEEP_ASPECT |
-                                           CONTAINER_FILL_POLICY_HOMOGENOUS);
+                                                CONTAINER_FILL_POLICY_KEEP_ASPECT
+                                                |
+                                                CONTAINER_FILL_POLICY_HOMOGENOUS);
                esmart_container_padding_set(oo, 0, 0, 0, 0);
                esmart_container_spacing_set(oo, 4);
                snprintf(buf, PATH_MAX, "ecco,container,%s,direction",
