@@ -50,6 +50,9 @@ typedef struct {
 	Evas_Object    *edje;
 } ControlCentre;
 
+extern ControlCentre *controlcentre;
+extern MainConfig *main_config;
+
 /* Setting the Control Centre up */
 void            setup_cc(void);
 

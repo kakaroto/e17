@@ -14,6 +14,7 @@
 #include "ipc.h"
 
 Ecore_Ipc_Server *mysvr;
+Ecore_Event_Handler *listenev;
 
 /**
  * @return: Integer stating whether a server is running.
@@ -50,7 +51,7 @@ setup_server(void)
 			mysvr = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER,
 						     IPC_NAME, IPC_PORT, NULL);
 			if (mysvr != NULL) {
-				ecore_event_handler_add
+				listenev=ecore_event_handler_add
 					(ECORE_IPC_EVENT_CLIENT_DATA,
 					 ipc_svr_data_recv, NULL);
 			}
@@ -67,14 +68,13 @@ setup_server(void)
 void
 send_to_server(char *msg)
 {
-	Ecore_Ipc_Server *p;
-
-	if ((p =
+	if ((mysvr =
 	     ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_NAME, IPC_PORT,
 				      NULL)) != NULL) {
-		ecore_ipc_server_send(p, 0, 0, 0, 0, 0, optarg,
-				      strlen(optarg) + 1);
-		ecore_ipc_server_del(p);
+	
+		ipc_send_message_with_mysvr(msg);  /*  To server  */
+	
+		ecore_ipc_server_del(mysvr);
 	} else {
 		return;
 	}
@@ -123,11 +123,38 @@ ipc_svr_data_recv(void *data, int type, void *event)
 				}
 			} else if (p->cmd == CLOSE) {
 				ecore_main_loop_quit();
+			} else if (p->cmd == CONTROLCENTRECLOSE) {
+				if (controlcentre!=NULL){
+					ecore_evas_free(controlcentre->win);
+					free(controlcentre);
+					controlcentre=NULL;
+				} else {
+					new_note_with_values (325, 0, "No Control Centre to Close", "An IPC command was recieved which\nwants to close the controlcentre.\n\nSince the control centre isn't currently\nopen, it wasn't possible to do so!");
+				}
+			} else if (p->cmd == CONTROLCENTREOPEN) {
+				if (controlcentre==NULL){
+					setup_cc();
+				} else {
+					new_note_with_values (325, 0, "Control Centre Already Open", "An IPC command was recieved which\nwants to open the control centre, but the\ncontrol centre is already open!");
+				}
 			}
 		}
 	}
 	return (1);
 }
+
+/**
+ * @param msg: The message to be sent to the connected host.
+ * @brief:     Send a char message to the host.
+ */
+void
+ipc_send_message_with_mysvr (char *msg)
+{
+	if (msg!=NULL && mysvr != NULL)
+		ecore_ipc_server_send(mysvr, 0, 0, 0, 0, 0, msg, strlen(msg) + 1);
+	return;
+}
+
 
 /**
  * @param msg: Message to parse.
@@ -176,6 +203,10 @@ parse_message(char *msg)
 		p->cmd = NOTE;
 	} else if (!strcmp(one, "CLOSE")) {
 		p->cmd = CLOSE;
+	} else if (!strcmp(one, "CONTROLCENTREOPEN")) {
+		p->cmd = CONTROLCENTREOPEN;
+	} else if (!strcmp(one, "CONTROLCENTRECLOSE")) {
+		p->cmd = CONTROLCENTRECLOSE;
 	} else {
 		free(one);
 		free(p);

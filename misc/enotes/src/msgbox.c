@@ -55,11 +55,11 @@ msgbox_manual(char *title, char *content, int x, int y, int width, int height)
 
 	/* Setup the EWL Widgets */
 	mb->emb = ewl_embed_new();
-	ewl_object_set_fill_policy((Ewl_Object *) mb->emb, EWL_FLAG_FILL_FILL);
-	ewl_widget_set_appearance(mb->emb, "window");
+	ewl_object_fill_policy_set((Ewl_Object *) mb->emb, EWL_FLAG_FILL_FILL);
+	ewl_widget_appearance_set(mb->emb, "window");
 	ewl_widget_show(mb->emb);
 
-	mb->eo = ewl_embed_set_evas((Ewl_Embed *) mb->emb, mb->evas, (void *)
+	mb->eo = ewl_embed_evas_set((Ewl_Embed *) mb->emb, mb->evas, (void *)
 				    ecore_evas_software_x11_window_get(mb->
 								       win));
 	evas_object_name_set(mb->eo, "eo");
@@ -69,21 +69,21 @@ msgbox_manual(char *title, char *content, int x, int y, int width, int height)
 	evas_object_show(mb->eo);
 
 	mb->vbox = ewl_vbox_new();
-	ewl_container_append_child((Ewl_Container *) mb->emb, mb->vbox);
-	ewl_object_set_fill_policy((Ewl_Object *) mb->vbox, EWL_FLAG_FILL_FILL);
+	ewl_container_child_append((Ewl_Container *) mb->emb, mb->vbox);
+	ewl_object_fill_policy_set((Ewl_Object *) mb->vbox, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(mb->vbox);
 
 	mb->msg = ewl_text_new(content);
-	ewl_container_append_child((Ewl_Container *) mb->vbox, mb->msg);
-	ewl_object_set_fill_policy((Ewl_Object *) mb->msg, EWL_FLAG_FILL_FILL);
+	ewl_container_child_append((Ewl_Container *) mb->vbox, mb->msg);
+	ewl_object_fill_policy_set((Ewl_Object *) mb->msg, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(mb->msg);
 
 	mb->hbox = ewl_hbox_new();
-	ewl_container_append_child((Ewl_Container *) mb->vbox, mb->hbox);
+	ewl_container_child_append((Ewl_Container *) mb->vbox, mb->hbox);
 	ewl_widget_show(mb->hbox);
 
 	mb->okbtn = ewl_button_new("Ok.");
-	ewl_container_append_child((Ewl_Container *) mb->hbox, mb->okbtn);
+	ewl_container_child_append((Ewl_Container *) mb->hbox, mb->okbtn);
 	ewl_widget_show(mb->okbtn);
 
 	/* Ecore Callbacks */

@@ -84,6 +84,8 @@ remove_note(Evas_List * note)
 	dml("Closing a Note", 2);
 
 	ecore_timer_del(p->timcomp);
+	p->timcomp=NULL;
+
 	ecore_evas_free(p->win);
 	free(p);
 	gbl_notes = evas_list_remove_list(gbl_notes, note);
@@ -98,7 +100,7 @@ remove_note(Evas_List * note)
 
 	if (saveload != NULL) {
 		dml("Removing note entry from saveload list", 2);
-		ewl_tree_destroy_row((Ewl_Tree *) saveload->tree,
+		ewl_tree_row_destroy((Ewl_Tree *) saveload->tree,
 				     p->saveload_row);
 	}
 
@@ -192,9 +194,9 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 
 	/* Ewl */
 	p->emb = ewl_embed_new();
-	ewl_object_set_fill_policy((Ewl_Object *) p->emb, EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set((Ewl_Object *) p->emb, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(p->emb);
-	p->eo = ewl_embed_set_evas(EWL_EMBED(p->emb),
+	p->eo = ewl_embed_evas_set((Ewl_Embed*)p->emb,
 				   ecore_evas_get(p->win), (void *)
 				   ecore_evas_software_x11_window_get(p->win));
 	evas_object_layer_set(p->eo, 2);
@@ -203,20 +205,24 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	evas_object_show(p->eo);
 
 
+	evas_object_focus_set (p->eo, TRUE);
+	ewl_embed_focus_set ((Ewl_Embed*)p->emb, TRUE);
+
+
 	p->vbox = ewl_vbox_new();
-	ewl_object_set_fill_policy((Ewl_Object *) p->vbox, EWL_FLAG_FILL_FILL);
-	ewl_container_append_child((Ewl_Container *) p->emb, p->vbox);
+	ewl_object_fill_policy_set((Ewl_Object *) p->vbox, EWL_FLAG_FILL_FILL);
+	ewl_container_child_append((Ewl_Container *) p->emb, p->vbox);
 	ewl_widget_show(p->vbox);
 
 	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
 			    p->vbox);
 
 	p->title = ewl_entry_new(title);
-	ewl_container_append_child((Ewl_Container *) p->vbox, p->title);
+	ewl_container_child_append((Ewl_Container *) p->vbox, p->title);
 	ewl_widget_show(p->title);
 
-	p->content = ewl_textarea_new(fcontent);
-	ewl_container_append_child((Ewl_Container *) p->vbox, p->content);
+	p->content = ewl_text_new(fcontent);
+	ewl_container_child_append((Ewl_Container *) p->vbox, p->content);
 	ewl_widget_show(p->content);
 
 	/* Ecore Callbacks */
@@ -388,6 +394,8 @@ timer_val_compare(void *data)
 {
 	Note           *p = (Note *) data;
 
+	if (p->timcomp==NULL) return(0);
+
 	if (p->txt_title != NULL) {
 		if (strcmp
 		    (p->txt_title,
@@ -475,7 +483,7 @@ get_content_by_note(Evas_List * note)
 {
 	Note           *p = evas_list_data(note);
 
-	return ((char *) ewl_textarea_get_text((Ewl_TextArea *) p->content));
+	return ((char *) ewl_text_text_get((Ewl_Text *) p->content));
 }
 
 
@@ -519,6 +527,6 @@ get_cycle_previous_note(Evas_List * note)
 void
 note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }

@@ -61,11 +61,11 @@ setup_settings_win(Settings * s)
 
 	/* Setup the EWL Widgets */
 	s->emb = ewl_embed_new();
-	ewl_object_set_fill_policy((Ewl_Object *) s->emb, EWL_FLAG_FILL_FILL);
-	ewl_widget_set_appearance(s->emb, "window");
+	ewl_object_fill_policy_set((Ewl_Object *) s->emb, EWL_FLAG_FILL_ALL);
+	ewl_widget_appearance_set(s->emb, "window");
 	ewl_widget_show(s->emb);
 
-	s->eo = ewl_embed_set_evas((Ewl_Embed *) s->emb, s->evas, (void *)
+	s->eo = ewl_embed_evas_set((Ewl_Embed *) s->emb, s->evas, (void *)
 				   ecore_evas_software_x11_window_get(s->win));
 	evas_object_name_set(s->eo, "eo");
 	evas_object_layer_set(s->eo, 0);
@@ -73,29 +73,31 @@ setup_settings_win(Settings * s)
 	evas_object_resize(s->eo, SETTINGS_W, SETTINGS_H);
 	evas_object_show(s->eo);
 
+	evas_object_focus_set (s->eo, TRUE);
+	ewl_embed_focus_set ((Ewl_Embed*)s->emb, TRUE);
+
 	s->vbox = ewl_vbox_new();
-	ewl_container_append_child((Ewl_Container *) s->emb, s->vbox);
-	ewl_object_set_fill_policy((Ewl_Object *) s->vbox, EWL_FLAG_FILL_FILL);
+	ewl_container_child_append((Ewl_Container *) s->emb, s->vbox);
+	ewl_object_fill_policy_set((Ewl_Object *) s->vbox, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(s->vbox);
 
 	ewl_callback_append(s->emb, EWL_CALLBACK_CONFIGURE, settings_move_embed,
 			    s->vbox);
 
 	s->tree = ewl_tree_new(2);
-	ewl_container_append_child((Ewl_Container *) s->vbox, s->tree);
-	ewl_object_set_fill_policy((Ewl_Object *) s->tree, EWL_FLAG_FILL_FILL);
+	ewl_container_child_append((Ewl_Container *) s->vbox, s->tree);
 
 	headers[0] = strdup("Setting");
 	headers[1] = strdup("Value");
-	ewl_tree_set_headers((Ewl_Tree *) s->tree, headers);
+	ewl_tree_headers_set((Ewl_Tree *) s->tree, headers);
 	free(headers[0]);
 	free(headers[1]);
 
 	ewl_widget_show(s->tree);
 
 	s->hbox = ewl_hbox_new();
-	ewl_container_append_child((Ewl_Container *) s->vbox, s->hbox);
-	ewl_object_set_fill_policy((Ewl_Object *) s->hbox, EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append((Ewl_Container *) s->vbox, s->hbox);
+	ewl_object_fill_policy_set((Ewl_Object *) s->hbox, EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(s->hbox);
 
 	settings_setup_button(s->hbox, &(s->savebtn), "Save.");
@@ -165,7 +167,7 @@ void
 settings_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
 	*b = ewl_button_new(label);
-	ewl_container_append_child((Ewl_Container *) c, *b);
+	ewl_container_child_append((Ewl_Container *) c, *b);
 	ewl_widget_show(*b);
 	return;
 }
@@ -194,7 +196,7 @@ setup_settings_opt(Ewl_Widget * tree, char *caption, char *value)
 	entries[0] = o->caption;
 	entries[1] = o->entry;
 
-	ewl_tree_add_row((Ewl_Tree *) tree, 0, entries);
+	ewl_tree_row_add((Ewl_Tree *) tree, 0, entries);
 
 	return (oa);
 }
@@ -350,6 +352,6 @@ save_settings(void)
 void
 settings_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }

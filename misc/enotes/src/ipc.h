@@ -24,13 +24,16 @@
 #include "note.h"
 #include "storage.h"
 #include "debug.h"
+#include "controlcentre.h"
 
 #define IPC_NAME "enotes"
 #define IPC_PORT 2323
 
 typedef enum {			/* More to come. :-) */
 	NOTE,
-	CLOSE
+	CLOSE,
+	CONTROLCENTREOPEN,
+	CONTROLCENTRECLOSE
 } MessageType;
 
 typedef struct {
@@ -39,6 +42,7 @@ typedef struct {
 } RecvMsg;
 
 extern Ecore_Ipc_Server *mysvr;
+extern Ecore_Event_Handler *listenev;
 
 /* High Level */
 int             find_server(void);
@@ -47,8 +51,10 @@ void            send_to_server(char *msg);
 
 /* Low Level */
 int             ipc_svr_data_recv(void *data, int type, void *event);
+int             ipc_response_data_recv(void *data, int type, void *event);
 RecvMsg        *parse_message(char *msg);
 int             ipc_close_enotes(void *data);
 char           *fix_newlines(char *b);
+void            ipc_send_message_with_mysvr (char *msg);
 
 #endif

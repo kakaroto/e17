@@ -13,7 +13,7 @@
 
 #include "controlcentre.h"
 
-extern MainConfig *main_config;
+ControlCentre *controlcentre;
 
 
 /**
@@ -22,11 +22,13 @@ extern MainConfig *main_config;
 void
 setup_cc(void)
 {
-	ControlCentre   controlcentre;
-	ControlCentre  *cc = &controlcentre;
+	ControlCentre  *cc;
 	char           *edjefn = malloc(PATH_MAX);
 	char           *fontpath = malloc(PATH_MAX);
 	Evas_Coord      edje_w, edje_h;
+
+	cc=malloc(sizeof(ControlCentre));
+	controlcentre=cc;
 
 	/* Setup the Window */
 	cc->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, 250, 250);
@@ -63,7 +65,7 @@ setup_cc(void)
 	evas_object_move(cc->edje, 0, 0);
 	evas_object_layer_set(cc->edje, 1);
 	evas_object_name_set(cc->edje, "edje");
-	evas_object_pass_events_set(cc->edje, 1);
+	evas_object_pass_events_set(cc->edje, 0);
 	evas_object_show(cc->edje);
 
 	/* EDJE and ECORE min, max and resizing */

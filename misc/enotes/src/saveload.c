@@ -65,13 +65,13 @@ setup_saveload_win(void)
 
 	/* Setup the EWL Widgets */
 	saveload->emb = ewl_embed_new();
-	ewl_object_set_fill_policy((Ewl_Object *) saveload->emb,
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->emb,
 				   EWL_FLAG_FILL_FILL);
-	ewl_widget_set_appearance(saveload->emb, "window");
+	ewl_widget_appearance_set(saveload->emb, "window");
 	ewl_widget_show(saveload->emb);
 
 	saveload->eo =
-		ewl_embed_set_evas((Ewl_Embed *) saveload->emb, saveload->evas,
+		ewl_embed_evas_set((Ewl_Embed *) saveload->emb, saveload->evas,
 				   (void *)
 				   ecore_evas_software_x11_window_get(saveload->
 								      win));
@@ -81,10 +81,13 @@ setup_saveload_win(void)
 	evas_object_resize(saveload->eo, SAVELOAD_W, SAVELOAD_H);
 	evas_object_show(saveload->eo);
 
+	evas_object_focus_set (saveload->eo, TRUE);
+	ewl_embed_focus_set ((Ewl_Embed*)saveload->emb, TRUE);
+
 	saveload->vbox = ewl_vbox_new();
-	ewl_container_append_child((Ewl_Container *) saveload->emb,
+	ewl_container_child_append((Ewl_Container *) saveload->emb,
 				   saveload->vbox);
-	ewl_object_set_fill_policy((Ewl_Object *) saveload->vbox,
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->vbox,
 				   EWL_FLAG_FILL_FILL);
 	ewl_widget_show(saveload->vbox);
 
@@ -92,26 +95,26 @@ setup_saveload_win(void)
 			    save_and_load_move_embed, saveload->vbox);
 
 	saveload->tree = ewl_tree_new(1);
-	ewl_container_append_child((Ewl_Container *) saveload->vbox,
+	ewl_container_child_append((Ewl_Container *) saveload->vbox,
 				   saveload->tree);
-	ewl_object_set_fill_policy((Ewl_Object *) saveload->tree,
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->tree,
 				   EWL_FLAG_FILL_FILL);
 
 	headers[0] = strdup("Note Title");
-	ewl_tree_set_headers((Ewl_Tree *) saveload->tree, headers);
+	ewl_tree_headers_set((Ewl_Tree *) saveload->tree, headers);
 	free(headers[0]);
 
 	ewl_widget_show(saveload->tree);
 
 	saveload->txt_selected = ewl_text_new("Selected: N/A");
-	ewl_container_append_child((Ewl_Container *) saveload->vbox,
+	ewl_container_child_append((Ewl_Container *) saveload->vbox,
 				   saveload->txt_selected);
 	ewl_widget_show(saveload->txt_selected);
 
 	saveload->hbox = ewl_hbox_new();
-	ewl_container_append_child((Ewl_Container *) saveload->vbox,
+	ewl_container_child_append((Ewl_Container *) saveload->vbox,
 				   saveload->hbox);
-	ewl_object_set_fill_policy((Ewl_Object *) saveload->hbox,
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->hbox,
 				   EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(saveload->hbox);
 
@@ -154,7 +157,7 @@ void
 saveload_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
 	*b = ewl_button_new(label);
-	ewl_container_append_child((Ewl_Container *) c, *b);
+	ewl_container_child_append((Ewl_Container *) c, *b);
 	ewl_widget_show(*b);
 	return;
 }
@@ -202,7 +205,7 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 			    (void *) ewl_saveload_listitem_click, NULL);
 	ewl_widget_show(capt);
 	d->saveload_row =
-		(Ewl_Row *) ewl_tree_add_row((Ewl_Tree *) tree, 0, &capt);
+		(Ewl_Row *) ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
 	return;
 }
 
@@ -288,9 +291,9 @@ ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 {
 	char           *tmp = malloc(MAX_TITLE);
 
-	saveload_selected = ewl_text_get_text((Ewl_Text *) o);
+	saveload_selected = ewl_text_text_get((Ewl_Text *) o);
 	snprintf(tmp, MAX_TITLE, "Selected: %s", saveload_selected);
-	ewl_text_set_text((Ewl_Text *) saveload->txt_selected, tmp);
+	ewl_text_text_set((Ewl_Text *) saveload->txt_selected, tmp);
 	free(tmp);
 	return;
 }
@@ -392,12 +395,12 @@ setup_load_win(void)
 
 	/* Setup the EWL Widgets */
 	load->emb = ewl_embed_new();
-	ewl_object_set_fill_policy((Ewl_Object *) load->emb,
+	ewl_object_fill_policy_set((Ewl_Object *) load->emb,
 				   EWL_FLAG_FILL_FILL);
-	ewl_widget_set_appearance(load->emb, "window");
+	ewl_widget_appearance_set(load->emb, "window");
 	ewl_widget_show(load->emb);
 
-	load->eo = ewl_embed_set_evas((Ewl_Embed *) load->emb, load->evas,
+	load->eo = ewl_embed_evas_set((Ewl_Embed *) load->emb, load->evas,
 				      (void *)
 				      ecore_evas_software_x11_window_get(load->
 									 win));
@@ -407,9 +410,12 @@ setup_load_win(void)
 	evas_object_resize(load->eo, LOAD_W, LOAD_H);
 	evas_object_show(load->eo);
 
+	evas_object_focus_set (load->eo, TRUE);
+	ewl_embed_focus_set ((Ewl_Embed*)load->emb, TRUE);
+
 	load->vbox = ewl_vbox_new();
-	ewl_container_append_child((Ewl_Container *) load->emb, load->vbox);
-	ewl_object_set_fill_policy((Ewl_Object *) load->vbox,
+	ewl_container_child_append((Ewl_Container *) load->emb, load->vbox);
+	ewl_object_fill_policy_set((Ewl_Object *) load->vbox,
 				   EWL_FLAG_FILL_FILL);
 	ewl_widget_show(load->vbox);
 
@@ -417,24 +423,24 @@ setup_load_win(void)
 			    save_and_load_move_embed, load->vbox);
 
 	load->tree = ewl_tree_new(1);
-	ewl_container_append_child((Ewl_Container *) load->vbox, load->tree);
-	ewl_object_set_fill_policy((Ewl_Object *) load->tree,
+	ewl_container_child_append((Ewl_Container *) load->vbox, load->tree);
+	ewl_object_fill_policy_set((Ewl_Object *) load->tree,
 				   EWL_FLAG_FILL_FILL);
 
 	headers[0] = strdup("Note Title");
-	ewl_tree_set_headers((Ewl_Tree *) load->tree, headers);
+	ewl_tree_headers_set((Ewl_Tree *) load->tree, headers);
 	free(headers[0]);
 
 	ewl_widget_show(load->tree);
 
 	load->txt_selected = ewl_text_new("Selected: N/A");
-	ewl_container_append_child((Ewl_Container *) load->vbox,
+	ewl_container_child_append((Ewl_Container *) load->vbox,
 				   load->txt_selected);
 	ewl_widget_show(load->txt_selected);
 
 	load->hbox = ewl_hbox_new();
-	ewl_container_append_child((Ewl_Container *) load->vbox, load->hbox);
-	ewl_object_set_fill_policy((Ewl_Object *) load->hbox,
+	ewl_container_child_append((Ewl_Container *) load->vbox, load->hbox);
+	ewl_object_fill_policy_set((Ewl_Object *) load->hbox,
 				   EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(load->hbox);
 
@@ -465,7 +471,7 @@ void
 load_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
 	*b = ewl_button_new(label);
-	ewl_container_append_child((Ewl_Container *) c, *b);
+	ewl_container_child_append((Ewl_Container *) c, *b);
 	ewl_widget_show(*b);
 	return;
 }
@@ -509,7 +515,7 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_load_listitem_click, NULL);
 	ewl_widget_show(capt);
-	ewl_tree_add_row((Ewl_Tree *) tree, 0, &capt);
+	ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
 	return;
 }
 
@@ -623,9 +629,9 @@ ewl_load_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 {
 	char           *tmp = malloc(MAX_TITLE);
 
-	load_selected = ewl_text_get_text((Ewl_Text *) o);
+	load_selected = ewl_text_text_get((Ewl_Text *) o);
 	snprintf(tmp, MAX_TITLE, "Selected: %s", load_selected);
-	ewl_text_set_text((Ewl_Text *) load->txt_selected, tmp);
+	ewl_text_text_set((Ewl_Text *) load->txt_selected, tmp);
 	free(tmp);
 	return;
 }
@@ -672,6 +678,6 @@ ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 void
 save_and_load_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }
