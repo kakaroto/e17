@@ -772,9 +772,7 @@ feh_draw_caption(winwidget w)
    if (!w->file) {
      D_RETURN_(4);
    }
-
    file = FEH_FILE(w->file->data);
-
    if (!file->filename) {
      D_RETURN_(4);
    }
@@ -787,7 +785,20 @@ feh_draw_caption(winwidget w)
       free(caption_filename);
    }
 
-   if (file->caption == NULL || *(file->caption) == '\0') {
+   if (file->caption == NULL) {
+     /* caption file is not there, we want to cache that, otherwise we'll stat
+      * the damn file every time we render the image. Reloading an image will
+      * always cause the caption to be reread though so we're safe to do so.
+      * (Before this bit was added, when zooming a captionless image with
+      * captions enabled, the captions file would be stat()d like 30 times a
+      * second) - don't forget this function is called from
+      * winwidget_render_image().
+      */
+     file->caption = estrdup("");
+     D_RETURN_(4);
+   }
+
+   if (file->caption == '\0') {
      D_RETURN_(4);
    }
 
@@ -818,7 +829,7 @@ feh_draw_caption(winwidget w)
    if (!lines)
      D_RETURN_(4);
 
-   /* Work out how high the caption is */
+   /* Work out how high/wide the caption is */
    l = lines;
    while (l) {
      p = (char *) l->data;
@@ -830,11 +841,13 @@ feh_draw_caption(winwidget w)
        th += 1; /* line spacing */
      l = l->next;
    }
-             
+   
+   /* we don't want the caption overlay larger than our window */
    if (th > w->h)
      th = w->h;
    if (tw > w->w)
      tw = w->w;
+
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
