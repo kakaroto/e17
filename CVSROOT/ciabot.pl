@@ -261,21 +261,12 @@ EM
 
 for (my $dirnum = 0; $dirnum < @dir; $dirnum++) {
   map {
-    $_ = $dir[$dirnum] . '/' . $_;
-#    for (my $ix = 0; $ix < $pcount; $ix++) {
-      #   s#^[^/]*##; # weed out the module name
-#    }
-    if ($pcount == 3) {
-      s#^.*?/.*?/.*?/##;
-    } elsif ($pcount == 2) {
-      s#^.*?/.*?/##;
-    } else {
-      s#^.*?/##;
-    }
+    #$_ = $dir[$dirnum] . '/' . $_;
+    s#^$module?/##;
     s/&/&amp;/g;
     s/</&lt;/g;
     s/>/&gt;/g;
-    $message .= "  <file>$_</file>\n";
+    $message .= "             <file>$_</file>\n";
   } split(/ /, $dirfiles[$dirnum]);
 }
 
@@ -322,7 +313,6 @@ if ($xml_rpc) {
   }
   exit;
 }
-
 
 
 ### Send out the mail
