@@ -66,6 +66,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_configure, NULL);
+	ewl_object_set_fill_policy(EWL_OBJECT(tree), EWL_FILL_POLICY_HSHRINK |
+			EWL_FILL_POLICY_HFILL);
 
 	tree->ncols = columns;
 	tree->colw = NEW(int, columns);
@@ -419,7 +421,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
 			CURRENT_W(w), ewl_object_get_preferred_h(child));
-	x = CURRENT_X(w) + node->tree->indent;
+	x = CURRENT_X(w);/* + node->tree->indent; */
 	y = CURRENT_Y(w) + ewl_object_get_current_h(child);
 	width = CURRENT_W(w) - x + CURRENT_X(w);
 

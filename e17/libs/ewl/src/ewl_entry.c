@@ -94,15 +94,12 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_entry_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, __ewl_entry_key_down,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_entry_mouse_down,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_entry_mouse_move,
-			    NULL);
+
 	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
 			    NULL);
+
+	ewl_entry_set_editable(e, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -146,6 +143,48 @@ char           *ewl_entry_get_text(Ewl_Entry * e)
 	w = EWL_WIDGET(e);
 
 	DRETURN_PTR(ewl_text_get_text(EWL_TEXT(e->text)), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_entry_set_editable - change the ability to edit the text in an entry
+ * @e: then entry to change
+ * @edit: a boolean value indicating the ability to edit the entry
+ *
+ * Returns no value.
+ */
+void
+ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (e->editable == edit)
+		DRETURN(DLEVEL_STABLE);
+
+	w = EWL_WIDGET(e);
+
+	e->editable = edit;
+
+	if (edit) {
+		ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
+				__ewl_entry_key_down, NULL);
+		ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+				__ewl_entry_mouse_down, NULL);
+		ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+				__ewl_entry_mouse_move, NULL);
+	}
+	else {
+		ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN,
+				__ewl_entry_key_down);
+		ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN,
+				__ewl_entry_mouse_down);
+		ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
+				__ewl_entry_mouse_move);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*

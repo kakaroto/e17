@@ -188,19 +188,19 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		/*
 		 * Get the default style and color based on the theme.
 		 */
-		snprintf(key, PATH_MAX, "%s/style");
+		snprintf(key, PATH_MAX, "%s/style", w->appearance);
 		style = ewl_theme_data_get_str(w, key);
 
-		snprintf(key, PATH_MAX, "%s/r");
+		snprintf(key, PATH_MAX, "%s/r", w->appearance);
 		r = ewl_theme_data_get_int(w, key);
 
-		snprintf(key, PATH_MAX, "%s/g");
+		snprintf(key, PATH_MAX, "%s/g", w->appearance);
 		g = ewl_theme_data_get_int(w, key);
 
-		snprintf(key, PATH_MAX, "%s/b");
+		snprintf(key, PATH_MAX, "%s/b", w->appearance);
 		b = ewl_theme_data_get_int(w, key);
 
-		snprintf(key, PATH_MAX, "%s/a");
+		snprintf(key, PATH_MAX, "%s/a", w->appearance);
 		a = ewl_theme_data_get_int(w, key);
 
 		/*
