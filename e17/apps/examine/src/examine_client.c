@@ -385,7 +385,7 @@ examine_client_get_val_cb(void)
     ewl_spinner_set_value(EWL_SPINNER(prop->w), (double) tmpi);
     break;
   case PT_FLT:
-    sscanf(ret, "%lf", &tmpd);
+    sscanf(ret, "%f", &tmpd);
     prop->value.fval = tmpd;
     prop->oldvalue.fval = tmpd;
     ewl_spinner_set_value(EWL_SPINNER(prop->w), tmpd);
