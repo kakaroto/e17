@@ -177,3 +177,19 @@ void e_handle_resize(void)
 
   e_handle_arrows();
 }
+
+void e_handle_dnd(void)
+{
+    DIR *d;
+    int i;
+    char *dnd_item;
+
+    for (i = 0; i < dnd_num_files; i++)
+	{
+	    dnd_item = strstr(dnd_files[i], "file:" );
+	    dnd_item = strchr(dnd_item, '/' ); 
+
+	    image_add_from_dnd(dnd_item);	   
+	}
+    return;
+}

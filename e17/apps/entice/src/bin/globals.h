@@ -65,5 +65,7 @@ extern int down_sy;
 extern double scale;
 extern double focus_pos;
 extern int need_thumbs;
+extern int dnd_num_files;
+extern char **dnd_files;
 
 #endif /* __GLOBAL_H__ */

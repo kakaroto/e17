@@ -56,6 +56,9 @@ double scale = 1.0;
 double focus_pos = 0.0;
 int need_thumbs = 1;
 
+int dnd_num_files;
+char **dnd_files = NULL;
+
 /*****************************************************************************/
 
 Window find_current_rep(Window win, Atom atom)

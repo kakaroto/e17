@@ -1,5 +1,45 @@
 #include "entice.h"
 
+void image_add_from_dnd(char *item)
+{
+    DIR *d;
+    struct dirent *dent;
+    Image *im;
+    Evas_List l;
+    char buf[4096];
+
+    if (e_file_is_dir(item))
+    {
+	d = opendir(item);
+	while( ( dent=readdir(d) )!=NULL )
+	{
+	    if( !strcmp(dent->d_name,".") || !strcmp(dent->d_name,"..")
+		|| dent->d_name[0]=='.' )
+		continue;
+	    
+	    sprintf(buf, "%s/%s", item, dent->d_name);
+	    if (e_file_is_dir(buf))
+		image_add_from_dnd(buf);
+	    else {
+		im = e_image_new(buf);
+		im->subst = 1;
+		images = evas_list_prepend_relative(images, im, current_image->data);
+		current_image = current_image->prev; }
+	}
+	closedir(d);
+    }
+    else
+    {
+	im = e_image_new(item);
+	im->subst = 1;
+	images = evas_list_prepend_relative(images, im, current_image->data);
+	current_image = current_image->prev;
+    }
+    need_thumbs = 1;
+    e_display_current_image();
+    return;
+}
+
 void image_create_list(int argc, char **argv)
 {
   int i;
@@ -150,31 +190,33 @@ void e_image_free(Image *im)
 void e_delete_current_image(void)
 {
     Evas_List l = NULL;
+
     Image *im;
 
-    if (current_image)
+    if (current_image && current_image->data)
     {
 	im = (Image *)(current_image->data);
-       
-	if (im->o_thumb) {
-	    evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_DOWN );
-	    evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_IN   );
-	    evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_OUT  );
-
-	    evas_del_object(evas, im->o_thumb); }
 	 
 	if (current_image->next)
 	    l = current_image->next;
 	else if (current_image->prev)
 	    l = current_image->prev;
+	else
+	    l = NULL;
 
-	if (l) {
+	if (l != NULL) {
+	    if (im->o_thumb) {
+		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_DOWN );
+		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_IN   );
+		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_OUT  );
+
+		evas_del_object(evas, im->o_thumb); }
 	    images = evas_list_remove(images, current_image->data);
 	    e_image_free((Image *)current_image->data); }
-	else
-	    image_destroy_list();
-	 
-	current_image = l;
+	
+	if (l != NULL)
+	    current_image = l;
+
 	e_display_current_image();
     }
 }

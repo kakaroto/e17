@@ -23,6 +23,9 @@ void setup(void)
   ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_CONFIGURE,         e_window_configure);
   ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN,                 e_key_down);
   ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_PROPERTY,          e_property);
+
+  ecore_event_filter_handler_add(ECORE_EVENT_DND_DROP,                 e_dnd_drop);
+  ecore_event_filter_handler_add(ECORE_EVENT_DND_DROP_REQUEST,         e_dnd_drop_request);
   /* handler for when the event queue goes idle */
   ecore_event_filter_idle_handler_add(e_idle, NULL);
   /* create a 400x300 toplevel window */
@@ -49,6 +52,8 @@ void setup(void)
   ecore_window_show(ewin);
   /* set the events this window accepts */
   ecore_window_set_events(ewin, XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE | XEV_KEY);
+  /* Advertise for dnd */
+  ecore_window_dnd_advertise(ewin);
   /* show the toplevel */
   ecore_window_show(win);
    
@@ -321,3 +326,55 @@ void e_fix_icons(void)
   evas_set_image_fill(evas, o_list_select, 0, 0, 52, 52);
   evas_set_image_border(evas, o_list_select, 4, 4, 4, 4);
 }
+
+
+void e_dnd_drop_request(Ecore_Event *ev)
+{
+    Ecore_Event_Dnd_Drop_Request *dnd;
+    DIR *d;
+    Window dnd_win;
+    int i;
+
+    dnd_win = evas_get_window(evas);
+    dnd = ev->event;
+    if (dnd_win == dnd->win) 
+    {
+	dnd_num_files = dnd->num_files;
+	dnd_files = NEW_PTR(dnd_num_files);
+	for (i = 0; i < dnd_num_files; i++) 
+	    dnd_files[i] = strdup(dnd->files[i]); 
+    }
+    return;
+}
+
+void e_dnd_drop(Ecore_Event *ev)
+{
+    Ecore_Event_Dnd_Drop_Request *dnd;
+    Window dnd_win;
+
+    dnd_win = evas_get_window(evas);
+    dnd = ev->event;
+    if (dnd_win == dnd->win) 
+    {
+	e_handle_dnd();
+	ecore_window_dnd_send_finished(main_win, dnd->source_win);
+	e_dnd_drop_request_free();
+    }
+
+    return;
+}
+
+void e_dnd_drop_request_free(void)
+{
+    int i;
+
+    for (i = 0; i < dnd_num_files; i++) 
+	free(dnd_files[i]);
+    free(dnd_files);
+    dnd_files = NULL;
+    dnd_num_files = 0;
+    return;
+}
+    
+
+
