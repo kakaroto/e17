@@ -21,3 +21,4 @@ raster: need to lock .enlightenment dir for multiple logins etc.
 
 BUGS TO BE FIXED for 0.17:
 user: If you increase the "Pager scanning speed" via the Pager Settings to over 100, the text above the slider goes funny and doesn't reflect accurately what is set.
+mandrake: I'm sure that focus code has bugs in it somewhere. just needs to be completely rewritten, basically
