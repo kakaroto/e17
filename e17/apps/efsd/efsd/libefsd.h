@@ -135,17 +135,22 @@ void           efsd_event_cleanup(EfsdEvent *ev);
  * efsd_commands_pending - whether there are commands still waiting to be sent to Efsd.
  * @ec: The Efsd connection
  *
- * Returns value > 0 when commands are queued, 0 when the queue is empty,
- * value < 0 when an error occured.
+ * Use this function to find out whether commands are currently queued
+ * on the client side. Returns value > 0 when commands are queued, 0 when
+ * the queue is empty, value < 0 when an error occured.
  */
 int            efsd_commands_pending(EfsdConnection *ec);
 
 /**
- * efsd_flush - tries to flush the queue of outstanding commands.
+ * efsd_flush - tries to flush the queue of unsent commands.
  * @ec: The Efsd connection
  *
- * Returns value > 0 when the queue could be flushed, 0 otherwise,
- * < 0 when there was an error.
+ * When clients send bursts of commands to the server, it can happen that
+ * Efsd cannot immediately accept a command. In that case, commands are
+ * queued on the client side. This queue can be flushed using this command.
+ * This function tries to send as many commands as possible, and then 
+ * returns. It does not block. Returns value > 0 when the queue could be
+ * flushed, 0 otherwise, < 0 when there was an error.
  */
 int            efsd_flush(EfsdConnection *ec);
 

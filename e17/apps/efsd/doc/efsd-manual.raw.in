@@ -322,7 +322,7 @@ if (efsd_close(ec) < 0)
 	    </listitem>
 	  </itemizedlist>
 	  
-	  When a command is sent to the server, you get a command ID in
+	  When a command is sent to the server, you get a (non-negative) command ID in
 	  return, which is guaranteed to be unique, and can therefore be
 	  used to associate replies from &efsd; and
 	  sent commands. The exception is the unlikely case that the
@@ -357,23 +357,41 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	      reported as error codes in the returned replies.
 	    </para>
 	  </note>
-
+	</para>	
+	<para><
 	  If you don't check the return value, the receiving part of your client
 	  may be waiting for reply to a command that never got sent to &efsd;.
-	  &efsd; does not queue those requests on the client side, as the urgency of
-	  the commands depends on the application setting. For some scenarios,
-	  queueing may be appropriate, while for others, simply discarding
-	  the command may be better. The decision is left to the client.
+	</para>
+	<para>
+	  When clients send bursts of commands, it can happen that &efsd; is busy
+	  processing commands and cannot keep up with the commands being sent to
+	  the server. When this happens, commands are queued on the client side.
+	    &lefsd; offers two calls to handle the client-side command queues:
+	  <link linkend="API-efsd-commands-pending"><function>efsd_commands_pending()</function></link>,
+	  which reports whether or not commands are currently queued, and 
+	  <link linkend="API-efsd-flush"><function>efsd_flush()</function></link>,
+          which sends as many queued commands to the client as possible.
+	</para>
+	<para>
+	  The queue is also processed whenever a command is written to the server,
+	  so the command sequence always remains intact.
+	</para>
+	<para>
+	  The ideal way to manually flush the queue (in case there is one), is to
+	  get the &efsd; connection file descriptor using
+	  <link linkend="API-efsd-get-connection-fd"><function>efsd_get_connection_fd()</function></link>,
+	  then to use <function>select()</function> on the file descriptor to
+	  find out when it becomes writeable, and then flush the queue.
 	</para>
       </section>
-
+      
       <section>
 	<title>Receiving Events</title>
         <para>
-	There are two basic ways of receiving events from &efsd; in your client:
-	Using <function>select()</function> to wait on events on file descriptors,
-	or using &lefsd;'s convenience functions which block and wait until events
-	arrive.
+	  There are two basic ways of receiving events from &efsd; in your client:
+	  Using <function>select()</function> to wait on events on file descriptors,
+	  or using &lefsd;'s convenience functions which block and wait until events
+	  arrive.
         </para>
 	<section>
 	  <title>Using <function>select()</function> and File Descriptors</title>
