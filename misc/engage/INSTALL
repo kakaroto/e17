@@ -14,7 +14,10 @@ To install (run this as root, or the user who handles installs):
 You need to use the e_util_eapp_edit application (as the user that will be
 running engage, not root!) from CVS in e17/apps/e_utils to build icon files for your apps.
 These icons are compatible with the upcoming e17 e_app icons and should live
-in ~.e/e/applications/all.
+in ~/.e/e/applications/all.
+
+In ~/.e/e/applications/engage you need to place a .order file or however you
+like to manage your icon lists in e17.
 
 Unmatched windows will pick up the xapp.eapp in the shared directory which has
 no icon - _unless_ the theme overrides this icon!
