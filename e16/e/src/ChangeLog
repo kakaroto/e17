@@ -1260,3 +1260,10 @@ Sat Sep  4 00:35:38 PDT 1999
 
 draw queue for handling expoes on dialogs.. more efficient drawing for dialogs
 AND now no drawing bugs in non opaque move and resize modes :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 00:41:49 PDT 1999
+(Raster)
+
+update TOTO buglist.... ooh its getting short.. :)
