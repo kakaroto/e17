@@ -91,8 +91,6 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 
 	main_vbox = ewl_vbox_new();
 	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
-	ewl_theme_data_set(main_vbox,
-			   "/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new();
@@ -214,8 +212,6 @@ __notebook_generate_page(Ewl_Widget * notebook)
 
 	main_vbox = ewl_vbox_new();
 	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
-	ewl_theme_data_set(main_vbox,
-			   "/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new();
@@ -226,8 +222,6 @@ __notebook_generate_page(Ewl_Widget * notebook)
 
 	hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(hbox), 5);
-	ewl_theme_data_set(hbox, "/appearance/box/horizontal/base/visible",
-			   "no");
 	ewl_object_set_padding(EWL_OBJECT(hbox), 0, 0, 20, 0);
 	ewl_object_set_custom_size(EWL_OBJECT(hbox), 225, 17);
 	ewl_object_set_alignment(EWL_OBJECT(hbox), EWL_ALIGNMENT_CENTER);

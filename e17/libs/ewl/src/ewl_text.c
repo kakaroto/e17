@@ -54,8 +54,6 @@ ewl_text_init(Ewl_Text * t)
 			     NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_text_configure, NULL);
-	ewl_callback_del(w, EWL_CALLBACK_THEME_UPDATE,
-			 __ewl_widget_theme_update);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -77,22 +75,26 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Determine the proper vertical alignment
 	 */
-	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_BOTTOM)
+
+/*	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_BOTTOM)
 		v_align = ETOX_ALIGN_TYPE_BOTTOM;
-	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_TOP)
-		v_align = ETOX_ALIGN_TYPE_TOP;
-	else
-		v_align = ETOX_ALIGN_TYPE_CENTER;
+	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_TOP)*/
+	v_align = ETOX_ALIGN_TYPE_TOP;
+
+/*	else
+		v_align = ETOX_ALIGN_TYPE_CENTER;*/
 
 	/*
 	 * Determine the proper horizontal alignment
 	 */
-	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_RIGHT)
+
+/*	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_RIGHT)
 		h_align = ETOX_ALIGN_TYPE_RIGHT;
-	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_LEFT)
-		h_align = ETOX_ALIGN_TYPE_LEFT;
-	else
-		h_align = ETOX_ALIGN_TYPE_CENTER;
+	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_LEFT)*/
+	h_align = ETOX_ALIGN_TYPE_LEFT;
+
+/*	else
+		h_align = ETOX_ALIGN_TYPE_CENTER;*/
 
 	/*
 	 * Create the evas objects needed to draw the text
@@ -164,12 +166,12 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (t->tox)
 	  {
-		  double xx, yy, ww, hh;
+		  double ww, hh;
 
 		  etox_move(t->tox, CURRENT_X(t), CURRENT_Y(t));
 		  etox_resize(t->tox, START_W, START_H);
-		  etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
-		  etox_resize(t->tox, ww, hh);
+		  etox_get_actual_geometry(t->tox, NULL, NULL, &ww, &hh);
+//                etox_resize(t->tox, ww, hh);
 		  ewl_object_set_custom_size(EWL_OBJECT(w), ww, hh);
 	  }
 

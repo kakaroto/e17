@@ -191,7 +191,8 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 		  path = NEW(char, PATH_LEN);
 
 		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
-	} else			/* Absolute path given, so return it */
+	  }
+	else			/* Absolute path given, so return it */
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))

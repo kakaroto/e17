@@ -144,7 +144,6 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Widget *main_vbox;
 	Ewl_Widget *button_hbox;
 	Ewl_Widget *button_prev, *button_load, *button_next;
 	char *image_file = NULL;
@@ -156,16 +155,12 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	images = ewd_dlist_new();
 
 	image_win = ewl_window_new();
+	ewl_box_set_spacing(EWL_BOX(image_win), 10);
 	ewl_window_resize(image_win, 390, 297);
 	ewl_window_set_min_size(image_win, 390, 297);
 	ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_image_test_window, NULL);
 	ewl_widget_show(image_win);
-
-	main_vbox = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(image_win), main_vbox);
-	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
-	ewl_widget_show(main_vbox);
 
 	if ((__image_exists(PACKAGE_DATA_DIR "/images/e-logo.png")) != -1)
 		image_file = strdup(PACKAGE_DATA_DIR "/images/e-logo.png");
@@ -177,7 +172,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	image = ewl_image_load(image_file);
 	ewl_object_set_padding(EWL_OBJECT(image), 0, 0, 5, 0);
 	ewl_object_set_alignment(EWL_OBJECT(image), EWL_ALIGNMENT_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), image);
+	ewl_container_append_child(EWL_CONTAINER(image_win), image);
 	ewl_widget_show(image);
 
 	if (image_file)
@@ -186,7 +181,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	entry_path = ewl_entry_new();
 	if (image_file)
 		ewl_entry_set_text(entry_path, image_file);
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), entry_path);
+	ewl_container_append_child(EWL_CONTAINER(image_win), entry_path);
 	ewl_widget_show(entry_path);
 
 	button_hbox = ewl_hbox_new();
@@ -194,7 +189,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_alignment(EWL_OBJECT(button_hbox),
 				 EWL_ALIGNMENT_CENTER);
 	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 112, 38);
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), button_hbox);
+	ewl_container_append_child(EWL_CONTAINER(image_win), button_hbox);
 	ewl_widget_show(button_hbox);
 
 	button_prev = ewl_button_new(NULL);

@@ -4,7 +4,7 @@
 %define	rel	1
 %define prefix  /usr
 
-Summary: Enlightened Widget Library
+Summary: Enlightenment Widget Library
 Name: %{name}
 Version: %{ver}
 Release: %{rel}

@@ -120,4 +120,11 @@ enum _ewl_position
 	EWL_POSITION_BOTTOM
 };
 
+typedef enum _ewl_notebook_flags Ewl_Notebook_Flags;
+
+enum _ewl_notebook_flags
+{
+	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x1
+};
+
 #endif /* __EWL_ENUMS_H__ */

@@ -444,6 +444,24 @@ ewl_notebook_get_tabs_position(Ewl_Widget * w)
 }
 
 void
+ewl_notebook_set_flags(Ewl_Widget * w, Ewl_Notebook_Flags flags)
+{
+	Ewl_Notebook *n;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	n = EWL_NOTEBOOK(w);
+
+	n->flags = flags;
+
+	if (n->flags & EWL_NOTEBOOK_FLAG_TABS_HIDDEN)
+		ewl_widget_hide(n->tab_box);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
 __ewl_notebook_init(Ewl_Notebook * n)
 {
 	Ewl_Widget *w;
@@ -486,8 +504,11 @@ __ewl_notebook_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	n = EWL_NOTEBOOK(w);
 
-	ewl_container_append_child(EWL_CONTAINER(w), n->tab_box);
-	ewl_widget_realize(n->tab_box);
+	if (n->flags != EWL_NOTEBOOK_FLAG_TABS_HIDDEN)
+	  {
+		  ewl_container_append_child(EWL_CONTAINER(w), n->tab_box);
+		  ewl_widget_realize(n->tab_box);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -517,132 +538,137 @@ __ewl_notebook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			      CURRENT_W(w), CURRENT_H(w));
 	  }
 
-	if (!n->tab_box || !EWL_CONTAINER(n->tab_box)->children ||
-	    ewd_list_is_empty(EWL_CONTAINER(n->tab_box)->children))
-		DRETURN(DLEVEL_STABLE);
-
-	ewl_object_get_maximum_size(EWL_OBJECT(n->tab_box), &ww, &hh);
-
-	a = ewl_object_get_alignment(EWL_OBJECT(n->tab_box));
-
-	switch (n->tabs_position)
+	if (n->flags != EWL_NOTEBOOK_FLAG_TABS_HIDDEN)
 	  {
-	  case EWL_POSITION_LEFT:
-		  switch (a)
+		  if (!n->tab_box || !EWL_CONTAINER(n->tab_box)->children ||
+		      ewd_list_is_empty(EWL_CONTAINER(n->tab_box)->children))
+			  DRETURN(DLEVEL_STABLE);
+
+		  ewl_object_get_maximum_size(EWL_OBJECT(n->tab_box), &ww,
+					      &hh);
+
+		  a = ewl_object_get_alignment(EWL_OBJECT(n->tab_box));
+
+		  switch (n->tabs_position)
 		    {
-		    case EWL_ALIGNMENT_CENTER:
-			    rx = CURRENT_X(w);
-			    ry = CURRENT_Y(w);
-			    ry += CURRENT_H(w) / 2;
-			    ry -= hh / 2;
-			    rw = ww;
-			    rh = hh;
+		    case EWL_POSITION_LEFT:
+			    switch (a)
+			      {
+			      case EWL_ALIGNMENT_CENTER:
+				      rx = CURRENT_X(w);
+				      ry = CURRENT_Y(w);
+				      ry += CURRENT_H(w) / 2;
+				      ry -= hh / 2;
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_BOTTOM:
+				      rx = CURRENT_X(w);
+				      ry = CURRENT_Y(w) + CURRENT_H(w) - hh;
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_TOP:
+			      default:
+				      rx = CURRENT_X(w);
+				      ry = CURRENT_Y(w);
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      }
 			    break;
-		    case EWL_ALIGNMENT_BOTTOM:
-			    rx = CURRENT_X(w);
-			    ry = CURRENT_Y(w) + CURRENT_H(w) - hh;
-			    rw = ww;
-			    rh = hh;
+		    case EWL_POSITION_RIGHT:
+			    switch (a)
+			      {
+			      case EWL_ALIGNMENT_CENTER:
+				      rx = CURRENT_X(w) + CURRENT_W(w) - ww;
+				      ry = CURRENT_Y(w);
+				      ry += CURRENT_H(w) / 2;
+				      ry -= hh / 2;
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_BOTTOM:
+				      rx = CURRENT_X(w) + CURRENT_W(w) - ww;
+				      ry = CURRENT_Y(w) + CURRENT_H(w) - hh;
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_TOP:
+			      default:
+				      rx = CURRENT_X(w) + CURRENT_W(w) - ww;
+				      ry = CURRENT_Y(w);
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      }
 			    break;
-		    case EWL_ALIGNMENT_TOP:
+		    case EWL_POSITION_TOP:
+			    switch (a)
+			      {
+			      case EWL_ALIGNMENT_CENTER:
+				      rx = CURRENT_X(w);
+				      rx += CURRENT_W(w) / 2;
+				      rx -= ww / 2;
+				      ry = CURRENT_Y(w);
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_RIGHT:
+				      rx = CURRENT_X(w) + CURRENT_W(w) - ww;
+				      ry = CURRENT_Y(w);
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_LEFT:
+			      default:
+				      rx = CURRENT_X(w);
+				      ry = CURRENT_Y(w);
+				      rw = ww;
+				      rh = hh;
+				      break;
+
+			      }
+			    break;
+		    case EWL_POSITION_BOTTOM:
+			    switch (a)
+			      {
+			      case EWL_ALIGNMENT_CENTER:
+				      rx = CURRENT_X(w);
+				      rx += CURRENT_W(w) / 2;
+				      rx -= ww / 2;
+				      ry = CURRENT_Y(w) + CURRENT_H(w);
+				      ry -= hh;
+				      rw = ww;
+				      rh = CURRENT_H(n->tab_box);
+				      break;
+			      case EWL_ALIGNMENT_RIGHT:
+				      rx = CURRENT_X(w) + CURRENT_W(w) - ww;
+				      ry = CURRENT_Y(w) + CURRENT_H(w);
+				      ry -= hh;
+				      rw = ww;
+				      rh = hh;
+				      break;
+			      case EWL_ALIGNMENT_LEFT:
+			      default:
+				      rx = CURRENT_X(w);
+				      ry = CURRENT_Y(w) + CURRENT_H(w);
+				      ry -= hh;
+				      rw = ww;
+				      rh = hh;
+				      break;
+
+			      }
+			    break;
 		    default:
-			    rx = CURRENT_X(w);
-			    ry = CURRENT_Y(w);
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    }
-		  break;
-	  case EWL_POSITION_RIGHT:
-		  switch (a)
-		    {
-		    case EWL_ALIGNMENT_CENTER:
-			    rx = CURRENT_X(w) + CURRENT_W(w) - ww;
-			    ry = CURRENT_Y(w);
-			    ry += CURRENT_H(w) / 2;
-			    ry -= hh / 2;
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    case EWL_ALIGNMENT_BOTTOM:
-			    rx = CURRENT_X(w) + CURRENT_W(w) - ww;
-			    ry = CURRENT_Y(w) + CURRENT_H(w) - hh;
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    case EWL_ALIGNMENT_TOP:
-		    default:
-			    rx = CURRENT_X(w) + CURRENT_W(w) - ww;
-			    ry = CURRENT_Y(w);
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    }
-		  break;
-	  case EWL_POSITION_TOP:
-		  switch (a)
-		    {
-		    case EWL_ALIGNMENT_CENTER:
-			    rx = CURRENT_X(w);
-			    rx += CURRENT_W(w) / 2;
-			    rx -= ww / 2;
-			    ry = CURRENT_Y(w);
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    case EWL_ALIGNMENT_RIGHT:
-			    rx = CURRENT_X(w) + CURRENT_W(w) - ww;
-			    ry = CURRENT_Y(w);
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    case EWL_ALIGNMENT_LEFT:
-		    default:
-			    rx = CURRENT_X(w);
-			    ry = CURRENT_Y(w);
-			    rw = ww;
-			    rh = hh;
 			    break;
 
 		    }
-		  break;
-	  case EWL_POSITION_BOTTOM:
-		  switch (a)
-		    {
-		    case EWL_ALIGNMENT_CENTER:
-			    rx = CURRENT_X(w);
-			    rx += CURRENT_W(w) / 2;
-			    rx -= ww / 2;
-			    ry = CURRENT_Y(w) + CURRENT_H(w);
-			    ry -= hh;
-			    rw = ww;
-			    rh = CURRENT_H(n->tab_box);
-			    break;
-		    case EWL_ALIGNMENT_RIGHT:
-			    rx = CURRENT_X(w) + CURRENT_W(w) - ww;
-			    ry = CURRENT_Y(w) + CURRENT_H(w);
-			    ry -= hh;
-			    rw = ww;
-			    rh = hh;
-			    break;
-		    case EWL_ALIGNMENT_LEFT:
-		    default:
-			    rx = CURRENT_X(w);
-			    ry = CURRENT_Y(w) + CURRENT_H(w);
-			    ry -= hh;
-			    rw = ww;
-			    rh = hh;
-			    break;
 
-		    }
-		  break;
-	  default:
-		  break;
-
+		  ewl_object_request_geometry(EWL_OBJECT(n->tab_box), rx, ry,
+					      rw, rh);
+		  ewl_widget_configure(n->tab_box);
 	  }
-
-	ewl_object_request_geometry(EWL_OBJECT(n->tab_box), rx, ry, rw, rh);
-	ewl_widget_configure(n->tab_box);
 
 	if (w->ebits_object)
 	  {
@@ -868,8 +894,8 @@ __ewl_notebook_tab_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 		  ewl_widget_hide(n->visible_np->page);
 
 		  ewl_object_request_position(EWL_OBJECT
-					      (n->visible_np->page), 1 << 30,
-					      1 << 30);
+					      (n->visible_np->page), 1 << 15,
+					      1 << 15);
 		  ewl_widget_configure(n->visible_np->page);
 	  }
 
@@ -948,7 +974,7 @@ __ewl_notebook_page_create(Ewl_Notebook * n, Ewl_Widget * c, Ewl_Widget * l)
 	box = ewl_vbox_new();
 	ewl_widget_set_appearance(box, "/appearance/notebook/content_box");
 	ewl_container_append_child(EWL_CONTAINER(box), c);
-	ewl_object_request_position(EWL_OBJECT(box), 1 << 30, 1 << 30);
+	ewl_object_request_position(EWL_OBJECT(box), 1 << 15, 1 << 15);
 	ewl_widget_configure(box);
 
 	button = ewl_button_new(NULL);

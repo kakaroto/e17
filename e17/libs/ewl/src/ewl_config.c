@@ -31,7 +31,8 @@ ewl_config_init(void)
 	  {
 		  __close_config();
 		  DRETURN_INT(FALSE, DLEVEL_STABLE);
-	} else
+	  }
+	else
 		__create_user_config();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

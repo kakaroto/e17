@@ -97,12 +97,10 @@ inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
 
 #define ewl_object_set_custom_width(o, w) \
 	ewl_object_set_maximum_width(o, w); \
-	ewl_object_set_minimum_width(o, w); \
-	CURRENT_W(o) = w;
+	ewl_object_set_minimum_width(o, w);
 
 #define ewl_object_set_custom_height(o, h) \
 	ewl_object_set_maximum_height(o, h); \
-	ewl_object_set_minimum_height(o, h); \
-	CURRENT_H(o) = h;
+	ewl_object_set_minimum_height(o, h);
 
 #endif /* __EWL_OBJECT_H__ */

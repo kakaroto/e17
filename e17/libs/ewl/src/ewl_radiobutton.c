@@ -75,7 +75,8 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 
 		  ewd_list_append(crb->chain, w);
 		  ewd_list_append(crb->chain, c);
-	} else
+	  }
+	else
 	  {
 		  rb->chain = crb->chain;
 

@@ -102,9 +102,8 @@ ewl_ev_window_configure(Ecore_Event * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_object_request_geometry(EWL_OBJECT(window), ev->x, ev->y,
-				    ev->w, ev->h);
-	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_CONFIGURE);
+	ewl_object_request_geometry(EWL_OBJECT(window), 0, 0, ev->w, ev->h);
+	ewl_widget_configure(EWL_WIDGET(window));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -188,9 +187,19 @@ ewl_ev_key_down(Ecore_Event * _ev)
 	 * appropriate widget.
 	 */
 	if (last_selected)
-		ewl_callback_call_with_event_data(last_selected,
-						  EWL_CALLBACK_KEY_DOWN, ev);
-	last_key = last_selected;
+	  {
+		  ewl_callback_call_with_event_data(last_selected,
+						    EWL_CALLBACK_KEY_DOWN,
+						    ev);
+		  last_key = last_selected;
+	  }
+	else
+	  {
+		  ewl_callback_call_with_event_data(EWL_WIDGET(window),
+						    EWL_CALLBACK_KEY_DOWN,
+						    ev);
+		  last_key = EWL_WIDGET(window);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

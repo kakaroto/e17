@@ -119,7 +119,8 @@ __ewl_fx_handle_fade_in(int val, void *data)
 					timer->timeout,
 					__ewl_fx_handle_fade_in,
 					val + timer->increase, timer);
-	} else
+	  }
+	else
 	  {
 		  timer->repeat--;
 		  if (timer->repeat > 0)
@@ -128,7 +129,8 @@ __ewl_fx_handle_fade_in(int val, void *data)
 						  timer->timeout,
 						  __ewl_fx_handle_fade_in,
 						  timer->start_val, timer);
-		  } else
+		    }
+		  else
 		    {
 			    if (timer->func)
 				    timer->func(timer->widget,
@@ -161,7 +163,8 @@ __ewl_fx_handle_fade_out(int val, void *data)
 					timer->timeout,
 					__ewl_fx_handle_fade_out,
 					val - timer->increase, timer);
-	} else
+	  }
+	else
 	  {
 		  timer->repeat--;
 		  if (timer->repeat > 0)
@@ -170,7 +173,8 @@ __ewl_fx_handle_fade_out(int val, void *data)
 						  timer->timeout,
 						  __ewl_fx_handle_fade_out,
 						  timer->start_val, timer);
-		  } else
+		    }
+		  else
 		    {
 			    if (timer->func)
 				    timer->func(timer->widget,
@@ -202,7 +206,8 @@ __ewl_fx_handle_glow(int val, void *data)
 		  ecore_add_event_timer(timer->name,
 					timer->timeout, __ewl_fx_handle_glow,
 					val + 5, timer);
-	} else if (timer->start_val == 255 && val > 5)
+	  }
+	else if (timer->start_val == 255 && val > 5)
 	  {
 		  ecore_add_event_timer(timer->name,
 					timer->timeout, __ewl_fx_handle_glow,

@@ -125,7 +125,6 @@ void
 __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *box_win;
-	Ewl_Widget *main_vbox;
 	Ewl_Widget *vbox[2];
 	Ewl_Widget *vbox_button[2][3];
 	Ewl_Widget *hbox[3];
@@ -140,12 +139,8 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 			    __destroy_box_test_window, NULL);
 	ewl_widget_show(box_win);
 
-	main_vbox = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(box_win), main_vbox);
-	ewl_widget_show(main_vbox);
-
 	hbox[0] = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), hbox[0]);
+	ewl_container_append_child(EWL_CONTAINER(box_win), hbox[0]);
 	ewl_widget_show(hbox[0]);
 
 	/****************************************************************/
@@ -216,7 +211,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/****************************************************************/
 
 	hbox[1] = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), hbox[1]);
+	ewl_container_append_child(EWL_CONTAINER(box_win), hbox[1]);
 	ewl_widget_show(hbox[1]);
 
 	hbox_button[0][0] = ewl_button_new("Top");
@@ -249,7 +244,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/****************************************************************/
 
 	hbox[2] = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), hbox[2]);
+	ewl_container_append_child(EWL_CONTAINER(box_win), hbox[2]);
 	ewl_widget_show(hbox[2]);
 
 	hbox_button[1][0] = ewl_button_new("Normal");

@@ -10,7 +10,7 @@ typedef struct _ewl_window Ewl_Window;
 
 struct _ewl_window
 {
-	Ewl_Container widget;
+	Ewl_Box widget;
 	Window window;
 	Evas_Object bg_rect;
 	Ebits_Object *ebits_object;

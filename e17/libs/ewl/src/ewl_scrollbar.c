@@ -1,8 +1,8 @@
 
 #include <Ewl.h>
 
-static void __ewl_scrollbar_show(Ewl_Widget * s, void *ev_data,
-				 void *user_data);
+static void __ewl_scrollbar_realize(Ewl_Widget * s, void *ev_data,
+				    void *user_data);
 
 static void __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
@@ -29,7 +29,15 @@ ewl_scrollbar_new(Ewl_Orientation orientation)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	memset(s, 0, sizeof(Ewl_Scrollbar));
 
+	s->decrement = ewl_button_new(NULL);
+	s->increment = ewl_button_new(NULL);
+	s->seeker = ewl_seeker_new(orientation);
+
 	ewl_scrollbar_init(s, orientation);
+
+	ewl_container_append_child(EWL_CONTAINER(s), s->decrement);
+	ewl_container_append_child(EWL_CONTAINER(s), s->increment);
+	ewl_container_prepend_child(EWL_CONTAINER(s), s->seeker);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
@@ -49,19 +57,17 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	DCHECK_PARAM_PTR("s", s);
 
 	ewl_box_init(EWL_BOX(s), orientation);
-	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_SHOW,
-			    __ewl_scrollbar_show, NULL);
+
+	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_REALIZE,
+			    __ewl_scrollbar_realize, NULL);
+
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
 
-	s->decrement = ewl_button_new(NULL);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_scrollbar_decrement, s);
 
-	s->increment = ewl_button_new(NULL);
 	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_scrollbar_increment, s);
-
-	s->seeker = ewl_seeker_new(orientation);
 
 	ewl_object_set_maximum_size(EWL_OBJECT(s->decrement),
 				    MINIMUM_W(s->seeker),
@@ -88,11 +94,8 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 					    "/appearance/scrollbar/horizontal");
 		  ewl_widget_set_appearance(s->increment,
 					    "/appearance/scrollbar/horizontal/decrement");
-
-		  ewl_container_append_child(EWL_CONTAINER(s), s->decrement);
-		  ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
-		  ewl_container_append_child(EWL_CONTAINER(s), s->increment);
-	} else
+	  }
+	else
 	  {
 		  ewl_widget_set_appearance(s->decrement,
 					    "/appearance/scrollbar/vertical/increment");
@@ -100,10 +103,6 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 					    "/appearance/scrollbar/vertical");
 		  ewl_widget_set_appearance(s->increment,
 					    "/appearance/scrollbar/vertical/decrement");
-
-		  ewl_container_append_child(EWL_CONTAINER(s), s->increment);
-		  ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
-		  ewl_container_append_child(EWL_CONTAINER(s), s->decrement);
 	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -113,7 +112,7 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
  * Make sure that we show all the parts of the scrollbar
  */
 static void
-__ewl_scrollbar_show(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_scrollbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Scrollbar *s;
 
@@ -122,9 +121,9 @@ __ewl_scrollbar_show(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SCROLLBAR(w);
 
-	ewl_widget_show(s->decrement);
-	ewl_widget_show(s->seeker);
-	ewl_widget_show(s->increment);
+	ewl_widget_realize(s->decrement);
+	ewl_widget_realize(s->seeker);
+	ewl_widget_realize(s->increment);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

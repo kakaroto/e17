@@ -212,7 +212,8 @@ __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 	  {
 		  ewl_widget_update_appearance(w, "hilited");
 		  ewl_callback_call(w, EWL_CALLBACK_CLICKED);
-	} else
+	  }
+	else
 		ewl_widget_update_appearance(w, "normal");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -25,6 +25,8 @@ struct _ewl_notebook
 
 	Ewl_NotebookPage *visible_np;
 	Ewd_List *pages;
+
+	Ewl_Notebook_Flags flags;
 };
 
 Ewl_Widget *ewl_notebook_new(void);
@@ -45,5 +47,6 @@ Ewl_Alignment ewl_notebook_get_tabs_alignment(Ewl_Widget * w);
 void ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p);
 Ewl_Position ewl_notebook_get_tabs_position(Ewl_Widget * w);
 
+void ewl_notebook_set_flags(Ewl_Widget * w, Ewl_Notebook_Flags flags);
 
 #endif /* __EWL_NOTEBOOK_H__ */

@@ -276,7 +276,8 @@ __ewl_list_key_down(Ewl_Widget * widget, void *event_data, void *user_data)
 	if (!strcmp(ev->key, "Up"))
 	  {
 		  __ewl_list_move_up_selection(widget, multiple);
-	} else if (!strcmp(ev->key, "Down"))
+	  }
+	else if (!strcmp(ev->key, "Down"))
 	  {
 		  __ewl_list_move_down_selection(widget, multiple);
 	  }

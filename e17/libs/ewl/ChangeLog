@@ -1,3 +1,11 @@
+Mon Oct  22 20:25:16 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Made Ewl_Table layout its children correctly.
+	* Some cleanups in the ewl_test program.
+
+Sun Oct  21 18:24:57 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* The Ewl_Window now inherits from Ewl_Box.
+	* Ewl_Scrollbar cleanups.
+
 Tue Oct  09 09:37:56 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Now move to the page after the one removed by
 	  ewl_notebook_remove_visible() instead of just jumping to the first

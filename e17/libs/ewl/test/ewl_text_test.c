@@ -31,20 +31,25 @@ __create_text_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	text_button = w;
 
 	text_win = ewl_window_new();
+	ewl_box_set_spacing(EWL_BOX(text_win), 10);
 	ewl_callback_append(text_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_text_test_window, NULL);
 	ewl_widget_show(text_win);
 
-	main_vbox = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(text_win), main_vbox);
-	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
-	ewl_widget_show(main_vbox);
-
 	text = ewl_text_new();
 	ewl_text_set_text(text,
-			  "This i just a small text, with \n"
-			  "no really meaningful text. EWL!");
-	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
+			  "Enlightenment Widget Library\n"
+			  "\n"
+			  "Bla bla bla bla bla bla bla bla bla\n"
+			  "Bla bla bla bla bla bla bla bla bla\n"
+			  "Bla bla bla bla bla bla bla bla bla\n"
+			  "Bla bla bla bla bla bla bla bla bla\n"
+			  "Bla bla bla bla bla bla bla bla bla\n"
+			  "Bla bla bla bla bla bla bla bla bla\n"
+			  "\n" "            Bla bla bla bla bla bla\n");
+	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_padding(EWL_OBJECT(text), 0, 0, 20, 0);
+	ewl_container_append_child(EWL_CONTAINER(text_win), text);
 	ewl_widget_show(text);
 
 	return;
