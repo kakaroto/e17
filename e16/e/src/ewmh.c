@@ -49,18 +49,11 @@
    XChangeProperty(disp, win, atom, XA_CARDINAL, 32, PropModeReplace, \
                    (unsigned char *)p_val, cnt)
 
-/* These should be global */
-static const char   wm_name[] = "Enlightenment";
-static const char   wm_version[] = ENLIGHTENMENT_VERSION;
-
 /* Will become predefined? */
 Atom                E_XA_UTF8_STRING;
 
-/* Move to ewmh.h? */
-
 /* Window manager info */
 Atom                _NET_WM_NAME;
-Atom                _NET_WM_VERSION;
 Atom                _NET_SUPPORTED;
 Atom                _NET_SUPPORTING_WM_CHECK;
 
@@ -102,7 +95,6 @@ Atom                _NET_WM_MOVERESIZE;
 /*
  * Application Window Properties
  */
-/*   _NET_WM_NAME;      */
 Atom                _NET_WM_DESKTOP;
 
 /* _NET_WM_WINDOW_TYPE (window property) */
@@ -192,11 +184,9 @@ winlist_rindex(Window * wl, int len, Window win)
 /*
  * Initialize EWMH stuff
  */
-
 void
-EWMH_Init(void)
+EWMH_Init(Window win_wm_check)
 {
-   Window              win;	/* Should be elsewhere ? */
    Atom                atom_list[64];
    int                 atom_count;
 
@@ -207,7 +197,6 @@ EWMH_Init(void)
    atom_count = 0;
 
    _ATOM_INIT(_NET_WM_NAME);
-   _ATOM_INIT(_NET_WM_VERSION);
    _ATOM_INIT(_NET_SUPPORTED);
    _ATOM_INIT(_NET_SUPPORTING_WM_CHECK);
 
@@ -256,13 +245,11 @@ EWMH_Init(void)
    _ATOM_SET_ATOM(_NET_SUPPORTED, root.win, atom_list, atom_count);
 
    /* Set WM info properties */
-   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, root.win, wm_name);
-   _ATOM_SET_UTF8_STRING(_NET_WM_VERSION, root.win, wm_version);
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, root.win, e_wm_name);
 
-   win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
-   _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, root.win, &win, 1);
-   _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, win, &win, 1);
-   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win, wm_name);
+   _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, root.win, &win_wm_check, 1);
+   _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, win_wm_check, &win_wm_check, 1);
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win_wm_check, e_wm_name);
 
    EWMH_SetDesktopCount();
    EWMH_SetDesktopNames();

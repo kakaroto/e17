@@ -22,6 +22,13 @@
  */
 #include "E.h"
 
+const char          e_wm_name[] = "Enlightenment";
+const char          e_wm_version[] =
+#ifdef ENLIGHTENMENT_RELEASE
+   "enlightenment-" ENLIGHTENMENT_VERSION "-" ENLIGHTENMENT_RELEASE;
+#else
+   "enlightenment-" ENLIGHTENMENT_VERSION;
+#endif
 pid_t               master_pid;
 int                 master_screen;
 int                 display_screens;

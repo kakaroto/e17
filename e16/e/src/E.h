@@ -2341,6 +2341,7 @@ void                deleteHint(Window win, Atom atom);
 
 #if ENABLE_GNOME
 /* gnome.c functions */
+void                GNOME_SetHints(Window win_wm_check);
 void                GNOME_GetHintIcons(EWin * ewin, Atom atom_change);
 void                GNOME_SetCurrentDesk(void);
 void                GNOME_SetUsedHints(void);
@@ -2351,17 +2352,14 @@ void                GNOME_GetHintAppState(EWin * ewin, Atom atom_change);
 void                GNOME_GetHintState(EWin * ewin, Atom atom_change);
 void                GNOME_GetHintLayer(EWin * ewin, Atom atom_change);
 void                GNOME_SetEwinArea(EWin * ewin);
-void                GNOME_SetWMCheck(void);
 void                GNOME_SetDeskCount(void);
 void                GNOME_SetDeskNames(void);
 void                GNOME_SetClientList(void);
 void                GNOME_GetHints(EWin * ewin, Atom atom_change);
 void                GNOME_SetHint(EWin * ewin);
 void                GNOME_SetEwinDesk(EWin * ewin);
-void                GNOME_SetHints(void);
 void                GNOME_SetCurrentArea(void);
 void                GNOME_SetAreaCount(void);
-void                GNOME_SetWMNameVer(void);
 void                GNOME_DelHints(EWin * ewin);
 void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
@@ -2384,7 +2382,7 @@ void                KDE_UpdateClient(EWin * ewin);
 
 #if ENABLE_EWMH
 /* ewmh.c functions */
-void                EWMH_Init(void);
+void                EWMH_Init(Window win_wm_check);
 void                EWMH_SetDesktopCount(void);
 void                EWMH_SetDesktopNames(void);
 void                EWMH_SetDesktopSize(void);
@@ -3003,6 +3001,9 @@ char                CanZoom(void);
 void                ZoomInit(void);
 void                Zoom(EWin * ewin);
 
+/* Global vars */
+extern const char   e_wm_name[];
+extern const char   e_wm_version[];
 extern pid_t        master_pid;
 extern int          master_screen;
 extern int          display_screens;

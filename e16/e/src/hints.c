@@ -32,17 +32,24 @@
 void
 HintsInit(void)
 {
+   Atom                atom;
+   Window              win;
+
    EDBUG(6, "HintsInit");
+   win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
    ICCCM_Init();
 #if ENABLE_KDE
    /* ??? */
 #endif
 #if ENABLE_GNOME
-   GNOME_SetHints();
+   GNOME_SetHints(win);
 #endif
 #if ENABLE_EWMH
-   EWMH_Init();
+   EWMH_Init(win);
 #endif
+   atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
+   XChangeProperty(disp, root.win, atom, XA_STRING, 8, PropModeReplace,
+		   (unsigned char *)e_wm_version, strlen(e_wm_version));
    EDBUG_RETURN_;
 }
 

@@ -586,23 +586,21 @@ GNOME_SetCurrentDesk(void)
    EDBUG_RETURN_;
 }
 
-void
-GNOME_SetWMCheck(void)
+static void
+GNOME_SetWMCheck(Window win_wm_check)
 {
    static Atom         atom_set = 0;
    CARD32              val;
-   Window              win;
 
    EDBUG(6, "GNOME_SetWMCheck");
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_SUPPORTING_WM_CHECK, False);
-   win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
-   val = win;
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)&val, 1);
-   XChangeProperty(disp, win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)&val, 1);
+   val = win_wm_check;
+   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL,
+		   32, PropModeReplace, (unsigned char *)&val, 1);
+   XChangeProperty(disp, win_wm_check, atom_set, XA_CARDINAL,
+		   32, PropModeReplace, (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
 
@@ -699,18 +697,17 @@ GNOME_SetClientList(void)
    EDBUG_RETURN_;
 }
 
-void
+static void
 GNOME_SetWMNameVer(void)
 {
    static Atom         atom_set = 0, atom_set2 = 0;
-   const char         *wm_name = "Enlightenment";
    const char         *wm_version = ENLIGHTENMENT_VERSION;
 
    EDBUG(6, "GNOME_SetWMNameVer");
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WM_NAME, False);
    XChangeProperty(disp, root.win, atom_set, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)wm_name, strlen(wm_name));
+		   (unsigned char *)e_wm_name, strlen(e_wm_name));
    if (!atom_set2)
       atom_set2 = XInternAtom(disp, XA_WIN_WM_VERSION, False);
    XChangeProperty(disp, root.win, atom_set2, XA_STRING, 8, PropModeReplace,
@@ -759,7 +756,7 @@ GNOME_GetHints(EWin * ewin, Atom atom_change)
 }
 
 void
-GNOME_SetHints(void)
+GNOME_SetHints(Window win_wm_check)
 {
    EDBUG(6, "GNOME_SetHints");
    GNOME_SetWMNameVer();
@@ -767,7 +764,7 @@ GNOME_SetHints(void)
    GNOME_SetDeskCount();
    GNOME_SetDeskNames();
    GNOME_SetAreaCount();
-   GNOME_SetWMCheck();
+   GNOME_SetWMCheck(win_wm_check);
    {
       Atom                atom_set;
       CARD32              val;
