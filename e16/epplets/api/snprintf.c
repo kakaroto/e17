@@ -94,7 +94,7 @@ Esnprintf(char *str, size_t count, const char *fmt, ...)
 #else
 int
 Esnprintf(va_alist)
-     va_dcl;
+     va_dcl
 
 #endif
 {
