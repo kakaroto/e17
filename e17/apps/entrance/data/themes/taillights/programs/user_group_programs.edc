@@ -26,7 +26,7 @@
 		signal, "mouse,in";
 		source, "base";
 		action, STATE_SET "hilited" 0.0;
-		target, "EntranceUserName";
+		target, "entrance.user.name";
 		transition, SINUSOIDAL 0.35;
 	    }
 	    program
@@ -35,7 +35,7 @@
 		signal, "mouse,out";
 		source, "base";
 		action, STATE_SET "default" 0.0;
-		target, "EntranceUserName";
+		target, "entrance.user.name";
 		transition, DECELERATE 0.25;
 		in, 0.35 0.0;
 	    }

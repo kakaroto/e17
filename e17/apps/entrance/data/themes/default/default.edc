@@ -1969,7 +1969,7 @@ collections {
 	    }
 	 }
 	 part {
-	    name: "EntranceSessionIcon";
+	    name: "entrance.xsession.icon";
 	    type: SWALLOW;
 	    mouse_events: 0;
 	    description {
@@ -1992,7 +1992,7 @@ collections {
 	    }
 	 }
 	 part {
-	    name: "EntranceSessionTitle";
+	    name: "entrance.xsession.title";
 	    type: TEXT;
 	    mouse_events: 0;
 	    effect: SHADOW;
@@ -2002,12 +2002,12 @@ collections {
 	       rel1 {
 		  relative: 1.0 0.0;
 		  offset: 2 0;
-		  to: "EntranceSessionIcon";
+		  to: "entrance.xsession.icon";
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
 		  offset: -7 -1;
-		  to_y: "EntranceSessionIcon";
+		  to_y: "entrance.xsession.icon";
 		  to_x: "bg";
 	       }
 	       color: 0 0 0 128;
@@ -2044,7 +2044,7 @@ collections {
 	    signal: "mouse,down,1";
 	    source: "event_rect";
 	    action: STATE_SET "clicked" 0.0;
-	    target: "EntranceSessionTitle";
+	    target: "entrance.xsession.title";
 	    target: "bg";
 	 }
 	 program {
@@ -2052,7 +2052,7 @@ collections {
 	    signal: "mouse,up,1";
 	    source: "event_rect";
 	    action: STATE_SET "default" 0.0;
-	    target: "EntranceSessionTitle";
+	    target: "entrance.xsession.title";
 	    target: "bg";
 	 }
 	 program {

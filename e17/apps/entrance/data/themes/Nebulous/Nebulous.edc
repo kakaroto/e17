@@ -1605,7 +1605,7 @@ collections
 	{
 	    part
 	    {
-		name, "EntranceSessionIcon";
+		name, "entrance.xsession.icon";
 		type, RECT;
 		mouse_events, 1;
 		description
@@ -1627,7 +1627,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceSessionTitle";
+		name, "entrance.xsession.title";
 		type, TEXT;
 		mouse_events, 1;
 		effect, SOFT_SHADOW;
@@ -1639,13 +1639,13 @@ collections
 		    {
 			relative, 1.0 0.5;
 			offset, 2 -17;
-			to, "EntranceSessionIcon";
+			to, "entrance.xsession.icon";
 		    }
 		    rel2
 		    {
 			relative, 1.0 0.5;
 			offset, 110 17;
-			to, "EntranceSessionIcon";
+			to, "entrance.xsession.icon";
 		    }
 		    color, 100 100 100 192;
 		    color3, 255 255 255 255;
@@ -1666,14 +1666,14 @@ collections
 	    {
 		name, "SessionIconClicked";
 		signal, "mouse,clicked,1";
-		source, "EntranceSessionIcon";
+		source, "entrance.xsession.icon";
 		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	    program
 	    {
 		name, "SessionTitleClicked";
 		signal, "mouse,clicked,1";
-		source, "EntranceSessionTitle";
+		source, "entrance.xsession.title";
 		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	}
