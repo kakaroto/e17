@@ -1,0 +1,10 @@
+feh (0.0.0-1) unstable; urgency=low
+
+  * A CVS Release
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 19 Dec 1999 17:01:43 -0500
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address: "ljlane@debian.org"
+End:
