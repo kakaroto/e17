@@ -75,8 +75,8 @@ __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
    DATA32 **p;
    int i, j = 0;
    int val, inc;
-   
-   p = malloc(dh * sizeof(DATA32 *));
+
+   p = malloc((dh + 1) * sizeof(DATA32 *));
    if (dh < (b1 + b2))
      {
 	if (dh < b1)
@@ -106,7 +106,7 @@ __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
      }
    val = (sh - b2) << 16;
    inc = 1 << 16;
-   for (i = 0; i < b2; i++)
+   for (i = 0; i <= b2; i++)
      {
 	p[j++] = src + ((val >> 16) * sw);
 	val += inc;
@@ -119,8 +119,8 @@ __imlib_CalcXPoints(int sw, int dw, int b1, int b2)
 {
    int *p, i, j = 0;
    int val, inc;
-   
-   p = malloc(dw * sizeof(int));
+
+   p = malloc((dw + 1) * sizeof(int));
    if (dw < (b1 + b2))
      {
 	if (dw < b1)
@@ -150,7 +150,7 @@ __imlib_CalcXPoints(int sw, int dw, int b1, int b2)
      }
    val = (sw - b2) << 16;
    inc = 1 << 16;
-   for (i = 0; i < b2; i++)
+   for (i = 0; i <= b2; i++)
      {
 	p[j++] = (val >> 16);
 	val += inc;
@@ -203,32 +203,30 @@ __imlib_CalcApoints(int s, int d, int b1, int b2)
    /* scaling down */
    else
      {
+	int val, inc;
+	
 	for (i = 0; i < b1; i++)
-	   p[j++] = 1;
+	   p[j++] = (1 << (16 + 14)) + (1 << 14);
 	if (d > (b1 + b2))
 	  {
-	     int ss, dd;
+	     int ss, dd, ap, Cp;
 	     
 	     ss = s - b1 - b2;
 	     dd = d - b1 - b2;
+	     val = 0;
+	     inc = (ss << 16) / dd;
+	     Cp = ((dd << 14) / ss) + 1;
 	     for (i = 0; i < dd; i++)
 	       {
-		  v = (((i + 1) * ss) / dd) - ((i * ss) / dd);
-		  if (v != 1)
-		    {
-		       if (((((i + 1) * ss) / dd) + b1) >= s)
-			  v = s - (((i * ss) / dd) + b1) - 1;
-		       p[j++] = v;
-		    }
-		  else
-		     p[j++] = v;
-		  if (p[j - 1] < 1)
-		     p[j - 1] = 1;
+		  ap = ((0x100 - ((val >> 8) & 0xff)) * Cp) >> 8;
+		  p[j] = ap | (Cp << 16);
+		  j++;
+		  val += inc;
 	       }
 	  }
 	for (i = 0; i < b2; i++)
-	   p[j++] = 1;
-     }    
+	   p[j++] = (1 << (16 + 14)) + (1 << 14);
+     }
    return p;
 }
 
@@ -263,7 +261,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		    int *xapoints, int *yapoints, char xup, char yup,
 		    int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow)
 {
-   DATA32 *sptr, *ssptr, *dptr;
+   DATA32 *sptr, *dptr;
    int x, y, i, j, end;
    
    end = dxx + dw;
@@ -291,8 +289,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 					   sow, XAP, YAP);
 			    dptr++;
 #else
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
@@ -326,8 +323,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 					  sow, YAP);
 			    dptr++;
 #else
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_YAP;
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
@@ -361,8 +357,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 					  1, XAP);
 			    dptr++;
 #else
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
@@ -391,66 +386,60 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	/* go through every scanline in the output buffer */
 	for (y = 0; y < dh; y++)
 	  {
+	     int yap;
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     if (YAP > 1)
+
+	     yap = (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
+	     if (yap > 1)
 	       {
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0, a = 0;
 		       int rr = 0, gg = 0, bb = 0, aa = 0;
-		       int count;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)
 			 {
-			    for (j = 0; j < YAP; j++)
+			    pix = sptr + xpoints[x];
+			    for (j = 0; j < yap; j++)
 			      {
-				 ssptr = ypoints[dyy + y] + (j * sow);
-				 pix = &ssptr[xpoints[x]];
 				 r += R_VAL(pix);
 				 g += G_VAL(pix);
 				 b += B_VAL(pix);
 				 a += A_VAL(pix);
+				 rr += R_VAL(pix + 1);
+				 gg += G_VAL(pix + 1);
+				 bb += B_VAL(pix + 1);
+				 aa += A_VAL(pix + 1);
+				 pix += sow;
 			      }
-			    count = j;
-			    r = r * INV_XAP / count;
-			    g = g * INV_XAP / count;
-			    b = b * INV_XAP / count;
-			    a = a * INV_XAP / count;
-			    for (j = 0; j < YAP; j++)
-			      {
-				 ssptr = ypoints[dyy + y] + (j * sow);
-				 pix = &ssptr[xpoints[x] + 1];
-				 rr += R_VAL(pix);
-				 gg += G_VAL(pix);
-				 bb += B_VAL(pix);
-				 aa += A_VAL(pix);
-			      }
-			    count = j;
-			    r = (r + ((rr * XAP) / count)) >> 8;
-			    g = (g + ((gg * XAP) / count)) >> 8;
-			    b = (b + ((bb * XAP) / count)) >> 8;
-			    a = (a + ((aa * XAP) / count)) >> 8;
+			    r = r * INV_XAP / yap;
+			    g = g * INV_XAP / yap;
+			    b = b * INV_XAP / yap;
+			    a = a * INV_XAP / yap;
+			    r = (r + ((rr * XAP) / yap)) >> 8;
+			    g = (g + ((gg * XAP) / yap)) >> 8;
+			    b = (b + ((bb * XAP) / yap)) >> 8;
+			    a = (a + ((aa * XAP) / yap)) >> 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
 		       else
 			 {
-			    for (j = 0; j < YAP; j++)
+			    pix = sptr + xpoints[x];
+			    for (j = 0; j < yap; j++)
 			      {
-				 ssptr = ypoints[dyy + y] + (j *sow);
-				 pix = &ssptr[xpoints[x]];
 				 r += R_VAL(pix);
 				 g += G_VAL(pix);
 				 b += B_VAL(pix);
 				 a += A_VAL(pix);
+				 pix += sow;
 			      }
-			    count = j;
-			    r /= count;
-			    g /= count;
-			    b /= count;
-			    a /= count;
+			    r /= yap;
+			    g /= yap;
+			    b /= yap;
+			    a /= yap;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
 		    }		       
@@ -460,14 +449,12 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0, a = 0;
-		       int rr = 0, gg = 0, bb = 0, aa = 0;
 		       int count;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)
 			 {
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
@@ -504,45 +491,41 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		    {
 		       int r = 0, g = 0, b = 0, a = 0;
 		       int rr = 0, gg = 0, bb = 0, aa = 0;
-		       int count;
+		       int xap;
 		       DATA32 *pix;
 		  
-		       if (XAP > 1)
+		       xap = xpoints[x + 1] - xpoints[x];
+		       if (xap > 1)
 			 {
-			    ssptr = ypoints[dyy + y];
-			    for (i = 0; i < XAP; i++)
+			    pix = ypoints[dyy + y] + xpoints[x];
+			    for (i = 0; i < xap; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
-				 r += R_VAL(pix);
-				 g += G_VAL(pix);
-				 b += B_VAL(pix);
-				 a += A_VAL(pix);
+				 r += R_VAL(pix + i);
+				 g += G_VAL(pix + i);
+				 b += B_VAL(pix + i);
+				 a += A_VAL(pix + i);
 			      }
-			    count = i;
-			    r = r * INV_YAP / count;
-			    g = g * INV_YAP / count;
-			    b = b * INV_YAP / count;
-			    a = a * INV_YAP / count;
-			    ssptr = ypoints[dyy + y] + sow;
-			    for (i = 0; i < XAP; i++)
+			    r = r * INV_YAP / xap;
+			    g = g * INV_YAP / xap;
+			    b = b * INV_YAP / xap;
+			    a = a * INV_YAP / xap;
+			    pix = ypoints[dyy + y] + xpoints[x] + sow;
+			    for (i = 0; i < xap; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
-				 rr += R_VAL(pix);
-				 gg += G_VAL(pix);
-				 bb += B_VAL(pix);
-				 aa += A_VAL(pix);
+				 rr += R_VAL(pix + i);
+				 gg += G_VAL(pix + i);
+				 bb += B_VAL(pix + i);
+				 aa += A_VAL(pix + i);
 			      }
-			    count = i;
-			    r = (r + ((rr * YAP) / count)) >> 8;
-			    g = (g + ((gg * YAP) / count)) >> 8;
-			    b = (b + ((bb * YAP) / count)) >> 8;
-			    a = (a + ((aa * YAP) / count)) >> 8;
+			    r = (r + ((rr * YAP) / xap)) >> 8;
+			    g = (g + ((gg * YAP) / xap)) >> 8;
+			    b = (b + ((bb * YAP) / xap)) >> 8;
+			    a = (a + ((aa * YAP) / xap)) >> 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
 		       else
 			 {
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_YAP;
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
@@ -565,26 +548,24 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0, a = 0;
-		       int rr = 0, gg = 0, bb = 0, aa = 0;
-		       int count;
+		       int xap;
 		       DATA32 *pix;
 		  
-		       if (XAP > 1)
+		       xap = xpoints[x + 1] - xpoints[x];
+		       if (xap > 1)
 			 {
-			    ssptr = ypoints[dyy + y];
-			    for (i = 0; i < XAP; i++)
+			    pix = ypoints[dyy + y] + xpoints[x];
+			    for (i = 0; i < xap; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
-				 r += R_VAL(pix);
-				 g += G_VAL(pix);
-				 b += B_VAL(pix);
-				 a += A_VAL(pix);
+				 r += R_VAL(pix + i);
+				 g += G_VAL(pix + i);
+				 b += B_VAL(pix + i);
+				 a += A_VAL(pix + i);
 			      }
-			    count = i;
-			    r /= count;
-			    g /= count;
-			    b /= count;
-			    a /= count;
+			    r /= xap;
+			    g /= xap;
+			    b /= xap;
+			    a /= xap;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
 		       else
@@ -595,38 +576,291 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
      }
    /* if we're scaling down horizontally & vertically */
    else
+#if 1
+     {
+	/*\ 'Correct' version, with math units prepared for MMXification:
+	|*|  The operation 'b = (b * c) >> 16' translates to pmulhw,
+	|*|  so the operation 'b = (b * c) >> d' would translate to
+	|*|  psllw (16 - d), %mmb; pmulh %mmc, %mmb
+	\*/
+	int Cx, Cy, i, j;
+	DATA32 *pix;
+	int a, r, g, b, ax, rx, gx, bx;
+	int xap, yap;
+
+	for (y = 0; y < dh; y++)
+	  {
+	     Cy = YAP >> 16;
+	     yap = YAP & 0xffff;
+
+	     dptr = dest + dx + ((y + dy) * dow);
+	     for (x = dxx; x < end; x++)
+	       {
+		  Cx = XAP >> 16;
+		  xap = XAP & 0xffff;
+
+#if defined(DO_MMX_ASM) && defined(__GNUC__)
+		  __asm__ (
+		  "movd %3, %%mm3\n\t"		/*\ Cx \*/
+		  "punpcklwd %%mm3, %%mm3\n\t"
+		  "punpckldq %%mm3, %%mm3\n\t"
+		  "movd %4, %%mm4\n\t"		/*\ Cy \*/
+		  "punpcklwd %%mm4, %%mm4\n\t"
+		  "punpckldq %%mm4, %%mm4\n\t"
+		  "movd %5, %%mm5\n\t"		/*\ xap \*/
+		  "punpcklwd %%mm5, %%mm5\n\t"
+		  "punpckldq %%mm5, %%mm5\n\t"
+		  "pxor %%mm7, %%mm7\n\t"
+		  "\n\t"
+		  "movl %0, %%esi\n\t"		/*\ sptr \*/
+		  "movl %%esi, %%eax\n\t"	/*\ p = sptr \*/
+		  "addl %1, %%esi\n\t"		/*\ sptr += sow \*/
+		  "movd (%%eax), %%mm0\n\t"	/*\ vx = (*p++ * xap) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm0\n\t"
+		  "psllw $7, %%mm0\n\t"
+		  "pmulhw %%mm5, %%mm0\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%ecx\n\t"	/*\ i = 0x4000 - xap \*/
+		  "subl %5, %%ecx\n\t"
+		  "jmp 2f\n"
+		  "1:\n\t"
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx += (*p++ * Cx) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm3, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "subl %3, %%ecx\n"		/*\ i -= Cx; while i > Cx \*/
+		  "2:\n\t"
+		  "cmpl %3, %%ecx\n\t"
+		  "jg 1b\n\t"
+		  "\n\t"
+		  "movd %%ecx, %%mm6\n\t"	/*\ i \*/
+		  "punpcklwd %%mm6, %%mm6\n\t"
+		  "punpckldq %%mm6, %%mm6\n\t"
+		  "\n\t"
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx += (*p * i) >> 9 \*/
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm6, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "movd %6, %%mm2\n\t"		/*\ yap \*/
+		  "punpcklwd %%mm2, %%mm2\n\t"
+		  "punpckldq %%mm2, %%mm2\n\t"
+		  "psllw $2, %%mm0\n\t"		/*\ v = (vx * yap) >> 14 \*/
+		  "pmulhw %%mm2, %%mm0\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%edx\n\t"	/*\ j = 0x4000 - yap \*/
+		  "subl %6, %%edx\n\t"
+		  "jmp 4f\n"
+		  "3:\n\t"
+		  "movl %%esi, %%eax\n\t"	/*\ p = sptr \*/
+		  "addl %1, %%esi\n\t"		/*\ sptr += sow \*/
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx = (*p++ * xap) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm5, %%mm1\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%ecx\n\t"	/*\ i = 0x4000 - xap \*/
+		  "subl %5, %%ecx\n\t"
+		  "jmp 2f\n"
+		  "1:\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p++ * Cx) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm3, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "subl %3, %%ecx\n"		/*\ i -= Cx; while i > Cx \*/
+		  "2:\n\t"
+		  "cmpl %3, %%ecx\n\t"
+		  "jg 1b\n\t"
+		  "\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p * i) >> 9 \*/
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm6, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "psllw $2, %%mm1\n\t"		/*\ v += (vx * Cy) >> 14 \*/
+		  "pmulhw %%mm4, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "subl %4, %%edx\n"		/*\ j -= Cy; while j > Cy \*/
+		  "4:\n\t"
+		  "cmpl %4, %%edx\n\t"
+		  "jg 3b\n\t"
+		  "\n\t"
+		  "movl %%esi, %%eax\n\t"	/*\ p = sptr \*/
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx = (*p++ * xap) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm5, %%mm1\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%ecx\n\t"	/*\ i = 0x4000 - xap \*/
+		  "subl %5, %%ecx\n\t"
+		  "jmp 2f\n"
+		  "1:\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p++ * Cx) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm3, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "subl %3, %%ecx\n"		/*\ i -= Cx; while i > Cx \*/
+		  "2:\n\t"
+		  "cmpl %3, %%ecx\n\t"
+		  "jg 1b\n\t"
+		  "\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p * i) >> 9 \*/
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm6, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "movd %%edx, %%mm6\n\t"	/*\ j \*/
+		  "punpcklwd %%mm6, %%mm6\n\t"
+		  "punpckldq %%mm6, %%mm6\n\t"
+		  "\n\t"
+		  "psllw $2, %%mm1\n\t"		/*\ v += (vx * j) >> 14 \*/
+		  "pmulhw %%mm6, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "psrlw $5, %%mm0\n\t"		/*\ *dest = v >> 5 \*/
+		  "packuswb %%mm0, %%mm0\n\t"
+		  "movl %2, %%eax\n\t"
+		  "movd %%mm0, (%%eax)\n\t"
+		  : /*\ No outputs \*/
+		  : "g" (ypoints[dyy + y] + xpoints[x]), "g" (sow * 4),
+		    "g" (dptr), "g" (Cx), "g" (Cy), "g" (xap), "g" (yap)
+		  : "si", "ax", "cx", "dx");
+#else
+		  sptr = ypoints[dyy + y] + xpoints[x];
+		  pix = sptr;
+		  sptr += sow;
+		  ax = (A_VAL(pix) * xap) >> 9;
+		  rx = (R_VAL(pix) * xap) >> 9;
+		  gx = (G_VAL(pix) * xap) >> 9;
+		  bx = (B_VAL(pix) * xap) >> 9;
+		  pix++;
+		  for (i = (1 << 14) - xap; i > Cx; i -= Cx)
+		    {
+		       ax += (A_VAL(pix) * Cx) >> 9;
+		       rx += (R_VAL(pix) * Cx) >> 9;
+		       gx += (G_VAL(pix) * Cx) >> 9;
+		       bx += (B_VAL(pix) * Cx) >> 9;
+		       pix++;
+		    }
+		  ax += (A_VAL(pix) * i) >> 9;
+		  rx += (R_VAL(pix) * i) >> 9;
+		  gx += (G_VAL(pix) * i) >> 9;
+		  bx += (B_VAL(pix) * i) >> 9;
+
+		  a = (ax * yap) >> 14;
+		  r = (rx * yap) >> 14;
+		  g = (gx * yap) >> 14;
+		  b = (bx * yap) >> 14;
+
+		  for (j = (1 << 14) - yap; j > Cy; j -= Cy)
+		    {
+		       pix = sptr;
+		       sptr += sow;
+		       ax = (A_VAL(pix) * xap) >> 9;
+		       rx = (R_VAL(pix) * xap) >> 9;
+		       gx = (G_VAL(pix) * xap) >> 9;
+		       bx = (B_VAL(pix) * xap) >> 9;
+		       pix++;
+		       for (i = (1 << 14) - xap; i > Cx; i -= Cx)
+			 {
+			    ax += (A_VAL(pix) * Cx) >> 9;
+			    rx += (R_VAL(pix) * Cx) >> 9;
+			    gx += (G_VAL(pix) * Cx) >> 9;
+			    bx += (B_VAL(pix) * Cx) >> 9;
+			    pix++;
+			 }
+		       ax += (A_VAL(pix) * i) >> 9;
+		       rx += (R_VAL(pix) * i) >> 9;
+		       gx += (G_VAL(pix) * i) >> 9;
+		       bx += (B_VAL(pix) * i) >> 9;
+
+		       a += (ax * Cy) >> 14;
+		       r += (rx * Cy) >> 14;
+		       g += (gx * Cy) >> 14;
+		       b += (bx * Cy) >> 14;
+		    }
+		  pix = sptr;
+		  sptr += sow;
+		  ax = (A_VAL(pix) * xap) >> 9;
+		  rx = (R_VAL(pix) * xap) >> 9;
+		  gx = (G_VAL(pix) * xap) >> 9;
+		  bx = (B_VAL(pix) * xap) >> 9;
+		  pix++;
+		  for (i = (1 << 14) - xap; i > Cx; i -= Cx)
+		    {
+		       ax += (A_VAL(pix) * Cx) >> 9;
+		       rx += (R_VAL(pix) * Cx) >> 9;
+		       gx += (G_VAL(pix) * Cx) >> 9;
+		       bx += (B_VAL(pix) * Cx) >> 9;
+		       pix++;
+		    }
+		  ax += (A_VAL(pix) * i) >> 9;
+		  rx += (R_VAL(pix) * i) >> 9;
+		  gx += (G_VAL(pix) * i) >> 9;
+		  bx += (B_VAL(pix) * i) >> 9;
+
+		  a += (ax * j) >> 14;
+		  r += (rx * j) >> 14;
+		  g += (gx * j) >> 14;
+		  b += (bx * j) >> 14;
+
+		  A_VAL(dptr) = a >> 5;
+		  R_VAL(dptr) = r >> 5;
+		  G_VAL(dptr) = g >> 5;
+		  B_VAL(dptr) = b >> 5;
+#endif
+		  dptr++;
+	       }
+	  }
+     }
+#else
      {
 	int count;
 	DATA32 *pix;
-	int r, g, b, a;
-	int xp, xap, yap;
+	int a, r, g, b;
 	
 	/* go through every scanline in the output buffer */
 	for (y = 0; y < dh; y++)
 	  {
+	     int yap = (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
 	     for (x = dxx; x < end; x++)
 	       {
-		  if ((XAP > 1) || (YAP > 1))
+		  int xap = xpoints[x + 1] - xpoints[x];
+		  if ((xap > 1) || (yap > 1))
 		    {
-		       r = 0; g = 0; b = 0; a = 0; count = 0;
-		       xp = xpoints[x];
-		       ssptr = ypoints[dyy + y];
-		       for (j = 0; j < YAP; j++)
+		       r = 0; g = 0; b = 0;
+		       pix = ypoints[dyy + y] + xpoints[x];
+		       for (j = yap; --j >= 0; )
 			 {
-			    for (i = 0; i < XAP; i++)
+			    for (i = xap; --i >= 0; )
 			      {
-				 pix = &ssptr[xp + i];
-				 r += R_VAL(pix);
-				 g += G_VAL(pix);
-				 b += B_VAL(pix);
-				 a += A_VAL(pix);
+				 r += R_VAL(pix + i);
+				 g += G_VAL(pix + i);
+				 b += B_VAL(pix + i);
+				 a += A_VAL(pix + i);
 			      }
-			    count += i;
-			    ssptr += sow;
+			    pix += sow;
 			 }
+		       count = xap * yap;
 		       R_VAL(dptr) = r / count;
 		       G_VAL(dptr) = g / count;
 		       B_VAL(dptr) = b / count;
@@ -638,6 +872,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	       }
 	  }
      }
+#endif
 #ifdef EMMS
      EMMS();
 #endif
@@ -649,7 +884,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		   int *xapoints, int *yapoints, char xup, char yup,
 		   int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow)
 {
-   DATA32 *sptr, *ssptr, *dptr;
+   DATA32 *sptr, *dptr;
    int x, y, i, j, end;
    
    end = dxx + dw;
@@ -677,8 +912,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 					   sow, XAP, YAP);
 			    dptr++;
 #else
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
@@ -707,8 +941,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 					  sow, YAP);
 			    dptr++;
 #else
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_YAP;
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
@@ -739,8 +972,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 					  1, XAP);
 			    dptr++;
 #else
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
@@ -766,60 +998,54 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	/* go through every scanline in the output buffer */
 	for (y = 0; y < dh; y++)
 	  {
+	     int yap;
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     if (YAP > 1)
+
+	     yap = (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
+	     if (yap > 1)
 	       {
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0;
 		       int rr = 0, gg = 0, bb = 0;
-		       int count;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)
 			 {
-			    for (j = 0; j < YAP; j++)
+			    pix = sptr + xpoints[x];
+			    for (j = 0; j < yap; j++)
 			      {
-				 ssptr = ypoints[dyy + y] + (j * sow);
-				 pix = &ssptr[xpoints[x]];
 				 r += R_VAL(pix);
 				 g += G_VAL(pix);
 				 b += B_VAL(pix);
+				 rr += R_VAL(pix + 1);
+				 gg += G_VAL(pix + 1);
+				 bb += B_VAL(pix + 1);
+				 pix += sow;
 			      }
-			    count = j;
-			    r = r * INV_XAP / count;
-			    g = g * INV_XAP / count;
-			    b = b * INV_XAP / count;
-			    for (j = 0; j < YAP; j++)
-			      {
-				 ssptr = ypoints[dyy + y] + (j * sow);
-				 pix = &ssptr[xpoints[x] + 1];
-				 rr += R_VAL(pix);
-				 gg += G_VAL(pix);
-				 bb += B_VAL(pix);
-			      }
-			    count = j;
-			    r = (r + ((rr * XAP) / count)) >> 8;
-			    g = (g + ((gg * XAP) / count)) >> 8;
-			    b = (b + ((bb * XAP) / count)) >> 8;
+			    r = r * INV_XAP / yap;
+			    g = g * INV_XAP / yap;
+			    b = b * INV_XAP / yap;
+			    r = (r + ((rr * XAP) / yap)) >> 8;
+			    g = (g + ((gg * XAP) / yap)) >> 8;
+			    b = (b + ((bb * XAP) / yap)) >> 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		       else
 			 {
-			    for (j = 0; j < YAP; j++)
+			    pix = sptr + xpoints[x];
+			    for (j = 0; j < yap; j++)
 			      {
-				 ssptr = ypoints[dyy + y] + (j *sow);
-				 pix = &ssptr[xpoints[x]];
 				 r += R_VAL(pix);
 				 g += G_VAL(pix);
 				 b += B_VAL(pix);
+				 pix += sow;
 			      }
-			    count = j;
-			    r /= count;
-			    g /= count;
-			    b /= count;
+			    r /= yap;
+			    g /= yap;
+			    b /= yap;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		    }		       
@@ -829,14 +1055,11 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0;
-		       int rr = 0, gg = 0, bb = 0;
-		       int count;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)
 			 {
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
@@ -870,41 +1093,37 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		    {
 		       int r = 0, g = 0, b = 0;
 		       int rr = 0, gg = 0, bb = 0;
-		       int count;
+		       int xap;
 		       DATA32 *pix;
 
-		       if (XAP > 1)
+		       xap = xpoints[x + 1] - xpoints[x];
+		       if (xap > 1)
 			 {
-			    ssptr = ypoints[dyy + y];
-			    for (i = 0; i < XAP; i++)
+			    pix = ypoints[dyy + y] + xpoints[x];
+			    for (i = 0; i < xap; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
-				 r += R_VAL(pix);
-				 g += G_VAL(pix);
-				 b += B_VAL(pix);
+				 r += R_VAL(pix + i);
+				 g += G_VAL(pix + i);
+				 b += B_VAL(pix + i);
 			      }
-			    count = i;
-			    r = r * INV_YAP / count;
-			    g = g * INV_YAP / count;
-			    b = b * INV_YAP / count;
-			    ssptr = ypoints[dyy + y] + sow;
-			    for (i = 0; i < XAP; i++)
+			    r = r * INV_YAP / xap;
+			    g = g * INV_YAP / xap;
+			    b = b * INV_YAP / xap;
+			    pix = ypoints[dyy + y] + xpoints[x] + sow;
+			    for (i = 0; i < xap; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
-				 rr += R_VAL(pix);
-				 gg += G_VAL(pix);
-				 bb += B_VAL(pix);
+				 rr += R_VAL(pix + i);
+				 gg += G_VAL(pix + i);
+				 bb += B_VAL(pix + i);
 			      }
-			    count = i;
-			    r = (r + ((rr * YAP) / count)) >> 8;
-			    g = (g + ((gg * YAP) / count)) >> 8;
-			    b = (b + ((bb * YAP) / count)) >> 8;
+			    r = (r + ((rr * YAP) / xap)) >> 8;
+			    g = (g + ((gg * YAP) / xap)) >> 8;
+			    b = (b + ((bb * YAP) / xap)) >> 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		       else
 			 {
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
+			    pix = ypoints[dyy + y] + xpoints[x];
 			    r = R_VAL(pix) * INV_YAP;
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
@@ -924,24 +1143,22 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0;
-		       int rr = 0, gg = 0, bb = 0;
-		       int count;
+		       int xap;
 		       DATA32 *pix;
 
-		       if (XAP > 1)
+		       xap = xpoints[x + 1] - xpoints[x];
+		       if (xap > 1)
 			 {
-			    ssptr = ypoints[dyy + y];
-			    for (i = 0; i < XAP; i++)
+			    pix = ypoints[dyy + y] + xpoints[x];
+			    for (i = 0; i < xap; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
-				 r += R_VAL(pix);
-				 g += G_VAL(pix);
-				 b += B_VAL(pix);
+				 r += R_VAL(pix + i);
+				 g += G_VAL(pix + i);
+				 b += B_VAL(pix + i);
 			      }
-			    count = i;
-			    r /= count;
-			    g /= count;
-			    b /= count;
+			    r /= xap;
+			    g /= xap;
+			    b /= xap;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		       else
@@ -953,37 +1170,273 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
    /* fully optimized (i think) - onyl change of algorithm can help */
    /* if we're scaling down horizontally & vertically */
    else
+#if 1
+     {
+	/*\ 'Correct' version, with math units prepared for MMXification \*/
+	int Cx, Cy, i, j;
+	DATA32 *pix;
+	int r, g, b, rx, gx, bx;
+	int xap, yap;
+
+	for (y = 0; y < dh; y++)
+	  {
+	     Cy = YAP >> 16;
+	     yap = YAP & 0xffff;
+
+	     dptr = dest + dx + ((y + dy) * dow);
+	     for (x = dxx; x < end; x++)
+	       {
+		  Cx = XAP >> 16;
+		  xap = XAP & 0xffff;
+
+#if defined(DO_MMX_ASM) && defined(__GNUC__)
+		  __asm__ (
+		  "movd %3, %%mm3\n\t"		/*\ Cx \*/
+		  "punpcklwd %%mm3, %%mm3\n\t"
+		  "punpckldq %%mm3, %%mm3\n\t"
+		  "movd %4, %%mm4\n\t"		/*\ Cy \*/
+		  "punpcklwd %%mm4, %%mm4\n\t"
+		  "punpckldq %%mm4, %%mm4\n\t"
+		  "movd %5, %%mm5\n\t"		/*\ xap \*/
+		  "punpcklwd %%mm5, %%mm5\n\t"
+		  "punpckldq %%mm5, %%mm5\n\t"
+		  "pxor %%mm7, %%mm7\n\t"
+		  "\n\t"
+		  "movl %0, %%esi\n\t"		/*\ sptr \*/
+		  "movl %%esi, %%eax\n\t"	/*\ p = sptr \*/
+		  "addl %1, %%esi\n\t"		/*\ sptr += sow \*/
+		  "movd (%%eax), %%mm0\n\t"	/*\ vx = (*p++ * xap) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm0\n\t"
+		  "psllw $7, %%mm0\n\t"
+		  "pmulhw %%mm5, %%mm0\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%ecx\n\t"	/*\ i = 0x4000 - xap \*/
+		  "subl %5, %%ecx\n\t"
+		  "jmp 2f\n"
+		  "1:\n\t"
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx += (*p++ * Cx) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm3, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "subl %3, %%ecx\n"		/*\ i -= Cx; while i > Cx \*/
+		  "2:\n\t"
+		  "cmpl %3, %%ecx\n\t"
+		  "jg 1b\n\t"
+		  "\n\t"
+		  "movd %%ecx, %%mm6\n\t"	/*\ i \*/
+		  "punpcklwd %%mm6, %%mm6\n\t"
+		  "punpckldq %%mm6, %%mm6\n\t"
+		  "\n\t"
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx += (*p * i) >> 9 \*/
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm6, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "movd %6, %%mm2\n\t"		/*\ yap \*/
+		  "punpcklwd %%mm2, %%mm2\n\t"
+		  "punpckldq %%mm2, %%mm2\n\t"
+		  "psllw $2, %%mm0\n\t"		/*\ v = (vx * yap) >> 14 \*/
+		  "pmulhw %%mm2, %%mm0\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%edx\n\t"	/*\ j = 0x4000 - yap \*/
+		  "subl %6, %%edx\n\t"
+		  "jmp 4f\n"
+		  "3:\n\t"
+		  "movl %%esi, %%eax\n\t"	/*\ p = sptr \*/
+		  "addl %1, %%esi\n\t"		/*\ sptr += sow \*/
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx = (*p++ * xap) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm5, %%mm1\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%ecx\n\t"	/*\ i = 0x4000 - xap \*/
+		  "subl %5, %%ecx\n\t"
+		  "jmp 2f\n"
+		  "1:\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p++ * Cx) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm3, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "subl %3, %%ecx\n"		/*\ i -= Cx; while i > Cx \*/
+		  "2:\n\t"
+		  "cmpl %3, %%ecx\n\t"
+		  "jg 1b\n\t"
+		  "\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p * i) >> 9 \*/
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm6, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "psllw $2, %%mm1\n\t"		/*\ v += (vx * Cy) >> 14 \*/
+		  "pmulhw %%mm4, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "subl %4, %%edx\n"		/*\ j -= Cy; while j > Cy \*/
+		  "4:\n\t"
+		  "cmpl %4, %%edx\n\t"
+		  "jg 3b\n\t"
+		  "\n\t"
+		  "movl %%esi, %%eax\n\t"	/*\ p = sptr \*/
+		  "movd (%%eax), %%mm1\n\t"	/*\ vx = (*p++ * xap) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm1\n\t"
+		  "psllw $7, %%mm1\n\t"
+		  "pmulhw %%mm5, %%mm1\n\t"
+		  "\n\t"
+		  "movl $0x4000, %%ecx\n\t"	/*\ i = 0x4000 - xap \*/
+		  "subl %5, %%ecx\n\t"
+		  "jmp 2f\n"
+		  "1:\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p++ * Cx) >> 9 \*/
+		  "addl $4, %%eax\n\t"
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm3, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "subl %3, %%ecx\n"		/*\ i -= Cx; while i > Cx \*/
+		  "2:\n\t"
+		  "cmpl %3, %%ecx\n\t"
+		  "jg 1b\n\t"
+		  "\n\t"
+		  "movd (%%eax), %%mm2\n\t"	/*\ vx += (*p * i) >> 9 \*/
+		  "punpcklbw %%mm7, %%mm2\n\t"
+		  "psllw $7, %%mm2\n\t"
+		  "pmulhw %%mm6, %%mm2\n\t"
+		  "paddw %%mm2, %%mm1\n\t"
+		  "\n\t"
+		  "movd %%edx, %%mm6\n\t"	/*\ j \*/
+		  "punpcklwd %%mm6, %%mm6\n\t"
+		  "punpckldq %%mm6, %%mm6\n\t"
+		  "\n\t"
+		  "psllw $2, %%mm1\n\t"		/*\ v += (vx * j) >> 14 \*/
+		  "pmulhw %%mm6, %%mm1\n\t"
+		  "paddw %%mm1, %%mm0\n\t"
+		  "\n\t"
+		  "psrlw $5, %%mm0\n\t"		/*\ *dest = v >> 5 \*/
+		  "packuswb %%mm0, %%mm0\n\t"
+		  "movl %2, %%eax\n\t"
+		  "movd %%mm0, (%%eax)\n\t"
+		  : /*\ No outputs \*/
+		  : "g" (ypoints[dyy + y] + xpoints[x]), "g" (sow * 4),
+		    "g" (dptr), "g" (Cx), "g" (Cy), "g" (xap), "g" (yap)
+		  : "si", "ax", "cx", "dx");
+#else
+		  sptr = ypoints[dyy + y] + xpoints[x];
+		  pix = sptr;
+		  sptr += sow;
+		  rx = (R_VAL(pix) * xap) >> 9;
+		  gx = (G_VAL(pix) * xap) >> 9;
+		  bx = (B_VAL(pix) * xap) >> 9;
+		  pix++;
+		  for (i = (1 << 14) - xap; i > Cx; i -= Cx)
+		    {
+		       rx += (R_VAL(pix) * Cx) >> 9;
+		       gx += (G_VAL(pix) * Cx) >> 9;
+		       bx += (B_VAL(pix) * Cx) >> 9;
+		       pix++;
+		    }
+		  rx += (R_VAL(pix) * i) >> 9;
+		  gx += (G_VAL(pix) * i) >> 9;
+		  bx += (B_VAL(pix) * i) >> 9;
+
+		  r = (rx * yap) >> 14;
+		  g = (gx * yap) >> 14;
+		  b = (bx * yap) >> 14;
+
+		  for (j = (1 << 14) - yap; j > Cy; j -= Cy)
+		    {
+		       pix = sptr;
+		       sptr += sow;
+		       rx = (R_VAL(pix) * xap) >> 9;
+		       gx = (G_VAL(pix) * xap) >> 9;
+		       bx = (B_VAL(pix) * xap) >> 9;
+		       pix++;
+		       for (i = (1 << 14) - xap; i > Cx; i -= Cx)
+			 {
+			    rx += (R_VAL(pix) * Cx) >> 9;
+			    gx += (G_VAL(pix) * Cx) >> 9;
+			    bx += (B_VAL(pix) * Cx) >> 9;
+			    pix++;
+			 }
+		       rx += (R_VAL(pix) * i) >> 9;
+		       gx += (G_VAL(pix) * i) >> 9;
+		       bx += (B_VAL(pix) * i) >> 9;
+
+		       r += (rx * Cy) >> 14;
+		       g += (gx * Cy) >> 14;
+		       b += (bx * Cy) >> 14;
+		    }
+		  pix = sptr;
+		  sptr += sow;
+		  rx = (R_VAL(pix) * xap) >> 9;
+		  gx = (G_VAL(pix) * xap) >> 9;
+		  bx = (B_VAL(pix) * xap) >> 9;
+		  pix++;
+		  for (i = (1 << 14) - xap; i > Cx; i -= Cx)
+		    {
+		       rx += (R_VAL(pix) * Cx) >> 9;
+		       gx += (G_VAL(pix) * Cx) >> 9;
+		       bx += (B_VAL(pix) * Cx) >> 9;
+		       pix++;
+		    }
+		  rx += (R_VAL(pix) * i) >> 9;
+		  gx += (G_VAL(pix) * i) >> 9;
+		  bx += (B_VAL(pix) * i) >> 9;
+
+		  r += (rx * j) >> 14;
+		  g += (gx * j) >> 14;
+		  b += (bx * j) >> 14;
+
+		  R_VAL(dptr) = r >> 5;
+		  G_VAL(dptr) = g >> 5;
+		  B_VAL(dptr) = b >> 5;
+#endif
+		  dptr++;
+	       }
+	  }
+     }
+#else
      {
 	int count;
 	DATA32 *pix;
 	int r, g, b;
-	int xp, xap, yap;
 	
 	/* go through every scanline in the output buffer */
 	for (y = 0; y < dh; y++)
 	  {
+	     int yap = (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
 	     for (x = dxx; x < end; x++)
 	       {
-		  if ((XAP > 1) || (YAP > 1))
+		  int xap = xpoints[x + 1] - xpoints[x];
+		  if ((xap > 1) || (yap > 1))
 		    {
-		       r = 0; g = 0; b = 0; count = 0;
-		       xp = xpoints[x];
-		       ssptr = ypoints[dyy + y];
-		       for (j = 0; j < YAP; j++)
+		       r = 0; g = 0; b = 0;
+		       pix = sptr + xpoints[x];
+		       for (j = yap; --j >= 0; )
 			 {
-			    for (i = 0; i < XAP; i++)
+			    for (i = xap; --i >= 0; )
 			      {
-				 pix = &ssptr[xp + i];
-				 r += R_VAL(pix);
-				 g += G_VAL(pix);
-				 b += B_VAL(pix);
+				 r += R_VAL(pix + i);
+				 g += G_VAL(pix + i);
+				 b += B_VAL(pix + i);
 			      }
-			    count += i;
-			    ssptr += sow;
+			    pix += sow;
 			 }
+		       count = xap * yap;
 		       R_VAL(dptr) = r / count;
 		       G_VAL(dptr) = g / count;
 		       B_VAL(dptr) = b / count;
@@ -994,6 +1447,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	       }
 	  }
      }
+#endif
 #ifdef EMMS
      EMMS();
 #endif
