@@ -138,8 +138,7 @@ alb_thumb_reload_file(alb_thumb * t)
   h = gib_imlib_image_get_height(t->im);
   if (t->im)
     gib_imlib_free_image(t->im);
-  if (t->orig_im)
-  {
+  if (t->orig_im) {
     gib_imlib_free_image(t->orig_im);
     t->orig_im = NULL;
   }
@@ -348,8 +347,7 @@ alb_thumb_load_file(int w,
     }
   }
   if (ret) {
-    if (img->orig_im)
-    {
+    if (img->orig_im) {
       gib_imlib_free_image(img->orig_im);
       img->orig_im = NULL;
     }
@@ -885,4 +883,46 @@ alb_thumb_rotate(alb_object * obj,
   printf("Implement me!\n");
 
   D_RETURN_(3);
+}
+
+gib_list *
+alb_thumb_tesselate_constrain_w(int w,
+                                int *h,
+                                int item_w,
+                                int item_h,
+                                int h_space,
+                                int v_space,
+                                int count)
+{
+  gib_list *l, *ll, *ret = NULL;
+  alb_object *obj;
+  int x = 5, y = 5, i;
+  double rem;
+  int rows, cols;
+  struct point *point;
+
+  D_ENTER(3);
+
+  if (w < item_w + h_space)
+    return NULL;
+
+  cols = (w - (2 * h_space)) / (item_h + v_space);
+  rem = (w - (2 * h_space)) % (item_h + v_space);
+  rows = count / cols;
+  if (rem > 0.0)
+    rows++;
+  *h = (v_space) + (rows * (item_h + v_space));
+
+  for (i = 0; i < count; i++) {
+    if ((x + 105) > w) {
+      x = 5;
+      y += 105;
+    }
+    point = emalloc(sizeof(struct point));
+    point->x = x;
+    point->y = y;
+    ret = gib_list_add_end(ret, point);
+    x += 105;
+  }
+  return ret;
 }

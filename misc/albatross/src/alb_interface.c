@@ -277,7 +277,7 @@ alb_gtk_new_interface(void)
 
   clist_browse = gtk_clist_new(1);
   gtk_widget_ref(clist_browse);
-  gtk_widget_set_usize(clist_browse, 50,-1);
+  gtk_widget_set_usize(clist_browse, 50, -1);
   gtk_object_set_data_full(GTK_OBJECT(win_main), "clist_browse", clist_browse,
                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show(clist_browse);
@@ -315,7 +315,7 @@ alb_gtk_new_interface(void)
   da_album = gtk_drawing_area_new();
   gtk_widget_ref(da_album);
   state.da_album = da_album;
-  gtk_widget_set_usize(da_album, 600,-1);
+  gtk_widget_set_usize(da_album, -1, 600);
   gtk_object_set_data_full(GTK_OBJECT(win_main), "da_album", da_album,
                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show(da_album);
@@ -435,8 +435,9 @@ alb_select_album(char *album)
   struct dirent *de;
   DIR *d;
   char *albumdir, *albdir, *cachedir;
-  int x, y;
+  int x, y, h;
   struct stat st;
+  gib_list *files = NULL, *sizes;
 
   if (state.album) {
     alb_document_free(state.album);
@@ -453,13 +454,13 @@ alb_select_album(char *album)
     weprintf("couldn't open dir %s\n", albumdir);
     D_RETURN_(3);
   }
- 
+
   albdir = g_strjoin("/", albumdir, ".albatross", NULL);
   cachedir = g_strjoin("/", albumdir, ".albatross", "cache", NULL);
-  if(stat(albdir, &st) == -1) {
+  if (stat(albdir, &st) == -1) {
     mkdir(albdir, 0755);
   }
-  if(stat(cachedir, &st) == -1) {
+  if (stat(cachedir, &st) == -1) {
     printf("making %s\n", cachedir);
     mkdir(cachedir, 0755);
   }
@@ -471,32 +472,46 @@ alb_select_album(char *album)
   y = 5;
   while (de) {
     if (de->d_name[0] != '.') {
-      alb_object *thumb;
       char *filename;
 
       filename = g_strjoin("/", albumdir, de->d_name, NULL);
-      if ((x+105) > state.album->w) {
-        x = 5;
-        y += 105;
-        if ((y+105) > state.album->h) {
-          alb_document_resize(state.album, state.album->w,
-                              state.album->h + 105);
-          gtk_widget_set_usize(state.album->darea, -1, state.album->h);
-        }
-      }
-      thumb = alb_thumb_new_from_file(x, y, 100, 100, filename);
-      x += 105;
-      if (thumb)
-        alb_document_add_object(state.album, thumb);
-      g_free(filename);
-      alb_document_render_updates(state.album, TRUE);
-      while(gtk_events_pending())
-        gtk_main_iteration();
+      files = gib_list_add_end(files, filename);
     }
     de = readdir(d);
   }
   closedir(d);
+
   g_free(albumdir);
+
+  sizes =
+    alb_thumb_tesselate_constrain_w(state.album->w, &h, 100, 100, 5, 5,
+                                    gib_list_length(files));
+  if (gib_list_length(sizes) != gib_list_length(files)) {
+    weprintf("wrong! gave it %d, got back %d\n", gib_list_length(files), gib_list_length(sizes));
+  } else {
+    struct point *p;
+    gib_list *file, *points;
+    alb_object *thumb;
+    int i;
+
+    alb_document_resize(state.album, state.album->w, h);
+    gtk_widget_set_usize(state.album->darea, -1, state.album->h);
+    points = sizes;
+    file = files;
+    for (i = 0; i < gib_list_length(files); i++) {
+      p = (struct point *) points->data;
+      thumb =
+        alb_thumb_new_from_file(p->x, p->y, 100, 100, (char *) file->data);
+      printf("%d,%d\n", p->x, p->y);
+      if (thumb)
+        alb_document_add_object(state.album, thumb);
+      alb_document_render_updates(state.album, TRUE);
+      points = points->next;
+      file = file->next;
+    }
+    gib_list_free_and_data(sizes);
+    gib_list_free_and_data(files);
+  }
 }
 
 char *
@@ -510,34 +525,39 @@ alb_get_album_from_row(int row)
 
 
 gboolean
-album_configure_cb(GtkWidget *widget,
-             GdkEventConfigure *event,
-             gpointer user_data)
+album_configure_cb(GtkWidget * widget,
+                   GdkEventConfigure * event,
+                   gpointer user_data)
 {
   alb_document *doc;
+
   doc = ALB_DOCUMENT(*((alb_document **) user_data));
   if (!doc)
     return TRUE;
 
   if ((event->width != doc->w)) {
-    alb_document_resize(doc, event->width, event->height);
+    printf("configure\n");
+    alb_document_resize(doc, event->width, doc->h);
+    alb_document_tesselate(doc);
+    gtk_widget_set_usize(doc->darea, -1, doc->h);
   }
   return TRUE;
 }
 
 gboolean
-scratch_configure_cb(GtkWidget *widget,
-             GdkEventConfigure *event,
-             gpointer user_data)
+scratch_configure_cb(GtkWidget * widget,
+                     GdkEventConfigure * event,
+                     gpointer user_data)
 {
   alb_document *doc;
+
   doc = ALB_DOCUMENT(*((alb_document **) user_data));
   if (!doc)
     return TRUE;
 
   if ((event->width != doc->w) || (event->height != doc->h)) {
     alb_document_resize(doc, event->width, event->height);
-    gtk_widget_set_usize(doc->darea, event->width, event->height);
+    gtk_widget_set_usize(doc->darea, -1, doc->h);
   }
   return TRUE;
 }
@@ -1873,4 +1893,3 @@ alb_confirmation_dialog_new_with_text(char *text)
   efree(data);
   D_RETURN(3, ret);
 }
-

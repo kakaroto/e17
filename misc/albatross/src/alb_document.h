@@ -108,5 +108,6 @@ void
                           int y,
                           int w,
                           int h);
+void alb_document_tesselate(alb_document *doc);
 
 #endif

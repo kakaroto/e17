@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "alb_document.h"
+#include "alb_thumb.h"
 #include "alb_document_xml.h"
 
 alb_document *
@@ -442,6 +443,7 @@ alb_document_resize(alb_document * doc,
   if (h == 0)
     h = 1;
 
+  printf("resizing to %dx%d\n", w, h);
   if ((w != doc->w) || (h != doc->h)) {
     int old_w, old_h;
 
@@ -455,9 +457,8 @@ alb_document_resize(alb_document * doc,
     if (doc->im)
       gib_imlib_free_image(doc->im);
     doc->im = imlib_create_image(w, h);
-    /* TODO move objects back into document if they are moved off it */
-#if 0
-    alb_document_resize_gtk(doc, w, h);
+    alb_document_render_full(doc, FALSE);
+#if 1
     if (w > old_w) {
       alb_document_dirty_area(doc, old_w, 0, w - old_w, h);
     }
@@ -466,8 +467,40 @@ alb_document_resize(alb_document * doc,
     }
     alb_document_render_updates(doc, TRUE);
 #endif
-    alb_document_render_full(doc, TRUE);
   }
 
   D_RETURN_(3);
+}
+
+void
+alb_document_tesselate(alb_document * doc)
+{
+  int h;
+  gib_list *l, *ll, *lll, *objs, *points;
+  alb_object *obj;
+  struct point *p;
+
+  for (l = doc->layers; l; l = l->next) {
+    int count;
+
+    ll = ALB_LAYER(l->data)->objects;
+    count = gib_list_length(ll);
+    lll = alb_thumb_tesselate_constrain_w(doc->w, &h, 100, 100, 5, 5, count);
+    if (gib_list_length(lll) != count) {
+      weprintf("wrong!, gave it %d, got %d back\n", count,
+               gib_list_length(lll));
+    } else {
+      alb_document_resize(doc, doc->w, h);
+      points = lll;
+      for (objs = ll; objs; objs = objs->next) {
+        obj = ALB_OBJECT(ll->data);
+        p = (struct point *) points->data;
+        alb_object_move(obj, p->x, p->y);
+        printf("moving to %d,%d\n", p->x, p->y);
+        points = points->next;
+        alb_document_render_updates(doc, TRUE);
+      }
+      gib_list_free_and_data(lll);
+    }
+  }
 }

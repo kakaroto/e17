@@ -614,10 +614,12 @@ alb_object_int_move(alb_object * obj,
 {
   D_ENTER(3);
 
-  alb_object_dirty(obj);
-  obj->x = x - obj->clicked_x;
-  obj->y = y - obj->clicked_y;
-  alb_object_dirty(obj);
+  if((x != obj->x) || (y != obj->y)) {
+    alb_object_dirty(obj);
+    obj->x = x - obj->clicked_x;
+    obj->y = y - obj->clicked_y;
+    alb_object_dirty(obj);
+  }
 
   D_RETURN_(3);
 }

@@ -108,6 +108,10 @@ extern struct _state state;
 
 void imlib_init(GtkWidget * area);
 
+struct point {
+  int x;
+  int y;
+};
 
 /* Imlib stuff */
 extern Display *disp;

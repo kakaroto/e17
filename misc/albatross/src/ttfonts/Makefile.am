@@ -16,6 +16,6 @@ morpheus.ttf \
 notepad.ttf \
 soulpapa.ttf
 
-testfontsdir=$(prefix)/share/geist/fonts
+testfontsdir=$(prefix)/share/albatross/fonts
 
 EXTRA_DIST = $(testfonts_DATA)

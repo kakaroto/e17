@@ -93,5 +93,7 @@ void alb_thumb_save_to_cache(alb_thumb * t);
 char *alb_thumb_get_cache_filename(alb_thumb * t);
 void alb_thumb_resize_done(alb_object *obj);
 void alb_thumb_reload_file(alb_thumb *t);
+gib_list *
+alb_thumb_tesselate_constrain_w(int w, int *h, int item_w, int item_h, int h_space, int v_space, int count);
 
 #endif
