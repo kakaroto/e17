@@ -9,6 +9,7 @@
 #include <Imlib2.h>
 #include <E.h>
 #include <Engrave.h>
+#include <Ecore.h>
 
 #include "config.h"
 
@@ -33,6 +34,13 @@ typedef enum E_Bg_Types E_Bg_Types;
 
 void _e_bg_bg_help() { 
    printf("Usage: e17setroot <imagename> | <eet>\n");
+}
+
+static int _e_bg_bg_get(void *data, int type, void *event) {   
+   E_Response_Background_Get *bg;   
+   bg = event;   
+   printf("Bg: %s\n", bg->data);
+   ecore_main_loop_quit();      
 }
 
 /* parse command line options */
@@ -90,6 +98,10 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 /* get current bg */
        case E_BG_GET:
        case 'g':
+	 ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, _e_bg_bg_get, NULL);
+	 e_background_get();
+	 ecore_main_loop_begin();
+	 return;
 	 break;
 	 
 	 /* show help screen */
@@ -182,10 +194,7 @@ char *_e_bg_bg_file_stripext(char *path) {
 }
 
 int _e_bg_bg_set(char *filename) {
-   if (!e_init(":0.0")) {
-      printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
-      return 0;
-   }
+
    e_background_set(filename);
    return 1;
 }
@@ -200,12 +209,12 @@ void _e_bg_bg_eet_gen(char *filename) {
    Engrave_Part *part;
    Engrave_Part_State *ps;
 
-   if (strcmp(filename + strlen(filename) - 4, ".eet") == 0)
-     {
-       _e_bg_bg_set(filename);
-       return;
-     }
-		   
+   if (strcmp(filename + strlen(filename) - 4, ".eet") == 0) {
+      _e_bg_bg_set(filename);
+      ecore_main_loop_quit();
+      return;
+   }
+   
    file = _e_bg_bg_file_getfile(filename);
    dir = _e_bg_bg_file_getdir(filename);
 
@@ -277,8 +286,10 @@ void _e_bg_bg_eet_gen(char *filename) {
    engrave_file_free(eet);
 
    /* set the background */
-   if (!_e_bg_bg_set(eet_file))
-       return;
+   if (!_e_bg_bg_set(eet_file)) {
+      ecore_main_loop_quit();
+      return;
+   }
 
    /* If we're using pseudo-trans for eterm, then this will help */
    esetroot = malloc(strlen("Esetroot ") + strlen(filename) + 1);
@@ -286,13 +297,22 @@ void _e_bg_bg_eet_gen(char *filename) {
    strcat(esetroot, filename);
    system(esetroot);
    free(esetroot);
+   ecore_main_loop_quit();
 }
 
 int main(int argc, char **argv)
 {
+   if (!e_init(":0.0")) {
+      printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
+      return 0;
+   }
+   
+   ecore_init();
+   
    _e_bg_bg_parseargs(argc, argv);
-
+   
    e_shutdown();
+   ecore_shutdown();
 
    return 0;
 }
