@@ -32,9 +32,13 @@ sphere_map_image(GtkWidget *widget, GdkEvent *event, gpointer data)
 		calc_return = calc_mapping(image_width, image_height, x, y);
 		mapx = calc_return->mappedx;
 		mapy = calc_return->mappedy;
-		
-		*(image_buffer + ((y * image_height) + x)) = 
-		  *(map_buffer + ((mapy * image_height) + mapx));
+		if (x>=0 && y>=0)
+		  {
+		    *(image_buffer + ((y * image_height) + x)) = 
+		      *(map_buffer + ((mapy * image_height) + mapx));
+		  }
+		else
+		  *(image_buffer + ((y * image_height) + x)) = 0;
 	      }
 	  imlib_image_put_back_data(image_buffer);
 	  DrawImage(im, image_height, image_width);
@@ -88,8 +92,8 @@ mapped_pixels
     {
       x += radius;
       y += radius;
-      mapped_return->mappedx = x; 
-      mapped_return->mappedy = y;
+      mapped_return->mappedx = -1; 
+      mapped_return->mappedy = -1;
     }
   return(mapped_return);
 }

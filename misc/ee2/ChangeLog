@@ -292,3 +292,11 @@ be around 150 pixels or so.... pretty cool.
 
 -------------------------------------------------------------------------------
 
+Fri Mar 10 15:23:45 CST 2000
+(dphase)
+
+Added Nolan's sphre mapping patch to clear the window then create the
+sphere, also edited the sphere-map-test image a bit...
+
+-------------------------------------------------------------------------------
+
