@@ -5,9 +5,7 @@
 
 	* Make themes and icons! ;)
 
-	* Make it more themeable.
-
-	* Use autoconf and automake.
+	* Make it more themeable
 
 	* Make a theme file generation tool.
 	  -> slethe should do this.

@@ -1,3 +1,6 @@
+Sat Sep 16 19:55:28 CEST 2000 BLAdER:
+	* We're now using autoconf and automake! ;)
+
 Sat Sep  9 20:15:26 CEST 2000 BLAdER:
 	* Some code restructuring and init of sleth,
 	  the slets themefile generator.
