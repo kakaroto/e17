@@ -28,9 +28,10 @@ bin_PROGRAMS = testgevas
 testgevas_SOURCES = \
 	testgevas.c
 
-INCLUDES = -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src @gtk_cflags@
+INCLUDES = -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src \
+	@GTK_CFLAGS@ @evas_cflags@
 
-testgevas_LDADD = @evas_libs@ @edb_libs@  ../src/libgevas.la -lm @GTK_LIBS@ 
+testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ 
 
 # $(INTLLIBS)
 
