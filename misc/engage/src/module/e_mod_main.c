@@ -713,7 +713,6 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
 {
    Engage_App_Icon *ai;
    Evas_Object *o;
-   Evas_Coord bw, bh;
 
    ai = E_NEW(Engage_App_Icon, 1);
    if (!ai) return NULL;
@@ -746,7 +745,6 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    ai->icon_object = o;
    edje_object_file_set(o, ic->app->path, "icon");
    edje_object_part_swallow(ai->bg_object, "item", o);
-   edje_object_size_min_calc(ai->bg_object, &bw, &bh);
    evas_object_pass_events_set(o, 1);
 
    o = edje_object_add(ic->eb->evas);
@@ -755,7 +753,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
 	 "icon_overlay");
 
    evas_object_raise(ai->event_object);
-   evas_object_resize(ai->bg_object, ic->eb->engage->conf->iconsize / 2, ic->eb->engage->conf->iconsize / 2);
+   evas_object_resize(ai->bg_object, ic->eb->engage->iconbordersize / 2, ic->eb->engage->iconbordersize / 2);
 
    edje_object_signal_emit(ai->bg_object, "passive", "");
    edje_object_signal_emit(ai->overlay_object, "passive", "");
@@ -1150,7 +1148,7 @@ _engage_bar_update_policy(Engage_Bar *eb)
 static void
 _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 {
-   Evas_Coord x, y, w, h, md, xx, yy;
+   Evas_Coord x, y, w, h, md, xx, yy, app_size;
    double relx, rely, left, right, dummy;
    Evas_List *items, *extras;
    int bordersize, counter;
@@ -1190,6 +1188,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	md = mx;
 	counter = x;
      }
+   app_size = eb->engage->iconbordersize / 1.5;
    counter += (eb->engage->iconbordersize / 2) + 1;
    while (items)
      {
@@ -1210,8 +1209,8 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	  yy = counter - 0.5 * size;
 	else if (edge == E_GADMAN_EDGE_RIGHT)
 	  {
-	     x = x + w - size;
-	     y = counter - 0.5 * size;
+	     xx = x + w - size;
+	     yy = counter - 0.5 * size;
 	  }
 	else if (edge == E_GADMAN_EDGE_TOP)
 	  xx = counter - 0.5 * size;
@@ -1225,11 +1224,11 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	if (edge == E_GADMAN_EDGE_LEFT)
 	  xx += size;
 	else if (edge == E_GADMAN_EDGE_RIGHT)
-	  xx -= size;
+	  xx -= app_size;
 	else if (edge == E_GADMAN_EDGE_TOP)
 	  yy += size;
 	else
-	  yy -= size;
+	  yy -= app_size;
 	if (do_zoom && -0.5 < distance && distance < 0.5)
 	  {
 	     evas_object_raise(icon->icon_object);
@@ -1240,13 +1239,14 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 		  Engage_App_Icon *ai;
 
 		  ai = extras->data;
-		  evas_object_show(ai->bg_object);
+		  evas_object_resize(ai->bg_object, app_size, app_size);
 		  evas_object_move(ai->bg_object, xx, yy);
+		  evas_object_show(ai->bg_object);
 
 		  if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
-		    yy += eb->engage->iconbordersize / 2;
+		    yy += app_size;
 		  else
-		    xx += eb->engage->iconbordersize / 2;
+		    xx += app_size;
 	       }
 	  }
 	else
