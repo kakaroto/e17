@@ -2247,26 +2247,26 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
      {
         xx = (source_width * x) / destination_width;
         XCopyArea(ctx->display, ctx->drawable, p, gc, source_x + xx, 0, 1,
-                  source_height, xx, 0);
+                  source_height, x, 0);
         if (m != None)
-           XCopyArea(ctx->display, mask, m, mgc, xx, 0, 1, source_height, xx,
+           XCopyArea(ctx->display, mask, m, mgc, xx, 0, 1, source_height, x,
                      0);
      }
    for (x = 0; x < destination_height; x++)
      {
         xx = (source_height * x) / destination_height;
-        XCopyArea(ctx->display, ctx->drawable, p, gc, 0, source_y + xx,
-                  destination_width, 1, 0, xx);
+        XCopyArea(ctx->display, p, p, gc, 0, source_y + xx,
+                  destination_width, 1, 0, x);
         if (m != None)
-           XCopyArea(ctx->display, mask, m, mgc, 0, source_y + xx,
-                     destination_width, 1, 0, xx);
+           XCopyArea(ctx->display, m, m, mgc, 0, source_y + xx,
+                     destination_width, 1, 0, x);
      }
    im = __imlib_CreateImage(destination_width, destination_height, NULL);
    im->data = malloc(destination_width * destination_height * sizeof(DATA32));
    __imlib_GrabDrawableToRGBA(im->data, 0, 0, destination_width,
-                              destination_height, ctx->display, p, m,
+                              source_height, ctx->display, p, m,
                               ctx->visual, ctx->colormap, ctx->depth, 0, 0,
-                              source_width, source_height, domask,
+                              destination_width, destination_height, domask,
                               need_to_grab_x);
    XFreePixmap(ctx->display, p);
    if (m != None)
