@@ -1471,7 +1471,8 @@ imlib_image_copy_rect(Imlib_Image image, int x, int y, int width, int height,
    __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
 }
 
-Imlib_Color_Range imlib_create_color_range(void)
+Imlib_Color_Range 
+imlib_create_color_range(void)
 {
    return (Imlib_Color_Range)__imlib_CreateRange();
 }

@@ -314,10 +314,10 @@ int main (int argc, char **argv)
 		       cl.red = 32; cl.green = 48; cl.blue = 80; cl.alpha = 0;
 		       imlib_add_color_to_color_range(rg, &cl, 1);
 		    }
-		  imlib_image_fill_color_range_rectangle(im, 30, 30, 256, 256, 
+		  imlib_image_fill_color_range_rectangle(im, 60, 60, 256, 256, 
 							 rg, (double)x,
 							 IMLIB_OP_COPY);
-		  up = imlib_update_append_rect(up, 40, 40, 256, 256);
+		  up = imlib_update_append_rect(up, 60, 60, 256, 256);
 	       }
 	     if (fon)
 	       {
