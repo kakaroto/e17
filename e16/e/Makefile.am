@@ -18,6 +18,5 @@ debian/README.debian \
 debian/changelog \
 debian/control \
 debian/copyright \
-debian/debhelper2.sh \
-debian/menus.sedscr \
+debian/debianize.sh \
 debian/rules
