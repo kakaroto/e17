@@ -1,6 +1,6 @@
 HSLIDER("entice.image.scroll.horizontal", 
 	"HPanningClip", 0.0 0.0, 0 0,
-	"HPanningClip", 1.0 1.0, 0 0, 
+	"HPanningClip", 1.0 1.0, -3 0, 
 	"HPanningClip");
 	    part
 	    {
@@ -46,7 +46,7 @@ HSLIDER("entice.image.scroll.horizontal",
 	    }
 VSLIDER("entice.image.scroll.vertical", 
 	"VPanningClip", 0.0 0.0, 0 0,
-	"VPanningClip", 1.0 1.0, 0 0, 
+	"VPanningClip", 1.0 1.0, 0 -3, 
 	"VPanningClip");
 	    part
 	    {
@@ -66,7 +66,7 @@ VSLIDER("entice.image.scroll.vertical",
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 23 -5;
+			offset, 23 -3;
 			to, "entice.image.border";
 		    }
 		    color, 255 255 255 100;
@@ -84,7 +84,7 @@ VSLIDER("entice.image.scroll.vertical",
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 23 -5;
+			offset, 23 -3;
 			to, "entice.image.border";
 		    }
 		    color, 255 255 255 255;
