@@ -353,4 +353,9 @@ else
   mv api/epplet.h.new api/epplet.h
 fi
 
+echo
 echo "Now type 'make' to build $PACKAGE $VERSION."
+echo "Then type 'make install' to install."
+echo
+echo "If you are installing epplets for the first time, don't forget"
+echo "to run $EBIN/e_gen_menus to build your epplets menu"
