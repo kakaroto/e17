@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2004-2005 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,7 +23,8 @@
  */
 #include "E.h"
 
-static int          new_desk_focus_nesting = 0;
+static int          focus_enable = 0;
+static int          focus_new_desk_nesting = 0;
 
 /*
  * Return !0 if it is OK to focus ewin.
@@ -52,7 +54,7 @@ FocusEwinValid(EWin * ewin, int on_screen)
 static EWin        *
 FocusEwinSelect(void)
 {
-   EWin               *const *lst, *ewin = NULL;
+   EWin               *const *lst, *ewin;
    int                 num, i;
 
    switch (Conf.focus.mode)
@@ -61,16 +63,23 @@ FocusEwinSelect(void)
      case MODE_FOCUS_POINTER:
 	ewin = GetEwinPointerInClient();
 	break;
+
      case MODE_FOCUS_SLOPPY:
 	ewin = GetEwinPointerInClient();
-	if (ewin)
+	if (ewin && FocusEwinValid(ewin, 1) && !ewin->focusclick)
 	   break;
-	/* If pointer not in window -  fall thru and select other */
+	goto do_select;
+
      case MODE_FOCUS_CLICK:
+	goto do_select;
+
+      do_select:
+	ewin = NULL;
 	lst = EwinListFocusGet(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i], 1) || lst[i]->skipfocus)
+	     if (!FocusEwinValid(lst[i], 1) || lst[i]->skipfocus ||
+		 lst[i]->focusclick)
 		continue;
 	     ewin = lst[i];
 	     break;
@@ -216,6 +225,9 @@ FocusToEWin(EWin * ewin, int why)
 	   Eprintf("FocusToEWin None why=%d\n", why);
      }
 
+   if (!focus_enable)
+      return;
+
    switch (why)
      {
      case FOCUS_NEXT:
@@ -306,6 +318,9 @@ FocusToEWin(EWin * ewin, int why)
 
    /* NB! ewin != NULL */
 
+   if (why != FOCUS_CLICK && ewin->focusclick)
+      return;
+
    if (do_follow)
       DeskGotoByEwin(ewin);
 
@@ -366,7 +381,7 @@ FocusToEWin(EWin * ewin, int why)
 void
 FocusNewDeskBegin(void)
 {
-   if (new_desk_focus_nesting++)
+   if (focus_new_desk_nesting++)
       return;
 
    FocusToEWin(NULL, FOCUS_DESK_LEAVE);
@@ -381,6 +396,9 @@ static void
 FocusInit(void)
 {
    EWin               *ewin;
+
+   /* Start focusing windows */
+   focus_enable = 1;
 
    /* Set the mouse-over window */
    ewin = GetEwinByCurrentPointer();
@@ -399,7 +417,7 @@ FocusNewDesk(void)
 {
    EWin               *ewin;
 
-   if (--new_desk_focus_nesting)
+   if (--focus_new_desk_nesting)
       return;
 
    /* we flipped - re-enable enter and leave events */
@@ -510,13 +528,21 @@ FocusHandleClick(EWin * ewin, Window win)
  */
 
 static void
+FocusInitTimeout(int val __UNUSED__, void *data __UNUSED__)
+{
+   FocusInit();
+}
+
+static void
 FocusSighan(int sig, void *prm __UNUSED__)
 {
    switch (sig)
      {
      case ESIGNAL_START:
-	FocusInit();
+	/* Delay focusing a bit to allow things to settle down */
+	DoIn("FOCUS_INIT_TIMEOUT", 1., FocusInitTimeout, 0, NULL);
 	break;
+
      case ESIGNAL_EXIT:
 	FocusExit();
 	break;
