@@ -94,6 +94,7 @@ ActionMoveEnd(EWin * ewin)
    int                 d, wasresize = 0, num, i;
 
    EDBUG(6, "doMoveEnd");
+
    GrabPointerRelease();
 
    if (ewin && ewin != mode_moveresize_ewin)
@@ -169,13 +170,7 @@ ActionMoveEnd(EWin * ewin)
    Conf.movemode = move_mode_real;
    Mode.nogroup = 0;
    Mode.move.swap = 0;
-
-   if (Mode.have_place_grab)
-     {
-	Mode.have_place_grab = 0;
-	XUngrabPointer(disp, CurrentTime);
-     }
-
+   Mode.have_place_grab = 0;
    EwinUpdateAfterMoveResize(ewin, 0);
 
    EDBUG_RETURN(0);

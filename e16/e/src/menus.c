@@ -1848,7 +1848,6 @@ ShowNamedMenu(const char *name)
    m = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
    if (m)
      {
-	XUngrabPointer(disp, CurrentTime);
 	if (!FindEwinByMenu(m))	/* Don't show if already shown */
 	   MenuShow(m, 0);
 	Mode.menus.list[0] = m;
@@ -1991,8 +1990,6 @@ ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
    MenuStyle          *ms = *pms;
 
    EDBUG(5, "ShowInternalMenu");
-
-   XUngrabPointer(disp, CurrentTime);
 
    if (!ms)
      {
@@ -2317,7 +2314,6 @@ MenusEventMouseDown(XEvent * ev)
 	Mode.menus.list[0] = m;
 	Mode.menus.current_depth = 1;
 	MenuShowMasker(m);
-	XUngrabPointer(disp, CurrentTime);
 	ewin = FindEwinByMenu(m);
 	if (ewin)
 	  {

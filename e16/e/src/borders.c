@@ -329,7 +329,6 @@ AddToFamily(Window win)
    EWin              **lst;
    int                 i, k, num, speed, fx, fy, x, y;
    char                doslide, manplace;
-   char                cangrab = 0;
 
    EDBUG(3, "AddToFamily");
 
@@ -479,18 +478,11 @@ AddToFamily(Window win)
    if ((!ewin->client.transient) && (Conf.place.manual)
        && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))
      {
+	char                cangrab;
+
 	cangrab = GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
-	if ((cangrab == GrabNotViewable) || (cangrab == AlreadyGrabbed)
-	    || (cangrab == GrabFrozen))
-	  {
-	     XUngrabPointer(disp, CurrentTime);
-	     cangrab = 0;
-	  }
-	else
-	  {
-	     manplace = 1;
-	     cangrab = 1;
-	  }
+	if (cangrab == GrabSuccess)
+	   manplace = 1;
      }
 
    /* if it hasn't been placed yet.... find a spot for it */
@@ -512,10 +504,8 @@ AddToFamily(Window win)
 	     if (ewin->desktop >= 0)
 		GotoDesktop(ewin->desktop);
 
-	     GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	     XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx,
 			   &wy, &mask);
-	     XUngrabPointer(disp, CurrentTime);
 	     Mode.x = rx;
 	     Mode.y = ry;
 	     ewin->client.already_placed = 1;

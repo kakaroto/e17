@@ -1997,6 +1997,7 @@ void                EdgeHandleMotion(XEvent * ev);
 #define EDBUG_TYPE_SESSION   	134
 #define EDBUG_TYPE_SNAPS     	135
 #define EDBUG_TYPE_DESKS     	136
+#define EDBUG_TYPE_GRABS     	137
 int                 EventDebug(unsigned int type);
 #else
 #define             EventDebug(type) 0
