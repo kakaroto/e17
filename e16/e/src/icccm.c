@@ -1312,6 +1312,7 @@ ICCCM_GetEInfo(EWin * ewin)
 		    {
 		       ewin->border_new = 1;
 		       ewin->border = b;
+		       SetFrameProperty(ewin);
 		    }
 	       }
 	     XFree(c);

@@ -1030,6 +1030,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 	  {
 	     ewin->border_new = 1;
 	     ewin->border = b;
+	     SetFrameProperty(ewin);
 	  }
      }
    if (sn->groups)

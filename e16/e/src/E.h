@@ -1863,6 +1863,7 @@ void               *MatchEwinByFunction(EWin * ewin,
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* borders.c functions */
+void                SetFrameProperty(EWin * ewin);
 void                KillEwin(EWin * ewin);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                DetermineEwinArea(EWin * ewin);

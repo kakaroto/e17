@@ -3041,3 +3041,12 @@ Tue Oct  5 09:15:46 PDT 1999
 (Raster)
 
 get rid of ~ backup file and rogue .xvpics dir :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 11:09:53 PDT 1999
+(Raster)
+
+let the sun AWT developers have a better day finding out the frame size.. 
+now lest wait for sun to producea patch/new version of awt that uses 
+this property :)

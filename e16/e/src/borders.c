@@ -23,6 +23,27 @@
 #include "E.h"
 
 void
+SetFrameProperty(EWin * ewin)
+{
+   static Atom         atom_set = 0;
+   CARD32              val[4];
+
+   if (!atom_set)
+      atom_set = XInternAtom(disp, "_E_FRAME_SIZE", False);
+   if (ewin->border)
+     {
+	val[0] = ewin->border->border.left;
+	val[1] = ewin->border->border.right;
+	val[2] = ewin->border->border.top;
+	val[3] = ewin->border->border.bottom;
+     }
+   else
+      val[0] = val[1] = val[2] = val[3] = 0;
+   XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
+		   PropModeReplace, (unsigned char *)&val, 4);
+}
+
+void
 KillEwin(EWin * ewin)
 {
    EWin              **gwins;
@@ -1305,13 +1326,19 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 	b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
 				MatchEwinBorder);
 	if (b)
-	   ewin->border = b;
+	  {
+	     ewin->border = b;
+	     SetFrameProperty(ewin);
+	  }
      }
    MatchEwinToSnapInfo(ewin);
    if (!ewin->border)
      {
 	if (border)
-	   ewin->border = border;
+	  {
+	     ewin->border = border;
+	     SetFrameProperty(ewin);
+	  }
 	else
 	   SetEwinBorder(ewin);
      }
@@ -1604,6 +1631,7 @@ SetEwinBorder(EWin * ewin)
       b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
 			      LIST_TYPE_BORDER);
    ewin->border = b;
+   SetFrameProperty(ewin);
    EDBUG_RETURN_;
 }
 
@@ -1640,6 +1668,7 @@ SetEwinToBorder(EWin * ewin, Border * b)
      }
    ewin->border_new = 0;
    ewin->border = b;
+   SetFrameProperty(ewin);
    b->ref_count++;
 
    if (b->num_winparts > 0)
