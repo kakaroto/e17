@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
   <!ENTITY appversion "0.2">
-  <!ENTITY manrevision "0.2">
+  <!ENTITY manrevision "0.1">
   <!ENTITY date "August 2004">
   <!ENTITY app "<application>E16 Menu Editor II</application>">
   <!-- Information about the entities
@@ -19,72 +19,165 @@
     <copyright> 
       <year>2004</year> 
       <holder>Andreas Volz</holder> 
-    </copyright> 
+    </copyright>
+     
     <publisher> 
       <publishername>Enlightenment Project</publishername> 
-    </publisher> 
+    </publisher>
+     
     &legal;
     <authorgroup>
       <author>
-	<firstname>Andreas</firstname> <surname>Volz</surname>
-	<affiliation>
-    <orgname>Enlightenment Project</orgname> 
-	  <address>
-	    <email>linux@brachttal.net</email>      
-	  </address>
-	</affiliation>
-      </author>     
+        <firstname>Andreas</firstname> <surname>Volz</surname>
+        <affiliation>
+          <orgname>Enlightenment Project</orgname> 
+          <address>
+            <email>linux@brachttal.net</email>      
+          </address>
+        </affiliation>
+      </author>
+       
     </authorgroup>
     <revhistory>      
       <revision>
-	<revnumber>&app; Manual v&appversion;</revnumber>
-	<date>2004</date>
-	<revdescription>
-	  <para role="author">Andreas Volz
-	    <email>linux@brachttal.net</email>
-	  </para>
-	</revdescription>
+        <revnumber>&app; Manual v&appversion;</revnumber>
+        <date>2004</date>
+        <revdescription>
+          <para role="author">Andreas Volz
+            <email>linux@brachttal.net</email>
+          </para>
+        </revdescription>
       </revision>
     </revhistory>
     <releaseinfo>This manual describes version &appversion; of &app;.
-    </releaseinfo> 
-      <legalnotice> 
+    </releaseinfo>
+     
+    <legalnotice> 
       <title>Feedback</title> 
       <para>To report a bug or make a suggestion regarding the &app; application or
-      this manual, follow the directions in the 
-      <ulink url="http://xcomputerman.com/bugs/login_page.php"
+        this manual, follow the directions in the 
+        <ulink url="http://xcomputerman.com/bugs/login_page.php"
 	  type="help">Enlightenment BugTracker</ulink>. 
       </para>
-      </legalnotice>
+    </legalnotice>
   </articleinfo>
-
+  
   <sect1 id="intro">
-    <title>Introduction.</title>
-      <para>This is the &app; user's guide. It does not yet contain
-      any actual information. Just a template currently.</para>
+    <title>Introduction</title>
+    <para>In this user guide is explained how to use the functions
+      in &app;. The main functions <emphasis>save</emphasis>, <emphasis>New Enty</emphasis>,
+      <emphasis>Choose Icon</emphasis>, <emphasis>Delete Entry</emphasis> and 
+      <emphasis>Quit</emphasis> are available though the menu- and toolbar. 
+    </para>
     <figure id="mainwindow-fig"> 
-	<title>&app; Window</title> 
-	<screenshot> 
-	  <mediaobject> 
-	    <imageobject><imagedata
+      <title>&app; Window</title> 
+      <screenshot> 
+        <mediaobject> 
+          <imageobject>
+            <imagedata
 		fileref="figures/e16menuedit2-main.png" format="PNG"/> 
-	    </imageobject>
-	    
-	    <textobject> 
-	      <phrase>Shows &app; main window.</phrase> 
-	    </textobject> 
-	  </mediaobject> 
-	</screenshot> 
+          </imageobject>          	
+        </mediaobject>         
+      </screenshot>       
     </figure>
   </sect1>
- 
-   <sect1 id="advanced">
-      <title>Advanced e16menuedit2.</title> 
-      <para> &app; is a complex program, with many advanced
-      features.</para>
+  
+  <sect1 id="edit">
+    <title>Edit Entries</title> 
+    <para>To edit an entry select first the row you like. Then select the
+      cell you like to edit with a second click on Description cell or
+      Parameters cell. The Description cell is shown in the E16 menu and
+      Parameters cell is the command to be executed if the entry is no submenu.
+      Otherwise the Parameters cell it's the submenus position and name.      
+    </para>
+    <figure id="edit-fig"> 
+      <title>&app; cell edit function</title> 
+      <screenshot> 
+        <mediaobject> 
+          <imageobject>
+            <imagedata
+		fileref="figures/e16menuedit2-edit.png" format="PNG"/> 
+          </imageobject>          	
+        </mediaobject>         
+      </screenshot>       
+    </figure>
+    <para>The Icon cell couldn't edited directly like the description or parameters.
+      Select Choose Icon in menu- or toolbar to open a new dialog to choose an icon.
+      If you select an image the is a litlle preview for it. If you don't like the
+      real image size or the the limit of 64x64 pixels, there is a combo box to
+      change the image size on the fly before inserting it into menu. A yet existing
+      menu image could be removed with the <emphasis>Clear-Button</emphasis>. No
+      files are really deleted if you press this button.
+    </para>
+    <figure id="icon-fig"> 
+      <title>&app; icon chooser dialog</title> 
+      <screenshot> 
+        <mediaobject> 
+          <imageobject>
+            <imagedata
+		fileref="figures/e16menuedit2-icon.png" format="PNG"/> 
+          </imageobject>          	
+        </mediaobject>         
+      </screenshot>       
+    </figure>    
+  </sect1>
 
-   </sect1>
+  <sect1 id="move">
+    <title>Move Entries</title> 
+    <para>The entries could be moved in the menu tree with the mouse. Drag an
+      entry (or submenu) with the left mouse button and drop the entry at it's
+      new position. But see the difference between moving an entry and creating
+      a submenu. As you can see on the image there should be a line between the
+      two entries where you insert the draged entry.
+    </para>
+    <figure id="move-fig"> 
+      <title>&app; row move function</title> 
+      <screenshot> 
+        <mediaobject> 
+          <imageobject>
+            <imagedata
+		fileref="figures/e16menuedit2-move.png" format="PNG"/> 
+          </imageobject>          	
+        </mediaobject>         
+      </screenshot>       
+    </figure>    
+  </sect1>
 
+  <sect1 id="submenu">
+    <title>Create submenus</title> 
+    <para>Creating new submenus could be done with drag and drop. Simply create at least
+      two new entries and then drag one over the other entry. But other that if moving
+      an entry there's a small dotted line around the entry where the new submenu should
+      be created.
+    </para>
+    <figure id="submenu-fig"> 
+      <title>&app; submenu create function</title> 
+      <screenshot> 
+        <mediaobject> 
+          <imageobject>
+            <imagedata
+		fileref="figures/e16menuedit2-submenu.png" format="PNG"/> 
+          </imageobject>          	
+        </mediaobject>         
+      </screenshot>       
+    </figure> 
+    <para>After dropping the entry the new submenu is created. Now you can give an subdir
+      and filename where the submenu is saved. This directory is relative to ~/.enlightenment.
+      &app; creates this directory, so you should't care about this.
+    </para>
+    <figure id="submenu2-fig"> 
+      <title>&app; submenu name</title> 
+      <screenshot> 
+        <mediaobject> 
+          <imageobject>
+            <imagedata
+		fileref="figures/e16menuedit2-submenu2.png" format="PNG"/> 
+          </imageobject>          	
+        </mediaobject>         
+      </screenshot>       
+    </figure>    
+  </sect1>
+  
 </article>
 
 

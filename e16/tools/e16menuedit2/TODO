@@ -1,5 +1,7 @@
 BUGS:
 - compressed svg?
+- size columns with mouse
+- crash while save if submenu has empty string!
 
 FEATURES:
 - Gnome2 panel and desktop Drag&Drop support
