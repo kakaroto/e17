@@ -199,14 +199,6 @@ echo "Warning: No ales were found in your refrigerator."
 echo "  We highly suggest that you rectify this situation immediately."
 ])
 
-edocdata=`ls -1 $srcdir/dox/E-docs | egrep -v '(Makefile|CVS|^misc|\.sh$)'`
-edocexec=`ls -1 $srcdir/dox/E-docs | egrep '\.sh$'`
-edocdata=`echo $edocdata`
-edocexec=`echo $edocexec`
-
-AC_SUBST(edocdata)
-AC_SUBST(edocexec)
-
 AC_OUTPUT([
 Makefile
 src/Makefile
@@ -215,7 +207,6 @@ src/themes/configs/Makefile
 src/themes/configs/pix/Makefile
 src/themes/configs/backup/Makefile
 dox/Makefile
-dox/E-docs/Makefile
 eesh/Makefile
 epp/Makefile
 man/Makefile

@@ -29,7 +29,7 @@ runDocBrowser(void)
 {
    char                file[FILEPATH_LEN_MAX];
 
-   Esnprintf(file, sizeof(file), "%s/dox", EDirBin());
+   Esnprintf(file, sizeof(file), "%s/edox", EDirBin());
    if (!canexec(file))
       return;
    Esnprintf(file, sizeof(file), "%s/E-docs", EDirRoot());
@@ -39,7 +39,7 @@ runDocBrowser(void)
    if (fork())
       EDBUG_RETURN_;
 
-   Esnprintf(file, sizeof(file), "exec %s/dox %s/E-docs",
+   Esnprintf(file, sizeof(file), "exec %s/edox %s/E-docs",
 	     EDirBin(), EDirRoot());
 
    execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);

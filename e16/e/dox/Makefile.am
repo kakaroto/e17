@@ -1,16 +1,9 @@
-SUBDIRS=E-docs
 
 EXTRA_DIST = ChangeLog README
 
-bin_PROGRAMS = dox
+bin_PROGRAMS = edox
 
-dox_SOURCES = \
-        format.c \
-        file.c \
-        ttfont.c \
-	text.c \
-	dox.c \
-	dox.h
+edox_SOURCES = dox.c dox.h file.c format.c text.c ttfont.c
 
 LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) $(XINERAMA_LIBS) -lm
 

@@ -58,10 +58,10 @@ BlumFlimFrub(void)
 	if (!canexec(s))
 	  {
 	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		     "Enlightenment's dox executable is not able to be executed:\n"
+		     "Enlightenment's utility executable is not able to be executed:\n"
 		     "\n" "%s\n"
 		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure dox is installed\n"
+		     "Please rectify this situation and ensure it is installed\n"
 		     "correctly.\n"), s);
 	     EExit(NULL);
 	  }
