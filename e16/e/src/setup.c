@@ -497,7 +497,7 @@ SetupX()
    mode.mouse_over_win = NULL;
    mode.click_focus_grabbed = 0;
    mode.movemode = 0;
-   mode.dockdirmode = DOCK_UP;
+   mode.dockdirmode = DOCK_DOWN;
    mode.dockstartx = 0;
    mode.dockstarty = 0;
    mode.primaryicondir = ICON_RIGHT;
