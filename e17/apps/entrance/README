@@ -46,13 +46,23 @@ directory to specify the names of the X sessions on your machine. For
 example, debian's sessions typically start with lowercase letters, so
 nothing would work out of the box on that distro! :) While adding sessions,
 please note that
+
 - A session without a path is assumed to be an Xsession name, and will be
   launched using Xsession. Otherwise, the specific path will be executed
   (this is useful for those of you using E17, for example).
+- The Failsafe session should be left as is (with "failsafe" as path)
+- You do not need to add a default session; that is added automatically.
 - You need to update the session count entry before you finish.
 
 You may also want to add images for users in the data/images/users 
-directory so that they come up while you log in.
+directory so that they come up while you log in. For example, if your
+login was foo, then you would need to add "foo.png" to that directory
+for it to come up. The image also needs to be the size specified in
+the theme (in the default it is 192x223; this can be changed). Custom
+image sizes (and names in the config) is on the TODO list for now.
+
+Take a look at buildtheme.sh in the BlueCrystal theme directory as a
+guide to the theme format.
 
 Of course, patches and improvements are always welcome. :)
 
