@@ -26,6 +26,6 @@ theme.eet: Makefile
 	$(top_builddir)/data/theme.eet
 
 clean-local:
-        rm -f *.eet
+	rm -f *.eet
 	
 				
