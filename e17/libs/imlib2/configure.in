@@ -205,7 +205,7 @@ if test "$edb_ok" = yes; then
   edb_ok=no)
   AC_MSG_RESULT($edb_ok)
   if test "$edb_ok" = yes; then
-    PNGLIBS="-ledb"
+    EDBLIBS="-ledb"
   else
     AC_MSG_WARN(*** Native EDB support will not be built (EDB header file not found) ***)
   fi

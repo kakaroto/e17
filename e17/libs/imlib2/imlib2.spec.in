@@ -19,7 +19,6 @@ Requires: imlib2-loader_png
 Requires: imlib2-loader_db
 Requires: imlib2-loader_argb
 Docdir: %{prefix}/doc
-
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
 provides many more features with much greater flexability and speed than
@@ -30,9 +29,15 @@ rendering and blending, dynamic binary filters, scripting, and more.
 Summary: Imlib2 headers, static libraries and documentation
 Group: System Environment/Libraries
 Requires: imlib2 = %{PACKAGE_VERSION}
-
 %description devel
 Headers, static libraries and documentation for Imlib2.
+
+%package filters
+Summary: Imlib2 basic plugin filters set
+Group: System Environment/Libraries
+Requires: imlib2 = %{PACKAGE_VERSION}
+%description filters
+Basic set of plugin filters that come with Imlib2
 
 %package loader_jpeg
 Summary: Imlib2 JPEG loader
@@ -144,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/libImlib2.so
 %{prefix}/lib/*.a
 %{prefix}/include/*
+
+%files filters
+%attr(755,root,root) %{prefix}/lib/loaders/filter/*
 
 %files loader_jpeg
 %attr(755,root,root) %{prefix}/lib/loaders/image/jpeg.*
