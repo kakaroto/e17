@@ -9,9 +9,30 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <style type="text/css">img {behavior: url("png.htc");} </style>
+  <script language="JavaScript" type="text/javascript">
+  <!--
+    var supported = /MSIE (5\.5)|[6789]/.test(navigator.userAgent) && navigator.platform == "Win32";
+
+    function adjust()
+    {
+      var object;
+      
+      if (!supported) return;
+      object = document.getElementById("bottom");
+      adjust_obj(object, "i/bottom.png");
+    }
+    function adjust_obj(object, img)
+    {
+      object.style.background = "url(img/blank.gif)";
+      object.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + img + "', sizingMethod='crop');";
+    }
+  -->
+  </script>  
 </head>
 
-<body>
+<body
+onLoad="adjust();"
+>
 
 <img src="img/banner-top.png" width=700 height=149 alt="Enlightenment.org">
 
@@ -218,6 +239,7 @@ attractive xdm/gdm/kdm login replacement built on Evas, Ecore etc.
 </td>
 </tr></table>
 </div> <!-- Close the content div -->
+<div id="bottom" style="width:100%; background-image:url('i/bottom.png'); background-repeat:no-repeat; background-position:'left bottom';"><img src=img/blank.gif width=120 height=120></div>
 
 </body></html>
 

@@ -9,6 +9,27 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <style type="text/css">img {behavior: url("png.htc");} </style>
+  <script language="JavaScript" type="text/javascript">
+  <!--
+    var supported = /MSIE (5\.5)|[6789]/.test(navigator.userAgent) && navigator.platform == "Win32";
+
+    function adjust()
+    {
+      var object;
+      
+      if (!supported) return;
+      object = document.getElementById("bottom");
+      adjust_obj(object, "i/bottom.png");
+    }
+    function adjust_obj(object, img)
+    {
+      object.style.background = "url(img/blank.gif)";
+      object.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + img + "', sizingMethod='crop');";
+    }
+  -->
+  </script>  
 </head>
 
-<body>
+<body
+onLoad="adjust();"
+>
