@@ -31,8 +31,8 @@ part {
     }
     image {
       normal: "tabs-trough.png";
+      border: 2 2 2 2;
     }
-    border: 2 2 2 2;
   }
 }
 

@@ -12,7 +12,7 @@ group {
         text {
           text, "Theme Name";
           font, "Vera";
-          size, "7";
+          size, 10;
           align, 0 .5;
         }
       }
@@ -22,7 +22,7 @@ group {
         text {
           text, "Theme Name";
           font, "Vera";
-          size, "7";
+          size, 10;
           align, 0 .5;
         }
       }

@@ -45,8 +45,8 @@ part {
     }
     image {
       normal: "cont-trough.png";
+      border: 2 2 2 2;
     }
-    border: 2 2 2 2;
   }
 }
 
@@ -71,7 +71,7 @@ part {
     text {
       font: "Vera";
       text: "themes:";
-      size: 7;
+      size: 10;
       align: 0 0;
     }
   }

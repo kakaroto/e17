@@ -15,8 +15,8 @@ part {
     }
     image {
       normal: "base-left.png";
+      border: 10 10 10 10;
     }
-    border: 10 10 10 10;
   }
   description {
     state: "open" 0.0;
@@ -32,8 +32,8 @@ part {
     }
     image {
       normal: "base-left.png";
+      border: 5 5 5 5;
     }
-    border: 5 5 5 5;
   }
 }
 
@@ -54,8 +54,8 @@ part {
     }
     image {
       normal: "base-right.png";
+      border: 10 10 10 10;
     }
-    border: 10 10 10 10;
   }
   description {
     state: "open" 0.0;
@@ -71,8 +71,8 @@ part {
     }
     image {
       normal: "base-right.png";
+      border: 5 5 5 5;
     }
-    border: 5 5 5 5;
   }
 }
 
@@ -95,8 +95,8 @@ part {
     }
     image {
       normal: "panel.png";
+      border: 5 5 5 5;
     }
-    border: 5 5 5 5;
   }
 }
 

@@ -18,8 +18,8 @@
       } \
       image { \
         normal, "tab-unsel.png"; \
+        border, 2 2 2 2; \
       } \
-      border, 2 2 2 2; \
     } \
     description { \
       state, "selected" 0.0; \
@@ -37,8 +37,8 @@
       } \
       image { \
         normal, "tab-sel.png"; \
+        border, 2 2 2 2; \
       } \
-      border, 2 2 2 2; \
     } \
   } \
   part { \
