@@ -23,3 +23,4 @@ dist-hook:
 	  done \
 	fi
 
+extra: flipbook.glade
