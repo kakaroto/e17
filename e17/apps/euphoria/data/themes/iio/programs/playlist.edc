@@ -3,10 +3,12 @@ program { name, "selected_mouse"; signal, "mouse,clicked,1"; source, "*";
 	action, SIGNAL_EMIT "PLAYLIST_ITEM_SELECTED" ""; }
 
 program { name, "selected"; signal, "PLAYLIST_ITEM_SELECTED"; source, "";
-	action, STATE_SET "selected" 0.0; transition, LINEAR, 0.2; target, "background"; }
+	action, STATE_SET "selected" 0.0; transition, LINEAR, 0.2; 
+	target, "title"; target, "length"; target, "background"; }
 
 program { name, "unselected"; signal, "PLAYLIST_ITEM_UNSELECTED"; source, "";
-	action, STATE_SET "default" 0.0; transition, LINEAR, 0.2; target, "background"; }
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.2; 
+	target, "title"; target, "length"; target, "background"; }
 
 program { name, "dbl_clicked"; signal, "mouse,down,1,double"; source, "*";
 	action, SIGNAL_EMIT "PLAYLIST_ITEM_PLAY" ""; }
@@ -15,7 +17,5 @@ program { name, "scroll_up"; signal, "mouse,wheel,0,-1"; source, "*";
 	action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" ""; }
 
 program { name, "scroll_down"; signal, "mouse,wheel,0,1"; source, "*";
-	action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" ""; }
-
-}
+	action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" ""; } }
 
