@@ -25,12 +25,12 @@ char *find_theme(const char *name) {
 	snprintf(eet, sizeof(eet),
 	         "%s/.e/apps/" PACKAGE "/" "themes/%s.eet",
 	         getenv("HOME"), name);
-	
+
 	if (!stat(eet, &st))
 		return eet;
 
 	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet", name);
-	
+
 	return stat(eet, &st) ? NULL : eet;
 }
 
@@ -51,10 +51,10 @@ bool is_dir(const char *dir) {
  */
 char *strstrip(char *str) {
 	char *start, *ptr = str;
-	
+
 	/* step over leading whitespace */
 	for (start = str; isspace(*start); start++);
-	
+
 	if (str != start) {
 		while ((*ptr++ = *start++));
 		*ptr = 0;
@@ -68,7 +68,7 @@ char *strstrip(char *str) {
 
 	if (!isspace(*ptr))
 		return str;
-	
+
 	while (isspace(*ptr) && ptr >= str)
 		ptr--;
 
@@ -79,7 +79,7 @@ char *strstrip(char *str) {
 
 void debug(DebugLevel level, const char *fmt, ...) {
 	va_list list;
-	
+
 	if (level > DEBUG_LEVEL || !fmt || !fmt[0])
 		return;
 

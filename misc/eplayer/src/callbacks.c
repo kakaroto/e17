@@ -317,7 +317,7 @@ EDJE_CB(eplayer_raise) {
 }
 
 EDJE_CB(switch_group) {
-	evas_object_del(player->gui.edje);
+	ui_deinit_edje(player);
 	ui_init_edje(player, src);
 }
 

@@ -102,6 +102,8 @@ static bool config_load(Config *cfg, const char *file) {
 		free(str);
 	}
 
+	e_db_close(edb);
+
 	return true;
 }
 
@@ -125,6 +127,8 @@ static void eplayer_free(ePlayer *player) {
 	
 	pthread_mutex_destroy(&player->playback_stop_mutex);
 	pthread_mutex_destroy(&player->playback_next_mutex);
+	
+	ui_deinit(player);
 	
 	free(player);
 }
@@ -349,7 +353,6 @@ int main(int argc, const char **argv) {
 
 	eplayer_free(player);
 
-	ui_deinit();
 	lt_dlexit();
 	
 	return 0;

@@ -85,20 +85,30 @@ bool ui_init(ePlayer *player) {
 	char buf[PATH_MAX];
 	
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
-
+	
 	ecore_init();
 	ecore_evas_init();
+	edje_init();
 	ewl_init(&zero, NULL);
+
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
 	                        NULL);
 
+#ifdef HAVE_ECORE_EVAS_GL
 	if (!strcasecmp(player->cfg.evas_engine, "gl")) {
 		debug(DEBUG_LEVEL_INFO, "Starting EVAS GL X11\n");
 		player->gui.ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 0, 0);
-	} else if(!strcasecmp(player->cfg.evas_engine, "fb")) {
+	} else
+#endif
+
+#ifdef HAVE_ECORE_EVAS_FB
+	if (!strcasecmp(player->cfg.evas_engine, "fb")) {
 		debug(DEBUG_LEVEL_INFO, "Starting EVAS FB\n");
 		player->gui.ee = ecore_evas_fb_new(NULL, 0, 0, 0);
-	} else {
+	} else
+#endif
+	
+	{
 		debug(DEBUG_LEVEL_INFO, "Starting EVAS X11\n");
 		player->gui.ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
 	}
@@ -141,8 +151,27 @@ bool ui_init(ePlayer *player) {
 	return ui_init_edje(player, "eplayer");
 }
 
-void ui_deinit() {
+void ui_deinit_edje(ePlayer *player) {
+	if (player->gui.playlist) {
+		edje_object_part_unswallow(player->gui.edje,
+		                           player->gui.playlist);
+		evas_object_del(player->gui.playlist);
+		player->gui.playlist = NULL;
+	}
+
+	if (player->gui.edje) {
+		evas_object_del(player->gui.edje);
+		player->gui.edje = NULL;
+	}
+}
+
+void ui_deinit(ePlayer *player) {
+	assert(player);
+
+	ui_deinit_edje(player);
+
 	ewl_deinit();
+	edje_shutdown();
 	ecore_evas_shutdown();
 	ecore_shutdown();
 }
