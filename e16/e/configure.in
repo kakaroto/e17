@@ -177,8 +177,8 @@ else
 fi
 
 AC_ARG_ENABLE(xrandr,
-  [  --enable-xrandr         compile with RandR support [default=no]],,
-  enable_xrandr=no)
+  [  --enable-xrandr         compile with RandR support [default=yes]],,
+  enable_xrandr=yes)
 if test "x$enable_xrandr" = "xyes"; then
 AC_CHECK_LIB(Xrandr, XRRQueryExtension,
     AC_DEFINE(HAS_XRANDR, 1, [RandR support])
