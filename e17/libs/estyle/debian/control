@@ -2,7 +2,7 @@ Source: estyle
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libedb1-dev, libevas2-dev, libewd0-dev, debhelper (>= 3.0)
+Build-Depends: libecore1-dev, libedb1-dev, libevas2-dev, libimlib2-dev, debhelper (>= 3.0)
 Standards-Version: 3.6.1.0
 
 Package: libestyle0
@@ -16,7 +16,7 @@ Package: libestyle0-dev
 Architecture: any
 Section: devel
 Architecture: any
-Depends: libestyle0 (= ${Source-Version}), libc6-dev | libc-dev, libedb1-dev, libevas2-dev, libewd0-dev
+Depends: libestyle0 (= ${Source-Version}), libc6-dev | libc-dev, libedb1-dev, libevas2-dev
 Provides: libestyle-dev
 Conflicts: libestyle-dev
 Description: libestyle0 headers, static libraries and documentation
