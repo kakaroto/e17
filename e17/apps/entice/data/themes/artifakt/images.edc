@@ -26,14 +26,6 @@
    	image, "icon_FullScreen_an1.png" RAW;
    image, "icon_FullScreen_dormant.png" RAW;
 
-   image, "icon_RotL_active.png" RAW;
-   	image, "icon_RotL_an1.png" RAW;
-   image, "icon_RotL_dormant.png" RAW;
-
-   image, "icon_RotR_active.png" RAW;
-   	image, "icon_RotR_an1.png" RAW;
-   image, "icon_RotR_dormant.png" RAW;
-
    image, "button_prev_normal.png" RAW;
    image, "button_prev_clicked.png" RAW;
    image, "button_prev_hilited.png" RAW;
