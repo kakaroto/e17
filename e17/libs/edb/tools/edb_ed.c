@@ -59,7 +59,7 @@ main(int argc, char **argv)
 		    "Get value:         %s database_file.db add key [str|int|float]\n"
 		    "Delete value:      %s database_file.db del key\n"
 		    ,
-		    argv[0], argv[0], argv[0]);
+		    argv[0], argv[0], argv[0], argv[0]);
 	     exit(1);
 	  }
 	else
