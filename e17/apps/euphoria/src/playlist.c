@@ -136,7 +136,7 @@ PlayListItem *playlist_set_current(PlayList *pl, unsigned int id)
 
 void playlist_load_file(PlayList *pl, const char *uri, bool append) {
 	assert(pl);
-	assert(fileuri);
+	assert(uri);
 
 	xmmsc_playlist_add(pl->xmms, (char *) uri);
 }
