@@ -236,8 +236,8 @@ e_display_init(char *display)
 
 //	default_win		= e_window_new(default_root, 0, 0, 10, 10);
 	
-	default_view = Elogin_ViewNew();
-	e_window_add_events(default_view->win, XEV_KEY | XEV_IN_OUT | XEV_MOUSE_MOVE | XEV_BUTTON);
+	main_view = Elogin_ViewNew();
+	e_window_add_events(main_view->win, XEV_KEY | XEV_IN_OUT | XEV_MOUSE_MOVE | XEV_BUTTON);
 	e_pointer_xy(0, NULL, NULL);
 	
 	imlib_context_set_display(disp);

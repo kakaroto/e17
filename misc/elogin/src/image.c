@@ -106,7 +106,7 @@ Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg,
 	imlib_free_image();
 	
 	/* Logo */
-	pm = e_pixmap_new(default_view->win, lbox->w, lbox->h, default_depth);
+	pm = e_pixmap_new(main_view->win, lbox->w, lbox->h, default_depth);
 	imlib_context_set_drawable(pm);
 	imlib_context_set_image(lbox->im);
 	imlib_blend_image_onto_image(llogo->im, 0,
@@ -129,9 +129,9 @@ Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg,
 		250, 200, lpbox->w, lpbox->h);
 	
 	imlib_render_image_on_drawable(0, 0);
-	e_window_set_background_pixmap(default_view->win, pm);
-	e_window_resize(default_view->win, lbox->w, lbox->h);
-	e_window_show(default_view->win);
+	e_window_set_background_pixmap(main_view->win, pm);
+	e_window_resize(main_view->win, lbox->w, lbox->h);
+	e_window_show(main_view->win);
 	e_sync();
 	
 	/* Free me! */
@@ -185,6 +185,7 @@ Elogin_ViewNew (void)
 	view->login_box = Elogin_WidgetLoad("login_box");
 //	view->user_box = Elogin_BitLoad("user_box");
 //	view->pass_box = Elogin_BitLoad("pass_box");
+	view->widgets = NULL;
 	view->next = main_view;
 	if (view->next)
 		view->next->prev = view;
@@ -212,12 +213,12 @@ Elogin_Display (void)
 	imlib_context_set_image(main_view->login_box->im->im);
 	imlib_render_image_on_drawable(0, 0);
 	e_window_set_background_pixmap(main_view->win, pm);
-	e_window_resize(default_view->win, default_view->login_box->im->w, 
-			default_view->login_box->im->h);
+	e_window_resize(main_view->win, main_view->login_box->im->w, 
+			main_view->login_box->im->h);
 	e_window_resize(main_view->win, 100, 100);
 	e_window_show(main_view->win);
 	e_sync();
 	
-	imlib_context_set_image(default_view->login_box->im->im);imlib_free_image();
+	imlib_context_set_image(main_view->login_box->im->im);imlib_free_image();
 }
 

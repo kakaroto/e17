@@ -18,10 +18,10 @@ Elogin_WidgetLoad (char *name)
 	for (n = 0; n < num_bit; n++)
 	{
 		bit = Elogin_WidgetNew();
-		if(default_view->widgets)
-			Elogin_WidgetAppend(default_view->widgets, bit);
+		if(main_view->widgets)
+			Elogin_WidgetAppend(main_view->widgets, bit);
 		else
-			default_view->widgets = bit;
+			main_view->widgets = bit;
 		bit->name	= e_db_str_get(name, "name");
 		bit->class	= e_db_str_get(name, "class");
 		bit->type	= e_db_int_get(name, "type");

@@ -44,7 +44,7 @@
 
 int				default_depth;
 Window			default_root;
-Elogin_View	*	default_view;
+//Elogin_View	*	default_view;
 
 void			e_sync(void);
 void			e_flush(void);
