@@ -9,8 +9,11 @@ struct _estyle_color {
 	int a, r, g, b;
 };
 
-Estyle_Color *estyle_color_instance(int r, int g, int b, int a);
-Estyle_Color *estyle_color_instance_db(char *color);
-void estyle_color_init();
+Estyle_Color *_estyle_color_instance(int r, int g, int b, int a);
+Estyle_Color *_estyle_color_instance_db(char *color);
+void _estyle_color_init();
+
+#define ESTYLE_HASH_COLOR(r, g, b, a) ((r << 24) | (g << 16) | (b << 8) | a)
+
 
 #endif

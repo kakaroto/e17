@@ -3,6 +3,8 @@
 
 #include "Estyle.h"
 #include "estyle_heap.h"
+#include "estyle_color.h"
+#include "estyle_style.h"
 #include <Edb.h>
 
 typedef enum _estyle_bit_flags Estyle_Bit_Flags;
@@ -10,33 +12,6 @@ enum _estyle_bit_flags {
 	ESTYLE_BIT_FIXED = 1,
 	ESTYLE_BIT_VISIBLE = 2,
 };
-
-/*
- * The info structure keeps the important information about the style, but not
- * the bits used to display the text.
- */
-typedef struct _estyle_style_info Estyle_Style_Info;
-struct _estyle_style_info {
-	char *name;
-	E_DB_File *style_db;
-	Estyle_Heap *layers;
-	int left_push, right_push, top_push, bottom_push;
-
-	int references;
-};
-
-/*
- * The style of a text keeps a reference to style info for deciding how to
- * alter the text, and a list of the bits that are created by the style.
- */
-typedef struct _estyle_style Estyle_Style;
-struct _estyle_style {
-	Estyle_Style_Info *info;
-	Evas_List bits;
-};
-
-#include "estyle_style.h"
-#include "estyle_color.h"
 
 struct _estyle {
 	/*

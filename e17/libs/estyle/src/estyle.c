@@ -30,8 +30,8 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	 * Check to see if the internal data structures has been completed.
 	 */
 	if (!estyle_setup_complete) {
-		estyle_color_init();
-		estyle_style_add_path(PACKAGE_DATA_DIR "/styles");
+		_estyle_color_init();
+		_estyle_style_add_path(PACKAGE_DATA_DIR "/styles");
 		estyle_setup_complete = 1;
 	}
 
@@ -51,16 +51,16 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	/*
 	 * Set some default colors, font, and font size.
 	 */
-	es->color = estyle_color_instance(255, 255, 255, 255);
+	es->color = _estyle_color_instance(255, 255, 255, 255);
 
 	/*
 	 * Create the style and set the default color.
 	 */
 	if (style)
-		es->style = estyle_style_instance(style);
+		es->style = _estyle_style_instance(style);
 	estyle_set_color(es, 255, 255, 255, 255);
 	if (es->style)
-		estyle_style_draw(es, text);
+		_estyle_style_draw(es, text);
 
 	/*
 	 * Set length and dimensions.
@@ -71,7 +71,7 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	/*
 	 * move to (0,0) by default. (is this necessary? -redalb)
 	 */
-	estyle_move(es, 0, 0);
+	/* estyle_move(es, 0, 0); */
 
 	return es;
 }
@@ -90,7 +90,7 @@ void estyle_free(Estyle *es)
 		evas_del_object(es->evas, es->bit);
 
 	if (es->style)
-		estyle_style_release(es->style, es->evas);
+		_estyle_style_release(es->style, es->evas);
 
 	FREE(es);
 }
@@ -106,7 +106,7 @@ void estyle_show(Estyle *es)
 	CHECK_PARAM_POINTER("es", es);
 
 	es->flags |= ESTYLE_BIT_VISIBLE;
-	estyle_style_show(es);
+	_estyle_style_show(es);
 	evas_show(es->evas, es->bit);
 }
 
@@ -122,7 +122,7 @@ void estyle_hide(Estyle *es)
 	CHECK_PARAM_POINTER("es", es);
 
 	es->flags &= ~ESTYLE_BIT_VISIBLE;
-	estyle_style_hide(es);
+	_estyle_style_hide(es);
 	evas_hide(es->evas, es->bit);
 }
 
@@ -149,7 +149,7 @@ void estyle_move(Estyle *es, int x, int y)
 			(double)(y + (es->style ? 
 					es->style->info->top_push : 0)));
 	if (es->style)
-		estyle_style_move(es);
+		_estyle_style_move(es);
 }
 
 /**
@@ -192,9 +192,9 @@ void estyle_set_color(Estyle *es, int r, int g, int b, int a)
 {
 	CHECK_PARAM_POINTER("es", es);
 
-	es->color = estyle_color_instance(r, g, b, a);
+	es->color = _estyle_color_instance(r, g, b, a);
 	evas_set_color(es->evas, es->bit, r, g, b, a);
-	estyle_style_set_color(es);
+	_estyle_style_set_color(es);
 }
 
 /**
@@ -214,7 +214,7 @@ void estyle_lookup_color_db(char *name, int *r, int *g, int *b, int *a)
 
 	CHECK_PARAM_POINTER("name", name);
 
-	color = estyle_color_instance_db(name);
+	color = _estyle_color_instance_db(name);
 
 	if (r)
 		*r = color->r;
@@ -235,11 +235,11 @@ void estyle_set_color_db(Estyle *es, char *name)
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("name", name);
 
-	es->color = estyle_color_instance_db(name);
+	es->color = _estyle_color_instance_db(name);
 	evas_set_color(es->evas, es->bit, es->color->r, es->color->g,
 			es->color->b, es->color->a);
 	if (es->style)
-		estyle_style_set_color(es);
+		_estyle_style_set_color(es);
 }
 
 /**
@@ -278,9 +278,9 @@ void estyle_set_style(Estyle *es, char *name)
 	 * Set the style for this particular es.
 	 */
 	if (es->style)
-		estyle_style_release(es->style, es->evas);
+		_estyle_style_release(es->style, es->evas);
 
-	if ((es->style = estyle_style_instance(name)) == NULL)
+	if ((es->style = _estyle_style_instance(name)) == NULL)
 		return;
 
 	text = evas_get_text_string(es->evas, es->bit);
@@ -289,21 +289,21 @@ void estyle_set_style(Estyle *es, char *name)
 	 * Draw the new style bits and set the correct layer for all of the
 	 * estyle contents. Also clip the contents to the clip rectangle.
 	 */
-	estyle_style_draw(es, text);
+	_estyle_style_draw(es, text);
 
 	layer = evas_get_layer(es->evas, es->bit);
 	estyle_set_layer(es, layer);
 
-	estyle_style_move(es);
+	_estyle_style_move(es);
 
 	if ((clip = evas_get_clip_object(es->evas, es->bit)) != NULL)
-		estyle_style_set_clip(es, clip);
+		_estyle_style_set_clip(es, clip);
 
 	__estyle_update_position(es);
 	__estyle_update_dimensions(es);
 
 	if (es->flags & ESTYLE_BIT_VISIBLE)
-		estyle_style_show(es);
+		_estyle_style_show(es);
 }
 
 /**
@@ -336,36 +336,21 @@ char *estyle_get_text(Estyle *es)
  */
 void estyle_set_text(Estyle *es, char *text)
 {
-	int layer;
-
 	CHECK_PARAM_POINTER("es", es);
 
-	/*
-	 * Create the text if no evas object is present, otherwise just change
-	 * of the evas object.
-	 */
 	evas_set_text(es->evas, es->bit, text);
 
 	/*
 	 * Set the text for the style bits.
 	 */
 	if (es->style)
-		estyle_style_set_text(es);
+		_estyle_style_set_text(es);
 
 	/*
 	 * Set new length and dimensions.
 	 */
 	es->length = strlen(text);
 	__estyle_update_dimensions(es);
-
-	if (es->flags & ESTYLE_BIT_VISIBLE)
-		estyle_style_show(es);
-
-	/*
-	 * Must adjust the layer of the text to ensure proper style stacking.
-	 */
-	layer = evas_get_layer(es->evas, es->bit);
-	estyle_set_layer(es, layer);
 }
 
 /**
@@ -376,7 +361,7 @@ void estyle_set_text(Estyle *es, char *text)
  */
 int estyle_get_layer(Estyle *es)
 {
-	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+	CHECK_PARAM_POINTER_RETURN("es", es, FALSE);
 
 	return evas_get_layer(es->evas, es->bit);
 }
@@ -402,12 +387,12 @@ void estyle_set_layer(Estyle *es, int layer)
 	 * ensure the relative ordering remains the same.
 	 */
 	if (es->style)
-		index = estyle_style_set_layer_lower(es, layer);
+		index = _estyle_style_set_layer_lower(es, layer);
 
 	evas_set_layer(es->evas, es->bit, layer);
 
 	if (es->style)
-		estyle_style_set_layer_upper(es, layer, index);
+		_estyle_style_set_layer_upper(es, layer, index);
 }
 
 /**
@@ -424,6 +409,19 @@ char *estyle_get_font(Estyle *es)
 }
 
 /**
+ * estyle_get_font_size - retrieve the font size
+ * @es: the estyle to get the font size from
+ *
+ * Returns the font size (an int) or FALSE if an error occurs.
+ */  
+int estyle_get_font_size(Estyle *es)
+{
+	CHECK_PARAM_POINTER_RETURN("es", es, FALSE);
+
+	return evas_get_text_size(es->evas, es->bit);
+}
+
+/**
  * estyle_set_font - change the font used for the specified estyle
  * @es: the estyle to change fonts
  * @font: the name of the font to use for the estyle
@@ -437,10 +435,23 @@ void estyle_set_font(Estyle *es, char *font, int size)
 
 	evas_set_font(es->evas, es->bit, font, size);
 	if (es->style)
-		estyle_style_set_font(es, font, size);
+		_estyle_style_set_font(es, font, size);
 
 	__estyle_update_dimensions(es);
 }
+
+/**
+ * estyle_get_clip - get the clip box of an estyle
+ * @es: the estyle to get the clip box from
+ *
+ * Returns an Evas_Object or NULL if no clip box specified.
+ */
+Evas_Object estyle_get_clip(Estyle *es)
+{
+	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+
+	return evas_get_clip_object(es->evas, es->bit);
+} 
 
 /**
  * estyle_set_clip - set the clip box for the estyle
@@ -459,7 +470,7 @@ void estyle_set_clip(Estyle *es, Evas_Object clip)
 		evas_unset_clip(es->evas, es->bit);
 
 	if (es->style)
-		estyle_style_set_clip(es, clip);
+		_estyle_style_set_clip(es, clip);
 }
 
 /**
@@ -521,16 +532,17 @@ Estyle *estyle_split(Estyle *es, int index)
 
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
-	content = strdup(evas_get_text_string(es->evas, es->bit));
-	if (strlen(content) > index)
+	content = estyle_get_text(es);
+	if (!content || index > strlen(content))
 		return NULL;
 
 	temp = content[index];
 	content[index] = '\0';
-	estyle_set_text(es->bit, content);
+	estyle_set_text(es, content);
 
 	content[index] = temp;
 	new_es = estyle_new(es->evas, &(content[index]), es->style->info->name);
+	FREE(content);
 
 	return new_es;
 }
@@ -543,7 +555,7 @@ Estyle *estyle_split(Estyle *es, int index)
  */
 inline int estyle_length(Estyle *es)
 {
-	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+	CHECK_PARAM_POINTER_RETURN("es", es, FALSE);
 
 	return es->length;
 }

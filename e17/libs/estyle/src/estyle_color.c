@@ -1,4 +1,4 @@
-#include "../estyle-config.h"
+#include "estyle-config.h"
 #include "Estyle_private.h"
 
 static Ewd_Hash *color_table = NULL;
@@ -8,7 +8,7 @@ static E_DB_File *user_colors = NULL;
 static int __estyle_color_cmp(void *c1, void *c2);
 
 /**
- * estyle_color_instance - get a pointer to a color structure
+ * _estyle_color_instance - get a pointer to a color structure
  * @r: the red value of the color
  * @g: the green value of the color
  * @b: the blue value of the color
@@ -17,7 +17,7 @@ static int __estyle_color_cmp(void *c1, void *c2);
  * Returns a pointer to the color structure for use by contexts, NULL returned
  * on failure.
  */
-Estyle_Color *estyle_color_instance(int r, int g, int b, int a)
+Estyle_Color *_estyle_color_instance(int r, int g, int b, int a)
 {
 	unsigned int value;
 	Estyle_Color *ret;
@@ -40,20 +40,18 @@ Estyle_Color *estyle_color_instance(int r, int g, int b, int a)
 }
 
 /**
- * estyle_color_instance_db - get a pointer to a color structure by name
+ * _estyle_color_instance_db - get a pointer to a color structure by name
  * @color: the name of the color to retrieve from the colors dbs
  *
  * Returns a pointer to the color structure for use by contexts, NULL returned
  * on failure.
  */
-Estyle_Color *estyle_color_instance_db(char *color)
+Estyle_Color *_estyle_color_instance_db(char *color)
 {
 	int r, g, b, a;
 	unsigned int value;
 	char key[PATH_MAX];
 	Estyle_Color *found;
-
-	CHECK_PARAM_POINTER_RETURN("color", color, NULL);
 
 	/*
 	 * Retrieve the red value
@@ -110,7 +108,7 @@ Estyle_Color *estyle_color_instance_db(char *color)
  *
  * Returns no value. Sets up necessary internal variables for color handling.
  */
-void estyle_color_init()
+void _estyle_color_init()
 {
 	char *home;
 	char user_path[PATH_MAX];

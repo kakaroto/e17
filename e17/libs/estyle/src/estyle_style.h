@@ -1,6 +1,7 @@
 #ifndef _ESTYLE_STYLE_H
 #define _ESTYLE_STYLE_H
 
+
 /*
  * The style layer must keep track of the positioning and color modifications
  * of the bits appearance.
@@ -16,39 +17,64 @@ struct _estyle_style_layer {
 };
 
 /*
+ * The info structure keeps the important information about the style, but not
+ * the bits used to display the text.
+ */
+typedef struct _estyle_style_info Estyle_Style_Info;
+struct _estyle_style_info {
+	char *name;
+	E_DB_File *style_db;
+	Estyle_Heap *layers;
+	int left_push, right_push, top_push, bottom_push;
+
+	int references;
+};
+
+/*
+ * The style of a text keeps a reference to style info for deciding how to
+ * alter the text, and a list of the bits that are created by the style.
+ */
+typedef struct _estyle_style Estyle_Style;
+struct _estyle_style {
+	Estyle_Style_Info *info;
+	Evas_List bits;
+};
+
+
+/*
  * Style constructors and destructors
  */
-Estyle_Style *estyle_style_instance(char *name);
-void estyle_style_release(Estyle_Style * style, Evas ev);
+Estyle_Style *_estyle_style_instance(char *name);
+void _estyle_style_release(Estyle_Style * style, Evas ev);
 
 /*
  * Style display modifiers.
  */
-void estyle_style_draw(Estyle * et, char *text);
-void estyle_style_move(Estyle * bit);
-void estyle_style_set_clip(Estyle * bit, Evas_Object ob);
-void estyle_style_set_color(Estyle * bit);
-void estyle_style_set_font(Estyle *es, char *font, int size);
-void estyle_style_set_text(Estyle *es);
-int estyle_style_set_layer_lower(Estyle * bit, int layer);
-int estyle_style_set_layer_upper(Estyle * bit, int layer, int start);
+void _estyle_style_draw(Estyle * et, char *text);
+void _estyle_style_move(Estyle * bit);
+void _estyle_style_set_clip(Estyle * bit, Evas_Object ob);
+void _estyle_style_set_color(Estyle * bit);
+void _estyle_style_set_font(Estyle *es, char *font, int size);
+void _estyle_style_set_text(Estyle *es);
+int _estyle_style_set_layer_lower(Estyle * bit, int layer);
+int _estyle_style_set_layer_upper(Estyle * bit, int layer, int start);
 
 /*
  * Style info access functions
  */
-void estyle_style_info_dereference(Estyle_Style_Info *info);
-Estyle_Style_Info *estyle_style_info_reference(char *name);
+void _estyle_style_info_dereference(Estyle_Style_Info *info);
+Estyle_Style_Info *_estyle_style_info_reference(char *name);
 
 /*
  * Style show and hide functions
  */
-void estyle_style_show(Estyle *es);
-void estyle_style_hide(Estyle *es);
+void _estyle_style_show(Estyle *es);
+void _estyle_style_hide(Estyle *es);
 
 /*
  * Style search path manipulators
  */
-void estyle_style_add_path(char *path);
-void estyle_style_remove_path(char *path);
+void _estyle_style_add_path(char *path);
+void _estyle_style_remove_path(char *path);
 
 #endif
