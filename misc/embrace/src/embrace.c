@@ -288,10 +288,34 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 	return evas_list_count (e->mailboxes);
 }
 
+/**
+ * Finds the filename for the theme @name.
+ * Looks in: ~/.e/apps/embrace/themes
+ *           DATADIR/themes
+ */
+static char *find_theme (const char *name)
+{
+	static char eet[PATH_MAX + 1];
+	struct stat st;
+
+	assert (name);
+
+	snprintf (eet, sizeof (eet),
+			 "%s/.e/apps/" PACKAGE "/themes/%s.eet",
+			 getenv ("HOME"), name);
+
+	if (!stat (eet, &st))
+		return eet;
+
+	snprintf (eet, sizeof (eet), DATA_DIR "/themes/%s.eet", name);
+
+	return stat(eet, &st) ? NULL : eet;
+}
+
 static bool config_load_misc (Embrace *e, E_DB_File *edb)
 {
-	struct stat st;
-	char *str, eet[PATH_MAX + 1];
+	char *str, *theme;
+	bool ret = false;
 
 	assert (e);
 	assert (edb);
@@ -302,30 +326,21 @@ static bool config_load_misc (Embrace *e, E_DB_File *edb)
 		free (str);
 	}
 
-	if (!(str = e_db_str_get (edb, "/" PACKAGE "/theme")))
+	if (!(str = e_db_str_get (edb, "/" PACKAGE "/theme"))) {
+		fprintf (stderr, "'theme' not specified, "
+		         "falling back to the default theme instead!\n");
 		str = strdup ("default");
-
-	/* look for themes in various places...
-	 * try ~ first */
-	snprintf (eet, sizeof (eet),
-	         "%s/.e/apps/" PACKAGE "/themes/%s.eet",
-	         getenv("HOME"), str);
-
-	if (!stat (eet, &st)) {
-		snprintf (e->cfg.theme, sizeof (e->cfg.theme), "%s", eet);
-		free (str);
-		return true;
 	}
 
-	/* no luck. try $prefix/share next. */
-	snprintf (eet, sizeof (eet), DATA_DIR "/themes/%s.eet", str);
+	if ((theme = find_theme (str))) {
+		snprintf (e->cfg.theme, sizeof (e->cfg.theme), "%s", theme);
+		ret = true;
+	} else
+		fprintf (stderr, "Cannot find theme '%s'!\n", str);
+
 	free (str);
 
-	if (!stat (eet, &st)) {
-		snprintf (e->cfg.theme, sizeof (e->cfg.theme), "%s", eet);
-		return true;
-	} else
-		return false;
+	return ret;
 }
 
 static E_DB_File *open_edb (Embrace *e)
@@ -548,7 +563,7 @@ bool embrace_load_ui (Embrace *e)
 	else
 #endif
 		e->gui.ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 0, 0);
-	
+
 	if (!e->gui.ee)
 		return false;
 
