@@ -698,3 +698,8 @@ Tue Oct 26 12:18:14 2004                        Michael Jennings (mej)
 
 Fix spec.
 ----------------------------------------------------------------------
+Tue Oct 26 13:58:45 2004                        Michael Jennings (mej)
+
+Pre-parsing is kinda unique, and most applications probably won't need
+it.  So now pre-parsing of options must be specifically requested.
+----------------------------------------------------------------------

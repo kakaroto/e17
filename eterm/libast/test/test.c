@@ -518,9 +518,9 @@ test_options(void)
     long color = 0;
     spif_uint32_t options = 0;
     char *argv2[] = {
-        "test", "some", "stuff", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com",
-        "--scrollbar", "--buttonbar", "no", "--login=0", "-mvd", "foo:0", "--color", "4",
-        "--foo", "blah", "-d", "eatme", NULL
+        "test", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com",
+        "--scrollbar", "--buttonbar", "no", "some", "--login=0", "-mvd", "foo:0", "--color", "4",
+        "stuff", "--foo", "blah", "-d", "eatme", NULL
     };
     int argc2 = 20;
     spifopt_t opts2[] = {
@@ -542,6 +542,7 @@ test_options(void)
     SPIFOPT_OPTLIST_SET(opts1);
     SPIFOPT_NUMOPTS_SET(sizeof(opts1) / sizeof(spifopt_t));
     SPIFOPT_ALLOWBAD_SET(0);
+    SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_PREPARSE);
     spifopt_parse(argc1, argv1);
     TEST_FAIL_IF(test_flag_var != 0x10);
     TEST_FAIL_IF(file_var != NULL);
@@ -558,10 +559,10 @@ test_options(void)
     FREE(file_var);
     spiftool_free_array(exec_list, -1);
 
-    SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_POSTPARSE);
     SPIFOPT_OPTLIST_SET(opts2);
     SPIFOPT_NUMOPTS_SET(sizeof(opts2) / sizeof(spifopt_t));
     SPIFOPT_ALLOWBAD_SET(0);
+    SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_PREPARSE);
     spifopt_parse(argc2, argv2);
     TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(display), "foo:0"));
     TEST_FAIL_IF(name != NULL);

@@ -61,8 +61,8 @@ static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 /** Next loop.  Proceed to the next parsing stage (letter or word). */
 #define NEXT_LOOP()      D_OPTIONS(("NEXT_LOOP()\n")); if (islong || val_ptr) {NEXT_ARG();} else {NEXT_LETTER();} NOP
 /** Option parse test.  Returns true IFF the option should be parsed on this pass. */
-#define SHOULD_PARSE(j)  ((SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && !SPIFOPT_OPT_IS_PREPARSE(j)) \
-                           || (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && SPIFOPT_OPT_IS_PREPARSE(j)))
+#define SHOULD_PARSE(j)  ((SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE) && SPIFOPT_OPT_IS_PREPARSE(j)) \
+                           || (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE) && !SPIFOPT_OPT_IS_PREPARSE(j)))
 /*@}*/
 
 /**
@@ -560,7 +560,7 @@ spifopt_parse(int argc, char *argv[])
                 NEXT_LETTER();
             }
         }
-        if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE)) {
+        if (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE)) {
             argv[i] = NULL;
         }
 
@@ -663,13 +663,15 @@ spifopt_parse(int argc, char *argv[])
                 ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
             }
         }
-        if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE)) {
+        if (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE)) {
             argv[i] = NULL;
         }
         NEXT_LOOP();
     }
 
-    if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE)) {
+    if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_PREPARSE)) {
+        SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_PREPARSE);
+    } else {
         for (i = 1, j = 1; i < argc; i++) {
             if (argv[i]) {
                 argv[j] = argv[i];
@@ -679,8 +681,6 @@ spifopt_parse(int argc, char *argv[])
         if (j > 1) {
             argv[j] = NULL;
         }
-    } else {
-        SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_POSTPARSE);
     }
 }
 

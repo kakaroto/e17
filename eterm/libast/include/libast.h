@@ -1702,8 +1702,8 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_FLAG_TYPEMASK             (0x07ff)
 /**
  * Preparsed option.  This flag marks an option which is preparsed
- * (i.e., parsed on the first pass, which is generally done before
- * config files are read).
+ * (i.e., parsed only on the pre-parse pass, which is generally done
+ * before config files are read).
  */
 #define SPIFOPT_FLAG_PREPARSE             (1UL << 11)
 /**
@@ -1743,13 +1743,15 @@ extern const char *true_vals[], *false_vals[];
  * @ingroup DOXGRP_OPT
  */
 
-/** Postparse flag.  This flag denotes whether or not the initial
- *  option parsing pass has been done.  The first call to the
- *  spifopt_parse() function will parse only those options which have
- *  the SPIFOPT_FLAG_TYPEMASK flag set, after which it will set this
- *  flag.  Subsequent calls will parse only non-preparsed options.
+/** 
+ * Preparse flag.  This flag denotes whether or not the next call to
+ * the spifopt_parse() function will parse only those options which
+ * have the SPIFOPT_FLAG_PREPARSE flag set, after which it will clear
+ * this flag.  Callers wishing to have certain options pre-parsed
+ * should set this flag prior to invoking spifopt_parse().  Use of
+ * this flag is not required.
  */
-#define SPIFOPT_SETTING_POSTPARSE         (1UL << 0)
+#define SPIFOPT_SETTING_PREPARSE         (1UL << 0)
 /*@}*/
 
 /*@{*/

@@ -438,7 +438,7 @@ perf_options(void)
     SPIFOPT_NUMOPTS_SET(sizeof(opts1) / sizeof(spifopt_t));
     SPIFOPT_ALLOWBAD_SET(0);
     PERF_TEST(
-              SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_POSTPARSE);
+              SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_PREPARSE);
               spifopt_parse(argc1, argv1);
               spifopt_parse(argc1, argv1);
               FREE(file_var);
@@ -449,7 +449,7 @@ perf_options(void)
     SPIFOPT_NUMOPTS_SET(sizeof(opts2) / sizeof(spifopt_t));
     SPIFOPT_ALLOWBAD_SET(0);
     PERF_TEST(
-              SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_POSTPARSE);
+              SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_PREPARSE);
               spifopt_parse(argc2, argv2);
               spifopt_parse(argc2, argv2);
               FREE(display);
