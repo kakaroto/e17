@@ -304,24 +304,7 @@ ShowMenu(Menu * m, char noshow)
    wy = 0;
    if (mode.menusonscreen)
      {
-	<<<<<<<menus.c
-	   if (mode.x - x - ((int)w / 2) > (int)root.w)
-	   wx = 0 + ((int)mw - (int)w);
-	else if (mode.x + (int)w > (int)root.w)
-	   wx = root.w - (int)mw - ((int)mw - (int)w);
-	else
-	   wx = mode.x - x - ((int)w / 2);
-	if ((wx - ((int)w / 2)) < 0)
-	   wx = 0;
-
-	if (mode.y + (int)mh > (int)root.h)
-	   wy = (int)root.h - (int)mh;
-	else
-	   wy = mode.y - y - ((int)h / 2);
-	if ((wy - ((int)h / 2)) < 0)
-	   wy = 0;
-	== == == =
-	   Border * b;
+	Border             *b;
 
 	b = (Border *) FindItem(m->style->border_name, 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BORDER);
@@ -343,7 +326,6 @@ ShowMenu(Menu * m, char noshow)
 	     if ((wy - ((int)h / 2) - (int)b->border.top) < 0)
 		wy = (int)b->border.top;
 	  }
-	>>>>>>>1.8
      }
 
    if ((mode.x >= 0) && (mode.y >= 0))
