@@ -67,6 +67,8 @@ geist_text_new_with_text(int x, int y, char *fontname, char *text, int a,
 
    obj->x = x;
    obj->y = y;
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
 
    txt->im = geist_text_create_image(txt, &obj->w, &obj->h);
 
@@ -109,7 +111,7 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
 
    D_ENTER(5);
 
-   if(!geist_object_get_state(obj, VISIBLE))
+   if (!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
    im = GEIST_TEXT(obj);
@@ -137,7 +139,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    D_ENTER(5);
 
-   if(!geist_object_get_state(obj, VISIBLE))
+   if (!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
    im = GEIST_TEXT(obj);
@@ -195,8 +197,7 @@ geist_text_change_text(geist_text * txt, char *newtext)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_text_create_image(geist_text * txt, int *w, int *h)
+Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
 {
    DATA8 atab[256];
    Imlib_Image im;
@@ -217,6 +218,8 @@ geist_text_create_image(geist_text * txt, int *w, int *h)
 
    obj = GEIST_OBJECT(txt);
    geist_imlib_get_text_size(txt->fn, txt->text, w, h, IMLIB_TEXT_TO_RIGHT);
+   obj->rendered_w = *w;
+   obj->rendered_h = *h;
 
    im = imlib_create_image(*w, *h);
    if (!im)
@@ -239,7 +242,8 @@ geist_text_create_image(geist_text * txt, int *w, int *h)
    D_RETURN(3, im);
 }
 
-Imlib_Image geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -257,8 +261,13 @@ geist_text_duplicate(geist_object * obj)
    txt = GEIST_TEXT(obj);
 
    ret =
-      geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text,
-                               txt->a, txt->r, txt->g, txt->b);
+      geist_text_new_with_text(obj->x, obj->y,
+                               txt->fontname, txt->text, txt->a, txt->r,
+                               txt->g, txt->b);
+   ret->rendered_x = obj->rendered_x;
+   ret->rendered_y = obj->rendered_y;
+   ret->w = obj->w;
+   ret->h = obj->h;
    if (ret)
    {
       ret->state = obj->state;

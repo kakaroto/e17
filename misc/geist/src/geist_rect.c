@@ -53,8 +53,10 @@ geist_rect_new_of_size(int x, int y, int w, int h, int a, int r, int g, int b)
 
    obj->x = x;
    obj->y = y;
-   obj->w = w;
-   obj->h = h;
+   obj->w = obj->rendered_w = w;
+   obj->h = obj->rendered_h = h;
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
 
    D_RETURN(5, GEIST_OBJECT(rec));
 }
@@ -83,12 +85,13 @@ geist_rect_render(geist_object * obj, Imlib_Image dest)
 
    D_ENTER(5);
 
-   if(!geist_object_get_state(obj, VISIBLE))
+   if (!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
    rec = GEIST_RECT(obj);
-   D(5, ("rendering %d,%d %dx%d with %d,%d,%d,%d\n", obj->x, obj->y, obj->w,
-          obj->h, rec->r, rec->g, rec->b, rec->a));
+   D(5,
+     ("rendering %d,%d %dx%d with %d,%d,%d,%d\n", obj->x, obj->y, obj->w,
+      obj->h, rec->r, rec->g, rec->b, rec->a));
 
    geist_imlib_image_fill_rectangle(dest, obj->x, obj->y, obj->w, obj->h,
                                     rec->r, rec->g, rec->b, rec->a);
@@ -105,7 +108,7 @@ geist_rect_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    D_ENTER(5);
 
-   if(!geist_object_get_state(obj, VISIBLE))
+   if (!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
    rec = GEIST_RECT(obj);
@@ -131,8 +134,9 @@ geist_rect_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    dw = sw;
    dh = sh;
 
-   D(5, ("partial rendering %d,%d %dx%d with %d,%d,%d,%d\n", dx, dy, dw, dh,
-          rec->r, rec->g, rec->b, rec->a));
+   D(5,
+     ("partial rendering %d,%d %dx%d with %d,%d,%d,%d\n", dx, dy, dw, dh,
+      rec->r, rec->g, rec->b, rec->a));
 
    geist_imlib_image_fill_rectangle(dest, dx, dy, dw, dh, rec->r, rec->g,
                                     rec->b, rec->a);
@@ -151,8 +155,13 @@ geist_rect_duplicate(geist_object * obj)
    rec = GEIST_RECT(obj);
 
    ret =
-      geist_rect_new_of_size(obj->x, obj->y, obj->w, obj->h, rec->a, rec->r,
+      geist_rect_new_of_size(obj->x, obj->y,
+                             obj->rendered_w, obj->rendered_h, rec->a, rec->r,
                              rec->g, rec->b);
+   ret->rendered_x = obj->rendered_x;
+   ret->rendered_y = obj->rendered_y;
+   ret->w = obj->w;
+   ret->h = obj->h;
    if (ret)
    {
       ret->state = obj->state;

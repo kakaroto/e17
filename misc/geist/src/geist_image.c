@@ -65,6 +65,8 @@ geist_image_new_from_file(int x, int y, char *filename)
 
    obj->x = x;
    obj->y = y;
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
 
    D_RETURN(5, (geist_object *) img);
 }
@@ -189,15 +191,14 @@ geist_image_load_file(geist_image * img, char *filename)
    {
       obj = (geist_object *) img;
 
-      obj->w = geist_imlib_image_get_width(img->im);
-      obj->h = geist_imlib_image_get_height(img->im);
+      obj->w = obj->rendered_w = geist_imlib_image_get_width(img->im);
+      obj->h = obj->rendered_h = geist_imlib_image_get_height(img->im);
    }
 
    D_RETURN(5, ret);
 }
 
-Imlib_Image
-geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -214,7 +215,12 @@ geist_image_duplicate(geist_object * obj)
 
    img = GEIST_IMAGE(obj);
 
-   ret = geist_image_new_from_file(obj->x, obj->y, img->filename);
+   ret =
+      geist_image_new_from_file(obj->x, obj->y, img->filename);
+   ret->rendered_x = obj->rendered_x;
+   ret->rendered_y = obj->rendered_y;
+   ret->h = obj->h;
+   ret->w = obj->w;
    if (ret)
    {
       ret->state = obj->state;

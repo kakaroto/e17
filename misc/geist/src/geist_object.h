@@ -22,20 +22,34 @@ enum __resize_type
 
 typedef enum __geist_object_state
 { SELECTED = 1UL << 0, HILITED = 1UL << 1, DRAG = 1UL << 2, RESIZE =
-      1UL << 3, VISIBLE = 1UL << 4 }
+      1UL << 3, VISIBLE = 1UL << 4
+}
 geist_object_state;
 
 struct __geist_object
 {
-   char *name;
    geist_object_type type;
-   int w;
-   int h;
+   char *name;
+   /* Object position/size */
    int x;
    int y;
+   int w;
+   int h;
+   /* x,y offset of rendered image within object */
+   int rendered_x;
+   int rendered_y;
+   /* Actual size of rendered image/shape */
+   int rendered_w;
+   int rendered_h;
+   /* where was the object clicked? (for dragging) */
    int clicked_x;
    int clicked_y;
+   /* where was clicked for a resize? */
+   int resize_x;
+   int resize_y;
+   /* type of resize being performed */
    int resize;
+   /* object state */
    unsigned long int state;
    enum
    { SIZEMODE_ZOOM, SIZEMODE_STRETCH, SIZEMODE_CENTER, SIZEMODE_LEFT,

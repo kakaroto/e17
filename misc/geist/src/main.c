@@ -235,10 +235,6 @@ main(int argc, char *argv[])
                                                        PREFIX
                                                        "/share/geist/images/elogo.png"));
    geist_document_add_object(doc,
-                             geist_image_new_from_file(125, 5,
-                                                       PREFIX
-                                                       "/share/geist/images/globe.png"));
-   geist_document_add_object(doc,
                              geist_image_new_from_file(175, 125,
                                                        PREFIX
                                                        "/share/geist/images/bulb.png"));
@@ -265,6 +261,14 @@ main(int argc, char *argv[])
                              geist_text_new_with_text(275, 15, "20thcent/20",
                                                       "So this is geist...",
                                                       128, 255, 100, 100));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(103, 171,
+                                                       PREFIX
+                                                       "/share/geist/images/globe.png"));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(83, 171,
+                                                       PREFIX
+                                                       "/share/geist/images/globe.png"));
    geist_document_add_object(doc,
                              geist_rect_new_of_size(25, 175, 200, 300, 50,
                                                     255, 255, 0));
@@ -343,6 +347,8 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
                printf("setting resize\n");
                geist_object_set_state(obj, RESIZE);
                obj->resize = resize;
+               obj->resize_x = event->x;
+               obj->resize_y = event->y;
                geist_document_dirty_object(doc, obj);
             }
             gtk_object_set_data_full(GTK_OBJECT(mainwin), "resizelist", list,
