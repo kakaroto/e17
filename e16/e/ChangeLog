@@ -2669,3 +2669,14 @@ Fix stacking after layer change.
 Fix segv when closing windows.
 Fix stacking after window move.
 Cleanups.
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 16:27:51 CEST 2004
+(Kim)
+
+Fix transparent, shaped border update after resize.
+Move edge window handling code to new edge.c.
+Close menu before performing action.
+Move global queue_up to Mode struct.
+Simplify border update code, partial fix to border updates after desk switch.
