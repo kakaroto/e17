@@ -19,7 +19,6 @@ sub set_direction {
 	my ($widget,$dir) = @_;
 
 	if(!$do_not_edit) {
-		print "changing to $dir\n";
 		$orientations{$text} = $dir;
 	}
 }
@@ -93,6 +92,19 @@ sub update_text {
 
 }
 
+sub create_menuitem {
+	my $title = shift;
+	my $func = shift;
+	$menuitem = new Gtk::MenuItem($title);
+	$menuitem->show;
+
+	if($func) {
+		$menuitem->signal_connect('activate',$func);
+	}
+
+	return $menuitem;
+}
+
 $p_window = new Gtk::Window;
 signal_connect $p_window "destroy" => \&exit_application, \$p_window;
 signal_connect $p_window "delete_event" => \&exit_application, \$p_window;
@@ -103,6 +115,45 @@ $vbox = new Gtk::VBox(0,0);
 $vbox->border_width(2);
 $p_window->add($vbox);
 $vbox->show;
+
+$menubar = new Gtk::MenuBar;
+$vbox->pack_start($menubar,0,1,0);
+
+$menu = new Gtk::Menu;
+$menu->append(create_menuitem("New"));
+$menu->append(create_menuitem("Open"));
+$menu->append(create_menuitem("Save"));
+$menu->append(create_menuitem("Save As"));
+$menu->append(create_menuitem("Exit",\&exit_application));
+$menu->show;
+
+$menuitem = new Gtk::MenuItem("File");
+$menubar->append($menuitem);
+$menuitem->set_submenu($menu);
+$menuitem->show;
+
+$menu = new Gtk::Menu;
+$menu->append(create_menuitem("Next Image"));
+$menu->append(create_menuitem("Previous Image"));
+$menu->append(create_menuitem("Export Web Site"));
+$menu->append(create_menuitem("Edit Preferences"));
+
+$menuitem = new Gtk::MenuItem("Gallery Options");
+$menubar->append($menuitem);
+$menuitem->set_submenu($menu);
+$menuitem->show;
+
+$menu = new Gtk::Menu;
+$menu->append(create_menuitem("Documentation"));
+$menu->append(create_menuitem("About Web Picture Gallery"));
+
+$menuitem = new Gtk::MenuItem("Help");
+$menubar->append($menuitem);
+$menuitem->set_submenu($menu);
+$menuitem->show;
+
+$menubar->show;
+
 
 $hbox = new Gtk::HBox(0,0);
 $hbox->border_width(2);
