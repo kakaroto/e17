@@ -769,8 +769,7 @@ inline int ewl_object_get_actual_minimum_w(Ewl_Object * o)
 
 	val = MINIMUM_W(o);
 
-	DRETURN_INT(val + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o),
-			DLEVEL_STABLE);
+	DRETURN_INT(val, DLEVEL_STABLE);
 }
 
 /**
