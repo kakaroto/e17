@@ -1,6 +1,11 @@
 #ifndef E_DB_H
 #define E_DB_H 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif  
+
+
 /* The basic db handle */
 typedef void        E_DB_File;
 
@@ -134,5 +139,10 @@ e_db_data_del(__edb, key); \
 e_db_close(__edb); \
 }}
 #define E_DB_FLUSH e_db_runtime_flush();
+
+
+#ifdef __cplusplus
+}
+#endif                                                  /* __cplusplus */
 
 #endif
