@@ -1257,12 +1257,13 @@ MenuCreateFromFlatFile(const char *name, MenuStyle * ms, const char *file,
 		       Menu * parent)
 {
    Menu               *m;
-   char                s[4096], *ff = NULL;
+   char                s[4096], *ff;
    static int          calls = 0;
 
    EDBUG(5, "MenuCreateFromFlatFile");
-   if (calls > 255)
+   if (calls > 32)
       EDBUG_RETURN(NULL);
+   calls++;
 
    ff = FindFile(file);
    if (!ff)
