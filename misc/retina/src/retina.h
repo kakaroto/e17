@@ -27,6 +27,7 @@ void r_gtk_init(void);
 gboolean r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event, gpointer data);
 gboolean r_gtk_area_b_release(GtkWidget *area, GdkEventButton *event, gpointer data);
 
+void r_evas_create(void);
 void r_evas_init(void);
 void r_evas_config_event(GtkWidget *area, GdkEventConfigure *event);
 void r_evas_expose_event(GtkWidget *area, GdkEventExpose *event);

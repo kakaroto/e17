@@ -32,32 +32,33 @@ int mouse_button;
 int
 main(int argc, char **argv)
 {
-	/* GTK+ Widgets */
-	
-	/* Get things started */
-	gtk_init(&argc, &argv);
-	r_gtk_init();
-	r_evas_init();
-
-	/* Check for a command line arg, do things appropriately */
-	if(argc > 1){
-		sprintf(window_title, "Retina - %s", argv[1]);
-		gtk_window_set_title(GTK_WINDOW(window), window_title);
-		/* Load the splash screen */
-		r_evas_load(argv[1]);
-	} else {
-		r_evas_load("../img/retina.png");
-	}
-
-	/* Toolbar stuff */
-	r_evas_toolbar_init();
-
-	/* Evas Callback attachments */
-	r_cb_init();
-
-	/* Show window, loop, return */
-	gtk_widget_show(window);
-	gtk_main();
-	evas_free(e_area);
-	return 0;
+   /* GTK+ Widgets */
+   
+   /* Get things started */
+   gtk_init(&argc, &argv);
+   r_evas_create();
+   r_gtk_init();
+   r_evas_init();
+   
+   /* Check for a command line arg, do things appropriately */
+   if(argc > 1){
+      sprintf(window_title, "Retina - %s", argv[1]);
+      gtk_window_set_title(GTK_WINDOW(window), window_title);
+      /* Load the splash screen */
+      r_evas_load(argv[1]);
+   } else {
+      r_evas_load("../img/retina.png");
+   }
+   
+   /* Toolbar stuff */
+   r_evas_toolbar_init();
+   
+   /* Evas Callback attachments */
+   r_cb_init();
+   
+   /* Show window, loop, return */
+   gtk_widget_show(window);
+   gtk_main();
+   evas_free(e_area);
+   return 0;
 }
