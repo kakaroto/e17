@@ -95,7 +95,7 @@ read_configuration(MainConfig * p)
 
 	ecore_config_theme_create("enotes.theme", "postit", 't', "theme",
 				  "GUI Theme");
-	ecore_config_theme_preview_group_set("enotes.theme", "preview");
+	ecore_config_theme_preview_group_set("enotes.theme", "Main");
 	ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
 
 	ecore_config_load();
