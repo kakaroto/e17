@@ -50,18 +50,22 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	ImlibLoader *loader;
 	FILE *fp;
 	int dest, res;
-	char *file, tmp[] = "/tmp/imlib2_loader_bz2-XXXXXX";
+	char *file, tmp[] = "/tmp/imlib2_loader_bz2-XXXXXX", *p;
 
 	assert (im);
 
 	/* we'll need a copy of it later */
 	file = im->real_file;
-
-	if ((dest = mkstemp (tmp)) < 0)
-		return 0;
-
+	p = strrchr(im->real_file, '.');
+	if (p) {
+		if (strcasecmp(p + 1, "bz2")) return 0;
+	}
 	if (!(fp = fopen (im->real_file, "rb"))) {
-		unlink (tmp);
+		return 0;
+	}
+
+	if ((dest = mkstemp (tmp)) < 0) {
+		fclose (fp);
 		return 0;
 	}
 
