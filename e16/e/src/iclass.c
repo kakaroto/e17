@@ -231,6 +231,16 @@ ImageStatePopulate(ImageState * is)
    EDBUG_RETURN_;
 }
 
+#define ISTATE_SET_STATE(which, fallback) \
+   if (iclass->which) ImageStatePopulate(iclass->which); \
+   else iclass->which = iclass->fallback;
+
+#define ISTATE_SET_CM(which, fallback) \
+   if (!iclass->which->colmod) { \
+      iclass->which->colmod = fallback; \
+      if (fallback) fallback->ref_count++; \
+     }
+
 void
 IclassPopulate(ImageClass * iclass)
 {
@@ -244,129 +254,24 @@ IclassPopulate(ImageClass * iclass)
       EDBUG_RETURN_;
 
    ImageStatePopulate(iclass->norm.normal);
-   if (!iclass->norm.hilited)
-     {
-	iclass->norm.hilited = iclass->norm.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->norm.hilited);
-     }
-   if (!iclass->norm.clicked)
-     {
-	iclass->norm.clicked = iclass->norm.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->norm.clicked);
-     }
-   if (!iclass->norm.disabled)
-     {
-	iclass->norm.disabled = iclass->norm.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->norm.disabled);
-     }
+   ISTATE_SET_STATE(norm.hilited, norm.normal);
+   ISTATE_SET_STATE(norm.clicked, norm.normal);
+   ISTATE_SET_STATE(norm.disabled, norm.normal);
 
-   if (!iclass->active.normal)
-     {
-	iclass->active.normal = iclass->norm.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->active.normal);
-     }
-   if (!iclass->active.hilited)
-     {
-	iclass->active.hilited = iclass->active.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->active.hilited);
-     }
-   if (!iclass->active.clicked)
-     {
-	iclass->active.clicked = iclass->active.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->active.clicked);
-     }
-   if (!iclass->active.disabled)
-     {
-	iclass->active.disabled = iclass->active.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->active.disabled);
-     }
+   ISTATE_SET_STATE(active.normal, norm.normal);
+   ISTATE_SET_STATE(active.hilited, active.normal);
+   ISTATE_SET_STATE(active.clicked, active.normal);
+   ISTATE_SET_STATE(active.disabled, active.normal);
 
-   if (!iclass->sticky.normal)
-     {
-	iclass->sticky.normal = iclass->norm.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky.normal);
-     }
-   if (!iclass->sticky.hilited)
-     {
-	iclass->sticky.hilited = iclass->sticky.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky.hilited);
-     }
-   if (!iclass->sticky.clicked)
-     {
-	iclass->sticky.clicked = iclass->sticky.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky.clicked);
-     }
-   if (!iclass->sticky.disabled)
-     {
-	iclass->sticky.disabled = iclass->sticky.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky.disabled);
-     }
+   ISTATE_SET_STATE(sticky.normal, norm.normal);
+   ISTATE_SET_STATE(sticky.hilited, sticky.normal);
+   ISTATE_SET_STATE(sticky.clicked, sticky.normal);
+   ISTATE_SET_STATE(sticky.disabled, sticky.normal);
 
-   if (!iclass->sticky_active.normal)
-     {
-	iclass->sticky_active.normal = iclass->norm.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky_active.normal);
-     }
-   if (!iclass->sticky_active.hilited)
-     {
-	iclass->sticky_active.hilited = iclass->sticky_active.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky_active.hilited);
-     }
-   if (!iclass->sticky_active.clicked)
-     {
-	iclass->sticky_active.clicked = iclass->sticky_active.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky_active.clicked);
-     }
-   if (!iclass->sticky_active.disabled)
-     {
-	iclass->sticky_active.disabled = iclass->sticky_active.normal;
-     }
-   else
-     {
-	ImageStatePopulate(iclass->sticky_active.disabled);
-     }
+   ISTATE_SET_STATE(sticky_active.normal, norm.normal);
+   ISTATE_SET_STATE(sticky_active.hilited, sticky_active.normal);
+   ISTATE_SET_STATE(sticky_active.clicked, sticky_active.normal);
+   ISTATE_SET_STATE(sticky_active.disabled, sticky_active.normal);
 
    if (!iclass->colmod)
      {
@@ -377,150 +282,46 @@ IclassPopulate(ImageClass * iclass)
 						LIST_TYPE_COLORMODIFIER);
 	iclass->colmod = cm;
      }
+
    cm = (ColorModifierClass *) FindItem("NORMAL", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = iclass->colmod;
-   if (!iclass->norm.normal->colmod)
-     {
-	iclass->norm.normal->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->norm.hilited->colmod)
-     {
-	iclass->norm.hilited->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->norm.clicked->colmod)
-     {
-	iclass->norm.clicked->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->norm.disabled->colmod)
-     {
-	iclass->norm.disabled->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
+
+   ISTATE_SET_CM(norm.normal, cm);
+   ISTATE_SET_CM(norm.hilited, cm);
+   ISTATE_SET_CM(norm.clicked, cm);
+   ISTATE_SET_CM(norm.disabled, cm);
+
    cm = (ColorModifierClass *) FindItem("ACTIVE", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = iclass->colmod;
-   if (!iclass->active.normal->colmod)
-     {
-	iclass->active.normal->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->active.hilited->colmod)
-     {
-	iclass->active.hilited->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->active.clicked->colmod)
-     {
-	iclass->active.clicked->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->active.disabled->colmod)
-     {
-	iclass->active.disabled->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
+
+   ISTATE_SET_CM(active.normal, cm);
+   ISTATE_SET_CM(active.hilited, cm);
+   ISTATE_SET_CM(active.clicked, cm);
+   ISTATE_SET_CM(active.disabled, cm);
+
    cm = (ColorModifierClass *) FindItem("STICKY", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = iclass->colmod;
-   if (!iclass->sticky.normal->colmod)
-     {
-	iclass->sticky.normal->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->sticky.hilited->colmod)
-     {
-	iclass->sticky.hilited->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->sticky.clicked->colmod)
-     {
-	iclass->sticky.clicked->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->sticky.disabled->colmod)
-     {
-	iclass->sticky.disabled->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
+
+   ISTATE_SET_CM(sticky.normal, cm);
+   ISTATE_SET_CM(sticky.hilited, cm);
+   ISTATE_SET_CM(sticky.clicked, cm);
+   ISTATE_SET_CM(sticky.disabled, cm);
+
    cm = (ColorModifierClass *) FindItem("STICKY_ACTIVE", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = iclass->colmod;
-   if (!iclass->sticky_active.normal->colmod)
-     {
-	iclass->sticky_active.normal->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->sticky_active.hilited->colmod)
-     {
-	iclass->sticky_active.hilited->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->sticky_active.clicked->colmod)
-     {
-	iclass->sticky_active.clicked->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
-   if (!iclass->sticky_active.disabled->colmod)
-     {
-	iclass->sticky_active.disabled->colmod = cm;
-	if (cm)
-	  {
-	     cm->ref_count++;
-	  }
-     }
+
+   ISTATE_SET_CM(sticky_active.normal, cm);
+   ISTATE_SET_CM(sticky_active.hilited, cm);
+   ISTATE_SET_CM(sticky_active.clicked, cm);
+   ISTATE_SET_CM(sticky_active.disabled, cm);
 
    EDBUG_RETURN_;
 }
@@ -633,10 +434,15 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	    desks.desk[desks.current].bg && desks.desk[desks.current].bg->pmap)
 	   bg = desks.desk[desks.current].bg->pmap;
 	XTranslateCoordinates(disp, win, root.win, 0, 0, &xx, &yy, &cr);
+/*	printf("ImageStateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
 	imlib_context_set_drawable(bg);
 	ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
 	imlib_context_set_image(ii);
 	imlib_context_set_drawable(win);
+     }
+   else
+     {
+/*	printf("ImageStateMakePmapMask %#lx %d %d\n", win, w, h); */
      }
 #endif
 
