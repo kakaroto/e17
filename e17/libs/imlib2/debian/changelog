@@ -1,8 +1,8 @@
-imlib2 (0.0.0-1) unstable; urgency=low
+imlib2 (0.0.3-0.2000022501) unstable; urgency=low
 
-  * A CVS Release
+  * A CVS release.
 
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Oct 1999 23:15:37 -0400
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 25 Feb 2000 09:45:48 -0500
 
 Local variables:
 mode: debian-changelog
