@@ -101,6 +101,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, backgrounds.user, 1),
 
    CFG_ITEM_BOOL(Conf, dialogs.headers, 0),
+   CFG_ITEM_BOOL(Conf, dialogs.button_image, 0),
 
    CFG_ITEM_BOOL(Conf, dock.enable, 1),
    CFG_ITEM_BOOL(Conf, dock.sticky, 1),

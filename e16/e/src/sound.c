@@ -483,9 +483,9 @@ SettingsAudio(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureAudio, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureAudio, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureAudio, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureAudio, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureAudio, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureAudio, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureAudio, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureAudio, 0);

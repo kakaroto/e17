@@ -662,8 +662,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), ChooseGroup, 1);
-   DialogAddButton(d, _("Close"), ChooseGroup, 1);
+   DialogAddButton(d, _("OK"), ChooseGroup, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Close"), ChooseGroup, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, ChooseGroup, 2);
    DialogBindKey(d, "Escape", ChooseGroupEscape, 0);
    DialogBindKey(d, "Return", ChooseGroup, 0);
@@ -965,9 +965,9 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureGroup, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureGroup, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureGroup, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureGroup, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureGroup, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureGroup, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureGroup, 2);
    DialogBindKey(d, "Escape", CB_ConfigureGroupEscape, 0);
    DialogBindKey(d, "Return", CB_ConfigureGroup, 0);
@@ -1142,9 +1142,12 @@ SettingsDefaultGroupControl(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureDefaultGroupSettings, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureDefaultGroupSettings, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureDefaultGroupSettings, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureDefaultGroupSettings, 1,
+		   DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureDefaultGroupSettings, 0,
+		   DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureDefaultGroupSettings, 1,
+		   DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureDefaultGroupSettings, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureDefaultGroupSettings, 0);

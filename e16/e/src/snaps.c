@@ -851,9 +851,9 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ApplySnap, 1);
-   DialogAddButton(d, _("Apply"), CB_ApplySnap, 0);
-   DialogAddButton(d, _("Close"), CB_ApplySnap, 1);
+   DialogAddButton(d, _("OK"), CB_ApplySnap, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ApplySnap, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ApplySnap, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ApplySnap, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ApplySnap, 0);
@@ -1075,9 +1075,9 @@ SettingsRemember(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ApplyRemember, 1);
-   DialogAddButton(d, _("Apply"), CB_ApplyRemember, 0);
-   DialogAddButton(d, _("Close"), CB_ApplyRemember, 1);
+   DialogAddButton(d, _("OK"), CB_ApplyRemember, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ApplyRemember, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ApplyRemember, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ApplyRemember, 2);
    DialogBindKey(d, "Escape", CB_ApplyRememberEscape, 0);
    DialogBindKey(d, "Return", CB_ApplyRemember, 0);

@@ -165,6 +165,7 @@ typedef struct
    char                close;
    TextClass          *tclass;
    ImageClass         *iclass;
+   int                 image;
 } DButton;
 
 typedef struct
@@ -337,7 +338,7 @@ DialogGetData(Dialog * d)
 
 void
 DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
-		char doclose)
+		char doclose, int image)
 {
    DButton            *db;
    int                 w, h;
@@ -351,6 +352,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
    db->parent = d;
    db->text = Estrdup(text);
    db->func = func;
+   db->image = image;
    db->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
    EventCallbackRegister(db->win, 0, DButtonHandleEvents, db);
    EMapWindow(db->win);
@@ -371,8 +373,11 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
       db->iclass->ref_count++;
 
    TextSize(db->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
-   db->w = w + db->iclass->padding.left + db->iclass->padding.right;
    db->h = h + db->iclass->padding.top + db->iclass->padding.bottom;
+   if (!db->image)
+      db->w = w + db->iclass->padding.left + db->iclass->padding.right;
+   else
+      db->w = w + db->iclass->padding.left + db->iclass->padding.right + db->h;
    ESelectInput(db->win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | ExposureMask);
@@ -382,6 +387,7 @@ static void
 DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 {
    int                 state;
+   Imlib_Image        *im = NULL;
 
    state = STATE_NORMAL;
    if ((db->hilited) && (db->clicked))
@@ -399,8 +405,57 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 
    ImageclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 0,
 		   ST_WIDGET);
-   TextclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 1, db->tclass,
-		  db->text);
+
+   if (Conf.dialogs.button_image == 1)
+     {
+	switch (db->image)
+	  {
+	  case DIALOG_BUTTON_OK:
+	     im = ELoadImage("pix/ok.png");
+	     break;
+	  case DIALOG_BUTTON_CANCEL:
+	     im = ELoadImage("pix/cancel.png");
+	     break;
+	  case DIALOG_BUTTON_APPLY:
+	     im = ELoadImage("pix/apply.png");
+	     break;
+	  case DIALOG_BUTTON_CLOSE:
+	     im = ELoadImage("pix/close.png");
+	     break;
+	  default:
+	     im = NULL;
+	  }
+
+	if (im)
+	  {
+	     int                 w, h;
+
+	     TextSize(db->tclass, 0, 0, STATE_NORMAL, db->text, &w, &h, 17);
+
+	     TextDraw(db->tclass, db->win, 0, 0, state, db->text,
+		      db->w / 2.0 - w / 2.0 + db->h / 2.0, db->h / 4, db->w,
+		      db->h, 0, 0);
+
+	     imlib_context_set_image(im);
+	     imlib_context_set_drawable(db->win);
+	     imlib_context_set_blend(1);
+	     imlib_render_image_on_drawable_at_size(db->w / 2.0 - w / 2.0 -
+						    db->h / 2.0, 3, db->h - 6,
+						    db->h - 6);
+	     imlib_context_set_blend(0);
+	     imlib_free_image();
+	  }
+	else
+	  {
+	     TextclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 1,
+			    db->tclass, db->text);
+	  }
+     }
+   else
+     {
+	TextclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 1,
+		       db->tclass, db->text);
+     }
 }
 
 static void
@@ -2000,7 +2055,7 @@ DialogOKstr(const char *title, const char *txt)
    DialogSetTitle(d, title);
    DialogSetText(d, txt);
 
-   DialogAddButton(d, _("OK"), NULL, 1);
+   DialogAddButton(d, _("OK"), NULL, 1, DIALOG_BUTTON_OK);
    ShowDialog(d);
 }
 

@@ -326,9 +326,9 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureFocus, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureFocus, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureFocus, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureFocus, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureFocus, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureFocus, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureFocus, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureFocus, 0);
@@ -694,9 +694,11 @@ SettingsMoveResize(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureMoveResize, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureMoveResize, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureMoveResize, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureMoveResize, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureMoveResize, 0,
+		   DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureMoveResize, 1,
+		   DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureMoveResize, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureMoveResize, 0);
@@ -884,9 +886,11 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigurePlacement, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigurePlacement, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigurePlacement, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigurePlacement, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigurePlacement, 0,
+		   DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigurePlacement, 1,
+		   DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigurePlacement, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigurePlacement, 0);
@@ -980,9 +984,11 @@ SettingsAutoRaise(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureAutoraise, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureAutoraise, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureAutoraise, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureAutoraise, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureAutoraise, 0,
+		   DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureAutoraise, 1,
+		   DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureAutoraise, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureAutoraise, 0);
@@ -992,6 +998,7 @@ SettingsAutoRaise(void)
 static char         tmp_dialog_headers;
 static char         tmp_logout_dialog;
 static char         tmp_reboot_halt;
+static char         tmp_button_image;
 
 static void
 CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -1001,6 +1008,7 @@ CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.dialogs.headers = tmp_dialog_headers;
 	Conf.session.enable_logout_dialog = tmp_logout_dialog;
 	Conf.session.enable_reboot_halt = tmp_reboot_halt;
+	Conf.dialogs.button_image = tmp_button_image;
      }
    autosave();
 }
@@ -1023,6 +1031,7 @@ SettingsMiscellaneous(void)
    tmp_dialog_headers = Conf.dialogs.headers;
    tmp_logout_dialog = Conf.session.enable_logout_dialog;
    tmp_reboot_halt = Conf.session.enable_reboot_halt;
+   tmp_button_image = Conf.dialogs.button_image;
 
    d = DialogCreate("CONFIGURE_MISCELLANEOUS");
    DialogSetTitle(d, _("Miscellaneous Settings"));
@@ -1062,6 +1071,14 @@ SettingsMiscellaneous(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Enable Button Images"));
+   DialogItemCheckButtonSetState(di, tmp_button_image);
+   DialogItemCheckButtonSetPtr(di, &tmp_button_image);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di, _("Enable Logout Dialog"));
    DialogItemCheckButtonSetState(di, tmp_logout_dialog);
    DialogItemCheckButtonSetPtr(di, &tmp_logout_dialog);
@@ -1080,9 +1097,11 @@ SettingsMiscellaneous(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureMiscellaneous, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureMiscellaneous, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureMiscellaneous, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureMiscellaneous, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureMiscellaneous, 0,
+		   DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureMiscellaneous, 1,
+		   DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureMiscellaneous, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureMiscellaneous, 0);
@@ -1396,9 +1415,9 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureFX, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureFX, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureFX, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureFX, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureFX, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureFX, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureFX, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureFX, 0);
@@ -1539,9 +1558,11 @@ SettingsComposite(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureComposite, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureComposite, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureComposite, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureComposite, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureComposite, 0,
+		   DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureComposite, 1,
+		   DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureComposite, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureComposite, 0);

@@ -2727,9 +2727,9 @@ IconboxConfigure(Iconbox * ib)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureIconbox, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureIconbox, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureIconbox, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureIconbox, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureIconbox, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureIconbox, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ConfigureIconbox, 2);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureIconbox, 0);

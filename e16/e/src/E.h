@@ -809,6 +809,7 @@ typedef struct
    struct
    {
       char                headers;
+      char                button_image;
    } dialogs;
    struct
    {
@@ -1075,6 +1076,13 @@ Qentry;
 #define DITEM_RADIOBUTTON  7
 #define DITEM_SLIDER       8
 #define DITEM_AREA         9
+
+/* Dialog button icons */
+#define DIALOG_BUTTON_NONE   0
+#define DIALOG_BUTTON_OK     1
+#define DIALOG_BUTTON_CANCEL 2
+#define DIALOG_BUTTON_APPLY  3
+#define DIALOG_BUTTON_CLOSE  4
 
 typedef struct _drawqueue
 {
@@ -1394,7 +1402,8 @@ void                ShowDialog(Dialog * d);
 void                DialogClose(Dialog * d);
 
 void                DialogAddButton(Dialog * d, const char *text,
-				    DialogCallbackFunc * func, char doclose);
+				    DialogCallbackFunc * func, char doclose,
+				    int image);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 DItem              *DialogItem(Dialog * d);

@@ -966,11 +966,14 @@ SessionLogoutConfirm(void)
 			   "\n\n"));
 	if (Conf.session.enable_reboot_halt)
 	  {
-	     DialogAddButton(d, _("  Yes, Shut Down  "), LogoutCB, 1);
-	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1);
+	     DialogAddButton(d, _("  Yes, Shut Down  "), LogoutCB, 1,
+			     DIALOG_BUTTON_OK);
+	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1,
+			     DIALOG_BUTTON_OK);
 	  }
-	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
-	DialogAddButton(d, _("  No  "), NULL, 1);
+	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1,
+			DIALOG_BUTTON_OK);
+	DialogAddButton(d, _("  No  "), NULL, 1, DIALOG_BUTTON_CANCEL);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 1);
 	DialogBindKey(d, "Return", LogoutCB, 0);
      }
