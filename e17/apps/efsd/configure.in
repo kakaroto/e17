@@ -123,7 +123,7 @@ AC_ARG_WITH(xml2,
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
-AC_PATH_GENERIC(xml2, 2.0.0, [
+AC_PATH_GENERIC(xml2, 2.3.10, [
     AC_SUBST(xml2_libs)
     AC_SUBST(xml2_cflags)],
     AC_MSG_ERROR(Cannot find libxml2: Is xml2-config in path?))
