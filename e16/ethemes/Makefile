@@ -21,4 +21,4 @@ $(THEMES-CHECK): check-%:
 rpms: $(THEMES-RPM)
 $(THEMES-RPM): rpm-%:
 #	cd $*; ./autogen.sh && make dist && rpmbuild -bb etheme-$*.spec
-	cd $*; rpmbuild -bb etheme-$*.spec
+	cd $*; rpmbuild -ba etheme-$*.spec
