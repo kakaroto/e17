@@ -303,9 +303,13 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
     g_print ("running browser: %s\n", browser);
     help_error = run_help (browser, PACKAGE_DOC_DIR, PACKAGE".html");
 
-    if (help_error)
+    if (help_error == 1)
     {
-      print_statusbar ("no help system or help file found!\n");
+      print_statusbar ("No help file found!\n");
+    }
+    else if (help_error == 2)
+    {
+      print_statusbar ("No help application found");
     }
   }
 }

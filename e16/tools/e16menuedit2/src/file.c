@@ -385,7 +385,7 @@ int run_help (char *help_app, char *help_dir, char *help_file)
 
   if (help_missing)
   {
-    /* no yelp files found */
+    /* no help files found */
     return 1;
   }
   else
@@ -400,7 +400,7 @@ int run_help (char *help_app, char *help_dir, char *help_file)
 
     if (!spawn)
     {
-      /* no yelp application found */
+      /* no help application found */
       return 2;
     }
 
