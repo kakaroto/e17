@@ -154,6 +154,11 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
                the current row, since it's incomplete. */
             im->data = (DATA32 *) realloc(im->data, sizeof(DATA32) * w * i);
             im->h = i;
+            DGifCloseFile(gif);
+            for (i = 0; i < h; i++) {
+                free(rows[i]);
+            }
+            free(rows);
             return 2;
           }
           last_y = i;

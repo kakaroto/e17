@@ -2898,3 +2898,10 @@ Thu Apr 27 04:22:06 GMT 2000
 
 Return 2 from interrupted loaders.
 
+_______________________________________________
+
+Thu Apr 27 13:41:11 GMT 2000
+(gilbertt)
+
+Free up some RAM and close the filehandle when interrupted.
+
