@@ -328,11 +328,19 @@ void            Epplet_gadget_destroy(Epplet_gadget gadget);
 void            Epplet_gadget_hide(Epplet_gadget gadget);
 /* show a gadget */
 void            Epplet_gadget_show(Epplet_gadget gadget);
+/* move a gadget */
+void		Epplet_gadget_move(Epplet_gadget gadget, int x, int y);
 /* get the callback data from a gadget */
 void			*Epplet_gadget_get_data(Epplet_gadget gadget);
 /* if you chaged the value a gadget is pointing to call this on the gadget */
 /* so it can update and redraw */
 void            Epplet_gadget_data_changed(Epplet_gadget gadget);
+/* Redraw a gadget.  un_only should be set to 1 if you only want to "undraw"
+   the existing gadget.  force should be 1 if you want to draw it even if it
+   is invisible.  Beware that this could be a Bad Thing (tm). */
+void		Epplet_gadget_draw(Epplet_gadget gadget, int un_only, int force);
+/* Redraw all gadgets. */
+void		Epplet_redraw(void);
 /* change the popup a popbutton brings up and destroy the popup it currently */
 /* brings up */
 void            Epplet_change_popbutton_popup(Epplet_gadget gadget, 
@@ -343,13 +351,13 @@ void            Epplet_pop_popup(Epplet_gadget gadget, Window ww);
 /* change the image file and widht & height of the image gadget */
 void            Epplet_change_image(Epplet_gadget gadget, int w, int h, 
 				    char *image);
-/* change the x and y coordinates of the image gadget */
-void            Epplet_move_image(Epplet_gadget gadget, int x, int y);
-/* do both at once */
+/* change the x and y coordinates of the image gadget and change the image */
 void            Epplet_move_change_image(Epplet_gadget gadget, int x, int y, 
                                          int w, int h, char *image);
 /* change the label string contents of the gadget label */
 void            Epplet_change_label(Epplet_gadget gadget, char *label);
+/* move the label to a new x/y and change the text too */
+void            Epplet_move_change_label(Epplet_gadget gadget, int x, int y, char *label);
 
 /****************************************************************************/
 /* Some window creation functions for configs, questions, external displays */

@@ -37,9 +37,10 @@
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
-Epplet_gadget close_button, in_bar, out_bar, in_label, out_label;
+Epplet_gadget close_button, in_bar, out_bar, in_label, out_label, title, cfg_button;
 int in_val = 0, out_val = 0;
 unsigned long max_in = 1, max_out = 1;
+unsigned char show_title = 1;
 
 static void timer_cb(void *data);
 static void close_cb(void *data);
@@ -120,10 +121,34 @@ close_cb(void *data) {
 }
 
 static void
+title_cb(void *data) {
+
+  show_title = !show_title;
+  if (show_title) {
+    Epplet_gadget_move(in_label, 3, 13);
+    Epplet_gadget_move(out_label, 3, 30);
+    Epplet_gadget_move(in_bar, 3, 22);
+    Epplet_gadget_move(out_bar, 3, 39);
+    Epplet_gadget_show(title);
+  } else {
+    Epplet_gadget_move(in_label, 4, 4);
+    Epplet_gadget_move(out_label, 4, 24);
+    Epplet_gadget_move(in_bar, 4, 14);
+    Epplet_gadget_move(out_bar, 4, 36);
+    Epplet_gadget_hide(title);
+  }
+  Epplet_modify_config("title", (show_title ? "1" : "0"));
+  Epplet_redraw();
+  return;
+  data = NULL;
+}
+
+static void
 in_cb(void *data, Window w) {
 
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_show(close_button);
+    Epplet_gadget_show(cfg_button);
   }
   return;
   data = NULL;
@@ -134,6 +159,7 @@ out_cb(void *data, Window w) {
 
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_hide(close_button);
+    Epplet_gadget_hide(cfg_button);
   }
   return;
   data = NULL;
@@ -152,6 +178,7 @@ parse_conf(void) {
   if (s) {
     max_out = strtoul(s, (char **) NULL, 10);
   }
+  show_title = atoi(Epplet_query_config_def("title", "1"));
 }
 
 int
@@ -166,21 +193,23 @@ main(int argc, char **argv) {
   Epplet_load_config();
   parse_conf();
 
+  title = Epplet_create_label(3, 3, "Disk I/O", 1);
+  if (show_title) {
+    /* New arrangement */
+    in_label = Epplet_create_label(3, 13, "I: 0 K/s", 1);
+    out_label = Epplet_create_label(3, 30, "O: 0 K/s", 1);
+    in_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &in_val);
+    out_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &out_val);
+    Epplet_gadget_show(title);
+  } else {
+    /* Old arrangement */
+    in_label = Epplet_create_label(4, 4, "I: 0 K/s", 1);
+    out_label = Epplet_create_label(4, 24, "O: 0 K/s", 1);
+    in_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &in_val);
+    out_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &out_val);
+  }
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-#if 0
-  /* Old arrangement */
-  in_label = Epplet_create_label(4, 4, "I: 0 K/s", 1);
-  out_label = Epplet_create_label(4, 24, "O: 0 K/s", 1);
-  in_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &in_val);
-  out_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &out_val);
-#else
-  /* New arrangement */
-  Epplet_gadget_show(Epplet_create_label(3, 3, "Disk I/O", 1));
-  in_label = Epplet_create_label(3, 13, "I: 0 K/s", 1);
-  out_label = Epplet_create_label(3, 30, "O: 0 K/s", 1);
-  in_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &in_val);
-  out_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &out_val);
-#endif
+  cfg_button = Epplet_create_button(NULL, NULL, 33, 2, 0, 0, "CONFIGURE", 0, NULL, title_cb, NULL);
   Epplet_gadget_show(in_label);
   Epplet_gadget_show(in_bar);
   Epplet_gadget_show(out_label);

@@ -45,8 +45,9 @@
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
-Epplet_gadget close_button, mem_bar, swap_bar, mem_label, swap_label;
+Epplet_gadget close_button, mem_bar, swap_bar, mem_label, swap_label, title, cfg_button;
 int mem_val = 0, swap_val = 0;
+int show_title = 1;
 
 static void timer_cb(void *data);
 static void close_cb(void *data);
@@ -144,10 +145,34 @@ close_cb(void *data) {
 }
 
 static void
+title_cb(void *data) {
+
+  show_title = !show_title;
+  if (show_title) {
+    Epplet_gadget_move(mem_label, 3, 13);
+    Epplet_gadget_move(swap_label, 3, 30);
+    Epplet_gadget_move(mem_bar, 3, 22);
+    Epplet_gadget_move(swap_bar, 3, 39);
+    Epplet_gadget_show(title);
+  } else {
+    Epplet_gadget_move(mem_label, 4, 4);
+    Epplet_gadget_move(swap_label, 4, 24);
+    Epplet_gadget_move(mem_bar, 4, 14);
+    Epplet_gadget_move(swap_bar, 4, 36);
+    Epplet_gadget_hide(title);
+  }
+  Epplet_modify_config("title", (show_title ? "1" : "0"));
+  Epplet_redraw();
+  return;
+  data = NULL;
+}
+
+static void
 in_cb(void *data, Window w) {
 
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_show(close_button);
+    Epplet_gadget_show(cfg_button);
   }
   return;
   data = NULL;
@@ -158,6 +183,7 @@ out_cb(void *data, Window w) {
 
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_hide(close_button);
+    Epplet_gadget_hide(cfg_button);
   }
   return;
   data = NULL;
@@ -172,20 +198,24 @@ main(int argc, char **argv) {
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   Epplet_Init("E-MemWatch", "0.1", "Enlightenment RAM/Swap Monitor Epplet", 3, 3, argc, argv, 0);
+  Epplet_load_config();
+  show_title = atoi(Epplet_query_config_def("title", "1"));
 
+  title = Epplet_create_label(3, 3, "Mem Used", 1);
+  if (show_title) {
+    mem_label = Epplet_create_label(3, 13, "M:", 1);
+    swap_label = Epplet_create_label(3, 30, "S:", 1);
+    mem_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &mem_val);
+    swap_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &swap_val);
+    Epplet_gadget_show(title);
+  } else {
+    mem_label = Epplet_create_label(4, 4, "M:", 1);
+    swap_label = Epplet_create_label(4, 24, "S:", 1);
+    mem_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &mem_val);
+    swap_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &swap_val);
+  }
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-#if 0
-  mem_label = Epplet_create_label(4, 4, "M:", 1);
-  swap_label = Epplet_create_label(4, 24, "S:", 1);
-  mem_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &mem_val);
-  swap_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &swap_val);
-#else
-  Epplet_gadget_show(Epplet_create_label(3, 3, "Mem Used", 1));
-  mem_label = Epplet_create_label(3, 13, "M:", 1);
-  swap_label = Epplet_create_label(3, 30, "S:", 1);
-  mem_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &mem_val);
-  swap_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &swap_val);
-#endif
+  cfg_button = Epplet_create_button(NULL, NULL, 33, 2, 0, 0, "CONFIGURE", 0, NULL, title_cb, NULL);
   Epplet_gadget_show(mem_label);
   Epplet_gadget_show(mem_bar);
   Epplet_gadget_show(swap_label);

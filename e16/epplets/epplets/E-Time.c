@@ -135,14 +135,10 @@ apply_config(void)
   tmp = (cfg_just ? -1 : 1);
   if (just != tmp) {
     just = tmp;
-    Epplet_gadget_destroy(label1);
-    Epplet_gadget_destroy(label2);
-    Epplet_gadget_destroy(label3);
-    Epplet_gadget_destroy(label4);
-    Epplet_gadget_show(label1 = Epplet_create_label(4 * just, 4, "", 1));
-    Epplet_gadget_show(label2 = Epplet_create_label(4 * just, 15, "", 1));
-    Epplet_gadget_show(label3 = Epplet_create_label(4 * just, 26, "", 1));
-    Epplet_gadget_show(label4 = Epplet_create_label(4 * just, 36, "", 1));
+    Epplet_gadget_move(label1, 4 * just, 4);
+    Epplet_gadget_move(label2, 4 * just, 15);
+    Epplet_gadget_move(label3, 4 * just, 26);
+    Epplet_gadget_move(label4, 4 * just, 36);
     Esnprintf(buff, sizeof(buff), "%d", just);
     Epplet_modify_config("just", buff);
   }

@@ -152,7 +152,6 @@ static char        *win_name = NULL;
 static char        *win_version = NULL;
 static char        *win_info = NULL;
 
-static void         Epplet_redraw(void);
 static void         Epplet_event(Epplet_gadget gadget, XEvent * ev);
 static void         Epplet_add_gad(Epplet_gadget gadget);
 static void         Epplet_del_gad(Epplet_gadget gadget);
@@ -210,6 +209,179 @@ typedef struct gad_general
    Epplet_window       parent;
 }
 GadGeneral;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   char               *label;
+   char               *image;
+   char                hilited;
+   char                clicked;
+   char                pop;
+   Epplet_gadget       pop_parent;
+   char               *std;
+   void                (*func) (void *data);
+   void               *data;
+   Pixmap              pmap, mask;
+}
+GadButton;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   int                 x_offset;
+   unsigned int        cursor_pos, to_cursor;
+   char               *image;
+   char               *contents;
+   char                hilited;
+   char                size;
+   void                (*func) (void *data);
+   void               *data;
+   Pixmap              pmap, mask;
+}
+GadTextBox;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   char               *label;
+   char               *image;
+   char                hilited;
+   char                clicked;
+   int                *val;
+   void                (*func) (void *data);
+   void               *data;
+   Pixmap              pmap, mask;
+}
+GadToggleButton;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   Window              win_in;
+}
+GadDrawingArea;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   int                 min, max;
+   int                 step, jump;
+   char                hilited;
+   char                clicked;
+   int                *val;
+   void                (*func) (void *data);
+   void               *data;
+   Window              win_knob;
+}
+GadHSlider;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   int                 min, max;
+   int                 step, jump;
+   char                hilited;
+   char                clicked;
+   int                *val;
+   void                (*func) (void *data);
+   void               *data;
+   Window              win_knob;
+}
+GadVSlider;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   int                *val;
+   char                dir;
+   Window              win_in;
+}
+GadHBar;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   int                *val;
+   char                dir;
+   Window              win_in;
+}
+GadVBar;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   int                 pw, ph;
+   char               *image;
+}
+GadImage;
+
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   char                size;
+   char               *label;
+}
+GadLabel;
+
+typedef struct
+{
+   char               *label;
+   char               *image;
+   int                 w, h;
+   void                (*func) (void *data);
+   void               *data;
+   Epplet_gadget       gadget;
+}
+GadPopEntry;
+
+typedef struct _gadpopupbutton GadPopupButton;
+typedef struct
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   Epplet_gadget       popbutton;
+   int                 entry_num;
+   GadPopEntry        *entry;
+   char                changed;
+}
+GadPopup;
+
+struct _gadpopupbutton
+{
+   GadGeneral          general;
+   int                 x, y, w, h;
+   Window              win;
+   char               *label;
+   char               *image;
+   char                hilited;
+   char                clicked;
+   Epplet_gadget       popup;
+   char                popped;
+   char               *std;
+   Pixmap              pmap, mask;
+};
 
 void
 Epplet_send_ipc(char *s)
@@ -1712,24 +1884,6 @@ Epplet_get_color(int r, int g, int b)
    return Imlib_best_color_match(id, &rr, &gg, &bb);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   char               *label;
-   char               *image;
-   char                hilited;
-   char                clicked;
-   char                pop;
-   Epplet_gadget       pop_parent;
-   char               *std;
-   void                (*func) (void *data);
-   void               *data;
-   Window              win;
-   Pixmap              pmap, mask;
-}
-GadButton;
-
 static char        *
 Estrdup(char *s)
 {
@@ -1804,22 +1958,6 @@ Epplet_del_gad(Epplet_gadget gadget)
      }
 
 }
-
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h, x_offset;
-   unsigned int        cursor_pos, to_cursor;
-   char               *image;
-   char               *contents;
-   char                hilited;
-   char                size;
-   void                (*func) (void *data);
-   void               *data;
-   Window              win;
-   Pixmap              pmap, mask;
-}
-GadTextBox;
 
 Epplet_gadget
 Epplet_create_textbox(char *image, char *contents, int x, int y,
@@ -2571,22 +2709,6 @@ Epplet_draw_button(Epplet_gadget eg)
    XClearWindow(disp, g->win);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   char               *label;
-   char               *image;
-   char                hilited;
-   char                clicked;
-   int                *val;
-   void                (*func) (void *data);
-   void               *data;
-   Window              win;
-   Pixmap              pmap, mask;
-}
-GadToggleButton;
-
 Epplet_gadget
 Epplet_create_togglebutton(char *label, char *image, int x,
 			   int y, int w, int h, int *val,
@@ -2709,15 +2831,6 @@ Epplet_draw_togglebutton(Epplet_gadget eg)
    XClearWindow(disp, g->win);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   Window              win;
-   Window              win_in;
-}
-GadDrawingArea;
-
 Epplet_gadget
 Epplet_create_drawingarea(int x, int y, int w, int h)
 {
@@ -2767,22 +2880,6 @@ Epplet_draw_drawingarea(Epplet_gadget eg)
    g = (GadDrawingArea *) eg;
    Epplet_imageclass_apply("EPPLET_DRAWINGAREA", "normal", g->win);
 }
-
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   int                 min, max;
-   int                 step, jump;
-   char                hilited;
-   char                clicked;
-   int                *val;
-   void                (*func) (void *data);
-   void               *data;
-   Window              win;
-   Window              win_knob;
-}
-GadHSlider;
 
 Epplet_gadget
 Epplet_create_hslider(int x, int y, int len, int min, int max,
@@ -2864,22 +2961,6 @@ Epplet_draw_hslider(Epplet_gadget eg)
    Epplet_imageclass_apply("EPPLET_HSLIDER_KNOB", state, g->win_knob);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   int                 min, max;
-   int                 step, jump;
-   char                hilited;
-   char                clicked;
-   int                *val;
-   void                (*func) (void *data);
-   void               *data;
-   Window              win;
-   Window              win_knob;
-}
-GadVSlider;
-
 Epplet_gadget
 Epplet_create_vslider(int x, int y, int len, int min, int max,
 		      int step, int jump, int *val,
@@ -2960,17 +3041,6 @@ Epplet_draw_vslider(Epplet_gadget eg)
    Epplet_imageclass_apply("EPPLET_VSLIDER_KNOB", state, g->win_knob);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   int                *val;
-   char                dir;
-   Window              win;
-   Window              win_in;
-}
-GadHBar;
-
 Epplet_gadget
 Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 {
@@ -3029,17 +3099,6 @@ Epplet_draw_hbar(Epplet_gadget eg)
    Epplet_imageclass_apply("EPPLET_HBAR_BASE", "normal", g->win);
    Epplet_imageclass_apply("EPPLET_HBAR_BAR", "normal", g->win_in);
 }
-
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   int                *val;
-   char                dir;
-   Window              win;
-   Window              win_in;
-}
-GadVBar;
 
 Epplet_gadget
 Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
@@ -3100,14 +3159,6 @@ Epplet_draw_vbar(Epplet_gadget eg)
    Epplet_imageclass_apply("EPPLET_VBAR_BAR", "normal", g->win_in);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h, pw, ph;
-   char               *image;
-}
-GadImage;
-
 Epplet_gadget
 Epplet_create_image(int x, int y, int w, int h, char *image)
 {
@@ -3121,6 +3172,7 @@ Epplet_create_image(int x, int y, int w, int h, char *image)
    g->y = y;
    g->w = w;
    g->h = h;
+   g->win = None;
    g->pw = 0;
    g->ph = 0;
    g->image = Estrdup(image);
@@ -3169,15 +3221,6 @@ Epplet_draw_image(Epplet_gadget eg, char un_only)
    XFreeGC(disp, gc);
 }
 
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   char                size;
-   char               *label;
-}
-GadLabel;
-
 Epplet_gadget
 Epplet_create_label(int x, int y, char *label, char size)
 {
@@ -3189,6 +3232,7 @@ Epplet_create_label(int x, int y, char *label, char size)
    g->general.visible = 0;
    g->x = x;
    g->y = y;
+   g->win = None;
    g->size = size;
    g->label = Estrdup(label);
    if (g->size == 0)
@@ -3299,45 +3343,6 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
    XClearWindow(disp, g->general.parent->win);
    XFreeGC(disp, gc);
 }
-
-typedef struct
-{
-   char               *label;
-   char               *image;
-   int                 w, h;
-   void                (*func) (void *data);
-   void               *data;
-   Epplet_gadget       gadget;
-}
-GadPopEntry;
-
-typedef struct _gadpopupbutton GadPopupButton;
-typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   Epplet_gadget       popbutton;
-   int                 entry_num;
-   GadPopEntry        *entry;
-   Window              win;
-   char                changed;
-}
-GadPopup;
-
-struct _gadpopupbutton
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   char               *label;
-   char               *image;
-   char                hilited;
-   char                clicked;
-   Epplet_gadget       popup;
-   char                popped;
-   char               *std;
-   Window              win;
-   Pixmap              pmap, mask;
-};
 
 Epplet_gadget
 Epplet_create_popup(void)
@@ -3746,21 +3751,6 @@ Epplet_change_image(Epplet_gadget gadget, int w, int h, char *image)
 }
 
 void
-Epplet_move_image(Epplet_gadget gadget, int x, int y)
-{
-   GadImage           *g;
-   GadGeneral         *gg;
-
-   g = (GadImage *) gadget;
-   gg = (GadGeneral *) gadget;
-   Epplet_draw_image(gadget, 1);
-   g->x = x;
-   g->y = y;
-   if (gg->visible != 0)
-      Epplet_draw_image(gadget, 0);
-}
-
-void
 Epplet_move_change_image(Epplet_gadget gadget, int x, int y, int w, int h,
 			 char *image)
 {
@@ -3798,6 +3788,30 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
      }
    g->label = Estrdup(label);
    if (gg->visible != 0)
+      Epplet_draw_label(gadget, 0);
+}
+
+void
+Epplet_move_change_label(Epplet_gadget gadget, int x, int y, char *label)
+{
+   GadLabel           *g;
+   GadGeneral         *gg;
+
+   g = (GadLabel *) gadget;
+   gg = (GadGeneral *) gadget;
+   if (gg->visible)
+     Epplet_draw_label(gadget, 1);
+   if (g->label)
+     {
+	if (label && !strcmp(g->label, label))
+	   return;		/* The labels are identical, so no sense in redrawing */
+	else
+	   free(g->label);	/* The labels are different.  Proceed. */
+     }
+   g->label = Estrdup(label);
+   g->x = x;
+   g->y = y;
+   if (gg->visible)
       Epplet_draw_label(gadget, 0);
 }
 
@@ -4664,6 +4678,24 @@ Epplet_gadget_show(Epplet_gadget gadget)
      }
 }
 
+void
+Epplet_gadget_move(Epplet_gadget gadget, int x, int y)
+{
+   GadImage           *g;  /* Image is the lowest common denominator, sorta. */
+   GadGeneral         *gg;
+
+   g = (GadImage *) gadget;
+   gg = (GadGeneral *) gadget;
+   Epplet_gadget_draw(gadget, 1, 0);
+   g->x = x;
+   g->y = y;
+   if (g->win != None)
+     {
+       XMoveWindow(disp, g->win, x, y);
+     }
+   Epplet_gadget_draw(gadget, 0, 0);
+}
+
 void               *
 Epplet_gadget_get_data(Epplet_gadget gadget)
 {
@@ -4757,60 +4789,66 @@ Epplet_gadget_data_changed(Epplet_gadget gadget)
 }
 
 void
+Epplet_gadget_draw(Epplet_gadget g, int un_only, int force)
+{
+  GadGeneral *gg = (GadGeneral *) g;
+
+  if (gg->visible || force)
+    {
+      switch (gg->type)
+        {
+        case E_BUTTON:
+          if (!un_only) Epplet_draw_button(g);
+          break;
+        case E_TEXTBOX:
+          if (!un_only) Epplet_draw_textbox(g);
+          break;
+        case E_DRAWINGAREA:
+          if (!un_only) Epplet_draw_drawingarea(g);
+          break;
+        case E_HSLIDER:
+          if (!un_only) Epplet_draw_hslider(g);
+          break;
+        case E_VSLIDER:
+          if (!un_only) Epplet_draw_vslider(g);
+          break;
+        case E_TOGGLEBUTTON:
+          if (!un_only) Epplet_draw_togglebutton(g);
+          break;
+        case E_POPUPBUTTON:
+          if (!un_only) Epplet_draw_popupbutton(g);
+          break;
+        case E_POPUP:
+          if (!un_only) Epplet_draw_popup(g);
+          break;
+        case E_IMAGE:
+          Epplet_draw_image(g, un_only);
+          break;
+        case E_LABEL:
+          Epplet_draw_label(g, un_only);
+          break;
+        case E_HBAR:
+          if (!un_only) Epplet_draw_hbar(g);
+          break;
+        case E_VBAR:
+          if (!un_only) Epplet_draw_vbar(g);
+          break;
+        default:
+          break;
+        }
+    }
+}
+
+void
 Epplet_redraw(void)
 {
    int                 i;
-   GadGeneral         *gg;
 
    Epplet_refresh_backgrounds();
 
    for (i = 0; i < gad_num; i++)
      {
-	gg = (GadGeneral *) gads[i];
-	if (gg->visible)
-	  {
-	     switch (gg->type)
-	       {
-	       case E_BUTTON:
-		  Epplet_draw_button(gads[i]);
-		  break;
-	       case E_TEXTBOX:
-		  Epplet_draw_textbox(gads[i]);
-		  break;
-	       case E_DRAWINGAREA:
-		  Epplet_draw_drawingarea(gads[i]);
-		  break;
-	       case E_HSLIDER:
-		  Epplet_draw_hslider(gads[i]);
-		  break;
-	       case E_VSLIDER:
-		  Epplet_draw_vslider(gads[i]);
-		  break;
-	       case E_TOGGLEBUTTON:
-		  Epplet_draw_togglebutton(gads[i]);
-		  break;
-	       case E_POPUPBUTTON:
-		  Epplet_draw_popupbutton(gads[i]);
-		  break;
-	       case E_POPUP:
-		  Epplet_draw_popup(gads[i]);
-		  break;
-	       case E_IMAGE:
-		  Epplet_draw_image(gads[i], 0);
-		  break;
-	       case E_LABEL:
-		  Epplet_draw_label(gads[i], 0);
-		  break;
-	       case E_HBAR:
-		  Epplet_draw_hbar(gads[i]);
-		  break;
-	       case E_VBAR:
-		  Epplet_draw_vbar(gads[i]);
-		  break;
-	       default:
-		  break;
-	       }
-	  }
+        Epplet_gadget_draw(gads[i], 0, 0);
      }
 }
 

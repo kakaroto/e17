@@ -1692,3 +1692,12 @@ Wed Dec 15 18:40:51 PST 1999
 
 Dammit.  My Linux version checking was broken in net.c, so users of 2.1 and
 2.2 kernels weren't getting outgoing packet counts.  Fixed.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 16 19:56:24 PST 1999
+(KainX)
+
+API changes here, all in order to make E-Disk and E-MemWatch be able to toggle
+between the old arrangement and the new.  So basically, you can now move
+gadgets to new locations.
