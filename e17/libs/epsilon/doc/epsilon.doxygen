@@ -13,6 +13,7 @@ A Thumbnailing Library
 @author Corey Donohoe <atmos@atmos.org>
 @author Carsten Haitzler <raster@rasterman.com>
 @author Azundris <azundris@azundris.com>
+@author Eric Johnston <emj@postal.net>
 @date 2004
 
 
@@ -20,7 +21,6 @@ A Thumbnailing Library
 <ul>
 <li><a href="./index.html#intro">What is Epsilon?</a></li>
 <li><a href="./index.html#running">How do I use it?</a></li>
-<li><a href="./index.html#coding">Themers documentation</a></li>
 <li><a href="./index.html#requirements">Build Instructions</a></li>
 </ul>
 
@@ -44,15 +44,54 @@ standard, but is only available if the input image is a jpeg file.  If
 the file is anything other than jpg, the traditional freedesktop.org png
 thumbnailing will occur. </p>
 
-<p>To show the speed increase epeg offers,
-Epsilon builds with and without epeg.
+<p>To show the speed increase epeg offers, Epsilon builds with and without
+epeg.  Notice the time difference for the epsilon compiled with Epeg.
 </p>
+<h3> Digital Photo Results: 3072x204 jpeg images</h3>
+@verbatim
+nemesis% du -sh /home/atmos/Pictures/October_07_2004/     
+241M    /home/atmos/Pictures/October_07_2004/
+@endverbatim
+<ul>
+<li>w/ epeg
+@verbatim
+nemesis% time epsilon /home/atmos/Pictures/October_07_2004/*.jpg
+epsilon /home/atmos/Pictures/October_07_2004/*.jpg  7.63s user 0.36s system
+64% cpu 12.373 total
+@endverbatim
+</li>
+<li> w/o epeg
+@verbatim
+nemesis% time epsilon /home/atmos/Pictures/October_07_2004/*.jpg
+epsilon /home/atmos/Pictures/October_07_2004/*.jpg  48.50s user 3.01s system
+98% cpu 52.180 total
+@endverbatim
+</li></ul>
+<h3> Mixed Image Formats: png,gif,xcf,and jpg, various sizes </h3>
+@verbatim
+nemesis% du -sh /home/atmos/Images/  
+289M    /home/atmos/Images/
+@endverbatim
+<ul>
+<li>w/ epeg
+@verbatim
+nemesis% time epsilon /home/atmos/Images/*
+epsilon /home/atmos/Images/*  14.32s user 0.81s system 74% cpu 20.276 total
+@endverbatim
+</li>
+<li> w/o epeg
+@verbatim
+nemesis% time epsilon /home/atmos/Images/*
+epsilon /home/atmos/Images/*  38.31s user 1.82s system 90% cpu 44.250 total
+@endverbatim
+</li></ul>
 
 
 @section running How do I use epsilon ?
 
-<p>First, locate some images.  Let's say we have a bunch of photos in
-~/myphotos/</p>
+<p>Epsilon isn't really an app anyone will use.  The executable provided is
+merely for testing the library's functionality.  If you would like to generate
+thumbnails, simply run epsilon on the image files.</p>
 @verbatim
 $ epsilon /home/me/myphotos/*.jpg 
 ...
@@ -60,17 +99,38 @@ $ epsilon /home/me/myphotos/*.jpg
 <p>You'll see messages saying that the thumbnails need to be generated.  After
 a short time you'll be back at your command prompt.  Running the same
 command  after the thumbnail has been generated returns the meta info stored
-inside of the thumbnail.</p>
+inside of the thumbnail.  Exif info is extracted from the image file if it
+is present.  The epsilon executable is just a simple test case for the
+library.  You can extract much more information from the lib than you see
+from the epsilon executable.</p>
 @verbatim
-$ epsilon /home/me/myphotos/*.jpg 
-...
-URI: file:///home/me/myphotos/2004-02-25_w1.jpg
-MimeType: image/jpeg
-Source Image Width: 1600
-Source Image Height: 1200
-Source Image Mtime: 1077731214
+
+nemesis% epsilon /home/atmos/Pictures/October_07_2004/October_07_2004_098.jpg /home/atmos/navigation_bar_things.png 
+
 Thumbnail already exists
-...
+/home/atmos/.thumbnails/normal/933949ebe596222320ace1b49df4035d.png
+Thumbnail already exists
+URI: file:///home/atmos/navigation_bar_things.png
+Source Image Width: 685
+Source Image Height: 195
+Source Image Mtime: 1097025094
+Trying EXIF Info: Not Found!
+
+Thumbnail already exists
+/home/atmos/.thumbnails/normal/d2cc3c8e48ac81ce02ceea8be6c1e79d.png
+Thumbnail already exists
+URI: file:///home/atmos/Pictures/October_07_2004/October_07_2004_098.jpg
+Source Image Width: 0
+Source Image Height: 0
+Source Image Mtime: 1097168889
+Trying EXIF Info: Found!
+Image Orientation: Left-Hand, Bottom
+Exposure Time: 1/60 sec
+F-Number: f/5.6
+ISO Speed Rating: 400
+Flash: Flash, Auto
+Focal Length: 49.00 mm
+
 @endverbatim
 
 
@@ -81,6 +141,7 @@ Epsilon relies on a lot of libraries most notably
   - Imlib2_loaders (library)
   - Epeg (library)
   - libpng (library)
+  - exiftags (included in Epsilon)
 
 The following instructions assume you've checked out the e17 directory
 from cvs.  
