@@ -1057,6 +1057,7 @@ typedef struct _emode
      char                place;
      char                flipp;
      char                startup;
+     char                xselect;
      int                 next_move_x_plus;
      int                 next_move_y_plus;
      EWin               *ewin;

@@ -346,6 +346,8 @@ SetupX()
 		PropertyChangeMask | SubstructureRedirectMask | KeyPressMask |
 		KeyReleaseMask | PointerMotionMask | ResizeRedirectMask |
 		SubstructureNotifyMask);
+   XSync(disp, False);
+   mode.xselect = 0;
    /* Init XKB to pick up release of alt modifier */
    WarpFocusInitEvents();
    {
@@ -452,6 +454,7 @@ SetupX()
    mode.place = 0;
    mode.flipp = 0;
    mode.startup = 1;
+   mode.xselect = 1;
    mode.ewin = NULL;
    mode.button = NULL;
    mode.have_place_grab = 0;
