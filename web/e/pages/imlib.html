@@ -306,12 +306,12 @@ int main(int argc, char **argv)
         printf("Usage:\n %s image_file\n",argv[0]);
         exit(1);
       }
-/* Inititalise GDK */
+/* Inititalize GDK */
     gdk_init(&argc,&argv);
-/* Immediately after initialising GDK, Initialise Imlib */
+/* Immediately after initializing GDK, Initialize Imlib */
     gdk_imlib_init();
 
-/* Get gdk to use imlib's visual and colormap */
+/* Get gdk to use Imlib's visual and colormap */
    gtk_widget_push_visual(gdk_imlib_get_visual());
    gtk_widget_push_colormap(gdk_imlib_get_colormap());
       
@@ -481,10 +481,10 @@ int main(int argc, char **argv)
       }
 /* Inititalise GDK */
     gdk_init(&argc,&argv);
-/* Immediately after initialising GDK, Initialise Imlib */
+/* Immediately after initializing GDK, Initialize Imlib */
     gdk_imlib_init();
 
-/* Get gdk to use imlib's visual and colormap */
+/* Get gdk to use Imlib's visual and colormap */
    gtk_widget_push_visual(gdk_imlib_get_visual());
    gtk_widget_push_colormap(gdk_imlib_get_colormap());
    
@@ -703,7 +703,7 @@ contrast=(double)mod.contrast/256;
 gdk_imlib_set_image_modifier(im,&mod);
 </pre></td></tr></table></center>
 <p>
-Note that the contrast, brightness and gamma values are in fact int's. A
+Note that the contrast, brightness and gamma values are in fact integers. A
 value of 1.0 (unmodified verbatim data) is in fact 256, so to use a value of
 0.5 for any of these, you would have to use a value of 128 etc.
 <p>
@@ -724,7 +724,7 @@ Imlib_get_image_blue_curve, gdk_imlib_set_image_red_curve,
 gdk_imlib_set_image_green_curve, gdk_imlib_set_image_blue_curve,
 gdk_imlib_get_image_red_curve, gdk_imlib_get_image_green_curve, and
 gdk_imlib_get_image_blue_curve will set and get these. You pass the pointer
-to an array of 256 unsigned char's as the last parameter in each of these
+to an array of 256 unsigned chars as the last parameter in each of these
 functions to have Imlib fill that table's contents or use that table's 
 contents.
 <p>
@@ -1217,7 +1217,7 @@ void gdk_imlib_set_image_red_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
 <p>
 This function returns the current red channel mapping table curve by copying
-its contents into the 256 element array of unsigned char's pointed to by mod.
+its contents into the 256 element array of unsigned chars pointed to by mod.
 <p>
 <center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_green_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
@@ -1225,7 +1225,7 @@ void gdk_imlib_get_image_green_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
 <p>
 This function returns the current green channel mapping table curve by copying
-its contents into the 256 element array of unsigned char's pointed to by mod.
+its contents into the 256 element array of unsigned chars pointed to by mod.
 <p>
 <center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_blue_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
@@ -1233,7 +1233,7 @@ void gdk_imlib_get_image_blue_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
 <p>
 This function returns the current blue channel mapping table curve by copying
-its contents into the 256 element array of unsigned char's pointed to by mod.
+its contents into the 256 element array of unsigned chars pointed to by mod.
 <p>
 <center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_apply_modifiers_to_rgb(ImlibData *id, ImlibImage *im);
@@ -1433,7 +1433,7 @@ void gdk_imlib_best_color_get(GdkColor *c);
 </td></tr></table></center>
 <p>
 This is a gdk_imlib only API call, as much of GTK and GDK pass GdkColor
-structs around, and so Imlbi will fill the pixel value of the GdkColor and
+structs around, and so Imlib will fill the pixel value of the GdkColor and
 set the red, green and blue members to a member form Imlib's palette (unless
 it is in 15bpp or higher and palette remapping isn't forced), thus
 conserving colors wherever possible. In truecolor and higher it will give
@@ -1447,13 +1447,13 @@ int Imlib_save_image(ImlibData *id, ImlibImage *im, char *file, ImlibSaveInfo *i
 <p>
 This function is for those who want brain-dead saving in a single function. 
 It will save the image pointed to as the file passed. The extension is used 
-to determine filetype to save as, so saving as image.jpg will save as a jpeg, 
+to determine filetype to save as, so saving as image.jpg will save as a JPEG, 
 or saving as file.png will save as a png file etc. The info pointer can be 
 NULL, in which case the image will be saved with certain settings if the 
-format supports it. for example a jpeg image will always be saved at 80% 
+format supports it. for example a JPEG image will always be saved at 80% 
 quality unless you provide a pointer to this structure and set the quality 
 member to a value from 0 to 256, 256 being 100% quality, 0 being 0% quality. 
-Only jpeg images use this member. The other members of the info structure are 
+Only JPEG images use this member. The other members of the info structure are 
 used for postscript saving, so if you plan to output as a postscript, file 
 set the members in the structure. The scaling member is a value, with 1024 
 meaning "scale the image to maximum size on paper", 512 meaning "half the paper
@@ -1462,8 +1462,8 @@ be clipped to the border of your paper. The color member is either 0 or 1 -
 1 meaning save as color, 0 meaning save as grayscale. the x and
 yjustification members specify a justification in the x and y directions (on
 paper relative to the bottom-left of the page) - 1024 meaning right or top
-justify, 0 meaning left or bottom justify. Using values inbetween (like
-512,512) will give center justification or many variations inbetween.
+justify, 0 meaning left or bottom justify. Using values in between (like
+512,512) will give center justification or many variations in between.
 <p>
 The page_size member can be one of PAGE_SIZE_EXECUTIVE, PAGE_SIZE_LETTER,
 PAGE_SIZE_LEGAL, PAGE_SIZE_A4, PAGE_SIZE_A3, PAGE_SIZE_A5, or
@@ -1520,7 +1520,7 @@ typedef struct _GdkImlibColor
 } GdkImlibColor;
 </td></tr></table></center>
 <p>
-The r,g and b members are ints in the range 0 - 255. If any value is -1, and 
+The r,g and b members are integers in the range 0 - 255. If any value is -1, and 
 this is used to set or get that shape color, the shape color is either off, 
 or will be turned off.
 <p>

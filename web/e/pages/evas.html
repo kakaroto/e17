@@ -99,7 +99,7 @@ allocate enough colors it keeps reducing the size of the color cube until it
 reaches plain black and white. This way, it can display on anything from a
 black and white only terminal to 16 color VGA to 256 color and all the way
 up through 15, 16, 24 and 32bit color. Here are some screen shots of a demo
-Evas app to show the rendering output in different situations</p>
+Evas application to show the rendering output in different situations</p>
 <p><img src=img/evas_colors.png width=128 height=128></p>
 
 <p class="contenttitle">Colors</p>
@@ -119,7 +119,7 @@ simulated, using the software rendering engine in Evas.</p>
 <p>
 The next pictures were taken of the same application in 8 bit color
 simulating worse color depths by reducing the allocation maximum, and using the
-X11 rendering engine that uses X11 primitives instead of the CPU (ie
+X11 rendering engine that uses X11 primitives instead of the CPU (i.e.
 pixmaps, lines, rectangles, masks etc.).
 </p>
 <p>
@@ -332,7 +332,7 @@ resize it, show it, change the angle etc. and Evas handles it for us.
 </p><p>
 This is not where it ends. There are other primitives that Evas supports.
 Polygons, Lines and Rectangles complete this list for now, but future plans
-at a later point may mean Video objects (eg MPEG streams as objects), curved
+at a later point may mean Video objects (e.g. MPEG streams as objects), curved
 objects (ellipses, circles, splines etc.) and more, but for now they are not
 supported.
 </p>
@@ -477,7 +477,7 @@ Now lets look at clipping in Evas. Clipping is the process by which you
 "clip off" bits of what you are drawing that lie outside the area you are
 clipping to. For example - you have an image and you clip it to a box that
 is smaller than the image placed in the middle of the images location. This
-means the image will now only be drawn in the area that clips it - ie this
+means the image will now only be drawn in the area that clips it - i.e. this
 rectangle. The parts of the image lying outside the bounds of this rectangle
 will never be drawn. You can also think of this as windowing - allowing
 only what you can see through the "window" (or clip region) to show through.
@@ -536,12 +536,12 @@ areas to be marked as dirty and be redrawn anyway.
 <p class="contenttitle">How Evas Renders</p>
 <p>
 Evas minimizes the amount to render whenever possible. As long as you don't
-force it to do rendering then it doesn't have to (ie uselessly call the
+force it to do rendering then it doesn't have to (i.e. uselessly call the
 evas_update_rect() call, or call evas_render() or evas_render_updates() all
 the time whenever you make any changes at all to an Evas), Evas will keep
 rendering to a bare minimum for you, and still retain display quality and
 rendering speed. Remember to only call Evas's render calls when you program
-goes IDLE - ie no more events to process and no state to change. Doing
+goes IDLE - i.e. no more events to process and no state to change. Doing
 otherwise will impact performance badly.
 </p>
 
