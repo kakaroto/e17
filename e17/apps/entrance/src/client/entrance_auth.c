@@ -317,7 +317,14 @@ entrance_auth_setup_environment(Entrance_Auth * e)
 
    if (!e || !e->pw)
       return;
+
+/* clearenv() is only availble in glibc */
+#if HAVE_CLEARENV
    clearenv();
+#else
+   environ = NULL;
+#endif
+   
    e->env = environ;
    setenv("XAUTHORITY", buf, 1);
    setenv("TERM", "vt100", 0);  // TERM=linux?

@@ -133,6 +133,11 @@ esmart_cflags=`esmart-config --cflags`
 AC_SUBST(esmart_libs)
 AC_SUBST(esmart_cflags)
 
+have_clearenv=no
+AC_CHECK_LIB(c, clearenv, [
+	have_clearenv=yes
+	AC_DEFINE(HAVE_CLEARENV, 1, [clearenv() function available])])
+
 have_pam=no
 AC_CHECK_HEADERS(security/pam_appl.h, [
 	LIBS="$LIBS -lpam"
