@@ -4620,8 +4620,8 @@ instead of Xinerama for better X performance.</label>
 	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	      <child>
 		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
+		<expand>True</expand>
+		<fill>True</fill>
 	      </child>
 
 	      <widget>
@@ -4646,9 +4646,9 @@ instead of Xinerama for better X performance.</label>
 		  <widget>
 		    <class>GtkFrame</class>
 		    <name>frame11</name>
-		    <border_width>2</border_width>
+		    <border_width>4</border_width>
 		    <label_xalign>0</label_xalign>
-		    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+		    <shadow_type>GTK_SHADOW_IN</shadow_type>
 
 		    <widget>
 		      <class>GtkDrawingArea</class>
@@ -4661,6 +4661,7 @@ instead of Xinerama for better X performance.</label>
 		<widget>
 		  <class>GtkEntry</class>
 		  <name>entry1</name>
+		  <tooltip>The image used to tile in the background</tooltip>
 		  <can_focus>True</can_focus>
 		  <signal>
 		    <name>changed</name>
@@ -4681,6 +4682,7 @@ instead of Xinerama for better X performance.</label>
 		<widget>
 		  <class>GtkButton</class>
 		  <name>button2</name>
+		  <tooltip>Select an Image file to tile as a background patterm</tooltip>
 		  <can_focus>True</can_focus>
 		  <signal>
 		    <name>clicked</name>
@@ -4698,6 +4700,7 @@ instead of Xinerama for better X performance.</label>
 		<widget>
 		  <class>GtkButton</class>
 		  <name>button1</name>
+		  <sensitive>False</sensitive>
 		  <can_focus>True</can_focus>
 		  <signal>
 		    <name>clicked</name>

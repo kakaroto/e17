@@ -2369,6 +2369,9 @@ create_preferences (void)
   GtkWidget *hbuttonbox3;
   GtkWidget *ok;
   GtkWidget *cancel;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   preferences = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (preferences), "preferences", preferences);
@@ -2504,7 +2507,7 @@ create_preferences (void)
   gtk_object_set_data_full (GTK_OBJECT (preferences), "frame7", frame7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame7);
-  gtk_box_pack_start (GTK_BOX (vbox8), frame7, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox8), frame7, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame7), 4);
 
   vbox9 = gtk_vbox_new (FALSE, 4);
@@ -2528,7 +2531,8 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame11);
   gtk_container_add (GTK_CONTAINER (frame10), frame11);
-  gtk_container_set_border_width (GTK_CONTAINER (frame11), 2);
+  gtk_container_set_border_width (GTK_CONTAINER (frame11), 4);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame11), GTK_SHADOW_IN);
 
   pref_da = gtk_drawing_area_new ();
   gtk_widget_ref (pref_da);
@@ -2544,6 +2548,7 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (entry1);
   gtk_box_pack_start (GTK_BOX (vbox9), entry1, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, entry1, _("The image used to tile in the background"), NULL);
 
   button2 = gtk_button_new_with_label (_("Select Grid Image"));
   gtk_widget_ref (button2);
@@ -2551,6 +2556,7 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button2);
   gtk_box_pack_start (GTK_BOX (vbox9), button2, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, button2, _("Select an Image file to tile as a background patterm"), NULL);
 
   button1 = gtk_button_new_with_label (_("Select Tint Color"));
   gtk_widget_ref (button1);
@@ -2558,6 +2564,7 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button1);
   gtk_box_pack_start (GTK_BOX (vbox9), button1, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (button1, FALSE);
 
   dialog_action_area2 = GTK_DIALOG (preferences)->action_area;
   gtk_object_set_data (GTK_OBJECT (preferences), "dialog_action_area2", dialog_action_area2);
@@ -2607,6 +2614,8 @@ create_preferences (void)
                       NULL);
 
   gtk_widget_grab_default (ok);
+  gtk_object_set_data (GTK_OBJECT (preferences), "tooltips", tooltips);
+
   return preferences;
 }
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-09-14 00:07+0200\n"
+"POT-Creation-Date: 2000-09-13 22:39-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -465,45 +465,45 @@ msgstr ""
 msgid "3D Hardware"
 msgstr ""
 
-#: src/interface.c:2373
+#: src/interface.c:2378
 msgid "Etcher Preferences"
 msgstr ""
 
-#: src/interface.c:2413
+#: src/interface.c:2418
 msgid "Display Window"
 msgstr ""
 
-#: src/interface.c:2429
+#: src/interface.c:2434
 msgid "Use software rendered display method"
 msgstr ""
 
-#: src/interface.c:2437
+#: src/interface.c:2442
 msgid "Use 3D accelerated display method"
 msgstr ""
 
-#: src/interface.c:2445
+#: src/interface.c:2450
 msgid ""
 "If you change your display preferences you will\n"
 "have to restart Etcher for them to take effect."
 msgstr ""
 
-#: src/interface.c:2453
+#: src/interface.c:2458
 msgid "Zoom Window"
 msgstr ""
 
-#: src/interface.c:2469
+#: src/interface.c:2474
 msgid ""
 "Use smooth zoom display\n"
 "(use pixmaps for zooming)"
 msgstr ""
 
-#: src/interface.c:2477
+#: src/interface.c:2482
 msgid ""
 "Zoom directly in the framebuffer\n"
 "(If you use Xinerama select this)"
 msgstr ""
 
-#: src/interface.c:2485
+#: src/interface.c:2490
 msgid ""
 "Xinerama users note, Xinerama has severe\n"
 "performance issues and Etcher brings out one\n"
@@ -512,23 +512,35 @@ msgid ""
 "instead of Xinerama for better X performance."
 msgstr ""
 
-#: src/interface.c:2500
+#: src/interface.c:2505
 msgid "Grid settings"
 msgstr ""
 
-#: src/interface.c:2516
+#: src/interface.c:2521
 msgid "Preview"
 msgstr ""
 
-#: src/interface.c:2540
-msgid "Select tint color ..."
+#: src/interface.c:2551
+msgid "The image used to tile in the background"
 msgstr ""
 
-#: src/interface.c:2560
+#: src/interface.c:2553
+msgid "Select Grid Image"
+msgstr ""
+
+#: src/interface.c:2559
+msgid "Select an Image file to tile as a background patterm"
+msgstr ""
+
+#: src/interface.c:2561
+msgid "Select Tint Color"
+msgstr ""
+
+#: src/interface.c:2581
 msgid "OK"
 msgstr ""
 
-#: src/interface.c:2568
+#: src/interface.c:2589
 msgid "Cancel"
 msgstr ""
 

@@ -35,15 +35,15 @@ guint current_idle = 0;
 gboolean no_splash = FALSE;
 char *load_file = NULL;
 
-static int new_evas = 1;
-static int new_fade = 0;
-static Evas_Object o_logo = NULL, o_info1 = NULL, o_info2, o_info3, o_info4;
-static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
-static Evas_Object o_select_rect, o_select_line1, o_select_line2, o_select_line3, o_select_line4;
-static Evas_Object o_select_abs1, o_select_rel1, o_select_adj1, o_select_abs2, o_select_rel2, o_select_adj2;
-static double backing_x, backing_y, backing_w, backing_h;
-static gint draft_mode = 1;
-static gint zoom_x, zoom_y, zoom_scale = 4;
+int new_evas = 1;
+int new_fade = 0;
+Evas_Object o_bg = NULL, o_logo = NULL, o_info1 = NULL, o_info2, o_info3, o_info4;
+Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
+Evas_Object o_select_rect, o_select_line1, o_select_line2, o_select_line3, o_select_line4;
+Evas_Object o_select_abs1, o_select_rel1, o_select_adj1, o_select_abs2, o_select_rel2, o_select_adj2;
+double backing_x, backing_y, backing_w, backing_h;
+gint draft_mode = 1;
+gint zoom_x, zoom_y, zoom_scale = 4;
 
 static Ebits_Object bits = NULL;
 static Ebits_Object_Bit_State selected_state = NULL;
@@ -1528,7 +1528,6 @@ on_view_expose_event                   (GtkWidget       *widget,
 {
    if (new_evas)
      {
-	Evas_Object o_bg;
 	int w, h;
 	
 	new_evas = 0;
@@ -1548,8 +1547,20 @@ on_view_expose_event                   (GtkWidget       *widget,
 	
 	evas_set_font_cache(view_evas, 1 * 1024 * 1024);
 	evas_set_image_cache(view_evas, 8 * 1024 * 1024);
-	o_bg = evas_add_image_from_file(view_evas,
-					  PACKAGE_DATA_DIR"/pixmaps/tile.png");
+	  {
+	     char *tile = NULL;
+	     int ok = 0;
+	     
+	     E_DB_STR_GET(etcher_config, "/grid/image", tile, ok);
+	     if (!tile)
+		o_bg = evas_add_image_from_file(view_evas,
+						PACKAGE_DATA_DIR"/pixmaps/tile.png");
+	     else
+	       {
+		  o_bg = evas_add_image_from_file(view_evas, tile);
+		  free(tile);
+	       }
+	  }
 	evas_callback_add(view_evas, o_bg, CALLBACK_MOUSE_DOWN, handle_bg_mouse_down, NULL);
 	evas_get_image_size(view_evas, o_bg, &w, &h);
 	evas_set_image_fill(view_evas, o_bg, 0, 0, w, h);
@@ -2251,7 +2262,7 @@ on_selectimage_clicked                 (GtkButton       *button,
 	  }
 	else
 	  {
-	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/pixmaps/");
 	  }
 	e_db_flush();
      }
