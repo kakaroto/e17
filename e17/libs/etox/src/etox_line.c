@@ -44,8 +44,8 @@ void etox_line_free(Etox_Line * line)
 		 * Free all of the bits on the line.
 		 */
 		bit = line->bits->data;
-		estyle_free(bit);
 		line->bits = evas_list_remove(line->bits, bit);
+		estyle_free(bit);
 	}
 
 	FREE(line);
@@ -277,15 +277,16 @@ void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 	/*
 	 * Move the bits from line2 to line1.
 	 */
-	for (l = line2->bits; l; l = l->next) {
-		bit = l->data;
+	while (line2->bits) {
+		bit = line2->bits->data;
+		line2->bits = evas_list_remove(line2->bits, bit);
 		line1->bits = evas_list_append(line1->bits, bit);
 	}
 
 	/*
 	 * Adjust the height, width and length of the merged line.
 	 */
-   line1->w += line2->w;
+	line1->w += line2->w;
 	if (line2->h > line1->h)
 		line1->h = line2->h;
 	line1->length += line2->length;

@@ -197,7 +197,7 @@ void etox_append_text(Etox * et, char *text)
 {
 	Evas_List lines, l, ll;
 	Etox_Line *end = NULL, *start;
-	int i;
+	int i, y;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
@@ -210,14 +210,15 @@ void etox_append_text(Etox * et, char *text)
 	for (l = et->lines; l; l = l->next)
 		end = l->data;
 	et->lines = evas_list_remove(et->lines, end);
+	y = end->y;
 
 	for (i = 0, ll = lines; ll; ll = ll->next, i++) {
 		if (i == 0) {
 			start = ll->data;
 
 			/*
-			 * Need to adjust the height and length of the line to reflect the
-			 * text that was added.
+			 * Need to adjust the height and length of the line to
+			 * reflect the text that was added.
 			 */
 			et->length -= start->length;
 			et->h -= start->h;
@@ -248,7 +249,7 @@ void etox_append_text(Etox * et, char *text)
 	/*
 	 * Layout the lines on the etox starting at the newly added text.
 	 */
-	_etox_layout(et, end->y);
+	_etox_layout(et, y);
 
 	/*
 	 * Destroy the temporary list of lines now that it is empty.
@@ -454,8 +455,8 @@ void etox_clear(Etox * et)
 
 	while (et->lines) {
 		line = et->lines->data;
-		etox_line_free(line);
 		et->lines = evas_list_remove(et->lines, line);
+		etox_line_free(line);
 	}
 }
 
