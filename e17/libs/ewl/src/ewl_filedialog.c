@@ -176,7 +176,7 @@ void ewl_filedialog_set_directory(Ewl_Filedialog *fd, char *path)
 void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data, 
 		void *user_data) 
 {
-	char *path;
+	char *path, *ptr = NULL;
 	char str[PATH_MAX + 50];
 	Ewl_Filedialog *fd = user_data; 
 
@@ -186,8 +186,22 @@ void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data,
 		path = ewl_fileselector_get_path (EWL_FILESELECTOR (fd->selector));
 
 		snprintf (str, sizeof (str), "Current dir: %s", path);
-                free(path);
+		free(path);
 		ewl_text_set_text (EWL_TEXT (fd->path_label), str);
+ 
+		path = ewl_fileselector_get_filename(EWL_FILESELECTOR(fd->selector));
+		if (!path) return;
+		ptr = strrchr(path, '/');
+		/* if we have a file */
+		if (ptr)
+		{
+		  ptr++;
+		  ewl_entry_set_text (EWL_ENTRY(fd->entry), ptr);
+		}
+		/* if we just changed dirs, then clear it out */
+		else
+		  ewl_entry_set_text (EWL_ENTRY(fd->entry), "");
+		free(path);
 	}
 	else {
 		ewl_filedialog_ok_cb(w, NULL, fd);
