@@ -229,7 +229,7 @@ show_usage(void)
            "                            low quality means high compression.\n"
            "  -m, --multidisp           For multiple heads, grab shot from each\n"
            "                            and join them together.\n"
-           "  -s, --select              interactively choose a window or rectnagle\n"
+           "  -s, --select              interactively choose a window or rectangle\n"
            "                            with the mouse\n"
            "  -t, --thumb NUM           generate thumbnail too. NUM is the percentage\n"
            "                            of the original size for the thumbnail to be,\n"
