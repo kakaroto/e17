@@ -6,15 +6,15 @@
 #include <Ebits_Private.h>
 */
 static void __ewl_image_init(Ewl_Image * i);
-static void __ewl_image_realize(Ewl_Widget * w, void *event_data,
+static void __ewl_image_realize(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_image_show(Ewl_Widget * w, void *event_data,
+static void __ewl_image_show(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_image_hide(Ewl_Widget * w, void *event_data,
+static void __ewl_image_hide(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_image_destroy(Ewl_Widget * w, void *event_data,
+static void __ewl_image_destroy(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_image_configure(Ewl_Widget * w, void *event_data,
+static void __ewl_image_configure(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 
 static Ewl_Image_Type __ewl_image_get_type(const char *i);
@@ -329,7 +329,7 @@ __ewl_image_init(Ewl_Image * i)
 }
 
 static void
-__ewl_image_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image *i;
 
@@ -367,7 +367,7 @@ __ewl_image_realize(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_image_show(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_image_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -378,19 +378,19 @@ __ewl_image_show(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_image_hide(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_image_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 }
 
 static void
-__ewl_image_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_image_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 }
 
 static void
-__ewl_image_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image *i;
 

@@ -69,6 +69,11 @@ AC_SUBST(ewd_libs)
 ewd_cflags=`ewd-config --cflags`
 ewd_libs=`ewd-config --libs`
 
+AC_SUBST(imlib2_cflags)
+AC_SUBST(imlib2_libs)
+imlib2_cflags=`imlib2-config --cflags`
+imlib2_libs=`imlib2-config --libs`
+
 AC_OUTPUT([
 Makefile
 ewl-config

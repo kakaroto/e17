@@ -1,5 +1,6 @@
 
 #include <Ewl.h>
+#include "getopt.h"
 
 void ewl_idle_render(void *data);
 
@@ -116,7 +117,7 @@ ewl_parse_option_array(int argc, char **argv)
 	char stropts[] =
 		"a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
-	struct option lopts[] = {
+	static struct option lopts[] = {
 		{"ewl_debug-level", 1, 0, '@'},
 		{"ewl_display", 1, 0, '$'},
 		{0, 0, 0, 0}
