@@ -11,7 +11,7 @@
 #define B_VAL(x)                  (((x) & 0x00ff0000) >> 16)
 #define A_VAL(x)                  (((x) & 0xff000000) >> 24)
  */
-#define RGBA_COMPOSE(r, g, b, a)  ((a) << 24) | ((b) << 16) | ((g) << 8) | (r)
+#define RGBA_COMPOSE(r, g, b, a)  ((a) << 24) | ((r) << 16) | ((g) << 8) | (b)
 #define INV_XAP                   (255 - xapoints[x])
 #define XAP                       (xapoints[x])
 #define INV_YAP                   (255 - yapoints[dyy + y])
