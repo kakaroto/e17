@@ -667,6 +667,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    EWin              **lst, **gwins;
    int                 gnum, num, i, j, screen_snap_dist, odx, ody;
    static char         last_res = 0;
+   static XineramaScreenInfo *screens = NULL;
+   static int          num_screens = 0;
+   int                 top_bound, bottom_bound, left_bound, right_bound;
 
    EDBUG(5, "SnapEwin");
    if (!ewin)
@@ -678,8 +681,53 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	*new_dy = dy;
 	EDBUG_RETURN_;
      }
+
+   left_bound = 0;
+   right_bound = root.w;
+   top_bound = 0;
+   bottom_bound = root.h;
+
    screen_snap_dist = mode.constrained ? (root.w + root.h)
       : mode.screen_snap_dist;
+
+#ifdef HAS_XINERAMA
+
+   if (xinerama_active)
+     {
+	if (!screens)
+	   screens = XineramaQueryScreens(disp, &num_screens);
+	for (i = 0; i < num_screens; i++)
+	  {
+	     if (ewin->x >= screens[i].x_org)
+	       {
+		  if (ewin->x <= (screens[i].width + screens[i].x_org))
+		    {
+		       if (ewin->y >= screens[i].y_org)
+			 {
+			    if (ewin->y <= (screens[i].height +
+					    screens[i].y_org))
+			      {
+				 left_bound = screens[i].x_org;
+				 right_bound =
+				    screens[i].x_org + screens[i].width;
+				 top_bound = screens[i].y_org;
+				 bottom_bound =
+				    screens[i].y_org + screens[i].height;
+				 screen_snap_dist =
+				    mode.constrained ? (screens[i].width +
+							screens[i].
+							height) : mode.
+				    screen_snap_dist;
+			      }
+			 }
+		    }
+	       }
+
+	  }
+     }
+
+#endif
+
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &gnum);
    if (gwins)
@@ -698,9 +746,10 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    ody = dy;
    if (dx < 0)
      {
-	if (IN_BELOW(ewin->x + dx, 0, screen_snap_dist) && (ewin->x >= 0))
+	if (IN_BELOW(ewin->x + dx, left_bound, screen_snap_dist)
+	    && (ewin->x >= left_bound))
 	  {
-	     dx = 0 - ewin->x;
+	     dx = left_bound - ewin->x;
 	  }
 	else if (lst)
 	  {
@@ -732,10 +781,10 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      }
    else if (dx > 0)
      {
-	if (IN_ABOVE(ewin->x + ewin->w + dx, root.w, screen_snap_dist)
-	    && ((ewin->x + ewin->w) <= root.w))
+	if (IN_ABOVE(ewin->x + ewin->w + dx, right_bound, screen_snap_dist)
+	    && ((ewin->x + ewin->w) <= right_bound))
 	  {
-	     dx = root.w - (ewin->x + ewin->w);
+	     dx = right_bound - (ewin->x + ewin->w);
 	  }
 	else if (lst)
 	  {
@@ -766,9 +815,10 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      }
    if (dy < 0)
      {
-	if (IN_BELOW(ewin->y + dy, 0, screen_snap_dist) && (ewin->y >= 0))
+	if (IN_BELOW(ewin->y + dy, top_bound, screen_snap_dist)
+	    && (ewin->y >= top_bound))
 	  {
-	     dy = 0 - ewin->y;
+	     dy = top_bound - ewin->y;
 	  }
 	else if (lst)
 	  {
@@ -800,10 +850,10 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      }
    else if (dy > 0)
      {
-	if (IN_ABOVE(ewin->y + ewin->h + dy, root.h, screen_snap_dist)
-	    && ((ewin->y + ewin->h) <= root.h))
+	if (IN_ABOVE(ewin->y + ewin->h + dy, bottom_bound, screen_snap_dist)
+	    && ((ewin->y + ewin->h) <= bottom_bound))
 	  {
-	     dy = root.h - (ewin->y + ewin->h);
+	     dy = bottom_bound - (ewin->y + ewin->h);
 	  }
 	else if (lst)
 	  {
@@ -1004,25 +1054,21 @@ ArrangeEwin(EWin * ewin)
 	     screens = XineramaQueryScreens(disp, &num);
 	     for (i = 0; i < num; i++)
 	       {
-		  for (i = 0; i < num; i++)
+		  if (pointer_x >= screens[i].x_org)
 		    {
-		       if (pointer_x >= screens[i].x_org)
+		       if (pointer_x <= (screens[i].width + screens[i].x_org))
 			 {
-			    if (pointer_x <=
-				(screens[i].width + screens[i].x_org))
+			    if (pointer_y >= screens[i].y_org)
 			      {
-				 if (pointer_y >= screens[i].y_org)
+				 if (pointer_y <= (screens[i].height +
+						   screens[i].y_org))
 				   {
-				      if (pointer_y <= (screens[i].height +
-							screens[i].y_org))
-					{
-					   ewin->x =
-					      ((screens[i].width - ewin->w) /
-					       2) + screens[i].x_org;
-					   ewin->y =
-					      ((screens[i].height - ewin->h) /
-					       2) + screens[i].y_org;
-					}
+				      ewin->x =
+					 ((screens[i].width - ewin->w) /
+					  2) + screens[i].x_org;
+				      ewin->y =
+					 ((screens[i].height - ewin->h) /
+					  2) + screens[i].y_org;
 				   }
 			      }
 			 }

@@ -4475,3 +4475,10 @@ Sat Mar 25 20:58:49 PST 2000
 (Mandrake)
 
 oops, debugging printfs
+
+-------------------------------------------------------------------------------
+
+Sun Mar 26 13:42:23 PST 2000
+(Mandrake)
+
+fixed edge resistance between heads when you're using xinerama.
