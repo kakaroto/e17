@@ -629,3 +629,13 @@ Working towards cool new E-ScreenShoot features.
 
 They're not there yet though :)
 
+-------------------------------------------------------------------------------
+
+Thu Nov 18 18:42:45 GMT 1999
+(gilbertt)
+
+Changes to cloak.[ch]
+
+If those functions are not going to be static any more, declare them in
+cloak.h, so other epplets can use them
+

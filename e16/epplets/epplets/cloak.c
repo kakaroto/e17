@@ -15,17 +15,7 @@ int rr, gg, bb;
 extern RGB_buf buf;
 int load_val = 35;
 
-void aa_line (int x1, int y1, int x2, int y2, unsigned char b,
-		     unsigned char rr, unsigned char gg, unsigned char bb);
-void set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
-			   unsigned char ggg, unsigned char bbb);
 /* static void set_pixel (int x, int y, unsigned char c); */
-void aa_pixel (double wx, double wy, unsigned char c,
-		      unsigned char rrr, unsigned char ggg,
-		      unsigned char bbb);
-void color_buf (unsigned char rr, unsigned char gg, unsigned char bb);
-void fade_buf (int percent);
-void scroll_buf (void);
 static void
 get_warpedcolor (unsigned char *rrr, unsigned char *ggg, unsigned char *bbb);
 
