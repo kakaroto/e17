@@ -10,6 +10,7 @@ animation no longer occurs when iconifying from the pager.
 minor bug with setting backgrounds via IPC is fixed
 KDE menu generation fixes
 fix to e/dox/dox.h for freetype 1.3
+#-style comments in .menu files
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
