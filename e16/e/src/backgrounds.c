@@ -2453,6 +2453,7 @@ BackgroundSet1(const char *name, const char *params)
      {
 	IpcPrintf("Error: unknown background value type '%s'.", type);
      }
+   autosave();
 }
 
 static void
@@ -2572,7 +2573,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	     bg = BrackgroundCreateFromImage(prm, p, NULL, 0);
 	  }
      }
-   else if (!strncmp(cmd, "xset", 2))
+   else if (!strncmp(cmd, "set", 2))
      {
 	BackgroundSet1(prm, p);
      }
@@ -2616,6 +2617,36 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      {
 	BackgroundSet2(prm, p);
      }
+   else
+     {
+	/* Compatibility with pre- 0.16.8 clients */
+	BackgroundSet1(cmd, atword(params, 2));
+     }
+}
+
+static void
+IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX], w[FILEPATH_LEN_MAX];
+   Background         *bg;
+   int                 i, wd;
+
+   word(params, 1, param1);
+
+   bg = FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   if (!bg)
+      return;
+
+   for (wd = 2;; wd++)
+     {
+	w[0] = 0;
+	word(params, wd++, w);
+	if (!w[0])
+	   break;
+	i = atoi(w);
+	DesktopSetBg(i, bg, 1);
+     }
+   autosave();
 }
 
 #if 0				/* I doubt this is used */
@@ -2691,6 +2722,9 @@ IpcItem             BackgroundsIpcArray[] = {
     "  background use <name> <desks...> Switch to background <name>\n"
     "  background xget <name>           Special show background parameters\n"
     "  background xset <name> ...       Special set background parameters\n"}
+   ,
+   {
+    IPC_BackgroundUse, "use_bg", NULL, "Deprecated - do not use", NULL}
    ,
 #if 0				/* I doubt this is used */
    {IPC_BackgroundColormodifierSet, "set_bg_colmod", NULL, "TBD", NULL}

@@ -1013,13 +1013,13 @@ IPC_Version(const char *params __UNUSED__, Client * c __UNUSED__)
 	     e_wm_version, E_CHECKOUT_DATE);
 }
 
+#if !USE_LIBC_MALLOC
 static void
 IPC_MemDebug(const char *params __UNUSED__, Client * c __UNUSED__)
 {
-#if !USE_LIBC_MALLOC
    EDisplayMemUse();
-#endif
 }
+#endif
 
 static void
 IPC_Hints(const char *params, Client * c __UNUSED__)
@@ -1072,7 +1072,14 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
 	l = 0;
 	sscanf(p, "%1000s %n", param, &l);
 	p += l;
-	if (!strncmp(param, "allow", 2))
+
+	if (!strcmp(param, "?"))
+	  {
+	     IpcPrintf("Pointer grab on=%d win=%#lx\n",
+		       Mode.grabs.pointer_grab_active,
+		       Mode.grabs.pointer_grab_window);
+	  }
+	else if (!strncmp(param, "allow", 2))
 	  {
 	     l = 0;
 	     sscanf(p, "%d", &l);
@@ -1368,18 +1375,6 @@ IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_MiscInfo(const char *params __UNUSED__, Client * c __UNUSED__)
-{
-   IpcPrintf("stuff:\n");
-
-   if (Mode.focuswin)
-      IpcPrintf("Focus - win=%#lx\n", Mode.focuswin->client.win);
-
-   IpcPrintf("Pointer grab on=%d win=%#lx\n",
-	     Mode.grabs.pointer_grab_active, Mode.grabs.pointer_grab_window);
-}
-
-static void
 IPC_Reparent(const char *params, Client * c __UNUSED__)
 {
    char                param1[FILEPATH_LEN_MAX];
@@ -1415,21 +1410,36 @@ IPC_Slideout(const char *params, Client * c __UNUSED__)
      }
 }
 
-#if 0
-static int
-doWarpPointer(EWin * edummy __UNUSED__, const char *params)
+static void
+IPC_Warp(const char *params, Client * c __UNUSED__)
 {
-   int                 dx, dy;
+   int                 x, y;
 
-   if (params)
+   if (!params)
+      return;
+
+   x = y = 0;
+   if (!strcmp(params, "?"))
      {
-	sscanf(params, "%i %i", &dx, &dy);
-	XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
+	PointerAt(&x, &y);
+	IpcPrintf("Pointer location: %d %d\n", x, y);
      }
-
-   return 0;
+   else if (!strncmp(params, "abs", 3))
+     {
+	sscanf(params, "%*s %i %i", &x, &y);
+	XWarpPointer(disp, None, VRoot.win, 0, 0, 0, 0, x, y);
+     }
+   else if (!strncmp(params, "rel", 3))
+     {
+	sscanf(params, "%*s %i %i", &x, &y);
+	XWarpPointer(disp, None, None, 0, 0, 0, 0, x, y);
+     }
+   else
+     {
+	sscanf(params, "%i %i", &x, &y);
+	XWarpPointer(disp, None, None, 0, 0, 0, 0, x, y);
+     }
 }
-#endif
 
 /* the IPC Array */
 
@@ -1597,6 +1607,7 @@ IpcItem             IPCArray[] = {
     "Retrieve some general information",
     "use \"general_info <info>\" to retrieve information\n"
     "available info is: screen_size\n"},
+#if !USE_LIBC_MALLOC
    {
     IPC_MemDebug,
     "dump_mem_debug", NULL,
@@ -1608,6 +1619,7 @@ IpcItem             IPCArray[] = {
     "very easily with all pointers allocated stamped with a time, call\n"
     "tree that led to that allocation, file and line, "
     "and the chunk size.\n"},
+#endif
    {
     IPC_Xinerama,
     "xinerama", NULL,
@@ -1622,12 +1634,12 @@ IpcItem             IPCArray[] = {
     IPC_Hints,
     "hints", NULL,
     "Set hint options",
-    "usage:\n" "  hints xroot <normal/root>\n"},
+    "  hints xroot <normal/root>\n"},
    {
     IPC_Debug,
     "debug", NULL,
     "Set debug options",
-    "usage:\n" "  debug events <EvNo>:<EvNo>...\n"},
+    "  debug events <EvNo>:<EvNo>...\n"},
    {
     IPC_Set, "set", NULL, "Set configuration parameter", NULL},
    {
@@ -1639,12 +1651,10 @@ IpcItem             IPCArray[] = {
    {
     IPC_EwinInfo2, "win_info", "wi", "Show client window info", NULL},
    {
-    IPC_MiscInfo, "dump_info", NULL, "TBD", NULL},
-   {
     IPC_Reparent,
     "reparent", "rep",
     "Reparent window",
-    "usage:\n" "  reparent <windowid> <new parent>\n"},
+    "  reparent <windowid> <new parent>\n"},
    {
     IPC_Slideout, "slideout", NULL, "Show slideout", NULL},
    {
@@ -1654,6 +1664,14 @@ IpcItem             IPCArray[] = {
     "  remember <windowid> <parameter>...\n"
     "For compatibility with epplets only. In stead use\n"
     "  wop <windowid> snap <parameter>...\n"},
+   {
+    IPC_Warp,
+    "warp", NULL,
+    "Warp/query pointer",
+    "  warp ?               Get pointer position\n"
+    "  warp abs <x> <y>     Set pointer position\n"
+    "  warp rel <x> <y>     Move pointer relative to current position\n"
+    "  warp <x> <y>         Same as \"warp rel\"\n"},
 };
 
 static int          ipc_item_count = 0;
@@ -1743,7 +1761,6 @@ ipccmp(void *p1, void *p2)
 static void
 IPC_Help(const char *params, Client * c __UNUSED__)
 {
-   char                buf[FILEPATH_LEN_MAX];
    int                 i, num;
    const IpcItem     **lst, *ipc;
    const char         *nick;
@@ -1810,13 +1827,10 @@ IPC_Help(const char *params, Client * c __UNUSED__)
 		 (ipc->nick == NULL || strcmp(params, ipc->nick)))
 		continue;
 
-	     if (ipc->nick)
-		sprintf(buf, " (%s)", ipc->nick);
-	     else
-		buf[0] = '\0';
-
-	     IpcPrintf(" : %s%s\n--------------------------------\n%s\n",
-		       ipc->name, buf, ipc->help_text);
+	     nick = (ipc->nick) ? ipc->nick : "";
+	     IpcPrintf("----------------------------------------\n");
+	     IpcPrintf("%18s %4s: %s\n", ipc->name, nick, ipc->help_text);
+	     IpcPrintf("----------------------------------------\n");
 	     if (ipc->extended_help_text)
 		IpcPrintf(ipc->extended_help_text);
 	  }
