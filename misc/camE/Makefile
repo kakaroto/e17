@@ -7,7 +7,7 @@ bindir=$(ROOT)${exec_prefix}/bin
 mandir=$(ROOT)${prefix}/man
 
 CC=gcc
-CFLAGS=-O3 -g -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE `giblib-config --cflags` -lcurl
+CFLAGS=-O3 -g -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE `giblib-config --cflags`
 
 INSTALL=/usr/bin/install -c
 INSTALL_PROGRAM=${INSTALL}
@@ -23,7 +23,7 @@ OBJS=webcam.o parseconfig.o
 all build: $(PROGS)
 
 camE: $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS) `giblib-config --libs`
+	$(CC) $(CFLAGS) -o $@ $(OBJS) `giblib-config --libs` -lcurl
 
 install: all
 	$(INSTALL_DIR) $(bindir)

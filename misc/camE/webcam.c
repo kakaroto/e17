@@ -53,6 +53,7 @@ char *temp_file = "/tmp/webcam.jpg";
 pid_t childpid = 0;
 int ftp_passive = 1;
 int ftp_do = 1;
+int ftp_upload_every = 1; /* default to upload every shot */
 int ftp_keepalive = 1;
 int ftp_delete_first = 0;
 char *scp_target = NULL;
@@ -1115,8 +1116,11 @@ do_upload(char *file)
 {
   struct stat st;
   int upload_successful = 1;
+  static int shot_counter = 0;
 
-  if (ftp_do) {
+  shot_counter++;
+
+  if (ftp_do && (shot_counter >= ftp_upload_every)) {
     if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
         || !upload_blockfile) {
       log("*** uploading via ftp\n");
@@ -1128,7 +1132,8 @@ do_upload(char *file)
         log("post upload action done\n");
       }
     }
-  } else if (scp_target) {
+    shot_counter = 0;
+  } else if (scp_target && (shot_counter >= ftp_upload_every)) {
     char target_buf[2048];
     char cmd_buf[4096];
     char *scp_args[] = { "scp", "-BCq", NULL, NULL, NULL };
@@ -1159,6 +1164,7 @@ do_upload(char *file)
         }
       }
     }
+    shot_counter = 0;
   }
   return upload_successful;
 }
@@ -1218,6 +1224,8 @@ main(int argc,
     cfg_parse_file(config_file);
   } else {
     sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
+    memset(filename, '\0', sizeof(filename));
+    snprintf(filename, sizeof(filename)-1, "%s/%s", getenv("HOME"), ".camErc");
     cfg_parse_file(filename);
   }
 
@@ -1239,6 +1247,8 @@ main(int argc,
     ftp_debug = i;
   if (-1 != (i = cfg_get_int("ftp", "do")))
     ftp_do = i;
+  if (-1 != (i = cfg_get_int("ftp", "upload_every")))
+    ftp_upload_every = i;
   if (-1 != (i = cfg_get_int("ftp", "keepalive")))
     ftp_keepalive = i;
   if (-1 != (i = cfg_get_int("ftp", "timeout")))

@@ -4,6 +4,7 @@ dir  = public_html/images
 file = webcam.jpg
 tmp  = uploading.jpg
 do = 0
+upload_every = 1
 
 [scp]
 target = user@host

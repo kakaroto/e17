@@ -23,9 +23,15 @@ do = 1
 # Some servers require us to explicitly delete the previous image
 # In that case, enable this option
 delete_first = 0
+# Determines how many shots are taken before an image is uploaded.
+# (1 == every picture is uploaded, 10 would be every 10th image)
+# (Defaults to 1 if not present)
+upload_every = 1
 
 # you can set ftp->do to 0 above and use scp instead - you still need
 # the dir, file and tmp settings in the ftp section for this to work.
+# scp also honors the upload_every setting from the ftp section, and
+# will also default to a value of 1 if not present.
 
 [scp]
 # target = user@host

@@ -23,3 +23,6 @@ Birger Nissen <birger@ekenis.de>
 
 Abel Muiño <abel.muinho@mundo-r.com>
       optionally delete before move when uploading via FTP
+
+Nathan Poznick <poznick@conwaycorp.net>
+      upload_every option
