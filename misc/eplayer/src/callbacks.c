@@ -112,7 +112,7 @@ void cb_volume_raise(ePlayer *player, Evas_Object *obj,
 		return;
 	
 	player->output->volume_set(left + 5, right + 5);
-	refresh_volume(player);
+	ui_refresh_volume(player);
 }
 
 void cb_volume_lower(ePlayer *player, Evas_Object *obj,
@@ -125,7 +125,7 @@ void cb_volume_lower(ePlayer *player, Evas_Object *obj,
 		return;
 	
 	player->output->volume_set(left - 5, right - 5);
-	refresh_volume(player);
+	ui_refresh_volume(player);
 }
 
 void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
@@ -235,5 +235,5 @@ void cb_switch_group(void *udata, Evas_Object *obj,
 	ePlayer *player = udata;
 	
 	evas_object_del(player->gui.edje);
-	setup_edje(player, src);
+	ui_init_edje(player, src);
 }

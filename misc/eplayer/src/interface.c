@@ -1,4 +1,5 @@
 #include <config.h>
+#include <assert.h>
 #include "eplayer.h"
 #include <Esmart/container.h>
 #include <Edje.h>
@@ -38,7 +39,7 @@ static void cb_ee_resize(Ecore_Evas *ee) {
 	evas_object_resize(edje, (Evas_Coord) w, (Evas_Coord) h);
 }
 
-int setup_gui(ePlayer *player) {
+int ui_init(ePlayer *player) {
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
 	ecore_init();
@@ -78,15 +79,29 @@ int setup_gui(ePlayer *player) {
 	player->gui.evas = ecore_evas_get(player->gui.ee);
 	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
 
-	if (!setup_edje(player, "eplayer"))
+	if (!ui_init_edje(player, "eplayer"))
 		return 0;
-
-	setup_playlist(player);
 
 	return 1;
 }
 
-int setup_edje(ePlayer *player, const char *name) {
+void ui_fill_track_info(ePlayer *player) {
+	PlayListItem *pli;
+
+	if (!(pli = playlist_current_item_get(player->playlist)))
+		return;
+
+	track_update_time(player);
+
+	edje_object_part_text_set(player->gui.edje, "song_name",
+	                          pli->comment[COMMENT_ID_TITLE]);
+	edje_object_part_text_set(player->gui.edje, "artist_name",
+	                          pli->comment[COMMENT_ID_ARTIST]);
+	edje_object_part_text_set(player->gui.edje, "album_name",
+	                          pli->comment[COMMENT_ID_ALBUM]);
+}
+
+int ui_init_edje(ePlayer *player, const char *name) {
 	char eet[PATH_MAX + 1];
 	double edje_w = 0, edje_h = 0;
 
@@ -117,6 +132,11 @@ int setup_edje(ePlayer *player, const char *name) {
 	
 	/* resize to the min size */
 	ecore_evas_resize(player->gui.ee, (int) edje_w, (int) edje_h);
+	
+	setup_playlist(player);
+	ui_fill_playlist(player);
+	ui_fill_track_info(player);
+	ui_refresh_volume(player);
 	
 	/*** Edje Callbacks ***************************/
 	edje_object_signal_callback_add(player->gui.edje,
@@ -179,8 +199,7 @@ static void setup_playlist(ePlayer *player) {
 	                         player->gui.playlist);
 }
 
-void show_playlist_item(PlayListItem *pli, void *data) {
-	ePlayer *player = data;
+static void show_playlist_item(ePlayer *player, PlayListItem *pli) {
 	Evas_Object *o;
 	char len[32], eet[PATH_MAX + 1];
 	double w = 0, h = 0;
@@ -225,7 +244,17 @@ void show_playlist_item(PlayListItem *pli, void *data) {
 	                                cb_playlist_item_selected, player);
 }
 
-int refresh_volume(void *udata) {
+void ui_fill_playlist(ePlayer *player) {
+	Evas_List *l;
+
+	assert (player);
+	assert (player->playlist);
+
+	for (l = player->playlist->items; l; l = l->next)
+		show_playlist_item(player, l->data);
+}
+
+int ui_refresh_volume(void *udata) {
 	ePlayer *player = udata;
 	char buf[8];
 	int left = 0, right = 0;
@@ -239,7 +268,7 @@ int refresh_volume(void *udata) {
 	return 1;
 }
 
-int refresh_time(ePlayer *player, int time) {
+int ui_refresh_time(ePlayer *player, int time) {
 	char buf[9], *fmt[2];
 	
 	fmt[TIME_DISPLAY_ELAPSED] = "%i:%02i";

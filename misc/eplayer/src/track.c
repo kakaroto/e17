@@ -45,7 +45,7 @@ int track_update_time(void *udata) {
 		return 1;
 
 	old_time = cur_time;
-	refresh_time(player, cur_time);
+	ui_refresh_time(player, cur_time);
 
 	return 1;
 }
@@ -75,13 +75,7 @@ void track_open(ePlayer *player) {
 	pli->current_pos = 0;
 	pli->plugin->open(pli->file);
 
-	edje_object_part_text_set(player->gui.edje, "song_name",
-	                          pli->comment[COMMENT_ID_TITLE]);
-	edje_object_part_text_set(player->gui.edje, "artist_name",
-	                          pli->comment[COMMENT_ID_ARTIST]);
-	edje_object_part_text_set(player->gui.edje, "album_name",
-	                          pli->comment[COMMENT_ID_ALBUM]);
-	edje_object_part_text_set(player->gui.edje, "time_text", "0:00");
+	ui_fill_track_info(player);
 
 	if (!player->output->configure(pli->channels, pli->sample_rate, 16)) {
 		debug(DEBUG_LEVEL_CRITICAL, "Cannot configure output plugin\n");

@@ -98,7 +98,7 @@ static void eplayer_free(ePlayer *player) {
 	free(player);
 }
 
-static ePlayer *eplayer_new() {
+static ePlayer *eplayer_new(const char **args) {
 	ePlayer *player;
 	char cfg_file[PATH_MAX + 1];
 
@@ -106,6 +106,8 @@ static ePlayer *eplayer_new() {
 		return NULL;
 
 	memset(player, 0, sizeof(ePlayer));
+
+	player->args = args;
 
 	/* load config */
 	config_init(&player->cfg);
@@ -126,9 +128,6 @@ static ePlayer *eplayer_new() {
 	player->input_plugins = load_input_plugins();
 
 	player->playlist = playlist_new(player->input_plugins);
-
-	playlist_item_add_cb_set(player->playlist,
-	                         show_playlist_item, player);
 
 	/* load the output plugin */
 	player->output = plugin_new(player->cfg.output_plugin,
@@ -211,10 +210,13 @@ static int load_playlist(void *data) {
 	debug(DEBUG_LEVEL_INFO, "Got %i playlist entries\n",
 	      player->playlist->num);
 
+	/* update the ui */
+	ui_fill_playlist(player);
+
 	if (player->playlist->num)
 		track_open(player);
-		
-	refresh_time(player, 0);
+	
+	ui_refresh_time(player, 0);
 
 	return 0; /* stop timer */
 }
@@ -228,19 +230,18 @@ int main(int argc, const char **argv) {
 		return 1;
 	}
 	
-	if (!(player = eplayer_new()))
+	if (!(player = eplayer_new(argv)))
 		return 1;
 	
-	if (!setup_gui(player)) {
+	if (!ui_init(player)) {
 		eplayer_free(player);
 		return 1;
 	}	
 	
-	player->args = argv;
 	ecore_timer_add(1, load_playlist, player);
 
-	refresh_volume(player);
-	ecore_timer_add(1.5, refresh_volume, player);
+	ui_refresh_volume(player);
+	ecore_timer_add(1.5, ui_refresh_volume, player);
 
 	debug(DEBUG_LEVEL_INFO, "Starting main loop\n");
 
