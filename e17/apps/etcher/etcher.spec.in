@@ -13,7 +13,7 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/etcher-%{ver}.tar.gz
 BuildRoot: /var/tmp/etcher-root
 Packager: Term <kempler@utdallas.edu>
 URL: http://www.enlightenment.org/
-Requires: evas >= 1.0.0
+Requires: evas >= 0.0.1
 Requires: edb >= 1.0.0
 Requires: imlib2 >= 1.0.0
 
