@@ -10,11 +10,10 @@
 /* TODO List:
  *
  * immediate fixes needed:
- * * hook up event callbacks for Engage_App_Icon s
  * * store ignore list in config
- * * fix mouse overs etc to reach all the sub icons
+ * * fix mouse overs etc to reach all the sub icons (currently missine ends)
  *
- * * pick up iconified apps and running apps on startup
+ * * pick up apps on enable (startup OK, disable then enable not)
  * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
  * * bounce icons on click ( following e_app exec hints? )
  *
@@ -22,10 +21,7 @@
  * 
  * * Fix menu
  *
- * * icon labels & label tooltips supported for the name of the app
- * * use part list to know how many icons & where to put in the overlay of an icon
  * * description bubbles/tooltips for icons
- * * support dynamic iconsize change on the fly
  * * app subdirs - need to somehow handle these...
  * * use overlay object and repeat events for doing auto hide/show
  * * emit signals on hide/show due to autohide/show
@@ -524,11 +520,9 @@ _engage_bar_new(Engage *e, E_Container *con)
 	 _engage_cb_event_border_add, eb);
    eb->remove_handler = ecore_event_handler_add(E_EVENT_BORDER_REMOVE,
 	 _engage_cb_event_border_remove, eb);
-   /* FIXME - these are not really iconify events, we need them to be
-    * added to E before we can hook in "properly" */
-   eb->iconify_handler = ecore_event_handler_add(E_EVENT_BORDER_HIDE,
+   eb->iconify_handler = ecore_event_handler_add(E_EVENT_BORDER_ICONIFY,
 	 _engage_cb_event_border_iconify, eb);
-   eb->uniconify_handler = ecore_event_handler_add(E_EVENT_BORDER_SHOW,
+   eb->uniconify_handler = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY,
 	 _engage_cb_event_border_uniconify, eb);
    return eb;
 }
@@ -858,6 +852,12 @@ _engage_cb_event_border_add(void *data, int type, void *event)
    if (ic)
      {
 	ai = _engage_app_icon_new(ic, e->border, 0);
+	if (e->border->iconic)
+	  {
+	     ai->min = 1;
+	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
+	     edje_object_signal_emit(ai->bg_object, "iconify", "");
+	  }				       
      }
 }
 
@@ -918,9 +918,6 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    if (e->border->container != eb->con)
      return;
 
-   /* FIXME we can remove this when this is a real iconify event */
-   if (!e->border->iconic)
-     return;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
