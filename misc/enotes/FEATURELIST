@@ -14,4 +14,16 @@
 
 	Features in E-Notes:
 
-A damn lot, lemme formulate a list. :)
+Note: Most of these features are optional.
+
+Automatic Saving and Loading of Notes.
+Saving and Loading of notes (individually).
+GUI Settings window.
+IPC Support (commands and what-not).
+GUI and Console error, warning and notice messages.
+Global and Local Configurations.
+Full usage support.
+Control Centre to manage notes.
+Introduction Note.
+Full theming by way of edje.
+Draggable windows (with or without titlebar).
