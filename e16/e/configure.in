@@ -177,6 +177,17 @@ AC_SUBST(XVM_LIBS)
 AC_SUBST(XINERAMA_LIBS)
 AC_SUBST(XKB)
 
+AC_ARG_WITH(readline,
+  [  --with-readline         compile eesh with GNU readline support [default=no]],, with_readline=no)
+if test "x$with_readline" = "xyes"; then
+  AC_CHECK_LIB(readline, readline, RL_LIBS="-lreadline -ltermcap",
+   AC_ERROR(readline not found - don't use --with-readline),
+      -ltermcap
+  )
+  AC_SUBST(RL_LIBS)
+  AC_DEFINE(USE_READLINE, 1, [readline support])
+fi
+
 AC_CHECK_LIB(Fridge,mass_quantities_of_bass_ale)
 AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale, , [
 echo "Warning: No ales were found in your refrigerator."

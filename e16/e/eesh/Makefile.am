@@ -12,7 +12,7 @@ eesh_SOURCES = \
 	file.c                  \
 	alert.c
 
-LDADD = $(X_PRE_LIBS) $(X_LIBS) -lX11 $(X_EXTRA_LIBS) -lm
+LDADD = $(X_PRE_LIBS) $(X_LIBS) -lX11 $(X_EXTRA_LIBS) $(RL_LIBS) -lm
 
 INCLUDES = $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl
 
