@@ -318,7 +318,7 @@ int ewl_ev_mouse_up(void *data, int type, void *_ev)
 	 */
 	temp = last_selected;
 	while (temp) {
-		if (!(last_selected->state & EWL_STATE_DISABLED)) {
+		if (!(temp->state & EWL_STATE_DISABLED)) {
 			temp->state &= ~EWL_STATE_PRESSED;
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_UP, ev);

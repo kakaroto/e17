@@ -76,18 +76,11 @@ void ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
 int
 main(int argc, char **argv)
 {
-	/*
-	Ewd_List *avail;
-	*/
 
 	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
 	memset(&confirm, 0, sizeof(struct _confirm_win));
 
 	ewl_init(argc, argv);
-
-	/*
-	avail = ewl_fx_get_available();
-	*/
 
 	ewl_config_read_configs();
 
@@ -111,8 +104,6 @@ main(int argc, char **argv)
 
 	e_conf.button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(e_conf.button_hbox), 5);
-	ewl_object_set_padding(EWL_OBJECT(e_conf.button_hbox), 0, 0, 0, 10);
-	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_hbox), 415, 17);
 	ewl_object_set_alignment(EWL_OBJECT(e_conf.button_hbox),
 				 EWL_ALIGNMENT_CENTER);
 	ewl_object_set_fill_policy(EWL_OBJECT(e_conf.button_hbox),
@@ -122,7 +113,6 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.button_hbox);
 
 	e_conf.button_save = ewl_button_new("Save");
-	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_save), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
 				   e_conf.button_save);
 	ewl_callback_append(e_conf.button_save, EWL_CALLBACK_CLICKED,
@@ -130,8 +120,6 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.button_save);
 
 	e_conf.button_restore = ewl_button_new("Restore");
-	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_restore), 100,
-				   17);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
 				   e_conf.button_restore);
 	ewl_callback_append(e_conf.button_restore, EWL_CALLBACK_CLICKED,
@@ -139,8 +127,6 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.button_restore);
 
 	e_conf.button_defaults = ewl_button_new("Defaults");
-	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_defaults), 100,
-				   17);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
 				   e_conf.button_defaults);
 	ewl_callback_append(e_conf.button_defaults, EWL_CALLBACK_CLICKED,
@@ -148,7 +134,6 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.button_defaults);
 
 	e_conf.button_exit = ewl_button_new("Exit");
-	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_exit), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
 				   e_conf.button_exit);
 	ewl_callback_append(e_conf.button_exit, EWL_CALLBACK_CLICKED,
@@ -158,12 +143,10 @@ main(int argc, char **argv)
 	/* Evas Page */
 
 	e_conf.page_evas_label = ewl_text_new("Evas Settings");
-	ewl_text_set_font_size(EWL_TEXT(e_conf.page_evas_label), 8);
 	ewl_widget_show(e_conf.page_evas_label);
 
 	e_conf.page_evas = ewl_vbox_new();
 	ewl_box_set_spacing(EWL_BOX(e_conf.page_evas), 5);
-	ewl_object_set_padding(EWL_OBJECT(e_conf.page_evas), 10, 5, 5, 0);
 	ewl_widget_show(e_conf.page_evas);
 
 	e_conf.render_method_label = ewl_text_new("Render Method");
@@ -223,16 +206,14 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.image_cache);
 
 	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
-		e_conf.page_evas, e_conf.page_evas_label);
+			e_conf.page_evas_label, e_conf.page_evas);
 
 	/* Debug Page */
 
 	e_conf.page_debug_label = ewl_text_new("Debug Settings");
-	ewl_text_set_font_size(EWL_TEXT(e_conf.page_debug_label), 8);
 	ewl_widget_show(e_conf.page_debug_label);
 
 	e_conf.page_debug = ewl_vbox_new();
-	ewl_object_set_padding(EWL_OBJECT(e_conf.page_debug), 10, 5, 5, 0);
 	ewl_box_set_spacing(EWL_BOX(e_conf.page_debug), 5);
 	ewl_widget_show(e_conf.page_debug);
 
@@ -256,15 +237,13 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.debug_level);
 
 	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
-			e_conf.page_debug, e_conf.page_debug_label);
+			e_conf.page_debug_label, e_conf.page_debug);
 
 	/* Theme Page */
 	e_conf.page_theme_label = ewl_text_new("Theme Settings");
-	ewl_text_set_font_size(EWL_TEXT(e_conf.page_theme_label), 8);
 	ewl_widget_show(e_conf.page_theme_label);
 
 	e_conf.page_theme = ewl_vbox_new();
-	ewl_object_set_padding(EWL_OBJECT(e_conf.page_theme), 10, 5, 5, 0);
 	ewl_box_set_spacing(EWL_BOX(e_conf.page_theme), 5);
 	ewl_widget_show(e_conf.page_theme);
 
@@ -285,7 +264,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.theme_cache);
 
 	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
-			e_conf.page_theme, e_conf.page_theme_label);
+			e_conf.page_theme_label, e_conf.page_theme);
 
 	ewl_set_settings(&init_settings);
 
@@ -547,9 +526,8 @@ ewl_config_create_confirm_dialog(void)
 				   confirm.main_vbox);
 	ewl_widget_show(confirm.main_vbox);
 
-	confirm.text = ewl_text_new("You have made modifications, what would you "
-			  "like to do ?");
-	ewl_object_set_padding(EWL_OBJECT(confirm.text), 0, 0, 20, 20);
+	confirm.text = ewl_text_new("You have made modifications."
+			"What would you like to do?");
 	ewl_object_set_alignment(EWL_OBJECT(confirm.text),
 				 EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
@@ -558,8 +536,6 @@ ewl_config_create_confirm_dialog(void)
 
 	confirm.button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(confirm.button_hbox), 5);
-	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_hbox), 340, 17);
-	ewl_object_set_padding(EWL_OBJECT(confirm.button_hbox), 0, 0, 20, 20);
 	ewl_object_set_alignment(EWL_OBJECT(confirm.button_hbox),
 				 EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
@@ -567,7 +543,6 @@ ewl_config_create_confirm_dialog(void)
 	ewl_widget_show(confirm.button_hbox);
 
 	confirm.button_save = ewl_button_new("Save & Exit");
-	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_save), 110, 17);
 	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
 				   confirm.button_save);
 	ewl_callback_append(confirm.button_save, EWL_CALLBACK_CLICKED,
@@ -577,7 +552,6 @@ ewl_config_create_confirm_dialog(void)
 	ewl_widget_show(confirm.button_save);
 
 	confirm.button_exit = ewl_button_new("Exit without saving");
-	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_exit), 110, 17);
 	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
 				   confirm.button_exit);
 	ewl_callback_append(confirm.button_exit, EWL_CALLBACK_CLICKED,
@@ -585,8 +559,6 @@ ewl_config_create_confirm_dialog(void)
 	ewl_widget_show(confirm.button_exit);
 
 	confirm.button_cancel = ewl_button_new("Cancel");
-	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_cancel), 110,
-				   17);
 	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
 				   confirm.button_cancel);
 	ewl_callback_append(confirm.button_cancel, EWL_CALLBACK_CLICKED,

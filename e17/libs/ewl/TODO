@@ -3,33 +3,33 @@ TODO
 
 0.0.1 goals
 -----------
- + Object class
- + Widget class
- + Container class
- + Event loop
+ + Object class (complete)
+ + Widget class (complete)
+ + Container class (complete)
+ + Event loop (complete)
 
 0.0.2 goals
 -----------
- + Flexible theme support
- + Box widget
- + Button widget
- + Text widget
- + Spinner widget
- + Seeker/scrollbar widgets
- + Scrollarea widget
+ + Flexible theme support (complete)
+ + Box widget (complete)
+ + Button widget (complete)
+ + Text widget (complete)
+ + Spinner widget (complete)
+ + Seeker/scrollbar widgets (complete)
+ + Scrollarea widget (complete)
 
 0.0.3 goals
 -----------
- + Entry widget
- + Notebook widget
- + Tree widget
- + Menu widgets
+ + Entry widget (complete)
+ + Embed widgets in pre-existing evas (in progress)
+ + Notebook widget (in progress)
 
 0.0.4 goals:
 -----------
- + Fully functional textarea
+ + Tree widget (in progress)
+ + Menu widgets (in progress)
  + Table widget
 
 0.0.5 goals:
 ------------
- + Embed widgets in pre-existing evas's.
+ + Fully functional textarea
