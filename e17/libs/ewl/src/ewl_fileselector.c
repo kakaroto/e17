@@ -1,14 +1,11 @@
 #include <Ewl.h>
 
-#include "../ewl-config.h"
-
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <string.h>
 #include <regex.h>
-
-#include "ewl_fileselector.h"
 
 /*
  * Internally used functions
@@ -575,20 +572,13 @@ void ewl_fileselector_configure_cb(Ewl_Fileselector * fs, char *path)
 	while ((d = ecore_list_current(dirs))) {
 		Ewl_Widget *hbox;
 		Ewl_Widget *label;
-		Ewl_Widget *image;
 
 		hbox = ewl_hbox_new();
 		ewl_box_spacing_set(EWL_BOX(hbox), 5);
 		label = ewl_text_new(d->name);
-		image = ewl_image_new(PACKAGE_DATA_DIR"/stock_open_24.png",
-				      NULL);
-		ewl_object_fill_policy_set(EWL_OBJECT(image),
-					   EWL_FLAG_FILL_SHRINK);
 		ewl_object_fill_policy_set(EWL_OBJECT(label),
 					   EWL_FLAG_FILL_SHRINK);
-		ewl_container_child_append(EWL_CONTAINER(hbox), image);
 		ewl_container_child_append(EWL_CONTAINER(hbox), label);
-		ewl_widget_show(image);
 		ewl_widget_show(label);
 		ewl_widget_show(hbox);
 

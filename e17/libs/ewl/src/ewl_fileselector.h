@@ -20,14 +20,6 @@
  * @themekey /fileselector/group
  */
 
-
-#include <sys/stat.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-
 /* Private: data for a file */
 
 typedef struct Ewl_Fileselector_Data Ewl_Fileselector_Data;
@@ -96,9 +88,5 @@ void ewl_fileselector_configure_cb(Ewl_Fileselector *fs, char *path);
 
 void ewl_fileselector_filter_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-
 #endif /* __EWL_FILESELECTOR_H__ */
+

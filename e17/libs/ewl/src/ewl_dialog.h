@@ -1,11 +1,6 @@
 #ifndef __EWL_DIALOG_H__
 #define __EWL_DIALOG_H__
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 /**
  * @defgroup Ewl_Dialog Dialog: A Window to prompt the user for
  * Displaying Messages, asking
@@ -71,10 +66,5 @@ void         ewl_dialog_has_separator_set (Ewl_Dialog *dialog,
 /**
  * @}
  */
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
 
 #endif /* __EWL_DIALOG_H__ */

@@ -1,10 +1,6 @@
 #ifndef __EWL_FILEDIALOG_H__
 #define __EWL_FILEDIALOG_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 /**
  * @defgroup Ewl_Filedialog Filedialog: A Dialog For Picking Files
  *
@@ -68,10 +64,5 @@ void ewl_filedialog_click_cb (Ewl_Widget *w, void *ev_data, void *data);
 /**
  * @}
  */
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
 
 #endif /* __EWL_FS_H__ */

@@ -1,12 +1,6 @@
 #ifndef __EWL_BUTTON_STOCK_H__
 #define __EWL_BUTTON_STOCK_H__
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-
 /**
  * @defgroup Ewl_Button_Stock Button_Stock: A Button with a Stock Icon in it.
  * @brief The button_stock class is a button with a stock icon or a
@@ -86,10 +80,4 @@ void ewl_button_stock_click_cb (Ewl_Widget *w, void *ev, void *data);
  * @}
  */
   
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-
 #endif /* __EWL_BUTTON_STOCK_H__ */
