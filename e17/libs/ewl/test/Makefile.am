@@ -15,6 +15,7 @@ bin_PROGRAMS			=	$(EWLTESTPROGRAMS) $(EWLMEDIATESTPROGRAMS)
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
 ewl_test_SOURCES		=	ewl_test.h \
 					ewl_test.c \
+					ewl_border_test.c \
 					ewl_box_test.c \
 					ewl_button_test.c \
 					ewl_colorpicker_test.c \

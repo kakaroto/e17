@@ -12,6 +12,7 @@ struct _test_set
 };
 
 void __close_main_widow                 (Ewl_Widget * w, void *ev_data, void *user_data);
+void __create_border_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_box_test_window           (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_button_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_colorpicker_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);

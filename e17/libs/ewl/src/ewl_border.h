@@ -31,19 +31,30 @@ typedef struct Ewl_Border Ewl_Border;
  */
 struct Ewl_Border
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Box         box;       /**< Inherit from Ewl_Box */
 	Ewl_Widget     *label;     /**< Text label for the border */
-	Ewl_Widget     *box;       /**< Box for holding children */
-	unsigned int    flags;     /**< Flags for placing the label */
+	Ewl_Widget     *body;      /**< Box for holding children */
+	Ewl_Position    label_position;     /**< Flags for placing the label */
 };
 
 Ewl_Widget     *ewl_border_new(char *label);
 int             ewl_border_init(Ewl_Border * b, char *label);
 
+void            ewl_border_text_set(Ewl_Border * b, char *t);
+char           *ewl_border_text_get(Ewl_Border * b);
+
+void            ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos);
+Ewl_Position    ewl_border_label_position_get(Ewl_Border *b);
+
+void		ewl_border_label_alignment_set(Ewl_Border *b, 
+						unsigned int align);
+unsigned int    ewl_border_label_alignment_get(Ewl_Border *b);
+
 /*
  * Internally used callbacks.
  */
-void ewl_border_child_size_cb(Ewl_Container *c, Ewl_Widget * w);
-void ewl_border_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void            ewl_border_destroy_cb(Ewl_Widget *w, void *ev_data, 
+							void *user_data);
 
 #endif				/* __EWL_BORDER_H__ */
+

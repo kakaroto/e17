@@ -69,6 +69,7 @@ main(int argc, char **argv)
         Ewl_Widget     *tooltip;
 	Ewl_Widget     *prow[BUTTONS];
 	static test_set       tests[] = {
+		{ "Border",      __create_border_test_window,      "ewl_border_test.c" },
 		{ "Box",         __create_box_test_window,         "ewl_box_test.c" },
 		{ "Button",      __create_button_test_window,      "ewl_button_test.c" },
 		{ "ColorPicker", __create_colorpicker_test_window, "ewl_colorpicker_test.c" },
@@ -95,14 +96,16 @@ main(int argc, char **argv)
 		{ 0, 0, 0 }
 	};
 	static char* tooltips[] = {
-	    	"Defines the Ewl_Box class used for\n"
+		"Defines the Ewl_Border class for displaing\n"
+			"a container with a label.",
+	   	"Defines the Ewl_Box class used for\n"
 			"laying out Ewl_Widget's in a horizontal\n"
 			"or vertical line.",
-	    	"The button class is a basic button\n"
+	   	"The button class is a basic button\n"
 			"with a label. This class inherits from\n"
 			"the Ewl_Box to allow for placing any\n"
 			"other widget inside the button.",
-	    	"Defines a color picker.",
+	   	"Defines a color picker.",
 		"Defines a combo box used internally.\n"
 			"The contents on the box are not drawn\n"
 			"outside of the Evas.",
