@@ -53,6 +53,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	 * Add the check box first.
 	 */
 	cb->check = ewl_check_new();
+	ewl_widget_set_internal(cb->check, TRUE);
 	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb);
 	ewl_container_prepend_child(EWL_CONTAINER(cb), cb->check);
 	ewl_widget_show(cb->check);

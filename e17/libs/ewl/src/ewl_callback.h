@@ -86,8 +86,8 @@ struct Ewl_Callback
 			((unsigned int)w->callbacks[t] & \
 			 EWL_CALLBACK_NOTIFY_MASK)
 
-void            ewl_callbacks_init();
-void            ewl_callbacks_deinit();
+void            ewl_callbacks_init(void);
+void            ewl_callbacks_deinit(void);
 int             ewl_callback_append(Ewl_Widget * widget, Ewl_Callback_Type type,
 				    Ewl_Callback_Function func,
 				    void *user_data);

@@ -62,9 +62,15 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
 	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
 
+	ewl_widget_set_internal(s->box, TRUE);
+	ewl_widget_set_internal(s->hscrollbar, TRUE);
+	ewl_widget_set_internal(s->vscrollbar, TRUE);
+
 	ewl_widget_show(s->box);
 	ewl_widget_show(s->hscrollbar);
 	ewl_widget_show(s->vscrollbar);
+
+	ewl_container_set_redirect(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
 
 	/*
 	 * Append necessary callbacks for the scrollpane.
@@ -310,6 +316,7 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_scrollpane_add_cb(Ewl_Container * parent, Ewl_Widget * child)
 {
+	int pw, ph;
 	Ewl_ScrollPane *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -319,12 +326,27 @@ void ewl_scrollpane_add_cb(Ewl_Container * parent, Ewl_Widget * child)
 
 	s = EWL_SCROLLPANE(parent);
 
-	if ((child != s->box) && (child != s->hscrollbar) &&
-			(child != s->vscrollbar)) {
-		ewl_container_append_child(EWL_CONTAINER
-					   (EWL_SCROLLPANE(parent)->box),
-					   child);
+	if (child == s->vscrollbar) {
+		pw = PREFERRED_W(parent) +
+			ewl_object_get_preferred_w(EWL_OBJECT(child));
+		ph = MAX(PREFERRED_H(parent),
+				ewl_object_get_preferred_h(EWL_OBJECT(child)));
 	}
+	else if (child == s->hscrollbar) {
+		pw = MAX(PREFERRED_W(parent),
+				ewl_object_get_preferred_w(EWL_OBJECT(child)));
+		ph = PREFERRED_H(parent) +
+			ewl_object_get_preferred_h(EWL_OBJECT(child));
+	}
+	else {
+		pw = PREFERRED_W(parent) +
+			ewl_object_get_preferred_w(EWL_OBJECT(child));
+		ph = PREFERRED_H(parent) +
+			ewl_object_get_preferred_h(EWL_OBJECT(child));
+	}
+
+	ewl_object_set_preferred_w(EWL_OBJECT(parent), pw);
+	ewl_object_set_preferred_h(EWL_OBJECT(parent), ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -348,11 +370,11 @@ ewl_scrollpane_child_resize_cb(Ewl_Container * parent, Ewl_Widget * child,
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_set_preferred_w(EWL_OBJECT(parent),
 				ewl_object_get_preferred_w(EWL_OBJECT(s->box)) +
-				ewl_object_get_preferred_h(EWL_OBJECT(s->vscrollbar)));
+				ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar)));
 	}
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(parent),
-				ewl_object_get_preferred_w(EWL_OBJECT(s->box)) +
+				ewl_object_get_preferred_h(EWL_OBJECT(s->box)) +
 				ewl_object_get_preferred_h(EWL_OBJECT(s->hscrollbar)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

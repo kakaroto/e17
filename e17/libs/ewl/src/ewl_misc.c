@@ -107,6 +107,30 @@ void ewl_init(int *argc, char **argv)
 
 /**
  * @return Returns no value.
+ * @brief Cleanup internal data structures used by ewl.
+ *
+ * This should be called to cleanup internal EWL data structures, if using
+ * ecore directly rather than using ewl_main().
+ */
+void ewl_deinit()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ecore_timer_del(config_timer);
+	ewl_callbacks_deinit();
+
+	ewd_list_destroy(configure_list);
+	ewd_list_destroy(realize_list);
+	ewd_list_destroy(destroy_list);
+	ewd_list_destroy(free_evas_list);
+	ewd_list_destroy(free_evas_object_list);
+	ewd_list_destroy(child_add_list);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
  * @brief The main execution loop of EWL
  * 
  * This is the  main execution loop of ewl. It dispatches
@@ -117,6 +141,7 @@ void ewl_main(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_main_loop_begin();
+	ewl_deinit();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -197,15 +222,6 @@ void ewl_main_quit(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_main_loop_quit();
-	ecore_timer_del(config_timer);
-	ewl_callbacks_deinit();
-
-	ewd_list_destroy(configure_list);
-	ewd_list_destroy(realize_list);
-	ewd_list_destroy(destroy_list);
-	ewd_list_destroy(free_evas_list);
-	ewd_list_destroy(free_evas_object_list);
-	ewd_list_destroy(child_add_list);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

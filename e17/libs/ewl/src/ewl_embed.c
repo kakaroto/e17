@@ -310,6 +310,7 @@ void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (EWL_EMBED(w)->smart) {
+		evas_object_smart_data_set(EWL_EMBED(w)->smart, NULL);
 		ewl_evas_object_destroy(EWL_EMBED(w)->smart);
 		EWL_EMBED(w)->smart = NULL;
 	}
@@ -430,8 +431,10 @@ static void ewl_embed_smart_del_cb(Evas_Object *obj)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	emb->smart = NULL;
-	ewl_widget_unrealize(EWL_WIDGET(emb));
+	if (emb) {
+		emb->smart = NULL;
+		ewl_widget_unrealize(EWL_WIDGET(emb));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -443,7 +446,8 @@ static void ewl_embed_smart_layer_set_cb(Evas_Object *obj, int l)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	ewl_widget_set_layer(EWL_WIDGET(emb), l);
+	if (emb)
+		ewl_widget_set_layer(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -458,7 +462,8 @@ static void ewl_embed_smart_layer_adjust_cb(Evas_Object *obj)
 	l = evas_object_layer_get(obj);
 
 	emb = evas_object_smart_data_get(obj);
-	ewl_widget_set_layer(EWL_WIDGET(emb), l);
+	if (emb)
+		ewl_widget_set_layer(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -471,10 +476,11 @@ ewl_embed_smart_layer_adjust_rel_cb(Evas_Object *obj, Evas_Object *rel)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	l = evas_object_layer_get(obj);
-
 	emb = evas_object_smart_data_get(obj);
-	ewl_widget_set_layer(EWL_WIDGET(emb), l);
+	if (emb) {
+		l = evas_object_layer_get(obj);
+		ewl_widget_set_layer(EWL_WIDGET(emb), l);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -487,7 +493,9 @@ ewl_embed_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	ewl_object_request_position(EWL_OBJECT(emb), (int)(x), (int)(y));
+	if (emb)
+		ewl_object_request_position(EWL_OBJECT(emb), (int)(x),
+					    (int)(y));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -500,7 +508,8 @@ ewl_embed_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	ewl_object_request_size(EWL_OBJECT(emb), (int)(w), (int)(h));
+	if (emb)
+		ewl_object_request_size(EWL_OBJECT(emb), (int)(w), (int)(h));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -512,7 +521,8 @@ static void ewl_embed_smart_show_cb(Evas_Object *obj)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	ewl_widget_show(EWL_WIDGET(emb));
+	if (emb)
+		ewl_widget_show(EWL_WIDGET(emb));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -524,7 +534,8 @@ static void ewl_embed_smart_hide_cb(Evas_Object *obj)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	ewl_widget_hide(EWL_WIDGET(emb));
+	if (emb)
+		ewl_widget_hide(EWL_WIDGET(emb));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -548,12 +559,7 @@ static void ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	if (!emb) {
-		printf("No smart data on object?!?\n");
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	if (EWL_WIDGET(emb)->fx_clip_box
+	if (emb && EWL_WIDGET(emb)->fx_clip_box
 			&& clip != EWL_WIDGET(emb)->fx_clip_box)
 		evas_object_clip_set(EWL_WIDGET(emb)->fx_clip_box, clip);
 
@@ -567,7 +573,7 @@ static void ewl_embed_smart_clip_unset_cb(Evas_Object *obj)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	if (EWL_WIDGET(emb)->fx_clip_box)
+	if (emb && EWL_WIDGET(emb)->fx_clip_box)
 		evas_object_clip_unset(EWL_WIDGET(emb)->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -55,6 +55,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Create the basic widgets that are contained in the scrollbar.
 	 */
 	s->button_decrement = ewl_button_new(NULL);
+	ewl_widget_set_internal(s->button_decrement, TRUE);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
 			EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrement),
@@ -65,6 +66,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Create the increment button.
 	 */
 	s->button_increment = ewl_button_new(NULL);
+	ewl_widget_set_internal(s->button_increment, TRUE);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
 			EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increment),
@@ -75,6 +77,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Setup the seeker portion
 	 */
 	s->seeker = ewl_seeker_new(orientation);
+	ewl_widget_set_internal(s->seeker, TRUE);
 	ewl_widget_show(s->seeker);
 
 	/*

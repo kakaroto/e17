@@ -26,7 +26,7 @@ struct _ewl_spectrum {
 	int             redraw;
 };
 
-Ewl_Widget     *ewl_spectrum_new();
+Ewl_Widget     *ewl_spectrum_new(void);
 void            ewl_spectrum_init(Ewl_Spectrum * cp);
 
 void            ewl_spectrum_mode_set(Ewl_Spectrum * sp,

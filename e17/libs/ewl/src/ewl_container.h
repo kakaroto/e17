@@ -56,6 +56,7 @@ struct Ewl_Container
 	Ewl_Child_Add    child_add; /**< Function called on child add */
 	Ewl_Child_Add    child_remove; /**< Function called on child remove */
 	Ewl_Child_Resize child_resize; /**< Function called on child resize */
+	Ewl_Container   *redirect; /**< Non-internal widgets placed here */
 };
 
 void            ewl_container_init(Ewl_Container * widget, char *appearance,
@@ -92,6 +93,9 @@ void            ewl_container_prefer_largest(Ewl_Container *c,
 					     Ewl_Orientation o);
 void            ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w);
 void            ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w);
+Ewl_Container  *ewl_container_get_end_redirect(Ewl_Container *c);
+Ewl_Container  *ewl_container_get_redirect(Ewl_Container *c);
+void            ewl_container_set_redirect(Ewl_Container *c, Ewl_Container *rc);
 
 /*
  * Internally used callbacks, override at your own risk.

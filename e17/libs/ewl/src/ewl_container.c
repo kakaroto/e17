@@ -133,6 +133,9 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	while (pc->redirect)
+		pc = pc->redirect;
+
 	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
@@ -161,6 +164,9 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 		DWARNING("Attempting to make a child a parent of itself");
 		DRETURN(DLEVEL_STABLE);
 	}
+
+	while (pc->redirect)
+		pc = pc->redirect;
 
 	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
@@ -194,6 +200,9 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	while (pc->redirect)
+		pc = pc->redirect;
+
 	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
@@ -219,6 +228,14 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (child == EWL_WIDGET(pc->redirect))
+		pc->redirect = NULL;
+
+	if (child->parent != EWL_WIDGET(pc)) {
+		while (pc->redirect)
+			pc = pc->redirect;
+	}
 
 	/*
 	 * First remove reference to the parent if necessary.
@@ -419,7 +436,8 @@ int ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w)
  * @return Returns no value.
  * @brief Destroy all children of the container
  *
- * Destroys all the children of the container but not the container itself.
+ * Destroys all the children of the container but not the container itself or
+ * internally used widgets.
  */
 void ewl_container_reset(Ewl_Container * c)
 {
@@ -428,11 +446,18 @@ void ewl_container_reset(Ewl_Container * c)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
+	while (c->redirect)
+		c = c->redirect;
+
 	/*
 	 * Loop through removing each child and destroying it.
 	 */
-	while ((w = ewd_list_goto_last(c->children)))
-		ewl_container_remove_child(c, w);
+	while ((w = ewd_list_goto_last(c->children))) {
+		if (!ewl_object_has_flags(EWL_OBJECT(w),
+					EWL_FLAG_PROPERTY_INTERNAL,
+					EWL_FLAGS_PROPERTY_MASK))
+			ewl_container_remove_child(c, w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -595,13 +620,14 @@ void ewl_container_destroy(Ewl_Container * c)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
+	c->redirect = NULL;
 	if (c->children) {
 		/*
 		 * Destroy any children still in the container.
 		 */
-		ewd_list_goto_first(c->children);
-		while ((child = ewd_list_remove_last(c->children)))
+		while ((child = ewd_list_remove_last(c->children))) {
 			ewl_widget_destroy(child);
+		}
 
 		/*
 		 * Destroy the container list and set it to NULL.
@@ -609,6 +635,59 @@ void ewl_container_destroy(Ewl_Container * c)
 		ewd_list_destroy(c->children);
 		c->children = NULL;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container to retrieve it's redirection end container
+ * @return Returns the container children are placed in, NULL if none.
+ * @brief Searches for the last redirected container of the container.
+ */
+Ewl_Container *ewl_container_get_end_redirect(Ewl_Container *c)
+{
+	Ewl_Container *rc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, NULL);
+
+	if (!c->redirect)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	while (c->redirect) {
+		rc = c->redirect;
+		c = c->redirect;
+	}
+
+	DRETURN_PTR(rc, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container to retrieve it's redirection container
+ * @return Returns the container children are placed in, NULL if none.
+ * @brief Retrieves for the redirected container of the container.
+ */
+Ewl_Container *ewl_container_get_redirect(Ewl_Container *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, NULL);
+
+	DRETURN_PTR(c->redirect, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container to change it's redirection container
+ * @param rc: the new container to redirect children to
+ * @return Returns no value.
+ * @brief Changes the redirected container of the container.
+ */
+void ewl_container_set_redirect(Ewl_Container *c, Ewl_Container *rc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("rc", rc);
+
+	c->redirect = rc;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

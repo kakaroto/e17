@@ -27,7 +27,7 @@ struct Ewl_Cell
 	Ewl_Container container; /**< Inherit from the Ewl_Container */
 };
 
-Ewl_Widget *ewl_cell_new();
+Ewl_Widget *ewl_cell_new(void);
 int ewl_cell_init(Ewl_Cell *cell);
 
 /*

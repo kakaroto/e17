@@ -42,7 +42,7 @@ struct Ewl_Window
 	int             y; /**< Screen relative vertical position of window */
 };
 
-Ewl_Widget     *ewl_window_new();
+Ewl_Widget     *ewl_window_new(void);
 int             ewl_window_init(Ewl_Window * win);
 Ewl_Window     *ewl_window_find_window(Ecore_X_Window window);
 void            ewl_window_set_title(Ewl_Window * win, char *title);

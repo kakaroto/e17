@@ -13,7 +13,7 @@ struct _ewl_row
 	Ewl_Row *header;
 };
 
-Ewl_Widget *ewl_row_new();
+Ewl_Widget *ewl_row_new(void);
 int ewl_row_init(Ewl_Row *row);
 
 void ewl_row_set_header(Ewl_Row *row, Ewl_Row *header);

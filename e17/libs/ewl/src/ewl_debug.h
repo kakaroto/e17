@@ -6,7 +6,7 @@
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
 
-inline void     ewl_print_warning();
+inline void     ewl_print_warning(void);
 
 #define DENTER_FUNCTION(lvl) \
 { \

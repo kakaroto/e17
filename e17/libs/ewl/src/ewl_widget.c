@@ -665,9 +665,7 @@ void ewl_widget_rebuild_appearance(Ewl_Widget *w)
 	snprintf(path, PATH_MAX, "%s/%s",
 			(w->parent ? w->parent->appearance : ""), base);
 
-	base = w->appearance;
-	FREE(base);
-
+	FREE(w->appearance);
 	w->appearance = strdup(path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1066,6 +1064,7 @@ void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (w->theme_object) {
 		ewl_evas_object_destroy(w->theme_object);
+		w->theme_object = NULL;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -37,7 +37,7 @@ int             ewl_config_set_float(char *config, char *k, float v);
 char           *ewl_config_get_str(char *config, char *k);
 int             ewl_config_get_int(char *config, char *k);
 float           ewl_config_get_float(char *config, char *k);
-char *          ewl_config_get_render_method();
+char *          ewl_config_get_render_method(void);
 void            ewl_config_reread_and_apply(void);
 
 /**

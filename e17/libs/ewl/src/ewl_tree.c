@@ -1,7 +1,5 @@
 #include "Ewl.h"
 
-void ewl_tree_add_cb(Ewl_Container *c, Ewl_Widget *w);
-
 void ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
 void ewl_tree_node_clicked_cb(Ewl_Widget * w, void *ev_data,
@@ -93,9 +91,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	ewl_container_append_child(EWL_CONTAINER(tree), tree->scrollarea);
 	ewl_widget_show(tree->scrollarea);
 
-	ewl_container_add_notify(EWL_CONTAINER(tree), ewl_tree_add_cb);
-
-	ewl_container_remove_notify(EWL_CONTAINER(tree), NULL);
+	ewl_container_set_redirect(EWL_CONTAINER(tree),
+				   EWL_CONTAINER(tree->scrollarea));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -186,6 +183,7 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 			break;
 		}
 
+		ewl_widget_set_internal(cell, TRUE);
 		ewl_container_append_child(EWL_CONTAINER(row), cell);
 		ewl_object_set_fill_policy(EWL_OBJECT(cell),
 				EWL_FLAG_FILL_HFILL |
@@ -465,20 +463,6 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 		ewl_widget_show(w);
 
 	ewl_widget_set_state(EWL_WIDGET(node), "expanded");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_tree_add_cb(Ewl_Container *c, Ewl_Widget *w)
-{
-	Ewl_Tree *t;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	t = EWL_TREE(c);
-	if (w != t->scrollarea && w != t->header)
-		ewl_container_append_child(EWL_CONTAINER(t->scrollarea), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

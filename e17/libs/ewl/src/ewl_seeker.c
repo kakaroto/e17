@@ -64,6 +64,7 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	 * Create and add the button portion of the seeker
 	 */
 	s->button = ewl_button_new(NULL);
+	ewl_widget_set_internal(s->button, TRUE);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button);
 	ewl_widget_show(s->button);
 

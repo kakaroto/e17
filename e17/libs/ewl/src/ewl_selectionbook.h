@@ -29,7 +29,7 @@ struct _ewl_selectionbook
 };
 
 
-Ewl_Widget     *ewl_selectionbook_new();
+Ewl_Widget     *ewl_selectionbook_new(void);
 void            ewl_selectionbook_init(Ewl_Selectionbook * s);
 void            ewl_selectionbook_add_page(Ewl_Selectionbook * s,
 					   Ewl_Widget * tab, Ewl_Widget * page);

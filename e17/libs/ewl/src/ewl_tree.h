@@ -58,7 +58,7 @@ struct _ewl_tree_node
 /*
  * Node creation/initialization functions.
  */
-Ewl_Widget *ewl_tree_node_new();
+Ewl_Widget *ewl_tree_node_new(void);
 int ewl_tree_node_init(Ewl_Tree_Node *tree_node);
 
 /*
