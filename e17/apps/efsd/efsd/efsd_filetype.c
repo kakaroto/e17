@@ -837,12 +837,12 @@ filetype_sax_callback_end_element(void *user_data, const xmlChar *name)
       em->regexp = strdup(ctxt->cdata);
       D("Read regexp val %s\n", em->regexp);
     }
-  else if (!strcmp(name, "descr") && (ctxt->cdata[0] != '\0'))
+  else if (!strcmp(name, "descr"))
     {
       /* The <descr> element can occur both in pattern tests
 	 and magic tests, but they are handled differently: */
 
-      if (ctxt->pattern)
+      if (ctxt->pattern && (ctxt->cdata[0] != '\0'))
 	{
 	  FREE(ctxt->pattern->filetype);
 	  ctxt->pattern->filetype = strdup(ctxt->cdata);
@@ -851,8 +851,16 @@ filetype_sax_callback_end_element(void *user_data, const xmlChar *name)
 	{
 	  em = (EfsdMagic*)efsd_stack_top(ctxt->node_stack);
 	  
-	  em->filetype = strdup(ctxt->cdata);
-	  em->formatter = filetype_analyze_format_string(em->filetype);
+	  if (ctxt->cdata[0] != '\0')
+	    {
+	      em->filetype = strdup(ctxt->cdata);
+	      em->formatter = filetype_analyze_format_string(em->filetype);
+	    }
+	  else
+	    {
+	      em->filetype = "";
+	      em->formatter = NULL;
+	    }
 
 	  D("Read type %s\n", em->filetype);
 	}
@@ -940,7 +948,9 @@ filetype_magic_free(EfsdMagic *em)
     D_RETURN;
 
   FREE(em->value);
-  FREE(em->filetype);
+  if (em->filetype != "")
+    FREE(em->filetype);
+
   /* formatter points into value, so no freeing here! */
   FREE(em->regexp);
   FREE(em);
