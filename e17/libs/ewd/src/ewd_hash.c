@@ -203,6 +203,8 @@ _ewd_hash_bucket_destroy(Ewd_List *list, Ewd_Free_Cb keyd, Ewd_Free_Cb valued)
 	while ((node = ewd_list_remove_first(list)) != NULL)
 		_ewd_hash_node_destroy(node, keyd, valued);
 
+	ewd_list_destroy(list);
+
 	return TRUE;
 }
 
