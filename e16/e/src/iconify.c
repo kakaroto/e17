@@ -115,6 +115,7 @@ IconifyEwin(EWin * ewin)
 
 	ib = SelectIconboxForEwin(ewin);
 	was_shaded = ewin->shaded;
+	AUDIO_PLAY("SOUND_ICONIFY");
 	if (ib)
 	  {
 	     IB_Animate(1, ewin, ib->ewin);
@@ -180,6 +181,7 @@ DeIconifyEwin(EWin * ewin)
 	  }
 	else
 	   ConformEwinToDesktop(ewin);
+	AUDIO_PLAY("SOUND_DEICONIFY");
 	if (ib)
 	   IB_Animate(0, ewin, ib->ewin);
 	RaiseEwin(ewin);
