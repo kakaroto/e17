@@ -460,7 +460,7 @@ void ewl_fileselector_select_file_cb(Ewl_Widget * w, void *ev_data, Ewl_Filesele
 
 	file = (char *) ewl_widget_data_get(EWL_WIDGET(w), "FILE");
 	fs->file = file;
-	ewl_entry_set_text(EWL_ENTRY(fs->entry_file), file);
+	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), file);
 }
 
 void ewl_fileselector_select_dir_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector * fs)
@@ -507,12 +507,12 @@ void ewl_fileselector_configure_cb(Ewl_Fileselector * fs, char *path)
 
 	ewl_container_reset(EWL_CONTAINER(fs->list_dirs));
 	ewl_container_reset(EWL_CONTAINER(fs->list_files));
-	ewl_entry_set_text(EWL_ENTRY(fs->entry_file), "");
+	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
 
 	/*
 	 * Setup a regex for matching files.
 	 */
-	filter = ewl_entry_get_text(EWL_ENTRY(fs->entry_filter));
+	filter = ewl_entry_text_get(EWL_ENTRY(fs->entry_filter));
 
 	if (path[strlen(path) - 1] == '/')
 		path2 = strdup(path);
@@ -525,7 +525,7 @@ void ewl_fileselector_configure_cb(Ewl_Fileselector * fs, char *path)
 
 	fs->path = path2;
 	fs->file = NULL;
-	ewl_entry_set_text(EWL_ENTRY(fs->entry_dir), path2);
+	ewl_entry_text_set(EWL_ENTRY(fs->entry_dir), path2);
 
 	files = ecore_list_new();
 	dirs = ecore_list_new();

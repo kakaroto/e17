@@ -25,7 +25,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
 	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_base");
 
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_menu_base_expand_cb, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESELECT,
@@ -94,13 +94,9 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	/*
 	 * Initialize the inherited container fields.
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(item), "menuitem"))
+	if (!ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(item),
-				  ewl_menu_item_child_show_cb);
-	ewl_container_resize_notify_set(EWL_CONTAINER(item),
-				  ewl_menu_item_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
@@ -303,32 +299,6 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 				 CURRENT_H(w));
 		x += width;
 	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_container_largest_prefer(parent, EWL_ORIENTATION_VERTICAL);
-	ewl_object_preferred_inner_w_set(EWL_OBJECT(parent), PREFERRED_W(parent) +
-			ewl_object_preferred_w_get(EWL_OBJECT(child)));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
-			      int size, Ewl_Orientation o)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (o == EWL_ORIENTATION_VERTICAL)
-		ewl_container_largest_prefer(parent, o);
-	else
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(parent),
-				PREFERRED_W(parent) + size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

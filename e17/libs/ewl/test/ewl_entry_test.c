@@ -21,11 +21,11 @@ __fetch_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *s;
 
-	s = ewl_entry_get_text(EWL_ENTRY(entry[0]));
+	s = ewl_entry_text_get(EWL_ENTRY(entry[0]));
 	printf("First entry covers: %s\n", s);
 	FREE(s);
 
-	s = ewl_entry_get_text(EWL_ENTRY(entry[1]));
+	s = ewl_entry_text_get(EWL_ENTRY(entry[1]));
 	printf("Second entry covers: %s\n", s);
 	FREE(s);
 
@@ -43,8 +43,8 @@ __set_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 			0, 0, 0, 255);
 	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[1])->text),
 			0, 0, 0, 255);
-	ewl_entry_set_text(EWL_ENTRY(entry[0]), "Play with me ?");
-	ewl_entry_set_text(EWL_ENTRY(entry[1]), "E W L ! ! !");
+	ewl_entry_text_set(EWL_ENTRY(entry[0]), "Play with me ?");
+	ewl_entry_text_set(EWL_ENTRY(entry[1]), "E W L ! ! !");
 	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[0])->text),
 			255, 0, 0, 255);
 	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[1])->text),

@@ -84,6 +84,14 @@ void            ewl_scrollbar_flag_set(Ewl_Scrollbar * s,
 				       Ewl_ScrollBar_Flags f);
 Ewl_ScrollBar_Flags ewl_scrollbar_flag_get(Ewl_Scrollbar * s);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void        ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+void        ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
+
 /**
  * @}
  */

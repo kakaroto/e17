@@ -91,7 +91,7 @@ void ewl_password_text_set(Ewl_Password * e, char *t)
 		memset(vis, e->obscure, len);
 	}
 
-	ewl_entry_set_text(EWL_ENTRY(e), vis);
+	ewl_entry_text_set(EWL_ENTRY(e), vis);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -194,10 +194,10 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (!strcmp(ev->keyname, "BackSpace")) {
-		tmp = ewl_entry_get_text(EWL_ENTRY(e));
+		tmp = ewl_entry_text_get(EWL_ENTRY(e));
 		if (tmp && (len = strlen(tmp))) {
 			tmp[len - 1] = '\0';
-			ewl_entry_set_text(EWL_ENTRY(e), tmp);
+			ewl_entry_text_set(EWL_ENTRY(e), tmp);
 			e->real_text[len - 1] = '\0';
 			FREE(tmp);
 		}

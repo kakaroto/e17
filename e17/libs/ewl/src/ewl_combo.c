@@ -39,14 +39,16 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(combo), NULL, title);
+	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_HFILL |
+			EWL_FLAG_FILL_HSHRINK);
 
 	ewl_widget_appearance_set( EWL_WIDGET(combo), "combo" );
 
-	if( EWL_MENU_ITEM(combo)->icon )
+	if (EWL_MENU_ITEM(combo)->icon)
 		ewl_widget_destroy(EWL_MENU_ITEM(combo)->icon);
 	EWL_MENU_ITEM(combo)->icon = NULL;
 
-	if( EWL_MENU_ITEM(combo)->text )
+	if (EWL_MENU_ITEM(combo)->text)
 		ewl_widget_destroy(EWL_MENU_ITEM(combo)->text);
 	EWL_MENU_ITEM(combo)->text = NULL;
 
@@ -60,34 +62,37 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_widget_show(combo->button);
 
 	combo->selected = ewl_entry_new(title);
-	ewl_object_alignment_set(EWL_OBJECT(combo->selected), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(combo->selected),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+	ewl_object_alignment_set(EWL_OBJECT(combo->selected),
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(combo), combo->selected);
 	ewl_widget_show(combo->selected);
 
 	ewl_callback_del(EWL_WIDGET(combo), EWL_CALLBACK_SELECT,
-									 ewl_menu_base_expand_cb);
+			 ewl_menu_base_expand_cb);
 
-	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
-																			EWL_CALLBACK_CLICKED );
-	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
-																			EWL_CALLBACK_MOUSE_DOWN );
-	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
-																			EWL_CALLBACK_MOUSE_UP );
-	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
-																			EWL_CALLBACK_MOUSE_MOVE );
-	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
-																			EWL_CALLBACK_SELECT );
-	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
-																			EWL_CALLBACK_DESELECT );
+	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
+					   EWL_CALLBACK_CLICKED);
+	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
+					   EWL_CALLBACK_MOUSE_DOWN);
+	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
+					   EWL_CALLBACK_MOUSE_UP);
+	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
+					   EWL_CALLBACK_MOUSE_MOVE);
+	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
+					   EWL_CALLBACK_SELECT);
+	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
+					   EWL_CALLBACK_DESELECT);
 
-	ewl_container_redirect_set( EWL_CONTAINER(combo), redirect );
+	ewl_container_redirect_set(EWL_CONTAINER(combo), redirect);
 
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
-											ewl_combo_expand_cb, combo);
+			    ewl_combo_expand_cb, combo);
 	ewl_callback_append(EWL_WIDGET(combo), EWL_CALLBACK_CONFIGURE,
-											ewl_combo_configure_cb, NULL);
+			    ewl_combo_configure_cb, NULL);
 	ewl_callback_append(combo->selected, EWL_CALLBACK_VALUE_CHANGED,
-											ewl_combo_value_changed_cb, combo);
+			    ewl_combo_value_changed_cb, combo);
 
 	/*
 	 * Create the popup combo portion of the widget.
@@ -99,7 +104,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_box_orientation_set(EWL_BOX(combo->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->base.popup),
-				   EWL_FLAG_FILL_HFILL);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(combo->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
@@ -116,8 +121,8 @@ void ewl_combo_set_selected(Ewl_Combo * combo, char *item )
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if( combo->selected ) {
-		ewl_entry_set_text(EWL_ENTRY(combo->selected), item);
+	if (combo->selected) {
+		ewl_entry_text_set(EWL_ENTRY(combo->selected), item);
 		ewl_callback_call_with_event_data(EWL_WIDGET(combo),
 						  EWL_CALLBACK_VALUE_CHANGED,
 						  item);
@@ -138,7 +143,7 @@ char *ewl_combo_get_selected(Ewl_Combo * combo )
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if( combo->selected )
-		val = ewl_entry_get_text( EWL_ENTRY(combo->selected) );
+		val = ewl_entry_text_get( EWL_ENTRY(combo->selected) );
 	
 	DRETURN_PTR(val, DLEVEL_STABLE);
 }
@@ -203,7 +208,7 @@ void ewl_combo_value_changed_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	combo = EWL_COMBO(user_data);
 
 	ewl_callback_call_with_event_data(cw, EWL_CALLBACK_VALUE_CHANGED,
-		ewl_entry_get_text(EWL_ENTRY(combo->selected)));
+		ewl_entry_text_get(EWL_ENTRY(combo->selected)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -2,11 +2,6 @@
 #include <Ewl.h>
 
 
-void        ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void        ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-
 static int  ewl_scrollbar_timer(void *data);
 
 

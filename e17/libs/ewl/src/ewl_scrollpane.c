@@ -297,20 +297,6 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	content_h = CURRENT_H(w) - hs_height;
 
 	/*
-	 * Position the horizontal scrollbar.
-	 */
-	ewl_object_geometry_request(EWL_OBJECT(s->hscrollbar),
-				    CURRENT_X(w), CURRENT_Y(w) + content_h,
-				    content_w, hs_height);
-
-	/*
-	 * Position the vertical scrollbar.
-	 */
-	ewl_object_geometry_request(EWL_OBJECT(s->vscrollbar),
-				    CURRENT_X(w) + content_w, CURRENT_Y(w),
-				    vs_width, content_h);
-
-	/*
 	 * A rare case where we need to know the preferred size over the
 	 * minimum size.
 	 */
@@ -347,6 +333,20 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_scrollbar_step_set(EWL_SCROLLBAR(s->vscrollbar), step);
+
+	/*
+	 * Position the horizontal scrollbar.
+	 */
+	ewl_object_geometry_request(EWL_OBJECT(s->hscrollbar),
+				    CURRENT_X(w), CURRENT_Y(w) + content_h,
+				    content_w, hs_height);
+
+	/*
+	 * Position the vertical scrollbar.
+	 */
+	ewl_object_geometry_request(EWL_OBJECT(s->vscrollbar),
+				    CURRENT_X(w) + content_w, CURRENT_Y(w),
+				    vs_width, content_h);
 
 	/*
 	 * Now move the box into position. For the scrollpane to work we move

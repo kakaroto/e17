@@ -5,7 +5,7 @@
 void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *entry = user_data;
-	printf("%s\n", ewl_entry_get_text(EWL_ENTRY(entry)));
+	printf("%s\n", ewl_entry_text_get(EWL_ENTRY(entry)));
 	return;
 	w = NULL;
 	ev_data = NULL;

@@ -45,20 +45,20 @@ struct Ewl_Entry
 
 Ewl_Widget     *ewl_entry_new(char *text);
 int             ewl_entry_init(Ewl_Entry * e, char *text);
-void            ewl_entry_set_text(Ewl_Entry * e, char *t);
-char           *ewl_entry_get_text(Ewl_Entry * e);
-void            ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit);
+void            ewl_entry_text_set(Ewl_Entry * e, char *t);
+char           *ewl_entry_text_get(Ewl_Entry * e);
+void            ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit);
 
-void ewl_entry_move_cursor_to_left(Ewl_Entry * e);
-void ewl_entry_move_cursor_to_previous_word(Ewl_Entry * e);
-void ewl_entry_move_cursor_to_right(Ewl_Entry * e);
-void ewl_entry_move_cursor_to_next_word(Ewl_Entry * e);
-void ewl_entry_move_cursor_to_home(Ewl_Entry * e);
-void ewl_entry_move_cursor_to_end(Ewl_Entry * e);
-void ewl_entry_insert_text(Ewl_Entry * e, char *s);
-void ewl_entry_delete_to_left(Ewl_Entry * e);
-void ewl_entry_delete_to_right(Ewl_Entry * e);
-void ewl_entry_delete_to_word_begin(Ewl_Entry * e);
+void ewl_entry_cursor_left_move(Ewl_Entry * e);
+void ewl_entry_cursor_previous_word_move(Ewl_Entry * e);
+void ewl_entry_cursor_right_move(Ewl_Entry * e);
+void ewl_entry_cursor_next_word_move(Ewl_Entry * e);
+void ewl_entry_cursor_home_move(Ewl_Entry * e);
+void ewl_entry_cursor_end_move(Ewl_Entry * e);
+void ewl_entry_text_insert(Ewl_Entry * e, char *s);
+void ewl_entry_left_delete(Ewl_Entry * e);
+void ewl_entry_right_delete(Ewl_Entry * e);
+void ewl_entry_word_begin_delete(Ewl_Entry * e);
 
 /*
  * Internally used callbacks, override at your own risk.

@@ -28,7 +28,7 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
  */
 struct Ewl_Menu_Item
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Box         box; /**< Inherit from Ewl_Container */
 	Ewl_Widget     *icon; /**< The image in this menu item */
 	Ewl_Widget     *text; /**< The text label for this menu item  */
 	Ewl_Widget     *inmenu; /**< Set if inside a menu */

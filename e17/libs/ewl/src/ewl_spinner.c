@@ -400,21 +400,21 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (!strcmp(ev->keyname, "Down"))
 		ewl_spinner_decrease_value_cb(w, NULL, NULL);
 	else if (!strcmp(ev->keyname, "Left"))
-		ewl_entry_move_cursor_to_left(e);
+		ewl_entry_cursor_left_move(e);
 	else if (!strcmp(ev->keyname, "Right"))
-		ewl_entry_move_cursor_to_right(e);
+		ewl_entry_cursor_right_move(e);
 	else if (!strcmp(ev->keyname, "Home"))
-		ewl_entry_move_cursor_to_home(e);
+		ewl_entry_cursor_home_move(e);
 	else if (!strcmp(ev->keyname, "End"))
-		ewl_entry_move_cursor_to_end(e);
+		ewl_entry_cursor_end_move(e);
 	else if (!strcmp(ev->keyname, "BackSpace"))
-		ewl_entry_delete_to_left(e);
+		ewl_entry_left_delete(e);
 	else if (!strcmp(ev->keyname, "Delete"))
-		ewl_entry_delete_to_right(e);
+		ewl_entry_right_delete(e);
 	else if (ev->keyname && (isdigit(ev->keyname[0]) ||
 				 ev->keyname[0] == '.' ||
 				 ev->keyname[0] == '-'))
-		ewl_entry_insert_text(e, ev->keyname);
+		ewl_entry_text_insert(e, ev->keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -431,7 +431,7 @@ ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SPINNER(w->parent);
 
-	str = ewl_entry_get_text(EWL_ENTRY(s->entry));
+	str = ewl_entry_text_get(EWL_ENTRY(s->entry));
 
 	if (str && strlen(str)) {
 		val = atof(str);
@@ -465,7 +465,7 @@ ewl_spinner_calc_value(Ewl_Spinner * s, double value)
 	snprintf(format, 64, "%%.%df", s->digits);
 	snprintf(str, 64, format, s->value);
 
-	ewl_entry_set_text(EWL_ENTRY(s->entry), str);
+	ewl_entry_text_set(EWL_ENTRY(s->entry), str);
 
 	if (oval != s->value) {
 		oval = s->value;
