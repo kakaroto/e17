@@ -233,3 +233,14 @@ Tue Nov  2 18:28:36 PST 1999
 (KainX)
 
 A new cloak mode for E-ScreenShoot...random!  You can guess what it does.
+
+-------------------------------------------------------------------------------
+
+Wed Nov  3 23:58:36 GMT 1999
+(gilbertt)
+
+More late-night coding for Tom ;-)
+The trouble with using a .1f format string for something which will
+accept a < 0.1 value, is that the value is written as 0.
+This is clearly not a good idea, and led to an interesting 5 minutes
+bug-hunt.

@@ -52,13 +52,13 @@ save_config (void)
   Epplet_modify_config ("QUALITY", buf);
   sprintf (buf, "%d", opt.win);
   Epplet_modify_config ("WIN_AREA", buf);
-  sprintf (buf, "%.1f", opt.delay);
+  sprintf (buf, "%.2f", opt.delay);
   Epplet_modify_config ("SHOT_DELAY", buf);
-  sprintf (buf, "%.1f", opt.cloak_delay);
+  sprintf (buf, "%.2f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  sprintf (buf, "%.1f", opt.draw_interval);
+  sprintf (buf, "%.2f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
-  sprintf (buf, "%.1f", opt.rand_delay);
+  sprintf (buf, "%.2f", opt.rand_delay);
   Epplet_modify_config ("RAND_DELAY", buf);
   sprintf (buf, "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
