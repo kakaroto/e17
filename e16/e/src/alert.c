@@ -183,12 +183,14 @@ ShowAlert(char *text)
    str3 = ExitText;
    if (!title)
       title = _("Enlightenment Error");
+#if 0
    if (!str1)
       str1 = _("Ignore");
    if (!str2)
       str2 = _("Restart");
    if (!str3)
       str3 = _("Exit");
+#endif
 
    cnum = 0;
    colorful = 0;
@@ -239,19 +241,19 @@ ShowAlert(char *text)
    win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
 		       CopyFromParent, InputOutput, CopyFromParent, mask, &att);
 
-   if (sscanf(str1, "%s", line) > 0)
+   if (str1 && sscanf(str1, "%s", line) > 0)
      {
 	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
 			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b1);
      }
-   if (sscanf(str2, "%s", line) > 0)
+   if (str2 && sscanf(str2, "%s", line) > 0)
      {
 	b2 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
 			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b2);
      }
-   if (sscanf(str3, "%s", line) > 0)
+   if (str3 && sscanf(str3, "%s", line) > 0)
      {
 	b3 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
 			   InputOutput, CopyFromParent, mask, &att);
@@ -311,29 +313,39 @@ ShowAlert(char *text)
    XUngrabServer(dd);
    XSync(dd, False);
 
-   ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
-   mh = rect2.width;
-   ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
-   mh = (rect2.width > mh) ? rect2.width : mh;
-   ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
-   mh = (rect2.width > mh) ? rect2.width : mh;
+   mh = 0;
+   if (str1)
+     {
+	ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
+	mh = (rect2.width > mh) ? rect2.width : mh;
+     }
+   if (str2)
+     {
+	ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
+	mh = (rect2.width > mh) ? rect2.width : mh;
+     }
+   if (str3)
+     {
+	ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
+	mh = (rect2.width > mh) ? rect2.width : mh;
+     }
    mh += 10;
 
-   if (sscanf(str1, "%s", line) > 0)
+   if (str1 && sscanf(str1, "%s", line) > 0)
      {
 	w = 5 + (((580 - mh) * 0) / 4);
 	XMoveResizeWindow(dd, b1, w, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b1,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
-   if (sscanf(str2, "%s", line) > 0)
+   if (str2 && sscanf(str2, "%s", line) > 0)
      {
 	w = 5 + (((580 - mh) * 1) / 2);
 	XMoveResizeWindow(dd, b2, w, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b2,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
-   if (sscanf(str3, "%s", line) > 0)
+   if (str3 && sscanf(str3, "%s", line) > 0)
      {
 	w = 5 + (((580 - mh) * 2) / 2);
 	XMoveResizeWindow(dd, b3, w, 440 - 15 - fh, mh + 10, fh + 10);
@@ -443,7 +455,7 @@ ShowAlert(char *text)
 		       k += fh + 2;
 		    }
 	       }
-	     if (sscanf(str1, "%s", line) > 0)
+	     if (str1 && sscanf(str1, "%s", line) > 0)
 	       {
 		  ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
 		  h = rect2.width;
@@ -453,7 +465,7 @@ ShowAlert(char *text)
 		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
-	     if (sscanf(str2, "%s", line) > 0)
+	     if (str2 && sscanf(str2, "%s", line) > 0)
 	       {
 		  ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
 		  h = rect2.width;
@@ -463,7 +475,7 @@ ShowAlert(char *text)
 		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
-	     if (sscanf(str3, "%s", line) > 0)
+	     if (str3 && sscanf(str3, "%s", line) > 0)
 	       {
 		  ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
 		  h = rect2.width;
@@ -486,10 +498,12 @@ ShowAlert(char *text)
      case 1:
 	break;
      case 2:
-	SessionExit(EEXIT_RESTART, NULL);
+	if (getpid() == Mode.wm.pid)
+	   SessionExit(EEXIT_RESTART, NULL);
 	break;
      case 3:
-	SessionExit(EEXIT_EXIT, NULL);
+	if (getpid() == Mode.wm.pid)
+	   SessionExit(EEXIT_EXIT, NULL);
 	break;
      default:
 	break;

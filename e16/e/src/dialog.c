@@ -2087,7 +2087,7 @@ DialogAlertOK(const char *fmt, ...)
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);
    va_end(ap);
-   AlertX(_("Attention !!!"), _("OK"), " ", " ", text);
+   AlertX(_("Attention !!!"), _("OK"), NULL, NULL, text);
 }
 
 /*

@@ -120,7 +120,7 @@ SetupX(const char *dstr)
 
    /* In case we are going to fork, set up the master pid */
    Mode.wm.master = 1;
-   Mode.wm.master_pid = getpid();
+   Mode.wm.master_pid = Mode.wm.pid = getpid();
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
    disp = EDisplayOpen(dstr);
@@ -177,6 +177,7 @@ SetupX(const char *dstr)
 		  /* We are a slave */
 		  EDisplayDisconnect();
 		  Mode.wm.master = 0;
+		  Mode.wm.pid = getpid();
 		  VRoot.scr = i;
 #ifdef SIGSTOP
 		  kill(getpid(), SIGSTOP);

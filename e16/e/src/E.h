@@ -1006,6 +1006,7 @@ typedef struct
       char                master;	/* We are the master E */
       char                single;	/* No slaves */
       char                window;	/* Running in virtual root window */
+      pid_t               pid;
       pid_t               master_pid;
       int                 master_screen;
       char                session_start;
