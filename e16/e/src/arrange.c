@@ -572,8 +572,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
       Efree(yarray);
    if (filled)
       Efree(filled);
-   if (spaces);
-   Efree(spaces);
+   if (spaces)
+      Efree(spaces);
    if (leftover)
       Efree(leftover);
 
