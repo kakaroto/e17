@@ -316,7 +316,7 @@ session_item_selected_cb(void *data, Evas_Object * o, const char *emission,
    {
       Entrance_X_Session *exs = (Entrance_X_Session *) data;
 
-      entrance_session_xsession_set(session, exs->name);
+      entrance_session_x_session_set(session, exs);
    }
 }
 
@@ -797,9 +797,9 @@ main(int argc, char *argv[])
          in the config's session list */
       if (edje_object_part_exists(edje, "EntranceSession"))
       {
-         entrance_session_xsession_set(session,
-                                       entrance_session_default_xsession_get
-                                       (session));
+         entrance_session_x_session_set(session,
+                                        entrance_session_x_session_default_get
+                                        (session));
       }
       /* See if we have an EntranceSessionList part, tell the session to load 
          the session list if it exists. */

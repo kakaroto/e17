@@ -18,6 +18,7 @@
 #include "entrance_auth.h"
 #include "entrance_config.h"
 #include "entrance_user.h"
+#include "entrance_x_session.h"
 
 /**
  * This is the handle to all of the data we've allocated in entrance
@@ -45,12 +46,13 @@ void entrance_session_user_reset(Entrance_Session * e);
 void entrance_session_user_set(Entrance_Session * e, Entrance_User * user);
 void entrance_session_user_session_default_set(Entrance_Session * e);
 void entrance_session_start_user_session(Entrance_Session * e);
-void entrance_session_xsession_set(Entrance_Session * e,
-                                   const char *xsession);
 void entrance_session_edje_object_set(Entrance_Session * e,
                                       Evas_Object * obj);
 void entrance_session_list_add(Entrance_Session * e);
 void entrance_session_user_list_add(Entrance_Session * e);
-const char *entrance_session_default_xsession_get(Entrance_Session * e);
+Entrance_X_Session *entrance_session_x_session_default_get(Entrance_Session *
+                                                           e);
+void entrance_session_x_session_set(Entrance_Session * e,
+                                    Entrance_X_Session * exs);
 
 #endif

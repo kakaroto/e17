@@ -24,9 +24,6 @@ extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
 static void _entrance_session_user_list_fix(Entrance_Session * e);
 
-static void entrance_session_xsession_load(Entrance_Session * e,
-                                           const char *key);
-
 /**
  * entrance_session_new: allocate a new  Entrance_Session
  * @param config - parse this config file instead of the normal system one
@@ -171,6 +168,7 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
 {
    Evas_Object *obj = NULL;
    const char *file = NULL;
+   Entrance_X_Session *exs = NULL;
 
    if (e && eu)
    {
@@ -189,10 +187,11 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
                if (e->session)
                   free(e->session);
                e->session = strdup(eu->session);
-               entrance_session_xsession_load(e, eu->session);
-
-               /* FIXME: Should this be optional ? */
-
+               if ((exs =
+                    evas_hash_find(e->config->sessions.hash, eu->session)))
+               {
+                  entrance_session_x_session_set(e, exs);
+               }
             }
 #if 0
             if ((pass = edje_file_data_get(file, "password")))
@@ -353,74 +352,39 @@ entrance_session_start_user_session(Entrance_Session * e)
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
 }
 
-/**
- * entrance_session_xsession_load : The error checking part of
- * entrance_session_xsession_set.  It only frees the current EntranceSession
- * object in the main edje if loading the newly requested one was
- * successful.
- * @param e - the entrance session you want to set the session for
- * @param key - the key in the config hash that has this session
- */
-static void
-entrance_session_xsession_load(Entrance_Session * e, const char *key)
-{
-   if (e && e->edje)
-   {
-      char buf[PATH_MAX];
-      Entrance_X_Session *exs = NULL;
-      Evas_Object *o = NULL, *old_o = NULL;
-
-      if ((exs = evas_hash_find(e->config->sessions.hash, key)))
-      {
-         snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
-                  e->config->theme);
-         if ((o = entrance_x_session_edje_get(exs, e->edje, buf)))
-         {
-            if (e->session)
-               free(e->session);
-            e->session = strdup(key);
-
-            old_o = edje_object_part_swallow_get(e->edje, "EntranceSession");
-            if (old_o)
-            {
-               edje_object_part_unswallow(e->edje, old_o);
-               evas_object_del(old_o);
-            }
-            edje_object_part_swallow(e->edje, "EntranceSession", o);
-            edje_object_signal_emit(e->edje, "SessionDefaultChanged", "");
-         }
-      }
-   }
-}
 
 /**
  * entrance_session_xsession_set : Set the current xsesssion to the
  * specified key, emit a signal to the main edje letting it know the main
  * session has changed
  * @param e - the entrance session you want to set the session for
- * @param key - the key in the config hash that has this session
+ * @param exs - the Entrance_X_Session we want to be the new current
  */
 void
-entrance_session_xsession_set(Entrance_Session * e, const char *key)
+entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
 {
-   char *str = NULL;
-   char buf[PATH_MAX];
-
-   if (!e || !key)
-      return;
-
-   if ((str = evas_hash_find(e->config->sessions.hash, key)))
+   if (e && e->edje && exs)
    {
-      snprintf(buf, PATH_MAX, "%s", key);
-      if (strcmp(str, e->session))
+      const char *file = NULL;
+      Evas_Object *o = NULL, *old_o = NULL;
+
+      edje_object_file_get(e->edje, &file, NULL);
+      if ((o = entrance_x_session_edje_get(exs, e->edje, file)))
       {
-         entrance_session_xsession_load(e, key);
+         if (e->session)
+            free(e->session);
+         e->session = strdup(exs->session);
+
+         old_o = edje_object_part_swallow_get(e->edje, "EntranceSession");
+         if (old_o)
+         {
+            edje_object_part_unswallow(e->edje, old_o);
+            evas_object_del(old_o);
+         }
+         edje_object_part_swallow(e->edje, "EntranceSession", o);
+         edje_object_signal_emit(e->edje, "SessionDefaultChanged", "");
+         edje_object_signal_emit(e->edje, "SessionSelected", "");
       }
-      edje_object_signal_emit(e->edje, "SessionSelected", "");
-   }
-   else
-   {
-      fprintf(stderr, "Unable to find session %s\n", key);
    }
 }
 
@@ -449,12 +413,12 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
 void
 entrance_session_list_add(Entrance_Session * e)
 {
-   char buf[PATH_MAX];
-   Evas_List *l = NULL;
-   Entrance_X_Session *exs = NULL;
-   const char *key = NULL;
    Evas_Coord w, h;
+   Evas_List *l = NULL;
+   const char *key = NULL;
+   const char *file = NULL;
    Evas_Object *edje = NULL;
+   Entrance_X_Session *exs = NULL;
    Evas_Object *container = NULL;
 
    if (!e || !e->edje || !e->config)
@@ -478,15 +442,13 @@ entrance_session_list_add(Entrance_Session * e)
                                      CONTAINER_FILL_POLICY_KEEP_ASPECT);
          e_container_direction_set(container, 1);
       }
-
-      snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
-               e->config->theme);
+      edje_object_file_get(e->edje, &file, NULL);
       for (l = e->config->sessions.keys; l; l = l->next)
       {
          key = (const char *) l->data;
          if ((exs = evas_hash_find(e->config->sessions.hash, key)))
          {
-            if ((edje = entrance_x_session_edje_get(exs, e->edje, buf)))
+            if ((edje = entrance_x_session_edje_get(exs, e->edje, file)))
             {
                e_container_element_append(container, edje);
             }
@@ -553,17 +515,18 @@ entrance_session_user_list_add(Entrance_Session * e)
  * session that's the first item in the system's session list
  * @param e - the entrance session you're working with
  */
-const char *
-entrance_session_default_xsession_get(Entrance_Session * e)
+Entrance_X_Session *
+entrance_session_x_session_default_get(Entrance_Session * e)
 {
    Evas_List *l = NULL;
-   const char *result = NULL;
+   Entrance_X_Session *result = NULL;
 
    if (e && e->config)
    {
       if ((l = e->config->sessions.keys))
       {
-         result = (const char *) l->data;
+         result =
+            evas_hash_find(e->config->sessions.hash, (const char *) l->data);
       }
    }
    return (result);
