@@ -1978,28 +1978,28 @@ collections
 		name, "ZoomNormalRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonZoomNormal";
-		action, SIGNAL_EMIT "EnticeZoomDefault" "";
+		action, SIGNAL_EMIT "EnticeImageZoomDefault" "";
 	    }
 	    program
 	    {
 		name,   "ZoomInRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonZoomIn";
-		action, SIGNAL_EMIT "EnticeZoomIn" "";
+		action, SIGNAL_EMIT "EnticeImageZoomIn" "";
 	    }
 	    program
 	    {
 		name,   "ZoomOutRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonZoomOut";
-		action, SIGNAL_EMIT "EnticeZoomOut" "";
+		action, SIGNAL_EMIT "EnticeImageZoomOut" "";
 	    }
 	    program
 	    {
 		name,   "ExpandRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonExpandImage";
-		action, SIGNAL_EMIT "EnticeZoomFit" "";
+		action, SIGNAL_EMIT "EnticeImageZoomFit" "";
 	    }
 	    program
 	    {
@@ -2031,7 +2031,7 @@ collections
 		name, "DeleteFileFromFSRequest";
 		signal, "mouse,clicked,1";
 		source, "DeleteFromFS";
-		action, SIGNAL_EMIT "EnticeDeleteCurrent" "";
+		action, SIGNAL_EMIT "EnticeImageDelete" "";
 		after, "DeleteDialogHide";
 	    }
 	    program
@@ -2039,7 +2039,7 @@ collections
 		name, "DeleteFileFromEnticeRequest";
 		signal, "mouse,clicked,1";
 		source, "DeleteFromEntice";
-		action, SIGNAL_EMIT "EnticeRemoveCurrent" "";
+		action, SIGNAL_EMIT "EnticeImageRemove" "";
 		after, "DeleteDialogHide";
 	    }
 	    program
@@ -2056,21 +2056,21 @@ collections
 		name, "SaveImageRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonSaveImage";
-		action, SIGNAL_EMIT "EnticeSaveCurrent" "";
+		action, SIGNAL_EMIT "EnticeImageSave" "";
 	    }
 	    program
 	    {
 		name, "RotateRightImageRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonRotateRight";
-		action, SIGNAL_EMIT "EnticeRotateRight" "";
+		action, SIGNAL_EMIT "EnticeImageRotateRight" "";
 	    }
 	    program
 	    {
 		name, "RotateLeftImageRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonRotateLeft";
-		action, SIGNAL_EMIT "EnticeRotateLeft" "";
+		action, SIGNAL_EMIT "EnticeImageRotateLeft" "";
 	    }
 	    program
 	    {
