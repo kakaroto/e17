@@ -14,6 +14,7 @@
  * * fix mouse overs etc to reach all the sub icons (currently missine ends)
  *
  * * pick up apps on enable (startup OK, disable then enable not)
+ * * When a window gets focus move the selected_app pointer
  * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
  * * bounce icons on click ( following e_app exec hints? )
  *
@@ -90,6 +91,7 @@ static void    _engage_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, v
 static void    _engage_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void    _engage_icon_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 #if 0
 static void    _engage_icon_reorder_before(Engage_Icon *ic, Engage_Icon *before);
@@ -660,6 +662,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    ic->app = a;
    ic->scale = 1.0;
    ic->temp = 0;
+   ic->selected_app = NULL;
    e_object_ref(E_OBJECT(a));
    eb->icons = evas_list_append(eb->icons, ic);
 
@@ -673,6 +676,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _engage_icon_cb_mouse_out, ic);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_icon_cb_mouse_down, ic);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _engage_icon_cb_mouse_up, ic);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_WHEEL, _engage_icon_cb_mouse_wheel, ic);
    evas_object_show(o);
 
    o = edje_object_add(eb->evas);
@@ -810,6 +814,21 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
 static void
 _engage_app_icon_free(Engage_App_Icon *ai)
 {
+  // If this app_icon is selected_app, then try to make next the
+   // selected_app, then the previous, or make it null if was only app.
+   if(ai->ic->selected_app)
+     {
+       if(ai->ic->selected_app->data == ai)
+	 {
+	   if(ai->ic->selected_app->next)
+	     ai->ic->selected_app = ai->ic->selected_app->next;
+	   else if(ai->ic->selected_app->prev)
+	     ai->ic->selected_app = ai->ic->selected_app->prev;
+	   else
+	     ai->ic->selected_app = NULL;
+	 }
+     }
+
    ai->ic->extra_icons = evas_list_remove(ai->ic->extra_icons, ai);
    if (ai->bg_object) evas_object_del(ai->bg_object);
    if (ai->overlay_object) evas_object_del(ai->overlay_object);
@@ -1395,13 +1414,46 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	       }
 	     else
 	       {
-		  arc = ((2 * M_PI) / 3) / (evas_list_count(icon->extra_icons) - 1);
+		  int i = 0, selected_pos = 0, app_cnt;
+
+		  app_cnt = evas_list_count(icon->extra_icons);
+
+		  extras = icon->extra_icons;
+
+		  // if first time through, then set to first app
+		  if(!icon->selected_app)
+		    icon->selected_app = icon->extra_icons;
+
+		  // get the position we are currently in
+		  while(extras)
+		    {
+		      if(icon->selected_app == extras)
+			break;
+
+		      selected_pos++;
+		      extras = extras->next;
+		    }
+
+		  // divide the 120 degrees of a circle into the proper number of
+		  // divisions to make it possible to rotate the app icons around
+		  // in their 60 degree arc
+		  arc = ((2 * M_PI) / 3) / (app_cnt * 2 - 2);
 		  theta = (-2 * M_PI) / 6;
- 
-		  for (extras = icon->extra_icons; extras; extras = extras->next)
+
+		  // start at back of list so that the app_icon for the 
+		  // first item will be placed directly above the main engage icon
+		  extras = evas_list_last(icon->extra_icons);
+
+		  // loop through twice as many times (-1) times the number of apps
+		  // so that we have the proper number of places to put icons
+		  while(i < app_cnt * 2 - 1)
 		    {
 		       Engage_App_Icon *ai;
-		       Evas_Coord x, y;
+		       Evas_Coord x, y, ax, ay;
+
+		       // if we've placed all the icons, then break
+		       if(!extras)
+			 break;
 
 		       ai = extras->data;
 		       x = radius * sin(theta);
@@ -1410,16 +1462,44 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 		       evas_object_resize(ai->bg_object, app_size, app_size);
 
 		       if (edge == E_GADMAN_EDGE_LEFT)
-			 evas_object_move(ai->bg_object, cx + y - halfapp_size, cy + x - halfapp_size);
+			 {
+			   ax = cx + y - halfapp_size;
+			   ay = cy + x - halfapp_size;
+			 }
 		       else if (edge == E_GADMAN_EDGE_RIGHT)
-			 evas_object_move(ai->bg_object, cx - y - halfapp_size, cy - x - halfapp_size);
+			 {
+			   ax = cx - y - halfapp_size;
+			   ay = cy - x - halfapp_size;
+			 }	     
 		       else if (edge == E_GADMAN_EDGE_TOP)
-			 evas_object_move(ai->bg_object, cx + x - halfapp_size, cy + y - halfapp_size);
+			 {
+			   ax = cx + x - halfapp_size;
+			   ay = cy + y - halfapp_size;
+			 }
 		       else
-			 evas_object_move(ai->bg_object, cx - x - halfapp_size, cy - y - halfapp_size);
+			 {
+			   ax = cx - x - halfapp_size;
+			   ay = cy - y - halfapp_size;
+			 }
+			 
+		       // if we are currently in a position that is above the number of
+		       // the currently selected app icon but is not past the slots where 
+		       // we place the app icons
+		       if(i >= selected_pos && i <= app_cnt + selected_pos)
+			 {
+			   evas_object_move(ai->bg_object, ax, ay);
+			   evas_object_show(ai->bg_object);
+			       
+			   // raise the app icon we are on above the others
+			   if(x == 0)
+			     evas_object_layer_set(ai->bg_object, 1);
+			   else
+			     evas_object_layer_set(ai->bg_object, 0);
 
-		       evas_object_show(ai->bg_object);
-		       theta += arc;
+			   extras = extras->prev;
+			 }		       
+ 		       theta += arc;
+		       i++;
 		    }
 	       }
 	  }
@@ -1658,6 +1738,52 @@ _engage_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info
 	edje_object_signal_emit(ic->overlay_object, "start_end", "");
      }
 }
+
+static void
+_engage_icon_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+  Evas_Event_Mouse_Wheel *ev;
+  Engage_Icon *ic;
+  Engage_App_Icon *ai;
+  
+  ev = event_info;
+  ic = data;
+
+  if(!ic->extra_icons)
+    return;
+
+  if(ev->z > 0) // Wheel Down, traverse clockwise
+    {
+      if(!ic->selected_app)
+	ic->selected_app = ic->extra_icons;
+      else
+	{
+	  if(ic->selected_app->next)
+	    ic->selected_app = ic->selected_app->next;
+	}
+    }
+  else // Wheel Up, traverse counterclockwise
+    {
+      if(!ic->selected_app)
+	ic->selected_app = evas_list_last(ic->extra_icons);
+      else
+	{
+	  if(ic->selected_app->prev)
+	    ic->selected_app = ic->selected_app->prev;
+	}
+    }
+  
+   ai = ic->selected_app->data;
+   edje_object_signal_emit(ai->bg_object, "start", "");
+   edje_object_signal_emit(ai->overlay_object, "start", "");
+   if (ai->min)
+     e_border_uniconify(ai->border);
+   e_border_raise(ai->border);
+   e_desk_show(ai->border->desk);
+
+   _engage_bar_motion_handle(ic->eb, ev->canvas.x, ev->canvas.y);
+}
+
 
 static void
 _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)

@@ -77,7 +77,7 @@ struct _Engage_Icon
    Evas_Object   *overlay_object;
    Evas_Object   *icon_object;
    Evas_Object   *event_object;
-   Evas_List     *extra_icons;
+   Evas_List     *extra_icons, *selected_app;
 
    double         scale;
    int            temp;
