@@ -187,7 +187,6 @@ entice_init(Ecore_Evas * ee)
       }
       if ((str = edje_object_data_get(e->edje, "entice.window.type")))
       {
-         fprintf(stderr, "%s entice.window.type\n", str);
          if (!strcmp(str, "shaped"))
          {
             ecore_evas_borderless_set(ee, 1);

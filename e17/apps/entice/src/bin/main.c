@@ -47,6 +47,7 @@ win_mouse_in_cb(Ecore_Evas * ee)
 static void
 win_resize_cb(Ecore_Evas * ee)
 {
+   Evas_Object *o = NULL;
    int x, y, w, h;
 
    if (ee)
@@ -55,6 +56,8 @@ win_resize_cb(Ecore_Evas * ee)
       if (!ecore_evas_fullscreen_get(ee))
          entice_config_geometry_set(x, y, w, h);
       entice_resize(w, h);
+      if ((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+         esmart_trans_x11_freshen(o, x, y, w, h);
    }
 }
 
@@ -66,11 +69,14 @@ static void
 win_move_cb(Ecore_Evas * ee)
 {
    int x, y, w, h;
+   Evas_Object *o = NULL;
 
    if (ee)
    {
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       entice_config_geometry_set(x, y, w, h);
+      if ((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+         esmart_trans_x11_freshen(o, x, y, w, h);
    }
 }
 
