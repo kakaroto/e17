@@ -228,6 +228,10 @@ void                 imlib_reset_color_modifier(void);
 void                 imlib_apply_color_modifier(void);
 void                 imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height);
 
+int
+imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
+                  int ymax, int *clip_x0, int *clip_y0, int *clip_x1,
+                  int *clip_y1);
 Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates);
 /* draw line clipped into rectangle - results in no draw if line is not inside
  * rectangle */

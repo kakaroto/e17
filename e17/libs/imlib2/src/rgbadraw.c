@@ -1530,7 +1530,7 @@ __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
 {
    int                 cx0, cx1, cy0, cy1;
 
-   if (__imlib_clip_line
+   if (imlib_clip_line
        (x1, y1, x2, y2, clip_xmin, clip_xmax, clip_ymin, clip_ymax, &cx0, &cy0,
         &cx1, &cy1))
    {
@@ -1542,7 +1542,7 @@ __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
 }
 
 int
-__imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
+imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
                   int ymax, int *clip_x0, int *clip_y0, int *clip_x1,
                   int *clip_y1)
 {
