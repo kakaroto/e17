@@ -5,6 +5,8 @@ void            __ewl_notebook_init(Ewl_Notebook * n);
 void            __ewl_notebook_configure(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
 void            __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w);
+void            __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+					Ewl_Orientation o);
 
 
 void __ewl_notebook_tabcb(Ewl_Widget *widget, void *ev_data, void *user_data); 
@@ -48,7 +50,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * policy to fill the area available.
 	 */
 	ewl_container_init(EWL_CONTAINER(w), "tnotebook", __ewl_notebook_add,
-			NULL, NULL);
+			__ewl_notebook_resize, NULL);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
@@ -63,7 +65,9 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 */
 	n->tab_box = ewl_hbox_new();
 	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FILL_POLICY_HFILL);
+	ewl_object_set_alignment(EWL_OBJECT(n->tab_box), EWL_ALIGNMENT_LEFT |
+			EWL_ALIGNMENT_TOP);
 	ewl_container_append_child(EWL_CONTAINER(n), n->tab_box);
 	ewl_widget_show(n->tab_box);
 
@@ -416,21 +420,30 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			snprintf(file, PATH_LEN, "lnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
+			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+					EWL_FILL_POLICY_VFILL);
+			break;
 		case EWL_POSITION_RIGHT:
 			snprintf(file, PATH_LEN, "rnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
+			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+					EWL_FILL_POLICY_VFILL);
 			break;
 		case EWL_POSITION_BOTTOM:
 			snprintf(file, PATH_LEN, "bnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
+			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+					EWL_FILL_POLICY_HFILL);
 			break;
 		case EWL_POSITION_TOP:
 		default:
 			snprintf(file, PATH_LEN, "tnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
+			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+					EWL_FILL_POLICY_HFILL);
 			break;
 	}
 
@@ -498,12 +511,12 @@ void __ewl_notebook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * direction.
 	 */
 	if (n->flags & EWL_POSITION_LEFT || n->flags & EWL_POSITION_RIGHT) {
-		width = CURRENT_W(n);
-		height = CURRENT_H(n) / 2;
-	}
-	else {
 		width = CURRENT_W(n) / 2;
 		height = CURRENT_H(n);
+	}
+	else {
+		width = CURRENT_W(n);
+		height = CURRENT_H(n) / 2;
 	}
 
 	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
