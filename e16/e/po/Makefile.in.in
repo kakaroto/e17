@@ -19,8 +19,8 @@ VPATH = @srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 datadir = $(prefix)/@DATADIRNAME@
-localedir = @ENLIGHTENMENT_ROOT@/locale
-gnulocaledir = @ENLIGHTENMENT_ROOT@/locale
+localedir = @LOCALEDIR@
+gnulocaledir = @LOCALEDIR@
 gettextsrcdir = $(prefix)/share/gettext/po
 subdir = po
 
@@ -51,8 +51,8 @@ stamp-cat-id $(POFILES) $(GMOFILES) $(SOURCES)
 
 POTFILES = \
 
-CATALOGS = nl.gmo de.gmo hu.gmo
-CATOBJEXT = .gmo
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
 INSTOBJEXT = @INSTOBJEXT@
 
 .SUFFIXES:

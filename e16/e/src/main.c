@@ -60,7 +60,7 @@ main(int argc, char **argv)
 /* Part of gettext stuff */
 
    setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, ENLIGHTENMENT_ROOT "/locale");
+   bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
 
 /* End of gettext stuff */
