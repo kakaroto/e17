@@ -1479,3 +1479,11 @@ Tue Dec  7 20:02:09 PST 1999
 Config file support and a new config dialog for E-Time.  You can set the
 strings passed to strftime() for each line, and you can also set the text
 justification (right or left).
+
+-------------------------------------------------------------------------------
+
+Wed Dec  8 15:41:25 PST 1999
+(KainX)
+
+Applied a patch from Michael Roberts <m.t.roberts@student.murdoch.edu.au> so
+that invisible gadgets won't try to redraw themselves.

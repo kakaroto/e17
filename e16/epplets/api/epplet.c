@@ -8,15 +8,15 @@
 #include <sys/wait.h>
 
 typedef struct epplet_window
-{
-   Window              win;
-   int                 w;
-   int                 h;
-   char                win_vert;
-   Pixmap              bg_pmap;
-   Pixmap              bg_mask;
-   Pixmap              bg_bg;
-}
+  {
+     Window              win;
+     int                 w;
+     int                 h;
+     char                win_vert;
+     Pixmap              bg_pmap;
+     Pixmap              bg_mask;
+     Pixmap              bg_bg;
+  }
 EppWindow;
 typedef EppWindow  *Epplet_window;
 
@@ -75,11 +75,11 @@ static void         (*buttonrelease_func) (void *data, Window win, int x, int y,
 					   int b) =            NULL;
 static void         (*mousemotion_func) (void *data, Window win, int x, int y) =
 
-   NULL;
+                    NULL;
 static void         (*keypress_func) (void *data, Window win, char *key) = NULL;
 static void         (*keyrelease_func) (void *data, Window win, char *key) =
 
-   NULL;
+                    NULL;
 static void         (*enter_func) (void *data, Window win) = NULL;
 static void         (*leave_func) (void *data, Window win) = NULL;
 static void         (*focusin_func) (void *data, Window win) = NULL;
@@ -98,32 +98,32 @@ static Epplet_window Epplet_window_get_from_Window(Window win);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
-{
-   unsigned long       flags;
-   unsigned long       functions;
-   unsigned long       decorations;
-   long                inputMode;
-   unsigned long       status;
-}
+  {
+     unsigned long       flags;
+     unsigned long       functions;
+     unsigned long       decorations;
+     long                inputMode;
+     unsigned long       status;
+  }
 MWMHints;
 struct _etimer
-{
-   char               *name;
-   void                (*func) (void *data);
-   void               *data;
-   double              in;
-   char                just_added;
-   ETimer             *next;
-};
+  {
+     char               *name;
+     void                (*func) (void *data);
+     void               *data;
+     double              in;
+     char                just_added;
+     ETimer             *next;
+  };
 
 #define ESYNC ECommsSend("nop");free(ECommsWaitForMessage());
 
 /* The structures for the config file management ... */
 typedef struct _configdict
-{
-   ConfigItem         *entries;
-   int                 num_entries;
-}
+  {
+     ConfigItem         *entries;
+     int                 num_entries;
+  }
 ConfigDict;
 
 static ConfigDict  *config_dict = NULL;
@@ -196,11 +196,11 @@ typedef enum gad_type
 GadType;
 
 typedef struct gad_general
-{
-   GadType             type;
-   char                visible;
-   Epplet_window       parent;
-}
+  {
+     GadType             type;
+     char                visible;
+     Epplet_window       parent;
+  }
 GadGeneral;
 
 void
@@ -472,7 +472,7 @@ Epplet_create_window_config(int w, int h, char *title,
 			    void (*ok_func) (void *data),
 			    void *ok_data, void (*apply_func) (void *data),
 			    void *apply_data,
-			    void (*cancel_func) (void *data), void *cancel_data)
+			  void (*cancel_func) (void *data), void *cancel_data)
 {
    Window              ret;
    Epplet_gadget       ok_btn, apply_btn, cancel_btn;
@@ -615,10 +615,10 @@ Epplet_window_push_context(Window newwin)
       return;
 
    if (
-       ((window_stack
-	 =
-	 realloc(window_stack,
-		 sizeof(Epplet_window) * (window_stack_pos + 1))) == NULL))
+	 ((window_stack
+	   =
+	   realloc(window_stack,
+		   sizeof(Epplet_window) * (window_stack_pos + 1))) == NULL))
       exit(1);
    window_stack[window_stack_pos] = win;
    window_stack_pos++;
@@ -633,10 +633,10 @@ Epplet_window_pop_context(void)
    window_stack_pos--;
    ret = window_stack[window_stack_pos];
    if (
-       ((window_stack
-	 =
-	 realloc(window_stack,
-		 sizeof(Epplet_window) * (window_stack_pos))) == NULL))
+	 ((window_stack
+	   =
+	   realloc(window_stack,
+		   sizeof(Epplet_window) * (window_stack_pos))) == NULL))
       exit(1);
    /* Window stack pos == 0 corresponds to the main epplet window */
    if (window_stack_pos < 1)
@@ -789,7 +789,8 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window Epplet_get_main_window(void)
+Window 
+Epplet_get_main_window(void)
 {
    return mainwin->win;
 }
@@ -910,8 +911,8 @@ Epplet_textclass_get_size(char *iclass, int *w, int *h, char *txt)
 
 void
 Epplet_register_expose_handler(void (*func)
-			       (void *data, Window win, int x, int y, int w,
-				int h), void *data)
+	                         (void *data, Window win, int x, int y, int w,
+				  int h), void *data)
 {
    expose_data = data;
    expose_func = func;
@@ -919,8 +920,8 @@ Epplet_register_expose_handler(void (*func)
 
 void
 Epplet_register_move_resize_handler(void (*func)
-				    (void *data, Window win, int x, int y,
-				     int w, int h), void *data)
+		                        (void *data, Window win, int x, int y,
+					 int w, int h), void *data)
 {
    moveresize_data = data;
    moveresize_func = func;
@@ -928,8 +929,8 @@ Epplet_register_move_resize_handler(void (*func)
 
 void
 Epplet_register_button_press_handler(void (*func)
-				     (void *data, Window win, int x, int y,
-				      int b), void *data)
+		                        (void *data, Window win, int x, int y,
+					 int b), void *data)
 {
    buttonpress_data = data;
    buttonpress_func = func;
@@ -937,8 +938,8 @@ Epplet_register_button_press_handler(void (*func)
 
 void
 Epplet_register_button_release_handler(void (*func)
-				       (void *data, Window win, int x, int y,
-					int b), void *data)
+		                        (void *data, Window win, int x, int y,
+					 int b), void *data)
 {
    buttonrelease_data = data;
    buttonrelease_func = func;
@@ -946,7 +947,7 @@ Epplet_register_button_release_handler(void (*func)
 
 void
 Epplet_register_key_press_handler(void (*func)
-				  (void *data, Window win, char *key),
+		                          (void *data, Window win, char *key),
 				  void *data)
 {
    keypress_data = data;
@@ -955,7 +956,7 @@ Epplet_register_key_press_handler(void (*func)
 
 void
 Epplet_register_key_release_handler(void (*func)
-				    (void *data, Window win, char *key),
+		                          (void *data, Window win, char *key),
 				    void *data)
 {
    keyrelease_data = data;
@@ -964,7 +965,7 @@ Epplet_register_key_release_handler(void (*func)
 
 void
 Epplet_register_mouse_motion_handler(void (*func)
-				     (void *data, Window win, int x, int y),
+		                       (void *data, Window win, int x, int y),
 				     void *data)
 {
    mousemotion_data = data;
@@ -973,7 +974,7 @@ Epplet_register_mouse_motion_handler(void (*func)
 
 void
 Epplet_register_mouse_enter_handler(void (*func)
-				    (void *data, Window win), void *data)
+		                         (void *data, Window win), void *data)
 {
    enter_data = data;
    enter_func = func;
@@ -981,7 +982,7 @@ Epplet_register_mouse_enter_handler(void (*func)
 
 void
 Epplet_register_mouse_leave_handler(void (*func)
-				    (void *data, Window win), void *data)
+		                         (void *data, Window win), void *data)
 {
    leave_data = data;
    leave_func = func;
@@ -989,7 +990,7 @@ Epplet_register_mouse_leave_handler(void (*func)
 
 void
 Epplet_register_focus_in_handler(void (*func)
-				 (void *data, Window win), void *data)
+		                         (void *data, Window win), void *data)
 {
    focusin_data = data;
    focusin_func = func;
@@ -997,7 +998,7 @@ Epplet_register_focus_in_handler(void (*func)
 
 void
 Epplet_register_focus_out_handler(void (*func)
-				  (void *data, Window win), void *data)
+		                         (void *data, Window win), void *data)
 {
    focusout_data = data;
    focusout_func = func;
@@ -1005,7 +1006,7 @@ Epplet_register_focus_out_handler(void (*func)
 
 void
 Epplet_register_delete_event_handler(int (*func)
-				     (void *data, Window win), void *data)
+		                         (void *data, Window win), void *data)
 {
    delete_data = data;
    delete_func = func;
@@ -1013,7 +1014,7 @@ Epplet_register_delete_event_handler(int (*func)
 
 void
 Epplet_register_event_handler(void (*func)
-			      (void *data, XEvent * ev), void *data)
+		                        (void *data, XEvent * ev), void *data)
 {
    event_data = data;
    event_func = func;
@@ -1396,10 +1397,10 @@ Epplet_prune_events(XEvent * ev, int num)
    /* any reason to remember the window properties? */
    for (i = 0; i < num; i++)
       if (
-	  ((ev[i].type == ConfigureNotify)
-	   && (ev->xconfigure.window == mainwin->win))
-	  || ((ev[i].type == PropertyNotify)
-	      && (ev->xproperty.window == mainwin->win)))
+	    ((ev[i].type == ConfigureNotify)
+	     && (ev->xconfigure.window == mainwin->win))
+	    || ((ev[i].type == PropertyNotify)
+		&& (ev->xproperty.window == mainwin->win)))
 	 Epplet_remember();
 }
 
@@ -2202,7 +2203,7 @@ Epplet_gadget
 Epplet_create_button(char *label, char *image, int x, int y,
 		     int w, int h, char *std, Window parent,
 		     Epplet_gadget pop_parent,
-		     void (*func) (void *data), void *data)
+		     void                (*func) (void *data), void *data)
 {
    GadButton          *g;
    XSetWindowAttributes attr;
@@ -2274,19 +2275,20 @@ Epplet_create_text_button(char *label, int x, int y,
 /* A cut down version for stdimage-only buttons */
 Epplet_gadget
 Epplet_create_std_button(char *std, int x, int y,
-			  void (*func) (void *data), void *data)
+			 void (*func) (void *data), void *data)
 {
    return Epplet_create_button(NULL, NULL, x, y, 12, 12, std, 0, NULL, func,
 			       data);
 }
 
 /* A cut down version for image-only buttons */
-Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
-                                     int w, int h,
-				     void (*func) (void *data), void *data)
+Epplet_gadget 
+Epplet_create_image_button(char *image, int x, int y,
+			   int w, int h,
+			   void (*func) (void *data), void *data)
 {
    return Epplet_create_button(NULL, image, x, y, w, h, NULL, 0, NULL, func,
-                               data);
+			       data);
 }
 
 void
@@ -2413,7 +2415,7 @@ GadToggleButton;
 Epplet_gadget
 Epplet_create_togglebutton(char *label, char *image, int x,
 			   int y, int w, int h, int *val,
-			   void (*func) (void *data), void *data)
+			 void                (*func) (void *data), void *data)
 {
    GadToggleButton    *g;
    XSetWindowAttributes attr;
@@ -2541,7 +2543,8 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget 
+Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
@@ -2609,7 +2612,7 @@ GadHSlider;
 Epplet_gadget
 Epplet_create_hslider(int x, int y, int len, int min, int max,
 		      int step, int jump, int *val,
-		      void (*func) (void *data), void *data)
+		      void                (*func) (void *data), void *data)
 {
    GadHSlider         *g;
    XSetWindowAttributes attr;
@@ -2682,7 +2685,7 @@ Epplet_draw_hslider(Epplet_gadget eg)
      }
    Epplet_imageclass_apply("EPPLET_HSLIDER_BASE", "normal", g->win);
    XMoveWindow(disp, g->win_knob,
-	       g->x + ((g->w - 8) * (*(g->val))) / (g->max - g->min + 1), g->y);
+	     g->x + ((g->w - 8) * (*(g->val))) / (g->max - g->min + 1), g->y);
    Epplet_imageclass_apply("EPPLET_HSLIDER_KNOB", state, g->win_knob);
 }
 
@@ -2705,7 +2708,7 @@ GadVSlider;
 Epplet_gadget
 Epplet_create_vslider(int x, int y, int len, int min, int max,
 		      int step, int jump, int *val,
-		      void (*func) (void *data), void *data)
+		      void                (*func) (void *data), void *data)
 {
    GadVSlider         *g;
    XSetWindowAttributes attr;
@@ -2778,7 +2781,7 @@ Epplet_draw_vslider(Epplet_gadget eg)
      }
    Epplet_imageclass_apply("EPPLET_VSLIDER_BASE", "normal", g->win);
    XMoveWindow(disp, g->win_knob,
-	       g->x, g->y + ((g->h - 8) * (*(g->val))) / (g->max - g->min + 1));
+	     g->x, g->y + ((g->h - 8) * (*(g->val))) / (g->max - g->min + 1));
    Epplet_imageclass_apply("EPPLET_VSLIDER_KNOB", state, g->win_knob);
 }
 
@@ -2930,7 +2933,8 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget 
+Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
@@ -2999,7 +3003,8 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget 
+Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
@@ -3133,33 +3138,34 @@ GadPopEntry;
 
 typedef struct _gadpopupbutton GadPopupButton;
 typedef struct
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   Epplet_gadget       popbutton;
-   int                 entry_num;
-   GadPopEntry        *entry;
-   Window              win;
-   char                changed;
-}
+  {
+     GadGeneral          general;
+     int                 x, y, w, h;
+     Epplet_gadget       popbutton;
+     int                 entry_num;
+     GadPopEntry        *entry;
+     Window              win;
+     char                changed;
+  }
 GadPopup;
 
 struct _gadpopupbutton
-{
-   GadGeneral          general;
-   int                 x, y, w, h;
-   char               *label;
-   char               *image;
-   char                hilited;
-   char                clicked;
-   Epplet_gadget       popup;
-   char                popped;
-   char               *std;
-   Window              win;
-   Pixmap              pmap, mask;
-};
+  {
+     GadGeneral          general;
+     int                 x, y, w, h;
+     char               *label;
+     char               *image;
+     char                hilited;
+     char                clicked;
+     Epplet_gadget       popup;
+     char                popped;
+     char               *std;
+     Window              win;
+     Pixmap              pmap, mask;
+  };
 
-Epplet_gadget Epplet_create_popup(void)
+Epplet_gadget 
+Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
@@ -3195,7 +3201,7 @@ Epplet_gadget Epplet_create_popup(void)
 
 void
 Epplet_add_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
-		       void (*func)        (void *data), void *data)
+		       void                (*func) (void *data), void *data)
 {
    GadPopup           *g;
 
@@ -3536,46 +3542,57 @@ void
 Epplet_change_popbutton_popup(Epplet_gadget gadget, Epplet_gadget popup)
 {
    GadPopupButton     *g;
+   GadGeneral         *gg;
 
    g = (GadPopupButton *) gadget;
+   gg = (GadGeneral *) gadget;
    Epplet_gadget_destroy(g->popup);
    g->popped = 0;
    g->popup = popup;
-   Epplet_draw_popupbutton(gadget);
+   if (gg->visible != 0)
+      Epplet_draw_popupbutton(gadget);
 }
 
 void
 Epplet_change_image(Epplet_gadget gadget, int w, int h, char *image)
 {
    GadImage           *g;
+   GadGeneral         *gg;
 
    g = (GadImage *) gadget;
+   gg = (GadGeneral *) gadget;
    if (g->image)
       free(g->image);
    g->image = Estrdup(image);
    g->w = w;
    g->h = h;
-   Epplet_draw_image(gadget, 0);
+   if (gg->visible != 0)
+      Epplet_draw_image(gadget, 0);
 }
 
 void
 Epplet_move_image(Epplet_gadget gadget, int x, int y)
 {
    GadImage           *g;
+   GadGeneral         *gg;
 
    g = (GadImage *) gadget;
+   gg = (GadGeneral *) gadget;
    Epplet_draw_image(gadget, 1);
    g->x = x;
    g->y = y;
-   Epplet_draw_image(gadget, 0);
+   if (gg->visible != 0)
+      Epplet_draw_image(gadget, 0);
 }
 
 void
 Epplet_move_change_image(Epplet_gadget gadget, int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
+   GadGeneral         *gg;
 
    g = (GadImage *) gadget;
+   gg = (GadGeneral *) gadget;
    Epplet_draw_image(gadget, 1);
    if (g->image)
       free(g->image);
@@ -3584,15 +3601,18 @@ Epplet_move_change_image(Epplet_gadget gadget, int x, int y, int w, int h, char 
    g->h = h;
    g->x = x;
    g->y = y;
-   Epplet_draw_image(gadget, 0);
+   if (gg->visible != 0)
+      Epplet_draw_image(gadget, 0);
 }
 
 void
 Epplet_change_label(Epplet_gadget gadget, char *label)
 {
    GadLabel           *g;
+   GadGeneral         *gg;
 
    g = (GadLabel *) gadget;
+   gg = (GadGeneral *) gadget;
    if (g->label)
      {
 	if (label && !strcmp(g->label, label))
@@ -3601,10 +3621,12 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
 	   free(g->label);	/* The labels are different.  Proceed. */
      }
    g->label = Estrdup(label);
-   Epplet_draw_label(gadget, 0);
+   if (gg->visible != 0)
+      Epplet_draw_label(gadget, 0);
 }
 
-Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window 
+Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -4063,10 +4085,10 @@ Epplet_background_properties(char vertical, Window newwin)
 
    if (vertical)
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_VERTICAL", "normal",
-				    &win->bg_bg, &win->bg_mask, win->w, win->h);
+				  &win->bg_bg, &win->bg_mask, win->w, win->h);
    else
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
-				    &win->bg_bg, &win->bg_mask, win->w, win->h);
+				  &win->bg_bg, &win->bg_mask, win->w, win->h);
    win->bg_pmap = XCreatePixmap(disp, win->win, win->w, win->h, id->x.depth);
 
    gc = XCreateGC(disp, win->bg_pmap, 0, &gcv);
@@ -4670,7 +4692,8 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
    XFreeGC(disp, gc);
 }
 
-RGB_buf Epplet_make_rgb_buf(int w, int h)
+RGB_buf 
+Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;
@@ -4768,7 +4791,7 @@ Epplet_destroy_spawned_command(int pid)
 
 void
 Epplet_register_child_handler(void (*func)
-			      (void *data, int pid, int exit_code), void *data)
+	                     (void *data, int pid, int exit_code), void *data)
 {
    child_data = data;
    child_func = func;
@@ -4928,7 +4951,7 @@ Epplet_find_instance(char *name)
 	     continue;
 	  }
 	pid = getpid();
-	write(fd, &pid, sizeof(pid_t));	/* Not sure how best to deal with write errors here */
+	write(fd, &pid, sizeof(pid_t));		/* Not sure how best to deal with write errors here */
 	close(fd);
 	/* If we made it here, we've just written the lock file and saved it.  We have our instance
 	 * number, so exit the loop. */
@@ -4961,16 +4984,17 @@ Epplet_get_instance(void)
 void
 Epplet_add_config(char *key, char *value)
 {
-   if (!key) return;
+   if (!key)
+      return;
    if (!config_dict)
      {
 	config_dict = (ConfigDict *) malloc(sizeof(ConfigDict));
 	memset(config_dict, 0, sizeof(ConfigDict));
-        config_dict->entries = malloc(sizeof(ConfigItem));
+	config_dict->entries = malloc(sizeof(ConfigItem));
      }
    else
      {
-        config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
+	config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
      }
    config_dict->entries[config_dict->num_entries].key = strdup(key);
    config_dict->entries[config_dict->num_entries].value = (value ? strdup(value) : strdup(""));
@@ -5048,7 +5072,8 @@ Epplet_query_config(char *key)
    int                 i;
    ConfigItem         *ci;
 
-   if (!key) return ((char *)NULL);
+   if (!key)
+      return ((char *)NULL);
    for (i = 0; i < config_dict->num_entries; i++)
      {
 	ci = &(config_dict->entries[i]);
@@ -5065,7 +5090,8 @@ Epplet_query_config_def(char *key, char *def)
    int                 i;
    ConfigItem         *ci;
 
-   if (!key) return (def);
+   if (!key)
+      return (def);
    for (i = 0; i < config_dict->num_entries; i++)
      {
 	ci = &(config_dict->entries[i]);
@@ -5083,7 +5109,8 @@ Epplet_modify_config(char *key, char *value)
    int                 i;
    ConfigItem         *ci;
 
-   if (!key) return;
+   if (!key)
+      return;
    for (i = 0; i < config_dict->num_entries; i++)
      {
 	ci = &(config_dict->entries[i]);
