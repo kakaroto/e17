@@ -25,7 +25,6 @@ main(int argc, char **argv)
 	/* check for command line stuff */
 	if(argc > 1){
 		for(i = 1; i < argc; i++){
-			retina_thumbnail_generate(argv[i]);
 			retina_image_list[i-1] = strdup(argv[i]);
 			img_count++;
 		}
