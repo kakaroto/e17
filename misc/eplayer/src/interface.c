@@ -5,11 +5,10 @@
 #include <Edje.h>
 #include "callbacks.h"
 #include "track.h"
+#include "utils.h"
 
 static int app_signal_exit(void *data, int type, void *event) {
-#ifdef DEBUG
-	printf("DEBUG: Exit called, shutting down\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Exit called, shutting down\n");
 	
 	ecore_main_loop_quit();
 	return 1;
@@ -19,9 +18,7 @@ int setup_gui(ePlayer *player) {
 	Ecore_Evas *ee;
 	double edje_w = 0, edje_h = 0;
 
-#ifdef DEBUG
-	printf("DEBUG: Starting setup\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
 	ecore_init();
 	ecore_evas_init();
@@ -42,15 +39,13 @@ int setup_gui(ePlayer *player) {
 	evas_font_path_append(player->gui.evas, DATA_DIR "/themes/fonts");
 
 	/* EDJE */
-#ifdef DEBUG
-	printf("DEBUG - EDJE: Defining Edje \n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
 
 	player->gui.edje = edje_object_add(player->gui.evas);
 	
 	if (!(edje_object_file_set(player->gui.edje,
 	                     DATA_DIR "/themes/eplayer.eet", "eplayer"))) {
-		fprintf(stderr, "Cannot load theme!\n");
+		debug(DEBUG_LEVEL_CRITICAL, "Cannot load theme!\n");
 		return 0;
 	}
 	

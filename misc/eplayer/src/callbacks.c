@@ -4,6 +4,7 @@
 #include "eplayer.h"
 #include "track.h"
 #include "interface.h"
+#include "utils.h"
 
 static int paused = 0;
 
@@ -16,9 +17,7 @@ static int paused = 0;
  * @param event
  */
 void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
-#ifdef DEBUG
-	printf("DEBUG: Play callback entered\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Play callback entered\n");
 
 	if (!paused) { /* restart from beginning */
 		eplayer_playback_stop(player);
@@ -38,9 +37,7 @@ void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  * @param event
  */
 void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
-#ifdef DEBUG
-	printf("DEBUG: Pause callback entered\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Pause callback entered\n");
 	
 	if (paused)
 		eplayer_playback_start(player, 0);
@@ -61,9 +58,7 @@ void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  */
 void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
                    void *event) {
-#ifdef DEBUG
-	printf("DEBUG: Next File Called\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
 
 	eplayer_playback_stop(player);
 
@@ -90,9 +85,7 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
  */
 void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
                    void *event) {
-#ifdef DEBUG
-	printf("DEBUG: Previous File Called\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Previous File Called\n");
 
 	/* first item on the list: do nothing */
 	if (!player->playlist->cur_item->prev)
@@ -110,9 +103,7 @@ void cb_volume_raise(ePlayer *player, Evas_Object *obj,
                      const char *emission, const char *src) {
 	int left = 0, right = 0;
 	
-#ifdef DEBUG
-	printf("DEBUG: Raising volume\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Raising volume\n");
 
 	if (!player->output->volume_get(&left, &right))
 		return;
@@ -125,9 +116,7 @@ void cb_volume_lower(ePlayer *player, Evas_Object *obj,
                      const char *emission, const char *src) {
 	int left = 0, right = 0;
 	
-#ifdef DEBUG
-	printf("DEBUG: Lowering volume\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Lowering volume\n");
 	
 	if (!player->output->volume_get(&left, &right))
 		return;
@@ -173,9 +162,7 @@ void cb_seek_forward(void *udata, Evas_Object *obj,
 	ePlayer *player = udata;
 	PlayListItem *pli = player->playlist->cur_item->data;
 
-#ifdef DEBUG
-	printf("DEBUG: Seeking forward\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Seeking forward\n");
 
 	/* We don't care if you seek past the file, the play loop
 	 * will catch EOF and play next file
@@ -191,9 +178,9 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 	PlayListItem *pli = player->playlist->cur_item->data;
 	int cur_time = pli->plugin->get_current_pos();
 	
-#ifdef DEBUG
-	printf("DEBUG: Seeking backward - Current Pos: %i\n", cur_time);
-#endif
+	debug(DEBUG_LEVEL_INFO, "Seeking backward - Current Pos: %i\n",
+	      cur_time);
+
 	eplayer_playback_stop(player);
 
 	if (cur_time < 6) /* restart from the beginning */

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "eplayer.h"
 #include "interface.h"
+#include "utils.h"
 
 /**
  * Plays a chunk of the current track.
@@ -87,7 +88,7 @@ void track_open(ePlayer *player) {
 	edje_object_part_text_set(player->gui.edje, "time_text", "0:00");
 
 	if (!player->output->configure(pli->channels, pli->sample_rate, 16)) {
-		fprintf(stderr, "Cannot configure output plugin\n");
+		debug(DEBUG_LEVEL_CRITICAL, "Cannot configure output plugin\n");
 	
 		/* move to the next track */
 		edje_object_signal_emit(player->gui.edje,

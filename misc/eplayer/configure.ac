@@ -29,7 +29,9 @@ AC_SUBST(SYSCONF_DIR)
 
 AC_ARG_ENABLE(debug,
 	[  --enable-debug          debug build (default: no)], [
-		AC_DEFINE([DEBUG], [], [Define to 1 if you want debugging output])
+		AC_DEFINE([DEBUG_LEVEL], [999], [
+			Define to 999 if you want much debugging output
+		])
 		CFLAGS=`echo "$CFLAGS -g -Wall" | sed s/" -s"//`
 	])
 

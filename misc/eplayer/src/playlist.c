@@ -61,9 +61,7 @@ PlayListItem *playlist_item_new(Evas_List *plugins, const char *file) {
 	}
 
 	if (!pli->plugin) {
-#ifdef DEBUG
-		printf("No plugin found for %s!\n", file);
-#endif
+		debug(DEBUG_LEVEL_WARNING, "No plugin found for %s!\n", file);
 
 		playlist_item_free(pli);
 		return NULL;

@@ -112,12 +112,9 @@ static ePlayer *eplayer_new() {
 		snprintf(cfg_file, sizeof(cfg_file),
 		         SYSCONF_DIR "/" PACKAGE ".db");
 
-		if (!config_load(&player->cfg, cfg_file)) {
-#ifdef DEBUG
-			printf("Cannot load config, "
-			       "falling back to default settings!\n");
-#endif
-		}
+		if (!config_load(&player->cfg, cfg_file))
+			debug(DEBUG_LEVEL_WARNING, "Cannot load config, "
+			      "falling back to default settings!\n");
 	}
 
 	player->input_plugins = load_input_plugins();
@@ -129,8 +126,8 @@ static ePlayer *eplayer_new() {
 	                            PLUGIN_TYPE_OUTPUT);
 
 	if (!player->output) {
-		fprintf(stderr, "Cannot load %s output plugin!\n",
-		        player->cfg.output_plugin);
+		debug(DEBUG_LEVEL_CRITICAL, "Cannot load %s output plugin!\n",
+		      player->cfg.output_plugin);
 
 		eplayer_free(player);
 		return NULL;
@@ -208,7 +205,7 @@ int main(int argc, const char **argv) {
 		playlist_load_any(player->playlist, argv[i], i > 1);
 	
 	if (!player->playlist->num) {
-		fprintf(stderr, "No files loaded!\n");
+		debug(DEBUG_LEVEL_CRITICAL, "No files loaded!\n");
 		eplayer_free(player);
 		return 1;
 	}
@@ -226,9 +223,7 @@ int main(int argc, const char **argv) {
 	track_open(player);
 	refresh_time(player, 0);
 
-#ifdef DEBUG
-	printf("DEBUG: Starting main loop\n");
-#endif
+	debug(DEBUG_LEVEL_INFO, "Starting main loop\n");
 
 	ecore_main_loop_begin();
 

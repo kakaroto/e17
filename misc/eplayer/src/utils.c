@@ -4,6 +4,9 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include "utils.h"
 
 int is_dir(const char *dir) {
 	struct stat st;
@@ -76,4 +79,15 @@ char *strstrip(char *str) {
 	ptr[1] = 0;
 
 	return str;
+}
+
+void debug(DebugLevel level, const char *fmt, ...) {
+	va_list list;
+	
+	if (level > DEBUG_LEVEL || !fmt || !fmt[0])
+		return;
+
+	va_start(list, fmt);
+	vprintf(fmt, list);
+	va_end(list);
 }
