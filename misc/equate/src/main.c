@@ -81,17 +81,10 @@ Version 0.0.4 (Dec 8 2003)\n\
 Usage: equate [options]");
 
    /* this controls our defaults */
-   ecore_config_default_int_bound("/settings/mode", BASIC, 0, 3, 1);
-   ecore_config_describe("/settings/mode",
-                         "The mode to start in, 1=basic, 2=sci, 3=edje");
-   ecore_config_set_short_opt("/settings/mode", 'm');
-   ecore_config_set_long_opt("/settings/mode", "mode");
-
-   ecore_config_default_theme("/settings/theme", "equate");
-   ecore_config_describe("/settings/theme",
-                         "The name of the edje theme to use in mode 3");
-   ecore_config_set_short_opt("/settings/theme", 't');
-   ecore_config_set_long_opt("/settings/theme", "theme");
+   ecore_config_create_int_bound("/settings/mode", BASIC, 0, 3, 1, 'm', "mode",
+      "The mode to start in, 1=basic, 2=sci, 3=edje");
+   ecore_config_create_theme("/settings/theme", "equate", 't', "theme",
+      "The name of the edje theme to use in mode 3");
 
    /* load and read our settings */
    ecore_config_load();
