@@ -105,7 +105,7 @@ load_menus_from_disk (void)
   char buf[1024];
   char first = 1;
   char s[4096];
-  GtkCTreeNode *parent;
+  GtkCTreeNode *parent = NULL;
 
   sprintf (buf, "%s/.enlightenment/file.menu", homedir (getuid ()));
   menufile = fopen (buf, "r");
@@ -250,7 +250,6 @@ create_main_window (void)
   GtkWidget *label;
   GtkWidget *alignment;
   GtkWidget *hbox;
-  GtkWidget *checkbox;
   GtkWidget *menu;
   GtkWidget *menuitem;
 
@@ -606,8 +605,7 @@ tree_to_gnode (GtkCTree * ctree,
 }
 
 /* Next two functions are co-recursing */
-gint
-write_menu (GNode * node, gchar * file)
+gint write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
@@ -647,8 +645,7 @@ write_menu (GNode * node, gchar * file)
   return 0;
 }
 
-gint
-write_menu_entry (GNode * node, FILE * fp)
+gint write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
 
