@@ -24,14 +24,14 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    t1 = GetTime();
    if (iconify)
      {
-	fw = from->w;
-	fh = from->h;
-	fx = from->x + desks.desk[from->desktop].x;
-	fy = from->y + desks.desk[from->desktop].y;
-	dw = 0;
-	dh = 0;
-	dx = to->x + desks.desk[to->desktop].x + (to->w / 2);
-	dy = to->y + desks.desk[to->desktop].y + (to->h / 2);
+	fw = from->w + 4;
+	fh = from->h + 4;
+	fx = from->x + desks.desk[from->desktop].x - 2;
+	fy = from->y + desks.desk[from->desktop].y - 2;
+	dw = 4;
+	dh = 4;
+	dx = to->x + desks.desk[to->desktop].x + (to->w / 2) - 2;
+	dy = to->y + desks.desk[to->desktop].y + (to->h / 2) - 2;
 	for (i = 0.0; i < 1.0; i += spd)
 	  {
 	     ii = 1.0 - i;
@@ -54,14 +54,14 @@ IB_Animate(char iconify, EWin * from, EWin * to)
      }
    else
      {
-	fw = from->w;
-	fh = from->h;
-	fx = from->x + desks.desk[from->desktop].x;
-	fy = from->y + desks.desk[from->desktop].y;
-	dw = 0;
-	dh = 0;
-	dx = to->x + desks.desk[to->desktop].x + (to->w / 2);
-	dy = to->y + desks.desk[to->desktop].y + (to->h / 2);
+	fw = from->w + 4;
+	fh = from->h + 4;
+	fx = from->x + desks.desk[from->desktop].x - 2;
+	fy = from->y + desks.desk[from->desktop].y - 2;
+	dw = 4;
+	dh = 4;
+	dx = to->x + desks.desk[to->desktop].x + (to->w / 2) - 2;
+	dy = to->y + desks.desk[to->desktop].y + (to->h / 2) - 2;
 	for (i = 1.0; i >= 0.0; i -= spd)
 	  {
 	     ii = 1.0 - i;

@@ -1496,3 +1496,11 @@ Wed Sep  8 20:24:28 PDT 1999
 Fixed a typo in the KDE hint stuff.
 
 Also removed old crappy themes to make room for newer, spiffier ones.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 23:58:28 PDT 1999
+(Raster)
+
+account for bad X implimentatiosn that dont like negative W&h's for 
+XDrawRectangle
