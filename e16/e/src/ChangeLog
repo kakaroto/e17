@@ -3949,3 +3949,10 @@ Mon Nov 15 09:07:28 PST 1999
 (Raster)
 
 bounds checking fix :) thanks alan strange :)
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 09:34:29 PST 1999
+(Mandrake)
+
+fixed a pretty nasty uninitialized memory test.

@@ -36,6 +36,7 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
    b = Emalloc(sizeof(Button));
 
    b->name = duplicate(name);
+   b->label = duplicate(label);
 
    b->iclass = iclass;
    if (!b->iclass)
