@@ -60,10 +60,8 @@ To run the demo:
 * Run make install if you want.
 * Launch the daemon, use -f to keep it from forking into the
   background.
-* If you did make install and libefsd is properly installed, just run
-  efsddemo (I suggest using a directory where you have write permission
-  and that contains a bunch of files to see something.), if not, cd
-  into ./demo and ./run_efsddemo.sh.
+* To see some examples, start either efsddemo (in the demo directory)
+  or play with efsdsh (in the tools directory, enter "help" for info).
 
 
 There's still stuff to be done, check out the TODO file for that.
