@@ -417,6 +417,7 @@ void display_default_usage ()
 
 int main (int argc, char * const argv[])
 {
+	Ecore_X_Window win;
 	Evas_Object *header;
 	int x, y, w, h;
 	int height;
@@ -552,12 +553,14 @@ int main (int argc, char * const argv[])
 		height += 26;
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
+	win = ecore_evas_software_x11_window_get(ee);
 
 	if (!ee)
 		return -1;
 
 	ecore_evas_borderless_set (ee, cfg->borderless);
-	ecore_evas_title_set (ee, "erss");
+	snprintf(theme_file, PATH_MAX, "erss - %s", config_file);
+	ecore_evas_title_set (ee, theme_file);
 	ecore_evas_shaped_set (ee, 1);
 	ecore_evas_show (ee);
 
