@@ -264,9 +264,10 @@ void etox_line_minimize(Etox_Line * line)
 		 */
 		if (estyle_merge(last_bit, bit))
 			ewd_list_remove(line->bits);
-
-		ewd_list_next(line->bits);
-		last_bit = bit;
+		else {
+			ewd_list_next(line->bits);
+			last_bit = bit;
+		}
 	}
 }
 
