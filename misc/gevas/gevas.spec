@@ -1,6 +1,6 @@
 %define	name	 gevas
 %define ver      0.0.2
-%define rel      1
+%define rel      2
 %define prefix   /usr
 
 Summary: GTK+ wrapper for evas.
