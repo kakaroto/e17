@@ -652,18 +652,20 @@ SnapshotEwinGroups(EWin * ewin, char onoff)
 	     groups = ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
 	     if (groups)
 	       {
-		  if (gwins[i]->snap)
-		     UnsnapshotEwin(gwins[i]);
-		  sn = GetSnapshot(gwins[i]);
+		  sn = gwins[i]->snap;
+		  if (!sn)
+		     sn = GetSnapshot(gwins[i]);
 		  if (sn)
 		    {
+		       if (sn->groups)
+			  Efree(sn->groups);
+
 		       sn->groups = Emalloc(sizeof(int) * num_groups);
 
+		       sn->num_groups = num_groups;
+
 		       for (j = 0; j < num_groups; j++)
-			 {
-			    sn->groups[j] = groups[j]->index;
-			    sn->num_groups = num_groups;
-			 }
+			  sn->groups[j] = groups[j]->index;
 		    }
 		  Efree(groups);
 	       }

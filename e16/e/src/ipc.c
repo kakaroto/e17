@@ -618,7 +618,7 @@ IPC_Remember(char *params, Client * c)
 	EWin               *ewin;
 
 	word(params, 1, param1);
-	win = (Window) strtol(param1, (char **)NULL, 0);
+	win = (Window) strtol(param1, (char **)NULL, 16);
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
@@ -652,8 +652,13 @@ IPC_Remember(char *params, Client * c)
 		  else if (!strcmp((char *)params, "dialog"))
 		     SnapshotEwinDialog(ewin);
 		  SaveSnapInfo();
+		  Esnprintf(buf, sizeof(buf), "params %s", params);
 	       }
+	     else
+		Esnprintf(buf, sizeof(buf), "Error: no parameter");
 	  }
+	else
+	   Esnprintf(buf, sizeof(buf), "Error: no window found");
      }
    else
       Esnprintf(buf, sizeof(buf), "Error: no parameters");
