@@ -43,6 +43,7 @@ AC_SUBST(CPPFLAGS)
 
 AC_OUTPUT([
 src/Makefile 
+amx/Makefile
 Makefile 
 ], [
 ])
