@@ -66,3 +66,5 @@ if [ ! -f "$OUT" ]; then
   echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
 fi
 touch $OUT
+
+eesh -e "reload_menus"
