@@ -67,8 +67,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* The connection to FAM */
 FAMConnection        famcon;
 
-/* File desciptors for connected clients */
-int                  clientfd[EFSD_CLIENTS];
 
 /* Command line options: */
 char                 opt_foreground = FALSE;
@@ -77,6 +75,10 @@ char                 opt_debug      = FALSE;
 char                 opt_nesting    = FALSE;
 
 EfsdQueue           *ev_q;
+
+/* File desciptors for connected clients */
+static int           clientfd[EFSD_CLIENTS];
+
 
 /* File descriptor for accepting new clients */
 static int           listen_fd;
@@ -661,7 +663,7 @@ main_handle_fam_events(void)
 static void 
 main_handle_connections(void)
 {
-  struct sockaddr_un serv_sun, cli_sun;
+  struct sockaddr_un serv_sun;
   int             num_read, fdsize, clilen, i, n, can_accept, sock_fd;
   fd_set          fdrset;
   fd_set          fdwset;
@@ -770,6 +772,7 @@ main_handle_connections(void)
       */
       tv.tv_sec  = 1;
       tv.tv_usec = 0;       
+
       while ((n = select(fdsize+1, &fdrset, fdwset_ptr, NULL, &tv)) < 0)
 	{
 	  if (errno == EINTR)
@@ -836,12 +839,15 @@ main_handle_connections(void)
 	      else
 		{
 		  efsd_cmd_free(ecmd);
+		  efsd_main_close_connection(i);
 		}
 	    }
 	}
 
       if (FD_ISSET(listen_fd, &fdrset))
 	{
+	  struct sockaddr_un cli_sun;
+
 	  /* There's a new client connecting -- register it. */
 	  clilen = sizeof(cli_sun);
 	  if ( (sock_fd = accept(listen_fd, (struct sockaddr *)&cli_sun, &clilen)) < 0)
@@ -1195,6 +1201,16 @@ main_check_options(int argc, char**argv)
 	}	  
     }
   D_RETURN;
+}
+
+
+int
+efsd_main_get_fd(int client)
+{
+  if (client < 0 || client >= EFSD_CLIENTS)
+    D_RETURN_(-1);
+
+  D_RETURN_(clientfd[client]);
 }
 
 

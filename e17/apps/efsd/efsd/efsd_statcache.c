@@ -165,14 +165,12 @@ stat_internal(char *filename, struct stat *st, char use_lstat)
     }
   else
     {
-      if (stat(filename, &(it->st)) < 0)
+      if ((stat(filename, &(it->st))  < 0) &&
+	  (lstat(filename, &(it->st)) < 0))
 	{
-	  if (lstat(filename, &(it->st)) < 0)
-	    {
-	      D("stat and lstat() on %s failed.\n", filename);
-	      FREE(it);
-	      D_RETURN_(FALSE);
-	    }
+	  D("stat and lstat() on %s failed.\n", filename);
+	  FREE(it);
+	  D_RETURN_(FALSE);
 	}
     }
 

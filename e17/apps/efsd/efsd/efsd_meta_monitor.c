@@ -329,7 +329,7 @@ meta_monitor_send_change_event(EfsdMetaMonitor *monitor, EfsdDatatype type,
 
       D("Sending metadata change event for %s:%s to %i\n", monitor->filename, monitor->key, emr->client);
 
-      if (efsd_io_write_event(clientfd[emr->client], &ee) < 0)
+      if (efsd_io_write_event(efsd_main_get_fd(emr->client), &ee) < 0)
 	{
 	  if (errno == EPIPE)
 	    {
@@ -338,7 +338,7 @@ meta_monitor_send_change_event(EfsdMetaMonitor *monitor, EfsdDatatype type,
 	    }
 	  else
 	    {
-	      efsd_event_queue_add_event(ev_q, clientfd[emr->client], &ee);
+	      efsd_event_queue_add_event(ev_q, emr->client, &ee);
 	      D("write() error when writing metadata change event.\n");
 	    }
 	}

@@ -77,7 +77,7 @@ send_reply(EfsdCommand *cmd, int errorcode,
 
   D_ENTER;
 
-  sockfd = clientfd[client];
+  sockfd = efsd_main_get_fd(client);
 
   if (sockfd < 0)
     D_RETURN_(-1);
@@ -98,7 +98,7 @@ send_reply(EfsdCommand *cmd, int errorcode,
       if (errno == EPIPE)
 	efsd_main_close_connection(client);
       else
-	efsd_event_queue_add_event(ev_q, sockfd, &ee);
+	efsd_event_queue_add_event(ev_q, client, &ee);
 
       D_RETURN_(-1);
     }
@@ -470,6 +470,7 @@ efsd_command_readlink(EfsdCommand *cmd, int client)
 
   if ((n = readlink(cmd->efsd_file_cmd.files[0], s, MAXPATHLEN)) >= 0)
     {
+      s[n] = '\0';
       result = send_reply(cmd, 0, n, s, client);
     }
   else

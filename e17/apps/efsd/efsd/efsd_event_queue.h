@@ -45,6 +45,6 @@ void efsd_event_queue_fill_fdset(EfsdQueue *q, fd_set *fdset, int *fdsize);
 /* Adds an event that is supposed to be delivered to SOCKFD,
    making a copy of event EE.
 */
-void efsd_event_queue_add_event(EfsdQueue *q, int sockfd, EfsdEvent *ee);
+void efsd_event_queue_add_event(EfsdQueue *q, int client, EfsdEvent *ee);
 
 #endif 

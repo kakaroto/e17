@@ -227,21 +227,24 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
   if (S_ISLNK(src_st->st_mode))
     {
       char realfile[MAXPATHLEN];
+      int length;
 
-      if (readlink(src_path, realfile, MAXPATHLEN) < 0)
+      if ((length = readlink(src_path, realfile, MAXPATHLEN)) < 0)
 	{
 	  perror("Readlink error");
 	  success = FALSE;
 	}
       
+      /* Terminate the thing, dammit. */
+      realfile[length] = '\0';
+
       if (realfile[0] != '/')
 	{
 	  char realcopy[MAXPATHLEN];
 	  char *lastslash;
 
-	  strncpy(realcopy, realfile, MAXPATHLEN);
-	  strncpy(realfile, src_path, MAXPATHLEN);
-	  lastslash = strrchr(realfile, '/');
+	  snprintf(realcopy, MAXPATHLEN, src_path);
+	  lastslash = strrchr(realcopy, '/');
 
 	  if (!lastslash)
 	    {
@@ -250,7 +253,8 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
 	      exit(-1);
 	    }
 
-	  strncpy(lastslash+1, realcopy, MAXPATHLEN - (lastslash - realfile));
+	  snprintf(lastslash + 1, MAXPATHLEN - (lastslash - realcopy), "%s", realfile);
+	  snprintf(realfile, MAXPATHLEN, realcopy);
 	}
 
       if (symlink(realfile, dst_path) < 0)
@@ -260,9 +264,12 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
 	  perror("Symlink error");
 	  success = FALSE;
 	}
-
-      D("Created symlink from %s to %s.\n",
-	 realfile, dst_path);
+      else
+	{
+	  success = TRUE;
+	  D("Created symlink from %s to %s.\n",
+	    realfile, dst_path);
+	}
     }
   else if (S_ISFIFO(src_st->st_mode))
     {
@@ -703,7 +710,7 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
 
 	  continue;
 	}
-      
+
       /* Otherwise, copy single regular file. */
       if (!file_copy(src_path, &src_st, dst_path))
 	D_RETURN_(FALSE);      

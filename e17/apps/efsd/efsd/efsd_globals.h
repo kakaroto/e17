@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_queue.h>
 
 extern FAMConnection    famcon;
-extern int              clientfd[EFSD_CLIENTS];
 extern int              listen_fd;
 extern mode_t           mode_755;
 

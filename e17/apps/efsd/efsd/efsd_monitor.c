@@ -402,7 +402,7 @@ efsd_monitor_send_filechange_events(EfsdMonitor *m, EfsdMonitorRequest *emr)
 static int
 monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 {
-  EfsdList           *l2 = NULL;
+  EfsdList           *l = NULL;
   EfsdMonitorRequest *emr;
 
   D_ENTER;
@@ -410,9 +410,9 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
   if (!m)
     D_RETURN_(FALSE);
 
-  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
+  for (l = efsd_list_head(m->clients); l; l = efsd_list_next(l))
     {
-      if (((EfsdMonitorRequest*)efsd_list_data(l2))->client == client)
+      if (((EfsdMonitorRequest*)efsd_list_data(l))->client == client)
 	{
 	  LOCK(&m->use_count_mutex);
 	  if (client == EFSD_CLIENT_INTERNAL)
@@ -424,7 +424,7 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	    }
 	  else
 	    {
-	      efsd_monitor_send_filechange_events(m, (EfsdMonitorRequest*)efsd_list_data(l2)); 
+	      efsd_monitor_send_filechange_events(m, (EfsdMonitorRequest*)efsd_list_data(l)); 
 	      D("Client %i already monitors %s\n", client, m->filename);
 	    }
 	  UNLOCK(&m->use_count_mutex);
@@ -906,7 +906,7 @@ efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
      famev.code, emr->client);
   */
 
-  if (efsd_io_write_event(clientfd[emr->client], &ee) < 0)
+  if (efsd_io_write_event(efsd_main_get_fd(emr->client), &ee) < 0)
     {
       if (errno == EPIPE)
 	{
@@ -915,7 +915,7 @@ efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
 	}
       else
 	{
-	  efsd_event_queue_add_event(ev_q, clientfd[emr->client], &ee);
+	  efsd_event_queue_add_event(ev_q, emr->client, &ee);
 	  D("write() error when writing FAM event.\n");
 	}
 

@@ -94,18 +94,20 @@ efsd_event_queue_fill_fdset(EfsdQueue *q, fd_set *fdset, int *fdsize)
 {
   EfsdQueueIterator *eqi;
   EfsdEventQItem    *qi;
+  int                fd;
 
   D_ENTER;
 
   for (eqi = efsd_queue_it_new(q); efsd_queue_it_valid(eqi); efsd_queue_it_next(eqi))
     {      
       qi = (EfsdEventQItem*) efsd_queue_it_item(eqi);
+      fd = efsd_main_get_fd(qi->client); 
 
-      if (qi->client > 0)
+      if (fd > 0)
 	{
-	  FD_SET(qi->client, fdset);
-	  if (qi->client > *fdsize)
-	    *fdsize = qi->client;
+	  FD_SET(fd, fdset);
+	  if (fd > *fdsize)
+	    *fdsize = fd;
 	}
     }
 
@@ -120,7 +122,7 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
 {
   EfsdQueueIterator *eqi;
   EfsdEventQItem    *qi;
-  int                done = 0;
+  int                fd, done = 0;
 
   D_ENTER;
 
@@ -136,8 +138,9 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
   for (eqi = efsd_queue_it_new(q); efsd_queue_it_valid(eqi); efsd_queue_it_next(eqi))
     {
       qi = (EfsdEventQItem*) efsd_queue_it_item(eqi);
+      fd = efsd_main_get_fd(qi->client);
 
-      if (qi->client < 0)
+      if (fd < 0)
 	{
 	  efsd_queue_it_remove(eqi);
 	  event_queue_item_free(qi);	  
@@ -145,9 +148,10 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
 	  continue;
 	}
 
-      if (FD_ISSET(qi->client, fdset))
+
+      if (FD_ISSET(fd, fdset))
 	{
-	  if (efsd_io_write_event(qi->client, qi->ee) < 0)
+	  if (efsd_io_write_event(fd, qi->ee) < 0)
 	    {
 	      if (errno == EPIPE)
 		{
@@ -180,7 +184,7 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
 
 
 void
-efsd_event_queue_add_event(EfsdQueue *q, int sockfd, EfsdEvent *ee)
+efsd_event_queue_add_event(EfsdQueue *q, int client, EfsdEvent *ee)
 {
   EfsdEvent *ee_copy;
 
@@ -188,7 +192,7 @@ efsd_event_queue_add_event(EfsdQueue *q, int sockfd, EfsdEvent *ee)
 
   ee_copy = NEW(EfsdEvent);
   efsd_event_duplicate(ee, ee_copy);
-  efsd_queue_append_item(q, event_queue_item_new(sockfd, ee_copy));
+  efsd_queue_append_item(q, event_queue_item_new(client, ee_copy));
 
   D_RETURN;
 }
