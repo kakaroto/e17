@@ -1,3 +1,9 @@
+Sun Jun 18 13:46:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now feh will query eesh for the number of desktops a user
+	has. If eesh is there, and there is more than one, the background
+	setting menu will offer a choice of which desktop to set.
+
 Sun Jun 18 03:47:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay. Thanks to richlowe and me, the bg setting is getting
