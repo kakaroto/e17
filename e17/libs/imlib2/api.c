@@ -57,6 +57,13 @@ imlib_get_visual_depth(Display *display, Visual *visual)
    return __imlib_XActualDepth(display, visual);
 }
 
+Visual *
+imlib_get_best_visual(Display *display, int screen,
+		      int *depth_return)
+{
+   return __imlib_BestVisual(display, screen, depth_return);
+}
+
 Imlib_Image 
 imlib_load_image(char *file)
 {

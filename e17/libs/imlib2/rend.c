@@ -149,7 +149,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
      }
    /* do a double check in 24/32bpp */
    if ((xim->bits_per_pixel == 32) && (depth == 24))
-      depth = 32;
+      actual_depth = 32;
    if (m)
      {
 	mxim = __imlib_ProduceXImage(d, v, 1, dw, dh, &shm);

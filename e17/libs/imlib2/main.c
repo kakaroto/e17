@@ -67,7 +67,7 @@ int main (int argc, char **argv)
 	   root = 1;
 	else if (!strcmp(argv[i], "-smooth"))
 	   aa = 1;
-	else if (!strcmp(argv[i], "-interactive"))
+	else if (!strcmp(argv[i], "-loop"))
 	  {
 	     interactive = 0;
 	     loop = 1;
@@ -103,11 +103,16 @@ int main (int argc, char **argv)
    disp = XOpenDisplay(NULL);
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
+   printf("%i\n", depth);
    cm = DefaultColormap(disp, DefaultScreen(disp));
    if (root)
       win = DefaultRootWindow(disp);
    else
-      win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
+     {
+	win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
+	XSelectInput(disp, win, ButtonPressMask | PointerMotionMask | 
+		     ExposureMask);
+     }
    if (!interactive)
      {
 	im = imlib_load_image_with_progress_callback(file, progress, 0);
@@ -169,14 +174,21 @@ int main (int argc, char **argv)
      }
    else if (interactive)
      {
-	int wo, ho;
-	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13];
+	int wo, ho, px, py, first = 1;
+	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13], im_tmp;
 	Imlib_Border border;
-
+	Imlib_Updates up = NULL;
+	int x, y, dum, i, j;
+	unsigned int dui;
+	Window rt;
+	XEvent ev;
+	
+	
 	if (file)
 	   im_bg = imlib_load_image(file);
 	else
 	   im_bg = imlib_load_image("test_images/bg.png");
+	im_tmp = imlib_clone_image(im_bg);
 	w = imlib_image_get_width(im_bg);
 	h = imlib_image_get_height(im_bg);
 	wo = w;
@@ -184,13 +196,39 @@ int main (int argc, char **argv)
 	w *= 1;
 	h *= 1;
 	XResizeWindow(disp, win, w, h);
+	XSync(disp, False);
 	im = imlib_create_image(w, h);
 	imlib_set_cache_size(4 * 1024 * 1024);
+	i = 0;
+	up = imlib_update_append_rect(up, 0, 0, w, h);
+	x = -9999;
+	y = -9999;
 	while (1)
 	  {
-	     int x, y, dum, i, j;
-	     unsigned int dui;
-	     Window rt;
+	     px = x;
+	     py = y;
+	     do 
+	       {
+		  XNextEvent(disp, &ev);
+		  switch (ev.type)
+		    {
+		    case Expose:
+		       up = imlib_update_append_rect(up, 
+						     ev.xexpose.x, ev.xexpose.y, 
+						     ev.xexpose.width, ev.xexpose.height);
+		       break;
+		    case ButtonPress:
+		       exit(0);
+		       break;
+		    case MotionNotify:
+		       x = ev.xmotion.x;
+		       y = ev.xmotion.y;
+		    default:
+		       break;
+		       
+		    }
+	       }
+	     while (XPending(disp));
 	     
 	     im_sh1 = imlib_load_image("test_images/sh1.png");
 	     im_sh2 = imlib_load_image("test_images/sh2.png");
@@ -208,49 +246,101 @@ int main (int argc, char **argv)
 	     im_ic[10] = imlib_load_image("test_images/tnt.png");
 	     im_ic[11] = imlib_load_image("test_images/bulb.png");
 	     im_ic[12] = imlib_load_image("test_images/lock.png");
-	     XQueryPointer(disp, win, &rt, &rt, &dum, &dum,
-			   &x, &y, &dui);
-	     if ((dui) && (x > 0) && (y > 0) && (x < w) && (y < h))
-		exit(0);
-	     imlib_blend_image_onto_image(im_bg, im, 
-					  0, 0, 0,
-					  0, 0, wo, ho, 
-					  0, 0, w, h,
-					  NULL, IMLIB_OP_COPY);
-	     for (j = 0; j < 32; j++)
+
+	     if (first)
 	       {
-		  for (i = 0; i < 32; i++)
+		  imlib_blend_image_onto_image(im_bg, im,
+					       0, 0, 0,
+					       0, 0, w, h,
+					       0, 0, w, h,
+					       NULL, IMLIB_OP_COPY);
+		  first = 0;
+	       }
+	     if ((px != x) || (py != y))
+	       {
+		  for (j = 0; j < 32; j++)
 		    {
-		       int ic, iw, ih, ww, hh;
-		       
-		       ic = ((j * 32) + i) % 13;
-		       iw = imlib_image_get_width(im_ic[ic]);
-		       ih = imlib_image_get_height(im_ic[ic]);
-		       ww = iw;
-		       hh = ih;
-		       imlib_blend_image_onto_image(im_ic[ic], im, 
-						    aa, blend, 0,
-						    0, 0, iw, ih, 
-						    x + (i * iw), y + (j * ih), 
-						    ww, hh,
-						    NULL, IMLIB_OP_COPY);
+		       for (i = 0; i < 32; i++)
+			 {
+			    int ic, iw, ih, ww, hh;
+			    
+			    ic = ((j * 32) + i) % 13;
+			    iw = imlib_image_get_width(im_ic[ic]);
+			    ih = imlib_image_get_height(im_ic[ic]);
+			    ww = iw;
+			    hh = ih;
+			    up = imlib_update_append_rect(up, x + (i * iw * 2), 
+							  y + (j * ih * 2), ww, hh);
+			    up = imlib_update_append_rect(up, px + (i * iw * 2), 
+							  py + (j * ih * 2), ww, hh);
+			    imlib_blend_image_onto_image(im_ic[ic], im, 
+							 aa, blend, 0,
+							 0, 0, iw, ih, 
+							 x + (i * iw * 2), 
+							 y + (j * ih * 2), 
+							 ww, hh,
+							 NULL, IMLIB_OP_COPY);
+			 }
 		    }
 	       }
 	     imlib_blend_image_onto_image(im_sh1, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
 					  0, 0, 50, 50, NULL, IMLIB_OP_COPY);
+	     up = imlib_update_append_rect(up, 0, 0, 50, 50);
 	     imlib_blend_image_onto_image(im_sh2, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
 					  50, 0, w - 50, 50, NULL, IMLIB_OP_COPY);
+	     up = imlib_update_append_rect(up, 50, 0, w - 50, 50);
 	     imlib_blend_image_onto_image(im_sh3, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
 					  0, 50, 50, h - 50, NULL, IMLIB_OP_COPY);
-	     imlib_render_image_on_drawable(im, disp, win, vis, 
-					    cm, depth, dith, 1, 0, 0, NULL,
-					    IMLIB_OP_COPY);
+	     up = imlib_update_append_rect(up, 0, 50, 50, h - 50);
+	     up = imlib_updates_merge(up, w, h);
+	     imlib_render_image_updates_on_drawable(im, up, disp, win, vis, cm,
+						    depth, dith, 0, 0, NULL);
+	     if ((px != x) || (py != y))
+               {
+		  Imlib_Updates u;
+		  
+		  u = up;
+		  while (u)
+		    {
+		       int ux, uy, uw, uh;
+		       
+		       imlib_updates_get_coordinates(u, &ux, &uy, &uw, &uh);
+		       imlib_blend_image_onto_image(im_bg, im,
+						    0, 0, 0,
+						    ux, uy, uw, uh,
+						    ux, uy, uw, uh,
+						    NULL, IMLIB_OP_COPY);
+		       u = imlib_updates_get_next(u);
+		    }
+	       }
+#if 0	     
+	       {
+		  Imlib_Updates up2;
+		  GC gc;
+		  XGCValues gcv;
+		  
+		  gc = XCreateGC(disp, win, 0, &gcv);
+		  XSetForeground(disp, gc, 0xffff);
+		  up2 = up;
+		  while(up2)
+		    {
+		       int ux, uy, uw, uh;
+		       
+		       imlib_updates_get_coordinates(up2, &ux, &uy, &uw, &uh);
+		       XDrawRectangle(disp, win, gc, ux, uy, uw - 1, uh - 1);
+		       up2 = imlib_updates_get_next(up2);
+		    }
+		  XFreeGC(disp, gc);
+	       }
+#endif	     
+	     imlib_updates_free(up);
+	     up = NULL;
 	     imlib_free_image(im_sh1);
 	     imlib_free_image(im_sh2);
 	     imlib_free_image(im_sh3);

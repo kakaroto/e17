@@ -2,10 +2,10 @@
 #define __IMLIB_API_H 1
 
 #ifndef DATA64
-# define DATA64 unsigned long long
-# define DATA32 unsigned int
-# define DATA16 unsigned short
-# define DATA8  unsigned char
+#define DATA64 u_int64_t
+#define DATA32 u_int32_t
+#define DATA16 u_int16_t
+#define DATA8  u_int8_t
 #endif
 
 /* data types - guess what - no transparent datatypes - all hidden */
@@ -78,6 +78,8 @@ int         imlib_get_color_usage(void);
 void        imlib_set_color_usage(int max);
 
 int         imlib_get_visual_depth(Display *display, Visual *visual);
+Visual     *imlib_get_best_visual(Display *display, int screen, 
+				  int *depth_return);
 
 /* image loading functions */
 Imlib_Image imlib_load_image(char *file);
@@ -217,6 +219,11 @@ Imlib_Image imlib_create_cropped_scaled_image(Imlib_Image image,
 					      int source_height,
 					      int destination_width,
 					      int destination_height);
+#if 0 /* FIXME: must impliment */
+Imlib_Updates imlib_updates_init(void);
+Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates, 
+					   Imlib_Updates appended_updates);
+#endif
 Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, 
 				       int x, int y, int w, int h);
 Imlib_Updates imlib_updates_merge(Imlib_Updates updates, int w, int h);
@@ -280,7 +287,7 @@ void imlib_free_font(Imlib_Font font);
 void imlib_text_draw(Imlib_font font, Imlib_Image image, int x, int y,
 		     int width, int height, Imlib_Text_Direction direction, 
 		     char *text, Imlib_Color *color, 
-		     Imlib_Operation operation);
+		     Imlib_Operation operation, char wrap);
 void imlib_get_text_size(Imlib_font font, Imlib_Text_Direction direction, 
 			 char *text, int *width_return, 
 			 int *height_return);
@@ -294,7 +301,7 @@ Imlib_Rectangle *imlib_get_text_in_text_size_and_position(Imlib_font font,
 int imlib_get_character_index_and_location_in_text(Imlib_font font, 
 						   Imlib_Text_Direction direction, 
 						   int width, int height,
-						   char *text,
+						   char *text, char wrap,
 						   int *x_return,
 						   int *y_return,
 						   int *width_return,

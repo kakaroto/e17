@@ -25,6 +25,43 @@ __imlib_XActualDepth(Display *d, Visual *v)
    return depth;
 }
 
+Visual *
+__imlib_BestVisual(Display *d, int screen, int *depth_return)
+{
+   XVisualInfo xvi, *xvir;
+   int         i, num, maxd = 0;
+   Visual     *v = NULL;
+   
+   xvi.screen = screen;
+   for (xvi.class = TrueColor; xvi.class >= StaticGray; xvi.class--)
+     {
+	xvir = XGetVisualInfo(d, VisualScreenMask | VisualClassMask, 
+			      &xvi, &num);
+	if (xvir)
+	  {
+	     maxd = 0;
+	     for (i = 0; i < num; i++)
+	       {
+		  if (xvir[i].depth > maxd)
+		    {
+		       maxd = xvir[i].depth;
+		       v = xvir[i].visual;
+		    }
+	       }
+	     XFree(xvir);
+	  }
+	if (v)
+	  {
+	     if (depth_return)
+		*depth_return = maxd;
+	     return v;
+	  }
+     }
+   if (depth_return)
+      *depth_return = maxd;
+   return v;
+}
+
 DATA8 *
 __imlib_AllocColorTable(Display *d, Colormap cmap, DATA8 *type_return)
 {
