@@ -1,7 +1,7 @@
 Summary:	Documentation for the Enlightenment window manager.
 Name:		enlightenment-docs
 Version:	0.16.7
-Release:	0.03
+Release:	1
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
