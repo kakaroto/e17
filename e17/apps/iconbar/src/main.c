@@ -24,12 +24,22 @@ int trans_bg = 0;
 int shaped = 1;
 
 int
-main()
+main(int argc, char **argv)
 {
+  int i, withdrawn = 0;
   char buf[2048];
 
+  for (i = 1; i < argc; i++)
+  {
+    if (!strcmp(argv[i], "--withdrawn") || !strcmp(argv[i], "-w"))
+      withdrawn = 1;
+  }
+  printf("withdrawn: %d\n", withdrawn);
+  
   ecore_init();
+  ecore_app_args_set(&argc, &argv);
   ecore_evas_init();
+  edje_init();
 
   ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 50, 100);
   ecore_evas_callback_mouse_out_set(ee, window_leave);
@@ -87,6 +97,10 @@ main()
 
 
   ecore_main_loop_begin();
+
+  edje_shutdown();
+  ecore_evas_shutdown();
+  ecore_shutdown();
 
   return 0;
 }
