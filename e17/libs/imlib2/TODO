@@ -3,4 +3,4 @@ path rendering is correct for that visual
 * formalize loader/saver api
 * fix loaders to only build if libs are present
 * move db loader/saver to use edb
-
+* bug in mmx image -> image blending skips 1 line high segments

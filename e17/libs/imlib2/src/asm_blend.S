@@ -119,8 +119,10 @@ c1: .word 0x1, 0x1, 0x1, 0x1
 	leal (%edi, %ebx, 4), %edi	;\
 	negl %ebx			;\
 	jz 9f				;\
+	incl  %edx			;\
 	decl  %edx			;\
 	jz 9f				;\
+	decl  %edx			;\
 
 #define LOOP_START		\
 8:				;\
@@ -148,7 +150,7 @@ c1: .word 0x1, 0x1, 0x1, 0x1
 	popl %ebp		;\
 	ret
 
-
+/****!!!!!!!!1 has bug wiht 1 line high ********/
 PR_(imlib_mmx_blend_rgba_to_rgb):
 	ENTER
 

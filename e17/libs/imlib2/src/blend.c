@@ -906,7 +906,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 
 #ifdef DO_MMX_ASM
    /*\ OP_COPY \*/
-   {{{{{ __imlib_mmx_copy_rgba_to_rgb,  __imlib_mmx_blend_rgba_to_rgb },
+   {{{{{ __imlib_mmx_copy_rgba_to_rgb,  __imlib_mmx_blend_rgba_to_rgb},
        {  __imlib_mmx_copy_rgb_to_rgb,   __imlib_mmx_blend_rgb_to_rgb } },
       {{ __imlib_mmx_copy_rgba_to_rgba, __imlib_BlendRGBAToRGBA/*__imlib_mmx_blend_rgba_to_rgba*/ },
        {  __imlib_mmx_copy_rgb_to_rgba,  __imlib_mmx_blend_rgb_to_rgba } } },
@@ -1202,7 +1202,6 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     else
 		__imlib_ScaleSampleRGBA(scaleinfo, buf, dxx, dyy + y,
 					0, 0, dw, hh, dw);
-
 	     __imlib_BlendRGBAToData(buf, dw, hh,
 				     im_dst->data, im_dst->w,
 				     im_dst->h,
