@@ -1629,9 +1629,8 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
    return accept;
 }
 
-ImlibOutCode
-__imlib_comp_outcode(double x, double y, double xmin, double xmax,
-                     double ymin, double ymax)
+ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
+                                  double xmax, double ymin, double ymax)
 {
    ImlibOutCode code = 0;
 
@@ -1646,7 +1645,8 @@ __imlib_comp_outcode(double x, double y, double xmin, double xmax,
    return code;
 }
 
-ImlibPoly __imlib_polygon_new()
+ImlibPoly
+__imlib_polygon_new()
 {
    ImlibPoly poly;
 
@@ -1840,12 +1840,17 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
    for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
         x++)
    {
-      for (i = yc - y; i <= yc + y; i++)
+      if ((i >= clip_ymin) && (i <= clip_ymax))
       {
-         __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin, clip_xmax,
-                                        clip_ymin, clip_ymax, r, g, b, a, op);
-         __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin, clip_xmax,
-                                        clip_ymin, clip_ymax, r, g, b, a, op);
+         for (i = yc - y; i <= yc + y; i++)
+         {
+            __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin,
+                                           clip_xmax, clip_ymin, clip_ymax, r,
+                                           g, b, a, op);
+            __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin,
+                                           clip_xmax, clip_ymin, clip_ymax, r,
+                                           g, b, a, op);
+         }
       }
 
       if (dec >= 0)
@@ -1856,14 +1861,19 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
    for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
         y++)
    {
-      for (i = yc - y; i <= yc + y; i++)
+      if ((i >= clip_ymin) && (i <= clip_ymax))
       {
-         __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin, clip_xmax,
-                                        clip_ymin, clip_ymax, r, g, b, a, op);
-         __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin, clip_xmax,
-                                        clip_ymin, clip_ymax, r, g, b, a, op);
+         for (i = yc - y; i <= yc + y; i++)
+         {
+            __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin,
+                                           clip_xmax, clip_ymin, clip_ymax, r,
+                                           g, b, a, op);
+            __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin,
+                                           clip_xmax, clip_ymin, clip_ymax, r,
+                                           g, b, a, op);
+         }
       }
-
+      
       if (dec >= 0)
          dec += 4 * b2 * (1 - (x--));
       dec += a2 * (4 * y + 6);
@@ -1925,7 +1935,7 @@ __imlib_draw_set_point(ImlibImage * im, int x, int y, DATA8 r, DATA8 g,
    DATA32 *p;
    int tmp;
 
-   if ((x >= 0 && x < im->w) && (y >= 0 && y <= im->h))
+   if (XY_IN_RECT(x, y, 0, 0, im->w, im->h))
    {
       p = &(im->data[(im->w * y) + x]);
       switch (op)

@@ -849,7 +849,7 @@ int main (int argc, char **argv)
           imlib_context_set_cliprect(0,0,0,0);
           
           /* test polygons */
-          imlib_context_set_color(255, 0, 0, 255);
+          imlib_context_set_color(255, 0, 0, 128);
           imlib_image_fill_polygon(poly);
           imlib_context_set_color(255, 255, 255, 255);
           imlib_image_draw_polygon(poly2,0);
@@ -858,7 +858,7 @@ int main (int argc, char **argv)
           
           imlib_context_set_color(255, 55, 55, 255);
           imlib_context_set_cliprect(380,260,50,50);
-          imlib_image_draw_polygon(poly3,1);
+          imlib_image_fill_polygon(poly3);
           imlib_context_set_cliprect(0,0,0,0);
 
 	       }
