@@ -1,2 +1,1 @@
-SUBDIRS = BlueCrystal matrix0
-
+SUBDIRS = default
