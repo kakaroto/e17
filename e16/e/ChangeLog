@@ -2214,3 +2214,11 @@ Sat Nov  8 11:57:22 CET 2003
 (Kim)
 
 Bye bye KDE(1).
+
+-------------------------------------------------------------------------------
+
+Sun Nov  9 01:09:35 CET 2003
+(Kim)
+
+Patch for desktop wraparound by Alan Schmitt <alan.schmitt@polytechnique.org>.
+Shuffled around some pager stuff.
