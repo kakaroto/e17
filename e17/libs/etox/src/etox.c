@@ -25,15 +25,15 @@ Evas_Object *etox_new(Evas *evas)
 	Etox *et;
 	const Evas_List *font_paths;
 	int path_found = 0;
+	char buf[PATH_MAX];
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
 
+	strncpy(buf, PACKAGE_DATA_DIR "/fonts", PATH_MAX);
 	font_paths = evas_font_path_list(evas);
 	while (font_paths) {
-		char buf[PATH_MAX];
 		char *path = font_paths->data;
 
-		strncpy(buf, PACKAGE_DATA_DIR "/fonts", PATH_MAX);
 		if (!strcmp(path, buf)) {
 			path_found = 1;
 			break;
