@@ -96,7 +96,7 @@ void ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
  */
 char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
 {
-	return ewl_fileselector_path_get(fd->fs);
+	return ewl_fileselector_path_get(EWL_FILESELECTOR(fd->fs));
 }
 
 /**
