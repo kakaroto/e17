@@ -86,12 +86,12 @@ struct _etox
 	/*
 	 * Geometry of the etox
 	 */
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 
 	/*
 	 * Geometry the text prefers w/o wraps.
 	 */
-	double tw, th;
+	Evas_Coord tw, th;
 
 	/*
 	 * The length text in the etox
@@ -145,7 +145,7 @@ struct _etox_line
 	/*
 	 * The dimensions of this line.
 	 */
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 
 	/*
 	 * Flags indicating alignment, or if this is a "softline", ie. etox
@@ -191,8 +191,8 @@ struct _etox_selection
 void etox_free(Evas_Object * et);
 void etox_show(Evas_Object * et);
 void etox_hide(Evas_Object * et);
-void etox_move(Evas_Object * et, double x, double y);
-void etox_resize(Evas_Object * et, double w, double h);
+void etox_move(Evas_Object * et, Evas_Coord x, Evas_Coord y);
+void etox_resize(Evas_Object * et, Evas_Coord w, Evas_Coord h);
 void etox_set_layer(Evas_Object * et, int layer);
 void etox_set_clip(Evas_Object * et, Evas_Object *clip);
 void etox_unset_clip(Evas_Object * et);

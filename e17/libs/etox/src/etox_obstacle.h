@@ -6,7 +6,8 @@ void etox_obstacle_free(Etox * et, Etox_Obstacle * obstacle);
 void etox_obstacle_line_insert(Etox_Line * line, Etox_Obstacle * obst);
 void etox_obstacle_place(Etox_Obstacle * obst);
 void etox_obstacle_unplace(Etox_Obstacle * obst);
-inline int etox_rect_intersect(double x1, double y1, double w1, double h1,
-			       double x2, double y2, double w2, double h2);
+inline int etox_rect_intersect(Evas_Coord x1, Evas_Coord y1, Evas_Coord w1,
+			       Evas_Coord h1, Evas_Coord x2, Evas_Coord y2,
+			       Evas_Coord w2, Evas_Coord h2);
 
 #endif

@@ -7,7 +7,7 @@ do { \
 	Evas_Object *bit = NULL; \
 	Etox_Line *line; \
 	Evas_List *l, *bl; \
-	double w, h; \
+	Evas_Coord w, h; \
 	line = selected->start.line; \
 	l = evas_list_find_list(selected->etox->lines, selected->start.line); \
 	bl = evas_list_find_list(line->bits, selected->start.bit); \
@@ -153,7 +153,8 @@ etox_selection_free_by_etox(Evas_Object *obj)
 /**
  */
 Etox_Selection *
-etox_select_coords(Evas_Object *obj, double sx, double sy, double ex, double ey)
+etox_select_coords(Evas_Object *obj, Evas_Coord sx, Evas_Coord sy,
+		   Evas_Coord ex, Evas_Coord ey)
 {
 	int i1, i2;
 	Etox *et;
@@ -283,8 +284,8 @@ etox_select_str(Evas_Object * obj, char *match, int *index)
 /**
  */
 void
-etox_selection_bounds(Etox_Selection *selected, double *sx, double *sy,
-		double *ex, double *ey)
+etox_selection_bounds(Etox_Selection *selected, Evas_Coord *sx, Evas_Coord *sy,
+		      Evas_Coord *ex, Evas_Coord *ey)
 {
 }
 
@@ -374,7 +375,7 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
 {
   Etox_Rect *rects = NULL, *cur = NULL;
   Evas_List *l = NULL, *midlines = NULL;
-  double x, y, w, h;
+  Evas_Coord x, y, w, h;
   int count = 1;
 
   if (selected->start.line == selected->end.line)
@@ -411,13 +412,13 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
 
   printf("(%f, %f) %f x %f\n", rects->x, rects->y, rects->w, rects->h);
   cur = rects;
-  printf("cur1: %d\n", cur);
+  /* printf("cur1: %d\n", cur); */
   for (l = midlines; l; l = l->next)
   {
     Etox_Line *line = l->data;
 
     cur++;
-  printf("cur2: %d\n", cur);
+    /* printf("cur2: %d\n", cur); */
     etox_line_get_geometry(line, &x, &y, &w, &h);
 
     cur->x = x;

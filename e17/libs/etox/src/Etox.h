@@ -81,8 +81,8 @@ struct _etox_context
 typedef struct _etox_rect Etox_Rect;
 struct _etox_rect
 {
-	double x, y;
-	double w, h;
+	Evas_Coord x, y;
+	Evas_Coord w, h;
 };
 
 typedef struct _etox_obstacle Etox_Obstacle;
@@ -92,8 +92,8 @@ typedef struct _etox_selection Etox_Selection;
  * Etox creation and deletion functions
  */
 Evas_Object *etox_new(Evas *evas);
-Evas_Object *etox_new_all(Evas *evas, double x, double y, double w, double h,
-		int alpha, Etox_Alignment align);
+Evas_Object *etox_new_all(Evas *evas, Evas_Coord x, Evas_Coord y, Evas_Coord w,
+			  Evas_Coord h, int alpha, Etox_Alignment align);
 
 /*
  * Context management functions
@@ -159,11 +159,12 @@ int etox_get_length(Evas_Object *obj);
 /*
  * Geometry retrieval functions
  */
-int etox_coord_to_index(Evas_Object * et, double x, double y);
-void etox_index_to_geometry(Evas_Object * et, int index, double *x, double *y,
-			    double *w, double *h);
-int etox_coord_to_geometry(Evas_Object * et, double xc, double yc, double *x,
-		double *y, double *w, double *h);
+int etox_coord_to_index(Evas_Object * et, Evas_Coord x, Evas_Coord y);
+void etox_index_to_geometry(Evas_Object * et, int index, Evas_Coord *x,
+			    Evas_Coord *y, Evas_Coord *w, Evas_Coord *h);
+int etox_coord_to_geometry(Evas_Object * et, Evas_Coord xc, Evas_Coord yc,
+			   Evas_Coord *x, Evas_Coord *y,
+			   Evas_Coord *w, Evas_Coord *h);
 
 void etox_set_soft_wrap(Evas_Object * et, int boolean);
 
@@ -175,17 +176,17 @@ void etox_set_alpha(Evas_Object * et, int alpha);
 /*
  * Obstacle manipulation functions
  */
-Etox_Obstacle *etox_obstacle_add(Evas_Object * et, double x, double y, double w,
-		double h);
+Etox_Obstacle *etox_obstacle_add(Evas_Object * et, Evas_Coord x, Evas_Coord y,
+				 Evas_Coord w, Evas_Coord h);
 void etox_obstacle_remove(Etox_Obstacle * obstacle);
-void etox_obstacle_move(Etox_Obstacle * obstacle, double x, double y);
-void etox_obstacle_resize(Etox_Obstacle * obstacle, double w, double h);
+void etox_obstacle_move(Etox_Obstacle * obstacle, Evas_Coord x, Evas_Coord y);
+void etox_obstacle_resize(Etox_Obstacle * obstacle, Evas_Coord w, Evas_Coord h);
 
 /*
  * These functions select regions of the etox.
  */
-Etox_Selection *etox_select_coords(Evas_Object * et, double sx, double sy,
-		double ex, double ey);
+Etox_Selection *etox_select_coords(Evas_Object * et, Evas_Coord sx,
+				   Evas_Coord sy, Evas_Coord ex, Evas_Coord ey);
 Etox_Selection *etox_select_index(Evas_Object * et, int si, int ei);
 Etox_Selection *etox_select_str(Evas_Object * et, char *match, int *index);
 
@@ -198,8 +199,8 @@ void etox_selection_free_by_etox(Evas_Object *etox);
 /*
  * This function gets a rectangular bound on the selection.
  */
-void etox_selection_bounds(Etox_Selection * selected, double *x, double *y,
-			   double *w, double *h);
+void etox_selection_bounds(Etox_Selection * selected, Evas_Coord *x,
+			   Evas_Coord *y, Evas_Coord *w, Evas_Coord *h);
 
 /*
  * These methods alter the appearance of the selected region.

@@ -33,7 +33,7 @@ double get_time(void)
 
 void window_resize(Ecore_Evas *ee)
 {
-	double pw;
+	Evas_Coord pw;
 	int ex, ey, ew, eh;
 
 	evas_output_size_get(evas, &win_w, &win_h);
@@ -258,9 +258,9 @@ prev_test(void *_data, Evas *_e, Evas_Object *_o,
 
 void setup(void)
 {
-	double pw;
+	Evas_Coord pw;
 	int ex, ey, ew, eh;
-	double width, height;
+	Evas_Coord width, height;
 	char msg[] =
 	    "The Etox Test utility consists in a series "
 	    "of test suites designed to exercise all of "

@@ -103,7 +103,7 @@ void etox_line_hide(Etox_Line * line)
  */
 void etox_line_append(Etox_Line * line, Evas_Object * bit)
 {
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
@@ -132,7 +132,7 @@ void etox_line_append(Etox_Line * line, Evas_Object * bit)
  */
 void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
 {
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
@@ -159,7 +159,7 @@ void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
  */
 void etox_line_remove(Etox_Line * line, Evas_Object * bit)
 {
-	double w;
+	Evas_Coord w;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
@@ -187,7 +187,7 @@ void etox_line_layout(Etox_Line * line)
 {
 	int x;
 	Evas_Object *bit;
-	double tx, ty, tw, th;
+	Evas_Coord tx, ty, tw, th;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -397,7 +397,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *ll;
 	Evas_Object *bit = NULL, *marker;
-	double x, w, y, h;
+	Evas_Coord x, w, y, h;
 	int index = -1;
 
 	/* iterate through the bits to find the one on the border */
@@ -553,7 +553,7 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 Evas_Object *
 etox_line_coord_to_bit(Etox_Line *line, int x)
 {
-	double bx;
+	Evas_Coord bx;
 	Evas_List *l = NULL;
 	Evas_Object *bit = NULL;
 
@@ -623,8 +623,8 @@ etox_line_set_layer(Etox_Line *line, int layer)
 }
 
 void
-etox_line_index_to_geometry(Etox_Line *line, int index, double *x, double *y,
-                            double *w, double *h)
+etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
+			    Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 {
   Evas_Object *bit = NULL;
   Evas_List *l;
@@ -713,8 +713,8 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
 }
 
 void
-etox_line_get_geometry(Etox_Line *line, double *x, double *y,
-                       double *w, double *h)
+etox_line_get_geometry(Etox_Line *line, Evas_Coord *x, Evas_Coord *y,
+                       Evas_Coord *w, Evas_Coord *h)
 {
   if (!line)
   {

@@ -61,8 +61,8 @@ Evas_Object *etox_new(Evas *evas)
  * Returns a pointer to a newly allocated etox on success, NULL on failure.
  */
 Evas_Object *
-etox_new_all(Evas *evas, double x, double y, double w, double h, int alpha,
-		   Etox_Alignment align)
+etox_new_all(Evas *evas, Evas_Coord x, Evas_Coord y, Evas_Coord w,
+	     Evas_Coord h, int alpha, Etox_Alignment align)
 {
 	Evas_Object *et;
         Etox_Context *ec;
@@ -140,8 +140,8 @@ void etox_show(Evas_Object * obj)
 	 */
 	if (et->lines)
 		evas_object_show(et->clip);
-	evas_object_move(et->clip, (double) (et->x), (double) (et->y));
-	evas_object_resize(et->clip, (double) (et->w), (double) (et->h));
+	evas_object_move(et->clip, (et->x), (et->y));
+	evas_object_resize(et->clip, (et->w), (et->h));
 }
 
 /**
@@ -658,7 +658,7 @@ etox_get_length(Evas_Object *obj)
  * Returns no value. Changes the position of the etox @et to the specified
  * position.
  */
-void etox_move(Evas_Object * obj, double x, double y)
+void etox_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
 {
 	Etox *et;
 
@@ -685,8 +685,8 @@ void etox_move(Evas_Object * obj, double x, double y)
 	 * do both a move and a resize in case the size has been adjusted
 	 * during layout.
 	 */
-	evas_object_move(et->clip, (double) (et->x), (double) (et->y));
-	evas_object_resize(et->clip, (double) (et->w), (double) (et->h));
+	evas_object_move(et->clip, (et->x), (et->y));
+	evas_object_resize(et->clip, (et->w), (et->h));
 }
 
 /**
@@ -698,7 +698,7 @@ void etox_move(Evas_Object * obj, double x, double y)
  * Returns no value. Changes the dimensions of the etox to match the specified
  * dimensions.
  */
-void etox_resize(Evas_Object * obj, double w, double h)
+void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 {
 	Etox *et;
 
@@ -723,8 +723,8 @@ void etox_resize(Evas_Object * obj, double w, double h)
 	 * do both a move and a resize in case the size has been adjusted
 	 * during layout.
 	 */
-	evas_object_move(et->clip, (double) (et->x), (double) (et->y));
-	evas_object_resize(et->clip, (double) (et->w), (double) (et->h));
+	evas_object_move(et->clip, (et->x), (et->y));
+	evas_object_resize(et->clip, (et->w), (et->h));
 	evas_object_resize(obj, et->w, et->h);
 }
 
@@ -767,8 +767,9 @@ void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h)
  * Returns no value. Stores the current geometry of the letter at index @index
  * in @et into the integers pointed to by @x, @y, @w, and @h.
  */
-void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
-			    double *w, double *h)
+void
+etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
+		       Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 {
 	Etox *et;
 	int sum = 0;
@@ -804,14 +805,16 @@ void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
  * of the letter at coordinates @xc, @yc in @et into the integers pointed to by
  * @x, @y, @w, and @h.
  */
-int etox_coord_to_geometry(Evas_Object * obj, double xc, double yc, double *x,
-		double *y, double *w, double *h)
+int
+etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
+		       Evas_Coord *x, Evas_Coord *y, Evas_Coord *w,
+		       Evas_Coord *h)
 {
 	Etox *et;
 	int sum;
 	Evas_Object *bit;
 	Etox_Line *line = NULL;
-	double tx, ty, tw, th;
+	Evas_Coord tx, ty, tw, th;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
@@ -943,7 +946,8 @@ void etox_unset_clip(Evas_Object * obj)
  * Adds an obstacle to the etox @et that the text will wrap around.
  */
 Etox_Obstacle *
-etox_obstacle_add(Evas_Object * obj, double x, double y, double w, double h)
+etox_obstacle_add(Evas_Object * obj, Evas_Coord x, Evas_Coord y,
+		  Evas_Coord w, Evas_Coord h)
 {
 	Etox *et;
 	Etox_Obstacle *obst;
@@ -990,7 +994,7 @@ void etox_obstacle_remove(Etox_Obstacle * obstacle)
  * Returns no value. Changes the position information for @obst and updates the
  * etox to work around the new position.
  */
-void etox_obstacle_move(Etox_Obstacle * obst, double x, double y)
+void etox_obstacle_move(Etox_Obstacle * obst, Evas_Coord x, Evas_Coord y)
 {
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -1009,7 +1013,7 @@ void etox_obstacle_move(Etox_Obstacle * obst, double x, double y)
  * Returns no value. Changes the size information for @obst and updates the
  * etox to work around the new position.
  */
-void etox_obstacle_resize(Etox_Obstacle * obst, double x, double y)
+void etox_obstacle_resize(Etox_Obstacle * obst, Evas_Coord x, Evas_Coord y)
 {
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -1218,7 +1222,7 @@ void etox_layout(Etox * et)
 		 */
 		ll = et->obstacles;
 		while (ll) {
-			double ox, oy, ow, oh;
+			Evas_Coord ox, oy, ow, oh;
 
 			Etox_Obstacle *obst = ll->data;
 			evas_object_geometry_get(obst->bit, &ox, &oy, &ow, &oh);
