@@ -857,3 +857,14 @@ entire window.  this is a noticable speed improvement.
 ...
 thanks dude. :)
 
+-----
+20000821-1323-PDT, pabs
+
+- fixed the VBOX segv (gotta be more careful with those wacky 
+comparisons).
+
+-----
+20000821-1722-PDT, pabs
+
+- added ewl_widget_imlayer_show/hide/get_by_name()
+
