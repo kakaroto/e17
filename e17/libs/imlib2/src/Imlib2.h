@@ -275,6 +275,7 @@ void imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
 void imlib_image_filter(void);
 Imlib_Filter imlib_create_filter(int initsize);
 void imlib_context_set_filter(Imlib_Filter filter);
+Imlib_Filter imlib_context_get_filter(void);
 void imlib_free_filter(void);
 void imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b);
 void imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g, int b);

@@ -2542,6 +2542,12 @@ imlib_context_set_filter(Imlib_Filter filter)
    ctxt_filter = filter;
 }
 
+Imlib_Filter
+imlib_context_get_filter(void)
+{
+   return ctxt_filter;
+}
+
 void
 imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b)
 {
