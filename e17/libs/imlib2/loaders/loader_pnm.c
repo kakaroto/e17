@@ -193,10 +193,15 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                  per = (char) ((100 * y) / im->h);
                  if (((per - pper) >= progress_granularity)
                      || (y == (im->h - 1)))
-                 {
+		 {
                     l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
+		 
+		    /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    { 
                        fclose(f);
                        return 2;
                     }
@@ -276,11 +281,17 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                  per = (char) ((100 * y) / im->h);
                  if (((per - pper) >= progress_granularity)
                      || (y == (im->h - 1)))
-                 {
-                    l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
-                       if (idata)
+		 {
+		
+		    l = y - pl;
+
+		    /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    { 
+		       if (idata)
                           free(idata);
                        fclose(f);
                        return 2;
@@ -363,10 +374,15 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                  per = (char) ((100 * y) / im->h);
                  if (((per - pper) >= progress_granularity)
                      || (y == (im->h - 1)))
-                 {
-                    l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
+		 {
+		    l = y - pl;
+
+		    /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    {
                        if (idata)
                           free(idata);
                        fclose(f);
