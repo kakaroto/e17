@@ -82,16 +82,12 @@ MapUnmap(int start)
 			 {
 			    if (attr.override_redirect)
 			      {
-				 if (init_win1)
-				   {
-				      XRaiseWindow(disp, init_win1);
-				      XRaiseWindow(disp, init_win2);
-				   }
 #ifdef USE_EXT_INIT_WIN
 				 if (init_win_ext)
 				    XRaiseWindow(disp, init_win_ext);
-				 ProgressbarsRaise();
 #endif
+				 StartupWindowsRaise();
+				 ProgressbarsRaise();
 				 EMapWindow(disp, wlist[i]);
 			      }
 			    else

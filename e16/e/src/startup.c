@@ -23,11 +23,11 @@
 #include "E.h"
 #include <time.h>
 
-Window              init_win1 = 0;
-Window              init_win2 = 0;
+Window              init_win1 = None;
+Window              init_win2 = None;
 
 void
-CreateStartupDisplay(char start)
+StartupWindowsCreate(int start)
 {
    static Window       w1, w2, win1, win2, b1, b2;
    static Background  *bg = NULL;
@@ -141,4 +141,15 @@ CreateStartupDisplay(char start)
 	BackgroundDestroyByName("STARTUP_BACKGROUND");
      }
    EDBUG_RETURN_;
+}
+
+/* FIXME - should be handled via object stack */
+void
+StartupWindowsRaise(void)
+{
+   if (init_win1)
+     {
+	XRaiseWindow(disp, init_win1);
+	XRaiseWindow(disp, init_win2);
+     }
 }

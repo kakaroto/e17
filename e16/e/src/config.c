@@ -533,7 +533,7 @@ ThemeConfigLoad(void)
 	if (!Mode.wm.restart)
 	  {
 	     if (i == 2)
-		CreateStartupDisplay(1);
+		StartupWindowsCreate(1);
 
 	     if ((i > 1) && (!p))
 	       {

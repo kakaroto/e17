@@ -964,6 +964,9 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    EwinBorderDraw(ewin, 1, 1);
 
    EwinDetermineArea(ewin);
+
+   StartupWindowsRaise();
+
    ecore_x_ungrab();
 
    EDBUG_RETURN(ewin);

@@ -270,7 +270,7 @@ main(int argc, char **argv)
    MapUnmap(1);
 
    if (!Mode.wm.restart)
-      CreateStartupDisplay(0);
+      StartupWindowsCreate(0);
 
    /* sync just to make sure */
    ecore_x_sync();

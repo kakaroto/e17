@@ -2209,7 +2209,8 @@ EWin               *EwinListStackGetTop(void);
 #define EwinListFocusLower(ewin) EobjListFocusLower(&(ewin->o))
 
 /* startup.c */
-void                CreateStartupDisplay(char start);
+void                StartupWindowsCreate(int start);
+void                StartupWindowsRaise(void);
 
 /* tclass.c */
 int                 TextclassConfigLoad(FILE * fs);
