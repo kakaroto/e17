@@ -1,0 +1,17 @@
+Source: econfig
+Section: libs
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Standards-Version: 3.0.1.1
+
+Package: libeconfig0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: eConfig
+ some config thingy for e.. it's way past my bedtime and I'm trying
+ to roll efm, which seems to want this
+
+Package: libeconfig-dev
+Architecture: all
+Description: econfig development files
+ C header file for compiling programs with econfig support.

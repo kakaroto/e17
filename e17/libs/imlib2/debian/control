@@ -1,0 +1,17 @@
+Source: imlib2
+Section: libs
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Standards-Version: 3.0.1.1
+
+Package: libimlib2
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: imlib2
+ imlib2 is the second incarnation of the rasterman's superb imaging
+ library
+
+Package: libimlib2-dev
+Architecture: all
+Description: imlib2 development files
+ C header file for compiling programs with imlib2 support.
