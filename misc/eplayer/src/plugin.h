@@ -1,6 +1,8 @@
 #ifndef __PLUGIN_H
 #define __PLUGIN_H
 
+#include "utils.h"
+
 #define MAX_COMMENT_LEN 256
 
 typedef enum {

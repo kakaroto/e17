@@ -16,6 +16,7 @@ static int fd = -1;
 
 void oss_shutdown() {
 	if (fd != -1) {
+		ioctl(fd, SNDCTL_DSP_RESET, 0);
 		close(fd);
 		fd = -1;
 	}
@@ -31,6 +32,8 @@ int oss_configure(int channels, int rate, int bits) {
 	int format, tmp;
 
 	assert(fd != -1);
+
+	ioctl(fd, SNDCTL_DSP_RESET, 0);
 
 	/* set format */
 	if (bits == 8)
