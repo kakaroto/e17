@@ -2203,6 +2203,7 @@ void                KDE_ProcessClientMessage(XClientMessageEvent * event);
 void                KDE_ModuleAssert(EWin * ewin);
 void                KDE_PrepModuleEvent(EWin * ewin, KMessage msg);
 void                KDE_CheckClientHints(EWin * ewin);
+void                KDE_HintChange(XPropertyEvent * event);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);

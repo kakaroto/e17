@@ -74,7 +74,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+void 
 KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 {
 
@@ -97,7 +97,7 @@ KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 
 }
 
-void
+void 
 KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 {
 
@@ -119,7 +119,7 @@ KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 
 }
 
-void
+void 
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -138,7 +138,7 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void
+void 
 KDE_AddModule(EWin * ewin)
 {
 
@@ -217,7 +217,7 @@ KDE_AddModule(EWin * ewin)
 
 }
 
-void
+void 
 KDE_RemoveModule(EWin * ewin)
 {
 
@@ -272,7 +272,7 @@ KDE_RemoveModule(EWin * ewin)
 
 }
 
-void
+void 
 KDE_Init(void)
 {
    /*
@@ -384,7 +384,7 @@ KDE_Init(void)
 
 }
 
-void
+void 
 KDE_Shutdown(void)
 {
 
@@ -409,7 +409,7 @@ KDE_Shutdown(void)
 
 }
 
-void
+void 
 KDE_ClientInit(EWin * ewin)
 {
 
@@ -439,7 +439,7 @@ KDE_ClientInit(EWin * ewin)
 
 }
 
-void
+void 
 KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
 {
 
@@ -510,7 +510,7 @@ KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
 
 }
 
-void
+void 
 KDE_GetDecorationHint(EWin * ewin, long *dechints)
 {
 
@@ -573,7 +573,7 @@ KDE_GetDecorationHint(EWin * ewin, long *dechints)
 
 }
 
-void
+void 
 KDE_CheckClientHints(EWin * ewin)
 {
 
@@ -596,7 +596,7 @@ KDE_CheckClientHints(EWin * ewin)
 
 }
 
-int
+int 
 KDE_WindowCommand(EWin * ewin, char *cmd)
 {
 
@@ -652,7 +652,7 @@ KDE_WindowCommand(EWin * ewin, char *cmd)
 
 }
 
-void
+void 
 KDE_Command(char *cmd, XClientMessageEvent * event)
 {
 
@@ -731,7 +731,7 @@ KDE_Command(char *cmd, XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ProcessClientMessage(XClientMessageEvent * event)
 {
 
@@ -785,7 +785,7 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ModuleAssert(EWin * ewin)
 {
 
@@ -795,12 +795,11 @@ KDE_ModuleAssert(EWin * ewin)
      {
 	KDE_AddModule(ewin);
      }
-
    EDBUG_RETURN_;
 
 }
 
-void
+void 
 KDE_PrepModuleEvent(EWin * ewin, KMessage msg)
 {
 
@@ -835,6 +834,7 @@ KDE_PrepModuleEvent(EWin * ewin, KMessage msg)
 	EDBUG_RETURN_;
 
      }
+
    if (ewin)
      {
 	KDE_SendMessagesToModules(event, ewin->win);
@@ -842,6 +842,30 @@ KDE_PrepModuleEvent(EWin * ewin, KMessage msg)
    else
      {
 	KDE_SendMessagesToModules(event, 0);
+     }
+
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_HintChange(XPropertyEvent * event)
+{
+
+   EDBUG(6, "KDE_HintChange");
+
+   if (event->atom == KDE_CURRENT_DESKTOP)
+     {
+	GotoDesktop(*(getSimpleHint(root.win, KDE_CURRENT_DESKTOP)));
+     }
+   else if (event->atom == KDE_NUMBER_OF_DESKTOPS)
+     {
+	ChangeNumberOfDesktops(*(getSimpleHint(root.win,
+					       KDE_NUMBER_OF_DESKTOPS)));
+     }
+   else
+     {
+	/* not supported right now */
      }
 
    EDBUG_RETURN_;
