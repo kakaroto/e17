@@ -1233,8 +1233,7 @@ EwinCreate(Window win)
 
    EDBUG(5, "EwinCreate");
 
-   ewin = Emalloc(sizeof(EWin));
-   memset(ewin, 0, sizeof(EWin));
+   ewin = Ecalloc(1, sizeof(EWin));
 
    ewin->state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
    ewin->x = -1;

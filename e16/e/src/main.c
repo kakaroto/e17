@@ -82,8 +82,7 @@ main(int argc, char **argv)
    /* go head and set up the internal data lists that enlightenment
     * uses for finding everything
     */
-   lists = Emalloc(sizeof(List) * LIST_TYPE_COUNT);
-   lists = memset(lists, 0, (sizeof(List) * LIST_TYPE_COUNT));
+   lists = Ecalloc(LIST_TYPE_COUNT, sizeof(List));
 
    srand(time(NULL));
 

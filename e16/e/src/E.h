@@ -2765,30 +2765,38 @@ void                Zoom(EWin * ewin);
 
 #if USE_LIBC_MALLOC
 
-#define Efree       free
+#define Ecalloc     calloc
 #define Emalloc     malloc
+#define Efree       free
 #define Erealloc    realloc
 
 #elif defined(__FILE__) && defined(__LINE__)
 
-#define Efree(x) \
-__Efree(x, __FILE__, __LINE__)
+#define Ecalloc(n, x) \
+__Ecalloc(n, x, __FILE__, __LINE__)
 #define Emalloc(x) \
 __Emalloc(x, __FILE__, __LINE__)
+#define Efree(x) \
+__Efree(x, __FILE__, __LINE__)
 #define Erealloc(x, y) \
 __Erealloc(x, y, __FILE__, __LINE__)
+void               *__Ecalloc(int nmemb, int size, const char *file, int line);
 void               *__Emalloc(int size, const char *file, int line);
-void               *__Erealloc(void *ptr, int size, const char *file, int line);
 void                __Efree(void *ptr, const char *file, int line);
+void               *__Erealloc(void *ptr, int size, const char *file, int line);
 
 #else
+
 /* We still want our special handling, even if they don't have file/line stuff -- mej */
-#define Efree(x) \
-__Efree(x, "<unknown>", 0)
+#define Ecalloc(n, x) \
+__Ecalloc(n, x, "<unknown>", 0)
 #define Emalloc(x) \
 __Emalloc(x, "<unknown>", 0)
+#define Efree(x) \
+__Efree(x, "<unknown>", 0)
 #define Erealloc(x, y) \
 __Erealloc(x, y, "<unknown>", 0)
+
 #endif
 
 #if USE_LIBC_STRDUP

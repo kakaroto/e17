@@ -29,11 +29,10 @@ CreateTclass(void)
 
    EDBUG(5, "CreateTclass");
 
-   t = Emalloc(sizeof(TextClass));
+   t = Ecalloc(1, sizeof(TextClass));
    if (!t)
       EDBUG_RETURN(NULL);
 
-   memset(t, 0, sizeof(TextClass));
    t->justification = 512;
 
    EDBUG_RETURN(t);

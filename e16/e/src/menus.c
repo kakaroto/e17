@@ -410,8 +410,7 @@ MenuStyleCreate(void)
 
    EDBUG(5, "MenuStyleCreate");
 
-   ms = Emalloc(sizeof(MenuStyle));
-   memset(ms, 0, sizeof(MenuStyle));
+   ms = Ecalloc(1, sizeof(MenuStyle));
    ms->iconpos = ICON_LEFT;
 
    EDBUG_RETURN(ms);
@@ -424,8 +423,7 @@ MenuItemCreate(const char *text, ImageClass * iclass, int action_id,
    MenuItem           *mi;
 
    EDBUG(5, "MenuItemCreate");
-   mi = Emalloc(sizeof(MenuItem));
-   memset(mi, 0, sizeof(MenuItem));
+   mi = Ecalloc(1, sizeof(MenuItem));
 
    mi->icon_iclass = iclass;
    if (iclass)
@@ -447,8 +445,7 @@ MenuCreate(const char *name)
 
    EDBUG(5, "MenuCreate");
 
-   m = Emalloc(sizeof(Menu));
-   memset(m, 0, sizeof(Menu));
+   m = Ecalloc(1, sizeof(Menu));
    MenuAddName(m, name);
 
    EDBUG_RETURN(m);

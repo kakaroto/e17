@@ -25,8 +25,8 @@
 
 #if !USE_LIBC_MALLOC
 
-/* uncomment DBUG_MEM to get rudamentary pointer checking                    */
-/* uncomment MEM_OUT to get full debug output. to make this work you have to */
+/* Define DBUG_MEM to 1 to get rudamentary pointer checking */
+/* Define MEM_OUT to 1 to get full debug output. to make this work you have to */
 /* put a file in the directory (cwd) you run E from calle e.sym              */
 /* to generate the e.sym file do:                                            */
 	 /*                                                                */
@@ -38,18 +38,17 @@
 	 /*                                                                */
 /* do that whenever you recompile enlightenment and place the e.sym file in  */
 /* the current working directory of enlightenment                            */
-/*                                                                           */
 
-/*#define DBUG_MEM 1 */
-/*#define MEM_OUT 1 */
+#define DBUG_MEM 0
+#define MEM_OUT 0
 
-#ifdef DBUG_MEM
+#if DBUG_MEM
 #define POINTERS_SIZE 50000
 static unsigned int num_pointers = 0;
 static void        *pointers_ptr[POINTERS_SIZE];
 static unsigned int pointers_size[POINTERS_SIZE];
 
-#ifdef MEM_OUT
+#if MEM_OUT
 static void        *pointers_stack[POINTERS_SIZE][32];
 static char         pointers_file[POINTERS_SIZE][16];
 static int          pointers_line[POINTERS_SIZE];
@@ -101,7 +100,7 @@ getsym(void *p)
 void
 EDisplayMemUse()
 {
-#ifdef DBUG_MEM
+#if DBUG_MEM
    FILE               *f;
    unsigned int        i, min, max, sum;
 
@@ -182,6 +181,20 @@ EDisplayMemUse()
 
 #if defined(__FILE__) && defined(__LINE__)
 void               *
+__Ecalloc(int nmemb, int size, const char *file, int line)
+{
+   void               *p;
+
+   if (nmemb <= 0)
+      return NULL;
+   p = __Emalloc(nmemb * size, file, line);
+   if (!p)
+      return NULL;
+   memset(p, 0, nmemb * size);
+   return p;
+}
+
+void               *
 __Emalloc(int size, const char *file, int line)
 {
    void               *p;
@@ -209,13 +222,13 @@ __Emalloc(int size, const char *file, int line)
 		 "\n" "The malloc requested was at %s, line %d\n "), size,
 	       (float)size / 1024, (float)size / (1024 * 1024), file, line);
      }
-#ifdef DBUG_MEM
+#if DBUG_MEM
    if (p)
      {
 	num_pointers++;
 	pointers_ptr[num_pointers - 1] = p;
 	pointers_size[num_pointers - 1] = size;
-#ifdef MEM_OUT
+#if MEM_OUT
 	strcpy(pointers_file[num_pointers - 1], file);
 	pointers_line[num_pointers - 1] = line;
 	pointers_time[num_pointers - 1] = time(NULL);
@@ -231,7 +244,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 {
    void               *p;
 
-#ifdef DBUG_MEM
+#if DBUG_MEM
    char                bad = 0;
 
 #endif
@@ -250,7 +263,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	return NULL;
      }
    EDBUG(9, "Erealloc");
-#ifdef DBUG_MEM
+#if DBUG_MEM
    if (ptr)
      {
 	unsigned int        i;
@@ -303,7 +316,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 		 "\n" "The realloc requested was at %s, line %d\n "), size,
 	       (float)size / 1024, (float)size / (1024 * 1024), file, line);
      }
-#ifdef DBUG_MEM
+#if DBUG_MEM
    if (p)
      {
 	unsigned int        i;
@@ -326,12 +339,12 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 void
 __Efree(void *ptr, const char *file, int line)
 {
-#ifdef DBUG_MEM
+#if DBUG_MEM
    char                bad = 0;
 
 #endif
    EDBUG(9, "Efree");
-#ifdef DBUG_MEM
+#if DBUG_MEM
    {
       unsigned int        i, j, k;
 
@@ -344,7 +357,7 @@ __Efree(void *ptr, const char *file, int line)
 		  {
 		     pointers_ptr[j] = pointers_ptr[j + 1];
 		     pointers_size[j] = pointers_size[j + 1];
-#ifdef MEM_OUT
+#if MEM_OUT
 		     for (k = 0; k < 32; k++)
 			pointers_stack[j][k] = pointers_stack[j + 1][k];
 		     strcpy(pointers_file[j], pointers_file[j + 1]);
