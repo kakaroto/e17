@@ -124,7 +124,7 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   ecore_x_pixmap_geometry_get(pmap, &x, &y, &w, &h);
   imlib_context_set_display(dsp);
   imlib_context_set_visual(DefaultVisual(dsp, scr));
-  imlib_context_set_colormap(DefaultColormap(dsp, scr));
+  imlib_context_set_colormap(None);
   imlib_context_set_dither_mask(0);
   imlib_context_set_drawable(pmap);
 
