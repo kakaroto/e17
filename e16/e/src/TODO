@@ -1,5 +1,5 @@
 Fixes in 0.16.3:
-iconbox named displayed turned off WORKS now
+iconbox names displayed turned off WORKS now
 some odd, can't-see-how-it-could-possibly-trigger potential segfault in drawupdate code
 
 The Road to 0.17 (post 0.16.x):
