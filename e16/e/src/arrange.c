@@ -24,9 +24,6 @@
 
 int                 ArrangeAddToList(int **array, int current_size, int value);
 void                ArrangeSwapList(RectBox * list, int a, int b);
-void                MaximizeRects(RectBox * fixed, int fixed_count,
-				  RectBox * floating, int floating_count,
-				  RectBox * sorted, int width, int height);
 
 int
 ArrangeAddToList(int **array, int current_size, int value)
@@ -75,164 +72,6 @@ ArrangeSwapList(RectBox * list, int a, int b)
 }
 
 void
-MaximizeRects(RectBox * fixed, int fixed_count, RectBox * floating,
-	      int floating_count, RectBox * sorted, int width, int height)
-{
-   int                 num_sorted = 0;
-   int                 xsize = 0, ysize = 0;
-   int                *xarray = NULL, *yarray = NULL;
-   int                *leftover = NULL;
-   int                 i, j, k, x, y, x1 = 0, x2 = 0, y1 = 0, y2 = 0, size;
-   unsigned char      *filled = NULL;
-   RectBox            *spaces = NULL;
-
-/* for every floating rect in order, "fit" it into the sorted list */
-   size = ((fixed_count + floating_count) * 2) + 2;
-   xarray = Emalloc(size * sizeof(int));
-   yarray = Emalloc(size * sizeof(int));
-   filled = Emalloc(size * size * sizeof(char));
-
-   spaces = Emalloc(size * size * sizeof(RectBox));
-
-   if (floating_count)
-      leftover = Emalloc(floating_count * sizeof(int));
-
-   if ((!xarray) || (!yarray) || (!filled) || (!spaces))
-     {
-	if (xarray)
-	   Efree(xarray);
-	if (yarray)
-	   Efree(yarray);
-	if (filled)
-	   Efree(filled);
-	if (spaces)
-	   Efree(spaces);
-	if (leftover)
-	   Efree(leftover);
-	xarray = NULL;
-	yarray = NULL;
-	filled = NULL;
-	spaces = NULL;
-	return;
-     }
-
-   for (i = 0; i < fixed_count; i++)
-     {
-	sorted[num_sorted].data = fixed[i].data;
-	sorted[num_sorted].x = fixed[i].x;
-	sorted[num_sorted].y = fixed[i].y;
-	sorted[num_sorted].w = fixed[i].w;
-	sorted[num_sorted].h = fixed[i].h;
-	sorted[num_sorted].p = fixed[i].p;
-	num_sorted++;
-     }
-
-   xsize = 0;
-   ysize = 0;
-   xsize = ArrangeAddToList(&xarray, xsize, 0);
-   xsize = ArrangeAddToList(&xarray, xsize, width);
-   ysize = ArrangeAddToList(&yarray, ysize, 0);
-   ysize = ArrangeAddToList(&yarray, ysize, height);
-
-   for (i = 0; i < floating_count; i++)
-     {
-	xsize = ArrangeAddToList(&xarray, xsize, floating[i].x);
-	ysize = ArrangeAddToList(&yarray, ysize, floating[i].y);
-     }
-
-   for (j = 0; j < num_sorted; j++)
-     {
-	if (sorted[j].x < width)
-	   xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
-	if ((sorted[j].x + sorted[j].w) < width)
-	   xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
-	if (sorted[j].y < height)
-	   ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
-	if ((sorted[j].y + sorted[j].h) < height)
-	   ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
-     }
-
-   memset(filled, 0, size * size * sizeof(char));
-
-   for (j = 0; j < num_sorted; j++)
-     {
-	for (k = 0; k < xsize; k++)
-	   if (sorted[j].x == xarray[k])
-	     {
-		x1 = k;
-		x2 = k;
-		break;
-	     }
-	for (; k < xsize; k++)
-	   if (sorted[j].x + sorted[j].w == xarray[k + 1])
-	     {
-		x2 = k;
-		break;
-	     };
-	for (k = 0; k < ysize; k++)
-	   if (sorted[j].y == yarray[k])
-	     {
-		y1 = k;
-		y2 = k;
-		break;
-	     }
-	for (; k < ysize; k++)
-	   if (sorted[j].y + sorted[j].h == yarray[k + 1])
-	     {
-		y2 = k;
-		break;
-	     };
-
-	if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
-	   for (y = y1; y <= y2; y++)
-	      for (x = x1; x <= x2; x++)
-		 if (filled[(y * xsize) + x] < (sorted[j].p + 1))
-		    filled[(y * xsize) + x] = sorted[j].p + 1;
-     }
-
-   for (i = 0; i < floating_count; i++)
-     {
-	for (x = 0; xarray[x] != floating[i].x; x++);
-	for (y = 0; yarray[y] != floating[i].y; y++);
-
-	for (x1 = x, y1 = ysize - 1; (x1 < (xsize - 1)) && (filled[y * (xsize) + x1] <= floating[i].p); x1++)
-	  {
-	     for (y2 = y; (y2 <= y1) && (filled[y2 * xsize + x1] <= floating[i].p); y2++);
-	     if (y2 < y1)
-		y1 = y2;
-	  }
-
-	if (((xarray[x1] - xarray[x]) >= floating[i].w) && ((yarray[y1] - yarray[y]) >= floating[i].h))
-	  {
-	     sorted[num_sorted].data = floating[i].data;
-	     sorted[num_sorted].x = floating[i].x;
-	     sorted[num_sorted].y = floating[i].y;
-	     sorted[num_sorted].w = xarray[x1] - xarray[x];
-	     sorted[num_sorted].h = yarray[y1] - yarray[y];
-	     sorted[num_sorted].p = floating[i].p;
-	     num_sorted++;
-
-	     for (y2 = y; y2 < y1; y2++)
-		for (x2 = x; x2 < x1; x2++)
-		   filled[(y2 * xsize) + x2] = floating[i].p + 1;
-	  }
-
-     }
-   if (xarray)
-      Efree(xarray);
-   if (yarray)
-      Efree(yarray);
-   if (filled)
-      Efree(filled);
-   if (spaces)
-      Efree(spaces);
-   if (leftover)
-      Efree(leftover);
-
-   EDBUG_RETURN_;
-}
-
-void
 ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     int floating_count, RectBox * sorted, int width, int height,
 	     int policy)
@@ -241,14 +80,13 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    int                 xsize = 0, ysize = 0;
    int                *xarray = NULL, *yarray = NULL;
    int                *leftover = NULL;
-   int                 i, j, k, x = 0, y = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0,
-                       size, offset;
+   int                 i, j, k, x, y, x1, x2, y1, y2;
    unsigned char      *filled = NULL;
    RectBox            *spaces = NULL;
+   int                 num_spaces = 0;
    int                 sort;
-   int                 a1 = 0, a2 = 0;
-   int                 num_left = 0;
-   int                 num_spaces;
+   int                 a1, a2;
+   int                 num_leftover = 0;
 
    EDBUG(7, "ArrangeRects");
    switch (policy)
@@ -294,20 +132,17 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	break;
      }
 /* for every floating rect in order, "fit" it into the sorted list */
-   size = ((fixed_count + floating_count) * 2) + 2;
-   xarray = Emalloc(size * sizeof(int));
-   yarray = Emalloc(size * sizeof(int));
-   filled = Emalloc(size * size * sizeof(char));
+   i = ((fixed_count + floating_count) * 2) + 2;
+   xarray = Emalloc(i * sizeof(int));
+   yarray = Emalloc(i * sizeof(int));
+   filled = Emalloc(i * i * sizeof(char));
 
-   spaces = Emalloc(size * size * sizeof(RectBox));
-
+   spaces = Emalloc(i * i * sizeof(RectBox));
    if (floating_count)
       leftover = Emalloc(floating_count * sizeof(int));
 
-   if ((!xarray) || (!yarray) || (!filled) || (!spaces))
+   if (!xarray)
      {
-	if (xarray)
-	   Efree(xarray);
 	if (yarray)
 	   Efree(yarray);
 	if (filled)
@@ -316,9 +151,39 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	   Efree(spaces);
 	if (leftover)
 	   Efree(leftover);
-	return;
+	EDBUG_RETURN_;
      }
-
+   if (!yarray)
+     {
+	Efree(xarray);
+	if (filled)
+	   Efree(filled);
+	if (spaces)
+	   Efree(spaces);
+	if (leftover)
+	   Efree(leftover);
+	EDBUG_RETURN_;
+     }
+   if (!filled)
+     {
+	Efree(xarray);
+	Efree(yarray);
+	if (spaces)
+	   Efree(spaces);
+	if (leftover)
+	   Efree(leftover);
+	EDBUG_RETURN_;
+     }
+   if (!spaces)
+     {
+	Efree(xarray);
+	Efree(yarray);
+	Efree(filled);
+	if (leftover)
+	   Efree(leftover);
+	EDBUG_RETURN_;
+     }
+/* copy "fixed" rects into the sorted list */
    for (i = 0; i < fixed_count; i++)
      {
 	sorted[num_sorted].data = fixed[i].data;
@@ -329,110 +194,138 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	sorted[num_sorted].p = fixed[i].p;
 	num_sorted++;
      }
-
-   xsize = 0;
-   ysize = 0;
-   xsize = ArrangeAddToList(&xarray, xsize, 0);
-   xsize = ArrangeAddToList(&xarray, xsize, width);
-   ysize = ArrangeAddToList(&yarray, ysize, 0);
-   ysize = ArrangeAddToList(&yarray, ysize, height);
-   for (j = 0; j < num_sorted; j++)
-     {
-	if (sorted[j].x < width)
-	   xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
-	if ((sorted[j].x + sorted[j].w) < width)
-	   xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
-	if (sorted[j].y < height)
-	   ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
-	if ((sorted[j].y + sorted[j].h) < height)
-	   ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
-     }
-
-   memset(filled, 0, size * size * sizeof(char));
-
-   for (j = 0; j < num_sorted; j++)
-     {
-	for (k = 0; k < xsize; k++)
-	   if (sorted[j].x == xarray[k])
-	     {
-		x1 = k;
-		x2 = k;
-		break;
-	     }
-	for (; k < xsize; k++)
-	   if (sorted[j].x + sorted[j].w == xarray[k + 1])
-	     {
-		x2 = k;
-		break;
-	     };
-	for (k = 0; k < ysize; k++)
-	   if (sorted[j].y == yarray[k])
-	     {
-		y1 = k;
-		y2 = k;
-		break;
-	     }
-	for (; k < ysize; k++)
-	   if (sorted[j].y + sorted[j].h == yarray[k + 1])
-	     {
-		y2 = k;
-		break;
-	     };
-
-	if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
-	   for (y = y1; y <= y2; y++)
-	      for (x = x1; x <= x2; x++)
-		 if (filled[(y * xsize) + x] < (sorted[j].p + 1))
-		    filled[(y * xsize) + x] = sorted[j].p + 1;
-     }
-
+/* go through each floating rect in order and "fit" it in */
    for (i = 0; i < floating_count; i++)
      {
-	/* determine spaces */
-	num_spaces = 0;
-	for (y = 0; y < ysize; y++)
+	xsize = 0;
+	ysize = 0;
+/* put all the sorted rects into the xy arrays */
+	xsize = ArrangeAddToList(&xarray, xsize, 0);
+	xsize = ArrangeAddToList(&xarray, xsize, width);
+	ysize = ArrangeAddToList(&yarray, ysize, 0);
+	ysize = ArrangeAddToList(&yarray, ysize, height);
+	for (j = 0; j < num_sorted; j++)
 	  {
-	     offset = y * (xsize);
-	     for (x = 0; x < xsize; x++)
+	     if (sorted[j].x < width)
+		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
+	     if ((sorted[j].x + sorted[j].w) < width)
+		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
+	     if (sorted[j].y < height)
+		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
+	     if ((sorted[j].y + sorted[j].h) < height)
+		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
+	  }
+/* fill the allocation array */
+	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
+	for (j = 0; j < num_sorted; j++)
+	  {
+	     x1 = -1;
+	     x2 = -1;
+	     y1 = -1;
+	     y2 = -1;
+	     for (k = 0; k < xsize - 1; k++)
 	       {
-		  if (filled[offset + x] > floating[i].p)
-		     continue;
-
-		  for (x1 = x, y1 = ysize - 1; (x1 < (xsize - 1)) && (filled[offset + x1] <= floating[i].p); x1++)
+		  if (sorted[j].x == xarray[k])
 		    {
-		       for (y2 = y; (y2 <= y1) && (filled[y2 * xsize + x1] <= floating[i].p); y2++);
-		       if (y2 < y1)
-			  y1 = y2;
+		       x1 = k;
+		       x2 = k;
 		    }
-
-		  if ((x1 > x) && (y1 > y))
+		  if (sorted[j].x + sorted[j].w == xarray[k + 1])
+		     x2 = k;
+	       }
+	     for (k = 0; k < ysize - 1; k++)
+	       {
+		  if (sorted[j].y == yarray[k])
 		    {
+		       y1 = k;
+		       y2 = k;
+		    }
+		  if (sorted[j].y + sorted[j].h == yarray[k + 1])
+		     y2 = k;
+	       }
+	     if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
+	       {
+		  for (y = y1; y <= y2; y++)
+		    {
+		       for (x = x1; x <= x2; x++)
+			 {
+			    if (filled[(y * (xsize - 1)) + x] < (sorted[j].p + 1))
+			       filled[(y * (xsize - 1)) + x] = sorted[j].p + 1;
+			 }
+		    }
+	       }
+	  }
+	num_spaces = 0;
+/* create list of all "spaces" */
+	for (y = 0; y < ysize - 1; y++)
+	  {
+	     for (x = 0; x < xsize - 1; x++)
+	       {
+/* if the square is empty (lowe prioiryt suares filled) "grow" the space */
+		  if (filled[(y * (xsize - 1)) + x] < (floating[i].p + 1))
+		    {
+		       int                 can_expand_x = 1;
+		       int                 can_expand_y = 1;
+
+		       x1 = x + 1;
+		       y1 = y + 1;
+		       filled[(y * (xsize - 1)) + x] = 100;
+		       if (x >= xsize - 2)
+			  can_expand_x = 0;
+		       if (y >= ysize - 2)
+			  can_expand_y = 0;
+		       while ((can_expand_x) || (can_expand_y))
+			 {
+			    if (x1 >= xsize - 1)
+			       can_expand_x = 0;
+			    if (y1 >= ysize - 1)
+			       can_expand_y = 0;
+			    if (can_expand_x)
+			      {
+				 for (j = y; j < y1; j++)
+				   {
+				      if (filled[(j * (xsize - 1)) + x1] >=
+					  (floating[i].p + 1))
+					 can_expand_x = 0;
+				   }
+			      }
+			    if (can_expand_x)
+			       x1++;
+			    if (can_expand_y)
+			      {
+				 for (j = x; j < x1; j++)
+				   {
+				      if (filled[(y1 * (xsize - 1)) + j] >=
+					  (floating[i].p + 1))
+					 can_expand_y = 0;
+				   }
+			      }
+			    if (can_expand_y)
+			       y1++;
+			 }
 		       spaces[num_spaces].x = xarray[x];
 		       spaces[num_spaces].y = yarray[y];
 		       spaces[num_spaces].w = xarray[x1] - xarray[x];
 		       spaces[num_spaces].h = yarray[y1] - yarray[y];
-		       spaces[num_spaces].p = floating[i].p;
+		       spaces[num_spaces].p = 0;
 		       num_spaces++;
-		    };
+		    }
 	       }
 	  }
-
+/* find the first space that fits */
 	k = -1;
 	sort = 0x7fffffff;
 	for (j = 0; j < num_spaces; j++)
 	  {
-	     if ((spaces[j].w >= floating[i].w) && (spaces[j].h >= floating[i].h))
+	     if ((spaces[j].w >= floating[i].w) &&
+		 (spaces[j].h >= floating[i].h))
 	       {
-		  switch (policy)
+		  if (policy == ARRANGE_BY_POSITION)
 		    {
-		    case ARRANGE_VERBATIM:
-		    case ARRANGE_BY_SIZE:
-		       k = j;
-		       j = num_spaces;
-		       break;
-		    case ARRANGE_BY_POSITION:
-		       a1 = (spaces[j].x + (spaces[j].w >> 1)) - (floating[i].x + (floating[i].w >> 1));
-		       a2 = (spaces[j].y + (spaces[j].h >> 1)) - (floating[i].y + (floating[i].h >> 1));
+		       a1 = (spaces[j].x + (spaces[j].w >> 1)) -
+			  (floating[i].x + (floating[i].w >> 1));
+		       a2 = (spaces[j].y + (spaces[j].h >> 1)) -
+			  (floating[i].y + (floating[i].h >> 1));
 		       if (a1 < 0)
 			  a1 = -a1;
 		       if (a2 < 0)
@@ -442,83 +335,179 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			    sort = a1 + a2;
 			    k = j;
 			 }
-		       break;
+		    }
+		  else
+		    {
+		       k = j;
+		       j = num_spaces;
 		    }
 	       }
-	  };
-
+	  }
 	if (k >= 0)
 	  {
+	     if (policy == ARRANGE_BY_POSITION)
+	       {
+		  a1 = (spaces[k].x + (spaces[k].w >> 1)) -
+		     (floating[i].x + (floating[i].w >> 1));
+		  a2 = (spaces[k].y + (spaces[k].h >> 1)) -
+		     (floating[i].y + (floating[i].h >> 1));
+		  if (a1 >= 0)
+		     sorted[num_sorted].x = spaces[k].x;
+		  else
+		     sorted[num_sorted].x = spaces[k].x + spaces[k].w - floating[i].w;
+		  if (a2 >= 0)
+		     sorted[num_sorted].y = spaces[k].y;
+		  else
+		     sorted[num_sorted].y = spaces[k].y + spaces[k].h - floating[i].h;
+	       }
+	     else
+	       {
+		  sorted[num_sorted].x = spaces[k].x;
+		  sorted[num_sorted].y = spaces[k].y;
+	       }
 	     sorted[num_sorted].data = floating[i].data;
-	     sorted[num_sorted].x = spaces[k].x;
-	     sorted[num_sorted].y = spaces[k].y;
 	     sorted[num_sorted].w = floating[i].w;
 	     sorted[num_sorted].h = floating[i].h;
 	     sorted[num_sorted].p = floating[i].p;
 	     num_sorted++;
-
-	     if ((spaces[k].w != floating[i].w) || (spaces[k].h != floating[i].h))
-	       {
-		  int                 xnew, ynew;
-
-		  xnew = ArrangeAddToList(&xarray, xsize, spaces[k].x + floating[i].w);
-		  ynew = ArrangeAddToList(&yarray, ysize, spaces[k].y + floating[i].h);
-
-		  for (y2 = ynew - 1; y2 >= 0; y2--)
-		     for (x2 = xnew - 1; x2 >= 0; x2--)
-			if ((xarray[x2] >= spaces[k].x) && (xarray[x2] < (spaces[k].x + floating[i].w)) && (yarray[y2] >= spaces[k].y) && (yarray[y2] < (spaces[k].y + floating[i].h)))
-			   filled[y2 * xnew + x2] = floating[i].p + 1;
-			else
-			   filled[y2 * xnew + x2] = filled[((yarray[y2] >= (spaces[k].y + floating[i].h)) ? y2 - (ynew - ysize) : y2) * xsize + ((xarray[x2] >= (spaces[k].x + floating[i].w)) ? x2 - (xnew - xsize) : x2)];
-
-		  xsize = xnew;
-		  ysize = ynew;
-	       }
-	     else
-	       {
-		  for (y2 = y; y2 < y1; y2++)
-		     for (x2 = x; x2 < x1; x2++)
-			filled[y2 * xsize + x2] = floating[i].p + 1;
-	       };
 	  }
 	else
-	   leftover[num_left++] = i;
+	   leftover[num_leftover++] = i;
      }
-
-   /* place leftovers */
-   for (i = 0; i < num_left; i++)
+/* ok we cant fit everything in this baby.... time fit the leftovers into the */
+/* leftover space */
+   for (i = 0; i < num_leftover; i++)
      {
-	/* determine spaces */
-	num_spaces = 0;
-	for (y = 0; y < ysize; y++)
+	xsize = 0;
+	ysize = 0;
+/* put all the sorted rects into the xy arrays */
+	xsize = ArrangeAddToList(&xarray, xsize, 0);
+	xsize = ArrangeAddToList(&xarray, xsize, width);
+	ysize = ArrangeAddToList(&yarray, ysize, 0);
+	ysize = ArrangeAddToList(&yarray, ysize, height);
+	for (j = 0; j < num_sorted; j++)
 	  {
-	     offset = y * (xsize);
-	     for (x = 0; x < xsize; x++)
+	     if (sorted[j].x < width)
+		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
+	     if ((sorted[j].x + sorted[j].w) < width)
+		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
+	     if (sorted[j].y < height)
+		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
+	     if ((sorted[j].y + sorted[j].h) < height)
+		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
+	  }
+/* fill the allocation array */
+	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
+	for (j = 0; j < num_sorted; j++)
+	  {
+	     x1 = -1;
+	     x2 = -1;
+	     y1 = -1;
+	     y2 = -1;
+	     for (k = 0; k < xsize - 1; k++)
 	       {
-		  if (filled[offset + x] > floating[leftover[i]].p)
-		     continue;
-
-		  for (x1 = x, y1 = ysize - 1; (x1 < (xsize - 1)) && (filled[offset + x1] <= floating[leftover[i]].p); x1++)
+		  if (sorted[j].x == xarray[k])
 		    {
-		       for (y2 = y; (y2 <= y1) && (filled[y2 * xsize + x1] <= floating[leftover[i]].p) && (!(yarray[y2] >= yarray[y] + floating[leftover[i]].h)); y2++);
-		       if (y2 < y1)
-			  y1 = y2;
+		       x1 = k;
+		       x2 = k;
 		    }
-
-		  if ((x1 > x) && (y1 > y))
+		  if (sorted[j].x + sorted[j].w == xarray[k + 1])
+		     x2 = k;
+	       }
+	     for (k = 0; k < ysize - 1; k++)
+	       {
+		  if (sorted[j].y == yarray[k])
 		    {
+		       y1 = k;
+		       y2 = k;
+		    }
+		  if (sorted[j].y + sorted[j].h == yarray[k + 1])
+		     y2 = k;
+	       }
+	     if ((x1 >= 0) && (x2 >= 0) && (y1 >= 0) && (y2 >= 0))
+	       {
+		  for (y = y1; y <= y2; y++)
+		    {
+		       for (x = x1; x <= x2; x++)
+			 {
+			    if (filled[(y * (xsize - 1)) + x] < (sorted[j].p + 1))
+			       filled[(y * (xsize - 1)) + x] = sorted[j].p + 1;
+			 }
+		    }
+	       }
+	  }
+	num_spaces = 0;
+/* create list of all "spaces" */
+	for (y = 0; y < ysize - 1; y++)
+	  {
+	     for (x = 0; x < xsize - 1; x++)
+	       {
+/* if the square is empty "grow" the space */
+		  if (!filled[(y * (xsize - 1)) + x])
+		    {
+		       int                 can_expand_x = 1;
+		       int                 can_expand_y = 1;
+		       char                fitswin = 1;
+
+		       x1 = x + 1;
+		       y1 = y + 1;
+		       if (x >= xsize - 2)
+			  can_expand_x = 0;
+		       if (y >= ysize - 2)
+			  can_expand_y = 0;
+		       while ((can_expand_x) || (can_expand_y))
+			 {
+			    if (x1 >= xsize - 1)
+			       can_expand_x = 0;
+			    if (y1 >= ysize - 1)
+			       can_expand_y = 0;
+			    if (can_expand_x)
+			      {
+				 for (j = y; j < y1; j++)
+				   {
+				      if (filled[(j * (xsize - 1)) + x1] >=
+					  (floating[leftover[i]].p + 1))
+					{
+					   if (filled[(j * (xsize - 1)) + x1] >
+					       (floating[leftover[i]].p + 1))
+					      fitswin = 0;
+					   can_expand_x = 0;
+					}
+				   }
+			      }
+			    if (can_expand_x)
+			       x1++;
+			    if (can_expand_y)
+			      {
+				 for (j = x; j < x1; j++)
+				   {
+				      if (filled[(y1 * (xsize - 1)) + j] >=
+					  (floating[leftover[i]].p + 1))
+					{
+					   if (filled[(y1 * (xsize - 1)) + j] >
+					       (floating[leftover[i]].p + 1))
+					      fitswin = 0;
+					   can_expand_y = 0;
+					}
+				   }
+			      }
+			    if (can_expand_y)
+			       y1++;
+			 }
 		       spaces[num_spaces].x = xarray[x];
 		       spaces[num_spaces].y = yarray[y];
 		       spaces[num_spaces].w = xarray[x1] - xarray[x];
 		       spaces[num_spaces].h = yarray[y1] - yarray[y];
-		       spaces[num_spaces].p = floating[leftover[i]].p;
+		       spaces[num_spaces].p = fitswin;
 		       num_spaces++;
-		    };
+		    }
 	       }
 	  }
-
+/* find the first space that fits */
 	k = -1;
 	sort = 0x7fffffff;
+	a1 = floating[leftover[i]].w * floating[leftover[i]].h;
+	k = -1;
 	for (j = 0; j < num_spaces; j++)
 	  {
 	     a2 = spaces[j].w * spaces[j].h;
@@ -528,15 +517,14 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		  sort = a1 - a2;
 	       }
 	  }
-
+/* if there's a small space ... */
 	if (k >= 0)
 	  {
-	     sorted[num_sorted].data = floating[leftover[i]].data;
 	     sorted[num_sorted].x = spaces[k].x;
 	     sorted[num_sorted].y = spaces[k].y;
+	     sorted[num_sorted].data = floating[leftover[i]].data;
 	     sorted[num_sorted].w = floating[leftover[i]].w;
 	     sorted[num_sorted].h = floating[leftover[i]].h;
-	     sorted[num_sorted].p = floating[leftover[i]].p;
 	     if ((sorted[num_sorted].x + sorted[num_sorted].w) > width)
 		sorted[num_sorted].x = width - sorted[num_sorted].w;
 	     if ((sorted[num_sorted].y + sorted[num_sorted].h) > height)
@@ -545,46 +533,41 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		sorted[num_sorted].x = 0;
 	     if (sorted[num_sorted].y < 0)
 		sorted[num_sorted].y = 0;
-
 	     num_sorted++;
-
-	     if ((spaces[k].w != floating[leftover[i]].w) || (spaces[k].h != floating[leftover[i]].h))
-	       {
-		  int                 xnew, ynew;
-
-		  xnew = ArrangeAddToList(&xarray, xsize, spaces[k].x + floating[leftover[i]].w);
-		  ynew = ArrangeAddToList(&yarray, ysize, spaces[k].y + floating[leftover[i]].h);
-
-		  for (y2 = ynew - 1; y2 >= 0; y2--)
-		     for (x2 = xnew - 1; x2 >= 0; x2--)
-			if ((xarray[x2] >= spaces[k].x) && (xarray[x2] < (spaces[k].x + floating[leftover[i]].w)) && (yarray[y2] >= spaces[k].y) && (yarray[y2] < (spaces[k].y + floating[leftover[i]].h)))
-			   filled[y2 * xnew + x2] = floating[leftover[i]].p + 1;
-			else
-			   filled[y2 * xnew + x2] = filled[((yarray[y2] >= (spaces[k].y + floating[leftover[i]].h)) ? y2 - (ynew - ysize) : y2) * xsize + ((xarray[x2] >= (spaces[k].x + floating[leftover[i]].w)) ? x2 - (xnew - xsize) : x2)];
-
-		  xsize = xnew;
-		  ysize = ynew;
-	       }
-	     else
-	       {
-		  for (y2 = y; y2 < y1; y2++)
-		     for (x2 = x; x2 < x1; x2++)
-			filled[y2 * xsize + x2] = floating[leftover[i]].p + 1;
-	       };
 	  }
+/* there is no room - put it centered (but dont put top left off screen) */
 	else
-	   leftover[num_left++] = i;
+	  {
+	     sorted[num_sorted].data = floating[leftover[i]].data;
+	     sorted[num_sorted].x = (width - floating[leftover[i]].w) / 2;
+	     sorted[num_sorted].y = (height - floating[leftover[i]].h) / 2;
+	     sorted[num_sorted].w = floating[leftover[i]].w;
+	     sorted[num_sorted].h = floating[leftover[i]].h;
+	     if (sorted[num_sorted].x < 0)
+		sorted[num_sorted].x = 0;
+	     if (sorted[num_sorted].y < 0)
+		sorted[num_sorted].y = 0;
+	     num_sorted++;
+	  }
      }
-   if (xarray)
-      Efree(xarray);
-   if (yarray)
-      Efree(yarray);
-   if (filled)
-      Efree(filled);
-   if (spaces)
-      Efree(spaces);
+/* free up memory */
+   Efree(xarray);
+   Efree(yarray);
+   Efree(filled);
+   Efree(spaces);
    if (leftover)
       Efree(leftover);
+   for (i = 0; i < num_sorted; i++)
+     {
+	if ((sorted[i].x + sorted[i].w) > root.w)
+	   sorted[i].x = root.w - sorted[i].w;
+	if ((sorted[i].y + sorted[i].h) > root.h)
+	   sorted[i].y = root.h - sorted[i].h;
+	if (sorted[i].x < 0)
+	   sorted[i].x = 0;
+	if (sorted[i].y < 0)
+	   sorted[i].y = 0;
+     }
    EDBUG_RETURN_;
 }
 
@@ -771,7 +754,6 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 void
 ArrangeEwin(EWin * ewin)
 {
-
    EWin              **lst;
    Button            **blst;
    int                 i, j, num;
@@ -942,5 +924,4 @@ ArrangeEwin(EWin * ewin)
 	ewin->y = (root.h - ewin->h) >> 1;
      }
    MoveEwin(ewin, ewin->x, ewin->y);
-
 }
