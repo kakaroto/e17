@@ -7,7 +7,7 @@ bindir=$(ROOT)${exec_prefix}/bin
 mandir=$(ROOT)${prefix}/man
 
 CC=gcc
-CFLAGS=-O2 -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE -I/usr/local/include -I/usr/X11R6/include
+CFLAGS=-O3 -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE -I/usr/local/include -I/usr/X11R6/include
 
 INSTALL=/usr/bin/install -c
 INSTALL_PROGRAM=${INSTALL}

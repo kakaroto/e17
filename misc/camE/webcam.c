@@ -19,15 +19,12 @@
 #include <Imlib2.h>
 
 #include <asm/types.h>
-#include "videodev.h"   /* change this to "videodev2.h" for v4l2 */
+#include "videodev.h"
 
 #include "ftp.h"
 #include "parseconfig.h"
 
 void log(char *entry);
-
-/* ---------------------------------------------------------------------- */
-/* configuration                                                          */
 
 char *ftp_host = "www";
 char *ftp_user = "webcam";
@@ -64,6 +61,7 @@ int bg_r = 0;
 int bg_g = 0;
 int bg_b = 0;
 int bg_a = 150;
+int close_dev = 0;
 char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *grab_archive = NULL;
@@ -75,27 +73,27 @@ char *title_text = NULL;
 int grab_input = 0;
 int grab_norm = VIDEO_MODE_PAL;
 
-/* ---------------------------------------------------------------------- */
-
+static struct video_mmap grab_buf;
+static int grab_fd = -1;
+static int grab_size = 0;
+static unsigned char *grab_data = NULL;
 Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height);
 
-/* ---------------------------------------------------------------------- */
-/* jpeg stuff                                                             */
-
-
-/* ---------------------------------------------------------------------- */
-/* capture stuff  -  old v4l (bttv)                                       */
-
-static struct video_capability grab_cap;
-static struct video_mmap grab_buf;
-static struct video_channel grab_chan;
-static int grab_fd, grab_size;
-static unsigned char *grab_data = NULL;
-static struct video_mbuf vid_mbuf;
+void
+close_device()
+{
+   close(grab_fd);
+   grab_fd = -1;
+   munmap(grab_data, grab_size);
+}
 
 void
 grab_init()
 {
+   struct video_capability grab_cap;
+   struct video_channel grab_chan;
+   struct video_mbuf vid_mbuf;
+
    if ((grab_fd = open(grab_device, O_RDWR)) == -1)
    {
       fprintf(stderr, "open %s: %s\n", grab_device, strerror(errno));
@@ -134,10 +132,15 @@ grab_init()
    grab_size = vid_mbuf.size;
    grab_data =
       mmap(0, grab_size, PROT_READ | PROT_WRITE, MAP_SHARED, grab_fd, 0);
+   if (grab_data == NULL)
+   {
+      fprintf(stderr,
+              "couldn't mmap vidcam. your card doesn't support that?\n");
+      exit(1);
+   }
 }
 
-Imlib_Image
-grab_one(int *width, int *height)
+Imlib_Image grab_one(int *width, int *height)
 {
    Imlib_Image im;
    int i = lag_reduce;
@@ -246,8 +249,7 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    }
 }
 
-Imlib_Image
-convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
+Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
 {
    Imlib_Image im;
    DATA32 *data, *dest;
@@ -443,7 +445,8 @@ main(int argc, char *argv[])
       bg_a = i;
    if (-1 != (i = cfg_get_int("grab", "lag_reduce")))
       lag_reduce = i;
-
+   if (-1 != (i = cfg_get_int("grab", "close_dev")))
+      close_dev = i;
 
    /* print config */
    fprintf(stderr, "camE v0.3 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
@@ -527,6 +530,8 @@ main(int argc, char *argv[])
             log("running post upload action");
             system(action_post_upload);
          }
+         imlib_context_set_image(image);
+         imlib_free_image_and_decache();
          log("sleeping");
       }
       if (grab_delay > 0)
