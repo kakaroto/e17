@@ -1140,6 +1140,7 @@ doSMExit(void *params)
 	if (!(d = FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
 			   LIST_TYPE_DIALOG)))
 	  {
+	     AUDIO_PLAY("SOUND_LOGOUT");
 	     d = CreateDialog("LOGOUT_DIALOG");
 	     DialogSetTitle(d, "Are you sure?");
 	     DialogSetText(d,

@@ -3475,3 +3475,10 @@ Mon Oct 11 09:31:19 PDT 1999
 (Raster)
 
 patch from dave mason to fix minor spelling mistakes :)
+
+-------------------------------------------------------------------------------
+
+Mon Oct 11 09:46:02 PDT 1999
+(Raster)
+
+add logout soudn when u have have libSM :)
