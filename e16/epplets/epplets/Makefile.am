@@ -32,7 +32,7 @@ E_Biff_epplet_SOURCES = E-Biff.c mbox.c
 E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-INCLUDES = -DEBIN=\"$(EBIN)\" -DEROOT=\"$(EROOT)\" -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
+INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 ABOUT_DOCS = E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
@@ -47,14 +47,14 @@ EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
 install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons
 	@for i in ${ICONS}; do \
-	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
-	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	done
 	@for i in ${IMAGES}; do \
-	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
-	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	done
 	@for i in ${ABOUT_DOCS}; do \
-	  echo $(INSTALL_DATA) -D $$i $(EROOT)/epplet_icons/$$i ; \
-	  $(INSTALL_DATA) -D $$i $(EROOT)/epplet_icons/$$i ; \
+	  echo $(INSTALL_DATA) -D $(srcdir)/$$i $(EROOT)/epplet_icons/$$i ; \
+	  $(INSTALL_DATA) -D $(srcdir)/$$i $(EROOT)/epplet_icons/$$i ; \
 	done
