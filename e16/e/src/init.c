@@ -133,7 +133,7 @@ SetupFallbackClasses(void)
 
    /* create a fallback textclass in case no textclass is found */
    tc = CreateTclass();
-   tc->name = "__FALLBACK_TCLASS";
+   tc->name = Estrdup("__FALLBACK_TCLASS");
    tc->norm.normal = CreateTextState();
    tc->norm.normal->fontname =
       Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");

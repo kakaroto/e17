@@ -913,7 +913,7 @@ void
 SetSMID(const char *smid)
 {
 #ifdef HAVE_X11_SM_SMLIB_H
-   sm_client_id = smid;
+   sm_client_id = Estrdup(smid);
 #endif /* HAVE_X11_SM_SMLIB_H */
 }
 

@@ -77,6 +77,36 @@ CreateToolTip(const char *name, ImageClass * ic0, ImageClass * ic1,
    EDBUG_RETURN(tt);
 }
 
+static ImageClass  *
+TooltipCreateIclass(const char *name, const char *file, int *pw, int *ph)
+{
+   ImageClass         *ic;
+
+   ic = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   if (!ic)
+     {
+	ic = CreateIclass();
+	ic->norm.normal = CreateImageState();
+	ic->norm.normal->im_file = Estrdup(file);
+	IclassPopulate(ic);
+	AddItem(ic, name, 0, LIST_TYPE_ICLASS);
+     }
+   if (ic->norm.normal)
+     {
+	ImageStateRealize(ic->norm.normal);
+	if (ic->norm.normal->im)
+	  {
+	     imlib_context_set_image(ic->norm.normal->im);
+	     if (*pw < imlib_image_get_width())
+		*pw = imlib_image_get_width();
+	     if (*ph < imlib_image_get_height())
+		*ph = imlib_image_get_height();
+	  }
+     }
+
+   return ic;
+}
+
 void
 ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 {
@@ -108,337 +138,104 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	     temp_w = 0;
 	     temp_h = 0;
 
-	     if (ac->list[i]->tooltipstring)
+	     if (!ac->list[i]->tooltipstring)
+		continue;
+
+	     TextSize(tt->tclass, 0, 0, STATE_NORMAL,
+		      ac->list[i]->tooltipstring, &temp_w, &temp_h, 17);
+	     if (temp_w > labels_width)
+		labels_width = temp_w;
+	     temp_w = 0;
+
+	     if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
 	       {
-		  TextSize(tt->tclass, 0, 0, STATE_NORMAL,
-			   ac->list[i]->tooltipstring, &temp_w, &temp_h, 17);
-		  if (temp_w > labels_width)
-		     labels_width = temp_w;
-		  temp_w = 0;
-
-		  if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
-		    {
-		       TextSize(tt->tclass, 0, 0, STATE_NORMAL, "2x", &double_w,
-				&temp_h, 17);
-		       if (cols[0] < double_w)
-			  cols[0] = double_w;
-		    }
-
-		  if (ac->list[i]->anybutton)
-		    {
-		       ic = FindItem("TOOLTIP_MOUSEBUTTON_ANY", 0,
-				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-		       if (!ic)
-			 {
-			    ic = CreateIclass();
-			    ic->norm.normal = CreateImageState();
-			    ic->norm.normal->im_file = "pix/mouse_any.png";
-			    IclassPopulate(ic);
-			    AddItem(ic, "TOOLTIP_MOUSEBUTTON_ANY", 0,
-				    LIST_TYPE_ICLASS);
-			 }
-		       if (ic->norm.normal)
-			  ImageStateRealize(ic->norm.normal);
-		    }
-		  else
-		     switch (ac->list[i]->button)
-		       {
-		       case 1:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_1", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (!ic)
-			    {
-			       ic = CreateIclass();
-			       ic->norm.normal = CreateImageState();
-			       ic->norm.normal->im_file = "pix/mouse_1.png";
-			       IclassPopulate(ic);
-			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_1", 0,
-				       LIST_TYPE_ICLASS);
-			    }
-			  if (ic->norm.normal)
-			     ImageStateRealize(ic->norm.normal);
-			  break;
-		       case 2:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_2", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (!ic)
-			    {
-			       ic = CreateIclass();
-			       ic->norm.normal = CreateImageState();
-			       ic->norm.normal->im_file = "pix/mouse_2.png";
-			       IclassPopulate(ic);
-			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_2", 0,
-				       LIST_TYPE_ICLASS);
-			    }
-			  if (ic->norm.normal)
-			     ImageStateRealize(ic->norm.normal);
-			  break;
-		       case 3:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_3", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (!ic)
-			    {
-			       ic = CreateIclass();
-			       ic->norm.normal = CreateImageState();
-			       ic->norm.normal->im_file = "pix/mouse_3.png";
-			       IclassPopulate(ic);
-			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_3", 0,
-				       LIST_TYPE_ICLASS);
-			    }
-			  if (ic->norm.normal)
-			     ImageStateRealize(ic->norm.normal);
-			  break;
-		       case 4:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_4", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (!ic)
-			    {
-			       ic = CreateIclass();
-			       ic->norm.normal = CreateImageState();
-			       ic->norm.normal->im_file = "pix/mouse_4.png";
-			       IclassPopulate(ic);
-			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_4", 0,
-				       LIST_TYPE_ICLASS);
-			    }
-			  if (ic->norm.normal)
-			     ImageStateRealize(ic->norm.normal);
-			  break;
-		       case 5:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_5", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (!ic)
-			    {
-			       ic = CreateIclass();
-			       ic->norm.normal = CreateImageState();
-			       ic->norm.normal->im_file = "pix/mouse_5.png";
-			       IclassPopulate(ic);
-			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_5", 0,
-				       LIST_TYPE_ICLASS);
-			    }
-			  if (ic->norm.normal)
-			     ImageStateRealize(ic->norm.normal);
-			  break;
-		       case 0:
-		       default:
-			  break;
-		       }
-
-		  if (ic)
-		    {
-		       if (ic->norm.normal->im)
-			 {
-			    imlib_context_set_image(ic->norm.normal->im);
-			    if (cols[1] < imlib_image_get_width())
-			       cols[1] = imlib_image_get_width();
-			    if (imlib_image_get_height() > temp_h)
-			       temp_h = imlib_image_get_height();
-			 }
-		    }
-		  if (ac->list[i]->modifiers)
-		    {
-		       if (ac->list[i]->modifiers & ShiftMask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_SHIFT", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_shift.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_SHIFT", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[2] < imlib_image_get_width())
-				    cols[2] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & LockMask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_LOCK", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_lock.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_LOCK", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[3] < imlib_image_get_width())
-				    cols[3] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & ControlMask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_CTRL", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_ctrl.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_CTRL", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[4] < imlib_image_get_width())
-				    cols[4] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & Mod1Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD1", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_mod1.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_MOD1", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[5] < imlib_image_get_width())
-				    cols[5] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & Mod2Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD2", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_mod2.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_MOD2", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[6] < imlib_image_get_width())
-				    cols[6] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & Mod3Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD3", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_mod3.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_MOD3", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[7] < imlib_image_get_width())
-				    cols[7] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & Mod4Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD4", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_mod4.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_MOD4", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[8] < imlib_image_get_width())
-				    cols[8] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		       if (ac->list[i]->modifiers & Mod5Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD5", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (!ic)
-			      {
-				 ic = CreateIclass();
-				 ic->norm.normal = CreateImageState();
-				 ic->norm.normal->im_file = "pix/key_mod5.png";
-				 IclassPopulate(ic);
-				 AddItem(ic, "TOOLTIP_KEY_MOD5", 0,
-					 LIST_TYPE_ICLASS);
-			      }
-			    if (ic->norm.normal)
-			       ImageStateRealize(ic->norm.normal);
-			    if (ic->norm.normal->im)
-			      {
-				 imlib_context_set_image(ic->norm.normal->im);
-				 if (cols[9] < imlib_image_get_width())
-				    cols[9] = imlib_image_get_width();
-				 if (imlib_image_get_height() > temp_h)
-				    temp_h = imlib_image_get_height();
-			      }
-			 }
-		    }
-
-		  temp_w =
-		     cols[0] + cols[1] + cols[2] + cols[3] + cols[4] +
-		     cols[5] + cols[6] + cols[7] + cols[8] + cols[9];
-
-		  if (temp_w > icons_width)
-		     icons_width = temp_w;
-		  heights[i] = temp_h;
-		  h += temp_h;
+		  TextSize(tt->tclass, 0, 0, STATE_NORMAL, "2x", &double_w,
+			   &temp_h, 17);
+		  if (cols[0] < double_w)
+		     cols[0] = double_w;
 	       }
+
+	     if (ac->list[i]->anybutton)
+	       {
+		  TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_ANY",
+				      "pix/mouse_any.png", &cols[1], &temp_h);
+	       }
+	     else
+		switch (ac->list[i]->button)
+		  {
+		  case 1:
+		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_1",
+					      "pix/mouse_1.png", &cols[1],
+					      &temp_h);
+		     break;
+		  case 2:
+		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_2",
+					      "pix/mouse_2.png", &cols[1],
+					      &temp_h);
+		     break;
+		  case 3:
+		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_3",
+					      "pix/mouse_3.png", &cols[1],
+					      &temp_h);
+		     break;
+		  case 4:
+		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_4",
+					      "pix/mouse_4.png", &cols[1],
+					      &temp_h);
+		     break;
+		  case 5:
+		     ic = TooltipCreateIclass("TOOLTIP_MOUSEBUTTON_5",
+					      "pix/mouse_5.png", &cols[1],
+					      &temp_h);
+		     break;
+		  case 0:
+		  default:
+		     break;
+		  }
+
+	     if (ac->list[i]->modifiers)
+	       {
+		  if (ac->list[i]->modifiers & ShiftMask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_SHIFT",
+					      "pix/key_shift.png",
+					      &cols[2], &temp_h);
+		  if (ac->list[i]->modifiers & LockMask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_LOCK",
+					      "pix/key_lock.png",
+					      &cols[3], &temp_h);
+		  if (ac->list[i]->modifiers & ControlMask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_CTRL",
+					      "pix/key_ctrl.png",
+					      &cols[4], &temp_h);
+		  if (ac->list[i]->modifiers & Mod1Mask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD1",
+					      "pix/key_mod1.png",
+					      &cols[5], &temp_h);
+		  if (ac->list[i]->modifiers & Mod2Mask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD2",
+					      "pix/key_mod2.png",
+					      &cols[6], &temp_h);
+		  if (ac->list[i]->modifiers & Mod3Mask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD3",
+					      "pix/key_mod3.png",
+					      &cols[7], &temp_h);
+		  if (ac->list[i]->modifiers & Mod4Mask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD4",
+					      "pix/key_mod4.png",
+					      &cols[8], &temp_h);
+		  if (ac->list[i]->modifiers & Mod5Mask)
+		     ic = TooltipCreateIclass("TOOLTIP_KEY_MOD5",
+					      "pix/key_mod5.png",
+					      &cols[9], &temp_h);
+	       }
+
+	     temp_w = cols[0] + cols[1] + cols[2] + cols[3] + cols[4] +
+		cols[5] + cols[6] + cols[7] + cols[8] + cols[9];
+
+	     if (temp_w > icons_width)
+		icons_width = temp_w;
+	     heights[i] = temp_h;
+	     h += temp_h;
 	  }
      }
 
