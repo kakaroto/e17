@@ -111,6 +111,11 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 
    if (ptr == NULL)
       return __Emalloc(size, file, line);
+   if ((ptr != NULL) && (size == 0))
+     {
+	__Efree(ptr, file, line);
+	return NULL;
+     }
    EDBUG(9, "Erealloc");
 #ifdef DBUG_MEM
    if (ptr)
@@ -151,7 +156,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
      }
 #endif
    p = realloc(ptr, size);
-   if (!p)
+   if ((!p) && (size != 0))
      {
 	if (disp)
 	   UngrabX();

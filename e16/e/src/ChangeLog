@@ -1906,3 +1906,12 @@ segfault.
 Needs fixing.  BIG bug.  if you turn "kde off" in your eesh it will fix that,
 or if you want kde support only use desktop 0 for now.  'nuff said.
 
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 08:57:02 PDT 1999
+(Raster)
+
+have erealloc call efree if size == 0 & ptr != NULL
+
+if we change desktop area size - dont reshufle sticky windows... :)

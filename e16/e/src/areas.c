@@ -34,10 +34,13 @@ SetNewAreaSize(int ax, int ay)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if (lst[i]->area_x >= ax)
-		MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
-	     if (lst[i]->area_y >= ay)
-		MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
+	     if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
+	       {
+		  if (lst[i]->area_x >= ax)
+		     MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
+		  if (lst[i]->area_y >= ay)
+		     MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
+	       }
 	  }
 	Efree(lst);
      }
