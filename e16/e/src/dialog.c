@@ -266,6 +266,8 @@ DialogDestroy(Dialog * d)
 {
    int                 i;
 
+   RemoveItem(NULL, d->win, LIST_FINDBY_ID, LIST_TYPE_DIALOG);
+
    if (d->name)
       Efree(d->name);
    if (d->title)
@@ -596,8 +598,6 @@ DialogClose(Dialog * d)
 
    if (d->exit_func)
       d->exit_func(d, d->exit_val, NULL);
-
-   RemoveItem(NULL, d->win, LIST_FINDBY_ID, LIST_TYPE_DIALOG);
 }
 
 DItem              *

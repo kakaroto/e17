@@ -623,9 +623,11 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 #endif
 
  done:
-   if (sd)
-      Efree(sd);
-   DialogSetData(d, NULL);
+   if (sd && val == 2)
+     {
+	Efree(sd);
+	DialogSetData(d, NULL);
+     }
 
    SaveSnapInfo();
 }
