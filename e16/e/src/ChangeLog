@@ -3354,3 +3354,12 @@ Sat Oct  9 19:56:36 PDT 1999
 (Raster)
 
 attempt at maybe fixing E's soudn on ppc?
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 20:35:22 PDT 1999
+(Mandrake)
+
+removing Ganymede and adding BlueSteel for release (sorry Christian - don't
+have enough time to fix all of ganymede myself for epplets - we'll put it back
+in CVS and remove BlueSteel later)
