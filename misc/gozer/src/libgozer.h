@@ -1,4 +1,4 @@
-/* options.h
+/* libgozer.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#ifndef LIBGOZER_H
+#define LIBGOZER_H
 
 enum __justify
 { JUST_LEFT,
@@ -62,7 +62,18 @@ struct __gozeroptions
    int x,y;
 };
 
-void init_parse_options(int argc, char **argv);
-extern gozeroptions opt;
+typedef struct __gozeroptions gozeroptions;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void default_options(gozeroptions *opt);
+Imlib_Image gozer_render(gozeroptions *opt);
+void gozer_parse_rc_file(char *file, int user_defined, gozeroptions *opt);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

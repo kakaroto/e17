@@ -10,6 +10,6 @@ $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = gozer
-gozer_SOURCES       = main.c getopt.c getopt1.c getopt.h gozer.h \
-options.c options.h debug.h utils.c utils.h imlib.c structs.h
+gozer_SOURCES       = main.c gozer.c getopt.c getopt1.c getopt.h gozer.h \
+options.c debug.h utils.c utils.h imlib.c
 gozer_LDADD         = @GIBLIB_LIBS@

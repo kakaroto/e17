@@ -39,11 +39,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 #include <giblib/giblib.h>
 
-#include "config.h"
-#include "structs.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include "utils.h"
 #include "getopt.h"
 #include "debug.h"
+#include "libgozer.h"
 
 #ifndef __GNUC__
 # define __attribute__(x)
@@ -51,14 +53,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define PIPE_BUF_MAX 10240
 
-void show_usage(void);
-void show_version(void);
 void init_imlib(void);
-void show_mini_usage(void);
-gib_list *gozer_calculate_lines(Imlib_Font fn, gib_style *style);
-char *gozer_read_file(char *filename);
-char *gozer_read_pipe();
-
-void gozer_stream_file(char *file, int headers);
 
 #endif

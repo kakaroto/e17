@@ -1,3 +1,10 @@
+Sat Jan 18 18:13:51 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Jonas Jensen <jbj@knef.dk> which makes the gozer functionality
+    usable as a library. You can now just include libgozer.h and link against
+    gozer.o, util.o and options.o if you want to use gozer in your own
+    programs.
+
 Wed Dec 04 12:33:12 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Patch from Jonas Jensen <jbj@knef.dk> to speed up --stdout
