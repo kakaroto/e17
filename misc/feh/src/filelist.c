@@ -818,7 +818,7 @@ feh_absolute_path(char *path)
    if (!path)
       D_RETURN(NULL);
    if (path[0] == '/')
-      D_RETURN(path);
+      D_RETURN(estrdup(path));
    /* This path is not relative. We're gonna convert it, so that a
       filelist file can be saved anywhere and feh will still find the
       images */

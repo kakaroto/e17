@@ -1,3 +1,12 @@
+Tue Jun 20 20:02:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed mousebutton swapping option code. It was broken for
+	certain combinations, now all seems well.
+	* Found a use for ctrl+button1 for now, it just blurs/sharpens the
+	image dynamically - for shits and giggles. It is somewhat spoiled
+	by the fact that imlib2 currently doesn't seem to care what radius
+	you pass to imlib_sharpen_image(), it always does the same thing.
+
 Mon Jun 19 17:47:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added new background setting mode. "Set seamless." It's purdy.
