@@ -416,7 +416,7 @@ static void on_delete_request (Ecore_Evas *ee)
 
 static bool ui_load_edje (Embrace *e)
 {
-	double w = 0, h = 0;
+	Evas_Coord w = 0, h = 0;
 
 	assert (e);
 
@@ -436,9 +436,9 @@ static bool ui_load_edje (Embrace *e)
 	ecore_evas_size_max_set (e->gui.ee, w, h);
 
 	edje_object_size_min_get (e->gui.edje, &w, &h);
-	ecore_evas_size_min_set (e->gui.ee, w, h);
+	ecore_evas_size_min_set (e->gui.ee, (int) w, (int) h);
 	evas_object_resize (e->gui.edje, w, h);
-	ecore_evas_resize (e->gui.ee, w, h);
+	ecore_evas_resize (e->gui.ee, (int) w, (int) h);
 
 	evas_object_pass_events_set (e->gui.edje, true);
 	evas_object_show (e->gui.edje);

@@ -30,8 +30,8 @@
 
 typedef struct {
 	Evas_Object *edje;
-	double width;
-	double height;
+	Evas_Coord width;
+	Evas_Coord height;
 
 	void *plugin;
 
