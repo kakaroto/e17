@@ -1,4 +1,5 @@
 #include "entice.h"
+#include "ipc.h"
 #include <Ecore_Ipc.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -103,7 +104,19 @@ ipc_client_data(void *data, int type, void *event)
       char buf[e->size];
 
       snprintf(buf, e->size, "%s", (char *) e->data);
-      entice_file_add(buf);
+      switch(e->major)
+      {
+	  case IPC_FILE_APPEND:
+	    entice_file_add(buf);
+	    break;
+	  case IPC_FILE_DISPLAY:
+	    entice_current_image_set(buf);
+	    break;
+	  default:
+	    fprintf(stderr, "Unknown major code sent by client(%d)\n",
+	    e->major);
+	    break;
+      }
       /*
          printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major,
          e->minor, e->size, buf);
@@ -138,7 +151,11 @@ entice_ipc_init(int argc, const char **argv)
    {
       ecore_ipc_server_del(server);
       for (i = 1; i < argc; i++)
-         entice_file_add_job_cb((void *) argv[i]);
+      {
+         entice_file_add_job_cb((void*)argv[i], IPC_FILE_APPEND);
+      }
+      if(argc > 0)
+	  entice_file_add_job_cb((void*)argv[1], IPC_FILE_DISPLAY);
       return (1);
    }
    /* Otherwise we create it */
@@ -183,7 +200,7 @@ entice_ipc_shutdown(void)
  * @file - the absolute path to file
  */
 void
-entice_ipc_client_request_image_load(const char *file)
+entice_ipc_client_request_image_load(const char *file, int major)
 {
    Ecore_Ipc_Server *server = NULL;
 
@@ -203,9 +220,9 @@ entice_ipc_client_request_image_load(const char *file)
                               NULL);
       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data,
                               NULL);
-
+      
       snprintf(buf, PATH_MAX, "%s", file);
-      ecore_ipc_server_send(server, 5, 6, 0, 0, 0, buf, strlen(buf) + 1);
+      ecore_ipc_server_send(server, major, 6, 0, 0, 0, buf, strlen(buf) + 1);
       memset(buf, 0, sizeof(buf));
       ecore_ipc_server_del(server);
    }
@@ -215,5 +232,4 @@ entice_ipc_client_request_image_load(const char *file)
       fprintf(stderr, "ERROR: Unable to connect to entice IPC Server\n");
    }
 #endif
-
 }

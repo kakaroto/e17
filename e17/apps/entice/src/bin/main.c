@@ -195,7 +195,7 @@ main(int argc, char *argv[])
             {
               case 0:
                  for (i = 1; i < argc; i++)
-                    entice_file_add_job_cb((void *) argv[i]);
+                    entice_file_add_job_cb((void *) argv[i], IPC_FILE_APPEND);
                  exit(0);
                  break;
               default:

@@ -140,6 +140,7 @@ entice_init(Ecore_Evas * ee)
                                         CONTAINER_FILL_POLICY_FILL_X |
                                         CONTAINER_FILL_POLICY_KEEP_ASPECT);
             e_container_direction_set(e->container, 1);
+	    fprintf(stderr, "TAller than high\n");
          }
          edje_object_part_swallow(e->edje, "EnticeThumbnailArea",
                                   e->container);
@@ -178,6 +179,22 @@ entice_free(void)
    }
 }
 
+int
+entice_current_image_set(const char *file)
+{
+    if(entice && file)
+    {
+	Evas_Object *o = NULL;
+	if((o = (Evas_Object*)evas_hash_find(entice->thumb.hash, file)))
+	{
+	    entice_thumb_load_ethumb(edje_object_part_swallow_get(o,
+	    "EnticeThumb"));
+	    return(1);
+	}
+    }
+    return(0);
+}
+
 /**
  * _entice_thumb_load - callback for loading an entice thumb
  * @_data - The E_Thumb object we're loading from, a param to the cb
@@ -199,7 +216,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       Evas_Coord w, h;
       int should_fit = 0;
       char buf[PATH_MAX];
-
+    
       if ((entice->current) && entice_image_file_get(entice->current)
           && !strcmp(e_thumb_file_get(o),
                      entice_image_file_get(entice->current)))
@@ -295,22 +312,43 @@ entice_file_add(const char *file)
       {
          if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
          {
-            entice->thumb.list = evas_list_append(entice->thumb.list, o);
-            evas_object_resize(o, 48, 48);
 
             edje = edje_object_add(ecore_evas_get(entice->ee));
-            edje_object_file_set(edje, entice_config_theme_get(),
-                                 "EnticeThumb");
-            hookup_entice_thumb_signals(edje, o);
-            edje_object_part_swallow(edje, "EnticeThumb", o);
-            evas_object_show(edje);
-            evas_object_show(o);
+            if(edje_object_file_set(edje, entice_config_theme_get(),
+                                 "EnticeThumb"))
+	    {
+		if(edje_object_part_exists(edje, "EnticeThumb"))
+		{
+		    entice->thumb.list = 
+			evas_list_append(entice->thumb.list, o);
+		    evas_object_resize(o, 48, 48);
+		    hookup_entice_thumb_signals(edje, o);
+		    edje_object_part_swallow(edje, "EnticeThumb", o);
+		    evas_object_show(edje);
+		    evas_object_show(o);
+            
+		    entice->thumb.hash = 
+			evas_hash_add(entice->thumb.hash, buf, edje);
 
-            entice->thumb.hash = evas_hash_add(entice->thumb.hash, buf, edje);
-
-            e_container_element_append(entice->container, edje);
-            if (evas_list_count(entice->thumb.list) == 1)
-               _entice_thumb_load(o, NULL, NULL, NULL);
+		    e_container_element_append(entice->container, edje);
+		    if (evas_list_count(entice->thumb.list) == 1)
+		    _entice_thumb_load(o, NULL, NULL, NULL);
+		}
+		else
+		{
+		    fprintf(stderr, "Broken Theme!!! You didn't define an"
+		    "EnticeThumb part\n");
+		    result = 1;
+		}
+	    }
+	    else
+	    {
+		fprintf(stderr, "Broken Theme!!! You didn't define an"
+		"EnticeThumb group\n");
+		evas_object_del(edje);
+		evas_object_del(o);
+		result = 1;
+	    }
          }
          else
             result = 1;
@@ -358,7 +396,7 @@ entice_file_add_dir_job_cb(void *data)
                continue;
             snprintf(buf, PATH_MAX, "%s/%s", file, dent->d_name);
             if (!entice_file_is_dir(buf))
-               entice_file_add_job_cb(buf);
+               entice_file_add_job_cb(buf, IPC_FILE_APPEND);
          }
          closedir(d);
       }
@@ -370,9 +408,10 @@ entice_file_add_dir_job_cb(void *data)
  * entice_file_add_job_cb - generate the cached thumb and send an ipc
  * message telling entice to load it
  * @data - the full or relative path to the file we want to cache
+ * @add_type - whether to display or show the image
  */
 void
-entice_file_add_job_cb(void *data)
+entice_file_add_job_cb(void *data, int add_type)
 {
    Epsilon *e = NULL;
    char buf[PATH_MAX], *file = NULL;
@@ -411,7 +450,7 @@ entice_file_add_job_cb(void *data)
                }
             }
             epsilon_free(e);
-            entice_ipc_client_request_image_load(buf);
+            entice_ipc_client_request_image_load(buf, add_type);
          }
       }
    }
