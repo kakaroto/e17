@@ -12,10 +12,10 @@
 typedef struct _ewl_fileselector_row Ewl_Fileselector_Row;
 
 /**
- * @def EWL_FILESELECTOR_ROW(fd) 
+ * @def EWL_FILESELECTOR_ROW(row) 
  * Typecasts a pointer to an Ewl_Fileselector_Row pointer.
  */
-#define EWL_FILESELECTOR_ROW(di) ((Ewl_Fileselector_Row *))
+#define EWL_FILESELECTOR_ROW(row) ((Ewl_Fileselector_Row *))
 
 /**
  * @struct Ewl_Fileselector_Row

@@ -128,7 +128,7 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 char *ewl_fileselector_get_filename (Ewl_Fileselector *fs) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
+	
 	DRETURN_PTR(fs->item, DLEVEL_STABLE);
 }
 
@@ -228,8 +228,6 @@ void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
 					dentries[num]->d_name[1] != '.'))
 			continue;
 		
-		printf ("%s\n", dentries[num]->d_name);
-
 		items[0] = ewl_text_new (dentries[num]->d_name);
 		ewl_widget_show (items[0]);
 		
@@ -277,9 +275,14 @@ void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 	fs = EWL_FILESELECTOR (user_data);
 
 	file = malloc (PATH_MAX);
-	snprintf (file, PATH_MAX, "%s/%s", f_info->path, f_info->name);
+	
+	if (!strcmp (f_info->path, "/"))
+		snprintf (file, PATH_MAX, "/%s", f_info->name);
+	else
+		snprintf (file, PATH_MAX, "%s/%s", f_info->path, f_info->name);
 
 	fs->item = strdup (file);
+
 	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
