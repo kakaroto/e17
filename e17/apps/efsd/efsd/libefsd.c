@@ -209,6 +209,7 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
 		      EfsdDatatype datatype, int data_len, void *data)
 {
   EfsdCommand  cmd;
+  EfsdCmdId    id;
 
   D_ENTER;
 
@@ -241,8 +242,9 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
   if (send_command(ec, &cmd) < 0)
     goto error_return;
 
+  id = cmd.efsd_set_metadata_cmd.id;
   efsd_cmd_cleanup(&cmd);
-  D_RETURN_(cmd.efsd_set_metadata_cmd.id);
+  D_RETURN_(id);
 
  error_return:
   efsd_cmd_cleanup(&cmd);
@@ -414,8 +416,6 @@ efsd_remove(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   else
     result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, 0, NULL);
   
-  FREE(ops);
-
   D_RETURN_(result);
 }
 
@@ -432,8 +432,6 @@ efsd_move(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   else
     result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, 0, NULL);
   
-  FREE(ops);
-
   D_RETURN_(result);
 }
 
@@ -450,8 +448,6 @@ efsd_copy(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   else
     result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, 0, NULL);
   
-  FREE(ops);
-
   D_RETURN_(result);
 }
 
@@ -484,7 +480,6 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
   else
     result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, 0, NULL);
   
-  FREE(ops);
   D_RETURN_(result);
 }
 
@@ -501,6 +496,7 @@ EfsdCmdId
 efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
 {
   EfsdCommand  cmd;
+  EfsdCmdId    id;
 
   D_ENTER;
 
@@ -514,12 +510,18 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
   cmd.efsd_chmod_cmd.file = get_full_path(filename);
 
   if (!cmd.efsd_chmod_cmd.file)
-    D_RETURN_(-1);
+    goto error_return;
 
   if (send_command(ec, &cmd) < 0)
-    D_RETURN_(-1);
+    goto error_return;
 
-  D_RETURN_(cmd.efsd_chmod_cmd.id);
+  id = cmd.efsd_chmod_cmd.id;
+  efsd_cmd_cleanup(&cmd);
+  D_RETURN_(id);
+
+ error_return:
+  efsd_cmd_cleanup(&cmd);
+  D_RETURN_(-1);
 }
 
 
@@ -588,7 +590,7 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
 		  EfsdDatatype datatype)
 {
   EfsdCommand  cmd;
-   EfsdCmdId cmd_id;
+  EfsdCmdId    id;
    
   D_ENTER;
 
@@ -619,9 +621,9 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
   if (send_command(ec, &cmd) < 0)
     goto error_return;
 
-   cmd_id = cmd.efsd_get_metadata_cmd.id;
+  id = cmd.efsd_get_metadata_cmd.id;
   efsd_cmd_cleanup(&cmd);
-  D_RETURN_(cmd_id);
+  D_RETURN_(id);
 
  error_return:
   efsd_cmd_cleanup(&cmd);
@@ -776,8 +778,8 @@ EfsdCmdId
 efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir_mode)
 
 {
-  struct stat st;
-  int result = 0;
+  struct stat     st;
+  EfsdCmdId       result = 0;
   EfsdCommandType type;
 
   D_ENTER;
@@ -798,7 +800,6 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir
   else
     result = file_cmd(ec, type, 1, &filename, 0, NULL);
   
-  FREE(ops);
   D_RETURN_(result);
 }
 

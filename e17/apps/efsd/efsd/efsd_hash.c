@@ -87,7 +87,7 @@ efsd_hash_new(int num_buckets, int bucket_size, EfsdHashFunc hash_func,
 void          
 efsd_hash_free(EfsdHash* h)
 {
-  unsigned int i;
+  int i;
 
   D_ENTER;
 

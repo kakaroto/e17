@@ -192,7 +192,6 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     {
     case EFSD_CMD_REMOVE:
     case EFSD_CMD_MAKEDIR:
-    case EFSD_CMD_CHMOD:
     case EFSD_CMD_STOPMON_FILE:
     case EFSD_CMD_STOPMON_DIR:
     case EFSD_CMD_STAT:
@@ -225,6 +224,9 @@ efsd_cmd_cleanup(EfsdCommand *ec)
 	    FREE(ec->efsd_file_cmd.options);
 	  }
       }
+      break;
+    case EFSD_CMD_CHMOD:
+      FREE(ec->efsd_chmod_cmd.file);
       break;
     case EFSD_CMD_SETMETA:
       /* FREE(ec->efsd_set_metadata_cmd.data);*/

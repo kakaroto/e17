@@ -333,7 +333,7 @@ efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
 	}
     }
 
-  if (efsd_monitor_start(cmd, client, dir_mode, do_sort) >= 0)
+  if (efsd_monitor_start(cmd, client, dir_mode, do_sort) != NULL)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
   
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
