@@ -38,7 +38,7 @@ main(int argc, char **argv)
 
   ecore_evas_init();
   edje_init();
-  
+  edje_frametime_set(1.0/30.0); 
   iconbar_config_init();
   iconbar_config_geometry_get(&x, &y, &w, &h);
 
@@ -167,26 +167,36 @@ window_resize(Ecore_Evas *ee)
 static void
 window_leave(Ecore_Evas *ee)
 {
+  static double last = 0.0;
   Evas_Object *o = NULL, *edje = NULL;
   
   if((o = evas_object_name_find(ecore_evas_get(ee), "iconbar")))
   {
     if((edje = iconbar_gui_get(o)))
     {
-	edje_object_signal_emit(edje, "window,leave", "");	
+	if(ecore_time_get() - last > 0.05)
+	{
+	    edje_object_signal_emit(edje, "window,leave", "");	
+	    last = ecore_time_get();
+	}
     }
   }
 }
 static void
 window_enter(Ecore_Evas *ee)
 {
+  static double last = 0.0;
   Evas_Object *o = NULL, *edje = NULL;
-  
+
   if((o = evas_object_name_find(ecore_evas_get(ee), "iconbar")))
   {
     if((edje = iconbar_gui_get(o)))
     {
-	edje_object_signal_emit(edje, "window,enter", "");	
+	if(ecore_time_get() - last > 0.05)
+	{
+	    edje_object_signal_emit(edje, "window,enter", "");	
+	    last = ecore_time_get();
+	}
     }
   }
 }
