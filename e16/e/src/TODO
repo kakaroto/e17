@@ -1,3 +1,6 @@
+New since 0.16.4
+Option to position new windows centered under the mouse pointer.
+
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
 Imlib 2 backend work
