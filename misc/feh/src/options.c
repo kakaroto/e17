@@ -51,6 +51,7 @@ init_parse_options (int argc, char **argv)
   opt.alpha_level = 0;
   opt.stretch = 0;
   opt.font = NULL;
+  opt.title_font=NULL;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -96,6 +97,10 @@ init_parse_options (int argc, char **argv)
 	{
 	  opt.font = argv[++i];
 	}
+      else if ((!strcmp (argv[i], "--title-font")) && (argc - i > 1))
+        {
+          opt.title_font = argv[++i];
+        }
       else if ((!strcmp (argv[i], "--bg")) && (argc - i > 1))
 	{
 	  opt.bg = 1;
@@ -214,6 +219,8 @@ show_usage (void)
 	   "  -f FONT                   Use FONT to print the information under each\n"
 	   "                            thumbnail. FONT should be defined in the form\n"
 	   "                            fontname/size(points). eg -f myfont/12\n"
+	   "     --title-font FONT      Use FONT to print a title on the index, if no\n"
+	   "                            font is specified, a title will not be printed\n"
 	   "\n"
 	   "This program is free software.\n"
 	   "Distributed under the GNU public license.\n"

@@ -90,6 +90,7 @@ typedef struct cmdlineoptions
   char *output_file;
   char *bg_file;
   char *font;
+  char *title_font;
 
   int thumb_w;
   int thumb_h;

@@ -1,3 +1,8 @@
+Fri Dec 17 22:00:57 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Added titles to index prints. A title will only be printed if
+	you specify --title-font.
+
 Fri Dec 17 21:33:55 1999  Michael Jennings  <mej@eterm.org>
 
 	* Added "make test" to run the test scripts one by one.

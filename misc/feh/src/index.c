@@ -22,6 +22,7 @@
 
 static char *create_index_dimension_string (int w, int h);
 static char *create_index_size_string (char *file);
+static char *create_index_title_string (int num, int w, int h);
 
 /* TODO Break this up a bit ;) */
 void
@@ -29,20 +30,25 @@ init_index_mode (void)
 {
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
-  int w = 800, h = 600, i, ww, hh, www, hhh, xxx, yyy;
+  int w = 800, h = 600, i, ww = 0, hh = 0, www, hhh, xxx, yyy;
   int x = 0, y = 0;
   int bg_w = 0, bg_h = 0;
   winwidget winwid;
   Imlib_Image *bg_im = NULL;
   int tot_thumb_h;
   int text_area_h = 50;
-  int title_area_h = 100;
+  int title_area_h = 0;
   Imlib_Font fn = NULL;
+  Imlib_Font title_fn = NULL;
+  int im_per_col = 0;
+  int im_per_row = 0;
 
   D (("In init_index_mode\n"));
 
   /* This includes the text area for index data */
   tot_thumb_h = opt.thumb_h + text_area_h;
+  if(opt.title_font)
+      title_area_h=50;
 
   /* Time to set up the font stuff */
   imlib_add_path_to_font_path ("./ttfonts");
@@ -50,10 +56,20 @@ init_index_mode (void)
     {
       fn = imlib_load_font (opt.font);
       if (!fn)
-	fn = imlib_load_font ("cinema/6");
+	fn = imlib_load_font ("20thcent/6");
     }
   else
-    fn = imlib_load_font ("cinema/6");
+	fn = imlib_load_font ("20thcent/6");
+
+  if (opt.title_font)
+    { 
+      title_fn = imlib_load_font (opt.title_font);
+      if (!fn)
+        title_fn = imlib_load_font ("20thcent/24");
+    }
+  else
+        title_fn = imlib_load_font ("20thcent/24");
+  
   imlib_context_set_font (fn);
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
@@ -98,8 +114,6 @@ init_index_mode (void)
 
   if (opt.limit_w && opt.limit_h)
     {
-      int im_per_col = 0;
-      int im_per_row = 0;
       w = opt.limit_w;
       h = opt.limit_h;
       im_per_col = h / tot_thumb_h;
@@ -147,8 +161,6 @@ init_index_mode (void)
     }
   else if (opt.limit_h)
     {
-      int im_per_col = 0;
-      int im_per_row = 0;
       h = opt.limit_h;
 
       im_per_col = h / tot_thumb_h;
@@ -165,8 +177,6 @@ init_index_mode (void)
     }
   else if (opt.limit_w)
     {
-      int im_per_row = 0;
-      int im_per_col = 0;
       w = opt.limit_w;
 
       im_per_row = w / opt.thumb_w;
@@ -272,10 +282,8 @@ init_index_mode (void)
 			   create_index_dimension_string (ww, hh));
 	  imlib_text_draw (x, y + opt.thumb_h + 30,
 			   create_index_size_string (files[i]));
-
 	  imlib_context_set_image (im_temp);
 	  imlib_free_image_and_decache ();
-
 	  x += opt.thumb_w;
 	  if (x > w - opt.thumb_w)
 	    {
@@ -288,7 +296,16 @@ init_index_mode (void)
     }
   if (opt.verbose)
     fprintf (stdout, "\n");
-
+  
+  if(opt.title_font)
+  {
+  /* Put some other text on there... */
+  imlib_context_set_font (title_fn);
+  imlib_context_set_image (im_main);
+  imlib_text_draw (20, h+10 ,
+	  create_index_title_string (im_per_row * im_per_col, w, h));
+  }
+  
   if (opt.output && opt.output_file)
     {
       imlib_context_set_image (im_main);
@@ -331,7 +348,6 @@ create_index_size_string (char *file)
   int size = 0;
   double kbs = 0.0;
   struct stat st;
-
   if (stat (file, &st))
     kbs = 0.0;
   else
@@ -348,7 +364,15 @@ static char *
 create_index_dimension_string (int w, int h)
 {
   static char str[50];
-
   snprintf (str, sizeof (str), "%dx%d", w, h);
+  return str;
+}
+
+static char *
+create_index_title_string (int num, int w, int h)
+{
+  static char str[50];
+  snprintf (str, sizeof (str),
+	    PACKAGE " index - %d thumbnails, %d by %d pixels", num, w, h);
   return str;
 }
