@@ -58,6 +58,7 @@ struct __gozeroptions
    int justification;
    int to_stdout;
    int cgi;
+   int x,y;
 };
 
 void init_parse_options(int argc, char **argv);

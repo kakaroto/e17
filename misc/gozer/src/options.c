@@ -41,6 +41,10 @@ init_parse_options(int argc, char **argv)
    memset(&opt, 0, sizeof(gozeroptions));
 
    opt.line_spacing = 1;
+   opt.bg_a = 255;
+   opt.bg_g = 255;
+   opt.bg_b = 255;
+   opt.bg_r = 255;
    opt.fn_a = 255;
    opt.justification = JUST_LEFT;
    opt.font = estrdup("20thcent/16");
@@ -73,7 +77,7 @@ init_parse_options(int argc, char **argv)
 static void
 gozer_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "b:f:F:G:hj:l:oOpPr:s:t:T:vw:012";
+   static char stropts[] = "b:f:F:G:hj:l:oOpPr:s:t:T:vw:x:y:012";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},
@@ -98,6 +102,8 @@ gozer_parse_option_array(int argc, char **argv)
       {"text", 1, 0, 't'},
       {"textfile", 1, 0, 'T'},
       {"wrap", 1, 0, 'w'},
+      {"x-offset", 1, 0, 'x'},
+      {"y-offset", 1, 0, 'y'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -169,6 +175,12 @@ gozer_parse_option_array(int argc, char **argv)
            break;
         case 'w':
            opt.wrap_width = atoi(optarg);
+           break;
+        case 'x':
+           opt.x = atoi(optarg);
+           break;
+        case 'y':
+           opt.y = atoi(optarg);
            break;
 		case '0':
            opt.bg_resize = 1;
@@ -263,6 +275,8 @@ show_usage(void)
            " -t, --text STR           use STR as text to draw.\n"
            " -T, --textfile STR       read text to draw from file STR.\n"
            " -w, --wrap INT           wordwrap the text to INT pixels.\n" "\n"
+           " -x, --x-offset INT       Offset text horizontally from top left by INT pixels.\n" "\n"
+           " -y, --y-offset INT       Offset text vertically from top left by INT pixels.\n" "\n"
            " -0, --bg-nocrop          set output size to background image size\n"
            " -1, --bg-scale           scale background image\n"
            " -2, --bg-tile            tile background image\n"

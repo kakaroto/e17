@@ -1,3 +1,8 @@
+Tue Oct 16 23:01:01 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Life! Added -x and -y for specifying text offsets. Very useful
+	when using gozer to annotate an image.
+
 Sat Jan 27 00:42:19 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Renamed to gozer.

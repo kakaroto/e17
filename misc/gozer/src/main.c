@@ -33,8 +33,7 @@ main(int argc, char **argv)
    Imlib_Image image, bg_image = NULL;
    Imlib_Load_Error err;
    gib_list *lines, *l, *ll, *words;
-   int w = 0, h = 0, ww, hh, x = 0, y = 0, 
-       bgw = 0, bgh = 0;
+   int w = 0, h = 0, ww, hh, x = 0, y = 0, bgw = 0, bgh = 0;
    DATA8 atab[256];
    gib_style *style = NULL;
    char *p, *pp;
@@ -51,8 +50,9 @@ main(int argc, char **argv)
    if (!opt.text && opt.textfile)
       opt.text = gozer_read_file(opt.textfile);
 
-   if (!opt.text && opt.pipe) {
-	  opt.text = gozer_read_pipe();
+   if (!opt.text && opt.pipe)
+   {
+      opt.text = gozer_read_pipe();
    }
 
    if (!opt.text)
@@ -74,10 +74,13 @@ main(int argc, char **argv)
 
    if (opt.bg_image)
    {
-      if (gib_imlib_load_image(&bg_image, opt.bg_image)) {
+      if (gib_imlib_load_image(&bg_image, opt.bg_image))
+      {
          bgw = gib_imlib_image_get_width(bg_image);
          bgh = gib_imlib_image_get_height(bg_image);
-      } else {
+      }
+      else
+      {
          weprintf("failed to load background image \"%s\"", opt.bg_image);
       }
    }
@@ -97,7 +100,13 @@ main(int argc, char **argv)
       l = l->next;
    }
 
-   if (bg_image&&opt.bg_resize)
+   /* If we have an offset, increase the size */
+   if (opt.x)
+      w += opt.x;
+   if (opt.y)
+      h += opt.y;
+
+   if (bg_image && opt.bg_resize)
       image = imlib_create_image(bgw, bgh);
    else
       image = imlib_create_image(w, h);
@@ -113,23 +122,28 @@ main(int argc, char **argv)
 
    gib_imlib_image_fill_rectangle(image, 0, 0, w, h, opt.bg_r, opt.bg_g,
                                   opt.bg_b, opt.bg_a);
-   if (bg_image) {
-      if (opt.bg_scale) {
-         gib_imlib_blend_image_onto_image(image, bg_image, 1,
-                                          0, 0, bgw, bgh,
+   if (bg_image)
+   {
+      if (opt.bg_scale)
+      {
+         gib_imlib_blend_image_onto_image(image, bg_image, 1, 0, 0, bgw, bgh,
                                           0, 0, w, h, 0, 1, 1);
-      } else if (opt.bg_tile) {
+      }
+      else if (opt.bg_tile)
+      {
          gib_imlib_image_tile(bg_image);
-         gib_imlib_blend_image_onto_image(image, bg_image, 1,
-                                          0, 0, bgw, bgh,
+         gib_imlib_blend_image_onto_image(image, bg_image, 1, 0, 0, bgw, bgh,
                                           0, 0, w, h, 0, 1, 1);
-      } else {
-         gib_imlib_blend_image_onto_image(image, bg_image, 1,
-                                          0, 0, bgw, bgh,
+      }
+      else
+      {
+         gib_imlib_blend_image_onto_image(image, bg_image, 1, 0, 0, bgw, bgh,
                                           0, 0, bgw, bgh, 0, 1, 1);
       }
    }
    l = lines;
+   x = opt.x;
+   y = opt.y;
    while (l)
    {
       p = (char *) l->data;
@@ -137,18 +151,18 @@ main(int argc, char **argv)
       switch (opt.justification)
       {
         case JUST_LEFT:
-           x = 0;
+           x = opt.x;
            gib_imlib_text_draw(image, fn, style, x, y, p, IMLIB_TEXT_TO_RIGHT,
                                opt.fn_r, opt.fn_g, opt.fn_b, opt.fn_a);
            break;
         case JUST_CENTER:
-           x = (((opt.bg_resize&&bgw)?bgw:w) - ww) / 2;
-           y = (((opt.bg_resize&&bgw)?bgh:h) - hh) / 2;
+           x = (((opt.bg_resize && bgw) ? bgw : w) - ww) / 2 + opt.x;
+           y = (((opt.bg_resize && bgw) ? bgh : h) - hh) / 2 + opt.y;
            gib_imlib_text_draw(image, fn, style, x, y, p, IMLIB_TEXT_TO_RIGHT,
                                opt.fn_r, opt.fn_g, opt.fn_b, opt.fn_a);
            break;
         case JUST_RIGHT:
-           x = ((opt.bg_resize&&bgw)?bgw:w) - ww;
+           x = ((opt.bg_resize && bgw) ? bgw : w) - ww + opt.x;
            gib_imlib_text_draw(image, fn, style, x, y, p, IMLIB_TEXT_TO_RIGHT,
                                opt.fn_r, opt.fn_g, opt.fn_b, opt.fn_a);
 
@@ -361,20 +375,22 @@ gozer_read_file(char *filename)
 char *
 gozer_read_pipe()
 {
-   char  buf[PIPE_BUF_MAX] = "",
-         buf2[1023] = "",
-        *text = NULL;
-	int len = 0;
+   char buf[PIPE_BUF_MAX] = "", buf2[1023] = "", *text = NULL;
+   int len = 0;
 
-	while(fgets(buf2,1023,stdin)) {
-		len+=strlen(buf2);
-		if (len<PIPE_BUF_MAX) {
-			strncat(buf, buf2, 1023);
-		} else {
-			weprintf("Truncating oversized pipe buffer at %d bytes.", len);
-		}
-	}
-	text = _estrdup(buf);
+   while (fgets(buf2, 1023, stdin))
+   {
+      len += strlen(buf2);
+      if (len < PIPE_BUF_MAX)
+      {
+         strncat(buf, buf2, 1023);
+      }
+      else
+      {
+         weprintf("Truncating oversized pipe buffer at %d bytes.", len);
+      }
+   }
+   text = _estrdup(buf);
    return text;
 }
 
