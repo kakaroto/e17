@@ -7,13 +7,8 @@
 #include "geist_rect.h"
 #include "geist_text.h"
 
-#ifdef HAVE_GNOME_XML_PARSER_H
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
-#else
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-#endif
+#include <parser.h>
+#include <xmlmemory.h>
 
 enum xml_load_err {ERR_NO_FILE, ERR_EMPTY_FILE, ERR_WRONG_TYPE};
 

@@ -1,3 +1,14 @@
+Mon Aug 21 19:15:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Decent, Working XML check courtesy of Dave J (the powertweak
+	guy), much better :-)
+	* A line object type. Works well, but don't try and resize it,
+	that code is just a stubb right now. I had to use a line clipping
+	algorithm to do partial rendering right here, so everyone thank
+	Cohen and Sutherland for "lending" me theirs ;-)
+	* I can put the line clipping code into imlib2 if raster is
+	interested, as a seperate function of course.
+
 Sun Aug 20 01:10:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* nolan pointed out that the _object_dirty() function dirties the

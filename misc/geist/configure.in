@@ -26,14 +26,10 @@ AC_CHECK_LIB(Imlib2, imlib_load_image, , [
 echo "ERROR:  You need libImlib2 to build feh.";
              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
 
-dnl XML check
-AC_CHECK_HEADERS(gnome-xml/parser.h libxml/parser.h,[ break] , )
-AC_CHECK_LIB(xml, xmlNewDoc, , [
-        if test x$2 = xfailure; then 
-            AC_MSG_ERROR(Could not link sample xml program)
-        fi
-    ], -lz -lxml)
-AC_SUBST(XML_LIB)
+AC_PATH_GENERIC(xml, 1.8.0, [
+  AC_SUBST(XML_LIBS)
+  AC_SUBST(XML_CFLAGS) ],
+  AC_MSG_ERROR(Cannot find libXML: Is xml-config in the path?) )
 
 AC_CHECK_LIB(pr0n,huge_nekkid_pictures_of_pabs_mom, , [
 echo "WARNING: You appear to be missing pr0n pictures of Paul Duncan's mother."
