@@ -422,14 +422,59 @@ DATA8
 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
 {
    Imlib_Color c;
+   int num = 0;
+   int ave = 0;
+   int w, h;
 
    imlib_context_set_image(im);
-   imlib_image_query_pixel(x, y, &c);
+   w = imlib_image_get_width();
+   h = imlib_image_get_height();
 
-   D(5, ("pixel %d,%d is A:%d R:%d B:%d G:%d\n", x, y, c.alpha, c.red,
-          c.green, c.blue));
+   imlib_image_query_pixel(x - 1, y, &c);
+   ave += c.alpha;
+   num++;
+   if (x > 0)
+   {
+      imlib_image_query_pixel(x - 1, y, &c);
+      ave += c.alpha;
+      num++;
+   }
+   if (y > 0)
+   {
+      imlib_image_query_pixel(x, y - 1, &c);
+      ave += c.alpha;
+      num++;
+   }
+   if ((x > 0) && (y > 0))
+   {
+      imlib_image_query_pixel(x - 1, y - 1, &c);
+      ave += c.alpha;
+      num++;
+   }
+   if (x < w)
+   {
+      imlib_image_query_pixel(x + 1, y, &c);
+      ave += c.alpha;
+      num++;
+   }
+   if (y < h)
+   {
+      imlib_image_query_pixel(x, y + 1, &c);
+      ave += c.alpha;
+      num++;
+   }
+   if ((x < w) && (y < h))
+   {
+      imlib_image_query_pixel(x + 1, y + 1, &c);
+      ave += c.alpha;
+      num++;
+   }
+   ave = ave / num;
 
-   if (c.alpha == 0)
+   printf("average value %d\n", ave);
+
+/* TODO Make this fuzziness an OPTION */
+   if (ave < 5)
       return 1;
    else
       return 0;
