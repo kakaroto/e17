@@ -138,7 +138,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (!ewd_list_is_empty(pc->children) && pc->clip_box)
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_append(pc->children, child);
@@ -170,7 +170,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (!ewd_list_is_empty(pc->children) && pc->clip_box)
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_prepend(pc->children, child);
@@ -205,7 +205,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (!ewd_list_is_empty(pc->children) && pc->clip_box)
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_goto_index(pc->children, index);

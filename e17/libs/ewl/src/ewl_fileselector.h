@@ -2,7 +2,16 @@
 #define __EWL_FILESELECTOR_H__
 
 /**
- * @defgroup Ewl_Fileselector Fileselector: a fileselector
+ * @defgroup Ewl_Fileselector Fileselector: Basic File And Directory Listing
+ *
+ * Displays a list of directories and a list of files for the user to choose.
+ * The selector triggers a EWL_CALLBACK_VALUE_CHANGED callback when either a
+ * click causes the selected file to change, when a double click causes the
+ * currently displayed directory to change, or when a double click on a file
+ * occurs to signal an open. The event data passed to the callback is NULL,
+ * unless the double click event occurred on a file, in which case it is the
+ * file's path.
+ *
  * @{
  */
 
@@ -12,31 +21,9 @@
  */
 
 /**
- * The Ewl_Fileselector_Row provides data for a single row
- */
-typedef struct _ewl_fileselector_row Ewl_Fileselector_Row;
-
-/**
- * @def EWL_FILESELECTOR_ROW(row) 
- * Typecasts a pointer to an Ewl_Fileselector_Row pointer.
- */
-#define EWL_FILESELECTOR_ROW(row) ((Ewl_Fileselector_Row *))
-
-/**
- * @struct Ewl_Fileselector_Row
- * Internally used struct for storing the filename as a 
- * datapointer inside each tree row
- */
-struct _ewl_fileselector_row
-{
-	char            *name;	/* directory name */
-	char            *path;	/* path to directory */
-};
-
-/**
  * The Ewl_Fileselector provides a fileselector
  */
-typedef struct _ewl_fileselector Ewl_Fileselector;
+typedef struct Ewl_Fileselector Ewl_Fileselector;
 
 /**
  * @def EWL_FILESELECTOR(fd) 
@@ -48,7 +35,7 @@ typedef struct _ewl_fileselector Ewl_Fileselector;
  * @struct Ewl_Fileselector
  * Creates a fileselector with one tree for dirs and one for files
  */
-struct _ewl_fileselector
+struct Ewl_Fileselector
 {
 	Ewl_Box         box;   /* the vbox containing the trees */
 	Ewl_Widget     *dirs;	 /* directory table */
@@ -56,16 +43,13 @@ struct _ewl_fileselector
 
 	char           *path;  /* current fileselector path */
 	char           *item;  /* current selected item in the fileselector */
-
-	Ewl_Callback_Function file_clicked; /* use callback for open file */
 };
 
 
-Ewl_Widget *ewl_fileselector_new(Ewl_Callback_Function file_clicked);
+Ewl_Widget *ewl_fileselector_new();
 
-void ewl_fileselector_init(Ewl_Fileselector * fs,
-		Ewl_Callback_Function fc);
-void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path);
+void ewl_fileselector_init(Ewl_Fileselector * fs);
+void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path);
 
 char *ewl_fileselector_get_filename (Ewl_Fileselector *fs);
 char *ewl_fileselector_get_path (Ewl_Fileselector *fs);
@@ -78,19 +62,14 @@ void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data,
 		void *user_data);
 void ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data,
 		void *user_data);
-void ewl_fileselector_directory_clicked(Ewl_Widget * w, void *ev_data,
-		void *user_data);
 void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data, 
+		void *user_data);
+void ewl_fileselector_file_open_cb(Ewl_Widget * w, void *ev_data,
 		void *user_data);
 void ewl_fileselector_directory_clicked_single_cb(Ewl_Widget * w, 
 		void *ev_data, void *user_data);
 void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data, 
 		void *user_data);
-char *ewl_fileselector_directory_adjust (Ewl_Fileselector *fs,
-		Ewl_Fileselector_Row *d_info);
-char *ewl_fileselector_path_down (char *dir);
-int ewl_fileselector_alphasort(const void *a, const void *b);
-
 
 /**
  * @}

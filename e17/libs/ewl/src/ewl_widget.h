@@ -5,6 +5,11 @@
  * @defgroup Ewl_Widget Widget: The Parent Widget Class Common to All Widgets
  * @brief Defines the Ewl_Widget class and it's accessor/modifier functions.
  *
+ * The Ewl_Widget extends the Ewl_Object to provide the basic facilities
+ * necessary for widgets to interact with the end user. This includes basic
+ * callbacks for input events, window information changes, and drawing to the
+ * display.
+ *
  * @{
  */
 
@@ -21,7 +26,7 @@ typedef struct Ewl_Widget Ewl_Widget;
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
 /**
- * @struct Ewl_Widget
+ * @class Ewl_Widget
  * The class inheriting from Ewl_Object that provides appearance, parent, and
  * callback capabilities.
  */

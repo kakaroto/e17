@@ -40,6 +40,7 @@ struct Ewl_Embed
 
 	Evas_Object    *smart; /**< Object to manipulate Ewl_Embed from evas */
 	Ewd_List       *tab_order; /**< Order of widgets to send focus on tab */
+	int             max_layer; /**< The highest layer used by sub-widget */
 };
 
 Ewl_Widget     *ewl_embed_new(void);

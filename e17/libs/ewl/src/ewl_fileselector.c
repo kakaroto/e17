@@ -1,5 +1,9 @@
 #include <Ewl.h>
 
+void ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, char *path);
+void ewl_fileselector_path_down (char *dir);
+int ewl_fileselector_alphasort(const void *a, const void *b);
+
 /** Addition for Solaris compatablity in scandir dep. -benr **/
 /** Code written originally by Joerg-R. Hill for Viewmol used with permission and covered by GPL **/
 #ifdef HAVE_SUN
@@ -51,11 +55,10 @@ int scandir(const char *dir, struct dirent ***namelist,
 
 
 /**
- * @param clicked: callback for file clicked event
- * @return Returns NULL on failure, or a pointer to the new fileselector on success.
- * @brief create a new fileselector
+ * @return Returns NULL on failure, or the new fileselector on success.
+ * @brief Create a new fileselector
  */
-Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function clicked)
+Ewl_Widget     *ewl_fileselector_new()
 {
 	Ewl_Fileselector *fs;
 
@@ -65,18 +68,17 @@ Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function clicked)
 	if (!fs)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_fileselector_init(fs, clicked);
+	ewl_fileselector_init(fs);
 
 	DRETURN_PTR(EWL_WIDGET(fs), DLEVEL_STABLE);
 }
 
 /**
  * @param fs: the fileselector
- * @param fc: your select file callback function
  * @return Returns no value.
  * @brief Initalize the fileselector
  */
-void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
+void ewl_fileselector_init(Ewl_Fileselector * fs)
 {
 	Ewl_Widget     *w;
 	char *head_dirs[1] = {
@@ -108,9 +110,6 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 	ewl_container_append_child(EWL_CONTAINER(w), fs->files);
 	ewl_object_set_padding(EWL_OBJECT(fs->files), 2, 2, 2, 2);
 	ewl_widget_show (fs->files);
-
-	/* Set what callback the user has defined */
-	fs->file_clicked = fc;
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    ewl_fileselector_realize_cb, NULL);
@@ -157,9 +156,8 @@ void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	fs = EWL_FILESELECTOR(w);
 	home = getenv("HOME");
 
-
 	if (home)
-		ewl_fileselector_process_directory(fs, home);
+		ewl_fileselector_set_directory(fs, home);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -183,19 +181,26 @@ ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  * @return Returns nothing
  * @brief Prosess the given directory / change the fileselector dir
  */
-void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
+void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path)
 {
 	struct dirent        **dentries;
 	int                  num, i;
-	char                 dir[PATH_MAX];
 	char                 file[PATH_MAX];
 	struct stat          statbuf;
 	Ewl_Widget           *items[1];
 	Ewl_Widget           *row = NULL;
-	Ewl_Fileselector_Row *f_row;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
+	DCHECK_PARAM_PTR("path", path);
+
+	if (fs->path && !strcmp(fs->path, path))
+		DRETURN(DLEVEL_STABLE);
+
+	if ((num = scandir(path, &dentries, 0, ewl_fileselector_alphasort)) < 0) {
+		perror("ewl_fileselector_set_directory - scandir");
+		return;
+	}
 
 	/* 
 	 * Empty the trees before adding data.
@@ -203,24 +208,14 @@ void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
 	ewl_container_reset (EWL_CONTAINER (fs->dirs));
 	ewl_container_reset (EWL_CONTAINER (fs->files));
 
-	strncpy (dir, path, PATH_MAX);
-
 	fs->path = strdup (path);
-	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_VALUE_CHANGED);
-
-	if ((num = scandir(dir, &dentries, 0, ewl_fileselector_alphasort)) < 0) {
-		perror("ewl_fileselector_process_directory - scandir");
-		return;
-	}
-	
-	printf ("Prosessing %d elements in %s\n", num, dir);
 	
 	while (num--) {
-		snprintf(file, PATH_MAX, "%s/%s", dir, dentries[num]->d_name);
+		snprintf(file, PATH_MAX, "%s/%s", path, dentries[num]->d_name);
 
 		i = stat (file, &statbuf);
 		if (i == -1) {
-			perror("ewl_fileselector_process_directory - stat 1");
+			perror("ewl_fileselector_set_directory - stat 1");
 			continue;
 		}
 
@@ -230,34 +225,37 @@ void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
 			continue;
 		
 		items[0] = ewl_text_new (dentries[num]->d_name);
+		ewl_object_set_fill_policy(EWL_OBJECT(items[0]),
+					   EWL_FLAG_FILL_HFILL);
 		ewl_widget_show (items[0]);
 		
 		if (S_ISDIR(statbuf.st_mode)) {
-			row = ewl_tree_add_row (EWL_TREE (fs->dirs), NULL, items);
-			
-			ewl_callback_append(row, EWL_CALLBACK_DOUBLE_CLICKED,
-					ewl_fileselector_directory_clicked_cb, fs);
-			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
-					ewl_fileselector_directory_clicked_single_cb, fs);
-			
-		} else if (S_ISREG(statbuf.st_mode)) {
+			ewl_callback_append(items[0], EWL_CALLBACK_CLICKED,
+					    ewl_fileselector_directory_clicked_single_cb,
+					    fs);
+			row = ewl_tree_add_row (EWL_TREE (fs->dirs), NULL,
+						items);
+			ewl_callback_append(items[0],
+					    EWL_CALLBACK_DOUBLE_CLICKED,
+					    ewl_fileselector_directory_clicked_cb,
+					    fs);
+		}
+		else if (S_ISREG(statbuf.st_mode)) {
+			ewl_callback_append(items[0],
+					    EWL_CALLBACK_DOUBLE_CLICKED,
+					    ewl_fileselector_file_open_cb,
+					    fs);
+			ewl_callback_append(items[0], EWL_CALLBACK_CLICKED,
+					    ewl_fileselector_file_clicked_cb,
+					    fs);
 			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
-			
-			ewl_callback_append (row, EWL_CALLBACK_DOUBLE_CLICKED,
-					fs->file_clicked, fs);
-			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
-					ewl_fileselector_file_clicked_cb, fs);
-			
 		}
 
 		if (!row)
 			continue;
-
-		f_row = NEW (Ewl_Fileselector_Row, 1);
-		f_row->name = strdup (dentries[num]->d_name);
-		f_row->path = strdup (dir);
-		ewl_widget_set_data (EWL_WIDGET (row), "filedialog_info", f_row);
 	}
+
+	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_VALUE_CHANGED);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -265,90 +263,103 @@ void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
 void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 		void *user_data)
 {
+	char *tmp;
 	Ewl_Fileselector *fs;
-	char *file;
-	Ewl_Fileselector_Row *f_info = ewl_widget_get_data (EWL_WIDGET (w), 
-			"filedialog_info");
+	char file[PATH_MAX];
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	fs = EWL_FILESELECTOR (user_data);
 
-	file = malloc (PATH_MAX);
-	
-	if (!strcmp (f_info->path, "/"))
-		snprintf (file, PATH_MAX, "/%s", f_info->name);
+	tmp = ewl_text_get_text(EWL_TEXT(w));
+	if (!strcmp (tmp, "/"))
+		snprintf (file, PATH_MAX, "/%s", tmp);
 	else
-		snprintf (file, PATH_MAX, "%s/%s", f_info->path, f_info->name);
+		snprintf (file, PATH_MAX, "%s/%s", fs->path, tmp);
 
 	fs->item = strdup (file);
-
-	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
+	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-char *ewl_fileselector_path_down (char *dir)
+void ewl_fileselector_file_open_cb(Ewl_Widget * w, void *ev_data,
+		void *user_data)
 {
-	char *ptr;
 	char *tmp;
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ptr = strdup(dir);
-	tmp = strrchr(ptr, '/');
-	if (tmp)
-		*tmp = '\0';
-	tmp = ptr;
+	Ewl_Fileselector *fs;
+	char file[PATH_MAX];
 	
-	if (!(*ptr)) {
-		ptr = malloc (2);
-		strcpy (ptr, "/");
-	} 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 
-	DRETURN_PTR(ptr, DLEVEL_STABLE);
+	fs = EWL_FILESELECTOR (user_data);
+
+	tmp = ewl_text_get_text(EWL_TEXT(w));
+	if (!strcmp (tmp, "/"))
+		snprintf (file, PATH_MAX, "/%s", tmp);
+	else
+		snprintf (file, PATH_MAX, "%s/%s", fs->path, tmp);
+
+	fs->item = strdup (file);
+	ewl_callback_call_with_event_data(EWL_WIDGET(fs),
+			EWL_CALLBACK_VALUE_CHANGED, fs->item);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-char *ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, 
-		Ewl_Fileselector_Row *d_info)
+void ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, char *path)
 {
-	char *dir;
 	char *ptr;
+	char dir[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	dir = malloc (PATH_MAX);
-	
-	if (!strcmp (d_info->name, "..")) {
-		ptr = ewl_fileselector_path_down (d_info->path);
+	dir[0] = '\0';
+	ptr = strrchr(path, '/');
+	if (ptr) {
+		ptr++;
+		if (!strcmp (ptr, "..")) {
+			ptr--;
+			*ptr = '\0';
+			ptr = strrchr(path, '/');
+			if (!ptr) {
+				*path = '/';
+				ptr = path + 1;
+			}
 
-		snprintf (dir, PATH_MAX, "%s", ptr);
-	} else {
-		if (!strcmp (d_info->path, "/"))
-			snprintf (dir, PATH_MAX, "/%s", d_info->name);
-		else
-			snprintf (dir, PATH_MAX, "%s/%s", d_info->path, d_info->name);
+			*ptr = '\0';
+			snprintf (dir, PATH_MAX, "%s", path);
+		}
+		else {
+			if (!strcmp (ptr, "/"))
+				snprintf (dir, PATH_MAX, "/%s", ptr);
+			else
+				snprintf (dir, PATH_MAX, "%s", ptr);
+		}
 	}
 
+	IF_FREE(fs->item);
 	fs->item = strdup (dir);
-	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
 
-	DRETURN_PTR(dir, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_fileselector_directory_clicked_single_cb(Ewl_Widget * w, 
 		void *ev_data, void *user_data)
 {
 	Ewl_Fileselector *fs;
-	Ewl_Fileselector_Row *d_info = ewl_widget_get_data (EWL_WIDGET (w), 
-			"filedialog_info"); 
+	char path[PATH_MAX];
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	fs = EWL_FILESELECTOR (user_data);
+	snprintf(path, PATH_MAX, "%s/%s", fs->path,
+		 ewl_text_get_text(EWL_TEXT(w)));
 
-	ewl_fileselector_directory_adjust (fs, d_info);
+	ewl_fileselector_directory_adjust (fs, path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -357,18 +368,20 @@ void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 				    void *user_data)
 {
 	char *dir;
+	char path[PATH_MAX];
 	Ewl_Fileselector *fs;
-	Ewl_Fileselector_Row *d_info = ewl_widget_get_data (EWL_WIDGET (w), 
-			"filedialog_info");
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	
 	fs = EWL_FILESELECTOR (user_data);
 
-	dir = ewl_fileselector_directory_adjust (fs, d_info);
-	
-	ewl_fileselector_process_directory (fs, dir);
+	dir = ewl_text_get_text(EWL_TEXT(w));
+	snprintf(path, PATH_MAX, "%s/%s", fs->path, dir);
+
+	IF_FREE(dir);
+	ewl_fileselector_directory_adjust (fs, path);
+	ewl_fileselector_set_directory (fs, path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -629,9 +629,12 @@ int ewl_widget_get_layer(Ewl_Widget *w)
 int ewl_widget_get_layer_sum(Ewl_Widget *w)
 {
 	int sum = 0;
+	Ewl_Widget *emb = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
+
+	emb = ewl_embed_find_by_widget(w);
 
 	while (!REALIZED(w) && w->parent) {
 		sum += LAYER(w);

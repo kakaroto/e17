@@ -68,6 +68,15 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	user_data = NULL;
 }
 
+void goto_home(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	char *home;
+	Ewl_Filedialog *fd = user_data;
+
+	home = getenv("HOME");
+	if (home)
+		ewl_filedialog_set_directory(fd, home);
+}
 
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 {
@@ -83,6 +92,8 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 
 		home_button = ewl_button_new("Home");
+		ewl_callback_append(home_button, EWL_CALLBACK_CLICKED,
+				    goto_home, fd);
 		ewl_object_set_fill_policy(EWL_OBJECT(home_button),
 					   EWL_FLAG_FILL_HFILL);
 		ewl_container_append_child(EWL_CONTAINER(fd), home_button);

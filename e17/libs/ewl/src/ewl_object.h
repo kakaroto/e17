@@ -31,7 +31,7 @@ typedef struct Ewl_Object Ewl_Object;
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
 
 /**
- * @struct Ewl_Object
+ * @class Ewl_Object
  * @brief Provides facilities for sizing, position, alignment and fill policy.
  *
  * The fields of the object, while their explanations are fairly clear, can be

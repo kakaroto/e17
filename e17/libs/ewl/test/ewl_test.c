@@ -39,6 +39,7 @@ main(int argc, char **argv)
 		{ "Floater", __create_floater_test_window },
 		{ "Image", __create_image_test_window },
 		{ "IMenu", __create_imenu_test_window },
+		{ "Menu", __create_menu_test_window },
 		{ "Notebook", __create_notebook_test_window },
 		{ "Password", __create_password_test_window },
 		{ "Progressbar", __create_progressbar_test_window },
