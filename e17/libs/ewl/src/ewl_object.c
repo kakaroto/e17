@@ -653,6 +653,9 @@ inline void ewl_object_minimum_w_set(Ewl_Object * o, int w)
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	if (w < EWL_OBJECT_MIN_SIZE)
+		w = EWL_OBJECT_MIN_SIZE;
+
 	old_size = MINIMUM_W(o);
 
 	new_size = MINIMUM_W(o) = w;
@@ -693,6 +696,9 @@ inline void ewl_object_minimum_h_set(Ewl_Object * o, int h)
 		ewl_print_warning();
 		DRETURN(DLEVEL_STABLE);
 	}
+
+	if (h < EWL_OBJECT_MIN_SIZE)
+		h = EWL_OBJECT_MIN_SIZE;
 
 	old_size = MINIMUM_H(o);
 
@@ -858,6 +864,9 @@ inline void ewl_object_maximum_w_set(Ewl_Object * o, int w)
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	if (w > EWL_OBJECT_MAX_SIZE)
+		w = EWL_OBJECT_MAX_SIZE;
+
 	MAXIMUM_W(o) = w;
 
 	if (MINIMUM_W(o) > w)
@@ -892,6 +901,9 @@ inline void ewl_object_maximum_h_set(Ewl_Object * o, int h)
 		ewl_print_warning();
 		DRETURN(DLEVEL_STABLE);
 	}
+
+	if (h > EWL_OBJECT_MAX_SIZE)
+		h = EWL_OBJECT_MAX_SIZE;
 
 	o->maximum.h = h;
 

@@ -1111,10 +1111,12 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		i_l = (int)(width);
 		i_t = (int)(height);
 
-		if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
+		if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE
+				&& i_l > EWL_OBJECT_MIN_SIZE && i_l <= EWL_OBJECT_MAX_SIZE)
 			ewl_object_minimum_w_set(EWL_OBJECT(w), i_l);
 
-		if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
+		if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE
+				&& i_t > EWL_OBJECT_MIN_SIZE && i_t <= EWL_OBJECT_MAX_SIZE)
 			ewl_object_minimum_h_set(EWL_OBJECT(w), i_t);
 
 		/*
@@ -1124,10 +1126,12 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		i_l = (int)(width);
 		i_t = (int)(height);
 
-		if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
+		if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
+				&& i_l >= EWL_OBJECT_MIN_SIZE && i_l < EWL_OBJECT_MAX_SIZE)
 			ewl_object_maximum_w_set(EWL_OBJECT(w), i_l);
 
-		if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
+		if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
+				&& i_t >= EWL_OBJECT_MIN_SIZE && i_t < EWL_OBJECT_MAX_SIZE)
 			ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
 	}
 
