@@ -31,7 +31,7 @@ AC_ARG_WITH(imlib2,
 AC_CHECK_LIB(Imlib2, imlib_load_image, , [
 echo "ERROR:  You need libImlib2 to build EWL.";
              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
-LIBS="$LIBS -lm"
+LIBS="$LIBS "`imlib2-config --libs`
 
 AC_ARG_WITH(evas,
         [  --with-evas=DIR       use evas in <DIR>],
@@ -41,7 +41,7 @@ AC_ARG_WITH(evas,
 AC_CHECK_LIB(evas, evas_new, , [
 echo "ERROR:  You need libEvas to build EWL.";
              AC_MSG_ERROR([Fatal:  libevas not found.])], -lm)
-LIBS="$LIBS -lm"
+LIBS="$LIBS "`evas-config --libs`
 
 
 AC_CHECK_LIB(ugly, ugly_nekkid_pics_of_giblets_mom, , [

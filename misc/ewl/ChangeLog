@@ -1174,3 +1174,10 @@ fix itself once i clean up the layout code.
 every other application i use) on my p200 at home in osftware.
 ... enough for the night.. tomorrow will be layout coding day.
 
+-----
+20000914-1134-PDT, pabs
+
+- gee it sure wouldb e nice if hte configure scripts actually linked
+to the gl libs that way i get hardware acceleration. :)
+- fixed
+
