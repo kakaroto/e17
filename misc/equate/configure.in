@@ -88,6 +88,11 @@ ewl_libs=`ewl-config --libs`
 AC_SUBST(ewl_cflags)
 AC_SUBST(ewl_libs)
 
+ecore_cflags=`ecore-config --cflags`
+ecore_libs=`ecore-config --libs`
+AC_SUBST(ecore_cflags)
+AC_SUBST(ecore_libs)
+
 AC_OUTPUT([
 Makefile
 src/Makefile
