@@ -50,10 +50,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	$ARGV2[0] = "update";
 
 	print "Force updating ChangeLog and removing src/timestamp.h\n";
-	unlink "ChangeLog";
-	system("cvs update ChangeLog");
-	unlink "src/timestamp.h";
-	system("cvs update src/timestamp.h");
+	system("cvs update -C ChangeLog src/timestamp.h");
 
 	print "Updating the files you are committing.\n";
 	system("cvs @ARGV2 2>&1 |tee errors");
