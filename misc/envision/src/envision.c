@@ -62,7 +62,7 @@ main(int argc, char **argv)
 
    // Setup edje objects
    e->gui.edje = edje_object_add(e->gui.evas);
-   edje_object_file_set(e->gui.edje, DATA_DIR "/themes/trakvision.eet",
+   edje_object_file_set(e->gui.edje, DATA_DIR "/themes/trakvision.edj",
          "envision");
    evas_object_move(e->gui.edje, 0, 0);
    edje_object_size_min_get(e->gui.edje, &minw, &minh);
