@@ -24,6 +24,8 @@ void LoadImage(char *imagetoload);
 void DrawChecks(void);
 void Checks(int image_h, int image_w);
 
+void ShowAbout(GtkWidget *widget, gpointer data);
+void HideAbout(GtkWidget *widget, gpointer data);
 void CloseWindow(GtkWidget *widget, gpointer data);
 void CloseFileSel(GtkWidget *widget, gpointer data);
 void FileOpen(GtkWidget *widget, GtkFileSelection *fs);

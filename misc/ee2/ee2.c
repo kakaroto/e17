@@ -13,7 +13,11 @@ GtkWidget *EventBox;
 
 GtkWidget *MainWindow, *FileSel, *SaveSel, *area;
 
-GtkWidget *RootMenu, *RSep1, *RQuit;
+GtkWidget *RootMenu, *RSep1, *RAbout, *RQuit;
+
+GtkWidget *AboutWindow, *AboutText, *AboutClose;
+
+GtkWidget *BrWin, *BrClist, *BrClose;
 
 GtkWidget *FileMenu, *FileItem, *FOpen, *FSave, *FSaveAs,
 			 *FSep1, *FExit;
@@ -37,18 +41,40 @@ char *splashfile = NULL;
 Imlib_Image *bg = NULL;
 Imlib_Image *im = NULL;
 
+/* clist stuff for image browser */
+int col;
+gchar *listdata[255][1];
+gchar *listtext;
+
 int main(int argc, char **argv)
 {
 	gtk_init (&argc, &argv);
 	
 	/* tell the widgets what they are */
 	MainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	AboutWindow = gtk_dialog_new();
+	gtk_container_set_border_width(GTK_CONTAINER(AboutWindow), 7);
+	AboutText = gtk_label_new("Electric Eyes 2\n"
+									  "(C) 2000 Joshua Deere (distantPhase)\n"
+									  "dphase@locnet.net\n\n"
+									  "Please e-mail me with bug reports, feature\n"
+									  "requests, and anything else that you might\n"
+									  "think up that I would need to know.");
+	AboutClose = gtk_button_new_with_label("Close");
+	gtk_window_set_title(GTK_WINDOW(AboutWindow), "About Electric Eyes 2\n");
+	BrWin = gtk_dialog_new();
+	gtk_container_set_border_width(GTK_CONTAINER(BrWin), 2);
+	gtk_window_set_title(GTK_WINDOW(BrWin), "Image Browser");
+	BrClist = gtk_clist_new(1);
+	gtk_widget_set_usize(BrClist, 400, 150);
+	BrClose = gtk_button_new_with_label("Close");
 	EventBox = gtk_event_box_new();
 	FileSel = gtk_file_selection_new("Open Image...");
 	SaveSel = gtk_file_selection_new("Save Image As...");
 	RootMenu = gtk_menu_new();
 	RSep1 = gtk_menu_item_new();
 	gtk_widget_set_sensitive(RSep1, FALSE);
+	RAbout = gtk_menu_item_new_with_label("About");
 	RQuit = gtk_menu_item_new_with_label("Exit");
 	area = gtk_drawing_area_new();
 	FileMenu = gtk_menu_new();
@@ -89,6 +115,7 @@ int main(int argc, char **argv)
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(ImageItem), ImageMenu);
 	gtk_menu_append(GTK_MENU(RootMenu), ImageItem);
 	gtk_menu_append(GTK_MENU(RootMenu), RSep1);
+	gtk_menu_append(GTK_MENU(RootMenu), RAbout);
 	gtk_menu_append(GTK_MENU(RootMenu), RQuit);
 	
 	gtk_menu_append(GTK_MENU(FileMenu), FOpen);
@@ -119,6 +146,11 @@ int main(int argc, char **argv)
 	gtk_signal_connect(GTK_OBJECT(area), "expose_event",
 							 GTK_SIGNAL_FUNC(a_expose), NULL);
 	
+	gtk_signal_connect(GTK_OBJECT(AboutClose), "clicked",
+							 GTK_SIGNAL_FUNC(HideAbout), NULL);
+	
+	gtk_signal_connect(GTK_OBJECT(RAbout), "activate",
+							 GTK_SIGNAL_FUNC(ShowAbout), NULL);
 	gtk_signal_connect(GTK_OBJECT(RQuit), "activate",
 							 GTK_SIGNAL_FUNC(CloseWindow), NULL);
 
@@ -171,6 +203,18 @@ int main(int argc, char **argv)
 	
 	gtk_widget_set_events(EventBox, GDK_BUTTON_PRESS_MASK);
 	
+	/* AboutWindow packing */
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(AboutWindow)->vbox),
+							 AboutText, TRUE, TRUE, 0);	
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(AboutWindow)->action_area),
+							 AboutClose, TRUE, TRUE, 0);
+	
+	/* Image Browser packing */
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(BrWin)->vbox),
+							 BrClist, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(BrWin)->action_area),
+							 BrClose, TRUE, TRUE, 0);
+
 	/* main stuff */
 	if(argc == 2){
 		sprintf(currentimage, "%s", argv[1]);
@@ -183,7 +227,11 @@ int main(int argc, char **argv)
 	/* show the widgets */
 	gtk_widget_show(RootMenu);
 	gtk_widget_show(RSep1);
+	gtk_widget_show(RAbout);
 	gtk_widget_show(RQuit);
+	gtk_widget_show(BrClist);
+	gtk_widget_show(BrClose);
+	gtk_widget_show(BrWin);
 	gtk_widget_show(EventBox);
 	gtk_widget_show(FileMenu);
 	gtk_widget_show(FileItem);
@@ -377,6 +425,18 @@ void Flip3(GtkWidget *widget, gpointer data)
 	gtk_widget_show(area);
 }
 
+void ShowAbout(GtkWidget *widget, gpointer data)
+{
+	gtk_widget_show(AboutText);
+	gtk_widget_show(AboutClose);
+	gtk_widget_show(AboutWindow);
+}
+
+void HideAbout(GtkWidget *widget, gpointer data)
+{
+	gtk_widget_hide(AboutWindow);
+}
+	
 gint ButtonPressed(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	GtkMenu *menu;
