@@ -3,6 +3,7 @@
 #include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Esmart/Esmart_Trans.h>
+#include <limits.h>
 
 #include "iconbar.h"
 #include "util.h"
@@ -23,7 +24,7 @@ main(int argc, char **argv)
   Evas_List *l = NULL;
   Evas_Object *o = NULL;
   Ecore_Evas *ee = NULL;
-  Evas_Coord edjew, edjeh;
+  Evas_Coord edjew = 0, edjeh = 0;
   Evas_Object *iconbar = NULL;
 
   if(!ecore_init())
@@ -91,8 +92,13 @@ main(int argc, char **argv)
 	    ecore_evas_size_min_set(ee, (int)edjew, (int)edjeh);
 	
 	edje_object_size_max_get(o, &edjew, &edjeh);
+
 	if((edjew > 0) && (edjeh > 0))
+	{
+	    if (edjew > INT_MAX) edjew = INT_MAX;
+	    if (edjeh > INT_MAX) edjew = INT_MAX;
 	    ecore_evas_size_max_set(ee, (int)edjew, (int)edjeh);
+	}
 	if(iconbar_config_sticky_get() > 0)
 	    edje_object_signal_emit(o, "window,sticky,on", "");
 	else
