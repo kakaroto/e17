@@ -12,11 +12,16 @@ static Ewd_List *font_paths = NULL;
 static Ewd_Hash *cached_theme_data = NULL;
 static Ewd_Hash *def_theme_data = NULL;
 
+void          __ewl_theme_init_font_path(void);
+
 /**
- * ewl_theme_init - initialize the themeing  system
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the themeing  system
  *
- * Returns TRUE on success, FALSE on failure. Initializes the data structures
- * involved with theme handling. This involves finding the specified theme file. */
+ * Initializes the data structures involved with theme handling. Involves
+ * finding the specified theme file. This is called by ewl_init, and is not
+ * necessary for the end programmer to call.
+ */
 int ewl_theme_init(void)
 {
 	struct stat     st;
@@ -77,19 +82,18 @@ int ewl_theme_init(void)
 		}
 	}
 
-	ewl_theme_init_font_path();
+	__ewl_theme_init_font_path();
 
 	IF_FREE(theme_name);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-/**
- * ewl_theme_init_font_path - initialize the font path from the theme
- *
- * Returns no value. Initializes the font path based on the theme.
+/*
+ * Initializes the font path based on the theme. Also called by ewl_init, and
+ * is not recommended to be called separately.
  */
-void ewl_theme_init_font_path()
+void __ewl_theme_init_font_path()
 {
 	char           *font_path;
 	char            key[PATH_MAX];
@@ -117,11 +121,11 @@ void ewl_theme_init_font_path()
 }
 
 /**
- * ewl_theme_init_widget - initialize a widgets theme information to the default
- * @w: the widget to initialize theme information
+ * @param w: the widget to initialize theme information
+ * @return Returns no value.
+ * @brief Initialize a widgets theme information to the default
  *
- * Returns no value. Sets the widget @w's theme information to the default
- * values.
+ * Sets the widget @a w's theme information to the default values.
  */
 void ewl_theme_init_widget(Ewl_Widget * w)
 {
@@ -134,11 +138,11 @@ void ewl_theme_init_widget(Ewl_Widget * w)
 }
 
 /**
- * ewl_theme_deinit_widget - remove the theme information from a widget
- * @w: the widget to remove theme information
+ * @param w: the widget to remove theme information
+ * @return Returns no value.
+ * @brief remove the theme information from a widget
  *
- * Returns no value. Removes and frees (if not default) the theme information
- * from the widget @w.
+ * Removes and frees the theme information from the widget @a w.
  */
 void ewl_theme_deinit_widget(Ewl_Widget * w)
 {
@@ -158,17 +162,18 @@ void ewl_theme_deinit_widget(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* Return the path of the current theme */
+/*
+ * @brief Return the path of the current theme
+ * @return Returns a copy of the current theme path on success, NULL on failure
+ */
 char           *ewl_theme_path()
 {
 	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
 }
 
 /**
- * ewl_theme_font_path - retrieve the path of a widgets theme's fonts
- * @w: the widget to search
- *
- * Returns the font path associated with widget @w on success, NULL on failure.
+ * @return Returns the font path of widget @a w on success, NULL on failure.
+ * @brief retrieve the path of a widgets theme's fonts
  */
 Ewd_List       *ewl_theme_font_path_get()
 {
@@ -178,10 +183,11 @@ Ewd_List       *ewl_theme_font_path_get()
 }
 
 /**
- * ewl_theme_font_path_add - add a specified path to the font search path
- * @path: the font to add to the search path
+ * @param path: the font to add to the search path
+ * @return Returns no value.
+ * @brief Add a specified path to the font search path
  *
- * Returns no value. Duplicates the string pointed to by @path and adds it to
+ * Duplicates the string pointed to by @a path and adds it to
  * the list of paths that are searched for fonts.
  */
 void ewl_theme_font_path_add(char *path)
@@ -200,11 +206,10 @@ void ewl_theme_font_path_add(char *path)
 }
 
 /**
- * ewl_theme_image_get - retrieve the path to an image from a widgets theme
- * @w: the widget to search
- * @k: the image to search for
- *
- * Returns the path associated with image key @k on success, NULL on failure.
+ * @param w: the widget to search
+ * @param k: the image to search for
+ * @return Returns the path of image key @a k on success, NULL on failure.
+ * @brief retrieve the path to an image from a widgets theme
  */
 char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 {
@@ -238,11 +243,10 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 
 
 /**
- * ewl_theme_data_get_str - retrieve an string value from a widgets theme
- * @w: the widget to search
- * @k: the key to search for
- *
- * Returns the string associated with key @k on success, NULL on failure.
+ * @param w: the widget to search
+ * @param k: the key to search for
+ * @return Returns the string associated with @a k on success, NULL on failure.
+ * @brief Retrieve an string value from a widgets theme
  */
 char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
@@ -284,11 +288,10 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 }
 
 /**
- * ewl_theme_data_get_int - retrieve an integer value from a widgets theme
- * @w: the widget to search
- * @k: the key to search for
- *
- * Returns the integer associated with key @k on success, 0 on failure.
+ * @param w: the widget to search
+ * @param k: the key to search for
+ * @return Returns the integer associated with key @a k on success, 0 on failure.
+ * @brief Retrieve an integer value from a widgets theme
  */
 int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 {
@@ -314,13 +317,14 @@ int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 }
 
 /**
- * ewl_theme_data_set_str -  store data into a widgets theme
- * @w: the widget to change theme data
- * @k: the key to change
- * @v: the data to assign to the key
+ * @param w: the widget to change theme data
+ * @param k: the key to change
+ * @param v: the data to assign to the key
+ * @return Returns no value.
+ * @brief Store data into a widgets theme
  *
- * Returns no value. Changes the theme data in widget @w so that key @k now is
- * associated with value @v.
+ * Changes the theme data in widget @a w so that key @a k now is
+ * associated with value @a v.
  */
 void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 {
@@ -342,13 +346,14 @@ void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 }
 
 /**
- * ewl_theme_data_set_int -  store data into a widgets theme
- * @w: the widget to change theme data
- * @k: the key to change
- * @v: the data to assign to the key
+ * @param w: the widget to change theme data
+ * @param k: the key to change
+ * @param v: the data to assign to the key
+ * @return Returns no value.
+ * @brief Store data into a widgets theme
  *
- * Returns no value. Changes the theme data in widget @w so that key @k now is
- * associated with value @v.
+ * Changes the theme data in widget @a w so that key @a k now is
+ * associated with value @a v.
  */
 void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
 {
@@ -367,12 +372,13 @@ void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
 }
 
 /**
- * ewl_theme_data_set_default_str - set a theme key to a default value
- * @k: the key to be set
- * @v: the value to set for the key
+ * @param k: the key to be set
+ * @param v: the value to set for the key
+ * @return Returns no value.
+ * @brief Set a theme key to a default value
  *
- * Returns no value. Sets the data associated with key @k to value @v in the
- * default theme data.
+ * Sets the data associated with key @a k to value @a v in the default theme
+ * data.
  */
 void ewl_theme_data_set_default_str(char *k, char *v)
 {
@@ -384,11 +390,12 @@ void ewl_theme_data_set_default_str(char *k, char *v)
 }
 
 /**
- * ewl_theme_data_set_default_int - set a theme key to a default value
- * @k: the key to be set
- * @v: the value to set for the key
+ * @param k: the key to be set
+ * @param v: the value to set for the key
+ * @return Returns no value.
+ * @brief Set a theme key to a default value
  *
- * Returns no value. Sets the data associated with key @k to value @v in the
+ * Sets the data associated with key @a k to value @a v in the
  * default theme data.
  */
 void ewl_theme_data_set_default_int(char *k, int v)

@@ -2,9 +2,8 @@
 #include <Ewl.h>
 
 /**
- * ewl_spacer_new - allocate and initialize a new spacer
- *
- * Returns NULL on failure, a pointer to a new spacer on success
+ * @return Returns NULL on failure, a pointer to a new spacer on success
+ * @brief Allocate and initialize a new spacer
  */
 Ewl_Widget     *ewl_spacer_new()
 {
@@ -23,11 +22,11 @@ Ewl_Widget     *ewl_spacer_new()
 }
 
 /**
- * ewl_spacer_init - initialize a spacer to starting values
- * @b: the spacer to initialize
- * @label: set the label of the spacer @b to @label
+ * @param s: the spacer to initialize
+ * @return Returns no value.
+ * @brief Initialize a spacer to starting values
  *
- * Returns no value. Initializes a spacer to default values and callbacks.
+ * Initializes a spacer to default values and callbacks.
  */
 void ewl_spacer_init(Ewl_Spacer * s)
 {

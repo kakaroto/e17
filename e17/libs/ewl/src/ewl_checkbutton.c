@@ -5,10 +5,9 @@ void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
 
 /**
- * ewl_checkbutton_new - allocate and initialize a new check button
- * @label: the label to display with the checkbutton, NULL for no label
- *
- * Returns the newly allocated checkbutton on success, NULL on failure.
+ * @param label: the label to display with the checkbutton, NULL for no label
+ * @return Returns the newly allocated checkbutton on success, NULL on failure.
+ * @brief Allocate and initialize a new check button
  */
 Ewl_Widget     *ewl_checkbutton_new(char *label)
 {
@@ -27,12 +26,13 @@ Ewl_Widget     *ewl_checkbutton_new(char *label)
 }
 
 /**
- * ewl_checkbutton_init - initialize the members and callbacks of a check button
- * @cb: the check button to initialize
- * @label: the label to give the initialized check button
+ * @param cb: the check button to initialize
+ * @param label: the label to give the initialized check button
+ * @return Returns no value.
+ * @brief Initialize the members and callbacks of a check button
  *
- * Returns no vlalue.The internal structures and callbacks of the checkbutton
- * are initialized ot default values.
+ * The internal structures and callbacks of the checkbutton are initialized to
+ * default values.
  */
 void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 {
@@ -65,12 +65,12 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 }
 
 /**
- * ewl_checkbutton_set_label_position - set the check buttons label position
- * @w: the widget to change the label positioning
- * @p: the new position of the label
+ * @param w: the widget to change the label positioning
+ * @param p: the new position of the label
+ * @return Returns no value.
+ * @brief Set the check buttons label position
  *
- * Returns no value. Changes the position of the label associated with the
- * check button.
+ * Changes the position of the label associated with the check button.
  */
 void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 {

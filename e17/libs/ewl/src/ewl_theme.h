@@ -2,8 +2,13 @@
 #ifndef __EWL_THEME_H__
 #define __EWL_THEME_H__
 
+/**
+ * @file ewl_theme.h
+ * Provides methods for accessing theme data, global theme data or per-widget
+ * theme data.
+ */
+
 int             ewl_theme_init(void);
-void            ewl_theme_init_font_path(void);
 void            ewl_theme_init_widget(Ewl_Widget * w);
 void            ewl_theme_deinit_widget(Ewl_Widget * w);
 char           *ewl_theme_path(void);

@@ -1,33 +1,37 @@
 
-/*
- * The button class is a basic button with a label. This class is inherited by
- * the check button and radio button classes.
- */
-
 #ifndef __EWL_CHECKBUTTON_H__
 #define __EWL_CHECKBUTTON_H__
 
-typedef struct _ewl_checkbutton Ewl_CheckButton;
+/**
+ * @file ewl_checkbutton.h
+ * @brief Defines an Ewl_CheckButton that inherits from Ewl_Widget and
+ * provides an Ewl_Check that changes value on each click.
+ */
 
+/**
+ * The button class is a basic button with a label. This class is inherited by
+ * the check button and radio button classes.
+ */
+typedef struct Ewl_CheckButton Ewl_CheckButton;
+
+/**
+ * @def EWL_CHECKBUTTON(button)
+ * Typecasts a pointer to an Ewl_CheckButton pointer.
+ */
 #define EWL_CHECKBUTTON(button) ((Ewl_CheckButton *) button)
 
-struct _ewl_checkbutton {
+/**
+ * @struct Ewl_CheckButton
+ * Inherits from Ewl_Widget and expands to provide a stateful check button.
+ */
+struct Ewl_CheckButton
+{
+	Ewl_Button      button; /**< Inherit the basic button properties */
 
-	/*
-	 * Inherit the basic button properties
-	 */
-	Ewl_Button      button;
+	
+	Ewl_Position    label_position; /**< Order of label and check */
 
-	/*
-	 * Label positition determines packing order of the label and the
-	 * check
-	 */
-	Ewl_Position    label_position;
-
-	/*
-	 * Public references to the check and label widgets.
-	 */
-	Ewl_Widget     *check;
+	Ewl_Widget     *check; /**< Check widget represented */
 };
 
 Ewl_Widget     *ewl_checkbutton_new(char *l);
