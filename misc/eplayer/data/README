@@ -16,6 +16,11 @@ The "eplayer" Edje emits the following signals:
     action,     SIGNAL_EMIT "SEEK_FORWARD" "*";
     action,     SIGNAL_EMIT "SEEK_BACK" "*";
 
+    action,     SIGNAL_EMIT "SEEK_FORWARD_START" "*";
+    action,     SIGNAL_EMIT "SEEK_FORWARD_STOP" "*";
+    action,     SIGNAL_EMIT "SEEK_BACKWARD_START" "*";
+    action,     SIGNAL_EMIT "SEEK_BACKWARD_STOP" "*";
+
     action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "*";
     action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "*";
 
@@ -26,6 +31,9 @@ The "eplayer" Edje emits the following signals:
     action,     SIGNAL_EMIT "SEEKER_START" "*";
     action,     SIGNAL_EMIT "SEEKER_UPDATE" "*"; 
     action,     SIGNAL_EMIT "SEEKER_STOP" "*";
+
+    action,     SIGNAL_EMIT "PLAYLIST_ADD" "*";
+    action,     SIGNAL_EMIT "PLAYLIST_DEL" "*";
 
 The "SWITCH_GROUP" signal is special. It will reload the Edje using the
 group "foo" (src argument). This way, you can easily implement
@@ -47,6 +55,8 @@ The Edje provides the following parts for text display, etc:
 The seeker:
   The seeker involves two parts. One, "seeker" is a draggable that gets set to the current song position (as a percent). Often, this can be an invisible part with other parts relative to it (to create a bar, for instance). Second is the "seeker_grabber" part, which captures mouse down/move events to actually seek. Create programs for this part that emit SEEKER_START on mouse down, SEEKER_UPDATE on mouse move and SEEKER_STOP on mouse up. 
 
+Dragging:
+  ePlayer contains an object underneath the theme that catches mouse events to allow window dragging. In order to take advantage of this, you must allow events to pass through to this layer in any areas you want to allow for dragging. Do this by adding "repeat_events, 1" to the relevant parts.
 
 
 The "playlist_item" Edje contains a "title" and a "length" part.
@@ -57,6 +67,7 @@ These parts emit the following signals:
     action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "";
     action,     SIGNAL_EMIT "PLAYLIST_ITEM_PLAY" "";
     action,     SIGNAL_EMIT "PLAYLIST_ITEM_REMOVE" "";
+
 
 
 ---------------------------------------------------------
