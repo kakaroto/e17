@@ -13,6 +13,8 @@ group {
 
 group {
     name, "cursor";
+	min, 1 99;
+	max, 2 99;
     parts {
         part {
             name, "background";
@@ -28,7 +30,7 @@ group {
                     relative, 1.0 1.0;
                     offset, -1 -1;
                 }
-                color, 180 180 180 128;
+                color, 0 0 0 255;
             }
         }
     }

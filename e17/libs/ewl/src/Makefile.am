@@ -20,7 +20,6 @@ EWLHEADERS = \
 	ewl_combo.h \
 	ewl_config.h \
 	ewl_container.h \
-	ewl_cursor.h \
 	ewl_debug.h \
 	ewl_dialog.h \
 	ewl_embed.h \
@@ -81,7 +80,6 @@ EWLSOURCES= \
 	ewl_combo.c \
 	ewl_config.c \
 	ewl_container.c \
-	ewl_cursor.c \
 	ewl_dialog.c \
 	ewl_embed.c \
 	ewl_entry.c \

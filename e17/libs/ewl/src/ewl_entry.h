@@ -34,7 +34,8 @@ struct Ewl_Entry
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 
 	Ewl_Widget     *text; /**< Provide Ewl_Text for text display */
-	Ewl_Widget     *cursor; /**< Provide Ewl_Cursor for cursor display */
+	Ewl_Widget     *cursor; /**< Provide Ewl_Entry_Cursor for cursor display */
+	Ewl_Widget     *selection; /**< Provied Ewl_Entry_Selection for selection display */
 
 	int             offset; /**< Starting position of cursor in text */
 	int             editable; /**< Flag to indicate if user can edit text */
@@ -54,9 +55,7 @@ void            ewl_entry_multiline_set(Ewl_Entry * e, int m);
 int             ewl_entry_multiline_get(Ewl_Entry * e);
 
 void ewl_entry_cursor_left_move(Ewl_Entry * e);
-void ewl_entry_cursor_previous_word_move(Ewl_Entry * e);
 void ewl_entry_cursor_right_move(Ewl_Entry * e);
-void ewl_entry_cursor_next_word_move(Ewl_Entry * e);
 void ewl_entry_cursor_down_move(Ewl_Entry * e);
 void ewl_entry_cursor_up_move(Ewl_Entry * e);
 void ewl_entry_cursor_home_move(Ewl_Entry * e);

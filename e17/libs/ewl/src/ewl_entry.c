@@ -1,5 +1,51 @@
 #include <Ewl.h>
 
+/*
+ * the cursor stuff 
+ */
+typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
+
+#define EWL_ENTRY_CURSOR(cursor) ((Ewl_Entry_Cursor *) cursor)
+
+struct Ewl_Entry_Cursor
+{
+	Ewl_Widget	widget;
+	int		position;
+};
+
+static Ewl_Widget *ewl_entry_cursor_new(void);
+static void ewl_entry_cursor_init(Ewl_Entry_Cursor *c); 
+
+static void ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, int pos);
+static int ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c);
+
+/*
+ * the selection stuff
+ */
+typedef struct Ewl_Entry_Selection Ewl_Entry_Selection;
+ 
+#define EWL_ENTRY_SELECTION(selection) ((Ewl_Entry_Selection *) selection)
+
+struct Ewl_Entry_Selection
+{
+	Ewl_Widget	widget;
+	unsigned int 	start;
+	unsigned int	end;
+};
+
+static Ewl_Widget *ewl_entry_selection_new(void);
+static void ewl_entry_selection_init(Ewl_Entry_Selection *s); 
+
+static void ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s,
+						unsigned int start);
+static int ewl_entry_selection_start_position_get(Ewl_Entry_Selection *s);
+static void ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s,
+						unsigned int end);
+static int ewl_entry_selection_end_position_get(Ewl_Entry_Selection *s);
+static void ewl_entry_selection_select_to(Ewl_Entry_Selection *s,
+						unsigned int pos);
+
+
 static int ewl_entry_timer();
 
 /**
@@ -27,7 +73,7 @@ Ewl_Widget *ewl_entry_multiline_new(char *text)
  * @return Returns a new entry widget on success, NULL on failure.
  * @brief Allocate and initialize a new entry widget
  */
-Ewl_Widget     *ewl_entry_new(char *text)
+Ewl_Widget *ewl_entry_new(char *text)
 {
 	Ewl_Entry      *e;
 
@@ -81,10 +127,14 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 			    ewl_entry_configure_text_cb, e);
 	ewl_widget_show(e->text);
 
-	e->cursor = ewl_cursor_new();
+	e->cursor = ewl_entry_cursor_new();
 	ewl_container_child_append(EWL_CONTAINER(e), e->cursor);
+	ewl_widget_internal_set(e->cursor, TRUE);
+	ewl_object_fill_policy_set(EWL_OBJECT(e->cursor), EWL_FLAG_FILL_SHRINK);
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
+	ewl_widget_show(e->cursor);
 
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), 1);
+	e->selection = NULL;
 
 	/*
 	 * Attach necessary callback mechanisms 
@@ -146,7 +196,14 @@ void ewl_entry_text_set(Ewl_Entry * e, char *t)
 	DCHECK_PARAM_PTR("e", e);
 
 	ewl_text_text_set(EWL_TEXT(e->text), t);
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), 1);
+
+	if (e->cursor)
+		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
+
+	if (e->selection) {
+		ewl_widget_destroy(e->selection);
+		e->selection = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -250,9 +307,9 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry    *e;
 	int           xx, yy, ww, hh;
-	int           c_spos, c_epos, base, l;
-	int           sx = 0, sy = 0, ex = 0, ey = 0, dx = 0;
-	unsigned int  sw = 0, sh = 0, ew = 0, eh = 0;
+	int	      c_pos = 0, l;
+	int           cx = 0, cy = 0;
+	unsigned int  cw = 0, ch = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -268,60 +325,35 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ww = CURRENT_W(e);
 	hh = CURRENT_H(e);
 
-	c_spos = ewl_cursor_start_position_get(EWL_CURSOR(e->cursor));
-	c_epos = ewl_cursor_end_position_get(EWL_CURSOR(e->cursor));
-	base = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+	c_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
-	if (c_spos > l) {
-		ex = sx = ewl_object_current_x_get(EWL_OBJECT(w)) +
-			ewl_object_current_w_get(EWL_OBJECT(w));
-		ew = 5;
+	if (c_pos >= l) {
+		cx = ewl_object_current_x_get(EWL_OBJECT(w)) +
+				ewl_object_current_w_get(EWL_OBJECT(w));
 	} else {
-
-		/*
-		 * Now position the cursor based on the current position in the
-		 * text.
-		 */
-		ewl_text_index_geometry_map(EWL_TEXT(w), --c_spos, &sx, &sy,
-					    &sw, &sh);
-
-		ewl_text_index_geometry_map(EWL_TEXT(w), --c_epos, &ex, &ey,
-					    &ew, &eh);
-		base--;
+		ewl_text_index_geometry_map(EWL_TEXT(w), c_pos, &cx, &cy, &cw, &ch);
 	}
 
 	/*
 	 * D'oh, get the hell out of here, the entry is way too small to do
 	 * anything useful.
 	 */
-	if (ew > ww)
+	if (cw > ww)
 		DRETURN(DLEVEL_STABLE);
-
-	hh = eh;
-
-	/*
-	 * Scroll the text to fit the cursor position.
-	 */
-	if ((c_spos == base) && ((int)(ex + ew) > (int)(xx + ww))) {
-		dx -= (int)((ex + ew) - (xx + ww));
-	}
-	else if ((c_epos == base) && (sx < xx)) {
-		dx = xx - sx;
-	}
 
 	if (e->offset < 0)
 		e->offset = 0;
 
-	if (dx)
-		ewl_object_geometry_request(EWL_OBJECT(w),
-				ewl_object_current_x_get(EWL_OBJECT(w)) + dx,
-				sy, CURRENT_W(e), hh);
+/* FIXME
+	ch = ewl_text_font_size_get(EWL_TEXT(w)); */
+	ch = ewl_theme_data_int_get(w, "font_size");
 
-	ew = (ex + ew) - sx;
-	ewl_object_geometry_request(EWL_OBJECT(e->cursor), sx + dx, sy,
-			ew, hh);
+#if 0
+printf("cx %d, cy %d, cw %d, ch %d\n", cx, cy, cw, ch);
+#endif
 
-	e->offset -= dx;
+	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, 
+									CURRENT_W(e->cursor), ch);
 }
 
 /*
@@ -397,24 +429,25 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 	e = EWL_ENTRY(w);
 
+	e->in_select_mode = TRUE;
+
 	len = ewl_text_length_get(EWL_TEXT(e->text));
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
-	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
+
+	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) 
 		index = len;
-	}
-	else {
-		index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x,
-						 ev->y);
-	}
+	
+	else
+		index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x, ev->y);
 
-	index++;
+	if (!e->selection)
+		e->selection = ewl_entry_selection_new();
+	
+	ewl_entry_selection_start_position_set(EWL_ENTRY_SELECTION(e->selection), index);
+	ewl_entry_selection_end_position_set(EWL_ENTRY_SELECTION(e->selection), index);
 
-	if (index > len + 1)
-		index = len + 1;
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), index);
-
-	e->in_select_mode = TRUE;
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), index);
 
 	ewl_widget_configure(w);
 
@@ -449,7 +482,7 @@ void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int             index = 0;
+	int             index = 0, spos = 0;
 	Ewl_Event_Mouse_Move *ev;
 	Ewl_Entry      *e;
 
@@ -486,19 +519,7 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		*/
 	}
 
-	index++;
-
-	if (ewl_cursor_start_position_get(EWL_CURSOR(e->cursor)) != index) {
-		int len, base;
-
-		index--;
-		len = ewl_text_length_get(EWL_TEXT(e->text));
-		base = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
-		if (base > len)
-			ewl_cursor_base_set(EWL_CURSOR(e->cursor), --base);
-	}
-
-	ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
+	ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), index);
 
 	ewl_widget_configure(w);
 
@@ -510,9 +531,7 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Entry            *e;
-	char                 *s;
 	int                   len = 0;
-	int                   bp, index;
   
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -523,47 +542,40 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	len = ewl_text_length_get(EWL_TEXT(e->text));
 
 	if (ev->clicks == 2) {
-		bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+		char   *s;
+		int 	start, end;
+
+		start = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+
+		if (e->selection) {
+			ewl_widget_destroy(e->selection);
+			e->selection = ewl_entry_selection_new();
+		}
 
 		s = ewl_entry_text_get(e);
-      
-		if (s[bp-1] != ' ') {
-			if (s[bp] != ' ') {
-				if (bp < len) {
-					index = bp-1;
-					while ((index-->0) && (s[index] != ' ')){}
-					ewl_cursor_base_set(EWL_CURSOR(e->cursor), index+2);
-					index = bp-1;
-					while ((index++<len) &&	(s[index] != ' ')){}
-					if (index > len) index--;
-					ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
-				}
-				else {
-					index = bp-1;
-					while ((index-->0) && (s[index] != ' ')){}
-					ewl_cursor_base_set(EWL_CURSOR(e->cursor), index+2);
-					ewl_cursor_select_to(EWL_CURSOR(e->cursor), len);
-				}
-			}
-			else
-			{
-				index = bp-1;
-				while ((index-->0) && (s[index] != ' ')){}
-				ewl_cursor_base_set(EWL_CURSOR(e->cursor), index+2);
-				ewl_cursor_select_to(EWL_CURSOR(e->cursor), bp);
-			}
-		}
-		else if (s[bp] != ' ') {
-			index = bp;
-			while ((index<len) && (s[index] != ' '))
-				index ++;
-			ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp+1);
-			ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
-		}
-	}
-	else {
-		ewl_cursor_base_set(EWL_CURSOR(e->cursor), 1);
-		ewl_cursor_select_to(EWL_CURSOR(e->cursor), len);
+    
+		while ((s[start] != ' ') && (s[start] != '\t')
+				&& (s[start] != '\n') && (--start > 0))
+			;
+
+		if (start < 0) start++;
+		end = start;
+
+		while ((s[end + 1] != ' ') && (s[end + 1] != '\t')
+				&& (s[end + 1] != '\n') && (++end < len))
+			;
+
+		if (end == len) end --; 
+		ewl_entry_selection_start_position_set(
+				EWL_ENTRY_SELECTION(e->selection), start);
+		ewl_entry_selection_end_position_set(
+				EWL_ENTRY_SELECTION(e->selection), end);
+		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), end + 1);
+
+	} else {
+		ewl_entry_selection_start_position_set(EWL_ENTRY_SELECTION(e->selection), 0);
+		ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), len - 1);
+		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), len);
 	}
 
 	e->in_select_mode = (ev->modifiers & EWL_KEY_MODIFIER_SHIFT);
@@ -581,7 +593,7 @@ void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	ewl_widget_show(e->cursor);
+	ewl_widget_show(e->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -595,7 +607,7 @@ void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	ewl_widget_hide(e->cursor);
+	ewl_widget_hide(e->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -607,57 +619,17 @@ void ewl_entry_cursor_left_move(Ewl_Entry * e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	pos = ewl_cursor_start_position_get(EWL_CURSOR(e->cursor));
+	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
-	if (pos > 1)
-		--pos;
+	if (--pos < 0) pos = 0;
 
 	if (e->in_select_mode)
-		ewl_cursor_select_to(EWL_CURSOR(e->cursor), pos);
-	else
-		ewl_cursor_base_set(EWL_CURSOR(e->cursor), pos);
+		ewl_entry_selection_start_position_set(
+			EWL_ENTRY_SELECTION(e->selection), pos);
+
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos);
 
 	ewl_widget_configure(EWL_WIDGET(e));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
- * Move the cursor to the previous word. This is internal, so the
- * parameter is not checked.
- */
-void ewl_entry_cursor_previous_word_move(Ewl_Entry * e)
-{
-	char                 *s;
-	int                   len = 0;
-	int                   bp;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-  
-	len = ewl_text_length_get(EWL_TEXT(e->text));
-	bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
-	
-	s = ewl_entry_text_get(e);
-
-	if ((bp >1) && (s[bp] != ' ') && (s[bp-1] == ' '))
-	  bp--;
-
-	if (bp >= 0)
-	  {
-	    if (s[bp] == ' ') {
-	      while ((--bp > 0) && (s[bp] == ' ')){}
-	    }
-	    while ((--bp > 0) && (s[bp] != ' ')){}
-	  }
-	if (bp <= len)
-		++bp;
-
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp);
-
-	ewl_widget_configure(EWL_WIDGET(e));
-
-	FREE(s);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -671,59 +643,19 @@ void ewl_entry_cursor_right_move(Ewl_Entry * e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	pos = ewl_cursor_end_position_get(EWL_CURSOR(e->cursor));
+	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	str = ewl_entry_text_get(e);
 
 	len = strlen(str);
-
 	FREE(str);
 
-	if (pos <= len)
-		++pos;
-
+	if (++pos > len) pos = len;
 	if (e->in_select_mode)
-		ewl_cursor_select_to(EWL_CURSOR(e->cursor), pos);
-	else
-		ewl_cursor_base_set(EWL_CURSOR(e->cursor), pos);
+		ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), pos);
+
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos);
 
 	ewl_widget_configure(EWL_WIDGET(e));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
- * Move the cursor to the next word. This is internal, so the
- * parameter is not checked.
- */
-void ewl_entry_cursor_next_word_move(Ewl_Entry * e)
-{
-	char                 *s;
-	int                   len = 0;
-	int                   bp;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-  
-	len = ewl_text_length_get(EWL_TEXT(e->text));
-	bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
-	
-	s = ewl_entry_text_get(e);
-
-	if (bp <= len)
-	  {
-	    if (s[bp] != ' ') {
-	      while ((++bp < len) && (s[bp] != ' ')){}
-	    }
-	    while ((++bp < len) && (s[bp] == ' ')){}
-	  }
-	if (bp > len)
-	  bp = len;
-
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp);
-
-	ewl_widget_configure(EWL_WIDGET(e));
-
-	FREE(s);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -743,7 +675,8 @@ void ewl_entry_cursor_down_move(Ewl_Entry * e)
 
 	if (e->multiline) {
 		len = ewl_text_length_get(EWL_TEXT(e->text));
-		nline = start = bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+		nline = start = bp =
+			ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 		s = ewl_entry_text_get(e);
 
@@ -771,9 +704,9 @@ void ewl_entry_cursor_down_move(Ewl_Entry * e)
 			lpos = nend - 1;
 
 		if (e->in_select_mode)
-			ewl_cursor_select_to(EWL_CURSOR(e->cursor), lpos);
-		else
-			ewl_cursor_base_set(EWL_CURSOR(e->cursor), lpos);
+			ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), lpos);
+
+		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), lpos);
 
 		ewl_widget_configure(EWL_WIDGET(e));
 	}
@@ -794,7 +727,8 @@ void ewl_entry_cursor_up_move(Ewl_Entry * e)
 
 	if (e->multiline) {
 		len = ewl_text_length_get(EWL_TEXT(e->text));
-		start = bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+		start = bp = 
+			ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 		s = ewl_entry_text_get(e);
 
@@ -823,9 +757,9 @@ void ewl_entry_cursor_up_move(Ewl_Entry * e)
 			lpos = pend - 1;
 
 		if (e->in_select_mode)
-			ewl_cursor_select_to(EWL_CURSOR(e->cursor), lpos);
-		else
-			ewl_cursor_base_set(EWL_CURSOR(e->cursor), lpos);
+			ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), lpos);
+		
+		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), lpos);
 
 		ewl_widget_configure(EWL_WIDGET(e));
 	}
@@ -837,31 +771,12 @@ void ewl_entry_cursor_up_move(Ewl_Entry * e)
  */
 void ewl_entry_cursor_home_move(Ewl_Entry * e)
 {
-	int bp = 1;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (e->multiline) {
-		char *s = ewl_entry_text_get(e);
-		int len;
-
-		len = ewl_text_length_get(EWL_TEXT(e->text));
-		bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
-
-		if (bp > 1) {
-			while ((--bp > 1) && (s[bp] != '\n'));
-			if (s[bp] == '\n')
-				bp += 2;
-		} else {
-			bp = 1;
-		}
-	}
-
 	if (e->in_select_mode)
-		ewl_cursor_select_to(EWL_CURSOR(e->cursor), bp);
-	else
-		ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp);
+		ewl_entry_selection_start_position_set(EWL_ENTRY_SELECTION(e->selection), 0);
 
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -882,29 +797,13 @@ void ewl_entry_cursor_end_move(Ewl_Entry * e)
 
 	if (s) {
 		l = strlen(s);
-
-		if (e->multiline) {
-			int bp;
-
-			bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
-
-			if (bp < l) {
-				while ((++bp < l) && (s[bp] != '\n'));
-			} else {
-				bp = l;
-			}
-
-			l = bp;
-		}
-
 		FREE(s);
 	}
 
 	if (e->in_select_mode)
-		ewl_cursor_select_to(EWL_CURSOR(e->cursor), l);
-	else
-		ewl_cursor_base_set(EWL_CURSOR(e->cursor), l + 1);
+		ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), l);
 
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), l);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -913,7 +812,7 @@ void ewl_entry_cursor_end_move(Ewl_Entry * e)
 void ewl_entry_text_insert(Ewl_Entry * e, char *s)
 {
 	char           *s2, *s3;
-	int             l = 0, l2 = 0, sp = 0, ep = 0;
+	int             l = 0, l2 = 0, sp = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -927,7 +826,10 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *s)
 	else
 		l2 = 0;
 
-	sp = ewl_cursor_start_position_get(EWL_CURSOR(e->cursor));
+	if (e->selection)
+		sp = ewl_entry_selection_start_position_get(EWL_ENTRY_SELECTION(e->selection));
+	else
+		sp = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 	s3 = NEW(char, l + 1 + l2);
 	if (!s3) {
@@ -935,24 +837,20 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *s)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	s3[0] = 0;
-	if (s2)
-		strncat(s3, s2, sp - 1);
+	if (s2) strncat(s3, s2, sp);
 	strcat(s3, s);
 
-	ep = ewl_cursor_end_position_get(EWL_CURSOR(e->cursor));
-	if (!ep || (sp != ep))
-		ep++;
-	if (s2) strcat(s3, &(s2[ep - 1]));
+	if (e->selection)
+		sp = ewl_entry_selection_end_position_get(EWL_ENTRY_SELECTION(e->selection));
+
+	if (s2) strcat(s3, &(s2[sp]));
 
 	ewl_entry_text_set(e, s3);
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), ep);
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), ++sp);
 
 	IF_FREE(s2);
 	FREE(s3);
 
-	sp++;
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), sp);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -961,35 +859,30 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *s)
 void ewl_entry_left_delete(Ewl_Entry * e)
 {
 	char           *s;
-	unsigned int    sp, ep;
+	unsigned int    sp, ep, len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	sp = ewl_cursor_start_position_get(EWL_CURSOR(e->cursor));
-	ep = ewl_cursor_end_position_get(EWL_CURSOR(e->cursor));
+	if (e->selection) {
+		sp = ewl_entry_selection_start_position_get(EWL_ENTRY_SELECTION(e->selection));
+		ep = ewl_entry_selection_end_position_get(EWL_ENTRY_SELECTION(e->selection));
+	} else 
+		sp = ep = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 	s = ewl_entry_text_get(e);
-	if (!s)
+	if (!s || !strlen(s) || (!sp && sp == ep))
 		DRETURN(DLEVEL_STABLE);
 
-	if (!strlen(s) || (sp == ep && sp < 2)) {
-		FREE(s);
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (!sp) sp ++;
 
-	if (sp != ep) {
-		sp++;
-		ep++;
-	}
-
-	strcpy(&(s[sp - 2]), &(s[ep - 1]));
+	strcpy(&(s[sp - 1]), &(s[ep]));
 	ewl_entry_text_set(e, s);
-	sp--;
-
+	len = strlen(s);
 	FREE(s);
 
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), sp);
+	if (--sp > len) sp = len;
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), sp);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -998,27 +891,33 @@ void ewl_entry_left_delete(Ewl_Entry * e)
 void ewl_entry_right_delete(Ewl_Entry * e)
 {
 	char           *s;
-	int             sp, ep;
+	int             sp, ep, len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	sp = ewl_cursor_start_position_get(EWL_CURSOR(e->cursor));
-	ep = ewl_cursor_end_position_get(EWL_CURSOR(e->cursor));
-
+	if (e->selection) {
+		sp = ewl_entry_selection_start_position_get(EWL_ENTRY_SELECTION(e->selection));
+		ep = ewl_entry_selection_end_position_get(EWL_ENTRY_SELECTION(e->selection));
+	} else 
+		sp = ep = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+	
 	s = ewl_entry_text_get(e);
-	if (!s)
+	if (!s) DRETURN(DLEVEL_STABLE);
+	len = strlen(s);
+
+	if (!len || (sp == len))
 		DRETURN(DLEVEL_STABLE);
 
-	if (!strlen(s) || sp == strlen(s) + 1)
-		DRETURN(DLEVEL_STABLE);
-
-	strcpy(&(s[sp - 1]), &(s[ep]));
+	strcpy(&(s[sp]), &(s[ep + 1]));
 	ewl_entry_text_set(e, s);
+
+	len = strlen(s);
+	if (sp > len) sp = len;
 
 	FREE(s);
 
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), sp);
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), sp);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1037,7 +936,7 @@ ewl_entry_word_begin_delete(Ewl_Entry * e)
 	if (!s)
 		DRETURN(DLEVEL_STABLE);
 
-	bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+	bp = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	index = bp-2;
 	
 	while ((index-->0) && (s[index] == ' ')){}
@@ -1052,7 +951,8 @@ ewl_entry_word_begin_delete(Ewl_Entry * e)
 
 	if (index <= 0) 
 	  index = 1;
-	ewl_cursor_base_set(EWL_CURSOR(e->cursor), index);
+
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), index);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1104,34 +1004,19 @@ static int ewl_entry_timer(void *data)
 	Ewl_Entry      *e;
 	double          dt;
 	double          value;
-	int             velocity, direction;
+	int             velocity, direction, tmp;
 
 	e = EWL_ENTRY(data);
 
 	dt = ecore_time_get() - e->start_time;
-	direction = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor)) -
-			ewl_cursor_end_position_get(EWL_CURSOR(e->cursor));
-
-	if (!direction)
-		direction = ewl_cursor_start_position_get(EWL_CURSOR(e->cursor))
-			- ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
-
-	if (!direction) {
-		int tmp;
-		direction = CURRENT_X(e->cursor) - CURRENT_X(e);
-		tmp = (CURRENT_X(e) + CURRENT_W(e)) - (CURRENT_X(e->cursor) +
-				CURRENT_W(e->cursor));
-		if (direction < tmp)
-			direction = -1;
-		else
-			direction = 1;
-	}
-	else {
-		if (direction < 0)
-			direction = 1;
-		else
-			direction = -1;
-	}
+	
+	direction = CURRENT_X(e->cursor) - CURRENT_X(e);
+	tmp = (CURRENT_X(e) + CURRENT_W(e)) - (CURRENT_X(e->cursor) +
+			CURRENT_W(e->cursor));
+	if (direction < tmp)
+		direction = -1;
+	else
+		direction = 1;
 
 	/*
 	 * Check the theme for a velocity setting and bring it within normal
@@ -1154,3 +1039,152 @@ static int ewl_entry_timer(void *data)
 
 	return 1;
 }
+
+/*
+ * Cursor functions
+ */
+static Ewl_Widget *
+ewl_entry_cursor_new(void)
+{
+	Ewl_Entry_Cursor *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	c = NEW(Ewl_Entry_Cursor, 1);
+	if (!c)
+		return NULL;
+
+	ewl_entry_cursor_init(c);
+
+	DRETURN_PTR(EWL_WIDGET(c), DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_cursor_init(Ewl_Entry_Cursor *c)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	w = EWL_WIDGET(c);
+	ewl_widget_init(w, "cursor");
+	c->position = 0;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, int pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	c->position = pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+
+	DRETURN_INT(c->position, DLEVEL_STABLE);
+}
+
+/*
+ * Selection functions
+ */
+static Ewl_Widget *
+ewl_entry_selection_new(void)
+{
+	Ewl_Entry_Selection *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = NEW(Ewl_Entry_Selection, 1);
+	if (!s)
+		return NULL;
+
+	ewl_entry_selection_init(s);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_selection_init(Ewl_Entry_Selection *s)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	w = EWL_WIDGET(s);
+	ewl_widget_init(w, "selection");
+	s->start = 0;
+	s->end = 0;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s, 
+						unsigned int start)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	s->start = start;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_entry_selection_start_position_get(Ewl_Entry_Selection *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	DRETURN_INT(s->start, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s,
+						unsigned int end)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	s->end = end;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_entry_selection_end_position_get(Ewl_Entry_Selection *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	DRETURN_INT(s->end, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_selection_select_to(Ewl_Entry_Selection *s,
+					unsigned int pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	if (pos < s->start)
+		s->start = pos;
+	else 
+		s->end = pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+
