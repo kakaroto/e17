@@ -1,6 +1,42 @@
 #ifndef __RGBADRAW
 #define __RGBADRAW 1
 
+typedef struct _imlib_point    ImlibPoint;
+
+struct _imlib_point
+{  
+   int x,y;
+};
+
+typedef struct _imlib_rectangle    Imlib_Rectangle;
+
+struct _imlib_rectangle
+{
+   int x,y,w,h;
+};
+
+
+enum __imlib_polytype
+{
+   P_OPEN,
+   P_CLOSED,
+   P_FILLED
+};
+
+typedef struct _imlib_polygon _ImlibPoly;
+typedef _ImlibPoly * ImlibPoly;
+
+struct _imlib_polygon
+{
+   unsigned char closed, filled;
+   ImlibPoint *points;
+   int pointcount;
+   DATA8 r,g,b,a;
+};
+
+void __imlib_polygon_free(ImlibPoly poly);
+void __imlib_polygon_add_point(ImlibPoly poly, int x, int y);
+ImlibPoly __imlib_polygon_new(int type);
 
 typedef unsigned int ImlibOutCode;
 enum

@@ -1626,3 +1626,43 @@ __imlib_comp_outcode(double x, double y, double xmin, double xmax, double ymin,
       code |= LEFT;
    return code;
 }
+
+ImlibPoly __imlib_polygon_new(int type)
+{
+   ImlibPoly poly;
+   poly = malloc(sizeof(_ImlibPoly));
+   if(!poly)
+      return NULL;
+   memset(poly, 0, sizeof(_ImlibPoly));
+   switch(type)
+   {
+     case P_OPEN:
+        break;
+     case P_CLOSED:
+        poly->closed = 1;
+        break;
+     case P_FILLED:
+        poly->filled = 1;
+        break;
+     default:
+        break;
+   }
+   return poly;
+}
+
+void __imlib_polygon_add_point(ImlibPoly poly, int x, int y)
+{
+   poly->pointcount++;
+   if(!poly->points)
+      poly->points = malloc(sizeof(ImlibPoint));
+   else
+      poly->points = realloc(poly->points, (poly->pointcount * sizeof(ImlibPoint)));
+   poly->points[poly->pointcount - 1].x = x;
+   poly->points[poly->pointcount - 1].y = y;
+}
+
+void __imlib_polygon_free(ImlibPoly poly)
+{
+   free(poly->points);
+   free(poly);
+}

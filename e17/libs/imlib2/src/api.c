@@ -86,8 +86,26 @@ static Imlib_Progress_Function ctxt_progress_func = NULL;
 static char         ctxt_progress_granularity = 0;
 static char         ctxt_dither_mask = 0;
 static Imlib_Filter ctxt_filter = NULL;
+static Imlib_Rectangle ctxt_cliprect = {0,0,0,0};
 
 /* context setting/getting functions */
+
+void imlib_context_set_cliprect(int x, int y, int w, int h)
+{
+   ctxt_cliprect.x = x;
+   ctxt_cliprect.y = y;
+   ctxt_cliprect.w = w;
+   ctxt_cliprect.h = h;
+}
+
+void imlib_context_get_cliprect(int *x, int *y, int *w, int *h)
+{
+   *x = ctxt_cliprect.x;
+   *y = ctxt_cliprect.y;
+   *w = ctxt_cliprect.w;
+   *h = ctxt_cliprect.h;
+}
+
 void
 imlib_context_set_display(Display * display)
 {
@@ -2032,39 +2050,29 @@ Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2,
       return NULL;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
+   if(ctxt_cliprect.w)
+   {
+   return (Imlib_Updates) __imlib_draw_line_clipped(im, x1, y1, x2, y2,
+      ctxt_cliprect.x,
+      ctxt_cliprect.x + ctxt_cliprect.w,
+      ctxt_cliprect.y,
+      ctxt_cliprect.y + ctxt_cliprect.h,
+      (DATA8) ctxt_color.red,
+      (DATA8) ctxt_color.green,
+      (DATA8) ctxt_color.blue,
+      (DATA8) ctxt_color.alpha,
+      ctxt_operation,
+      (char)make_updates);   
+   }
+   else
+   {
    return (Imlib_Updates) __imlib_draw_line(im, x1, y1, x2, y2,
                                             (DATA8) ctxt_color.red,
                                             (DATA8) ctxt_color.green,
                                             (DATA8) ctxt_color.blue,
                                             (DATA8) ctxt_color.alpha,
                                             ctxt_operation, (char)make_updates);
-}
-
-Imlib_Updates imlib_image_draw_line_clipped(int x1, int y1, int x2, int y2,
-                                            int clip_xmin, int clip_xmax,
-                                            int clip_ymin, int clip_ymax,
-                                            char make_updates)
-{
-   ImlibImage         *im;
-
-   CHECK_PARAM_POINTER_RETURN("imlib_image_draw_line_clipped", "image",
-                              ctxt_image, NULL);
-   CAST_IMAGE(im, ctxt_image);
-   if ((!(im->data)) && (im->loader) && (im->loader->load))
-      im->loader->load(im, NULL, 0, 1);
-   if (!(im->data))
-      return NULL;
-   __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
-   return (Imlib_Updates) __imlib_draw_line_clipped(im, x1, y1, x2, y2,
-                                                    clip_xmin, clip_xmax,
-                                                    clip_ymin, clip_ymax,
-                                                    (DATA8) ctxt_color.red,
-                                                    (DATA8) ctxt_color.green,
-                                                    (DATA8) ctxt_color.blue,
-                                                    (DATA8) ctxt_color.alpha,
-                                                    ctxt_operation,
-                                                    (char)make_updates);
+   }
 }
 
 void
@@ -2080,29 +2088,22 @@ imlib_image_draw_rectangle(int x, int y, int width, int height)
       return;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   __imlib_draw_box(im, x, y, width, height, ctxt_color.red, ctxt_color.green,
-                    ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
-}
-
-void
-imlib_image_draw_rectangle_clipped(int x, int y, int width, int height,
-                                   int clip_xmin, int clip_xmax, int clip_ymin,
-                                   int clip_ymax)
-{
-   ImlibImage         *im;
-
-   CHECK_PARAM_POINTER("imlib_image_draw_rectangle", "image", ctxt_image);
-   CAST_IMAGE(im, ctxt_image);
-   if ((!(im->data)) && (im->loader) && (im->loader->load))
-      im->loader->load(im, NULL, 0, 1);
-   if (!(im->data))
-      return;
-   __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
-   __imlib_draw_box_clipped(im, x, y, width, height, clip_xmin, clip_xmax,
-                            clip_ymin, clip_ymax, ctxt_color.red,
+   if(ctxt_cliprect.w)
+   {
+      __imlib_draw_box_clipped(im, x, y, width, height,
+                            ctxt_cliprect.x,
+                            ctxt_cliprect.x + ctxt_cliprect.w,
+                            ctxt_cliprect.y,
+                            ctxt_cliprect.y + ctxt_cliprect.h,
+                            ctxt_color.red,
                             ctxt_color.green, ctxt_color.blue, ctxt_color.alpha,
                             ctxt_operation);
+   }
+   else
+   {
+   __imlib_draw_box(im, x, y, width, height, ctxt_color.red, ctxt_color.green,
+      ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
+   }
 }
 
 void
@@ -2701,3 +2702,21 @@ imlib_apply_filter(char *script, ...)
    __imlib_script_parse(im, script, param_list);
    va_end(param_list);
 }
+
+ImlibPolygon imlib_polygon_new(int type)
+{
+  return (ImlibPolygon)__imlib_polygon_new(type);
+}
+
+void imlib_polygon_add_point(ImlibPolygon poly, int x, int y)
+{
+  CHECK_PARAM_POINTER("imlib_polygon_add_point", "polygon", poly);
+  __imlib_polygon_add_point(poly, x, y);
+}
+
+void imlib_polygon_free(ImlibPolygon poly)
+{
+  CHECK_PARAM_POINTER("imlib_polygon_free", "polygon", poly);
+  __imlib_polygon_free(poly);
+}
+

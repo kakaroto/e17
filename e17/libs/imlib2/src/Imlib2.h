@@ -17,7 +17,14 @@ typedef void * Imlib_Color_Range;
 typedef void * Imlib_Filter;
 typedef struct _imlib_border Imlib_Border;
 typedef struct _imlib_color Imlib_Color;
-typedef struct _imlib_rectangle Imlib_Rectangle;
+typedef void * ImlibPolygon;
+
+enum _imlib_polytype
+{
+   POLY_OPEN,
+   POLY_CLOSED,
+   POLY_FILLED
+};
 
 enum _imlib_operation
 {
@@ -69,11 +76,6 @@ struct _imlib_color
    int alpha, red, green, blue;
 };
 
-struct _imlib_rectangle
-{
-   int x, y, width, height;
-};
-
 typedef int (*Imlib_Progress_Function)(Imlib_Image im, char percent,
 					int update_x, int update_y,
 					int update_w, int update_h);
@@ -102,6 +104,7 @@ void imlib_context_set_color_range(Imlib_Color_Range color_range);
 void imlib_context_set_progress_function(Imlib_Progress_Function progress_function);
 void imlib_context_set_progress_granularity(char progress_granularity);
 void imlib_context_set_image(Imlib_Image image);
+void imlib_context_set_cliprect(int x, int y, int w, int h);
 
 Display *imlib_context_get_display(void);
 void imlib_context_set_visual(Visual *visual);
@@ -124,6 +127,7 @@ Imlib_Color_Range imlib_context_get_color_range(void);
 Imlib_Progress_Function imlib_context_get_progress_function(void);
 char imlib_context_get_progress_granularity(void);
 Imlib_Image imlib_context_get_image(void);
+void imlib_context_get_cliprect(int *x, int *y, int *w, int *h);
 
 int     imlib_get_cache_size(void);
 void    imlib_set_cache_size(int bytes);
@@ -233,19 +237,17 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
                   int ymax, int *clip_x0, int *clip_y0, int *clip_x1,
                   int *clip_y1);
 Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates);
-/* draw line clipped into rectangle - results in no draw if line is not inside
- * rectangle */
-Imlib_Updates imlib_image_draw_line_clipped(int x1, int y1, int x2, int y2, int clip_xmin, int clip_xmax, int clip_ymin, int clip_ymax, char make_updates);
 void imlib_image_draw_rectangle(int x, int y, int width, int height);
-void
-imlib_image_draw_rectangle_clipped(int x, int y, int width, int height,
-                                   int clip_xmin, int clip_xmax, int clip_ymin,
-                                   int clip_ymax);
 void imlib_image_fill_rectangle(int x, int y, int width, int height);
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y);
 void imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source, int x, int y, int width, int height, int destination_x, int destination_y);
 void imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x, int delta_y);
 void imlib_image_copy_rect(int x, int y, int width, int height, int new_x,int new_y);
+
+/* polygons */
+ImlibPolygon imlib_polygon_new(int type);
+void imlib_polygon_free(ImlibPolygon poly);
+void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);
 
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(void);
