@@ -20,6 +20,7 @@ package-based system, be sure to install the devel packages):
 - Edb (>= 1.0.3)
 - Ecore (>= 1.0.0pre4). You must have Ecore_Evas support.
 - Edje
+- Esmart
 - PAM (optional)
 
 Then, type:
@@ -35,9 +36,9 @@ Entrance also works well with initscripts, so you can modify
 /etc/X11/prefdm or /etc/init.d/dm to launch entranced. A startup script 
 (etc/init.d/entrance) is also installed for your convenience. For those 
 who would like to see what Entrance looks like before using it to start 
-sessions, you may edit src/client/entrance.h and specify #define X_TESTING 1
-(instead of 0). This will cause Entrance to launch in a 640x480 window,
-and xterm will be executed instead of the selected session.
+sessions, run "entrance --test". This will launch entrance in a window
+(800x600 by default), and xterm will be executed instead of the selected 
+session. For more information type entrance --help.
 
 WARNING: Do not attempt to launch entranced from an existing X session. It
 will cause all sorts of havoc and may even blow a hole in the back of your
