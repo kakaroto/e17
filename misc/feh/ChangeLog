@@ -1,3 +1,11 @@
+Sat Mar 11 23:35:20 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Added proper commandline option parsing courtesy of getopt_long
+	:) Obviously not everyone has this, so I include it myself. Now
+	you can combine args in nice ways: "feh -kR20 http://some.webcam"
+	* It passes "make test" okay, but I reserve the right to have
+	broken something =) Let me know?
+
 Sat Mar 11 01:34:36 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* 0.6.4 released

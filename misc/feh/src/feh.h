@@ -38,6 +38,7 @@
 #include <sys/wait.h>
 #include <Imlib2.h>
 #include "utils.h"
+#include "getopt.h"
 
 #if 0
 #define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \

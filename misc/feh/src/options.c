@@ -25,7 +25,42 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  int i;
+  static char stropts[] = "a:AbBcD:f:FhHikmo:O:PrR:stTvVwWxy:z:";
+  static struct option lopts[] = {
+    /* actions and macros */
+    {"help", 0, 0, 'h'},
+    {"version", 0, 0, 'v'},
+    {"booth", 0, 0, 'B'},
+    /* toggles */
+    {"montage", 0, 0, 'm'},
+    {"index", 0, 0, 'i'},
+    {"thumbs", 0, 0, 't'},
+    {"verbose", 0, 0, 'V'},
+    {"borderless", 0, 0, 'x'},
+    {"keep-http", 0, 0, 'k'},
+    {"stretch", 0, 0, 's'},
+    {"multiwindow", 0, 0, 'w'},
+    {"recursive", 0, 0, 'r'},
+    {"randomize", 0, 0, 'c'},
+    {"full-screen", 0, 0, 'F'},
+    {"noprogressive", 0, 0, 'P'},
+    {"ignoreaspect", 0, 0, 'A'},
+    /* options with values */
+    {"output", 1, 0, 'o'},
+    {"output-only", 1, 0, 'O'},
+    {"font", 1, 0, 'f'},
+    {"title-font", 1, 0, 'T'},
+    {"bg", 1, 0, 'b'},
+    {"limit-width", 1, 0, 'W'},
+    {"limit-height", 1, 0, 'H'},
+    {"thumb-width", 1, 0, 'y'},
+    {"thumb-height", 1, 0, 'z'},
+    {"slideshow-delay", 1, 0, 'D'},
+    {"reload", 1, 0, 'R'},
+    {"alpha", 1, 0, 'a'},
+    {0, 0, 0, 0}
+  };
+  int optch = 0, cmdx = 0;
 
   D (("In init_parse_options\n"));
 
@@ -38,125 +73,125 @@ init_parse_options (int argc, char **argv)
   opt.display = 1;
   opt.aspect = 1;
   opt.progressive = 1;
-
   opt.thumb_w = 60;
   opt.thumb_h = 60;
 
-  for (i = 1; i < argc; i++)
+  /* Now to pass some optionarinos */
+  while ((optch = getopt_long (argc, argv, stropts, lopts, &cmdx)) != EOF)
     {
-      if ((!strcmp (argv[i], "--help")) || (!strcmp (argv[i], "-h")))
-	show_usage ();
-      else if ((!strcmp (argv[i], "--version")) || (!strcmp (argv[i], "-v")))
-	show_version ();
-      else if ((!strcmp (argv[i], "--montage")) || (!strcmp (argv[i], "-m")))
-	opt.montage = 1;
-      else if ((!strcmp (argv[i], "--index")) || (!strcmp (argv[i], "-i")))
-	opt.index = 1;
-      else if ((!strcmp (argv[i], "--thumbs")) || (!strcmp (argv[i], "-t")))
-	opt.thumbs = 1;
-      else if ((!strcmp (argv[i], "--verbose")) || (!strcmp (argv[i], "-V")))
-	opt.verbose = 1;
-      else if ((!strcmp (argv[i], "--borderless"))
-	       || (!strcmp (argv[i], "-b")))
-	opt.borderless = 1;
-      else if ((!strcmp (argv[i], "--keep-http"))
-	       || (!strcmp (argv[i], "-k")))
-	opt.keep_http = 1;
-      else if ((!strcmp (argv[i], "--stretch")) || (!strcmp (argv[i], "-s")))
-	opt.stretch = 1;
-      else if ((!strcmp (argv[i], "--noprogressive"))
-	       || (!strcmp (argv[i], "-P")))
-	opt.progressive = 0;
-      else if ((!strcmp (argv[i], "--ignoreaspect"))
-	       || (!strcmp (argv[i], "-A")))
-	opt.aspect = 0;
-      else if ((!strcmp (argv[i], "--multiwindow"))
-	       || (!strcmp (argv[i], "-w")))
+      switch (optch)
 	{
-	  opt.slideshow = 0;
+	case 0:
+	  printf ("FIXME: Long option without short version\n");
+	  break;
+	case 'h':
+	  show_usage ();
+	  break;
+	case 'v':
+	  show_version ();
+	  break;
+	case 'm':
+	  opt.montage = 1;
+	  break;
+	case 'i':
+	  opt.index = 1;
+	  break;
+	case 't':
+	  opt.thumbs = 1;
+	  break;
+	case 'V':
+	  opt.verbose = 1;
+	  break;
+	case 'x':
+	  opt.borderless = 1;
+	  break;
+	case 'k':
+	  opt.keep_http = 1;
+	  break;
+	case 's':
+	  opt.stretch = 1;
+	  break;
+	case 'w':
 	  opt.multiwindow = 1;
-	}
-      else if ((!strcmp (argv[i], "--recursive"))
-	       || (!strcmp (argv[i], "-r")))
-	opt.recursive = 1;
-      else if ((!strcmp (argv[i], "-o")) && (argc - i > 1))
-	{
-	  opt.output = 1;
-	  opt.output_file = argv[++i];
-	}
-      else if ((!strcmp (argv[i], "-O")) && (argc - i > 1))
-	{
-	  opt.output = 1;
-	  opt.output_file = argv[++i];
-	  opt.display = 0;
-	}
-      else if ((!strcmp (argv[i], "-f")) && (argc - i > 1))
-	{
-	  opt.font = argv[++i];
-	}
-      else if ((!strcmp (argv[i], "--title-font")) && (argc - i > 1))
-	{
-	  opt.title_font = argv[++i];
-	}
-      else if ((!strcmp (argv[i], "--bg")) && (argc - i > 1))
-	{
-	  opt.bg = 1;
-	  opt.bg_file = argv[++i];
-	}
-      else if ((!strcmp (argv[i], "--limit-width")) && (argc - i > 1))
-	{
-	  opt.limit_w = atoi (argv[++i]);
-	}
-      else if ((!strcmp (argv[i], "--limit-height")) && (argc - i > 1))
-	{
-	  opt.limit_h = atoi (argv[++i]);
-	}
-      else if ((!strcmp (argv[i], "--thumb-width")) && (argc - i > 1))
-	{
-	  opt.thumb_w = atoi (argv[++i]);
-	}
-      else if ((!strcmp (argv[i], "--thumb-height")) && (argc - i > 1))
-	{
-	  opt.thumb_h = atoi (argv[++i]);
-	}
-      else
-	if (
-	    ((!strcmp (argv[i], "--slideshow-delay"))
-	     || (!strcmp (argv[i], "-D"))) && (argc - i > 1))
-	{
-	  opt.slideshow_delay = atoi (argv[++i]);
-	}
-      else
-	if (
-	    ((!strcmp (argv[i], "--reload"))
-	     || (!strcmp (argv[i], "-R"))) && (argc - i > 1))
-	{
-	  opt.reload = atoi (argv[++i]);
-	}
-      else if ((!strcmp (argv[i], "--alpha")) && (argc - i > 1))
-	{
-	  opt.alpha = 1;
-	  opt.alpha_level = atoi (argv[++i]);
-	}
-      else if (!strcmp (argv[i], "--randomize"))
-	opt.randomize = 1;
-      else if ((!strcmp (argv[i], "--full-screen"))
-	       || (!strcmp (argv[i], "-F")))
-	opt.full_screen = 1;
-      else if (!strcmp (argv[i], "--booth"))
-	{
+	  break;
+	case 'r':
+	  opt.recursive = 1;
+	  break;
+	case 'c':
+	  opt.randomize = 1;
+	  break;
+	case 'F':
+	  opt.full_screen = 1;
+	  break;
+	case 'P':
+	  opt.progressive = 0;
+	  break;
+	case 'A':
+	  opt.aspect = 0;
+	  break;
+	case 'B':
 	  opt.full_screen = 1;
 	  opt.slideshow_delay = 20;
+	  break;
+	case 'o':
+	  opt.output = 1;
+	  opt.output_file = optarg;
+	  break;
+	case 'O':
+	  opt.output = 1;
+	  opt.output_file = optarg;
+	  opt.display = 0;
+	  break;
+	case 'f':
+	  opt.font = optarg;
+	  break;
+	case 'T':
+	  opt.title_font = optarg;
+	  break;
+	case 'b':
+	  opt.bg = 1;
+	  opt.bg_file = optarg;
+	  break;
+	case 'W':
+	  opt.limit_w = atoi (optarg);
+	  break;
+	case 'H':
+	  opt.limit_h = atoi (optarg);
+	  break;
+	case 'y':
+	  opt.thumb_w = atoi (optarg);
+	  break;
+	case 'z':
+	  opt.thumb_h = atoi (optarg);
+	  break;
+	case 'D':
+	  opt.slideshow_delay = atoi (optarg);
+	  break;
+	case 'R':
+	  opt.reload = atoi (optarg);
+	  break;
+	case 'a':
+	  opt.alpha = 1;
+	  opt.alpha_level = atoi (optarg);
+	  break;
+	default:
+	  printf ("FIXME! Default case reached\n");
+	  break;
 	}
-      else
+    }
+
+  /* Now the leftovers, which must be files */
+  if (optind < argc)
+    {
+      while (optind < argc)
 	{
 	  /* If recursive is NOT set, but the only argument is a
 	   * directory name, we grab all the files in there, but not
 	   * subdirs */
-	  add_file_to_filelist_recursively (argv[i], FILELIST_FIRST);
+	  add_file_to_filelist_recursively (argv[optind++], FILELIST_FIRST);
 	}
     }
-  if (filelist_length (filelist) == 0)
+  else
     show_mini_usage ();
 
   if (opt.randomize)
@@ -227,13 +262,13 @@ show_usage (void)
 	   "  -V, --verbose             output useful information, progress bars, etc\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
-	   "      --randomize           When viewing multiple files in a slideshow,\n"
+	   "  -c, --randomize           When viewing multiple files in a slideshow,\n"
 	   "                            randomise the file list before displaying\n"
 	   "  -F, --full-screen         Make the window fullscreen\n"
 	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
 	   "                            instead of opening multiple files in slideshow\n"
 	   "                            mode, multiple windows will be opened.\n"
-	   "  -b, --borderless          Create borderless windows\n"
+	   "  -x, --borderless          Create borderless windows\n"
 	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
 	   "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
 	   "                            between automatically changing slides.\n"
@@ -256,7 +291,7 @@ show_usage (void)
 	   "                            defined information beneath each thumbnail. Index\n"
 	   "                            mode enables certain other options, see INDEX MODE\n"
 	   "                            OPTIONS\n"
-	   "      --booth               Combines some options suitable for a nice\n"
+	   "  -B, --booth               Combines some options suitable for a nice\n"
 	   "                            booth display mode. A fullscreen slideshow\n"
 	   "                            with a slide change every 20 seconds...\n"
 	   " MONTAGE MODE OPTIONS\n"
@@ -271,18 +306,18 @@ show_usage (void)
 	   "                            option is set, the image will be scaled up to fit\n"
 	   "                            the thumnail size. (Aspect ratio will be maintained\n"
 	   "                            unless --ignoreaspect is specified)\n"
-	   "      --thumb-width NUM     Set thumbnail width in pixels\n"
-	   "      --thumb-height NUM    Set thumbnail height in pixels\n"
+	   "  -y, --thumb-width NUM     Set thumbnail width in pixels\n"
+	   "  -z, --thumb-height NUM    Set thumbnail height in pixels\n"
 	   "                            Thumbnails default to 20x20 pixels\n"
-	   "      --limit-width NUM     Limit the width of the montage in pixels\n"
-	   "      --limit-height NUM    Limit the height of the montage in pixels\n"
+	   "  -W, --limit-width NUM     Limit the width of the montage in pixels\n"
+	   "  -H, --limit-height NUM    Limit the height of the montage in pixels\n"
 	   "                            These options can be used together (to define the\n"
 	   "                            image size exactly), or separately. If only one is\n"
 	   "                            specified, theother is calculated from the number\n"
 	   "                            of files specified and the size of the thumbnails.\n"
 	   "                            The default is to limit width to 800 pixels and\n"
 	   "                            calculate the height\n"
-	   "      --bg FILE             Use FILE as a background for your montage. With\n"
+	   "  -b, --bg FILE             Use FILE as a background for your montage. With\n"
 	   "                            this option specified, the size of the montage will\n"
 	   "                            default to the size of FILE if no size restrictions\n"
 	   "                            are specified.\n"
@@ -293,7 +328,7 @@ show_usage (void)
 	   "  -f FONT                   Use FONT to print the information under each\n"
 	   "                            thumbnail. FONT should be defined in the form\n"
 	   "                            fontname/size(points). eg -f myfont/12\n"
-	   "     --title-font FONT      Use FONT to print a title on the index, if no\n"
+	   "  -T,--title-font FONT      Use FONT to print a title on the index, if no\n"
 	   "                            font is specified, a title will not be printed\n"
 	   " SLIDESHOW KEYS\n"
 	   " The default mode for viewing mulitple images is Slideshow mode\n"
