@@ -131,7 +131,8 @@ void open_icon_chooser (GtkWidget *treeview_menu)
       model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
       select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_menu));
 
-      if (gtk_tree_selection_get_selected (select, &model, &iter))
+      if (gtk_tree_selection_get_selected (select, &model, &iter) 
+	&& filename != NULL)
       {
         const gchar *entry_select;
         gint width, height;
@@ -253,10 +254,6 @@ void open_icon_chooser (GtkWidget *treeview_menu)
     /* delete current icon */
   case GTK_RESPONSE_REJECT:
     {
-      gchar *filename;
-
-      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (filechooser));
-
       model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
       select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_menu));
 
@@ -277,8 +274,6 @@ void open_icon_chooser (GtkWidget *treeview_menu)
                             -1);
 
       }
-
-      g_free (filename);
       break;
     }
   }
