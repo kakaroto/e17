@@ -1,3 +1,4763 @@
+Sun Mar 14 17:26:01 EST 1999
+(Mandrake)
+
+Beginning work on 0.16 - new ChangeLog, too.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 15 19:16:45 EST 1999
+(Mandrake)
+
+fixed crashing bug.  non-input windows being selected as the selected window no
+longer should crash everything
+
+-------------------------------------------------------------------------------
+
+Mon Mar 15 20:55:34 EST 1999
+(Mandrake)
+
+fixing things to say 0.15.3...  blah.  damned bugs :)
+
+-------------------------------------------------------------------------------
+
+Wed Mar 17 02:42:04 EST 1999
+(Mandrake)
+
+ARGH.  bug bug bug.  some code got commented out that shouldn't have been
+commented out last night in draw.c.  uncommented and committing.
+(messes up shaped/borderless window resizes)
+increased revision number to 0.15.4.  hope to release some time tomorrow.
+maybe I'll tackle some other bugs before then.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 17 14:52:24 EST 1999
+(Mandrake)
+
+Fixed a bug in translucent move mode in draw.c
+
+-------------------------------------------------------------------------------
+
+Thu Mar 18 02:38:18 EST 1999
+(Mandrake)
+
+Added network.c and update.c - VERY rough skeleton code.  user-optional
+automatic code updates and update testing
+
+-------------------------------------------------------------------------------
+
+Sat Mar 20 13:21:14 EST 1999
+(Mandrake)
+
+added button_show IPC command
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 02:52:04 EST 1999
+(Mandrake)
+
+a little bit of work on the auto-update stuff.  I still have a long way to go
+here, but I thought that I would go ahead and start putting in a little bit of
+logic here and there for the upgrade paths.  still no actual http support.
+debating on whether or not to use ghttp (since it doesn't require any of gnome
+I'm thinking about it)
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 03:53:51 EST 1999
+(Mandrake)
+
+Cleaned up epp a little more.  still LOTS of work there.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 20:46:46 EST 1999
+(Mandrake)
+
+cleaned up auto-upgrade to where it won't compile if you don't have libghttp.
+
+-------------------------------------------------------------------------------
+
+Thu Mar 25 14:36:47 CST 1999
+(KainX)
+
+Fixed a bug with reverting focus to desktop zero.  If you went from desktop 0
+to desktop 2 to desktop 6, then back to desktop 0, a window on desktop 2 would
+remain focused.  Not any more. =)
+
+Also added code to revert to the default colormap when leaving a window or a
+desktop.  Most users won't notice this.  But you definitely will see a
+difference if you use Netscape with the "-install" option. :-)
+
+Commented out the debugging output for select() since it was confusing the hell
+out of lots of users.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 09:27:54 EST 1999
+(Raster)
+
+Well - back from CEBIT... and now to the goodies...
+
+* added pager that does snapshots - and continuous snapshot updating... works 
+beautifully with almost no cpu use on a local machine - it'll probably kill 
+your network if you run it over a network... :( But it does everything
+except allowe you to drag and drop windows around (at the moment) - that will
+be added.
+
+* added mode.show_pagers option that is internal for now...
+
+* added flatfile menu loading - sorry - no examples yet - but it works and
+automagically updates the menu if the file changes. It makes constructing menus
+childs play - I mean REALLY childs play.
+
+* fixed countless minor buglets.
+
+* added area sliding (if desktop sliding is on areas will slide around too)
+
+* fixed manual placement so the mouse up doesnt get passed onto clients under
+the pointer then the window is placed
+
+* fixed window list off dragbar so things dont die when you try focus an ewin 
+ID that doesnt exist anymore
+
+* this brings E's code (not including fnlib, imlib etc.) up to about 60756
+lines of code.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 10:28:48 CST 1999
+(KainX)
+
+When we use the pager to make a window sticky, bring that window to the
+current desktop as one would expect to happen.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 17:30:49 EST 1999
+(Raster)
+
+* fixed numlock / scrollock keybinding / action etc. issues....
+
+-------------------------------------------------------------------------------
+
+Thu Apr  1 14:56:19 EST 1999
+(Mandrake)
+
+netowrk updates, etc
+
+-------------------------------------------------------------------------------
+
+Fri Apr  2 00:56:47 EST 1999
+(Mandrake)
+
+Lots of stuff.  ipc commands.  pager command now enables and disables the pager
+- made a couple of generic functions EnableAllPagers() and DisableAllPagers()
+to do the actual work there.  also added skeleton of the fx command.  will do
+that tonight as I watch a movie.  added move_mode and resize_mode commands
+(since everyone seems to have wanted that and I don't know how those slipped my
+mind) they're not documented well yet, but if you read ipc.c you should be able
+to guess how they work (they all work similarly to other ipc commands - I like
+the interface I'm brewing up and I'm likely to continue using it)
+
+-------------------------------------------------------------------------------
+
+Fri Apr  2 12:04:19 EST 1999
+(Mandrake)
+
+#if 0'd some stuff out for 0.15.5 release
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 17:10:08 EDT 1999
+(Mandrake)
+
+lots of IPC work.  new fx command.  also a big restructuring of the code itself
+in the ipc array (much prettier to the eye)
+also I commented a few bits of code -- it's now documented somewhat how to add
+new IPC commands in there.
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 20:04:20 EDT 1999
+(Mandrake)
+
+more IPC work.  now many win_op commands have status checks
+win_op <windowid> <operation> ?
+as well as support 
+win_op <windowid> <operation> <on/off>
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 21:32:43 EDT 1999
+(Mandrake)
+
+added more "?" commands to win_op
+very useful.
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 23:04:17 EDT 1999
+(Mandrake)
+
+CPPFLAGS problems people were having should be solved
+put the -D stuff from e/src/Makefile.am into econfig.h
+
+-------------------------------------------------------------------------------
+
+Mon Apr  5 21:30:50 EDT 1999
+(Mandrake)
+
+updated some numbers to 0.16.0 -> time to say goodbye to 0.15
+
+-------------------------------------------------------------------------------
+
+Mon Apr  5 22:59:08 EDT 1999
+(Mandrake)
+
+holy cow, commented some code.  Also split out all the initial setup of
+fallback classes into SetupFallbackClasses() in init.c -- cleans up main.c
+considerably
+
+-------------------------------------------------------------------------------
+
+Tue Apr  6 18:54:54 EDT 1999
+(Mandrake)
+
+minor bugfix care of Daniele Paoni for java applications.
+also some more comments.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 02:33:54 EDT 1999
+(Raster)
+
+again - minor fixes to manual placement, a few other little things here and 
+there scattered about.... but one major addition...
+
+you can drag windows around the pager now... and..... between pagers for 
+desktops... soi you can move windows form any area to any desktop and around
+any desktop now... and it all works nicely... :)
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 11:39:45 EDT 1999
+(Mandrake)
+
+now we autosave whether or not the pager was on.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 15:14:19 EDT 1999
+(Mandrake)
+
+added the very useful internal_list IPC command.
+see help for details.
+
+also added a samplescripts directory with my first sample script, 
+testroller.pl
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 16:50:22 EDT 1999
+(Mandrake)
+
+fleshed out the --help / -h cmdline parameter to eesh a little.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 17:55:20 EDT 1999
+(Mandrake)
+
+added advanced_focus IPC command.  see IPC help for more information
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 00:07:46 EDT 1999
+(Mandrake)
+
+added set_focus IPC command.
+also added "focus" to win_op command
+added dialog_ok IPC command.
+see ipc help for more details
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 12:36:56 EDT 1999
+(Mandrake)
+
+added list_class IPC command
+see ipc help for more details
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 13:36:12 EDT 1999
+(Mandrake)
+
+added play_sound IPC command.
+started work on soundclass IPC command (not finished)
+added -v/--version commandline parameter
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 14:14:54 EDT 1999
+(Mandrake)
+
+added general_info IPC command.  just has screen_size in it now, but I
+am sure tehre will be more going in later
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 17:16:27 EDT 1999
+(Mandrake)
+
+fleshed out soundclass ipc
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 00:26:09 EDT 1999
+(Mandrake)
+
+GetNetText() actually does something now.  also fixed Makefile.am
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 00:44:50 EDT 1999
+(Mandrake)
+
+mostly-functional GetNetFileDate() now.  also cleaned up update.c (doesn't
+give warnings anymore)
+also the bulk of the work in SaveNetFile()
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 10:53:00 EDT 1999
+(Mandrake)
+
+Somehow network.c got messed up inbetween compile and commit.
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 11:50:45 EDT 1999
+(Mandrake)
+
+minor bugfix in ipc.c
+
+-------------------------------------------------------------------------------
+
+Sun Apr 11 23:15:27 EDT 1999
+(Mandrake)
+
+merged pager stuff into uni-pager command.
+
+-------------------------------------------------------------------------------
+
+Tue Apr 20 17:48:12 EDT 1999
+(Raster)
+
+Again - I've been lazy with the changelog... but I have done a buttload...
+lets summarise...
+
+* added slider widget and event handleing
+* added drawing area widget and event handleing 
+* added sliders to all dialog settings boxes that need them
+* added start of a background editor dialog
+* added multiple desktop editor
+* fixed soem menu bugs
+* fixed memory leaks
+* fixed "app resizes whilst being moved" bug
+* fixed tables instie tables so they work
+* optimised backgorudns menu a bit better for file searching
+* got rid of redundant sound code that esd now does
+* fixed minor bug in WAV loading code
+* added elements to brushed metal theme to supply data for new widgets & 
+  features
+* fixed 1 or 2 little pager bugs
+* fixed possible segfault in text shortening code
+* fixed internationalisation problem in saving and reading floats
+* did lots of other fixes and adds I've forgotten about
+
+-------------------------------------------------------------------------------
+
+Fri Apr 23 12:38:30 EDT 1999
+(Raster)
+
+* added desktop background selector AND editor settings dialog - all gui - all
+  works. You can't select files to use as backgrounds yet - need file selector
+  dialog for that (probably next on my list) BUT if you have E generate 
+  background defs from ~/.enlightenmen/backgrounds (which should be a symlink
+  to wherever you store your images, or just fill that directory with images
+  and sibdirectories and images - E will auto-index them into the backgrounds
+  menu). you can edit all of those and their attributes, and clone versions
+  then edit the clones, modify them, remove the images to use a solid color
+  instead - etc. all works.. :)
+
+-------------------------------------------------------------------------------
+
+Sat May 15 15:04:35 EDT 1999
+(Raster)
+
+* added pager background caching - now pager backrounds will be cached and 
+  saved to disk for faster "repainting" or initial painting. This should
+  work now.
+
+* session saving no longer saves "-theme" optin ofr command line - the
+  ~/.enlightenment/user_theme.cfg takes pcare of this.
+
+* "snapshots" now use a snapshot dialog. snapshotting location also snaps
+  desktop area as well (since a desktop is one virtually large desktop).
+  It can also snap the "command" and be able to start the apps up again on
+  startup if you select that option. You can also select if the snapped
+  attributes are to apply toall windows of that class and not just the first
+  instance. should be a lot nicer.
+
+* some minor pager updating bugs fixed - now if you close a window on another
+  desktop area it updates properly. the pager "hilight" zoom window should
+  now be pretty hard to make hang around - paranoia added to hide all zoom
+  window whenever there is a chance we dont want them.
+  
+* minor memory leak fixed.
+
+* brushed metal theme now has different pager border style - more of a 
+  demonstration now of the power of internal ewins that are beng used for the
+  pager border and how you can make them vehave like a slideout so you can
+  shade the pager out of the way when you dont want it.
+
+* X11R5 apps should be session managed pproperly now if E is X11R6 session
+  managed - they shoudl normally go back on the same desktop etc. - but its
+  not guaranteed - still not 100% unambiguous to determine windows of
+  unique apps.
+
+* fixed cloning bug where double cloning happens on desktop switch - sticky 
+  windows should not flicker as much now. should be faster / more efficient
+
+* fixed numerous other little buglets and made numerous other little speedups
+  and improvements.
+  
+* added new menu scrolling method patch from Christian - very nice - thanks
+  fixed one minor bug in it.
+
+* added rotated fonts patch from, Christian - thanks again.
+
+* fixed app re-focus when we go back to the previous desktop in click-to-focus
+
+* fixed potential pixmap leak
+
+* suggest using Imlib from CVS - E triggered a pixmap leak - OOOPS - fixed
+
+* should have fixed "wierd focus behavior" when flipping desktops - basically
+  now the code goes throuhg ALL ewins - ALL the border parts and removes motion
+  enter leave and other miscellaneous events that may trigger E to respond to
+  these and set the focus to that window - so basically we now get E to not
+  recieve any such tiggering events whilst flipping desktops.
+
+* fixed some internal stack tracing problems where we forget to wrap some
+  returns form some functions.
+
+* added options for turing pager zoom on and off - loads ans saves it and
+  has settings check button for it.
+
+* added window title popup option and code (using tooltip as definition
+  backend - now have PAGER tooltip type to define this). loads and saves
+  this option - also has settings check button for it.
+
+* added PAGER tooltip type (and image & text classes for it) to BrushedMetal 
+  theme.
+  
+-------------------------------------------------------------------------------
+
+Fri May 14 12:40:27 IST 1999
+(Merlin)
+
+* Fixed a bug in list.c movetofront that turned lists into loops.
+
+* Updated keyboard warping to operate more sanely; especially in a cramped
+  desktop with lots of overlapping windows. At start, it makes a list of
+  the warpring; then when you release alt (currently hardwired for only
+  alt) it dumps the warpring. Added configuration option 'raise after warp'
+  if you use focus with pointer; when you release alt, the chosen window
+  is raised. Also, displays the title of the windows it is warping to so
+  you know, even if you can't see them. This is only compiled in if you
+  define WITH_TARTY_WARP; see E.h; needs XKB X extension.
+
+* Added action MOVE_CONTRAINED which is a normal window move, but the
+  window is absolutely constrained to the current view area.
+
+* Changed menu handling so if you click on a menu item, drag off it and
+  then release, the menu item is not activated. So you can undo a mistaken
+  click.
+  
+-------------------------------------------------------------------------------
+
+Tue May 25 11:43:48 PDT 1999
+(Mandrake)
+
+modules.  that's what I'm going to start working on now.
+incidentally, the xkb tests don't seem to work under accelx.
+
+-------------------------------------------------------------------------------
+
+Wed May 26 17:13:26 PDT 1999
+(Mandrake)
+
+More modules work.  Now we can load and unload modules.  they don't do much
+yet, though.
+
+-------------------------------------------------------------------------------
+
+Sat May 29 13:14:42 PDT 1999
+(Mandrake)
+
+more modules work.  the unloading should actually work correctly now (wasn't
+removing them before).
+Also, the ipc "exit" command now runs a logout (pops up a dialog box) unless
+you pass a parameter (of any kind) to it.
+people should learn to use the IPC help mechanisms.
+
+-------------------------------------------------------------------------------
+
+Sat May 29 19:08:59 PDT 1999
+(Mandrake)
+
+more IPC work.  advanced_focus and pager got some stuff added.
+check out online help for details.
+
+-------------------------------------------------------------------------------
+
+Sun May 30 14:21:39 PDT 1999
+(Mandrake)
+
+fixed restart_wm in doExit(), which has apparently been broken for ages.
+(allows you to start another window manager from inside of E)
+this will fix the menus, the ipc, etc...
+
+-------------------------------------------------------------------------------
+
+Mon May 31 00:20:06 PDT 1999
+(Mandrake)
+
+began work on ref_counts in all sorts of things.  also added ability to enable
+and disable a particular pager at runtime.  see pager IPC help for more
+details.
+
+-------------------------------------------------------------------------------
+
+Mon May 31 15:52:00 PDT 1999
+(Mandrake)
+
+borderless windows save state between restarts
+
+-------------------------------------------------------------------------------
+
+Wed Jun  2 13:33:59 PDT 1999
+(Mandrake)
+
+fixed pagers on restarts.
+sorry about that.  use "pager off" "pager on" ipc commands, should reset (after
+starting this version)
+
+-------------------------------------------------------------------------------
+
+Sun Jun  6 12:59:53 PDT 1999
+(Mandrake)
+
+some work on reference counting.  Things should start picking up now that
+at least one class does reference counting properly in one instance.
+(this is a very large problem to solve)
+
+-------------------------------------------------------------------------------
+
+Wed Jun  9 12:49:52 PDT 1999
+(Mandrake)
+
+reference counting continues.  more of the same.  lots of work to do here.
+
+-------------------------------------------------------------------------------
+
+Fri Jun 11 14:30:34 PDT 1999
+(Mandrake)
+
+more work on reference counting.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 12 19:20:10 PDT 1999
+(Mandrake)
+
+reference counting, reference counting, etc.
+oh, and some more IPC work in order to test a little more thoroughly.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 12 19:46:41 PDT 1999
+(Mandrake)
+
+flipped around some IPC commands, added a couple of new ones.
+still testing.
+
+-------------------------------------------------------------------------------
+
+Sun Jun 13 15:54:51 PDT 1999
+(Mandrake)
+
+more IPC work, more reference count work, as well as some additional
+destructors for things like borders.
+
+-------------------------------------------------------------------------------
+
+Mon Jun 14 17:39:17 PDT 1999
+(Mandrake)
+
+more IPC work, skeletoning out some stuff.  Also fixed reference counting on
+backgrounds.
+
+-------------------------------------------------------------------------------
+
+Wed Jun 16 10:39:58 PDT 1999
+(Mandrake)
+
+just when you thought reference counting madness was over, it wasn't :)
+thanks to Christian Kreibich for helping me there :)
+
+-------------------------------------------------------------------------------
+
+Fri Jun 18 14:18:58 PDT 1999
+(Mandrake)
+
+fixed a bug in cached config file loading.  thanks to 
+Peter Kjellerstedt <peter.kjellerstedt@axis.com>
+
+-------------------------------------------------------------------------------
+
+Fri Jun 18 17:51:04 PDT 1999
+(Mandrake)
+
+fixed the pager bug on restart.  also fixed the "88% load bug"
+
+-------------------------------------------------------------------------------
+
+Mon Jun 21 15:19:11 PDT 1999
+(Mandrake)
+
+added "windowlist" and "desktopwindowlist" menu types. -- same code from
+dragbar.
+
+-------------------------------------------------------------------------------
+
+Tue Jun 22 13:27:57 CDT 1999
+(KainX)
+
+This should fix the button toggling bug reported by David Joseph Goehrig
+<djg5@st-andrews.ac.uk>
+
+-------------------------------------------------------------------------------
+
+Mon Jun 28 01:54:01 PDT 1999
+(Mandrake)
+
+this should fix some config loading bugs as reported by
+Jesse Michael <jessem@revlabs.com>
+
+-------------------------------------------------------------------------------
+
+Tue Jun 29 13:13:04 PDT 1999
+(Mandrake)
+
+Merged in a patch from Christian Kreibich <kreibich@informatik.tu-muenchen.de>
+for Labeled Buttons.  Also added dereferening to the destructor for the
+additional memory he allocated, as well as removed a couple of lines of
+redundant code.  Will add to the default themes later.
+
+-------------------------------------------------------------------------------
+
+Wed Jun 30 12:22:40 PDT 1999
+(Raster)
+
+Oooops - overoptimised the event pruner... optimised out some window 
+map requests - fixed this... just got rid of the map request compressor.
+thanks shaleh for bugging us about this
+
+-------------------------------------------------------------------------------
+
+Wed Jul  7 13:55:42 PDT 1999
+(Mandrake)
+
+Fixed labeled buttons definition for Christian.  Also added the regex that he
+sent in.
+
+-------------------------------------------------------------------------------
+
+Sun Jul 11 13:07:07 PDT 1999
+(Mandrake)
+
+added "dock" IPC command.  see
+eesh -ewait "help dock" for more information
+
+-------------------------------------------------------------------------------
+
+Tue Jul 13 01:07:29 CEST 1999
+(Christian)
+
+Cleaned up eesh's help output. Also added a generic quicksort algorithm,
+see misc.c for details and IPC_Help() for an example.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 13 11:12:25 EST 1999
+(Raster)
+
+Committing work on iconbox - scrollbar, scrollarrows ec. all work - in theory
+i can re-arrange the arrows to be either end, on one of the ends or no arrows
+and arrange the scrollbar to be on the botton or top.. some code left to do
+vertical iconbox - not much though - just scrollbar arrangement code.
+
+iconify and de-iconfi works all great - only thing to watch.. dont restart
+E with iconified windows.. you'll lose their icons right now.. need to fix
+that.
+
+next need to ad non snapshotted icon support (several stages - use E defined 
+icons only, use E definied icons only if defined, otherwise use snapshotted
+icons, use app defined icons only if defined otherwise use snapshots, 
+use E defined icons if defined, otherwise use app defined icon if defined,
+if not defined use snapshot.. not ot mention the introduction of default
+E defined icons for all unknown windows - then the actual icon def list itself
+and the config system for that etc... then need to support multiple iconboxes
+and dnd form pager to iconbox and back... and between iconboxes... then 
+definable iconification into certain iconboxes - and also need to support
+transparent backgrouns for iconbox - thus simulating the old icons floating 
+about thing... but its all coming...
+
+-------------------------------------------------------------------------------
+
+Fri Jul 16 03:31:40 EST 1999
+(Raster)
+
+Iconbox now handles ghe horizontal, the vertical, all scrollbar optiond - even
+has a settings dialog box (right muse on iconbox). it can even be transparent.
+
+I also optimised property change event handling - e should be much much much
+more eficient at it avoiding lots of unecessary X traffic.
+
+Changed gthe box draw mode to move the inner box 1 pixel in so on borderless
+window you can see the border when moving & resizing.
+
+added icon creation policy code.
+
+in the middle of ading icon list code /9that determines what icon image is
+to be used for what apps and is user definable)
+
+play with the iconbox - it shouldnt be too bad. :)
+
+-------------------------------------------------------------------------------
+
+Fri Jul 16 02:04:42 CEST 1999
+(Christian)
+
+Replaced about.png so that it matches the look of the website logo.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 16 15:54:44 PDT 1999
+(Mandrake)
+
+KDE hints start.  rev 1 didn't actually work, so we started over
+
+-------------------------------------------------------------------------------
+
+Mon Jul 19 23:03:11 EST 1999
+(Raster)
+
+* fixed minor shape propagation bug
+* improved dialog code by adding bindable callback keyboard shortcuts
+* improved backgroudns dialog... I just got an influx of about 4000 new pix,
+  and it did get a bit tedious as i have to filter the backgrounds to only
+  keep the good ones... now the backgrounds dialog can becme almost an image
+  viewer that lets me filter my background colletcion... not to mention some
+  keyboard shorts work now (like left/right arrow, d, delete, space and
+  backspace)
+* iconbox now starts up when E starts - still doesnt remember settings but
+  iconifed windows on start / restart get handled now, and added some 
+  imageclasses for the iconbox widget parts - still need more bits put in
+  though like a scrollbar knob imageclass and a iconbox frame imageclass
+  
+-------------------------------------------------------------------------------
+
+Tue Jul 20 02:34:29 EST 1999
+(Raster)
+
+* added iconbox coverwin support and imageclass - if the iclass is there the
+cover win is displayed... also updated brushed metal. again.. to include this
+stuff.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 23 11:34:11 PDT 1999
+(KainX)
+
+Added support for HP-UX 10.x modules thanks to a patch from Marty Riedling
+<m_riedling@hotmail.com>
+
+-------------------------------------------------------------------------------
+
+Mon Jul 26 14:03:39 PDT 1999
+(Troy R. Pesola)
+
+Here is a patch file that incorporates the following:
+
+-fixed actions.c to set the desktop and area when switching to another ewin.
+
+-added sound "SOUND_FOCUS_SET" to be played when the focus is set.
+
+-added win_op title to the IPC stuff.
+
+-changed keybindings to reveal deskmenu and taskmenu.
+
+-changed menus to remove -geom params on netscape calls (personal pref)
+
+I will start working on the IPC stuff that has the create/modify/delete
+functions.
+
+-------------------------------------------------------------------------------
+
+Mon Jul 26 23:31:51 CEST 1999
+(Christian)
+
+Window Groups :)
+
+E's windows can new be grouped by opening the winops menu for a
+window, and selecting 'Window Group'->'Start Group'. Windows can be added
+using 'Window Group'->'Add to group'. There's a control dialog for groups
+via 'Window Group'->'Configure group', which defines what actions are
+applied to all group members. Moving groups should work in every method
+except for translucent, which is turned into opaque.
+
+The pagers by default are a group. 
+	
+The group members can be emphasized using 'Window Group'->'Show/Hide Group',
+doing so again returns to the previous borders. Which borders are used for
+emphasizing is defined by a tag __BORDER_GROUP_NAME <bordername> for every
+border in the theme. Still needs to be added to BrushedMetal.
+
+Also corrected a typo. Or two, or three ... ;)
+
+-------------------------------------------------------------------------------
+
+Mon Jul 26 16:09:13 PDT 1999
+(Mandrake)
+
+cleaned up a little bit (especially in actions.c -- there was a spot where i
+was being used from a previous context but being reset inside of a closure - I
+HAVE to assume that was a mistake).  Also took out a couple of warnings.
+Expect a new version of kde.c when I get home, also -- time to commit
+  
+-------------------------------------------------------------------------------
+
+Tue Jul 27 23:38:36 EST 1999
+(Raster)
+
+guess what... i'm back... and the iconbox is almost 100% done... sorry no
+example icondefs.cfg files yt to demo the app window -> micon image matching...
+but i'll include that later... just trust me that it all works.
+
+the icobox now does a hell of a LOT and is very configrable and malleble. set
+the right options and it'd look and feel almost exactly like the old 
+iconification stuff except with enhancements and better behavior.
+
+at least now you can have multpile iconboxes, create and destroy them at will
+and chnage all the options int he iconbox and e will remember and save/load
+this info up again.
+
+quite nice actually... :) try it out - sorry - snapshotted windows only for
+those of you not evil enuf to read e's code to figure out thr iconfdefs.cfg
+format. :) i''ll let that cat out of the bag soon enuf.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 27 22:23:25 CEST 1999
+(Christian)
+
+Hopefully fixed a segfault in moving windows with transients.
+
+-------------------------------------------------------------------------------
+
+Wed Jul 28 08:19:27 EST 1999
+(Raster)
+
+added in owens withdrawn state patch thst fixes sojme java apps continuously 
+spinning after withdrawing windows...
+
+also fixed variable clash.. this could cause segv's - the cvs merge didnt 
+notice we now had to i variables in different contexts... :) fixed.
+
+-------------------------------------------------------------------------------
+
+Thu Jul 29 00:46:24 CEST 1999
+(Christian)
+
+Added window group shortcuts to titlebar of BrushedMetal. Also dropped
+Tigert a mail today and told him that we could use borders for grouped
+windows ... I have something here for that purpose but it's Tigert's
+theme, right?
+
+-------------------------------------------------------------------------------
+
+Wed Jul 28 18:33:09 PDT 1999
+(KainX)
+
+Added iconbox images to ShinyMetal theme (which I still use...sue me).
+
+-------------------------------------------------------------------------------
+
+Thu Jul 29 17:41:14 PDT 1999
+(Knut Neumann)
+
+this adds create/modify/delete ability to the
+background ipc command. Its using the format, Troy suggested on e-develop,
+though it might easily be changed to the "old" style system.
+
+It is using a new value type system as well, which is working the following
+way:
+
+        background TEST bg.file /home/test/test.png
+
+will create a background (resp. modifying it, if it already exists) and set
+bg.file property to the specified file.
+
+This way takes advantage over the way to provide parameters as the set_bg
+command from comms.c works as one does not have to hack in every single
+parameter. On the other side, it is a real mess, if one wants to set a whole
+bunch of options at once. I have no idea how to solve that discrepance at the
+moment. Suggestions are welcome.
+
+-------------------------------------------------------------------------------
+
+Thu Jul 29 18:33:02 PDT 1999
+(Mandrake)
+
+shut up compile.  still reading kwm.cpp - if we're going to support KDE hints,
+we're going to do them right.  this _STRING_ stuff is silly.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 30 11:10:28 PDT 1999
+(Mandrake)
+
+applied patch from Valdis Kletnieks <Valdis.Kletnieks@vt.edu> to make epp
+compile cleanly on AIX.
+
+-------------------------------------------------------------------------------
+
+Mon Aug  2 15:06:33 PDT 1999
+(Mandrake)
+
+KDE Part thirty-seven.  should start working soon
+
+-------------------------------------------------------------------------------
+
+Mon Aug  2 17:16:55 PDT 1999
+(Mandrake)
+
+more atom work.
+
+-------------------------------------------------------------------------------
+
+Thu Aug  5 00:32:51 CEST 1999
+(Christian)
+
+The tooltip icons are back. Add tooltip text to the actions in an
+action class using __TOOLTIP_ACTION_TEXT "whatever" and you get the mouse
+button and key combination visualized for free :) See BrushedMetal's
+window titlebar for an example. Theme designers can override the icon
+looks by providing imageclasses named: TOOLTIP_MOUSEBUTTON_ANY,
+TOOLTIP_MOUSEBUTTON_1, TOOLTIP_MOUSEBUTTON_2, TOOLTIP_MOUSEBUTTON_3,
+TOOLTIP_KEY_SHIFT, TOOLTIP_KEY_LOCK, TOOLTIP_KEY_CTRL, TOOLTIP_KEY_MOD1
+TOOLTIP_KEY_MOD2, TOOLTIP_KEY_MOD3, TOOLTIP_KEY_MOD4, TOOLTIP_KEY_MOD5.
+
+Have fun folks :)
+
+-------------------------------------------------------------------------------
+
+Wed Aug  4 23:08:41 PDT 1999
+(KainX)
+
+The beginnings of the imageclass apply IPC.
+
+-------------------------------------------------------------------------------
+
+Fri Aug 20 13:45:41 CEST 1999
+(Christian)
+
+Ok, quite some stuff:
+
+:) Fixed window shading: it can now really be turned on and off.
+:) Having a window shaded and switching the border to one that
+   shades to another direction works properly now.
+:) Changed the layout management of the Remember dialog a bit to avoid
+   a problem that Hall Stevenson reported to the list. Also added a nice
+   pic ;)
+:) Lots of internal changes to window groups, they're now a list type and
+   pointered in both directions: an ewin in a group has a pointer to a
+   group, the Group has a list of EWin pointers that are group members.
+:) Added dialog for picking the group a window shall belong to. See
+   'Window Group'->'Select group to add to'. Maybe the layout could be
+   nicer.
+:) Groups are remembered now. Therefore, pagers are no longer a group
+   by default, but you can make them a group and have that group be
+   remembered. See the 'Remember' dialog settings. Should work, but I tested
+   it only for a day or so.
+:) I turned that menu onscreen appearance thing into an option, since
+   I'm not too happy with it. I'm used to just left-clicking on the
+   desktop for getting an Eterm, and if I do that now and the cursor
+   happens to be near the screen edge, I get ee or whatever. I turned
+   it on by default though :)
+
+Hope you like it folks.
+
+-------------------------------------------------------------------------------
+
+Fri Aug 20 19:13:30 PDT 1999
+(Raster)
+
+Fixed some iconification bugs - a bit cleaner now - wiht snapshots and 
+everything. stil soem annoying niggly where if you are snapshotting the ewin
+and its shaded when you iconify - de-iconifying leaves the client window
+exposed but the border is still shaded - E seems to be responding to an
+events after de-iconification - mayeb - but what it is - i dunno.
+
+-------------------------------------------------------------------------------
+
+Mon Aug 23 14:06:19 PDT 1999
+(Raster)
+
+fixed group remembering, some other group stuff, iconfication stuff, alertbox 
+stuff - god - almost everything got a fix somewhere... :) 
+
+-------------------------------------------------------------------------------
+
+Mon Aug 23 16:17:33 PDT 1999
+(Raster)
+
+menus stay onscreen with menusonscreen on top and left sides now. :) also side
+ways starup screen patch in :)
+
+-------------------------------------------------------------------------------
+
+Mon Aug 30 17:04:20 PDT 1999
+(Mandrake)
+
+removed config.h
+a little more KDE stuff - have to merge with stuff at home and commit again.
+
+-------------------------------------------------------------------------------
+
+Tue Aug 31 17:31:58 PDT 1999
+(Mandrake)
+
+some more KDE stuff.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 13:48:38 PDT 1999
+(Mandrake)
+
+applied patch from Graham A. MacDonald <graham@34southpark.freeserve.co.uk>
+that fixes a groups segfault
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 14:32:11 PDT 1999
+(Mandrake)
+
+New ecvs script.  this one automatically builds a changelog for us.
+rewrote the whole thing in perl.  some things you'll notice at the top, easy
+ways for you to change what your (Mandrake) message in ChangeLog shows up as,
+as well as an easy entry point for you to add your own indent style
+(see %names and %indents hashes)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 14:40:22 PDT 1999
+(Mandrake)
+
+a couple of minor bugfixes to ecvs.  now it removes the tempfile CommitLog
+as well as remembers to display the cvs commit as it happens.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 16:09:21 PDT 1999
+(Raster)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 16:09:47 PDT 1999
+(Raster)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 16:10:02 PDT 1999
+(Raster)
+
+ok - errant use of the scritp.. this needs to be fixed.. :)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 16:34:48 PDT 1999
+(Raster)
+
+fixed movign of groups and transients with parents if movemode != opaque
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 17:04:23 PDT 1999
+(Mandrake)
+
+wrote a lot more code into ecvs.  92 lines long just to do some simple
+commit checks.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 17:07:35 PDT 1999
+(Mandrake)
+
+trying this one more time (still working on ecvs)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 17:08:51 PDT 1999
+(Mandrake)
+
+still more bugs in ecvs.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 17:12:17 PDT 1999
+(Mandrake)
+
+this is a test commit, to make sure everything works again.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 18:08:53 PDT 1999
+(Raster)
+
+fix minor problem introduced by fixing other shape bug.. :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 09:44:46 PDT 1999
+(Raster)
+
+added group menu (shit middle button on root) patch - nice :)
+fixed some buffer overflow problems in the ipc.c code that cause segfaults.
+fixed alert box form trying to run commands it cant find form rememberd states
+on startup
+fixed group null setting.
+I flimmed.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 12:53:23 PDT 1999
+(Mandrake)
+
+Added a bug to TODO list.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 13:02:53 PDT 1999
+(Raster)
+
+move bug to be off for E 17.. its minor and will get fixedf then anyway :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 13:11:08 PDT 1999
+(Mandrake)
+
+fixed ecvs to force update timestamp.h always first.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 13:22:24 PDT 1999
+(Mandrake)
+
+Changed TODO format slightly.  making an automated script to build a bugs.html
+page on enlightenment.org
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 14:24:52 PDT 1999
+(Mandrake)
+
+Added focus code rewrite into todo list
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 14:38:11 PDT 1999
+(Raster)
+
+fixed tooltip drawing bug.. 
+been updating brushed metal.. MUCH sexier now :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 15:53:53 PDT 1999
+(Raster)
+
+more updates on brushed metal.. :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 17:03:39 PDT 1999
+(Mandrake)
+
+some more KDE work.  getting closer
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 17:00:15 PDT 1999
+(Raster)
+
+and more changes to bushed metal.. pretty much done now.. and added a 
+label in settings dialogs
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 17:13:45 PDT 1999
+(Raster)
+
+added patch from duncan for mirror group properties - also added mroe padding 
+in dialog ok/etrc. buttons for theme :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep  3 15:05:50 PDT 1999
+(Raster)
+
+fixed border togglign if borderless and restarting.. also restart remembers 
+borders even if they arent snapshotted (but its onyl thru a restart)
+
+-------------------------------------------------------------------------------
+
+Fri Sep  3 15:52:54 PDT 1999
+(Raster)
+
+fix execing of apps :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep  3 16:33:31 PDT 1999
+(Raster)
+
+ok - i forgot if i edited something....
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 00:35:38 PDT 1999
+(Raster)
+
+draw queue for handling expoes on dialogs.. more efficient drawing for dialogs
+AND now no drawing bugs in non opaque move and resize modes :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 00:41:49 PDT 1999
+(Raster)
+
+update TOTO buglist.... ooh its getting short.. :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 08:19:25 PDT 1999
+(Raster)
+
+fixed makefile.am to not nuke interactive.sh
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 09:39:09 PDT 1999
+(Raster)
+
+added filename display to background selector..
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 09:50:18 PDT 1999
+(Raster)
+
+in updating brushed metal - forgot to re-add cionbox base image back...
+
+-------------------------------------------------------------------------------
+
+Sun Sep  5 12:12:15 PDT 1999
+(Raster)
+
+added an iconification animation, added some more bg's to brushed metal,
+changed pager scaning speed to be %03i instead of %i to ensure the label 
+remains the same size :)
+
+-------------------------------------------------------------------------------
+
+Sun Sep  5 20:03:56 PDT 1999
+(Raster)
+
+and dont asume an iconbox actually can be found and exists
+
+-------------------------------------------------------------------------------
+
+Mon Sep  6 20:33:51 PDT 1999
+(Raster)
+
+fixed keyebindings not working on both heads in multihead
+fixed focus changing in multihead
+group proerties are now all saved to disk and loaded again each session.
+
+gee - only bug left on list is to update all of dox,
+only feature left is dnd in iconbox.. :)
+
+now hurry up geoff and christian.. finish off :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 00:12:33 PDT 1999
+(Raster)
+
+you can now drag from the pager into the iconbox.. :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 08:50:03 PDT 1999
+(Raster)
+
+added lots of paranoia checkign around the PixImg stuff in draw.c - if creation
+fails at any point it cleans up and bails out... if creation of any piximg
+fails E drops back to opque move mode automatically.
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 08:52:58 PDT 1999
+(Raster)
+
+made the auto insertion into ~/.xession etc exec thather than just run it
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 11:26:24 PDT 1999
+(Raster)
+
+fixed "not recognising clicks when chaded" problem
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 14:36:02 PDT 1999
+(Mandrake)
+
+yet more KDE stuff.  time to make a couple of configuration flags, add in
+the stuff to the main event loop, and test test test
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 16:33:15 PDT 1999
+(Mandrake)
+
+more stuff for KDE support
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 17:03:02 PDT 1999
+(Mandrake)
+
+well, I suppose if we're going to CHECK a variable, we should SET it.
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 17:08:13 PDT 1999
+(Raster)
+
+added icons and icondefs file.. feel free to submti nice icons and addtions to
+the icondefs file for your favorite apps :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 18:33:13 PDT 1999
+(Raster)
+
+set display_warp to 0 if xkb isnt available
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 19:48:26 PDT 1999
+(KainX)
+
+Fixed some rastermanglish.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 08:40:40 PDT 1999
+(Raster)
+
+do anim AFTEr we move the window to a new spot :)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 08:58:10 PDT 1999
+(Raster)
+
+raiselower patch applied :)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 13:50:50 PDT 1999
+(Mandrake)
+
+A little more refining of kde stuff.  trying to make pager work right.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 14:21:49 PDT 1999
+(Raster)
+
+and send events with timestanps later or equal to the input focus timestamp 
+for multihead keypress event passing.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 15:47:08 PDT 1999
+(Raster)
+
+allow middle button to move desktops in pager..
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 16:26:34 PDT 1999
+(Mandrake)
+
+apparently I forgot a commit in here somewhere.  probably kde stuff
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 20:32:38 EDT 1999
+(Christian)
+
+Hey, finally. Windows can be in multiple groups now. Needed lots
+of changes in the dialogs. The default settings for group options
+are now configurable through control.cfg and a dialog.
+
+Added group-overriding actions, but haven't tested them enough.
+Some cosmetics for the TODO list. Also fixed some bugs in
+showing/hiding groups and changing borders for shaded wins in a group.
+
+In the code, there are a lot more options now for getting groups,
+e.g. get all the groups, only the ones a window belongs to or
+all except the ones that it belongs to etc.
+
+Paranoia checks for groups shouldn't allow adding a window to a group
+multiple times anymore, the current_group is protected better, plus
+some more.
+
+Updating BrushedMetal still necessary.
+	
+The timestamp thing in groups.c (g->index = (int)(GetTime() * 100))
+doesn't seem to work for me, every group gets an index of -INT_MAX,
+so I changed that a little bit. Hope that's ok?
+
+Sorry that things took me so long .. more small commits surely would
+have been better.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 18:19:45 PDT 1999
+(Mandrake)
+
+apparently I'm still out of sync.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 19:47:28 PDT 1999
+(Raster)
+
+add new samples to brushed metal and disable the move resist sample since its 
+annoying and doesnt work right...
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 20:01:58 PDT 1999
+(Raster)
+
+hmm how come this didnt get in?
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 20:24:28 PDT 1999
+(KainX)
+
+Fixed a typo in the KDE hint stuff.
+
+Also removed old crappy themes to make room for newer, spiffier ones.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 23:58:28 PDT 1999
+(Raster)
+
+account for bad X implimentatiosn that dont like negative W&h's for 
+XDrawRectangle
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 10:06:29 PDT 1999
+(Raster)
+
+fix up some stuff (get rid of excess lines of padding)
+allow alt-left mosue button drag to work on menus.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 10:13:13 PDT 1999
+(Raster)
+
+save snap info when iconbox resizes :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 10:45:43 PDT 1999
+(Raster)
+
+have E snapshot the size and location of the iconbox when its in 
+autoresize mode at its minimum size. :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 15:11:27 PDT 1999
+(Mandrake)
+
+added some function prototypes, fixed a merging conflict in kde.c
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 15:22:47 PDT 1999
+(Mandrake)
+
+somehow I lost some of this.  committing again.  (kde stuff for pager)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 15:53:02 PDT 1999
+(Mandrake)
+
+kpanel's desktop switcher should work now.
+still needs some work.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 17:38:23 PDT 1999
+(Mandrake)
+
+more panel work
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 14:05:11 PDT 1999
+(Raster)
+
+dint get command form windows that are group leaders if the window doesnt 
+have a command set on it explicitly.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 14:14:11 PDT 1999
+(Raster)
+
+try this fix for focus loss (extra check for multihead case)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 14:59:58 PDT 1999
+(Raster)
+
+more ref count to after discovery of the objetc, not before.. :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 15:45:37 PDT 1999
+(Mandrake)
+
+forgot something in one place.  client message processing
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 15:51:51 PDT 1999
+(Raster)
+
+doen allow user resize vertically and horizotnally whne shaeded too as well 
+as normal resize
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 15:53:10 PDT 1999
+(Raster)
+
+and dont allow maximising fo windwos when shaded...
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 16:36:32 PDT 1999
+(Raster)
+
+and dont let fixed position windows move.. :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 17:47:28 PDT 1999
+(Raster)
+
+and get commands form the first window for a group only :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 12:33:21 PDT 1999
+(Raster)
+
+* ignore mouse events shilst sliding off to a new desktop area with edge resist
+on, and we're abotu to warp the pointer anyway.. so just ignore the extra 
+mouse events.
+
+* dont slide iconified windows around when moving virtual desktops
+
+* account for border of window when dropping pager mini ewin on other pagers
+and stuff so you cant accidentally drop it off screen, also ignore othr windows
+apart from pagers and iconboxes when doing the drop.
+
+* flim
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 13:49:43 PDT 1999
+(Raster)
+
+add ABOUT section to Brushed Metal theme so the "about this theme" entry in 
+the middle-desktop button menu works and displays something nice.
+
+i hope all theme desginers use this to plug themselves and any comments or
+credits they want to give for their theme.
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 14:17:44 PDT 1999
+(Raster)
+
+fix minor sample loading and caching bug.. :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 15:00:52 PDT 1999
+(Raster)
+
+ad onyl allow you to stick menus if you release on the titlebar of the menu...
+much better :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 15:31:35 PDT 1999
+(Raster)
+
+hm ok - fix that pager bug i just put in.. NOw it does what it was meant to
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 15:56:18 PDT 1999
+(Raster)
+
+ok - fixed that iconify and pager bug for good :)
+
+-------------------------------------------------------------------------------
+
+Sun Sep 12 10:19:20 PDT 1999
+(Raster)
+
+play desktop area swtichign sounds whenever u swithc - even witht he pager.. :)
+
+-------------------------------------------------------------------------------
+
+Sun Sep 12 10:39:46 PDT 1999
+(Raster)
+
+make sure we have name and class set on dialogs so rememebr.. can work on them
+
+-------------------------------------------------------------------------------
+
+Sun Sep 12 10:49:14 PDT 1999
+(Raster)
+
+and use those snapshot values for the dialogs damnit... :)
+
+-------------------------------------------------------------------------------
+
+Sun Sep 12 12:29:12 PDT 1999
+(Raster)
+
+make xchat icondef correct
+
+dont remember everythign abotu every window ina group - just have every 
+window int hat group rememebr its in that group and otherwise remember the
+normal stuff.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 13 09:10:06 PDT 1999
+(Raster)
+
+turn off focus list when changing desktop
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 19:33:15 EDT 1999
+(Christian)
+
+Added group borders to BrushedMetal, also made the groups be visualized when
+they are switched in one of the groups dialogs. Apparently there's a bug
+with imageclasses that use transparency, probably an Imlib issue.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 10:53:14 PDT 1999
+(Raster)
+
+fix menu segfault bug
+
+fix raiswlower for groups :)
+
+make "abotu this theme" brign up the ABOUT for the CURRENT theme :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 11:50:29 PDT 1999
+(Raster)
+
+add click always raises patch... :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 15:34:11 EDT 1999
+(Christian)
+
+Don't use the fallback border for group borders. 
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 15:54:25 EDT 1999
+(Christian)
+
+Ooops, the middle button in the titlebar did raise/lower and show/hide
+group borders at the same time. Changed show/hide group borders
+to shift-middleclick.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 14 18:52:24 EDT 1999
+(Christian)
+
+I hope this fixes the segfault that Technoir reported.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 17:06:08 PDT 1999
+(Raster)
+
+ok - go make desktop windows off the screen.... :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 18:55:40 PDT 1999
+(Raster)
+
+and double check that ewins didnt go missing whilst we were dragging them
+in the pager
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 09:34:16 PDT 1999
+(Raster)
+
+fixe over sealous ewin existance catching.. 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 10:46:01 PDT 1999
+(Raster)
+
+get rid of cruft in all settigns boxes - make them smaller so they fit on 
+6480x480 screens 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 15:40:07 PDT 1999
+(Mandrake)
+
+KDE part four thousand eight hundred and two.
+no more KDE kpanel segfaults.
+the taskbar and the desktop pager still don't have names in them, and E for
+some reason isn't triggering update events.  but we'll fix that soon enough.
+here's another taste of the kde support though.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 19:09:52 PDT 1999
+(Mandrake)
+
+syncing kde code
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 12:04:54 PDT 1999
+(Raster)
+
+added patch to fix some behavior of raiselower
+
+fixed pager starting up shaded problem
+
+fixed iconfiicaton of thing son other desktops problem
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 16:33:08 EDT 1999
+(Christian)
+
+Don't snapshot group borders.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 13:59:43 PDT 1999
+(Raster)
+
+fix speed fo menu sliding/scrolling and cleanup sliding/scrolling.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 14:16:43 PDT 1999
+(Mandrake)
+
+a few kde fixes - now some of the taskbar stuff should work a little better.
+still no names of windows / desktops / etc in there, but that'll all get
+updated soon enough.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 15:14:09 PDT 1999
+(Raster)
+
+play sounds for desktoop changing better :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 16:23:20 PDT 1999
+(Mandrake)
+
+taskbar now should update when you change focus.  next on to setting and
+updating all the names.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 16:41:47 PDT 1999
+(Raster)
+
+allow iconbox menu to pop up wiht any button presses ont he iconbox border :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 17:10:27 PDT 1999
+(Mandrake)
+
+task list updates on new windows and old windows dying off in kpanel now (oops)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 18:36:16 PDT 1999
+(Mandrake)
+
+closer to having the client titles show up in the taskbar.  at least the
+desktops show up in the pager now.  (more kde work)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 18:47:31 PDT 1999
+(Mandrake)
+
+well, it would HELP if I used XA_STRING on those :)
+MOST of the taskbar works now.
+still have to do updates of title setting KWM_WIN_TITLE.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 18:59:43 PDT 1999
+(Mandrake)
+
+IMPORTANT TODO ITEM:   kde support and desktops other than 0 cause things to 
+segfault.
+Needs fixing.  BIG bug.  if you turn "kde off" in your eesh it will fix that,
+or if you want kde support only use desktop 0 for now.  'nuff said.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 08:57:02 PDT 1999
+(Raster)
+
+have erealloc call efree if size == 0 & ptr != NULL
+
+if we change desktop area size - dont reshufle sticky windows... :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 09:43:01 PDT 1999
+(Raster)
+
+handle icon property change events properly and redraw iconbox if window 
+iconfied.
+
+fixed up 2 images in brushed metal theme + add right side pager border
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 11:29:07 PDT 1999
+(KainX)
+
+Changes to the memory allocation stuff to make it more portable and
+such.  Account for all the different ways they could be called and
+do the rerouting ourselves so we don't depend on the OS.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 12:45:36 PDT 1999
+(Mandrake)
+
+fixed the kde support causing segfault bug
+fixed the kde event duplication bugs.
+fixed "segfault everything on non-desk-0 bug"
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 13:04:10 PDT 1999
+(Mandrake)
+
+fixed a hard-to-find crashing bug in kde support
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 13:14:42 PDT 1999
+(Mandrake)
+
+titlebar updates update in the kpanel taskbar.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 15:33:29 PDT 1999
+(Mandrake)
+
+when we change desktops and/or areas, unfocus the currently focused window.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 15:55:05 PDT 1999
+(Mandrake)
+
+fix minor casting bug
+
+-------------------------------------------------------------------------------
+
+Sat Sep 18 11:04:41 PDT 1999
+(Raster)
+
+shen changing numebr of desktops - get rid of the old desktops first before
+chanign the number
+
+dont looses as much accuracy when moving pagers in the pager view.
+
+-------------------------------------------------------------------------------
+
+Sat Sep 18 22:58:43 PDT 1999
+(Raster)
+
+fix recursive call in iconification. :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 18 23:10:16 PDT 1999
+(Raster)
+
+ok - be paranoid abotu the creation of ximages and if it fails... :)
+
+-------------------------------------------------------------------------------
+
+Sun Sep 19 13:08:30 PDT 1999
+(Mandrake)
+
+fixed a compile warning in iconify.c
+
+-------------------------------------------------------------------------------
+
+Sun Sep 19 14:28:18 PDT 1999
+(Mandrake)
+
+added another todo bug with kpanel
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 11:08:01 PDT 1999
+(Mandrake)
+
+minor fix that should keep kpanel win_add's from duplicating on map.
+(hopefully) - this fixes the desktop change window duplication bugs, too.  I
+might have some stacking issues to deal with.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 11:53:55 PDT 1999
+(Mandrake)
+
+fixed a fairly significant list freeing bug in the kde support.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 12:43:48 PDT 1999
+(Mandrake)
+
+well, we had some issues with removing the kde dock windows.  that should be
+taken care of now (hooked in destroy handler)
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 13:28:56 PDT 1999
+(Mandrake)
+
+Crushed the kpanel tasklist duplication bug via mallet method.
+CRUSH CRUSH CRUSH.
+Well, you should be able to run netscape again.  if a window duplicates itself
+in the taskbar again after this commit, PLEASE let me know.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 13:59:58 PDT 1999
+(Mandrake)
+
+added important TODO item for kde support :
+
+mandrake:   um, don't use close from the kpanel menu right yet.  that's a bad idea.  in fact, I wouldn't use ANY of the kpanel windowops things yet.  (nasty)
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 15:20:56 PDT 1999
+(Mandrake)
+
+more kde fixes.  more to come, still.  this fixes using client.win instead of
+base win for most everything.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 19:23:42 EDT 1999
+(Christian)
+
+Added Ganymede, finally. Noticed one little bug in it: In the
+Desktop Background Settings there's a single transparent line
+on the bottom. Couldn't work my way around it.
+
+Sorted the list of window borders in the 'Set Border Style'
+menu.
+
+Added some group issues to TODO file. I hope I get to finish that
+during this week.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 19:41:17 PDT 1999
+(Mandrake)
+
+yet more kde fixes.  Hopefully most of the window operations menu in kpanel
+ should work now
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 20:14:35 PDT 1999
+(Mandrake)
+
+removed todo item, added new TODO item
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 21:30:28 PDT 1999
+(Mandrake)
+
+fixed the desktop changing bug in kde support.  (oops)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 10:13:48 PDT 1999
+(Mandrake)
+
+fixed some problems with kde notifications on events.  all of these things
+should be accounted for now.  It looks like all of panel pretty much works
+out-of-box.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 16:12:59 EDT 1999
+(Christian)
+
+YASGB. Yet another stupid group bug, that is. Group borders
+weren't reset after closing some dialogs.
+
+Tweaked the user name mapping in ecvs so that it works on my
+lappy :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 17:06:31 EST 1999
+(Christian)
+
+Updated the Eterm theme and some minor fixes.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 19:37:31 PDT 1999
+(Raster)
+
+fix possible memory leak
+
+cleaned up some code
+
+fixed positioning on restart/start of internal wins
+
+fixed iconified startup bugs for clients that ask to be iconified on start
+
+fixed icon pixmap bugs
+
+took my iguana for a walk around the block
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 19:51:51 PDT 1999
+(Raster)
+
+get rid of 2 warnings
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 23:17:24 PDT 1999
+(Raster)
+
+only allow one "default group settings" configuration dialog at a time
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 09:33:27 PDT 1999
+(Raster)
+
+fix the focus fixup - shoudl let focus change as per before AND fix up
+transient focus errors too... i hope.. needs some testing.
+
+added "set focus to logout are you ssure" dialog and make sure it accepts the 
+standard retrun/escape keybindings for "yes/no" like the settings dialogs do.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 10:44:34 PDT 1999
+(Raster)
+
+update TODO
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 13:37:41 PDT 1999
+(Raster)
+
+the remember dialog not coming up bug.. fixed.. :)
+
+*should* have fixed soem multihead issues - have still to test..
+(shoudl restart correctly, exit correcttly, restart anotherwm correctly and
+restart themes correctly)
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 13:39:22 PDT 1999
+(Raster)
+
+get rid of fprintf debug messags
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 15:37:25 PDT 1999
+(Mandrake)
+
+fixed a bug in kde support that caused E to potentially crash on property
+events upon deletion by a window.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 15:41:28 PDT 1999
+(Raster)
+
+some more multihead fixes...
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 16:08:01 PDT 1999
+(Raster)
+
+make the memory debugging stuff better commented - and add ipc call tyo 
+dump mem debug info
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 16:39:43 PDT 1999
+(Mandrake)
+
+moved kde client change property handler a little, but I don't think this is
+going to make a difference.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 17:55:48 PDT 1999
+(KainX)
+
+Added a "query" command to the imageclass IPC.  This is for an Eterm
+feature.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 18:21:40 PDT 1999
+(KainX)
+
+Ergh...let's not go freeing image classes willy-nilly, shall we?
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 20:07:31 PDT 1999
+(Raster)
+
+disabel pagers and icobnoxes form going into groups - ok theres a bug 
+restoring them and i've had enough of looking at that code.. so i simply
+disabled it. much simpler.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 20:17:22 PDT 1999
+(Raster)
+
+get rid of printf.......
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 16:46:10 EST 1999
+(Christian)
+
+Ok, groups behave inconsistent if you use them over
+multiple desktops and via the titlebar or the menu,
+so group effects are limited to the current desktop
+for now.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:40:50 PDT 1999
+(KainX)
+
+Woops.  Width and height of 0 doesn't make for a happy pixmap.  Let
+E figure it out.  This fixes Eterm's auto mode.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:52:38 PDT 1999
+(Raster)
+
+ok- theres a memeory leak if you use color modifiers in yout theme.. and thus
+color modifiers have been disabled - spent too many hours looking for the leak
+and cannot find it anywhere.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:55:59 PDT 1999
+(Raster)
+
+and dont save colro modifiers in the user config anymore since they have been 
+disabled
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:57:35 PDT 1999
+(Raster)
+
+get the end of comment thing right :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 15:34:31 PDT 1999
+(KainX)
+
+Did I leave that debugging printf() in there?  Surely not!
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 15:51:32 PDT 1999
+(KainX)
+
+Removed color modifiers from the Ganymede theme and added imageclasses
+required for Eterm's "auto" mode.  (Note to Christian:  Mine are just
+temporary, for testing only.  Please make real ones as you see fit.)
+:-)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 10:30:08 PDT 1999
+(Raster)
+
+hide tooltips when flippign desktop areas :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 10:58:11 PDT 1999
+(Raster)
+
+fix slideout segfault bug problem thingy majigo
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 12:30:53 PDT 1999
+(KainX)
+
+If there is no iconbox and the user tries to iconify something, create
+a default iconbox.  This code does the exact same thing as selecting
+"Create New Iconbox" from the menu (except that it's automatic), so it
+should be safe.  But feel free to remove it anyway if you don't think
+it's ready for 0.16.  It's just the behavior I think users expect. :-)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 13:06:55 PDT 1999
+(Raster)
+
+remove iconbox auto create code - add creat eiconbox entyr to 
+settings menu aswell
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 13:31:05 PDT 1999
+(Raster)
+
+allow borderless windows in focus list - rmeve hack laying around 
+since early gnome days..
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 16:43:48 EST 1999
+(Christian)
+
+Grrr. Added more bugs.
+
+-------------------------------------------------------------------------------
+
+Sat Sep 25 13:03:34 PDT 1999
+(Raster)
+
+fix iconbox border going all wierd when in auto resize mode.. :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 25 13:07:52 PDT 1999
+(Raster)
+
+add mroe to the color modifiers comment dialog...
+
+-------------------------------------------------------------------------------
+
+Sun Sep 26 19:37:30 PDT 1999
+(Mandrake)
+
+added patch from Martin Tyler <martin@boo.org>
+fixes segfaults in modules loading with ipc.
+
+-------------------------------------------------------------------------------
+
+Sun Sep 26 19:45:58 PDT 1999
+(Mandrake)
+
+added a bug from the mailing list.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 12:12:46 EST 1999
+(Christian)
+
+Fixed the segfault that ocurred when switching
+to Ganymede from BrushedMetal with a previously
+wiped out ~/.enlightenment. The problem was that
+a pointer was freed but not set to NULL.
+
+I have a question regarding this: Wouldn't it
+be good to set a freed pointer to NULL by default?
+For example by changing the Efree macro to
+
+#define Efree(x) \
+__Efree(x, __FILE__, __LINE__)\
+x = NULL;
+
+or something? Since Efree is called about 700 times 
+in E, I really didn't want to mess that up.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 12:17:26 PDT 1999
+(Mandrake)
+
+fixed the bug where everything in kontrol-center crashed E.  what's really
+bizarre is that they were really doing everything the wrong way, creating
+windows, mapping them, and then reparenting them into the control center.  I'm
+not 100% sure why, but I think I'm going to report this as a bug to the kde
+people.  Luckily for me, however, it uncovered a flaw in my "do not manage" kde
+support.  Fixed that all up.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 12:32:58 PDT 1999
+(Mandrake)
+
+I think I've fixed the other two KDE bugs at the bottom of the TODO file now -
+please check and see if anyone else can crash E using either of these things
+now.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 13:31:26 PDT 1999
+(Mandrake)
+
+oops, forgot an EDBUG init in those functions
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 23:54:54 PDT 1999
+(Mandrake)
+
+fixed the bug that ganymede would flaunt with spawning menus via buttons
+(using spawnMenu()) with click to raise and/or click to focus enabled.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 28 00:12:05 PDT 1999
+(Mandrake)
+
+fixed the "restart on wrong desktop if it's the last desktop available" bug.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 28 00:44:15 PDT 1999
+(Raster)
+
+add bugs to TODO
+
+-------------------------------------------------------------------------------
+
+Tue Sep 28 15:30:03 PDT 1999
+(Raster)
+
+and free desktop bgs more aggressively
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 12:28:22 EST 1999
+(Christian)
+
+Added a gkrellm theme to Ganymede.I really like gkrellm.
+Could somebody please explain me the name of that thing?  
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 17:41:37 PDT 1999
+(Raster)
+
+shoudl have elleviated focus swtichng problem... :)
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 17:43:41 PDT 1999
+(Raster)
+
+no debugging printf...
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 17:52:48 PDT 1999
+(Raster)
+
+and fix that event mask...
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 17:56:39 PDT 1999
+(Raster)
+
+update TOTO
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 18:13:37 PDT 1999
+(Mandrake)
+
+nuked useless variable + warning
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 09:44:14 PDT 1999
+(Raster)
+
+fix typo in icon settings dialog box
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 11:55:12 PDT 1999
+(Raster)
+
+dont clone iconfiied windows...
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 16:54:54 PDT 1999
+(Raster)
+
+change menus.cfg to use new menus scritps can generate
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 16:59:57 PDT 1999
+(Raster)
+
+handle file menus beign deleted form disk and delete them from the menu 
+heirachy too
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 17:26:38 PDT 1999
+(Raster)
+
+try nto to segv if filemnus go missing... :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 18:54:13 PDT 1999
+(Raster)
+
+added pager group move patch and windowmatces pact for dialogs...
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 19:28:13 PDT 1999
+(Raster)
+
+add some mroe window matched to brushed metal to accoutn for dialogs
+and have the dialog code and ewin match function work better...
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 20:43:54 PDT 1999
+(Mandrake)
+
+fixed a warning caused in borders.c due to lack of a cast
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 22:36:37 PDT 1999
+(Mandrake)
+
+added KDE Support config dialog
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 23:05:53 PDT 1999
+(Mandrake)
+
+updated TODO - removed two items, added one
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 23:07:48 PDT 1999
+(Raster)
+
+flim! :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 01:16:46 PDT 1999
+(Raster)
+
+fix windowmatch border sige-effect for starting the firts time
+
+fix start/restart/logout on multihead 
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 01:32:30 PDT 1999
+(Raster)
+
+add bug i noticed to TODO
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 10:50:59 PDT 1999
+(Raster)
+
+fixed minor pager sel windo resize problem...
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 11:08:10 PDT 1999
+(Mandrake)
+
+fixed the bug where remembering any state BESIDES location on a dialog window
+would cause it to pop up at -20, -20
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 11:09:35 PDT 1999
+(Raster)
+
+patch for label in settings dialog
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 12:10:25 PDT 1999
+(Raster)
+
+new mantinence submenu form deksktop menu
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 12:52:19 PDT 1999
+(Mandrake)
+
+fixed the bug in dox, removed from TODO list.
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 13:35:50 PDT 1999
+(Mandrake)
+
+wrote some code for "first time initialization" cruft.
+should generate the user menus in ~/.enlightenment, as well as run dox for the
+first time.
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 15:08:47 PDT 1999
+(Raster)
+
+reload_menus segv fixed :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 15:44:09 PDT 1999
+(Raster)
+
+move abotu logo to left sit of about box
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 16:17:41 PDT 1999
+(Mandrake)
+
+I can't reproduce the transparency issue bug.
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 16:19:08 PDT 1999
+(Raster)
+
+commit updated TODO
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 17:01:44 PDT 1999
+(Mandrake)
+
+let us place dialog boxes arranged like the rest of the windows in the world
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 17:11:42 PDT 1999
+(Mandrake)
+
+trying to make that about box look a bit more clean.  also took out the
+"USE AT YOUR OWN RISK" since we're getting prepped for a release
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 17:12:04 PDT 1999
+(Raster)
+
+fixed really obscure focus bug.....
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 18:00:54 PDT 1999
+(Raster)
+
+pager group dnd patch
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 18:59:58 PDT 1999
+(Raster)
+
+commented somehting out.. stil works.. ho hum.. dunno - expose bug cant be
+reporduced right now :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 19:32:02 PDT 1999
+(Mandrake)
+
+fixed a warning in evhandlers.c
+also, the TODO item is fixed.  Yay!  that was the last bug on the buglist.
+snapshot coming out.
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 19:25:38 PDT 1999
+(Raster)
+
+remove raindrops fx from menu - still leaks shm segs like a seive. :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 19:44:55 PDT 1999
+(Raster)
+
+chaneg abotu text a little
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 11:59:40 PDT 1999
+(Mandrake)
+
+edited some documentation, also fixed a minor typo in menus.cfg
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 14:05:27 PDT 1999
+(Mandrake)
+
+having the logout dialog autoarrange looked kind of bad - so I have this one
+centered again in session.c
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 16:08:43 PDT 1999
+(Mandrake)
+
+changed it to where the first dialog that pops up pops up centered, and
+subsequent dialogs pop up in an auto-arranged format.
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 17:25:12 PDT 1999
+(Raster)
+
+several patches (group break if members of group of screen patch plue some
+xmms behavior patches)
+:)
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 17:27:31 PDT 1999
+(Raster)
+
+add dialog to explain pagers and iconboxes arent part of a group... :)
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 17:28:58 PDT 1999
+(Raster)
+
+damn.. fix that \" :)
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:04:57 PDT 1999
+(Raster)
+
+fix "saying no to logout dialog stops windows form being de-iconified"
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:08:37 PDT 1999
+(Raster)
+
+get rid of warning
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:11:31 PDT 1999
+(Raster)
+
+rtemove reply from ipc iclass apply - more efficient - this WILL break eterm
+automode (well it will braak eterm) until eterm is updated :)
+sorry kainx  :)
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:59:21 PDT 1999
+(Raster)
+
+needed to fix the iclass ipc stuff a bit to make it more useful in the long
+run
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 20:45:20 PDT 1999
+(Raster)
+
+chaneg menu entry name, fix some bits of the ipcs and remove useless \n's in
+ipc returns...
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 21:20:50 PDT 1999
+(Raster)
+
+add $EBIN as env variable.. need for scripts.. :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 00:45:11 PDT 1999
+(Raster)
+
+get textclas ipc right....
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 01:11:42 PDT 1999
+(Raster)
+
+and save snapsh when the ipc is called....
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 11:44:39 PDT 1999
+(Mandrake)
+
+if the focus changes, we crush any open but un-stuck windows to avoid any
+bizarre problems this may cause later
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 11:45:28 PDT 1999
+(Raster)
+
+change menu scroll dist to 4 pixels
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 12:03:22 PDT 1999
+(Raster)
+
+bad theme dialog added so people knwo they chose a bad theme...
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 12:37:15 PDT 1999
+(Mandrake)
+
+okay, here's the way the menu focus fix SHOUDL have gone
+
+incidentally, we now have a proper README, INSTALL, and FAQ file in the e/
+directory
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 13:09:10 PDT 1999
+(Raster)
+
+add soem smarts to icon imges to limit the size to the iconox size... :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 13:18:30 PDT 1999
+(Mandrake)
+
+patch to have only one dialog box for logging out, courtesy of
+"Daniel Erat" <erat@cats.ucsc.edu>
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 14:43:23 PDT 1999
+(Raster)
+
+have the imagelcass pixmap freere read the pixmap id right.
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 14:47:51 PDT 1999
+(Raster)
+
+read pixmap id like all other id's
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 16:41:28 PDT 1999
+(Mandrake)
+
+fixed a bug where you couldn't ever delete snapshot information about a window
+without removing all the snapshot specs.  thanks to XStauff for pointing it
+out.
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 16:46:39 PDT 1999
+(Raster)
+
+get rid of debugign  printfs....
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 16:58:09 PDT 1999
+(Raster)
+
+fix exist handler for pager to pass the right param... :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 17:26:37 PDT 1999
+(Raster)
+
+fix mem leak in ipc... :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 18:03:12 PDT 1999
+(Mandrake)
+
+typo
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 18:23:28 PDT 1999
+(Raster)
+
+flippy iconify anim + resize DOWN not UP with icons if > iconsize
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 18:28:53 PDT 1999
+(Raster)
+
+flippy icon patch :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 21:28:31 PDT 1999
+(Raster)
+
+grouped window patch for pager if moving form desktop -> desk
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 12:25:23 PDT 1999
+(Mandrake)
+
+removed apply button from groups break dialog since it was breaking all sorts
+of stuff.
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 12:56:07 PDT 1999
+(Raster)
+
+patch to stop possible endless loops in ipc for menu reloading
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 13:16:37 PDT 1999
+(KainX)
+
+Removed extraneous files from ShinyMetal per ljlane's request.
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 13:31:29 PDT 1999
+(Mandrake)
+
+Fixed bugs in snapshotting windows.
+order could have potentially been invalid.
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 16:47:48 PDT 1999
+(Mandrake)
+
+some work on the KDE window region code -- so that windows and panel will get
+along correctly
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 17:58:33 PDT 1999
+(Raster)
+
+my god.. copyright notices..........
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 18:10:34 PDT 1999
+(Raster)
+
+better directory checkign on startup.........
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 18:19:13 PDT 1999
+(Raster)
+
+get rid of "//" C++ style comments..... eeeeeeevil
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 09:15:46 PDT 1999
+(Raster)
+
+get rid of ~ backup file and rogue .xvpics dir :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 11:09:53 PDT 1999
+(Raster)
+
+let the sun AWT developers have a better day finding out the frame size.. 
+now lest wait for sun to producea patch/new version of awt that uses 
+this property :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 11:54:49 PDT 1999
+(Raster)
+
+handle window gravities correctly... :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 12:06:49 PDT 1999
+(Raster)
+
+__WINDOWS_KEY was the wrang meta modifier - chnage the definitions define...
+add a windowskey+left mosue and ctrl+left mouse optison to briugn up menus
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 14:23:51 PDT 1999
+(Raster)
+
+add dialogs to warn about zoom mode etc......
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 16:08:28 PDT 1999
+(Raster)
+
+allow tooltips for DESKBINDINGS to be displayed
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 16:21:56 PDT 1999
+(Raster)
+
+and let deskbindings tooltips work & add the tooltips into the defautl 
+keybindings.cfg
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 20:58:06 PDT 1999
+(Mandrake)
+
+hide any tooltips whenever we change desktops.
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 23:59:22 EST 1999
+(Christian)
+
+Give help on the command line more easily. iirc --help
+is recommended by the GNU coding standards.
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 22:34:52 PDT 1999
+(Mandrake)
+
+added an option to never display tooltips if you're over the "root window" or
+desktop.  very annoying if you use sloppyfocus extensively.
+
+access it by using the rightmouse menu -> tooltip settings
+uncheck the 2nd item.
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 00:01:40 PDT 1999
+(Raster)
+
+try committing again
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 11:11:19 PDT 1999
+(Raster)
+
+images for mousewheel added :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 12:07:04 PDT 1999
+(Mandrake)
+
+a couple of unused parameters should be fixed here (no more warnings I can see)
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 12:53:33 PDT 1999
+(Raster)
+
+fix keybidnigns_changed flag to work right...
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 14:22:23 PDT 1999
+(Raster)
+
+fix lowerign of desktop 0 bug :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 16:44:32 PDT 1999
+(Mandrake)
+
+minor change in config.c - if you can't find ROOT_IMAGE menustyle, go back to
+default in dirscan menus.  Also changed the ROOT_IMAGE menustyle to 20 length
+in brushed metal
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 17:38:58 PDT 1999
+(Raster)
+
+turn off draw queue for ipc imageclass draws...
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 20:31:02 PDT 1999
+(Raster)
+
+need to add nop ipc call - need it for syncing purposes.
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 23:40:32 PDT 1999
+(Raster)
+
+/* that's it - people are stupid and have executable images and just */
+/* don't get it - so I'm disablign this to save people from their own */
+/* stupidity */
+
+ho hum.........
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 12:10:53 PDT 1999
+(Raster)
+
+have the SetupUserInitialization chekc if the fopen succeeded.
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 13:49:23 PDT 1999
+(Raster)
+
+do the SetupUserInitialization late in the startup - not early.. :)
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 16:06:02 PDT 1999
+(Mandrake)
+
+this is broken.  good thing it's commented out.
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 16:17:35 PDT 1999
+(Mandrake)
+
+still having a few issues with this code, but at least we're STARTING to have
+some of the arrange code for kpanel working.
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 16:46:47 PDT 1999
+(Mandrake)
+
+a little bit better arrange code for handling panel hints.
+still have some work
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 20:44:53 PDT 1999
+(Mandrake)
+
+now when you use the standard autoarrange action stuff it also will pay
+attention to panel's hints
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 21:16:32 PDT 1999
+(Mandrake)
+
+more work on arranger code paying attention to kpanel.  next to make window
+snaps work with it (seriously dreading this one)
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 22:33:36 PDT 1999
+(Mandrake)
+
+extra dump_mem_debug command in IPC
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 23:53:06 PDT 1999
+(Raster)
+
+fix vbar imageclass to use pb_v.png :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  8 18:37:34 EST 1999
+(Christian)
+
+Ok, I tried to update Ganymede as quickly as I could.
+I did this in a _great_ hurry, and I hate that. So
+I won't be surprised if I missed something. I updated
+menustyles.cfg, no more warnigs from epp. I threw
+out actionclasses.cfg, and renamed the few classes
+I needed to something containing GANYMEDE. buttons.cfg
+doesn't exist by default, I added a script that'll
+build it and install the pulldown menues as well.
+I still get emails from people telling me the pulldown
+menues don't work, arrgh >:/ -- it's all in the dox
+and the README.
+
+I did not touch any of the imageclasses. Either I
+modify all the ones that needed colormods or not,
+I won't commit a half finished job.
+
+I threw out all the borders that used colormods.
+
+I haven't really  understood what that epplet stuff is
+all about, (I'm not fully up to date on the list right
+now), so I mostly copied from dialog widgets. But at
+least there's something there now.
+
+That's all I can do at the moment. If anybody sees
+the need to change anything, please feel free to do so!
+I'll be back on monday.
+
+Have fun,
+-- Christian. 
+
+-------------------------------------------------------------------------------
+
+Fri Oct  8 18:53:09 EST 1999
+(Christian)
+
+Uhmm .. _now_ there's no more buttons.cfg. Sorry :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  8 22:46:54 PDT 1999
+(Mandrake)
+
+I've gone through and put all the people in the AUTHORS file in the 
+documentation.  updated the documentation some (now it all fits on one page in
+a couple of key places) including the credits in the documentation.  I don't
+want anyone that has been recognized to feel like they got credit left out.
+If you've contributed patches and don't see your name listed - you NEED to 
+let me know ASAP.  if you don't let me know in the next couple of days you
+probably won't be in the 0.16.0 release's credits.  (sorry)
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 10:10:52 PDT 1999
+(Mandrake)
+
+groups patch from Martin Tyler
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 11:30:58 PDT 1999
+(Mandrake)
+
+fixed simon's name in ipc call, authors, and docomentation
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 12:54:21 PDT 1999
+(Mandrake)
+
+minor dock patch
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 15:07:18 PDT 1999
+(Raster)
+
+re-install default cmap whne mensu pop up
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 15:17:29 PDT 1999
+(Raster)
+
+add speculative hack to "pause" the pager for a bit if it thinks its getting 
+called too much
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 15:23:14 PDT 1999
+(Mandrake)
+
+removed color modifiers and buttons from shinymetal.
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 19:56:36 PDT 1999
+(Raster)
+
+attempt at maybe fixing E's soudn on ppc?
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 20:35:22 PDT 1999
+(Mandrake)
+
+removing Ganymede and adding BlueSteel for release (sorry Christian - don't
+have enough time to fix all of ganymede myself for epplets - we'll put it back
+in CVS and remove BlueSteel later)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 00:37:18 PDT 1999
+(Mandrake)
+
+since I've been mucking with ShinyMetal I thought I would put up a changelog
+entry for it.  - I've redone a lot of this theme from the ground up.  it still
+has a ways to go - a little more eterm autotheme tinkering as well as redoing
+the epplet config (which I just copied straight from brushed metal)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 01:32:17 PDT 1999
+(Mandrake)
+
+pretty much finished up shinymetal now.  what a pita.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 01:43:18 PDT 1999
+(Raster)
+
+cleaned up a possible race condition when setting up IPC (discovered it 
+coudl be a possible race condition whilsyt testign epplets starting on login)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 01:53:41 PDT 1999
+(Raster)
+
+move snap spawing elsewhere....
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 02:58:26 PDT 1999
+(Mandrake)
+
+minor bug in Makefile.am that caused make distcheck to fail
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 09:33:57 PDT 1999
+(Raster)
+
+mayaswell store the new title in a property.. :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 11:17:24 PDT 1999
+(Raster)
+
+fix obscure menu bug :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 12:49:28 PDT 1999
+(Raster)
+
+add sanity checks to the installation...
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 13:45:49 PDT 1999
+(Mandrake)
+
+added a configure option to disable the animation on iconification.
+autosaves, too.
+default is ON when creating a new iconbox.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 14:18:14 PDT 1999
+(Raster)
+
+too much checking.........
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 14:19:19 PDT 1999
+(Raster)
+
+move it there.........
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 16:05:48 PDT 1999
+(Raster)
+
+move coord box to the right place...
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 20:02:50 PDT 1999
+(Mandrake)
+
+a minor change in ShinyMetal.  typo
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 20:28:44 PDT 1999
+(Mandrake)
+
+changed the default direction to DOWN
+
+-------------------------------------------------------------------------------
+
+Mon Oct 11 09:31:19 PDT 1999
+(Raster)
+
+patch from dave mason to fix minor spelling mistakes :)
+
+-------------------------------------------------------------------------------
+
+Mon Oct 11 09:46:02 PDT 1999
+(Raster)
+
+add logout soudn when u have have libSM :)
+
+-------------------------------------------------------------------------------
+
+Mon Oct 11 11:27:12 PDT 1999
+(KainX)
+
+Undid the naughty part of an earlier patch.  Also eliminated an
+unnecessary variable while I was at it.
+
+-------------------------------------------------------------------------------
+
+Wed Oct 13 12:24:18 PDT 1999
+(Raster)
+
+um... ipc bug.. DONT reply for the rememebr ipc... oh and spawn snapped 
+commands later :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct 13 18:51:30 EST 1999
+(Christian)
+
+Added an IPC call for obtaining the current theme.
+
+-------------------------------------------------------------------------------
+
+Thu Oct 14 16:54:52 PDT 1999
+(KainX)
+
+Bye-bye icky warnings.
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 15:31:12 PDT 1999
+(Mandrake)
+
+putting in a changelog entry for having updated the rev # in CVS to say 0.16.1
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 15:34:23 PDT 1999
+(Mandrake)
+
+fixed default control.cfg dock direction.  fixed in setup.c also earlier
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 16:16:57 PDT 1999
+(Raster)
+
+remember ipc uses scanf now
+raise, lower & layer win_op calls
+
+minor other fixes
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 16:23:30 PDT 1999
+(Raster)
+
+OS/2 patches :)
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 16:34:34 PDT 1999
+(Raster)
+
+#ifdef __EMX__ for io.h
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 16:50:50 PDT 1999
+(Mandrake)
+
+added tom's name to all the authors locations (need to centralize something to
+sed through and use a single reference point to build that at some point)
+
+also fixed some of the EMX stuff
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 17:42:03 PDT 1999
+(Raster)
+
+arrange patch - faster arrange code
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 20:56:03 PDT 1999
+(Mandrake)
+
+updated shinymetal.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 00:06:17 PDT 1999
+(Raster)
+
+fix translucent move mode bug when desktosp are partially dragged down..
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 09:22:04 PDT 1999
+(Raster)
+
+OS2/ fix :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 09:29:17 PDT 1999
+(Raster)
+
+hmmmmmm oops over-zealous on the commit after bug report :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 19:24:53 PDT 1999
+(Mandrake)
+
+someone was a tad overzealous in their patching.
+
+ aa = (int)st.st_nlink;
+should have been...
+ aa = (int)st.st_ino;
+
+I suspect this broke during the OS/2 merge.  OS/2 maintainer guy, take a look
+ at this.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 23:22:55 EST 1999
+(Christian)
+
+The Return of The Ganymede Theme.
+
+
+Replaced all previously colormodified images with
+new ones, including these for red rootshells etc :)
+
+Added full support for epplets.
+
+Added a script that allows users to activate buttons
+and that installs default pulldown menues. Just go to
+the Ganymede directory and run ACTIVATE_BUTTONS.
+
+Updated README and dox too. So please nobody send me
+email anymore telling me that the pulldowns don't
+work, ok? They do. Thanks.
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 11:38:40 PDT 1999
+(Mandrake)
+
+I broke a small portion of code in OS/2
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 11:43:14 PDT 1999
+(Mandrake)
+
+one more OS/2 patch.
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 12:40:52 PDT 1999
+(Mandrake)
+
+right.  I am the king of bad typing.
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 12:48:59 PDT 1999
+(Mandrake)
+
+one more typo
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 13:25:24 PDT 1999
+(Mandrake)
+
+new TODO file.  please take a look at http://enlightenment.org/todo.html
+(the page that is generated by this file)
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 14:55:06 PDT 1999
+(Mandrake)
+
+Yet Another OS/2 patch
+this time in misc.c
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 15:00:25 PDT 1999
+(Raster)
+
+fix colormap problem with ximtool :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 18:09:59 PDT 1999
+(Mandrake)
+
+updated man pages.
+Now it should automatically build from the e/dox/E-docs/MAIN file
+
+-------------------------------------------------------------------------------
+
+Thu Oct 21 11:07:00 PDT 1999
+(Mandrake)
+
+new INSTALL documentation for getting enlightenment to work with KDE and
+GNOME, as well as sample configurations for making this work, and instructions
+on how to use the new sample files.
+
+-------------------------------------------------------------------------------
+
+Thu Oct 21 18:49:59 PDT 1999
+(Mandrake)
+
+forgot to add some files to the distribution package
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 12:10:12 PDT 1999
+(Mandrake)
+
+Minor patch for client title setting
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 23:27:28 PDT 1999
+(Mandrake)
+
+Max size now takes into account kde hints.
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:51:46 PDT 1999
+(Mandrake)
+
+fixed a potential coredump (though I'm not sure how that happened) in
+ArrangeRects()
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:52:42 PDT 1999
+(Raster)
+
+add that to TODO for tomorrow...
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 09:08:15 PDT 1999
+(Raster)
+
+be a bit mroe paranoid about loading textclasses.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 10:37:53 PDT 1999
+(Raster)
+
+be even more paranoid............ in arrangerects
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 13:54:25 PDT 1999
+(Raster)
+
+flim
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 14:04:00 PDT 1999
+(Raster)
+
+again.......
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 15:22:18 PDT 1999
+(KainX)
+
+Fixed another IPC syncing problem, this time with textclasses.
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 15:02:57 EST 1999
+(Christian)
+
+New backgrounds for the dialogs, menus and the documentation.
+I grew bored with the old ones. Opinions welcome :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 12:36:22 PDT 1999
+(Raster)
+
+some text so you know audio wasnt compiled in...
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 13:43:23 PDT 1999
+(Mandrake)
+
+hmm.  lets see if this fixes the coredump when trying to iconify a menu
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 16:11:27 PDT 1999
+(Raster)
+
+fix translucent move for 24bpp packed.. ugly.. ergh.. code is slow... but works
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 23:03:16 PDT 1999
+(Mandrake)
+
+fixes for Tru64 unix.  I may end up wanting to do an 0.16.2 release just for
+them (regular folks won't have to upgrade)
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 12:13:32 PDT 1999
+(Mandrake)
+
+I can't think of why this would be segfaulting or how this code could have
+gotten called if there were no border, but I think this must be the segfault
+I received in email. *shrug*
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 13:07:01 PDT 1999
+(Raster)
+
+dont allow snapshotting of command (retsrat on login) for remote apps 
+if we can detect they are remote.
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 16:16:36 PDT 1999
+(Raster)
+
+update desktop property even if its sticky.........
+
+-------------------------------------------------------------------------------
+
+Sat Oct 30 12:37:48 PDT 1999
+(Mandrake)
+
+fixed KDE from accidentally closing when we didn't mean to exit.
+
+-------------------------------------------------------------------------------
+
+Wed Nov  3 00:45:47 EST 1999
+(Christian)
+
+Fixed the segfault that Cale Gibbard reported -- hitting
+the close button in groups dialogs. Hey who among the
+gentlemen around here removed the apply button? He missed
+that :)
+ 
+-------------------------------------------------------------------------------
+
+Fri Nov  5 14:24:02 PST 1999
+(Mandrake)
+
+holy crap I can't believe I didn't see that bug sooner.
+This should fix the "maximize seems to mess up when I have KDE support
+enabled" bug.
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 10:51:24 PST 1999
+(Mandrake)
+
+removed two warnings when compiled with --disable-zoom
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 11:54:31 PST 1999
+(Raster)
+
+fixed sticky windows beig moved by the pager problems....... :) you can't lose
+them now anyway... :)
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 11:58:59 PST 1999
+(Raster)
+
+use no backing pixel for windows by default... :)
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 11:31:11 PST 1999
+(Mandrake)
+
+minor ArrangeRects() param change.  updated all the source to use the new
+params.  I have to write ArrangeRects() to do it right now, too.
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 14:03:54 PST 1999
+(Raster)
+
+fix some clipping code for arrage stuff...
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 15:07:24 PST 1999
+(Mandrake)
+
+Fixed a bug in KDE support where windows would place themselves underneath the
+kpanel occasionally.  it shouldn't ever do that again :)
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 16:09:57 PST 1999
+(Mandrake)
+
+Fixed a bug where selecting a window on another desktop using kpanel wouldn't
+change the current desktop in kpanel (workaround for kpanel bug)
+
+-------------------------------------------------------------------------------
+
+Sun Nov  7 18:20:16 PST 1999
+(Mandrake)
+
+fixed bug reported by ljlane@debian.org - icons still showed named when show
+names was turned off.
+
+-------------------------------------------------------------------------------
+
+Mon Nov  8 20:38:35 PST 1999
+(Mandrake)
+
+evil bug I don't grok how it happened
+
+-------------------------------------------------------------------------------
+
+Tue Nov  9 16:10:16 PST 1999
+(Raster)
+
+oops typos in non EMX code.. :) missing ;
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 09:07:28 PST 1999
+(Raster)
+
+bounds checking fix :) thanks alan strange :)
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 09:34:29 PST 1999
+(Mandrake)
+
+fixed a pretty nasty uninitialized memory test.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 14:53:40 PST 1999
+(Mandrake)
+
+fixed an uninitialized memory check in menus.c (reported by Alan Stange - this
+man is getting it on with debuggers - I will put his name in the credits
+sometime this week for 0.16.3)
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 16:34:16 EST 1999
+(Christian)
+
+Fixed a segfault that Paul Radford <prbluebottle@netscape.net>
+reported: "Minimize a window into an iconbox, close the icon-
+box and minimize the app again". I could not exactly reproduce
+this because I already got segfaults when I _entered_ the window
+that is uniconified when the iconbox is closed.
+
+In any case, there were strange things going on with
+mode.focuswin, because FocusToEWin(NULL) returns immediately
+in clickmode ... hope the whole thing is history now.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 18:58:56 PST 1999
+(Raster)
+
+fix variable expansion for file execcing...
+fix mensu to be onscreen including submenus when u have menus onsreen selected.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 22 12:42:56 PST 1999
+(Mandrake)
+
+added "current" option to win_op ipc command for walt :)
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:52:40 PST 1999
+(Raster)
+
+gettext internationalisation support & patch
+fix to allow setting of which mouse button do what on the pager
+fix to border width handlign in icccm
+fix to warp foucs
+some other stuff i probabyl forgot about...
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:57:42 PST 1999
+(Raster)
+
+how DID border s get that in there?????????????
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 21:32:16 PST 1999
+(KainX)
+
+Make this sucker build again.
+
+-------------------------------------------------------------------------------
+
+Wed Dec  8 10:57:56 PST 1999
+(Mandrake)
+
+nasty indention issues in ipc.c
+
+-------------------------------------------------------------------------------
+
+Wed Dec  8 11:05:27 PST 1999
+(Mandrake)
+
+more minor changes
+
+-------------------------------------------------------------------------------
+
+Fri Dec 10 10:27:22 PST 1999
+(Raster)
+
+auto resizing border parts patch for veretical text...
+
+-------------------------------------------------------------------------------
+
+Fri Dec 10 10:33:49 PST 1999
+(Raster)
+
+true64 fix........
+
+-------------------------------------------------------------------------------
+
+Sun Dec 12 13:17:45 PST 1999
+(Raster)
+
+ooooooops :) tabel paddign done wrong...
+
+-------------------------------------------------------------------------------
+
+Wed Dec 15 13:47:12 PST 1999
+(KainX)
+
+Patches from Peter Kjellerstedt <peter.kjellerstedt@axis.com>
+for typos and such.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 16 18:28:59 PST 1999
+(Mandrake)
+
+this is a test commit to see if the list works again.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 08:02:15 PST 1999
+(Raster)
+
+add in patches from 2 AUTHORS for internationalisation...
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 08:12:29 PST 1999
+(Raster)
+
+fix some consitancies for text but peter um.. :) not all that patch was 
+typos.. the original spelling was correct. I was using "English" not "American"
+:) (note Enlish spelligns for colour is coloUr not color, and initialise is 
+with an S not a Z in English) :)
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 08:23:33 PST 1999
+(Raster)
+
+patch for file finding internationalisation...
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 13:23:45 PST 1999
+(Mandrake)
+
+added "extended" data display mode to window_list IPC command.
+you can get an extended list using "window_list extended"
+returns the following format:
+"window_id : title :: desktop : area_x area_y : x_coordinate y_coordinate
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 22:29:49 PST 1999
+(Mandrake)
+
+fixed minor ipc help indention problem
+
+-------------------------------------------------------------------------------
+
+Thu Dec 23 10:46:56 PST 1999
+(Raster)
+
+dont animate if animate is turend off for iconbox when dnd to iconbox..
+
+-------------------------------------------------------------------------------
+
+Thu Dec 23 10:59:57 PST 1999
+(Raster)
+
+use setlocale.... 
+
+-------------------------------------------------------------------------------
+
+Wed Dec 29 14:14:29 PST 1999
+(KainX)
+
+Fixed that weird background setting behavior that E-Slides revealed.
+
+-------------------------------------------------------------------------------
+
+Tue Jan  4 23:58:44 CET 2000
+(Saur)
+
+* Corrected a couple of spelling errors in the code.
+* Added localization of a few messages in the E.h file.
+
+-------------------------------------------------------------------------------
+
+Thu Jan  6 12:23:56 PST 2000
+(Mandrake)
+
+updated copyrights to say 2000. muahahaha.  
+
+-------------------------------------------------------------------------------
+
+Mon Jan 10 18:26:39 PST 2000
+(Raster)
+
+use LC_ALL
+
+-------------------------------------------------------------------------------
+
+Mon Jan 10 20:08:46 PST 2000
+(Raster)
+
+i cant remmeber if the last commit worked..
+
+-------------------------------------------------------------------------------
+
+Tue Jan 18 11:56:55 PST 2000
+(Raster)
+
+extra check for xim in ttfonts
+
+-------------------------------------------------------------------------------
+
+Tue Jan 25 14:38:37 EST 2000
+(Christian)
+
+Ganymede 0.5. Lots of minor changes I haven't commited yet, most
+notably on the Eterm theme.
+
+-------------------------------------------------------------------------------
+
+Fri Jan 28 10:30:51 PST 2000
+(Raster)
+
+now that was silly - setting mode.xselect afterwards to 1 again,..
+
+-------------------------------------------------------------------------------
+
+Fri Jan 28 14:24:27 PST 2000
+(KainX)
+
+Fixed issues on platforms with unsigned chars.
+
+-------------------------------------------------------------------------------
+
+Mon Jan 31 10:50:09 PST 2000
+(Raster)
+
+text compression works wiht multi-byte stuff now thanks to masahiko :)
+
+-------------------------------------------------------------------------------
+
+Sun Feb 13 13:57:02 PST 2000
+(Mandrake)
+
+allowing a # style comment in .menu files.
+# MUST be the very first character however :)
+
+-------------------------------------------------------------------------------
+
+Sun Feb 20 17:08:25 GMT 2000
+(gilbertt)
+
+Hopefully not too controversial... Added option in "Special FX Settings"
+to enable/disable warping the pointer after sliding a menu onscreen. I was
+going on about it ages ago, and thought this was the best thing to do...
+
+Default behaviour is not changed, the setting is saved and loaded correctly.
+
+*Clenches and awaits cl00batting*
+
+-------------------------------------------------------------------------------
+
+Sun Feb 20 18:10:30 GMT 2000
+(gilbertt)
+
+Don't kill meeeee!
+
+;)
+
+People keep asking for this, so I added an option to "Focus Settings",
+called "Show sticky windows in focus list". Its selected by default, but if
+you deselect it, your ALT+TAB list won't show sticky windows. Keeps loggers
+and gkrellm etc out of it...
+
+Feel free to revert the commit if it's inappropriate...
+
+-------------------------------------------------------------------------------
+
+Mon Feb 21 20:46:52 GMT 2000
+(gilbertt)
+
+Added winops commands/remember options/action definitions for skipping
+focus, skipping tasklist, skipping winlist.
+
+The second two work well. skipfocus is not thoroughly implemented in the e
+code, ie. you can still focus =) I'm about to go through and add some logic
+for that... Then I was gonna make non-ALT button clicks on skip_focus
+windows bring up root menus...
+
+Lots of changes, so check for bugs =)
+
+-------------------------------------------------------------------------------
+
+Mon Feb 21 21:48:34 GMT 2000
+(gilbertt)
+
+Warning removal. I was a bad boy.
+
+-------------------------------------------------------------------------------
+
+Mon Feb 21 21:50:20 GMT 2000
+(gilbertt)
+
+and this.
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 14:55:54 GMT 2000
+(gilbertt)
+
+Modified the ipc remember command. It is compatible with the old one
+however.
+
+Originally, you'd do:
+remember windowid sticky
+remember windowid command
+remember windowid size
+etc
+
+Now you can also do:
+remember windowid sticky command size ...
+
+This streamlines epplets in particular, and speeds up Epplet_remember by a
+factor of 8. (Significant on certain boxen).
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 15:39:37 GMT 2000
+(gilbertt)
+
+*cough*. Now the remember ipc should actually *work*. Sorry ;)
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 15:54:11 GMT 2000
+(gilbertt)
+
+remove a debugging printf
+
+-------------------------------------------------------------------------------
+
+Mon Feb 28 18:04:33 GMT 2000
+(gilbertt)
+
+Did what I should have in the first place: consolidated all those window
+list options into one winop: "Skip Window Lists", and one remember option.
+
+The actions are still defined to do stuff individually, but users have no
+need of that sort of granularity. Much nicer now :)
+
+-------------------------------------------------------------------------------
+
+Mon Feb 28 19:39:46 GMT 2000
+(gilbertt)
+
+64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
+
+-------------------------------------------------------------------------------
+
+Tue Feb 29 19:44:59 GMT 2000
+(gilbertt)
+
+Hehe. Typo stopped the list skip thing being loaded from the .snaps.x file.
+Fixed.
+
+-------------------------------------------------------------------------------
+
+Tue Mar 14 18:57:38 CET 2000
+(Christian)
+
+Small fix for people who want to pop up
+menus using their keyboard.
+
+-------------------------------------------------------------------------------
+
+Tue Mar 14 20:23:53 CET 2000
+(Saur)
+
+Added patch from Masahiko Mori <masa@cthulhu.engr.sgi.com>
+to improve localization support (I modified the patch somewhat).
+
+-------------------------------------------------------------------------------
+
+Tue Mar 14 22:23:27 GMT 2000
+(gilbertt)
+
+Patches from Bob Arendt <rdarendt@cwcom.net> to enable a user-configurable
+cache-dir. Solves some preformance problems on NFS-mounted home directories.
+Also fixes a couple of bugs with the current -econfdir option.
+
+I've tested this fairly well, as has Bob, but let me know if there are any
+problems.
+
+
+-------------------------------------------------------------------------------
+
+Thu Mar 16 23:02:49 GMT 2000
+(gilbertt)
+
+Patch from Marius Aamodt Eriksen <marius@linux.com>. Provides option to
+include shaded windows in focuslist. Now all we need is an "include
+iconified windows" option...
+
+
+-------------------------------------------------------------------------------
+
+Fri Mar 17 21:09:33 GMT 2000
+(gilbertt)
+
+Another patch from Marius Aamodt Eriksen <marius@linux.com>. Adds the
+option to include iconified windows in the focuslist and uniconify them on
+selection. Flim.
+
+-------------------------------------------------------------------------------
+
+Fri Mar 17 23:01:24 PST 2000
+(KainX)
+
+I found the problem in icccm.c.  For some reason, somebody thought it
+would be a good idea to set minimum width/height equal to the base
+width/height if no *maximum* size was specified.  I think they meant to
+check for *minimum* size.  Anyway, I fixed that and added a more robust
+check for that kind of thing.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 18 18:24:29 CET 2000
+(Christian)
+
+Well, I'm committing the area wraparound stuff, since people
+keep asking me for updated versons of the patch. I've moved
+the config option to the areas dialog, where it fits better.
+Feel free to revert if this is inappropriate.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 20 21:58:50 GMT 2000
+(gilbertt)
+
+You can now iconify windows with skip_winlists set.
+
+
+-------------------------------------------------------------------------------
+
+Thu Mar 23 22:02:20 PST 2000
+(Mandrake)
+
+redoing libXinerama support.  If you use xinerama, try using the "xinerama"
+command.  ALSO - you have to make sure you installed libXinerama.a in the
+right place as well as Xinerama.h -- still lots more hacking to do (trying to
+do a cleaner implementation than my last hack)
+
+-------------------------------------------------------------------------------
+
+Thu Mar 23 22:10:29 PST 2000
+(Mandrake)
+
+minor update to tell you that xinerama is not active on your box if it isn't
+turned on but you have xinerama support in your server.
+
+
+-------------------------------------------------------------------------------
+
+Fri Mar 24 17:53:46 PST 2000
+(Mandrake)
+
+working on xinerama (copying home)
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 17:02:32 GMT 2000
+(gilbertt)
+
+This *should* prevent windows set to skip_winlists from appearing in the gnome
+pager and other such gnomey things. Could someone who use the gnome-pager
+applet test it for me?
+
+This doesn't break the gnome wm-spec does it?
+
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 17:15:37 GMT 2000
+(gilbertt)
+
+I suspect this would be necessary too.
+
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 23:17:57 GMT 2000
+(gilbertt)
+
+Fixed a bug where the winops menu always appeared at the top of the screen,
+if "keep menus onscreen" was selected.
+
+At some point, the menu location calcs ended up before the XQueryPointer, so
+uninitialised values were being used.
+
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 23:31:02 GMT 2000
+(gilbertt)
+
+Another fine patch from Marius Eriksen <marius@linux.com>. Gives windows the
+focus when they are cycled through in the focuslist. Enabled by default, as  
+it's nice behaviour, but toggleable of course =)
+
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 17:32:16 PST 2000
+(Mandrake)
+
+This is still slightly hacking xinerama support - needs some more work.
+some things will still pop up inbetween heads, but for the most part windows
+will pop up on the head that is currently focused and will pop up without
+going between heads.
+
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 18:16:11 PST 2000
+(Mandrake)
+
+slightly better arranger code for XINERAMA - this should ALSO fix a couple of
+KDE arranger problems that people reported, too.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 18:17:32 PST 2000
+(Mandrake)
+
+oops, left a debugging printf in arrange.c
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 20:51:51 PST 2000
+(Mandrake)
+
+more xinerama support.  This time settings dialogs pop up centered on the
+current head if there isn't a settings dialog already open.
+Next - edge resistance between heads.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 20:58:49 PST 2000
+(Mandrake)
+
+oops, debugging printfs
+
+-------------------------------------------------------------------------------
+
+Sun Mar 26 13:42:23 PST 2000
+(Mandrake)
+
+fixed edge resistance between heads when you're using xinerama.
+
+-------------------------------------------------------------------------------
+
+Sun Mar 26 14:16:39 PST 2000
+(Mandrake)
+
+added xinerama support for maximizing windows.  They'll stay on the current
+had unless you use the "absolute" option, which means you want as much space
+as possible
+
+-------------------------------------------------------------------------------
+
+Sun Mar 26 15:40:38 PST 2000
+(Mandrake)
+
+new "configpanel" ipc command.  This way I can use my config panels from efm
+by building a menu that runs eesh *grin*
+
+-------------------------------------------------------------------------------
+
+Tue Mar 28 10:31:25 PST 2000
+(Mandrake)
+
+fixed maximize bug where it would pay attention to iconified windows.
+
+-------------------------------------------------------------------------------
+
+Thu Mar 30 15:43:39 PST 2000
+(Mandrake)
+
+fixed logout dialog box to work properly under xinerama
+
+-------------------------------------------------------------------------------
+
+Thu Mar 30 18:21:59 PST 2000
+(Mandrake)
+
+fix for maximize to ignore iconified windows
+fixed dock app support
+fix to speed up epplets by merging snap saves in timer event
+fixed ascents in I18N fonts
+minor initialization fix in eesh
+
+
+-------------------------------------------------------------------------------
+
+Fri Mar 31 10:38:09 PST 2000
+(Mandrake)
+
+some people have problems with this session.c (don't know why)
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 10:17:21 PDT 2000
+(Mandrake)
+
+fix for iconified windows not getting focus properly when in focuslist.
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 12:00:47 PDT 2000
+(Mandrake)
+
+the remembered settings dialog was too big.  This has less information in it
+but isn't so big when I have a lot of remembered windows on screen.
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 15:07:12 PDT 2000
+(Mandrake)
+
+beginnings of xinerama menu support.  just have to fix the remainder of the
+"stay on screen as I scroll" bits"
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 16:46:07 PDT 2000
+(Mandrake)
+
+more fixes for xinerama-aware menus.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  6 01:17:06 CEST 2000
+(Saur)
+
+Ran the default indent from ecvs on all files to get rid of differences
+caused by it (should hopefully give smaller diffs in the future).
+Removed all duplicated * * in comments (generated by indent sometimes).
+
+-------------------------------------------------------------------------------
+
+Thu Apr  6 01:39:50 CEST 2000
+(Saur)
+
+Removed memory leaks from the dialog displaying a list of remembered
+windows, and fixed so E does not crash if you press escape in it.
+
+-------------------------------------------------------------------------------
+
+Wed Apr  5 16:55:39 PDT 2000
+(Mandrake)
+
+a little bit of fixing to the xinerama menu code
+
+-------------------------------------------------------------------------------
+
+Thu Apr  6 03:45:54 CEST 2000
+(Saur)
+
+Revenge of the config dialog headers!
+
+There is now a new dialog for miscellaneous options (did not
+have much choice as there was no suitable dialog fit for the
+purpose), which currently only contains one option:
+the possibility to turn on dialog headers again.
+
+If anyone feels up to it, the following dialog images are
+missing (as I cannot draw  anything worth looking at):
+group.png, iconbox.png, kde.png and miscellaneous.png.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  6 04:29:03 CEST 2000
+(Saur)
+
+Added localization of some more messages.
+
+-------------------------------------------------------------------------------
+
+Fri Apr  7 11:44:00 GMT 2000
+(gilbertt)
+
+Tasklist/desktop menu window raising fix requested by lee@brave.com.
+
+
+-------------------------------------------------------------------------------
+
+Mon Apr 10 12:45:00 PDT 2000
+(Mandrake)
+
+redid all the xinerama menu code
+
+-------------------------------------------------------------------------------
+
+Mon Apr 10 15:01:10 PDT 2000
+(Mandrake)
+
+fixed the rest of xinerama menu usage (please test under non-xinerama)
+
+-------------------------------------------------------------------------------
+
+Mon Apr 10 15:43:56 PDT 2000
+(Mandrake)
+
+fix for bringing iconified windows to current head when using the tasklist.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 24 15:33:47 PDT 2000
+(KainX)
+
+Patch from Bob Arendt <rdarendt@cwcom.net> for move/resize geometry
+box location.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 24 15:57:55 PDT 2000
+(KainX)
+
+Patch from Johannes Erdfelt <jerdfelt@valinux.com> to give a demo of
+each of the move types in the move/resize settings dialog.  Really
+cool. :-)
+
+-------------------------------------------------------------------------------
+
+Mon May  8 20:15:23 CEST 2000
+(Saur)
+
+Make sure mode.geominfomode is initialized.
+
+-------------------------------------------------------------------------------
+
+Tue May  9 22:00:05 CEST 2000
+(Christian)
+
+I've implemented the window swapping feature recently
+discussed on the list. There's a new action __A_SWAPMOVE
+on ALT-SHIFT-Button1 that swaps windows that belong to a group.
+Can be disabled in the global groups dialog. Play with it, it's fun :)
+
+Also minor tweaks to the Ganymede Eterm theme.
+
+-------------------------------------------------------------------------------
+
+Sun May 28 11:48:09 PDT 2000
+(KainX)
+
+There's nothing illegal about base width/height being zero, so don't
+force it to be no less than 1.
+
+-------------------------------------------------------------------------------
+
+Sun Jun  4 20:56:41 GMT 2000
+(gilbertt)
+
+Patch from monkeyiq@flashmail.com (real name?) for the option to position
+windows centered under the mouse pointer.
+
+(I changed the logic just slightly from the patch, so that windows too big
+vertically are positioned so that the top is visible, instead of the other
+way around).
+
+-------------------------------------------------------------------------------
+
+Thu Jul 20 16:14:29 PDT 2000
+(KainX)
+
+If GNOME-friendly E happens to be running in a non-GNOME environment, you
+won't be able to exit E without eesh.  So now there are separate "Exit E" and
+"Logout" options in the menu.
+
+-------------------------------------------------------------------------------
+
+Wed Jul 26 11:18:29 PDT 2000
+(Mandrake)
+
+apparently when you first open up the background settings dialog box it
+clobbers the atom that says what the base background should have in it.
+This is a hack, but fixes the symptom of the problem :)
+
+-------------------------------------------------------------------------------
+
+Wed Jul 26 11:54:23 PDT 2000
+(Mandrake)
+
+Same problem when you close the desktop background window
+
+-------------------------------------------------------------------------------
+
+Fri Jul 28 10:42:05 PDT 2000
+(Mandrake)
+
+the beginning of another xinerama feature "place additional windows on extra
+head when current head is full"
+
+-------------------------------------------------------------------------------
+
+Fri Jul 28 12:31:35 PDT 2000
+(Mandrake)
+
+Now with xinerama enabled your alt-tab focus list will appear properly
+centered in the current head.  I think I will add an alt-tab feature to only
+focus on windows in the current head as well (this will be toggle-able)
+
+-------------------------------------------------------------------------------
+
+Fri Jul 28 23:31:29 CEST 2000
+(Christian)
+
+Make this compile again on non-Xinerama machines.
+Hey Mandrake, have mercy with us poor singleheads :)
+
+-------------------------------------------------------------------------------
+
+Fri Jul 28 23:46:02 CEST 2000
+(Christian)
+
+I'm commenting out the MoveResize Demo thing for the 0.16.5 release.
+
+-------------------------------------------------------------------------------
+
+Fri Mar 28 00:14:31 EST 2003
+(KainX)
+
+More patches from Kim Woelders <kim@woelders.dk>.
 
 -------------------------------------------------------------------------------
 
@@ -5,3 +4765,6 @@ Mon Mar 31 12:29:44 EST 2003
 (KainX)
 
 3 more patches from Kim Woelders <kim@woelders.dk>.
+
+-------------------------------------------------------------------------------
+

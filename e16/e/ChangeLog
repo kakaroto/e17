@@ -1761,9 +1761,9 @@ Patch from Kim Woelders <kim@woelders.dk> for freedesktop.org WM hints.
 
 -------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------
-
 Sun Mar 23 22:59:34 EST 2003
 (KainX)
 
 Add Kim to the AUTHORS file, and run ecvs for the first time in ages.
+
+-------------------------------------------------------------------------------
