@@ -54,9 +54,9 @@ __imlib_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b)
    
    if (s == 0.0)
      {
-	*r = lround ((v*255.0)/100.0);
-	*g = lround ((v*255.0)/100.0);
-	*b = lround ((v*255.0)/100.0);
+	*r = round ((v*255.0)/100.0);
+	*g = round ((v*255.0)/100.0);
+	*b = round ((v*255.0)/100.0);
 	
 	return;
      }
@@ -73,44 +73,44 @@ __imlib_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b)
      {
       case 0:
 	  {
-	     *r = lround (v*255.0 / 100.0);
-	     *g = lround (t*255.0);
-	     *b = lround (p*255.0);
+	     *r = round (v*255.0 / 100.0);
+	     *g = round (t*255.0);
+	     *b = round (p*255.0);
 	     break;
 	  }
       case 1:
 	  {
-	     *r = lround (q*255.0);
-	     *g = lround (v*255.0 / 100.0);
-	     *b = lround (p*255.0);
+	     *r = round (q*255.0);
+	     *g = round (v*255.0 / 100.0);
+	     *b = round (p*255.0);
 	     break;
 	  }
       case 2:
 	  {
-	     *r = lround (p*255.0);
-	     *g = lround (v*255.0 / 100.0);
-	     *b = lround (t*255.0);
+	     *r = round (p*255.0);
+	     *g = round (v*255.0 / 100.0);
+	     *b = round (t*255.0);
 	     break;
 	  }
       case 3:
 	  {
-	     *r = lround (p*255.0);
-	     *g = lround (q*255.0);
-	     *b = lround (v*255.0 / 100.0);
+	     *r = round (p*255.0);
+	     *g = round (q*255.0);
+	     *b = round (v*255.0 / 100.0);
 	     break;
 	  }
       case 4:
 	  {
-	     *r = lround (t*255.0);
-	     *g = lround (p*255.0);
-	     *b = lround (v*255.0 / 100.0);
+	     *r = round (t*255.0);
+	     *g = round (p*255.0);
+	     *b = round (v*255.0 / 100.0);
 	     break;
 	  }
       case 5:
 	  {
-	     *r = lround (v*255.0 / 100.0);
-	     *g = lround (p*255.0);
-	     *b = lround (q*255.0);
+	     *r = round (v*255.0 / 100.0);
+	     *g = round (p*255.0);
+	     *b = round (q*255.0);
 	     break;
 	  }
      }
