@@ -74,7 +74,7 @@ if test "$db_cv_cxx" = "yes"; then
 		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
 	fi
 
-	LIBOBJS="$LIBOBJS \$(COBJS)"
+	AC_LIBOBJ="$AC_LIBOBJ \$(COBJS)"
 fi
 
 dnl There are additional libraries we need for some compiler/architecture
@@ -88,7 +88,7 @@ AC_ARG_ENABLE(compat185,
 	[db_cv_compat185="$enable_compat185"], [db_cv_compat185="no"])
 AC_MSG_RESULT($db_cv_compat185)
 if test "$db_cv_compat185" = "yes"; then
-	LIBOBJS="db185.o $LIBOBJS"
+	AC_LIBOBJ="db185.o $AC_LIBOBJ"
 fi
 
 dnl Optional utilities.
@@ -163,7 +163,7 @@ AC_CHECK_FUNCS(getuid pread pstat_getdynamic sysconf)
 
 dnl A/UX has a broken getopt(3).
 case "$host_os" in
-aux*)	LIBOBJS="getopt.o $LIBOBJS";;
+aux*)	AC_LIBOBJ="getopt.o $AC_LIBOBJ";;
 esac
 
 dnl Checks for system functions for which we don't have replacements.
@@ -453,7 +453,7 @@ uts4/cc)
 	AC_DEFINE(HAVE_ASSEM_UTS4_CC)
 	mutex_align="sizeof(int)"
 	spin_line1="typedef int tsl_t;"
-	LIBOBJS="$LIBOBJS uts4.cc.o";;
+	AC_LIBOBJ="$AC_LIBOBJ uts4.cc.o";;
 x86/gcc)
 	AC_DEFINE(HAVE_ASSEM_X86_GCC)
 	mutex_align="1"
@@ -648,9 +648,8 @@ fi
 AC_MSG_RESULT($gtk_ok)
 
 AC_CHECK_LIB(ncurses, putwin,
-  AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no),
-  ncurses_ok=no,
-  -lncurses)
+  [AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no)],
+  ncurses_ok=no, -lncurses)
   
 AM_CONDITIONAL(EDB_VT_ED, test "$ncurses_ok" = yes)
 AM_CONDITIONAL(EDB_GTK_ED, test "$gtk_ok" = yes)
