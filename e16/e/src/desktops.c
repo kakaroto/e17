@@ -707,7 +707,8 @@ MoveStickyWindowsToCurrentDesk(void)
 void
 GotoDesktop(int desk)
 {
-   int                 x, y, pdesk;
+   static int          pdesk = -1;
+   int                 x, y;
 
    EDBUG(2, "GotoDesktop");
 
@@ -718,10 +719,8 @@ GotoDesktop(int desk)
 	else if (desk < 0)
 	   desk = Conf.desks.num - 1;
      }
-   if (desk < 0 || desk >= Conf.desks.num || desk == desks.current)
+   if (desk < 0 || desk >= Conf.desks.num || desk == pdesk)
       EDBUG_RETURN_;
-
-   pdesk = desks.current;
 
    SlideoutsHide();
 
@@ -811,10 +810,13 @@ GotoDesktop(int desk)
    if (Mode.mode == MODE_DESKSWITCH)
       Mode.mode = MODE_NONE;
 
-   RedrawPagersForDesktop(pdesk, 0);
+   if (pdesk >= 0)
+      RedrawPagersForDesktop(pdesk, 0);
    RedrawPagersForDesktop(desk, 3);
    ForceUpdatePagersForDesktop(desk);
    HandleDrawQueue();
+
+   pdesk = desks.current;
 
    EDBUG_RETURN_;
 }

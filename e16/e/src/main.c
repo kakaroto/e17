@@ -234,7 +234,6 @@ main(int argc, char **argv)
    ZoomInit();
    SetupDirs();
    InitDesktopBgs();
-   GotoDesktop(0);
    CommsSetup();
    CommsFindCommsWindow();
    LoadGroups();
@@ -314,6 +313,7 @@ main(int argc, char **argv)
 
    /* let's make sure we set this up and go to our desk anyways */
    GotoDesktop(desks.current);
+#if 0				/* Why? */
    if (desks.current < (Conf.desks.num - 1))
      {
 	char                ps = 0;
@@ -342,6 +342,7 @@ main(int argc, char **argv)
 	if (!Conf.mapslide)
 	   Conf.desks.slidein = ps;
      }
+#endif
    XSync(disp, False);
 
    /* if we didn't have an external window piped to us, we'll do some stuff */
