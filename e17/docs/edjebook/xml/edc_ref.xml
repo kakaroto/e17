@@ -283,18 +283,6 @@ ex: aspect, 1.0 5.0; (Minimum aspect of 1:1, maximum of 5:1 - Width:Height);
 <row>
   <entry>description
         </entry>
-  <entry>border,
-        </entry>
-  <entry>LEFT RIGHT TOP BOTTOM;
-        </entry>
-  <entry>Border scaling values for an image part as specified in integer pixel widths, for each four sides of an image. This will stop Edje from scaling the outside edge of an image when scaling an image part.
-ex: border, 10 10 10 10; (Scale the edge of the image part 10 pixels on all sides)
-        </entry>
-</row>
-
-<row>
-  <entry>description
-        </entry>
   <entry>color,
         </entry>
   <entry>RED GREEN BLUE ALPHA;
@@ -406,6 +394,18 @@ ex: to, "some_part";
   <entry>"image_name";
         </entry>
   <entry>Name of an image to be used in an animation loop.  Images are dispay in the order they are listed.  There is no limit to the number of tweens that can be specified.
+        </entry>
+</row>
+
+<row>
+  <entry>image
+        </entry>
+  <entry>border,
+        </entry>
+  <entry>LEFT RIGHT TOP BOTTOM;
+        </entry>
+  <entry>Border scaling values for an image part as specified in integer pixel widths, for each four sides of an image. This will stop Edje from scaling the outside edge of an image when scaling an image part.
+ex: border, 10 10 10 10; (Scale the edge of the image part 10 pixels on all sides)
         </entry>
 </row>
 

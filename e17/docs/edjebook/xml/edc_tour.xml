@@ -4,7 +4,7 @@
 <para>
 Whenever you design a graphical application you need to first determine
 what the application needs to do, and then you consider how it should look.
-When developing with Edje these two tasks are the seperate activities they should
+When developing with Edje these two tasks are the separate activities they should
 be.  When determining how to design your interface, it's common to use GIMP
 as a layout tool,  this is particularly helpful for designing your interface with
 Edje as you can see exactly how each element is going to be positioned and relate
@@ -13,7 +13,7 @@ Next, it's time to actually build your real interface.  This starts by creating
 a file typically labeled with a .edc extension.  Once you've created your EDC,
 you will generate the EET that will be used by your application. This is done using <command>edje_cc</command>,
 the Edje Collection Compiler.  Edje_cc will pack your EDC plus all of the images
-your interface will need into one tight compact EDC, and will even compress
+your interface will need into one tight compact EET, and will even compress
 images if you specified compression in your EDC.  This generated EET will
 be the file that your application code, using the Edje API, will access
 and interact with.  This allows you to share or transfer themes by moving
@@ -194,7 +194,7 @@ collections {
 <para>
 The first thing to notice is that the syntax is very C like.  The second is that EDCs have two major
 sections: images and collections.  And lastly, that every directive is in the form: keyword, arg1 arg2 ...;.
-Now lets talk thru this EDC section by section.
+Now lets talk through this EDC section by section.
 </para>
 
 <para>
