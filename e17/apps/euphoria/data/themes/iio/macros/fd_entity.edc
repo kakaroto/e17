@@ -5,13 +5,13 @@ part { name, pname".name"; type, TEXT; mouse_events, 0; effect, NONE; \
     rel1 { relative, 0.0 0.0; offset, 5 0; } \
     rel2 { relative, 1.0 1.0; offset, -5 0; } \
     color, 150 150 160 255; text {text,"";font,"Edje.visitor1"; \
-    size, 7; align, talign; fit, 0 0; } } \
+    size, 9; align, talign; fit, 0 0; } } \
     description { \
 	state, "hilited" 0.0; visible, 1; \
 	rel1 { relative, 0.0 0.0; offset, 5 0; } \
 	rel2 { relative, 1.0 1.0; offset, -5 0; } \
 	color, 31 31 55 255; \
-	text {text,"";font,"Edje.visitor1"; size, 7; align, talign; fit, 0 0; } } \
+	text {text,"";font,"Edje.visitor1"; size, 9; align, talign; fit, 0 0; } } \
      } \
 part { name, "base"; type, RECT; mouse_events, 1; repeat_events, 1; \
     description { state, "default" 0.0; visible, 1; \

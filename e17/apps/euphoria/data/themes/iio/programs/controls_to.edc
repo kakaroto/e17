@@ -94,7 +94,7 @@ program { name, "play_unhilited"; signal, "mouse,out"; source, PLAY;
 }	
 program { name, "play_click"; signal, "mouse,down,*";source, PLAY;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, PLAY;
-	after, "play_unclick", in, 0.15 0.0;
+	after, "play_unclick"; in, 0.15 0.0;
 }	
 program { name, "play_unclick"; signal, "mouse,up,*"; source, PLAY;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PLAY;
@@ -132,7 +132,7 @@ program { name, "next_unhilited"; signal, "mouse,out"; source, NEXT;
 }
 program { name, "next_click"; signal, "mouse,down,*"; source, NEXT;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, NEXT;
-	after, "next_unclick", in, 0.15 0.0;
+	after, "next_unclick"; in, 0.15 0.0;
 }
 program { name, "next_unclick"; signal, "mouse,up,*"; source, NEXT;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, NEXT;

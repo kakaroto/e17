@@ -79,7 +79,7 @@
 	rel1 { relative, 0.5 1.0; offset, -10 -3; to, "small_lcd"; }
 	rel2 { relative, 1.0 0.5; offset, 0 0; to, "small_lcd"; }
 	color,  31 31 55 255;
-	text { text, "0:00"; font, "Edje.visitor1"; size, 7; align, 0.0 0.0; } } }
+	text { text, "0:00"; font, "Edje.visitor1"; size, 9; align, 0.0 0.0; } } }
 //
 	part { name, "_prev_button"; type, IMAGE; mouse_events, 1;	    
 	description { state, "default" 0.0; max, 13 39; min, 13 39;       		
@@ -216,4 +216,4 @@
 	rel1 { relative, 0.10 0.6; offset, 0 0; to, "strans_Rect"; }
 	rel2 { relative, 1.0 0.0; offset, 0 0; to, "strans_Rect"; }
 	color,  31 31 55 255;
-	text { text, "song"; font, "Edje.visitor1"; size, 7; align, 0.0 0.0; } } }
+	text { text, "song"; font, "Edje.visitor1"; size, 9; align, 0.0 0.0; } } }

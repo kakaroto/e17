@@ -27,16 +27,16 @@
 	image { normal, "bar_delay_right.png"; }
 	border, 0 0 7 8; } }
 
-	part { name, RIGHT"border-slide";
+	part { name, RIGHT"border-slide"; type, RECT;
 	description { state, "default" 0.0; visible, 0; min, 0 94; max, 9999 9999;
+	color, 0 0 0 0;
 	rel1 { to, RIGHT"border"; relative, 1.0 0.0; offset, 0 0; }
-	rel2 { to, RIGHT"border"; relative, 1.0 1.0; offset, 0 0; }
-	border, 0 0 0 0; }
+	rel2 { to, RIGHT"border"; relative, 1.0 1.0; offset, 0 0; } }
 
 	description { state, "slide" 0.0; visible, 1; min, 0 94; max, 9999 9999; 
+	color, 0 0 0 0;
 	rel1 { to, RIGHT"border"; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, RIGHT"border"; relative, 1.0 1.0; offset, 0 0; }
-	border, 0 0 0 0; } }
+	rel2 { to, RIGHT"border"; relative, 1.0 1.0; offset, 0 0; } } }
 ///////////////////////////////////////////////////////////////////////
 	part { name, LEFT"panel"; type, IMAGE; mouse_events, 1; repeat_events, 1;
 	description { state, "default" 0.0; min, 0 94; max, 145 94;
@@ -56,16 +56,16 @@
 	rel2 { to, BASE; relative, 0.0 1.0; offset, 1 -1; }       
 	image { normal, "bar_delay_left.png"; } } }
 
-	part { name, LEFT"border-slide"; 
+	part { name, LEFT"border-slide"; type, RECT;
 	description { state, "default" 0.0; visible, 0; min, 0 94; max, 9999 9999;
+	color, 0 0 0 0;
 	rel1 { to, LEFT"border"; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, LEFT"border"; relative, 1.0 1.0; offset, 0 0; }
-	border, 0 0 0 0; }
+	rel2 { to, LEFT"border"; relative, 1.0 1.0; offset, 0 0; } }
 
 	description { state, "slide" 0.0; visible, 1; min, 0 94; max, 9999 9999; 
+	color, 0 0 0 0;
 	rel1 { to, LEFT"border"; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, LEFT"border"; relative, 1.0 1.0; offset, 0 0; }
-	border, 0 0 0 0; } }
+	rel2 { to, LEFT"border"; relative, 1.0 1.0; offset, 0 0; } } }
 ///////////////////////////////////////////////////////////////////////
 	part { name, RIGHT"lcd"; type, IMAGE; mouse_events, 0;
 	description { state, "default" 0.0; min, 0 94; max, 142 94; 
@@ -100,8 +100,10 @@
 	border, 9 9 9 9; fill { smooth, 0; } } }
 //
 ///////////////////////////////////////////////////////////////////////
-	part { name, "CenterClipArea"; mouse_events, 1; repeat_events, 1;
+	part { name, "CenterClipArea"; type, RECT;
+	mouse_events, 1; repeat_events, 1;
 	description { state, "default" 0.0; min, 123 94; max, 123 94;
+	color, 0 0 0 0;
 	rel1 { to, BASE; relative, 0.0 0.0; offset, 0 0; }
 	rel2 { to, BASE; relative, 1.0 1.0; offset, 0 0; } } }
 ///////////////////////////////////////////////////////////////////////
@@ -248,7 +250,7 @@
 	rel1 { to, "trans_Rect"; relative, 0 0; offset, 10 14; }
 	rel2 { to, "trans_Rect"; relative, 0.5 0; offset, 0 0; }
 	color, 76 67 88 255;
-	text { text, "00:00"; font, "Edje.visitor1"; size, 7; align, 0 0; } } }
+	text { text, "00:00"; font, "Edje.visitor1"; size, 9; align, 0 0; } } }
 //
 	part { name, "artist_bullet"; type, IMAGE; clip_to, "trans_Rect";
 	description { min, 3 3; max, 3 3; state, "default" 0.0;
@@ -262,7 +264,7 @@
 	rel1 { relative, 0.0 0.0; offset, 10 13; to, "trans_Rect"; }
 	rel2 { relative, 1.0 1.0; offset, -4 12; to, "trans_Rect"; }
 	color, 76 67 88 255;
-	text { text, "Artist"; font, "Edje.visitor1"; size, 7; align, 0.0 0.1; } } }
+	text { text, "Artist"; font, "Edje.visitor1"; size, 9; align, 0.0 0.1; } } }
 //
 	part { name, "album_bullet"; type, IMAGE; clip_to, "trans_Rect";
 	description { min, 3 3; max, 3 3; state, "default" 0.0;
@@ -276,7 +278,7 @@
 	rel1 { relative, 0.0 0.0; offset, 0 15; to, "artist_name"; }
 	rel2 { relative, 1.0 1.0; offset, 0 17; to, "artist_name"; }
 	color, 76 67 88 255;
-	text { text, "Album"; font, "Edje.visitor1"; size, 7; align, 0 0; } } }
+	text { text, "Album"; font, "Edje.visitor1"; size, 9; align, 0 0; } } }
 //
 	part { name, "song_bullet"; type, IMAGE; clip_to, "trans_Rect";
 	description { min, 3 3; max, 3 3; state, "default" 0.0;
@@ -290,7 +292,7 @@
 	rel1 { relative, 0 0; offset, 0 10; to, "album_name"; }
 	rel2 { relative, 1 0; offset, 0 10; to, "album_name"; }
 	color, 76 67 88 255;
-	text { text, "Song"; font, "Edje.visitor1"; size, 7; align, 0 0; } } }
+	text { text, "Song"; font, "Edje.visitor1"; size, 9; align, 0 0; } } }
 //
 	part { name, "bitrate_bullet"; type, IMAGE; clip_to, "trans_Rect";
 	description { min, 3 3; max, 3 3; state, "default" 0.0;
@@ -304,7 +306,7 @@
 	rel1 { relative, 0 0; offset, 48 22; to, "trans_Rect"; }
 	rel2 { relative, 0 1; offset, -8 30; to, "trans_Rect"; }
 	color, 76 67 88 255;
-	text { text, "000"; font, "Edje.visitor1"; size, 7; align, 0 0; } } }
+	text { text, "000"; font, "Edje.visitor1"; size, 9; align, 0 0; } } }
 ///////////////////////////////////////////////////////////////////////
 // SeekerBar
 
@@ -326,8 +328,7 @@
 	dragable { x, 1 1 1;  y, 0 0 0; confine, "seekerTrough"; }
 	description { state, "default" 0.0; visible, 0; color, 0 0 0 255; min, 1 5; max, 1 5;
 	rel1 { to, "seekerTrough"; relative, 0 0; offset, 0 0; }
-	rel2 { to, "seekerTrough"; relative, 1 1; offset,  -1 -1; } 
-	border, 5 5 1 1; } }
+	rel2 { to, "seekerTrough"; relative, 1 1; offset,  -1 -1; } } }
 //
 	part { name, "switch_stance"; type, RECT; mouse_events, 1; clip_to, "trans_Rect";
 	description { min, 10 10; max, 10 10; state, "default" 0.0;
@@ -340,8 +341,7 @@
 	part { name, "playlistPanel"; mouse_events, 1; type, RECT;
 	description { state, "default" 0.0; min, 0 72; max, 120 72;
 	rel1 { to, RIGHT"lcd"; relative, 0 1; offset, 8 0; }
-	rel2 { to, RIGHT"border"; relative, 0 0; offset, -8 -1; }
-	border, 0 0 0 0; } }
+	rel2 { to, RIGHT"border"; relative, 0 0; offset, -8 -1; } } }
 
 	part { name, "playlist"; type, RECT; mouse_events, 1; repeat_events, 1; clip_to, "playlistPanel";
 	description { state, "default" 0.0; min, 0 62; max, 120 62;
