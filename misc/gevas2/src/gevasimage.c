@@ -305,10 +305,11 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     eo = evas_object_image_add( EVAS(ev) );
     _gevas_set_obj( GTK_OBJECT(ev), eo);
 
+//    evas_object_resize( eo, w, h );
     evas_object_image_size_set( eo, w, h );
 //    evas_object_resize( eo, w, h );
-    evas_object_image_fill_set( eo, 0, 0, w, h );
     evas_object_image_data_set( eo, (int*)(rgbadata) );
+    evas_object_image_fill_set( eo, 0, 0, w, h );
 }
 
 
@@ -384,7 +385,6 @@ setup_attribs( GtkgEvasImage* ev, GHashTable* hash_args )
 
     
 
-#ifdef BUILD_EDB_CODE
 static void
 load_from_metadata(
     gpointer data,
@@ -398,7 +398,7 @@ load_from_metadata(
     char* edb_prefix = 0;
     char* p = 0;
     GHashTable* hash_args = 0;
-    E_DB_File* edb = 0;
+/*     E_DB_File* edb = 0; */
     gboolean failed=1;
     
     g_return_if_fail(ev != NULL);
@@ -465,6 +465,7 @@ gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
 
     ev->metadata_load_hash = 0;
     
+#ifdef BUILD_EDB_CODE
     if( strstr( loc, "#edb" ))
     {
         const char* p = 0;
@@ -483,7 +484,8 @@ gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
 
         printf("gevasimage_load_from_metadata() edb in URL... NEW loc:%s\n",loc);
     }
-
+#endif
+    
     ev->metadata_load_loaded = 0;
     ev->metadata_load_postfix = loc;
 
@@ -517,7 +519,6 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
     }
     return o;
 }
-#endif
 
 void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int desiredWidth )
 {
