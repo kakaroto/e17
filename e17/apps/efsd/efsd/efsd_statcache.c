@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 static EfsdHash  *stat_cache;
 static EfsdHash  *lstat_cache;
-EfsdLock         *stat_lock;
+static EfsdLock  *stat_lock;
 
 
 /* Statcache entries, hashed by the filename: */

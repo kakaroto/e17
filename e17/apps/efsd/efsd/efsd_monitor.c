@@ -38,6 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_globals.h>
 #include <efsd_hash.h>
 #include <efsd_io.h>
+#include <efsd_lock.h>
 #include <efsd_macros.h>
 #include <efsd_main.h>
 #include <efsd_misc.h>
@@ -45,32 +46,126 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_queue.h>
 #include <efsd_statcache.h>
 
+static EfsdHash *monitors = NULL;
+static EfsdLock *monitors_lock;
 
-EfsdHash *monitors = NULL;
+typedef struct efsd_monitor_key
+{
+  char        *filename;
+  int          dir_mode;
+}
+EfsdMonitorKey;
 
 /* Allocator and deallocator for a Monitor */
-static EfsdMonitor     *monitor_new(EfsdCommand *com, int client,
-				    int dir_mode, int is_temporary,
-				    int is_sorted);
-static void             monitor_free(EfsdMonitor *m);
+static EfsdMonitor        *monitor_new(EfsdCommand *com, int client,
+				       int dir_mode, int is_temporary,
+				       int is_sorted);
+static void                monitor_free(EfsdMonitor *m);
 
 
 static EfsdMonitorRequest *monitor_request_new(int client, EfsdFileCmd *cmd);
 
-static void             monitor_request_free(EfsdMonitorRequest *emr);
+static void                monitor_request_free(EfsdMonitorRequest *emr);
 
 /* Increment use count for file monitor, or start
    new monitor if file is not monitored yet.
  */
-static int              monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client);
+static int                 monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client);
+
+/* Returns list item containing monitoring request as data,
+   if monitor contains request by client CLIENT:
+ */
+static EfsdList           *monitor_has_client(EfsdMonitor *m, int client);
 
 /* Decreases use count on file. If count drops to
    zero, monitoring is stopped.
 */
-static int              monitor_remove_client(EfsdCommand *com, int client, int dir_mode);
+static int                 monitor_remove_client(EfsdCommand *com, int client, int dir_mode);
 
-static void             monitor_hash_item_free(EfsdHashItem *it);
+static void                monitor_hash_item_free(EfsdHashItem *it);
 
+static EfsdMonitorKey     *monitor_key_new(char *filename, int dir_mode);
+static void                monitor_key_init(EfsdMonitorKey *emk);
+static void                monitor_key_free(EfsdMonitorKey *emk);
+static int                 monitor_key_cmp(EfsdMonitorKey *k1, EfsdMonitorKey *k2);
+static unsigned int        monitor_key_hash(EfsdMonitorKey *emk);
+
+
+static EfsdMonitorKey *
+monitor_key_new(char *filename, int dir_mode)
+{
+  EfsdMonitorKey *emk = NULL;
+
+  D_ENTER;
+
+  emk = NEW(EfsdMonitorKey);
+  memset(emk, 0, sizeof(EfsdMonitorKey));
+
+  emk->filename = filename;
+  emk->dir_mode = dir_mode;
+
+  D_RETURN_(emk);
+}
+
+
+static void             
+monitor_key_init(EfsdMonitorKey *emk)
+{
+  D_ENTER;
+
+  if (!emk)
+    D_RETURN;
+
+  memset(emk, 0, sizeof(EfsdMonitorKey));
+
+  D_RETURN;
+}
+
+
+static void             
+monitor_key_free(EfsdMonitorKey *emk)
+{
+  D_ENTER;
+
+  if (!emk)
+    D_RETURN;
+
+  FREE(emk->filename);
+  FREE(emk);
+
+  D_RETURN;
+}
+
+
+static unsigned int     
+monitor_key_hash(EfsdMonitorKey *emk)
+{
+  D_ENTER;
+
+  D_RETURN_(efsd_hash_string(monitors, emk->filename));
+}
+
+
+static int              
+monitor_key_cmp(EfsdMonitorKey *k1, EfsdMonitorKey *k2)
+{
+  D_ENTER;
+
+  if (!k1 || !k2)
+    {
+      D("ONE MONITOR NULL\n");
+      D_RETURN_(1);
+    }
+
+  D("Comparing %s %i -- %s %i\n",
+    k1->filename, k1->dir_mode,
+    k2->filename, k2->dir_mode);
+
+  D("Returning %i\n",
+    (strcmp(k1->filename, k2->filename) || !(k1->dir_mode == k2->dir_mode)));
+
+  D_RETURN_((strcmp(k1->filename, k2->filename) || !(k1->dir_mode == k2->dir_mode)));
+}
 
 
 static EfsdMonitor *         
@@ -98,12 +193,18 @@ monitor_new(EfsdCommand *com, int client, int dir_mode, int is_temporary, int is
   else
     m->client_use_count = 1;
 
+#if USE_THREADS
+  pthread_mutex_init(&m->use_count_mutex, NULL);
+#endif
+
   m->is_dir = dir_mode;
   m->is_temporary = is_temporary;
   m->is_sorted = is_sorted;
   m->is_receiving_exist_events = TRUE;
 
-  efsd_hash_insert(monitors, m->filename, m);
+  efsd_lock_get_write_access(monitors_lock);
+  efsd_hash_insert(monitors, monitor_key_new(m->filename, dir_mode), m);
+  efsd_lock_release_write_access(monitors_lock);
 
   D_RETURN_(m);
 }
@@ -129,6 +230,10 @@ monitor_free(EfsdMonitor *m)
 
   efsd_list_free(m->clients, (EfsdFunc)monitor_request_free);
   efsd_dca_free(m->files);
+
+#if USE_THREADS
+  pthread_mutex_destroy(&m->use_count_mutex);
+#endif
 
   FREE(m);
 
@@ -188,15 +293,27 @@ static void
 monitor_hash_item_free(EfsdHashItem *it)
 {
   EfsdMonitor *m = NULL;
+  EfsdMonitorKey *key = NULL;
 
   D_ENTER;
 
   if (!it)
     D_RETURN;
 
-  /* Key is a string inside the monitor,
-     so we don't need to free it separately.
+  /* Key is a EfsdMonitorKey, the filename inside the key is a string
+     also contained inside the monitor, so we must not free it separately,
+     because it also gets freed below.
   */
+
+  key = (EfsdMonitorKey*)it->key;
+  key->filename = NULL;
+  monitor_key_free(key);  
+
+  /* Set the key to NULL, to make sure no hash table lookup
+     can possibly succeed on this monitor any more.
+  */
+
+  it->key = NULL;
 
   /* Data is an EfsdMonitor -- and this is a problem:
      If we free the monitor right away, we'll segfault
@@ -292,28 +409,33 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
     {
       if (((EfsdMonitorRequest*)efsd_list_data(l2))->client == client)
 	{
+	  LOCK(&m->use_count_mutex);
 	  if (client == EFSD_CLIENT_INTERNAL)
 	    {
+	      
 	      m->internal_use_count++;
 	      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
-		 m->filename, m->internal_use_count, m->client_use_count);
+		m->filename, m->internal_use_count, m->client_use_count);
 	    }
 	  else
 	    {
 	      efsd_monitor_send_filechange_events(m, (EfsdMonitorRequest*)efsd_list_data(l2)); 
 	      D("Client %i already monitors %s\n", client, m->filename);
 	    }
+	  UNLOCK(&m->use_count_mutex);
 
 	  D_RETURN_(TRUE);
 	}
     }
   
       
+  LOCK(&m->use_count_mutex);
+
   if (client == EFSD_CLIENT_INTERNAL)
     {
       m->internal_use_count++;
       D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
-	m->filename, m->internal_use_count, m->client_use_count);
+	m->filename, m->internal_use_count, m->client_use_count);  
     }
   else
     {
@@ -322,8 +444,10 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	m->filename, m->internal_use_count, m->client_use_count);
     }
   
-  emr = monitor_request_new(client, &com->efsd_file_cmd);
+  emr = monitor_request_new(client, &com->efsd_file_cmd);  
   m->clients = efsd_list_prepend(m->clients, emr);
+  
+  UNLOCK(&m->use_count_mutex);
 
   if (client == EFSD_CLIENT_INTERNAL)
     D_RETURN_(TRUE);
@@ -331,6 +455,35 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
   efsd_monitor_send_filechange_events(m, emr);
 
   D_RETURN_(TRUE);
+}
+
+
+static EfsdList *
+monitor_has_client(EfsdMonitor *m, int client)
+{
+  EfsdMonitorRequest    *emr;
+  EfsdList              *l;
+
+  D_ENTER;
+
+  if (!m)
+    D_RETURN_(FALSE);
+
+  LOCK(&m->use_count_mutex);
+      
+  for (l = efsd_list_head(m->clients); l; l = efsd_list_next(l))
+    {
+      emr = (EfsdMonitorRequest*)efsd_list_data(l);
+      
+      if (emr->client == client)
+	{
+	  UNLOCK(&m->use_count_mutex);
+	  D_RETURN_(l);
+	}
+    }
+	  
+  UNLOCK(&m->use_count_mutex);
+  D_RETURN_(NULL);
 }
 
 
@@ -343,7 +496,10 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
   D_ENTER;
 
   if (!com)
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   filename = com->efsd_file_cmd.files[0];
   efsd_misc_remove_trailing_slashes(filename);
@@ -359,14 +515,17 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
       D_RETURN_(0);
     }
 
-  m = efsd_monitored(filename, dir_mode);
+  m = efsd_monitored(filename, client, dir_mode);
 
   if (!m)
     {
       D("%s not monitored?\n", filename);
+      errno = ENOENT;
       D_RETURN_(-1);
     }
   
+  LOCK(&m->use_count_mutex);
+
   if (client == EFSD_CLIENT_INTERNAL)
     m->internal_use_count--;
   else
@@ -439,32 +598,10 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
 	}
     }
 
+  UNLOCK(&m->use_count_mutex);
+
   D_RETURN_(0);
 }
-
-/*
-static EfsdMonitor*
-monitored_internally(char *filename)
-{
-  EfsdMonitor   *m;
-  EfsdList         *l;
-
-  D_ENTER;
-  
-  m = efsd_hash_find(monitors, filename);
-      
-  if (m)
-    {
-      for (l = efsd_list_head(m->clients); l; l = efsd_list_next(l))
-	{
-	  if (((EfsdMonitorRequest*)efsd_list_data(l))->client == EFSD_CLIENT_INTERNAL)
-	    D_RETURN_(m);
-	}
-    }
-
-  D_RETURN_(NULL);
-}
-*/
 
 void         
 efsd_monitor_init(void)
@@ -477,8 +614,10 @@ efsd_monitor_init(void)
       exit(-1);
     }
 
-  monitors = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
-			   (EfsdCmpFunc)strcmp, monitor_hash_item_free);
+  monitors = efsd_hash_new(1023, 10, (EfsdHashFunc)monitor_key_hash,
+			   (EfsdCmpFunc)monitor_key_cmp, monitor_hash_item_free);
+
+  monitors_lock = efsd_lock_new();
 
   D_RETURN;
 }
@@ -490,6 +629,8 @@ efsd_monitor_cleanup(void)
   D_ENTER;
 
   efsd_hash_free(monitors);
+  efsd_lock_free(monitors_lock);
+
   monitors = NULL;
   FAMClose_r(&famcon);
 
@@ -505,11 +646,14 @@ efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int do_sort)
   D_ENTER;
 
   if (!com)
-    D_RETURN_(NULL);
+    {
+      errno = EINVAL;
+      D_RETURN_(NULL);
+    }
 
   efsd_misc_remove_trailing_slashes(com->efsd_file_cmd.files[0]);
 
-  if ((m = efsd_monitored(com->efsd_file_cmd.files[0], dir_mode)) == NULL)
+  if ((m = efsd_monitored(com->efsd_file_cmd.files[0], client, dir_mode)) == NULL)
     {      
       m = monitor_new(com, client, dir_mode, FALSE, do_sort);
 
@@ -584,27 +728,36 @@ efsd_monitor_stop_internal(char *filename, int dir_mode)
 
 
 EfsdMonitor *
-efsd_monitored(char *filename, int dir_mode)
+efsd_monitored(char *filename, int client, int dir_mode)
 {
-  char path[MAXPATHLEN];
-  EfsdMonitor *m = NULL;
+  char                   path[MAXPATHLEN];
+  EfsdMonitor           *m = NULL;
+  EfsdMonitorKey         key;
 
   D_ENTER;
 
   efsd_misc_remove_trailing_slashes(filename);
-  m = efsd_hash_find(monitors, filename);
+
+  monitor_key_init(&key);
+  key.filename = filename;
+  key.dir_mode = dir_mode;
+
+  D("Looking up %s, as dir: %i\n", filename, dir_mode);
+
+  efsd_lock_get_read_access(monitors_lock);
+  m = efsd_hash_find(monitors, &key);
+  efsd_lock_release_read_access(monitors_lock);
 
   if (m)
     {
-      D("Monitor found for %s with dir mode %i\n",
-	filename, m->is_dir);
-    }
-
-  if (m && (dir_mode == m->is_dir))
-    {
       D("%s is monitored, dir requested: %i, monitored as dir: %i\n",
 	filename, dir_mode, m->is_dir);
-      D_RETURN_(m);
+
+      if (monitor_has_client(m, client))
+	D_RETURN_(m);
+
+      D("Monitor doesn't have client %i\n", client);
+      D_RETURN_(NULL);
     }
 
   /* If it's not directly monitored, maybe it's treated
@@ -617,17 +770,26 @@ efsd_monitored(char *filename, int dir_mode)
       D_RETURN_(NULL);
     }
 
-  m = efsd_hash_find(monitors, path);
+  key.filename = path;
+  key.dir_mode = TRUE;
+
+  efsd_lock_get_read_access(monitors_lock);
+  m = efsd_hash_find(monitors, &key);
+  efsd_lock_release_read_access(monitors_lock);
 
   /* We found a monitor for a directory. Now it must be
      monitoring the directory and its contents, not just
      the directory file. */
 
-  if (m && m->is_dir && !dir_mode)
+  if (m && !dir_mode)
     {
       D("%s is dir-monitored, so %s is monitored.\n",
 	 m->filename, filename);
-      D_RETURN_(m);
+
+      if (monitor_has_client(m, client))
+	D_RETURN_(m);
+
+      D("Monitor doesn't have client %i\n", client);
     }
   
   D_RETURN_(NULL);
@@ -637,11 +799,17 @@ efsd_monitored(char *filename, int dir_mode)
 void             
 efsd_monitor_remove(EfsdMonitor *m)
 {
+  EfsdMonitorKey key;
+
   D_ENTER;
 
   if (!m)
     D_RETURN;
   
+  monitor_key_init(&key);
+  key.filename = m->filename;
+  key.dir_mode = m->is_dir;
+
   m->is_finished = TRUE;
 
   if (m->is_temporary)
@@ -650,8 +818,10 @@ efsd_monitor_remove(EfsdMonitor *m)
     }
   else
     {
-      D("Freeing monitor for %s.\n", m->filename);
-      efsd_hash_remove(monitors, m->filename);    
+      D("Freeing monitor for %s %i.\n", m->filename, m->is_dir);
+      efsd_lock_get_write_access(monitors_lock);
+      efsd_hash_remove(monitors, &key);
+      efsd_lock_release_write_access(monitors_lock);
     }
 
   D_RETURN;
@@ -661,27 +831,25 @@ efsd_monitor_remove(EfsdMonitor *m)
 int          
 efsd_monitor_cleanup_client(int client)
 {
-  EfsdList         *c;
+  EfsdList         *l;
   EfsdHashIterator *it;
-  EfsdMonitor   *m;
+  EfsdMonitor      *m;
 
   D_ENTER;
+
+  efsd_lock_get_read_access(monitors_lock);
 
   for (it = efsd_hash_it_new(monitors); efsd_hash_it_valid(it); efsd_hash_it_next(it))
     {
       m = (EfsdMonitor *) ((efsd_hash_it_item(it))->data);
       
-      c = efsd_list_head(m->clients);
-      while (c)
-	{
-	  if (((EfsdMonitorRequest*)efsd_list_data(c))->client == client)
-	    break;
-
-	  c = efsd_list_next(c);
-	}
-
-      if (!c)
+      if (!m)
 	continue;
+
+      if ((l = monitor_has_client(m, client)) == NULL)
+	continue;
+
+      LOCK(&m->use_count_mutex);
 
       if (client == EFSD_CLIENT_INTERNAL)
 	m->internal_use_count--;
@@ -691,26 +859,20 @@ efsd_monitor_cleanup_client(int client)
       D("Client %i found monitoring %s, use count now (%i/%i)\n",
 	client, m->filename, m->internal_use_count, m->client_use_count);
 
+      D("Removing client %i from monitor for %s\n", client, m->filename);
+      m->clients = efsd_list_remove(m->clients, l, (EfsdFunc)monitor_request_free);
+
       if (m->client_use_count == 0 && m->internal_use_count == 0)
 	{
 	  /* Use count dropped to zero -- stop monitoring. */
 	  D("Stopping monitoring %s.\n", m->filename);
 	  FAMCancelMonitor_r(&famcon, m->fam_req);
 	}
-      else
-	{
-	  if (!efsd_list_prev(c) && !efsd_list_next(c))
-	    {
-	      /* This cannot happen -- use count is not zero! */
-	      fprintf(stderr, "FAM connection handling error -- ouch.\n");
-	      exit(-1);
-	    }
-	  
-	  D("Removing client %i from monitor for %s\n", client, m->filename);
-	  /* Use count not zero, but remove client from list of users */
-	  m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)monitor_request_free);
-	}
+      
+      UNLOCK(&m->use_count_mutex);
     }
+
+  efsd_lock_release_read_access(monitors_lock);
 
   efsd_hash_it_free(it);
   D_RETURN_(FALSE);
@@ -734,8 +896,10 @@ efsd_monitor_cleanup_requests(EfsdMonitor *m)
       
       if (emr->is_finished)
 	{
+	  LOCK(&m->use_count_mutex);
 	  m->clients = efsd_list_remove(m->clients, l,
 					(EfsdFunc)monitor_request_free);
+	  UNLOCK(&m->use_count_mutex);
 	}
     }  
 

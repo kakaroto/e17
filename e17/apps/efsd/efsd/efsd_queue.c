@@ -125,13 +125,25 @@ efsd_queue_fill_fdset(fd_set *fdset, int *fdsize)
 int 
 efsd_queue_process(fd_set *fdset)
 {
-  EfsdList      *q;
+  EfsdList      *q, *qtemp;
   EfsdQueueItem *eqi;
   int            done = 0;
 
-  for (q = queue; q; q = efsd_list_next(q));
+  for (q = queue; q; )
     {
       eqi = (EfsdQueueItem*) efsd_list_data(q);
+
+      if (eqi->client < 0)
+	{
+	  if (q == queue_last)
+	    queue_last = NULL;
+
+	  qtemp = q;
+	  q = efsd_list_next(q);
+	  queue = efsd_list_remove(queue, qtemp, (EfsdFunc)queue_item_free);
+	  done++;
+	  continue;
+	}
 
       if (FD_ISSET(clientfd[eqi->client], fdset))
 	{
@@ -141,7 +153,10 @@ efsd_queue_process(fd_set *fdset)
 		{
 		  D("Client %i died -- closing connection\n", eqi->client);
 		  efsd_main_close_connection(eqi->client);
-		  queue = efsd_list_remove(queue, q, (EfsdFunc)queue_item_free);
+
+		  qtemp = q;
+		  q = efsd_list_next(q);
+		  queue = efsd_list_remove(queue, qtemp, (EfsdFunc)queue_item_free);
 		  done++;
 		}
 	      else
@@ -156,7 +171,9 @@ efsd_queue_process(fd_set *fdset)
 	      if (q == queue_last)
 		queue_last = NULL;
 	      
-	      queue = efsd_list_remove(queue, q, (EfsdFunc)queue_item_free);
+	      qtemp = q;
+	      q = efsd_list_next(q);
+	      queue = efsd_list_remove(queue, qtemp, (EfsdFunc)queue_item_free);
 	      done++;
 	    }
 	}

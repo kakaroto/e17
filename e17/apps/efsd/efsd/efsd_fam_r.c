@@ -28,17 +28,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd_debug.h>
 #include <efsd_fam_r.h>
+#include <efsd_lock.h>
 
 #if USE_THREADS
 #include <pthread.h>
 
 static pthread_mutex_t fam_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-#define LOCK    (pthread_mutex_lock(&fam_mutex))
-#define UNLOCK  (pthread_mutex_unlock(&fam_mutex))
-#else
-#define LOCK
-#define UNLOCK
 #endif
 
 int
@@ -47,11 +42,11 @@ FAMOpen_r(FAMConnection* fc)
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
 
   result = FAMOpen(fc);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 
@@ -62,11 +57,11 @@ FAMClose_r(FAMConnection* fc)
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
 
   result = FAMClose(fc);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 
@@ -78,11 +73,11 @@ FAMMonitorDirectory_r(FAMConnection *fc, const char *filename,
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
   
   result = FAMMonitorDirectory(fc, filename, fr, userData);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 
@@ -94,11 +89,11 @@ FAMMonitorFile_r(FAMConnection *fc, const char *filename,
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
 
   result = FAMMonitorFile(fc, filename, fr, userData);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 
@@ -109,11 +104,11 @@ FAMCancelMonitor_r(FAMConnection *fc, const FAMRequest *fr)
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
 
   result = FAMCancelMonitor(fc, fr);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 
@@ -124,11 +119,11 @@ FAMNextEvent_r(FAMConnection *fc, FAMEvent *fe)
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
 
   result = FAMNextEvent(fc, fe);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 
@@ -138,11 +133,11 @@ FAMPending_r(FAMConnection* fc)
   int result;
 
   D_ENTER;
-  LOCK;
+  LOCK(&fam_mutex);
 
   result = FAMPending(fc);
 
-  UNLOCK;
+  UNLOCK(&fam_mutex);
   D_RETURN_(result);
 }
 

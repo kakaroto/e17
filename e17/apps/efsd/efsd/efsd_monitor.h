@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_options.h>
 #include <efsd_dynarray.h>
 #include <efsd_list.h>
-
+#include <efsd_lock.h>
 
 #define EFSD_CLIENT_INTERNAL -1
 
@@ -64,6 +64,11 @@ typedef struct efsd_monitor
   */
   int                   client_use_count;
   int                   internal_use_count;
+
+#if USE_THREADS
+  pthread_mutex_t       use_count_mutex;
+#endif
+
 
   /* Which clients monitor this file,
      and with what command id.
@@ -131,7 +136,7 @@ int              efsd_monitor_stop_internal(char *filename, int dir_mode);
 
 /* Returns value >0 when file is already monitored.
  */
-EfsdMonitor     *efsd_monitored(char *filename, int as_dir);
+EfsdMonitor     *efsd_monitored(char *filename, int client, int as_dir);
 
 /* Check for all monitors if they are requested by CLIENT
    and in that case release those requests.

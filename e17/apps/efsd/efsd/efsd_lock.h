@@ -42,6 +42,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #  include <pthread.h>
 
+#define LOCK(X)    (pthread_mutex_lock(X))
+#define UNLOCK(X)  (pthread_mutex_unlock(X))
+
 typedef struct efsd_lock EfsdLock;
 
 EfsdLock *efsd_lock_new(void);
@@ -58,6 +61,9 @@ void      efsd_lock_release_read_access(EfsdLock *l);
    void pointers and hide the function calls to
    minimize #ifdef clutter...
 */
+
+#define LOCK(X)
+#define UNLOCK(X)
 
 typedef void EfsdLock;
 

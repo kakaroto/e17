@@ -228,7 +228,7 @@ efsd_command_listdir(EfsdCommand *cmd, int client)
       D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
     }
 
-  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
 }
 
 
@@ -336,7 +336,7 @@ efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
   if (efsd_monitor_start(cmd, client, dir_mode, do_sort) != NULL)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
   
-  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, EINVAL, 0, NULL, client));
 }
 
 
@@ -348,7 +348,7 @@ efsd_command_stop_monitor(EfsdCommand *cmd, int client, int dir_mode)
   if (efsd_monitor_stop(cmd, client, dir_mode) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
-  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
 }
 
 
