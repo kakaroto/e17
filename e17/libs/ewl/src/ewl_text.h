@@ -19,24 +19,24 @@ struct _ewl_text
 	int padding;
 };
 
-Ewl_Widget *ewl_text_new ();
+Ewl_Widget *ewl_text_new();
 
-void ewl_text_set_text (Ewl_Widget * w, char *text);
-char *ewl_text_get_text (Ewl_Widget * w);
-void ewl_text_set_font (Ewl_Widget * w, char *font);
-char *ewl_text_get_font (Ewl_Widget * w);
-void ewl_text_set_font_size (Ewl_Widget * w, int size);
-int ewl_text_get_font_size (Ewl_Widget * w);
-void ewl_text_set_color (Ewl_Widget * w, int r, int g, int b, int a);
-void ewl_text_get_color (Ewl_Widget * w, int *r, int *g, int *b, int *a);
-void ewl_text_get_text_geometry (Ewl_Widget * w, double *xx, double *yy,
-				 double *ww, double *hh);
-void ewl_text_set_style (Ewl_Widget * w, char *s);
-void ewl_text_get_letter_geometry (Ewl_Widget * w, int index, double *xx,
-				   double *yy, double *ww, double *hh);
-void ewl_text_get_letter_geometry_at (Ewl_Widget * w, double x, double y,
-				      double *tx, double *ty, double *tw,
-				      double *th);
-void ewl_text_set_alignment (Ewl_Widget * w, Ewl_Alignment a);
+void ewl_text_set_text(Ewl_Widget * w, char *text);
+char *ewl_text_get_text(Ewl_Widget * w);
+void ewl_text_set_font(Ewl_Widget * w, char *font);
+char *ewl_text_get_font(Ewl_Widget * w);
+void ewl_text_set_font_size(Ewl_Widget * w, int size);
+int ewl_text_get_font_size(Ewl_Widget * w);
+void ewl_text_set_color(Ewl_Widget * w, int r, int g, int b, int a);
+void ewl_text_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a);
+void ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
+				double *ww, double *hh);
+void ewl_text_set_style(Ewl_Widget * w, char *s);
+void ewl_text_get_letter_geometry(Ewl_Widget * w, int index, double *xx,
+				  double *yy, double *ww, double *hh);
+void ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
+				     double *tx, double *ty, double *tw,
+				     double *th);
+void ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a);
 
 #endif

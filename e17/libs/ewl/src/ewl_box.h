@@ -24,10 +24,10 @@ struct _ewl_box
 #define ewl_vbox_new() ewl_box_new(EWL_ORIENTATION_VERTICAL)
 
 
-Ewl_Widget *ewl_box_new (Ewl_Orientation orientation);
-void ewl_box_init (Ewl_Box * box, Ewl_Orientation orientation);
-void ewl_box_set_orientation (Ewl_Widget * w, Ewl_Orientation o);
-void ewl_box_set_spacing (Ewl_Widget * w, unsigned int spacing);
-void ewl_box_set_padding (Ewl_Widget * w, int xp, int yp);
+Ewl_Widget *ewl_box_new(Ewl_Orientation orientation);
+void ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
+void ewl_box_set_orientation(Ewl_Widget * w, Ewl_Orientation o);
+void ewl_box_set_spacing(Ewl_Widget * w, unsigned int spacing);
+void ewl_box_set_padding(Ewl_Widget * w, int xp, int yp);
 
 #endif /* __EWL_BOX_H__ */

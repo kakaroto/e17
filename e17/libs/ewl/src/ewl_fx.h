@@ -35,12 +35,12 @@ typedef struct _ewl_fx_timer Ewl_FX_Timer;
 
 #define EWL_FX_TIMER(timer) ((Ewl_FX_Timer *) timer)
 
-int ewl_fx_init (void);
-void ewl_fx_add (Ewl_Widget * widget,
-		 Ewl_FX_Type type,
-		 void (*func) (Ewl_Widget * widget,
-			       void *func_data), void *func_data);
-void ewl_fx_clip_box_create (Ewl_Widget * widget);
-void ewl_fx_clip_box_resize (Ewl_Widget * widget);
+int ewl_fx_init(void);
+void ewl_fx_add(Ewl_Widget * widget,
+		Ewl_FX_Type type,
+		void (*func) (Ewl_Widget * widget,
+			      void *func_data), void *func_data);
+void ewl_fx_clip_box_create(Ewl_Widget * widget);
+void ewl_fx_clip_box_resize(Ewl_Widget * widget);
 
 #endif /* __EWL_FX_H__ */

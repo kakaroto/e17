@@ -15,8 +15,8 @@ struct _ewl_entry
 	Ewl_Widget *selection;
 };
 
-Ewl_Widget *ewl_entry_new (void);
-void ewl_entry_set_text (Ewl_Widget * w, char *t);
-char *ewl_entry_get_text (Ewl_Widget * w);
+Ewl_Widget *ewl_entry_new(void);
+void ewl_entry_set_text(Ewl_Widget * w, char *t);
+char *ewl_entry_get_text(Ewl_Widget * w);
 
 #endif /* __EWL_ENTRY_H__ */
