@@ -84,6 +84,9 @@ void ewl_window_set_title(Ewl_Window * win, char *title)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 
+	if (!title)
+		title = "";
+
 	if (strcmp(win->title, title)) {
 		IF_FREE(win->title);
 		win->title = strdup(title);
@@ -110,6 +113,97 @@ char           *ewl_window_get_title(Ewl_Window * win)
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
 
 	DRETURN_PTR(strdup(win->title), DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to change the name
+ * @param name: the name to set for the window
+ * @return Returns no value.
+ * @brief Set the name of the specified window
+ *
+ * Sets the name of window @a w to @a name and calls the necessary X lib
+ * functions to update the window.
+ */
+void ewl_window_set_name(Ewl_Window * win, char *name)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+
+	if (!name)
+		name = "";
+
+	if (strcmp(win->name, name)) {
+		IF_FREE(win->name);
+		win->name = strdup(name);
+	}
+
+	if (!REALIZED(win))
+		return;
+
+	ecore_x_window_prop_name_class_set(win->window, name, win->name);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to retrieve the window
+ * @return Returns a pointer to a new copy of the name, NULL on failure.
+ * @brief Retrieve the name of the specified window
+ *
+ * The returned name should be freed.
+ */
+char           *ewl_window_get_name(Ewl_Window * win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, NULL);
+
+	DRETURN_PTR(strdup(win->name), DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to change the class
+ * @param classname: the class to set for the window
+ * @return Returns no value.
+ * @brief Set the class of the specified window
+ *
+ * Sets the class of window @a w to @a class and calls the necessary X lib
+ * functions to update the window.
+ */
+void ewl_window_set_class(Ewl_Window * win, char *classname)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+
+	if (!classname)
+		classname = "";
+
+	if (strcmp(win->classname, classname)) {
+		IF_FREE(win->classname);
+		win->classname = strdup(classname);
+	}
+
+	if (!REALIZED(win))
+		return;
+
+	ecore_x_window_prop_name_class_set(win->window, classname,
+					   win->classname);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to retrieve the window
+ * @return Returns a pointer to a new copy of the class, NULL on failure.
+ * @brief Retrieve the class of the specified window
+ *
+ * The returned class should be freed.
+ */
+char           *ewl_window_get_class(Ewl_Window * win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, NULL);
+
+	DRETURN_PTR(strdup(win->classname), DLEVEL_STABLE);
 }
 
 /**
@@ -194,7 +288,9 @@ int ewl_window_init(Ewl_Window * w)
 	ewl_embed_init(EWL_EMBED(w));
 	ewl_widget_set_appearance(EWL_WIDGET(w), "window");
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
-	w->title = strdup("EWL!");
+	w->title = strdup("EWL");
+	w->name = strdup("EWL");
+	w->classname  = strdup("EWL");
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     ewl_window_realize_cb, NULL);
@@ -241,7 +337,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
 
-	ecore_x_window_prop_name_class_set(window->window, "EWL", "EWL!");
+	ecore_x_window_prop_name_class_set(window->window, window->name,
+					   window->classname);
 	ecore_x_window_prop_title_set(window->window, window->title);
 	ecore_x_window_prop_protocol_set(window->window,
 			ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);

@@ -31,6 +31,9 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	floater_button = w;
 
 	floater_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(floater_win), "Floater Test");
+	ewl_window_set_name(EWL_WINDOW(floater_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(floater_win), "EFL Test Application");
 	ewl_callback_append(floater_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_floater_test_window, NULL);
 	ewl_widget_show(floater_win);

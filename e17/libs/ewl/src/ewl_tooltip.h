@@ -6,14 +6,14 @@ typedef struct _ewl_tooltip Ewl_Tooltip;
 #define EWL_TOOLTIP(tt) ((Ewl_Tooltip *) tt)
 
 struct _ewl_tooltip {
-	Ewl_Floater box;   /* the box container */
+	Ewl_Floater box;    /**< the floating box container */
 
-	Ewl_Widget  *text;  /* the text displaying in the tooltip */
+	Ewl_Widget  *text;  /**< the text displaying in the tooltip */
 
-	double      delay;  /* how long before tooltip will display in secs */
-	int         hide;   /* flag to enable/disable tooltip */
+	double      delay;  /**< how long before tooltip will display in secs */
+	int         hide;   /**< flag to enable/disable tooltip */
 
-	Ecore_Timer *timer; /* pointer to the focus timer */
+	Ecore_Timer *timer; /**< pointer to the focus timer */
 };
 
 Ewl_Widget *ewl_tooltip_new (Ewl_Widget *parent);

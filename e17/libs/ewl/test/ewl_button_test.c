@@ -3,14 +3,6 @@
 static Ewl_Widget *button_button = NULL;
 
 void
-__break_here(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	static n = 0;
-
-	printf("Configuring pass %d\n", n++);
-}
-
-void
 __delete_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_widget_destroy(w);
@@ -38,6 +30,9 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	button_button = w;
 
 	button_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(button_win), "Button Type Test");
+	ewl_window_set_name(EWL_WINDOW(button_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(button_win), "EFL Test Application");
 	ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __delete_button_test_window, NULL);
 	ewl_widget_show(button_win);
@@ -48,8 +43,6 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	button_box = ewl_vbox_new();
 	ewl_container_append_child(EWL_CONTAINER(button_win), button_box);
 	ewl_box_set_spacing(EWL_BOX(button_box), 10);
-	ewl_callback_prepend(button_box, EWL_CALLBACK_CONFIGURE, __break_here,
-			NULL);
 	ewl_widget_show(button_box);
 
 	/*

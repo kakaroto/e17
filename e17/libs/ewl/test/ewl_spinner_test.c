@@ -5,7 +5,7 @@ Ewl_Widget     *tmp_win;
 static Ewl_Widget *spinner_button;
 static Ewl_Widget *spinner[4];
 
-void __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
+void __spinner_window_configure(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 
 void
@@ -34,12 +34,12 @@ __spinner_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 	hh = (int) (ewl_spinner_get_value(EWL_SPINNER(spinner[3])));
 
 	ewl_callback_del(tmp_win, EWL_CALLBACK_CONFIGURE,
-			 __spinner_main_window_configure);
+			 __spinner_window_configure);
 
 	ewl_window_move(EWL_WINDOW(tmp_win), xx, yy);
 
 	ewl_callback_append(tmp_win, EWL_CALLBACK_CONFIGURE,
-			    __spinner_main_window_configure, NULL);
+			    __spinner_window_configure, NULL);
 
 	return;
 	w = NULL;
@@ -48,7 +48,7 @@ __spinner_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__spinner_main_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+__spinner_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             xx, yy, ww, hh;
 
@@ -99,6 +99,9 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	spinner_button = w;
 
 	spinner_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(spinner_win), "STest");
+	ewl_window_set_name(EWL_WINDOW(spinner_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(spinner_win), "EFL Test Application");
 	ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_spinner_test_window, NULL);
 	ewl_widget_show(spinner_win);
@@ -113,7 +116,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	tmp_win = ewl_window_new();
 	ewl_callback_append(tmp_win, EWL_CALLBACK_CONFIGURE,
-			    __spinner_main_window_configure, NULL);
+			    __spinner_window_configure, NULL);
 	ewl_widget_show(tmp_win);
 	ewl_window_set_borderless(EWL_WINDOW(tmp_win));
 

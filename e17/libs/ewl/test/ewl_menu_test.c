@@ -46,6 +46,9 @@ __create_menu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	menu_button = w;
 
 	menu_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(menu_win), "Menu Test");
+	ewl_window_set_name(EWL_WINDOW(menu_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(menu_win), "EFL Test Application");
 	ewl_callback_append(menu_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_menu_test_window, NULL);
 	ewl_widget_show(menu_win);

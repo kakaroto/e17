@@ -77,6 +77,9 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	textarea_button = w;
 
 	textarea_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(textarea_win), "Textarea Test");
+	ewl_window_set_name(EWL_WINDOW(textarea_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(textarea_win), "EFL Test Application");
 	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win),
 			EWL_FLAG_FILL_FILL);
 	ewl_object_set_minimum_size(EWL_OBJECT(textarea_win), 200, 200);

@@ -28,6 +28,9 @@ __create_scrollbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	scrollbar_button = w;
 
 	scrollbar_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(scrollbar_win), "Scrollbar Test");
+	ewl_window_set_name(EWL_WINDOW(scrollbar_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(scrollbar_win), "EFL Test Application");
 	ewl_callback_append(scrollbar_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_scrollbar_test_window, NULL);
 	ewl_widget_show(scrollbar_win);

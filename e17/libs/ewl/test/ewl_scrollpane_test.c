@@ -30,6 +30,9 @@ __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 	scrollpane_button = w;
 
 	scrollpane_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(scrollpane_win), "Scrollpane Test");
+	ewl_window_set_name(EWL_WINDOW(scrollpane_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(scrollpane_win), "EFL Test Application");
 	ewl_callback_append(scrollpane_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_scrollpane_test_window, NULL);
 	ewl_object_set_minimum_size(EWL_OBJECT(scrollpane_win), 200, 200);

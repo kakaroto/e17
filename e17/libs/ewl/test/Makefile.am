@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
-CFLAGS			=	-g -W -Wall -Wno-implicit
+CFLAGS			=	-g -W -Wall -Wno-implicit -pg
 INCLUDES		=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@ @ewd_cflags@
 
 bin_PROGRAMS			=	ewl_test
@@ -30,5 +30,5 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c
 
-#ewl_test_LDFLAGS		=	-static
-ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@
+ewl_test_LDFLAGS		=	-pg
+ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@ -lefence

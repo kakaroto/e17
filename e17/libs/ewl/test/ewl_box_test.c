@@ -129,6 +129,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	box_button = w;
 
 	box_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(box_win), "Box Packing Test");
+	ewl_window_set_name(EWL_WINDOW(box_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(box_win), "EFL Test Application");
 	ewl_object_request_size(EWL_OBJECT(box_win), 256, 256);
 	ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_box_test_window, NULL);

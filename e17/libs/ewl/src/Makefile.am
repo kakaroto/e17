@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @ewd_cflags@ @etox_cflags@
+INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @ewd_cflags@ @etox_cflags@ -pg
 
 lib_LTLIBRARIES = libewl.la
 
@@ -103,4 +103,4 @@ libewl_la_SOURCES = \
 	ewl_window.c
 
 libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @etox_libs@ -lm
-libewl_la_LDFLAGS = -version-info 0:0:0
+libewl_la_LDFLAGS = -version-info 0:0:0 -pg

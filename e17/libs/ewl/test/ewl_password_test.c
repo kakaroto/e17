@@ -61,6 +61,9 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	password_button = w;
 
 	password_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(password_win), "Password Entry Test");
+	ewl_window_set_name(EWL_WINDOW(password_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(password_win), "EFL Test Application");
 	ewl_callback_append(password_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_password_test_window, NULL);
 	ewl_widget_show(password_win);

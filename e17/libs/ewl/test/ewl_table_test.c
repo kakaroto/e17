@@ -37,6 +37,9 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	table_button = w;
 
 	table_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(table_win), "Table Test");
+	ewl_window_set_name(EWL_WINDOW(table_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(table_win), "EFL Test Application");
 	ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_table_test_window, NULL);
 	ewl_widget_show(table_win);

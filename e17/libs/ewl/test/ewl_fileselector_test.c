@@ -31,6 +31,9 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 	fs_button = w;
 
 	fs_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(fs_win), "File Selector Test");
+	ewl_window_set_name(EWL_WINDOW(fs_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(fs_win), "EFL Test Application");
 	ewl_callback_append(fs_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_fileselector_test_window, NULL);
 	ewl_widget_show(fs_win);

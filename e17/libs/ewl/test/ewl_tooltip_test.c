@@ -26,6 +26,9 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	tooltip_button = w;
 
 	tooltip_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(tooltip_win), "Tooltip Test");
+	ewl_window_set_name(EWL_WINDOW(tooltip_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(tooltip_win), "EFL Test Application");
 	ewl_object_request_size(EWL_OBJECT(tooltip_win), 200, 100);
 	ewl_callback_append(tooltip_win, EWL_CALLBACK_DELETE_WINDOW,
 			__destroy_tooltip_test_window, NULL);

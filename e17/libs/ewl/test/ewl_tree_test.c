@@ -38,6 +38,9 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 	tree_button = w;
 
 	tree_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(tree_win), "Tree Test");
+	ewl_window_set_name(EWL_WINDOW(tree_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(tree_win), "EFL Test Application");
 	ewl_object_set_minimum_size(EWL_OBJECT(tree_win), 400, 400);
 	ewl_callback_append(tree_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_tree_test_window, NULL);

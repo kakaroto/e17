@@ -34,6 +34,9 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 
 
 	sbook_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(sbook_win), "Selectionbook Test");
+	ewl_window_set_name(EWL_WINDOW(sbook_win), "EWL Test Application");
+	ewl_window_set_class(EWL_WINDOW(sbook_win), "EFL Test Application");
 	ewl_callback_append(sbook_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_selectionbook_test_window, NULL);
 	ewl_widget_show(sbook_win);
