@@ -213,20 +213,28 @@ void gevas_sprite_push_metadata_prefix( GtkgEvasSprite* ev, const char* p )
     if(!strlen(p))
         return;
 
-    // FIXME:
+    ev->metadata_prefix_list = g_list_append(ev->metadata_prefix_list,
+                                             g_strdup(p));
     
 }
 
 void gevas_sprite_pop_metadata_prefix ( GtkgEvasSprite* ev, const char* p )
 {
-	g_return_if_fail(ev != NULL);
+    GList *li = 0;
+    
+    g_return_if_fail(ev != NULL);
 	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 
     if(!strlen(p))
         return;
 
-    // FIXME:
+    if(li = g_list_find(ev->metadata_prefix_list, p))
+    {
+        g_free(li->data);
+        ev->metadata_prefix_list =
+            g_list_remove_link(ev->metadata_prefix_list, li);
+    }
 }
 
 gboolean gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
@@ -240,11 +248,33 @@ gboolean gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
     // FIXME:
 }
 
+gint
+gevas_sprite_get_size( GtkgEvasSprite* ev )
+{
+	g_return_val_if_fail(ev != NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVAS_SPRITE(ev),0);
+	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
+
+    return gevas_obj_collection_get_size( ev->col );
+}
+
+
+
 // Check to see that 0 < f < size( ev->col )
 static gboolean
 within_range( GtkgEvasSprite* ev, gint f )
 {
-    // FIXME:
+    gint max = gevas_sprite_get_size( ev );
+    
+    return 0 < f && f <= max;
+}
+
+gint gevas_sprite_get_current_frame( GtkgEvasSprite* ev )
+{
+ 	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
+	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
+    return ev->current_frame;
 }
 
 
@@ -253,34 +283,62 @@ void gevas_sprite_set_current_frame( GtkgEvasSprite* ev, gint f )
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
+	g_return_if_fail(within_range(ev,f));
 
-    
-    // FIXME:
+    ev->current_frame = f;
 }
 
-void gevas_sprite_set_current_frame_by_name( GtkgEvasSprite* ev, const char* n )
+
+gboolean gevas_sprite_set_current_frame_by_name( GtkgEvasSprite* ev, const char* name )
 {
+    gint idx = -1;
+    
 	g_return_if_fail(ev != NULL);
 	g_return_if_fail(n  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 
-    // FIXME:
+    idx = gevas_obj_collection_element_idx_from_name(ev->col,0,name );
+    if( idx >= 0 )
+    {
+        ev->current_frame = idx;
+        return 1;
+    }
+    return 0;
+}
+
+gboolean gevas_sprite_set_current_frame_by_namei( GtkgEvasSprite* ev, const char* name )
+{
+    gint idx = -1;
+    
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(n  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
+
+    idx = gevas_obj_collection_element_idx_from_namei(ev->col,0,name );
+    if( idx >= 0 )
+    {
+        ev->current_frame = idx;
+        return 1;
+    }
+    return 0;
 }
 
 void gevas_sprite_advance_n( GtkgEvasSprite* ev, gint n )
 {
+    gint f = 0;
+    
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+    f = n + gevas_sprite_get_current_frame(ev);
+	g_return_if_fail(within_range(ev,f));
+
+    gevas_sprite_set_current_frame(ev,f);
 }
 
 void gevas_sprite_retard_n ( GtkgEvasSprite* ev, gint n )
 {
- 	g_return_if_fail(ev != NULL);
-	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
-	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+    gevas_sprite_advance_n( ev, -n );
 }
 
 void gevas_sprite_jumpto_start( GtkgEvasSprite* ev )
@@ -288,7 +346,8 @@ void gevas_sprite_jumpto_start( GtkgEvasSprite* ev )
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    gevas_sprite_set_current_frame(ev,0);
 }
 
 void gevas_sprite_jumpto_end  ( GtkgEvasSprite* ev )
@@ -296,7 +355,8 @@ void gevas_sprite_jumpto_end  ( GtkgEvasSprite* ev )
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    gevas_sprite_set_current_frame(ev,gevas_sprite_get_size(ev));
 }
 
 
@@ -305,7 +365,8 @@ void gevas_sprite_play( GtkgEvasSprite* ev )
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    ev->frames_to_play = -1;
 }
 
 void gevas_sprite_play_n( GtkgEvasSprite* ev, gint n )
@@ -313,23 +374,32 @@ void gevas_sprite_play_n( GtkgEvasSprite* ev, gint n )
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    ev->frames_to_play = ABS(n);
 }
 
 void gevas_sprite_play_to_end( GtkgEvasSprite* ev )
 {
+    gint n = 0;
+    
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    n = gevas_sprite_get_size(ev) - ev->current_frame;
+    gevas_sprite_play_n( ev, n );
 }
 
 void gevas_sprite_play_one_loop( GtkgEvasSprite* ev )
 {
+    gint n = 0;
+    
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    n = gevas_sprite_get_size(ev);
+    gevas_sprite_play_n( ev, n );
 }
 
 
@@ -338,7 +408,8 @@ void gevas_sprite_set_play_backwards( GtkgEvasSprite* ev, gboolean v )
  	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
-    // FIXME:
+
+    ev->playing_backwards = v;
 }
 
 
@@ -405,6 +476,7 @@ gevas_sprite_init(GtkgEvasSprite * ev)
     ev->gevas             = 0;
     ev->col               = 0;
     ev->playing_backwards = 0;
+    ev->metadata_prefix_list = 0;
 }
 
 

@@ -61,9 +61,16 @@ extern "C" {
     {
         GtkObject gobj;
 
-        gboolean playing_backwards;
         GtkgEvasObjCollection* col;
         GtkgEvas* gevas;
+
+        // # frames to play, -1 == play forever
+        gint frames_to_play; 
+        gint current_frame;
+        gboolean playing_backwards;
+
+        GList* metadata_prefix_list;
+        
     };
 
     struct _GtkgEvasSpriteClass {
@@ -86,6 +93,7 @@ extern "C" {
     void gevas_sprite_clear(         GtkgEvasSprite* ev );
     void gevas_sprite_move(          GtkgEvasSprite* ev, gint32 x, gint32 y );
     void gevas_sprite_move_relative( GtkgEvasSprite* ev, gint32 dx, gint32 dy );
+    gint gevas_sprite_get_size(      GtkgEvasSprite* ev );
     void gevas_sprite_hide(          GtkgEvasSprite* ev );
     void gevas_sprite_show(          GtkgEvasSprite* ev );
     void gevas_sprite_set_visible(   GtkgEvasSprite* ev, gboolean v );
@@ -96,8 +104,10 @@ extern "C" {
     void gevas_sprite_pop_metadata_prefix ( GtkgEvasSprite* ev, const char* p );
     gboolean gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc );
 
+    gint gevas_sprite_get_current_frame( GtkgEvasSprite* ev );
     void gevas_sprite_set_current_frame( GtkgEvasSprite* ev, gint f );
-    void gevas_sprite_set_current_frame_by_name( GtkgEvasSprite* ev, const char* n );
+    gboolean gevas_sprite_set_current_frame_by_name( GtkgEvasSprite* ev,const char*n);
+    gboolean gevas_sprite_set_current_frame_by_namei( GtkgEvasSprite* ev,const char*n);
     void gevas_sprite_advance_n( GtkgEvasSprite* ev, gint n );
     void gevas_sprite_retard_n ( GtkgEvasSprite* ev, gint n );
     void gevas_sprite_jumpto_start( GtkgEvasSprite* ev );

@@ -148,6 +148,79 @@ void gevas_obj_collection_set_add_predicate(
     ev->m_pred_udata = udata;
 }
 
+GtkgEvasObjCollection_T
+gevas_obj_collection_element_n( GtkgEvasObjCollection* ev, gint n )
+{
+    gint i=0;
+    Evas_List li=0;
+
+    g_return_if_fail (ev != NULL);
+    g_return_if_fail (n >= 0);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
+
+    for( li=s->selected_objs; li; li = li->next)
+        if(li->data)
+        {
+            if( ++i == n )
+            {
+                return li->data;
+            }
+        }
+    return 0;
+}
+
+gint gevas_obj_collection_element_idx_from_name(
+    GtkgEvasObjCollection* ev,
+    gint start,
+    const char* name )
+{
+    gint i=0;
+    Evas_List li=0;
+
+    g_return_if_fail (ev != NULL);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
+
+    for( li=s->selected_objs; li; li = li->next)
+        if(li->data)
+        {
+            if( i >= start )
+            {
+                if( !strcmp(name, gevasobj_get_name(li->data)))
+                {
+                    return i;
+                }
+            }
+            ++i;
+        }
+    return -1;
+}
+
+gint gevas_obj_collection_element_idx_from_namei(
+    GtkgEvasObjCollection* ev,
+    gint start,
+    const char* name )
+{
+    gint i=0;
+    Evas_List li=0;
+
+    g_return_if_fail (ev != NULL);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
+
+    for( li=s->selected_objs; li; li = li->next)
+        if(li->data)
+        {
+            if( i >= start )
+            {
+                if( !stricmp(name, gevasobj_get_name(li->data)))
+                {
+                    return i;
+                }
+            }
+            ++i;
+        }
+    return -1;
+}
+
 
 
 void
@@ -384,6 +457,26 @@ gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32
 */
         }
 }
+
+gint
+gevas_obj_collection_get_size(  GtkgEvasObjCollection* ev )
+{
+    gint ret = 0;
+
+    g_return_if_fail (ev != NULL);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
+
+    for(tl = ev->selected_objs; tl; tl = tl->next)
+	{
+		if( tl->data )
+		{
+            ++ret;
+		}
+	}
+    return ret;
+}
+
+
 
 void
 gevas_obj_collection_hide( GtkgEvasObjCollection* ev )

@@ -106,6 +106,18 @@ extern "C" {
         gpointer udata,
         add_predicate_t p);
     
+    GtkgEvasObjCollection_T
+    gevas_obj_collection_element_n( GtkgEvasObjCollection* ev, gint n );
+    gint gevas_obj_collection_element_idx_from_name(
+        GtkgEvasObjCollection* ev,
+        gint start,
+        const char* name );
+    gint gevas_obj_collection_element_idx_from_namei(
+        GtkgEvasObjCollection* ev,
+        gint start,
+        const char* name );
+    
+
     void gevas_obj_collection_add( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o );
     void gevas_obj_collection_add_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s);
     void gevas_obj_collection_add_flood( GtkgEvasObjCollection* ev,
@@ -122,6 +134,7 @@ extern "C" {
     void gevas_obj_collection_clear(  GtkgEvasObjCollection* ev );
     void gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y );
     void gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32 dy );
+    gint gevas_obj_collection_get_size(  GtkgEvasObjCollection* ev );
     void gevas_obj_collection_hide( GtkgEvasObjCollection* ev );
     void gevas_obj_collection_show( GtkgEvasObjCollection* ev );
     void gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v );
