@@ -1,6 +1,6 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
-Version: @VERSION@
+Version: 1.0.4
 Release: 1
 Copyright: BSD
 Group: System Environment/Libraries
@@ -8,8 +8,6 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Lyle Kempler <term@kempler.net>, Joakim Bodin <bodin@dreamhosted.com>
 URL: http://www.rasterman.com/raster/imlib.html
-Requires: freetype
-Requires: XFree86
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: XFree86-devel
@@ -23,31 +21,28 @@ rendering and blending, dynamic binary filters, scripting, and more.
 
 %package devel
 Summary: Imlib2 headers, static libraries and documentation
-Group: System/Libraries
-Requires: %{name} = %{PACKAGE_VERSION}
+Group: System Environment/Libraries
+Requires: %{name} = %{version}
 %description devel
 Headers, static libraries and documentation for Imlib2.
 
 %package filters
 Summary: Imlib2 basic plugin filters set
-Group: System/Libraries
-Requires: %{name} = %{PACKAGE_VERSION}
+Group: System Environment/Libraries
+Requires: %{name} = %{version}
 %description filters
 Basic set of plugin filters that come with Imlib2
 
 %package loader_jpeg
 Summary: Imlib2 JPEG loader
-Group: System/Libraries
-Requires: libjpeg
+Group: System Environment/Libraries
 BuildRequires: libjpeg-devel
 %description loader_jpeg
 JPEG image loader/saver for Imlib2
 
 %package loader_png
 Summary: Imlib2 PNG loader
-Group: System/Libraries
-Requires: libpng
-Requires: zlib
+Group: System Environment/Libraries
 BuildRequires: libpng-devel
 BuildRequires: zlib-devel
 %description loader_png
@@ -55,47 +50,44 @@ PNG image loader/saver for Imlib2
 
 %package loader_argb
 Summary: Imlib2 ARGB loader
-Group: System/Libraries
+Group: System Environment/Libraries
 %description loader_argb
 ARGB image loader/saver for Imlib2
 
 %package loader_bmp
 Summary: Imlib2 BMP loader
-Group: System/Libraries
+Group: System Environment/Libraries
 %description loader_bmp
 BMP image loader/saver for Imlib2
 
 %package loader_gif
 Summary: Imlib2 GIF loader
-Group: System/Libraries
-Requires: libungif
-BuildRequires: libungif-devel
+Group: System Environment/Libraries
 %description loader_gif
-GIF image loader/saver for Imlib2
+GIF image loader for Imlib2
 
 %package loader_pnm
 Summary: Imlib2 PNM loader
-Group: System/Libraries
+Group: System Environment/Libraries
 %description loader_pnm
 PNM image loader/saver for Imlib2
 
 %package loader_tga
 Summary: Imlib2 TGA loader
-Group: System/Libraries
+Group: System Environment/Libraries
 %description loader_tga
 TGA image loader/saver for Imlib2
 
 %package loader_tiff
 Summary: Imlib2 TIFF loader
-Group: System/Libraries
-Requires: libtiff
+Group: System Environment/Libraries
 BuildRequires: libtiff-devel
 %description loader_tiff
 TIFF image loader/saver for Imlib2
 
 %package loader_xpm
 Summary: Imlib2 XPM loader
-Group: System/Libraries
+Group: System Environment/Libraries
 %description loader_xpm
 XPM image loader/saver for Imlib2
 
@@ -126,7 +118,7 @@ fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -178,9 +170,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/loaders/image/xpm.*
 
 %changelog
-* Tue Aug 28 2001 Alvaro Herrera <alvherre@dcc.uchile.cl>
-- Remove loader_db since it's included in a different package.
-
 * Mon Jan 8 2001 The Rasterman <raster@rasterman.com>
 - Fix Requires & BuildRequires for freetype.
 

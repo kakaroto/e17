@@ -14,7 +14,6 @@ SUBDIRS		     = libltdl src filters doc loaders
 bin_SCRIPTS = imlib2-config
 
 EXTRA_DIST = \
-imlib2.spec.in \
 imlib2.spec \
 demo/Makefile.am \
 demo/Makefile.in \
