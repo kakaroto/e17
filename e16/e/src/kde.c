@@ -857,7 +857,7 @@ KDE_SetRootArea(void)
 
    EDBUG(6, "KDE_SetRootArea");
 
-   setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current);
+   setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current + 1);
    setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
 
    EDBUG_RETURN_;

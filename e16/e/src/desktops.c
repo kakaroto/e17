@@ -1488,6 +1488,8 @@ GotoDesktop(int num)
    desks.current = num;
    MoveStickyWindowsToCurrentDesk();
    GNOME_SetCurrentDesk();
+   if (mode.kde_support)
+      KDE_SetRootArea();
 
    if (num > 0)
      {
