@@ -120,15 +120,19 @@ $_ = $dir[0];
 my $first = "";
 my $second = "";
 my $third = "";
-(my $first, my $second, my $third) = /^((\w*)\/(\w+| )*\/(.*))/;
-if ($first eq 'e17') {
-  $module = $first . "/" . $second . "/" . $third;
-} elsif ($first eq "CVSROOT") {
-  $module = $first;
-} elsif ($first eq "") {
-  $module = 'CVSROOT';
+if((my $first, my $second, my $third) = /^((\w*)\/(\w*)\/(.*))/)
+{
+  if ($first eq "e17") {
+    $module = $third;
+  } elsif ($first eq "e16") {
+    $module = $first . ": " . $second . "/" . $third;
+  } elsif ($first eq "misc") { 
+    $module = $second . "/" . $third;
+  } else {
+    $module = $dir[0];
+  }
 } else {
-  $module = $first . "/" . $second;
+  $module = $dir[0];
 }
    
 
