@@ -11,6 +11,7 @@ Group:		User Interface/Desktops
 Source:		%{name}-%{version}.tar.gz
 Prefix:		%{_prefix}
 Docdir:		%{_docdir}
+BuildArch:	noarch
 BuildRoot:	/tmp/build-%{name}-%{version}-root
 Packager:	Michael Jennings <mej@eterm.org>
 URL:		http://www.enlightenment.org/
