@@ -177,9 +177,9 @@ int main(int argc, char *argv[])
     makeSelectable( sprite );
 
 
-    gi = gevasimage_new_from_metadata( gevas, "cell4.png?x=220&y=290&visible=0&fill_size=1" );
-    gevasobj_show( GTK_GEVASOBJ( gi ));
-    makeSelectable( gi );
+/*     gi = gevasimage_new_from_metadata( gevas, "cell4.png?x=220&y=290&visible=0&fill_size=1" ); */
+/*     gevasobj_show( GTK_GEVASOBJ( gi )); */
+/*     makeSelectable( gi ); */
     
     
     
