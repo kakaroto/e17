@@ -156,24 +156,25 @@ e_key_down(Ecore_Event * ev)
    e = ev->event;
    if (e->win != ewin)
       return;
+
    if (!strcmp(e->key, "n"))
      {
 	scale = 1.0;
 	e_handle_resize();
      }
-   else if (!strcmp(e->key, "minus"))
+   else if (!strcmp(e->symbol, "minus"))
      {
 	scale += 0.5;
 	e_handle_resize();
      }
-   else if (!strcmp(e->key, "equal"))
+   else if (!strcmp(e->symbol, "plus"))
      {
 	scale -= 0.5;
 	if (scale < 0.5)
 	   scale = 0.5;
 	e_handle_resize();
      }
-   else if (!strcmp(e->key, "w"))
+   else if (!strcmp(e->symbol, "w"))
      {
 	int                 w, h;
 
@@ -190,39 +191,39 @@ e_key_down(Ecore_Event * ev)
 	     e_handle_resize();
 	  }
      }
-   else if (!strcmp(e->key, "f"))
+   else if (!strcmp(e->symbol, "f"))
      {
 	e_toggle_fullscreen();
      }
-   else if (!strcmp(e->key, "i"))
+   else if (!strcmp(e->symbol, "i"))
      {
 	e_fade_info_in(0, NULL);
      }
-   else if (!strcmp(e->key, "?"))
+   else if (!strcmp(e->symbol, "?"))
      {
 	/* FIXME: display help */
      }
-   else if (!strcmp(e->key, "q"))
+   else if (!strcmp(e->symbol, "q"))
      {
 	exit(0);
      }
-   else if (!strcmp(e->key, "r"))
+   else if (!strcmp(e->symbol, "r"))
      {
 	e_rotate_r_current_image();
      }
-   else if (!strcmp(e->key, "l"))
+   else if (!strcmp(e->symbol, "l"))
      {
 	e_rotate_l_current_image();
      }
-   else if (!strcmp(e->key, "h"))
+   else if (!strcmp(e->symbol, "h"))
      {
 	e_flip_h_current_image();
      }
-   else if (!strcmp(e->key, "v"))
+   else if (!strcmp(e->symbol, "v"))
      {
 	e_flip_v_current_image();
      }
-   else if (!strcmp(e->key, "p"))
+   else if (!strcmp(e->symbol, "p"))
      {
 	int force = 1;
 	if (panel_active == active_in || panel_active == active_force_in) {
@@ -233,7 +234,7 @@ e_key_down(Ecore_Event * ev)
 	   e_slide_panel_in(0, &force);
 	}
      }
-   else if (!strcmp(e->key, "b"))
+   else if (!strcmp(e->symbol, "b"))
      {
 	int force = 1;
 	if (buttons_active == active_in || buttons_active == active_force_in) {
@@ -244,44 +245,44 @@ e_key_down(Ecore_Event * ev)
 	   e_slide_buttons_in(0, &force);
 	}
      }
-   else if (!strcmp(e->key, "d"))
+   else if (!strcmp(e->symbol, "d"))
      {
 	e_delete_current_image();
      }
-   else if (!strcmp(e->key, "s"))
+   else if (!strcmp(e->symbol, "s"))
      {
 	e_save_current_image();
      }
-   else if (!strcmp(e->key, "t"))
+   else if (!strcmp(e->symbol, "t"))
      {
         e_turntable_l_current_image();
      }
-   else if (!strcmp(e->key, "e"))
+   else if (!strcmp(e->symbol, "e"))
      {
         e_size_match();
      }
-   else if (!strcmp(e->key, "Escape"))
+   else if (!strcmp(e->symbol, "Escape"))
      {
 	exit(0);
      }
-   else if (!strcmp(e->key, "Return"))
+   else if (!strcmp(e->symbol, "Return"))
      {
 	e_display_current_image();
      }
-   else if (!strcmp(e->key, "space"))
+   else if (!strcmp(e->symbol, "space"))
      {
 	e_load_next_image();
      }
-   else if (!strcmp(e->key, "BackSpace"))
+   else if (!strcmp(e->symbol, "BackSpace"))
      {
 	e_load_prev_image();
      }
-   else if (!strcmp(e->key, "Up"))
+   else if (!strcmp(e->symbol, "Up"))
      {
 	icon_y += 8;
 	e_fix_icons();
      }
-   else if (!strcmp(e->key, "Down"))
+   else if (!strcmp(e->symbol, "Down"))
      {
 	icon_y -= 8;
 	e_fix_icons();
@@ -296,7 +297,7 @@ e_key_up(Ecore_Event * ev)
    e = ev->event;
    if (e->win != ewin)
       return;
-   if (!strcmp(e->key, "t"))
+   if (!strcmp(e->symbol, "t"))
      {
         e_turntable_r_current_image();
      }
