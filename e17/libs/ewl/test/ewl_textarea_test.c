@@ -146,11 +146,12 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Create the textarea to be displayed.
 	 */
-	textarea = ewl_entry_new(NULL);
+	textarea = ewl_entry_new("");
 	ewl_container_child_append(EWL_CONTAINER(scrollpane), textarea);
-	ewl_object_fill_policy_set(EWL_OBJECT(textarea), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(textarea), EWL_FLAG_FILL_FILL);
 	ewl_callback_append(textarea, EWL_CALLBACK_REALIZE, __font_get,
 			    spinner);
+	ewl_entry_multiline_set(EWL_ENTRY(textarea), TRUE);
 	ewl_widget_show(textarea);
 
 	ewl_callback_append(spinner, EWL_CALLBACK_VALUE_CHANGED, __font_set,

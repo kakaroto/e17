@@ -470,7 +470,7 @@ char *ewl_entry_font_get(Ewl_Entry *e)
 
 	if (REALIZED(e)) {
 		int size;
-		font = etox_context_get_font(e->context, &size);
+		font = etox_context_get_font(etox_get_context(e->etox), &size);
 	}
 	else {
 		op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
@@ -494,11 +494,11 @@ int ewl_entry_font_size_get(Ewl_Entry *e)
 	int size = 1;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, NULL);
+	DCHECK_PARAM_PTR_RET("e", e, 1);
 
 	if (REALIZED(e)) {
 		char *font = NULL;
-		font = etox_context_get_font(e->context, &size);
+		font = etox_context_get_font(etox_get_context(e->etox), &size);
 		if (font)
 			FREE(font);
 	}
@@ -710,18 +710,8 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 		pos = c_pos;
 
-	if (l) {
-		/* 
-		 * if we are at the end of the text, dont grab the
-		 * width/height as they will not make sense
-		 */
-		if (pos != c_pos)
-			ewl_entry_index_geometry_map(e, c_pos, &cx, &cy,
-							NULL, NULL);
-		else
-			ewl_entry_index_geometry_map(e, pos, &cx, &cy, &cw, 
-							&ch);
-	}
+	if (l)
+		ewl_entry_index_geometry_map(e, pos, &cx, &cy, &cw, &ch);
 	else
 		ewl_object_current_geometry_get(EWL_OBJECT(w), &cx, &cy, &cw,
 						&ch);
