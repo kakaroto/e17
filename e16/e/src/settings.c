@@ -2457,6 +2457,7 @@ static int          tmp_theme_transparency;
 #ifdef ENABLE_THEME_TRANSPARENCY
 static int          tmp_st_border;
 static int          tmp_st_widget;
+static int          tmp_st_dialog;
 static int          tmp_st_menu;
 static int          tmp_st_tooltip;
 static int          tmp_st_hilight;
@@ -2478,10 +2479,9 @@ CB_ConfigureBG(int val, void *data)
 #ifdef ENABLE_THEME_TRANSPARENCY
 	Conf.st_trans.border = tmp_st_border;
 	Conf.st_trans.widget = tmp_st_widget;
+	Conf.st_trans.dialog = tmp_st_dialog;
 	Conf.st_trans.menu = tmp_st_menu;
 	Conf.st_trans.tooltip = tmp_st_tooltip;
-
-	Conf.st_trans.dialog = ICLASS_ATTR_BG;
 
 	if (tmp_st_hilight == ICLASS_ATTR_GLASS)
 	  {
@@ -3215,7 +3215,7 @@ SettingsSelectiveTransparency(void)
 
    DItem              *table, *di;
    DItem              *radio_border, *radio_widget, *radio_menu,
-      *radio_tooltip, *radio_hilight;
+      *radio_dialog, *radio_tooltip, *radio_hilight;
 
    if ((d =
 	FindItem("CONFIGURE_SELECTIVETRANSPARENCY", 0, LIST_FINDBY_NAME,
@@ -3229,6 +3229,7 @@ SettingsSelectiveTransparency(void)
 
    tmp_st_border = Conf.st_trans.border;
    tmp_st_widget = Conf.st_trans.widget;
+   tmp_st_dialog = Conf.st_trans.dialog;
    tmp_st_menu = Conf.st_trans.menu;
    tmp_st_tooltip = Conf.st_trans.tooltip;
    tmp_st_hilight = Conf.st_trans.hilight;
@@ -3237,7 +3238,7 @@ SettingsSelectiveTransparency(void)
    DialogSetTitle(d, _("Selective Transparency Settings"));
 
    table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 6, 0, 0, 0);
+   DialogItemTableSetOptions(table, 7, 0, 0, 0);
 
    if (Conf.dialogs.headers)
      {
@@ -3256,14 +3257,14 @@ SettingsSelectiveTransparency(void)
 	DialogItemSeparatorSetOrientation(di, 0);
      }
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 6);
+   DialogItemSetColSpan(di, 7);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di, _("Changes Might Require Restart:"));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 6);
+   DialogItemSetColSpan(di, 7);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
@@ -3306,6 +3307,13 @@ SettingsSelectiveTransparency(void)
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, _("E Dialogs:"));
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 1);
+   DialogItemSetPadding(di, 2, 15, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di, _("Tooltips:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -3337,6 +3345,12 @@ SettingsSelectiveTransparency(void)
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_widget);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+
+   radio_dialog = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 15, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemRadioButtonSetFirst(di, radio_dialog);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio_tooltip = di = DialogAddItem(table, DITEM_RADIOBUTTON);
@@ -3381,6 +3395,13 @@ SettingsSelectiveTransparency(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
+   DialogItemRadioButtonSetFirst(di, radio_dialog);
+   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetValPtr(radio_dialog, &tmp_st_dialog);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 15, 2, 2);
+   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_tooltip);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3413,6 +3434,10 @@ SettingsSelectiveTransparency(void)
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
 
+   di = DialogAddItem(table, DITEM_NONE);
+   DialogItemSetPadding(di, 2, 15, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -3421,7 +3446,7 @@ SettingsSelectiveTransparency(void)
    DialogItemRadioButtonGroupSetValPtr(radio_tooltip, &tmp_st_tooltip);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 6);
+   DialogItemSetColSpan(di, 7);
    DialogItemSetPadding(di, 2, 2, 4, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
@@ -3472,6 +3497,7 @@ SettingsBackground(Background * bg)
 #ifdef USE_IMLIB2
    tmp_st_border = Conf.st_trans.border;
    tmp_st_widget = Conf.st_trans.widget;
+   tmp_st_dialog = Conf.st_trans.dialog;
    tmp_st_menu = Conf.st_trans.menu;
    tmp_st_tooltip = Conf.st_trans.tooltip;
    tmp_st_hilight = Conf.st_trans.hilight;

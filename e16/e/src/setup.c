@@ -491,12 +491,15 @@ SetupX(void)
 
 #ifdef USE_IMLIB2
    Conf.st_trans.menu = ICLASS_ATTR_BG;
-   Conf.st_trans.menu_item = ICLASS_ATTR_OPAQUE;
+   Conf.st_trans.menu_item = ICLASS_ATTR_BG;
    Conf.st_trans.tooltip = ICLASS_ATTR_GLASS;
-   Conf.st_trans.widget = ICLASS_ATTR_OPAQUE;
+   Conf.st_trans.widget = ICLASS_ATTR_BG;
+   Conf.st_trans.hilight = ICLASS_ATTR_OPAQUE;
    Conf.st_trans.border = ICLASS_ATTR_BG;
    Conf.st_trans.iconbox = ICLASS_ATTR_BG;
    Conf.st_trans.dialog = ICLASS_ATTR_BG;
+   Conf.st_trans.pager = ICLASS_ATTR_BG;
+   Conf.st_trans.warplist = ICLASS_ATTR_BG;
 #endif
 
    ScreenInit();
