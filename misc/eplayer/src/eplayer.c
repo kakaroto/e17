@@ -34,10 +34,8 @@ static int load_input_plugin (const char *file, lt_ptr udata) {
 	ePlayer *player = udata;
 	InputPlugin *ip;
 
-	if (!(ip = plugin_new(file, PLUGIN_TYPE_INPUT))) {
-		fprintf (stderr, "Cannot load plugin: '%s'\n", file);
+	if (!(ip = plugin_new(file, PLUGIN_TYPE_INPUT)))
 		return 0;
-	}
 
 	/* only add this plugin if it hasn't been added yet */
 	if (find_input_plugin(player, ip->name)) {
