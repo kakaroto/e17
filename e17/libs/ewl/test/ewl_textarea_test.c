@@ -79,7 +79,7 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_text_color_set(EWL_TEXT(textarea), 0, 255, 0, 255);
 	ewl_text_text_append(EWL_TEXT(textarea), long_text);
 	ewl_text_color_set(EWL_TEXT(textarea), 0, 0, 255, 255);
-	ewl_text_text_append(EWL_TEXT(textarea), long_text);
+	ewl_text_text_prepend(EWL_TEXT(textarea), long_text);
 	ewl_container_append_child(EWL_CONTAINER(scrollpane), textarea);
 	ewl_widget_show(textarea);
 
