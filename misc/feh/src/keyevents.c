@@ -129,13 +129,13 @@ handle_keypress_event (XEvent * ev, Window win)
       feh_flip_v (winwid);
       break;
     case '0':
-      feh_modify_brightness (winwid, 1);
+      feh_modify_brightness (winwid, 0.1);
       break;
     case '-':
-      feh_modify_gamma (winwid, 1);
+      feh_modify_gamma (winwid, 0.1);
       break;
     case '=':
-      feh_modify_contrast (winwid, 1);
+      feh_modify_contrast (winwid, 0.1);
       break;
     default:
       break;
