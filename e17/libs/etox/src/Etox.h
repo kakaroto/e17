@@ -103,6 +103,9 @@ extern "C"
 	E_Font_Style *E_load_font_style(char *path);
 	void E_Font_Style_free(E_Font_Style *style);
 	char etox_set_font_style(Etox *e, E_Font_Style *font_style);
+        void etox_add_path_to_font_style_path(char *path);
+        void etox_remove_path_to_font_style_path(char *path);
+        char **etox_list_font_style_path(int *number_return);
 	char etox_clip_rect_new(Etox *e, double x, double y, double w,double h);
 	char *etox_get_text(Etox *e);
 	char etox_show(Etox *e);

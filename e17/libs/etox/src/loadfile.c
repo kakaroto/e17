@@ -158,3 +158,15 @@ char *GetLine(char *s, int size, FILE * f)
 	}
 	return ret;
 }
+
+int fileGood(char *path) {
+  struct stat buf;
+  int ret;
+  
+  ret = stat(path, &buf);
+  if (ret < 0)
+    return 0;
+  if ((buf.st_mode & S_IFLNK) || (buf.st_mode & S_IFREG))
+    return 1;
+  return 0;
+}

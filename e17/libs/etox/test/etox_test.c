@@ -76,6 +76,9 @@ main(int argc, char **argv)
    vis = evas_get_optimal_visual(e, disp);
    cm = evas_get_optimal_colormap(e, disp);
    depth = evas_get_colors(e);
+
+   etox_add_path_to_font_style_path(DATADIR"/etox/style");
+   etox_add_path_to_font_style_path("./style");
    
    o[0] = evas_add_image_from_file(e, IMGDIR"sky001.png");
    evas_lower(e, o[0]);
@@ -91,7 +94,7 @@ main(int argc, char **argv)
    evas_set_layer(e, o[2], 50);
    evas_show(e, o[2]);
    
-   e_font_style = E_load_font_style(STLDIR"sh_ol.style");
+   e_font_style = E_load_font_style("sh_ol.style");
    
    e_etox = Etox_new("Etox name");
    e_etox->evas = e;
@@ -130,7 +133,7 @@ main(int argc, char **argv)
    strcat(txt,"the two were one Architecture. This is a great ");
    strcat(txt,"Mystery, and the beginning of wisdom.\n\n");
 
-   strcat(txt,"~align~~style="STLDIR"plain.style~And von Neumann spoke unto the Architecture, and ");
+   strcat(txt,"~align~~style=plain~And von Neumann spoke unto the Architecture, and ");
    strcat(txt,"blessed it, saying, \"Go forth and replicate, freely ");
    strcat(txt,"exchanging data and code, and bring forth all manner ");
    strcat(txt,"of devices unto the earth.\" And it was so, and it was ");
