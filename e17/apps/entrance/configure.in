@@ -219,6 +219,7 @@ data/users/Makefile
 data/users/default/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/E17/Makefile
 data/themes/Nebulous/Makefile
 data/themes/taillights/Makefile
 data/themes/taillights/parts/Makefile
