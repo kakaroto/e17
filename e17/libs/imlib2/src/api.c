@@ -4255,7 +4255,7 @@ imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
 }
 
 void
-imlib_clear_image(void)
+imlib_image_clear(void)
 {
    ImlibImage *im;
 
@@ -4269,4 +4269,25 @@ imlib_clear_image(void)
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    memset(im->data, 0, im->w * im->h * sizeof(DATA32));   
+}
+
+void
+imlib_image_clear_color(int r, int g, int b, int a)
+{
+   ImlibImage *im;
+   int i, max;
+   DATA32 col;
+
+   if (!ctx) ctx = imlib_context_new();
+   CHECK_PARAM_POINTER("imlib_fill_ellipse", "image", ctx->image);
+   CAST_IMAGE(im, ctx->image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   max = im->w * im->h;
+   WRITE_RGBA(&col, r, g, b, a);
+   for (i = 0; i < max; i++) im->data[i] = col;
 }

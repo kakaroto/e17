@@ -465,7 +465,8 @@ extern "C"
 
    void imlib_apply_filter(char *script, ...);
 
-   void imlib_clear_image(void);
+   void imlib_image_clear(void);
+   void imlib_image_clear_color(int r, int g, int b, int a);
 
 #ifdef __cplusplus
 }
