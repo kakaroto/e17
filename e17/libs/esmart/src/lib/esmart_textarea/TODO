@@ -1,17 +1,20 @@
 Simple:
 =======
-add mouse selection
-handle up / down movement when lower line longer that top one and v/v
-remove all hardcoded values
+- add mouse selection
+- handle up / down movement when lower line longer that top one and v/v
+- remove all hardcoded values
 
 Medium:
 =======
-when we reach the top / botton line, up / down need special cases
+- when we reach the top / botton line, up / down need special cases
+- if on the last line and hit enter, cursor doesnt move till you enter 
+  a character
+	       
 
 Hard:
 =====
-add copy / paste (clipboard support)
+- add copy / paste (clipboard support)
 
 Insane:
 =======
-ambitious? add color coding
+- ambitious? add color coding
