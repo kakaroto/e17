@@ -84,7 +84,7 @@ __imlib_DataCmodApply(DATA32 *data, int w, int h, int jump,
    DATA8   r, g, b, a;
    
    /*\ We might be adding alpha \*/
-   if (!(*fl & F_HAS_ALPHA))
+   if (fl && !(*fl & F_HAS_ALPHA))
      {
 	p = data;
 	for (y = 0; y < h; y++)

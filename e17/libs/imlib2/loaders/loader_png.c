@@ -131,6 +131,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	png_set_packing(png_ptr);
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 	   png_set_expand(png_ptr);
+        if (im->data)
+           free(im->data);
 	im->data = malloc(w * h * sizeof(DATA32));
 	if (!im->data)
 	  {

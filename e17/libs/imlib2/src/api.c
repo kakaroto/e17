@@ -583,7 +583,7 @@ imlib_image_has_alpha(void)
 }
 
 void 
-imlib_image_set_never_changes_on_disk(Imlib_Image image)
+imlib_image_set_never_changes_on_disk(void)
 {
    ImlibImage *im;
 
@@ -1792,7 +1792,6 @@ imlib_text_get_location_at_index(const char *text, int index,
 	return;
 	break;
      }
-   return -1;
 }
 
 char **
@@ -1843,14 +1842,14 @@ imlib_get_font_descent(void)
 }
 
 int
-imlib_get_maximum_font_ascent(Imlib_Font font)
+imlib_get_maximum_font_ascent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_ascent", "font", ctxt_font , 0);
    return ((ImlibFont *)ctxt_font)->max_ascent;
 }
 
 int
-imlib_get_maximum_font_descent(Imlib_Font font)
+imlib_get_maximum_font_descent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_descent", "font", ctxt_font , 0);
    return ((ImlibFont *)ctxt_font)->max_ascent;
@@ -2581,18 +2580,16 @@ imlib_filter_divisors(int a, int r, int g, int b)
    __imlib_FilterDivisors((ImlibFilter *)ctxt_filter, a, r, g, b);
 }
 
-void imlib_apply_filter( char *script, ... )
+void imlib_apply_filter(char *script, ...)
 {
-   IFunction            *func = NULL, *ptr;
    va_list               param_list;
    Imlib_Image           im;
-   
    
    __imlib_dynamic_filters_init();
    CAST_IMAGE(im, ctxt_image);   
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   va_start( param_list, script );
-   __imlib_script_parse( im, script, param_list );
-   va_end( param_list );
+   va_start(param_list, script);
+   __imlib_script_parse(im, script, param_list);
+   va_end(param_list);
 }
