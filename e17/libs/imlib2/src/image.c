@@ -868,12 +868,14 @@ __imlib_LoadAllLoaders(void)
 ImlibLoader *
 __imlib_FindBestLoaderForFile(const char *file)
 {
-   char *extension, *lower;
+   char *extension, *lower, *rfile;
    ImlibLoader *l = NULL;
 
    /* use the file extension for a "best guess" as to what loader to try */
    /* first at any rate */
-   extension = __imlib_FileExtension(file);
+   rfile = __imlib_FileRealFile(file);
+   extension = __imlib_FileExtension(rfile);
+   free(rfile);
    /* change the extensiont o all lower case as all "types" are listed as */
    /* lower case strings fromt he loader that represent all the possible */
    /* extensions that file format could have */
