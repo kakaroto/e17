@@ -224,7 +224,7 @@ void etox_append_text(Etox * et, char *text)
 			etox_line_merge(start, end);
 			et->length += start->length;
 			et->h += start->h;
-			lines = evas_list_append(lines, start);
+			et->lines = evas_list_append(et->lines, start);
 		} else {
 			start = ll->data;
 
@@ -236,7 +236,7 @@ void etox_append_text(Etox * et, char *text)
 
 			et->h += start->h;
 			et->length += start->length;
-			lines = evas_list_append(lines, start);
+			et->lines = evas_list_append(et->lines, start);
 		}
 	}
 
