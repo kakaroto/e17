@@ -2,29 +2,43 @@
 #ifndef __EWL_WINDOW_H__
 #define __EWL_WINDOW_H__
 
-/*
+/**
+ * @file ewl_window.h
+ * Defines the Ewl_Window class which extends the Ewl_Embed class by creating
+ * it's own window and evas.
+ */
+
+/**
  * The window structure is mostly a container for holding widgets and a
  * wrapper around the xlib window.
  */
-typedef struct _ewl_window Ewl_Window;
+typedef struct Ewl_Window Ewl_Window;
 
-struct _ewl_window
+/**
+ * @def EWL_WINDOW(win)
+ * Typecasts a pointer to an Ewl_Window pointer.
+ */
+#define EWL_WINDOW(win) ((Ewl_Window *) win)
+
+/**
+ * @struct Ewl_Window
+ * Extends the Ewl_Embed class to create it's own window and evas for drawing,
+ * sizing and positioning.
+ */
+struct Ewl_Window
 {
-	Ewl_Embed       embed;
+	Ewl_Embed       embed; /**< Inherits from the Ewl_Embed class */
 
-	Window          window;
+	Window          window; /**< Provides a window for drawing */
 
-	char           *title;
+	char           *title; /**< The current title on the provided window */
 
-	/*
-	 * Flag to indicate if the window has a border.
-	 */
-	Ewl_Window_Flags flags;
+	 
+	Ewl_Window_Flags flags; /**< Flags indicating window properties */
 
-	int x, y;
+	int             x; /**< Screen relative horizontal position of window */
+	int             y; /**< Screen relative vertical position of window */
 };
-
-#define EWL_WINDOW(widget) ((Ewl_Window *) widget)
 
 Ewl_Widget     *ewl_window_new();
 int             ewl_window_init(Ewl_Window * win);

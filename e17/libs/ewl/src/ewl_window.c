@@ -20,9 +20,8 @@ void            __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
 					  int size, Ewl_Orientation o);
 
 /**
- * ewl_window_new - allocate and initialize a new window
- *
- * Returns a new window on success, or NULL on failure.
+ * @return Returns a new window on success, or NULL on failure.
+ * @brief Allocate and initialize a new window
  */
 Ewl_Widget     *ewl_window_new()
 {
@@ -44,11 +43,9 @@ Ewl_Widget     *ewl_window_new()
 }
 
 /**
- * ewl_window_find_window - find an ewl window by it's X window
- * @window: the X window to search for on the list of ewl window's
- *
- * Returns the found ewl window on success, NULL on failure to find the
- * window.
+ * @param window: the X window to search for on the list of ewl window's
+ * @return Returns the found ewl window on success, NULL on failure.
+ * @brief Find an ewl window by it's X window
  */
 Ewl_Window     *ewl_window_find_window(Window window)
 {
@@ -67,12 +64,13 @@ Ewl_Window     *ewl_window_find_window(Window window)
 }
 
 /**
- * ewl_window_set_title - set the title of the specified window
- * @win: the window to change the title
- * @title: the title to set for the window
+ * @param win: the window to change the title
+ * @param title: the title to set for the window
+ * @return Returns no value.
+ * @brief Set the title of the specified window
  *
- * Returns no value. Sets the title of window @w to @title and calls the
- * necessary X lib functions to update the window.
+ * Sets the title of window @a w to @a title and calls the necessary X lib
+ * functions to update the window.
  */
 void ewl_window_set_title(Ewl_Window * win, char *title)
 {
@@ -93,10 +91,10 @@ void ewl_window_set_title(Ewl_Window * win, char *title)
 }
 
 /**
- * ewl_window_get_title - retrieve the title of the specified window
- * @win: the window to retrieve the window
+ * @param win: the window to retrieve the window
+ * @return Returns a pointer to a new copy of the title, NULL on failure.
+ * @brief Retrieve the title of the specified window
  *
- * Returns a pointer to a newly allocated copy of the title, NULL on failure.
  * The returned title should be freed.
  */
 char           *ewl_window_get_title(Ewl_Window * win)
@@ -108,11 +106,11 @@ char           *ewl_window_get_title(Ewl_Window * win)
 }
 
 /**
- * ewl_window_set_borderless - remove the border from the specified window
- * @win: the window to remove the border
- * @value: the boolean to indicate borderless settings
+ * @param win: the window to remove the border
+ * @return Returns no value.
+ * @brief Remove the border from the specified window
  *
- * Returns no value. Remove the border from the specified widget and call the
+ * Remove the border from the specified widget and call the
  * necessary X lib functions to update the appearance.
  */
 void ewl_window_set_borderless(Ewl_Window * win)
@@ -129,12 +127,13 @@ void ewl_window_set_borderless(Ewl_Window * win)
 }
 
 /**
- * ewl_window_move - move the specified window to the given position
- * @win: the window to move
- * @x: the x coordinate of the new position
- * @y: the y coordinate of the new position
+ * @param win: the window to move
+ * @param x: the x coordinate of the new position
+ * @param y: the y coordinate of the new position
+ * @return Returns no value.
+ * @brief Move the specified window to the given position
  *
- * Returns no value. Moves the window into the specified position in the
+ * Moves the window into the specified position in the
  * window manager environment.
  */
 void ewl_window_move(Ewl_Window * win, int x, int y)
@@ -149,11 +148,13 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 }
 
 /**
- * ewl_window_get_position - retrieve the position of the window
- * @x: a pointer to the integer that should receive the x coordinate
- * @y: a pointer to the integer that should receive the y coordinate
+ * @param win: the window to query for position
+ * @param x: a pointer to the integer that should receive the x coordinate
+ * @param y: a pointer to the integer that should receive the y coordinate
+ * @return Returns no value.
+ * @brief Retrieve the position of the window
  *
- * Returns no value. Stores the window position into the parameters @x and @y.
+ * Stores the window position into the parameters @a x and @a y.
  */
 void ewl_window_get_position(Ewl_Window * win, int *x, int *y)
 {
@@ -169,11 +170,11 @@ void ewl_window_get_position(Ewl_Window * win, int *x, int *y)
 }
 
 /**
- * ewl_window_init - initialize a window to default values and callbacks
- * @w: the window to be initialized to default values and callbacks
+ * @param w: the window to be initialized to default values and callbacks
+ * @return Returns TRUE or FALSE depending on if initialization succeeds.
+ * @brief Initialize a window to default values and callbacks
  *
- * Returns TRUE or FALSE depending on if initialization succeeds. Sets the
- * values and callbacks of a window @w to their defaults.
+ * Sets the values and callbacks of a window @a w to their defaults.
  */
 int ewl_window_init(Ewl_Window * w)
 {

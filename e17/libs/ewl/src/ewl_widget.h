@@ -3,56 +3,46 @@
 
 /**
  * @file ewl_widget.h
- * Defines the widget class and it's accessor/modifier functions.
+ * Defines the Ewl_Widget class and it's accessor/modifier functions.
  */
 
-typedef struct _ewl_widget Ewl_Widget;
+/**
+ * The class that all widgets should inherit. Provides reference to a parent
+ * widget/container, callbacks, and appearance information.
+ */
+typedef struct Ewl_Widget Ewl_Widget;
 
+/**
+ * @def EWL_WIDGET(widget)
+ * @brief Typecast a pointer to an Ewl_Widget pointer.
+ */
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
 /**
  * @struct Ewl_Widget
+ * The class inheriting from Ewl_Object that provides appearance, parent, and
+ * callback capabilities.
  */
-struct _ewl_widget
+struct Ewl_Widget
 {
-	/*
-	 * These fields are the basic information about how this widget
-	 * relates to others.
-	 */
-	Ewl_Object      object;
-	Ewl_Widget     *parent;
+	Ewl_Object      object; /**< Inherit the base Object class */
+	Ewl_Widget     *parent; /**< The parent widget, actually a container */
 
-	/*
-	 * List of callbacks for this widget 
-	 */
-	Ewd_List       *callbacks[EWL_CALLBACK_MAX];
+	Ewd_List       *callbacks[EWL_CALLBACK_MAX]; /**< Callback list array */
 
-	Evas_Object    *fx_clip_box;
+	Evas_Object    *fx_clip_box; /**< Clipping rectangle of widget */
 
-	Evas_Object    *theme_object;
-	char           *bit_state;
-	char           *appearance;
-	int             layer;
+	Evas_Object    *theme_object; /**< Appearance shown on canvas */
+	char           *bit_state; /**< State of the appaarance */
+	char           *appearance; /**< Key to lookup appearance in theme */
+	int             layer; /**< Current layer of widget on canvas */
 
-	/**
-	 * And these are for keeping track of the appearance, behavior
-	 * states of the widget and the data attached to the widget.
-	 */
-	Ewl_State       state;
-	Ewd_Hash       *theme;
-	Ewd_Hash       *data;
+	Ewl_State       state; /**< Present widget state bitmask */
+	Ewd_Hash       *theme; /**< Overriding theme settings of this widget */
+	Ewd_Hash       *data; /**< Arbitrary data attached to this widget */
 
-	/**
-	 * Flags for determining the current visibility of the widget as well
-	 * as if it has been realized
-	 */
-	Ewl_Widget_Flags       flags;
+	Ewl_Widget_Flags flags; /**< Bitmask indicating visibility and status */
 };
-
-/*
- * Returns a allocated widget structure
- */
-Ewl_Widget     *ewl_widget_new();
 
 /*
  * Initialize a widget to it's default values

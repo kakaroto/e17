@@ -52,9 +52,8 @@ void __ewl_embed_evas_key_down(void *data, Evas *e, Evas_Object *obj, void *even
 void __ewl_embed_evas_key_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /**
- * ewl_embed_new - allocate and initialize a new embed
- *
- * Returns a new embed on success, or NULL on failure.
+ * @return Returns a new embed on success, or NULL on failure.
+ * @brief Allocate and initialize a new embed
  */
 Ewl_Widget     *ewl_embed_new()
 {
@@ -76,11 +75,11 @@ Ewl_Widget     *ewl_embed_new()
 }
 
 /**
- * ewl_embed_init - initialize a embed to default values and callbacks
- * @w: the embed to be initialized to default values and callbacks
+ * @param w: the embed to be initialized to default values and callbacks
+ * @return Returns TRUE or FALSE depending on if initialization succeeds.
+ * @brief initialize a embed to default values and callbacks
  *
- * Returns TRUE or FALSE depending on if initialization succeeds. Sets the
- * values and callbacks of a embed @w to their defaults.
+ * Sets the values and callbacks of a embed @a w to their defaults.
  */
 int ewl_embed_init(Ewl_Embed * w)
 {
@@ -115,12 +114,13 @@ int ewl_embed_init(Ewl_Embed * w)
 }
 
 /**
- * ewl_embed_set_evas - change the evas used by the embedded container
- * @emb: the embedded container to change the target evas
- * @evas: the new evas to draw the container and it's contents
+ * @param emb: the embedded container to change the target evas
+ * @param evas: the new evas to draw the container and it's contents
+ * @return Returns an evas smart object on success, NULL on failure.
+ * @brief Change the evas used by the embedded container
  *
- * Returns an evas smart object for manipulating the target embedded container
- * on success, NULL on failure.
+ * The returned smart object can be used to manipulate the area used by EWL
+ * through standard evas functions.
  */
 Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 {
@@ -198,11 +198,12 @@ Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 }
 
 /**
- * ewl_embed_font_path_add - add a font path to all embeds after realized
- * @path: the font path to add to the embeds
+ * @param path: the font path to add to the embeds
+ * @return Returns no value.
+ * @brief Add a font path to all embeds after realized
  *
- * Returns no value. Adds the search path @path to the evases created in the
- * embeds. Using ewl_theme_font_path_add is preferred.
+ * Adds the search path to the evases created in the embeds. Using
+ * ewl_theme_font_path_add is preferred.
  */
 void ewl_embed_font_path_add(char *path)
 {
@@ -221,10 +222,9 @@ void ewl_embed_font_path_add(char *path)
 }
 
 /**
- * ewl_embed_find_by_evas_window - find an ewl embed by its evas window
- * @embed: the evas window to search for on the list of embeds
- *
- * Returns the found embed on success, NULL on failure to find the embed.
+ * @param window: the evas window to search for on the list of embeds
+ * @return Returns the found embed on success, NULL on failure.
+ * @brief Find an ewl embed by its evas window
  */
 Ewl_Embed      *ewl_embed_find_by_evas_window(Window window)
 {
@@ -244,10 +244,9 @@ Ewl_Embed      *ewl_embed_find_by_evas_window(Window window)
 }
 
 /**
- * ewl_embed_find_by_widget - find an ewl embed by a widget inside
- * @w: the widget to search for its embed
- *
- * Returns the found embed on success, NULL on failure to find the embed.
+ * @param w: the widget to search for its embed
+ * @return Returns the found embed on success, NULL on failure.
+ * @brief Find an ewl embed by a widget inside
  */
 Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
 {

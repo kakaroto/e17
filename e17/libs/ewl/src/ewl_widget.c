@@ -48,11 +48,13 @@ static inline void __ewl_widget_theme_destroy(Ewl_Widget *w);
 static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w);
 
 /**
- * ewl_widget_init - initialize a widgets to default values and callbacks
- * @w: the widget to initialize
- * @appearance: the key for the widgets theme appearance
+ * @param w: the widget to initialize
+ * @param appearance: the key for the widgets theme appearance
  *
- * Returns no value. The widget @w is initialized to default values and is
+ * @return No value.
+ * @brief Initialize a widget to default values and callbacks
+ *
+ * The widget w is initialized to default values and is
  * assigned the default callbacks. The appearance key is assigned for easy
  * access to theme information.
  */
@@ -116,11 +118,12 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 }
 
 /**
- * ewl_widget_realize - realize the specified widget
- * @w: the widget to realize
+ * @param w: the widget to realize
+ * @return Returns no value.
+ * @brief Realize the specified widget.
  *
- * Returns no value. The specified widget is realized (ie. actually displayed to
- * the screen).
+ *
+ * The specified widget is realized, ie. actually displayed to the screen.
  */
 void ewl_widget_realize(Ewl_Widget * w)
 {
@@ -132,7 +135,7 @@ void ewl_widget_realize(Ewl_Widget * w)
 
 	w->flags |= EWL_FLAGS_REALIZED;
 
-	if (w->parent && !REALIZED(w->parent))
+	f (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
 
 	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
@@ -142,11 +145,11 @@ void ewl_widget_realize(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_unrealize - unrealize the specified widget
- * @w: the widget to unrealize
+ * @param w: the widget to unrealize
+ * @return Returns no value.
+ * @brief Unrealize the specified widget
  *
- * Returns no value. The specified widget is unrealized (ie. no longer
- * displayed to the screen).
+ * The specified widget is unrealized, ie. no longer displayed to the screen.
  */
 void ewl_widget_unrealize(Ewl_Widget * w)
 {
@@ -164,11 +167,12 @@ void ewl_widget_unrealize(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_show - mark a widget as visible
- * @w: the widget to be marked as visible
+ * @param w: the widget to be marked as visible
+ * @return Returns no value.
+ * @brief mark a widget as visible
  *
- * Returns no value. Marks the widget as visible so that it will be displayed
- * the next time through the rendering loop.
+ * Marks the widget as visible so that it will be displayed the next time
+ * through the rendering loop.
  */
 void ewl_widget_show(Ewl_Widget * w)
 {
@@ -194,11 +198,12 @@ void ewl_widget_show(Ewl_Widget * w)
 
 
 /**
- * ewl_widget_hide - mark a widget as invisible
- * @w: the widget to be marked as invisible
+ * @param w: the widget to be marked as invisible
+ * @return Returns no value.
+ * @brief Mark a widget as invisible
  *
- * Returns no value. Marks the widget as invisible so that it will not be
- * displayed the next time through the rendering loop.
+ * Marks the widget as invisible so that it will not be displayed the next time
+ * through the rendering loop.
  */
 void ewl_widget_hide(Ewl_Widget * w)
 {
@@ -222,11 +227,12 @@ void ewl_widget_hide(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_destroy - destroy the specified widget
- * @w: the widget to be destroyed
+ * @param w: the widget to be destroyed
+ * @return Returns no value.
+ * @brief Destroy the specified widget
  *
- * Returns no value. The widget calls it's destroy callback to do any clean up
- * necessary and then free's the widget.
+ * The widget calls it's destroy callback to do any clean up necessary and then
+ * free's the widget.
  */
 void ewl_widget_destroy(Ewl_Widget * w)
 {
@@ -256,11 +262,12 @@ void ewl_widget_destroy(Ewl_Widget * w)
 
 
 /**
- * ewl_widget_configure - initiate configuring of the specified widget
- * @w: the widget to configure
+ * @param w: the widget to configure
+ * @return Returns no value.
+ * @brief Initiate configuring of the specified widget
  *
- * Returns no value. The configure callback is triggered for the specified
- * widget, this should adjust the widgets size and position.
+ * The configure callback is triggered for the specified widget, this should
+ * adjust the widgets size and position.
  */
 void ewl_widget_configure(Ewl_Widget * w)
 {
@@ -276,11 +283,12 @@ void ewl_widget_configure(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_theme_update - initiate theme update of the specified widget
- * @w: the widget to update the theme
+ * @param w: the widget to update the theme
+ * @return Returns no value.
+ * @brief Initiate theme update of the specified widget
  *
- * Returns no value. The theme update callback is triggered for the specified
- * widget, this should adjust the widgets appearance.
+ * The theme update callback is triggered for the specified widget, this should
+ * adjust the widgets appearance.
  */
 void ewl_widget_theme_update(Ewl_Widget * w)
 {
@@ -297,11 +305,12 @@ void ewl_widget_theme_update(Ewl_Widget * w)
 
 
 /**
- * ewl_widget_reparent - initiate reparent of the specified widget
- * @w: the widget to reparent
+ * @param w: the widget to reparent
+ * @return Returns no value.
+ * @brief initiate reparent of the specified widget
  *
- * Returns no value. The reparent callback is triggered for the specified
- * widget, this should adjust the widgets attributes based on the new parent.
+ * The reparent callback is triggered for the specified widget, this should
+ * adjust the widgets attributes based on the new parent.
  */
 void ewl_widget_reparent(Ewl_Widget * w)
 {
@@ -314,13 +323,14 @@ void ewl_widget_reparent(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_set_data - attach the specified key / value pair to the widget
- * @w: the widget to own the key value pair
- * @k: the key that is associated with the data
- * @v: the data that is to be tracked
+ * @param w: the widget to own the key value pair
+ * @param k: the key that is associated with the data
+ * @param v: the data that is to be tracked
+ * @return Returns no value.
+ * @brief Attach the specified key / value pair to the widget
  *
- * Returns no value. Assigns a key / value pair with @k as the key and @v as
- * the value to the specified widget @w.
+ * Assigns a key / value pair with k as the key and v as the value to the
+ * specified widget w.
  */
 void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 {
@@ -338,12 +348,12 @@ void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 
 
 /**
- * ewl_widget_del_data - remove the specified key / value pair from the widget
- * @w: the widget that owns the key value pair
- * @k: the key that is associated with the data
+ * @param w: the widget that owns the key value pair
+ * @param k: the key that is associated with the data
+ * @return Returns no value.
+ * @brief Remove the specified key / value pair from the widget
  *
- * Returns no value. Removes a key / value pair with @k as the key from the
- * specified widget @w.
+ * Removes a key / value pair with k as the key from the specified widget w.
  */
 void ewl_widget_del_data(Ewl_Widget * w, void *k)
 {
@@ -359,12 +369,12 @@ void ewl_widget_del_data(Ewl_Widget * w, void *k)
 
 
 /**
- * ewl_widget_get_data - retrieve the specified key / value pair from the widget
- * @w: the widget that owns the key value pair
- * @k: the key that is associated with the data
+ * @param w: the widget that owns the key value pair
+ * @param k: the key that is associated with the data
+ * @return Returns the value associated with k on success, NULL on failure.
+ * @brief retrieve the specified key / value pair from the widget
  *
- * Returns the value associated with @k on success, NULL on failure. Retrieves a
- * key / value pair with @k as the key from the specified widget @w.
+ * Retrieves a key / value pair with k as the key from the specified widget w.
  */
 void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
 {
@@ -379,12 +389,13 @@ void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
 }
 
 /**
- * ewl_widget_set_appearance - change the appearance of the specified widget
- * @w: the widget to change the appearance
- * @appearance: the new key for the widgets appearance
+ * @param w: the widget to change the appearance
+ * @param appearance: the new key for the widgets appearance
+ * @return Returns no value.
+ * @brief Change the appearance of the specified widget
  *
- * Returns no value. Changes the key associated with the widgets appearance
- * and calls the theme update callback to initiate the change.
+ * Changes the key associated with the widgets appearance and calls the theme
+ * update callback to initiate the change.
  */
 void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 {
@@ -407,10 +418,10 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 }
 
 /**
- * ewl_widget_get_appearance - retrieve the appearance key of the widget
- * @w: the widget to retrieve the appearance key
- *
- * Returns a pointer to the appearance key string on success, NULL on failure.
+ * @param w: the widget to retrieve the appearance key
+ * @return Returns a pointer to the appearance key string on success, NULL on
+ * failure.
+ * @brief Retrieve the appearance key of the widget
  */
 char           *ewl_widget_get_appearance(Ewl_Widget * w)
 {
@@ -422,12 +433,13 @@ char           *ewl_widget_get_appearance(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_set_state - update the appearance of the widget to a state
- * @w: the widget to update the appearance
- * @state: the new state of the widget
+ * @param w: the widget to update the appearance
+ * @param state: the new state of the widget
+ * @return Returns no value.
+ * @brief Update the appearance of the widget to a state
  *
- * Returns no value. Changes the appearance of the widget @w depending on the
- * state string passed by @state.
+ * Changes the appearance of the widget depending on the state string passed by
+ * the state parameter.
  */
 void ewl_widget_set_state(Ewl_Widget * w, char *state)
 {
@@ -448,13 +460,13 @@ void ewl_widget_set_state(Ewl_Widget * w, char *state)
 }
 
 /**
- * ewl_widget_set_parent - change the parent of the specified widget
- * @w: the widget to change the parent
- * @p: the new parent of the widget
+ * @param w: the widget to change the parent
+ * @param p: the new parent of the widget
+ * @return Returns no value.
+ * @brief change the parent of the specified widget
  *
- * Returns no value. Changes the parent of the widget @w, to the container @p.
- * The reparent callback is triggered to notify children of @w of the change
- * in parent.
+ * Changes the parent of the widget w, to the container p. The reparent
+ * callback is triggered to notify children of w of the change in parent.
  */
 void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 {
@@ -476,6 +488,13 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: the widget to re-enable
+ * @return Returns no value.
+ * @brief Re-enable a disabled widget
+ *
+ * Re-enables a previously disabled widget.
+ */
 void ewl_widget_enable(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -491,6 +510,13 @@ void ewl_widget_enable(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: the widget to disable
+ * @return Returns no value. Disables a specified widget.
+ * @brief Prevent a widget from receiving any events
+ *
+ * This prevents that widget from receiving any user input events.
+ */
 void ewl_widget_disable(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

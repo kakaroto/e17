@@ -1,37 +1,92 @@
 #ifndef __EWL_OBJECT_H__
 #define __EWL_OBJECT_H__
 
+/**
+ * @file ewl_object.h
+ * @brief Defines the Ewl_Object class along with methods and macros related
+ * to it.
+ */
+
+/**
+ * @def EWL_OBJECT_MIN_SIZE The minimum possible size any object can receive.
+ */
 #define EWL_OBJECT_MIN_SIZE 1
+/**
+ * @def EWL_OBJECT_MIN_SIZE The maximum possible size any object can receive.
+ */
 #define EWL_OBJECT_MAX_SIZE 1 << 30
 
-typedef struct _ewl_object Ewl_Object;
+/**
+ * The base class inherited by all widgets. Provides methods for size and
+ * position.
+ */
+typedef struct Ewl_Object Ewl_Object;
 
+/**
+ * @def EWL_OBJECT(object) A typecast for accessing the inherited object
+ * fields.
+ */
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
 
-struct _ewl_object
+/**
+ * @struct Ewl_Object
+ * @brief Provides facilities for sizing, position, alignment and fill policy.
+ *
+ * The fields of the object, while their explanations are fairly clear, can be
+ * visualized with the following diagram:
+ *
+ * @image html object_fields.png
+ *
+ * The CURRENT_W(w) and CURRENT_H(w) are macros that provide easy access to the
+ * data fields describing the internal area of the Ewl_Object. While the
+ * functions ewl_object_get_current_w(w) and ewl_object_get_current_h(w) are
+ * to access the overall size of the area this Ewl_Object resides in. There
+ * are corresponding macros and functions for preferred, minimum and maximum
+ * sizes as well. There are also functions for setting each of these values.
+ *
+ * The affect of the fields when performing layout is as follows:
+ *
+ * @image html object_sizing.png
+ *
+ * As illustrated, the fill policy determines how much space an object will
+ * use when the request for a specific size is made. When the fill policy
+ * contains EWL_FILL_POLICY_HSHRINK, EWL_FILL_POLICY_VSHRINK or both, the
+ * Ewl_Object can be resized down to it's minimum size in width, height or both
+ * respectively.
+ *
+ * The opposite is true for a fill policy containing EWL_FILL_POLICY_HFILL,
+ * EWL_FILL_POLICY_VFILL or both, The Ewl_Object will now expand to fill the
+ * space up to it's maximum size in the respective direction.
+ */
+struct Ewl_Object
 {
 	struct
 	{
-		int             x, y;
-		unsigned int    w, h;
-	} current;
+		int             x, /**< Horizontal position */
+				y; /**< Vertical position */
+		unsigned int    w, /**< Width */
+				h; /**< Height */
+	} current; /**< The current size and position of an object. */
 
 	struct
 	{
-		unsigned int    w, h;
-	} preferred, maximum, minimum;
+		unsigned int    w, /**< Width */
+				h; /**< Height */
+	}
+	preferred, /**< The optimal size of the object in ideal circumstances */
+	maximum, /**< The guaranteed maximum size this object will receive. */
+	minimum; /**< The guaranteed minimum size this object will receive. */
 
-	/*
-	 * pad refers to the space padded around the outside of the widget.
-	 * insets refers to the space padded inside the widget where children
-	 * should not be laid out.
-	 */
 	struct
 	{
-		int             l, r, t, b;
-	} pad, insets;
+		int             l, /**< Left value */
+				r, /**< Right value */
+				t, /**< Top value */
+				b; /**< Bottom value */
+	} pad, /**< The space padded around the outside of the object. */
+	insets; /**< The space inside where children should not be laid out. */
 
-	unsigned int flags;
+	unsigned int flags; /**< Bitmask indicating fill policy and alignment */
 };
 
 void            ewl_object_init(Ewl_Object * o);

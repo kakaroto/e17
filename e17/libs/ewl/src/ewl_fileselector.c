@@ -70,12 +70,12 @@ int alphasort(const struct dirent **a, const struct dirent **b)
 
 /**
  * ewl_fileselector_new - create a new fileselector
- * @file_clicked: callback for file clicked event
+ * @clicked: callback for file clicked event
  *
  * Returns a pointer to a newly allocated fileselector on success, NULL
  * on failure.
  */
-Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function file_clicked)
+Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function clicked)
 {
 	Ewl_Fileselector *fs;
 

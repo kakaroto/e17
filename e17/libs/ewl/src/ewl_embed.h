@@ -2,30 +2,38 @@
 #ifndef __EWL_EMBED_H__
 #define __EWL_EMBED_H__
 
-/*
+/**
+ * @file ewl_embed.h
+ * Defines the Ewl_Embed class to provide EWL with the ability to work with an
+ * evas.
+ */
+
+/**
  * The embed structure is mostly a container for holding widgets and a
  * wrapper evas smart object.
  */
-typedef struct _ewl_embed Ewl_Embed;
+typedef struct Ewl_Embed Ewl_Embed;
 
-struct _ewl_embed
-{
-	Ewl_Container   widget;
-
-	/*
-	 * The following fields allow for drawing the widgets
-	 */
-	Evas           *evas;
-	Window         evas_window;
-
-	/*
-	 * This smart object can be used by a lower level evas access library
-	 * to manipulate the size and position of the embedded container.
-	 */
-	Evas_Object *smart;
-};
-
+/**
+ * @def EWL_EMBED(widget)
+ * @brief Typecast a pointer to an Ewl_Embed pointer.
+ */
 #define EWL_EMBED(widget) ((Ewl_Embed *) widget)
+
+/**
+ * @struct Ewl_Embed
+ * @brief The class inheriting from Ewl_Container that acts as a top level
+ * widget for interacting with the evas.
+ */
+struct Ewl_Embed
+{
+	Ewl_Container   container; /**< Inherits from the Ewl_Container class */
+
+	Evas           *evas; /**< Evas where drawing takes place. */
+	Window         evas_window; /**< The window holding the evas. */
+
+	Evas_Object *smart; /**< Object to manipulate Ewl_Embed from evas */
+};
 
 Ewl_Widget     *ewl_embed_new();
 int             ewl_embed_init(Ewl_Embed * win);
