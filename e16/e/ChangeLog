@@ -3195,3 +3195,12 @@ Tue Dec 14 22:59:25 CET 2004
 Fix handling of border parts where text state changes but image state doesn't.
 Fix startup position for shaded down- or right-shading windows.
 
+
+-------------------------------------------------------------------------------
+
+Fri Dec 17 21:07:37 CET 2004
+(Kim)
+
+Bump version numbers.
+Fix backgrounds with only non-fullscreen foreground image.
+Fix "Background Error! 1 references remain".
