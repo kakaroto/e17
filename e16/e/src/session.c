@@ -1239,9 +1239,6 @@ EExit(int exitcode)
 	GrabPointerRelease();
 	XAllowEvents(disp, AsyncBoth, CurrentTime);
 
-	/* This mechanism is only needed when the SM is unavailable: */
-	ICCCM_SetEInfoOnAll();
-
 	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
 	/* I think this is a better way to release the grabs: (felix) */
 	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);

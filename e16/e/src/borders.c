@@ -2548,7 +2548,8 @@ EwinInstantShade(EWin * ewin, int force)
 	d = ewin->x + ewin->w - b;
 	ewin->shaded = 2;
 	ewin->w = b;
-	ewin->x = d;
+	if (!Mode.wm.startup)
+	   ewin->x = d;
 	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	CalcEwinSizes(ewin);
@@ -2574,7 +2575,8 @@ EwinInstantShade(EWin * ewin, int force)
 	d = ewin->y + ewin->h - b;
 	ewin->shaded = 2;
 	ewin->h = b;
-	ewin->y = d;
+	if (!Mode.wm.startup)
+	   ewin->y = d;
 	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	CalcEwinSizes(ewin);
@@ -3467,6 +3469,7 @@ EwinsSetFree(void)
 	   continue;
 
 	/* This makes E determine the client window stacking at exit */
+	EwinInstantUnShade(ewin);
 	EReparentWindow(disp, ewin->client.win, VRoot.win,
 			ewin->client.x, ewin->client.y);
      }
