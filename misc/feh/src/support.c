@@ -46,7 +46,7 @@ feh_wm_set_bg_file(char *file, unsigned char bgmode)
       {
         case BG_MODE_SEAMLESS:
            feh_imlib_image_tile(im);
-           feh_wm_set_bg(file, im, 0, 0, 0, 1);
+           feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
            break;
         case BG_MODE_TILE:
            feh_wm_set_bg(file, im, 0, 0, 0, 1);
@@ -69,7 +69,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 {
    char bgname[20];
    int num = (int) rand();
-   char bgfil[2096];
+   char bgfil[4096];
    char sendbuf[4096];
 
    D_ENTER(4);
@@ -150,6 +150,9 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       unsigned long length, after;
       unsigned char *data_root, *data_esetroot;
       Pixmap pmap_d1, pmap_d2;
+      /* string for sticking in ~/.fehbg */
+      char *fehbg = NULL;
+      char *home;
 
       /* local display to set closedownmode on */
       Display *disp2;
@@ -162,17 +165,15 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
       D(3, ("Falling back to XSetRootWindowPixmap\n"));
       
-      if (scaled)
-      {
+      if (scaled) {
          w = scr->width;
          h = scr->height;
          pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
          feh_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
                                                     scr->width, scr->height,
                                                     1, 0, 1);
-      }
-      else if (centered)
-      {
+         fehbg = estrjoin(" ", "feh --bg-scale", fil, NULL);
+      } else if (centered) {
          XGCValues gcval;
          GC gc;
          int x, y;
@@ -188,16 +189,30 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          y = (scr->height - feh_imlib_image_get_height(im)) >> 1;
          feh_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
          XFreeGC(disp, gc);
-      }
-      else
-      {
+         fehbg = estrjoin(" ", "feh --bg-center", fil, NULL);
+      } else {
          w = feh_imlib_image_get_width(im);
          h = feh_imlib_image_get_height(im);
          pmap_d1 =
             XCreatePixmap(disp, root, w, h, depth);
          feh_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
+         fehbg = estrjoin(" ", "feh --bg-tile", fil, NULL);
       }
 
+      if(fehbg) {
+        home = getenv("HOME");
+        if(home) {
+          FILE *fp;
+          char *path;
+          path = estrjoin("/", home, ".fehbg", NULL);
+          fp = fopen(path, "w");
+          fprintf(fp, "%s\n", fehbg);
+          fclose(fp);
+          free(path);
+        }
+        free(fehbg);
+      }
+      
       /* create new display, copy pixmap to new display */
       disp2 = XOpenDisplay(NULL);
       if (!disp2)

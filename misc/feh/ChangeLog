@@ -1,3 +1,12 @@
+Mon Jan 14 19:51:18 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fixed --bg-seamless from the commandline.
+	* When you set a bg with feh, it now stores the necessary
+	commandline to restore that bg in ~/.fehbg. So for non-E
+	windowmanagers, that don't remember the bg, you can put "eval `cat
+	$HOME/.fehbg" in your .xsession, and your setting are remembered
+	when you restart X.
+
 Sun Jan 13 21:12:42 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
 
 	* Gah. imlib_image_set_format("JPG") does not work, yet jpg

@@ -230,12 +230,22 @@ below each thumbnail.
 Same as Index mode, but the thumbnails are clickable image launchers.
 .TP 5
 .B --bg-tile FILE
+.TP 5
 .B --bg-center FILE
+.TP 5
 .B --bg-scale FILE
+.TP 5
 .B --bg-seamless FILE
-Set your desktop background to FILE
+Set your desktop background to FILE. Feh
 can use enlightenment IPC if you are running
 it, or will fall back to X methods.
+Feh stores the commandline necessary to restore
+the background you chose in ~/.fehbg. So to have
+feh-set backgrounds restored when you restart X,
+add the line "eval `cat $HOME/.fehbg`" to your
+X startup script (e.g. ~/.xsession). Note that
+you only need to do this for non E window
+managers.
 .TP 5
 .B -M, --menu-font FONT
 Use FONT for the font in menus.
