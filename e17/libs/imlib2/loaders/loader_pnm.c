@@ -52,6 +52,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    if (p == '1' || p == '4')
       numbers = 2;      /* bitimages don't have max value */
 
+   if ((p < '1') || (p > '8'))
+     {
+	fclose(f);
+	return 0;	
+     }
    count = 0;
    while (count < numbers)
    {
@@ -106,6 +111,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
          }
       }
    }
+   if ((w <= 0) || (w > 8192) || 
+       (h <= 0) || (h > 8192) || 
+       (v < 0) || (v > 255))
+     {
+	fclose(f);
+	return 0;
+     }
 
    im->w = w;
    im->h = h;
