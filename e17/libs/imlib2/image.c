@@ -279,6 +279,23 @@ __imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, Display *d, Visual *
    return NULL;
 }
 
+ImlibImagePixmap *
+__imlib_FindCachedImagePixmapByID(Display *d, Pixmap p)
+{
+   ImlibImagePixmap *ip;
+   
+   ip = pixmaps;
+   /* go through the pixmap list */
+   while (ip)
+     {
+	/* if all the pixmap attributes match */
+	if ((ip->pixmap == p) && (ip->display == d))
+	   return ip;
+	ip = ip->next;	
+     }
+   return NULL;
+}
+
 void
 __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip)
 {
