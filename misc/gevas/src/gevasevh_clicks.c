@@ -63,6 +63,7 @@
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
 #include <gdk/gdktypes.h>
+#include "project.h"
 
 static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass);
 static void gevasevh_clicks_init(GtkgEvasEvHClicks * ev);
@@ -75,7 +76,7 @@ gevasevh_clicks_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 
 enum {
-	SIG_DCLICK,
+	SIG_DCLICK=1,
 	LAST_SIGNAL
 };
 static guint _gevasevh_clicks_signals[LAST_SIGNAL] = { 0 };
@@ -169,6 +170,7 @@ guint gevasevh_clicks_get_type(void)
 	return ev_type;
 }
 
+
 static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass)
 {
 	GtkObjectClass *object_class;
@@ -188,18 +190,18 @@ static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass)
 	evh_klass->handler_mouse_up = gevasev_clicks_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_clicks_mouse_move;
 
-	_gevasevh_clicks_signals[SIG_DCLICK] =
+    _gevasevh_clicks_signals[SIG_DCLICK] =
 		gtk_signal_new("dclick",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,
 					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 
-	gtk_object_class_add_signals(object_class, _gevasevh_clicks_signals,
-								 LAST_SIGNAL);
+/* 	gtk_object_class_add_signals(object_class, _gevasevh_clicks_signals, */
+/* 								 LAST_SIGNAL); */
 
 	gtk_object_add_arg_type(GTK_GEVASEVH_CLICKS_DCLICK_MILLIS,
 							GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_DCLICK_MILLIS);

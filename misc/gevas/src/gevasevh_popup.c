@@ -62,6 +62,7 @@
 #include "gevasevh_popup.h"
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
+#include "project.h"
 
 static void gevasevh_popup_class_init(GtkgEvasEvHPopupClass * klass);
 static void gevasevh_popup_init(GtkgEvasEvHPopup * ev);
@@ -198,15 +199,15 @@ static void gevasevh_popup_class_init(GtkgEvasEvHPopupClass * klass)
 	_gevasevh_popup_signals[M_DOWN] =
 		gtk_signal_new("popup_activate",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,
 					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 
-	gtk_object_class_add_signals(object_class, _gevasevh_popup_signals,
-								 LAST_SIGNAL);
+/* 	gtk_object_class_add_signals(object_class, _gevasevh_popup_signals, */
+/* 								 LAST_SIGNAL); */
 
 	gtk_object_add_arg_type(GTK_GEVASEVH_POPUP_GTK_MENU,
 							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_GTK_MENU);

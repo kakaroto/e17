@@ -780,9 +780,9 @@ gevas_obj_collection_get_type(void)
 static void
 gevas_obj_collection_class_init(GtkgEvasObjCollectionClass * klass)
 {
-	GtkObjectClass *object_class;
+    GObjectClass*   gobject_class = G_OBJECT_CLASS (klass);
+    GtkObjectClass* object_class  = GTK_OBJECT_CLASS (klass);                      
 
-	object_class = (GtkObjectClass *) klass;
 	parent_class = gtk_type_class(gtk_object_get_type());
 
 	object_class->destroy = gevas_obj_collection_destroy;
@@ -790,17 +790,19 @@ gevas_obj_collection_class_init(GtkgEvasObjCollectionClass * klass)
 	object_class->set_arg = gevas_obj_collection_set_arg;
 
     signals[SIG_ADD] =
-        gtk_signal_new ("add", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("add", GTK_RUN_LAST, GTK_CLASS_TYPE(object_class), 0,
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);
+    
     signals[SIG_REMOVE] =
-        gtk_signal_new ("remove", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("remove", GTK_RUN_LAST, GTK_CLASS_TYPE(object_class), 0,
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);
 
-    gtk_object_class_add_signals (object_class, signals, SIG_LAST);
+
+/*     gtk_object_class_add_signals (object_class, signals, SIG_LAST); */
 
 
 }

@@ -890,14 +890,16 @@ gevas_sprite_class_init(GtkgEvasSpriteClass * klass)
     object_class->get_arg = gevas_sprite_get_arg;
 	object_class->set_arg = gevas_sprite_set_arg;
 
-/*    signals[SIG_ADD] =
+    /*
+    signals[SIG_ADD] =
         gtk_signal_new ("add", GTK_RUN_LAST, object_class->type, 0,
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);
+    */
+    
+/*     gtk_object_class_add_signals (object_class, signals, SIG_LAST); */
 
-    gtk_object_class_add_signals (object_class, signals, SIG_LAST);
-*/
     
 
 }

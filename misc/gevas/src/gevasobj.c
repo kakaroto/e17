@@ -37,9 +37,8 @@
 #include "config.h"
 #include <gevasobj.h>
 
-#include <gtk/gtkmarshal.h>
-#include <gtk/gtksignal.h>
 
+#include "project.h"
 
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
@@ -72,7 +71,7 @@ enum {
 };
 
 enum {
-    SIG_MOVE_ABSOLUTE,
+    SIG_MOVE_ABSOLUTE=1,
     SIG_MOVE_RELATIVE,
     SIG_RESIZE,
     SIG_VISIBLE,
@@ -91,7 +90,7 @@ static void gevasobj_init(GtkgEvasObj * ev);
 static void gevasobj_destroy(GtkObject * object);
 static void gevasobj_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 static void gevasobj_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
-static void gevasobj_finalize(GtkObject * object);
+static void gevasobj_finalize(GObject* object);
 
 #define GEVAS(ev) ev->gevas
 #define EVAS(ev) gevas_get_evas(GEVAS(ev))
@@ -115,23 +114,8 @@ gtk_marshal_BOOL__POINTER_POINTER (GtkObject * object,
                           GTK_VALUE_POINTER (args[1]), func_data);
 }
 
-typedef gint (*GtkSignal_INT__POINTER_POINTER) (GtkObject * object,
-                                             gpointer arg1,
-                                             gpointer arg2,
-                                             gpointer user_data);
-void
-gtk_marshal_INT__POINTER_POINTER (GtkObject * object,
-                                   GtkSignalFunc func,
-                                   gpointer func_data, GtkArg * args)
-{
-  GtkSignal_INT__POINTER_POINTER rfunc;
-  gint *return_val;
-  return_val = GTK_RETLOC_INT (args[2]);
-  rfunc = (GtkSignal_INT__POINTER_POINTER) func;
-  *return_val = (*rfunc) (object, GTK_VALUE_POINTER (args[0]),
-                          GTK_VALUE_POINTER (args[1]), func_data);
-}
 
+  
 
 #define EMIT_1( o, sig, a1 ) \
 { \
@@ -374,16 +358,15 @@ int _gevasobj_get_alpha(GtkgEvasObj * object)
 void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 {
 	GtkgEvasObj *ev;
+    GtkgEvasEvHClass* k;
 	g_return_if_fail(h != NULL);
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH(h));
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
+    k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(h);
 
-	if( GEVASEV_HANDLER_PRIORITY_HI == 
-		((GtkgEvasEvHClass*)(((GtkObject*)h)->klass))
-			->get_priority(GTK_GEVASEVH(h))
-	  )
+    if( GEVASEV_HANDLER_PRIORITY_HI == k->get_priority(GTK_GEVASEVH(h)))
 	{
 		ev->ev_handlers = g_slist_prepend(ev->ev_handlers, h);
 	}
@@ -434,25 +417,65 @@ guint gevasobj_get_type(void)
 	return ev_type;
 }
 
+static gint sig_move_absolute(GtkgEvasObj* ev, gpointer d1, gpointer d2)
+{
+    printf("sig_move_absolute\n");
+    return 0;
+}
+
+static gint sig_move_relative(GtkgEvasObj* ev, gpointer d1, gpointer d2)
+{
+    printf("sig_move_relative\n");
+    return 0;
+}
+
+static gint sig_resize(GtkgEvasObj* ev, gpointer d1, gpointer d2)
+{
+    printf("sig_resize\n");
+    return 0;
+}
+
+static gint sig_visible(GtkgEvasObj* ev, gpointer d1)
+{
+    printf("sig_visible\n");
+    return 0;
+}
+
+static gint sig_layer(GtkgEvasObj* ev, gpointer d1)
+{
+    printf("sig_layer\n");
+    return 0;
+}
+
+
 static void gevasobj_class_init(GtkgEvasObjClass * klass)
 {
 	GtkObjectClass *object_class;
+    GObjectClass   *go;
 
-	object_class = (GtkObjectClass *) klass;
+    go           = (GObjectClass   *) klass;
+    object_class = (GtkObjectClass *) klass;
 	parent_class = gtk_type_class(gtk_object_get_type());
 
 	object_class->destroy = gevasobj_destroy;
 
 	object_class->get_arg = gevasobj_get_arg;
 	object_class->set_arg = gevasobj_set_arg;
-	object_class->finalize = gevasobj_finalize;
+    go->finalize = gevasobj_finalize;
 
-  /** Protected inherit **/
+    /** signals **/
+    klass->sig_move_absolute = sig_move_absolute;
+    klass->sig_move_relative = sig_move_relative;
+    klass->sig_resize  = sig_resize;
+    klass->sig_visible = sig_visible;
+    klass->sig_layer   = sig_layer;
+    
+    /** Protected inherit **/
 	klass->_gevas_evas = _gevas_evas;
 	klass->_gevas_set_obj = _gevas_set_obj;
 	klass->_gevasobj_ensure_obj_free = _gevasobj_ensure_obj_free;
 
-  /** public members **/
+    /** public members **/
 	klass->set_color = _gevasobj_set_color;
 	klass->set_angle = _gevasobj_set_angle;
 	klass->set_zoom_scale = _gevasobj_set_zoom_scale;
@@ -481,38 +504,60 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
 	gtk_object_add_arg_type(GTK_GEVASOBJ_GEVAS,
 							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_GEVAS);
 
+    printf("gevasobj_class_init 1 ********** \n");
+    
+
 
     signals[SIG_MOVE_ABSOLUTE] =
-        gtk_signal_new ("move_absolute", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("move_absolute",
+                        GTK_RUN_LAST,
+                        GTK_CLASS_TYPE(object_class),
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjClass, sig_move_absolute),
                         gtk_marshal_INT__POINTER_POINTER,
-                        GTK_TYPE_INT,
-                        2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+                        GTK_TYPE_INT, 2,
+                        GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+
+    printf("gevasobj_class_init 2 ************ \n");
 
     signals[SIG_MOVE_RELATIVE] =
-        gtk_signal_new ("move_relative", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("move_relative",
+                        GTK_RUN_LAST, 
+                        GTK_CLASS_TYPE(object_class),
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjClass, sig_move_relative),
                         gtk_marshal_INT__POINTER_POINTER,
-                        GTK_TYPE_INT,
-                        2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+                        GTK_TYPE_INT, 2,
+                        GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+    printf("gevasobj_class_init 3 ************ \n");
 
     signals[SIG_RESIZE] =
-        gtk_signal_new ("resize", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("resize", GTK_RUN_LAST, 
+                        GTK_CLASS_TYPE(object_class),
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjClass, sig_resize),
                         gtk_marshal_INT__POINTER_POINTER,
-                        GTK_TYPE_INT,
-                        2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+                        GTK_TYPE_INT, 2,
+                        GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 
     signals[SIG_VISIBLE] =
-        gtk_signal_new ("visible", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("visible", GTK_RUN_LAST, 
+                        GTK_CLASS_TYPE(object_class), 
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjClass, sig_visible),
                         gtk_marshal_INT__POINTER,
-                        GTK_TYPE_INT,
-                        1, GTK_TYPE_POINTER );
+                        GTK_TYPE_INT, 1,
+                        GTK_TYPE_POINTER );
 
     signals[SIG_LAYER] =
-        gtk_signal_new ("layer", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("layer", GTK_RUN_LAST, 
+                        GTK_CLASS_TYPE(object_class),
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjClass, sig_layer),
                         gtk_marshal_INT__POINTER,
-                        GTK_TYPE_INT,
-                        1, GTK_TYPE_POINTER );
+                        GTK_TYPE_INT, 1,
+                        GTK_TYPE_POINTER );
 
-    gtk_object_class_add_signals (object_class, signals, SIG_LAST);
+
+                        
+/*     gtk_object_class_add_signals (object_class, signals, SIG_LAST); */
 
     
 }
@@ -554,11 +599,11 @@ static void gevasobj_destroy(GtkObject * object)
 
 
 	/* Chain up */
-	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
+		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object);
 }
 
-static void gevasobj_finalize(GtkObject * object)
+static void gevasobj_finalize(GObject * object)
 {
 	GtkgEvasObj *ev;
 	g_return_if_fail(object != NULL);
@@ -568,13 +613,14 @@ static void gevasobj_finalize(GtkObject * object)
 	/* printf("FREE() gevasobj_finalize()\n"); */
 
 	/* Chain up */
-	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+//	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
+//		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object);
 }
 
 /** public wrappers that call the vtable functions so that subclasses
     can modify/add to the default action **/
-#define VTAB ((GtkgEvasObjClass*)(((GtkObject*)object)->klass))
+#define VTAB ((GtkgEvasObjClass*)GTK_OBJECT_GET_CLASS(object))
+//#define VTAB ((GtkgEvasObjClass*)(((GtkObject*)object)->klass))
 
 void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a)
 {

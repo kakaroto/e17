@@ -37,6 +37,8 @@
 
 #include "config.h"
 
+#include "project.h"
+
 #include <Evas.h>
 #include <Edb.h>
 
@@ -54,6 +56,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+
+
 
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
@@ -107,7 +111,6 @@ static void gevas_init(GtkgEvas * ev);
 
 /* GtkObject functions */
 static void gevas_destroy(GtkObject * object);
-static void gevas_finalize(GtkObject * object);
 
 
 /* GtkWidget functions */
@@ -221,15 +224,17 @@ void _show_evas_checked_bg(GtkWidget * widget, GtkgEvas * ev)
 		size = g_slist_length( hans ); \
 		for( i=0; i < size; i++ ) { \
 			gpointer hdata = g_slist_nth_data( hans, i ); \
-			if(GEVASEV_HANDLER_RET_CHOMP \
-					== ((GtkgEvasEvHClass*)(((GtkObject*) (hdata))->klass))-> \
-						func_to_call \
+            GtkgEvasEvHClass* k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(hdata); \
+            \
+			if(GEVASEV_HANDLER_RET_CHOMP == k->func_to_call \
 							(GTK_OBJECT(hdata), GTK_OBJECT(_data), _b, _x, _y )) \
 			{ \
 				break; \
 			} \
 		} \
 	}
+
+/* == ((GtkgEvasEvHClass*)(((GtkObject*) (hdata))->klass))->  */
 
 
 void
@@ -372,18 +377,27 @@ guint gevas_get_type(void)
 	return ev_type;
 }
 
+static void gevas_finalize(GObject* object);
+
+
+
 static void gevas_class_init(GtkgEvasClass * klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
+    GObjectClass   *go;
 
-	object_class = (GtkObjectClass *) klass;
+    printf("gevas_class_init()\n");
+
+    
+    go           = (GObjectClass   *) klass;
+    object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
 
 	parent_class = gtk_type_class(gtk_widget_get_type());
 
 	object_class->destroy = gevas_destroy;
-	object_class->finalize = gevas_finalize;
+	go->finalize = gevas_finalize;
 
 	widget_class->realize = gevas_realize;
 	widget_class->unrealize = gevas_unrealize;
@@ -392,12 +406,14 @@ static void gevas_class_init(GtkgEvasClass * klass)
 
 	widget_class->size_allocate = gevas_size_allocate;
 
-	widget_class->draw = gevas_draw;
+    // FIXME: check it draws ok still...
+//	widget_class->draw = gevas_draw;
+//	widget_class->draw_focus = gevas_draw_focus;
+
 	widget_class->map = gevas_map;
 
 	widget_class->event = gevas_event;
 
-	widget_class->draw_focus = gevas_draw_focus;
 
 	widget_class->expose_event = gevas_expose;
 
@@ -413,12 +429,13 @@ static void gevas_class_init(GtkgEvasClass * klass)
 	klass->object_at_position = gevas_object_at_position;
 	klass->object_get_named = gevas_object_get_named;
 
+    printf("gevas_class_init() 3\n");
 
 	gtk_object_add_arg_type(GTK_GEVAS_CHECKED_BG,
 							GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_CHECKED_BG);
 
 	gtk_object_add_arg_type(GTK_GEVAS_RENDER_MODE,
-							GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_RENDER_MODE);
+							GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_RENDER_MODE);
 
 	gtk_object_add_arg_type(GTK_GEVAS_EVAS,
 							GTK_TYPE_POINTER, GTK_ARG_READABLE, ARG_EVAS);
@@ -455,10 +472,13 @@ static void gevas_class_init(GtkgEvasClass * klass)
 							GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_VIEWPORT_H);
 
 
+    printf("gevas_class_init() end\n");
 }
 
 static void gevas_init(GtkgEvas * ev)
 {
+    printf("gevas_init()\n");
+    
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(ev), GTK_CAN_FOCUS);
 
 	ev->show_checked_bg = 0;
@@ -473,13 +493,14 @@ static void gevas_init(GtkgEvas * ev)
 	ev->middleb_scrolls_xplane = 0;
 	ev->gevasobjs = g_hash_table_new(NULL, NULL);
 	ev->gevasobjlist = NULL;
+    printf("gevas_init() end\n");
 }
 
 GtkWidget *gevas_new(void)
 {
 	GtkgEvas *ev;
 
-	ev = gtk_type_new(gevas_get_type());
+    ev = gtk_type_new(gevas_get_type());
 
 	gevas_set_render_mode(ev, RENDER_METHOD_ALPHA_SOFTWARE);
 	gevas_set_size_request_x(ev, 200);
@@ -504,11 +525,11 @@ static void gevas_destroy(GtkObject * object)
 
 
 	/* Chain up */
-	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
+		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object);
 }
 
-static void gevas_finalize(GtkObject * object)
+static void gevas_finalize(GObject* object)
 {
 	GtkgEvas *ev;
 	g_return_if_fail(object != NULL);
@@ -525,7 +546,7 @@ static void gevas_finalize(GtkObject * object)
 		pitem = g_slist_nth(ev->gevasobjlist, 0);
 		if (!pitem)
 			break;
-		ref_count = ((GtkObject *) (pitem->data))->ref_count;
+		ref_count = G_OBJECT(pitem->data)->ref_count;
 /*		printf("gevas_finalize wave... before unref... ref_count:%d\n",ref_count); */
 		gtk_object_destroy(GTK_OBJECT(pitem->data));
 		gtk_object_unref(GTK_OBJECT(pitem->data));
@@ -554,8 +575,8 @@ static void gevas_finalize(GtkObject * object)
 	}
 
 	/* Chain up */
-	if (GTK_OBJECT_CLASS(parent_class)->finalize)
-		(*GTK_OBJECT_CLASS(parent_class)->finalize) (object);
+	if (G_OBJECT_CLASS(parent_class)->finalize)
+		(*G_OBJECT_CLASS(parent_class)->finalize) (object);
 
 }
 
@@ -823,6 +844,9 @@ static void gevas_realize(GtkWidget * widget)
 	GdkVisual *gdk_vis;
 	GdkColormap *gdk_cmap;
 
+    printf("gevas_realize()\n");
+    
+    
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
@@ -845,6 +869,7 @@ static void gevas_realize(GtkWidget * widget)
 
 /*  evas_set_image_cache(ev->evas, 8 * 1024 * 1024); */
 	evas_set_output_method(ev->evas, ev->render_method);
+
 	vis =
 		evas_get_optimal_visual(ev->evas,
 								GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
@@ -853,10 +878,11 @@ static void gevas_realize(GtkWidget * widget)
 								  GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
 	gdk_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
 	gdk_cmap = gdkx_colormap_get(cmap);
-	((GdkColormapPrivate *) gdk_cmap)->visual = gdk_vis;
+
+///	((GdkColormapPrivate *) gdk_cmap)->visual = gdk_vis;  // This was not commented before.
 /*  gtk_widget_push_visual(gdk_vis);*/
 /*  gtk_widget_push_colormap(gdk_cmap);*/
-
+ 
 	attributes.visual = gdk_vis;	/*gtk_widget_get_visual (widget); */
 	attributes.colormap = gdk_cmap;	/*gtk_widget_get_colormap (widget); */
 	attributes.event_mask = gtk_widget_get_events(widget) | GDK_EXPOSURE_MASK;
@@ -893,8 +919,16 @@ static void gevas_realize(GtkWidget * widget)
 	evas_set_output_viewport(ev->evas, 0, 0, widget->allocation.width,
 							 widget->allocation.height);
 
+
 	/* only shows if the user has requested it */
 	_show_evas_checked_bg(widget, ev);
+
+    // FIXME:
+    gtk_widget_set_double_buffered( widget, 0);
+    
+
+    
+    printf("gevas_realize() end\n");
 }
 
 static void gevas_unrealize(GtkWidget * widget)
@@ -1033,7 +1067,7 @@ static gint gevas_focus_in(GtkWidget * widget, GdkEventFocus * event)
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), FALSE);
 
 	GTK_WIDGET_SET_FLAGS(widget, GTK_HAS_FOCUS);
-	gtk_widget_draw_focus(widget);
+//	gtk_widget_draw_focus(widget);
 
 	return FALSE;
 }
@@ -1044,7 +1078,7 @@ static gint gevas_focus_out(GtkWidget * widget, GdkEventFocus * event)
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), FALSE);
 
 	GTK_WIDGET_UNSET_FLAGS(widget, GTK_HAS_FOCUS);
-	gtk_widget_draw_focus(widget);
+//	gtk_widget_draw_focus(widget);
 
 	return FALSE;
 }
@@ -1058,7 +1092,9 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
-	widget = GTK_WIDGET(ev);
+    printf("gevas_paint()\n");
+
+    widget = GTK_WIDGET(ev);
 
 	if (!GTK_WIDGET_DRAWABLE(widget))
 		return;
@@ -1099,6 +1135,9 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
     }
   
 
+
+
+    
     evas_render(ev->evas);
 
 
@@ -1117,16 +1156,17 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* h )
 {
     GtkAdjustment* a = 0;
-
+    GtkScrolledWindow* swin = GTK_SCROLLED_WINDOW(gevas->scrolledwindow);
+    
     if( gevas->scrolledwindow )
     {
-        if( a = gtk_scrolled_window_get_hadjustment( gevas->scrolledwindow ))
+        if( a = gtk_scrolled_window_get_hadjustment( swin ))
         {
             *x = a->value;
             *w = a->page_size;
         }
         
-        if( a = gtk_scrolled_window_get_vadjustment( gevas->scrolledwindow ))
+        if( a = gtk_scrolled_window_get_vadjustment( swin ))
         {
             *y = a->value;
             *h = a->page_size;
@@ -1147,8 +1187,11 @@ gint gevas_view_redraw_cb(gpointer data)
     evas_clear_obscured_rects(ev->evas);
     evas_render(ev->evas);
 
+    printf("gevas_view_redraw_cb!\n");
+    
+    
 #if 0
-  * Although the below code *seems* faster (due to calling paint, and thus having*/
+  /* Although the below code *seems* faster (due to calling paint, and thus having*/
   /* obscures working to block parts of the evas) the dumber code above seems faster.*/
 
 /*    printf("gevas_view_redraw_cb %p %p\n", ev->scrolledwindow, ev->scrolledwindow_viewport);*/
@@ -1265,11 +1308,12 @@ void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
     GtkBin *bin;
 
 	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-	*gevas = GTK_GEVAS(gevas_new());
+	*gevas = GTK_GEVAS(gevas_new()); // errs on this line
 
 	gtk_scrolled_window_add_with_viewport(
         GTK_SCROLLED_WINDOW(*scrolledwindow), GTK_WIDGET(*gevas));
 
+    
     bin = GTK_BIN (*scrolledwindow);
     if (bin->child != NULL)
     {
@@ -1317,7 +1361,7 @@ static void gevas_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			break;
 
 		case ARG_RENDER_MODE:
-			ev->render_method = GTK_VALUE_ENUM(*arg);
+			ev->render_method = GTK_VALUE_INT(*arg);
 			evas_set_output_method(ev->evas, ev->render_method);
 			break;
 
@@ -1376,7 +1420,7 @@ static void gevas_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			GTK_VALUE_BOOL(*arg) = ev->show_checked_bg;
 			break;
 		case ARG_RENDER_MODE:
-			GTK_VALUE_ENUM(*arg) = evas_get_render_method(ev->evas);
+			GTK_VALUE_INT(*arg) = evas_get_render_method(ev->evas);
 			break;
 		case ARG_EVAS:
 			GTK_VALUE_POINTER(*arg) = ev->evas;
@@ -1885,10 +1929,10 @@ gevas_metadata_lookup_int(
     
     if(!data.loaded)
     {
-        return data.def;
+        return (gint)data.def;
     }
     g_free(data.def);
-    return data.loaded_data;
+    return (gint)data.loaded_data;
 }
 
 

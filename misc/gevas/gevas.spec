@@ -1,5 +1,5 @@
 %define	name	 gevas
-%define ver      0.0.3
+%define ver      0.5.0
 %define rel      2
 %define prefix   /usr
 

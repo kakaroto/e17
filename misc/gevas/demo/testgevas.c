@@ -568,12 +568,16 @@ void setup_bg(GtkWidget * gevas)
 	printf(" quitely fail and look really bad!\n");
 
 	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/bg.png");
-	gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h);
+    gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h);
 	gevasimage_set_image_fill(GTK_GEVASOBJ(gevas_image), 0,0,w,h);
 	gevasobj_move(GTK_GEVASOBJ(gevas_image), 0, 0);
+    printf("3\n\n");
 	gevasobj_set_layer(GTK_GEVASOBJ(gevas_image), -9999);
+    printf("3.5\n\n");
 	gevasobj_resize(GTK_GEVASOBJ(gevas_image), 9999,9999);
+    printf("3.6\n\n");
 	gevasobj_show(GTK_GEVASOBJ(gevas_image));
+    printf("4\n\n");
 
 
 	/** Make this a group_selector **/
@@ -608,18 +612,18 @@ void setup_raptor(GtkWidget * gevas)
 	GtkObject *evh;
 
 	gevas_image = gevasimage_new();
-	{
-		gint ref_count;
-		ref_count = ((GtkObject *) gevas_image)->ref_count;
-		printf("test_1... ref_count:%d\n", ref_count);
-	}
+/* 	{ */
+/* 		gint ref_count; */
+/* 		ref_count = ((GtkObject *) gevas_image)->ref_count; */
+/* 		printf("test_1... ref_count:%d\n", ref_count); */
+/* 	} */
 
 	gevasobj_set_gevas(gevas_image, gevas);
-	{
-		gint ref_count;
-		ref_count = ((GtkObject *) gevas_image)->ref_count;
-		printf("test_2... ref_count:%d\n", ref_count);
-	}
+/* 	{ */
+/* 		gint ref_count; */
+/* 		ref_count = ((GtkObject *) gevas_image)->ref_count; */
+/* 		printf("test_2... ref_count:%d\n", ref_count); */
+/* 	} */
 
 	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/raptor.png");
 	gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h);
@@ -956,7 +960,9 @@ int main(int argc, char *argv[])
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
+    printf("A\n\n");
     gevas_new_gtkscrolledwindow(&gevas, &wtoy );
+    printf("B\n\n");
 
     /* The above line is the same as these three, except that it can give more*/
     /* speed because gevas can optimize redraws knowing that it is in a scrolled window.*/
@@ -966,15 +972,22 @@ int main(int argc, char *argv[])
 
 
     gtk_container_add(GTK_CONTAINER(window), wtoy);
+    printf("C\n\n");
 
     
     gtk_widget_set_usize(gevas, 3000, 3000);
+    printf("D\n\n");
+    
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    printf("E\n\n"); 
+   
 /*	gevas_set_checked_bg(gevas, 1);*/
 /*	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); */
     gevas_set_render_mode(gevas, RENDER_METHOD_ALPHA_SOFTWARE);
+    printf("F\n\n");
 	gevas_set_size_request_x(gevas, 200);
 	gevas_set_size_request_y(gevas, 200);
+    printf("G\n\n");
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtoy), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 
@@ -983,21 +996,31 @@ int main(int argc, char *argv[])
     
 
 	gtk_window_set_title(GTK_WINDOW(window), "gevas is Gtk Evas");
+    printf("H\n\n");
 
 	gtk_signal_connect(GTK_OBJECT(window),
 					   "delete_event", GTK_SIGNAL_FUNC(delete_event_cb), NULL);
+    printf("I\n\n");
 
 	gtk_widget_show_all(window);
+    printf("J\n\n");
     
 
     gevas_add_fontpath(GTK_GEVAS(gevas), PACKAGE_DATA_DIR);
 	printf("added a font path to %s\n", PACKAGE_DATA_DIR);
 
+    printf("1\n\n");
+    
+    
 	setup_bg(gevas);
+    printf("2\n\n");
 	setup_raptor(gevas);
 	setup_menu_raptor(gevas);
+    printf("3\n\n");
 	make_text(gevas);
 	make_draw_icon(gevas);
+    printf("5\n\n");
+    
 	make_grad(gevas);
 	make_twin(gevas);
     

@@ -62,6 +62,7 @@
 #include "gevasevh_to_gtk_signals.h"
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
+#include "project.h"
 
 static void gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass *
 											  klass);
@@ -188,7 +189,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 	_gevasevh_to_gtk_signal_signals[M_DOWN] =
 		gtk_signal_new("mouse_down",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
@@ -197,7 +198,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 	_gevasevh_to_gtk_signal_signals[M_UP] =
 		gtk_signal_new("mouse_up",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
@@ -206,7 +207,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 	_gevasevh_to_gtk_signal_signals[M_MOVE] =
 		gtk_signal_new("mouse_move",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
@@ -215,7 +216,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 	_gevasevh_to_gtk_signal_signals[M_IN] =
 		gtk_signal_new("mouse_in",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
@@ -224,7 +225,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 	_gevasevh_to_gtk_signal_signals[M_OUT] =
 		gtk_signal_new("mouse_out",
 					   GTK_RUN_LAST,
-					   object_class->type,
+					   GTK_CLASS_TYPE(object_class),
 					   0,
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
@@ -232,8 +233,8 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 
 
-	gtk_object_class_add_signals(object_class, _gevasevh_to_gtk_signal_signals,
-								 LAST_SIGNAL);
+/* 	gtk_object_class_add_signals(object_class, _gevasevh_to_gtk_signal_signals, */
+/* 								 LAST_SIGNAL); */
 
 }
 

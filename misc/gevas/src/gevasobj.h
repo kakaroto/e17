@@ -104,6 +104,12 @@ extern "C" {
 		void (*add_evhandler) (GtkgEvasObj * object, GtkObject * h);
 		void (*remove_evhandler) (GtkgEvasObj * object, GtkObject * h);
 
+        gint (*sig_move_absolute)(GtkgEvasObj* ev, gpointer d1, gpointer d2);
+        gint (*sig_move_relative)(GtkgEvasObj* ev, gpointer d1, gpointer d2);
+        gint (*sig_resize)       (GtkgEvasObj* ev, gpointer d1, gpointer d2);
+        gint (*sig_visible)      (GtkgEvasObj* ev, gpointer d1);
+        gint (*sig_layer)        (GtkgEvasObj* ev, gpointer d1);
+
 	};
 
 
