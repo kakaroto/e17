@@ -219,28 +219,35 @@ EDJE_CB(playlist_item_play) {
 		state = PLAYBACK_STATE_PLAYING;
 }
 
-EDJE_CB(playlist_item_remove) {
-	int ok = 0;
-	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
-	
-	e_container_element_remove(player->gui.playlist, obj);
-	evas_object_del(obj);
-	
-	if (pli == playlist_current_item_get(player->playlist))
-	{
-	    eplayer_playback_stop(player);
-		
-	    if (playlist_current_item_has_next(player->playlist))
-			ok = playlist_current_item_next(player->playlist);
-		
-	    if (!ok && playlist_current_item_has_prev(player->playlist))
-			ok = playlist_current_item_prev(player->playlist);
-	    
-		if (!ok)
-			playlist_remove_all(player->playlist);
+static void remove_playlist_item(ePlayer *player, PlayListItem *pli) {
+	bool ok = false;
+
+	assert(pli);
+
+	if (pli != playlist_current_item_get(player->playlist)) {
+		playlist_remove_item(player->playlist, pli);
+		return;
 	}
 
-	playlist_remove_item(player->playlist, pli);
+	eplayer_playback_stop(player);
+
+	if (playlist_current_item_has_next(player->playlist))
+		ok = playlist_current_item_next(player->playlist);
+
+	if (!ok && playlist_current_item_has_prev(player->playlist))
+		ok = playlist_current_item_prev(player->playlist);
+
+	if (!ok)
+		playlist_remove_all(player->playlist);
+	else
+		playlist_remove_item(player->playlist, pli);
+}
+
+EDJE_CB(playlist_item_remove) {
+	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
+
+	if (pli)
+		remove_playlist_item(player, pli);
 }
 
 EDJE_CB(playlist_item_selected) {
@@ -497,9 +504,9 @@ EDJE_CB(playlist_add) {
 }
 
 EDJE_CB(playlist_del) {
-
-/* playlist_item_remove should be the callback to use.. not sure why that one doesn't work */
-
+	/* FIXME find the currently selected track and call
+	 * remove_playlist_item()
+	 */
 }
 
 static void 

@@ -60,9 +60,9 @@ void playlist_remove_all(PlayList *pl) {
  * @param pli
  */
 void playlist_remove_item(PlayList *pl, PlayListItem *pli) {
-	if (!pl || !pli)
-		return;
-	
+	assert(pl);
+	assert(pli);
+
 	pl->num--;
 	pl->duration -= pli->duration;
 

@@ -39,6 +39,8 @@ void playlist_item_free(PlayListItem *pli) {
 
 	pthread_mutex_destroy(&pli->pos_mutex);
 
+	e_container_element_remove(pli->container, pli->edje);
+	
 	if (pli->edje)
 		evas_object_del(pli->edje);
 
