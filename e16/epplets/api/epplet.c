@@ -75,6 +75,24 @@ struct _etimer
 
 #define ESYNC ECommsSend("nop");free(ECommsWaitForMessage());
 
+/* The structures for the config file management ... */
+
+typedef struct _dictentry
+{
+       char *key;
+       char *value;
+}
+DictEntry;
+
+typedef struct _dictionary
+{
+       DictEntry *entries;
+       int        num_entries;
+}
+Dictionary;
+
+static Dictionary *edict = NULL;
+
 static void    CommsFindCommsWindow(void);
 static void    ECommsSetup(Display *d);
 static void    CommsHandleDestroy(Window win);
@@ -252,6 +270,26 @@ Epplet_Init(char *name,
    sa.sa_flags = SA_RESTART;
    sigemptyset(&sa.sa_mask);
    sigaction(SIGCHLD, &sa, (struct sigaction *)0);   
+}
+
+void
+Epplet_cleanup(void)
+{
+   int i;
+
+   if (edict)
+     {
+       for (i = 0; i < edict->num_entries; i++)
+	 {
+	   if (edict->entries[i].key)
+	     free(edict->entries[i].key);
+	   if (edict->entries[i].value)
+	     free(edict->entries[i].value);
+	 }
+       free(edict->entries);
+       free(edict);
+       edict = NULL;
+     }
 }
 
 void
@@ -3571,6 +3609,79 @@ Epplet_dialog_ok(char *text)
    sprintf(s, "dialog_ok %s", text);
    ECommsSend(s);
    free(s);
+}
+
+int
+Epplet_load_config_file(char *filename)
+{
+   char s[1024], s2[1024], s3[1024];
+   FILE *f;
+   
+   if (filename)
+     {
+       if (strlen(filename) > 1)
+	 {
+	   if (filename[0] == '~' && filename[1] == '/')
+	     {
+	       filename += 2;
+	       snprintf(s, 1024, "%s/%s", getenv("HOME"), filename);
+	     }
+	   else
+	     {
+	       snprintf(s, 1024, "%s", filename);
+	     }
+	 }
+       f = fopen(s, "r");
+       if (f)
+	 {
+	   if (!edict)
+	     {
+	       edict = (Dictionary*)malloc(sizeof(Dictionary));
+	     }
+	   if (edict)
+	     {
+	       edict->entries = NULL;
+	       edict->num_entries = 0;
+
+	       while ((fscanf(f, "%s %[^\n]\n", (char*)&s2, (char*)&s3) != EOF))
+		 {
+		   edict->num_entries++;
+		   edict->entries = realloc(edict->entries, sizeof(DictEntry) * edict->num_entries);
+		   edict->entries[edict->num_entries-1].key = NULL;
+		   edict->entries[edict->num_entries-1].value = NULL;
+		   edict->entries[edict->num_entries-1].key = strdup(s2);
+		   edict->entries[edict->num_entries-1].value = strdup(s3);
+		 }
+	       fclose(f);
+	       return 1;
+	     }
+	 }
+       return 0;
+     }
+   else
+     return 0;
+  
+}
+
+char *
+Epplet_query_config_file(char *key)
+{
+  int i;
+
+  if (edict)
+    {
+      for (i = 0; i < edict->num_entries; i++)
+	{
+	  if (edict->entries[i].key)
+	    {
+	      if (!strcmp(key, edict->entries[i].key))
+		/* we've found the key */
+		return edict->entries[i].value;
+	    }
+	}
+    }
+
+  return NULL;
 }
 
 int 

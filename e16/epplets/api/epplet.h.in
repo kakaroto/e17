@@ -50,6 +50,9 @@ typedef struct _rgb_buf
 /* apps more horizontal than vertical shodul set this to 0. */
 void   Epplet_Init(char *name, char *version, char *info, int w, int h,
 		   int argc, char **argv, char vertical);
+/* you should call this to give the epplet a chance to clean itself up */
+/* before exiting */ 
+void   Epplet_cleanup(void);
 /* actualy display the app */
 void   Epplet_show(void);
 /* ask E to remember stuff about it - you don't need to do this at startup */
@@ -315,6 +318,12 @@ void            Epplet_show_about(char *name);
 void            Epplet_dialog_ok(char *text);
 int             Epplet_get_hslider_clicked(Epplet_gadget gadget);
 int             Epplet_get_vslider_clicked(Epplet_gadget gadget);
+
+/****************************************************************************/
+/* Config file handling stuff                                               */
+/****************************************************************************/
+int             Epplet_load_config_file(char *filename);
+char           *Epplet_query_config_file(char *key);
 
 /****************************************************************************/
 /* Convenience macros to make using the above calls easier                  */
