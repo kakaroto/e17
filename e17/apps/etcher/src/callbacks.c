@@ -10,6 +10,7 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
+#include "bits.h"
 
 extern GtkWidget *main_win;
 
