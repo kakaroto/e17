@@ -1,0 +1,14 @@
+Source: elapse
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: libeet0-dev, libevas2-dev, libimlib2-dev, libedje0-dev, libesmart0-dev , debhelper (>> 4.0.0)
+Standards-Version: 3.6.1.0
+
+Package: elapse
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Enlightenment clock
+ Elapse is a small themeable clock based on the EFL.
