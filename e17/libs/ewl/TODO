@@ -21,8 +21,6 @@ In the ewl_entry, need to make the text scroll over as you type past
 
 Text wrap in the ewl_entry.
 
-ewl_entry should only show the cursor if that entry has focus ...
-
 
 0.0.1 goals
 -----------

@@ -8,7 +8,7 @@ struct _test_set
 {
 	char *name;
 	Ewl_Callback_Function func;
-        char *filename;
+	char *filename;
 };
 
 void __close_main_window                (Ewl_Widget * w, void *ev_data, void *user_data);

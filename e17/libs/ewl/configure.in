@@ -310,9 +310,10 @@ AC_OUTPUT([
 Makefile
 ewl.pc
 ewl-config
-src/Ewl.h
 src/Makefile
-test/Makefile
+src/bin/Makefile
+src/lib/Ewl.h
+src/lib/Makefile
 tools/Makefile
 tools/ewl_edb_ed/Makefile
 data/Makefile
