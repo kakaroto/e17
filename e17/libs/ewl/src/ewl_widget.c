@@ -197,7 +197,7 @@ void ewl_widget_hide(Ewl_Widget * w)
 		EWL_CONTAINER(w->parent)->child_remove(EWL_CONTAINER(w->parent),
 				w);
 
-	w->visible = EWL_VISIBILITY_HIDDEN;
+	w->visible &= ~EWL_VISIBILITY_SHOWN;
 
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
 

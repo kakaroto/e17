@@ -129,8 +129,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Set the appearance strings for the parts of the scrollbar
 	 */
-	ewl_widget_set_appearance(s->button_decrement, "button_increment");
-	ewl_widget_set_appearance(s->button_increment, "button_decrement");
+	ewl_widget_set_appearance(s->button_decrement, "button_decrement");
+	ewl_widget_set_appearance(s->button_increment, "button_increment");
 
 	/*
 	 * Set the alignment of the buttons to the seeker.
