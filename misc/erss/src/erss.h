@@ -3,7 +3,6 @@
 
 #include <Ecore.h>
 #include <Ecore_Con.h>
-#include <Ewd.h>
 #include <Esmart/Esmart_Trans.h>
 #include <Esmart/container.h>
 #include <Etox.h>
@@ -38,7 +37,7 @@ extern Evas        *evas;
 extern Evas_Object *cont;
 extern int          world_x;
 extern int          world_y;
-extern Ewd_List    *config_files;
+extern Ecore_List  *config_files;
 
 
 
@@ -87,7 +86,7 @@ typedef struct _erss_feed {
   size_t            main_bufsize;
   int               waiting_for_reply;
   int               total_connects;
-  Ewd_List         *list;
+  Ecore_List       *list;
   xmlDocPtr         doc;
   Erss_Article     *item;
   Erss_Config      *cfg;

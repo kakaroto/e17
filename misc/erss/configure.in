@@ -53,15 +53,6 @@ esmart_cflags=`esmart-config --cflags`
 AC_SUBST(edje_libs)
 AC_SUBST(edje_cflags)
 
-AC_PATH_GENERIC(ewd, 0.0.1, [
-  AC_SUBST(ewd_libs)
-	AC_SUBST(ewd_cflags) ],
-	AC_MSG_ERROR(Cannot find ewd: Is ewd-config in path?))
-ewd_libs=`ewd-config --libs`
-ewd_cflags=`ewd-config --cflags`
-AC_SUBST(ewd_libs)
-AC_SUBST(ewd_cflags)
-
 AC_PATH_GENERIC(etox, 0.0.2, [
 	AC_SUBST(etox_libs)
 	AC_SUBST(etox_cflags) ],

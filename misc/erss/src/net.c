@@ -111,7 +111,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	erss_gui_items_drop(&f->list);
 
 	f->item = NULL;
-	f->list = ewd_list_new ();
+	f->list = ecore_list_new ();
 
 	temp = strstr (buf, "<?xml");
 	f->doc = xmlParseMemory (temp, f->main_bufsize - (temp - f->main_buffer));
@@ -122,7 +122,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	ecore_con_server_del (e->server);
 	f->server = NULL;
 	
-	if (ewd_list_is_empty (f->list)) {
+	if (ecore_list_is_empty (f->list)) {
 		if (buf)
 			printf ("%s\n", temp);
 		else 

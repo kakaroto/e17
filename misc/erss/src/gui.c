@@ -177,8 +177,8 @@ int erss_gui_items_add(Erss_Feed *f) {
     return -1;
 
   if (f->list) {
-    Erss_Article *item = ewd_list_goto_first (f->list);
-    while ((item = ewd_list_next(f->list))) {
+    Erss_Article *item = ecore_list_goto_first (f->list);
+    while ((item = ecore_list_next(f->list))) {
       if(erss_gui_item_new(f,item)==ERSS_GAI_SUCC)
 	c++;
     }
@@ -215,21 +215,21 @@ static Erss_Article *erss_gui_item_dst(Erss_Article **i) {
 
 
 
-int erss_gui_items_drop(Ewd_List **l) {
-	Ewd_List     *list;
+int erss_gui_items_drop(Ecore_List **l) {
+	Ecore_List     *list;
 	Erss_Article *item;
 
 	if ((l == NULL) || ((list=*l) == NULL))
 		return FALSE;
 
-	item = ewd_list_goto_first (list);
-	while ((item = ewd_list_next(list))) {
+	item = ecore_list_goto_first (list);
+	while ((item = ecore_list_next(list))) {
 		if (item->description && item->obj)
 			erss_tooltip_free(item);
 		erss_gui_item_dst(&item);
 	}
 
-	ewd_list_remove (list);
+	ecore_list_remove (list);
 
 	return TRUE;
 }

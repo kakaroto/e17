@@ -7,7 +7,7 @@
 
 
 
-Ewd_List    *config_files=NULL;
+Ecore_List    *config_files=NULL;
 char        *theme=NULL;
 
 

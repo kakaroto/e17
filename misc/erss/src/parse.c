@@ -16,7 +16,7 @@ static Erss_Article *erss_parse_story_new (Erss_Feed *f)
 
 static void erss_parse_story_end (Erss_Feed *f)
 {
-	ewd_list_append (f->list, f->item);
+	ecore_list_append (f->list, f->item);
 	f->item = NULL;
 }
 
@@ -57,7 +57,7 @@ static void erss_parse_story (Erss_Feed *f, xmlNodePtr cur)
 
 	while (cur != NULL) {
 
-		if (ewd_list_nodes (f->list) >= cfg->num_stories)
+		if (ecore_list_nodes (f->list) >= cfg->num_stories)
 			return;
 
 		if (!strcmp(cur->name, cfg->item_start)) {
@@ -136,11 +136,11 @@ int erss_parse (Erss_Feed *f)
 		return ERSS_PARSE_EMPTY;
 	}
 
-	ret=ewd_list_nodes (f->list);
+	ret=ecore_list_nodes (f->list);
 	cur = cur->xmlChildrenNode;
 
 	while (cur != NULL) {
-		if (ewd_list_nodes (f->list) >= cfg->num_stories) {
+		if (ecore_list_nodes (f->list) >= cfg->num_stories) {
 			ret=cfg->num_stories;
 			break;
 		}

@@ -11,7 +11,7 @@ void erss_list_config_files (int output)
 {
 	char *str;
 	char *ptr;
-	Ewd_List *paths;
+	Ecore_List *paths;
 	struct dirent **dentries;
 	struct stat statbuf;
 	int num, i;
@@ -19,26 +19,26 @@ void erss_list_config_files (int output)
 	int found_files = FALSE;
 	int no_dir = FALSE;
 
-	paths = ewd_list_new ();
-	config_files = ewd_list_new ();
+	paths = ecore_list_new ();
+	config_files = ecore_list_new ();
 
 	str = malloc (PATH_MAX);
 	snprintf (str, PATH_MAX, "%s/.%s/config", getenv("HOME"), PACKAGE);
-	ewd_list_append (paths, str);
+	ecore_list_append (paths, str);
 
 	str = malloc (PATH_MAX);
 	snprintf (str, PATH_MAX, "/etc/%s/config", PACKAGE);
-	ewd_list_append (paths, str);
+	ecore_list_append (paths, str);
 
 	str = malloc (PATH_MAX);
 	snprintf (str, PATH_MAX, "%s/config", PACKAGE_DATA_DIR);
-	ewd_list_append (paths, str);
+	ecore_list_append (paths, str);
 
 	if (output)
 		printf ("\n%s processing potential dirs ...\n", PACKAGE);
 
-	ptr = ewd_list_goto_first (paths);
-	while ((ptr = ewd_list_current (paths))) {
+	ptr = ecore_list_goto_first (paths);
+	while ((ptr = ecore_list_current (paths))) {
 		if (output)
 			printf ("\nprocessing '%s':\n", ptr);
 
@@ -66,7 +66,7 @@ void erss_list_config_files (int output)
 
 					if (strstr (dentries[num]->d_name, ".cfg")) {
 						found_files = TRUE;
-						ewd_list_append (config_files, strdup (file));
+						ecore_list_append (config_files, strdup (file));
 						if (output)
 							printf ("\t%s\n", file);
 					}
@@ -86,20 +86,20 @@ void erss_list_config_files (int output)
 			no_dir = FALSE;
 		}
 
-		ewd_list_next (paths);
+		ecore_list_next (paths);
 	}
 
 	/*
 	 * Finished reading and printing available config files
 	 * now remove the paths list since we don't need it anymore.
 	 */
-	ptr = ewd_list_goto_first (paths);
-	while ((ptr = ewd_list_current (paths))) {
+	ptr = ecore_list_goto_first (paths);
+	while ((ptr = ecore_list_current (paths))) {
 		if (ptr)
 			free (ptr);
 		
-		ewd_list_next (paths);
+		ecore_list_next (paths);
 	}
 
-	ewd_list_destroy (paths);
+	ecore_list_destroy (paths);
 }
