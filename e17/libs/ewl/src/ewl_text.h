@@ -31,10 +31,10 @@ void ewl_text_get_color(Ewl_Widget * widget, int *r, int *g, int *b, int *a);
 void ewl_text_set_style(Ewl_Widget * w, char * s);
 void ewl_text_get_text_geometry(Ewl_Widget * widget, double *x, double *y,
 				double *w, double *h);
-void ewl_text_get_letter_geometry(Ewl_Widget * widget, int index, int *x,
-				  int *y, int *w, int *h);
-void ewl_text_get_letter_geometry_at(Ewl_Widget * widget, int x, int y,
-				     int *tx, int *ty, int *tw, int *th);
+void ewl_text_get_letter_geometry(Ewl_Widget * widget, int index, double *x,
+				  double *y, double *w, double *h);
+void ewl_text_get_letter_geometry_at(Ewl_Widget * widget, double x, double y,
+				     double *tx, double *ty, double *tw, double *th);
 void ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a);
 
 #endif

@@ -25,16 +25,20 @@ __toggle_child_fill_policy(Ewl_Widget * w, void * ev_data, void * user_data)
 	  {
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 		ewl_object_set_custom_size(EWL_OBJECT(w), 0, 0);
-		ewl_widget_configure(w->parent);
 		ewl_button_set_label(w, "Fill");
+		ewl_widget_configure(w->parent);
 	  }
 	else
 	  {
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NORMAL);
 		ewl_object_set_custom_size(EWL_OBJECT(w), 100, 17);
-		ewl_widget_configure(w->parent);
 		ewl_button_set_label(w, "Normal");
+		ewl_widget_configure(w->parent);
 	  }
+
+	return;
+	ev_data = NULL;
+	user_data = NULL;
 }
 
 void
@@ -67,6 +71,10 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void * ev_data,void * user_data)
 
 	if (w->parent)
 		ewl_widget_configure(w->parent);
+
+	return;
+	ev_data = NULL;
+	user_data = NULL;
 }
 
 void
@@ -99,6 +107,10 @@ __toggle_child_vertical_align(Ewl_Widget * w, void * ev_data,void * user_data)
 
         if (w->parent)
                 ewl_widget_configure(w->parent);
+
+	return;
+	ev_data = NULL;
+	user_data = NULL;
 }
 
 void
@@ -171,18 +183,16 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(vbox_button[1][0], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][0]),
 			EWL_FILL_POLICY_NORMAL);
-/*	ewl_callback_append(vbox_button[1][0], EWL_CALLBACK_CLICKED,
+	ewl_callback_append(vbox_button[1][0], EWL_CALLBACK_CLICKED,
 			__toggle_child_fill_policy, NULL);
-	FIXME etox is broken atm, we can use this when its fixed. */
-        ewl_widget_show(vbox_button[1][0]);
+	ewl_widget_show(vbox_button[1][0]);
 
         vbox_button[1][1] = ewl_button_new("Fill");
         ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][1]);
         ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][1]),
 			EWL_FILL_POLICY_FILL);
-/*	ewl_callback_append(vbox_button[1][1], EWL_CALLBACK_CLICKED,
+	ewl_callback_append(vbox_button[1][1], EWL_CALLBACK_CLICKED,
                         __toggle_child_fill_policy, NULL);
-	FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(vbox_button[1][1]);
 
         vbox_button[1][2] = ewl_button_new("Normal");
@@ -190,9 +200,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(vbox_button[1][2], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][2]),
 			EWL_FILL_POLICY_NORMAL);
-/*	ewl_callback_append(vbox_button[1][2], EWL_CALLBACK_CLICKED,
+	ewl_callback_append(vbox_button[1][2], EWL_CALLBACK_CLICKED,
 		__toggle_child_fill_policy, NULL);
-	FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(vbox_button[1][2]);
 
 	/****************************************************************/
@@ -239,18 +248,16 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[1][0], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][0]),
 			EWL_FILL_POLICY_NORMAL);
-/*      ewl_callback_append(hbox_button[1][0], EWL_CALLBACK_CLICKED,
+        ewl_callback_append(hbox_button[1][0], EWL_CALLBACK_CLICKED,
                         __toggle_child_fill_policy, NULL);
-        FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(hbox_button[1][0]);
 
         hbox_button[1][1] = ewl_button_new("Fill");
         ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
         ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][1]),
 			EWL_FILL_POLICY_FILL);
-/*      ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
+        ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
                         __toggle_child_fill_policy, NULL);
-        FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(hbox_button[1][1]);
 
         hbox_button[1][2] = ewl_button_new("Normal");
@@ -258,9 +265,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[1][2], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][2]),
 			EWL_FILL_POLICY_NORMAL);
-/*      ewl_callback_append(hbox_button[1][2], EWL_CALLBACK_CLICKED,
+        ewl_callback_append(hbox_button[1][2], EWL_CALLBACK_CLICKED,
                         __toggle_child_fill_policy, NULL);
-        FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(hbox_button[1][2]);
 
 	box_win_realized = 1;

@@ -6,6 +6,9 @@ void __close_main_widow(Ewl_Widget * w, void * ev_data, void *user_data);
 int box_win_realized = 0;
 void __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data);
 
+int button_win_realized = 0;
+void __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data);
+
 
 void
 __close_main_widow(Ewl_Widget * w, void * ev_data, void * user_data)
@@ -55,6 +58,8 @@ main(int argc, char ** argv)
         button[1] = ewl_button_new("Ewl_Button");
 	ewl_object_set_custom_size(button[1], 100, 17);
         ewl_container_append_child(EWL_CONTAINER(vbox[0]), button[1]);
+	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
+				__create_button_test_window, NULL);
         ewl_widget_show(button[1]);
 
         button[2] = ewl_button_new("Ewl_Entry");

@@ -18,9 +18,6 @@ static void __ewl_radiobutton_hide(Ewl_Widget * w, void *event_data,
 				   void *user_data);
 static void __ewl_radiobutton_destroy(Ewl_Widget * w, void *event_data,
 				      void *user_data);
-static void __ewl_radiobutton_destroy_recursive(Ewl_Widget * w,
-						void *event_data,
-						void *user_data);
 static void __ewl_radiobutton_configure(Ewl_Widget * w, void *event_data,
 					void *user_data);
 static void __ewl_radiobutton_focus_in(Ewl_Widget * w, void *event_data,
@@ -53,6 +50,8 @@ ewl_radiobutton_new(const char *l)
 static void
 __ewl_radiobutton_init(Ewl_RadioButton * b, const char *label)
 {
+	Ewl_Widget * w;
+
 	DENTER_FUNCTION;
 
 	/*
@@ -60,7 +59,9 @@ __ewl_radiobutton_init(Ewl_RadioButton * b, const char *label)
 	 */
 	memset(b, 0, sizeof(Ewl_RadioButton));
 	ewl_container_init(EWL_CONTAINER(b), 16, 16,
-			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_LEFT);
+			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
+
+	w = EWL_WIDGET(b);
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
@@ -78,43 +79,26 @@ __ewl_radiobutton_init(Ewl_RadioButton * b, const char *label)
 	/*
 	 * Attach necessary callback mechanisms
 	 */
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_REALIZE,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_radiobutton_realize, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_SHOW,
+	ewl_callback_append(w, EWL_CALLBACK_SHOW,
 			    __ewl_radiobutton_show, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_HIDE,
+	ewl_callback_append(w, EWL_CALLBACK_HIDE,
 			    __ewl_radiobutton_hide, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_DESTROY,
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    __ewl_radiobutton_destroy, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_DESTROY_RECURSIVE,
-			    __ewl_radiobutton_destroy_recursive, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_radiobutton_configure, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_radiobutton_mouse_down, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 			    __ewl_radiobutton_mouse_up, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_FOCUS_IN,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
 			    __ewl_radiobutton_focus_in, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
 			    __ewl_radiobutton_focus_out, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_THEME_UPDATE,
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_radiobutton_theme_update, NULL);
-
-	DLEAVE_FUNCTION;
-}
-
-/*
- * Change the label of the specified button
- */
-void
-ewl_radiobutton_set_label(Ewl_Widget * w, char *l)
-{
-	Ewl_RadioButton *b;
-
-	DENTER_FUNCTION;
-
-	b = EWL_RADIOBUTTON(w);
 
 	DLEAVE_FUNCTION;
 }
@@ -123,7 +107,7 @@ ewl_radiobutton_set_label(Ewl_Widget * w, char *l)
  * Change the state of the specified button
  */
 void
-ewl_radiobutton_set_radioed(Ewl_Widget * w, int c)
+ewl_radiobutton_set_checked(Ewl_Widget * w, int c)
 {
 	Ewl_RadioButton *b;
 
@@ -142,13 +126,10 @@ static void
 __ewl_radiobutton_realize(Ewl_Widget * w, void *event_data,
 			  void *user_data)
 {
-	Ewl_RadioButton *b;
-	Ewl_Widget *t;
+	char * l = NULL;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-
-	b = EWL_RADIOBUTTON(w);
 
 	ewl_fx_clip_box_create(w);
 
@@ -156,15 +137,14 @@ __ewl_radiobutton_realize(Ewl_Widget * w, void *event_data,
 		evas_set_clip(w->evas, w->fx_clip_box,
 			      EWL_CONTAINER(w->parent)->clip_box);
 
-	if (EWL_BUTTON(b)->label) {
-		t = ewl_text_new();
-		ewl_text_set_text(t, EWL_BUTTON(b)->label);
-		ewl_text_set_font_size(t, 10);
-		ewl_container_append_child(EWL_CONTAINER(b), t);
+	if (EWL_BUTTON(w)->label)
+		l = strdup(EWL_BUTTON(w)->label);
 
-		ewl_widget_realize(t);
-	}
+	if (l)
+		ewl_button_set_label(w, l);
 
+	IF_FREE(l);
+	
 	ewl_widget_theme_update(w);
 
 	DLEAVE_FUNCTION;
@@ -175,17 +155,6 @@ __ewl_radiobutton_show(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-
-	if (EWL_CONTAINER(w)->children &&
-	    !ewd_list_is_empty(EWL_CONTAINER(w)->children)) {
-		Ewl_Widget *c;
-
-		ewd_list_goto_first(EWL_CONTAINER(w)->children);
-
-		while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
-		       != NULL)
-			ewl_widget_show(c);
-	}
 
 	evas_show(w->evas, w->fx_clip_box);
 
@@ -220,9 +189,12 @@ __ewl_radiobutton_destroy(Ewl_Widget * w, void *event_data,
 		ebits_free(w->ebits_object);
 	}
 
-	evas_hide(w->evas, w->fx_clip_box);
-	evas_unset_clip(w->evas, w->fx_clip_box);
-	evas_del_object(w->evas, w->fx_clip_box);
+	if (w->fx_clip_box)
+	  {
+		evas_hide(w->evas, w->fx_clip_box);
+		evas_unset_clip(w->evas, w->fx_clip_box);
+		evas_del_object(w->evas, w->fx_clip_box);
+	  }
 
 	ewl_callback_clear(w);
 
@@ -234,36 +206,17 @@ __ewl_radiobutton_destroy(Ewl_Widget * w, void *event_data,
 }
 
 static void
-__ewl_radiobutton_destroy_recursive(Ewl_Widget * w, void *event_data,
-				    void *user_data)
-{
-	Ewl_Widget *c;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	if (EWL_CONTAINER(w)->children)
-		while ((c =
-			ewd_list_remove_last(EWL_CONTAINER(w)->children))
-		       != NULL)
-			ewl_widget_destroy_recursive(c);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
 __ewl_radiobutton_configure(Ewl_Widget * w, void *event_data,
 			    void *user_data)
 {
-	Ewl_RadioButton *b;
-	Ewl_Widget *t;
+	Ewl_Button * b;
 	int req_x, req_y, req_w, req_h;
-	int cur_w, cur_h;
+	int cur_w = 0, cur_h = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	b = EWL_RADIOBUTTON(w);
+	b = EWL_BUTTON(w);
 
 	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
 				      &req_w, &req_h);
@@ -271,33 +224,44 @@ __ewl_radiobutton_configure(Ewl_Widget * w, void *event_data,
 	if (w->ebits_object) {
 		ebits_move(w->ebits_object, req_x, req_y);
 		ebits_resize(w->ebits_object, req_w, req_h);
+	}
 
+	if (w->fx_clip_box)
+	  {
 		evas_move(w->evas, w->fx_clip_box, req_x, req_y);
 		evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+		
+	  }
+
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
 		evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
 			  req_y);
 		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
 			    req_h);
-	}
+	  }
 
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	t = ewd_list_current(EWL_CONTAINER(w)->children);
 
-	if (!t)
-		DRETURN;
+        if (b->label_object) {
+                ewl_object_get_current_size(EWL_OBJECT(b->label_object),
+                                            &cur_w, &cur_h);
 
-	ewl_object_get_current_size(EWL_OBJECT(t), &cur_w, &cur_h);
+                ewl_object_request_geometry(EWL_OBJECT(b->label_object),
+                                            req_x + 19,
+                                            req_y + ((req_h / 2) -
+                                                     (cur_h / 2)), cur_w,
+                                            cur_h);
 
-	ewl_object_request_geometry(EWL_OBJECT(t),
-				    req_x + 3 + req_w,
-				    req_y + ((req_h / 2) - (cur_h / 2)),
-				    cur_w, cur_h);
+                ewl_widget_configure(b->label_object);
 
-	ewl_widget_configure(t);
+                ewl_object_get_current_size(EWL_OBJECT(b->label_object),
+                                            &cur_w, &cur_h);
+        }
+        
+        ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y,
+                                        19 + cur_w, req_h);
 
-	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y,
-					req_w + 3 + cur_w, req_h);
-
+        ewl_object_set_custom_size(EWL_OBJECT(w), 19 + cur_w, req_h);
 
 	DLEAVE_FUNCTION;
 }
@@ -344,6 +308,8 @@ __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *event_data,
 
 	ewl_widget_theme_update(w);
 
+	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+
 	DLEAVE_FUNCTION;
 }
 
@@ -372,22 +338,18 @@ static void
 __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 			       void *user_data)
 {
-	Ewl_RadioButton *b;
 	char *v;
 	char str[512];
 	char state[512];
 
 	DENTER_FUNCTION;
-
 	DCHECK_PARAM_PTR("w", w);
 
 	/*
 	 * Don't want to update anything if the widget isn't realized. 
 	 */
-	if (!w->object.realized)
+	if (!REALIZED(w))
 		DRETURN;
-
-	b = EWL_RADIOBUTTON(w);
 
 	if (w->state & EWL_STATE_PRESSED)
 		snprintf(state, 512, "clicked");
@@ -404,7 +366,7 @@ __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 	  }
 
 	snprintf(str, 512, "/appearance/button/radio/%s-checked%i/visible",
-		 state, EWL_CHECKBUTTON(b)->checked);
+		 state, EWL_CHECKBUTTON(w)->checked);
 
 	v = ewl_theme_data_get(w, str);
 
@@ -412,7 +374,7 @@ __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 		char *i;
 
 		snprintf(str, 512, "/appearance/button/radio/%s-checked%i",
-			 state, EWL_CHECKBUTTON(b)->checked);
+			 state, EWL_CHECKBUTTON(w)->checked);
 
 		i = ewl_theme_image_get(w, str);
 

@@ -492,35 +492,32 @@ __ewl_button_update_label(Ewl_Widget * w)
 	 * If the label object has not yet been created then do so and
 	 * add it to the container button
 	 */
+
+	if (b->label_object)
+		ewl_text_set_text(b->label_object, b->label);
+
 	if (!b->label_object) {
 		b->label_object = ewl_text_new();
 		ewl_container_append_child(EWL_CONTAINER(w),
 					   b->label_object);
-	}
+		ewl_text_set_text(b->label_object, b->label);
 
-	/*
-	 * Retrieve theme information
-	 */
-	tmp =
-	    ewl_theme_data_get(w, "/appearance/button/default/text/font");
+		/*
+		 * Retrieve theme information
+		 */
+		tmp = ewl_theme_data_get(w,
+				"/appearance/button/default/text/font");
 
-	if (tmp)
-		ewl_text_set_font(b->label_object, tmp);
+		if (tmp)
+			ewl_text_set_font(b->label_object, tmp);
 
-	tmp =
-	    ewl_theme_data_get(w,
+		tmp = ewl_theme_data_get(w,
 			       "/appearance/button/default/text/font_size");
 
-	if (tmp)
-		ewl_text_set_font_size(b->label_object, (int) (tmp));
-
-	ewl_text_set_text(b->label_object, b->label);
-
-        if (REALIZED(w))
-                ewl_widget_realize(b->label_object);
-
-        if (VISIBLE(w))
-                ewl_widget_show(b->label_object);
+		if (tmp)
+			ewl_text_set_font_size(b->label_object, (int) (tmp));
+		ewl_widget_show(b->label_object);
+	  }
 
 	DLEAVE_FUNCTION;
 }

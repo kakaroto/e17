@@ -1,10 +1,18 @@
+Tue Aug  21 16:17:49 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Improved __ewl_button_update_label a bit.
+	* Made the size of the Ewl_Text etox area allways be the actual size
+	  of it without breaking rows.
+	* Added a button test part to the test program.
+	* Fixed some minor bugs in the Ewl_CheckButton & Ewl_RadioButton
+	  widget.
+
 Tue Aug  21 02:18:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
-	* Some more typos fixed in the box code
+	* Some more typos fixed in the box code.
 	* Extended the box test program to be able to change child alignments
 	  dynamically.
 	* Added Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o)
 	  and Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o)
-	  to be able to query the alignment & fill_policy
+	  to be able to query the alignment & fill_policy.
 
 Mon Aug  20 23:05:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed _LOTS_ of typos in the box widget whiched caused very odd

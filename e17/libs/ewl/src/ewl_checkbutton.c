@@ -18,9 +18,6 @@ static void __ewl_checkbutton_hide(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 static void __ewl_checkbutton_destroy(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
-static void __ewl_checkbutton_destroy_recursive(Ewl_Widget * w,
-						void *ev_data,
-						void *user_data);
 static void __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data,
 					void *user_data);
 static void __ewl_checkbutton_focus_in(Ewl_Widget * w, void *ev_data,
@@ -102,8 +99,6 @@ __ewl_checkbutton_init(Ewl_CheckButton * b, const char *l)
 			    __ewl_checkbutton_hide, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    __ewl_checkbutton_destroy, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY_RECURSIVE,
-			    __ewl_checkbutton_destroy_recursive, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_checkbutton_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
@@ -133,7 +128,10 @@ ewl_checkbutton_set_checked(Ewl_Widget * w, int c)
 
 	cb = EWL_CHECKBUTTON(w);
 
-	cb->checked = c;
+	if (c)
+		cb->checked = 1;
+	else
+		cb->checked = 0;
 
 	ewl_widget_theme_update(w);
 
@@ -162,7 +160,8 @@ __ewl_checkbutton_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (EWL_BUTTON(w)->label)
 		l = strdup(EWL_BUTTON(w)->label);
 
-	ewl_button_set_label(w, l);
+	if (l)
+		ewl_button_set_label(w, l);
 
 	IF_FREE(l);
 
@@ -176,17 +175,6 @@ __ewl_checkbutton_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-
-	if (EWL_CONTAINER(w)->children &&
-	    !ewd_list_is_empty(EWL_CONTAINER(w)->children)) {
-		Ewl_Widget *c;
-
-		ewd_list_goto_first(EWL_CONTAINER(w)->children);
-
-		while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
-		       != NULL)
-			ewl_widget_show(c);
-	}
 
 	evas_show(w->evas, w->fx_clip_box);
 
@@ -236,36 +224,16 @@ __ewl_checkbutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_destroy_recursive(Ewl_Widget * w, void *ev_data,
-				    void *user_data)
-{
-	Ewl_Widget *c;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	if (EWL_CONTAINER(w)->children)
-		while ((c =
-			ewd_list_remove_last(EWL_CONTAINER(w)->children))
-		       != NULL)
-			ewl_widget_destroy_recursive(c);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
 __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
-	Ewl_CheckButton *cb;
 	int req_x, req_y, req_w, req_h;
-	int cur_w, cur_h;
+	int cur_w = 0, cur_h = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	b = EWL_BUTTON(w);
-	cb = EWL_CHECKBUTTON(w);
 
 	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
 				      &req_w, &req_h);
@@ -305,9 +273,8 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y,
 					19 + cur_w, req_h);
-	ewl_object_set_minimum_size(EWL_OBJECT(w), 19 + cur_w, req_h);
-	ewl_object_set_maximum_size(EWL_OBJECT(w), 19 + cur_w, req_h);
 
+	ewl_object_set_custom_size(EWL_OBJECT(w), 19 + cur_w, req_h);
 
 	DLEAVE_FUNCTION;
 }

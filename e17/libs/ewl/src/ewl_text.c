@@ -3,15 +3,15 @@
 #include <Etox.h>
 
 static void __ewl_text_init(Ewl_Widget * widget);
-static void __ewl_text_realize(Ewl_Widget * widget, void *ev_data,
+static void __ewl_text_realize(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
-static void __ewl_text_show(Ewl_Widget * widget, void *ev_data,
+static void __ewl_text_show(Ewl_Widget * w, void *ev_data,
 			    void *user_data);
-static void ewl_text_hide(Ewl_Widget * widget, void *ev_data,
+static void ewl_text_hide(Ewl_Widget * w, void *ev_data,
 			  void *user_data);
-static void ewl_text_destroy(Ewl_Widget * widget, void *ev_data,
+static void ewl_text_destroy(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void ewl_text_configure(Ewl_Widget * widget, void *ev_data,
+static void ewl_text_configure(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 #define START_W 2048
 #define START_H 2048
@@ -144,12 +144,8 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_text_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
 
 	evas_show(w->evas, w->fx_clip_box);
 
@@ -203,22 +199,22 @@ ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-ewl_text_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
+ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text * t;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	t = EWL_TEXT(widget);
+	t = EWL_TEXT(w);
 
-	ewl_object_apply_requested(EWL_OBJECT(widget));
+	ewl_object_apply_requested(EWL_OBJECT(w));
 
-	if (widget->fx_clip_box) {
-		evas_move(widget->evas, widget->fx_clip_box,
-				CURRENT_X(widget), CURRENT_Y(widget));
-		evas_resize(widget->evas, widget->fx_clip_box,
-				CURRENT_W(widget), CURRENT_H(widget));
+	if (w->fx_clip_box) {
+		evas_move(w->evas, w->fx_clip_box,
+				CURRENT_X(w), CURRENT_Y(w));
+		evas_resize(w->evas, w->fx_clip_box,
+				CURRENT_W(w), CURRENT_H(w));
 	}
 
 	if (t->tox)
@@ -226,9 +222,12 @@ ewl_text_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
 		double xx, yy, ww, hh;
 
 		etox_move(t->tox, CURRENT_X(t), CURRENT_Y(t));
+		etox_resize(t->tox, START_W, START_H);
 		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
 		etox_resize(t->tox, ww, hh);
+		ewl_object_set_custom_size(t, ww, hh);
 	  }
+
 	DLEAVE_FUNCTION;
 }
 
@@ -252,8 +251,12 @@ ewl_text_set_text(Ewl_Widget * w, const char *text)
 
 	if (t->tox)
 	  {
+		double xx, yy, ww, hh;
+
 		etox_resize(t->tox, START_W, START_H);
 		etox_set_text(t->tox, ET_TEXT(t->text), ET_END);
+		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
+		etox_resize(t->tox, ww, hh);
 		ewl_widget_configure(w);
 	  }
 
@@ -398,7 +401,7 @@ ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
 
 void
 ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
-			     int *xx, int *yy, int *ww, int *hh)
+			     double *xx, double *yy, double *ww, double *hh)
 {
 	Ewl_Text * t;
 
@@ -413,8 +416,8 @@ ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
 }
 
 void
-ewl_text_get_letter_geometry_at(Ewl_Widget * w, int x, int y,
-				int *tx, int *ty, int *tw, int *th)
+ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
+				double *tx, double *ty, double *tw, double *th)
 {
 	Ewl_Text * t;
 
