@@ -1,5 +1,6 @@
 @top@
 @start@
+<p class="contenttitle">THIS PAGE IS BEING WRITTEN - NOT FINISHED!</p>
 <p class="contenttitle">Enlightenment's Core Systems</p>
 <br>
 
@@ -18,7 +19,7 @@ We refer to these systems as the <a href=efl.html>EFL or Enlightenment
 Foundation Libraries</a>, as they are the foundation of the project and the
 currently contain all the hard work. The intent is to have libraries that are
 extremely easy to use and learn, that optimize automatically for the programmer
-where possible and svage the programmer time and effort in the long run. We
+where possible and save the programmer time and effort in the long run. We
 believe we have achieved many of these goals and have some very unique
 aspects that may be of great interest to developers outside of the project to
 create some interesting or even amazing tools.
@@ -50,7 +51,7 @@ Evas is a very core part of the <a href=efl.html>EFL</a>. It is the rendering
 and display management engine that sits under anything you see on a screen.
 It does all the work of managing display objects, their state, state changes,
 layering, rendering and scaling, image loading, text rendering, update
-handling, optimizing the display pipeline to avoid work and more. It does a
+handling, optimising the display pipeline to avoid work and more. It does a
 lot of the grunt work of display, and is portable beyond
 <a href=http://www.x.org>X</a>. It even runs in the framebuffer directly
 without needing <a href=http://www.x.org>X</a>, under
@@ -68,20 +69,40 @@ important work of making their application.
 But despite all of the things that Evas can do, it is not very large. It has
 been kept small and lean to make it viable for use on NOT just heavy-weight
 desktops, but also on limited resource devices such as PDA's, mobile phones
-and Smartphones, Stereo systems, DVD Players, PVR/DVR Systems and more. It
-has already been proted to Mobile phones and PDA's, PVR/DVR systems and has
-proven itself capable of driving these displays very nicely with beautiful
+and Smart phones, Stereo systems, DVD Players, PVR/DVR Systems and more. It
+has already been ported to Mobile phones and PDA's, PVR/DVR systems and has
+proved itself capable of driving these displays very nicely with beautiful
 effects. The developer does not have to change how they code for a device or
 their desktop as the API and rendering are the same, so no special
 development environments or emulators are needed. This saves time and effort,
 allowing desktop and device code to be shared and maintained easily. Also
 since Evas hides the details of the devices display format, and virtualises
-the display at an object level, the programmer doesnt need to care how to
+the display at an object level, the programmer doesn't need to care how to
 render things. They can use a standard system that is universal across all
 instances of Evas.
 </p><p>
+Evas provides alpha blending, high quality scaling of images, anti-aliased
+truetype text, gradients, lines, polygons and more. The list of supported
+objects is growing, and can be extended via smart objects. It has an interface
+mechanism to allow for video data to be efficiently handled (which is what
+Emotion exploits) and more.
+</p><p>
 <img src=img/sys_ecore.png width=318 height=100>
 </p><p>
+Ecore is a modular group of very closely linked libraries that provide core
+event loop functionality and related tasks. As the core event loop it
+provides conversion of system signals into events, to avoid having to have
+re-entrant code, handle basic file descriptor watching and passing off
+control to appropriate callback routines where needed, handling timers, idle
+calls, and other general program infrastructure and loop code.
+</p><p>
+It also provides easy to use wrappers around common systems such as X, Evas
+(for setup and combining with X), the framebuffer, configuration management,
+inter process communication, socket handling, client/server programming, text
+encoding conversions (e.g. EUCJP to UTF8), deferred job handling and more. This
+library is a big time saver and core infrastructure library that can be used
+to do all the basic things applications need to do, with minimal code and
+effort.
 </p><p>
 <img src=img/sys_edje.png width=318 height=100>
 </p><p>
