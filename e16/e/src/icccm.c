@@ -410,8 +410,12 @@ ICCCM_Withdraw(EWin * ewin)
 void
 ICCCM_Cmap(EWin * ewin)
 {
-   EDBUG(6, "ICCCM_Cmap");
+   static Atom         atom = 0;
+   XWindowAttributes   xwa;
+   Window             *wlist = NULL;
+   int                 i, num;
 
+   EDBUG(6, "ICCCM_Cmap");
    if (!ewin)
      {
 	if (mode.current_cmap)
@@ -424,8 +428,32 @@ ICCCM_Cmap(EWin * ewin)
    if (mode.cur_menu_mode)
       EDBUG_RETURN_;
    ICCCM_GetColormap(ewin);
+
+   EDBUG(6, "ICCCM_GetColormap");
+   if (ewin->internal)
+      EDBUG_RETURN_;
+
    if ((ewin->client.cmap) && (mode.current_cmap != ewin->client.cmap))
      {
+	if (!atom)
+	   atom = XInternAtom(disp, "WM_COLORMAP_WINDOWS", False);
+	wlist = AtomGet(ewin->client.win, atom, XA_WINDOW, &num);
+	if (wlist)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (XGetWindowAttributes(disp, wlist[i], &xwa))
+		    {
+		       if (xwa.colormap != DefaultColormap(disp, root.scr))
+			 {
+			    XInstallColormap(disp, xwa.colormap);
+			    mode.current_cmap = xwa.colormap;
+			 }
+		    }
+	       }
+	     Efree(wlist);
+	     EDBUG_RETURN_;
+	  }
 	XInstallColormap(disp, ewin->client.cmap);
 	mode.current_cmap = ewin->client.cmap;
      }

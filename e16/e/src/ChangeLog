@@ -3676,3 +3676,10 @@ Wed Oct 20 14:55:06 PDT 1999
 
 Yet Another OS/2 patch
 this time in misc.c
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 15:00:25 PDT 1999
+(Raster)
+
+fix colormap problem with ximtool :)
