@@ -44,8 +44,11 @@ int sig_exit(void *data, int type, void * ev)
 
 int main(int argc, const char **argv)
 {
+	/*
 	Etox_Selection *selected1;
 	Etox_Selection *selected2;
+	*/
+	Etox_Obstacle *obstacle;
 
 	ecore_init();
 	ecore_app_args_set(argc, argv);
@@ -84,6 +87,7 @@ int main(int argc, const char **argv)
 	etox_set_layer(etox, 1000);
 	etox_show(etox);
 
+	/*
 	selected1 = etox_select_index(etox, 9, 60);
 	if (selected1) {
 		etox_selection_set_font(selected1, "morpheus", 20);
@@ -109,8 +113,11 @@ int main(int argc, const char **argv)
 	if (selected2) {
 		etox_selection_set_color(selected2, 0, 0, 255, 255);
 	}
+	*/
 
-	etox_append_text(etox, "Well slap my ass and call me Sally!");
+	etox_append_text(etox, "Fear the boring test text!");
+
+	obstacle = etox_obstacle_add(etox, 20, 20, 20, 20);
 
 	ecore_evas_callback_resize_set(ee, window_resize);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit, NULL);

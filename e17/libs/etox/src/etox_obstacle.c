@@ -57,10 +57,9 @@ void etox_obstacle_free(Etox * et, Etox_Obstacle * obstacle)
 void etox_obstacle_place(Etox_Obstacle * obst)
 {
 	int i = 0;
-	int j = 0;
 	double x, y, w, h;
 	Etox_Line *line;
-	Evas_List *l_nodes, *l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -81,14 +80,8 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 	if (y + h < obst->et->y)
 		return;
 
-	/*
-	 * We know the obstacle intersects this etox, so now determine
-	 * starting and ending lines, as well as split lines appropriately.
-	 */
-	for (l_nodes = obst->et->lines; l_nodes; l_nodes = l_nodes->next)
-		j++;
-	obst->start_line = j;
-	obst->end_line = -1;
+	obst->start_line = 0;
+	obst->end_line = 0;
 
 	/*
 	 * Run through to determine the lines to determine which intersect the
@@ -96,17 +89,18 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 	 */
 	for (l = obst->et->lines; l; l = l->next) {
 		line = l->data;
-		if (line->y < y + h) {
-			if (line->y > y) {
-				/*
-				 * Check if the obstacle starts at this line
-				 */
-				if (i < obst->start_line)
-					obst->start_line = i;
-				_etox_obstacle_line_insert(line, obst);
-			}
-		} else
+
+		if (line->y > y + h)
 			break;
+
+		if (line->y + line->h >= y) {
+			/*
+			 * Check if the obstacle starts at this line
+			 */
+			if (!obst->start_line)
+				obst->start_line = i;
+			_etox_obstacle_line_insert(line, obst);
+		}
 
 		/*
 		 * Check if the obstacle starts at this line
@@ -114,7 +108,7 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 		i++;
 	}
 
-	obst->end_line = i - 1;
+	obst->end_line = i;
 }
 
 /*
@@ -123,9 +117,8 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 void etox_obstacle_unplace(Etox_Obstacle * obst)
 {
 	int i, j;
-	Evas_Object *bit;
 	Etox_Line *line;
-	Evas_List *l, *ll;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -138,22 +131,11 @@ void etox_obstacle_unplace(Etox_Obstacle * obst)
 	 * On each line within the obstacle bounds, remove the obstacle from
 	 * the list of bits.
 	 */
-	for (j = 1, l = obst->et->lines; j <= obst->end_line && l;
+	for (j = 0, l = obst->et->lines; j <= obst->end_line && l;
 	     l = l->next, j++) {
-		if (j < i);
-		else {
+		if (j >= i) {
 			line = l->data;
-			/*
-			 * Now find the obstacle on the list of bits and remove it.
-			 */
-			for (ll = line->bits; ll; ll = ll->next) {
-				bit = ll->data;
-				if (bit != obst->bit);
-				else {
-					ll = evas_list_remove(ll, bit);
-					break;
-				}
-			}
+			etox_line_remove(line, obst->bit);
 		}
 	}
 }
@@ -164,33 +146,44 @@ void etox_obstacle_unplace(Etox_Obstacle * obst)
 static void _etox_obstacle_line_insert(Etox_Line * line,
 				       Etox_Obstacle * obst)
 {
+	int i;
 	Evas_Object *bit;
-	double x, y, w, h;
-	Evas_List *l;
+	double x;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("obst", obst);
 
-	evas_object_geometry_get(obst->bit, &x, &y, &w, &h);
+	evas_object_geometry_get(obst->bit, &x, NULL, NULL, NULL);
 
 	/*
 	 * Find the position to place the obstacle within the line
 	 */
-	for (l = line->bits; l; l = l->next) {
-		double tx, ty, tw, th;
-		bit = l->data;
+	bit = etox_line_coord_to_bit(line, x);
+	if (!bit)
+		return;
 
-		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
-		if (etox_rect_intersect(x, y, w, h, tx, ty, tw, th)) {
-			if (!bit)
-				return;
-			/*
-			 * FIXME: We need to do some bit-splitting here, just
-			 * need to get around to it.
-			 */
-			l = evas_list_prepend_relative(l, obst->bit, l->next);
-			break;
+	/*
+	 * Find the index into the line of the obstacle.
+	 */
+	i = estyle_text_at_position(bit, x, line->y + (line->h / 2), NULL, NULL,
+			NULL, NULL);
+
+	/*
+	 * Check if we can append it after this bit, possibly after splitting.
+	 */
+	if (i > 0) {
+		if (i < estyle_length(bit)) {
+			etox_split_bit(line, bit, i);
 		}
+		line->bits = evas_list_append_relative(line->bits, obst->bit,
+				bit);
+	}
+	else {
+		/*
+		 * Otherwise, stick it in front of this bit.
+		 */
+		line->bits = evas_list_prepend_relative(line->bits, obst->bit,
+				bit);
 	}
 }
 

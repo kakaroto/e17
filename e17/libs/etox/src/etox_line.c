@@ -213,9 +213,9 @@ void etox_line_layout(Etox_Line * line)
 	 */
 	for (l = line->bits; l; l = l->next) {
 		bit = l->data;
+		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 		if (!estyle_fixed(bit)) {
 
-			evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 			if (line->h < th)
 				line->h = th;
 
@@ -234,6 +234,8 @@ void etox_line_layout(Etox_Line * line)
 			 */
 			evas_object_move(bit, x, ty);
 		}
+		else
+			printf("Encountered an obstacle!!\n");
 
 		/*
 		 * Move horizontally to place the next bit.

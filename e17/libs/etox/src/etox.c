@@ -931,9 +931,11 @@ etox_obstacle_add(Evas_Object * obj, double x, double y, double w, double h)
 	obst = etox_obstacle_new(et, x, y, w, h);
 
 	if (obst) {
-		evas_list_append(et->obstacles, obst);
+		et->obstacles = evas_list_append(et->obstacles, obst);
 		etox_obstacle_place(obst);
 	}
+
+	etox_layout(et);
 
 	return obst;
 }
@@ -1146,14 +1148,27 @@ void etox_layout(Etox * et)
 
 	CHECK_PARAM_POINTER("et", et);
 
+	if (!et->w)
+		et->w = et->tw;
+
 	/*
 	 * What the hell, do you expect us to "just know" what text to
 	 * display, you've got to set some dumbass!
 	 */
-	if (!et->lines)
+	if (!et->lines || et->w <= 0 || et->h <= 0)
 		return;
 
 	y = et->y;
+
+	/*
+	 * Remove all the obstacles from their places in the etox.
+	 */
+	l = et->obstacles;
+	while (l) {
+		Etox_Obstacle *obst = l->data;
+		etox_obstacle_unplace(obst);
+		l = l->next;
+	}
 
 	/*
 	 * Traverse the list displaying each line, moving down the screen after
@@ -1161,6 +1176,8 @@ void etox_layout(Etox * et)
 	 */
 	l = et->lines;
 	while (l) {
+		Evas_List *ll;
+
 		line = l->data;
 		line->x = et->x;
 		line->y = y;
@@ -1173,6 +1190,16 @@ void etox_layout(Etox * et)
 
 			if (temp->flags & ETOX_LINE_WRAPPED)
 				etox_line_unwrap(et, line);
+		}
+
+		/*
+		 * Re-place all the obstacles into their places in the etox.
+		 */
+		ll = et->obstacles;
+		while (ll) {
+			Etox_Obstacle *obst = ll->data;
+			etox_obstacle_place(obst);
+			ll = ll->next;
 		}
 
 		etox_line_layout(line);
