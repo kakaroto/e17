@@ -363,7 +363,6 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	imagefile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
 	sprintf(currentimage, "%s", imagefile);
 	gtk_widget_hide(FileSel);
-	gtk_widget_hide(area);
 	LoadImage(imagefile);
 	DrawImage(im, 0, 0);
 }
@@ -374,8 +373,6 @@ void DrawImage(Imlib_Image *im, int w, int h)
 	int x, y;
 	
 	printf("DrawImage(%8p, %d, %d)\n", im, w, h);
-	
-	gtk_widget_hide(area);
 	
 	if(!disp){
 		disp = GDK_WINDOW_XDISPLAY(area->window);
@@ -396,15 +393,19 @@ void DrawImage(Imlib_Image *im, int w, int h)
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
 	
-	if (w <= imgw) w = imgw;
-	if (h <= imgh) h = imgh;
+	if (w == 0) w = imgw;
+	if (h == 0) h = imgh;
 	
 	printf("w %d, h %d, imgw %d, imgh %d, winw %d, winh %d\n", w, h, imgw, imgh, winw, winh);
 	winw = w;
 	winh = h;
 	
 	gtk_window_set_default_size(GTK_WINDOW(MainWindow), (gint)w, (gint)h);
+#if 0
+        /* Not needed. */
+	gtk_widget_set_usize(MainWindow, (gint)w, (gint)h);
 	gtk_widget_set_usize(EventBox, (gint)w, (gint)h);
+#endif
 	gtk_widget_set_usize(area, w, h);
 	
 	pm = XCreatePixmap(disp, win, w, h, depth);
@@ -423,25 +424,25 @@ void DrawImage(Imlib_Image *im, int w, int h)
 	imlib_context_set_image(bimg);
 	Checks(w, h);
 	
-	if (imgw == w && imgh == h){
-		imlib_blend_image_onto_image(im, 1, 0, 0, imgw, imgh,
-											  0, 0, imgw, imgh);
-	} else {
-		/* if the window is larger than the image,
-		 * center the image on the window
-		 */
-		x = (w - imgw) / 2;
-		y = (h - imgh) / 2;
-		imlib_blend_image_onto_image(im, 1, 0, 0, imgw, imgh,
-											x, y, imgw, imgh);
-	}
+        if (w > imgw) {
+          x = (w - imgw) / 2;
+          w = imgw;
+        } else {
+          x = 0;
+        }
+        if (h > imgh) {
+          y = (h - imgh) / 2;
+          h = imgh;
+        } else {
+          y = 0;
+        }
+        imlib_blend_image_onto_image(im, 1, 0, 0, w, h, x, y, w, h);
 	
 	imlib_render_image_on_drawable(0, 0);
 	XSetWindowBackgroundPixmap(disp, win, pm);
 	XClearWindow(disp, win);
 	XFreePixmap(disp, pm);
 	imlib_context_set_drawable(None);
-	gtk_widget_show(area);
 }
 
 void OpenImageFromMenu(GtkWidget *widget, gpointer data)
@@ -582,12 +583,5 @@ gboolean a_config(GtkWidget *widget,
   if (event->width != winw || event->height != winh) {
     DrawImage(im, event->width, event->height);
   }
-  return FALSE;
-}
-
-gboolean a_expose(GtkWidget *widget,
-						GdkEventConfigure *event,
-						gpointer user_data)
-{
-	return TRUE;
+  return TRUE;
 }
