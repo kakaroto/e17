@@ -7,18 +7,18 @@ extern Ewl_Widget *last_key;
 extern Ewl_Widget *last_focused;
 extern Ewl_Widget *dnd_widget;
 
-static void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
+void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
 void
 __ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
 void __ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
 					void *user_data);
-static void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
+void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
+void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 
 /**
@@ -414,7 +414,7 @@ ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
  * they are destroyed. This should ALWAYS be the the last callback
  * in the chain.
  */
-static void
+void
 __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -466,7 +466,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 /*
  * Every widget must show it's fx_clip_box to be seen
  */
-static void
+void
 __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -481,7 +481,7 @@ __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Every widget must hide it's fx_clip_box in order to hide
  */
-static void
+void
 __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -496,7 +496,7 @@ __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for realizing a widget
  */
-static void
+void
 __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Container *pc;
@@ -655,7 +655,7 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for reparenting a widget
  */
-static void
+void
 __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
