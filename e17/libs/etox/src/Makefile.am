@@ -27,10 +27,15 @@ include_HEADERS      = Etox.h
 
 libetox_la_SOURCES   = \
 Etox.h \
+Etox_private.h \
 etox.c \
 loadfile.h \
 loadfile.c \
-font_style.c
+etox_set.c \
+etox_get.c \
+etox_style.c \
+etox_color.c \
+etox_obstacle.c
 
 
 libetox_la_LIBADD       = $(LIBS_ALL)
