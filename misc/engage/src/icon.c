@@ -17,7 +17,8 @@
 Evas_List      *icon_mappings = NULL;
 Evas_List      *icon_paths = NULL;
 
-static OD_Icon *od_icon_new(const char *name, const char *icon_path);
+static OD_Icon *od_icon_new(const char *winclass, const char *name,
+                            const char *icon_path);
 static void     od_icon_mapping_get(const char *winclass, char **name, char **icon_name);       // DON'T free returned
 static char    *od_icon_path_get(const char *icon_name);
 static void     od_icon_edje_app_cb(void *data, Evas_Object * obj,
@@ -36,11 +37,13 @@ od_icon_new_applnk(const char *command, const char *winclass)
 
   od_icon_mapping_get(winclass, &name, &icon_name);
   icon_path = od_icon_path_get(icon_name);
-  OD_Icon        *ret = od_icon_new(name, icon_path);
+  OD_Icon        *ret = od_icon_new(winclass, name, icon_path);
 
+#if 0
   fprintf(stderr,
           "new applnk: name=\"%s\" winclass=\"%s\" icon_path=\"%s\" command=\"%s\"\n",
           name, winclass, icon_path, command);
+#endif
   ret->type = application_link;
   ret->data.applnk.command = strdup(command);
   ret->data.applnk.winclass = strdup(winclass);
@@ -53,10 +56,12 @@ OD_Icon        *
 od_icon_new_dicon(const char *command, const char *name, const char *icon_name)
 {
   char           *icon_path = od_icon_path_get(icon_name);
-  OD_Icon        *ret = od_icon_new(name, icon_path);
+  OD_Icon        *ret = od_icon_new(name, name, icon_path);
 
+#if 0
   fprintf(stderr, "new dicon: name=\"%s\" icon_path=\"%s\" command=\"%s\"\n",
           name, icon_path, command);
+#endif
   ret->type = docked_icon;
   ret->data.applnk.command = strdup(command);
   free(icon_path);
@@ -74,12 +79,14 @@ od_icon_new_minwin(Ecore_X_Window win)
   char           *icon_path = od_icon_path_get(icon_name);
   OD_Icon        *ret;
 
-  ret = od_icon_new(title, icon_path);
+  ret = od_icon_new(winclass, title, icon_path);
 #ifdef HAVE_IMLIB
   if (options.grab_min_icons != 0)
     od_icon_grab(ret, win);
 #endif
+#if 0
   fprintf(stderr, "new minwin: icon_path=\"%s\"\n", icon_path);
+#endif
   ret->type = minimised_window;
   ret->data.minwin.window = win;
   free(winclass);
@@ -98,6 +105,9 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   int             scr, x, y, w, h;
   Pixmap          pmap, mask;
   Evas_Object    *obj = NULL;
+
+  if (!strcmp(evas_object_type_get(icon->pic), "edje"))
+    return;
 
   dsp = ecore_x_display_get();
   scr = DefaultScreen(dsp);
@@ -149,39 +159,31 @@ od_object_resize_intercept_cb(void *data, Evas_Object * o,
 {
   if (o) {
     if (!strcmp("image", evas_object_type_get(o))) {
-      evas_object_resize(o, w, h);
       evas_object_image_fill_set(o, 0.0, 0.0, w, h);
     } else {
+#if 0
       fprintf(stderr, "Intercepting something other than an image(%s)\n",
               evas_object_type_get(o));
+#endif
     }
   }
+  evas_object_resize(o, w, h);
 }
 
 
 OD_Icon        *
-od_icon_new(const char *name, const char *icon_file)
+od_icon_new(const char *winclass, const char *name, const char *icon_file)
 {
+  const char     *icon_part = NULL;
   OD_Icon        *ret = (OD_Icon *) malloc(sizeof(OD_Icon));
   char            path[PATH_MAX];
+  Evas_Object    *pic = NULL;
 
   ret->name = strdup(name);
   ret->scale = 0.0;
   Evas_Object    *icon = ret->icon = edje_object_add(evas);
   Evas_Object    *tt_txt = ret->tt_txt = evas_object_text_add(evas);
   Evas_Object    *tt_shd = ret->tt_shd = evas_object_text_add(evas);
-  Evas_Object    *pic = ret->pic = evas_object_image_add(evas);
-
-  evas_object_image_file_set(pic, icon_file, NULL);
-  evas_object_image_alpha_set(pic, 1);
-  evas_object_image_smooth_scale_set(pic, 1);
-  evas_object_pass_events_set(pic, 1);
-  evas_object_layer_set(pic, 100);
-
-  evas_object_show(pic);
-  evas_object_intercept_resize_callback_add(pic,
-                                            od_object_resize_intercept_cb,
-                                            NULL);
 
   ret->arrow = NULL;
   ret->state = 0;
@@ -194,6 +196,47 @@ od_icon_new(const char *name, const char *icon_file)
     snprintf(path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", options.theme);
 
   if (edje_object_file_set(icon, path, "Main") > 0) {
+#if 0
+    fprintf(stderr, "Trying to find part for %s\n", winclass);
+#endif
+    if ((icon_part = edje_object_data_get(icon, winclass))) {
+      pic = edje_object_add(evas_object_evas_get(icon));
+      if (edje_object_file_set(pic, path, icon_part) > 0) {
+#if 0
+        fprintf(stderr, "Found icon part for %s(%s)\n", name, icon_part);
+#endif
+      } else if (edje_object_file_set(pic, path, "Unknown") > 0) {
+#if 0
+        fprintf(stderr, "Didn't Find icon part for %s\n", name);
+#endif
+      } else {
+        evas_object_del(pic);
+        pic = NULL;
+      }
+    } else {
+      pic = edje_object_add(evas_object_evas_get(icon));
+      if (edje_object_file_set(pic, path, "Unknown") > 0) {
+#if 0
+        fprintf(stderr, "Didn't Find icon part for %s\n", name);
+#endif
+      } else {
+        evas_object_del(pic);
+        pic = NULL;
+      }
+    }
+    if (!pic) {
+      pic = evas_object_image_add(evas);
+      evas_object_image_file_set(pic, icon_file, NULL);
+      evas_object_image_alpha_set(pic, 1);
+      evas_object_image_smooth_scale_set(pic, 1);
+      evas_object_pass_events_set(pic, 1);
+    }
+    ret->pic = pic;
+    evas_object_layer_set(pic, 100);
+    evas_object_show(pic);
+    evas_object_intercept_resize_callback_add(pic,
+                                              od_object_resize_intercept_cb,
+                                              NULL);
     if (edje_object_part_exists(icon, "EngageIcon")) {
       edje_object_part_swallow(icon, "EngageIcon", pic);
     } else {
@@ -335,9 +378,11 @@ od_icon_mapping_add(const char *winclass, const char *name,
 void
 od_icon_mapping_get(const char *winclass, char **name, char **icon_name)
 {
-  printf("getting mapping for %s\n", winclass);
   Evas_List      *item = icon_mappings;
 
+#if 0
+  printf("getting mapping for %s\n", winclass);
+#endif
   while (item) {
     if (strcmp(winclass, (char *) item->data) == 0) {
       *name = (char *) item->next->data;

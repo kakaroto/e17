@@ -112,7 +112,9 @@ od_sync_clients(void *data)
     OD_Window      *wfresh = (OD_Window *) (pfresh ? pfresh->data : NULL);
 
     if (wcurrent && (!wfresh || wcurrent->id < wfresh->id)) {   // wcurrent disappeared
+#if 0
       fprintf(stderr, "window disappeared: id=0x%.8x\n", wcurrent->id);
+#endif
       if (wcurrent->minwin)
         od_dock_del_icon(wcurrent->minwin);
       if (wcurrent->applnk) {
@@ -156,9 +158,11 @@ od_sync_clients(void *data)
       char           *title = od_wm_get_title(wfresh->id);
       char           *winclass = od_wm_get_winclass(wfresh->id);
 
+#if 0
       fprintf(stderr,
               "window appeared: id=0x%.8x, name=\"%s\", winclass=\"%s\"\n",
               wfresh->id, title, winclass);
+#endif
 
       if (!od_wm_ignored(wfresh->id)) {
         {
