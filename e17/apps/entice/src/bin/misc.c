@@ -33,7 +33,7 @@ setup(void)
    char                string[] = "entice";
 
    /* handler for when the event queue goes idle */
-   ecore_idler_add(e_idle, NULL);
+   ecore_idle_enterer_add(e_idle, NULL);
    /* create a 400x300 toplevel window */
    ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
    ecore_evas_callback_resize_set(ecore_evas, e_window_resize);
