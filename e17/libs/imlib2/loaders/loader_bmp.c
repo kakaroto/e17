@@ -111,6 +111,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
       fseek(f, 8, SEEK_CUR);
       ReadleLong(f, &offset);
       ReadleLong(f, &headSize);
+      if (offset >= size)
+        {
+           fclose(f);
+           return 0;
+        }
       if (headSize == 12)
         {
            ReadleShort(f, &tmpShort);
@@ -139,6 +144,12 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            fclose(f);
            return 0;
         }
+      
+      if ((w > 8192) || (h > 8192))
+	{
+	   fclose(f);
+	   return 0;
+	}
 
       if (bitcount < 16)
         {
