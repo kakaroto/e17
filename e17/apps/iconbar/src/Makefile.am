@@ -26,6 +26,8 @@ iconbar_LDADD = \
 @ecore_libs@ \
 @esmart_libs@ \
 @ewl_libs@ \
+-lesmart_container \
+-lesmart_trans_x11 \
 -ledje_edit
 
 
