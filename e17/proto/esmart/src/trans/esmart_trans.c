@@ -49,6 +49,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old,
 
   if((prop=XInternAtom(ecore_x_display_get(),"_XROOTPMAP_ID",True))!=None)
   {
+    /* FIXME: CACHE ME! */
     int ret=XGetWindowProperty(ecore_x_display_get(), 
 		               RootWindow(ecore_x_display_get(), 0),
                                prop, 0L, 1L, False, AnyPropertyType, &type,
@@ -66,9 +67,6 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old,
         fprintf(stderr,"bg_ebg_trans: transparency update %3d,%3d %3dx%3d\n",x,y,w,h);
 #  endif
 
-        imlib_context_set_display(ecore_x_display_get());
-        imlib_context_set_visual(DefaultVisual(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
-        imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
         imlib_context_set_drawable(*((Pixmap *)data));
 
 	if((x>=px)&&(y>=py)&&((x+w)<=(py+((signed int)pw)))&&((y+h)<=(py+((signed int)ph)))) 
@@ -87,15 +85,25 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old,
 	    imlib_image_clear();
 	    imlib_context_set_cliprect(0, 0, w, h);
 
-	    dx = pw;
-	    dy = ph;
-	    dx = (x%dx);
-	    dy = (y%dy);
-       imlib_blend_image_onto_image(im, 1, 0, 0, pw, ph, 0, 0, pw, ph);
+	    dx = (x%pw);
+	    dy = (y%ph);
 
-	    for (sy = 0; sy < (h + dy);sy+=ph) 
-		   for (sx = 0; sx < (w + dx); sx += pw) 
-           imlib_image_copy_rect(0, 0, pw, ph, sx - dx, sy-dy);
+       /* There really ought to be a better way to do this, like
+        * negative coordinates, but I'm not sure those are valid */
+       imlib_blend_image_onto_image(im, 1, dx, dy, pw - dx, ph - dy, 
+                                    0, 0, pw - dx, ph - dy);
+       imlib_blend_image_onto_image(im, 1, 0, dy, dx, pw - dy,
+                                    pw - dx, 0, dx, ph -dy);
+       imlib_blend_image_onto_image(im, 1, dx, 0, pw - dx, dy,
+                                    0, ph - dy, pw - dx, dy);
+       imlib_blend_image_onto_image(im, 1, 0, 0, dx, dy,
+                                    pw - dx, ph - dy, dx, dy);
+                                    
+
+       for (sx = 0; sx < w; sx += pw)
+          for (sy = 0; sy < h; sy += ph)
+             if(sx || sy)
+              imlib_image_copy_rect(0, 0, pw, ph, sx, sy);
 	    
        imlib_context_set_image(im);
 	    imlib_free_image();
@@ -163,6 +171,10 @@ Evas_Object *
 esmart_trans_x11_new(Evas *e)
 {
   Evas_Object *x11_trans_object;
+  
+  imlib_context_set_display(ecore_x_display_get());
+  imlib_context_set_visual(DefaultVisual(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
+  imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
   
   x11_trans_object = evas_object_smart_add(e,
 				_esmart_trans_x11_smart_get());
