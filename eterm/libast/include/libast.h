@@ -105,6 +105,7 @@ extern int re_exec();
 #include <libast/tok.h>
 #include <libast/url.h>
 
+#include <libast/iterator_if.h>
 #include <libast/list_if.h>
 #include <libast/vector_if.h>
 
@@ -115,8 +116,86 @@ extern int re_exec();
 #include <libast/avl_tree.h>
 
 /******************************* GENERIC GOOP *********************************/
+/**
+ * Mark a variable as used.
+ *
+ * This macro is used to explicitly mark a variable as "used."  It intentionally
+ * generates no real code, but suppresses gcc warnings about unused variables
+ * and/or parameters.  That way, the programmer can explicitly acknowledge that
+ * certain variables/parameters are intentionally unused, making the warnings
+ * more effective by eliminating false positives.
+ *
+ * @param x Any variable or parameter name.
+ */
 #define USE_VAR(x)   (void) x
 
+/**
+ * @def MIN(a, b)
+ * Return the lesser of @a a or @a b.
+ *
+ * This macro compares its two parameters, @a a and @a b, and returns the lesser
+ * of the two (the minimum).  When building under gcc, a GNU-specific extension
+ * is used which prevents expressions used as parameters from being evaluated
+ * multiple times.
+ *
+ * @param a Any expression that evaluates to a value.
+ * @param b Any expression that evaluates to a value.
+ * @return The lesser of the two values
+ */
+/**
+ * @def MAX(a, b)
+ * Return the greater of @a a or @a b.
+ *
+ * This macro compares its two parameters, @a a and @a b, and returns the greater
+ * of the two (the maximum).  When building under gcc, a GNU-specific extension
+ * is used which prevents expressions used as parameters from being evaluated
+ * multiple times.
+ *
+ * @param a Any expression that evaluates to a value.
+ * @param b Any expression that evaluates to a value.
+ * @return The greater of the two values
+ */
+/**
+ * @def LOWER_BOUND(current, other)
+ * Force a lower bound on a variable.
+ *
+ * This macro checks the value of its first parameter, @a current, and makes sure
+ * it is greater than or equal to the value of @a other.  If @a current is less
+ * than @a other, @a current is assigned the value of @a other.  In essence, this
+ * establishes a "lower bound" on @a current equal to the value of @a other.
+ *
+ * @param current The variable to check.
+ * @param other   The value by which @a current will be bound.
+ * @return The new value of @a current.
+ */
+/**
+ * @def UPPER_BOUND(current, other)
+ * Force an upper bound on a variable.
+ *
+ * This macro checks the value of its first parameter, @a current, and makes sure
+ * it is less than or equal to the value of @a other.  If @a current is greater
+ * than @a other, @a current is assigned the value of @a other.  In essence, this
+ * establishes an "upper bound" on @a current equal to the value of @a other.
+ *
+ * @param current The variable to check.
+ * @param other   The value by which @a current will be bound.
+ * @return The new value of @a current.
+ */
+/**
+ * @def BOUND(val, min, max)
+ * Force a variable to be within a given range.
+ *
+ * This macro checks the value of its first parameter, @a val, and makes sure
+ * it is between @a min and @a max, inclusive.  If @a val is above this range, it
+ * is assigned the value of @a max.  Likewise, if @a val is below this range, it
+ * is assigned the value of @a min.  In essence, this establishes both an "upper
+ * bound" and a "lower bound" on @a val.
+ *
+ * @param val The variable to check.
+ * @param min The lowest value @a val may have.
+ * @param max The highest value @a val may have.
+ * @return The new value of @a val.
+ */
 #ifdef MIN
 # undef MIN
 #endif
@@ -130,41 +209,78 @@ extern int re_exec();
 # define UPPER_BOUND(current, other)    __extension__ ({__typeof__(other) o = (other); ((current) > o) ? ((current) = o) : (current);})
 # define BOUND(val, min, max)           __extension__ ({__typeof__(min) m1 = (min); __typeof__(max) m2 = (max); ((val) < m1) ? ((val) = m1) : (((val) > m2) ? ((val) = m2) : (val));})
 #else
-# define MIN(a,b)	                (((a) < (b)) ? (a) : (b))
+# define MIN(a,b)	                    (((a) < (b)) ? (a) : (b))
 # define MAX(a,b)                       (((a) > (b)) ? (a) : (b))
 # define LOWER_BOUND(current, other)    (((current) < (other)) ? ((current) = (other)) : (current))
 # define UPPER_BOUND(current, other)    (((current) > (other)) ? ((current) = (other)) : (current))
 # define BOUND(val, min, max)           (((val) < (min)) ? ((val) = (min)) : (((val) > (max)) ? ((val) = (max)) : (val)))
 #endif
+/** @def AT_LEAST(current, other) Alias for LOWER_BOUND().  This macro is an alias for LOWER_BOUND(). */
 #define AT_LEAST(current, other)        LOWER_BOUND(current, other)
+/** @def MAX_IT(current, other) Alias for LOWER_BOUND().  This macro is an alias for LOWER_BOUND(). */
 #define MAX_IT(current, other)          LOWER_BOUND(current, other)
+/** @def AT_MOST(current, other) Alias for UPPER_BOUND().  This macro is an alias for UPPER_BOUND(). */
 #define AT_MOST(current, other)         UPPER_BOUND(current, other)
+/** @def MIN_IT(current, other) Alias for UPPER_BOUND().  This macro is an alias for UPPER_BOUND(). */
 #define MIN_IT(current, other)          UPPER_BOUND(current, other)
+/** @def CONTAIN(val, min, max) Alias for BOUND().  This macro is an alias for BOUND(). */
 #define CONTAIN(val, min, max)          BOUND(val, min, max)
+/**
+ * Swaps two values.
+ *
+ * This macro swaps the values of its first two parameters using the third as temporary storage.
+ *
+ * @param one The first variable.
+ * @param two The second variable.
+ * @param tmp A temporary holding spot used during swapping.
+ */
 #define SWAP_IT(one, two, tmp)          do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
 
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD
+/**
+ * Where to send debugging output.
+ *
+ * This defines where debugging output should be sent.  Should be either stdout or stderr.
+ */
 # define LIBAST_DEBUG_FD  (stderr)
 #endif
 #ifndef DEBUG
+/**
+ * Maximum compile-time debugging level.
+ *
+ * LibAST supports debugging levels, allowing for progressively more verbosity of debugging
+ * output as the level gets higher.  This defines the compile-time maximum; support for higher
+ * debugging levels than this will not even be compiled in, so use care when setting this.
+ */
 # define DEBUG 0
 #endif
 
+/** UNDOCUMENTED. */
 #define DEBUG_LEVEL       (libast_debug_level)
+/** UNDOCUMENTED. */
 #define DEBUG_FLAGS       (libast_debug_flags)
 
-/* A NOP.  Does nothing. */
+/** Does nothing.  This macro is a nop (no operation).  It does nothing. */
 #define NOP ((void)0)
 
-/* A macro and an #define to FIXME-ize individual calls or entire code blocks. */
+/** A fix-me NOP.  This is the same as NOP(), but is used to mark something needing to be fixed. */
 #define FIXME_NOP(x)
+/** Mark a block of code needing fixing.  This marks a block of code needing fixing and removes it. */
 #define FIXME_BLOCK 0
 
-/* An "unused block" marker similar to the above. */
+/** Mark unused blocks of code.  This marks a block of code as unused and removes it. */
 #define UNUSED_BLOCK 0
 
-/* The basic debugging output leader. */
+/**
+ * @def __DEBUG()
+ * Format and print debugging output.
+ *
+ * This macro formats and prints debugging output by prepending a timestamp, the filename, the
+ * line number, and (if available) the function name.
+ *
+ * This is an internal macro and should not be used directly.
+ */
 #if defined(__FILE__) && defined(__LINE__)
 # ifdef __GNUC__
 #  define __DEBUG()  fprintf(LIBAST_DEBUG_FD, "[%lu] %12s | %4d: %s(): ", (unsigned long) time(NULL), __FILE__, __LINE__, __FUNCTION__)
@@ -175,7 +291,12 @@ extern int re_exec();
 # define __DEBUG()   NOP
 #endif
 
-/* A quick and dirty macro to say, "Hi!  I got here without crashing!" */
+/**
+ * Assert reaching a line of code.
+ *
+ * This macro is simply a quick-and-dirty way of printing out a unique message which proves
+ * that a particular portion of code was reached and executed properly.
+ */
 #define MOO()  do {__DEBUG(); libast_dprintf("Moo.\n");} while (0)
 
 /* Assertion/abort macros which are quite a bit more useful than assert() and abort().  These are defined
