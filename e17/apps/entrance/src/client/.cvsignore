@@ -3,3 +3,4 @@ Makefile
 Makefile.in
 entrance
 entrance_login
+entrance_edit
