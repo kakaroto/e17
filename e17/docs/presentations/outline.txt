@@ -27,8 +27,8 @@ History of X Window Managers and Environments
 		- fvwm and variants
 		- afterstep
 		- windowmaker
-		- gnome
 		- kde
+		- gnome
 
 	* Enlightenment
 		- Originally hacked fvwm to support pixmaps, called fvwm-xpm
@@ -65,17 +65,54 @@ Present
 Overview of Libraries
 
 	* Evas
+		- Canvas library
+		- Multiple backends or engines
+			+ Software X11
+			+ Software Linux Framebuffer
+			+ Hardware GL
+			+ Cairo
+			+ Memory buffer
+		- Consistent and easy to use API
 	* Ecore
+		- Event queue
+		- Data structures
+		- Timers
+		- Subsystem wrappers
+			+ IPC
+			+ Networking, including SSL
+			+ Linux Framebuffer
+			+ X11
 	* Edje
+		- UI layout
+		- Key state animation
+		- Signals
+		- Scripting
 	* Emotion
+		- Allows manipulation of video like an image object
+		- Designed to allow multiple decoders
+		- Currently uses libxine for video decoding
 	* EWL
+		- High level toolkit
+		- Uses Edje as it's theme engine
 
 Emphasis on Portability
 
 	* Desktops
-	* Handhelds
-	* Cell phones
+		- AIX
+		- *BSD
+		- HP/UX
+		- IRIX
+		- Linux
+		- Mac OS X
+		- OS/2
+		- Solaris
+	* Portables
+		- PDA
+		- Cell phone
 	* Set-top
+		- DVD Player
+		- PVR
+		- Kiosk
 
 How do they fit together?
 
