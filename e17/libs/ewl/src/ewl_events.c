@@ -19,7 +19,7 @@ extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
 extern Ewl_Widget     *dnd_widget;
 
-extern Ewd_List       *embed_list;;
+extern Ecore_List       *embed_list;;
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 int ewl_ev_x_window_expose(void *data, int type, void *_ev);
@@ -471,7 +471,7 @@ int ewl_ev_fb_key_down(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewd_list_goto_first(embed_list);
+	embed = ecore_list_goto_first(embed_list);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -500,7 +500,7 @@ int ewl_ev_fb_key_up(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewd_list_goto_first(embed_list);
+	embed = ecore_list_goto_first(embed_list);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);

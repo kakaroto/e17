@@ -104,13 +104,13 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 	if (!EWL_CONTAINER(tree)->children)
 		DRETURN(DLEVEL_STABLE);
 
-	row = ewd_list_goto_first(EWL_CONTAINER(tree)->children);
-	ewd_list_goto_first(EWL_CONTAINER(row)->children);
+	row = ecore_list_goto_first(EWL_CONTAINER(tree)->children);
+	ecore_list_goto_first(EWL_CONTAINER(row)->children);
 
-	button = ewd_list_next(EWL_CONTAINER(row)->children);
+	button = ecore_list_next(EWL_CONTAINER(row)->children);
 	for (i = 0; i < tree->ncols && button; i++) {
 		ewl_button_set_label(EWL_BUTTON(button), headers[i]);
-		button = ewd_list_next(EWL_CONTAINER(row)->children);
+		button = ecore_list_next(EWL_CONTAINER(row)->children);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -302,7 +302,7 @@ void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
 	c = EWL_CONTAINER(row);
 
 	if (c->children) {
-		while ((w = ewd_list_goto_first(c->children)))
+		while ((w = ecore_list_goto_first(c->children)))
 			ewl_container_remove_child(c, w);
 	}
 
@@ -467,8 +467,8 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	if (!EWL_CONTAINER(node)->children)
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(EWL_CONTAINER(node)->children);
-	while ((w = ewd_list_next(EWL_CONTAINER(node)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(node)->children);
+	while ((w = ecore_list_next(EWL_CONTAINER(node)->children))) {
 		if (w != node->row)
 			ewl_widget_hide(w);
 	}
@@ -500,8 +500,8 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 	if (!EWL_CONTAINER(node)->children)
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(EWL_CONTAINER(node)->children);
-	while ((w = ewd_list_next(EWL_CONTAINER(node)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(node)->children);
+	while ((w = ecore_list_next(EWL_CONTAINER(node)->children))) {
 		if (w != node->row)
 			ewl_widget_show(w);
 	}
@@ -530,8 +530,8 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!c->children)
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(c->children);
-	child = ewd_list_next(c->children);
+	ecore_list_goto_first(c->children);
+	child = ecore_list_next(c->children);
 
 	/*
 	 * The first child is the current level row
@@ -546,7 +546,7 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * All subsequent children are lower nodes and rows.
 	 */
-	while ((child = ewd_list_next(c->children))) {
+	while ((child = ecore_list_next(c->children))) {
 		ewl_object_request_geometry(child, CURRENT_X(w), y, width,
 				ewl_object_get_preferred_h(child));
 		y += ewl_object_get_current_h(child);
@@ -585,7 +585,7 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	node = EWL_TREE_NODE(c);
 
-	if (!ewd_list_nodes(c->children))
+	if (!ecore_list_nodes(c->children))
 		node->row = w;
 
 	if (node->expanded || w == node->row) {

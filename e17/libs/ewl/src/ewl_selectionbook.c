@@ -58,7 +58,7 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 
 	s->tab_bar = ewl_selectionbar_new(w);
 
-	s->pages = ewd_list_new();
+	s->pages = ecore_list_new();
 	s->current_page = NULL;
 	s->num_pages = 0;
 
@@ -101,7 +101,7 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 
 	ewl_container_append_child(EWL_CONTAINER(s->tab_bar), tab);
 
-	ewd_list_append(s->pages, p);
+	ecore_list_append(s->pages, p);
 
 	s->num_pages++;
 
@@ -122,21 +122,21 @@ void ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 		return;
 
 /*
-	ewd_list_goto_index(s->pages, num);
+	ecore_list_goto_index(s->pages, num);
 
-	p = (Ewl_SbookPage *) ewd_list_remove(s->pages);
+	p = (Ewl_SbookPage *) ecore_list_remove(s->pages);
 
 	if (s->current_page == p) {
 		if (num == 1) {
 			if (s->num_pages == 1)
 				s->current_page = NULL;
 			else {
-				ewd_list_goto_index(s->pages, 2);
-				s->current_page = ewd_list_next(s->pages);
+				ecore_list_goto_index(s->pages, 2);
+				s->current_page = ecore_list_next(s->pages);
 			}
 		} else {
-			ewd_list_goto_first(s->pages);
-			s->current_page = ewd_list_next(s->pages);
+			ecore_list_goto_first(s->pages);
+			s->current_page = ecore_list_next(s->pages);
 		}
 	}
 
@@ -171,12 +171,12 @@ void ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
 
 /*
 	p = s->current_page;
-	ewd_list_goto_first(s->pages);
-	s->current_page = (Ewl_SbookPage *) ewd_list_current(s->pages);
+	ecore_list_goto_first(s->pages);
+	s->current_page = (Ewl_SbookPage *) ecore_list_current(s->pages);
 
 	if (s->current_page == p)
 		s->current_page =
-		    (Ewl_SbookPage *) ewd_list_next(s->pages);
+		    (Ewl_SbookPage *) ecore_list_next(s->pages);
 
 
 	ewl_container_remove_child(EWL_CONTAINER(s->panel), p->page);
@@ -254,13 +254,13 @@ ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	s = EWL_SELECTIONBOOK(w);
 
 	if (s->pages) {
-		ewd_list_goto_first(s->pages);
-		while ((p = (Ewl_SbookPage *) ewd_list_next(s->pages)) != NULL)
+		ecore_list_goto_first(s->pages);
+		while ((p = (Ewl_SbookPage *) ecore_list_next(s->pages)) != NULL)
 			ewl_widget_destroy(p->page);
 	}
 
 	ewl_widget_destroy(s->tab_bar);
-	ewd_list_destroy(s->pages);
+	ecore_list_destroy(s->pages);
 
 	s->pages = NULL;
 

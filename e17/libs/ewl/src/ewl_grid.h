@@ -13,7 +13,7 @@ struct Ewl_Grid_Info
 	int             override;
 	int             size;
 	Ewl_Widget     *max;
-	Ewd_List       *cross;
+	Ecore_List       *cross;
 };
 
 typedef struct _ewl_grid Ewl_Grid;
@@ -40,7 +40,7 @@ struct _ewl_grid {
 	/*
 	 * list of old children after a reset call
 	 */
-	Ewd_List       *rchildren;
+	Ecore_List       *rchildren;
 };
 
 

@@ -41,7 +41,7 @@ Box_Orientation *info = NULL;
 /*
  * These lists are used to sort children when configured.
  */
-static Ewd_List *spread = NULL;
+static Ecore_List *spread = NULL;
 
 static void     ewl_box_setup();
 
@@ -100,7 +100,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 * Create the temporary layout lists now that they are needed.
 	 */
 	if (!spread)
-		spread = ewd_list_new();
+		spread = ecore_list_new();
 
 	/*
 	 * Initialize the container portion of the box
@@ -243,7 +243,7 @@ void ewl_box_set_spacing(Ewl_Box * b, int s)
 
 	w = EWL_WIDGET(b);
 
-	nodes = ewd_list_nodes(EWL_CONTAINER(b)->children);
+	nodes = ecore_list_nodes(EWL_CONTAINER(b)->children);
 
 	if (nodes) {
 		nodes--;
@@ -283,7 +283,7 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Catch the easy case, and return.
 	 */
-	if (ewd_list_is_empty(EWL_CONTAINER(w)->children))
+	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -349,12 +349,12 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewd_list_is_empty(EWL_CONTAINER(w)->children))
+	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
 
 	num = 0;
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
 		if (VISIBLE(child))
 			num++;
 	}
@@ -389,8 +389,8 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	*fill_size = *fill_size / num;
 
 	i = 0;
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
 		if (VISIBLE(child)) {
 			i++;
 			if (i == num)
@@ -414,14 +414,14 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	initial = *fill_size / ewd_list_nodes(EWL_CONTAINER(b)->children);
+	initial = *fill_size / ecore_list_nodes(EWL_CONTAINER(b)->children);
 
 	/*
 	 * Sort the children into lists dependant on their alignment within the
 	 * box.
 	 */
-	ewd_list_goto_first(EWL_CONTAINER(b)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(b)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(b)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(b)->children))) {
 		int             change;
 
 		/*
@@ -453,7 +453,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 * concerned with, add it to the fill list.
 			 */
 			if (ewl_object_get_fill_policy(child) & info->f_policy)
-				ewd_list_append(spread, child);
+				ecore_list_append(spread, child);
 		}
 	}
 
@@ -477,17 +477,17 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 	 * Calculate the space to give per child. Safeguard against divide by
 	 * zero.
 	 */
-	space = (ewd_list_is_empty(spread) ? 0 :
-		 *fill_size / ewd_list_nodes(spread));
+	space = (ecore_list_is_empty(spread) ? 0 :
+		 *fill_size / ecore_list_nodes(spread));
 
 	/*
 	 * As long as children keep accepting more space, we should loop
 	 * through and give them what's available.
 	 */
-	while (space && !ewd_list_is_empty(spread)) {
+	while (space && !ecore_list_is_empty(spread)) {
 
-		ewd_list_goto_first(spread);
-		while ((c = ewd_list_current(spread))) {
+		ecore_list_goto_first(spread);
+		while ((c = ecore_list_current(spread))) {
 
 			/*
 			 * Save the current size of the child, then
@@ -507,24 +507,24 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * it's at it's max/min and is no longer useful.
 			 */
 			if (!temp || (*fill_size - temp < 0))
-				ewd_list_remove(spread);
+				ecore_list_remove(spread);
 			else {
 				*fill_size -= temp;
-				ewd_list_next(spread);
+				ecore_list_next(spread);
 			}
 		}
 
 		/*
 		 * Calculate the space to give per child.
 		 */
-		space = (ewd_list_is_empty(spread) ? 0 :
-			 *fill_size / ewd_list_nodes(spread));
+		space = (ecore_list_is_empty(spread) ? 0 :
+			 *fill_size / ecore_list_nodes(spread));
 	}
 
 	/*
 	 * Distribute any remaining fill space.
 	 */
-	while (*fill_size && !ewd_list_is_empty(spread)) {
+	while (*fill_size && !ecore_list_is_empty(spread)) {
 
 		/*
 		 * Determine the sign of the amount to be incremented.
@@ -534,8 +534,8 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 		/*
 		 * Add the remainder sign to each child.
 		 */
-		ewd_list_goto_first(spread);
-		while (*fill_size && (c = ewd_list_current(spread))) {
+		ecore_list_goto_first(spread);
+		while (*fill_size && (c = ecore_list_current(spread))) {
 
 			/*
 			 * Store the current size of the child.
@@ -558,10 +558,10 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * total.
 			 */
 			if (!temp || (*fill_size - temp < 0))
-				ewd_list_remove(spread);
+				ecore_list_remove(spread);
 			else {
 				*fill_size -= remainder;
-				ewd_list_next(spread);
+				ecore_list_next(spread);
 			}
 		}
 	}
@@ -569,7 +569,7 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 	/*
 	 * This contents of the list are no longer needed.
 	 */
-	ewd_list_clear(spread);
+	ecore_list_clear(spread);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -585,8 +585,8 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	/*
 	 * Configure the widgets on the first list.
 	 */
-	ewd_list_goto_first(EWL_CONTAINER(b)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(b)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(b)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(b)->children))) {
 
 		if (VISIBLE(child)) {
 
@@ -663,7 +663,7 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewd_list_nodes(c->children) > 1)
+	if (ecore_list_nodes(c->children) > 1)
 		space = EWL_BOX(c)->spacing;
 
 	/*
@@ -694,7 +694,7 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewd_list_nodes(c->children) > 1)
+	if (ecore_list_nodes(c->children) > 1)
 		space = b->spacing;
 
 	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {

@@ -160,7 +160,7 @@ void
 ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
-	Ewd_List       *children;
+	Ecore_List       *children;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -182,8 +182,8 @@ ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/*
 	if (children) {
-		ewd_list_goto_first(children);
-		while ((child = ewd_list_next(children)) != NULL)
+		ecore_list_goto_first(children);
+		while ((child = ecore_list_next(children)) != NULL)
 			printf("child layer = %d\n", LAYER(child));
 		s = s;
 	}
@@ -226,7 +226,7 @@ ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewl_Object     *o;
-	Ewd_List       *children;
+	Ecore_List       *children;
 	Ewl_Widget     *child;
 	int             cum_width;
 
@@ -249,8 +249,8 @@ ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(s->scroller.top);
 	ewl_widget_show(s->scroller.bottom);
 
-	ewd_list_goto_first(children);
-	while ((child = ewd_list_next(children)) != NULL) {
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)) != NULL) {
 		if (child != EWL_WIDGET(s->scroller.top) &&
 		    child != EWL_WIDGET(s->scroller.bottom)) {
 
@@ -282,7 +282,7 @@ void
 ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
-	Ewd_List       *children;
+	Ecore_List       *children;
 	Ewl_Widget     *child;
 	Ewl_Embed      *embed;
 	Ewl_Object     *o;
@@ -328,8 +328,8 @@ ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_hide(s->scroller.top);
 	ewl_widget_hide(s->scroller.bottom);
 
-	ewd_list_goto_first(children);
-	while ((child = ewd_list_next(children)) != NULL)
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)) != NULL)
 		if (child != EWL_WIDGET(s->scroller.top) &&
 		    child != EWL_WIDGET(s->scroller.bottom))
 			ewl_widget_hide(child);
@@ -430,7 +430,7 @@ ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
 
 	Ewl_Widget     *child;
 	Ewl_Object     *o;
-	Ewd_List       *children;
+	Ecore_List       *children;
 	Ewl_Event_Mouse_Move *ev;
 	Ewl_Selectionbar *s;
 	int             x, old_x;
@@ -456,8 +456,8 @@ ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
 				    x - 15, CURRENT_Y(o) + CURRENT_H(o) - 15);
 
 
-	ewd_list_goto_first(children);
-	while ((child = ewd_list_next(children)) != NULL) {
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)) != NULL) {
 		if (child != EWL_WIDGET(s->scroller.bottom) &&
 		    child != EWL_WIDGET(s->scroller.top)) {
 

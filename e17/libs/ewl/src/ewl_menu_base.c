@@ -220,8 +220,8 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	c = EWL_CONTAINER(w);
 	x = CURRENT_X(w);
-	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children))) {
+	ecore_list_goto_first(c->children);
+	while ((child = ecore_list_next(c->children))) {
 		int width;
 
 		width = ewl_object_get_preferred_w(EWL_OBJECT(child));
@@ -279,9 +279,9 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
 					 CURRENT_W(menu));
 
-	ewd_list_goto_first(EWL_CONTAINER(menu->popbox)->children);
+	ecore_list_goto_first(EWL_CONTAINER(menu->popbox)->children);
 
-	while ((child = ewd_list_next(EWL_CONTAINER(menu->popbox)->children))) {
+	while ((child = ecore_list_next(EWL_CONTAINER(menu->popbox)->children))) {
 		if (ewl_widget_is_type(child, "menuitem")) {
 			EWL_MENU_ITEM(child)->submenu = 1;
 		}

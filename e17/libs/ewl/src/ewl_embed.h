@@ -39,7 +39,7 @@ struct Ewl_Embed
 	void           *evas_window; /**< The window holding the evas. */
 
 	Evas_Object    *smart; /**< Object to manipulate Ewl_Embed from evas */
-	Ewd_List       *tab_order; /**< Order of widgets to send focus on tab */
+	Ecore_List       *tab_order; /**< Order of widgets to send focus on tab */
 };
 
 Ewl_Widget     *ewl_embed_new(void);

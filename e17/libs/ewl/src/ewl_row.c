@@ -109,7 +109,7 @@ ewl_row_get_column(Ewl_Row *row, short n)
 
 	DCHECK_PARAM_PTR_RET("row", row, NULL);
 
-	found = ewd_list_goto_index(EWL_CONTAINER(row)->children, n + 1);
+	found = ecore_list_goto_index(EWL_CONTAINER(row)->children, n + 1);
 
 	DRETURN_PTR(found, DLEVEL_STABLE);
 }
@@ -130,7 +130,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	x = CURRENT_X(w);
 
-	ewd_list_goto_first(c->children);
+	ecore_list_goto_first(c->children);
 
 	/*
 	 * This should be the common case, a row bounded by a set of fields,
@@ -142,7 +142,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		Ewl_Container *hdr;
 
 		hdr = EWL_CONTAINER(row->header);
-		align = ewd_list_goto_first(EWL_CONTAINER(hdr)->children);
+		align = ecore_list_goto_first(EWL_CONTAINER(hdr)->children);
 
 		if (align) {
 			x = MAX(CURRENT_X(align), CURRENT_X(w));
@@ -150,13 +150,13 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		else
 			x = CURRENT_X(w);
 
-		while ((child = ewd_list_next(c->children))) {
-			align = ewd_list_next(EWL_CONTAINER(hdr)->children);
+		while ((child = ecore_list_next(c->children))) {
+			align = ecore_list_next(EWL_CONTAINER(hdr)->children);
 			if (align)
 				width = CURRENT_X(align) + CURRENT_W(align) - x;
 			else
 				width = CURRENT_W(w) /
-					ewd_list_nodes(c->children);
+					ecore_list_nodes(c->children);
 			ewl_object_place(child, x, CURRENT_Y(w), width,
 				CURRENT_H(w));
 			x += width;
@@ -171,8 +171,8 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		int remains, nodes;
 
 		remains = CURRENT_W(w);
-		nodes = ewd_list_nodes(c->children);
-		while ((child = ewd_list_next(c->children))) {
+		nodes = ecore_list_nodes(c->children);
+		while ((child = ecore_list_next(c->children))) {
 			int portion;
 
 			/*
@@ -192,7 +192,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			nodes--;
 		}
 
-		if (remains > 0 && (child = ewd_list_goto_last(c->children)))
+		if (remains > 0 && (child = ecore_list_goto_last(c->children)))
 			ewl_object_request_w(child,
 					ewl_object_get_current_w(child) +
 					remains);

@@ -27,7 +27,7 @@ struct _ewl_selectionbook
 	Ewl_Widget     *tab_bar;	/* selectionbar */
 	Ewl_Widget     *panel;	/* vbox */
 
-	Ewd_List       *pages;
+	Ecore_List       *pages;
 	Ewl_SbookPage  *current_page;
 
 	int             num_pages;	/* number of pages */

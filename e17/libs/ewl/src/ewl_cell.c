@@ -59,7 +59,7 @@ ewl_cell_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	cell = EWL_CELL(w);
 	c = EWL_CONTAINER(w);
 
-	child = ewd_list_goto_first(c->children);
+	child = ecore_list_goto_first(c->children);
 
 	if (child)
 		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
@@ -79,8 +79,8 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	 * Cell's only allow one child, so remove the rest, this may cause a
 	 * leak, but they should know better.
 	 */
-	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children))) {
+	ecore_list_goto_first(c->children);
+	while ((child = ecore_list_next(c->children))) {
 		if (child != w)
 			ewl_container_remove_child(c, child);
 	}

@@ -216,11 +216,11 @@ void ewl_notebook_remove_first_page(Ewl_Notebook * n)
 	w = EWL_WIDGET(n);
 	c = EWL_CONTAINER(n);
 
-	if (!ewd_list_nodes(c->children))
+	if (!ecore_list_nodes(c->children))
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(c->children);
-	while ((page = ewd_list_next(c->children)) && (page == n->tab_box));
+	ecore_list_goto_first(c->children);
+	while ((page = ecore_list_next(c->children)) && (page == n->tab_box));
 
 	if (page) {
 		ewl_container_remove_child(c, page);
@@ -257,11 +257,11 @@ void ewl_notebook_remove_last_page(Ewl_Notebook * n)
 	w = EWL_WIDGET(n);
 	c = EWL_CONTAINER(n);
 
-	if (!ewd_list_nodes(c->children))
+	if (!ecore_list_nodes(c->children))
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(c->children);
-	while ((last = ewd_list_next(c->children))) {
+	ecore_list_goto_first(c->children);
+	while ((last = ecore_list_next(c->children))) {
 		if (page != n->tab_box) {
 			page = last;
 		}
@@ -303,11 +303,11 @@ void ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 	w = EWL_WIDGET(n);
 	c = EWL_CONTAINER(n);
 
-	if (!ewd_list_nodes(c->children))
+	if (!ecore_list_nodes(c->children))
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(c->children);
-	while ((page = ewd_list_next(c->children)) && j < i) {
+	ecore_list_goto_first(c->children);
+	while ((page = ecore_list_next(c->children)) && j < i) {
 		if (page != n->tab_box)
 			j++;
 	}
@@ -355,8 +355,8 @@ void ewl_notebook_remove_visible(Ewl_Notebook * n)
 	/*
 	 * Search out the page in the notebook, and the tab that goes with it.
 	 */
-	ewd_list_goto_first(c->children);
-	while ((page = ewd_list_next(c->children)) && page != n->visible_page);
+	ecore_list_goto_first(c->children);
+	while ((page = ecore_list_next(c->children)) && page != n->visible_page);
 
 	/*
 	 * We found a page, sweet, kick it to the curb!
@@ -576,12 +576,12 @@ void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
 
 	c = EWL_CONTAINER(n);
 
-	if (!ewd_list_nodes(c->children) || t > ewd_list_nodes(c->children))
+	if (!ecore_list_nodes(c->children) || t > ecore_list_nodes(c->children))
 		DRETURN(DLEVEL_STABLE);
 
 	i = 0;
-	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children))) {
+	ecore_list_goto_first(c->children);
+	while ((child = ecore_list_next(c->children))) {
 		if (child != n->tab_box &&
 				ewl_object_get_flags(EWL_OBJECT(child),
 						EWL_FLAG_QUEUED_DSCHEDULED)) {
@@ -617,9 +617,9 @@ int ewl_notebook_get_visible_page(Ewl_Notebook *n)
 
 	c = EWL_CONTAINER(n);
 
-	ewd_list_goto_first(c->children);
+	ecore_list_goto_first(c->children);
 	while (child != n->visible_page &&
-			(child = ewd_list_next(c->children))) {
+			(child = ecore_list_next(c->children))) {
 		if (child != n->tab_box)
 			i++;
 	}

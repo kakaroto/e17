@@ -66,7 +66,7 @@ void            ewl_table_get_col_row(Ewl_Table * table, Ewl_Cell * cell,
 				      int *start_col, int *end_col,
 				      int *start_row, int *end_row);
 
-Ewd_List       *ewl_table_find(Ewl_Table * table,
+Ecore_List       *ewl_table_find(Ewl_Table * table,
 			       int start_col,
 			       int end_col, int start_row, int emd_row);
 

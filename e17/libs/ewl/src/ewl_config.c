@@ -14,7 +14,7 @@ static int      ewl_config_db_stat(char *name);
 static void     ewl_config_db_close(void);
 static int      ewl_config_db_exists(char *name);
 
-extern Ewd_List *ewl_embed_list;
+extern Ecore_List *ewl_embed_list;
 
 Ewl_Config ewl_config;
 
@@ -328,12 +328,12 @@ void ewl_config_reread_and_apply(void)
 		}
 	}
 
-	if (ewl_embed_list && !ewd_list_is_empty(ewl_embed_list)) {
+	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) {
 		Ewl_Embed      *e;
 
-		ewd_list_goto_first(ewl_embed_list);
+		ecore_list_goto_first(ewl_embed_list);
 
-		while ((e = ewd_list_next(ewl_embed_list)) != NULL) {
+		while ((e = ecore_list_next(ewl_embed_list)) != NULL) {
 			if (!e->evas)
 				continue;
 

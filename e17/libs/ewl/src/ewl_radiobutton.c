@@ -40,14 +40,14 @@ void ewl_radiobutton_set_chain(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
 	 * If a chain doesnt exist, create one 
 	 */
 	if (!crb->chain) {
-		crb->chain = ewd_list_new();
+		crb->chain = ecore_list_new();
 
-		ewd_list_append(crb->chain, rb);
-		ewd_list_append(crb->chain, crb);
+		ecore_list_append(crb->chain, rb);
+		ecore_list_append(crb->chain, crb);
 	} else {
 
-		if (!ewd_list_goto(crb->chain, rb))
-			ewd_list_append(crb->chain, rb);
+		if (!ecore_list_goto(crb->chain, rb))
+			ecore_list_append(crb->chain, rb);
 	}
 
 	rb->chain = crb->chain;
@@ -98,12 +98,12 @@ void ewl_radiobutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	rb = EWL_RADIOBUTTON(w);
 	oc = ewl_checkbutton_is_checked(cb);
 
-	if (rb->chain && !ewd_list_is_empty(rb->chain)) {
+	if (rb->chain && !ecore_list_is_empty(rb->chain)) {
 		Ewl_CheckButton *c;
 
-		ewd_list_goto_first(rb->chain);
+		ecore_list_goto_first(rb->chain);
 
-		while ((c = ewd_list_next(rb->chain)) != NULL) {
+		while ((c = ecore_list_next(rb->chain)) != NULL) {
 			ewl_checkbutton_set_checked(c, 0);
 		}
 	}
@@ -127,11 +127,11 @@ void ewl_radiobutton_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!rb->chain)
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto(rb->chain, w);
-	ewd_list_remove(rb->chain);
+	ecore_list_goto(rb->chain, w);
+	ecore_list_remove(rb->chain);
 
-	if (ewd_list_is_empty(rb->chain)) {
-		ewd_list_destroy(rb->chain);
+	if (ecore_list_is_empty(rb->chain)) {
+		ecore_list_destroy(rb->chain);
 		rb->chain = NULL;
 	}
 

@@ -913,7 +913,7 @@ static void ewl_widget_rebuild_appearance(Ewl_Widget *w)
  */
 void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
 {
-	Ewd_List       *destroy_cbs;
+	Ecore_List       *destroy_cbs;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

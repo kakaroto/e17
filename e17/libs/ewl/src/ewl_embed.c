@@ -5,7 +5,7 @@ extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
 extern Ewl_Widget     *dnd_widget;
 
-Ewd_List       *ewl_embed_list = NULL;
+Ecore_List       *ewl_embed_list = NULL;
 Evas_Smart     *embedded_smart = NULL;
 
 static void ewl_embed_smart_add_cb(Evas_Object *obj);
@@ -100,9 +100,9 @@ int ewl_embed_init(Ewl_Embed * w)
 
 	LAYER(w) = -1000;
 
-	ewd_list_append(ewl_embed_list, w);
+	ecore_list_append(ewl_embed_list, w);
 
-	w->tab_order = ewd_list_new();
+	w->tab_order = ecore_list_new();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -121,7 +121,7 @@ Evas_Object *
 ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
 {
 	Ewl_Widget *w;
-	Ewd_List   *paths;
+	Ecore_List   *paths;
 	char       *font_path;
 	char *name = "EWL Embedded Smart Object";
 
@@ -198,8 +198,8 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
 	}
 
 	paths = ewl_theme_font_path_get();
-	ewd_list_goto_first(paths);
-	while ((font_path = ewd_list_next(paths))) {
+	ecore_list_goto_first(paths);
+	while ((font_path = ecore_list_next(paths))) {
 		evas_font_path_append(evas, font_path);
 	}
 
@@ -550,12 +550,12 @@ void ewl_embed_font_path_add(char *path)
 
 	DCHECK_PARAM_PTR("path", path);
 
-	ewd_list_goto_first(ewl_embed_list);
-	while ((e = ewd_list_next(ewl_embed_list)))
+	ecore_list_goto_first(ewl_embed_list);
+	while ((e = ecore_list_next(ewl_embed_list)))
 		if (REALIZED(e))
 			evas_font_path_append(e->evas, path);
 
-	ewd_list_append(ewl_theme_font_path_get(), strdup(path));
+	ecore_list_append(ewl_theme_font_path_get(), strdup(path));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -572,9 +572,9 @@ Ewl_Embed      *ewl_embed_find_by_evas_window(void *window)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
-	ewd_list_goto_first(ewl_embed_list);
+	ecore_list_goto_first(ewl_embed_list);
 
-	while ((retemb = ewd_list_next(ewl_embed_list)) != NULL) {
+	while ((retemb = ecore_list_next(ewl_embed_list)) != NULL) {
 		if (retemb->evas_window == window)
 			DRETURN_PTR(retemb, DLEVEL_STABLE);
 	}
@@ -616,10 +616,10 @@ void ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w)
 	if (!ewl_container_parent_of(EWL_WIDGET(e), w))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewd_list_goto(e->tab_order, w))
-		ewd_list_remove(e->tab_order);
+	if (ecore_list_goto(e->tab_order, w))
+		ecore_list_remove(e->tab_order);
 
-	ewd_list_prepend(e->tab_order, w);
+	ecore_list_prepend(e->tab_order, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -636,8 +636,8 @@ void ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (ewd_list_goto(e->tab_order, w))
-		ewd_list_remove(e->tab_order);
+	if (ecore_list_goto(e->tab_order, w))
+		ecore_list_remove(e->tab_order);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -654,9 +654,9 @@ void ewl_embed_next_tab_order(Ewl_Embed *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	if (!(w = ewd_list_next(e->tab_order))) {
-		ewd_list_goto_first(e->tab_order);
-		w = ewd_list_next(e->tab_order);
+	if (!(w = ecore_list_next(e->tab_order))) {
+		ecore_list_goto_first(e->tab_order);
+		w = ecore_list_next(e->tab_order);
 	}
 
 	if (w)
@@ -713,10 +713,10 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	emb = EWL_EMBED(w);
 
-	if (ewd_list_goto(ewl_embed_list, w))
-		ewd_list_remove(ewl_embed_list);
+	if (ecore_list_goto(ewl_embed_list, w))
+		ecore_list_remove(ewl_embed_list);
 
-	ewd_list_destroy(emb->tab_order);
+	ecore_list_destroy(emb->tab_order);
 	emb->tab_order = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

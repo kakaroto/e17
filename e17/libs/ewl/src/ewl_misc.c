@@ -16,8 +16,8 @@
 #include <Evas_Engine_Software_X11.h>
 #endif
 
-extern Ewd_List *ewl_embed_list;
-extern Ewd_List *ewl_window_list;
+extern Ecore_List *ewl_embed_list;
+extern Ecore_List *ewl_window_list;
 
 /*
  * Configuration and option related flags.
@@ -34,16 +34,16 @@ static Ecore_Timer    *config_timer = NULL;
 /*
  * Queues for scheduling various actions.
  */
-static Ewd_List *configure_list = NULL;
-static Ewd_List *realize_list = NULL;
-static Ewd_List *destroy_list = NULL;
-static Ewd_List *child_add_list= NULL;
+static Ecore_List *configure_list = NULL;
+static Ecore_List *realize_list = NULL;
+static Ecore_List *destroy_list = NULL;
+static Ecore_List *child_add_list= NULL;
 
 /*
  * Lists for cleaning up evas related memory at convenient times.
  */
-static Ewd_List *free_evas_list = NULL;
-static Ewd_List *free_evas_object_list = NULL;
+static Ecore_List *free_evas_list = NULL;
+static Ecore_List *free_evas_object_list = NULL;
 
 
 int             ewl_idle_render(void *data);
@@ -91,12 +91,12 @@ void ewl_init(int *argc, char **argv)
 	if (initialized > 1)
 		DRETURN(DLEVEL_STABLE);
 
-	configure_list = ewd_list_new();
-	realize_list = ewd_list_new();
-	destroy_list = ewd_list_new();
-	free_evas_list = ewd_list_new();
-	free_evas_object_list = ewd_list_new();
-	child_add_list = ewd_list_new();
+	configure_list = ecore_list_new();
+	realize_list = ecore_list_new();
+	destroy_list = ecore_list_new();
+	free_evas_list = ecore_list_new();
+	free_evas_object_list = ecore_list_new();
+	child_add_list = ecore_list_new();
 
 	ewl_init_parse_options(argc, argv);
 
@@ -151,8 +151,8 @@ void ewl_init(int *argc, char **argv)
 		exit(-1);
 	}
 
-	ewl_embed_list = ewd_list_new();
-	ewl_window_list = ewd_list_new();
+	ewl_embed_list = ecore_list_new();
+	ewl_window_list = ecore_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
 	/*
@@ -180,14 +180,14 @@ void ewl_shutdown()
 	ewl_theme_shutdown();
 	ewl_config_shutdown();
 
-	ewd_list_destroy(configure_list);
-	ewd_list_destroy(realize_list);
-	ewd_list_destroy(destroy_list);
-	ewd_list_destroy(free_evas_list);
-	ewd_list_destroy(free_evas_object_list);
-	ewd_list_destroy(child_add_list);
-	ewd_list_destroy(ewl_embed_list);
-	ewd_list_destroy(ewl_window_list);
+	ecore_list_destroy(configure_list);
+	ecore_list_destroy(realize_list);
+	ecore_list_destroy(destroy_list);
+	ecore_list_destroy(free_evas_list);
+	ecore_list_destroy(free_evas_object_list);
+	ecore_list_destroy(child_add_list);
+	ecore_list_destroy(ewl_embed_list);
+	ecore_list_destroy(ewl_window_list);
 
 	edje_shutdown();
 	ecore_x_shutdown();
@@ -232,14 +232,14 @@ int ewl_idle_render(void *data)
 		exit(-1);
 	}
 
-	if (ewd_list_is_empty(ewl_embed_list))
+	if (ecore_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
 	 * Freeze events on the evases to reduce overhead
 	 */
-	ewd_list_goto_first(ewl_embed_list);
-	while ((emb = ewd_list_next(ewl_embed_list)) != NULL) {
+	ecore_list_goto_first(ewl_embed_list);
+	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
 		if (emb->evas)
 			evas_event_freeze(emb->evas);
 	}
@@ -251,13 +251,13 @@ int ewl_idle_render(void *data)
 	 * unnecessary work done from configuration. Then display new widgets,
 	 * finally layout the widgets.
 	 */
-	if (!ewd_list_is_empty(destroy_list))
+	if (!ecore_list_is_empty(destroy_list))
 		ewl_garbage_collect();
 
-	if (!ewd_list_is_empty(realize_list))
+	if (!ecore_list_is_empty(realize_list))
 		ewl_realize_queue();
 
-	if (!ewd_list_is_empty(configure_list))
+	if (!ecore_list_is_empty(configure_list))
 		ewl_configure_queue();
 
 	edje_thaw();
@@ -265,8 +265,8 @@ int ewl_idle_render(void *data)
 	/*
 	 * Allow each embed to render itself, this requires thawing the evas.
 	 */
-	ewd_list_goto_first(ewl_embed_list);
-	while ((emb = ewd_list_next(ewl_embed_list)) != NULL) {
+	ecore_list_goto_first(ewl_embed_list);
+	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
 		if (emb->evas) {
 			evas_event_thaw(emb->evas);
 			evas_render(emb->evas);
@@ -459,15 +459,15 @@ void ewl_configure_request(Ewl_Widget * w)
 	if (ewl_object_has_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED)) {
 		if (ewl_object_has_queued(EWL_OBJECT(w),
 					EWL_FLAG_QUEUED_CSCHEDULED)) {
-			ewd_list_goto_first(configure_list);
-			while ((search = ewd_list_current(configure_list))) {
+			ecore_list_goto_first(configure_list);
+			while ((search = ecore_list_current(configure_list))) {
 				if (search == w) {
 					ewl_object_remove_queued(EWL_OBJECT(w),
 						EWL_FLAG_QUEUED_CSCHEDULED);
-					ewd_list_remove(configure_list);
+					ecore_list_remove(configure_list);
 					break;
 				}
-				ewd_list_next(configure_list);
+				ecore_list_next(configure_list);
 			}
 		}
 
@@ -504,7 +504,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * children widgets should have been removed by this point.
 	 */
 	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
-	ewd_list_append(configure_list, w);
+	ecore_list_append(configure_list, w);
 
 	/*
 	 * Now clean off any children of this widget, they will get added
@@ -512,8 +512,8 @@ void ewl_configure_request(Ewl_Widget * w)
 	 */
 	/* FIXME: This is a big source of slow down on long lists of widgets,
 	 * might not be worth it
-	ewd_list_goto_first(configure_list);
-	while ((search = ewd_list_current(configure_list))) {
+	ecore_list_goto_first(configure_list);
+	while ((search = ecore_list_current(configure_list))) {
 		Ewl_Widget *parent;
 
 		parent = search;
@@ -521,20 +521,20 @@ void ewl_configure_request(Ewl_Widget * w)
 			if (parent == w) {
 				ewl_object_remove_queued(EWL_OBJECT(search),
 						EWL_FLAG_QUEUED_CSCHEDULED);
-				ewd_list_remove(configure_list);
+				ecore_list_remove(configure_list);
 				break;
 			}
 		}
 
-		ewd_list_next(configure_list);
+		ecore_list_next(configure_list);
 	}
 	*/
 
 	/*
 	 * FIXME: Remove this once we get things stabilize a bit more.
 	 */
-	if (ewd_list_nodes(configure_list) > longest) {
-		longest = ewd_list_nodes(configure_list);
+	if (ecore_list_nodes(configure_list) > longest) {
+		longest = ecore_list_nodes(configure_list);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
@@ -547,7 +547,7 @@ void ewl_configure_queue()
 	/*
 	 * Configure any widgets that need it.
 	 */
-	while ((w = ewd_list_remove_first(configure_list))) {
+	while ((w = ecore_list_remove_first(configure_list))) {
 		if (ewl_object_get_flags(EWL_OBJECT(w),
 					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
 			ewl_object_request_size(EWL_OBJECT(w),
@@ -577,10 +577,10 @@ void ewl_configure_cancel_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
 
-	ewd_list_goto(configure_list, w);
+	ecore_list_goto(configure_list, w);
 
-	if (ewd_list_current(configure_list) == w)
-		ewd_list_remove(configure_list);
+	if (ecore_list_current(configure_list) == w)
+		ecore_list_remove(configure_list);
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -605,7 +605,7 @@ void ewl_realize_request(Ewl_Widget *w)
 	}
 
 	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
-	ewd_list_append(realize_list, w);
+	ecore_list_append(realize_list, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -624,13 +624,13 @@ void ewl_realize_queue()
 	 * can't be placed on this list unless their parent has been realized
 	 * or they are a toplevel widget.
 	 */
-	ewd_list_goto_first(realize_list);
-	while ((w = ewd_list_remove_first(realize_list))) {
+	ecore_list_goto_first(realize_list);
+	while ((w = ecore_list_remove_first(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
 			ewl_object_remove_queued(EWL_OBJECT(w),
 					EWL_FLAG_QUEUED_RSCHEDULED);
 			ewl_widget_realize(EWL_WIDGET(w));
-			ewd_list_prepend(child_add_list, w);
+			ecore_list_prepend(child_add_list, w);
 		}
 	}
 
@@ -638,7 +638,7 @@ void ewl_realize_queue()
 	 * Work our way back up the chain of widgets to resize from bottom to
 	 * top.
 	 */
-	while ((w = ewd_list_remove_first(child_add_list))) {
+	while ((w = ecore_list_remove_first(child_add_list))) {
 		if (w->parent)
 			ewl_container_call_child_show(EWL_CONTAINER(w->parent),
 						      w);
@@ -706,7 +706,7 @@ void ewl_destroy_request(Ewl_Widget *w)
 	/*
 	 * Must prepend to ensure children are freed before parents.
 	 */
-	ewd_list_prepend(destroy_list, w);
+	ecore_list_prepend(destroy_list, w);
 
 	/*
 	 * Schedule child widgets for destruction.
@@ -719,12 +719,12 @@ void ewl_destroy_request(Ewl_Widget *w)
 
 void ewl_evas_destroy(Evas *evas)
 {
-	ewd_list_append(free_evas_list, evas);
+	ecore_list_append(free_evas_list, evas);
 }
 
 void ewl_evas_object_destroy(Evas_Object *obj)
 {
-	ewd_list_append(free_evas_object_list, obj);
+	ecore_list_append(free_evas_object_list, obj);
 }
 
 void ewl_garbage_collect()
@@ -735,16 +735,16 @@ void ewl_garbage_collect()
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	while ((w = ewd_list_remove_first(destroy_list))) {
+	while ((w = ecore_list_remove_first(destroy_list))) {
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		FREE(w);
 	}
 
-	while ((obj = ewd_list_remove_first(free_evas_object_list)))
+	while ((obj = ecore_list_remove_first(free_evas_object_list)))
 		evas_object_del(obj);
 
-	while ((evas = ewd_list_remove_first(free_evas_object_list)))
+	while ((evas = ecore_list_remove_first(free_evas_object_list)))
 		evas_free(evas);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

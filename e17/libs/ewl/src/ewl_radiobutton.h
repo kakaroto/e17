@@ -33,7 +33,7 @@ typedef struct Ewl_RadioButton Ewl_RadioButton;
 struct Ewl_RadioButton
 {
 	Ewl_CheckButton button; /**< Inherit from Ewl_CheckButton */
-	Ewd_List       *chain; /**< List of members of the group */
+	Ecore_List       *chain; /**< List of members of the group */
 };
 
 Ewl_Widget     *ewl_radiobutton_new(char *l);

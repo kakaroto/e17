@@ -74,7 +74,7 @@ struct Ewl_Container
 {
 	Ewl_Widget       widget; /**< Inherit the basics of the widget. */
 
-	Ewd_List        *children; /**< List of children that are contained. */
+	Ecore_List        *children; /**< List of children that are contained. */
 
 	Evas_Object     *clip_box; /**< Clip box to bound widgets inside. */
 

@@ -35,7 +35,7 @@ struct Ewl_Widget
 	Ewl_Object      object; /**< Inherit the base Object class */
 	Ewl_Widget     *parent; /**< The parent widget, actually a container */
 
-	Ewd_List       *callbacks[EWL_CALLBACK_MAX]; /**< Callback list array */
+	Ecore_List       *callbacks[EWL_CALLBACK_MAX]; /**< Callback list array */
 
 	Evas_Object    *fx_clip_box; /**< Clipping rectangle of widget */
 

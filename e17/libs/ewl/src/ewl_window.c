@@ -21,7 +21,7 @@
 #include <Evas_Engine_Software_X11.h>
 #endif
 
-Ewd_List *ewl_window_list = NULL;
+Ecore_List *ewl_window_list = NULL;
 
 void            ewl_window_realize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
@@ -70,9 +70,9 @@ Ewl_Window     *ewl_window_find_window(void *window)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
-	ewd_list_goto_first(ewl_window_list);
+	ecore_list_goto_first(ewl_window_list);
 
-	while ((retwin = ewd_list_next(ewl_window_list)))
+	while ((retwin = ecore_list_next(ewl_window_list)))
 		if (retwin->window == window)
 			DRETURN_PTR(retwin, DLEVEL_STABLE);
 
@@ -319,7 +319,7 @@ int ewl_window_init(Ewl_Window * w)
 			     ewl_window_configure_cb, NULL);
 
 	LAYER(w) = -1000;
-	ewd_list_append(ewl_window_list, w);
+	ecore_list_append(ewl_window_list, w);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -526,8 +526,8 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(win->title);
 
-	if ((win = ewd_list_goto(ewl_window_list, win)))
-		ewd_list_remove(ewl_window_list);
+	if ((win = ecore_list_goto(ewl_window_list, win)))
+		ecore_list_remove(ewl_window_list);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -102,7 +102,7 @@ void ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
 
 	g->rchildren = EWL_CONTAINER(w)->children;
 	EWL_CONTAINER(w)->children = NULL;
-	EWL_CONTAINER(w)->children = ewd_list_new();
+	EWL_CONTAINER(w)->children = ecore_list_new();
 
 	IF_FREE(g->col_size);
 	IF_FREE(g->row_size);
@@ -366,7 +366,7 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * if so, we need to destroy the old children
 	 */
 	if (g->rchildren) {
-		while ((child = ewd_list_remove_first(g->rchildren)) != NULL)
+		while ((child = ecore_list_remove_first(g->rchildren)) != NULL)
 			ewl_widget_destroy(child);
 		g->rchildren = NULL;
 	}
@@ -377,8 +377,8 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	c_x = CURRENT_X(EWL_OBJECT(w));
 	c_y = CURRENT_Y(EWL_OBJECT(w));
 
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
+	ecore_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(w)->children)) != NULL) {
 		c = (Ewl_Grid_Child *) ewl_widget_get_data(child, (void *) g);
 
 		/* calculate child widgets width */
@@ -526,9 +526,9 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 	 */
 	for (i = cdata->start_col; i < cdata->end_col; i++) {
 		if (!g->col_size[i].cross)
-			g->col_size[i].cross = ewd_list_new();
+			g->col_size[i].cross = ecore_list_new();
 
-		ewd_list_append(g->col_size[i].cross, c);
+		ecore_list_append(g->col_size[i].cross, c);
 
 		/*
 		 * Calculate the amount of space the widget would need in this
@@ -558,9 +558,9 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 	 */
 	for (i = cdata->start_row; i < cdata->end_row; i++) {
 		if (!g->row_size[i].cross)
-			g->row_size[i].cross = ewd_list_new();
+			g->row_size[i].cross = ecore_list_new();
 
-		ewd_list_append(g->row_size[i].cross, c);
+		ecore_list_append(g->row_size[i].cross, c);
 
 		/*
 		 * Calculate the amount of space the widget would need in this
@@ -658,8 +658,8 @@ ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 				 * Otherwise we need to search for the largest
 				 * widget in this space in the grid.
 				 */
-				ewd_list_goto_first(info[i].cross);
-				while ((temp = ewd_list_next(info[i].cross))) {
+				ecore_list_goto_first(info[i].cross);
+				while ((temp = ecore_list_next(info[i].cross))) {
 					if (widget_size(EWL_OBJECT(temp)) > max) {
 						max = widget_size(EWL_OBJECT
 								  (temp));

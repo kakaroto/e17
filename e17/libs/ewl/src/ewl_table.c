@@ -153,15 +153,15 @@ void ewl_table_get_col_row(Ewl_Table * t, Ewl_Cell * cell,
 
 	Ewl_Widget *child;
 	Ewl_Grid_Child *g_child;
-	Ewd_List *children;
+	Ecore_List *children;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
 	children = EWL_CONTAINER(t->grid)->children;
 
-	ewd_list_goto_first(children);
-	while ((child = ewd_list_next(children)) != NULL)
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)) != NULL)
 	{
 		if (child == EWL_WIDGET(cell)) {
 			g_child = (Ewl_Grid_Child *) ewl_widget_get_data(child,
@@ -191,10 +191,10 @@ void ewl_table_get_col_row(Ewl_Table * t, Ewl_Cell * cell,
  * @param end_col: the end column
  * @param start_row: the start row
  * @param end_row: the end row
- * @return Returns Ewd_List of widgets found in the specified col/row area.
+ * @return Returns Ecore_List of widgets found in the specified col/row area.
  * @brief Get a list of the widgets in the specified col/row
  */
-Ewd_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
+Ecore_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 			       int start_row, int end_row)
 {
 
@@ -209,22 +209,22 @@ Ewd_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 
 	Ewl_Grid_Child *gc;
 	Ewl_Widget     *child;
-	Ewd_List       *children;
-	Ewd_List       *list;
+	Ecore_List       *children;
+	Ecore_List       *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	list = ewd_list_new();
+	list = ecore_list_new();
 	children = EWL_CONTAINER(t->grid)->children;
 
-	ewd_list_goto_first(children);
-	while ((child = ewd_list_next(children)) != NULL) {
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_get_data(child,
 							    (void *) t->grid);
 
 		if (start_col >= gc->start_col && end_col <= gc->end_col &&
 		    start_row >= gc->start_row && end_row <= gc->end_row) {
-			ewd_list_append(list, child);
+			ecore_list_append(list, child);
 		}
 	}
 
@@ -378,15 +378,15 @@ char           *ewl_table_get_selected(Ewl_Table * t)
 {
 	Ewl_Text       *tw;
 	Ewl_Widget     *child;
-	Ewd_List       *children;
+	Ecore_List       *children;
 	Ewl_Grid_Child *gc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	children = EWL_CONTAINER(t->grid)->children;
 
-	ewd_list_goto_first(children);
-	while ((child = ewd_list_next(children)) != NULL) {
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_get_data(child,
 							    (void *) t->grid);
 
@@ -395,7 +395,7 @@ char           *ewl_table_get_selected(Ewl_Table * t)
 		    t->selected.end_c == gc->end_col &&
 		    t->selected.end_r == gc->end_row) {
 			
-			tw = (Ewl_Text *) ewd_list_goto_first(
+			tw = (Ewl_Text *) ecore_list_goto_first(
 					EWL_CONTAINER(child)->children);
 
 			DRETURN_PTR(ewl_text_get_text(tw), DLEVEL_STABLE);
@@ -461,9 +461,9 @@ void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				    INSET_BOTTOM(o));
 
 
-	ewd_list_goto_first(EWL_CONTAINER(table->grid)->children);
+	ecore_list_goto_first(EWL_CONTAINER(table->grid)->children);
 	while ((child =
-		ewd_list_next(EWL_CONTAINER(table->grid)->children)) != NULL) {
+		ecore_list_next(EWL_CONTAINER(table->grid)->children)) != NULL) {
 
 		ewl_widget_configure(child);
 	}

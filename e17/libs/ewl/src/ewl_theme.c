@@ -8,7 +8,7 @@ static char     *theme_path = NULL;
 
 static E_DB_File *theme_db = NULL;
 
-static Ewd_List *font_paths = NULL;
+static Ecore_List *font_paths = NULL;
 static Ewd_Hash *cached_theme_data = NULL;
 static Ewd_Hash *def_theme_data = NULL;
 
@@ -150,10 +150,10 @@ void ewl_theme_shutdown()
 	}
 
 	if (font_paths) {
-		while ((data = ewd_list_remove_first(font_paths)))
+		while ((data = ecore_list_remove_first(font_paths)))
 			free(data);
 		
-		ewd_list_destroy(font_paths);
+		ecore_list_destroy(font_paths);
 		font_paths = NULL;
 	}
 
@@ -175,17 +175,17 @@ static void ewl_theme_init_font_path()
 	/*
 	 * Setup the default font paths
 	 */
-	font_paths = ewd_list_new();
+	font_paths = ecore_list_new();
 	if (font_paths) {
 		font_path = ewl_theme_data_get_str(NULL, "/theme/font_path");
 
 		if (font_path) {
 			if (*font_path == '/')
-				ewd_list_append(font_paths, font_path);
+				ecore_list_append(font_paths, font_path);
 			else {
 				snprintf(key, PATH_MAX, "%s/%s", theme_path,
 						font_path);
-				ewd_list_append(font_paths, strdup(key));
+				ecore_list_append(font_paths, strdup(key));
 
 				FREE(font_path);
 			}
@@ -260,7 +260,7 @@ E_DB_File *ewl_theme_get_db()
  * @return Returns the font path of widget @a w on success, NULL on failure.
  * @brief retrieve the path of a widgets theme's fonts
  */
-Ewd_List       *ewl_theme_font_path_get()
+Ecore_List       *ewl_theme_font_path_get()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -284,7 +284,7 @@ void ewl_theme_font_path_add(char *path)
 	DCHECK_PARAM_PTR("path", path);
 
 	temp = strdup(path);
-	ewd_list_append(font_paths, temp);
+	ecore_list_append(font_paths, temp);
 	ewl_embed_font_path_add(temp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -69,8 +69,8 @@ void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	/*
 	 * Configure each of the child widgets.
 	 */
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
 		/*
 		 * Try to give the child the full size of the window from it's
 		 * base position. The object will constrict it based on the
@@ -126,8 +126,8 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 	child = EWL_OBJECT(w);
 	overlay = EWL_OVERLAY(c);
 
-	ewd_list_goto_first(EWL_CONTAINER(overlay)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(overlay)->children))) {
+	ecore_list_goto_first(EWL_CONTAINER(overlay)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(overlay)->children))) {
 		int             cs;
 
 		/*
