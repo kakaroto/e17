@@ -22,17 +22,21 @@ __create_scrollbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *scrollbar_win;
 	Ewl_Widget *hscrollbar, *vscrollbar;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_scrollbar_test_window);
-
 	scrollbar_button = w;
 
 	scrollbar_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(scrollbar_win), "Scrollbar Test");
 	ewl_window_name_set(EWL_WINDOW(scrollbar_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(scrollbar_win), "EFL Test Application");
-	ewl_callback_append(scrollbar_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_scrollbar_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+				 __create_scrollbar_test_window);
+		ewl_callback_append(scrollbar_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __destroy_scrollbar_test_window, NULL);
+	} else
+		ewl_callback_append(scrollbar_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_win, NULL);
 	ewl_widget_show(scrollbar_win);
 
 	hscrollbar = ewl_hscrollbar_new();

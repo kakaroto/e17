@@ -25,17 +25,21 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 	Ewl_Widget     *fs;
 	Ewl_Widget     *fs_win;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_fileselector_test_window);
-
 	fs_button = w;
 
 	fs_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(fs_win), "File Selector Test");
 	ewl_window_name_set(EWL_WINDOW(fs_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(fs_win), "EFL Test Application");
-	ewl_callback_append(fs_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_fileselector_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+				__create_fileselector_test_window);
+		ewl_callback_append(fs_win, EWL_CALLBACK_DELETE_WINDOW,
+				__destroy_fileselector_test_window, NULL);
+	} else
+		ewl_callback_append(fs_win, EWL_CALLBACK_DELETE_WINDOW,
+						__close_main_window, NULL);
 	ewl_widget_show(fs_win);
 
 	fs = ewl_fileselector_new(__file_clicked);

@@ -94,16 +94,21 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *separator[3];
 	int             xx, yy, ww, hh, mw, mh;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_spinner_test_window);
-
 	spinner_button = w;
 
 	spinner_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(spinner_win), "STest");
 	ewl_window_name_set(EWL_WINDOW(spinner_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(spinner_win), "EFL Test Application");
-	ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_spinner_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+				__create_spinner_test_window);
+		ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __destroy_spinner_test_window, NULL);
+	} else
+		ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(spinner_win);
 
 	/*

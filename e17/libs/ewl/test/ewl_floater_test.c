@@ -26,16 +26,21 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *check_button[2];
 	Ewl_Widget     *radio_button[2];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_floater_test_window);
-
 	floater_button = w;
 
 	floater_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(floater_win), "Floater Test");
 	ewl_window_name_set(EWL_WINDOW(floater_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(floater_win), "EFL Test Application");
-	ewl_callback_append(floater_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_floater_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+				__create_floater_test_window);
+		ewl_callback_append(floater_win, EWL_CALLBACK_DELETE_WINDOW,
+					__destroy_floater_test_window, NULL);
+	} else
+		ewl_callback_append(floater_win, EWL_CALLBACK_DELETE_WINDOW,
+						__close_main_window, NULL);
 	ewl_widget_show(floater_win);
 
 	floater_box = ewl_vbox_new();

@@ -60,16 +60,21 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *button_hbox;
 	Ewl_Widget     *button[2];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_entry_test_window);
-
 	entry_button = w;
 
 	entry_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(entry_win), "Entry Test");
 	ewl_window_name_set(EWL_WINDOW(entry_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(entry_win), "EFL Test Application");
-	ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_entry_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+					__create_entry_test_window);
+		ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __destroy_entry_test_window, NULL);
+	} else
+		ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(entry_win);
 
 	/*

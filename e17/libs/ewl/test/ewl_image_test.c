@@ -120,8 +120,6 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *button_prev, *button_load, *button_next;
 	char           *image_file = NULL;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_image_test_window);
-
 	image_button = w;
 
 	images = ecore_dlist_new();
@@ -130,8 +128,15 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_title_set(EWL_WINDOW(image_win), "Image Test");
 	ewl_window_name_set(EWL_WINDOW(image_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(image_win), "EFL Test Application");
-	ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_image_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+						__create_image_test_window);
+		ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
+					    __destroy_image_test_window, NULL);
+	} else
+		ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
+						__close_main_window, NULL);
 	ewl_widget_show(image_win);
 
 	/*

@@ -124,8 +124,6 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *hbox[3];
 	Ewl_Widget     *hbox_button[2][3];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_box_test_window);
-
 	box_button = w;
 
 	box_win = ewl_window_new();
@@ -133,8 +131,15 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_name_set(EWL_WINDOW(box_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(box_win), "EFL Test Application");
 	ewl_object_size_request(EWL_OBJECT(box_win), 256, 256);
-	ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_box_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+					__create_box_test_window);
+		ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
+					__destroy_box_test_window, NULL);
+	} else
+		ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(box_win);
 
 	/*

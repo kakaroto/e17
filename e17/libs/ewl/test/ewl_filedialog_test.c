@@ -26,8 +26,13 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_window_name_set (EWL_WINDOW (win), "EWL Test Application");
 	ewl_window_class_set (EWL_WINDOW (win), "EFL Test Application");
 	ewl_object_size_request (EWL_OBJECT (win), 500, 450);
-	ewl_callback_append (win, EWL_CALLBACK_DELETE_WINDOW,
-			     __destroy_filedialog_test_window, NULL);
+
+	if (w)
+		ewl_callback_append (win, EWL_CALLBACK_DELETE_WINDOW,
+				     __destroy_filedialog_test_window, NULL);
+	else
+		ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
+						__close_main_window, NULL);
 	ewl_widget_show(win);
 
 	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);

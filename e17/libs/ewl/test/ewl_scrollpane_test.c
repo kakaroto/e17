@@ -24,17 +24,21 @@ __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 	Ewl_Widget *scrollpane;
 	Ewl_Widget *button;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_scrollpane_test_window);
-
 	scrollpane_button = w;
 
 	scrollpane_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(scrollpane_win), "Scrollpane Test");
 	ewl_window_name_set(EWL_WINDOW(scrollpane_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(scrollpane_win), "EFL Test Application");
-	ewl_callback_append(scrollpane_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_scrollpane_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __create_scrollpane_test_window);
+		ewl_callback_append(scrollpane_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __destroy_scrollpane_test_window, NULL);
+	} else
+		ewl_callback_append(scrollpane_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_object_set_minimum_size(EWL_OBJECT(scrollpane_win), 200, 200);
 	ewl_widget_show(scrollpane_win);
 

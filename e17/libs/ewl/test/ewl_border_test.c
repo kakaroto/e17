@@ -76,8 +76,6 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *border_box;
 	Ewl_Widget *alabel, *avbox, *pvbox, *plabel;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_border_test_window);
-
 	border_button = w;
 
 	border_win = ewl_window_new();
@@ -85,8 +83,16 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_name_set(EWL_WINDOW(border_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(border_win), "EFL Test Application");
 	ewl_object_size_request(EWL_OBJECT(border_win), 100, 100);
-	ewl_callback_append(border_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_border_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+					__create_border_test_window);
+		ewl_callback_append(border_win, EWL_CALLBACK_DELETE_WINDOW,
+					__destroy_border_test_window, NULL);
+	} else
+		ewl_callback_append(border_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
+
 	ewl_widget_show(border_win);
 
 	border_box = ewl_border_new("box title");

@@ -91,8 +91,6 @@ main(int argc, char **argv)
 		{ "Textarea",    __create_textarea_test_window,    "ewl_textarea_test.c" },
 		{ "Tooltip",     __create_tooltip_test_window,     "ewl_tooltip_test.c" },
 		{ "Tree",        __create_tree_test_window,        "ewl_tree_test.c" },
-
-		
 		{ 0, 0, 0 }
 	};
 	static char* tooltips[] = {
@@ -159,6 +157,24 @@ main(int argc, char **argv)
 		return 1;
 	}
 
+	if (argc > 1) {
+		int j, found = 0;
+
+		for (j = 1; j < argc; j++) {
+			for (i = 0; tests[i].func; i++) {
+				if (!strcasecmp(argv[j], tests[i].name)) {
+					tests[i].func(NULL, NULL, NULL);
+					found++;
+				}
+			}
+		}
+
+		if (found) {
+			ewl_main();
+			exit(0);
+		}
+	}
+
 	heap_end = sbrk(0);
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
 
@@ -206,8 +222,6 @@ main(int argc, char **argv)
 
 	i = 0;
 	while (tests[i].func) {
-		int         j;
-
 		/*
 		 * Add the row to the tree, and setup it's alignment and
 		 * fill.
@@ -229,11 +243,6 @@ main(int argc, char **argv)
 		ewl_container_child_append (EWL_CONTAINER (main_win),
 					    tooltip);
 		ewl_tooltip_text_set (EWL_TOOLTIP (tooltip), tooltips[i]);
-
-		for (j = 1; j < argc; j++) {
-			if (!strcasecmp(argv[j], tests[i].name))
-				tests[i].func(prow[i], NULL, NULL);
-		}
 
 		i++;
 	}

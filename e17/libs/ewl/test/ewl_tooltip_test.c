@@ -20,9 +20,6 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	Ewl_Widget     *button;
 	Ewl_Widget     *tooltip;
 
-
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_tooltip_test_window);
-
 	tooltip_button = w;
 
 	tooltip_win = ewl_window_new();
@@ -30,8 +27,15 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	ewl_window_name_set(EWL_WINDOW(tooltip_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(tooltip_win), "EFL Test Application");
 	ewl_object_size_request(EWL_OBJECT(tooltip_win), 200, 100);
-	ewl_callback_append(tooltip_win, EWL_CALLBACK_DELETE_WINDOW,
-			__destroy_tooltip_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+					__create_tooltip_test_window);
+		ewl_callback_append(tooltip_win, EWL_CALLBACK_DELETE_WINDOW,
+				__destroy_tooltip_test_window, NULL);
+	} else
+		ewl_callback_append(tooltip_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(tooltip_win);
 	
 	tooltip_vbox = ewl_vbox_new();

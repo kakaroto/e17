@@ -110,8 +110,13 @@ __create_dialog_test_window (Ewl_Widget * w,
   ewl_window_name_set (EWL_WINDOW (dialog_win), "EWL Test Application");
   ewl_window_class_set (EWL_WINDOW (dialog_win), "EFL Test Application");
   ewl_object_insets_set (EWL_OBJECT (dialog_win), 5, 5, 5, 5);
-  ewl_callback_append (dialog_win, EWL_CALLBACK_DELETE_WINDOW,
-		       EWL_CALLBACK_FUNCTION (__destroy_dialog_test_window), NULL);
+
+  if (w) 
+	  ewl_callback_append (dialog_win, EWL_CALLBACK_DELETE_WINDOW,
+	       EWL_CALLBACK_FUNCTION (__destroy_dialog_test_window), NULL);
+  else
+  	ewl_callback_append(dialog_win, EWL_CALLBACK_DELETE_WINDOW,
+						__close_main_window, NULL);
 
   hbox = ewl_hbox_new ();
   ewl_dialog_widget_add (EWL_DIALOG (dialog_win), hbox);

@@ -27,18 +27,21 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	Ewl_Widget     *tab[2];
 	Ewl_Widget     *panel[2];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_selectionbook_test_window);
-
 	sbook_button = w;
-
 
 	sbook_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(sbook_win), "Selectionbook Test");
 	ewl_window_name_set(EWL_WINDOW(sbook_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(sbook_win), "EFL Test Application");
-	ewl_callback_append(sbook_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_selectionbook_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __create_selectionbook_test_window);
+		ewl_callback_append(sbook_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __destroy_selectionbook_test_window, NULL);
+	} else
+		ewl_callback_append(sbook_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(sbook_win);
 
 	sbook = ewl_selectionbook_new();

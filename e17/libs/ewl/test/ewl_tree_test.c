@@ -50,9 +50,6 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 	Ewl_Widget *hbox;
 	Ewl_Widget *button;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_tree_test_window);
-
 	tree_button = w;
 
 	tree_win = ewl_window_new();
@@ -62,8 +59,15 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_window_class_set(EWL_WINDOW(tree_win), "EFL Test Application");
 	/* ewl_object_set_maximum_size(EWL_OBJECT(tree_win), 400, 400); */
 	ewl_object_size_request(EWL_OBJECT(tree_win), 400, 200);
-	ewl_callback_append(tree_win, EWL_CALLBACK_DELETE_WINDOW,
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+		                	 __create_tree_test_window);
+		ewl_callback_append(tree_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_tree_test_window, NULL);
+	} else
+		ewl_callback_append(tree_win, EWL_CALLBACK_DELETE_WINDOW,
+						__close_main_window, NULL);
 	ewl_widget_show(tree_win);
 
 	box = ewl_vbox_new();

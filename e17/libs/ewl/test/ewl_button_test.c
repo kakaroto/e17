@@ -25,16 +25,21 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *check_button[2];
 	Ewl_Widget     *radio_button[2];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_button_test_window);
-
 	button_button = w;
 
 	button_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(button_win), "Button Type Test");
 	ewl_window_name_set(EWL_WINDOW(button_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(button_win), "EFL Test Application");
-	ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __delete_button_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+					__create_button_test_window);
+		ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __delete_button_test_window, NULL);
+	} else 
+		ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(button_win);
 
 	/*

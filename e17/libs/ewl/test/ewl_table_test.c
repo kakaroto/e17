@@ -32,16 +32,21 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	char           *three = "three";
 	char           *four = "four";
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_table_test_window);
-
 	table_button = w;
 
 	table_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(table_win), "Table Test");
 	ewl_window_name_set(EWL_WINDOW(table_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(table_win), "EFL Test Application");
-	ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_table_test_window, NULL);
+
+	if (w) {
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+					__create_table_test_window);
+		ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
+				    __destroy_table_test_window, NULL);
+	} else 
+		ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(table_win);
 
 	/*

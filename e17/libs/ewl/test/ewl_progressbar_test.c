@@ -15,7 +15,7 @@ int __increment_progress(void *data)
 	double value, range;
 	char c[30];
 	int i;
-  Ewl_Progressbar *p = EWL_PROGRESSBAR(data);
+	Ewl_Progressbar *p = EWL_PROGRESSBAR(data);
 
 	val = ewl_progressbar_value_get(p);
 
@@ -132,9 +132,6 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	Ewl_Widget     *button;
 	int            i;
 
-
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_progressbar_test_window);
-
 	progressbar_button = w;
 
 	progressbar_win = ewl_window_new();
@@ -142,8 +139,15 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	ewl_window_name_set(EWL_WINDOW(progressbar_win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(progressbar_win), "EFL Test Application");
 	ewl_object_size_request(EWL_OBJECT(progressbar_win), 300, 20);
-	ewl_callback_append(progressbar_win, EWL_CALLBACK_DELETE_WINDOW,
-			__destroy_progressbar_test_window, NULL);
+
+	if (w) { 
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
+				__create_progressbar_test_window);
+		ewl_callback_append(progressbar_win, EWL_CALLBACK_DELETE_WINDOW,
+				__destroy_progressbar_test_window, NULL);
+	} else
+		ewl_callback_append(progressbar_win, EWL_CALLBACK_DELETE_WINDOW,
+					__close_main_window, NULL);
 	ewl_widget_show(progressbar_win);
 	
 	progressbar_vbox = ewl_vbox_new();
