@@ -2875,3 +2875,14 @@ Introduced a new event handler registration/dispatching engine (not used yet).
 Don't zoom on desktop type (layer 0) windows in pager.
 Clean up hint handling at startup.
 Initial fullscreen window state handling.
+
+-------------------------------------------------------------------------------
+
+Thu Jun  3 20:36:55 CEST 2004
+(Kim)
+
+Fix answering 'no' to logout dialog.
+Fix saving info at exit + shuffle some code around.
+Set stacking order at exit.
+Fix RaiseLower segv.
+Selective Transparency - basic functionality (Jaron Omega <jaron@sock-stream.net>).
