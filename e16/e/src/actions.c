@@ -784,7 +784,12 @@ execApplication(void *params)
    f = popen(exe, "r");
    if (f)
      {
-	fread(s, 1, FILEPATH_LEN_MAX, f);
+	int                 n;
+
+	n = fread(s, 1, FILEPATH_LEN_MAX, f);
+	/* True64 bug workaround */
+	if (n == 0)
+	   fread(s, 1, FILEPATH_LEN_MAX, f);
 	s[FILEPATH_LEN_MAX - 1] = 0;
 	l = strlen(s);
 	s[l - 1] = 0;
