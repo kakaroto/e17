@@ -107,17 +107,17 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
          if ((w > 0) && (h > 0))
             evas_object_resize(result, w, h);
 
-         if (edje_object_part_exists(o, "EntranceUserIcon"))
+         if (edje_object_part_exists(o, "entrance.user.icon"))
          {
             if ((avatar = _entrance_user_icon_load(edje, e->icon)))
             {
                entrance_smart_avatar_set(result, avatar);
-               edje_object_part_swallow(o, "EntranceUserIcon", avatar);
+               edje_object_part_swallow(o, "entrance.user.icon", avatar);
             }
          }
-         if (edje_object_part_exists(o, "EntranceUserName"))
+         if (edje_object_part_exists(o, "entrance.user.name"))
          {
-            edje_object_part_text_set(o, "EntranceUserName", e->name);
+            edje_object_part_text_set(o, "entrance.user.name", e->name);
          }
 	    /**
 	     * FIXME: perhaps go so far as to do Gecos type stuff

@@ -106,17 +106,17 @@ entrance_x_session_edje_get(Entrance_X_Session * e, Evas_Object * o,
       else
          evas_object_resize(result, 150, 50);
 
-      if (edje_object_part_exists(edje, "EntranceSessionIcon"))
+      if (edje_object_part_exists(edje, "entrance.xsession.icon"))
       {
          if ((avatar = entrance_x_session_icon_load(o, e->icon)))
          {
             entrance_smart_avatar_set(result, avatar);
-            edje_object_part_swallow(edje, "EntranceSessionIcon", avatar);
+            edje_object_part_swallow(edje, "entrance.xsession.icon", avatar);
          }
       }
-      if (edje_object_part_exists(edje, "EntranceSessionTitle"))
+      if (edje_object_part_exists(edje, "entrance.xsession.title"))
       {
-         edje_object_part_text_set(edje, "EntranceSessionTitle", e->name);
+         edje_object_part_text_set(edje, "entrance.xsession.title", e->name);
       }
       edje_object_signal_callback_add(edje, "entrance,xsession,selected", "",
                                       session_item_selected_cb,
