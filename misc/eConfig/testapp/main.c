@@ -15,7 +15,7 @@
 #include "../src/eConfig.h"
 #include "../src/eConfig.internal.h"
 
-int
+int 
 main(int argc, char **argv)
 {
 
@@ -27,9 +27,9 @@ main(int argc, char **argv)
 
    eConfigInit();
 
-   eConfigAddPath("/home");
-   eConfigAddPath("/usr");
-   eConfigAddPath("/enlightenment");
+   eConfigAddPath("/usr/enlightenment");
+   eConfigAddPath("/usr/local/enlightenment");
+   eConfigAddPath("~/.enlightenment");
 
    if ((stuff = eConfigPaths(&num)))
      {
@@ -40,11 +40,12 @@ main(int argc, char **argv)
 	     printf("path: %s\n", stuff[i]);
 	  }
 	free(stuff);
-
      }
 
-   printf("/home,/usr,and /enlightenment should have shown up\n");
-   eConfigRemovePath("/usr");
+   printf("/usr/enlightenment,/usr/local/enlightenment,\n"
+	  "and ~/.enlightenment should have shown up\n");
+   eConfigRemovePath("/usr/enlightenment");
+   printf("removing /usr/enlightenment");
 
    if ((stuff = eConfigPaths(&num)))
      {
@@ -55,9 +56,24 @@ main(int argc, char **argv)
 	     printf("path: %s\n", stuff[i]);
 	  }
 	free(stuff);
-
      }
-   printf("now just /home and /enlightenment should have shown up\n");
+
+   printf("now just /usr/local/enlightenment and\n"
+	  "	~/.enlightenment should have shown up\n");
+
+   eConfigAddPath(".");
+
+   if ((stuff = eConfigPaths(&num)))
+     {
+	int                 i;
+
+	for (i = 0; i < num; i++)
+	  {
+	     printf("path: %s\n", stuff[i]);
+	  }
+	free(stuff);
+     }
+   printf("now we have added . to the directory list\n");
 
    return 0;
 }
