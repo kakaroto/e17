@@ -59,3 +59,8 @@ Wed May  9 17:20:46 PDT 2001	Michael Jennings <mej@eterm.org>
 	Better handling of NULL values all around.
 	
 -------------------------------------------------------------------------------
+Thu May 17 10:27:02 PDT 2001	Michael Jennings <mej@eterm.org>
+
+	Fixed "make distcheck."
+	
+-------------------------------------------------------------------------------

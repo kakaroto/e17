@@ -2,7 +2,7 @@
 
 bin_PROGRAMS = libast-test
 
-libast_test_SOURCES = test.c
+libast_test_SOURCES = test.c test.h
 libast_test_DEPENDENCIES = $(top_builddir)/libast.la
 libast_test_LDADD = $(top_builddir)/libast.la
 
