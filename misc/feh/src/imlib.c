@@ -359,7 +359,9 @@ feh_http_load_image(char *url)
    do
    {
       snprintf(num, sizeof(num), "%06ld", i++);
-      tmpname = estrjoin("", "feh_", num, "_", strrchr(url, '/') + 1, NULL);
+      tmpname =
+         estrjoin("", opt.keep_http ? "feh_" : "/tmp/feh_", num, "_",
+                  strrchr(url, '/') + 1, NULL);
    }
    while (stat(tmpname, &st) == 0);
 

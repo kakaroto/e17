@@ -1,6 +1,6 @@
 %define name	@PACKAGE@
 %define ver	@VERSION@
-%define RELEASE 2
+%define RELEASE 3
 #%define rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix	/usr
 

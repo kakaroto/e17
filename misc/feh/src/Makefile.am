@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 LDFLAGS           = -L/usr/X11R6/lib
 INCLUDES          = -I/usr/X11R6/include \
 $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
--DPREFIX=\""$(prefix)"\"
+-DPREFIX=\""$(prefix)"\" @IMLIB_CFLAGS@
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = feh
@@ -14,7 +14,7 @@ filelist.c filelist.h multiwindow.c imlib.c index.c slideshow.c \
 utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h \
 events.c events.h feh_imlib2.h feh_imlib2.c support.c support.h \
 thumbnail.c thumbnail.h feh_list.c feh_list.h
-feh_LDADD         = -lX11
+feh_LDADD         = -lX11 @IMLIB_LIBS@
 
 images_DATA = about.png menubg.png menubg_chrome.png menubg_brushed.png \
 menubg_pastel.png menubg_aluminium.png menubg_aqua.png \
