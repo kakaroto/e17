@@ -154,7 +154,8 @@ grab_init()
    }
 }
 
-Imlib_Image grab_one(int *width, int *height)
+Imlib_Image
+grab_one(int *width, int *height)
 {
    Imlib_Image im;
    int i = 0;
@@ -271,7 +272,8 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    }
 }
 
-Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
+Imlib_Image
+convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
 {
    Imlib_Image im;
    DATA32 *data, *dest;
@@ -382,6 +384,16 @@ main(int argc, char *argv[])
    char filename[100];
    int width, height, i;
    struct stat st;
+   pid_t childpid;
+
+   /* fork and die */
+   if ((childpid = fork()) < 0)
+   {
+      fprintf(stderr, "fork (%s)\n", strerror(errno));
+      return (2);
+   }
+   else if (childpid > 0)
+      exit(0);          /* parent */
 
    /* read config */
    sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
