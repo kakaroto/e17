@@ -138,6 +138,10 @@ HandleFocusOut(XEvent * ev)
 
    EDBUG(5, "HandleFocusOut");
 
+   /* Do nothing if the focus is passed down to child */
+   if (ev->xfocus.detail == NotifyInferior)
+      goto exit;
+
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin && ewin->active)
      {
@@ -147,6 +151,7 @@ HandleFocusOut(XEvent * ev)
 	FocusEwinSetGrabs(ewin);
      }
 
+ exit:
    EDBUG_RETURN_;
 }
 

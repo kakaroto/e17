@@ -490,6 +490,11 @@ FocusHandleEnter(XEvent * ev)
 void
 FocusHandleLeave(XEvent * ev)
 {
+   Window              win = ev->xcrossing.window;
+
+   /* Leaving root means entering other screen */
+   if (win == root.win)
+      FocusToEWin(NULL, FOCUS_SET);
 }
 
 #if 0
