@@ -41,6 +41,8 @@ int main()
 
         while (i < MAX_VAL) {
                 HASH_SET(hash, (void *)i, (void *)(i + 1));
+		if (i % 10 == 0)
+			HASH_REMOVE(hash, i);
                 i++;
         }
 /*	printf("Got through the first loop\n"); */
@@ -50,7 +52,8 @@ int main()
 
 /*		printf("Key: %d\t", i); */
 		value = (int)HASH_GET(hash, (void *)i);
-/*		printf("Value: %d\n", value); */
+		if (!value)
+			printf("Could not find key: %d\n", i);
 /*	       	fflush(stdout); */
 
 	}

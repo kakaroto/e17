@@ -318,11 +318,11 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 	if (ewd_list_is_empty(EWD_LIST(list)))
 		return FALSE;
 
-	if (index > ewd_list_nodes(EWD_LIST(list)) || index < 0)
+	if (index > ewd_list_nodes(EWD_LIST(list)) || index < 1)
 		return FALSE;
 
 	if (EWD_LIST(list)->index > EWD_LIST(list)->nodes)
-		EWD_LIST(list)->index = EWD_LIST(list)->nodes;
+		_ewd_list_goto_last(EWD_LIST(list));
 
 	if (index < EWD_LIST(list)->index)
 		increment = -1;
@@ -453,9 +453,10 @@ void *_ewd_dlist_previous(Ewd_DList * list)
 		data = EWD_LIST(list)->current->data;
 		EWD_LIST(list)->current = EWD_LIST_NODE(EWD_DLIST_NODE(
 				EWD_LIST(list)->current)->previous);
+		EWD_LIST(list)->index--;
 	}
 	else
-		EWD_LIST(list)->current = EWD_LIST(list)->last;
+		_ewd_list_goto_last(EWD_LIST(list));
 
 	return data;
 }
