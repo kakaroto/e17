@@ -129,6 +129,7 @@ Pixmap feh_create_checks(void);
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
 void feh_debug_print_winwid(winwidget winwid);
 winwidget winwidget_get_first_window_of_type(unsigned int type);
+void winwidget_reset_image(winwidget winwid);
 
 extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */

@@ -46,8 +46,13 @@ static void feh_menu_cb_exit(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_reload(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_remove(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data);
-static void feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i, void *data);
-static void feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_reset(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i,
+
+                                     void *data);
+static void feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i,
+
+                                     void *data);
 static void feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i,
 
                                              void *data);
@@ -956,14 +961,12 @@ feh_menu_init_main(void)
 
    m = feh_menu_new();
    m->name = estrdup("FILE");
-   if (opt.slideshow || opt.multiwindow)
-   {
-      feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
-                         NULL);
-      feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
-                         feh_menu_cb_remove, NULL, NULL);
-      feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
-   }
+   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
+   feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
+                      NULL);
+   feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
+                      feh_menu_cb_remove, NULL, NULL);
+   feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
 
    D_RETURN_;
@@ -1134,6 +1137,7 @@ feh_menu_init_single_win(void)
                       NULL, NULL);
    m = feh_menu_new();
    m->name = estrdup("SINGLEWIN_FILE");
+   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
    feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
@@ -1169,33 +1173,36 @@ feh_menu_init_thumbnail_viewer(void)
    menu_thumbnail_viewer = feh_menu_new();
    menu_thumbnail_viewer->name = estrdup("THUMBVIEW");
 
-   feh_menu_add_entry(menu_thumbnail_viewer, "File", NULL, "THUMBVIEW_FILE", NULL,
-                      NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, "File", NULL, "THUMBVIEW_FILE",
+                      NULL, NULL, NULL);
    m = feh_menu_new();
    m->name = estrdup("THUMBVIEW_FILE");
+   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
    feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
                       feh_menu_cb_remove_thumb, NULL, NULL);
-   feh_menu_add_entry(m, "Delete", NULL, "THUMBVIEW_CONFIRM", NULL, NULL, NULL);
+   feh_menu_add_entry(m, "Delete", NULL, "THUMBVIEW_CONFIRM", NULL, NULL,
+                      NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
 
    mi =
-      feh_menu_add_entry(menu_thumbnail_viewer, "Image Info", NULL, "INFO", NULL,
-                         NULL, NULL);
+      feh_menu_add_entry(menu_thumbnail_viewer, "Image Info", NULL, "INFO",
+                         NULL, NULL, NULL);
    mi->func_gen_sub = feh_menu_func_gen_info;
-   feh_menu_add_entry(menu_thumbnail_viewer, NULL, NULL, NULL, NULL, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, NULL, NULL, NULL, NULL, NULL,
+                      NULL);
    feh_menu_add_entry(menu_thumbnail_viewer, "About " PACKAGE, NULL, NULL,
                       feh_menu_cb_about, NULL, NULL);
-   feh_menu_add_entry(menu_thumbnail_viewer, "Close", NULL, NULL, feh_menu_cb_close,
-                      NULL, NULL);
-   feh_menu_add_entry(menu_thumbnail_viewer, "Exit", NULL, NULL, feh_menu_cb_exit,
-                      NULL, NULL);   
-   
+   feh_menu_add_entry(menu_thumbnail_viewer, "Close", NULL, NULL,
+                      feh_menu_cb_close, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, "Exit", NULL, NULL,
+                      feh_menu_cb_exit, NULL, NULL);
+
    m = feh_menu_new();
    m->name = estrdup("THUMBVIEW_CONFIRM");
-   feh_menu_add_entry(m, "Confirm", NULL, NULL, feh_menu_cb_delete_thumb, NULL,
-                      NULL);
+   feh_menu_add_entry(m, "Confirm", NULL, NULL, feh_menu_cb_delete_thumb,
+                      NULL, NULL);
 
    D_RETURN_;
 }
@@ -1345,10 +1352,22 @@ feh_menu_cb_exit(feh_menu * m, feh_menu_item * i, void *data)
 }
 
 static void
+feh_menu_cb_reset(feh_menu * m, feh_menu_item * i, void *data)
+{
+   D_ENTER;
+   winwidget_reset_image(m->fehwin);
+   winwidget_render_image(m->fehwin, 1, 1);
+   D_RETURN_;
+   i = NULL;
+   data = NULL;
+}
+
+
+static void
 feh_menu_cb_reload(feh_menu * m, feh_menu_item * i, void *data)
 {
    D_ENTER;
-   feh_reload_image(m->fehwin);
+   feh_reload_image(m->fehwin, 0);
    D_RETURN_;
    i = NULL;
    data = NULL;
@@ -1384,7 +1403,7 @@ feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i, void *data)
    i = NULL;
    data = NULL;
 }
-                                          
+
 static void
 feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i, void *data)
 {

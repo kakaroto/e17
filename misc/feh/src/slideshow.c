@@ -90,13 +90,13 @@ cb_reload_timer(void *data)
    winwidget w = (winwidget) data;
 
    D_ENTER;
-   feh_reload_image(w);
+   feh_reload_image(w, 0);
    feh_add_unique_timer(cb_reload_timer, w, opt.reload);
    D_RETURN_;
 }
 
 void
-feh_reload_image(winwidget w)
+feh_reload_image(winwidget w, int resize)
 {
    Imlib_Progress_Function pfunc = NULL;
 
@@ -123,7 +123,7 @@ feh_reload_image(winwidget w)
             w->had_resize = 1;
          w->im_w = feh_imlib_image_get_width(w->im);
          w->im_h = feh_imlib_image_get_height(w->im);
-         winwidget_render_image(w, 1, 1);
+         winwidget_render_image(w, resize, 1);
       }
       if (opt.draw_filename)
          feh_draw_filename(w);

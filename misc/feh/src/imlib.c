@@ -249,11 +249,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       D(("First progress load. setting stuff up\n"));
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
-      progwin->zoom = 1.0;
-      progwin->im_x = 0;
-      progwin->im_y = 0;
-      progwin->im_angle = 0.0;
-      progwin->has_rotated = 0.0;
+      winwidget_reset_image(progwin);
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {

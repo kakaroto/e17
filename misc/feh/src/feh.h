@@ -113,7 +113,7 @@ int feh_load_image_char(Imlib_Image * im, char *filename, Imlib_Progress_Functio
 void feh_draw_filename(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);
-void feh_reload_image(winwidget w);
+void feh_reload_image(winwidget w, int resize);
 void feh_filelist_image_remove(winwidget winwid, char do_delete);
 
 

@@ -187,7 +187,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
                free(thumbwin->file);
                thumbwin->file = feh_list_add_front(NULL, thumbfile);
                winwidget_rename(thumbwin, thumbfile->name);
-               feh_reload_image(thumbwin);
+               feh_reload_image(thumbwin, 1);
             }
          }
       }

@@ -136,7 +136,7 @@ handle_keypress_event(XEvent * ev, Window win)
         break;
      case 'r':
      case 'R':
-        feh_reload_image(winwid);
+        feh_reload_image(winwid, 0);
         break;
      case '=':
      case '+':

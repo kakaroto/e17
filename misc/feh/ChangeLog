@@ -1,3 +1,10 @@
+Sat Jun 24 00:46:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* New menu item, Reset. It resets the zoom/pan/rotate etc.
+	* Currently only with -P (to be fixed), a reload does not force a
+	reset like it did before, so you can zoom a webcam and not have it
+	reset on reload.
+
 Sat Jun 24 00:13:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Thumbnails, when clicked, now all open the clicked image in the
