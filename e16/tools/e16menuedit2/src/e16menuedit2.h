@@ -42,8 +42,8 @@
 #define APP_HOME ".e16menuedit2"
 #define ICON_DIR "icons"
 #define DEBUG_OUTPUT printf ("(%s, %d): ", __FILE__, __LINE__);
-#define ENLIGHTENMENT_MENU ".enlightenment"
-#define E16_MENU ".e16"
+#define ENLIGHTENMENT_PATH ".enlightenment"
+#define E16_PATH ".e16"
 
 void print_statusbar (const gchar *format, ...);
 gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
@@ -53,8 +53,14 @@ void show_version ();
 
 enum
 {
-  ARG_EMENU,
+  ARG_MENUS = 1,
   ARG_VERSION
+};
+
+enum
+{
+  EMENU_AUTODETECT,
+  EMENU_MENUS
 };
 
 #endif /* _E16MENUEDIT_H */

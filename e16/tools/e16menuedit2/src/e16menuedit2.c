@@ -37,7 +37,8 @@
 int librsvg_cmp;
 char *browser;
 char *glade_file;
-char *emenu_path;
+char *epath;
+int emenu;
 
 int main (int argc, char *argv[])
 {
@@ -62,7 +63,11 @@ int main (int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 
+  /* set log level for app exit */
+  g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
+
   parse_options (argc, argv);
+
   gtk_init (&argc, &argv);
 
   for (i = 0; i < MAX_RECURSION; i++)
@@ -119,10 +124,10 @@ int main (int argc, char *argv[])
   }
 
   g_free (filename_properties);
-  
+
   gtk_main ();
 
-  free (emenu_path);
+  free (epath);
   g_free (glade_file);
 
   return 0;
@@ -191,30 +196,47 @@ void parse_options (int argc, char **argv)
 {
   poptContext context;
   int option;
-  char *emenu = NULL;
-  char *e_version_current;
-  int e_version_cmp;
-  char e_version[] = "0.16.8";
+  epath = NULL;
+  struct stat buf;
+  gboolean epath_missing = TRUE;
+  char *tmp;
+  
+  emenu = EMENU_AUTODETECT;
 
   struct poptOption options[] =
     {
-      {"emenu", 'e', POPT_ARG_STRING,
-        &emenu, ARG_EMENU,
-        "Enlightenment menu dir (enlightenment or e16).",
-        NULL},
+      {"menus", 'm', POPT_ARG_NONE, NULL, ARG_MENUS,
+       "Force search of file.menu in 'menus' subdirecory of enlightenment"
+       "configuration direcory. If not given e16menuedit2 try to auto detect it.",
+       NULL},
       {"version", 'v', POPT_ARG_NONE, NULL, ARG_VERSION, "show version", NULL},
       POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}
     };
 
-  context = poptGetContext ("popt1", argc, (const char **) argv, options, 0);
+  /* get E path */
+  tmp = getenv ("ECONFDIR");
+  epath = g_strdup_printf (tmp);
+  
+  if (!epath)
+  {
+    epath = g_strdup_printf ("%s/%s", homedir (getuid ()),
+                                  ENLIGHTENMENT_PATH);
+  }
+  epath_missing = stat (epath, &buf);
+  if (epath_missing)
+  {
+    g_critical ("The direcory %s seems not to be a E16 conf path!\n", epath);
+  }
 
+  context = poptGetContext ("popt1", argc, (const char **) argv, options, 0);
+  
   /* start option handling */
   while ((option = poptGetNextOpt (context)) > 0)
-  {
+  {  
     switch (option)
     {
-    case ARG_EMENU:
-      g_print ("emenu case\n");
+    case ARG_MENUS:
+      emenu = EMENU_MENUS;
       break;
     case ARG_VERSION:
       show_version ();
@@ -223,43 +245,6 @@ void parse_options (int argc, char **argv)
     }
   }
 
-  if (emenu == NULL)
-  {
-    e_version_current = e16_version ();
-    e_version_cmp = version_cmp (e_version_current, e_version);
-    free (e_version_current);
-
-    if (e_version_cmp >= 0)
-    {
-      emenu_path = malloc (strlen (E16_MENU) + 1);
-      strcpy (emenu_path, E16_MENU);
-    }
-    else
-    {
-      emenu_path = malloc (strlen (ENLIGHTENMENT_MENU) + 1);
-      strcpy (emenu_path, ENLIGHTENMENT_MENU);
-    }
-  }
-  else
-  {
-    if (!strcmp (emenu, "enlightenment"))
-    {
-      emenu_path = malloc (strlen (ENLIGHTENMENT_MENU) + 1);
-      strcpy (emenu_path, ENLIGHTENMENT_MENU);
-    }
-    else if (!strcmp (emenu, "e16"))
-    {
-      emenu_path = malloc (strlen (E16_MENU) + 1);
-      strcpy (emenu_path, E16_MENU);
-    }
-    else
-    {
-      g_print ("Sorry, the parameter 'emenu' has only state 'enlightenment'\n"
-               "for old menu structure and 'e16' for new direcory structure\n"
-	       "in '.e16/menus' for E16 > 0.16.8.\n");
-      exit (0);
-    }
-  }
 }
 
 void show_version ()

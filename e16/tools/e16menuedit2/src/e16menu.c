@@ -32,7 +32,8 @@
 
 int app_errno;
 char app_errno_str[APP_ERRNO_STR_LEN];
-extern char *emenu_path;
+extern char *epath;
+extern int emenu;
 
 GtkTreeModel *load_menus_from_disk (void)
 {
@@ -50,22 +51,34 @@ GtkTreeModel *load_menus_from_disk (void)
                               G_TYPE_STRING,
                               G_TYPE_STRING);
 
-  if (!strcmp (emenu_path, ENLIGHTENMENT_MENU))
-    sprintf (buf, "%s/%s/file.menu", homedir (getuid ()), emenu_path);
-  else if (!strcmp (emenu_path, E16_MENU))
-    sprintf (buf, "%s/%s/%s/file.menu", homedir (getuid ()), emenu_path, "menus");
+  if (emenu == EMENU_AUTODETECT)
+  {
+    struct stat stat_buf;
+    gboolean epath_missing = TRUE;
+
+    sprintf (buf, "%s/file.menu", epath);
+    epath_missing = stat (buf, &stat_buf);
+
+    if (epath_missing)
+    {
+      sprintf (buf, "%s/menus/file.menu", epath);
+    }
+  }
+  else if (emenu == EMENU_MENUS)
+  {
+    sprintf (buf, "%s/menus/file.menu", epath);
+  }
   else
   {
-    printf ("unknown menu definition!\n");
+    g_critical ("unknown menu definition!\n");
     exit (1);
   }
 
   menufile = fopen (buf, "r");
   if (!menufile)
   {
-    printf ("hmm. looks like you have some \"issues\" as you don't have\n"
-            "a %s file.\n", buf);
-    gtk_exit (1);
+    g_critical ("hmm. looks like you have some \"issues\" as you don't have\n"
+                "a %s file.\n", buf);
   }
 #ifdef DEBUG
   g_print ("Loading menu: %s\n", buf);
@@ -167,11 +180,11 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
   char first = 1;
   char s[4096];
   GtkTreeIter sub_iter;
-  
+
   if (!file_to_load)
     return;
   if (file_to_load[0] != '/')
-    sprintf (buf, "%s/%s/%s", homedir (getuid ()), emenu_path, file_to_load);
+    sprintf (buf, "%s/%s", epath, file_to_load);
   else
     sprintf (buf, "%s", file_to_load);
 
@@ -273,8 +286,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   if (!g_path_is_absolute (params))
   {
     /* Tarnation! A relative path */
-    realfile = g_strjoin ("/", homedir (getuid ()),
-                          emenu_path, params, NULL);
+    realfile = g_strjoin (epath, params, NULL);
   }
   else
   {
@@ -303,7 +315,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
     if (has_child)
     {
 #ifdef WRITE_FILE      
-      menu_ptr2 = fopen (menu_file[depth], "w");   
+      menu_ptr2 = fopen (menu_file[depth], "w");
       if (menu_ptr2 == NULL)
       {
         printf ("Couldn't save menu to: %s\n", menu_file[depth]);
@@ -318,7 +330,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 #else
       g_print ("write header to: \"%s\"\n", menu_file[depth]);
 #endif /* !WRITE_FILE */    
-      
+
       sprintf (buffer, "\"%s\"\t%s\tmenu\t\"%s\"\n",
                description[0] == '\0' ? "NULL" : description,
                icon[0] == '\0' ? "NULL" : icon,
@@ -356,7 +368,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
       printf ("Couldn't save menu to: %s\n", menu_file[depth]);
     }
 #endif /*WRITE_FILE */
-  
+
     sprintf (buffer, "\"%s\"\n", description);
 #ifdef WRITE_FILE  
     fprintf (menu_ptr2, "%s", g_locale_from_utf8 (buffer,
