@@ -4,6 +4,7 @@ include_HEADERS = eConfig.h
 
 libeConfig_la_SOURCES = \
     api.c               \
+    cache.c             \
     init.c              \
 	load.c      	    \
     eConfig.internal.h  \
