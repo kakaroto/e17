@@ -9,8 +9,8 @@ INCLUDES          = -I. -I$(top_srcdir)/dox -I/usr/X11R6/include \
 
 LIBOBJS = @LIBOBJS@
 
-bin_PROGRAMS      = bdox
-bdox_SOURCES      = main.c dox.h hotspot.c style.c utils.c style.h
-bdox_LDADD        = -lX11
+bin_PROGRAMS      = dox2
+dox2_SOURCES      = main.c dox.h hotspot.c style.c utils.c style.h
+dox2_LDADD        = -lX11
 
 EXTRA_DIST = 
