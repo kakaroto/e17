@@ -1,9 +1,9 @@
 Sat Jun 17 12:57:49 PDT 2000 Paul Duncan <pabs@pablotron.org>
    
-   * wget is now quied by dfeault (wget -q). it's verbose if the
+   * wget is now quiet by default (wget -q). it's verbose if the
    -V or --verbose flag is passed to feh.  Your terminal will
    thank you.
-   * mirrored the same change too cam.  cam -V or cam --version
+   * mirrored the same change too cam.  cam -V or cam --verbose
    will enable verbose mode for feh and the forked wgets.
    * the second mouse button now zooms again, and the third button
    pans.
