@@ -35,6 +35,7 @@
 #if HAVE_SETENV
 #define USE_LIBC_SETENV  1	/* Use libc setenv  if present */
 #endif
+#define USE_LIBC_MALLOC  1	/* Use unwrapped libc malloc/realloc/free */
 #define DEBUG_EWMH  0
 
 #include <X11/Xlib.h>
@@ -2697,10 +2698,11 @@ char                CanZoom(void);
 void                ZoomInit(void);
 void                Zoom(EWin * ewin);
 
-#if defined(USE_LIBC_MALLOC)
+#if USE_LIBC_MALLOC
 
-#define Emalloc malloc
-#define Efree free
+#define Efree       free
+#define Emalloc     malloc
+#define Erealloc    realloc
 
 #elif defined(__FILE__) && defined(__LINE__)
 

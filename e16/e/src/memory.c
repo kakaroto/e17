@@ -21,6 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <time.h>
+
+#if !USE_LIBC_MALLOC
 
 /* uncomment DBUG_MEM to get rudamentary pointer checking                    */
 /* uncomment MEM_OUT to get full debug output. to make this work you have to */
@@ -67,7 +70,7 @@ static time_t       pointers_time[POINTERS_SIZE];
    PSTK(y, 20); PSTK(y, 21); PSTK(y, 22); PSTK(y, 23); PSTK(y, 24);\
    PSTK(y, 25); PSTK(y, 26); PSTK(y, 27); PSTK(y, 28); PSTK(y, 29);\
    PSTK(y, 30); PSTK(y, 31);\
-end: \
+end:; \
 }
 
 static struct _symtab
@@ -79,7 +82,7 @@ static struct _symtab
 
 static int          sym_count = 0;
 
-char               *
+static const char  *
 getsym(void *p)
 {
    int                 i;
@@ -113,7 +116,7 @@ EDisplayMemUse()
 	     void               *p;
 	     char                buf[256];
 
-	     while (fscanf(f, "%x %*s %250s\n", &p, buf) != EOF)
+	     while (fscanf(f, "%p %*s %250s\n", &p, buf) != EOF)
 	       {
 		  sym_count++;
 		  sym = realloc(sym, sizeof(struct _symtab) * sym_count);
@@ -390,6 +393,8 @@ __Efree(void *ptr, const char *file, int line)
    EDBUG_RETURN_;
 }
 #endif
+
+#endif /* !USE_LIBC_MALLOC */
 
 #if !USE_LIBC_STRDUP
 char               *

@@ -4943,7 +4943,9 @@ IPC_Group(const char *params, Client * c)
 static void
 IPC_MemDebug(const char *params, Client * c)
 {
+#if !USE_LIBC_MALLOC
    EDisplayMemUse();
+#endif
 
    params = NULL;
    c = NULL;
