@@ -585,7 +585,10 @@ doSMExit(void *params)
 	     ShowDialog(d);
 	     ewin = FindEwinByDialog(d);
 	     if (ewin)
-		FocusToEWin(ewin);
+	       {
+		  MoveEwin(ewin, ((root.w - (ewin->w)) / 2), ((root.h - (ewin->h)) / 2));
+		  FocusToEWin(ewin);
+	       }
 	     return;
 	  }
      }
@@ -1128,7 +1131,10 @@ doSMExit(void *params)
 	ShowDialog(d);
 	ewin = FindEwinByDialog(d);
 	if (ewin)
-	   FocusToEWin(ewin);
+	  {
+	     MoveEwin(ewin, ((root.w - (ewin->w)) / 2), ((root.h - (ewin->h)) / 2));
+	     FocusToEWin(ewin);
+	  }
 	return;
      }
    else if (!strcmp(s, "restart_wm"))

@@ -2756,3 +2756,11 @@ Sat Oct  2 11:59:40 PDT 1999
 (Mandrake)
 
 edited some documentation, also fixed a minor typo in menus.cfg
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 14:05:27 PDT 1999
+(Mandrake)
+
+having the logout dialog autoarrange looked kind of bad - so I have this one
+centered again in session.c
