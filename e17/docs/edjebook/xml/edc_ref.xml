@@ -317,6 +317,19 @@ ex: color3, 255 0 0 255; (Outline is colored red)
 </row>
 
 <row>
+  <entry>description
+        </entry>
+  <entry>inherit,
+        </entry>
+  <entry>"name" INDEX;
+        </entry>
+  <entry>Inherit the values of the description identified by "name" and INDEX.
+  Inherit can only be used <emphasis>after</emphasis> a state is set on the
+  current description and can not be used for the default state.
+        </entry>
+</row>
+
+<row>
   <entry>rel1/rel2
         </entry>
   <entry>relative,
