@@ -524,45 +524,28 @@ EwinInstantShade(EWin * ewin, int force)
    Mode.queue_up = 0;
    switch (ewin->border->shadedir)
      {
+     default:
      case 0:
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
-	ewin->shaded = 2;
 	EoSetW(ewin, b);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
 	break;
      case 1:
 	att.win_gravity = WestGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	d = EoGetX(ewin) + EoGetW(ewin) - b;
-	ewin->shaded = 2;
 	EoSetW(ewin, b);
 	if (!Mode.wm.startup)
 	   EoSetX(ewin, d);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	b = d;
-	ewin->shaded = 2;
 	EoSetH(ewin, b);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
@@ -570,19 +553,19 @@ EwinInstantShade(EWin * ewin, int force)
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	b = d;
 	d = EoGetY(ewin) + EoGetH(ewin) - b;
-	ewin->shaded = 2;
 	EoSetH(ewin, b);
 	if (!Mode.wm.startup)
 	   EoSetY(ewin, d);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
-	break;
-     default:
 	break;
      }
+
+   ewin->shaded = 2;
+   ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
+		      EoGetW(ewin), EoGetH(ewin));
+   EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+   EwinBorderCalcSizes(ewin);
+   ecore_x_sync();
+
    EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
@@ -605,16 +588,13 @@ EwinInstantUnShade(EWin * ewin)
 
    switch (ewin->border->shadedir)
      {
+     default:
      case 0:
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	b = ewin->client.w + ewin->border->border.left +
 	   ewin->border->border.right;
-	ewin->shaded = 0;
 	EoSetW(ewin, b);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
 	break;
      case 1:
 	att.win_gravity = WestGravity;
@@ -624,23 +604,15 @@ EwinInstantUnShade(EWin * ewin)
 	d = EoGetX(ewin) + EoGetW(ewin) - (ewin->border->border.right +
 					   ewin->client.w +
 					   ewin->border->border.left);
-	ewin->shaded = 0;
 	EoSetW(ewin, b);
 	EoSetX(ewin, d);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	b = ewin->client.h + ewin->border->border.top +
 	   ewin->border->border.bottom;
-	ewin->shaded = 0;
 	EoSetH(ewin, b);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
@@ -650,16 +622,16 @@ EwinInstantUnShade(EWin * ewin)
 	d = EoGetY(ewin) + EoGetH(ewin) - (ewin->border->border.bottom +
 					   ewin->client.h +
 					   ewin->border->border.top);
-	ewin->shaded = 0;
 	EoSetH(ewin, b);
 	EoSetY(ewin, d);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
-	break;
-     default:
 	break;
      }
+
+   ewin->shaded = 0;
+   MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
+		  ewin->client.h);
+   ecore_x_sync();
+
    EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
@@ -678,7 +650,7 @@ EwinShade(EWin * ewin)
       return;
    if (GetZoomEWin() == ewin)
       return;
-   if (ewin->shaded)
+   if (ewin->shaded || ewin->iconified)
       return;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       return;
