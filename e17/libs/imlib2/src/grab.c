@@ -420,6 +420,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    origh = h;
    if (grab)
       XGrabServer(d);
+   XSync(d, False);
    prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
    _x_err = 0;
    /* lets see if its a pixmap or not */
