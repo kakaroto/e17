@@ -1991,6 +1991,7 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
 	evas_show(view_evas, o_backing);
 	if (selected_state)
 	  {
+	     update_visible_selection();
 	     evas_show(view_evas, o_select_rect);
 	     evas_show(view_evas, o_select_line1);
 	     evas_show(view_evas, o_select_line2);
