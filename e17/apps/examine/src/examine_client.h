@@ -44,7 +44,8 @@ typedef struct examine_prop {
     long            val;
     float           fval;
   } oldvalue;
-  Ewl_Widget       *w;
+  Ewl_Widget     *w;
+  void           *data;
   struct examine_prop *next;
 } examine_prop;
 

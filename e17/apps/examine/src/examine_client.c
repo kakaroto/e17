@@ -256,6 +256,9 @@ examine_client_list_props_cb(void)
           }
         } else if (!strcmp(type, "colour")) {
           prop_tmp->type = PT_RGB;
+        } else if (!strcmp(type, "theme")) {
+          prop_tmp->type = PT_THM;
+          prop_tmp->data = strdup(range);
         } else
           prop_tmp->value.ptr = NULL;
 
@@ -354,6 +357,7 @@ examine_client_get_val_cb(void)
   int             tmpi;
   float           tmpd;
   examine_prop   *prop;
+  Ewl_Widget     *sibling;
 
   ret = strstr(examine_client_buf, "=") + 1;
   if (*ret == '"') {
@@ -389,6 +393,19 @@ examine_client_get_val_cb(void)
     prop->value.fval = tmpd;
     prop->oldvalue.fval = tmpd;
     ewl_spinner_set_value(EWL_SPINNER(prop->w), tmpd);
+    break;
+  case PT_THM:
+    prop->value.ptr = strdup(ret);
+    prop->oldvalue.ptr = strdup(ret);
+
+    tmp = malloc(strlen(ret) + 5);      // 5 = .eet + \0
+    strcpy(tmp, ret);
+    strcat(tmp, ".eet");
+    ewl_container_child_iterate_begin(EWL_CONTAINER(prop->w));
+    while (sibling = ewl_container_next_child(EWL_CONTAINER(prop->w)))
+      if (!memcmp(EWL_IMAGE(sibling)->path + strlen(EWL_IMAGE(sibling)->path)
+                  - strlen(tmp), tmp, strlen(tmp)))
+        ewl_object_set_padding(EWL_OBJECT(sibling), 0, 0, 0, 0);
     break;
   default:                     /* PT_STR, PT_RGB */
     prop->value.ptr = strdup(ret);

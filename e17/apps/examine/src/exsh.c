@@ -535,7 +535,7 @@ parse_line(Ecore_Config_Ipc_Server_List ** server_list, char *line)
     if (!cp)
       ret = ECORE_CONFIG_ERR_NOTFOUND;
     else {
-      
+
       if (h)
         puts(cp->help);
       else if (cp->signature & P_HELPONLY) {

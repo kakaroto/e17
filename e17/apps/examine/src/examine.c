@@ -5,12 +5,14 @@
 
 #include "Ecore_Config.h"
 
-#include <Ewl.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "examine_client.h"
 
@@ -19,6 +21,7 @@ int             debug = 1;
 void            render_ewl(void);
 void            print_usage(void);
 Ewl_Widget     *add_tab(char *name);
+char           *app_name;
 
 Ewl_Widget     *main_win;
 Ewl_Widget     *tree_box;
@@ -52,7 +55,6 @@ main(int argc, char **argv)
 {
   int             ret = ECORE_CONFIG_ERR_SUCC, cc = 0;
   connstate       cs = OFFLINE;
-  char           *pipe_name = NULL;
 
   if (argc <= 1 ||
       (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)) {
@@ -60,8 +62,8 @@ main(int argc, char **argv)
     return 0;
   }
 
-  pipe_name = argv[1];
-  E(2, "examine: connecting to %s.\n", pipe_name);
+  app_name = argv[1];
+  E(2, "examine: connecting to %s.\n", app_name);
 
   ecore_init();
   ecore_app_args_set(argc, (const char **) argv);
@@ -81,9 +83,9 @@ main(int argc, char **argv)
 
 reconnect:
   cc++;
-  if ((ret = examine_client_init(pipe_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
+  if ((ret = examine_client_init(app_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
     E(0, "examine: %sconnect to %s failed: %d\n", (cc > 1) ? "re" : "",
-      pipe_name, ret);
+      app_name, ret);
   else {
     render_ewl();
     ewl_widget_show(main_win);
@@ -165,12 +167,38 @@ cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
   change->value.fval = (float) ewl_spinner_get_value(EWL_SPINNER(w));
 }
 
+void
+cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_prop   *change;
+  char           *theme, *ext;
+  Ewl_Widget     *sibling;
+
+  change = (examine_prop *) user_data;
+
+  if (!(theme = rindex(EWL_IMAGE(w)->path, '/') + 1))
+    theme = EWL_IMAGE(w)->path;
+
+  theme = strdup(theme);
+  if (ext = rindex(theme, '.'))
+    *ext = '\0';
+
+  ewl_container_child_iterate_begin(EWL_CONTAINER(w->parent));
+  while (sibling = ewl_container_next_child(EWL_CONTAINER(w->parent)))
+    ewl_object_set_padding(EWL_OBJECT(sibling), 2, 2, 2, 2);
+  ewl_object_set_padding(EWL_OBJECT(w), 0, 0, 0, 0);
+
+  if (change->value.ptr)
+    free(change->value.ptr);
+  change->value.ptr = theme;
+}
+
 /* UI constructor */
 
 void
 draw_tree(examine_prop * prop_item)
 {
-  Ewl_Widget     *entries[2], *tree_box, *tmp_row;
+  Ewl_Widget     *entries[2], *tree_box, *tmp_row, *tmp;
   examine_panel  *panel_ptr;
   char           *key_tmp;
   char           *panel_name;
@@ -257,6 +285,35 @@ draw_tree(examine_prop * prop_item)
       entries[1] = ewl_entry_new("");
       ewl_callback_append(EWL_ENTRY(entries[1])->text,
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
+    } else if (prop_item->type == PT_THM) {
+      struct dirent  *next;
+      DIR            *dp;
+      char           *dir, *fulldir;
+      char           *file;
+
+      entries[1] = ewl_hbox_new();
+
+      // FIXME - only looking in /usr/local/share - should be settable
+      dir = "/usr/local/share/";
+      fulldir = malloc(strlen(dir) + strlen(app_name) + strlen("/themes/") + 1);
+      strcpy(fulldir, dir);
+      strcat(fulldir, app_name);
+      strcat(fulldir, "/themes/");
+      dp = opendir((const char *) fulldir);
+      while (next = readdir(dp)) {
+        if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, ".."))
+          continue;
+        file = malloc(strlen(fulldir) + strlen(next->d_name) + 1);
+        strcpy(file, fulldir);
+        strcat(file, next->d_name);
+        tmp = ewl_image_new(file, (char *) prop_item->data);
+        ewl_widget_show(tmp);
+        ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp);
+        ewl_callback_append(tmp, EWL_CALLBACK_CLICKED, cb_choose_theme,
+                            prop_item);
+        ewl_object_set_padding(EWL_OBJECT(tmp), 2, 2, 2, 2);
+      }
+
     } else
       entries[1] = ewl_entry_new("unknown");
     prop_item->w = entries[1];
@@ -316,7 +373,8 @@ render_ewl(void)
 
 /*****************************************************************************/
 
-Ewl_Widget * add_tab(char *name)
+Ewl_Widget     *
+add_tab(char *name)
 {
   Ewl_Widget     *button, *scrollpane, *pane, *headers[2];
   examine_panel  *new_panel;
