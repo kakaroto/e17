@@ -34,11 +34,11 @@ static equate_button buttons[] = {
   {3, 1, 1, 1, "7", "7", (void *)calc_append, NULL},
   {3, 2, 1, 1, "8", "8", (void *)calc_append, NULL},
   {3, 3, 1, 1, "9", "9", (void *)calc_append, NULL},
-//  {3, 4, 1, 1, "(", "(", (void *)calc_append, NULL},
+  {3, 4, 1, 1, "(", "(", (void *)calc_op, NULL},
   {4, 1, 1, 1, "4", "4", (void *)calc_append, NULL},
   {4, 2, 1, 1, "5", "5", (void *)calc_append, NULL},
   {4, 3, 1, 1, "6", "6", (void *)calc_append, NULL},
-//  {4, 4, 1, 1, ")", ")", (void *)calc_append, NULL},
+  {4, 4, 1, 1, ")", ")", (void *)calc_op, NULL},
   {5, 1, 1, 1, "1", "1", (void *)calc_append, NULL},
   {5, 2, 1, 1, "2", "2", (void *)calc_append, NULL},
   {5, 3, 1, 1, "3", "3", (void *)calc_append, NULL},
@@ -77,8 +77,10 @@ calc_op (Ewl_Widget * w, void *ev_data, void *user_data)
   double val;
   int len;
   
-  sscanf(tmp, "%lf", &val);
-  equate_parse_val(val);
+  if (tmp[0] != '\0') {
+    sscanf(tmp, "%lf", &val);
+    equate_parse_val(val);
+  }
 
   tmp[0]='\0';
   key=(char) *((char *) user_data);
@@ -95,7 +97,14 @@ calc_op (Ewl_Widget * w, void *ev_data, void *user_data)
     case '/':
       equate_parse_div();
       break;
+    case '(':
+      equate_parse_open_brak();
+      break;
+    case ')':
+      equate_parse_close_brak();
+      break;
     case '=':
+      equate_print();
       calc_exec();
       break;
   }
@@ -183,6 +192,8 @@ draw_interface (void)
   Ewl_Widget *button[count];
   Ewl_Widget *cell[count];
   Ewl_Widget *displaycell;
+
+  equate_init();
 
   tmp[0]='\0';
   disp[0]='\0';
