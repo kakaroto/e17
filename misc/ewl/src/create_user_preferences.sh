@@ -16,17 +16,28 @@ mkdir $HOME/.ewl/themes
 # create the default preferences db
 ./ewldbtool $HOME/.ewl/preferences "path" $HOME"/.ewl/personal:"$HOME"/.ewl/themes:/usr/local/share/ewl/themes:/usr/local/share/ewl/default"
 ./ewldbtool $HOME/.ewl/preferences "theme" "defaultTheme"
-./ewldbtool $HOME/.ewl/preferences "render/dithered" "false"
-./ewldbtool $HOME/.ewl/preferences "render/antialiased" "false"
 ./ewldbtool $HOME/.ewl/preferences "render/method" "alpha_software"
+./ewldbtool $HOME/.ewl/preferences "render/image_cache" "8388608"
+./ewldbtool $HOME/.ewl/preferences "render/font_cache"  "1048576"
+
+./ewldbtool $HOME/.ewl/preferences "render/dithered" "false"    # depricated
+./ewldbtool $HOME/.ewl/preferences "render/antialiased" "false" # depricated
+
+./ewldbtool $HOME/.ewl/preferences "font_path" $HOME"/.ewl/personal:"$HOME"/.ewl/themes:/usr/local/share/ewl/themes:/usr/local/share/ewl/default:/usr/share/fonts/truetype:/usr/local/share/fonts/truetype"
+./ewldbtool $HOME/.ewl/preferences "default_font" "20thcent"
 
 
 # create a defaultTheme directory
 cp -rf ./themes/defaultTheme $HOME/.ewl/themes
 
-###$##################
+### none of the rest of this crap is necessary (because of the previous
+### line -- it's only here to aid in development and as a tutorial.
+
+
+
+######################
 #   PARENT CLASSES   #
-##$###################
+######################
 
 # create the default EwlWidget db
 DB=$HOME/.ewl/themes/defaultTheme/EwlWidget

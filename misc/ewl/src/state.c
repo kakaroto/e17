@@ -20,7 +20,8 @@ void       ewl_state_init(EwlState *s)
 	      *home = NULL,
 	      *prefs_path = NULL,
 	      *prefs_name = ".ewl/preferences",
-	      *prefs_list = NULL;
+	      *prefs_list = NULL,
+	      *font_list  = NULL;
 	int    i = 0,
 	       len = 0;
 	FUNC_BGN("ewl_state_init");
@@ -33,7 +34,8 @@ void       ewl_state_init(EwlState *s)
 	/* sanitize data */
 	s->application_name = NULL;
 	s->theme_name = NULL;
-	s->path_list = NULL;
+	s->config_path_list = NULL;
+	s->font_path_list = NULL;
 
 	s->debug = _Ewl_Debug;
 	/*s->static_registry = _Ewl_Static_Registry;*/
@@ -91,6 +93,44 @@ void       ewl_state_init(EwlState *s)
 					fprintf(stderr,"ewl_state_init(): dithered = %s\n", 
 					        s->render_dithered?"true":"false");
 
+				temp = ewl_db_get(db,"default_font", &len);
+				s->default_font = e_string_dup(temp);
+				if (ewl_debug_is_active())
+					fprintf(stderr,"ewl_state_init(): dfeault_font = %s\n", 
+					        temp?temp:"");
+				
+				temp = ewl_db_get(db,"render/image_cache", &len);
+				if (temp)	{
+					s->image_cache_size = atoi(temp);
+				} else {
+					fprintf(stderr, 
+					        "WARNING: Undefined Image Cache size in %s\n"
+					        "         This could mean you have an "
+					        "obsolete or corrupt preferences database,\n"
+					        "         or that you just forgot to run "
+					        "the create preferences script.\n"
+					        "         Setting Image Cache to 8388608 bytes.\n",
+					        prefs_path);
+					s->image_cache_size = 8388608;
+				}
+
+				temp = ewl_db_get(db,"render/font_cache", &len);
+				if (temp)	{
+					s->font_cache_size = atoi(temp);
+				} else {
+					fprintf(stderr, 
+					        "WARNING: Undefined Font Cache size in %s\n"
+					        "         This could mean you have an "
+					        "obsolete or corrupt preferences database,\n"
+					        "         or that you just forgot to run "
+					        "the create preferences script.\n"
+					        "         Setting Font Cache to 1048576  bytes.\n",
+					        prefs_path);
+					s->font_cache_size = 1048576;
+				}
+
+
+
 				temp = ewl_db_get(db,"render/method", &len);
 				if (temp) {
 					for (i=0; i<RENDER_METHOD_COUNT; i++)	{
@@ -105,7 +145,10 @@ void       ewl_state_init(EwlState *s)
 				} else {
 					fprintf(stderr,
 				            "WARNING: Undefined Render Method in %s\n"
-					        "         This could mean you have an obsolete or corrupt preferences database.\n"
+					        "         This could mean you have an "
+					        "obsolete or corrupt preferences database,\n"
+					        "         or that you just forgot to run "
+					        "the create preferences script.\n"
 					        "         Falling back to Software Rendering.\n",
 					        prefs_path);
 					s->render_method = RENDER_METHOD_ALPHA_SOFTWARE;
@@ -120,6 +163,7 @@ void       ewl_state_init(EwlState *s)
 					s->render_method = RENDER_METHOD_ALPHA_SOFTWARE;
 				}
 
+				/* get config file path */
 				prefs_list = ewl_db_get(db,"path", &len);
 				if (ewl_debug_is_active())
 					fprintf(stderr,"ewl_state_init(): paths = %s\n",
@@ -127,12 +171,28 @@ void       ewl_state_init(EwlState *s)
 
 				for (temp=strtok(prefs_list,":"); temp;
 				     temp=strtok(NULL,":"))	{
-					s->path_list = ewl_ll_insert_with_data(s->path_list,
+					s->config_path_list = ewl_ll_insert_with_data(s->config_path_list,
 					                                       (EwlData*)
 					                                       e_string_dup(temp));
 					if (ewl_debug_is_active())
 						fprintf(stderr,"ewl_state_init(): adding path %s\n",
 						temp);
+				}
+
+				/* get font path list */
+				font_list = ewl_db_get(db,"font_path", &len);
+				if (ewl_debug_is_active())
+					fprintf(stderr,"ewl_state_init(): font_paths = %s\n",
+					        font_list);
+
+				for (temp=strtok(font_list,":"); temp;
+				     temp=strtok(NULL,":"))	{
+					s->font_path_list = ewl_ll_insert_with_data(s->font_path_list,
+					                                       (EwlData*)
+					                                       e_string_dup(temp));
+					if (ewl_debug_is_active())
+						fprintf(stderr,"ewl_state_init(): "
+						        "adding font path %s\n", temp);
 				}
 				ewl_db_close(db);
 			}
@@ -283,6 +343,130 @@ char     **ewl_get_path_strings(int *length)
 	FUNC_END("ewl_get_path_strings");
 	return temp;
 }
+
+
+
+void       ewl_insert_font_path(char *font_path)
+{
+	FUNC_BGN("ewl_insert_font_path");
+	ewl_state_insert_font_path(font_path);
+	FUNC_END("ewl_insert_font_path");
+	return;
+}
+
+void       ewl_remove_font_path(char *font_path)
+{
+	FUNC_BGN("ewl_remove_font_path");
+	ewl_state_remove_font_path(font_path);
+	FUNC_END("ewl_remove_font_path");
+	return;
+}
+
+EwlLL     *ewl_get_font_path_list()
+{
+	EwlLL *l = NULL;
+	FUNC_BGN("ewl_get_font_path_list");
+	l = ewl_state_get_font_path_list();
+	FUNC_END("ewl_get_font_path_list");
+	return l;
+}
+
+
+char     **ewl_get_font_path_strings(int *length)
+{
+	char **temp = NULL;
+	FUNC_BGN("ewl_get_font_path_strings");
+	temp = ewl_state_get_font_path_strings(length);
+	FUNC_END("ewl_get_font_path_strings");
+	return temp;
+}
+
+void       ewl_set_default_font(char *font)
+{
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_set_default_font");
+	if (!s)	{
+		ewl_debug("ewl_set_default_font", EWL_NULL_ERROR, "s");
+	} else if (!font||!strlen(font)) {
+		ewl_debug("ewl_set_default_font", EWL_NULL_ERROR, "font");
+	} else {
+		s->default_font = e_string_dup(font);
+	}
+	FUNC_END("ewl_set_default_font");
+	return;
+}
+
+char      *ewl_get_default_font()
+{
+	EwlState *s = ewl_state_get();
+	char     *font = NULL;
+	FUNC_BGN("ewl_get_default_font");
+	if (!s)	{
+		ewl_debug("ewl_get_default_font", EWL_NULL_ERROR, "s");
+	} else {
+		font = e_string_dup(s->default_font);
+	}
+	FUNC_END("ewl_get_default_font");
+	return font;
+}
+
+
+
+void       ewl_set_font_cache(int size)
+{
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_set_font_cache");
+	if (!s)	{
+		ewl_debug("ewl_set_font_cache", EWL_NULL_ERROR, "s");
+	} else {
+		s->font_cache_size = size;
+	}
+	FUNC_END("ewl_set_font_cache");
+	return;
+}
+
+int        ewl_get_font_cache()
+{
+	EwlState *s = ewl_state_get();
+	int       size = 0;
+	FUNC_BGN("ewl_get_font_cache");
+	if (!s)	{
+		ewl_debug("ewl_get_font_cache", EWL_NULL_ERROR, "s");
+	} else {
+		size = s->font_cache_size;
+	}
+	FUNC_END("ewl_get_font_cache");
+	return size;
+}
+
+
+void       ewl_set_image_cache(int size)
+{
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_set_image_cache");
+	if (!s)	{
+		ewl_debug("ewl_set_image_cache", EWL_NULL_ERROR, "s");
+	} else {
+		s->image_cache_size = size;
+	}
+	FUNC_END("ewl_set_image_cache");
+	return;
+}
+
+int        ewl_get_image_cache()
+{
+	EwlState *s = ewl_state_get();
+	int       size = 0;
+	FUNC_BGN("ewl_get_image_cache");
+	if (!s)	{
+		ewl_debug("ewl_get_image_cache", EWL_NULL_ERROR, "s");
+	} else {
+		size = s->image_cache_size;
+	}
+	FUNC_END("ewl_get_image_cache");
+	return size;
+}
+
 
 
 void       ewl_render_antialiased_set(EwlBool a)
@@ -483,7 +667,7 @@ void       ewl_state_insert_path(char *path)
 	} else if (!path) {
 		ewl_debug("ewl_state_insert_path", EWL_NULL_ERROR, "path");
 	} else {
-		s->path_list = ewl_ll_insert_with_data(s->path_list,
+		s->config_path_list = ewl_ll_insert_with_data(s->config_path_list,
 		                                       (EwlData*)e_string_dup(path));
 	}
 	FUNC_END("ewl_state_insert_path");
@@ -521,7 +705,7 @@ EwlLL     *ewl_state_get_path_list()
 	if (!s)	{
 		ewl_debug("ewl_state_get_path_list", EWL_NULL_ERROR, "s");
 	} else {
-		l = s->path_list;
+		l = s->config_path_list;
 	}
 	FUNC_END("ewl_state_get_path_list");
 	return l;
@@ -536,12 +720,12 @@ char     **ewl_state_get_path_strings(int *length)
 	FUNC_BGN("ewl_state_get_path_strings");
 	if (!s)	{
 		ewl_debug("ewl_state_get_path_strings", EWL_NULL_ERROR, "s");
-	} else if (!(len = ewl_ll_sizeof(s->path_list))) {
+	} else if (!(len = ewl_ll_sizeof(s->config_path_list))) {
 		ewl_debug("ewl_state_get_path_strings", EWL_NULL_ERROR, "s");
 	} else {
 		paths = malloc(sizeof(char*)*len);	
 		if (length) *length = len;
-		for (l=s->path_list;l;l=l->next)	{
+		for (l=s->config_path_list;l;l=l->next)	{
 			if (l->data&&((len = strlen((char*)l->data))!=0))	{
 				paths[i] = e_string_dup((char*)l->data);
 				i++;
@@ -552,6 +736,85 @@ char     **ewl_state_get_path_strings(int *length)
 	return paths;
 }
 
+
+
+void       ewl_state_insert_font_path(char *font_path)
+{
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_state_insert_font_path");
+	if (!s)	{
+		ewl_debug("ewl_state_insert_font_path", EWL_NULL_ERROR, "s");
+	} else if (!font_path) {
+		ewl_debug("ewl_state_insert_font_path", EWL_NULL_ERROR, "font_path");
+	} else {
+		s->font_path_list = ewl_ll_insert_with_data(s->font_path_list,
+		                                       (EwlData*)e_string_dup(font_path));
+	}
+	FUNC_END("ewl_state_insert_font_path");
+	return;
+}
+
+void       ewl_state_remove_font_path(char *font_path)
+{
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_state_insert_font_path");
+	if (!s)	{
+		ewl_debug("ewl_state_insert_font_path", EWL_NULL_ERROR, "s");
+	} else if (!font_path) {
+		ewl_debug("ewl_state_insert_font_path", EWL_NULL_ERROR, "font_path");
+	} else {
+		fprintf(stderr,"ewl_state_remove_font_path(): not implemented yet\n");
+	}
+	FUNC_END("ewl_state_insert_font_path");
+	return;
+}
+
+EwlBool   _cb_ewl_state_get_font_path(EwlLL *node, EwlData *data)
+{
+	EwlLL *l = (EwlLL*) data;
+	l = ewl_ll_insert_with_data(l,(EwlData*) e_string_dup((char*)node->data));
+	fprintf(stderr,"_cb_ewl_state_get_font_path: %s\n", (char*) node->data);
+	return TRUE;
+}
+
+EwlLL     *ewl_state_get_font_path_list()
+{
+	EwlState    *s = ewl_state_get();
+	EwlLL       *l = NULL;
+	FUNC_BGN("ewl_state_get_font_path_list");
+	if (!s)	{
+		ewl_debug("ewl_state_get_font_path_list", EWL_NULL_ERROR, "s");
+	} else {
+		l = s->font_path_list;
+	}
+	FUNC_END("ewl_state_get_font_path_list");
+	return l;
+}
+
+char     **ewl_state_get_font_path_strings(int *length)
+{
+	EwlState    *s = ewl_state_get();
+	EwlLL       *l = NULL;
+	char       **font_paths = NULL;
+	int          len = 0, i = 0;
+	FUNC_BGN("ewl_state_get_font_path_strings");
+	if (!s)	{
+		ewl_debug("ewl_state_get_font_path_strings", EWL_NULL_ERROR, "s");
+	} else if (!(len = ewl_ll_sizeof(s->font_path_list))) {
+		ewl_debug("ewl_state_get_font_path_strings", EWL_NULL_ERROR, "s");
+	} else {
+		font_paths = malloc(sizeof(char*)*len);	
+		if (length) *length = len;
+		for (l=s->font_path_list;l;l=l->next)	{
+			if (l->data&&((len = strlen((char*)l->data))!=0))	{
+				font_paths[i] = e_string_dup((char*)l->data);
+				i++;
+			}
+		}
+	}
+	FUNC_BGN("ewl_state_get_font_path_strings");
+	return font_paths;
+}
 
 
 char       ewl_state_render_antialiased_get()

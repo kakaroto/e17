@@ -43,8 +43,6 @@ struct _EwlState
 	char                       *application_name;
 	char                       *theme_name;
 
-	EwlLL                      *path_list;
-
 	unsigned char               debug;
 	/* eventually the widget registry will go here instaed */
 	/*EwlRegistryEntry           *static_registry;*/
@@ -69,6 +67,14 @@ struct _EwlState
 	EwlBool                     render_antialiased;
 
 	EwlRenderMethod             render_method;
+
+	EwlLL                      *config_path_list;
+	EwlLL                      *font_path_list;
+
+	int                         image_cache_size;
+	int                         font_cache_size;
+
+	char                       *default_font;
 };
 
 EwlState  *ewl_state_new();
@@ -132,6 +138,20 @@ void       ewl_remove_path(char *path);
 EwlLL     *ewl_get_path_list();
 char     **ewl_get_path_strings(int *length);
 
+void       ewl_insert_font_path(char *path);
+void       ewl_remove_font_path(char *path);
+EwlLL     *ewl_get_font_path_list();
+char     **ewl_get_font_path_strings(int *length);
+
+void       ewl_set_default_font(char *font);
+char      *ewl_get_default_font();
+
+void       ewl_set_font_cache(int size);
+int        ewl_get_font_cache();
+
+void       ewl_set_image_cache(int size);
+int        ewl_get_image_cache();
+
 void       ewl_render_antialiased_set(EwlBool a);
 void       ewl_render_dithered_set(EwlBool d);
 EwlBool    ewl_render_antialiased_get();
@@ -161,6 +181,11 @@ void       ewl_state_insert_path(char *path);
 void       ewl_state_remove_path(char *path);
 EwlLL     *ewl_state_get_path_list();
 char     **ewl_state_get_path_strings(int *length);
+
+void       ewl_state_insert_font_path(char *font_path);
+void       ewl_state_remove_font_path(char *font_path);
+EwlLL     *ewl_state_get_font_path_list();
+char     **ewl_state_get_font_path_strings(int *length);
 
 EwlBool    ewl_state_render_antialiased_get();
 EwlBool    ewl_state_render_dithered_get();

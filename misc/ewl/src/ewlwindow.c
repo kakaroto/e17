@@ -609,8 +609,8 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 	EwlWindow   *win	= (EwlWindow *) widget;
 	XGCValues    gc;
 	Atom         wmhints;
-	char        *temp;
-	int          t;
+	char        *temp, **font_paths;
+	int          i, t;
 	double       x, y, w, h;
 
 	FUNC_BGN("ewl_window_handle_realize");
@@ -621,10 +621,20 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		fprintf(stderr, "realizing window 0x%08x\n", (unsigned int)win);
 
 		win->evas = evas_new();
-		evas_set_output_method(win->evas, ewl_get_render_method());
 		if (!win->evas)	{
 			fprintf(stderr,"WARNING: No Evas was allocated for "
 			        "EwlWindow 0x%08x.\n", (unsigned int) win);
+		}
+		evas_set_output_method(win->evas, ewl_get_render_method());
+		evas_set_font_cache(win->evas, ewl_get_font_cache());
+		evas_set_image_cache(win->evas, ewl_get_image_cache());
+		font_paths = ewl_get_font_path_strings(&t);
+		if (font_paths)	{
+			for (i=0; i<t; i++)	{
+				evas_font_add_path(win->evas, font_paths[i]);
+				free(font_paths[i]);
+			}
+			free(font_paths);
 		}
 
 		/* LAOD DB SHIT HERE */
@@ -739,8 +749,8 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		evas_set_output_size(win->evas, w, h);
 		evas_set_output_viewport(win->evas, 0, 0, w, h);
 
-		evas_set_font_cache(win->evas, 1 * 1024 * 1024);
-		evas_set_image_cache(win->evas, 8 * 1024 * 1024);   
+		/*evas_set_font_cache(win->evas, 1 * 1024 * 1024);
+		evas_set_image_cache(win->evas, 8 * 1024 * 1024);   */
    
 		temp = ewl_theme_find_file(ewl_theme_get_string("/EwlWindow/background"));
 		if (!temp)	{

@@ -1104,3 +1104,20 @@ script in order to see them.
 - updated the bg to so you can see the transparency.
 - just for fun, i made it so mouse clicking hilites the button.
 
+-----
+20000912-0048-PDT, pabs
+
+- added font path support.  syntax and behavoir mimicks the theme path
+stuff (which means you can override fonts on a personal or application-
+wide basis -- hooray!).  the key is "font_path", and the
+create_user_preferences.sh script has been updated to reflect this.
+- added font and image cache support -- the keys are
+"render/image_cache" and "render/font_cache".  ewl will fall back to
+sane values if these aren't set (ala the render/method key), but it
+will bitch. :)
+- added a default font from my font stockpile. :)
+- added font api stuff -- widgets wanting to use text can define
+their own font keys (eg EwlButton/default_font or whatever), but
+they if they're not defined widgets should fall back on the 
+char *ewl_get_default_font() value.
+

@@ -15,6 +15,7 @@ enum _EwlLabelFlagEnum	{
 struct _EwlLabel {
 	EwlWidget             *widget;
 	char                  *text;
+	/*char                  *font;*/
 	unsigned int           allocated;
 	EwlFlag                flags;
 
