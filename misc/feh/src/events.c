@@ -129,7 +129,6 @@ feh_event_handle_ButtonPress(XEvent * ev)
                  feh_menu_init();
               if (winwid->type == WIN_TYPE_ABOUT)
               {
-                 /* winwidget_destroy(winwid); */
                  XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
                  feh_menu_show_at_xy(menu_close, winwid, x, y);
               }
@@ -204,7 +203,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
-           D(("Disabling Pan/Zoom mode baby!\n"));
+           D(("Disabling Pan/Zoom mode\n"));
            opt.mode = MODE_NORMAL;
            winwid->mode = MODE_NORMAL;
         }
@@ -242,7 +241,7 @@ feh_event_handle_ConfigureNotify(XEvent * ev)
             w->w = ev->xconfigure.width;
             w->h = ev->xconfigure.height;
             w->had_resize = 1;
-            winwidget_render_image(w, 0, 0);
+            winwidget_render_image(w, 0, 1);
          }
       }
    }
@@ -346,15 +345,17 @@ feh_event_handle_MotionNotify(XEvent * ev)
          if (winwid->type == WIN_TYPE_ABOUT)
          {
             Imlib_Image im2, temp;
+            int x, y;
 
+            x = ev->xmotion.x - winwid->im_x;
+            y = ev->xmotion.y - winwid->im_y;
             im2 = feh_imlib_clone_image(winwid->im);
             imlib_context_set_image(im2);
             imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
-                               "/share/feh/images/about.png);",
-                               &ev->xmotion.x, &ev->xmotion.y);
+                               "/share/feh/images/about.png);", &x, &y);
             temp = winwid->im;
             winwid->im = im2;
-            winwidget_render_image(winwid, 0, 0);
+            winwidget_render_image(winwid, 0, 1);
             winwid->im = temp;
             feh_imlib_free_image_and_decache(im2);
          }

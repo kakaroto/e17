@@ -111,7 +111,6 @@ feh_reload_image(winwidget w)
    }
    if ((feh_load_image(&(w->im), w->file)) != 0)
    {
-      w->zoom = 0.0;
       if (!opt.progressive)
       {
          w->mode = MODE_NORMAL;
@@ -123,7 +122,7 @@ feh_reload_image(winwidget w)
          w->im_x = 0;
          w->im_y = 0;
          w->zoom_percent = 100;
-         winwidget_render_image(w, 1, 0);
+         winwidget_render_image(w, 1, 1);
       }
       if (opt.draw_filename)
          feh_draw_filename(w);
@@ -230,7 +229,6 @@ slideshow_change_image(winwidget winwid, int change)
       {
          success = 1;
          winwid->mode = MODE_NORMAL;
-         winwid->zoom = 0.0;
          winwid->file = current_file;
          if (!opt.progressive)
          {
@@ -242,7 +240,7 @@ slideshow_change_image(winwidget winwid, int change)
             winwid->im_x = 0;
             winwid->im_y = 0;
             winwid->zoom_percent = 100;
-            winwidget_render_image(winwid, 1, 0);
+            winwidget_render_image(winwid, 1, 1);
          }
          if (opt.draw_filename)
             feh_draw_filename(winwid);

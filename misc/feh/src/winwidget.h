@@ -90,9 +90,6 @@ struct __winwidget
 
    /* Stuff for zooming */
    unsigned char mode;
-   int zx;                      /* TODO KILL THESE */
-   int zy;
-   double zoom;
 
    /* New stuff */
    int im_x;                    /* image offset from window top left */

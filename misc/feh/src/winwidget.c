@@ -55,9 +55,6 @@ winwidget_allocate(void)
 
    /* Zoom stuff */
    ret->mode = MODE_NORMAL;
-   ret->zx = 0;
-   ret->zy = 0;
-   ret->zoom = 1.0;
 
    ret->gc = None;
 
@@ -91,7 +88,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
       ret->name = estrdup(PACKAGE);
 
    winwidget_create_window(ret, ret->w, ret->h);
-   winwidget_render_image(ret, 1, 0);
+   winwidget_render_image(ret, 1, 1);
 
    D_RETURN(ret);
 }
@@ -135,7 +132,7 @@ winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
         ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
          feh_imlib_image_format(ret->im)));
       winwidget_create_window(ret, ret->w, ret->h);
-      winwidget_render_image(ret, 1, 0);
+      winwidget_render_image(ret, 1, 1);
    }
 
    D_RETURN(ret);

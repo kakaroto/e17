@@ -78,7 +78,6 @@ void show_usage(void);
 void show_version(void);
 int feh_main_iteration(int block);
 void feh_handle_event(XEvent * ev);
-void feh_smooth_image(winwidget w);
 void init_x_and_imlib(void);
 void init_multiwindow_mode(void);
 void init_montage_mode(void);
