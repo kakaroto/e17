@@ -745,7 +745,7 @@ main(int argc, char *argv[])
       }
       if (!edje_object_file_set(edje, buf, "Main"))
       {
-         syslog(LOG_CRIT, "Failed to load theme %s\n", theme);
+         syslog(LOG_CRIT, "Failed to load theme %s\n", buf);
          entrance_session_free(session);
          exit(1);
       }
