@@ -224,6 +224,7 @@ main(int argc, char **argv) {
 
   icon_file = NULL;
   dialog_win = NULL;
+  ef = NULL;
   /* handle some command-line parameters */
   for (i = 1; i < argc; i++) {
     if (!strcmp(argv[i], "-l") || !strcmp(argv[i], "--lang")) {
@@ -293,7 +294,8 @@ main(int argc, char **argv) {
   start = _eapp_edit_read(ef, "app/info/startup_notify", NULL, "Startup notify", grid, 9, 1);
   wait = _eapp_edit_read(ef, "app/info/wait_exit", NULL, "Wait exit", grid, 10, 1);
    
-  eet_close(ef);
+  if (ef)
+    eet_close(ef);
 
   cell = ewl_cell_new();
   content = ewl_button_new("Set Icon");
