@@ -80,11 +80,6 @@ AC_ARG_ENABLE(hints-ewmh,
   [  --enable-hints-ewmh     compile with Extended Window Manager Hints support [default=yes]],, enable_hints_ewmh=yes)
 AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support [default=no]],, enable_hints_gnome=no)
-AC_ARG_WITH(imlib2,
-  [  --with-imlib2           compile with Imlib2 support [default=yes]],, with_imlib2=yes)
-
-AC_ARG_WITH(fnlib,
-  [  --with-fnlib            compile with Fnlib support (requires Imlib1) [default=no]],, with_fnlib=no)
 
 if test "x$enable_hints_ewmh" = "xyes"; then AC_DEFINE(ENABLE_EWMH, 1, [Extended Window Manager Hints]) fi
 if test "x$enable_hints_gnome" = "xyes"; then AC_DEFINE(ENABLE_GNOME, 1, [GNOME(<2.0) Hints]) fi
@@ -125,9 +120,7 @@ fi
 
 LDFLAGS="$LDFLAGS -L$prefix/lib"
 
-if test "x$with_imlib2" = "xyes"; then
-# Use Imlib2
-
+# Imlib2
 IMLIB_LIBS=`imlib2-config --libs`
 IMLIB_CFLAGS=`imlib2-config --cflags`
 AC_SUBST(IMLIB_LIBS)
@@ -136,31 +129,6 @@ AC_CHECK_LIB(Imlib2, imlib_create_image,
              AC_DEFINE(USE_IMLIB2, 1, [Imlib2 support]),
              AC_MSG_ERROR([Fatal Error: no Imlib2 detected.]),
              $IMLIB_LIBS)
-with_fnlib="no"
-
-else
-# Use Imlib1, Fnlib, and FreeType1
-
-AM_PATH_IMLIB(1.9.8, , [
-echo "ERROR: Enlightenment needs a system with Imlib 1.9.8 or higher."
-AC_MSG_ERROR([Fatal Error: no Imlib detected.])])
-
-if test "x$with_fnlib" = "xyes"; then
-# AC_CHECK_HEADER(Fnlib.h, ,AC_MSG_ERROR([Fatal Error: no Fnlib header detected.]))
-AC_CHECK_LIB(Fnlib, Fnlib_init, FNLIB_LIBS=-lFnlib , [
-echo "ERROR: Enlightenment needs a system with libFnlib.so (fnlib)."
-AC_MSG_ERROR([Fatal Error: no Fnlib detected.])], $IMLIB_LIBS)
-AC_SUBST(FNLIB_LIBS)
-AC_DEFINE(USE_FNLIB, 1, [Fnlib support])
-fi
-
-AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h,[ break] , )
-AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
-echo "ERROR: Enlightenment needs a system with libttf.so (freetype)."
-AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
-AC_SUBST(TTF_LIBS)
-
-fi
 
 AC_CHECK_LIB(dl, dlopen, DL_LIBS=-ldl , [
 echo "Warning: Enlightenment requires the dl (dynamic loader) library"

@@ -1790,10 +1790,6 @@ doMoveModeSet(EWin * edummy, const void *params)
       Conf.movemode = atoi((char *)params);
    else
       Conf.movemode++;
-#if !USE_IMLIB2
-   if ((prImlib_Context) && (Conf.movemode == 5))
-      Conf.movemode = 3;
-#endif
    if (Conf.movemode < 0 || Conf.movemode > 5)
       Conf.movemode = 0;
    autosave();

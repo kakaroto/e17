@@ -48,14 +48,6 @@
 Display            *disp;
 Root                VRoot;
 
-#if !USE_IMLIB2
-ImlibData          *pI1Ctx;
-ImlibImage         *pIcImg;
-Drawable            vIcDrw;
-#endif
-#if USE_FNLIB
-FnlibData          *pFnlibData;
-#endif
 Window              win_main, win_title, win_exit, win_next, win_prev, win_text,
    win_cover;
 Imlib_Image        *im_text;
@@ -114,15 +106,10 @@ VRootInit(void)
    int                 x_return, y_return;
    unsigned int        border_width_return;
 
-#if !USE_IMLIB2
-   ImlibInitParams     params;
-#endif
-
    VRoot.scr = DefaultScreen(disp);
    VRoot.win = FindRootWindow(disp);
    XGetGeometry(disp, VRoot.win, &root_return, &x_return, &y_return,
 		&VRoot.w, &VRoot.h, &border_width_return, &VRoot.depth);
-#if USE_IMLIB2
    VRoot.vis = DefaultVisual(disp, VRoot.scr);
    VRoot.depth = DefaultDepth(disp, VRoot.scr);
    VRoot.cmap = DefaultColormap(disp, VRoot.scr);
@@ -134,16 +121,6 @@ VRootInit(void)
    imlib_context_set_colormap(VRoot.cmap);
    imlib_context_set_dither(1);
    imlib_context_set_dither_mask(0);
-#else
-   params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
-   params.imagecachesize = (EDOX_DEFAULT_W * EDOX_DEFAULT_H * 3 * 2);
-   params.pixmapcachesize = (EDOX_DEFAULT_W * EDOX_DEFAULT_H * 3 * 2 * 8);
-   pI1Ctx = Imlib_init_with_params(disp, &params);
-   Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL);
-   VRoot.vis = Imlib_get_visual(pI1Ctx);
-   VRoot.depth = pI1Ctx->x.depth;
-   VRoot.cmap = Imlib_get_colormap(pI1Ctx);
-#endif
 }
 
 static              Window
@@ -175,6 +152,7 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
    hnt.min_height = hh;
    hnt.max_height = hh;
    XSetWMNormalHints(disp, win, &hnt);
+
    return win;
 }
 
@@ -200,7 +178,7 @@ ApplyImage1(Window win, Imlib_Image * im)
    imlib_context_set_drawable(win);
    imlib_render_pixmaps_for_whole_image(&pmap, &mask);
    XSetWindowBackgroundPixmap(disp, win, pmap);
-   IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
+   imlib_free_pixmap_and_mask(pmap);
 }
 
 static void
@@ -211,12 +189,8 @@ ApplyImage2(Window win, Imlib_Image * im)
    imlib_render_image_on_drawable(0, 0);
 }
 
-#if USE_IMLIB2
 #define ApplyImage3(win, im) \
 	XClearWindow(disp, win)
-#else
-#define ApplyImage3 ApplyImage2
-#endif
 
 #define FREE_LINKS \
 ll = l; \
@@ -289,9 +263,6 @@ main(int argc, char **argv)
    setlocale(LC_NUMERIC, "C");
 
    VRootInit();
-#if USE_FNLIB
-   pFnlibData = Fnlib_init(pI1Ctx);
-#endif
 
    if (argc < 2)
      {
@@ -355,10 +326,6 @@ main(int argc, char **argv)
 
    GetObjects(f);
    fclose(f);
-
-#if USE_FNLIB
-   Fnlib_add_dir(pFnlibData, docdir);
-#endif
 
    t = 16;
    wx = (VRoot.w - w) / 2;

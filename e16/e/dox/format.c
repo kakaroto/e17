@@ -517,13 +517,6 @@ RenderPage(Window win, int page_num, int w, int h)
    int                 wastext = 0;
 
    ts.fontname = NULL;
-#if USE_FNLIB
-   ts.style.orientation = FONT_TO_RIGHT;
-   ts.style.mode = MODE_WRAP_WORD;
-   ts.style.justification = 0;
-   ts.style.spacing = 0;
-   ts.font = NULL;
-#endif
    ESetColor(&ts.fg_col, 0, 0, 0);
    ESetColor(&ts.bg_col, 0, 0, 0);
    ts.effect = 0;
@@ -604,15 +597,6 @@ RenderPage(Window win, int page_num, int w, int h)
 	  case FONT:
 	     fn = pg->obj[i].object;
 	     ts.fontname = NULL;
-#if USE_FNLIB
-	     ts.style.orientation = FONT_TO_RIGHT;
-	     ts.style.mode = MODE_WRAP_WORD;
-	     ts.style.justification = 0;
-	     ts.style.spacing = 0;
-	     if (ts.font)
-		Fnlib_free_font(pFnlibData, ts.font);
-	     ts.font = NULL;
-#endif
 	     ESetColor(&ts.fg_col, 0, 0, 0);
 	     ESetColor(&ts.bg_col, 0, 0, 0);
 	     ts.effect = 0;
@@ -1007,10 +991,6 @@ RenderPage(Window win, int page_num, int w, int h)
 	  }
      }
 
-#if USE_FNLIB
-   if (ts.font)
-      Fnlib_free_font(pFnlibData, ts.font);
-#endif
    if (ts.efont)
       Efont_free(ts.efont);
    if (ts.xfont)

@@ -144,21 +144,10 @@ TextStateLoadFont(TextState * ts)
       EDBUG_RETURN_;
 
    /* Quit if already done */
-#if USE_FNLIB
-   if ((ts->font) || (ts->efont) || (ts->xfont) || (ts->xfontset))
-#else
    if ((ts->efont) || (ts->xfont) || (ts->xfontset))
-#endif
       EDBUG_RETURN_;
 
    ts->need_utf8 = Mode.text.utf8_int;
-
-#if USE_FNLIB
-   /* Try Fnlib */
-   ts->font = Fnlib_load_font(pFnlibData, ts->fontname);
-   if (ts->font)
-      goto done;
-#endif
 
    /* Try FreeType */
    {
@@ -182,10 +171,9 @@ TextStateLoadFont(TextState * ts)
 	}
       if (s2)
 	 Efree(s2);
-#if USE_IMLIB2
+
       if (ts->efont)
 	 ts->need_utf8 = 1;
-#endif
    }
    if (ts->efont)
       goto done;
@@ -263,24 +251,6 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    if (!lines)
       EDBUG_RETURN_;
 
-#if USE_FNLIB
-   if (ts->font)
-     {
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 high, wid, dummy;
-
-	     Fnlib_measure(pFnlibData, ts->font, 0, 0, 999999, 999999, 0, 0,
-			   fsize, &ts->style, (unsigned char *)lines[i], 0, 0,
-			   &dummy, &dummy, &wid, &high, &dummy, &dummy, &dummy,
-			   &dummy);
-	     *height += high;
-	     if (wid > *width)
-		*width = wid;
-	  }
-     }
-   else
-#endif
    if (ts->efont)
      {
 	for (i = 0; i < num_lines; i++)
@@ -383,28 +353,6 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    xx = x;
    yy = y;
 
-#if USE_FNLIB
-   if (ts->font)
-     {
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 high, wid, dummy;
-
-	     Fnlib_measure(pFnlibData, ts->font, 0, 0, 999999, 999999, 0, 0,
-			   fsize, &ts->style, (unsigned char *)lines[i], 0, 0,
-			   &dummy, &dummy, &wid, &high, &dummy, &dummy, &dummy,
-			   &dummy);
-	     if ((ts->style.orientation == FONT_TO_UP)
-		 || (ts->style.orientation == FONT_TO_DOWN))
-		fsize = w;
-	     xx = x + (((w - wid) * justification) >> 10);
-	     Fnlib_draw(pFnlibData, ts->font, win, 0, xx, yy, w, h, 0, 0, fsize,
-			&ts->style, (unsigned char *)lines[i]);
-	     yy += high;
-	  }
-     }
-   else
-#endif
    if (ts->efont)
      {
 	for (i = 0; i < num_lines; i++)

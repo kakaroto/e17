@@ -308,13 +308,6 @@ ECreatePixImg(Window win, int w, int h)
    else
       bpp = 4;
 
-#if !USE_IMLIB2
-   if ((pImlib_Context->max_shm) && ((bpp * w * h) > pImlib_Context->max_shm))
-      return NULL;
-   if ((!pImlib_Context->x.shm) || (!pImlib_Context->x.shmp))
-      return NULL;
-#endif
-
    pi = Emalloc(sizeof(PixImg));
    if (!pi)
       return NULL;
@@ -557,7 +550,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	       }
 	     break;
 	  case 16:
-	     if (IC_RenderDepth() != 15)
+	     if (DefaultDepth(disp, VRoot.scr) != 15)
 	       {
 		  for (j = 0; j < h; j++)
 		    {
@@ -951,7 +944,7 @@ ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 	  }
 
 	difx = (sw / pw) / 2;
-	switch (IC_RenderDepth())
+	switch (DefaultDepth(disp, VRoot.scr))
 	  {
 	  case 24:
 	  case 32:
@@ -1340,13 +1333,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	   bpp = 3;
 	else
 	   bpp = 4;
-#if !USE_IMLIB2
-	if ((prImlib_Context) ||
-	    (pImlib_Context->max_shm &&
-	     ((bpp * w * h) > pImlib_Context->max_shm)) ||
-	    ((!pImlib_Context->x.shm) || (!pImlib_Context->x.shmp)))
-	   md = 0;
-#endif
      }
 
    pw = w;

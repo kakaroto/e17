@@ -909,7 +909,7 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_USER_BG:
 	     Conf.backgrounds.user = i2;
 	     break;
-#ifdef USE_IMLIB2
+#ifdef ENABLE_THEME_TRANSPARENCY
 	  case CONTROL_THEME_TRANSPARENCY:
 	     Conf.theme.transparency = i2;
 	     break;
@@ -1912,10 +1912,6 @@ Config_Desktop(FILE * ConfigFile)
 		       if ((desks.desk[atoi(s2)].bg == NULL) ||
 			   (Conf.backgrounds.user))
 			 {
-#if !USE_IMLIB2
-			    if ((prImlib_Context) && (atoi(s2) == 0))
-			       bg = NULL;
-#endif
 			    if (!bg)
 			      {
 				 bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
@@ -1930,10 +1926,6 @@ Config_Desktop(FILE * ConfigFile)
 			      {
 				 DesktopSetBg(atoi(s2), bg, 0);
 			      }
-#if !USE_IMLIB2
-			    if ((prImlib_Context) && (atoi(s2) == 0))
-			       bg = NULL;
-#endif
 			 }
 		    }
 	       }
@@ -1955,10 +1947,6 @@ Config_Desktop(FILE * ConfigFile)
 				   {
 				      DesktopSetBg(atoi(s2), bg, 0);
 				   }
-#if !USE_IMLIB2
-				 if ((prImlib_Context) && (atoi(s2) == 0))
-				    bg = NULL;
-#endif
 			      }
 			 }
 		    }
@@ -2512,10 +2500,9 @@ Config_ImageClass(FILE * ConfigFile)
 		ICToRead->border->right = atoi(s3);
 		ICToRead->border->top = atoi(s4);
 		ICToRead->border->bottom = atoi(s5);
-#ifdef USE_IMLIB2		/* Hmmm... */
+		/* Hmmm... imlib2 works better with this */
 		ICToRead->border->right++;
 		ICToRead->border->bottom++;
-#endif
 	     }
 	     break;
 	  case ICLASS_FILLRULE:
@@ -3714,13 +3701,8 @@ LoadEConfig(char *themelocation)
    EDBUG(5, "LoadEConfig");
 
    Esnprintf(s, sizeof(s), "%s/", EDirUser());
-#if USE_FNLIB
-   Fnlib_add_dir(pFnlibData, s);
-#endif
    Esnprintf(s, sizeof(s), "%s/config/", EDirRoot());
-#if USE_FNLIB
-   Fnlib_add_dir(pFnlibData, s);
-#endif
+
    /* save the current theme */
    if ((themelocation) && (themelocation[0] != 0))
      {
@@ -3753,9 +3735,7 @@ LoadEConfig(char *themelocation)
 
    strcpy(themepath, theme);
    Esnprintf(s, sizeof(s), "%s/", theme);
-#if USE_FNLIB
-   Fnlib_add_dir(pFnlibData, s);
-#endif
+
    {
       Progressbar        *p = NULL;
       int                 i;
@@ -3934,7 +3914,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1368 %i\n", (int)Conf.tooltips.showroottooltip);
 	fprintf(autosavefile, "1369 %i %i %i\n", (int)Conf.pagers.sel_button,
 		(int)Conf.pagers.win_button, (int)Conf.pagers.menu_button);
-#ifdef USE_IMLIB2
+#ifdef ENABLE_THEME_TRANSPARENCY
 	fprintf(autosavefile, "1373 %i\n", (int)Conf.theme.transparency);
 	fprintf(autosavefile, "1375 %i\n", (int)Conf.st_trans.border);
 	fprintf(autosavefile, "1376 %i\n", (int)Conf.st_trans.widget);

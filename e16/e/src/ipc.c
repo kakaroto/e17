@@ -5280,10 +5280,6 @@ IPC_ControlsSet(const char *s, Client * c __UNUSED__)
 	  {
 	     word(s, wd, w);
 	     Conf.movemode = atoi(w);
-#if !USE_IMLIB2
-	     if ((prImlib_Context) && (Conf.movemode == 5))
-		Conf.movemode = 3;
-#endif
 	  }
 	else if (!strcmp(w, "RESIZEMODE:"))
 	  {

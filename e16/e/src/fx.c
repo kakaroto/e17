@@ -420,40 +420,6 @@ FX_raindrops_timeout(int val, void *data)
      {
 	XGCValues           gcv;
 
-#if !USE_IMLIB2
-	if (!pImlib_Context->x.shm)
-	  {
-	     DialogOK(_("Unable to display raindrops"),
-		      _("\n"
-			"Enlightenment is unable to display raindrops on this\n"
-			"display because Shared memory is not available on this\n"
-			"X-Server.\n" "\n"
-			"This may be due to Enlightenment being a remote client\n"
-			"running over the network, a MIT-SHM incapable X-server,\n"
-			"having run out of SHM ID's on the system or Shared\n"
-			"Memory support being turned off in Imlib\n" "\n"
-			"You may correct this by either running `imlib_config'\n"
-			"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-			"and editing it, enabling shared memory.\n" "\n"));
-	     return;
-	  }
-	if (!pImlib_Context->x.shmp)
-	  {
-	     DialogOK(_("Unable to display raindrops"),
-		      _("\n"
-			"Enlightenment is unable to display raindrops on this\n"
-			"display because shared pixmaps are not available on this\n"
-			"X-Server.\n" "\n"
-			"This may be due to either the X-Server not implementing\n"
-			"shared pixmaps, or shared pixmaps being disabled in\n"
-			"Imlib's configuration.\n" "\n"
-			"You may correct this by either running `imlib_config'\n"
-			"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-			"and editing it, enabling shared pixmaps.\n" "\n"));
-	     return;
-	  }
-#endif
-
 	FX_raindrops_info();
 
 	if (first)
@@ -937,8 +903,6 @@ FX_imagespinner_timeout(int val, void *data)
    if (string)
      {
 	Imlib_Image        *im;
-
-	IMLIB1_SET_CONTEXT(desks.current == 0);
 
 	im = ELoadImage(string);
 	if (im)

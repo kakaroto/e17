@@ -3494,7 +3494,7 @@ SettingsBackground(Background * bg)
    tmp_bg_timeout = Conf.backgrounds.timeout;
    tmp_theme_transparency = Conf.theme.transparency;
 
-#ifdef USE_IMLIB2
+#ifdef ENABLE_THEME_TRANSPARENCY
    tmp_st_border = Conf.st_trans.border;
    tmp_st_widget = Conf.st_trans.widget;
    tmp_st_dialog = Conf.st_trans.dialog;

@@ -30,17 +30,6 @@ const char          e_wm_version[] =
    "enlightenment-" ENLIGHTENMENT_VERSION;
 #endif
 Display            *disp;
-
-#if !USE_IMLIB2
-ImlibData          *pImlib_Context;
-ImlibData          *prImlib_Context;
-ImlibData          *pI1Ctx;
-ImlibImage         *pIcImg;
-Drawable            vIcDrw;
-#endif
-#if USE_FNLIB
-FnlibData          *pFnlibData;
-#endif
 List               *lists;
 RealRoot            RRoot;
 VirtRoot            VRoot;

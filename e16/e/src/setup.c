@@ -22,9 +22,6 @@
  */
 #include "E.h"
 #include <X11/keysym.h>
-#if !USE_IMLIB2
-#include <X11/cursorfont.h>
-#endif
 #include <sys/time.h>
 
 void
@@ -266,7 +263,6 @@ SetupX(void)
    Esetenv("ENL_WM_ROOT", buf, 1);
 
    /* initialise imlib */
-#if USE_IMLIB2
    imlib_set_cache_size(2048 * 1024);
    imlib_set_font_cache_size(512 * 1024);
    imlib_set_color_usage(128);
@@ -277,48 +273,6 @@ SetupX(void)
    imlib_context_set_visual(VRoot.vis);
    imlib_context_set_colormap(VRoot.cmap);
    imlib_context_set_dither_mask(0);
-#else
-   pImlib_Context = Imlib_init(disp);
-   IMLIB1_SET_CONTEXT(0);
-   if (!pImlib_Context)
-     {
-	AlertX(_("Imlib initialisation error"), "", "",
-	       _("Quit Enlightenment"),
-	       _("FATAL ERROR:\n" "\n"
-		 "Enlightenment is unable to initialise Imlib.\n" "\n"
-		 "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	EExit(1);
-     }
-#if USE_FNLIB
-   pFnlibData = Fnlib_init(pImlib_Context);
-   if (!pFnlibData)
-     {
-	AlertX(_("X server setup error"), "", "",
-	       _("Quit Enlightenment"),
-	       _("FATAL ERROR:\n" "\n"
-		 "Enlightenment is unable to initialise Fnlib.\n" "\n"
-		 "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	EExit(1);
-     }
-#endif
-   VRoot.win = pImlib_Context->x.root;
-   VRoot.vis = Imlib_get_visual(pImlib_Context);
-   VRoot.depth = pImlib_Context->x.depth;
-   VRoot.cmap = Imlib_get_colormap(pImlib_Context);
-   /* warn, if necessary about visual problems */
-   if (DefaultVisual(disp, VRoot.scr) != VRoot.vis)
-     {
-	ImlibInitParams     p;
-
-	p.flags = PARAMS_VISUALID;
-	p.visualid = XVisualIDFromVisual(DefaultVisual(disp, VRoot.scr));
-	prImlib_Context = Imlib_init_with_params(disp, &p);
-     }
-   else
-     {
-	prImlib_Context = NULL;
-     }
-#endif
 
    /* Initialise event handling */
    EventsInit();
@@ -489,7 +443,7 @@ SetupX(void)
    Conf.place.manual = 0;
    Conf.edge_flip_resistance = 15;
 
-#ifdef USE_IMLIB2
+#ifdef ENABLE_THEME_TRANSPARENCY
    Conf.st_trans.menu = ICLASS_ATTR_BG;
    Conf.st_trans.menu_item = ICLASS_ATTR_BG;
    Conf.st_trans.tooltip = ICLASS_ATTR_GLASS;
@@ -691,7 +645,7 @@ MakeExtInitWin(void)
    d2 = XOpenDisplay(DisplayString(disp));
    close(ConnectionNumber(disp));
    XGrabServer(d2);
-#if USE_IMLIB2
+
    imlib_set_cache_size(2048 * 1024);
    imlib_set_font_cache_size(512 * 1024);
    imlib_set_color_usage(128);
@@ -699,10 +653,7 @@ MakeExtInitWin(void)
    imlib_context_set_display(d2);
    imlib_context_set_visual(DefaultVisual(d2, DefaultScreen(d2)));
    imlib_context_set_colormap(DefaultColormap(d2, DefaultScreen(d2)));
-#else
-   pImlib_Context = Imlib_init(d2);
-#endif
-   IMLIB1_SET_CONTEXT(0);
+
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
    attr.colormap = VRoot.cmap;
@@ -729,99 +680,75 @@ MakeExtInitWin(void)
    XUngrabServer(d2);
    XSync(d2, False);
 
-#if !USE_IMLIB2
-   if (!pImlib_Context)
-     {
-	i = 0;
-	for (;;)
-	  {
-	     Cursor              cs = 0;
-	     struct timeval      tv;
+   {
+      Window              w2, ww;
+      char               *f, s[1024];
+      Imlib_Image        *im;
+      struct timeval      tv;
+      int                 dd, x, y;
+      unsigned int        mm;
+      Cursor              cs = 0;
+      XColor              cl;
 
-	     cs = XCreateFontCursor(d2, i);
-	     XDefineCursor(d2, win, cs);
-	     XSync(d2, False);
-	     tv.tv_sec = 0;
-	     tv.tv_usec = 50000;
-	     select(0, NULL, NULL, NULL, &tv);
-	     XFreeCursor(d2, cs);
-	     i += 2;
-	     if (i >= XC_num_glyphs)
-		i = 0;
-	  }
-     }
-   else
-#endif
-     {
-	Window              w2, ww;
-	char               *f, s[1024];
-	Imlib_Image        *im;
-	struct timeval      tv;
-	int                 dd, x, y;
-	unsigned int        mm;
-	Cursor              cs = 0;
-	XColor              cl;
+      w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, VRoot.depth, InputOutput,
+			 VRoot.vis,
+			 CWOverrideRedirect | CWBackingStore | CWColormap |
+			 CWBackPixel | CWBorderPixel, &attr);
+      pmap = ECreatePixmap(d2, w2, 16, 16, 1);
+      gc = XCreateGC(d2, pmap, 0, &gcv);
+      XSetForeground(d2, gc, 0);
+      XFillRectangle(d2, pmap, gc, 0, 0, 16, 16);
+      XFreeGC(d2, gc);
+      mask = ECreatePixmap(d2, w2, 16, 16, 1);
+      gc = XCreateGC(d2, mask, 0, &gcv);
+      XSetForeground(d2, gc, 0);
+      XFillRectangle(d2, mask, gc, 0, 0, 16, 16);
+      XFreeGC(d2, gc);
+      cs = XCreatePixmapCursor(d2, pmap, mask, &cl, &cl, 0, 0);
+      XDefineCursor(d2, win, cs);
+      XDefineCursor(d2, w2, cs);
 
-	w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, VRoot.depth, InputOutput,
-			   VRoot.vis,
-			   CWOverrideRedirect | CWBackingStore | CWColormap |
-			   CWBackPixel | CWBorderPixel, &attr);
-	pmap = ECreatePixmap(d2, w2, 16, 16, 1);
-	gc = XCreateGC(d2, pmap, 0, &gcv);
-	XSetForeground(d2, gc, 0);
-	XFillRectangle(d2, pmap, gc, 0, 0, 16, 16);
-	XFreeGC(d2, gc);
-	mask = ECreatePixmap(d2, w2, 16, 16, 1);
-	gc = XCreateGC(d2, mask, 0, &gcv);
-	XSetForeground(d2, gc, 0);
-	XFillRectangle(d2, mask, gc, 0, 0, 16, 16);
-	XFreeGC(d2, gc);
-	cs = XCreatePixmapCursor(d2, pmap, mask, &cl, &cl, 0, 0);
-	XDefineCursor(d2, win, cs);
-	XDefineCursor(d2, w2, cs);
+      for (i = 1;; i++)
+	{
+	   if (i > 12)
+	      i = 1;
 
-	for (i = 1;; i++)
-	  {
-	     if (i > 12)
-		i = 1;
+	   Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
+	   if (EventDebug(EDBUG_TYPE_SESSION))
+	      Eprintf("MakeExtInitWin - child %s\n", s);
 
-	     Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
-	     if (EventDebug(EDBUG_TYPE_SESSION))
-		Eprintf("MakeExtInitWin - child %s\n", s);
+	   f = FindFile(s);
+	   im = NULL;
+	   if (f)
+	     {
+		im = imlib_load_image(f);
+		Efree(f);
+	     }
 
-	     f = FindFile(s);
-	     im = NULL;
-	     if (f)
-	       {
-		  im = imlib_load_image(f);
-		  Efree(f);
-	       }
-
-	     if (im)
-	       {
-		  imlib_context_set_image(im);
-		  imlib_context_set_drawable(w2);
-		  imlib_render_pixmaps_for_whole_image(&pmap, &mask);
-		  EShapeCombineMask(d2, w2, ShapeBounding, 0, 0, mask,
-				    ShapeSet);
-		  ESetWindowBackgroundPixmap(d2, w2, pmap);
-		  imlib_free_pixmap_and_mask(pmap);
-		  XClearWindow(d2, w2);
-		  XQueryPointer(d2, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
-		  EMoveResizeWindow(d2, w2,
-				    x - imlib_image_get_width() / 2,
-				    y - imlib_image_get_height() / 2,
-				    imlib_image_get_width(),
-				    imlib_image_get_height());
-		  EMapWindow(d2, w2);
-		  imlib_free_image();
-	       }
-	     tv.tv_sec = 0;
-	     tv.tv_usec = 50000;
-	     select(0, NULL, NULL, NULL, &tv);
-	     XSync(d2, False);
-	  }
-     }
+	   if (im)
+	     {
+		imlib_context_set_image(im);
+		imlib_context_set_drawable(w2);
+		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+		EShapeCombineMask(d2, w2, ShapeBounding, 0, 0, mask, ShapeSet);
+		ESetWindowBackgroundPixmap(d2, w2, pmap);
+		imlib_free_pixmap_and_mask(pmap);
+		XClearWindow(d2, w2);
+		XQueryPointer(d2, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
+		EMoveResizeWindow(d2, w2,
+				  x - imlib_image_get_width() / 2,
+				  y - imlib_image_get_height() / 2,
+				  imlib_image_get_width(),
+				  imlib_image_get_height());
+		EMapWindow(d2, w2);
+		imlib_free_image();
+	     }
+	   tv.tv_sec = 0;
+	   tv.tv_usec = 50000;
+	   select(0, NULL, NULL, NULL, &tv);
+	   XSync(d2, False);
+	}
+   }
 /*    {
  * XEvent              ev;
  * 

@@ -52,112 +52,10 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#if USE_IMLIB2
 #include <Imlib2.h>
-
-#define IMLIB1_SET_CONTEXT(root_ctx)
 
 #define EAllocColor(pxc) \
 	XAllocColor(disp, VRoot.cmap, pxc)
-
-#define IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask) \
-	imlib_free_pixmap_and_mask(pmap)
-
-#define IC_RenderDepth() DefaultDepth(disp, VRoot.scr)
-
-#else
-
-#include <Imlib.h>
-
-extern ImlibData   *pI1Ctx;
-extern ImlibImage  *pIcImg;
-extern Drawable     vIcDrw;
-
-#define IMLIB1_SET_CONTEXT(root_ctx) \
-	pI1Ctx = ((root_ctx) && prImlib_Context) ? prImlib_Context : pImlib_Context
-
-#define imlib_context_set_image(im_img) \
-	pIcImg = im_img
-#define imlib_context_set_drawable(im_drw) \
-	vIcDrw = im_drw
-
-#define imlib_context_set_dither(onoff) \
-	Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL)
-#define imlib_context_get_dither() \
-	Imlib_get_render_type(pI1Ctx)
-
-#define imlib_image_get_width() \
-	pIcImg->rgb_width
-#define imlib_image_get_height() \
-	pIcImg->rgb_height
-
-#define imlib_load_image(file) \
-	Imlib_load_image(pI1Ctx, file)
-#define imlib_create_image_from_drawable(mask, x, y, w, h, grab) \
-	Imlib_create_image_from_drawable(pI1Ctx, vIcDrw, mask, x, y, w, h)
-
-#define imlib_image_set_format(fmt)
-#define imlib_save_image(file) \
-	Imlib_save_image_to_ppm(pI1Ctx, pIcImg, file)
-
-#define imlib_render_pixmaps_for_whole_image(p, m) \
-	Imlib_render(pI1Ctx, pIcImg, imlib_image_get_width(), imlib_image_get_height()); \
-	if (p) *p = Imlib_copy_image(pI1Ctx, pIcImg); \
-	if (m) *m = Imlib_copy_mask(pI1Ctx, pIcImg)
-#define imlib_render_pixmaps_for_whole_image_at_size(p, m, w, h) \
-	Imlib_render(pI1Ctx, pIcImg, w, h); \
-	if (p) *p = Imlib_copy_image(pI1Ctx, pIcImg); \
-	if (m) *m = Imlib_copy_mask(pI1Ctx, pIcImg)
-#define imlib_render_image_on_drawable(x, y) \
-	Imlib_apply_image(pI1Ctx, pIcImg, vIcDrw)
-#define imlib_render_image_on_drawable_at_size(x, y, w, h) \
-	Imlib_paste_image(pI1Ctx, pIcImg, vIcDrw, x, y, w, h)
-
-#define imlib_create_cropped_scaled_image(x, y, w, h, w2, h2) \
-	Imlib_clone_scaled_image(pI1Ctx, pIcImg, w2, h2)
-
-#define imlib_image_orientate(rot) \
-	switch (rot) { \
-	case 1: \
-		Imlib_rotate_image(pI1Ctx, pIcImg, 1); \
-		Imlib_flip_image_horizontal(pI1Ctx, pIcImg); \
-		break; \
-	case 2: \
-        	Imlib_flip_image_vertical(pI1Ctx, pIcImg); \
-        	Imlib_flip_image_horizontal(pI1Ctx, pIcImg); \
-	case 3: \
-		Imlib_rotate_image(pI1Ctx, pIcImg, -1); \
-		Imlib_flip_image_vertical(pI1Ctx, pIcImg); \
-		break; \
-	}
-
-#define imlib_free_image() \
-	({ Imlib_destroy_image(pI1Ctx, pIcImg); pIcImg = NULL; })
-#define imlib_free_image_and_decache() \
-	({ Imlib_kill_image(pI1Ctx, pIcImg); pIcImg = NULL; })
-#define imlib_free_pixmap_and_mask(pmap) \
-	Imlib_free_pixmap(pI1Ctx, pmap)
-
-#define IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask) \
-	({ Imlib_free_pixmap(pI1Ctx, pmap); Imlib_free_pixmap(pI1Ctx, mask); })
-
-#define imlib_image_set_border(im_bdr) \
-	Imlib_set_image_border(pI1Ctx, pIcImg, im_bdr)
-
-#define EAllocColor(pxc) \
-	({ int r = ((pxc)->red)>>8, g = ((pxc)->green)>>8, b = ((pxc)->blue)>>8; \
-		(pxc)->pixel = Imlib_best_color_match(pI1Ctx, &r, &g, &b); })
-
-#define Imlib_Context ImlibData
-#define Imlib_Image ImlibImage
-#define Imlib_Color ImlibColor
-#define Imlib_Border ImlibBorder
-#define IC_RenderDepth() (pImlib_Context->x.render_depth)
-#endif
-
-#if USE_FNLIB
-#include <Fnlib.h>
-#endif
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
@@ -201,10 +99,6 @@ Root;
 typedef struct _textstate
 {
    char               *fontname;
-#if USE_FNLIB
-   FnlibStyle          style;
-   FnlibFont          *font;
-#endif
    XColor              fg_col;
    XColor              bg_col;
    int                 effect;
@@ -321,10 +215,6 @@ Link               *RenderPage(Window win, int page_num, int w, int h);
 
 extern Display     *disp;
 extern Root         VRoot;
-
-#if USE_FNLIB
-extern FnlibData   *pFnlibData;
-#endif
 extern char        *docdir;
 
 #define Emalloc malloc

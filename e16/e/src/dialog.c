@@ -1263,7 +1263,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		ESetWindowBackgroundPixmap(disp, di->win, pmap);
 		EShapeCombineMask(disp, di->win, ShapeBounding, 0,
 				  0, mask, ShapeSet);
-		IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
+		imlib_free_pixmap_and_mask(pmap);
 		imlib_free_image();
 	     }
 	}

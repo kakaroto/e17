@@ -951,7 +951,7 @@ ImageStateRealize(ImageState * is)
    if (is->border)
       imlib_image_set_border(is->border);
 
-#if !USE_IMLIB2
+#if 0				/* To be implemented? */
    if (is->colmod)
      {
 	Imlib_set_image_red_curve(pImlib_Context, is->im, is->colmod->red.map);
@@ -982,10 +982,6 @@ FreePmapMask(PmapMask * pmm)
      {
 	if (pmm->type == 0)
 	   EFreePixmap(disp, pmm->mask);
-#if !USE_IMLIB2
-	else
-	   imlib_free_pixmap_and_mask(pmm->mask);
-#endif
 	pmm->mask = 0;
      }
 }

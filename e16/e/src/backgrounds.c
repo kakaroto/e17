@@ -374,8 +374,6 @@ BackgroundApply(Background * bg, Window win, int setbg)
    if (!WinExists(win))
       EDBUG_RETURN_;
 
-   IMLIB1_SET_CONTEXT(win == VRoot.win);
-
    GetWinWH(win, &rw, &rh);
    depth = GetWinDepth(win);
    imlib_context_set_drawable(win);
@@ -425,7 +423,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	if (cm)
 	  {
 	     cm->ref_count++;
-#if !USE_IMLIB2
+#if 0				/* To be implemented? */
 	     if (bg->top.im)
 	       {
 		  Imlib_set_image_red_curve(pImlib_Context, bg->top.im,
@@ -498,7 +496,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 		XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
 	     else
 		XFillRectangle(disp, dpmap, gc, x, y, w, h);
-	     IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
+	     imlib_free_pixmap_and_mask(pmap);
 	  }
 
 	if (hasfg)
@@ -521,7 +519,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 		  XSetClipOrigin(disp, gc, x, y);
 	       }
 	     XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
-	     IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
+	     imlib_free_pixmap_and_mask(pmap);
 	  }
 
 	if (!bg->keepim)
@@ -568,8 +566,6 @@ BackgroundApply(Background * bg, Window win, int setbg)
       XFreeGC(disp, gc);
 
    imlib_context_set_dither(rt);
-
-   IMLIB1_SET_CONTEXT(0);
 
    EDBUG_RETURN_;
 }
@@ -663,7 +659,6 @@ BackgroundsAccounting(void)
 	     XClearWindow(disp, win);
 	  }
 
-	IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);
 	BackgroundPixmapFree(lst[i]);
 
       next:
@@ -671,7 +666,6 @@ BackgroundsAccounting(void)
      }
    if (lst)
       Efree(lst);
-   IMLIB1_SET_CONTEXT(0);
 
    EDBUG_RETURN_;
 }
