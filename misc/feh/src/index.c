@@ -42,7 +42,7 @@ init_index_mode (void)
   tot_thumb_h = opt.thumb_h + text_area_h;
 
   /* Time to set up the font stuff */
-  imlib_add_path_to_font_path (".");
+  imlib_add_path_to_font_path ("./ttfonts");
   if (opt.font)
     {
       fn = imlib_load_font (opt.font);

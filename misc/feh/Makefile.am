@@ -29,6 +29,17 @@ src/testimages/spears21.jpg src/testimages/spears22.jpg src/testimages/pngs/bg.p
 src/testimages/pngs/bulb.png src/testimages/pngs/globe.png src/testimages/pngs/mail.png \
 src/testimages/pngs/mush.png src/testimages/pngs/paper.png
 
+testfonts = \
+src/ttfonts/20thcent.ttf \
+src/ttfonts/cinema.ttf \
+src/ttfonts/droid.ttf \
+src/ttfonts/goodtime.ttf \
+src/ttfonts/grunge.ttf \
+src/ttfonts/joystix.ttf \
+src/ttfonts/morpheus.ttf \
+src/ttfonts/notepad.ttf \
+src/ttfonts/soulpapa.ttf
+
 # `ll -1d src/test*`
 testscripts = \
 src/test01_montage_background_defaults \
@@ -44,7 +55,9 @@ src/test10_montage_no_bg_recursive \
 src/test11_montage_background_blend \
 src/test12_evil_montage_create_massive_image \
 src/test13_montage_pngs_on_pngs_stretch
+src/test14_index_no_bg_defaults \
+src/test15_slideshow_multiple_images
 
-EXTRA_DIST = $(testimages) $(testscripts) README AUTHORS ChangeLog
+EXTRA_DIST = $(testimages) $(testscripts) $(testfonts) README AUTHORS ChangeLog
 
 SUBDIRS = src
