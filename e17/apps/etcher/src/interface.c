@@ -266,7 +266,7 @@ create_main (void)
   gtk_widget_show (menubar1);
   gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
 
-  flie1 = gtk_menu_item_new_with_label (_("Flie"));
+  flie1 = gtk_menu_item_new_with_label (_("File"));
   gtk_widget_ref (flie1);
   gtk_object_set_data_full (GTK_OBJECT (main), "flie1", flie1,
                             (GtkDestroyNotify) gtk_widget_unref);

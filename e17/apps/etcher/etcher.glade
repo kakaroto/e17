@@ -49,7 +49,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>flie1</name>
-	<label>Flie</label>
+	<label>File</label>
 	<right_justify>False</right_justify>
 
 	<widget>
