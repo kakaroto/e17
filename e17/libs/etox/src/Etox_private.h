@@ -86,21 +86,29 @@ struct _Etox_Obstacle
     double x,y;
 };
 
-/** Internal Fucntions **/
-void etox_refresh(Etox e);
-void etox_clean(Etox e);
-void etox_bit_update_geometry(Etox e, Etox_Bit abit);
-void etox_bit_set_face(Etox_Bit bit, char *font, int font_size, Etox_Style style);
-int search_tokens(const char* text, const char** needles, int needles_count,
-                  char* *beg, char* *next);
-void create_bit_objects(Etox_Bit abit, Etox e, Etox_Color text_color);
-void update_bit_objects(Etox_Bit abit, Etox e);
-void etox_bit_move_relative(Etox e, Etox_Bit abit, double delta_x, double delta_y);
-double dump_line(Etox_Bit *abits, int bit_count, Etox e, char align, 
-                 char vertical_align, double beg_x, double cur_w);
-void find_available_size(Etox e, double beg_x, double beg_y, double h,
-                         double padding, double *av_x, double *av_y, double *av_w);
-Etox_Bit etox_bit_new();
-Etox_Color_Bit etox_color_get_bit(Etox_Color color, char *member);
+/** Internal Functions **/
+
+int		_etox_search_tokens(const char *text, const char **needles, 
+                                    int needles_count, char **beg, char **next);
+void		_etox_available_size(Etox e, double beg_x, double beg_y, 
+                                     double h, double padding, 
+                                     double *av_x, double *av_y, double *av_w);
+void		_etox_clean(Etox e);
+void		_etox_refresh(Etox e);
+
+Etox_Bit	_etox_bit_new(void);
+void		_etox_bit_update_geometry(Etox e, Etox_Bit abit);
+void		_etox_bit_set_face(Etox_Bit bit, char *font, int font_size, 
+                                   Etox_Style style);
+void		_etox_bit_create_objects(Etox_Bit abit, Etox e, 
+                                         Etox_Color text_color);
+void		_etox_bit_update_objects(Etox_Bit abit, Etox e);
+void		_etox_bit_move_relative(Etox e, Etox_Bit abit, 
+                                        double delta_x, double delta_y);
+double		_etox_bit_dump_line(Etox_Bit *abits, int bit_count, Etox e, 
+                                    char align, char vertical_align,
+                                    double beg_x, double cur_w);
+
+Etox_Color_Bit	_etox_color_get_bit(Etox_Color color, char *member);
 
 #endif
