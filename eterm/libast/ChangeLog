@@ -202,3 +202,8 @@ The options parser seems to be working now.  It's fairly extensible
 and fixes a lot of the problems with the old one.  It was rewritten
 more or less from scratch.
 ----------------------------------------------------------------------
+Tue Apr 30 22:17:27 2002                        Michael Jennings (mej)
+
+I really should be more careful when creating test cases.  This
+should fix the parsing of boolean options with values.
+----------------------------------------------------------------------

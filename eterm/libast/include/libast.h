@@ -486,13 +486,12 @@ extern const char *true_vals[], *false_vals[];
 /* Flags for individual options */
 #define SPIFOPT_FLAG_NONE                 (0)
 #define SPIFOPT_FLAG_BOOLEAN              (1UL << 0)
-#define SPIFOPT_FLAG_ABSTRACT             (1UL << 1)
-#define SPIFOPT_FLAG_TYPEMASK_NOVALUE     (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_ABSTRACT)
-#define SPIFOPT_FLAG_INTEGER              (1UL << 2)
-#define SPIFOPT_FLAG_STRING               (1UL << 3)
-#define SPIFOPT_FLAG_ARGLIST              (1UL << 4)
-#define SPIFOPT_FLAG_ABSTRACT_VALUE       (1UL << 5)
-#define SPIFOPT_FLAG_TYPEMASK_VALUE       (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT_VALUE)
+#define SPIFOPT_FLAG_TYPEMASK_NOVALUE     (SPIFOPT_FLAG_BOOLEAN)
+#define SPIFOPT_FLAG_INTEGER              (1UL << 1)
+#define SPIFOPT_FLAG_STRING               (1UL << 2)
+#define SPIFOPT_FLAG_ARGLIST              (1UL << 3)
+#define SPIFOPT_FLAG_ABSTRACT             (1UL << 4)
+#define SPIFOPT_FLAG_TYPEMASK_VALUE       (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT)
 #define SPIFOPT_FLAG_TYPEMASK             (SPIFOPT_FLAG_TYPEMASK_NOVALUE | SPIFOPT_FLAG_TYPEMASK_VALUE)
 
 #define SPIFOPT_FLAG_PREPARSE             (1UL << 8)
@@ -501,44 +500,39 @@ extern const char *true_vals[], *false_vals[];
 /* Flags that control the parser's behavior */
 #define SPIFOPT_SETTING_POSTPARSE          (1UL << 0)
 
-#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d,                                                   (f), &(p), m }
-#define SPIFOPT_BOOL(s, l, d, v, m)       { s, l, d,                                (SPIFOPT_FLAG_BOOLEAN), &(v), m }
-#define SPIFOPT_BOOL_PP(s, l, d, v, m)    { s, l, d,        (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
-#define SPIFOPT_BOOL_LONG(l, d, v, m)     { 0, l, d,                                (SPIFOPT_FLAG_BOOLEAN), &(v), m }
-#define SPIFOPT_BOOL_LONG_PP(l, d, v, m)  { 0, l, d,        (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
-#define SPIFOPT_ABST(s, l, d, f)          { s, l, d,                               (SPIFOPT_FLAG_ABSTRACT),  (f), 0 }
-#define SPIFOPT_ABST_PP(s, l, d, f)       { s, l, d,       (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
-#define SPIFOPT_ABST_LONG(l, d, f)        { 0, l, d,                               (SPIFOPT_FLAG_ABSTRACT),  (f), 0 }
-#define SPIFOPT_ABST_LONG_PP(l, d, f)     { 0, l, d,       (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
-#define SPIFOPT_INT(s, l, d, p)           { s, l, d,                                (SPIFOPT_FLAG_INTEGER), &(p), 0 }
-#define SPIFOPT_INT_PP(s, l, d, p)        { s, l, d,        (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_INT_LONG(l, d, p)         { 0, l, d,                                (SPIFOPT_FLAG_INTEGER), &(p), 0 }
-#define SPIFOPT_INT_LONG_PP(l, d, p)      { 0, l, d,        (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_STR(s, l, d, p)           { s, l, d,                                 (SPIFOPT_FLAG_STRING), &(p), 0 }
-#define SPIFOPT_STR_PP(s, l, d, p)        { s, l, d,         (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_STR_LONG(l, d, p)         { 0, l, d,                                 (SPIFOPT_FLAG_STRING), &(p), 0 }
-#define SPIFOPT_STR_LONG_PP(l, d, p)      { 0, l, d,         (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_ARGS(s, l, d, p)          { s, l, d,                                (SPIFOPT_FLAG_ARGLIST), &(p), 0 }
-#define SPIFOPT_ARGS_PP(s, l, d, p)       { s, l, d,        (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_ARGS_LONG(l, d, p)        { 0, l, d,                                (SPIFOPT_FLAG_ARGLIST), &(p), 0 }
-#define SPIFOPT_ARGS_LONG_PP(l, d, p)     { 0, l, d,        (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_ABSV(s, l, d, f)          { s, l, d,                         (SPIFOPT_FLAG_ABSTRACT_VALUE),  (f), 0 }
-#define SPIFOPT_ABSV_PP(s, l, d, f)       { s, l, d, (SPIFOPT_FLAG_ABSTRACT_VALUE | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
-#define SPIFOPT_ABSV_LONG(l, d, f)        { 0, l, d,                         (SPIFOPT_FLAG_ABSTRACT_VALUE),  (f), 0 }
-#define SPIFOPT_ABSV_LONG_PP(l, d, f)     { 0, l, d, (SPIFOPT_FLAG_ABSTRACT_VALUE | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
+#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d,                                             (f), &(p), m }
+#define SPIFOPT_BOOL(s, l, d, v, m)       { s, l, d,                          (SPIFOPT_FLAG_BOOLEAN), &(v), m }
+#define SPIFOPT_BOOL_PP(s, l, d, v, m)    { s, l, d,  (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
+#define SPIFOPT_BOOL_LONG(l, d, v, m)     { 0, l, d,                          (SPIFOPT_FLAG_BOOLEAN), &(v), m }
+#define SPIFOPT_BOOL_LONG_PP(l, d, v, m)  { 0, l, d,  (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
+#define SPIFOPT_INT(s, l, d, p)           { s, l, d,                          (SPIFOPT_FLAG_INTEGER), &(p), 0 }
+#define SPIFOPT_INT_PP(s, l, d, p)        { s, l, d,  (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
+#define SPIFOPT_INT_LONG(l, d, p)         { 0, l, d,                          (SPIFOPT_FLAG_INTEGER), &(p), 0 }
+#define SPIFOPT_INT_LONG_PP(l, d, p)      { 0, l, d,  (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
+#define SPIFOPT_STR(s, l, d, p)           { s, l, d,                           (SPIFOPT_FLAG_STRING), &(p), 0 }
+#define SPIFOPT_STR_PP(s, l, d, p)        { s, l, d,   (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
+#define SPIFOPT_STR_LONG(l, d, p)         { 0, l, d,                           (SPIFOPT_FLAG_STRING), &(p), 0 }
+#define SPIFOPT_STR_LONG_PP(l, d, p)      { 0, l, d,   (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
+#define SPIFOPT_ARGS(s, l, d, p)          { s, l, d,                          (SPIFOPT_FLAG_ARGLIST), &(p), 0 }
+#define SPIFOPT_ARGS_PP(s, l, d, p)       { s, l, d,  (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
+#define SPIFOPT_ARGS_LONG(l, d, p)        { 0, l, d,                          (SPIFOPT_FLAG_ARGLIST), &(p), 0 }
+#define SPIFOPT_ARGS_LONG_PP(l, d, p)     { 0, l, d,  (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
+#define SPIFOPT_ABST(s, l, d, f)          { s, l, d,                         (SPIFOPT_FLAG_ABSTRACT),  (f), 0 }
+#define SPIFOPT_ABST_PP(s, l, d, f)       { s, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
+#define SPIFOPT_ABST_LONG(l, d, f)        { 0, l, d,                         (SPIFOPT_FLAG_ABSTRACT),  (f), 0 }
+#define SPIFOPT_ABST_LONG_PP(l, d, f)     { 0, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
 
 #define SPIFOPT_TYPE(opt)                 (((spifopt_t) (opt)).flags & SPIFOPT_FLAG_TYPEMASK)
 #define SPIFOPT_OPT_TYPE(n)               (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_TYPEMASK)
 #define SPIFOPT_OPT_IS_BOOLEAN(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_BOOLEAN)
-#define SPIFOPT_OPT_IS_ABSTRACT(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT)
 #define SPIFOPT_OPT_IS_STRING(n)          (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_STRING)
 #define SPIFOPT_OPT_IS_INTEGER(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_INTEGER)
 #define SPIFOPT_OPT_IS_ARGLIST(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ARGLIST)
-#define SPIFOPT_OPT_IS_ABSTRACT_VALUE(n)  (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT_VALUE)
+#define SPIFOPT_OPT_IS_ABSTRACT(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT)
 #define SPIFOPT_OPT_IS_PREPARSE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_PREPARSE)
 #define SPIFOPT_OPT_IS_DEPRECATED(n)      (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_DEPRECATED)
 #define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_INTEGER \
-                                                                   | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT_VALUE))
+                                                                   | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT))
 
 #define SPIFOPT_OPT_SHORT(n)              (SPIFOPT_OPTLIST(n).short_opt)
 #define SPIFOPT_OPT_LONG(n)               (SPIFOPT_OPTLIST(n).long_opt)
@@ -561,12 +555,11 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_ALLOWBAD_SET(n)           (spifopt_settings.allow_bad = (n))
 #define SPIFOPT_INDENT_GET()              (spifopt_settings.indent)
 #define SPIFOPT_INDENT_SET(n)             (spifopt_settings.indent = (n))
-#define SPIFOPT_HELPHANDLER               ((spifopt_settings.help_handler) ? (spifopt_settings.help_handler) : (usage))
+#define SPIFOPT_HELPHANDLER               ((spifopt_settings.help_handler) ? (spifopt_settings.help_handler) : (spifopt_usage))
 #define SPIFOPT_HELPHANDLER_SET(f)        (spifopt_settings.help_handler = (f))
 
 typedef void (*spifopt_helphandler_t)();
-typedef void (*spifopt_abstract_handler_t)(void);
-typedef void (*spifopt_abstract_value_handler_t)(char *);
+typedef void (*spifopt_abstract_handler_t)(char *);
 
 typedef struct spifopt_t_struct {
     spif_char_t short_opt;
@@ -696,5 +689,6 @@ extern char *conf_parse(char *conf_name, const char *dir, const char *path);
 
 /* options.c */
 extern void spifopt_parse(int, char **);
+extern void spifopt_usage(void);
 
 #endif /* _LIBAST_H_ */

@@ -49,8 +49,8 @@ get_option_type_string(spif_uint32_t type)
     ASSERT_NOTREACHED_RVAL(NULL);
 }
 
-static void
-usage(void)
+void
+spifopt_usage(void)
 {
     spif_uint16_t i, col, l_long = 0, l_desc = 0;
 
@@ -62,7 +62,7 @@ usage(void)
     l_long += 2;  /* Add 2 for the "--" */
     l_desc += 7;  /* Add 7 for the type and a space */
 
-    printf("%s %s\n\n", libast_program_name, libast_program_version);
+    printf("%s %s\n", libast_program_name, libast_program_version);
     printf("Usage:\n\n");
     printf("POSIX ");
 
@@ -177,6 +177,40 @@ find_value_short(char *arg, char *next_arg)
     D_OPTIONS(("val_ptr == %10.8p \"%s\"\n", val_ptr, NONULL(val_ptr)));
     return val_ptr;
 }
+
+static spif_bool_t
+is_boolean_value(char *val_ptr)
+{
+    if (!(val_ptr) || !(*val_ptr)) {
+        return FALSE;
+    }
+    return ((BOOL_OPT_ISTRUE(val_ptr) || BOOL_OPT_ISFALSE(val_ptr)) ? (TRUE) : (FALSE));
+}
+
+#if 0
+/* For future use, maybe... */
+static char *
+get_valid_option(char *opt)
+{
+    REQUIRE_RVAL(opt != NULL, NULL);
+
+    if (*opt != '-') {
+        return NULL;
+    }
+    opt++;
+    if (*opt == '-') {
+        opt++;
+        if (find_long_option(opt) >= 0) {
+            return (opt);
+        }
+    } else {
+        if (find_short_option(*opt) >= 0) {
+            return (opt);
+        }
+    }
+    return NULL;
+}
+#endif
 
 static spif_bool_t
 handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
@@ -305,12 +339,19 @@ spifopt_parse(int argc, char *argv[])
         }
 
         /* If a value was passed to this option, set val_ptr to point to it. */
-        if (SPIFOPT_OPT_NEEDS_VALUE(j)) {
-            if (islong) {
-                val_ptr = find_value_long(argv[i], argv[i + 1], &hasequal);
-            } else {
-                val_ptr = find_value_short(opt, argv[i + 1]);
+        if (islong) {
+            val_ptr = find_value_long(argv[i], argv[i + 1], &hasequal);
+        } else {
+            val_ptr = find_value_short(opt, argv[i + 1]);
+        }
+
+        /* Boolean options may or may not have a value... */
+        if (val_ptr && SPIFOPT_OPT_IS_BOOLEAN(j)) {
+            if (!is_boolean_value(val_ptr)) {
+                val_ptr = NULL;
             }
+        }
+        if (val_ptr) {
             if (val_ptr == argv[i + 1]) {
                 i++;
                 opt += strlen(opt);
@@ -373,11 +414,6 @@ spifopt_parse(int argc, char *argv[])
             if (!handle_boolean(j, val_ptr, islong)) {
                 i--;
             }
-        } else if (SPIFOPT_OPT_IS_ABSTRACT(j)) {
-            if (SHOULD_PARSE(j)) {
-                D_OPTIONS(("Abstract option detected\n"));
-                ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))();
-            }
         } else if (SPIFOPT_OPT_IS_STRING(j)) {
             if (SHOULD_PARSE(j)) {
                 handle_string(j, val_ptr);
@@ -393,10 +429,10 @@ spifopt_parse(int argc, char *argv[])
             if (!hasequal) {
                 break;
             }
-        } else if (SPIFOPT_OPT_IS_ABSTRACT_VALUE(j)) {
+        } else if (SPIFOPT_OPT_IS_ABSTRACT(j)) {
             if (SHOULD_PARSE(j)) {
-                D_OPTIONS(("Abstract/value option detected\n"));
-                ((spifopt_abstract_value_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
+                D_OPTIONS(("Abstract option detected\n"));
+                ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
             }
         }
         NEXT_LOOP();

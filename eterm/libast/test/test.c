@@ -229,7 +229,6 @@ test_options(void)
     char *display = NULL, *name = NULL, *theme = NULL, **exec = NULL, **foo = NULL;
     long color = 0;
     spif_uint32_t options = 0;
-    static void handle_buttonbar(void) {options |= 0x20;}
     static void handle_theme(char *val_ptr) {theme = STRDUP(val_ptr);}
     char *argv2[] = { "test", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com", "--scrollbar",
                       "--buttonbar", "no", "--login=0", "-mvd", "foo:0", "--color", "4", "--foo", "blah", "-d", "eatme", NULL };
@@ -241,10 +240,10 @@ test_options(void)
         SPIFOPT_BOOL('m', "map-alert", "raise window on beep", options, 0x02),
         SPIFOPT_STR('n', "name", "name", name),
         SPIFOPT_BOOL('r', "reverse-video", "enable reverse video", options, 0x04),
-        SPIFOPT_ABSV_PP('t', "theme", "theme to use", handle_theme),
+        SPIFOPT_ABST_PP('t', "theme", "theme to use", handle_theme),
         SPIFOPT_BOOL_PP('v', "visual-bell", "enable visual bell", options, 0x08),
         SPIFOPT_BOOL_LONG("scrollbar", "enable scrollbar", options, 0x10),
-        SPIFOPT_ABST_LONG("buttonbar", "enable buttonbar", handle_buttonbar),
+        SPIFOPT_BOOL_LONG("buttonbar", "enable buttonbar", options, 0x20),
         SPIFOPT_INT_LONG("color", "pick a color", color),
         SPIFOPT_ARGS_LONG("foo", "foo", foo)
     };
@@ -281,7 +280,7 @@ test_options(void)
     TEST_FAIL_IF(exec[2] != NULL);
     TEST_FAIL_IF(foo != NULL);
     TEST_FAIL_IF(color != 0);
-    TEST_FAIL_IF(options != 0x09);
+    TEST_FAIL_IF(options != 0x08);
     spifopt_parse(argc2, argv2);
     TEST_FAIL_IF(strcmp(display, "foo:0"));
     TEST_FAIL_IF(strcmp(name, "This is a name"));
@@ -296,7 +295,7 @@ test_options(void)
     TEST_FAIL_IF(strcmp(foo[2], "eatme"));
     TEST_FAIL_IF(foo[3] != NULL);
     TEST_FAIL_IF(color != 4);
-    TEST_FAIL_IF(options != 0x3f);
+    TEST_FAIL_IF(options != 0x1e);
 
     TEST_PASS();
 
