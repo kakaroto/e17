@@ -90,7 +90,7 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))
    {
-      char *key = NULL, listkey;
+      char *key = NULL;
       char *icon = NULL;
       char *value = NULL;
 
@@ -103,9 +103,9 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
          snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
          icon = e_db_str_get(db, buf);
 
-         e->sessions = evas_hash_add(e->sessions, key, value);
-         e->icons = evas_hash_add(e->icons, key, icon);
-         e->keys = evas_list_append(e->keys, key);
+         e->sessions.hash = evas_hash_add(e->sessions.hash, key, value);
+         e->sessions.icons = evas_hash_add(e->sessions.icons, key, icon);
+         e->sessions.keys = evas_list_append(e->sessions.keys, key);
       }
    }
    if (e_db_int_get(db, "/entrance/fonts/count", &num_fonts))

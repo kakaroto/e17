@@ -452,38 +452,6 @@ timer_cb(void *data)
    return (1);
 }
 
-void
-entrance_user_list_add(Evas_Object * edje, Entrance_Config cfg)
-{
-   Evas_Coord w, h;
-   Evas_Object *container = NULL;
-
-   if (!edje || !cfg)
-      return;
-   edje_object_part_geometry_get(edje, "EntranceUserList", NULL, NULL, &w,
-                                 &h);
-   if ((container = e_container_new(evas_object_evas_get(edje))))
-   {
-      e_container_padding_set(container, 4, 4, 4, 4);
-      e_container_spacing_set(container, 4);
-      e_container_move_button_set(container, 2);
-      if (w > h)
-      {
-         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_Y);
-         e_container_direction_set(container, 0);
-      }
-      else
-      {
-         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_X);
-         e_container_direction_set(container, 1);
-      }
-#if 0
-      entrance_swallow_users_to_container(container, cfg);
-#endif
-      edje_object_part_swallow(edje, "EntranceUserList", container);
-   }
-}
-
 /**
  * main - where it all starts !
  */
@@ -639,7 +607,7 @@ main(int argc, char *argv[])
       }
       if (edje_object_part_exists(edje, "EntranceUserList"))
       {
-         entrance_user_list_add(edje, session->config);
+         entrance_session_user_list_add(session);
       }
       edje_object_signal_callback_add(edje, "EntranceUserAuthSuccessDone", "",
                                       done_cb, e);

@@ -9,6 +9,8 @@ extern void session_item_selected_cb(void *data, Evas_Object * o,
 static Evas_Object *_entrance_session_icon_load(Evas_Object * o, char *file);
 static Evas_Object *_entrance_session_load_session(Entrance_Session e,
                                                    char *key);
+static Evas_Object *_entrance_session_user_load(Entrance_Session e,
+                                                char *key);
 
 /**
  * entrance_session_new: allocate a new  Entrance_Session
@@ -138,7 +140,7 @@ entrance_session_start_user_session(Entrance_Session e)
       /etc/X11. A notable exception is Gentoo, but there is a customized *
       ebuild for this distribution. Please comment. */
    if ((session_key =
-        (char *) evas_hash_find(e->config->sessions, e->session)))
+        (char *) evas_hash_find(e->config->sessions.hash, e->session)))
       snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
    else
       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);	/* Default 
@@ -215,7 +217,7 @@ entrance_session_xsession_set(Entrance_Session e, char *key)
    if (!e || !key)
       return;
 
-   if ((str = evas_hash_find(e->config->sessions, key)))
+   if ((str = evas_hash_find(e->config->sessions.hash, key)))
    {
       snprintf(buf, PATH_MAX, "%s", key);
       if (strcmp(key, e->session))
@@ -270,7 +272,7 @@ entrance_session_list_add(Entrance_Session e)
          e_container_direction_set(container, 1);
       }
 
-      for (l = e->config->keys; l; l = l->next)
+      for (l = e->config->sessions.keys; l; l = l->next)
       {
          key = (char *) l->data;
          if ((edje = _entrance_session_load_session(e, key)))
@@ -280,6 +282,106 @@ entrance_session_list_add(Entrance_Session e)
       }
       edje_object_part_swallow(e->edje, "EntranceSessionList", container);
    }
+}
+void
+entrance_session_user_list_add(Entrance_Session e)
+{
+   Evas_Coord w, h;
+   char *key = NULL;
+   Evas_List *l = NULL;
+   Evas_Object *container = NULL, *edje;
+
+   if (!e || !e->edje)
+      return;
+   edje_object_part_geometry_get(e->edje, "EntranceUserList", NULL, NULL, &w,
+                                 &h);
+   if ((container = e_container_new(evas_object_evas_get(e->edje))))
+   {
+      e_container_padding_set(container, 4, 4, 4, 4);
+      e_container_spacing_set(container, 4);
+      e_container_move_button_set(container, 2);
+      if (w > h)
+      {
+         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_Y);
+         e_container_direction_set(container, 0);
+      }
+      else
+      {
+         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_X);
+         e_container_direction_set(container, 1);
+      }
+#if 0
+      entrance_swallow_users_to_container(container, cfg);
+#endif
+      for (l = e->config->users.keys; l; l = l->next)
+      {
+         key = (char *) l->data;
+         if ((edje = _entrance_session_user_load(e, key)))
+         {
+            e_container_element_append(container, edje);
+         }
+      }
+      edje_object_part_swallow(e->edje, "EntranceUserList", container);
+   }
+
+}
+
+/* 
+ * 
+ */
+static char *
+_entrance_session_path_resolve(Entrance_Session e, char *prefix, char *key)
+{
+   return (NULL);
+}
+
+static Evas_Object *
+_entrance_session_user_load(Entrance_Session e, char *key)
+{
+   int result = 0;
+   char *icon = NULL;
+   char buf[PATH_MAX];
+   Evas_Object *o = NULL;
+   Evas_Object *edje = NULL;
+
+   if (!e || !e->edje || !key)
+      return (NULL);
+
+   if ((icon = evas_hash_find(e->config->users.hash, key)))
+   {
+      fprintf(stderr, "%s:%s\n", key, icon);
+      edje = edje_object_add(evas_object_evas_get(e->edje));
+      snprintf(buf, PATH_MAX, "%s/users/%s", PACKAGE_DATA_DIR, icon);
+      if ((result = edje_object_file_set(edje, buf, "User")) > 0)
+      {
+         evas_object_move(edje, 0, 0);
+         evas_object_resize(edje, 48, 48);
+         evas_object_layer_set(edje, 0);
+
+         if (edje_object_part_exists(edje, "EntranceUser"))
+         {
+            edje_object_part_text_set(edje, "EntranceUser", key);
+         }
+         else
+         {
+            if (o)
+               evas_object_del(o);
+            if (edje)
+               evas_object_del(edje);
+            edje = NULL;
+         }
+         evas_object_show(edje);
+      }
+      else
+      {
+         fprintf(stderr, "Failed on: %s(%d)\n", key, result);
+         evas_object_del(edje);
+         evas_object_del(o);
+         edje = NULL;
+      }
+   }
+   return (edje);
+
 }
 static Evas_Object *
 _entrance_session_icon_load(Evas_Object * o, char *file)
@@ -335,7 +437,7 @@ _entrance_session_load_session(Entrance_Session e, char *key)
 
       if (edje_object_part_exists(edje, "EntranceSessionIcon"))
       {
-         icon = (char *) evas_hash_find(e->config->icons, key);
+         icon = (char *) evas_hash_find(e->config->sessions.icons, key);
          o = _entrance_session_icon_load(e->edje, icon);
          if (!strcmp(evas_object_type_get(o), "image"))
          {

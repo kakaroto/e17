@@ -67,22 +67,25 @@ struct _Entrance_Config
     * fonts - available font paths for fonts
     */
    Evas_List *fonts;
+
    /**
     * users - users known to the system
     */
-   Evas_List *users;
+   struct
+   {
+      Evas_Hash *hash;
+      Evas_List *keys;
+   } users;
+
    /**
-    * sessions - a Title string to xsession mapping
+    * sessions - sessions known to the system
     */
-   Evas_Hash *sessions;
-   /**
-    * sessions - a Title string to iconfile mapping
-    */
-   Evas_List *keys;
-   /**
-    * keys - a listing of the keys in our hashes
-    */
-   Evas_Hash *icons;
+   struct
+   {
+      Evas_Hash *hash;
+      Evas_Hash *icons;
+      Evas_List *keys;
+   } sessions;
 };
 
 typedef struct _Entrance_Config *Entrance_Config;
