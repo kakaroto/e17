@@ -1988,13 +1988,6 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 
    switch (ev->type)
      {
-     case EnterNotify:
-	FocusHandleEnter(NULL, ev);
-	break;
-     case LeaveNotify:
-	FocusHandleLeave(NULL, ev);
-	break;
-
      case MapRequest:
 	EwinEventMapRequest(NULL, ev->xmaprequest.window);
 	break;

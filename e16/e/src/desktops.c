@@ -1495,6 +1495,13 @@ DesktopHandleEvents(XEvent * ev, void *prm)
      case ButtonRelease:
 	DesktopEventButtonRelease(d, ev);
 	break;
+
+     case EnterNotify:
+	FocusHandleEnter(NULL, ev);
+	break;
+     case LeaveNotify:
+	FocusHandleLeave(NULL, ev);
+	break;
      }
 }
 

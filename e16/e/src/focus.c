@@ -454,8 +454,6 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
 	  }
      }
 
-   Mode.mouse_over_ewin = ewin;
-
    switch (Conf.focus.mode)
      {
      default:
