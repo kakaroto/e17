@@ -1188,6 +1188,8 @@ typedef struct _emode
    int                 start_x, start_y;
    char                noewin;
    char                have_place_grab;
+   char                action_inhibit;
+   char                justclicked;
    int                 focusmode;
    char                dockdirmode;
    char                primaryicondir;
@@ -1712,6 +1714,8 @@ void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 void                SetEInfoOnAll(void);
 EWin               *GetEwinPointerInClient(void);
 EWin               *GetFocusEwin(void);
+EWin               *GetContextEwin(void);
+void                SetContextEwin(EWin * ewin);
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
@@ -1734,6 +1738,10 @@ EWin               *AdoptInternal(Window win, Border * border, int type,
 				  void *ptr);
 EWin               *CreateEwin(void);
 void                FreeEwin(EWin * ewin);
+int                 BordersEventMouseDown(XEvent * ev);
+int                 BordersEventMouseUp(XEvent * ev);
+int                 BordersEventMouseIn(XEvent * ev);
+int                 BordersEventMouseOut(XEvent * ev);
 
 /* windowmatch.c functions */
 WindowMatch        *CreateWindowMatch(char *name);
@@ -2136,8 +2144,7 @@ void                ButtonFindEmptySpotFor(Button * bt, char *listname,
 					   char dirtomove);
 int                 ButtonsEventExpose(XEvent * ev);
 int                 ButtonsEventMouseDown(XEvent * ev);
-int                 ButtonsEventMouseUp(XEvent * ev, int wasmovres,
-					int wasdrag);
+int                 ButtonsEventMouseUp(XEvent * ev);
 int                 ButtonsEventMouseIn(XEvent * ev);
 int                 ButtonsEventMouseOut(XEvent * ev);
 
@@ -2361,7 +2368,7 @@ void                MenuHideMasker(void);
 void                MenusDestroyLoaded(void);
 void                MenusHideByWindow(Window win);
 int                 MenusEventMouseDown(XEvent * ev);
-int                 MenusEventMouseUp(XEvent * ev, int justclicked);
+int                 MenusEventMouseUp(XEvent * ev);
 int                 MenusEventMouseIn(XEvent * ev);
 int                 MenusEventMouseOut(XEvent * ev);
 
@@ -2640,7 +2647,7 @@ int                 DialogEventKeyPress(XEvent * ev);
 int                 DialogEventMotion(XEvent * ev);
 int                 DialogEventExpose(XEvent * ev);
 int                 DialogEventMouseDown(XEvent * ev);
-int                 DialogEventMouseUp(XEvent * ev, Window click_was_in);
+int                 DialogEventMouseUp(XEvent * ev);
 int                 DialogEventMouseIn(XEvent * ev);
 int                 DialogEventMouseOut(XEvent * ev);
 
@@ -2825,7 +2832,6 @@ extern char         mustdel;
 extern char         queue_up;
 extern char         no_overwrite;
 extern char         clickmenu;
-extern Window       last_bpress;
 extern int          child_count;
 extern pid_t       *e_children;
 extern int          numlock_mask;

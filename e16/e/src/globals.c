@@ -65,7 +65,6 @@ char                mustdel;
 char                queue_up;
 char                no_overwrite = 0;
 char                clickmenu = 0;
-Window              last_bpress = 0;
 int                 child_count = 0;
 pid_t              *e_children = NULL;
 int                 numlock_mask = 0;

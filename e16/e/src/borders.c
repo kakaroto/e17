@@ -201,6 +201,31 @@ GetFocusEwin(void)
    EDBUG_RETURN(mode.ewin);
 }
 
+#if 0
+EWin               *
+GetContextEwin(void)
+{
+   EDBUG(4, "GetContextEwin");
+
+   if (mode.context_ewin)
+      EDBUG_RETURN(mode.context_ewin);
+
+   if (mode.focuswin)
+      EDBUG_RETURN(mode.focuswin);
+
+   EDBUG_RETURN(mode.mouse_over_win);
+}
+#endif
+
+void
+SetContextEwin(EWin * ewin)
+{
+   EDBUG(4, "SetContextEwin");
+   if (!ewin->menu && !mode.cur_menu_mode)
+      mode.context_ewin = ewin;
+   EDBUG_RETURN_;
+}
+
 void
 SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 {
@@ -3089,4 +3114,133 @@ UnShadeEwin(EWin * ewin)
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
    EDBUG_RETURN_;
+}
+
+/*
+ * Border event handlers
+ */
+typedef void        (border_event_func_t) (XEvent * ev, EWin * ewin, int part);
+
+static void
+BorderWinpartEventMouseDown(XEvent * ev, EWin * ewin, int j)
+{
+   GrabThePointer(ewin->bits[j].win);
+
+   ewin->bits[j].state = STATE_CLICKED;
+   ChangeEwinWinpart(ewin, j);
+
+   mode.ewin = ewin;
+   mode.borderpartpress = 1;
+   if (ewin->border->part[j].aclass)
+      EventAclass(ev, ewin->border->part[j].aclass);
+   mode.borderpartpress = 0;
+}
+
+static void
+BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
+{
+   Window              win2;
+
+   if ((ewin->bits[j].state == STATE_CLICKED) && (!ewin->bits[j].left))
+      ewin->bits[j].state = STATE_HILITED;
+   else
+      ewin->bits[j].state = STATE_NORMAL;
+   ewin->bits[j].left = 0;
+   ChangeEwinWinpart(ewin, j);
+
+   win2 = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
+   mode.borderpartpress = 1;
+   if (win2 == mode.context_win && (ewin->border->part[j].aclass))
+      EventAclass(ev, ewin->border->part[j].aclass);
+   mode.borderpartpress = 0;
+}
+
+static void
+BorderWinpartEventEnter(XEvent * ev, EWin * ewin, int j)
+{
+   mode.noewin = 0;
+   mode.ewin = ewin;
+
+   if (ewin->bits[j].state == STATE_CLICKED)
+      ewin->bits[j].left = 0;
+   else
+     {
+	ewin->bits[j].state = STATE_HILITED;
+	ChangeEwinWinpart(ewin, j);
+	if (ewin->border->part[j].aclass)
+	   EventAclass(ev, ewin->border->part[j].aclass);
+     }
+}
+
+static void
+BorderWinpartEventLeave(XEvent * ev, EWin * ewin, int j)
+{
+   if (mode.mode == MODE_NONE)
+      mode.ewin = NULL;
+   else
+      mode.noewin = 1;
+
+   if (ewin->bits[j].state == STATE_CLICKED)
+      ewin->bits[j].left = 1;
+   else
+     {
+	ewin->bits[j].state = STATE_NORMAL;
+	ChangeEwinWinpart(ewin, j);
+	if (ewin->border->part[j].aclass)
+	   EventAclass(ev, ewin->border->part[j].aclass);
+     }
+}
+
+static int
+BordersEvent(XEvent * ev, border_event_func_t * func)
+{
+   Window              win = ev->xany.window;
+   EWin              **ewins;
+   int                 i, j, num, used = 0;
+
+   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   for (i = 0; i < num; i++)
+     {
+	for (j = 0; j < ewins[i]->border->num_winparts; j++)
+	  {
+	     if (win == ewins[i]->bits[j].win)
+	       {
+		  SetContextEwin(ewins[i]);
+		  func(ev, ewins[i], j);
+
+		  used = 1;
+		  goto exit;
+	       }
+	  }
+     }
+
+ exit:
+   if (ewins)
+      Efree(ewins);
+
+   return used;
+}
+
+int
+BordersEventMouseDown(XEvent * ev)
+{
+   return BordersEvent(ev, BorderWinpartEventMouseDown);
+}
+
+int
+BordersEventMouseUp(XEvent * ev)
+{
+   return BordersEvent(ev, BorderWinpartEventMouseUp);
+}
+
+int
+BordersEventMouseIn(XEvent * ev)
+{
+   return BordersEvent(ev, BorderWinpartEventEnter);
+}
+
+int
+BordersEventMouseOut(XEvent * ev)
+{
+   return BordersEvent(ev, BorderWinpartEventLeave);
 }

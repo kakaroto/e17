@@ -636,7 +636,7 @@ ButtonsEventMouseDown(XEvent * ev)
 }
 
 int
-ButtonsEventMouseUp(XEvent * ev, int wasmovres, int wasdrag)
+ButtonsEventMouseUp(XEvent * ev)
 {
    int                 used = 0;
    int                 i, num;
@@ -652,7 +652,7 @@ ButtonsEventMouseUp(XEvent * ev, int wasmovres, int wasdrag)
 	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
 	   continue;
 
-	if ((buttons[i]->inside_win) && (!wasmovres))
+	if (buttons[i]->inside_win && !mode.action_inhibit)
 	  {
 	     Window              id = ev->xany.window;	/* ??? */
 
@@ -668,9 +668,8 @@ ButtonsEventMouseUp(XEvent * ev, int wasmovres, int wasdrag)
 	   buttons[i]->state = STATE_NORMAL;
 	buttons[i]->left = 0;
 	ButtonDraw(buttons[i]);
-	if ((buttons[i]->aclass) && (!wasdrag) && (!wasmovres))
+	if (buttons[i]->aclass)
 	   EventAclass(ev, buttons[i]->aclass);
-	last_bpress = 0;
 	used = 1;
 	break;
      }

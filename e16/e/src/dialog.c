@@ -2375,21 +2375,21 @@ DialogEventMouseDown(XEvent * ev)
 }
 
 int
-DialogEventMouseUp(XEvent * ev, Window click_was_in)
+DialogEventMouseUp(XEvent * ev)
 {
-   Window              win = ev->xbutton.window;
+   Window              win = mode.context_win;
    Dialog             *d;
    int                 bnum;
    DItem              *di;
 
-   d = FindDialogButton(click_was_in, &bnum);
+   d = FindDialogButton(win, &bnum);
    if (d)
      {
-	DialogActivateButton(click_was_in, 3);
+	DialogActivateButton(win, 3);
 	goto exit;
      }
 
-   di = FindDialogItem(click_was_in, &d);
+   di = FindDialogItem(win, &d);
    if (d == NULL)
       return 0;
 
@@ -2397,7 +2397,7 @@ DialogEventMouseUp(XEvent * ev, Window click_was_in)
       goto exit;
 
    di->clicked = 0;
-   if (click_was_in)
+   if (win)
      {
 	if (di->type == DITEM_AREA)
 	  {
@@ -2438,7 +2438,7 @@ DialogEventMouseUp(XEvent * ev, Window click_was_in)
 	  }
      }
    DialogDrawItems(d, di, 0, 0, 99999, 99999);
-   if (click_was_in)
+   if (win)
      {
 	if (di->func)
 	   (di->func) (di->val, di->data);

@@ -2235,7 +2235,6 @@ MenusHide(void)
    MenuHideMasker();
    mode.cur_menu_depth = 0;
    mode.cur_menu_mode = 0;
-   last_bpress = 0;
    clickmenu = 0;
 }
 
@@ -2310,7 +2309,7 @@ MenusEventMouseDown(XEvent * ev)
 }
 
 int
-MenusEventMouseUp(XEvent * ev, int justclicked)
+MenusEventMouseUp(XEvent * ev)
 {
    Menu               *m;
    MenuItem           *mi;
@@ -2320,7 +2319,7 @@ MenusEventMouseUp(XEvent * ev, int justclicked)
      {
 	mi->state = STATE_HILITED;
 	MenuDrawItem(m, mi, 1);
-	if ((mi->act_id) && (!justclicked))
+	if ((mi->act_id) && (!mode.justclicked))
 	  {
 	     (*(ActionFunctions[mi->act_id])) (mi->params);
 	     if (clickmenu)
@@ -2363,7 +2362,7 @@ MenusEventMouseUp(XEvent * ev, int justclicked)
 	return 1;
      }
 
-   if ((mode.cur_menu_mode) && (!justclicked))
+   if ((mode.cur_menu_mode) && (!mode.justclicked))
      {
 	MenusHide();
 	return 1;

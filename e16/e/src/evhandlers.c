@@ -27,7 +27,7 @@ static ToolTip     *ttip = NULL;
 static void         ToolTipTimeout(int val, void *data);
 
 static char         sentpress = 0;
-static Window       click_was_in = 0;
+static Window       last_bpress = 0;
 static Time         last_time = 0;
 static int          last_button = 0;
 
@@ -1269,10 +1269,9 @@ HandleExpose(XEvent * ev)
 void
 HandleMouseDown(XEvent * ev)
 {
-   Window              win;
+   Window              win = ev->xbutton.window;
    EWin               *ewin;
-   EWin              **ewins;
-   int                 i, j, num;
+   int                 i;
    int                 desk_click;
    char                double_click = 0;
    float               mode_double_click_time = 0.25;
@@ -1314,10 +1313,10 @@ HandleMouseDown(XEvent * ev)
 	mode_double_click_time)
        && ((int)(ev->xbutton.button) == (int)(last_button)))
       double_click = 1;
+
    last_time = ev->xbutton.time;
    last_button = ev->xbutton.button;
-
-   last_bpress = click_was_in = win = ev->xbutton.window;
+   last_bpress = win;
 
    mode.x = ev->xbutton.x_root;
    mode.y = ev->xbutton.y_root;
@@ -1373,36 +1372,8 @@ HandleMouseDown(XEvent * ev)
    if (double_click)
       ev->xbutton.time = 0;
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (ewins)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     for (j = 0; j < ewins[i]->border->num_winparts; j++)
-	       {
-		  if (win == ewins[i]->bits[j].win)
-		    {
-		       if (!clickmenu)
-			 {
-			    GrabThePointer(win);
-			    mode.ewin = ewins[i];
-			    ewins[i]->bits[j].state = STATE_CLICKED;
-			    ChangeEwinWinpart(ewins[i], j);
-			    if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
-			       mode.context_ewin = ewins[i];
-			    mode.borderpartpress = 1;
-			    if (ewins[i]->border->part[j].aclass)
-			       EventAclass(ev,
-					   ewins[i]->border->part[j].aclass);
-			    mode.borderpartpress = 0;
-			 }
-		       Efree(ewins);
-		       EDBUG_RETURN_;
-		    }
-	       }
-	  }
-	Efree(ewins);
-     }
+   if (!clickmenu && BordersEventMouseDown(ev))
+      goto exit;
 
    if (ButtonsEventMouseDown(ev))
       goto exit;
@@ -1410,7 +1381,7 @@ HandleMouseDown(XEvent * ev)
    if (DialogEventMouseDown(ev))
       goto exit;
 
-   ewin = FindEwinByBase(ev->xbutton.window);
+   ewin = FindEwinByBase(win);
    if (ewin)
      {
 	ActionClass        *ac;
@@ -1425,7 +1396,7 @@ HandleMouseDown(XEvent * ev)
 	     if (EventAclass(ev, ac))
 	       {
 		  mode.borderpartpress = 0;
-		  EDBUG_RETURN_;
+		  goto exit;
 	       }
 	     mode.borderpartpress = 0;
 	  }
@@ -1441,13 +1412,9 @@ HandleMouseDown(XEvent * ev)
 void
 HandleMouseUp(XEvent * ev)
 {
-   Window              win, win2;
+   Window              win = ev->xbutton.window;
    EWin               *ewin;
-   EWin              **ewins;
-   int                 i, j, num;
-   char                wasdrag;
-   char                wasmovres;
-   char                justclicked = 0;
+   int                 i, num;
    Slideout           *pslideout;
    EWin              **gwins;
 
@@ -1464,35 +1431,12 @@ HandleMouseUp(XEvent * ev)
    TooltipsHandleEvent();
    UnGrabTheButtons();
 
-   win2 = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
-   win = ev->xbutton.window;
-
    mode.x = ev->xbutton.x_root;
    mode.y = ev->xbutton.y_root;
 
-   if ((mode.place) && (mode.mode == MODE_MOVE))
-     {
-	ewin = mode.ewin;
-	if (ewin)
-	  {
-	     gwins =
-		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
-					   &num);
-	     if ((mode.movemode == 0) && (mode.mode == MODE_MOVE))
-		for (i = 0; i < num; i++)
-		   DetermineEwinFloat(gwins[i], 0, 0);
-	     Efree(gwins);
-	  }
-	doMoveEnd(NULL);
-	if (mode.have_place_grab)
-	  {
-	     mode.have_place_grab = 0;
-	     XUngrabPointer(disp, CurrentTime);
-	  }
-	mode.place = 0;
-	EDBUG_RETURN_;
-     }
+   pslideout = mode.slideout;
 
+#if 0				/* Do we need this? */
    if ((last_bpress) && (last_bpress != win))
      {
 	ewin = FindEwinByChildren(last_bpress);
@@ -1513,18 +1457,16 @@ HandleMouseUp(XEvent * ev)
 		    }
 	       }
 	  }
-	last_bpress = 0;
      }
+#endif
 
-   wasdrag = 0;
-   wasmovres = 0;
    switch (mode.mode)
      {
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
 	doResizeEnd(NULL);
-	wasmovres = 1;
+	mode.action_inhibit = 1;
 	break;
      case MODE_MOVE:
 	ewin = mode.ewin;
@@ -1544,9 +1486,21 @@ HandleMouseUp(XEvent * ev)
 	     mode.have_place_grab = 0;
 	     XUngrabPointer(disp, CurrentTime);
 	  }
-	mode.place = 0;
-	wasmovres = 1;
 	mode.ewin = NULL;
+	mode.action_inhibit = 1;
+	if (mode.place)
+	  {
+	     mode.place = 0;
+	     goto exit;
+	  }
+	break;
+     case MODE_DESKDRAG:
+	mode.mode = MODE_NONE;
+	break;
+     case MODE_BUTTONDRAG:
+	if (!mode.button_move_pending)
+	   mode.action_inhibit = 1;
+	doDragButtonEnd(NULL);
 	break;
      default:
 	break;
@@ -1557,89 +1511,32 @@ HandleMouseUp(XEvent * ev)
 	sentpress = 0;
 	XSendEvent(disp, bpress_win, False, SubstructureNotifyMask, ev);
      }
-   mode.context_win = click_was_in;
+   mode.context_win = last_bpress;
 
-   pslideout = mode.slideout;
    ewin = SlideoutsGetContextEwin();
    if (ewin)
       mode.ewin = ewin;
-
-   if (mode.mode == MODE_DESKDRAG)
-      mode.mode = MODE_NONE;
-   if (mode.mode == MODE_BUTTONDRAG)
-     {
-	if (!mode.button_move_pending)
-	   wasdrag = 1;
-	doDragButtonEnd(NULL);
-     }
 
    if ((((float)(ev->xbutton.time - last_time) / 1000) < 0.5)
        && (mode.cur_menu_depth > 0) && (!clickmenu))
      {
 	clickmenu = 1;
-	justclicked = 1;
+	mode.justclicked = 1;
      }
 
-   if (MenusEventMouseUp(ev, justclicked))
+   if (MenusEventMouseUp(ev))
       goto exit;
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < ewins[i]->border->num_winparts; j++)
-	  {
-	     if (click_was_in == ewins[i]->bits[j].win)
-	       {
-		  if (!clickmenu)
-		    {
-		       if (ewins[i] == mode.ewin)
-			 {
-			    switch (mode.mode)
-			      {
-			      case MODE_RESIZE:
-			      case MODE_RESIZE_H:
-			      case MODE_RESIZE_V:
-				 doResizeEnd(NULL);
-				 break;
-			      case MODE_MOVE:
-				 doMoveEnd(NULL);
-				 break;
-			      default:
-				 break;
-			      }
-			 }
-		       if ((ewins[i]->bits[j].state == STATE_CLICKED)
-			   && (!ewins[i]->bits[j].left))
-			  ewins[i]->bits[j].state = STATE_HILITED;
-		       else
-			  ewins[i]->bits[j].state = STATE_NORMAL;
-		       ewins[i]->bits[j].left = 0;
-		       ChangeEwinWinpart(ewins[i], j);
-		       if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
-			  mode.context_ewin = ewins[i];
-		       mode.borderpartpress = 1;
-		       if ((click_was_in == win2)
-			   && (ewins[i]->border->part[j].aclass)
-			   && (!wasmovres))
-			  EventAclass(ev, ewins[i]->border->part[j].aclass);
-		       mode.borderpartpress = 0;
-		    }
-		  Efree(ewins);
-		  last_bpress = 0;
-		  goto exit;
-	       }
-	  }
-     }
-   if (ewins)
-      Efree(ewins);
-
-   if (ButtonsEventMouseUp(ev, wasmovres, wasdrag))
+   if (!clickmenu && BordersEventMouseUp(ev))
       goto exit;
 
-   if (DialogEventMouseUp(ev, click_was_in))
+   if (ButtonsEventMouseUp(ev))
       goto exit;
 
-   ewin = FindEwinByBase(ev->xbutton.window);
+   if (DialogEventMouseUp(ev))
+      goto exit;
+
+   ewin = FindEwinByBase(win);
    if (ewin)
      {
 	ActionClass        *ac;
@@ -1658,14 +1555,16 @@ HandleMouseUp(XEvent * ev)
 	  }
      }
 
-   if (!wasmovres)
-      PagersEventMouseUp(ev);
+   if (PagersEventMouseUp(ev))
+      goto exit;
 
  exit:
    if ((mode.slideout) && (pslideout))
       SlideoutHide(mode.slideout);
 
-   click_was_in = 0;
+   mode.action_inhibit = 0;
+   mode.justclicked = 0;
+   last_bpress = 0;
 
    EDBUG_RETURN_;
 }
@@ -1673,16 +1572,20 @@ HandleMouseUp(XEvent * ev)
 void
 HandleMouseIn(XEvent * ev)
 {
-   Window              win;
-   EWin              **ewins;
-   int                 i, j, num;
+   Window              win = ev->xcrossing.window;
 
    EDBUG(5, "HandleMouseIn");
 
+   if (mode.mode != MODE_NONE)
+      EDBUG_RETURN_;
+
+   if (win == root.win)
+      goto exit;
+
+   mode.context_win = win;
+
    TooltipsHandleEvent();
    EdgeHandleEnter(ev);
-   win = ev->xcrossing.window;
-   mode.context_win = win;
 
    if (PagersEventMouseIn(ev))
       goto exit;
@@ -1690,37 +1593,8 @@ HandleMouseIn(XEvent * ev)
    if (MenusEventMouseIn(ev))
       goto exit;
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < ewins[i]->border->num_winparts; j++)
-	  {
-	     if (win == ewins[i]->bits[j].win)
-	       {
-		  if (!clickmenu)
-		    {
-		       mode.noewin = 0;
-		       mode.ewin = ewins[i];
-		       if (ewins[i]->bits[j].state == STATE_CLICKED)
-			  ewins[i]->bits[j].left = 0;
-		       else
-			 {
-			    ewins[i]->bits[j].state = STATE_HILITED;
-			    ChangeEwinWinpart(ewins[i], j);
-			    if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
-			       mode.context_ewin = ewins[i];
-			    if (ewins[i]->border->part[j].aclass)
-			       EventAclass(ev,
-					   ewins[i]->border->part[j].aclass);
-			 }
-		    }
-		  Efree(ewins);
-		  EDBUG_RETURN_;
-	       }
-	  }
-     }
-   if (ewins)
-      Efree(ewins);
+   if (!clickmenu && BordersEventMouseIn(ev))
+      goto exit;
 
    if (ButtonsEventMouseIn(ev))
       goto exit;
@@ -1735,17 +1609,16 @@ HandleMouseIn(XEvent * ev)
 void
 HandleMouseOut(XEvent * ev)
 {
-   Window              win;
-   EWin              **ewins;
-   int                 i, j, num;
+   Window              win = ev->xcrossing.window;
 
    EDBUG(5, "HandleMouseOut");
 
-   TooltipsHandleEvent();
+   if (mode.mode != MODE_NONE)
+      EDBUG_RETURN_;
 
+   TooltipsHandleEvent();
    EdgeHandleLeave(ev);
 
-   win = ev->xcrossing.window;
    mode.context_win = win;
 
    if (PagersEventMouseOut(ev))
@@ -1756,39 +1629,8 @@ HandleMouseOut(XEvent * ev)
 
    ICCCM_Cmap(NULL);
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < ewins[i]->border->num_winparts; j++)
-	  {
-	     if (win == ewins[i]->bits[j].win)
-	       {
-		  if (!clickmenu)
-		    {
-		       if (mode.mode == MODE_NONE)
-			  mode.ewin = NULL;
-		       else
-			  mode.noewin = 1;
-		       if (ewins[i]->bits[j].state == STATE_CLICKED)
-			  ewins[i]->bits[j].left = 1;
-		       else
-			 {
-			    ewins[i]->bits[j].state = STATE_NORMAL;
-			    ChangeEwinWinpart(ewins[i], j);
-			    if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
-			       mode.context_ewin = ewins[i];
-			    if (ewins[i]->border->part[j].aclass)
-			       EventAclass(ev,
-					   ewins[i]->border->part[j].aclass);
-			 }
-		    }
-		  Efree(ewins);
-		  EDBUG_RETURN_;
-	       }
-	  }
-     }
-   if (ewins)
-      Efree(ewins);
+   if (!clickmenu && BordersEventMouseOut(ev))
+      goto exit;
 
    if (ButtonsEventMouseOut(ev))
       goto exit;

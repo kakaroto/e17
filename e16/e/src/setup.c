@@ -382,11 +382,13 @@ SetupX()
       if (mod)
 	 XFreeModifiermap(mod);
    }
+
    /* Now we're going to set a bunch of default settings in E - in case we
     * don't ever get to load a config file for some odd reason.
     * Also, we'll take this opportunity to initialize all of our
     * important state variables.
     */
+   memset(&mode, 0, sizeof(mode));
 
    mode.next_move_x_plus = 0;
    mode.next_move_y_plus = 0;

@@ -347,6 +347,10 @@ EventAclass(XEvent * ev, ActionClass * a)
    char                reset_ewin;
 
    EDBUG(5, "EventAclass");
+
+   if (mode.action_inhibit)
+      EDBUG_RETURN(0);
+
    reset_ewin = key = type = button = modifiers = mouse = 0;
    if (!mode.ewin)
      {
