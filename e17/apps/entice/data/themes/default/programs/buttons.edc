@@ -41,7 +41,7 @@
 	    "zfitup", "zfitclicked");
 	    BUTTON_PROG("ButtonFullScreen", "EnticeFullScreen", "zfsdown",
 	    "zfsup", "zfsclicked");
-	    BUTTON_PROG("ButtonSaveImage", "EnticeSaveImage", "sidown",
+	    BUTTON_PROG("ButtonSaveImage", "EnticeImageSave", "sidown",
 	    "siup", "siclicked");
 	    BUTTON_PROG("ButtonRotateRight", "EnticeImageRotateRight", "rrdown",
 	    "rrup", "rrclicked");
