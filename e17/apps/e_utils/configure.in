@@ -145,5 +145,6 @@ Makefile
 src/Makefile
 src/bin/Makefile
 src/bin/eapp_edit/Makefile
+src/bin/e17setroot/Makefile
 ],[
 ])

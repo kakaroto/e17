@@ -10,7 +10,7 @@ INCLUDES = \
 
 bin_PROGRAMS = e17setroot
 
-e_util_eapp_edit_SOURCES = \
+e17setroot_SOURCES = \
 e17setroot.c
 
 e17setroot_LDADD = @ewl_libs@ @eet_libs@ @engrave_libs@
