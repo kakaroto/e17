@@ -19,7 +19,7 @@
 #   s = file name
 #   V = old version number (pre-checkin)
 #   v = new version number (post-checkin)
-###
+#
 # For example:
 #DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # or
