@@ -18,7 +18,7 @@ AC_DEFUN([AST_CHECK_LIBAST], [
         LDFLAGS="$LDFLAGS `$LIBAST_CONFIG --ldflags`"
     fi
     AC_CHECK_HEADERS(libast.h, [
-        AC_CHECK_LIB(ast, libast_malloc, $1=1, $1=0, ${$2})
+        AC_CHECK_LIB(ast, libast_malloc, $1=1, [ AC_CHECK_LIB(ast, spifmem_malloc, $1=0, ${$2}) ]
     ], $1=0)
 
     if test "${$1}" -ne "1"; then

@@ -54,6 +54,8 @@ AST_HEADER_CHECKS()
 AST_TYPE_CHECKS()
 AST_FUNC_CHECKS()
 
+AC_PROG_LIBTOOL()
+
 AST_ARG_DEBUG(DEBUG)
 if test $DEBUG -eq 0 ; then
     AC_WARN(*** Debugging support disabled.  Client programs will ***)

@@ -685,3 +685,7 @@ Fri Aug 20 18:50:46 2004                        Michael Jennings (mej)
 
 Revert bad autogen.sh change.
 ----------------------------------------------------------------------
+Tue Sep 14 11:45:40 2004                        Michael Jennings (mej)
+
+Patch from Dirk Tilger <dirk@ostec.org> for 0.5 compatibility.
+----------------------------------------------------------------------
