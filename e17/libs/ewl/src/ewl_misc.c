@@ -23,15 +23,15 @@ ewl_init(int argc, char **argv)
 
 	ewl_init_parse_options(argc, argv);
 
-	if (!e_display_init(xdisplay))
+	if (!ecore_display_init(xdisplay))
 	  {
 		  fprintf(stderr, "ERRR: Cannot connect to X display!\n");
 		  exit(-1);
 	  }
 
-	e_event_filter_init();
-	e_ev_signal_init();
-	e_ev_x_init();
+	ecore_event_filter_init();
+	ecore_event_signal_init();
+	ecore_event_x_init();
 
 	if (!ewl_config_init())
 		DERROR("Couldn't init config data.. Exiting....");
@@ -46,7 +46,7 @@ ewl_init(int argc, char **argv)
 		DERROR("Couldn't init theme data.. Exiting....");
 
 	ewl_window_list = ewd_list_new();
-	e_event_filter_idle_handler_add(ewl_idle_render, NULL);
+	ecore_event_filter_idle_handler_add(ewl_idle_render, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -59,7 +59,7 @@ ewl_main(void)
 	ewl_reread_config(0, NULL);
 
 	ewl_idle_render(NULL);
-	e_event_loop();
+	ecore_event_loop();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -108,7 +108,7 @@ ewl_main_quit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	e_event_loop_quit();
+	ecore_event_loop_quit();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -160,6 +160,6 @@ ewl_reread_config(int val, void *data)
 {
 	ewl_config_reread_and_apply();
 
-	e_add_event_timer("reread_config_timer", 0.5,
-			  ewl_reread_config, 0, NULL);
+	ecore_add_event_timer("reread_config_timer", 0.5,
+			      ewl_reread_config, 0, NULL);
 }

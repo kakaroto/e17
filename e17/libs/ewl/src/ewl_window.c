@@ -83,18 +83,19 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	window = EWL_WINDOW(w);
 
-	window->window = e_window_new(0, 0, 0, CURRENT_W(w), CURRENT_H(w));
-	e_window_set_events(window->window, XEV_CONFIGURE);
-	e_window_set_name_class(window->window, "EWL", "EWL!");
-	e_window_set_min_size(window->window, MINIMUM_W(w), MINIMUM_H(w));
-	e_window_set_max_size(window->window, MAXIMUM_W(w), MAXIMUM_H(w));
-	e_window_set_title(window->window, window->title);
+	window->window =
+		ecore_window_new(0, 0, 0, CURRENT_W(w), CURRENT_H(w));
+	ecore_window_set_events(window->window, XEV_CONFIGURE);
+	ecore_window_set_name_class(window->window, "EWL", "EWL!");
+	ecore_window_set_min_size(window->window, MINIMUM_W(w), MINIMUM_H(w));
+	ecore_window_set_max_size(window->window, MAXIMUM_W(w), MAXIMUM_H(w));
+	ecore_window_set_title(window->window, window->title);
 
-	e_window_set_delete_inform(window->window);
+	ecore_window_set_delete_inform(window->window);
 
 	font_path = ewl_theme_font_path();
 
-	w->evas = evas_new_all(e_display_get(),
+	w->evas = evas_new_all(ecore_display_get(),
 			       window->window, 0, 0,
 			       CURRENT_W(w),
 			       CURRENT_H(w),
@@ -104,20 +105,20 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	FREE(font_path);
 
 	w->evas_window = evas_get_window(w->evas);
-	e_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
-			    XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
-			    XEV_MOUSE_MOVE);
+	ecore_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
+				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
+				XEV_MOUSE_MOVE);
 
 	window->bg_rect = evas_add_rectangle(w->evas);
 	evas_set_color(w->evas, window->bg_rect, 0, 0, 0, 255);
 	evas_set_layer(w->evas, window->bg_rect, LAYER(w) - 1000);
 	evas_show(w->evas, window->bg_rect);
 
-	e_window_show(EWL_WINDOW(w)->window);
-	e_window_show(w->evas_window);
+	ecore_window_show(EWL_WINDOW(w)->window);
+	ecore_window_show(w->evas_window);
 
 	if (EWL_WINDOW(w)->borderless)
-		e_window_hint_set_borderless(EWL_WINDOW(w)->window);
+		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -131,11 +132,11 @@ __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!EWL_WINDOW(w)->window)
 		DRETURN(DLEVEL_STABLE);
 
-	e_window_show(EWL_WINDOW(w)->window);
-	e_window_show(w->evas_window);
+	ecore_window_show(EWL_WINDOW(w)->window);
+	ecore_window_show(w->evas_window);
 
 	if (EWL_WINDOW(w)->borderless)
-		e_window_hint_set_borderless(EWL_WINDOW(w)->window);
+		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -146,8 +147,8 @@ __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
-	e_window_hide(widget->evas_window);
-	e_window_hide(EWL_WINDOW(widget)->window);
+	ecore_window_hide(widget->evas_window);
+	ecore_window_hide(EWL_WINDOW(widget)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -164,11 +165,11 @@ __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(win->title);
 
-	e_window_hide(w->evas_window);
-	e_window_hide(win->window);
+	ecore_window_hide(w->evas_window);
+	ecore_window_hide(win->window);
 
-	e_window_destroy(w->evas_window);
-	e_window_destroy(win->window);
+	ecore_window_destroy(w->evas_window);
+	ecore_window_destroy(win->window);
 
 	IF_FREE(win->title);
 
@@ -220,7 +221,7 @@ __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			      CURRENT_H(w));
 	  }
 
-	e_window_resize(w->evas_window, CURRENT_W(w), CURRENT_H(w));
+	ecore_window_resize(w->evas_window, CURRENT_W(w), CURRENT_H(w));
 	evas_set_output_size(w->evas, CURRENT_W(w), CURRENT_H(w));
 	evas_set_output_viewport(w->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
 
@@ -353,7 +354,7 @@ ewl_window_resize(Ewl_Widget * widget, int w, int h)
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
-	e_window_resize(win->window, w, h);
+	ecore_window_resize(win->window, w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -378,7 +379,7 @@ ewl_window_set_min_size(Ewl_Widget * widget, int w, int h)
 	if (!REALIZED(widget))
 		return;
 
-	e_window_set_min_size(EWL_WINDOW(widget)->window, w, h);
+	ecore_window_set_min_size(EWL_WINDOW(widget)->window, w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -404,7 +405,7 @@ ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 	if (!REALIZED(widget))
 		return;
 
-	e_window_set_max_size(EWL_WINDOW(widget)->window, w, h);
+	ecore_window_set_max_size(EWL_WINDOW(widget)->window, w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -432,7 +433,7 @@ ewl_window_set_title(Ewl_Widget * w, char *title)
 	if (!REALIZED(w))
 		return;
 
-	e_window_set_title(EWL_WINDOW(w)->window, title);
+	ecore_window_set_title(EWL_WINDOW(w)->window, title);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -469,7 +470,7 @@ ewl_window_set_borderless(Ewl_Widget * w)
 	EWL_WINDOW(w)->borderless = 1;
 
 	if (REALIZED(w))
-		e_window_hint_set_borderless(EWL_WINDOW(w)->window);
+		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -489,7 +490,7 @@ ewl_window_move(Ewl_Widget * w, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	e_window_move(EWL_WINDOW(w)->window, x, y);
+	ecore_window_move(EWL_WINDOW(w)->window, x, y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

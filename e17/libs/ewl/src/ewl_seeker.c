@@ -311,7 +311,7 @@ static void
 __ewl_seeker_drag_button_mouse_down(Ewl_Widget * w, void *event_data,
 				    void *user_data)
 {
-	Ev_Mouse_Down *ev;
+	Ecore_Event_Mouse_Down *ev;
 	Ewl_Seeker *s;
 	int tmp;
 	int x, y, width, height;
@@ -356,7 +356,7 @@ static void
 __ewl_seeker_drag_button_mouse_move(Ewl_Widget * w, void *event_data,
 				    void *user_data)
 {
-	Ev_Mouse_Move *ev;
+	Ecore_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -573,7 +573,7 @@ static void
 __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Seeker *s;
-	Ev_Mouse_Move *ev;
+	Ecore_Event_Mouse_Move *ev;
 	int x, y, width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

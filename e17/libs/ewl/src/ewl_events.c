@@ -6,16 +6,16 @@ Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;
 
-static void ewl_ev_window_expose(Eevent * _ev);
-static void ewl_ev_window_configure(Eevent * _ev);
-static void ewl_ev_window_delete(Eevent * _ev);
+static void ewl_ev_window_expose(Ecore_Event * _ev);
+static void ewl_ev_window_configure(Ecore_Event * _ev);
+static void ewl_ev_window_delete(Ecore_Event * _ev);
 
-/*static void ewl_ev_window_reparent(Eevent * _ev);*/
-static void ewl_ev_key_down(Eevent * _ev);
-static void ewl_ev_key_up(Eevent * _ev);
-static void ewl_ev_mouse_down(Eevent * _ev);
-static void ewl_ev_mouse_up(Eevent * _ev);
-static void ewl_ev_mouse_move(Eevent * _ev);
+/*static void ewl_ev_window_reparent(Ecore_Event * _ev);*/
+static void ewl_ev_key_down(Ecore_Event * _ev);
+static void ewl_ev_key_up(Ecore_Event * _ev);
+static void ewl_ev_mouse_down(Ecore_Event * _ev);
+static void ewl_ev_mouse_up(Ecore_Event * _ev);
+static void ewl_ev_mouse_move(Ecore_Event * _ev);
 
 /**
  * ewl_ev_init - initialize the event handlers for dispatching to proper widgets
@@ -27,17 +27,21 @@ ewl_ev_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	e_event_filter_handler_add(EV_WINDOW_EXPOSE, ewl_ev_window_expose);
-	e_event_filter_handler_add(EV_WINDOW_CONFIGURE,
-				   ewl_ev_window_configure);
-	e_event_filter_handler_add(EV_WINDOW_DELETE, ewl_ev_window_delete);
+	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE,
+				       ewl_ev_window_expose);
+	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_CONFIGURE,
+				       ewl_ev_window_configure);
+	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_DELETE,
+				       ewl_ev_window_delete);
 
-/*	e_event_filter_handler_add(EV_WINDOW_REPARENT, ewl_ev_window_reparent);*/
-	e_event_filter_handler_add(EV_KEY_DOWN, ewl_ev_key_down);
-	e_event_filter_handler_add(EV_KEY_UP, ewl_ev_key_up);
-	e_event_filter_handler_add(EV_MOUSE_DOWN, ewl_ev_mouse_down);
-	e_event_filter_handler_add(EV_MOUSE_UP, ewl_ev_mouse_up);
-	e_event_filter_handler_add(EV_MOUSE_MOVE, ewl_ev_mouse_move);
+/*	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_REPARENT, ewl_ev_window_reparent);*/
+	ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN, ewl_ev_key_down);
+	ecore_event_filter_handler_add(ECORE_EVENT_KEY_UP, ewl_ev_key_up);
+	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN,
+				       ewl_ev_mouse_down);
+	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_UP, ewl_ev_mouse_up);
+	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,
+				       ewl_ev_mouse_move);
 
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
@@ -50,13 +54,13 @@ ewl_ev_init(void)
  * handling.
  */
 static void
-ewl_ev_window_expose(Eevent * _ev)
+ewl_ev_window_expose(Ecore_Event * _ev)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
 	 * let them know in case a widget is using a non-evas based draw method
 	 */
-	Ev_Window_Expose *ev;
+	Ecore_Event_Window_Expose *ev;
 	Ewl_Window *window;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -82,13 +86,13 @@ ewl_ev_window_expose(Eevent * _ev)
  * window.
  */
 static void
-ewl_ev_window_configure(Eevent * _ev)
+ewl_ev_window_configure(Ecore_Event * _ev)
 {
 	/*
 	 * When a configure event occurs, we must update the windows geometry
-	 * based on the coordinates and dimensions given in the Eevent.
+	 * based on the coordinates and dimensions given in the Ecore_Event.
 	 */
-	Ev_Window_Configure *ev;
+	Ecore_Event_Window_Configure *ev;
 	Ewl_Window *window;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -109,9 +113,9 @@ ewl_ev_window_configure(Eevent * _ev)
  * FIXME: We probably need to do some work here.
  *
 static void
-ewl_ev_window_reparent(Eevent * _ev)
+ewl_ev_window_reparent(Ecore_Event * _ev)
 {
-	Ev_Window_Reparent *ev = _ev->event;
+	Ecore_Event_Window_Reparent *ev = _ev->event;
 	Ewl_Window *window;
 
 	window = ewl_window_find_window(ev->win);
@@ -130,13 +134,13 @@ ewl_ev_window_reparent(Eevent * _ev)
  * window.
  */
 static void
-ewl_ev_window_delete(Eevent * _ev)
+ewl_ev_window_delete(Ecore_Event * _ev)
 {
 	/*
 	 * Retrieve the appropriate ewl_window using the x window id that is
 	 * held in the eevent, and call it's handlers for a window delete event.
 	 */
-	Ev_Window_Delete *ev;
+	Ecore_Event_Window_Delete *ev;
 	Ewl_Window *window;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -161,14 +165,14 @@ ewl_ev_window_delete(Eevent * _ev)
  * window.
  */
 static void
-ewl_ev_key_down(Eevent * _ev)
+ewl_ev_key_down(Ecore_Event * _ev)
 {
 	/*
 	 * Dispatcher of key down events, these get sent to the last widget
 	 * selected.
 	 */
 	Ewl_Window *window;
-	Ev_Key_Down *ev;
+	Ecore_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -199,13 +203,13 @@ ewl_ev_key_down(Eevent * _ev)
  * window.
  */
 static void
-ewl_ev_key_up(Eevent * _ev)
+ewl_ev_key_up(Ecore_Event * _ev)
 {
 	/*
 	 * Dispatch key up events to the appropriate widget
 	 */
 	Ewl_Window *window;
-	Ev_Key_Up *ev;
+	Ecore_Event_Key_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -235,11 +239,11 @@ ewl_ev_key_up(Eevent * _ev)
  * window. Also determines the widgets clicked state.
  */
 static void
-ewl_ev_mouse_down(Eevent * _ev)
+ewl_ev_mouse_down(Ecore_Event * _ev)
 {
 	Ewl_Widget *widget;
 	Ewl_Window *window;
-	Ev_Mouse_Down *ev;
+	Ecore_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -302,10 +306,10 @@ ewl_ev_mouse_down(Eevent * _ev)
  * window. Also determines the widgets clicked state.
  */
 static void
-ewl_ev_mouse_up(Eevent * _ev)
+ewl_ev_mouse_up(Ecore_Event * _ev)
 {
 	Ewl_Window *window;
-	Ev_Mouse_Up *ev;
+	Ecore_Event_Mouse_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -335,11 +339,11 @@ ewl_ev_mouse_up(Eevent * _ev)
  * window.
  */
 static void
-ewl_ev_mouse_move(Eevent * _ev)
+ewl_ev_mouse_move(Ecore_Event * _ev)
 {
 	Ewl_Widget *widget;
 	Ewl_Window *window;
-	Ev_Mouse_Move *ev;
+	Ecore_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

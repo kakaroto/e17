@@ -263,14 +263,14 @@ __ewl_list_configure(Ewl_Widget * widget, void *event_data, void *user_data)
 static void
 __ewl_list_key_down(Ewl_Widget * widget, void *event_data, void *user_data)
 {
-	Ev_Key_Down *ev;
+	Ecore_Event_Key_Down *ev;
 	int multiple = 0;
 
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ev = (Ev_Key_Down *) event_data;
+	ev = (Ecore_Event_Key_Down *) event_data;
 
-	if (ev->mods & EV_KEY_MODIFIER_SHIFT)
+	if (ev->mods & ECORE_EVENT_KEY_MODIFIER_SHIFT)
 		multiple = TRUE;
 
 	if (!strcmp(ev->key, "Up"))

@@ -271,7 +271,7 @@ __ewl_entry_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ev_Key_Down *ev;
+	Ecore_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -308,7 +308,7 @@ __ewl_entry_key_up(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ev_Mouse_Down *ev;
+	Ecore_Event_Mouse_Down *ev;
 	Ewl_Entry *e;
 	int index = 0, len = 0;
 
@@ -366,7 +366,7 @@ __ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ev_Mouse_Move *ev;
+	Ecore_Event_Mouse_Move *ev;
 	Ewl_Entry *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

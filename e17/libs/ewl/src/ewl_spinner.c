@@ -228,14 +228,14 @@ static void
 __ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
-	Ev_Key_Down *ev;
+	Ecore_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SPINNER(w->parent);
 
-	ev = (Ev_Key_Down *) ev_data;
+	ev = (Ecore_Event_Key_Down *) ev_data;
 
 	if (!strcmp(ev->key, "Up"))
 		__ewl_spinner_increase_value(w, NULL, NULL);
