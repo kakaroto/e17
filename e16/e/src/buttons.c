@@ -303,7 +303,7 @@ ButtonDraw(Button * b)
 {
    EDBUG(3, "ButtonDraw");
 
-   IclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0, ST_BORDER);
+   IclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0, ST_BUTTON);
 
    if (b->label)
       TclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0, b->tclass,

@@ -404,6 +404,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  {
 	  default:
 	  case ST_UNKNWN:
+	  case ST_BUTTON:
 	     flags = ICLASS_ATTR_OPAQUE;
 	     break;
 	  case ST_BORDER:

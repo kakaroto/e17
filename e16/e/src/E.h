@@ -77,6 +77,7 @@
 #define ST_HILIGHT	8
 #define ST_PAGER	9
 #define ST_WARPLIST	10
+#define ST_BUTTON	11
 
 #define ICLASS_ATTR_OPAQUE      0	/* No transparency */
 #define ICLASS_ATTR_BG          1	/* Background transparency */
