@@ -1,4 +1,5 @@
 #include "Equate.h"
+#include <Ecore_Config.h>
 
 /**
  * Edjification by atmos and digitalfallout
@@ -341,6 +342,8 @@ exit_cb(void *ev, int ev_type, void *data)
 void
 equate_edje_init(Equate * eq)
 {
+   extern Ecore_Config_Bundle *props;
+
    Evas           *evas = NULL;
    Evas_Object    *o = NULL;
    Evas_Coord      mw, mh;
@@ -392,4 +395,7 @@ equate_edje_init(Equate * eq)
       ecore_main_loop_begin();
       ecore_evas_shutdown();
    }
+   if (props)
+      ecore_config_save(props);
+   ecore_config_exit();
 }
