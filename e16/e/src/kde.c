@@ -357,8 +357,8 @@ KDE_Init(void)
 
 	memset(KDE_DESKTOP_NAME, 0, sizeof(KDE_DESKTOP_NAME));
      }
-   /* and we tell the root window to announce we're KDE compliant */
-   setSimpleHint(root.win, KDE_RUNNING, 1);
+
+   KDE_SetRootArea();
 
    /* then we're going to set a series of string hints on the root window */
 #define SETSTR(hint, str) {\
@@ -378,6 +378,9 @@ KDE_Init(void)
    SETSTR(KWM_STRING_CLOSE, "Close");
    SETSTR(KWM_STRING_TODESKTOP, "Move To");
    SETSTR(KWM_STRING_ONTOCURRENTDESKTOP, "Bring Here");
+
+   /* and we tell the root window to announce we're KDE compliant */
+   setSimpleHint(root.win, KDE_RUNNING, 1);
 
    mode.kde_support = 1;
    EDBUG_RETURN_;
@@ -853,6 +856,10 @@ KDE_SetRootArea(void)
 {
 
    EDBUG(6, "KDE_SetRootArea");
+
+   setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current);
+   setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
+
    EDBUG_RETURN_;
 
 }

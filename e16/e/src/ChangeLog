@@ -1534,3 +1534,10 @@ Thu Sep  9 15:11:27 PDT 1999
 (Mandrake)
 
 added some function prototypes, fixed a merging conflict in kde.c
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 15:22:47 PDT 1999
+(Mandrake)
+
+somehow I lost some of this.  committing again.  (kde stuff for pager)
