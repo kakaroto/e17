@@ -1,9 +1,7 @@
 todo
 ----
-  o fix scrollbar dragging when list of elts is smaller than height
+  o check for {swatch,shot}.container part before creating containers
   o add support for horizontal scrollbars / swatch,shot lists
   o get theme panel working
   o add panels to spring theme
-  o don't allow blank space at bottom after deleting swatches/shots 
-    (scroll to end of list instead)
   o document all the part names / signals necessary

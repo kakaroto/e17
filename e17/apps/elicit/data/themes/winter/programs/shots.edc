@@ -22,3 +22,16 @@
     source, "shot.scroll.up";
     action, SIGNAL_EMIT "elicit,shot,scroll,up,stop" "";
   }
+  program {
+    name, "scroll.wheel.up";
+    signal, "mouse,wheel,0,-1";
+    source, "shot.grabber";
+    action, SIGNAL_EMIT "elicit,shot,scroll,up" "";
+  }
+  program {
+    name, "scroll.wheel.dn";
+    signal, "mouse,wheel,0,1";
+    source, "shot.grabber";
+    action, SIGNAL_EMIT "elicit,shot,scroll,down" "";
+  }
+
