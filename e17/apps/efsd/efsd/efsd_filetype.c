@@ -234,7 +234,7 @@ EfsdXmlParserContext;
 static int          filetype_magic_load_xml(const char *filename, EfsdMagic *magic_root_node,
 					    EfsdList **pattern_list);
 static int          filetype_magic_save_xml(EfsdMagic *em, const char *filename);
-static void         filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em);
+static void         filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em, int *id);
 static void         filetype_pattern_test_to_xml(xmlNodePtr parent_node, EfsdPattern *ep);
 
 static EfsdMagic   *filetype_magic_new(void);
@@ -288,6 +288,7 @@ filetype_magic_save_xml(EfsdMagic *em, const char *filename)
   EfsdList  *pattern;
   xmlDocPtr  doc;
   int        result = TRUE;
+  int        id = 0;
 
   D_ENTER;
 
@@ -300,7 +301,7 @@ filetype_magic_save_xml(EfsdMagic *em, const char *filename)
   /* Build the subtrees for each toplevel test: */
   
   for (test = em->kids; test; test = test->next)
-    filetype_magic_test_to_xml((xmlNodePtr)(doc->children), test);
+    filetype_magic_test_to_xml((xmlNodePtr)(doc->children), test, &id);
 
   /* Also add the system-wide pattern subtree: */
   for (pattern = sys_patterns; pattern; pattern = efsd_list_next(pattern))
@@ -320,7 +321,7 @@ filetype_magic_save_xml(EfsdMagic *em, const char *filename)
 
 
 static void
-filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em)
+filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em, int *id)
 {
   EfsdMagic  *test;
   xmlNodePtr  node;
@@ -393,6 +394,10 @@ filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em)
     default:
       D("Not setting test type %i.\n", em->test);
     }
+  
+  /* Set ID: */
+  snprintf(s, MAXPATHLEN, "%u", (*id)++);
+  xmlSetProp(node, "id", s);
   
   snprintf(s, MAXPATHLEN, "%u", em->offset);
   xmlNewChild(node, NULL, "offset", s);
@@ -482,7 +487,7 @@ filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em)
   xmlNewChild(node, NULL, "descr", em->filetype);
   
   for (test = em->kids; test; test = test->next)
-    filetype_magic_test_to_xml(node, test);
+    filetype_magic_test_to_xml(node, test, id);
     
   D_RETURN;
 }
