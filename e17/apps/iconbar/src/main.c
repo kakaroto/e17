@@ -100,7 +100,10 @@ resize(Ecore_Evas *ee)
 
 #ifdef HAVE_TRANS_BG
   if((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+  {
+    evas_object_resize(o, w, h);
     esmart_trans_x11_freshen(o, x, y, w, h);
+  }
 #endif
   evas_object_resize(iconbar, w, h); 
 }
