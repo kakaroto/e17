@@ -566,8 +566,6 @@ workspace_update_selection_from_widget(void)
 		  selected->normal.image = NULL;
 		  selected->normal.saved = 0;
 	       }
-	     else
-		selected->normal.saved = 0;
 	  }
 
 	if (selected->description->hilited.image)
@@ -581,8 +579,6 @@ workspace_update_selection_from_widget(void)
 		  selected->hilited.image = NULL;
 		  selected->hilited.saved = 0;
 	       }
-	     else
-		selected->hilited.saved = 0;
 	  }
 
 	if (selected->description->clicked.image)
@@ -596,8 +592,6 @@ workspace_update_selection_from_widget(void)
 		  selected->clicked.image = NULL;
 		  selected->clicked.saved = 0;
 	       }
-	     else
-		selected->clicked.saved = 0;
 	  }
 
 	if (selected->description->disabled.image)
@@ -611,8 +605,6 @@ workspace_update_selection_from_widget(void)
 		  selected->disabled.image = NULL;
 		  selected->disabled.saved = 0;
 	       }
-	     else
-		selected->disabled.saved = 0;
 	  }
 
 	for (l = ebits_get_state_names(bits); l; l = l->next)
@@ -641,8 +633,6 @@ workspace_update_selection_from_widget(void)
 		       ss_d->image = NULL;
 		       ss_d->saved = 0;
 		    }
-		  else
-		     ss_d->saved = 0;
 	       }
 	     ebits_add_bit_state(selected, l->data, strdup(image));
 	  }

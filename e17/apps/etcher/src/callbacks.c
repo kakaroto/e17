@@ -626,8 +626,6 @@ on_images_unselect_row(GtkCList * clist,
 		       gint row,
 		       gint column, GdkEvent * event, gpointer user_data)
 {
-   GtkWidget          *w;
-
    workspace_select_image(-1);
 }
 

@@ -1,3 +1,10 @@
+Sat Mar 9 16:10:04 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a rectangle to the preference preview evas that layers beneath
+	  everything else, this fixes the problem with the evas getting
+	  artifacts when no grid image or a grid image with alpha is selected.
+	* We accedently marked a image as unsaved, when it actually were
+	  unsaved.
+
 Sun Mar 03 19:00:54 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* When trying to change image in a loaded ebits, it didn't mark the
 	  bit as unsaved, and therefor the new image was looked for in the

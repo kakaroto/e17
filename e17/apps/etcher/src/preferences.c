@@ -31,7 +31,7 @@ typedef struct etcher_preferences
    char               *grid_image_file_old;
 
    Evas                pref_evas;
-   Evas_Object         o_pref_image;
+   Evas_Object         o_pref_image, bg_rect;
    gint                pref_idle;
    gint                new_pref_evas;
 
@@ -110,6 +110,13 @@ on_pref_da_expose_event2(GtkWidget * widget,
 				   (GTK_OBJECT(pref_dialog), "entry1")));
 	pref.o_pref_image = evas_add_image_from_file(pref.pref_evas, file);
 	evas_show(pref.pref_evas, pref.o_pref_image);
+
+	pref.bg_rect = evas_add_rectangle(pref.pref_evas);
+	evas_set_layer(pref.pref_evas, pref.bg_rect, -9999);
+	evas_set_color(pref.pref_evas, pref.bg_rect, 255, 255, 255, 255);
+	evas_move(pref.pref_evas, pref.bg_rect, 0, 0);
+	evas_resize(pref.pref_evas, pref.bg_rect, 9999, 9999);
+	evas_show(pref.pref_evas, pref.bg_rect);
 	pref_update_preview();
      }
 
@@ -435,6 +442,9 @@ pref_ok_clicked(GtkButton * button, gpointer user_data)
 		(int)pref.render_method);
    E_DB_INT_SET(pref.etcher_config, "/display/zoom_method",
 		(int)pref.zoom_method);
+
+   if (!pref.grid_image_file || !strlen(pref.grid_image_file))
+      pref.grid_image_file = g_strdup(PACKAGE_DATA_DIR "/pixmaps/tile.png");
    E_DB_STR_SET(pref.etcher_config, "/grid/image", pref.grid_image_file);
    E_DB_INT_SET(pref.etcher_config, "/splash/show", (int)pref.splash);
    e_db_flush();
