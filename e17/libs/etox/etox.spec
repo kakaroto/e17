@@ -63,6 +63,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc doc/html
 %{_libdir}/libetox.so
 %{_libdir}/libetox.a
+%{_libdir}/pkgconfig/etox.pc
 %{_includedir}/Etox.h
 %{_bindir}/etox-config
 %{_datadir}/aclocal/etox.m4
