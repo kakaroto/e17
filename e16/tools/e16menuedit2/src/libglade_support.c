@@ -62,3 +62,56 @@ GtkWidget *lookup_libglade_widget (const char *parent_name,
 
   return found_widget;
 }
+
+char* searchGladeFile (char *glade_file)
+{
+  gboolean glade_found;
+  struct stat buf;
+  gchar *glade_path;
+
+  glade_path = g_strdup_printf ("%s", glade_file);
+  glade_found = !(stat (glade_path, &buf));
+
+  if (!glade_found)
+  {
+    g_free (glade_path);
+    glade_path = g_strdup_printf ("%s/%s", "..", glade_file);
+    glade_found = !(stat (glade_path, &buf));
+
+    if (!glade_found)
+    {
+      g_free (glade_path);
+      glade_path = g_strdup_printf ("%s/%s/%s", PACKAGE_DATA_DIR, "glade",
+                                    glade_file);
+    }
+
+  }
+
+  return glade_path;
+}
+
+char* searchPixmapFile (char *pixmap_file)
+{
+  gboolean pixmap_found;
+  struct stat buf;
+  gchar *pixmap_path;
+
+  pixmap_path = g_strdup_printf ("%s/%s", "pixmaps", pixmap_file);
+  pixmap_found = !(stat (pixmap_path, &buf));
+
+  if (!pixmap_found)
+  {
+    g_free (pixmap_path);
+    pixmap_path = g_strdup_printf ("%s/%s", "../pixmaps", pixmap_file);
+    pixmap_found = !(stat (pixmap_path, &buf));
+
+    if (!pixmap_found)
+    {
+      g_free (pixmap_path);
+      pixmap_path = g_strdup_printf ("%s/%s", SYSTEM_PIXMAPS_DIR, pixmap_file);
+    }
+
+  }
+
+  return pixmap_path;
+}

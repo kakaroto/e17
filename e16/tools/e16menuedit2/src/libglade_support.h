@@ -32,9 +32,13 @@
 #endif
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 void register_libglade_parent (GladeXML *glade_xml, const char *parent_name);
 GtkWidget *lookup_libglade_widget (const char *parent_name, const char *widget_name);
+char* searchGladeFile (char *glade_file);
+char* searchPixmapFile (char *pixmap_file);
 
 #endif /* _LIBGLADE_SUPPORT_H */

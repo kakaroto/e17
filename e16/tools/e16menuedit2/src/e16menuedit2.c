@@ -36,6 +36,7 @@
 
 int librsvg_cmp;
 char *browser;
+char *glade_file;
 
 int main (int argc, char *argv[])
 {
@@ -48,7 +49,7 @@ int main (int argc, char *argv[])
   char good_version[] = "2.7.1";
   char *version;
   int i;
-
+  char *pixmap_file;
   FILE *fz_properties;
   gchar *filename_properties;
   char key[KEY_LENGTH];
@@ -66,22 +67,20 @@ int main (int argc, char *argv[])
   {
     menu_file[i] = NULL;
   }
-
-  main_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
-                            "main_window", NULL);
+  
+  glade_file = searchGladeFile ("e16menuedit2.glade");
+  main_xml = glade_xml_new (glade_file, "main_window", NULL);
 
   register_libglade_parent (main_xml, "main_window");
 
-
   glade_xml_signal_autoconnect (main_xml);
-
 
   main_window = lookup_libglade_widget ("main_window", "main_window");
 
-
+  pixmap_file = searchPixmapFile ("e16menuedit2-icon.png");
   gtk_window_set_icon_from_file (GTK_WINDOW (main_window),
-                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png",
-                                 NULL);
+                                 pixmap_file, NULL);
+  g_free (pixmap_file);
 
   treeview_menu = lookup_libglade_widget ("main_window", "treeview_menu");
   create_tree_model (treeview_menu);
@@ -121,6 +120,9 @@ int main (int argc, char *argv[])
 
 
   gtk_main ();
+
+  g_free (glade_file);
+
   return 0;
 }
 

@@ -35,6 +35,7 @@
 #include "treeview.h"
 
 extern char *browser;
+extern char *glade_file;
 
 void bind_toolbar_callbacks (GtkWidget *treeview_menu)
 {
@@ -158,9 +159,11 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
   GtkWidget *info_window;
   GtkWidget *logo_image;
   GladeXML *info_xml;
+  char *pixmap_file;
 
-  info_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
+  info_xml = glade_xml_new (glade_file,
                             "info_window", NULL);
+
   register_libglade_parent (info_xml, "info_window");
   glade_xml_signal_autoconnect (info_xml);
 
@@ -168,12 +171,14 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
 
   logo_image = lookup_libglade_widget ("info_window", "logo_image");
 
+  pixmap_file = searchPixmapFile ("e16menuedit2-icon.png");
   gtk_image_set_from_file (GTK_IMAGE (logo_image),
-                           SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png");
+                           pixmap_file);
 
   gtk_window_set_icon_from_file (GTK_WINDOW (info_window),
-                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png",
+                                 pixmap_file,
                                  NULL);
+  g_free (pixmap_file);				     
 }
 
 void on_toolbutton_save_clicked (GtkToolButton *toolbutton,
@@ -317,9 +322,11 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   char key[KEY_LENGTH];
   char value[VALUE_LENGTH];
   GtkTreeModel* treemodel;
+  char *glade_file;
+  char *pixmap_file;
 
-  properties_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
-                                  "properties_window", NULL);
+  properties_xml = glade_xml_new (glade_file, "properties_window", NULL);
+
   register_libglade_parent (properties_xml, "properties_window");
   glade_xml_signal_autoconnect (properties_xml);
 
@@ -329,8 +336,10 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
 
   gtk_combo_box_set_active (GTK_COMBO_BOX (comboboxentry1), 0);
 
+  pixmap_file = searchPixmapFile ("e16menuedit2-icon.png");
   gtk_window_set_icon_from_file (GTK_WINDOW (properties_window),
-                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png", NULL);
+                                 pixmap_file, NULL);
+  g_free (pixmap_file);				 
 
   filename_properties = g_strdup_printf ("%s/%s/properties",
                                          homedir (getuid ()), APP_HOME);
@@ -362,7 +371,7 @@ on_properties_close_clicked            (GtkButton       *button,
   GtkTreeIter iter;
   gboolean valid;
   GtkTreeModel* treemodel;
-  GtkWidget *properties_window;
+  GtkWidget *properties_window;  
 
   filename_properties = g_strdup_printf ("%s/%s/properties",
                                          homedir (getuid ()), APP_HOME);
