@@ -44,8 +44,8 @@ init_slideshow_mode (void)
 	  free (s);
 	  success = 1;
 	  w->file = file;
-	  if(opt.draw_filename)
-		feh_draw_filename(w);
+	  if (opt.draw_filename)
+	    feh_draw_filename (w);
 	  if (!opt.progressive)
 	    winwidget_show (w);
 	  if (opt.slideshow_delay > 0)
@@ -107,8 +107,8 @@ cb_reload_timer (void *data)
 	  w->im_h = imlib_image_get_height ();
 	  winwidget_render_image (w);
 	}
-	  if(opt.draw_filename)
-		feh_draw_filename(w);
+      if (opt.draw_filename)
+	feh_draw_filename (w);
     }
   else
     eprintf ("Couldn't reload image. Is it still there?");
@@ -206,8 +206,8 @@ slideshow_change_image (winwidget winwid, int change)
 	      winwid->im_h = imlib_image_get_height ();
 	      winwidget_render_image (winwid);
 	    }
-	  if(opt.draw_filename)
-		feh_draw_filename(winwid);
+	  if (opt.draw_filename)
+	    feh_draw_filename (winwid);
 	  break;
 	}
       else
@@ -235,4 +235,53 @@ slideshow_create_name (char *filename)
 	    filelist_num (filelist, current_file) + 1,
 	    filelist_length (filelist), filename);
   return s;
+}
+
+void
+feh_action_run (winwidget w)
+{
+  char *sys;
+  D (("In feh_action_run\n"));
+  D (("   Running action %s\n", opt.action));
+
+  sys = feh_printf (opt.action, w);
+
+  if(opt.verbose)
+	fprintf(stderr, "Running action -->%s<--\n", sys);
+  system(sys);
+}
+
+char *
+feh_printf (char *str, winwidget w)
+{
+  int i = 0;
+  char *c;
+  int retpos = 0;
+  static char ret[4096];
+  D (("In feh_printf\n"));
+
+  ret[0]='\0';
+  
+  for (c = str; *c != '\0'; c++)
+    {
+      if (*c == '%')
+	{
+	  c++;
+	  switch (*c)
+	    {
+	    case 'f':
+	      strcat (ret, w->file->filename);
+	      break;
+	    case 'n':
+	      strcat (ret, w->file->name);
+	      break;
+	    default:
+	      strncat (ret, c, 1);
+	      break;
+	    }
+	}
+      else
+	strncat (ret, c, 1);
+    }
+  return ret;
 }

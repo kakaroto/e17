@@ -77,6 +77,21 @@ handle_keypress_event (XEvent * ev, Window win)
       if (opt.slideshow)
 	slideshow_change_image (winwid, SLIDE_LAST);
       break;
+    case XK_Return:
+      if(opt.action)
+      {
+	  if (opt.slideshow)
+	  {
+	      feh_action_run(winwid);
+	      slideshow_change_image (winwid, SLIDE_NEXT);
+	  }
+	  else if(opt.multiwindow)
+	  {
+	      feh_action_run(winwid);
+	      winwidget_destroy(winwid);
+	  }
+      }
+      break;
     default:
       break;
     }

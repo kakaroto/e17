@@ -196,6 +196,7 @@ typedef struct cmdlineoptions
   char *bg_file;
   char *font;
   char *title_font;
+  char *action;
 
   int thumb_w;
   int thumb_h;
@@ -230,6 +231,8 @@ void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);
 char *chop_file_from_full_path (char *str);
 void handle_keypress_event (XEvent * ev, Window win);
+void feh_action_run(winwidget w);
+char *feh_printf(char *str, winwidget w);
 
 int winwidget_loadimage (winwidget winwid, feh_file *filename);
 void winwidget_show (winwidget winwid);

@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTuUvVwW:xy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -54,6 +54,7 @@ init_parse_options (int argc, char **argv)
     {"unloadables", 0, 0, 'u'},
     /* options with values */
     {"output", 1, 0, 'o'},
+    {"action", 1, 0, 'X'},
     {"output-only", 1, 0, 'O'},
     {"font", 1, 0, 'f'},
     {"title-font", 1, 0, 'T'},
@@ -205,6 +206,9 @@ init_parse_options (int argc, char **argv)
 	case 'b':
 	  opt.bg = 1;
 	  opt.bg_file = optarg;
+	  break;
+	case 'X':
+	  opt.action = optarg;
 	  break;
 	case 'W':
 	  opt.limit_w = atoi (optarg);
@@ -379,6 +383,14 @@ show_usage (void)
 	   "                            For sort modes other than name or filename, a\n"
 	   "                            preload run will be necessary, causing a delay\n"
 	   "                            proportional to the number of images in the list\n"
+	   "  -X, --action ACTION       Specify a string as an action to perform when the\n"
+	   "                            enter key is pressed in slideshow or multiwindow\n"
+	   "                            modes. The action will be executed in a shell. Use\n"
+	   "                            %f to refer to the image filename, and %n to refer\n"
+	   "                            to it's name. Eg. -X \"mv %f ~/images/%n\"\n"
+	   "                            In slideshow mode, the next image will be shown\n"
+	   "                            after running the command, in multiwindow mode,\n"
+	   "                            the window will be closed.\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

@@ -1,3 +1,14 @@
+Wed Mar 22 03:50:24 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* User definable actions for slideshow and multiwindow modes. Use
+	-X or --action STRING to define an action. The action will be run
+	when the ENTER key is pressed. The action should be in the form of
+	a shell command, using %f to represent the image filename
+	(including path), and %n to refer to it's name. Example:
+	feh -X "mv %f ~/images/%n"
+	Use this to go through some images and pick out the good ones :)
+	More format specifiers will follow...
+
 Wed Mar 22 02:55:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Okay. I found a naughty bug of mine. If the last image of a
