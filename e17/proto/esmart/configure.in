@@ -100,6 +100,7 @@ data/images/Makefile
 src/container/Makefile
 src/thumb/Makefile
 src/trans/Makefile
+src/draggies/Makefile
 ], [
 chmod +x esmart-config
 ]
