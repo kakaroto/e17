@@ -1054,20 +1054,32 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> A1 conversion */
 
-#define WRITE1_RGBA_A1(src, dest)                   \
+#ifdef WORDS_BIGENDIAN
+# define WRITE1_RGBA_A1(src, dest)                   \
+*dest |= ((*src & 0x80000000) >> ((x & 0x7)));       \
+if ((x & 0x7) == 0x7) dest++;                        \
+src++
+#else
+# define WRITE1_RGBA_A1(src, dest)                   \
 *dest |= ((*src & 0x80000000) >> (31 - (x & 0x7))); \
 if ((x & 0x7) == 0x7) dest++;                       \
 src++
+#endif
 
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> A1 conversion */
-#define DITHER_RGBA_A1_LUT(num) \
+# define DITHER_RGBA_A1_LUT(num) \
 (_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 24))])
-
-#define WRITE1_RGBA_A1_DITHER(src, dest)            \
+#ifdef WORDS_BIGENDIAN
 *dest |= (DITHER_RGBA_A1_LUT(0)) << (x & 0x7);      \
 if ((x & 0x7) == 0x7) dest++;                       \
 src++;
+#else
+#define WRITE1_RGBA_A1_DITHER(src, dest)              \
+*dest |= (DITHER_RGBA_A1_LUT(0)) << (31 - (x & 0x7)); \
+if ((x & 0x7) == 0x7) dest++;                         \
+src++;
+#endif
 
 /*****************************************************************************/
 /* Actual rendering routines                                                 */
@@ -1132,6 +1144,7 @@ __imlib_RGBASetupContext(Context *ct)
 	     break;
 	  }
      }
+   _dither_r8 = (DATA8 *)ct->r_dither;
 }
    
 /* Palette mode stuff */
@@ -2811,6 +2824,7 @@ __imlib_RGBA_to_A1_fast(DATA32 *src , int src_jump,
   w = width;
   h = height;
 
+   memset(dest, 0, ((w + 7) >> 3 + dest_jump) * height);
   for (y = 0; y < h; y++)
     {
       for (x = 0; x < w; x++)
@@ -2835,6 +2849,7 @@ __imlib_RGBA_to_A1_dither(DATA32 *src , int src_jump,
   w = width + dx;
   h = height + dy;
 
+   memset(dest, 0, ((w + 7) >> 3 + dest_jump) * height);
   for (y = dy; y < h; y++)
     {
       for (x = dx; x < w; x++)
