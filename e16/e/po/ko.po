@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
-"POT-Creation-Date: 1999-12-23 11:29-0800\n"
+"POT-Creation-Date: 1999-12-29 14:32-0800\n"
 "PO-Revision-Date: 1999-12-11 06:58:18+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"

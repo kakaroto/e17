@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nl.po\n"
-"POT-Creation-Date: 1999-12-23 11:29-0800\n"
+"POT-Creation-Date: 1999-12-29 14:32-0800\n"
 "PO-Revision-Date: 1999-12-13 HO:MI+ZONE\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

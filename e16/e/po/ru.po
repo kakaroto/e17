@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ENLIGHTENMENT CVS\n"
-"POT-Creation-Date: 1999-12-23 11:29-0800\n"
+"POT-Creation-Date: 1999-12-29 14:32-0800\n"
 "PO-Revision-Date: 1999-12-09 21:00+0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: RUSSIAN <ru@li.org>\n"

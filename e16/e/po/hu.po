@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Enlightenment DR 0.16\n"
-"POT-Creation-Date: 1999-12-23 11:29-0800\n"
+"POT-Creation-Date: 1999-12-29 14:32-0800\n"
 "PO-Revision-Date: 1999-12-12 13:38+0200\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
