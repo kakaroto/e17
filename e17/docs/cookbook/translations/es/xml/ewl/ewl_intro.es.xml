@@ -249,7 +249,7 @@ empezaremos empaquetando los widgets desde arriba hacia abajo.
     ewl_container_child_append(EWL_CONTAINER(box), menu_bar);
     ewl_object_fill_policy_set(EWL_OBJECT(menu_bar), EWL_FLAG_FILL_HSHRINK);
     ewl_object_alignment_set(EWL_OBJECT(menu_bar), EWL_FLAG_ALIGN_LEFT);
-    ewl_box_set_spacing(EWL_BOX(menu_bar), 4);
+    ewl_box_spacing_set(EWL_BOX(menu_bar), 4);
     ewl_object_padding_set(EWL_OBJECT(menu_bar), 5, 5, 5, 5);
     ewl_widget_show(menu_bar);
 </programlisting>
@@ -277,7 +277,7 @@ As&#237; que el men&#250; estar&#225; alineado con el lado izquierdo de la caja 
 
 <para>
 Entonces especificamos el espaciado de elementos dentro de la caja del men&#250;. Esto dar&#225; un poco m&#225;s de espacio 
-entre nuestros elementos de men&#250; y se hace con <function>ewl_box_set_spacing()</function>. 
+entre nuestros elementos de men&#250; y se hace con <function>ewl_box_spacing_set()</function>. 
 Despues de cambiar el espacio cambiamos el relleno alrededor de la caja como un todo con la llamada a 
 <function>ewl_object_padding_set()</function>, esto incrementar&#225; la cantidad de espacio que queda alrededor 
 del objeto como un todo.

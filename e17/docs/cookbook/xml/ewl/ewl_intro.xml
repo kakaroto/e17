@@ -256,7 +256,7 @@ bottom of our display.
     ewl_container_child_append(EWL_CONTAINER(box), menu_bar);
     ewl_object_fill_policy_set(EWL_OBJECT(menu_bar), EWL_FLAG_FILL_HSHRINK);
     ewl_object_alignment_set(EWL_OBJECT(menu_bar), EWL_FLAG_ALIGN_LEFT);
-    ewl_box_set_spacing(EWL_BOX(menu_bar), 4);
+    ewl_box_spacing_set(EWL_BOX(menu_bar), 4);
     ewl_object_padding_set(EWL_OBJECT(menu_bar), 5, 5, 5, 5);
     ewl_widget_show(menu_bar);
 </programlisting>
@@ -287,7 +287,7 @@ So the menu will be aligned with the left side of the main box.
 <para>
 We then specify the spacing of items inside the menu box. This will give
 a little more space between our menu items and is done with
-<function>ewl_box_set_spacing()</function>. 
+<function>ewl_box_spacing_set()</function>. 
 After changing the space we change the padding around the box as a whole
 with the call to <function>ewl_object_padding_set()</function>, this will increase the amount of
 space left around the object as a whole.
