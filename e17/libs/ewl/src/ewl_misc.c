@@ -112,7 +112,7 @@ void ewl_init(int *argc, char **argv)
  * This should be called to cleanup internal EWL data structures, if using
  * ecore directly rather than using ewl_main().
  */
-void ewl_deinit()
+void ewl_shutdown()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -145,7 +145,7 @@ void ewl_main(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_main_loop_begin();
-	ewl_deinit();
+	ewl_shutdown();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

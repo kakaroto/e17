@@ -16,7 +16,7 @@ struct Ewl_Options
 };
 
 void            ewl_init(int *argc, char **argv);
-void            ewl_deinit(void);
+void            ewl_shutdown(void);
 void            ewl_main(void);
 void            ewl_main_quit(void);
 void            ewl_configure_request(Ewl_Widget * w);
@@ -24,8 +24,8 @@ void            ewl_configure_queue(void);
 void            ewl_configure_cancel_request(Ewl_Widget *w);
 void            ewl_realize_request(Ewl_Widget *w);
 void            ewl_realize_queue(void);
-void 		ewl_destroy_request(Ewl_Widget *w);
-void 		ewl_garbage_collect(void);
+void            ewl_destroy_request(Ewl_Widget *w);
+void            ewl_garbage_collect(void);
 void            ewl_enter_realize_phase(void);
 void            ewl_exit_realize_phase(void);
 int             ewl_in_realize_phase(void);
