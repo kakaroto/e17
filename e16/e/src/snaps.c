@@ -54,73 +54,6 @@ struct _snapshot
 #endif
 };
 
-/*
- * Stupid hack to fix apps that set WM_WINDOW_ROLE to
- * a <name>-<pid>-<something>-<time> like thing.
- * Is this even ICCCM compliant?
- */
-static const char  *
-SnapGetRole(const char *role, char *buf, int len)
-{
-   int                 l1, l2;
-
-   l1 = strlen(role);
-   if (l1 >= len)
-      l1 = len - 1;
-   l2 = strcspn(role, "-0123456789");
-   if (l1 - l2 > 8)
-      l1 = l2;
-   memcpy(buf, role, l1);
-   buf[l1] = '\0';
-
-   return buf;
-}
-
-/* Format the window identifier string */
-static int
-EwinMakeID(EWin * ewin, char *buf, int len)
-{
-   char                s[256];
-
-   if ((ewin->icccm.wm_role) && (ewin->icccm.wm_res_name)
-       && (ewin->icccm.wm_res_class))
-      Esnprintf(buf, len, "%s.%s:%s", ewin->icccm.wm_res_name,
-		ewin->icccm.wm_res_class,
-		SnapGetRole(ewin->icccm.wm_role, s, sizeof(s)));
-   else if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
-      Esnprintf(buf, len, "%s.%s", ewin->icccm.wm_res_name,
-		ewin->icccm.wm_res_class);
-   else if (ewin->icccm.wm_name)
-      Esnprintf(buf, len, "TITLE.%s", ewin->icccm.wm_name);
-   else
-      return -1;
-
-   return 0;
-}
-
-/* find a snapshot state that applies to this ewin */
-static Snapshot    *
-SnapshotFind(EWin * ewin)
-{
-   Snapshot           *sn;
-   char                buf[4096];
-
-   if (ewin->snap)
-      return ewin->snap;
-
-   if (EwinMakeID(ewin, buf, sizeof(buf)))
-      return NULL;
-
-   sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
-   if (sn)
-     {
-	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
-	sn->used = ewin;
-     }
-
-   return sn;
-}
-
 static Snapshot    *
 SnapshotCreate(const char *name)
 {
@@ -161,19 +94,86 @@ SnapshotDestroy(Snapshot * sn)
    Efree(sn);
 }
 
-/* find a snapshot state that applies to this ewin Or if that doesnt exist */
-/* create a new one */
+/*
+ * Stupid hack to fix apps that set WM_WINDOW_ROLE to
+ * a <name>-<pid>-<something>-<time> like thing.
+ * Is this even ICCCM compliant?
+ */
+static const char  *
+SnapGetRole(const char *role, char *buf, int len)
+{
+   int                 l1, l2;
+
+   l1 = strlen(role);
+   if (l1 >= len)
+      l1 = len - 1;
+   l2 = strcspn(role, "-0123456789");
+   if (l1 - l2 > 8)
+      l1 = l2;
+   memcpy(buf, role, l1);
+   buf[l1] = '\0';
+
+   return buf;
+}
+
+/* Format the window identifier string */
+static int
+SnapEwinMakeID(EWin * ewin, char *buf, int len)
+{
+   char                s[256];
+
+   if ((ewin->icccm.wm_role) && (ewin->icccm.wm_res_name)
+       && (ewin->icccm.wm_res_class))
+      Esnprintf(buf, len, "%s.%s:%s", ewin->icccm.wm_res_name,
+		ewin->icccm.wm_res_class,
+		SnapGetRole(ewin->icccm.wm_role, s, sizeof(s)));
+   else if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
+      Esnprintf(buf, len, "%s.%s", ewin->icccm.wm_res_name,
+		ewin->icccm.wm_res_class);
+   else if (ewin->icccm.wm_name)
+      Esnprintf(buf, len, "TITLE.%s", ewin->icccm.wm_name);
+   else
+      return -1;
+
+   return 0;
+}
+
+/* find a snapshot state that applies to this ewin */
 static Snapshot    *
-GetSnapshot(EWin * ewin)
+SnapshotEwinFind(EWin * ewin)
 {
    Snapshot           *sn;
    char                buf[4096];
 
-   sn = SnapshotFind(ewin);
+   if (ewin->snap)
+      return ewin->snap;
+
+   if (SnapEwinMakeID(ewin, buf, sizeof(buf)))
+      return NULL;
+
+   sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
+   if (sn)
+     {
+	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
+	sn->used = ewin;
+     }
+
+   return sn;
+}
+
+/* find a snapshot state that applies to this ewin Or if that doesnt exist */
+/* create a new one */
+static Snapshot    *
+SnapshotEwinGet(EWin * ewin)
+{
+   Snapshot           *sn;
+   char                buf[4096];
+
+   sn = SnapshotEwinFind(ewin);
    if (sn)
       return sn;
 
-   if (EwinMakeID(ewin, buf, sizeof(buf)))
+   if (SnapEwinMakeID(ewin, buf, sizeof(buf)))
       return NULL;
 
    sn = SnapshotCreate(buf);
@@ -314,7 +314,7 @@ SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 	       {
 		  sn = gwins[i]->snap;
 		  if (!sn)
-		     sn = GetSnapshot(gwins[i]);
+		     sn = SnapshotEwinGet(gwins[i]);
 		  if (sn)
 		    {
 		       if (sn->groups)
@@ -334,7 +334,7 @@ SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 	  {
 	     if (ewin->snap)
 	       {
-		  sn = GetSnapshot(gwins[i]);
+		  sn = SnapshotEwinFind(gwins[i]);
 		  if (sn)
 		    {
 		       if (sn->groups)
@@ -409,7 +409,7 @@ SnapshotEwinSet(EWin * ewin, unsigned int flags)
    if (!(flags & SNAP_USE_ALL))
       return;
 
-   sn = GetSnapshot(ewin);
+   sn = SnapshotEwinGet(ewin);
    if (!sn)
       return;
 
@@ -428,6 +428,10 @@ SnapshotEwinUpdate(EWin * ewin, unsigned int flags)
    sn = ewin->snap;
    if (!sn || !sn->track_changes)
       return;
+
+#if 0
+   Eprintf("SnapshotEwinUpdate %s: %#x\n", EwinGetName(ewin), flags);
+#endif
 
    if (flags & sn->use_flags)
       SnapEwinUpdate(sn, ewin, flags);
@@ -449,7 +453,7 @@ SnapshotEwinRemove(EWin * ewin)
      {
 	char                buf[4096];
 
-	if (EwinMakeID(ewin, buf, sizeof(buf)))
+	if (SnapEwinMakeID(ewin, buf, sizeof(buf)))
 	   return;
 	sn = RemoveItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
      }
@@ -1392,19 +1396,16 @@ SnapshotEwinMatch(EWin * ewin)
    Snapshot           *sn;
    int                 i, ax, ay;
 
-   sn = SnapshotFind(ewin);
+   sn = SnapshotEwinFind(ewin);
    if (!sn)
-      return;
+     {
+	if (ewin->props.autosave)
+	   SnapshotEwinSet(ewin, SNAP_USE_ALL | SNAP_AUTO);
+	return;
+     }
 
    ewin->snap = sn;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
-
-   if (ewin->props.autosave)
-     {
-	sn->track_changes = 1;
-	if (!sn->use_flags)
-	   sn->use_flags = SNAP_USE_ALL;
-     }
 
    if (sn->use_flags & SNAP_USE_STICKY)
       EoSetSticky(ewin, sn->sticky);
@@ -1490,7 +1491,7 @@ SnapshotEwinMatch(EWin * ewin)
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
-/* make a client window conform to snapshot info */
+/* Detach snapshot from ewin */
 void
 SnapshotEwinUnmatch(EWin * ewin)
 {
