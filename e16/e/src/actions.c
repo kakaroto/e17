@@ -3026,20 +3026,17 @@ doAbout(void *params)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 "THIS IS NOT A RELEASE VERSION\n"
-			 "You are using this version at your own risk!!\n"
-			 "\n"
 			 "Welcome to the "
 			 ENLIGHTENMENT_VERSION
-			 " development series "
-			 "of the Enlightenment\n"
-			 "window manager. Enlightenment is still under "
+			 " development series\n"
+			 "of the Enlightenment "
+			 "window manager.\n Enlightenment is still under "
 			 "development, but\n"
 			 "we have tried to iron out all the bugs "
-			 "that we can find. If\n"
-			 "you find a bug in the software, please do "
-			 "not hesitate to send\n"
-			 "in a bug report.  See \"Help\" for information "
+			 "that\nwe can find. If "
+			 "you find a bug in the software,\n please do "
+			 "not hesitate to send "
+			 "in a bug report.\nSee \"Help\" for information "
 			 "on joining the\n"
 			 "mailing list.\n"
 			 "\n"
