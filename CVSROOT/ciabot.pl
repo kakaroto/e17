@@ -263,7 +263,7 @@ EM
 
 for (my $dirnum = 0; $dirnum < @dir; $dirnum++) {
   map {
-    #$_ = $dir[$dirnum] . '/' . $_;
+    $_ = $dir[$dirnum] . '/' . $_;
     s#^$module?/##;
     s/&/&amp;/g;
     s/</&lt;/g;
