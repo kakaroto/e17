@@ -1,6 +1,12 @@
 ######## EPLAYER EDJE GUIDE #########
 
-The Edje emits the following signals:
+An ePlayer theme consists of several Edjes:
+ * The main Edje, called "eplayer"
+ * Two Edjes for the playlist entries:
+   "playlist_item_title" is used for the title,
+   "playlist_item_length" is used for the title's length.
+
+The "eplayer" Edje emits the following signals:
 
 	action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
 	action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
@@ -11,16 +17,25 @@ The Edje emits the following signals:
 	action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
 	action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
 
+	action,     SIGNAL_EMIT "SWITCH_TIME_DISPLAY" "time_text";
+
 It provides the following parts for text display:
 
-	Part: "title"	-> Window Title
-	Part: "artist_name" -> Name of artist
-	Part: "album_name"  -> Name of album
-	Part: "song_name"   -> Name of song
-	Part: "time_text"   -> Current pos in track	(-00:00)
-	Part: "vol_display_text" -> Current Volume Level (00 - 99)
+	Part: "title"            -> Window Title
+	Part: "artist_name"      -> Name of artist
+	Part: "album_name"       -> Name of album
+	Part: "song_name"        -> Name of song
+	Part: "time_text"        -> Current pos in track ([-]00:00)
+	Part: "vol_display_text" -> Current Volume Level (0 - 100)
 
 
+The "playlist_item_title" and "playlist_item_length" Edjes both contain
+a "text" part, which holds the actual values.
+
+The "text" parts emit the following signals:
+
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "text";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "text";
 
 
 ---------------------------------------------------------

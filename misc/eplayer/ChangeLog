@@ -2,6 +2,8 @@ $Id$
 
 2003-11-10 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/playlist.c: Misc fixes
+        * src/callbacks.c: Reset paused state on next/prev/seek
+        * data/README: Updated Edje documentation
 
 2003-10-25 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/eplayer.c, src/track.c: Put the decoding/playing

@@ -65,6 +65,7 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
 	if (player->playlist->cur_item->next) {
 		player->playlist->cur_item = player->playlist->cur_item->next;
 		eplayer_playback_start(player, 1);
+		paused = 0;
 	} else {
 		/* there's no next item, so move to the beginning again
 		 * but don't start playing yet.
@@ -97,6 +98,7 @@ void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
 	player->playlist->cur_item = player->playlist->cur_item->prev;
 
 	eplayer_playback_start(player, 1);
+	paused = 0;
 }
 
 void cb_volume_raise(ePlayer *player, Evas_Object *obj,
@@ -170,6 +172,7 @@ void cb_seek_forward(void *udata, Evas_Object *obj,
 	eplayer_playback_stop(player);
 	pli->plugin->set_current_pos(pli->plugin->get_current_pos() + 5);
 	eplayer_playback_start(player, 0);
+	paused = 0;
 }
 
 void cb_seek_backward(void *udata, Evas_Object *obj,
@@ -189,4 +192,6 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 		pli->plugin->set_current_pos(cur_time - 5);
 		eplayer_playback_start(player, 0);
 	}
+	
+	paused = 0;
 }
