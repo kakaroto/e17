@@ -581,9 +581,7 @@ SetupDirs()
 	  }
      }
    else
-     {
-	md(s);
-     }
+      md(s);
 
    Esnprintf(s, sizeof(s), "%s/.enlightenment/themes", home);
    if (!exists(s))
