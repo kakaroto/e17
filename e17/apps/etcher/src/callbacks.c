@@ -30,6 +30,7 @@ Evas view_evas = NULL;
 gint render_method = 0;
 gint zoom_method = 0;
 guint current_idle = 0;
+gboolean no_splash;
 
 static int new_evas = 1;
 static int new_fade = 0;
@@ -1647,18 +1648,23 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_move(view_evas, o_bg, 0, 0);
 	evas_resize(view_evas, o_bg, 9999, 9999);
 	
-	o_logo = evas_add_image_from_file(view_evas, 
-					  PACKAGE_DATA_DIR"/pixmaps/etcher.png");
-	evas_set_layer(view_evas, o_logo, 900);
-	evas_show(view_evas, o_logo);
-	evas_get_image_size(view_evas, o_logo, &w, &h);
-	evas_move(view_evas, o_logo, 
-		  (widget->allocation.width - w) / 2,
-		  -h);
+	if (!no_splash)
+	  {
+	    o_logo = evas_add_image_from_file(view_evas, 
+					      PACKAGE_DATA_DIR"/pixmaps/etcher.png");
+	    evas_set_layer(view_evas, o_logo, 900);
+	    evas_show(view_evas, o_logo);
+	    evas_get_image_size(view_evas, o_logo, &w, &h);
+	    evas_move(view_evas, o_logo, 
+		      (widget->allocation.width - w) / 2,
+		      -h);
+	  }
+
 	backing_x = 32;
 	backing_y = 32;
 	backing_w = widget->allocation.width - 64;
 	backing_h = widget->allocation.height - 64;
+
 	o_pointer = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/pointer.png");
 	evas_set_layer(view_evas, o_pointer, 999);
 	evas_set_pass_events(view_evas, o_pointer, 1);
@@ -1724,27 +1730,36 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_callback_add(view_evas, o_select_adj2, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
 	evas_callback_add(view_evas, o_select_adj2, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
 	
-	gtk_timeout_add(50, view_scroll_logo, NULL);
-	gtk_timeout_add(50, view_scroll_info, NULL);   
+	if (!no_splash)
 	  {
-	     GdkPixmap *src, *mask;
-	     GdkColor fg, bg;
-	     GdkGC *gc;
-	     GdkCursor *cursor;
-	     
-	     src = gdk_pixmap_new(widget->window, 1, 1, 1);
-	     mask = gdk_pixmap_new(widget->window, 1, 1, 1);
-	     gc = gdk_gc_new(mask);
-	     fg.pixel = 0;
-	     gdk_gc_set_foreground(gc, &fg);
-	     gdk_draw_rectangle(mask, gc, 1, 0, 0, 1, 1);
-	     cursor = gdk_cursor_new_from_pixmap(src, mask, &fg, &bg, 0, 0);
-	     gdk_window_set_cursor(widget->window, cursor);
-	     gdk_cursor_destroy(cursor);
-	     gdk_pixmap_unref(src);
-	     gdk_pixmap_unref(mask);
-	     gdk_gc_destroy(gc);
+	    gtk_timeout_add(50, view_scroll_logo, NULL);
+	    gtk_timeout_add(50, view_scroll_info, NULL);   
 	  }
+	else
+	  {
+	    if (!o_handle1) view_create_handles(NULL);
+	    QUEUE_DRAW;
+	  }
+
+	{
+	  GdkPixmap *src, *mask;
+	  GdkColor fg, bg;
+	  GdkGC *gc;
+	  GdkCursor *cursor;
+	  
+	  src = gdk_pixmap_new(widget->window, 1, 1, 1);
+	  mask = gdk_pixmap_new(widget->window, 1, 1, 1);
+	  gc = gdk_gc_new(mask);
+	  fg.pixel = 0;
+	  gdk_gc_set_foreground(gc, &fg);
+	  gdk_draw_rectangle(mask, gc, 1, 0, 0, 1, 1);
+	  cursor = gdk_cursor_new_from_pixmap(src, mask, &fg, &bg, 0, 0);
+	  gdk_window_set_cursor(widget->window, cursor);
+	  gdk_cursor_destroy(cursor);
+	  gdk_pixmap_unref(src);
+	  gdk_pixmap_unref(mask);
+	  gdk_gc_destroy(gc);
+	}
      }
    evas_update_rect(view_evas, 
 		    event->area.x,

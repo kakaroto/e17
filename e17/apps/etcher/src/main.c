@@ -17,6 +17,7 @@ char etcher_config[4096];
 extern Evas view_evas;
 extern gint render_method;
 extern gint zoom_method;
+extern gboolean no_splash;
 
 GdkVisual *gdk_vis = NULL;
 GdkColormap *gdk_cmap = NULL;
@@ -24,8 +25,18 @@ GdkColormap *gdk_cmap = NULL;
 int
 main (int argc, char *argv[])
 {
-   int config_ok = 0, config_render_method, config_zoom_method;
+   int i, config_ok = 0, config_render_method, config_zoom_method;
    
+   no_splash = FALSE;
+
+   for (i=1; i<argc; i++)
+     {
+       if (!strcmp(argv[i], "--no-splash"))
+	 {
+	   no_splash = TRUE;
+	 }
+     }
+
 #ifdef ENABLE_NLS
    bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
    textdomain (PACKAGE);
