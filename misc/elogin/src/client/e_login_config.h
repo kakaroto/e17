@@ -22,9 +22,14 @@ struct _E_Login_Config
          char *name;
       }
       font;
+      struct
+      {
+	  float x, y;
+	  int offset_x, offset_y;
+      } pos;
       char *mess;
    }
-   welcome, passwd;
+   welcome, passwd, greeting;
 
    struct
    {

@@ -4,7 +4,8 @@ INCLUDES = \
 	@evas_cflags@ \
 	@ebg_cflags@ \
 	@edb_cflags@ \
-	@ecore_cflags@
+	@ecore_cflags@ \
+	@estyle_cflags@
 
 bin_PROGRAMS = elogin
 
@@ -23,4 +24,5 @@ elogin_LDADD = \
 	@evas_libs@ \
 	@ebg_libs@ \
 	@edb_libs@ \
-	@ecore_libs@ 
+	@ecore_libs@ \
+	@estyle_libs@

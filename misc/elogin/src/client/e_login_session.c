@@ -208,7 +208,6 @@ e_login_session_init(E_Login_Session e)
       e->session = evas_list_data(l);
    else
       e->session = NULL;
-
    e->session_index = 0;
 
    e->evas = evas;

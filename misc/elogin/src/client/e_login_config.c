@@ -16,11 +16,28 @@ e_login_config_new(void)
 
    return (e);
 }
+static char*
+get_hostname(void)
+{
+    FILE *fp = NULL;
+    char *result = NULL;
+    char buf[PATH_MAX], buf2[PATH_MAX];
+
+    if((fp = fopen("/etc/hostname", "r")))
+    {
+	int read_bytes = fread(buf, 1, PATH_MAX, fp);
+	snprintf(buf2, read_bytes, "%s", buf);
+	result = strdup(buf2);
+	fclose(fp);
+    }
+    return(result);
+}
 
 static void
 e_login_config_populate(E_Login_Config e, E_DB_File * db)
 {
    char *str = NULL;
+   char buf[PATH_MAX];
    Evas_List *l = NULL;
    int i = 0, num_session = 0;
 
@@ -73,6 +90,16 @@ e_login_config_populate(E_Login_Config e, E_DB_File * db)
       e->welcome.font.b = 192;
    if (!e_db_int_get(db, "/elogin/welcome/font/a", &(e->welcome.font.a)))
       e->welcome.font.a = 192;
+   if (!e_db_float_get(db, "/elogin/welcome/pos/x", &(e->welcome.pos.x)))
+       e->welcome.pos.x = 0.0;
+   if (!e_db_float_get(db, "/elogin/welcome/pos/y", &(e->welcome.pos.y)))
+       e->welcome.pos.x = 0.0;
+   if (!e_db_int_get(db, "/elogin/welcome/pos/offset/x",
+	       &(e->welcome.pos.offset_x)))
+       e->welcome.pos.offset_x = 0;
+   if (!e_db_int_get(db, "/elogin/welcome/pos/offset/y",
+	       &(e->welcome.pos.offset_y)))
+       e->welcome.pos.offset_y = 0;
    if (!e_db_int_get
        (db, "/elogin/welcome/font/size", &(e->welcome.font.size)))
       e->welcome.font.size = 20;
@@ -97,6 +124,47 @@ e_login_config_populate(E_Login_Config e, E_DB_File * db)
       e->passwd.font.a = 192;
    if (!e_db_int_get(db, "/elogin/passwd/font/size", &(e->passwd.font.size)))
       e->passwd.font.size = 20;
+   if (!e_db_float_get(db, "/elogin/passwd/pos/x", &(e->passwd.pos.x)))
+       e->passwd.pos.x = 0.0;
+   if (!e_db_float_get(db, "/elogin/passwd/pos/y", &(e->passwd.pos.y)))
+       e->passwd.pos.x = 0.0;
+   if (!e_db_int_get(db, "/elogin/passwd/pos/offset/x",
+	       &(e->passwd.pos.offset_x)))
+       e->passwd.pos.offset_x = 0;
+   if (!e_db_int_get(db, "/elogin/passwd/pos/offset/y",
+	       &(e->passwd.pos.offset_y)))
+       e->passwd.pos.offset_y = 0;
+   if ((str = e_db_str_get(db, "/elogin/greeting/mess")))
+      e->greeting.mess = str;
+   else
+      e->greeting.mess = strdup("Welcome to");
+
+   if ((str = e_db_str_get(db, "/elogin/greeting/font/name")))
+      e->greeting.font.name = str;
+   else
+      e->greeting.font.name = strdup("notepad.ttf");
+
+   if (!e_db_int_get(db, "/elogin/greeting/font/r", &(e->greeting.font.r)))
+      e->greeting.font.r = 192;
+   if (!e_db_int_get(db, "/elogin/greeting/font/g", &(e->greeting.font.g)))
+      e->greeting.font.g = 192;
+   if (!e_db_int_get(db, "/elogin/greeting/font/b", &(e->greeting.font.b)))
+      e->greeting.font.b = 192;
+   if (!e_db_int_get(db, "/elogin/greeting/font/a", &(e->greeting.font.a)))
+      e->greeting.font.a = 192;
+   if (!e_db_float_get(db, "/elogin/greeting/pos/x", &(e->greeting.pos.x)))
+       e->greeting.pos.x = 0.0;
+   if (!e_db_float_get(db, "/elogin/greeting/pos/y", &(e->greeting.pos.y)))
+       e->greeting.pos.x = 0.0;
+   if (!e_db_int_get(db, "/elogin/greeting/pos/offset/x",
+	       &(e->greeting.pos.offset_x)))
+       e->greeting.pos.offset_x = 0;
+   if (!e_db_int_get(db, "/elogin/greeting/pos/offset/y",
+	       &(e->greeting.pos.offset_y)))
+       e->greeting.pos.offset_y = 0;
+   if (!e_db_int_get
+       (db, "/elogin/greeting/font/size", &(e->greeting.font.size)))
+      e->greeting.font.size = 20;
 
    if (!e_db_int_get(db, "/elogin/xinerama/screens/w", &(e->screens.w)))
       e->screens.w = 1;
@@ -106,7 +174,14 @@ e_login_config_populate(E_Login_Config e, E_DB_File * db)
       e->display.w = 1;
    if (!e_db_int_get(db, "/elogin/xinerama/on/h", &(e->display.h)))
       e->display.h = 1;
-
+    
+   if((str = get_hostname()))
+   {
+    snprintf(buf, PATH_MAX, "%s %s", e->greeting.mess, str);
+    free(e->greeting.mess);
+    free(str);
+    e->greeting.mess = strdup(buf);
+   }
 }
 
 E_Login_Config
