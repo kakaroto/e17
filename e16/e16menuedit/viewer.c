@@ -269,7 +269,7 @@ create_main_window (void)
   gtk_window_set_policy (GTK_WINDOW (win), TRUE, TRUE, FALSE);
   gtk_window_set_title (GTK_WINDOW (win), "E Menu Editor");
   gtk_window_set_wmclass (GTK_WINDOW (win), "e16menuedit", "e16menuedit");
-  gtk_widget_set_usize (win, -2, 300);
+  gtk_widget_set_usize (win, 660, 300);
 
   bigvbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (bigvbox);
@@ -321,7 +321,7 @@ create_main_window (void)
   gtk_widget_show (ctree);
 
   vbox = gtk_vbox_new (FALSE, 3);
-  
+
   gtk_widget_show (vbox);
   gtk_paned_pack2 (GTK_PANED (panes), vbox, FALSE, FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
@@ -582,9 +582,9 @@ tree_to_gnode (GtkCTree * ctree,
 			   &col3);
   gtk_ctree_get_node_info (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode),
 			   &col1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-  edata->desc = col1;
-  edata->icon = col2;
-  edata->params = col3;
+  edata->desc = duplicate (col1);
+  edata->icon = duplicate (col2);
+  edata->params = duplicate (col3);
   gnode->data = edata;
   return TRUE;
   depth = 0;
@@ -592,8 +592,7 @@ tree_to_gnode (GtkCTree * ctree,
 }
 
 /* Next two functions are co-recursing */
-gint
-write_menu (GNode * node, gchar * file)
+gint write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
@@ -633,8 +632,7 @@ write_menu (GNode * node, gchar * file)
   return 0;
 }
 
-gint
-write_menu_entry (GNode * node, FILE * fp)
+gint write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
 
