@@ -134,8 +134,8 @@ void        imlib_image_set_irrelevant_alpha(char irrelevant);
 char       *imlib_image_format(void);
 void        imlib_image_set_has_alpha(char has_alpha);
 
-void        imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return, Pixmap *mask_return, char create_dithered_mask);
-void        imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return, Pixmap *mask_return, char create_dithered_mask, int width, int height);
+void        imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return, Pixmap *mask_return);
+void        imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return, Pixmap *mask_return, int width, int height);
 void        imlib_free_pixmap_and_mask(Pixmap pixmap);
 void        imlib_render_image_on_drawable(int x, int y);
 void        imlib_render_image_on_drawable_at_size(int x, int y, int width, int height);

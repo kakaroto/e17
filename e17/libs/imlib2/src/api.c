@@ -704,8 +704,7 @@ imlib_image_set_has_alpha(char has_alpha)
 
 void 
 imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return,
-				     Pixmap *mask_return,
-				     char create_dithered_mask)
+				     Pixmap *mask_return)
 {
    ImlibImage *im;
 
@@ -720,14 +719,13 @@ imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return,
    __imlib_CreatePixmapsForImage(ctxt_display, ctxt_drawable, ctxt_visual,
 				 ctxt_depth, ctxt_colormap, im, pixmap_return, 
 				 mask_return, 0, 0, im->w, im->h, im->w, im->h,
-				 0, ctxt_dither, create_dithered_mask,
+				 0, ctxt_dither, ctxt_dither_mask,
 				 ctxt_color_modifier);
 }
 
 void 
 imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return,
 					     Pixmap *mask_return,
-					     char create_dithered_mask,
 					     int width, int height)
 {
    ImlibImage *im;
@@ -744,7 +742,7 @@ imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return,
 				 ctxt_depth, ctxt_colormap,  im, 
 				 pixmap_return, mask_return, 0, 0, im->w, 
 				 im->h, width, height, ctxt_anti_alias,
-				 ctxt_dither, create_dithered_mask,
+				 ctxt_dither, ctxt_dither_mask,
 				 ctxt_color_modifier);
 }
 

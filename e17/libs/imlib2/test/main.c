@@ -184,8 +184,6 @@ int main (int argc, char **argv)
 	  {
 	     if (scaleup)
 		XResizeWindow(disp, win, w * 4, h * 4);
-	     else if (scaleboth)
-		XResizeWindow(disp, win, w * 2, h * 2);
 	     else
 		XResizeWindow(disp, win, w, h);
 	     XMapWindow(disp, win);
