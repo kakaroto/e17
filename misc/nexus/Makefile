@@ -57,9 +57,8 @@ uninstall:
 distclean-1:
 	rm -rf "$(PACKAGE)-$(VERSION)/" "$(PACKAGE)-$(VERSION).tar" \
 		"$(PACKAGE)-$(VERSION).tar.gz"
+
 distclean: distclean-1 clean
-	rm -rf "$(PACKAGE)-$(VERSION)/" "$(PACKAGE)-$(VERSION).tar" \
-		"$(PACKAGE)-$(VERSION).tar.gz"
 
 dist: distclean-1
 	mkdir "$(PACKAGE)-$(VERSION)/"
