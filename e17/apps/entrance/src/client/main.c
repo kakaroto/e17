@@ -86,13 +86,19 @@ get_my_hostname(void)
 {
    char buf[255];               /* some standard somewhere limits hostname
                                    lengths to this */
+   char *dot;
    char message[PATH_MAX];
 
    char *result = NULL;
 
    if (!(gethostname(buf, 255)))
    {
-       snprintf(message, PATH_MAX, "%s%s%s", session->config->before.string,
+	   /* Ensure that hostname is in short form */
+	   dot = strstr(buf, ".");
+	   if(dot)
+		   *dot = '\0';
+	   
+       snprintf(message, PATH_MAX, "%s %s %s", session->config->before.string,
 	       buf, session->config->after.string);
    }
    else
