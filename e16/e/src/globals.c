@@ -55,7 +55,6 @@ Desktops            desks;
 Window              init_win1 = 0;
 Window              init_win2 = 0;
 Window              init_win_ext = 0;
-Window              bpress_win = 0;
 int                 deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 char                themepath[FILEPATH_LEN_MAX];
 char                themename[FILEPATH_LEN_MAX];

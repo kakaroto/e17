@@ -1318,6 +1318,7 @@ typedef struct
    char                nogroup;
    char                keybinds_changed;
    char                firsttime;
+   Window              button_proxy_win;
 }
 EMode;
 
@@ -1904,6 +1905,7 @@ void                RemoveActionClass(ActionClass * ActionToRemove);
 void                AddToAction(Action * act, int id, void *params);
 void                AddAction(ActionClass * a, Action * act);
 int                 EventAclass(XEvent * ev, ActionClass * a);
+void                doActionEnd(void);
 int                 spawnMenu(void *params);
 int                 hideMenu(void *params);
 int                 doNothing(void *params);
@@ -2833,7 +2835,6 @@ extern Desktops     desks;
 extern Window       init_win1;
 extern Window       init_win2;
 extern Window       init_win_ext;
-extern Window       bpress_win;
 extern int          deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 
 #define FILEPATH_LEN_MAX 4096

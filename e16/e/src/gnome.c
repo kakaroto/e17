@@ -770,11 +770,11 @@ GNOME_SetHints(Window win_wm_check)
       CARD32              val;
 
       atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
-      bpress_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
-      val = bpress_win;
+      mode.button_proxy_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
+      val = mode.button_proxy_win;
       XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32,
 		      PropModeReplace, (unsigned char *)&val, 1);
-      XChangeProperty(disp, bpress_win, atom_set, XA_CARDINAL, 32,
+      XChangeProperty(disp, mode.button_proxy_win, atom_set, XA_CARDINAL, 32,
 		      PropModeReplace, (unsigned char *)&val, 1);
    }
 

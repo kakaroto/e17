@@ -1239,6 +1239,55 @@ doMoveEnd(void *params)
    EDBUG_RETURN(0);
 }
 
+void
+doActionEnd(void)
+{
+   EWin               *ewin;
+   int                 i, num;
+   EWin              **gwins;
+
+   switch (mode.mode)
+     {
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	doResizeEnd(NULL);
+	mode.action_inhibit = 1;
+	break;
+     case MODE_MOVE:
+	ewin = mode.ewin;
+	if (ewin)
+	  {
+	     gwins =
+		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
+					   &num);
+	     if ((conf.movemode == 0) && (mode.mode == MODE_MOVE))
+		for (i = 0; i < num; i++)
+		   DetermineEwinFloat(gwins[i], 0, 0);
+	     Efree(gwins);
+	  }
+	doMoveEnd(NULL);
+	if (mode.have_place_grab)
+	  {
+	     mode.have_place_grab = 0;
+	     XUngrabPointer(disp, CurrentTime);
+	  }
+	mode.ewin = NULL;
+	mode.action_inhibit = 1;
+	break;
+     case MODE_DESKDRAG:
+	mode.mode = MODE_NONE;
+	break;
+     case MODE_BUTTONDRAG:
+	if (!mode.button_move_pending)
+	   mode.action_inhibit = 1;
+	doDragButtonEnd(NULL);
+	break;
+     default:
+	break;
+     }
+}
+
 int
 doRaise(void *params)
 {

@@ -95,6 +95,14 @@ TooltipsHandleEvent(void)
       DoIn("TOOLTIP_TIMEOUT", conf.tooltips.tiptime, ToolTipTimeout, 0, NULL);
 }
 
+static void
+ButtonProxySendEvent(XEvent * ev)
+{
+   if (mode.button_proxy_win)
+      XSendEvent(disp, mode.button_proxy_win, False, SubstructureNotifyMask,
+		 ev);
+}
+
 void
 HandleClientMessage(XEvent * ev)
 {
@@ -1343,7 +1351,7 @@ HandleMouseDown(XEvent * ev)
 	if (ac)
 	  {
 	     if (!EventAclass(ev, ac))
-		XSendEvent(disp, bpress_win, False, SubstructureNotifyMask, ev);
+		ButtonProxySendEvent(ev);
 	  }
 	EDBUG_RETURN_;
      }
@@ -1415,9 +1423,7 @@ HandleMouseUp(XEvent * ev)
 {
    Window              win = ev->xbutton.window;
    EWin               *ewin;
-   int                 i, num;
    Slideout           *pslideout;
-   EWin              **gwins;
 
    EDBUG(5, "HandleMouseUp");
 
@@ -1461,57 +1467,20 @@ HandleMouseUp(XEvent * ev)
      }
 #endif
 
-   switch (mode.mode)
+   doActionEnd();
+   if (mode.place)
      {
-     case MODE_RESIZE:
-     case MODE_RESIZE_H:
-     case MODE_RESIZE_V:
-	doResizeEnd(NULL);
-	mode.action_inhibit = 1;
-	break;
-     case MODE_MOVE:
-	ewin = mode.ewin;
-	if (ewin)
-	  {
-	     gwins =
-		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
-					   &num);
-	     if ((conf.movemode == 0) && (mode.mode == MODE_MOVE))
-		for (i = 0; i < num; i++)
-		   DetermineEwinFloat(gwins[i], 0, 0);
-	     Efree(gwins);
-	  }
-	doMoveEnd(NULL);
-	if (mode.have_place_grab)
-	  {
-	     mode.have_place_grab = 0;
-	     XUngrabPointer(disp, CurrentTime);
-	  }
-	mode.ewin = NULL;
-	mode.action_inhibit = 1;
-	if (mode.place)
-	  {
-	     mode.place = 0;
-	     goto exit;
-	  }
-	break;
-     case MODE_DESKDRAG:
-	mode.mode = MODE_NONE;
-	break;
-     case MODE_BUTTONDRAG:
-	if (!mode.button_move_pending)
-	   mode.action_inhibit = 1;
-	doDragButtonEnd(NULL);
-	break;
-     default:
-	break;
+	mode.place = 0;
+	goto exit;
      }
 
    if (sentpress)
      {
+	/* We never get here? */
 	sentpress = 0;
-	XSendEvent(disp, bpress_win, False, SubstructureNotifyMask, ev);
+	ButtonProxySendEvent(ev);
      }
+
    mode.context_win = last_bpress;
 
    ewin = SlideoutsGetContextEwin();
@@ -1525,10 +1494,13 @@ HandleMouseUp(XEvent * ev)
 	mode.justclicked = 1;
      }
 
-   if (MenusEventMouseUp(ev))
+   if (!clickmenu && BordersEventMouseUp(ev))
       goto exit;
 
-   if (!clickmenu && BordersEventMouseUp(ev))
+   if (mode.action_inhibit)
+      goto exit;
+
+   if (MenusEventMouseUp(ev))
       goto exit;
 
    if (ButtonsEventMouseUp(ev))
