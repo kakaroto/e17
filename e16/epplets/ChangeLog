@@ -2171,3 +2171,13 @@ Tue May 23 20:37:47 GMT 2000
 Patch to E-Biff from Alan Schmitt <alan.schmitt@inria.fr>
 Adds config option not to show total number of messages.
 
+-------------------------------------------------------------------------------
+
+Wed May 31 23:10:44 PDT 2000
+(KainX)
+
+Patch from Jeremy Blosser <jblosser@firinn.org> to add a "Lock" button to
+E-Xss.  Right now it's hard-coded to run "xscreensaver-command -lock".  Anyone
+who'd like to make that configurable and has more time than me, have at it.
+:-)
+

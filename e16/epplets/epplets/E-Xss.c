@@ -43,7 +43,7 @@
 #define INC_HACK()       do {idx++; if (idx == hack_cnt) idx = 0;} while (0)
 #define DEC_HACK()       do {if (idx == 0) idx = hack_cnt - 1; else idx--;} while (0)
 
-Epplet_gadget close_button, prev_button, next_button, zoom_button, cfg_button, draw_area;
+Epplet_gadget close_button, prev_button, next_button, zoom_button, cfg_button, lock_button, draw_area;
 Epplet_gadget cfg_tb_delay, *cfg_tb_hacks;
 Window config_win = None;
 unsigned long idx = 0, hack_cnt = 0;
@@ -67,6 +67,7 @@ static void ok_cb(void *data);
 static void apply_cb(void *data);
 static void cancel_cb(void *data);
 static void config_cb(void *data);
+static void lock_cb(void *data);
 
 static void
 start_hack(char *hack) {
@@ -162,6 +163,7 @@ in_cb(void *data, Window w) {
     Epplet_gadget_show(prev_button);
     Epplet_gadget_show(next_button);
     Epplet_gadget_show(cfg_button);
+    Epplet_gadget_show(lock_button);
   }
   return;
   data = NULL;
@@ -177,6 +179,7 @@ out_cb(void *data, Window w) {
     Epplet_gadget_hide(prev_button);
     Epplet_gadget_hide(next_button);
     Epplet_gadget_hide(cfg_button);
+    Epplet_gadget_hide(lock_button);
   }
   return;
   data = NULL;
@@ -289,6 +292,15 @@ config_cb(void *data)
 }
 
 static void
+lock_cb (void *data)
+{
+  Epplet_spawn_command("xscreensaver-command -lock");
+
+  return;
+  data = NULL;
+}
+
+static void
 parse_config(void) {
 
   delay = atof(Epplet_query_config_def("delay", "60.0"));
@@ -347,10 +359,14 @@ main(int argc, char **argv) {
   draw_area = Epplet_create_drawingarea(3, 3, 43, 43);
   Epplet_gadget_show(draw_area);
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
+  cfg_button = Epplet_create_std_button("CONFIGURE", 33, 3, config_cb, NULL);
+
+  lock_button = Epplet_create_button("Lock", NULL, 2, 17, 44, 13, 0, 0, NULL, lock_cb, NULL);
+
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
+  zoom_button = Epplet_create_button(NULL, NULL, 18, 33, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (1));
-  cfg_button = Epplet_create_std_button("CONFIGURE", 18, 3, config_cb, NULL);
+
   Epplet_show();
 
   Epplet_register_focus_in_handler(in_cb, NULL);
