@@ -3550,3 +3550,12 @@ Epplet_clear_window(Window ww)
 {
    XClearWindow(disp, ww);
 }
+
+void
+Epplet_show_about(char *name)
+{
+   char s[1024];
+   
+   sprintf(s, "%s/dox %s/epplet_icons/%s.ABOUT", EBIN, EROOT, name);
+   Epplet_spawn_command(s);
+}
