@@ -41,7 +41,7 @@ class GeistDocument : public GeistCompositeObject
         virtual void dirty() { };
         virtual void dirty(Rect r) { };
 
-        Imlib_Image get_image() { return _image; };
+        Imlib_Image get_image() const { return _image; };
 
     protected:
 

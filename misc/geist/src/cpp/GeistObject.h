@@ -57,18 +57,14 @@ struct Point
 
 struct Rect
 {
-   Rect()
+   Rect() : _p(0,0)
    {
-      _p._x = 0;
-      _p._y = 0;
       _w = 0;
       _h = 0;
    };
 
-   Rect(Point p, Coord w, Coord h)
+   Rect(Point p, Coord w, Coord h) : _p(p._x, p._y)
    {
-      _p._x = p._x;
-      _p._y = p._y;
       _w = w;
       _h = h;
    };
@@ -82,7 +78,7 @@ class GeistObject
 {
     public:
 
-        virtual ~ GeistObject();
+        virtual ~GeistObject();
 
         // defined in the base class, all objects have a name - can be
         // overridden in case a name change requires a rerender or something
@@ -90,7 +86,7 @@ class GeistObject
         {
            _name = name;
         };
-        virtual string get_name()
+        virtual string get_name() const
         {
            return _name;
         };
@@ -104,7 +100,7 @@ class GeistObject
         {
            throw eNoChildren();
         };
-        virtual GeistObject *get_parent()
+        virtual GeistObject *get_parent() const
         {
            return _parent;
         };
@@ -142,7 +138,7 @@ class GeistObject
            else
               throw eDisownedObject();
         };
-        virtual Rect get_rect()
+        virtual Rect get_rect() const
         {
            return _rect;
         };

@@ -28,9 +28,9 @@ GIBLIB_CFLAGS=`giblib-config --cflags`
 AC_SUBST(GIBLIB_LIBS)
 AC_SUBST(GIBLIB_CFLAGS)
 
-AC_PATH_GENERIC(xml, 2.0.0, [
-  AC_SUBST(XML_LIBS)
-  AC_SUBST(XML_CFLAGS) ],
+AC_PATH_GENERIC(xml2, 2.0.0, [
+  AC_SUBST(XML2_LIBS)
+  AC_SUBST(XML2_CFLAGS) ],
   AC_MSG_ERROR(Cannot find libXML: Is xml-config in the path?) )
 
 AC_CHECK_LIB(pr0n,huge_nekkid_pictures_of_pabs_mom, , [

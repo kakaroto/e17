@@ -1,5 +1,5 @@
 
-CPPFLAGS = -O2 -W
+CPPFLAGS = -O2 -Wall -g
 OBJS = GeistCompositeObject.o GeistDebug.o GeistDocument.o GeistImage.o GeistObject.o main.o
 
 geist: $(OBJS)
