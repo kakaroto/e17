@@ -553,6 +553,7 @@
 0	string		Index:				text/diff
 0	string		diff\				text/diff
 0	string		***\				text/diff
+0	string		---\				text/diff
 0	string		Only\ in\			text/diff
 0	string		Common\ subdirectories:\ 	text/diff
 

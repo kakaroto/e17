@@ -358,6 +358,9 @@ command_line(EfsdConnection *ec)
   char      *tok;
   int        num_options;
 
+  printf("> ");
+  fflush(stdout);
+
   while (fgets(s, 4096, stdin))
     {
       num_options = 0;
@@ -645,7 +648,14 @@ command_line(EfsdConnection *ec)
 		    printf("Couldn't issue stopmon command.\n");
 		}
 	    }
+	  else
+	    {
+	      printf("Invalid command.\n");
+	    }
 	}
+
+      printf("> ");
+      fflush(stdout);
     }
 }
 
