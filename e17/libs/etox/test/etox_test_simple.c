@@ -140,7 +140,8 @@ main(int argc, char *argv[])
   etox_resize(e, 380, 380);
   etox_set_font(e, "notepad", 10);
 
-  etox_style_add_path("./style/");
+  etox_style_add_path(PACKAGE_DATA_DIR"/etox/style");
+  etox_style_add_path("./style");
 
   s = etox_style_new("plain");
 
@@ -189,12 +190,10 @@ main(int argc, char *argv[])
     evas_show(evas, real_rect);
   }
 
-  /* render it! :) */
-  evas_render(evas);
+  e_event_loop();
 
   etox_free(e);
-
-  e_event_loop();
+  evas_free(evas);
 
   return 0;
 }
