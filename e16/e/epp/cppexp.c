@@ -41,12 +41,12 @@
 
 /* This is used for communicating lists of keywords with cccp.c.  */
 struct arglist
-  {
-     struct arglist     *next;
-     unsigned char             *name;
-     int                 length;
-     int                 argno;
-  };
+{
+   struct arglist     *next;
+   unsigned char      *name;
+   int                 length;
+   int                 argno;
+};
 
 /* Define a generic NULL if one hasn't already been defined.  */
 
@@ -128,13 +128,13 @@ static long         right_shift();
 /*#define UNSIGNEDP 16 */
 
 struct operation
-  {
-     short               op;
-     char                rprio;	/* Priority of op (relative to it right operand). */
-     char                flags;
-     char                unsignedp;	/* true if value should be treated as unsigned */
-     HOST_WIDE_INT       value;	/* The value logically "right" of op. */
-  };
+{
+   short               op;
+   char                rprio;	/* Priority of op (relative to it right operand). */
+   char                flags;
+   char                unsignedp;	/* true if value should be treated as unsigned */
+   HOST_WIDE_INT       value;	/* The value logically "right" of op. */
+};
 
 /* Take care of parsing a number (anything that starts with a digit).
  * LEN is the number of characters in it.  */
@@ -148,13 +148,13 @@ parse_number(pfile, start, olen)
      int                 olen;
 {
    struct operation    op;
-   char      *p = start;
-   int        c;
-   unsigned long n = 0, nd, ULONG_MAX_over_base;
-   int        base = 10;
-   int        len = olen;
-   int        overflow = 0;
-   int        digit, largest_digit = 0;
+   char               *p = start;
+   int                 c;
+   unsigned long       n = 0, nd, ULONG_MAX_over_base;
+   int                 base = 10;
+   int                 len = olen;
+   int                 overflow = 0;
+   int                 digit, largest_digit = 0;
    int                 spec_long = 0;
 
    op.unsignedp = 0;
@@ -240,7 +240,8 @@ parse_number(pfile, start, olen)
    if ((long)n < 0 && !op.unsignedp)
      {
 	if (base == 10)
-	   cpp_warning(pfile, "integer constant is so large that it is unsigned");
+	   cpp_warning(pfile,
+		       "integer constant is so large that it is unsigned");
 	op.unsignedp = 1;
      }
    op.value = n;
@@ -254,8 +255,7 @@ struct token
    int                 token;
 };
 
-static struct token tokentab2[] =
-{
+static struct token tokentab2[] = {
    {"&&", ANDAND},
    {"||", OROR},
    {"<<", LSH},
@@ -275,11 +275,11 @@ struct operation
 cpp_lex(pfile)
      cpp_reader         *pfile;
 {
-   int        c;
-   struct token *toktab;
+   int                 c;
+   struct token       *toktab;
    enum cpp_token      token;
    struct operation    op;
-   unsigned char             *tok_start, *tok_end;
+   unsigned char      *tok_start, *tok_end;
    int                 old_written;
 
  retry:
@@ -327,18 +327,20 @@ cpp_lex(pfile)
 	 * handles multicharacter constants and wide characters.
 	 * It is mostly copied from c-lex.c.  */
 	{
-	   int        result = 0;
-	   int        num_chars = 0;
+	   int                 result = 0;
+	   int                 num_chars = 0;
 	   unsigned            width = MAX_CHAR_TYPE_SIZE;
 	   int                 wide_flag = 0;
 	   int                 max_chars;
-	   unsigned char             *ptr = tok_start;
+	   unsigned char      *ptr = tok_start;
 
 #ifdef MULTIBYTE_CHARS
-	   char                token_buffer[MAX_LONG_TYPE_SIZE / MAX_CHAR_TYPE_SIZE + MB_CUR_MAX];
+	   char                token_buffer[MAX_LONG_TYPE_SIZE /
+					    MAX_CHAR_TYPE_SIZE + MB_CUR_MAX];
 
 #else
-	   char                token_buffer[MAX_LONG_TYPE_SIZE / MAX_CHAR_TYPE_SIZE + 1];
+	   char                token_buffer[MAX_LONG_TYPE_SIZE /
+					    MAX_CHAR_TYPE_SIZE + 1];
 
 #endif
 
@@ -367,7 +369,7 @@ cpp_lex(pfile)
 		     if (width < HOST_BITS_PER_INT
 			 && (unsigned)c >= (unsigned)(1 << width))
 			cpp_pedwarn(pfile,
-				"escape sequence out of range for character");
+				    "escape sequence out of range for character");
 		  }
 		num_chars++;
 
@@ -405,10 +407,13 @@ cpp_lex(pfile)
 			       sizeof("__CHAR_UNSIGNED__") - 1, -1)
 		    || ((result >> (num_bits - 1)) & 1) == 0)
 		   op.value
-		      = result & ((unsigned long)~0 >> (HOST_BITS_PER_LONG - num_bits));
+		      =
+		      result & ((unsigned long)~0 >>
+				(HOST_BITS_PER_LONG - num_bits));
 		else
-		   op.value
-		      = result | ~((unsigned long)~0 >> (HOST_BITS_PER_LONG - num_bits));
+		   op.value =
+		      result | ~((unsigned long)~0 >>
+				 (HOST_BITS_PER_LONG - num_bits));
 	     }
 	   else
 	     {
@@ -426,7 +431,8 @@ cpp_lex(pfile)
 		     if (mbtowc(&wc, token_buffer, num_chars) == num_chars)
 			result = wc;
 		     else
-			cpp_warning(pfile, "Ignoring invalid multibyte character");
+			cpp_warning(pfile,
+				    "Ignoring invalid multibyte character");
 		  }
 #endif
 		op.value = result;
@@ -456,7 +462,8 @@ cpp_lex(pfile)
 
 		  memset(buf, 0, 40);
 
-		  sprintf(buf, "`%s' not allowed in operand of `#if'", tok_start);
+		  sprintf(buf, "`%s' not allowed in operand of `#if'",
+			  tok_start);
 		  cpp_error(pfile, buf);
 		  free(buf);
 	       }
@@ -489,7 +496,7 @@ cpp_parse_escape(pfile, string_ptr)
      cpp_reader         *pfile;
      char              **string_ptr;
 {
-   int        c = *(*string_ptr)++;
+   int                 c = *(*string_ptr)++;
 
    switch (c)
      {
@@ -527,8 +534,8 @@ cpp_parse_escape(pfile, string_ptr)
      case '6':
      case '7':
 	{
-	   int        i = c - '0';
-	   int        count = 0;
+	   int                 i = c - '0';
+	   int                 count = 0;
 
 	   while (++count < 3)
 	     {
@@ -551,7 +558,7 @@ cpp_parse_escape(pfile, string_ptr)
 	}
      case 'x':
 	{
-	   unsigned   i = 0, overflow = 0, digits_found = 0, digit;
+	   unsigned            i = 0, overflow = 0, digits_found = 0, digit;
 
 	   for (;;)
 	     {
@@ -665,9 +672,9 @@ right_shift(pfile, a, unsignedp, b)
 /* Parse and evaluate a C expression, reading from PFILE.
  * Returns the value of the expression.  */
 
-HOST_WIDE_INT
-cpp_parse_expr(pfile)
-     cpp_reader         *pfile;
+HOST_WIDE_INT cpp_parse_expr(pfile)
+     cpp_reader         *
+	pfile;
 {
    /* The implementation is an operator precedence parser,
     * i.e. a bottom-up parser, using a stack for not-yet-reduced tokens.
@@ -683,7 +690,7 @@ cpp_parse_expr(pfile)
    struct operation    init_stack[INIT_STACK_SIZE];
    struct operation   *stack = init_stack;
    struct operation   *limit = stack + INIT_STACK_SIZE;
-   struct operation *top = stack;
+   struct operation   *top = stack;
    int                 lprio = 0, rprio = 0;
    int                 skip_evaluation = 0;
 
@@ -804,7 +811,8 @@ cpp_parse_expr(pfile)
 	while (top->rprio > lprio)
 	  {
 	     long                v1 = top[-1].value, v2 = top[0].value;
-	     int                 unsigned1 = top[-1].unsignedp, unsigned2 = top[0].unsignedp;
+	     int                 unsigned1 = top[-1].unsignedp, unsigned2 =
+		top[0].unsignedp;
 
 	     top--;
 	     if ((top[1].flags & LEFT_OPERAND_REQUIRED)
@@ -839,7 +847,7 @@ cpp_parse_expr(pfile)
 		    }
 		  break;
 	       case '-':
-		  if (skip_evaluation);		/* do nothing */
+		  if (skip_evaluation);	/* do nothing */
 		  else if (!(top->flags & HAVE_VALUE))
 		    {		/* Unary '-' */
 		       top->value = -v2;
@@ -1021,8 +1029,7 @@ cpp_parse_expr(pfile)
 	       case ')':
 		  if ((top[1].flags & HAVE_VALUE)
 		      || !(top[0].flags & HAVE_VALUE)
-		      || top[0].op != '('
-		      || (top[-1].flags & HAVE_VALUE))
+		      || top[0].op != '(' || (top[-1].flags & HAVE_VALUE))
 		    {
 		       cpp_error(pfile, "mismatched parentheses in #if");
 		       goto syntax_error;
@@ -1039,8 +1046,7 @@ cpp_parse_expr(pfile)
 		  fprintf(stderr,
 			  top[1].op >= ' ' && top[1].op <= '~'
 			  ? "unimplemented operator '%c'\n"
-			  : "unimplemented operator '\\%03o'\n",
-			  top[1].op);
+			  : "unimplemented operator '\\%03o'\n", top[1].op);
 	       }
 	  }
 	if (op.op == 0)
@@ -1065,7 +1071,7 @@ cpp_parse_expr(pfile)
 	     else
 	       {
 		  new_stack = (struct operation *)xmalloc(new_size);
-		  memcpy((char *)new_stack,(char *)stack, old_size);
+		  memcpy((char *)new_stack, (char *)stack, old_size);
 	       }
 	     stack = new_stack;
 	     top = (struct operation *)((char *)new_stack + old_size);

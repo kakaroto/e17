@@ -26,11 +26,11 @@
 #include "cpphash.h"
 
 static HASHNODE    *hashtab[HASHSIZE];
-HASHNODE           *cpp_lookup(struct parse_file *pfile, const unsigned char * name, int len,
-			       int hash);
+HASHNODE           *cpp_lookup(struct parse_file *pfile,
+			       const unsigned char *name, int len, int hash);
 void                delete_macro(HASHNODE * hp);
-HASHNODE           *install(unsigned char * name, int len, enum node_type type, int ivalue,
-			    char *value, int hash);
+HASHNODE           *install(unsigned char *name, int len, enum node_type type,
+			    int ivalue, char *value, int hash);
 
 /* Define a generic NULL if one hasn't already been defined.  */
 
@@ -53,7 +53,7 @@ HASHNODE           *install(unsigned char * name, int len, enum node_type type, 
 int
 hashf(const unsigned char *name, int len, int hashsize)
 {
-   int        r = 0;
+   int                 r = 0;
 
    while (len--)
       r = HASHSTEP(r, *name++);
@@ -72,10 +72,11 @@ hashf(const unsigned char *name, int len, int hashsize)
  * Otherwise, compute the hash code.
  */
 HASHNODE           *
-cpp_lookup(struct parse_file *pfile, const unsigned char *name, int len, int hash)
+cpp_lookup(struct parse_file * pfile, const unsigned char *name, int len,
+	   int hash)
 {
    const unsigned char *bp;
-   HASHNODE  *bucket;
+   HASHNODE           *bucket;
 
    pfile = NULL;
    if (len < 0)
@@ -157,16 +158,16 @@ delete_macro(hp)
  */
 HASHNODE           *
 install(name, len, type, ivalue, value, hash)
-     unsigned char             *name;
+     unsigned char      *name;
      int                 len;
      enum node_type      type;
      int                 ivalue;
      char               *value;
      int                 hash;
 {
-   HASHNODE  *hp;
-   int        i, bucket;
-   unsigned char    *p, *q;
+   HASHNODE           *hp;
+   int                 i, bucket;
+   unsigned char      *p, *q;
 
    if (len < 0)
      {
@@ -193,7 +194,7 @@ install(name, len, type, ivalue, value, hash)
       hp->value.ival = ivalue;
    else
       hp->value.cpval = value;
-   hp->name = ((unsigned char *) hp) + sizeof(HASHNODE);
+   hp->name = ((unsigned char *)hp) + sizeof(HASHNODE);
    p = hp->name;
    q = name;
    for (i = 0; i < len; i++)
@@ -206,7 +207,7 @@ void
 cpp_hash_cleanup(pfile)
      cpp_reader         *pfile;
 {
-   int        i;
+   int                 i;
 
    pfile = NULL;
    for (i = HASHSIZE; --i >= 0;)
