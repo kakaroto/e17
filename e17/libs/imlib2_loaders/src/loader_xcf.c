@@ -804,7 +804,6 @@ read_tiles_into_data(Tile* tiles, int num_cols, int width,
 			R_VAL(ptr) = image->cmap[*(ptr2) * 3];
 			G_VAL(ptr) = image->cmap[*(ptr2) * 3 + 1];
 			B_VAL(ptr) = image->cmap[*(ptr2) * 3 + 2];
-			printf("%i %i %i\n", R_VAL(ptr), G_VAL(ptr), B_VAL(ptr));
 			A_VAL(ptr) = 255;
 		      }
 		    /* else use colors themselves */
