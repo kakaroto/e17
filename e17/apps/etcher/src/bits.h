@@ -2,6 +2,8 @@
 #define BITS_H 1
 #include <Evas.h>
 
+#define EDITOR 1
+
 typedef struct _Ebits_Object * Ebits_Object;
 
 Ebits_Object ebits_load(char *file);
@@ -29,7 +31,9 @@ typedef struct _Ebits_Object_Bit_Description * Ebits_Object_Bit_Description;
 typedef struct _Ebits_Object_Bit_State * Ebits_Object_Bit_State;
 
 Ebits_Object ebits_new(void);
+#ifdef EDITOR
 void ebits_save(Ebits_Object o, char *file);
+#endif
 
 struct _Ebits_Object_Description
 {
@@ -55,6 +59,9 @@ struct _Ebits_Object_Bit_Description
       int l, r, t, b;
    } border;
    struct {
+      int w, h;
+   } tile;
+   struct {
       char *name;
       int x, y;
       double rx, ry;
@@ -62,11 +69,11 @@ struct _Ebits_Object_Bit_Description
    } rel1, rel2;
    struct {
       double w, h;
-   } aspect, align;
+   } align;
    struct {
       int x, y;
-   } step;
-   Evas_List *sync;   
+   } aspect, step;
+   Evas_List sync;   
 };
 
 struct _Ebits_Object_State
@@ -79,11 +86,19 @@ struct _Ebits_Object_State
 
 struct _Ebits_Object_Bit_State
 {
+   Ebits_Object                 o;
    Evas_Object                  object;
    Ebits_Object_Bit_Description description;
    int                          recalc;
    int                          calculated;
    double                       x, y, w, h;
+   int                          mouse_in;
+   int                          state;
+#ifdef EDITOR   
+   struct {
+      Imlib_Image                  image;
+   } normal, hilited, clicked, disabled;
+#endif   
 };
 
 struct _Ebits_Object

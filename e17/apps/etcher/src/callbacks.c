@@ -22,9 +22,12 @@ static Evas_Object o_logo = NULL;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
 static double backing_x, backing_y, backing_w, backing_h;
 static gint draft_mode = 1;
+static gint zoom_x, zoom_y;
+static gint need_zoom_draw = 0;
 
 static Ebits_Object bits = NULL;
 
+void zoom_redraw(int xx, int yy);
 static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
@@ -35,7 +38,62 @@ gint
 view_redraw(gpointer data)
 {
    evas_render(view_evas);
+   if (need_zoom_draw)
+      zoom_redraw(zoom_x, zoom_y);
    return FALSE;
+}
+
+void
+zoom_redraw(int xx, int yy)
+{
+   GtkWidget *zoom, *view;
+   GdkPixmap *pmap;
+   GdkGC *gc;
+   int x, y;
+   
+   view = gtk_object_get_data(GTK_OBJECT(main_win), "view");
+   zoom = gtk_object_get_data(GTK_OBJECT(main_win), "zoom");
+   gc = gdk_gc_new(view->window);
+   pmap = gdk_pixmap_new(view->window, zoom->allocation.width, 
+			 zoom->allocation.height, -1);
+   gdk_draw_rectangle(pmap, gc, 1, 0, 0, zoom->allocation.width, zoom->allocation.height);
+   for (y = 0; y < (zoom->allocation.height + 1) / 4; y++)
+     {
+	int i;
+	
+	for (i = 0; i < 4; i++)
+	  {
+	     gdk_window_copy_area(pmap, gc, 
+				  0, (y * 4) + i, 
+				  view->window,
+				  xx - ((zoom->allocation.width + 1) / 8),
+				  yy - ((zoom->allocation.height + 1) / 8) + y,
+				  (zoom->allocation.width + 1) / 4,
+				  1);
+	  }
+     }
+   for (x = ((zoom->allocation.width + 1) / 4) - 1; x >= 0; x--)
+     {
+	int i;
+	
+	for (i = 3; i >= 0; i--)
+	  {
+	     gdk_window_copy_area(pmap, gc, 
+				  (x * 4) + i, 0, 
+				  pmap,
+				  x, 0,
+				  1,
+				  zoom->allocation.height);
+	  }
+     }
+   gdk_window_copy_area(zoom->window, gc, 
+			0, 0, 
+			pmap,
+			0, 0,
+			zoom->allocation.width,
+			zoom->allocation.height);
+   gdk_pixmap_unref(pmap);
+   gdk_gc_destroy(gc);
 }
 
 static void
@@ -425,6 +483,9 @@ on_view_motion_notify_event            (GtkWidget       *widget,
                                         GdkEventMotion  *event,
                                         gpointer         user_data)
 {
+   zoom_x = event->x;
+   zoom_y = event->y;
+   need_zoom_draw = 1;
    if (o_pointer)
      {
 	evas_move(view_evas, o_pointer, event->x, event->y);
@@ -489,6 +550,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	int w, h;
 	
 	new_evas = 0;
+	gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
 	evas_set_output(view_evas, 
 			GDK_WINDOW_XDISPLAY(widget->window), 
 			GDK_WINDOW_XWINDOW(widget->window), 
@@ -588,8 +650,9 @@ on_zoom_configure_event                (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-
-  return FALSE;
+   need_zoom_draw = 1;
+   gtk_idle_add(view_redraw, NULL);
+   return FALSE;
 }
 
 
@@ -598,8 +661,9 @@ on_zoom_expose_event                   (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-
-  return FALSE;
+   need_zoom_draw = 1;
+   gtk_idle_add(view_redraw, NULL);
+   return FALSE;
 }
 
 
