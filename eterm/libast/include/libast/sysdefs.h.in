@@ -134,6 +134,9 @@
 #ifndef SIZEOF_SHORT
 #  define SIZEOF_SHORT 0
 #endif
+#ifndef WORDS_BIGENDIAN
+#  define WORDS_BIGENDIAN 0
+#endif
 
 /* Substitutes for some non-standard functions. */
 #ifndef HAVE_MEMMEM

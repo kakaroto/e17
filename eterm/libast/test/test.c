@@ -35,6 +35,7 @@ unsigned short tnum = 0;
 int test_macros(void);
 int test_mem(void);
 int test_strings(void);
+int test_hash_functions(void);
 int test_snprintf(void);
 int test_options(void);
 int test_obj(void);
@@ -214,6 +215,148 @@ test_strings(void)
     TEST_PASS();
 
     TEST_PASSED("string");
+    return 0;
+}
+
+#define HASHSTATE 1
+#define HASHLEN   1
+#define MAXPAIR 80
+#define MAXLEN 70
+int
+test_hash_functions(void)
+{
+    TEST_BEGIN("Jenkins hash functions");
+    {
+        spif_uint32_t buf[256];
+        spif_uint32_t i;
+        spif_uint32_t h = 0;
+
+        for (i = 0; i < 256; i++) {
+            h = jenkins_hash(buf, i, h);
+        }
+        TEST_FAIL_IF(h == 0);
+        for (i = 0; i < 256; i++) {
+            h = jenkins_hash32(buf, i, h);
+        }
+        TEST_FAIL_IF(h == 0);
+    }
+    {
+        spif_uint8_t qa[MAXLEN + 1], qb[MAXLEN + 2], *a = &qa[0], *b = &qb[1];
+        spif_uint32_t c[HASHSTATE], d[HASHSTATE], i, j = 0, k, l, m, z;
+        spif_uint32_t e[HASHSTATE], f[HASHSTATE], g[HASHSTATE], h[HASHSTATE];
+        spif_uint32_t x[HASHSTATE], y[HASHSTATE];
+        spif_uint32_t hlen;
+
+        /*printf("No more than %d trials should ever be needed\n", MAXPAIR / 2);*/
+        for (hlen = 0; hlen < MAXLEN; hlen++) {
+            z = 0;
+            for (i = 0; i < hlen; i++) {
+                /*----------------------- for each input byte, */
+                for (j = 0; j < 8; j++) {
+                    /*------------------------ for each input bit, */
+                    for (m = 1; m < 8; m++) {
+                        /*------------ for several possible seeds, */
+                        for (l = 0; l < HASHSTATE; l++)
+                            e[l] = f[l] = g[l] = h[l] = x[l] = y[l] = ~(SPIF_CAST(uint32) 0);
+
+                        /*---- check that every output bit is affected by that input bit */
+                        for (k = 0; k < MAXPAIR; k += 2) {
+                            spif_uint32_t finished = 1;
+
+                            /* keys have one bit different */
+                            for (l = 0; l < hlen + 1; l++) {
+                                a[l] = b[l] = (spif_uint8_t) 0;
+                            }
+                            /* have a and b be two keys differing in only one bit */
+                            a[i] ^= (k << j);
+                            a[i] ^= (k >> (8 - j));
+                            c[0] = jenkins_hash(a, hlen, m);
+                            b[i] ^= ((k + 1) << j);
+                            b[i] ^= ((k + 1) >> (8 - j));
+                            d[0] = jenkins_hash(b, hlen, m);
+                            /* check every bit is 1, 0, set, and not set at least once */
+                            for (l = 0; l < HASHSTATE; l++) {
+                                e[l] &= (c[l] ^ d[l]);
+                                f[l] &= ~(c[l] ^ d[l]);
+                                g[l] &= c[l];
+                                h[l] &= ~c[l];
+                                x[l] &= d[l];
+                                y[l] &= ~d[l];
+                                if (e[l] | f[l] | g[l] | h[l] | x[l] | y[l])
+                                    finished = 0;
+                            }
+                            if (finished)
+                                break;
+                        }
+                        if (k > z)
+                            z = k;
+                        if (k == MAXPAIR) {
+                            printf("Some bit didn't change: ");
+                            printf("%.8lx %.8lx %.8lx %.8lx %.8lx %.8lx  ", e[0], f[0], g[0], h[0], x[0], y[0]);
+                            printf("i %ld j %ld m %ld len %ld\n", i, j, m, hlen);
+                        }
+                        if (z == MAXPAIR)
+                            goto done;
+                    }
+                }
+            }
+        done:
+            if (z < MAXPAIR) {
+                printf("Mix success  %2ld bytes  %2ld seeds  ", i, m);
+                printf("required  %ld  trials\n", z / 2);
+            }
+        }
+        printf("\n");
+    }
+    {
+        spif_uint8_t buf[MAXLEN + 20], *b;
+        spif_uint32_t len;
+        spif_uint8_t q[] = "This is the time for all good men to come to the aid of their country";
+        spif_uint8_t qq[] = "xThis is the time for all good men to come to the aid of their country";
+        spif_uint8_t qqq[] = "xxThis is the time for all good men to come to the aid of their country";
+        spif_uint8_t qqqq[] = "xxxThis is the time for all good men to come to the aid of their country";
+        spif_uint32_t h, i, j, ref, x, y;
+
+        printf("Endianness.  These should all be the same:\n");
+        printf("%.8lx\n", jenkins_hash(q, sizeof(q) - 1, SPIF_CAST(uint32) 0));
+        printf("%.8lx\n", jenkins_hash(qq + 1, sizeof(q) - 1, SPIF_CAST(uint32) 0));
+        printf("%.8lx\n", jenkins_hash(qqq + 2, sizeof(q) - 1, SPIF_CAST(uint32) 0));
+        printf("%.8lx\n", jenkins_hash(qqqq + 3, sizeof(q) - 1, SPIF_CAST(uint32) 0));
+        printf("\n");
+        for (h = 0, b = buf + 1; h < 8; h++, b++) {
+            for (i = 0; i < MAXLEN; i++) {
+                len = i;
+                for (j = 0; j < i; j++)
+                    *(b + j) = 0;
+
+                /* these should all be equal */
+                ref = jenkins_hash(b, len, SPIF_CAST(uint32) 1);
+                *(b + i) = (spif_uint8_t) ~ 0;
+                *(b - 1) = (spif_uint8_t) ~ 0;
+                x = jenkins_hash(b, len, SPIF_CAST(uint32) 1);
+                y = jenkins_hash(b, len, SPIF_CAST(uint32) 1);
+                if ((ref != x) || (ref != y)) {
+                    printf("alignment error: %.8lx %.8lx %.8lx %ld %ld\n", ref, x, y, h, i);
+                }
+            }
+        }
+    }
+    {
+        spif_uint8_t buf[1];
+        spif_uint32_t h, i, state[HASHSTATE];
+
+
+        buf[0] = ~0;
+        for (i = 0; i < HASHSTATE; i++)
+            state[i] = 1;
+        printf("These should all be different\n");
+        for (i = 0, h = 0; i < 8; i++) {
+            h = jenkins_hash(buf, SPIF_CAST(uint32) 0, h);
+            printf("%2ld  0-byte strings, hash is  %.8lx\n", i, h);
+        }
+    }
+
+    TEST_PASSED("hash functions");
     return 0;
 }
 
@@ -1630,6 +1773,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_strings()) != 0) {
+        return ret;
+    }
+    if ((ret = test_hash_functions()) != 0) {
         return ret;
     }
     if ((ret = test_snprintf()) != 0) {

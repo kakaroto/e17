@@ -549,3 +549,7 @@ Step #1:  Update copyright statements.
 Step #2:  ???
 Step #3:  Profit.
 ----------------------------------------------------------------------
+Wed Jan 21 18:19:49 2004                        Michael Jennings (mej)
+
+Adding hash functions in preparation for a hash table implementation.
+----------------------------------------------------------------------

@@ -2570,6 +2570,71 @@ typedef struct spifopt_settings_t_struct {
 extern spifopt_settings_t spifopt_settings;
 
 
+/******************************* HASHING GOOP *********************************/
+
+/**
+ * @name Jenkins Hash
+ *
+ * Bob Jenkins' hash algorithm as published in December 1996.  Public
+ * domain.  See http://burtleburtle.net/bob/hash/
+ */
+/*@{*/
+/**
+ * Calculate number of hash buckets needed for an n-bit hash key.
+ *
+ * This macro returns the number of hash buckets needed for a hash key
+ * of n distinct bits.  Choose n based on your tolerable level of
+ * collisions, on average, for 2^n key values.
+ *
+ * @param n The number of bits.
+ * @return  Number of hash buckets required.
+ *
+ */
+#define JENKINS_HASH_SIZE(n)       (SPIF_CAST(uint32) (1UL << (n)))
+
+/**
+ * Calculate mask to apply to hash key to get lowest n bits.
+ *
+ * This macro returns the bitmask needed for a hash key of n distinct
+ * bits.  Choose n based on your tolerable level of collisions, on
+ * average, for 2^n key values.
+ *
+ * @param n The number of bits.
+ * @return  Bitmask to zero out all but the n lowest bits.
+ *
+ */
+#define JENKINS_HASH_MASK(n)       (SPIF_CAST(uint32) (JENKINS_HASH_SIZE(n) - 1))
+
+/**
+ * Mix 3 32-bit integer values in a reproducible, reversible manner.
+ *
+ * This macro is used by the Jenkins hash algorithm to shuffle bits of
+ * three integers in such a way as to make sure that changes are
+ * propogated throughout the values.
+ *
+ * Instructions are arranged in such a way as to be parallizable;
+ * i.e., excluding the first two instructions, each subsequent pair of
+ * instructions may be evaluated simultaneously for pipelining
+ * purposes.
+ *
+ * @param a A 32-bit integer.
+ * @param b A 32-bit integer.
+ * @param c A 32-bit integer.
+ */
+#define JENKINS_MIX(a,b,c) \
+{ \
+    a -= b; a -= c; a ^= (c>>13); \
+    b -= c; b -= a; b ^= (a<<8);  \
+    c -= a; c -= b; c ^= (b>>13); \
+    a -= b; a -= c; a ^= (c>>12); \
+    b -= c; b -= a; b ^= (a<<16); \
+    c -= a; c -= b; c ^= (b>>5);  \
+    a -= b; a -= c; a ^= (c>>3);  \
+    b -= c; b -= a; b ^= (a<<10); \
+    c -= a; c -= b; c ^= (b>>15); \
+}
+/*@}*/
+
 
 
 /******************************** PROTOTYPES **********************************/
@@ -2657,6 +2722,15 @@ extern char *strrev(char *);
 #endif
 #if !(HAVE_STRSEP)
 extern char *strsep(char **, char *);
+#endif
+
+/* builtin_hashes.c */
+spif_uint32_t jenkins_hash(register spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
+spif_uint32_t jenkins_hash32(register spif_uint32_t *key, register spif_uint32_t length, register spif_uint32_t seed);
+#if WORDS_BIGENDIAN
+#  define jenkins_hashLE(k, l, s)  jenkins_hash((k), (l), (s))
+#else
+spif_uint32_t jenkins_hashLE(register spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
 #endif
 
 /* conf.c */
