@@ -8,6 +8,7 @@ mkdir $HOME/.ewl/personal
 ./ewldbtool $HOME/.ewl/preferences "theme" "defaultTheme"
 ./ewldbtool $HOME/.ewl/preferences "render/dithered" "false"
 ./ewldbtool $HOME/.ewl/preferences "render/antialiased" "false"
+./ewldbtool $HOME/.ewl/preferences "render/method" "alpha_software"
 
 
 # create a defaultTheme directory

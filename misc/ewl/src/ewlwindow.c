@@ -576,7 +576,14 @@ EwlBool  ewl_window_handle_configure(EwlWidget *widget,
 		                 widget->padding[EWL_PAD_RIGHT]),
 		        height - (widget->padding[EWL_PAD_TOP] + 
 		                  widget->padding[EWL_PAD_BOTTOM]));
-		evas_show(window->evas, widget->evas_object);
+		evas_set_image_fill(window->evas, widget->evas_object, 
+		                    /*x +*/ widget->padding[EWL_PAD_LEFT],
+		                    /*y +*/ widget->padding[EWL_PAD_TOP],
+		                    width - (widget->padding[EWL_PAD_LEFT] +
+		                             widget->padding[EWL_PAD_RIGHT]),
+		                    height - (widget->padding[EWL_PAD_TOP] + 
+		                              widget->padding[EWL_PAD_BOTTOM]));
+		/*evas_show(window->evas, widget->evas_object);*/
 
 		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
 		ewl_container_resize_children(widget);
@@ -598,6 +605,9 @@ EwlBool  ewl_window_handle_expose(EwlWidget *widget,
 	} else if (!eev) {
 		ewl_debug("ewl_window_handle_expose", EWL_NULL_ERROR, "eev");
 	} else {
+		fprintf(stderr,"ewl_window_handle_expose(): window 0x%08x, rect = ",
+		        (unsigned int) window);
+		ewl_rect_dump(eev->rect);
 		evas_update_rect(window->evas,
 		                 eev->rect->x, eev->rect->y,
 		                 eev->rect->w, eev->rect->h);
@@ -623,14 +633,18 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 	} else {
 		fprintf(stderr, "realizing window 0x%08x\n", (unsigned int)win);
 
+		win->evas = evas_new();
+		evas_set_output_method(win->evas, ewl_get_render_method());
 		win->screen = ScreenOfDisplay(ewl_get_display(),
 		                              DefaultScreen(ewl_get_display()));
-		win->vis = DefaultVisual(ewl_get_display(),
-		                         DefaultScreen(ewl_get_display()));
+		/*win->vis = DefaultVisual(ewl_get_display(),
+		                         DefaultScreen(ewl_get_display()));*/
+		win->vis = evas_get_optimal_visual(win->evas, ewl_get_display());
 		win->depth = DefaultDepth(ewl_get_display(),
 		                          DefaultScreen(ewl_get_display()));
-		win->cm = DefaultColormap(ewl_get_display(),
-		                          DefaultScreen(ewl_get_display()));
+		/*win->cm = DefaultColormap(ewl_get_display(),
+		                          DefaultScreen(ewl_get_display()));*/
+		win->cm = evas_get_optimal_colormap(win->evas, ewl_get_display());
 		win->root = RootWindow(ewl_get_display(),
 		                       DefaultScreen(ewl_get_display()));
 		/*wid->root = DefaultRootWindow(ewl_get_display());*/
@@ -679,8 +693,8 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		                          widget->layout->req->h,
 		                          0, win->depth,
 		                          InputOutput, win->vis,
-		                          CWOverrideRedirect | CWSaveUnder |
-		                          CWBackingStore | CWColormap |
+		                          /* CWOverrideRedirect | CWSaveUnder |
+		                          CWBackingStore |*/  CWColormap |
 		                          CWBackPixel | CWBorderPixel |
 		                          CWEventMask, &win->attr);
 
@@ -712,10 +726,9 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 
 		w = widget->layout->req->w;
 		h = widget->layout->req->h;
-		win->evas = evas_new();
+		fprintf(stderr,"win->evas = %08x\n", (unsigned int) win->evas);
 		evas_set_output(win->evas, ewl_get_display(),
 		                win->xwin, win->vis, win->cm);
-		evas_set_output_method(win->evas, ewl_get_render_method());
 		evas_set_output_size(win->evas, w, h);
 		evas_set_output_viewport(win->evas, 0, 0, w, h);
 
@@ -738,7 +751,14 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 			                 widget->padding[EWL_PAD_RIGHT]),
 			            h - (widget->padding[EWL_PAD_TOP] + 
 			                 widget->padding[EWL_PAD_BOTTOM]));
-			evas_set_pass_events(win->evas, widget->evas_object, TRUE);
+			evas_set_image_fill(win->evas, widget->evas_object, 
+			                    /*x +*/ widget->padding[EWL_PAD_LEFT],
+			                    /*y +*/ widget->padding[EWL_PAD_TOP],
+			                    w - (widget->padding[EWL_PAD_LEFT] +
+			                         widget->padding[EWL_PAD_RIGHT]),
+			                    h - (widget->padding[EWL_PAD_TOP] + 
+			                         widget->padding[EWL_PAD_BOTTOM]));
+			/*evas_set_pass_events(win->evas, widget->evas_object, TRUE);*/
 			evas_show(win->evas, widget->evas_object);
 			fprintf(stderr,"/EwlWindow/background loaded okay\n");
 		}

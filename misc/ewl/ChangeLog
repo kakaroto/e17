@@ -996,3 +996,19 @@ works right.
 
 
 
+-----
+20000905-1512-PDT, pabs
+
+- okey now it renders the window, you'll have to either rerun the 
+create_user_preferences.sh script in ewl/src/ or manually set the
+"render/method" key in $HOME/.ewl/preferences.db to alpha_software
+in order to get hte warning to go away (if it doesn't find a 
+rendering method, ewl will just fall back to software).  To use
+hardware acceleration, just do this:
+
+  ewldbtool ~/.ewl/preferences "render/method" "3D_Hardware"
+  (the key is case-sensitive but the value itself is not)
+
+- there's still a little bit of garbage int he rendering.. gonna look
+in to that (it's either evas or ewl... not sure yet).
+
