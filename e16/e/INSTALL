@@ -248,9 +248,6 @@ with --enable-hints-ewmh (default).
 For compatibility with GNOME versions prior to 2.0, configure with 
 --enable-hints-gnome and read the section about GNOME below.
 
-For compatibility with KDE versions prior to 2.0, configure with 
---enable-hints-kde and read the section about KDE below.
-
 
 Setting Up Enlightenment To Work with GNOME versions prior to 2.0
 =================================================================
@@ -280,23 +277,4 @@ instead of running gnome-session.  You can start "panel" and "gmc" by hand and
 have enlightenment relaunch them as the preferred launch method.  To do this,
 once you have launched them by hand, alt-rightclick on them, select "Remember"
 and then choose "Restart Application on Login".
-
-Setting Up Enlightenment To Work with KDE versions prior to 2.0
-===============================================================
-
-By default, Enlightenment does not support the KDE hints.  You can turn them
-on easily through your settings menus, however.  If you want to add support
-automatically upon launch (which can be disabled by the autosaved user
-configuration) then copy the control.kde.cfg to the ~/.enlightenment directory
-and rename it to control.cfg.  If you are doing this after launching
-enlightenment for the first time, you will want to remove the line from your
-~/.enlightenment/...e_session.XXXXXX file that looks like:
-1366 0
-simply remove that line and start up enlightenment again.
-If your "KDE Support" settings panel still show KDE support turned on, then
-you can simply check the box there, and KDE support will remain on.
-You can launch kpanel and/or kfm from your .xsession or .xinitrc files and
-they will work correctly.  If you want to edit the startkde script
-(system-wide configuration change) find the line that contains kwm and replace
-it with /path/to/enlightenment.
 

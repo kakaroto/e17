@@ -999,11 +999,6 @@ HandleDestroy(XEvent * ev)
 
    mode.context_win = win;
 
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_RemoveModule(win);
-#endif
-
    if (ewin)
      {
 	Pager              *p;
@@ -1089,6 +1084,7 @@ HandleProperty(XEvent * ev)
 	Pixmap              pm;
 
 	GrabX();
+
 	pm = ewin->client.icon_pmap;
 	if (ewin->client.title)
 	   strncpy(title, ewin->client.title, 10240);
@@ -1103,20 +1099,14 @@ HandleProperty(XEvent * ev)
 	ICCCM_GetGeoms(ewin, ev->xproperty.atom);
 	SessionGetInfo(ewin, ev->xproperty.atom);
 	SyncBorderToEwin(ewin);
-#if ENABLE_KDE
-	if (mode.kde_support)
-	   KDE_ClientChange(win, ev->xproperty.atom);
-#endif
+
 	if (ewin->client.title)
 	   if (strncmp(title, ewin->client.title, 10240))
 	     {
 		UpdateBorderInfo(ewin);
 		CalcEwinSizes(ewin);
-#if ENABLE_KDE
-		if (mode.kde_support)
-		   KDE_UpdateClient(ewin);
-#endif
 	     }
+
 	if ((ewin->iconified) && (pm != ewin->client.icon_pmap))
 	  {
 	     Iconbox           **ib;
@@ -1147,19 +1137,8 @@ HandleProperty(XEvent * ev)
    else if (win == root.win)
      {
 	/* we're in the root window, not in a client */
-#if ENABLE_KDE
-	if (mode.kde_support)
-	  {
-	     KDE_HintChange(ev->xproperty.atom);
-	  }
-#endif
      }
-#if ENABLE_KDE
-   else if (mode.kde_support)
-     {
-	KDE_ClientChange(win, ev->xproperty.atom);
-     }
-#endif
+
    EDBUG_RETURN_;
 }
 
@@ -1474,17 +1453,8 @@ HandleMapRequest(XEvent * ev)
      {
 	AddToFamily(ev->xmap.window);
 	HintsSetClientList();
-#if ENABLE_KDE
-	if (mode.kde_support)
-	  {
-	     EWin               *ewin;
-
-	     ewin =
-		FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     KDE_NewWindow(ewin);
-	  }
-#endif
      }
+
    EDBUG_RETURN_;
 }
 

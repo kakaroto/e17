@@ -1,6 +1,6 @@
 SUBDIRS = themes
 
-EXTRA_DIST = README ChangeLog ewmh.c gnome.c kde.c
+EXTRA_DIST = README ChangeLog ewmh.c gnome.c
 
 bin_PROGRAMS = enlightenment
 
@@ -9,9 +9,6 @@ SRCS_EWMH = ewmh.c
 endif
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c            
-endif
-if ENABLE_KDE
-SRCS_KDE = kde.c
 endif
 enlightenment_SOURCES = \
 	E.h			\

@@ -304,12 +304,6 @@ main(int argc, char **argv)
      }
    HintsSetClientList();
 
-#if ENABLE_KDE
-   /* start up any kde crap we might need to start up */
-   if (mode.kde_support)
-      KDE_Init();
-#endif
-
    /* sync just to make sure */
    XSync(disp, False);
    queue_up = DRAW_QUEUE_ENABLE;

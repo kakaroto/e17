@@ -1471,57 +1471,10 @@ doCleanup(void *params)
 	       }
 	     Efree(blst);
 	  }
-#if ENABLE_KDE
-	if (mode.kde_support)
-	  {
-	     fixed = Erealloc(fixed, sizeof(RectBox) * (k + 2));
-	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k + 2));
 
-	     fixed[k].data = NULL;
-	     fixed[k].p = 50;
-	     fixed[k].x = 0;
-	     fixed[k].y = 0;
-	     if (mode.kde_y1 == 0)
-	       {
-		  fixed[k].w = mode.kde_x1;
-	       }
-	     else
-	       {
-		  fixed[k].w = root.w;
-	       }
-	     if (mode.kde_x1 == 0)
-	       {
-		  fixed[k].h = mode.kde_y1;
-	       }
-	     else
-	       {
-		  fixed[k].h = root.h;
-	       }
-	     k++;
-
-	     fixed[k].data = NULL;
-	     if ((mode.kde_x2 == root.w) && (mode.kde_y2 < root.h))
-		fixed[k].x = 0;
-	     else
-		fixed[k].x = mode.kde_x2;
-	     fixed[k].w = mode.kde_x2 - root.w;
-	     if (mode.kde_x2 < root.w)
-	       {
-		  fixed[k].y = 0;
-		  fixed[k].h = root.h;
-	       }
-	     else
-	       {
-		  fixed[k].y = mode.kde_y2;
-		  fixed[k].h = mode.kde_y2 - root.h;
-	       }
-	     fixed[k].p = 50;
-	     k++;
-
-	  }
-#endif
 	ArrangeRects(fixed, k, floating, j, ret, 0, 0, root.w, root.h, method,
 		     0);
+
 	for (i = 0; i < (j + k); i++)
 	  {
 	     if (ret[i].data)
@@ -3419,10 +3372,6 @@ doConfigure(void *params)
 	   SettingsAutoRaise();
 	else if (!strcmp(s, "tooltips"))
 	   SettingsTooltips();
-#if ENABLE_KDE
-	else if (!strcmp(s, "kde"))
-	   SettingsKDE();
-#endif
 	else if (!strcmp(s, "audio"))
 	   SettingsAudio();
 	else if (!strcmp(s, "fx"))

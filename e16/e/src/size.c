@@ -94,20 +94,6 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 	x2 += x1;
 	y2 += y1;
 
-#if ENABLE_KDE
-	if (mode.kde_support)
-	  {
-	     if (x1 < mode.kde_x1)
-		x1 = mode.kde_x1;
-	     if (x2 > mode.kde_x2)
-		x2 = mode.kde_x2;
-	     if (y1 < mode.kde_y1)
-		y1 = mode.kde_y1;
-	     if (y2 > mode.kde_y2)
-		y2 = mode.kde_y2;
-	  }
-#endif
-
 	if (type == MAX_ABSOLUTE)
 	  {
 	     /* Simply ignore all windows */
@@ -182,10 +168,6 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
    ewin->toggle = 1;
 
  exit:;
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
-#endif
 }
 
 void

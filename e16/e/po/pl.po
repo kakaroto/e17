@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-10-25 14:52+0200\n"
+"POT-Creation-Date: 2003-11-08 02:05+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2241 src/buttons.c:125 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2238 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:88
 #: src/tooltips.c:970
 #, c-format
@@ -113,16 +113,16 @@ msgstr ""
 "Nie mo¿na uruchomiæ programu.\n"
 "Ten plik nie jest plikiem zwyk³ym.\n"
 
-#: src/actions.c:3271
+#: src/actions.c:3224
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "O Enlightenment %s"
 
-#: src/actions.c:3287
+#: src/actions.c:3240
 msgid "Welcome to the "
 msgstr "Witamy w "
 
-#: src/actions.c:3287
+#: src/actions.c:3240
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -136,7 +136,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3297
+#: src/actions.c:3250
 msgid ""
 "\n"
 "\n"
@@ -146,21 +146,21 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3302 src/dialog.c:303 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3255 src/dialog.c:303 src/groups.c:693 src/settings.c:329
 #: src/settings.c:602 src/settings.c:974 src/settings.c:1182
 #: src/settings.c:1419 src/settings.c:1563 src/settings.c:1666
-#: src/settings.c:1774 src/settings.c:1858 src/settings.c:1939
-#: src/settings.c:2030 src/settings.c:2485 src/settings.c:3891
-#: src/settings.c:4247 src/settings.c:4550 src/settings.c:4728
-#: src/settings.c:4948 src/snaps.c:551 src/sound.c:262
+#: src/settings.c:1774 src/settings.c:1854 src/settings.c:1945
+#: src/settings.c:2400 src/settings.c:3806 src/settings.c:4162
+#: src/settings.c:4465 src/settings.c:4643 src/settings.c:4863 src/snaps.c:551
+#: src/sound.c:262
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3458
+#: src/actions.c:3407
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Wybierz grupê, do której bêdzie nale¿eæ okno:\n"
 
-#: src/actions.c:3813
+#: src/actions.c:3762
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -180,23 +180,23 @@ msgstr ""
 "  Wybierz inn± grupê, do której bêdzie nale¿eæ okno:  \n"
 "\n"
 
-#: src/actions.c:3846
+#: src/actions.c:3795
 msgid "   Select the group to remove the window from.  "
 msgstr "   Wybierz grupê, z której mam usun±æ okno.  "
 
-#: src/actions.c:3870
+#: src/actions.c:3819
 msgid "  Select the group to break  "
 msgstr "  Wybierz grupê, któr± mam rozbiæ  "
 
-#: src/actions.c:3898
+#: src/actions.c:3847
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Ostrze¿ono Ciê przed niebezpieczeñstwami trybu Powiêkszenia \n"
 
-#: src/actions.c:3901
+#: src/actions.c:3850
 msgid "Warning !!!"
 msgstr "Ostrze¿enie !"
 
-#: src/actions.c:3902
+#: src/actions.c:3851
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -241,7 +241,7 @@ msgstr "Uruchom ponownie"
 msgid "Exit"
 msgstr "Wyj¶cie"
 
-#: src/borders.c:2243
+#: src/borders.c:2240
 msgid "Border Error!"
 msgstr "B³±d sekcji Border"
 
@@ -274,20 +274,20 @@ msgstr ""
 msgid "E IPC Error"
 msgstr "B³±d Enlightenment IPC"
 
-#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:881
-#: src/config.c:998 src/config.c:1239 src/config.c:1367 src/config.c:1472
-#: src/config.c:1688 src/config.c:1936 src/config.c:2008 src/config.c:2103
-#: src/config.c:2361 src/config.c:2578 src/config.c:2842 src/config.c:2935
-#: src/config.c:2969 src/config.c:3118 src/config.c:3353
+#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:880
+#: src/config.c:997 src/config.c:1238 src/config.c:1366 src/config.c:1471
+#: src/config.c:1687 src/config.c:1935 src/config.c:2007 src/config.c:2102
+#: src/config.c:2360 src/config.c:2577 src/config.c:2841 src/config.c:2934
+#: src/config.c:2968 src/config.c:3117 src/config.c:3352
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "Konfiguracja : pomijam nadmiarowe dane w \"%s\"\n"
 
-#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:887
-#: src/config.c:1004 src/config.c:1245 src/config.c:1373 src/config.c:1480
-#: src/config.c:1696 src/config.c:1942 src/config.c:2014 src/config.c:2111
-#: src/config.c:2367 src/config.c:2586 src/config.c:2848 src/config.c:3124
-#: src/config.c:3361
+#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:886
+#: src/config.c:1003 src/config.c:1244 src/config.c:1372 src/config.c:1479
+#: src/config.c:1695 src/config.c:1941 src/config.c:2013 src/config.c:2110
+#: src/config.c:2366 src/config.c:2585 src/config.c:2847 src/config.c:3123
+#: src/config.c:3360
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "Konfiguracja : Brak wymaganych danych w \"%s\"\n"
@@ -321,7 +321,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Slideout. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:848
+#: src/config.c:847
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -334,7 +334,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:855
+#: src/config.c:854
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
@@ -342,7 +342,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Control. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:965 src/config.c:1198
+#: src/config.c:964 src/config.c:1197
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
@@ -350,7 +350,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Menu. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:1335
+#: src/config.c:1334
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
@@ -358,7 +358,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji BorderPart. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:1425
+#: src/config.c:1424
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
@@ -366,7 +366,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Main Border. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:1644
+#: src/config.c:1643
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
@@ -374,7 +374,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Button. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:1900 src/config.c:1983
+#: src/config.c:1899 src/config.c:1982
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -382,11 +382,11 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Desktop. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:1995
+#: src/config.c:1994
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Easter Egg!  Funckcja Iconbox nie jest jeszcze zaimplementowana.\n"
 
-#: src/config.c:2026
+#: src/config.c:2025
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -394,7 +394,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Iconbox. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:2062
+#: src/config.c:2061
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -402,7 +402,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Sound. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:2316
+#: src/config.c:2315
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -415,7 +415,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:2331
+#: src/config.c:2330
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -423,7 +423,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Action Class. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:2530
+#: src/config.c:2529
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -436,7 +436,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:2538
+#: src/config.c:2537
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -444,7 +444,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji ImageClass. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:2778
+#: src/config.c:2777
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -457,7 +457,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:2803
+#: src/config.c:2802
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -467,7 +467,7 @@ msgstr ""
 "zakoñczono ³adowanie sekcji ColorModifier.\n"
 "Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:2895
+#: src/config.c:2894
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -480,7 +480,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:2903
+#: src/config.c:2902
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -488,7 +488,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Tooltip. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:2942
+#: src/config.c:2941
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -496,7 +496,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji FX. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:3033
+#: src/config.c:3032
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -509,7 +509,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:3042
+#: src/config.c:3041
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -517,7 +517,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Iconbox. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:3079
+#: src/config.c:3078
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -530,7 +530,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:3088
+#: src/config.c:3087
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -538,7 +538,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji Extras. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:3195
+#: src/config.c:3194
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -551,7 +551,7 @@ msgstr ""
 "%s\n"
 "Zignorujê to i bêdê kontynuowaæ...\n"
 
-#: src/config.c:3203
+#: src/config.c:3202
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -559,7 +559,7 @@ msgstr ""
 "Ostrze¿enie:  Wydaje siê, ¿e konfiguracja urwa³a siê zanim\n"
 "zakoñczono ³adowanie sekcji WindowMatch. Wynik pewnie nie jest dobry.\n"
 
-#: src/config.c:3239
+#: src/config.c:3238
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -575,23 +575,23 @@ msgstr ""
 "Powodem jest prawdopodobnie albo to, ¿e program nie istnieje\n"
 "albo to, ¿e nie masz do niego praw wykonywania.\n"
 
-#: src/config.c:3244
+#: src/config.c:3243
 msgid "error"
 msgstr "b³±d"
 
-#: src/config.c:3370
+#: src/config.c:3369
 msgid "Theme versioning ERROR"
 msgstr "B³±d w wersji wystroju."
 
-#: src/config.c:3371 src/config.c:3401
+#: src/config.c:3370 src/config.c:3400
 msgid "Restart with Defaults"
 msgstr "Uruchom ponownie z warto¶ciami domy¶lnymi."
 
-#: src/config.c:3372 src/config.c:3402
+#: src/config.c:3371 src/config.c:3401
 msgid "Abort and Exit"
 msgstr "Zaniechaj i Wyjd¼"
 
-#: src/config.c:3374
+#: src/config.c:3373
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -628,11 +628,11 @@ msgstr ""
 "za¶ ten wystrój korzysta z nowych funckji wprowadzonych\n"
 "w nowych wersjach Enlightenment.\n"
 
-#: src/config.c:3400
+#: src/config.c:3399
 msgid "User Config Version ERROR"
 msgstr "B³±d wersji konfiguracji u¿ytkownika"
 
-#: src/config.c:3404
+#: src/config.c:3403
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -661,7 +661,7 @@ msgstr ""
 "ustawieniami. Mo¿esz potem bezpiecznie dostosowaæ\n"
 "ustawienia do swoich potrzeb.\n"
 
-#: src/config.c:3693
+#: src/config.c:3692
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -676,7 +676,7 @@ msgstr ""
 "Mo¿e byæ to spowodowane brakiem miejsca na dysku\n"
 "przekroczeniem quoty lub prawami dostêpu.\n"
 
-#: src/config.c:3702
+#: src/config.c:3701
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -725,27 +725,27 @@ msgstr ""
 "informacje mo¿esz znale¼æ w dokumentacji, która zosta³a\n"
 "dostarczona wraz z Enlightenment.\n"
 
-#: src/config.c:3769
+#: src/config.c:3768
 msgid "Enlightenment Starting..."
 msgstr "Uruchamianie Enlightenment..."
 
-#: src/config.c:4208
+#: src/config.c:4204
 msgid "Recover system config?"
 msgstr "Odtworzyæ konfiguracjê systemu?"
 
-#: src/config.c:4208
+#: src/config.c:4204
 msgid "Yes, Attempt recovery"
 msgstr "Tak, spróbuj odtworzyæ"
 
-#: src/config.c:4209
+#: src/config.c:4205
 msgid "Restart and try again"
 msgstr "Uruchom ponownie i spróbuj jeszcze raz"
 
-#: src/config.c:4209
+#: src/config.c:4205
 msgid "Quit and give up"
 msgstr ""
 
-#: src/config.c:4211
+#: src/config.c:4207
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1010,7 +1010,7 @@ msgstr ""
 "byc cz³onkami grup. Nie mo¿esz dodawaæ tych okien\n"
 "do grup\n"
 
-#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4370
+#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4285
 msgid "Window Group Error"
 msgstr "B³±d Grup Okien"
 
@@ -1067,9 +1067,9 @@ msgstr ""
 #: src/groups.c:694 src/pager.c:1283 src/settings.c:331 src/settings.c:604
 #: src/settings.c:976 src/settings.c:1184 src/settings.c:1421
 #: src/settings.c:1565 src/settings.c:1668 src/settings.c:1776
-#: src/settings.c:1860 src/settings.c:1941 src/settings.c:2032
-#: src/settings.c:2487 src/settings.c:3893 src/settings.c:4249
-#: src/settings.c:4552 src/settings.c:4730 src/settings.c:4950 src/snaps.c:553
+#: src/settings.c:1856 src/settings.c:1947 src/settings.c:2402
+#: src/settings.c:3808 src/settings.c:4164 src/settings.c:4467
+#: src/settings.c:4645 src/settings.c:4865 src/snaps.c:553
 msgid "Close"
 msgstr "Zamknij"
 
@@ -1203,7 +1203,7 @@ msgstr ""
 "\n"
 "Istnieje mo¿liwo¶æ b³êdnej modyfikacji plików.\n"
 
-#: src/handlers.c:205 src/session.c:1171
+#: src/handlers.c:205 src/session.c:1161
 msgid "Are you sure?"
 msgstr "Na pewno?"
 
@@ -1253,15 +1253,15 @@ msgstr "Zamknij Pude³ko na Ikony"
 msgid "Create New Iconbox"
 msgstr "Stwórz nowe Pude³ko na Ikony"
 
-#: src/ipc.c:2249
+#: src/ipc.c:2193
 msgid "Message"
 msgstr "Wiadomo¶æ"
 
-#: src/ipc.c:4686
+#: src/ipc.c:4630
 msgid "Enlightenment IPC Commands Help"
 msgstr "Pomoc dla komend Enlightenmnet IPC"
 
-#: src/ipc.c:4690 src/ipc.c:4720
+#: src/ipc.c:4634 src/ipc.c:4664
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1269,7 +1269,7 @@ msgstr ""
 "\n"
 "Aktualnie dostêpne komendy :\n"
 
-#: src/ipc.c:4692
+#: src/ipc.c:4636
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1279,16 +1279,16 @@ msgstr ""
 "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 "\n"
 
-#: src/ipc.c:4722
+#: src/ipc.c:4666
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 
-#: src/ipc.c:4724
+#: src/ipc.c:4668
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<komenda> : <opis>\n"
 
-#: src/ipc.c:4830
+#: src/ipc.c:4774
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1805,7 +1805,7 @@ msgstr "W³±cz Wysok± Jako¶æ"
 msgid "High Quality Off"
 msgstr "Wy³±cz Wysok± Jako¶æ"
 
-#: src/session.c:243
+#: src/session.c:242
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1815,7 +1815,7 @@ msgstr ""
 "skoñczy³a Ci siê przestrzeñ dyskowa, nie masz praw zapisu,\n"
 "lub wyst±pi³ inny, podobny problem\n"
 
-#: src/session.c:431
+#: src/session.c:430
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1824,7 +1824,7 @@ msgstr ""
 "skoñczy³a Ci siê przestrzeñ dyskowa, nie masz praw zapisu,\n"
 "lub wyst±pi³ inny, podobny problem\n"
 
-#: src/session.c:1032
+#: src/session.c:1022
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1850,7 +1850,7 @@ msgstr ""
 "\n"
 "... Tak± mam nadziejê.\n"
 
-#: src/session.c:1173
+#: src/session.c:1163
 msgid ""
 "\n"
 "\n"
@@ -1864,11 +1864,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1176
+#: src/session.c:1166
 msgid "  Yes, Log Out  "
 msgstr "  Tak, Wyloguj siê  "
 
-#: src/session.c:1177
+#: src/session.c:1167
 msgid "  No  "
 msgstr "  Nie  "
 
@@ -1921,7 +1921,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Przycisk myszy s³u¿acy do wybierania i przeci±gania okien :"
 
 #: src/settings.c:238 src/settings.c:270 src/settings.c:302
-#: src/settings.c:2333
+#: src/settings.c:2248
 msgid "Left"
 msgstr "Lewo"
 
@@ -1930,7 +1930,7 @@ msgid "Middle"
 msgstr "¦rodek"
 
 #: src/settings.c:254 src/settings.c:286 src/settings.c:318
-#: src/settings.c:2340
+#: src/settings.c:2255
 msgid "Right"
 msgstr "Prawo"
 
@@ -1944,10 +1944,10 @@ msgstr "Przycisk myszy s³u¿acy do wy¶wietlania menu Podgl±du Pulpitu :"
 
 #: src/settings.c:330 src/settings.c:603 src/settings.c:975
 #: src/settings.c:1183 src/settings.c:1420 src/settings.c:1564
-#: src/settings.c:1667 src/settings.c:1775 src/settings.c:1859
-#: src/settings.c:1940 src/settings.c:2031 src/settings.c:2486
-#: src/settings.c:3892 src/settings.c:4248 src/settings.c:4551
-#: src/settings.c:4729 src/settings.c:4949 src/snaps.c:552
+#: src/settings.c:1667 src/settings.c:1775 src/settings.c:1855
+#: src/settings.c:1946 src/settings.c:2401 src/settings.c:3807
+#: src/settings.c:4163 src/settings.c:4466 src/settings.c:4644
+#: src/settings.c:4864 src/snaps.c:552
 msgid "Apply"
 msgstr "Zastosuj"
 
@@ -2047,23 +2047,23 @@ msgstr "Metody Przesuwania"
 msgid "Resize Methods:"
 msgstr "Metody Zmiany rozmiaru"
 
-#: src/settings.c:841 src/settings.c:849 src/settings.c:2194
+#: src/settings.c:841 src/settings.c:849 src/settings.c:2109
 msgid "Opaque"
 msgstr "Nieprzezroczysta"
 
-#: src/settings.c:857 src/settings.c:865 src/settings.c:2209
+#: src/settings.c:857 src/settings.c:865 src/settings.c:2124
 msgid "Technical"
 msgstr "Techniczna"
 
-#: src/settings.c:873 src/settings.c:881 src/settings.c:2224
+#: src/settings.c:873 src/settings.c:881 src/settings.c:2139
 msgid "Box"
 msgstr "Pude³ko"
 
-#: src/settings.c:889 src/settings.c:897 src/settings.c:2239
+#: src/settings.c:889 src/settings.c:897 src/settings.c:2154
 msgid "Shaded"
 msgstr "Zacieniowane"
 
-#: src/settings.c:905 src/settings.c:913 src/settings.c:2254
+#: src/settings.c:905 src/settings.c:913 src/settings.c:2169
 msgid "Semi-Solid"
 msgstr "Pó³-pe³ne"
 
@@ -2234,27 +2234,11 @@ msgstr "Wy¶wietlaj Podpowiedzi Okna G³ównego"
 msgid "Tooltip Delay:\n"
 msgstr "Opó¼nienie wy¶wietlania Podpowiedzi\n"
 
-#: src/settings.c:1821
-msgid "KDE Settings"
-msgstr "Ustawienia KDE"
-
-#: src/settings.c:1835
-msgid ""
-"Enlightenment KDE\n"
-"Settings Dialog\n"
-msgstr ""
-"Okno ustawieñ\n"
-"KDE Enlightenment\n"
-
-#: src/settings.c:1848
-msgid "Enable KDE Support"
-msgstr "W³±cz obs³ugê KDE"
-
-#: src/settings.c:1900
+#: src/settings.c:1815
 msgid "Miscellaneous Settings"
 msgstr "Ustawienia ró¿ne"
 
-#: src/settings.c:1915
+#: src/settings.c:1830
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -2262,15 +2246,15 @@ msgstr ""
 "Okno Ustawieñ Ró¿nych\n"
 "Enlightenment\n"
 
-#: src/settings.c:1929
+#: src/settings.c:1844
 msgid "Enable Dialog Headers"
 msgstr "W³±cz nag³ówki okien dialogowych"
 
-#: src/settings.c:1983
+#: src/settings.c:1898
 msgid "Audio Settings"
 msgstr "Ustawienia Audio"
 
-#: src/settings.c:1998
+#: src/settings.c:1913
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2278,11 +2262,11 @@ msgstr ""
 "Okno ustwieñ Audio\n"
 "Enlightenment\n"
 
-#: src/settings.c:2011
+#: src/settings.c:1926
 msgid "Enable sounds"
 msgstr "W³±cz d¼wiêki"
 
-#: src/settings.c:2020
+#: src/settings.c:1935
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2290,11 +2274,11 @@ msgstr ""
 "D¼wiêki nie s± dostêpne, poniewa¿ EsounD\n"
 "nie by³ dostêpny podczas kompilacji."
 
-#: src/settings.c:2143
+#: src/settings.c:2058
 msgid "Special FX Settings"
 msgstr "Ustawienia Efektów specjalnych"
 
-#: src/settings.c:2158
+#: src/settings.c:2073
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2302,103 +2286,103 @@ msgstr ""
 "Okno ustawieñ Efektów\n"
 "specjalnych Enlightenmnet\n"
 
-#: src/settings.c:2181
+#: src/settings.c:2096
 msgid "Slide Method:"
 msgstr "Metoda ¦lizgania :"
 
-#: src/settings.c:2187
+#: src/settings.c:2102
 msgid "Slide desktops around when changing"
 msgstr "Pulpity ¶lizgaj± siê podczas ich zmiany"
 
-#: src/settings.c:2202
+#: src/settings.c:2117
 msgid "Slide windows around when cleaning up"
 msgstr "Okna ¶lizgaja siê podczas czyszczenia"
 
-#: src/settings.c:2217
+#: src/settings.c:2132
 msgid "Slide windows in when they appear"
 msgstr "Okna ¶lizgaj± siê, gdy siê pojawjaj±"
 
-#: src/settings.c:2232
+#: src/settings.c:2147
 msgid "Animated display of menus"
 msgstr "Animowane wy¶wietlanie menu"
 
-#: src/settings.c:2247
+#: src/settings.c:2162
 msgid "Always pop up menus on screen"
 msgstr "Zawsze pokazuj menu w ca³o¶ci na ekranie"
 
-#: src/settings.c:2263
+#: src/settings.c:2178
 msgid "Warp pointer after moving menus"
 msgstr "Przeno¶ wska¼nik myszy razem z menu"
 
-#: src/settings.c:2272
+#: src/settings.c:2187
 msgid "Use saveunders to reduce window exposures"
 msgstr "U¿yj funkcji saveunders, aby ograniczyæ wy¶wietlanie okien"
 
-#: src/settings.c:2281
+#: src/settings.c:2196
 msgid "Animate shading and unshading of windows"
 msgstr "Animacja przechodzenia w cieñ i wychodzenia z cienia"
 
-#: src/settings.c:2295
+#: src/settings.c:2210
 msgid "Display desktop dragbar"
 msgstr "Wy¶wietlaj Pasek Przeci±gania Pulpitu"
 
-#: src/settings.c:2304
+#: src/settings.c:2219
 msgid "Drag bar position:"
 msgstr "Pozycja Paska Przeci±gania"
 
-#: src/settings.c:2315
+#: src/settings.c:2230
 msgid "Top"
 msgstr "Góra"
 
-#: src/settings.c:2322
+#: src/settings.c:2237
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/settings.c:2359
+#: src/settings.c:2274
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "Szybko¶æ ¶lizgania siê Pulpitów: (wolno)\n"
 
-#: src/settings.c:2375 src/settings.c:2397 src/settings.c:2419
-#: src/settings.c:2441
+#: src/settings.c:2290 src/settings.c:2312 src/settings.c:2334
+#: src/settings.c:2356
 msgid "(fast)\n"
 msgstr "(szybko)\n"
 
-#: src/settings.c:2381
+#: src/settings.c:2296
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "Szybko¶æ ¶lizgania siê okien przy czyszczeniu: (wolno)\n"
 
-#: src/settings.c:2403
+#: src/settings.c:2318
 msgid "Appear Slide speed: (slow)\n"
 msgstr "Szybko¶æ ¶lizgania siê przy pojawianiu: (wolno)\n"
 
-#: src/settings.c:2425
+#: src/settings.c:2340
 msgid "Window Shading speed: (slow)\n"
 msgstr "Szybko¶æ przechodzenia w cieñ: (wolna)\n"
 
-#: src/settings.c:2454
+#: src/settings.c:2369
 msgid "Effects"
 msgstr ""
 
-#: src/settings.c:2460
+#: src/settings.c:2375
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Nie da siê wy¶wietliæ kropli deszczu"
 
-#: src/settings.c:2467
+#: src/settings.c:2382
 msgid "Ripples"
 msgstr ""
 
-#: src/settings.c:2475
+#: src/settings.c:2390
 msgid "Waves"
 msgstr ""
 
-#: src/settings.c:2753 src/settings.c:2874 src/settings.c:3132
-#: src/settings.c:3255 src/settings.c:3877
+#: src/settings.c:2668 src/settings.c:2789 src/settings.c:3047
+#: src/settings.c:3170 src/settings.c:3792
 msgid "-NONE-"
 msgstr "-¯ADEN-"
 
-#: src/settings.c:2756 src/settings.c:2877 src/settings.c:3135
-#: src/settings.c:3258 src/settings.c:3879
+#: src/settings.c:2671 src/settings.c:2792 src/settings.c:3050
+#: src/settings.c:3173 src/settings.c:3794
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -2409,7 +2393,7 @@ msgstr ""
 "Nazwa : %s\n"
 "Plik  : %s\n"
 
-#: src/settings.c:3007 src/settings.c:3009
+#: src/settings.c:2922 src/settings.c:2924
 msgid ""
 "No\n"
 "Background"
@@ -2417,16 +2401,16 @@ msgstr ""
 "Ilo¶æ\n"
 "t³o"
 
-#: src/settings.c:3196 src/settings.c:3768
+#: src/settings.c:3111 src/settings.c:3683
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Usuwanie nie uzywanych plików t³a po %2i:%02i:%02i"
 
-#: src/settings.c:3529
+#: src/settings.c:3444
 msgid "Desktop Background Settings"
 msgstr "Ustawienia T³a Pulpitu"
 
-#: src/settings.c:3545
+#: src/settings.c:3460
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -2434,51 +2418,51 @@ msgstr ""
 "Oknoustawieñ T³a\n"
 "Pulpitu Enlightenment\n"
 
-#: src/settings.c:3558
+#: src/settings.c:3473
 msgid "BG Colour\n"
 msgstr "Kolor t³a\n"
 
-#: src/settings.c:3569
+#: src/settings.c:3484
 msgid "Move to Front\n"
 msgstr "Przesuñ na przód\n"
 
-#: src/settings.c:3576
+#: src/settings.c:3491
 msgid "Duplicate\n"
 msgstr "Powiel\n"
 
-#: src/settings.c:3582
+#: src/settings.c:3497
 msgid "Unlist\n"
 msgstr "Usuñ z listy\n"
 
-#: src/settings.c:3588
+#: src/settings.c:3503
 msgid "Delete File\n"
 msgstr "Skasuj plik\n"
 
-#: src/settings.c:3597
+#: src/settings.c:3512
 msgid "Red:\n"
 msgstr "Czerwony  :\n"
 
-#: src/settings.c:3611
+#: src/settings.c:3526
 msgid "Use background image"
 msgstr "U¿yj obrazka jako t³a"
 
-#: src/settings.c:3619
+#: src/settings.c:3534
 msgid "Green:\n"
 msgstr "Zielony   :\n"
 
-#: src/settings.c:3633
+#: src/settings.c:3548
 msgid "Keep aspect on scale"
 msgstr "Zachowaj proporcje przy skalowaniu"
 
-#: src/settings.c:3641
+#: src/settings.c:3556
 msgid "Blue:\n"
 msgstr "Niebieski :\n"
 
-#: src/settings.c:3655
+#: src/settings.c:3570
 msgid "Tile image across background"
 msgstr "Utwórz mozaikê z obrazka"
 
-#: src/settings.c:3671
+#: src/settings.c:3586
 msgid ""
 "Background\n"
 "Image\n"
@@ -2492,35 +2476,35 @@ msgstr ""
 "Obrazka\n"
 "t³a\n"
 
-#: src/settings.c:3752
+#: src/settings.c:3667
 msgid "Use dithering in Hi-Colour"
 msgstr "U¿ywaj ditheringu w trybie Hi-Color"
 
-#: src/settings.c:3759
+#: src/settings.c:3674
 msgid "Background overrides theme"
 msgstr "Ustawienia t³a nadrzêdne nad ustawieniami wystroju"
 
-#: src/settings.c:3815
+#: src/settings.c:3730
 msgid "Pre-scan BG's"
 msgstr "Pre-skanowanie obrazków t³a"
 
-#: src/settings.c:3825
+#: src/settings.c:3740
 msgid "Sort by File"
 msgstr "Sortuj wed³ug pliku"
 
-#: src/settings.c:3831
+#: src/settings.c:3746
 msgid "Sort by Attr."
 msgstr "Sortuj wed³ug atrybutów"
 
-#: src/settings.c:3837
+#: src/settings.c:3752
 msgid "Sort by Image"
 msgstr "Sortuj wed³ug obrazka"
 
-#: src/settings.c:3998
+#: src/settings.c:3913
 msgid "Iconbox Settings"
 msgstr "Ustawienia Pude³ka na Ikony"
 
-#: src/settings.c:4016
+#: src/settings.c:3931
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -2528,103 +2512,103 @@ msgstr ""
 "Okno ustawieñ Pude³ka\n"
 "na Ikony Enlightenment\n"
 
-#: src/settings.c:4027
+#: src/settings.c:3942
 msgid "Transparent background"
 msgstr "Przezroczyste t³o"
 
-#: src/settings.c:4034
+#: src/settings.c:3949
 msgid "Hide border around inner Iconbox"
 msgstr "Schowaj obramowanie wewnêtrzne Pude³ka na Ikony"
 
-#: src/settings.c:4041
+#: src/settings.c:3956
 msgid "Show icon names"
 msgstr "Pokazuj nazwy Ikon"
 
-#: src/settings.c:4048
+#: src/settings.c:3963
 msgid "Draw base image behind Icons"
 msgstr "Umieszczaj za Ikonami obrazek bazowy"
 
-#: src/settings.c:4055
+#: src/settings.c:3970
 msgid "Hide scrollbar when not needed"
 msgstr "Ukryj pasek przewijania, gdy nie jest portrzebny"
 
-#: src/settings.c:4062
+#: src/settings.c:3977
 msgid "Automatically resize to fit Icons"
 msgstr "Automatycznie zmieniaj rozmiar, tak aby zmie¶ciæ Ikony"
 
-#: src/settings.c:4070
+#: src/settings.c:3985
 msgid "Animate when iconifying to this Iconbox"
 msgstr "W³±cz animacjê przy zwijaniu do Ikony w tym Pude³ku"
 
-#: src/settings.c:4080
+#: src/settings.c:3995
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Wyrównywanie zaczepienia przy automatycznej zmianie rozmiaru"
 
-#: src/settings.c:4102
+#: src/settings.c:4017
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Sposób wy¶wietlania ikon (je¿eli która¶ zawiedzie, spróbuj nastêpnej):"
 
-#: src/settings.c:4109
+#: src/settings.c:4024
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Zdjêcie Okna, U¿yj Ikony aplikacji, U¿ytj Ikony Enlightenment"
 
-#: src/settings.c:4118
+#: src/settings.c:4033
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "U¿yj Ikony aplikacji, U¿ytj Ikony Enlightenment, Zdjêcie Okna"
 
-#: src/settings.c:4126
+#: src/settings.c:4041
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "U¿ytj Ikony Enlightenment, Zdjêcie Okna"
 
-#: src/settings.c:4140
+#: src/settings.c:4055
 msgid "Icon size"
 msgstr "Rozmiar Ikon"
 
-#: src/settings.c:4163
+#: src/settings.c:4078
 msgid "Orientation:"
 msgstr "Orientacja:"
 
-#: src/settings.c:4169
+#: src/settings.c:4084
 msgid "Scrollbar side:"
 msgstr "Pozycja Paska Przewijania:"
 
-#: src/settings.c:4175
+#: src/settings.c:4090
 msgid "Scrollbar arrows:"
 msgstr "Strza³ki Paska Przewijania:"
 
-#: src/settings.c:4180
+#: src/settings.c:4095
 msgid "Horizontal"
 msgstr "Poziome"
 
-#: src/settings.c:4187
+#: src/settings.c:4102
 msgid "Left / Top"
 msgstr "Lewo / Góra"
 
-#: src/settings.c:4194
+#: src/settings.c:4109
 msgid "Start"
 msgstr "Start"
 
-#: src/settings.c:4201
+#: src/settings.c:4116
 msgid "Vertical"
 msgstr "Pionowe"
 
-#: src/settings.c:4209
+#: src/settings.c:4124
 msgid "Right / Bottom"
 msgstr "Prawo / Dó³"
 
-#: src/settings.c:4217
+#: src/settings.c:4132
 msgid "Both ends"
 msgstr "Obydwa koñce"
 
-#: src/settings.c:4227
+#: src/settings.c:4142
 msgid "End"
 msgstr "Koniec"
 
-#: src/settings.c:4237
+#: src/settings.c:4152
 msgid "None"
 msgstr "¯aden"
 
-#: src/settings.c:4372
+#: src/settings.c:4287
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -2634,11 +2618,11 @@ msgstr ""
 "  To okno nie nale¿y w tej chwili do ¿adnej grupy.   \n"
 "\n"
 
-#: src/settings.c:4395
+#: src/settings.c:4310
 msgid "Window Group Settings"
 msgstr "Ustawienia Grup Okien"
 
-#: src/settings.c:4410
+#: src/settings.c:4325
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -2646,11 +2630,11 @@ msgstr ""
 "Okno ustawieñ Grup\n"
 "Okien Enlightenment\n"
 
-#: src/settings.c:4425
+#: src/settings.c:4340
 msgid "   Pick the group to configure:   "
 msgstr "   Wybierz grupê, któr± chcesz konfigurowaæ :"
 
-#: src/settings.c:4461
+#: src/settings.c:4376
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -2658,43 +2642,43 @@ msgstr ""
 "  Nastêpuj±ce akcje obejmuj±  \n"
 "  wszystkich cz³onków grupy:  "
 
-#: src/settings.c:4470 src/settings.c:4641
+#: src/settings.c:4385 src/settings.c:4556
 msgid "Changing Border Style"
 msgstr "Zmiana stylu obramowania"
 
-#: src/settings.c:4480 src/settings.c:4649
+#: src/settings.c:4395 src/settings.c:4564
 msgid "Iconifying"
 msgstr "Zwijanie do Ikony"
 
-#: src/settings.c:4490 src/settings.c:4657
+#: src/settings.c:4405 src/settings.c:4572
 msgid "Killing"
 msgstr "Niszczenie"
 
-#: src/settings.c:4500 src/settings.c:4665
+#: src/settings.c:4415 src/settings.c:4580
 msgid "Moving"
 msgstr "Przesuwanie"
 
-#: src/settings.c:4510 src/settings.c:4673
+#: src/settings.c:4425 src/settings.c:4588
 msgid "Raising/Lowering"
 msgstr "Podnoszenie / Zag³êbianie"
 
-#: src/settings.c:4520 src/settings.c:4681
+#: src/settings.c:4435 src/settings.c:4596
 msgid "Sticking"
 msgstr "Przyklejanie"
 
-#: src/settings.c:4530 src/settings.c:4689
+#: src/settings.c:4445 src/settings.c:4604
 msgid "Shading"
 msgstr "Usuwanie w cieñ"
 
-#: src/settings.c:4540 src/settings.c:4697
+#: src/settings.c:4455 src/settings.c:4612
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Usuwanie w Cieñ/Zwijanie do Ikony/Przyklejanie"
 
-#: src/settings.c:4599
+#: src/settings.c:4514
 msgid "Default Group Control Settings"
 msgstr "Ustawienia Domy¶lne Grupy"
 
-#: src/settings.c:4614
+#: src/settings.c:4529
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -2702,23 +2686,23 @@ msgstr ""
 "Okno ustawieñ domy¶lnych\n"
 "Grup Enlightenment\n"
 
-#: src/settings.c:4629
+#: src/settings.c:4544
 msgid " Per-group settings: "
 msgstr " Ustawienia dotycz±ce ca³ej grupy: "
 
-#: src/settings.c:4712
+#: src/settings.c:4627
 msgid " Global settings: "
 msgstr " Ustawienia globalne: "
 
-#: src/settings.c:4718
+#: src/settings.c:4633
 msgid "Swap Window Locations"
 msgstr "Zamiana po³o¿eñ okien"
 
-#: src/settings.c:4847
+#: src/settings.c:4762
 msgid "Remembered Windows Settings"
 msgstr "Zapamiêtywane ustawienia okien"
 
-#: src/settings.c:4863
+#: src/settings.c:4778
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2726,11 +2710,11 @@ msgstr ""
 "Okno dialogowe Zapamiêtywanych\n"
 "Ustawwieñ Okien Enlightenment\n"
 
-#: src/settings.c:4918
+#: src/settings.c:4833
 msgid "Remembered Settings..."
 msgstr "Zapamiêtywane ustawienia..."
 
-#: src/settings.c:4939
+#: src/settings.c:4854
 msgid "There are no active windows with remembered attributes."
 msgstr "Nie ma ¿adnych aktywnych okien z zapamiêtanymi ustawieniami."
 
@@ -2843,7 +2827,7 @@ msgstr ""
 "ni¿ X11, to do Twojego serwera autor Enlightenment nigdy nie\n"
 "mia³ dostêpu, ani nawet o nim nie s³ysza³.\n"
 
-#: src/setup.c:534
+#: src/setup.c:527
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2854,7 +2838,7 @@ msgstr ""
 "To jest sytuacja krytyczna.\n"
 "Usuñ ten plik.\n"
 
-#: src/setup.c:541
+#: src/setup.c:534
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2867,7 +2851,7 @@ msgstr ""
 "Sprawd¼ kto jest w³a¶cicielem i jakie s± prawa dostêpu\n"
 "do tego katalogu i spróbuj temu zaradziæ.\n"
 
-#: src/setup.c:550
+#: src/setup.c:543
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2880,7 +2864,7 @@ msgstr ""
 "Sprawd¼ kto jest w³a¶cicielem i jakie s± prawa dostêpu\n"
 "do tego katalogu i spróbuj temu zaradziæ.\n"
 
-#: src/setup.c:558
+#: src/setup.c:551
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -3045,3 +3029,16 @@ msgstr "B³±d podpowiedzi"
 #: src/update.c:166
 msgid "Enlightenment's message of the day"
 msgstr "Wiadomo¶æ dnia Enlightenment"
+
+#~ msgid "KDE Settings"
+#~ msgstr "Ustawienia KDE"
+
+#~ msgid ""
+#~ "Enlightenment KDE\n"
+#~ "Settings Dialog\n"
+#~ msgstr ""
+#~ "Okno ustawieñ\n"
+#~ "KDE Enlightenment\n"
+
+#~ msgid "Enable KDE Support"
+#~ msgstr "W³±cz obs³ugê KDE"

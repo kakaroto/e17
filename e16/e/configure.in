@@ -74,17 +74,13 @@ AC_ARG_ENABLE(hints-ewmh,
   [  --enable-hints-ewmh     compile with Extended Window Manager Hints support [default=yes]],, enable_hints_ewmh=yes)
 AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support [default=no]],, enable_hints_gnome=no)
-AC_ARG_ENABLE(hints-kde,
-  [  --enable-hints-kde      compile with KDE(<2.0) hints support [default=no]],, enable_hints_kde=no)
 AC_ARG_WITH(fnlib,
   [  --with-fnlib            compile with Fnlib support [default=yes]],, with_fnlib=yes)
 
 if test "x$enable_hints_ewmh" = "xyes"; then AC_DEFINE(ENABLE_EWMH, 1, [Extended Window Manager Hints]) fi
 if test "x$enable_hints_gnome" = "xyes"; then AC_DEFINE(ENABLE_GNOME, 1, [GNOME(<2.0) Hints]) fi
-if test "x$enable_hints_kde" = "xyes"; then AC_DEFINE(ENABLE_KDE, 1, [KDE(<2.0) Hints]) fi
 AM_CONDITIONAL(ENABLE_EWMH, test "x$enable_hints_ewmh" = "xyes")
 AM_CONDITIONAL(ENABLE_GNOME, test "x$enable_hints_gnome" = "xyes")
-AM_CONDITIONAL(ENABLE_KDE, test "x$enable_hints_kde" = "xyes")
 
 dnl The following test must come after AM_GNU_GETTEXT as it relies on
 dnl ${DATADIRNAME} being defined.

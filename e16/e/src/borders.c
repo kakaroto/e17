@@ -1511,9 +1511,6 @@ CreateEwin()
    ewin->snap = NULL;
    ewin->icon_pmap = 0;
    ewin->icon_mask = 0;
-#if ENABLE_KDE
-   ewin->kde_hint = 0;
-#endif
 
    att.event_mask =
       StructureNotifyMask | ResizeRedirectMask | ButtonPressMask |

@@ -927,20 +927,8 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	newrect.w = ewin->w;
 	newrect.h = ewin->h;
 	newrect.p = ewin->layer;
-#if ENABLE_KDE
-	if (mode.kde_support)
-	  {
-	     ArrangeRects(fixed, j, &newrect, 1, ret,
-			  mode.kde_x1, mode.kde_y1, mode.kde_x2, mode.kde_y2,
-			  ARRANGE_BY_SIZE, 1);
-
-	  }
-	else
-#endif
-	  {
-	     ArrangeRects(fixed, j, &newrect, 1, ret,
-			  0, 0, root.w, root.h, ARRANGE_BY_SIZE, 1);
-	  }
+	ArrangeRects(fixed, j, &newrect, 1, ret,
+		     0, 0, root.w, root.h, ARRANGE_BY_SIZE, 1);
 
 	for (i = 0; i < j + 1; i++)
 	  {

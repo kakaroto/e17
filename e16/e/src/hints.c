@@ -38,9 +38,6 @@ HintsInit(void)
    EDBUG(6, "HintsInit");
    win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
    ICCCM_Init();
-#if ENABLE_KDE
-   /* ??? */
-#endif
 #if ENABLE_GNOME
    GNOME_SetHints(win);
 #endif
@@ -70,10 +67,6 @@ void
 HintsSetDesktopConfig(void)
 {
    EDBUG(6, "HintsSetDesktopConfig");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_SetNumDesktops();
-#endif
 #if ENABLE_GNOME
    GNOME_SetDeskCount();
    GNOME_SetDeskNames();
@@ -103,10 +96,6 @@ void
 HintsSetCurrentDesktop(void)
 {
    EDBUG(6, "HintsSetCurrentDesktop");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_SetRootArea();
-#endif
 #if ENABLE_GNOME
    GNOME_SetCurrentDesk();
 #endif
@@ -134,10 +123,6 @@ void
 HintsSetActiveWindow(EWin * ewin)
 {
    EDBUG(6, "HintsSetActiveWindow");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_UpdateFocusedWindow();
-#endif
 #if ENABLE_EWMH
    EWMH_SetActiveWindow(ewin);
 #endif
@@ -148,10 +133,6 @@ void
 HintsSetWindowDesktop(EWin * ewin)
 {
    EDBUG(6, "HintsSetWindowDesktop");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
-#endif
 #if ENABLE_GNOME
    GNOME_SetEwinDesk(ewin);
 #endif
@@ -176,10 +157,6 @@ void
 HintsSetWindowState(EWin * ewin)
 {
    EDBUG(6, "HintsSetWindowState");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
-#endif
 #if ENABLE_GNOME
    GNOME_SetHint(ewin);
 #endif
@@ -193,21 +170,9 @@ HintsSetWindowState(EWin * ewin)
 void
 HintsSetWindowHints(EWin * ewin)
 {
-#if ENABLE_KDE
-   int                 kde_support = 0;
-#endif
    EDBUG(6, "HintsSetWindowHints");
-#if ENABLE_KDE
-   kde_support = mode.kde_support;
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
-   mode.kde_support = 0;
-#endif
    HintsSetWindowDesktop(ewin);
    HintsSetWindowState(ewin);
-#if ENABLE_KDE
-   mode.kde_support = kde_support;
-#endif
    EDBUG_RETURN_;
 }
 
@@ -236,10 +201,6 @@ void
 HintsDelWindowHints(EWin * ewin)
 {
    EDBUG(6, "HintsDelWindowHints");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_RemoveWindow(ewin);
-#endif
 #if ENABLE_GNOME
    GNOME_DelHints(ewin);
 #endif
@@ -259,10 +220,6 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
    EDBUG(6, "HintsHandlePropertyChange");
 #if ENABLE_GNOME
    GNOME_GetHints(ewin, atom_change);
-#endif
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_UpdateFocusedWindow();
 #endif
 #if ENABLE_EWMH
    EWMH_ProcessPropertyChange(ewin, atom_change);
@@ -292,13 +249,6 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 #if ENABLE_GNOME
    else if (!memcmp(name, "_WIN_", 5))
       GNOME_ProcessClientMessage(event);
-#endif
-#if ENABLE_KDE
-   else if (!memcmp(name, "KWM_", 4))
-     {
-	if (mode.kde_support)
-	   KDE_ProcessClientMessage(event);
-     }
 #endif
    XFree(name);
    EDBUG_RETURN_;

@@ -188,7 +188,6 @@ GetGenericSMFile(void)
    return default_save_prefix();
 }
 
-/* This code covers X11R6 and X11R5 clients (xterm, KDE, ...). */
 static void
 SaveWindowStates(void)
 {
@@ -581,11 +580,6 @@ doSMExit(void *params)
 	  }
 	else if (!strcmp(s, "restart_wm"))
 	  {
-#if ENABLE_KDE
-	     /* kill off kde */
-	     if (mode.kde_support)
-		KDE_Shutdown();
-#endif
 	     AUDIO_PLAY("SOUND_EXIT");
 	     if (sound_fd >= 0)
 		close(sound_fd);
@@ -631,11 +625,7 @@ doSMExit(void *params)
 	     return;
 	  }
      }
-#if ENABLE_KDE
-   /* kill off kde */
-   if (mode.kde_support)
-      KDE_Shutdown();
-#endif
+
    AUDIO_PLAY("SOUND_EXIT");
    EExit(0);
 }
@@ -1189,11 +1179,6 @@ doSMExit(void *params)
    else if (!strcmp(s, "restart_wm"))
      {
 	AUDIO_PLAY("SOUND_WAIT");
-#if ENABLE_KDE
-	/* kill off kde */
-	if (mode.kde_support)
-	   KDE_Shutdown();
-#endif
 	XCloseDisplay(disp);
 	disp = NULL;
 	Esnprintf(s, sizeof(s), "exec %s -display %s", atword(params, 2), dstr);
@@ -1275,13 +1260,10 @@ doSMExit(void *params)
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp((char *)s, "error"))
-      EExit(0);
+     {
+	EExit(0);
+     }
 
-#if ENABLE_KDE
-   /* kill off kde */
-   if (mode.kde_support)
-      KDE_Shutdown();
-#endif
    restarting = False;
    SaveSession(1);
    AUDIO_PLAY("SOUND_EXIT");

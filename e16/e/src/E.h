@@ -936,9 +936,6 @@ typedef struct _ewin
    Snapshot           *snap;
    int                 icon_pmap_w, icon_pmap_h;
    Pixmap              icon_pmap, icon_mask;
-#if ENABLE_KDE
-   char                kde_hint;
-#endif
    int                 head;
 }
 EWin;
@@ -1286,14 +1283,6 @@ typedef struct _emode
    char                nogroup;
    GroupConfig         group_config;
    char                group_swapmove;
-#if ENABLE_KDE
-   Window              kde_dock;
-   int                 kde_support;
-   int                 kde_x1;
-   int                 kde_x2;
-   int                 kde_y1;
-   int                 kde_y2;
-#endif
    char                clickalways;
    char                keybinds_changed;
    char                firsttime;
@@ -1750,31 +1739,6 @@ typedef struct _drawqueue
    int                 x, y;
 }
 DrawQueue;
-
-#if ENABLE_KDE
-/* some kde hint enums here */
-
-typedef enum
-{
-   StickyFlag = (1 << 0),
-   MaximizedFlag = (1 << 1),
-   IconifiedFlag = (1 << 2),
-   AllFlags = 7
-}
-KStates;
-
-typedef enum
-{
-   AddWindow,
-   RemoveWindow,
-   FocusWindow,
-   RaiseWindow,
-   LowerWindow,
-   ChangedClient,
-   IconChange
-}
-KMessage;
-#endif
 
 /* only used for remember list dialog callback funcs (SettingsDialog()
  * in in settings.c)... snaps are attached to windows, not a global list */
@@ -2361,22 +2325,6 @@ void                GNOME_DelHints(EWin * ewin);
 void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
 
-#if ENABLE_KDE
-/* kde.c functions */
-void                KDE_Init(void);
-void                KDE_Shutdown(void);
-void                KDE_RemoveModule(Window win);
-void                KDE_ClientChange(Window win, Atom a);
-void                KDE_ProcessClientMessage(XClientMessageEvent * event);
-void                KDE_HintChange(Atom a);
-void                KDE_SetRootArea(void);
-void                KDE_UpdateFocusedWindow(void);
-void                KDE_SetNumDesktops(void);
-void                KDE_NewWindow(EWin * ewin);
-void                KDE_RemoveWindow(EWin * ewin);
-void                KDE_UpdateClient(EWin * ewin);
-#endif
-
 #if ENABLE_EWMH
 /* ewmh.c functions */
 void                EWMH_Init(Window win_wm_check);
@@ -2942,7 +2890,6 @@ void                SettingsPlacement(void);
 void                SettingsIcons(void);
 void                SettingsAutoRaise(void);
 void                SettingsTooltips(void);
-void                SettingsKDE(void);
 void                SettingsAudio(void);
 void                SettingsSpecialFX(void);
 void                SettingsBackground(Background * bg);
