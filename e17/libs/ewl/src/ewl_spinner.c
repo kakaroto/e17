@@ -83,6 +83,8 @@ int ewl_spinner_init(Ewl_Spinner * s)
 			    ewl_spinner_key_down_cb, NULL);
 	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
 			    ewl_spinner_deselect_cb, NULL);
+    ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
+				ewl_spinner_wheel_cb, NULL);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_increase_value_cb, w);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
@@ -439,6 +441,23 @@ ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_spinner_calc_value(s, (double) (val));
 	} else if (str)
 		FREE(str);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_spinner_wheel_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Spinner		*s;
+	Ewl_Event_Mouse_Wheel *wheel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	s = EWL_SPINNER(w->parent);
+	wheel = (Ewl_Event_Mouse_Wheel *)ev_data;
+
+	ewl_spinner_calc_value(s, s->value - (wheel->z * s->step));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
