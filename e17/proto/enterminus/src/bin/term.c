@@ -117,7 +117,7 @@ Term_TCanvas *term_tcanvas_new() {
    canvas->canvas_id = 1; /* change later */
    canvas->rows = 24; /* multiply by a number or scrollback */  
    canvas->cols = 80;
-   canvas->scroll_size = 3; /* this means rows * 3 total rows */
+   canvas->scroll_size = 30; /* this means rows * 3 total rows */
    canvas->cur_row = 0;   /* between 0 and rows-1 */
    canvas->cur_col = 0;
    canvas->grid = calloc(canvas->cols * 
@@ -157,7 +157,6 @@ int term_font_get_width(Term *term) {
    evas_object_text_font_set(ob, term->font.face, term->font.size);
    evas_object_text_text_set(ob, "W");
    evas_object_geometry_get(ob,&x,&y,&w,&h);
-   w = evas_object_text_horiz_advance_get(ob);
    evas_object_del(ob);
    return w;
 }
@@ -173,17 +172,17 @@ int term_font_get_height(Term *term) {
    evas_object_text_font_set(ob, term->font.face, term->font.size);
    evas_object_text_text_set(ob, "W");
    evas_object_geometry_get(ob,&x,&y,&w,&h);
-   evas_object_geometry_get(ob,&x,&y,&w,&h);
-   h = evas_object_text_vert_advance_get(ob);
    evas_object_del(ob);
-   return h+10;
+   return h;
 }
 
-Term *term_new(Evas *evas) {
+Term *term_new(Ecore_Evas *ee) {
    int i, j;
    Term_EGlyph *gl;
-   Term *term = malloc(sizeof(Term));
+   Term *term = malloc(sizeof(Term));   
    term->term_id = 0;
+   term->ee = ee;
+   term->evas = ecore_evas_get(ee);   
    term->tcanvas = term_tcanvas_new();
    term->grid = calloc(term->tcanvas->cols * term->tcanvas->rows,
 		       sizeof(Term_EGlyph));
@@ -191,19 +190,28 @@ Term *term_new(Evas *evas) {
    for(i = 0; 
        i < term->tcanvas->cols * term->tcanvas->rows; i++) {
       gl = &term->grid[i];
-      gl->text = evas_object_text_add(evas);      
+      gl->text = evas_object_text_add(term->evas);      
    }   
    
    term->bg = NULL;
    strcpy(term->font.path, DATADIR);
    strcpy(term->font.face, "VeraMono");
    term->font.size = 10;
-   term->evas = evas;
    term->data_ptr = 0;   
    term->font.width = term_font_get_width(term);
    term->font.height = term_font_get_height(term);
    evas_font_path_append(term->evas, term->font.path);
-   ecore_timer_add(0.1, term_timers, term);
-
+   ecore_timer_add(0.1, term_timers, term);   
+   
+   ecore_x_window_prop_step_size_set(ecore_evas_software_x11_window_get(term->ee),
+				      term_font_get_width(term),
+				      term_font_get_height(term));
+   
+   ecore_evas_resize(term->ee, 
+		     term->tcanvas->cols*term_font_get_width(term), 
+		     term->tcanvas->rows*term_font_get_height(term));
+   
+   ecore_evas_data_set(term->ee, "term", term);
+   
    return term;
 }

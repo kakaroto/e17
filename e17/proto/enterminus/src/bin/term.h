@@ -92,6 +92,7 @@ typedef struct _Term_EGlyph Term_EGlyph;
 
 struct _Term {
    int           term_id;
+   Ecore_Evas   *ee;
    Term_TCanvas *tcanvas;
    Term_EGlyph  *grid;
    Evas_Object  *bg;
@@ -104,11 +105,12 @@ struct _Term {
    int           data_len;  
    int           font_width;
    int           font_height;
+   
 };
 
 typedef struct _Term Term;
 
-Term          *term_new(Evas *evas);
+Term          *term_new(Ecore_Evas *ee);
 Term_TCanvas  *term_tcanvas_new();
 int            term_tcanvas_data(void *data);
 void           term_tcanvas_glyph_push(Term *term, char c);
@@ -121,6 +123,7 @@ void           term_handler_xterm_seq(int op, Term *term);
 int            term_handler_escape_seq(Term *term);
 
 void           term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void           term_cb_resize(Ecore_Evas *ee);
 
 static void    strupper(char *str);
 int            term_timers(void *data);
@@ -132,7 +135,7 @@ struct passwd *find_user(void);
 int            execute_command(Term *term, int argc, const char **argv);
 
 void           term_window_init(Ecore_Evas *ee, Evas *evas);
-void           term_term_bg_set(Term *term, char *img, Ecore_Evas *ee);
+void           term_term_bg_set(Term *term, char *img);
 void           term_redraw(void *data);
 
 int            term_cursor_move_up(Term *term, int n);

@@ -8,9 +8,10 @@
 #define COLOR4 20, 20, 200
 #define COLOR5 46, 75, 100
 #define COLOR6 98, 175, 200
-#define COLOR7 200, 200, 200 
+#define COLOR7 50, 50, 50 
 #define COLOR8 231, 105, 50
 
+/* this isnt used right now */
 void term_window_init(Ecore_Evas *ee, Evas *evas) {
 
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 640, 480);
@@ -18,26 +19,25 @@ void term_window_init(Ecore_Evas *ee, Evas *evas) {
    ecore_evas_show(ee);
 }
 
-void term_term_bg_set(Term *term, char *img, Ecore_Evas *ee) {
-   int w, h;
-   Evas_Object *bg;
+void term_term_bg_set(Term *term, char *img) {
+   int x, y, w, h;
 
-   w = term->tcanvas->cols*term_font_get_width(term);
-   h = term->tcanvas->rows*term_font_get_height(term);
+   ecore_evas_geometry_get(term->ee, &x, &y, &w, &h);
+      
+   if(!term->bg) {
+      term->bg = evas_object_image_add(term->evas);
+      evas_object_event_callback_add(term->bg, EVAS_CALLBACK_KEY_DOWN, 
+				     term_cb_key_down,
+				     term);
+      ecore_evas_callback_resize_set(term->ee, term_cb_resize);
+   }
    
-   ecore_evas_resize(ee, w, h);
-
-   bg = evas_object_image_add(term->evas);
-   evas_object_resize(bg, w, h);
-   evas_object_image_file_set(bg, img, NULL);
-   evas_object_layer_set(bg, 0);
-   //evas_object_image_size_get(ob, &w, &h);
-   evas_object_image_fill_set(bg, 0, 0, w, h);
-   evas_object_focus_set(bg,1);
-   evas_object_event_callback_add(bg, EVAS_CALLBACK_KEY_DOWN, term_cb_key_down,
-				  term);
-   //evas_object_event_callback_add(bg, EVAS_CALLBACK_KEY_UP, cb_key_up, term);
-   evas_object_show(bg);
+   evas_object_resize(term->bg, w, h);
+   evas_object_image_file_set(term->bg, img, NULL);
+   evas_object_layer_set(term->bg, 0);
+   evas_object_image_fill_set(term->bg, 0, 0, w, h);
+   evas_object_focus_set(term->bg,1);   
+   evas_object_show(term->bg);
 
 }
 
@@ -252,7 +252,7 @@ void term_scroll_up(Term *term, int rows) {
       printf("End gone past max scroll buffer, wrapping\n");                  
       term->tcanvas->scroll_region_end = rows - (((term->tcanvas->rows-1) * 
 	term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_end);
-      /* we going back to the top, clear the rows we want to overwrite */
+      /* we're going back to the top, clear the rows we want to overwrite */
       for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
 	 term->tcanvas->changed_rows[i] = 1;
 	 for(j = 0; j <= term->tcanvas->cols; j++) {
@@ -279,8 +279,16 @@ void term_scroll_up(Term *term, int rows) {
 
    if(term->tcanvas->scroll_region_start < term->tcanvas->scroll_region_end)
      i2 = term->tcanvas->scroll_region_end;
-   else
-     i2 = (term->tcanvas->rows - 1) * term->tcanvas->scroll_size;
+   else {
+      for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
+	 term->tcanvas->changed_rows[i] = 1;
+	 for(j = 0; j <= term->tcanvas->cols; j++) {
+	    gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
+	    gl->changed = 1;
+	 }	 
+      }
+      i2 = (term->tcanvas->rows - 1) * term->tcanvas->scroll_size;
+   }
    
    for(i = term->tcanvas->scroll_region_start;
        i <= i2;
@@ -296,7 +304,7 @@ void term_scroll_up(Term *term, int rows) {
    
    
    if(term->tcanvas->scroll_in_region) {
-      
+      printf("SCROLL IN REGION!!!!!!!!!!!!!!!!!!!!\n");
    } else {
       
    }

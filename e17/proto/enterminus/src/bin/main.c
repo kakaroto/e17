@@ -3,18 +3,15 @@
 int main(int argc, char **argv) {
 
    Ecore_Evas  *ee;     /* ecore_evas */
-   Evas        *evas;   /* evas       */
-//   Evas_Object *ob,*bg; /* background */   
    Term        *term;   /* terminal   */
    
    //term_window_init(ee, evas);
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 640, 480);
-   evas =  ecore_evas_get(ee);
    ecore_evas_show(ee);
    
-   term = term_new(evas);
+   term = term_new(ee);
    
-   term_term_bg_set(term, DATADIR"white.png", ee);
+   term_term_bg_set(term, DATADIR"white.png");
 
    execute_command(term, argc, argv);
 

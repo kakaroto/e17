@@ -449,3 +449,42 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
 
    }
 }
+
+struct winsize *get_font_dim(Term *term)
+{
+   static struct winsize w;
+   w.ws_row = term->tcanvas->rows;
+   w.ws_col = term->tcanvas->cols;
+   w.ws_xpixel = w.ws_ypixel = 0;
+   return &w;
+}
+
+
+void term_cb_resize(Ecore_Evas *ee) {
+   int x, y, w, h, w_char, h_char, num_chars_w, num_chars_h;
+   Term *term;
+   
+   term = (Term*)ecore_evas_data_get(ee, "term");
+   
+   w_char = term_font_get_width(term);
+   h_char = term_font_get_height(term);   
+   
+   num_chars_w = (int)((float)w/(float)w_char);
+   num_chars_h = (int)((float)h/(float)h_char);
+   
+      
+   term->tcanvas->cols = num_chars_w;
+   term->tcanvas->rows = num_chars_h;
+   
+   term->tcanvas->scroll_region_start = 0;
+   term->tcanvas->scroll_region_end = term->tcanvas->rows - 1;      
+   
+   if(ioctl(term->cmd_fd.sys, TIOCSWINSZ, get_font_dim(term)) < 0)
+     {
+	fprintf(stderr, "Couldn't set window size: %m\n");
+	return -1;
+     }
+   
+   term_term_bg_set(term, DATADIR"white.png");
+   
+}
