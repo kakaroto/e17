@@ -192,7 +192,6 @@ static void
 __ewl_list_realize(Ewl_Widget * widget, void *event_data, void *user_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
-	ewl_fx_clip_box_create(widget);
 
 	evas_set_clip(widget->evas, widget->fx_clip_box,
 		      EWL_CONTAINER(widget->parent)->clip_box);
