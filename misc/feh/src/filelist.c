@@ -66,10 +66,11 @@ add_file_to_filelist_recursively (char *path)
 		  char *file;
 		  int len = 0;
 
+		  /* Add one for the "/" and one for the '/0' */
 		  len = strlen (path) + strlen (de->d_name) + 2;
 		  if ((file = malloc (len)) == NULL)
 		    {
-		      fprintf (stderr, "Out of memory\n");
+		      fprintf (stderr, PACKAGE" - Out of memory\n");
 		      exit (1);
 		    }
 		  /* Remember NOT to free this. add_file_to_filelist doesn't
