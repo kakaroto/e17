@@ -50,11 +50,13 @@ static void cb_ee_resize(Ecore_Evas *ee) {
 }
 
 int ui_init(ePlayer *player) {
+	int zero = 0;
+	
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
 	ecore_init();
 	ecore_evas_init();
-	ewl_init(0, NULL);
+	ewl_init(&zero, NULL);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
 	                        NULL);
 	
