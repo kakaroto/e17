@@ -294,7 +294,32 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
 	   Mode.resize_detail = 2;
 	if ((x >= w) && (y >= h))
 	   Mode.resize_detail = 3;
+
+	/* The following four if statements added on 07/22/04 by Josh Holtrop.
+	 * They allow strictly horizontal or vertical resizing when the
+	 * cursor is towards the middle of an edge of a window. */
+	if ((abs(x - w) < (w >> 1)) && (y < (h >> 1)))
+	  {
+	     Mode.mode = MODE_RESIZE_V;
+	     Mode.resize_detail = 0;
+	  }
+	else if ((abs(x - w) < (w >> 1)) && (y > (h + (h >> 1))))
+	  {
+	     Mode.mode = MODE_RESIZE_V;
+	     Mode.resize_detail = 1;
+	  }
+	else if ((abs(y - h) < (h >> 1)) && (x < (w >> 1)))
+	  {
+	     Mode.mode = MODE_RESIZE_H;
+	     Mode.resize_detail = 0;
+	  }
+	else if ((abs(y - h) < (h >> 1)) && (x > (w + (w >> 1))))
+	  {
+	     Mode.mode = MODE_RESIZE_H;
+	     Mode.resize_detail = 1;
+	  }
 	break;
+
      case MODE_RESIZE_H:
 	Mode.mode = hv;
 	x = Mode.x - ewin->x;
@@ -304,6 +329,7 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
 	else
 	   Mode.resize_detail = 1;
 	break;
+
      case MODE_RESIZE_V:
 	Mode.mode = hv;
 	y = Mode.y - ewin->y;
@@ -314,6 +340,7 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
 	   Mode.resize_detail = 1;
 	break;
      }
+
    Mode.start_x = Mode.x;
    Mode.start_y = Mode.y;
    Mode.win_x = ewin->x;
