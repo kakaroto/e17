@@ -53,7 +53,7 @@ AM_PATH_GTK(1.2.0, ,
             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
 
 BONUS_INCS=" -I/usr/X11R6/include"
-BONUS_LIBS="-L/usr/X11R6/lib -lgdk_imlib"
+BONUS_LIBS="-L/usr/X11R6/lib"
 
 AC_SUBST(BONUS_INCS)
 AC_SUBST(BONUS_LIBS)
