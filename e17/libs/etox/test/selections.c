@@ -38,6 +38,7 @@ window_resize(Ecore_Evas *ee)
 
 int sig_exit(void *data, int type, void * ev)
 {
+        printf("sig exit!!\n");
 	ecore_main_loop_quit();
 	return 1;
 	data = NULL;
@@ -81,8 +82,8 @@ int main(int argc, const char **argv)
 	/* Create message etox */
 	etox = etox_new_all(evas, 0, 0, win_w, win_h, 255,
 			ETOX_ALIGN_LEFT | ETOX_ALIGN_BOTTOM);
-	etox_context_set_font(etox, "sinon", 14);
-	etox_context_set_color(etox, 0, 255, 0, 255);
+	etox_context_set_font(etox, "Vera", 14);
+	etox_context_set_color(etox, 173, 193, 79, 255);
 	etox_context_set_style(etox, "shadow");
 	etox_context_set_soft_wrap(etox, 1);
 	etox_set_text(etox, msg);
@@ -126,6 +127,8 @@ int main(int argc, const char **argv)
 
 	ecore_evas_callback_resize_set(ee, window_resize);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit, NULL);
+        ecore_evas_callback_delete_request_set(ee, sig_exit);
+        ecore_evas_callback_destroy_set(ee, sig_exit);
 
 	ecore_main_loop_begin();
 
@@ -141,17 +144,30 @@ _test_sel1(Evas_Object *etox)
   Etox_Selection *sel;
   Etox_Context *old, *cont;
 
+
+  printf("style: %s\n", etox_context_get_style(etox));
   sel = etox_select_index(etox, 10, 120);
 
-//  cont = etox_context_new();
-//  old = etox_context_save(etox);
+  old = etox_context_save(etox);
 
   etox_context_set_color(etox, 220, 0, 0, 255);
-  etox_context_set_font(etox, "nationff", 12);
+  etox_context_set_font(etox, "Vera", 12);
   cont = etox_context_save(etox);
   etox_selection_apply_context(sel, cont);
-//  etox_context_load(etox, old);
 
-  //etox_context_free(old);
-  //etox_context_free(cont);
+  etox_selection_free_by_etox(etox);
+  
+  sel = etox_select_index(etox, 50, 200);
+  etox_context_set_color(etox, 200, 102, 10, 255);
+  etox_context_free(cont);
+  cont = etox_context_save(etox);
+  etox_selection_apply_context(sel, cont);
+
+  etox_context_load(etox, old);
+
+  printf("style: %s\n", etox_context_get_style(etox));
+  etox_append_text(etox, " Blah. Blah. Blum de dum.");
+
+  etox_context_free(cont);
+  etox_context_free(old);
 }
