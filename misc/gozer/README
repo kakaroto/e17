@@ -1,0 +1,5 @@
+Compile:
+
+$ ./configure
+$ make
+$ su -c "make install"

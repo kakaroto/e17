@@ -1,0 +1,11 @@
+Fri Nov 10 14:37:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* ~/.gomrc is now always read first if available. This sets
+	default values if you want. Then commandline options are read,
+	then, if --rc-file is specified, that is read and overrides all
+	previous options.
+
+Fri Nov 10 04:27:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Created and added to CVS.
+
