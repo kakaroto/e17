@@ -9,6 +9,8 @@ void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, c
 void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
 void seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
+void ecore_resize(Ecore_Evas *ee);
+void update_timer(void *data, Evas_Object *obj, void *event_info);
 
 
 #define WIDTH 400
@@ -20,7 +22,7 @@ void seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emissio
         Evas_Object *   emotion;
 	int 		w, h;
 	Evas_Coord	minw, minh;
-	double		volume;
+	double		volume, vid_len;
 	char 		vol_str[3];
 	int 		muted = 0;
 
@@ -139,6 +141,7 @@ int main(int argc, char *argv[]){
 
 	emotion_object_play_set(emotion, 1);
 	
+		/* EDJE STUFF */
 	/* Get and Display the volume */
 	volume = emotion_object_audio_volume_get(emotion);
 	printf("DEBUG: Volume is: %0f\n", volume*100);
@@ -146,15 +149,20 @@ int main(int argc, char *argv[]){
 	edje_object_part_text_set(edje, "vol_display_text", vol_str);
 
 	edje_object_part_text_set(edje, "video_name", argv[1]);
+	vid_len = emotion_object_play_length_get(emotion);
+	
 
 	/* Callbacks */
+	ecore_evas_callback_resize_set(ee, ecore_resize);
         evas_object_event_callback_add(emotion, 
 			EVAS_CALLBACK_KEY_DOWN, keydown_evascallback, NULL); 
+	evas_object_smart_callback_add(emotion, "frame_decode", update_timer, NULL);
 	edje_object_signal_callback_add(edje, "VOL_INCR", "vol_incr_button", raisevol_edjecallback, NULL);
 	edje_object_signal_callback_add(edje, "VOL_DECR", "vol_decr_button", lowervol_edjecallback, NULL);
 	edje_object_signal_callback_add(edje, "QUIT", "quit", quit_edjecallback, NULL);
         edje_object_signal_callback_add(edje, "SEEK_BACK", "seekback_button", seekbackward_edjecallback, NULL);
         edje_object_signal_callback_add(edje, "SEEK_FORWARD", "seekforward_button", seekforward_edjecallback, NULL);
+
 	
 
         ecore_main_loop_begin();
@@ -204,6 +212,38 @@ void seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission
         pos = emotion_object_position_get(emotion);
 	printf("DEBUG: Position is %2f - Forward\n", pos);
         emotion_object_position_set(emotion, pos+10);
+}
+
+
+void ecore_resize(Ecore_Evas *ee) {
+        int ws = 0, hs = 0;
+
+	ecore_evas_geometry_get(ee, NULL, NULL, &ws, &hs);
+        evas_object_resize(edje, (Evas_Coord) ws, (Evas_Coord) hs);	
+}
+
+void update_timer(void *data, Evas_Object *obj, void *event_info){
+	char buffer[512];
+	double len, pos;
+	int pos_h, pos_m, len_h, len_m;
+	double pos_s, len_s;
+
+        /* get the current position and length (in seconds) */
+        pos = emotion_object_position_get(emotion);
+        len = emotion_object_play_length_get(emotion);
+        /* now convert this into hrs:mins:secs */
+        pos_h = (int)pos / (60 * 60);
+        pos_m = ((int)pos / (60)) - (pos_h * 60);
+        pos_s = pos - (pos_h * 60 * 60) - (pos_m * 60);
+        len_h = (int)len / (60 * 60);
+        len_m = ((int)len / (60)) - (len_h * 60);
+        len_s = len - (len_h * 60 * 60) - (len_m * 60);
+        /* print this to a stirng buffer */
+        /* snprintf(buffer, sizeof(buffer), "%02i:%02i:%02.2f / %02i:%02i:%02.2f",
+                 pos_h, pos_m, pos_s, len_h, len_m, len_s);	*/
+        snprintf(buffer, sizeof(buffer), "%02i:%02i:%02.0f",
+                 pos_h, pos_m, pos_s);
+	edje_object_part_text_set(edje, "time_text", buffer);
 }
 
 

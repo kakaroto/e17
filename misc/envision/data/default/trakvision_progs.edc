@@ -5,7 +5,7 @@
                                 source, "quit";
                                 action, STATE_SET "default" 1.0;
                                 target, "quit";
-                                transition, ACCELERATE 1.0;
+                                transition, ACCELERATE 0.1;
                         }
                         program {
                                 name, "quit_button_out";
@@ -13,7 +13,7 @@
                                 source, "quit";
                                 action, STATE_SET "default" 0.0;
                                 target, "quit";
-                                transition, DECELERATE 1.0;
+                                transition, SINUSOIDAL 1.0;
                         }
                         program {
                                 name, "quit_button_click";

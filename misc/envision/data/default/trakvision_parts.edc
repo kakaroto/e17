@@ -298,8 +298,8 @@
                                         }
 
                                         rel2 {
-                                                relative, 0.0 0.0;
-                                                offset, 80 38;
+                                                relative, 1.0 1.0;
+                                                offset, -9 -7;
                                                 to, "lcd_backdrop";
                                         }
 
@@ -309,7 +309,7 @@
                                                 text, "0:00";
                                                 font, "Edje.micro"; 
                                                 size, 26;       
-                                                align, 0.5 0.5;      
+                                                align, 0.8 0.5;      
                                         }
                                 }
                         }
@@ -989,11 +989,11 @@
                 }
 
 
-                        /************ Misc Area - Swallow Me! ****************************/
+                        /************ Seeker ****************************/
 
                 /* LCD Playlist Backdrop Image */
                 part {
-                        name, "misc_backdrop";
+                        name, "seeker_backdrop";
                         type, IMAGE;
                         mouse_events, 0;
                         description {
@@ -1021,7 +1021,7 @@
                 }
 
                 part {
-                        name, "misc";
+                        name, "seeker";
                         type, RECT;
                         mouse_events, 1;
 
@@ -1030,16 +1030,33 @@
 
                                 rel1 {
                                         relative, 0.0 0.0;
-                                        offset, 8 5;
-                                        to, "misc_backdrop";
+                                        offset, 5 5;
+                                        to, "seeker_backdrop";
+                                }
+
+                                rel2 {
+                                        relative, 0.0 0.0;
+                                        offset, 6 -6;
+                                        to, "seeker_backdrop";
+                                }
+                                color,  181 247 255 255;
+                        }
+
+			description {
+                                state, "default" 1.0;
+
+                                rel1 {
+                                        relative, 0.0 0.0;
+                                        offset, 5 5;
+                                        to, "seeker_backdrop";
                                 }
 
                                 rel2 {
                                         relative, 1.0 1.0;
                                         offset, -6 -6;
-                                        to, "misc_backdrop";
+                                        to, "seeker_backdrop";
                                 }
-                                color, 0 0 0 0;
+				color,  181 247 255 255;
                         }
                 }
 
