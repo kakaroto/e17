@@ -40,6 +40,10 @@ typedef struct
 #define ALIGN_TOP    3
 #define ALIGN_BOTTOM 4
 
+#define WORD_WRAP_NEVER 0
+#define WORD_WRAP_SOFT  1
+#define WORD_WRAP_FORCE 2
+
 typedef struct {
 
 	char type;
@@ -54,7 +58,8 @@ typedef struct {
 	int num_bits;
 	char *name;
 	int in_use;
-
+        double left, right, up, down;
+   
 } E_Font_Style;
 
 typedef struct {
@@ -93,6 +98,7 @@ typedef struct {
         double padding;
         char vertical_align;
         int alpha_mod;
+        char word_wrap;
    
 } Etox;
 
@@ -118,6 +124,8 @@ extern "C"
 	void etox_set_color(Etox *e, E_Text_Color *cl);
         void etox_set_alpha_mod(Etox *e, int amod);
         int  etox_get_alpha_mod(Etox *e);
+        void etox_set_word_wrap(Etox *e, int awrap);
+        int  etox_get_word_wrap(Etox *e);
 	void etox_set_color_component(Etox *e, char *arg, E_Color component);
 	Etox_Bit *Etox_Bit_new(void);
 	Etox *Etox_new(char *name);

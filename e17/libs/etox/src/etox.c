@@ -1,26 +1,34 @@
 #include "Etox.h"
 
-void etox_bit_update_geometry(Etox *e, Etox_Bit *abit) {
+void etox_bit_update_geometry(Etox *e, Etox_Bit *abit)
+{
+   /* 
+    * Internal etox:
+    * find the maximum shift to left, right, uo and down
+    * in the current font style
+    */
+   
    double obj_x, obj_y, obj_w, obj_h, max_x, max_y, min_x, min_y, max_ascent, max_descent;
    int i;
-   
+
    abit->x = abit->y = abit->w = abit->h = 0;
    min_x = min_y = max_x = max_y = 0;
    if (e && abit && abit->evas_list && abit->font_style && (abit->font_style->num_bits>0) && (abit->num_evas > 0))
      {
 	evas_get_geometry(e->evas, abit->evas_list[(abit->num_evas - 1)], &obj_x, &obj_y, &obj_w, &obj_h);
-	evas_text_get_max_ascent_descent(e->evas, abit->evas_list[(abit->num_evas - 1)], &max_ascent, &max_descent);	
+	evas_text_get_max_ascent_descent(e->evas, abit->evas_list[(abit->num_evas - 1)], &max_ascent, &max_descent);
 	obj_h = max_ascent - max_descent;
-	for (i=0; i<abit->font_style->num_bits; i++) {
-	   if (min_x > abit->font_style->bits[i].x)
-	     min_x = abit->font_style->bits[i].x;
-	   else if (max_x < abit->font_style->bits[i].x)
-	     max_x = abit->font_style->bits[i].x;
-	   if (min_y > abit->font_style->bits[i].y)
-	     min_y = abit->font_style->bits[i].y;
-	   else if (max_y < abit->font_style->bits[i].y)
-	     max_y = abit->font_style->bits[i].y;
-	}
+	for (i=0; i<abit->font_style->num_bits; i++)
+	  {
+	     if (min_x > abit->font_style->bits[i].x)
+	       min_x = abit->font_style->bits[i].x;
+	     else if (max_x < abit->font_style->bits[i].x)
+	       max_x = abit->font_style->bits[i].x;
+	     if (min_y > abit->font_style->bits[i].y)
+	       min_y = abit->font_style->bits[i].y;
+	     else if (max_y < abit->font_style->bits[i].y)
+	       max_y = abit->font_style->bits[i].y;
+	  }
 	abit->x = obj_x;
 	abit->y = obj_y;
 	abit->w = obj_w + (max_x - min_x);
@@ -30,7 +38,11 @@ void etox_bit_update_geometry(Etox *e, Etox_Bit *abit) {
 
 void etox_bit_set_face(Etox_Bit *bit, char *font, int font_size, E_Font_Style *style)
 {
-
+   /*
+    * Set all the font face information
+    * in one call
+    */
+   
    if(bit->font)
      free(bit->font);
    bit->font = malloc((strlen(font) * sizeof(char)) + 1);
@@ -59,12 +71,20 @@ char *etox_get_text(Etox *e)
 
 void etox_set_color(Etox *e, E_Text_Color *cl)
 {
+   /* 
+    * Set the default etox color
+    */
+   
    if (cl)
      e->color = *cl;
 }
 
 void etox_set_color_component(Etox *e, char *arg, E_Color component)
 {
+   /* 
+    * Set one of the components of the etox default color
+    */
+   
    if (!(strcmp(arg, "fg")))
      e->color.fg = component;
    else if (!(strcmp(arg, "ol")))
@@ -108,21 +128,21 @@ void etox_clean(Etox *e)
 
    if(e->text)
      free(e->text);
-   
+
    return;
 
 }
 
-int search_tokens(const char* text, const char** needles, int needles_count, char* *beg, char* *next)
+int search_tokens(const char* text, char** needles, int needles_count, char* *beg, char* *next)
 {
-   /* 
+   /*
     * Browse througn text, looking for any of the needles.
-    * Upon finding one - set copy to beg the string between
-    * the beginnig of text, and the first occurence of one 
-    * of the needles. Set next to point to the remainig 
+    * Upon finding one - copy to beg the string between
+    * the beginnig of text, and the first occurence of one
+    * of the needles. Set next to point to the remainig
     * text right after the first found needle
     */
-   
+
    char *tmp=NULL;
    int token_length=0;
    int needle_num = -1;
@@ -168,7 +188,7 @@ int search_tokens(const char* text, const char** needles, int needles_count, cha
 void create_bit_objects(Etox_Bit *abit, Etox *e, E_Text_Color *text_color)
 {
    /* Create the evas objects than make up this Etox_Bit */
-   
+
    double obj_x, obj_y, obj_w, obj_h;
    int i;
 
@@ -235,6 +255,12 @@ void create_bit_objects(Etox_Bit *abit, Etox *e, E_Text_Color *text_color)
 
 void update_bit_objects(Etox_Bit *abit, Etox *e)
 {
+   
+   /* 
+    * Make sure that all the etox bits are displaying the
+    * current bit text
+    */
+   
    double obj_x, obj_y, obj_w, obj_h;
    int i;
 
@@ -245,11 +271,16 @@ void update_bit_objects(Etox_Bit *abit, Etox *e)
 
 void etox_bit_move_relative(Etox *e, Etox_Bit *abit, double delta_x, double delta_y)
 {
+   /* 
+    * Move all the etox bit evas objects relative
+    * to current postion
+    */
+   
    int i;
    double obj_x, obj_y, obj_w, obj_h;
    abit->x += delta_x;
    abit->y += delta_y;
-   
+
    for (i=0; i<abit->num_evas; i++)
      {
 	evas_get_geometry(e->evas,abit->evas_list[i],&obj_x, &obj_y, &obj_w, &obj_h);
@@ -261,59 +292,59 @@ void etox_bit_move_relative(Etox *e, Etox_Bit *abit, double delta_x, double delt
 
 double dump_line(Etox_Bit **abits, int bit_count, Etox *e, char align, char vertical_align, double beg_x, double cur_w)
 {
-   int i;
-   double line_height, line_width, obj_x, obj_y, obj_w, obj_h, delta_x, delta_y, ascent, descent, max_ascent;
-
    /*
     * Copy Etox_Bits from the buffer to Etox,
     * and place them accoring to lineheight and
     * current alignments
     */
+   int i;
+   double line_height, line_width, obj_x, obj_y, obj_w, obj_h, delta_x, delta_y, ascent, descent, max_ascent;
 
    line_height = 0;
    line_width = 0;
    max_ascent = 0;
    /* Get line width and height */
-   for (i=0; i<bit_count; i++) {
-      if (abits[i]->h > line_height)
-	line_height = abits[i]->h;
-      if (i == (bit_count-1))
-	line_width = abits[i]->x + abits[i]->w;      
-      evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);
-      if (ascent > max_ascent)
-	max_ascent = ascent;
-   }
+   for (i=0; i<bit_count; i++)
+     {
+	if (abits[i]->h > line_height)
+	  line_height = abits[i]->h;
+	if (i == (bit_count-1))
+	  line_width = abits[i]->x + abits[i]->w;
+	evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);
+	if (ascent > max_ascent)
+	  max_ascent = ascent;
+     }
 
    if (align == ALIGN_LEFT)
-     delta_x = 0;
-   else if (align == ALIGN_CENTER) 
+     delta_x = -abits[0]->font_style->left;
+   else if (align == ALIGN_CENTER)
      delta_x = (beg_x + cur_w - line_width) / 2;
    else if (align == ALIGN_RIGHT)
      delta_x = beg_x + (cur_w - line_width);
 
    /* Move to properly aligned postion */
-   for (i=0; i<bit_count; i++) {
+   for (i=0; i<bit_count; i++)
+     {
 
-      if (vertical_align == ALIGN_TOP) 
-	delta_y = 0;
-      else if (vertical_align == ALIGN_CENTER) 
-	{
-	   evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);	   
-	   delta_y = (max_ascent - ascent) /2;
-	}
-      else if (vertical_align == ALIGN_BOTTOM)
-	{
-	   evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);	   
-	   delta_y = max_ascent - ascent;
-	}
-      /* Align the bit */
-      etox_bit_move_relative(e, abits[i], delta_x, delta_y);
+	if (vertical_align == ALIGN_TOP)
+	  delta_y = -abits[0]->font_style->up;
+	else if (vertical_align == ALIGN_CENTER)
+	  {
+	     evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);
+	     delta_y = (max_ascent - ascent) /2;
+	  }
+	else if (vertical_align == ALIGN_BOTTOM)
+	  {
+	     evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);
+	     delta_y = max_ascent - ascent;
+	  }
+	/* Align the bit */
+	etox_bit_move_relative(e, abits[i], delta_x, delta_y);
 
-      /* Move it to the right position in the evas */
-      etox_bit_move_relative(e, abits[i], e->x, e->y);
-   }
-   
-   
+	/* Move it to the right position in the evas */
+	etox_bit_move_relative(e, abits[i], e->x, e->y);
+     }
+
    if (bit_count)
      {
 	if(e->bit_list)
@@ -328,7 +359,6 @@ double dump_line(Etox_Bit **abits, int bit_count, Etox *e, char align, char vert
 	     e->bit_list = malloc(sizeof(Etox_Bit *) *
 				  (e->num_bits));
 	  }
-
 	for (i=0; i<bit_count; i++)
 	  {
 	     e->bit_list[e->num_bits - bit_count + i] = abits[i];
@@ -339,76 +369,96 @@ double dump_line(Etox_Bit **abits, int bit_count, Etox *e, char align, char vert
 
 void find_available_size(Etox *e, double beg_x, double beg_y, double h, double padding, double *av_x, double *av_y, double *av_w)
 {
-   /* 
-    * Find the next available rectangle of the given height 
+   /*
+    * Find the next available rectangle of the given height
     * that is not clipped off
     */
-   
+
    double x1, x2, y1, y2;
    int i, j;
    char ok = 0;
-   
+
    x1 = beg_x;
    x2 = e->w;
    y1 = beg_y;
    y2 = beg_y + h;
-   
-   if (beg_x > e->w) {
+
+   if (beg_x > e->w)
+     {
       /* It's the endof the line - begin a new one */
-      
-      x1 = 0;
-      x2 = e->w;
-      y1 = beg_y + h + padding;
-      y2 = y2 + h;
-   }
-   while (!ok) {
-      ok = 1;
-      for(i=0; i<e->num_rects; i++)
-	{
-	   if ((y1 <= (e->rect_list[i]->y) + (e->rect_list[i]->h)) &&
-	       ((y2) >= e->rect_list[i]->y ))
-	     {
-		if ((x1 >= e->rect_list[i]->x) &&
-		    (x1 <= (e->rect_list[i]->x + e->rect_list[i]->w)))
-		  {
-		     /* The beginning is inside a rectangle - move it out of it */  
-		
-		     x1 = e->rect_list[i]->x + e->rect_list[i]->w;
-		     if (x1 >= x2) 
-		       {
+
+	x1 = 0;
+	x2 = e->w;
+	y1 = beg_y + h + padding;
+	y2 = y2 + h;
+     }
+   while (!ok)
+     {
+	ok = 1;
+	for(i=0; i<e->num_rects; i++)
+	  {
+	     if ((y1 <= (e->rect_list[i]->y) + (e->rect_list[i]->h)) &&
+		 ((y2) >= e->rect_list[i]->y ))
+	       {
+		  if ((x1 >= e->rect_list[i]->x) &&
+		      (x1 <= (e->rect_list[i]->x + e->rect_list[i]->w)))
+		    {
+		     /* The beginning is inside a rectangle - move it out of it */
+
+		       x1 = e->rect_list[i]->x + e->rect_list[i]->w;
+		       if (x1 >= x2)
+			 {
 			  /* No chance of a new line on this height - move down */
-			  ok = 0;
-			  x1 = 0;
-			  x2 = e->w;
-			  y1 = (beg_y + h + padding);
-			  y2 = y1 + h;
-		       }
-		  }
-		if ((x2 >= e->rect_list[i]->x) &&
-		    (x1 <= (e->rect_list[i]->x)))
-		  {
-		     /* 
-		      * The rectangle is inbetween the beginnig and
+			    ok = 0;
+			    x1 = 0;
+			    x2 = e->w;
+			    y1 = (beg_y + h + padding);
+			    y2 = y1 + h;
+			 }
+		    }
+		  if ((x2 >= e->rect_list[i]->x) &&
+		      (x1 <= (e->rect_list[i]->x)))
+		    {
+		     /*
+		      * The clipping rectangle is inbetween the beginnig and
 		      * the end of the line - shorten the line
 		      */
-		     x2 = e->rect_list[i]->x;
-		     if (x2 <= x1)
-		       {
+		       x2 = e->rect_list[i]->x;
+		       if (x2 <= x1)
+			 {
 			  /* No chance of a new line on this height - move down */
-			  ok = 0;
-			  x1 = 0;
-			  x2 = e->w;
-			  y1 = (beg_y + h + padding);
-			  y2 = y1 + h;
-			  
-		       }
-		  }
-	     }
-	}
-   }
+			    ok = 0;
+			    x1 = 0;
+			    x2 = e->w;
+			    y1 = (beg_y + h + padding);
+			    y2 = y1 + h;
+			 }
+		    }
+	       }
+	  }
+     }
    *av_x = x1;
    *av_y = y1;
    *av_w = x2 - x1;
+}
+
+double check_bit_width(Etox *e, char *font, E_Font_Style *style, int font_size, char *text)
+{
+   /*
+    * Check what would be the with of a given Evas
+    * text object with the given font, font size
+    * and font style
+    */
+
+   double width;
+   Evas_Object o;
+
+   o = evas_add_text(e->evas,font,font_size, text);
+   width = evas_get_text_width(e->evas, o);
+   evas_del_object(e->evas, o);
+   width += style->right - style->left;
+
+   return width;
 }
 
 char etox_set_text(Etox *e, char *new_text)
@@ -436,20 +486,17 @@ char etox_set_text(Etox *e, char *new_text)
    double cur_padding;
    char cur_align, cur_vertical_align;
    double last_line_height;
-   
+
    /* Current line bits */
    Etox_Bit **cur_line = NULL;
    int cur_line_bit_count;
 
-   /* Current word */
-   char *cur_word;
-
    /* Text position pointers */
    char *cur_beg;
    char *cur_end;
+   char *cur_bit_beg;
 
    /* Status variables */
-   int first;
    char **needles;
    int cur_token, last_token;
    int ok;
@@ -468,7 +515,7 @@ char etox_set_text(Etox *e, char *new_text)
    cur_font_style = e->font_style;
    cur_align = e->align;
    cur_vertical_align = e->vertical_align;
-   
+
    /* Prepare needles */
    needles = malloc (sizeof (char *) * 3);
    needles[0] = strdup(" ");
@@ -488,20 +535,21 @@ char etox_set_text(Etox *e, char *new_text)
    cur_w = e->w;
    cur_padding = e->padding;
    cur_text_color = e->color;
-   
+
    cur_line_bit_count = 0;
    /*
-    * now we're going to loop through the text that they just set word 
-    * by word and build our internal data structures as well as any 
+    * now we're going to loop through the text that they just set word
+    * by word and build our internal data structures as well as any
     * Evas_Objects we will need to draw this text to the screen
     */
 
    last_line_height = 0.0;
-   first = 1;
    last_token = -1;
+
    cur_beg = NULL;
    cur_end = NULL;
-   
+   cur_bit_beg = e->text;
+
    find_available_size(e, cur_x, cur_y, e->font_size, e->padding, &cur_x, &cur_y, &cur_w);
    cur_token = search_tokens(e->text, needles, 3, &cur_beg, &cur_end);
    while (cur_beg)
@@ -522,53 +570,147 @@ char etox_set_text(Etox *e, char *new_text)
 	       {
 		  /* The same font face - adding text to the current bit */
 
-		  Evas_Object *o;
 		  double obj_x, obj_y, obj_w, obj_h;
 		  char *new_line;
-		  double line_end;		  
-		  
+		  double line_end;
+
 		  new_line = malloc (strlen(cur_bit->text) + strlen(cur_beg) + 2);
 		  strcpy(new_line, cur_bit->text);
 		  if (last_token == 0)
 		    strcat(new_line, " ");
 		  strcat(new_line, cur_beg);
 
-		  o = evas_add_text(e->evas,cur_font,cur_font_size,
-				    new_line);
+		  obj_w = check_bit_width(e, cur_font, cur_font_style, cur_font_size, new_line);
 
-		  obj_w = evas_get_text_width(e->evas, o);
-		  
 		  line_end = cur_bit->x + obj_w;
-		  
-		  evas_del_object(e->evas, o);
+
 		  if (line_end > (cur_w + cur_line[0]->x))
 		    {
 		       /* this will not fit into a line - start a new one */
+		       /* Do the word wrapping if neccessary */
+		       if (e->word_wrap == WORD_WRAP_FORCE)
+			 {
+			    /*
+			     * it will have to be broken up into smaller pieces
+			     */
+			    
+			    int divide_point = -1;
+			    double old_w = 0;
+
+			    double rect_end;
+			    
+			    int word_length;
+			    int old_divide_point;
+			    double old_obj_w;
+			    char w_ok;
+
+			    char *cut_word = NULL;
+			    word_length= strlen(new_line);
+
+			    rect_end = cur_line[0]->x + cur_w;
+			    
+			    /* Initial division point */
+			    divide_point = (word_length * (rect_end - cur_line[(cur_line_bit_count-1)]->x)) / obj_w;
+
+			    w_ok = 0;
+			    obj_w = 0;
+			    old_divide_point = 0;
+			    
+			    /*
+			     * Find a point where to cut the word in two pieces
+			     * so that the remaining part fits the available rectangle
+			     * just right.
+			     */
+				 
+			    while ((divide_point > 0) && !w_ok)
+			      {
+				 if (cut_word)
+				   free(cut_word);
+				 cut_word = malloc(sizeof(char) * divide_point + 1);
+				 strncpy(cut_word, new_line, divide_point);
+				 cut_word[divide_point] = '\0';
+
+				 old_obj_w = obj_w;
+				 obj_w = check_bit_width(e, cur_font, cur_font_style, cur_font_size, cut_word);
+				 
+				 if ((cur_line[(cur_line_bit_count-1)]->x + obj_w) <= rect_end)
+				   {
+				      if ((cur_line[(cur_line_bit_count-1)]->x + old_obj_w) > rect_end)
+					{
+					   /* New divide value is the right one */
+
+					   if (new_line)
+					     free(new_line);
+					   new_line = strdup(cut_word);
+					   w_ok = 1;
+					}
+				      else
+					{
+					   old_divide_point = divide_point;
+					   divide_point++;
+					}
+				   }
+				 else if (((cur_line[(cur_line_bit_count-1)]->x + old_obj_w) <= rect_end) && old_obj_w)
+				   {
+				      /* Old divide value was the right one */
+				      
+				      divide_point = old_divide_point;
+				      if (new_line)
+					free(new_line);
+				      new_line = malloc(sizeof(char) * divide_point + 1);
+				      strncpy(new_line, cut_word, divide_point);
+				      new_line[divide_point] = '\0';
+				      w_ok = 1;
+				   }
+				 else
+				   {
+				      old_divide_point = divide_point;
+				      divide_point--;
+				   }
+			      }
+
+			    if (cur_beg)
+			      free(cur_beg);
+			    cur_beg = strdup("");
+
+			    cur_end = cur_bit_beg + divide_point;
+			    cur_token = -1;
+			    last_token = -1;
+			    
+			    /* Add a remaining text to a current line */
+			    			    
+			    free(cur_bit->text);
+			    cur_bit->text = strdup(new_line);
+			    update_bit_objects(cur_bit, e);
+			    if (cut_word)
+			      free(cut_word);
+			 }
 		       line_end = cur_w + cur_line[0]->x + 1;
 		       
 		       thesame = 0;
+		       cur_bit_beg = cur_end;
 		       last_line_height = dump_line(cur_line, cur_line_bit_count, e, cur_align, cur_vertical_align, cur_line[0]->x, cur_w);
 		       free(cur_line);
 		       cur_line = NULL;
 		       cur_line_bit_count = 0;
-		       find_available_size(e, line_end, cur_y, 
+		       find_available_size(e, line_end, cur_y,
 					   last_line_height, e->padding, &cur_x, &cur_y, &cur_w);
 		    }
 		  else
 		    {
 		       /* Add a text to a current line */
-		       
+
 		       free(cur_bit->text);
 		       cur_bit->text = strdup(new_line);
 		       update_bit_objects(cur_bit, e);
-		       
-		       cur_x = cur_bit->x + cur_bit->w;	     	  
+
+		       cur_x = cur_bit->x + cur_bit->w;
 		    }
+		  if (new_line)
+		    free(new_line);
 	       }
 	     else
-	       {
-		  thesame = 0;
-	       }
+	       thesame = 0;
 	  }
 	else
 	  thesame = 0;
@@ -576,23 +718,152 @@ char etox_set_text(Etox *e, char *new_text)
 	  {
 	     /* New line or a new font face - building a new bit */
 	     double obj_x, obj_y, obj_w, obj_h;
-	     
+
+	     /* Do the word wrapping if neccessary */
+	     if ((e->word_wrap == WORD_WRAP_FORCE) ||
+		 ((e->word_wrap == WORD_WRAP_SOFT) && cur_line_bit_count == 0))
+	       {
+		  int divide_point = -1;
+		  double old_w = 0;
+
+		  do
+		    {
+		       double rect_end;
+		       /* Get the end of current rectangle */
+
+		       obj_w = check_bit_width(e, cur_font, cur_font_style, cur_font_size, cur_beg);
+
+		       if (cur_line_bit_count)
+			 rect_end = cur_line[0]->x + cur_w;
+		       else
+			 rect_end = cur_x + cur_w;
+
+		       /* Check if the word will fit in the current rectangle */
+		       if ((cur_x + obj_w) > rect_end)
+			 {
+			    /*
+			     * It will not fit -
+			     * it will have to be broken up into smaller pieces
+			     */
+
+			    int word_length;
+			    int old_divide_point;
+			    double old_obj_w;
+			    char w_ok;
+
+			    char *cut_word = NULL;
+			    word_length= strlen(cur_beg);
+
+			    /* Initial division point */
+			    divide_point = (word_length * (rect_end - cur_x)) / obj_w;
+
+			    w_ok = 0;
+			    obj_w = 0;
+			    old_divide_point = 0;
+
+			    /*
+			     * Find a point where to cut the word in two pieces
+			     * so that the remaining part fits the available rectangle
+			     * just right.
+			     */
+
+			    while ((divide_point > 0) && !w_ok)
+			      {
+				 if (cut_word)
+				   free(cut_word);
+				 cut_word = malloc(sizeof(char) * divide_point + 1);
+				 strncpy(cut_word, cur_beg, divide_point);
+				 cut_word[divide_point] = '\0';
+
+				 old_obj_w = obj_w;
+				 obj_w = check_bit_width(e, cur_font, cur_font_style, cur_font_size, cut_word);
+
+				 if ((cur_x + obj_w) <= rect_end)
+				   {
+				      if ((cur_x + old_obj_w) > rect_end)
+					{
+					   /* New divide value is the right one */
+
+					   if (cur_beg)
+					     free(cur_beg);
+					   cur_beg = strdup(cut_word);
+					   cur_end = cur_bit_beg + divide_point;
+					   cur_token = -1;
+					   w_ok = 1;
+					}
+				      else
+					{
+					   old_divide_point = divide_point;
+					   divide_point++;
+					}
+				   }
+				 else if (((cur_x + old_obj_w) <= rect_end) && old_obj_w)
+				   {
+				      /* Old divide value was the right one */
+
+				      divide_point = old_divide_point;
+				      if (cur_beg)
+					free(cur_beg);
+				      cur_beg = malloc(sizeof(char) * divide_point + 1);
+				      strncpy(cur_beg, cut_word, divide_point);
+				      cur_beg[divide_point] = '\0';
+				      cur_end = cur_bit_beg + divide_point;
+				      cur_token = -1;
+				      w_ok = 1;
+				   }
+				 else
+				   {
+				      old_divide_point = divide_point;
+				      divide_point--;
+				   }
+
+			      }
+			    if (cut_word)
+			      free(cut_word);
+			 }
+		       if (divide_point == 0)
+			 {
+			    /*
+			     * Not even one character will fit here!
+			     * Go to the next available rectangle
+			     */
+			    old_w = cur_w;
+
+			    find_available_size(e, cur_x + cur_w + 1, cur_y, e->font_size, e->padding, &cur_x, &cur_y, &cur_w);
+			 }
+		    }
+		  while (!divide_point && (old_w != e->w));
+		  if (divide_point == 0)
+		    {
+		       /*
+			* It's hopeless - this etox is to narrow to fit even
+			* a single character of this text.
+			* Interrupt bit placement
+			*/
+
+		       cur_end = NULL;
+		       if (cur_beg)
+			 free(cur_beg);
+		       cur_beg = strdup("");
+		    }
+	       }
+
 	     /* Create a new bit list */
-	     if (cur_line) 
+	     if (cur_line)
 	       {
 		  cur_line = realloc(cur_line,sizeof(Etox_Bit *) * (cur_line_bit_count + 1));
 	       }
-	     else 
+	     else
 	       {
 		  cur_line = malloc(sizeof(Etox_Bit *) * (cur_line_bit_count + 1));
 	       }
-	     
+
 	     /* Create the next bit */
 	     cur_line[cur_line_bit_count] = Etox_Bit_new();
 	     if ((last_token == 0) && (cur_line_bit_count > 0))
 	       {
 		  char *new_line;
-		  
+
 		  new_line = malloc(sizeof(char) * (strlen(cur_beg) + 2));
 		  strcpy(new_line, " ");
 		  strcat(new_line, cur_beg);
@@ -614,7 +885,7 @@ char etox_set_text(Etox *e, char *new_text)
 	     /* Create the Evas objects */
 	     create_bit_objects(cur_line[cur_line_bit_count], e, &cur_text_color);
 
-	     cur_x = cur_line[cur_line_bit_count]->x + cur_line[cur_line_bit_count]->w;	     	  
+	     cur_x = cur_line[cur_line_bit_count]->x + cur_line[cur_line_bit_count]->w;
 
 	     cur_line_bit_count += 1;
 	  }
@@ -699,7 +970,7 @@ char etox_set_text(Etox *e, char *new_text)
 			    else if (!strncmp(cur_end,"align",5))
 			      {
 				 /* Set the current alignment */
-				 
+
 				 if(!strcmp(s4,"right"))
 				   {
 				      cur_align = ALIGN_RIGHT;
@@ -717,7 +988,7 @@ char etox_set_text(Etox *e, char *new_text)
 			    else if (!strncmp(cur_end,"valign",6))
 			      {
 				 /* Set the current alignment */
-				 
+
 				 if(!strcmp(s4,"top"))
 				   {
 				      cur_vertical_align = ALIGN_TOP;
@@ -776,11 +1047,13 @@ char etox_set_text(Etox *e, char *new_text)
 			      }
 			 }
 		       last_token = cur_token;
+		       cur_bit_beg = s2 + 1;
 		       cur_token = search_tokens((s2 + 1),needles,3, &cur_beg, &cur_end);
 		    }
 		  else
 		    {
 		       last_token = cur_token;
+		       cur_bit_beg = s2 + 1;
 		       cur_token = search_tokens((s2 + 1),needles,3, &cur_beg, &cur_end);
 		    }
 	       }
@@ -794,18 +1067,22 @@ char etox_set_text(Etox *e, char *new_text)
 	if (!(cur_end || cur_beg) || (last_token == 1))
 	  {
 	     /* the end of the text or the forced end of line - flush the buffer (current line) */
-	     
+
 	     if (cur_line)
 	       {
+		  cur_bit_beg = cur_end;
 		  last_line_height = dump_line(cur_line, cur_line_bit_count, e, cur_align, cur_vertical_align, cur_line[0]->x, cur_w);
 		  free(cur_line);
 		  cur_line = NULL;
 		  cur_line_bit_count = 0;
 	       }
-	     find_available_size(e, e->w + 1, cur_y, 
+	     find_available_size(e, e->w + 1, cur_y,
 				 last_line_height, e->padding, &cur_x, &cur_y, &cur_w);
-	  }	
+	  }
      }
+   for (ok=0; ok<3; ok++)
+     free(needles[ok]);
+   free(needles);
    return 1;
 }
 
@@ -840,10 +1117,10 @@ int etox_get_layer(Etox *e)
     * returns the layer on which all the Evas components sit
     * or a negative -1 in case of failure
     */
-   
+
    if(!e)
      return -1;
-   
+
    return e->layer;
 }
 
@@ -966,12 +1243,12 @@ char etox_set_font_style(Etox *e, E_Font_Style *font_style)
 
    if(!font_style)
      return 0;
-   
+
    if (e->font_style)
      E_Font_Style_free(e->font_style);
    e->font_style = font_style;
    e->font_style->in_use++;
-   
+
    etox_refresh(e);
 
    return 1;
@@ -1002,7 +1279,7 @@ void etox_refresh(Etox *e)
 
 char etox_clip_rect_new(Etox *e, double x, double y, double w,double h)
 {
-   
+
    /*
     * This function adds a new clip rect to the Etox.
     * Need to add a function to remove a cliprect from an Etox, as well as
@@ -1059,7 +1336,7 @@ void etox_free(Etox *e)
     */
 
    int i;
-   
+
    etox_clean(e);
    if (e->rect_list)
      {
@@ -1138,7 +1415,8 @@ Etox *Etox_new(char *name)
    e->w = 0;
    e->h = 0;
    e->alpha_mod = 255;
-   
+   e->word_wrap = WORD_WRAP_SOFT;
+
    return e;
 }
 
@@ -1146,17 +1424,22 @@ Etox *Etox_new_all(Evas *evas, char *name, double x, double y, double w, double 
 		   int layer, char *font, char *font_style, int font_size, E_Text_Color *cl,
 		   double padding, int align, int vertical_align)
 {
+   /* 
+    * Creates a new etox and initializes all
+    * the relevant fields 
+    */
+   
    Etox *e;
 
    e = malloc(sizeof(Etox));
-   
+
    if (name)
      e->name = strdup(name);
    else
      e->name = NULL;
    e->text = NULL;
    e->text_len = 0;
-   
+
    e->rect_list = NULL;
    e->num_rects = 0;
    e->rendered = 0;
@@ -1178,7 +1461,7 @@ Etox *Etox_new_all(Evas *evas, char *name, double x, double y, double w, double 
 
 	e->font_style->name = strdup("default");
 	e->font_style->bits = malloc(sizeof(E_Style_Bit));
-	
+
 	e->font_style->bits[0].x = 0.0;
 	e->font_style->bits[0].y = 0.0;
 	e->font_style->bits[0].alpha = 255;
@@ -1212,19 +1495,24 @@ Etox *Etox_new_all(Evas *evas, char *name, double x, double y, double w, double 
      }
    e->vertical_align = vertical_align;
    e->alpha_mod = 255;
+   e->word_wrap = WORD_WRAP_SOFT;
+
    return e;
 }
 
-void etox_set_alpha_mod(Etox *e, int amod) {
-   int i,j;
+void etox_set_alpha_mod(Etox *e, int amod)
+{
+   /* Sets the etox alpha modifier */
    
-   e->alpha_mod = amod;   
+   int i,j;
+
+   e->alpha_mod = amod;
    for (i=0; i<e->num_bits; i++)
      {
-	for (j=0; j<e->bit_list[i]->num_evas; j++) 
+	for (j=0; j<e->bit_list[i]->num_evas; j++)
 	  {
 	     int r, g, b, a;
-	     
+
 	     evas_get_color(e->evas, e->bit_list[i]->evas_list[j], &r, &g, &b, &a);
 	     a = e->bit_list[i]->font_style->bits[j].alpha * amod / 255;
 	     evas_set_color(e->evas, e->bit_list[i]->evas_list[j], r, g, b, a);
@@ -1232,6 +1520,24 @@ void etox_set_alpha_mod(Etox *e, int amod) {
      }
 }
 
-int  etox_get_alpha_mod(Etox *e) {
+int  etox_get_alpha_mod(Etox *e)
+{
+   /* Returns the current etox alpha moifier */
    return e->alpha_mod;
+}
+
+void etox_set_word_wrap(Etox *e, int awrap)
+{
+   /* Set the etoz word wrapping mode */
+   if (e->word_wrap != awrap)
+     {
+	e->word_wrap = awrap;
+	etox_refresh(e);
+     }
+}
+
+int  etox_get_word_wrap(Etox *e)
+{
+   /* Return the current etox word wrapping mode */
+   return e->word_wrap;
 }

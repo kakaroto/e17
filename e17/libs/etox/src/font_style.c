@@ -42,6 +42,29 @@ char **etox_list_font_style_path(int *number_return) {
   return fspath;
 }
 
+void E_Font_Style_calculate_shift(E_Font_Style *style) 
+{
+   int i;
+   
+   if (style->num_bits)
+     {
+	style->left = style->right = style->bits[0].x;
+	style->up   = style->down  = style->bits[0].y;
+	for(i=1; i<style->num_bits; i++)
+	  {
+	     if (style->bits[i].x < style->left)
+	       style->left = style->bits[i].x;
+	     if (style->bits[i].x > style->right)
+	       style->right = style->bits[i].x;
+	     if (style->bits[i].y < style->down)
+	       style->down = style->bits[i].y;
+	     if (style->bits[i].y > style->up)
+	       style->up = style->bits[i].y;
+	  }
+     }     
+   else
+     style->left = style->right = style->up = style->down = 0;
+}
 
 E_Font_Style *E_load_font_style(char *path) {
 
@@ -125,7 +148,8 @@ E_Font_Style *E_load_font_style(char *path) {
     style->bits[style->num_bits - 1].alpha = i3;
   }
   fclose(font_file);
-  
+
+   E_Font_Style_calculate_shift(style);
   (style->in_use)++;
   return style;
   

@@ -112,11 +112,11 @@ main(int argc, char **argv)
    e_etox->y = 0;
    e_etox->w=450;
    e_etox->h=1000;
-   etox_clip_rect_new(e_etox, 100, 80, 50, 400);
+   etox_clip_rect_new(e_etox, 100, 90, 50, 400);
    rect[0] = evas_add_rectangle(e);
    evas_set_color(e, rect[0], 20, 40, 200, 150);
    evas_resize(e, rect[0], 50, 400);
-   evas_move(e, rect[0], 105, 80);
+   evas_move(e, rect[0], 105, 90);
    evas_set_layer(e, rect[0], 10);
    evas_show(e, rect[0]);
    etox_clip_rect_new(e_etox, 350, 150, 100, 100);
@@ -176,6 +176,7 @@ main(int argc, char **argv)
    strcat(txt,"the children of von Neumann. ");
    
    etox_set_alpha_mod(e_etox, 255);
+   etox_set_word_wrap(e_etox, WORD_WRAP_FORCE);
    etox_set_text(e_etox, txt);
    etox_x = 5; etox_y = 0;
    etox_move(e_etox, etox_x, etox_y);
