@@ -15,7 +15,6 @@ struct _ewl_config
 	struct {
 		int             enable;
 		int             level;
-		int             hierarchy;
 	} debug;
 	struct {
 		int             font_cache;
@@ -26,6 +25,7 @@ struct _ewl_config
 		char           *name;
 		int             cache;
 		int             cclass_override;
+		int             print_keys;
 	} theme;
 };
 

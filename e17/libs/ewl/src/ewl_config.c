@@ -8,13 +8,13 @@
 enum Ewl_Config_Types {
 	EWL_CONFIG_DEBUG_ENABLE,
 	EWL_CONFIG_DEBUG_LEVEL,
-	EWL_CONFIG_DEBUG_HIER,
 	EWL_CONFIG_EVAS_RENDER_METHOD,
 	EWL_CONFIG_EVAS_FONT_CACHE,
 	EWL_CONFIG_EVAS_IMAGE_CACHE,
 	EWL_CONFIG_THEME_NAME,
 	EWL_CONFIG_THEME_CACHE,
-	EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE
+	EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE,
+	EWL_CONFIG_THEME_PRINT_KEYS
 };
 
 extern Ecore_List *ewl_embed_list;
@@ -189,12 +189,12 @@ static void ewl_config_config_read(void)
 
 	nc.debug.enable = ewl_config_int_get("/ewl/debug/enable");
 	nc.debug.level = ewl_config_int_get("/ewl/debug/level");
-	nc.debug.hierarchy = ewl_config_int_get("/ewl/debug/hierarchy");
 	nc.evas.font_cache = ewl_config_int_get("/ewl/evas/font_cache");
 	nc.evas.image_cache = ewl_config_int_get("/ewl/evas/image_cache");
 	nc.evas.render_method = ewl_config_str_get("/ewl/evas/render_method");
 	nc.theme.name = ewl_config_str_get("/ewl/theme/name");
 	nc.theme.cache = ewl_config_int_get("/ewl/theme/cache");
+	nc.theme.print_keys = ewl_config_int_get("/ewl/theme/print_keys");
 	nc.theme.cclass_override = 
 			ewl_config_int_get("/ewl/theme/color_classes/override");
 
@@ -338,12 +338,12 @@ static void ewl_config_config_read(void)
 
 	ewl_config.debug.enable = nc.debug.enable;
 	ewl_config.debug.level = nc.debug.level;
-	ewl_config.debug.hierarchy = nc.debug.hierarchy;
 	ewl_config.evas.font_cache = nc.evas.font_cache;
 	ewl_config.evas.image_cache = nc.evas.image_cache;
 	ewl_config.evas.render_method = nc.evas.render_method;
 	ewl_config.theme.name = nc.theme.name;
 	ewl_config.theme.cache = nc.theme.cache;
+	ewl_config.theme.print_keys = nc.theme.print_keys;
 	ewl_config.theme.cclass_override = nc.theme.cclass_override;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -355,13 +355,13 @@ static void ewl_config_defaults_set(void)
 
 	ecore_config_int_default("/ewl/debug/enable", 0);
 	ecore_config_int_default("/ewl/debug/level", 0);
-	ecore_config_int_default("/ewl/debug/hierarchy", 0);
 	ecore_config_string_default("/ewl/evas/render_method", "software_x11");
 	ecore_config_int_default("/ewl/evas/font_cache", 2097152);
 	ecore_config_int_default("/ewl/evas/image_cache", 8388608);
 	ecore_config_theme_default("/ewl/theme/name", "default");
 	ecore_config_int_default("/ewl/theme/cache", 0);
 	ecore_config_int_default("/ewl/theme/color_classes/override", 0);
+	ecore_config_int_default("/ewl/theme/print_keys", 0);
 
 	/* need to set each of these keys into the system section */
 	{
@@ -370,13 +370,13 @@ static void ewl_config_defaults_set(void)
 		char *keys [] = {
 		    "/ewl/debug/enable",
 		    "/ewl/debug/level",
-		    "/ewl/debug/hierarchy",
 		    "/ewl/evas/render_method",
 		    "/ewl/evas/font_cache",
 		    "/ewl/evas/image_cache",
 		    "/ewl/theme/name",
 		    "/ewl/theme/cache",
 		    "/ewl/theme/color_classes/override",
+		    "/ewl/theme/print_keys",
 		    NULL
 		};
 
@@ -390,8 +390,6 @@ static void ewl_config_defaults_set(void)
 		    ewl_config_listener, EWL_CONFIG_DEBUG_ENABLE, NULL);
 		ecore_config_listen("ewl_debug_level", "/ewl/debug/level",
 		    ewl_config_listener, EWL_CONFIG_DEBUG_LEVEL, NULL);
-		ecore_config_listen("ewl_debug_hierarchy", "/ewl/debug/hierarchy",
-		    ewl_config_listener, EWL_CONFIG_DEBUG_HIER, NULL);
 		ecore_config_listen("ewl_render_method", "/ewl/evas/render_method",
 		    ewl_config_listener, EWL_CONFIG_EVAS_RENDER_METHOD, NULL);
 		ecore_config_listen("ewl_font_cache", "/ewl/evas/font_cache",
@@ -402,6 +400,8 @@ static void ewl_config_defaults_set(void)
 		    ewl_config_listener, EWL_CONFIG_THEME_NAME, NULL);
 		ecore_config_listen("ewl_theme_cache", "/ewl/theme/cache",
 		    ewl_config_listener, EWL_CONFIG_THEME_CACHE, NULL);
+		ecore_config_listen("ewl_theme_print_keys", "/ewl/theme/print_keys",
+		    ewl_config_listener, EWL_CONFIG_THEME_PRINT_KEYS, NULL);
 		ecore_config_listen("ewl_theme_cclases_override", "/ewl/theme/color_classes/override",
 		    ewl_config_listener, EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE, NULL);
 	}
@@ -419,10 +419,6 @@ static int ewl_config_listener(const char *key, const Ecore_Config_Type type,
 
 		case EWL_CONFIG_DEBUG_LEVEL:
 			ewl_config.debug.level = ewl_config_int_get(key);
-			break;
-
-		case EWL_CONFIG_DEBUG_HIER:
-			ewl_config.debug.hierarchy = ewl_config_int_get(key);
 			break;
 
 		case EWL_CONFIG_EVAS_RENDER_METHOD:
@@ -449,6 +445,10 @@ static int ewl_config_listener(const char *key, const Ecore_Config_Type type,
 			
 		case EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE:
 			ewl_config.theme.cclass_override = ewl_config_int_get(key);
+			break;
+
+		case EWL_CONFIG_THEME_PRINT_KEYS:
+			ewl_config.theme.print_keys = ewl_config_int_get(key);
 			break;
 	}
 	return 0;

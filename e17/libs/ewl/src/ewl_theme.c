@@ -344,7 +344,7 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	else
 		snprintf(key, PATH_MAX, "%s", k);
 
-	if (ewl_config.debug.hierarchy) 
+	if (ewl_config.theme.print_keys) 
 		printf("%s\n", key);
 
 
