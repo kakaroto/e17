@@ -163,6 +163,7 @@ sub create_todo_page {
 		push @todolist, \%todoitem;
 
 	}
+	close TODOLIST;
 
 	$todo{vbox} = $vbox;
 
