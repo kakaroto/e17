@@ -6,9 +6,6 @@ Known bugs, feature requests, and miscellaneous issues
 Known bugs
 ----------
 
-- E may lose control over a window if it is iconified and de-iconified
-  shortly after.
-
 - Custom group member settings are lost when all members are closed.
 
 - Various minor focus issues.
@@ -40,6 +37,9 @@ TODO for E 16.7
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- E may lose control over a window if it is iconified and de-iconified
+  shortly after.
 
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
