@@ -64,3 +64,10 @@ efsd_get_socket_file(void)
 
   return (s);
 }
+
+
+void
+efsd_remove_socket_file(void)
+{
+  unlink(efsd_get_socket_file());
+}

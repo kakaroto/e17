@@ -66,19 +66,20 @@ static int           listen_fd;
 
 /* For options: */
 static int           opt_foreground = 0;
-static int           opt_forcestart = 0;
+static int           opt_careful    = 0;
 
-void   efsd_connect_to_fam(void);
-int    efsd_handle_client_command(EfsdCommand *command, int sockfd);
-void   efsd_handle_fam_events(void);
-void   efsd_handle_connections(void);
-void   efsd_cleanup(int signal);
-void   efsd_daemonize(void);
-void   efsd_check_options(int argc, char**argv);
-int    efsd_close_connection(int client);
+static void   efsd_connect_to_fam(void);
+static int    efsd_handle_client_command(EfsdCommand *command, int sockfd);
+static void   efsd_handle_fam_events(void);
+static void   efsd_handle_connections(void);
+static void   efsd_cleanup_signal_callback(int signal);
+static void   efsd_cleanup(void);
+static void   efsd_daemonize(void);
+static void   efsd_check_options(int argc, char**argv);
+static int    efsd_close_connection(int client);
 
 
-void 
+static void 
 efsd_connect_to_fam(void)
 {
   if ((FAMOpen(&famcon)) < 0)
@@ -89,7 +90,7 @@ efsd_connect_to_fam(void)
 }
 
 
-int
+static int
 efsd_handle_client_command(EfsdCommand *command, int client)
 {
   int result = (-1);
@@ -155,7 +156,7 @@ efsd_handle_client_command(EfsdCommand *command, int client)
 }
 
 
-void 
+static void 
 efsd_handle_fam_events(void)
 {
   FAMEvent    famev;
@@ -245,30 +246,13 @@ efsd_handle_fam_events(void)
 }
 
 
-void 
+static void 
 efsd_handle_connections(void)
 {
   struct sockaddr_un serv_sun, cli_sun;
   int         num_read, fdsize, clilen, i, can_accept, sock_fd;
   EfsdCommand ecmd;
   fd_set      fdset;
-
-  if (efsd_misc_file_exists(efsd_get_socket_file()))
-    {
-      if (opt_forcestart)
-	{
-	  if (unlink(efsd_get_socket_file()) < 0)
-	    {
-	      fprintf(stderr, "Socket file exists and cannot be removed, with -F given -- exiting.\n");
-	      exit(-1);
-	    }	  
-	}
-      else
-	{
-	  fprintf(stderr, "Efsd appears to be already running -- exiting.\n");
-	  exit(-1);
-	}
-    }
 
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientfd[i] = -1;
@@ -390,28 +374,32 @@ efsd_handle_connections(void)
 }
 
 
-void 
-efsd_cleanup(int signal)
+static void 
+efsd_cleanup_signal_callback(int signal)
+{
+  efsd_cleanup();
+}
+
+static void 
+efsd_cleanup(void)
 {
   int i;
-
+  
   for (i = 0; i < EFSD_CLIENTS; i++)
     {
       if (clientfd[i] >= 0)
 	close(clientfd[i]);
     }
-
+  
   close(listen_fd);
-  unlink(efsd_get_socket_file());
+  efsd_remove_socket_file();
   FAMClose(&famcon);
   efsd_fam_cleanup();
-
   exit(0);
-  signal = 0;
 }
 
 
-void 
+static void 
 efsd_initialize(void)
 {
   int i;
@@ -427,35 +415,36 @@ efsd_initialize(void)
   
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
-  signal(SIGABRT,   efsd_cleanup);
-  signal(SIGALRM,   efsd_cleanup);
-  signal(SIGBUS,    efsd_cleanup);
+  signal(SIGABRT,   efsd_cleanup_signal_callback);
+  signal(SIGALRM,   efsd_cleanup_signal_callback);
+  signal(SIGBUS,    efsd_cleanup_signal_callback);
 #ifdef SIGEMT
-  signal(SIGEMT, efsd_cleanup);
+  signal(SIGEMT, efsd_cleanup_signal_callback);
 #endif
-  signal(SIGFPE,    efsd_cleanup);
-  signal(SIGHUP,    efsd_cleanup);
-  signal(SIGILL,    efsd_cleanup);
-  signal(SIGINT,    efsd_cleanup);
-  signal(SIGIO,     efsd_cleanup);
-  signal(SIGIOT,    efsd_cleanup);
-  signal(SIGQUIT,   efsd_cleanup);
-  signal(SIGSEGV,   efsd_cleanup);
-  signal(SIGSTKFLT, efsd_cleanup);
-  signal(SIGSYS,    efsd_cleanup);
-  signal(SIGTERM,   efsd_cleanup);
-  signal(SIGTRAP,   efsd_cleanup);
-  signal(SIGUSR1,   efsd_cleanup);
-  signal(SIGUSR2,   efsd_cleanup);
-  signal(SIGVTALRM, efsd_cleanup);
-  signal(SIGXCPU,   efsd_cleanup);
-  signal(SIGXFSZ,   efsd_cleanup);
+  signal(SIGFPE,    efsd_cleanup_signal_callback);
+  signal(SIGHUP,    efsd_cleanup_signal_callback);
+  signal(SIGILL,    efsd_cleanup_signal_callback);
+  signal(SIGINT,    efsd_cleanup_signal_callback);
+  signal(SIGIO,     efsd_cleanup_signal_callback);
+  signal(SIGIOT,    efsd_cleanup_signal_callback);
+  signal(SIGQUIT,   efsd_cleanup_signal_callback);
+  signal(SIGSEGV,   efsd_cleanup_signal_callback);
+  signal(SIGSTKFLT, efsd_cleanup_signal_callback);
+  signal(SIGSYS,    efsd_cleanup_signal_callback);
+  signal(SIGTERM,   efsd_cleanup_signal_callback);
+  signal(SIGTRAP,   efsd_cleanup_signal_callback);
+  signal(SIGUSR1,   efsd_cleanup_signal_callback);
+  signal(SIGUSR2,   efsd_cleanup_signal_callback);
+  signal(SIGVTALRM, efsd_cleanup_signal_callback);
+  signal(SIGXCPU,   efsd_cleanup_signal_callback);
+  signal(SIGXFSZ,   efsd_cleanup_signal_callback);
 
   signal(SIGPIPE, SIG_IGN);
+  atexit(efsd_remove_socket_file);
 }
 
 
-void
+static void
 efsd_daemonize(void)
 {
   pid_t   pid;
@@ -482,7 +471,7 @@ efsd_daemonize(void)
 }
 
 
-void 
+static void 
 efsd_check_options(int argc, char**argv)
 {
   int i;
@@ -496,7 +485,7 @@ efsd_check_options(int argc, char**argv)
 		 "USAGE: %s [OPTIONS]\n"
 		 "\n"
 		 "  -f, --foreground      do not fork into background on startup.\n"
-		 "  -F, --forcestart      start even if socket file exists already.\n"
+		 "  -c, --careful         don't start if socket file exists.\n"
 		 "\n",
 		 argv[0]);
 	  exit(0);
@@ -505,15 +494,30 @@ efsd_check_options(int argc, char**argv)
 	{
 	  opt_foreground = 1;
 	}
-      else if (!strcmp(argv[i], "-F") || !strcmp(argv[i], "--forcestart"))
+      else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--careful"))
 	{
-	  opt_forcestart = 1;
+	  opt_careful = 1;
 	}
+    }
+
+  if (efsd_misc_file_exists(efsd_get_socket_file()))
+    {
+      if (opt_careful)
+	{      
+	  fprintf(stderr, "Efsd appears to be already running -- exiting.\n");
+	  exit(-1);
+	}
+
+      if (unlink(efsd_get_socket_file()) < 0)
+	{
+	  fprintf(stderr, "Socket file exists and cannot be removed -- exiting.\n");
+	  exit(-1);
+	}	  
     }
 }
 
 
-int
+static int
 efsd_close_connection(int client)
 {
   D(("Closing connection %i\n", client));
