@@ -61,6 +61,7 @@ struct _Ewl_Button_Stock
   Ewl_Button  button;       /* Inherit from the button */
   Ewl_Widget *image_object; /* Here is the image */
 
+  char       *stock_id;     /* Copy of set stock id */
   int         response_id;  /* the response Id */
 };
 
