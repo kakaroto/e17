@@ -406,10 +406,17 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		*/
 	}
 
-	if (ewl_cursor_get_start_position(EWL_CURSOR(e->cursor)) != index)
-		index--;
-
 	index++;
+
+	if (ewl_cursor_get_start_position(EWL_CURSOR(e->cursor)) != index) {
+		int len, base;
+
+		index--;
+		len = ewl_text_length_get(EWL_TEXT(e->text));
+		base = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
+		if (base > len)
+			ewl_cursor_set_base(EWL_CURSOR(e->cursor), --base);
+	}
 
 	ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
 
