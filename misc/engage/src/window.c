@@ -83,7 +83,7 @@ od_window_init()
   else
     ecore_evas_shaped_set(ee, 0);
   ecore_evas_callback_pre_render_set(ee, od_dock_redraw);
-  ecore_evas_callback_focus_out_set(ee, handle_mouse_out);
+  ecore_evas_callback_mouse_out_set(ee, handle_mouse_out);
 
   evas = ecore_evas_get(ee);
   Evas_Object    *eventer = evas_object_rectangle_add(evas);

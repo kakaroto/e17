@@ -110,7 +110,7 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   imlib_context_set_dither_mask(0);
   imlib_context_set_drawable(pmap);
 
-#if !IMLIB_CREATE_IMAGE_FROM_DRAWABLE_WORKS_WITH_MASK
+#if IMLIB_CREATE_IMAGE_FROM_DRAWABLE_WORKS_WITH_MASK
   mask = None;
 #endif
   img = imlib_create_image_from_drawable(mask, x, y, w, h, 0);
@@ -119,8 +119,9 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   evas_object_image_size_set(icon->pic, w, h);
   evas_object_image_data_copy_set(icon->pic,
                                   imlib_image_get_data_for_reading_only());
-  edje_object_part_unswallow(icon->icon, "EquateIcon");
-  edje_object_part_swallow(icon->icon, "EquateIcon", icon->pic);
+  /*FIXME WRONG ! */
+  edje_object_part_unswallow(icon->icon, "EngageIcon");
+  edje_object_part_swallow(icon->icon, "EngageIcon", icon->pic);
 
   imlib_free_image();
 
@@ -430,6 +431,8 @@ char *source)
 		    OD_Window *win = (OD_Window*)l->data;
 		    if(win->applnk == icon)
 		    {
+			clients = evas_list_remove(clients, win);
+			clients = evas_list_append(clients, win);
 			od_wm_activate_window(win->id);
 			break;
 		    }
@@ -439,6 +442,29 @@ char *source)
 		break;
 	    case minimised_window:
 		od_wm_activate_window(icon->data.minwin.window);
+		break;
+	}
+    }
+    else if(!strcmp(emission, "engage,app,minimize"))
+    {
+	switch(icon->type)
+	{
+	    case application_link:
+		for(l = clients; l; l = l->next)
+		{
+		    OD_Window *win = (OD_Window*)l->data;
+		    if(win->applnk == icon)
+		    {
+			clients = evas_list_remove(clients, win);
+			clients = evas_list_append(clients, win);
+			od_wm_deactivate_window(win->id);
+			break;
+		    }
+		}
+		break;
+	    case docked_icon:
+		break;
+	    case minimised_window:
 		break;
 	}
     }

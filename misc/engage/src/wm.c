@@ -263,3 +263,9 @@ od_wm_activate_window(Ecore_X_Window win)
   ecore_x_window_show(win);
   ecore_x_window_raise(win);
 }
+void
+od_wm_deactivate_window(Ecore_X_Window win)
+{
+  ecore_x_window_lower(win);
+  ecore_x_window_prop_state_request(win, ECORE_X_WINDOW_STATE_ICONIFIED, 1);
+}
