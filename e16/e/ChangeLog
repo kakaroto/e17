@@ -2610,3 +2610,12 @@ Wed Mar 31 21:58:20 CEST 2004
 Simplify alert (GSOD) code. Less intensive use of macros.
 Set DISPLAY env var early. Fixes a problem with multihead and early alerts.
 Various trivial fixups.
+
+-------------------------------------------------------------------------------
+
+Fri Apr  2 01:26:26 CEST 2004
+(Kim)
+
+Improve on (click-to-) focus.
+Some more bits for UTF-8 support.
+Avoid crash with Absolute E theme.
