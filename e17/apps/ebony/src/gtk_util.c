@@ -379,11 +379,11 @@ display_bg(E_Background _bg)
    e_bg_add_to_evas(_bg, evas);
    e_bg_set_layer(_bg, 0);
    e_bg_show(_bg);
+   bg = _bg;
    _bl = e_bg_get_layer_number(_bg, 0);
    display_layer_values(_bl);
    set_spin_value("layer_num", 0);
    update_background(_bg);
-   bg = _bg;
 }
 
 /**
@@ -412,13 +412,6 @@ save_as_ok_clicked(GtkWidget * w, gpointer data)
 
    /* Save as over another file, load images before nuking it */
    fill_background_images(bg);
-
-   _bg = e_bg_load((char *) file);
-   if (_bg)
-   {
-      clear_bg_db_keys(_bg);
-      e_bg_free(_bg);
-   }
 
    e_bg_save(bg, (char *) file);
 
@@ -607,6 +600,7 @@ gradient_one_cs_ok_button_clicked(GtkWidget * w, gpointer data)
       g->g = 255 * color[1];
       g->b = 255 * color[2];
       g->a = 255 * color[3];
+      g->dist = 1;
    }
    da = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_one_color_box");
    gtk_widget_set_sensitive(da, TRUE);
@@ -651,6 +645,7 @@ gradient_two_cs_ok_button_clicked(GtkWidget * w, gpointer data)
       g->g = 255 * color[1];
       g->b = 255 * color[2];
       g->a = 255 * color[3];
+      g->dist = 1;
    }
    da = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_two_color_box");
    gtk_widget_set_sensitive(da, TRUE);

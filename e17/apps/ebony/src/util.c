@@ -8,6 +8,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define EBONY_IMAGE_CACHE 4
+#define EBONY_FONT_CACHE 0
+
 /** Parse the ebony previously modified bg dbs 
  * Return a GList 
  */
@@ -219,7 +222,6 @@ move_layer_down(E_Background_Layer _bl)
 void
 outline_evas_object(Evas_Object * _o)
 {
-#if 0
    double x, y, w, h;
 
    /* int colors[] = { 255, 255, 255, 255 }; */
@@ -229,32 +231,31 @@ outline_evas_object(Evas_Object * _o)
 
    if (!_o)
       return;
-   evas_object_geometry_get(evas, _o, &x, &y, &w, &h);
-   o = evas_object_get_named(evas, "top_line");
+   evas_object_geometry_get(_o, &x, &y, &w, &h);
+   o = evas_object_name_find(evas, "top_line");
    if (o)
    {
-      evas_set_line_xy(evas, o, x, y, x + w, y);
-      evas_set_layer(evas, o, 100);
+      evas_object_line_xy_set(o, x, y, x + w, y);
+      evas_object_layer_set(o, 100);
    }
-   o = evas_object_get_named(evas, "bottom_line");
+   o = evas_object_name_find(evas, "bottom_line");
    if (o)
    {
-      evas_set_line_xy(evas, o, x, y + h, x + w, y + h);
-      evas_set_layer(evas, o, 100);
+      evas_object_line_xy_set(o, x, y + h, x + w, y + h);
+      evas_object_layer_set(o, 100);
    }
-   o = evas_object_get_named(evas, "right_line");
+   o = evas_object_name_find(evas, "right_line");
    if (o)
    {
-      evas_set_line_xy(evas, o, x + w, y, x + w, y + h);
-      evas_set_layer(evas, o, 100);
+      evas_object_line_xy_set(o, x + w, y, x + w, y + h);
+      evas_object_layer_set(o, 100);
    }
-   o = evas_object_get_named(evas, "left_line");
+   o = evas_object_name_find(evas, "left_line");
    if (o)
    {
-      evas_set_line_xy(evas, o, x, y, x, y + h);
-      evas_set_layer(evas, o, 100);
+      evas_object_line_xy_set(o, x, y, x, y + h);
+      evas_object_layer_set(o, 100);
    }
-#endif
 }
 
 /**
@@ -272,16 +273,12 @@ fill_background_images(E_Background _bg)
    for (l = _bg->layers; l; l = l->next)
    {
       _bl = (E_Background_Layer) l->data;
-      if (_bl->type == E_BACKGROUND_TYPE_IMAGE)
+      if ((_bl->type == E_BACKGROUND_TYPE_IMAGE) && (_bl->inlined))
       {
-         if (!_bl->image)
-            _bl->image = imlib_load_image(_bl->file);
-	 if (!_bl->image)
-	 {
-	     char buf[PATH_MAX];
-	     snprintf(buf, PATH_MAX, "%s:%s", _bg->file, _bl->file);
-	     _bl->image = imlib_load_image(buf);
-	 }
+         char buf[PATH_MAX];
+
+         snprintf(buf, PATH_MAX, "%s:%s", _bg->file, _bl->file);
+         _bl->image = imlib_load_image(buf);
       }
    }
 }
@@ -334,7 +331,8 @@ redraw_gradient_object(void)
    for (l = bl->gradient.colors; l; l = l->next)
    {
       g = (E_Background_Gradient) l->data;
-      evas_object_gradient_color_add(bl->obj, g->r, g->g, g->b, g->a, 1);
+      evas_object_gradient_color_add(bl->obj, g->r, g->g, g->b, g->a,
+                                     g->dist);
    }
    evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
    evas_object_show(bl->obj);
@@ -347,9 +345,10 @@ void
 setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
            int h)
 {
+   Evas_Object *o;
    Evas_Engine_Info_Software_X11 *einfo;
 
-   /* int colors[] = { 255, 255, 255, 255 }; */
+   int colors[] = { 255, 255, 255, 255 };
 
    evas = evas_new();
    evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
@@ -366,8 +365,8 @@ setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
    einfo->info.debug = 0;
    evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
 
-   evas_object_image_cache_set(evas, (1024 * 1024) * 1);
-   evas_object_font_cache_set(evas, (1024 * 1024) * 4);
+   evas_object_image_cache_set(evas, (1024 * 1024) * EBONY_IMAGE_CACHE);
+   evas_object_font_cache_set(evas, (1024 * 1024) * EBONY_FONT_CACHE);
    evas_object_font_path_append(evas, PACKAGE_DATA_DIR "/fnt");
 
    ebony_base_bg = e_bg_load(PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
@@ -383,27 +382,26 @@ setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
       fprintf(stderr, "Unable to load %s\n",
               PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
    }
-#if 0
-   o = evas_add_line(evas);
-   evas_object_set_name(evas, o, "top_line");
-   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
-   evas_show(evas, o);
 
-   o = evas_add_line(evas);
-   evas_object_set_name(evas, o, "bottom_line");
-   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
-   evas_show(evas, o);
+   o = evas_object_line_add(evas);
+   evas_object_name_set(o, "top_line");
+   evas_object_color_set(o, colors[0], colors[1], colors[2], colors[3]);
+   evas_object_show(o);
 
-   o = evas_add_line(evas);
-   evas_object_set_name(evas, o, "left_line");
-   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
-   evas_show(evas, o);
+   o = evas_object_line_add(evas);
+   evas_object_name_set(o, "bottom_line");
+   evas_object_color_set(o, colors[0], colors[1], colors[2], colors[3]);
+   evas_object_show(o);
 
-   o = evas_add_line(evas);
-   evas_object_set_name(evas, o, "right_line");
-   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
-   evas_show(evas, o);
-#endif
+   o = evas_object_line_add(evas);
+   evas_object_name_set(o, "left_line");
+   evas_object_color_set(o, colors[0], colors[1], colors[2], colors[3]);
+   evas_object_show(o);
+
+   o = evas_object_line_add(evas);
+   evas_object_name_set(o, "right_line");
+   evas_object_color_set(o, colors[0], colors[1], colors[2], colors[3]);
+   evas_object_show(o);
 }
 
 void

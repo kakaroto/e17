@@ -79,7 +79,6 @@ on_save_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
    if (bg)
    {
       fill_background_images(bg);
-      clear_bg_db_keys(bg);
       e_bg_save(bg, bg->file);
 
       if ((filesize = filesize_as_string(bg->file)))
