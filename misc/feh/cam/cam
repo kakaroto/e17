@@ -39,7 +39,7 @@ my %bms = ();
 GetOptions('help|?|h'                    => \$help,
            'full-screen|f|giblets-mom' => \$fullscreen,
            'list|l'                      => \$list,
-           'geometry|g'                  => \$geometry,
+           'geometry|g=s'                => \$geometry,
            'verbose|v'                   => \$verbose,
            'add|a'                       => \$add,
            'keep-images|k|save-pr0n'     => \$keep,
