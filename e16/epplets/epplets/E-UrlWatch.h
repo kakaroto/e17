@@ -1,5 +1,5 @@
-Epplet_gadget btn_conf, btn_close, btn_help, btn_ctimer, btn_save;
-Epplet_gadget btn_col;
+Epplet_gadget btn_conf, btn_close, btn_help, btn_ctimer, btn_www, btn_ftp, btn_wget;
+Epplet_gadget btn_col, lbl_url;
 Epplet_gadget p, col_p, ctimer_p, stimer_p;
 Window win;
 RGB_buf buf;
@@ -18,6 +18,13 @@ int cloak_delays[] = {
 int rand_delays[] = {
   0, 30, 60, 90, 120, 180, 240, 300, 600, 900, 1200
 };
+
+struct
+{
+    char *str;
+    int len;
+    int pos;
+}dtext;
 
 struct
 {
@@ -40,6 +47,8 @@ struct
   char *file_type;
   char *script;
   char *url_save_file;
-  char *command;
+  char *www_command;
+  char *ftp_command;
+  char *get_command;
 }
 opt;

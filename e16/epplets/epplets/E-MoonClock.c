@@ -76,6 +76,10 @@ moonclock_cb(void *data)
 
   Epplet_timer(moonclock_cb, NULL, interval, "TIMER");
 
+  return;
+
+  data=NULL;
+
 }
 static void
 close_cb(void *data)
