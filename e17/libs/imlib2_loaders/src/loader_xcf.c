@@ -1570,15 +1570,18 @@ xcf_file_init(char* filename)
   char success = 1;
   char id[14];
   char* suffix = NULL;
+
+  D(("Filename: %s\n", filename));
    
   image->single_layer_index = -1;
+  /*
   if ((suffix = strchr(filename, ':')))
     {
       *suffix = '\0';
       image->single_layer_index = atoi(suffix+1);
       D(("Loading only XCF layer %i.\n", image->single_layer_index));
     }
-
+  */
   image->fp = fopen (filename, "r");
   if (!image->fp)
     return 0;
