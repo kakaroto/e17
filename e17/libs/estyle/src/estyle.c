@@ -42,7 +42,7 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	 */
 	es->color = estyle_color_instance(255, 255, 255, 255);
 	es->font = estyle_font_instance("nationff");
-	es->font->size = 14;
+	es->font_size = 14;
 
 	if (style)
 		es->style = estyle_style_instance(style);
@@ -206,6 +206,26 @@ void estyle_set_style(Estyle * es, char *name)
 }
 
 /**
+ * estyle_get_text - retrieve the text in the specified estyle
+ * @es: the estyle to retrieve text
+ *
+ * Returns a pointer to a copy of the text in the estyle @es on success, NULL
+ * on failure.
+ */
+char *estyle_get_text(Estyle *es)
+{
+	char *ret;
+
+	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+
+	ret = evas_get_text_string(es->evas, es->bit);
+	if (ret)
+		ret = strdup(ret);
+
+	return ret;
+}
+
+/**
  * estyle_set_text - change the text on a specified estyle
  * @es: the estyle to change text
  * @text: the new text for the estyle
@@ -225,24 +245,27 @@ void estyle_set_text(Estyle * es, char *text)
 	 */
 	if (es->bit)
 		evas_set_text(es->evas, es->bit, text);
-
 	else {
-		es->bit = evas_add_text(es->evas, es->font->name,
-					 es->font->size, text);
+		es->bit = evas_add_text(es->evas, es->font,
+					 es->font_size, text);
 	}
 
 	es->length = strlen(text);
-	evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
 
 	/*
-	 * This essentially performs a round operation, since
-	 * casting a double's value to an int discards the decimal
-	 * portion of the number. Adding 0.5 to the value will round
-	 * it up if it is appropriate.
+	 * If the estyle doesn't have fixed dimensions then set it to the
+	 * geometry of it's contents.
 	 */
-	es->w = (int) (w + 0.5);
-	es->h = (int) (h + 0.5);
+	if (!(es->flags & ESTYLE_BIT_FIXED)) {
+		evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
 
+		es->w = D2I_ROUND(w);
+		es->h = D2I_ROUND(h);
+	}
+
+	/*
+	 * Setup the color of the evas object and move it into position.
+	 */
 	evas_set_color(es->evas, es->bit, es->color->r, es->color->g,
 			es->color->b, es->color->a);
 	evas_move(es->evas, es->bit, (double)(es->x), (double)(es->y));
@@ -254,6 +277,19 @@ void estyle_set_text(Estyle * es, char *text)
 
 	if (es->flags & ESTYLE_BIT_VISIBLE)
 		estyle_style_show(es);
+}
+
+/**
+ * estyle_get_layer - retrieve the layer of the estyle
+ * @es: the estyle to retrieve the current layer
+ *
+ * Returns the current layer of the estyle @es.
+ */
+int estyle_get_layer(Estyle *es)
+{
+	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+
+	return evas_get_layer(es->evas, es->bit);
 }
 
 /**
@@ -284,16 +320,39 @@ void estyle_set_layer(Estyle * es, int layer)
 }
 
 /**
+ * estyle_get_font - retrieve a copy of the current font for an estyle
+ * @es: the estyle to retrieve the current font
+ *
+ * Returns a pointer to a copy of the current font of the estyle @es.
+ */
+char *estyle_get_font(Estyle *es)
+{
+	char *ret = NULL;
+
+	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+
+	if (es->font)
+		ret = strdup(es->font);
+
+	return ret;
+}
+
+/**
  * estyle_set_font - change the font used for the specified estyle
  * @es: the estyle to change fonts
  * @font: the name of the font to use for the estyle
  *
  * Returns no value. Changes the font for the specified estyle to @name.
  */
-void estyle_set_font(Estyle * es, char *name)
+void estyle_set_font(Estyle * es, char *name, int size)
 {
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("name", name);
+
+	es->font = estyle_font_instance(name);
+	es->font_size = size;
+
+	evas_set_font(es->evas, es->bit, es->font, es->font_size);
 }
 
 /**
@@ -426,17 +485,12 @@ void estyle_text_at(Estyle *es, int index, int *char_x, int *char_y,
 {
 	double xx, yy, ww, hh;
 
-	*char_x = 0;
-	*char_y = 0;
-	*char_w = 0;
-	*char_h = 0;
-
 	evas_text_at(es->evas, es->bit, index, &xx, &yy, &ww, &hh);
 
-	*char_x = (int)(xx + 0.5) + es->x;
-	*char_y = (int)(yy + 0.5) + es->y;
-	*char_w = (int)(ww + 0.5);
-	*char_h = (int)(hh + 0.5);
+	*char_x = D2I_ROUND(xx) + es->x;
+	*char_y = D2I_ROUND(yy) + es->y;
+	*char_w = D2I_ROUND(ww);
+	*char_h = D2I_ROUND(hh);
 }
 
 /**
@@ -457,20 +511,70 @@ int estyle_text_at_position(Estyle *es, int x, int y, int *char_x, int *char_y,
 		int *char_w, int *char_h)
 {
 	int ret;
-	double xx, yy, ww, hh;
-
-	*char_x = 0;
-	*char_y = 0;
-	*char_w = 0;
-	*char_h = 0;
+	double xx = 0, yy = 0, ww = 0, hh = 0;
 
 	ret = evas_text_at_position(es->evas, es->bit, (double)(x - es->x),
 			(double)(y - es->y), &xx, &yy, &ww, &hh);
 
-	*char_x = (int)(xx + 0.5) + es->x;
-	*char_y = (int)(yy + 0.5) + es->y;
-	*char_w = (int)(ww + 0.5);
-	*char_h = (int)(hh + 0.5);
+	*char_x = D2I_ROUND(xx) + es->x;
+	*char_y = D2I_ROUND(yy) + es->y;
+	*char_w = D2I_ROUND(ww);
+	*char_h = D2I_ROUND(hh);
 
 	return ret;
+}
+
+/**
+ * estyle_fixed - determine if the specified estyle has fixed geometry
+ * @es: the estyle to check for fixed geometry
+ *
+ * Returns 0 if the estyle does not have fixed geometry, > 0 otherwise.
+ */
+inline int estyle_fixed(Estyle *es)
+{
+	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+
+	return es->flags & ESTYLE_BIT_FIXED;
+}
+
+/**
+ * estyle_fix_geometry - report a fixed geometry to querying functions
+ * @es: the estyle to fix the geometry
+ * @x: the x coordinate to report
+ * @y: the y coordinate to report
+ * @w: the width to report
+ * @h: the height to report
+ *
+ * Returns no value. Fixes the reported geometry of @es to @x, @y, @w, and @h
+ * respectively.
+ */
+void estyle_fix_geometry(Estyle *es, int x, int y, int w, int h)
+{
+	CHECK_PARAM_POINTER("es", es);
+
+	es->flags |= ESTYLE_BIT_FIXED;
+	es->x = x;
+	es->y = y;
+	es->w = w;
+	es->h = h;
+}
+
+/**
+ * estyle_unfix_geometry - remove the fixed property of the estyle
+ * @es: the estyle to remove the fixed property
+ *
+ * Returns no value. Removes the fixed property of the estyle and updates its
+ * geometry to the actual geometry of the contents.
+ */
+void estyle_unfix_geometry(Estyle *es)
+{
+	double x, y, w, h;
+
+	CHECK_PARAM_POINTER("es", es);
+
+	evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
+	es->x = D2I_ROUND(x);
+	es->y = D2I_ROUND(y);
+	es->w = D2I_ROUND(w);
+	es->h = D2I_ROUND(h);
 }

@@ -8,9 +8,9 @@ static Ewd_Hash *fonts = NULL;
  *
  * Returns a pointer to a the font on success, NULL on failure.
  */
-Estyle_Font *estyle_font_instance(char *name)
+char *estyle_font_instance(char *name)
 {
-	Estyle_Font *fn;
+	char *fn;
 
 	CHECK_PARAM_POINTER_RETURN("name", name, NULL);
 
@@ -23,8 +23,7 @@ Estyle_Font *estyle_font_instance(char *name)
 
 	fn = ewd_hash_get(fonts, name);
 	if (!fn) {
-		fn = (Estyle_Font *)malloc(sizeof(Estyle_Font));
-		fn->name = strdup(name);
+		fn = strdup(name);
 
 		ewd_hash_set(fonts, name, fn);
 	}

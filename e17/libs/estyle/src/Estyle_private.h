@@ -32,7 +32,6 @@ struct _estyle_style {
 	Ewd_List *bits;
 };
 
-#include "estyle_font.h"
 #include "estyle_style.h"
 #include "estyle_color.h"
 
@@ -51,7 +50,12 @@ struct _estyle {
 	/*
 	 * The bits can also have different fonts
 	 */
-	Estyle_Font *font;
+	char *font;
+
+	/*
+	 * Or different font sizes
+	 */
+	int font_size;
 
 	/*
 	 * Keep track of the geometry of the text to aid in layout. In the
@@ -82,5 +86,15 @@ struct _estyle {
 	 */
 	int length;
 };
+
+char *estyle_font_instance(char *name);
+
+/*
+ * This rounds the double to the nearest integer and returns it as an int
+ */
+#define D2I_ROUND(d) (int)(d + 0.5)
+#define BIT_MERGEABLE(es1, es2) (es1 && es2 && \
+		!(es1->flags & ESTYLE_BIT_FIXED) && \
+		!(es2->flags & ESTYLE_BIT_FIXED) && es1 != es2)
 
 #endif

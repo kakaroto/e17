@@ -1,8 +1,6 @@
 #include "../estyle-config.h"
 #include "Estyle_private.h"
 
-#define HASH_COLOR(r, g, b, a) ((r << 24) | (g << 16) | (b << 8) | a)
-
 static Ewd_Hash *color_table = NULL;
 static E_DB_File *sys_colors = NULL;
 static E_DB_File *user_colors = NULL;
@@ -27,7 +25,7 @@ Estyle_Color *estyle_color_instance(int r, int g, int b, int a)
 	/*
 	 * Check the hash table for a previous malloc of the color
 	 */
-	value = HASH_COLOR(r, g, b, a);
+	value = ESTYLE_HASH_COLOR(r, g, b, a);
 	ret = (Estyle_Color *) ewd_hash_get(color_table, (void *) value);
 	if (!ret) {
 		ret = (Estyle_Color *) malloc(sizeof(Estyle_Color));
@@ -89,7 +87,7 @@ Estyle_Color *estyle_color_instance_db(char *color)
 	if (!a)
 		e_db_int_get(sys_colors, key, &a);
 
-	value = HASH_COLOR(r, g, b, a);
+	value = ESTYLE_HASH_COLOR(r, g, b, a);
 
 	/*
 	 * Check for a previous allocation for this color.

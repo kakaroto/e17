@@ -8,12 +8,12 @@
     <authorgroup>
 
       <author>
-	<firstname></firstname>
-	<othername></othername>
-	<surname></surname>
+	<firstname>Nathan</firstname>
+	<othername>"RbdPngn"</othername>
+	<surname>Ingersoll</surname>
 	<affiliation>
 	  <address>
-	    <email></email>
+	    <email>ningerso@d.umn.edu</email>
 	  </address>
 	</affiliation>
       </author>
@@ -22,7 +22,7 @@
 
     <copyright>
       <year>2001</year>
-      <holder></holder>
+      <holder>Nathan Ingersoll</holder>
     </copyright>
 
     <legalnotice>
@@ -88,8 +88,19 @@
     <biblioentry id="bib-efsd">
       <bookbiblio>
 	<author>	  
-	  <firstname></firstname>
-	  <surname></surname>
+	  <firstname>Till</firstname>
+	  <surname>Adam</surname>
+	</author>
+	<title>Initial Documentation Setup</title>
+	<date>2001</date>
+      </bookbiblio>
+    </biblioentry>	
+
+    <biblioentry id="bib-efsd">
+      <bookbiblio>
+	<author>	  
+	  <firstname>Christian</firstname>
+	  <surname>Kreibich</surname>
 	</author>
 	<title>The Estyle Programming Manual</title>
 	<date>2001</date>

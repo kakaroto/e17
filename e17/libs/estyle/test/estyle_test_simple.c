@@ -88,11 +88,12 @@ static void ecore_mouse_down(Ecore_Event * ev)
 				&w, &h);
 		if (index < 0)
 			printf("Click occurred outside of estyle\n");
-		else
+		else {
 			printf("Clicked letter %c at %d, %d size %d x %d\n",
 				last[index], x, y, w, h);
-		evas_move(evas, cursor, x, y);
-		evas_resize(evas, cursor, w, h);
+			evas_move(evas, cursor, x, y);
+			evas_resize(evas, cursor, w, h);
+		}
 
 	} else if (eemd->button == 2) {
 		layer = -layer;
@@ -233,11 +234,12 @@ int main(int argc, char *argv[])
 	estyle_set_color(e, 128, 255, 255, 255);
 	estyle_set_clip(e, clip_rect);
 	estyle_show(e);
+	estyle_text_at(e, 0, &curs_x, &curs_y, &curs_w, &curs_h);
 
 	/* add a cursor */
 	cursor = evas_add_rectangle(evas);
-	evas_resize(evas, cursor, 10, 20);
-	evas_move(evas, cursor, 30, 30);
+	evas_move(evas, cursor, curs_x, curs_y);
+	evas_resize(evas, cursor, curs_w, curs_h);
 	evas_set_layer(evas, cursor, 10000);
 	evas_set_color(evas, cursor, 255, 255, 255, 128);
 	evas_show(evas, cursor);

@@ -512,8 +512,8 @@ static Evas_Object _estyle_style_layer_draw(Estyle_Style_Layer * layer,
 	/*
 	 * Create the text at the correct size and move it into position
 	 */
-	ret = evas_add_text(es->evas, es->font->name,
-			es->font->size + layer->size_change, text);
+	ret = evas_add_text(es->evas, es->font,
+			es->font_size + layer->size_change, text);
 
 	evas_move(es->evas, ret, (double)(es->x + layer->x_offset),
 			(double)(es->y + layer->y_offset));
