@@ -8,12 +8,12 @@
 
 static E_DB_File *config_db = NULL;
 
-void            __ewl_color_class_free(void *data);
-void            __create_user_config(void);
+void            __ewl_config_db_create(void);
 
-static int      __open_config_db(const char *name);
-static void     __close_config_db(void);
-static int      __config_exists(char *name);
+static int      __ewl_config_db_open(const char *name);
+static int      __ewl_config_db_stat(char *name);
+static void     __ewl_config_db_close(void);
+static int      __ewl_config_db_exists(char *name);
 
 extern Ewd_List *ewl_embed_list;
 
@@ -31,12 +31,12 @@ int ewl_config_init(void)
 
 	memset(&ewl_config, 0, sizeof(Ewl_Config));
 
-	if (__config_exists("system") != -1)
-		__close_config_db();
+	if (__ewl_config_db_exists("system") != -1)
+		__ewl_config_db_close();
 	else
-		__create_user_config();
+		__ewl_config_db_create();
 
-	if (__config_exists("system") == -1)
+	if (__ewl_config_db_exists("system") == -1)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -56,12 +56,12 @@ int ewl_config_set_str(char *config, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__open_config_db(config))
+	if (!__ewl_config_db_open(config))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	e_db_str_set(config_db, k, v);
 
-	__close_config_db();
+	__ewl_config_db_close();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -82,12 +82,12 @@ int ewl_config_set_int(char *config, char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__open_config_db(config))
+	if (!__ewl_config_db_open(config))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	e_db_int_set(config_db, k, v);
 
-	__close_config_db();
+	__ewl_config_db_close();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -107,12 +107,12 @@ int ewl_config_set_float(char *config, char *k, float v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__open_config_db(config))
+	if (!__ewl_config_db_open(config))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	e_db_float_set(config_db, k, v);
 
-	__close_config_db();
+	__ewl_config_db_close();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -130,10 +130,10 @@ char           *ewl_config_get_str(char *config, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__open_config_db(config)) {
+	if (__ewl_config_db_open(config)) {
 		ret = e_db_str_get(config_db, k);
 
-		__close_config_db();
+		__ewl_config_db_close();
 	}
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -153,10 +153,10 @@ int ewl_config_get_int(char *config, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__open_config_db(config)) {
+	if (__ewl_config_db_open(config)) {
 		ret = e_db_int_get(config_db, k, &v);
 
-		__close_config_db();
+		__ewl_config_db_close();
 	}
 
 	if (!ret)
@@ -178,10 +178,10 @@ float ewl_config_get_float(char *config, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__open_config_db(config)) {
+	if (__ewl_config_db_open(config)) {
 		ret = e_db_float_get(config_db, k, &v);
 
-		__close_config_db();
+		__ewl_config_db_close();
 	}
 
 	if (!ret)
@@ -214,9 +214,16 @@ char *ewl_config_get_render_method()
 void ewl_config_reread_and_apply(void)
 {
 	int             cc;
+	time_t          mt;
 	Ewl_Config      nc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	mt = __ewl_config_db_stat("system");
+	if (mt == ewl_config.mtime)
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_config.mtime = mt;
 
 	/*
 	 * Clean out some memory first, this is likely to get re-used if the
@@ -224,10 +231,6 @@ void ewl_config_reread_and_apply(void)
 	 */
 	IF_FREE(ewl_config.evas.render_method);
 	IF_FREE(ewl_config.theme.name);
-	if (ewl_config.theme.cclasses) {
-		ewd_list_destroy(ewl_config.theme.cclasses);
-		ewl_config.theme.cclasses = NULL;
-	}
 
 	nc.debug.enable = ewl_config_get_int("system", "/debug/enable");
 	nc.debug.level = ewl_config_get_int("system", "/debug/level");
@@ -240,43 +243,83 @@ void ewl_config_reread_and_apply(void)
 	nc.theme.cclass_override = ewl_config_get_int("system",
 			"/theme/color_classes/override");
 
-	nc.theme.cclasses = NULL;
 	if (nc.theme.cclass_override) {
 		int i;
 
-		nc.theme.cclasses = ewd_list_new();
-		ewd_list_set_free_cb(nc.theme.cclasses, __ewl_color_class_free);
 		cc = ewl_config_get_int("system", "/theme/color_classes/count");
 		for (i = 0; i < cc; i++) {
+			char *name;
 			char key[PATH_MAX];
-			Ewl_Color_Class *cclass;
-
-			cclass = NEW(Ewl_Color_Class, 1);
 
 			snprintf(key, PATH_MAX,
 					"/theme/color_classes/%d/name", i);
-			cclass->name = ewl_config_get_str("system", key);
-			if (cclass->name) {
+			name = ewl_config_get_str("system", key);
+			if (name) {
+				int r, g, b, a;
+				int r2, g2, b2, a2;
+				int r3, g3, b3, a3;
+
 				snprintf(key, PATH_MAX,
 						"/theme/color_classes/%d/r", i);
-				cclass->r = ewl_config_get_int("system", key);
+				r = ewl_config_get_int("system", key);
 
 				snprintf(key, PATH_MAX,
 						"/theme/color_classes/%d/g", i);
-				cclass->g = ewl_config_get_int("system", key);
+				g = ewl_config_get_int("system", key);
 
 				snprintf(key, PATH_MAX,
 						"/theme/color_classes/%d/b", i);
-				cclass->b = ewl_config_get_int("system", key);
+				b = ewl_config_get_int("system", key);
 
 				snprintf(key, PATH_MAX,
 						"/theme/color_classes/%d/a", i);
-				cclass->a = ewl_config_get_int("system", key);
+				a = ewl_config_get_int("system", key);
 
-				ewd_list_append(nc.theme.cclasses, cclass);
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/r2",
+						i);
+				r2 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/g2",
+						i);
+				g2 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/b2",
+						i);
+				b2 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/a2",
+						i);
+				a2 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/r3",
+						i);
+				r3 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/g3",
+						i);
+				g3 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/b3",
+						i);
+				b3 = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/a3",
+						i);
+				a3 = ewl_config_get_int("system", key);
+
+				edje_color_class_set(name, r, g, b, a,
+						r2, g2, b2, a2,
+						r3, g3, b3, a3);
+				FREE(name);
 			}
-			else
-				FREE(cclass);
 		}
 	}
 
@@ -311,24 +354,11 @@ void ewl_config_reread_and_apply(void)
 	ewl_config.theme.name = nc.theme.name;
 	ewl_config.theme.cache = nc.theme.cache;
 	ewl_config.theme.cclass_override = nc.theme.cclass_override;
-	ewl_config.theme.cclasses = nc.theme.cclasses;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_color_class_free(void *data)
-{
-	Ewl_Color_Class *class = data;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	FREE(class->name);
-	FREE(class);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __create_user_config(void)
+void __ewl_config_db_create(void)
 {
 	char           *home;
 	char            pe[PATH_MAX];
@@ -360,7 +390,7 @@ void __create_user_config(void)
 	DRETURN(DLEVEL_STABLE);
 }
 
-static int __open_config_db(const char *name)
+static int __ewl_config_db_open(const char *name)
 {
 	char           *home;
 	char            path[PATH_MAX];
@@ -384,21 +414,43 @@ static int __open_config_db(const char *name)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
-static void __close_config_db()
+static int __ewl_config_db_stat(char *name)
+{
+	char           *home;
+	char            path[PATH_MAX];
+	struct stat     st;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	home = getenv("HOME");
+
+	if (!home) {
+		DWARNING("Failed to fetch environment variable HOME\n");
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	snprintf(path, PATH_MAX, "%s/.e/ewl/config/%s.db", home, name);
+
+	stat(path, &st);
+
+	DRETURN_INT(st.st_mtime, DLEVEL_STABLE);
+}
+
+static void __ewl_config_db_close()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	e_db_flush();
-
 	if (config_db)
 		e_db_close(config_db);
+
+	e_db_flush();
 
 	config_db = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int __config_exists(char *name)
+static int __ewl_config_db_exists(char *name)
 {
 	char           *home;
 	char            path[PATH_MAX];

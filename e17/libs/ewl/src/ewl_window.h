@@ -31,7 +31,7 @@ struct Ewl_Window
 {
 	Ewl_Embed       embed; /**< Inherits from the Ewl_Embed class */
 
-	Window          window; /**< Provides a window for drawing */
+	Ecore_X_Window  window; /**< Provides a window for drawing */
 
 	char           *title; /**< The current title on the provided window */
 
@@ -44,7 +44,7 @@ struct Ewl_Window
 
 Ewl_Widget     *ewl_window_new();
 int             ewl_window_init(Ewl_Window * win);
-Ewl_Window     *ewl_window_find_window(Window window);
+Ewl_Window     *ewl_window_find_window(Ecore_X_Window window);
 void            ewl_window_set_title(Ewl_Window * win, char *title);
 char           *ewl_window_get_title(Ewl_Window * win);
 void            ewl_window_set_borderless(Ewl_Window * win);

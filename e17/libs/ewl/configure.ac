@@ -102,6 +102,14 @@ AC_PATH_GENERIC(evas,, [
 evas_libs=`evas-config --libs`
 evas_cflags=`evas-config --cflags`
 
+AC_CHECK_HEADERS(Evas_Engine_Software_X11.h, [], [], [
+	#include <Evas.h>
+	])
+
+AC_CHECK_HEADERS(Evas_Engine_GL_X11.h, [], [], [
+	#include <Evas.h>
+	])
+
 AC_ARG_WITH(etox,
         [  --with-etox=DIR         use etox in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"

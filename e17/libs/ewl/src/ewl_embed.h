@@ -36,7 +36,7 @@ struct Ewl_Embed
 	Ewl_Container   container; /**< Inherits from the Ewl_Container class */
 
 	Evas           *evas; /**< Evas where drawing takes place. */
-	Window         evas_window; /**< The window holding the evas. */
+	Ecore_X_Window  evas_window; /**< The window holding the evas. */
 
 	Evas_Object *smart; /**< Object to manipulate Ewl_Embed from evas */
 };
@@ -45,7 +45,7 @@ Ewl_Widget     *ewl_embed_new();
 int             ewl_embed_init(Ewl_Embed * win);
 Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas);
 void            ewl_embed_font_path_add(char *path);
-Ewl_Embed      *ewl_embed_find_by_evas_window(Window win);
+Ewl_Embed      *ewl_embed_find_by_evas_window(Ecore_X_Window win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
 
 /**

@@ -41,7 +41,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 			    __destroy_tree_test_window, NULL);
 	ewl_widget_show(tree_win);
 
-	tree = ewl_tree_new(4);
+	tree = ewl_tree_new(COLS);
 	ewl_container_append_child(EWL_CONTAINER(tree_win), tree);
 	ewl_widget_show(tree);
 

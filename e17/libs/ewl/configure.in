@@ -85,6 +85,14 @@ AC_ARG_WITH(evas,
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
+AC_CHECK_HEADERS(Evas_Engine_Software_X11.h, [], [], [
+	#include <Evas.h>
+	])
+
+AC_CHECK_HEADERS(Evas_Engine_GL_X11.h, [], [], [
+	#include <Evas.h>
+	])
+
 AC_PATH_GENERIC(evas,, [
     AC_SUBST(evas_libs)
     AC_SUBST(evas_cflags)],

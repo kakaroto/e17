@@ -229,7 +229,7 @@ void ewl_embed_font_path_add(char *path)
  * @return Returns the found embed on success, NULL on failure.
  * @brief Find an ewl embed by its evas window
  */
-Ewl_Embed      *ewl_embed_find_by_evas_window(Window window)
+Ewl_Embed      *ewl_embed_find_by_evas_window(Ecore_X_Window window)
 {
 	Ewl_Embed      *retemb;
 

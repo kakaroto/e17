@@ -11,6 +11,7 @@ typedef struct _ewl_config Ewl_Config;
 
 struct _ewl_config
 {
+	time_t                  mtime;
 	struct {
 		int             enable;
 		int             level;
@@ -24,21 +25,10 @@ struct _ewl_config
 		char           *name;
 		int             cache;
 		int             cclass_override;
-		Ewd_List       *cclasses;
 	} theme;
 };
 
 extern Ewl_Config      ewl_config;
-
-typedef struct _ewl_color_class Ewl_Color_Class;
-struct _ewl_color_class
-{
-	char *name; /**< The name of the class, for matching to theme */
-	int r; /**< Red color value */
-	int g; /**< Green color value */
-	int b; /**< Blue color value */
-	int a; /**< Alpha value */
-};
 
 int             ewl_config_init(void);
 int             ewl_config_set_str(char *config, char *k, char *v);

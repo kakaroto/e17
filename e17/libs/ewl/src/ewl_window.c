@@ -1,5 +1,16 @@
-
 #include <Ewl.h>
+
+#ifdef HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_GL_X11_H
+#include <Evas_Engine_GL_X11.h>
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#include <Evas_Engine_Software_X11.h>
+#endif
 
 extern Ewd_List *ewl_embed_list;
 
@@ -44,7 +55,7 @@ Ewl_Widget     *ewl_window_new()
  * @return Returns the found ewl window on success, NULL on failure.
  * @brief Find an ewl window by it's X window
  */
-Ewl_Window     *ewl_window_find_window(Window window)
+Ewl_Window     *ewl_window_find_window(Ecore_X_Window window)
 {
 	Ewl_Window     *retwin;
 
@@ -271,6 +282,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
 
+#ifdef HAVE_EVAS_ENGINE_GL_X11_H
 	if (!strcmp(render, "gl_x11")) {
 		Evas_Engine_Info_GL_X11 *glinfo;
 
@@ -285,7 +297,10 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		glinfo->info.depth = DefaultDepth(glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
 	}
-	else {
+	else
+#endif
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	{
 		Evas_Engine_Info_Software_X11 *sinfo;
 
 		sinfo = (Evas_Engine_Info_Software_X11 *)info;
@@ -301,6 +316,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		sinfo->info.rotation = 0;
 		sinfo->info.debug = 0;
 	}
+#endif
 
 	evas_engine_info_set(embed->evas, info);
 
