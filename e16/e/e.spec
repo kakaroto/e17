@@ -1,8 +1,6 @@
 %define name	enlightenment
 %define version 0.16.7
-%define release 0.34
-# Suppress building a debuginfo package
-%define debug_package %{nil}
+%define release 0.35
 
 Summary:	The Enlightenment window manager.
 Name:		%{name}
