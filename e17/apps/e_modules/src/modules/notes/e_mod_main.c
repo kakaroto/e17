@@ -90,7 +90,7 @@ int
 info (E_Module *m)
 {
    m->label = strdup("Notes");
-   m->icon_file = PACKAGE_LIB_DIR "/e_modules/notes/module_icon.png";
+   m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/notes/module_icon.png");
    
    return 1;
 }
