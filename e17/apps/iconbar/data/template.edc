@@ -185,6 +185,14 @@ collections {
         source, "grabber";
         action, SIGNAL_EMIT "EXEC" "iconbar";
       }
+      
+      program {
+        name, "exec";
+        signal, "mouse,clicked,3";
+        source, "grabber";
+        action, SIGNAL_EMIT "edit" "iconbar";
+      }
+
 
     }
 
