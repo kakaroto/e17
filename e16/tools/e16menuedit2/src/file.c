@@ -378,10 +378,8 @@ int run_help (char *help_app, char *help_dir, char *help_file)
   gboolean help_missing = TRUE;
   struct stat buf;
 
-  locale = setlocale (LC_MESSAGES, NULL);
+  locale = getenv ("LANG");
   
-  printf ("locale: %s\n", locale);
-
   params = g_strdup_printf ("%s/%s/%s", help_dir,
                             locale, help_file);
 #ifdef DEBUG
