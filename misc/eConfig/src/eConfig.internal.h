@@ -53,6 +53,8 @@ typedef struct _econffat {
 	char            loc[FILEPATH_LEN_MAX];
 	unsigned long   position;
 	unsigned long   length;
+	unsigned long   usage_index;
+	unsigned long   updated_on;
 
 } eConfigFAT;
 
@@ -60,7 +62,6 @@ typedef struct {
 
     PathStruct   *paths;
     eConfigData  *data;
-	time_t        updated_on;
 	unsigned long cachesize;
 
 } eConfigType;

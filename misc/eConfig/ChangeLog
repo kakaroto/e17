@@ -91,3 +91,13 @@ Sun Oct 31 12:24:17 PST 1999
 
 committing what I did last night before I went to bed.  I don't remember what
 this does
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 16:53:24 PST 1999
+(Mandrake)
+
+A little bit of work here and there.  the API is coming together nicely.  Need
+to rethink a minor bit of work in _econf_save_data_to_disk -- it needs local
+and global tags, etc.  I need to clean some of that up.
+

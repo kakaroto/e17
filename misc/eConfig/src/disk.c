@@ -86,6 +86,12 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 		unsigned long length, void *data) {
 
+	/* This function is pretty simplistic.  it just saves out a bit of *data to
+	 * the theme at *path, into the data file at position, and knows it is
+	 * length long.  It returns a 0 on failure, and a 1 on success.
+	 * This function is internal to eConfig
+	 */
+
 	FILE *CONF_TABLE;
 	char confpath[FILEPATH_LEN_MAX];
 
@@ -120,6 +126,11 @@ int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 
 
 int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
+
+	/* This function is supposed to save data out to disk.  it really needs to
+	 * be slapped since it really isn't doing what I think it should be doing.
+	 * FIXME: this function doesn't work right.
+	 */
 
 	char **paths;
 	int num;
@@ -165,11 +176,20 @@ int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
 	 * to, which is probably a bad thing
 	 */
 
-
 	return 0;
+
 }
 
 int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
+
+	/* This function is supposed to "dirty" the data inside of a disk at any
+	 * particular location.  typically used because your data is:
+	 * a) no longer viable
+	 * b) no longer usable
+	 * c) too short for the new data you have to save into this file
+	 * if your dataspace is marked as dirty it will be fsck()d out at the
+	 * next instance of eConfigFsckPath() on *path.
+	 */
 
 	if(!loc)
 		return 0;
@@ -177,12 +197,20 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 		return 0;
 
 	return 0;
+
 }
 
 int _econf_purge_data_from_disk(char *loc) {
+
+	/* This tries to remove a value completely from all writable config files.
+	 * It searches the path and dirties the contents using
+	 * _econf_purge_data_from_disk_at_path() on every place in the path it can
+	 * find it
+	 */
 
 	if(!loc)
 		return 0;
 
 	return 0;
+
 }
