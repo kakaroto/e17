@@ -96,42 +96,72 @@ queue_item_free(EfsdQueueItem *eqi)
 int 
 efsd_queue_empty(void)
 {
-  return (queue == NULL);
+  D_ENTER;
+  D_RETURN_(queue == NULL);
+}
+
+
+void
+efsd_queue_fill_fdset(fd_set *fdset, int *fdsize)
+{
+  EfsdList      *q;
+  EfsdQueueItem *eqi;
+
+  D_ENTER;
+
+  for (q = queue; q; q = efsd_list_next(q))
+    {
+      eqi = (EfsdQueueItem*) efsd_list_data(q);
+      
+      FD_SET(clientfd[eqi->client], fdset);
+      if (clientfd[eqi->client] > *fdsize)
+	*fdsize = clientfd[eqi->client];
+    }
+
+  D_RETURN;
 }
 
 
 int 
-efsd_queue_process(void)
+efsd_queue_process(fd_set *fdset)
 {
+  EfsdList      *q;
   EfsdQueueItem *eqi;
-  int done = 0;
+  int            done = 0;
 
-  while (queue)
+  for (q = queue; q; q = efsd_list_next(q));
     {
-      eqi = efsd_list_data(queue);
+      eqi = (EfsdQueueItem*) efsd_list_data(q);
 
-      if (efsd_io_write_event(clientfd[eqi->client], eqi->ee) < 0)
+      if (FD_ISSET(clientfd[eqi->client], fdset))
 	{
-	  if (errno == EPIPE)
+	  if (efsd_io_write_event(clientfd[eqi->client], eqi->ee) < 0)
 	    {
-	      D(("Client %i died -- closing connection\n", eqi->client));
-	      efsd_main_close_connection(eqi->client);
-	      queue = efsd_list_remove(queue, queue, (EfsdFunc)queue_item_free);
-	      done++;
+	      if (errno == EPIPE)
+		{
+		  D(("Client %i died -- closing connection\n", eqi->client));
+		  efsd_main_close_connection(eqi->client);
+		  queue = efsd_list_remove(queue, q, (EfsdFunc)queue_item_free);
+		  done++;
+		}
+	      else
+		{
+		  D(("Couldn't write queued command.\n"));
+		}
 	    }
 	  else
 	    {
-	      D_RETURN_(done);
+	      D(("One queue item processed.\n"));
+
+	      if (q == queue_last)
+		queue_last = NULL;
+	      
+	      queue = efsd_list_remove(queue, q, (EfsdFunc)queue_item_free);
+	      done++;
 	    }
 	}
-
-      D(("One queue item processed.\n"));
-      
-      queue = efsd_list_remove(queue, queue, (EfsdFunc)queue_item_free);
-      done++;
     }
 
-  queue_last = NULL;
   D_RETURN_(done);
 }
 

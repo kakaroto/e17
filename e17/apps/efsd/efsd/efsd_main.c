@@ -338,8 +338,9 @@ efsd_handle_connections(void)
   struct sockaddr_un serv_sun, cli_sun;
   int             num_read, fdsize, clilen, i, n, can_accept, sock_fd;
   EfsdCommand     ecmd;
-  fd_set          fdset;
-  struct timeval  tv;
+  fd_set          fdrset;
+  fd_set          fdwset;
+  fd_set         *fdwset_ptr = NULL;
 
   D_ENTER;
 
@@ -372,15 +373,14 @@ efsd_handle_connections(void)
 
   for ( ; ; )
     {
-      tv.tv_sec  = 1;
-      tv.tv_usec = 0;
-
       can_accept = 0;
-      FD_ZERO(&fdset);
+      FD_ZERO(&fdrset);
+      FD_ZERO(&fdwset);
+      fdwset_ptr = NULL;
       fdsize = 0;
 
       /* listen to FAM file descriptor */
-      FD_SET(famcon.fd, &fdset);
+      FD_SET(famcon.fd, &fdrset);
       if (famcon.fd > fdsize)
 	fdsize = famcon.fd;
 
@@ -389,7 +389,7 @@ efsd_handle_connections(void)
 	{
 	  if (clientfd[i] >= 0)
 	    {
-	      FD_SET(clientfd[i], &fdset);
+	      FD_SET(clientfd[i], &fdrset);
 	      if (clientfd[i] > fdsize)
 		fdsize = clientfd[i];
 	    }
@@ -400,20 +400,30 @@ efsd_handle_connections(void)
       /* listen for new connections */
       if (can_accept)
 	{
-	  FD_SET(listen_fd, &fdset);
+	  FD_SET(listen_fd, &fdrset);
 	  if (listen_fd > fdsize)
 	    fdsize = listen_fd;
 	}
 
+      if (!efsd_queue_empty())
+	{
+	  efsd_queue_fill_fdset(&fdwset, &fdsize);
+	  fdwset_ptr = &fdwset;
+	}
+
       /* Wait for next event to happen ... */
-      while ((n = select(fdsize+1, &fdset, NULL, NULL, &tv)) < 0)
+      while ((n = select(fdsize+1, &fdrset, fdwset_ptr, NULL, NULL)) < 0)
 	{
 	  if (errno == EINTR)
 	    {
 	      D(("read_data select() interrupted\n"));
-	      tv.tv_sec  = 1;
-	      tv.tv_usec = 0;
-	      FD_ZERO(&fdset);
+
+	      FD_ZERO(&fdrset);
+
+	      if (fdwset_ptr)
+		{
+		  FD_ZERO(fdwset_ptr);
+		}
 	    }
 	  else
 	    {
@@ -425,10 +435,10 @@ efsd_handle_connections(void)
       /* Check if anything is queued to be written ... */
       if (!efsd_queue_empty())
 	{
-	  efsd_queue_process();
+	  efsd_queue_process(fdwset_ptr);
 	}
       
-      if (FD_ISSET(famcon.fd, &fdset))
+      if (FD_ISSET(famcon.fd, &fdrset))
 	{
 	  /* FAM reported something -- handle it. */
 	  efsd_handle_fam_events();
@@ -436,7 +446,7 @@ efsd_handle_connections(void)
       
       for (i = 0; i < EFSD_CLIENTS; i++)
 	{
-	  if (clientfd[i] >= 0 && FD_ISSET(clientfd[i], &fdset))
+	  if (clientfd[i] >= 0 && FD_ISSET(clientfd[i], &fdrset))
 	    {
 	      /* A connected client sent something -- handle it. */
 	      memset(&ecmd, 0, sizeof(EfsdCommand));
@@ -460,7 +470,7 @@ efsd_handle_connections(void)
 	    }
 	}
 
-      if (FD_ISSET(listen_fd, &fdset))
+      if (FD_ISSET(listen_fd, &fdrset))
 	{
 	  /* There's a new client connecting -- register it. */
 	  clilen = sizeof(cli_sun);
@@ -520,7 +530,6 @@ efsd_cleanup(void)
   
   close(listen_fd);
   efsd_misc_remove_socket_file();
-  FAMClose(&famcon);
   efsd_fam_cleanup();
   exit(0);
 
@@ -554,7 +563,7 @@ efsd_initialize(void)
   signal(SIGILL,    efsd_cleanup_signal_callback);
   signal(SIGINT,    efsd_cleanup_signal_callback);
   signal(SIGQUIT,   efsd_cleanup_signal_callback);
-  signal(SIGSEGV,   efsd_cleanup_signal_callback);
+  //signal(SIGSEGV,   efsd_cleanup_signal_callback);
   signal(SIGSYS,    efsd_cleanup_signal_callback);
   signal(SIGTERM,   efsd_cleanup_signal_callback);
   signal(SIGTRAP,   efsd_cleanup_signal_callback);

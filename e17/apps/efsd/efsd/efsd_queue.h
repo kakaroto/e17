@@ -25,16 +25,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef efsd_queue_h
 #define efsd_queue_h
 
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <efsd.h>
 
 /* Returns value > 0 when items are in the queue.
  */
-int efsd_queue_empty(void);
+int  efsd_queue_empty(void);
 
 /* Tries to process as many items in the queue as possible.
    Returns number of items processed, 0 if none got processed.
 */
-int efsd_queue_process(void);
+int  efsd_queue_process(fd_set *fdset);
+
+/* Fills an fd_set with the file descriptors of events that
+   are waiting to be sent in the queue.
+*/
+void efsd_queue_fill_fdset(fd_set *fdset, int *fdsize);
 
 /* Adds an event that is supposed to be delivered to SOCKFD,
    making a copy of event EE.
