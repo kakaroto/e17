@@ -1,0 +1,2133 @@
+<page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_logo.png x=32 y=77>
+<font face=rothwell/25 color=#ffffff>
+<p align=50%>
+<br>
+Enlightenment<br>
+version 0.16.4
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p align=50%>
+トピック：<br>
+_ドキュメントビューアの使い方(aboutdox)<br>
+_Enlightenmentについて(about)<br>
+_著作権(copyright)<br>
+_クレジット(credits)<br>
+_Webサイト(web)<br>
+_IRC(irc)<br>
+_電子メール(email)<br>
+<br>
+_ユーザドキュメント(docindex)<br>
+_よく聞かれる質問とその答え(faq)<br>
+_日本語訳について(japanese)<br>
+<br>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+Enlightenment
+ドキュメントビューアへようこそ。
+トピックを一覧から選んでください。
+
+
+
+
+
+
+<page columns=1 padding=16 name=aboutdox background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+このドキュメントはEnlightenmentとそのデフォルトの設定状態で、どう
+やって使うか、どうやって設定を変更するか、どうやって使えるように
+するかをステップごとに案内することを目的としています。どれかページ
+を読み終えたら、このウィンドウの上にあるNEXTボタンを押して次のペ
+ージに行くか、 _インデックス(docindex) にたどりつくまでBackボタンを
+押し続けてください。
+<p>
+これを今読めているということは、なんとかEnlightenmentは正しくイン
+ストールできていて、初めてEnlightenmentを起動したか、新しいバージ
+ョンにアップグレードしたかでしょう。おめでとうございます。さあ
+目の前にあるデスクトップのクイックツアーに出かける時間です。
+<p>
+デフォルト(Brushed Metal)以外にも、 _テーマ(themes) を使えることを
+忘れないでください。テーマには、少しまたは完璧に違う内容のユーザ
+ドキュメントがあります。動作も異なるかもしれません。
+<p>
+このヘルプブラウザを好きな時にもう一度読むには、 _デスクトップ(desktops) 
+で中央ボタンを押して"ヘルプ"を選択します。ドキュメントが起動して
+最初のページが読み直されます。"Home"キーを押すといつでも最初のペ
+ージに戻ることが出来ます。
+
+
+
+
+<page columns=1 padding=16 name=about background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p align=50%>
+Enlightenmentはウィンドウマネージャです。ウィンドウマネージャは
+ウィンドウの枠組みの外観やウィンドウの振舞い、位置や強制終了、
+サイズ変更、移動、アイコン化、シェードなどの、ユーザーのさまざま
+な操作すべてをコントロールします。ウィンドウ、仮想デスクトップ、
+マルチデスクトップ、ウィンドウのメニューやルートウィンドウのメ
+ニュー、さらにデスクトップのバックグラウンドもコントロールして
+います。
+<p align=50%>
+Enlightenmentは大きく複雑なプログラムでパーフェクトということは
+ありませんが、とにかく動作していて可能な限り堅牢になっています。
+多くの先進的な特徴を持っていますがそれにともなって、望まれるい
+くつかの機能を失っているかも知れません。今動作しているバージョン
+(0.16.4)で開発や改善が終了したわけではなくて、修正や愉快な
+新機能が常に研究され続けています。新バージョンや修正、パッチや
+アップデートについては<br>
+_ウェブサイト(web) をしばしば訪れてください。
+<p align=50%>
+私たちは、自分たちがEnlightenmentを楽しみながら書いているように
+ユーザにも楽しんでEnlightenmentを使ってくれることを願っています。
+もしこれがユーザに適切なソフトウェアでないとしても、私たちが
+作ったものの周辺を楽しく遊んでもらえればという考えでいます。
+
+<page columns=1 padding=16 name=copyright background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p align=50%>
+Copyright (C) 1997-2000 _The_Enlightenment_Development_Team(credits)
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+<p>
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+
+
+
+<page columns=2 padding=16 name=credits background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+Enlightenmentを書いたのは:<br>
+<br>
+The Rasterman (Carsten Haitzler),<br>
+Mandrake (Geoff Harrison),<br>
+Chutt (Isaac Richards),<br>
+Michael Jennings (KainX),<br>
+Christian Kreibich (cK),<br>
+Sung-Hyun Nam,
+Kimball Thurston,<br>
+Michael Kellen,
+Frederic Devernay,<br>
+Felix Bellaby,
+Peter Kjellerstedt,<br>
+Troy Pesola,
+Owen Taylor,<br>
+Stalyn,
+Knut Neumann,<br>
+Nathan Heagy,
+Simon Forman,<br>
+Brent Nelson,
+Martin Tyler,<br>
+Graham MacDonald,
+Jesse Michael,<br>
+Paul Duncan,
+Daniel Erat,<br>
+Tom Gilbert,
+Peter Alm,<br>
+Ben FrantzDale,
+Hallvar Helleseth,<br>
+Kameran Kashani,
+Carl Strasen,<br>
+David Mason,
+Tom Christiansen<br>
+と多くの人達。<br>
+(AUTHORSファイル参照).
+<p>
+Enlightenmentのサポートを助けて
+くれたいくつかの企業に多大な感謝。
+<p>
+Red Hat Software (www.redhat.com)
+Enlightenmentに従事する開発
+リソースと時間を提供してくれま
+した。
+<br>
+VA Linux Systems (www.valinux.com)
+ハードウェアとネットワーク、コー
+ラ、そしてを困ったやつらをなんとか
+雇ってくれて、私たちが(そして願わ
+くばユーザも) 面白いと思うものに
+従事させてくれました。
+<p>
+Xi Graphics (www.xig.com)
+コードをテストするXサーバを提供
+してくれました。
+<p>
+こうした人々だけではなく、Eのコミ
+ュニティー全体 - Eメーリングリスト、
+EFnetのIRCの#E、フィードバックや
+デバッグ情報、バグフィックス、
+
+<page columns=2 padding=16 name=credits2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+パッチそしてサポートを提供して
+くれたすべてのEユーザに感謝する
+べきです。プロジェクトをここま
+で可能にしてくれた全てのユーザ
+に多大な感謝をします。
+<p>
+それに加えて、他のプロジェクト
+にも感謝をしたいと思います。例
+えばXFree86、Imlib、Esound、
+Freetypeや他の多くのプロジェク
+トにです。これらの同じくらい重
+要なプロジェクトに従事している
+人々を忘れてはいけません。
+
+<page columns=1 padding=16 name=web background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_website.png x=300 y=20>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<p align=50%>
+Enlightenmentについての最新の情報
+や開発、バグフィックス、開発版の
+スナップショットなどは、こちらです：
+<p align=50%>
+<font face=rothwell/30 color=#ccdddd>
+http://www.enlightenment.org/
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p align=50%>
+修正や開発リリースでいつも更新されているので、訪れたくなることで
+しょう。また、FTPサイトの日刊スナップショットに訪れてみるのもよい
+ことです。 (詳しくは、ウェブサイトのスナップショットセクションを
+ご覧ください。)
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=irc background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+EnlightenmentのオフィシャルIRCチャンネルがあり、もしよければハマ
+ることもできます。他のEユーザや開発者と話をしてみたり、助けを求め
+たり、一緒に騒いだりなどができます。EFnetのircサーバ
+(irc.efnet.org)のどれかに接続して#Eに参加します。例えば：
+<p>
+BitchX ニックネーム irc.efnet.org<br>
+<br>
+または<br>
+<br>
+irc ニックネーム irc.efnet.org<br>
+<br>
+またはお気に入りのグラフィカルなIRCクライアントを使います。
+<p>
+100人もの人が同時に話すと混雑状態になるということを忘れないでくだ
+さい。全員が実際にずっと話を聞いているわけではないし、会話の最中と
+いうわけではありません。礼儀正しく忍耐強くユーモアの精神を持ち、そ
+してあなたも楽しんでください。
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=email background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+CVS Commitリストメール
+<p>
+CVS Commitメールを受け取るには、CVS Commitsリストメールのページに
+行ってください：
+http://www.enlightenment.org/mailman/listinfo/cvs-commits-list
+<br>
+このメーリングリストはユーザからのメールを受け付けません。
+EnlightenmentのCVSサーバが何かcommitを受けるたびに自動的に電子
+メールが生成されます。メールがたくさん生成されることもあります
+が、生成されないこともあります。
+<p>
+開発向けメーリングリスト
+<p>
+もし開発向けメーリングリストからのメールを受け取りたいなら、
+E-developメーリングリストに行ってください：
+http://enlightenment.org/mailman/listinfo/e-develop.
+<br>
+このメーリングリストはEnlightenmentとその開発、バグ、機能の
+要望などについて話し合うためのものです。これは一般的な会話用
+メーリングリストではありません。開発者たちはこのメーリング
+リストを読み、上がってくる話題にときどきコメントしたりします。
+<p>
+
+
+
+
+
+
+
+
+<page columns=2 padding=16 name=docindex background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+ドキュメントインデックス
+<p>
+<br>
+<br>
+_概要(basicintro)<br>
+_メニューを使う(rootmenu)<br>
+_マウスのバインディング(mousebind)<br>
+_マウスの設定(mouseconfig)<br>
+_ウィンドウボーダーを使う(border)<br>
+_ウィンドウボーダーの変更(changeborder)<br>
+_デフォルトのキーバインディング(defkeys)<br>
+_マルチデスクトップ(desktops)<br>
+_デスクトップの更新(changedesk)<br>
+_アプリのデスクトップ間移動(appsdesk)<br>
+_ドラッグバー(dragbar)<br>
+_ページャ(pager)<br>
+_アイコンボックス(iconbox)<br>
+_最小化したアプリを元に戻す(minimized)<br>
+_アプリの設定を記録する(properties)<br>
+_設定の概要(settings)<br>
+_ウィンドウグループ(groups)<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+_デスクトップのバックグラウンド(backgrounds)<br>
+_ツールチップ(tooltips)<br>
+_オーディオ(audio)<br>
+_特殊効果(fx)<br>
+_フォーカス設定(focus)<br>
+_ウィンドウの移動(movemode)<br>
+_ウィンドウのサイズ変更(resizemode)<br>
+_ウィンドウの操作(windowops)<br>
+_ウィンドウ配置オプション(placement)<br>
+_自動前面移動設定(placement)<br>
+_KDEとGNOMEのサポート(deskenv)<br>
+_IPCについての簡単な概要(eesh)<br>
+_メニューを編集するには(editmenus)<br>
+_キーバインディングの変更(editkeys)<br>
+_テーマ(themes)<br>
+_おまけの楽しみ方(eyecandy)<br>
+_メンテナンス用スクリプト(maint)<br>
+
+
+
+
+<page columns=1 padding=16 name=basicintro background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_screen_start.png x=16 y=16>
+<p>
+もしEnlightenmentをデ
+スクトップシェルとし
+て使っているならば
+起動されているので、
+画面が左のようになっ
+ているでしょう。
+<p>
+画面のトップ全体を横
+切っているバーがあり、
+左端と右端で矢印が上
+と下を差しているのが
+見えるでしょう。これ
+がデスクトップの
+<br>
+_ドラッグバー(dragbar)
+です。
+<p>
+左下には3のボックスが
+見えるでしょう。スクロ
+ールバーが付いている
+一番上のボックスは _アイコンボックス(iconbox) です。
+<p>
+その下にある他の2つのボックスは _ページャ(pager) でデスクトップ0と1です。
+他のすべてはデスクトップのバックグラウンドです。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=rootmenu background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_app_menu.png x=350 y=38>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+メニューを使う
+<p>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+デスクトップの _バックグラウンド(backgrounds) でマウスの
+左ボタンをクリックすると、"ユーザメニュー"
+メニューが表れます(例としては右のようなもの)。
+インストールされているアプリケーションがこの
+メニューに表れます。そこから一つを起動するに
+は、メニューから選択するだけでよいのです。
+<p>
+注: Enlightenmentのメニューは多くのメニューシステ
+ムと同じように動作します。マウスボタンを押し
+たままで探し、選びたいところでボタンを離しま
+す。何も選択したくなかったらメニューの外でボ
+タンを離します。すばやくクリックして離し、探すことも出来ます。
+その時はマウスを動かして、選択したいところでもう一度クリック
+します。何も選択したくなければメニューの外をクリックします。
+<p>
+何度も選択できるようにメニューを貼り付けたままにしておくには、
+クリックしてマウスを押した状態からメニューの(もしあれば)タイ
+トルのところで離します。そうすると、残しておくことが出来ます。
+普通のウィンドウと同じように移動したりすることが出来ます。
+ウィンドウを閉じると、メニューのスティックを解除することが
+できます。
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=tut4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_settings_menu.png x=285 y=235>
+<img src=E_enlightenment_menu.png x=4 y=30>
+<p>
+<br>
+デスクトップの _バックグラウンド(backgrounds) を中央ボタン
+でクリックすると、Enlightenmentのメインメニュ
+ーが表示されます。このメニューから、もっとオ
+プションのある(ログアウトや再起動、ヘルプ情報
+の表示などを含む)他のメニューを呼ぶこともでき
+ます。このメニューの例が左にあります。
+<p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+マウスの右ボタンをクリックすると、"設
+定"というタイトルのメニューが表れます。
+これがEnlihgtenmentの _設定(settings) メニュー
+です。ここからデスクトップに必要に適し
+たカスタマイズをするのを支援する、さま
+ざまな設定ダイアログを選択することが出
+来ます。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=mousebind background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+マウスのバインディング
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+ご存知の通り、  _デスクトップ(desktops) の _バックグラウンド(backgrounds) をクリックする
+と普通は _メニュー(rootmenu) が表示されます。またご存知の通り、ウィンドウ
+の _ボーダー(border) をクリックすると、さまざまなことが出来ます。しかし
+マウスでできることはこれらだけではありません。
+<p>
+Enlightenmentでは、デフォルトでマウスがすることの出来るアクショ
+ンが他にもいくつかあります。例えば、ウィンドウの中のどこでもALT
+キーを押しながらマウスの左ボタンを押すと、まるでタイトルバーを
+使ってするようにウィンドウを画面の中で _移動(movemode) できることが分かる
+でしょう。また、ウィンドウの中でALTと中央ボタンのクリックで
+<br>
+_サイズ変更(resizemode) することができ、ALTと右ボタンのクリックで
+<br>
+_ウィンドウの操作(windowops) メニューを表示することができます。
+<p>
+_デスクトップ(desktops) のバックグラウンドでマウスの中央ボタンを押しながら
+ALTキーを押すと、現在アクティブになっている全てのアプリケーショ
+ンウィンドウのタイトルのメニューが表示されるのが分かるでしょう。
+このどれかを選択すると、そのアプリケーションに移動できます。ALT
+キーのかわりにCTRLキーを使うと、現在のデスクトップすべてのメニ
+ューが表示され、それぞれのアプリケーションがサブメニューとして
+表示されます。
+<p>
+
+
+
+
+
+
+<page columns=1 padding=30 name=mouseconfig background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+マウスの設定
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+Enlightenmentはマウスの特殊な使い方をしてます。もしかすると、X
+サーバでのマウス設定によっては、いくつかの機能が使えなくなってい
+るかも知れません。
+<p>
+もしマウスに中央ボタンがなければ、Xサーバで"3ボタンのエミュレー
+ト" を有効にしておくべきです。このオプションによって、マウスの
+左と右のボタンを同時に押すことで3ボタンマウスをエミュレートする
+ことができます。もしこの機能が動作しなかった場合、3ボタンのエミ
+ュレートが有効になっていないのかも知れません。このエミュレーシ
+ョンの設定をするには、Xサーバのドキュメントを読んでください。
+<p>
+これはシステムによってまちまちであるかも知れません。可能であっ
+ても、OSとXサーバでやり方が異なっているかも知れません。
+Enlightenmentで、あるいはXで中央ボタンがないということは好まし
+くありません。なぜならばほとんどあるものと仮定されていて、Eを
+含む多くのアプリケーションで使われているからです。
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=tut6 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_mousewheel.png x=370 y=30>
+<img src=E_mouse.png x=410 y=330>
+<p>
+もしホイールマウスを持っていて、Xがそれを使えるように設定されている
+ならば、Enlightenmentはデフォルトでサポートします。
+<p>
+ホイールをデスクトップのバックグラウンドで上に回転
+させると、 _デスクトップ(desktops) を戻ることができます。
+ホイールを下方向に回転させると先のデスクトップに進
+むことができます。
+<p>
+もしこれが機能しないならば、マウスにホイールがついているのを認識
+するようにXサーバが設定されていないのでしょう。もしXFree86を使って
+いるなら、XF86Configを編集してこのように"Pointer"セクションを追加
+する必要があるかも知れません：
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ccaacc>
+<p>
+Section "Pointer"<br>
+Protocol    "MousemanPlusPS/2"<br>
+Device      "/dev/mouse"<br>
+ZAxisMapping 4 5<br>
+Buttons      5<br>
+EndSection
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+これはマウスによって修正が必要かも知れません。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=border background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウボーダーを使う
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+アプリケーションを起動すると特別なプロパティがない限りは、タイト
+ルバーといくつかのコントロールボタンのあるボーダーが周りに囲んで
+画面に表示されます。ボーダーはアプリケーションのウィンドウを操作
+するための基本的なインターフェースです。デフォルトのセットアップ
+(次のページにあります)では十分でかつシンプルさをとどめたコントロ
+ールを提供しています。
+<p>
+もしタイトルバーでマウスの左ボタンをクリックして、マウスのボタン
+を押したままにすると、ウィンドウはマウスの移動するところにはどこ
+でも付いていきます。サイズ変更のところでマウスの左ボタンをクリッ
+クしてドラッグするとウィンドウはその方向にサイズ変更します。サイ
+ズ変更のところでマウスの右ボタンをクリックすると、ウィンドウを最
+前面に移動します。
+<p>
+タイトルバーや左上のウィンドウ操作メニューボタンのどれかの上でマ
+ウスの右ボタンをクリックすると、ウィンドウを操作するメニューが表
+示されます。
+<p>
+ダブルクリック(連続して素早く2回マウスをクリックすること)すると
+ウィンドウがシェード状態またはシェード解除状態になります(起動時
+にシェード状態だったかどうかによります)。
+
+
+
+
+
+
+<page columns=1 padding=16 name=tut8 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_window_diagram.png x=16 y=48>
+<p>
+
+
+
+
+
+
+<page columns=1 padding=16 name=tut9 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+アイコン化ボタンの上でマウスの左ボタンをクリックするとウィンドウをア
+イコン化して _アイコンボックス(iconbox) に送ります。最大化ボタンを押すとアプ
+リケーションを画面いっぱいのサイズに最大化します。それをもう一度押す
+と最大化を解除して、ウィンドウを元のサイズに戻します。
+<p>
+閉じるボタンの上でマウスの左ボタンをクリックするとウィンドウを閉じま
+す。もしそのウィンドウを所有しているアプリケーションが、終了せよとい
+うナイスなリクエストに応答しない場合は、閉じるボタンの上でマウスの右
+ボタンを押すとウィンドウを強制的に終了します。アプリケーションが「ハ
+ング」しているような時以外はするべきではありません。
+<p>
+これらの方法以外にも、ウィンドウを操作するその他の方法があります。
+<p>
+ウィンドウのどこでもいいから(ボーダーの上またはアプリケーションの部
+分で)ALTキーを押したままマウスの左ボタンを押してドラッグすると、その
+ウィンドウを移動することができます。マウスの中央ボタンで同じことをす
+るとウィンドウをその方向にサイズ変更します。ウィンドウのどこかでALT
+キーを押しながらマウスの右ボタンをクリックすると、ウィンドウの操作メ
+ニューが表示されます。
+
+
+
+<page columns=1 padding=30 name=changeborder background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_border_selector.png x=300 y=40>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウボーダーの変更
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+時が経つにつれて何かの理由で、一つのウ
+ィンドウがある特定のボーダーを使ってい
+るのが気にくわなくなるかもしれません。
+しかしEnlightenmentでは、
+<br>
+_ウィンドウの操作(windowops) メニューを使うと、
+ウィンドウのボーダースタイルを簡単に変
+更することができます。
+<br>
+「ボーダースタイルのセット」メニューを
+選ぶと、このテーマで使用できるボーダー
+の一覧が表示されます。これのよくある使
+い方としては、BORDERLESSボーダータイプ
+を使ってアプリケーションが持つボーダー
+にすることです。
+<p>
+ALT+マウスの右ボタンでウィンドウのどこかをクリックするとウィンド
+ウ操作メニューをもう一度表示することが出来ます。
+<p>
+このアプリケーションを次回起動したときにボーダースタイルを記憶し
+ておきたいときは、現在のウィンドウボーダーを記憶しておくことがで
+きる _記憶(properties) ダイアログをいつでも使うことができます。
+
+
+
+
+
+<page columns=1 padding=30 name=defkeys background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_keyboard.png x=312 y=0>
+<p>
+デフォルトのキーバイン
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+<br>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+ディング
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+下は「工場出荷状態」でのEのキーバインディ
+ングです。
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#112222>
+<p>
+CTRL+ALT+Home - 画面のウィンドウをシャッフルしなおして整頓する
+<br>
+CTRL+ALT+Del - Enlightenmentを終了してログアウトする
+<br>
+CTRL+ALT+End - Enlightenmentの再起動
+<br>
+CTRL+ALT+Up-Arrow - ウィンドウを最前面に移動する
+<br>
+CTRL+ALT+Down-Arrow - ウィンドウを最背面に移動する
+<br>
+CTRL+ALT+Left-Arrow - 前のデスクトップに移動
+<br>
+CTRL+ALT+Right-Arrow - 次のデスクトップに移動
+<br>
+CTRL+ALT+X - 現在フォーカスされているウィンドウを閉じる
+<br>
+CTRL+ALT+K - 現在フォーカスされているウィンドウを強制終了する
+<br>
+CTRL+ALT+R - 現在フォーカスされているウィンドウをシェード／シェード解除する
+<br>
+CTRL+ALT+I - 現在フォーカスされているウィンドウをアイコン化する
+<br>
+CTRL+ALT+S - 現在フォーカスされているウィンドウをスティック／スティック解除する
+<br>
+CTRL+ALT+(F1 - F12) - デスクトップ0 - 11に直接移動する
+<br>
+ALT+Tab - フォーカスを次のウィンドウに移す
+<br>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+(次のページに続きます ...)
+
+
+
+
+
+<page columns=1 padding=16 name=tut11 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#112222>
+<p>
+ALT+Enter - 現在フォーカスされているウィンドウのズーム／ズーム解除する
+<br>
+SHIFT+ALT+Left-Arrow - 左に仮想デスクトップがあれば移動する
+<br>
+SHIFT+ALT+Right-Arrow - 右に仮想デスクトップがあれば移動する
+<br>
+SHIFT+ALT+Up-Arrow - 上に仮想デスクトップがあれば移動する
+<br>
+SHIFT+ALT+Down-Arrow - 下に仮想デスクトップがあれば移動する
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+注：
+ズームインとズームアウトはXFree86サーバかXf86VidModeエクステンション
+を実装しているサーバなら動作します。多くのディスプレイモードを定義し
+ておく必要もありますので、XF86Configの"Display"セクションがこのように
+なっているようにしてください：
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ccaacc>
+<p>
+SubSection "Display"<br>
+	Depth 16<br>
+	Modes "1600x1200" "1280x1024" "1152x864" "1024x768" "800x600" "640x480" "512x384" "400x300" "320x240"<br>
+EndSubSection
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+深さごと(この例では16ビット)の"Display"サブセクションを作り、すべての
+解像度が上のようになるようにしてください。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=desktops background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_deskstack.png x=360 y=70>
+<p>
+マルチ＆仮想デスクトップ
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+Enlightenmentはマルチデスクトップと仮想デスクトップをサポートし
+ています。2つの機能はかなり異なっており、
+Enlightenmentはこれらを別々に扱っております。
+<p>
+Enlightenmentを起動したとき、デフォルトでは2つ
+のデスクトップがあります。Enlightenmentではデス
+クトップは座標的に関係のないワークエリアです。
+デスクトップはお互いの手前に仮想的に重なってお
+り、ドラッグして下のデスクトップを露出させるこ
+ともできます。
+<p>
+このことを把握するもっともよい方法としては、それぞれのデスクトッ
+プが一枚の紙であり、はじめのデスクトップ(デスクトップ0)に貼り付
+いて一つになっているということです。重なっている紙はシャッフルし
+て一つ下に移動し、下にある紙一枚を上に持ってくることができます。
+最初の一枚だけは移動することはできません。それぞれのデスクトップ
+(またはシート)にはアプリケーションウィンドウがあります。
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=desktops2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_deskarray.png x=350 y=140>
+<p>
+ウィンドウは通常はひとつのデスクトップにありますが、すべてのデスクト
+ップ上に存在させることもできます。つまり新しいデスクトップに変わった
+ときにはいつでもウィンドウは付いていって、そのデスクトップにも表れま
+す。これはスティックとして知られています。ウィンドウがスティックにな
+ると「画面のガラスに貼り付く」ようになり、もうスティックにならなくな
+るかウィンドウを閉じるまでそこにとどまります。
+<p>
+仮想デスクトップ(デスクトップエリアとしても知られています)はデスクト
+ップがどれくらい大きいのかの指標です。デスクト
+ップは画面サイズの数倍のサイズ(2x1, 2x2, 3x3, 
+4x2など)になります。それぞれのデスクトップが確
+保されたエリアのAxB倍の画面サイズになり、それ
+ぞれが画面サイズになった一部を見ることができま
+す。これはまさに紙をもう何シートも使って、今の
+シートの横につなげたようなものです。表示すると
+ころをかえる簡単な方法は、デスクトップの今見え
+ていない部分の方向へマウスをスライドさせるだけ
+です。エッジフリップが有効になっている限りはEnlightenmentは自
+動的にデスクトップのその部分にスクロールしていきます。
+
+
+
+<page columns=1 padding=16 name=desktops3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_virtual_desk_settings.png x=335 y=51>
+<img src=E_area_settings.png x=30 y=190>
+<p>
+<br>
+<br>
+仮想デスクトップの数を変更するには、右のマウ
+ス _設定メニュー(sttings) にある「マルチデスクトップ設
+定」ダイアログを使います。右のようなメニュー
+が見れていなければなりません。スライダーバー
+を素早く仮想デスクトップの適切な数に合わせま
+す。
+<p>
+<br>
+<br>
+<br>
+仮想エリアの数を変更するには、「仮想デスクト
+ップ設定」メニューを使います。これは左のよう
+なメニューになります。スライダーバーを使って
+仮想エリアの数を増やしていきます。このダイア
+ログで、仮想エリア同士に移動した時のエッジで
+の耐久( _マウス(mousebind) がエリアのエッジにあたった時)
+も有効／無効にすることができます。
+
+
+
+
+<page columns=1 padding=16 name=desktops4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_deskimg.png x=275 y=81>
+<p>
+Enlightenmentでは、デスクトップごとに異なるバックグラウンドをセット
+して環境をカスタマイズし、どのデスクトップがどれなのか差をつける手
+助けもします。
+<p>
+<p>
+Enlightenmentに自動的に画像を使わせる
+簡単なの方法として、~/.enlightenment
+ディレクトリにbackgroundsというディレ
+クトリを作り、そこに気に入っているバ
+ックグラウンドを入れることができます。
+Enlightenmentは自動的にここを見つけ
+て、選択して設定を変更できるようにイ
+ンデックスを作ります。このトピックに
+ついて詳しくは
+<br>
+_デスクトップバックグラウンド(background)
+セクションにあります。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=changedesk background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+デスクトップの更新
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+現在のデスクトップを更新する方法はいくつかあります。そのうちのい
+くつかをここで解説します。
+<p>
+はじめから12のデスクトップには、alt-F1からalt-F12の
+<br>
+_キーバインディング(defkeys) を使うことができます。<br><br>
+次の／前のデスクトップに移動するにはCtrl-Alt-LeftとCtrl-Alt-Right
+の _キーバインディング(defkeys) を使うことができます。<br><br>
+shift-alt-方向矢印の _キーバインディング(defkeys) でその方向の仮想エリア
+に変更できます。<br><br>
+_ページャ(pager) を使うと、移動したいデスクトップ／エリアをクリックして
+すばやく移ることができます。<br><br>
+_ドラッグバー(dragbar) を使うと、マウスの右と中央ボタンでアプリケーション
+やデスクトップにすばやく移動することができます。<br><br>
+GNOMEパネルのページャやKDEパネルのページャなどの外部のアプリケー
+ションを使って、デスクトップやアプリケーションに移動することがで
+きます。これらを使うには、 _デスクトップ(deskenv) のサポートを有効にする
+必要があるでしょう。<br>
+
+
+<page columns=1 padding=30 name=appsdesk background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+アプリのデスクトップ間の移動
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+アプリケーションをデスクトップから他のデスクトップに移動するには
+いくつかの方法があります。ここでいくつかを説明します。
+<p>
+まずは、 _ページャ(pager) を使ってアプリをデスクトップ間で移動すること
+ができます。
+<p>
+_ドラッグバー(dragbar) を使ってアプリケーションをデスクトップ間で移動する
+こともできます。
+<p>
+_KDEとGNOME(deskenv) のデスクトップページャを使ってアプリケーションをデス
+クトップ間を移動することができます。
+<p>
+ウィンドウを _移動(movemode) しているときに、 _キーバインディング(defkeys) を使って
+デスクトップを移動してウィンドウも連れていくこともできます。
+
+
+<page columns=1 padding=30 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_dragbar.png x=10 y=345>
+<img src=E_dragging_desktops.png x=315 y=20>
+<p>
+ドラッグバー
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+画面の上に沿って、下に描いたような長くて
+細いバーがあるのに気がつくでしょう。これ
+がドラッグバーと呼ばれるものです。これは
+デスクトップをドラッグするというはじめの
+目的から名前がとられたものです。
+<br>
+もしデスクトップ0以外のどれかのデスクトッ
+プにいるときは、デスクトップをつまんでど
+こかの方向に移動することができます。
+<br>
+_デスクトップ(desktops) のドキュメントにどうやって
+デスクトップを移動するかについて詳しく書
+いてあります。一度デスクトップをドラッグ
+して下に移動すると、ページャを使うかわりにこれと同じようにしてウ
+ィンドウをデスクトップ間で移動することができます。
+<p>
+ドラッグバーを使ってウィンドウの一覧を表示することもできます。マ
+ウスの中央ボタンでウィンドウの一覧を表示して、マウスの右ボタンで
+デスクトップごとにソートしたウィンドウリストの表示です。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=pager background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_pager.png x=320 y=70>
+<p>
+ページャ
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+ページャは、デスクトップ環境としては新しいアイディアではないかも
+知れませんが、 Enlightenmentにあるページ
+ャ(右)はデスクトップ、ウィンドウのツール
+としては高度に進化して高度に設定可能とな
+っています。
+<p>
+ページャはデスクトップの画面エリアをミニチュアで見せてくれます。
+デスクトップをクリックするとそこを「見せて」くれます。ページャの
+中にあるウィンドウをクリックしてドラッグすると画面上で、あるいは
+_デスクトップ(desktops) 間ですばやく移動します。現在位置のエリア(アクティ
+ブなウィンドウがあるところ)は強調表示されています。
+<p>
+ウィンドウをページャのエリアから別のエリアや別のデスクトップにド
+ラッグするとそこに移動します。枠の外にドラッグして実際のデスクト
+ップに置いてやると、ウィンドウがその場所に置かれます。また、ウィ
+ンドウを _アイコンボックス(iconbox) にドラッグするとウィンドウを最小化し
+ます。
+<p>
+
+
+
+
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=pager2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_pager_settings_menu.png x=8 y=30>
+<img src=E_pager_settings.png x=208 y=180>
+<p>
+ページャの中の何もない部分でマウスの右ボタンを押すと、ページャメニ
+ューが表示されて、設定を変更することができます。
+これで左のようにいくつかの簡単なオプションを設定
+することができます。他の可能なオプションには、「
+ページャ設定」を選択すると、下のような他のダイア
+ログが出てきます。
+<p>
+このダイアログボックスでは他のパラメータすべてを設
+定することができ、システムにおけるEnlightenmentのパフォーマンスを向
+上させるうちの多くとなっています。高品質スナップショットや普通のスナ
+ップショットや恒常的更新などを無効にすると、パフォーマンスが著しく向
+上することがあります。これ
+らの機能はハイエンドマシン
+のためにあるのです。
+
+
+
+
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=pager3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_pager.png x=320 y=220>
+<p>
+<br>
+<br>
+<br>
+<br>
+ページャは好きなサイズに変更することができます。ALTを押しながらマウ
+スの中央ボタンを使ってページャをどの方向にもサイズ変更します。ALTを
+押しながらマウスの左ボタンを使ってドラッグするとウィンドウが移動しま
+す。ALTを押しながらマウスの右ボタンを押すと、普通のウィンドウのよう
+にウィンドウの操作メニューが表示されます。
+<p>
+デフォルトのテーマでは、ページャの右側にある、右向きの矢印があるタブ
+をクリックするとページャウィンドウが水平にシェードしたりシェード解除
+したりするので、簡単にウィンドウを隠したり戻したりすることができます。
+<p>
+ページャのボーダーにあるこのタブの上の縞模
+様のエリアはページャを移動するのに使います。
+普通のウィンドウのタイトルバーのようなもの
+です。
+
+
+
+
+
+
+<page columns=1 padding=30 name=iconbox background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_iconbox.png x=300 y=90>
+<p>
+アイコンボックス
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+アイコンボックスは、アイコン化されたウィンドウすべてのアイコン
+を置く場所です。 _最小化(minimized) されたアプリケーションを元に戻す一つの
+方法でもあります。ウィンドウをアイコン化したり最小化すると必ず
+アイコンボックスに入り、そこにアイコン
+が表示されます。アイコンをクリックする
+とアイコン化が解除されます。
+<p>
+<p>
+<p>
+アイコンボックスはデスクトップにいくつでも好きなだけ置くことが
+できます。 中央ボタンの _メニュー(rootmenu) を使えばもっと作ることができ
+ます。[デスクトップ]→[新規アイコンボックス作成]を選ぶと新規ア
+イコンボックスがデスクトップに作成されます。これらのアイコンボ
+ックスはそれぞれ別の設定をすることができます。詳しくは次のペー
+ジに書いてあります。
+<p>
+アイコンボックスのウィンドウの上でALT-左クリックを使うと、アイ
+コンボックスを _移動(movemode) することができ、画面の好きな場所に移動でき
+ます。アイコンボックスはウィンドウの上でalt-中央クリックすると
+<br>
+_サイズ変更(resizemode) することができ、 _マウスのバインディング(mousebind) セクション
+で説明されているようにサイズを適応させることができます。
+<p>
+
+
+<page columns=1 padding=16 name=iconbox2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_iconbox_menu.png x=300 y=20>
+<img src=E_iconbox_settings.png x=10 y=200>
+<p>
+アイコンボックスのどこかでマウスの右ボタ
+ンをクリックすると、アイコンボックスの設
+定をするメニューが表示されます。このメニ
+ューは右のようなものです。このメニューで
+はアイコンボックスを閉じたり、別のアイコ
+ンボックスを開いたりすることもできます。
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+それぞれのアイコンボックスでの設定を変更
+するために、マウスの右ボタン _メニュー(mousebind) を
+使い、[このアイコンボックスの設定]を選択
+します。するとこの左にあるようなダイアロ
+グが表示されます。方向やアイコンサイズ、
+スクロールバーオプション、ディスプレイポ
+リシー、背景のイメージなどアイコンボック
+スの多くのオプションをこのダイアログで変
+更することができます。サイズ変更のアンカ
+ーの位置の変更も選択することができます。
+アイコンボックスの位置にサイズ変更するま
+で使うことができます。(注：原文意味不明)
+
+<page columns=1 padding=16 name=iconbox3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+アイコンボックスにあるアイコンに使われるイメージをカスタマイズしたい
+なら、設定の例がすでに用意されています。独自の設定をするには、
+Enlightenmentのシステム設定ディレクトリにあるicondefs.cfgファイル
+(/usr/local/enlightenment/config/icondefs.cfgか/usr/share/enlighten
+ment/config/icondefs.cfgあるいは/usr/X11R6/share/enlightenment/conf
+ig/icondefs.cfg)を~/.enlightenmentディレクトリにコピーして編集します。
+それぞれの行には4つのフィールドがあります。最初のフィールドは使用さ
+れるイメージファイルです。イメージファイルの絶対パスでなければ、通常
+の検索パスで検索されます。検索パスの順序は~/.enlightennent、THEME_DI
+R/、 ENLIGHTENMENT_ROOT/configです。
+<p>
+次のフィールドはウィンドウのタイトルにマッチさせるシェルの正規表現で
+す。このフィールドに何もなければ、かわりにNULLが使われます。つまり
+有効な正規表現は"*"だけになります。3番目のフィールドはウィンドウの
+NAMEプロパティで4番目はCLASSです。検索の優先順位は最後から最初です
+ので、ウィンドウのタイトル、名前、クラスにマッチする、ファイルの最後
+のエントリがはじめの行で定義されたアイコンイメージに使われます。
+
+<page columns=1 padding=16 name=iconbox4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+すべてのウィンドウがアイコンを持つようにしたいなら：
+<p>
+"pix/pimage.png" NULL NULL NULL
+<p>
+としましょう。こうするとアイコンのもっとも一般的なマッチで、すべての
+ウィンドウにマッチします。もしこれを使うときは、ファイルの先頭にある
+ようにして、他のマッチが見つからないようにしましょう。
+<p>
+システムのicondefs.cfgには、正規表現やマッチングの例がいくつかありま
+す。自分で追加をするときの参考に使ってください。
+
+<page columns=1 padding=30 name=minimized background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+最小化したアプリを元に戻す
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+いったん最小化したアプリケーションを元に戻すにはいくつかの方法
+があります。もっとも分かりやすい方法は _アイコンボックス(iconbox) を使う
+方法です。もちろんアイコンボックスをたまたま閉じてしまったとき
+に中にいくつかのアプリケーションがあるかも知れません。また、い
+くつかのアプリケーションを最小化しておいて、アイコンボックスが
+ないのを忘れているかも知れません。また、アイコンボックスが好き
+ではなくて、通常はKDEやGNOMEのパネルを使って元に戻すけれども、
+それらを出すのを忘れていたりするかも知れません。そんなときでも
+大丈夫です。 _ドラッグバー(dragbar)
+を中央クリックして出て来る<br>
+_メニュー(rootmenu) でいつでも元に戻すことができます。デスクトップをALTか
+CTRL-中央クリックすると同じメニューが出てきます(ドラッグバーが
+ないような場合に)。
+<p>
+最小化したアプリケーションを元に戻そうとして、新規に<br>
+_アイコンボックス(iconbox) を作るのはいつでもできます。残念ながらアイコ
+ンボックスはそれぞれに _設定(settings) があるので再設定しなければなりませ
+ん。
+
+
+
+
+
+<page columns=1 padding=30 name=properties background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_remember_settings.png x=320 y=50>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+アプリの設定を記憶する
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+どのウィンドウの _ウィンドウの操作(windowops) メニュ
+ーにも、"記憶する..."というラベルのエント
+リがあります。これを選択するとそのウィン
+ドウの、右のような「記憶する」ダイアログ
+が出てきます。 (注：これらのダイアログは
+一度に一つがアクティブになります。)
+<p>
+このダイアログはそのときのウィンドウの、ある属性のスナップショッ
+トをとり、Enlightenmentに記憶させます。どの属性を記憶させるかを
+選択することができ、アプリケーションを自動的には起動しないように
+することもできます。そのウィンドウについてEnlightenmentに何を記
+憶させるかを選択して、「適用」や、そのダイアログがもう必要ないな
+ら「了解」を押します。そうするとEnlightenmentはそのアプリケーシ
+ョンが次回起動するときに今の位置、サイズ、ボーダースタイルやその
+他の属性をそのウィンドウに適用します。Enlightenmentのスタートア
+ップ時にアプリケーションを起動するようにすることもできます。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=settings background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_settings_menu.png x=240 y=87>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+設定の概要
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<br>
+<br>
+デスクトップのバックグラウンドでマウスの右ボタンをクリックする
+と、設定メニューが表示されます。ここからEnlightenmentを好きな
+ように設定するためのカテゴリを選択することができます。ここで
+実際に全部説明するには多すぎる
+ほどの設定がありますが、Enligh
+tenmentで、期待する動作をして
+ほしいときはこれらのオプション
+で単に遊んでみるだけでできるこ
+とでしょう。
+<p>
+<p>
+期待する効果を実現するために
+は、オプションを組み合わせなけ
+ればならないことがしばしばあります。したがって、いくらか試してみ
+ることも必要かも知れません。怒らないでください。ただオプションを
+元に戻して[適用]をもう一度押して取り消せないものはないのです。
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=groups background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_group_settings.png x=370 y=255>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウグループ
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+時として、論理的に一緒に扱いたいいくつかのウィンドウがデスクトッ
+プにあることでしょう。Enlightenmentではウィンドウをグループとして
+一緒にすることができます。そうすると、グループの中のあるウィンド
+ウのプロパティを変更すると、グループの他のメンバーにもその変更が
+影響します。メンバーが複数の _デスクトップ(desktops) にまたがって
+いるグループの場合、グループのプロパティはそのデスクトップにある
+そのグループのウィンドウにのみ影響します。
+<p>
+グループ全体に変更が及ぶプロパティには、ウィンドウのボーダーや、
+アイコン化、強制終了、移動、前面／背面移動、スティックやシェード
+などがあります。
+<p>
+<p>
+<p>
+<p>
+デフォルトでどのプロパティがグループに適用される
+かを定義するには、 _設定(settings) メニューで[グループ設定
+]オプションを選ぶと、設定を変更できる、右のよう
+なダイアログウィンドウが表示されます。
+
+
+
+
+
+<page columns=1 padding=16 name=groups2 background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_groups_menu.png x=320 y=25>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウグループを扱うには2つの異なる方法
+があります。一つは、それぞれのウィンドウに
+ある操作メニューの[ウィンドウグループ]とあ
+るサブメニューです。このメニューは右にある
+ようなものです。(前のページにあるように)
+グループを、デフォルトのグループ設定とは異
+なるように設定することもできます。
+<p>
+2番目は、すぐに便利に使えるもっとも重要な
+オプションである、ウィンドウのタイトルバーです。Shift-クリックでグル
+ープを開始し、Ctrl-クリックでウィンドウをもっとも若いグループ(「現在
+の」グループとも言います)に追加されます。Shift-Ctrl-クリックでグルー
+プを終了します。マウスの中央ボタンをクリックしてウィンドウのグループ
+を見ることもできます。もう一度クリックすると前のボーダーに戻ります。
+<p>
+ウィンドウは一度に複数のグループに入ることができます。したがって多く
+のオプションでは、どのグループとして設定するのか指定しないといけませ
+ん。ダイアログウィンドウの上の方にある、(グループメンバーのタイトル
+が表示されている)適切なチェックボックスを選択してください。
+
+
+<page columns=1 padding=30 name=backgrounds background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+デスクトップのバックグラウンド
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+デスクトップのバックグラウンドを変更したくなることがしばしばある
+でしょう。それにはいくつかの方法があります。しかしもちろん、デス
+クトップを変更するには、Enlightenmentが扱えるグラフィックを指定
+する必要があります。デスクトップテーマも、1つや2つのバックグラウ
+ンドを選択肢に追加してくれますが、多くのユーザはもっと多くのバッ
+クグラウンドから選びたいと思うことでしょう。選択できるバックグラ
+ウンドを追加するには、ホームディレクトリの下にバックグラウンドの
+ディレクトリを作ります。これには、シェルで
+<p>
+mkdir ~/.enlightenment/backgrounds
+<p>
+と打ってください。この後には、Enlightenmentを再起動しなくてはな
+りません。再起動はCtrl-Alt-Endキーの同時押しをするだけで素早く
+簡単にすることができます。Enlightenmentが起動する時には、これら
+のディレクトリをスキャンしなおして、新しいファイルをバックグラウ
+ンドセレクタに追加してくれます。
+
+
+
+
+
+
+<page columns=1 padding=16 name=backgrounds2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_backgrounds_menu.png x=163 y=107>
+<p>
+<br>
+<br>
+バックグラウンドを追加してEnlightenmentを再起動したら、ルートメニュー
+のデスクトップセレクタを使うことができるはずです。このメニューを表示
+するためには、デスクトップで中央ボタンをクリックして[デスクトップ]を
+選択して、[バックグラウンド]を選択します。右のようなものが表示される
+はずです。ここからバ
+ックグラウンドのメニ
+ューを閲覧・選択する
+ことができるでしょう。
+<br>
+<br>
+<br>
+<br>
+(nextをクリックすると
+続きが見れます)
+
+
+<page columns=1 padding=16 name=backgrounds3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_backgrounds_menu_view.png x=3 y=84>
+<p>
+<br>
+<br>
+バックグラウンドメニューを開いてみると、下のイメージのようなものが表示
+されるはずです。ここでどれかイメージの上にマウスを重ねると、現在のデス
+クトップのバックグラウンドがその選択
+したイメージに変更されます。
+<p>
+<br>
+<br>
+Enlightenmentは、バックグラウンドにつ
+いては最適な設定をしようとしますが、
+それが都合の悪い時はいつでも手動で設
+定を変更することができます。右ボタン
+で設定メニューを表示して、 [バックグ
+ラウンドの設定]を選択すると、次のペ
+ージのようなダイアログが表示されます。
+
+<page columns=1 padding=16 name=backgrounds4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<img src=E_backgrounds_settings.png x=0 y=0>
+<p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+このダイアログから、それぞれのバックグラウンドについてのさまざまな設
+定をすべてすることもできますし、またここでもバックグラウンドを変更す
+ることができます。
+
+
+
+
+
+
+
+
+
+
+<page columns=1 padding=30 name=tooltips background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_tooltips.png x=260 y=65>
+<img src=E_tooltip_settings.png x=20 y=245>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ツールチップ
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+Enlightenmentを使っているとそのうちに、どれが何だかわからなくな
+った時にはマウスをその上に少し
+の間乗せ続けているとツールチッ
+プが表示されるのに気がつくでし
+ょう。そのもっとも簡単な例とし
+ては、 _ウィンドウボーダー(border) に
+マウスを置いておいたときがあり
+ます。
+<p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+_設定(settings) メニューから、左のような
+[ツールチップの設定]ダイアログを
+選択すると、ツールチップを無効に
+したり、表示されるまでの時間を変
+更することができます。
+
+
+
+
+<page columns=1 padding=30 name=audio background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_audio_settings.png x=300 y=220>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+オーディオ
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+当然ながらEnlightenmentは、デスクトップでいろいろなことをしたと
+きにたくさんの効果音やビープ音を鳴らすようにあらかじめ設定されて
+います。Enlightenmentでサウンドを使うためには、ESounDとaudiofile
+の両方をインストールして置かなくてはなりません。これらのライブラ
+リについての詳しい情報は http://www.gnome.org/ にあります。
+<p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+実行時にサウンドを有効にするか無効にす
+るかは、 _設定(settings) メニューから[オーディオ
+の設定]オプションを選択すると表示され
+る、右のようなダイアログで設定すること
+ができます。
+
+
+<page columns=1 padding=30 name=fx background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_special_fx_settings.png x=320 y=60>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+特殊効果
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+Enlightenmentには、[特殊効果]の _設定(settings) ダ
+イアログで設定できる多くの機能がありま
+す。そこでは、 _ドラッグバー(dragbar) の設定や、
+(ウィンドウのシェードする速度を含む)さ
+まざまなスライド速度の設定、いろいろな
+場面でのアニメーションの有無などの設定
+することができます。ウィンドウのスライ
+ドの方法を、 _サイズ変更モード(resizemode) のように
+設定することもできます。
+<p>
+<p>
+メニューのアニメーション表示など、新しくインストールしたときには
+デフォルトでは無効になっている特殊効果がいくつかあります。サーバ
+と設定によってはEnlightenmentのパフォーマンスを改善したり低下させ
+たりしますが、saveunderを有効にすることもできます。
+
+
+<page columns=1 padding=30 name=focus background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_mouse.png x=410 y=330>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+フォーカスの設定
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+Enlightenmentはウィンドウのフォーカスについて多くのオプションを
+提供しています。デフォルトでは、ほぼ厳密なフォーカスモードになっ
+ています。Enlightenmentには、他の2つの主要なフォーカスモードがあ
+ります。クリックとポインタによるフォーカスです。
+<p>
+クリックによるフォーカスはもっとも多くの人に知られています。ウィ
+ンドウをクリックするとそのウィンドウがEnlightenmentからフォーカ
+スを取得します。
+<p>
+ポインタによるフォーカスでは、ポインタが上にあるウィンドウにフォ
+ーカスが与えられます。
+<p>
+ほぼ厳密なフォーカスというのは、ポインタによるフォーカスに似てい
+ますが、 _デスクトップのバックグラウンド(backgrounds) にポインタがいったとき
+には最後のウィンドウにフォーカスがあたったままになるという点で異
+なります。
+<p>
+次は、これらの設定をどうやって変更するかについてです。
+
+
+<page columns=1 padding=16 name=focus2 background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_focus_settings.png x=320 y=30>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+Enlightenmentでは、いつでもフォーカスの設定
+を変更することができます。単に _設定(settings) メニュ
+ーから[フォーカスの設定]を選択して右のよう
+なダイアログを表示させるだけです。一番上で
+は、前のページで述べた3つのフォーカスモード
+から選択できるようになっています。
+<p>
+<p>
+<p>
+他のいくつかの機能、例えば _マウス(mousebind) クリックだけでウィンドウを前面に
+移動するようにするとか、進んだフォーカス設定などを有効にすることも
+できます。
+<p>
+ここでは、フォーカスリストの機能も有効にすることもできます。この機
+能はXサーバでXkbが有効になっていることが必要です。Xkbが有効になって
+いなければ、どうやって有効にするかについてそのXサーバのドキュメント
+を探してください。フォーカスリストとは、ALT + TAB
+<br>
+_キーバインディング(defkeys) を使ってフォーカスを変更するときに表示される
+ウィンドウのリストです。
+
+
+<page columns=1 padding=30 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_move_resize_settings.png x=300 y=50>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウの移動
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+Enlightenmentには、ウィンドウを移動す
+るのにいくつかの異なる方法があります。
+実際の移動には _ウィンドウボーダー(border) を
+使うこともできますし、<br>
+_マウスのバインディング(mousebind) を使うこともで
+きます。マウスのボタンを離すまでウィン
+ドウを移動させることができます。
+<p>
+<p>
+ウィンドウの移動で使うモード(デフォル
+トではそのまま)を変更するには、 _設定(settings)
+メニューを開き、[移動とサイズ変更の設
+定]ダイアログを選択します。右上のよう
+なダイアログが表示されます。もっとも
+適切と思われるものが見つかるまでいろいろ試してみてください。
+<p>
+目で真剣に楽しみたければ、半透明移動モードを試してみてください。
+ただしこれは XサーバとEnlightenmentが同じマシンで動いているとき
+のみ動作します。
+
+
+<page columns=1 padding=30 name=resizemode background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_move_resize_settings.png x=300 y=50>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウのサイズ変更
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+Enlightenmentでは、ウィンドウのサイズ
+変更の方法にもいくつかの方法がありま
+す。ウィンドウの _ボーダー(border) のサイズ変
+更部分をどこかクリックして、好きな方
+向にドラッグすると実際にサイズ変更を
+することができます。ウィンドウのどこ
+かでALT + 中央ボタンの<br>
+_マウスバインディング(mousebind) を使っても同じ
+ことができます。
+<p>
+ウィンドウのサイズ変更のモード(デフォ
+ルトではそのまま)を変更するには、<br>
+_設定(settings) メニューを開き、[移動とサイズ変
+更の設定]を選択します。選択すると右上
+のようなものが表示されます。もっとも適切なものが見つかるまで試し
+てみてください。
+<p>
+目で真剣に楽しみたければ、テクニカル移動モードを試してみてくださ
+い。このモードでは、画面の端からの距離と、ウィンドウの高さと幅を
+表示します。
+
+<page columns=1 padding=30 name=windowops background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_app_rightmouse_menu.png x=360 y=40>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウの操作
+<p>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ウィンドウの操作メニューとは、現在のウィンドウ
+にいろいろ多くのアクションをするときによく使っ
+ているメニューです。
+<p>
+[閉じる]はそのウィンドウを閉じます。[強制終了]
+はウィンドウが属するアプリケーションに通知する
+ことなくそのウィンドウを閉じます。アプリケーシ
+ョンが[閉じる]では応答しないときには特に便利で
+す。
+<p>
+[アイコン化]ではウィンドウをアイコン化します。
+もし _アイコンボックス(iconbox) があれば、もっとも近い
+アイコンボックスに送られます。
+<p>
+[前面移動]では、邪魔になっているようなどのウィ
+ンドウよりも手前に移動します。[背面移動]ではど
+のウィンドウよりも後ろに移動します。
+<p>
+_次(windowops2) のページに続きます。
+
+<page columns=1 padding=16 name=windowops2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+[シェード/シェード解除]ではウィンドウのシェード状態を変更します。ボ
+ーダーのないウィンドウではシェードはできないことに注意してください。
+<p>
+[スティック／スティック解除]ではウィンドウのスティック状態を変更し
+ます。スティックなウィンドウは「ガラスに貼り付いた」状態になり、ど
+の仮想デスクトップでもどのマルチ _デスクトップ(desktops) でも表示されます。
+<p>
+[フルスクリーン/ウィンドウ]では、可能ならばウィンドウの解像度を変更
+して _拡大や縮小(tut11) をします。この機能はXサーバが正しく設定され、XVidtu
+neエクステンションをサポートしているときのみ使えます。Xサーバは解像
+度をされたがらないかも知れません。安定していないXサーバでこれを使う
+とクラッシュしてしまう可能性があります。この機能を使うときにはその
+ことに気をつけてください。
+<p>
+[記憶する...]は、アプリケーションのこのインスタンスについて何を記憶
+しておくかを選択できる、 _記憶のプロパティ(properties) ダイアログを表示します。
+ダイアログの[適用]や[了解]ボタンを押したときに属性が選択されていると
+そのときの状態が記憶されます。ウィンドウの別な状態を記憶させたいとき
+にはもう一度ダイアログを表示させることになります。
+<p>
+_次(windowops3) のページに続きます。
+
+<page columns=1 padding=16 name=windowops3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+_ウィンドウのグループ(groups) サブメニューには、ウィンドウのグループや、その
+ウィンドウがどのグループにどのようにかかわっているかを設定するさまざ
+まなオプションがあります。 _ページャ(pager) や
+<br>
+_アイコンボックス(iconbox) はそれぞれグループ化したり、また他のウィンドウとグ
+ループ化させることはできませんので注意してください。
+<p>
+[ウィンドウサイズ]サブメニューを使うといくつかの視点からウィンドウを
+最大サイズにすばやく変更することが可能です。
+<p>
+[スタックの設定]ではウィンドウのスタックレイヤを変更することができま
+す。
+<p>
+別なウィンドウのボーダーを使いたければ、[ボーダースタイルの設定]メ
+ニューを使うと、 _ボーダー(changeborder) を変更することができます。ボーダーを変
+更してからテーマを変更すると、新しいテーマに同じ名前のボーダーがな
+ければDEFAULTボーダーに戻され、また自分で変更しないかぎりはそのまま
+使われます。
+
+<page columns=1 padding=30 name=deskenv background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_kde_settings.png x=300 y=70>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ＫＤＥとＧＮＯＭＥのサポート
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+Enlightenmentはそれだけでデスクトップ
+環境になっていますが、デスクトップ環境
+のKDEとGNOMEがあればいつでもそれらをサ
+ポートすることができます。実際にはEnli
+ghtenmentは元からGNOMEをサポートするよ
+うにはなっています。しかしながらKDEヒ
+ントを有効にするにはEnlightenmentを起
+動して、 _設定(settings) メニューの[KDEサポート
+の設定]セクションを使わなくてはなりません。この設定は、次回Enlig
+htenmentを起動したときのために自動的に保存されます。これでどんな
+KDE、GNOMEアプリケーションも使うことができるし、GNOMEパネルやkpa
+nel、gmcやkfmなど(これらに限りませんが)もちゃんとサポートされて
+います。
+<p>
+_よくある質問(faq) には、デフォルトでEnlightenmentがGNOMEやKDEと動作
+させるにはどうしたらよいかについてもっと情報があります。
+
+
+
+<page columns=1 padding=30 name=placement background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_placement_settings.png x=220 y=70>
+<img src=E_autoraise_settings.png x=10 y=270>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+自動前面移動設定
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+これら2つの _設定(settings) ダイアロ
+グでは、ウィンドウの配置に
+ついてさまざまなオプション
+を設定できます。この2つの
+ダイアログのウィンドウオプ
+ションはNetscapeでALT+Oで
+開くURLウィンドウのような
+ウィンドウに使うためのもの
+です。手動による配置では、
+新規に表示されるウィンドウ
+はすべて自分でマウスを使って配置することになります。
+<p>
+[自動手前移動設定]ダイアログでは、設定した時間が経つとウィンドウ
+が自動的に手前に移動するように、タイマーイベントを設定することが
+できます。タイマーを変更するだけでなく、有効にすることもできます。
+_フォーカスモード(focus) がほぼ厳密
+かポインタ通りであるときだけ
+便利です。
+
+<page columns=1 padding=30 name=eesh background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+ＩＰＣについての簡単な概要
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+Enlightenmentには、興味深いIPCシステムがあり、(Etermのような)外
+部アプリケーションとEnlightenmentがやり取りをして、お互いに情報
+を問い合わせたり変更したりすることができます。EnlightenmentのIPC
+への簡単なシェルインターフェースである「eesh」というプログラムが
+インストールされています。eeshを実行してhelpと打つと、理解できる
+コマンドのリストが返ってくるはずです。
+<p>
+注：EのIPCには、必然的にまだ動作していなかったり、完全には実装さ
+れていなかったりするコマンドが多くあります。eeshを使うと、本当に
+すごいことを潜在的にはできるわけですが、多くの場合Eのもう一つの
+興味深いインターフェースにすぎません。配布しているパッケージには
+eeshを介してEとのインターフェースとなる、Perlで書かれたいくつか
+のスクリプトがあるはずで、Eの基本的な機能の他にEをどうやって操作
+したらいいかが分かるでしょう。将来的なバージョンでIPCがもっとい
+ろいろできるようになるものと期待しておいてください。
+<br>
+eeshを終了するには、CTRL + D (EOF) を入力してください。
+
+<page columns=1 padding=30 name=editmenus background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+メニューを編集するには
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+インストールしたあとに初めてEnlightenmentを起動すると、ホームデ
+ィレクトリに.enlightenmentというディレクトリを作成します。このデ
+ィレクトリには「file.menu」というファイルができます。このファイ
+ルはマウスの左ボタン _メニュー(rootmenu) の内容を管理しています。ファイル
+の一番はじめの行にはメニューのタイトルがあり、残りはこのようにな
+っています：
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#112222>
+<p>
+"Eterm" NULL exec "Eterm"
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+それぞれのカラムは：
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#112222>
+<p>
+エントリ名、メニューのグラフィック(またはNULL)、exec "コマンドライン"
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+を表しています。
+<p>
+ここにはいくつかのファイルがあり、Enlightenmentがインストール時
+にKDEやGnomeを検出していると、それらのメニューもあります。もし検
+出していたら、user_apps.menuというファイルが作られます。これらの
+ファイルはそれぞれ編集してもいいことになっています。
+
+
+<page columns=1 padding=30 name=editkeys background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+キーバインディングの編集
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+<br>
+
+自分でキーバインディングを設定するには、Enlightenmentと一緒にイ
+ンストールされているkeybindings.cfgファイルを探して、~/.enlight
+enmentディレクトリにコピーしてやるだけでできます。このファイルは
+結構長いのですが、編集するのがそれほど難しいわけではありません。
+どうぞお気をつけて！このファイルがある限り、デフォルトのキーバイ
+ンディングを*すべて*上書きしてしまいます。したがって(自分が何を
+しているのかちゃんと分かっていないならば)このファイルを編集する
+ときには最高級の注意を払ってください。
+<p>
+キーバインディングをデフォルトに戻すには、単にこのファイルを~/.
+enlightenmentディレクトリから消してください。次にEnlightenmentを
+再起動したらデフォルトのキーバインディングがメモリに読み込まれる
+はずです。
+
+<page columns=1 padding=30 name=themes background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+テーマ
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+Enlightenmentの強力な点の一つは、もちろん、デスクトップのルック
+アンドフィールをいつでも好きな時に完全に変更できることです。リリ
+ース0.16.4にはテーマがいくつかあり、この設定の自由さの片鱗を見せ
+てくれます。マウスの中央ボタンの _メニュー(rootmenu) を使うと、[テーマ]セ
+レクタで新しいテーマを選択することができます。当然ですが、デフォ
+ルトで付いてくるもの以外にも、Enlightenmentのテーマはもっといっ
+ぱいあります。ここでもっと見つけることができます：
+<p>
+http://e.themes.org
+<p>
+そしていいものが見つかるまで探してみてください。
+<p>
+新しいテーマをインストールするのは簡単です。何とか.ethemeファイ
+ルを拾ってきて~/.enlightenment/themesディレクトリに置いてやるだ
+けです。その後一度Enlightenmentを再起動すると、自動的にテーマ<br>
+_メニュー(rootmenu) の中に表示され、他のテーマと同じように選択することが
+できます。
+
+
+
+
+<page columns=1 padding=30 name=eyecandy background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+おまけの楽しみ方
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+当然ながら、ちょっとした遊べるおまけがないとEnlightenmentは完璧
+ではありません。マウスの中央ボタン _メニュー(rootmenu) から[デスクトップ]
+を選んで使ってみてください。
+<p>2つのおまけが選択できます：
+<p>波紋効果 - これは波紋が少し起き、画面の下がうつります。
+<p>ウェーブ効果 - 波紋に似ていますが、端から端に波が起こります。
+<p>
+<br>
+<br>
+これらはそれぞれ、有効にしたのと同じメニューを使ってオフにするこ
+とができます。
+
+
+
+<page columns=1 padding=30 name=maint background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_maint_menu.png x=265 y=60>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+メンテナンス用スクリプト
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+Enlightenmentにはマウスの中央ボタ
+ン _メニュー(rootmenu) から実行できるスク
+リプトがいくつかあります。これら
+のスクリプトはEnlightenmentが自動
+的に作成したファイルにあらゆるメ
+ンテナンスをすることができます。
+[メンテナンス]を選択すると、右上
+のようなメニューが表示されるはず
+です。ここから、Enlightenmentが使
+う _KDEとGNOME(deskenv) メニューを作り直す
+こともできます。
+<p>
+注意ですが、設定情報を消すと、次回Enlightenmentを再起動した時に
+は読み込むのに時間が長くかかってしまいます。提供されているクエリ
+ーツールで、Enlightenmentの使用状況を監視することができます。も
+しテーマをたくさん変更したら、テーマをセットした後おそらく設定
+ファイルキャッシュを消したくなるでしょう。Enlightenmentによるデ
+ィスクの使用を減らしておくのに役立つからです。
+
+
+
+
+
+
+<page columns=1 padding=30 name=faq background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+_アイコンボックスは見つからないし、設定も変更できませんが？(faq2)
+<p>
+_マウスの左ボタンメニューが見つからないようですが？(faq2)
+<p>
+_設定が全部ダメですが、直すことはできないのでしょうか？(faq3)
+<p>
+_テーマを更新したのに新しい方を使ってくれませんが？(faq3)
+<p>
+_ウィンドウをボーダーレスにしたけど戻せないんでしょうか？(faq4)
+<p>
+_アイコンボックスを移動したりサイズ変更するには？(faq4)
+<p>
+_うっとおしいデスクトップツールチップをなくすには？(faq4)
+<p>
+_EnlightenmentをGNOMEで使えるようにするには？(faq5)
+<p>
+_EnlightenmentをKDEで使えるようにするには？(faq7)
+<p>
+_このドキュメントは役に立たないが、他にはないのか？(faqend)
+
+
+
+
+<page columns=1 padding=30 name=faq2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ１
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+問: アイコンボックスは見つからないし、設定も変更できませんが。
+<p>
+答: 2つ考えられます。
+<p>
+1. デスクトップにアイコンボックスがない。中央クリックで[デスク
+トップ]-[新規アイコンボックスの作成]を選択してみましょう。
+<p>
+2. アイコンボックスが透明だったりボーダーレスである。ウィンドウ
+をアイコン化してアイコンが表示されるか見てください。もし表示さ
+れるならそのアイコンを右クリックしてアイコンボックスを再設定し
+てください。
+<p>
+<br>
+<br>
+問: マウスの左ボタンメニューが見つからないようですが。
+<p>
+答:  メニューファイルが壊れているようです。プログラムをもう一度
+実行してはじめから作り直してみてください。まず~/.enlightenment/
+*.menuファイルを消します。そして _[メンテナンス](maint) メニューで再
+構築します。
+
+
+
+<page columns=1 padding=30 name=faq3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ２
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+<br>
+問: 設定が全部ダメですが、直すことはできないのでしょうか。
+<p>
+答: そうですね、もしダメでも、Enlightenmentが自動的に保存するフ
+ァイルをすべて削除することがいつでもできます。~/.enlightenmentで、
+...e_sessionファイルを削除して、cachedディレクトリも消します。テ
+ーマが壊れていたら、user_theme.cfgファイルも削除します。次にEnli
+ghtenmentを起動したらすべてがデフォルトに戻っているはずです。
+<p>
+<br>
+<br>
+問: テーマを更新したのに新しい方を使ってくれませんが。
+<p>
+答: Enlightenmentに付属していないテーマに更新したら、~/.enlight
+enment/themesディレクトリにもしテーマの展開したバージョンがあれ
+ば削除されているようにしてください。もしそれができていなければ、
+Enlightenmentが新しいバージョンで起動しても古いファイルを使うこ
+とになり、こうした問題が起こります。
+
+<page columns=1 padding=30 name=faq4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ３
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+<br>
+問: ウィンドウをボーダーレスにしたけど戻せません。
+<p>
+答: ALT + マウスの右ボタンをウィンドウのどこかで押せばいつでも<br>
+_ウィンドウ操作(windowops) メニューが表示されます。ALT + マウスの左ボタンで
+ウィンドウを移動して、ALT + マウスの中央ボタンでウィンドウのサ
+イズ変更ができます。
+<p>
+<br>
+問: アイコンボックスを移動したりサイズ変更するには。
+<p>
+答: 上にもありますが、ALT + マウスの右ボタンで _ウィンドウの操作(windowops)
+メニューが表示され、ALT + マウスの中央ボタンでアイコンボックス
+のサイズ変更ができ、ALT+マウスの左ボタンで移動することができま
+す。 _アイコンボックス(iconbox) のドキュメントに詳しく書いてあります。
+<p>
+<br>
+問: うっとおしいデスクトップツールチップをなくすには？
+<p>
+答: _ツールチップ(tooltips) の設定メニューに特別な設定オプションがありま
+す。
+
+<page columns=1 padding=30 name=faq5 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ４
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+問: EnlightenmentをGNOMEで使えるようにするには？
+<p>
+答: デフォルトでは、EnlightenmentはGNOMEヒントをすべてサポート
+しています。しかしながらもしGMCを使っているときにルートウィンド
+ウをクリックしても(アイコンのドラッグやGMCのルートメニューなど)
+望んだ効果が常に得られるわけではないことに気がつくかもしれませ
+ん。もしEnlightenmentとGMCを使いたければ、いくつかのオプション
+があります。alt+マウス左ボタンやalt+マウス右ボタンを使うとGMCの
+ルートメニューが表示できます。また、keybindings.cfgを編集してマ
+ウスの左右ボタンのバインディングを削除することもできます。その
+ためにEnlightenmentにはkeybindings.cfgのコピーが付いています。
+/Enlightenmentの/パス/の/configs/にあるkeybindings.gmc.cfgを~/
+.enlightenmentディレクトリにコピーしてください。再起動すると、
+マウスの左右ボタンがEnlightenmentにバインディングされなくなって
+います。システムの設定を変更するには、そのディレクトリのkeybind
+ings.cfgにコピーして上書きしてください。後日この変更を戻したく
+なったときのために、keybindings.nogmc.cfgが用意されています。
+<br align=75%>
+_次のページへ(faq6)
+
+
+
+<page columns=1 padding=30 name=faq6 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ５
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+GNOMEセットアップその2
+<p>
+注意: GMCは0以外のデスクトップのルートウィンドウではどこを押し
+ても認識しないので、仮想デスクトップのかわりに仮想エリアを使い
+たくなるかもしれません。
+もしEnlightenmentをgnome-sessionから起動したいなら、GNOMEコント
+ロールセンターを使ってEnlightenmentを新規にウィンドウマネージャ
+に選択するべきです。<br>
+注意: Enlightenmentをセッションマネージャから実行すると遅くなり
+ます。自分でEnlightenmentを実行して、gnome-sessionを起動するかわ
+りにEnlightenmentがセッションマネージャになるようにしましょう。
+GNOMEパネルとgmcを手動で起動し、推奨されるランチャとしてEnlighte
+nmentが配置しなおすことができます。こうするには、手動で起動したら
+それらの上でalt-右クリックして[記憶する...]を選択して[ログイン時
+にアプリケーションを再起動する]を選択してください。
+
+
+<page columns=1 padding=30 name=faq7 background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ６
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<p>
+問: Enlightenmentを _KDE(deskenv) で使えるようにするには？
+<p>
+答: デフォルトでは、EnlightenmentはKDEヒントをサポートしていま
+せん。しかしながら設定メニューで簡単に有効にすることができます。
+もし起動時に自動的にサポートを追加したいときは(設定の自動保存で
+無効にできますが)control.kde.cfgを~/.enlightenmentディレクトリ
+にコピーして、control.cfgに名前を変更してください。もしEnlighte
+nmentを最初に起動したあとでこれをするには、~/.enlightenment/..
+e_session.XXXXXXファイルから次のような行を削除してください：<br>
+1366 0<br>
+単にこの行を削除してEnlightenmentを起動しなおします。もし[KDEの
+サポート]の _設定(settings) パネルでKDEサポートがオンになったま
+まであれば、ダイアログをそのままにしておけばKDEサポートはオンの
+ままになります。kpanelとkfmを.xsessionか.xinitrcから起動するよう
+にすればそれらが正しく起動するようになります。もしstartkdeスクリ
+プトを編集(システム全体の設定変更を)したいならば、kwmが含まれて
+いる行を見つけて、/Enlightenment/への/パス に置き換えてください。
+
+
+<page columns=1 padding=30 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+よくある質問：ページ７
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+問: このドキュメントは役に立たないが、他にはないのか？
+<p>
+答: そうですね、質問にはあらかじめ予想できるものにしか答えられ
+ないのは明らかです。したがって _メーリングリスト(email) 、特にメーリン
+グリストのアーカイブや _Webサイト(web) などを探してみてください。誰か
+が偶然すでに同じ質問をしているかもしれません。そしてもし見つか
+らなければ、 _irc(irc) チャンネルで誰かに質問してみてください。
+<p>
+
+
+
+<page columns=1 padding=30 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
+<font face="-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0208.1983-0,-jis-fixed-medium-r-normal--24-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+日本語訳について
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+この日本語訳の著作権は他のどの訳も参考にしなかったので：
+<p>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#88dddd>
+中井 幸博 nakai@gnome.gr.jp
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+にあります。日本語訳に関するライセンスはGPLとしますが、原作による
+制限をうけるものとします。そのまま、または改変して配布する場合は、
+この「日本語訳について」の部分を削除せず、また改変者と改変部分に
+ついての情報を追加してください。(多くて、1ページくらい。)
+<p>
+日本語訳にあたっては、<br>
+・直訳表現はなるべく避け、ユーザの分かりやすい表現を心がけた。<br>
+・差別表現にあたるものは排除し、差し支えない語に差し替えた。<br>
+<br>
+に気をつけました。したがって表現等についての修正はしませんが、誤訳
+や原文の誤りがそのままになっているものについては修正しますのでご連
+絡ください。
+<p>
+この日本語訳のバージョンは：<br>
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#88dddd>
+2000.01.12版
+<font face="-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0,-misc-fixed-medium-r-normal--14-*-*-*-*-*-jisx0201.1976-0" color=#ffffff>
+<p>
+とします。
