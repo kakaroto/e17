@@ -30,12 +30,6 @@ GeistDocument::GeistDocument()
    D(1,"GeistDocument constructor");
 }
 
-GeistDocument::GeistDocument(string name)
-{
-   _name = name;
-   D(1,"GeistDocument constructor with name");
-}
-
 GeistDocument::~GeistDocument()
 {
    D(1,"GeistDocument destructor");

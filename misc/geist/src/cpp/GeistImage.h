@@ -33,8 +33,6 @@ class GeistImage : public GeistObject
 {
    public:
        
-   class eNoChildren { };  // can't add or remove children to a leaf
-
    GeistImage(string name);
    ~GeistImage();
    GeistImage();
