@@ -307,21 +307,21 @@ Epplet_remember(void)
 {
    char   s[1024];
 
-   sprintf(s, "remember 0x%x none", (unsigned int)win);
+   sprintf(s, "remember %x none", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x layer", (unsigned int)win);
+   sprintf(s, "remember %x layer", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x border", (unsigned int)win);
+   sprintf(s, "remember %x border", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x location", (unsigned int)win);
+   sprintf(s, "remember %x location", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x sticky", (unsigned int)win);
+   sprintf(s, "remember %x sticky", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x shade", (unsigned int)win);
+   sprintf(s, "remember %x shade", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x group", (unsigned int)win);
+   sprintf(s, "remember %x group", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x command", (unsigned int)win);
+   sprintf(s, "remember %x command", (unsigned int)win);
    ECommsSend(s);
 }
 
