@@ -398,7 +398,6 @@ AddToFamily(Window win)
      }
    x = 0;
    y = 0;
-   DetermineEwinArea(ewin);
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
    if (ewin->client.transient)
@@ -1641,6 +1640,11 @@ EwinSetBorderByName(EWin * ewin, const char *name, int apply)
 void
 EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 {
+   if (!ewin)
+      return;
+
+   DetermineEwinArea(ewin);
+
    if (ewin->dialog)
       DialogMove(ewin->dialog);
    else if (ewin->menu)
@@ -1888,9 +1892,6 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
      }
 
    EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-
-   if (move)
-      DetermineEwinArea(ewin);
 
    if ((mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
        || (mode.have_place_grab))
@@ -3142,16 +3143,21 @@ EwinGetDesk(EWin * ewin)
 int
 EwinIsOnScreen(EWin * ewin)
 {
-   int                 desk;
+   int                 x, y, w, h;
 
    if (ewin->sticky)
       return 1;
-   desk = ewin->desktop;
-   if (desk != desks.current)
+   if (ewin->desktop != desks.current)
       return 0;
-   if (ewin->area_x != desks.desk[desk].current_area_x ||
-       ewin->area_y != desks.desk[desk].current_area_y)
+
+   x = ewin->x;
+   y = ewin->y;
+   w = ewin->w;
+   h = ewin->h;
+
+   if (x + w <= 0 || x >= root.w || y + h <= 0 || y >= root.h)
       return 0;
+
    return 1;
 }
 

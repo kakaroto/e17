@@ -1141,11 +1141,8 @@ ConformEwinToDesktop(EWin * ewin)
 	DesktopAddEwinToTop(ewin);
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
-	RaiseEwin(ewin);
-/*      ShowEwin(ewin); */
-	ICCCM_Configure(ewin);
 	StackDesktops();
-	SetEwinToCurrentArea(ewin);
+	MoveEwin(ewin, ewin->x, ewin->y);
      }
    else
      {
@@ -1846,7 +1843,7 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
    EDBUG(3, "MoveEwinToDesktopAt");
 /*   ewin->sticky = 0; */
    ewin->floating = 0;
-   if (num != ewin->desktop)
+   if (num != ewin->desktop && !ewin->sticky)
      {
 	DesktopRemoveEwin(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
@@ -1874,7 +1871,7 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
 	     Efree(lst);
 	  }
      }
-   ForceUpdatePagersForDesktop(ewin->desktop);
+   ForceUpdatePagersForDesktop(num);
    EDBUG_RETURN_;
 }
 
