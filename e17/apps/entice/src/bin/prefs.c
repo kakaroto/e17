@@ -95,13 +95,11 @@ const char *
 entice_config_theme_get(void)
 {
    char buf[PATH_MAX];
+   struct stat status;
 
-   if (econfig && econfig->theme)
+   if (econfig)
    {
-      struct stat status;
-
-      /* theme doesn't exist by abs/relative path in db */
-      if (stat(econfig->theme, &status) != 0)
+      if (econfig->theme)
       {
          snprintf(buf, PATH_MAX, "%s/.e/apps/entice/themes/%s",
                   getenv("HOME"), econfig->theme);
@@ -115,10 +113,13 @@ entice_config_theme_get(void)
                         PACKAGE_DATA_DIR);
             }
          }
-         if (econfig->theme)
-            free(econfig->theme);
-         econfig->theme = strdup(buf);
+         free(econfig->theme);
       }
+      else
+      {
+         snprintf(buf, PATH_MAX, "%s/themes/default.eet", PACKAGE_DATA_DIR);
+      }
+      econfig->theme = strdup(buf);
       return (econfig->theme);
    }
    return (NULL);
