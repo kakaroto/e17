@@ -1211,6 +1211,14 @@ typedef struct
    } grabs;
    struct
    {
+      int                 current_depth;
+      Menu               *list[256];
+      char                clicked;
+      Window              cover_win;
+      Window              win_covered;
+   } menus;
+   struct
+   {
       char                master;	/* We are the master E */
       char                single;	/* No slaves */
       char                window;	/* Running in virtual root window */
@@ -1254,11 +1262,6 @@ typedef struct
    Colormap            current_cmap;
    Slideout           *slideout;
    Window              context_win;
-   char                cur_menu_mode;
-   int                 cur_menu_depth;
-   Menu               *cur_menu[256];
-   Window              menu_cover_win;
-   Window              menu_win_covered;
 #if 1				/* Should be removed */
    int                 context_w, context_h;
 #endif
@@ -2325,6 +2328,7 @@ void                EDisplayMemUse(void);
 /* menus.c */
 void                MenusInit(void);
 void                MenusHide(void);
+int                 MenusActive(void);
 MenuStyle          *MenuStyleCreate(void);
 Menu               *MenuCreate(const char *name);
 void                MenuDestroy(Menu * m);
@@ -2801,7 +2805,6 @@ extern Window       init_win_ext;
 extern char         themepath[FILEPATH_LEN_MAX];
 
 extern char         no_overwrite;
-extern char         clickmenu;
 extern int          child_count;
 extern pid_t       *e_children;
 extern int          numlock_mask;

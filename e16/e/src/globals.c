@@ -42,7 +42,6 @@ Window              init_win_ext = 0;
 char                themepath[FILEPATH_LEN_MAX];
 
 char                no_overwrite = 0;
-char                clickmenu = 0;
 int                 child_count = 0;
 pid_t              *e_children = NULL;
 int                 numlock_mask = 0;

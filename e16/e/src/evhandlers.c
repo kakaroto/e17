@@ -151,7 +151,7 @@ HandleMouseDown(XEvent * ev)
    if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
-   if ((Mode.cur_menu_mode) && (!clickmenu))
+   if (MenusActive() && (!Mode.menus.clicked))
      {
 	unsigned int        bmask = 0, evmask;
 
@@ -169,7 +169,7 @@ HandleMouseDown(XEvent * ev)
 	else if (ev->xbutton.button == 5)
 	   bmask = Button5Mask;
 	if (bmask != evmask)
-	   clickmenu = 1;
+	   Mode.menus.clicked = 1;
 	else
 	  {
 	     EDBUG_RETURN_;
@@ -221,7 +221,7 @@ HandleMouseDown(XEvent * ev)
    if (double_click)
       ev->xbutton.time = 0;
 
-   if ( /*!clickmenu && */ BordersEventMouseDown(ev))
+   if ( /*!Mode.menus.clicked && */ BordersEventMouseDown(ev))
       goto done;
 
    if (ButtonsEventMouseDown(ev))
@@ -304,13 +304,13 @@ HandleMouseUp(XEvent * ev)
    Mode.context_win = Mode.last_bpress;
 
    if ((((float)(ev->xbutton.time - Mode.last_time) / 1000) < 0.5)
-       && (Mode.cur_menu_depth > 0) && (!clickmenu))
+       && (MenusActive()) && (!Mode.menus.clicked))
      {
-	clickmenu = 1;
+	Mode.menus.clicked = 1;
 	Mode.justclicked = 1;
      }
 
-   if ( /*!clickmenu && */ BordersEventMouseUp(ev))
+   if ( /*!Mode.menus.clicked && */ BordersEventMouseUp(ev))
       goto done;
 
    if (Mode.action_inhibit)
@@ -380,7 +380,7 @@ HandleMotion(XEvent * ev)
    ActionsHandleMotion();
 
 #define SCROLL_RATIO 2/3
-   if (((Mode.cur_menu_mode) || (clickmenu)) && (Mode.cur_menu_depth > 0))
+   if ((MenusActive() || (Mode.menus.clicked)))
      {
 	int                 i, offx = 0, offy = 0, xdist = 0, ydist = 0;
 	EWin               *ewin;
@@ -428,7 +428,7 @@ HandleMotion(XEvent * ev)
 	     menu_scroll_dist = 13;
 	  }
 
-	if (Mode.cur_menu_depth > 0)
+	if (Mode.menus.current_depth > 0)
 	  {
 	     int                 x1, y1, x2, y2;
 
@@ -438,11 +438,11 @@ HandleMotion(XEvent * ev)
 	     y2 = y_org - 1;
 	     /* work out the minimum and maximum extents of our */
 	     /* currently active menus */
-	     for (i = 0; i < Mode.cur_menu_depth; i++)
+	     for (i = 0; i < Mode.menus.current_depth; i++)
 	       {
-		  if (Mode.cur_menu[i])
+		  if (Mode.menus.list[i])
 		    {
-		       ewin = FindEwinByMenu(Mode.cur_menu[i]);
+		       ewin = FindEwinByMenu(Mode.menus.list[i]);
 		       if (ewin)
 			 {
 			    if (ewin->x < x1)
@@ -500,19 +500,19 @@ HandleMotion(XEvent * ev)
 		  if (xdist > my_height)
 		     xdist = my_height * SCROLL_RATIO;
 
-		  if (Mode.cur_menu_depth)
+		  if (Mode.menus.current_depth)
 		    {
 #ifdef HAS_XINERAMA
-		       ewin = FindEwinByMenu(Mode.cur_menu[0]);
+		       ewin = FindEwinByMenu(Mode.menus.list[0]);
 		       if (ewin->head == head_num)
 			 {
 #endif
-			    for (i = 0; i < Mode.cur_menu_depth; i++)
+			    for (i = 0; i < Mode.menus.current_depth; i++)
 			      {
 				 menus[i] = NULL;
-				 if (Mode.cur_menu[i])
+				 if (Mode.menus.list[i])
 				   {
-				      ewin = FindEwinByMenu(Mode.cur_menu[i]);
+				      ewin = FindEwinByMenu(Mode.menus.list[i]);
 				      if (ewin)
 					{
 					   menus[i] = ewin;
@@ -524,7 +524,8 @@ HandleMotion(XEvent * ev)
 				   }
 			      }
 			    SlideEwinsTo(menus, fx, fy, tx, ty,
-					 Mode.cur_menu_depth, Conf.shadespeed);
+					 Mode.menus.current_depth,
+					 Conf.shadespeed);
 			    if (((xdist != 0) || (ydist != 0))
 				&& (Conf.warpmenus))
 			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
@@ -568,7 +569,7 @@ HandleMouseIn(XEvent * ev)
    if (MenusEventMouseIn(ev))
       goto done;
 
-   if ( /*!clickmenu && */ BordersEventMouseIn(ev))
+   if ( /*!Mode.menus.clicked && */ BordersEventMouseIn(ev))
       goto done;
 
    if (ButtonsEventMouseIn(ev))
@@ -604,7 +605,7 @@ HandleMouseOut(XEvent * ev)
    if (MenusEventMouseOut(ev))
       goto done;
 
-   if ( /*!clickmenu && */ BordersEventMouseOut(ev))
+   if ( /*!Mode.menus.clicked && */ BordersEventMouseOut(ev))
       goto done;
 
    if (ButtonsEventMouseOut(ev))

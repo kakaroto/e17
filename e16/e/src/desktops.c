@@ -1140,8 +1140,8 @@ StackDesktop(int desk)
 	   continue;
 
 	_APPEND_TO_WIN_LIST(ewin->win);
-	if (ewin->win == Mode.menu_win_covered)
-	   _APPEND_TO_WIN_LIST(Mode.menu_cover_win);
+	if (ewin->win == Mode.menus.win_covered)
+	   _APPEND_TO_WIN_LIST(Mode.menus.cover_win);
      }
 
    /* Non-sticky, "below" buttons */

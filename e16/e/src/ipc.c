@@ -5844,10 +5844,10 @@ IPC_MiscInfo(const char *params __UNUSED__, Client * c __UNUSED__)
    IpcPrintf("stuff:\n");
 
    if (Mode.focuswin)
-      IpcPrintf(" mode.focuswin - %#lx\n", Mode.focuswin->client.win);
+      IpcPrintf("Focus - win=%#lx\n", Mode.focuswin->client.win);
 
-   if (Mode.cur_menu_mode)
-      IpcPrintf(" cur_menu_mode is set\n");
+   IpcPrintf("Menus - depthe=%d, clicked=%d\n",
+	     Mode.menus.current_depth, Mode.menus.clicked);
 
    IpcPrintf("Pointer grab on=%d win=%#lx\n",
 	     Mode.grabs.pointer_grab_active, Mode.grabs.pointer_grab_window);

@@ -581,7 +581,7 @@ spawnMenu(EWin * ewin, const void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   if (Mode.cur_menu_depth > 0)
+   if (MenusActive())
       EDBUG_RETURN(0);
 
 #if 0				/* FIXME: Incorrect placement if in deskslide */
@@ -613,7 +613,7 @@ spawnMenu(EWin * ewin, const void *params)
 #endif
 
    if (Mode.button)
-      clickmenu = 1;
+      Mode.menus.clicked = 1;
 
    sscanf((char *)params, "%1000s %1000s", s, s2);
    if (!strcmp(s, "deskmenu"))
@@ -640,11 +640,11 @@ spawnMenu(EWin * ewin, const void *params)
    if (((ewin) && (ewin->win == Mode.context_win))
        || (ewin = FindEwinByChildren(Mode.context_win)))
      {
-	if ((ewin) && (Mode.cur_menu_depth > 0) && (Mode.cur_menu[0]))
-	   ewin->shownmenu = MenuWindow(Mode.cur_menu[0]);
+	if ((ewin) && (Mode.menus.current_depth > 0) && (Mode.menus.list[0]))
+	   ewin->shownmenu = MenuWindow(Mode.menus.list[0]);
      }
 
-   if (Mode.cur_menu_depth == 0)
+   if (!MenusActive())
       EDBUG_RETURN(0);
    EDBUG_RETURN(1);
 }

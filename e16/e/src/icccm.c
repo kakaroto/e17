@@ -443,7 +443,7 @@ ICCCM_Cmap(EWin * ewin)
 	EDBUG_RETURN_;
      }
 
-   if (Mode.cur_menu_mode)
+   if (MenusActive())
       EDBUG_RETURN_;
 
    ICCCM_GetColormap(ewin);

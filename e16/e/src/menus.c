@@ -388,7 +388,7 @@ MenuShow(Menu * m, char noshow)
    }
 
    m->shown = 1;
-   if (Mode.cur_menu_depth == 0)
+   if (Mode.menus.current_depth == 0)
      {
 	XSync(disp, False);
 	GrabKeyboard(m->win);
@@ -1488,56 +1488,6 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
    fclose(f);
 }
 
-#if 0				/* We travelled up the tree. Why? Leaving this around for now. */
-static void
-FileMenuUpdate(int val, void *data)
-{
-   Menu               *m, *mm;
-   time_t              lastmod = 0;
-   char                s[4096];
-
-   m = (Menu *) data;
-   if (!m)
-      return;
-   if (!FindItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
-      return;
-   /* if the menu is up dont update */
-   if (((Mode.cur_menu_mode) || (clickmenu)) && (Mode.cur_menu_depth > 0))
-     {
-	Esnprintf(s, sizeof(s), "__.%s", m->name);
-	DoIn(s, 2.0, FileMenuUpdate, 0, m);
-	return;
-     }
-   mm = m;
-   if (m->ref_menu)
-      mm = m->ref_menu;
-   if (!exists(m->data))
-     {
-	MenuHide(m);
-	MenuEmpty(m);
-	return;
-     }
-   if (m->data)
-      lastmod = moddate(m->data);
-   if (lastmod > m->last_change)
-     {
-	m->last_change = lastmod;
-	if (m == mm)
-	  {
-	     Esnprintf(s, sizeof(s), "__.%s", m->name);
-	     DoIn(s, 2.0, FileMenuUpdate, 0, m);
-	  }
-	MenuEmpty(mm);
-	FillFlatFileMenu(mm, mm->style, mm->name, mm->data, mm);
-	MenuRepack(mm);
-	return;
-     }
-   Esnprintf(s, sizeof(s), "__.%s", m->name);
-   DoIn(s, 2.0, FileMenuUpdate, 0, m);
-   val = 0;
-}
-#else
-
 static void
 FileMenuUpdate(int val __UNUSED__, void *data)
 {
@@ -1553,7 +1503,8 @@ FileMenuUpdate(int val __UNUSED__, void *data)
       return;
 
    /* if the menu is up dont update */
-   if (((Mode.cur_menu_mode) || (clickmenu)) && (Mode.cur_menu_depth > 0))
+   if ((MenusActive() || (Mode.menus.clicked))
+       && (Mode.menus.current_depth > 0))
       goto done;
 
    if (!exists(m->data))
@@ -1577,7 +1528,6 @@ FileMenuUpdate(int val __UNUSED__, void *data)
    Esnprintf(s, sizeof(s), "__.%s", m->name);
    DoIn(s, 5.0, FileMenuUpdate, 0, m);
 }
-#endif
 
 Menu               *
 MenuCreateFromGnome(const char *name, MenuStyle * ms, const char *dir)
@@ -1947,33 +1897,33 @@ MenuShowMasker(Menu * m)
    EWin               *ewin;
 
    ewin = FindEwinByMenu(m);
-   if ((ewin) && (!Mode.menu_cover_win))
+   if ((ewin) && (!Mode.menus.cover_win))
      {
 	Window              parent;
 	Window              wl[2];
 
 	parent = desks.desk[ewin->desktop].win;
-	Mode.menu_cover_win =
+	Mode.menus.cover_win =
 	   ECreateEventWindow(parent, 0, 0, VRoot.w, VRoot.h);
-	Mode.menu_win_covered = ewin->win;
-	wl[0] = Mode.menu_win_covered;
-	wl[1] = Mode.menu_cover_win;
-	XSelectInput(disp, Mode.menu_cover_win,
+	Mode.menus.win_covered = ewin->win;
+	wl[0] = Mode.menus.win_covered;
+	wl[1] = Mode.menus.cover_win;
+	XSelectInput(disp, Mode.menus.cover_win,
 		     ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		     LeaveWindowMask);
 	XRestackWindows(disp, wl, 2);
-	EMapWindow(disp, Mode.menu_cover_win);
+	EMapWindow(disp, Mode.menus.cover_win);
      }
 }
 
 void
 MenuHideMasker(void)
 {
-   if (Mode.menu_cover_win)
+   if (Mode.menus.cover_win)
      {
-	EDestroyWindow(disp, Mode.menu_cover_win);
-	Mode.menu_cover_win = 0;
-	Mode.menu_win_covered = 0;
+	EDestroyWindow(disp, Mode.menus.cover_win);
+	Mode.menus.cover_win = 0;
+	Mode.menus.win_covered = 0;
      }
 }
 
@@ -1987,19 +1937,18 @@ ShowNamedMenu(const char *name)
    m = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
    if (m)
      {
-	Mode.cur_menu_mode = 1;
 	XUngrabPointer(disp, CurrentTime);
 	if (!FindEwinByMenu(m))	/* Don't show if already shown */
 	   MenuShow(m, 0);
-	Mode.cur_menu[0] = m;
-	Mode.cur_menu_depth = 1;
+	Mode.menus.list[0] = m;
+	Mode.menus.current_depth = 1;
 	MenuShowMasker(m);
 	m->ref_count++;
      }
    else
      {
-	Mode.cur_menu[0] = NULL;
-	Mode.cur_menu_depth = 0;
+	Mode.menus.list[0] = NULL;
+	Mode.menus.current_depth = 0;
 	MenuHideMasker();
      }
 
@@ -2049,11 +1998,11 @@ MenusHideByWindow(Window win)
      {
 	MenuHide(m);
 	ok = 0;
-	for (i = 0; i < Mode.cur_menu_depth; i++)
+	for (i = 0; i < Mode.menus.current_depth; i++)
 	  {
 	     if (ok)
-		MenuHide(Mode.cur_menu[i]);
-	     if (Mode.cur_menu[i] == m)
+		MenuHide(Mode.menus.list[i]);
+	     if (Mode.menus.list[i] == m)
 		ok = 1;
 	  }
 	MenuHideMasker();
@@ -2115,8 +2064,8 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
 	     MoveEwin(ewin, lx, ly);
 	     ShowEwin(ewin);
 	  }
-	Mode.cur_menu[0] = m;
-	Mode.cur_menu_depth = 1;
+	Mode.menus.list[0] = m;
+	Mode.menus.current_depth = 1;
 	MenuShowMasker(m);
      }
 
@@ -2144,21 +2093,19 @@ ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
 	*pms = ms;
      }
 
-   Mode.cur_menu_mode = 1;
-
    *pm = m = RefreshInternalMenu(m, ms, mcf);
    if (m)
      {
 	if (!FindEwinByMenu(m))
 	   MenuShow(m, 0);
-	Mode.cur_menu[0] = m;
-	Mode.cur_menu_depth = 1;
+	Mode.menus.list[0] = m;
+	Mode.menus.current_depth = 1;
 	MenuShowMasker(m);
      }
    else
      {
-	Mode.cur_menu[0] = NULL;
-	Mode.cur_menu_depth = 0;
+	Mode.menus.list[0] = NULL;
+	Mode.menus.current_depth = 0;
 	MenuHideMasker();
      }
 
@@ -2201,8 +2148,8 @@ RefreshTaskMenu(int desk)
 	     MoveEwin(ewin, lx, ly);
 	     ShowEwin(ewin);
 	  }
-	Mode.cur_menu[0] = task_menu[desk];
-	Mode.cur_menu_depth = 1;
+	Mode.menus.list[0] = task_menu[desk];
+	Mode.menus.current_depth = 1;
 	MenuShowMasker(task_menu[desk]);
      }
    EDBUG_RETURN(task_menu[desk]);
@@ -2254,15 +2201,14 @@ MenusHide(void)
 {
    int                 i;
 
-   for (i = 0; i < Mode.cur_menu_depth; i++)
+   for (i = 0; i < Mode.menus.current_depth; i++)
      {
-	if (!Mode.cur_menu[i]->stuck)
-	   MenuHide(Mode.cur_menu[i]);
+	if (!Mode.menus.list[i]->stuck)
+	   MenuHide(Mode.menus.list[i]);
      }
    MenuHideMasker();
-   Mode.cur_menu_depth = 0;
-   Mode.cur_menu_mode = 0;
-   clickmenu = 0;
+   Mode.menus.current_depth = 0;
+   Mode.menus.clicked = 0;
 
 #if 0
    /* If all done properly this shouldn't be necessary... */
@@ -2270,6 +2216,12 @@ MenusHide(void)
    active_menu = NULL;
    active_item = NULL;
 #endif
+}
+
+int
+MenusActive(void)
+{
+   return Mode.menus.current_depth;
 }
 
 Window
@@ -2421,8 +2373,6 @@ MenusEventMouseDown(XEvent * ev)
    if (mi == NULL)
       goto done;
 
-   Mode.cur_menu_mode = 1;
-
    mi->state = STATE_CLICKED;
    MenuDrawItem(m, mi, 1);
 
@@ -2432,8 +2382,8 @@ MenusEventMouseDown(XEvent * ev)
 	unsigned int        mw, mh;
 	EWin               *ewin2;
 
-	Mode.cur_menu[0] = m;
-	Mode.cur_menu_depth = 1;
+	Mode.menus.list[0] = m;
+	Mode.menus.current_depth = 1;
 	MenuShowMasker(m);
 	XUngrabPointer(disp, CurrentTime);
 	ewin = FindEwinByMenu(m);
@@ -2454,7 +2404,7 @@ MenusEventMouseDown(XEvent * ev)
 		  ShowEwin(ewin2);
 		  if (Conf.menuslide)
 		     EwinUnShade(ewin2);
-		  Mode.cur_menu[Mode.cur_menu_depth++] = mi->child;
+		  Mode.menus.list[Mode.menus.current_depth++] = mi->child;
 	       }
 #else
 	     ewin2 = FindEwinByMenu(mi->child);
@@ -2489,7 +2439,7 @@ MenusEventMouseUp(XEvent * ev)
 	  }
      }
 
-   if ((Mode.cur_menu_mode) && (!clickmenu))
+   if (MenusActive() && (!Mode.menus.clicked))
      {
 	if (!m)
 	  {
@@ -2518,7 +2468,7 @@ MenusEventMouseUp(XEvent * ev)
 	return 1;
      }
 
-   if ((Mode.cur_menu_mode) && (!Mode.justclicked))
+   if (MenusActive() && (!Mode.justclicked))
      {
 	MenusHide();
 	return 1;
@@ -2543,9 +2493,9 @@ MenusSetEvents(int on)
 
    event_mask = (on) ? MENU_ITEM_EVENT_MASK : 0;
 
-   for (i = 0; i < Mode.cur_menu_depth; i++)
+   for (i = 0; i < Mode.menus.current_depth; i++)
      {
-	m = Mode.cur_menu[i];
+	m = Mode.menus.list[i];
 	if (!m)
 	   continue;
 
@@ -2588,8 +2538,8 @@ SubmenuShowTimeout(int val, void *dat)
 	if (Conf.menuslide)
 	   EwinUnShade(ewin2);
 
-	if (Mode.cur_menu[Mode.cur_menu_depth - 1] != mi->child)
-	   Mode.cur_menu[Mode.cur_menu_depth++] = mi->child;
+	if (Mode.menus.list[Mode.menus.current_depth - 1] != mi->child)
+	   Mode.menus.list[Mode.menus.current_depth++] = mi->child;
 
 	if (Conf.menusonscreen)
 	  {
@@ -2607,12 +2557,12 @@ SubmenuShowTimeout(int val, void *dat)
 		ydist = VRoot.h - (ewin2->y + ewin2->h);
 	     if ((xdist != 0) || (ydist != 0))
 	       {
-		  for (i = 0; i < Mode.cur_menu_depth; i++)
+		  for (i = 0; i < Mode.menus.current_depth; i++)
 		    {
 		       menus[i] = NULL;
-		       if (Mode.cur_menu[i])
+		       if (Mode.menus.list[i])
 			 {
-			    ewin = FindEwinByMenu(Mode.cur_menu[i]);
+			    ewin = FindEwinByMenu(Mode.menus.list[i]);
 			    if (ewin)
 			      {
 				 menus[i] = ewin;
@@ -2626,7 +2576,7 @@ SubmenuShowTimeout(int val, void *dat)
 
 		  /* Disable menu item events while sliding */
 		  MenusSetEvents(0);
-		  SlideEwinsTo(menus, fx, fy, tx, ty, Mode.cur_menu_depth,
+		  SlideEwinsTo(menus, fx, fy, tx, ty, Mode.menus.current_depth,
 			       Conf.shadespeed);
 		  MenusSetEvents(1);
 
@@ -2661,23 +2611,23 @@ MenuActivateItem(Menu * m, MenuItem * mi)
 
    RemoveTimerEvent("SUBMENU_SHOW");
 
-   for (i = 0; i < Mode.cur_menu_depth; i++)
+   for (i = 0; i < Mode.menus.current_depth; i++)
      {
-	if (Mode.cur_menu[i] == m)
+	if (Mode.menus.list[i] == m)
 	  {
 	     if ((!mi->child) ||
-		 ((mi->child) && (Mode.cur_menu[i + 1] != mi->child)))
+		 ((mi->child) && (Mode.menus.list[i + 1] != mi->child)))
 	       {
-		  for (j = i + 1; j < Mode.cur_menu_depth; j++)
-		     MenuHide(Mode.cur_menu[j]);
-		  Mode.cur_menu_depth = i + 1;
-		  i = Mode.cur_menu_depth;
+		  for (j = i + 1; j < Mode.menus.current_depth; j++)
+		     MenuHide(Mode.menus.list[j]);
+		  Mode.menus.current_depth = i + 1;
+		  i = Mode.menus.current_depth;
 		  break;
 	       }
 	  }
      }
 
-   if ((mi->child) && (!mi->child->shown) && (Mode.cur_menu_mode))
+   if ((mi->child) && (!mi->child->shown) && MenusActive())
      {
 	EWin               *ewin;
 

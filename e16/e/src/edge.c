@@ -32,7 +32,7 @@ EdgeTimeout(int val, void *data)
    int                 ax, ay, aw, ah, dx, dy, dax, day;
    EWin               *ewin;
 
-   if (Mode.cur_menu_mode > 0)
+   if (MenusActive())
       return;
    if (!Conf.edge_flip_resistance)
       return;

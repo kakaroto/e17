@@ -1021,7 +1021,7 @@ PagerShowTt(EWin * ewin)
    if (!Conf.pagers.title || (ewin == tt_ewin))
       return;
 
-   if (Mode.cur_menu_depth)	/* Don't show Tooltip when menu is up */
+   if (MenusActive())		/* Don't show Tooltip when menu is up */
       return;
 
    tt = FindItem("PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
@@ -1073,7 +1073,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
    char                pq;
    ImageClass         *ic = NULL;
 
-   if (Mode.cur_menu_depth)	/* Don't show HiWin when menu is up */
+   if (MenusActive())		/* Don't show HiWin when menu is up */
       return;
 
    pq = Mode.queue_up;
