@@ -35,7 +35,11 @@ struct _eobjlist
    int                 nalloc;
    int                 nwins;
    EObj              **list;
+   char                layered;
 };
+
+static int          EobjListRaise(EobjList * ewl, EObj * eo);
+static int          EobjListLower(EobjList * ewl, EObj * eo);
 
 #if ENABLE_DEBUG_STACKING
 static void
@@ -52,8 +56,7 @@ EobjListShow(const char *txt, EobjList * ewl)
      {
 	eo = ewl->list[i];
 	Eprintf(" %2d: %#10lx %#10lx %d %d %s\n", i, eo->win,
-		EobjGetCwin(eo), eo->desk,
-		(eo->floating) ? 999 : eo->ilayer, EobjGetName(eo));
+		EobjGetCwin(eo), eo->desk, eo->ilayer, EobjGetName(eo));
      }
 }
 #else
@@ -88,14 +91,34 @@ EobjListAdd(EobjList * ewl, EObj * eo, int ontop)
 	ewl->list = (EObj **) Erealloc(ewl->list, ewl->nalloc * sizeof(EObj *));
      }
 
-   if (ontop)
+   if (ewl->layered)
      {
-	memmove(ewl->list + 1, ewl->list, ewl->nwins * sizeof(EObj *));
-	ewl->list[0] = eo;
+	/* The simple way for now (add, raise/lower) */
+	if (ontop)
+	  {
+	     ewl->list[ewl->nwins] = eo;
+	     EobjListRaise(ewl, eo);
+	  }
+	else
+	  {
+	     memmove(ewl->list + 1, ewl->list, ewl->nwins * sizeof(EObj *));
+	     ewl->list[0] = eo;
+	     EobjListLower(ewl, eo);
+	  }
+
+	DeskSetDirtyStack(eo->desk);
      }
    else
      {
-	ewl->list[ewl->nwins] = eo;
+	if (ontop)
+	  {
+	     memmove(ewl->list + 1, ewl->list, ewl->nwins * sizeof(EObj *));
+	     ewl->list[0] = eo;
+	  }
+	else
+	  {
+	     ewl->list[ewl->nwins] = eo;
+	  }
      }
    ewl->nwins++;
 
@@ -130,7 +153,7 @@ EobjListDel(EobjList * ewl, EObj * eo)
 }
 
 static int
-EobjListLower(EobjList * ewl, EObj * eo, int mode)
+EobjListLower(EobjList * ewl, EObj * eo)
 {
    int                 i, j, n;
 
@@ -140,7 +163,7 @@ EobjListLower(EobjList * ewl, EObj * eo, int mode)
       return 0;
 
    j = ewl->nwins - 1;
-   if (mode)
+   if (ewl->layered)
      {
 	/* Take the layer into account */
 	for (; j >= 0; j--)
@@ -155,11 +178,15 @@ EobjListLower(EobjList * ewl, EObj * eo, int mode)
      {
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EObj *));
 	ewl->list[j] = eo;
+	if (ewl->layered)
+	   DeskSetDirtyStack(eo->desk);
      }
    else if (n < 0)
      {
 	memmove(ewl->list + j + 1, ewl->list + j, -n * sizeof(EObj *));
 	ewl->list[j] = eo;
+	if (ewl->layered)
+	   DeskSetDirtyStack(eo->desk);
      }
 
    EobjListShow("EobjListLower", ewl);
@@ -167,7 +194,7 @@ EobjListLower(EobjList * ewl, EObj * eo, int mode)
 }
 
 static int
-EobjListRaise(EobjList * ewl, EObj * eo, int mode)
+EobjListRaise(EobjList * ewl, EObj * eo)
 {
    int                 i, j, n;
 
@@ -177,7 +204,7 @@ EobjListRaise(EobjList * ewl, EObj * eo, int mode)
       return 0;
 
    j = 0;
-   if (mode)
+   if (ewl->layered)
      {
 	/* Take the layer into account */
 	for (; j < ewl->nwins; j++)
@@ -192,11 +219,15 @@ EobjListRaise(EobjList * ewl, EObj * eo, int mode)
      {
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EObj *));
 	ewl->list[j] = eo;
+	if (ewl->layered)
+	   DeskSetDirtyStack(eo->desk);
      }
    else if (n < 0)
      {
 	memmove(ewl->list + j + 1, ewl->list + j, -n * sizeof(EObj *));
 	ewl->list[j] = eo;
+	if (ewl->layered)
+	   DeskSetDirtyStack(eo->desk);
      }
 
    EobjListShow("EobjListRaise", ewl);
@@ -230,8 +261,8 @@ EobjListTypeCount(const EobjList * ewl, int type)
 /*
  * The global stacking and focus lists
  */
-EobjList            EwinListStack = { "Stack", 0, 0, NULL };
-EobjList            EwinListFocus = { "Focus", 0, 0, NULL };
+EobjList            EwinListStack = { "Stack", 0, 0, NULL, 1 };
+EobjList            EwinListFocus = { "Focus", 0, 0, NULL, 0 };
 
 static EObj        *const *
 EobjListGet(EobjList * ewl, int *num)
@@ -279,19 +310,19 @@ EobjListFocusDel(EObj * eo)
 int
 EobjListStackRaise(EObj * eo)
 {
-   return EobjListRaise(&EwinListStack, eo, 1);
+   return EobjListRaise(&EwinListStack, eo);
 }
 
 int
 EobjListStackLower(EObj * eo)
 {
-   return EobjListLower(&EwinListStack, eo, 1);
+   return EobjListLower(&EwinListStack, eo);
 }
 
 int
 EobjListFocusRaise(EObj * eo)
 {
-   return EobjListRaise(&EwinListFocus, eo, 0);
+   return EobjListRaise(&EwinListFocus, eo);
 }
 
 EWin               *const *
@@ -382,7 +413,7 @@ EobjListStackGetForDesk(int *num, int desk)
    for (i = j = 0; i < ewl->nwins; i++)
      {
 	eo = ewl->list[i];
-	if (eo->desk != desk && !eo->sticky && !eo->floating)
+	if (eo->desk != desk)
 	   continue;
 
 	lst[j++] = eo;

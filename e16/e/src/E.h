@@ -523,7 +523,7 @@ struct _eobj
 #define EoGetH(eo)              ((eo)->o.h)
 #define EoIsSticky(eo)          ((eo)->o.sticky)
 #define EoIsFloating(eo)        ((eo)->o.floating)
-#define EoGetDesk(eo)           EobjGetDesk(&((eo)->o))
+#define EoGetDesk(eo)           ((eo)->o.desk)
 #define EoGetLayer(eo)          ((eo)->o.layer)
 #define EoGetPixmap(eo)         EobjGetPixmap(&((eo)->o))
 
@@ -674,11 +674,12 @@ WinClient;
 struct _ewin
 {
    EObj                o;
-   int                 shape_x, shape_y;
-   int                 req_x, req_y;
-   int                 lx, ly, lw, lh, ll;
    char                type;
    char                state;
+   int                 ld;	/* Last desk */
+   int                 lx, ly;	/* Last pos */
+   int                 lw, lh;	/* Last size */
+   int                 ll;	/* Last layer */
    char                toggle;
    Window              win_container;
    WinClient           client;
@@ -686,9 +687,8 @@ struct _ewin
    const Border       *normal_border;
    const Border       *previous_border;
    EWinBit            *bits;
-   int                 flags;
-   Group             **groups;
    int                 num_groups;
+   Group             **groups;
    char                visibility;
    char                docked;
    char                shown;
@@ -752,6 +752,8 @@ struct _ewin
       char               *wm_name;
       char               *wm_icon_name;
    } ewmh;
+   int                 shape_x, shape_y;
+   int                 req_x, req_y;
    void                (*MoveResize) (EWin * ewin, int resize);
    void                (*Refresh) (EWin * ewin);
    void                (*Close) (EWin * ewin);
@@ -1354,6 +1356,7 @@ void                DeskGetArea(int desk, int *ax, int *ay);
 void                DeskSetArea(int desk, int ax, int ay);
 int                 DeskIsViewable(int desk);
 void                DeskSetViewable(int desk, int on);
+void                DeskSetDirtyStack(int desk);
 void                DeskGetCurrentArea(int *ax, int *ay);
 Window              DeskGetCurrentRoot(void);
 void                DeskSetCurrentArea(int ax, int ay);
@@ -1369,8 +1372,6 @@ void                DesksRefresh(void);
 void                DeskSetBg(int desk, Background * bg, int refresh);
 int                 DesktopAt(int x, int y);
 void                DeskGoto(int num);
-void                DeskRaise(int num);
-void                DeskLower(int num);
 void                DeskMove(int num, int x, int y);
 void                DeskHide(int num);
 void                DeskShow(int num);

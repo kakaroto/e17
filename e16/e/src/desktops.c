@@ -34,6 +34,7 @@ typedef struct
    EObj                o;
    int                 num;
    char                viewable;
+   char                dirty_stack;
    Background         *bg;
    Button             *tag;
    int                 current_area_x;
@@ -46,11 +47,14 @@ typedef struct
 typedef struct _desktops
 {
    int                 current;
+   int                 previous;
    Desk               *desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 }
 Desktops;
 
+static void         DeskRaise(int num);
+static void         DeskLower(int num);
 static void         DesktopHandleEvents(XEvent * ev, void *prm);
 
 /* The desktops */
@@ -308,6 +312,9 @@ DeskControlsCreate(Desk * d)
      }
 #endif
 
+   /* Restack buttons - Hmmm. */
+   StackDesktop(d->num);
+
    d->tag = b;
 }
 
@@ -550,6 +557,17 @@ DeskSetViewable(int desk, int on)
    _DeskGet(desk)->viewable = on;
 }
 
+void
+DeskSetDirtyStack(int desk)
+{
+   Desk               *d = _DeskGet(desk);
+
+   if (!d)
+      return;
+
+   d->dirty_stack++;
+}
+
 Window
 DeskGetCurrentRoot(void)
 {
@@ -591,6 +609,8 @@ DesksInit(void)
 {
    int                 i;
 
+   desks.previous = -1;
+
    for (i = 0; i < Conf.desks.num; i++)
       DeskCreate(i, 0);
 }
@@ -602,9 +622,6 @@ DesksResize(int w, int h)
 
    for (i = 0; i < Conf.desks.num; i++)
       DeskResize(i, w, h);
-
-   /* Restack buttons - Hmmm. */
-   StackDesktops();
 
    ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
 }
@@ -631,8 +648,10 @@ ChangeNumberOfDesktops(int quantity)
       return;
 
    pnum = Conf.desks.num;
+
    for (i = quantity; i < Conf.desks.num; i++)
       DeskLower(i);
+
    Conf.desks.num = quantity;
 
    if (Conf.desks.num > pnum)
@@ -707,9 +726,6 @@ DesksControlsRefresh(void)
    DesksControlsDestroy();
    DesksControlsCreate();
    DesksControlsShow();
-
-   /* Restack buttons - Hmmm. */
-   StackDesktops();
 
    autosave();
 }
@@ -972,7 +988,6 @@ MoveStickyButtonsToCurrentDesk(void)
 void
 DeskGoto(int desk)
 {
-   static int          pdesk = -1;
    Desk               *d;
    int                 x, y;
 
@@ -983,7 +998,7 @@ DeskGoto(int desk)
 	else if (desk < 0)
 	   desk = Conf.desks.num - 1;
      }
-   if (desk < 0 || desk >= Conf.desks.num || desk == pdesk)
+   if (desk < 0 || desk >= Conf.desks.num || desk == desks.previous)
       return;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
@@ -1066,7 +1081,6 @@ DeskGoto(int desk)
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 
    HandleDrawQueue();
-   pdesk = DesksGetCurrent();
 }
 
 void
@@ -1182,7 +1196,7 @@ UncoverDesktop(int desk)
       EMapWindow(EoGetWin(d));
 }
 
-void
+static void
 DeskRaise(int desk)
 {
    Desk               *d;
@@ -1193,38 +1207,41 @@ DeskRaise(int desk)
 
    d = _DeskGet(desk);
 
-   if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskRaise %d\n", desk);
-
    FocusNewDeskBegin();
    d->viewable = 1;
    DeskRefresh(desk);
    MoveToDeskTop(desk);
 
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskRaise(%d) current=%d\n", desk, desks.current);
+
+   desks.previous = desks.current = desk;
+
    if (desk == 0)
      {
 	for (i = Conf.desks.num - 1; i > 0; i--)
-	  {
-	     DeskHide(desks.order[i]);
-	  }
+	   DeskHide(desks.order[i]);
      }
+   else
+     {
+	EMapWindow(EoGetWin(d));
+     }
+
    StackDesktops();
-   desks.current = desk;
    MoveStickyWindowsToCurrentDesk();
    MoveStickyButtonsToCurrentDesk();
    StackDesktop(DesksGetCurrent());
    FocusNewDesk();
-#if 0				/* FIXME - TBD */
-   ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-#endif
    if (Mode.mode == MODE_NONE)
-      HandleDrawQueue();
+     {
+	ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
+	HandleDrawQueue();
+     }
    HintsSetCurrentDesktop();
-   EMapWindow(EoGetWin(d));
    ecore_x_sync();
 }
 
-void
+static void
 DeskLower(int desk)
 {
    if ((desk <= 0) || (desk >= Conf.desks.num))
@@ -1232,19 +1249,25 @@ DeskLower(int desk)
 
    FocusNewDeskBegin();
    MoveToDeskBottom(desk);
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskLower(%d) %d -> %d\n", desk, desks.current, desks.order[0]);
+
+   desks.previous = desks.current = desks.order[0];
+
    UncoverDesktop(desks.order[0]);
    DeskHide(desk);
+
    StackDesktops();
-   desks.current = desks.order[0];
    MoveStickyWindowsToCurrentDesk();
    MoveStickyButtonsToCurrentDesk();
    StackDesktop(DesksGetCurrent());
    FocusNewDesk();
-#if 0				/* FIXME - TBD */
-   ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-#endif
    if (Mode.mode == MODE_NONE)
-      HandleDrawQueue();
+     {
+	ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
+	HandleDrawQueue();
+     }
    HintsSetCurrentDesktop();
    ecore_x_sync();
 }
@@ -1388,11 +1411,11 @@ StackDesktop(int desk)
 void
 DeskGotoByEwin(EWin * ewin)
 {
-   if (!EoIsSticky(ewin))
-     {
-	DeskGoto(EoGetDesk(ewin));
-	SetCurrentArea(ewin->area_x, ewin->area_y);
-     }
+   if (EoIsSticky(ewin) || EoIsFloating(ewin))
+      return;
+
+   DeskGoto(EoGetDesk(ewin));
+   SetCurrentArea(ewin->area_x, ewin->area_y);
 }
 
 static char         sentpress = 0;

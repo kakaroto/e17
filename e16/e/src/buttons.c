@@ -150,7 +150,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    EoSetShadow(b, 0);
 
    EobjListStackAdd(&b->o, 0);
-   EwinListStackRaise(b);
 
    AddItem(b, b->name, id, LIST_TYPE_BUTTON);
 

@@ -67,6 +67,7 @@ EwinCreate(Window win, int type)
 
    ewin->type = type;
    ewin->state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
+   ewin->ld = -1;
    ewin->lx = -1;
    ewin->ly = -1;
    ewin->lw = -1;
@@ -837,10 +838,12 @@ AddToFamily(EWin * ewin, Window win)
 	unsigned int        mask;
 	Window              junk, root_return;
 
+#if 0				/* FIXME: Disable for now */
 	/* if the loser has manual placement on and the app asks to be on */
 	/*  a desktop, then send E to that desktop so the user can place */
 	/* the window there */
 	DeskGoto(desk);
+#endif
 
 	XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx, &wy,
 		      &mask);
@@ -1410,9 +1413,14 @@ FloatEwinAt(EWin * ewin, int x, int y)
       return;
 
    if (EoIsFloating(ewin))
-      EoSetFloating(ewin, 2);
+     {
+	EoSetFloating(ewin, 2);
+     }
    else
-      EoSetFloating(ewin, 1);
+     {
+	ewin->ld = EoGetDesk(ewin);
+	EoSetFloating(ewin, 1);
+     }
 
    dx = x - EoGetX(ewin);
    dy = y - EoGetY(ewin);

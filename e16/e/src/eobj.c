@@ -54,7 +54,9 @@ EobjSetDesk(EObj * eo, int desk)
 	eo->desk = desk;
 	break;
      case EOBJ_TYPE_EWIN:
-	if (eo->sticky || eo->floating || eo->desk < 0)
+	if (eo->floating)
+	   eo->desk = 0;
+	else if (eo->sticky || eo->desk < 0)
 	   eo->desk = DesksGetCurrent();
 	else
 	   eo->desk = desk % Conf.desks.num;
@@ -128,6 +130,7 @@ EobjSetFloating(EObj * eo, int floating)
       return;
 
    eo->floating = floating;
+   eo->desk = 0;
    EobjSetLayer(eo, eo->layer);
 }
 

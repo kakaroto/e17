@@ -104,8 +104,6 @@ ActionMoveEnd(EWin * ewin)
 	return 0;
      }
 
-   d = DesktopAt(Mode.x, Mode.y);
-
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &num);
 
@@ -123,6 +121,8 @@ ActionMoveEnd(EWin * ewin)
 			 gwins[i]->client.w, gwins[i]->client.h, 2);
      }
    Mode.mode = MODE_NONE;
+
+   d = DesktopAt(Mode.x, Mode.y);
 
    for (i = 0; i < num; i++)
      {

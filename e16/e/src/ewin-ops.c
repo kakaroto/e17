@@ -1285,18 +1285,15 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 	   EoGetDesk(ewin), desk);
 #endif
 
-   pdesk = EoGetDesk(ewin);
+   pdesk = ewin->ld;
    desk = desk % Conf.desks.num;
+   EoSetDesk(ewin, desk);
+
    if (desk != pdesk && !EoIsSticky(ewin))
      {
-#if 0				/* Not necessary when the the _XROOT... atoms are initially set on each desk */
-	/* Refresh bg before apps are planted so they can pick it up */
-	DeskSetViewable(desk, 1);
-	DeskRefresh(desk);
-#endif
-	EoSetDesk(ewin, desk);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
-	ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
+	if (pdesk >= 0)
+	   ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
      }
 
    dx = x - EoGetX(ewin);
