@@ -6,28 +6,28 @@ An ePlayer theme consists of two Edjes:
 
 The "eplayer" Edje emits the following signals:
 
-    action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
-    action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
+    action,     SIGNAL_EMIT "PLAY_PREVIOUS" "*";
+    action,     SIGNAL_EMIT "PLAY_NEXT" "*";
 
-    action,     SIGNAL_EMIT "PAUSE" "pause_button";
-    action,     SIGNAL_EMIT "PLAY" "play_button";
-    action,     SIGNAL_EMIT "STOP" "stop_button";
+    action,     SIGNAL_EMIT "PAUSE" "*";
+    action,     SIGNAL_EMIT "PLAY" "*";
+    action,     SIGNAL_EMIT "STOP" "*";
 
-    action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
-    action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
+    action,     SIGNAL_EMIT "SEEK_FORWARD" "*";
+    action,     SIGNAL_EMIT "SEEK_BACK" "*";
 
-    action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "time_text";
-    action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
+    action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "*";
+    action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "*";
 
     action,     SIGNAL_EMIT "SWITCH_GROUP" "foo";
 
-    action,     SIGNAL_EMIT "QUIT" "quit";
+    action,     SIGNAL_EMIT "QUIT" "*";
 
 The "SWITCH_GROUP" signal is special. It will reload the Edje using the
 group "foo" (src argument). This way, you can easily implement
 collapsed/expanded states etc.
 
-The Edje provides the following parts for text display:
+The Edje provides the following parts for text display, etc:
 
     Part: "title"            -> Window Title
     Part: "artist_name"      -> Name of artist
@@ -35,6 +35,9 @@ The Edje provides the following parts for text display:
     Part: "song_name"        -> Name of song
     Part: "time_text"        -> Current pos in track ([-]00:00)
     Part: "vol_display_text" -> Current Volume Level (0 - 100)
+
+    Part: "playlist"         -> where to swallow the playlist
+    Part: "seeker"           -> draggable set to track position (%)
 
 
 The "playlist_item" Edje contains a "title" and a "length" part.
