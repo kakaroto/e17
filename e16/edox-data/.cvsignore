@@ -1,0 +1,8 @@
+autom4te.cache
+aclocal.m4
+Makefile.in
+configure
+config.log
+config.status
+Makefile
+edox-data-0.16.7.tar.gz
