@@ -3,40 +3,69 @@ host = cam.super.tasty.men.com
 user = giblet
 pass = NO_WAY_BUDDY
 dir  = public_html/images/
+# where should the file end up? Also, this extension determines the file
+# type the image is saved as. Try image.png for a png.
 file = webcam.jpg
+# camE uploads to a temp file, and moves it across when done
+# this way people don't view half-uploaded images
 tmp  = uploading.jpg
+# do passive ftp?
 passive = 1
+# ftp debugging? (noisy)
 debug = 0
+# Actually do the upload? If do = 0, just take and archive pics.
 do = 1
 
 [grab]
 device = /dev/video0
+# store temp image on local machine
 temp_file = /tmp/webcam.jpg
+# lag reduction, takes 5 shots, discards the first 4, thus clearing mmap
+# buffers
 lag_reduce = 5
+# This goes at the bottom left, with the message from "infofile" appended.
+# It is run through strftime, so date vars are expanded.
 text   = %d/%m/%Y %H:%M GMT - 
 width  = 352
 height = 288
+# delay between uploading one shot and starting the next
 delay  = 10
+# where to log activity. comment out this line to disable logging
 logfile = /home/gilbertt/.camlog
+# gets the message text from here. one line allowed only. means you can do
+# stuff like echo "sleeping and stuff" > ~/.caminfo
 infofile = /home/gilbertt/.caminfo
+# directory to archive pics in. They are datestamped and saved in here.
 archive = /opt/images/webcam
+# jpeg quality (you can save as png etc too, but then quality does squat)
 quality = 80
 input  = 0
 norm   = 0
+# Goes in the top right. strftime() is run on this too, so put date stuff in
+# if you like
 title_text = Giblet TV
+# color/transparency of title text
 title_r = 255
 title_g = 255
 title_b = 0
 title_a = 255
+# font for title text. fontname/size
 title_font = arial/8
+# color/transparency of message text
 text_r = 255
 text_g = 255
 text_b = 0
 text_a = 255
+# font for message text. fontname/size
 text_font = arial/8
+# color/transparency of rectangle behind text
+# make it 0,0,0,0 to disable.
 bg_a = 0
 bg_b = 0
 bg_g = 0
 bg_a = 100
+# directory to look for ttf fonts in
 ttf_dir = /usr/X11R6/lib/X11/fonts/TrueType
+# file to check for before shooting. while this file exists, no shots will
+# be taken.
 blockfile = /home/gilbertt/BLOCKCAM
