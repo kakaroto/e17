@@ -39,7 +39,7 @@ main(int argc, char **argv)
    char                buf[10240];
    int                 i, j, k;
    fd_set              fd;
-   char                ret;
+   signed char         ret;
    char               *command;
 
    waitonly = 0;
