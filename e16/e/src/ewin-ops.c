@@ -409,7 +409,8 @@ EwinIconify(EWin * ewin)
 
    was_shaded = ewin->shaded;
 
-   ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
+   if (!ewin->client.transient)
+      ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
 
    HideEwin(ewin);
 
@@ -418,6 +419,13 @@ EwinIconify(EWin * ewin)
 
    if (was_shaded != ewin->shaded)
       EwinInstantShade(ewin, 0);
+
+   if (ewin->client.transient)
+     {
+	/* We should only get here during restart */
+	ewin->iconified = 4;
+	goto done;
+     }
 
    ewin->iconified = 3;
    ICCCM_Iconify(ewin);
@@ -442,6 +450,7 @@ EwinIconify(EWin * ewin)
 
    HintsSetWindowState(ewin);
 
+ done:
    call_depth--;
 }
 
