@@ -231,7 +231,7 @@ static bool imap_load_config (MailBox *mb, E_DB_File *edb,
 	}
 	
 	mailbox_property_set (mb, "path", str);
-	free (str),
+	free (str);
 
 	return true;
 }
