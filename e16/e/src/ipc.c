@@ -25,12 +25,7 @@
 #include "timestamp.h"
 #include <ctype.h>
 
-#if HAVE___ATTRIBUTE__
-static void         IpcPrintf(const char *fmt, ...)
-   __attribute__ ((__format__(__printf__, 1, 2)));
-#else
-static void         IpcPrintf(const char *fmt, ...);
-#endif
+static void __PRINTF__ IpcPrintf(const char *fmt, ...);
 
 typedef struct _IPCstruct
 {

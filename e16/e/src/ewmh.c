@@ -833,7 +833,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == _NET_SHOWING_DESKTOP)
      {
-	Eprintf("EWMH_ProcessClientMessage: _NET_SHOWING_DESKTOP: %d\n",
+	Eprintf("EWMH_ProcessClientMessage: _NET_SHOWING_DESKTOP: %ld\n",
 		event->data.l[0]);
 	EWMH_SetShowingDesktop(event->data.l[0]);
 	goto done;

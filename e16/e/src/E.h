@@ -100,8 +100,10 @@ if (__xim) XDestroyImage(__xim);}
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
+#define __PRINTF__ __attribute__((__format__(__printf__, 1, 2)))
 #else
 #define __UNUSED__
+#define __PRINTF__
 #endif
 
 /* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
@@ -2384,7 +2386,7 @@ void                EDirUserCacheSet(const char *d);
 char               *EDirUserCache(void);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
-void                Eprintf(const char *fmt, ...);
+void __PRINTF__     Eprintf(const char *fmt, ...);
 
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, const void *params,

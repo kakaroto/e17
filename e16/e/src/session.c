@@ -1242,7 +1242,7 @@ EExit(int exitcode)
    EDBUG(9, "EExit");
 
    if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("EExit(%p)\n", exitcode);
+      Eprintf("EExit(%d)\n", exitcode);
 
    SaveSession(1);
 
