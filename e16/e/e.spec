@@ -1,15 +1,20 @@
-Summary: The Enlightenment window manager.
-Name: enlightenment
-Version: 0.16.7
-Release: 0.21
-Copyright: BSD
-Group: User Interface/Desktops
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
-Prefix: %{_prefix}
-Docdir: %{_docdir}
-BuildRoot: /tmp/e-%{version}-root
-Packager: Michael Jennings <mej@eterm.org>
-URL: http://www.enlightenment.org/
+%define name	enlightenment
+%define version 0.16.7
+%define release 0.22
+
+Summary:	The Enlightenment window manager.
+Name:		%{name}
+Version:	%{version}
+Release:	%{release}
+Copyright:	BSD
+Group:		User Interface/Desktops
+Source:		ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
+Prefix:		%{_prefix}
+Docdir:		%{_docdir}
+BuildRoot:	/tmp/e-%{version}-root
+Packager:	Michael Jennings <mej@eterm.org>
+URL:		http://www.enlightenment.org/
+
 Requires: imlib2
 Requires: esound >= 0.2.13
 
@@ -33,7 +38,8 @@ This package will install the Enlightenment window manager.
 
 %build
 CFLAGS="${RPM_OPT_FLAGS}"
-export CFLAGS
+ENLIGHTENMENT_RELEASE=%{release}
+export CFLAGS ENLIGHTENMENT_RELEASE
 if [ ! -f configure ]; then
   ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no --enable-hints-gnome
 else

@@ -2396,3 +2396,13 @@ Sun Jan 25 09:57:33 CET 2004
 
 Fixups after recent changes.
 Focus code name space cleanup.
+
+-------------------------------------------------------------------------------
+
+Sun Feb  1 17:54:40 CET 2004
+(Kim)
+
+Shuffled around some focus and event handling code.
+Attempted to fix some focus problems.
+Fixed error in placement of initially shaded windows.
+Included ENLIGHTENMENT_RELEASE in version string.
