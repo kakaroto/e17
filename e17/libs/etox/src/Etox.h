@@ -1,142 +1,99 @@
-
 #ifndef ETOX_H
 #define ETOX_H 1
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <Evas.h>
 
-typedef struct {
+#ifndef ETOX_PRIVATE_H
+typedef void *		Etox;
+typedef void *		Etox_Style;
+typedef void *		Etox_Color;
+typedef void *		Etox_Obstacle;
+#endif
 
-	double w,h;
-	double x,y;
 
-} E_Clip_Rect;
-
-typedef struct {
-
-	int r,g,b;
-
-} E_Color;
-
-typedef struct
+enum _Etox_Align
 {
+   ETOX_ALIGN_LEFT,
+   ETOX_ALIGN_RIGHT,
+   ETOX_ALIGN_CENTER,
+   ETOX_ALIGN_TOP,
+   ETOX_ALIGN_BOTTOM
+};
 
-   E_Color fg;
-   E_Color ol;
-   E_Color sh;
+enum _Etox_Style_Type
+{
+   ETOX_STYLE_TYPE_FOREGROUND,
+   ETOX_STYLE_TYPE_SHADOW,
+   ETOX_STYLE_TYPE_OUTLINE
+};
 
-} E_Text_Color;
+typedef enum _Etox_Align        Etox_Align;
+typedef enum _Etox_Style_Type   Etox_Style_Type;
 
-#define STYLE_TYPE_FOREGROUND 0
-#define STYLE_TYPE_SHADOW     1
-#define STYLE_TYPE_OUTLINE    2
-
-#define ALIGN_LEFT   0
-#define ALIGN_RIGHT  1
-#define ALIGN_CENTER 2
-#define ALIGN_TOP    3
-#define ALIGN_BOTTOM 4
-
-#define WORD_WRAP_NEVER 0
-#define WORD_WRAP_SOFT  1
-#define WORD_WRAP_FORCE 2
-
-typedef struct {
-
-	char type;
-	int alpha;
-	double x,y;
-
-} E_Style_Bit;
-
-typedef struct {
-
-	E_Style_Bit *bits;
-	int num_bits;
-	char *name;
-	int in_use;
-        double left, right, up, down;
-   
-} E_Font_Style;
-
-typedef struct {
-
-	char *text;
-	char underlined;
-	double x,y,w,h;
-	char *font;
-	Evas_Object **evas_list;
-	int num_evas;
-	E_Font_Style *font_style;
-	int font_size;
-
-} Etox_Bit;
-
-typedef struct {
-
-	char *name;
-	char *text;
-	int text_len;
-
-	E_Clip_Rect **rect_list;
-	int num_rects;
-	char rendered;
-	char visible;
-	double x,y,w,h;
-	int layer;
-	char *font;
-	E_Font_Style *font_style;
-	int font_size;
-	Etox_Bit **bit_list;
-	int num_bits;
-	Evas *evas;
-        int align;
-        E_Text_Color color;
-        double padding;
-        char vertical_align;
-        int alpha_mod;
-        char word_wrap;
-   
-} Etox;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-	E_Font_Style *E_load_font_style(char *path);
-	void E_Font_Style_free(E_Font_Style *style);
-	char etox_set_font_style(Etox *e, E_Font_Style *font_style);
-        void etox_add_path_to_font_style_path(char *path);
-        void etox_remove_path_to_font_style_path(char *path);
-        char **etox_list_font_style_path(int *number_return);
-	char etox_clip_rect_new(Etox *e, double x, double y, double w,double h);
-	char *etox_get_text(Etox *e);
-	char etox_show(Etox *e);
-	char etox_hide(Etox *e);
-	void etox_refresh(Etox *e);
-	char etox_set_text(Etox *e, char *new_text);
-	char etox_set_layer(Etox *e, int layer);
-	int  etox_get_layer(Etox *e);
-	void etox_set_color(Etox *e, E_Text_Color *cl);
-        void etox_set_alpha_mod(Etox *e, int amod);
-        int  etox_get_alpha_mod(Etox *e);
-        void etox_set_word_wrap(Etox *e, int awrap);
-        int  etox_get_word_wrap(Etox *e);
-	void etox_set_color_component(Etox *e, char *arg, E_Color component);
-	Etox_Bit *Etox_Bit_new(void);
-	Etox *Etox_new(char *name);
-	Etox *Etox_new_all(Evas *evas, char *name, double x, double y, double w, double h,
-			   int layer, char *font, char *font_style, int font_size, E_Text_Color *cl,
-			   double padding, int align, int vertical_align);
-	void etox_free(Etox *e);
-	void etox_clean(Etox *e);
-	void etox_move(Etox *e, double x, double y);
-	void etox_resize(Etox *e, double w, double h);
-   
+Etox	etox_new(Evas evas, char *name);
+Etox	etox_new_all(Evas evas, char *name,
+		     double x, double y, double w, double h,
+		     char *font, int font_size, char *style_path,
+		     Etox_Color color, Etox_Align h_align, Etox_Align v_align,
+		     int layer, double padding);
+void	etox_free(Etox e);
+
+void	etox_show(Etox e);
+void	etox_hide(Etox e);
+void	etox_raise(Etox e);
+void	etox_lower(Etox e);
+
+void	etox_move(Etox e, double x, double y);
+void	etox_resize(Etox e, double w, double h);
+
+void	etox_set_evas(Etox e, Evas evas);
+void	etox_set_name(Etox e, char *name);
+void	etox_set_font(Etox e, char *font, int size);
+void	etox_set_style(Etox e, Etox_Style style);
+void	etox_set_align(Etox e, Etox_Align h_align, Etox_Align v_align);
+void	etox_set_layer(Etox e, int layer);
+void	etox_set_padding(Etox e, double padding);
+void	etox_set_text(Etox e, char *new_text);
+void	etox_set_color(Etox e, Etox_Color color);
+void	etox_set_alpha(Etox e, int alpha);
+void	etox_set_clip(Etox e, Evas_Object clip);
+void    etox_set_unclip(Etox e);
+
+Evas    	etox_get_evas(Etox e);
+char *		etox_get_name(Etox e);
+Etox_Style	etox_get_style(Etox e);
+int		etox_get_layer(Etox e);
+double		etox_get_padding(Etox e);
+char *		etox_get_text(Etox e);
+Etox_Color	etox_get_color(Etox e);
+int		etox_get_alpha(Etox e);
+void		etox_get_geometry(Etox e, double *x, double *y, double *w, double *h);
+
+Etox_Obstacle	etox_obstacle_add(Etox e, 
+                                  double x, double y, double w, double h);
+void		etox_obstacle_set(Etox e, Etox_Obstacle obst, 
+				  double x, double y, double w, double h);
+void		etox_obstacle_del(Etox e, Etox_Obstacle obst);
+
+Etox_Style	etox_style_new(char *path);
+void		etox_style_free(Etox_Style style);
+
+void		etox_style_add_path(char *path);
+void		etox_style_del_path(char *path);
+char **		etox_style_get_paths(int *number_return);
+
+Etox_Color	etox_color_new(void);
+void		etox_color_set_member(Etox_Color color, char *member,
+                       	              int r, int g, int b, int a);
+void		etox_color_free(Etox_Color color);
+
+
 #ifdef __cplusplus
 }
 #endif
