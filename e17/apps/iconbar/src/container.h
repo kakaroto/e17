@@ -34,7 +34,8 @@ enum _Container_Fill_Policy
   CONTAINER_FILL_POLICY_KEEP_ASPECT = 0x01,
   CONTAINER_FILL_POLICY_FILL_X = 0x02,
   CONTAINER_FILL_POLICY_FILL_Y = 0x04,
-  CONTAINER_FILL_POLICY_FILL = 0x08 
+  CONTAINER_FILL_POLICY_FILL = 0x08, 
+  CONTAINER_FILL_POLICY_HOMOGENOUS = 0x10
 };
 
 struct _Container
@@ -130,4 +131,5 @@ void e_container_callback_order_change_set(Evas_Object *obj,
                                            void (*func)(void *data),
                                            void *data);
 
+double e_container_elements_length_get(Evas_Object *container);
 #endif

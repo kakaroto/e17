@@ -29,7 +29,7 @@ Evas_Smart *_container_smart_get();
 Container *_container_fetch(Evas_Object *obj);
 Container_Element *_container_element_new(Container *cont, Evas_Object *obj);
 void _container_elements_fix(Container *cont);
-double _container_elements_length_get(Container *cont);
+double _container_elements_orig_length_get(Container *cont);
 void _cb_container(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void _cb_element_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void _cb_element_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -213,6 +213,8 @@ void e_container_element_append(Evas_Object *container, Evas_Object *element)
   if (!el) return;
 
   cont->elements = evas_list_append(cont->elements, el);
+
+  _container_elements_fix(cont);
 }
 
 void e_container_element_prepend(Evas_Object *container, Evas_Object *element)
@@ -227,6 +229,8 @@ void e_container_element_prepend(Evas_Object *container, Evas_Object *element)
   if (!el) return;
 
   cont->elements = evas_list_prepend(cont->elements, el);
+
+  _container_elements_fix(cont);
 }
 
 void e_container_element_append_relative(Evas_Object *container,
@@ -246,6 +250,8 @@ void e_container_element_append_relative(Evas_Object *container,
   if (!rel) return;
 
   cont->elements = evas_list_append_relative(cont->elements, el, rel);
+
+  _container_elements_fix(cont);
 }
 
 void e_container_element_prepend_relative(Evas_Object *container,
@@ -265,6 +271,8 @@ void e_container_element_prepend_relative(Evas_Object *container,
   if (!rel) return;
 
   cont->elements = evas_list_prepend_relative(cont->elements, el, rel);
+
+  _container_elements_fix(cont);
 }
 
 void e_container_element_remove(Evas_Object *container, Evas_Object *element)
@@ -277,6 +285,8 @@ void e_container_element_remove(Evas_Object *container, Evas_Object *element)
 
   el = evas_object_data_get(element, "Container_Element");
   cont->elements = evas_list_remove(cont->elements, el);
+
+  _container_elements_fix(cont);
 }
 
 Evas_List *e_container_elements_get(Evas_Object *container)
@@ -307,6 +317,36 @@ void e_container_callback_order_change_set(Evas_Object *container, void (*func)(
   cont->cb_order_change = func;
   cont->data_order_change = data;
 }
+
+double
+e_container_elements_length_get(Evas_Object *container)
+{
+  Container *cont;
+  Evas_List *l;
+  double length = 0;
+
+  cont = _container_fetch(container);
+  if (!cont) return 0;
+
+  //_container_elements_fix(cont);
+    
+  for (l = cont->elements; l; l = l->next)
+  {
+    Container_Element *el = l->data;
+    double w, h;
+
+    evas_object_geometry_get(el->obj, NULL, NULL, &w, &h);
+
+    length += cont->direction ? h : w;
+    length += cont->spacing; 
+  }
+
+  /* subtract off extra spacing from last element */
+  length -= cont->spacing;
+
+  return length;
+}
+
 
 
 /*** internal  functions ***/
@@ -365,7 +405,13 @@ _container_elements_fix(Container *cont)
   Evas_List *l;
   double ax, ay, aw, ah; // element area geom
   double ix, iy, iw, ih; // new x, y, w, h
+  double L; // length of all objects at original size (for nonhomog)
   int num; // number of elements
+  double error = 0;
+
+  /* FIXME: add a 'changed' flag to prevent multiple recalcs */
+
+  
 
   evas_object_geometry_get(cont->grabber, &ax, &ay, &aw, &ah);
 
@@ -381,6 +427,7 @@ _container_elements_fix(Container *cont)
   ix = ax;
   iy = ay;
 
+  L = _container_elements_orig_length_get(cont);
   num = evas_list_count(cont->elements);
 
   for (l = cont->elements; l; l = l->next)
@@ -404,7 +451,12 @@ _container_elements_fix(Container *cont)
       if (cont->fill & CONTAINER_FILL_POLICY_FILL)
       {
         iw = aw;
-        ih = (ah - cont->spacing * (num - 1) ) / num;
+
+        if (cont->fill & CONTAINER_FILL_POLICY_HOMOGENOUS)
+          ih = (ah - cont->spacing * (num - 1) ) / num;
+        else
+          ih = el->orig_h * (ah - cont->spacing * (num - 1) ) / L;
+          
       }
       else if (cont->fill & CONTAINER_FILL_POLICY_FILL_X)
       {
@@ -421,16 +473,15 @@ _container_elements_fix(Container *cont)
       }
       else if (cont->fill & CONTAINER_FILL_POLICY_FILL_Y)
       {
-        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
-        {
+        if (cont->fill & CONTAINER_FILL_POLICY_HOMOGENOUS)
           ih = (ah - cont->spacing * (num - 1) ) / num;
-          iw = ew * ih/eh;
-        }
         else
-        {
-          ih = (ah - cont->spacing * (num - 1) ) / num;
+          ih = el->orig_h * (ah - cont->spacing * (num - 1) ) / L;
+
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+          iw = ew * ih/eh;
+        else
           iw = ew;
-        }
       }
       else
       {
@@ -447,6 +498,10 @@ _container_elements_fix(Container *cont)
 
       evas_object_move(el->obj, ix, iy);
       evas_object_resize(el->obj, iw, ih);
+      if (!strcmp(evas_object_type_get(el->obj), "image"))
+      {
+        evas_object_image_fill_set(el->obj, 0, 0, iw, ih);
+      }
       evas_object_move(el->grabber, ix, iy);
       evas_object_resize(el->grabber, iw, ih);
 
@@ -458,21 +513,36 @@ _container_elements_fix(Container *cont)
     {
       if (cont->fill & CONTAINER_FILL_POLICY_FILL)
       {
+        //printf("fill\n");
         ih = ah;
-        iw = (aw - cont->spacing * (num - 1) ) / num;
+        
+        if (cont->fill & CONTAINER_FILL_POLICY_HOMOGENOUS)
+          iw = (aw - cont->spacing * (num - 1) ) / num;
+        else
+        {
+          //printf("nonhomog\n");
+          iw = el->orig_w * (aw - cont->spacing * (num - 1) ) / L;
+        }
       }
       else if (cont->fill & CONTAINER_FILL_POLICY_FILL_X)
       {
-        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+        //printf("fill x\n");
+
+        if (cont->fill & CONTAINER_FILL_POLICY_HOMOGENOUS)
         {
+          //printf ("homog\n");
           iw = (aw - cont->spacing * (num - 1) ) / num;
-          ih = eh * iw/ew;
         }
         else
         {
-          iw = (aw - cont->spacing * (num - 1) ) / num;
-          ih = eh;
+          //printf("nonhomog - L: %f, ew: %f\n", L, ew);
+          iw = el->orig_w * (aw - cont->spacing * (num - 1) ) / L;
         }
+
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+          ih = eh * iw/ew;
+        else
+          ih = eh;
       }
       else if (cont->fill & CONTAINER_FILL_POLICY_FILL_Y)
       {
@@ -480,7 +550,6 @@ _container_elements_fix(Container *cont)
         {
           ih = ah;
           iw = ew * ih/eh;
-          printf("**** ih: %f, eh: %f, iw: %f\n", ih, eh, iw);
         }
         else
         {
@@ -501,9 +570,26 @@ _container_elements_fix(Container *cont)
       else if (cont->align == CONTAINER_ALIGN_BOTTOM)
         iy = ay + ah - eh;
 
-      printf("**********ix: %f, iw: %f, cont->spacing: %d\n", ix, iw, cont->spacing);
+ 
+      if (error >= 1)
+      {
+        iw++;
+        error -= 1;
+      }
+      else if (error <= -1)
+      {
+        iw--;
+        error += 1;
+      }
+
+      error += iw - (int)iw; 
+      iw = (int)iw;
       evas_object_move(el->obj, ix, iy);
       evas_object_resize(el->obj, iw, ih);
+      if (!strcmp(evas_object_type_get(el->obj), "image"))
+      {
+        evas_object_image_fill_set(el->obj, 0, 0, iw, ih);
+      }
       evas_object_move(el->grabber, ix, iy);
       evas_object_resize(el->grabber, iw, ih);
       ix += iw + cont->spacing;
@@ -516,7 +602,7 @@ _container_elements_fix(Container *cont)
 }
 
 double
-_container_elements_length_get(Container *cont)
+_container_elements_orig_length_get(Container *cont)
 {
   Evas_List *l;
   double length = 0;
@@ -528,15 +614,14 @@ _container_elements_length_get(Container *cont)
 
     evas_object_geometry_get(el->obj, NULL, NULL, &w, &h);
 
-    length += cont->direction ? h : w;
-    length += cont->spacing; 
+    length += cont->direction ? el->orig_h : el->orig_w;
   }
-
-  /* subtract off extra spacing from last element */
-  length -= cont->spacing;
 
   return length;
 }
+
+
+
 
 void
 _container_element_move(Container_Element *el)

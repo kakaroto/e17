@@ -396,7 +396,7 @@ iconbar_icons_load(Iconbar *ib)
   DIR *dirp;
   struct dirent *dp;
   char dir[PATH_MAX];
-  Evas_List *icons;
+  Evas_List *icons, *new = NULL;
 
   snprintf(dir, sizeof(dir), "%s/icons", ib->path);
   dirp = opendir(dir);
@@ -433,7 +433,6 @@ iconbar_icons_load(Iconbar *ib)
 
     if (f)
     {
-      Evas_List *new = NULL;
 
       while (fgets(buf, sizeof(buf) - 1, f))
       {
@@ -456,28 +455,30 @@ iconbar_icons_load(Iconbar *ib)
           }
         }
       }
-
       fclose(f);
-
-      /* add the ones not mentioned to the end */
-      for (l = icons; l; l = evas_list_next(l))
-      {
-        if (!evas_list_find(new, evas_list_data(l)))
-        {
-          new = evas_list_append(new, evas_list_data(l));
-        }
-      }
-
-      for (l = new; l; l = evas_list_next(l))
-      {
-        Icon *ic = evas_list_data(l);
-
-        e_container_element_append(ib->cont, ic->image);
-      }
-
-      evas_list_free(icons);
-      evas_list_free(new);
     }
+
+
+    /* add the ones not mentioned to the end */
+    for (l = icons; l; l = evas_list_next(l))
+    {
+      if (!evas_list_find(new, evas_list_data(l)))
+      {
+        new = evas_list_append(new, evas_list_data(l));
+        
+      }
+    }
+
+    for (l = new; l; l = evas_list_next(l))
+    {
+      Icon *ic = evas_list_data(l);
+
+      printf("append icon: %s\n", ic->file);
+      e_container_element_append(ib->cont, ic->image);
+    }
+
+    evas_list_free(icons);
+    evas_list_free(new);
   }
 
   write_out_order(ib);
@@ -497,6 +498,7 @@ write_out_order(Iconbar *ib)
 
   if (f)
   {
+    printf("file opened ok\n");
     for (l = e_container_elements_get(ib->cont); l; l = l->next)
     {
       Evas_Object *obj = l->data;
@@ -509,10 +511,11 @@ write_out_order(Iconbar *ib)
         p++;
         fputs(p, f);
         fputs("\n", f);
+        printf("write: %s\n", p);
       }
     }
-    fclose(f);
   }
+    fclose(f);
 }
 
 
