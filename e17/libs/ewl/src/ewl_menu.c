@@ -103,12 +103,6 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	menu = EWL_MENU(w);
 
-	if (!REALIZED(menu->base.popup)) {
-		emb = ewl_embed_widget_find(w);
-		ewl_container_child_append(EWL_CONTAINER(emb),
-					   menu->base.popup); 
-	}
-
 	ewl_widget_show(menu->base.popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
