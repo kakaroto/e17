@@ -11,6 +11,10 @@ Information on how to install Enlightenment on your system is contained in the
 INSTALL file.  Please consult the INSTALL file for information on how to get
 Enlightenment compiled and running on your system.
 
+There is a minor FAQ that is replicated from the documentation found in the
+file FAQ.  The version in the Documentation Browser is more helpful, but this
+is included for completeness.
+
 Information on the copyright, and your rights as a user of enlightenment can be
 found in the file COPYING, which is also contained in this directory.
 Enlightenment is free software, and you should know that you are entitled to
