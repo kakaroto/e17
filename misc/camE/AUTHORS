@@ -7,3 +7,6 @@ Ng (Chris Jones) <chris@linuxdude.co.uk>
 Brian Martin <indyz@megsinet.net>
       Passive mode support with libcurl
       watch-interface option
+
+Greg Gilbert <greg@treke.net>
+      Cropping and scaling code options

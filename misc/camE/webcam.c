@@ -106,6 +106,16 @@ char *watch_interface = NULL;
 int interface_active = 0;
 int device_palette;
 
+int crop = 0;
+int crop_x = 0;
+int crop_y = 0;
+int crop_width = 0;
+int crop_height = 0;
+
+int scale = 0;
+int scale_width = 0;
+int scale_height = 0;
+
 int v_width[5] = { 128, 160, 176, 320, 640 };
 int v_height[5] = { 96, 120, 144, 240, 480 };
 int v_curr = -1;
@@ -205,7 +215,7 @@ grab_init()
    grab_buf.height = grab_height;
 
    ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
-   
+
    /* special philips features */
    if (sscanf(grab_cap.name, "Philips %d webcam", &type) > 0)
    {
@@ -228,9 +238,9 @@ grab_init()
       vwin.flags |= PWC_FPS_SNAPSHOT;
 
       ioctl(grab_fd, VIDIOCSWIN, &vwin);
-      if(ioctl(grab_fd, VIDIOCPWCSAGC, &gain) < 0)
+      if (ioctl(grab_fd, VIDIOCPWCSAGC, &gain) < 0)
          perror("trying to set gain");
-      if(ioctl(grab_fd, VIDIOCPWCSSHUTTER, &shutter) < 0)
+      if (ioctl(grab_fd, VIDIOCPWCSSHUTTER, &shutter) < 0)
          perror("trying to set shutter");
    }
 
@@ -892,7 +902,7 @@ int
 main(int argc, char *argv[])
 {
    unsigned char *val;
-   Imlib_Image image;
+   Imlib_Image image, tmp_image;
    char filename[100];
    int width, height, i;
    struct stat st;
@@ -1054,10 +1064,26 @@ main(int argc, char *argv[])
       cam_whiteness = i;
    if (-1 != (i = cfg_get_int("grab", "framerate")))
       cam_framerate = i;
+   if (-1 != (i = cfg_get_int("grab", "crop")))
+      crop = i;
+   if (-1 != (i = cfg_get_int("grab", "crop_width")))
+      crop_width = i;
+   if (-1 != (i = cfg_get_int("grab", "crop_height")))
+      crop_height = i;
+   if (-1 != (i = cfg_get_int("grab", "crop_x")))
+      crop_x = i;
+   if (-1 != (i = cfg_get_int("grab", "crop_y")))
+      crop_y = i;
+   if (-1 != (i = cfg_get_int("grab", "scale")))
+      scale = i;
+   if (-1 != (i = cfg_get_int("grab", "scale_width")))
+      scale_width = i;
+   if (-1 != (i = cfg_get_int("grab", "scale_height")))
+      scale_height = i;
 
-   if(cam_framerate > 60)
+   if (cam_framerate > 60)
       cam_framerate = 60;
-   if(cam_framerate < 1)
+   if (cam_framerate < 1)
       cam_framerate = 1;
 
    /* print config */
@@ -1127,6 +1153,43 @@ main(int argc, char *argv[])
          {
             fprintf(stderr, "no image captured\n");
             exit(2);
+         }
+
+
+         if (crop)
+         {
+            if (!crop_width)
+               crop_width = grab_width;
+            if (!crop_height)
+               crop_height = grab_height;
+            tmp_image =
+               gib_imlib_create_cropped_scaled_image(image, crop_x, crop_y,
+                                                     crop_width, crop_height,
+                                                     crop_width, crop_height,
+                                                     1);
+            gib_imlib_free_image_and_decache(image);
+            image = tmp_image;
+            imlib_context_set_image(image);
+         }
+
+         if (scale)
+         {
+            if (!scale_width)
+               scale_width = grab_width;
+            if (!scale_height)
+               scale_height = grab_height;
+
+            tmp_image =
+               gib_imlib_create_cropped_scaled_image(image, 0, 0, scale_width,
+                                                     scale_height,
+                                                     scale_width,
+                                                     scale_height, 1);
+            gib_imlib_blend_image_onto_image(tmp_image, image, 1, 0, 0,
+                                             grab_width, grab_height, 0, 0,
+                                             scale_width, scale_height, 1, 0,
+                                             0);
+            gib_imlib_free_image_and_decache(image);
+            image = tmp_image;
          }
 
          log("** shot taken\n");

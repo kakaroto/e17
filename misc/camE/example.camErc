@@ -113,4 +113,15 @@ overlay_y = 5
 #action_pre_shot
 #action_post_shot
 #action_post_upload
-
+# image processing
+# crop = 1
+# crop_width = 320
+# crop_height = 240
+# crop_x = 20
+# crop_y = 20
+#
+# scaling is applied after cropping, so you can
+# remove borders then stretch up the result
+# scale = 1
+# scale_width = 640
+# scale_height = 480
