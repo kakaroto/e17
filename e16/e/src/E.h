@@ -1963,6 +1963,10 @@ void                PropagateShapes(Window win);
 /* events.c */
 #define ENABLE_DEBUG_EVENTS 1
 #if ENABLE_DEBUG_EVENTS
+#define EDBUG_TYPE_FOCUS	128
+#define EDBUG_TYPE_COMPRESSION	129
+#define EDBUG_TYPE_STACKING	130
+#define EDBUG_TYPE_RAISELOWER	131
 int                 EventDebug(unsigned int type);
 #else
 #define             EventDebug(type) 0

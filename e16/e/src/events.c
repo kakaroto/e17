@@ -187,7 +187,7 @@ EventsCompress(XEvent * ev)
 	     ev->xexpose.y = ya;
 	     ev->xexpose.height = yb - ya;
 	  }
-	if (EventDebug(51))
+	if (EventDebug(EDBUG_TYPE_COMPRESSION))
 	   printf("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
 		  ev->xexpose.window, i, xa, xb, ya, yb);
 	break;

@@ -211,7 +211,7 @@ FocusToEWin(EWin * ewin, int why)
 
    EDBUG(4, "FocusToEWin");
 
-   if (EventDebug(50))
+   if (EventDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
 	   printf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,

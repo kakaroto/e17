@@ -39,7 +39,7 @@ EwinListShow(const char *txt, EWinList * ewl)
    int                 i;
    EWin               *ewin;
 
-   if (!EventDebug(129))
+   if (!EventDebug(EDBUG_TYPE_STACKING))
       return;
 
    printf("%s-%s:\n", ewl->name, txt);
