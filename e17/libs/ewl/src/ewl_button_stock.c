@@ -13,6 +13,8 @@ static const Ewl_Stock_Item builtin_items [] =
     { EWL_STOCK_REWIND,      "rewind" },
     { EWL_STOCK_FASTFORWARD, "fast forward" },
     { EWL_STOCK_QUIT,        "quit" },
+    { EWL_STOCK_ARROW_UP,    "up" },
+    { EWL_STOCK_HOME,        "home" },
   };
 
 /* Return the label of the stock item if it exists */

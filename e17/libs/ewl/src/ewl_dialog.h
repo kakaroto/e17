@@ -22,24 +22,6 @@ extern "C" {
  */
 
 /**
- * @enum Ewl_Response_Type
- */
-enum _Ewl_Response_Type
-{
-	EWL_RESPONSE_OPEN   = -5,
-	EWL_RESPONSE_SAVE   = -6,
-	EWL_RESPONSE_OK     = -10,
-	EWL_RESPONSE_CANCEL = -11,
-	EWL_RESPONSE_APPLY  = -12,
-	EWL_RESPONSE_PLAY   = -20,
-	EWL_RESPONSE_PAUSE  = -21,
-	EWL_RESPONSE_STOP   = -22,
-	EWL_RESPONSE_QUIT   = -23,
-};
-
-typedef enum _Ewl_Response_Type Ewl_Response_Type;
-
-/**
  * The dialog structure is a window with two area: a box (vbox) to hold
  * messages and another box (action_area) to put buttons
  * (usually). These boxes can be separated by a line.

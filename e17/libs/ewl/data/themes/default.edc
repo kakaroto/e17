@@ -21,8 +21,10 @@ data {
 	item, "/button/label/font" "Vera";
 	item, "/button/label/style" "none";
 	item, "/button/stock_apply/group" "stock_apply";
+	item, "/button/stock_arrow_up/group" "stock_arrow_up";
 	item, "/button/stock_cancel/group" "stock_cancel";
 	item, "/button/stock_fastforward/group" "stock_fastforward";
+	item, "/button/stock_home/group" "stock_home";
 	item, "/button/stock_ok/group" "stock_ok";
 	item, "/button/stock_open/group" "stock_open";
 	item, "/button/stock_pause/group" "stock_pause";

@@ -98,41 +98,21 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 					   EWL_FLAG_FILL_FILL);
 		ewl_widget_show(misc);
 
-		button = ewl_button_new("");
-		ewl_object_fill_policy_set(EWL_OBJECT(button),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_VFILL);
+		button = ewl_button_stock_with_id_new(EWL_STOCK_ARROW_UP,
+							EWL_RESPONSE_ARROW_UP);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 				    EWL_CALLBACK_FUNCTION(ewl_fileselector_go_up_cb),
 				    fs);
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);
 		ewl_widget_show(button);
 
-		misc = ewl_image_new(PACKAGE_DATA_DIR"/images/arrow_up.png", NULL);
-		ewl_object_fill_policy_set(EWL_OBJECT(misc),
-					   EWL_FLAG_FILL_SHRINK);
-		ewl_object_alignment_set(EWL_OBJECT(misc),
-					 EWL_FLAG_ALIGN_CENTER);
-		ewl_container_child_append(EWL_CONTAINER(button), misc);
-		ewl_widget_show(misc);
-
-		button = ewl_button_new("");
-		ewl_object_fill_policy_set(EWL_OBJECT(button),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_VFILL);
+		button = ewl_button_stock_with_id_new(EWL_STOCK_HOME,
+							EWL_RESPONSE_HOME);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 				    EWL_CALLBACK_FUNCTION
 				    (ewl_fileselector_go_home_cb), fs);
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);
 		ewl_widget_show(button);
-
-		misc = ewl_image_new(PACKAGE_DATA_DIR"/images/home.png", NULL);
-		ewl_object_alignment_set(EWL_OBJECT(misc),
-					 EWL_FLAG_ALIGN_CENTER);
-		ewl_object_fill_policy_set(EWL_OBJECT(misc),
-					   EWL_FLAG_FILL_SHRINK);
-		ewl_container_child_append(EWL_CONTAINER(button), misc);
-		ewl_widget_show(misc);
 
 		ewl_container_child_append(EWL_CONTAINER(fs), hbox);
 		ewl_widget_show(hbox);

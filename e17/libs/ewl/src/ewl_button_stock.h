@@ -29,6 +29,8 @@ extern "C" {
 #define EWL_STOCK_REWIND      "stock_rewind"
 #define EWL_STOCK_FASTFORWARD "stock_fastforward"
 #define EWL_STOCK_QUIT        "stock_quit"
+#define EWL_STOCK_ARROW_UP    "stock_arrow_up"
+#define EWL_STOCK_HOME        "stock_home"
 
 typedef struct Ewl_Stock_Item Ewl_Stock_Item;
   
