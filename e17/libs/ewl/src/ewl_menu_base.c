@@ -1,7 +1,7 @@
 #include <Ewl.h>
 
-static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
-																			 char *image, char *text );
+static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
+                                        char *image, char *text );
 
 /**
  * @param menu: the menu item to initialize
@@ -123,7 +123,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 					 EWL_CALLBACK_DESELECT);
 
 	item->icon = NULL;
-	if (!ewl_menu_item_create_image(item, image, text))
+	if (!ewl_menu_item_image_create(item, image, text))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
@@ -144,8 +144,8 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
-																				char *image, char *text ) {
+static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
+                                        char *image, char *text ) {
 	Ewl_Container *redirect;
 
 	if (item->icon)
@@ -188,7 +188,7 @@ static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
  * @brief Get the text of a menu item
  */
 char *
-ewl_menu_item_get_text( Ewl_Menu_Item *item )
+ewl_menu_item_text_get( Ewl_Menu_Item *item )
 {
 	if (item->text)
 		DRETURN_PTR(ewl_text_text_get(EWL_TEXT(item->text)), DLEVEL_STABLE);
@@ -201,7 +201,7 @@ ewl_menu_item_get_text( Ewl_Menu_Item *item )
  * @brief Sets the text of a menu item
  */
 void
-ewl_menu_item_set_text( Ewl_Menu_Item *item, char *text )
+ewl_menu_item_text_set( Ewl_Menu_Item *item, char *text )
 {
 	if (item->text)
 		ewl_text_text_set(EWL_TEXT(item->text), text);
@@ -213,7 +213,7 @@ ewl_menu_item_set_text( Ewl_Menu_Item *item, char *text )
  * @brief Get the image of a menu item
  */
 char *
-ewl_menu_item_get_image( Ewl_Menu_Item *item )
+ewl_menu_item_image_get( Ewl_Menu_Item *item )
 {
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
 		DRETURN_PTR(ewl_image_get_file(EWL_IMAGE(item->icon)), DLEVEL_STABLE);
@@ -226,13 +226,13 @@ ewl_menu_item_get_image( Ewl_Menu_Item *item )
  * @brief Set the image of a menu item
  */
 void
-ewl_menu_item_set_image( Ewl_Menu_Item *item, char *image )
+ewl_menu_item_image_set( Ewl_Menu_Item *item, char *image )
 {
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
 		ewl_image_set_file(EWL_IMAGE(item->icon), image, NULL);
 	else {
-		ewl_menu_item_create_image( item, image,
-																ewl_text_text_get(EWL_TEXT(item->text)) );
+		ewl_menu_item_image_create( item, image,
+                                    ewl_text_text_get(EWL_TEXT(item->text)) );
 	}
 }
 
