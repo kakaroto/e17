@@ -32,8 +32,7 @@
 static char *create_index_dimension_string(int w, int h);
 static char *create_index_size_string(char *file);
 static char *create_index_title_string(int num, int w, int h);
-static int num_thumbs = 0;
-static feh_thumbnail **thumbnails;
+static feh_list *thumbnails = NULL;
 
 
 /* TODO Break this up a bit ;) */
@@ -69,8 +68,6 @@ init_thumbnail_mode(void)
 
    D_ENTER;
 
-
-   thumbnails = (feh_thumbnail **) emalloc(sizeof(feh_thumbnail *));
    if (opt.font)
    {
       fn = imlib_load_font(opt.font);
@@ -468,8 +465,7 @@ init_thumbnail_mode(void)
                                           feh_imlib_image_has_alpha(im_thumb),
                                           0);
 
-         feh_thumbnail_add(file, xxx, yyy, www, hhh);
-
+         thumbnails = feh_list_add_front(thumbnails, feh_thumbnail_new(file, xxx, yyy, www, hhh));
 
          feh_imlib_free_image_and_decache(im_thumb);
 
@@ -555,13 +551,6 @@ init_thumbnail_mode(void)
 }
 
 
-/*char *
-chop_file_from_full_path(char *str)
-{
-   D_ENTER;
-   D_RETURN(strrchr(str, '/') + 1);
-}*/
-
 static char *
 create_index_size_string(char *file)
 {
@@ -604,73 +593,59 @@ create_index_title_string(int num, int w, int h)
    D_RETURN(str);
 }
 
-void
-feh_thumbnail_add(feh_file * fil, int x, int y, int w, int h)
+feh_thumbnail *feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
 {
-   feh_thumbnail *tmpthumb;
-
+   feh_thumbnail *thumb;
    D_ENTER;
 
-   ++num_thumbs;
-
-   D(("x == %d for file %s\n", x, fil->name));
-   D(("y == %d for file %s\n", y, fil->name));
-   D(("w == %d for file %s\n", w, fil->name));
-   D(("h == %d for file %s\n", h, fil->name));
-
-   tmpthumb = (feh_thumbnail *) emalloc(sizeof(feh_thumbnail));
-
-   tmpthumb->x = x;
-   tmpthumb->y = y;
-   tmpthumb->w = w;
-   tmpthumb->h = h;
-   tmpthumb->file = fil;
-
-   D(("num_thumbs == %d on line %d of %s\n", num_thumbs, __LINE__, __FILE__));
-
-   thumbnails =
-      (feh_thumbnail **) erealloc(thumbnails,
-                                  sizeof(feh_thumbnail *) * num_thumbs);
-
-   thumbnails[num_thumbs - 1] = tmpthumb;
-
-   D_RETURN_;
+   thumb = (feh_thumbnail *) emalloc(sizeof(feh_thumbnail));
+   thumb->x = x;
+   thumb->y = y;
+   thumb->w = w;
+   thumb->h = h;
+   thumb->file = file;
+   
+   D_RETURN(thumb);
 }
 
 feh_file *
 feh_thumbnail_get_file_from_coords(int x, int y)
 {
-   int i;
+   feh_list *l;
+   feh_thumbnail *thumb;
+   D_ENTER;
 
-   for (i = 0; i < num_thumbs; i++)
+   for (l=thumbnails; l ; l = l->next)
    {
-      D(("%d times through\n", i));
+      thumb = FEH_THUMB(l->data);
       if (XY_IN_RECT
-          (x, y, thumbnails[i]->x, thumbnails[i]->y, thumbnails[i]->w,
-           thumbnails[i]->h))
+          (x, y, thumb->x, thumb->y, thumb->w,
+           thumb->h))
       {
-         return (thumbnails[i]->file);
+         D_RETURN(thumb->file);
       }
    }
    D(("No matching %d %d", x, y));
-   return (NULL);
+   D_RETURN(NULL);
 }
 
 feh_thumbnail *
 feh_thumbnail_get_thumbnail_from_coords(int x, int y)
 {
-   int i;
+   feh_list *l;
+   feh_thumbnail *thumb;
+   D_ENTER;
 
-   for (i = 0; i < num_thumbs; i++)
+   for (l=thumbnails; l ; l = l->next)
    {
-      D(("%d times through\n", i));
+      thumb = FEH_THUMB(l->data);
       if (XY_IN_RECT
-          (x, y, thumbnails[i]->x, thumbnails[i]->y, thumbnails[i]->w,
-           thumbnails[i]->h))
+          (x, y, thumb->x, thumb->y, thumb->w,
+           thumb->h))
       {
-         return (thumbnails[i]);
+         D_RETURN(thumb);
       }
    }
    D(("No matching %d %d", x, y));
-   return (NULL);
+   D_RETURN(NULL);
 }

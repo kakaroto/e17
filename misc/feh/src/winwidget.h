@@ -88,6 +88,7 @@ struct __winwidget
    Pixmap bg_pmap;
    char *name;
    feh_list *file;
+   unsigned char visible;
 
    /* Stuff for zooming */
    unsigned char mode;

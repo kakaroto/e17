@@ -52,7 +52,6 @@ init_multiwindow_mode(void)
       {
          if (opt.draw_filename)
             feh_draw_filename(w);
-         if (!opt.progressive)
             winwidget_show(w);
          if (opt.reload > 0)
             feh_add_unique_timer(cb_reload_timer, w, opt.reload);

@@ -58,7 +58,6 @@ init_slideshow_mode(void)
          success = 1;
          if (opt.draw_filename)
             feh_draw_filename(w);
-         if (!opt.progressive)
             winwidget_show(w);
          if (opt.slideshow_delay >= 0)
             feh_add_timer(cb_slide_timer, w, opt.slideshow_delay,

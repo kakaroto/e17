@@ -184,6 +184,16 @@ feh_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
 }
 
 void
+feh_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
+                               int r, int g, int b, int a)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, a);
+   imlib_image_draw_rectangle(x, y, w, h);
+}
+
+
+void
 feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, int x, int y, char *text,
                     Imlib_Text_Direction dir, int r, int g, int b, int a)
 {
@@ -203,7 +213,8 @@ feh_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
    imlib_get_text_size(text, w, h);
 }
 
-Imlib_Image feh_imlib_clone_image(Imlib_Image im)
+Imlib_Image
+feh_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
@@ -254,9 +265,9 @@ feh_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dh = 0;
 }
 
-Imlib_Image feh_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
-                                                  int sy, int sw, int sh,
-                                                  int dw, int dh, char alias)
+Imlib_Image
+feh_imlib_create_cropped_scaled_image(Imlib_Image im, int sx, int sy, int sw,
+                                      int sh, int dw, int dh, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -309,7 +320,8 @@ feh_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
    imlib_image_draw_line(x1, y1, x2, y2, make_updates);
 }
 
-Imlib_Image feh_imlib_create_rotated_image(Imlib_Image im, double angle)
+Imlib_Image
+feh_imlib_create_rotated_image(Imlib_Image im, double angle)
 {
    imlib_context_set_image(im);
    return (imlib_create_rotated_image(angle));
@@ -322,15 +334,16 @@ feh_imlib_image_tile(Imlib_Image im)
    imlib_image_tile();
 }
 
-void feh_imlib_image_blur(Imlib_Image im, int radius)
+void
+feh_imlib_image_blur(Imlib_Image im, int radius)
 {
    imlib_context_set_image(im);
    imlib_image_blur(radius);
 }
 
-void feh_imlib_image_sharpen(Imlib_Image im, int radius)
+void
+feh_imlib_image_sharpen(Imlib_Image im, int radius)
 {
    imlib_context_set_image(im);
    imlib_image_sharpen(radius);
 }
-

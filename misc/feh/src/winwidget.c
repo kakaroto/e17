@@ -54,6 +54,7 @@ winwidget_allocate(void)
    ret->name = NULL;
    ret->file = NULL;
    ret->type = WIN_TYPE_UNSET;
+   ret->visible = 0;
 
    /* Zoom stuff */
    ret->mode = MODE_NORMAL;
@@ -131,12 +132,11 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
 
    if (winwidget_loadimage(ret, file) == 0)
    {
-      if (opt.progressive)
-         winwidget_destroy(ret);
+      winwidget_destroy(ret);
       D_RETURN(NULL);
    }
 
-   if (!opt.progressive)
+   if (!opt.progressive || !ret->win)
    {
       ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
       ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
@@ -519,9 +519,11 @@ void
 winwidget_destroy(winwidget winwid)
 {
    D_ENTER;
-   winwidget_unregister(winwid);
    if (winwid->win)
+   {
+      winwidget_unregister(winwid);
       XDestroyWindow(disp, winwid->win);
+   }
    if (winwid->bg_pmap)
       XFreePixmap(disp, winwid->bg_pmap);
    if (winwid->name)
@@ -565,12 +567,15 @@ winwidget_show(winwidget winwid)
    D_ENTER;
 
    /* feh_debug_print_winwid(winwid); */
-
-   XMapWindow(disp, winwid->win);
-   /* wait for the window to map */
-   D(("Waiting for window to map\n"));
-   XMaskEvent(disp, StructureNotifyMask, &ev);
-   D(("Window mapped\n"));
+   if (!winwid->visible)
+   {
+      XMapWindow(disp, winwid->win);
+      /* wait for the window to map */
+      D(("Waiting for window to map\n"));
+      XMaskEvent(disp, StructureNotifyMask, &ev);
+      D(("Window mapped\n"));
+      winwid->visible = 1;
+   }
    D_RETURN_;
 }
 
@@ -599,6 +604,7 @@ winwidget_hide(winwidget winwid)
 {
    D_ENTER;
    XUnmapWindow(disp, winwid->win);
+   winwid->visible = 0;
    D_RETURN_;
 }
 
@@ -681,11 +687,11 @@ winwidget_free_image(winwidget w)
 void
 feh_debug_print_winwid(winwidget w)
 {
-   printf("winwid_debug:\n" "winwid = %p\n" "win = %ld\n" "w = %d\n" "h = %d\n"
-          "im_w = %d\n" "im_h = %d\n" "im_angle = %f\n" "type = %d\n"
-          "had_resize = %d\n" "im = %p\n" "GC = %p\n" "pixmap = %ld\n"
-          "name = %s\n" "file = %p\n" "mode = %d\n" "im_x = %d\n"
-          "im_y = %d\n" "zoom = %f\n" "click_offset_x = %d\n"
+   printf("winwid_debug:\n" "winwid = %p\n" "win = %ld\n" "w = %d\n"
+          "h = %d\n" "im_w = %d\n" "im_h = %d\n" "im_angle = %f\n"
+          "type = %d\n" "had_resize = %d\n" "im = %p\n" "GC = %p\n"
+          "pixmap = %ld\n" "name = %s\n" "file = %p\n" "mode = %d\n"
+          "im_x = %d\n" "im_y = %d\n" "zoom = %f\n" "click_offset_x = %d\n"
           "click_offset_y = %d\n" "im_click_offset_x = %d\n"
           "im_click_offset_y = %d\n" "has_rotated = %d\n", w, w->win, w->w,
           w->h, w->im_w, w->im_h, w->im_angle, w->type, w->had_resize, w->im,
@@ -693,4 +699,3 @@ feh_debug_print_winwid(winwidget w)
           w->zoom, w->click_offset_x, w->click_offset_y, w->im_click_offset_x,
           w->im_click_offset_y, w->has_rotated);
 }
-

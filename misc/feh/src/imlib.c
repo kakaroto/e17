@@ -284,11 +284,25 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       dest_y = (scr->height - progwin->im_h) >> 1;
    }
 
-   if (progwin->im_angle != 0)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
-         (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
-          dest_x + update_x, dest_y + update_y, update_w, update_h,
-          progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
+   if (progwin->has_rotated)
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
+                                                                    bg_pmap,
+                                                                    im,
+                                                                    update_x,
+                                                                    update_y,
+                                                                    update_w,
+                                                                    update_h,
+                                                                    dest_x +
+                                                                    update_x,
+                                                                    dest_y +
+                                                                    update_y,
+                                                                    update_w,
+                                                                    update_h,
+                                                                    progwin->
+                                                                    im_angle,
+                                                                    1,
+                                                                    feh_imlib_image_has_alpha
+                                                                    (im), 0);
    else
       feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
                                                       update_x, update_y,
@@ -402,8 +416,8 @@ feh_draw_filename(winwidget w)
 
    feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   feh_imlib_text_draw(im, fn, 0, 0, FEH_FILE(w->file->data)->filename, IMLIB_TEXT_TO_RIGHT,
-                       255, 255, 255, 255);
+   feh_imlib_text_draw(im, fn, 0, 0, FEH_FILE(w->file->data)->filename,
+                       IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
    feh_imlib_render_image_on_drawable_with_rotation(w->bg_pmap, im, 0, 0,
                                                     w->im_angle, 1, 0, 0);
@@ -426,9 +440,7 @@ feh_display_status(char stat)
 
    D_ENTER;
 
-   D(
-     ("filelist %p, filelist->next %p\n", filelist,
-      filelist->next));
+   D(("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
    if (!init_len)
       init_len = feh_list_length(filelist);
@@ -465,4 +477,3 @@ feh_display_status(char stat)
    i++;
    D_RETURN_;
 }
-

@@ -157,7 +157,6 @@ feh_event_handle_ButtonPress(XEvent * ev)
             thumbwin =
                winwidget_create_from_file(feh_list_add_front(NULL, thumbfile),
                                           thumbfile->name, WIN_TYPE_SINGLE);
-            if (!opt.progressive)
                winwidget_show(thumbwin);
          }
       }
@@ -534,20 +533,18 @@ feh_event_handle_MotionNotify(XEvent * ev)
       {
          if (winwid->type == WIN_TYPE_ABOUT)
          {
-            Imlib_Image im2, temp;
+            Imlib_Image orig_im;
             int x, y;
 
             x = ev->xmotion.x - winwid->im_x;
             y = ev->xmotion.y - winwid->im_y;
-            im2 = feh_imlib_clone_image(winwid->im);
-            imlib_context_set_image(im2);
+            orig_im = feh_imlib_clone_image(winwid->im);
+            imlib_context_set_image(winwid->im);
             imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
                                "/share/feh/images/about.png);", &x, &y);
-            temp = winwid->im;
-            winwid->im = im2;
             winwidget_render_image(winwid, 0, 1);
-            winwid->im = temp;
-            feh_imlib_free_image_and_decache(im2);
+            feh_imlib_free_image_and_decache(winwid->im);
+            winwid->im = orig_im;
          }
          else if (winwid->type == WIN_TYPE_THUMBNAIL)
          {
@@ -555,12 +552,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
             feh_thumbnail *thumbnail;
             int x, y;
 
-            x = ev->xbutton.x;
-            y = ev->xbutton.y;
-            x -= winwid->im_x;
-            y -= winwid->im_y;
-            x /= winwid->zoom;
-            y /= winwid->zoom;
+            x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
+            y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
             thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
             if (thumbnail != last_thumb)
             {
@@ -569,13 +562,24 @@ feh_event_handle_MotionNotify(XEvent * ev)
                   Imlib_Image origwin;
 
                   origwin = feh_imlib_clone_image(winwid->im);
-                  imlib_context_set_image(winwid->im);
                   feh_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
                                                  thumbnail->y, thumbnail->w,
-                                                 thumbnail->h, 50, 255, 50,
+                                                 thumbnail->h, 50, 50, 255,
                                                  100);
-                  /* feh_imlib_render_image_on_drawable(winwid->win, winwid->im, 0,
-                     0, 0, 1, 1); */
+                  feh_imlib_image_draw_rectangle(winwid->im, thumbnail->x,
+                                                 thumbnail->y, thumbnail->w,
+                                                 thumbnail->h, 255, 255, 255,
+                                                 255);
+                  feh_imlib_image_draw_rectangle(winwid->im, thumbnail->x + 1,
+                                                 thumbnail->y + 1,
+                                                 thumbnail->w - 2,
+                                                 thumbnail->h - 2, 0, 0, 0,
+                                                 255);
+                  feh_imlib_image_draw_rectangle(winwid->im, thumbnail->x + 2,
+                                                 thumbnail->y + 2,
+                                                 thumbnail->w - 4,
+                                                 thumbnail->h - 4, 255, 255,
+                                                 255, 255);
                   winwidget_render_image(winwid, 0, 1);
                   feh_imlib_free_image_and_decache(winwid->im);
                   winwid->im = origwin;
