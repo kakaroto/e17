@@ -1,0 +1,49 @@
+
+#include "img/images.edc"
+#include "fonts/fonts.edc" 
+
+collections {
+
+	group {
+		name,	"eplayer";
+		min,		413 94;
+		max,	413 94;
+      
+#include "collections/base.edc"
+}
+
+	programs {
+
+#include "programs/controls.edc"
+
+}
+
+	group {
+		name,	"playlist_item";
+		min,		122 9;
+		max,	122 9;
+	
+#include "collections/playlist.edc"
+}
+
+	programs {
+
+#include "programs/playlist.edc"
+} 
+
+collections {
+
+	group {
+		name,	"eplayer_small";
+		min,		93 187;
+		max,	93 187;
+
+#include "collections/switch.edc"
+}
+
+	programs {
+
+#include "programs/mini_controls.edc"
+}
+
+}

@@ -1,0 +1,1272 @@
+	parts {
+        		part {
+			name, "base";
+                	type,   IMAGE;
+                	mouse_events, 1;
+			repeat_events, 1;
+
+                description {
+                        	state, "default" 0.0;
+				max,      	413 94;
+	       			min,      	413 94;
+
+                        rel1 {
+                                relative, 0.0 0.0;
+                                offset, 0 0;
+                        }
+                        
+			rel2 {
+                                relative, 1.0 1.0;
+                                offset, -1 -1;
+                        }
+	
+                        image {
+                                normal, "base_layer.png";
+			}
+				
+				border, 6 6 6 6;
+				
+			fill {
+				smooth, 1;
+			}
+
+		}
+	} 
+
+		part {
+	    		name,	"left_bar";
+			type,	IMAGE;
+			mouse_events, 1;
+
+			description {
+				state,    	"default" 0.0;
+	       			max,      	19 94;
+	       			min,      	19 94;
+	       			align,	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+	       		}
+
+	       		rel2 {
+		  			relative, 2.5 1.0;
+		  			offset, -1 -1;
+	       		}
+	       
+			image {
+		  			normal, "bar_delay_left.png";
+			}
+
+	    	}
+
+		description {
+				state,    	"hilited" 0.0;
+	       			max,      	19 94;
+	       			min,      	19 94;
+	       			align,	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+	       		}
+
+	       		rel2 {
+		  			relative, 2.5 1.0;
+		  			offset, -1 -1;
+	       		}
+	       
+			image {
+		  			normal, "bar_delay_hilited.png";
+			}
+
+	    	}
+
+		description {
+				state,    	"clicked" 0.0;
+	       			max,      	19 94;
+	       			min,      	19 94;
+	       			align,	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+	       		}
+
+	       		rel2 {
+		  			relative, 2.5 1.0;
+		  			offset, -1 -1;
+	       		}
+	       
+			image {
+		  			normal, "bar_delay_clicked.png";
+			}
+
+	    	}
+	}
+	
+		part {
+	    		name,	"right_bar";
+			type,	IMAGE;
+			mouse_events, 1;
+
+		description {
+				state,    	"default" 0.0;
+	       			max,      	19 94;
+	       			min,      	19 94;
+	       			align,    	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 1.0  0.0;
+		  			offset, 0 0;
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -1 -1;
+	       		}
+	       
+			image {
+		  		normal, "bar_delay_right.png";
+			}
+
+	    	}
+
+		description {
+				state,    	"hilited" 0.0;
+	       			max,      	19 94;
+	       			min,      	19 94;
+	       			align,    	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 1.0  0.0;
+		  			offset, 0 0;
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -1 -1;
+	       		}
+	       
+			image {
+		  		normal, "bar_delay_right_hilited.png";
+			}
+
+	    	}
+
+			description {
+				state,    	"clicked" 0.0;
+	       			max,      	19 94;
+	       			min,      	19 94;
+	       			align,    	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 1.0  0.0;
+		  			offset, 0 0;
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -1 -1;
+	       		}
+	       
+			image {
+		  		normal, "bar_delay_right_clicked.png";
+			}
+
+	    	}
+	}
+	
+		part {
+	    		name,	"lcd";
+			type,	IMAGE;
+			mouse_events, 0;
+
+		description {
+			state,    "default" 0.0;
+	       		max,      142 94;
+	       		min,      142 94;
+	       		align,    0.0 0.0;
+	       
+			rel1 {
+		  			relative, 1.0  0.0;
+		  			offset, 0 0;
+	       		}
+	       		
+			rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -20 -1;
+	       		}
+	       
+			image {
+		  		normal, "lcd_window.png";
+		  	}
+			border, 9 9 9 9;
+
+			fill {
+				smooth, 0;
+			}
+
+	    	}
+	}
+
+		part {
+	    		name,	"main_w";
+			type,	IMAGE;
+			mouse_events, 0;	  
+
+		description {
+			state,    "default" 0.0;
+	       		max,      142 94;
+	       		min,      142 94;
+	       		align,    0.0 0.0;
+	       
+			rel1 {
+		  			relative, 1.0  0.0;
+		  			offset, 0 0;
+					to, "left_bar";
+	       		}
+	       		
+			rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -19 0;
+					to, "right_bar";
+	       		}
+	       
+			image {
+		  		normal, "lcd_window.png";
+		  	}
+			border, 9 9 9 9;
+
+			fill {
+				smooth, 0;
+			}
+
+		}
+	}
+
+		part {
+	    		name,	"ct_align";
+			type,	IMAGE;
+			mouse_events, 0;	  
+
+			description {
+				state,   	"default" 0.0;
+	       			max,	85 28;
+	       			min,     	85 28;
+	       			align,    	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.4  0.0;
+		  			offset, -1 0;
+					to, "base";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 0;
+					to, "base";
+	       		}
+	       
+			image {
+		  		normal, "align_top.png";
+			}
+
+	    	}
+	}
+	
+		part {
+	    		name,	"cl_align";
+			type,	IMAGE;
+			mouse_events, 0;
+
+		description {
+			state,	"default" 0.0;
+	       		max,      	22 41;
+	       		min,      	22 41;
+	       		align,    	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.4  0.0;
+		  			offset, -1 28;
+					to, "base";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -1 -1;
+					to, "base";
+	       		}
+	       
+			image {
+		  		normal, "align_left.png";
+			}
+
+	    	}
+	}
+	
+		part {
+	    		name,	"cc_align";
+			type,	IMAGE;
+			mouse_events, 0;	    
+
+		description {
+			state,	"default" 0.0;
+	       		max,      	41 41;
+	       		min,      	41 41;
+	       		align,    	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.5  0.0;
+		  			offset, -20 28;
+					to, "base";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -1 -1;
+					to, "base";
+	       		}
+	       
+			image {
+		  		normal, "align_center.png";
+			}
+
+	    	}
+	}
+	
+		part {
+	    		name,	"cr_align";
+			type,	IMAGE;
+			mouse_events, 0;	    
+
+		description {
+			state,    	"default" 0.0;
+	       		max,      	22 41;
+	       		min,      	22 41;
+	       		align,	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.4  0.0;
+		  			offset, 62 28;
+					to, "base";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 2 -1;
+					to, "base";
+	       		}
+	       
+			image {
+		  		normal, "align_right.png";
+			}
+
+	    	}
+	}
+	
+		part {
+	    		name,	"cb_align";
+			type,	IMAGE;
+			mouse_events, 0;	    
+
+		description {
+			state,    	"default" 0.0;
+	       		max,      	85 25;
+	       		min,      	85 25;
+	       		align,	0.0 0.0;
+	       
+			rel1 {
+		  			relative, 0.5  0.0;
+		  			offset, -42 69;
+					to, "base";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 0;
+					to, "base";
+	       		}
+	       
+			image {
+		  		normal, "align_bottom.png";
+			}
+
+	    	}
+	} 
+
+	/* Previous button */
+		part {
+	    		name,          "prev_button";
+			/* type,	IMAGE; */
+			mouse_events, 1;	    
+
+		description {
+			state,    "default" 0.0;
+	       		max,      13 39;
+	       		min,      13 39;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cl_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 5 0;
+		  			to, "cl_align";
+	       		}
+			image {
+		  		normal, "previous_button.png";
+			}
+	    	}
+
+		description {
+			state,    "hilited" 0.0;
+	       		max,      13 39;
+	       		min,      13 39;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cl_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 5 0;
+		  			to, "cl_align";
+	       		}
+			image {
+		  		normal, "previous_button_hilited.png";
+			}
+	    	}
+
+		description {
+			state,    "clicked" 0.0;
+	       		max,      13 39;
+	       		min,      13 39;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cl_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 5 0;
+		  			to, "cl_align";
+	       		}
+			image {
+		  		normal, "previous_button_clicked.png";
+			}
+
+	    	}
+	} 
+
+	/* pause_button */
+		part {
+	    		name,          "pause_button";
+			/* type,	IMAGE; */
+			mouse_events, 1;	    
+
+		description {
+			state,    "default" 0.0;
+	       		max,      39 12;
+	       		min,      39 12;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "ct_align";
+	       		}
+	       		
+			rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 12;
+		  			to, "ct_align";
+	       		}
+			image {
+		  		normal, "pause_button.png";
+			}
+	    	}
+
+		description {
+			state,    "hilited" 0.0;
+	       		max,      39 12;
+	       		min,      39 12;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "ct_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 12;
+		  			to, "ct_align";
+	       		}
+			image {
+			  	normal, "pause_button_hilited.png";
+			}
+	    	}
+
+		description {
+			state,    "clicked" 0.0;
+		      	max,      39 12;
+		       	min,      39 12;
+
+	       		rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "ct_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 12;
+		  			to, "ct_align";
+	       		}
+			image {
+			  	normal, "pause_button_clicked.png";
+			}
+
+	    	}
+	} 
+	
+		part {
+	    		name,          "play_button";
+			/* type,	IMAGE; */
+			mouse_events, 1;	    
+
+		description {
+			state,    "default" 0.0;
+	       		max,      23 23;
+	       		min,      23 23;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cc_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 0;
+		  			to, "cc_align";
+	       		}
+			image {
+		  		normal, "play_button.png";	
+			}
+			border, 1 1 1 1;
+
+			fill {
+				smooth, 0;
+			}
+		}	
+	
+		description {
+			state,    "hilited" 0.0;
+	       		max,      23 23;
+	       		min,      23 23;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cc_align";
+	       		}
+	
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 0;
+		  			to, "cc_align";
+	       		}
+			image {
+		  	normal, "play_button_hilited.png";	
+			}
+			border, 1 1 1 1;
+
+			fill {
+				smooth, 1;
+			}
+	    	}
+
+		description {
+			state,    "clicked" 0.0;
+	       		max,      23 23;
+	       		min,      23 23;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cc_align";
+	       		}
+	
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 0;
+		  			to, "cc_align";
+	       		}
+			image {
+		  		normal, "play_button_clicked.png";	
+			}
+			border, 1 1 1 1;
+
+			fill {
+				smooth, 0;
+			}
+	    	}
+	}
+
+	 /* next_button */
+		part {
+	    		name,          "next_button";
+			/* type,	IMAGE; */
+			mouse_events, 1;	    
+
+		description {
+			state,    "default" 0.0;
+	       		max,      13 39;
+	       		min,      13 39;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cr_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -5 0;
+		  			to, "cr_align";
+	       		}
+			image {
+			  	normal, "next_button.png";
+			}
+	    	}
+
+		description {
+			state,    "hilited" 0.0;
+	       		max,      13 39;
+	       		min,      13 39;
+
+	       		rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cr_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -5 0;
+		  			to, "cr_align";
+	       		}
+			image {
+			  	normal, "next_button_hilited.png";
+			}
+	    	}
+
+		description {
+			state,    "clicked" 0.0;
+		     	max,      13 39;
+		      	min,      13 39;
+
+	       		rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cr_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -5 0;
+		  			to, "cr_align";
+	       		}
+			image {
+			  	normal, "next_button_clicked.png";
+			}
+
+	    	}
+	} 
+
+	/* stop_button */
+		part {
+		    	name,          "stop_button";
+			/* type,	IMAGE; */
+			mouse_events, 1;	    
+
+		description {
+			state,    "default" 0.0;
+	       		max,      39 13;
+	       		min,      39 13;
+	       		
+			rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cb_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 -8;
+		  			to, "cb_align";
+	       		}
+			image {
+			  	normal, "stop_button.png";
+			}
+	    	}
+
+		description {
+			state,    "hilited" 0.0;
+		      		max,      39 13;
+		       	min,      39 13;
+
+	       		rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cb_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 -8;
+		  			to, "cb_align";
+	       		}
+			image {
+			  	normal, "stop_button_hilited.png";
+			}
+	    	}
+
+		description {
+			state,    "clicked" 0.0;
+		      	max,      39 13;
+		       	min,      39 13;
+
+	       		rel1 {
+		  			relative, 0.0  0.0;
+		  			offset, 0 0;
+		  			to, "cb_align";
+	       		}
+
+	       		rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, 0 -8;
+		  			to, "cb_align";
+	       		}
+			image {
+			  	normal, "stop_button_clicked.png";
+			}
+
+	    	}
+	}
+
+	 /* begin LCD area */
+		part {
+	    		name,          "trans_Rect";
+	    		mouse_events,  1;
+	   		type,          IMAGE;
+	    	
+		description {
+	       		state,    "default" 0.0;
+	       		max,      119 68;
+	       		min,      119 68;
+	       		
+			rel1 {
+		  			relative, 1.0  1.0;
+		  			offset,   0 0;
+		  			to,       "main_w";
+	       		}
+	       		rel2 {
+		  			relative, 0.0  0.0;
+		  			offset,   0 0;
+		  			to,       "main_w";
+	       		}
+	       		//color,       199 199 208 255;
+			image {
+			  	normal, "fake_rect.png";
+	    		}
+
+	 	}
+	}
+			
+		part {
+                       	name, "artist_name";
+                       	type,   TEXT;
+                       	mouse_events, 0;
+			
+		description {
+                       	state,  "default" 0.0;
+
+                       	rel1 {
+                               	relative, 0.0 0.3;
+                               	offset, 3 -7;
+				to, "trans_Rect";
+                      	}
+
+                       	rel2 {
+                              	relative, 1.0 1.0;
+                               	offset, 0 0;
+				to, "trans_Rect";
+                     	}
+
+                       	color,  106 95 113 255;
+                      	text {
+                       		text, "Artist Name";    
+                               	font, "Edje.visitor1";            
+                              	size, 7;     
+                               	align, 0.0 0.1;       
+                     	}
+
+               	}
+       	}
+
+		part {
+                        name, "album_name";
+                        type,   TEXT;
+                        mouse_events, 0;
+                        
+		description {
+                      	state,  "default" 0.0;
+
+                       	rel1 {
+                               	relative, 0.0 0.0;
+                                        offset, 0 12;
+					to, "artist_name";
+                      	}
+
+                      	rel2 {
+                            	relative, 1.0 1.0;
+                               	offset, 0 0;
+				to, "artist_name";
+                       	}
+
+                       	color,  106 95 113 255;
+                      	text {
+                      		text, "Album Name";
+                               	font, "Edje.visitor1";        
+                               	size, 7;      
+                               	align, 0.0 0.0;       
+                      	}
+                        
+		}
+      	}
+
+                part {
+                        name, "song_name";
+                        type,   TEXT;
+                        mouse_events, 0;
+                        
+		description {
+                      	state,  "default" 0.0;
+
+                       	rel1 {
+                              	relative, 0.0 0.0;
+                               	offset, 0 15;
+				to, "album_name";
+                     	}
+
+                       	rel2 {
+                              	relative, 1.0 0.0;
+                              	offset, 0 1;
+				to, "album_name";
+                      	}
+
+                      	color,  106 95 113 255;
+                      	text {
+                             	text, "Song Name";    
+                               	font, "Edje.visitor1";           
+                              	size, 7;       
+                              	align, 0.0 0.0;       
+                       	}
+
+               	}
+  	}
+
+            	part {
+                    	name, "time_text";
+                        type,   TEXT;
+                        mouse_events, 0;
+                        
+		description {
+                      	state,  "default" 0.0;
+
+                      	rel1 {
+                               	relative, 0.0 0.0;
+                               	offset, 0 15;
+				to, "song_name";
+                      	}
+
+                       	rel2 {
+                               	relative, 1.0 0.0;
+                              	offset, 0 1;
+				to, "song_name";
+                      	}
+
+                      	color,  106 95 113 255;
+                      	text {
+                              	text, "00:00";          
+                               	font, "Edje.visitor1";   
+                              	size, 7;       
+                              	align, 0.0 0.0;      
+                      	}
+
+              	}
+      	}
+
+		part {
+                   	name, "quit";
+               	        type, IMAGE;
+                       	mouse_events, 1;
+		
+		description {
+			max,      10 10;
+	       		min,      10 10;
+                       	state,  "default" 0.0;
+
+			rel1 {
+                       		relative, 1.0 0.0;
+       	                	offset, -4 0;
+				to, "trans_Rect";
+       		        }
+
+                        rel2 {
+                        	relative, 1.0 0.0;
+                              	offset, -8 12;
+				to, "trans_Rect";
+                       	}
+
+                      	image {
+                           	normal, "close_button.png";
+                       	}
+
+                       	fill {
+                             	smooth, 1;
+                      	}
+              	}
+
+		description {
+			max,      10 10;
+	       		min,      10 10;
+                       	state,  "default" 1.0;
+                       	visible, 0;
+
+			rel1 {
+                       		relative, 1.0 0.0;
+       	                	offset, -4 0;
+				to, "trans_Rect";
+       		        }
+
+                        rel2 {
+                        	relative, 1.0 0.0;
+                              	offset, -8 12;
+				to, "trans_Rect";
+                       	}
+
+                      	image {
+                           	normal, "close_button.png";
+                       	}
+
+                       	fill {
+                             	smooth, 1;
+                      	}
+              	}
+
+		description {
+			max,      10 10;
+	       		min,      10 10;
+      	                state,  "hilited" 0.0;
+
+     	                rel1 {
+                               	relative, 1.0 0.0;
+       	                        offset, -4 0;
+				to, "trans_Rect";
+                       	}
+
+                       	rel2 {
+                             	relative, 1.0 0.0;
+                              	offset, -8 12;
+				to, "trans_Rect";
+                      	}
+
+                       	image {
+                              	normal, "close_button_hilited.png";
+                      	}
+
+                       	fill {
+                       		smooth, 1;
+                     	}
+               	}
+
+		description {
+			max,      10 10;
+	       		min,      10 10;
+             	     	state,  "clicked" 0.0;
+
+                     	rel1 {
+                               	relative, 1.0 0.0;
+                               	offset, -4 0;
+				to, "trans_Rect";
+                       	}
+
+                       	rel2 {
+                              	relative, 1.0 0.0;
+             	                offset, -8 12;
+				to, "trans_Rect";
+                       	}
+
+                       	image {
+                               	normal, "close_button_clicked.png";
+                      	}
+
+                      	fill {
+                             	smooth, 1;
+                      	}
+
+       		}
+    	}
+
+		part {
+                   	name, "arrow";
+               	        type, IMAGE;
+                       	mouse_events, 1;
+		
+		description {
+			max,      7 4;
+	       		min,      7 4;
+                       	state,  "default" 0.0;
+
+			rel1 {
+                       		relative, 0.0 0.0;
+       	                	offset, 21 0;
+				to, "trans_Rect";
+       		        }
+
+                        rel2 {
+                        	relative, 0.0 0.0;
+                              	offset, -8 12;
+				to, "trans_Rect";
+                       	}
+
+                      	image {
+                           	normal, "arrow.png";
+                       	}
+
+                       	fill {
+                             	smooth, 1;
+                      	}
+              	}
+	}
+
+		part {
+			name, "playlist";
+			type, RECT;
+			mouse_events, 1;
+
+		description {
+			state, "default" 0.0;
+	       		max,      122 70;
+	       		min,      122 70;
+
+			rel1 {
+				relative, 0.0 0.0;
+				offset, 0 0;
+				to, "lcd";
+			}
+
+			rel2 {
+				relative, 1.0 1.0;
+				offset, 1 2;
+				to, "lcd";
+			}
+				color, 0 0 0 0;
+			}
+		}
+
+		part {
+			name, "layer_in";
+			type, RECT;
+			mouse_events, 1;
+		
+			description {
+				state, "default" 0.0;
+				max,      122 54;
+	       			min,      122 54;
+				visible, 1;
+				color, 238 238 244 0;
+	
+                     	rel1 {
+                           	relative, 0.0 0.0;
+                               	offset, 0 0;
+				to, "main_w";
+                     	}
+	
+                        rel2 {
+                           	relative, 1.0 1.0;
+                             	offset, 0 2;
+				to, "main_w";
+                       	}
+		}
+	
+               	description {
+                       	state, "default" 1.0;
+			max,      122 54;
+	       		min,      122 54;
+                       	visible, 1;
+                       	color, 238 238 244 255;
+        
+              	rel1 {
+                      	relative, 0.0 0.0;
+                       	offset, 0 0;
+			to, "main_w";
+               	}
+
+               	rel2 {
+                       	relative, 1.0 1.0;
+                       	offset, 0 2;
+			to, "main_w";
+              	}
+
+             	}
+	} 
+
+		part {
+	    		name,          "a_a";
+			mouse_events, 0;
+				
+		description {
+	       		state,    "default" 0.0;
+	       		max,      132 67;
+	       		min,      132 67;
+                       	visible, 0;
+	       
+
+		rel1 {
+			relative, 0.0  0.5;
+		  	offset,   0    0;
+			to, "layer_in" 0.0;
+	       	}
+	       
+		rel2 {
+		  	relative, 1.0  0.5;
+		  	offset, 0 0;
+			to, "layer_in" 0.0;
+	       	}
+	      
+		image {
+		  	normal, "a_base.png";
+		 	tween, "a_1.png";
+		 	tween, "a_2.png";
+		 	tween, "a_3.png";
+		 	tween, "a_4.png";
+		  	tween, "a_5.png";
+		  	tween, "a_6.png";
+		  	tween, "a_7.png";
+		  	tween, "a_8.png";
+		  	tween, "a_9.png";
+		  	tween, "a_10.png";
+		  	tween, "a_11.png";
+		  	tween, "a_12.png";
+		  	tween, "a_13.png";
+		  	tween, "a_14.png";
+		  	tween, "a_15.png";
+		  	tween, "a_16.png";
+		  	tween, "a_17.png";
+		  	tween, "a_18.png";
+		  	tween, "a_19.png";
+		  	tween, "a_20.png";
+		  	tween, "a_21.png";
+		  	tween, "a_22.png";
+		  	tween, "a_21.png";
+		  	tween, "a_20.png";
+		  	tween, "a_19.png";
+		  	tween, "a_18.png";
+		  	tween, "a_17.png";
+		  	tween, "a_16.png";
+		  	tween, "a_15.png";
+		  	tween, "a_14.png";
+		  	tween, "a_13.png";
+		  	tween, "a_12.png";
+		  	tween, "a_11.png";
+		  	tween, "a_10.png";
+		  	tween, "a_9.png";
+		  	tween, "a_8.png";
+		  	tween, "a_7.png";
+		  	tween, "a_6.png";
+		  	tween, "a_5.png";
+		  	tween, "a_4.png";
+		  	tween, "a_3.png";
+		 	tween, "a_2.png";
+		  	tween, "a_1.png";
+		}
+	}
+
+		description {
+	       			state,    "default" 1.0;
+	       			max,      132 67;
+	       			min,      132 67;
+	       			//align,    0.5 0.5;
+                                visible, 1;
+	       
+			rel1 {
+		  		relative, 0.0  0.5;
+		  		offset,   0    0;
+				to, "layer_in" 1.0;
+	       		}
+	       
+			rel2 {
+		  		relative, 1.0  0.5;
+		  		offset, 0 0;
+				to, "layer_in" 1.0;
+	       		}
+	      
+		image {
+		 	normal, "a_base.png";
+		  	tween, "a_1.png";
+		  	tween, "a_2.png";
+		 	tween, "a_3.png";
+		 	tween, "a_4.png";
+		  	tween, "a_5.png";
+		  	tween, "a_6.png";
+		  	tween, "a_7.png";
+		  	tween, "a_8.png";
+		  	tween, "a_9.png";
+		  	tween, "a_10.png";
+		  	tween, "a_11.png";
+		  	tween, "a_12.png";
+		  	tween, "a_13.png";
+		  	tween, "a_14.png";
+		  	tween, "a_15.png";
+		  	tween, "a_16.png";
+		  	tween, "a_17.png";
+		  	tween, "a_18.png";
+		  	tween, "a_19.png";
+		  	tween, "a_20.png";
+		  	tween, "a_21.png";
+		  	tween, "a_22.png";
+		  	tween, "a_21.png";
+		  	tween, "a_20.png";
+		  	tween, "a_19.png";
+		  	tween, "a_18.png";
+		  	tween, "a_17.png";
+		  	tween, "a_16.png";
+		  	tween, "a_15.png";
+		  	tween, "a_14.png";
+		  	tween, "a_13.png";
+		  	tween, "a_12.png";
+		  	tween, "a_11.png";
+		  	tween, "a_10.png";
+		  	tween, "a_9.png";
+		  	tween, "a_8.png";
+		  	tween, "a_7.png";
+		  	tween, "a_6.png";
+		  	tween, "a_5.png";
+		  	tween, "a_4.png";
+		  	tween, "a_3.png";
+		  	tween, "a_2.png";
+		  	tween, "a_1.png";
+		}
+	}
+}
