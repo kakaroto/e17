@@ -48,3 +48,5 @@ edb_ed $DB add /entrance/system/reboot int 1
 edb_ed $DB add /entrance/system/halt int 1
 edb_ed $DB add /entrance/user/remember int 1
 edb_ed $DB add /entrance/user/remember_n int 5
+edb_ed $DB add /entrance/autologin/mode int 0
+#edb_ed $DB add /entrance/autologin/user str "atmos"
