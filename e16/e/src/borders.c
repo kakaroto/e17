@@ -3550,11 +3550,13 @@ BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
       ewin->bits[j].state = STATE_HILITED;
    else
       ewin->bits[j].state = STATE_NORMAL;
-   ewin->bits[j].left = 0;
    BorderWinpartChange(ewin, j, 0);
 
-   if (ewin->bits[j].win == Mode.context_win && ewin->border->part[j].aclass)
+   if (ewin->bits[j].win == Mode.context_win && (!ewin->bits[j].left) &&
+       ewin->border->part[j].aclass)
       EventAclass(ev, ewin, ewin->border->part[j].aclass);
+
+   ewin->bits[j].left = 0;
 }
 
 static void
