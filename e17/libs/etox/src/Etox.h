@@ -173,6 +173,7 @@ void etox_hide(Etox * et);
 /*
  * Context management functions
  */
+Etox_Context *etox_context_new();
 Etox_Context *etox_context_save(Etox * et);
 void etox_context_load(Etox * et, Etox_Context * context);
 void etox_context_free(Etox_Context * context);

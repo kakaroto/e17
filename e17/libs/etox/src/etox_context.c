@@ -2,6 +2,25 @@
 #include "Etox_private.h"
 
 /**
+ * etox_context_new - create a new context for loading values to an etox
+ *
+ * Returns a newly allocated and zeroed out Etox_Context on success, NULL on
+ * failure.
+ */
+Etox_Context *etox_context_new()
+{
+	Etox_Context *ret;
+
+	ret = (Etox_Context *)malloc(sizeof(Etox_Context));
+	if (!ret)
+		return NULL;
+
+	memset(ret, 0, sizeof(Etox_Context));
+
+	return ret;
+}
+
+/**
  * etox_context_save - save a copy of the current context for restoring later
  * @et: the etox to retrieve a copy of the current context
  *

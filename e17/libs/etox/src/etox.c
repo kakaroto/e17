@@ -25,10 +25,9 @@ Etox *etox_new(Evas evas)
 	et->evas = evas;
 
 	/*
-	 * Allocate space for the default context
+	 * Allocate the default context
 	 */
-	et->context = (Etox_Context *) malloc(sizeof(Etox_Context));
-	memset(et->context, 0, sizeof(Etox_Context));
+	et->context = etox_context_new();
 
 	/*
 	 * Setup the default color
@@ -119,6 +118,8 @@ void etox_free(Etox * et)
 
 	while (et->obstacles && (obst = ewd_list_remove_last(et->obstacles)))
 		FREE(obst);
+
+	FREE(et->context);
 }
 
 /**
