@@ -26,6 +26,7 @@ geist_SOURCES = \
     geist_fill.c geist_fill.h \
     geist_document_xml.c geist_document_xml.h \
     geist_gtk_menu.c geist_gtk_menu.h \
+    geist_interface.c geist_interface.h \
     imlib.c
 
 geist_LDADD = @GTK_LIBS@ -lImlib2 -lxml -lz

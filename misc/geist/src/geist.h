@@ -74,5 +74,7 @@ extern int depth;
 extern Window root;
 extern Screen *scr;
 
+extern GtkWidget *mainwin;
+extern geist_document *current_doc;
 
 #endif

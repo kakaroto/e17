@@ -9,6 +9,7 @@
 #include "geist_document_gtk.h"
 #include "geist_fill.h"
 
+#define GEIST_DOCUMENT(d) ((geist_document *) d)
 
 struct __geist_document
 {
@@ -45,5 +46,6 @@ void geist_document_render_selection_partial(geist_document * doc, int x,
                                              int y, int w, int h);
 void geist_document_remove_object(geist_document * d, geist_object * obj);
 void geist_document_dirty_selection(geist_document * doc);
+void geist_document_render_full(geist_document * d);
 
 #endif

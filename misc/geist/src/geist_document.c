@@ -268,6 +268,19 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 
 }
 
+void geist_document_render_full(geist_document * d)
+{
+   D_ENTER(3);
+
+   geist_document_render(d);
+   geist_document_render_selection(d);
+   geist_document_render_pmap(d);
+
+   geist_document_render_to_window(d);
+
+   D_RETURN_(3);
+}
+
 void
 geist_document_render_updates(geist_document * d)
 {
