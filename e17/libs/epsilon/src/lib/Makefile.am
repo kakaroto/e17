@@ -13,7 +13,7 @@ lib_LTLIBRARIES      = libepsilon.la
 include_HEADERS      = Epsilon.h
 libepsilon_la_SOURCES  = \
 Epsilon.c \
-md5.c
+md5.c md5.h
 
 libepsilon_la_LIBADD       = $(LDFLAGS)
 libepsilon_la_DEPENDENCIES = ../config.h
