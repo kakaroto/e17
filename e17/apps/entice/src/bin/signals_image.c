@@ -19,7 +19,7 @@ Keep the data in entice.c and the request for state changes separate
 #include "signals_image.h"
 #include "entice.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 /**
  * Delete the current image in entice from the disk
@@ -180,7 +180,7 @@ _entice_image_prev(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageZoomInRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "entice,imageZoomIn" "";
+ *	action, SIGNAL_EMIT "entice,image,current,zoom,in" "";
  *  }
  * @endcode
  *
@@ -215,7 +215,7 @@ _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageZoomInRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "entice,imageZoomOut" "";
+ *	action, SIGNAL_EMIT "entice,image,current,zoom,out" "";
  *  }
  * @endcode
  *
@@ -250,7 +250,7 @@ _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageZoomDefaultRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "entice,imageZoomDefault" "";
+ *	action, SIGNAL_EMIT "entice,image,current,zoom,reset" "";
  *  }
  * @endcode
  *
@@ -321,7 +321,7 @@ _entice_fit_window(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageRotateLeft */
+/* entice,image,current,rotate,left */
 void
 _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
                     const char *source)
@@ -334,7 +334,7 @@ _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageRotateRight */
+/* entice,image,current,rotate,right */
 void
 _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
                      const char *source)
@@ -347,7 +347,7 @@ _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageFlipH */
+/* entice,image,current,flip,horizontal */
 void
 _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
                         const char *source)
@@ -360,7 +360,7 @@ _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageFlipV */
+/* entice,image,current,flip,vertical */
 void
 _entice_flip_vertical(void *data, Evas_Object * o, const char *emission,
                       const char *source)
@@ -373,7 +373,7 @@ _entice_flip_vertical(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeFullScreen */
+/* entice,window,fullscreen */
 void
 _entice_fullscreen(void *data, Evas_Object * o, const char *emission,
                    const char *source)
@@ -386,7 +386,7 @@ _entice_fullscreen(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeThumbScrollNextStart */
+/* entice,thumbnail,scroll,start,next */
 void
 _entice_thumbs_scroll_next_start(void *data, Evas_Object * o,
                                  const char *emission, const char *source)
@@ -399,7 +399,7 @@ _entice_thumbs_scroll_next_start(void *data, Evas_Object * o,
    source = NULL;
 }
 
-/* EnticeThumbScrollPrevStart */
+/* entice,thumbnail,scroll,start,prev */
 void
 _entice_thumbs_scroll_prev_start(void *data, Evas_Object * o,
                                  const char *emission, const char *source)
@@ -412,7 +412,7 @@ _entice_thumbs_scroll_prev_start(void *data, Evas_Object * o,
    source = NULL;
 }
 
-/* EnticeThumbScrollStop */
+/* entice,thumbnail,scroll,stop */
 void
 _entice_thumbs_scroll_stop(void *data, Evas_Object * o, const char *emission,
                            const char *source)
@@ -502,7 +502,7 @@ _entice_image_scroll_stop(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeQuit */
+/* entice,quit */
 void
 _entice_quit(void *data, Evas_Object * o, const char *emission,
              const char *source)
@@ -515,7 +515,7 @@ _entice_quit(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageModified */
+/* entice,image,modified */
 void
 _entice_image_modified(void *data, Evas_Object * o, const char *emission,
                        const char *source)
@@ -530,7 +530,7 @@ _entice_image_modified(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageSave */
+/* entice,image,current,save */
 void
 _entice_image_save(void *data, Evas_Object * o, const char *emission,
                    const char *source)

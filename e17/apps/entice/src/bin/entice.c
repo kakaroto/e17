@@ -263,7 +263,7 @@ entice_current_image_set(const char *file)
       if ((o = (Evas_Object *) evas_hash_find(entice->thumb.hash, file)))
       {
          entice_thumb_load_ethumb(edje_object_part_swallow_get
-                                  (o, "EnticeThumb"));
+                                  (o, "entice.thumb"));
          return (1);
       }
    }
@@ -439,16 +439,16 @@ entice_file_add(const char *file)
                else
                {
                   fprintf(stderr,
-                          "Broken Theme!!! You didn't define an"
-                          "EnticeThumb part\n");
+                          "Broken Theme!!! You didn't define an "
+                          "entice.thumb part\n");
                   result = 1;
                }
             }
             else
             {
                fprintf(stderr,
-                       "Broken Theme!!! You didn't define an"
-                       "EnticeThumb group\n");
+                       "Broken Theme!!! You didn't define an "
+                       "entice.thumb group\n");
                evas_object_del(edje);
                evas_object_del(o);
                result = 1;
