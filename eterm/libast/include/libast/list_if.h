@@ -70,6 +70,7 @@
 #define SPIF_LIST_TO_ARRAY(o)                           SPIF_CAST_PTR(obj) ((SPIF_LIST_CALL_METHOD((o), to_array))(o))
 
 typedef spif_obj_t spif_list_t;
+typedef spif_int32_t spif_listidx_t;
 
 SPIF_DECL_OBJ(listclass) {
     SPIF_DECL_PARENT_TYPE(class);

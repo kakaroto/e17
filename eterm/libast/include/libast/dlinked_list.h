@@ -38,7 +38,7 @@ SPIF_DECL_OBJ(dlinked_list_item) {
 
 SPIF_DECL_OBJ(dlinked_list) {
     SPIF_DECL_PARENT_TYPE(obj);
-    size_t len;
+    spif_listidx_t len;
     spif_dlinked_list_item_t head, tail;
 };
 

@@ -578,3 +578,7 @@ Fri Jan 23 01:42:05 2004                        Michael Jennings (mej)
 
 It's tomorrow...and it's fixed.
 ----------------------------------------------------------------------
+Sat Jan 24 13:54:02 2004                        Michael Jennings (mej)
+
+Added map interface (unimplemented) and a paired object class.
+----------------------------------------------------------------------

@@ -1,8 +1,9 @@
 # $Id: Makefile.am,v 1.6 2001/09/22 16:25:29 mej Exp $
 
-EXTRA_HEADERS = \
-    array.h avl_tree.h dlinked_list.h iterator_if.h linked_list.h list_if.h \
-    obj.h regexp.h socket.h str.h sysdefs.h tok.h types.h url.h vector_if.h
+EXTRA_HEADERS =                                                                 \
+    array.h avl_tree.h dlinked_list.h iterator_if.h linked_list.h list_if.h     \
+    obj.h objpair.h regexp.h socket.h str.h sysdefs.h tok.h types.h             \
+    url.h vector_if.h
 
 install-exec-hook:
 	$(mkinstalldirs) $(DESTDIR)$(includedir)/$(PACKAGE)

@@ -32,7 +32,7 @@
 
 SPIF_DECL_OBJ(array) {
     SPIF_DECL_PARENT_TYPE(obj);
-    size_t len;
+    spif_listidx_t len;
     spif_obj_t *items;
 };
 

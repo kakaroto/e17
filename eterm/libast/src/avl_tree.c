@@ -53,7 +53,7 @@ static spif_cmp_t spif_avl_tree_comp(spif_avl_tree_t, spif_avl_tree_t);
 static spif_avl_tree_t spif_avl_tree_dup(spif_avl_tree_t);
 static spif_classname_t spif_avl_tree_type(spif_avl_tree_t);
 static spif_bool_t spif_avl_tree_contains(spif_avl_tree_t, spif_obj_t);
-static size_t spif_avl_tree_count(spif_avl_tree_t);
+static spif_listidx_t spif_avl_tree_count(spif_avl_tree_t);
 static spif_obj_t spif_avl_tree_find(spif_avl_tree_t, spif_obj_t);
 static spif_bool_t spif_avl_tree_insert(spif_avl_tree_t, spif_obj_t);
 static spif_bool_t spif_avl_tree_iterator(spif_avl_tree_t);
@@ -331,7 +331,7 @@ spif_avl_tree_contains(spif_avl_tree_t self, spif_obj_t obj)
     return ((SPIF_LIST_ISNULL(spif_avl_tree_find(self, obj))) ? (FALSE) : (TRUE));
 }
 
-static size_t
+static spif_listidx_t
 spif_avl_tree_count(spif_avl_tree_t self)
 {
     return self->len;
@@ -422,7 +422,7 @@ spif_avl_tree_to_array(spif_avl_tree_t self)
 {
     spif_obj_t *tmp;
     spif_avl_tree_node_t current;
-    size_t i;
+    spif_listidx_t i;
 
     tmp = SPIF_CAST_PTR(obj) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
     for (i = 0, current = self->root; i < self->len; current = current->next, i++) {

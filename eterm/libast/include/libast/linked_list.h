@@ -42,7 +42,7 @@ SPIF_DECL_OBJ(linked_list_item) {
 
 SPIF_DECL_OBJ(linked_list) {
     SPIF_DECL_PARENT_TYPE(obj);
-    size_t len;
+    spif_listidx_t len;
     spif_linked_list_item_t head;
 };
 

@@ -62,17 +62,17 @@ static spif_classname_t spif_linked_list_type(spif_linked_list_t);
 static spif_bool_t spif_linked_list_append(spif_linked_list_t, spif_obj_t);
 static spif_bool_t spif_linked_list_contains(spif_linked_list_t, spif_obj_t);
 static spif_bool_t spif_linked_list_vector_contains(spif_linked_list_t, spif_obj_t);
-static size_t spif_linked_list_count(spif_linked_list_t);
+static spif_listidx_t spif_linked_list_count(spif_linked_list_t);
 static spif_obj_t spif_linked_list_find(spif_linked_list_t, spif_obj_t);
 static spif_obj_t spif_linked_list_vector_find(spif_linked_list_t, spif_obj_t);
-static spif_obj_t spif_linked_list_get(spif_linked_list_t, size_t);
-static size_t spif_linked_list_index(spif_linked_list_t, spif_obj_t);
+static spif_obj_t spif_linked_list_get(spif_linked_list_t, spif_listidx_t);
+static spif_listidx_t spif_linked_list_index(spif_linked_list_t, spif_obj_t);
 static spif_bool_t spif_linked_list_insert(spif_linked_list_t, spif_obj_t);
-static spif_bool_t spif_linked_list_insert_at(spif_linked_list_t, spif_obj_t, size_t);
+static spif_bool_t spif_linked_list_insert_at(spif_linked_list_t, spif_obj_t, spif_listidx_t);
 static spif_iterator_t spif_linked_list_iterator(spif_linked_list_t);
 static spif_bool_t spif_linked_list_prepend(spif_linked_list_t, spif_obj_t);
 static spif_obj_t spif_linked_list_remove(spif_linked_list_t, spif_obj_t);
-static spif_obj_t spif_linked_list_remove_at(spif_linked_list_t, size_t);
+static spif_obj_t spif_linked_list_remove_at(spif_linked_list_t, spif_listidx_t);
 static spif_bool_t spif_linked_list_reverse(spif_linked_list_t);
 static spif_obj_t *spif_linked_list_to_array(spif_linked_list_t);
 static spif_linked_list_iterator_t spif_linked_list_iterator_new(spif_linked_list_t subject);
@@ -335,7 +335,7 @@ spif_linked_list_show(spif_linked_list_t self, spif_charptr_t name, spif_str_t b
 {
     char tmp[4096];
     spif_linked_list_item_t current;
-    size_t i;
+    spif_listidx_t i;
 
     memset(tmp, ' ', indent);
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_linked_list_t) %s:  %010p {\n", name, self);
@@ -440,7 +440,7 @@ spif_linked_list_vector_contains(spif_linked_list_t self, spif_obj_t obj)
     return ((SPIF_LIST_ISNULL(spif_linked_list_vector_find(self, obj))) ? (FALSE) : (TRUE));
 }
 
-static size_t
+static spif_listidx_t
 spif_linked_list_count(spif_linked_list_t self)
 {
     return self->len;
@@ -478,23 +478,23 @@ spif_linked_list_vector_find(spif_linked_list_t self, spif_obj_t obj)
 }
 
 static spif_obj_t
-spif_linked_list_get(spif_linked_list_t self, size_t idx)
+spif_linked_list_get(spif_linked_list_t self, spif_listidx_t idx)
 {
-    size_t i;
+    spif_listidx_t i;
     spif_linked_list_item_t current;
 
     for (current = self->head, i = 0; current && i < idx; i++, current = current->next);
     return (current ? (current->data) : SPIF_NULL_TYPE(obj));
 }
 
-static size_t
+static spif_listidx_t
 spif_linked_list_index(spif_linked_list_t self, spif_obj_t obj)
 {
-    size_t i;
+    spif_listidx_t i;
     spif_linked_list_item_t current;
 
     for (current = self->head, i = 0; current && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj)); i++, current = current->next);
-    return (current ? i : ((size_t) (-1)));
+    return (current ? i : ((spif_listidx_t) (-1)));
 }
 
 static spif_bool_t
@@ -522,9 +522,9 @@ spif_linked_list_insert(spif_linked_list_t self, spif_obj_t obj)
 }
 
 static spif_bool_t
-spif_linked_list_insert_at(spif_linked_list_t self, spif_obj_t obj, size_t idx)
+spif_linked_list_insert_at(spif_linked_list_t self, spif_obj_t obj, spif_listidx_t idx)
 {
-    size_t i;
+    spif_listidx_t i;
     spif_linked_list_item_t item, current;
 
     if (idx == 0 || SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
@@ -596,9 +596,9 @@ spif_linked_list_remove(spif_linked_list_t self, spif_obj_t item)
 }
 
 static spif_obj_t
-spif_linked_list_remove_at(spif_linked_list_t self, size_t idx)
+spif_linked_list_remove_at(spif_linked_list_t self, spif_listidx_t idx)
 {
-    size_t i;
+    spif_listidx_t i;
     spif_linked_list_item_t item, current;
     spif_obj_t tmp;
 
@@ -641,7 +641,7 @@ spif_linked_list_to_array(spif_linked_list_t self)
 {
     spif_obj_t *tmp;
     spif_linked_list_item_t current;
-    size_t i;
+    spif_listidx_t i;
 
     tmp = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
     for (i = 0, current = self->head; i < self->len; current = current->next, i++) {

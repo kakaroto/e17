@@ -98,6 +98,7 @@ extern int re_exec();
 
 #include <libast/types.h>
 #include <libast/obj.h>
+#include <libast/objpair.h>
 #include <libast/regexp.h>
 #include <libast/socket.h>
 #include <libast/str.h>
@@ -106,6 +107,7 @@ extern int re_exec();
 
 #include <libast/iterator_if.h>
 #include <libast/list_if.h>
+#include <libast/map_if.h>
 #include <libast/vector_if.h>
 
 #include <libast/array.h>
