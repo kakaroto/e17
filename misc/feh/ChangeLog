@@ -1,3 +1,10 @@
+Tue Dec 21 03:28:30 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* And now the thing won't go mad when you hold down a change-slide
+	button in Slideshow mode... Before it stored *all* the KeyPresses
+	and responded to *all* of them. Hehe. It was fun watching it go
+	round though :)
+
 Mon Dec 20 17:35:25 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Hehe. Ooops. I only need to blend on zoom if the image *has* an

@@ -86,6 +86,8 @@ main_loop (void)
 	      break;
 	    case KeyPress:
 	      D (("Received KeyPress event\n"));
+	      while (XCheckTypedWindowEvent
+		     (disp, ev.xkey.window, KeyPress, &ev));
 	      handle_keypress_event (&ev, ev.xkey.window);
 	      break;
 	    case ButtonPress:
@@ -118,8 +120,8 @@ main_loop (void)
 		      imlib_context_set_image (winwid->blank_im);
 		      imlib_render_image_on_drawable (0, 0);
 		      imlib_context_set_image (winwid->im);
-		      if(imlib_image_has_alpha())
-			    imlib_context_set_blend (1);
+		      if (imlib_image_has_alpha ())
+			imlib_context_set_blend (1);
 		      imlib_render_image_on_drawable (0, 0);
 		      XSetWindowBackgroundPixmap (disp, winwid->win,
 						  winwid->bg_pmap);
