@@ -15,3 +15,10 @@ program {
 	action, STATE_SET "default" 0.0;
 	target, "icon";
 }
+
+program {
+	name, "mailbox_clicked";
+	signal, "mouse,clicked,3";
+	source, "icon";
+	action, SIGNAL_EMIT "MAILBOX_FORCE_CHECK" "icon";
+}

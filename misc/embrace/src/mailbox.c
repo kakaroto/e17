@@ -67,6 +67,12 @@ static void on_edje_signal_exec (void *udata, Evas_Object *o,
 }
 #endif
 
+static void on_edje_signal_force_check (void *udata, Evas_Object *o,
+                                        const char *e, const char *s)
+{
+	mailbox_check (udata);
+}
+
 MailBox *mailbox_new (Evas *evas, const char *theme)
 {
 	MailBox *mb;
@@ -98,6 +104,10 @@ MailBox *mailbox_new (Evas *evas, const char *theme)
 	edje_object_signal_callback_add (mb->edje, "EXEC", "*",
 	                                 on_edje_signal_exec, mb);
 #endif
+
+	edje_object_signal_callback_add (mb->edje,
+	                                 "MAILBOX_FORCE_CHECK", "*",
+	                                 on_edje_signal_force_check, mb);
 
 	evas_object_show (mb->edje);
 

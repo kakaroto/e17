@@ -1,6 +1,10 @@
 $Id$
 
 2005-01-30 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/mailbox.c, data/themes/default/programs/mailbox.edc:
+          Force a mailbox check on right-click on the "icon" part
+
+2005-01-30 Tilman Sauerbeck (tilman at code-monkey de)
         * Released version 0.0.1
 
 2005-01-30 Tilman Sauerbeck (tilman at code-monkey de)
