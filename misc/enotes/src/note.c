@@ -282,7 +282,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	
 	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTSIZE);
 	if(prop!=NULL)
-		ewl_theme_data_str_set(p->content,"/entry/text/size",prop);
+		ewl_theme_data_int_set(p->content,"/entry/text/font_size",atoi(prop));
 
 	ewl_entry_text_set ((Ewl_Entry*)p->content,fcontent);
 	ewl_widget_show(p->content);
