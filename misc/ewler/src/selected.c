@@ -5,6 +5,7 @@
 #include <Ewl.h>
 
 #include "ewler.h"
+#include "form.h"
 #include "selected.h"
 
 /**
@@ -76,6 +77,17 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 											ewler_selected_realize_cb, NULL);
 	ewl_callback_append(sw, EWL_CALLBACK_DESELECT,
 											ewler_selected_deselect_cb, NULL);
+	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_MOVE,
+											ewler_selected_mouse_move_cb, NULL);
+	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_DOWN,
+											ewler_selected_mouse_down_cb, NULL);
+
+	edje_object_signal_callback_add(sw->theme_object,
+																	"top_left", "down",
+																	ewler_selected_part_down, s);
+	edje_object_signal_callback_add(sw->theme_object,
+																	"top_left", "up",
+																	ewler_selected_part_up, s);
 
 	s->index = index;
 	s->selected = w;
@@ -157,4 +169,61 @@ ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	s->index = -1;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewler_selected_part_down(void *data, Evas_Object *o,
+												 const char *emission, const char *source)
+{
+	printf( "in part_down with emission %s, source %s\n", emission, source );
+}
+
+void
+ewler_selected_part_up(void *data, Evas_Object *o,
+											 const char *emission, const char *source)
+{
+	printf( "in part_up with emission %s, source %s\n", emission, source );
+}
+
+void
+ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Embed *embed;
+	Ewl_Event_Mouse_Move *ev = ev_data;
+
+	embed = ewl_embed_find_by_widget(w);
+	
+	evas_event_feed_mouse_move(embed->evas, ev->x, ev->y);
+}
+
+void
+ewler_selected_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Embed *embed;
+	Ewl_Event_Mouse_Down *ev = ev_data;
+	int x, y;
+
+	x = ev->x;
+	y = ev->y;
+
+	if( (x <= (CURRENT_X(w) + 4) || x >= (CURRENT_X(w) + CURRENT_W(w) - 4)) ||
+			(y <= (CURRENT_Y(w) + 4) || y >= (CURRENT_Y(w) + CURRENT_H(w) - 4)) ) {
+		form_set_widget_selected();
+
+		embed = ewl_embed_find_by_widget(w);
+
+		evas_event_feed_mouse_down(embed->evas, ev->button);
+	}
+}
+
+void
+ewler_selected_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Embed *embed;
+	Ewl_Event_Mouse_Up *ev = ev_data;
+
+	embed = ewl_embed_find_by_widget(w);
+
+	evas_event_feed_mouse_move(embed->evas, ev->x, ev->y);
+	evas_event_feed_mouse_up(embed->evas, ev->button);
 }

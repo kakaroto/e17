@@ -149,7 +149,7 @@ static void
 __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Ewl_Event_Mouse_Down *ev = ev_data;
-	Ewl_Widget *nw;
+	Ewl_Widget *nw, *menu_item;
 	Ewler_Ctor tool_ctor;
 	Ewler_Form *form = EWLER_FORM(user_data);
 	static char widget_name_buf[256];
@@ -204,12 +204,26 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 			}
 			break;
 		case 2: break;
-		case 3: /* popup menu */
+		case 3:
+			form->popup = ewl_menu_new(NULL, "configure");
+			ewl_object_request_position(EWL_OBJECT(form->popup), ev->x, ev->y);
+			ewl_container_append_child(EWL_CONTAINER(form->window), form->popup);
+			ewl_widget_show(form->popup);
+
+			menu_item = ewl_menu_item_new(NULL, "conf item");
+			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_widget_show(menu_item);
 			break;
 	}
 
 	widget_container = w;
 	widget_selected = 0;
+}
+
+void
+form_set_widget_selected( void )
+{
+	widget_selected = 1;
 }
 
 void

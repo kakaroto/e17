@@ -97,7 +97,7 @@
 		<elem type="string" set="ewl_window_set_class" get="ewl_window_get_class">classname</elem>
 		<elem type="string">render</elem>
 	</class>
-	<class name="Ewl_Entry" super="Ewl_Container">
-		<elem type="string" set="ewl_entry_set_text" get="ewl_entry_get_text">text</elem>
+	<class name="Ewl_Combo" super="Ewl_Box" ctor="ewl_combo_new">
+		<elem type="string" set="ewl_combo_set_selected" get="ewl_combo_get_selected">selected</elem>
 	</class>
 </classes>

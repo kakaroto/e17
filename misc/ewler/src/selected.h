@@ -18,5 +18,15 @@ Ewl_Widget *ewler_selected_get(Ewler_Selected *s);
 void ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewler_selected_mouse_down_cb(Ewl_Widget *w, void *ev_data,
+																	void *user_data);
+void ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data,
+																	void *user_data);
+void ewler_selected_mouse_up_cb(Ewl_Widget *w, void *ev_data,
+																void *user_data);
 
+void ewler_selected_part_down(void *data, Evas_Object *o,
+															const char *emission, const char *source);
+void ewler_selected_part_up(void *data, Evas_Object *o,
+														const char *emission, const char *source);
 #endif
