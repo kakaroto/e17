@@ -1475,23 +1475,27 @@ Epplet_reset_textbox(Epplet_gadget eg)
 void
 Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 {
-	GadTextBox *g;
-	int	len;
-	
-	len = strlen(new_contents);
-	g = (GadTextBox *) eg;
+  GadTextBox *g;
+  int	len;
 
-	if(g->contents == new_contents)
-		return;
-	else if(g->contents != NULL)
-		free(g->contents);
+  if (!new_contents || ((len = strlen(new_contents)) == 0))
+    {
+      Epplet_reset_textbox(eg);
+      return;
+    }
+  g = (GadTextBox *) eg;
 
-	g->contents = Estrdup(new_contents);
+  if (g->contents == new_contents)
+    return;
+  else if (g->contents != NULL)
+    free(g->contents);
 
-	g->cursor_pos = strlen(new_contents);
-	g->text_offset = 0;
+  g->contents = Estrdup(new_contents);
 
-	Epplet_draw_textbox(eg);
+  g->cursor_pos = strlen(new_contents);
+  g->text_offset = 0;
+
+  Epplet_draw_textbox(eg);
 }
 
 void
