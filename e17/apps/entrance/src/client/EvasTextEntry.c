@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "EvasTextEntry.h"
 
+#define DEBUG 1
 static Evas_Smart *evas_text_entry_smart_get(void);
 static void evas_text_entry_text_fix(Evas_Object * o);
 
@@ -71,13 +72,13 @@ evas_text_entry_edje_part_set(Evas_Object * o, Evas_Object * edje, char *part)
 {
    Evas_Text_Entry *e = NULL;
 
-   e = evas_object_smart_data_get(o);
-   if (e->edje.o)
-      evas_object_del(e->edje.o);
-   e->edje.o = edje;
-   if (e->edje.part)
-      free(e->edje.part);
-   e->edje.part = strdup(part);
+   if ((e = evas_object_smart_data_get(o)))
+   {
+      e->edje.o = edje;
+      if (e->edje.part)
+         free(e->edje.part);
+      e->edje.part = strdup(part);
+   }
 }
 
 void
@@ -126,6 +127,9 @@ evas_text_entry_text_set(Evas_Object * o, const char *str)
       }
       e->buf.index = strlen(e->buf.text);
       evas_text_entry_text_fix(o);
+#if DEBUG
+      fprintf(stderr, "Text Set (%d) %s\n", e->buf.index, e->buf.text);
+#endif
    }
 }
 
@@ -224,7 +228,7 @@ _key_up_cb(void *data, Evas * e, Evas_Object * o, void *ev)
                  evas_text_entry_text_set(data, "");
                  break;
               default:
-#if 0
+#if DEBUG
                  fprintf(stderr, "(%d) is the key value\n",
                          (int) evx->keyname[0]);
 #endif
@@ -256,13 +260,19 @@ _key_up_cb(void *data, Evas * e, Evas_Object * o, void *ev)
                  break;
               case 13:         /* \r */
                  if (entry->return_key.func)
+                 {
                     entry->return_key.func(entry->return_key.arg,
                                            entry->buf.text);
+#if DEBUG
+                    fprintf(stderr, "Buffer Length %d\n",
+                            strlen(entry->buf.text));
+#endif
+                 }
                  break;
               default:
                  evas_text_entry_buffer_char_append(data,
                                                     evx->key_compose[0]);
-#if 0
+#if DEBUG
                  fprintf(stderr, "(%d) is the key_compose value\n",
                          (int) evx->key_compose[0]);
 #endif

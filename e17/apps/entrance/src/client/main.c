@@ -159,8 +159,8 @@ interp_return_key(void *data, const char *str)
          if (!entrance_auth_set_user(session->auth, str))
          {
             edje_object_signal_emit(e->edje.o, "EntranceUserAuth", "");
-	    if((eu = evas_hash_find(session->config->users.hash, str)))
-		entrance_session_user_set(session, eu);
+            if ((eu = evas_hash_find(session->config->users.hash, str)))
+               entrance_session_user_set(session, eu);
 
             focus_swap(o, 0);
          }
@@ -366,7 +366,7 @@ static void
 reboot_cb(void *data, Evas_Object * o, const char *emission,
           const char *source)
 {
-   if (session->config->reboot.allow)
+   if (session->config->reboot)
    {
       pid_t pid;
 
@@ -406,7 +406,7 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
 {
    pid_t pid;
 
-   if (session->config->halt.allow)
+   if (session->config->halt)
    {
       entrance_session_free(session);
       session = NULL;
@@ -675,10 +675,10 @@ main(int argc, char *argv[])
       /* testing mode decides entrance window size * * Use rendering engine
          specified in config. On systems with * hardware acceleration, GL
          should improve performance appreciably */
-      if (!strcmp(session->config->engine, "software"))
+      if (!session->config->engine)
          e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
 #ifdef HAVE_ECORE_GL_X11
-      else if (!strcmp(session->config->engine, "gl"))
+      else if (session->config->engine)
          e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, g_x, g_y);
 #endif
       else

@@ -494,6 +494,7 @@ entrance_session_list_add(Entrance_Session * e)
 void
 entrance_session_user_list_add(Entrance_Session * e)
 {
+   char *str = NULL;
    Evas_Coord w, h;
    Entrance_User *key = NULL;
    Evas_List *l = NULL;
@@ -520,10 +521,11 @@ entrance_session_user_list_add(Entrance_Session * e)
       }
       for (l = e->config->users.keys; l; l = l->next)
       {
-         key = (Entrance_User *) l->data;
-         if ((edje = entrance_user_edje_get(key, e->edje)))
+         str = (char *) l->data;
+         if ((key = evas_hash_find(e->config->users.hash, str)))
          {
-            e_container_element_append(container, edje);
+            if ((edje = entrance_user_edje_get(key, e->edje)))
+               e_container_element_append(container, edje);
          }
       }
       edje_object_part_swallow(e->edje, "EntranceUserList", container);
@@ -692,7 +694,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             {
                e->config->users.keys =
                   evas_list_prepend(evas_list_remove
-                                    (e->config->users.keys, eu), eu);
+                                    (e->config->users.keys, eu), eu->name);
                entrance_config_user_list_write(e->config);
                return;
             }
@@ -701,7 +703,8 @@ _entrance_session_user_list_fix(Entrance_Session * e)
       snprintf(buf, PATH_MAX, "default.eet");
       if ((eu = entrance_user_new(e->auth->user, buf, e->session)))
       {
-         e->config->users.keys = evas_list_prepend(e->config->users.keys, eu);
+         e->config->users.keys =
+            evas_list_prepend(e->config->users.keys, eu->name);
          entrance_config_user_list_write(e->config);
       }
    }

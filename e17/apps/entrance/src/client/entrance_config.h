@@ -24,12 +24,6 @@
 struct _Entrance_Config
 {
    /**
-    * engine - the evas rendering engine to use
-    * gl - OpenGL rendering engine
-    * software - The software rendering engine (default)
-    */
-   char *engine;
-   /**
     * theme - the theme we want entrance ui to use
     */
    char *theme;
@@ -63,11 +57,25 @@ struct _Entrance_Config
     * ENTRANCE_USE_SHADOW- if set to use shadow auth if pam is not avail
     */
    int auth;
+   /**
+    * engine - the evas rendering engine to use
+    * 1 - OpenGL rendering engine
+    * 0 - The software rendering engine (default)
+    */
+   int engine;
 
-   struct
-   {
-      int allow;
-   } reboot, halt;
+   /**
+    * reboot - whether or not to allow themeable rebooting
+    * 1 - Allow Rebooting
+    * 0 - Disable theme rebooting
+    */
+   int reboot;
+   /**
+    * halt - whether or not to allow themeable halting
+    * 1 - Allow Halting
+    * 0 - Disable theme halting
+    */
+   int halt;
 
    /**
     * fonts - available font paths for fonts

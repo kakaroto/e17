@@ -40,11 +40,6 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       return;
 
    /* strings 'n things */
-   if ((str = e_db_str_get(db, "/entrance/engine")))
-      e->engine = str;
-   else
-      e->engine = strdup("software");
-
    if ((str = e_db_str_get(db, "/entrance/theme")))
       e->theme = str;
    else
@@ -72,6 +67,17 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       e->time.string = str;
    else
       e->time.string = strdup("%l:%M:%S %p");
+   /* ints */
+   if (!e_db_int_get(db, "/entrance/user/remember", &e->users.remember))
+      e->users.remember = 1;
+   if (!e_db_int_get(db, "/entrance/user/remember_n", &e->users.remember_n))
+      e->users.remember_n = 5;
+   if (!e_db_int_get(db, "/entrance/engine", &e->engine))
+      e->engine = 0;
+   if (!e_db_int_get(db, "/entrance/system/reboot", &(e->reboot)))
+      e->reboot = 0;
+   if (!e_db_int_get(db, "/entrance/system/halt", &(e->halt)))
+      e->halt = 0;
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
       Entrance_User *eu = NULL;
@@ -92,7 +98,7 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
             if ((eu = entrance_user_new(user, icon, session)))
             {
                e->users.hash = evas_hash_add(e->users.hash, user, eu);
-               e->users.keys = evas_list_append(e->users.keys, eu);
+               e->users.keys = evas_list_append(e->users.keys, user);
             }
             else
             {
@@ -110,10 +116,6 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
    {
       syslog(LOG_WARNING, "Warning: No users found.");
    }
-   if (!e_db_int_get(db, "/entrance/user/remember", &e->users.remember))
-      e->users.remember = 1;
-   if (!e_db_int_get(db, "/entrance/user/remember_n", &e->users.remember_n))
-      e->users.remember_n = 5;
 
    /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))
@@ -168,13 +170,9 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
 
 
    /* auth info */
+
    if (!e_db_int_get(db, "/entrance/auth", &(e->auth)))
       e->auth = 0;
-   if (!e_db_int_get(db, "/entrance/system/reboot", &(e->reboot.allow)))
-      e->reboot.allow = 0;
-   if (!e_db_int_get(db, "/entrance/system/halt", &(e->halt.allow)))
-      e->halt.allow = 0;
-
    if (e->auth != ENTRANCE_USE_PAM)
    {
       /* check whether /etc/shadow can be used for authentication */
@@ -218,21 +216,64 @@ entrance_config_parse(char *file)
    return (e);
 }
 
-/*void
-entrance_config_print(Entrance_Config e)
+void
+entrance_config_print(Entrance_Config * e)
 {
-   fprintf(stderr,
-           "%s is the background\n"
-           "%s is the welcomeage\n%s is the message fontname\n"
-           "%d is the fontsize{%d,%d,%d,%d}\n"
-           "%s is the passwdage\n%s is the passwd fontname\n"
-           "%d is the fontsize{%d,%d,%d,%d}\n", e->bg, e->welcome,
-           e->welcome.font.name, e->welcome.font.size, e->welcome.font.r,
-           e->welcome.font.g, e->welcome.font.b, e->welcome.font.a,
-           e->passwd, e->passwd.font.name, e->passwd.font.size,
-           e->passwd.font.r, e->passwd.font.g, e->passwd.font.b,
-           e->passwd.font.a);
-}*/
+   int i = 0;
+   char *str = NULL;
+   Entrance_User *eu;
+   Evas_List *l = NULL;
+   char *strings[] = { "Theme Edje %s\n",
+      "Pointer Image %s\n", "Date Format %s\n", "Time Format %s\n",
+      "Greeting Before %s\n", "Greeting After %s\n"
+   };
+   char *values[] = { e->theme, e->pointer, e->date.string,
+      e->time.string, e->before.string, e->after.string
+   };
+   int ssize = sizeof(strings) / sizeof(char *);
+
+   char *intstrings[] = { "Use Evas GL %d\n", "Allow reboot %d\n",
+      "Allow Shutdown %d\n",
+      "Remember Users who login %d\n",
+      "Number of users to remember %d\n",
+      "Authentication Mode %d\n"
+   };
+   int intvalues[] = { e->engine, e->reboot, e->halt, e->users.remember,
+      e->users.remember_n, e->auth
+   };
+   int intsize = sizeof(intstrings) / sizeof(int);
+
+   char *userstrings[] = { "\nUsername %s\n", "XSession %s\n",
+      "Icon file %s\n"
+   };
+
+   for (i = 0; i < ssize; i++)
+   {
+      printf(strings[i], values[i]);
+   }
+   for (i = 0; i < intsize; i++)
+   {
+      printf(intstrings[i], intvalues[i]);
+   }
+   for (l = e->users.keys; l; l = l->next)
+   {
+      if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
+      {
+         printf(userstrings[0], eu->name);
+         printf(userstrings[1], eu->session);
+         printf(userstrings[2], eu->icon);
+
+      }
+   }
+   for (l = e->sessions.keys; l; l = l->next)
+   {
+      printf("\n%s\n", (char *) l->data);
+      if ((str = evas_hash_find(e->sessions.icons, (char *) l->data)))
+         printf("Session Icon File: %s\n", str);
+      if ((str = evas_hash_find(e->sessions.hash, (char *) l->data)))
+         printf("XSession exec string %s\n", str);
+   }
+}
 
 /**
  * entrance_config_free Free up an Entrance_Config struct
