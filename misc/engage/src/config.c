@@ -130,10 +130,6 @@ od_config_init(void)
   ecore_config_argb_create("engage.options.bg_fore", "#7f000000", 'B', "bg-outline-color", "Background outline color");
   ecore_config_argb_create("engage.options.bg_back", "#7fffffff", 'b', "bg-main-color", "Background main color");
 
-  ecore_config_string_create("engage.options.tt_fa", "Vera", 'f', "font",
-                             "The font to use for application titles etc.");
-  ecore_config_int_create("engage.options.tt_fs", 8, 'F', "font-size",
-                          "The font size (in points)");
   ecore_config_float_create("engage.options.icon_appear_duration", 0.1, 'D',
                             "appear-time",
                             "Time taken (in seconds) for new icons to appear");
@@ -183,8 +179,6 @@ od_config_init(void)
   ecore_config_listen("colour", "engage.options.bg_back", 
                       colour_listener, BG_BACK, NULL);
 
-  options.tt_fa = ecore_config_string_get("engage.options.tt_fa");
-  options.tt_fs = ecore_config_int_get("engage.options.tt_fs");
   options.icon_appear_duration =
     ecore_config_float_get("engage.options.icon_appear_duration");
 
