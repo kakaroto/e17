@@ -110,3 +110,13 @@ void      gib_hash_remove(gib_hash *hash, char *key)
 	return;
 }
 
+void      gib_hash_foreach(gib_hash *hash, void (*foreach_cb)(gib_hash_node *node, void *data), void *data)
+{
+	gib_hash_node *i, *next;
+	for (i=hash->base; i; i=next) {
+		next = GIB_HASH_NODE(GIB_LIST(i)->next);
+		foreach_cb(i,data);
+	}
+	return;
+}
+

@@ -30,6 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <giblib/gib_imlib.h>
 #include <giblib/gib_hash.h>
 #include <giblib/gib_list.h>
+#include <giblib/gib_queue.h>
+#include <giblib/gib_stack.h>
 #include <giblib/gib_style.h>
 
 #endif

@@ -39,6 +39,12 @@ struct __gib_btree {
 	          *right;
 };
 
+enum _gib_btree_traverse_order {
+	GIB_PRE,
+	GIB_IN,
+	GIB_POST
+};
+
 gib_btree *gib_btree_new(void *data, int sort_val);
 void       gib_btree_free(gib_btree *tree);
 void       gib_btree_free_and_data(gib_btree *tree);
@@ -46,11 +52,13 @@ void       gib_btree_free_and_data(gib_btree *tree);
 void       gib_btree_free_leaf(gib_btree *tree);
 void       gib_btree_free_leaf_and_data(gib_btree *tree);
 
-gib_btree *gib_btree_add(gib_btree *tree, gib_btree *branch);
+gib_btree *gib_btree_add(gib_btree *tree, void *data, int sort_val);
+gib_btree *gib_btree_add_branch(gib_btree *tree, gib_btree *branch);
 gib_btree *gib_btree_remove(gib_btree *tree, gib_btree *leaf);
 gib_btree *gib_btree_remove_branch(gib_btree *tree, gib_btree *branch);
 
 gib_btree *gib_btree_find(gib_btree *tree, int val);
 gib_btree *gib_btree_find_by_data(gib_btree *tree, unsigned char (*find_func)(gib_btree *tree, void *data), void *data);
 
+void      gib_btree_traverse(gib_btree *tree, void (*traverse_cb)(gib_btree *tree, void *data), int order, void *data);
 #endif /* _BIG_BTREE_H */

@@ -59,5 +59,6 @@ void      gib_hash_set(gib_hash *hash, char *key, void *data);
 void     *gib_hash_get(gib_hash *hash, char *key);
 void      gib_hash_remove(gib_hash *hash, char *key);
 
+void      gib_hash_foreach(gib_hash *hash, void (*foreach_cb)(gib_hash_node *node, void *data), void *data);
 
 #endif /* GIB_HASH_H */

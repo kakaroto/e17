@@ -66,7 +66,12 @@ void       gib_btree_free_leaf_and_data(gib_btree *leaf)
 	return;
 }
 
-gib_btree *gib_btree_add(gib_btree *tree, gib_btree *branch)
+gib_btree *gib_btree_add(gib_btree *tree, void *data, int sort_val)
+{
+	return gib_btree_add_branch(tree, gib_btree_new(data,sort_val));
+}
+
+gib_btree *gib_btree_add_branch(gib_btree *tree, gib_btree *branch)
 {
 	gib_btree *i, *left, *right, *next;
 
@@ -95,8 +100,8 @@ gib_btree *gib_btree_add(gib_btree *tree, gib_btree *branch)
 		}
 	}
 
-	if (left) gib_btree_add(tree, left);
-	if (right) gib_btree_add(tree, right);
+	if (left) gib_btree_add_branch(tree, left);
+	if (right) gib_btree_add_branch(tree, right);
 
 	return tree;
 }
@@ -115,7 +120,7 @@ gib_btree *gib_btree_remove(gib_btree *tree, gib_btree *leaf)
 			if (leaf->right) {
 				temp = leaf->left;
 				i->left = leaf->right;
-				tree = gib_btree_add(tree, temp);
+				tree = gib_btree_add_branch(tree, temp);
 			}
 			gib_btree_free_leaf(leaf);
 			break;
@@ -123,7 +128,7 @@ gib_btree *gib_btree_remove(gib_btree *tree, gib_btree *leaf)
 			if (leaf->right) {
 				temp = leaf->left;
 				i->right = leaf->right;
-				tree = gib_btree_add(tree, temp);
+				tree = gib_btree_add_branch(tree, temp);
 			}
 			gib_btree_free_leaf(leaf);
 			break;
@@ -186,3 +191,31 @@ gib_btree *gib_btree_find_by_data(gib_btree *tree, unsigned char (*find_func)(gi
 
 }
 
+void      gib_btree_traverse(gib_btree *tree, void (*traverse_cb)(gib_btree *tree, void *data), int order, void *data)
+{
+	if (!tree)
+		return;
+	
+	switch (order) {
+	case GIB_PRE:
+		traverse_cb(tree, data);
+		gib_btree_traverse(tree->left, traverse_cb, order, data);
+		gib_btree_traverse(tree->right, traverse_cb, order, data);
+		break;
+	case GIB_IN:
+		gib_btree_traverse(tree->left, traverse_cb, order, data);
+		traverse_cb(tree, data);
+		gib_btree_traverse(tree->right, traverse_cb, order, data);
+		break;
+	case GIB_POST:
+		gib_btree_traverse(tree->left, traverse_cb, order, data);
+		gib_btree_traverse(tree->right, traverse_cb, order, data);
+		traverse_cb(tree, data);
+		break;
+	default:
+		/* um... well shit */
+		fprintf(stderr,"giblib_btree: unknown traverse order %d.\n", order);
+	}
+
+	return;
+}
