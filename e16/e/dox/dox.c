@@ -42,6 +42,9 @@
 #pragma 2
 #endif
 
+#define EDOX_DEFAULT_W  512
+#define EDOX_DEFAULT_H  400
+
 Display            *disp;
 Root                VRoot;
 
@@ -111,6 +114,10 @@ VRootInit(void)
    int                 x_return, y_return;
    unsigned int        border_width_return;
 
+#if !USE_IMLIB2
+   ImlibInitParams     params;
+#endif
+
    VRoot.scr = DefaultScreen(disp);
    VRoot.win = FindRootWindow(disp);
    XGetGeometry(disp, VRoot.win, &root_return, &x_return, &y_return,
@@ -129,8 +136,8 @@ VRootInit(void)
    imlib_context_set_dither_mask(0);
 #else
    params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
-   params.imagecachesize = (w * h * 3 * 2);
-   params.pixmapcachesize = (w * h * 3 * 2 * 8);
+   params.imagecachesize = (EDOX_DEFAULT_W * EDOX_DEFAULT_H * 3 * 2);
+   params.pixmapcachesize = (EDOX_DEFAULT_W * EDOX_DEFAULT_H * 3 * 2 * 8);
    pI1Ctx = Imlib_init_with_params(disp, &params);
    Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL);
    VRoot.vis = Imlib_get_visual(pI1Ctx);
@@ -255,16 +262,12 @@ main(int argc, char **argv)
    Pixmap              draw = 0;
    Link               *l = NULL, *ll = NULL;
    Imlib_Border        ibd;
-
-#if !USE_IMLIB2
-   ImlibInitParams     params;
-#endif
    int                *page_hist = NULL;
    int                 page_hist_len = 1;
    int                 page_hist_pos = 0;
 
-   w = 512;
-   h = 400;
+   w = EDOX_DEFAULT_W;
+   h = EDOX_DEFAULT_H;
    x = 0;
    y = 0;
    pagenum = 0;
