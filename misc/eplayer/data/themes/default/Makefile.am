@@ -8,7 +8,7 @@ SUFFIXES = .edc .eet
 CLEANFILES = $(EET)
 EXTRA_DIST = $(EDC)
 
-themedir = $(pkgdatadir)/themes/$(THEME)
+themedir = $(pkgdatadir)/themes
 theme_DATA = $(EET)
 
 all: $(EDC)
