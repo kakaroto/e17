@@ -252,6 +252,11 @@ create_main (void)
   GtkWidget *label56;
   GtkWidget *label57;
   GtkWidget *label58;
+  GtkWidget *label63;
+  GtkObject *bit_step_h_adj;
+  GtkWidget *bit_step_h;
+  GtkObject *bit_step_v_adj;
+  GtkWidget *bit_step_v;
   GtkWidget *label52;
   GtkWidget *hbuttonbox1;
 
@@ -784,7 +789,7 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tl_abs_h_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  tl_abs_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_abs_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_abs_h_adj), 1, 0);
   gtk_widget_ref (tl_abs_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "tl_abs_h", tl_abs_h,
@@ -794,7 +799,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tl_abs_v_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  tl_abs_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_abs_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_abs_v_adj), 1, 0);
   gtk_widget_ref (tl_abs_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "tl_abs_v", tl_abs_v,
@@ -804,8 +809,8 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tl_rel_h_adj = gtk_adjustment_new (1.49012e-08, 0, 100, 0.1, 10, 10);
-  tl_rel_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_rel_h_adj), 1, 1);
+  tl_rel_h_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
+  tl_rel_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_rel_h_adj), 1, 2);
   gtk_widget_ref (tl_rel_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel_h", tl_rel_h,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -814,7 +819,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tl_adj_h_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  tl_adj_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_adj_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_adj_h_adj), 1, 0);
   gtk_widget_ref (tl_adj_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "tl_adj_h", tl_adj_h,
@@ -824,7 +829,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tl_adj_v_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  tl_adj_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_adj_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_adj_v_adj), 1, 0);
   gtk_widget_ref (tl_adj_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "tl_adj_v", tl_adj_v,
@@ -834,8 +839,8 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tl_rel_v_adj = gtk_adjustment_new (0, 0, 100, 0.1, 10, 10);
-  tl_rel_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_rel_v_adj), 1, 1);
+  tl_rel_v_adj = gtk_adjustment_new (0, -99999, 99999, 0.1, 10, 10);
+  tl_rel_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_rel_v_adj), 1, 2);
   gtk_widget_ref (tl_rel_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel_v", tl_rel_v,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -952,7 +957,7 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_abs_h_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  br_abs_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_abs_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_abs_h_adj), 1, 0);
   gtk_widget_ref (br_abs_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_abs_h", br_abs_h,
@@ -962,7 +967,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_abs_v_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  br_abs_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_abs_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_abs_v_adj), 1, 0);
   gtk_widget_ref (br_abs_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_abs_v", br_abs_v,
@@ -972,8 +977,8 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_rel_h_adj = gtk_adjustment_new (1.49012e-08, 0, 100, 0.1, 10, 10);
-  br_rel_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_rel_h_adj), 1, 1);
+  br_rel_h_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
+  br_rel_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_rel_h_adj), 1, 2);
   gtk_widget_ref (br_rel_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_rel_h", br_rel_h,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -982,7 +987,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_adj_h_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  br_adj_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_adj_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_adj_h_adj), 1, 0);
   gtk_widget_ref (br_adj_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_adj_h", br_adj_h,
@@ -992,7 +997,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_adj_v_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  br_adj_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_adj_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_adj_v_adj), 1, 0);
   gtk_widget_ref (br_adj_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_adj_v", br_adj_v,
@@ -1002,8 +1007,8 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_rel_v_adj = gtk_adjustment_new (0, 0, 100, 0.1, 10, 10);
-  br_rel_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_rel_v_adj), 1, 1);
+  br_rel_v_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
+  br_rel_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_rel_v_adj), 1, 2);
   gtk_widget_ref (br_rel_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_rel_v", br_rel_v,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1120,8 +1125,8 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  content_alignment_h_adj = gtk_adjustment_new (0, 0, 100, 0.1, 10, 10);
-  content_alignment_h = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_h_adj), 1, 1);
+  content_alignment_h_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
+  content_alignment_h = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_h_adj), 1, 2);
   gtk_widget_ref (content_alignment_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "content_alignment_h", content_alignment_h,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1130,8 +1135,8 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  content_alignment_v_adj = gtk_adjustment_new (0, 0, 100, 0.1, 10, 10);
-  content_alignment_v = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_v_adj), 1, 1);
+  content_alignment_v_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
+  content_alignment_v = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_v_adj), 1, 2);
   gtk_widget_ref (content_alignment_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "content_alignment_v", content_alignment_v,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1140,7 +1145,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  aspect_h_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  aspect_h_adj = gtk_adjustment_new (1, 0, 999999, 1, 10, 10);
   aspect_h = gtk_spin_button_new (GTK_ADJUSTMENT (aspect_h_adj), 1, 0);
   gtk_widget_ref (aspect_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "aspect_h", aspect_h,
@@ -1150,7 +1155,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  aspect_v_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  aspect_v_adj = gtk_adjustment_new (1, 0, 999999, 1, 10, 10);
   aspect_v = gtk_spin_button_new (GTK_ADJUSTMENT (aspect_v_adj), 1, 0);
   gtk_widget_ref (aspect_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "aspect_v", aspect_v,
@@ -1233,7 +1238,7 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  min_h_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  min_h_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   min_h = gtk_spin_button_new (GTK_ADJUSTMENT (min_h_adj), 1, 0);
   gtk_widget_ref (min_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "min_h", min_h,
@@ -1243,7 +1248,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  min_v_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  min_v_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   min_v = gtk_spin_button_new (GTK_ADJUSTMENT (min_v_adj), 1, 0);
   gtk_widget_ref (min_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "min_v", min_v,
@@ -1253,7 +1258,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  max_h_adj = gtk_adjustment_new (99999, 0, 99999, 1, 10, 10);
+  max_h_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   max_h = gtk_spin_button_new (GTK_ADJUSTMENT (max_h_adj), 1, 0);
   gtk_widget_ref (max_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "max_h", max_h,
@@ -1263,7 +1268,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  max_v_adj = gtk_adjustment_new (99999, 0, 99999, 1, 10, 10);
+  max_v_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   max_v = gtk_spin_button_new (GTK_ADJUSTMENT (max_v_adj), 1, 0);
   gtk_widget_ref (max_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "max_v", max_v,
@@ -1520,7 +1525,7 @@ create_main (void)
   gtk_table_set_row_spacings (GTK_TABLE (table7), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table7), 2);
 
-  border_l_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_l_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_l = gtk_spin_button_new (GTK_ADJUSTMENT (border_l_adj), 1, 0);
   gtk_widget_ref (border_l);
   gtk_object_set_data_full (GTK_OBJECT (main), "border_l", border_l,
@@ -1530,7 +1535,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  border_r_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_r_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_r = gtk_spin_button_new (GTK_ADJUSTMENT (border_r_adj), 1, 0);
   gtk_widget_ref (border_r);
   gtk_object_set_data_full (GTK_OBJECT (main), "border_r", border_r,
@@ -1540,7 +1545,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  border_t_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_t_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_t = gtk_spin_button_new (GTK_ADJUSTMENT (border_t_adj), 1, 0);
   gtk_widget_ref (border_t);
   gtk_object_set_data_full (GTK_OBJECT (main), "border_t", border_t,
@@ -1550,7 +1555,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  border_b_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_b_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_b = gtk_spin_button_new (GTK_ADJUSTMENT (border_b_adj), 1, 0);
   gtk_widget_ref (border_b);
   gtk_object_set_data_full (GTK_OBJECT (main), "border_b", border_b,
@@ -1774,7 +1779,7 @@ create_main (void)
   gtk_widget_show (label36);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 6), label36);
 
-  table9 = gtk_table_new (5, 5, FALSE);
+  table9 = gtk_table_new (6, 5, FALSE);
   gtk_widget_ref (table9);
   gtk_object_set_data_full (GTK_OBJECT (main), "table9", table9,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1784,7 +1789,7 @@ create_main (void)
   gtk_table_set_row_spacings (GTK_TABLE (table9), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table9), 2);
 
-  bit_pad_l_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_pad_l_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_l = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_l_adj), 1, 0);
   gtk_widget_ref (bit_pad_l);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_l", bit_pad_l,
@@ -1794,7 +1799,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_min_h_adj = gtk_adjustment_new (0, 0, 9999, 1, 10, 10);
+  bit_min_h_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   bit_min_h = gtk_spin_button_new (GTK_ADJUSTMENT (bit_min_h_adj), 1, 0);
   gtk_widget_ref (bit_min_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_min_h", bit_min_h,
@@ -1804,7 +1809,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_min_v_adj = gtk_adjustment_new (0, 0, 9999, 1, 10, 10);
+  bit_min_v_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   bit_min_v = gtk_spin_button_new (GTK_ADJUSTMENT (bit_min_v_adj), 1, 0);
   gtk_widget_ref (bit_min_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_min_v", bit_min_v,
@@ -1814,7 +1819,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_max_h_adj = gtk_adjustment_new (0, 0, 9999, 1, 10, 10);
+  bit_max_h_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   bit_max_h = gtk_spin_button_new (GTK_ADJUSTMENT (bit_max_h_adj), 1, 0);
   gtk_widget_ref (bit_max_h);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_max_h", bit_max_h,
@@ -1824,7 +1829,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_max_v_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  bit_max_v_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   bit_max_v = gtk_spin_button_new (GTK_ADJUSTMENT (bit_max_v_adj), 1, 0);
   gtk_widget_ref (bit_max_v);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_max_v", bit_max_v,
@@ -1852,7 +1857,7 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_pad_r_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_pad_r_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_r = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_r_adj), 1, 0);
   gtk_widget_ref (bit_pad_r);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_r", bit_pad_r,
@@ -1862,7 +1867,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_pad_t_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_pad_t_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_t = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_t_adj), 1, 0);
   gtk_widget_ref (bit_pad_t);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_t", bit_pad_t,
@@ -1872,7 +1877,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_pad_b_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_pad_b_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_b = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_b_adj), 1, 0);
   gtk_widget_ref (bit_pad_b);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_b", bit_pad_b,
@@ -1882,7 +1887,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_inset_l_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_inset_l_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_l = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_l_adj), 1, 0);
   gtk_widget_ref (bit_inset_l);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_l", bit_inset_l,
@@ -1892,7 +1897,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_inset_r_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_inset_r_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_r = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_r_adj), 1, 0);
   gtk_widget_ref (bit_inset_r);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_r", bit_inset_r,
@@ -1902,7 +1907,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_inset_t_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_inset_t_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_t = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_t_adj), 1, 0);
   gtk_widget_ref (bit_inset_t);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_t", bit_inset_t,
@@ -1912,7 +1917,7 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  bit_inset_b_adj = gtk_adjustment_new (0, -99999, 99999, 1, 10, 10);
+  bit_inset_b_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_b = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_b_adj), 1, 0);
   gtk_widget_ref (bit_inset_b);
   gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_b", bit_inset_b,
@@ -1961,6 +1966,36 @@ create_main (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label58), 7.45058e-09, 0.5);
+
+  label63 = gtk_label_new (_("Stepping"));
+  gtk_widget_ref (label63);
+  gtk_object_set_data_full (GTK_OBJECT (main), "label63", label63,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label63);
+  gtk_table_attach (GTK_TABLE (table9), label63, 0, 1, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label63), 7.45058e-09, 0.5);
+
+  bit_step_h_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
+  bit_step_h = gtk_spin_button_new (GTK_ADJUSTMENT (bit_step_h_adj), 1, 0);
+  gtk_widget_ref (bit_step_h);
+  gtk_object_set_data_full (GTK_OBJECT (main), "bit_step_h", bit_step_h,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (bit_step_h);
+  gtk_table_attach (GTK_TABLE (table9), bit_step_h, 1, 3, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  bit_step_v_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
+  bit_step_v = gtk_spin_button_new (GTK_ADJUSTMENT (bit_step_v_adj), 1, 0);
+  gtk_widget_ref (bit_step_v);
+  gtk_object_set_data_full (GTK_OBJECT (main), "bit_step_v", bit_step_v,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (bit_step_v);
+  gtk_table_attach (GTK_TABLE (table9), bit_step_v, 3, 5, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   label52 = gtk_label_new (_("All"));
   gtk_widget_ref (label52);
@@ -2062,6 +2097,18 @@ create_main (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (states), "select_row",
                       GTK_SIGNAL_FUNC (on_states_select_row),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (browse_clicked), "clicked",
+                      GTK_SIGNAL_FUNC (on_browse_clicked_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (borwse_hilited), "clicked",
+                      GTK_SIGNAL_FUNC (on_borwse_hilited_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (browse_normal), "clicked",
+                      GTK_SIGNAL_FUNC (on_browse_normal_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (browse_disabled), "clicked",
+                      GTK_SIGNAL_FUNC (on_browse_disabled_clicked),
                       NULL);
 
   return main;

@@ -170,6 +170,21 @@ update_selection_from_widget(void)
 	  }
 	gtk_clist_thaw(GTK_CLIST(w));
      }
+#define GET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); bits->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
+   GET_ALL_SPIN("bit_min_h", min.w);
+   GET_ALL_SPIN("bit_min_v", min.h);
+   GET_ALL_SPIN("bit_max_h", max.w);
+   GET_ALL_SPIN("bit_max_v", max.h);
+   GET_ALL_SPIN("bit_pad_l", padding.l);
+   GET_ALL_SPIN("bit_pad_r", padding.r);
+   GET_ALL_SPIN("bit_pad_t", padding.t);
+   GET_ALL_SPIN("bit_pad_b", padding.b);
+   GET_ALL_SPIN("bit_inset_l", inset.l);
+   GET_ALL_SPIN("bit_inset_r", inset.r);
+   GET_ALL_SPIN("bit_inset_t", inset.t);
+   GET_ALL_SPIN("bit_inset_b", inset.b);
+   GET_ALL_SPIN("bit_step_h", step.x);
+   GET_ALL_SPIN("bit_step_v", step.y);
 }
 
 static void
@@ -327,6 +342,21 @@ update_widget_from_selection(void)
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	gtk_clist_unselect_all(GTK_CLIST(w));	
      }
+#define SET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), bits->description->val);
+   SET_ALL_SPIN("bit_min_h", min.w);
+   SET_ALL_SPIN("bit_min_v", min.h);
+   SET_ALL_SPIN("bit_max_h", max.w);
+   SET_ALL_SPIN("bit_max_v", max.h);
+   SET_ALL_SPIN("bit_pad_l", padding.l);
+   SET_ALL_SPIN("bit_pad_r", padding.r);
+   SET_ALL_SPIN("bit_pad_t", padding.t);
+   SET_ALL_SPIN("bit_pad_b", padding.b);
+   SET_ALL_SPIN("bit_inset_l", inset.l);
+   SET_ALL_SPIN("bit_inset_r", inset.r);
+   SET_ALL_SPIN("bit_inset_t", inset.t);
+   SET_ALL_SPIN("bit_inset_b", inset.b);
+   SET_ALL_SPIN("bit_step_h", step.x);
+   SET_ALL_SPIN("bit_step_v", step.y);
 }
 
 static void
@@ -1484,5 +1514,37 @@ on_3d_hardware_clicked                 (GtkButton       *button,
    e_db_flush();
    gtk_widget_destroy(top);
    gtk_main_quit();
+}
+
+
+void
+on_browse_clicked_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_borwse_hilited_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_browse_normal_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_browse_disabled_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
 }
 

@@ -157,3 +157,19 @@ on_file_ok_clicked                     (GtkButton       *button,
 void
 on_file_cancel_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_browse_clicked_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_borwse_hilited_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_browse_normal_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_browse_disabled_clicked             (GtkButton       *button,
+                                        gpointer         user_data);

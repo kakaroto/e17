@@ -906,8 +906,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -938,8 +938,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -964,14 +964,14 @@
 	      <name>tl_rel_h</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
-	      <digits>1</digits>
+	      <digits>2</digits>
 	      <numeric>False</numeric>
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>1.49012e-08</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
+	      <value>0</value>
+	      <lower>-9999</lower>
+	      <upper>9999</upper>
 	      <step>0.1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1002,8 +1002,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1034,8 +1034,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1060,14 +1060,14 @@
 	      <name>tl_rel_v</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
-	      <digits>1</digits>
+	      <digits>2</digits>
 	      <numeric>False</numeric>
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
+	      <lower>-99999</lower>
+	      <upper>99999</upper>
 	      <step>0.1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1352,8 +1352,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1384,8 +1384,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1410,14 +1410,14 @@
 	      <name>br_rel_h</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
-	      <digits>1</digits>
+	      <digits>2</digits>
 	      <numeric>False</numeric>
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>1.49012e-08</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
+	      <value>0</value>
+	      <lower>-9999</lower>
+	      <upper>9999</upper>
 	      <step>0.1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1448,8 +1448,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1480,8 +1480,8 @@
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1506,14 +1506,14 @@
 	      <name>br_rel_v</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
-	      <digits>1</digits>
+	      <digits>2</digits>
 	      <numeric>False</numeric>
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
+	      <lower>-9999</lower>
+	      <upper>9999</upper>
 	      <step>0.1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1792,14 +1792,14 @@
 	      <name>content_alignment_h</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
-	      <digits>1</digits>
+	      <digits>2</digits>
 	      <numeric>False</numeric>
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
+	      <lower>-9999</lower>
+	      <upper>9999</upper>
 	      <step>0.1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1824,14 +1824,14 @@
 	      <name>content_alignment_v</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
-	      <digits>1</digits>
+	      <digits>2</digits>
 	      <numeric>False</numeric>
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
+	      <lower>-9999</lower>
+	      <upper>9999</upper>
 	      <step>0.1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1863,7 +1863,7 @@
 	      <wrap>False</wrap>
 	      <value>1</value>
 	      <lower>0</lower>
-	      <upper>100</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -1895,7 +1895,7 @@
 	      <wrap>False</wrap>
 	      <value>1</value>
 	      <lower>0</lower>
-	      <upper>100</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2097,7 +2097,7 @@
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>100</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2129,7 +2129,7 @@
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>100</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2159,9 +2159,9 @@
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>99999</value>
+	      <value>999999</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2191,9 +2191,9 @@
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>99999</value>
+	      <value>999999</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2713,7 +2713,7 @@ Hidden
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2745,7 +2745,7 @@ Hidden
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2777,7 +2777,7 @@ Hidden
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -2809,7 +2809,7 @@ Hidden
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3236,6 +3236,11 @@ Tile Integer
 	      <class>GtkButton</class>
 	      <name>browse_clicked</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_browse_clicked_clicked</handler>
+		<last_modification_time>Tue, 05 Sep 2000 07:32:12 GMT</last_modification_time>
+	      </signal>
 	      <label>Browse...</label>
 	      <child>
 		<left_attach>4</left_attach>
@@ -3257,6 +3262,11 @@ Tile Integer
 	      <class>GtkButton</class>
 	      <name>borwse_hilited</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_borwse_hilited_clicked</handler>
+		<last_modification_time>Tue, 05 Sep 2000 07:32:06 GMT</last_modification_time>
+	      </signal>
 	      <label>Browse...</label>
 	      <child>
 		<left_attach>4</left_attach>
@@ -3278,6 +3288,11 @@ Tile Integer
 	      <class>GtkButton</class>
 	      <name>browse_normal</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_browse_normal_clicked</handler>
+		<last_modification_time>Tue, 05 Sep 2000 07:32:01 GMT</last_modification_time>
+	      </signal>
 	      <label>Browse...</label>
 	      <child>
 		<left_attach>4</left_attach>
@@ -3299,6 +3314,11 @@ Tile Integer
 	      <class>GtkButton</class>
 	      <name>browse_disabled</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_browse_disabled_clicked</handler>
+		<last_modification_time>Tue, 05 Sep 2000 07:32:18 GMT</last_modification_time>
+	      </signal>
 	      <label>Browse...</label>
 	      <child>
 		<left_attach>4</left_attach>
@@ -3334,7 +3354,7 @@ Tile Integer
 	    <class>GtkTable</class>
 	    <name>table9</name>
 	    <border_width>4</border_width>
-	    <rows>5</rows>
+	    <rows>6</rows>
 	    <columns>5</columns>
 	    <homogeneous>False</homogeneous>
 	    <row_spacing>2</row_spacing>
@@ -3351,8 +3371,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3384,7 +3404,7 @@ Tile Integer
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>9999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3416,7 +3436,7 @@ Tile Integer
 	      <wrap>False</wrap>
 	      <value>0</value>
 	      <lower>0</lower>
-	      <upper>9999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3446,9 +3466,9 @@ Tile Integer
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>0</value>
+	      <value>999999</value>
 	      <lower>0</lower>
-	      <upper>9999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3478,9 +3498,9 @@ Tile Integer
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>0</value>
+	      <value>999999</value>
 	      <lower>0</lower>
-	      <upper>99999</upper>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3563,8 +3583,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3595,8 +3615,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3627,8 +3647,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3659,8 +3679,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3691,8 +3711,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3723,8 +3743,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3755,8 +3775,8 @@ Tile Integer
 	      <snap>False</snap>
 	      <wrap>False</wrap>
 	      <value>0</value>
-	      <lower>-99999</lower>
-	      <upper>99999</upper>
+	      <lower>-999999</lower>
+	      <upper>999999</upper>
 	      <step>1</step>
 	      <page>10</page>
 	      <page_size>10</page_size>
@@ -3877,6 +3897,96 @@ Tile Integer
 		<yshrink>False</yshrink>
 		<xfill>True</xfill>
 		<yfill>True</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label63</name>
+	      <label>Stepping</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>7.45058e-09</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
+		<top_attach>5</top_attach>
+		<bottom_attach>6</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkSpinButton</class>
+	      <name>bit_step_h</name>
+	      <can_focus>True</can_focus>
+	      <climb_rate>1</climb_rate>
+	      <digits>0</digits>
+	      <numeric>False</numeric>
+	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	      <snap>False</snap>
+	      <wrap>False</wrap>
+	      <value>1</value>
+	      <lower>1</lower>
+	      <upper>999999</upper>
+	      <step>1</step>
+	      <page>10</page>
+	      <page_size>10</page_size>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>3</right_attach>
+		<top_attach>5</top_attach>
+		<bottom_attach>6</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>True</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkSpinButton</class>
+	      <name>bit_step_v</name>
+	      <can_focus>True</can_focus>
+	      <climb_rate>1</climb_rate>
+	      <digits>0</digits>
+	      <numeric>False</numeric>
+	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	      <snap>False</snap>
+	      <wrap>False</wrap>
+	      <value>1</value>
+	      <lower>1</lower>
+	      <upper>999999</upper>
+	      <step>1</step>
+	      <page>10</page>
+	      <page_size>10</page_size>
+	      <child>
+		<left_attach>3</left_attach>
+		<right_attach>5</right_attach>
+		<top_attach>5</top_attach>
+		<bottom_attach>6</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>True</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
 	      </child>
 	    </widget>
 	  </widget>
