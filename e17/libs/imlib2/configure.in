@@ -382,3 +382,31 @@ imlib2.pc
 chmod +x imlib2-config
 touch imlib2_docs.tar.gz
 ])
+
+#####################################################################
+## Info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo
+echo "Image Loaders:"
+echo "  JPEG....................: $jpeg_ok"
+echo "  PNG.....................: $png_ok"
+echo "  TIFF....................: $tiff_ok"
+echo "  GIF.....................: $gif_ok"
+echo "  ZLIB....................: $zlib_ok"
+echo "  BZIP2...................: $bz2_ok"
+echo
+echo
+echo "Installation Path.........: $prefix"
+echo
+echo "Compilation...............: make"
+echo "Installation..............: make install"
+echo
