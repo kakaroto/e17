@@ -12,6 +12,7 @@ struct _ewl_entry {
 	Ewl_Widget     *text;
 	Ewl_Widget     *cursor;
 
+	int             offset;
 	int             editable;
 };
 

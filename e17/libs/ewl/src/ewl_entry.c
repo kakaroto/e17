@@ -214,7 +214,8 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * First position the text to a known base position.
 	 */
-	ewl_object_request_geometry(EWL_OBJECT(e->text), xx, yy, ww, hh);
+	ewl_object_request_geometry(EWL_OBJECT(e->text), xx - e->offset, yy,
+			ww, hh);
 
 	str = ewl_text_get_text(EWL_TEXT(e->text));
 	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
@@ -237,30 +238,31 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
 					     &ey, &ew, NULL);
 		base--;
-
-		ew = (ex + ew);
 	}
 
 	/*
 	 * Scroll the text to fit the contents.
 	 */
-	if ((c_spos == base) && (ew > (int)(xx + ww))) {
-		xx -= (ex + ew) - (xx + ww);
-
-		ewl_object_request_geometry(EWL_OBJECT(e->text), xx,
-					CURRENT_Y(e), CURRENT_W(e), hh);
-		printf("Scrolling text to (%d, %d) dimensions %d x %d\n",
-				CURRENT_X(e->text), CURRENT_Y(e->text),
-				CURRENT_W(e->text), CURRENT_H(e->text));
+	if ((c_spos == base) && ((ex + ew) > (int)(xx + ww))) {
+		/*
+		 * Calculation re-ordered to maintain precision
+		 */
+		e->offset += (int)((ex + ew) - (xx + ww));
+		printf("Scrolling text by %d\n", e->offset);
 	}
 	else if ((c_epos == base) && (sx < xx)) {
-		xx -= sx;
-
-		ewl_object_request_geometry(EWL_OBJECT(e->text), xx,
-				CURRENT_Y(e), CURRENT_W(e), hh);
+		e->offset -= xx - sx;
 	}
 
-	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx, yy, ew - sx, hh);
+	if (e->offset < 0)
+		e->offset = 0;
+
+	ew = (ex + ew);
+	ewl_object_request_geometry(EWL_OBJECT(e->text), xx - e->offset,
+				CURRENT_Y(e), CURRENT_W(e), hh);
+
+	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx, yy,
+			ew - sx, hh);
 
 	FREE(str);
 
