@@ -9,7 +9,8 @@ INCLUDES = \
 bin_PROGRAMS = epeg
 
 epeg_SOURCES = \
-epeg_main.c
+epeg_main.c \
+epeg_main.h
 
 epeg_LDADD = \
 $(top_builddir)/src/lib/libepeg.la
