@@ -2273,3 +2273,12 @@ Sun Nov 30 16:37:42 CET 2003
 Pager fixups after imlib2 port.
 Fix pager mini-window and tooltip unmapping.
 Pager code shuffling.
+
+-------------------------------------------------------------------------------
+
+Thu Dec  4 20:11:07 CET 2003
+(Kim)
+
+Fix initial default iconbox placement.
+Attempt to fix pager update glitch during desktop switch.
+Fix icons for apps specifying pixmap but no mask.

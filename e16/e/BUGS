@@ -31,6 +31,9 @@ Known bugs
 Fixed in CVS
 ~~~~~~~~~~~~
 
+- Icons for windows where pixmap but no mask is given are not visible in
+  transparent iconbox.
+
 - The pager mini-window tooltips are sometimes not unmapped when they should be.
 
 - When right clicking a zoomed pager mini-window to get the menu, the
