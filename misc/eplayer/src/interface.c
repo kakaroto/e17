@@ -170,7 +170,7 @@ void ui_deinit(ePlayer *player) {
 
 	ui_deinit_edje(player);
 
-	ewl_deinit();
+	ewl_shutdown();
 	edje_shutdown();
 	ecore_evas_shutdown();
 	ecore_shutdown();
