@@ -372,7 +372,7 @@ entice_file_add_dir_job_cb(void *data)
 void
 entice_file_add_job_cb(void *data)
 {
-   Evas_Object *o = NULL;
+   Epsilon *e = NULL;
    char buf[PATH_MAX], *file = NULL;
 
    if (entice && entice->ee && data)
@@ -399,9 +399,16 @@ entice_file_add_job_cb(void *data)
          }
          if (entice_file_is_dir(buf))
             entice_file_add_dir_job_cb(buf);
-         else if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
+         else if ((e = epsilon_new(buf)))
          {
-            evas_object_del(o);
+            if (epsilon_exists(e) == EPSILON_FAIL)
+            {
+               if (epsilon_generate(e) == EPSILON_FAIL)
+               {
+                  fprintf(stderr, "Unable to thumbnail %s\n", file);
+               }
+            }
+            epsilon_free(e);
             entice_ipc_client_request_image_load(buf);
          }
       }
