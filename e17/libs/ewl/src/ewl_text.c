@@ -539,13 +539,7 @@ void ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (w->fx_clip_box)
 		evas_object_clip_set(ta->etox, w->fx_clip_box);
 
-	/*
-	 * Now set the text and display it.
-	 */
-	if (ta->text)
-		etox_set_text(ta->etox, ta->text);
 	evas_object_show(ta->etox);
-
 	ewl_text_ops_apply(ta);
 
 	/*
