@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
-#if defined(__FreeBSD__)
+#ifdef __FreeBSD__
 #include <sys/mount.h>
 #else
 #include <sys/statfs.h>
@@ -821,7 +821,12 @@ magic_test_fs(char *filename, struct stat *st)
 #else
   if (statfs(filename, &stfs) < 0)
     D_RETURN_(NULL);
-
+#ifdef __FreeBSD__
+  if (stfs.f_fstypename < 0)
+    sprintf(s, "%s", "unknown-fs");
+  else
+    sprintf(s, "%s", stfs.f_fstypename);
+#else
   switch (stfs.f_type)
     {
     case AFFS_SUPER_MAGIC:
@@ -893,6 +898,7 @@ magic_test_fs(char *filename, struct stat *st)
     default:
       sprintf(s, "%s", "unknown-fs");
     }
+#endif
 #endif
 
   ptr = s + strlen(s);
