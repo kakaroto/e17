@@ -1,12 +1,25 @@
-Fri Jun  2 22:58:50 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun Jun  4 15:44:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a wrapper to imlib2. I was getting some subtle bugs from
+	the singleton context (accidentally leaving context_antialias on,
+	not blending when I should be etc), and to fix them I was adding
+	lines and lines of context_set this, context_set that. I've
+	wrapped the imlib calls in an imlib1 
+	lots-of-params-per-function-call stylee, and now it's much more
+	readable and harder to break.
+	* In the process, made big speedups by not antialiasing when I
+	needn't, or blending when I shouldn't etc. Also blew away a few
+	hundred lines of context-setting.
+
+Fri Jun  2 22:58:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed pixmap resizing bug properly this time ;-)
 
-Thu Jun  1 19:36:19 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Jun  1 19:36:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Correct oversite in sizing pixmaps.
 
-Wed May 24 20:21:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed May 24 20:21:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Massively speeded up image rendering and therefore zooming by
 	actually *thinking* about what I was doing and using a tiled
@@ -14,46 +27,46 @@ Wed May 24 20:21:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	checkerboard pattern. Much better. I'll clean it up a bit
 	next.
 
-Wed May 24 00:09:12 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed May 24 00:09:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed bug with --no-progressive and window resizing. The
 	rendering and resizing code is a *mess* now, which I'll have to
 	fix tomorrow (lots of duplication and a complex codepath). But at
 	least it works properly right now :-)
 
-Tue May 23 22:19:30 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May 23 22:19:30 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Optimised event handling from nasty big switch() to a table of
 	pointers to functions.
 
-Sun May 21 20:53:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun May 21 20:53:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* About.png contributed by Phil Morris (marmot)
 	<marmot@vennercs.com>
 
-Sun May 21 10:01:39 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun May 21 10:01:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Gratituous eyecandy in the about box 'cos Boris asked nicely ;-)
 
-Sat May 20 01:09:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 20 01:09:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Wired cam into the Makefile.am
 
-Fri May 19 19:21:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri May 19 19:21:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* You can now use --action with list or customlists too. In these
 	modes, the action is run automatically for each file listed.
 
-Thu May 18 21:34:03 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu May 18 21:34:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Quotes, escaped quotes and escaped spaces in config files work
 	as one would expect. I think. Don't they?
 
-Thu May 18 20:43:16 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu May 18 20:43:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* \n now gets you a newline in a feh-interpreted string.
 
-Thu May 18 20:26:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu May 18 20:26:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Changed how -l and -L work. -L is now --customlist, which takes
 	a string argument. The string is a feh-printf format specifier,
@@ -65,13 +78,13 @@ Thu May 18 20:26:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	my config parsing code is :-) Quotes and escaped quotes currently
 	*do not* work right. I'm fixing it now :-)
 
-Tue May 16 17:51:40 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May 16 17:51:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Ignore duplicate MotionNotify events
 	* Same for ConfigureNotify
 	* Saved some wasted cycles
 
-Mon May 15 22:49:07 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon May 15 22:49:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hehe. Now I made a release I can break stuff again =P You can
 	resize the window again now, and it works okay, except zooming
@@ -79,41 +92,41 @@ Mon May 15 22:49:07 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	now. I have to redo *all* that zooming code over the next week
 	or so 'cos it was shortsighted to start with :-(
 
-Sun May 14 17:34:48 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun May 14 17:34:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* New "Image Info" submenu. It tells you stuff. About the
 	image. Hence the name.
 
-Sun May 14 16:03:53 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun May 14 16:03:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Reorganised and tidied the headers somewhat. Various cleanups.
 
-Sat May 13 20:53:12 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 13 20:53:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Add -N, --no-menus option for people who Just Want The Pr0n [tm]
 
-Sat May 13 20:35:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 13 20:35:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now you can press 'r' to reload images too.
 
-Sat May 13 20:24:18 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 13 20:24:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hide menu, *then* perform action. Otherwise hitting "reload" on
 	an http:// image over a slow connection keeps the mouse grab until
 	finished. Messy ;-)
 
-Sat May 13 19:54:46 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 13 19:54:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Make the menus slightly prettier. I wish I had an artistic bone
 	somewhere in my body...
 
-Sat May 13 18:04:58 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 13 18:04:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Use realpath() to cleanup paths before sticking them in a
 	filelist. Added --menu-font, -M so that you can use whatever font
 	you like for menus.
 
-Sat May 13 00:11:06 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat May 13 00:11:06 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Menus. They need some work, but are mostly good.
 	* I owe many thanks to raster here, 'cos I pinched some functions
@@ -121,78 +134,78 @@ Sat May 13 00:11:06 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	* Added --auto-zoom. Currently only works with --no-progressive, I
 	need to fix that soonish...
 
-Tue May  9 22:04:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May  9 22:04:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now --filelist is -f, relegating -font to -e. *shrug*.
 
-Tue May  9 21:57:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May  9 21:57:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now --theme is -t instead of -C (duh).
 
-Tue May  9 21:35:34 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May  9 21:35:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now --action is A, and --ignoreaspect is X.
 
-Tue May  9 21:30:59 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May  9 21:30:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now randomize is -z, which makes a little more sense.
 
-Tue May  9 21:15:57 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May  9 21:15:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Swapped -g and -c so that --collage gets the -c it fits, and
 	randomize gets -g. I need to rework all these short options,
 	they're a mess right now. Sorry if I break anyone's configs doing
 	this :-(
 
-Tue May  9 21:09:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue May  9 21:09:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Removed -B, --booth, as it's just a combo of options now doable
 	in the config file. I stuck it in the example config instead...
 
-Mon May  8 22:38:11 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon May  8 22:38:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Don't apply colormods to each whole image. First scale it to
 	thumbnail size, then apply the colormod to that.
 
-Mon May  8 22:08:41 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon May  8 22:08:41 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Made --alpha actually do stuff. I finally grokked color
 	modifiers, and now they're fun ;-) Imlib2.h is really gonna need
 	some comments at some point though - I had proper trial-and-error
 	fun and games there for a while ;-)
 
-Mon May  8 21:58:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon May  8 21:58:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* D'oh! if(foo & bar) isn't quite the same as if(foo &&
 	bar). Stupid cheap keyboards ;-)
 
-Mon May  8 13:12:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon May  8 13:12:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fun with dmalloc
 
-Mon May  8 13:10:12 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon May  8 13:10:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Ensure backgrounds of index and montage images are black by
 	default. Imlib2's behaviour changed in this respect at some point.
 
-Sun May  7 18:42:57 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun May  7 18:42:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed breakage (and segfault) when preloading images in verbose
 	mode if any of the images are unloadable. Stupid typo.
 
-Sun Apr 30 16:02:11 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun Apr 30 16:02:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added  -n, --reverse. Reverses the sort order.
 	Use this to invert the order of the filelist. Eg to sort in
 	reverse width order, use -nSwidth
 
-Sun Apr 30 15:13:25 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun Apr 30 15:13:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* In slideshow and muliwindow modes, DELETE now removes the
 	current file from the filelist. CTRL+DELETE deletes the files from
 	the filesystem and removes it from the filelist.
 
-Sun Apr 30 14:48:04 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun Apr 30 14:48:04 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Filelists can now be saved to and loaded from files, very much
 	like the playlists used by music players.
@@ -220,29 +233,29 @@ Sun Apr 30 14:48:04 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	and group pics too. ~/lists/britney.list, ~/lists/laetitia.list.
 	Hmmmmmm.
 
-Sun Apr 30 02:40:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun Apr 30 02:40:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* PageUp/PageDown in slideshows will jump back/forward about
 	1/20th of the total number of files...
 
-Sat Apr 29 21:42:45 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Apr 29 21:42:45 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hrm. Actually wait for X to resize the window before rendering
 	the pixmap, or the resize sometimes gets delayed...
 
-Sat Apr 29 04:52:20 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Apr 29 04:52:20 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Heh. Sanely handle deleting the only/last image in the
 	slideshow.
 
-Thu Apr 27 16:10:35 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Apr 27 16:10:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* You can delete files using ctrl-del in multiwindow mode too now.
 	* Smoothing now occurs as soon as you stop zooming. This also
 	massively tidied the event loop and killed a couple of nasty
 	globals.
 
-Thu Apr 27 14:39:44 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Apr 27 14:39:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Spilt off the part of main_loop which loops for ever from the
 	part that responds to events. I now have a feh_main_iteration that
@@ -250,37 +263,37 @@ Thu Apr 27 14:39:44 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	events from outside the main loop. I'm gonna use this and the
 	new interruptable progressive loaders to do funky stuff soon ;-)
 
-Thu Apr 27 03:29:33 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Apr 27 03:29:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Progressive loading api change.
 
-Tue Apr 25 01:41:52 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue Apr 25 01:41:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* I'm bored, and a little drunk, so I made it pass -pedantic, for
 	kicks.
 
-Mon Apr 24 22:29:52 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Apr 24 22:29:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Make sure nothing's cached.
 
-Mon Apr 24 19:53:23 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Apr 24 19:53:23 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Changed some of the debugging macros.
 	* Found and fixed wasted extra loops in option file parsing.
 
-Mon Apr 24 16:48:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Apr 24 16:48:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Feh is hereby rereleased under a less restrictive license. Much
 	as I want to propagate Free software, I don't want to be a Free
 	software Nazi. Do with it what you wish.
 	* Various fixups, tweaks, and readability improvements.
 
-Mon Apr 24 04:47:44 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Apr 24 04:47:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Finally got off my arse and made the text center under the
 	images in index mode.
 
-Mon Apr 24 04:21:49 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Apr 24 04:21:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now that I have the config file, feh can safely be called
 	without any paramters, they can all be defined in the theme.
@@ -288,40 +301,40 @@ Mon Apr 24 04:21:49 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	if(argc < 2) show_usage();
 	looking pretty stupid.
 
-Mon Apr 24 03:53:16 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Apr 24 03:53:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added --fontpath, to allow an extra directory to be specified in
 	which to look for fonts. You can add this to /etc/fehrc or
 	~/.fehrc to make it permanent. Something like:
 	feh --fontpath /usr/share/ttfonts
 
-Sat Apr 22 01:48:46 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Apr 22 01:48:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* A slideshow delay of zero is now permitted. It means "go as fast
 	as you can". I like it ;-) You can pause with the middle mouse
 	button.
 
-Wed Apr 19 19:42:45 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Apr 19 19:42:45 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -g, --collage. Collage mode is like montage mode, except
 	the image thumbnails are distributed randomly. Run test26 for an
 	example.
 
-Tue Apr 11 18:20:21 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue Apr 11 18:20:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Make included getopt actually work if needed :)
 
-Sat Mar 25 17:42:43 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 25 17:42:43 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Event loop and zooming tweak.
 
-Sat Mar 25 02:09:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 25 02:09:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay, well, seeing as feh isn't resize-friendly (it's just not
 	designed for it - use gimp for that stuff ;), I'm disabling
 	resizing of the window. Bite me :)
 
-Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Muhahaha. Config file. It had to be done, there are so many
 	options now. This is totally optional of course, if you don't
@@ -344,18 +357,18 @@ Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	$ mkindex.
 	* An example.fehrc is provided with a couple of cool examples.
 	
-Fri Mar 24 19:17:27 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 24 19:17:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Slightly increased the default index mode font size.
 
-Fri Mar 24 16:59:28 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 24 16:59:28 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Modified index mode to only show the image name below each
 	thumbnail, and added -I, --fullindex mode to provide the other
 	info (size, dimensions). Squashed a bug where the index print was
 	always made 30 pixels too tall ;)
 
-Thu Mar 23 22:45:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Mar 23 22:45:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Feh will now read options from the environment variable
 	FEH_OPTIONS if it is set. These options will be loaded before
@@ -363,26 +376,26 @@ Thu Mar 23 22:45:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	as the commandline, so multiples are allowed (eg "-Vq -Sname")
 	I would recommend export FEH_OPTIONS="-Vq" as being quite handy.
 
-Wed Mar 22 22:52:53 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 22 22:52:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Well, it might be an idea to tell wget to ignore server-cached
 	data when reloading webcams :)
 	DOH!
 
-Wed Mar 22 19:57:04 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 22 19:57:04 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Better man page. Examples of cool usage.
 
-Wed Mar 22 18:17:11 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 22 18:17:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Man page! Whee!
 
-Wed Mar 22 04:14:12 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 22 04:14:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added format specifiers for actions. %w width, %h height, %p
 	pixels, %s size, %t type (jpeg etc).
 
-Wed Mar 22 03:50:24 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 22 03:50:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* User definable actions for slideshow and multiwindow modes. Use
 	-X or --action STRING to define an action. The action will be run
@@ -393,77 +406,77 @@ Wed Mar 22 03:50:24 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	Use this to go through some images and pick out the good ones :)
 	More format specifiers will follow...
 
-Wed Mar 22 02:55:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 22 02:55:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay. I found a naughty bug of mine. If the last image of a
 	montage/index was not loadable - core was dumped. Nice bug. Fun to
 	find =) I blame redhat.
 
-Tue Mar 21 15:45:02 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue Mar 21 15:45:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Major cruft removal and tidying of code path. Progressive
 	loading code slightly less complex now.
 
-Tue Mar 21 15:18:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue Mar 21 15:18:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Big optimisation for progressive loading in fullscreen mode. I
 	was recreating the pixmap at every iteration - damnit ;)
 
-Mon Mar 20 21:54:22 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Mar 20 21:54:22 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Dammit. Why do I find these things *after* a release?
 
-Mon Mar 20 19:24:46 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Mon Mar 20 19:24:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Released 0.7.0
 
-Sun Mar 19 20:55:57 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sun Mar 19 20:55:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Main event loop tidy up.
 
-Sat Mar 18 21:59:55 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 21:59:55 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added a coupla more tests...
 
-Sat Mar 18 21:56:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 21:56:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed stupid segfault using --list when there are no loadable
 	images.
 
-Sat Mar 18 14:06:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 14:06:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* --list tidy up.
 
-Sat Mar 18 02:56:03 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 02:56:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More --verbose twiddles.
 
-Sat Mar 18 02:18:39 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 02:18:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Made the --verbose output more useful, and prettier ;)
 
-Sat Mar 18 00:37:17 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 00:37:17 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Made the -V, --verbose option give cooler output on loading
 	mulitple images. It's pretty flim now.
 
-Sat Mar 18 00:32:42 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 18 00:32:42 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -U, --loadables, and -u, --unloadables. They don't show
 	images, just list all the files from the filelist that are
 	loadable or unloadable, respectively.
 
-Fri Mar 17 22:58:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 17 22:58:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Don't need to create checkerboard for list mode, montage mode,
 	index mode, etc...
 
-Fri Mar 17 22:43:27 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 17 22:43:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* We don't need to allocate space for the file info unless we
 	intend to use it. Saves RAM on big file lists...
 
-Fri Mar 17 22:18:50 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 17 22:18:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Big changes. I am tired ;)
 	* You can now sort the filelist in any mode.
@@ -479,56 +492,56 @@ Fri Mar 17 22:18:50 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	as it ensures the correctly sized space is allocated for the
 	images/thumbnails/whatever.
 
-Fri Mar 17 19:22:18 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 17 19:22:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* List modes can now sort by image info using -S, --sort. Allowed
 	sort modes are width, height, pixels, size, format, name,
 	filename. Default sort mode is none (ie order specified/read).
 	* eg. feh -lSpixels * to see the highest resolution images...
 
-Fri Mar 17 18:04:03 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Fri Mar 17 18:04:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -L, --longlist to allow for more detailed listings. Lists
 	are sorted by filename now too. (Until I write more sorting
 	options...)
 
-Thu Mar 16 19:47:16 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Mar 16 19:47:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Slightly cleaner --list stuff...
 
-Thu Mar 16 17:46:39 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Mar 16 17:46:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -l, --list mode. Doesn't display images, just analyses
 	them a little and spits out an 'ls' style listing with some basic
 	info. Useful in scripts. I intend to extend this somewhat soon.
 
-Thu Mar 16 16:40:19 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Thu Mar 16 16:40:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -q, --quiet option. Stops non-fatal image load errors
 	being reported. Useful when you want to do feh * on a directory
 	with some images, some other stuff. You'll only see what imlib2
 	can load.
 
-Wed Mar 15 21:32:48 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 15 21:32:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed bug using the short versions of --limit-width and
 	--limit-height
 
-Wed Mar 15 21:17:26 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 15 21:17:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Better still. Font size increases in fullscreen mode, but -d
 	works in windowed modes too now.
 
-Wed Mar 15 20:58:50 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 15 20:58:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hrm. Much better.
 
-Wed Mar 15 20:36:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Wed Mar 15 20:36:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -d, --draw_filename for use with fullscreen mode. It
 	sticks the filename up in the top left. Needs some more work yet.
 
-Sat Mar 11 23:35:20 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 11 23:35:20 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added proper commandline option parsing courtesy of getopt_long
 	:) Obviously not everyone has this, so I include it myself. Now
@@ -536,28 +549,28 @@ Sat Mar 11 23:35:20 2000  Tom Gilbert  <gilbertt@btinternet.com>
 	* It passes "make test" okay, but I reserve the right to have
 	broken something =) Let me know?
 
-Sat Mar 11 01:34:36 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar 11 01:34:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* 0.6.4 released
 
-Tue Mar  7 23:07:40 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Tue Mar  7 23:07:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed evil segv due to uninitialised gc.
 
-Sat Mar  4 16:33:29 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar  4 16:33:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* --help output for the new options.
 	* Added --booth, with is a shortcut for a fullscreen slideshow
 	with an auto-change every 20 seconds...
 
-Sat Mar  4 15:59:44 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar  4 15:59:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Bah. Disabled zooming in fullscreen mode for now. I'll do the
 	math and fix it later.
 	* I think I'm gonna have to rewrite shedloads of it to support
 	window resizing etc...
 
-Sat Mar  4 14:46:42 2000  Tom Gilbert  <gilbertt@btinternet.com>
+Sat Mar  4 14:46:42 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed progressive loading in fullscreen mode. Those callbacks
 	*are* on crack, but for them to make sense would be a big rewrite
@@ -584,19 +597,19 @@ Wed Mar  1 15:13:04 PST 2000  Michael Jennings <mej@eterm.org>
 
 	* Math lib
 	
-Sun Feb 20 15:22:00 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Feb 20 15:22:00 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Remove some crufty duplication.
 
-Sat Feb 19 17:11:49 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Feb 19 17:11:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Reduced mem usage, tuned file handling. Tidied up.
 
-Sat Feb 19 00:55:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Feb 19 00:55:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -b, --borderless option. Can you guess what it does?
 
-Fri Feb 18 23:51:14 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Feb 18 23:51:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Well, if I wasn't so dumb, I'd have realised that my last
 	comment only holds true for depths > 4000 or so. I don't have that
@@ -605,49 +618,49 @@ Fri Feb 18 23:51:14 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	to close my damn dirents.
 	* Pull out the cl00bats, for I have goofed.
 
-Fri Feb 18 23:33:54 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Feb 18 23:33:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay, okay. I suck. There is a mild problem I have to fix when
 	running recursively on *massive* hierarchy's. Basically, I run out
 	of file descriptors :( At least it now aborts when this happens, but
 	I need to fix this.
 
-Fri Feb 18 21:13:32 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Feb 18 21:13:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* configure.in: less stupid
 
-Fri Feb 18 20:51:53 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Feb 18 20:51:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* index.c: misc tidyups
 
-Fri Feb 18 20:41:02 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Feb 18 20:41:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Misc fixes and cleanups.
 
-Fri Feb 18 16:34:49 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Feb 18 16:34:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Stupid, stupid, stupid. I am stupid.
 
-Thu Feb 17 23:14:09 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Feb 17 23:14:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Ooh. Cool. Now slideshow/deletion numbering works more sanely -
 	thanks to the new filelist code.
 
-Thu Feb 17 23:13:22 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Feb 17 23:13:22 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hehe. That was more dumb than usual. Deleting files somewhat
 	destroyed the list, and caused nice segfaults.
 
-Thu Feb 17 22:05:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Feb 17 22:05:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More file-list fixes.
 
-Thu Feb 17 21:55:53 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Feb 17 21:55:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Note to self: if you prepend everything to a list, the resultant
 	list will be in reverse. You'll be needing to fix that =)
 
-Thu Feb 17 21:35:15 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Feb 17 21:35:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Thank goodness for that :) I totally reworked the file handling
 	code, and things are cleaner internally now. The change shouldn't
@@ -656,7 +669,7 @@ Thu Feb 17 21:35:15 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	everything back on track. There may be issues still, but it seems
 	good now, and I'll keep playing with it...
 
-Wed Feb  9 21:59:09 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Feb  9 21:59:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Removed all the image modification code from feh, seeing as
 	dphase is working on ee2. No point duplicating everything :)
@@ -665,13 +678,13 @@ Wed Feb  9 21:59:09 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	* I never wanted the modification stuff in here really, it was
 	just feature creep. Feh is a viewer and montager. That is all :)
 
-Tue Jan 11 21:11:11 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Jan 11 21:11:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hrm. Just so you know what order they come in, the images are
 	  now saved in /tmp (actually whatever tempdir is set up on your
 	  system) in the format "number"_"unique bit"_"original filename"
 
-Tue Jan 11 20:52:19 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Jan 11 20:52:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay. The cached images are now deleted. The filenames are no
 	  longer crap. ("Unique prefix"_feh_"original filename")
@@ -684,7 +697,7 @@ Tue Jan 11 20:52:19 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	* I *can't* imagine why anyone would *want* that, but I thought
 	  I'd pass it on ;-)
 
-Tue Jan 11 19:51:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Jan 11 19:51:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Caching of images loaded via http. When in slideshow mode, and
 	  the --reload option is not specified, a file loaded by http will
@@ -697,14 +710,14 @@ Tue Jan 11 19:51:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	  current directory. (So you still have the images after viewing
 	  them).
 
-Tue Jan 11 19:07:07 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Jan 11 19:07:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* New option, -R, --reload. Lets you specify a time in seconds,
 	  feh will reload the image for you after this time. This works for
 	  normal files and urls. The image will not be cached, so it is
 	  ideal for viewing webcam images etc.
 
-Mon Jan 10 22:48:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Mon Jan 10 22:48:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Whee. Now feh can load images from urls.
 	* Specify an image starting with http:// and feh will use wget to
@@ -714,7 +727,7 @@ Mon Jan 10 22:48:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	  cached, so if you have http files in a slideshow, they will reload
 	  each time you get to them ;) I'll do this soon.
 
-Sat Jan  8 18:44:05 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Jan  8 18:44:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Finally got around to adding timers to feh. Now there is a new
 	  option, -D, or --slideshow-delay NUM. NUM is the time in seconds
@@ -725,7 +738,7 @@ Sat Jan  8 18:44:05 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	* The timers code is loosely based on raster's epplet timer
 	  code, 'cos its cool. No need to re-invent the wheel ;)
 
-Mon Jan  3 18:29:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Mon Jan  3 18:29:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay. feh is now capable of some minor touch-ups. Nothing major,
 	and no image saving yet, but it tests the selection and
@@ -744,34 +757,34 @@ Mon Jan  3 18:29:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	guess maybe we should have some persistant rectangle selections,
 	but I don't want to go too far.
 
-Sat Jan  1 22:25:49 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Jan  1 22:25:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* I prefer LineOnOffDash drawing more for selections :)
 
-Sat Jan  1 22:12:37 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Jan  1 22:12:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* I'm alive!!! Somewhat hungover though ;)
 	* So, some changes to the rectangle selection code, some by
 	Andrew, some by me :) Again, press 'r' to test it.
 
-Sun Dec 26 22:57:53 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Dec 26 22:57:53 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Take the gc creation out of the loop, as much as poss.
 	* Is xmas over now?
 	* Am I still drunk?
 
-Fri Dec 24 13:22:19 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 24 13:22:19 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* I've switched to using XFindContext et al to associate X Windows
 	with internal structures. Much faster than my rubbish list
 	searching.
 	* Dammit. Why don't people tell me you can *do* stuff like this ;)
 
-Fri Dec 24 01:01:49 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 24 01:01:49 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* And now we can crop :) Thanks Andrew.
 
-Thu Dec 23 20:45:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Dec 23 20:45:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* We can now draw selection rectangles on windows using XORed
 	lines. This rules. Once the editing functions and menus are in
@@ -779,28 +792,28 @@ Thu Dec 23 20:45:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	* For now, press r to toggle line drawing, so you can see it for
 	yourself. Click and drag lmb to see.
 
-Wed Dec 22 23:37:27 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Dec 22 23:37:27 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More stuff from Andrew (hoss), we're starting to add stuff for
 	drawing rectangles, applying mods to rectangles, setting
 	backgrounds (under any wm) and other stuff like that.
 
-Wed Dec 22 21:49:10 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Dec 22 21:49:10 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Memory usage down by ONE THIRD :)
 	* I finally did the checkerboard bg thing the Right Way, and saved
 	lots of wasted RAM. Hooray.
 
-Wed Dec 22 20:47:11 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Dec 22 20:47:11 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* And now index mode has a go at recommending the image size for
 	you, if you specify one too small.
 
-Wed Dec 22 18:23:42 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Dec 22 18:23:42 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hehe. Found it. Little bugger. *squish*
 
-Wed Dec 22 18:12:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Dec 22 18:12:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More modify.c submissions from Andrew, including the start of
 	some very funky background setting and image scaling ::)
@@ -809,7 +822,7 @@ Wed Dec 22 18:12:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	pretty unflim, so its nice to clean it up a bit. However, the niew
 	code still has a couple of issues, which I am looking into.
 
-Wed Dec 22 13:21:12 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Wed Dec 22 13:21:12 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay, index mode now kinda takes into account the height of the
 	font you use. Width is on its way, but is more tricky.
@@ -818,7 +831,7 @@ Wed Dec 22 02:17:01 1999  Michael Jennings <mej@eterm.org>
 
 	* Removed a warning, and added "make testclean"
 
-Tue Dec 21 23:28:20 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Dec 21 23:28:20 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More modify.c submissions from Andrew, and some initial menu
 	work. The menus are not compiled in right now, and would core if I
@@ -826,34 +839,34 @@ Tue Dec 21 23:28:20 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	* I have #ifdef'ed out the code which uses X86VidMode extensions
 	until I can find out how common it is not to have them :)
 
-Tue Dec 21 18:40:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Dec 21 18:40:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* The winwidget_rerender_image() function now checks for changed
 	dimensions and acts accordingly, and the rotate() function now
 	updates the width and height attributes. The modify.c functions
 	are now available for testing using 1-9, 0, -, = key presses.
 
-Tue Dec 21 18:01:15 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Dec 21 18:01:15 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Encorporated modify.c, contributed by Andrew Glover
 	<aglover@axe.net>. These functions wrap imlib2 modification
 	functions, and will be handy when I make some menus :) We'll be
 	able to do scaling, tiling, color modifiers, and more.
 
-Tue Dec 21 03:28:30 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Tue Dec 21 03:28:30 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* And now the thing won't go mad when you hold down a change-slide
 	button in Slideshow mode... Before it stored *all* the KeyPresses
 	and responded to *all* of them. Hehe. It was fun watching it go
 	round though :)
 
-Mon Dec 20 17:35:25 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Mon Dec 20 17:35:25 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hehe. Ooops. I only need to blend on zoom if the image *has* an
 	alpha channel. Hehe. Ok, now zooming is *much* faster and
 	smoother, and I am slightly less of an idiot.
 
-Mon Dec 20 16:46:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Mon Dec 20 16:46:58 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay, I'm still a newbie at this X stuff :) Made some
 	optimisations to the main loop which speed things up a
@@ -861,13 +874,13 @@ Mon Dec 20 16:46:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	* Added better error handling when loading images.
 	* The Q or q key can now be used to exit the app in any mode.
 
-Mon Dec 20 15:22:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Mon Dec 20 15:22:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added some utility functions, so I don't have to write
 	if((s=malloc(blah))==NULL){fprintf("oops\n");exit(2);}
 	15 million times. It really bugs me ;-)
 
-Mon Dec 20 12:53:28 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Mon Dec 20 12:53:28 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Hehe. I like slideshow mode so much its now the default :)
 	Having multiple images pop up one-per-window can be quite evil, so
@@ -877,20 +890,20 @@ Mon Dec 20 12:53:28 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	tightened up the main loop somewhat, and a coupla things really
 	late last night which I can't remember ;-)
 
-Sun Dec 19 22:06:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Dec 19 22:06:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* For packaging reasons, I have changed the scripts to run feh in
 	the current dir, if it is there, but to fall back on the installed
 	copy.
 
-Sun Dec 19 20:29:33 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Dec 19 20:29:33 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added a .spec file for feh. Contributed by Alistair Sutton
 	<metallica@freenet.co.uk>, (who is obviously a metallica fan ;), 
 	and has written specs for me before ::) Thanks dude :)
 	* Urm. I haven't actually tested this yet :)
 
-Sun Dec 19 18:55:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Dec 19 18:55:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Slideshow mode now has keyboard control ::)
 	Mouse button 1 still changes slides, but you now have:
@@ -903,36 +916,36 @@ Sun Dec 19 18:55:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	More to come.
 
-Sun Dec 19 15:43:07 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Dec 19 15:43:07 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Big performance improvements in the main loop. Squashed another
 	couple of bugs, and made things real stable. Tightened up the
 	tests somewhat, and split the source up more clearly.
 
-Sun Dec 19 02:58:35 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sun Dec 19 02:58:35 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed a number of bugs introduced by the new progressive loading
 	and zooming code ::)
 
-Sat Dec 18 22:11:02 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Dec 18 22:11:02 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Whee. Progressive loading works :) It can be disabled with -P,
 	--noprogressive, if you don't want it. Can't think why though. It
 	rocks. Thanks again go to Raster. Progressive loading callbacks
 	*rule*.
 
-Sat Dec 18 18:15:18 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Dec 18 18:15:18 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* The fonts are now installed, and loaded from the installation
 	directory.
 
-Sat Dec 18 15:45:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Dec 18 15:45:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay then, there is now a checkerboard background when
 	zooming out. There is a more memory efficent way of doing this,
 	but I'll do that later...
 
-Sat Dec 18 14:31:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Sat Dec 18 14:31:58 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Wheeeee! Thanks to Raster's example code, we now have zooming
 	Raster, you are my hero :)
@@ -941,7 +954,7 @@ Sat Dec 18 14:31:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	zooming out), but these are trivial compared to getting the
 	zooming working with multiple windows, which I just did ::)
 
-Fri Dec 17 22:00:57 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 17 22:00:57 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added titles to index prints. A title will only be printed if
 	you specify --title-font.
@@ -950,16 +963,16 @@ Fri Dec 17 21:33:55 1999  Michael Jennings  <mej@eterm.org>
 
 	* Added "make test" to run the test scripts one by one.
 
-Fri Dec 17 21:32:16 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 17 21:32:16 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added more info the the index output :) Try test14 now :)
 
-Fri Dec 17 21:01:21 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 17 21:01:21 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added a couple of fonts, found one small for doing index prints,
 	tidied the directory structure a bit.
 
-Fri Dec 17 18:37:14 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 17 18:37:14 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added some new options, here's an excerpt from --help
 	-S, --slideshow  Enable slideshow mode. With this setting, instead
@@ -978,22 +991,22 @@ Fri Dec 17 18:37:14 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 	Now all I need is a font which is legible in very small point :)
 	I also added a couple of new tests for these options.
 
-Fri Dec 17 03:09:46 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 17 03:09:46 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Made the test scripts more verbose. It appears that people who
 	run a test called test07_bork_non_image_files still expect it to
 	work ;) hehe.
 
-Fri Dec 17 02:09:20 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Fri Dec 17 02:09:20 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Right-clicking in multi-image mode now closes ALL windows. I'll
 	add a popup menu soon.
 
-Thu Dec 16 22:58:21 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Dec 16 22:58:21 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Changed --help output to fit into 80 characters...
 
-Thu Dec 16 22:10:50 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+Thu Dec 16 22:10:50 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial import. Feh is currently at 0.5.0 release level.
 

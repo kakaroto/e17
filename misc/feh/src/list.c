@@ -87,8 +87,7 @@ real_loadables_mode(int loadable)
          /* loaded ok */
          if (loadable)
             fprintf(stdout, "%s\n", file->filename);
-         imlib_context_set_image(im);
-         imlib_free_image_and_decache();
+         feh_imlib_free_image_and_decache(im);
       }
       else
       {

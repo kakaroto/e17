@@ -44,7 +44,7 @@ init_x_and_imlib(void)
 
    disp = XOpenDisplay(NULL);
    if (!disp)
-      eprintf("Can't open X display");
+      eprintf("Can't open X display. It *is* running, yeah?");
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));
@@ -58,8 +58,6 @@ init_x_and_imlib(void)
    imlib_context_set_color_modifier(NULL);
    imlib_context_set_operation(IMLIB_OP_COPY);
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
-   imlib_context_set_dither(1);
-   imlib_context_set_blend(0);
 
    /* Set up the font stuff */
    imlib_add_path_to_font_path(".");
@@ -236,17 +234,12 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       D_RETURN(0);
    }
 
-   imlib_context_set_drawable(progwin->bg_pmap);
-   imlib_context_set_anti_alias(0);
-   imlib_context_set_dither(1);
-   imlib_context_set_image(im);
-
    /* Is this the first progress return for a new image? */
    /* If so, we have some stuff to set up... */
    if (progwin->im_w == 0)
    {
-      progwin->w = progwin->im_w = imlib_image_get_width();
-      progwin->h = progwin->im_h = imlib_image_get_height();
+      progwin->w = progwin->im_w = feh_imlib_image_get_width(im);
+      progwin->h = progwin->im_h = feh_imlib_image_get_height(im);
       progwin->had_resize = 1;
       /* do we need to create a window for the image? */
       if (!progwin->win)
@@ -272,24 +265,20 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
          XClearArea(disp, progwin->win, 0, 0, progwin->w, progwin->h, False);
    }
 
-   imlib_context_set_image(im);
-   imlib_context_set_drawable(progwin->bg_pmap);
-   imlib_context_set_anti_alias(0);
-   imlib_context_set_dither(1);
-   imlib_context_set_blend(0);
-   if (imlib_image_has_alpha())
-      imlib_context_set_blend(1);
-
    if (opt.full_screen)
    {
       dest_x = (scr->width - progwin->im_w) >> 1;
       dest_y = (scr->height - progwin->im_h) >> 1;
    }
 
-   imlib_render_image_part_on_drawable_at_size(update_x, update_y, update_w,
-                                               update_h, dest_x + update_x,
-                                               dest_y + update_y, update_w,
-                                               update_h);
+   feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
+                                                   update_x, update_y,
+                                                   update_w, update_h,
+                                                   dest_x + update_x,
+                                                   dest_y + update_y,
+                                                   update_w, update_h, 1,
+                                                   feh_imlib_image_has_alpha
+                                                   (im), 0);
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
 
@@ -368,29 +357,22 @@ feh_draw_filename(winwidget w)
       D_RETURN_;
    }
 
-   imlib_context_set_font(fn);
-   imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
-   imlib_context_set_color(0, 0, 0, 255);
-   imlib_context_set_blend(1);
-   imlib_context_set_drawable(w->bg_pmap);
-
    /* Work out how high the font is */
-   imlib_get_text_size(w->file->filename, &tw, &th);
+   feh_imlib_get_text_size(fn, w->file->filename, &tw, &th,
+                           IMLIB_TEXT_TO_RIGHT);
 
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
-   imlib_context_set_image(im);
-   imlib_image_fill_rectangle(0, 0, tw, th);
-   imlib_context_set_color(255, 255, 255, 255);
+   feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   imlib_text_draw(0, 0, w->file->filename);
+   feh_imlib_text_draw(im, fn, 0, 0, w->file->filename, IMLIB_TEXT_TO_RIGHT,
+                       255, 255, 255, 255);
 
-   imlib_render_image_on_drawable(0, 0);
+   feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
 
-   imlib_free_image_and_decache();
-   imlib_context_set_image(w->im);
+   feh_imlib_free_image_and_decache(im);
 
    XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
    XClearArea(disp, w->win, 0, 0, tw, th, False);
@@ -481,18 +463,12 @@ feh_smooth_image(winwidget w)
       sw = w->w;
       sh = w->h;
    }
-   imlib_context_set_anti_alias(1);
-   imlib_context_set_dither(1);
-   imlib_context_set_blend(0);
-   imlib_context_set_drawable(w->bg_pmap);
    feh_draw_checks(w);
-   imlib_context_set_image(w->im);
-   if (imlib_image_has_alpha())
-      imlib_context_set_blend(1);
-   imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
-                                               dh);
+   feh_imlib_render_image_part_on_drawable_at_size(w->bg_pmap, w->im, sx, sy,
+                                                   sw, sh, dx, dy, dw, dh, 1,
+                                                   feh_imlib_image_has_alpha
+                                                   (w->im), 1);
    XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
    XClearWindow(disp, w->win);
-   imlib_context_set_anti_alias(0);
    D_RETURN_;
 }

@@ -45,6 +45,7 @@
 #include <Imlib2.h>
 
 #include "structs.h"
+#include "feh_imlib2.h"
 
 #include "utils.h"
 #include "getopt.h"

@@ -77,9 +77,8 @@ winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
    ret->type = type;
 
    ret->im = im;
-   imlib_context_set_image(ret->im);
-   ret->w = ret->im_w = imlib_image_get_width();
-   ret->h = ret->im_h = imlib_image_get_height();
+   ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
+   ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
 
    if (name)
       ret->name = estrdup(name);
@@ -125,12 +124,11 @@ winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
 
    if (!opt.progressive)
    {
-      imlib_context_set_image(ret->im);
-      ret->w = ret->im_w = imlib_image_get_width();
-      ret->h = ret->im_h = imlib_image_get_height();
+      ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
+      ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
       D(
         ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
-         imlib_image_format()));
+         feh_imlib_image_format(ret->im)));
       winwidget_create_window(ret, ret->w, ret->h);
       winwidget_render_image(ret, 1);
    }
@@ -309,17 +307,9 @@ winwidget_render_image(winwidget winwid, int resize)
       need_resize = 1;
    }
    winwidget_setup_pixmaps(winwid);
-   imlib_context_set_image(winwid->im);
-   imlib_context_set_blend(0);
 
-   if (!opt.full_screen && (imlib_image_has_alpha() || diff_size))
-   {
+   if (!opt.full_screen && (feh_imlib_image_has_alpha(winwid->im) || diff_size))
       feh_draw_checks(winwid);
-      imlib_context_set_blend(1);
-   }
-
-   imlib_context_set_image(winwid->im);
-   imlib_context_set_drawable(winwid->bg_pmap);
 
    if (opt.full_screen)
    {
@@ -353,13 +343,13 @@ winwidget_render_image(winwidget winwid, int resize)
                x = (scr->width - www) >> 1;
             }
          }
-         imlib_render_image_on_drawable_at_size(x, y, www, hhh);
+         feh_imlib_render_image_on_drawable_at_size(winwid->bg_pmap, winwid->im, x, y, www, hhh, 1, feh_imlib_image_has_alpha(winwid->im), 0);
       }
       else
       {
          x = (scr->width - winwid->im_w) >> 1;
          y = (scr->height - winwid->im_h) >> 1;
-         imlib_render_image_on_drawable(x, y);
+         feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y, 1, feh_imlib_image_has_alpha(winwid->im), 0);
       }
    }
    else
@@ -375,7 +365,7 @@ winwidget_render_image(winwidget winwid, int resize)
        */
       /* resize window if the image size has changed */
       D(("rendering image normally\n"));
-      imlib_render_image_on_drawable(x, y);
+      feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y, 1, feh_imlib_image_has_alpha(winwid->im), 0);
    }
    if (need_resize)
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -408,25 +398,22 @@ feh_draw_checks(winwidget win)
          eprintf
             ("Unable to create a teeny weeny imlib image. I detect problems");
 
-      imlib_context_set_image(checks);
       for (y = 0; y < 16; y += 8)
       {
          onoff = (y / 8) & 0x1;
          for (x = 0; x < 16; x += 8)
          {
             if (onoff)
-               imlib_context_set_color(144, 144, 144, 255);
+            feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144, 144, 255);
             else
-               imlib_context_set_color(100, 100, 100, 255);
-            imlib_image_fill_rectangle(x, y, 8, 8);
+            feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100, 100, 255);
             onoff++;
             if (onoff == 2)
                onoff = 0;
          }
       }
       checks_pmap = XCreatePixmap(disp, win->win, 16, 16, depth);
-      imlib_context_set_drawable(checks_pmap);
-      imlib_render_image_on_drawable(0, 0);
+      feh_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
 
       gcval.tile = checks_pmap;
       gcval.fill_style = FillTiled;
@@ -451,10 +438,7 @@ winwidget_destroy(winwidget winwid)
    if ((winwid->type == WIN_TYPE_ABOUT) && winwid->file)
       feh_file_free(winwid->file);
    if (winwid->im)
-   {
-      imlib_context_set_image(winwid->im);
-      imlib_free_image_and_decache();
-   }
+      feh_imlib_free_image_and_decache(winwid->im);
    free(winwid);
    D_RETURN_;
 }
@@ -579,10 +563,7 @@ void
 winwidget_free_image(winwidget w)
 {
    if (w->im)
-   {
-      imlib_context_set_image(w->im);
-      imlib_free_image_and_decache();
-   }
+      feh_imlib_free_image_and_decache(w->im);
    w->im_w = 0;
    w->im_h = 0;
 }

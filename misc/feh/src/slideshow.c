@@ -115,9 +115,8 @@ feh_reload_image(winwidget w)
       w->zoom = 0.0;
       if (!opt.progressive)
       {
-         imlib_context_set_image(w->im);
-         w->im_w = imlib_image_get_width();
-         w->im_h = imlib_image_get_height();
+         w->im_w = feh_imlib_image_get_width(w->im);
+         w->im_h = feh_imlib_image_get_height(w->im);
          winwidget_render_image(w, 0);
       }
       if (opt.draw_filename)
@@ -229,12 +228,11 @@ slideshow_change_image(winwidget winwid, int change)
          winwid->file = current_file;
          if (!opt.progressive)
          {
-            imlib_context_set_image(winwid->im);
-            if ((winwid->im_w != imlib_image_get_width())
-                || (winwid->im_h != imlib_image_get_height()))
+            if ((winwid->im_w != feh_imlib_image_get_width(winwid->im))
+                || (winwid->im_h != feh_imlib_image_get_height(winwid->im)))
                winwid->had_resize = 1;
-            winwid->im_w = imlib_image_get_width();
-            winwid->im_h = imlib_image_get_height();
+            winwid->im_w = feh_imlib_image_get_width(winwid->im);
+            winwid->im_h = feh_imlib_image_get_height(winwid->im);
             winwidget_render_image(winwid, 1);
          }
          if (opt.draw_filename)

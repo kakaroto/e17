@@ -337,10 +337,6 @@ feh_event_handle_MotionNotify(XEvent * ev)
          {
             int sx, sy, sw, sh, dx, dy, dw, dh;
 
-            imlib_context_set_anti_alias(0);
-            imlib_context_set_dither(0);
-            imlib_context_set_blend(0);
-
             winwid->zoom =
                ((double) ev->xmotion.x - (double) winwid->zx) / 32.0;
             if (winwid->zoom < 0)
@@ -361,7 +357,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
                sy = winwid->zy - (winwid->zy / winwid->zoom);
                sw = winwid->w / winwid->zoom;
                sh = winwid->h / winwid->zoom;
-               if (imlib_image_has_alpha()
+               if (feh_imlib_image_has_alpha(winwid->im)
                    || ((winwid->w > winwid->im_w)
                        || (winwid->h > winwid->im_h)))
                   feh_draw_checks(winwid);
@@ -379,12 +375,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
                sh = winwid->h;
                feh_draw_checks(winwid);
             }
-            imlib_context_set_drawable(winwid->bg_pmap);
-            imlib_context_set_image(winwid->im);
-            if (imlib_image_has_alpha())
-               imlib_context_set_blend(1);
-            imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx,
-                                                        dy, dw, dh);
+            feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh, 0, feh_imlib_image_has_alpha(winwid->im), 0);
             XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
             XClearWindow(disp, winwid->win);
             XFlush(disp);
@@ -402,8 +393,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
          {
             Imlib_Image *im2, *temp;
 
-            imlib_context_set_image(winwid->im);
-            im2 = imlib_clone_image();
+            im2 = feh_imlib_clone_image(winwid->im);
             imlib_context_set_image(im2);
             imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
                                "/share/feh/images/about.png);",
@@ -412,8 +402,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im = im2;
             winwidget_render_image(winwid, 0);
             winwid->im = temp;
-            imlib_context_set_image(im2);
-            imlib_free_image_and_decache();
+            feh_imlib_free_image_and_decache(im2);
          }
       }
    }

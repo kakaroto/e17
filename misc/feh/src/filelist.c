@@ -566,23 +566,21 @@ feh_file_info_load(feh_file * file, Imlib_Image * im)
 
    if (im || feh_load_image(&im, file))
    {
-      imlib_context_set_image(im);
-
       file->info = feh_file_info_new();
 
-      file->info->width = imlib_image_get_width();
-      file->info->height = imlib_image_get_height();
+      file->info->width = feh_imlib_image_get_width(im);
+      file->info->height = feh_imlib_image_get_height(im);
 
-      file->info->has_alpha = imlib_image_has_alpha();
+      file->info->has_alpha = feh_imlib_image_has_alpha(im);
 
       file->info->pixels = file->info->width * file->info->height;
 
-      file->info->format = estrdup(imlib_image_format());
+      file->info->format = estrdup(feh_imlib_image_format(im));
 
       file->info->size = st.st_size;
 
       if (need_free)
-         imlib_free_image_and_decache();
+         feh_imlib_free_image_and_decache(im);
 
       D_RETURN(0);
    }

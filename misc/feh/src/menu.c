@@ -435,9 +435,8 @@ feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h)
       fn = imlib_load_font(opt.menu_font);
       if (fn)
       {
-         imlib_context_set_font(fn);
-         imlib_get_text_size(i->text, &tw, &th);
-         imlib_free_font();
+         feh_imlib_get_text_size(fn, i->text, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+         feh_imlib_free_font(fn);
       }
       *w =
          tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT +
@@ -498,9 +497,8 @@ feh_menu_calc_size(feh_menu * m)
          {
             int iw, ih, ow, oh;
 
-            imlib_context_set_image(im);
-            iw = imlib_image_get_width();
-            ih = imlib_image_get_height();
+            iw = feh_imlib_image_get_width(im);
+            ih = feh_imlib_image_get_height(im);
             if (ih <= max_h)
             {
                ow = iw;
@@ -513,7 +511,7 @@ feh_menu_calc_size(feh_menu * m)
             }
             if (ow > icon_w)
                icon_w = ow;
-            imlib_free_image();
+            feh_imlib_free_image(im);
          }
       }
    }
@@ -582,19 +580,17 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
          }
 
          /* draw text */
-         imlib_context_set_blend(1);
-         imlib_context_set_image(im);
-         imlib_context_set_font(fn);
-         imlib_context_set_operation(IMLIB_OP_COPY);
-         imlib_context_set_color(0, 0, 0, 60);
-         imlib_text_draw(i->x - ox + i->text_x + FEH_MENU_FONT_SHADOW_OFF_X,
-                         i->y - oy + FEH_MENUITEM_PAD_TOP +
-                         FEH_MENU_FONT_SHADOW_OFF_Y, i->text);
+         feh_imlib_text_draw(im, fn,
+                             i->x - ox + i->text_x +
+                             FEH_MENU_FONT_SHADOW_OFF_X,
+                             i->y - oy + FEH_MENUITEM_PAD_TOP +
+                             FEH_MENU_FONT_SHADOW_OFF_Y, i->text,
+                             IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 60);
 
-         imlib_context_set_color(0, 0, 0, 255);
-         imlib_text_draw(i->x - ox + i->text_x,
-                         i->y - oy + FEH_MENUITEM_PAD_TOP, i->text);
-         imlib_free_font();
+         feh_imlib_text_draw(im, fn, i->x - ox + i->text_x,
+                             i->y - oy + FEH_MENUITEM_PAD_TOP, i->text,
+                             IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+         feh_imlib_free_font(fn);
       }
       else
          weprintf("couldn't load font %s\n", opt.menu_font);
@@ -609,13 +605,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
          {
             int iw, ih, ow, oh;
 
-            imlib_context_set_image(im2);
-            iw = imlib_image_get_width();
-            ih = imlib_image_get_height();
-            imlib_context_set_image(im);
-            imlib_context_set_blend(1);
-            imlib_context_set_anti_alias(1);
-            imlib_context_set_operation(IMLIB_OP_COPY);
+            iw = feh_imlib_image_get_width(im2);
+            ih = feh_imlib_image_get_height(im2);
             if (ih <= (i->h - FEH_MENUITEM_PAD_TOP - FEH_MENUITEM_PAD_BOTTOM))
             {
                ow = iw;
@@ -629,15 +620,14 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
                     FEH_MENUITEM_PAD_BOTTOM)) / ih;
                oh = i->h - FEH_MENUITEM_PAD_TOP - FEH_MENUITEM_PAD_BOTTOM;
             }
-            imlib_blend_image_onto_image(im2, 0, 0, 0, iw, ih,
+            feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                          i->x + i->icon_x - ox,
                                          i->y + FEH_MENUITEM_PAD_TOP +
-                                         (((i->h
-                                            - FEH_MENUITEM_PAD_TOP -
+                                         (((i->
+                                            h - FEH_MENUITEM_PAD_TOP -
                                             FEH_MENUITEM_PAD_BOTTOM) -
-                                           oh) / 2) - oy, ow, oh);
-            imlib_context_set_image(im2);
-            imlib_free_image();
+                                           oh) / 2) - oy, ow, oh, 1, 1, 1);
+            feh_imlib_free_image(im2);
          }
       }
       if (i->submenu)
@@ -648,8 +638,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -660,8 +650,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -707,14 +697,9 @@ feh_menu_redraw(feh_menu * m)
          im = imlib_create_image(w, h);
          if (im)
          {
-            imlib_context_set_image(im);
             feh_menu_draw_to_buf(m, im, x, y);
-            imlib_context_set_image(im);
-            imlib_context_set_blend(0);
-            imlib_context_set_dither(1);
-            imlib_context_set_drawable(m->pmap);
-            imlib_render_image_on_drawable(x, y);
-            imlib_free_image();
+            feh_imlib_render_image_on_drawable(m->pmap, im, x, y, 1, 0, 0);
+            feh_imlib_free_image(im);
             XClearArea(disp, m->win, x, y, w, h, False);
          }
       }
@@ -744,9 +729,8 @@ feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy)
    int w, h;
 
    D_ENTER;
-   imlib_context_set_image(im);
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
+   w = feh_imlib_image_get_width(im);
+   h = feh_imlib_image_get_height(im);
    feh_menu_draw_menu_bg(m, im, ox, oy);
    for (i = m->items; i; i = i->next)
    {
@@ -763,11 +747,9 @@ feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy)
 
    D_ENTER;
 
-   imlib_context_set_image(im);
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
-   imlib_context_set_color(255, 253, 226, 255);
-   imlib_image_fill_rectangle(0, 0, w, h);
+   w = feh_imlib_image_get_width(im);
+   h = feh_imlib_image_get_height(im);
+   feh_imlib_image_fill_rectangle(im, 0, 0, w, h, 255, 253, 226, 255);
    D_RETURN_;
    m = NULL;
    ox = oy = 0;
@@ -782,16 +764,14 @@ feh_menu_draw_submenu_at(int x, int y, int w, int h, Imlib_Image dst, int ox,
    D_ENTER;
    x -= ox;
    y -= oy;
-   imlib_context_set_image(dst);
-   imlib_context_set_color(0, 0, 0, 255);
    x1 = x;
    y1 = y + 2;
    x2 = x + w - 3;
    y2 = y + (h / 2);
-   imlib_image_draw_line(x1, y1, x2, y2, 0);
+   feh_imlib_image_draw_line(dst, x1, y1, x2, y2, 0, 0, 0, 0, 255);
    x1 = x;
    y1 = y + h - 2;
-   imlib_image_draw_line(x1, y1, x2, y2, 0);
+   feh_imlib_image_draw_line(dst, x1, y1, x2, y2, 0, 0, 0, 0, 255);
    D_RETURN_;
    selected = 0;
 }
@@ -802,9 +782,8 @@ feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst,
                            int ox, int oy)
 {
    D_ENTER;
-   imlib_context_set_image(dst);
-   imlib_context_set_color(0, 0, 0, 255);
-   imlib_image_fill_rectangle(x - ox + 2, y - oy + 2, w - 4, h - 4);
+   feh_imlib_image_fill_rectangle(dst, x - ox + 2, y - oy + 2, w - 4, h - 4,
+                                  0, 0, 0, 255);
    D_RETURN_;
 }
 
@@ -815,10 +794,11 @@ feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst, int ox,
    D_ENTER;
    imlib_context_set_image(dst);
    if (selected)
-      imlib_context_set_color(155, 153, 226, 255);
+      feh_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 155, 153, 226,
+                                     255);
    else
-      imlib_context_set_color(255, 253, 226, 255);
-   imlib_image_fill_rectangle(x - ox, y - oy, w, h);
+      feh_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 255, 253, 226,
+                                     255);
    D_RETURN_;
 }
 

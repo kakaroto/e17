@@ -51,9 +51,8 @@ init_montage_mode(void)
       D(("Time to apply a background to blend onto\n"));
       if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
       {
-         imlib_context_set_image(bg_im);
-         bg_w = imlib_image_get_width();
-         bg_h = imlib_image_get_height();
+         bg_w = feh_imlib_image_get_width(bg_im);
+         bg_h = feh_imlib_image_get_height(bg_im);
       }
    }
 
@@ -171,17 +170,13 @@ init_montage_mode(void)
    if (!im_main)
       eprintf("Imlib error creating image");
 
-   imlib_context_set_image(im_main);
-   imlib_context_set_blend(0);
-
    if (bg_im)
-      imlib_blend_image_onto_image(bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
+      feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0,
+                                       0, w, h, 1, 0, 0);
    else
    {
       /* Colour the background */
-      imlib_context_set_color(0, 0, 0, 255);
-      imlib_image_fill_rectangle(0, 0, w, h);
-      imlib_context_set_color(255, 255, 255, 255);
+      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
    }
 
    for (file = filelist; file; file = file->next)
@@ -199,13 +194,8 @@ init_montage_mode(void)
             feh_display_status('.');
          www = opt.thumb_w;
          hhh = opt.thumb_h;
-         imlib_context_set_image(im_temp);
-         ww = imlib_image_get_width();
-         hh = imlib_image_get_height();
-         if (imlib_image_has_alpha())
-            imlib_context_set_blend(1);
-         else
-            imlib_context_set_blend(0);
+         ww = feh_imlib_image_get_width(im_temp);
+         hh = feh_imlib_image_get_height(im_temp);
 
          if (opt.aspect)
          {
@@ -239,32 +229,28 @@ init_montage_mode(void)
             yyy = y;
          }
 
-         imlib_context_set_image(im_temp);
-         im_thumb = imlib_create_cropped_scaled_image(0, 0, ww, hh, www, hhh);
-         imlib_free_image_and_decache();
+         im_thumb =
+            feh_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www,
+                                                  hhh, 1);
+         feh_imlib_free_image_and_decache(im_temp);
 
          if (opt.alpha)
          {
-            Imlib_Color_Modifier cm;
             DATA8 atab[256];
 
             D(("Applying alpha options\n"));
-            cm = imlib_create_color_modifier();
-            imlib_context_set_color_modifier(cm);
-            imlib_context_set_image(im_thumb);
-            imlib_context_set_blend(1);
-            imlib_image_set_has_alpha(1);
+            feh_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
-            imlib_set_color_modifier_tables(NULL, NULL, NULL, atab);
-            imlib_apply_color_modifier_to_rectangle(0, 0, www, hhh);
-            imlib_free_color_modifier();
+            feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
+                                                        hhh, NULL, NULL, NULL,
+                                                        atab);
          }
-         imlib_context_set_image(im_main);
 
-         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy,
-                                      www, hhh);
-         imlib_context_set_image(im_thumb);
-         imlib_free_image_and_decache();
+         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www,
+                                          hhh, xxx, yyy, www, hhh, 1,
+                                          feh_imlib_image_has_alpha(im_thumb),
+                                          0);
+         feh_imlib_free_image_and_decache(im_thumb);
          x += opt.thumb_w;
          if (x > w - opt.thumb_w)
          {
@@ -286,14 +272,13 @@ init_montage_mode(void)
 
    if (opt.output && opt.output_file)
    {
-      imlib_context_set_image(im_main);
-      imlib_save_image(opt.output_file);
+      feh_imlib_save_image(im_main, opt.output_file);
       if (opt.verbose)
       {
          int tw, th;
 
-         tw = imlib_image_get_width();
-         th = imlib_image_get_height();
+         tw = feh_imlib_image_get_width(im_main);
+         th = feh_imlib_image_get_height(im_main);
          fprintf(stdout, PACKAGE " - File saved as %s\n", opt.output_file);
          fprintf(stdout,
                  "    - Image is %dx%d pixels and contains %d thumbnails\n",
@@ -310,8 +295,7 @@ init_montage_mode(void)
    }
    else
    {
-      imlib_context_set_image(im_main);
-      imlib_free_image_and_decache();
+      feh_imlib_free_image_and_decache(im_main);
    }
    D_RETURN_;
 }
