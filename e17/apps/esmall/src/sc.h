@@ -36,6 +36,18 @@ typedef long int cell;
 #define DIRSEP_CHAR '/'   /* directory separator character */
 #endif	/*  */
 
+/* Linux already has these... */
+#if !defined BIG_ENDIAN
+#define BIG_ENDIAN 4321
+#endif /* BIG_ENDIAN */
+#if !defined LITTLE_ENDIAN
+#define LITTLE_ENDIAN 1234
+#endif /* LITTLE_ENDIAN */
+
+/* Educated guess, BYTE_ORDER is undefined, i386 is common => little endian */
+#if !defined BYTE_ORDER
+#define BYTE_ORDER LITTLE_ENDIAN
+#endif /* BYTE_ORDER */
 
 #define _dimen_max     2    /* maximum number of array dimensions */
 #define _def_litmax  500    /* initial size of the literal pool, in "cells" */
@@ -367,159 +379,84 @@ extern "C" {
 #endif	/*  */
 
 /* function prototypes in SC1.C */ 
-void dumplits(void);
-
-void dumpzero(int count);
-
 int gettag(char *name);
-
 int constexpr(cell * val, int *tag);
-
 constval * append_constval(constval * table, char *name, cell val);
-
 constval * find_constval(constval * table, char *name);
-
 void add_constant(char *name, cell val, int vclass, int tag);
-
 
 /* function prototypes in SC2.C */ 
 void pushstk(stkitem val);
-
 stkitem popstk(void);
-
 void plungefile(char *name);
-
 void preprocess(void);
-
 void lexinit(void);
-
 int lex(cell * lexvalue, char **lexsym);
-
 void lexpush(void);
-
 int matchtoken(int token);
-
 int tokeninfo(cell * val, char **str);
-
 int needtoken(int token);
-
 void stowlit(cell value);
-
 int alphanum(char c);
-
 int ishex(char c);
-
 void delete_symbols(symbol * root, int level, int del_labels);
-
 symbol * findglb(char *name);
-
 symbol * findloc(char *name);
-
 symbol * findconst(char *name);
-
 symbol * finddepend(symbol * parent);
-
 symbol * addsym(char *name, cell addr, int ident, int vclass, int tag, int usage);
-
 symbol * addvariable(char *name, cell addr, int ident, int vclass, int tag, 
 					 int dim[], int numdim, int idxtag[]);
-
 int getlabel(void);
-
 char *itoh(ucell val);
-
 
 /* function prototypes in SC3.C */ 
 int hier14(value * lval1);		/* the highest expression level */
-
 int expression(int *constant, cell * val, int *tag);
-
 
 /* function prototypes in SC4.C */ 
 void writetrailer(void);
-
 void begcseg(void);
-
 void begdseg(void);
-
 cell nameincells(char *name);
-
 void setfile(char *name, int fileno);
-
 void setline(int line, int fileno);
-
 void setlabel(int index);
-
 void endexpr(void);
-
 void startfunc(void);
-
 void endfunc(void);
-
 void defsymbol(char *name, int ident, int vclass, cell offset);
-
 void symbolrange(int level, cell size);
-
 void rvalue(value * lval);
-
 void address(symbol * ptr);
-
 void store(value * lval);
-
 void memcopy(cell size);
-
 void fillarray(symbol * sym, cell size, cell value);
-
 void copyarray(symbol * sym, cell size);
-
 void const1(cell val);
-
 void const2(cell val);
-
 void push1(void);
-
 void pushval(cell val);
-
 void pop2(void);
-
 void ffswitch(int label);
-
 void ffcase(cell value, char *labelname, int newtable);
-
 void ffcall(symbol * sym, int numargs);
-
 void ffret(void);
-
 void ffabort(int reason);
-
 void ffbounds(cell size);
-
 void jumplabel(int number);
-
 void defstorage(void);
-
 void modstk(int delta);
-
 void setstk(cell value);
-
 void modheap(int delta);
-
 void setheap_pri(void);
-
 void setheap(cell value);
-
 void cell2addr(void);
-
 void cell2addr_alt(void);
-
 void addr2cell(void);
-
 void char2addr(void);
-
 void charalign(void);
-
 void addconst(cell value);
-
 
 /*  Code generation functions for arithmetic operators.
  *
@@ -530,163 +467,88 @@ void addconst(cell value);
  *          +------------- "o"perator
  */ 
 void os_mult(void);				/* multiplication (signed) */
-
 void os_div(void);				/* division (signed) */
-
 void os_mod(void);				/* modulus (signed) */
-
 void ob_add(void);				/* addition */
-
 void ob_sub(void);				/* subtraction */
-
 void ob_sal(void);				/* shift left (arithmetic) */
-
 void os_sar(void);				/* shift right (arithmetic, signed) */
-
 void ou_sar(void);				/* shift right (logical, unsigned) */
-
 void ob_or(void);				/* bitwise or */
-
 void ob_xor(void);				/* bitwise xor */
-
 void ob_and(void);				/* bitwise and */
-
 void os_le(void);				/* less or equal (signed) */
-
 void os_ge(void);				/* greater or equal (signed) */
-
 void os_lt(void);				/* less (signed) */
-
 void os_gt(void);				/* greater (signed) */
-
 void ob_eq(void);				/* equality */
-
 void ob_ne(void);				/* inequality */
 
-
 void lneg(void);
-
 void neg(void);
-
 void invert(void);
-
 void inc(value * lval);
-
 void dec(value * lval);
-
 void jmp_ne0(int number);
-
 void jmp_eq0(int number);
-
 void outval(cell val, int newline);
-
 
 /* function prototypes in SC5.C */ 
 int error(int number,...);
 
-
 /* function prototypes in SC6.C */ 
 void assemble(FILE * fout, FILE * fin);
 
-
 /* function prototypes in SC7.C */ 
 void stgmark(char mark);
-
 void stgwrite(char *st);
-
 void stgout(int index);
-
 void stgdel(int index, cell code_index);
-
 int stgget(int *index, cell * code_index);
-
 void stgset(int onoff);
 
-
 /* external variables (defined in sc.c) */ 
-extern symbol loctab;			/* local symbol table */
+extern symbol loctab;		/* local symbol table */
+extern symbol glbtab;		/* global symbol table */
+extern cell *litq;			/* the literal queue */
+extern char pline[];		/* the line read from the input file */
+extern char *lptr;			/* points to the current position in "pline" */
+extern constval libname_tab;/* library table (#pragma library "..." syntax) */
+extern char *inpfname;		/* name of the file currently read from */
+extern char outfname[];		/* output file name */
+extern char errfname[];		/* error file name */
+extern char includepath[];	/* directory for system include files */
+extern char ctrlchar;		/* the control character (or escape character) */
+extern int litidx;			/* index to literal table */
+extern int litmax;			/* current size of the literal table */
+extern int stgidx;			/* index to the staging buffer */
+extern int labnum;			/* number of (internal) labels */
+extern int staging;			/* true if staging output */
+extern cell declared;		/* number of local cells declared */
+extern cell glb_declared;	/* number of global bytes declared */
+extern cell code_idx;		/* number of bytes with generated code */
+extern int ntv_funcid;		/* incremental number of native function */
+extern int errflag;			/* 1 after first error in statement, -1 if no
+							 * error on current line, but errors were found */
+extern int errnum;			/* number of errors */
+extern int warnnum;			/* number of warnings */
+extern int verbose;			/* display extra information while compiling? */
+extern int debug;			/* by default: full debug info */
+extern int charbits;		/* number of bits for a character */
+extern int packstr;			/* strings are packed by default? */
+extern int needsemicolon;	/* semicolon required to terminate expressions? */
+extern int curseg;			/* 1 if currently parsing CODE, 2 if parsing DATA */
+extern cell stksize;		/* stack size */
+extern int freading;		/* is there an input file ready for reading? */
+extern int fline;			/* the line number in the current file */
+extern int fnumber;			/* the file number in the file table (debugging) */
+extern int fcurrent;		/* current file being processed (debugging) */
+extern int intest;			/* true if inside a test */
+extern int sideeffect;		/* true if an expression causes a side-effect */
+extern int stmtindent;		/* current indent of the statement */
+extern int indent_nowarn;	/* skip warning "217 loose indentation" */
 
-extern symbol glbtab;			/* global symbol table */
-
-extern cell *litq;				/* the literal queue */
-
-extern char pline[];			/* the line read from the input file */
-
-extern char *lptr;				/* points to the current position in "pline" */
-
-extern constval libname_tab;		/* library table (#pragma library "..." syntax) */
-
-extern char *inpfname;			/* name of the file currently read from */
-
-extern char outfname[];			/* output file name */
-
-extern char errfname[];			/* error file name */
-
-extern char includepath[];		/* directory for system include files */
-
-
-extern char ctrlchar;			/* the control character (or escape character) */
-
-extern int litidx;				/* index to literal table */
-
-extern int litmax;				/* current size of the literal table */
-
-extern int stgidx;				/* index to the staging buffer */
-
-extern int labnum;				/* number of (internal) labels */
-
-extern int staging;				/* true if staging output */
-
-extern cell declared;			/* number of local cells declared */
-
-extern cell glb_declared;		/* number of global bytes declared */
-
-extern cell code_idx;			/* number of bytes with generated code */
-
-extern int ntv_funcid;			/* incremental number of native function */
-
-extern int errflag;				/* 1 after first error in statement, -1 if no
-								 * error on current line, but errors were found */
-
-extern int errnum;				/* number of errors */
-
-extern int warnnum;				/* number of warnings */
-
-extern int verbose;				/* display extra information while compiling? */
-
-extern int debug;				/* by default: full debug info */
-
-extern int charbits;			/* number of bits for a character */
-
-extern int packstr;				/* strings are packed by default? */
-
-extern int needsemicolon;		/* semicolon required to terminate expressions? */
-
-extern int curseg;				/* 1 if currently parsing CODE, 2 if parsing DATA */
-
-extern cell stksize;			/* stack size */
-
-extern int freading;			/* is there an input file ready for reading? */
-
-extern int fline;				/* the line number in the current file */
-
-extern int fnumber;				/* the file number in the file table (debugging) */
-
-extern int fcurrent;			/* current file being processed (debugging) */
-
-extern int intest;				/* true if inside a test */
-
-extern int sideeffect;			/* true if an expression causes a side-effect */
-
-extern int stmtindent;			/* current indent of the statement */
-
-extern int indent_nowarn;		/* skip warning "217 loose indentation" */
-
-
-extern FILE *inpf;				/* file read from */
-
-extern FILE *outf;				/* file written to */
-
+extern FILE *inpf;			/* file read from */
+extern FILE *outf;			/* file written to */
 
 char *strlwr(char *str);
-

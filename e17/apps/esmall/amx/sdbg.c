@@ -115,15 +115,15 @@ static void term_csrget(int *x, int *y)
 
 	fflush(stdout);
 
-	while (getch() != '\033')
+	while (getchar() != '\033')
 
 		/* nothing */ ;
 
-	val = getch();
+	val = getchar();
 
 	assert(val == '[');
 
-	for (i = 0; i < 8 && (val = getch()) != ';'; i++)
+	for (i = 0; i < 8 && (val = getchar()) != ';'; i++)
 
 		str[i] = (char) val;
 
@@ -131,7 +131,7 @@ static void term_csrget(int *x, int *y)
 
 	*y = atoi(str);
 
-	for (i = 0; i < 8 && (val = getch()) != 'R'; i++)
+	for (i = 0; i < 8 && (val = getchar()) != 'R'; i++)
 
 		str[i] = (char) val;
 
@@ -139,7 +139,7 @@ static void term_csrget(int *x, int *y)
 
 	*x = atoi(str);
 
-	val = getch();
+	val = getchar();
 
 	assert(val == '\r');	/* ANSI driver adds CR to the end of the command */
 
@@ -1018,7 +1018,7 @@ static void listcommands(char *command)
 		
 			command = "";
 	
-		if (stricmp(command, "break") == 0) {
+		if (strcasecmp(command, "break") == 0) {
 		
 			printf("\tBREAK\t\tlist all breakpoints\n" 
 				   "\tBREAK n\t\tset a breakpoint at line \"n\"\n" 
@@ -1026,36 +1026,36 @@ static void listcommands(char *command)
 				   "\tBREAK var\tset a breakpoint at variable \"var\"\n" 
 			"\tBREAK var[i]\tset a breakpoint at array element \"var[i]\"\n");
 		
-	} else if (stricmp(command, "cbreak") == 0) {
+	} else if (strcasecmp(command, "cbreak") == 0) {
 		
 			printf("\tCBREAK n\tremove breakpoint number \"n\"\n" 
 				   "\tCBREAK *\tremove all breakpoints\n");
 		
-	} else if (stricmp(command, "cwatch") == 0) {
+	} else if (strcasecmp(command, "cwatch") == 0) {
 		
 			printf("\tCWATCH n\tremove watch number \"n\"\n" 
 				   "\tCWATCH *\tremove all watches\n");
 		
-	} else if (stricmp(command, "disp") == 0 || stricmp(command, "d") == 0) {
+	} else if (strcasecmp(command, "disp") == 0 || strcasecmp(command, "d") == 0) {
 		
 			printf("\tDISP may be abbreviated to D\n\n" 
 			 "\tDISP\t\tdisplay all variables that are currently in scope\n" 
 				   "\tDISP var\tdisplay the value of variable \"var\"\n" 
 			"\tDISP var[i]\tdisplay the value of array element \"var[i]\"\n");
 		
-	} else if (stricmp(command, "file") == 0) {
+	} else if (strcasecmp(command, "file") == 0) {
 		
 			printf("\tFILE\t\tlist all files that this program is composed off\n" 
 				   "\tFILE name\tset the current file to \"name\"\n");
 		
-	} else if (stricmp(command, "g") == 0 || stricmp(command, "go") == 0) {
+	} else if (strcasecmp(command, "g") == 0 || strcasecmp(command, "go") == 0) {
 		
 			printf("\tGO may be abbreviated to G\n\n" 
 			"\tGO\t\trun until the next breakpoint or program termination\n" 
 				   "\tGO RET\t\trun until the end of the current function\n" 
 				   "\tGO n\t\trun until line number \"n\"\n");
 		
-	} else if (stricmp(command, "l") == 0 || stricmp(command, "list") == 0) {
+	} else if (strcasecmp(command, "l") == 0 || strcasecmp(command, "list") == 0) {
 		
 			printf("\tLIST may be abbreviated to L\n\n" 
 				   "\tLIST\t\tdisplay 10 lines around the current line\n" 
@@ -1065,20 +1065,20 @@ static void listcommands(char *command)
 				"\tLIST ON\t\tautomatically list 10 lines after each step\n" 
 				   "\tLIST OFF\tturn off automatic list\n");
 		
-	} else if (stricmp(command, "n") == 0 || stricmp(command, "next") == 0 
-			   ||stricmp(command, "quit") == 0 
-			   ||stricmp(command, "s") == 0 || stricmp(command, "step") == 0)
+	} else if (strcasecmp(command, "n") == 0 || strcasecmp(command, "next") == 0 
+			   ||strcasecmp(command, "quit") == 0 
+			   ||strcasecmp(command, "s") == 0 || strcasecmp(command, "step") == 0)
 		
 	{
 		
 			printf("\tno additional information\n");
 		
-	} else if (stricmp(command, "term") == 0) {
+	} else if (strcasecmp(command, "term") == 0) {
 		
 			printf("\tTERM ANSI\tuse VT100/ANSI terminal display\n" 
 				   "\tTERM OFF\tno terminal support\n");
 		
-	} else if (stricmp(command, "watch") == 0) {
+	} else if (strcasecmp(command, "watch") == 0) {
 		
 			printf("\tWATCH var\tset a new watch at variable \"var\"\n" 
 				   "\tWATCH n var\tchange watch \"n\" to variable \"var\"\n");
@@ -1147,19 +1147,19 @@ static int docommand(AMX * amx, int calllevel)
 			params = (params != NULL) ? skipwhitespace(params) : "";
 		
 			
-			if (stricmp(command, "?") == 0) {
+			if (strcasecmp(command, "?") == 0) {
 			
 				result = sscanf(line, "%*s %30s", command);
 			
 				listcommands(result ? command : NULL);
 			
-		} else if (stricmp(command, "quit") == 0) {
+		} else if (strcasecmp(command, "quit") == 0) {
 			
 				exit(0);
 			
-		} else if (stricmp(command, "g") == 0 || stricmp(command, "go") == 0) {
+		} else if (strcasecmp(command, "g") == 0 || strcasecmp(command, "go") == 0) {
 			
-				if (stricmp(params, "ret") == 0)
+				if (strcasecmp(params, "ret") == 0)
 				
 					return GO_RET;
 			
@@ -1167,29 +1167,29 @@ static int docommand(AMX * amx, int calllevel)
 			
 				return GO;
 			
-		} else if (stricmp(command, "s") == 0 || stricmp(command, "step") == 0) {
+		} else if (strcasecmp(command, "s") == 0 || strcasecmp(command, "step") == 0) {
 			
 				strcpy(lastcommand, "s");
 			
 				return STEP;
 			
-		} else if (stricmp(command, "n") == 0 || stricmp(command, "next") == 0) {
+		} else if (strcasecmp(command, "n") == 0 || strcasecmp(command, "next") == 0) {
 			
 				strcpy(lastcommand, "n");
 			
 				return NEXT;
 			
-		} else if (stricmp(command, "l") == 0 || stricmp(command, "list") == 0) {
+		} else if (strcasecmp(command, "l") == 0 || strcasecmp(command, "list") == 0) {
 			
 			/* first check a few hard cases */ 
-				if (stricmp(params, "funcs") == 0) {
+				if (strcasecmp(params, "funcs") == 0) {
 				
 					for (sym = functab.next; sym != NULL; sym = sym->next)
 					
 						printf("%s\t%s(%d)\n", sym->name, 
 							 skippath(filenames[sym->file]), (int) sym->addr);
 				
-			} else if (stricmp(params, "on") == 0) {
+			} else if (strcasecmp(params, "on") == 0) {
 				
 					autolist = DEF_LIST;
 				
@@ -1197,7 +1197,7 @@ static int docommand(AMX * amx, int calllevel)
 				
 					source_list(curline - autolist / 2, autolist);
 				
-			} else if (stricmp(params, "off") == 0) {
+			} else if (strcasecmp(params, "off") == 0) {
 				
 					if (terminal == TERM_NONE)
 					
@@ -1224,7 +1224,7 @@ static int docommand(AMX * amx, int calllevel)
 					source_list(lnum, numlines);
 				
 			} /* if */ 
-		} else if (stricmp(command, "break") == 0) {
+		} else if (strcasecmp(command, "break") == 0) {
 			
 				if (*params == '\0') {
 				
@@ -1240,7 +1240,7 @@ static int docommand(AMX * amx, int calllevel)
 				
 			}					/* if */
 			
-		} else if (stricmp(command, "cbreak") == 0) {
+		} else if (strcasecmp(command, "cbreak") == 0) {
 			
 				if (*params == '*') {
 				
@@ -1259,7 +1259,7 @@ static int docommand(AMX * amx, int calllevel)
 				
 			}					/* if */
 			
-		} else if (stricmp(command, "disp") == 0 || stricmp(command, "d") == 0) {
+		} else if (strcasecmp(command, "disp") == 0 || strcasecmp(command, "d") == 0) {
 			
 				if (*params == '\0') {
 				
@@ -1324,7 +1324,7 @@ static int docommand(AMX * amx, int calllevel)
 				
 			}					/* if */
 			
-		} else if (stricmp(command, "file") == 0) {
+		} else if (strcasecmp(command, "file") == 0) {
 			
 				if (*params == '\0') {
 				
@@ -1340,8 +1340,8 @@ static int docommand(AMX * amx, int calllevel)
 					for (file = 0; file < MAXFILES; file++) {
 					
 						if (filenames[file] != NULL 
-							&&(stricmp(params, filenames[file]) == 0 
-						   ||stricmp(params, skippath(filenames[file])) == 0))
+							&&(strcasecmp(params, filenames[file]) == 0 
+						   ||strcasecmp(params, skippath(filenames[file])) == 0))
 						
 							break;
 					
@@ -1381,15 +1381,15 @@ static int docommand(AMX * amx, int calllevel)
 				
 			}					/* if */
 			
-		} else if (stricmp(command, "term") == 0) {
+		} else if (strcasecmp(command, "term") == 0) {
 			
 				int new_term = terminal;
 			
-				if (stricmp(params, "off") == 0)
+				if (strcasecmp(params, "off") == 0)
 				
 					new_term = TERM_NONE;
 			
-				else if (stricmp(params, "ansi") == 0)
+				else if (strcasecmp(params, "ansi") == 0)
 				
 					new_term = TERM_ANSI;
 			
@@ -1421,7 +1421,7 @@ static int docommand(AMX * amx, int calllevel)
 				
 			}					/* if */
 			
-		} else if (stricmp(command, "watch") == 0) {
+		} else if (strcasecmp(command, "watch") == 0) {
 			
 				if (isdigit(*params)) {
 				
@@ -1445,7 +1445,7 @@ static int docommand(AMX * amx, int calllevel)
 				
 					printf("Invalid watch, or table full\n");
 			
-		} else if (stricmp(command, "cwatch") == 0) {
+		} else if (strcasecmp(command, "cwatch") == 0) {
 			
 				if (*params == '*') {
 				

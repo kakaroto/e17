@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 {
 
 	extern AMX_NATIVE_INFO core_Natives[];
+	extern AMX_NATIVE_INFO console_Natives[];
 
 	AMX amx;
 	cell ret;
@@ -61,8 +62,10 @@ int main(int argc, char *argv[])
 			   "The filename must include the extension\n");
 		return 1;
 	}							/* if */
-	err = amx_Register(&amx, core_Natives, -1);
+	amx_Register(&amx, core_Natives, -1);
 	core_Init();
+	err = amx_Register(&amx, console_Natives, -1);
+
 	start = clock();
 	if (err == AMX_ERR_NONE)
 		err = amx_Exec(&amx, &ret, AMX_EXEC_MAIN, 0);

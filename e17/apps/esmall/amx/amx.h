@@ -12,6 +12,16 @@ extern "C" {
 	
 #endif	/*  */
 	
+#if !defined __CYGWIN__
+#if defined __WIN32__ || defined _WIN32
+#define EOL_CHAR       '\r'
+#endif   /* __WIN32__ || _WIN32 */
+#endif    /* __CYGWIN__ */
+
+#if !defined EOL_CHAR
+#define EOL_CHAR       '\n'
+#endif    /* EOL_CHAR */
+
 /* calling convention for native functions */ 
 #if !defined AMX_NATIVE_CALL
 #define AMX_NATIVE_CALL
