@@ -339,6 +339,45 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 }
 
 void
+configure_scrollbars_default(Ewl_Widget * pane)
+{
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_increment/file", NULL);
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_decrement/file", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/file", NULL);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/button/file", NULL);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_increment/file", NULL);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_decrement/file", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/file", NULL);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/button/file", NULL);
+
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_increment/group",NULL);
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_decrement/group",NULL);
+
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/group",NULL);
+
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/vseeker/button/group",NULL);
+
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_increment/group",NULL);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_decrement/group",NULL);
+
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/group",NULL);
+
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/hseeker/button/group",NULL);
+
+	return;
+}
+
+void
 configure_scrollbars(Ewl_Widget * pane, char *edjefn)
 {
 	ewl_theme_data_str_set(pane,
@@ -618,6 +657,8 @@ notes_update_themes(void)
 					/* FIXME: What the fuck is happening when
 					 * we enable this?: */
 //                                      configure_scrollbars(note->pane,edjefn);
+				}else{
+//					configure_scrollbars_default(note->pane);
 				}
 			}
 			working = get_cycle_next_note(working);
