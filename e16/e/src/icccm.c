@@ -912,7 +912,6 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	else
 	   ewin->client.icon_name = NULL;
      }
-
    ok = 1;
    if (atom_change)
      {

@@ -102,6 +102,7 @@ LDADD = \
 	$(XVM_LIBS) 		\
 	$(GHTTP_LIBS)           \
 	$(DL_LIBS)              \
+	$(XINERAMA_LIBS)              \
 	-lm
 
 INCLUDES=-I$(top_srcdir) $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(includedir) -I.. -I../intl -I$(top_srcdir)/intl

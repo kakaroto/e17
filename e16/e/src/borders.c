@@ -269,7 +269,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
    int                 k, spd, *x = NULL, *y =
-      NULL, min, tmpx, tmpy, tmpw, tmph, i;
+   NULL,               min, tmpx, tmpy, tmpw, tmph, i;
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
@@ -1191,7 +1191,6 @@ CalcEwinWinpart(EWin * ewin, int i)
 	   ewin->border->part[i].geom.bottomright.y.absolute +
 	   ewin->bits[bottomright].y;
      }
-
    /*
     * * calculate height before width, because we may need it in order to
     * * determine the font size. But we might do it the other way around for
@@ -1257,7 +1256,6 @@ CalcEwinWinpart(EWin * ewin, int i)
 	  {
 	     h = min;
 	  }
-
 	/*
 	 * * and now the width.
 	 */
@@ -1649,7 +1647,6 @@ FreeEwin(EWin * ewin)
 	     HideMenuMasker();
 	  }
      }
-
    if (ewin == mode.focuswin)
       FocusToNone();
 
@@ -2588,7 +2585,7 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		     leftborderwidth =
 			ewin->border->border.left - ewin->bits[i].x;
 		  if ((ewin->bits[i].x + ewin->bits[i].w) -
-		      (ewin->w - ewin->border->border.right) > rightborderwidth)
+		    (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
 							       ewin->

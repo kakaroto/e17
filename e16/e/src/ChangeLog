@@ -4365,3 +4365,13 @@ Mon Mar 20 21:58:50 GMT 2000
 
 You can now iconify windows with skip_winlists set.
 
+
+-------------------------------------------------------------------------------
+
+Thu Mar 23 22:02:20 PST 2000
+(Mandrake)
+
+redoing libXinerama support.  If you use xinerama, try using the "xinerama"
+command.  ALSO - you have to make sure you installed libXinerama.a in the
+right place as well as Xinerama.h -- still lots more hacking to do (trying to
+do a cleaner implementation than my last hack)

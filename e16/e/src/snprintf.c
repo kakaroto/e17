@@ -84,11 +84,12 @@ Evsnprintf(char *str, size_t count, const char *fmt, va_list args)
 
 #ifdef HAVE_STDARGS
 int
-Esnprintf(char *str, size_t count, const char *fmt, ...)
+Esnprintf(char *str, size_t count, const char *fmt,...)
 #else
 int
 Esnprintf(va_alist)
      va_dcl
+
 #endif
 {
 #ifndef HAVE_STDARGS

@@ -37,6 +37,10 @@
 #include <Imlib.h>
 #include <Fnlib.h>
 
+#ifdef HAS_XINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
+
 /* dmalloc debugging */
 /*#include <dmalloc.h> */
 
@@ -3080,6 +3084,11 @@ extern char        *dstr;
 extern char        *badtheme;
 extern char        *badreason;
 extern char        *e_machine_name;
+
+#ifdef HAS_XINERAMA
+extern char         xinerama_active;
+
+#endif
 
 /* This turns on E's internal stack tracking system for coarse debugging */
 /* and being able to trace E for profiling/optimisation purposes (which */

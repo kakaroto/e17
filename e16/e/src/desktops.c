@@ -28,10 +28,10 @@ GetUniqueBGString(Background * bg)
    char                s[256];
    const char         *chmap =
 #ifndef __EMX__
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
 #else
-      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
 
    /* cyrillic symbols from 866 page correctly handled instead of eng. capitals */
 #endif
@@ -1310,17 +1310,17 @@ InitDesktopControls()
 	     else if (desks.dragdir == 2)
 	       {
 		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
-				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
+				 NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     else
 	       {
 		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
-				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
+				 NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y + root.h -
-				   desks.dragbar_width, 0, 0, 0, 0, 0, 1, 0, 1);
+				 desks.dragbar_width, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     AddItem(b, b->name, 2, LIST_TYPE_BUTTON);
 	     desks.desk[i].tag = b;
