@@ -99,6 +99,8 @@ void esmart_container_scroll(Evas_Object *container, int val);
 
 void esmart_container_scroll_offset_set(Evas_Object *container, int val);
 int  esmart_container_scroll_offset_get(Evas_Object *container);
+void esmart_container_scroll_percent(Evas_Object *container, double percent);
+void esmart_container_scroll_to(Evas_Object *container, Evas_Object *element);
 
 /* callbacks */
 void esmart_container_callback_order_change_set(Evas_Object *obj, 
@@ -110,7 +112,6 @@ double esmart_container_elements_orig_length_get(Evas_Object *container);
 
 int esmart_container_layout_plugin_set(Evas_Object *container, const char *name);
 
-void esmart_container_scroll_to(Evas_Object *container, Evas_Object *element);
 
 #ifdef __cplusplus
 }

@@ -322,6 +322,22 @@ esmart_container_scroll_stop(Evas_Object *container)
 }
 
 void
+esmart_container_scroll_percent(Evas_Object *container, double percent)
+{
+  Container *cont;
+  double length, size;
+
+  cont = _container_fetch(container);
+  if (!cont) return;
+
+
+  length = esmart_container_elements_length_get(container);
+  size = cont->direction ? cont->h : cont->w;
+  if (length > size)
+    esmart_container_scroll_offset_set(container, -percent * (length - size));
+}
+
+void
 esmart_container_scroll_to(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
