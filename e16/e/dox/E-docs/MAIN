@@ -503,6 +503,34 @@ the resolutions defined as above.
 <p>
 Multiple & Virtual Desktops
 <font face=aircut3/12 color=#ffffff>
+<p>
+Enlightenment supports both Multiple and Virtual desktops. There is a fine but 
+distinct difference between the 2, and enlightenment treats them differently.
+<p>
+When you start Enlightenment you will by default have 2 desktops. In
+Enlightenment desktops are geometrically unrelated work areas. They are 
+visually stacked ontop of eachother and can even be dragged down to expose
+desktops underneath.
+<p>
+The best way to imagine this is that each desktop is a sheet of paper with the
+first (desktop 0) desktop being glued in-place. You can re-shuffle the stack
+of papers and slide one down to reveal a piece of paper underneath - the only
+paper you can't slide is the first one. Each desktop (or sheet) contains your
+application windows. Windows normally live on one desktop, but can be made
+to exit on all desktops - whenever you change to a new desktop the window
+will follow you and be on that desktop too. This is known as being sticky.
+if a window is sticky it will "stick to the glass of your screen" and stay
+there until it is not sticky anymore or the window is closed.
+<p>
+Virtual desktops (also known as desktop areas) is a measure of how big your
+desktops are. A desktop can be a multple of your screen size in size (2x1, 
+2x2, 3x3, 4x2 etc.). That means each desktop has an AxB screen size of area
+allocated to it and you can be looking at any screen-sized part of it at any 
+time. It's just like getting more sheets of paper and taping them to the sides
+of your current sheet of paper. An easy way of changing your view is by just
+sliding your mouse in the direction of a currently unviewable part of your
+desktop and as long as you have Edge Flip enabled Enlightenment will 
+automatically scroll over to that part of the desktop
 
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
@@ -526,5 +554,17 @@ The Iconbox
 <font face=rothwell/25 color=#ffffff>
 <p>
 Settings
+<font face=aircut3/12 color=#ffffff>
+
+<page columns=1 padding=16 name=properties background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Remembering Properites
+<font face=aircut3/12 color=#ffffff>
+
+<page columns=1 padding=16 name=groups background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Window Groups
 <font face=aircut3/12 color=#ffffff>
 
