@@ -6,6 +6,7 @@ cK              E freezes when I use click-to-focus and select an item from Gany
 mandrake:   kontrol-center seems to crash E when you click on just about anything. needs fixing
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
 mandrake:   closing windows on other desktops works, but if you close the last window on another desktop it crashes E for some reason (using kpanel)
+mandrake:   Start up kfm and kpanel.  On any of the icons right click and do properties. Go to the execute tab and click browse. The new window should come up. Now click on the previous window, and e quicly focuses the 2 windows back and forth taking up considerable cpu usage, then dies. -- possible bug (haven't investigated yet)
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
