@@ -2,5 +2,5 @@ Makefile.in
 Makefile
 .deps
 .libs
-testapp
+eConfig_test
 

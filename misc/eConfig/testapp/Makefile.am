@@ -1,11 +1,11 @@
-TESTS = testapp
+TESTS = eConfig_test
 
-bin_PROGRAMS = testapp
+bin_PROGRAMS = eConfig_test
 
-testapp_SOURCES =  \
+eConfig_test_SOURCES =  \
     main.c
 
-testapp_INCLUDES = -I. -I$(srcdir) -I.. -I$(srcdir)/..
+eConfig_test_INCLUDES = -I. -I$(srcdir) -I.. -I$(srcdir)/..
 
-testapp_LDADD =           \
+eConfig_test_LDADD =           \
    ../src/libeConfig.la

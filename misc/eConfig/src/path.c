@@ -4,9 +4,6 @@
 eConfigType eConfig;
 
 int eConfigAddPath(char *path) {
-	/* This function Initializes the Configuration Engine.  
-	 * It is called externally by the loading application.
-	 */
 
 	PathStruct *cur_path;
 
