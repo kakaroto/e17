@@ -7,36 +7,6 @@ static MenuStyle   *group_menu_style = NULL;
 static void         FileMenuUpdate(int val, void *data);
 static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent);
 
-void                addmenu(void);
-
-/* FIXME: this addmenu(); is temporary - needs to be removed later for real */
-/* root menus */
-/*
- * void
- * addmenu(void)
- * {
- * static Menu        *m = NULL;
- * 
- * XUngrabPointer(disp, CurrentTime);
- * m = FindItem("ROOT_2", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
- * if (m)
- * {
- * mode.cur_menu_mode = 1;
- * if (!FindEwinByMenu(m))
- * ShowMenu(m, 0);
- * mode.cur_menu[0] = m;
- * mode.cur_menu_depth = 1;
- * ShowMenuMasker(m);
- * }
- * else
- * {
- * mode.cur_menu[0] = NULL;
- * mode.cur_menu_depth = 0;
- * HideMenuMasker();
- * }
- * }
- */
-
 void
 ShowTaskMenu(void)
 {
@@ -1548,6 +1518,12 @@ FileMenuUpdate(int val, void *data)
    mm = m;
    if (m->ref_menu)
       mm = m->ref_menu;
+   if (!exists(m->data))
+     {
+	HideMenu(m);
+	DestroyMenu(m);
+	return;
+     }
    if (m->data)
       lastmod = moddate(m->data);
    if (lastmod > m->last_change)

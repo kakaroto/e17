@@ -2540,3 +2540,11 @@ Thu Sep 30 16:54:54 PDT 1999
 (Raster)
 
 change menus.cfg to use new menus scritps can generate
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 16:59:57 PDT 1999
+(Raster)
+
+handle file menus beign deleted form disk and delete them from the menu 
+heirachy too
