@@ -75,6 +75,7 @@ void mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer da
 
 void fx_init(void);
 void fx_blur(void);
+void fx_sharpen(void);
 
 void check_cache(void);
 int check_cache_file(char *cache_file);
