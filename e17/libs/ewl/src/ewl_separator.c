@@ -37,13 +37,16 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 
 	w = EWL_WIDGET(s);
 
-	if (o == EWL_ORIENTATION_HORIZONTAL)
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_widget_init(w, "hseparator");
-	else
+		ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL);
+	}
+	else {
 		ewl_widget_init(w, "vseparator");
+		ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL);
+	}
 
 	ewl_object_set_alignment(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL);
 
 	s->orientation = o;
 

@@ -104,7 +104,10 @@ void ewl_window_set_title(Ewl_Window * win, char *title)
 	if (!REALIZED(win))
 		return;
 
-	ecore_x_window_prop_title_set((Ecore_X_Window)win->window, title);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11"))
+		ecore_x_window_prop_title_set((Ecore_X_Window)win->window, title);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -149,7 +152,11 @@ void ewl_window_set_name(Ewl_Window * win, char *name)
 	if (!REALIZED(win))
 		return;
 
-	ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window, name, win->name);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11"))
+		ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window,
+						   name, win->name);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -194,8 +201,11 @@ void ewl_window_set_class(Ewl_Window * win, char *classname)
 	if (!REALIZED(win))
 		return;
 
-	ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window, classname,
-					   win->classname);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11"))
+		ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window,
+				classname, win->classname);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -230,8 +240,11 @@ void ewl_window_set_borderless(Ewl_Window * win)
 
 	win->flags |= EWL_WINDOW_BORDERLESS;
 
-	if (REALIZED(win))
-		ecore_x_window_prop_borderless_set((Ecore_X_Window)win->window, TRUE);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (REALIZED(win) && strstr(win->render, "x11"))
+		ecore_x_window_prop_borderless_set((Ecore_X_Window)win->window,
+						   TRUE);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -251,8 +264,12 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 
-	if (REALIZED(win))
+	if (!REALIZED(win))
+		DRETURN(DLEVEL_STABLE);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11"))
 		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -456,6 +473,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_current_h(o));
 
 	ewl_embed_set_evas(embed, evas, window->window);
+	window->render = strdup(render);
+	FREE(render);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -474,7 +493,10 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_evas_destroy(embed->evas);
 	embed->evas = NULL;
 
-	ecore_x_window_del((Ecore_X_Window)EWL_WINDOW(embed)->window);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(EWL_WINDOW(embed)->render, "x11"))
+		ecore_x_window_del((Ecore_X_Window)EWL_WINDOW(embed)->window);
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -487,11 +509,16 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!EWL_WINDOW(w)->window)
 		DRETURN(DLEVEL_STABLE);
 
-	if (EWL_WINDOW(w)->flags & EWL_WINDOW_BORDERLESS)
-		ecore_x_window_prop_borderless_set((Ecore_X_Window)EWL_WINDOW(w)->window, 1);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(EWL_WINDOW(w)->render, "x11")) {
+		if (EWL_WINDOW(w)->flags & EWL_WINDOW_BORDERLESS)
+			ecore_x_window_prop_borderless_set((Ecore_X_Window)
+					EWL_WINDOW(w)->window, 1);
 
-	ecore_x_window_show((Ecore_X_Window)EWL_WINDOW(w)->window);
-	ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
+		ecore_x_window_show((Ecore_X_Window)EWL_WINDOW(w)->window);
+		ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
+	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -501,8 +528,12 @@ void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
-	ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(widget)->evas_window);
-	ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(widget)->window);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(EWL_WINDOW(widget)->render, "x11")) {
+		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(widget)->evas_window);
+		ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(widget)->window);
+	}
+#endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -516,15 +547,18 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	win = EWL_WINDOW(w);
 
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (REALIZED(win) && strstr(win->render, "x11")) {
+		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+		ecore_x_window_hide((Ecore_X_Window)win->window);
+
+		ecore_x_window_del((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+		ecore_x_window_del((Ecore_X_Window)win->window);
+	}
+#endif
+
 	IF_FREE(win->title);
-
-	ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
-	ecore_x_window_hide((Ecore_X_Window)win->window);
-
-	ecore_x_window_del((Ecore_X_Window)EWL_EMBED(win)->evas_window);
-	ecore_x_window_del((Ecore_X_Window)win->window);
-
-	IF_FREE(win->title);
+	IF_FREE(win->render);
 
 	if ((win = ecore_list_goto(ewl_window_list, win)))
 		ecore_list_remove(ewl_window_list);
@@ -548,12 +582,16 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Adjust the maximum window bounds to match the widget
 	 */
-	ecore_x_window_prop_min_size_set((Ecore_X_Window)win->window,
-			ewl_object_get_minimum_w(EWL_OBJECT(w)),
-		       	ewl_object_get_minimum_h(EWL_OBJECT(w)));
-	ecore_x_window_prop_max_size_set((Ecore_X_Window)win->window,
-			ewl_object_get_maximum_w(EWL_OBJECT(w)),
-			ewl_object_get_maximum_h(EWL_OBJECT(w)));
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11")) {
+		ecore_x_window_prop_min_size_set((Ecore_X_Window)win->window,
+				ewl_object_get_minimum_w(EWL_OBJECT(w)),
+				ewl_object_get_minimum_h(EWL_OBJECT(w)));
+		ecore_x_window_prop_max_size_set((Ecore_X_Window)win->window,
+				ewl_object_get_maximum_w(EWL_OBJECT(w)),
+				ewl_object_get_maximum_h(EWL_OBJECT(w)));
+	}
+#endif
 
 	/*
 	 * Find out how much space the widget accepted.
@@ -568,13 +606,22 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
 		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
 	else {
-		ecore_x_window_resize((Ecore_X_Window)win->window, width, height);
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+		if (strstr(win->render, "x11"))
+			ecore_x_window_resize((Ecore_X_Window)win->window,
+					      width, height);
+#endif
 
 	}
 
-	if (EWL_EMBED(win)->evas_window != win->window)
-		ecore_x_window_resize((Ecore_X_Window)EWL_EMBED(win)->evas_window, width,
-				      height);
+	if (EWL_EMBED(win)->evas_window != win->window) {
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+		if (strstr(win->render, "x11"))
+			ecore_x_window_resize((Ecore_X_Window)
+					EWL_EMBED(win)->evas_window, width,
+					height);
+#endif
+	}
 	evas_output_size_set(EWL_EMBED(win)->evas, width, height);
 	evas_output_viewport_set(EWL_EMBED(win)->evas,
 				 ewl_object_get_current_x(EWL_OBJECT(w)),

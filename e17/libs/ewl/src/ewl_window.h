@@ -47,6 +47,7 @@ struct Ewl_Window
 
 	int             x; /**< Screen relative horizontal position of window */
 	int             y; /**< Screen relative vertical position of window */
+	char           *render; /**< The render engine in use */
 };
 
 Ewl_Widget     *ewl_window_new(void);

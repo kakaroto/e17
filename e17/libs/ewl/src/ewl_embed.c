@@ -162,7 +162,7 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
 
 	if (w->fx_clip_box) {
 		evas_object_clip_set(emb->smart, w->fx_clip_box);
-		evas_object_repeat_events_set(w->fx_clip_box, TRUE);
+		evas_object_repeat_events_set(w->fx_clip_box, FALSE);
 
 		/*
 		 * Catch mouse events processed through the evas

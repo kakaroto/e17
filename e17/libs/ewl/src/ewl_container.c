@@ -185,7 +185,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
  * @param pc: the parent container that will hold the child
  * @param child: the child to add to the container
  * @return Returns no value.
- * @brief Add a child at the end of the container
+ * @brief Add a child at the beginning of the container
  *
  * Attaches the child to the start of the parent containers child list.
  */
