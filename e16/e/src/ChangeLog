@@ -4327,3 +4327,12 @@ Mon Feb 28 19:39:46 GMT 2000
 
 64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
 
+
+-------------------------------------------------------------------------------
+
+Tue Feb 29 19:44:59 GMT 2000
+(gilbertt)
+
+Hehe. Typo stopped the list skip thing being loaded from the .snaps.x file.
+Fixed.
+

@@ -1059,32 +1059,30 @@ LoadSnapInfo(void)
 		  word(buf, 2, s);
 		  sn->sticky = atoi(s);
 	       }
-	     /* added by tom */
-	     else if (!strcmp(s, "SKIPFOCUS"))
+	     else if (!strcmp(s, "SKIPFOCUS:"))
 	       {
 		  sn->use_skiplists = 1;
 		  word(buf, 2, s);
 		  sn->skipfocus = atoi(s);
 	       }
-	     else if (!strcmp(s, "SKIPTASK"))
+	     else if (!strcmp(s, "SKIPTASK:"))
 	       {
 		  sn->use_skiplists = 1;
 		  word(buf, 2, s);
 		  sn->skiptask = atoi(s);
 	       }
-	     else if (!strcmp(s, "SKIPWINLIST"))
+	     else if (!strcmp(s, "SKIPWINLIST:"))
 	       {
 		  sn->use_skiplists = 1;
 		  word(buf, 2, s);
 		  sn->skipwinlist = atoi(s);
 	       }
-	     else if (!strcmp(s, "NEVERFOCUS"))
+	     else if (!strcmp(s, "NEVERFOCUS:"))
 	       {
 		  sn->use_neverfocus = 1;
 		  word(buf, 2, s);
 		  sn->neverfocus = atoi(s);
 	       }
-	  /***/
 	     else if (!strcmp(s, "SHADE:"))
 	       {
 		  sn->use_shade = 1;
@@ -1340,7 +1338,6 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
      }
    if (sn->use_neverfocus)
       ewin->neverfocus = sn->neverfocus;
-  /***/
    if (sn->use_shade)
      {
 	if (sn->shade)
