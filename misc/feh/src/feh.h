@@ -235,7 +235,7 @@ feh_file filelist_first (feh_file file);
 feh_file feh_file_rm_and_free (feh_file list, feh_file file);
 int filelist_num (feh_file list, feh_file file);
 feh_file filelist_reverse (feh_file list);
-feh_file filelist_randomize(feh_file list);
+feh_file filelist_randomize (feh_file list);
 
 
 /* Imlib stuff */

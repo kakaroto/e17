@@ -205,7 +205,7 @@ slideshow_change_image (winwidget winwid, int change)
 	  break;
 	}
       else
-	  last = current_file;
+	last = current_file;
     }
   if (!success)
     {

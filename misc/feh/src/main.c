@@ -136,11 +136,11 @@ main_loop (void)
 			  if (opt.full_screen)
 			    imlib_render_image_on_drawable (
 							    (scr->width -
-							     progwin->
-							     im_w) >> 1,
+							     progwin->im_w) >>
+							    1,
 							    (scr->height -
-							     progwin->
-							     im_h) >> 1);
+							     progwin->im_h) >>
+							    1);
 			  else
 			    imlib_render_image_on_drawable (0, 0);
 			  XSetWindowBackgroundPixmap (disp, winwid->win,

@@ -51,13 +51,15 @@
 #define PROP_MWM_HINTS_ELEMENTS             5
 
 /* Motif window hints */
-typedef struct _mwmhints {
+typedef struct _mwmhints
+{
   CARD32 flags;
   CARD32 functions;
   CARD32 decorations;
-  INT32  input_mode;
+  INT32 input_mode;
   CARD32 status;
-} MWMHints;
+}
+MWMHints;
 
 
 static void winwidget_unregister (winwidget win);

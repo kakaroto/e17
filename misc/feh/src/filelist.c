@@ -26,7 +26,8 @@ extern int errno;
 
 static feh_file rm_filelist = NULL;
 
-feh_file filelist_newitem (char *filename)
+feh_file
+filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
@@ -56,7 +57,8 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-feh_file feh_file_rm_and_free (feh_file list, feh_file file)
+feh_file
+feh_file_rm_and_free (feh_file list, feh_file file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
@@ -64,7 +66,8 @@ feh_file feh_file_rm_and_free (feh_file list, feh_file file)
 }
 
 
-feh_file filelist_addtofront (feh_file root, feh_file newfile)
+feh_file
+filelist_addtofront (feh_file root, feh_file newfile)
 {
   D (("In filelist_addtofront\n"));
   newfile->next = root;
@@ -89,8 +92,7 @@ filelist_length (feh_file file)
   return length;
 }
 
-feh_file
-filelist_last (feh_file file)
+feh_file filelist_last (feh_file file)
 {
   D (("In filelist_last\n"));
   if (file)
@@ -101,8 +103,7 @@ filelist_last (feh_file file)
   return file;
 }
 
-feh_file
-filelist_first (feh_file file)
+feh_file filelist_first (feh_file file)
 {
   D (("In filelist_first\n"));
   if (file)
@@ -113,7 +114,8 @@ filelist_first (feh_file file)
   return file;
 }
 
-feh_file filelist_reverse (feh_file list)
+feh_file
+filelist_reverse (feh_file list)
 {
   feh_file last;
 
@@ -129,7 +131,8 @@ feh_file filelist_reverse (feh_file list)
   return last;
 }
 
-feh_file filelist_randomize (feh_file list)
+feh_file
+filelist_randomize (feh_file list)
 {
   int len, r, i;
   feh_file *farray, f;
@@ -192,7 +195,8 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-feh_file filelist_remove_file (feh_file list, feh_file file)
+feh_file
+filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
   if (!file)

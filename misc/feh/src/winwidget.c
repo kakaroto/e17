@@ -51,7 +51,8 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -78,7 +79,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget winwidget_create_from_file (feh_file file, char *name)
+winwidget
+winwidget_create_from_file (feh_file file, char *name)
 {
   winwidget ret = NULL;
 
@@ -334,9 +336,9 @@ feh_draw_checks (winwidget win)
 {
   int x, y;
 
-  if(opt.full_screen)
-	return;
-  
+  if (opt.full_screen)
+    return;
+
   imlib_context_set_image (checks);
   imlib_context_set_drawable (win->bg_pmap);
 
@@ -442,7 +444,8 @@ winwidget_unregister (winwidget win)
   XDeleteContext (disp, win->win, xid_context);
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
   winwidget ret = NULL;
 
