@@ -1,3 +1,10 @@
+Sat Jun 17 23:46:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* A couple of nice new menu bgs from pabsmonkey.
+	* The example.fehrc has theme entries for them, so if you copy it
+	to ~/.fehrc, using feh --theme brushed will use the brushed menu
+	bg. Same for --theme chrome.
+
 Sat Jun 17 12:57:49 PDT 2000 Paul Duncan <pabs@pablotron.org>
    
    * wget is now quiet by default (wget -q). it's verbose if the

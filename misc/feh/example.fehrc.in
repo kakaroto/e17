@@ -50,3 +50,6 @@ screensave --full-screen --randomize --slideshow-delay 5
 # Add <img> tags to your html with ease :-)
 newimg -q -L "<img src=\"%f\" alt=\"feh\" border=\"0\" width=\"%w\" height=\"%h\">"
 
+# Different menus
+chrome --menu-bg @prefix@/share/feh/images/menubg_chrome.png
+brushed --menu-bg @prefix@/share/feh/images/menubg_brushed.png
