@@ -70,6 +70,8 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 			button = ewl_button_new(col_headers[i - 1]);
 			ewl_widget_disable(button);
 			ewl_container_append_child(EWL_CONTAINER(cell), button);
+			ewl_object_set_fill_policy(EWL_OBJECT(cell),
+						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 			ewl_grid_add(t->grid, EWL_WIDGET(cell), i, i, 1, 1);
 			ewl_widget_show(EWL_WIDGET(button));
 			ewl_widget_show(EWL_WIDGET(cell));
