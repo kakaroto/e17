@@ -592,28 +592,27 @@ AddToFamily(Window win)
 		  Efree(blst);
 	       }
 
-	     /*
-	      * if(mode.kde_support) {
-	      * fixed = Erealloc(fixed, sizeof(RectBox) * (j + 1));
-	      * ret = Erealloc(ret, sizeof(RectBox) * (j + 2) + 1);
-	      * 
-	      * fixed[j].data = NULL;
-	      * fixed[j].x = 0;
-	      * fixed[j].y = 0;
-	      * fixed[j].w = mode.kde_x1;
-	      * fixed[j].h = mode.kde_y1;
-	      * fixed[j].p = 50;
-	      * j++;
-	      * fixed[j].data = NULL;
-	      * fixed[j].x = mode.kde_x2;
-	      * fixed[j].y = mode.kde_y2;
-	      * fixed[j].w = mode.kde_x2 - root.w;
-	      * fixed[j].h = mode.kde_y2 - root.h;
-	      * fixed[j].p = 50;
-	      * j++;
-	      * 
-	      * }
-	      */
+	     if (mode.kde_support)
+	       {
+		  fixed = Erealloc(fixed, sizeof(RectBox) * (j + 2));
+		  ret = Erealloc(ret, sizeof(RectBox) * ((j + 2) + 1));
+
+		  fixed[j].data = NULL;
+		  fixed[j].x = 0;
+		  fixed[j].y = 0;
+		  fixed[j].w = mode.kde_x1;
+		  fixed[j].h = mode.kde_y1;
+		  fixed[j].p = 50;
+		  j++;
+		  fixed[j].data = NULL;
+		  fixed[j].x = mode.kde_x2;
+		  fixed[j].y = mode.kde_y2;
+		  fixed[j].w = mode.kde_x2 - root.w;
+		  fixed[j].h = mode.kde_y2 - root.h;
+		  fixed[j].p = 50;
+		  j++;
+
+	       }
 
 	     newrect.data = ewin;
 	     newrect.x = 0;
