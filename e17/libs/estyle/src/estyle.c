@@ -6,6 +6,8 @@
 #define DEFAULT_FONT "nationff"
 #define DEFAULT_SIZE 12
 
+void __estyle_update(Estyle *es);
+
 static int estyle_setup_complete = 0;
 
 /**
@@ -269,6 +271,8 @@ void estyle_set_style(Estyle * es, char *name)
 
 	if (es->flags & ESTYLE_BIT_VISIBLE)
 		estyle_style_show(es);
+
+	__estyle_update(es);
 }
 
 /**
@@ -301,8 +305,6 @@ char *estyle_get_text(Estyle *es)
  */
 void estyle_set_text(Estyle * es, char *text)
 {
-	double x, y, w, h;
-
 	CHECK_PARAM_POINTER("es", es);
 
 	/*
@@ -329,32 +331,10 @@ void estyle_set_text(Estyle * es, char *text)
 
 	es->length = strlen(text);
 
-	/*
-	 * If the estyle doesn't have fixed dimensions then set it to the
-	 * geometry of it's contents.
-	 */
-	if (!(es->flags & ESTYLE_BIT_FIXED)) {
-		evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
-
-		es->w = D2I_ROUND(w) + (es->style ? es->style->info->left_push
-			+ es->style->info->right_push : 0);
-		es->h = D2I_ROUND(h) + (es->style ? es->style->info->top_push
-			+ es->style->info->bottom_push : 0);
-	}
-
-	/*
-	 * Setup the color of the evas object and move it into position.
-	 */
-	evas_set_color(es->evas, es->bit, es->color->r, es->color->g,
-			es->color->b, es->color->a);
-	evas_move(es->evas, es->bit,
-			(double)(es->x + (es->style ?
-					  es->style->info->left_push : 0)),
-			(double)(es->y + (es->style ?
-					  es->style->info->top_push : 0)));
-
 	if (es->flags & ESTYLE_BIT_VISIBLE)
 		estyle_style_show(es);
+
+	__estyle_update(es);
 }
 
 /**
@@ -425,6 +405,8 @@ void estyle_set_font(Estyle * es, char *font, int size)
 	evas_set_font(es->evas, es->bit, font, size);
 	if (es->style)
 		estyle_style_set_font(es, font, size);
+
+	__estyle_update(es);
 }
 
 /**
@@ -676,4 +658,36 @@ void estyle_unfix_geometry(Estyle *es)
 	es->y = D2I_ROUND(y);
 	es->w = D2I_ROUND(w);
 	es->h = D2I_ROUND(h);
+}
+
+/*
+ * __estyle_update - update the sizing and position of the estyle
+ */
+void __estyle_update(Estyle *es)
+{
+	double x, y, w, h;
+
+	/*
+	 * If the estyle doesn't have fixed dimensions then set it to the
+	 * geometry of it's contents.
+	 */
+	if (!(es->flags & ESTYLE_BIT_FIXED)) {
+		evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
+
+		es->w = D2I_ROUND(w) + (es->style ? es->style->info->left_push
+			+ es->style->info->right_push : 0);
+		es->h = D2I_ROUND(h) + (es->style ? es->style->info->top_push
+			+ es->style->info->bottom_push : 0);
+	}
+
+	/*
+	 * Setup the color of the evas object and move it into position.
+	 */
+	evas_set_color(es->evas, es->bit, es->color->r, es->color->g,
+			es->color->b, es->color->a);
+	evas_move(es->evas, es->bit,
+			(double)(es->x + (es->style ?
+					  es->style->info->left_push : 0)),
+			(double)(es->y + (es->style ?
+					  es->style->info->top_push : 0)));
 }
