@@ -46,11 +46,12 @@ will cause all sorts of havoc and may even blow a hole in the back of
 your monitor. Run "entrance" instead.
 
 To set up your sessions, edit the build_config.sh script in the data/config
-directory to specify the names of the X sessions on your machine.
-Alternatively, you can edit data/config/entrance_config.db using an EDB
-editor like edb_gtk_ed. The default sessions are designed to work on a
-Debian 3.0 installation, so you will likely need to update your db before
-Entrance can work for you. While adding sessions, please note that
+directory before compiling to specify the names of the X sessions on your 
+machine. After installation, you will need to directly edit
+/etc/entrace_config.db using an EDB editor like edb_gtk_ed.  The default 
+sessions are designed to work on a Debian 3.0 installation, so you will 
+likely need to update your db before Entrance can work for you. While 
+adding sessions, please note that:
 
 - A session without a path is assumed to be an Xsession name, and will be
   launched using Xsession. Otherwise, the specific path will be executed
@@ -67,7 +68,7 @@ You may also want to add images for users in the appropriate
 directory so that they come up while you log in. For example, if your
 login was foo, then you would need to add "foo.png" to that directory
 for it to come up. The location of this image is now specified in config
-as either in the system directory ($PREFIX/share/entrance/data/images/users/)
+as either in the system directory ($PREFIX/share/entrance/images/users/)
 or in the user's home directory ($HOME/.e/entrance/). The config format is
 as follows:
 
@@ -78,8 +79,8 @@ as follows:
 
 <n> is an index starting from zero.
 
-Also, if $PREFIX/share/entrance/data/images/users/_default.png exists, it
-will be used as the default image if an image is not available for a user.
+Also, if $PREFIX/share/entrance/images/users/_default.png exists, it will 
+be used as the default image if an image is not available for a user.
 
 Take a look at buildtheme.sh in the BlueCrystal theme directory as a
 guide to the theme format.
