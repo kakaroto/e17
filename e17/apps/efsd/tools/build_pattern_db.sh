@@ -22,7 +22,7 @@ $DB "*.ttf"     $STR "font/true-type"
 
 $DB "*.tar"     $STR "application/tar"
 $DB "*.tar.gz"  $STR "application/tar-gzip"
-$DB "*.gz"      $STR "application/gzip"
+$DB "*.gz"      $STR "application/gnu-zip"
 $DB "*.tgz"     $STR "application/tar-gzip"
 $DB "*.tar.Z"   $STR "application/tar-compressed"
 $DB "*.tar.bz2" $STR "application/tar-bzip2"

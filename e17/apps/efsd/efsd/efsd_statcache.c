@@ -166,18 +166,22 @@ efsd_stat_update(char *filename)
 
   if ((st = (struct stat*)efsd_hash_find(stat_cache, filename)))
     {
+      D(("Old timestamp: %i\n", st->st_mtime));
       if (stat(filename, st) < 0)
 	{
 	  D(("stat() on %s failed.\n", filename));
 	}
+      D(("New timestamp: %i\n", st->st_mtime));
     }
 
   if ((st = (struct stat*)efsd_hash_find(lstat_cache, filename)))
     {
+      D(("Old timestamp: %i\n", st->st_mtime));
       if (lstat(filename, st) < 0)
 	{
 	  D(("stat() on %s failed.\n", filename));
 	}
+      D(("New timestamp: %i\n", st->st_mtime));
     }
 
   D_RETURN;
