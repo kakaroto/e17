@@ -131,7 +131,7 @@ main(int argc, char **argv)
         main_win = ewl_window_new();
         ewl_window_set_title(main_win,
                              "The Cuddletech Test App: EWL");
-        ewl_window_resize(main_win, 297, 68); 
+        ewl_object_resize(EWL_OBJECT(main_win), 297, 68); 
         ewl_widget_show(main_win);
 
         /* Setup and show a button */
