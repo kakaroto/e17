@@ -68,7 +68,6 @@ int main (int argc, char **argv)
 	   file = argv[i];
      }
    printf("init\n");
-   __imlib_RGBA_init();
    disp = XOpenDisplay(NULL);
    printf("load\n");
    im = __imlib_LoadImage(file, NULL, 0, 0, 0);
@@ -95,8 +94,6 @@ int main (int argc, char **argv)
      }
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
-   if (depth == 8)
-      __imlib_AllocColorTable(disp, DefaultColormap(disp, DefaultScreen(disp)));
    XSync(disp, False);
    printf("rend\n");
    gettimeofday(&timev,NULL);
@@ -209,8 +206,6 @@ int main (int argc, char **argv)
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
    cm = DefaultColormap(disp, DefaultScreen(disp));
-   if (depth == 8)
-      __imlib_AllocColorTable(disp, cm);
    __imlib_SetMaxXImageCount(disp, 0);  
    XSync(disp, False);
    printf("init\n");

@@ -1,4 +1,6 @@
 #include "common.h"
+#include <X11/Xlib.h>
+#include "context.h"
 #include "rgba.h"
 
 #define IS_ALIGNED_64(val) (!((val) & 0x7))
@@ -15,48 +17,19 @@
 /* NOTES: */
 /* x86: RGBA in byte order = ABGR when read as an int (in register/int) */
 
-/* internal static functions */
-static void *_load_PNG (int *ww, int *hh, FILE *f);
-
 /* lookup table to see what color index to use */
-extern DATA8 _dither_color_lut[256];
+static DATA8 *_dither_color_lut;
+static DATA8 _pal_type;
 
 /* using DATA32 - major speedup for aligned memory reads */
 
-/* 48Kb of static data (lookup tabel for dithering) */
-static DATA16 _dither_r565_44[4][4][256];
-static DATA16 _dither_g565_44[4][4][256];
-static DATA16 _dither_b565_44[4][4][256];
-/* another 48Kb of static data (lookup table for dithering) */
-static DATA16 _dither_r555_44[4][4][256];
-static DATA16 _dither_g555_44[4][4][256];
-static DATA16 _dither_b555_44[4][4][256];
-/* another 24Kb of static data (lookup table for dithering) */
-static DATA8 _dither_r332_88[8][8][256];
-static DATA8 _dither_g332_88[8][8][256];
-static DATA8 _dither_b332_88[8][8][256];
-/* another 24Kb of static data (lookup table for dithering) */
-static DATA8 _dither_r232_88[8][8][256];
-static DATA8 _dither_g232_88[8][8][256];
-static DATA8 _dither_b232_88[8][8][256];
-/* another 24Kb of static data (lookup table for dithering) */
-static DATA8 _dither_r222_88[8][8][256];
-static DATA8 _dither_g222_88[8][8][256];
-static DATA8 _dither_b222_88[8][8][256];
-/* another 24Kb of static data (lookup table for dithering) */
-static DATA8 _dither_r221_88[8][8][256];
-static DATA8 _dither_g221_88[8][8][256];
-static DATA8 _dither_b221_88[8][8][256];
-/* another 24Kb of static data (lookup table for dithering) */
-static DATA8 _dither_r121_88[8][8][256];
-static DATA8 _dither_g121_88[8][8][256];
-static DATA8 _dither_b121_88[8][8][256];
-/* another 24Kb of static data (lookup table for dithering) */
-static DATA8 _dither_r111_88[8][8][256];
-static DATA8 _dither_g111_88[8][8][256];
-static DATA8 _dither_b111_88[8][8][256];
-/* another 8Kb of static data (lookup table for dithering) */
-static DATA8 _dither_1_88[8][8][256];
+/* these data structs global rather than context-based for speed */
+static DATA16 *_dither_r16;
+static DATA16 *_dither_g16;
+static DATA16 *_dither_b16;
+static DATA8 *_dither_r8;
+static DATA8 *_dither_g8;
+static DATA8 *_dither_b8;
 
 /*****************************************************************************/
 /* Actual rendering routines                                                 */
@@ -95,11 +68,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB565 conversion */
 #define DITHER_RGBA_565_LUT_R(num) \
-(_dither_r565_44[(x + num) & 0x3][y & 0x3][(src[num] >> 0 ) & 0xff])
+(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_565_LUT_G(num) \
-(_dither_g565_44[(x + num) & 0x3][y & 0x3][(src[num] >> 8)  & 0xff])
+(_dither_g16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 8 ) & 0xff)])
 #define DITHER_RGBA_565_LUT_B(num) \
-(_dither_b565_44[(x + num) & 0x3][y & 0x3][(src[num] >> 16) & 0xff])
+(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
 
 #define WRITE1_RGBA_RGB565_DITHER(src, dest)                  \
 *dest = (DITHER_RGBA_565_LUT_R(0)) |                          \
@@ -166,11 +139,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB555 conversion */
 #define DITHER_RGBA_555_LUT_R(num) \
-(_dither_r555_44[(x + num) & 0x3][y & 0x3][(src[num] >> 0 ) & 0xff])
+(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_555_LUT_G(num) \
-(_dither_g555_44[(x + num) & 0x3][y & 0x3][(src[num] >> 8)  & 0xff])
+(_dither_g16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 8 ) & 0xff)])
 #define DITHER_RGBA_555_LUT_B(num) \
-(_dither_b555_44[(x + num) & 0x3][y & 0x3][(src[num] >> 16) & 0xff])
+(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
 
 #define WRITE1_RGBA_RGB555_DITHER(src, dest)                  \
 *dest = (DITHER_RGBA_555_LUT_R(0)) |                          \
@@ -269,11 +242,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB332 conversion */
 #define DITHER_RGBA_332_LUT_R(num) \
-(_dither_r332_88[(x + num) & 0x7][y & 0x7][(src[num] >> 0 ) & 0xff])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_332_LUT_G(num) \
-(_dither_g332_88[(x + num) & 0x7][y & 0x7][(src[num] >> 8)  & 0xff])
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_332_LUT_B(num) \
-(_dither_b332_88[(x + num) & 0x7][y & 0x7][(src[num] >> 16) & 0xff])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 
 #define WRITE1_RGBA_RGB332_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_332_LUT_R(0)) |                         \
@@ -411,11 +384,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB232 conversion */
 #define DITHER_RGBA_232_LUT_R(num) \
-(_dither_r232_88[(x + num) & 0x7][y & 0x7][(src[num] >> 0 ) & 0xff])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_232_LUT_G(num) \
-(_dither_g232_88[(x + num) & 0x7][y & 0x7][(src[num] >> 8)  & 0xff])
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_232_LUT_B(num) \
-(_dither_b232_88[(x + num) & 0x7][y & 0x7][(src[num] >> 16) & 0xff])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 
 #define WRITE1_RGBA_RGB232_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_232_LUT_R(0)) |                         \
@@ -553,11 +526,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB222 conversion */
 #define DITHER_RGBA_222_LUT_R(num) \
-(_dither_r222_88[(x + num) & 0x7][y & 0x7][(src[num] >> 0 ) & 0xff])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_222_LUT_G(num) \
-(_dither_g222_88[(x + num) & 0x7][y & 0x7][(src[num] >> 8)  & 0xff])
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_222_LUT_B(num) \
-(_dither_b222_88[(x + num) & 0x7][y & 0x7][(src[num] >> 16) & 0xff])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 
 #define WRITE1_RGBA_RGB222_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_222_LUT_R(0)) |                         \
@@ -695,11 +668,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB221 conversion */
 #define DITHER_RGBA_221_LUT_R(num) \
-(_dither_r221_88[(x + num) & 0x7][y & 0x7][(src[num] >> 0 ) & 0xff])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_221_LUT_G(num) \
-(_dither_g221_88[(x + num) & 0x7][y & 0x7][(src[num] >> 8)  & 0xff])
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_221_LUT_B(num) \
-(_dither_b221_88[(x + num) & 0x7][y & 0x7][(src[num] >> 16) & 0xff])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 
 #define WRITE1_RGBA_RGB221_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_221_LUT_R(0)) |                         \
@@ -837,11 +810,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB121 conversion */
 #define DITHER_RGBA_121_LUT_R(num) \
-(_dither_r121_88[(x + num) & 0x7][y & 0x7][(src[num] >> 0 ) & 0xff])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_121_LUT_G(num) \
-(_dither_g121_88[(x + num) & 0x7][y & 0x7][(src[num] >> 8)  & 0xff])
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_121_LUT_B(num) \
-(_dither_b121_88[(x + num) & 0x7][y & 0x7][(src[num] >> 16) & 0xff])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 
 #define WRITE1_RGBA_RGB121_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_121_LUT_R(0)) |                         \
@@ -979,11 +952,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB111 conversion */
 #define DITHER_RGBA_111_LUT_R(num) \
-(_dither_r111_88[(x + num) & 0x7][y & 0x7][(src[num] >> 0 ) & 0xff])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
 #define DITHER_RGBA_111_LUT_G(num) \
-(_dither_g111_88[(x + num) & 0x7][y & 0x7][(src[num] >> 8)  & 0xff])
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_111_LUT_B(num) \
-(_dither_b111_88[(x + num) & 0x7][y & 0x7][(src[num] >> 16) & 0xff])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 
 #define WRITE1_RGBA_RGB111_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_111_LUT_R(0)) |                         \
@@ -1060,9 +1033,11 @@ static DATA8 _dither_1_88[8][8][256];
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB1 conversion */
 #define DITHER_RGBA_1_LUT(num) \
-(_dither_1_88[(x + num) & 0x7][y & 0x7][((((*src >> 0) & 0xff) +      \
-                                         ((*src >>  8) & 0xff) +      \
-                                         ((*src >> 16) & 0xff)) / 3)])
+(_dither_r8[(((x + num) & 0x7) << 11) |   \
+            ((y & 0x7)         << 8) |    \
+            ((((*src >> 0) & 0xff) +      \
+             ((*src >>  8) & 0xff) +      \
+             ((*src >> 16) & 0xff)) / 3)])
 
 #define WRITE1_RGBA_RGB1_DITHER(src, dest)                        \
 *dest = _dither_color_lut[(DITHER_RGBA_1_LUT(0))]; dest++; src++
@@ -1083,7 +1058,7 @@ src++
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> A1 conversion */
 #define DITHER_RGBA_A1_LUT(num) \
-(_dither_1_88[(x + num) & 0x7][y & 0x7][(src[num] >> 24)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 24))])
 
 #define WRITE1_RGBA_A1_DITHER(src, dest)            \
 *dest |= (DITHER_RGBA_A1_LUT(0)) << (x & 0x7);      \
@@ -1114,224 +1089,308 @@ src++;
 *dest = ((*src >> 8)   & 0xff); dest++;       \
 *dest = ((*src >> 0)   & 0xff); dest++; src++;
 
+void
+__imlib_RGBASetupContext(Context *ct)
+{
+   _dither_color_lut = ct->palette;
+   _pal_type = ct->palette_type;
+
+   if ((ct->depth == 16) || (ct->depth == 15))
+     {
+	_dither_r16 = (DATA16 *)ct->r_dither;
+	_dither_g16 = (DATA16 *)ct->g_dither;
+	_dither_b16 = (DATA16 *)ct->b_dither;
+     }
+   else if (ct->depth <= 8)
+     {
+	switch (_pal_type)
+	  {
+	  case 0:
+	  case 1:
+	  case 2:
+	  case 3:
+	  case 4:
+	  case 5:
+	     _dither_r8 = (DATA8 *)ct->r_dither;
+	     _dither_g8 = (DATA8 *)ct->g_dither;
+	     _dither_b8 = (DATA8 *)ct->b_dither;
+	     break;
+	  case 6:
+	     _dither_r8 = (DATA8 *)ct->r_dither;
+	     break;
+	  default:
+	     break;
+	  }
+     }
+}
+   
 /* Palette mode stuff */
 
-void 
-__imlib_RGBA_init(void)
-{
-  /* the famous dither matrix */
-  DATA8 _dither_44[4][4] =
-    {
-	{0, 4, 1, 5},
-	{6, 2, 7, 3},
-	{1, 5, 0, 4},
-	{7, 3, 6, 2}
-    };
-  DATA8 _dither_88[8][8] =
-    {
-	{ 0,  32, 8,  40, 2,  34, 10, 42 },
-	{ 48, 16, 56, 24, 50, 18, 58, 26 },
-	{ 12, 44, 4,  36, 14, 46, 6,  38 },
-	{ 60, 28, 52, 20, 62, 30, 54, 22 },
-	{ 3,  35, 11, 43, 1,  33, 9,  41 },
-	{ 51, 19, 59, 27, 49, 17, 57, 25 },
-	{ 15, 47, 7,  39, 13, 45, 5,  37 },
-	{ 63, 31, 55, 23, 61, 29, 53, 21 }
-    };
-  int i, x, y;
-  
-  for (y = 0; y < 4; y++)
-    {
-      for (x = 0; x < 4; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-		_dither_r565_44[x][y][i] = ((i + 8) & 0xf8) << 8;
-	      else
-		_dither_r565_44[x][y][i] = (i & 0xf8) << 8;
-	      
-	      if ((_dither_44[x][y] < ((i & 0x3) << 1)) && (i < (256 - 4)))
-		_dither_g565_44[x][y][i] = (((i + 4) & 0xfc) << 8) >> 5;
-	      else
-		_dither_g565_44[x][y][i] = ((i & 0xfc) << 8) >> 5;
-	      
-	      if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-		_dither_b565_44[x][y][i] = (((i + 8) & 0xf8) << 16) >> 19;
-	      else
-		_dither_b565_44[x][y][i] = ((i & 0xf8) << 16) >> 19;
-	      
-	      if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-		_dither_r555_44[x][y][i] = (((i + 8) & 0xf8) << 8) >> 1;
-	      else
-		_dither_r555_44[x][y][i] = ((i & 0xf8) << 8) >> 1;
-	      
-	      if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-		_dither_g555_44[x][y][i] = (((i + 8) & 0xf8) << 8) >> 6;
-	      else
-		_dither_g555_44[x][y][i] = ((i & 0xf8) << 8) >> 6;
-	      
-	      if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-		_dither_b555_44[x][y][i] = (((i + 8) & 0xf8) << 16) >> 19;
-	      else
-		_dither_b555_44[x][y][i] = ((i & 0xf8) << 16) >> 19;
-	    }
-	}
-    }
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < ((i & 0x1f) << 1)) && (i < (256 - 32)))
-		_dither_r332_88[x][y][i] = ((i + 32) & 0xe0);
-	      else
-		_dither_r332_88[x][y][i] = (i & 0xe0);
-	      
-	      if ((_dither_88[x][y] < ((i & 0x1f) << 1)) && (i < (256 - 32)))
-		_dither_g332_88[x][y][i] = (((i + 32) >> 3)& 0x1c);
-	      else
-		_dither_g332_88[x][y][i] = ((i >> 3) & 0x1c);
-	      
-	      if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
-		_dither_b332_88[x][y][i] = (((i + 64) >> 6)& 0x03);
-	      else
-		_dither_b332_88[x][y][i] = ((i >> 6) & 0x03);
-	    }
-	}
-    } 
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
-		_dither_r232_88[x][y][i] = (((i + 64) >> 1) & 0x60);
-	      else
-		_dither_r232_88[x][y][i] = ((i >> 1) & 0x60);
-	      
-	      if ((_dither_88[x][y] < ((i & 0x1f) << 1)) && (i < (256 - 32)))
-		_dither_g232_88[x][y][i] = (((i + 32) >> 3)& 0x1c);
-	      else
-		_dither_g232_88[x][y][i] = ((i >> 3) & 0x1c);
-	      
-	      if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
-		_dither_b232_88[x][y][i] = (((i + 64) >> 6)& 0x03);
-	      else
-		_dither_b232_88[x][y][i] = ((i >> 6) & 0x03);
-	    }
-	}
-    }
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < (i & 0x3f))         && (i < (256 - 64)))
-		_dither_r222_88[x][y][i] = (((i + 64) >> 2) & 0x30);
-	      else
-		_dither_r222_88[x][y][i] = ((i >> 2) & 0x30);
-	      
-	      if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
-		_dither_g222_88[x][y][i] = (((i + 64) >> 4)& 0x0c);
-	      else
-		_dither_g222_88[x][y][i] = ((i >> 4) & 0x0c);
-	      
-	      if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
-		_dither_b222_88[x][y][i] = (((i + 64) >> 6)& 0x03);
-	      else
-		_dither_b222_88[x][y][i] = ((i >> 6) & 0x03);
-	    }
-	}
-    }
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < (i & 0x3f)) && (i < (256 - 64)))
-		_dither_r221_88[x][y][i] = (((i + 64) >> 3) & 0x18);
-	      else
-		_dither_r221_88[x][y][i] = ((i >> 3) & 0x18);
-	      
-	      if ((_dither_88[x][y] < (i & 0x3f)) && (i < (256 - 64)))
-		_dither_g221_88[x][y][i] = (((i + 64) >> 5) & 0x06);
-	      else
-		_dither_g221_88[x][y][i] = ((i >> 5) & 0x06);
-	      
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_b221_88[x][y][i] = (((i + 128) >> 7) & 0x01);
-	      else
-		_dither_b221_88[x][y][i] = ((i >> 7) & 0x01);
-	    }
-	}
-    }
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_r121_88[x][y][i] = (((i + 128) >> 4) & 0x08);
-	      else
-		_dither_r121_88[x][y][i] = ((i >> 4) & 0x08);
-	      
-	      if ((_dither_88[x][y] < (i & 0x3f)) && (i < (256 - 64)))
-		_dither_g121_88[x][y][i] = (((i + 64) >> 5) & 0x06);
-	      else
-		_dither_g121_88[x][y][i] = ((i >> 5) & 0x06);
-	      
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_b121_88[x][y][i] = (((i + 128) >> 7) & 0x01);
-	      else
-		_dither_b121_88[x][y][i] = ((i >> 7) & 0x01);
-	    }
-	}
-    }
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_r111_88[x][y][i] = (((i + 128) >> 5) & 0x04);
-	      else
-		_dither_r111_88[x][y][i] = ((i >> 5) & 0x04);
-	      
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_g111_88[x][y][i] = (((i + 128) >> 6) & 0x02);
-	      else
-		_dither_g111_88[x][y][i] = ((i >> 6) & 0x02);
-	      
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_b111_88[x][y][i] = (((i + 128) >> 7) & 0x01);
-	      else
-		_dither_b111_88[x][y][i] = ((i >> 7) & 0x01);
-	    }
-	}
-    }
-  for (y = 0; y < 8; y++)
-    {
-      for (x = 0; x < 8; x++)
-	{
-	  for (i = 0; i < 256; i++)
-	    {
-	      if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
-		_dither_1_88[x][y][i] = (((i + 128) >> 7) & 0x01);
-	      else
-		_dither_1_88[x][y][i] = ((i >> 7) & 0x01);
-	    }
-	}
-    }
-}
-
 void
+__imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
+{
+   DATA16 *rd16, *gd16, *bd16;
+   DATA8 *rd8, *gd8, *bd8;
+   /* the famous dither matrix */
+   const DATA8 _dither_44[4][4] =
+     {
+	  {0, 4, 1, 5},
+	  {6, 2, 7, 3},
+	  {1, 5, 0, 4},
+	  {7, 3, 6, 2}
+     };
+   const DATA8 _dither_88[8][8] =
+     {
+	  { 0,  32, 8,  40, 2,  34, 10, 42 },
+	  { 48, 16, 56, 24, 50, 18, 58, 26 },
+	  { 12, 44, 4,  36, 14, 46, 6,  38 },
+	  { 60, 28, 52, 20, 62, 30, 54, 22 },
+	  { 3,  35, 11, 43, 1,  33, 9,  41 },
+	  { 51, 19, 59, 27, 49, 17, 57, 25 },
+	  { 15, 47, 7,  39, 13, 45, 5,  37 },
+	  { 63, 31, 55, 23, 61, 29, 53, 21 }
+     };
+   int i, x, y;
+   
+   switch (depth)
+     {
+     case 16:
+	rd16 = (DATA16 *)rd;
+	gd16 = (DATA16 *)gd;
+	bd16 = (DATA16 *)bd;
+	for (y = 0; y < 4; y++)
+	  {
+	     for (x = 0; x < 4; x++)
+	       {
+		  for (i = 0; i < 256; i++)
+		    {
+		       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+			  rd16[(x << 10) | (y << 8) | i] = ((i + 8) & 0xf8) << 8;
+		       else
+			  rd16[(x << 10) | (y << 8) | i] = (i & 0xf8) << 8;
+		       
+		       if ((_dither_44[x][y] < ((i & 0x3) << 1)) && (i < (256 - 4)))
+			  gd16[(x << 10) | (y << 8) | i] = (((i + 4) & 0xfc) << 8) >> 5;
+		       else
+			  gd16[(x << 10) | (y << 8) | i] = ((i & 0xfc) << 8) >> 5;
+		       
+		       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+			  bd16[(x << 10) | (y << 8) | i] = (((i + 8) & 0xf8) << 16) >> 19;
+		       else
+			  bd16[(x << 10) | (y << 8) | i] = ((i & 0xf8) << 16) >> 19;
+		    }
+	       }
+	  }
+	break;
+     case 15:
+	rd16 = (DATA16 *)rd;
+	gd16 = (DATA16 *)gd;
+	bd16 = (DATA16 *)bd;
+	for (y = 0; y < 4; y++)
+	  {
+	     for (x = 0; x < 4; x++)
+	       {
+		  for (i = 0; i < 256; i++)
+		    {	      
+		       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+			  rd16[(x << 10) | (y << 8) | i] = (((i + 8) & 0xf8) << 8) >> 1;
+		       else
+			  rd16[(x << 10) | (y << 8) | i] = ((i & 0xf8) << 8) >> 1;
+		       
+		       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+			  gd16[(x << 10) | (y << 8) | i] = (((i + 8) & 0xf8) << 8) >> 6;
+		       else
+			  gd16[(x << 10) | (y << 8) | i] = ((i & 0xf8) << 8) >> 6;
+		       
+		       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+			  bd16[(x << 10) | (y << 8) | i] = (((i + 8) & 0xf8) << 16) >> 19;
+		       else
+			  bd16[(x << 10) | (y << 8) | i] = ((i & 0xf8) << 16) >> 19;
+		    }
+	       }
+	  }
+	break;
+     case 8:
+	rd8 = (DATA8 *)rd;
+	gd8 = (DATA8 *)gd;
+	bd8 = (DATA8 *)bd;
+	switch (palette_type)
+	  {
+	  case 0:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < ((i & 0x1f) << 1)) && (i < (256 - 32)))
+			       rd8[(x << 11) | (y << 8) | i] = ((i + 32) & 0xe0);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = (i & 0xe0);
+			    
+			    if ((_dither_88[x][y] < ((i & 0x1f) << 1)) && (i < (256 - 32)))
+			       gd8[(x << 11) | (y << 8) | i] = (((i + 32) >> 3)& 0x1c);
+			    else
+			       gd8[(x << 11) | (y << 8) | i] = ((i >> 3) & 0x1c);
+			    
+			    if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
+			       bd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 6)& 0x03);
+			    else
+			       bd8[(x << 11) | (y << 8) | i] = ((i >> 6) & 0x03);
+			 }
+		    }
+	       } 
+	     break;
+	  case 1:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
+			       rd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 1) & 0x60);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = ((i >> 1) & 0x60);
+			    
+			    if ((_dither_88[x][y] < ((i & 0x1f) << 1)) && (i < (256 - 32)))
+			       gd8[(x << 11) | (y << 8) | i] = (((i + 32) >> 3)& 0x1c);
+			    else
+			       gd8[(x << 11) | (y << 8) | i] = ((i >> 3) & 0x1c);
+			    
+			    if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
+			       bd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 6)& 0x03);
+			    else
+			       bd8[(x << 11) | (y << 8) | i] = ((i >> 6) & 0x03);
+			 }
+		    }
+	       }
+	     break;
+	  case 2:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < (i & 0x3f))         && (i < (256 - 64)))
+			       rd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 2) & 0x30);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = ((i >> 2) & 0x30);
+			    
+			    if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
+			       gd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 4)& 0x0c);
+			    else
+			       gd8[(x << 11) | (y << 8) | i] = ((i >> 4) & 0x0c);
+			    
+			    if ((_dither_88[x][y] < (i & 0x3f))        && (i < (256 - 64)))
+			       bd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 6)& 0x03);
+			    else
+			       bd8[(x << 11) | (y << 8) | i] = ((i >> 6) & 0x03);
+			 }
+		    }
+	       }
+	     break;
+	  case 3:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < (i & 0x3f)) && (i < (256 - 64)))
+			       rd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 3) & 0x18);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = ((i >> 3) & 0x18);
+			    
+			    if ((_dither_88[x][y] < (i & 0x3f)) && (i < (256 - 64)))
+			       gd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 5) & 0x06);
+			    else
+			       gd8[(x << 11) | (y << 8) | i] = ((i >> 5) & 0x06);
+			    
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       bd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 7) & 0x01);
+			    else
+			       bd8[(x << 11) | (y << 8) | i] = ((i >> 7) & 0x01);
+			 }
+		    }
+	       }
+	     break;
+	  case 4:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       rd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 4) & 0x08);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = ((i >> 4) & 0x08);
+			    
+			    if ((_dither_88[x][y] < (i & 0x3f)) && (i < (256 - 64)))
+			       gd8[(x << 11) | (y << 8) | i] = (((i + 64) >> 5) & 0x06);
+			    else
+			       gd8[(x << 11) | (y << 8) | i] = ((i >> 5) & 0x06);
+			    
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       bd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 7) & 0x01);
+			    else
+			       bd8[(x << 11) | (y << 8) | i] = ((i >> 7) & 0x01);
+			 }
+		    }
+	       }
+	     break;
+	  case 5:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       rd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 5) & 0x04);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = ((i >> 5) & 0x04);
+			    
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       gd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 6) & 0x02);
+			    else
+			       gd8[(x << 11) | (y << 8) | i] = ((i >> 6) & 0x02);
+			    
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       bd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 7) & 0x01);
+			    else
+			       bd8[(x << 11) | (y << 8) | i] = ((i >> 7) & 0x01);
+			 }
+		    }
+	       }
+	     break;
+	  case 6:
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			    if ((_dither_88[x][y] < ((i & 0x7f) >> 1)) && (i < (256 - 128)))
+			       rd8[(x << 11) | (y << 8) | i] = (((i + 128) >> 7) & 0x01);
+			    else
+			       rd8[(x << 11) | (y << 8) | i] = ((i >> 7) & 0x01);
+			 }
+		    }
+	       }
+	     break;
+	  default:
+	     break;
+	  }
+	break;
+     default:
+	break;
+     }
+}
+	
+   void
 __imlib_RGBA_to_RGB565_fast(DATA32 *src , int src_jump, 
 		    DATA16 *dest, int dest_jump,
 		    int width, int height, int dx, int dy)

@@ -1,7 +1,9 @@
 #ifndef __RGBA
 #define __RGBA 1
 
-void    __imlib_RGBA_init(void);
+void    __imlib_RGBASetupContext(Context *ct);
+void    __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, 
+			  DATA8 palette_type);
 void    __imlib_RGBA_to_RGB565_fast(DATA32 *src , int src_jump,
 			    DATA16 *dest, int dest_jump,
 			    int width, int height, int dx, int dy);

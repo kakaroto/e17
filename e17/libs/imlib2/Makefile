@@ -70,9 +70,9 @@ LN_S = ln -s
 LTLIBOBJS = 
 MAKEINFO = makeinfo
 NM = /usr/bin/nm -B
-OBJDUMP = 
 PACKAGE = imlib
 RANLIB = ranlib
+USE_SYMBOL_UNDERSCORE = no
 VERSION = 2.0
 pkglibdir = ${libdir}/loaders
 
@@ -95,7 +95,7 @@ png_la_LDFLAGS = -no-undefined -module -avoid-version
 png_la_LIBADD = -lpng -lz -lX11 -lXext
 
 bin_PROGRAMS = imlib2
-imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c
+imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c 		  context.c
 
 imlib2_LDADD = -export-dynamic $(top_builddir)/libltdl/libltdlc.la -lX11 -lXext
 
@@ -115,7 +115,7 @@ png_la_OBJECTS =  loader_png.lo
 PROGRAMS =  $(bin_PROGRAMS)
 
 imlib2_OBJECTS =  rend.o ximage.o scale.o main.o rgba.o image.o color.o \
-grab.o blend.o file.o rgbadraw.o api.o draw.o
+grab.o blend.o file.o rgbadraw.o api.o draw.o context.o
 imlib2_DEPENDENCIES =  $(top_builddir)/libltdl/libltdlc.la
 imlib2_LDFLAGS = 
 CFLAGS = -O2                     -mpentium -mcpu=pentium -march=pentium -malign-loops=2 -malign-jumps=2 -malign-functions=2 -g  -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wpointer-arith   
@@ -132,9 +132,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/api.P .deps/blend.P .deps/color.P .deps/draw.P \
-.deps/file.P .deps/grab.P .deps/image.P .deps/loader_png.P .deps/main.P \
-.deps/rend.P .deps/rgba.P .deps/rgbadraw.P .deps/scale.P .deps/ximage.P
+DEP_FILES =  .deps/api.P .deps/blend.P .deps/color.P .deps/context.P \
+.deps/draw.P .deps/file.P .deps/grab.P .deps/image.P .deps/loader_png.P \
+.deps/main.P .deps/rend.P .deps/rgba.P .deps/rgbadraw.P .deps/scale.P \
+.deps/ximage.P
 SOURCES = $(png_la_SOURCES) $(imlib2_SOURCES)
 OBJECTS = $(png_la_OBJECTS) $(imlib2_OBJECTS)
 

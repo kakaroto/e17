@@ -25,6 +25,7 @@ typedef void (*Imlib_Progress_Function)(Imlib_Image *im, char percent,
 char        imlib_init(void);
 int         imlib_get_cache_size(void);
 void        imlib_set_cache_size(int bytes);
+int         imlib_get_color_usage(void);
 void        imlib_set_color_usage(int max);
 
 /* image loading functions */
@@ -47,12 +48,13 @@ void imlib_free_image_and_decache(Imlib_Image image);
 int     imlib_get_image_width(Imlib_Image image);
 int     imlib_get_image_height(Imlib_Image image);
 DATA32 *imlib_get_image_data(Imlib_Image image);
-void    imlib_put_back_image_data(Imlib_Image image);
 char    imlib_image_has_alpha(Imlib_Image image);
-void    imlib_set_image_never_changes_on_disk(Imlib_Image image);
+char   *imlib_image_format(Imlib_Image image);
+void    imlib_put_back_image_data(Imlib_Image image);
+void    imlib_image_set_has_alpha(Imlib_Image image, char has_alpha);
+void    imlib_image_set_never_changes_on_disk(Imlib_Image image);
 void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border);
 void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border);
-char   *imlib_image_format(Imlib_Image image);
 
 /* image drawing/rendering functions */
 
@@ -95,6 +97,9 @@ void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  int destination_x, int destination_y,
 				  int destination_width, int destination_height);
 
+/* draw line, polygon, rect - with option of drawing in rgb or alpha or both */
+/* apply alpha of one image to another */
+
 /* image creation and grabbing */
 Imlib_Image imlib_create_image_using_data(int width, int height, 
 					  DATA32 *data);
@@ -106,6 +111,30 @@ Imlib_Image imlib_create_image_from_drawable(Display *display,
 					     Colormap colormap, int depth,
 					     int x, int y, 
 					     int width, int height);
-
 Imlib_Image imlib_clone_image(Imlib_Image image);
+#if 0
+Imlib_image imlib_create_cropped_image(Imlib_Image image,
+				       int x, int y, int width, int height);
+Imlib_image imlib_create_cropped_scaled_image(Imlib_Image image,
+					      int source_x, int source_y, 
+					      int source_width, 
+					      int source_height,
+					      int destination_width,
+					      int destination_height);
+/* image modification - geometry */
+void imlib_create_cropped_image(Imlib_Image image, int x, int y, int width, 
+				int height);
+void imlib_cropp_scale_image(Imlib_Image image, int source_x, int source_y, 
+			     int source_width, int source_height);
+
+/* image modification - color */
+
+/* image modification - rotation */
+
+/* image modification - blur / sharpen */
+
+/* image modification - special (seamless tile (h, v & both) etc) */
+
+/* image saving functions */
+#endif
 #endif

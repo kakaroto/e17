@@ -3,6 +3,7 @@
 #include "scale.h"
 #include "image.h"
 #include "rend.h"
+#include "context.h"
 #include "rgba.h"
 #include "color.h"
 #include "file.h"
@@ -19,7 +20,6 @@ typedef void (*Imlib_Internal_Progress_Function)(ImlibImage*, char,
 char 
 imlib_init(void)
 {
-   __imlib_RGBA_init();
    return 1;
 }
 
@@ -33,6 +33,12 @@ void
 imlib_set_cache_size(int bytes)
 {
    __imlib_SetCacheSize(bytes);
+}
+
+int
+imlib_get_color_usage(void)
+{
+   return (int)_max_colors;
 }
 
 void 
@@ -163,7 +169,7 @@ imlib_image_has_alpha(Imlib_Image image)
 }
 
 void 
-imlib_set_image_never_changes_on_disk(Imlib_Image image)
+imlib_image_set_never_changes_on_disk(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -208,6 +214,15 @@ imlib_image_format(Imlib_Image image)
 
    CAST_IMAGE(im, image);
    return im->format;
+}
+
+void 
+imlib_image_set_has_alpha(Imlib_Image image, char has_alpha)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   UNSET_FLAG(im->flags, F_HAS_ALPHA);
 }
 
 void 

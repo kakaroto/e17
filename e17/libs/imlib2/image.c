@@ -161,6 +161,7 @@ __imlib_CurrentCacheSize(void)
 	  }
 	ip = ip->next;
      }
+   return current_cache;
 }
 
 void
@@ -300,7 +301,7 @@ __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip)
 }
 
 void
-__imlib_CleanupImagePixmapCache()
+__imlib_CleanupImagePixmapCache(void)
 {
    ImlibImagePixmap *ip, *ip_last;   
    int               current_cache;
@@ -348,9 +349,8 @@ LTDL_Init(void)
 {
   static int errors = LOADERS_UNINITIALISED;
     
-
   /* Do this only once! */
-  if (errors = LOADERS_UNINITIALISED)
+  if ((errors = LOADERS_UNINITIALISED))
     {
       errors = lt_dlinit();
 
@@ -614,6 +614,7 @@ __imlib_CreateImage(int w, int h, DATA32 *data)
    im->data = data;
    im->references = 1;
    SET_FLAG(im->flags, F_UNCACHEABLE);
+   return im;
 }
 
 ImlibImage *

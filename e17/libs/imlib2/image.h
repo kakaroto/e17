@@ -92,7 +92,7 @@ ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h,
 					char aa, char hiq, char dmask);
 void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
 void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
-void              __imlib_CleanupImagePixmapCache();
+void              __imlib_CleanupImagePixmapCache(void);
 ImlibLoader      *__imlib_ProduceLoader(char *file);
 char            **__imlib_ListLoaders(int *num_ret);
 void              __imlib_ConsumeLoader(ImlibLoader *l);
