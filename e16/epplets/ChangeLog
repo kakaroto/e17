@@ -930,3 +930,10 @@ Sun Nov 28 21:06:21 GMT 1999
 Added a popup containing a history of the urls you launch, of the urls found
 in the file being watched. This is cool :)
 
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:52:12 GMT 1999
+(gilbertt)
+
+Made the screensaver lock command configurable in E-ScreenSave.
+
