@@ -4,6 +4,6 @@
 #include <gtk/gtk.h>
 #include <Evas.h>
 
-void show_splash(Evas evas, gint *idle, GtkFunction redraw_func);
+void            show_splash(Evas evas, gint * idle, GtkFunction redraw_func);
 
 #endif

@@ -1,3 +1,9 @@
+Sat Mar 02 19:18:28 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Made the lower and raise apply directly so you dont have to
+	  press the apply button.
+	* Fixed bug causing the images not getting saved.
+	* Etcher now handles custom states.
+
 Wed Feb 27 23:16:47 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Created a ChangLog.
 	* Made etcher handle the Selected state.
