@@ -217,4 +217,4 @@ epp/Makefile
 man/Makefile
 scripts/Makefile
 scripts/enlightenment.install
-)
+])
