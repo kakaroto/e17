@@ -3988,3 +3988,10 @@ Fri Nov 19 18:58:56 PST 1999
 
 fix variable expansion for file execcing...
 fix mensu to be onscreen including submenus when u have menus onsreen selected.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 22 12:42:56 PST 1999
+(Mandrake)
+
+added "current" option to win_op ipc command for walt :)
