@@ -11,7 +11,7 @@
 #include <Ecore.h>
 #include "image.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 static void entice_image_resize(Evas_Object * o, double w, double h);
 static int _entice_image_scroll_timer(void *data);
