@@ -255,7 +255,6 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 		e->seekerflags.invert_dir = atoi(invert);
 
 	evas_object_move(e->gui.edje, 0, 0);
-	evas_object_pass_events_set (e->gui.edje, 1);
 	evas_object_show(e->gui.edje);
 
 	/* set max size */
