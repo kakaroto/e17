@@ -1927,11 +1927,17 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
         x++)
    {
-      table1[yc - y].x = xc - x;
-      table2[yc - y].x = xc + x;
+      if (((yc - y) >= 0) && ((yc - y) < im->h))
+	{
+	   table1[yc - y].x = xc - x;
+	   table2[yc - y].x = xc + x;
+	}
 
-      table1[yc + y].x = xc - x;
-      table2[yc + y].x = xc + x;
+      if (((yc + y) >= 0) && ((yc + y) < im->h))
+	{
+	   table1[yc + y].x = xc - x;
+	   table2[yc + y].x = xc + x;
+	}
 
       if (dec >= 0.0)
          dec += 4.0 * a2 * (1 - (y--));
@@ -1941,11 +1947,17 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
         y++)
    {
-      table1[yc - y].x = xc - x;
-      table2[yc - y].x = xc + x;
+      if (((yc - y) >= 0) && ((yc - y) < im->h))
+	{
+	   table1[yc - y].x = xc - x;
+	   table2[yc - y].x = xc + x;
+	}
 
-      table1[yc + y].x = xc - x;
-      table2[yc + y].x = xc + x;
+      if (((yc + y) >= 0) && ((yc + y) < im->h))
+	{
+	   table1[yc + y].x = xc - x;
+	   table2[yc + y].x = xc + x;
+	}
 
       if (dec >= 0)
          dec += 4 * b2 * (1 - (x--));
@@ -1960,21 +1972,31 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
       __spanlist_clip(table1, table2, &miny, &maxy, clip_xmin, clip_xmax,
                       clip_ymin, clip_ymax);
 
-   if (antialias)
-   {
-      do
-      {
-/*         spanAA(im, miny, table1, table2, r, g, b, a, op);*/
-         miny++;
-      }
-      while (miny < maxy);
-   }
-   else
+   if (miny < 0) miny = 0;
+   if (miny >= im->h) 
+     {
+	free(table1);
+	free(table2);
+	return;
+     }
+   if (maxy < 0)
+     {
+	free(table1);
+	free(table2);
+	return;
+     }
+   if (maxy >= im->h) maxy = im->h - 1;
    {
 
       do
       {
-         span(im, miny, table1[miny].x, table2[miny].x, r, g, b, a, op);
+	 int x1, x2;
+	 
+	 x1 = table1[miny].x;
+	 x2 = table2[miny].x;
+	 if (x1 < clip_xmin) x1 = clip_xmin;
+	 if (x2 > clip_xmax) x2 = clip_xmax;
+         span(im, miny, x1, x2, r, g, b, a, op);
          miny++;
       }
       while (miny < maxy);

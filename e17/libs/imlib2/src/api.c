@@ -2946,8 +2946,11 @@ imlib_image_draw_ellipse(int xc, int yc, int a, int b)
    }
    else
    {
-      __imlib_draw_ellipse(im, xc, yc, a, b, ctxt_color.red, ctxt_color.green,
-                           ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
+      __imlib_draw_ellipse_clipped(im, xc, yc, a, b, 0, 
+				   im->w - 1, 0, im->h - 1,
+                                   ctxt_color.red, ctxt_color.green,
+                                   ctxt_color.blue, ctxt_color.alpha,
+                                   ctxt_operation);
    }
 }
 
@@ -2966,11 +2969,11 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
    __imlib_DirtyPixmapsForImage(im);
 
    __imlib_fill_ellipse(im, xc, yc, a, b, ctxt_cliprect.x,
-                        ctxt_cliprect.x + ctxt_cliprect.w,
-                        ctxt_cliprect.y,
-                        ctxt_cliprect.y + ctxt_cliprect.h, ctxt_color.red,
-                        ctxt_color.green, ctxt_color.blue, ctxt_color.alpha,
-                        ctxt_operation, ctxt_anti_alias);
+			ctxt_cliprect.x + ctxt_cliprect.w - 1,
+			ctxt_cliprect.y,
+			ctxt_cliprect.y + ctxt_cliprect.h - 1, ctxt_color.red,
+			ctxt_color.green, ctxt_color.blue, ctxt_color.alpha,
+			ctxt_operation, ctxt_anti_alias);
 }
 
 
