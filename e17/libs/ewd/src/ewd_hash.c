@@ -2,6 +2,9 @@
 
 #define EWD_HASH_CHAIN_MAX 3
 
+#define EWD_COMPUTE_HASH(hash, key) hash->hash_func(key) % \
+					ewd_prime_table[hash->size];
+
 #define EWD_HASH_INCREASE(hash) ((hash && hash->size < PRIME_MAX) ? \
 		(hash->nodes / ewd_prime_table[hash->size]) > \
 		EWD_HASH_CHAIN_MAX : FALSE)
@@ -152,8 +155,9 @@ void ewd_hash_destroy(Ewd_Hash *hash)
 	EWD_WRITE_LOCK(hash);
 
 	while (i < ewd_prime_table[hash->size]) {
-		_ewd_hash_bucket_destroy(hash->buckets[i],
-				hash->free_key, hash->free_value);
+		if (hash->buckets[i])
+			_ewd_hash_bucket_destroy(hash->buckets[i],
+					hash->free_key, hash->free_value);
 		i++;
 	}
 
@@ -199,7 +203,7 @@ _ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
 		_ewd_hash_decrease(hash);
 
 	/* Compute the position in the table */
-	hash_val = hash->hash_func(node->key) % ewd_prime_table[hash->size];
+	hash_val = EWD_COMPUTE_HASH(hash, node->key);
 
 	/* Create the list if it's not already present */
 	if (!hash->buckets[hash_val])
@@ -237,6 +241,60 @@ void *ewd_hash_get(Ewd_Hash *hash, void *key)
 	return data;
 }
 
+
+/*
+ * Description: Remove the value associated with key
+ * Parameters: 1. hash - the hash table to remove the key from
+ *             2. key - the key to search for in the hash table
+ * Returns: NULL on error, value corresponding to key on success
+ */
+void *ewd_hash_remove(Ewd_Hash *hash, void *key)
+{
+	Ewd_Hash_Node *node = NULL;
+	Ewd_List *list;
+	unsigned int hash_val;
+	void *ret = NULL;
+
+	CHECK_PARAM_POINTER_RETURN("hash", hash, NULL);
+
+	EWD_WRITE_LOCK(hash);
+	/* Compute the position in the table */
+	hash_val = EWD_COMPUTE_HASH(hash, key);
+
+	/*
+	 * If their is a list that could possibly hold the key/value pair
+	 * traverse it and remove the hash node.
+	 */
+	if (hash->buckets[hash_val]) {
+		list = hash->buckets[hash_val];
+		ewd_list_goto_first(list);
+
+		/*
+		 * Traverse the list to find the specified key
+		 */
+		if (hash->compare) {
+			while ((node = ewd_list_current(list)) &&
+					hash->compare(node->key, key) != 0)
+				ewd_list_next(list);
+		}
+		else {
+			while ((node = ewd_list_current(list)) &&
+					node->key != key)
+				ewd_list_next(list);
+		}
+
+		if (node)
+			ewd_list_remove(list);
+
+		ret = node->value;
+		FREE(node);
+	}
+
+	EWD_WRITE_UNLOCK(hash);
+
+	return ret;
+}
+
 /*
  * Description: Retrieve the node associated with key
  * Parameters: 1. hash - the hash table to search for the key
@@ -252,7 +310,7 @@ _ewd_hash_get_node(Ewd_Hash *hash, void *key)
 	CHECK_PARAM_POINTER_RETURN("hash", hash, NULL);
 
 	EWD_READ_LOCK(hash);
-	hash_val = hash->hash_func(key) % ewd_prime_table[hash->size];
+	hash_val = EWD_COMPUTE_HASH(hash, key);
 	if (hash->buckets[hash_val])
 		node = _ewd_hash_get_bucket(hash, hash->buckets[hash_val], key);
 	EWD_READ_UNLOCK(hash);
@@ -274,6 +332,11 @@ _ewd_hash_get_bucket(Ewd_Hash *hash, Ewd_List *bucket, void *key)
 
 	EWD_READ_LOCK(hash);
 	ewd_list_goto_first(bucket);
+
+	/*
+	 * Traverse the list to find the desired node, if the node is in the
+	 * list, then return the node.
+	 */
 	if (hash->compare) {
 		while ((node = ewd_list_next(bucket)) != NULL) {
 			EWD_READ_LOCK(node);
@@ -323,6 +386,9 @@ _ewd_hash_increase(Ewd_Hash *hash)
 		return FALSE;
 	}
 
+	/*
+	 * Clear out the newly allocated memory area
+	 */
 	memset(hash->buckets + ewd_prime_table[hash->size - 1], 0,
 			(ewd_prime_table[hash->size] -
 			 ewd_prime_table[hash->size - 1]) * sizeof(Ewd_List *));
@@ -445,6 +511,7 @@ _ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
+	EWD_INIT_LOCKS(node);
 	node->key = key;
 	node->value = value;
 

@@ -46,5 +46,6 @@ void ewd_hash_destroy(Ewd_Hash *hash);
 /* Retrieve and store data into the hash */
 void *ewd_hash_get(Ewd_Hash *hash, void *key);
 int ewd_hash_set(Ewd_Hash *hash, void *key, void *value);
+void *ewd_hash_remove(Ewd_Hash *hash, void *key);
 
 #endif
