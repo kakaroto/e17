@@ -4133,3 +4133,11 @@ Wed Dec 29 14:14:29 PST 1999
 (KainX)
 
 Fixed that weird background setting behavior that E-Slides revealed.
+
+-------------------------------------------------------------------------------
+
+Tue Jan  4 23:58:44 CET 2000
+(Saur)
+
+* Corrected a couple of spelling errors in the code.
+* Added localization of a few messages in the E.h file.

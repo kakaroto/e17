@@ -91,10 +91,10 @@
 #endif /* !WITH_TARTY_WARP */
 
 #define RESET_ALERT \
-   AssignTitleText("Enlightenment Message Dialog"); \
-   AssignIgnoreText("Ignore this"); \
-   AssignRestartText("Restart Enlightenment"); \
-   AssignExitText("Quit Enlightenment");
+   AssignTitleText(_("Enlightenment Message Dialog")); \
+   AssignIgnoreText(_("Ignore this")); \
+   AssignRestartText(_("Restart Enlightenment")); \
+   AssignExitText(_("Quit Enlightenment"));
 
 #define ASSIGN_ALERT(a, b, c, d) \
   AssignTitleText(a); \
@@ -118,7 +118,7 @@ ApplySclass(FindItem((sclass), 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
   __d = CreateDialog("DIALOG"); \
   DialogSetTitle(__d, title); \
   DialogSetText(__d, text); \
-  DialogAddButton(__d, "OK", NULL, 1); \
+  DialogAddButton(__d, _("OK"), NULL, 1); \
   ShowDialog(__d); \
 }
 
@@ -133,7 +133,7 @@ DialogSetParamText(__d,
 
 #define DIALOG_PARAM_END \
   ); \
-  DialogAddButton(__d, "OK", NULL, 1); \
+  DialogAddButton(__d, _("OK"), NULL, 1); \
   ShowDialog(__d); \
 }
 
@@ -248,13 +248,18 @@ int                 Esnprintf(va_alist);
 
 /* This is a start to providing internationalization by means */
 /* of gettext */
-/* #ifdef HAVE_GETTEXT */
 
+#ifdef HAVE_LOCALE_H
 #include <locale.h>
-#include <libintl.h>
-#define _(String) gettext (String)
+#endif
 
-/* #endif */
+#include <libintl.h>
+#define _(String) gettext(String)
+#ifdef gettext_noop
+#define N_(String) gettext_noop(String)
+#else
+#define N_(String) (String)
+#endif
 
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
 #ifndef MAX

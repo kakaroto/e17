@@ -508,7 +508,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Display and use focuslist"));
+   DialogItemCheckButtonSetText(di, _("Display and use focus list"));
    DialogItemCheckButtonSetState(di, tmp_display_warp);
    DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
 
@@ -3024,7 +3024,7 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, _("BG Color\n"));
+   DialogItemTextSetText(di, _("BG Colour\n"));
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -3218,7 +3218,7 @@ SettingsBackground(Background * bg)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Use dithering in Hi-Color"));
+   DialogItemCheckButtonSetText(di, _("Use dithering in Hi-Colour"));
    DialogItemCheckButtonSetState(di, tmp_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_hiq);
 
@@ -3282,7 +3282,7 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemButtonSetText(di, _("Prescan BG's"));
+   DialogItemButtonSetText(di, _("Pre-scan BG's"));
    DialogItemSetCallback(di, CB_BGScan, 0, NULL);
 
    di = table2 = DialogAddItem(table, DITEM_TABLE);

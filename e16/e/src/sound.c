@@ -262,7 +262,7 @@ SoundInit()
 	ASSIGN_ALERT(_("Error initialising sound"),
 		     _("OK"), " ", " ");
 	Alert(_
-	      ("Audio was enabled for Enlightenemnt but there was an error\n"
+	      ("Audio was enabled for Enlightenment but there was an error\n"
 	       "communicating with the audio server (Esound). Audio will\n"
 	       "now be disabled.\n"));
 	RESET_ALERT;

@@ -220,7 +220,7 @@ EHandleXError(Display * d, XErrorEvent * ev)
 	     "You will have to quit your current Window Manager first before\n"
 		     "you can successfully run Enlightenment.\n"
 		     "\n"
-	      "If you haven't edited your user startup files, Enlightenment\n"
+	     "If you haven't edited your user start-up files, Enlightenment\n"
 		   "can do that now for you, so when you log in again after\n"
 		     "quitting your current window manager, you will have\n"
 		     "Enlightenment running.\n"
@@ -236,8 +236,8 @@ EHandleXError(Display * d, XErrorEvent * ev)
 			  "", _("NO (do not edit)"));
 	     Alert(_
 		   ("Are you absolutely sure you want to have Enlightenment\n"
-		    "edit your startup files for you?\n" "\n"
-		  "If your startup files are highly customised this may not\n"
+		    "edit your start-up files for you?\n" "\n"
+		 "If your start-up files are highly customised this may not\n"
 		    "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
 	     RESET_ALERT;
 	     AddE();

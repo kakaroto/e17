@@ -331,7 +331,7 @@ SetupX()
 		"\n"
 		"Enlightenment is unable to initialise Imlib.\n"
 		"\n"
-		"This is unusual. Unable to contiune.\n" "Exiting.\n"));
+		"This is unusual. Unable to continue.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -344,7 +344,7 @@ SetupX()
 		"\n"
 		"Enlightenment is unable to initialise Fnlib.\n"
 		"\n"
-		"This is unusual. Unable to contiune.\n" "Exiting.\n"));
+		"This is unusual. Unable to continue.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
