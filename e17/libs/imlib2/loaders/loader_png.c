@@ -154,20 +154,18 @@ load(ImlibImage * im, ImlibProgressFunction progress,
          return 0;
       }
       if (hasg)
+         {
+            png_set_gray_to_rgb(png_ptr);
+            if (png_get_bit_depth(png_ptr, info_ptr) < 8)
+               png_set_gray_1_2_4_to_8(png_ptr);
+         }
+      for (i = 0; i < h; i++)
+         lines[i] =
+            ((unsigned char *) (im->data)) + (i * w * sizeof(DATA32));
+      if (progress)
       {
-         DATA8 *line;
          int y, count, prevy, pass, number_passes, per, nrows = 1;
 
-         line = malloc(w * 2);
-         if (!line)
-         {
-            free(lines);
-            im->data = NULL;
-            png_read_end(png_ptr, info_ptr);
-            png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-            fclose(f);
-            return 0;
-         }
          count = 0;
          number_passes = png_set_interlace_handling(png_ptr);
          for (pass = 0; pass < number_passes; pass++)
@@ -176,31 +174,25 @@ load(ImlibImage * im, ImlibProgressFunction progress,
             per = 0;
             for (y = 0; y < h; y += nrows)
             {
-               DATA32 *ptr;
+               png_read_rows(png_ptr, &lines[y], NULL, nrows);
 
-               lines[0] = line;
-               png_read_rows(png_ptr, &lines[0], NULL, nrows);
-               ptr = im->data + (y * w);
-               for (i = 0; i < w; i++)
+               per = (((pass * h) + y) * 100) / (h * number_passes);
+               if ((per - count) >= progress_granularity)
                {
-                  ptr[0] =
-                     (line[i << 1] << 16) | (line[i << 1] << 8) |
-                     (line[i << 1]) | (line[(i << 1) + 1] << 24);
-                  ptr++;
-               }
-               if (progress)
-               {
-                  per = (((pass * h) + y) * 100) / (h * number_passes);
-                  if ((per - count) >= progress_granularity)
+                  count = per;
+                  if (!progress(im, per, 0, prevy, w, y - prevy + 1))
                   {
-                     count = per;
-                     progress(im, per, 0, prevy, w, y - prevy + 1);
-                     prevy = y + 1;
+                     free(lines);
+                     png_read_end(png_ptr, info_ptr);
+                     png_destroy_read_struct(&png_ptr, &info_ptr,
+                                             (png_infopp) NULL);
+                     fclose(f);
+                     return 2;
                   }
+                  prevy = y + 1;
                }
             }
-            if ((progress)
-                && (!progress(im, per, 0, prevy, w, y - prevy + 1)))
+            if (!progress(im, per, 0, prevy, w, y - prevy + 1))
             {
                free(lines);
                png_read_end(png_ptr, info_ptr);
@@ -210,57 +202,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                return 2;
             }
          }
-         free(line);
       }
       else
-      {
-         for (i = 0; i < h; i++)
-            lines[i] =
-               ((unsigned char *) (im->data)) + (i * w * sizeof(DATA32));
-         if (progress)
-         {
-            int y, count, prevy, pass, number_passes, per, nrows = 1;
-
-            count = 0;
-            number_passes = png_set_interlace_handling(png_ptr);
-            for (pass = 0; pass < number_passes; pass++)
-            {
-               prevy = 0;
-               per = 0;
-               for (y = 0; y < h; y += nrows)
-               {
-                  png_read_rows(png_ptr, &lines[y], NULL, nrows);
-
-                  per = (((pass * h) + y) * 100) / (h * number_passes);
-                  if ((per - count) >= progress_granularity)
-                  {
-                     count = per;
-                     if (!progress(im, per, 0, prevy, w, y - prevy + 1))
-                     {
-                        free(lines);
-                        png_read_end(png_ptr, info_ptr);
-                        png_destroy_read_struct(&png_ptr, &info_ptr,
-                                                (png_infopp) NULL);
-                        fclose(f);
-                        return 2;
-                     }
-                     prevy = y + 1;
-                  }
-               }
-               if (!progress(im, per, 0, prevy, w, y - prevy + 1))
-               {
-                  free(lines);
-                  png_read_end(png_ptr, info_ptr);
-                  png_destroy_read_struct(&png_ptr, &info_ptr,
-                                          (png_infopp) NULL);
-                  fclose(f);
-                  return 2;
-               }
-            }
-         }
-         else
-            png_read_image(png_ptr, lines);
-      }
+         png_read_image(png_ptr, lines);
       free(lines);
       png_read_end(png_ptr, info_ptr);
    }
