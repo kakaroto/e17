@@ -8,6 +8,8 @@ char *atword(char *s, int num);
 void change_action(GtkWidget *my_clist, gint row, gint column, 
 		GdkEventButton *event, gpointer data);
 void on_change_params(GtkWidget *widget, gpointer user_data);
+void e_cb_key_change(GtkWidget * widget, gpointer data);
+
 
 GtkTooltips *tooltips;
 GtkAccelGroup *accel_group;

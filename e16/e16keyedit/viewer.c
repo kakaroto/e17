@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <X11/Xlib.h>
+#include <gdk/gdkx.h>
 #include <unistd.h>
 #include <string.h>
 #include "viewer.h"
@@ -149,7 +151,58 @@ static ActionOpt actions[] = {
 };
 
 
-void e_cb_modifier(GtkWidget * widget, gpointer data) {
+void
+e_cb_key_change(GtkWidget * widget, gpointer data)
+{
+	GtkWidget *win, *label, *frame, *align;
+
+	if(data)
+		widget = NULL;
+
+	win = gtk_window_new(GTK_WINDOW_POPUP);
+	gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
+	gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_MOUSE);
+	frame = gtk_frame_new(NULL);
+	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
+	align = gtk_alignment_new(0.0, 0.0, 0.0, 0.0);
+	gtk_container_set_border_width(GTK_CONTAINER(align), 32);
+	label = gtk_label_new("Please press the key on the keyboard\n"
+				"you wish to modify this keyboard-shortcut\n"
+				"to use from now on.");
+	gtk_container_add(GTK_CONTAINER(win), frame);
+	gtk_container_add(GTK_CONTAINER(frame), align);
+	gtk_container_add(GTK_CONTAINER(align), label);
+	gtk_widget_show_all(win);
+	while (gtk_events_pending())
+		gtk_main_iteration();
+	gdk_flush();
+	while (gtk_events_pending())
+		gtk_main_iteration();
+
+	{
+		char *key;
+		XEvent ev;
+
+		gdk_window_set_events(win->window, GDK_KEY_PRESS_MASK);
+		XSetInputFocus(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(win->window),
+				RevertToPointerRoot, CurrentTime);
+		gdk_keyboard_grab(win->window, TRUE, CurrentTime);
+		XWindowEvent(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(win->window),
+				KeyPressMask, &ev);
+		gdk_keyboard_ungrab(gdk_time_get());
+		key = XKeysymToString(XKeycodeToKeysym(GDK_DISPLAY(),
+					ev.xkey.keycode, 0));
+		gtk_entry_set_text(GTK_ENTRY(act_key),key);
+		gtk_clist_set_text(GTK_CLIST(clist),last_row,1,key);
+	}
+
+	gtk_widget_destroy(win);
+}
+
+
+void
+e_cb_modifier(GtkWidget * widget, gpointer data)
+{
 
 	gint value;
 
@@ -568,6 +621,8 @@ create_list_window(void)
 	gtk_widget_show(button);
 	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 0, 1,
 			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+	gtk_signal_connect(GTK_OBJECT(button),"clicked",
+			GTK_SIGNAL_FUNC(e_cb_key_change),NULL);
 
 
 
@@ -604,7 +659,6 @@ create_list_window(void)
 			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 	gtk_signal_connect(GTK_OBJECT(entry),"changed",
 			GTK_SIGNAL_FUNC(on_change_params),NULL);
-
 
 	scrollybit = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrollybit);
