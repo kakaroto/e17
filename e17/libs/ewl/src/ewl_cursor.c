@@ -44,6 +44,16 @@ void ewl_cursor_init(Ewl_Cursor * c)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void ewl_cursor_set_base(Ewl_Cursor *c, unsigned int pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	c->position.start = c->position.end = c->position.base = pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /**
  * ewl_cursor_set_position - set the current position of the cursor
  * @w: the cursor widget to change position
@@ -71,6 +81,34 @@ ewl_cursor_set_position(Ewl_Cursor * c, unsigned int start, unsigned int end)
 	ewl_callback_call(EWL_WIDGET(c), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_cursor_select_to(Ewl_Cursor *c, unsigned int pos)
+{
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	if (pos < c->position.base) {
+		c->position.start = pos;
+		c->position.end = c->position.base;
+	}
+	else if (pos > c->position.base) {
+		c->position.start = c->position.base;
+		c->position.end = pos;
+	}
+	else
+		c->position.start = c->position.end = pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int ewl_cursor_get_base_position(Ewl_Cursor *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+
+	DRETURN_INT(c->position.base, DLEVEL_STABLE);
 }
 
 /**

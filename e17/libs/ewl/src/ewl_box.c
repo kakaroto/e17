@@ -489,7 +489,7 @@ __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * If the child did not accept any of the size, then
 			 * it's at it's max/min and is no longer useful.
 			 */
-			if (!temp)
+			if (temp <= 0)
 				ewd_list_remove(spread);
 			else {
 				*fill_size -= temp;
@@ -540,7 +540,7 @@ __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * otherwise subtract the accepted space from the
 			 * total.
 			 */
-			if (!temp)
+			if (temp <= 0)
 				ewd_list_remove(spread);
 			else {
 				*fill_size -= remainder;

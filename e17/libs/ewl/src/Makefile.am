@@ -43,6 +43,7 @@ installed_headers_DATA = \
 	ewl_selectionbook.h \
 	ewl_separator.h \
 	ewl_spacer.h \
+	ewl_spectrum.h \
 	ewl_spinner.h \
 	ewl_text.h \
 	ewl_textarea.h \
@@ -84,6 +85,7 @@ libewl_la_SOURCES = \
 	ewl_selectionbook.c \
 	ewl_separator.c \
 	ewl_spacer.c \
+	ewl_spectrum.c \
 	ewl_spinner.c \
 	ewl_table.c \
 	ewl_text.c \

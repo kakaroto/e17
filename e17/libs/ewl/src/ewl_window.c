@@ -438,11 +438,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_current_h(o));
 	ecore_window_set_events(window->window, XEV_CONFIGURE);
 	ecore_window_set_name_class(window->window, "EWL", "EWL!");
-	ecore_window_set_min_size(window->window,
-			ewl_object_get_minimum_w(o),
-		       	ewl_object_get_minimum_h(o));
-	ecore_window_set_max_size(window->window, ewl_object_get_maximum_w(o),
-			ewl_object_get_maximum_h(o));
+
 	ecore_window_set_title(window->window, window->title);
 
 	ecore_window_set_delete_inform(window->window);
@@ -578,6 +574,24 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
+	ecore_window_set_min_size(win->window,
+			ewl_object_get_minimum_w(EWL_OBJECT(w)),
+		       	ewl_object_get_minimum_h(EWL_OBJECT(w)));
+	ecore_window_set_max_size(win->window,
+			ewl_object_get_maximum_w(EWL_OBJECT(w)),
+			ewl_object_get_maximum_h(EWL_OBJECT(w)));
+
+	width = ewl_object_get_current_w(EWL_OBJECT(w));
+	height = ewl_object_get_current_h(EWL_OBJECT(w));
+
+	ecore_window_resize(win->window, width, height);
+	ecore_window_resize(win->evas_window, width, height);
+	evas_output_size_set(win->evas, width, height);
+	evas_output_viewport_set(win->evas,
+			ewl_object_get_current_x(EWL_OBJECT(w)),
+			ewl_object_get_current_y(EWL_OBJECT(w)),
+			width, height);
+
 	/*
 	 * Configure each of the child widgets.
 	 */
@@ -595,17 +609,6 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 					CURRENT_H(w) -
 					ewl_object_get_current_y(child));
 	}
-
-	width = ewl_object_get_current_w(EWL_OBJECT(w));
-	height = ewl_object_get_current_h(EWL_OBJECT(w));
-
-	ecore_window_resize(win->window, width, height);
-	ecore_window_resize(win->evas_window, width, height);
-	evas_output_size_set(win->evas, width, height);
-	evas_output_viewport_set(win->evas,
-			ewl_object_get_current_x(EWL_OBJECT(w)),
-			ewl_object_get_current_y(EWL_OBJECT(w)),
-			width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
