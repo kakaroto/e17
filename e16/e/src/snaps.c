@@ -745,6 +745,8 @@ SaveSnapInfo(void)
 		fprintf(f, "CLASS: %s\n", sn->win_class);
 	     if (sn->use_desktop)
 		fprintf(f, "DESKTOP: %i\n", sn->desktop);
+	     if (sn->use_xy)
+		fprintf(f, "RES: %i %i\n", root.w, root.h);
 	     if (sn->use_wh)
 		fprintf(f, "WH: %i %i\n", sn->w, sn->h);
 	     if (sn->use_xy)
@@ -813,6 +815,7 @@ LoadSnapInfo(void)
    Snapshot           *sn = NULL;
    char                buf[4096], s[4096];
    FILE               *f;
+   int                res_w, res_h;
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), root.scr);
    if (!exists(buf))
@@ -826,7 +829,11 @@ LoadSnapInfo(void)
 	buf[strlen(buf) - 1] = 0;
 	word(buf, 1, s);
 	if (!strcmp(s, "NEW:"))
-	   sn = NewSnapshot(atword(buf, 2));
+	  {
+	     res_w = root.w;
+	     res_h = root.h;
+	     sn = NewSnapshot(atword(buf, 2));
+	  }
 	else if (sn)
 	  {
 	     if (!strcmp(s, "TITLE:"))
@@ -846,6 +853,13 @@ LoadSnapInfo(void)
 		  word(buf, 2, s);
 		  sn->desktop = atoi(s);
 	       }
+	     else if (!strcmp(s, "RES:"))
+	       {
+		  word(buf, 2, s);
+		  res_w = atoi(s);
+		  word(buf, 3, s);
+		  res_h = atoi(s);
+	       }
 	     else if (!strcmp(s, "WH:"))
 	       {
 		  sn->use_wh = 1;
@@ -861,6 +875,39 @@ LoadSnapInfo(void)
 		  sn->x = atoi(s);
 		  word(buf, 3, s);
 		  sn->y = atoi(s);
+		  /* we changed reses since we last used this snapshot file */
+		  if (res_w != root.w)
+		    {
+		       if (sn->use_wh)
+			 {
+			    if ((res_w - sn->w) <= 0)
+			       sn->x = 0;
+			    else
+			       sn->x = (sn->x * (root.w - sn->w)) / 
+			       (res_w - sn->w);
+			 }
+		       else
+			 {
+			    if (sn->x >= root.w)
+			       sn->x = root.w - 32;
+			 }
+		    }
+		  if (res_h != root.h)
+		    {
+		       if (sn->use_wh)
+			 {
+			    if ((res_h - sn->h) <= 0)
+			       sn->y = 0;
+			    else
+			       sn->y = (sn->y * (root.h - sn->h)) / 
+			       (res_h - sn->h);
+			 }
+		       else
+			 {
+			    if (sn->y >= root.h)
+			       sn->y = root.h - 32;
+			 }
+		    }
 		  word(buf, 4, s);
 		  sn->area_x = atoi(s);
 		  word(buf, 5, s);

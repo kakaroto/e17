@@ -1,16 +1,25 @@
+BUGS:
+kainx: translucent and group window moves if move != opaque - fix :)
+kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
+raster: must update dox docs fully
+raster: group properties are not remembered :(
+raster: tooltips fro pager names and iconbox names runs off right edge
+raster: changing virtual desktop size screws up pager content draws.
+raster: double "close sound" playing atthe moment - fix.
+raster: all buttons that launch menus done unpress
+raster: bacgkrounds not in theme make pager display incorrectly ?
+raster: resize pager recalcs sel win size but not xy properly
+raster: in E-docs interactive.sh gets hosed on make clean
+mark: grab cursor and confine to root window when moving windows / resizing.
+
+FEATURES:
+kainx: reduce need for tooltip text to have auto gened tooltips work
 user: spacers in menus
 user: "default button" indicator for the default "enter" activated button
 user: add submenu resistance / timeout for running across to a submenu
 user: add "virtual" resistance boxes
 user: finer grained control on selecting icon display policy
-kainx: translucent and group window moves if move != opaque - fix :)
-kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
-kainx: reduce need for tooltip text to have auto gened tooltips work
-raster: must update dox docs fully
-raster: group properties are not remembered :(
-raster: tooltips fro pager names and iconbox names runs off right edge
 raster: add dnd to iconbox
-raster: icoify animation suport
-raster: changing virtual desktop size screws up pager content draws.
-raster: double "close sound" playing atthe moment - fix.
+raster: iconify animation suport
 raster: need to lock .enlightenment dir for multiple logins etc.
+

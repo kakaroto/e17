@@ -1682,6 +1682,7 @@ PagerSetSnap(char onoff)
    Pager             **pl;
    EWin              **lst;
    int                 i, num;
+   char                s[256];
 
    SNAP = onoff;
 
@@ -1703,6 +1704,12 @@ PagerSetSnap(char onoff)
 	     PagerHideHi(pl[i]);
 	     PagerRedraw(pl[i], 2);
 	     PagerForceUpdate(pl[i]);
+	     if (SNAP)
+	       {
+		  Esnprintf(s, sizeof(s), "__.%x", pl[i]->win);
+		  if (mode.pager_scanspeed > 0)
+		     DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout, 0, pl[i]);
+	       }
 	  }
 	Efree(pl);
      }
