@@ -70,6 +70,7 @@ e_mouse_move(Ecore_Event * ev)
    if ((e->win != evas_get_window(evas)))
       return;
    evas_event_move(evas, e->x, e->y);
+   evas_move(evas, e_session->pointer, e->x, e->y);
 }
 
 static void

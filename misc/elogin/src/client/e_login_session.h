@@ -14,6 +14,7 @@
 struct _E_Login_Session
 {
    Evas evas;
+   Evas_Object pointer;
    E_Background bg;
    E_Login_Auth auth;
    Window main_win, ewin;

@@ -1,8 +1,6 @@
 #include"e_login_session.h"
 #include"callbacks.h"
 
-char *bgfile = PACKAGE_DATA_DIR "/data/bgs/elogin.bg.db";
-
 extern void intro_init(E_Login_Session e);
 
 #define RENDER_METHOD RENDER_METHOD_ALPHA_SOFTWARE
@@ -24,6 +22,8 @@ e_login_session_init(E_Login_Session e)
 {
    Window win, ewin;
    Evas evas;
+   char *bgfile = PACKAGE_DATA_DIR "/data/bgs/elogin.bg.db";
+   int iw, ih;
 
 #if X_TESTING
    win = ecore_window_new(0, 0, 0, 640, 480);
@@ -51,6 +51,7 @@ e_login_session_init(E_Login_Session e)
 
    ecore_window_show(ewin);
    ecore_window_show(win);
+   ecore_set_blank_pointer(win);
 
    e->main_win = win;
    e->ewin = ewin;
@@ -65,6 +66,14 @@ e_login_session_init(E_Login_Session e)
    e_bg_set_layer(e->bg, 0);
    e_bg_show(e->bg);
 
+   e->pointer =
+      evas_add_image_from_file(evas,
+                               PACKAGE_DATA_DIR "/data/images/pointer.png");
+   evas_get_image_size(evas, e->pointer, &iw, &ih);
+   evas_resize(evas, e->pointer, iw, ih);
+   evas_set_image_fill(evas, e->pointer, 0.0, 0.0, (double) iw, (double) ih);
+   evas_set_layer(evas, e->pointer, 2000);
+   evas_show(evas, e->pointer);
    intro_init(e);
 }
 
