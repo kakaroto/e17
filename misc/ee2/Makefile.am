@@ -4,7 +4,7 @@ ee2_SOURCES = 		\
 	ee2.h		\
 	ee2.c
 
-CFLAGS = `gtk-config --cflags` 
+CFLAGS := $(CPPFLAGS) $(CFLAGS) `gtk-config --cflags` 
 
 ee2_LDFLAGS = `gtk-config --libs`
 

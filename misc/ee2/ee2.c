@@ -7,7 +7,7 @@
 
 #include "ee2.h"
 
-#define CHECKS 160
+#define CHECKS 16
 
 /* GTK Widgets */
 GtkWidget *EventBox;
@@ -35,7 +35,7 @@ Colormap cm;
 Pixmap pm;
 
 /* globals */
-int depth, imgw = 0, imgh = 0;
+int depth, imgw = 0, imgh = 0, winw = 0, winh = 0;
 int ww = 0, wh = 0;
 int i = 0, xx = 0, yy = 0, c = 1;
 int onoff;
@@ -45,6 +45,7 @@ char *imagefile = NULL;
 char *splashfile = NULL;
 Imlib_Image *bg = NULL;
 Imlib_Image *im = NULL;
+Imlib_Image *bimg = NULL;
 
 /* clist stuff for image browser */
 int col;
@@ -149,10 +150,8 @@ int main(int argc, char **argv)
 	/* connect to signals */
 	gtk_signal_connect(GTK_OBJECT(MainWindow), "delete_event",
 							 GTK_SIGNAL_FUNC(CloseWindow), NULL);
-	gtk_signal_connect(GTK_OBJECT(area), "configure_event",
+	gtk_signal_connect_after(GTK_OBJECT(area), "configure_event",
 							 GTK_SIGNAL_FUNC(a_config), NULL);
-	gtk_signal_connect(GTK_OBJECT(area), "expose_event",
-							 GTK_SIGNAL_FUNC(a_expose), NULL);
 	
 	gtk_signal_connect(GTK_OBJECT(AboutClose), "clicked",
 							 GTK_SIGNAL_FUNC(HideAbout), NULL);
@@ -245,7 +244,9 @@ int main(int argc, char **argv)
 		sprintf(currentimage, "./ee2.png");
 		LoadImage("./ee2.png");
 	}
-	
+
+        gtk_window_set_default_size(GTK_WINDOW(MainWindow), imlib_image_get_width(), imlib_image_get_height());
+
 	/* show the widgets */
 	gtk_widget_show(RootMenu);
 	gtk_widget_show(RSep1);
@@ -296,8 +297,9 @@ void LoadImage(char *imagetoload)
 	
 	/* free the image if there is one */
 	if(im){
-		imlib_free_image();
-		imgw = 0; imgh = 0;
+          imlib_context_set_image(im);
+          imlib_free_image();
+          imgw = 0; imgh = 0;
 	}
 	
 	im = imlib_load_image(imagetoload);
@@ -330,7 +332,7 @@ void Checks(int image_w, int image_h)
 {
 	for(yy = 0; yy < image_h; yy += CHECKS)
 	  for(xx = 0; xx < image_w; xx += CHECKS)
-		 imlib_render_image_on_drawable(xx, yy);
+            imlib_blend_image_onto_image(bg, 0, 0, 0, CHECKS, CHECKS, xx, yy, CHECKS, CHECKS);
 }
 
 void CloseWindow(GtkWidget *widget, gpointer data)
@@ -351,22 +353,68 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	gtk_widget_hide(FileSel);
 	gtk_widget_hide(area);
 	LoadImage(imagefile);
-	imlib_context_set_image(im);
-	imgw = imlib_image_get_width();
-	imgh = imlib_image_get_height();
-	DrawChecks();
-	Checks(imgw, imgh);
-	imlib_context_set_image(im);
-	imgw = imlib_image_get_width();
-	imgh = imlib_image_get_height();
-	printf("%d - %d\n", imgw, imgh);
-	/*imlib_render_image_on_drawable_at_size(0, 0, imgw, imgh);*/
-	imlib_blend_image_onto_image(im, 1, 0, 0, imgw, imgh, 0, 0, imgw, imgh);
-	printf("%d - %d\n", imgw, imgh);
-	gtk_widget_set_usize(MainWindow, (gint)imgw, (gint)imgh);
-	gtk_widget_set_usize(EventBox, (gint)imgw, (gint)imgh);
-	gtk_widget_set_usize(area, (gint)imgw, (gint)imgh);
-	gtk_widget_show(area);
+        DrawImage(im, 0, 0);
+}
+
+void DrawImage(Imlib_Image *im, int w, int h)
+{
+  Pixmap pm, mask;
+  int x, y;
+
+  printf("DrawImage(%8p, %d, %d)\n", im, w, h);
+  if(!disp){
+    disp = GDK_WINDOW_XDISPLAY(area->window);
+    win = GDK_WINDOW_XWINDOW(area->window);
+    vis = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area));
+    cm = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(area));
+    root = GDK_WINDOW_XWINDOW(area->window);
+    depth = imlib_get_visual_depth(disp, vis);
+  }
+		
+  imlib_context_set_display(disp);
+  imlib_context_set_visual(vis);
+  imlib_context_set_colormap(cm);
+
+  if(!im) return;
+
+  imlib_context_set_image(im);
+  imgw = imlib_image_get_width();
+  imgh = imlib_image_get_height();
+  if (w <= imgw) w = imgw;
+  if (h <= imgh) h = imgh;
+  printf("w %d, h %d, imgw %d, imgh %d, winw %d, winh %d\n", w, h, imgw, imgh, winw, winh);
+  winw = w;
+  winh = h;
+  gtk_window_set_default_size(GTK_WINDOW(MainWindow), (gint)w, (gint)h);
+  gtk_widget_set_usize(EventBox, (gint)w, (gint)h);
+  gtk_widget_set_usize(area, w, h);
+
+  pm = XCreatePixmap(disp, win, w, h, depth);
+  imlib_context_set_drawable(pm);
+  if (bg == NULL) {
+    DrawChecks();
+  }
+  if (bimg) {
+    imlib_context_set_image(bimg);
+    imlib_free_image();
+  }
+  bimg = imlib_create_image(w, h);
+  imlib_context_set_image(bimg);
+  Checks(w, h);
+
+  if (imgw == w && imgh == h) {
+    imlib_blend_image_onto_image(im, 1, 0, 0, imgw, imgh, 0, 0, imgw, imgh);
+  } else {
+    x = (w - imgw) / 2;
+    y = (h - imgh) / 2;
+    imlib_blend_image_onto_image(im, 1, 0, 0, imgw, imgh, x, y, imgw, imgh);
+  }
+  imlib_render_image_on_drawable(0, 0);
+  XSetWindowBackgroundPixmap(disp, win, pm);
+  XClearWindow(disp, win);
+  XFreePixmap(disp, pm);
+  imlib_context_set_drawable(None);
+  gtk_widget_show(area);
 }
 
 void OpenImageFromMenu(GtkWidget *widget, gpointer data)
@@ -446,9 +494,6 @@ void Flip3(GtkWidget *widget, gpointer data)
 	imlib_image_flip_diagonal();
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
-	gtk_widget_set_usize(MainWindow, (gint)imgw, (gint)imgh);
-	gtk_widget_set_usize(EventBox, (gint)imgw, (gint)imgh);
-	gtk_widget_set_usize(area, (gint)imgw, (gint)imgh);
 	imlib_render_image_on_drawable(0, 0);
 	gtk_widget_show(area);
 }
@@ -486,58 +531,16 @@ gboolean a_config(GtkWidget *widget,
 						GdkEventConfigure *event,
 						gpointer user_data)
 {
-	if(!disp){
-		disp = GDK_WINDOW_XDISPLAY(widget->window);
-      win = GDK_WINDOW_XWINDOW(widget->window);
-      vis = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(widget));
-      cm = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(widget));
-      root = GDK_WINDOW_XWINDOW(widget->window);
-      depth = imlib_get_visual_depth(disp, vis);
-	}
-	
-	if(pm)
-	  XFreePixmap(disp, pm);
-	
-	imlib_context_set_display(disp);
-   /*imlib_context_set_drawable(win);*/
-	imlib_context_set_drawable(pm);
-   imlib_context_set_visual(vis);
-   imlib_context_set_colormap(cm);
-	
-	if(im){
-		imlib_context_set_image(im);
-		imgw = imlib_image_get_width();
-		imgh = imlib_image_get_height();
-		pm = XCreatePixmap(disp, win, imgw, imgh, depth);
-		DrawChecks();
-		Checks(imgw, imgh);
-		XSetWindowBackgroundPixmap(disp, win, pm);
-		XResizeWindow(disp, win, imgw, imgh);
-		imlib_context_set_image(im);
-	}
-	
-	imgw = imlib_image_get_width();
-	imgh = imlib_image_get_height();
-	
-	/* only happens once! */
-	if(im && i == 0){
-		gtk_widget_set_usize(MainWindow, (gint)imgw, (gint)imgh);
-		gtk_widget_set_usize(EventBox, (gint)imgw, (gint)imgh);
-		gtk_widget_set_usize(area, (gint)imgw, (gint)imgh);
-	}
-	
-	printf("configure event\n");
-	i++;
-	return TRUE;
+  printf("configure event\n");
+  if (event->width != winw || event->height != winh) {
+    DrawImage(im, event->width, event->height);
+  }
+  return FALSE;
 }
 
 gboolean a_expose(GtkWidget *widget,
 						GdkEventConfigure *event,
 						gpointer user_data)
 {
-	printf("exposure event\n");
-	if(im){
-		imlib_render_image_on_drawable_at_size(0, 0, imgw, imgh);
-	}
-	return FALSE;
+	return TRUE;
 }
