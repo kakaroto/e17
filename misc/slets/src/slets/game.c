@@ -376,16 +376,17 @@ void game_main(void)
               {
                gfx_hide(slot[i]->o[1]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[1]);
                gfx_render();
-               sleep(0.5);
               }
             if ((slot[i]->s->row1->y ==
                  prev[1]->r->y) )
               {
                gfx_hide(slot[i]->o[2]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[2]);
                gfx_render();
@@ -397,6 +398,7 @@ void game_main(void)
               {
                gfx_hide(slot[i]->o[3]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[3]);
                gfx_render();
@@ -411,6 +413,7 @@ void game_main(void)
                gfx_hide(slot[i]->o[1]);
                gfx_hide(slot[i]->o[4]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[1]);
                gfx_show(slot[i]->o[4]);
@@ -424,6 +427,7 @@ void game_main(void)
                gfx_hide(slot[i]->o[2]);
                gfx_hide(slot[i]->o[5]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[2]);
                gfx_show(slot[i]->o[5]);
@@ -437,6 +441,7 @@ void game_main(void)
                gfx_hide(slot[i]->o[3]);
                gfx_hide(slot[i]->o[6]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[3]);
                gfx_show(slot[i]->o[6]);
@@ -450,6 +455,7 @@ void game_main(void)
                gfx_hide(slot[i]->o[1]);
                gfx_hide(slot[i]->o[5]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[1]);
                gfx_show(slot[i]->o[5]);
@@ -463,13 +469,17 @@ void game_main(void)
                gfx_hide(slot[i]->o[3]);
                gfx_hide(slot[i]->o[5]);
                gfx_render();
+               gfx_flush();
                sleep(0.5);
                gfx_show(slot[i]->o[3]);
                gfx_show(slot[i]->o[5]);
-               gfx_render();  
+               gfx_render();
               }
           break;
          }
       }
+    
+    gfx_flush();
+
    }
 }

@@ -1,7 +1,6 @@
-#ifndef __SLETS_THEME_H__
-#define __SLETS_THEME_H__
+#ifndef __SLETHE_THEME_H__
+#define __SLETHE_THEME_H__
 
-void theme_set_defaults(void);
 int theme_read(char *file);
 
 #endif

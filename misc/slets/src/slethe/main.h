@@ -8,8 +8,8 @@
 #include <time.h>
 #include <esd.h>
 #include "../slets/core.h"
-#include "gfx.h"
 #include "view.h"
 #include "theme.h"
+#include "../../config.h"
 
 #endif

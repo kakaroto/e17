@@ -106,6 +106,10 @@ void gfx_hide(GFX_OBJECT tmp)
 void gfx_render(void)
 {
  evas_render(e);
+}
+
+void gfx_flush(void)
+{
  evas_flush_image_cache(e);
  evas_flush_font_cache(e);
 }

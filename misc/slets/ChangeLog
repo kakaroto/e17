@@ -1,3 +1,6 @@
+Thu Oct  5 21:54:59 CEST 2000:
+	* Fixed a bug.
+
 Sat Sep 16 19:55:28 CEST 2000 BLAdER:
 	* We're now using autoconf and automake! ;);
 	* Default theme uses relative paths;

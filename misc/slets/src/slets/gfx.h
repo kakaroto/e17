@@ -22,6 +22,7 @@ void gfx_show(GFX_OBJECT tmp);
 void gfx_hide(GFX_OBJECT tmp);
 
 void gfx_render(void);
+void gfx_flush(void);
 
 void gfx_update_rect(int x, int y, int w, int h);
 int gfx_pending(void);

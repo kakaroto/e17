@@ -29,7 +29,7 @@ char icon_files[10][255] =
 };
 char font_path[512] = "./fnt";
 
-VIEW_COLOR text_color;
+VIEW_COLOR  text_color;
 VIEW_COLOR  menu_color;
 VIEW_COLOR  points_color;
 VIEW_PREV   **prev;
