@@ -61,6 +61,7 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
     case EFSD_CMD_STARTMON:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
+    case EFSD_CMD_GETMIME:
     case EFSD_CMD_READLINK:
       ec_dst->efsd_file_cmd.file = strdup(ec_src->efsd_file_cmd.file);
       break;
@@ -82,7 +83,7 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
     case EFSD_CMD_CLOSE:
       break;
     default:
-      D(("Warning -- unknown command type.\n"));
+      D(("Warning -- unknown command type in duplicate().\n"));
     }
 
   D_RETURN;
@@ -173,6 +174,7 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_STARTMON:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
+    case EFSD_CMD_GETMIME:
     case EFSD_CMD_READLINK:
       FREE(ec->efsd_file_cmd.file);
       break;
@@ -208,7 +210,7 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_CLOSE:
       break;
     default:
-      D(("Warning -- unknown command type.\n"));
+      D(("Warning -- unknown command type in cleanup().\n"));
     }
   D_RETURN;
 }
