@@ -2486,7 +2486,7 @@ CB_ConfigureBG(int val, void *data)
 	if (tmp_st_hilight == ICLASS_ATTR_GLASS)
 	  {
 	     Conf.st_trans.hilight = tmp_st_hilight;
-	     Conf.st_trans.menu_item = ICLASS_ATTR_BG;
+	     Conf.st_trans.menu_item = ICLASS_ATTR_GLASS;
 
 	  }
 	else if (tmp_st_hilight == ICLASS_ATTR_BG)
