@@ -43,4 +43,5 @@ mini_sel.png \
 panel.png \
 thumb.png \
 trash.png \
+border-bevel.png \
 winter_menu.png

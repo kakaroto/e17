@@ -1,17 +1,27 @@
 EXTRA_DIST= \
 Tpanel.png \
+arrow_l.png \
+arrow_lc.png \
+arrow_r.png \
+arrow_rc.png \
 base_to.png \
 bg.png \
+button_clicked.png \
 button_exit_clicked.png \
 button_exit_hilited.png \
 button_exit_normal.png \
 button_next_clicked.png \
 button_next_hilited.png \
 button_next_normal.png \
+button_normal.png \
 button_prev_clicked.png \
 button_prev_hilited.png \
 button_prev_normal.png \
 deco.png \
+entice.thumb.png \
+icon_FullScreen_active.png \
+icon_FullScreen_an1.png \
+icon_FullScreen_dormant.png \
 icon_fit_active.png \
 icon_fit_an1.png \
 icon_fit_an2.png \
@@ -35,4 +45,9 @@ icon_zoom_in_dormant.png \
 icon_zoom_out_active.png \
 icon_zoom_out_dormant.png \
 panel.png \
-t_cel.png
+t_cel.png \
+thumb_preview.png \
+zoom_in_clicked.png \
+zoom_in_normal.png \
+zoom_out_clicked.png \
+zoom_out_normal.png

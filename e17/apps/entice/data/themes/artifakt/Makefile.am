@@ -1,4 +1,4 @@
-EXTRA_DIST= artifakt.edc images.edc fonts.edc macros/macros.edc embryo/globals.edc programs/enticethumbnail_area.edc
+EXTRA_DIST= artifakt.edc images.edc fonts.edc macros/macros.edc embryo/globals.edc
 
 SUBDIRS = parts programs images fonts
 DB = artifakt.eet

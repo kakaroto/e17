@@ -5,5 +5,6 @@ enticethumb_group.edc \
 image.edc \
 info.edc \
 panel.edc \
+panel.buttons.edc \
 setup.edc \
 tools.edc
