@@ -103,6 +103,15 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 
 	ewl_entry_editable_set(e, TRUE);
 
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+					ewl_entry_mouse_down_cb, NULL);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
+					ewl_entry_mouse_up_cb);
+	ewl_callback_append(w, EWL_CALLBACK_DOUBLE_CLICKED,
+					ewl_entry_mouse_double_click_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+					ewl_entry_mouse_move_cb, NULL);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -194,8 +203,9 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	if (e->editable == edit)
+	if (e->editable == edit) {
 		DRETURN(DLEVEL_STABLE);
+	}
 
 	w = EWL_WIDGET(e);
 
@@ -204,26 +214,14 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit)
 	if (edit) {
 		ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
 				ewl_entry_key_down_cb, NULL);
-		ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-				ewl_entry_mouse_down_cb, NULL);
-		ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
-				ewl_entry_mouse_up_cb);
-		ewl_callback_append(w, EWL_CALLBACK_DOUBLE_CLICKED,
-				ewl_entry_mouse_double_click_cb, NULL);
-		ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-				ewl_entry_mouse_move_cb, NULL);
+
+		ewl_widget_show(e->cursor);
 	}
 	else {
 		ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN,
 				ewl_entry_key_down_cb);
-		ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN,
-				ewl_entry_mouse_down_cb);
-		ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
-				ewl_entry_mouse_up_cb);
-		ewl_callback_del(w, EWL_CALLBACK_DOUBLE_CLICKED,
-				ewl_entry_mouse_double_click_cb);
-		ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
-				ewl_entry_mouse_move_cb);
+
+		ewl_widget_hide(e->cursor);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -260,13 +258,17 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Entry    *e;
+	Ewl_Entry    *e = NULL;
 	int           xx, yy, ww, hh;
 	int	      c_pos = 0, pos, l;
 	int           cx = 0, cy = 0;
 	unsigned int  cw = 0, ch = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (!e->editable) {
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
 
 	e = EWL_ENTRY(user_data);
 
@@ -312,10 +314,6 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (!ch)
 		ch = CURRENT_H(e->cursor);
-
-#if 0
-printf("cx %d, cy %d, cw %d, ch %d\n", cx, cy, cw, ch);
-#endif
 
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, 
 				    cw, ch);
@@ -772,12 +770,16 @@ void ewl_entry_cursor_end_move(Ewl_Entry * e)
 
 void ewl_entry_text_insert(Ewl_Entry * e, char *s)
 {
-	char           *s2, *s3;
+	char           *s2 = NULL, *s3 = NULL;
 	int             l = 0, l2 = 0, sp = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_PARAM_PTR("s", s);
+
+	if (!e->editable) {
+		DLEAVE_FUNCTION(DLEVEL_STABLE)
+	}
 
 	s2 = ewl_entry_text_get(e);
 	l = strlen(s);
@@ -820,10 +822,14 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *s)
 void ewl_entry_left_delete(Ewl_Entry * e)
 {
 	char           *s;
-	unsigned int    sp, ep, len;
+	unsigned int    sp = 0, ep = 0, len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
+
+	if (!e->editable) {
+		DLEAVE_FUNCTION(DLEVEL_STABLE)
+	}
 
 	if (e->selection) {
 		sp = ewl_entry_selection_start_position_get(EWL_ENTRY_SELECTION(e->selection));
@@ -852,10 +858,14 @@ void ewl_entry_left_delete(Ewl_Entry * e)
 void ewl_entry_right_delete(Ewl_Entry * e)
 {
 	char           *s;
-	int             sp, ep, len;
+	int             sp = 0, ep = 0, len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
+
+	if (!e->editable) {
+		DLEAVE_FUNCTION(DLEVEL_STABLE)
+	}
 
 	if (e->selection) {
 		sp = ewl_entry_selection_start_position_get(EWL_ENTRY_SELECTION(e->selection));
@@ -887,11 +897,15 @@ void ewl_entry_right_delete(Ewl_Entry * e)
 void
 ewl_entry_word_begin_delete(Ewl_Entry * e)
 {
-	char           *s;
+	char           *s = NULL;
 	int             bp, index;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
+
+	if (!e->editable) {
+		DLEAVE_FUNCTION(DLEVEL_STABLE)
+	}
 
 	s = ewl_entry_text_get(e);
 	if (!s)

@@ -62,6 +62,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_widget_show(combo->button);
 
 	combo->selected = ewl_entry_new(title);
+	ewl_entry_editable_set(EWL_ENTRY(combo->selected), FALSE);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->selected),
 				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(combo->selected),
