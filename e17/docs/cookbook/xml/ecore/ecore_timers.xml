@@ -1,0 +1,102 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>29 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Ecore Timers</title>
+<para>
+If you need to have a callback triggered at a specific time, with the possibility
+of repeating the timer continuously, then the <literal>Ecore_Timer</literal> is what
+you are looking for.
+</para>
+
+<para>
+<example>
+<title>Ecore Timers</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore.h&gt;
+
+static int timer_one_cb(void *data);
+static int timer_two_cb(void *data);
+
+int main(int argc, char ** argv) {
+    ecore_init();
+
+    ecore_timer_add(1, timer_one_cb, NULL);
+    ecore_timer_add(0.5, timer_two_cb, NULL);
+
+    ecore_main_loop_begin();
+    ecore_shutdown();
+
+    return 0;
+}
+
+static int timer_one_cb(void *data) {
+    printf("1");
+    fflush(stdout);
+    return 1;
+}
+
+static int timer_two_cb(void *data) {
+    printf("2");
+    fflush(stdout);
+    return 1;
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+The creation of the timers is as simple as calling <function>ecore_timer_add()</function>.
+This will return an <literal>Ecore_Timer</literal> strut on success or NULL on failure.
+In this case I'm ignoring the return value. The three parameters are:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>double timeout</para></listitem>
+ <listitem><para>int (*callback)(void *data)</para></listitem>
+ <listitem><para>const void *user_data</para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+The timeout gives the number of seconds in which this timer will expire. In the case of this 
+example we give it 1 second and 0.5 seconds respectively. The callback function is the one that
+will be executed when the timer expires and the user_data is any data to be passed to the 
+callback function.
+</para>
+
+<para>
+The callback functions all have the same signature <literal>int callback(void *data)</literal>. The
+return value of the timer should be either 0 or 1. If you return 0 the timer will expire and will
+<emphasis>not</emphasis> be run again. If you return 1, the timer will be rescheduled to re-execute
+in the amount of time given by the timeout. This allows you to activate or continue the timer as
+required by your program.
+</para>
+
+<para>
+Compiling the example is as simple as:
+<example>
+<title>Compilation</title>
+<screen>
+gcc -Wall -o etimer etimer.c `ecore-config --cflags --libs`
+</screen>
+</example>
+If you run the program you should see a series of '1's and '2's on the screen
+with twice as many '2's as '1's.
+</para>
+
+<para>
+The <literal>Ecore_Timer</literal>s are easy to setup and use and provide a powerful
+timing mechanism to your programs.
+</para>
+
+</section>
+
+

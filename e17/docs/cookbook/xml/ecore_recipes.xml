@@ -38,6 +38,7 @@ for abstract socket communication.
 &ecore_config_intro;
 &ecore_config_listener;
 &ecore_ipc_intro;
+&ecore_timers;
 
 </chapter>
 
