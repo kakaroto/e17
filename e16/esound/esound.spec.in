@@ -1,0 +1,86 @@
+# Note that this is NOT a relocatable package
+%define ver      @ESD_VERSION@
+%define rel      2
+%define prefix   /usr
+
+Summary: The Enlightened Sound Daemon.
+Name:      esound
+Version:   %ver
+Release:   %rel
+Copyright: GPL
+Group: System Environment/Base
+Source0:   esound-%{PACKAGE_VERSION}.tar.gz
+URL:       http://www.tux.org/~ricdude/EsounD.html
+BuildRoot: /var/tmp/esound-%{PACKAGE_VERSION}-root
+
+Docdir: %{prefix}/doc
+
+%description
+EsounD -- the Enlightened Sound Daemon -- is a server process
+that allows multiple applications to share a single sound
+card. For example, when you're listening to music from your CD
+and you receive a sound-related event from ICQ, your applications
+won't have to jockey for the attention of your sound card.
+
+EsounD mixes several audio streams for playback by a single
+audio device.
+
+Install esound if you'd like to allow for such event sharing
+by your audio device.
+
+%package devel
+Summary: Libraries, includes and more to develop EsounD applications.
+Group: Development/Libraries
+Requires: esound
+
+%description devel
+Libraries, include files and other resources you can use
+to develop EsounD applications.
+
+%prep
+%setup
+
+%build
+  CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=/etc
+  make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT/etc install
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog EsounD.html INSTALL NEWS README TIPS TODO
+/etc/*
+%{prefix}/bin/*
+%{prefix}/lib/lib*.so.*
+%{prefix}/lib/lib*.so
+
+%files devel
+%defattr(-, root, root)
+
+%{prefix}/lib/*a
+%{prefix}/include/*
+%{prefix}/share/aclocal/*
+
+%changelog
+* Sat Nov 21 1998 Pablo Saratxaga <srtxg@chanae.alphanet.ch>
+
+- added %{prefix}/share/aclocal/* to %files devel
+- added spanish and french translations for rpm
+
+* Thu Oct 1 1998 Ricdude <ericmit@ix.netcom.com>
+
+- make autoconf do the version updating for us.
+
+* Wed May 13 1998 Michael Fulbright <msf@redhat.com>
+
+- First try at an RPM

@@ -1,0 +1,76 @@
+Planned for 0.2.9:
+==================
+
+* some data is required for each protocol handler or Bad Things Happen.
+  In the immortal words of John Parker, "So what, big deal."
+
+* factor out monitor_write internals, and recorder_write, and filter_write
+  into a write_player, and conditionally swap data on those writes.
+
+* function pointers in mix.c for mix_in (add) and translate (copy):
+  mix_funcs[MAX] = { mix_to_format, mix_from_format, clip_format, ... };
+  set function when creating player. update if a filter is added or removed
+
+* volume control (setting of left/right volume) on samples and streams
+  modify clients volume or mute so that client can kill it.. etc.. 
+  so in effect an audio manager could be written
+  play_sample_pan( int sample_id, int left_volume, int right_volume );
+  
+* get rid of hard coded 44100's in esdlib.c
+
+* make all protocols return an int indicating success/failure at a minimum
+  NOTE: this will break protocol!
+
+* change audio device with esdctl??? on the fly???
+
+* esd_rename_stream( int stream_id, char *name ); ???
+
+* reorganize source files into esdlib, esd, utils subdirectories. ???
+
+* support 8 bit u-law format output data ???
+
+
+Planned for later:
+================== 
+
+make the reading/mixing
+process a separate thread from the client protocol parsing thread.
+
+command line parameter for the server's fragment value
+
+kill_sample( int sample_id );
+
+One other nice feature of the BeOS streaming model is that you can
+choose where your application should be positioned in the stream
+(beginning | end | don't care).  Could be done with some extra
+parameters to esd_play_stream()..?  add a queue of requests to the
+sample clients, and watch for kills?
+
+mmap the data into the sound card? -- Linux only
+[raster!raster@trode.redhat.com] actuyally dump like 1k or whatever -
+tell soundcard to start at the first 1kb - while readihg this (the
+soundcard) write the 2nd kb - then the 3rd etc... just have to keep in
+step with the card and a little ahead of it... but only just enough to
+minimize lag.
+
+it's also rather fiddly wiht cpu usage spikes.. 
+
+play sample, loop sample, end sample:
+int play_tri_sample( start, loop, end ) { 
+        play(start); loop(loop); return end;
+}
+later: 
+int finish_tri_sample( end ) { play(end); return ?;}
+
+allow a "volume envelope"
+sample to be paired witht the sample optionally - perhaps at a lower
+sampling rate and maybe 8 or 4 bits.. this sould in addition to "set lr
+volume for smapl/stream now" functions... :)
+so that would be something like (format determined by sample uploaded):
+modulate_sample( int play_sample, int modulation_sample );
+
+allow server to run mono.
+
+pitch adjust on samples?
+
+playback samples at different rates?

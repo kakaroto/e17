@@ -1,0 +1,14 @@
+New Stuff in EsounD version 0.2:
+
+o  esd_play_stream_fallback, esd_record_stream_fallback 
+	- if default esd is not available, revert to /dev/dsp
+	for playback/record
+
+o  esd_open_sound
+	- returns -1 if it can't find esd, instead of exiting
+
+o  ESPEAKER environment variable
+	- can be used to play/record/monitor esd on a 
+	remote machine
+
+o  GNU configure-able installation

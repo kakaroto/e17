@@ -1,0 +1,58 @@
+Program History:
+
+    EsounD is currently primarily coded and maintained by 
+    Eric B. Mitchell (aka 'Ricdude) <ericmit@ix.netcom.com>.
+
+    This was based on a prototype sound daemon created by Carsten 
+    Haitzler (aka The Rasterman).  Some snips of his code are 
+    probably still lurking about, but the overwhelming majority 
+    of it was written from scratch.
+
+Additional Credits:
+
+    Chutt <#E>, for insanely agreeing to alpha test, and porting 
+    Emusic, to EsounD.  Emusic is a highly customizable sound player
+    available from:  http://www.icom.net/~smelecat/emp3/index.htm.
+    And for the initial configure setup
+
+    Shaleh <#E>, for "-Wall -pedantic" cleanup patches
+
+    adnans <#E>, threshhold clipping patches
+
+    Peter Asobeck, Sun driver update.
+
+    Jason Ish, BSD patches and debugging.
+
+    Jeff Dubrule, mklinux driver and patches.
+
+    Vendu <#E>, remembering to check for errors in esdcat.
+
+    Brian M. Almeida, Sun driver update.
+
+    Simon Kagedal, for esdplay, a generic audio file player.
+
+    mackman, linuxppc patches.
+
+    Nick Lopez <kimo_sabe@usa.net>: ALSA port.
+
+    Dave Glowacki <dglo@SSEC.WISC.EDU>: audio_hpux patches.
+
+    Kimball Thurston: audio_irix patches.
+
+    Mandrake (Geoff Harrison) <mandrake@mandrake.net>: making sure
+    the library revision numbers actually come out right. :)
+
+    Bibek Sahu: Improved ALSA detection algorithms, filters, mixdown
+    optimizations. 
+
+    Jimmy Olsen <jo@hrp.no>: hpux driver fixes
+
+    Manish Singh <yosh@gimp.org>: misc autoconf hackery, the magic
+    /dev/dsp to esd rerouter.
+
+    Miodrag Vallat: aix driver fixes
+
+    Philippe Defert: unnecessary fsync() cleanup, rounding patch.
+
+    Your Name Here, simply submit a patch, or port an existing 
+    application for use with this package.
