@@ -17,6 +17,20 @@ static Entice_Config *econfig = NULL;
 static void entice_config_generate_original_db(char *filename);
 
 /**
+ * entice_config_auto_orient_get - Get whether we should auto orient or not
+ * Returns - 0 doesn't use exif info to orient, 1 does
+ */
+int
+entice_config_image_auto_orient_get(void)
+{
+   int result = 0;
+
+   if (econfig)
+      result = econfig->auto_orient;
+   return (result);
+}
+
+/**
  * entice_config_image_quality_get - Get the image quality
  * Returns - value should always be >= 70 and <= 100
  */
@@ -231,6 +245,9 @@ entice_config_init(void)
             if (!e_db_int_get
                 (db, "/entice/image_quality", &econfig->image_quality))
                econfig->image_quality = 80;
+            if (!e_db_int_get
+                (db, "/entice/auto/orient", &econfig->auto_orient))
+               econfig->auto_orient = 1;
 
             if (e_db_int_get(db, "/entice/keys/up/count", &count))
             {
@@ -331,6 +348,7 @@ entice_config_generate_original_db(char *filename)
       {
          e_db_str_set(db, "/entice/theme", "default.eet");
          e_db_int_set(db, "/entice/engine", 0);
+         e_db_int_set(db, "/entice/auto/orient", 1);
 #ifndef GIMP_REMOTE_BIN
          e_db_str_set(db, "/entice/editor", "");
 #else

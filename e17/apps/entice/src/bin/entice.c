@@ -331,7 +331,9 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       edje_object_signal_emit(entice->edje, "entice,image,display,before",
                               "");
 
-      tmp = esmart_thumb_evas_object_get(o);
+      tmp =
+         esmart_thumb_evas_object_get(o,
+                                      entice_config_image_auto_orient_get());
       if ((new_current = entice_image_new(tmp)))
       {
          entice_image_file_set(new_current, esmart_thumb_file_get(o));

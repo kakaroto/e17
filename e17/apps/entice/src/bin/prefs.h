@@ -19,6 +19,7 @@ struct _Entice_Config
 
    int engine;
    int image_quality;
+   int auto_orient;
 
    struct
    {
@@ -46,5 +47,6 @@ void entice_config_geometry_get(int *x, int *y, int *w, int *h);
 void entice_config_geometry_set(int x, int y, int w, int h);
 int entice_config_image_quality_get(void);
 const char *entice_config_editor_get(void);
+int entice_config_image_auto_orient_get(void);
 
 #endif
