@@ -24,7 +24,11 @@
  *========================================================================*/
 static int sort_cb (void *d1, void *d2);
 static void interp_return_key (void *data, const char *str);
+
+#if 0
+/* unused */
 static void interp_tab_key (void *data, const char *str);
+#endif
 
 static void
 _esmart_file_dialog_entry_focus_cb (void *data, Evas_Object * o,
@@ -64,10 +68,10 @@ static void _esmart_file_dialog_object_stack_above (Evas_Object * o,
 						    Evas_Object * above);
 static void _esmart_file_dialog_object_stack_below (Evas_Object * o,
 						    Evas_Object * below);
-static void _esmart_file_dialog_object_move (Evas_Object * o, double x,
-					     double y);
-static void _esmart_file_dialog_object_resize (Evas_Object * o, double w,
-					       double h);
+static void _esmart_file_dialog_object_move (Evas_Object * o, Evas_Coord x,
+					     Evas_Coord y);
+static void _esmart_file_dialog_object_resize (Evas_Object * o, Evas_Coord w,
+					       Evas_Coord h);
 static void _esmart_file_dialog_object_show (Evas_Object * o);
 static void _esmart_file_dialog_object_hide (Evas_Object * o);
 static void _esmart_file_dialog_object_color_set (Evas_Object * o, int r,
@@ -284,6 +288,8 @@ interp_return_key (void *data, const char *str)
     }
 }
 
+#if 0
+/* unused */
 static void
 interp_tab_key (void *data, const char *str)
 {
@@ -292,6 +298,7 @@ interp_tab_key (void *data, const char *str)
       fprintf (stderr, "Tab %s\n", str);
     }
 }
+#endif
 
 static int
 sort_cb (void *d1, void *d2)
@@ -757,7 +764,7 @@ _esmart_file_dialog_object_stack_below (Evas_Object * o, Evas_Object * below)
 }
 
 void
-_esmart_file_dialog_object_move (Evas_Object * o, double x, double y)
+_esmart_file_dialog_object_move (Evas_Object * o, Evas_Coord x, Evas_Coord y)
 {
   Esmart_File_Dialog *data;
 
@@ -771,7 +778,7 @@ _esmart_file_dialog_object_move (Evas_Object * o, double x, double y)
 }
 
 void
-_esmart_file_dialog_object_resize (Evas_Object * o, double w, double h)
+_esmart_file_dialog_object_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h)
 {
   Esmart_File_Dialog *data;
 

@@ -47,7 +47,7 @@ struct _Esmart_File_Dialog
  * @param evas the evas to add the object to
  * @param edje the file to load the edje parts from
  */
-Evas_Object *esmart_file_dialog_new (Evas * evas, const char *edje);
+Evas_Object *esmart_file_dialog_new (Evas * evas, const char *edje_file);
 
 void esmart_file_dialog_callback_add (Evas_Object * efd,
 				      void (*func) (void *data,
