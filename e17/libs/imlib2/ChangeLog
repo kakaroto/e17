@@ -1,0 +1,2853 @@
+
+
+Changes by:	raster	99/08/01 15:14:14
+
+Log message:
+    adding imlib2 code in.. NOT a lib yet... :) but playable code and loader
+    system
+    
+    Status:
+    
+    Vendor Tag:	imlib2
+    Release Tags:	A
+    
+    N imlib2/loader_png.c
+    N imlib2/Makefile
+    N imlib2/README
+    N imlib2/blend.c
+    N imlib2/blend.h
+    N imlib2/color.c
+    N imlib2/color.h
+    N imlib2/common.h
+    N imlib2/file.c
+    N imlib2/file.h
+    N imlib2/grab.c
+    N imlib2/grab.h
+    N imlib2/image.c
+    N imlib2/image.h
+    N imlib2/main.c
+    N imlib2/rend.c
+    N imlib2/rend.h
+    N imlib2/rgba.c
+    N imlib2/rgba.h
+    N imlib2/scale.c
+    N imlib2/scale.h
+    N imlib2/ximage.c
+    N imlib2/ximage.h
+    N imlib2/test_images/im_rgb.png
+    N imlib2/test_images/im.png
+    
+    No conflicts created by this import
+
+_______________________________________________
+
+Changes by:	raster	99/08/02 15:50:36
+
+Modified files:
+	.              : loader_png.c 
+Added files:
+	.              : COPYING 
+
+Log message:
+fixed minor bug in png loader.... added copying file :)
+
+_______________________________________________
+
+Changes by:	raster	99/08/02 22:15:35
+
+Modified files:
+	.              : image.c image.h loader_png.c main.c 
+
+Log message:
+updated loader api to include progress callback stuff.... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/01 10:36:17
+
+Modified files:
+	.              : api.c api.h context.c image.c image.h main.c 
+
+Log message:
+remember to not free images made form external data if it wasnt copied.. and
+free colors from color cubes once the context is invalid.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/08 10:27:41
+
+Modified files:
+	.              : api.c api.h blend.c blend.h draw.c grab.c 
+	                 grab.h loader_png.c main.c rend.c rend.h rgba.c 
+
+Log message:
+lots more work on mr imlib2 :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/08 11:15:04
+
+Modified files:
+	.              : api.c main.c 
+
+Log message:
+and more updates :) wheeeeeeeee
+
+_______________________________________________
+
+Changes by:	raster	99/09/08 19:39:19
+
+Modified files:
+	.              : Makefile api.c 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure configure.in ltdl.c 
+	                 ltdl.h 
+
+Log message:
+more work on imlib2.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/09 19:33:12
+
+Modified files:
+	.              : api.c blend.c blend.h loader_png.c main.c 
+	                 rend.c 
+
+Log message:
+ooh is imlib2 ever workign fast now baybeee.. blending one image onto
+another .. with clipping, scaling, anti-aliasing and more.. need to add
+a bit to the api, and move the stuff nowin api.c off into imlib backend
+sinc ethat stuff doesnt belong in api.c
+
+_______________________________________________
+
+Changes by:	raster	99/09/10 11:11:47
+
+Modified files:
+	.              : Makefile Makefile.am api.c api.h main.c 
+Added files:
+	.              : loader_jpeg.c 
+
+Log message:
+jpeg loader added that does everything RIGHT - needto mapk the png loader
+do the same. :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/10 19:04:10
+
+Modified files:
+	.              : api.c loader_png.c main.c 
+
+Log message:
+and now the png loader does full progress callbacks and multi-phase loading
+correctly... WHEEEEEEEEEEe :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/12 18:56:57
+
+Modified files:
+	.              : Makefile README api.c api.h blend.c blend.h 
+	                 image.c loader_png.c main.c 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure configure.in ltdl.c 
+	                 ltdl.h 
+Added files:
+	test_images    : audio.png bg.png folder.png mush.png paper.png 
+	                 sh1.png sh2.png sh3.png 
+
+Log message:
+ooh now imlib2 has a sexy demo for you people :) mmmmm watch the alpha
+blending... mmmmmmmmm
+
+_______________________________________________
+
+Changes by:	raster	99/09/12 21:06:58
+
+Modified files:
+	.              : color.c context.c main.c rgba.c 
+
+Log message:
+more playing with imlib2... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/12 22:32:36
+
+Modified files:
+	.              : main.c 
+Added files:
+	test_images    : bulb.png cal.png calc.png globe.png lock.png 
+	                 mail.png menu.png stop.png tnt.png 
+
+Log message:
+add some more images just to show off :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/12 22:34:51
+
+Modified files:
+	.              : context.c 
+
+Log message:
+get rid of printfs i dont need no more :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/13 21:21:29
+
+Modified files:
+	.              : Makefile api.c api.h blend.c blend.h draw.c 
+	                 main.c rend.c rend.h 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure configure.in ltdl.c 
+	                 ltdl.h 
+
+Log message:
+add operation type to blend ops.. :)
+
+_______________________________________________
+
+Changes by:	mej	99/09/14 17:16:44
+
+Modified files:
+	.              : autogen.sh 
+
+Log message:
+*sigh*
+
+This should fix those weird autogen.sh problems.  Apparently
+automake --copy thinks it fails even though it really doesn't.
+
+_______________________________________________
+
+Changes by:	raster	99/09/14 18:15:55
+
+Modified files:
+	.              : blend.c main.c 
+
+Log message:
+oooh more blending and operation code :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/14 18:23:00
+
+Modified files:
+	.              : autogen.sh 
+
+Log message:
+better autogen.sh comments to help you build imlib2
+
+_______________________________________________
+
+Changes by:	raster	99/09/14 18:24:28
+
+Modified files:
+	.              : autogen.sh 
+
+Log message:
+some mroe echos...
+
+_______________________________________________
+
+Changes by:	raster	99/09/16 18:31:57
+
+Modified files:
+	.              : Makefile Makefile.am api.c api.h blend.c rend.c 
+Added files:
+	.              : updates.c updates.h 
+
+Log message:
+added updates work.. well starting on it.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/16 18:47:49
+
+Modified files:
+	.              : updates.c 
+
+Log message:
+more wokr on updates
+
+_______________________________________________
+
+Changes by:	raster	99/09/18 00:50:37
+
+Modified files:
+	.              : Makefile Makefile.am api.c api.h image.c main.c 
+	                 rgbadraw.c rgbadraw.h updates.c 
+
+Log message:
+lots of new image manipulation functions and minor fix in loader module code.
+
+_______________________________________________
+
+Changes by:	raster	99/09/18 09:40:24
+
+Added files:
+	.              : colormod.c colormod.h config.h loaderpath.h 
+
+Log message:
+add some files
+
+_______________________________________________
+
+Changes by:	raster	99/09/18 09:41:59
+
+Removed files:
+	.              : config.h loaderpath.h 
+
+Log message:
+rewmove files i didnt mean tot add
+
+_______________________________________________
+
+Changes by:	raster	99/09/18 23:28:54
+
+Modified files:
+	.              : Makefile api.c api.h blend.c blend.h file.c 
+	                 image.c image.h loader_jpeg.c loader_png.c 
+	                 main.c rend.c rgbadraw.c scale.c 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure configure.in ltdl.c 
+	                 ltdl.h 
+
+Log message:
+cleaned up code a bit... :) minor speedup for sparse (lost of transparent
+bits in images) for alpha blending :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 11:33:15
+
+Modified files:
+	.              : rgba.c 
+
+Log message:
+get rid of extra space
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 13:05:23
+
+Modified files:
+	.              : api.c api.h color.c color.h main.c 
+
+Log message:
+ok- fix depth retireval code :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:00:17
+
+Modified files:
+	.              : loader_png.c 
+
+Log message:
+try make png laoder work on big endian... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:18:15
+
+Modified files:
+	.              : loader_png.c 
+
+Log message:
+and one mroe fix for big endian boxes for imlib png loader
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:22:21
+
+Modified files:
+	.              : loader_png.c 
+
+Log message:
+and add soem comments
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:43:59
+
+Modified files:
+	.              : rend.c 
+
+Log message:
+fix 15/16bpp depth problems
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:53:59
+
+Modified files:
+	.              : configure.in loader_png.c rgba.c 
+
+Log message:
+let autoconf figure out our endianess
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:56:55
+
+Modified files:
+	.              : Makefile Makefile.am 
+
+Log message:
+make install isnot system loader dirs
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 14:57:37
+
+Modified files:
+	.              : autogen.sh 
+
+Log message:
+update autogen.sh
+
+_______________________________________________
+
+Changes by:	raster	99/09/19 15:05:59
+
+Modified files:
+	.              : main.c 
+
+Log message:
+fix main.c
+
+_______________________________________________
+
+Changes by:	raster	99/09/26 14:36:51
+
+Modified files:
+	.              : api.c api.h color.c color.h common.h main.c 
+	                 rend.c rgbadraw.c updates.c 
+
+Log message:
+make imlib2 demo event based - test rect combining code in handling exposures
+and stuff - works it seesm - need to expand api though... expose handlign works
+fine as does rect mergeing and stuff.. must more efficient updating method now
+for demo.. template for stuff to be used by apps later :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/26 21:33:58
+
+Modified files:
+	.              : Makefile.am api.c api.h 
+Added files:
+	.              : font.c font.h format.c format.h 
+
+Log message:
+add some files...
+
+_______________________________________________
+
+Changes by:	raster	99/09/26 22:24:42
+
+Modified files:
+	.              : Makefile font.c font.h 
+
+Log message:
+more font stuff
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 08:16:52
+
+Modified files:
+	.              : Makefile Makefile.am font.c font.h 
+
+Log message:
+more code for font stugff being added.. more to come...
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 08:19:11
+
+Removed files:
+	.              : Makefile 
+
+Log message:
+why did i have a Makefile in cvs ?
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 15:47:45
+
+imlib2/ttfonts
+
+Update of /cvs/enlightenment/imlib2/ttfonts
+In directory ford:/tmp/cvs-serv11657/ttfonts
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/ttfonts added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 15:52:03
+
+Modified files:
+	.              : api.h font.c main.c ximage.c 
+Added files:
+	ttfonts        : Gadzoox.ttf Glypic.ttf Lemonfnt.ttf 
+	                 Tejartchi.ttf Terminator.ttf Virginlo.ttf 
+	                 adlib.ttf andes.ttf angular.ttf anklepants.ttf 
+	                 arabian.ttf arnprior.ttf asimov.ttf 
+	                 aurabesh.ttf autobot.ttf axaxax.ttf axaxaxl.ttf 
+	                 badfilms.ttf balconyangels.ttf baltar.ttf 
+	                 baltar01.ttf bastarda.ttf battlest.ttf 
+	                 battlestar.ttf beebop.ttf beebopp.ttf 
+	                 bellbottomlaser.ttf berliner.ttf bevel.ttf 
+	                 bigfish.ttf bitchin.ttf blackadderii.ttf 
+	                 blackforest.ttf bloodofdracula.ttf bloody.ttf 
+	                 blueregular.ttf bookworm.ttf branson.ttf 
+	                 burnout.ttf busorama.ttf 
+	                 butterflychromosome.ttf calligrapher.ttf 
+	                 cardas1.ttf carrdin2.ttf carrding.ttf 
+	                 carrelec.ttf carrkeys.ttf casloninitials.ttf 
+	                 celticmd.ttf checkbk.ttf chemicalgus.ttf 
+	                 choc.ttf chromosomelight.ttf cinema.ttf 
+	                 cld_____.ttf comics.ttf competitor.ttf 
+	                 computerfont.ttf crackbabies.ttf crackman.ttf 
+	                 crapola.ttf crysta.ttf crystalradiokit.ttf 
+	                 ctype.ttf cupertino.ttf dazzleships.ttf 
+	                 decaying.ttf deceptgr.ttf demonnight.ttf 
+	                 diamondgothic.ttf dienasty.ttf 
+	                 dirtybakersdozen.ttf dogsonmars.ttf dolphin.ttf 
+	                 down.ttf dragonwick.ttf duedate.ttf 
+	                 dustmites.ttf dutchtreat.ttf eccentrical.ttf 
+	                 elbjorgscript.ttf electrichermes.ttf enya.ttf 
+	                 erasure.ttf fleur_tt.ttf flouridebeings.ttf 
+	                 flytningar.ttf frowf___.ttf gaeil1.ttf 
+	                 galab___.ttf galactic.ttf gardenparty.ttf 
+	                 gathora.ttf glazkrak.ttf glypic.ttf goethe.ttf 
+	                 goldengirdle.ttf goofball.ttf grease.ttf 
+	                 grunge.ttf hackers.ttf handwriting.ttf 
+	                 headhunter.ttf heavyheap.ttf hirosh.ttf 
+	                 hman.ttf hman2.ttf holstein.ttf huskystash.ttf 
+	                 hydrogenwhiskey.ttf id4.ttf igloo.ttf 
+	                 inavelkusin.ttf inavelmutant.ttf 
+	                 incantation.ttf induction2.ttf instanttunes.ttf 
+	                 invisiblekiller.ttf joycircuit.ttf joystix.ttf 
+	                 karloff.ttf kewken.ttf khaf____.ttf 
+	                 khan____.ttf khb_____.ttf khf_____.ttf 
+	                 khl_____.ttf kho_____.ttf kiloton.ttf 
+	                 kingarthur.ttf kissmekissmekissme.ttf 
+	                 klingonblade.ttf klingonscript.ttf kontrast.ttf 
+	                 kurtrussell.ttf lansbury.ttf lavalava.ttf 
+	                 lemonfnt.ttf lochen.ttf lockergn.ttf 
+	                 lockergnome.ttf logger.ttf lombardic.ttf 
+	                 lombnarr.ttf lowereastside.ttf 
+	                 lowerwestside.ttf lunauror.ttf lunaurora.ttf 
+	                 lynx.ttf machuman.ttf magdelena.ttf 
+	                 marqueem.ttf massiveretaliation.ttf mechoba.ttf 
+	                 metallord.ttf mickey.ttf minya.ttf monst___.ttf 
+	                 monstro.ttf morpheus.ttf nasalization.ttf 
+	                 neon2.ttf newworldvibes.ttf nightcourt.ttf 
+	                 nine____.ttf nosferatu.ttf notepad.ttf 
+	                 notepad_.ttf oldgermen.ttf oliver.ttf 
+	                 oliviabrush.ttf ollon.ttf omnibus.ttf 
+	                 parkavenue.ttf pastorofmuppets.ttf 
+	                 planetbenson.ttf plasticbag.ttf 
+	                 pleasantlyplump.ttf plump.ttf popticsone.ttf 
+	                 popticsoneextras.ttf popticsthree.ttf 
+	                 popticsthreeextras.ttf popticstwo.ttf 
+	                 popticstwoextras.ttf pormask2039.ttf prick.ttf 
+	                 prima.ttf puppf___.ttf purptete.ttf 
+	                 quadrangle.ttf quake.ttf radiostars.ttf 
+	                 ransom.ttf rattpick.ttf rebucked.ttf 
+	                 refluxed.ttf reticulan.ttf reverb.ttf roar.ttf 
+	                 robokoz.ttf romeo.ttf rotondosilver.ttf 
+	                 rylodian.ttf saf.ttf sand____.ttf schizm.ttf 
+	                 scritz.ttf seawfa__.ttf sham.ttf shlop.ttf 
+	                 singothic.ttf slumberp.ttf snidely.ttf 
+	                 solsticeofsuffering.ttf spillm~1.ttf 
+	                 spirits.ttf spongy.ttf spund.ttf squealer.ttf 
+	                 squire.ttf stonehenge.ttf stop.ttf 
+	                 superglue.ttf superheterodyne.ttf 
+	                 taxidermist.ttf thalia.ttf thickhead.ttf 
+	                 tofu8.ttf tomhand.ttf toontime.ttf topbond.ttf 
+	                 tosscasu.ttf touchofnature.ttf transylvania.ttf 
+	                 trash.ttf tron.ttf turkeys.ttf ventilate.ttf 
+	                 village.ttf virginlo.ttf wacko.ttf warlock.ttf 
+	                 whitebld.ttf xenowort.ttf xoltoa.ttf yadou.ttf 
+	                 yoinks.ttf zerohour.ttf 
+	                 zodillinstrisstirust.ttf 
+
+Log message:
+add some test truetype fonts - just for testing... and truetype font
+rendering code... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 15:52:56
+
+Removed files:
+	ttfonts        : zodillinstrisstirust.ttf 
+
+Log message:
+bad bad font.......
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 15:55:56
+
+Modified files:
+	.              : main.c 
+Removed files:
+	ttfonts        : instanttunes.ttf 
+
+Log message:
+actualyl chekc if the font laod works and remove another bad font
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 16:09:07
+
+Removed files:
+	ttfonts        : Tejartchi.ttf beebop.ttf beebopp.ttf bevel.ttf 
+	                 blackadderii.ttf carrelec.ttf computerfont.ttf 
+	                 crysta.ttf galab___.ttf handwriting.ttf 
+	                 lynx.ttf omnibus.ttf popticsthree.ttf 
+	                 popticsthreeextras.ttf transylvania.ttf 
+
+Log message:
+get rid of soem useless fonts...
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 16:09:55
+
+Removed files:
+	ttfonts        : cld_____.ttf fleur_tt.ttf frowf___.ttf 
+	                 khaf____.ttf khan____.ttf khb_____.ttf 
+	                 khf_____.ttf khl_____.ttf kho_____.ttf 
+	                 monst___.ttf nine____.ttf notepad_.ttf 
+	                 puppf___.ttf sand____.ttf seawfa__.ttf 
+
+Log message:
+get rid of silyl fonts with silyl names... i hate those names... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 16:12:12
+
+Removed files:
+	ttfonts        : hman2.ttf 
+
+Log message:
+this font segfaults freetype.. ooh nice freetype :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 16:17:22
+
+Removed files:
+	ttfonts        : calligrapher.ttf inavelmutant.ttf 
+	                 nasalization.ttf 
+
+Log message:
+nuke some more unusable fonts :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 17:03:20
+
+Removed files:
+	ttfonts        : bastarda.ttf 
+
+Log message:
+another useless font
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 17:33:23
+
+Removed files:
+	ttfonts        : Terminator.ttf carrdin2.ttf carrding.ttf 
+	                 carrkeys.ttf gaeil1.ttf goldengirdle.ttf 
+	                 klingonblade.ttf kontrast.ttf lockergn.ttf 
+	                 planetbenson.ttf popticstwo.ttf pormask2039.ttf 
+	                 quake.ttf refluxed.ttf reverb.ttf roar.ttf 
+	                 saf.ttf stop.ttf 
+
+Log message:
+remove some more useless fonts
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 17:36:41
+
+Modified files:
+	.              : font.c main.c 
+
+Log message:
+some fixes to font code... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 19:13:50
+
+Modified files:
+	.              : font.c font.h main.c 
+
+Log message:
+fix raster map over-allocation problem for fonts.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 19:22:57
+
+Modified files:
+	.              : font.c font.h 
+
+Log message:
+add prototypes and cleanup unused vars
+
+_______________________________________________
+
+Changes by:	raster	99/09/27 23:59:55
+
+Modified files:
+	.              : font.c 
+
+Log message:
+you mightnt guess it - but rotated text all works now.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/28 11:51:08
+
+Modified files:
+	.              : api.c api.h font.c updates.c updates.h 
+
+Log message:
+fix ups some toehr stuff...
+
+_______________________________________________
+
+Changes by:	raster	99/09/28 16:08:40
+
+Modified files:
+	.              : font.c main.c 
+
+Log message:
+some fixes to get the output nextx and nexty right... :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/28 16:48:39
+
+Modified files:
+	.              : api.c api.h font.c font.h main.c 
+
+Log message:
+add some of the font api to the api :)
+
+_______________________________________________
+
+Changes by:	raster	99/09/29 10:25:52
+
+Modified files:
+	.              : api.c api.h font.c font.h main.c 
+
+Log message:
+add speculative fotn cache ability - just like we have for images and pixmaps
+and ximages.
+
+_______________________________________________
+
+Changes by:	raster	99/09/29 11:10:14
+
+Modified files:
+	.              : api.c api.h font.c font.h 
+
+Log message:
+add actual api.h calls to the font caching stuff...
+
+_______________________________________________
+
+Changes by:	raster	99/09/30 09:46:04
+
+Modified files:
+	.              : main.c rgbadraw.c 
+
+Log message:
+we have... anti-aliased line drawing code now... :) (and funnily enough -
+UNLIKE gimp it actually CAN draw a straight line for shit with anti-aliasing)
+
+_______________________________________________
+
+Changes by:	raster	99/10/21 10:07:21
+
+Modified files:
+	.              : api.c api.h blend.c blend.h colormod.c 
+	                 colormod.h common.h draw.c font.c font.h grab.c 
+	                 image.c image.h rend.c rgbadraw.c ximage.c 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure configure.in ltdl.c 
+	                 ltdl.h 
+
+Log message:
+color modifiers in imlib2 now done.. cleaned up soem code...
+
+_______________________________________________
+
+Changes by:	mandrake	99/10/22 04:19:11
+
+Modified files:
+	.              : api.h file.h font.c grab.c loader_jpeg.c 
+	                 loader_png.c main.c rgbadraw.c rgbadraw.h 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure configure.in ltdl.c 
+	                 ltdl.h 
+Added files:
+	.              : ChangeLog 
+
+Log message:
+Fri Oct 22 10:53:26 PDT 1999
+(Mandrake)
+
+removed almost all the warnings.
+except for:
+main.c:287: warning: implicit declaration of function `__imlib_draw_line'
+which I believe is because it's not using the appropriate API call yet.
+
+_______________________________________________
+
+Changes by:	raster	99/10/22 04:40:45
+
+Modified files:
+	.              : api.h 
+
+Log message:
+again........ :)
+
+_______________________________________________
+
+Changes by:	raster	99/10/25 09:36:24
+
+Modified files:
+	.              : Makefile.am api.c api.h image.h main.c 
+	                 rgbadraw.c rgbadraw.h 
+	libltdl        : ltdl.c 
+
+Log message:
+work work work...
+
+_______________________________________________
+
+Changes by:	raster	99/10/25 16:30:01
+
+Modified files:
+	.              : draw.c image.c 
+
+Log message:
+more flim
+
+_______________________________________________
+
+Changes by:	raster	99/10/25 16:30:46
+
+Modified files:
+	.              : api.c api.h image.h 
+
+Log message:
+more flim code..... >8)
+
+_______________________________________________
+
+Changes by:	raster	99/10/27 06:48:39
+
+Modified files:
+	.              : rgba.c 
+
+Log message:
+memcpy :)
+
+_______________________________________________
+
+Changes by:	raster	99/10/27 07:08:32
+
+Modified files:
+	.              : api.c api.h main.c 
+Added files:
+	.              : grad.c grad.h 
+
+Log message:
+nice FAST gradient drawing code.... :) eat my dast... MUHAHAHAHAHHA! :)
+
+_______________________________________________
+
+Changes by:	raster	99/10/27 07:20:27
+
+Modified files:
+	.              : api.c api.h 
+
+Log message:
+pixel query call.... need this one
+
+_______________________________________________
+
+Changes by:	raster	99/10/27 10:44:15
+
+Modified files:
+	.              : api.c main.c 
+
+Log message:
+and the flim goes on..........
+
+_______________________________________________
+
+Changes by:	raster	99/10/28 03:40:02
+
+Modified files:
+	.              : color.c 
+
+Log message:
+dont chose visuals > 24bit :)
+
+_______________________________________________
+
+Changes by:	mandrake	99/10/28 06:09:03
+
+Added files:
+	libltdl        : .cvsignore 
+Removed files:
+	libltdl        : configure 
+
+Log message:
+trying to "fix" imlib2's cvs tree
+
+_______________________________________________
+
+Changes by:	mandrake	99/10/28 06:11:27
+
+Added files:
+	.              : .cvsignore 
+
+Log message:
+more "hush yo mouf cvs" changes
+
+_______________________________________________
+
+Changes by:	raster	99/10/28 08:26:19
+
+Modified files:
+	.              : api.c api.h blend.c grab.c 
+
+Log message:
+LOTS of checkign in the api now to make sure the calling program can't stuff
+things up too badly...
+
+_______________________________________________
+
+Changes by:	raster	99/10/28 10:43:42
+
+Removed files:
+	test_images    : im.png im_rgb.png 
+
+Log message:
+get rid of images i'm nto using...
+
+_______________________________________________
+
+Changes by:	raster	99/10/28 16:04:27
+
+Modified files:
+	.              : api.h main.c 
+	test_images    : bg.png 
+
+Log message:
+better api.h
+
+_______________________________________________
+
+Changes by:	raster	99/10/29 02:11:58
+
+Modified files:
+	.              : rgbadraw.c 
+
+Log message:
+oooooooooops - thanks hans! :)
+
+_______________________________________________
+
+Changes by:	raster	99/10/29 03:39:09
+
+Modified files:
+	.              : color.h 
+
+Log message:
+dont need that fixme..
+
+_______________________________________________
+
+Changes by:	raster	99/10/30 04:22:48
+
+Modified files:
+	.              : main.c rgba.c 
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure.in ltdl.c ltdl.h 
+
+Log message:
+speed testing code back.. just testing...
+
+_______________________________________________
+
+Changes by:	raster	99/10/30 04:54:01
+
+Modified files:
+	.              : loader_png.c 
+
+Log message:
+try this..
+
+_______________________________________________
+
+Changes by:	raster	99/10/30 10:41:08
+
+Modified files:
+	.              : blend.c 
+
+Log message:
+optmiseeeeeeeeeeeeeeeeeee. :)
+
+_______________________________________________
+
+Changes by:	mandrake	99/10/31 11:45:23
+
+Modified files:
+	.              : ChangeLog 
+	libltdl        : .cvsignore 
+Removed files:
+	libltdl        : Makefile.am Makefile.in acinclude.m4 aclocal.m4 
+	                 config.h.in configure.in ltdl.c ltdl.h 
+
+Log message:
+Sun Oct 31 20:21:13 PST 1999
+(Mandrake)
+
+libltdl (large chunks of it) is automatically generated by autogen.sh.
+no need for those files to be in CVS.
+
+_______________________________________________
+
+Changes by:	mandrake	99/10/31 11:50:50
+
+Modified files:
+	.              : rgba.c 
+
+Log message:
+removed a warning
+
+_______________________________________________
+
+Changes by:	raster	99/10/31 14:50:06
+
+Modified files:
+	.              : blend.c 
+
+Log message:
+eeek math error at 255 (becomes 254) not surprising i didnt notice.. i
+looked at the results rsather than numerically evaluating...
+
+_______________________________________________
+
+Changes by:	raster	99/10/31 15:08:18
+
+Modified files:
+	.              : grab.c rend.c rgba.c rgba.h 
+
+Log message:
+and handle ABGR ordering in 24/32bpp
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 02:00:06
+
+Modified files:
+	.              : api.c api.h blend.c image.c image.h 
+
+Log message:
+added ability to attach integert vlue and data poitner tags to images by
+string keys (with destructors optional) - wil be used for saving of images
+(savers will look for these keys to gleen parameters for saaving)
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 02:07:14
+
+Modified files:
+	.              : grad.c main.c rgbadraw.c 
+
+Log message:
+fix some minro roundoff problems as before...
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 03:05:17
+
+Modified files:
+	.              : blend.c grad.c rgbadraw.c 
+
+Log message:
+udless &'s
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 04:11:30
+
+Modified files:
+	.              : ChangeLog image.c image.h 
+Added files:
+	.              : TODO 
+
+Log message:
+add TODO...
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 06:35:25
+
+Modified files:
+	.              : api.c api.h image.c image.h 
+
+Log message:
+structure for savign all done - now just need to fill in the save() functions
+in the loaders (yes laoder are also savers - loader and saver are
+interchangeable).
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 07:27:34
+
+Modified files:
+	.              : api.c image.c loader_jpeg.c main.c 
+
+Log message:
+we have a jpeg saver and the saver code works
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 07:30:56
+
+Modified files:
+	.              : image.c 
+
+Log message:
+whee more robus tagging...
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 08:14:00
+
+Modified files:
+	.              : image.c loader_png.c main.c 
+
+Log message:
+and now it all works...
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 08:15:37
+
+Modified files:
+	.              : main.c 
+
+Log message:
+flim
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 08:34:01
+
+Modified files:
+	.              : blend.c 
+
+Log message:
+and now thats all better.
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 08:52:52
+
+Modified files:
+	.              : blend.c 
+
+Log message:
+fix that........
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 08:54:49
+
+Modified files:
+	.              : blend.c 
+
+Log message:
+fix that bitchift..
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:12:39
+
+imlib2/loaders
+
+Update of /cvs/enlightenment/imlib2/loaders
+In directory ford:/tmp/cvs-serv13720/loaders
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/loaders added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:12:40
+
+imlib2/src
+
+Update of /cvs/enlightenment/imlib2/src
+In directory ford:/tmp/cvs-serv13720/src
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/src added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:40:51
+
+Modified files:
+	.              : Makefile.am configure.in 
+Added files:
+	loaders        : Makefile.am loader_jpeg.c loader_png.c 
+	src            : Imlib2.h Makefile.am api.c blend.c blend.h 
+	                 color.c color.h colormod.c colormod.h common.h 
+	                 context.c context.h draw.c draw.h file.c file.h 
+	                 font.c font.h format.c format.h grab.c grab.h 
+	                 grad.c grad.h image.c image.h main.c rend.c 
+	                 rend.h rgba.c rgba.h rgbadraw.c rgbadraw.h 
+	                 scale.c scale.h updates.c updates.h ximage.c 
+	                 ximage.h 
+Removed files:
+	.              : api.c api.h blend.c blend.h color.c color.h 
+	                 colormod.c colormod.h common.h context.c 
+	                 context.h draw.c draw.h file.c file.h font.c 
+	                 font.h format.c format.h grab.c grab.h grad.c 
+	                 grad.h image.c image.h loader_jpeg.c 
+	                 loader_png.c main.c rend.c rend.h rgba.c rgba.h 
+	                 rgbadraw.c rgbadraw.h scale.c scale.h updates.c 
+	                 updates.h ximage.c ximage.h 
+
+Log message:
+re-structure......
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:41:03
+
+imlib2/test
+
+Update of /cvs/enlightenment/imlib2/test
+In directory ford:/tmp/cvs-serv14123/test
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/test added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:47:48
+
+imlib2/test/test_images
+
+Update of /cvs/enlightenment/imlib2/test/test_images
+In directory ford:/tmp/cvs-serv14183/test_images
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/test/test_images added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:48:23
+
+imlib2/test/ttfonts
+
+Update of /cvs/enlightenment/imlib2/test/ttfonts
+In directory ford:/tmp/cvs-serv14198/ttfonts
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/test/ttfonts added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 09:49:59
+
+Modified files:
+	.              : configure.in 
+Added files:
+	test           : Makefile.am main.c 
+	test/test_images: audio.png bg.png bulb.png cal.png calc.png 
+	                  folder.png globe.png lock.png mail.png 
+	                  menu.png mush.png paper.png sh1.png sh2.png 
+	                  sh3.png stop.png tnt.png 
+	test/ttfonts   : cinema.ttf grunge.ttf morpheus.ttf notepad.ttf 
+Removed files:
+	src            : main.c 
+	test_images    : audio.png bg.png bulb.png cal.png calc.png 
+	                 folder.png globe.png lock.png mail.png menu.png 
+	                 mush.png paper.png sh1.png sh2.png sh3.png 
+	                 stop.png tnt.png 
+	ttfonts        : Gadzoox.ttf Glypic.ttf Lemonfnt.ttf 
+	                 Virginlo.ttf adlib.ttf andes.ttf angular.ttf 
+	                 anklepants.ttf arabian.ttf arnprior.ttf 
+	                 asimov.ttf aurabesh.ttf autobot.ttf axaxax.ttf 
+	                 axaxaxl.ttf badfilms.ttf balconyangels.ttf 
+	                 baltar.ttf baltar01.ttf battlest.ttf 
+	                 battlestar.ttf bellbottomlaser.ttf berliner.ttf 
+	                 bigfish.ttf bitchin.ttf blackforest.ttf 
+	                 bloodofdracula.ttf bloody.ttf blueregular.ttf 
+	                 bookworm.ttf branson.ttf burnout.ttf 
+	                 busorama.ttf butterflychromosome.ttf 
+	                 cardas1.ttf casloninitials.ttf celticmd.ttf 
+	                 checkbk.ttf chemicalgus.ttf choc.ttf 
+	                 chromosomelight.ttf cinema.ttf comics.ttf 
+	                 competitor.ttf crackbabies.ttf crackman.ttf 
+	                 crapola.ttf crystalradiokit.ttf ctype.ttf 
+	                 cupertino.ttf dazzleships.ttf decaying.ttf 
+	                 deceptgr.ttf demonnight.ttf diamondgothic.ttf 
+	                 dienasty.ttf dirtybakersdozen.ttf 
+	                 dogsonmars.ttf dolphin.ttf down.ttf 
+	                 dragonwick.ttf duedate.ttf dustmites.ttf 
+	                 dutchtreat.ttf eccentrical.ttf 
+	                 elbjorgscript.ttf electrichermes.ttf enya.ttf 
+	                 erasure.ttf flouridebeings.ttf flytningar.ttf 
+	                 galactic.ttf gardenparty.ttf gathora.ttf 
+	                 glazkrak.ttf glypic.ttf goethe.ttf goofball.ttf 
+	                 grease.ttf grunge.ttf hackers.ttf 
+	                 headhunter.ttf heavyheap.ttf hirosh.ttf 
+	                 hman.ttf holstein.ttf huskystash.ttf 
+	                 hydrogenwhiskey.ttf id4.ttf igloo.ttf 
+	                 inavelkusin.ttf incantation.ttf induction2.ttf 
+	                 invisiblekiller.ttf joycircuit.ttf joystix.ttf 
+	                 karloff.ttf kewken.ttf kiloton.ttf 
+	                 kingarthur.ttf kissmekissmekissme.ttf 
+	                 klingonscript.ttf kurtrussell.ttf lansbury.ttf 
+	                 lavalava.ttf lemonfnt.ttf lochen.ttf 
+	                 lockergnome.ttf logger.ttf lombardic.ttf 
+	                 lombnarr.ttf lowereastside.ttf 
+	                 lowerwestside.ttf lunauror.ttf lunaurora.ttf 
+	                 machuman.ttf magdelena.ttf marqueem.ttf 
+	                 massiveretaliation.ttf mechoba.ttf 
+	                 metallord.ttf mickey.ttf minya.ttf monstro.ttf 
+	                 morpheus.ttf neon2.ttf newworldvibes.ttf 
+	                 nightcourt.ttf nosferatu.ttf notepad.ttf 
+	                 oldgermen.ttf oliver.ttf oliviabrush.ttf 
+	                 ollon.ttf parkavenue.ttf pastorofmuppets.ttf 
+	                 plasticbag.ttf pleasantlyplump.ttf plump.ttf 
+	                 popticsone.ttf popticsoneextras.ttf 
+	                 popticstwoextras.ttf prick.ttf prima.ttf 
+	                 purptete.ttf quadrangle.ttf radiostars.ttf 
+	                 ransom.ttf rattpick.ttf rebucked.ttf 
+	                 reticulan.ttf robokoz.ttf romeo.ttf 
+	                 rotondosilver.ttf rylodian.ttf schizm.ttf 
+	                 scritz.ttf sham.ttf shlop.ttf singothic.ttf 
+	                 slumberp.ttf snidely.ttf 
+	                 solsticeofsuffering.ttf spillm~1.ttf 
+	                 spirits.ttf spongy.ttf spund.ttf squealer.ttf 
+	                 squire.ttf stonehenge.ttf superglue.ttf 
+	                 superheterodyne.ttf taxidermist.ttf thalia.ttf 
+	                 thickhead.ttf tofu8.ttf tomhand.ttf 
+	                 toontime.ttf topbond.ttf tosscasu.ttf 
+	                 touchofnature.ttf trash.ttf tron.ttf 
+	                 turkeys.ttf ventilate.ttf village.ttf 
+	                 virginlo.ttf wacko.ttf warlock.ttf whitebld.ttf 
+	                 xenowort.ttf xoltoa.ttf yadou.ttf yoinks.ttf 
+	                 zerohour.ttf 
+
+Log message:
+restructure the direcotry a bit.......
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:00:02
+
+Modified files:
+	.              : configure.in 
+
+Log message:
+fix the version
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:05:48
+
+Modified files:
+	.              : README 
+
+Log message:
+update README
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:06:33
+
+Added files:
+	loaders        : .cvsignore 
+	src            : .cvsignore 
+	test           : .cvsignore 
+
+Log message:
+add ignores......
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:07:34
+
+Modified files:
+	.              : .cvsignore 
+
+Log message:
+more in ignore
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:10:30
+
+Modified files:
+	loaders        : loader_png.c 
+
+Log message:
+handle progress callback for saving in png loader..
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:12:42
+
+Modified files:
+	test           : main.c 
+
+Log message:
+stop testing saving.. it works..
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:13:02
+
+Modified files:
+	src            : blend.c 
+
+Log message:
+no printf
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:45:29
+
+Modified files:
+	loaders        : Makefile.am loader_jpeg.c loader_png.c 
+	src            : image.c 
+Added files:
+	loaders        : loader_pnm.c 
+
+Log message:
+starting on pnm loader (ppm, pgm pbm, pam) - will finish later...
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 10:46:23
+
+Modified files:
+	loaders        : Makefile.am 
+
+Log message:
+oops makefile......
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 12:50:16
+
+Modified files:
+	loaders        : loader_pnm.c 
+
+Log message:
+hmm that didnt compile.. ooh fun :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 16:24:17
+
+Modified files:
+	loaders        : loader_pnm.c 
+
+Log message:
+pnm loader handles binary formats allright... :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/01 16:53:45
+
+Modified files:
+	loaders        : loader_pnm.c 
+
+Log message:
+binary png loaders done..plus speculating on the P8 format... dont like it
+much... i think ineed a FAST trivial to load ARGB format.
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 00:25:18
+
+Modified files:
+	loaders        : loader_pnm.c 
+
+Log message:
+pnm loader can save now...
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 02:16:50
+
+Modified files:
+	loaders        : Makefile.am loader_pnm.c 
+	src            : api.c 
+	test           : main.c 
+Added files:
+	loaders        : loader_argb.c 
+
+Log message:
+argb format loader & saver. my own format just so i can load and save raw ARGB
+data blindingly fast for imlib2 :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 02:17:07
+
+Modified files:
+	test           : main.c 
+
+Log message:
+get rid of saver func
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 02:46:34
+
+imlib2/demo
+
+Update of /cvs/enlightenment/imlib2/demo
+In directory ford:/tmp/cvs-serv28365/demo
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/demo added to the repository
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 03:12:59
+
+Modified files:
+	.              : configure.in 
+	src            : rgbadraw.c 
+Added files:
+	demo           : Makefile.am view.c 
+
+Log message:
+oops - fix that filled rect drawing code
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 03:13:59
+
+Added files:
+	demo           : .cvsignore 
+
+Log message:
+add ignores.......
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 05:32:40
+
+Modified files:
+	demo           : view.c 
+	loaders        : loader_argb.c loader_jpeg.c loader_pnm.c 
+	src            : rend.c 
+
+Log message:
+fix a little of the rend code - never testyed that bit...
+andf the imlib2_view works nicely iwth zooming too :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 06:34:48
+
+Modified files:
+	demo           : view.c 
+
+Log message:
+primitive timeout.. its not even that good.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 06:42:05
+
+Modified files:
+	demo           : view.c 
+
+Log message:
+now that works better
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 07:29:52
+
+Modified files:
+	.              : configure.in 
+
+Log message:
+Makefile NOT Makefil ! :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/02 07:56:23
+
+Modified files:
+	.              : Makefile.am 
+Added files:
+	.              : imlib2.spec 
+
+Log message:
+more correct makefile.am in base........
+
+_______________________________________________
+
+Changes by:	raster	99/11/03 08:21:02
+
+Modified files:
+	demo           : Makefile.am 
+	src            : blend.c 
+Added files:
+	demo           : blend.c 
+
+Log message:
+add soem stuff and new blend.c from ryan :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/03 08:22:21
+
+Modified files:
+	src            : blend.c 
+
+Log message:
+again..........
+
+_______________________________________________
+
+Changes by:	raster	99/11/04 01:02:58
+
+Modified files:
+	src            : Imlib2.h api.c 
+
+Log message:
+mising 2 important calls inthe font code... :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/04 08:20:08
+
+Modified files:
+	src            : font.c 
+
+Log message:
+ooooooooops :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/07 00:51:47
+
+Modified files:
+	.              : COPYING 
+	demo           : blend.c 
+	src            : blend.c blend.h font.c rend.c 
+Added files:
+	.              : AUTHORS 
+
+Log message:
+added AUTHORS file.. fixed copyting....
+
+_______________________________________________
+
+Changes by:	raster	99/11/13 10:55:40
+
+Modified files:
+	src            : blend.c 
+
+Log message:
+oopsie in blend.c
+
+_______________________________________________
+
+Changes by:	raster	99/11/15 16:06:54
+
+Modified files:
+	src            : rgbadraw.c 
+
+Log message:
+oop s- clipping problme wiht lines.. fixed :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/16 16:01:58
+
+Modified files:
+	src            : api.c 
+
+Log message:
+oh oops - image blending whilst scaling want quite right in the api.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/11/18 23:42:21
+
+Modified files:
+	src            : grad.c 
+
+Log message:
+ok - gradients now dont overflow the precision buffer as badly.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/02 13:02:01
+
+Modified files:
+	src            : image.c 
+
+Log message:
+oops saver does rescan loader - so unless you laoded an image no laoders
+will be around... and it wont get rescanned on save.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/07 09:28:53
+
+Modified files:
+	src            : Imlib2.h api.c 
+	test           : main.c 
+
+Log message:
+lets break the Imlib2 api and chnage it... now its context based.. :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/07 09:30:01
+
+Modified files:
+	.              : configure.in 
+	src            : Makefile.am 
+
+Log message:
+just up the versions to show i did something... :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/07 09:30:56
+
+Modified files:
+	.              : imlib2.spec 
+
+Log message:
+spec file too...
+
+_______________________________________________
+
+Changes by:	raster	99/12/07 10:02:48
+
+Modified files:
+	test           : main.c 
+
+Log message:
+test program back to normal.. nwo works with api changes...
+
+_______________________________________________
+
+Changes by:	raster	99/12/07 10:20:57
+
+Modified files:
+	demo           : Makefile.am view.c 
+Removed files:
+	demo           : blend.c 
+
+Log message:
+fixe view to compile & work
+
+_______________________________________________
+
+Changes by:	raster	99/12/07 10:28:51
+
+Modified files:
+	demo           : Makefile.am view.c 
+
+Log message:
+imlib2_view works again...
+
+_______________________________________________
+
+Changes by:	raster	99/12/10 04:34:12
+
+Modified files:
+	src            : api.c 
+
+Log message:
+oops :) fixed :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/10 06:26:13
+
+Modified files:
+	.              : configure.in 
+
+Log message:
+blum
+
+_______________________________________________
+
+Changes by:	raster	99/12/10 06:27:54
+
+Modified files:
+	src            : api.c font.c 
+
+Log message:
+more blum - bloody freetype - why does debian have to go move the headre to a
+different location to where it always was?
+
+_______________________________________________
+
+Changes by:	raster	99/12/10 06:30:10
+
+Modified files:
+	src            : api.c font.c 
+
+Log message:
+compile damnit...
+
+_______________________________________________
+
+Changes by:	raster	99/12/10 06:31:32
+
+Modified files:
+	src            : font.c 
+
+Log message:
+include config.h
+
+_______________________________________________
+
+Changes by:	raster	99/12/14 01:18:24
+
+Modified files:
+	src            : blend.c colormod.h 
+
+Log message:
+fix fix fix fix......................... :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/17 07:37:20
+
+Modified files:
+	.              : configure.in 
+	loaders        : Makefile.am 
+
+Log message:
+create .a's :)
+
+_______________________________________________
+
+Changes by:	llane	99/12/19 13:05:33
+
+imlib2/debian
+
+Update of /cvs/enlightenment/imlib2/debian
+In directory ford:/tmp/cvs-serv24002/debian
+
+Log Message:
+Directory /cvs/enlightenment/imlib2/debian added to the repository
+
+_______________________________________________
+
+Changes by:	llane	99/12/19 13:08:33
+
+Modified files:
+	debian         : changelog 
+Added files:
+	debian         : changelog control libeconfig0.postinst rules 
+	                 shlibs.local 
+	debian         : changelog control libimlib2.postinst rules 
+	                 shlibs.local 
+
+Log message:
+more preliminary assimilation
+
+_______________________________________________
+
+Changes by:	raster	99/12/19 15:03:06
+
+Modified files:
+	loaders        : loader_jpeg.c 
+	test           : main.c 
+
+Log message:
+fix loaders......
+
+_______________________________________________
+
+Changes by:	mej	99/12/21 12:46:42
+
+Modified files:
+	loaders        : Makefile.am 
+Added files:
+	loaders        : loader_gif.c 
+
+Log message:
+A GIF loader.  There is no save function yet, and you'll need libgif to
+use it.
+
+_______________________________________________
+
+Changes by:	raster	99/12/22 00:04:00
+
+Modified files:
+	src            : Imlib2.h api.c 
+
+Log message:
+for acceleration to work i nee to add a parameter to put_back_data
+
+_______________________________________________
+
+Changes by:	mej	99/12/22 02:48:31
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+Whoops.  Forgot to call the progress callback one last time.
+
+_______________________________________________
+
+Changes by:	raster	99/12/23 08:43:26
+
+Modified files:
+	src            : api.c 
+
+Log message:
+oops typo :)
+
+_______________________________________________
+
+Changes by:	raster	99/12/23 15:30:18
+
+Modified files:
+	src            : blend.c 
+
+Log message:
+fix missing case in scaling for blending objects...
+
+_______________________________________________
+
+Changes by:	raster	99/12/26 10:27:05
+
+Modified files:
+	src            : blend.c rend.c updates.c 
+
+Log message:
+get clipping right...
+
+_______________________________________________
+
+Changes by:	raster	00/01/05 02:26:40
+
+Modified files:
+	loaders        : loader_gif.c 
+	src            : Imlib2.h api.c image.c 
+
+Log message:
+add loader flush call and fix gif loader to be able to load when theres no
+progress set :)
+
+_______________________________________________
+
+Changes by:	raster	00/01/05 04:23:25
+
+Modified files:
+	loaders        : loader_png.c 
+
+Log message:
+oops - expand indexed images...
+
+_______________________________________________
+
+Changes by:	mej	00/01/05 06:28:50
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+Don't ask me how this got out of sync....
+
+_______________________________________________
+
+Changes by:	mej	00/01/05 06:29:58
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+*grumble*
+
+_______________________________________________
+
+Changes by:	raster	00/01/05 21:58:21
+
+Modified files:
+	src            : font.c 
+
+Log message:
+allow full paths for font names too..
+
+_______________________________________________
+
+Changes by:	raster	00/01/05 22:32:45
+
+Modified files:
+	src            : font.c 
+
+Log message:
+search path for font mroe sanely
+
+_______________________________________________
+
+Changes by:	raster	00/01/07 10:40:51
+
+Modified files:
+	src            : font.c 
+
+Log message:
+dont be so anal abotu ewncodings... if no apple or windows encoding is there
+just use encoding charmap 0 :)
+
+_______________________________________________
+
+Changes by:	raster	00/01/09 21:41:18
+
+Modified files:
+	src            : Imlib2.h api.c image.c 
+
+Log message:
+i cant beleieve i missed wrappign the pixmap free function....
+
+_______________________________________________
+
+Changes by:	raster	00/01/09 21:42:41
+
+Modified files:
+	src            : api.c 
+
+Log message:
+add to header.....
+
+_______________________________________________
+
+Changes by:	raster	00/01/09 22:49:20
+
+Modified files:
+	src            : Imlib2.h api.c 
+
+Log message:
+add dither mask pixmap rendering contexts...
+
+_______________________________________________
+
+Changes by:	raster	00/01/10 04:25:14
+
+Modified files:
+	src            : Imlib2.h Makefile.am 
+
+Log message:
+up version... add c++ usability..
+
+_______________________________________________
+
+Changes by:	raster	00/01/10 19:15:59
+
+Modified files:
+	.              : configure.in 
+
+Log message:
+updates and fixes.. versioning etc...
+
+_______________________________________________
+
+Changes by:	mej	00/01/11 14:42:07
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+Ummm...
+
+_______________________________________________
+
+Changes by:	raster	00/01/17 10:20:29
+
+Modified files:
+	src            : Imlib2.h api.c 
+
+Log message:
+oops - forgort to remove param from imlib_free_color_rangex
+
+_______________________________________________
+
+Changes by:	raster	00/01/17 14:21:02
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+put that back...
+
+_______________________________________________
+
+Changes by:	mej	00/01/17 14:50:08
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+Put those back.  I hate warnings.
+
+_______________________________________________
+
+Changes by:	raster	00/01/21 12:36:28
+
+Modified files:
+	src            : api.c 
+
+Log message:
+2 more checks in save calls for image data...
+
+_______________________________________________
+
+Changes by:	raster	00/01/24 09:07:05
+
+Modified files:
+	src            : font.c 
+
+Log message:
+that was silly! fix fix fix - thanks alan :)
+
+_______________________________________________
+
+Changes by:	raster	00/01/24 11:18:17
+
+Modified files:
+	src            : font.c 
+
+Log message:
+ooops - fix :)
+
+_______________________________________________
+
+Changes by:	raster	00/01/25 21:14:38
+
+Modified files:
+	src            : rgba.c 
+
+Log message:
+endinaness for masks broken onf sparc.. fix...
+
+_______________________________________________
+
+Changes by:	raster	00/01/25 21:18:32
+
+Modified files:
+	src            : rgba.c 
+
+Log message:
+oops typo
+
+_______________________________________________
+
+Changes by:	raster	00/01/25 21:25:19
+
+Modified files:
+	src            : rgba.c 
+
+Log message:
+get enmdianess roight for sparc (and ppc) for masks...
+
+_______________________________________________
+
+Changes by:	llane	00/02/02 16:10:14
+
+Modified files:
+	debian         : rules 
+
+Log message:
+clean target
+
+_______________________________________________
+
+Changes by:	raster	00/02/07 09:53:25
+
+Modified files:
+	src            : image.c 
+
+Log message:
+oopsie - problem with non extension format images :)
+
+_______________________________________________
+
+Changes by:	raster	00/02/07 14:04:05
+
+Modified files:
+	src            : image.c 
+
+Log message:
+oooops - image and pixmap cache baddies.. :(
+
+_______________________________________________
+
+Changes by:	raster	00/02/07 14:38:01
+
+Modified files:
+	src            : Imlib2.h api.c 
+
+Log message:
+const char *
+
+_______________________________________________
+
+Changes by:	raster	00/02/19 12:10:37
+
+Modified files:
+	loaders        : loader_argb.c 
+
+Log message:
+ooops - big eng9ian bug! :)
+
+_______________________________________________
+
+Changes by:	mandrake	00/02/22 14:29:17
+
+Modified files:
+	.              : configure.in 
+
+Log message:
+fixing freetype detection stuff, maybe?
+
+_______________________________________________
+
+Changes by:	raster	00/02/27 10:36:26
+
+Modified files:
+	src            : Imlib2.h Makefile.am api.c 
+	test           : main.c 
+
+Log message:
+rotattion code added... :)
+
+_______________________________________________
+
+Changes by:	raster	00/02/27 10:37:28
+
+Modified files:
+	.              : AUTHORS 
+
+Log message:
+authors.. BTW - anyone watching commtis list please check AUTHORS...
+if your'e nto listed plese tell me to add you... I never do well maintaining
+it.
+
+_______________________________________________
+
+Changes by:	raster	00/02/27 11:23:21
+
+Added files:
+	src            : loaderpath.h rotate.c rotate.h 
+
+Log message:
+add files...
+
+_______________________________________________
+
+Changes by:	raster	00/02/27 11:23:36
+
+Removed files:
+	src            : loaderpath.h 
+
+Log message:
+dont add that1
+
+_______________________________________________
+
+Changes by:	raster	00/03/01 09:04:23
+
+Modified files:
+	src            : Imlib2.h api.c rotate.c rotate.h 
+	test           : main.c 
+
+Log message:
+flum..........
+
+_______________________________________________
+
+Changes by:	raster	00/03/03 08:42:18
+
+Modified files:
+	src            : Imlib2.h api.c font.c rgbadraw.c rgbadraw.h 
+	                 rotate.c 
+	test           : main.c 
+
+Log message:
+flum
+
+_______________________________________________
+
+Changes by:	raster	00/03/03 09:15:51
+
+Modified files:
+	src            : Imlib2.h api.c rotate.c rotate.h 
+
+Log message:
+better
+
+_______________________________________________
+
+Changes by:	raster	00/03/03 09:24:46
+
+Modified files:
+	test           : main.c 
+
+Log message:
+poatch main.c - but rottest doesnt work.. must fix later
+
+_______________________________________________
+
+Changes by:	raster	00/03/03 18:45:09
+
+Modified files:
+	src            : api.c 
+
+Log message:
+get context patch from tom......
+
+_______________________________________________
+
+Changes by:	llane	00/03/07 09:15:24
+
+Modified files:
+	debian         : changelog 
+
+Log message:
+stuff
+
+_______________________________________________
+
+Changes by:	llane	00/03/07 14:39:28
+
+Modified files:
+	debian         : rules 
+	debian         : rules 
+	debian         : rules 
+	debian         : rules 
+	debian         : rules 
+	debian         : rules 
+	debian         : rules 
+	debian         : rules 
+
+Log message:
+removed dh_testversion
+
+_______________________________________________
+
+Changes by:	llane	00/03/07 17:58:06
+
+Modified files:
+	debian         : changelog 
+	debian         : changelog 
+	debian         : changelog rules 
+	debian         : changelog 
+	debian         : changelog 
+	debian         : changelog 
+	debian         : changelog 
+
+Log message:
+stuff
+
+_______________________________________________
+
+Changes by:	mej	00/03/07 20:05:01
+
+Modified files:
+	loaders        : Makefile.am 
+Added files:
+	loaders        : loader_tiff.c 
+
+Log message:
+TIFF loader from Eric Dorland <dorland@lords.com>.
+
+_______________________________________________
+
+Changes by:	mej	00/03/07 22:08:29
+
+Modified files:
+	loaders        : Makefile.am 
+Added files:
+	loaders        : loader_bmp.c 
+
+Log message:
+BMP loader from Isaac Richards <ijr@po.cwru.edu>.  It currently has issues
+with progressive loading, so don't use it with feh. :-)
+
+_______________________________________________
+
+Changes by:	mej	00/03/07 22:11:04
+
+Modified files:
+	.              : AUTHORS 
+
+Log message:
+Keep raster happy.
+
+_______________________________________________
+
+Changes by:	mej	00/03/08 08:20:06
+
+Modified files:
+	loaders        : loader_bmp.c 
+
+Log message:
+BMP loader fix for progressive loading from Chutt.
+
+_______________________________________________
+
+Changes by:	mej	00/03/08 12:01:31
+
+Modified files:
+	loaders        : loader_bmp.c 
+
+Log message:
+Murple.
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/17 12:54:19
+
+Modified files:
+	loaders        : loader_tiff.c 
+
+Log message:
+Shaddup ;)
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/17 17:20:55
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+shaddup ;)
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/17 19:37:54
+
+Modified files:
+	loaders        : loader_gif.c 
+
+Log message:
+AARGH. Godamn file decriptor leak which has been driving me CRAZY for a
+WEEK! Got the BASTARD. DIE!
+
+(what complicated matters was that it only leaked on when it *couldn't* load
+the image).
+
+Please note. there is also a filedes leak in the tiff loader, also when it
+fails to load. I haven't been able to fix this yet, because libtiff sucks
+ass and has totally encapsulated the file descriptor. Lemme work on it
+tomorrow...
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/17 20:12:23
+
+Modified files:
+	src            : image.c 
+
+Log message:
+Removed a crufty bit.
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/17 20:43:47
+
+Modified files:
+	src            : image.c 
+
+Log message:
+nothing major
+
+_______________________________________________
+e-develop mailing list  -  e-develop@lists.on.openprojects.net
+
+Changes by:	gilbertt	00/03/18 05:07:53
+
+Modified files:
+	loaders        : loader_tiff.c 
+
+Log message:
+Leak plugged. Thanks Eric :)
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/18 05:56:29
+
+Modified files:
+	src            : image.c image.h 
+
+Log message:
+Okay. The loader list is now trimmed. Where it would previously contain:
+argb.a   bmp.a   gif.a   jpeg.a   png.a   pnm.a   tiff.a
+argb.la  bmp.la  gif.la  jpeg.la  png.la  pnm.la  tiff.la
+argb.so  bmp.so  gif.so  jpeg.so  png.so  pnm.so  tiff.so
+
+It now contains:
+argb
+bmp
+gif
+jpeg
+png
+pnm
+tiff
+
+lt_dlopen knows how to do the Right Thing with these, trying first the .la,
+then the .so. Now the loaders are each tried once per image (if none of them
+manage to load it).
+
+Added the following functions to achieve this:
+char            **__imlib_TrimLoaderList(char **list, int *num);
+int               __imlib_LoaderInList(char **list, int size, char *item);
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/18 06:26:13
+
+Modified files:
+	.              : AUTHORS 
+
+Log message:
+Bite me =P
+
+_______________________________________________
+
+Changes by:	gilbertt	00/03/18 15:45:47
+
+Modified files:
+	loaders        : loader_tiff.c 
+
+Log message:
+Partial loader_tiff rewrite from Eric Dorland. Much nicer :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/19 14:53:42
+
+Modified files:
+	src            : blend.c blend.h colormod.c grad.c rgbadraw.c 
+
+Log message:
+I'm back....... :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/21 01:38:40
+
+Modified files:
+	src            : blend.c blend.h 
+
+Log message:
+fix cmod.......
+
+_______________________________________________
+
+Changes by:	raster	00/03/22 14:26:58
+
+Modified files:
+	src            : blend.c blend.h colormod.c colormod.h rotate.h 
+
+Log message:
+optmize.. fix endianess stuff... :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/24 11:03:24
+
+Modified files:
+	src            : blend.c 
+
+Log message:
+oops - missed modfifying colros there.. :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/24 11:06:01
+
+Modified files:
+	src            : api.c rend.c rotate.c rotate.h 
+
+Log message:
+rotate speedups - rend bugfix... wheeeeeee
+
+_______________________________________________
+
+Changes by:	raster	00/03/25 16:10:46
+
+Modified files:
+	src            : blend.h 
+
+Log message:
+fix endianes problems..... works now on sparc solaris nicely.. :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/25 16:35:44
+
+Modified files:
+	src            : blend.h 
+
+Log message:
+ummmm fix dat.....
+
+_______________________________________________
+
+Changes by:	raster	00/03/27 11:17:37
+
+Modified files:
+	src            : color.c rend.c rgba.c rgba.h 
+	test           : main.c 
+
+Log message:
+BGR56r & BGR555 support.......... please test if u have a display like this :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/27 11:20:29
+
+Modified files:
+	src            : blend.h 
+
+Log message:
+nicer including of config.h
+
+_______________________________________________
+
+Changes by:	raster	00/03/27 11:39:36
+
+Modified files:
+	src            : rgba.c 
+
+Log message:
+oopsa typo
+
+_______________________________________________
+
+Changes by:	raster	00/03/28 10:09:46
+
+Modified files:
+	loaders        : loader_png.c 
+	src            : Imlib2.h api.c file.c file.h font.c font.h 
+	                 image.c image.h rotate.c 
+
+Log message:
+damn willem! you love playing with imlib2 don;t you? :-) good show :)
+
+_______________________________________________
+
+Changes by:	raster	00/03/28 14:25:45
+
+Modified files:
+	src            : scale.c 
+	test           : main.c 
+
+Log message:
+speedup scaling down....... but i cant seem to get any speedup for up scaling
+
+_______________________________________________
+
+Changes by:	raster	00/03/28 15:20:38
+
+Modified files:
+	src            : scale.c 
+
+Log message:
+optimize scalign down routine for RGBA as well as RGB...
+
+_______________________________________________
+
+Changes by:	raster	00/03/28 18:57:28
+
+Modified files:
+	libltdl        : COPYING.LIB README 
+	src            : scale.c 
+
+Log message:
+um ooops - how did that happen?
+
+_______________________________________________
+
+Changes by:	raster	00/03/29 19:28:56
+
+Modified files:
+	src            : scale.c 
+
+Log message:
+no more of that thanks
+
+_______________________________________________
+
+Changes by:	raster	00/04/02 13:31:40
+
+Modified files:
+	src            : Imlib2.h api.c 
+
+Log message:
+need new updates call.....
+
+_______________________________________________
+
+Changes by:	raster	00/04/02 13:42:42
+
+Modified files:
+	src            : updates.c 
+
+Log message:
+updates..... actually clip if only 1!
+
+_______________________________________________
+
+Changes by:	raster	00/04/03 15:38:01
+
+Modified files:
+	src            : scale.c 
+
+Log message:
+faster scaling up.......... :)
+
+_______________________________________________
+
+Changes by:	raster	00/04/04 18:34:06
+
+Modified files:
+	src            : rgba.c 
+
+Log message:
+fix dither mask generation.. works again now.. use for icons to dnd
+
+_______________________________________________
+
+Changes by:	raster	00/04/04 20:56:27
+
+Modified files:
+	src            : rgba.c 
+
+Log message:
+dont need that code no more
+
+_______________________________________________
+
+Changes by:	raster	00/04/07 21:13:52
+
+Modified files:
+	src            : Makefile.am api.c blend.c updates.c 
+
+Log message:
+now that was bad! fix update appending :)
+
+_______________________________________________
+
+Changes by:	raster	00/04/08 11:45:18
+
+Added files:
+	src            : asm_blend.S 
+
+Log message:
+add asm for blending.... this will break imlib2 right now for all platforms that
+arent xz86 intel 9unless you rmove the asm form the makefile and blend.c
+
+_______________________________________________
+
+Changes by:	raster	00/04/08 12:15:48
+
+Modified files:
+	.              : configure.in 
+	src            : asm_blend.S blend.c blend.h common.h 
+
+Log message:
+check for i686 artch and only then compile the mmx asm (i586 isnt guaranteed
+to have mmx - NB libs built for mmx will NOt work on non mmx boxes right now
+need to do a runtime chekc for that)
+
+_______________________________________________
+
+Changes by:	raster	00/04/08 12:20:13
+
+Modified files:
+	src            : blend.c 
+
+Log message:
+dont compile mmx data struct in if no mmx asm is used
+
+_______________________________________________
+
+Changes by:	raster	00/04/08 14:06:17
+
+Modified files:
+	.              : imlib2.spec 
+
+Log message:
+fix spec file - dont buidl demos package
+
+_______________________________________________
+
+Changes by:     raster 00/04/13 09:48:48
+
+..........
+summary:
+added mmx rotuines for blending - optimized them further
+thanks to some poitners form willem. added willems filter code. willem did
+mmx asm for the other blend rotuines too - added - needs fixing because
+math in C routines chnaged tobe fixed (there was a bug in RGBa destination
+alpha routines). fixed minor scaling calculation bug for clipping when
+blending. thansk everyone - please make sure your names are in the AUTHORS
+file at some point... :)
+
+_______________________________________________
+
+Thu Apr 27 02:59:57 GMT 2000
+(gilbertt)
+
+Well, I'm gonna use the damn ChangeLog anyhow ;-)
+
+Changed all the loaders to use ImlibProgressFunction instead of defining it
+themselves. This is so I can change them all at once tomorrow.
+
+_______________________________________________
+
