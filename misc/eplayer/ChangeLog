@@ -1,5 +1,14 @@
 $Id$
 
+2003-10-18 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/vorbis.c: track_open() initializes the "time_text"
+          part, too
+        * src/callbacks.c: when cb_track_next() is called after the
+          last playlist item, it moves to the beginning again, without
+          starting playback.
+        * src/callbacks.c: cb_track_prev() does nothing when it's
+          called on the beginning of the playlist
+
 2003-10-17 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/mixer.c, src/mixer.h, src/eplayer.c, src/callbacks.c,
           interface.c:

@@ -110,6 +110,7 @@ void track_open(ePlayer *player) {
 	edje_object_part_text_set(player->gui.edje, "song_name", pli->title);
 	edje_object_part_text_set(player->gui.edje, "artist_name", pli->artist);
 	edje_object_part_text_set(player->gui.edje, "album_name", pli->album);
+	edje_object_part_text_set(player->gui.edje, "time_text", "0:00");
 
 	setup_ao(player);
 }

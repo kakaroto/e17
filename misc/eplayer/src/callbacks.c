@@ -36,6 +36,15 @@ void cb_pause(ePlayer *player, Evas *e, Evas_Object *obj,
 	paused = !paused;
 }
 
+/**
+ * Moves to the next track and plays it, except when we're going
+ * back to the beginning of the playlist.
+ *
+ * @param player
+ * @param e
+ * @param obj
+ * @param event_info
+ */
 void cb_track_next(ePlayer *player, Evas *e, Evas_Object *obj,
                    void *event_info) {
 #ifdef DEBUG
@@ -44,27 +53,16 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *obj,
 
 	eplayer_playback_stop(player, 0);
 
-	/* Get the next list item */
-	player->playlist->cur_item = player->playlist->cur_item->next;
-	
-	if (!player->playlist->cur_item) {
-#ifdef DEBUG
-		printf("\n\nDEBUG: Youve hit the end of the list!!! \n\n");
-#endif
-
-		edje_object_part_text_set(player->gui.edje, "artist_name", "*****************************");
-		edje_object_part_text_set(player->gui.edje, "album_name", " END OF THE ROAD ");
-		edje_object_part_text_set(player->gui.edje, "song_name", "*****************************");
-		edje_object_part_text_set(player->gui.edje, "time_text", "DAS:EN:DE");
-		
-		/* Since we hit the end, start from the beginning. */
+	if (player->playlist->cur_item->next) {
+		player->playlist->cur_item = player->playlist->cur_item->next;
+		eplayer_playback_start(player, 1);
+	} else {
+		/* there's no next item, so move to the beginning again
+		 * but don't start playing yet.
+		 */
 		player->playlist->cur_item = player->playlist->items;
-
-		return;
-	} 
-	
-	/* Start the play loop */
-	eplayer_playback_start(player, 1);
+		track_open(player); /* refresh track info parts */
+	}
 }
 
 void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *obj,
@@ -73,15 +71,15 @@ void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *obj,
 	printf("DEBUG: Previous File Called\n");
 #endif
 
-	eplayer_playback_stop(player, 0);
-
-	/* Get the previous list item */
+	/* first item on the list: do nothing */
 	if (!player->playlist->cur_item->prev)
 		return;
 
+	eplayer_playback_stop(player, 0);
+	
+	/* Get the previous list item */
 	player->playlist->cur_item = player->playlist->cur_item->prev;
 
-	/* Start the play loop */
 	eplayer_playback_start(player, 1);
 }
 
