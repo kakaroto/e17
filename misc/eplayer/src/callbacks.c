@@ -285,27 +285,27 @@ EDJE_CB(seek_backward) {
 }
 
 EDJE_CB(seek_forward_start) {
-  debug(DEBUG_LEVEL_INFO, "Start Seeking Forward");
-  player->flags.seeking = true;
-  player->flags.seek_dir = 1; 
-  ecore_timer_add(.02, _eplayer_seek_timer, player);
+	debug(DEBUG_LEVEL_INFO, "Start Seeking Forward");
+	player->flags.seeking = true;
+	player->flags.seek_dir = 1; 
+	ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_forward_stop) {
-  debug(DEBUG_LEVEL_INFO, "Stop Seeking Forward");
-  player->flags.seeking = false; 
+	debug(DEBUG_LEVEL_INFO, "Stop Seeking Forward");
+	player->flags.seeking = false; 
 }
 
 EDJE_CB(seek_backward_start) {
-  debug(DEBUG_LEVEL_INFO, "Start Seeking Backward");
-  player->flags.seeking = true; 
-  player->flags.seek_dir = -1; 
-  ecore_timer_add(.02, _eplayer_seek_timer, player);
+	debug(DEBUG_LEVEL_INFO, "Start Seeking Backward");
+	player->flags.seeking = true; 
+	player->flags.seek_dir = -1; 
+	ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_backward_stop) {
-  debug(DEBUG_LEVEL_INFO, "Stop Seeking Backward");
-  player->flags.seeking = false; 
+	debug(DEBUG_LEVEL_INFO, "Stop Seeking Backward");
+	player->flags.seeking = false; 
 }
 
 EDJE_CB(eplayer_quit) {
@@ -319,6 +319,12 @@ EDJE_CB(eplayer_raise) {
 EDJE_CB(switch_group) {
 	ui_deinit_edje(player);
 	ui_init_edje(player, src);
+
+	ui_refresh_volume(player);
+	ui_fill_track_info(player);
+
+	playlist_container_set(player->playlist, player->gui.playlist);
+	hilight_current_track(player);
 }
 
 EDJE_CB(update_seeker) {

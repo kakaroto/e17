@@ -42,7 +42,6 @@ void track_play_chunk(void *udata) {
 int track_update_time(void *udata) {
 	ePlayer *player = udata;
 	PlayListItem *current_item = playlist_current_item_get(player->playlist);
-	static int old_time = -1;
 	int cur_time;
 	double song_pos;
 
@@ -52,10 +51,6 @@ int track_update_time(void *udata) {
 	if (player->cfg.time_display == TIME_DISPLAY_LEFT)
 		cur_time = current_item->duration - cur_time;
 
-	if (cur_time == old_time) /* value didn't change, so don't update */
-		return 1;
-
-	old_time = cur_time;
 	ui_refresh_time(player, cur_time);
 	ui_refresh_seeker(player, song_pos);
 

@@ -24,6 +24,8 @@ PlayList *playlist_new(Evas *evas, Evas_List *plugins,
                        const char *theme);
 void playlist_free(PlayList *pl);
 
+void playlist_container_set(PlayList *pl, Evas_Object *container);
+
 bool playlist_load_file(PlayList *pl, const char *file, bool append);
 bool playlist_load_dir(PlayList *pl, const char *dir, bool append);
 bool playlist_load_m3u(PlayList *pl, const char *file, bool append);

@@ -36,4 +36,8 @@ PlayListItem *playlist_item_new(const char *file, Evas *evas,
                                 const char *theme);
 void playlist_item_free(PlayListItem *pli);
 
+bool playlist_item_show(PlayListItem *pli);
+void playlist_item_container_set(PlayListItem *pli,
+                                 Evas_Object *container);
+
 #endif

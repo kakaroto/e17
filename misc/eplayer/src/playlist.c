@@ -36,6 +36,15 @@ PlayList *playlist_new(Evas *evas, Evas_List *plugins,
 	return pl;
 }
 
+void playlist_container_set(PlayList *pl, Evas_Object *container) {
+	Evas_List *l;
+
+	assert(pl);
+
+	for (l = pl->items; l; l = l->next)
+		playlist_item_container_set(l->data, container);
+}
+
 /**
  * Removes all items from a PlayList.
  *

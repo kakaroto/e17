@@ -63,7 +63,16 @@ static InputPlugin *find_plugin(const char *file, Evas_List *plugins) {
 	return NULL;
 }
 
-static bool playlist_item_init(PlayListItem *pli) {
+void playlist_item_container_set(PlayListItem *pli,
+                                 Evas_Object *container) {
+	assert(pli);
+
+	pli->container = container;
+
+	playlist_item_show(pli);
+}
+
+bool playlist_item_show(PlayListItem *pli) {
 	char len[32];
 	double w = 0, h = 0;
 	void *udata;
@@ -98,8 +107,6 @@ static bool playlist_item_init(PlayListItem *pli) {
 	evas_object_data_set(pli->container, "PlaylistFontSize",
 	                     (void *) (int) h);
 
-	e_container_element_append(pli->container, pli->edje);
-
 	udata = evas_object_data_get(pli->container, "ePlayer");
 
 	/* add playlist item callbacks */
@@ -113,6 +120,8 @@ static bool playlist_item_init(PlayListItem *pli) {
 	                                (EdjeCb) cb_playlist_item_selected, udata);
 	edje_object_signal_callback_add(pli->edje, "PLAYLIST_ITEM_REMOVE", "",
 	                                (EdjeCb) cb_playlist_item_remove, udata);
+
+	e_container_element_append(pli->container, pli->edje);
 
 	return true;
 }
@@ -155,7 +164,7 @@ PlayListItem *playlist_item_new(const char *file, Evas *evas,
 	pli->container = container;
 	pli->theme = theme;
 
-	if (!playlist_item_init(pli)) {
+	if (!playlist_item_show(pli)) {
 		playlist_item_free(pli);
 		return NULL;
 	}
