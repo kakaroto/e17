@@ -558,8 +558,8 @@ __imlib_ProduceLoader(char *file)
    return l;
 }
 
-/* list all the filenames of loaders  int he system laoders dir and the user */
-/* laoder dir */
+/* list all the filenames of loaders  int he system loaders dir and the user */
+/* loader dir */
 char **
 __imlib_ListLoaders(int *num_ret)
 {
@@ -586,7 +586,7 @@ __imlib_ListLoaders(int *num_ret)
 	pi = i;	
 	__imlib_FileFreeDirList(l, num);
      }
-   /* same for system laoder path */
+   /* same for system loader path */
    sprintf(s, SYS_LOADERS_PATH "/image");
    l = __imlib_FileDir(s, &num);
    if (num > 0)
@@ -599,8 +599,9 @@ __imlib_ListLoaders(int *num_ret)
 	     list[pi + i] = strdup(s);
 	  }
 	__imlib_FileFreeDirList(l, num);
-	free(home);
      }
+	free(home);
+
    return list;
 }
 
@@ -686,17 +687,17 @@ __imlib_RemoveAllLoaders(void)
    loaders = NULL;
 }
 
-/* find all the laoders we can find and load the m up to see what they can */
-/* laod / save */
+/* find all the loaders we can find and load them up to see what they can */
+/* load / save */
 void
 __imlib_LoadAllLoaders(void)
 {
    int    i, num;
    char **list;
 
-   /* list all the laoders imlib can find */
+   /* list all the loaders imlib can find */
    list = __imlib_ListLoaders(&num);
-   /* no loaders? well don't laod anything */
+   /* no loaders? well don't load anything */
    if (!list)
       return;
    
