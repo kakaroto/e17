@@ -1,0 +1,5 @@
+script {
+	public panel_is_visible;
+	public thumbs_are_visible;
+}
+
