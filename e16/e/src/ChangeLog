@@ -1385,3 +1385,10 @@ Tue Sep  7 18:33:13 PDT 1999
 (Raster)
 
 set display_warp to 0 if xkb isnt available
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 19:48:26 PDT 1999
+(KainX)
+
+Fixed some rastermanglish.

@@ -2355,9 +2355,9 @@ void                IB_RemoveIcondef(Icondef * idef);
 Icondef            *IB_MatchIcondef(char *title, char *name, char *class);
 Icondef           **IB_ListIcondef(int *num);
 void                IB_Setup(void);
-void                IB_LoadIcodefs(void);
-void                IB_ReLoadIcodefs(void);
-void                IB_SaveIcodefs(void);
+void                IB_LoadIcondefs(void);
+void                IB_ReLoadIcondefs(void);
+void                IB_SaveIcondefs(void);
 Iconbox           **ListAllIconboxes(int *num);
 Iconbox            *SelectIconboxForEwin(EWin * ewin);
 

@@ -754,7 +754,7 @@ IB_ListIcondef(int *num)
 static time_t       last_icondefs_time = 0;
 
 void
-IB_LoadIcodefs(void)
+IB_LoadIcondefs(void)
 {
    /* load the icon defs */
    char               *ff = NULL, s[1024], *s1, *s2, *s3, *s4;
@@ -794,7 +794,7 @@ IB_LoadIcodefs(void)
 }
 
 void
-IB_ReLoadIcodefs(void)
+IB_ReLoadIcondefs(void)
 {
    /* stat the icondefs and compare mod date to last known mod date - if */
    /* modified, delete all icondefs and load again */
@@ -823,7 +823,7 @@ IB_ReLoadIcodefs(void)
 		IB_RemoveIcondef(idef[i]);
 	     Efree(idef);
 	  }
-	IB_LoadIcodefs();
+	IB_LoadIcondefs();
      }
    Efree(ff);
 }
@@ -831,14 +831,14 @@ IB_ReLoadIcodefs(void)
 static void
 IcondefChecker(int val, void *data)
 {
-   IB_ReLoadIcodefs();
+   IB_ReLoadIcondefs();
    DoIn("ICONDEF_CHECK", 2.0, IcondefChecker, 0, NULL);
    val = 0;
    data = NULL;
 }
 
 void
-IB_SaveIcodefs(void)
+IB_SaveIcondefs(void)
 {
    /* save the icondefs */
    char                s[1024];
