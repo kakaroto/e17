@@ -356,6 +356,7 @@ AddToFamily(Window win)
 	  }
 	EDBUG_RETURN_;
      }
+
    /* grab that server */
    GrabX();
    speed = Conf.slidespeedmap;
@@ -547,7 +548,7 @@ AddToFamily(Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
      {
-	EwinBorderDraw(ewin, 1, 1);
+	EwinBorderDraw(ewin, 1, 0);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	UngrabX();
 	IconifyEwin(ewin);
@@ -575,7 +576,7 @@ AddToFamily(Window win)
 	x = Mode.x + 1;
 	y = Mode.y + 1;
 	ICCCM_Configure(ewin);
-	EwinBorderDraw(ewin, 1, 1);
+	EwinBorderDraw(ewin, 1, 0);
 	MoveEwinToDesktop(ewin, ewin->desktop);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, x, y);
@@ -614,7 +615,7 @@ AddToFamily(Window win)
 	     fx = VRoot.w;
 	     fy = (rand() % (VRoot.h)) - ewin->h;
 	  }
-	EwinBorderDraw(ewin, 1, 1);
+	EwinBorderDraw(ewin, 1, 0);
 	MoveEwinToDesktop(ewin, ewin->desktop);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, fx, fy);
@@ -624,7 +625,7 @@ AddToFamily(Window win)
      }
    else
      {
-	EwinBorderDraw(ewin, 1, 1);
+	EwinBorderDraw(ewin, 1, 0);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -647,8 +648,8 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    Border             *b;
 
    EDBUG(3, "AddInternalToFamily");
-   b = NULL;
 
+   b = NULL;
    if (bname)
      {
 	b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
