@@ -51,6 +51,7 @@ static void update_selection_from_widget(void);
 static void update_widget_from_selection(void);
 static void update_relative_combos(void);
 static void update_image_list(void);
+static void update_sync_list(void);
 void zoom_redraw(int xx, int yy);
 static void handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
@@ -260,34 +261,8 @@ update_widget_from_selection(void)
 	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
 	else
 	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
-	w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
 
-	gtk_clist_freeze(GTK_CLIST(w));
-	gtk_clist_clear(GTK_CLIST(w));
-	  {
-	     Evas_List l, ll;
-	     
-	     for (l = selected_state->o->description->bits; l; l = l->next)
-	       {
-		  Ebits_Object_Bit_Description bit;
-		  gint row;
-		  gchar *text[1];
-		  
-		  bit = l->data;
-		  if (bit->name) text[0] = bit->name;
-		  else  text[0] = "";
-		  row = gtk_clist_append(GTK_CLIST(w), text);
-		  for (ll = selected_state->description->sync; ll; ll = ll->next)
-		    {
-		       char *name;
-		       
-		       name = ll->data;
-		       if (!strcmp(text[0], name))
-			  gtk_clist_select_row(GTK_CLIST(w), row, 0);
-		    }
-	       }
-	  }
-	gtk_clist_thaw(GTK_CLIST(w));
+	/* update_sync_list(); */
 	
 	SET_ENTRY("name", name);
 	SET_ENTRY("class", class);
@@ -483,6 +458,46 @@ update_image_list(void)
   gtk_clist_thaw(GTK_CLIST(w));
 }
 
+
+static void
+update_sync_list(void)
+{
+  GtkWidget * w;
+
+  if (selected_state)
+    {
+  
+      w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
+      
+      gtk_clist_freeze(GTK_CLIST(w));
+      gtk_clist_clear(GTK_CLIST(w));
+      {
+	Evas_List l, ll;
+	
+	for (l = selected_state->o->description->bits; l; l = l->next)
+	  {
+	    Ebits_Object_Bit_Description bit;
+	    gint row;
+	    gchar *text[1];
+	    
+	    bit = l->data;
+	    if (bit->name) text[0] = bit->name;
+	    else  text[0] = "";
+	    row = gtk_clist_append(GTK_CLIST(w), text);
+	    for (ll = selected_state->description->sync; ll; ll = ll->next)
+	      {
+		char *name;
+		
+		name = ll->data;
+		if (!strcmp(text[0], name))
+		  gtk_clist_select_row(GTK_CLIST(w), row, 0);
+	      }
+	  }
+      }
+      gtk_clist_thaw(GTK_CLIST(w));
+    }
+}
+
 gint
 view_redraw(gpointer data)
 {
@@ -673,6 +688,7 @@ handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 	evas_put_data(_e, _o, "y", (void *)_y);
      }
    update_image_list();
+   update_sync_list();
    update_widget_from_selection();
    QUEUE_DRAW;
 }
@@ -723,8 +739,6 @@ handle_bit_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 static void
 handle_adjuster_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-   Ebits_Object_Bit_State state;
-
    evas_put_data(_e, _o, "clicked", (void *)1);
    evas_put_data(_e, _o, "x", (void *)_x);
    evas_put_data(_e, _o, "y", (void *)_y);
@@ -1155,6 +1169,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 
 	      update_relative_combos();
 	      update_image_list();
+	      update_sync_list();
 	      update_widget_from_selection();
 
 	      w = gtk_object_get_data(GTK_OBJECT(main_win), "file");
@@ -1203,6 +1218,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 	
 	update_relative_combos();
 	update_image_list();
+	update_sync_list();
 
 	E_DB_STR_SET(etcher_config, "/paths/image", 
 		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
@@ -1414,6 +1430,7 @@ on_delete1_activate                    (GtkMenuItem     *menuitem,
 
 	update_relative_combos();
 	update_image_list();
+	update_sync_list();
      }
 }
 
@@ -1910,6 +1927,7 @@ on_delete_clicked                      (GtkButton       *button,
 	
 	update_relative_combos();
 	update_image_list();
+	update_sync_list();
      }
 }
 
