@@ -1544,15 +1544,6 @@ typedef struct _drawqueue
 }
 DrawQueue;
 
-/* only used for remember list dialog callback funcs (SettingsDialog()
- * in in settings.c)... snaps are attached to windows, not a global list */
-typedef struct _remwinlist
-{
-   EWin               *ewin;
-   char                remember;
-}
-RememberWinList;
-
 typedef struct _rectbox
 {
    void               *data;

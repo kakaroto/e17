@@ -23,6 +23,13 @@
 #define DECLARE_STRUCT_ICONBOX
 #include "E.h"
 
+typedef struct _remwinlist
+{
+   EWin               *ewin;
+   char                remember;
+}
+RememberWinList;
+
 static void         CB_SettingsEscape(int val, void *data);
 static void
 CB_SettingsEscape(int val, void *data)
