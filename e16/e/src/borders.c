@@ -1430,6 +1430,13 @@ EwinEventUnmap(EWin * ewin)
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
+   if (ewin->state == EWIN_STATE_NEW)
+     {
+	Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
+		ewin->client.win);
+	return;
+     }
+
    /* Set state to unknown until we can set the correct one */
    ewin->state = (ewin->iconified) ? EWIN_STATE_ICONIC : EWIN_STATE_WITHDRAWN;
 
