@@ -181,6 +181,6 @@ double e_container_elements_orig_length_get(Evas_Object *container);
 
 int e_container_layout_plugin_set(Evas_Object *container, const char *name);
 
-
+void e_container_scroll_to(Evas_Object *container, Evas_Object *element);
 
 #endif
