@@ -775,17 +775,14 @@ __imlib_list_fonts(int *num_ret)
 	if (dir)
 	  {
 	     for (j = 0; j < d; j++)
-	       {
-		  if (__imlib_FileIsFile(dir[j]))
+         {
+            path = malloc(strlen(fpath[i]) + strlen(dir[j]) + 2);
+            sprintf(path, "%s/%s", fpath[i], dir[j]);
+		  if (__imlib_FileIsFile(path))
 		    {
 		       TT_Face f;
 		       
-		       path = malloc(strlen(fpath[i]) + 1 + strlen(dir[j]) + 1);
-		       strcpy(path, fpath[i]);
-		       strcat(path, "/");
-		       strcat(path, dir[j]);
 		       error = TT_Open_Face(engine, path, &f);
-		       free(path);
 		       if (!error)
 			 {
 			    TT_Close_Face(f);
@@ -798,6 +795,7 @@ __imlib_list_fonts(int *num_ret)
 			 }
 		       free(dir[j]);
 		    }
+		     free(path);
 	       }
 	     free(dir);
 	  }
