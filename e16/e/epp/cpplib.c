@@ -78,8 +78,12 @@ char               *version_string = "0.0.0";
 /* This defines "errno" properly for VMS, and gives us EACCES. */
 #include <errno.h>
 
+/* AIX #defines index as a macro for inlining by compiler
+ * and the non-ansi declaration gives it indigestion */
+#if !defined(index) || !defined(_AIX)
 extern char        *index();
 extern char        *rindex();
+#endif
 
 #ifndef O_RDONLY
 #define O_RDONLY 0
