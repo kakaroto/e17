@@ -42,9 +42,9 @@ void                IPC_SetFocus(char *params, Client * c);
 void                IPC_DialogOK(char *params, Client * c);
 void                IPC_SoundClass(char *params, Client * c);
 void                IPC_ImageClass(char *params, Client * c);
+void                IPC_TextClass(char *params, Client * c);
 void                IPC_ActionClass(char *params, Client * c);
 void                IPC_ColorModifierClass(char *params, Client * c);
-void                IPC_TextClass(char *params, Client * c);
 void                IPC_Border(char *params, Client * c);
 void                IPC_Button(char *params, Client * c);
 void                IPC_Background(char *params, Client * c);
@@ -445,7 +445,7 @@ IPCStruct           IPCArray[] =
    {
       IPC_TextClass,
       "textclass",
-      "Create/Delete/Modify a TextClass",
+      "Create/Delete/Modify/apply a TextClass",
       "This doesn't do anything yet."
    },
    {
@@ -626,7 +626,7 @@ IPC_Remember(char *params, Client * c)
 	  }
      }
    else
-      Esnprintf(buf, sizeof(buf), "Error: no parameters\n");
+      Esnprintf(buf, sizeof(buf), "Error: no parameters");
 
    if (buf[0])
       CommsSend(c, buf);
@@ -657,20 +657,20 @@ IPC_KDE(char *params, Client * c)
 	  {
 	     if (mode.kde_support)
 	       {
-		  Esnprintf(buf, sizeof(buf), "kde: active\n");
+		  Esnprintf(buf, sizeof(buf), "kde: active");
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "kde: inactive\n");
+		  Esnprintf(buf, sizeof(buf), "kde: inactive");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown state specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown state specified");
 	  }
      }
    else
-      Esnprintf(buf, sizeof(buf), "Error: no state specified\n");
+      Esnprintf(buf, sizeof(buf), "Error: no state specified");
 
    if (buf[0])
       CommsSend(c, buf);
@@ -702,7 +702,7 @@ IPC_Modules(char *params, Client * c)
 	  {
 	     if (!param2[0])
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no module specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no module specified");
 	       }
 	     else
 	       {
@@ -718,7 +718,7 @@ IPC_Modules(char *params, Client * c)
 	  {
 	     if (!param2[0])
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no module specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no module specified");
 	       }
 	     else
 	       {
@@ -729,7 +729,7 @@ IPC_Modules(char *params, Client * c)
 		       strcat(buf, ModuleErrorCodeToString(returncode));
 		       if (!buf[0])
 			 {
-			    Esnprintf(buf, sizeof(buf), "\n");
+			    Esnprintf(buf, sizeof(buf), "");
 			 }
 		    }
 	       }
@@ -739,18 +739,18 @@ IPC_Modules(char *params, Client * c)
 	     strcat(buf, ModuleListAsString());
 	     if (!buf[0])
 	       {
-		  Esnprintf(buf, sizeof(buf), "no modules loaded\n");
+		  Esnprintf(buf, sizeof(buf), "no modules loaded");
 	       }
 	  }
 	else
 	  {
 	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown module operation specified\n");
+		       "Error: unknown module operation specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no module operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no module operation specified");
      }
 
    if (buf[0])
@@ -786,7 +786,7 @@ IPC_DockPosition(char *params, Client * c)
 	       {
 		  if (!strcmp(param2, "?"))
 		    {
-		       Esnprintf(buf, sizeof(buf), "dock_startposition: %d %d\n",
+		       Esnprintf(buf, sizeof(buf), "dock_startposition: %d %d",
 				 mode.dockstartx, mode.dockstarty);
 		    }
 		  else
@@ -799,14 +799,14 @@ IPC_DockPosition(char *params, Client * c)
 			 }
 		       else
 			 {
-			    Esnprintf(buf, sizeof(buf), "Error: no y coordinate\n");
+			    Esnprintf(buf, sizeof(buf), "Error: no y coordinate");
 
 			 }
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
 	       }
 	  }
 	else if (!strcmp(param1, "direction"))
@@ -817,25 +817,25 @@ IPC_DockPosition(char *params, Client * c)
 		    {
 		       if (mode.dockdirmode == DOCK_LEFT)
 			 {
-			    Esnprintf(buf, sizeof(buf), "dock_dir: left\n");
+			    Esnprintf(buf, sizeof(buf), "dock_dir: left");
 			 }
 		       else if (mode.dockdirmode == DOCK_RIGHT)
 			 {
-			    Esnprintf(buf, sizeof(buf), "dock_dir: right\n");
+			    Esnprintf(buf, sizeof(buf), "dock_dir: right");
 			 }
 		       else if (mode.dockdirmode == DOCK_UP)
 			 {
-			    Esnprintf(buf, sizeof(buf), "dock_dir: up\n");
+			    Esnprintf(buf, sizeof(buf), "dock_dir: up");
 			 }
 		       else if (mode.dockdirmode == DOCK_DOWN)
 			 {
-			    Esnprintf(buf, sizeof(buf), "dock_dir: down\n");
+			    Esnprintf(buf, sizeof(buf), "dock_dir: down");
 			 }
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf), "Error: I have NO "
 				      "idea what direction "
-				      "this thing is going\n");
+				      "this thing is going");
 			 }
 		    }
 		  else if (!strcmp(param2, "left"))
@@ -857,22 +857,22 @@ IPC_DockPosition(char *params, Client * c)
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf), "Error: unknown direction "
-				 "specified\n");
+				 "specified");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no mode given\n");
+	Esnprintf(buf, sizeof(buf), "Error: no mode given");
      }
 
    if (buf[0])
@@ -894,16 +894,16 @@ IPC_GeneralInfo(char *params, Client * c)
      {
 	if (!strcmp(params, "screen_size"))
 	  {
-	     Esnprintf(buf, sizeof(buf), "screen_size: %d %d\n", root.w, root.h);
+	     Esnprintf(buf, sizeof(buf), "screen_size: %d %d", root.w, root.h);
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown info requested\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown info requested");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no info requested\n");
+	Esnprintf(buf, sizeof(buf), "Error: no info requested");
      }
 
    if (buf[0])
@@ -957,23 +957,23 @@ IPC_Button(char *params, Client * c)
 		  b = (Button *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BUTTON);
 		  if (b)
-		     Esnprintf(buf, sizeof(buf), "%u references remain\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
 			       b->ref_count);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
 	       }
 	  }
 	else
 	  {
 	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown operation specified\n");
+		       "Error: unknown operation specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1045,7 +1045,7 @@ IPC_Background(char *params, Client * c)
 		     bg = CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0);
 
 		  if (!bg)
-		     Esnprintf(buf, sizeof(buf), "Error: could not create background '%s'.\n", name);
+		     Esnprintf(buf, sizeof(buf), "Error: could not create background '%s'.", name);
 		  else
 		    {
 		       word(params, 3, valu);
@@ -1209,23 +1209,23 @@ IPC_Border(char *params, Client * c)
 		  b = (Border *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BORDER);
 		  if (b)
-		     Esnprintf(buf, sizeof(buf), "%u references remain\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
 			       b->ref_count);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
 	       }
 	  }
 	else
 	  {
 	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown operation specified\n");
+		       "Error: unknown operation specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1278,23 +1278,23 @@ IPC_Cursor(char *params, Client * c)
 		  ec = (ECursor *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					    LIST_TYPE_ECURSOR);
 		  if (ec)
-		     Esnprintf(buf, sizeof(buf), "%u references remain\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
 			       ec->ref_count);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
 	       }
 	  }
 	else
 	  {
 	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown operation specified\n");
+		       "Error: unknown operation specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1340,6 +1340,83 @@ IPC_TextClass(char *params, Client * c)
 	     else if (!strcmp(param2, "modify"))
 	       {
 	       }
+	     else if (!strcmp(param2, "apply"))
+	       {
+		  TextClass          *t;
+
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		    {
+		       int                 state;
+		       int                 x, y;
+		       char               *txt;
+		       Window              win;
+
+		       word(params, 3, param3);
+		       win = (Window) atoi(param3);
+		       word(params, 4, param3);
+		       x = (Window) atoi(param3);
+		       word(params, 5, param3);
+		       y = (Window) atoi(param3);
+		       word(params, 6, param3);
+		       state = STATE_NORMAL;
+		       if (!strcmp(param3, "normal"))
+			  state = STATE_NORMAL;
+		       else if (!strcmp(param3, "hilited"))
+			  state = STATE_HILITED;
+		       else if (!strcmp(param3, "clicked"))
+			  state = STATE_CLICKED;
+		       else if (!strcmp(param3, "disabled"))
+			  state = STATE_DISABLED;
+		       txt = atword(params, 7);
+		       if (txt)
+			  TextDraw(t, win, 0, 0, state, txt, x, y,
+				   99999, 99999, 17, t->justification);
+		       else
+			  Esnprintf(buf, sizeof(buf), "0 0");
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
+			       param1);
+	       }
+	     else if (!strcmp(param2, "query_size"))
+	       {
+		  TextClass          *t;
+
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		    {
+		       int                 w, h;
+		       char               *txt;
+
+		       txt = atword(params, 3);
+		       if (txt)
+			 {
+			    TextSize(t, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
+			    Esnprintf(buf, sizeof(buf), "%i %i", w, h);
+			 }
+		       else
+			  Esnprintf(buf, sizeof(buf), "0 0");
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
+			       param1);
+	       }
+	     else if (!strcmp(param2, "query"))
+	       {
+		  TextClass          *t;
+
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		     Esnprintf(buf, sizeof(buf), "TextClass %s found",
+			       t->name);
+		  else
+		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
+			       param1);
+	       }
 	     else if (!strcmp(param2, "ref_count"))
 	       {
 		  TextClass          *t;
@@ -1347,23 +1424,23 @@ IPC_TextClass(char *params, Client * c)
 		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_TCLASS);
 		  if (t)
-		     Esnprintf(buf, sizeof(buf), "%u references remain.\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain.",
 			       t->ref_count);
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown operation specified\n");
+			    "Error: unknown operation specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no class specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1416,23 +1493,23 @@ IPC_ColorModifierClass(char *params, Client * c)
 		  cm = (ColorModifierClass *) FindItem(param1, 0,
 				   LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
 		  if (cm)
-		     Esnprintf(buf, sizeof(buf), "%u references remain.\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain.",
 			       cm->ref_count);
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown operation specified\n");
+			    "Error: unknown operation specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no class specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1485,23 +1562,23 @@ IPC_ActionClass(char *params, Client * c)
 		  a = (ActionClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					       LIST_TYPE_ACLASS);
 		  if (a)
-		     Esnprintf(buf, sizeof(buf), "%u references remain.\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain.",
 			       a->ref_count);
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown operation specified\n");
+			    "Error: unknown operation specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no class specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1546,6 +1623,14 @@ IPC_ImageClass(char *params, Client * c)
 	       }
 	     else if (!strcmp(param2, "modify"))
 	       {
+	       }
+	     else if (!strcmp(param2, "free_pixmap"))
+	       {
+		  Pixmap              p;
+
+		  word(params, 2, param3);
+		  p = atoi(param3);
+		  Imlib_free_pixmap(id, p);
 	       }
 	     else if (!strcmp(param2, "get_padding"))
 	       {
@@ -1660,7 +1745,7 @@ IPC_ImageClass(char *params, Client * c)
 			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap, &mask);
-			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x\n", pmap, mask);
+			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap, mask);
 			 }
 		    }
 	       }
@@ -1743,7 +1828,7 @@ IPC_SoundClass(char *params, Client * c)
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: no file specified\n");
+		       Esnprintf(buf, sizeof(buf), "Error: no file specified");
 		    }
 	       }
 	     else if (!strcmp(param1, "delete"))
@@ -1754,17 +1839,17 @@ IPC_SoundClass(char *params, Client * c)
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown operation specified\n");
+			    "Error: unknown operation specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no class specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1788,11 +1873,11 @@ IPC_PlaySoundClass(char *params, Client * c)
 	if (soundtoplay)
 	   ApplySclass(soundtoplay);
 	else
-	   Esnprintf(buf, sizeof(buf), "Error: unknown soundclass selected\n");
+	   Esnprintf(buf, sizeof(buf), "Error: unknown soundclass selected");
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no soundclass selected\n");
+	Esnprintf(buf, sizeof(buf), "Error: no soundclass selected");
      }
 
    if (buf[0])
@@ -1982,10 +2067,10 @@ IPC_ListClassMembers(char *params, Client * c)
 		Efree(lst);
 	  }
 	else
-	   CommsSend(c, "Error: unknown class selected\n");
+	   CommsSend(c, "Error: unknown class selected");
      }
    else
-      CommsSend(c, "Error: no class selected\n");
+      CommsSend(c, "Error: no class selected");
    if (buf)
      {
 	CommsSend(c, buf);
@@ -2007,7 +2092,7 @@ IPC_DialogOK(char *params, Client * c)
 	DIALOG_OK("Message", params);
      }
    else
-      Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified\n");
+      Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified");
 
    if (buf[0])
       CommsSend(c, buf);
@@ -2032,12 +2117,12 @@ IPC_SetFocus(char *params, Client * c)
 	     my_focused_win = GetFocusEwin();
 	     if (my_focused_win)
 	       {
-		  Esnprintf(buf, sizeof(buf), "focused: %8x\n",
+		  Esnprintf(buf, sizeof(buf), "focused: %8x",
 			    my_focused_win->client.win);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "focused: none\n");
+		  Esnprintf(buf, sizeof(buf), "focused: none");
 	       }
 	  }
 	else
@@ -2052,7 +2137,7 @@ IPC_SetFocus(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no window selected\n");
+	Esnprintf(buf, sizeof(buf), "Error: no window selected");
      }
 
    if (buf[0])
@@ -2093,16 +2178,16 @@ IPC_AdvancedFocus(char *params, Client * c)
 	       {
 		  if (mode.all_new_windows_get_focus)
 		    {
-		       Esnprintf(buf, sizeof(buf), "new_window_focus: on\n");
+		       Esnprintf(buf, sizeof(buf), "new_window_focus: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "new_window_focus: off\n");
+		       Esnprintf(buf, sizeof(buf), "new_window_focus: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "focus_list"))
@@ -2119,16 +2204,16 @@ IPC_AdvancedFocus(char *params, Client * c)
 	       {
 		  if (mode.display_warp)
 		    {
-		       Esnprintf(buf, sizeof(buf), "focus_list: on\n");
+		       Esnprintf(buf, sizeof(buf), "focus_list: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "focus_list: off\n");
+		       Esnprintf(buf, sizeof(buf), "focus_list: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "new_popup_window_focus"))
@@ -2146,17 +2231,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.new_transients_get_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "new_popup_window_focus: on\n");
+				 "new_popup_window_focus: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "new_popup_window_focus: off\n");
+				 "new_popup_window_focus: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "new_popup_of_owner_focus"))
@@ -2174,17 +2259,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.new_transients_get_focus_if_group_focused)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "new_popup_of_owner_focus: on\n");
+				 "new_popup_of_owner_focus: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "new_popup_of_owner_focus: off\n");
+				 "new_popup_of_owner_focus: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "raise_on_keyboard_focus_switch"))
@@ -2202,17 +2287,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.raise_on_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "raise_on_keyboard_focus_switch: on\n");
+				 "raise_on_keyboard_focus_switch: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "raise_on_keyboard_focus_switch: off\n");
+				 "raise_on_keyboard_focus_switch: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "raise_after_keyboard_focus_switch"))
@@ -2230,17 +2315,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.raise_after_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "raise_after_keyboard_focus_switch: on\n");
+				 "raise_after_keyboard_focus_switch: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "raise_after_keyboard_focus_switch: off\n");
+				 "raise_after_keyboard_focus_switch: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "display_warp"))
@@ -2258,17 +2343,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.display_warp)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "display_warp: on\n");
+				 "display_warp: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "display_warp: off\n");
+				 "display_warp: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "pointer_to_keyboard_focus_window"))
@@ -2286,17 +2371,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.warp_on_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "pointer_to_keyboard_focus_window: on\n");
+				 "pointer_to_keyboard_focus_window: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "pointer_to_keyboard_focus_window: off\n");
+				 "pointer_to_keyboard_focus_window: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "pointer_after_keyboard_focus_window"))
@@ -2314,17 +2399,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.warp_after_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "pointer_after_keyboard_focus_window: on\n");
+				 "pointer_after_keyboard_focus_window: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "pointer_after_keyboard_focus_window: off\n");
+				 "pointer_after_keyboard_focus_window: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "transients_follow_leader"))
@@ -2342,17 +2427,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.transientsfollowleader)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "transients_follow_leader: on\n");
+				 "transients_follow_leader: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "transients_follow_leader: off\n");
+				 "transients_follow_leader: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "switch_to_popup_location"))
@@ -2370,17 +2455,17 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.switchfortransientmap)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "switch_to_popup_location: on\n");
+				 "switch_to_popup_location: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "switch_to_popup_location: off\n");
+				 "switch_to_popup_location: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "manual_placement"))
@@ -2398,27 +2483,27 @@ IPC_AdvancedFocus(char *params, Client * c)
 		  if (mode.manual_placement)
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "manual_placement: on\n");
+				 "manual_placement: on");
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "manual_placement: off\n");
+				 "manual_placement: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no mode selected\n");
+	Esnprintf(buf, sizeof(buf), "Error: no mode selected");
      }
 
    if (buf[0])
@@ -2495,7 +2580,7 @@ IPC_InternalList(char *params, Client * c)
 	else
 	  {
 	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown internal list specified\n");
+		       "Error: unknown internal list specified");
 	  }
 
 	if (lst)
@@ -2537,11 +2622,11 @@ IPC_Pager(char *params, Client * c)
 	  {
 	     if (mode.show_pagers)
 	       {
-		  Esnprintf(buf, sizeof(buf), "pager: on\n");
+		  Esnprintf(buf, sizeof(buf), "pager: on");
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "pager: off\n");
+		  Esnprintf(buf, sizeof(buf), "pager: off");
 	       }
 	  }
 	else if (!strcmp(param1, "hiq"))
@@ -2551,11 +2636,11 @@ IPC_Pager(char *params, Client * c)
 	       {
 		  if (mode.pager_hiq)
 		    {
-		       Esnprintf(buf, sizeof(buf), "pager_hiq: on\n");
+		       Esnprintf(buf, sizeof(buf), "pager_hiq: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "pager_hiq: off\n");
+		       Esnprintf(buf, sizeof(buf), "pager_hiq: off");
 		    }
 	       }
 	     else if (!strcmp(param2, "on"))
@@ -2568,7 +2653,7 @@ IPC_Pager(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 
 	       }
 	  }
@@ -2589,22 +2674,22 @@ IPC_Pager(char *params, Client * c)
 		    {
 		       if (mode.pager_zoom)
 			 {
-			    CommsSend(c, "pager_zoom: on\n");
+			    CommsSend(c, "pager_zoom: on");
 			 }
 		       else
 			 {
-			    CommsSend(c, "pager_zoom: off\n");
+			    CommsSend(c, "pager_zoom: off");
 			 }
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "Error: unknown mode selected\n");
+				 "Error: unknown mode selected");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no mode selected\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no mode selected");
 	       }
 	  }
 	else if (!strcmp(param1, "title"))
@@ -2624,16 +2709,16 @@ IPC_Pager(char *params, Client * c)
 		    {
 		       if (mode.pager_title)
 			 {
-			    CommsSend(c, "pager_title: on\n");
+			    CommsSend(c, "pager_title: on");
 			 }
 		       else
 			 {
-			    CommsSend(c, "pager_title: off\n");
+			    CommsSend(c, "pager_title: off");
 			 }
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: no mode selected\n");
+		       Esnprintf(buf, sizeof(buf), "Error: no mode selected");
 		    }
 	       }
 	  }
@@ -2645,7 +2730,7 @@ IPC_Pager(char *params, Client * c)
 		  if (!strcmp(param2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "pager_scanrate: %d\n", mode.pager_scanspeed);
+				 "pager_scanrate: %d", mode.pager_scanspeed);
 		    }
 		  else
 		    {
@@ -2654,7 +2739,7 @@ IPC_Pager(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no scanrate specified.\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no scanrate specified.");
 	       }
 	  }
 	else if (!strcmp(param1, "snap"))
@@ -2664,11 +2749,11 @@ IPC_Pager(char *params, Client * c)
 	       {
 		  if (mode.pager_hiq)
 		    {
-		       Esnprintf(buf, sizeof(buf), "pager_snap: on\n");
+		       Esnprintf(buf, sizeof(buf), "pager_snap: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "pager_snap: off\n");
+		       Esnprintf(buf, sizeof(buf), "pager_snap: off");
 		    }
 	       }
 	     else if (!strcmp(param2, "on"))
@@ -2704,35 +2789,35 @@ IPC_Pager(char *params, Client * c)
 		    }
 		  else if (!strcmp(param3, "?"))
 		    {
-		       Esnprintf(buf, sizeof(buf), "Desk %s: %i pagers\n", param2,
+		       Esnprintf(buf, sizeof(buf), "Desk %s: %i pagers", param2,
 				 PagerForDesktop(atoi(param2)));
 		    }
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "Error: unknown mode specified\n");
+				 "Error: unknown mode specified");
 		    }
 	       }
 	     else
 	       {
 		  if (param2[0])
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: no mode specified\n");
+		       Esnprintf(buf, sizeof(buf), "Error: no mode specified");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: no desk specified\n");
+		       Esnprintf(buf, sizeof(buf), "Error: no desk specified");
 		    }
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no mode specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -2781,29 +2866,29 @@ IPC_MoveMode(char *params, Client * c)
 	     if (mode.movemode)
 	       {
 		  if (mode.movemode == 1)
-		     Esnprintf(buf, sizeof(buf), "movemode: lined\n");
+		     Esnprintf(buf, sizeof(buf), "movemode: lined");
 		  else if (mode.movemode == 2)
-		     Esnprintf(buf, sizeof(buf), "movemode: box\n");
+		     Esnprintf(buf, sizeof(buf), "movemode: box");
 		  else if (mode.movemode == 3)
-		     Esnprintf(buf, sizeof(buf), "movemode: shaded\n");
+		     Esnprintf(buf, sizeof(buf), "movemode: shaded");
 		  else if (mode.movemode == 4)
-		     Esnprintf(buf, sizeof(buf), "movemode: semi-solid\n");
+		     Esnprintf(buf, sizeof(buf), "movemode: semi-solid");
 		  else if (mode.movemode == 5)
-		     Esnprintf(buf, sizeof(buf), "movemode: translucent\n");
+		     Esnprintf(buf, sizeof(buf), "movemode: translucent");
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "movemode: opaque\n");
+		  Esnprintf(buf, sizeof(buf), "movemode: opaque");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no mode specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -2848,27 +2933,27 @@ IPC_ResizeMode(char *params, Client * c)
 	     if (mode.resizemode)
 	       {
 		  if (mode.resizemode == 1)
-		     Esnprintf(buf, sizeof(buf), "resizemode: lined\n");
+		     Esnprintf(buf, sizeof(buf), "resizemode: lined");
 		  else if (mode.resizemode == 2)
-		     Esnprintf(buf, sizeof(buf), "resizemode: box\n");
+		     Esnprintf(buf, sizeof(buf), "resizemode: box");
 		  else if (mode.resizemode == 3)
-		     Esnprintf(buf, sizeof(buf), "resizemode: shaded\n");
+		     Esnprintf(buf, sizeof(buf), "resizemode: shaded");
 		  else if (mode.resizemode == 4)
-		     Esnprintf(buf, sizeof(buf), "resizemode: semi-solid\n");
+		     Esnprintf(buf, sizeof(buf), "resizemode: semi-solid");
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "resizemode: opaque\n");
+		  Esnprintf(buf, sizeof(buf), "resizemode: opaque");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no mode specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -2909,14 +2994,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (FX_IsOn("ripples"))
-		     Esnprintf(buf, sizeof(buf), "ripples: on\n");
+		     Esnprintf(buf, sizeof(buf), "ripples: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "ripples: off\n");
+		     Esnprintf(buf, sizeof(buf), "ripples: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "deskslide"))
@@ -2933,14 +3018,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (desks.slidein)
-		     Esnprintf(buf, sizeof(buf), "deskslide: on\n");
+		     Esnprintf(buf, sizeof(buf), "deskslide: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "deskslide: off\n");
+		     Esnprintf(buf, sizeof(buf), "deskslide: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "mapslide"))
@@ -2957,14 +3042,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (mode.mapslide)
-		     Esnprintf(buf, sizeof(buf), "mapslide: on\n");
+		     Esnprintf(buf, sizeof(buf), "mapslide: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "mapslide: off\n");
+		     Esnprintf(buf, sizeof(buf), "mapslide: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "raindrops"))
@@ -2983,14 +3068,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (FX_IsOn("raindrops"))
-		     Esnprintf(buf, sizeof(buf), "raindrops: on\n");
+		     Esnprintf(buf, sizeof(buf), "raindrops: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "raindrops: off\n");
+		     Esnprintf(buf, sizeof(buf), "raindrops: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "menu_animate"))
@@ -3007,14 +3092,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (mode.menuslide)
-		     Esnprintf(buf, sizeof(buf), "menu_animate: on\n");
+		     Esnprintf(buf, sizeof(buf), "menu_animate: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "menu_animate: off\n");
+		     Esnprintf(buf, sizeof(buf), "menu_animate: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "waves"))
@@ -3033,14 +3118,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (FX_IsOn("waves"))
-		     Esnprintf(buf, sizeof(buf), "waves: on\n");
+		     Esnprintf(buf, sizeof(buf), "waves: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "waves: off\n");
+		     Esnprintf(buf, sizeof(buf), "waves: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "animate_win_shading"))
@@ -3057,14 +3142,14 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (mode.animate_shading)
-		     Esnprintf(buf, sizeof(buf), "animate_win_shading: on\n");
+		     Esnprintf(buf, sizeof(buf), "animate_win_shading: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "animate_win_shading: off\n");
+		     Esnprintf(buf, sizeof(buf), "animate_win_shading: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "window_shade_speed"))
@@ -3074,12 +3159,12 @@ IPC_FX(char *params, Client * c)
 	       {
 		  if (mode.animate_shading)
 		    {
-		       Esnprintf(buf, sizeof(buf), "shadespeed: %d seconds\n",
+		       Esnprintf(buf, sizeof(buf), "shadespeed: %d seconds",
 				 mode.shadespeed);
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "shadespeed: off\n");
+		       Esnprintf(buf, sizeof(buf), "shadespeed: off");
 		    }
 	       }
 	     else
@@ -3134,30 +3219,30 @@ IPC_FX(char *params, Client * c)
 		    {
 		       if (desks.dragdir == 1)
 			 {
-			    Esnprintf(buf, sizeof(buf), "Dragbar: right\n");
+			    Esnprintf(buf, sizeof(buf), "Dragbar: right");
 			 }
 		       else if (desks.dragdir == 2)
 			 {
-			    Esnprintf(buf, sizeof(buf), "Dragbar: top\n");
+			    Esnprintf(buf, sizeof(buf), "Dragbar: top");
 			 }
 		       else if (desks.dragdir == 3)
 			 {
-			    Esnprintf(buf, sizeof(buf), "Dragbar: bottom\n");
+			    Esnprintf(buf, sizeof(buf), "Dragbar: bottom");
 			 }
 		       else
 			 {
-			    Esnprintf(buf, sizeof(buf), "Dragbar: left\n");
+			    Esnprintf(buf, sizeof(buf), "Dragbar: left");
 			 }
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Dragbar: off\n");
+		       Esnprintf(buf, sizeof(buf), "Dragbar: off");
 		    }
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 
 	     if (move)
@@ -3194,12 +3279,12 @@ IPC_FX(char *params, Client * c)
 	       {
 		  if (mode.tooltips)
 		    {
-		       Esnprintf(buf, sizeof(buf), "tooltips: %f seconds\n",
+		       Esnprintf(buf, sizeof(buf), "tooltips: %f seconds",
 				 mode.tiptime);
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "tooltips: off\n");
+		       Esnprintf(buf, sizeof(buf), "tooltips: off");
 		    }
 	       }
 	     else
@@ -3225,12 +3310,12 @@ IPC_FX(char *params, Client * c)
 		       if (mode.edge_flip_resistance >= 0)
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "edge_resistance: %d / 100 seconds\n",
+				      "edge_resistance: %d / 100 seconds",
 				      mode.edge_flip_resistance);
 			 }
 		       else
 			 {
-			    Esnprintf(buf, sizeof(buf), "edge_resistance: off\n");
+			    Esnprintf(buf, sizeof(buf), "edge_resistance: off");
 			 }
 		    }
 		  else
@@ -3240,7 +3325,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no time given\n");
+		  Esnprintf(buf, sizeof(buf), "Error: no time given");
 	       }
 	  }
 	else if (!strcmp(word1, "edge_snap_distance"))
@@ -3251,7 +3336,7 @@ IPC_FX(char *params, Client * c)
 		  if (!strcmp(word2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf),
-			     "edge_snap_distance: %d\n", mode.edge_snap_dist);
+			       "edge_snap_distance: %d", mode.edge_snap_dist);
 		    }
 		  else
 		    {
@@ -3261,7 +3346,7 @@ IPC_FX(char *params, Client * c)
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: no pixel distance given\n");
+			    "Error: no pixel distance given");
 	       }
 	  }
 	else if (!strcmp(word1, "autoraise"))
@@ -3279,12 +3364,12 @@ IPC_FX(char *params, Client * c)
 	       {
 		  if (mode.autoraise)
 		    {
-		       Esnprintf(buf, sizeof(buf), "autoraise: %f seconds\n",
+		       Esnprintf(buf, sizeof(buf), "autoraise: %f seconds",
 				 mode.autoraisetime);
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "autoraise: off\n");
+		       Esnprintf(buf, sizeof(buf), "autoraise: off");
 		    }
 	       }
 	     else
@@ -3336,24 +3421,24 @@ IPC_FX(char *params, Client * c)
 	     else if (!strcmp(word2, "?"))
 	       {
 		  if (mode.sound)
-		     Esnprintf(buf, sizeof(buf), "audio: on\n");
+		     Esnprintf(buf, sizeof(buf), "audio: on");
 		  else
-		     Esnprintf(buf, sizeof(buf), "audio: off\n");
+		     Esnprintf(buf, sizeof(buf), "audio: off");
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified\n");
+			    "Error: unknown mode specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown effect specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown effect specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no effect specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no effect specified");
      }
 
    if (buf[0])
@@ -3393,25 +3478,25 @@ IPC_ActiveNetwork(char *params, Client * c)
 	       {
 		  if (mode.activenetwork)
 		    {
-		       Esnprintf(buf, sizeof(buf), "Active network: on\n");
+		       Esnprintf(buf, sizeof(buf), "Active network: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Active network: off\n");
+		       Esnprintf(buf, sizeof(buf), "Active network: off");
 		    }
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown state.\n");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown state.");
 	       }
 	  }
 #else
 	Esnprintf(buf, sizeof(buf),
-		  "Active Network not compiled into this version of E\n");
+		  "Active Network not compiled into this version of E");
 #endif
      }
    else
-      Esnprintf(buf, sizeof(buf), "Error: no state specified\n");
+      Esnprintf(buf, sizeof(buf), "Error: no state specified");
 
    if (buf[0])
       CommsSend(c, buf);
@@ -3493,7 +3578,7 @@ IPC_GotoArea(char *params, Client * c)
 
    if (!params)
      {
-	Esnprintf(buf, sizeof(buf), "Error: no area specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no area specified");
      }
    else
      {
@@ -3541,7 +3626,7 @@ IPC_GotoArea(char *params, Client * c)
 	else if (!strcmp(param1, "?"))
 	  {
 	     GetCurrentArea(&a, &b);
-	     Esnprintf(buf, sizeof(buf), "Current Area: %d %d\n", a, b);
+	     Esnprintf(buf, sizeof(buf), "Current Area: %d %d", a, b);
 	  }
 	else
 	  {
@@ -3580,7 +3665,7 @@ IPC_WinOps(char *params, Client * c)
 	word(params, 2, operation);
 	if (!operation[0])
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
 	  }
 	else
 	  {
@@ -3589,7 +3674,7 @@ IPC_WinOps(char *params, Client * c)
 	     ewin = FindEwinByChildren(win);
 	     if (!ewin)
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x\n",
+		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
 			    win);
 	       }
 	     else
@@ -3625,10 +3710,10 @@ IPC_WinOps(char *params, Client * c)
 			      {
 				 if (ewin->iconified)
 				    Esnprintf(buf, sizeof(buf),
-					      "window iconified: yes\n");
+					      "window iconified: yes");
 				 else
 				    Esnprintf(buf, sizeof(buf),
-					      "window iconified: no\n");
+					      "window iconified: no");
 			      }
 			    else
 			      {
@@ -3663,10 +3748,10 @@ IPC_WinOps(char *params, Client * c)
 			      {
 				 if (ewin->shaded)
 				    Esnprintf(buf, sizeof(buf),
-					      "window shaded: yes\n");
+					      "window shaded: yes");
 				 else
 				    Esnprintf(buf, sizeof(buf),
-					      "window shaded: no\n");
+					      "window shaded: no");
 			      }
 			    else
 			      {
@@ -3701,10 +3786,10 @@ IPC_WinOps(char *params, Client * c)
 			      {
 				 if (ewin->sticky)
 				    Esnprintf(buf, sizeof(buf),
-					      "window sticky: yes\n");
+					      "window sticky: yes");
 				 else
 				    Esnprintf(buf, sizeof(buf),
-					      "window sticky: no\n");
+					      "window sticky: no");
 			      }
 			    else
 			      {
@@ -3736,7 +3821,7 @@ IPC_WinOps(char *params, Client * c)
 				   {
 				      /* return the window title */
 				      Esnprintf(buf, sizeof(buf),
-						"window title: %s\n", ewin->client.title);
+				      "window title: %s", ewin->client.title);
 				   }
 				 else
 				   {
@@ -3754,7 +3839,7 @@ IPC_WinOps(char *params, Client * c)
 			      {
 				 /* error */
 				 Esnprintf(buf, sizeof(buf),
-					   "Error: no title specified\n");
+					   "Error: no title specified");
 			      }
 			 }
 		    }
@@ -3787,7 +3872,7 @@ IPC_WinOps(char *params, Client * c)
 				      if (ewin->border->name)
 					{
 					   Esnprintf(buf, sizeof(buf),
-						     "window border: %s\n",
+						     "window border: %s",
 						     ewin->border->name);
 					}
 				   }
@@ -3809,7 +3894,7 @@ IPC_WinOps(char *params, Client * c)
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "Error: no border specified\n");
+				      "Error: no border specified");
 			 }
 		    }
 		  else if (!strcmp(operation, "desk"))
@@ -3836,7 +3921,7 @@ IPC_WinOps(char *params, Client * c)
 			    else if (!strcmp(param1, "?"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-					   "window desk: %d\n", ewin->desktop);
+					   "window desk: %d", ewin->desktop);
 			      }
 			    else
 			      {
@@ -3850,7 +3935,7 @@ IPC_WinOps(char *params, Client * c)
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "Error: no desktop supplied\n");
+				      "Error: no desktop supplied");
 			 }
 		    }
 		  else if (!strcmp(operation, "area"))
@@ -3863,7 +3948,7 @@ IPC_WinOps(char *params, Client * c)
 			    if (!strcmp(param1, "?"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-					 "window area: %d %d\n", ewin->area_x,
+					   "window area: %d %d", ewin->area_x,
 					   ewin->area_y);
 			      }
 			    else
@@ -3875,7 +3960,7 @@ IPC_WinOps(char *params, Client * c)
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "Error: no area supplied\n");
+				      "Error: no area supplied");
 			 }
 		    }
 		  else if (!strcmp(operation, "raise"))
@@ -3896,13 +3981,13 @@ IPC_WinOps(char *params, Client * c)
 			    if (!strcmp(param1, "?"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-					   "window location: %d %d\n", ewin->x,
+					   "window location: %d %d", ewin->x,
 					   ewin->y);
 			      }
 			    else if (!strcmp(param1, "??"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-					   "client location: %d %d\n",
+					   "client location: %d %d",
 					   ewin->x + ewin->border->border.left,
 					   ewin->y + ewin->border->border.top);
 			      }
@@ -3916,7 +4001,7 @@ IPC_WinOps(char *params, Client * c)
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "Error: no coords supplied\n");
+				      "Error: no coords supplied");
 			 }
 		    }
 		  else if (!strcmp(operation, "resize"))
@@ -3929,13 +4014,13 @@ IPC_WinOps(char *params, Client * c)
 			    if (!strcmp(param1, "?"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-				       "window size: %d %d\n", ewin->client.w,
+					 "window size: %d %d", ewin->client.w,
 					   ewin->client.h);
 			      }
 			    else if (!strcmp(param1, "??"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-				     "frame size: %d %d\n", ewin->w, ewin->h);
+				       "frame size: %d %d", ewin->w, ewin->h);
 			      }
 			    else
 			      {
@@ -3978,11 +4063,11 @@ IPC_WinOps(char *params, Client * c)
 			 {
 			    if (ewin == GetFocusEwin())
 			      {
-				 Esnprintf(buf, sizeof(buf), "focused: yes\n");
+				 Esnprintf(buf, sizeof(buf), "focused: yes");
 			      }
 			    else
 			      {
-				 Esnprintf(buf, sizeof(buf), "focused: no\n");
+				 Esnprintf(buf, sizeof(buf), "focused: no");
 			      }
 			 }
 		       else
@@ -3993,14 +4078,14 @@ IPC_WinOps(char *params, Client * c)
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "Error: unknown operation\n");
+				 "Error: unknown operation");
 		    }
 	       }
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no window specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no window specified");
      }
 
    if (buf[0])
@@ -4024,7 +4109,7 @@ IPC_NumAreas(char *params, Client * c)
 	     int                 ax, ay;
 
 	     GetAreaSize(&ax, &ay);
-	     Esnprintf(buf, sizeof(buf), "Number of Areas: %d %d\n",
+	     Esnprintf(buf, sizeof(buf), "Number of Areas: %d %d",
 		       ax, ay);
 	  }
 	else
@@ -4038,7 +4123,7 @@ IPC_NumAreas(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: number of areas not given\n");
+	Esnprintf(buf, sizeof(buf), "Error: number of areas not given");
      }
 
    if (buf[0])
@@ -4059,7 +4144,7 @@ IPC_NumDesks(char *params, Client * c)
      {
 	if (!strcmp(params, "?"))
 	  {
-	     Esnprintf(buf, sizeof(buf), "Number of Desks: %d\n",
+	     Esnprintf(buf, sizeof(buf), "Number of Desks: %d",
 		       mode.numdesktops);
 	  }
 	else
@@ -4069,7 +4154,7 @@ IPC_NumDesks(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: number of desks not given\n");
+	Esnprintf(buf, sizeof(buf), "Error: number of desks not given");
      }
 
    if (buf[0])
@@ -4113,34 +4198,34 @@ IPC_FocusMode(char *params, Client * c)
 	       {
 		  if (mode.click_focus_grabbed)
 		    {
-		       strcat(buf, "click\n");
+		       strcat(buf, "click");
 		    }
 		  else
 		    {
-		       strcat(buf, "clicknograb\n");
+		       strcat(buf, "clicknograb");
 		    }
 	       }
 	     else if (mode.focusmode == 1)
 	       {
-		  strcat(buf, "sloppy\n");
+		  strcat(buf, "sloppy");
 	       }
 	     else if (mode.focusmode == 0)
 	       {
-		  strcat(buf, "pointer\n");
+		  strcat(buf, "pointer");
 	       }
 	     else
 	       {
-		  strcat(buf, "unknown\n");
+		  strcat(buf, "unknown");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown focus type\n");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown focus type");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no focus type given\n");
+	Esnprintf(buf, sizeof(buf), "Error: no focus type given");
      }
 
    if (buf[0])
@@ -4173,19 +4258,19 @@ IPC_ShowIcons(char *params, Client * c)
 	  {
 	     Esnprintf(buf, sizeof(buf), "Icons: ");
 	     if (mode.showicons)
-		strcat(buf, "on\n");
+		strcat(buf, "on");
 	     else
-		strcat(buf, "off\n");
+		strcat(buf, "off");
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown icon statee: %s\n",
+	     Esnprintf(buf, sizeof(buf), "Error: unknown icon statee: %s",
 		       params);
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no icon state specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no icon state specified");
      }
 
    if (buf[0])
@@ -4203,7 +4288,7 @@ IPC_GotoDesktop(char *params, Client * c)
    buf[0] = 0;
    if (!params)
      {
-	Esnprintf(buf, sizeof(buf), "Error: no desktop selected\n");
+	Esnprintf(buf, sizeof(buf), "Error: no desktop selected");
      }
    else
      {
@@ -4217,7 +4302,7 @@ IPC_GotoDesktop(char *params, Client * c)
 	  }
 	else if (!strcmp(params, "?"))
 	  {
-	     Esnprintf(buf, sizeof(buf), "Current Desktop: %d\n",
+	     Esnprintf(buf, sizeof(buf), "Current Desktop: %d",
 		       desks.current);
 	  }
 	else
@@ -4294,7 +4379,7 @@ IPC_SMFile(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no file prefix specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no file prefix specified");
      }
 
    if (buf[0])
@@ -4345,7 +4430,7 @@ IPC_RestartWM(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no window manager specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no window manager specified");
 	CommsSend(c, buf);
      }
 
@@ -4367,7 +4452,7 @@ IPC_RestartTheme(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no theme specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no theme specified");
 	CommsSend(c, buf);
      }
    return;
@@ -4400,7 +4485,7 @@ IPC_DefaultTheme(char *params, Client * c)
 
    if (!strcmp(params, "?"))
      {
-	Esnprintf(buf, sizeof(buf), "%s\n", GetDefaultTheme());
+	Esnprintf(buf, sizeof(buf), "%s", GetDefaultTheme());
      }
    else
      {
@@ -4415,7 +4500,7 @@ IPC_DefaultTheme(char *params, Client * c)
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Could not find theme: %s\n",
+	     Esnprintf(buf, sizeof(buf), "Could not find theme: %s",
 		       GetDefaultTheme());
 	  }
      }
@@ -4441,9 +4526,9 @@ IPC_AutoSave(char *params, Client * c)
    if (!strcmp(params, "?"))
      {
 	if (mode.autosave)
-	   Esnprintf(buf, sizeof(buf), "Autosave : on\n");
+	   Esnprintf(buf, sizeof(buf), "Autosave : on");
 	else
-	   Esnprintf(buf, sizeof(buf), "Autosave : off\n");
+	   Esnprintf(buf, sizeof(buf), "Autosave : off");
      }
    else if (!strcmp(params, "on"))
      {
@@ -4455,7 +4540,7 @@ IPC_AutoSave(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Unknown autosave state: %s\n", params);
+	Esnprintf(buf, sizeof(buf), "Unknown autosave state: %s", params);
      }
    if (buf[0])
       CommsSend(c, buf);
@@ -4754,7 +4839,7 @@ IPC_GroupInfo(char *params, Client * c)
 
 	if (!group)
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d\n",
+	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d",
 		       index);
 	     CommsSend(c, buf);
 	     return;
@@ -4763,7 +4848,7 @@ IPC_GroupInfo(char *params, Client * c)
 
 	if (!groups)
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no memory\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no memory");
 	     CommsSend(c, buf);
 	     return;
 	  }
@@ -4775,7 +4860,7 @@ IPC_GroupInfo(char *params, Client * c)
 	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
 
 	Esnprintf(buf, sizeof(buf),
-		  "Number of groups: %d\n",
+		  "Number of groups: %d",
 		  num_groups);
      }
 
@@ -4849,7 +4934,7 @@ IPC_GroupOps(char *params, Client * c)
 
 	if (!operation[0])
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
 	  }
 	else
 	  {
@@ -4858,7 +4943,7 @@ IPC_GroupOps(char *params, Client * c)
 	     ewin = FindEwinByChildren(win);
 	     if (!ewin)
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x\n",
+		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
 			    win);
 	       }
 	     else
@@ -4866,7 +4951,7 @@ IPC_GroupOps(char *params, Client * c)
 		  if (!strcmp(operation, "start"))
 		    {
 		       BuildWindowGroup(&ewin, 1);
-		       Esnprintf(buf, sizeof(buf), "start %8x\n", win);
+		       Esnprintf(buf, sizeof(buf), "start %8x", win);
 		    }
 		  else if (!strcmp(operation, "add"))
 		    {
@@ -4879,7 +4964,7 @@ IPC_GroupOps(char *params, Client * c)
 			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
 			 }
 		       AddEwinToGroup(ewin, group);
-		       Esnprintf(buf, sizeof(buf), "add %8x\n", win);
+		       Esnprintf(buf, sizeof(buf), "add %8x", win);
 		    }
 		  else if (!strcmp(operation, "remove"))
 		    {
@@ -4893,7 +4978,7 @@ IPC_GroupOps(char *params, Client * c)
 			 }
 
 		       RemoveEwinFromGroup(ewin, group);
-		       Esnprintf(buf, sizeof(buf), "remove %8x\n", win);
+		       Esnprintf(buf, sizeof(buf), "remove %8x", win);
 		    }
 		  else if (!strcmp(operation, "break"))
 		    {
@@ -4907,16 +4992,16 @@ IPC_GroupOps(char *params, Client * c)
 			 }
 
 		       BreakWindowGroup(ewin, group);
-		       Esnprintf(buf, sizeof(buf), "break %8x\n", win);
+		       Esnprintf(buf, sizeof(buf), "break %8x", win);
 		    }
 		  else if (!strcmp(operation, "showhide"))
 		    {
 		       doShowHideGroup(windowid);
-		       Esnprintf(buf, sizeof(buf), "showhide %8x\n", win);
+		       Esnprintf(buf, sizeof(buf), "showhide %8x", win);
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: no such operation: %s\n",
+		       Esnprintf(buf, sizeof(buf), "Error: no such operation: %s",
 				 operation);
 
 		    }
@@ -4925,7 +5010,7 @@ IPC_GroupOps(char *params, Client * c)
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no window specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no window specified");
      }
 
    if (buf)
@@ -4959,7 +5044,7 @@ IPC_Group(char *params, Client * c)
 
 	if (!operation[0])
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
 	  }
 	else
 	  {
@@ -4970,7 +5055,7 @@ IPC_Group(char *params, Client * c)
 
 	     if (!group)
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no such group: %d\n",
+		  Esnprintf(buf, sizeof(buf), "Error: no such group: %d",
 			    index);
 	       }
 	     else
@@ -4986,12 +5071,12 @@ IPC_Group(char *params, Client * c)
 		       if (onoff == -1 && strcmp(param1, "?"))
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "Error: unknown mode specified\n");
+				      "Error: unknown mode specified");
 			 }
 		       else if (!strcmp(operation, "num_members"))
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "num_members: %d\n",
+				      "num_members: %d",
 				      group->num_members);
 			    onoff = -1;
 			 }
@@ -5054,7 +5139,7 @@ IPC_Group(char *params, Client * c)
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "Error: no such operation: %s\n",
+				      "Error: no such operation: %s",
 				      operation);
 			    onoff = -1;
 			 }
@@ -5062,19 +5147,19 @@ IPC_Group(char *params, Client * c)
 		  else
 		    {
 		       Esnprintf(buf, sizeof(buf),
-				 "Error: no mode specified\n");
+				 "Error: no mode specified");
 		    }
 	       }
 
 	     if (onoff == 1)
-		Esnprintf(buf, sizeof(buf), "%s: on\n", operation);
+		Esnprintf(buf, sizeof(buf), "%s: on", operation);
 	     else if (onoff == 0)
-		Esnprintf(buf, sizeof(buf), "%s: off\n", operation);
+		Esnprintf(buf, sizeof(buf), "%s: off", operation);
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no group specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no group specified");
      }
 
    if (buf)

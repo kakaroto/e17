@@ -2827,3 +2827,11 @@ Sat Oct  2 18:59:21 PDT 1999
 
 needed to fix the iclass ipc stuff a bit to make it more useful in the long
 run
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 20:45:20 PDT 1999
+(Raster)
+
+chaneg menu entry name, fix some bits of the ipcs and remove useless \n's in
+ipc returns...
