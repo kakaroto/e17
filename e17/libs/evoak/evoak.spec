@@ -69,6 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{prefix}/lib/libevoak.a
 %attr(755,root,root) %{prefix}/bin/evoak*
 %{prefix}/include/Evoak*
+%{_datadir}/evoak
 %doc AUTHORS
 %doc COPYING
 %doc README
