@@ -122,7 +122,7 @@ int ewl_embed_init(Ewl_Embed * w)
  * through standard evas functions.
  */
 Evas_Object *
-ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
+ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_window)
 {
 	Ewl_Widget *w;
 	Ecore_List   *paths;

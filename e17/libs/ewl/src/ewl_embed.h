@@ -59,7 +59,7 @@ struct Ewl_Embed
 Ewl_Widget     *ewl_embed_new(void);
 int             ewl_embed_init(Ewl_Embed * win);
 Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas,
-				   void *evas_window);
+				   Ewl_Embed_Evas_Window *evas_window);
 int             ewl_embed_get_max_layer(Ewl_Embed *embed);
 void            ewl_embed_set_max_layer(Ewl_Embed *embed, int layer);
 void            ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname,
