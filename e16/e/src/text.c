@@ -318,6 +318,7 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
      }
    freestrlist(lines, num_lines);
    EDBUG_RETURN_;
+   fsize = 0;
 }
 
 void
@@ -805,6 +806,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
      }
    freestrlist(lines, num_lines);
    EDBUG_RETURN_;
+   fsize = 0;
 }
 
 void

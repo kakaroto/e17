@@ -154,6 +154,7 @@ HintsSetWindowArea(EWin * ewin)
    GNOME_SetEwinArea(ewin);
 #endif
    EDBUG_RETURN_;
+   ewin = NULL;
 }
 
 void

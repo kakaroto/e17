@@ -231,6 +231,7 @@ TextSize(TextState * ts, char *text, int *width, int *height, int fsize)
      }
    freestrlist(lines, num_lines);
    return;
+   fsize = 0;
 }
 
 void
@@ -430,4 +431,5 @@ TextDraw(TextState * ts, Window win, char *text,
      }
    freestrlist(lines, num_lines);
    return;
+   h = fsize = 0;
 }

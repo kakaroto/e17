@@ -3458,6 +3458,8 @@ static void
 IPC_ButtonShow(char *params, Client * c)
 {
    ActionsCall(ACTION_HIDESHOW_BUTTON, NULL, params);
+   return;
+   c = NULL;
 }
 
 static void
@@ -4104,6 +4106,11 @@ IPC_FocusMode(char *params, Client * c)
 static void
 IPC_ShowIcons(char *params, Client * c)
 {
+    /* Doesn't look like this function is doing anything, but it used to 
+     * if I recall correctly --Mandrake */
+    return;
+    params = NULL;
+    c = NULL;
 }
 
 static void
@@ -4602,6 +4609,9 @@ IPC_ReloadMenus(char *params, Client * c)
    MenusDestroyLoaded();
 
    LoadConfigFile("menus.cfg");
+   return;
+   params = NULL;
+   c = NULL;
 }
 
 static void

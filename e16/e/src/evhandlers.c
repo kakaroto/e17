@@ -82,7 +82,7 @@ ToolTipTimeout(int val, void *data)
    EDBUG_RETURN_;
 }
 
-void
+static void
 TooltipsHandleEvent(void)
 {
    if (ttip)
@@ -766,6 +766,7 @@ HandleReparent(XEvent * ev)
 {
    EDBUG(5, "HandleReparent");
    EDBUG_RETURN_;
+   ev = NULL;
 }
 
 void
@@ -781,6 +782,7 @@ HandleConfigureNotify(XEvent * ev)
 #endif
 
    EDBUG_RETURN_;
+   ev = NULL;
 }
 
 void

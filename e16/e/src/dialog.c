@@ -340,7 +340,7 @@ DialogCreate(char *name)
    return d;
 }
 
-void
+static void
 FreeDButton(DButton * db)
 {
    if (db->text)
@@ -575,6 +575,8 @@ DialogMoveResize(EWin * ewin, int resize)
 
    if (conf.theme.transparency || IclassIsTransparent(d->iclass))
       DialogRedraw(d);
+   return;
+   resize = 0;
 }
 
 static void

@@ -82,7 +82,7 @@ static FXHandler    fx_handlers[] = {
 static FXHandler   *
 FX_Find(const char *name)
 {
-   int                 i;
+   unsigned int                 i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
       if (!strcmp(fx_handlers[i].name, name))
@@ -129,10 +129,16 @@ FX_Op(const char *name, int fx_op)
      }
 }
 
-void
+#if 0
+
+/*
+ e  Doesn't look like this is ever used, commented out for now
+ * --Mandrake
+ */
+static void
 FX_Activate(char *effect)
 {
-   int                 i;
+   unsigned int                 i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -147,11 +153,12 @@ FX_Activate(char *effect)
      }
    return;
 }
+#endif
 
 void
 FX_DeskChange(void)
 {
-   int                 i;
+   unsigned int                 i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -166,7 +173,7 @@ FX_DeskChange(void)
 void
 FX_Pause(void)
 {
-   int                 i;
+   unsigned int                 i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -191,7 +198,7 @@ FX_Pause(void)
 char              **
 FX_Active(int *num)
 {
-   int                 i;
+   unsigned int                 i;
    char              **list = NULL;
 
    *num = 0;
@@ -211,7 +218,7 @@ FX_Active(int *num)
 int
 FX_IsOn(char *effect)
 {
-   int                 i;
+   unsigned int                 i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -319,6 +326,8 @@ FX_Ripple_Init(const char *name)
 {
    fx_ripple_count = 0;
    DoIn("FX_RIPPLE_TIMEOUT", 0.066, FX_ripple_timeout, 0, NULL);
+   return;
+   name = NULL;
 }
 
 void
@@ -636,6 +645,8 @@ FX_Raindrops_Init(const char *name)
 	fx_raindrops[i].y = rand() % (root.h - fx_raindrop_size);
      }
    DoIn("FX_RAINDROPS_TIMEOUT", 0.066, FX_raindrops_timeout, 0, NULL);
+   return;
+   name = NULL;
 }
 
 void
@@ -839,6 +850,8 @@ FX_Waves_Init(const char *name)
 {
    fx_wave_count = 0;
    DoIn("FX_WAVE_TIMEOUT", 0.066, FX_Wave_timeout, 0, NULL);
+   return;
+   name = NULL;
 }
 
 void

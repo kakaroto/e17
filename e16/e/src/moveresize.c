@@ -82,6 +82,7 @@ ActionMoveStart(EWin * ewin, void *params, char constrained, int nogroup)
    mode.swapcoord_x = start_move_x = ewin->x;
    mode.swapcoord_y = start_move_y = ewin->y;
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 int
@@ -320,6 +321,7 @@ ActionResizeStart(EWin * ewin, void *params, int hv)
    mode.firstlast = 1;
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 int

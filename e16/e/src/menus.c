@@ -151,6 +151,8 @@ MenuMoveResize(EWin * ewin, int resize)
    if ((!m->style->use_item_bg && m->pmm.pmap == 0) ||
        conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
       MenuRedraw(m);
+   return;
+   resize = 0;
 }
 
 static void
@@ -1893,7 +1895,7 @@ MenuCreateMoveToDesktop(char *name, MenuStyle * ms)
 }
 #endif
 
-Menu               *
+static Menu               *
 MenuCreateFromGroups(char *name, MenuStyle * ms)
 {
    Menu               *m, *mm;

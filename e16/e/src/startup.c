@@ -24,7 +24,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-int
+static int
 AddEToFile(char *file)
 {
    FILE               *f1, *f2;
@@ -115,7 +115,7 @@ AddEToFile(char *file)
    EDBUG_RETURN(1);
 }
 
-int
+static int
 CreateEFile(char *file)
 {
    FILE               *f;

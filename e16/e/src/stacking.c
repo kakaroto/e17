@@ -33,7 +33,7 @@ struct _ewinlist
 };
 
 #if ENABLE_DEBUG_STACKING
-void
+static void
 EwinListShow(const char *txt, EWinList * ewl)
 {
    int                 i;
@@ -54,7 +54,7 @@ EwinListShow(const char *txt, EWinList * ewl)
 #define EwinListShow(txt, ewl)
 #endif
 
-int
+static int
 EwinListGetIndex(EWinList * ewl, EWin * ewin)
 {
    int                 i;

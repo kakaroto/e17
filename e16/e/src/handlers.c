@@ -127,7 +127,7 @@ SignalsSetup(void)
       SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGFPE, SIGSEGV, SIGPIPE,
       SIGALRM, SIGTERM, SIGUSR1, SIGUSR2, SIGCHLD, SIGBUS
    };
-   int                 i;
+   unsigned int                 i;
    struct sigaction    sa;
 
    EDBUG(6, "SignalsSetup");

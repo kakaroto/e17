@@ -10,7 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-11-09 00:49+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-18 11:07-0500\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -18,18 +19,18 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:278 src/borders.c:2238 src/buttons.c:125 src/cmclass.c:97
-#: src/cursors.c:120 src/desktops.c:353 src/iclass.c:111 src/tclass.c:88
-#: src/tooltips.c:970
+#: src/actions.c:289
+msgid "ActionClass Error!"
+msgstr "actionclass エラー"
+
+#: src/actions.c:289 src/borders.c:2048 src/buttons.c:124 src/cmclass.c:91
+#: src/cursors.c:104 src/desktops.c:373 src/iclass.c:163 src/tclass.c:69
+#: src/tooltips.c:863
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u 参照残っています\n"
 
-#: src/actions.c:280
-msgid "ActionClass Error!"
-msgstr "actionclass エラー"
-
-#: src/actions.c:675
+#: src/actions.c:696
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -42,7 +43,7 @@ msgstr ""
 "プログラムの実行ができませんでした。\n"
 "ファイルが存在しないようです。\n"
 
-#: src/actions.c:683
+#: src/actions.c:704
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -60,7 +61,7 @@ msgstr ""
 "シェルのマニュアルを読んで、シェルの実行パスの変更方法や追加方法\n"
 "を理解する事をおすすめします。\n"
 
-#: src/actions.c:703
+#: src/actions.c:724
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -76,7 +77,7 @@ msgstr ""
 "ファイルは存在しており、このファイルを実行する権限もありますが\n"
 "実行できませんでした。このファイルを調べてみる事をおすすめします。\n"
 
-#: src/actions.c:714
+#: src/actions.c:735
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -91,7 +92,7 @@ msgstr ""
 "ファイルは存在していますが、あなたにはこのファイルを\n"
 "実行する権限がありません。\n"
 
-#: src/actions.c:730
+#: src/actions.c:751
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -104,7 +105,7 @@ msgstr ""
 "これは実行できません。\n"
 "ディレクトリを指定しているからです。\n"
 
-#: src/actions.c:738
+#: src/actions.c:759
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -117,16 +118,16 @@ msgstr ""
 "このプログラムは実行できません。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:3237
+#: src/actions.c:2806
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s について"
 
-#: src/actions.c:3253
+#: src/actions.c:2822
 msgid "Welcome to the "
 msgstr ""
 
-#: src/actions.c:3253
+#: src/actions.c:2822
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -140,7 +141,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3263
+#: src/actions.c:2832
 msgid ""
 "\n"
 "\n"
@@ -150,21 +151,21 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3268 src/dialog.c:303 src/groups.c:693 src/settings.c:329
-#: src/settings.c:602 src/settings.c:974 src/settings.c:1199
-#: src/settings.c:1436 src/settings.c:1580 src/settings.c:1683
-#: src/settings.c:1791 src/settings.c:1871 src/settings.c:1962
-#: src/settings.c:2417 src/settings.c:3823 src/settings.c:4179
-#: src/settings.c:4482 src/settings.c:4660 src/settings.c:4880 src/snaps.c:551
-#: src/sound.c:262
+#: src/actions.c:2837 src/dialog.c:2144 src/dialog.c:2185 src/groups.c:694
+#: src/settings.c:335 src/settings.c:608 src/settings.c:979
+#: src/settings.c:1202 src/settings.c:1437 src/settings.c:1580
+#: src/settings.c:1682 src/settings.c:1789 src/settings.c:1868
+#: src/settings.c:1958 src/settings.c:2412 src/settings.c:3694
+#: src/settings.c:4050 src/settings.c:4351 src/settings.c:4528
+#: src/settings.c:4748 src/snaps.c:570 src/sound.c:304
 msgid "OK"
 msgstr "了解"
 
-#: src/actions.c:3420
+#: src/actions.c:2943
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " このウィンドウが属するグループを選択してください:  \n"
 
-#: src/actions.c:3775
+#: src/actions.c:3162
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -184,23 +185,24 @@ msgstr ""
 "  このウィンドウが属する別のグループを選択してください :\n"
 "\n"
 
-#: src/actions.c:3808
+#: src/actions.c:3181
 msgid "   Select the group to remove the window from.  "
 msgstr " このグループからとりのぞくウィンドウを選択してください。"
 
-#: src/actions.c:3832
+#: src/actions.c:3192
 msgid "  Select the group to break  "
 msgstr " 破棄するグループを選択してください。 "
 
-#: src/actions.c:3860
+#: src/actions.c:3218
+#, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Zoom モードの危険性は以前に警告してあります。\n"
 
-#: src/actions.c:3863
+#: src/actions.c:3221
 msgid "Warning !!!"
 msgstr ""
 
-#: src/actions.c:3864
+#: src/actions.c:3222
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -228,35 +230,59 @@ msgstr ""
 "この機能は使わないほうがよいでしょう。\n"
 "\n"
 
-#: src/alert.c:172
+#: src/alert.c:45 src/alert.c:75
+msgid "Enlightenment Message Dialog"
+msgstr "Enlightenment メッセージダイアログ"
+
+#: src/alert.c:46 src/alert.c:76 src/memory.c:194 src/memory.c:270
+#: src/memory.c:288 src/memory.c:364
+msgid "Ignore this"
+msgstr "無視する"
+
+#: src/alert.c:47 src/alert.c:77 src/memory.c:195 src/memory.c:270
+#: src/memory.c:289 src/memory.c:364 src/memory.c:379
+msgid "Restart Enlightenment"
+msgstr "Enlightenment の再起動"
+
+#: src/alert.c:48 src/alert.c:78 src/memory.c:195 src/memory.c:271
+#: src/memory.c:289 src/memory.c:365 src/memory.c:380 src/setup.c:220
+#: src/setup.c:231 src/setup.c:283
+msgid "Quit Enlightenment"
+msgstr "Enlightenment を終了"
+
+#: src/alert.c:214
 msgid "Enlightenment Error"
 msgstr "Enlightenment エラー"
 
-#: src/alert.c:174
+#: src/alert.c:216
 msgid "Ignore"
 msgstr "無視"
 
-#: src/alert.c:176
+#: src/alert.c:218
 msgid "Restart"
 msgstr "再起動"
 
-#: src/alert.c:178
+#: src/alert.c:220
 msgid "Exit"
 msgstr "終了"
 
-#: src/borders.c:2240
+#: src/borders.c:2048
 msgid "Border Error!"
 msgstr "border エラー"
 
-#: src/buttons.c:127
+#: src/buttons.c:124
 msgid "Button Error!"
 msgstr "button エラー"
 
-#: src/cmclass.c:99
+#: src/cmclass.c:91
 msgid "ColorModClass Error!"
 msgstr "colormodifier エラー"
 
-#: src/comms.c:2053
+#: src/comms.c:2048
+msgid "E IPC Error"
+msgstr "E IPC エラー"
+
+#: src/comms.c:2049
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -273,29 +299,25 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2056
-msgid "E IPC Error"
-msgstr "E IPC エラー"
-
-#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:883
-#: src/config.c:1000 src/config.c:1241 src/config.c:1369 src/config.c:1474
-#: src/config.c:1690 src/config.c:1938 src/config.c:2010 src/config.c:2105
-#: src/config.c:2363 src/config.c:2580 src/config.c:2844 src/config.c:2937
-#: src/config.c:2971 src/config.c:3120 src/config.c:3355
+#: src/config.c:354 src/config.c:592 src/config.c:667 src/config.c:981
+#: src/config.c:1097 src/config.c:1333 src/config.c:1460 src/config.c:1564
+#: src/config.c:1777 src/config.c:2026 src/config.c:2101 src/config.c:2193
+#: src/config.c:2449 src/config.c:2667 src/config.c:2929 src/config.c:3020
+#: src/config.c:3053 src/config.c:3198 src/config.c:3400
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータを無視\n"
 
-#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:889
-#: src/config.c:1006 src/config.c:1247 src/config.c:1375 src/config.c:1482
-#: src/config.c:1698 src/config.c:1944 src/config.c:2016 src/config.c:2113
-#: src/config.c:2369 src/config.c:2588 src/config.c:2850 src/config.c:3126
-#: src/config.c:3363
+#: src/config.c:360 src/config.c:598 src/config.c:675 src/config.c:987
+#: src/config.c:1103 src/config.c:1339 src/config.c:1466 src/config.c:1572
+#: src/config.c:1785 src/config.c:2032 src/config.c:2107 src/config.c:2201
+#: src/config.c:2455 src/config.c:2675 src/config.c:2935 src/config.c:3204
+#: src/config.c:3408
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
 
-#: src/config.c:451 src/config.c:529
+#: src/config.c:556 src/config.c:630
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -308,7 +330,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:458
+#: src/config.c:562
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
@@ -316,7 +338,7 @@ msgstr ""
 "Warning:  textclass.cfg ファイル内の文字設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:536
+#: src/config.c:636
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
@@ -324,7 +346,7 @@ msgstr ""
 "Warning:  slideouts.cfg ファイル内のスライド設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:850
+#: src/config.c:949
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -337,7 +359,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:857
+#: src/config.c:955
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
@@ -345,7 +367,7 @@ msgstr ""
 "Warning:  control.cfg ファイル内の各種設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:967 src/config.c:1200
+#: src/config.c:1064 src/config.c:1292
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
@@ -353,7 +375,7 @@ msgstr ""
 "Warning:  menus.cfg ファイル内のメニュー設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1337
+#: src/config.c:1428
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
@@ -361,7 +383,7 @@ msgstr ""
 "Warning:  border.cfg ファイル内のウィンドウ枠部品の設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1427
+#: src/config.c:1517
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
@@ -369,7 +391,7 @@ msgstr ""
 "Warning:  borders.cfg ファイル内のウィンドウ枠全体の設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1646
+#: src/config.c:1735
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
@@ -377,7 +399,7 @@ msgstr ""
 "Warning:  buttons.cfg ファイル内のウィンドウのボタン設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1902 src/config.c:1985
+#: src/config.c:1994 src/config.c:2076
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -385,11 +407,11 @@ msgstr ""
 "Warning:  desktops.cfg ファイル内のデスクトップ背景設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1997
+#: src/config.c:2088
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "イースターエッグです! アイコンボックスはまだ実装されていません\n"
 
-#: src/config.c:2028
+#: src/config.c:2118
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -397,7 +419,7 @@ msgstr ""
 "Warning:  iconbox.cfg ファイル内のアイコンボックス設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2064
+#: src/config.c:2152
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -405,7 +427,7 @@ msgstr ""
 "Warning:  sound.cfg 内のサウンド設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2318
+#: src/config.c:2405
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -418,7 +440,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2333
+#: src/config.c:2419
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -426,7 +448,7 @@ msgstr ""
 "Warning:  actionclasses.cfg ファイル内の ACLASS 設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2532
+#: src/config.c:2620
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -439,7 +461,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2540
+#: src/config.c:2627
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -447,7 +469,7 @@ msgstr ""
 "Warning:  imageclasses.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2780
+#: src/config.c:2866
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -460,7 +482,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2805
+#: src/config.c:2890
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -470,7 +492,7 @@ msgstr ""
 "きちんと最後まで書かれていないようです。\n"
 "出力は良くないでしょう。\n"
 
-#: src/config.c:2897
+#: src/config.c:2981
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -483,7 +505,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2905
+#: src/config.c:2988
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -491,7 +513,7 @@ msgstr ""
 "Warning: tooltips.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2944
+#: src/config.c:3026
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -499,7 +521,7 @@ msgstr ""
 "Warning: 設定ファイル内の特殊効果設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3035
+#: src/config.c:3116
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -512,7 +534,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3044
+#: src/config.c:3124
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -520,7 +542,7 @@ msgstr ""
 "Warning: iconbox.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3081
+#: src/config.c:3160
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -533,7 +555,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3090
+#: src/config.c:3168
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -541,7 +563,7 @@ msgstr ""
 "Warning: 設定ファイル内の Extras 設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3197
+#: src/config.c:3274
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -554,7 +576,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3205
+#: src/config.c:3281
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -562,7 +584,7 @@ msgstr ""
 "Warning: windowmatches.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3241
+#: src/config.c:3310
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -579,23 +601,19 @@ msgstr ""
 "原因は次のどちらかが考えられます : そのプログラムが存在しないため、\n"
 "存在してもあなたに実行許可がないため。\n"
 
-#: src/config.c:3246
-msgid "error"
-msgstr "エラー"
-
-#: src/config.c:3372
+#: src/config.c:3417
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:3373 src/config.c:3403
+#: src/config.c:3418 src/config.c:3447
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:3374 src/config.c:3404
+#: src/config.c:3419 src/config.c:3448
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:3376
+#: src/config.c:3420
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -632,11 +650,11 @@ msgstr ""
 "しなかったのでしょう。そのテーマは Enlightenment の新しいバージョン\n"
 "で追加された新機能を採用しているのです。\n"
 
-#: src/config.c:3402
+#: src/config.c:3446
 msgid "User Config Version ERROR"
 msgstr "ユーザ設定ファイルのバージョンエラー"
 
-#: src/config.c:3406
+#: src/config.c:3449
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -665,7 +683,7 @@ msgstr ""
 "こうすれば、再び設定ファイルを好きなように変更できます。\n"
 "\n"
 
-#: src/config.c:3695
+#: src/config.c:3696
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -731,55 +749,35 @@ msgstr ""
 "ドキュメントを読んでさらなる情報を得てください。\n"
 "\n"
 
-#: src/config.c:3771
+#: src/config.c:3773
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
-#: src/config.c:4208
+#: src/config.c:4218
 msgid "Recover system config?"
 msgstr "システムの設定の復旧をしますか？"
 
-#: src/config.c:4208
+#: src/config.c:4218
 msgid "Yes, Attempt recovery"
 msgstr "はい、復旧を試みます"
 
-#: src/config.c:4209
+#: src/config.c:4219
 msgid "Restart and try again"
 msgstr "再起動してもう一度試してみる"
 
-#: src/config.c:4209
+#: src/config.c:4219
 msgid "Quit and give up"
 msgstr "あきらめて終了する"
 
-#: src/config.c:4211
-msgid ""
-"Enlightenment has encountered parsing errors in your autosaved\n"
-"configuration.\n"
-"\n"
-"This may be due to filing system errors, Minor bugs or unforeseen\n"
-"system shutdowns.\n"
-"\n"
-"Do you wish Enlightenment to recover its original system\n"
-"configuration and try again?\n"
-msgstr ""
-"Enlightenment がオートセーブしておいた設定ファイルを\n"
-"きちんと読み込めませんでした。\n"
-"\n"
-"これはファイルシステムのエラーか、マイナーなバグか、予期しなかった\n"
-"システムのシャットダウンが原因かもしれません。\n"
-"\n"
-"オリジナルのシステム設定ファイルを読み込んで、再度試行しますか？\n"
-"\n"
-
-#: src/cursors.c:122
+#: src/cursors.c:104
 msgid "ECursor Error!"
 msgstr "cursor エラー"
 
-#: src/desktops.c:355
+#: src/desktops.c:373
 msgid "Background Error!"
 msgstr "background エラー"
 
-#: src/desktops.c:1043
+#: src/desktops.c:839
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -797,7 +795,7 @@ msgstr ""
 "中ボタンのクリックで現在動いている\n"
 "アプリケーションのリストが出てきます。\n"
 
-#: src/desktops.c:1055
+#: src/desktops.c:851
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -813,7 +811,7 @@ msgstr ""
 "中ボタンのクリックで現在動いている\n"
 "アプリケーションのリストが出てきます。\n"
 
-#: src/desktops.c:1076
+#: src/desktops.c:872
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -821,7 +819,7 @@ msgstr ""
 "ここをクリックするとこのデスクトップ\n"
 "を上面へ\n"
 
-#: src/desktops.c:1092
+#: src/desktops.c:887
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -829,15 +827,15 @@ msgstr ""
 "ここをクリックするとこのデスクトップ\n"
 "を下面へ\n"
 
-#: src/dialog.c:303
+#: src/dialog.c:2185
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/fx.c:240
+#: src/fx.c:241
 msgid "Starting up Ripples FX..."
 msgstr "Ripples Effect の開始..."
 
-#: src/fx.c:241
+#: src/fx.c:242
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
@@ -861,11 +859,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:391
+#: src/fx.c:387
 msgid "Starting up Raindrops FX..."
 msgstr "Raindrops Effect の開始..."
 
-#: src/fx.c:392
+#: src/fx.c:388
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -889,11 +887,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:421 src/fx.c:437
+#: src/fx.c:418 src/fx.c:434
 msgid "Unable to display raindrops"
 msgstr "Raindrop Effect を表示できません。"
 
-#: src/fx.c:422
+#: src/fx.c:419
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -925,7 +923,7 @@ msgstr ""
 "それを共有メモリが使えるような設定に編集してください。\n"
 "\n"
 
-#: src/fx.c:438
+#: src/fx.c:435
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -955,11 +953,11 @@ msgstr ""
 "それを shared pixmap が使えるような設定に編集してください。\n"
 "\n"
 
-#: src/fx.c:709
+#: src/fx.c:706
 msgid "Starting up Waves FX..."
 msgstr "Waves Effect の開始..."
 
-#: src/fx.c:710
+#: src/fx.c:707
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -983,11 +981,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:901
+#: src/fx.c:892
 msgid "Starting up imagespinners FX..."
 msgstr "Imagespinners Effect の開始..."
 
-#: src/fx.c:902
+#: src/fx.c:893
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -1001,11 +999,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/groups.c:117 src/groups.c:149
+#: src/groups.c:119 src/groups.c:141
 msgid "Cannot comply"
 msgstr "グループに含めることはできません"
 
-#: src/groups.c:118 src/groups.c:150
+#: src/groups.c:120 src/groups.c:142
 msgid ""
 "Iconboxes and Pagers are disallowed from being\n"
 "members of a group. You cannot add these windows\n"
@@ -1015,11 +1013,11 @@ msgstr ""
 "できません。これらを、このウィンドウ\n"
 "グループに追加する事はできません。\n"
 
-#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4302
+#: src/groups.c:600 src/groups.c:609 src/groups.c:617 src/settings.c:4171
 msgid "Window Group Error"
 msgstr "ウィンドウグループエラー"
 
-#: src/groups.c:601
+#: src/groups.c:602
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1033,7 +1031,7 @@ msgstr ""
 "  グループに属しているウィンドウをグループからとりのぞくこと。\n"
 "\n"
 
-#: src/groups.c:609
+#: src/groups.c:610
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1047,7 +1045,7 @@ msgstr ""
 "  他のウィンドウグループを作成してください。\n"
 "\n"
 
-#: src/groups.c:618
+#: src/groups.c:619
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1057,11 +1055,11 @@ msgstr ""
 "  現在、ウィンドウグループはありません。ウィンドウグループ \n"
 "  を作成してください。\n"
 
-#: src/groups.c:633
+#: src/groups.c:634
 msgid "Window Group Selection"
 msgstr "ウィンドウグループを選ぶ"
 
-#: src/groups.c:648
+#: src/groups.c:649
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -1069,16 +1067,16 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "選択ダイアログ\n"
 
-#: src/groups.c:694 src/pager.c:1300 src/settings.c:331 src/settings.c:604
-#: src/settings.c:976 src/settings.c:1201 src/settings.c:1438
-#: src/settings.c:1582 src/settings.c:1685 src/settings.c:1793
-#: src/settings.c:1873 src/settings.c:1964 src/settings.c:2419
-#: src/settings.c:3825 src/settings.c:4181 src/settings.c:4484
-#: src/settings.c:4662 src/settings.c:4882 src/snaps.c:553
+#: src/groups.c:695 src/pager.c:951 src/settings.c:337 src/settings.c:610
+#: src/settings.c:981 src/settings.c:1204 src/settings.c:1439
+#: src/settings.c:1582 src/settings.c:1684 src/settings.c:1791
+#: src/settings.c:1870 src/settings.c:1960 src/settings.c:2414
+#: src/settings.c:3696 src/settings.c:4052 src/settings.c:4353
+#: src/settings.c:4530 src/settings.c:4750 src/snaps.c:572
 msgid "Close"
 msgstr "閉じる"
 
-#: src/handlers.c:57
+#: src/handlers.c:59
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1098,7 +1096,7 @@ msgstr ""
 "システムにふさわしいパッケージを使うか、 Enlightenment 自身\n"
 "(とサポートライブラリ) を再コンパイルするかの、どちらかを行ってください。\n"
 
-#: src/handlers.c:71
+#: src/handlers.c:73
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1122,7 +1120,7 @@ msgstr ""
 "変数のダンプなどを有用なバグレポートにして送ってください。\n"
 "\n"
 
-#: src/handlers.c:90
+#: src/handlers.c:92
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1146,7 +1144,7 @@ msgstr ""
 "変数のダンプなどを有用なバグレポートにして送ってください。\n"
 "\n"
 
-#: src/handlers.c:106
+#: src/handlers.c:108
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1160,19 +1158,19 @@ msgstr ""
 "してください。ちゃんと動作しているハードウェアでバスエラーが起こる\n"
 "ことはめったにありません。\n"
 
-#: src/handlers.c:191
+#: src/handlers.c:185
 msgid "Another Window Manager is already running"
 msgstr "他のウィンドウマネージャがすでに起動しています"
 
-#: src/handlers.c:192
+#: src/handlers.c:186
 msgid "OK (edit file)"
 msgstr "了解 (ファイルを編集)"
 
-#: src/handlers.c:192
+#: src/handlers.c:186
 msgid "Cancel (do NOT edit)"
 msgstr "キャンセル (ファイルを編集しない)"
 
-#: src/handlers.c:194
+#: src/handlers.c:187
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1208,19 +1206,19 @@ msgstr ""
 "\n"
 "たぶんスタートアップファイルが正しく編集されていない可能性があります。\n"
 
-#: src/handlers.c:205 src/session.c:1161
+#: src/handlers.c:198 src/session.c:1005
 msgid "Are you sure?"
 msgstr "いいですか?"
 
-#: src/handlers.c:205
+#: src/handlers.c:198
 msgid "YES (edit file)"
 msgstr "はい (ファイルを編集)"
 
-#: src/handlers.c:206
+#: src/handlers.c:199
 msgid "NO (do not edit)"
 msgstr "いいえ (ファイルを編集しない)"
 
-#: src/handlers.c:208
+#: src/handlers.c:200
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your start-up files for you?\n"
@@ -1238,35 +1236,35 @@ msgstr ""
 "\n"
 "「本当に」編集していいですか？\n"
 
-#: src/iclass.c:113
+#: src/iclass.c:163
 msgid "ImageClass Error!"
 msgstr "imageclass エラー"
 
-#: src/iconify.c:2375
+#: src/iconify.c:2224
 msgid "Iconbox Options"
 msgstr "アイコンボックス オプション"
 
-#: src/iconify.c:2380
+#: src/iconify.c:2227
 msgid "This Iconbox Settings..."
 msgstr "このアイコンボックスの設定..."
 
-#: src/iconify.c:2383
+#: src/iconify.c:2230
 msgid "Close Iconbox"
 msgstr "アイコンボックスを閉じる"
 
-#: src/iconify.c:2385
+#: src/iconify.c:2232
 msgid "Create New Iconbox"
 msgstr "アイコンボックスの新規作成"
 
-#: src/ipc.c:2193
+#: src/ipc.c:2138
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:4630
+#: src/ipc.c:4383
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC コマンド ヘルプ"
 
-#: src/ipc.c:4634 src/ipc.c:4664
+#: src/ipc.c:4387 src/ipc.c:4417
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1274,7 +1272,7 @@ msgstr ""
 "\n"
 "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:4636
+#: src/ipc.c:4389
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1284,16 +1282,16 @@ msgstr ""
 "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 "\n"
 
-#: src/ipc.c:4666
+#: src/ipc.c:4419
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 
-#: src/ipc.c:4668
+#: src/ipc.c:4421
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
-#: src/ipc.c:4774
+#: src/ipc.c:4527
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1302,28 +1300,7 @@ msgstr ""
 "Enlightenment バージョン: %s\n"
 "コードバージョン        : %s\n"
 
-#. Set up all the text bits that belong on the GSOD
-#: src/main.c:88
-msgid "Enlightenment Message Dialog"
-msgstr "Enlightenment メッセージダイアログ"
-
-#: src/main.c:89 src/memory.c:194 src/memory.c:272 src/memory.c:291
-#: src/memory.c:368
-msgid "Ignore this"
-msgstr "無視する"
-
-#: src/main.c:90 src/memory.c:195 src/memory.c:272 src/memory.c:292
-#: src/memory.c:368 src/memory.c:385
-msgid "Restart Enlightenment"
-msgstr "Enlightenment の再起動"
-
-#: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
-#: src/memory.c:369 src/memory.c:386 src/setup.c:206 src/setup.c:239
-#: src/setup.c:252 src/setup.c:301
-msgid "Quit Enlightenment"
-msgstr "Enlightenment を終了"
-
-#: src/main.c:179
+#: src/main.c:181
 #, c-format
 msgid ""
 "Enlightenment Version: %s\n"
@@ -1332,11 +1309,11 @@ msgstr ""
 "Enlightenment バージョン: %s\n"
 "最終更新日時: %s\n"
 
-#: src/memory.c:194 src/memory.c:291
+#: src/memory.c:194 src/memory.c:288
 msgid "Cannot allocate enough memory"
 msgstr "十分なメモリを確保できません"
 
-#: src/memory.c:197
+#: src/memory.c:196
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1369,11 +1346,11 @@ msgstr ""
 "malloc は %s の %d 行で呼ばれました。\n"
 " "
 
-#: src/memory.c:271
+#: src/memory.c:269
 msgid "Error in reallocating memory that hasn't been allocated"
 msgstr "確保されていないメモリを再確保中にエラーが生じました"
 
-#: src/memory.c:275
+#: src/memory.c:272
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1398,7 +1375,7 @@ msgstr ""
 "\n"
 "このエラーは %s の %d 行で生じました。\n"
 
-#: src/memory.c:294
+#: src/memory.c:290
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1431,11 +1408,11 @@ msgstr ""
 "realloc は %s の %d 行で呼ばれました。\n"
 " "
 
-#: src/memory.c:367
+#: src/memory.c:363
 msgid "Error in freeing memory that hasn't been allocated"
 msgstr "まだ確保されていないメモリを解放しようとしてエラーが生じました"
 
-#: src/memory.c:371
+#: src/memory.c:366
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1458,15 +1435,15 @@ msgstr ""
 "\n"
 "このエラーは %s の %d 行で生じました。\n"
 
-#: src/memory.c:384
+#: src/memory.c:378
 msgid "Error in attempting to free NULL pointer"
 msgstr "NULL ポインタを解放しようとしてエラーが生じました"
 
-#: src/memory.c:385
+#: src/memory.c:379
 msgid "Ignore this (safe)"
 msgstr "無視する (安全です)"
 
-#: src/memory.c:388
+#: src/memory.c:381
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1489,29 +1466,29 @@ msgstr ""
 "ポインタの値は %x です。\n"
 "このエラーは %s の %d 行で生じました。\n"
 
-#: src/menus.c:1930
+#: src/menus.c:1847
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus.c:1946
+#: src/menus.c:1863 src/menus.c:1887
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus.c:2013
+#: src/menus.c:1917
 msgid "Show/Hide this group"
 msgstr "このグループを 表示/非表示 にする"
 
-#: src/menus.c:2016
+#: src/menus.c:1920
 msgid "Iconify this group"
 msgstr "このグループをアイコンに"
 
-#: src/menus.c:2028
+#: src/menus.c:1934
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
 
-#: src/misc.c:62
+#: src/misc.c:48
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1540,16 +1517,16 @@ msgstr ""
 "もしかすると Enlightenment をインストールする際のエラー\n"
 "が原因です。\n"
 
-#: src/misc.c:76
-#, c-format
+#: src/misc.c:61
+#, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
-"Enlightenment's dox executable is not able to be executed:\n"
+"Enlightenment's utility executable is not able to be executed:\n"
 "\n"
 "%s\n"
 "This is a fatal error and Enlightenment will cease to run.\n"
-"Please rectify this situation and ensure dox is installed\n"
+"Please rectify this situation and ensure it is installed\n"
 "correctly.\n"
 msgstr ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1561,33 +1538,7 @@ msgstr ""
 "そのファイルを正しい場所に置き、\n"
 "ドキュメントビューアがきちんとインストールされているか確認してください。\n"
 
-#: src/misc.c:97
-msgid ""
-"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-"\n"
-"Enlightenment's documentation is not present or correctly installed\n"
-"\n"
-"This is a fatal error and Enlightenment will cease to run.\n"
-"Please rectify this situation and ensure it is installed\n"
-"correctly.\n"
-"\n"
-"The reason this could be missing is due to badly created\n"
-"packages, someone manually deleting those files or perhaps\n"
-"an error in installing Enlightenment.\n"
-msgstr ""
-"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-"\n"
-"Enlightenment のドキュメントが存在しないか、きちんとインストール\n"
-"されていません。\n"
-"致命的なエラーです。Enlightenment を実行できなくなります。\n"
-"そのファイルを正しい場所に置き、ドキュメントビューア(dox)が\n"
-"きちんとインストールされているか確認してください。\n"
-"\n"
-"これはパッケージ作成のミスか、だれかがそのプログラムを消してしまったか、\n"
-"もしかすると Enlightenment をインストールする際のエラー\n"
-"が原因です。\n"
-
-#: src/misc.c:120
+#: src/misc.c:76
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1611,91 +1562,11 @@ msgstr ""
 "のは，普通は BrushedMetal-Tigert です。これはデフォルトのテーマとして\n"
 "適切なものです。\n"
 
-#: src/misc.c:426
-msgid "Theme does not contain a borders.cfg file\n"
-msgstr "このテーマには borders.cfg ファイルが入っていません\n"
-
-#: src/misc.c:432
-msgid "Theme does not contain a buttons.cfg file\n"
-msgstr "このテーマには buttons.cfg ファイルが入っていません\n"
-
-#: src/misc.c:438
-msgid "Theme does not contain a colormodifiers.cfg file\n"
-msgstr "このテーマには colormodifiers.cfg ファイルが入っていません\n"
-
-#: src/misc.c:444
-msgid "Theme does not contain a cursors.cfg file\n"
-msgstr "このテーマには cursors.cfg ファイルが入っていません\n"
-
-#: src/misc.c:450
-msgid "Theme does not contain a desktops.cfg file\n"
-msgstr "このテーマには desktops.cfg ファイルが入っていません\n"
-
-#: src/misc.c:456
-msgid "Theme does not contain a imageclasses.cfg file\n"
-msgstr "このテーマには imageclasses.cfg ファイルが入っていません\n"
-
-#: src/misc.c:462
-msgid "Theme does not contain a init.cfg file\n"
-msgstr "このテーマには init.cfg ファイルが入っていません\n"
-
-#: src/misc.c:468
-msgid "Theme does not contain a menustyles.cfg file\n"
-msgstr "このテーマには menustyles.cfg ファイルが入っていません\n"
-
-#: src/misc.c:474
-msgid "Theme does not contain a slideouts.cfg file\n"
-msgstr "このテーマには slideout.cfg ファイルが入っていません\n"
-
-#: src/misc.c:481
-msgid "Theme does not contain a sound.cfg file\n"
-msgstr "このテーマには sound.cfg ファイルが入っていません\n"
-
-#: src/misc.c:488
-msgid "Theme does not contain a tooltips.cfg file\n"
-msgstr "このテーマには tooltips.cfg ファイルが入っていません\n"
-
-#: src/misc.c:494
-msgid "Theme does not contain a windowmatches.cfg file\n"
-msgstr "このテーマには windowmatches.cfg ファイルが入っていません\n"
-
-#: src/misc.c:500
-msgid "Theme contains a menus.cfg file\n"
-msgstr "このテーマには menus.cfg ファイルが入っています\n"
-
-#: src/misc.c:506
-msgid "Theme contains a control.cfg file\n"
-msgstr "このテーマには control.cfg ファイルが入っています\n"
-
-#: src/misc.c:512
-msgid "Theme contains a keybindings.cfg file\n"
-msgstr "このテーマには keybindings.cfg ファイルが入っています\n"
-
-#: src/modules.c:138
-msgid "Module is Already Loaded.\n"
-msgstr "モジュールはすでに読み込まれています。\n"
-
-#: src/modules.c:140
-msgid "Module Failed During Load.\n"
-msgstr "モジュールの読み込みに失敗しました。\n"
-
-#: src/modules.c:142
-msgid "Module Unload Failed.\n"
-msgstr "モジュールのアンロードに失敗しました。\n"
-
-#: src/modules.c:144
-msgid "Module is not Loaded.\n"
-msgstr "モジュールは読み込まれていません。\n"
-
-#: src/modules.c:146
-msgid "Unknown Module Error.\n"
-msgstr "不明なモジュールエラー。\n"
-
-#: src/pager.c:532 src/pager.c:546 src/pager.c:560
+#: src/pager.c:140 src/pager.c:154 src/pager.c:168
 msgid "Warning!"
 msgstr "Warning!"
 
-#: src/pager.c:533
+#: src/pager.c:141
 msgid ""
 "\n"
 "You seem to have an X Server capable of Shared Memory\n"
@@ -1723,7 +1594,7 @@ msgstr ""
 "無効にすることをお勧めします。\n"
 "\n"
 
-#: src/pager.c:547
+#: src/pager.c:155
 msgid ""
 "\n"
 "Your X Server is capable of doing Shared Memory but you do\n"
@@ -1743,7 +1614,7 @@ msgstr ""
 "もっとよい性能で動きます。\n"
 "\n"
 
-#: src/pager.c:561
+#: src/pager.c:169
 msgid ""
 "\n"
 "You seem to be running Enlightenment over a network Connection\n"
@@ -1771,47 +1642,47 @@ msgstr ""
 "無効にしてください。\n"
 "\n"
 
-#: src/pager.c:1291
+#: src/pager.c:944
 msgid "Window Options"
 msgstr "ウィンドウオプション"
 
-#: src/pager.c:1297
+#: src/pager.c:948
 msgid "Iconify"
 msgstr "アイコン化"
 
-#: src/pager.c:1303
+#: src/pager.c:954
 msgid "Annihilate"
 msgstr "強制終了"
 
-#: src/pager.c:1306
+#: src/pager.c:957
 msgid "Stick / Unstick"
 msgstr "Stick する/しない"
 
-#: src/pager.c:1318
+#: src/pager.c:968
 msgid "Desktop Options"
 msgstr "デスクトップオプション"
 
-#: src/pager.c:1323
+#: src/pager.c:971
 msgid "Pager Settings..."
 msgstr "ページャの設定..."
 
-#: src/pager.c:1327
+#: src/pager.c:975
 msgid "Snapshotting On"
 msgstr "スナップショット On"
 
-#: src/pager.c:1331
+#: src/pager.c:979
 msgid "Snapshotting Off"
 msgstr "スナップショット Off"
 
-#: src/pager.c:1337
+#: src/pager.c:985
 msgid "High Quality On"
 msgstr "高解像度 On"
 
-#: src/pager.c:1341
+#: src/pager.c:989
 msgid "High Quality Off"
 msgstr "高解像度 Off"
 
-#: src/session.c:242
+#: src/session.c:259
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1821,7 +1692,7 @@ msgstr ""
 "ディスク容量を使い切ってしまったか、ファイルシステムの書き込み許可を\n"
 "持っていないか、似たような問題があるのでしょう。\n"
 
-#: src/session.c:430
+#: src/session.c:442
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1829,7 +1700,7 @@ msgstr ""
 "オートセーブデータを書き込み時点でエラーが起きました。\n"
 "ファイルシステムに問題があります。\n"
 
-#: src/session.c:1022
+#: src/session.c:856
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1855,7 +1726,7 @@ msgstr ""
 "\n"
 "...たぶん。\n"
 
-#: src/session.c:1163
+#: src/session.c:1007
 msgid ""
 "\n"
 "\n"
@@ -1869,27 +1740,27 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1166
+#: src/session.c:1010
 msgid "  Yes, Log Out  "
 msgstr " はい、ログアウトします"
 
-#: src/session.c:1167
+#: src/session.c:1011
 msgid "  No  "
 msgstr " いいえ、ログアウトしません "
 
-#: src/settings.c:87 src/settings.c:212
+#: src/settings.c:93 src/settings.c:218
 msgid "Pager scanning speed:"
 msgstr "ページャのスキャニングスピード:"
 
-#: src/settings.c:88 src/settings.c:213
+#: src/settings.c:94 src/settings.c:219
 msgid "lines per second"
 msgstr "(1秒あたりのライン数)"
 
-#: src/settings.c:126
+#: src/settings.c:132
 msgid "Pager Settings"
 msgstr "ページャの設定"
 
-#: src/settings.c:141
+#: src/settings.c:147
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1897,70 +1768,70 @@ msgstr ""
 "Enlightenment デスクトップの\n"
 "ページャ設定ダイアログ\n"
 
-#: src/settings.c:155
+#: src/settings.c:161
 msgid "Enable pager display"
 msgstr "ページャを表示させる"
 
-#: src/settings.c:164
+#: src/settings.c:170
 msgid "Make miniature snapshots of the screen"
 msgstr "画面のスナップショットを有効に"
 
-#: src/settings.c:174
+#: src/settings.c:180
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "スナップショットモードの高解像度モードをスムースに"
 
-#: src/settings.c:184
+#: src/settings.c:190
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "マウスポインタをかざすとページャ内部のウィンドウを拡大する"
 
-#: src/settings.c:194
+#: src/settings.c:200
 msgid "Pop up window title when mouse is over the window"
 msgstr "マウスポインタをかざすとウィンドウのタイトルを表示"
 
-#: src/settings.c:203
+#: src/settings.c:209
 msgid "Continuously scan screen to update pager"
 msgstr "ページャの更新の際に連続的にスキャンする"
 
-#: src/settings.c:232
+#: src/settings.c:238
 msgid "Mouse button to select and drag windows:"
 msgstr "ウィンドウを選択、ドラッグするためのマウスボタン:"
 
-#: src/settings.c:238 src/settings.c:270 src/settings.c:302
-#: src/settings.c:2265
+#: src/settings.c:244 src/settings.c:276 src/settings.c:308
+#: src/settings.c:2260
 msgid "Left"
 msgstr "左"
 
-#: src/settings.c:246 src/settings.c:278 src/settings.c:310
+#: src/settings.c:252 src/settings.c:284 src/settings.c:316
 msgid "Middle"
 msgstr "中央"
 
-#: src/settings.c:254 src/settings.c:286 src/settings.c:318
-#: src/settings.c:2272
+#: src/settings.c:260 src/settings.c:292 src/settings.c:324
+#: src/settings.c:2267
 msgid "Right"
 msgstr "右"
 
-#: src/settings.c:264
+#: src/settings.c:270
 msgid "Mouse button to select desktops:"
 msgstr "デスクトップを選択するマウスボタン:"
 
-#: src/settings.c:296
+#: src/settings.c:302
 msgid "Mouse button to display pager menu:"
 msgstr "ページャメニューを表示するためのマウスボタン:"
 
-#: src/settings.c:330 src/settings.c:603 src/settings.c:975
-#: src/settings.c:1200 src/settings.c:1437 src/settings.c:1581
-#: src/settings.c:1684 src/settings.c:1792 src/settings.c:1872
-#: src/settings.c:1963 src/settings.c:2418 src/settings.c:3824
-#: src/settings.c:4180 src/settings.c:4483 src/settings.c:4661
-#: src/settings.c:4881 src/snaps.c:552
+#: src/settings.c:336 src/settings.c:609 src/settings.c:980
+#: src/settings.c:1203 src/settings.c:1438 src/settings.c:1581
+#: src/settings.c:1683 src/settings.c:1790 src/settings.c:1869
+#: src/settings.c:1959 src/settings.c:2413 src/settings.c:3695
+#: src/settings.c:4051 src/settings.c:4352 src/settings.c:4529
+#: src/settings.c:4749 src/snaps.c:571
 msgid "Apply"
 msgstr "適用"
 
-#: src/settings.c:416
+#: src/settings.c:422
 msgid "Focus Settings"
 msgstr "フォーカス設定"
 
-#: src/settings.c:431
+#: src/settings.c:437
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1968,78 +1839,78 @@ msgstr ""
 "Enlightenment フォーカス\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:444
+#: src/settings.c:450
 msgid "Focus follows pointer"
 msgstr "マウスのあるウィンドウがフォーカス"
 
-#: src/settings.c:452
+#: src/settings.c:458
 msgid "Focus follows pointer sloppily"
 msgstr ""
 "マウスのあるウィンドウがフォーカス(ウィンドウを離れてもフォーカスは保持)"
 
-#: src/settings.c:460
+#: src/settings.c:466
 msgid "Focus follows mouse clicks"
 msgstr "クリックしたウィンドウをフォーカス"
 
-#: src/settings.c:475
+#: src/settings.c:481
 msgid "Clicking in a window always raises it"
 msgstr "ウィンドウをクリックすると常に上面へ"
 
-#: src/settings.c:489
+#: src/settings.c:495
 msgid "All new windows first get the focus"
 msgstr "新規ウィンドウは全て出現時にフォーカスされる"
 
-#: src/settings.c:497
+#: src/settings.c:503
 msgid "Only new dialog windows get the focus"
 msgstr "新規ダイアログウィンドウだけがフォーカスされる"
 
-#: src/settings.c:507
+#: src/settings.c:513
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "新規ダイアログは関係するウィンドウがフォーカスされているときだけフォーカスさ"
 "れる"
 
-#: src/settings.c:515
+#: src/settings.c:521
 msgid "Raise windows on focus switch"
 msgstr "フォーカスされたウィンドウを上面に"
 
-#: src/settings.c:525
+#: src/settings.c:531
 msgid "Send mouse pointer to window on focus switch"
 msgstr "フォーカスが移るとマウスポインタも追従"
 
-#: src/settings.c:540
+#: src/settings.c:546
 msgid "Display and use focus list"
 msgstr "フォーカスリストを表示、使用する"
 
-#: src/settings.c:548
+#: src/settings.c:554
 msgid "Include sticky windows in focus list"
 msgstr "フォーカスリストに stick なウィンドウも含める"
 
-#: src/settings.c:556
+#: src/settings.c:562
 msgid "Include shaded windows in focus list"
 msgstr "フォーカスリストにタイトルバーのみのウィンドウも含める"
 
-#: src/settings.c:565
+#: src/settings.c:571
 msgid "Include iconified windows in focus list"
 msgstr "フォーカスリストにアイコン化したウィンドウも含める"
 
-#: src/settings.c:573
+#: src/settings.c:579
 msgid "Focus windows while switching"
 msgstr "切り替わったらウィンドウをフォーカス"
 
-#: src/settings.c:581
+#: src/settings.c:587
 msgid "Raise windows after focus switch"
 msgstr "フォーカスされたウィンドウを上面に"
 
-#: src/settings.c:591
+#: src/settings.c:597
 msgid "Send mouse pointer to window after focus switch"
 msgstr "フォーカス移ったウィンドウにマウスポインタを移動"
 
-#: src/settings.c:801
+#: src/settings.c:806
 msgid "Move & Resize Settings"
 msgstr "移動とサイズ変更方式の設定"
 
-#: src/settings.c:816
+#: src/settings.c:821
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -2047,69 +1918,69 @@ msgstr ""
 "Enlightenment 移動 & サイズ変更\n"
 "方式設定ダイアログ\n"
 
-#: src/settings.c:830
+#: src/settings.c:835
 msgid "Move Methods:"
 msgstr "移動方式:"
 
-#: src/settings.c:836
+#: src/settings.c:841
 msgid "Resize Methods:"
 msgstr "サイズ変更方式:"
 
-#: src/settings.c:841 src/settings.c:849 src/settings.c:2126
+#: src/settings.c:846 src/settings.c:854 src/settings.c:2121
 msgid "Opaque"
 msgstr "表示したまま"
 
-#: src/settings.c:857 src/settings.c:865 src/settings.c:2141
+#: src/settings.c:862 src/settings.c:870 src/settings.c:2136
 msgid "Technical"
 msgstr "テクニカル"
 
-#: src/settings.c:873 src/settings.c:881 src/settings.c:2156
+#: src/settings.c:878 src/settings.c:886 src/settings.c:2151
 msgid "Box"
 msgstr "枠線"
 
-#: src/settings.c:889 src/settings.c:897 src/settings.c:2171
+#: src/settings.c:894 src/settings.c:902 src/settings.c:2166
 msgid "Shaded"
 msgstr "影"
 
-#: src/settings.c:905 src/settings.c:913 src/settings.c:2186
+#: src/settings.c:910 src/settings.c:918 src/settings.c:2181
 msgid "Semi-Solid"
 msgstr "ぬりつぶし"
 
-#: src/settings.c:922
+#: src/settings.c:927
 msgid "Translucent"
 msgstr "半透明"
 
-#: src/settings.c:941
+#: src/settings.c:946
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "移動 / サイズ変更での座標情報の位置:"
 
-#: src/settings.c:947
+#: src/settings.c:952
 msgid "Window Center (O/T/B Methods)"
 msgstr "ウィンドウの中心 (表示したまま/テクニカル/枠線)"
 
-#: src/settings.c:955
+#: src/settings.c:960
 msgid "Always Screen corner"
 msgstr "いつも画面のすみ"
 
-#: src/settings.c:963
+#: src/settings.c:968
 msgid "Don't show"
 msgstr "表示しない"
 
-#: src/settings.c:1094 src/settings.c:1157
+#: src/settings.c:1097 src/settings.c:1160
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/settings.c:1096 src/settings.c:1159
+#: src/settings.c:1099 src/settings.c:1162
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/settings.c:1121
+#: src/settings.c:1124
 msgid "Multiple Desktop Settings"
 msgstr "仮想デスクトップの枚数設定"
 
-#: src/settings.c:1136
+#: src/settings.c:1139
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -2117,16 +1988,16 @@ msgstr ""
 "Enlightenment 仮想デスクトップの枚数\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:1150
+#: src/settings.c:1153
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/settings.c:1189
+#: src/settings.c:1192
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右はつながっている"
 
-#: src/settings.c:1288 src/settings.c:1357
+#: src/settings.c:1289 src/settings.c:1358
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -2135,7 +2006,7 @@ msgstr ""
 "%i x %i\n"
 "のサイズの仮想デスクトップ"
 
-#: src/settings.c:1291 src/settings.c:1360
+#: src/settings.c:1292 src/settings.c:1361
 msgid ""
 "1\n"
 "Screen in size"
@@ -2143,11 +2014,11 @@ msgstr ""
 "1\n"
 "のサイズの仮想デスクトップ"
 
-#: src/settings.c:1321
+#: src/settings.c:1322
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップのサイズ設定"
 
-#: src/settings.c:1339
+#: src/settings.c:1340
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2155,19 +2026,19 @@ msgstr ""
 "Enlightenment 仮想デスクトップのサイズ\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:1351
+#: src/settings.c:1352
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップのサイズ:\n"
 
-#: src/settings.c:1405
+#: src/settings.c:1406
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右はつながっている"
 
-#: src/settings.c:1412
+#: src/settings.c:1413
 msgid "Enable edge flip"
 msgstr "デスクトップを移動できる"
 
-#: src/settings.c:1419
+#: src/settings.c:1420
 msgid "Resistance at edge of screen:\n"
 msgstr "移動のときにどのくらいの時間耐えるか:\n"
 
@@ -2203,11 +2074,11 @@ msgstr "マウスのある位置にウィンドウを配置"
 msgid "Place windows on another head when full"
 msgstr "画面が一杯なら別のディスプレイにウィンドウを配置"
 
-#: src/settings.c:1629
+#: src/settings.c:1628
 msgid "Autoraise Settings"
 msgstr "オートレイズ設定"
 
-#: src/settings.c:1644
+#: src/settings.c:1643
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -2215,19 +2086,19 @@ msgstr ""
 "Enlightenment ウィンドウのオートレイズ\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:1658
+#: src/settings.c:1657
 msgid "Raise Windows Automatically"
 msgstr "マウスポインタをかざしたウィンドウを上面に移動"
 
-#: src/settings.c:1666
+#: src/settings.c:1665
 msgid "Autoraise delay:"
 msgstr "ウィンドウが上面に移動するまでの時間:"
 
-#: src/settings.c:1730
+#: src/settings.c:1728
 msgid "Tooltip Settings"
 msgstr "ツールチップ設定"
 
-#: src/settings.c:1745
+#: src/settings.c:1743
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2235,23 +2106,23 @@ msgstr ""
 "Enlightenment ツールチップ\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:1758
+#: src/settings.c:1756
 msgid "Display Tooltips"
 msgstr "ツールチップを表示する"
 
-#: src/settings.c:1766
+#: src/settings.c:1764
 msgid "Display Root Window Tips"
 msgstr "ルートウィンドウのツールチップを表示する"
 
-#: src/settings.c:1774
+#: src/settings.c:1772
 msgid "Tooltip Delay:\n"
 msgstr "ツールチップが表示されるまでの時間:\n"
 
-#: src/settings.c:1832
+#: src/settings.c:1829
 msgid "Miscellaneous Settings"
 msgstr "その他の設定"
 
-#: src/settings.c:1847
+#: src/settings.c:1844
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -2259,15 +2130,15 @@ msgstr ""
 "Enlightenment その他の\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:1861
+#: src/settings.c:1858
 msgid "Enable Dialog Headers"
 msgstr "ダイアログヘッダを有効にする"
 
-#: src/settings.c:1915
+#: src/settings.c:1911
 msgid "Audio Settings"
 msgstr "オーディオ設定"
 
-#: src/settings.c:1930
+#: src/settings.c:1926
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2275,11 +2146,11 @@ msgstr ""
 "Enlightenment オーディオ\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:1943
+#: src/settings.c:1939
 msgid "Enable sounds"
 msgstr "効果音を出す"
 
-#: src/settings.c:1952
+#: src/settings.c:1948
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2287,11 +2158,11 @@ msgstr ""
 "コンパイル時に EsounD がインストールされていなかったために\n"
 "オーディオは利用できません"
 
-#: src/settings.c:2075
+#: src/settings.c:2070
 msgid "Special FX Settings"
 msgstr "特殊効果の設定"
 
-#: src/settings.c:2090
+#: src/settings.c:2085
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2299,103 +2170,101 @@ msgstr ""
 "Enlightenment 特殊効果\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:2113
+#: src/settings.c:2108
 msgid "Slide Method:"
 msgstr "スライド方式:"
 
-#: src/settings.c:2119
+#: src/settings.c:2114
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
-#: src/settings.c:2134
+#: src/settings.c:2129
 msgid "Slide windows around when cleaning up"
 msgstr "ウィンドウを整頓する時にスライドする"
 
-#: src/settings.c:2149
+#: src/settings.c:2144
 msgid "Slide windows in when they appear"
 msgstr "ウィンドウが出現する時にスライドする"
 
-#: src/settings.c:2164
+#: src/settings.c:2159
 msgid "Animated display of menus"
 msgstr "メニュー表示の際にアニメーションする"
 
-#: src/settings.c:2179
+#: src/settings.c:2174
 msgid "Always pop up menus on screen"
 msgstr "常にポップアップメニューをスクリーン上に"
 
-#: src/settings.c:2195
+#: src/settings.c:2190
 msgid "Warp pointer after moving menus"
 msgstr "マウスポインタはメニューの移動に追随する"
 
-#: src/settings.c:2204
+#: src/settings.c:2199
 msgid "Use saveunders to reduce window exposures"
 msgstr "セーブアンダー機能を使い，ウィンドウ再描画時の処理を少なくする"
 
-#: src/settings.c:2213
+#: src/settings.c:2208
 msgid "Animate shading and unshading of windows"
 msgstr "ウィンドウをタイトルバーだけにする時にアニメーションする"
 
-#: src/settings.c:2227
+#: src/settings.c:2222
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示"
 
-#: src/settings.c:2236
+#: src/settings.c:2231
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置:"
 
-#: src/settings.c:2247
+#: src/settings.c:2242
 msgid "Top"
 msgstr "上"
 
-#: src/settings.c:2254
+#: src/settings.c:2249
 msgid "Bottom"
 msgstr "下"
 
-#: src/settings.c:2291
+#: src/settings.c:2286
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "デスクトップのスライドスピード: (遅い)\n"
 
-#: src/settings.c:2307 src/settings.c:2329 src/settings.c:2351
-#: src/settings.c:2373
+#: src/settings.c:2302 src/settings.c:2324 src/settings.c:2346
+#: src/settings.c:2368
 msgid "(fast)\n"
 msgstr "(速い)\n"
 
-#: src/settings.c:2313
+#: src/settings.c:2308
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "デスクトップを整頓する時のスライドスピード: (遅い)\n"
 
-#: src/settings.c:2335
+#: src/settings.c:2330
 msgid "Appear Slide speed: (slow)\n"
 msgstr "ウィンドウが出現する時のスピード: (遅い)\n"
 
-#: src/settings.c:2357
+#: src/settings.c:2352
 msgid "Window Shading speed: (slow)\n"
 msgstr "ウィンドウをタイトルバーだけにする時のスピード: (遅い)\n"
 
-#: src/settings.c:2386
+#: src/settings.c:2381
 msgid "Effects"
 msgstr ""
 
-#: src/settings.c:2392
+#: src/settings.c:2387
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Raindrop Effect を表示できません。"
 
-#: src/settings.c:2399
+#: src/settings.c:2394
 msgid "Ripples"
 msgstr ""
 
-#: src/settings.c:2407
+#: src/settings.c:2402
 msgid "Waves"
 msgstr ""
 
-#: src/settings.c:2685 src/settings.c:2806 src/settings.c:3064
-#: src/settings.c:3187 src/settings.c:3809
+#: src/settings.c:2615 src/settings.c:3651
 msgid "-NONE-"
 msgstr "なし"
 
-#: src/settings.c:2688 src/settings.c:2809 src/settings.c:3067
-#: src/settings.c:3190 src/settings.c:3811
+#: src/settings.c:2617 src/settings.c:3653
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -2406,7 +2275,7 @@ msgstr ""
 "名前: %s\n"
 "ファイル: %s\n"
 
-#: src/settings.c:2939 src/settings.c:2941
+#: src/settings.c:2885 src/settings.c:2887
 msgid ""
 "No\n"
 "Background"
@@ -2414,16 +2283,21 @@ msgstr ""
 "背景\n"
 "なし"
 
-#: src/settings.c:3128 src/settings.c:3700
+#: src/settings.c:3021 src/settings.c:3542
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "%2i:%02i:%02i 後に使用されていない背景を解放する"
 
-#: src/settings.c:3461
+#: src/settings.c:3247 src/settings.c:3671
+#, c-format
+msgid "Theme transparency: %2d"
+msgstr ""
+
+#: src/settings.c:3303
 msgid "Desktop Background Settings"
 msgstr "デスクトップ背景の設定"
 
-#: src/settings.c:3477
+#: src/settings.c:3319
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -2431,51 +2305,51 @@ msgstr ""
 "Enlightenment デスクトップ\n"
 "背景の設定ダイアログ\n"
 
-#: src/settings.c:3490
+#: src/settings.c:3332
 msgid "BG Colour\n"
 msgstr "背景の色\n"
 
-#: src/settings.c:3501
+#: src/settings.c:3343
 msgid "Move to Front\n"
 msgstr "先頭へ移動\n"
 
-#: src/settings.c:3508
+#: src/settings.c:3350
 msgid "Duplicate\n"
 msgstr "コピー\n"
 
-#: src/settings.c:3514
+#: src/settings.c:3356
 msgid "Unlist\n"
 msgstr "背景リストから消去\n"
 
-#: src/settings.c:3520
+#: src/settings.c:3362
 msgid "Delete File\n"
 msgstr "背景ファイルを削除\n"
 
-#: src/settings.c:3529
+#: src/settings.c:3371
 msgid "Red:\n"
 msgstr "赤:\n"
 
-#: src/settings.c:3543
+#: src/settings.c:3385
 msgid "Use background image"
 msgstr "背景に画像を使用する"
 
-#: src/settings.c:3551
+#: src/settings.c:3393
 msgid "Green:\n"
 msgstr "緑:\n"
 
-#: src/settings.c:3565
+#: src/settings.c:3407
 msgid "Keep aspect on scale"
 msgstr "縦横のサイズ比を保つ"
 
-#: src/settings.c:3573
+#: src/settings.c:3415
 msgid "Blue:\n"
 msgstr "青:\n"
 
-#: src/settings.c:3587
+#: src/settings.c:3429
 msgid "Tile image across background"
 msgstr "背景画像をタイル状に配置"
 
-#: src/settings.c:3603
+#: src/settings.c:3445
 msgid ""
 "Background\n"
 "Image\n"
@@ -2489,35 +2363,35 @@ msgstr ""
 "\n"
 "方向\n"
 
-#: src/settings.c:3684
+#: src/settings.c:3526
 msgid "Use dithering in Hi-Colour"
 msgstr "ハイカラー時にディザリングする"
 
-#: src/settings.c:3691
+#: src/settings.c:3533
 msgid "Background overrides theme"
 msgstr "背景はテーマを上書きする"
 
-#: src/settings.c:3747
+#: src/settings.c:3589
 msgid "Pre-scan BG's"
 msgstr "背景をスキャン"
 
-#: src/settings.c:3757
+#: src/settings.c:3599
 msgid "Sort by File"
 msgstr "ファイル名でソート"
 
-#: src/settings.c:3763
+#: src/settings.c:3605
 msgid "Sort by Attr."
 msgstr "属性でソート"
 
-#: src/settings.c:3769
+#: src/settings.c:3611
 msgid "Sort by Image"
 msgstr "画像名でソート"
 
-#: src/settings.c:3930
+#: src/settings.c:3801
 msgid "Iconbox Settings"
 msgstr "アイコンボックス設定"
 
-#: src/settings.c:3948
+#: src/settings.c:3819
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -2525,105 +2399,105 @@ msgstr ""
 "Enlightenment アイコンボックス\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:3959
+#: src/settings.c:3830
 msgid "Transparent background"
 msgstr "背景を透明に"
 
-#: src/settings.c:3966
+#: src/settings.c:3837
 msgid "Hide border around inner Iconbox"
 msgstr "アイコンボックスの中では境界線を隠す"
 
-#: src/settings.c:3973
+#: src/settings.c:3844
 msgid "Show icon names"
 msgstr "アイコンの名前を表示"
 
-#: src/settings.c:3980
+#: src/settings.c:3851
 msgid "Draw base image behind Icons"
 msgstr "アイコンの後ろに下地の画像を描く"
 
-#: src/settings.c:3987
+#: src/settings.c:3858
 msgid "Hide scrollbar when not needed"
 msgstr "必要のない場合にはスクロールバーを隠す"
 
-#: src/settings.c:3994
+#: src/settings.c:3865
 msgid "Automatically resize to fit Icons"
 msgstr "サイズの自動調整をする"
 
-#: src/settings.c:4002
+#: src/settings.c:3873
 msgid "Animate when iconifying to this Iconbox"
 msgstr "アイコン化の際にアニメーションさせる"
 
-#: src/settings.c:4012
+#: src/settings.c:3883
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "アイコンボックスのサイズが変わっても動かない辺"
 
-#: src/settings.c:4034
+#: src/settings.c:3905
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "アイコン画像表示のポリシー (もし一つが失敗したら次をためします):"
 
-#: src/settings.c:4041
+#: src/settings.c:3912
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 "ウィンドウスナップショット、アプリケーションアイコン、Enlightenment アイコン"
 
-#: src/settings.c:4050
+#: src/settings.c:3921
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 "アプリケーションアイコン、Enlightenment アイコン、ウィンドウスナップショット"
 
-#: src/settings.c:4058
+#: src/settings.c:3929
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment アイコン、ウィンドウスナップショット"
 
-#: src/settings.c:4072
+#: src/settings.c:3943
 msgid "Icon size"
 msgstr "アイコンサイズ"
 
-#: src/settings.c:4095
+#: src/settings.c:3966
 msgid "Orientation:"
 msgstr "方向:"
 
-#: src/settings.c:4101
+#: src/settings.c:3972
 msgid "Scrollbar side:"
 msgstr "スクロールバー:"
 
-#: src/settings.c:4107
+#: src/settings.c:3978
 msgid "Scrollbar arrows:"
 msgstr "スクロールバーの矢印:"
 
-#: src/settings.c:4112
+#: src/settings.c:3983
 msgid "Horizontal"
 msgstr "水平"
 
-#: src/settings.c:4119
+#: src/settings.c:3990
 msgid "Left / Top"
 msgstr "左 / 上"
 
-#: src/settings.c:4126
+#: src/settings.c:3997
 msgid "Start"
 msgstr "左 / 上"
 
-#: src/settings.c:4133
+#: src/settings.c:4004
 msgid "Vertical"
 msgstr "垂直"
 
-#: src/settings.c:4141
+#: src/settings.c:4012
 msgid "Right / Bottom"
 msgstr "右 / 下"
 
-#: src/settings.c:4149
+#: src/settings.c:4020
 msgid "Both ends"
 msgstr "両端"
 
-#: src/settings.c:4159
+#: src/settings.c:4030
 msgid "End"
 msgstr "右 / 下"
 
-#: src/settings.c:4169
+#: src/settings.c:4040
 msgid "None"
 msgstr "なし"
 
-#: src/settings.c:4304
+#: src/settings.c:4173
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -2633,11 +2507,11 @@ msgstr ""
 "  このウィンドウは現在どのグループにも属していません。   \n"
 "\n"
 
-#: src/settings.c:4327
+#: src/settings.c:4196
 msgid "Window Group Settings"
 msgstr "ウィンドウグループ設定"
 
-#: src/settings.c:4342
+#: src/settings.c:4211
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -2645,11 +2519,11 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:4357
+#: src/settings.c:4226
 msgid "   Pick the group to configure:   "
 msgstr "  設定するグループを選択してください:   "
 
-#: src/settings.c:4393
+#: src/settings.c:4262
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -2657,43 +2531,43 @@ msgstr ""
 "  グループに含まれる全てのウィンドウ \n"
 "  に反映される操作:  "
 
-#: src/settings.c:4402 src/settings.c:4573
+#: src/settings.c:4271 src/settings.c:4441
 msgid "Changing Border Style"
 msgstr "ボーダースタイル変更"
 
-#: src/settings.c:4412 src/settings.c:4581
+#: src/settings.c:4281 src/settings.c:4449
 msgid "Iconifying"
 msgstr "アイコン化"
 
-#: src/settings.c:4422 src/settings.c:4589
+#: src/settings.c:4291 src/settings.c:4457
 msgid "Killing"
 msgstr "終了"
 
-#: src/settings.c:4432 src/settings.c:4597
+#: src/settings.c:4301 src/settings.c:4465
 msgid "Moving"
 msgstr "移動"
 
-#: src/settings.c:4442 src/settings.c:4605
+#: src/settings.c:4311 src/settings.c:4473
 msgid "Raising/Lowering"
 msgstr "上 / 下面へ"
 
-#: src/settings.c:4452 src/settings.c:4613
+#: src/settings.c:4321 src/settings.c:4481
 msgid "Sticking"
 msgstr "Stick / Unstick"
 
-#: src/settings.c:4462 src/settings.c:4621
+#: src/settings.c:4331 src/settings.c:4489
 msgid "Shading"
 msgstr "シェード"
 
-#: src/settings.c:4472 src/settings.c:4629
+#: src/settings.c:4341 src/settings.c:4497
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "一緒にシェード/アイコン化/Stickする"
 
-#: src/settings.c:4531
+#: src/settings.c:4399
 msgid "Default Group Control Settings"
 msgstr "グループのデフォルト設定"
 
-#: src/settings.c:4546
+#: src/settings.c:4414
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -2701,23 +2575,23 @@ msgstr ""
 "Enlightenment グループの\n"
 "デフォルト設定ダイアログ\n"
 
-#: src/settings.c:4561
+#: src/settings.c:4429
 msgid " Per-group settings: "
 msgstr " グループごとの設定: "
 
-#: src/settings.c:4644
+#: src/settings.c:4512
 msgid " Global settings: "
 msgstr " 全般の設定:  "
 
-#: src/settings.c:4650
+#: src/settings.c:4518
 msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
-#: src/settings.c:4779
+#: src/settings.c:4647
 msgid "Remembered Windows Settings"
 msgstr "ウィンドウ設定を記憶"
 
-#: src/settings.c:4795
+#: src/settings.c:4663
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2725,15 +2599,15 @@ msgstr ""
 "Enlightenment ウィンドウ設定の\n"
 "記憶設定ダイアログ\n"
 
-#: src/settings.c:4850
+#: src/settings.c:4718
 msgid "Remembered Settings..."
 msgstr "設定を記憶する..."
 
-#: src/settings.c:4871
+#: src/settings.c:4739
 msgid "There are no active windows with remembered attributes."
 msgstr "現在のウィンドウで設定を記憶してあるものはありません。"
 
-#: src/setup.c:135
+#: src/setup.c:128
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2757,35 +2631,11 @@ msgstr ""
 "X, xdm, startx の man ページを読んでください。\n"
 "\n"
 
-#: src/setup.c:205 src/setup.c:251
-msgid "X server setup error"
-msgstr "X サーバセットアップエラー"
-
-#: src/setup.c:208
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"This Xserver does not support the Shape extension.\n"
-"This is required for Enlightenment to run.\n"
-"\n"
-"Your Xserver probably is too old or mis-configured.\n"
-"\n"
-"Exiting.\n"
-msgstr ""
-"致命的なエラーです :\n"
-"\n"
-"この X サーバは形状拡張をサポートしていません。\n"
-"Enlightenment を動かすには、形状拡張機能が必要です。\n"
-"\n"
-"X サーバが古すぎるのか、設定が間違っているのかのどちらかです。\n"
-"\n"
-"終了します。\n"
-
-#: src/setup.c:238
+#: src/setup.c:219
 msgid "Imlib initialisation error"
 msgstr "Imlib 初期化エラー"
 
-#: src/setup.c:241
+#: src/setup.c:221
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2801,7 +2651,11 @@ msgstr ""
 "通常の状況ではありません。続けるのは不可能です。\n"
 "終了します。\n"
 
-#: src/setup.c:254
+#: src/setup.c:230
+msgid "X server setup error"
+msgstr "X サーバセットアップエラー"
+
+#: src/setup.c:232
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2817,15 +2671,15 @@ msgstr ""
 "普通の状況ではありません。続けるのは不可能です。\n"
 "終了します。\n"
 
-#: src/setup.c:300
+#: src/setup.c:282
 msgid "X server version error"
 msgstr "X サーババージョンエラー"
 
-#: src/setup.c:300
+#: src/setup.c:282
 msgid "Ignore this error"
 msgstr "このエラーを無視"
 
-#: src/setup.c:303
+#: src/setup.c:284
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2842,7 +2696,7 @@ msgstr ""
 "リリースされたものでしたら、Enlightenment の開発者はそのサーバを\n"
 "使ったこともなければ、それについて聞いたこともありません。\n"
 
-#: src/setup.c:528
+#: src/setup.c:451
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2853,7 +2707,7 @@ msgstr ""
 "致命的な状況です。\n"
 "このファイルを消してください。\n"
 
-#: src/setup.c:535
+#: src/setup.c:457
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2866,7 +2720,7 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/setup.c:544
+#: src/setup.c:465
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2879,7 +2733,7 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/setup.c:552
+#: src/setup.c:472
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2892,11 +2746,11 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/snaps.c:264
+#: src/snaps.c:283
 msgid "Remembered Application Attributes"
 msgstr "アプリケショーンの設定を記憶"
 
-#: src/snaps.c:281
+#: src/snaps.c:300
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2906,75 +2760,75 @@ msgstr ""
 "記憶させたい設定を選んでください。\n"
 "\n"
 
-#: src/snaps.c:339
+#: src/snaps.c:358
 msgid "Title:"
 msgstr "タイトル"
 
-#: src/snaps.c:354
+#: src/snaps.c:373
 msgid "Name:"
 msgstr "名前"
 
-#: src/snaps.c:370
+#: src/snaps.c:389
 msgid "Class:"
 msgstr "種類"
 
-#: src/snaps.c:386
+#: src/snaps.c:405
 msgid "Command:"
 msgstr "コマンド名"
 
-#: src/snaps.c:433
+#: src/snaps.c:452
 msgid "Location"
 msgstr "位置"
 
-#: src/snaps.c:441
+#: src/snaps.c:460
 msgid "Border style"
 msgstr "ボーダスタイル"
 
-#: src/snaps.c:449
+#: src/snaps.c:468
 msgid "Size"
 msgstr "サイズ"
 
-#: src/snaps.c:457
+#: src/snaps.c:476
 msgid "Desktop"
 msgstr "デスクトップ"
 
-#: src/snaps.c:465
+#: src/snaps.c:484
 msgid "Shaded state"
 msgstr "シェード状態"
 
-#: src/snaps.c:473
+#: src/snaps.c:492
 msgid "Sticky state"
 msgstr "Stick 状態"
 
-#: src/snaps.c:481
+#: src/snaps.c:500
 msgid "Stacking layer"
 msgstr "ウィンドウの上下関係"
 
-#: src/snaps.c:489
+#: src/snaps.c:508
 msgid "Window List Skip"
 msgstr "ウィンドウリストをスキップ"
 
-#: src/snaps.c:498
+#: src/snaps.c:517
 msgid "Never Focus"
 msgstr "フォーカスしない"
 
-#: src/snaps.c:518
+#: src/snaps.c:537
 msgid "Restart application on login"
 msgstr "ログイン時にアプリケーションを起動する"
 
-#: src/snaps.c:540
+#: src/snaps.c:559
 msgid "Remember this window's group(s)"
 msgstr "このウィンドウのグループを記憶する"
 
-#: src/snaps.c:930
+#: src/snaps.c:938
 msgid "Error saving snaps file\n"
 msgstr "スナップファイルを保存時にエラーが生じました\n"
 
-#: src/sound.c:53
+#: src/sound.c:76
 msgid "Error finding sound file"
 msgstr "サウンドファイルがみつかりません"
 
-#: src/sound.c:54
+#: src/sound.c:77
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2989,11 +2843,11 @@ msgstr ""
 "Enlightenment の操作は続けますが、設定ファイル\n"
 "をチェックした方がよいでしょう。\n"
 
-#: src/sound.c:262
+#: src/sound.c:304
 msgid "Error initialising sound"
 msgstr "サウンドの初期化中にエラーが生じました"
 
-#: src/sound.c:264
+#: src/sound.c:305
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -3003,19 +2857,83 @@ msgstr ""
 "(Esound) と接続できません。音は鳴らなくなります。\n"
 "\n"
 
-#: src/tclass.c:90
+#: src/tclass.c:69
 msgid "TextClass Error!"
 msgstr "textclass エラー"
 
-#: src/theme.c:298
+#: src/theme.c:43
+msgid "Theme does not contain a borders.cfg file\n"
+msgstr "このテーマには borders.cfg ファイルが入っていません\n"
+
+#: src/theme.c:49
+msgid "Theme does not contain a buttons.cfg file\n"
+msgstr "このテーマには buttons.cfg ファイルが入っていません\n"
+
+#: src/theme.c:55
+msgid "Theme does not contain a colormodifiers.cfg file\n"
+msgstr "このテーマには colormodifiers.cfg ファイルが入っていません\n"
+
+#: src/theme.c:61
+msgid "Theme does not contain a cursors.cfg file\n"
+msgstr "このテーマには cursors.cfg ファイルが入っていません\n"
+
+#: src/theme.c:67
+msgid "Theme does not contain a desktops.cfg file\n"
+msgstr "このテーマには desktops.cfg ファイルが入っていません\n"
+
+#: src/theme.c:73
+msgid "Theme does not contain a imageclasses.cfg file\n"
+msgstr "このテーマには imageclasses.cfg ファイルが入っていません\n"
+
+#: src/theme.c:79
+msgid "Theme does not contain a init.cfg file\n"
+msgstr "このテーマには init.cfg ファイルが入っていません\n"
+
+#: src/theme.c:85
+msgid "Theme does not contain a menustyles.cfg file\n"
+msgstr "このテーマには menustyles.cfg ファイルが入っていません\n"
+
+#: src/theme.c:91
+msgid "Theme does not contain a slideouts.cfg file\n"
+msgstr "このテーマには slideout.cfg ファイルが入っていません\n"
+
+#: src/theme.c:97
+msgid "Theme does not contain a sound.cfg file\n"
+msgstr "このテーマには sound.cfg ファイルが入っていません\n"
+
+#: src/theme.c:103
+msgid "Theme does not contain a tooltips.cfg file\n"
+msgstr "このテーマには tooltips.cfg ファイルが入っていません\n"
+
+#: src/theme.c:109
+msgid "Theme does not contain a windowmatches.cfg file\n"
+msgstr "このテーマには windowmatches.cfg ファイルが入っていません\n"
+
+#: src/theme.c:115
+msgid "Theme contains a menus.cfg file\n"
+msgstr "このテーマには menus.cfg ファイルが入っています\n"
+
+#: src/theme.c:121
+msgid "Theme contains a control.cfg file\n"
+msgstr "このテーマには control.cfg ファイルが入っています\n"
+
+#: src/theme.c:127
+msgid "Theme contains a keybindings.cfg file\n"
+msgstr "このテーマには keybindings.cfg ファイルが入っています\n"
+
+#: src/theme.c:380
 msgid "Unknown\n"
 msgstr "不明\n"
 
-#: src/theme.c:321 src/theme.c:333
+#: src/theme.c:396 src/theme.c:403
 msgid "Theme file/directory does not exist\n"
 msgstr "テーマのファイル/ディレクトリ が存在しません\n"
 
-#: src/theme.c:353
+#: src/theme.c:420
+msgid "Bad Theme"
+msgstr "だめなテーマです"
+
+#: src/theme.c:421
 #, c-format
 msgid ""
 "The theme:\n"
@@ -3034,17 +2952,93 @@ msgstr ""
 "テーマの悪い点は :\n"
 "%s"
 
-#: src/theme.c:358
-msgid "Bad Theme"
-msgstr "だめなテーマです"
-
-#: src/tooltips.c:972
+#: src/tooltips.c:863
 msgid "ToolTip Error!"
 msgstr "tooltip エラー"
 
-#: src/update.c:166
-msgid "Enlightenment's message of the day"
-msgstr "Enlightenment 今日の一言"
+#~ msgid "error"
+#~ msgstr "エラー"
+
+#~ msgid ""
+#~ "Enlightenment has encountered parsing errors in your autosaved\n"
+#~ "configuration.\n"
+#~ "\n"
+#~ "This may be due to filing system errors, Minor bugs or unforeseen\n"
+#~ "system shutdowns.\n"
+#~ "\n"
+#~ "Do you wish Enlightenment to recover its original system\n"
+#~ "configuration and try again?\n"
+#~ msgstr ""
+#~ "Enlightenment がオートセーブしておいた設定ファイルを\n"
+#~ "きちんと読み込めませんでした。\n"
+#~ "\n"
+#~ "これはファイルシステムのエラーか、マイナーなバグか、予期しなかった\n"
+#~ "システムのシャットダウンが原因かもしれません。\n"
+#~ "\n"
+#~ "オリジナルのシステム設定ファイルを読み込んで、再度試行しますか？\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+#~ "\n"
+#~ "Enlightenment's documentation is not present or correctly installed\n"
+#~ "\n"
+#~ "This is a fatal error and Enlightenment will cease to run.\n"
+#~ "Please rectify this situation and ensure it is installed\n"
+#~ "correctly.\n"
+#~ "\n"
+#~ "The reason this could be missing is due to badly created\n"
+#~ "packages, someone manually deleting those files or perhaps\n"
+#~ "an error in installing Enlightenment.\n"
+#~ msgstr ""
+#~ "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+#~ "\n"
+#~ "Enlightenment のドキュメントが存在しないか、きちんとインストール\n"
+#~ "されていません。\n"
+#~ "致命的なエラーです。Enlightenment を実行できなくなります。\n"
+#~ "そのファイルを正しい場所に置き、ドキュメントビューア(dox)が\n"
+#~ "きちんとインストールされているか確認してください。\n"
+#~ "\n"
+#~ "これはパッケージ作成のミスか、だれかがそのプログラムを消してしまったか、\n"
+#~ "もしかすると Enlightenment をインストールする際のエラー\n"
+#~ "が原因です。\n"
+
+#~ msgid "Module is Already Loaded.\n"
+#~ msgstr "モジュールはすでに読み込まれています。\n"
+
+#~ msgid "Module Failed During Load.\n"
+#~ msgstr "モジュールの読み込みに失敗しました。\n"
+
+#~ msgid "Module Unload Failed.\n"
+#~ msgstr "モジュールのアンロードに失敗しました。\n"
+
+#~ msgid "Module is not Loaded.\n"
+#~ msgstr "モジュールは読み込まれていません。\n"
+
+#~ msgid "Unknown Module Error.\n"
+#~ msgstr "不明なモジュールエラー。\n"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "This Xserver does not support the Shape extension.\n"
+#~ "This is required for Enlightenment to run.\n"
+#~ "\n"
+#~ "Your Xserver probably is too old or mis-configured.\n"
+#~ "\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "致命的なエラーです :\n"
+#~ "\n"
+#~ "この X サーバは形状拡張をサポートしていません。\n"
+#~ "Enlightenment を動かすには、形状拡張機能が必要です。\n"
+#~ "\n"
+#~ "X サーバが古すぎるのか、設定が間違っているのかのどちらかです。\n"
+#~ "\n"
+#~ "終了します。\n"
+
+#~ msgid "Enlightenment's message of the day"
+#~ msgstr "Enlightenment 今日の一言"
 
 #~ msgid "KDE Settings"
 #~ msgstr "KDE 設定"

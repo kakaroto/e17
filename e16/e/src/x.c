@@ -119,6 +119,8 @@ SetXID(Window win, Window parent, int x, int y, int w, int h, int depth)
    xid->h = h;
    xid->depth = root.depth;
    AddXID(xid);
+   return;
+   depth = 0;
 }
 
 Pixmap
@@ -259,6 +261,8 @@ void
 EForgetWindow(Display * d, Window win)
 {
    DelXID(win);
+   return;
+   d = NULL;
 }
 
 void
@@ -362,6 +366,9 @@ EShapeCombineMaskTiled(Display * d, Window win, int dest, int x, int y,
    XFreeGC(disp, gc);
    EShapeCombineMask(disp, win, dest, x, y, tm, op);
    EFreePixmap(disp, tm);
+
+   return;
+   d = NULL;
 }
 
 void

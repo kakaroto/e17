@@ -37,7 +37,7 @@ static const char  *const thms[] = { "themes/DEFAULT/epplets/epplets.cfg" };
 void
 BlumFlimFrub(void)
 {
-   int                 i;
+   unsigned int        i;
    char                s[1024];
 
    for (i = 0; i < N_BINS; i++)

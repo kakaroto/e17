@@ -2552,3 +2552,12 @@ Shuffle around some event handling code (arrange according to event number).
 Skip one level of event handling functions.
 Show annoying message about RandR screen size change, if enabled.
 Maintain a global window stacking order (not entirely finished).
+
+-------------------------------------------------------------------------------
+
+Thu Mar 18 12:10:13 EST 2004
+(Mandrake)
+
+Fixed a boatload of warnings.  Commented out a couple of functions that
+were no longer being used.  I fixed some of these warnings a few years ago
+and somehow *ahem* they were put back in ;)

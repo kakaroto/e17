@@ -562,7 +562,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 
    if (!dpmap)
      {
-	int                 w, h, x, y;
+	unsigned int                 w, h, x, y;
 	char                hasbg, hasfg;
 	Pixmap              pmap, mask;
 	ColorModifierClass *cm;

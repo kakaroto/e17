@@ -564,6 +564,8 @@ doNothing(EWin * ewin, void *params)
 {
    EDBUG(6, "doNothing");
    EDBUG_RETURN(0);
+   ewin = NULL;
+   params = NULL;
 }
 
 static int
@@ -653,6 +655,8 @@ hideMenu(EWin * ewin, void *params)
 {
    EDBUG(6, "hideMenu");
    EDBUG_RETURN(0);
+   ewin = NULL;
+   params = NULL;
 }
 
 static int
@@ -840,6 +844,7 @@ static int
 doExec(EWin * edummy, void *params)
 {
    return execApplication(params);
+   edummy = NULL;
 }
 
 static int
@@ -870,6 +875,7 @@ doAlert(EWin * edummy, void *params)
    Efree(pp);
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -880,6 +886,7 @@ doExit(EWin * ewin, void *params)
    SessionExit(params);
 
    EDBUG_RETURN(0);
+   ewin = NULL;
 }
 
 static int
@@ -1102,6 +1109,7 @@ DoRaise(EWin * ewin, void *params, int nogroup)
       RaiseEwin(gwins[i]);
    Efree(gwins);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1117,6 +1125,7 @@ DoLower(EWin * ewin, void *params, int nogroup)
       LowerEwin(gwins[i]);
    Efree(gwins);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1204,6 +1213,7 @@ DoRaiseLower(EWin * ewin, void *params, int nogroup)
       Efree(gwins);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1392,6 +1402,7 @@ doCleanup(EWin * edummy, void *params)
 	   Efree(lst);
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1400,6 +1411,7 @@ doKill(EWin * ewin, void *params)
    EDBUG(6, "doKill");
    KillEwin(ewin, 0);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1408,6 +1420,7 @@ doKillNoGroup(EWin * ewin, void *params)
    EDBUG(6, "doKillNoGroup");
    KillEwin(ewin, 1);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1418,6 +1431,7 @@ doKillNasty(EWin * ewin, void *params)
    SoundPlay("SOUND_WINDOW_CLOSE");
    EDestroyWindow(disp, ewin->client.win);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 /* Desktop actions */
@@ -1439,18 +1453,21 @@ DoGotoDesktop(EWin * edummy, void *params, int num)
       SoundPlay("SOUND_DESKTOP_SHUT");
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
 doNextDesktop(EWin * edummy, void *params)
 {
    return DoGotoDesktop(edummy, NULL, desks.current + 1);
+   params = NULL;
 }
 
 static int
 doPrevDesktop(EWin * edummy, void *params)
 {
    return DoGotoDesktop(edummy, NULL, desks.current - 1);
+   params = NULL;
 }
 
 static int
@@ -1459,7 +1476,7 @@ doGotoDesktop(EWin * edummy, void *params)
    return DoGotoDesktop(edummy, params, desks.current);
 }
 
-int
+static int
 doInplaceDesktop(EWin * edummy, void *params)
 {
    return DoGotoDesktop(edummy, params, desks.current);
@@ -1480,6 +1497,7 @@ doRaiseDesktop(EWin * edummy, void *params)
    RaiseDesktop(d);
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1497,6 +1515,7 @@ doLowerDesktop(EWin * edummy, void *params)
    LowerDesktop(d);
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1518,6 +1537,7 @@ doDragDesktop(EWin * edummy, void *params)
    mode.win_y = desks.desk[d].y;
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 /* Window ops */
@@ -1550,6 +1570,7 @@ DoStick(EWin * ewin, void *params, int nogroup)
       Efree(gwins);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1580,6 +1601,7 @@ doSkipLists(EWin * ewin, void *params)
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1593,6 +1615,7 @@ doSkipTask(EWin * ewin, void *params)
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1605,6 +1628,7 @@ doSkipFocus(EWin * ewin, void *params)
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1617,6 +1641,7 @@ doSkipWinList(EWin * ewin, void *params)
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -1629,6 +1654,7 @@ doNeverFocus(EWin * ewin, void *params)
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 /* Button actions */
@@ -1659,6 +1685,8 @@ doDragButtonStart(EWin * edummy, void *params)
    mode.firstlast = 0;
 
    EDBUG_RETURN(0);
+   edummy = NULL;
+   params = NULL;
 }
 
 int
@@ -1688,6 +1716,7 @@ doDragButtonEnd(void *params)
    autosave();
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 /* Settings */
@@ -1717,6 +1746,7 @@ doFocusModeSet(EWin * edummy, void *params)
    FocusFix();
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1739,6 +1769,7 @@ doMoveModeSet(EWin * edummy, void *params)
 #endif
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1759,6 +1790,7 @@ doResizeModeSet(EWin * edummy, void *params)
       conf.resizemode = 3;
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1777,6 +1809,7 @@ doSlideModeSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1796,6 +1829,7 @@ doCleanupSlideSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1813,6 +1847,7 @@ doMapSlideSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1840,6 +1875,7 @@ doSoundSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1850,6 +1886,7 @@ doButtonMoveResistSet(EWin * edummy, void *params)
       conf.button_move_resistance = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1860,6 +1897,7 @@ doDesktopBgTimeoutSet(EWin * edummy, void *params)
       conf.backgrounds.timeout = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1870,6 +1908,7 @@ doMapSlideSpeedSet(EWin * edummy, void *params)
       conf.slidespeedmap = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1880,6 +1919,7 @@ doCleanupSlideSpeedSet(EWin * edummy, void *params)
       conf.slidespeedcleanup = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1915,6 +1955,7 @@ doDragdirSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1943,6 +1984,7 @@ doDragbarOrderSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1965,6 +2007,7 @@ doDragbarWidthSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -1987,6 +2030,7 @@ doDragbarLengthSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2004,6 +2048,7 @@ doDeskSlideSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2014,6 +2059,7 @@ doDeskSlideSpeedSet(EWin * edummy, void *params)
       conf.desks.slidespeed = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2031,6 +2077,7 @@ doHiQualityBgSet(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2047,6 +2094,7 @@ doAutosaveSet(EWin * edummy, void *params)
 	   conf.autosave = 1;
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2059,6 +2107,7 @@ doToolTipSet(EWin * edummy, void *params)
       conf.tooltips.enable = !conf.tooltips.enable;
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 /* Misc actions */
@@ -2074,6 +2123,7 @@ doPlaySoundClass(EWin * edummy, void *params)
    SoundPlay((char *)params);
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2107,6 +2157,7 @@ doDeskray(EWin * edummy, void *params)
 	  }
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2198,6 +2249,7 @@ doHideShowButton(EWin * edummy, void *params)
    autosave();
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2205,6 +2257,8 @@ doScrollContainer(EWin * edummy, void *params)
 {
    EDBUG(6, "doScrollContainer");
    EDBUG_RETURN(0);
+   edummy = NULL;
+   params = NULL;
 }
 
 /* More winops */
@@ -2257,6 +2311,7 @@ DoIconifyWindow(EWin * ewin, void *params, int nogroup)
    if (gwins)
       Efree(gwins);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -2318,6 +2373,7 @@ doScrollWindows(EWin * edummy, void *params)
 	Efree(lst);
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 /* More winops */
@@ -2353,6 +2409,7 @@ DoShade(EWin * ewin, void *params, int nogroup)
      }
    Efree(gwins);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -2410,6 +2467,7 @@ doSendToNextDesk(EWin * ewin, void *params)
    ewin->sticky = 0;
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -2422,6 +2480,7 @@ doSendToPrevDesk(EWin * ewin, void *params)
    ewin->sticky = 0;
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -2467,6 +2526,7 @@ doToggleFixedPos(EWin * ewin, void *params)
       ewin->fixedpos = 1;
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -2506,6 +2566,8 @@ doFocusNext(EWin * edummy, void *params)
    else
       FocusGetNextEwin();
    EDBUG_RETURN(0);
+   edummy = NULL;
+   params = NULL;
 }
 
 static int
@@ -2514,6 +2576,8 @@ doFocusPrev(EWin * edummy, void *params)
    EDBUG(6, "doFocusPrev");
    FocusGetPrevEwin();
    EDBUG_RETURN(0);
+   edummy = NULL;
+   params = NULL;
 }
 
 static int
@@ -2530,6 +2594,7 @@ doFocusSet(EWin * ewin, void *params)
    FocusToEWin(ewin, FOCUS_SET);
 
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -2573,6 +2638,7 @@ doBackgroundSet(EWin * edummy, void *params)
    autosave();
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 /* Area actions */
@@ -2589,6 +2655,7 @@ doAreaSet(EWin * edummy, void *params)
    SetCurrentArea(a, b);
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2604,6 +2671,7 @@ doAreaMoveBy(EWin * edummy, void *params)
    MoveCurrentAreaBy(a, b);
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2618,6 +2686,7 @@ doLinearAreaSet(EWin * edummy, void *params)
 	SetCurrentLinearArea(da);
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2632,6 +2701,7 @@ doLinearAreaMoveBy(EWin * edummy, void *params)
 	MoveCurrentLinearAreaBy(da);
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2648,6 +2718,7 @@ doWarpPointer(EWin * edummy, void *params)
      }
 
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2837,6 +2908,8 @@ doAbout(EWin * edummy, void *params)
    DialogAddButton(d, _("OK"), NULL, 1);
    ShowDialog(d);
    EDBUG_RETURN(0);
+   edummy = NULL;
+   params = NULL;
 }
 
 static int
@@ -2847,6 +2920,7 @@ doFX(EWin * edummy, void *params)
       FX_Op((const char *)params, FX_OP_TOGGLE);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2862,6 +2936,7 @@ doSetPagerHiq(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2877,6 +2952,7 @@ doSetPagerSnap(EWin * edummy, void *params)
      }
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -2955,6 +3031,7 @@ doConfigure(EWin * edummy, void *params)
 	  }
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 struct _keyset
@@ -3110,6 +3187,7 @@ doInsertKeys(EWin * edummy, void *params)
 	  }
      }
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -3133,6 +3211,7 @@ doCreateIconbox(EWin * edummy, void *params)
    IconboxShow(ib);
    autosave();
    EDBUG_RETURN(0);
+   edummy = NULL;
 }
 
 static int
@@ -3141,6 +3220,7 @@ doShowHideGroup(EWin * ewin, void *params)
    EDBUG(6, "doShowGroup");
    ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -3150,6 +3230,7 @@ doStartGroup(EWin * ewin, void *params)
    BuildWindowGroup(&ewin, 1);
    SaveGroups();
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -3171,6 +3252,7 @@ doAddToGroup(EWin * ewin, void *params)
       AddEwinToGroup(ewin, current_group);
    SaveGroups();
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -3183,6 +3265,7 @@ doRemoveFromGroup(EWin * ewin, void *params)
 
    SaveGroups();
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -3193,6 +3276,7 @@ doBreakGroup(EWin * ewin, void *params)
 		     GROUP_SELECT_EWIN_ONLY, ACTION_BREAK_GROUP);
    SaveGroups();
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static int
@@ -3237,6 +3321,7 @@ doZoom(EWin * ewin, void *params)
    else
       Zoom(ewin);
    EDBUG_RETURN(0);
+   params = NULL;
 }
 
 static ActionFunction ActionFunctions[ACTION_NUMBEROF] = {

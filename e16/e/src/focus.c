@@ -83,6 +83,9 @@ AutoraiseTimeout(int val, void *data)
    ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
       RaiseEwin(ewin);
+
+   return;
+   data = NULL;
 }
 
 static void
@@ -93,6 +96,9 @@ ReverseTimeout(int val, void *data)
    ewin = RemoveItem("EWIN", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
       AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
+
+   return;
+   data = NULL;
 }
 
 static void
@@ -503,6 +509,7 @@ FocusHandleEnter(XEvent * ev)
      }
 
    EDBUG_RETURN_;
+   ev = NULL;
 }
 
 void

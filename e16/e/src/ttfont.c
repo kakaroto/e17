@@ -62,6 +62,8 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
    imlib_text_draw(0, 0, text);
    imlib_render_image_on_drawable(x, y - ascent);
    imlib_free_image();
+   return;
+   vis = NULL;
 }
 
 void
@@ -115,6 +117,10 @@ Efont_extents(Efont * f, char *text, int *font_ascent_return,
       *max_ascent_return = imlib_get_maximum_font_ascent();
    if (max_descent_return)
       *max_descent_return = imlib_get_maximum_font_descent();
+
+   return;
+   lbearing_return = NULL;
+   rbearing_return = NULL;
 }
 
 #else /* USE_IMLIB1 */

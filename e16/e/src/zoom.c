@@ -69,7 +69,7 @@ FindMode(int w, int h)
 }
 
 static int
-GetModeIndex(int dotclock, XF86VidModeModeLine * line)
+GetModeIndex(unsigned int dotclock, XF86VidModeModeLine * line)
 {
    int                 i;
    const XF86VidModeModeInfo *info;

@@ -193,7 +193,9 @@ GetContextEwin(void)
    if (mode.focuswin)
       EDBUG_RETURN(mode.focuswin);
 
-   if (mode.mouse_over_win);
+   /* FIXME: Is this semicolin supposed to be here in this if statement? */
+   /* until someone says one way or another its commented out --Mandrake */
+   /* if (mode.mouse_over_win); */
    EDBUG_RETURN(mode.mouse_over_win);
 
    return NULL;
@@ -3096,6 +3098,8 @@ void
 EwinChange(EWin * ewin, unsigned int flag)
 {
    EWinChanges.flags |= flag;
+   return;
+   ewin = NULL;
 }
 
 void
@@ -3148,6 +3152,8 @@ BorderWinpartEventExpose(XEvent * ev, EWin * ewin, int j)
    ewin->bits[j].expose = 1;
    if (DrawEwinWinpart(ewin, j) && IsPropagateEwinOnQueue(ewin))
       PropagateShapes(ewin->win);
+   return;
+   ev = NULL;
 }
 
 static void
@@ -3213,6 +3219,8 @@ BorderWinpartEventLeave2(XEvent * ev, EWin * ewin, int j)
    ewin->bits[j].left = 0;
    ewin->bits[j].state = STATE_NORMAL;
    ChangeEwinWinpart(ewin, j);
+   return;
+   ev = NULL;
 }
 
 static int

@@ -3248,6 +3248,8 @@ CB_ThemeTransparency(int val, void *data)
 	     tmp_theme_transparency);
    DialogItemTextSetText(di, s);
    DialogDrawItems(bg_sel_dialog, di, 0, 0, 99999, 99999);
+   return;
+   val = 0;
 }
 #endif
 

@@ -932,6 +932,9 @@ LogoutCB(int val, void *data)
      {
 	doSMExit(NULL);
      }
+   return;
+   val = 0;
+   data = NULL;
 }
 
 void

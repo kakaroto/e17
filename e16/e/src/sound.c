@@ -214,7 +214,7 @@ SclassCreate(const char *name, const char *file)
    EDBUG_RETURN(sclass);
 }
 
-void
+static void
 SclassApply(SoundClass * sclass)
 {
 #ifdef HAVE_LIBESD
@@ -240,7 +240,7 @@ SclassApply(SoundClass * sclass)
    EDBUG_RETURN_;
 }
 
-void
+static void
 SclassDestroy(SoundClass * sclass)
 {
    EDBUG(5, "SclassDestroy");

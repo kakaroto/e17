@@ -541,6 +541,8 @@ IconboxMoveResize(EWin * ewin, int resize)
    ib->force_update = 1;
    IconboxRedraw(ib);
    call_depth--;
+   return;
+   resize = 0;
 }
 
 static void
@@ -940,7 +942,7 @@ IB_GetEIcon(EWin * ewin)
    imlib_free_image();
 }
 
-void
+static void
 IB_AddIcondef(char *title, char *name, char *class, char *file)
 {
    /* add match for a window pointing to an iconfile */
@@ -2234,6 +2236,10 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
    MenuAddItem(p_menu, mi);
 
    ActionsCall(ACTION_SHOW_MENU, NULL, "named __IBOX_MENU");
+
+   return;
+   x = 0;
+   y = 0;
 }
 
 void

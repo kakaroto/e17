@@ -112,6 +112,8 @@ PagerUpdateTimeout(int val, void *data)
 	   PagerEwinUpdateFromPager(p, lst[i]);
 	p->update_phase = 0;
      }
+   return;
+   val = 0;
 }
 
 Pager              *
@@ -277,11 +279,19 @@ PagerMoveResize(EWin * ewin, int resize)
    lst = EwinListGetForDesktop(p->desktop, &num);
    for (i = 0; i < num; i++)
       PagerEwinUpdateMini(p, lst[i]);
+
+   return;
+   resize = 0;
 }
 
 static void
 PagerRefresh(EWin * ewin)
 {
+    /* This doesn't do anything anymore apparently
+     * --Mandrake
+     */
+    return;
+    ewin = NULL;
 }
 
 static void
@@ -399,7 +409,12 @@ PagerDestroy(Pager * p)
    Efree(p);
 }
 
-void
+#if 0
+/*
+ e  Doesn't look like this is ever used, commented out for now
+ * --Mandrake
+ */
+static void
 PagerOnUnmap(Pager * p)
 {
    PagerHideHi(p);
@@ -409,6 +424,7 @@ PagerOnUnmap(Pager * p)
 	mode.mode = MODE_NONE;
      }
 }
+#endif
 
 Pager             **
 PagersForDesktop(int d, int *num)
@@ -1387,6 +1403,9 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
      {
 	PagerShowTt(ewin);
      }
+
+   return;
+   win = 0;
 
 }
 

@@ -146,4 +146,6 @@ CloneDesktop(int d)
 	Efree(clist);
      }
 #endif
+   return;
+   d = 0;
 }
