@@ -470,6 +470,8 @@ main(int argc, char **argv)
 
    entranced_debug("entranced: main: display number is %d\n", d->dispnum);
 
+
+   entranced_pid = getpid();
    if (nodaemon)
    {
       if (Entranced_Write_Pidfile(entranced_pid))
@@ -480,7 +482,9 @@ main(int argc, char **argv)
       }
    }
    else
+   {
       Entranced_Fork_And_Exit();
+   }
 
    /* Check to make sure entrance binary is executable */
    if (access(ENTRANCE, X_OK))
@@ -493,13 +497,18 @@ main(int argc, char **argv)
    /* Daemonize */
    if (!nodaemon)
    {
+      /* This causes socket communication issues, yet unidentified */
+      /*
       close(0);
       close(1);
       close(2);
+      */
+      freopen("/dev/null", "r", stdin);
+      freopen("/dev/null", "w", stdout);
+      freopen("/dev/null", "w", stderr);
    }
-
    /* Init IPC */
-   if (!entranced_ipc_init(entranced_pid))
+   if (!entranced_ipc_init(getpid()))
       exit(1);
 
    /* Event filter */
