@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2000, Michael Jennings
+ * Copyright (C) 1997-2001, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -29,24 +29,24 @@ static const char cvs_ident[] = "$Id$";
 
 #include "libast_internal.h"
 
-static char *program_name = PACKAGE, *program_version = VERSION;
+char *libast_program_name = PACKAGE, *libast_program_version = VERSION;
 
 void
 libast_set_program_name(const char *progname)
 {
-  if (program_name && strcmp(program_name, PACKAGE)) {
-    FREE(program_name);
+  if (libast_program_name && strcmp(libast_program_name, PACKAGE)) {
+    FREE(libast_program_name);
   }
-  program_name = STRDUP(progname);
+  libast_program_name = STRDUP(progname);
 }
 
 void
 libast_set_program_version(const char *progversion)
 {
-  if (program_version && strcmp(program_version, VERSION)) {
-    FREE(program_version);
+  if (libast_program_version && strcmp(libast_program_version, VERSION)) {
+    FREE(libast_program_version);
   }
-  program_version = STRDUP(progversion);
+  libast_program_version = STRDUP(progversion);
 }
 
 int
@@ -69,7 +69,7 @@ print_error(const char *fmt, ...)
   va_list arg_ptr;
 
   va_start(arg_ptr, fmt);
-  fprintf(stderr, "%s:  Error:  ", program_name);
+  fprintf(stderr, "%s:  Error:  ", libast_program_name);
   vfprintf(stderr, fmt, arg_ptr);
   va_end(arg_ptr);
 }
@@ -81,7 +81,7 @@ print_warning(const char *fmt, ...)
   va_list arg_ptr;
 
   va_start(arg_ptr, fmt);
-  fprintf(stderr, "%s:  Warning:  ", program_name);
+  fprintf(stderr, "%s:  Warning:  ", libast_program_name);
   vfprintf(stderr, fmt, arg_ptr);
   va_end(arg_ptr);
 }
@@ -93,7 +93,7 @@ fatal_error(const char *fmt, ...)
   va_list arg_ptr;
 
   va_start(arg_ptr, fmt);
-  fprintf(stderr, "%s:  FATAL:  ", program_name);
+  fprintf(stderr, "%s:  FATAL:  ", libast_program_name);
   vfprintf(stderr, fmt, arg_ptr);
   va_end(arg_ptr);
   exit(-1);

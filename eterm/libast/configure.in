@@ -1,7 +1,7 @@
 dnl# $Id$
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(libast, 0.2)
+AM_INIT_AUTOMAKE(libast, 0.3)
 AC_DEFINE_UNQUOTED(LIBAST_VERSION, "$VERSION")
 
 dnl# Set some basic variables
@@ -182,6 +182,20 @@ AC_ARG_WITH(config-buffer-size,
 AC_MSG_RESULT($CONFIG_BUFF_SIZE bytes)
 AC_DEFINE_UNQUOTED(CONFIG_BUFF, $CONFIG_BUFF_SIZE)
 
+AC_MSG_CHECKING(if backquote execution support should be enabled)
+AC_ARG_WITH(backquote-exec,
+[  --without-backquote-exec
+                         disables the execution of commands from inside config files],
+            if test "$withval" = "no"; then
+              AC_MSG_RESULT(no)
+            else
+              AC_MSG_RESULT(yes)
+              AC_DEFINE(ALLOW_BACKQUOTE_EXEC)
+            fi,
+     AC_MSG_RESULT(yes)
+     AC_DEFINE(ALLOW_BACKQUOTE_EXEC)
+)
+
 CPPFLAGS=`eval eval eval eval eval echo "-I$includedir -I$prefix/include $CPPFLAGS"`
 CPPFLAGS=`echo $CPPFLAGS | tr ' ' '\n' | uniq | grep -v NONE | tr '\n' ' '`
 CFLAGS=${CFLAGS--O}
@@ -214,8 +228,6 @@ Configuration:
   Compiler:	              $CC $CFLAGS
   Linker:                     $CC $LDFLAGS $LIBS
   Install path:		      $prefix
-
-  See src/feature.h for further configuration information.
 
   Now type 'make' to build $PACKAGE $VERSION.
 "

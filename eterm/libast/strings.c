@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2000, Michael Jennings
+ * Copyright (C) 1997-2001, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -278,7 +278,9 @@ split(const char *delim, const char *str)
 char **
 split_regexp(const char *regexp, const char *str)
 {
-
+  USE_VAR(regexp);
+  USE_VAR(str);
+  return (NULL);
 }
 
 char *

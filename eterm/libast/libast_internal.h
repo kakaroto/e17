@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2000, Michael Jennings
+ * Copyright (C) 1997-2001, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -49,6 +49,11 @@
 #ifdef HAVE_STDARG_H
 # include <stdarg.h>
 #endif
+
+/******************************** MSGS GOOP ***********************************/
+extern char *libast_program_name, *libast_program_version;
+
+
 
 /********************************* MEM GOOP ***********************************/
 #define LIBAST_FNAME_LEN  20

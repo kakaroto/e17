@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2000, Michael Jennings
+ * Copyright (C) 1997-2001, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -48,6 +48,8 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
+#include <fcntl.h>
+#include <dirent.h>
 #include <errno.h>
 #include <signal.h>
 #ifdef WITH_DMALLOC
@@ -75,6 +77,38 @@
 #endif
 
 #define USE_VAR(x)   (void) x
+
+#ifdef MIN
+# undef MIN
+#endif
+#ifdef MAX
+# undef MAX
+#endif
+#ifdef __GNUC__
+# define MIN(a,b)                       __extension__ ({__typeof__(a) aa = (a); __typeof__(b) bb = (b); (aa < bb) ? (aa) : (bb);})
+# define MAX(a,b)                       __extension__ ({__typeof__(a) aa = (a); __typeof__(b) bb = (b); (aa > bb) ? (aa) : (bb);})
+# define LOWER_BOUND(current, other)    __extension__ ({__typeof__(other) o = (other); ((current) < o) ? ((current) = o) : (current);})
+# define AT_LEAST(current, other)       LOWER_BOUND(current, other)
+# define MAX_IT(current, other)         LOWER_BOUND(current, other)
+# define UPPER_BOUND(current, other)    __extension__ ({__typeof__(other) o = (other); ((current) > o) ? ((current) = o) : (current);})
+# define AT_MOST(current, other)        UPPER_BOUND(current, other)
+# define MIN_IT(current, other)         UPPER_BOUND(current, other)
+# define BOUND(val, min, max)           __extension__ ({__typeof__(min) m1 = (min); __typeof__(max) m2 = (max); ((val) < m1) ? ((val) = m1) : (((val) > m2) ? ((val) = m2) : (val));})
+# define CONTAIN(val, min, max)         BOUND(val, min, max)
+# define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
+#else
+# define MIN(a,b)	                (((a) < (b)) ? (a) : (b))
+# define MAX(a,b)                       (((a) > (b)) ? (a) : (b))
+# define LOWER_BOUND(current, other)    (((current) < (other)) ? ((current) = (other)) : (current))
+# define AT_LEAST(current, other)       LOWER_BOUND(current, other)
+# define MAX_IT(current, other)         LOWER_BOUND(current, other)
+# define UPPER_BOUND(current, other)    (((current) > (other)) ? ((current) = (other)) : (current))
+# define AT_MOST(current, other)        UPPER_BOUND(current, other)
+# define MIN_IT(current, other)         UPPER_BOUND(current, other)
+# define BOUND(val, min, max)           (((val) < (min)) ? ((val) = (min)) : (((val) > (max)) ? ((val) = (max)) : (val)))
+# define CONTAIN(val, min, max)         BOUND(val, min, max)
+# define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
+#endif
 
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD
@@ -196,10 +230,14 @@
 /* Use this for stuff that you only want turned on in dire situations */
 #define D_NEVER(x)             NOP
 
+#define DEBUG_CONF             3
+#define D_CONF(x)              DPRINTF3(x)
 #define DEBUG_MEM              5
 #define D_MEM(x)               DPRINTF5(x)
 #define DEBUG_STRINGS          9999
 #define D_STRINGS(x)           D_NEVER(x)
+#define DEBUG_PARSE            9999
+#define D_PARSE(x)             D_NEVER(x)
 
 
 
@@ -310,6 +348,107 @@
 
 
 
+/******************************** CONF GOOP ***********************************/
+
+#if defined(PATH_MAX) && (PATH_MAX < 255)
+#  undef PATH_MAX
+#endif
+#ifndef PATH_MAX
+#  define PATH_MAX 255
+#endif
+
+#define CONF_BEGIN_CHAR                 ((char) 1)
+#define CONF_END_CHAR                   ((char) 2)
+
+#define BOOL_OPT_ISTRUE(s)  (!strcasecmp((s), true_vals[0]) || !strcasecmp((s), true_vals[1]) \
+                             || !strcasecmp((s), true_vals[2]) || !strcasecmp((s), true_vals[3]))
+#define BOOL_OPT_ISFALSE(s) (!strcasecmp((s), false_vals[0]) || !strcasecmp((s), false_vals[1]) \
+                             || !strcasecmp((s), false_vals[2]) || !strcasecmp((s), false_vals[3]))
+
+/* The context table */
+#define ctx_name_to_id(the_id, n, i) do { \
+                                       for ((i)=0; (i) <= ctx_idx; (i)++) { \
+                                         if (!strcasecmp((n), context[(i)].name)) { \
+		                           (the_id) = (i); \
+					   break; \
+					 } \
+			               } \
+                                       if ((i) > ctx_idx) (the_id) = 0; \
+                                     } while (0)
+#define ctx_id_to_name(id)         (context[(id)].name)
+#define ctx_id_to_func(id)         (context[(id)].handler)
+
+/* The context state stack.  This keeps track of the current context and each previous one. */
+#define ctx_push(ctx)              conf_register_context_state(ctx)
+#define ctx_pop()                  (ctx_state_idx--)
+#define ctx_peek()                 (ctx_state[ctx_state_idx])
+#define ctx_peek_id()              (ctx_state[ctx_state_idx].ctx_id)
+#define ctx_peek_state()           (ctx_state[ctx_state_idx].state)
+#define ctx_peek_last_id()         (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].ctx_id)
+#define ctx_peek_last_state()      (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].state)
+#define ctx_poke_state(q)          ((ctx_state[ctx_state_idx].state) = (q))
+#define ctx_get_depth()            (ctx_state_idx)
+
+/* The file state stack */
+#define FILE_SKIP_TO_END           (0x01)
+#define FILE_PREPROC               (0x02)
+#define file_push(f, p, o, l, fl)  conf_register_fstate(f, p, o, l, fl)
+#define file_pop()                 (fstate_idx--)
+#define file_peek()                (fstate[fstate_idx])
+#define file_peek_fp()             (fstate[fstate_idx].fp)
+#define file_peek_path()           (fstate[fstate_idx].path)
+#define file_peek_outfile()        (fstate[fstate_idx].outfile)
+#define file_peek_line()           (fstate[fstate_idx].line)
+#define file_peek_skip()           (fstate[fstate_idx].flags & FILE_SKIP_TO_END)
+#define file_peek_preproc()        (fstate[fstate_idx].flags & FILE_PREPROC)
+
+#define file_poke_fp(f)            ((fstate[fstate_idx].fp) = (f))
+#define file_poke_path(p)          ((fstate[fstate_idx].path) = (p))
+#define file_poke_outfile(o)       ((fstate[fstate_idx].outfile) = (o))
+#define file_poke_line(l)          ((fstate[fstate_idx].line) = (l))
+#define file_skip_to_end()         ((fstate[fstate_idx].flags) |= (FILE_SKIP_TO_END))
+#define file_poke_skip(s)          do {if (s) {fstate[fstate_idx].flags |= FILE_SKIP_TO_END;} else {fstate[fstate_idx].flags &= ~(FILE_SKIP_TO_END);} } while (0)
+#define file_poke_preproc(s)       do {if (s) {fstate[fstate_idx].flags |= FILE_PREPROC;} else {fstate[fstate_idx].flags &= ~(FILE_PREPROC);} } while (0)
+#define file_poke(f, p, o, l, fl)  do {file_poke_fp(f); file_poke_path(p); file_poke_outfile(o); file_poke_line(l); fstate[fstate_idx].flags = (fl);} while (0)
+
+#define file_inc_line()            (fstate[fstate_idx].line++)
+
+/* Contexts */
+typedef void * (*ctx_handler_t)(char *, void *);
+typedef struct context_struct {
+  char *name;
+  ctx_handler_t handler;
+} ctx_t;
+typedef struct ctx_state_struct {
+  unsigned char ctx_id;
+  void *state;
+} ctx_state_t;
+
+/* Parser states */
+typedef struct file_state_struct {
+  FILE *fp;
+  char *path, *outfile;
+  unsigned long line;
+  unsigned char flags;
+} fstate_t;
+
+/* Built-in functions */
+typedef char * (*conf_func_ptr_t) (char *);
+typedef struct conf_func_struct {
+  char *name;
+  conf_func_ptr_t ptr;
+} conf_func_t;
+
+typedef struct conf_var_struct {
+  char *var, *value;
+  struct conf_var_struct *next;
+} conf_var_t;
+
+extern fstate_t *fstate;
+extern unsigned char fstate_idx;
+
+
+
 /******************************** PROTOTYPES **********************************/
 
 /* msgs.c */
@@ -396,5 +535,17 @@ extern void usleep(unsigned long);
 extern int vsnprintf(char *str, size_t count, const char *fmt, va_list args);
 extern int snprintf(char *str, size_t count, const char *fmt, ...);
 #endif
+
+/* conf.c */
+extern void conf_init_subsystem(void);
+extern unsigned char conf_register_context(char *name, ctx_handler_t handler);
+extern unsigned char conf_register_fstate(FILE *fp, char *path, char *outfile, unsigned long line, unsigned char flags);
+extern unsigned char conf_register_builtin(char *name, conf_func_ptr_t ptr);
+extern unsigned char conf_register_context_state(unsigned char ctx_id);
+extern void conf_free_subsystem(void);
+extern char *shell_expand(char *);
+extern char *conf_find_file(const char *file, const char *dir, const char *pathlist);
+extern FILE *open_config_file(char *name);
+extern char *conf_parse(char *conf_name, const char *dir, const char *path);
 
 #endif /* _LIBAST_H_ */
