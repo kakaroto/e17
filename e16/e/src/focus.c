@@ -311,6 +311,7 @@ FocusToEWin(EWin * ewin, int why)
 	   NULL);
 
    SoundPlay("SOUND_FOCUS_SET");
+   EwinListFocusRaise(ewin);
  exit:
    ICCCM_Cmap(ewin);
    ICCCM_Focus(ewin);

@@ -22,9 +22,13 @@
  */
 #include "E.h"
 
+#define ENABLE_CLONING 0
+
+#if ENABLE_CLONING
+
 static int          calls = 0;
 
-Clone              *
+static Clone       *
 CloneEwin(EWin * ewin)
 {
    Clone              *c;
@@ -63,16 +67,19 @@ CloneEwin(EWin * ewin)
    return c;
 }
 
-void
+static void
 FreeClone(Clone * c)
 {
    XDestroyWindow(disp, c->win);
    Efree(c);
 }
 
+#endif /* ENABLE_CLONING */
+
 void
 RemoveClones(void)
 {
+#if ENABLE_CLONING		/* FIXME What is this? */
    Clone              *c;
 
    calls--;
@@ -82,11 +89,13 @@ RemoveClones(void)
 	   FreeClone(c);
 	calls = 0;
      }
+#endif
 }
 
 void
 CloneDesktop(int d)
 {
+#if ENABLE_CLONING		/* FIXME What is this? */
    int                 i, num;
    Clone             **clist = NULL;
 
@@ -136,4 +145,5 @@ CloneDesktop(int d)
 	  }
 	Efree(clist);
      }
+#endif
 }

@@ -1062,8 +1062,6 @@ typedef struct _desk
    Window              win;
    int                 x, y;
    Background         *bg;
-   int                 num;
-   EWin              **list;
    Button             *tag;
    int                 current_area_x;
    int                 current_area_y;
@@ -1743,8 +1741,6 @@ int                 ButtonsEventMouseIn(XEvent * ev);
 int                 ButtonsEventMouseOut(XEvent * ev);
 
 /* clone.c */
-Clone              *CloneEwin(EWin * ewin);
-void                FreeClone(Clone * c);
 void                RemoveClones(void);
 void                CloneDesktop(int d);
 
@@ -1818,7 +1814,6 @@ void                InitDesktopControls(void);
 void                SetDesktopBg(int desk, Background * bg);
 void                ConformEwinToDesktop(EWin * ewin);
 int                 DesktopAt(int x, int y);
-void                MoveStickyWindowsToCurrentDesk(void);
 void                GotoDesktop(int num);
 void                MoveDesktop(int num, int x, int y);
 void                RaiseDesktop(int num);
@@ -1831,7 +1826,6 @@ void                UncoverDesktop(int num);
 void                MoveEwinToDesktop(EWin * ewin, int num);
 void                DesktopAddEwinToBottom(EWin * ewin);
 void                DesktopAddEwinToTop(EWin * ewin);
-void                DesktopRemoveEwin(EWin * ewin);
 void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
 void                GotoDesktopByEwin(EWin * ewin);
 void                FloatEwinAboveDesktops(EWin * ewin);
@@ -2510,6 +2504,20 @@ void                SoundInit(void);
 void                SoundExit(void);
 int                 SoundPlay(const char *name);
 int                 SoundFree(const char *name);
+
+/* stacking.c */
+typedef struct _ewinlist EWinList;
+extern EWinList     EwinListFocus;
+extern EWinList     EwinListStack;
+void                EwinListAdd(EWinList * ewl, EWin * ewin);
+void                EwinListDelete(EWinList * ewl, EWin * ewin);
+int                 EwinListRaise(EWinList * ewl, EWin * ewin, int mode);
+int                 EwinListLower(EWinList * ewl, EWin * ewin, int mode);
+EWin              **EwinListGetForDesktop(int desk, int *num);
+EWin              **EwinListGetStacking(int *num);
+int                 EwinListStackingRaise(EWin * ewin);
+int                 EwinListStackingLower(EWin * ewin);
+int                 EwinListFocusRaise(EWin * ewin);
 
 /* startup.c */
 void                AddE(void);

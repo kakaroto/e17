@@ -1162,30 +1162,27 @@ FindEwinInList(EWin * ewin, EWin ** gwins, int num)
 static int
 DoRaiseLower(EWin * ewin, void *params, int nogroup)
 {
-   EWin              **gwins;
-   int                 i, num, j, raise = 0;
+   EWin              **gwins, **lst;
+   int                 gnum, j, raise = 0;
+   int                 i, num;
 
    EDBUG(6, "doRaiseLower");
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, nogroup, &num);
-   for (j = 0; j < num; j++)
+   lst = EwinListGetForDesktop(ewin->desktop, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, nogroup, &gnum);
+   for (j = 0; j < gnum; j++)
      {
 	ewin = gwins[j];
-	if (desks.desk[ewin->desktop].list)
+	for (i = 0; i < num - 1; i++)
 	  {
-	     for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
+	     if (lst[i]->layer == ewin->layer &&
+		 (lst[i] == ewin || !FindEwinInList(lst[i], gwins, gnum)))
 	       {
-		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer
-		      && (desks.desk[ewin->desktop].list[i] == ewin
-			  || !FindEwinInList(desks.desk[ewin->desktop].list[i],
-					     gwins, num)))
-		    {
-		       if (desks.desk[ewin->desktop].list[i] != ewin)
-			  raise = 1;
+		  if (lst[i] != ewin)
+		     raise = 1;
 
-		       j = num;
-		       break;
-		    }
+		  j = gnum;
+		  break;
 	       }
 	  }
      }

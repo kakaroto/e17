@@ -104,13 +104,14 @@ PagerUpdateTimeout(int val, void *data)
    p->update_phase++;
    if (p->update_phase >= p->h)
      {
-	int                 i;
+	int                 i, num;
+	EWin              **lst;
 
-	for (i = 0; i < desks.desk[p->desktop].num; i++)
-	   PagerEwinUpdateFromPager(p, desks.desk[p->desktop].list[i]);
+	lst = EwinListGetForDesktop(p->desktop, &num);
+	for (i = 0; i < num; i++)
+	   PagerEwinUpdateFromPager(p, lst[i]);
 	p->update_phase = 0;
      }
-   val = 0;
 }
 
 Pager              *
@@ -222,9 +223,11 @@ PagerMoveResize(EWin * ewin, int resize)
 {
    Pager              *p = ewin->pager;
    int                 w, h;
-   int                 ax, ay, i, cx, cy;
+   int                 ax, ay, cx, cy;
    char                pq;
    ImageClass         *ic;
+   EWin              **lst;
+   int                 i, num;
 
    if (!conf.pagers.enable || !p)
       return;
@@ -271,8 +274,9 @@ PagerMoveResize(EWin * ewin, int resize)
      }
    queue_up = pq;
 
-   for (i = 0; i < desks.desk[p->desktop].num; i++)
-      PagerEwinUpdateMini(p, desks.desk[p->desktop].list[i]);
+   lst = EwinListGetForDesktop(p->desktop, &num);
+   for (i = 0; i < num; i++)
+      PagerEwinUpdateMini(p, lst[i]);
 }
 
 static void
@@ -581,9 +585,11 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 void
 PagerRedraw(Pager * p, char newbg)
 {
-   int                 i, x, y, ax, ay, cx, cy;
+   int                 x, y, ax, ay, cx, cy;
    GC                  gc;
    XGCValues           gcv;
+   EWin              **lst;
+   int                 i, num;
 
    if (!conf.pagers.enable || mode.mode == MODE_DESKSWITCH)
       return;
@@ -700,12 +706,13 @@ PagerRedraw(Pager * p, char newbg)
 			  p->h / ay, x * (p->w / ax), y * (p->h / ay));
 	  }
 
-	for (i = desks.desk[p->desktop].num - 1; i >= 0; i--)
+	lst = EwinListGetForDesktop(p->desktop, &num);
+	for (i = num - 1; i >= 0; i--)
 	  {
 	     EWin               *ewin;
 	     int                 wx, wy, ww, wh;
 
-	     ewin = desks.desk[p->desktop].list[i];
+	     ewin = lst[i];
 	     if (!ewin->iconified && ewin->visible)
 	       {
 		  wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
@@ -749,7 +756,9 @@ PagerRedraw(Pager * p, char newbg)
 void
 PagerForceUpdate(Pager * p)
 {
-   int                 ww, hh, xx, yy, ax, ay, cx, cy, i;
+   int                 ww, hh, xx, yy, ax, ay, cx, cy;
+   EWin              **lst;
+   int                 i, num;
 
    if (!conf.pagers.enable || mode.mode == MODE_DESKSWITCH)
       return;
@@ -798,8 +807,9 @@ PagerForceUpdate(Pager * p)
    ScaleRect(p->pmap, root.win, 0, 0, xx, yy, root.w, root.h, ww, hh);
    XClearWindow(disp, p->win);
 
-   for (i = 0; i < desks.desk[p->desktop].num; i++)
-      PagerEwinUpdateFromPager(p, desks.desk[p->desktop].list[i]);
+   lst = EwinListGetForDesktop(p->desktop, &num);
+   for (i = 0; i < num; i++)
+      PagerEwinUpdateFromPager(p, lst[i]);
 }
 
 void
@@ -869,7 +879,9 @@ PagerEwinOutsideAreaUpdate(EWin * ewin)
 static EWin        *
 EwinInPagerAt(Pager * p, int x, int y)
 {
-   int                 i, wx, wy, ww, wh, ax, ay, cx, cy;
+   int                 wx, wy, ww, wh, ax, ay, cx, cy;
+   EWin              **lst;
+   int                 i, num;
 
    if (!conf.pagers.enable)
       return NULL;
@@ -877,11 +889,12 @@ EwinInPagerAt(Pager * p, int x, int y)
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
-   for (i = 0; i < desks.desk[p->desktop].num; i++)
+   lst = EwinListGetForDesktop(p->desktop, &num);
+   for (i = 0; i < num; i++)
      {
 	EWin               *ewin;
 
-	ewin = desks.desk[p->desktop].list[i];
+	ewin = lst[i];
 	if ((ewin->visible) && (!ewin->iconified))
 	  {
 	     wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
@@ -892,6 +905,7 @@ EwinInPagerAt(Pager * p, int x, int y)
 		return ewin;
 	  }
      }
+
    return NULL;
 }
 
@@ -1972,7 +1986,7 @@ PagersEventMouseIn(XEvent * ev)
    p = FindPager(win);
    if (p)
      {
-#if 0
+#if 0				/* Nothing done here */
 	PagerHandleMotion(p, win, ev->xcrossing.x, ev->xcrossing.y,
 			  PAGER_EVENT_MOUSE_IN);
 #endif

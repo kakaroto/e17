@@ -68,6 +68,7 @@ enlightenment_SOURCES = \
 	slideout.c		\
 	snaps.c                 \
 	sound.c			\
+	stacking.c		\
 	startup.c		\
 	sticky.c		\
 	tclass.c		\

@@ -149,27 +149,32 @@ EWin               *
 GetEwinPointerInClient(void)
 {
    Window              rt, ch;
-   int                 dum, px, py, d, i;
+   int                 dum, px, py, d;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(5, "GetEwinPointerInClient");
-   d = DESKTOPS_WRAP_NUM(DesktopAt(mode.x, mode.y));
+
+   d = DesktopAt(mode.x, mode.y);
    XQueryPointer(disp, desks.desk[d].win, &rt, &ch, &(mode.x), &(mode.y), &dum,
 		 &dum, (unsigned int *)&dum);
    px = mode.x - desks.desk[d].x;
    py = mode.y - desks.desk[d].y;
 
-   for (i = 0; i < desks.desk[d].num; i++)
+   lst = EwinListGetForDesktop(d, &num);
+   for (i = 0; i < num; i++)
      {
 	int                 x, y, w, h;
 
-	x = desks.desk[d].list[i]->x;
-	y = desks.desk[d].list[i]->y;
-	w = desks.desk[d].list[i]->w;
-	h = desks.desk[d].list[i]->h;
+	x = lst[i]->x;
+	y = lst[i]->y;
+	w = lst[i]->w;
+	h = lst[i]->h;
 	if ((px >= x) && (py >= y) && (px < (x + w)) && (py < (y + h))
-	    && (desks.desk[d].list[i]->visible))
-	   EDBUG_RETURN(desks.desk[d].list[i]);
+	    && (lst[i]->visible))
+	   EDBUG_RETURN(lst[i]);
      }
+
    EDBUG_RETURN(NULL);
 }
 
@@ -1319,6 +1324,9 @@ CreateEwin()
 			   &att);
    FocusEwinSetGrabs(ewin);
    GrabButtonGrabs(ewin);
+   EwinListAdd(&EwinListStack, ewin);
+   EwinListAdd(&EwinListFocus, ewin);
+
    EDBUG_RETURN(ewin);
 }
 
@@ -1332,14 +1340,15 @@ FreeEwin(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
+   EwinListDelete(&EwinListStack, ewin);
+   EwinListDelete(&EwinListFocus, ewin);
+
    HintsSetClientList();
 
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
    UnmatchEwinToSnapInfo(ewin);
-
-   DesktopRemoveEwin(ewin);
 
    PagerEwinOutsideAreaUpdate(ewin);
    PagerHideAllHi();
@@ -1811,7 +1820,6 @@ FloatEwin(EWin * ewin)
    if (call_depth > 256)
       EDBUG_RETURN_;
    ewin->floating = 1;
-   DesktopRemoveEwin(ewin);
    ewin->desktop = 0;
    ConformEwinToDesktop(ewin);
    RaiseEwin(ewin);
@@ -1898,14 +1906,19 @@ RaiseEwin(EWin * ewin)
    static int          call_depth = 0;
 
    EDBUG(3, "RaiseEwin");
-   call_depth++;
    if (call_depth > 256)
       EDBUG_RETURN_;
+   call_depth++;
 
+#if 0
+   printf("RaiseEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
+#endif
    if (ewin->win)
      {
 	if (ewin->floating)
-	   XRaiseWindow(disp, ewin->win);
+	  {
+	     XRaiseWindow(disp, ewin->win);
+	  }
 	else
 	  {
 	     DesktopAddEwinToTop(ewin);
@@ -1925,6 +1938,7 @@ RaiseEwin(EWin * ewin)
 	     RestackEwin(ewin);
 	  }
      }
+
    call_depth--;
    EDBUG_RETURN_;
 }
@@ -1935,9 +1949,13 @@ LowerEwin(EWin * ewin)
    static int          call_depth = 0;
 
    EDBUG(3, "LowerEwin");
-   call_depth++;
    if (call_depth > 256)
       EDBUG_RETURN_;
+   call_depth++;
+
+#if 0
+   printf("LowerEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
+#endif
    if ((ewin->win) && (!ewin->floating))
      {
 	if (ewin->has_transients)
@@ -1956,6 +1974,7 @@ LowerEwin(EWin * ewin)
 	DesktopAddEwinToBottom(ewin);
 	RestackEwin(ewin);
      }
+
    call_depth--;
    EDBUG_RETURN_;
 }

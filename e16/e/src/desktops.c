@@ -759,8 +759,6 @@ InitDesktopBgs()
 	d = &desks.desk[i];
 	d->bg = NULL;
 	desks.order[i] = i;
-	d->num = 0;
-	d->list = NULL;
 	d->tag = NULL;
 	d->x = 0;
 	d->y = 0;
@@ -1122,7 +1120,6 @@ ConformEwinToDesktop(EWin * ewin)
      }
    else if (ewin->floating)
      {
-	DesktopRemoveEwin(ewin);
 	xo = desks.desk[ewin->desktop].x;
 	yo = desks.desk[ewin->desktop].y;
 	if ((ewin->parent != root.win) && (ewin->floating == 2))
@@ -1171,39 +1168,31 @@ DesktopAt(int x, int y)
    EDBUG_RETURN(0);
 }
 
-void
+static void
 MoveStickyWindowsToCurrentDesk(void)
 {
    EWin              **lst, *ewin, *last_ewin;
    int                 i, num;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if ((lst) && (num > 0))
+   lst = EwinListGetStacking(&num);
+   last_ewin = NULL;
+   for (i = 0; i < num; i++)
      {
-	last_ewin = NULL;
-	for (i = 0; i < num; i++)
-	  {
-	     ewin = (EWin *) lst[i];
-	     if (ewin->sticky)
-	       {
-		  DesktopRemoveEwin(ewin);
-		  ewin->desktop = DESKTOPS_WRAP_NUM(desks.current);
-		  ewin->parent = desks.desk[ewin->desktop].win;
-		  EReparentWindow(disp, ewin->win,
-				  desks.desk[ewin->desktop].win, root.w,
-				  root.h);
-		  XLowerWindow(disp, ewin->win);
-		  EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
-		  DesktopAddEwinToTop(ewin);
-		  HintsSetWindowArea(ewin);
-		  HintsSetWindowDesktop(ewin);
-		  last_ewin = ewin;
-	       }
-	  }
-	if (last_ewin)
-	   RestackEwin(last_ewin);
-	Efree(lst);
+	ewin = lst[i];
+	if (!ewin->sticky)
+	   continue;
+
+	ewin->desktop = desks.current;
+	ewin->parent = desks.desk[ewin->desktop].win;
+	EReparentWindow(disp, ewin->win,
+			desks.desk[ewin->desktop].win, root.w, root.h);
+	EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
+	HintsSetWindowArea(ewin);
+	HintsSetWindowDesktop(ewin);
+	last_ewin = ewin;
      }
+   if (last_ewin)
+      RestackEwin(last_ewin);
 }
 
 void
@@ -1289,7 +1278,8 @@ GotoDesktop(int desk)
 	       {
 		  GetWinXY(desks.desk[desk].win, &x, &y);
 		  SlideWindowTo(desks.desk[desk].win, desks.desk[desk].x,
-				desks.desk[desk].y, 0, 0, conf.desks.slidespeed);
+				desks.desk[desk].y, 0, 0,
+				conf.desks.slidespeed);
 		  RaiseDesktop(desk);
 	       }
 	     StackDesktops();
@@ -1596,7 +1586,7 @@ StackDesktop(int desk)
 	_APPEND_TO_WIN_LIST(init_win2);
      }
 
-   lst = (EWin **) ListItemType(&wnum, LIST_TYPE_EWIN);
+   lst = EwinListGetStacking(&wnum);
    blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
 
    /* Sticky buttons */
@@ -1646,9 +1636,11 @@ StackDesktop(int desk)
      }
 
    /* Normal EWins on this desk */
-   for (i = 0; i < desks.desk[desk].num; i++)
+   for (i = 0; i < wnum; i++)
      {
-	ewin = desks.desk[desk].list[i];
+	ewin = lst[i];
+	if (EwinGetDesk(ewin) != desk || ewin->floating)
+	   continue;
 
 	_APPEND_TO_WIN_LIST(ewin->win);
 	if (ewin->win == mode.menu_win_covered)
@@ -1678,8 +1670,6 @@ StackDesktop(int desk)
 
    if (wl)
       Efree(wl);
-   if (lst)
-      Efree(lst);
    if (blst)
       Efree(blst);
 
@@ -1709,7 +1699,6 @@ MoveEwinToDesktop(EWin * ewin, int desk)
    EDBUG(3, "MoveEwinToDesktop");
 /*   ewin->sticky = 0; */
    ewin->floating = 0;
-   DesktopRemoveEwin(ewin);
    pdesk = ewin->desktop;
    ewin->desktop = DESKTOPS_WRAP_NUM(desk);
    DesktopAddEwinToTop(ewin);
@@ -1735,121 +1724,32 @@ MoveEwinToDesktop(EWin * ewin, int desk)
 }
 
 void
-DesktopRemoveEwin(EWin * ewin)
-{
-   int                 i, j;
-
-   EDBUG(5, "DesktopRemoveEwin");
-   if ((ewin->desktop < 0)
-       || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
-      EDBUG_RETURN_;
-   for (i = 0; i < desks.desk[ewin->desktop].num; i++)
-     {
-	if (desks.desk[ewin->desktop].list[i] == ewin)
-	  {
-	     for (j = i; j < desks.desk[ewin->desktop].num - 1; j++)
-		desks.desk[ewin->desktop].list[j] =
-		   desks.desk[ewin->desktop].list[j + 1];
-	     desks.desk[ewin->desktop].num--;
-	     if (desks.desk[ewin->desktop].num <= 0)
-	       {
-		  desks.desk[ewin->desktop].num = 0;
-		  if (desks.desk[ewin->desktop].list)
-		     Efree(desks.desk[ewin->desktop].list);
-		  desks.desk[ewin->desktop].list = NULL;
-	       }
-	     else
-	       {
-		  desks.desk[ewin->desktop].list =
-		     Erealloc(desks.desk[ewin->desktop].list,
-			      desks.desk[ewin->desktop].num * sizeof(EWin *));
-	       }
-	     EDBUG_RETURN_;
-	  }
-     }
-   EDBUG_RETURN_;
-}
-
-void
 DesktopAddEwinToTop(EWin * ewin)
 {
-   int                 i, j;
-
    EDBUG(5, "DesktopAddEwinToTop");
+
    if ((ewin->desktop < 0)
        || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
       EDBUG_RETURN_;
 
-   DesktopRemoveEwin(ewin);
-   desks.desk[ewin->desktop].num++;
-   if (desks.desk[ewin->desktop].list)
-      desks.desk[ewin->desktop].list =
-	 Erealloc(desks.desk[ewin->desktop].list,
-		  desks.desk[ewin->desktop].num * sizeof(EWin *));
-   else
-      desks.desk[ewin->desktop].list = Emalloc(sizeof(EWin *));
-   if (desks.desk[ewin->desktop].num == 1)
-     {
-	desks.desk[ewin->desktop].list[0] = ewin;
-	ForceUpdatePagersForDesktop(ewin->desktop);
-	EDBUG_RETURN_;
-     }
-   for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
-     {
-	if (desks.desk[ewin->desktop].list[i]->layer <= ewin->layer)
-	  {
-	     for (j = desks.desk[ewin->desktop].num - 1; j > i; j--)
-		desks.desk[ewin->desktop].list[j] =
-		   desks.desk[ewin->desktop].list[j - 1];
-	     desks.desk[ewin->desktop].list[i] = ewin;
-	     ForceUpdatePagersForDesktop(ewin->desktop);
-	     EDBUG_RETURN_;
-	  }
-     }
-   desks.desk[ewin->desktop].list[desks.desk[ewin->desktop].num - 1] = ewin;
+   EwinListStackingRaise(ewin);
    ForceUpdatePagersForDesktop(ewin->desktop);
+
    EDBUG_RETURN_;
 }
 
 void
 DesktopAddEwinToBottom(EWin * ewin)
 {
-   int                 i, j;
-
    EDBUG(5, "DesktopAddEwinToBottom");
+
    if ((ewin->desktop < 0)
        || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
       EDBUG_RETURN_;
 
-   DesktopRemoveEwin(ewin);
-   desks.desk[ewin->desktop].num++;
-   if (desks.desk[ewin->desktop].list)
-      desks.desk[ewin->desktop].list =
-	 Erealloc(desks.desk[ewin->desktop].list,
-		  desks.desk[ewin->desktop].num * sizeof(EWin *));
-   else
-      desks.desk[ewin->desktop].list = Emalloc(sizeof(EWin *));
-   if (desks.desk[ewin->desktop].num == 1)
-     {
-	desks.desk[ewin->desktop].list[0] = ewin;
-	ForceUpdatePagersForDesktop(ewin->desktop);
-	EDBUG_RETURN_;
-     }
-   for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
-     {
-	if (desks.desk[ewin->desktop].list[i]->layer < ewin->layer)
-	  {
-	     for (j = desks.desk[ewin->desktop].num - 1; j > i; j--)
-		desks.desk[ewin->desktop].list[j] =
-		   desks.desk[ewin->desktop].list[j - 1];
-	     desks.desk[ewin->desktop].list[i] = ewin;
-	     ForceUpdatePagersForDesktop(ewin->desktop);
-	     EDBUG_RETURN_;
-	  }
-     }
-   desks.desk[ewin->desktop].list[desks.desk[ewin->desktop].num - 1] = ewin;
-
+   EwinListStackingLower(ewin);
    ForceUpdatePagersForDesktop(ewin->desktop);
+
    EDBUG_RETURN_;
 }
 
@@ -1863,7 +1763,6 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
    ewin->floating = 0;
    if (desk != ewin->desktop && !ewin->sticky)
      {
-	DesktopRemoveEwin(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
 	ewin->desktop = DESKTOPS_WRAP_NUM(desk);
 	DesktopAddEwinToTop(ewin);

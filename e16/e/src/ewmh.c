@@ -167,21 +167,6 @@ atom_list_set(Atom * atoms, int size, int *count, Atom atom, int set)
 }
 
 /*
- * Return index of window in list, -1 if not found.
- * Search starts at end (utility to help finding the stacking order).
- */
-static int
-winlist_rindex(Window * wl, int len, Window win)
-{
-   int                 i;
-
-   for (i = len - 1; i >= 0; i--)
-      if (win == wl[i])
-	 break;
-   return i;
-}
-
-/*
  * Initialize EWMH stuff
  */
 void
@@ -382,10 +367,11 @@ void
 EWMH_SetClientList(void)
 {
    Window             *wl;
-   int                 i, j, k, nwin, num;
+   int                 i, nwin, num;
    EWin              **lst;
 
    EDBUG(6, "EWMH_SetClientList");
+
    /* Mapping order */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    wl = NULL;
@@ -394,39 +380,24 @@ EWMH_SetClientList(void)
      {
 	wl = Emalloc(sizeof(Window) * num);
 	for (i = 0; i < num; i++)
-	  {
-	     EWin               *ewin = lst[i];
-
-	     if (ewin->iconified == 4)
-		continue;
-	     wl[nwin++] = ewin->client.win;
-	  }
+	   wl[nwin++] = lst[i]->client.win;
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, wl, nwin);
+	Efree(lst);
      }
-   _ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, wl, nwin);
-   if (lst)
-      Efree(lst);
 
-   /*
-    * Stacking order.
-    * We will only bother ourselves with the ones on this desktop.
-    */
-   num = desks.desk[desks.current].num;
-   lst = desks.desk[desks.current].list;
-   for (i = j = 0; i < num; i++)
-     {
-	Window              win = lst[i]->client.win;
-
-	k = winlist_rindex(wl, nwin - j, win);
-	if (k < 0)
-	   continue;
-	/* Swap 'em */
-	wl[k] = wl[nwin - 1 - j];
-	wl[nwin - 1 - j] = win;
-	j++;
-     }
+   /* Stacking order */
+   lst = EwinListGetStacking(&num);
+   /* FIXME: num must be unchanged here! Check! */
+   if (num != nwin)
+      printf("*** ERROR: %s %d\n", __FILE__, __LINE__);
+   nwin = 0;
+   for (i = num - 1; i >= 0; i--)
+      wl[nwin++] = lst[i]->client.win;
    _ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, wl, nwin);
+
    if (wl)
       Efree(wl);
+
    EDBUG_RETURN_;
 }
 
