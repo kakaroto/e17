@@ -292,7 +292,6 @@ int main (int argc, char **argv)
 			  al = 255;
 		       __imlib_render_str(im, fn, x, ty, str,
 					  255, 255, 255, al, 
-					  IMLIB_ALPHA | IMLIB_RED | IMLIB_GREEN | IMLIB_BLUE, 
 					  0, &retw, &reth, 0);
 		       up = imlib_update_append_rect(up, px + 5, 5 + ty + (py - y), retw, reth);
 		       up = imlib_update_append_rect(up, x + 5, 5 + ty, retw, reth);

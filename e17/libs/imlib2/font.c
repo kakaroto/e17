@@ -44,26 +44,6 @@ __imlib_create_font_raster(int width, int height)
    return rmap;
 }
 
-/* duplicate the rmap */
-static TT_Raster_Map *
-__imlib_duplicate_raster(TT_Raster_Map * rmap)
-{
-   TT_Raster_Map      *new_rmap;
-   
-   new_rmap = malloc(sizeof(TT_Raster_Map));
-   *new_rmap = *rmap;
-   new_rmap->bitmap = malloc(new_rmap->size);
-   memcpy(new_rmap->bitmap, rmap->bitmap, new_rmap->size);
-   return new_rmap;
-}
-
-/* clear out the rmap and set to 0 */
-static void
-__imlib_clear_raster(TT_Raster_Map * rmap)
-{
-   memset(rmap->bitmap, 0, rmap->size);
-}
-
 /* free the rmap */
 static void
 __imlib_destroy_font_raster(TT_Raster_Map * rmap)
@@ -241,7 +221,6 @@ __imlib_load_font(char *fontname)
    TT_Set_Instance_Resolutions(f->instance, dpi, dpi);
    TT_Set_Instance_CharSize(f->instance, size * 64);
    n = f->properties.num_CharMaps;
-   printf("font with %i charmaps %i glyphs\n", n, f->properties.num_Glyphs);
    
    for (i = 0; i < n; i++)
      {
@@ -412,7 +391,7 @@ __imlib_calc_size(ImlibFont *f, int *width, int *height, char *text)
 
 void
 __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
-		   DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibChanelMask chm,
+		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		   char dir, int *retw, int *reth, int blur)
 {
    DATA32              lut[9], wmask, *p, pp, *tmp;
@@ -427,7 +406,17 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 
    /* if we draw outside the image from here - give up */
    if ((drx > im->w) || (dry > im->h))
-      return;
+     {
+	if ((retw) || (reth))
+	  {
+	     __imlib_calc_size(fn, &w, &h, text);
+	     if (retw)
+		*retw = w;
+	     if (reth)
+		*reth = h;
+	  }
+	return;
+     }
    /* build LUT table */
    for (i = 0; i < 9; i++)
       lut[i] = (DATA32)(
@@ -435,15 +424,6 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 			((int)r << 16) |
 			((int)g << 8) |
 			((int)b));
-   /* build write mask */
-   if (chm & MSK_ALPHA)
-      wmask = 0xff000000;
-   if (chm & MSK_RED)
-      wmask |= 0xff0000;
-   if (chm & MSK_GREEN)
-      wmask |= 0xff00;
-   if (chm & MSK_BLUE)
-      wmask |= 0xff;
 
    /* get instance metrics */
    TT_Get_Instance_Metrics(fn->instance, &imetrics);
@@ -457,24 +437,22 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 
    /* figure out the size this text string is going to be */
    __imlib_calc_size(fn, &w, &h, text);
+   if (retw)
+      *retw = w;
+   if (reth)
+      *reth = h;
    /* if the text is completely outside the image - give up */
    if (((drx + w) <= 0) || ((dry + h) <= 0))
       return;
    /* create a scrate pad for it */
    rmap = __imlib_create_font_raster(w, h);
-   if (retw)
-      *retw = w;
-   if (reth)
-      *reth = h;
    rmap->flow = TT_Flow_Up;
    /* render the text into the scratch pad */
    for (i = 0; text[i]; i++)
      {
-	j = text[i];
-	
+	j = text[i];	
 	if (!TT_VALID(fn->glyphs[j]))
-	   continue;
-	
+	   continue;	
 	TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
 	
 	xmin = metrics.bbox.xMin & -64;
@@ -516,10 +494,8 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	/* This was the cause of strange misplacements when Bit.rows */
 	/* was unsigned.                                             */
 	
-	if (xmin >= (int)rmap->width ||
-	    ymin >= (int)rmap->rows ||
-	    xmax < 0 ||
-	    ymax < 0)
+	if ((xmin >= (int)rmap->width) || (ymin >= (int)rmap->rows) ||
+	    (xmax < 0) || (ymax < 0))
 	   continue;
 	
 	/* Note that the clipping check is performed _after_ rendering */
@@ -530,8 +506,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	/* size of the small pixmap.  Take care of that here.          */
 	
 	if (xmax - xmin + 1 > rtmp->width)
-	   xmax = xmin + rtmp->width - 1;
-	
+	   xmax = xmin + rtmp->width - 1;	
 	if (ymax - ymin + 1 > rtmp->rows)
 	   ymax = ymin + rtmp->rows - 1;
 	
