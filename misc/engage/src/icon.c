@@ -482,13 +482,7 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
     if (!strcmp(emission, "engage,app,open")) {
       switch (icon->type) {
       case application_link:
-        if ((pid = fork()) < 0)
-          return;
-        else if (pid == 0) {    /* child */
-          execl("/bin/sh", "sh", "-c", icon->data.applnk.command, NULL);
-        } else {                /* parent */
-
-        }
+        ecore_exe_run(icon->data.applnk.command, NULL);
         break;
       case docked_icon:
         break;
