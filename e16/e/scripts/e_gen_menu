@@ -30,8 +30,13 @@ export PATH
 OUT_DIR=$ECONFDIR
 OUT=$OUT_DIR"/file.menu"
 
+WINDOWID=`eesh -ewait window_list | awk '$3 ~ "^Message$" { printf("%s ", $1)}'`
+for i in $WINDOWID; do
+  eesh -e "win_op "$i" close"
+done
+
 eesh -e "dialog_ok Menus are being generated... Please Wait."
-WINDOWID=`eesh -ewait window_list | grep Message | awk '{printf("%s", $1);}'`
+WINDOWID=`eesh -ewait window_list | awk '$3 ~ "^Message$" { printf("%s ", $1)}'`
 
 e_gen_kde_menu menus_kde $OUT_DIR $OUT_DIR"/kde.menu"
 e_gen_gnome_menu menus_gnome $OUT_DIR $OUT_DIR"/gnome.menu"
@@ -62,14 +67,12 @@ touch $OUT
 
 # generate menu looking for Epplets - you might not have any yet.... but expect to
 OUT=$OUT_DIR"/epplets.menu"
-EPPLETS=`/bin/ls $EBIN"/"*.epplet 2> /dev/null | awk '{printf("%s ", $1);}'`
+EPPLETS="`/bin/ls $EBIN"/"*.epplet 2> /dev/null`"
 if [ -n "$EPPLETS" ]; then
   echo \"Enlightenment Epplets\" > $OUT
-  for I in $EPPLETS; do
-    NAME=`echo $I | sed 's/.epplet//g'`
-    NAME=`basename $NAME`
-    echo \"$NAME\" \"$EROOT"/epplet_icons/"$NAME".icon"\" exec \"$I\" >> $OUT
-  done
+  echo "$EPPLETS" | \
+    sed -e 's:\(^.*/\([^/]*\).epplet$\):\"\2\" \"'$EROOT'/epplet_icons/\2.icon\" exec \"\1\":' \
+    >> $OUT
 fi
 touch $OUT
 
@@ -106,6 +109,9 @@ if [ ! -f "$OUT" ]; then
   echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
 fi
 touch $OUT
-eesh -e "win_op "$WINDOWID" close"
+
+for i in $WINDOWID; do
+  eesh -e "win_op "$i" close"
+done
 eesh -e "reload_menus"
 eesh -e "dialog_ok Menu generation complete."

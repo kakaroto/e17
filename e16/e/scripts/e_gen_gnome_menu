@@ -30,86 +30,124 @@ if [ $# -lt 3 ]; then
   echo "    "$0" base_name output_dir output_file.menu [gnome_app_base_dir]"
   exit
 fi
-# setup variables
-BASE=$1
-ODIR=$2
-OUT=$3
 
+# setup variables
+BASE="$1"
+ODIR="$2"
+OUT="$3"
+
+CONVERT_CMD="`which convert`"
 
 # NEW
 find_app_base_dir() {
-  ADIR=`gnome-config --prefix`"/share/gnome/apps"
+  ADIR="`gnome-config --prefix`/share/gnome/apps"
   if [ ! -d "$ADIR" ]; then
-    ADIR=/usr/share/gnome/apps
+    ADIR="/usr/share/gnome/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/usr/share/apps
+    ADIR="/usr/share/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/usr/local/share/apps
+    ADIR="/usr/local/share/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/usr/gnome/share/apps
+    ADIR="/usr/gnome/share/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/usr/local/gnome/share/apps
+    ADIR="/usr/local/gnome/share/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/opt/gnome/share/apps
+    ADIR="/opt/gnome/share/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/opt/gnome/share/gnome/apps
+    ADIR="/opt/gnome/share/gnome/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/usr/X11R6/share/gnome/apps
+    ADIR="/usr/X11R6/share/gnome/apps"
+  else
+    return
   fi
   if [ ! -d "$ADIR" ]; then
-    ADIR=/opt/local/share/apps
+    ADIR="/opt/local/share/apps"
+  else
+    return
   fi
 }
 
 find_icon_base_dir() {
-  IDIR=`gnome-config --prefix`"/share/pixmaps"
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/usr/share/pixmaps
+  IDIR="`gnome-config --prefix`/share/pixmaps"
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/usr/share/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/usr/share/gnome/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/usr/share/gnome/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/usr/local/share/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/usr/local/share/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/usr/gnome/share/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/usr/gnome/share/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/usr/local/gnome/share/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/usr/local/gnome/share/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/opt/gnome/share/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/opt/gnome/share/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/opt/gnome/share/gnome/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/opt/gnome/share/gnome/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/usr/X11R6/share/gnome/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/usr/X11R6/share/gnome/pixmaps"
+  else
+    return
   fi
-  if [ ! -f $IDIR"/gnome-help.png" ]; then
-    IDIR=/opt/local/share/pixmaps
+  if [ ! -f "${IDIR}/gnome-help.png" ]; then
+    IDIR="/opt/local/share/pixmaps"
+  else
+    return
   fi
 }
 
 if [ $# -eq 4 ]; then
-  DIR=$4
+  DIR="$4"
 else
    find_app_base_dir
-   DIR=$ADIR
+   DIR="$ADIR"
 fi
 
 # In most cases I believe the icons can be found in the directory that is
 # ../../pixmaps from $ADIR.
 find_icon_base_dir
-GICONDIR=$IDIR
+GICONDIR="$IDIR"
 
 # if the apps dir doesn't exist in the end then exit
 if [ ! -d "$DIR" ]; then
@@ -117,100 +155,87 @@ if [ ! -d "$DIR" ]; then
 fi
 # if the destination dir doesnt exist - create it
 if [ ! -d "$ODIR" ]; then
-  mkdir $ODIR
+  mkdir "$ODIR"
 fi
 
 # function to check its a GNOME desktop file 
 is_desktop() {
-  VAL=`grep "\[Desktop Entry\]" $1`
+  VAL="`grep "\[Desktop Entry\]" $1`"
   if [ -n "$VAL" ]; then
-    VAL=`grep "^Name\[$LANG\]=" $1 | head -1`
-    if [ ! -n "$VAL" ]; then
-      VAL=`grep '^Name=' $1 | head -1`
-    fi
-    if [ -n "$VAL" ]; then
-      NAME=`echo $VAL | awk -F= '{printf("%s", $2);}'`
-      echo $NAME | tr -d '\n'
+    IS_DESKTOP_RESULT="`awk -F= 'BEGIN { n="" } END { printf("%s", n) } $1 ~ "^Name\\\['$LANG'\\\]" {n=$2;exit} $1 ~ "^Name$" {n=$2}' $1`"
+    if [ -n "$IS_DESKTOP_RESULT" ]; then
       return 0
     fi
   fi
+  IS_DESKTOP_RESULT=""
   return 1
 }
 
 # function to get the sortorder list -if there is one
 get_sortorder() {
-  if [ -f $1"/.order" ]; then
-    VAL=`cat $1"/.order" | awk '{printf("%s ", $1);}' | sed "s/,/ /g"`
+  if [ -f "${1}/.order" ]; then
+    VAL="`awk '{printf("%s ", $1);}' $1"/.order" | sed 's/,/ /g'`"
   else
     VAL=""
   fi
-  FILES=`/bin/ls $1 | awk '{printf("%s ", $1);}'`
-  VAL2=$VAL
-  for I in $FILES; do
+  GET_SORT_ORDER_RESULT="$VAL"
+  for I in `/bin/ls "$1"`; do
     IS_IN="n"
     for J in $VAL; do
       if [ "$J" = "$I" ]; then
         IS_IN="y"
+	continue 2
       fi
     done
-    if [ "$IS_IN" = "n" ]; then
-      VAL2=$VAL2$I" "
-    fi
+    GET_SORT_ORDER_RESULT="${GET_SORT_ORDER_RESULT}${I} "
   done
-  echo $VAL2
   return 0
 }
 
 get_icon() {
-  VAL=`grep '^Icon=' $1 | head -1`
-  if [ -n "$VAL" ]; then
-    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
-    # If we have "convert" and the icon havsn't already been scaled down, scale
-    # it down now!
-
-    EICONDIR="$ODIR/gnome_icons"
-    if [ ! -d $EICONDIR ];then
-      mkdir $EICONDIR
-    fi
-
-    # The "Icon" entery can contain an absolute path, if it does forget the
-    # $GICONDIR
-    VAL3=`echo $VAL2 | grep /`
-    if [ "$VAL3" != "$VAL2" ];then
-      if [ -n "$VAL2" ]; then
-	GICON=$GICONDIR/$VAL2
-	EICON=$EICONDIR/$VAL2
-      fi
-    else
-      if [ -n "$VAL3" ]; then
-	GICON=$VAL3
-	EICON=$EICONDIR/"`basename "$VAL3"`"
-      fi
-    fi
-    CONVERT=`which convert`
-    if [ -n "$CONVERT" ]; then
-      if [ -n "$GICON" ]; then
-        if [ -f "$GICON" ]; then
-          if [ ! -f "$EICON" ]; then
-            $CONVERT $GICON -geometry 16x16 $EICON
-          fi
-        fi
-      fi
-    fi
-    echo "$EICON" | tr -d '\n'
-    return 0
+  VAL2="`awk -F= '$1 ~ "^Icon$" {printf("%s", $2); exit;}' $1`"
+  if [ -z "$VAL2" ]; then
+    GET_ICON_RETURN=""
+    return 1
   fi
-  return 1
+
+  # If we have "convert" and the icon havsn't already been scaled down, scale
+  # it down now!
+
+  GET_ICON_RETURNDIR="${ODIR}/gnome_icons"
+  if [ ! -d "$GET_ICON_RETURNDIR" ];then
+    mkdir "$GET_ICON_RETURNDIR"
+  fi
+
+  # The "Icon" entery can contain an absolute path, if it does forget the
+  # $GICONDIR
+  VAL3="`echo $VAL2 | grep /`"
+  if [ "$VAL3" != "$VAL2" ];then
+    if [ -n "$VAL2" ]; then
+	GICON="$GICONDIR/$VAL2"
+	GET_ICON_RETURN="$GET_ICON_RETURNDIR/$VAL2"
+    fi
+  else
+    if [ -n "$VAL3" ]; then
+	GICON="$VAL3"
+	GET_ICON_RETURN="$GET_ICON_RETURNDIR/`basename "$VAL3"`"
+    fi
+  fi
+  if [ -n "$CONVERT_CMD" -a -n "$GICON" -a -f "$GICON" -a ! \
+        -f "$GET_ICON_RETURN" ]; then
+    "$CONVERT_CMD" "$GICON" -geometry 16x16 "$GET_ICON_RETURN"
+  fi
+  
+  return 0
 }
 
 get_exec() {
-  VAL=`grep '^Exec=' $1 | head -1`
-  if [ -n "$VAL" ]; then
-    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
-    echo $VAL2 | tr -d '\n'
-    return 0
+  GET_EXEC_RETURN="`awk -F= '$1 ~ "^Exec$" {printf("%s", $2);}' $1`"
+  if [ -z "$GET_EXEC_RETURN" ]; then
+    GET_EXEC_RETURN=""
+    return 1
   fi
-  return 1
+  return 0
 }
 
 E_TITLE="GNOME Menu"
@@ -219,41 +244,48 @@ ORDER=""
 # if a .directory file exists - read it
 F=$DIR"/.directory"
 if [ -f $F ]; then
-  NAME=`is_desktop $F`
+  is_desktop $F
+  NAME="$IS_DESKTOP_RESULT"
   if [ -n "$NAME" ]; then
-    E_TITLE=$NAME
+    E_TITLE="$NAME"
   fi
 fi
-ORDER=`get_sortorder $DIR`
+get_sortorder "$DIR"
+ORDER="$GET_SORT_ORDER_RESULT"
 
 # print the menu title
 echo \"$E_TITLE\" > $OUT
 
 # for every subdir in the dir list or order - print it
 for F in $ORDER; do
-  FF=$DIR"/"$F
+  FF="${DIR}/${F}"
   if [ -d "$FF" ]; then
-    FFF=$FF"/.directory"
-    if [ -f $FFF ]; then
-      NAME=`is_desktop $FFF`
+    FFF="${FF}/.directory"
+    if [ -f "$FFF" ]; then
+      is_desktop "$FFF"
+      NAME="$IS_DESKTOP_RESULT"
     else
-      NAME=`echo $F | sed "s/_/ /g"`
+      NAME="`echo $F | sed 's/_/ /g'`"
     fi
-    FFF=$ODIR"/"$BASE
+    FFF="${ODIR}/${BASE}"
     if [ ! -d "$FFF" ]; then
-      mkdir $FFF
+      mkdir "$FFF"
     fi
-    MFILE=$FFF"/"$F.menu
-    $0 $BASE"/"$F $ODIR $MFILE $DIR"/"$F
-	ICO=`get_icon $FF"/.directory"`
-    echo \"$NAME\" \"$ICO\" menu \"$MFILE\" >> $OUT
+    MFILE="${FFF}/${F}.menu"
+    "$0" "${BASE}/${F}" "$ODIR" "$MFILE" "${DIR}/${F}"
+    get_icon "${FF}/.directory"
+    ICO="$GET_ICON_RETURN"
+    echo "\"$NAME\" \"$ICO\" menu \"$MFILE\"" >> $OUT
   else
     if [ -r "$FF" ]; then
-      NAME=`is_desktop $FF`
+      is_desktop $FF
+      NAME="$IS_DESKTOP_RESULT"
       if [ -n "$NAME" ]; then
-	EXE=`get_exec $FF`
-	    ICO=`get_icon $FF`
-	echo \"$NAME\" \"$ICO\" exec \"$EXE\" >> $OUT
+	get_exec "$FF"
+	EXE="$GET_EXEC_RETURN"
+        get_icon "$FF"
+        ICO="$GET_ICON_RETURN"
+	echo "\"$NAME\" \"$ICO\" exec \"$EXE\"" >> $OUT
       fi
     fi
   fi
