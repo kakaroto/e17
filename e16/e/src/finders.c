@@ -349,12 +349,15 @@ ListTransientsFor(Window win, int *num)
    j = 0;
    for (i = 0; i < n; i++)
      {
-	if (win == ewins[i]->client.transient_for)
-	  {
-	     j++;
-	     lst = Erealloc(lst, sizeof(EWin *) * j);
-	     lst[j - 1] = ewins[i];
-	  }
+	if (win != ewins[i]->client.transient_for)
+	   continue;
+	/* A self-reference is not a valid transient */
+	if (win == ewins[i]->client.win)
+	   continue;
+
+	j++;
+	lst = Erealloc(lst, sizeof(EWin *) * j);
+	lst[j - 1] = ewins[i];
      }
    *num = j;
    EDBUG_RETURN(lst);

@@ -397,7 +397,9 @@ AddToFamily(Window win)
 	/* tag the parent window if this is a transient */
 	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
 			 LIST_TYPE_EWIN);
-	if (ewin2)
+
+	/* Don't count a self-reference as a valid transient */
+	if (ewin2 && ewin2 != ewin)
 	   ewin2->has_transients++;
 
 	if (Conf.focus.transientsfollowleader)
@@ -1738,7 +1740,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
-      Eprintf("doMoveResizeEwin %#lx %d+%d %d*%d %d %s\n",
+      Eprintf("doMoveResizeEwin(%d) %#lx %d+%d %d*%d %d %s\n", call_depth,
 	      ewin->client.win, x, y, w, h, flags, EwinGetTitle(ewin));
 
    if (Mode.mode == MODE_NONE && Mode.move.check)
