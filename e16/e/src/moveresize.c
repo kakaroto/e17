@@ -95,10 +95,10 @@ ActionMoveEnd(EWin * ewin)
 
    EDBUG(6, "doMoveEnd");
 
-   GrabPointerRelease();
-
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
+
+   GrabPointerRelease();
 
    SoundPlay("SOUND_MOVE_STOP");
 
@@ -357,10 +357,11 @@ ActionResizeEnd(EWin * ewin)
    int                 i;
 
    EDBUG(0, "doResizeEnd");
-   GrabPointerRelease();
 
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
+
+   GrabPointerRelease();
 
    SoundPlay("SOUND_RESIZE_STOP");
 
