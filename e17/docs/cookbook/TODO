@@ -13,7 +13,10 @@ benr:
 
 dj2: 
         *) Add Evas Smart Object recipe
-
+        - writting native functions to call from embryo
+        - lists, hashs and trees, oh my
+        - text conversions with ecore
+        - swallowing ??? (benr may have this one)
 
 * = Done.
 
