@@ -73,7 +73,7 @@ geist_document_load_xml(char *xml, gint * err_return)
       D_RETURN(3, NULL);
    }
 
-   /* Check the document is of the right kind */
+   /* Check the document is of the right type */
    cur = doc->root;
    if (cur == NULL)
    {
@@ -151,10 +151,14 @@ geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
       {
          layers = geist_layer_list_parse_xml(doc, ns, cur, ret);
       }
+      else
+         weprintf("unknown element '%s' found when parsing document",
+                  cur->name);
       cur = cur->next;
    }
 
    geist_document_rename(ret, name);
+   xmlFree(name);
    if (ret->bg_fill)
       geist_fill_free(ret->bg_fill);
    ret->bg_fill = fill;
@@ -195,11 +199,16 @@ geist_layer_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    while (cur != NULL)
    {
       if ((!strcmp(cur->name, "Layer")) && (cur->ns == ns))
+      {
          layer = geist_layer_parse_xml(doc, ns, cur, parent);
-      if (layer)
-         ret = geist_list_add_end(ret, layer);
+         if (layer)
+            ret = geist_list_add_end(ret, layer);
+         else
+            weprintf("invalid layer found\n");
+      }
       else
-         weprintf("invalid layer found\n");
+         weprintf("unexpected element '%s' found when parsing the layer list",
+                  cur->name);
 
       cur = cur->next;
    }
@@ -228,9 +237,12 @@ geist_layer_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    while (cur != NULL)
    {
       if ((!strcmp(cur->name, "Name")) && (cur->ns == ns))
-         ret->name = estrdup(xmlNodeGetContent(cur->childs));
+         ret->name = xmlNodeGetContent(cur->childs);
       else if ((!strcmp(cur->name, "Objects")) && (cur->ns == ns))
          ret->objects = geist_object_list_parse_xml(doc, ns, cur, ret);
+      else
+         weprintf("unexpected element '%s' found when parsing a layer\n",
+                  cur->name);
 
       cur = cur->next;
    }
@@ -257,8 +269,12 @@ geist_object_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
          if (obj)
             ret = geist_list_add_end(ret, obj);
          else
-            weprintf("invalid object\n");
+            weprintf("invalid object found");
       }
+      else
+         weprintf
+            ("unexpected element '%s' found when parsing the object list\n",
+             cur->name);
       cur = cur->next;
    }
 
@@ -290,7 +306,7 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
 
    if (!type)
    {
-      weprintf("invalid object found\n");
+      weprintf("invalid object found, no 'type' element\n");
       D_RETURN(3, NULL);
    }
 
@@ -298,6 +314,7 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    /* TODO this breaks the object model right now */
 
    type_int = geist_object_get_type_from_string(type);
+   xmlFree(type);
    switch (type_int)
    {
      case GEIST_TYPE_RECT:
@@ -330,20 +347,29 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    cur = cur->childs;
    while (cur != NULL)
    {
-      if ((!strcmp(c->name, "Name")) && (c->ns == ns))
+      if ((!strcmp(cur->name, "Name")) && (cur->ns == ns))
       {
          if (ret->name)
             efree(ret->name);
-         ret->name = estrdup(xmlNodeGetContent(cur->childs));
+         ret->name = xmlNodeGetContent(cur->childs);
       }
-      else if ((!strcmp(c->name, "Sizemode")) && (c->ns == ns))
-         ret->sizemode =
-            geist_object_get_sizemode_from_string(xmlNodeGetContent
-                                                  (cur->childs));
-      else if ((!strcmp(c->name, "Alignment")) && (c->ns == ns))
-         ret->alignment =
-            geist_object_get_alignment_from_string(xmlNodeGetContent
-                                                   (cur->childs));
+      else if ((!strcmp(cur->name, "Sizemode")) && (cur->ns == ns))
+      {
+         char *temp;
+
+         temp = xmlNodeGetContent(cur->childs);
+         ret->sizemode = geist_object_get_sizemode_from_string(temp);
+         xmlFree(temp);
+      }
+      else if ((!strcmp(cur->name, "Alignment")) && (cur->ns == ns))
+      {
+         char *temp;
+
+         temp = xmlNodeGetContent(cur->childs);
+         ret->alignment = geist_object_get_alignment_from_string(temp);
+         xmlFree(temp);
+      }
+
       cur = cur->next;
    }
    geist_object_update_alignment(ret);
@@ -373,7 +399,7 @@ geist_parse_rect_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 static geist_object *
 geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
-   geist_object *ret;
+   geist_object *ret = NULL;
    int r, g, b, a;
    char *fontname = NULL;
    int fontsize = 0;
@@ -399,7 +425,9 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
       cur = cur->next;
    }
 
-   ret = geist_text_new_with_text(0, 0, fontname, fontsize, text, a, r, g, b);
+   if (fontname && text)
+      ret =
+         geist_text_new_with_text(0, 0, fontname, fontsize, text, a, r, g, b);
 
    D_RETURN(3, ret);
 }
@@ -407,7 +435,7 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 static geist_object *
 geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
-   geist_object *ret;
+   geist_object *ret = NULL;
    char *filename = NULL;
 
    D_ENTER(3);
@@ -416,11 +444,19 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    while (cur != NULL)
    {
       if ((!strcmp(cur->name, "Filename")) && (cur->ns == ns))
+      {
          filename = xmlNodeGetContent(cur->childs);
+      }
       cur = cur->next;
    }
 
-   ret = geist_image_new_from_file(0, 0, filename);
+   if (filename)
+   {
+      ret = geist_image_new_from_file(0, 0, filename);
+      xmlFree(filename);
+   }
+   else
+      weprintf("invalid image object found - no 'Filename' element\n");
 
    D_RETURN(3, ret);
 }
@@ -441,6 +477,11 @@ geist_document_save_xml(geist_document * document, char *filename)
    D_ENTER(3);
 
    doc = xmlNewDoc("1.0");
+   if (!doc)
+   {
+      weprintf("couldn't create XML document");
+      D_RETURN(3, 1);
+   }
    doc->root = xmlNewDocNode(doc, NULL, "Geist", NULL);
    ns = xmlNewNs(doc->root, "http://www.linuxbrit.co.uk/geist", "geist");
 
@@ -490,7 +531,6 @@ geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent, xmlNsPtr ns)
 
    /* Other properties go here */
 
-   /* OBJECTS */
    if (layer->objects)
       subtree = xmlNewChild(newlayer, ns, "Objects", NULL);
 
@@ -621,7 +661,12 @@ geist_xml_read_int(xmlNodePtr cur, char *key, int def)
    if (prop)
       i = atoi(prop);
    else
+   {
+      weprintf("no value found for property '%s', using default value of %d",
+               key, def);
       i = def;
+   }
+   xmlFree(prop);
 
    D_RETURN(5, i);
 }
