@@ -30,7 +30,10 @@ gevasanim_SOURCES = \
 INCLUDES = -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src \
 	@GTK_CFLAGS@ @evas_cflags@
 
-gevasanim_LDADD = @evas_libs@ -lm @GTK_LIBS@  -ledb -lgevas
+gevasanim_LDADD =  @evas_libs@ -lm @GTK_LIBS@ \
+	@edb_libs@  \
+	-lgevas
+	#/usr/local/lib/libgevas.a
 
-# $(INTLLIBS)
+
 

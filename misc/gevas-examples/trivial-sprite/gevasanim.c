@@ -98,7 +98,7 @@ void setup_sprite()
     
     gevas_sprite_load_from_metadata(
         sprite,
-        "edb:///cvs/writeE/misc/gevas/demo-sprite/cell?prefix=cell" );
+        "edb:///cvs/writeE/misc/gevas-examples/trivial-sprite/cell?prefix=cell" );
 
     gevas_sprite_move( sprite, 100, 100 );
     gevas_sprite_show( sprite );
