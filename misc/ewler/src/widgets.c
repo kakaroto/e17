@@ -318,7 +318,7 @@ widget_changed( Ewl_Widget *w )
 }
 
 static void
-__widget_realized( Ewl_Widget *w, void *ev_data, void *user_data )
+__widget_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	widget_changed( w );
 }
@@ -350,7 +350,9 @@ widget_create_info( Ewl_Widget *w, const char *name, char *widget_name )
 	ecore_hash_set( widgets_type_rev, w, strdup( name ) );
 
 	ewl_callback_append( w, EWL_CALLBACK_REALIZE,
-											 __widget_realized, NULL );
+											 __widget_changed, NULL );
+	ewl_callback_append( w, EWL_CALLBACK_CONFIGURE,
+											 __widget_changed, NULL );
 }
 
 void
@@ -506,7 +508,8 @@ elem_new( const char *type, xmlTextReaderPtr reader )
 	} else if( !strcmp( type, "enum" ) ) {
 		elem->w_enum.w_type = WIDGET_ENUM_TYPE;
 		elem->w_enum.map = ecore_hash_new( ecore_str_hash, ecore_str_compare );
-		elem->w_enum.map_rev = ecore_hash_new( ecore_direct_hash, ecore_direct_compare );
+		elem->w_enum.map_rev =
+			ecore_hash_new( ecore_direct_hash, ecore_direct_compare );
 	} else if( !strcmp( type, "enum_val" ) ) {
 		FREE(elem);
 	} else if( type[len-1] == '*' && strpbrk( type, " \t" ) ) {

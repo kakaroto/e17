@@ -28,14 +28,16 @@ main( int argc, char *argv[] )
 	ewl_window_set_title( EWL_WINDOW(main_win), "Ewler" );
 	ewl_callback_append( main_win, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_main_window, NULL );
-#if 0
+	ewl_object_set_fill_policy( EWL_OBJECT(main_win), EWL_FLAG_FILL_SHRINK );
 	ewl_object_set_minimum_size( EWL_OBJECT(main_win), 300, 400 );
+#if 0
 	ewl_object_set_maximum_size( EWL_OBJECT(main_win), 300, 400 );
 #endif
 	ewl_object_set_preferred_size( EWL_OBJECT(main_win), 300, 400 );
 	ewl_widget_show( main_win );
 
 	main_layout = ewl_vbox_new();
+	ewl_object_set_fill_policy( EWL_OBJECT(main_layout), EWL_FLAG_FILL_SHRINK );
 	ewl_container_append_child( EWL_CONTAINER(main_win), main_layout );
 	ewl_widget_show( main_layout );
 

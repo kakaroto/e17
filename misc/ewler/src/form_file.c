@@ -7,6 +7,7 @@
 #include "ewler.h"
 #include "form.h"
 #include "widgets.h"
+#include "selected.h"
 
 #define ENCODING "ISO-8859-1"
 
@@ -63,33 +64,58 @@ __write_element( void *val )
 			if( data->w_str.value ) {
 				xmlTextWriterWriteString( writer, data->w_str.value );
 				xmlTextWriterEndElement( writer );
-			} else
+			} else {
 				xmlTextWriterFullEndElement( writer );
+				xmlTextWriterWriteString( writer, "\n" );
+			}
 			break;
 		case WIDGET_POINTER_TYPE:
 			xmlTextWriterFullEndElement( writer );
+			xmlTextWriterWriteString( writer, "\n" );
 			break;
 		case WIDGET_STRUCT_TYPE:
 			ecore_list_for_each( data->w_struct.members, __write_element );
 			xmlTextWriterEndElement( writer );
 			break;
+		case WIDGET_ENUM_TYPE:
+			{
+				char *enum_name;
+
+				enum_name = ecore_hash_get( data->type->w_enum.map_rev,
+																		(void *) data->w_enum.value );
+
+				if( enum_name ) {
+					xmlTextWriterWriteString( writer, enum_name );
+					xmlTextWriterEndElement( writer );
+				} else {
+					xmlTextWriterFullEndElement( writer );
+					xmlTextWriterWriteString( writer, "\n" );
+				}
+			}
+			break;
 	}
 }
 
 static void
-write_widget( void *value )
+write_widget( Ewl_Widget *w )
 {
-	Ewl_Widget *w = value;
+	Ewler_Selected *cs;
 	Ecore_List *info = widget_get_info( w );
+
+	if( !info )
+		return;
 
 	xmlTextWriterStartElement( writer, "widget" );
 	xmlTextWriterWriteAttribute( writer, "type", widget_get_type( w ) );
 
-	if( info )
-		ecore_list_for_each( info, __write_element );
+	ecore_list_for_each( info, __write_element );
 
-	if( widget_is_type( w, "Ewl_Container" ) )
-		ecore_list_for_each( EWL_CONTAINER(w)->children, write_widget );
+	if( widget_is_type( w, "Ewl_Container" ) ) {
+		ecore_list_goto_first( EWL_CONTAINER(w)->children );
+
+		while( (cs = ecore_list_next( EWL_CONTAINER(w)->children )) )
+			write_widget( ewler_selected_get( cs ) );
+	}
 
 	/* write callbacks for widget */
 	xmlTextWriterEndElement( writer );
@@ -154,8 +180,9 @@ process_read( Ewler_Form *form )
 						printf( "unknown constructor for type %s\n", xml_attr );
 						exit( 1 );
 					}
-					if( parent )
+					if( parent ) {
 						ewl_container_append_child( EWL_CONTAINER(parent), cur );
+					}
 					
 					if( !cur ) {
 						ewler_error_dialog( "Could not create widget of type '%s'",
@@ -174,9 +201,15 @@ process_read( Ewler_Form *form )
 					 * callbacks */
 					form_add_widget( form,(char *) widget_get_name( EWL_OBJECT(cur) ),
 													 cur );
+
 					ecore_list_remove_first( info_stack );
 					ewl_widget_show( cur );
+
 					if( cur->parent ) {
+						Ewl_Widget *s = ewler_selected_new( cur );
+						ewl_callback_call( s, EWL_CALLBACK_DESELECT );
+						ewl_widget_show( s );
+
 						cur = cur->parent;
 					} else {
 						done = 1;

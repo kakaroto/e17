@@ -151,7 +151,13 @@ ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
 
 	s = EWLER_SELECTED(w);
 
-	evas_object_layer_set(w->theme_object, 1000);
+	/* THIS IS A HACK!!! THE WIDGET IS ALWAYS IN THE DEFAULT STATE, BUT WE
+	 * HIDE IT IF THE BITSTATE DOESN'T SAY DEFAULT */
+	if( !strcmp( w->bit_state, "default" ) )
+		evas_object_layer_set(w->theme_object, 1000);
+	else
+		ewl_widget_set_state( w, "deselect" );
+
 	ewl_container_append_child(EWL_CONTAINER(s), s->selected);
 
 	if( ewl_widget_get_data( s->selected, "unsizable" ) )

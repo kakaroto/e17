@@ -35,8 +35,9 @@ ewler_inspector_init( void )
 	ewl_window_set_title( EWL_WINDOW(inspector_win), "Inspector" );
 	ewl_callback_append( inspector_win, EWL_CALLBACK_DELETE_WINDOW,
 											 __hide_inspector_cb, NULL );
-	ewl_object_set_minimum_size( EWL_OBJECT(inspector_win), 200, 400 );
 	ewl_object_set_preferred_size( EWL_OBJECT(inspector_win), 200, 400 );
+	ewl_object_set_minimum_size( EWL_OBJECT(inspector_win), 200, 400 );
+	ewl_object_set_fill_policy( EWL_OBJECT(inspector_win), EWL_FLAG_FILL_SHRINK );
 
 	inspector_tree = ewl_tree_new( 2 );
 	ewl_container_append_child( EWL_CONTAINER(inspector_win), inspector_tree );
@@ -66,14 +67,14 @@ inspector_show( void )
 
 /* PRAISE ME! */
 static void
-call_struct_set( Widget_Data_Elem *child, int index, int value )
+call_struct_set( Ewl_Widget *w, Widget_Data_Elem *child, int index, int value )
 {
 	Ecore_List *info;
 	Widget_Type_Elem *type = child->type->w.parent;
 	Widget_Data_Elem *parent;
 	int args[4], len;
 
-	info = widget_get_info( active_widget );
+	info = widget_get_info( w );
 
 	ecore_list_goto_first( info );
 
@@ -109,7 +110,7 @@ call_struct_set( Widget_Data_Elem *child, int index, int value )
 
 	/* maybe put a ridiculous switch on the number of args, but for now just call
 	 * it with 4... the stack frame should be fine */
-	parent->type->w.set( EWL_OBJECT(active_widget),
+	parent->type->w.set( EWL_OBJECT(w),
 											 args[0], args[1], args[2], args[3] );
 }
 
@@ -117,6 +118,7 @@ static void
 __inspector_entry_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Widget_Data_Elem *data = user_data;
+	Ewl_Widget *widget = ewl_widget_get_data( w, "widget" );
 	char *text, *endptr;
 	int int_val;
 
@@ -129,18 +131,18 @@ __inspector_entry_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 				printf( "invalid integer value %s\n", text );
 			} else {
 				if( data->type->w.set )
-					data->type->w.set( EWL_OBJECT(active_widget), data->w_int.value );
+					data->type->w.set( EWL_OBJECT(widget), data->w_int.value );
 				else if( data->type->w.parent && data->type->w.parent->w.set )
-					call_struct_set( data, data->type->w.index, int_val );
+					call_struct_set( widget, data, data->type->w.index, int_val );
 				data->w_int.value = int_val;
 			}
 			break;
 		case WIDGET_STRING_TYPE:
 			/* check string for validity */
 			if( data->type->w.set )
-				data->type->w.set( EWL_OBJECT(active_widget), text );
+				data->type->w.set( EWL_OBJECT(widget), text );
 			else if( data->type->w.parent && data->type->w.parent->w.set )
-				call_struct_set( data, data->type->w.index, (int) text );
+				call_struct_set( widget, data, data->type->w.index, (int) text );
 
 			if( !widget_get_error() ) {
 				if( data->w_str.value ) {
@@ -151,7 +153,7 @@ __inspector_entry_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 			break;
 	}
 
-	widget_changed( active_widget );
+	widget_changed( widget );
 	inspector_update();
 }
 
@@ -159,9 +161,9 @@ static void
 __inspector_combo_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Widget_Data_Elem *data = user_data;
+	Ewl_Widget *widget = ewl_widget_get_data( w, "widget" );
 	char *text;
 	int value;
-	Ewl_Object *active_object = EWL_OBJECT(active_widget);
 
 	text = ewl_combo_get_selected( EWL_COMBO(w) );
 
@@ -170,15 +172,14 @@ __inspector_combo_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 
 	value = (int) ecore_hash_get( data->type->w_enum.map, text );
 
-	if( data->type->w.set ) {
-		data->type->w.set( EWL_OBJECT(active_widget), value );
-	}
+	if( data->type->w.set )
+		data->type->w.set( EWL_OBJECT(widget), value );
 
-	ewl_object_set_fill_policy( EWL_OBJECT(active_widget->parent),
-															ewl_object_get_fill_policy(active_object) );
-	ewl_object_set_alignment( EWL_OBJECT(active_widget->parent),
-														ewl_object_get_alignment(active_object) );
-	widget_changed( active_widget );
+	ewl_object_set_fill_policy( EWL_OBJECT(widget->parent),
+															ewl_object_get_fill_policy(EWL_OBJECT(widget)) );
+	ewl_object_set_alignment( EWL_OBJECT(widget->parent),
+														ewl_object_get_alignment(EWL_OBJECT(widget)) );
+	widget_changed( widget );
 }
 
 static Ewl_Widget *t_combo;
@@ -213,13 +214,14 @@ __populate_tree( void *val )
 
 		ecore_hash_for_each_node( data->type->w_enum.map, __populate_combo_cb );
 
-		ewl_callback_append( EWL_WIDGET(row_elems[1]), EWL_CALLBACK_DESELECT,
+		ewl_callback_append( row_elems[1], EWL_CALLBACK_DESELECT,
 												 __inspector_combo_changed, data );
-		ewl_callback_append( EWL_WIDGET(row_elems[1]), EWL_CALLBACK_VALUE_CHANGED,
+		ewl_callback_append( row_elems[1], EWL_CALLBACK_VALUE_CHANGED,
 												 __inspector_combo_changed, data );
 
 		ewl_widget_show( row_elems[1] );
 		ewl_widget_set_data( row_elems[1], "get", data );
+		ewl_widget_set_data( row_elems[1], "widget", active_widget );
 	} else if( data->type->w.w_type != WIDGET_STRUCT_TYPE ) {
 		row_elems[1] = ewl_entry_new( NULL );
 
@@ -230,6 +232,7 @@ __populate_tree( void *val )
 
 		ewl_widget_show( row_elems[1] );
 		ewl_widget_set_data( row_elems[1], "get", data );
+		ewl_widget_set_data( row_elems[1], "widget", active_widget );
 	}
 
 	if( data->type->w.w_flags & ELEM_NO_MODIFY )
@@ -318,6 +321,7 @@ void
 inspector_reset( void )
 {
 	Ewl_Widget *s, *w = NULL;
+	Ewl_ScrollPane *scroll;
 	Ecore_List *info;
 
 	if( !active_form ) {
@@ -338,7 +342,11 @@ inspector_reset( void )
 		return;
 	}
 
+	scroll = EWL_SCROLLPANE(EWL_TREE(inspector_tree)->scrollarea);
+
 	ewl_container_reset( EWL_CONTAINER(inspector_tree) );
+	ewl_scrollpane_set_vscrollbar_value( scroll, 0.0 );
+	ewl_scrollpane_set_hscrollbar_value( scroll, 0.0 );
 	
 	if( w ) {
 		info = widget_get_info(w);

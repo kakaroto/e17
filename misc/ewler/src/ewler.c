@@ -206,7 +206,7 @@ void
 ewler_tools_init( Ewl_Widget *main_layout )
 {
 	tool_tree = ewl_tree_new( 1 );
-	ewl_object_set_fill_policy( EWL_OBJECT(tool_tree), EWL_FLAG_FILL_ALL );
+	ewl_object_set_fill_policy( EWL_OBJECT(tool_tree), EWL_FLAG_FILL_SHRINK );
 	ewl_container_append_child( EWL_CONTAINER(main_layout), tool_tree );
 
 	ewler_populate_tools();

@@ -54,10 +54,6 @@ gen_sets( Ecore_List *w, char *name, char *parent )
 						fprintf( fout, "\t%s( %s(%s), \"%s\" );\n", 
 										 data->type->w.set, data->type->w.cast,
 										 name, data->w_str.value );
-					} else {
-						fprintf( fout, "\t%s( %s(%s), \"%s\" );\n", 
-										 data->type->w.set, data->type->w.cast,
-										 name, data->w_str.value );
 					}
 					break;
 				case WIDGET_STRUCT_TYPE:
@@ -85,6 +81,19 @@ gen_sets( Ecore_List *w, char *name, char *parent )
 										else
 											fprintf( fout, "NULL" );
 										break;
+									case WIDGET_ENUM_TYPE:
+										{
+											char *enum_name;
+
+											enum_name = ecore_hash_get( data->type->w_enum.map_rev,
+																									(void *) data->w_enum.value );
+
+											if( enum_name )
+												fprintf( fout, "%s", enum_name );
+											else
+												fprintf( fout, "0" );
+										}
+										break;
 									case WIDGET_STRUCT_TYPE:
 										/* well, we're fucked here */
 										break;
@@ -92,6 +101,19 @@ gen_sets( Ecore_List *w, char *name, char *parent )
 					}
 
 					fprintf( fout, " );\n" );
+					break;
+				case WIDGET_ENUM_TYPE:
+					{
+						char *enum_name;
+
+						enum_name = ecore_hash_get( data->type->w_enum.map_rev,
+																				(void *) data->w_enum.value );
+
+						if( enum_name )
+							fprintf( fout, "\t%s( %s(%s), %s );\n",
+											 data->type->w.set, data->type->w.cast,
+											 name, enum_name );
+					}
 					break;
 			}
 		} else if( data->type->w.w_type == WIDGET_STRUCT_TYPE )
@@ -129,9 +151,41 @@ gen_inits( Ecore_List *w, char *parent )
 	args = widget_get_ctor_nargs( class );
 
 	for( i=0;i<args;i++ ) {
+		Widget_Data_Elem *ctor_arg;
+
 		if( i )
 			fprintf( fout, ", " );
-		fprintf( fout, "NULL" );
+	
+		ctor_arg = widget_lookup_ctor_arg( w, i );
+
+		if( ctor_arg ) {
+			switch( ctor_arg->type->w.w_type ) {
+				case WIDGET_INTEGER_TYPE:
+					fprintf( fout, "%d", ctor_arg->w_int.value );
+					break;
+				case WIDGET_STRING_TYPE:
+					if( ctor_arg->w_str.value )
+						fprintf( fout, "\"%s\"", ctor_arg->w_str.value );
+					else
+						fprintf( fout, "NULL" );
+					break;
+				case WIDGET_STRUCT_TYPE:
+				case WIDGET_POINTER_TYPE: fprintf( fout, "NULL" ); break;
+				case WIDGET_ENUM_TYPE:
+					{
+						char *enum_name;
+
+						enum_name = ecore_hash_get( ctor_arg->type->w_enum.map_rev,
+																				(void *) ctor_arg->w_enum.value );
+						if( enum_name )
+							fprintf( fout, "%s", enum_name );
+						else
+							fprintf( fout, "0" );
+					}
+					break;
+			}
+		} else
+			fprintf( fout, "NULL" );
 	}
 
 	fprintf( fout, " );\n\n" );

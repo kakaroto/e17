@@ -32,6 +32,7 @@ main( int argc, char *argv[] )
 	Ecore_List *info;
 	int out_fd, in_fd, header_fd = 0;
 	char *src_buf = NULL, *header_buf = NULL;
+	char *filename_start, *filename_end;
 	char *output_filename = NULL;
 	char *output_header = NULL;
 	char *input_filename;
@@ -109,11 +110,20 @@ main( int argc, char *argv[] )
 		in_fd = 0;
 	}
 
-	prefix_len = strrchr( output_filename, '.' ) -
-							 strrchr( output_filename, '/' ) - 1;
+	if( strchr( output_filename, '/' ) )
+		filename_start = strrchr( output_filename, '/' ) + 1;
+	else
+		filename_start = output_filename;
+
+	if( strchr( output_filename, '.' ) > filename_start )
+		filename_end = strrchr( output_filename, '.' );
+	else
+		filename_end = output_filename + strlen( output_filename );
+
+	prefix_len = filename_end - filename_start;
 
 	prefix = (char *) malloc( prefix_len + 1 );
-	strncpy( prefix, strrchr( output_filename, '/' ) + 1, prefix_len );
+	strncpy( prefix, filename_start, prefix_len );
 
 	remove( output_filename );
 	out_fd = open( output_filename, O_WRONLY | O_CREAT, 0644 );

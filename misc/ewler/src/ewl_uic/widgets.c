@@ -47,7 +47,7 @@ int widget_get_name( Ewl_Object *o );
 static Widget_Type_Elem widget_name_type = {
 	{
 		WIDGET_STRING_TYPE, "ewler_widget_name", 0,
-		NULL, NULL, NULL
+		NULL, NULL, NULL, NULL, -1, 0
 	}
 };
 
@@ -189,6 +189,9 @@ __copy_w_info( void *val )
 			lvl--;
 			c_info = t_info;
 			break;
+		case WIDGET_ENUM_TYPE:
+			elem->w_enum.value = elem->type->w_enum.default_value;
+			break;
 	}
 
 	ecore_list_prepend( c_info, elem );
@@ -271,6 +274,7 @@ __destroy_w_info( void *val )
 
 	switch( data->type->w.w_type ) {
 		case WIDGET_INTEGER_TYPE: break;
+		case WIDGET_ENUM_TYPE: break;
 		case WIDGET_STRING_TYPE:
 			if( data->w_str.value ) {
 				FREE(data->w_str.value);
@@ -319,6 +323,20 @@ widget_lookup_data( Ecore_List *info, char *elem )
 	return NULL;
 }
 
+Widget_Data_Elem *
+widget_lookup_ctor_arg( Ecore_List *info, int arg )
+{
+	Widget_Data_Elem *data;
+
+	ecore_list_goto_first( info );
+
+	while( (data = ecore_list_next( info )) )
+		if( data->type->w.ctor_arg == arg )
+			return data;
+
+	return NULL;
+}
+
 void
 widget_strset_info( Ecore_List *info, char *elem, char *value )
 {
@@ -341,6 +359,10 @@ widget_strset_info( Ecore_List *info, char *elem, char *value )
 					else
 						data->w_str.value = NULL;
 					return;
+				case WIDGET_ENUM_TYPE:
+					data->w_enum.value =
+						(int) ecore_hash_get( data->type->w_enum.map, value );
+					break;
 			}
 		}
 }
@@ -399,6 +421,13 @@ elem_new( const char *type, xmlTextReaderPtr reader )
 		elem->w_struct.w_type = WIDGET_STRUCT_TYPE;
 		elem->w_struct.members =
 			ecore_hash_new( ecore_str_hash, ecore_str_compare );
+	} else if( !strcmp( type, "enum" ) ) {
+		elem->w_enum.w_type = WIDGET_ENUM_TYPE;
+		elem->w_enum.map = ecore_hash_new( ecore_str_hash, ecore_str_compare );
+		elem->w_enum.map_rev =
+			ecore_hash_new( ecore_direct_hash, ecore_direct_compare );
+	} else if( !strcmp( type, "enum_val" ) ) {
+		FREE(elem);
 	} else if( type[len-1] == '*' && strpbrk( type, " \t" ) ) {
 		elem->w_ptr.w_type = WIDGET_POINTER_TYPE;
 
@@ -421,6 +450,7 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 	static char *class_name, *super_name;
 	static Ecore_Hash *class, *elem_hash;
 	static Widget_Type_Elem *elem, *last_elem = NULL;
+	Widget_Type_Elem *e;
 	static void *ctor;
 	static int nargs;
 	int token;
@@ -477,7 +507,27 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 				case XML_READER_TYPE_ELEMENT:
 					xml_attr = xmlTextReaderGetAttribute( reader, "type" );
 
-					elem = elem_new( xml_attr, reader );
+					e = elem_new( xml_attr, reader );
+					if( !e ) {
+						if( !strcmp( xml_attr, "enum_val" ) ) {
+							int value;
+							char *id;
+
+							xml_attr = xmlTextReaderGetAttribute( reader, "value" );
+							value = strtol( xml_attr, NULL, 0 );
+
+							xml_attr = xmlTextReaderGetAttribute( reader, "id" );
+							id = strdup( xml_attr );
+
+							ecore_hash_set( elem->w_enum.map, id, (void *) value );
+							ecore_hash_set( elem->w_enum.map_rev, (void *) value, id );
+						}
+						last_elem = elem;
+						elem = NULL;
+						break;
+					}
+
+					elem = e;
 					elem->w.parent = last_elem;
 					last_elem = elem;
 
@@ -505,19 +555,27 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 					else
 						elem->w.index = 0;
 
+					xml_attr = xmlTextReaderGetAttribute( reader, "ctor_arg" );
+					if( xml_attr )
+						elem->w.ctor_arg = strtol( xml_attr, NULL, 0 );
+					else
+						elem->w.ctor_arg = -1;
+
 					elem->w.cast = strudup( class_name );
 
 					if( elem->w.w_type == WIDGET_STRUCT_TYPE )
 						elem_hash = elem->w_struct.members;
 					break;
 				case XML_READER_TYPE_END_ELEMENT:
-					last_elem = elem->w.parent;
-					if( elem->w.w_type == WIDGET_STRUCT_TYPE && last_elem )
-						elem_hash = last_elem->w_struct.members;
-					else if( elem->w.w_type == WIDGET_STRUCT_TYPE )
-						elem_hash = class;
+					if( elem ) {
+						last_elem = elem->w.parent;
+						if( elem->w.w_type == WIDGET_STRUCT_TYPE && last_elem )
+							elem_hash = last_elem->w_struct.members;
+						else if( elem->w.w_type == WIDGET_STRUCT_TYPE )
+							elem_hash = class;
 
-					ecore_hash_set( elem_hash, elem->w.name, elem );
+						ecore_hash_set( elem_hash, elem->w.name, elem );
+					}
 
 					elem = last_elem;
 					break;

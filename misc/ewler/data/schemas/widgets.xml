@@ -70,9 +70,9 @@
 		<elem type="Evas_Object *">clip_box</elem>
 		<elem type="Ewl_Container *">redirect</elem>
 	</class>
-	<class name="Ewl_Box" super="Ewl_Container" ctor="ewl_box_new" nargs="0">
+	<class name="Ewl_Box" super="Ewl_Container" ctor="ewl_box_new" nargs="1">
 		<elem type="int">spacing</elem>
-		<elem type="enum" get="ewl_box_get_orientation" set="ewl_box_set_orientation" default="0">orientation
+		<elem type="enum" get="ewl_box_get_orientation" set="ewl_box_set_orientation" default="0" ctor_arg="0">orientation
 			<elem type="enum_val" value="0" id="EWL_ORIENTATION_HORIZONTAL"></elem>
 			<elem type="enum_val" value="1" id="EWL_ORIENTATION_VERTICAL"></elem>
 		</elem>
@@ -140,6 +140,8 @@
 		<elem type="int" set="ewl_image_set_proportional" default="0">proportional</elem>
 	</class>
 	<class name="Ewl_Menu_Item" super="Ewl_Container">
+		<elem type="string" set="ewl_menu_item_set_image" get="ewl_menu_item_get_image" ctor_arg="0">image</elem>
+		<elem type="string" set="ewl_menu_item_set_text" get="ewl_menu_item_get_text" ctor_arg="1">text</elem>
 	</class>
 	<class name="Ewl_Menu_Base" super="Ewl_Menu_Item">
 	</class>
@@ -157,5 +159,11 @@
 		<elem type="int" set="ewl_check_set_checked" get="ewl_check_is_checked">checked</elem>
 	</class>
 	<class name="Ewl_RadioButton" super="Ewl_CheckButton" ctor="ewl_radiobutton_new" nargs="1">
+	</class>
+	<class name="Ewl_Separator" super="Ewl_Widget" ctor="ewl_separator_new" nargs="1">
+		<elem type="enum" get="ewl_separator_get_orientation" set="ewl_separator_set_orientation" default="0" ctor_arg="0">orientation
+			<elem type="enum_val" value="0" id="EWL_ORIENTATION_HORIZONTAL"></elem>
+			<elem type="enum_val" value="1" id="EWL_ORIENTATION_VERTICAL"></elem>
+		</elem>
 	</class>
 </classes>

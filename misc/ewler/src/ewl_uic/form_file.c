@@ -49,6 +49,7 @@ process_read( void )
 	const xmlChar *xml_attr;
 	static char *elem_name;
 	static Ecore_List *cur = NULL, *parent, *cur_info;
+	Ecore_List *last = NULL;
 	Widget_Data_Elem *data;
 	static Ecore_List *info_stack = NULL;
 	static Ecore_List *data_stack = NULL;
@@ -76,7 +77,10 @@ process_read( void )
 					ecore_list_prepend( info_stack, cur );
 					break;
 				case XML_READER_TYPE_END_ELEMENT:
-					cur = ecore_list_remove_first( info_stack );
+					last = cur;
+
+					ecore_list_remove_first( info_stack );
+					cur = ecore_list_goto_first( info_stack );
 					if( !cur )
 						done = 1;
 					break;
@@ -114,7 +118,7 @@ process_read( void )
 	}
 
 	if( done ) {
-		Ecore_List *c = cur;
+		Ecore_List *c = last;
 
 		ecore_list_destroy( info_stack );
 		ecore_list_destroy( data_stack );
