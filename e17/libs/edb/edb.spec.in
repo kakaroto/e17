@@ -59,8 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q
 
 %build
-#%{configure} --prefix=%{_prefix}
-./configure --prefix=%{_prefix}
+%{configure} --prefix=%{_prefix}
+### use this if you have build problems
+#./configure --prefix=%{_prefix}
 %{__make} %{?_smp_mflags} %{?mflags}
 
 %install
