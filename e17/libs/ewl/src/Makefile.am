@@ -2,7 +2,10 @@
 
 MAINTAINERCLEANFILES = Ewl.h
 
-INCLUDES = @edje_cflags@ @ecore_cflags@ @evas_cflags@ @etox_cflags@ @emotion_cflags@
+INCLUDES = \
+-I$(top_builddir) \
+-I$(top_srcdir) \
+@edje_cflags@ @ecore_cflags@ @evas_cflags@ @etox_cflags@ @emotion_cflags@
 
 lib_LTLIBRARIES = libewl.la
 
