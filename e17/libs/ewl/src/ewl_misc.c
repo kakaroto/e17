@@ -5,19 +5,19 @@ int             ewl_idle_render(void *data);
 
 extern Ewd_List *ewl_embed_list;
 
-unsigned int    phase_status = 0;
-char           *xdisplay = NULL;
-Ewd_List *configure_list = NULL;
-Ewd_List *realize_list = NULL;
-Ewd_List *destroy_list = NULL;
+static unsigned int    debug_segv = 0;
+static unsigned int    phase_status = 0;
+static Ewd_List *configure_list = NULL;
+static Ewd_List *realize_list = NULL;
+static Ewd_List *destroy_list = NULL;
 
-Ewd_List *free_evas_list = NULL;
-Ewd_List *free_evas_object_list = NULL;
+static Ewd_List *free_evas_list = NULL;
+static Ewd_List *free_evas_object_list = NULL;
 
-Ewd_List *child_add_list= NULL;
+static Ewd_List *child_add_list= NULL;
 
-void            __ewl_init_parse_options(int argc, char **argv);
-void            __ewl_parse_option_array(int argc, char **argv);
+static void     __ewl_init_parse_options(int argc, char **argv);
+static void     __ewl_init_remove_option(int *argc, char **argv, int i);
 int             __ewl_ecore_exit(void *data, int type, void *event);
 static int      ewl_reread_config(void *data);
 
@@ -30,9 +30,15 @@ static int      ewl_reread_config(void *data);
  */
 inline void ewl_print_warning()
 {
-	fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
-		" To find where this is occurring set a breakpoint\n"
-		" for the function %s\n.", __FUNCTION__);
+	if (debug_segv) {
+		char *null = NULL;
+		*null = '\0';
+	}
+	else {
+		fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
+			" To find where this is occurring set a breakpoint\n"
+			" for the function %s\n.", __FUNCTION__);
+	}
 }
 
 /**
@@ -199,52 +205,35 @@ void ewl_main_quit(void)
  * Returns no value. Parses the arguments of the program into sections that
  * ewl knows how to deal with.
  */
-void __ewl_init_parse_options(int argc, char **argv)
+static void __ewl_init_parse_options(int argc, char **argv)
 {
+	int i;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	__ewl_parse_option_array(argc, argv);
+	i = 0;
+	while (i < argc) {
+		if (!strcmp(argv[i], "--ewl-segv")) {
+			debug_segv = 1;
+			__ewl_init_remove_option(&argc, argv, i);
+		}
+		else
+			i++;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * __ewl_parse_option_array - parses the argument arrays into options
- * @argc: the argc passed to the main function
- * @argv: the argv passed to the main function
- *
- * Returns no value. Parses the options passed to the main program and
- * processes any ewl related options.
- */
-void __ewl_parse_option_array(int argc, char **argv)
+static void __ewl_init_remove_option(int *argc, char **argv, int i)
 {
-	/*
-	char            stropts[] =
-	    "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
-
-	static struct option lopts[] = {
-		{"ewl_display", 1, 0, '$'},
-		{0, 0, 0, 0}
-	};
-	int             optch = 0, cmdx = 0;
-	*/
+	int j;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	while ((optch =
-		 getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF) {
-		switch (optch) {
-		case 0:
-			break;
-		case '$':
-			xdisplay = optarg;
-			break;
-		default:
-			break;
-		}
-	}
-	*/
+	*argc = *argc - 1;
+	for (j = i; j < *argc; j++)
+		argv[j] = argv[j + 1];
+	argv[j] = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
