@@ -101,6 +101,7 @@ Evas_Object *etox_new_all(Evas *evas, Evas_Coord x, Evas_Coord y, Evas_Coord w,
 Etox_Context *etox_context_new();
 Etox_Context *etox_get_context(Evas_Object * et);
 void etox_set_context(Evas_Object * et, Etox_Context * context);
+void etox_context_copy(Etox_Context *dst, Etox_Context *src);
 Etox_Context *etox_context_save(Evas_Object * et);
 void etox_context_load(Evas_Object * et, Etox_Context * context);
 void etox_context_free(Etox_Context * context);

@@ -51,6 +51,50 @@ Etox_Context *etox_context_new()
 }
 
 /**
+ * etox_context_copy - copy the contents of one context into another
+ * @dst: the destination context to receive the contents
+ * @src: the source context that is copied into the destination
+ *
+ * Returns no value. Copies the context data from @src to @dst.
+ */
+void etox_context_copy(Etox_Context *dst, Etox_Context *src)
+{
+
+	CHECK_PARAM_POINTER("dst", dst);
+	CHECK_PARAM_POINTER("src", src);
+
+	/*
+	 * Dereference the style before overwriting
+	 */
+	IF_FREE(dst->style);
+	IF_FREE(dst->font);
+	IF_FREE(dst->marker.text);
+	IF_FREE(dst->marker.style);
+
+	/*
+	 * Copy the contents of the old context
+	 */
+	memcpy(dst, src, sizeof(Etox_Context));
+	if (src->style)
+		dst->style = strdup(src->style);
+	else
+		dst->style = NULL;
+
+	if (src->font)
+		dst->font = strdup(src->font);
+
+	if (src->marker.text)
+		dst->marker.text = strdup(src->marker.text);
+
+	if (src->marker.style)
+		dst->marker.style = strdup(src->marker.style);
+
+        dst->flags = src->flags;
+
+	return;
+}
+
+/**
  * etox_context_save - save a copy of the current context for restoring later
  * @et: the etox to retrieve a copy of the current context
  *
@@ -66,24 +110,8 @@ Etox_Context *etox_context_save(Evas_Object * obj)
 
 	et = evas_object_smart_data_get(obj);
 
-	ret = (Etox_Context *) malloc(sizeof(Etox_Context));
-
-	/*
-	 * Copy the contents of the old context
-	 */
-	memcpy(ret, et->context, sizeof(Etox_Context));
-	if (et->context->style)
-		ret->style = strdup(et->context->style);
-	if (et->context->font)
-		ret->font = strdup(et->context->font);
-
-	if (et->context->marker.text)
-		ret->marker.text = strdup(et->context->marker.text);
-
-	if (et->context->marker.style)
-		ret->marker.style = strdup(et->context->marker.style);
-
-        ret->flags = et->context->flags;
+	ret = (Etox_Context *) calloc(sizeof(Etox_Context), 1);
+	etox_context_copy(ret, et->context);
 
 	return ret;
 }
@@ -105,28 +133,7 @@ void etox_context_load(Evas_Object * obj, Etox_Context * context)
 
 	et = evas_object_smart_data_get(obj);
 
-	/*
-	 * Dereference the style before overwriting
-	 */
-	IF_FREE(et->context->style);
-	IF_FREE(et->context->font);
-	IF_FREE(et->context->marker.text);
-	IF_FREE(et->context->marker.style);
-
-	memcpy(et->context, context, sizeof(Etox_Context));
-
-	if (context->style)
-		et->context->style = strdup(context->style);
-	if (context->font)
-		et->context->font = strdup(context->font);
-
-	if (et->context->marker.text)
-		et->context->marker.text = strdup(context->marker.text);
-
-	if (et->context->marker.style)
-		et->context->marker.style = strdup(context->marker.style);
-
-        et->context->flags = context->flags;
+	etox_context_copy(et->context, context);
 }
 
 /**
