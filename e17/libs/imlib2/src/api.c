@@ -954,7 +954,6 @@ imlib_image_get_data(void)
    if (!im->data)
       return NULL;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    return im->data;
 }
 
@@ -986,7 +985,6 @@ imlib_image_put_back_data(DATA32 * data)
    CHECK_PARAM_POINTER("imlib_image_put_back_data", "data", data);
    CAST_IMAGE(im, ctx->image);
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    data = NULL;
 }
 
@@ -1074,7 +1072,6 @@ imlib_image_set_format(const char *format)
    if (!(im->flags & F_FORMAT_IRRELEVANT))
      {
         __imlib_DirtyImage(im);
-        __imlib_DirtyPixmapsForImage(im);
      }
 }
 
@@ -1331,7 +1328,6 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
    if (!(im_dst->data))
       return;
    __imlib_DirtyImage(im_dst);
-   __imlib_DirtyPixmapsForImage(im_dst);
    /* FIXME: hack to get around infinite loops for scaling down too far */
    aa = ctx->anti_alias;
    if ((abs(destination_width) < (source_width >> 7))
@@ -1598,7 +1594,6 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
    if ((width <= 0) || (height <= 0))
       return 0;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    return __imlib_GrabDrawableToRGBA(im->data, destination_x, destination_y,
                                      im->w, im->h, ctx->display,
                                      ctx->drawable, mask, ctx->visual,
@@ -1918,7 +1913,6 @@ imlib_image_flip_horizontal(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_FlipImageHoriz(im);
 }
 
@@ -1936,7 +1930,6 @@ imlib_image_flip_vertical(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_FlipImageVert(im);
 }
 
@@ -1954,7 +1947,6 @@ imlib_image_flip_diagonal(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_FlipImageDiagonal(im, 0);
 }
 
@@ -1972,7 +1964,6 @@ imlib_image_orientate(int orientation)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    switch (orientation)
      {
        default:
@@ -2016,7 +2007,6 @@ imlib_image_blur(int radius)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_BlurImage(im, radius);
 }
 
@@ -2034,7 +2024,6 @@ imlib_image_sharpen(int radius)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_SharpenImage(im, radius);
 }
 
@@ -2052,7 +2041,6 @@ imlib_image_tile_horizontal(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_TileImageHoriz(im);
 }
 
@@ -2070,7 +2058,6 @@ imlib_image_tile_vertical(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_TileImageVert(im);
 }
 
@@ -2088,7 +2075,6 @@ imlib_image_tile(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_TileImageHoriz(im);
    __imlib_TileImageVert(im);
 }
@@ -2143,7 +2129,6 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
       return;
    fn = (ImlibFont *) ctx->font;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
 
    dir = ctx->direction;
    if (ctx->direction == IMLIB_TEXT_TO_ANGLE && ctx->angle == 0.0)
@@ -2668,7 +2653,6 @@ imlib_apply_color_modifier(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_DataCmodApply(im->data, im->w, im->h, 0, &(im->flags),
                          (ImlibColorModifier *) ctx->color_modifier);
 }
@@ -2712,7 +2696,6 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_DataCmodApply(im->data + (y * im->w) + x, width, height,
                          im->w - width, &(im->flags),
                          (ImlibColorModifier *) ctx->color_modifier);
@@ -2733,7 +2716,6 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
    if (!(im->data))
       return NULL;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    if (ctx->cliprect.w == 0)
      {
         __imlib_draw_set_point(im, x, y,
@@ -2777,7 +2759,6 @@ imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
    if (!(im->data))
       return NULL;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    if (ctx->cliprect.w)
      {
         return (Imlib_Updates) __imlib_draw_line_clipped(im, x1, y1, x2, y2,
@@ -2822,7 +2803,6 @@ imlib_image_draw_rectangle(int x, int y, int width, int height)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    if (ctx->cliprect.w)
      {
         __imlib_draw_box_clipped(im, x, y, width, height, ctx->cliprect.x,
@@ -2855,7 +2835,6 @@ imlib_image_fill_rectangle(int x, int y, int width, int height)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    if (ctx->cliprect.w)
      {
         __imlib_draw_filled_box_clipped(im, x, y, width, height,
@@ -2897,7 +2876,6 @@ imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y)
    if (!(im2->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_alpha_data(im, im2, 0, 0, im->w, im->h, x, y);
 }
 
@@ -2925,7 +2903,6 @@ imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source, int x,
    if (!(im2->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_alpha_data(im, im2, x, y, width, height, destination_x,
                            destination_y);
 }
@@ -2970,7 +2947,6 @@ imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x,
         h = height + delta_y;
      }
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_image_data(im, xx, yy, w, h, nx, ny);
 }
 
@@ -2988,7 +2964,6 @@ imlib_image_copy_rect(int x, int y, int width, int height, int new_x, int new_y)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
 }
 
@@ -3041,7 +3016,6 @@ imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_DrawGradient(im, x, y, width, height,
                         (ImlibRange *) ctx->color_range, angle,
                         ctx->operation,
@@ -3067,7 +3041,6 @@ imlib_image_fill_hsva_color_range_rectangle(int x, int y, int width, int height,
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_DrawHsvaGradient(im, x, y, width, height,
                             (ImlibRange *) ctx->color_range, angle,
                             ctx->operation,
@@ -3419,7 +3392,6 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
    if (!(im_dst->data))
       return;
    __imlib_DirtyImage(im_dst);
-   __imlib_DirtyPixmapsForImage(im_dst);
    __imlib_BlendImageToImageSkewed(im_src, im_dst, ctx->anti_alias,
                                    ctx->blend, merge_alpha, source_x,
                                    source_y, source_width, source_height,
@@ -3457,7 +3429,6 @@ imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
    if (!(im_dst->data))
       return;
    __imlib_DirtyImage(im_dst);
-   __imlib_DirtyPixmapsForImage(im_dst);
    __imlib_BlendImageToImageSkewed(im_src, im_dst, ctx->anti_alias,
                                    ctx->blend, merge_alpha, source_x,
                                    source_y, source_width, source_height,
@@ -3540,7 +3511,6 @@ imlib_image_filter(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_FilterImage(im, (ImlibFilter *) ctx->filter);
 }
 
@@ -3674,7 +3644,6 @@ imlib_apply_filter(char *script, ...)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    va_start(param_list, script);
    __imlib_script_parse(im, script, param_list);
    va_end(param_list);
@@ -3720,7 +3689,6 @@ imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    if (ctx->cliprect.w)
      {
         __imlib_draw_polygon_clipped(im, poly, closed, ctx->cliprect.x,
@@ -3752,7 +3720,6 @@ imlib_image_fill_polygon(ImlibPolygon poly)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    __imlib_draw_polygon_filled(im, poly, ctx->cliprect.x,
                                ctx->cliprect.x + ctx->cliprect.w - 1,
                                ctx->cliprect.y,
@@ -3786,7 +3753,6 @@ imlib_image_draw_ellipse(int xc, int yc, int a, int b)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
 
    if (ctx->cliprect.w)
      {
@@ -3822,7 +3788,6 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
 
    __imlib_fill_ellipse(im, xc, yc, a, b, ctx->cliprect.x,
                         ctx->cliprect.x + ctx->cliprect.w - 1,
@@ -3856,7 +3821,6 @@ imlib_image_clear(void)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    memset(im->data, 0, im->w * im->h * sizeof(DATA32));
 }
 
@@ -3876,7 +3840,6 @@ imlib_image_clear_color(int r, int g, int b, int a)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
    max = im->w * im->h;
    WRITE_RGBA(&col, r, g, b, a);
    for (i = 0; i < max; i++)
