@@ -1,7 +1,7 @@
 SUBDIRS = default
 MAINTAINERCLEANFILES = Makefile.in
 
-EDCS =  default.edc
+EDCS =  default.edc skeleton.edc
 
 EETS = $(EDCS:%.edc=%.eet)
 
