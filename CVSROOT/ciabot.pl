@@ -120,7 +120,7 @@ $_ = $dir[0];
 (my $first, my $second, my $third) = /^((\w*)\/(\w+| )*\/(.*))/;
 if ($first eq 'e17') {
   $module = $first . "/" . $second . "/" . $third;
-} else if ($first eq 'CVSROOT') {
+} elsif ($first eq 'CVSROOT') {
   $module = $first;
 } else {
   $module = $first . "/" . $second;
