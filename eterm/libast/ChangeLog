@@ -503,3 +503,13 @@ Fri Nov 21 16:39:23 2003                        Michael Jennings (mej)
 
 Tasty new goodies thanks to Graphviz.
 ----------------------------------------------------------------------
+Fri Nov 21 18:40:52 2003                        Michael Jennings (mej)
+
+Added more docs to obj.c.  I need to go back and be more verbose on
+some things, though.
+
+These can be viewed online at http://www.eterm.org/libast/ for those
+who'd like to get a sneak peak at them.  Please report any obvious
+errors, typos, etc.  Those with developer access, feel free to
+contribute or correct any errors or inconsistencies you find.
+----------------------------------------------------------------------

@@ -41,7 +41,23 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-/* The actual class structure for the "obj" type. */
+/**
+ * The actual class structure for the @c obj type.
+ *
+ * This structure is the actual class for the @c obj type.  All LibAST
+ * objects contain a spif_class_t member called @c cls which points to
+ * a class structure, like this one.  The first structure member is a
+ * pointer to the class name.  Each class uses the same pointer, so
+ * you can compare the pointer values rather than having to compare
+ * strings.  All other members are function pointers which reference
+ * the object-agnostic routines that object supports.  ALL LibAST
+ * objects support at least 8 operations:  new, init, done, del, show,
+ * comp, dup, and type.  Other classes may define other standard
+ * functions.  (This is used for doing interface classes.)
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
 static SPIF_CONST_TYPE(class) o_class = {
     SPIF_DECL_CLASSNAME(obj),
     (spif_func_t) spif_obj_new,
@@ -54,10 +70,15 @@ static SPIF_CONST_TYPE(class) o_class = {
     (spif_func_t) spif_obj_type
 };
 
-/*
- * The class instance for the "obj" type...a pointer to the struct
- * above.  This pointer value is the very first thing stored in each
- * instance of an "obj."
+/**
+ * The class instance for the @c obj type.
+ *
+ * This defines the spif_class_t for the @c obj type so that it points
+ * to the spif_const_class_t structure above.  This pointer value is
+ * the very first thing stored in each * instance of an "obj."
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
  */
 SPIF_TYPE(class) SPIF_CLASS_VAR(obj) = &o_class;
 /* *INDENT-ON* */
@@ -130,6 +151,16 @@ spif_obj_del(spif_obj_t self)
  * This function initializes the member variables of the @c obj
  * instance to their appropriate "bootstrap" values.
  *
+ * @note Though the calling of the parent's initializer is customary
+ * and proper in derived classes, for subtypes of @c obj, this is not
+ * strictly necessary.  All this function does is set the class to
+ * that of an @c obj, which the child must undo anyway (by calling
+ * <tt>spif_obj_set_class(self, SPIF_CLASS_VAR(XXX))</tt>, where
+ * <tt>XXX</tt> is the class name, like below).  Thus, it is
+ * acceptable for direct decendents of @c obj to not call this
+ * function.  However, anything whose parent type is @a not @c obj
+ * MUST call their parent's init function.
+ *
  * @param self The @c obj instance to be initialized.
  * @return     #TRUE if successful, #FALSE otherwise.
  *
@@ -162,22 +193,44 @@ spif_obj_done(spif_obj_t self)
     return TRUE;
 }
 
-spif_class_t
-spif_obj_get_class(spif_obj_t self)
-{
-    return ((self) ? (self->cls) : SPIF_NULL_TYPE(class));
-}
-
-spif_bool_t
-spif_obj_set_class(spif_obj_t self, spif_class_t cls)
-{
-    if (SPIF_OBJ_ISNULL(self)) {
-        return FALSE;
-    }
-    SPIF_OBJ_CLASS(self) = cls;
-    return TRUE;
-}
-
+/**
+ * Show an object and its contents.
+ *
+ * This function, as it is written here, doesn't do a whole hell of a
+ * lot.  But this standard member function (i.e., all objects must
+ * have one) provides the mechanism for which an object can display
+ * not only itself and its particular values, but those of any parent
+ * class or member object.  Besides the object to be displayed, this
+ * function is passed the variable name for that object (usually a
+ * constant string, like "foo"), a @c str object, possibly NULL, to be
+ * added to and returned, and an indent level, possibly 0, to
+ * represent how many leading spaces should pad the resulting output.
+ * The @c str object returned is either @a buff, or a new @c str if @a
+ * buff was passed as NULL.  Appended to it will be the description of
+ * the object followed by a newline.  This description may include
+ * descriptions of any number of child variables, parent objects, etc.
+ *
+ * Implementing this function properly is key to simplifying the
+ * examination of objects through the use of debugging code.  I @b
+ * highly recommend looking at some examples of how this function
+ * should be implemented.
+ *
+ * The simplest way to display an object is to use the SPIF_SHOW()
+ * macro.  This macro takes the object (@a self) and a file descriptor
+ * (like @c stderr or #LIBAST_DEBUG_FD), calls the object's @c show
+ * method, and prints the resulting string on the given file
+ * descriptor, freeing it afterward.  No muss, no fuss.
+ *
+ * @param self   The @c obj instance.
+ * @param name   The name of the variable passed as @a self.
+ * @param buff   A @c str object, possibly NULL, used as the buffer.
+ * @param indent The number of spaces with which to pad the line.
+ * @return       The @c str object, or a new one if @a buff was NULL,
+ *               describing @a self.
+ *
+ * @see DOXGRP_OBJ, SPIF_SHOW()
+ * @ingroup DOXGRP_OBJ
+ */
 spif_str_t
 spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
@@ -198,12 +251,51 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     return buff;
 }
 
+/**
+ * Compare two objects.
+ *
+ * As with most of the other member functions of the @c obj class,
+ * this one is really just a placeholder.  The @c comp standard member
+ * function is used to compare two objects of a given type.  The
+ * comparison can be implemented in any way, so long as it returns a
+ * consistent spif_cmp_t value.  The simplest way is to compare the
+ * two object variables, as shown below, but often a more sensible
+ * method is warranted.
+ *
+ * @param self  The first @c obj instance.
+ * @param other The second @c obj instance.
+ * @return      A spif_cmp_t value representing the comparison of @a
+ *              self and @a other.
+ *
+ * @see DOXGRP_OBJ, spif_str_comp(), spif_cmp_t, SPIF_CMP_FROM_INT()
+ * @ingroup DOXGRP_OBJ
+ */
 spif_cmp_t
 spif_obj_comp(spif_obj_t self, spif_obj_t other)
 {
     return (self == other);
 }
 
+/**
+ * Duplicate an @c obj and its resources.
+ *
+ * The @c dup standard member function is responsible for returning a
+ * new object instance which contains the exact same value as the
+ * instance supplied to it.  That means that any values are copied
+ * from the original to the duplicate, and any references (pointers
+ * and objects) are duplicated in the new instance, using MALLOC(),
+ * the member object's @c dup function, etc.  The object returned MUST
+ * be independent of the original; i.e., calling @c done or @c del on
+ * the duplicate MUST NOT destroy or affect the original, or any of
+ * its data, in any way.
+ *
+ * @param self The @c obj instance.
+ * @return     An exact duplicate of @a self which is identical to,
+ *             but programmatically independent of, the original.
+ *
+ * @see DOXGRP_OBJ, spif_str_dup()
+ * @ingroup DOXGRP_OBJ
+ */
 spif_obj_t
 spif_obj_dup(spif_obj_t self)
 {
@@ -214,10 +306,81 @@ spif_obj_dup(spif_obj_t self)
     return tmp;
 }
 
+/**
+ * Obtain the class name of an @c obj.
+ *
+ * The @c type standard member function is responsible for returning
+ * the class name (as a spif_classname_t) of the supplied object.  You
+ * will almost certainly want to implement it exactly as seen here.
+ * If you don't, know why.
+ *
+ * @param self The @c obj instance.
+ * @return     The class name of @a self.
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
 spif_classname_t
 spif_obj_type(spif_obj_t self)
 {
     return SPIF_OBJ_CLASSNAME(self);
+}
+
+/**
+ * Return the class of an object.
+ *
+ * This function returns the class (i.e., spif_class_t) of the
+ * supplied @c obj instance.  Thanks to the Magic and Mystery of
+ * typecasting, any LibAST object can be passed to this function to
+ * obtain its class information, like so:
+ * <tt>spif_obj_get_class(SPIF_OBJ(foo))</tt>  Or, simply use the
+ * SPIF_OBJ_CLASS() macro.
+ *
+ * Keep in mind that this will return the @a entire class.  If you
+ * simply want the class name string, use SPIF_OBJ_CLASSNAME()
+ * instead.
+ *
+ * @param self The @c obj instance.
+ * @return     The object's class, or NULL if @a self is NULL.
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
+spif_class_t
+spif_obj_get_class(spif_obj_t self)
+{
+    return ((self) ? SPIF_OBJ_CLASS(self) : SPIF_NULL_TYPE(class));
+}
+
+/**
+ * Set an object's class.
+ *
+ * This function sets the class (i.e., spif_class_t) of the supplied
+ * @c obj instance.  Thanks to the Magic and Mystery of typecasting,
+ * any LibAST object can be passed to this function to set its class
+ * information, like so: <tt>spif_obj_set_class(SPIF_OBJ(foo),
+ * SPIF_CLASS_VAR(XXX))</tt>, where <tt>XXX</tt> is the actual type of
+ * the object (like @c str or @c regexp).  Any call to the @c init
+ * member of a parent class MUST be immediately followed by a call to
+ * this function like the one above.  Failure to do so results in
+ * inaccurate class typing information, which kinda defeats the whole
+ * point, ya know?
+ *
+ * @param self The @c obj instance.
+ * @param cls  The @c class for the given instance.
+ * @return     #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
+spif_bool_t
+spif_obj_set_class(spif_obj_t self, spif_class_t cls)
+{
+    if (SPIF_OBJ_ISNULL(self)) {
+        return FALSE;
+    }
+    SPIF_OBJ_CLASS(self) = cls;
+    return TRUE;
 }
 
 /*@}*/
