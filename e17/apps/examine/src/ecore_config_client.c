@@ -165,6 +165,8 @@ ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
         }                       /* is not dir */
       }                         /* while dir */
 
+      closedir(dir);
+
       if (connected) {
 
         ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
@@ -176,7 +178,7 @@ ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
 
         return ECORE_CONFIG_ERR_SUCC;
       }
-    }                           /* openfir */
+    }                           /* opendir */
   } else {                      /* if we cannot access the home variable */
     if ((tmp_sock =
          ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, pipe_name, 0, NULL))) {
