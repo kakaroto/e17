@@ -161,4 +161,76 @@ engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
   ep->transition = trans;
   ep->duration = duration;
 }
+
+/**
+ * engrave_program_has_targets - See if a program has any targets
+ * @param ep: The Engrave_Program to check for targets
+ * 
+ * @return Returns 1 if there are targets, 0 otherwise
+ */
+int
+engrave_program_has_targets(Engrave_Program *ep)
+{
+  if (!ep) return 0;
+  if (evas_list_count(ep->targets) > 0) return 1;
+  return 0;
+}
+
+/**
+ * engrave_program_has_afters - See if a program has any afters
+ * @param ep: The Engrave_Program to check for afters
+ * 
+ * @return Returns 1 if there are afters, 0 otherwise
+ */
+int
+engrave_program_has_afters(Engrave_Program *ep)
+{
+  if (!ep) return 0;
+  if (evas_list_count(ep->afters) > 0) return 1;
+  return 0;
+}
+
+/**
+ * engrave_program_target_foreach - Iterate over each target
+ * @param ep: The Engrave_Program to get the targets from
+ * @param func: The function to call for each target
+ * @param data: User data
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_program_target_foreach(Engrave_Program *ep,
+                                void (*func)(char *, void *), void *data)
+{
+  Evas_List *l;
+
+  if (!engrave_program_has_targets(ep)) return;
+  for (l = ep->targets; l; l = l->next) {
+    char *target = l->data;
+    if (target) func(target, data);
+  }
+}
+
+/**
+ * engrave_program_after_foreach - Iterate over each after
+ * @param ep: The Engrave_Program to get the afters from
+ * @param func: The function to call for each after
+ * @param data: User data
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_program_after_foreach(Engrave_Program *ep,
+                               void (*func)(char *, void *), void *data)
+{
+  Evas_List *l;
+
+  if (!engrave_program_has_afters(ep)) return;
+  for (l = ep->afters; l; l = l->next) {
+    char *after = l->data;
+    if (after) func(after, data);
+  }
+}
+
+
  

@@ -62,6 +62,15 @@ void engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
 void engrave_program_transition_set(Engrave_Program *ep,
                                 Engrave_Transition trans, double duration);
 
+int engrave_program_has_afters(Engrave_Program *ep);
+int engrave_program_has_targets(Engrave_Program *ep);
+
+void engrave_program_target_foreach(Engrave_Program *ep,
+                                void (*func)(char *, void *), void *data);
+void engrave_program_after_foreach(Engrave_Program *ep,
+                                void (*func)(char *, void *), void *data);
+
+
 /**
  * @}
  */

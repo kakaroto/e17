@@ -3,13 +3,16 @@
 #include <stdarg.h>
 #include "Engrave.h"
 
-static void _engrave_output_part(Engrave_Part *part, FILE *out);
-static void _engrave_output_program(Engrave_Program *program, FILE *out);
-static void _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out);
+static void _engrave_output_part(Engrave_Part *part, void *data);
+static void _engrave_output_program(Engrave_Program *program, void *data);
+static void _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data);
 static void _engrave_output_image(Engrave_Image *image, void *data);
 static void _engrave_output_font(Engrave_Font *font, void *data);
 static void _engrave_output_data(Engrave_Data *data, void *udata);
 static void _engrave_output_group(Engrave_Group *group, void *data);
+static void _engrave_program_output_after(char *after, void *data);
+static void _engrave_program_output_target(char *target, void *data);
+static void _engrave_part_state_output_tween(Engrave_Image *ei, void *data);
 
 static int level = 0;
 
@@ -192,76 +195,59 @@ engrave_edc_output(Engrave_File *engrave_file, char *path)
 static void
 _engrave_output_group(Engrave_Group *group, void *data)
 {
-  Evas_List *l;
-  FILE *out;
-
-  out = data;
+  FILE *out = data;
+  char *tmp = NULL;
+  int w, h;
 
   engrave_out_start(out, "group");
 
-  /* FIXME max is 0 by default, this is bad... */
-  engrave_out_data(out, "name", "\"%s\"", group->name);
+  tmp = engrave_group_name_get(group);
+  engrave_out_data(out, "name", "\"%s\"", tmp);
+  if (tmp) free(tmp);
 
-  if (group->min.w != 0 || group->min.h != 0)
-    engrave_out_data(out, "min", "%d %d", group->min.w, group->min.h);
+  engrave_group_min_size_get(group, &w, &h);
+  if (w != 0 || h != 0)
+    engrave_out_data(out, "min", "%d %d", w, h);
 
-  if(group->max.w >= 0 || group->max.h >= 0)
-    engrave_out_data(out, "max", "%d %d", group->max.w, group->max.h);
+  engrave_group_max_size_get(group, &w, &h);
+  if(w >= 0 || h >= 0)
+    engrave_out_data(out, "max", "%d %d", w, h);
     
   /* data */
-  if (group->data)
+  if (engrave_group_has_data(group))
   {
     engrave_out_start(out, "data");
-    for (l = group->data; l; l = l->next)
-    {
-      Engrave_Data *data = l->data;
-      if (data)
-      {
-        if (data->value)
-          engrave_out_data(out, "item", "\"%s\" \"%s\"",
-                    data->key, data->value);
-        else
-          engrave_out_data(out, "item", "\"%s\" %d",
-                    data->key, data->int_value);
-		
-      }
-    }
+    engrave_group_data_foreach(group, _engrave_output_data, out);
     engrave_out_end(out);
   }
 
   /* script */
-  if (group->script) {
+  tmp = engrave_group_script_get(group);
+  if (tmp) {
     engrave_out_start(out, "script");
     /* FIXME scripts are wierd... */
-    fprintf(out, "%s", group->script);
+    fprintf(out, "%s", tmp);
     engrave_out_end(out);
+    free(tmp);
   }
 
   /* parts */
   engrave_out_start(out, "parts");
-  for (l = group->parts; l; l = l->next)
-  {
-    Engrave_Part *part = l->data;
-    if (part) _engrave_output_part(part, out);
-  }
+  engrave_group_parts_foreach(group, _engrave_output_part, out);
   engrave_out_end(out);
 
   /* programs */
   engrave_out_start(out, "programs");
-  for (l = group->programs; l; l = l->next)
-  {
-    Engrave_Program *program = l->data;
-    if (program) _engrave_output_program(program, out);
-  }
+  engrave_group_programs_foreach(group, _engrave_output_program, out);
   engrave_out_end(out);
 
   engrave_out_end(out);   /* group */
 }
 
 static void
-_engrave_output_part(Engrave_Part *part, FILE *out)
+_engrave_output_part(Engrave_Part *part, void *data)
 {
-  Evas_List *l;
+  FILE *out = data;
 
   engrave_out_start(out, "part");
 
@@ -292,20 +278,15 @@ _engrave_output_part(Engrave_Part *part, FILE *out)
 
     engrave_out_end(out);
   }
-  for (l = part->states; l; l = l->next)
-  {
-    Engrave_Part_State *state = l->data;
-    if (state) _engrave_output_state(part, state, out);
-  }
 
+  engrave_part_state_foreach(part, _engrave_output_state, out);
   engrave_out_end(out);
 }
 
-
 static void
-_engrave_output_program(Engrave_Program *program, FILE *out)
+_engrave_output_program(Engrave_Program *program, void *data)
 {
-  Evas_List *l;
+  FILE *out = data;
 
   engrave_out_start(out, "program");
 
@@ -365,27 +346,20 @@ _engrave_output_program(Engrave_Program *program, FILE *out)
             program->in.range
             );
 
-  for (l = program->targets; l; l = l->next)
-  {
-    engrave_out_data(out, "target", "\"%s\"", (char *)l->data);
-  }
-
-  for (l = program->afters; l; l = l->next)
-  {
-    engrave_out_data(out, "after", "\"%s\"", (char *)l->data);
-  }
+  engrave_program_target_foreach(program, _engrave_program_output_target, out);
+  engrave_program_after_foreach(program, _engrave_program_output_after, out);
 
   engrave_out_end(out);
 }
 
-
+/* Note: We only output if the value is different from the default to save
+ * space 
+ */
 static void
-_engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
+_engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 {
-  Evas_List *l;
+  FILE *out = data;
   
-  /* NB: many are only written if different from defaults (to save space) */
-
   engrave_out_start(out, "description");
 
   engrave_out_data(out, "state", "\"%s\" %.2f", state->name, state->value);
@@ -475,11 +449,8 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
   {
     engrave_out_start(out, "image");
     engrave_out_data(out, "normal", "\"%s\"", state->image.normal->name);
-    for (l = state->image.tween; l; l = l->next)
-    {
-      Engrave_Image *tw = l->data;
-      engrave_out_data(out, "tween", "\"%s\"", tw->name);
-    }
+    engrave_part_state_tween_foreach(state,
+                        _engrave_part_state_output_tween, out);
 
     if (state->image.border.l || state->image.border.r 
             || state->image.border.t || state->image.border.b)
@@ -575,6 +546,30 @@ _engrave_output_data(Engrave_Data *data, void *udata)
 
   free(key);
   free(value);
+}
+
+static void
+_engrave_program_output_target(char *target, void *data)
+{
+    FILE *out = data;
+    engrave_out_data(out, "target", "\"%s\"", target);
+}
+
+static void
+_engrave_program_output_after(char *after, void *data)
+{
+  FILE *out = data;
+  engrave_out_data(out, "after", "\"%s\"", after);
+}
+
+static void
+_engrave_part_state_output_tween(Engrave_Image *ei, void *data)
+{
+  FILE *out = data;
+  char *name = engrave_image_name_get(ei);
+
+  engrave_out_data(out, "tween", "\"%s\"", name);
+  if (name) free(name);
 }
 
 

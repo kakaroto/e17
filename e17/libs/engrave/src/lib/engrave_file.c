@@ -105,6 +105,62 @@ engrave_file_image_by_name_find(Engrave_File *ef, char *name)
 }
 
 /**
+ * engrave_file_has_images - check if the file has images
+ * @param ef: The Engrave_File to check for images
+ * 
+ * @return Returns 1 if the file contains images, 0 otherwise
+ */
+int
+engrave_file_has_images(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  if (evas_list_count(ef->images) > 0) return 1;
+  return 0;
+}
+
+/**
+ * engrave_file_has_images - check if the file has data
+ * @param ef: The Engrave_File to check for data
+ * 
+ * @return Returns 1 if the file contains data, 0 otherwise
+ */
+int
+engrave_file_has_data(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  if (evas_list_count(ef->data) > 0) return 1;
+  return 0;
+}
+
+/**
+ * engrave_file_has_images - check if the file has groups
+ * @param ef: The Engrave_File to check for groups
+ * 
+ * @return Returns 1 if the file contains groups, 0 otherwise
+ */
+int
+engrave_file_has_groups(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  if (evas_list_count(ef->groups) > 0) return 1;
+  return 0;
+}
+
+/**
+ * engrave_file_has_images - check if the file has fonts
+ * @param ef: The Engrave_File to check for fonts
+ * 
+ * @return Returns 1 if the file contains fonts, 0 otherwise
+ */
+int
+engrave_file_has_fonts(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  if (evas_list_count(ef->fonts) > 0) return 1;
+  return 0;
+}
+
+/**
  * engrave_file_image_foreach - call the given function for each image object
  * @param ef: The Engrave_File for which the images should be iterated over
  * @param func: The function to call for each image
@@ -119,6 +175,7 @@ engrave_file_image_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
+  if (!engrave_file_has_images(ef)) return;
   for (l = ef->images; l; l = l->next) {
     Engrave_Image *image = l->data;
     if (image) func(image, data);
@@ -140,6 +197,7 @@ engrave_file_data_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
+  if (!engrave_file_has_data(ef)) return;
   for (l = ef->data; l; l = l->next) {
     Engrave_Data *data = l->data;
     if (data) func(data, udata);
@@ -161,6 +219,7 @@ engrave_file_group_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
+  if (!engrave_file_has_groups(ef)) return;
   for (l = ef->groups; l; l = l->next) {
     Engrave_Group *group = l->data;
     if (group) func(group, data);
@@ -182,6 +241,7 @@ engrave_file_font_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
+  if (!engrave_file_has_fonts(ef)) return;
   for (l = ef->fonts; l; l = l->next) {
     Engrave_Font *font = l->data;
     if (font) func(font, data);

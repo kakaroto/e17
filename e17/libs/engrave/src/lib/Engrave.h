@@ -57,7 +57,9 @@
  * Compiling with the Engrave library is pretty simple, assuming you've
  * named your app engrave_test.c the following command will do the trick:
  *
+ * @code
  * gcc -o engrave_test `engrave-config --cflags --libs` engrave_test.c
+ * @endcode
  *
  * @section Conclusion
  * Engrave has been designed to make it easy to open and maniuplate Edje

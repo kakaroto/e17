@@ -70,6 +70,12 @@ void engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps);
 Engrave_Part_State * engrave_part_state_by_name_value_find(Engrave_Part *ep, 
                                             char *name, double val);
 
+int engrave_part_has_states(Engrave_Part *ep);
+
+void engrave_part_state_foreach(Engrave_Part *ep, 
+                    void (*func)(Engrave_Part_State *, Engrave_Part *, void *),
+                    void *data);
+
 /**
  * @}
  */

@@ -234,6 +234,11 @@ void engrave_part_state_text_align_set(Engrave_Part_State *eps,
 void engrave_part_state_copy(Engrave_Part_State *from, 
                                           Engrave_Part_State *to);
 
+int engrave_part_state_has_tweens(Engrave_Part_State *eps);
+
+void engrave_part_state_tween_foreach(Engrave_Part_State *eps,
+                void (*func)(Engrave_Image *, void *), void *data);
+
 /**
  * @}
  */

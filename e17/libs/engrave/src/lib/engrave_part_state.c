@@ -742,4 +742,38 @@ engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
   }
 }
 
+/**
+ * engrave_part_state_has_tweens - Check if the state contains image tweens
+ * @param eps: The Engrave_Part_State to check for tweens
+ *
+ * @return Returns 1 if tweens found, 0 otherwise
+ */
+int
+engrave_part_state_has_tweens(Engrave_Part_State *eps)
+{
+  if (!eps) return 0;
+  if (evas_list_count(eps->image.tween) > 0) return 1;
+  return 0;
+}
+
+/**
+ * engrave_part_state_tween_foreach - Iterate over the tween list
+ * @param eps: The Engrave_Part_State to get the tweens from
+ * @param func: The function to call for each tween
+ * @param data: User data to pass to the function
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_tween_foreach(Engrave_Part_State *eps,
+                void (*func)(Engrave_Image *, void *), void *data)
+{
+  Evas_List *l;
+
+  for (l = eps->image.tween; l; l = l->next) {
+    Engrave_Image *ei = l->data;
+    if (ei) func(ei, data);
+  }
+}
+
 
