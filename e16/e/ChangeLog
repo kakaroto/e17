@@ -1626,3 +1626,11 @@ Mon Dec  6 20:12:00 PST 1999
 (Mandrake)
 
 changed this to be 0.16.4
+
+-------------------------------------------------------------------------------
+
+Wed Dec  8 10:16:21 PST 1999
+(Mandrake)
+
+fixed a typo in INSTALL pointed out by Peter Kjellerstedt
+<peter.kjellerstedt@axis.com>

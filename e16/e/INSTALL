@@ -189,7 +189,7 @@ operates.
      Install Enlightenment in what is considered to be the "filing system
      standard" way. This means binaries will be put in /usr/local/bin
      or /usr/bin (PREFIX/bin) and data files in /usr/local/share/enlightenment
-     or /usrlshare/enlightenment (PREFIX/share/enlightenment), instead of the
+     or /usr/share/enlightenment (PREFIX/share/enlightenment), instead of the
      default where Enlightenemnt installs all files in /usr/local/enlightenment
      (PREFIX/enlightenment).
 `--prefix=PREFIX'
