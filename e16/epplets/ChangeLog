@@ -1169,3 +1169,11 @@ I actually needed to do was fix Epplet_draw_image - so I have :)
 
 Lots more to do tonight :)
 
+-------------------------------------------------------------------------------
+
+Fri Dec 03 18:34:47 GMT 1999
+(gilbertt)
+
+Hrm. Bye bye hardcoding, hello malloc()ed context stack. Improved the test
+app further.
+

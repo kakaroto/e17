@@ -14,8 +14,11 @@ static int          window_num = 0;     /* For window list */
 static Epplet_window *windows = NULL;   /* List of windows to loop though */
 
 static Epplet_window context_win;       /* Current context win */
-static int          window_stack_pos;   /* For context changes */
+static int          window_stack_pos=0;   /* For context changes */
+#if 0
 static Epplet_window window_stack[20];  /* For context changes */
+#endif
+static Epplet_window *window_stack;  /* For context changes */
 static Epplet_window mainwin;           /* Always the main epplet window */
 
 static ImlibData   *id = NULL;
@@ -529,6 +532,7 @@ Epplet_unregister_window(Epplet_window win)
      }
 }
 
+#if 0
 void
 Epplet_window_push_context(Epplet_window newwin)
 {
@@ -545,12 +549,41 @@ Epplet_window Epplet_window_pop_context(void)
 {
    window_stack_pos--;
    if (window_stack_pos < 1)
-     {
-	exit(1);
-     }
+   {
+       return NULL;
+   }
    context_win = window_stack[window_stack_pos - 1];
    return window_stack[window_stack_pos];
 }
+#endif
+
+/***************************/
+
+void
+Epplet_window_push_context(Epplet_window newwin)
+{
+   if (((window_stack=realloc(window_stack,sizeof(Epplet_window) * (window_stack_pos+1))) == NULL))
+        exit(1);
+   window_stack[window_stack_pos] = newwin;
+   window_stack_pos++;
+   context_win = newwin;
+}
+
+Epplet_window Epplet_window_pop_context(void)
+{
+   Epplet_window ret;
+   
+   window_stack_pos--;
+   ret=window_stack[window_stack_pos];
+   if (((window_stack=realloc(window_stack,sizeof(Epplet_window) * (window_stack_pos))) == NULL))
+        exit(1);
+   /* Window stack pos == 0 corresponds to the main epplet window */
+   if (window_stack_pos < 1)
+       return NULL;
+   context_win = window_stack[window_stack_pos - 1];
+   return ret;
+}
+
 
 /* Refresh window backgrounds on theme change */
 static void

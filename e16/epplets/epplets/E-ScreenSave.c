@@ -317,7 +317,7 @@ cb_out (void *data, Window w)
 static void
 btn_cb (void *data)
 {
-  Epplet_window_destroy ((Epplet_window)data);
+  Epplet_window_destroy ((Epplet_window) data);
 
   return;
 }
@@ -335,15 +335,15 @@ cb_shoot (void *data)
   static int temp = 20;
   static int temp2 = 50;
   static int temp3 = 80;
-  Epplet_window mywin;
+  Epplet_window mywin, mywin2, mywin3;
   Epplet_gadget sld, sld2, sld3, lbl, btn;
   mywin =
-    Epplet_create_window (400, 400, 100, 100,
+    Epplet_create_window (400, 300, 100, 100,
 			  "See! I told you this stuff was easy ;)");
   Epplet_window_show (mywin);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
-					   "Hello folks. I think its working :)",
+					   "This window was created on its own.",
 					   2));
   Epplet_gadget_show (sld =
 		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
@@ -355,11 +355,58 @@ cb_shoot (void *data)
 		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
 					     &temp3, NULL, NULL));
   Epplet_gadget_show (btn =
-		      Epplet_create_button ("Close window", NULL, 290, 010,
+		      Epplet_create_button ("Close window", NULL, 290, 270,
 					    100, 20, NULL, 0, NULL, btn_cb,
 					    mywin));
 
   Epplet_window_pop_context ();
+
+  mywin2 =
+    Epplet_create_window (400, 300, 100, 100,
+			  "See! I told you this stuff was easy ;)");
+  Epplet_window_show (mywin2);
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (20, 10,
+					   "This window was created first of two on the context stack.",
+					   2));
+  Epplet_gadget_show (sld =
+		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
+					     NULL, NULL));
+  Epplet_gadget_show (sld2 =
+		      Epplet_create_hslider (20, 100, 200, 0, 100, 1, 5,
+					     &temp2, NULL, NULL));
+  Epplet_gadget_show (sld3 =
+		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
+					     &temp3, NULL, NULL));
+  Epplet_gadget_show (btn =
+		      Epplet_create_button ("Close window", NULL, 290, 270,
+					    100, 20, NULL, 0, NULL, btn_cb,
+					    mywin2));
+
+  mywin3 =
+    Epplet_create_window (400, 300, 100, 100,
+			  "See! I told you this stuff was easy ;)");
+  Epplet_window_show (mywin3);
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (20, 10,
+					   "This window was created second of two on the context stack.",
+					   2));
+  Epplet_gadget_show (sld =
+		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
+					     NULL, NULL));
+  Epplet_gadget_show (sld2 =
+		      Epplet_create_hslider (20, 100, 200, 0, 100, 1, 5,
+					     &temp2, NULL, NULL));
+  Epplet_gadget_show (sld3 =
+		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
+					     &temp3, NULL, NULL));
+  Epplet_gadget_show (btn =
+		      Epplet_create_button ("Close window", NULL, 290, 270,
+					    100, 20, NULL, 0, NULL, btn_cb,
+					    mywin3));
+  Epplet_window_pop_context ();
+  Epplet_window_pop_context ();
+
   return;
   data = NULL;
 }
