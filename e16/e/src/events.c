@@ -675,11 +675,14 @@ EventShow(const XEvent * ev)
      case GraphicsExpose:
      case NoExpose:
      case VisibilityNotify:
+	goto case_common;
      case CreateNotify:
      case DestroyNotify:
      case UnmapNotify:
      case MapNotify:
      case MapRequest:
+	printf("EV-%s ev=%#lx win=%#lx\n", name, win, ev->xcreatewindow.window);
+	break;
      case ReparentNotify:
 	goto case_common;
      case ConfigureNotify:
