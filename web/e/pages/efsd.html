@@ -186,8 +186,12 @@ specifically, it does the following:
              With a client that uses <b>Efsd</b>, no user will ever click on what seems to be an mp3, accidentally executing a malicious script.
            </p>           
        </li>
-       <li><p style="text-align:justify">Handles all metadata requests, like storing/querying for file icons, icon coordinates etc. The
+       <li><p style="text-align:justify">Handles setting and retrieval of arbitrary metadata, e.g.
+	      like storing/querying for file icons, icon coordinates etc. The
               type of data to be stored/retrieved is entirely up to the clients.
+           </p></li>
+       <li><p style="text-align:justify">Can monitor metadata and sent events to the client when
+	      metadata entries change.
            </p></li>
        <li><p style="text-align:justify">Caches results of stat() calls to increase performance. FAM is used to let <b>Efsd</b> know
               internally when a file has changed, so that cached stats can be updated.
@@ -203,7 +207,7 @@ specifically, it does the following:
   </tr>
 </table>
 <p style="text-align:justify">
-<b>Efsd</b> is currently around 14,000 lines of C code, and mostly stable. It's available in
+<b>Efsd</b> is currently around 16,000 lines of C code, and mostly stable. It's available in
 Enlightenment's CVS repository, go to the <a href="http://www.sourceforge.net/projects/enlightenment">SourceForge page</a>
 for details. The Efsd Manual is available for download as HTML <a href="http://www.whoop.org/downloads/efsd-manual.tgz">here</a>, an online
 version is up <a href="http://www.whoop.org/efsd-manual/index.html">here</a>.
