@@ -7,6 +7,9 @@
 #include<limits.h>
 #include<string.h>
 
+#include "util.h"
 #include "e_login_session.h"
+
+#define ELOGIN_CONFIG_DATABASE PACKAGE_DATA_DIR"/data/config/elogin_config.db"
 
 #endif

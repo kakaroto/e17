@@ -5,6 +5,11 @@ extern void intro_init(E_Login_Session e);
 
 #define RENDER_METHOD RENDER_METHOD_ALPHA_SOFTWARE
 
+/**
+ * e_login_session_new: allocate a new  E_Login_Session
+ * Returns a valid E_Login_Session
+ * Also Allocates the auth, and parse the config struct 
+ */
 E_Login_Session
 e_login_session_new(void)
 {
@@ -13,24 +18,50 @@ e_login_session_new(void)
    e = (E_Login_Session) malloc(sizeof(struct _E_Login_Session));
 
    e->auth = e_login_auth_new();
+   e->config =
+      e_login_config_parse(PACKAGE_DATA_DIR "/data/config/elogin_config.db");
 
    return (e);
 }
 
+/**
+ * e_login_session_free: free the elogin session
+ */
+void
+e_login_session_free(E_Login_Session e)
+{
+   if (e)
+   {
+      e_login_auth_free(e->auth);
+      e_login_config_free(e->config);
+      evas_del_object(e->evas, e->pointer);
+      e_bg_free(e->bg);
+      evas_free(e->evas);
+      ecore_window_destroy(e->main_win);
+      free(e);
+   }
+}
+
+/**
+ * e_login_session_init: Initialize the session by taking over the screen
+ * @e - the E_Login_Session to be initialized
+ */
 void
 e_login_session_init(E_Login_Session e)
 {
    Window win, ewin;
    Evas evas;
-   char *bgfile = PACKAGE_DATA_DIR "/data/bgs/elogin.bg.db";
    int iw, ih;
 
+   if (!e)
+      exit(1);
+
 #if X_TESTING
-   win = ecore_window_new(0, 0, 0, 640, 480);
+   win = ecore_window_new(0, 0, 0, 800, 600);
    ecore_window_set_events(win, XEV_CONFIGURE | XEV_PROPERTY);
    ecore_window_set_name_class(win, "Elogin Test", "Main");
-   e->geom.w = 640;
-   e->geom.h = 480;
+   e->geom.w = 800;
+   e->geom.h = 600;
 #else
    ecore_window_get_geometry(ecore_window_root(), NULL, NULL, &e->geom.w,
                              &e->geom.h);
@@ -54,10 +85,13 @@ e_login_session_init(E_Login_Session e)
    ecore_set_blank_pointer(win);
 
    e->main_win = win;
-   e->ewin = ewin;
    e->evas = evas;
 
-   e->bg = e_bg_load(bgfile);
+   /* try config */
+   if ((e->config) && (e->config->bg))
+      e->bg = e_bg_load(e->config->bg);
+   if (!e->bg)
+      e->bg = e_bg_load(PACKAGE_DATA_DIR "/data/bgs/elogin.bg.db");
    if (!e->bg)
       e->bg = e_bg_new();
 
@@ -77,12 +111,19 @@ e_login_session_init(E_Login_Session e)
    intro_init(e);
 }
 
+/**
+ * e_login_session_auth_user: attempt to authenticate the user
+ * Returns 0 on success errors otherwise
+ */
 int
 e_login_session_auth_user(E_Login_Session e)
 {
    return (e_login_auth_cmp(e->auth));
 }
 
+/**
+ * e_login_session_auth_user: forget what we know about the current user
+ */
 void
 e_login_session_reset_user(E_Login_Session e)
 {

@@ -1,64 +1,15 @@
 #include "elogin.h"
-
-struct _Elogin_Config
-{
-   char *welcome;
-   char *password;
-   char *bg;
-
-   struct
-   {
-      int size;
-      int r, g, b, a;
-      char *name;
-   }
-   font;
-
-   struct
-   {
-      int total, placed;
-   }
-   xinerama;
-
-   struct
-   {
-      char *file;
-      int h, v;
-   }
-   logo;
-};
-
-typedef struct _Elogin_Config Elogin_Config;
-
-#define WELCOME_STRING "Enter your username"
-#define PASSWORD_STRING "Enter your password..."
-
-#define TEXT_DESC_FONTSIZE 22
-#define TEXT_ENTRY_FONTSIZE 20
-#define TEXT_ERR_FONTSIZE 22
-
-#define ENTRY_OFFSET 30
-
-#define XINERAMA_HEADS 1
-
-#define PERCENT_LOGO_HORIZONTAL_PLACEMENT 0.5
-#define PERCENT_LOGO_VERTICAL_PLACEMENT 0.5
+#include "e_login_config.h"
 
 #define PERCENT_DESC_HORIZONTAL_PLACEMENT 0.5
 #define PERCENT_DESC_VERTICAL_PLACEMENT 0.8
 
-#define FONTNAME "notepad.ttf"
-#define FONT_R 192
-#define FONT_G 192
-#define FONT_B 192
-#define FONT_A 210
-
 static Evas evas = NULL;
-static Evas_Object _o_logo = NULL;
 static Evas_Object _o_text_desc = NULL;
 static Evas_Object _o_pass_desc = NULL;
 static Evas_Object _o_text_entry = NULL;
 static Evas_Object _o_err_str = NULL;
+static E_Login_Config config = NULL;
 
 void
 show_password_description(void)
@@ -83,6 +34,7 @@ hide_text_description(void)
 {
    evas_hide(evas, _o_text_desc);
 }
+
 static void
 error_die(int val, void *_data)
 {
@@ -106,15 +58,16 @@ show_error_description(char *err_str)
       tw = evas_get_text_width(evas, o);
       th = evas_get_text_height(evas, o);
 
-      x = (((w / XINERAMA_HEADS) - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
-      y = ((h - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
+      x = (((w / config->screens.w) -
+            tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
+      y = (((h / config->screens.h) - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
 
       evas_move(evas, o, x, y);
 
       evas_hide(evas, _o_pass_desc);
       evas_hide(evas, _o_text_desc);
       evas_show(evas, _o_err_str);
-      ecore_add_event_timer("error_string", 1, error_die, 255, o);
+      ecore_add_event_timer("error_string", 1.5, error_die, 255, o);
    }
 }
 
@@ -144,8 +97,13 @@ set_text_entry_text(int is_pass, char *txt)
    tw = evas_get_text_width(evas, o);
    th = evas_get_text_height(evas, o);
 
-   x = (((w / XINERAMA_HEADS) - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
-   y = ((h - th) * PERCENT_DESC_VERTICAL_PLACEMENT + ENTRY_OFFSET);
+   x = (((w / config->screens.w) - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
+   y = (((h / config->screens.h) - th) * PERCENT_DESC_VERTICAL_PLACEMENT +
+        (config->welcome.font.size + 8));
+
+#if 0
+   fprintf(stderr, "%0.2f,%0.2f is x,y\n", x, y);
+#endif
 
    evas_move(evas, o, x, y);
 }
@@ -154,14 +112,11 @@ void
 intro_init(E_Login_Session e)
 {
    Evas_Object o;
-   int iw, ih;
    double tw, th;
    double x, y;
 
    if (evas)
    {
-      if (_o_logo)
-         evas_del_object(evas, _o_logo);
       if (_o_text_desc)
          evas_del_object(evas, _o_text_desc);
       if (_o_pass_desc)
@@ -171,58 +126,55 @@ intro_init(E_Login_Session e)
       if (_o_err_str)
          evas_del_object(evas, _o_err_str);
    }
-   else
-   {
-      if (e)
-         evas = e->evas;
-   }
+   if (e)
+      evas = e->evas;
+   if (!config)
+      config = e->config;
 
-   o = evas_add_image_from_file(evas,
-                                PACKAGE_DATA_DIR "/data/images/logo.png");
-   evas_get_image_size(evas, o, &iw, &ih);
-   evas_resize(evas, o, iw, ih);
-   evas_set_image_fill(evas, o, 0.0, 0.0, (float) iw, (float) ih);
-   x = (((e->geom.w / XINERAMA_HEADS) -
-         iw) * PERCENT_LOGO_HORIZONTAL_PLACEMENT);
-   y = ((e->geom.h - ih) * PERCENT_LOGO_VERTICAL_PLACEMENT);
-   evas_set_color(evas, o, 39, 196, 255, 255);
-   evas_move(evas, o, x, y);
-   evas_show(evas, o);
-   _o_logo = o;
 
-   o = evas_add_text(evas, FONTNAME, TEXT_DESC_FONTSIZE, WELCOME_STRING);
+   o = evas_add_text(evas, config->welcome.font.name,
+                     config->welcome.font.size, config->welcome.mess);
    tw = evas_get_text_width(evas, o);
    th = evas_get_text_height(evas, o);
-   x = (((e->geom.w / XINERAMA_HEADS) -
+   x = (((e->geom.w / config->screens.w) -
          tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
-   y = ((e->geom.h - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
-   evas_set_color(evas, o, FONT_R, FONT_G, FONT_B, FONT_A);
+   y = (((e->geom.h / config->screens.h) -
+         th) * PERCENT_DESC_VERTICAL_PLACEMENT);
+   evas_set_color(evas, o, config->welcome.font.r, config->welcome.font.g,
+                  config->welcome.font.b, config->welcome.font.a);
    evas_move(evas, o, x, y);
    evas_set_layer(evas, o, 5);
    evas_show(evas, o);
    _o_text_desc = o;
 
-   o = evas_add_text(evas, FONTNAME, TEXT_DESC_FONTSIZE, PASSWORD_STRING);
+   o = evas_add_text(evas, config->passwd.font.name, config->passwd.font.size,
+                     config->passwd.mess);
    tw = evas_get_text_width(evas, o);
    th = evas_get_text_height(evas, o);
-   x = (((e->geom.w / XINERAMA_HEADS) -
+   x = (((e->geom.w / config->screens.w) -
          tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
-   y = ((e->geom.h - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
-   evas_set_color(evas, o, FONT_R, FONT_G, FONT_B, FONT_A);
+   y = (((e->geom.h / config->screens.h) -
+         th) * PERCENT_DESC_VERTICAL_PLACEMENT);
+   evas_set_color(evas, o, config->passwd.font.r, config->passwd.font.g,
+                  config->passwd.font.b, config->passwd.font.a);
    evas_move(evas, o, x, y);
    evas_set_layer(evas, o, 5);
    _o_pass_desc = o;
 
-   o = evas_add_text(evas, FONTNAME, TEXT_DESC_FONTSIZE, "");
-   evas_set_color(evas, o, FONT_R, FONT_G, FONT_B, FONT_A);
+   o = evas_add_text(evas, config->welcome.font.name,
+                     config->welcome.font.size, "");
+   evas_set_color(evas, o, config->welcome.font.r, config->welcome.font.g,
+                  config->welcome.font.b, config->welcome.font.a);
    evas_set_layer(evas, o, 5);
    evas_move(evas, o, -999999, -9999999);
    evas_show(evas, o);
    _o_text_entry = o;
 
    /* _o_err_str is placed later */
-   o = evas_add_text(evas, FONTNAME, TEXT_ERR_FONTSIZE, "");
-   evas_set_color(evas, o, FONT_R, FONT_G, FONT_B, FONT_A);
+   o = evas_add_text(evas, config->welcome.font.name,
+                     config->welcome.font.size, "");
+   evas_set_color(evas, o, config->welcome.font.r, config->welcome.font.g,
+                  config->welcome.font.b, config->welcome.font.a);
    evas_set_layer(evas, o, 10);
    _o_err_str = o;
 

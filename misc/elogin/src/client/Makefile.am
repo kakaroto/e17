@@ -12,7 +12,9 @@ elogin_SOURCES = \
 	callbacks.c callbacks.h \
 	e_login_auth.c e_login_auth.h \
 	e_login_session.c e_login_session.h \
+	e_login_config.c e_login_config.h \
 	events.c events.h \
+	util.c util.h \
 	elogin.h \
 	intro.c \
 	main.c 

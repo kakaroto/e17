@@ -1,54 +1,5 @@
 #include"e_login_auth.h"
-
-
-static struct passwd *
-_struct_passwd_dup(struct passwd *pwent)
-{
-   struct passwd *result = NULL;
-
-   if (pwent)
-   {
-
-      result = (struct passwd *) malloc(sizeof(struct passwd));
-      memset(result, 0, sizeof(struct passwd));
-      if (pwent->pw_name)
-         result->pw_name = strdup(pwent->pw_name);
-      if (pwent->pw_passwd)
-         result->pw_passwd = strdup(pwent->pw_passwd);
-      if (pwent->pw_gecos)
-         result->pw_gecos = strdup(pwent->pw_gecos);
-      if (pwent->pw_shell)
-         result->pw_shell = strdup(pwent->pw_shell);
-      if (pwent->pw_dir)
-         result->pw_dir = strdup(pwent->pw_dir);
-
-      result->pw_uid = pwent->pw_uid;
-      result->pw_gid = pwent->pw_gid;
-
-   }
-
-   return (result);
-}
-
-static void *
-_struct_passwd_free(struct passwd *pwent)
-{
-   if (pwent)
-   {
-      if (pwent->pw_name)
-         free(pwent->pw_name);
-      if (pwent->pw_passwd)
-         free(pwent->pw_passwd);
-      if (pwent->pw_gecos)
-         free(pwent->pw_gecos);
-      if (pwent->pw_shell)
-         free(pwent->pw_shell);
-      if (pwent->pw_dir)
-         free(pwent->pw_dir);
-      free(pwent);
-   }
-   return (NULL);
-}
+#include "util.h"
 
 static char *
 _e_login_auth_get_running_username(void)
@@ -131,7 +82,7 @@ e_login_auth_free(E_Login_Auth e)
       pam_end(e->pam.handle, PAM_SUCCESS);
       e->pam.handle = NULL;
    }
-   e->pam.pw = _struct_passwd_free(e->pam.pw);
+   e->pam.pw = struct_passwd_free(e->pam.pw);
    memset(e->pass, 0, sizeof(e->pass));
    free(e);
 }
@@ -250,6 +201,10 @@ e_login_auth_cmp(E_Login_Auth e)
    return (result);
 }
 
+/**
+ * e_login_auth_set_pass: keep the error checking here
+ * Pass it a char* and it'll set it if it should
+ */
 void
 e_login_auth_set_pass(E_Login_Auth e, char *str)
 {
@@ -276,10 +231,10 @@ e_login_auth_set_user(E_Login_Auth e, char *str)
 
       memset(e->pass, 0, sizeof(e->pass));
       snprintf(e->user, PATH_MAX, "%s", str);
-      e->pam.pw = _struct_passwd_free(e->pam.pw);
+      e->pam.pw = struct_passwd_free(e->pam.pw);
       if ((pwent = getpwnam(e->user)))
       {
-         e->pam.pw = _struct_passwd_dup(pwent);
+         e->pam.pw = struct_passwd_dup(pwent);
          result = 0;
       }
       else
@@ -298,15 +253,16 @@ e_login_auth_setup_environment(E_Login_Auth e)
 {
    extern char **environ;
    int size;
-   char *mail;
+   char *mail, buf[PATH_MAX];
 
    environ = e->env;
+   snprintf(buf, PATH_MAX, "/bin:/usr/bin:/usr/local/bin:%s", getenv("PATH"));
    setenv("TERM", "vt100", 0);  // TERM=linux?
    setenv("HOME", e->pam.pw->pw_dir, 1);
    setenv("SHELL", e->pam.pw->pw_shell, 1);
    setenv("USER", e->pam.pw->pw_name, 1);
    setenv("LOGNAME", e->pam.pw->pw_name, 1);
-   setenv("DISPLAY", ":0.0", 1);
+   setenv("PATH", buf, 1);
 
    size = (strlen(_PATH_MAILDIR) + strlen(e->pam.pw->pw_name) + 2);
    mail = (char *) malloc(sizeof(char) * size);
