@@ -1089,7 +1089,7 @@ doMoveImpl(void *params, char constrained)
    xo = desks.desk[ewin->desktop].x;
    yo = desks.desk[ewin->desktop].y;
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup || mode.swapmovemode, &num);
    for (i = 0; i < num; i++)
      {
 	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
@@ -1101,8 +1101,8 @@ doMoveImpl(void *params, char constrained)
    Efree(gwins);
    mode.firstlast = 1;
    params = NULL;
-   start_move_x = ewin->x;
-   start_move_y = ewin->y;
+   mode.swapcoord_x = start_move_x = ewin->x;
+   mode.swapcoord_y = start_move_y = ewin->y;
    EDBUG_RETURN(0);
 }
 
@@ -1122,6 +1122,13 @@ int
 doMoveNoGroup(void *params)
 {
    mode.nogroup = 1;
+   return doMoveImpl(params, 0);
+}
+
+int
+doSwapMove(void *params)
+{
+   mode.swapmovemode = 1;
    return doMoveImpl(params, 0);
 }
 
@@ -1159,7 +1166,7 @@ doMoveEnd(void *params)
    mode.firstlast = 2;
    d = DesktopAt(mode.x, mode.y);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup || mode.swapmovemode, &num);
 
    if (!mode.moveresize_pending_ewin)
      {
@@ -1223,6 +1230,7 @@ doMoveEnd(void *params)
    mode.movemode = real_move_mode;
    params = NULL;
    mode.nogroup = 0;
+   mode.swapmovemode = 0;
    EDBUG_RETURN(0);
 }
 
@@ -4074,6 +4082,7 @@ initFunctionArray(void)
    ActionFunctions[ACTION_SKIPWINLIST] = (int (*)(void *))(doSkipWinList);
    ActionFunctions[ACTION_NEVERFOCUS] = (int (*)(void *))(doNeverFocus);
    ActionFunctions[ACTION_SKIPLISTS] = (int (*)(void *))(doSkipLists);
+   ActionFunctions[ACTION_SWAPMOVE] = (int (*)(void *))(doSwapMove);
 
    EDBUG_RETURN(0);
 }

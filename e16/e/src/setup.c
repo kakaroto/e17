@@ -497,6 +497,8 @@ SetupX()
    mode.mouse_over_win = NULL;
    mode.click_focus_grabbed = 0;
    mode.movemode = 0;
+   mode.swapmovemode = 0;
+   mode.swapcoord_x = mode.swapcoord_y = 0;
    mode.dockapp_support = 1;
    mode.dockdirmode = DOCK_DOWN;
    mode.dockstartx = 0;
@@ -599,6 +601,7 @@ SetupX()
    mode.group_config.stick = 1;
    mode.group_config.shade = 1;
    mode.group_config.mirror = 1;
+   mode.group_swapmove = 1;
    mode.area_wraparound = 0;
    mode.dialog_headers = 0;
    mode.clickalways = 0;

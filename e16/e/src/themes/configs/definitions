@@ -337,6 +337,7 @@
 #define __A_SKIPWINLIST 100
 #define __A_NEVERFOCUS 101
 #define __A_SKIPLISTS 102
+#define __A_SWAPMOVE 103
 
 #define __MODIFIER_KEY 101
 #define __TYPE 102

@@ -692,6 +692,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_GROUP_MIRROR:
 	     mode.group_config.mirror = i2;
 	     break;
+	  case CONTROL_GROUP_SWAPMOVE:
+	     mode.group_swapmove = i2;
+	     break;
 	  case DESKTOP_DRAGDIR:
 	     desks.dragdir = i2;
 	     break;
@@ -3862,6 +3865,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1363 %i\n", (int)mode.group_config.stick);
 	fprintf(autosavefile, "1364 %i\n", (int)mode.group_config.shade);
 	fprintf(autosavefile, "1365 %i\n", (int)mode.group_config.mirror);
+	fprintf(autosavefile, "1372 %i\n", (int)mode.group_swapmove);
 	fprintf(autosavefile, "1366 %i\n", (int)mode.kde_support);
 	fprintf(autosavefile, "1367 %i\n", (int)mode.clickalways);
 	fprintf(autosavefile, "1368 %i\n", (int)mode.showroottooltip);

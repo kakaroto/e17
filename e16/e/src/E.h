@@ -497,8 +497,9 @@ int                 Esnprintf(va_alist);
 #define ACTION_SKIPWINLIST            100
 #define ACTION_NEVERFOCUS             101
 #define ACTION_SKIPLISTS              102
+#define ACTION_SWAPMOVE               103
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               103
+#define ACTION_NUMBEROF               104
 
 #define MODE_NONE                 0
 #define MODE_MOVE                 1
@@ -1169,6 +1170,8 @@ typedef struct _emode
      int                 px, py, x, y;
      char                firstlast;
      int                 movemode;
+     int                 swapmovemode;
+     int                 swapcoord_x, swapcoord_y;
      int                 resizemode;
      int                 geominfomode;
      int                 slidemode;
@@ -1251,6 +1254,7 @@ typedef struct _emode
      int                 icon_mode;
      char                nogroup;
      GroupConfig         group_config;
+     char                group_swapmove;
      Window              kde_dock;
      int                 kde_support;
      int                 kde_x1;
@@ -2083,6 +2087,7 @@ int                 execApplication(void *params);
 int                 alert(void *params);
 int                 doExit(void *params);
 int                 doMove(void *params);
+int                 doSwapMove(void *params);
 int                 doMoveNoGroup(void *params);
 int                 doMoveConstrained(void *params);
 int                 doMoveConstrainedNoGroup(void *params);

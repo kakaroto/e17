@@ -388,16 +388,24 @@ HandleMotion(XEvent * ev)
 	if (mode.ewin)
 	  {
 	     EWin              **gwins;
-	     int                 i, num;
+	     int                 i, j, num;
 	     int                 ndx, ndy;
 	     int                 prx, pry;
 	     int                 screen_snap_dist;
 
 	     ewin = mode.ewin;
-	     gwins =
-		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
-					   &num);
-
+	     if (mode.swapmovemode /* && mode.group_swapmove */ )
+	       {
+		  gwins =
+		     ListWinGroupMembersForEwin(ewin, ACTION_MOVE, 1,
+						&num);
+	       }
+	     else
+	       {
+		  gwins =
+		     ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
+						&num);
+	       }
 	     if ((mode.moveresize_pending_ewin) &&
 		 (mode.ewin == mode.moveresize_pending_ewin))
 	       {
@@ -538,12 +546,56 @@ HandleMotion(XEvent * ev)
 				   gwins[i]->x + ndx, gwins[i]->y + ndy,
 				   gwins[i]->client.w, gwins[i]->client.h,
 				   mode.firstlast);
-		     /* if we didnt jump the winow after a reist at the edge */
-		     /* reset the requested x to be the prev requested + delta */
+		     /* if we didnt jump the winow after a resist at the edge */
+		     /* reset the requested x to be the prev. requested + delta */
 		     if (!(jumpx))
 			gwins[i]->reqx = prx + dx;
 		     if (!(jumpy))
 			gwins[i]->reqy = pry + dy;
+
+		     /* swapping of group member locations: */
+		     if (mode.swapmovemode && mode.group_swapmove)
+		       {
+			  EWin              **all_gwins;
+			  int                 all_gwins_num;
+
+			  all_gwins =
+			     ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0,
+							&all_gwins_num);
+
+			  for (j = 0; j < all_gwins_num; j++)
+			    {
+			       if (gwins[i] == all_gwins[j])
+				  continue;
+
+			       /* check for sufficient overlap and avoid flickering */
+			       if (((gwins[i]->x >= all_gwins[j]->x &&
+				     gwins[i]->x <= all_gwins[j]->x + all_gwins[j]->w / 2 &&
+				     mode.x <= mode.px) ||
+				    (gwins[i]->x <= all_gwins[j]->x &&
+				     gwins[i]->x + gwins[i]->w / 2 >= all_gwins[j]->x &&
+				     mode.x >= mode.px)) &&
+				   ((gwins[i]->y >= all_gwins[j]->y &&
+				     gwins[i]->y <= all_gwins[j]->y + all_gwins[j]->h / 2 &&
+				     mode.y <= mode.py) ||
+				    (gwins[i]->y <= all_gwins[j]->y &&
+				     gwins[i]->y + gwins[i]->h / 2 >= all_gwins[j]->y &&
+				     mode.y >= mode.py)))
+				 {
+				    int                 tmp_swapcoord_x;
+				    int                 tmp_swapcoord_y;
+
+				    tmp_swapcoord_x = mode.swapcoord_x;
+				    tmp_swapcoord_y = mode.swapcoord_y;
+				    mode.swapcoord_x = all_gwins[j]->x;
+				    mode.swapcoord_y = all_gwins[j]->y;
+				    MoveEwin(all_gwins[j], tmp_swapcoord_x, tmp_swapcoord_y);
+				    break;
+				 }
+			    }
+
+			  Efree(all_gwins);
+		       }
 		  }
 	     }
 	     Efree(gwins);

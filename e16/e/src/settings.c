@@ -4433,7 +4433,7 @@ SettingsGroups(EWin * ewin)
 }
 
 static GroupConfig  tmp_group_cfg;
-
+static char         tmp_group_swap;
 static void         CB_ConfigureDefaultGroupSettings(int val, void *data);
 static void
 CB_ConfigureDefaultGroupSettings(int val, void *data)
@@ -4441,6 +4441,7 @@ CB_ConfigureDefaultGroupSettings(int val, void *data)
    if (val < 2)
      {
 	CopyGroupConfig(&tmp_group_cfg, &(mode.group_config));
+	mode.group_swapmove = tmp_group_swap;
      }
    autosave();
    data = NULL;
@@ -4462,6 +4463,7 @@ SettingsDefaultGroupControl(void)
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
    CopyGroupConfig(&(mode.group_config), &tmp_group_cfg);
+   tmp_group_swap = mode.group_swapmove;
 
    d = CreateDialog("CONFIGURE_DEFAULT_GROUP_CONTROL");
    DialogSetTitle(d, _("Default Group Control Settings"));
@@ -4488,6 +4490,19 @@ SettingsDefaultGroupControl(void)
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSeparatorSetOrientation(di, 0);
      }
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, _(" Per-group settings: "));
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -4552,6 +4567,27 @@ SettingsDefaultGroupControl(void)
    DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.mirror));
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, _(" Global settings: "));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Swap Window Locations"));
+   DialogItemCheckButtonSetState(di, tmp_group_swap);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_swap));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

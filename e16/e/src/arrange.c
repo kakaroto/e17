@@ -731,7 +731,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 #endif
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &gnum);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup || mode.swapmovemode, &gnum);
    if (gwins)
      {
 	for (i = 0; i < gnum; i++)

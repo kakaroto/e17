@@ -4662,3 +4662,15 @@ Mon May  8 20:15:23 CEST 2000
 (Saur)
 
 Make sure mode.geominfomode is initialized.
+
+-------------------------------------------------------------------------------
+
+Tue May  9 22:00:05 CEST 2000
+(Christian)
+
+I've implemented the window swapping feature recently
+discussed on the list. There's a new action __A_SWAPMOVE
+on ALT-SHIFT-Button1 that swaps windows that belong to a group.
+Can be disabled in the global groups dialog. Play with it, it's fun :)
+
+Also minor tweaks to the Ganymede Eterm theme.
