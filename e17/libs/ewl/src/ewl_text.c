@@ -42,11 +42,11 @@ void ewl_text_init(Ewl_Text * ta, char *text)
 
 	w = EWL_WIDGET(ta);
 
-    ewl_entry_init(EWL_ENTRY(ta), text);
+	ewl_entry_init(EWL_ENTRY(ta), text);
 	ewl_entry_multiline_set(EWL_ENTRY(ta), TRUE);
 	ewl_entry_editable_set(EWL_ENTRY(ta), FALSE);
 
-    ewl_widget_appearance_set(w, "text");
+	ewl_widget_appearance_set(w, "text");
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -176,7 +176,7 @@ void ewl_text_color_set(Ewl_Text *ta, int r, int g, int b, int a)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
 
-    ewl_entry_color_set(EWL_ENTRY(ta), r, g, b, a);
+	ewl_entry_color_set(EWL_ENTRY(ta), r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -193,7 +193,7 @@ void ewl_text_font_set(Ewl_Text *ta, char *font, int size)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
 
-    ewl_entry_font_set(EWL_ENTRY(ta), font, size);
+	ewl_entry_font_set(EWL_ENTRY(ta), font, size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -222,7 +222,7 @@ void ewl_text_style_set(Ewl_Text *ta, char *style)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
 
-    ewl_entry_style_set(EWL_ENTRY(ta), style);
+	ewl_entry_style_set(EWL_ENTRY(ta), style);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -250,8 +250,8 @@ void ewl_text_align_set(Ewl_Text *ta, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
-    
-    ewl_entry_align_set(EWL_ENTRY(ta), align);
+
+	ewl_entry_align_set(EWL_ENTRY(ta), align);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -303,9 +303,9 @@ void ewl_text_index_geometry_map(Ewl_Text *ta, int index, int *x, int *y,
 				 int *w, int *h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-    DCHECK_PARAM_PTR("ta", ta);
+	DCHECK_PARAM_PTR("ta", ta);
 
-    ewl_entry_index_geometry_map(EWL_ENTRY(ta), index, x, y, w, h);
+	ewl_entry_index_geometry_map(EWL_ENTRY(ta), index, x, y, w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
