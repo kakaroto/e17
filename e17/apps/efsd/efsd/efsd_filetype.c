@@ -1211,6 +1211,7 @@ efsd_filetype_get(char *filename)
 {
   struct stat    *st;
   char *result = NULL;
+  char  realfile[MAXPATHLEN];
   EfsdFiletypeCacheItem *cached_result = NULL;
 
   D_ENTER;
@@ -1221,6 +1222,15 @@ efsd_filetype_get(char *filename)
   */
 
   st = efsd_stat(filename);
+
+  if (S_ISLNK(st->st_mode))
+    {
+      if (realpath(filename, realfile))
+	{
+	  filename = realfile;
+	  st = efsd_stat(filename);
+	}
+    }
 
   if ((cached_result = (EfsdFiletypeCacheItem *)
        filetype_cache_lookup(filename)) != NULL)
@@ -1247,6 +1257,7 @@ efsd_filetype_get(char *filename)
 	filetype_cache_update(cached_result, st->st_mtime, result);
       else
 	filetype_cache_insert(filename, st->st_mtime, result);
+
       D_RETURN_(result);
     }
 

@@ -290,8 +290,9 @@ void handle_efsd_event(EfsdEvent *ee)
 	    }
 	  break;
 	case EFSD_CMD_GETFILETYPE:
-	  printf("Getfile event %i\n", 
-		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  printf("Getfile event %i on %s\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_file_cmd.file);		 
 	  if (ee->efsd_reply_event.status == SUCCESS)
 	    {
 	      printf("filetype is %s\n", (char*)ee->efsd_reply_event.data);
