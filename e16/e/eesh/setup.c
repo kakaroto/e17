@@ -28,15 +28,6 @@ SetupX()
    root.w = DisplayWidth(disp, root.scr);
    root.h = DisplayHeight(disp, root.scr);
 
-   /* warn, if necessary about lack fo multi-head support */
-   if (ScreenCount(disp) > 1)
-     {
-	Alert("WARNING:\n"
-	      "Your Xserver supports a multi-headed configuration with\n"
-	      "multiple screens attached to the one display. Enlightenment\n"
-	      "does not currently support multi-headed setups, and as a\n"
-	      "result will only manage the first screen (this one).\n");
-     }
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)
      {
