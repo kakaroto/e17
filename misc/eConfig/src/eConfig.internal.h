@@ -67,7 +67,8 @@ typedef struct {
 
 extern eConfigType eConfig; 
 
-int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length);
+unsigned long _econf_finddatapointerinpath(char *path,char *loc,
+		unsigned long *position);
 void * _econf_get_data_from_disk(char *loc,unsigned long *length);
 int _econf_save_data_to_desk(void *data, char *loc,unsigned long length);
 int _econf_purge_data_from_disk(char *loc);

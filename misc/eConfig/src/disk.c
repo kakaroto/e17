@@ -2,7 +2,8 @@
 #include "eConfig.h"
 
 
-int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length) {
+unsigned long _econf_finddatapointerinpath(char *path,char *loc,
+		unsigned long *position) {
 
 	/* This function is internal to eConfig
 	 * its goal is to see if it can find the data specified (loc)
@@ -25,8 +26,8 @@ int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length) {
 		fread(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
 		if(!strcmp(tableentry.loc,loc)) {
 			fclose(FAT_TABLE);
-			*length = tableentry.length;
-			return tableentry.position;
+			*position = tableentry.position;
+			return tableentry.length;
 	    }
 	}
 
@@ -49,10 +50,11 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 
 	if((paths = eConfigPaths(&num))) {
 		int i;
-		int position;
+		unsigned long position;
 
 		for(i=0;i<num;i++) {
-			if((position = _econf_finddatapointerinpath(paths[i],loc,length))) {
+			if((*length =
+				_econf_finddatapointerinpath(paths[i],loc,&position))) {
 				FILE *CONF_TABLE;
 				char confpath[FILEPATH_LEN_MAX];
 				char *allocedspace;
