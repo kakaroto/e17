@@ -56,7 +56,12 @@ static geist_document *geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                                 xmlNodePtr cur,
 
                                                 char *filename);
-
+static geist_object *geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns,
+                                          xmlNodePtr cur);
+static geist_list *geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns,
+                                              xmlNodePtr cur);
+static geist_point *geist_point_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
+                                          xmlNodePtr cur);
 
 
 static void geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent,
@@ -75,6 +80,11 @@ static void geist_save_fill_xml(geist_fill * fill, xmlNodePtr parent,
 
                                 xmlNsPtr ns);
 static void geist_save_line_xml(geist_line * line, xmlNodePtr parent,
+
+                                xmlNsPtr ns);
+static void geist_save_point_xml(geist_point * point, xmlNodePtr parent,
+                                 xmlNsPtr ns);
+static void geist_save_poly_xml(geist_poly * poly, xmlNodePtr parent,
 
                                 xmlNsPtr ns);
 
@@ -352,6 +362,9 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
      case GEIST_TYPE_LINE:
         ret = geist_parse_line_xml(doc, ns, cur);
         break;
+     case GEIST_TYPE_POLY:
+        ret = geist_parse_poly_xml(doc, ns, cur);
+        break;
      default:
         weprintf("invalid object type found\n");
         break;
@@ -444,6 +457,75 @@ geist_parse_line_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    D_RETURN(3, ret);
 }
 
+static geist_object *
+geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+{
+   geist_object *ret;
+   int filled, closed, r, g, b, a;
+   geist_list *points = NULL;
+   geist_poly *poly;
+   D_ENTER(3);
+
+   a = geist_xml_read_int(cur, "A", 255);
+   r = geist_xml_read_int(cur, "R", 255);
+   g = geist_xml_read_int(cur, "G", 255);
+   b = geist_xml_read_int(cur, "B", 255);
+   filled = geist_xml_read_int(cur, "Filled", 0);
+   closed = geist_xml_read_int(cur, "Closed", 0);
+
+   cur = cur->children;
+   while (cur != NULL)
+   {
+      if ((!strcmp(cur->name, "Points")) && (cur->ns == ns))
+         points =
+            geist_list_add_end(points,
+                               geist_parse_point_list_xml(doc, ns, cur));
+      cur = cur->next;
+   }
+
+   ret = geist_poly_new_from_points(points, a, r, g, b);
+   poly = GEIST_POLY(ret);
+   poly->filled = filled;
+   poly->closed = closed;
+
+   D_RETURN(3, ret);
+}
+
+static geist_list *
+geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+{
+   geist_list *ret = NULL;
+   geist_point *point = NULL;
+
+   D_ENTER(3);
+   cur = cur->children;
+
+   while (cur != NULL)
+   {
+      if ((!strcmp(cur->name, "Point")) && (cur->ns == ns))
+      {
+         point = geist_point_parse_xml(doc, ns, cur);
+         if (point)
+            ret = geist_list_add_end(ret, point);
+         else
+            weprintf("invalid point found\n");
+      }
+      cur = cur->next;
+   }
+   D_RETURN(3, ret);
+}
+
+static geist_point *
+geist_point_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+{
+   geist_point *ret;
+
+   D_ENTER(3);
+
+   ret = geist_point_new(geist_xml_read_int(cur, "X", 1), geist_xml_read_int(cur, "Y", 1));
+
+   D_RETURN(3, ret);
+}
 
 static geist_object *
 geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
@@ -658,8 +740,11 @@ geist_save_object_xml(geist_object * obj, xmlNodePtr parent, xmlNsPtr ns)
      case GEIST_TYPE_LINE:
         geist_save_line_xml(GEIST_LINE(obj), newobject, ns);
         break;
+     case GEIST_TYPE_POLY:
+        geist_save_poly_xml(GEIST_POLY(obj), newobject, ns);
+        break;
      default:
-        printf("IMPLEMENT ME!\n");
+        weprintf("IMPLEMENT ME!\n");
         break;
    }
    D_RETURN_(3);
@@ -695,6 +780,49 @@ geist_save_text_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
    geist_xml_write_int(parent, "Wordwrap", txt->wordwrap);
    xmlNewTextChild(parent, ns, "Justification",
                    geist_text_get_justification_string(txt->justification));
+
+   D_RETURN_(3);
+}
+
+static void
+geist_save_poly_xml(geist_poly * poly, xmlNodePtr parent, xmlNsPtr ns)
+{
+   geist_list *kids;
+   xmlNodePtr subtree;
+
+   D_ENTER(3);
+
+   geist_xml_write_int(parent, "R", poly->r);
+   geist_xml_write_int(parent, "G", poly->g);
+   geist_xml_write_int(parent, "B", poly->b);
+   geist_xml_write_int(parent, "A", poly->a);
+   geist_xml_write_int(parent, "Filled", poly->filled);
+   geist_xml_write_int(parent, "Closed", poly->closed);
+
+   if (poly->points)
+   {
+      subtree = xmlNewChild(parent, ns, "Points", NULL);
+
+      kids = poly->points;
+      while (kids)
+      {
+         geist_save_point_xml(kids->data, subtree, ns);
+         kids = kids->next;
+      }
+   }
+   D_RETURN_(3);
+}
+
+static void
+geist_save_point_xml(geist_point * point, xmlNodePtr parent, xmlNsPtr ns)
+{
+   xmlNodePtr subtree;
+
+   D_ENTER(3);
+
+   subtree = xmlNewChild(parent, ns, "Point", NULL);
+   geist_xml_write_int(subtree, "X", point->x);
+   geist_xml_write_int(subtree, "Y", point->y);
 
    D_RETURN_(3);
 }

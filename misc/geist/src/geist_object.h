@@ -145,6 +145,7 @@ struct __geist_object
     char *(*get_object_list_entry)(geist_object *obj, int column);
     unsigned char (*has_transparency)(geist_object *obj);
     void (*rotate)(geist_object *obj, double angle);
+    void (*move)(geist_object * obj, int x, int y);
 };
 
 /* allocation functions */
@@ -183,6 +184,7 @@ unsigned char geist_object_part_is_transparent(geist_object * obj, int x,
 
                                                int y);
 void geist_object_move(geist_object * obj, int x, int y);
+void geist_object_int_move(geist_object * obj, int x, int y);
 unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x,
 
                                                    int y);

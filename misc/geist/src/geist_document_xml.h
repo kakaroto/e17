@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist_rect.h"
 #include "geist_text.h"
 #include "geist_line.h"
+#include "geist_poly.h"
 
 #include <parser.h>
 #include <xmlmemory.h>

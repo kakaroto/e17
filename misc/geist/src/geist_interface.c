@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist_image.h"
 #include "geist_document_gtk.h"
 #include "geist_text.h"
+#include "geist_poly.h"
 #include "geist_rect.h"
 #include "geist_layer.h"
 #include "geist_document_xml.h"
@@ -66,6 +67,7 @@ void rotation_cb(GtkWidget *widget, gpointer * obj);
 void geist_update_statusbar(geist_document * doc);
 void geist_update_document_props_window(void);
 void geist_update_obj_props_window(void);
+gboolean obj_addpoly_cb(GtkWidget * widget, gpointer * data);
 gboolean objwin_delete_cb(GtkWidget * widget, GdkEvent * event,
 
                           gpointer user_data);
@@ -268,6 +270,12 @@ geist_create_object_list(void)
                       GTK_SIGNAL_FUNC(obj_addline_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
+   obj_btn = gtk_button_new_with_label("Add Poly...");
+   gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
+                               GTK_SIGNAL_FUNC(obj_addpoly_cb), NULL);
+   gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
+   gtk_widget_show(obj_btn);
+      
    obj_btn = gtk_button_new_with_label("Copy");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_cpy_cb), NULL);
@@ -913,8 +921,7 @@ gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
    D_ENTER(3);
    if (doc_list)
    {
-      obj =
-         GEIST_OBJECT(geist_line_new_from_to(50, 50, 100, 100, 255, 0, 0, 0));
+      obj = geist_line_new_from_to(50, 50, 100, 100, 255, 0, 0, 0);
       geist_document_add_object(current_doc, obj);
       geist_document_unselect_all(current_doc);
       row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
@@ -925,6 +932,32 @@ gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
+gboolean obj_addpoly_cb(GtkWidget * widget, gpointer * data)
+{
+   int row;
+   geist_object *obj;
+
+   D_ENTER(3);
+   if (doc_list)
+   {
+      obj = geist_poly_new();
+      geist_poly_add_point(GEIST_POLY(obj), 40,20);
+      geist_poly_add_point(GEIST_POLY(obj), 20,80);
+      geist_poly_add_point(GEIST_POLY(obj), 60,80);
+      GEIST_POLY(obj)->r = 128;
+      GEIST_POLY(obj)->g = 0;
+      GEIST_POLY(obj)->b = 200;
+      GEIST_POLY(obj)->a = 255;
+      GEIST_POLY(obj)->filled = TRUE;
+      geist_document_add_object(current_doc, obj);
+      geist_document_unselect_all(current_doc);
+      row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
+      if (row != -1)
+         gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
+      geist_document_render_updates(current_doc);
+   }
+   D_RETURN(3, TRUE);
+}
 
 gboolean menu_cb(GtkWidget * widget, gpointer * data)
 {

@@ -61,8 +61,10 @@ geist_poly_init(geist_poly * poly)
    obj->part_is_transparent = geist_poly_part_is_transparent;
    obj->display_props = geist_poly_display_props;
    obj->resize_event = geist_poly_resize;
+   obj->move = geist_poly_move;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
+   obj->get_rendered_area = geist_poly_get_rendered_area;
    geist_object_set_type(obj, GEIST_TYPE_POLY);
    obj->name = estrdup("New polygon");
 
@@ -86,7 +88,7 @@ geist_poly_new_from_points(geist_list * points, int a, int r, int g, int b)
    poly->r = r;
 
    poly->points = points;
-   geist_poly_update_imlib_polygon(poly);
+   poly->need_update = TRUE;
 
    geist_poly_update_bounds(poly);
 
@@ -102,13 +104,31 @@ geist_poly_update_bounds(geist_poly * poly)
    D_ENTER(3);
    obj = GEIST_OBJECT(poly);
 
-   imlib_polygon_get_bounds(poly, &px1, &py1, &px2, &py2);
+   geist_poly_update_imlib_polygon(poly);
+   imlib_polygon_get_bounds(poly->poly, &px1, &py1, &px2, &py2);
    obj->x = px1;
    obj->y = py1;
    obj->w = obj->rendered_w = px2 - px1;
    obj->h = obj->rendered_h = py2 - py1;
    obj->rendered_x = 0;
    obj->rendered_y = 0;
+   printf("new poly bounds: %d,%d %dx%d\n", obj->x, obj->y, obj->w, obj->h);
+
+   D_RETURN_(3);
+}
+
+void
+geist_poly_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
+                             int *h)
+{
+   D_ENTER(3);
+
+   *x = obj->x;
+   *y = obj->y;
+   *w = obj->w;
+   *h = obj->h;
+
+   D(5, ("area %d,%d %dx%d\n", *x, *y, *w, *h));
 
    D_RETURN_(3);
 }
@@ -134,9 +154,13 @@ geist_poly_add_point(geist_poly * poly, int x, int y)
    if (!poly)
       D_RETURN_(3);
 
-   poly->points = geist_list_add_end(poly->points, geist_point_new(x, y));
+   if (!poly->poly)
+      poly->poly = imlib_polygon_new();
    imlib_polygon_add_point(poly->poly, x, y);
    geist_poly_update_bounds(poly);
+   x -= GEIST_OBJECT(poly)->x;
+   y -= GEIST_OBJECT(poly)->y;
+   poly->points = geist_list_add_end(poly->points, geist_point_new(x, y));
 
    D_RETURN_(3);
 }
@@ -146,11 +170,15 @@ geist_poly_update_imlib_polygon(geist_poly * poly)
 {
    geist_list *l;
    geist_point *p;
+   geist_object *obj;
 
    D_ENTER(3);
 
-   if (!poly || !poly->points)
+   if (!poly || !poly->points || !poly->need_update)
       D_RETURN_(3);
+   poly->need_update = FALSE;
+
+   obj = GEIST_OBJECT(poly);
 
    if (poly->poly)
       imlib_polygon_free(poly->poly);
@@ -160,7 +188,8 @@ geist_poly_update_imlib_polygon(geist_poly * poly)
    while (l)
    {
       p = (geist_point *) l->data;
-      imlib_polygon_add_point(poly->poly, p->x, p->y);
+      /* need to convert object-relative points to world points for imlib */
+      imlib_polygon_add_point(poly->poly, p->x + obj->x, p->y + obj->y);
       l = l->next;
    }
 
@@ -198,14 +227,7 @@ geist_poly_render(geist_object * obj, Imlib_Image dest)
 
    poly = GEIST_POLY(obj);
 
-/*
-   D(5,
-     ("rendering %d,%d %dx%d with %d,%d,%d,%d\n", obj->x, obj->y, obj->w,
-      obj->h, poly->r, poly->g, poly->b, poly->a));
-
-   geist_imlib_image_fill_polyangle(dest, obj->x, obj->y, obj->w, obj->h,
-                                    poly->r, poly->g, poly->b, poly->a);
- */
+   geist_poly_update_imlib_polygon(poly);
 
    if (poly->filled)
       geist_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
@@ -232,6 +254,8 @@ geist_poly_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       D_RETURN_(5);
 
    poly = GEIST_POLY(obj);
+
+   geist_poly_update_imlib_polygon(poly);
 
    geist_object_get_clipped_render_areas(obj, x, y, w, h, &sx, &sy, &sw, &sh,
                                          &dx, &dy, &dw, &dh);
@@ -274,6 +298,8 @@ geist_poly_duplicate(geist_object * obj)
    {
       ret->alias = obj->alias;
       ret->state = obj->state;
+      GEIST_POLY(ret)->closed = poly->closed;
+      GEIST_POLY(ret)->filled = poly->filled;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
@@ -286,15 +312,17 @@ unsigned char
 geist_poly_part_is_transparent(geist_object * obj, int x, int y)
 {
    D_ENTER(3);
-
+/*
    if (imlib_polygon_contains_point(GEIST_POLY(obj)->poly, x, y))
    {
       D_RETURN(3, GEIST_POLY(obj)->a == 0 ? 1 : 0);
    }
    else
    {
-      D_RETURN(3, 1);
+      D_RETURN(3, TRUE);
    }
+ */
+   D_RETURN(3, FALSE);
 }
 
 void
@@ -309,6 +337,16 @@ geist_poly_resize(geist_object * obj, int x, int y)
    D_RETURN_(5);
 }
 
+void
+geist_poly_move(geist_object * obj, int x, int y)
+{
+   D_ENTER(3);
+
+   GEIST_POLY(obj)->need_update = TRUE;
+   geist_object_int_move(obj, x, y);
+
+   D_RETURN_(3);
+}
 
 static void
 refresh_r_cb(GtkWidget * widget, gpointer * obj)

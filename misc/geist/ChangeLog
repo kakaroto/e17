@@ -1,3 +1,10 @@
+Mon Oct  9 16:52:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More polygon work. Lots more to do, it doesn't work properly
+	right now, not in the slightest ;-)
+	* However, they are loaded and saved okay now, and you can create
+	them. That's about it though.
+
 Thu Sep 28 14:12:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed broken line clipping, a line with height 0 should

@@ -69,6 +69,7 @@ geist_object_init(geist_object * obj)
    obj->get_updates = geist_object_int_get_updates;
    obj->get_object_list_entry = geist_object_int_get_object_list_entry;
    obj->has_transparency = geist_object_int_has_transparency;
+   obj->move = geist_object_int_move;
    obj->rotate = geist_object_int_rotate;
    obj->name = estrdup("Untitled Object");
    obj->last.alias = FALSE;
@@ -599,6 +600,14 @@ void
 geist_object_move(geist_object * obj, int x, int y)
 {
    D_ENTER(3);
+   obj->move(obj,x,y);
+   D_RETURN_(3);
+}
+
+void
+geist_object_int_move(geist_object * obj, int x, int y)
+{
+   D_ENTER(3);
 
    geist_object_dirty(obj);
    obj->x = x - obj->clicked_x;
@@ -614,7 +623,7 @@ geist_object_int_resize(geist_object * obj, int x, int y)
 {
    D_ENTER(5);
 
-   printf("implement me!\n");
+   printf("(int_resize) implement me!\n");
 
    D_RETURN_(5);
 }
@@ -740,7 +749,7 @@ geist_object_update_sizemode(geist_object * obj)
      case SIZEMODE_ZOOM:
         break;
      default:
-        printf("implement me!\n");
+        printf("(sizemode) implement me!\n");
         break;
    }
    D_RETURN_(3);
@@ -784,7 +793,7 @@ geist_object_update_alignment(geist_object * obj)
         obj->rendered_y = (obj->h - obj->rendered_h);
         break;
      default:
-        printf("implement me!\n");
+        printf("(alignment) implement me!\n");
         break;
    }
 
