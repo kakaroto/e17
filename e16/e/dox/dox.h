@@ -51,13 +51,6 @@
 #include <sys/resource.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
-#include <freetype1/freetype/freetype.h>
-#elif defined(HAVE_FREETYPE_FREETYPE_H)
-#include <freetype/freetype.h>
-#else
-#include <freetype.h>
-#endif
 
 #define ESetColor(pxc, r, g, b) \
 	({ (pxc)->red = ((r)<<8)|r; (pxc)->green = ((g)<<8)|g; (pxc)->blue = ((b)<<8)|b; })
@@ -189,6 +182,8 @@ extern Drawable     vIcDrw;
 #define ENCOING_ISO_8859_3 2
 #define ENCOING_ISO_8859_4 3
 
+typedef struct _efont Efont;
+
 #define Esetenv(var, val, overwrite) \
 { \
   static char envvar[1024]; \
@@ -207,21 +202,6 @@ typedef struct _root
    int                 w, h;
 }
 Root;
-
-typedef struct _efont
-  {
-     TT_Engine           engine;
-     TT_Face             face;
-     TT_Instance         instance;
-     TT_Face_Properties  properties;
-     int                 num_glyph;
-     TT_Glyph           *glyphs;
-     TT_Raster_Map     **glyphs_cached;
-     TT_CharMap          char_map;
-     int                 max_descent;
-     int                 max_ascent;
-  }
-Efont;
 
 typedef struct _textstate
   {
@@ -377,3 +357,6 @@ extern Root         root;
 extern FnlibData   *pFnlibData;
 #endif
 extern char        *docdir;
+
+#define Emalloc malloc
+#define Efree   free

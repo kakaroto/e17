@@ -195,13 +195,6 @@ if (__xim) XDestroyImage(__xim);}
 #include <sys/resource.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
-#include <freetype1/freetype/freetype.h>
-#elif defined(HAVE_FREETYPE_FREETYPE_H)
-#include <freetype/freetype.h>
-#else
-#include <freetype.h>
-#endif
 
 /* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
 /* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
@@ -671,6 +664,8 @@ typedef struct _group Group;
 typedef struct _button Button;
 typedef struct _buttoncontainer Container;
 
+typedef struct _efont Efont;
+
 typedef struct
 {
    char                type;
@@ -785,21 +780,6 @@ typedef struct _imageclass
    unsigned int        ref_count;
 }
 ImageClass;
-
-typedef struct _efont
-{
-   TT_Engine           engine;
-   TT_Face             face;
-   TT_Instance         instance;
-   TT_Face_Properties  properties;
-   int                 num_glyph;
-   TT_Glyph           *glyphs;
-   TT_Raster_Map     **glyphs_cached;
-   TT_CharMap          char_map;
-   int                 max_descent;
-   int                 max_ascent;
-}
-Efont;
 
 #if !USE_FNLIB
 #define MODE_VERBATIM  0
@@ -2498,7 +2478,13 @@ void                FreeProgressbar(Progressbar * p);
 Window             *ListProgressWindows(int *num);
 void                RaiseProgressbars(void);
 
-#if defined(__FILE__) && defined(__LINE__)
+#if defined(USE_LIBC_MALLOC)
+
+#define Emalloc malloc
+#define Efree free
+
+#elif defined(__FILE__) && defined(__LINE__)
+
 #define Efree(x) \
 __Efree(x, __FILE__, __LINE__)
 #define Emalloc(x) \

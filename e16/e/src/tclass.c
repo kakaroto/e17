@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2003 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -48,9 +47,6 @@ CreateTclass()
 void
 FreeTextState(TextState * ts)
 {
-
-   int                 i = 0;
-
    if (ts->fontname)
       Efree(ts->fontname);
 #if USE_FNLIB
@@ -60,21 +56,8 @@ FreeTextState(TextState * ts)
    if (ts->xfont)
       XFreeFont(disp, ts->xfont);
    if (ts->efont)
-     {
-	for (i = 0; i < ts->efont->num_glyph; i++)
-	  {
-	     Efree(ts->efont->glyphs_cached[i]->bitmap);
-	     Efree(ts->efont->glyphs_cached[i]);
-	     TT_Done_Glyph(ts->efont->glyphs[i]);
-	  }
-	Efree(ts->efont->glyphs_cached);
-	Efree(ts->efont->glyphs);
-	Efree(ts->efont);
-     }
+      Efont_free(ts->efont);
    Efree(ts);
-
-   return;
-
 }
 
 void

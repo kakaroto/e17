@@ -22,6 +22,35 @@
  */
 #include "E.h"
 
+#if TEST_TTFONT
+#undef XSync
+#undef IC_RenderDepth
+#define IC_RenderDepth() DefaultDepth(disp, DefaultScreen(disp))
+#define EGetGeometry XGetGeometry
+#endif
+
+#ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
+#include <freetype1/freetype/freetype.h>
+#elif defined(HAVE_FREETYPE_FREETYPE_H)
+#include <freetype/freetype.h>
+#else
+#include <freetype.h>
+#endif
+
+struct _efont
+{
+   TT_Engine           engine;
+   TT_Face             face;
+   TT_Instance         instance;
+   TT_Face_Properties  properties;
+   int                 num_glyph;
+   TT_Glyph           *glyphs;
+   TT_Raster_Map     **glyphs_cached;
+   TT_CharMap          char_map;
+   int                 max_descent;
+   int                 max_ascent;
+};
+
 typedef struct _efont_color_tab EfontColorTable;
 
 struct _efont_color_tab
@@ -343,8 +372,8 @@ render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f, char *text,
 	/* This was the cause of strange misplacements when Bit.rows */
 	/* was unsigned.                                             */
 
-	if (xmin >= (int)rmap->width || ymin >= (int)rmap->rows || xmax < 0
-	    || ymax < 0)
+	if (xmin >= (int)rmap->width || ymin >= (int)rmap->rows ||
+	    xmax < 0 || ymax < 0)
 	   continue;
 
 	/* Note that the clipping check is performed _after_ rendering */
@@ -421,8 +450,7 @@ merge_text_16(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
    cb = (col << 3) & 0xf8;
    for (y = 0; y < xim->height; y++)
      {
-	ptr =
-	   (unsigned char *)rmap->bitmap + offset_x +
+	ptr = (unsigned char *)rmap->bitmap + offset_x +
 	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
@@ -441,8 +469,7 @@ merge_text_16(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
 		       ng = g + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		       tmp = (cb - b) * a;
 		       nb = b + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		       pixel =
-			  ((nr & 0xf8) << 8) | ((ng & 0xfc) << 3) |
+		       pixel = ((nr & 0xf8) << 8) | ((ng & 0xfc) << 3) |
 			  ((nb & 0xf8) >> 3);
 		       XPutPixel(xim, x, y, pixel);
 		    }
@@ -468,8 +495,7 @@ merge_text_15(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
    cb = (col << 3) & 0xf8;
    for (y = 0; y < xim->height; y++)
      {
-	ptr =
-	   (unsigned char *)rmap->bitmap + offset_x +
+	ptr = (unsigned char *)rmap->bitmap + offset_x +
 	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
@@ -488,8 +514,7 @@ merge_text_15(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
 		       ng = g + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		       tmp = (cb - b) * a;
 		       nb = b + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		       pixel =
-			  ((nr & 0xf8) << 7) | ((ng & 0xf8) << 2) |
+		       pixel = ((nr & 0xf8) << 7) | ((ng & 0xf8) << 2) |
 			  ((nb & 0xf8) >> 3);
 		       XPutPixel(xim, x, y, pixel);
 		    }
@@ -515,8 +540,7 @@ merge_text_24(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
    cb = col & 0xff;
    for (y = 0; y < xim->height; y++)
      {
-	ptr =
-	   (unsigned char *)rmap->bitmap + offset_x +
+	ptr = (unsigned char *)rmap->bitmap + offset_x +
 	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
@@ -594,8 +618,7 @@ merge_text_1(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
 
    for (y = 0; y < xim->height; y++)
      {
-	ptr =
-	   (unsigned char *)rmap->bitmap + offset_x +
+	ptr = (unsigned char *)rmap->bitmap + offset_x +
 	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
@@ -649,9 +672,9 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
      {
 	x_error = 0;
 	is_pixmap = 1;
-	EGetGeometry(disp, win, &chld, &rx, &rx, (unsigned int *)&xatt.width,
-		     (unsigned int *)&xatt.height, (unsigned int *)&rx,
-		     (unsigned int *)&xatt.depth);
+	EGetGeometry(disp, win, &chld, &rx, &rx,
+		     (unsigned int *)&xatt.width, (unsigned int *)&xatt.height,
+		     (unsigned int *)&rx, (unsigned int *)&xatt.depth);
 	XFlush(disp);
 	if (x_error)
 	  {
@@ -744,9 +767,8 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	  {
 	     erh = XSetErrorHandler((XErrorHandler) handle_x_error);
 	  }
-	xim =
-	   XShmCreateImage(disp, vis, xatt.depth, ZPixmap, NULL, &shminfo,
-			   width, height);
+	xim = XShmCreateImage(disp, vis, xatt.depth, ZPixmap, NULL,
+			      &shminfo, width, height);
 	if (!shm_checked)
 	  {
 	     XSync(disp, False);
@@ -754,24 +776,21 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	       {
 		  shm = 0;
 		  XDestroyImage(xim);
-		  xim =
-		     XGetImage(disp, win, x, y, width, height, 0xffffffff,
-			       ZPixmap);
+		  xim = XGetImage(disp, win, x, y, width, height,
+				  0xffffffff, ZPixmap);
 		  XSetErrorHandler((XErrorHandler) erh);
 		  shm_checked = 1;
 	       }
 	     else
 	       {
-		  shminfo.shmid =
-		     shmget(IPC_PRIVATE, xim->bytes_per_line * xim->height,
-			    IPC_CREAT | 0666);
+		  shminfo.shmid = shmget(IPC_PRIVATE, xim->bytes_per_line *
+					 xim->height, IPC_CREAT | 0666);
 		  if (shminfo.shmid < 0)
 		    {
 		       shm = 0;
 		       XDestroyImage(xim);
-		       xim =
-			  XGetImage(disp, win, x, y, width, height, 0xffffffff,
-				    ZPixmap);
+		       xim = XGetImage(disp, win, x, y, width, height,
+				       0xffffffff, ZPixmap);
 		       XSetErrorHandler((XErrorHandler) erh);
 		       shm_checked = 1;
 		    }
@@ -785,16 +804,14 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	  }
 	else
 	  {
-	     shminfo.shmid =
-		shmget(IPC_PRIVATE, xim->bytes_per_line * xim->height,
-		       IPC_CREAT | 0666);
+	     shminfo.shmid = shmget(IPC_PRIVATE, xim->bytes_per_line *
+				    xim->height, IPC_CREAT | 0666);
 	     if (shminfo.shmid < 0)
 	       {
 		  shm = 0;
 		  XDestroyImage(xim);
-		  xim =
-		     XGetImage(disp, win, x, y, width, height, 0xffffffff,
-			       ZPixmap);
+		  xim = XGetImage(disp, win, x, y, width, height,
+				  0xffffffff, ZPixmap);
 		  XSetErrorHandler((XErrorHandler) erh);
 		  shm_checked = 1;
 	       }
@@ -812,9 +829,8 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	       {
 		  shm = 0;
 		  XDestroyImage(xim);
-		  xim =
-		     XGetImage(disp, win, x, y, width, height, 0xffffffff,
-			       ZPixmap);
+		  xim = XGetImage(disp, win, x, y, width, height,
+				  0xffffffff, ZPixmap);
 		  shm_checked = 1;
 	       }
 	     XSetErrorHandler((XErrorHandler) erh);
@@ -829,22 +845,22 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 /*  XUngrabServer(disp); */
 /*  XFlush(disp); */
 
-/*  
- * if (xatt.depth == 16)
- * {
- * XVisualInfo         xvi, *xvir;
- * int                 num;
- * 
- * xvi.visualid = XVisualIDFromVisual(vis);;
- * xvir = XGetVisualInfo(disp, VisualIDMask, &xvi, &num);
- * if (xvir)
- * {
- * if (xvir->red_mask != 0xf800)
- * xatt.depth = 15;
- * XFree(xvir);
- * }
- * }
- */
+#if 0
+   if (xatt.depth == 16)
+     {
+	XVisualInfo         xvi, *xvir;
+	int                 num;
+
+	xvi.visualid = XVisualIDFromVisual(vis);;
+	xvir = XGetVisualInfo(disp, VisualIDMask, &xvi, &num);
+	if (xvir)
+	  {
+	     if (xvir->red_mask != 0xf800)
+		xatt.depth = 15;
+	     XFree(xvir);
+	  }
+     }
+#endif
    if (xim)
      {
 	if (xatt.depth == 16)
@@ -961,8 +977,8 @@ Efont_load(char *file, int size)
    for (i = 0; i < n; i++)
      {
 	TT_Get_CharMap_ID(f->face, i, &platform, &encoding);
-	if ((platform == 3 && encoding == 1)
-	    || (platform == 0 && encoding == 0))
+	if ((platform == 3 && encoding == 1) ||
+	    (platform == 0 && encoding == 0))
 	  {
 	     /* TT_Get_CharMap(f->face, i, &char_map); */
 	     TT_Get_CharMap(f->face, i, &(f->char_map));
@@ -1076,42 +1092,56 @@ Efont_extents(Efont * f, char *text, int *font_ascent_return,
       *max_descent_return = f->max_descent;
 }
 
-/*
- * int
- * main( int argc, char **argv)
- * {
- * Display            *disp;
- * Efont              *f;
- * GC                  gc;
- * XGCValues           gcv;
- * Window              win;
- * int                 i;
- * 
- * disp=XOpenDisplay(NULL);
- * XSync(disp, False);
- * srand(time(NULL));
- * win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 640, 480, 0, 
- * 0, 0);
- * EMapWindow(disp, win);
- * XSync(disp, False);
- * 
- * gcv.subwindow_mode = IncludeInferiors;
- * gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
- * for (;;)
- * {
- * for (i = 3; i < argc; i++)
- * {
- * XSetForeground(disp, gc, rand()<<16 | rand());
- * f = Efont_load(argv[i], atoi(argv[1]));
- * if (f)
- * EFont_draw_string(disp, win, gc, 20, (atoi(argv[1])/10) * (i-2), argv[2], 
- * f,
- * DefaultVisual(disp, DefaultScreen(disp)),
- * DefaultColormap(disp, DefaultScreen(disp)));
- * Efont_free(f);
- * f = NULL;
- * }
- * }
- * return 0;
- * }
- */
+#if TEST_TTFONT
+Display            *disp;
+
+int
+main(int argc, char **argv)
+{
+   Efont              *f;
+   GC                  gc;
+   XGCValues           gcv;
+   Window              win;
+   int                 i, j;
+
+   disp = XOpenDisplay(NULL);
+   XSync(disp, False);
+   srand(time(NULL));
+   win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 640, 480, 0,
+			     0, 0);
+   XMapWindow(disp, win);
+   XSync(disp, False);
+
+   gcv.subwindow_mode = IncludeInferiors;
+   gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
+   for (;; j++)
+     {
+	for (i = 3; i < argc; i++)
+	  {
+	     XSetForeground(disp, gc, rand() << 16 | rand());
+	     f = Efont_load(argv[i], atoi(argv[1]));
+	     if (f)
+		EFont_draw_string(disp, win, gc, 20,
+				  atoi(argv[1]) * (i - 2), argv[2], f,
+				  DefaultVisual(disp, DefaultScreen(disp)),
+				  DefaultColormap(disp, DefaultScreen(disp)));
+	     Efont_free(f);
+	     f = NULL;
+	  }
+     }
+   return 0;
+}
+
+void
+GrabX()
+{
+   XGrabServer(disp);
+}
+
+void
+UngrabX()
+{
+   XUngrabServer(disp);
+   XFlush(disp);
+}
+#endif
