@@ -668,12 +668,12 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 
    if ((xatt.depth == 1) && (!cm) && (is_pixmap))
      {
-        rtab[0] = 0;
-        gtab[0] = 0;
-        btab[0] = 0;
-        rtab[1] = 255;
-        gtab[1] = 255;
-        btab[1] = 255;
+        rtab[0] = 255;
+        gtab[0] = 255;
+        btab[0] = 255;
+        rtab[1] = 0;
+        gtab[1] = 0;
+        btab[1] = 0;
      }
    else if (xatt.depth <= 8)
      {
@@ -700,7 +700,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
           }
      }
    __imlib_GrabXImageToRGBA(data, ox, oy, ow, oh,
-                            d, xim, mxim, v, depth, x, y, w, h, 0);
+                            d, xim, mxim, v, xatt.depth, x, y, w, h, 0);
 
    /* destroy the Ximage */
    if (is_shm)
