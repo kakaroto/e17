@@ -341,11 +341,13 @@ gboolean docwin_delete_cb(GtkWidget * widget, GdkEvent * event,
 {
    geist_document *doc;
    D_ENTER(3);
-   doc = gtk_object_get_data(GTK_OBJECT(widget), "doc");
+	
+	doc = gtk_object_get_data(GTK_OBJECT(widget), "doc");
    if(doc)
-      geist_document_free(doc);
+     	geist_document_free(doc);
    geist_document_reset_object_list(NULL);
-   D_RETURN(3, FALSE);
+	
+	D_RETURN(3, FALSE);
 }
 
 gboolean docwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
@@ -678,7 +680,9 @@ gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
 {
-   GtkWidget *file_sel = gtk_file_selection_new("Add an Image");
+   if (doc_list)
+	{
+	GtkWidget *file_sel = gtk_file_selection_new("Add an Image");
 
    gtk_file_selection_show_fileop_buttons(GTK_FILE_SELECTION(file_sel));
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(file_sel)->ok_button),
@@ -688,7 +692,8 @@ gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
                       "clicked", GTK_SIGNAL_FUNC(obj_load_cancel_cb),
                       (gpointer) file_sel);
    gtk_widget_show(file_sel);
-   return TRUE;
+	}
+	return TRUE;
 }
 
 
@@ -701,6 +706,8 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
    int row;
 
    D_ENTER(3);
+	if (doc_list)
+	{
    list = geist_document_get_selected_list(current_doc);
    for (l = list; l; l = l->next)
    {
@@ -723,7 +730,8 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
    }
    geist_list_free(list);
    geist_document_render_updates(current_doc);
-   D_RETURN(3, TRUE);
+	}
+	D_RETURN(3, TRUE);
 }
 
 gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
@@ -732,7 +740,9 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
    geist_list *l, *list;
 
    D_ENTER(3);
-   list = geist_document_get_selected_list(current_doc);
+   if (doc_list)
+	{
+	list = geist_document_get_selected_list(current_doc);
    for (l = list; l; l = l->next)
    {
       obj = GEIST_OBJECT(l->data);
@@ -751,7 +761,8 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
    }
    geist_list_free(list);
    geist_document_render_updates(current_doc);
-   D_RETURN(3, TRUE);
+	}
+	D_RETURN(3, TRUE);
 }
 
 
@@ -807,7 +818,9 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
    geist_object *obj;
 
    D_ENTER(3);
-   obj =
+   if (doc_list)
+	{
+	obj =
       GEIST_OBJECT(geist_text_new_with_text
                    (50, 50, "cinema.ttf", 12, "New Text", 50, 50, 255, 0));
    geist_document_add_object(current_doc, obj);
@@ -816,7 +829,8 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
    if (row != -1)
       gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
    geist_document_render_updates(current_doc);
-   D_RETURN(3, TRUE);
+	}
+	D_RETURN(3, TRUE);
 }
 
 
@@ -829,14 +843,16 @@ gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
    geist_object *obj;
 
    D_ENTER(3);
-   obj = GEIST_OBJECT(geist_rect_new_of_size(50, 50, 50, 50, 255, 0, 0, 0));
+   if (doc_list)
+	{
+	obj = GEIST_OBJECT(geist_rect_new_of_size(50, 50, 50, 50, 255, 0, 0, 0));
    geist_document_add_object(current_doc, obj);
    row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
    geist_document_unselect_all(current_doc);
    if (row != -1)
       gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
    geist_document_render_updates(current_doc);
-
+	}
    D_RETURN(3, TRUE);
 }
 
@@ -848,14 +864,16 @@ gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
    geist_object *obj;
 
    D_ENTER(3);
-   obj = GEIST_OBJECT(geist_line_new_from_to(50, 50, 100, 100, 255, 0, 0, 0));
+   if (doc_list)
+	{
+	obj = GEIST_OBJECT(geist_line_new_from_to(50, 50, 100, 100, 255, 0, 0, 0));
    geist_document_add_object(current_doc, obj);
    geist_document_unselect_all(current_doc);
    row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
    if (row != -1)
       gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
    geist_document_render_updates(current_doc);
-
+	}
    D_RETURN(3, TRUE);
 }
 
@@ -869,13 +887,21 @@ gboolean menu_cb(GtkWidget * widget, gpointer * data)
    item = (char *) data;
    if (!strcmp(item, "save doc"))
    {
-      if (current_doc->filename)
-         geist_document_save(current_doc, current_doc->filename);
-      else
-         geist_document_save_as(current_doc);
+      if (doc_list)
+		{
+			if (current_doc->filename)
+         	geist_document_save(current_doc, current_doc->filename);
+      	else
+         	geist_document_save_as(current_doc);
+		}
    }
    else if (!strcmp(item, "save doc as"))
-      geist_document_save_as(current_doc);
+	{
+      if (doc_list)
+		{
+			geist_document_save_as(current_doc);
+		}
+	}
    else if (!strcmp(item, "new doc"))
    {
       geist_document *doc = geist_document_new(500, 500);
@@ -1058,7 +1084,9 @@ geist_display_obj_props_window(void)
    int i;
 
    D_ENTER(3);
-   obj_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	if (doc_list)
+	{
+	obj_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    table = gtk_table_new(2, 4, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(obj_props_window), 5);
    gtk_container_add(GTK_CONTAINER(obj_props_window), table);
@@ -1174,7 +1202,8 @@ geist_display_obj_props_window(void)
    gtk_widget_show(obj_props_window);
    obj_props_active = 1;
    geist_update_obj_props_window();
-   D_RETURN_(3);
+	}
+	D_RETURN_(3);
 }
 
 void
@@ -1410,6 +1439,8 @@ geist_display_document_props_window(void)
    GtkWidget *w_l, *h_l;
 
    D_ENTER(3);
+	if (doc_list)
+	{
    doc_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    doc_hbox = gtk_hbox_new(FALSE, 0);
    gtk_container_add(GTK_CONTAINER(doc_props_window), doc_hbox);
@@ -1522,7 +1553,8 @@ geist_display_document_props_window(void)
    gtk_widget_show(doc_props_window);
    doc_props_active = 1;
    geist_update_document_props_window();
-   D_RETURN_(3);
+	}
+	D_RETURN_(3);
 }
 
 void
