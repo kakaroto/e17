@@ -139,3 +139,12 @@ Mon Nov  1 18:42:14 PST 1999
 
 Mostly cleaning up some code here and there.  read over a lot of code
 carefully.  Added comments here and there, too.
+
+-------------------------------------------------------------------------------
+
+Tue Nov  2 12:37:06 PST 1999
+(Mandrake)
+
+some more api changes - changed eConfigStoreData() and added
+eConfigStoreDataToFirstAvailablePath().
+

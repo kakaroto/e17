@@ -146,3 +146,27 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 	return 0;
 
 }
+
+int
+eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
+                                     unsigned long length)
+{
+
+	/* This function will store the *data at key *loc of length length into
+	 * the first properly writable config path.
+	 * It will test and store the data.
+	 * It returns an 0 on failure and a 1 on success.
+	 * FIXME: this function isn't doing anything right now.
+	 * This function is exported by eConfig.
+	 */
+
+	if(!loc)
+	if(!loc)
+		return 0;
+	if(!data)
+		return 0;
+	if(!length)
+		return 0;
+
+	return 0;
+}

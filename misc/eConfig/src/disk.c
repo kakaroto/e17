@@ -256,7 +256,12 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 		}
 	} else {
 		/* we don't exist in this datafile */
-
+		if(!_econf_create_new_data_repository(path)) {
+			/* we can't write to that data path - we can't make it */
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
 	return 0;

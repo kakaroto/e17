@@ -30,6 +30,9 @@ void            *eConfigRefreshData(char *loc, unsigned long *length);
 int              eConfigUnloadData(char *loc);
 int              eConfigStoreData(char *loc, void *data, unsigned long length,
                                   char *path);
+int              eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
+                                                      unsigned long length);
+
 
 int              eConfigExportData(char *loc,char local);
 
