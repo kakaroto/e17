@@ -21,7 +21,8 @@
 #include "feh.h"
 #include "winwidget.h"
 
-static winwidget winwidget_allocate (void)
+static winwidget
+winwidget_allocate (void)
 {
   winwidget ret = NULL;
 
@@ -107,10 +108,10 @@ winwidget_create_window (winwidget ret)
     VisibilityChangeMask;
   ret->win =
     XCreateWindow (disp, DefaultRootWindow (disp), 0, 0, ret->w, ret->h, 0,
-                   depth, InputOutput, vis,
-                   CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-                   CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
-                   &attr);
+		   depth, InputOutput, vis,
+		   CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		   CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
+		   &attr);
 
   wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
   XSetWMProtocols (disp, ret->win, &wmDeleteWindow, 1);
@@ -156,6 +157,19 @@ winwidget_destroy (winwidget winwid)
   XDestroyWindow (disp, winwid->win);
   free (winwid);
   winwid = NULL;
+}
+
+void
+winwidget_destroy_all (void)
+{
+  int i;
+  D (("In winwidget_destroy_all\n"));
+
+  /* Have to DESCEND the list here, 'cos of the way _unregister works.
+   * I'll re-implement the list at some point. A singly-linked list
+   * beckons :) */
+  for (i = window_num - 1; i >= 0; i--)
+    winwidget_destroy (windows[i]);
 }
 
 int
@@ -210,18 +224,18 @@ winwidget_unregister (winwidget win)
   for (i = 0; i < window_num; i++)
     {
       if (windows[i] == win)
-        {
-          for (j = i; j < window_num - 1; j++)
-            windows[j] = windows[j + 1];
-          window_num--;
-          if (window_num > 0)
-            windows = realloc (windows, window_num * sizeof (winwidget));
-          else
-            {
-              free (windows);
-              windows = NULL;
-            }
-        }
+	{
+	  for (j = i; j < window_num - 1; j++)
+	    windows[j] = windows[j + 1];
+	  window_num--;
+	  if (window_num > 0)
+	    windows = realloc (windows, window_num * sizeof (winwidget));
+	  else
+	    {
+	      free (windows);
+	      windows = NULL;
+	    }
+	}
     }
 }
 
@@ -234,7 +248,7 @@ winwidget winwidget_get_from_window (Window win)
   for (i = 0; i < window_num; i++)
     {
       if (windows[i]->win == win)
-        return windows[i];
+	return windows[i];
     }
   return NULL;
 }

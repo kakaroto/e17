@@ -110,6 +110,7 @@ void init_montage_mode (void);
 int feh_load_image (Imlib_Image ** im, char *filename);
 void add_file_to_filelist_recursively (char *path);
 void show_mini_usage (void);
+void winwidget_destroy_all(void);
 
 /* Imlib stuff */
 extern Display *disp;
