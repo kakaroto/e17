@@ -58,8 +58,10 @@ also has the ability to load files over http or ftp, simply specify the url
 on the commandline.
 .PP
 .B feh
-can read options from the commandline or from the enironment variable
-FEH_OPTIONS. The syntax is the same in each case.
+can read options from the commandline, from the enironment variable
+FEH_OPTIONS, or from a config file. The syntax is the same in each case. See
+.B CONFIG FILE SYNTAX
+for details about using themes defined in a config file.
 .SH OPTIONS
 .TP 5
 .B -h, --help
@@ -233,6 +235,37 @@ extension). eg. -f myfont/12
 .B -T,--title-font FONT
 Use FONT to print a title on the index, if no font is specified, a title
 will not be printed
+.SH CONFIG FILE SYNTAX
+The feh config file allows the naming of option groups, or themes.
+If 
+.B $HOME/.fehrc
+exists, or if not, but 
+.B /etc/fehrc
+exists, feh will look in it for theme name/options pairs. An example entry
+would be:
+.br
+.B imagemap -rVq --thumb-width 40 --thumb-height 30
+.br
+You can then use this theme in two ways. Either 
+.br
+.B feh -C imagemap *.jpg
+.br
+or you can create a symbolic link to feh with the name of the options you
+want it to use. So from the example above:
+.br
+.B ln -s `which feh` ~/bin/imagemap
+.br
+Now I just run 
+.B imagemap *.jpg
+to use those options. A cooler example is
+.br
+.B mkindex -iO index.jpg --title-font 20thcent/24 .
+.br
+Notice the '.' at the end. Now with a symlink I can create a mkindex
+command which will create an index.jpg in the current directory. I just
+run
+.B mkindex
+to do it. An example.fehrc is provided with a couple of cool examples.
 .SH SLIDESHOW KEYS
 The default mode for viewing mulitple images is Slideshow mode
 When viewing a slideshow, the following keys may be used:
