@@ -24,9 +24,10 @@ struct _E_Login_Config
       font;
       struct
       {
-	  float x, y;
-	  int offset_x, offset_y;
-      } pos;
+         float x, y;
+         int offset_x, offset_y;
+      }
+      pos;
       char *mess;
    }
    welcome, passwd, greeting;

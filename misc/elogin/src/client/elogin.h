@@ -1,8 +1,6 @@
 #ifndef _ELOGIN_H_
 #define _ELOGIN_H_
 
-#define X_TESTING 
-
 #include"../config.h"
 #include<stdio.h>
 #include<stdlib.h>

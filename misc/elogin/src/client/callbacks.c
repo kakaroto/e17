@@ -8,67 +8,6 @@ extern void show_error_description(char *);
 
 static void elogin_start_x(E_Login_Session e);
 
-void
-elogin_select_next_session(E_Login_Session e)
-{
-   elogin_select_session(e, e->session_index + 1);
-}
-
-void
-elogin_select_prev_session(E_Login_Session e)
-{
-   elogin_select_session(e, e->session_index - 1);
-}
-
-void
-elogin_session_list_clicked(void *session, Evas * evas, Evas_Object * li,
-                            void *event_info)
-{
-   E_Login_Session e = (E_Login_Session) session;
-   int i = 0;
-   Evas_List *t;
-   Evas_Event_Mouse_Up *ev = (Evas_Event_Mouse_Up *) event_info;
-
-   if (ev->button != 1)
-      return;
-
-   /* Find the index of the object that was clicked */
-   for (t = e->listitems; t && evas_list_data(t) != li; t = t->next)
-   {
-      ++i;
-   }
-
-   if (t)
-      elogin_select_session(e, i);
-}
-
-
-void
-elogin_select_session(E_Login_Session e, int s_index)
-{
-   int ix, iy;
-
-   /* Force within list bounds/wraparound */
-   if (s_index >= evas_list_count(e->listitems))
-      s_index = 0;
-   else if (s_index < 0)
-      s_index = evas_list_count(e->listitems) - 1;
-
-   /* Update bullet position */
-   ix = (e->geom.w - 250) / 2 + 20;
-   iy = 120 + (s_index * 30);
-   evas_object_move(e->bullet, ix, iy);
-
-   /* Update current session */
-   e->session_index = s_index;
-   e->session = evas_list_nth(e->config->sessions, s_index);
-
-#if ELOGIN_DEBUG
-   printf("Session Selected: Name = %s, Path= %s\n", e->session->name,
-          e->session->path);
-#endif
-}
-
 int
 elogin_return_key_cb(E_Login_Session e, char *buffer)
 {
@@ -123,26 +62,24 @@ elogin_start_x(E_Login_Session e)
    e_login_auth_setup_environment(e->auth);
 
 /*   snprintf(buf, PATH_MAX, "%s/.xinitrc", e->auth->pam.pw->pw_dir); */
-   if (e->session)
+   if (e->xsession)
    {
       /* If a path was specified for the session, use that path instead of
          passing the session name to Xsession */
-      if (e->session->path && strlen(e->session->path))
+      if (e->xsession->path && strlen(e->xsession->path))
       {
          /* Handle the failsafe session */
-         if (!strcmp(e->session->path, "failsafe"))
+         if (!strcmp(e->xsession->path, "failsafe"))
             snprintf(buf, PATH_MAX, "/etc/X11/Xsession failsafe");
          else
-            snprintf(buf, PATH_MAX, "%s", e->session->path);
+            snprintf(buf, PATH_MAX, "%s", e->xsession->path);
       }
-
       else
-         snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", e->session->name);
+         snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", e->xsession->name);
    }
    else
-      snprintf(buf, PATH_MAX, "/etc/X11/Xsession");	/* Default 
-	   Session 
-	 */
+      snprintf(buf, PATH_MAX, "/etc/X11/Xsession");
+   /* Default Session */
 
 #if X_TESTING
    printf("Would have executed: %s\n", buf);

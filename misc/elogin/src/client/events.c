@@ -114,6 +114,7 @@ e_key_down(Ecore_Event * ev)
    if (e->key)
    {
       int length = 0;
+
       length = strlen(e->key);
       if (e->mods & ECORE_EVENT_KEY_MODIFIER_CTRL)
       {
@@ -149,10 +150,10 @@ e_key_down(Ecore_Event * ev)
          {
             typebuffer.buf[typebuffer.buf_index++] = ' ';
          }
-	 else if(!(strcmp(e->key, "period")))
-	 {
-	     typebuffer.buf[typebuffer.buf_index++] = '.';
-	 }
+         else if (!(strcmp(e->key, "period")))
+         {
+            typebuffer.buf[typebuffer.buf_index++] = '.';
+         }
       }
       else
       {

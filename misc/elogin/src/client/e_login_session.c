@@ -44,7 +44,9 @@ e_login_session_free(E_Login_Session e)
 }
 
 /**
- * e_login_session_init: Initialize the session by taking over the screen
+ * e_login_session_init: Initialize the session by taking over the screen,
+ * giving us an Evas to play in,  If you want to add stuff don't add it
+ * here.
  * @e - the E_Login_Session to be initialized
  */
 void
@@ -56,9 +58,7 @@ e_login_session_init(E_Login_Session e)
    Display *disp;
    Window win, ewin;
    Evas *evas;
-   Evas_List *l;
-   Evas_Object *li;
-   int iw, ih, ix, iy;
+   int iw = 0, ih = 0;
 
    if (!e)
       exit(1);
@@ -112,8 +112,8 @@ e_login_session_init(E_Login_Session e)
                            XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE |
                            XEV_KEY);
 
-   evas_image_cache_set(evas, 0);
-   evas_font_cache_set(evas, 0);
+   evas_image_cache_set(evas,(1024 * 1024) * 1);
+   evas_font_cache_set(evas, (1024 * 1024) * 2);
    evas_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts/");
 
    ecore_window_show(ewin);
@@ -144,71 +144,6 @@ e_login_session_init(E_Login_Session e)
    evas_object_pass_events_set(e->pointer, 1);
    evas_object_show(e->pointer);
 
-   /* Session list background image */
-   e->listbg = evas_object_image_add(evas);
-   evas_object_image_file_set(e->listbg,
-                              PACKAGE_DATA_DIR "/data/images/parch.png",
-                              NULL);
-   evas_object_image_size_get(e->listbg, &iw, &ih);
-   evas_object_resize(e->listbg, iw, ih);
-   evas_object_image_fill_set(e->listbg, 0.0, 0.0, (double) iw, (double) ih);
-   evas_object_layer_set(e->listbg, 1);
-   evas_object_move(e->listbg, (double) (e->geom.w - 250) / 2.0, 40.0);
-   evas_object_show(e->listbg);
-
-   /* Session list heading */
-   e->listhead = evas_object_text_add(evas);
-   evas_object_text_font_set(e->listhead, "notepad.ttf", 21.0);
-   evas_object_text_text_set(e->listhead, "Select Session");
-   evas_object_layer_set(e->listhead, 2);
-   evas_object_color_set(e->listhead, 90, 60, 25, 255);
-   ix = (e->geom.w - 250) / 2 + 20;
-   iy = 80;
-   evas_object_move(e->listhead, (double) ix, (double) iy);
-   evas_object_show(e->listhead);
-
-   /* Build session list */
-   ix = (e->geom.w - 250) / 2 + 50;
-   iy = 120;
-
-   e->listitems = NULL;
-   for (l = e->config->sessions; l && iy <= 330; l = l->next)
-   {
-      char *session_name = ((E_Login_Session_Type *) evas_list_data(l))->name;
-
-      li = evas_object_text_add(evas);
-      evas_object_text_font_set(li, "notepad.ttf", 16.0);
-      evas_object_text_text_set(li, session_name);
-      evas_object_layer_set(li, 25);
-      evas_object_color_set(li, 0, 0, 0, 255);
-      evas_object_resize(li, 180, 30);
-      evas_object_move(li, (double) ix, (double) iy);
-      evas_object_event_callback_add(li, EVAS_CALLBACK_MOUSE_UP,
-                                     elogin_session_list_clicked, e);
-      evas_object_show(li);
-      e->listitems = evas_list_append(e->listitems, li);
-      iy += 30;
-   }
-
-   /* Bullet */
-   e->bullet = evas_object_image_add(evas);
-   evas_object_image_file_set(e->bullet,
-                              PACKAGE_DATA_DIR "/data/images/bullet.png",
-                              NULL);
-   evas_object_image_size_get(e->bullet, &iw, &ih);
-   evas_object_resize(e->bullet, iw, ih);
-   evas_object_image_fill_set(e->bullet, 0.0, 0.0, (double) iw, (double) ih);
-   evas_object_layer_set(e->bullet, 5);
-   evas_object_move(e->bullet, -99999, -99999);
-   evas_object_show(e->bullet);
-
-   /* Set default session to first in list (for now) */ ;
-   l = e->config->sessions;
-   if (l)
-      e->session = evas_list_data(l);
-   else
-      e->session = NULL;
-   e->session_index = 0;
 
    e->evas = evas;
    e->ewin = ewin;
@@ -234,4 +169,24 @@ e_login_session_reset_user(E_Login_Session e)
 {
    e_login_auth_free(e->auth);
    e->auth = e_login_auth_new();
+}
+
+void
+e_login_session_select_xsession_named(E_Login_Session e, const char *name)
+{
+   if (e)
+   {
+      Evas_List *l = NULL;
+      E_Login_Session_Type *t = NULL;
+
+      for (l = e->config->sessions; l; l = l->next)
+      {
+         t = (E_Login_Session_Type *) l->data;
+         if (!(strcmp(t->name, name)))
+         {
+            e->xsession = t;
+            return;
+         }
+      }
+   }
 }

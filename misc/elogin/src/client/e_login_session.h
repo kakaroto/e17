@@ -24,10 +24,6 @@ struct _E_Login_Session
 {
    Evas *evas;                  /* the evas being used in the X session */
    Evas_Object *pointer;        /* object for the pointer in the evas */
-   Evas_Object *listbg;         /* Background for session list */
-   Evas_Object *listhead;       /* Session List heading */
-   Evas_Object *bullet;
-   Evas_List *listitems;        /* Items in session list */
    E_Background bg;             /* ebg in the evas */
    E_Login_Auth auth;           /* encapsulated auth shit */
    E_Login_Config config;       /* configuration options */
@@ -39,12 +35,8 @@ struct _E_Login_Session
    }
    geom;                        /* the height/width of the evas */
 
-   E_Login_Session_Type *session;	/* The 
-	   session 
-	   to 
-	   load 
-	 */
-   int session_index;
+   E_Login_Session_Type *xsession;
+   /* The X session to load */
 
    Evas_List *users;            /* recent users */
    /* find a way to have plugins running */
@@ -58,7 +50,7 @@ void e_login_session_init(E_Login_Session e);
 
 int e_login_session_auth_user(E_Login_Session e);
 void e_login_session_reset_user(E_Login_Session e);
-void e_login_session_select_session(E_Login_Session e,
-                                    E_Login_Session_Type * t);
+void e_login_session_select_xsession_named(E_Login_Session e,
+                                           const char *name);
 
 #endif

@@ -2,6 +2,7 @@
 #include "e_login_config.h"
 #include "callbacks.h"
 #include <Estyle.h>
+#include "session_bar.h"
 
 static Evas *evas = NULL;
 static E_Login_Config config = NULL;
@@ -54,11 +55,11 @@ show_error_description(char *err_str)
       evas_output_size_get(evas, &w, &h);
       estyle_set_text(o, err_str);
 
-      estyle_geometry(o, NULL, NULL, (int*)&tw, (int*)&th);
-      x = ((((w / config->screens.w) -
-         tw) * config->welcome.pos.x ) + config->welcome.pos.offset_x);
-      y = ((((h / config->screens.h) -
-         th) * config->welcome.pos.y ) + config->welcome.pos.offset_y);
+      estyle_geometry(o, NULL, NULL, (int *) &tw, (int *) &th);
+      x = ((((w / config->screens.w) - tw) * config->welcome.pos.x) +
+           config->welcome.pos.offset_x);
+      y = ((((h / config->screens.h) - th) * config->welcome.pos.y) +
+           config->welcome.pos.offset_y);
 
       estyle_move(o, x, y);
       estyle_hide(_o_pass_desc);
@@ -83,32 +84,33 @@ set_text_entry_text(int is_pass, char *txt)
 
    evas_output_size_get(evas, &w, &h);
    estyle_geometry(o, NULL, NULL, &tw, &th);
-   
-   x = ((((w / config->screens.w) -
-         tw) * config->passwd.pos.x ) + config->passwd.pos.offset_x);
-   y = ((((h / config->screens.h) -
-         th) * config->passwd.pos.y ) + config->passwd.pos.offset_y + th);
+
+   x = ((((w / config->screens.w) - tw) * config->passwd.pos.x) +
+        config->passwd.pos.offset_x);
+   y = ((((h / config->screens.h) - th) * config->passwd.pos.y) +
+        config->passwd.pos.offset_y + th);
    estyle_move(o, x, y);
 }
 
 void
 elogin_update_time(int val, void *data)
 {
-    char buf[PATH_MAX], timer[PATH_MAX];
-    
-    if(data)
-    {
-	struct tm *current;
-	time_t _t = time(NULL);
-	current = localtime(&_t);
-	if(val)
-	    strftime(buf, PATH_MAX, "%I:%M %Z", current);
-	else
-	    strftime(buf, PATH_MAX, "%b %e %Y", current);
-	estyle_set_text((Estyle*)data, buf);
-	snprintf(timer, PATH_MAX, "%s timer", buf);
-	ecore_add_event_timer(timer, 1.0, elogin_update_time, val, data);
-    }
+   char buf[PATH_MAX], timer[PATH_MAX];
+
+   if (data)
+   {
+      struct tm *current;
+      time_t _t = time(NULL);
+
+      current = localtime(&_t);
+      if (val)
+         strftime(buf, PATH_MAX, "%I:%M %Z", current);
+      else
+         strftime(buf, PATH_MAX, "%b %e %Y", current);
+      estyle_set_text((Estyle *) data, buf);
+      snprintf(timer, PATH_MAX, "%s timer", buf);
+      ecore_add_event_timer(timer, 1.0, elogin_update_time, val, data);
+   }
 }
 
 void
@@ -142,35 +144,31 @@ intro_init(E_Login_Session e)
       config = e->config;
 
 
-   /* select a default session */
-   elogin_select_session(e, 0);
 
    es = estyle_new(evas, config->welcome.mess, "raised");
    estyle_set_color(es, config->welcome.font.r, config->welcome.font.g,
-	   config->welcome.font.b, config->welcome.font.a);
-   estyle_set_font(es, config->welcome.font.name,
-	   config->welcome.font.size); 
+                    config->welcome.font.b, config->welcome.font.a);
+   estyle_set_font(es, config->welcome.font.name, config->welcome.font.size);
    estyle_geometry(es, NULL, NULL, &tw, &th);
-   x = ((((e->geom.w / config->screens.w) - tw) *
-	       config->welcome.pos.x ) + config->welcome.pos.offset_x);
-   y = ((((e->geom.h / config->screens.h) - th) * 
-	       config->welcome.pos.y ) + config->welcome.pos.offset_y);
+   x = ((((e->geom.w / config->screens.w) - tw) * config->welcome.pos.x) +
+        config->welcome.pos.offset_x);
+   y = ((((e->geom.h / config->screens.h) - th) * config->welcome.pos.y) +
+        config->welcome.pos.offset_y);
    estyle_move(es, x, y);
    estyle_set_layer(es, 5);
    estyle_show(es);
    _o_text_desc = es;
-   
+
    /* password description */
    es = estyle_new(evas, config->passwd.mess, "raised");
    estyle_set_color(es, config->passwd.font.r, config->passwd.font.g,
-	   config->passwd.font.b, config->passwd.font.a);
-   estyle_set_font(es, config->passwd.font.name,
-	   config->passwd.font.size);
+                    config->passwd.font.b, config->passwd.font.a);
+   estyle_set_font(es, config->passwd.font.name, config->passwd.font.size);
    estyle_geometry(es, NULL, NULL, &tw, &th);
-   x = ((((e->geom.w / config->screens.w) -
-         tw) * config->passwd.pos.x ) + config->passwd.pos.offset_x);
-   y = ((((e->geom.h / config->screens.h) -
-         th) * config->passwd.pos.y ) + config->passwd.pos.offset_y);
+   x = ((((e->geom.w / config->screens.w) - tw) * config->passwd.pos.x) +
+        config->passwd.pos.offset_x);
+   y = ((((e->geom.h / config->screens.h) - th) * config->passwd.pos.y) +
+        config->passwd.pos.offset_y);
    estyle_move(es, x, y);
    estyle_set_layer(es, 5);
    estyle_hide(es);
@@ -179,9 +177,8 @@ intro_init(E_Login_Session e)
    /* o_text_entry */
    es = estyle_new(evas, "", "raised");
    estyle_set_color(es, config->welcome.font.r, config->welcome.font.g,
-	   config->welcome.font.b, config->welcome.font.a);
-   estyle_set_font(es, config->welcome.font.name,
-	   config->welcome.font.size);
+                    config->welcome.font.b, config->welcome.font.a);
+   estyle_set_font(es, config->welcome.font.name, config->welcome.font.size);
    estyle_move(es, x, y);
    estyle_set_layer(es, 5);
    estyle_show(es);
@@ -190,9 +187,8 @@ intro_init(E_Login_Session e)
    /* _o_err_str is placed later */
    es = estyle_new(evas, "", "raised");
    estyle_set_color(es, config->welcome.font.r, config->welcome.font.g,
-	   config->welcome.font.b, config->welcome.font.a);
-   estyle_set_font(es, config->welcome.font.name,
-	   config->welcome.font.size);
+                    config->welcome.font.b, config->welcome.font.a);
+   estyle_set_font(es, config->welcome.font.name, config->welcome.font.size);
    estyle_move(es, x, y);
    estyle_hide(es);
    estyle_set_layer(es, 5);
@@ -201,36 +197,38 @@ intro_init(E_Login_Session e)
    /* Greeting Message */
    es = estyle_new(evas, config->greeting.mess, "raised");
    estyle_set_color(es, config->greeting.font.r, config->greeting.font.g,
-	   config->greeting.font.b, config->greeting.font.a);
+                    config->greeting.font.b, config->greeting.font.a);
    estyle_set_font(es, config->greeting.font.name,
-	   config->greeting.font.size + 8);
+                   config->greeting.font.size + 8);
    estyle_geometry(es, NULL, NULL, &tw, &th);
-   x = ((((e->geom.w / config->screens.w) -
-         tw) * config->greeting.pos.x ) + config->greeting.pos.offset_x);
-   y = ((((e->geom.h / config->screens.h) -
-         th) * config->greeting.pos.y ) + config->greeting.pos.offset_y);
+   x = ((((e->geom.w / config->screens.w) - tw) * config->greeting.pos.x) +
+        config->greeting.pos.offset_x);
+   y = ((((e->geom.h / config->screens.h) - th) * config->greeting.pos.y) +
+        config->greeting.pos.offset_y);
    estyle_move(es, x, y);
    y += th;
    estyle_show(es);
-   
+
    /* Greeting Date */
    es = estyle_new(evas, "", "raised");
    estyle_set_color(es, config->greeting.font.r, config->greeting.font.g,
-	   config->greeting.font.b, config->greeting.font.a);
+                    config->greeting.font.b, config->greeting.font.a);
    estyle_set_font(es, config->greeting.font.name,
-	   config->greeting.font.size);
+                   config->greeting.font.size);
    estyle_move(es, x, y);
    y += config->greeting.font.size + 4;
    estyle_show(es);
    ecore_add_event_timer("timer", 1.0, elogin_update_time, 0, es);
-   
+
    /* Greeting time */
    es = estyle_new(evas, "", "raised");
    estyle_set_color(es, config->greeting.font.r, config->greeting.font.g,
-	   config->greeting.font.b, config->greeting.font.a);
+                    config->greeting.font.b, config->greeting.font.a);
    estyle_set_font(es, config->greeting.font.name,
-	   config->greeting.font.size);
+                   config->greeting.font.size);
    estyle_move(es, x, y);
    estyle_show(es);
    ecore_add_event_timer("timer2", 1.0, elogin_update_time, 1, es);
+
+   e_login_session_bar_init(e);
 }
