@@ -29,14 +29,14 @@ struct _elogin_image
 	char *name;
 	Imlib_Image *im;
 	int x, y, w, h;
- };
+};
 
 struct _elogin_view
 {
 	Window					win, frame;
 	int 					x, y, w, h;
 	char					visible;
-	Imlib_Image				*bg;
+	Elogin_Image				*bg;
 	char					focused;
 	int						button_down;
 	int						x_down, y_down;
@@ -44,8 +44,9 @@ struct _elogin_view
 	int						psel_x, psel_y, psel_w, psel_h;
 	int						sel_x, sel_y, sel_w, sel_h;
 	char					psel, sel;
-	Elogin_ImageObject		*box, *logo, *login_box;
+	Ewidget					*box, *logo, *login_box;
 //	Elogin_ImageObject		*user_box, *pass_box;
+	Ewidget					*widgets;
 	Elogin_View				*prev, *next;
 };
 
@@ -55,6 +56,8 @@ void Elogin_ImageSetImage(Elogin_Image *im, Imlib_Image *imlib);
 Elogin_Image *Elogin_LoadImage(char *file);
 Elogin_Image *Elogin_ImageNew();
 void Elogin_LoadAll();
-void Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg, Elogin_Image *lpbox, Elogin_Image *lp1, Elogin_Image *lp2);
+void Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, 
+		Elogin_Image *lbg, Elogin_Image *lpbox, Elogin_Image *lp1, 
+		Elogin_Image *lp2);
 
 #endif

@@ -26,15 +26,15 @@ Elogin_View		*main_view = NULL;
 void
 Elogin_ImageSetName(Elogin_Image *im, char *name)
 {
-	IF_FREE(im->name);
-	im->name = name;
+	IF_FREE(im->file);
+	im->file = name;
 }
 
 void
 Elogin_ImageSetImage(Elogin_Image *im, Imlib_Image *imlib)
 {
-	IF_FREE(im->im);
-	im->im = imlib;
+	IF_FREE(im->image);
+	im->image = imlib;
 }
 
 Elogin_Image	*
@@ -81,7 +81,8 @@ Elogin_LoadAll ()
 }
 
 void
-Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg, Elogin_Image *lpbox, Elogin_Image *lp1, Elogin_Image *lp2)
+Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg, 
+		Elogin_Image *lpbox, Elogin_Image *lp1, Elogin_Image *lp2)
 {
 	Pixmap pm;
 	static Atom	a = 0;
@@ -105,7 +106,7 @@ Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg, E
 	imlib_free_image();
 	
 	/* Logo */
-	pm = e_pixmap_new(default_win, lbox->w, lbox->h, default_depth);
+	pm = e_pixmap_new(default_view->win, lbox->w, lbox->h, default_depth);
 	imlib_context_set_drawable(pm);
 	imlib_context_set_image(lbox->im);
 	imlib_blend_image_onto_image(llogo->im, 0,
@@ -128,9 +129,9 @@ Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg, E
 		250, 200, lpbox->w, lpbox->h);
 	
 	imlib_render_image_on_drawable(0, 0);
-	e_window_set_background_pixmap(default_win, pm);
-	e_window_resize(default_win, lbox->w, lbox->h);
-	e_window_show(default_win);
+	e_window_set_background_pixmap(default_view->win, pm);
+	e_window_resize(default_view->win, lbox->w, lbox->h);
+	e_window_show(default_view->win);
 	e_sync();
 	
 	/* Free me! */
@@ -141,21 +142,47 @@ Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg, E
 	imlib_context_set_image(lp2->im);imlib_free_image();
 }
 
+void
+Elogin_SetRootBG (void)
+{
+	Pixmap pm;
+	static Atom	a = 0;
+	
+	/* BG */
+	pm = e_pixmap_new(default_root, main_view->bg->w, 
+			main_view->bg->h, default_depth);
+	imlib_context_set_drawable(pm);
+	imlib_context_set_image(main_view->bg);
+	imlib_image_tile();
+	imlib_render_image_on_drawable(0, 0);
+	E_ATOM(a, "_XROOTPMAP_ID");
+	e_window_property_set(default_root, a, XA_PIXMAP, 32,
+		&pm, 1);
+
+	e_window_set_background_pixmap(default_root, pm);
+	e_window_resize(default_root, main_view->bg->w, 
+			main_view->bg->h);
+	e_window_clear(default_root);
+	e_window_show(default_root);
+	e_sync();
+	imlib_free_image();
+}
+
 Elogin_View		*
 Elogin_ViewNew (void)
 {
 	Elogin_View		*view;
 
 	view = NEW(Elogin_View, 1);
-	view->frame = e_window_new(0, 0, 0, 500, 250);
+	view->frame = e_window_new(default_root, 0, 0, 500, 250);
 	view->win = e_window_new(view->frame, 0, 0, 500, 250);
 	view->w = 500;
 	view->h = 250;
 	view->x = 0;
 	view->y = 0;
 	view->bg = Elogin_LoadImage("images/bg2.png");
-	view->logo = Elogin_BitLoad("logo");
-	view->login_box = Elogin_BitLoad("login_box");
+//	view->logo = Elogin_BitLoad("logo");
+	view->login_box = Elogin_WidgetLoad("login_box");
 //	view->user_box = Elogin_BitLoad("user_box");
 //	view->pass_box = Elogin_BitLoad("pass_box");
 	view->next = main_view;
@@ -171,5 +198,26 @@ Elogin_ViewFree (Elogin_View *view)
 	e_window_destroy(view->frame);
 	/* Free our widgets */
 	FREE(view);
+}
+
+void
+Elogin_Display (void)
+{
+	int x;
+	Pixmap pm;
+	
+	pm = e_pixmap_new(main_view->win, main_view->login_box->im->w, 
+			main_view->login_box->h, default_depth);
+	imlib_context_set_drawable(pm);
+	imlib_context_set_image(main_view->login_box->im->im);
+	imlib_render_image_on_drawable(0, 0);
+	e_window_set_background_pixmap(main_view->win, pm);
+	e_window_resize(default_view->win, default_view->login_box->im->w, 
+			default_view->login_box->im->h);
+	e_window_resize(main_view->win, 100, 100);
+	e_window_show(main_view->win);
+	e_sync();
+	
+	imlib_context_set_image(lbox->login_box->im->im);imlib_free_image();
 }
 

@@ -50,8 +50,10 @@ main(int argc, char **argv)
  	
 //	Elogin_LoadConfigs ();
 	e_display_init(NULL);
-	Elogin_LoadAll();
+//	Elogin_LoadAll();
+//	Elogin_ViewNew();
 	Elogin_EventLoop();
+	Elogin_Display();
 
 	 return 0;
 }

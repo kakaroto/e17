@@ -27,8 +27,7 @@ static Visual	*default_vis;
 static Colormap	default_cm;
 int				default_depth;
 Window			default_root;
-Window			default_win;
-
+Elogin_View	*	default_view;
 static Window	focused_win = 0;
 static int		mouse_x = 0, mouse_y = 0;
 
@@ -37,6 +36,7 @@ static void		e_handle_x_io_error(Display *d);
 #ifdef HAS_XINERAMA
 static void		Elogin_XineramaCheck(void);
 #endif
+
 static void
 e_handle_x_error(Display *d, XErrorEvent *ev)
 {
@@ -100,7 +100,7 @@ Pixmap
 e_pixmap_new(Window win, int w, int h, int dep)
 {
 	if (!win)
-		win = default_win;
+		win = default_view->win;
 	if (dep == 0)
 		dep = default_depth;
 	return XCreatePixmap(disp, win, w, h, dep);
@@ -196,7 +196,7 @@ void
 e_display_init(char *display)
 {
 	int revert;
-	
+
 	disp = XOpenDisplay(display);
 	if (!disp)
 	{
@@ -234,10 +234,10 @@ e_display_init(char *display)
 	mouse_y = (DisplayHeight(disp, DefaultScreen(disp)) - (350)) / 2;
 #endif
 
-	default_win		= e_window_new(default_root, 0, 0, 10, 10);
+//	default_win		= e_window_new(default_root, 0, 0, 10, 10);
 	
-	e_window_add_events(default_win, XEV_KEY | XEV_IN_OUT | XEV_MOUSE_MOVE |
-				XEV_BUTTON);
+	default_view = Elogin_ViewNew();
+	e_window_add_events(default_view->win, XEV_KEY | XEV_IN_OUT | XEV_MOUSE_MOVE | XEV_BUTTON);
 	e_pointer_xy(0, NULL, NULL);
 	
 	imlib_context_set_display(disp);

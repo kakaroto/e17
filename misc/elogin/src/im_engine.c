@@ -5,32 +5,23 @@
 #include "im_engine.h"
 
 
-static void Elogin_BitAppend		(Elogin_Bit *bbit, Elogin_Bit *bit);
-static Elogin_Bit *Elogin_BitNew	(void);
+static void 		Elogin_WidgetAppend	(Ewidget *bbit, Ewidget *bit);
+static Ewidget		*Elogin_WidgetNew		(void);
 
-Elogin_ImageObject	*
-Elogin_BitLoad (char *name)
+Ewidget	*
+Elogin_WidgetLoad (char *name)
 {
-	Elogin_ImageObject	*ob;
-	Elogin_Bit			*bit;
+	Ewidget				*bit;
 	int 				num_bit = 0, n;
-	
-	ob = NEW(Elogin_ImageObject, 1);
-	ob->bits = NULL;
-	ob->x = 0;
-	ob->y = 0;
-	ob->w = 0;
-	ob->h = 0;
-	ob->clicked = 0;
 	
 	num_bit = 1;
 	for (n = 0; n < num_bit; n++)
 	{
-		bit = Elogin_BitNew();
-		if(ob->bits)
-			Elogin_BitAppend(ob->bits, bit);
+		bit = Elogin_WidgetNew();
+		if(default_view->widgets)
+			Elogin_WidgetAppend(default_view->widgets, bit);
 		else
-			ob->bits = bit;
+			default_view->widgets = bit;
 		bit->name	= e_db_str_get(name, "name");
 		bit->class	= e_db_str_get(name, "class");
 		bit->type	= e_db_int_get(name, "type");
@@ -40,20 +31,22 @@ Elogin_BitLoad (char *name)
 		bit->y1   	= e_db_int_get(name, "y1");
 		bit->x2   	= e_db_int_get(name, "x2");
 		bit->y2   	= e_db_int_get(name, "y2");
-		bit->image	= Elogin_LoadImage(e_db_str_get(name, "image"));
+		bit->im		= Elogin_LoadImage(e_db_str_get(name, "image"));
 		bit->x   	= e_db_int_get(name, "x");
 		bit->y   	= e_db_int_get(name, "y");
 		bit->w   	= e_db_int_get(name, "w");
 		bit->h   	= e_db_int_get(name, "h");
+
+		printf("%s's w = %d and h = %d\n", bit->name, bit->w, bit->h);
 	}
 	
-	return ob;
+	return bit;
 };
 
 static void
-Elogin_BitAppend (Elogin_Bit *bbit, Elogin_Bit *bit)
+Elogin_WidgetAppend (Ewidget *bbit, Ewidget *bit)
 {
-	Elogin_Bit	*b;
+	Ewidget		*b;
 	for (b = bbit; b; b = b->next)
 	{
 		if (!b->next)
@@ -64,18 +57,18 @@ Elogin_BitAppend (Elogin_Bit *bbit, Elogin_Bit *bit)
 	}
 }
 
-static Elogin_Bit		*
-Elogin_BitNew(void)
+static Ewidget		*
+Elogin_WidgetNew(void)
 {
-	Elogin_Bit	*b;
+	Ewidget	*b;
 
-	b = NEW(Elogin_Bit, 1);
+	b = NEW(Ewidget, 1);
 	b->name = NULL;
 	b->class = NULL;
 	b->type = BT_DECORATION;
 	b->rel1 = NULL;
 	b->rel2 = NULL;
-	b->image = NULL;
+	b->im = NULL;
 	b->x1 = 0;
 	b->y1 = 0;
 	b->x2 = -1;
