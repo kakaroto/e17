@@ -550,16 +550,16 @@ doSMExit(void *params)
 	       {
 		  Esnprintf(sss, sizeof(sss),
 			    "exec %s -single -ext_init_win %i -theme %s "
-			    "-econfdir %s -ecachedir %s -display %s", command,
-			    w, themename, UserEDir(), UserCacheDir(), dstr);
+			    "-econfdir %s -ecachedir %s", command,
+			    w, themename, UserEDir(), UserCacheDir());
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	     else
 	       {
 		  Esnprintf(sss, sizeof(sss),
 			    "exec %s -single -ext_init_win %i "
-			    "-econfdir %s -ecachedir %s -display %s", command,
-			    w, UserEDir(), UserCacheDir(), dstr);
+			    "-econfdir %s -ecachedir %s", command,
+			    w, UserEDir(), UserCacheDir());
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	  }
@@ -574,8 +574,8 @@ doSMExit(void *params)
 	     sscanf(params, "%*s %1000s", s);
 	     Esnprintf(sss, sizeof(sss),
 		       "exec %s -single -ext_init_win %i -theme %s "
-		       "-econfdir %s -ecachedir %s -display %s", command, w, s,
-		       UserEDir(), UserCacheDir(), dstr);
+		       "-econfdir %s -ecachedir %s", command, w, s,
+		       UserEDir(), UserCacheDir());
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	  }
 	else if (!strcmp(s, "restart_wm"))
@@ -589,8 +589,8 @@ doSMExit(void *params)
 		strncpy(s, atword(params, 2), 1000);
 	     real_exec = (char *)Emalloc(strlen(s) + 6);
 	     sprintf(real_exec,
-		     "exec %s " "-econfdir %s -ecachedir %s -display %s", s,
-		     UserEDir(), UserCacheDir(), dstr);
+		     "exec %s " "-econfdir %s -ecachedir %s", s,
+		     UserEDir(), UserCacheDir());
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec", real_exec,
 		   NULL);
 	  }
@@ -1181,7 +1181,7 @@ doSMExit(void *params)
 	AUDIO_PLAY("SOUND_WAIT");
 	XCloseDisplay(disp);
 	disp = NULL;
-	Esnprintf(s, sizeof(s), "exec %s -display %s", atword(params, 2), dstr);
+	Esnprintf(s, sizeof(s), "exec %s", atword(params, 2));
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp(s, "restart"))
@@ -1201,15 +1201,15 @@ doSMExit(void *params)
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i -theme %s "
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s -smid %s -display %s", command,
+			  "-smfile %s -smid %s", command,
 			  init_win_ext, themename, UserEDir(), UserCacheDir(),
-			  sm_file, sm_client_id, dstr);
+			  sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i -theme %s "
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s -display %s", command, init_win_ext,
-			  themename, UserEDir(), UserCacheDir(), sm_file, dstr);
+			  "-smfile %s", command, init_win_ext,
+			  themename, UserEDir(), UserCacheDir(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
 	else
@@ -1218,15 +1218,15 @@ doSMExit(void *params)
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i "
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s -smid %s -display %s", command,
+			  "-smfile %s -smid %s", command,
 			  init_win_ext, UserEDir(), UserCacheDir(), sm_file,
-			  sm_client_id, dstr);
+			  sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i"
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s -display %s", command, init_win_ext,
-			  UserEDir(), UserCacheDir(), sm_file, dstr);
+			  "-smfile %s", command, init_win_ext,
+			  UserEDir(), UserCacheDir(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
      }
@@ -1248,15 +1248,15 @@ doSMExit(void *params)
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -single -ext_init_win %i -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -smid %s -display %s", command, init_win_ext,
+		     "-smfile %s -smid %s", command, init_win_ext,
 		     userthemepath, UserEDir(), UserCacheDir(), sm_file,
-		     sm_client_id, dstr);
+		     sm_client_id);
 	else
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -ext_init_win %i -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -single -display %s", command, init_win_ext,
-		     userthemepath, UserEDir(), UserCacheDir(), sm_file, dstr);
+		     "-smfile %s -single", command, init_win_ext,
+		     userthemepath, UserEDir(), UserCacheDir(), sm_file);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp((char *)s, "error"))
