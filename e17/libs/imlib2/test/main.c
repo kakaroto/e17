@@ -746,11 +746,12 @@ int main (int argc, char **argv)
 						imlib_image_get_height());
 		  
 	       }
+/*	     
 	     if( bump_map_to_point )
 	       imlib_apply_filter("bump_map_point(x=[],y=[],map=test_images/bulb.png);", &x, &y );
 	     else
 	       imlib_apply_filter("bump_map(x=[],y=[],map=test_images/bulb.png);", &x, &y );
-										 
+*/										 
 	     up = imlib_update_append_rect(up, 0, 0,
 					   imlib_image_get_width(),
 					   imlib_image_get_height());
