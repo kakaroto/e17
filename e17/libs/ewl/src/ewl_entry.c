@@ -1,9 +1,7 @@
 
 #include <Ewl.h>
 
-void            ewl_entry_init(Ewl_Entry * e);
-void            __ewl_entry_realize(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
+void            ewl_entry_init(Ewl_Entry * e, char *text);
 void            __ewl_entry_configure(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 void            __ewl_entry_key_down(Ewl_Widget * w, void *ev_data,
@@ -49,17 +47,62 @@ Ewl_Widget     *ewl_entry_new(char *text)
 
 	ZERO(e, Ewl_Entry, 1);
 
-	e->text = ewl_text_new(text);
-	e->cursor = ewl_cursor_new();
-	e->selection = ewl_selection_new();
-
-	ewl_entry_init(e);
-
-	ewl_container_append_child(EWL_CONTAINER(e), e->text);
-	ewl_container_append_child(EWL_CONTAINER(e), e->selection);
-	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
+	ewl_entry_init(e, text);
 
 	DRETURN_PTR(EWL_WIDGET(e), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_entry_init - initialize an entry widget to default values
+ * @e: the entry widget to initialize
+ *
+ * Returns no value. Initializes the entry widget @e to it's default values
+ * and callbacks.
+ */
+void ewl_entry_init(Ewl_Entry * e, char *text)
+{
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	w = EWL_WIDGET(e);
+
+	ewl_container_init(EWL_CONTAINER(w), "entry", NULL,
+			__ewl_entry_child_resize, NULL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HSHRINK |
+			EWL_FILL_POLICY_HFILL);
+
+	w->recursive = FALSE;
+
+	e->text = ewl_text_new(text);
+	ewl_container_append_child(EWL_CONTAINER(e), e->text);
+	ewl_widget_show(e->text);
+
+	e->cursor = ewl_cursor_new();
+	ewl_container_append_child(EWL_CONTAINER(e), e->selection);
+	ewl_widget_show(e->selection);
+
+	e->selection = ewl_selection_new();
+	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
+	ewl_widget_show(e->cursor);
+
+	/*
+	 * Attach necessary callback mechanisms 
+	 */
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+			    __ewl_entry_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, __ewl_entry_key_down,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_entry_mouse_down,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_entry_mouse_move,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
+			    NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -96,71 +139,6 @@ char           *ewl_entry_get_text(Ewl_Entry * e)
 	w = EWL_WIDGET(e);
 
 	DRETURN_PTR(ewl_text_get_text(EWL_TEXT(e->text)), DLEVEL_STABLE);
-}
-
-/**
- * ewl_entry_init - initialize an entry widget to default values
- * @e: the entry widget to initialize
- *
- * Returns no value. Initializes the entry widget @e to it's default values
- * and callbacks.
- */
-void ewl_entry_init(Ewl_Entry * e)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-
-	w = EWL_WIDGET(e);
-
-	ewl_container_init(EWL_CONTAINER(w), "entry", NULL,
-			__ewl_entry_child_resize, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HSHRINK |
-			EWL_FILL_POLICY_HFILL);
-
-	w->recursive = FALSE;
-
-	/*
-	 * Attach necessary callback mechanisms 
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_entry_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_entry_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, __ewl_entry_key_down,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_entry_mouse_down,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_entry_mouse_move,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
-			    NULL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-
-/*
- * Draw the appearance information for the entry widget
- */
-void __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Entry      *e;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	e = EWL_ENTRY(w);
-
-	ewl_widget_show(e->text);
-	ewl_widget_realize(e->cursor);
-	ewl_widget_hide(e->cursor);
-
-	ewl_widget_realize(e->selection);
-	ewl_widget_hide(e->selection);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -587,10 +565,8 @@ __ewl_entry_child_resize(Ewl_Container * entry, Ewl_Widget * text, int size,
 {
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_object_set_preferred_w(EWL_OBJECT(entry),
-					   ewl_object_get_preferred_w(EWL_OBJECT
-								      (text)));
+			   ewl_object_get_preferred_w(EWL_OBJECT(text)));
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(entry),
-					   ewl_object_get_preferred_h(EWL_OBJECT
-								      (text)));
+			   ewl_object_get_preferred_h(EWL_OBJECT(text)));
 }

@@ -45,5 +45,6 @@ int ewl_tree_node_init(Ewl_Tree_Node *tree_node);
 Ewl_Widget *ewl_tree_new(unsigned short columns);
 int ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
 void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns);
+Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children);
 
 #endif

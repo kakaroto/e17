@@ -22,6 +22,28 @@ Ewl_Widget     *ewl_cursor_new(void)
 }
 
 /**
+ * ewl_cursor_init - initialize the cursor to default values and appearance
+ * @c: the cursor to initialize
+ *
+ * Returns no value. Sets the default values and appearance for the cursor @c.
+ */
+void ewl_cursor_init(Ewl_Cursor * c)
+{
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	w = EWL_WIDGET(c);
+
+	ewl_widget_init(w, "cursor");
+
+	c->position = 1;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * ewl_cursor_set_position - set the current position of the cursor
  * @w: the cursor widget to change position
  * @p: the index of the cursor position within the entry widget's text
@@ -29,7 +51,7 @@ Ewl_Widget     *ewl_cursor_new(void)
  * Returns no value. Changes the position of the cursor so that the entry
  * widget can update it appropriately.
  */
-void ewl_cursor_set_position(Ewl_Widget * w, int p)
+void ewl_cursor_set_position(Ewl_Widget * w, unsigned int p)
 {
 	Ewl_Cursor     *c;
 
@@ -38,6 +60,8 @@ void ewl_cursor_set_position(Ewl_Widget * w, int p)
 
 	c = EWL_CURSOR(w);
 
+	if (p == 0)
+		p = 1;
 	c->position = p;
 
 	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
@@ -61,26 +85,4 @@ int ewl_cursor_get_position(Ewl_Widget * w)
 	c = EWL_CURSOR(w);
 
 	DRETURN_INT(c->position, DLEVEL_STABLE);
-}
-
-/**
- * ewl_cursor_init - initialize the cursor to default values and appearance
- * @c: the cursor to initialize
- *
- * Returns no value. Sets the default values and appearance for the cursor @c.
- */
-void ewl_cursor_init(Ewl_Cursor * c)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-
-	w = EWL_WIDGET(c);
-
-	ewl_widget_init(w, "cursor");
-
-	c->position = 1;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
