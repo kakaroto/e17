@@ -27,7 +27,7 @@
 #include <sys/time.h>
 
 #ifdef USE_EXT_INIT_WIN
-static Window       init_win_ext = None;
+static Window       new_init_win_ext = None;
 #endif
 
 #ifndef DEFAULT_SH_PATH
@@ -340,8 +340,11 @@ set_save_props(SmcConn smc_conn, int master_flag)
    const char         *e_conf_dir;
    const char         *ecachedir = "-ecachedir";
    const char         *e_cache_dir;
+
+#ifdef USE_EXT_INIT_WIN
    const char         *extinitwin = "-ext_init_win";
    char                buf[512];
+#endif
    char                priority = 10;
    char                style;
    int                 n;
@@ -464,7 +467,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
 #ifdef USE_EXT_INIT_WIN
    if (restarting)
      {
-	Esnprintf(buf, sizeof(buf), "%li", init_win_ext);
+	Esnprintf(buf, sizeof(buf), "%li", new_init_win_ext);
 
 	restartVal[n].length = strlen(extinitwin);
 	restartVal[n++].value = (char *)extinitwin;
@@ -873,7 +876,7 @@ doSMExit(int mode, const char *params)
 	SoundPlay("SOUND_WAIT");
 #ifdef USE_EXT_INIT_WIN
 	if (disp)
-	   init_win_ext = ExtInitWinCreate();
+	   new_init_win_ext = ExtInitWinCreate();
 #endif
 	EDisplayClose();
 
@@ -884,10 +887,11 @@ doSMExit(int mode, const char *params)
 	if (sm_client_id)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -smid %s", sm_client_id);
 #endif
-	if (init_win_ext != None)
-	   l +=
-	      Esnprintf(s + l, sizeof(s) - l, " -ext_init_win %li",
-			init_win_ext);
+#ifdef USE_EXT_INIT_WIN
+	if (new_init_win_ext != None)
+	   l += Esnprintf(s + l, sizeof(s) - l, " -ext_init_win %li",
+			  new_init_win_ext);
+#endif
 	if (ss)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", ss);
 
