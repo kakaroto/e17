@@ -1,7 +1,7 @@
 # List of source files containing translatable strings.
-
 src/actions.c
 src/alert.c
+src/backgrounds.c
 src/borders.c
 src/buttons.c
 src/cmclass.c
@@ -10,6 +10,7 @@ src/config.c
 src/cursors.c
 src/desktops.c
 src/dialog.c
+src/events.c
 src/fx.c
 src/groups.c
 src/handlers.c
@@ -29,3 +30,6 @@ src/sound.c
 src/tclass.c
 src/theme.c
 src/tooltips.c
+
+# Strings in configuration files
+config/strings.c

@@ -17,7 +17,7 @@ menus.cfg
 configdatadir = $(ENLIGHTENMENT_ROOT)/config
 
 TRANSLATIONS = config.ja config.pl config.ko
-EXTRA_DIST = $(configdata_DATA) $(TRANSLATIONS)
+EXTRA_DIST = $(configdata_DATA) $(TRANSLATIONS) strings.c
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(configdatadir)
