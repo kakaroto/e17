@@ -1082,3 +1082,9 @@ Wed Sep  1 14:40:22 PDT 1999
 
 a couple of minor bugfixes to ecvs.  now it removes the tempfile CommitLog
 as well as remembers to display the cvs commit as it happens.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 16:09:21 PDT 1999
+(Raster)
+

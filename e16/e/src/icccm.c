@@ -1075,6 +1075,12 @@ ICCCM_GetShapeInfo(EWin * ewin)
 	     EShapeCombineMask(disp, ewin->win_container, ShapeBounding, 0, 0,
 			       None, ShapeSet);
 	  }
+	else
+	  {
+	     ewin->client.shaped = 1;
+	     EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
+				ewin->client.win, ShapeBounding, ShapeSet);
+	  }
      }
    else
      {
@@ -1082,7 +1088,7 @@ ICCCM_GetShapeInfo(EWin * ewin)
 	EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			   ewin->client.win, ShapeBounding, ShapeSet);
      }
-   if ((rl) && (rn > 0))
+   if (rl)
       XFree(rl);
    EDBUG_RETURN_;
 }
