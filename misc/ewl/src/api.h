@@ -6,6 +6,7 @@
 #include "event.h"
 #include "object.h"
 #include "widget.h"
+#include "icon.h"
 #include "translators.h"
 #include "container.h"
 #include "box.h"

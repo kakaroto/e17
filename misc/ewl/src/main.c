@@ -8,9 +8,9 @@ void  mousedown_cb(void *object, EwlEvent *ev, void *data);
 
 int main(int argc, char *argv[])
 {
-	EwlWidget *win = ewl_window_new("toplevel"),
-	          *box = ewl_hbox_new(FALSE),
-	          *box2 = ewl_vbox_new(FALSE),
+	EwlWidget *win =  ewl_window_new("toplevel"),
+	          *box =  ewl_hbox_new(FALSE),
+	          *icon = ewl_icon_new("themes/defaultTheme/images/elogo.png"),
 	          *btn;
 	UNUSED(btn);
 	ewl_init(&argc, &argv);
@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
 	ewl_callback_add(win, "mousedown", mousedown_cb, NULL);
 
 	ewl_container_insert(win,box);
-	ewl_container_insert(box,box2);
-	ewl_widget_show(box2);
+	ewl_container_insert(box,icon);
+	ewl_widget_show(icon);
 	ewl_widget_show(box);
 
 	ewl_hash_dump(EWL_OBJECT(box)->data);

@@ -87,10 +87,15 @@ void        ewl_widget_realize_callback(void     *object,
                                         EwlEvent *event,
                                         void     *data)
 {
-	UNUSED(event); UNUSED(data);
-	ewl_widget_set_flag(EWL_WIDGET(object),"realized", TRUE);
+	EwlWidget *widget = EWL_WIDGET(object);
+	UNUSED(event);
+	UNUSED(data);
 
-	ewl_widget_get_theme(EWL_WIDGET(object), "EwlWidget");
+	ewl_widget_set_flag(widget, "realized", TRUE);
+	ewl_widget_get_theme(widget, "EwlWidget");
+
+	if (ewl_widget_is_visible(widget))
+		ewl_widget_show(widget);
 	return;
 }
 
