@@ -211,13 +211,27 @@ efsd_cmd_cleanup(EfsdCommand *ec)
 	      }
 	  }
 	FREE(ec->efsd_file_cmd.options);
+	ec->efsd_file_cmd.options = NULL;
       }
       break;
     case EFSD_CMD_COPY:
     case EFSD_CMD_MOVE:
     case EFSD_CMD_SYMLINK:
-      FREE(ec->efsd_2file_cmd.file1);
-      FREE(ec->efsd_2file_cmd.file2);
+      {
+	int i;
+
+	FREE(ec->efsd_2file_cmd.file1);
+	FREE(ec->efsd_2file_cmd.file2);
+	if (ec->efsd_2file_cmd.num_options > 0)
+	  {
+	    for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
+	      {
+		efsd_option_cleanup(&(ec->efsd_2file_cmd.options[i]));
+	      }
+	  }
+	FREE(ec->efsd_2file_cmd.options);
+	ec->efsd_2file_cmd.options = NULL;
+      }
       break;
     case EFSD_CMD_SETMETA:
       /* FREE(ec->efsd_set_metadata_cmd.data);*/
@@ -233,6 +247,8 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     default:
       D(("Warning -- unknown command type in cleanup().\n"));
     }
+
+  memset(ec, 0, sizeof(EfsdCommand));
   D_RETURN;
 }
 

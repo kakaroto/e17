@@ -807,6 +807,8 @@ fill_option(EfsdIOV *iov, EfsdOption *eo)
       break;
     case EFSD_OP_GET_STAT:
       break;
+    case EFSD_OP_GET_LSTAT:
+      break;
     case EFSD_OP_ALL:
       break;
     case EFSD_OP_GET_FILETYPE:
@@ -1027,16 +1029,25 @@ efsd_io_read_option(int sockfd, EfsdOption *eo)
       switch (eo->type)
 	{
 	case EFSD_OP_FORCE:
+	  D(("Read force option\n"));
 	  break;
 	case EFSD_OP_RECURSIVE:
+	  D(("Read rec option\n"));
 	  break;
 	case EFSD_OP_ALL:
+	  D(("Read all option\n"));
 	  break;
 	case EFSD_OP_GET_STAT:
+	  D(("Read stat option\n"));
+	  break;
+	case EFSD_OP_GET_LSTAT:
+	  D(("Read stat option\n"));
 	  break;
 	case EFSD_OP_GET_FILETYPE:
+	  D(("Read filetype option\n"));
 	  break;
 	case EFSD_OP_GET_META:
+	  D(("Read meta option\n"));
 	  result = read_getmeta_op(sockfd, eo);
 	  break;
 	default:

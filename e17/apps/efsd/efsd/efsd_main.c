@@ -251,6 +251,7 @@ main_handle_client_command(void *data)
 
   efsd_cmd_free(command);
   FREE(container);
+  D(("Thread %i exits\n", pthread_self()));
 
   D_RETURN_(NULL);
 }
