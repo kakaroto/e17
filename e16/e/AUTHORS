@@ -152,6 +152,9 @@ Gergely Egervary <mauzi@poli.hu>
 Bob Arendt <rdarendt@cwcom.net>
         64-bit fixes for e and epplets. Added -ecachedir option to change
 	its location.
+
+Marius Aamodt Eriksen <marius@linux.com>
+        "Focuslist includes shaded windows" patch.
 	
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
