@@ -177,6 +177,7 @@ static void         Epplet_textbox_handle_keyevent(XEvent * ev,
 static void         Epplet_refresh_backgrounds(void);
 static void         Epplet_textbox_textsize(Epplet_gadget gadget, int *w,
 					    int *h, char *s);
+int                 Epplet_textbox_spacesize(Epplet_gadget gadget);
 static void         Epplet_find_instance(char *name);
 
 ImlibData          *
@@ -475,12 +476,14 @@ Epplet_internal_create_window(int w, int h, char *title, char vertical,
    return ret->win;
 }
 
-Window Epplet_create_window(int w, int h, char *title, char vertical)
+Window
+Epplet_create_window(int w, int h, char *title, char vertical)
 {
    return Epplet_internal_create_window(w, h, title, vertical, 1);
 }
 
-Window Epplet_create_window_borderless(int w, int h, char *title, char vertical)
+Window
+Epplet_create_window_borderless(int w, int h, char *title, char vertical)
 {
    return Epplet_internal_create_window(w, h, title, vertical, 0);
 }
@@ -643,7 +646,8 @@ Epplet_window_push_context(Window newwin)
    context_win = win;
 }
 
-Window Epplet_window_pop_context(void)
+Window
+Epplet_window_pop_context(void)
 {
    Epplet_window       ret;
 
@@ -806,7 +810,8 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window Epplet_get_main_window(void)
+Window
+Epplet_get_main_window(void)
 {
    return mainwin->win;
 }
@@ -1913,10 +1918,9 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
    g = (GadTextBox *) eg;
 
    if (g->contents)
-      s = (char *)malloc(sizeof(char) * (len + strlen(g->contents) + 1));
-
+      s = (char *)malloc(len + strlen(g->contents) + 1);
    else
-      s = (char *)malloc(sizeof(char) * (len + 1));
+      s = (char *)malloc(len + 1);
 
    if ((line_break = strchr(new_contents, '\n')))
      {
@@ -1928,9 +1932,14 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
 	*s = '\0';
 
 	if (g->contents)
-	   strcpy(s, g->contents);
-
-	strcat(s, new_contents);
+	  {
+	     strncpy(s, g->contents, g->cursor_pos);
+	     *(s + g->cursor_pos) = '\0';
+	     strcat(s, new_contents);
+	     strcat(s, (g->contents + g->cursor_pos + 1));
+	  }
+	else
+	   strcat(s, new_contents);
 
 	if (g->contents)
 	   free(g->contents);
@@ -1956,7 +1965,6 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
    g->x_offset = 0;
    if (w > g->w)
       g->x_offset -= w - g->w + 2 + CRSR_WDTH;
-
    g->to_cursor = w;
 
    Epplet_draw_textbox(eg);
@@ -1999,24 +2007,18 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 	else
 	   printf("Couldn't allocate memory.\n");
      }
+   g->contents = Estrdup(new_contents);
 
-   Epplet_textbox_textsize(g, &w, &h, new_contents);
+   Epplet_textbox_textsize(g, &w, &h, g->contents);
+
+   g->cursor_pos = g->contents ? strlen(g->contents) : 0;
 
    g->x_offset = 0;
-
    if (w > g->w)
-     {
-	g->x_offset = w - g->w - CRSR_WDTH;
-	/*
-	 * Epplet_textbox_textsize(g, &w, &h, (new_contents + g->text_offset));
-	 * g->text_offset++;
-	 * if (g->text_offset >= strlen(new_contents))
-	 * break;
-	 */
-     }
+      g->x_offset -= w - g->w + 2 + CRSR_WDTH;
 
+   g->to_cursor = w;
    g->cursor_pos = strlen(new_contents);
-   g->contents = Estrdup(new_contents);
 
    Epplet_draw_textbox(eg);
 }
@@ -2127,6 +2129,22 @@ Epplet_draw_textbox(Epplet_gadget eg)
 		     CRSR_WDTH, g->h - 4);
 }
 
+int
+Epplet_textbox_spacesize(Epplet_gadget gadget)
+{
+   char               *s1 = "Z Z";
+   char               *s2 = "ZZ";
+   int                 size1, size2, h;
+   GadTextBox         *g;
+
+   g = (GadTextBox *) gadget;
+
+   Epplet_textbox_textsize(g, &size1, &h, s1);
+   Epplet_textbox_textsize(g, &size2, &h, s2);
+
+   return (size1 - size2);
+}
+
 static void
 Epplet_textbox_textsize(Epplet_gadget gadget, int *w, int *h, char *s)
 {
@@ -2184,16 +2202,7 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 		if (g->contents && *(g->contents) && (g->x_offset < 0))
 		  {
 		     if (g->contents[strlen(g->contents) - 1] == ' ')
-		       {
-			  char               *s1 = "Z Z";
-			  char               *s2 = "ZZ";
-			  int                 size1, size2;
-
-			  Epplet_textbox_textsize(g, &size1, &h, s1);
-			  Epplet_textbox_textsize(g, &size2, &h, s2);
-
-			  char_width = size1 - size2;
-		       }
+			char_width = Epplet_textbox_spacesize(g);
 		     else
 		       {
 			  s[0] = *(g->contents + g->cursor_pos - 1);
@@ -2221,31 +2230,18 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 
 	   Epplet_textbox_textsize(g, &text_width, &h, g->contents);
 
-	   if ((int) (g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH))
+	   if ((int)(g->to_cursor + g->x_offset) >= g->w)
 	     {
-
 		s[0] = *(g->contents + g->cursor_pos + 1);
 		s[1] = '\0';
 
 		if (s[0] == ' ')
-		  {
-		     char               *s1 = "Z Z";
-		     char               *s2 = "ZZ";
-		     int                 size1, size2;
-
-		     Epplet_textbox_textsize(g, &size1, &h, s1);
-		     Epplet_textbox_textsize(g, &size2, &h, s2);
-
-		     char_width = size1 - size2;
-		  }
+		   char_width = Epplet_textbox_spacesize(g);
 		else
 		   Epplet_textbox_textsize(g, &char_width, &h, s);
 
 		if (((int)g->to_cursor + g->x_offset + CRSR_WDTH) >= g->w)
-		{
-		   printf("bam -- %d\n", char_width);
 		   g->x_offset -= char_width;
-		}
 	     }
 	   return;
 	   break;
@@ -2321,6 +2317,9 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 
 	     if (g->cursor_pos > 0)
 		g->cursor_pos--;
+
+	     if (g->cursor_pos == 0)
+		g->x_offset = 0;
 	  }
      }
    else
@@ -2353,33 +2352,14 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
    Epplet_textbox_textsize(g, &text_width, &h, g->contents);
 
    if (*kbuf == ' ')
-     {
-
-	char               *s1 = "Z Z";
-	char               *s2 = "ZZ";
-	int                 size1, size2;
-
-	Epplet_textbox_textsize(g, &size1, &h, s1);
-	Epplet_textbox_textsize(g, &size2, &h, s2);
-
-	char_width = size1 - size2;
-     }
+      char_width = Epplet_textbox_spacesize(g);
 
    if ((*kbuf == '\b') && g->contents && *(g->contents))
      {
 	if (g->x_offset < 0)
 	  {
 	     if (*(g->contents + strlen(g->contents)) == ' ')
-	       {
-		  char               *s1 = "Z Z";
-		  char               *s2 = "ZZ";
-		  int                 size1, size2;
-
-		  Epplet_textbox_textsize(g, &size1, &h, s1);
-		  Epplet_textbox_textsize(g, &size2, &h, s2);
-
-		  char_width = size1 - size2;
-	       }
+		char_width = Epplet_textbox_spacesize(g);
 	     else
 		Epplet_textbox_textsize(g, &char_width, &h,
 					&g->contents[strlen(g->contents) - 1]);
@@ -2738,7 +2718,8 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget
+Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
@@ -2990,7 +2971,8 @@ typedef struct
 }
 GadHBar;
 
-Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -3059,7 +3041,8 @@ typedef struct
 }
 GadVBar;
 
-Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -3125,7 +3108,8 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget
+Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
@@ -3194,7 +3178,8 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget
+Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
@@ -3354,7 +3339,8 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
-Epplet_gadget Epplet_create_popup(void)
+Epplet_gadget
+Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
@@ -3815,7 +3801,8 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
       Epplet_draw_label(gadget, 0);
 }
 
-Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window
+Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -4881,7 +4868,8 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
    XFreeGC(disp, gc);
 }
 
-RGB_buf Epplet_make_rgb_buf(int w, int h)
+RGB_buf
+Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;
@@ -5328,10 +5316,10 @@ Epplet_modify_config(char *key, char *value)
    Epplet_add_config(key, value);
 }
 
-void            
+void
 Epplet_modify_multi_config(char *shortkey, char **values, int num)
 {
-   int                 i,j,k, matches;
+   int                 i, j, k, matches;
    char                key[64], key2[64];
    char               *s;
 
@@ -5347,93 +5335,97 @@ Epplet_modify_multi_config(char *shortkey, char **values, int num)
      {
 	if (config_dict->entries[i].key)
 	  {
-	    s = strstr(config_dict->entries[i].key, key);
-	    if (s == config_dict->entries[i].key)
-	      /* we've found a key matching at the beginning */
-	      {
-		/* check how many keys match (in a row) */
-		for (j = i+1; j < config_dict->num_entries; j++)
-		  {
-		    s = strstr(config_dict->entries[i].key, key);
-		    if (s != config_dict->entries[i].key)
-		      break;
-		  }
-		/* free their pointers */
-		matches = j - i;
-		for (k = i; k < j; k++)
-		  {
-		    free(config_dict->entries[k].key);
-		    free(config_dict->entries[k].value);
-		  }
-		/* and move the rest. */
-		for (k = 0; k < config_dict->num_entries - j; k++)
-		  {
-		    config_dict->entries[i+k] = config_dict->entries[j+k];
-		  }
-		break;
-	      }
+	     s = strstr(config_dict->entries[i].key, key);
+	     if (s == config_dict->entries[i].key)
+		/* we've found a key matching at the beginning */
+	       {
+		  /* check how many keys match (in a row) */
+		  for (j = i + 1; j < config_dict->num_entries; j++)
+		    {
+		       s = strstr(config_dict->entries[i].key, key);
+		       if (s != config_dict->entries[i].key)
+			  break;
+		    }
+		  /* free their pointers */
+		  matches = j - i;
+		  for (k = i; k < j; k++)
+		    {
+		       free(config_dict->entries[k].key);
+		       free(config_dict->entries[k].value);
+		    }
+		  /* and move the rest. */
+		  for (k = 0; k < config_dict->num_entries - j; k++)
+		    {
+		       config_dict->entries[i + k] =
+			  config_dict->entries[j + k];
+		    }
+		  break;
+	       }
 	  }
      }
 
    /* then insert new ones */
    config_dict->entries = realloc(config_dict->entries,
-				  sizeof(ConfigItem) * (config_dict->num_entries - matches + num));
+				  sizeof(ConfigItem) *
+				  (config_dict->num_entries - matches + num));
    for (i = 0, j = config_dict->num_entries - matches; i < num; i++, j++)
      {
-       Esnprintf(key2, sizeof(key2), "%s%i", key, i);
-       config_dict->entries[j].key = strdup(key2);
-       config_dict->entries[j].value = strdup(values[i]);		    
+	Esnprintf(key2, sizeof(key2), "%s%i", key, i);
+	config_dict->entries[j].key = strdup(key2);
+	config_dict->entries[j].value = strdup(values[i]);
      }
    config_dict->num_entries = config_dict->num_entries - matches + num;
 }
 
-char          **
+char              **
 Epplet_query_multi_config(char *shortkey, int *num)
 {
-  char              **result = NULL;
-  char               *s;
-  char                key[64];
-  int                 i,j,k;
-  
-  if (!shortkey)
-    return NULL;
-  
-  /* build the actual key: */
-  Esnprintf(key, sizeof(key), "__%s__", shortkey);
-  *num = 0;
-  
-  for (i = 0; i < config_dict->num_entries; i++)
-    {
-      if (config_dict->entries[i].key)
-	{
-	  s = strstr(config_dict->entries[i].key, key);
-	  if (s == config_dict->entries[i].key)
-	    /* we've found a key matching at the beginning */
-	    {
-	      /* check how many keys match (in a row) */
-	      for (j = i+1, (*num) = 1; j < config_dict->num_entries; j++, (*num)++)
-		{
-		  s = strstr(config_dict->entries[j].key, key);
-		  if (s != config_dict->entries[j].key)
-		    break;
-		}
-	      /* and build result */
-	      result = (char**)malloc(sizeof(char*) * (*num));
-	      if (result)
-		{
-		  for (k = 0; k < (*num); k++)
+   char              **result = NULL;
+   char               *s;
+   char                key[64];
+   int                 i, j, k;
+
+   if (!shortkey)
+      return NULL;
+
+   /* build the actual key: */
+   Esnprintf(key, sizeof(key), "__%s__", shortkey);
+   *num = 0;
+
+   for (i = 0; i < config_dict->num_entries; i++)
+     {
+	if (config_dict->entries[i].key)
+	  {
+	     s = strstr(config_dict->entries[i].key, key);
+	     if (s == config_dict->entries[i].key)
+		/* we've found a key matching at the beginning */
+	       {
+		  /* check how many keys match (in a row) */
+		  for (j = i + 1, (*num) = 1; j < config_dict->num_entries;
+		       j++, (*num)++)
 		    {
-		      result[k] = config_dict->entries[i+k].value;
+		       s = strstr(config_dict->entries[j].key, key);
+		       if (s != config_dict->entries[j].key)
+			  break;
 		    }
-		  return result;
-		}
-	      *num = 0;
-	      return NULL;
-	    }
-	}
-    }
-  *num = 0;
-  return NULL;
+		  /* and build result */
+		  result = (char **)malloc(sizeof(char *) * (*num));
+
+		  if (result)
+		    {
+		       for (k = 0; k < (*num); k++)
+			 {
+			    result[k] = config_dict->entries[i + k].value;
+			 }
+		       return result;
+		    }
+		  *num = 0;
+		  return NULL;
+	       }
+	  }
+     }
+   *num = 0;
+   return NULL;
 }
 
 int
