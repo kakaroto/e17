@@ -40,7 +40,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 
 	ewl_container_init(EWL_CONTAINER(w), "progressbar",
 			__ewl_progressbar_child_add, 
-			__ewl_progressbar_child_add, 
+			__ewl_progressbar_child_resize, 
 			NULL);
 
 	p->bar = NEW(Ewl_Widget, 1);
