@@ -1,3 +1,4 @@
+
 General E Presentation: Targeted to all levels of users
 
 This document is the basic outline used to create the presentation. If you
@@ -11,18 +12,25 @@ Past
 What is a window manager and why do I need one?
 
 	* X is a networked display system only
+		- Graphic contexts
+		- Drawables such as windows and pixmaps
+		- Shared graphic images
+
 	* Window control system not built in like Windows and Mac OS
+
 	* Alone X just stacks windows w/o borders at requested coords
+
 	* A window manager provides:
-		- layout and manipulation of the windows on the screen
-		- changing focus between windows
-		- iconification control
-		- virtual desktops
-		- multiple desktops/workspaces
+		- Layout and manipulation of the windows on the screen
+		- Window decoration
+		- Changing focus between windows
+		- Iconification control
+		- Virtual desktops
+		- Multiple desktops/workspaces
 
 History of X Window Managers and Environments
 
-	* Other window managers (aka, Things That Make You Go Ewww)
+	* Other window managers
 
 		- TWM
 			+ original X window manager
@@ -157,12 +165,12 @@ Future
 
 How will the libraries be used?
 
-	* window manager
-	* file managers
-	* login managers
-	* terminal emulator
-	* desktop applications
-	* embedded environments
+	* Window manager
+	* File managers
+	* Login managers
+	* Terminal emulator
+	* Desktop applications
+	* Embedded environments
 
 Why should I use it?
 
@@ -200,3 +208,4 @@ How can I get involved?
 		- Donations of all sizes accepted
 		- Corporate sponsorship
 		- Derivative products
+

@@ -1,11 +1,12 @@
 Frequently asked questions
+--------------------------
 
-	This is a list of questions you can expect based on past presentations
-	related to enlightenment. Yes most of these questions are in the faq on
-	the website, but we all know how many end users read that before asking
-	questions.
+This is a list of questions you can expect based on past presentations
+related to enlightenment. Yes most of these questions are in the faq on
+the website, but we all know how many end users read that before asking
+questions.
 
-Is enlightenment development dead?
+Is Enlightenment development dead?
 
 	No, enlightenment has been in constant development since it's inception.
 	We did not release a window manager for 3 years, because it was not a
@@ -34,7 +35,8 @@ Why is there so much bloat in E?
 	Bloat? What bloat? Most claims of bloat in E are from '97 or '98, at
 	which time Enlightenment really pushed the boundaries of the hardware.
 	These days, E could be considered one of the lighter environments out
-	there, and will happily run on old pentium class hardware.
+	there, and will happily run on old pentium, or pre-G3 PPC class
+	hardware.
 
 Why are you making ANOTHER wm like gnome or kde?
 
@@ -47,7 +49,7 @@ Why are you making ANOTHER wm like gnome or kde?
 How fast will the new e apps work?
 
 	This will depend on the application to a large degree. The overall
-	goal is to make the libraries as fast and flexile as possible, so that
+	goal is to make the libraries as fast and flexible as possible, so that
 	apps can target their specific platform.
 
 How much memory or cpu will the libs use?
@@ -62,7 +64,7 @@ Where do the libs run (portability)?
 
 	Currently tested platforms include: Linux (x86, powerpc, ARM, Sparc),
 	Solaris, and Mac OS X. Some libraries have been tested on Windows 2000
-	and CE.
+	and CE. Most POSIX compatible environments should be easily ported to.
 
 Why are you redoing a lot of work being done in fd.o?
 
