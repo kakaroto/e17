@@ -353,9 +353,9 @@ Subject: CIA debug
 
 EOM2
 
-print MAIL "ARGV: '" . @ARGV . "'\n";
-print MAIL "dir: '" . @dir . "'\n";
-print MAIL "dirfiles: '" . @dirfiles . "'\n";
+print MAIL "ARGV:\n", join("\n", @ARGV), "\n";
+print MAIL "dir:\n", join("\n", @dir), "\n";
+print MAIL "dirfiles:\n", join("\n", @dirfiles), "\n";
 
 close MAIL;
 die "$0: sendmail exit status " . ($? >> 8) . "\n" unless ($? == 0);
