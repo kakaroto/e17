@@ -56,20 +56,6 @@ char save (ImlibImage *im,
 	   char progress_granularity);
 void formats (ImlibLoader *l);
 
-/* Hideous global is necessary because of libtiff's inadequencies */
-
-static sigjmp_buf	error_jmp;
-
-static void
-error_handler(const char *module, const char *fmt, va_list ap)
-{
-	fprintf(stderr, "%s: ", module);
-	vfprintf(stderr, fmt, ap);
-	fprintf(stderr, "\n");
- 	
-	siglongjmp(error_jmp, 1);
-}
-
 static void
 put_contig_and_raster(TIFFRGBAImage* img, uint32* rast,
     uint32 x, uint32 y, uint32 w, uint32 h,
@@ -173,7 +159,7 @@ load (ImlibImage *im,
 	TIFFRGBAImage_Extra	rgba_image;
 	uint32				*rast = NULL;
 	uint32				width, height, num_pixels;
-
+	
 	if (im->data)
 		return 0;
 	
@@ -195,26 +181,19 @@ load (ImlibImage *im,
 	fd = fileno(file);
 	fd = dup(fd);
 	fclose(file);
-
-	if (sigsetjmp(error_jmp, 1))
-	{
-		if (tif)
-			TIFFClose(tif);
-		else
-			close(fd);
-		if (rast)
-			_TIFFfree(rast);
-		if (im->data)
-			free(im->data);
-
-		return 0;
-	}
-	TIFFSetErrorHandler(error_handler);	
 	
 	tif = TIFFFdOpen(fd, im->file, "r");
 	
-	TIFFRGBAImageBegin((TIFFRGBAImage *) &rgba_image, tif, 1, 
-					   "error reading tiff");
+	if (!tif)
+		return 0;
+	
+	if ((!TIFFRGBAImageOK(tif, "Cannot be processed by libtiff")) 
+		|| (!TIFFRGBAImageBegin((TIFFRGBAImage *) &rgba_image, tif, 0, 
+					   "Error reading tiff")))
+	{
+		TIFFClose(tif);
+		return 0;
+	}
 	
 	rgba_image.image = im;
 	im->w = width = rgba_image.rgba.width;
@@ -234,10 +213,36 @@ load (ImlibImage *im,
 		rgba_image.progress_granularity = progress_granularity;
 		rast = (uint32 *) _TIFFmalloc(sizeof(uint32) * num_pixels);
 		im->data = (DATA32 *) malloc(sizeof(DATA32) * num_pixels);
-	
+		
+		if ((!rast) || (!im->data))	/* Error checking */
+		{
+			fprintf(stderr, "Out of memory\n");
+
+			if (!rast)
+				_TIFFfree(rast);
+			if (!im->data)
+			{
+				free(im->data);
+				im->data = NULL;
+			}
+
+			TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+			TIFFClose(tif);
+
+			return 0;
+		}
+		
 		if (rgba_image.rgba.put.any == NULL)
 		{
-			TIFFError(im->file, "No put function");
+			fprintf(stderr, "No put function");
+			
+			_TIFFfree(rast);
+			free(im->data);
+			im->data = NULL;
+			TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+			TIFFClose(tif);
+
+			return 0;
 		}
 		else
 		{
@@ -253,7 +258,18 @@ load (ImlibImage *im,
 			}
 		}
 	
-		TIFFRGBAImageGet((TIFFRGBAImage *) &rgba_image, rast, width, height);
+		if (!TIFFRGBAImageGet((TIFFRGBAImage *) &rgba_image,
+							 rast, width, height))
+		{
+			_TIFFfree(rast);
+			free(im->data);
+			im->data = NULL;
+			TIFFRGBAImageEnd((TIFFRGBAImage *) &rgba_image);
+			TIFFClose(tif);
+
+			return 0;
+		}
+		
 		_TIFFfree(rast);
 	}
 	
@@ -286,19 +302,14 @@ save (ImlibImage *im,
 	if (!im->data)
 		return 0;
 
-	if (sigsetjmp(error_jmp, 1))
-	{
-		if (buf)
-			_TIFFfree(buf);
-		if (tif)
-			TIFFClose(tif);
-
-		return 0;
-	}
-	TIFFSetErrorHandler(error_handler);
-
 	tif = TIFFOpen(im->file, "w");
 	
+	if (!tif)
+		return 0;
+
+	/* None of the TIFFSetFields are checked for errors, but since they */
+	/* shouldn't fail, this shouldn't be a problem */
+
 	TIFFSetField(tif, TIFFTAG_IMAGELENGTH, im->h);
 	TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, im->w);
 	TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
@@ -319,6 +330,12 @@ save (ImlibImage *im,
 	TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(tif, 0));
 
 	buf = (uint8 *) _TIFFmalloc(TIFFScanlineSize(tif));
+
+	if (!buf)
+	{
+		TIFFClose(tif);
+		return 0;
+	}
 
 	for (y = 0; y < im->h; y++)
 	{
@@ -347,7 +364,13 @@ save (ImlibImage *im,
 			if (has_alpha)
 				buf[i++] = a;
 		}
-		TIFFWriteScanline(tif, buf, y, 0);
+		
+		if (!TIFFWriteScanline(tif, buf, y, 0))
+		{
+			_TIFFfree(buf);
+			TIFFClose(tif);
+			return 0;
+		}
 
 		if (progress)
 		{
@@ -358,7 +381,7 @@ save (ImlibImage *im,
 			if ((per - pper) >= progress_granularity)
 			{
 				l = y - pl;
-				progress(im, per, 0, (y - l), im->w, l);
+				(*progress)(im, per, 0, (y - l), im->w, l);
 				pper = per;
 				pl = y;
 			}
