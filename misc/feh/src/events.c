@@ -434,7 +434,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
          D(("Rotating\n"));
 
 		
-         winwid->im_angle = (ev->xmotion.x - winwid->w)/((double)winwid->w/2)*180;
+         winwid->im_angle = (ev->xmotion.x - winwid->w/2)/((double)winwid->w/2)*3.1415926535;
 		 fprintf(stderr,"angle: %f\n", winwid->im_angle);
          winwidget_render_image(winwid, 0, 0);
       }

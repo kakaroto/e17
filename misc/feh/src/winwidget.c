@@ -387,10 +387,18 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    sh = dh / winwid->zoom;
 
    fprintf(stderr,"winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle);
-   feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->bg_pmap,
+   if( winwid->im_angle>0.05 || winwid->im_angle<-0.05)
+        feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->bg_pmap,
                                                    winwid->im, sx, sy, sw, sh,
                                                    dx, dy, dw, dh,
                                                    winwid->im_angle, 1,
+                                                   feh_imlib_image_has_alpha
+                                                   (winwid->im), alias);
+     else 
+         feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
+                                                   winwid->im, sx, sy, sw, sh,
+                                                   dx, dy, dw, dh,
+                                                    1,
                                                    feh_imlib_image_has_alpha
                                                    (winwid->im), alias);
 

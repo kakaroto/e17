@@ -291,7 +291,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ1:2:3:4:5";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ1:2:3:4:56:7";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -347,6 +347,8 @@ feh_parse_option_array(int argc, char **argv)
       {"zoom-button", 1, 0, '2'},
       {"pan-button", 1, 0, '3'},
       {"menu-button", 1, 0, '4'},
+      {"rotate-button", 1, 0, '6'},
+      {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"rcfile", 1, 0, '_'},
       {0, 0, 0, 0}
    };
@@ -555,6 +557,12 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '5':
            opt.no_menu_ctrl_mask = 1;
+           break;
+        case '6':
+           opt.rotate_button = atoi(optarg);
+           break;
+        case '7':
+           opt.no_rotate_ctrl_mask = 1;
            break;
         default:
            break;
@@ -779,6 +787,10 @@ show_usage(void)
            "                            is disabled if the -N or --no-menus option is set\n"
            "                            (defaults to 3, usually the right button).\n"
            "  -5, --no-menu-ctrl-mask   Don't require CTRL+Button for menu activation in\n"
+           "                            any mode -- just use the button (default=off).\n"
+           "  -6, --rotate-button B     Use CTRL+Button B to rotate the current image in\n"
+           "                            any mode (default=2).\n"
+           "  -7, --no-rotate-ctrl-mask Don't require CTRL+Button for rotation in\n"
            "                            any mode -- just use the button (default=off).\n"
            " FORMAT SPECIFIERS\n"
            "                            %%f image path/filename\n"

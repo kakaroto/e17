@@ -79,7 +79,11 @@ feh_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
                                                  char dither, char blend,
                                                  char alias)
 {
+   Imlib_Image new_im;
    imlib_context_set_image(im);
+   imlib_context_set_anti_alias(alias);
+   new_im = imlib_create_rotated_image(angle);
+   imlib_context_set_image(new_im);
    imlib_context_set_drawable(d);
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
@@ -112,13 +116,17 @@ feh_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
                                                          char blend,
                                                          char alias)
 {
+   Imlib_Image new_im;
    imlib_context_set_image(im);
-   imlib_context_set_drawable(d);
    imlib_context_set_anti_alias(alias);
+   new_im = imlib_create_rotated_image(angle);
+   imlib_context_set_image(new_im);
+   imlib_context_set_drawable(d);
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
    imlib_context_set_angle(angle);
    imlib_render_image_on_drawable_at_size(x, y, w, h);
+   imlib_free_image();
 }
 
 void
@@ -148,7 +156,12 @@ feh_imlib_render_image_part_on_drawable_at_size_with_rotation(
                                                 char dither, char blend,
                                                 char alias)
 {
+   Imlib_Image new_im;
    imlib_context_set_image(im);
+   imlib_context_set_anti_alias(alias);
+   new_im = imlib_create_rotated_image(angle);
+   /*imlib_context_set_image(im);*/
+   imlib_context_set_image(new_im);
    imlib_context_set_drawable(d);
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
@@ -156,6 +169,7 @@ feh_imlib_render_image_part_on_drawable_at_size_with_rotation(
    imlib_context_set_angle(angle);
    imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
                                                dh);
+   imlib_free_image();
 }
 
 void
@@ -228,8 +242,8 @@ feh_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
    imlib_context_set_angle(angle);
-   imlib_blend_image_onto_image(source_image, merge_alpha, sx, sy, sw, sh, dx,
-                                dy, dw, dh);
+   imlib_blend_image_onto_image_at_angle(source_image, merge_alpha, sx, sy, sw, sh, dx,
+                                dy, (int) angle, (int) angle);
 }
 
 Imlib_Image feh_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
