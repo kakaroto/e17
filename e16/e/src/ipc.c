@@ -581,7 +581,6 @@ IPC_Remember(char *params, Client * c)
 	     word(params, 1, param);
 	     while (params)
 	       {
-		  fprintf(stderr, "got param %s\n", (char *)param);
 		  if (!strcmp((char *)param, "all"))
 		    {
 		       SnapshotEwinAll(ewin);

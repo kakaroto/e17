@@ -4299,3 +4299,11 @@ Sun Feb 27 15:39:37 GMT 2000
 
 *cough*. Now the remember ipc should actually *work*. Sorry ;)
 
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 15:54:11 GMT 2000
+(gilbertt)
+
+remove a debugging printf
+
