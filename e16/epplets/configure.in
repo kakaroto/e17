@@ -213,7 +213,7 @@ AM_CONFIG_HEADER(config.h)
 AC_OUTPUT(Makefile api/Makefile epplets/Makefile)
 
 echo "creating api/epplet.h"
-sed -e "s%@EROOT@%$EROOT%g" -e "s%@EBIN@%$EBIN%g" ${srcdir}/api/epplet.h.in > api/epplet.h.new
+sed -e "s%@EROOT@%$EROOT%g" -e "s%@EBIN@%$EBIN%g" -e "s%\${exec_prefix}%${exec_prefix}%g" -e "s%\${prefix}%${prefix}%g" ${srcdir}/api/epplet.h.in > api/epplet.h.new
 if (diff api/epplet.h.new api/epplet.h >/dev/null 2>&1); then
   echo "api/epplet.h unchanged."
   rm -f api/epplet.h.new
