@@ -79,7 +79,7 @@ void ewl_border_text_set(Ewl_Border * b, char *t)
 }
 
 /**
- * @param e: the border to retrieve the label text
+ * @param b: the border to retrieve the label text
  * @return Returns the border label text on success, NULL on failure.
  * @brief Get the text label from a border widget
  */

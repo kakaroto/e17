@@ -5,7 +5,6 @@
 
 /**
  * ewl_selectionbook_new - create a new selectionbook
- * @window: the window the book will be added to
  * 
  * Returns a newly allocated selectionbook on success, NULL on failure.
  */
@@ -27,11 +26,10 @@ Ewl_Widget     *ewl_selectionbook_new()
 
 /**
  * ewl_selectionbook_init - initialize a selectionbook widget
- * @s: the selectionbook widget
- * @window: the window the book will be added to
+ * @param s: the selectionbook widget
  * 
  * Returns no value. Sets the fields and callbacks of the selectionbook
- * @s to their default values.
+ * @a s to their default values.
  */
 void ewl_selectionbook_init(Ewl_Selectionbook * s)
 {

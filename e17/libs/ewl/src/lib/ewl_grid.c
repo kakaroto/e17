@@ -4,10 +4,10 @@ static void ewl_grid_resize(Ewl_Grid * g);
 
 /**
  * ewl_grid_new - create a new grid
- * @cols: number of columns
- * @rows: number of rows
+ * @param cols: number of columns
+ * @param rows: number of rows
  *
- * Returns a pointer to a newly allocated grid on success, NULL on
+ * @return Returns a pointer to a newly allocated grid on success, NULL on
  * failure.
  */
 Ewl_Widget     *ewl_grid_new(int cols, int rows)
@@ -28,11 +28,11 @@ Ewl_Widget     *ewl_grid_new(int cols, int rows)
 
 /**
  * ewl_grid_init - initialize the grid to starting values
- * @g: the grid
- * @cols: number of columns
- * @rows: number of rows
+ * @param g: the grid
+ * @param cols: number of columns
+ * @param rows: number of rows
  *
- * Returns no value. Responsible for setting up default values and
+ * @return Returns no value. Responsible for setting up default values and
  * callbacks within a grid structure
  */
 int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
@@ -86,11 +86,11 @@ int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 
 /**
  * ewl_grid_reset - clear the grid and set new geometry
- * @g: the grid
- * @cols: the new number of columns
- * @rows: the new number of rows
+ * @param g: the grid
+ * @param cols: the new number of columns
+ * @param rows: the new number of rows
  *
- * Returns no value
+ * @return Returns no value
  */
 void ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
 {
@@ -123,16 +123,16 @@ void ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
 	g->rows = rows;
 
 
-	// store the total size of the grid widget /
+	/* store the total size of the grid widget */
 	g->grid_w = CURRENT_W(EWL_OBJECT(w));
 	g->grid_h = CURRENT_H(EWL_OBJECT(w));
 
 
-	// initialize the column width to default values /
+	/* initialize the column width to default values */
 	for (i = 0; i < g->cols; i++)
 		g->col_size[i].size = CURRENT_W(g) / g->cols;
 
-	// initialize the row height to default values /
+	/* initialize the row height to default values */
 	for (i = 0; i < g->rows; i++)
 		g->row_size[i].size = CURRENT_H(g) / g->rows;
 
@@ -145,14 +145,14 @@ void ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
 
 /**
  * ewl_grid_add - add a child widget to the grid
- * @g: the grid
- * @w: the child widget
- * @start_col: the start column
- * @end_col: the end column
- * @start_row: the start row
- * @end_row: the end row
+ * @param g: the grid
+ * @param w: the child widget
+ * @param start_col: the start column
+ * @param end_col: the end column
+ * @param start_row: the start row
+ * @param end_row: the end row
  *
- * Returns no value
+ * @return Returns no value
  */
 void
 ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
@@ -206,11 +206,11 @@ ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 
 /**
  * ewl_grid_col_w_set - set the width of a column
- * @g: the grid
- * @col: the column
- * @width: the new width
+ * @param g: the grid
+ * @param col: the column
+ * @param width: the new width
  *
- * Returns no value.
+ * @return Returns no value.
  */
 void ewl_grid_col_w_set(Ewl_Grid * g, int col, int width)
 {
@@ -245,11 +245,11 @@ void ewl_grid_col_w_set(Ewl_Grid * g, int col, int width)
 /**
  * ewl_grid_col_w_get - get the width of a column
  *
- * @g: the grid
- * @col: the column
- * @width: integer pointer to store the width in
+ * @param g: the grid
+ * @param col: the column
+ * @param width: integer pointer to store the width in
  *
- * Returns no value.
+ * @return Returns no value.
  */
 void ewl_grid_col_w_get(Ewl_Grid * g, int col, int *width)
 {
@@ -264,11 +264,11 @@ void ewl_grid_col_w_get(Ewl_Grid * g, int col, int *width)
 
 /**
  * ewl_grid_row_h_set - set the height of a row
- * @g: the grid
- * @col: the row
- * @width: the new height
+ * @param g: the grid
+ * @param row: the row
+ * @param height: the new height
  *
- * Returns no value.
+ * @return Returns no value.
  */
 void ewl_grid_row_h_set(Ewl_Grid * g, int row, int height)
 {
@@ -300,11 +300,11 @@ void ewl_grid_row_h_set(Ewl_Grid * g, int row, int height)
 /**
  * ewl_grid_row_h_get - get the height of a row
  *
- * @g: the grid
- * @row: the row
- * @height: integer pointer to store the height in
+ * @param g: the grid
+ * @param row: the row
+ * @param height: integer pointer to store the height in
  *
- * Returns no value.
+ * @return Returns no value.
  */
 void ewl_grid_row_h_get(Ewl_Grid * g, int row, int *height)
 {
@@ -329,16 +329,16 @@ void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_show(w);
 
-	// store the total size of the grid widget /
+	/* store the total size of the grid widget */
 	g->grid_w = CURRENT_W(EWL_OBJECT(w));
 	g->grid_h = CURRENT_H(EWL_OBJECT(w));
 
 
-	// initialize the column width to default values /
+	/* initialize the column width to default values */
 	for (i = 0; i < g->cols; i++)
 		g->col_size[i].size = g->grid_w / g->cols;
 
-	// initialize the row height to default values /
+	/* initialize the row height to default values */
 	for (i = 0; i < g->rows; i++)
 		g->row_size[i].size = g->grid_h / g->rows;
 
@@ -445,8 +445,6 @@ static void ewl_grid_resize(Ewl_Grid * g)
 	if (w_flag) {
 		for (i = 0; i < g->cols; i++) {
 			g->col_size[i].size += ((new_w - g->grid_w) / g->cols);
-
-/*			printf("col: %d, width: %d\n", i, g->col_size[i].size); */
 		}
 		g->grid_w = new_w;
 	}
@@ -458,8 +456,6 @@ static void ewl_grid_resize(Ewl_Grid * g)
 	if (h_flag) {
 		for (i = 0; i < g->rows; i++) {
 			g->row_size[i].size += ((new_h - g->grid_h) / g->rows);
-
-/*			printf("a row: %d, height: %d\n", i, g->row_size[i].size); */
 		}
 		g->grid_h = new_h;
 	}
@@ -690,3 +686,4 @@ ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

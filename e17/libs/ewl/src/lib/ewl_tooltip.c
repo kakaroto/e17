@@ -2,7 +2,7 @@
 
 
 /**
- * @parent: the widget this tooltip relates
+ * @param parent: the widget this tooltip relates
  * @return Returns a new tooltip widget on success, NULL on failure.
  * @brief Creates a new tooltip widget for a specific parent.
  */
@@ -24,8 +24,8 @@ Ewl_Widget *ewl_tooltip_new (Ewl_Widget *parent)
 }
 
 /**
- * @t: the tooltip widget to initialize to default values
- * @parent: the parent widget the tooltip is associated with
+ * @param t: the tooltip widget to initialize to default values
+ * @param parent: the parent widget the tooltip is associated with
  * @return Returns TRUE on success, FALSE otherwise.
  * @brief Initialize the default values of the tooltip fields.
  */

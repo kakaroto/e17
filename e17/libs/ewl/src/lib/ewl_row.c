@@ -27,7 +27,7 @@ Ewl_Widget *ewl_row_new()
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the row fields of an inheriting object
  *
- * The fields of the @row object are initialized to their defaults.
+ * The fields of the @a row object are initialized to their defaults.
  */
 int ewl_row_init(Ewl_Row *row)
 {
@@ -100,7 +100,7 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 /**
  * @param row: the row to retrieve a columns widget from
  * @param n: the column containing the desired widget
- * @return Returns widget located in column @n in @row on success.
+ * @return Returns widget located in column @a n in @a row on success.
  * @brief Retrieve the widget at a specified column
  */
 Ewl_Widget *

@@ -97,12 +97,11 @@ ewl_notebook_init(Ewl_Notebook * n)
 
 /**
  * ewl_notebook_page_append - append a page to the notebook
- * @n: the notebook to append the page
- * @t: the tab of the new page added
- b
- * @p: the contents of the page added
+ * @param n: the notebook to append the page
+ * @param t: the tab of the new page added
+ * @param p: the contents of the page added
  *
- * Returns no value. Appends a page to the list of available pages that will
+ * @return Returns no value. Appends a page to the list of available pages that will
  * be available for display.
  */
 void
@@ -118,11 +117,11 @@ ewl_notebook_page_append(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 
 /**
  * ewl_notebook_page_prepend - prepend a page to the notebook
- * @n: the notebook to prepend the page
- * @t: the tab of the new page added
- * @p: the contents of the page added
+ * @param n: the notebook to prepend the page
+ * @param t: the tab of the new page added
+ * @param p: the contents of the page added
  *
- * Returns no value. Prepends a page to the list of available pages that will
+ * @return Returns no value. Prepends a page to the list of available pages that will
  * be available for display.
  */
 void
@@ -137,12 +136,12 @@ ewl_notebook_page_prepend(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 
 /**
  * ewl_notebook_page_insert - insert a page to the notebook
- * @n: the notebook to insert the page
- * @t: the tab of the new page added
- * @p: the contents of the page added
- * @pos: the position in the list of tabs to add the page
+ * @param n: the notebook to insert the page
+ * @param t: the tab of the new page added
+ * @param p: the contents of the page added
+ * @param pos: the position in the list of tabs to add the page
  *
- * Returns no value. Insert a page to the list of available pages that will
+ * @return Returns no value. Insert a page to the list of available pages that will
  * be available for display.
  */
 void
@@ -197,9 +196,9 @@ ewl_notebook_page_insert(Ewl_Notebook * n, Ewl_Widget * t,
 
 /**
  * ewl_notebook_first_page_remove - remove the first page from the notebook
- * @n: the notebook to remove the first page
+ * @param n: the notebook to remove the first page
  *
- * Returns a pointer to the removed page on success, NULL on failure.
+ * @return Returns a pointer to the removed page on success, NULL on failure.
  */
 void
 ewl_notebook_first_page_remove(Ewl_Notebook * n)
@@ -213,9 +212,9 @@ ewl_notebook_first_page_remove(Ewl_Notebook * n)
 
 /**
  * ewl_notebook_first_page_remove - remove the last page from the notebook
- * @n: the notebook to remove the last page
+ * @param n: the notebook to remove the last page
  *
- * Returns a pointer to the removed page on success, NULL on failure.
+ * @return Returns a pointer to the removed page on success, NULL on failure.
  */
 void
 ewl_notebook_last_page_remove(Ewl_Notebook * n)
@@ -229,10 +228,10 @@ ewl_notebook_last_page_remove(Ewl_Notebook * n)
 
 /**
  * ewl_notebook_page_remove - remove the specified page from the notebook
- * @n: the notebook to remove the specified page
- * @i: the position in the list of pages to remove from @n
+ * @param n: the notebook to remove the specified page
+ * @param i: the position in the list of pages to remove from @n
  *
- * Returns a pointer to the removed page on success, NULL on failure.
+ * @return Returns a pointer to the removed page on success, NULL on failure.
  */
 void
 ewl_notebook_page_remove(Ewl_Notebook * n, int i)
@@ -273,9 +272,9 @@ ewl_notebook_page_remove(Ewl_Notebook * n, int i)
 
 /**
  * ewl_notebook_visible_page_remove - remove the visible page from the notebook
- * @n: the notebook to remove the visible page
+ * @param n: the notebook to remove the visible page
  *
- * Returns no value.
+ * @return Returns no value.
  */
 void
 ewl_notebook_visible_page_remove(Ewl_Notebook * n)
@@ -300,10 +299,10 @@ ewl_notebook_visible_page_remove(Ewl_Notebook * n)
 
 /**
  * ewl_notebook_tabs_alignment_set - set the alignment of a notebooks tabs
- * @n: the notebook to change tab alignment
- * @a: the new alignment for the tabs of @n
+ * @param n: the notebook to change tab alignment
+ * @param a: the new alignment for the tabs of @a n
  *
- * Returns no value. Changes the alignment of the tabs on @n to @a, and
+ * @return Returns no value. Changes the alignment of the tabs on @a n to @a a, and
  * updates the display.
  */
 void
@@ -318,9 +317,9 @@ ewl_notebook_tabs_alignment_set(Ewl_Notebook * n, unsigned int a)
 
 /**
  * ewl_notebook_tabs_alignment_get - get the alignment of a notebooks tabs
- * @n: the notebook to get tab alignment
+ * @param n: the notebook to get tab alignment
  *
- * Returns the tab alignment of the notebook @n on success, 0 on failure.
+ * @return Returns the tab alignment of the notebook @n on success, 0 on failure.
  */
 unsigned int
 ewl_notebook_tabs_alignment_get(Ewl_Notebook * n)
@@ -337,10 +336,10 @@ ewl_notebook_tabs_alignment_get(Ewl_Notebook * n)
 
 /**
  * ewl_notebook_tabs_position_set - set a notebooks tab position
- * @n: the notebook to change tab position
- * @p: the new position for the tabs of @n
+ * @param n: the notebook to change tab position
+ * @param p: the new position for the tabs of @n
  *
- * Returns no value. Changes the tab position of @n to @p and updates the
+ * @return Returns no value. Changes the tab position of @n to @p and updates the
  * display.
  */
 void
@@ -398,9 +397,9 @@ ewl_notebook_tabs_position_set(Ewl_Notebook *n, Ewl_Position p)
 
 /**
  * ewl_notebook_tabs_position_get - get the position of a notebooks tabs
- * @n: the notebook to retrieve the tab position
+ * @param n: the notebook to retrieve the tab position
  *
- * Returns the position of the tabs in @n on success, 0 on failure.
+ * @return Returns the position of the tabs in @n on success, 0 on failure.
  */
 Ewl_Position
 ewl_notebook_tabs_position_get(Ewl_Notebook * n)
@@ -413,10 +412,10 @@ ewl_notebook_tabs_position_get(Ewl_Notebook * n)
 
 /**
  * ewl_notebook_tabs_visible_set - set the visibility of the tabs
- * @n: the notebook to change flags
- * @show: the sets if the tabs should be shown (0) or not (1)
+ * @param n: the notebook to change flags
+ * @param show: the sets if the tabs should be shown (0) or not (1)
  *
- * Returns no value. Sets the visiblity for the tabs
+ * @return Returns no value. Sets the visiblity for the tabs
  */
 void
 ewl_notebook_tabs_visible_set(Ewl_Notebook * n, int show)

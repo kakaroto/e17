@@ -404,7 +404,7 @@ static void ewl_init_remove_option(int *argc, char **argv, int i)
  * @return Returns no value.
  * @brief Ask for a widget to be configured during idle loop
  *
- * Ask for the widget @w to be configured when the main idle loop is executed.
+ * Ask for the widget @a w to be configured when the main idle loop is executed.
  */
 void ewl_configure_request(Ewl_Widget * w)
 {
@@ -610,7 +610,7 @@ void ewl_configure_queue()
  * @return Returns no value.
  * @brief Cancel a request to configure a widget
  *
- * Remove the widget @w from the list of widgets that need to be configured.
+ * Remove the widget @a w from the list of widgets that need to be configured.
  */
 void ewl_configure_cancel_request(Ewl_Widget *w)
 {
@@ -654,7 +654,7 @@ void ewl_realize_request(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Cancel a request to realize a widget
  *
- * Remove the widget @w from the list of widgets that need to be realized.
+ * Remove the widget @a w from the list of widgets that need to be realized.
  */
 void ewl_realize_cancel_request(Ewl_Widget *w)
 {

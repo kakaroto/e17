@@ -32,7 +32,8 @@ Ewl_Widget     *ewl_selectionbar_new(Ewl_Widget * parent)
 
 /**
  * ewl_selectionbar_init - initialize a new selectionbar
- * @s: the selectionbar to initialize
+ * @param s: the selectionbar to initialize
+ * @param parent: the parent widget
  * 
  * Returns no value. Sets up the default callbacks and values for the
  * the selectionbar
