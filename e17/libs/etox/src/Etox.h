@@ -98,11 +98,10 @@ struct _etox_context {
 	/*
 	 * A marker for wrapped lines
 	 */
-	struct
-	{
-	  char *text;
-	  char *style;
-	  int r, g, b, a;
+	struct {
+		char *text;
+		char *style;
+		int r, g, b, a;
 	} marker;
 };
 
@@ -223,8 +222,9 @@ void etox_context_set_soft_wrap(Etox * et, int boolean);
 /* 
  * Wrap marker functions
  */
-void etox_context_set_wrap_marker(Etox *et, char *marker, char *style);
-void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a);
+void etox_context_set_wrap_marker(Etox * et, char *marker, char *style);
+void etox_context_set_wrap_marker_color(Etox * et, int r, int g, int b,
+					int a);
 
 /*
  * Text manipulation functions

@@ -273,14 +273,14 @@ void etox_context_set_align(Etox * et, int align)
  * 
  * Returns no value. changes current context alignment value.
  */
-void etox_context_set_soft_wrap(Etox *et, int boolean)
+void etox_context_set_soft_wrap(Etox * et, int boolean)
 {
-  CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("et", et);
 
-  if (boolean)
-    et->context->flags = et->context->flags | ETOX_SOFT_WRAP;
-  else
-    et->context->flags = et->context->flags & ~ETOX_SOFT_WRAP;
+	if (boolean)
+		et->context->flags = et->context->flags | ETOX_SOFT_WRAP;
+	else
+		et->context->flags = et->context->flags & ~ETOX_SOFT_WRAP;
 }
 
 /*
@@ -291,13 +291,13 @@ void etox_context_set_soft_wrap(Etox *et, int boolean)
  *
  * Returns nothing, changes context
  */
-void etox_context_set_wrap_marker(Etox *et, char *marker, char *style)
+void etox_context_set_wrap_marker(Etox * et, char *marker, char *style)
 {
-  CHECK_PARAM_POINTER("et", et);
-  IF_FREE(et->context->marker.text);
-  IF_FREE(et->context->marker.style);
-  et->context->marker.text = strdup(marker);
-  et->context->marker.style = strdup(style);
+	CHECK_PARAM_POINTER("et", et);
+	IF_FREE(et->context->marker.text);
+	IF_FREE(et->context->marker.style);
+	et->context->marker.text = strdup(marker);
+	et->context->marker.style = strdup(style);
 }
 
 /*
@@ -310,10 +310,11 @@ void etox_context_set_wrap_marker(Etox *et, char *marker, char *style)
  *
  * Returns nothing, changes context
  */
-void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a)
+void etox_context_set_wrap_marker_color(Etox * et, int r, int g, int b,
+					int a)
 {
-  et->context->marker.r = r;
-  et->context->marker.g = g;
-  et->context->marker.b = b;
-  et->context->marker.a = a;
+	et->context->marker.r = r;
+	et->context->marker.g = g;
+	et->context->marker.b = b;
+	et->context->marker.a = a;
 }

@@ -269,7 +269,6 @@ void etox_line_minimize(Etox_Line * line)
 void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 {
 	Estyle *bit;
-	Evas_List l;
 
 	CHECK_PARAM_POINTER("line1", line1);
 	CHECK_PARAM_POINTER("line2", line2);
@@ -326,4 +325,69 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	}
 
 	strcat(buf, "\n");
+}
+
+void
+etox_line_wrap(Etox *et, Etox_Line *line)
+{
+	Evas_List ll;
+	Etox_Line *newline;
+	Estyle *bit = NULL, *split = NULL, *marker;
+	int index = -1;
+
+	/* iterate through the bits to find the one on the border */
+	for (ll = line->bits; ll; ll = ll->next) {
+		bit = ll->data;
+
+		/* get the index of the character on the edge */
+		index = estyle_text_at_position(bit, et->x + et->w, line->y,
+				NULL, NULL, NULL, NULL);
+
+		/* if this bit contained the character on the edge, break */
+		if (index >= 0)
+			break;
+	}
+
+	/* if we have an index */
+	if (index != -1) {
+		char *tmp;
+
+		/* don't start a new line with a space */
+		tmp = estyle_get_text(bit);
+		while (tmp[index] == ' ')
+			index++;
+		FREE(tmp);
+
+		/* split the edge bit */
+		split = estyle_split(bit, index);
+	}
+
+	/* if split successful, set up the new bit */
+	if (split) {
+		/* create a marker bit. */
+		marker = estyle_new(et->evas, et->context->marker.text,
+				et->context->marker.style);
+		estyle_set_color(marker, et->context->marker.r,
+				et->context->marker.g, et->context->marker.b,
+				et->context->marker.a);
+		estyle_set_clip(marker, et->clip);
+		estyle_set_font(bit, et->context->font, et->context->font_size);
+		estyle_show(marker);
+
+		/* create a new line, with the marker and the split bits */
+		newline = etox_line_new(line->flags | ETOX_LINE_WRAPPED);
+		newline->et = et;
+		etox_line_append(newline, marker);
+		etox_line_append(newline, split);
+
+		/* move the remaining bits to the new line */
+		for (ll = ll->next; ll; ll = ll->next) {
+			bit = ll->data;
+			etox_line_remove(line, bit);
+			etox_line_append(newline, split);
+		}
+
+		/* add the newline after the current one */
+		et->lines = evas_list_append_relative(et->lines, newline, line);
+	}
 }
