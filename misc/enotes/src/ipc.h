@@ -29,7 +29,8 @@
 #define IPC_PORT 2323
 
 typedef enum {			/* More to come. :-) */
-	NOTE
+	NOTE,
+	CLOSE
 } MessageType;
 
 typedef struct {

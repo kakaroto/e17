@@ -53,6 +53,7 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 			if (find_server() == 1) {
 				send_to_server(optarg);
 			}
+			dispusage = 1;
 			break;
 		case 'r':
 			if (main_config->render_method != NULL)

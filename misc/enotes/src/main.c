@@ -19,6 +19,10 @@ main(int argc, char *argv[])
 {
 	char           *spec_conf;
 
+	/* IPC Check */
+	ecore_ipc_init();
+	dml("IPC Initiated Successfully", 1);
+
 	/* Read the Usage and Configurations */
 	main_config = mainconfig_new();
 	spec_conf = read_usage_for_configuration_fn(argc, argv);
@@ -39,9 +43,6 @@ main(int argc, char *argv[])
 
 	dml("Successfully Read Configurations and Usage", 1);
 
-	/* IPC Check */
-	ecore_ipc_init();
-	dml("IPC Initiated Successfully", 1);
 	if (find_server() == 0) {
 		dml("Server wasn't found.. Creating one", 1);
 		/* Setup Server */

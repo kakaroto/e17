@@ -89,6 +89,8 @@ ipc_svr_data_recv(void *data, int type, void *event)
 						     note->title, content);
 				free(content);
 				free_note_stor(note);
+			} else if (p->cmd == CLOSE) {
+				ecore_main_loop_quit();
 			}
 		}
 	}
@@ -125,6 +127,8 @@ parse_message(char *msg)
 
 	if (!strcmp(one, "NOTE")) {
 		p->cmd = NOTE;
+	} else if (!strcmp(one, "CLOSE")) {
+		p->cmd = CLOSE;
 	} else {
 		free(one);
 		free(p);
