@@ -376,7 +376,7 @@ void ui_zero_track_info(Euphoria *e) {
 	edje_object_part_text_set(e->gui.edje, "song_name", "");
 	edje_object_part_text_set(e->gui.edje, "artist_name", "");
 	edje_object_part_text_set(e->gui.edje, "album_name", "");
-	edje_object_part_text_set(e->gui.edje, "track_samplerate", "44.1");
-	edje_object_part_text_set(e->gui.edje, "track_bitrate", "192");
+	edje_object_part_text_set(e->gui.edje, "track_samplerate", "---");
+	edje_object_part_text_set(e->gui.edje, "track_bitrate", "---");
 	edje_object_part_text_set(e->gui.edje, "time_text", "0:00");
 }

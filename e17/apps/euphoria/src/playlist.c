@@ -122,6 +122,9 @@ PlayListItem *playlist_item_add(PlayList *pl, unsigned int id)
 
 	pl->items = evas_list_append(pl->items, pli);
 
+	if (!pl->current_item)
+		pl->current_item = pli;
+
 	return pli;
 }
 

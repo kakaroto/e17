@@ -619,15 +619,14 @@ XMMS_CB(playlist_shuffle) {
 	int i, *ids = NULL;
 	PlayListItem *pli = NULL;
 
-	if ((ids = xmmscs_playlist_list(e->xmms))) {
-	    for(i = 0; ids[i]; i++) {
-		if((pli = playlist_item_find_by_id(e->playlist, ids[i]))) {
-		    e_container_element_remove(pli->container, pli->edje);
-		    e_container_element_append(pli->container, pli->edje);
-		}
-		else {
-		    fprintf(stderr, "Unable to find %d: %d\n", i, ids[i]);
-		}
-	    }
+	if (!(ids = xmmscs_playlist_list(e->xmms)))
+		return;
+
+	for (i = 0; ids[i]; i++) {
+		if ((pli = playlist_item_find_by_id(e->playlist, ids[i]))) {
+			e_container_element_remove(pli->container, pli->edje);
+			e_container_element_append(pli->container, pli->edje);
+		} else
+			fprintf(stderr, "Unable to find %d: %d\n", i, ids[i]);
 	}
 }
