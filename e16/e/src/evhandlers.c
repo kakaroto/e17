@@ -2346,7 +2346,7 @@ HandleMouseUp(XEvent * ev)
 		    }
 		  else
 		    {
-		       int                 ndesk, nx, ny, base_x, base_y;
+		       int                 ndesk, nx, ny, base_x = 0, base_y = 0;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -

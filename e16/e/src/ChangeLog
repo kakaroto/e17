@@ -2726,3 +2726,12 @@ Fri Oct  1 18:59:58 PDT 1999
 
 commented somehting out.. stil works.. ho hum.. dunno - expose bug cant be
 reporduced right now :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 19:32:02 PDT 1999
+(Mandrake)
+
+fixed a warning in evhandlers.c
+also, the TODO item is fixed.  Yay!  that was the last bug on the buglist.
+snapshot coming out.

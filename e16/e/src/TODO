@@ -1,6 +1,3 @@
-BUGS:
-mandrake: expose events in the dialog boxes aren't handled right.
-
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
 user: 		spacers in menus
