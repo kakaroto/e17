@@ -59,6 +59,8 @@ struct _Engage_Bar
    E_Gadman_Client *gmc;
 
    Config_Bar     *conf;
+   Ecore_Event_Handler *iconify_handler;
+   Ecore_Event_Handler *uniconify_handler;
 };
 
 struct _Engage_Icon

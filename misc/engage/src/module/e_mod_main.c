@@ -485,9 +485,9 @@ _engage_bar_new(Engage *e, E_Container *con)
    edje_object_signal_emit(eb->bar_object, "passive", "");
    */
 
-   ecore_event_handler_add(E_EVENT_BORDER_HIDE,
+   eb->iconify_handler = ecore_event_handler_add(E_EVENT_BORDER_HIDE,
 	 _engage_cb_event_border_iconify, eb);
-   ecore_event_handler_add(E_EVENT_BORDER_SHOW,
+   eb->uniconify_handler = ecore_event_handler_add(E_EVENT_BORDER_SHOW,
 	 _engage_cb_event_border_uniconify, eb);
    return eb;
 }
@@ -511,9 +511,13 @@ _engage_bar_free(Engage_Bar *eb)
 
    eb->engage->bars = evas_list_remove(eb->engage->bars, eb);
 
+   ecore_event_handler_del(eb->iconify_handler);
+   ecore_event_handler_del(eb->uniconify_handler);
+
    free(eb->conf);
    free(eb);
    bar_count--;
+
 }
 
 static void
