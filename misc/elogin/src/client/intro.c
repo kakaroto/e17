@@ -71,22 +71,17 @@ show_error_description(char *err_str)
    }
 }
 
-#define STAR 42                 /* '*' */
-#define PASSWORD(str, size) { memset(&str, STAR, size); str[size + 1] = 0; }
-
 void
 set_text_entry_text(int is_pass, char *txt)
 {
    Evas_Object o = _o_text_entry;
 
-   char buf[PATH_MAX];
    double tw, th, x, y;
    int w, h;
 
-   memset(&buf, 0, PATH_MAX);
    if (is_pass)                 /* should only be ***** */
    {
-      PASSWORD(buf, strlen(txt)) evas_set_text(evas, o, buf);
+	evas_set_text(evas, o, ""); 
    }
    else
    {
