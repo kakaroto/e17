@@ -7,13 +7,13 @@ INCLUDES = \
 	@edje_cflags@ \
 	@pbb_cflags@
 
-bin_PROGRAMS = epbbuttons
+bin_PROGRAMS = epbb
 
-epbbuttons_SOURCES = \
+epbb_SOURCES = \
 epbb.c epbb.h \
 main.c
 
-epbbuttons_LDADD = \
+epbb_LDADD = \
 @evas_libs@ \
 @ecore_libs@ \
 @edje_libs@ \
