@@ -11,7 +11,7 @@ backend and its appearence is abstracted out for Edje to handle.
 
 <para>
 EWL is similar in feel to many of the other toolkits out there including
-GTK, QT or MOTIF. The APIs differ by the concepts are the same.
+GTK, QT or MOTIF. The APIs differ but the concepts are the same.
 </para>
 
 &ewl_intro;
