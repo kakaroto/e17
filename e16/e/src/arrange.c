@@ -497,9 +497,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		       spaces[num_spaces].y = yarray[y];
 		       spaces[num_spaces].w = xarray[x1] - xarray[x];
 		       spaces[num_spaces].h = yarray[y1] - yarray[y];
-		       if (spaces[num_spaces].w < floating[leftover[i]].w ||
-			   spaces[num_spaces].h < floating[leftover[i]].h)
-			  fitswin = 0;
 		       spaces[num_spaces].p = fitswin;
 		       num_spaces++;
 		    }
