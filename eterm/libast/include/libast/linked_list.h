@@ -47,4 +47,6 @@ SPIF_DECL_OBJ(linked_list) {
 };
 
 extern spif_listclass_t SPIF_LISTCLASS_VAR(linked_list);
+extern spif_vectorclass_t SPIF_VECTORCLASS_VAR(linked_list);
+
 #endif /* _LIBAST_LINKED_LIST_H_ */

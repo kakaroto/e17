@@ -29,6 +29,14 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+/* *INDENT-OFF* */
+SPIF_DECL_OBJ(dlinked_list_iterator) {
+    SPIF_DECL_PARENT_TYPE(obj);
+    spif_dlinked_list_t subject;
+    spif_dlinked_list_item_t current;
+};
+/* *INDENT-ON* */
+
 static spif_dlinked_list_item_t spif_dlinked_list_item_new(void);
 static spif_bool_t spif_dlinked_list_item_init(spif_dlinked_list_item_t);
 static spif_bool_t spif_dlinked_list_item_done(spif_dlinked_list_item_t);
@@ -41,17 +49,22 @@ static spif_obj_t spif_dlinked_list_item_get_data(spif_dlinked_list_item_t);
 static spif_bool_t spif_dlinked_list_item_set_data(spif_dlinked_list_item_t, spif_obj_t);
 
 static spif_dlinked_list_t spif_dlinked_list_new(void);
+static spif_dlinked_list_t spif_dlinked_list_vector_new(void);
 static spif_bool_t spif_dlinked_list_init(spif_dlinked_list_t);
+static spif_bool_t spif_dlinked_list_vector_init(spif_dlinked_list_t);
 static spif_bool_t spif_dlinked_list_done(spif_dlinked_list_t);
 static spif_bool_t spif_dlinked_list_del(spif_dlinked_list_t);
 static spif_str_t spif_dlinked_list_show(spif_dlinked_list_t, spif_charptr_t, spif_str_t, size_t);
 static spif_cmp_t spif_dlinked_list_comp(spif_dlinked_list_t, spif_dlinked_list_t);
 static spif_dlinked_list_t spif_dlinked_list_dup(spif_dlinked_list_t);
+static spif_dlinked_list_t spif_dlinked_list_vector_dup(spif_dlinked_list_t);
 static spif_classname_t spif_dlinked_list_type(spif_dlinked_list_t);
 static spif_bool_t spif_dlinked_list_append(spif_dlinked_list_t, spif_obj_t);
 static spif_bool_t spif_dlinked_list_contains(spif_dlinked_list_t, spif_obj_t);
+static spif_bool_t spif_dlinked_list_vector_contains(spif_dlinked_list_t, spif_obj_t);
 static size_t spif_dlinked_list_count(spif_dlinked_list_t);
 static spif_obj_t spif_dlinked_list_find(spif_dlinked_list_t, spif_obj_t);
+static spif_obj_t spif_dlinked_list_vector_find(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_get(spif_dlinked_list_t, size_t);
 static size_t spif_dlinked_list_index(spif_dlinked_list_t, spif_obj_t);
 static spif_bool_t spif_dlinked_list_insert(spif_dlinked_list_t, spif_obj_t);
@@ -62,6 +75,16 @@ static spif_obj_t spif_dlinked_list_remove(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_remove_at(spif_dlinked_list_t, size_t);
 static spif_bool_t spif_dlinked_list_reverse(spif_dlinked_list_t);
 static spif_obj_t *spif_dlinked_list_to_array(spif_dlinked_list_t);
+static spif_dlinked_list_iterator_t spif_dlinked_list_iterator_new(spif_dlinked_list_t subject);
+static spif_bool_t spif_dlinked_list_iterator_init(spif_dlinked_list_iterator_t self, spif_dlinked_list_t subject);
+static spif_bool_t spif_dlinked_list_iterator_done(spif_dlinked_list_iterator_t self);
+static spif_bool_t spif_dlinked_list_iterator_del(spif_dlinked_list_iterator_t self);
+static spif_str_t spif_dlinked_list_iterator_show(spif_dlinked_list_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent);
+static spif_cmp_t spif_dlinked_list_iterator_comp(spif_dlinked_list_iterator_t self, spif_dlinked_list_iterator_t other);
+static spif_dlinked_list_iterator_t spif_dlinked_list_iterator_dup(spif_dlinked_list_iterator_t self);
+static spif_classname_t spif_dlinked_list_iterator_type(spif_dlinked_list_iterator_t self);
+static spif_bool_t spif_dlinked_list_iterator_has_next(spif_dlinked_list_iterator_t self);
+static spif_obj_t spif_dlinked_list_iterator_next(spif_dlinked_list_iterator_t self);
 
 /* *INDENT-OFF* */
 static SPIF_CONST_TYPE(class) dli_class = {
@@ -105,6 +128,45 @@ static spif_const_listclass_t dl_class = {
     (spif_func_t) spif_dlinked_list_to_array
 };
 spif_listclass_t SPIF_LISTCLASS_VAR(dlinked_list) = &dl_class;
+
+static spif_const_vectorclass_t dlv_class = {
+    {
+        SPIF_DECL_CLASSNAME(dlinked_list),
+        (spif_func_t) spif_dlinked_list_vector_new,
+        (spif_func_t) spif_dlinked_list_vector_init,
+        (spif_func_t) spif_dlinked_list_done,
+        (spif_func_t) spif_dlinked_list_del,
+        (spif_func_t) spif_dlinked_list_show,
+        (spif_func_t) spif_dlinked_list_comp,
+        (spif_func_t) spif_dlinked_list_vector_dup,
+        (spif_func_t) spif_dlinked_list_type
+    },
+    (spif_func_t) spif_dlinked_list_vector_contains,
+    (spif_func_t) spif_dlinked_list_count,
+    (spif_func_t) spif_dlinked_list_vector_find,
+    (spif_func_t) spif_dlinked_list_insert,
+    (spif_func_t) spif_dlinked_list_iterator,
+    (spif_func_t) spif_dlinked_list_remove,
+    (spif_func_t) spif_dlinked_list_to_array
+};
+spif_vectorclass_t SPIF_VECTORCLASS_VAR(dlinked_list) = &dlv_class;
+
+static spif_const_iteratorclass_t dlli_class = {
+    {
+        SPIF_DECL_CLASSNAME(dlinked_list),
+        (spif_func_t) spif_dlinked_list_iterator_new,
+        (spif_func_t) spif_dlinked_list_iterator_init,
+        (spif_func_t) spif_dlinked_list_iterator_done,
+        (spif_func_t) spif_dlinked_list_iterator_del,
+        (spif_func_t) spif_dlinked_list_iterator_show,
+        (spif_func_t) spif_dlinked_list_iterator_comp,
+        (spif_func_t) spif_dlinked_list_iterator_dup,
+        (spif_func_t) spif_dlinked_list_iterator_type
+    },
+    (spif_func_t) spif_dlinked_list_iterator_has_next,
+    (spif_func_t) spif_dlinked_list_iterator_next
+};
+spif_iteratorclass_t SPIF_ITERATORCLASS_VAR(dlinked_list) = &dlli_class;
 /* *INDENT-ON* */
 
 static spif_dlinked_list_item_t
@@ -213,11 +275,32 @@ spif_dlinked_list_new(void)
     return self;
 }
 
+static spif_dlinked_list_t
+spif_dlinked_list_vector_new(void)
+{
+    spif_dlinked_list_t self;
+
+    self = SPIF_ALLOC(dlinked_list);
+    spif_dlinked_list_vector_init(self);
+    return self;
+}
+
 static spif_bool_t
 spif_dlinked_list_init(spif_dlinked_list_t self)
 {
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_LISTCLASS_VAR(dlinked_list)));
+    self->len = 0;
+    self->head = SPIF_NULL_TYPE(dlinked_list_item);
+    self->tail = SPIF_NULL_TYPE(dlinked_list_item);
+    return TRUE;
+}
+
+static spif_bool_t
+spif_dlinked_list_vector_init(spif_dlinked_list_t self)
+{
+    spif_obj_init(SPIF_OBJ(self));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_VECTORCLASS_VAR(dlinked_list)));
     self->len = 0;
     self->head = SPIF_NULL_TYPE(dlinked_list_item);
     self->tail = SPIF_NULL_TYPE(dlinked_list_item);
@@ -308,6 +391,26 @@ spif_dlinked_list_dup(spif_dlinked_list_t self)
     return tmp;
 }
 
+static spif_dlinked_list_t
+spif_dlinked_list_vector_dup(spif_dlinked_list_t self)
+{
+    spif_dlinked_list_t tmp;
+    spif_dlinked_list_item_t src, dest, prev;
+
+    tmp = spif_dlinked_list_vector_new();
+    memcpy(tmp, self, SPIF_SIZEOF_TYPE(dlinked_list));
+    tmp->head = spif_dlinked_list_item_dup(self->head);
+    for (src = self->head, dest = tmp->head, prev = SPIF_NULL_TYPE(dlinked_list_item);
+         src->next;
+         src = src->next, prev = dest, dest = dest->next) {
+        dest->next = spif_dlinked_list_item_dup(src->next);
+        dest->prev = prev;
+    }
+    dest->next = SPIF_NULL_TYPE(dlinked_list_item);
+    tmp->tail = prev;
+    return tmp;
+}
+
 static spif_classname_t
 spif_dlinked_list_type(spif_dlinked_list_t self)
 {
@@ -343,6 +446,12 @@ spif_dlinked_list_contains(spif_dlinked_list_t self, spif_obj_t obj)
     return ((SPIF_LIST_ISNULL(spif_dlinked_list_find(self, obj))) ? (FALSE) : (TRUE));
 }
 
+static spif_bool_t
+spif_dlinked_list_vector_contains(spif_dlinked_list_t self, spif_obj_t obj)
+{
+    return ((SPIF_LIST_ISNULL(spif_dlinked_list_vector_find(self, obj))) ? (FALSE) : (TRUE));
+}
+
 static size_t
 spif_dlinked_list_count(spif_dlinked_list_t self)
 {
@@ -357,6 +466,24 @@ spif_dlinked_list_find(spif_dlinked_list_t self, spif_obj_t obj)
     for (current = self->head; current; current = current->next) {
         if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj))) {
             return current->data;
+        }
+    }
+    return SPIF_NULL_TYPE(obj);
+}
+
+static spif_obj_t
+spif_dlinked_list_vector_find(spif_dlinked_list_t self, spif_obj_t obj)
+{
+    spif_dlinked_list_item_t current;
+
+    for (current = self->head; current; current = current->next) {
+        spif_cmp_t c;
+
+        c = SPIF_OBJ_COMP(current->data, obj);
+        if (SPIF_CMP_IS_EQUAL(c)) {
+            return current->data;
+        } else if (SPIF_CMP_IS_GREATER(c)) {
+            break;
         }
     }
     return SPIF_NULL_TYPE(obj);
@@ -455,8 +582,7 @@ spif_dlinked_list_insert_at(spif_dlinked_list_t self, spif_obj_t obj, size_t idx
 static spif_iterator_t
 spif_dlinked_list_iterator(spif_dlinked_list_t self)
 {
-    USE_VAR(self);
-    return SPIF_NULL_TYPE(iterator);
+    return SPIF_CAST(iterator) spif_dlinked_list_iterator_new(self);
 }
 
 static spif_bool_t
@@ -581,5 +707,121 @@ spif_dlinked_list_to_array(spif_dlinked_list_t self)
     for (i = 0, current = self->head; i < self->len; current = current->next, i++) {
         tmp[i] = SPIF_CAST(obj) SPIF_OBJ(spif_dlinked_list_item_get_data(current));
     }
+    return tmp;
+}
+
+static spif_dlinked_list_iterator_t
+spif_dlinked_list_iterator_new(spif_dlinked_list_t subject)
+{
+    spif_dlinked_list_iterator_t self;
+
+    self = SPIF_ALLOC(dlinked_list_iterator);
+    spif_dlinked_list_iterator_init(self, subject);
+    return self;
+}
+
+static spif_bool_t
+spif_dlinked_list_iterator_init(spif_dlinked_list_iterator_t self, spif_dlinked_list_t subject)
+{
+    spif_obj_init(SPIF_OBJ(self));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_ITERATORCLASS_VAR(dlinked_list)));
+    self->subject = subject;
+    if (SPIF_LIST_ISNULL(self->subject)) {
+        self->current = SPIF_NULL_TYPE(dlinked_list_item);
+    } else {
+        self->current = self->subject->head;
+    }
+    return TRUE;
+}
+
+static spif_bool_t
+spif_dlinked_list_iterator_done(spif_dlinked_list_iterator_t self)
+{
+    self->subject = SPIF_NULL_TYPE(dlinked_list);
+    self->current = SPIF_NULL_TYPE(dlinked_list_item);
+    return TRUE;
+}
+
+static spif_bool_t
+spif_dlinked_list_iterator_del(spif_dlinked_list_iterator_t self)
+{
+    spif_dlinked_list_iterator_done(self);
+    SPIF_DEALLOC(self);
+    return TRUE;
+}
+
+static spif_str_t
+spif_dlinked_list_iterator_show(spif_dlinked_list_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
+{
+    char tmp[4096];
+
+    if (SPIF_ITERATOR_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL(iterator, name, buff, indent, tmp);
+        return buff;
+    }
+
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_iterator_t) %s:  %010p {\n", name, self);
+    if (SPIF_STR_ISNULL(buff)) {
+        buff = spif_str_new_from_ptr(tmp);
+    } else {
+        spif_str_append_from_ptr(buff, tmp);
+    }
+
+    buff = spif_dlinked_list_show(self->subject, "subject", buff, indent + 2);
+    buff = spif_dlinked_list_item_show(self->current, "current", buff, indent + 2);
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    spif_str_append_from_ptr(buff, tmp);
+    return buff;
+}
+
+static spif_cmp_t
+spif_dlinked_list_iterator_comp(spif_dlinked_list_iterator_t self, spif_dlinked_list_iterator_t other)
+{
+    return spif_dlinked_list_comp(self->subject, other->subject);
+}
+
+static spif_dlinked_list_iterator_t
+spif_dlinked_list_iterator_dup(spif_dlinked_list_iterator_t self)
+{
+    spif_dlinked_list_iterator_t tmp;
+
+    tmp = spif_dlinked_list_iterator_new(self->subject);
+    tmp->current = self->current;
+    return tmp;
+}
+
+static spif_classname_t
+spif_dlinked_list_iterator_type(spif_dlinked_list_iterator_t self)
+{
+    return SPIF_OBJ_CLASSNAME(self);
+}
+
+static spif_bool_t
+spif_dlinked_list_iterator_has_next(spif_dlinked_list_iterator_t self)
+{
+    spif_dlinked_list_t subject;
+
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), FALSE);
+    subject = self->subject;
+    REQUIRE_RVAL(!SPIF_LIST_ISNULL(subject), FALSE);
+    if (self->current) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+static spif_obj_t
+spif_dlinked_list_iterator_next(spif_dlinked_list_iterator_t self)
+{
+    spif_obj_t tmp;
+
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->subject), SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(!SPIF_DLINKED_LIST_ITEM_ISNULL(self->current), SPIF_NULL_TYPE(obj));
+    tmp = self->current->data;
+    self->current = self->current->next;
     return tmp;
 }

@@ -43,4 +43,6 @@ SPIF_DECL_OBJ(dlinked_list) {
 };
 
 extern spif_listclass_t SPIF_LISTCLASS_VAR(dlinked_list);
+extern spif_vectorclass_t SPIF_VECTORCLASS_VAR(dlinked_list);
+
 #endif /* _LIBAST_DLINKED_LIST_H_ */

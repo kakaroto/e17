@@ -820,6 +820,8 @@ test_list(void)
     spif_list_t testlist;
     spif_str_t s, s2;
     spif_obj_t *list_array;
+    spif_iterator_t it;
+    size_t j;
 
     for (i = 0; i < 3; i++) {
         if (i == 0) {
@@ -956,6 +958,18 @@ test_list(void)
         spif_str_del(s);
         TEST_PASS();
 
+        TEST_BEGIN("SPIF_LIST_ITERATOR() macro");
+        for (j = 0, it = SPIF_LIST_ITERATOR(testlist); SPIF_ITERATOR_HAS_NEXT(it); j++) {
+            spif_str_t tmp;
+
+            tmp = SPIF_CAST(str) SPIF_ITERATOR_NEXT(it);
+            TEST_FAIL_IF(SPIF_STR_ISNULL(tmp));
+        }
+        TEST_FAIL_IF(j != 10);
+        TEST_FAIL_IF(SPIF_ITERATOR_HAS_NEXT(it));
+        TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_ITERATOR_NEXT(it)));
+        TEST_PASS();
+
         TEST_BEGIN("SPIF_LIST_REMOVE() macro");
         s = spif_str_new_from_ptr("MOO");
         s2 = SPIF_CAST(str) SPIF_LIST_REMOVE(testlist, s);
@@ -1072,12 +1086,20 @@ test_vector(void)
     spif_vector_t testvector;
     spif_str_t s, s2;
     spif_obj_t *vector_array;
+    spif_iterator_t it;
+    size_t j;
 
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < 3; i++) {
         if (i == 0) {
+            TEST_NOTICE("Testing vector interface class, linked_list instance:");
+            testvector = SPIF_VECTOR_NEW(linked_list);
+        } else if (i == 1) {
+            TEST_NOTICE("Testing vector interface class, dlinked_list instance:");
+            testvector = SPIF_VECTOR_NEW(dlinked_list);
+        } else if (i == 2) {
             TEST_NOTICE("Testing vector interface class, array instance:");
             testvector = SPIF_VECTOR_NEW(array);
-        } else if (i == 1) {
+        } else if (i == 3) {
         }
 
         TEST_BEGIN("SPIF_VECTOR_INSERT() macro");
@@ -1139,6 +1161,18 @@ test_vector(void)
         spif_str_init_from_ptr(s, "8");
         TEST_FAIL_IF(!SPIF_STR_ISNULL(SPIF_STR(SPIF_VECTOR_FIND(testvector, s))));
         spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_VECTOR_ITERATOR() macro");
+        for (j = 0, it = SPIF_VECTOR_ITERATOR(testvector); SPIF_ITERATOR_HAS_NEXT(it); j++) {
+            spif_str_t tmp;
+
+            tmp = SPIF_CAST(str) SPIF_ITERATOR_NEXT(it);
+            TEST_FAIL_IF(SPIF_STR_ISNULL(tmp));
+        }
+        TEST_FAIL_IF(j != 6);
+        TEST_FAIL_IF(SPIF_ITERATOR_HAS_NEXT(it));
+        TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_ITERATOR_NEXT(it)));
         TEST_PASS();
 
         TEST_BEGIN("SPIF_VECTOR_REMOVE() macro");

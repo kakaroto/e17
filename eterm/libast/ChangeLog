@@ -490,3 +490,12 @@ Added a routine for testing a regexp vs. a C string.
 
 Property-ized the URL class objects.
 ----------------------------------------------------------------------
+Wed Nov 19 17:39:01 2003                        Michael Jennings (mej)
+
+Added linked_list and dlinked_list implementations of the vector
+interface.
+
+Added iterator functionality for linked_list and dlinked_list.
+
+Added unit tests for the above.
+----------------------------------------------------------------------
