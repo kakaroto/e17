@@ -1,0 +1,115 @@
+/** 
+@file
+@brief Epsilon Thumbnailing library
+
+A Thumbnailing Library
+*/
+
+/**
+
+@mainpage Epsilon Developers Documentation
+
+@version 1.0.0
+@author Corey Donohoe <atmos@atmos.org>
+@author Carsten Haitzler <raster@rasterman.com>
+@author Azundris <azundris@azundris.com>
+@date 2004
+
+
+
+<ul>
+<li><a href="./index.html#intro">What is Epsilon?</a></li>
+<li><a href="./index.html#running">How do I use it?</a></li>
+<li><a href="./index.html#coding">Themers documentation</a></li>
+<li><a href="./index.html#requirements">Build Instructions</a></li>
+</ul>
+
+
+
+
+
+@section intro What is Epsilon?
+
+<p>
+This is a small, display independent, and quick thumbnailing library.
+The lib itself conforms to the standard put forth by freedesktop.org
+You can find out more information about it at <a
+href="http://triq.net/~jens/thumbnail-spec/index.html">fdo thumbnail
+spec</a>  It seemed better to
+break it out into a component that only depended on what was absolutely
+necessary.  Upon showing raster the wonders of freedesktop.org
+thumbnailing, he proclaimed that it was far to slow, this prompted him
+to write epeg.  Epeg offers very noticeable speed increases to this
+standard, but is only available if the input image is a jpeg file.  If
+the file is anything other than jpg, the traditional freedesktop.org png
+thumbnailing will occur. </p>
+
+<p>To show the speed increase epeg offers,
+Epsilon builds with and without epeg.
+</p>
+
+
+@section running How do I use epsilon ?
+
+<p>First, locate some images.  Let's say we have a bunch of photos in
+~/myphotos/</p>
+@verbatim
+$ epsilon /home/me/myphotos/*.jpg 
+...
+@endverbatim
+<p>You'll see messages saying that the thumbnails need to be generated.  After
+a short time you'll be back at your command prompt.  Running the same
+command  after the thumbnail has been generated returns the meta info stored
+inside of the thumbnail.</p>
+@verbatim
+$ epsilon /home/me/myphotos/*.jpg 
+...
+URI: file:///home/me/myphotos/2004-02-25_w1.jpg
+MimeType: image/jpeg
+Source Image Width: 1600
+Source Image Height: 1200
+Source Image Mtime: 1077731214
+Thumbnail already exists
+...
+@endverbatim
+
+
+@section requirements What does Epsilon require?
+
+Epsilon relies on a lot of libraries most notably
+  - Imlib2 (library)
+  - Imlib2_loaders (library)
+  - Epeg (library)
+  - libpng (library)
+
+The following instructions assume you've checked out the e17 directory
+from cvs.  
+@verbatim
+$ cvs -d:pserver:anonymous@cvs.enlightenment.sf.net:/cvsroot/enligtenment login 
+$ cvs -d:pserver:anonymous@cvs.enlightenment.sf.net:/cvsroot/enligtenment \
+co e17/libs/imlib2 e17/libs/imlib2_loaders e17/libs/epeg e17/libs/epsilon 
+@endverbatim
+
+That should fetch all the libraries you'll need to get epsilon.
+
+@verbatim
+1. You need libpng, your distribution probably already has it
+
+2. You need Imlib2 > 1.1.0 
+  cd e17/libs/imlib2; ./autogen.sh; make; sudo make install
+
+3. You need imlib2_loaders
+  cd e17/libs/imlib2_loaders; ./autogen.sh; make; sudo make install
+
+4. You need Epeg from cvs
+  cd e17/libs/epeg; ./autogen.sh; make; sudo make install
+
+5. You need Epsilon from cvs
+  cd e17/libs/epsilon; ./autogen.sh; make; sudo make install
+
+@endverbatim
+
+@todo Add a -c option to epsilon that goes through and prunes invalid
+thumbnails.
+
+*/

@@ -1,0 +1,6 @@
+#!/bin/sh
+rm -rf ./doc/html ./doc/latex ./doc/man
+doxygen
+cp doc/e.css doc/html/
+cp doc/images/*.png doc/html/
+exit 0
