@@ -7,7 +7,6 @@
 /*
  * Simple alignment bitfield
  */
-typedef enum _etox_alignment Etox_Alignment;
 enum _etox_alignment
 {
 	ETOX_ALIGN_CENTER = 0,
@@ -16,23 +15,24 @@ enum _etox_alignment
 	ETOX_ALIGN_TOP = 4,
 	ETOX_ALIGN_BOTTOM = 8
 };
+typedef enum _etox_alignment Etox_Alignment;
 
 #define ETOX_ALIGN_MASK 0xF
 
-typedef enum _etox_bit_type Etox_Bit_Type;
 enum _etox_bit_type
 {
 	ETOX_BIT_TYPE_TEXT = 0,
 	ETOX_BIT_TYPE_OBSTACLE = 1,
 	ETOX_BIT_TYPE_WRAP_MARKER = 2
 };
+typedef enum _etox_bit_type Etox_Bit_Type;
 
-typedef enum _etox_marker_placement Etox_Marker_Placement;
 enum _etox_marker_placement
 {
 	ETOX_MARKER_BEGINNING = 0,
 	ETOX_MARKER_END = 1,
 };
+typedef enum _etox_marker_placement Etox_Marker_Placement;
 
 /*
  * The context structure holds information relative to the appearance of text
@@ -95,6 +95,10 @@ struct _etox_rect
 
 typedef struct _etox_obstacle Etox_Obstacle;
 typedef struct _etox_selection Etox_Selection;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Etox creation and deletion functions
@@ -240,5 +244,9 @@ void etox_selection_del_callback(Etox_Selection * selected,
 void etox_selection_apply_context(Etox_Selection *selected,
                                   Etox_Context *context);
 Etox_Rect *etox_selection_get_geometry(Etox_Selection *selected, int *num);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
