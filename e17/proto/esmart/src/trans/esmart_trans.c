@@ -178,10 +178,10 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             fprintf(stderr, "Esmart_Trans Error: Got invalid pixmap from root window! Ignored.\n");
       } /* if ((p = *((Ecore_X_Pixmap *) data))) */
       else
-      {
-         free(data);
          fprintf(stderr, "Esmart_Trans Error: Could not read root window pixmap property!\n");
-      }
+
+      if (data)
+         free(data);
    } /* ecore_x_window_prop_property_get() */
    else
       fprintf(stderr, "Esmart_Trans Error: Could not obtain root pixmap atom.\n");
