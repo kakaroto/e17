@@ -1,0 +1,25 @@
+/*** Trak(tor)Vision ***/
+/***  By: Ben Rockwood 						    ***/
+fonts {
+	#include "trakvision_fonts.edc"
+}
+
+images {
+	#include "trakvision_images.edc"
+}
+
+collections {
+        group {
+                min, 324 246;
+                max, 1600 1200;
+                name, "envision";
+                parts {
+			#include "trakvision_parts.edc"
+		}
+                programs {
+                        #include "trakvision_progs.edc"
+                }
+
+        }
+
+}
