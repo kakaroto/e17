@@ -59,7 +59,6 @@ main(int argc, char **argv)
 
   main_win = ewl_window_new();
   ewl_window_set_title(EWL_WINDOW(main_win), "Examine Configuration Client");
-  //ewl_object_set_minimum_size(EWL_OBJECT(main_win), 200, 100);
   ewl_object_set_fill_policy((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
