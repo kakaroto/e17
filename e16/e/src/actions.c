@@ -3476,6 +3476,11 @@ doConfigure(void *params)
 				    ACTION_ADD_TO_GROUP);
 	       }
 	  }
+	else if (!strcmp(s, "remember"))
+	  {
+
+	     SettingsRemember();
+	  }
      }
    EDBUG_RETURN(0);
 }

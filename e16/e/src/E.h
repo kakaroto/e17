@@ -1736,6 +1736,16 @@ typedef enum
 }
 KMessage;
 
+/* only used for remember list dialog callback funcs (SettingsDialog()
+   in in settings.c)... snaps are attached to windows, not a global list */
+typedef struct _remwinlist
+{ 
+	EWin *ewin;
+	char remember; 
+}
+RememberWinList;
+
+
 /* function prototypes */
 
 void                Efont_extents(Efont * f, char *text,
@@ -3000,6 +3010,7 @@ void                SettingsBackground(Background * bg);
 void                SettingsIconbox(char *name);
 void                SettingsGroups(EWin * ewin);
 void                SettingsDefaultGroupControl(void);
+void                SettingsRemember(void);
 
 void                BGSettingsGoTo(Background * bg);
 

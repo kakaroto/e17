@@ -4191,3 +4191,215 @@ SettingsDefaultGroupControl(void)
    DialogBindKey(d, "Return", CB_ConfigureDefaultGroupSettings, 0, d);
    ShowDialog(d);
 }
+
+
+/* lsit of remembered items for the remember dialog -- it's either
+   _anotyer_ glboal var, or i wrapper struct to pass data to the 
+   callback funcs besides the dialog itself -- this is much easier */
+static RememberWinList **rd_ewin_list;
+
+void
+CB_ApplyRemember(int val, void *data)
+{
+	Snapshot *sn;
+	int i;
+
+	if (val<2 && rd_ewin_list)	{
+		for (i=0; rd_ewin_list[i]; i++)	{
+			if (rd_ewin_list[i])	{
+				if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember) {
+					UnsnapshotEwin(rd_ewin_list[i]->ewin);
+                    rd_ewin_list[i]->ewin = 0;
+					/* would this be a better way to do things? */
+					/* sn = FindSnapshot(rd_ewin_list[i]->ewin); */
+					/* ClearSnapshot(sn); */
+					/* rd_ewin_list[i]->ewin->snap = 0; */
+				}
+			}
+		}
+		/* save snapshot info to disk */
+		SaveSnapInfo();
+	}
+}
+
+void
+CB_ApplyRememberEscape(int val, void *data)
+{
+    int i;
+    DialogClose((Dialog *) data);
+    val = 0;
+    Efree(rd_ewin_list);
+}
+
+void
+CB_RememberWindowSettings(int va, void *data)
+{
+    EWin    *ewin;
+
+    if (!data)
+        return;
+    ewin = (EWin*) data;
+    SnapshotEwinDialog(ewin);
+}
+
+void
+SettingsRemember()
+{
+    Dialog             *d;
+    DItem             *table, *di;
+    EWin              **lst, *ewin;
+    int               i, ri, num, g_desc, verbose;
+
+    /* show as little infor as possible -- good for small screens
+       where the hell should i put this option? */
+    verbose = 1; 
+
+    /* init remember window */
+    if ((d=FindItem("REMEMBER_WINDOW",0,LIST_FINDBY_NAME,LIST_TYPE_DIALOG))) {
+        ShowDialog(d);
+        return;
+    }
+    d = CreateDialog("REMEMBER_WINDOW");
+    DialogSetTitle(d, "Remembered Window Settings");
+    table = DialogInitItem(d);
+    DialogItemTableSetOptions(table, 4, 0, 0, 0);
+
+    /* theres a much more efficient way of doing this, but this'll work
+       for now */
+    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+    if (rd_ewin_list)    {
+        for (i=0; rd_ewin_list[i]; i++)
+            Efree(rd_ewin_list[i]);
+        Efree(rd_ewin_list);
+        rd_ewin_list = 0;
+    }
+    rd_ewin_list = Emalloc(sizeof(RememberWinList*)*num+1);
+    ri = 0;
+    if ((lst) && (num > 0))    {
+        for (i = 0; i < num; i++)    {
+            ewin = lst[i];
+            if (!ewin || !FindSnapshot(ewin) ||
+                !(ewin->client.title||ewin->client.name||ewin->client.class)) {
+                /* fprintf(stderr,"Skipping window #%d \"%s\".\n",
+                    i, ewin->client.title?ewin->client.title:"null"); */
+            } else {
+                rd_ewin_list[ri] = Emalloc(sizeof(RememberWinList));
+                rd_ewin_list[ri]->ewin = ewin;
+                rd_ewin_list[ri]->remember = 1;
+                /* fprintf(stderr," Window #%d \"%s\" is remembered (ri==%d)\n",
+                    i, ewin->client.title?ewin->client.title:"null", ri);
+                fprintf(stderr,"  title:\t%s\n  name:\t%s\n  class:\t%s\n  command:\t%s\n",
+                    ewin->client.title?ewin->client.title:"null",
+                    ewin->client.name?ewin->client.name:"null",
+                    ewin->client.class?ewin->client.class:"null",
+                    ewin->client.command?ewin->client.command:"null"
+                ); */
+
+                di = DialogAddItem(table, DITEM_CHECKBUTTON);
+                DialogItemSetColSpan(di, 2);
+                DialogItemSetPadding(di, 2, 2, 2, 2);
+                DialogItemSetFill(di, 1, 0);
+                DialogItemSetAlign(di, 0, 512);
+                DialogItemCheckButtonSetText(di, _("Remember this window"));
+                DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
+                DialogItemCheckButtonSetPtr(di, &(rd_ewin_list[ri]->remember));
+
+                di = DialogAddItem(table, DITEM_BUTTON);
+                DialogItemSetColSpan(di, 2);
+                DialogItemSetPadding(di, 2, 2, 2, 2);
+                DialogItemSetFill(di, 1, 0);
+                DialogItemSetAlign(di, 1024, 512);
+                DialogItemButtonSetText(di, _("Remembered Settings..."));
+                DialogItemSetCallback(di, CB_RememberWindowSettings,
+                    0, (char*)ewin);
+    
+                g_desc = 0;
+                if (ewin->client.title && strlen(ewin->client.title) &&
+                    strncmp(ewin->client.title, "0", 1))  {
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 0, 512);
+                    DialogItemTextSetText(di, "Title:");
+    
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetColSpan(di, 3);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 1024, 512);
+                    DialogItemTextSetText(di, ewin->client.title);
+                    g_desc = 1;
+                }
+
+                if (ewin->client.name && strlen(ewin->client.name) &&
+                    strncmp(ewin->client.name, "0", 1) && (verbose||!g_desc)) {
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 0, 512);
+                    DialogItemTextSetText(di, "Name:");
+        
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetColSpan(di, 3);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 1024, 512);
+                    DialogItemTextSetText(di, ewin->client.name);
+                    g_desc = 1;
+                }
+                
+                if (ewin->client.class && strlen(ewin->client.class) &&
+                    strncmp(ewin->client.class, "0", 1) && (verbose||!g_desc)) {
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 0, 512);
+                    DialogItemTextSetText(di, "Class:");
+        
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetColSpan(di, 3);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 1024, 512);
+                    DialogItemTextSetText(di, ewin->client.class);
+                }
+       
+                if (ewin->client.command && strlen(ewin->client.command) &&
+                    strncmp(ewin->client.command, "0", 1)) {
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 0, 512);
+                    DialogItemTextSetText(di, "Command:");
+    
+                    di = DialogAddItem(table, DITEM_TEXT);
+                    DialogItemSetColSpan(di, 3);
+                    DialogItemSetPadding(di, 2, 2, 2, 2);
+                    DialogItemSetFill(di, 1, 0);
+                    DialogItemSetAlign(di, 1024, 512);
+                    DialogItemTextSetText(di, ewin->client.command);
+                }
+
+                di = DialogAddItem(table, DITEM_SEPARATOR);
+                   DialogItemSetColSpan(di, 4);
+                   DialogItemSetPadding(di, 2, 2, 2, 2);
+                   DialogItemSetFill(di, 1, 0);
+                   DialogItemSeparatorSetOrientation(di, 0);
+
+                ri++;
+            }
+        }
+        Efree(lst);
+        rd_ewin_list[ri]=0;
+    }
+
+    /* finish remember window */
+    DialogAddButton(d, _("OK"), CB_ApplyRemember, 1);
+    DialogAddButton(d, _("Apply"), CB_ApplyRemember, 0);
+    DialogAddButton(d, _("Cancel"), CB_ApplyRemember, 1);
+    DialogSetExitFunction(d, CB_ApplyRemember, 2, d);
+    DialogBindKey(d, "Escape", CB_ApplyRememberEscape, 0, d);
+    DialogBindKey(d, "Return", CB_ApplyRemember, 0, d);
+
+    ShowDialog(d);
+}
