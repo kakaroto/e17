@@ -26,7 +26,7 @@ void enterm_cb_resize(Ecore_Evas *ee) {
       
 }
 
-void enterm_cb_title_change(void *data, int type, void *ev) {
+int enterm_cb_title_change(void *data, int type, void *ev) {
    Term_Event_Title_Change *e;
    Ecore_Evas *ee;
    
@@ -34,4 +34,5 @@ void enterm_cb_title_change(void *data, int type, void *ev) {
    ee = data;
    ecore_x_window_prop_title_set(ecore_evas_software_x11_window_get(ee),
 				 e->title);
+   return 1;
 }

@@ -47,8 +47,8 @@ struct _Term_Event_Title_Change {
 typedef struct _Term_Event_Title_Change Term_Event_Title_Change;
 
 /* are those still global vars? if so, remove them */
-char *ptydev, *ttydev;
-pid_t pid;
+//char *ptydev, *ttydev;
+//pid_t pid;
 
 struct _Term_Fd {
    int               sys;
@@ -106,6 +106,7 @@ typedef struct _Term_EGlyph Term_EGlyph;
 
 struct _Term {
    int           term_id;
+   pid_t         pid;
    Ecore_Evas   *ee;
    Term_TCanvas *tcanvas;
    Term_EGlyph  *grid;
@@ -147,7 +148,8 @@ int             term_timers(void *data);
 struct winsize *get_font_dim(Term *term);
 int             get_pty(Term *term);
 int             get_tty(Term *term);
-void            sigchld_handler(int a);
+//void            sigchld_handler(int a);
+void sigchld_handler(void *data, int type, void *ev);
 struct passwd  *find_user(void);
 int             execute_command(Term *term);//, int argc, const char **argv);
 
@@ -186,9 +188,6 @@ void            term_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
 void            term_smart_clip_set(Evas_Object *o, Evas_Object *clip);
 void            term_smart_clip_unset(Evas_Object *o);
 Evas_Smart     *term_smart_get();
-
-void            enterm_init(Ecore_Evas *ee, Evas_Object *term);   
-void            enterm_cb_resize(Ecore_Evas *ee);
 
 void            term_event_title_change_free(void *data, void *ev);
    
