@@ -70,6 +70,7 @@ void __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		ebits_get_max_size(w->ebits_object, &ww, &hh);
 
+		/* ewl_object_set_preferred_size(EWL_OBJECT(w), ww, hh); */
 		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
 	}
 

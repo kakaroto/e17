@@ -1,4 +1,11 @@
-Thu Aug 12 19:39:57 2002 Nathan Ingersoll <ningerso@d.umn.edu>
+Wed Aug 14 19:39:57 2002 Nathan Ingersoll <ningerso@d.umn.edu>
+	* Added a spacer widget for tweaking layout
+	* Updated box layout to take padding into consideration
+	* Removed getopt files, no need to duplicate such heavyweight files
+	  for functionality we don't use.
+	* Fixed previous changelog entry to have the correct day of the week.
+
+Mon Aug 12 19:39:57 2002 Nathan Ingersoll <ningerso@d.umn.edu>
 	* Shortened theme keys, this will eventually be replaced with keys
 	  based on inheritance mapping type strings.
 	* Updated API documentation comments.

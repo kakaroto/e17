@@ -493,26 +493,33 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 * orientation. The first one is the simplest as it it a
 	 * direct use of the current coordinates.
 	 */
-	if (ewl_object_get_alignment(c) & info->a1_align)
+	if (ewl_object_get_alignment(c) & info->a1_align) {
+		*align += info->align_pad1(c);
 		ewl_object_request_position(c, *x, *y);
+		*align -= info->align_pad1(c);
+	}
 
 	/*
 	 * The second one is aligned against the furthest edge, so
 	 * there is some calculation to be made.
 	 */
 	else if (ewl_object_get_alignment(c) & info->a3_align) {
-		*align += *align_size - info->align_ask(c);
+		*align += *align_size -
+			(info->align_ask(c) + info->align_pad2(c));
 		ewl_object_request_position(c, *x, *y);
-		*align -= *align_size - info->align_ask(c);
+		*align -= *align_size -
+			(info->align_ask(c) + info->align_pad2(c));
 	}
 
 	/*
 	 * The final one is for centering the child.
 	 */
 	else {
-		*align += (*align_size - info->align_ask(c)) / 2;
+		*align += (*align_size + info->align_pad1(c) +
+				info->align_pad2(c) - info->align_ask(c)) / 2;
 		ewl_object_request_position(c, *x, *y);
-		*align -= (*align_size - info->align_ask(c)) / 2;
+		*align -= (*align_size + info->align_pad1(c) +
+				info->align_pad2(c) - info->align_ask(c)) / 2;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -524,6 +531,7 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 {
 	int             max_size = 0;
+	int temp;
 	Box_Orientation *info;
 
 	DCHECK_PARAM_PTR("c", c);
@@ -532,29 +540,38 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	/*
 	 * Base the info used on the orientation of the box.
 	 */
-	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL)
+	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		info = horizontal;
-	else
+	}
+	else {
 		info = vertical;
+	}
 
 	/*
 	 * If there already is a max widget, compare size to that one.
 	 */
 	if (EWL_BOX(c)->max_align)
 		max_size =
-		    info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align));
+		    info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align)) +
+		    info->align_pad1(EWL_OBJECT(EWL_BOX(c)->max_align)) +
+		    info->align_pad2(EWL_OBJECT(EWL_BOX(c)->max_align));
 	else
-		max_size = info->pref_align_ask(EWL_OBJECT(w));
+		max_size = info->pref_align_ask(EWL_OBJECT(w)) +
+		    info->align_pad1(EWL_OBJECT(w)) +
+		    info->align_pad2(EWL_OBJECT(w));
+
+	temp = info->pref_align_ask(EWL_OBJECT(w)) + 
+		    info->align_pad1(EWL_OBJECT(w)) +
+		    info->align_pad2(EWL_OBJECT(w));
 
 	/*
 	 * Use a <= here so we don't need as many cases in the previous if
 	 * statement. If this widget is the largest so far, mark it as the
 	 * largest in the box.
 	 */
-	if (max_size <= info->pref_align_ask(EWL_OBJECT(w))) {
+	if (max_size <= temp) {
 		EWL_BOX(c)->max_align = w;
-		info->pref_align_set(EWL_OBJECT(c),
-				     info->pref_align_ask(EWL_OBJECT(w)));
+		info->pref_align_set(EWL_OBJECT(c), temp);
 	}
 
 	/*
@@ -562,8 +579,7 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	 * any other widgets in the box.
 	 */
 	info->pref_fill_set(EWL_OBJECT(c),
-			    info->pref_fill_ask(EWL_OBJECT(c)) +
-			    info->pref_fill_ask(EWL_OBJECT(w)) +
+			    info->pref_fill_ask(EWL_OBJECT(c)) + temp +
 			    (ewd_list_nodes(c->children) > 1 ?
 			     EWL_BOX(c)->spacing : 0));
 }
@@ -628,7 +644,9 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		 */
 		info->pref_align_set(EWL_OBJECT(c),
 				     info->pref_align_ask(EWL_OBJECT(c)) +
-				     (size - align_insets));
+				     (size - align_insets) +
+				     info->align_pad1(EWL_OBJECT(c)) +
+				     info->align_pad2(EWL_OBJECT(c)));
 	}
 
 	/*
@@ -640,14 +658,19 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 
 		ewd_list_goto_first(c->children);
 		while ((child = ewd_list_next(c->children))) {
+			int temp;
+
+			temp = info->pref_align_ask(child) +
+				info->align_pad1(child) +
+				info->align_pad2(child);
 
 			/*
 			 * Found a larger widget than the previous largest, so
 			 * store it size as the new max size.
 			 */
-			if (info->pref_align_ask(child) > max_size) {
+			if (temp > max_size) {
 				EWL_BOX(c)->max_align = EWL_WIDGET(child);
-				max_size = info->pref_align_ask(child);
+				max_size = temp;
 			}
 		}
 

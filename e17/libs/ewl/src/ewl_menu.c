@@ -61,6 +61,7 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
+	ewl_widget_set_appearance(EWL_WIDGET(menu), "/menu/default");
 
 	/*
 	 * The realize needs to create the pop-up.
@@ -109,6 +110,6 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 					MINIMUM_H(menu->popup));
 	}
 
+	ewl_widget_realize(EWL_WIDGET(menu->popup));
 	ewl_window_move(EWL_WINDOW(menu->popup), x, y);
-	printf("Moving popup to %d, %d\n", x, y);
 }

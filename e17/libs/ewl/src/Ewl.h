@@ -56,6 +56,7 @@ extern          "C" {
 
 #include <ewl_seeker.h>
 #include <ewl_scrollbar.h>
+#include <ewl_spacer.h>
 #include <ewl_spinner.h>
 #include <ewl_list.h>
 #include <ewl_image.h>

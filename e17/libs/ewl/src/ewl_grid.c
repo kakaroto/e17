@@ -9,6 +9,7 @@ void            __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c);
 void            __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child,
 				       int size, Ewl_Orientation o);
 
+
 /**
  * ewl_grid_new - create a new grid
  * @cols: number of columns
@@ -33,7 +34,6 @@ Ewl_Widget     *ewl_grid_new(int cols, int rows)
 
 	DRETURN_PTR(EWL_WIDGET(g), DLEVEL_STABLE);
 }
-
 
 
 /**
