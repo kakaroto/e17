@@ -7,7 +7,6 @@
      fprintf(stderr,fmt, args); \
  } while(0)
 
-#include "gui.h"
 #include "calc.h"
 
 #include <Ecore_Evas.h>
@@ -31,6 +30,13 @@ typedef struct {
    Evas_Object    *edje;
 } Gui;
 
+typedef enum {
+   DEFAULT,
+   BASIC,
+   SCI,
+   EDJE
+} Mode;
+
 typedef struct {
    Mode            mode;
    char           *theme;
@@ -43,5 +49,5 @@ typedef struct {
 
 void            equate_init(Equate * equate);
 void            equate_quit();
-void            equate_init_gui(Equate * equate, int argc, char **argv);
-void            equate_quit_gui();
+
+#include "gui.h"

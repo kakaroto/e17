@@ -1,5 +1,7 @@
 #include "Equate.h"
 
+void            draw_ewl(Mode draw_mode);
+
 int             inited = 0;
 
 Ewl_Widget     *main_win;
@@ -270,6 +272,17 @@ equate_quit_gui()
       inited = 0;
       break;
    }
+}
+
+void
+equate_update_gui(Equate * equate)
+{
+   if (calc_mode == equate->conf.mode)
+      if (calc_mode == EDJE)
+         printf("### here we must change theme to %s\n", equate->conf.theme);
+      else
+         printf("### here we must redraw with mode %d\n", equate->conf.mode);
+   calc_mode = equate->conf.mode;
 }
 
 void

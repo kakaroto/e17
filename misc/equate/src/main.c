@@ -59,16 +59,14 @@ int
 gui_listener(const char *key, const Ecore_Config_Type type, const int tag,
              void *data, void *bundle)
 {
-   equate_quit_gui();
    switch (tag) {
    case 0:
       equate.conf.mode = ecore_config_get_int(bundle, key);
       break;
    case 1:
       equate.conf.theme = ecore_config_get_string(bundle, key);
-      break;
    }
-   equate_init_gui(&equate, 0, NULL);
+   equate_update_gui(&equate);
    return 0;
 }
 
@@ -132,12 +130,12 @@ main(int argc, char *argv[], char *env[])
       nextarg++;
    }
 
-   ecore_config_listen(props, "gui_mode", "/settings/mode", gui_listener,
-                       0, NULL);
-   ecore_config_listen(props, "gui_theme", "/settings/theme", gui_listener,
-                       1, NULL);
+   ecore_config_listen(props, "gui_mode", "/settings/mode", gui_listener, 0,
+                       NULL);
+   ecore_config_listen(props, "gui_theme", "/settings/theme", gui_listener, 1,
+                       NULL);
 
-//   equate_init(&equate);
-//   equate_init_gui(&equate, argc, argv);
+   equate_init(&equate);
+   equate_init_gui(&equate, argc, argv);
    return 0;
 }
