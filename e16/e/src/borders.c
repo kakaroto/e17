@@ -970,7 +970,7 @@ ChangeEwinWinpartContents(EWin * ewin, int i)
    EDBUG_RETURN(ret);
 }
 
-void
+static void
 CalcEwinWinpart(EWin * ewin, int i)
 {
    int                 x, y, w, h, ox, oy, max, min;
@@ -2213,98 +2213,101 @@ AddBorderPart(Border * b, ImageClass * iclass, ActionClass * aclass,
    EDBUG_RETURN_;
 }
 
-#define DO_CALC \
-for (i = 0; i < ewin->border->num_winparts; i++) \
-ewin->bits[i].w = -2; \
-for (i = 0; i < ewin->border->num_winparts; i++) \
-if (ewin->bits[i].w == -2) \
-CalcEwinWinpart(ewin, i);
-
-#define FIND_MAX \
-*mw = 0; \
-*mh = 0; \
-for (i = 0; i < ewin->border->num_winparts; i++) \
-{ \
-	if (ewin->border->part[i].keep_for_shade) \
-	{ \
-		if (*mw < (ewin->bits[i].w + ewin->bits[i].x)) \
-			*mw = ewin->bits[i].w + ewin->bits[i].x; \
-				if (*mh < (ewin->bits[i].h + ewin->bits[i].y)) \
-					*mh = ewin->bits[i].h + ewin->bits[i].y; \
-	} \
-}
-
 void
 MinShadeSize(EWin * ewin, int *mw, int *mh)
 {
-   int                 i, p;
+   int                 i, pw, ph, w, h, min_w, min_h;
    int                 leftborderwidth, rightborderwidth;
    int                 topborderwidth, bottomborderwidth;
 
-   *mw = 32;
-   *mh = 32;
+   min_w = 32;
+   min_h = 32;
+
    if (!ewin)
-      EDBUG_RETURN_;
+      goto exit;
+
+   pw = ewin->w;
+   ph = ewin->h;
+
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      ewin->bits[i].w = -2;
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      if (ewin->bits[i].w == -2)
+	 CalcEwinWinpart(ewin, i);
+
    switch (ewin->border->shadedir)
      {
      case 0:
      case 1:
-	p = ewin->w;
 	/* get the correct width, based on the borderparts that */
 	/*are remaining visible */
 	leftborderwidth = rightborderwidth = 0;
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	  {
-	     if (ewin->border->part[i].keep_for_shade)
-	       {
-		  if (ewin->border->border.left - ewin->bits[i].x >
-		      leftborderwidth)
-		     leftborderwidth =
-			ewin->border->border.left - ewin->bits[i].x;
-		  if ((ewin->bits[i].x + ewin->bits[i].w) -
-		      (ewin->w - ewin->border->border.right) > rightborderwidth)
-		     rightborderwidth =
-			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
-							       ewin->border->
-							       border.right);
-	       }
+	     if (!ewin->border->part[i].keep_for_shade)
+		continue;
+
+	     w = ewin->border->border.left - ewin->bits[i].x;
+	     if (leftborderwidth < w)
+		leftborderwidth = w;
+
+	     w = ewin->bits[i].x + ewin->bits[i].w -
+		(ewin->w - ewin->border->border.right);
+	     if (rightborderwidth < w)
+		rightborderwidth = w;
 	  }
 	ewin->w = rightborderwidth + leftborderwidth;
-	DO_CALC;
-	FIND_MAX;
-	ewin->w = p;
-	DO_CALC;
 	break;
      case 2:
      case 3:
-	p = ewin->h;
 	topborderwidth = bottomborderwidth = 0;
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	  {
-	     if (ewin->border->part[i].keep_for_shade)
-	       {
-		  if (ewin->border->border.top - ewin->bits[i].y >
-		      topborderwidth)
-		     topborderwidth =
-			ewin->border->border.top - ewin->bits[i].y;
-		  if ((ewin->bits[i].y + ewin->bits[i].h) -
-		      (ewin->h - ewin->border->border.bottom) >
-		      bottomborderwidth)
-		     bottomborderwidth =
-			(ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
-							       ewin->border->
-							       border.bottom);
-	       }
+	     if (!ewin->border->part[i].keep_for_shade)
+		continue;
+
+	     h = ewin->border->border.top - ewin->bits[i].y;
+	     if (topborderwidth < h)
+		topborderwidth = h;
+
+	     h = ewin->bits[i].y + ewin->bits[i].h -
+		(ewin->h - ewin->border->border.bottom);
+	     bottomborderwidth = h;
 	  }
 	ewin->h = bottomborderwidth + topborderwidth;
-	DO_CALC;
-	FIND_MAX;
-	ewin->h = p;
-	DO_CALC;
 	break;
      default:
 	break;
      }
+
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      ewin->bits[i].w = -2;
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      if (ewin->bits[i].w == -2)
+	 CalcEwinWinpart(ewin, i);
+
+   min_w = 0;
+   min_h = 0;
+   for (i = 0; i < ewin->border->num_winparts; i++)
+     {
+	if (!ewin->border->part[i].keep_for_shade)
+	   continue;
+
+	w = ewin->bits[i].x + ewin->bits[i].w;
+	if (min_w < w)
+	   min_w = w;
+
+	h = ewin->bits[i].y + ewin->bits[i].h;
+	if (min_h < h)
+	   min_h = h;
+     }
+
+   ewin->w = pw;
+   ewin->h = ph;
+
+ exit:
+   *mw = min_w;
+   *mh = min_h;
 }
 
 void

@@ -1752,7 +1752,6 @@ int                 DrawEwinWinpart(EWin * ewin, int i);
 int                 ChangeEwinWinpart(EWin * ewin, int i);
 void                DrawEwin(EWin * ewin);
 int                 ChangeEwinWinpartContents(EWin * ewin, int i);
-void                CalcEwinWinpart(EWin * ewin, int i);
 void                CalcEwinSizes(EWin * ewin);
 EWin               *Adopt(Window win);
 EWin               *AdoptInternal(Window win, Border * border, int type,
