@@ -70,7 +70,6 @@ unsigned char fstate_idx;
 void
 spifconf_init_subsystem(void)
 {
-
     /* Initialize the context list and establish a catch-all "null" context */
     ctx_cnt = 20;
     ctx_idx = 0;
@@ -111,6 +110,9 @@ spifconf_init_subsystem(void)
 unsigned char
 spifconf_register_context(char *name, ctx_handler_t handler)
 {
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(name), SPIF_CAST_C(unsigned char) -1);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(handler), SPIF_CAST_C(unsigned char) -1);
+
     if (strcasecmp(name, "null")) {
         if (++ctx_idx == ctx_cnt) {
             ctx_cnt *= 2;
@@ -129,6 +131,9 @@ spifconf_register_context(char *name, ctx_handler_t handler)
 unsigned char
 spifconf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long line, unsigned char flags)
 {
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(fp), SPIF_CAST_C(unsigned char) -1);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(path), SPIF_CAST_C(unsigned char) -1);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(outfile), SPIF_CAST_C(unsigned char) -1);
 
     if (++fstate_idx == fstate_cnt) {
         fstate_cnt *= 2;
@@ -146,6 +151,7 @@ spifconf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long lin
 unsigned char
 spifconf_register_builtin(char *name, spifconf_func_ptr_t ptr)
 {
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(name), SPIF_CAST_C(unsigned char) -1);
 
     builtins[builtin_idx].name = STRDUP(name);
     builtins[builtin_idx].ptr = ptr;
@@ -160,7 +166,6 @@ spifconf_register_builtin(char *name, spifconf_func_ptr_t ptr)
 unsigned char
 spifconf_register_context_state(unsigned char ctx_id)
 {
-
     if (++ctx_state_idx == ctx_state_cnt) {
         ctx_state_cnt *= 2;
         ctx_state = (ctx_state_t *) REALLOC(ctx_state, sizeof(ctx_state_t) * ctx_state_cnt);
@@ -206,6 +211,7 @@ spifconf_new_var(void)
 static void
 spifconf_free_var(spifconf_var_t *v)
 {
+    ASSERT(!SPIF_PTR_ISNULL(v));
     if (v->var) {
         FREE(v->var);
     }
@@ -220,6 +226,7 @@ spifconf_get_var(const char *var)
 {
     spifconf_var_t *v;
 
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(var), SPIF_NULL_TYPE_C(char *));
     D_CONF(("var == \"%s\"\n", var));
     for (v = spifconf_vars; v; v = v->next) {
         if (!strcmp(v->var, var)) {
@@ -286,6 +293,7 @@ builtin_random(char *param)
     unsigned long n, index;
     static unsigned int rseed = 0;
 
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(param), SPIF_NULL_TYPE_C(char *));
     D_PARSE(("builtin_random(%s) called\n", NONULL(param)));
 
     if (rseed == 0) {
@@ -308,6 +316,7 @@ builtin_exec(char *param)
     FILE *fp;
     int fd;
 
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(param), SPIF_NULL_TYPE_C(char *));
     D_PARSE(("builtin_exec(%s) called\n", NONULL(param)));
 
     Command = (char *) MALLOC(CONFIG_BUFF);
@@ -461,7 +470,7 @@ builtin_version(char *param)
 static char *
 builtin_appname(char *param)
 {
-    char buff[30];
+    char buff[256];
 
     USE_VAR(param);
     D_PARSE(("builtin_appname(%s) called\n", NONULL(param)));
@@ -952,7 +961,7 @@ spifconf_parse(char *conf_name, const char *dir, const char *path)
 static void *
 parse_null(char *buff, void *state)
 {
-
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(buff), SPIF_NULL_TYPE(ptr));
     if (*buff == SPIFCONF_BEGIN_CHAR) {
         return (NULL);
     } else if (*buff == SPIFCONF_END_CHAR) {

@@ -810,7 +810,7 @@ test_str(void)
     teststr = spif_str_new_from_ptr(tmp);
     test2str = spif_str_new_from_ptr("lots of fun");
     spif_str_splice(teststr, 8, 6, test2str);
-    TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "this is lots of fun"));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(teststr, "this is lots of fun")));
     TEST_FAIL_IF(spif_str_get_size(teststr) != 20);
     TEST_FAIL_IF(spif_str_get_len(teststr) != 19);
     spif_str_del(test2str);
@@ -1203,7 +1203,11 @@ test_list(void)
         TEST_BEGIN("SPIF_LIST_REMOVE_AT() macro");
         s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 11);
         TEST_FAIL_IF(!SPIF_STR_ISNULL(s2));
-        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 11);
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 10);
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(s2));
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 9);
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(s2));
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 8);
         TEST_FAIL_IF(!SPIF_STR_ISNULL(s2));
         s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 6);
         TEST_FAIL_IF(SPIF_STR_ISNULL(s2));
@@ -1869,9 +1873,6 @@ main(int argc, char *argv[])
     if ((ret = test_strings()) != 0) {
         return ret;
     }
-    if ((ret = test_hash_functions()) != 0) {
-        return ret;
-    }
     if ((ret = test_snprintf()) != 0) {
         return ret;
     }
@@ -1900,6 +1901,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_regexp()) != 0) {
+        return ret;
+    }
+    if ((ret = test_hash_functions()) != 0) {
         return ret;
     }
 

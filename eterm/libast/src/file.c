@@ -67,6 +67,8 @@ spiftool_temp_file(char *ftemplate, size_t len)
     int fd;
     mode_t m;
 
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(ftemplate), SPIF_CAST_C(int) -1);
+    ASSERT_RVAL(len > 0, SPIF_CAST_C(int) -1);
     if (getenv("TMPDIR")) {
         snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMPDIR"), ftemplate);
     } else if (getenv("TMP")) {

@@ -119,7 +119,10 @@ spif_objpair_new(void)
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    spif_objpair_init(self);
+    if (!spif_objpair_init(self)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(objpair);
+    }
     return self;
 }
 
@@ -140,7 +143,10 @@ spif_objpair_new_from_left(spif_obj_t left)
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    spif_objpair_init_from_left(self, left);
+    if (!spif_objpair_init_from_left(self, left)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(objpair);
+    }
     return self;
 }
 
@@ -161,7 +167,10 @@ spif_objpair_new_from_right(spif_obj_t right)
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    spif_objpair_init_from_right(self, right);
+    if (!spif_objpair_init_from_right(self, right)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(objpair);
+    }
     return self;
 }
 
@@ -184,29 +193,11 @@ spif_objpair_new_from_both(spif_obj_t left, spif_obj_t right)
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    spif_objpair_init_from_both(self, left, right);
+    if (!spif_objpair_init_from_both(self, left, right)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(objpair);
+    }
     return self;
-}
-
-/**
- * Delete an @c objpair instance.
- *
- * This function deletes an instance of an @c objpair.  The done method,
- * spif_objpair_done(), is called to free any object resources prior to
- * deallocation of the object itself.
- *
- * @param self The @c objpair instance to be deleted.
- * @return     #TRUE if successful, #FALSE otherwise.
- *
- * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
- * @ingroup DOXGRP_OBJPAIR
- */
-spif_bool_t
-spif_objpair_del(spif_objpair_t self)
-{
-    spif_objpair_done(self);
-    SPIF_DEALLOC(self);
-    return TRUE;
 }
 
 /**
@@ -224,6 +215,7 @@ spif_objpair_del(spif_objpair_t self)
 spif_bool_t
 spif_objpair_init(spif_objpair_t self)
 {
+    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(objpair));
     return TRUE;
 }
@@ -335,6 +327,28 @@ spif_objpair_done(spif_objpair_t self)
 }
 
 /**
+ * Delete an @c objpair instance.
+ *
+ * This function deletes an instance of an @c objpair.  The done method,
+ * spif_objpair_done(), is called to free any object resources prior to
+ * deallocation of the object itself.
+ *
+ * @param self The @c objpair instance to be deleted.
+ * @return     #TRUE if successful, #FALSE otherwise.
+ *
+ * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
+ * @ingroup DOXGRP_OBJPAIR
+ */
+spif_bool_t
+spif_objpair_del(spif_objpair_t self)
+{
+    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
+    spif_objpair_done(self);
+    SPIF_DEALLOC(self);
+    return TRUE;
+}
+
+/**
  * Render an @c objpair as a text string.
  *
  * This function displays an @c objpair as a string using a
@@ -388,6 +402,7 @@ spif_objpair_comp(spif_objpair_t self, spif_objpair_t other)
 {
     spif_cmp_t c;
 
+    SPIF_OBJ_COMP_CHECK_NULL(self, other);
     c = SPIF_OBJ_COMP(self->left, other->left);
     if (SPIF_CMP_IS_EQUAL(c)) {
         c = SPIF_OBJ_COMP(self->right, other->right);
@@ -411,6 +426,7 @@ spif_objpair_comp(spif_objpair_t self, spif_objpair_t other)
 spif_objpair_t
 spif_objpair_dup(spif_objpair_t self)
 {
+    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), SPIF_NULL_TYPE(objpair));
     return spif_objpair_new_from_both(self->left, self->right);
 }
 
@@ -429,6 +445,7 @@ spif_objpair_dup(spif_objpair_t self)
 spif_classname_t
 spif_objpair_type(spif_objpair_t self)
 {
+    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), SPIF_NULL_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(SPIF_OBJ(self));
 }
 

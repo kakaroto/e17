@@ -191,7 +191,6 @@ static spif_bool_t
 spif_linked_list_item_init(spif_linked_list_item_t self)
 {
     ASSERT_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self), FALSE);
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_CLASS_VAR(linked_list_item)));
     self->data = SPIF_NULL_TYPE(obj);
     self->next = SPIF_NULL_TYPE(linked_list_item);
     return TRUE;
@@ -237,7 +236,7 @@ spif_linked_list_item_show(spif_linked_list_item_t self, spif_charptr_t name, sp
         spif_str_append_from_ptr(buff, tmp);
     }
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->data)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj));
+        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj) "\n");
     } else {
         buff = SPIF_OBJ_SHOW(self->data, buff, 0);
     }
@@ -273,7 +272,7 @@ spif_linked_list_item_type(spif_linked_list_item_t self)
 }
 
 SPIF_DEFINE_PROPERTY_FUNC(linked_list_item, obj, data);
-SPIF_DEFINE_PROPERTY_FUNC(linked_list_item, linked_list_item, next);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list_item, linked_list_item, next);
 
 
 static spif_linked_list_t
@@ -381,7 +380,7 @@ spif_linked_list_show(spif_linked_list_t self, spif_charptr_t name, spif_str_t b
     spif_str_append_from_ptr(buff, tmp);
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj));
+        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj) "\n");
     } else {
         for (current = self->head, i = 0; current; current = current->next, i++) {
             sprintf(tmp, "item %d", i);
@@ -690,7 +689,7 @@ spif_linked_list_remove_at(spif_linked_list_t self, spif_listidx_t idx)
     }
     self->len--;
     tmp = spif_linked_list_item_get_data(item);
-    spif_linked_list_item_set_data(item, SPIF_NULL_TYPE(obj));
+    item->data = SPIF_NULL_TYPE(obj);
     spif_linked_list_item_del(item);
     return tmp;
 }
@@ -726,7 +725,7 @@ spif_linked_list_to_array(spif_linked_list_t self)
 }
 
 SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list, listidx, len);
-SPIF_DEFINE_PROPERTY_FUNC(linked_list, linked_list_item, head);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list, linked_list_item, head);
 
 
 static spif_linked_list_iterator_t
@@ -857,4 +856,4 @@ spif_linked_list_iterator_next(spif_linked_list_iterator_t self)
 }
 
 SPIF_DEFINE_PROPERTY_FUNC(linked_list_iterator, linked_list, subject);
-SPIF_DEFINE_PROPERTY_FUNC(linked_list_iterator, linked_list_item, current);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list_iterator, linked_list_item, current);

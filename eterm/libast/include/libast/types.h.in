@@ -363,6 +363,18 @@
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
 #define SPIF_NULLSTR_TYPE_C(type)         "{ ((" #type ") NULL) }"
+
+/**
+ * Returns whether or not a generic pointer is NULL.
+ *
+ * This macro returns whether or not a generic pointer is NULL.
+ *
+ * @param p The pointer to test.
+ * @return  #TRUE if NULL, #FALSE otherwise.
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST()
+ */
+#define SPIF_PTR_ISNULL(p)                ((SPIF_CAST(ptr) (p) == SPIF_NULL_TYPE(ptr)) ? (TRUE) : (FALSE))
 /*@}*/
 
 /*@{*/

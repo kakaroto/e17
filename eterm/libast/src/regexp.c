@@ -50,7 +50,10 @@ spif_regexp_new(void)
     spif_regexp_t self;
 
     self = SPIF_ALLOC(regexp);
-    spif_regexp_init(self);
+    if (!spif_regexp_init(self)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(regexp);
+    }
     return self;
 }
 
@@ -60,7 +63,10 @@ spif_regexp_new_from_str(spif_str_t other)
     spif_regexp_t self;
 
     self = SPIF_ALLOC(regexp);
-    spif_regexp_init_from_str(self, other);
+    if (!spif_regexp_init_from_str(self, other)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(regexp);
+    }
     return self;
 }
 
@@ -70,22 +76,20 @@ spif_regexp_new_from_ptr(spif_charptr_t other)
     spif_regexp_t self;
 
     self = SPIF_ALLOC(regexp);
-    spif_regexp_init_from_ptr(self, other);
+    if (!spif_regexp_init_from_ptr(self, other)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(regexp);
+    }
     return self;
-}
-
-spif_bool_t
-spif_regexp_del(spif_regexp_t self)
-{
-    spif_regexp_done(self);
-    SPIF_DEALLOC(self);
-    return TRUE;
 }
 
 spif_bool_t
 spif_regexp_init(spif_regexp_t self)
 {
-    spif_str_init(SPIF_STR(self));
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
+    if (!spif_str_init(SPIF_STR(self))) {
+        return FALSE;
+    }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
     self->data = SPIF_NULL_TYPE(ptr);
     spif_regexp_set_flags(self, SPIF_NULL_TYPE(charptr));
@@ -95,7 +99,10 @@ spif_regexp_init(spif_regexp_t self)
 spif_bool_t
 spif_regexp_init_from_str(spif_regexp_t self, spif_str_t other)
 {
-    spif_str_init_from_ptr(SPIF_STR(self), SPIF_STR_STR(other));
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
+    if (!spif_str_init_from_ptr(SPIF_STR(self), SPIF_STR_STR(other))) {
+        return FALSE;
+    }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
     self->data = SPIF_NULL_TYPE(ptr);
     spif_regexp_set_flags(self, "");
@@ -105,7 +112,10 @@ spif_regexp_init_from_str(spif_regexp_t self, spif_str_t other)
 spif_bool_t
 spif_regexp_init_from_ptr(spif_regexp_t self, spif_charptr_t other)
 {
-    spif_str_init_from_ptr(SPIF_STR(self), other);
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
+    if (!spif_str_init_from_ptr(SPIF_STR(self), other)) {
+        return FALSE;
+    }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
     self->data = SPIF_NULL_TYPE(ptr);
     spif_regexp_set_flags(self, "");
@@ -115,6 +125,7 @@ spif_regexp_init_from_ptr(spif_regexp_t self, spif_charptr_t other)
 spif_bool_t
 spif_regexp_done(spif_regexp_t self)
 {
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
     spif_str_done(SPIF_STR(self));
     if (self->data != SPIF_NULL_TYPE(ptr)) {
         FREE(self->data);
@@ -123,23 +134,13 @@ spif_regexp_done(spif_regexp_t self)
     return TRUE;
 }
 
-spif_regexp_t
-spif_regexp_dup(spif_regexp_t orig)
+spif_bool_t
+spif_regexp_del(spif_regexp_t self)
 {
-    spif_regexp_t self;
-
-    REQUIRE_RVAL(!SPIF_REGEXP_ISNULL(orig), FALSE);
-
-    self = spif_regexp_new_from_str(SPIF_STR(self));
-    self->flags = orig->flags;
-    spif_regexp_compile(self);
-    return self;
-}
-
-spif_cmp_t
-spif_regexp_comp(spif_regexp_t self, spif_regexp_t other)
-{
-    return SPIF_OBJ_COMP(self, other);
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
+    spif_regexp_done(self);
+    SPIF_DEALLOC(self);
+    return TRUE;
 }
 
 spif_str_t
@@ -165,15 +166,37 @@ spif_regexp_show(spif_regexp_t self, spif_charptr_t name, spif_str_t buff, size_
     return buff;
 }
 
+spif_cmp_t
+spif_regexp_comp(spif_regexp_t self, spif_regexp_t other)
+{
+    SPIF_OBJ_COMP_CHECK_NULL(self, other);
+    return spif_str_comp(SPIF_STR(self), SPIF_STR(other));
+}
+
+spif_regexp_t
+spif_regexp_dup(spif_regexp_t self)
+{
+    spif_regexp_t tmp;
+
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), SPIF_NULL_TYPE(regexp));
+
+    tmp = spif_regexp_new_from_str(SPIF_STR(self));
+    tmp->flags = self->flags;
+    spif_regexp_compile(tmp);
+    return tmp;
+}
+
 spif_classname_t
 spif_regexp_type(spif_regexp_t self)
 {
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), SPIF_NULL_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
 spif_bool_t
 spif_regexp_compile(spif_regexp_t self)
 {
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
     if (self->data != SPIF_NULL_TYPE(ptr)) {
         FREE(self->data);
     }
@@ -212,6 +235,8 @@ spif_regexp_compile(spif_regexp_t self)
 spif_bool_t
 spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
 {
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(subject), FALSE);
 #if LIBAST_REGEXP_SUPPORT_PCRE
     {
         int rc;
@@ -261,6 +286,8 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
 spif_bool_t
 spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
 {
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(subject), FALSE);
 #if LIBAST_REGEXP_SUPPORT_PCRE
     {
         int rc;
@@ -310,6 +337,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
 int
 spif_regexp_get_flags(spif_regexp_t self)
 {
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), SPIF_CAST_C(int) 0);
     return self->flags;
 }
 
@@ -318,6 +346,7 @@ spif_regexp_set_flags(spif_regexp_t self, spif_charptr_t flagstr)
 {
     spif_charptr_t p;
 
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
 #if LIBAST_REGEXP_SUPPORT_PCRE
     self->flags = 0;
 #elif (LIBAST_REGEXP_SUPPORT_POSIX)

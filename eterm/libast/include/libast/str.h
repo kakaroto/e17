@@ -40,7 +40,7 @@
 #define SPIF_STR_STR(obj)            (SPIF_CONST_CAST(charptr) ((SPIF_STR_ISNULL(obj)) \
                                                                 ? (SPIF_CAST(charptr) "") \
                                                                 : (SPIF_STR(obj)->s)))
-typedef size_t spif_stridx_t;
+typedef spif_int32_t spif_stridx_t;
 
 SPIF_DECL_OBJ(str) {
     SPIF_DECL_PARENT_TYPE(obj);
@@ -87,8 +87,8 @@ extern spif_bool_t spif_str_reverse(spif_str_t);
 extern spif_stridx_t spif_str_rindex(spif_str_t, spif_char_t);
 extern spif_bool_t spif_str_splice(spif_str_t, spif_stridx_t, spif_stridx_t, spif_str_t);
 extern spif_bool_t spif_str_splice_from_ptr(spif_str_t, spif_stridx_t, spif_stridx_t, spif_charptr_t);
-extern spif_str_t spif_str_substr(spif_str_t, spif_int32_t, spif_int32_t);
-extern spif_charptr_t spif_str_substr_to_ptr(spif_str_t, spif_int32_t, spif_int32_t);
+extern spif_str_t spif_str_substr(spif_str_t, spif_stridx_t, spif_stridx_t);
+extern spif_charptr_t spif_str_substr_to_ptr(spif_str_t, spif_stridx_t, spif_stridx_t);
 extern double spif_str_to_float(spif_str_t);
 extern size_t spif_str_to_num(spif_str_t, int);
 extern spif_bool_t spif_str_trim(spif_str_t);

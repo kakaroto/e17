@@ -59,7 +59,10 @@ spif_socket_new(void)
     spif_socket_t self;
 
     self = SPIF_ALLOC(socket);
-    spif_socket_init(self);
+    if (!spif_socket_init(self)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(socket);
+    }
     return self;
 }
 
@@ -69,22 +72,18 @@ spif_socket_new_from_urls(spif_url_t surl, spif_url_t durl)
     spif_socket_t self;
 
     self = SPIF_ALLOC(socket);
-    spif_socket_init_from_urls(self, surl, durl);
+    if (!spif_socket_init_from_urls(self, surl, durl)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(socket);
+    }
     return self;
-}
-
-spif_bool_t
-spif_socket_del(spif_socket_t self)
-{
-    spif_socket_done(self);
-    SPIF_DEALLOC(self);
-    return TRUE;
 }
 
 spif_bool_t
 spif_socket_init(spif_socket_t self)
 {
-    spif_obj_init(SPIF_OBJ(self));
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
+    /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(socket));
     self->fd = -1;
     self->fam = AF_INET;
@@ -101,7 +100,8 @@ spif_socket_init(spif_socket_t self)
 spif_bool_t
 spif_socket_init_from_urls(spif_socket_t self, spif_url_t surl, spif_url_t durl)
 {
-    spif_obj_init(SPIF_OBJ(self));
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
+    /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(socket));
     self->fd = -1;
     self->fam = AF_INET;
@@ -126,6 +126,7 @@ spif_socket_init_from_urls(spif_socket_t self, spif_url_t surl, spif_url_t durl)
 spif_bool_t
 spif_socket_done(spif_socket_t self)
 {
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
     if (self->fd >= 0) {
         spif_socket_close(self);
     }
@@ -146,6 +147,15 @@ spif_socket_done(spif_socket_t self)
         spif_url_del(self->remote_url);
         self->remote_url = SPIF_NULL_TYPE(url);
     }
+    return TRUE;
+}
+
+spif_bool_t
+spif_socket_del(spif_socket_t self)
+{
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
+    spif_socket_done(self);
+    SPIF_DEALLOC(self);
     return TRUE;
 }
 
@@ -203,7 +213,7 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
 spif_cmp_t
 spif_socket_comp(spif_socket_t self, spif_socket_t other)
 {
-    return (self->fd == other->fd);
+    return SPIF_CMP_FROM_INT(self->fd - other->fd);
 }
 
 spif_socket_t
@@ -211,6 +221,7 @@ spif_socket_dup(spif_socket_t self)
 {
     spif_socket_t tmp;
 
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(socket));
     tmp = spif_socket_new();
     if (self->fd >= 0) {
         tmp->fd = dup(self->fd);
@@ -236,13 +247,14 @@ spif_socket_dup(spif_socket_t self)
 spif_classname_t
 spif_socket_type(spif_socket_t self)
 {
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
 spif_bool_t
 spif_socket_open(spif_socket_t self)
 {
-    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
 
     if (!(self->addr)) {
         /* Set family, protocol, and type flags. */
@@ -349,6 +361,7 @@ spif_socket_close(spif_socket_t self)
 {
     int ret;
 
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
     REQUIRE_RVAL(self->fd >= 0, FALSE);
     SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_IOSTATE);
     do {
@@ -369,7 +382,7 @@ spif_socket_check_io(spif_socket_t self)
     static struct timeval tv = { 0, 0 };
     fd_set read_fds, write_fds;
 
-    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
     REQUIRE_RVAL(self->fd >= 0, FALSE);
 
     FD_ZERO(&read_fds);
@@ -402,7 +415,7 @@ spif_socket_accept(spif_socket_t self)
     int newfd;
     spif_socket_t tmp;
 
-    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(socket));
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(socket));
 
     addr = SPIF_ALLOC(sockaddr);
     do {
@@ -436,7 +449,7 @@ spif_socket_send(spif_socket_t self, spif_str_t data)
     int num_written;
     struct timeval tv = { 0, 0 };
 
-    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
     REQUIRE_RVAL(!SPIF_STR_ISNULL(data), FALSE);
 
     len = spif_str_get_len(data);
@@ -493,6 +506,7 @@ spif_socket_recv(spif_socket_t self)
 {
     spif_str_t new_str;
 
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(str));
     new_str = spif_str_new_from_fd(self->fd);
     return new_str;
 }
@@ -502,6 +516,7 @@ spif_socket_set_nbio(spif_socket_t self)
 {
     int flags;
 
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
     REQUIRE_RVAL(self->fd >= 0, FALSE);
 
     /* Set the socket options for non-blocking I/O. */
@@ -547,6 +562,7 @@ spif_socket_clear_nbio(spif_socket_t self)
 {
     int flags;
 
+    ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
     REQUIRE_RVAL(self->fd >= 0, FALSE);
 
     /* Set the socket options for blocking I/O. */
@@ -595,7 +611,10 @@ spif_url_new_from_ipaddr(spif_ipsockaddr_t ipaddr)
     spif_url_t self;
 
     self = SPIF_ALLOC(url);
-    spif_url_init_from_ipaddr(self, ipaddr);
+    if (!spif_url_init_from_ipaddr(self, ipaddr)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(url);
+    }
     return self;
 }
 
@@ -605,6 +624,7 @@ spif_url_init_from_ipaddr(spif_url_t self, spif_ipsockaddr_t ipaddr)
     spif_uint8_t tries;
     spif_hostinfo_t hinfo;
 
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     spif_str_init(SPIF_STR(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     self->proto = SPIF_NULL_TYPE(str);
@@ -639,13 +659,17 @@ spif_url_new_from_unixaddr(spif_unixsockaddr_t unixaddr)
     spif_url_t self;
 
     self = SPIF_ALLOC(url);
-    spif_url_init_from_unixaddr(self, unixaddr);
+    if (!spif_url_init_from_unixaddr(self, unixaddr)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(url);
+    }
     return self;
 }
 
 static spif_bool_t
 spif_url_init_from_unixaddr(spif_url_t self, spif_unixsockaddr_t unixaddr)
 {
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     spif_str_init(SPIF_STR(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     self->proto = SPIF_NULL_TYPE(str);
@@ -671,7 +695,7 @@ spif_url_get_ipaddr(spif_url_t self)
     spif_ipsockaddr_t addr;
     spif_str_t hostname;
 
-    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(ipsockaddr));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(ipsockaddr));
 
     /* We need a hostname of some type to connect to. */
     hostname = SPIF_STR(spif_url_get_host(self));
@@ -709,7 +733,7 @@ spif_url_get_unixaddr(spif_url_t self)
 {
     spif_unixsockaddr_t addr;
 
-    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(unixsockaddr));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(unixsockaddr));
 
     /* No address to look up, just a file path. */
     addr = SPIF_ALLOC(unixsockaddr);
@@ -724,7 +748,7 @@ spif_url_get_portnum(spif_url_t self)
 {
     spif_str_t port_str;
 
-    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(sockport));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(sockport));
 
     /* Return the integer form of the port number for a URL */
     port_str = spif_url_get_port(self);
@@ -742,6 +766,8 @@ spif_socket_get_proto(spif_socket_t self)
     spif_protoinfo_t proto;
     spif_str_t proto_str;
     spif_servinfo_t serv;
+
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
 
     /* If we have a remote URL, use it.  Otherwise, use the local one. */
     url = ((SPIF_URL_ISNULL(self->remote_url)) ? (self->local_url) : (self->remote_url));
@@ -802,4 +828,3 @@ spif_socket_get_proto(spif_socket_t self)
     }
     return TRUE;
 }
-

@@ -36,15 +36,16 @@
 #define SPIF_OBJ_IS_AVL_TREE_NODE(o)            (SPIF_OBJ_IS_TYPE((o), avl_tree_node))
 
 SPIF_DECL_OBJ(avl_tree_node) {
-    spif_obj_t data;
-    spif_int8_t balance;
-    spif_avl_tree_node_t left, right;
+    SPIF_DECL_PROPERTY(obj, data);
+    SPIF_DECL_PROPERTY(int8, balance);
+    SPIF_DECL_PROPERTY(avl_tree_node, left);
+    SPIF_DECL_PROPERTY(avl_tree_node, right);
 };
 
 SPIF_DECL_OBJ(avl_tree) {
     SPIF_DECL_PARENT_TYPE(obj);
-    size_t len;
-    spif_avl_tree_node_t root;
+    SPIF_DECL_PROPERTY(listidx, len);
+    SPIF_DECL_PROPERTY(avl_tree_node, root);
 };
 
 extern spif_vectorclass_t SPIF_VECTORCLASS_VAR(avl_tree);

@@ -49,6 +49,10 @@ memmem(const void *haystack, register size_t haystacklen, const void *needle, re
     register unsigned long i;
     register size_t len = haystacklen - needlelen;
 
+    REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(needlelen > 0, SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(haystacklen > 0, SPIF_NULL_TYPE(ptr));
     for (i = 0; i < len; i++) {
         if (!memcmp(hs + i, n, needlelen)) {
             return (hs + i);
@@ -64,8 +68,7 @@ strnlen(register const char *s, size_t maxlen)
 {
     register size_t n;
 
-    if (!s)
-        return 0;
+    REQUIRE_RVAL(s, SPIF_CAST_C(size_t) 0);
     for (n = 0; *s && n < maxlen; s++, n++);
     return n;
 }
@@ -99,8 +102,11 @@ char *
 strcasestr(const char *haystack, register const char *needle)
 {
     register const char *t;
-    register size_t len = strlen(needle);
+    register size_t len;
 
+    REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    len = strlen(needle);
     for (t = haystack; t && *t; t++) {
         if (!strncasecmp(t, needle, len)) {
             return ((char *) t);
@@ -116,6 +122,7 @@ strcasechr(const char *haystack, register const char needle)
 {
     register const char *t;
 
+    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     for (t = haystack; t && *t; t++) {
         if (tolower(*t) == tolower(needle)) {
             return ((char *) t);
@@ -131,6 +138,8 @@ strcasepbrk(const char *haystack, register const char *needle)
 {
     register const char *t;
 
+    REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     for (t = haystack; t && *t; t++) {
         if (strcasechr(needle, *t)) {
             return ((char *) t);
@@ -146,6 +155,7 @@ strrev(register char *str)
 {
     register int i, j;
 
+    REQUIRE_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     i = strlen(str);
     for (j = 0, i--; i > j; i--, j++) {
         (void) SWAP(str[j], str[i]);
@@ -159,10 +169,11 @@ strrev(register char *str)
 char *
 strsep(char **str, register char *sep)
 {
-
     register char *s = *str;
     char *sptr;
 
+    REQUIRE_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(sep != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     D_STRINGS(("strsep(%s, %s) called.\n", *str, sep));
     sptr = s;
     for (; *s && !strchr(sep, *s); s++);
@@ -390,6 +401,7 @@ spiftool_join(const char *sep, char **slist)
     size_t len, slen;
     char *new_str;
 
+    ASSERT_RVAL(slist != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     if (sep == NULL) {
         sep = "";
     }
@@ -420,6 +432,7 @@ spiftool_get_word(unsigned long index, const char *str)
     char delim = 0;
     register unsigned long i, j, k;
 
+    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     k = strlen(str) + 1;
     if ((tmpstr = (char *) MALLOC(k)) == NULL) {
         libast_print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n", index, str, strerror(errno));
@@ -475,8 +488,7 @@ spiftool_get_pword(unsigned long index, const char *str)
     register const char *tmpstr = str;
     register unsigned long j;
 
-    if (!str)
-        return ((char *) NULL);
+    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     for (; isspace(*tmpstr) && *tmpstr; tmpstr++);
     for (j = 1; j < index && *tmpstr; j++) {
         for (; !isspace(*tmpstr) && *tmpstr; tmpstr++);
@@ -503,6 +515,7 @@ spiftool_num_words(const char *str)
     char delim = 0;
     register unsigned long i;
 
+    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_CAST_C(unsigned long) -1);
     for (i = 0; str[i] && IS_DELIM(str[i]); i++);
     for (; str[i]; cnt++) {
         switch (str[i]) {
@@ -535,7 +548,6 @@ spiftool_num_words(const char *str)
 char *
 spiftool_chomp(char *s)
 {
-
     register char *front, *back;
 
     ASSERT_RVAL(s != NULL, NULL);
@@ -570,6 +582,7 @@ spiftool_downcase_str(char *str)
 {
     register char *tmp;
 
+    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     for (tmp = str; *tmp; tmp++) {
         *tmp = tolower(*tmp);
     }
@@ -582,6 +595,7 @@ spiftool_upcase_str(char *str)
 {
     register char *tmp;
 
+    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     for (tmp = str; *tmp; tmp++) {
         *tmp = toupper(*tmp);
     }
@@ -596,6 +610,7 @@ spiftool_condense_whitespace(char *s)
     register unsigned char gotspc = 0;
     register char *pbuff = s, *pbuff2 = s;
 
+    ASSERT_RVAL(s != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     D_STRINGS(("condense_whitespace(%s) called.\n", s));
     for (; *pbuff2; pbuff2++) {
         if (isspace(*pbuff2)) {
@@ -622,6 +637,7 @@ spiftool_safe_str(register char *str, unsigned short len)
 {
     register unsigned short i;
 
+    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     for (i = 0; i < len; i++) {
         if (iscntrl(str[i])) {
             str[i] = '.';
@@ -634,11 +650,11 @@ spiftool_safe_str(register char *str, unsigned short len)
 void
 spiftool_hex_dump(void *buff, register size_t count)
 {
-
     register unsigned long j, k, l;
     register unsigned char *ptr;
     unsigned char buffr[9];
 
+    ASSERT(buff != SPIF_NULL_TYPE(ptr));
     fprintf(stderr, "  Address  |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
     fprintf(stderr, "-----------+--------+---------+-------------------------+---------\n");
     for (ptr = (unsigned char *) buff, j = 0; j < count; j += 8) {
@@ -663,6 +679,14 @@ spif_cmp_t
 spiftool_version_compare(const char *v1, const char *v2)
 {
     char buff1[128], buff2[128];
+
+    if (SPIF_PTR_ISNULL(v1) && SPIF_PTR_ISNULL(v2)) {
+        return SPIF_CMP_EQUAL;
+    } else if (SPIF_PTR_ISNULL(v1)) {
+        return SPIF_CMP_LESS;
+    } else if (SPIF_PTR_ISNULL(v2)) {
+        return SPIF_CMP_GREATER;
+    }
 
     for (; *v1 && *v2; ) {
         if (isalpha(*v1) && isalpha(*v2)) {

@@ -139,6 +139,7 @@ libast_dprintf(const char *format, ...)
     va_list args;
     int n;
 
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(format), SPIF_CAST_C(int) -1);
     REQUIRE_RVAL(libast_program_name != NULL, 0);
     va_start(args, format);
     n = vfprintf(LIBAST_DEBUG_FD, format, args);
@@ -166,6 +167,7 @@ libast_print_error(const char *fmt, ...)
 {
     va_list arg_ptr;
 
+    ASSERT(!SPIF_PTR_ISNULL(fmt));
     REQUIRE(libast_program_name != NULL);
     va_start(arg_ptr, fmt);
     fprintf(stderr, "%s:  Error:  ", libast_program_name);
@@ -192,6 +194,7 @@ libast_print_warning(const char *fmt, ...)
 {
     va_list arg_ptr;
 
+    ASSERT(!SPIF_PTR_ISNULL(fmt));
     REQUIRE(libast_program_name != NULL);
     va_start(arg_ptr, fmt);
     fprintf(stderr, "%s:  Warning:  ", libast_program_name);
@@ -218,6 +221,7 @@ libast_fatal_error(const char *fmt, ...)
 {
     va_list arg_ptr;
 
+    ASSERT(!SPIF_PTR_ISNULL(fmt));
     if (libast_program_name != NULL) {
         va_start(arg_ptr, fmt);
         fprintf(stderr, "%s:  FATAL:  ", libast_program_name);

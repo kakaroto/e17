@@ -593,3 +593,7 @@ Mon Feb  2 17:22:42 2004                        Michael Jennings (mej)
 
 More cleanups.  And yes, I know "make test" doesn't work.
 ----------------------------------------------------------------------
+Tue Feb  3 18:18:32 2004                        Michael Jennings (mej)
+
+Cleanups are done.  Almost done with the NULL handling for lists too.
+----------------------------------------------------------------------

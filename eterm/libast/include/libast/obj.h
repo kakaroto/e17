@@ -642,8 +642,8 @@
  */
 #define SPIF_OBJ_SHOW_NULL(t, n, b, i, tmp)  do { \
                                                memset(tmp, ' ', (i)); \
-                                               snprintf(tmp + (i), sizeof(tmp) - (i), "(spif_" #t "_t) %s:  " \
-                                                        SPIF_NULLSTR_TYPE(t) "\n", NONULL(n)); \
+                                               snprintf(tmp + (i), sizeof(tmp) - (i), "(spif_" #t "_t) %s:  " SPIF_NULLSTR_TYPE(t) "\n", \
+                                                        NONULL(n)); \
                                                if (SPIF_STR_ISNULL(b)) { \
                                                  (b) = spif_str_new_from_ptr(tmp); \
                                                } else { \

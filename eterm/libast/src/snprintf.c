@@ -14,8 +14,7 @@ static const char cvs_ident[] = "$Id$";
 /* 
  * Shamelessly snarfed from Enlightenment...
  * which shamelessly snarfed from sane... 
- * which shamelessly snarfed from LPR 
- * which probably shamelessly snarfed from....
+ * which shamelessly snarfed from LPR.
  * 
  * Moved comments to end so I can actually read the code.. cleaned out useless
  * junk....
@@ -467,7 +466,7 @@ dopr_outch(int c)
  * following:
  * 
  * a) place your modifications in the Public Domain or otherwise make them
- * libast_freely Available, such as by posting said modifications to Usenet or
+ * Freely Available, such as by posting said modifications to Usenet or
  * an equivalent medium, or placing the modifications on a major archive
  * site such as uunet.uu.net, or by allowing the Copyright Holder to include
  * your modifications in the Standard Version of the Package.

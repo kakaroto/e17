@@ -52,7 +52,10 @@ spif_url_new(void)
     spif_url_t self;
 
     self = SPIF_ALLOC(url);
-    spif_url_init(self);
+    if (!spif_url_init(self)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(url);
+    }
     return self;
 }
 
@@ -62,7 +65,10 @@ spif_url_new_from_str(spif_str_t other)
     spif_url_t self;
 
     self = SPIF_ALLOC(url);
-    spif_url_init_from_str(self, other);
+    if (!spif_url_init_from_str(self, other)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(url);
+    }
     return self;
 }
 
@@ -72,22 +78,20 @@ spif_url_new_from_ptr(spif_charptr_t other)
     spif_url_t self;
 
     self = SPIF_ALLOC(url);
-    spif_url_init_from_ptr(self, other);
+    if (!spif_url_init_from_ptr(self, other)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(url);
+    }
     return self;
-}
-
-spif_bool_t
-spif_url_del(spif_url_t self)
-{
-    spif_url_done(self);
-    SPIF_DEALLOC(self);
-    return TRUE;
 }
 
 spif_bool_t
 spif_url_init(spif_url_t self)
 {
-    spif_str_init(SPIF_STR(self));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
+    if (!spif_str_init(SPIF_STR(self))) {
+        return FALSE;
+    }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     self->proto = SPIF_NULL_TYPE(str);
     self->user = SPIF_NULL_TYPE(str);
@@ -102,7 +106,10 @@ spif_url_init(spif_url_t self)
 spif_bool_t
 spif_url_init_from_str(spif_url_t self, spif_str_t other)
 {
-    spif_str_init_from_ptr(SPIF_STR(self), SPIF_STR_STR(other));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
+    if (!spif_str_init_from_ptr(SPIF_STR(self), SPIF_STR_STR(other))) {
+        return FALSE;
+    }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     self->proto = SPIF_NULL_TYPE(str);
     self->user = SPIF_NULL_TYPE(str);
@@ -118,7 +125,10 @@ spif_url_init_from_str(spif_url_t self, spif_str_t other)
 spif_bool_t
 spif_url_init_from_ptr(spif_url_t self, spif_charptr_t other)
 {
-    spif_str_init_from_ptr(SPIF_STR(self), other);
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
+    if (!spif_str_init_from_ptr(SPIF_STR(self), other)) {
+        return FALSE;
+    }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     self->proto = SPIF_NULL_TYPE(str);
     self->user = SPIF_NULL_TYPE(str);
@@ -134,6 +144,7 @@ spif_url_init_from_ptr(spif_url_t self, spif_charptr_t other)
 spif_bool_t
 spif_url_done(spif_url_t self)
 {
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     if (!SPIF_STR_ISNULL(self->proto)) {
         spif_str_del(self->proto);
         self->proto = SPIF_NULL_TYPE(str);
@@ -163,6 +174,15 @@ spif_url_done(spif_url_t self)
         self->query = SPIF_NULL_TYPE(str);
     }
     spif_str_done(SPIF_STR(self));
+    return TRUE;
+}
+
+spif_bool_t
+spif_url_del(spif_url_t self)
+{
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
+    spif_url_done(self);
+    SPIF_DEALLOC(self);
     return TRUE;
 }
 
@@ -200,7 +220,8 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
 spif_cmp_t
 spif_url_comp(spif_url_t self, spif_url_t other)
 {
-    return (self == other);
+    SPIF_OBJ_COMP_CHECK_NULL(self, other);
+    return spif_str_comp(SPIF_STR(self), SPIF_STR(other));
 }
 
 spif_url_t
@@ -208,6 +229,7 @@ spif_url_dup(spif_url_t self)
 {
     spif_url_t tmp;
 
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(url));
     tmp = spif_url_new_from_str(SPIF_STR(self));
     tmp->proto = spif_str_dup(self->proto);
     tmp->user = spif_str_dup(self->user);
@@ -222,6 +244,7 @@ spif_url_dup(spif_url_t self)
 spif_classname_t
 spif_url_type(spif_url_t self)
 {
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -239,6 +262,7 @@ spif_url_parse(spif_url_t self)
     const char *s = SPIF_STR_STR(SPIF_STR(self));
     const char *pstr, *pend, *ptmp;
 
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     pstr = s;
 
     /* Check for "proto:" at the beginning. */
@@ -338,6 +362,7 @@ spif_url_unparse(spif_url_t self)
 {
     spif_str_t tmp_str;
 
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     tmp_str = spif_str_new_from_buff(SPIF_NULL_TYPE(charptr), 128);
 
     /* First, proto followed by a colon. */
