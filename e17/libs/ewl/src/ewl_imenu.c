@@ -74,11 +74,11 @@ void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	 */
 	if (EWL_MENU_ITEM(w)->inmenu) {
 		ewl_floater_set_position(EWL_FLOATER(menu->base.popup),
-					 CURRENT_W(w), 0);
+				 ewl_object_current_w_get(EWL_OBJECT(w)), 0);
 	}
 	else {
 		ewl_floater_set_position(EWL_FLOATER(menu->base.popup), 0,
-					 CURRENT_H(w));
+				 ewl_object_current_h_get(EWL_OBJECT(w)));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
