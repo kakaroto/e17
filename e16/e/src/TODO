@@ -3,7 +3,7 @@ raster: 	must update dox docs fully
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 cK              E freezes when I use click-to-focus and select an item from Ganymede's pulldowns.  
-mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
+mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier -- this causes kfm and kpanel to exist over/under/etc apps and not have the arrange code know where the windows are.
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
