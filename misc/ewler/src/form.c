@@ -9,10 +9,10 @@
 #include "widgets.h"
 #include "form.h"
 #include "form_file.h"
-#include "project.h"
 #include "inspector.h"
 #include "selected.h"
 #include "layout.h"
+#include "project.h"
 
 Ecore_List *forms;
 static int widget_selected = 0;
@@ -55,6 +55,9 @@ __destroy_form( Ewl_Widget *w, void *ev_data, void *user_data )
 	if( form->dirty ) {
 		/* manufacture save/ok/cancel dialog */
 	}
+
+	if( !form->has_been_saved )
+		project_remove_file( form->filename );
 
 	FREE( form->filename );
 	ecore_list_destroy( form->selected );
@@ -414,7 +417,7 @@ form_new( void )
 	form = ALLOC(Ewler_Form);
 	form->filename = strdup( buf );
 
-	project_add_form( form->filename );
+	project_add_file( form->filename );
 
 	form->window = ewl_window_new();
 	ewl_window_set_title( EWL_WINDOW(form->window), form->filename );
@@ -450,13 +453,6 @@ form_new( void )
 	ewl_widget_set_data( form->overlay, "unsizable", (void *) 1 );
 	ewl_widget_show( form->overlay );
 
-#if 0
-	form->selector = ewler_selected_new( form->overlay );
-	ewl_callback_call( form->selector, EWL_CALLBACK_DESELECT );
-	ewl_object_set_preferred_size( EWL_OBJECT(form->selector), 800, 600 );
-	ewl_widget_show( form->selector );
-#endif
-
 	form->selected = ecore_list_new();
 	form->elements = ecore_hash_new( ecore_str_hash, ecore_str_compare );
 	form->elements_rev =
@@ -478,16 +474,20 @@ __save_form_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 	FILE *fptr;
 	char *filename = ev_data;
 	Ewler_Form *form = user_data;
+	char *title;
 
 	if( filename ) {
 		if( (fptr = fopen( filename, "w" )) ) {
 			fclose( fptr );
 
+			if( (title = project_set_file( form->filename, filename )) == NULL )
+				return;
+
 			FREE(form->filename);
 			form->filename = strdup( filename );
 
 			form->has_been_saved = 1;
-			ewl_window_set_title( EWL_WINDOW(form->window), form->filename );
+			ewl_window_set_title( EWL_WINDOW(form->window), title );
 			form_save_file( form, 0 );
 			ewl_widget_destroy( w->parent );
 		} else
@@ -500,6 +500,8 @@ __save_form_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 void
 form_save_file( Ewler_Form *form, int save_as )
 {
+	char *path;
+
 	if( !form )
 		form = inspector_get_form();
 
@@ -511,6 +513,10 @@ form_save_file( Ewler_Form *form, int save_as )
 			ewl_widget_show( window );
 
 			dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_SAVE );
+
+			if( (path = project_get_path()) )
+				ewl_filedialog_set_directory( EWL_FILEDIALOG(dialog), path );
+
 			ewl_container_append_child( EWL_CONTAINER(window), dialog );
 			ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
 													 __save_form_cb, form );
@@ -656,6 +662,9 @@ ewler_forms_close( void )
 			if( form->dirty )
 				fprintf( stderr, "closing a dirty form\n" );
 
+			if( !form->has_been_saved )
+				project_remove_file( form->filename );
+
 			FREE( form->filename );
 			ewl_widget_destroy( form->window );
 			FREE( form );
@@ -663,6 +672,20 @@ ewler_forms_close( void )
 
 		ecore_list_destroy( forms );
 	}
+}
+
+int
+form_is_open( char *filename )
+{
+	Ewler_Form *form;
+
+	ecore_list_goto_first( forms );
+
+	while( (form = ecore_list_next(forms)) )
+		if( !strcmp( form->filename, filename ) )
+			return 1;
+
+	return 0;
 }
 
 void

@@ -12,9 +12,9 @@ ewler_SOURCES = \
 	form_file.c form_file.h \
 	inspector.c inspector.h \
 	main.c \
-	project.c project.h \
 	selected.c selected.h \
 	widgets.c widgets.h \
+	project.c project.h \
 	layout.c
 
 ewler_LDADD = @ewl_libs@ @xml2_libs@

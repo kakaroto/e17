@@ -14,7 +14,7 @@ char *active_tool = NULL;
 extern void
 __destroy_main_window( Ewl_Widget *w, void *ev_data, void *user_data );
 
-static void
+void
 __destroy_dialog( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Ewl_Widget *dialog = user_data;
@@ -31,13 +31,18 @@ __create_new_form( Ewl_Widget *w, void *ev_data, void *user_data )
 static void
 __create_new_project( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	project_new_dialog();
+	project_new();
 }
 
 static void
 __open_project( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	project_open_dialog();
+}
+
+static void
+__project_options( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	project_options_dialog();
 }
 
 static void
@@ -84,6 +89,12 @@ __toggle_inspector( Ewl_Widget *w, void *ev_data, void *user_data )
 		inspector_hide();
 	else
 		inspector_show();
+}
+
+static void
+__toggle_projects( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	projects_toggle();
 }
 
 void
@@ -144,6 +155,12 @@ ewler_menu_init( Ewl_Widget *main_layout )
 											 __open_project, NULL );
 	ewl_widget_show( menu_item );
 
+	menu_item = ewl_menu_item_new( NULL, "Project Options..." );
+	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+											 __project_options, NULL );
+	ewl_widget_show( menu_item );
+
 	menu_item = EWL_WIDGET(ewl_menu_separator_new());
 	ewl_object_set_fill_policy( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
 	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
@@ -181,6 +198,12 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __toggle_inspector, NULL );
+	ewl_widget_show( menu_item );
+
+	menu_item = ewl_menu_item_new( NULL, "Project Overview" );
+	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
+	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+											 __toggle_projects, NULL );
 	ewl_widget_show( menu_item );
 }
 
@@ -287,3 +310,43 @@ ewler_error_dialog( const char *fmt, ... )
 	ewl_widget_show( dialog );
 }
 
+void
+ewler_yesno_dialog( Ewl_Callback_Function yes_cb, Ewl_Callback_Function no_cb,
+										void *user_data, const char *fmt, ... )
+{
+	Ewl_Widget *dialog, *text, *button;
+	static char buf[1024];
+	va_list ap;
+
+	dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
+	ewl_window_set_title( EWL_WINDOW(dialog), "ewler" );
+	ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
+											 __destroy_dialog, dialog );
+	if( no_cb )
+		ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW, no_cb, user_data );
+
+	va_start( ap, fmt );
+	vsnprintf( buf, 1023, fmt, ap );
+	va_end( ap );
+
+	text = ewl_text_new( buf );
+	ewl_object_set_padding( EWL_OBJECT(text), 5, 5, 5, 5 );
+	ewl_container_prepend_child( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
+	ewl_widget_show( text );
+
+	button = ewl_dialog_add_button( EWL_DIALOG(dialog),
+																	EWL_STOCK_OK, EWL_RESPONSE_OK );
+	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
+											 __destroy_dialog, dialog );
+	if( yes_cb )
+		ewl_callback_append( button, EWL_CALLBACK_CLICKED, yes_cb, user_data );
+
+	button = ewl_dialog_add_button( EWL_DIALOG(dialog),
+																	EWL_STOCK_CANCEL, EWL_RESPONSE_CANCEL );
+	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
+											 __destroy_dialog, dialog );
+	if( no_cb )
+		ewl_callback_append( button, EWL_CALLBACK_CLICKED, no_cb, user_data );
+
+	ewl_widget_show( dialog );
+}

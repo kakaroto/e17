@@ -4,6 +4,7 @@
 #include "form.h"
 #include "widgets.h"
 #include "inspector.h"
+#include "project.h"
 
 static Ewl_Widget *main_win;
 static Ewl_Widget *main_layout;
@@ -30,9 +31,6 @@ main( int argc, char *argv[] )
 											 __destroy_main_window, NULL );
 	ewl_object_set_fill_policy( EWL_OBJECT(main_win), EWL_FLAG_FILL_SHRINK );
 	ewl_object_set_minimum_size( EWL_OBJECT(main_win), 300, 400 );
-#if 0
-	ewl_object_set_maximum_size( EWL_OBJECT(main_win), 300, 400 );
-#endif
 	ewl_object_set_preferred_size( EWL_OBJECT(main_win), 300, 400 );
 	ewl_widget_show( main_win );
 
@@ -45,6 +43,8 @@ main( int argc, char *argv[] )
 	ewler_tools_init( main_layout );
 	ewler_forms_init();
 	ewler_inspector_init();
+
+	ewler_projects_init();
 
 	ewl_main();
 
