@@ -324,6 +324,7 @@ MatchEwinToSM(EWin * ewin)
 
    if (GetSMfd() < 0)
       return;
+
    for (i = 0; i < num_match; i++)
      {
 	if ((!matches[i].used))
@@ -385,31 +386,26 @@ MatchEwinToSM(EWin * ewin)
 		   * This seems a bit kludgy to me. (: */
 	       }
 
-	     if (!ICCCM_GetEInfo(ewin))
+	     matches[i].used = 1;
+	     ewin->client.already_placed = 1;
+	     ewin->iconified = matches[i].iconified;
+	     ewin->sticky = matches[i].sticky;
+	     ewin->shaded = matches[i].shaded;
+	     ewin->layer = matches[i].layer;
+	     if (!ewin->sticky)
+		ewin->desktop = matches[i].desktop;
+	     /* if it's NOT (X11R6 and already placed by the client) */
+	     if (!((ewin->client.already_placed) && (ewin->session_id)))
 	       {
-		  matches[i].used = 1;
-		  ewin->client.already_placed = 1;
-		  ewin->iconified = matches[i].iconified;
-		  ewin->sticky = matches[i].sticky;
-		  ewin->shaded = matches[i].shaded;
-		  ewin->layer = matches[i].layer;
-		  if (!ewin->sticky)
-		     ewin->desktop = matches[i].desktop;
-		  /* if it's NOT (X11R6 and already placed by the client) */
-		  if (!((ewin->client.already_placed) && (ewin->session_id)))
-		    {
-		       ewin->client.x =
-			  matches[i].x -
-			  (desks.desk[ewin->desktop].current_area_x * root.w);
-		       ewin->client.y =
-			  matches[i].y -
-			  (desks.desk[ewin->desktop].current_area_y * root.h);
-		       ewin->client.w = matches[i].w;
-		       ewin->client.h = matches[i].h;
-		       EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,
-					 ewin->client.y, ewin->client.w,
-					 ewin->client.h);
-		    }
+		  ewin->client.x = matches[i].x -
+		     (desks.desk[ewin->desktop].current_area_x * root.w);
+		  ewin->client.y = matches[i].y -
+		     (desks.desk[ewin->desktop].current_area_y * root.h);
+		  ewin->client.w = matches[i].w;
+		  ewin->client.h = matches[i].h;
+		  EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,
+				    ewin->client.y, ewin->client.w,
+				    ewin->client.h);
 	       }
 	     break;
 	  }
@@ -455,7 +451,6 @@ autosave(void)
 }
 
 #ifndef HAVE_X11_SM_SMLIB_H
-static void         LogoutCB(int val, void *data);
 
 void
 SessionInit(void)
@@ -501,7 +496,6 @@ LogoutCB(int val, void *data)
    data = NULL;
 }
 
-static void         CB_SettingsEscape(int val, void *data);
 static void
 CB_SettingsEscape(int val, void *data)
 {
@@ -645,8 +639,15 @@ doSMExit(void *params)
    AUDIO_PLAY("SOUND_EXIT");
    EExit(0);
 }
+
 #else /* HAVE_X11_SM_SMLIB_H */
+
 #include <X11/SM/SMlib.h>
+
+/*
+ * NB! If the discard property is revived, the dual use of buf must be fixed.
+ */
+#define USE_DISCARD_PROPERTY 0
 
 static char        *sm_client_id = NULL;
 static SmcConn      sm_conn = NULL;
@@ -654,20 +655,6 @@ static int          sm_fd = -1;
 
 /* True if we are saving state for a doExit("restart") */
 static int          restarting = False;
-
-static void         LogoutCB(int val, void *data);
-static void         set_save_props(SmcConn smc_conn, int master_flag);
-static void         callback_save_yourself2(SmcConn smc_conn,
-					    SmPointer client_data);
-static void         callback_save_yourself(SmcConn smc_conn,
-					   SmPointer client_data,
-					   int save_style, Bool shutdown,
-					   int interact_style, Bool fast);
-static void         callback_die(SmcConn smc_conn, SmPointer client_data);
-static void         callback_save_complete(SmcConn smc_conn,
-					   SmPointer client_data);
-static void         callback_shutdown_cancelled(SmcConn smc_conn,
-						SmPointer client_data);
 
 static void
 set_save_props(SmcConn smc_conn, int master_flag)
@@ -683,19 +670,22 @@ set_save_props(SmcConn smc_conn, int master_flag)
    char               *ecachedir = "-ecachedir";
    char               *e_cache_dir;
    char               *extinitwin = "-ext_init_win";
-   char               *sh = "sh";
-   char               *c = "-c";
    char                buf[512];
    char                priority = 10;
    char                style;
-   int                 n = 0;
+   int                 n;
    SmPropValue         programVal = { 0, NULL };
    SmPropValue         userIDVal = { 0, NULL };
+#if USE_DISCARD_PROPERTY
+   char               *sh = "sh";
+   char               *c = "-c";
    SmPropValue         discardVal[] = {
       {0, NULL},
       {0, NULL},
       {0, NULL}
    };
+   SmProp              discardProp;
+#endif
    SmPropValue         restartVal[] = {
       {0, NULL},
       {0, NULL},
@@ -712,7 +702,6 @@ set_save_props(SmcConn smc_conn, int master_flag)
    SmPropValue         priorityVal = { 0, NULL };
    SmProp              programProp;
    SmProp              userIDProp;
-   SmProp              discardProp;
    SmProp              restartProp;
    SmProp              cloneProp;
    SmProp              styleProp;
@@ -729,10 +718,12 @@ set_save_props(SmcConn smc_conn, int master_flag)
    userIDProp.num_vals = 1;
    userIDProp.vals = &userIDVal;
 
+#if USE_DISCARD_PROPERTY
    discardProp.name = (char *)SmDiscardCommand;
    discardProp.type = (char *)SmLISTofARRAY8;
    discardProp.num_vals = 3;
    discardProp.vals = (SmPropValue *) & discardVal;
+#endif
 
    restartProp.name = (char *)SmRestartCommand;
    restartProp.type = (char *)SmLISTofARRAY8;
@@ -751,14 +742,6 @@ set_save_props(SmcConn smc_conn, int master_flag)
    priorityProp.type = (char *)SmCARD8;
    priorityProp.num_vals = 1;
    priorityProp.vals = (SmPropValue *) & priorityVal;
-
-   props[0] = &programProp;
-   props[1] = &userIDProp;
-   props[2] = &discardProp;
-   props[3] = &restartProp;
-   props[4] = &cloneProp;
-   props[5] = &styleProp;
-   props[6] = &priorityProp;
 
    if (master_flag)
       /* Master WM restarts immediately for a doExit("restart") */
@@ -783,6 +766,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    priorityVal.length = 1;
    priorityVal.value = &priority;
 
+#if USE_DISCARD_PROPERTY
    /* Tell session manager how to clean up our old data */
    Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*.clients.*", sm_file);
 
@@ -791,8 +775,10 @@ set_save_props(SmcConn smc_conn, int master_flag)
    discardVal[1].length = strlen(c);
    discardVal[1].value = c;
    discardVal[2].length = strlen(buf);
-   discardVal[2].value = buf;
+   discardVal[2].value = buf;	/* ??? Also used in restartVal ??? */
+#endif
 
+   n = 0;
    restartVal[n].length = strlen(command);
    restartVal[n++].value = command;
    if (single_screen_mode)
@@ -831,7 +817,18 @@ set_save_props(SmcConn smc_conn, int master_flag)
    /* SM specs require SmCloneCommand excludes "-smid" option */
    cloneProp.num_vals = restartProp.num_vals - 2;
 
-   SmcSetProperties(smc_conn, sizeof(props) / sizeof(props[0]), props);
+   n = 0;
+   props[n++] = &programProp;
+   props[n++] = &userIDProp;
+#if USE_DISCARD_PROPERTY
+   props[n++] = &discardProp;
+#endif
+   props[n++] = &restartProp;
+   props[n++] = &cloneProp;
+   props[n++] = &styleProp;
+   props[n++] = &priorityProp;
+
+   SmcSetProperties(smc_conn, n, props);
    if (user)
       Efree(user);
 }
@@ -1120,7 +1117,6 @@ SaveSession(int shutdown)
      }
 }
 
-static void         CB_SettingsEscape(int val, void *data);
 static void
 CB_SettingsEscape(int val, void *data)
 {
@@ -1152,6 +1148,7 @@ doSMExit(void *params)
    if (params)
       sscanf(params, "%1000s", s);
 
+   SaveWindowStates();
    if (!params)
       SaveSession(1);
    if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
