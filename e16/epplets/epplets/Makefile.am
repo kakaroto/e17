@@ -6,7 +6,12 @@ if EPPLET_MIXER
 E_Mixer_prog = E-Mixer.epplet
 E_Mixer_sources = E-Mixer.c
 E_Mixer_depend = $(top_srcdir)/api/libepplet.la
+if SGI_AUDIO
+E_Mixer_ldflags = -rpath $(libdir):$(pkglibdir) -laudio
+E_Mixer_defines = -DSGI_AUDIO
+else
 E_Mixer_ldflags = -rpath $(libdir):$(pkglibdir)
+endif
 endif
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
@@ -110,7 +115,7 @@ E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
 E_Mountbox_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
+INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS) $(E_Mixer_defines)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 ABOUT_DOCS = \

@@ -207,11 +207,16 @@ AC_DEFINE_UNQUOTED(EBIN, "$EBIN")
 P_MIXER=
 AC_CHECK_HEADERS(linux/soundcard.h,[P_MIXER=mixer],[
    AC_CHECK_HEADERS(machine/soundcard.h, [P_MIXER=mixer],[
-      AC_CHECK_HEADERS(sys/soundcard.h, [P_MIXER=mixer]) ]) ])
+     AC_CHECK_HEADERS(dmedia/audio.h, [P_MIXER=mixer],[
+      AC_CHECK_HEADERS(sys/soundcard.h, [P_MIXER=mixer]) ]) ]) ])
 AM_CONDITIONAL(EPPLET_MIXER, test "$P_MIXER" = "mixer")
 if test "$P_MIXER" != "mixer"; then
 AC_MSG_WARN([*** \`E-Mixer' applet will not be built ***])
 fi
+
+SGI=
+AC_CHECK_HEADERS(dmedia/audio.h,[SGI=sgi])
+AM_CONDITIONAL(SGI_AUDIO, test "$SGI" = "sgi")
 
 CFLAGS=${CFLAGS--O}
 LDFLAGS=${LDFLAGS--O}
