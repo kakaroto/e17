@@ -639,12 +639,9 @@ Ewl_Fileselector_Data
 *ewl_fileselector_data_new(const char *name, off_t size, time_t time, mode_t mode)
 {
 	Ewl_Fileselector_Data *d;
-	char *n;
-
-	n = strdup(name);
 
 	d = (Ewl_Fileselector_Data *) malloc(sizeof(Ewl_Fileselector_Data));
-	d->name = strdup(n);
+	d->name = strdup(name);
 	d->size = size;
 	d->time = time;
 	d->mode = mode;
