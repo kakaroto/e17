@@ -554,6 +554,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 {
    EWin              **lst, **gwins;
    int                 gnum, num, i, j, screen_snap_dist, odx, ody;
+   static char         last_res = 0;
 
    EDBUG(5, "SnapEwin");
    if (!ewin)
@@ -715,8 +716,14 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
       Efree(lst);
    if ((odx != dx) || (ody != dy))
      {
-	AUDIO_PLAY("SOUND_MOVE_RESIST");
+	if (!last_res)
+	  {
+/*	     AUDIO_PLAY("SOUND_MOVE_RESIST");*/
+	     last_res = 1;
+	  }
      }
+   else
+      last_res = 0;
    *new_dx = dx;
    *new_dy = dy;
    EDBUG_RETURN_;

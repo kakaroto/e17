@@ -1472,3 +1472,11 @@ Wed Sep  8 18:19:45 PDT 1999
 (Mandrake)
 
 apparently I'm still out of sync.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 19:47:28 PDT 1999
+(Raster)
+
+add new samples to brushed metal and disable the move resist sample since its 
+annoying and doesnt work right...
