@@ -371,7 +371,7 @@ void ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
