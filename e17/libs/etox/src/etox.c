@@ -1249,7 +1249,6 @@ void etox_layout(Etox * et)
 		y += line->h;
 	}
 	et->th = y - et->y;
-printf("et->th %f\n", (float)et->th);
 }
 
 Etox_Line *
