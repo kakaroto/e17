@@ -1,4 +1,4 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *table_button = NULL;
 

@@ -1,10 +1,8 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *fd_button = NULL;
-		
 
-void __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
-					void *user_data);
+
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data);
 void __open_file (Ewl_Widget *, void *ev_data, void *user_data);
 

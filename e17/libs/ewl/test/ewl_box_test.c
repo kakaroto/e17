@@ -1,9 +1,6 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *box_button = NULL;
-
-void            __create_box_test_window(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
 
 void
 __destroy_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)

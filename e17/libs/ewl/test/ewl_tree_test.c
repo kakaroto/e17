@@ -1,14 +1,10 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 #define ROWS 10
 #define COLS 4
 #define NEST 3
 
 static Ewl_Widget *tree_button;
-
-void __create_tree_test_window(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-
 
 void
 __destroy_tree_test_window(Ewl_Widget * w, void *ev_data,

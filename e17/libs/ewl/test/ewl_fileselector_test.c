@@ -1,10 +1,7 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *fs_button = NULL;
 
-
-void            __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
-						  void *user_data);
 void            __file_clicked(Ewl_Widget *, void *ev_data, void *user_data);
 
 void

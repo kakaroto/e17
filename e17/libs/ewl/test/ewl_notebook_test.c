@@ -1,9 +1,7 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *notebook_button;
 
-void            __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
-					      void *user_data);
 void            __notebook_append_page(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 void            __notebook_prepend_page(Ewl_Widget * w, void *ev_data,
@@ -62,7 +60,6 @@ __notebook_change_position(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!ewl_radiobutton_is_checked(w))
 		return;
 
-	/*
 	if (w == button_pleft)
 		ewl_notebook_set_tabs_position(user_data, EWL_POSITION_LEFT);
 	else if (w == button_pright)
@@ -71,7 +68,6 @@ __notebook_change_position(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_notebook_set_tabs_position(user_data, EWL_POSITION_TOP);
 	else if (w == button_pbottom)
 		ewl_notebook_set_tabs_position(user_data, EWL_POSITION_BOTTOM);
-	*/
 
 	return;
 	ev_data = NULL;

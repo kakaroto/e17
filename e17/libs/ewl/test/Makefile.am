@@ -7,7 +7,8 @@ INCLUDES		=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@ @ewd_
 bin_PROGRAMS			=	ewl_test
 
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
-ewl_test_SOURCES		=	ewl_test.c \
+ewl_test_SOURCES		=	ewl_test.h \
+					ewl_test.c \
 					ewl_box_test.c \
 					ewl_button_test.c \
 					ewl_entry_test.c \

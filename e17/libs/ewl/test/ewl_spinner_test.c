@@ -1,15 +1,12 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 Ewl_Widget     *tmp_win;
 
 static Ewl_Widget *spinner_button;
 static Ewl_Widget *spinner[4];
 
-void            __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
-					     void *user_data);
-void
-                __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
-						void *user_data);
+void __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
 
 void
 __destroy_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)

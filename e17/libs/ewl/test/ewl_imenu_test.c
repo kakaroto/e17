@@ -1,9 +1,7 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *imenu_button = NULL;
 
-void            __create_imenu_test_window(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
 void            __item_down(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void

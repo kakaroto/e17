@@ -1,5 +1,4 @@
-#include <Ewl.h>
-#include <ewl-config.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *image_button;
 Ewl_Widget     *image_win;
@@ -9,11 +8,6 @@ Ewd_DList      *images;
 Ewl_Widget     *entry_path;
 Ewl_Widget	*note_box;
 Ewl_Widget	*note;
-
-
-void            __create_image_test_window(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
-
 
 void
 __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)

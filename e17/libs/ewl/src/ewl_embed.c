@@ -271,7 +271,7 @@ void __ewl_embed_configure(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	printf("EWL Embedded Object configured at (%d, %d) and %u x %u\n",
+	printf("EWL Embedded Object configured at (%d, %d) and %d x %d\n",
 			ewl_object_get_current_x(EWL_OBJECT(w)),
 			ewl_object_get_current_y(EWL_OBJECT(w)),
 			ewl_object_get_current_w(EWL_OBJECT(w)),

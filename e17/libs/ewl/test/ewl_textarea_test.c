@@ -1,4 +1,4 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static char    *long_text =
 	"This is a long string to test\n"
@@ -49,10 +49,6 @@ static char    *long_text =
 	"now be repeated to do a little stress testing.";
 
 static Ewl_Widget *textarea_button;
-
-void            __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
-					      void *user_data);
-
 
 void
 __destroy_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)

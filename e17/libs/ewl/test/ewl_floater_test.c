@@ -1,9 +1,6 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *floater_button = NULL;
-
-void            __create_floater_test_window(Ewl_Widget * w, void *ev_data,
-					     void *user_data);
 
 void
 __destroy_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)

@@ -1,10 +1,6 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *seeker_button;
-
-void __create_seeker_test_window(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-
 
 void
 __destroy_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)

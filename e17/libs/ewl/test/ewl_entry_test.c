@@ -1,10 +1,7 @@
-#include <Ewl.h>
+#include "ewl_test.h"
 
 static Ewl_Widget *entry_button;
 static Ewl_Widget *entry[2];
-
-void            __create_entry_test_window(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
 
 void
 __destroy_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
