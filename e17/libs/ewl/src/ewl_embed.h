@@ -21,10 +21,21 @@
 typedef struct Ewl_Embed Ewl_Embed;
 
 /**
+* Typedef and abstract out embedded evas windows
+*/
+typedef void *Ewl_Embed_Evas_Window;
+
+/**
  * @def EWL_EMBED(widget)
  * @brief Typecast a pointer to an Ewl_Embed pointer.
  */
 #define EWL_EMBED(widget) ((Ewl_Embed *) widget)
+
+/**
+* @def EWL_EMBED_EVAS_WINDOW(window)
+* @brief Typecast a pointer to an Evas_Window
+*/
+#define EWL_EMBED_EVAS_WINDOW(window) ((Ewl_Embed_Evas_Window *)window)
 
 /**
  * @struct Ewl_Embed
