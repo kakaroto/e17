@@ -2815,3 +2815,14 @@ New logo in the about dialog.
 Fix broken IPC "save configuration" command.
 Ignore bogus Unmap message causing window to be unmanaged.
 Fix floating window movement (finally, I hope).
+
+-------------------------------------------------------------------------------
+
+Sat May 22 17:20:21 CEST 2004
+(Kim)
+
+Fix non-opaque moving window with transients.
+Don't restrict window placement requests.
+Add Korean config/theme files. Patch from Michael Kim <lavnrose@e.sarang.net>.
+Correct Danish translations file name.
+Some more preparations for UTF8.

@@ -23,7 +23,7 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- Language/font handling is broken when using FT fonts.
+- Language/font handling is broken when using imlib2 to draw text.
 
 - Various segv's.
   Please provide directions to reproduce.
@@ -33,6 +33,9 @@ TODO for E 16.7
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- IPC "save configuration" command is broken.
+  This causes changes made with e16keyedit to be lost after restart.
 
 - Dragging from one virtual desk to another (via edge flip) is broken.
 
