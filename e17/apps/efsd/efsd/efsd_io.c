@@ -163,31 +163,48 @@ read_string(int sockfd, char **s)
 static int     
 write_data(int sockfd, void *data, int size)
 {
-  int result;
+  int             result;
+  struct timeval  t0;
+  struct timeval  t1;
 
   D_ENTER;
 
   if (sockfd < 0)
     D_RETURN_(-1);
 
-  if ( (result = write(sockfd, data, size)) != size)
+  gettimeofday(&t0, NULL);
+
+  for ( ; ; )
     {
-      if (result < 0)
+      if ( (result = write(sockfd, data, size)) != size)
 	{
-	  if (errno == EPIPE)
+	  if (result < 0)
 	    {
-	      D(("Broken pipe in write_data()\n"));
-	    }
-	  else
-	    {
-	      perror("Write error:");
+	      if (errno == EAGAIN)
+		{
+		  gettimeofday(&t1, NULL);
+		  if (t0.tv_sec < t1.tv_sec &&
+		      t0.tv_usec < t1.tv_usec)
+		    {
+		      D_RETURN_(-1);
+		    }
+		}
+	      else if (errno == EPIPE)
+		{
+		  D(("Broken pipe in write_data()\n"));
+		  D_RETURN_(-1);
+		}
+	      else		
+		{
+		  perror("Write error:");
+		  D_RETURN_(-1);
+		}
 	    }
 	}
       else
 	{
-	  D(("Couldn't write all data.\n"));
+	  break;
 	}
-      D_RETURN_(-1);
     }
 
   D_RETURN_(0);  
