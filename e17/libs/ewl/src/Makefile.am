@@ -16,6 +16,7 @@ EWLHEADERS = \
 	ewl_cell.h \
 	ewl_check.h \
 	ewl_checkbutton.h \
+	ewl_colorpicker.h \
 	ewl_combo.h \
 	ewl_config.h \
 	ewl_container.h \
@@ -74,6 +75,7 @@ EWLSOURCES= \
 	ewl_cell.c \
 	ewl_check.c \
 	ewl_checkbutton.c \
+	ewl_colorpicker.c \
 	ewl_combo.c \
 	ewl_config.c \
 	ewl_container.c \
