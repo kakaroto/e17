@@ -29,52 +29,13 @@ void term_tcanvas_glyph_push(Term *term, char c) {
    gl->bg = term->tcanvas->cur_bg;   
    term->tcanvas->changed_rows[term->tcanvas->cur_row] = 1;
    term->tcanvas->cur_col++;
+   
    if(term->tcanvas->cur_col > term->tcanvas->cols) {
       term->tcanvas->cur_col = 0;
       term->tcanvas->cur_row++;
    }
    
-   return;
-   
-   if(term->tcanvas->cur_row > term->tcanvas->scroll_region_end) {
-
-      printf("Scrolling: cur_row=%d, scr_end=%d\n", term->tcanvas->cur_row,term->tcanvas->scroll_region_end);
-      /* we're exhausting the entire scrollback */
-      if(term->tcanvas->cur_row > 
-	 (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-	 printf("Reached end of scroll buffer\n");	 
-	 term->tcanvas->scroll_region_start++;
-	 term->tcanvas->cur_row = 0;
-	 term->tcanvas->scroll_region_end = 1;	 
-      } else {
-	 /* we're simply at the end of the display, we have scrollback */
-	 printf("Reached end of display buffer\n");
-#if 0	 
-	 term_clear_area(term, 1, 1, 80, 24);
-	 term->tcanvas->scroll_region_start = 0;
-	 term->tcanvas->scroll_region_end = 23;      
-	 term->tcanvas->cur_row = term->tcanvas->scroll_region_end;
-	 term->tcanvas->cur_row = 0;
-	 term->tcanvas->cur_col = 0;
-#endif
-	 printf("Current start line: %d\n",term->tcanvas->scroll_region_start);
-	 term->tcanvas->scroll_region_start++;
-	 printf("New start line: %d\n",term->tcanvas->scroll_region_start);
-	 printf("Current end line: %d\n",term->tcanvas->scroll_region_end);
-	 term->tcanvas->scroll_region_end++;
-	 printf("New end line: %d\n",term->tcanvas->scroll_region_end);
-       }
-      
-      if(term->tcanvas->scroll_region_start > 
-	 (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-	 term->tcanvas->scroll_region_start = 0;
-      }
-	{
-	   int i, j = term->tcanvas->scroll_region_start;
-	   for(i = 0; i <= term->tcanvas->scroll_region_end; i++)
-	     term->tcanvas->changed_rows[j++] = 1;
-	}
-   }
+   return;   
 }
 
 char term_tcanvas_data_pop(Term *term) {
@@ -140,7 +101,7 @@ Term_TCanvas *term_tcanvas_new() {
    canvas->canvas_id = 1; /* change later */
    canvas->rows = 24; /* multiply by a number or scrollback */  
    canvas->cols = 80;
-   canvas->scroll_size = 3; /* this means rows * 3 total rows */
+   canvas->scroll_size = 50; /* this means rows * 3 total rows */
    canvas->cur_row = 0;   /* between 0 and rows-1 */
    canvas->cur_col = 0;
    canvas->grid = calloc(canvas->cols * 
@@ -150,7 +111,7 @@ Term_TCanvas *term_tcanvas_new() {
 				 sizeof(int));
    
    canvas->scroll_region_start = 0;
-   canvas->scroll_region_end = canvas->rows;
+   canvas->scroll_region_end = canvas->rows -1;
    
    for(i = 0; i < canvas->rows * canvas->scroll_size; i++)
      canvas->changed_rows[i] = 0;

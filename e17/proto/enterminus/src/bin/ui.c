@@ -51,48 +51,37 @@ void term_redraw(void *data) {
    Term_EGlyph *gl;
    Term_TGlyph *tgl;   
    
-   for(i = 0; i < term->tcanvas->rows; i++) {
-      
+   for(i = 0; i < term->tcanvas->rows; i++) {      
       if(term->tcanvas->changed_rows[i] != 1) {
 	 continue;
       }
-      //printf("I is %d\n",i);
       //printf("Rendering c-row %d  g-row %d\n",i+ term->tcanvas->scroll_region_start,i);
-
-      for(j = 0; j < term->tcanvas->cols; j++) {
-	 
+      for(j = 0; j < term->tcanvas->cols; j++) {	 
 	 tgl = &term->tcanvas->grid[j + 
 				    (term->tcanvas->cols * 
 				     (i+ term->tcanvas->scroll_region_start)
-				     )];
-	 
-	 //printf("Rendering row %d col %d\n",i+ term->tcanvas->scroll_region_start-ig,j);
+				     )];	 
 	 if(tgl->changed != 1) {
-	   continue;
+	    continue;
 	 }
 	 if(tgl->c == '\033') {
 	    printf("Got escape in term_redraw()!\n");
 	    continue;
 	 }
+	 
+	 //printf("i=%d term->tcanvas->scroll_region_start=%d term->tcanvas->rows=%d term->tcanvas->scroll_size=%d\n",i,term->tcanvas->scroll_region_start,term->tcanvas->rows,term->tcanvas->scroll_size);
 
-	 if(i + term->tcanvas->scroll_region_start < (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
+	 if(i + term->tcanvas->scroll_region_start + 1 < (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
 	    gl = &term->grid[j + (term->tcanvas->cols * i)];
-	 } else {
-	    printf("DETECTED OVERFLOW!!! [s: %d, e: %d] [ig=%d]\n",
-		   term->tcanvas->scroll_region_start,
-		   term->tcanvas->scroll_region_end,
-		   ig
-		   );
+	 } else {	    
 	    gl = &term->grid[j + (term->tcanvas->cols * ig)];
 	 }
-
-	 //printf("Current location: [%d, %d]\n",j,i);
+	 
 	 evas_object_text_font_set(gl->text, term->font.face, term->font.size);
 	 c[0] = tgl->c;
 	 c[1] = '\0';
 	 evas_object_text_text_set(gl->text, c);
-	 
-	 
+	 	 
 	 switch(tgl->fg) {
 	  case 0:
 	    evas_object_color_set(gl->text, COLOR0, 255);
@@ -123,18 +112,16 @@ void term_redraw(void *data) {
 	    break;
 
 	 }
-	 
-	 
+	 	
 	 evas_object_layer_set(gl->text,1);
-	 evas_object_move(gl->text,
-			  j*term->font.width,
-			  i*term->font.height);
+	 evas_object_move(gl->text, j*term->font.width, i*term->font.height);
 	 evas_object_show(gl->text);
-	 //printf("showing %c\n",tgl->c);
 	 tgl->changed = 0;
       }
-      if(i + term->tcanvas->scroll_region_start < (term->tcanvas->rows - 1)*term->tcanvas->scroll_size)
-	ig++;
+      if(i + term->tcanvas->scroll_region_start +1 > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
+	 printf("Overflowing: [cur_row=%d] [start: %d, end: %d] [ig=%d]\n",term->tcanvas->cur_row,term->tcanvas->scroll_region_start,term->tcanvas->scroll_region_end,ig);
+	 ig++;
+      }
       term->tcanvas->changed_rows[i] = 0;
    }
 }
@@ -233,7 +220,11 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    Term_TGlyph *tgl;
    /* TODO: Finalize this shit before shipping code out */
    x1--;y1--;x2--;y2--;
-   printf("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start);
+   if(x1 < 0) x1 = 0;
+   if(y2 < 0) x1 = 0;
+   if(x1 < 0) x1 = 0;
+   if(y2 < 0) x1 = 0;   
+   //printf("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start);
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
 	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * (i + term->tcanvas->scroll_region_start))];
@@ -252,14 +243,11 @@ void term_scroll_up(Term *term, int rows) {
    int i, j = term->tcanvas->scroll_region_start;
    int x,y;
    Term_TGlyph *gl;   
-   
-   printf("Scrolling\n");
-         
+            
    term->tcanvas->scroll_region_start+= rows;
    term->tcanvas->scroll_region_end+=rows;
    
    /* TODO: check for boundaries */
-   /* This stops the segfault, but makes no sense at all */
    if(term->tcanvas->cur_row >
       (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
       printf("Gone past scroll area max, going back to start\n");
