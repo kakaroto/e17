@@ -198,11 +198,6 @@ entrance_session_user_reset(Entrance_Session * e)
       entrance_auth_free(e->auth);
       e->auth = entrance_auth_new();
       edje_object_signal_emit(e->edje, "In", "EntranceUserEntry");
-      /* FIXME: we shouldn't emit UserAuthFail here, but it gets us back to
-         the beginning */
-      /* Any code that calls user_reset will also need to send the appropriate signal
-         to the edje - we're sending multiple signals and this can cause mayhem. */
-/*      edje_object_signal_emit(e->edje, "EntranceUserFail", ""); */
    }
 }
 
@@ -346,23 +341,21 @@ entrance_session_start_user_session(Entrance_Session * e)
 {
    pid_t pid;
    char buf[PATH_MAX];
-   char *session_key = NULL;
    char *shell = NULL;
-   Entrance_X_Session *exs = NULL;
 
    entrance_auth_setup_environment(e->auth);
-
-   if ((exs = evas_hash_find(e->config->sessions.hash, e->session)))
+    
+   if ((e->session) && (strlen(e->session) > 0))
    {
-      session_key = exs->session;
-      if (!strcmp(session_key, "default"))
+      if (!strcmp(e->session, "default"))
          snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
       else
-         snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
-   }
-   else
+         snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, e->session);
+   } 
+   else {
+      /* Default session */
       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
-   /* Default session */
+   }
 
    /* If an absolute path was specified for the session, use that path
       instead of passing the session name to Xsession */

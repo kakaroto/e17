@@ -317,6 +317,7 @@ entrance_auth_setup_environment(Entrance_Auth * e)
 
    if (!e || !e->pw)
       return;
+   clearenv();
    e->env = environ;
    setenv("XAUTHORITY", buf, 1);
    setenv("TERM", "vt100", 0);  // TERM=linux?
