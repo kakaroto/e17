@@ -10,6 +10,10 @@
 #include "utils.h"
 #include "callbacks.h"
 
+static Ewl_Widget *_fd_win = NULL;
+static void file_dialog_cancel(Ewl_Widget *row, void *ev_data, void *user_data);
+static void file_dialog_ok(Ewl_Widget *row, void *ev_data, void *user_data);
+
 int _eplayer_seek_timer(void *data);
 
 typedef enum {
@@ -442,6 +446,7 @@ void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
 {
 
 	ewl_widget_destroy(w);
+	_fd_win = NULL;
 
 	return;
 	ev_data = NULL;
@@ -451,32 +456,36 @@ void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
 /* File Dialog to add files, thanx to EWL */
 EDJE_CB(playlist_add) {
 
-	Ewl_Widget *fd_win;
-	Ewl_Widget *fd;
-	Ewl_Widget *vbox;
-
+    Ewl_Widget *fd_win = NULL;
+    Ewl_Widget *fd = NULL;
+    Ewl_Widget *vbox = NULL;
+    if(!_fd_win)
+    {
 	fd_win = ewl_window_new();
 	ewl_window_set_title(EWL_WINDOW(fd_win), "Eplayer Add File...");
-  ewl_window_set_name(EWL_WINDOW(fd_win), "Eplayer Add File...");
-  ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
-  ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
+	ewl_window_set_name(EWL_WINDOW(fd_win), "Eplayer Add File...");
+	ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
+	ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
 	
-  ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
+	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
 			destroy_ewl_filedialog, NULL);
-  ewl_widget_show(fd_win);
 	
-  vbox = ewl_vbox_new ();
-  ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+	vbox = ewl_vbox_new ();
+	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
-  ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
-  ewl_widget_show (vbox);
+	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
+	ewl_widget_show (vbox);
 
 	fd = ewl_filedialog_new(fd_win, EWL_FILEDIALOG_TYPE_OPEN,
-			report);
+			file_dialog_ok, file_dialog_cancel);
 
-  ewl_container_append_child(EWL_CONTAINER(vbox), fd);
-  ewl_widget_show(fd);
+	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+	ewl_widget_show(fd);
+	_fd_win = fd_win;
+	ewl_widget_set_data(_fd_win, "player", player);
+    }
+    ewl_widget_show(_fd_win);
 }
 
 EDJE_CB(playlist_del) {
@@ -485,15 +494,33 @@ EDJE_CB(playlist_del) {
 
 }
 
-void report(Ewl_Widget *row, void *ev_data, void *user_data) {
-	Ewl_Fileselector *fs = user_data;
-	char *file;
+static void 
+file_dialog_ok(Ewl_Widget *w, void *ev_data, void *user_data) {
+    Ewl_Fileselector *fs = user_data;
+    char *file = NULL;
 	
-	file = ewl_fileselector_get_filename (EWL_FILESELECTOR (fs));
-	
-	printf("eplayer file open : %s\n", file);
-	
-	/*
-	playlist_load_file(player->playlist, file, 1);
-	*/
+    if((file = ewl_fileselector_get_filename (EWL_FILESELECTOR (fs))))
+    {
+	if(strlen(file) > 0)
+	{
+	    ePlayer *player = NULL;
+	    printf("eplayer file open : %s(%p)\n", file, fs);
+	    if((player = (ePlayer*)ewl_widget_get_data(_fd_win, "player")))
+	    {
+		printf("fs is (%p)\n", player);
+		printf("BING : %s\n", file);
+#if 0
+		if(playlist_load_file(player->playlist, file, 1))
+		    interface_playlist_item_append(player, evas_list_nth(player->playlist->items, player->playlist->num - 1));
+#endif
+	    }
+	}
+    }
+    if(_fd_win)
+	ewl_widget_hide(_fd_win);
+}
+static void 
+file_dialog_cancel(Ewl_Widget *row, void *ev_data, void *user_data) {
+    if(_fd_win)
+	ewl_widget_hide(_fd_win);
 }
