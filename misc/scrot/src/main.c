@@ -33,7 +33,10 @@ main(int argc,
   Imlib_Image image;
   Imlib_Image thumbnail;
   Imlib_Load_Error err;
-  char *filename;
+  char *filename_im = NULL, *filename_thumb = NULL;
+
+  time_t t;
+  struct tm *tm;
 
   init_parse_options(argc, argv);
 
@@ -59,33 +62,64 @@ main(int argc,
   if (!image)
     gib_eprintf("no image grabbed");
 
+  time(&t); /* Get the time directly after the screenshot */
+  tm = localtime(&t);
+
   imlib_context_set_image(image);
   imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
 
-  filename = im_printf(opt.output_file, NULL, image);
-  gib_imlib_save_image_with_error_return(image, filename, &err);
+  filename_im = im_printf(opt.output_file, tm, NULL, NULL, image);
+  gib_imlib_save_image_with_error_return(image, filename_im, &err);
   if (err)
-    gib_eprintf("Saving to file %s failed\n", filename);
-  if (opt.thumb) {
+    gib_eprintf("Saving to file %s failed\n", filename_im);
+  if (opt.thumb)
+  {
     int cwidth, cheight;
+    int twidth, theight;
 
     cwidth = gib_imlib_image_get_width(image);
     cheight = gib_imlib_image_get_height(image);
+
+    /* Geometry based thumb size */
+    if (opt.thumb_width || opt.thumb_height)
+    {
+      if (!opt.thumb_width)
+      {
+        twidth = cwidth * opt.thumb_height / cheight;
+        theight = opt.thumb_height;
+      }
+      else if (!opt.thumb_height)
+      {
+        twidth = opt.thumb_width;
+        theight = cheight * opt.thumb_width / cwidth;
+      }
+      else
+      {
+        twidth = opt.thumb_width;
+        theight = opt.thumb_height;
+      }
+    }
+    else
+    {
+      twidth = cwidth * opt.thumb / 100;
+      theight = cheight * opt.thumb / 100;
+    }
+
     thumbnail =
       gib_imlib_create_cropped_scaled_image(image, 0, 0, cwidth, cheight,
-                                            cwidth * opt.thumb / 100,
-                                            cheight * opt.thumb / 100, 1);
+                                            twidth, theight, 1);
     if (thumbnail == NULL)
       gib_eprintf("Unable to create scaled Image\n");
-    else {
-      filename = im_printf(opt.thumb_file, NULL, thumbnail);
-      gib_imlib_save_image_with_error_return(thumbnail, filename, &err);
+    else
+    {
+      filename_thumb = im_printf(opt.thumb_file, tm, NULL, NULL, thumbnail);
+      gib_imlib_save_image_with_error_return(thumbnail, filename_thumb, &err);
       if (err)
-        gib_eprintf("Saving thumbnail %s failed\n", filename);
+        gib_eprintf("Saving thumbnail %s failed\n", filename_thumb);
     }
   }
   if (opt.exec)
-    scrot_exec_app(image, filename);
+    scrot_exec_app(image, tm, filename_im, filename_thumb);
   gib_imlib_free_image_and_decache(image);
 
   return 0;
@@ -126,12 +160,12 @@ scrot_grab_shot(void)
 }
 
 void
-scrot_exec_app(Imlib_Image im,
-               char *filename)
+scrot_exec_app(Imlib_Image image, struct tm *tm,
+               char *filename_im, char *filename_thumb)
 {
   char *execstr;
 
-  execstr = im_printf(opt.exec, filename, im);
+  execstr = im_printf(opt.exec, tm, filename_im, filename_thumb, image);
   system(execstr);
   exit(0);
 }
@@ -371,8 +405,9 @@ scrot_get_window(Display * display,
 
 
 char *
-im_printf(char *str,
-          char *filename,
+im_printf(char *str, struct tm *tm,
+          char *filename_im,
+          char *filename_thumb,
           Imlib_Image im)
 {
   char *c;
@@ -381,12 +416,8 @@ im_printf(char *str,
   char strf[4096];
   char *tmp;
   struct stat st;
-  time_t t;
-  struct tm *tm;
 
   ret[0] = '\0';
-  time(&t);
-  tm = localtime(&t);
   strftime(strf, 4095, str, tm);
 
   for (c = strf; *c != '\0'; c++) {
@@ -394,16 +425,20 @@ im_printf(char *str,
       c++;
       switch (*c) {
         case 'f':
-          if (filename)
-            strcat(ret, filename);
+          if (filename_im)
+            strcat(ret, filename_im);
+          break;
+        case 'm': /* t was allready taken, so m as in mini */
+          if (filename_thumb)
+            strcat(ret, filename_thumb);
           break;
         case 'n':
-          if (filename) {
-            tmp = strrchr(filename, '/');
+          if (filename_im) {
+            tmp = strrchr(filename_im, '/');
             if (tmp)
               strcat(ret, tmp + 1);
             else
-              strcat(ret, filename);
+              strcat(ret, filename_im);
           }
           break;
         case 'w':
@@ -415,8 +450,8 @@ im_printf(char *str,
           strcat(ret, buf);
           break;
         case 's':
-          if (filename) {
-            if (!stat(filename, &st)) {
+          if (filename_im) {
+            if (!stat(filename_im, &st)) {
               int size;
 
               size = st.st_size;
@@ -446,7 +481,7 @@ im_printf(char *str,
       c++;
       switch (*c) {
         case 'n':
-          if (filename)
+          if (filename_im)
             strcat(ret, "\n");
           break;
         default:

@@ -102,11 +102,7 @@ scrot_parse_option_array(int argc, char **argv)
            opt.countdown = 1;
            break;
         case 't':
-           opt.thumb = atoi(optarg);
-           if (opt.thumb < 1)
-              opt.thumb = 1;
-           if (opt.thumb > 100)
-              opt.thumb = 100;
+           options_parse_thumbnail(optarg);
            break;
         default:
            break;
@@ -159,6 +155,42 @@ name_thumbnail(char *name)
       sprintf(new_title, "%s-thumb", name);
 
    return new_title;
+}
+
+void
+options_parse_thumbnail(char *optarg)
+{
+   char *tok;
+
+   if (strchr(optarg, 'x')) /* We want to specify the geometry */
+   {
+     tok = strtok(optarg, "x");
+     opt.thumb_width = atoi(tok);
+     tok = strtok(NULL, "x");
+     if (tok)
+     {
+       opt.thumb_width = atoi(optarg);
+       opt.thumb_height = atoi(tok);
+
+       if (opt.thumb_width < 0)
+         opt.thumb_width = 1;
+       if (opt.thumb_height < 0)
+         opt.thumb_height = 1;
+
+       if (!opt.thumb_width && !opt.thumb_height)
+         opt.thumb = 0;
+       else
+         opt.thumb = 1;
+     }
+   }
+   else
+   {
+     opt.thumb = atoi(optarg);
+     if (opt.thumb < 1)
+       opt.thumb = 1;
+     else if (opt.thumb > 100)
+       opt.thumb = 100;
+   }
 }
 
 void
