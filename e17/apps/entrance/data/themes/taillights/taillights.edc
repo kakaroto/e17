@@ -7,6 +7,7 @@
  * Background by Roy Wagner : www.cozmo85.net
  * Various images by Raster : www.rasterman.com
  **************************************************************************/
+#define DEBUG 0
 
 /**
  * include our image { } block elsewhere
@@ -80,6 +81,9 @@ collections {
  */
 #include "parts/login_area.edc"
 
+#if DEBUG
+#include "parts/debug.edc"
+#endif
 	}
 	programs {
 	    program {
@@ -88,6 +92,10 @@ collections {
 		source, "";
 		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
 	    }
+#if DEBUG
+#include "programs/debug_programs.edc"
+#endif
+
 /**
  * handle EntranceSessionList callbacks:
  * minimize, show, etc 
