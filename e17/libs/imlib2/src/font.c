@@ -426,7 +426,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 
    /* figure out the size this text string is going to be */
    __imlib_calc_size(fn, &w, &h, text);
-   tw = w; th = w;
+   tw = w; th = h;
    switch(dir)
      {
      case 0:
