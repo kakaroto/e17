@@ -39,7 +39,7 @@
 
 #define VERSION "1.7"
 
-void log(char *fmt,
+void camlog(char *fmt,
          ...);
 
 char *ftp_host = "www";
@@ -200,15 +200,15 @@ find_palette(int fd,
              struct video_mmap *vid)
 {
   if (try_palette(fd, VIDEO_PALETTE_RGB24, 24)) {
-    log("negotiated palette RGB24\n");
+    camlog("negotiated palette RGB24\n");
     return VIDEO_PALETTE_RGB24;
   }
   if (try_palette(fd, VIDEO_PALETTE_YUV420P, 16)) {
-    log("negotiated palette YUV420P\n");
+    camlog("negotiated palette YUV420P\n");
     return VIDEO_PALETTE_YUV420P;
   }
   if (try_palette(fd, VIDEO_PALETTE_YUV420, 16)) {
-    log("negotiated palette YUV420\n");
+    camlog("negotiated palette YUV420\n");
     return VIDEO_PALETTE_YUV420;
   }
   fprintf(stderr,
@@ -251,7 +251,7 @@ grab_init()
   grab_buf.height = grab_height;
 
   ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
-  log("%s detected\n", grab_cap.name);
+  camlog("%s detected\n", grab_cap.name);
 
   /* special philips features */
   if (sscanf(grab_cap.name, "Philips %d webcam", &type) > 0) {
@@ -261,7 +261,7 @@ grab_init()
     struct pwc_whitebalance wb;
 
     /* philips cam detected, maybe enable special features */
-    log("enabling pwc-specific features\n");
+    camlog("enabling pwc-specific features\n");
 
     ioctl(grab_fd, VIDIOCGWIN, &vwin);
     if (vwin.flags & PWC_FPS_MASK) {
@@ -297,7 +297,7 @@ grab_init()
       wb.manual_red = 65535 * ((float) pwc_wb_red / 100);
       wb.manual_blue = 65535 * ((float) pwc_wb_blue / 100);
     } else {
-      log("unknown pwc white balance mode '%s' ignored\n", pwc_wb_mode);
+      camlog("unknown pwc white balance mode '%s' ignored\n", pwc_wb_mode);
     }
 
     if (ioctl(grab_fd, VIDIOCPWCSAWB, &wb) < 0)
@@ -633,7 +633,7 @@ do_postprocess(char *filename)
   if (grab_postprocess) {
     char buf[4096];
 
-    log("executing postprocessing\n");
+    camlog("executing postprocessing\n");
     snprintf(buf, sizeof(buf), "%s %s", grab_postprocess, filename);
     system(buf);
   }
@@ -668,21 +668,21 @@ archive_jpeg(Imlib_Image im)
       snprintf(buffer, sizeof(buffer), "%s/%s", grab_archive, year);
       if (access(buffer, F_OK) == -1) {
         mkdir(buffer, 0777);
-        log("Created new archive subdir %s\n", buffer);
+        camlog("Created new archive subdir %s\n", buffer);
       }
 
       snprintf(buffer, sizeof(buffer), "%s/%s/%s", grab_archive, year,
                month);
       if (access(buffer, F_OK) == -1) {
         mkdir(buffer, 0777);
-        log("Created new archive subdir %s\n", buffer);
+        camlog("Created new archive subdir %s\n", buffer);
       }
 
       snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s", grab_archive, year,
                month, day);
       if (access(buffer, F_OK) == -1) {
         mkdir(buffer, 0777);
-        log("Created new archive subdir %s\n", buffer);
+        camlog("Created new archive subdir %s\n", buffer);
       }
 
       snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s/%s.%s", grab_archive,
@@ -705,21 +705,21 @@ archive_jpeg(Imlib_Image im)
         snprintf(buffer, sizeof(buffer), "%s/%s", archive_thumbnails_dir, year);
         if (access(buffer, F_OK) == -1) {
           mkdir(buffer, 0777);
-          log("Created new archive subdir %s\n", buffer);
+          camlog("Created new archive subdir %s\n", buffer);
         }
 
         snprintf(buffer, sizeof(buffer), "%s/%s/%s", archive_thumbnails_dir,
                  year, month);
         if (access(buffer, F_OK) == -1) {
           mkdir(buffer, 0777);
-          log("Created new archive subdir %s\n", buffer);
+          camlog("Created new archive subdir %s\n", buffer);
         }
 
         snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s",
                  archive_thumbnails_dir, year, month, day);
         if (access(buffer, F_OK) == -1) {
           mkdir(buffer, 0777);
-          log("Created new archive subdir %s\n", buffer);
+          camlog("Created new archive subdir %s\n", buffer);
         }
 
         snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s/%s.%s",
@@ -741,7 +741,7 @@ archive_jpeg(Imlib_Image im)
 }
 
 void
-log(char *fmt,
+camlog(char *fmt,
     ...)
 {
   va_list args;
@@ -784,52 +784,52 @@ save_image(Imlib_Image image,
   if ((err) || (!image)) {
     switch (err) {
       case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-        log("Error saving image %s - File does not exist", file);
+        camlog("Error saving image %s - File does not exist", file);
         break;
       case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-        log("Error saving image %s - Directory specified for image filename",
+        camlog("Error saving image %s - Directory specified for image filename",
             file);
         break;
       case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-        log("Error saving image %s - No read access to directory", file);
+        camlog("Error saving image %s - No read access to directory", file);
         break;
       case IMLIB_LOAD_ERROR_UNKNOWN:
       case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-        log("Error saving image %s - No Imlib2 loader for that file format",
+        camlog("Error saving image %s - No Imlib2 loader for that file format",
             file);
         break;
       case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-        log("Error saving image %s - Path specified is too long", file);
+        camlog("Error saving image %s - Path specified is too long", file);
         break;
       case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-        log("Error saving image %s - Path component does not exist", file);
+        camlog("Error saving image %s - Path component does not exist", file);
         break;
       case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-        log("Error saving image %s - Path component is not a directory",
+        camlog("Error saving image %s - Path component is not a directory",
             file);
         break;
       case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-        log("Error saving image %s - Path points outside address space",
+        camlog("Error saving image %s - Path points outside address space",
             file);
         break;
       case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-        log("Error saving image %s - Too many levels of symbolic links",
+        camlog("Error saving image %s - Too many levels of symbolic links",
             file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-        log("Error saving image %s - Out of memory", file);
+        camlog("Error saving image %s - Out of memory", file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
         gib_eprintf("While loading %s - Out of file descriptors", file);
         break;
       case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-        log("Error saving image %s - Cannot write to directory", file);
+        camlog("Error saving image %s - Cannot write to directory", file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-        log("Error saving image %s - Cannot write - out of disk space", file);
+        camlog("Error saving image %s - Cannot write - out of disk space", file);
         break;
       default:
-        log
+        camlog
           ("Error saving image %s - Unknown error (%d). Attempting to continue",
            file, err);
         break;
@@ -872,21 +872,21 @@ bw_res_change(int diff)
               "You don't appear to be running any of the resolutions\n");
       fprintf(stderr,
               "req'd by the bandwidth limiter. It has been deactivated.\n");
-      log("method bw_percent killed, not at support'd res\n");
+      camlog("method bw_percent killed, not at support'd res\n");
     }
   }
 
   if (diff > (grab_delay * bw_percent) / 100) {
-    log("bw_res_change Not enough bandwidth.\n");
+    camlog("bw_res_change Not enough bandwidth.\n");
     if (v_force < -1 && v_curr > 0) {
-      log("bw_res_change Reducing image resolution.\n");
+      camlog("bw_res_change Reducing image resolution.\n");
       grab_buf.height = v_height[--v_curr];
       grab_buf.width = v_width[v_curr];
     }
     v_force--;
   } else if (diff < (grab_delay * bw_percent) / 200) {
     if (v_force > 1 && v_curr < 5) {
-      log("bw_res_change Increasing image resolution.\n");
+      camlog("bw_res_change Increasing image resolution.\n");
       grab_buf.height = v_height[++v_curr];
       grab_buf.width = v_width[v_curr];
     }
@@ -913,7 +913,7 @@ ftp_upload(char *local,
   infile = fopen(local, "r");
 
   if (!infile) {
-    log("camE: Couldn't open temp file to upload it\n");
+    camlog("camE: Couldn't open temp file to upload it\n");
     perror("ftp_upload(): ");
     return;
   }
@@ -971,107 +971,107 @@ ftp_upload(char *local,
   /* TODO check error */
   if (ret) {
     fprintf(stderr, "\ncamE: error sending via ftp: ");
-    log("camE error: ");
+    camlog("camE error: ");
     switch (ret) {
       case CURLE_URL_MALFORMAT:
         fprintf(stderr, "Badly formatted ftp host or directory\n");
-        log("Badly formatted ftp host or directory\n");
+        camlog("Badly formatted ftp host or directory\n");
         break;
       case CURLE_URL_MALFORMAT_USER:
         fprintf(stderr, "Badly formatted ftp username\n");
-        log("Badly formatted ftp username\n");
+        camlog("Badly formatted ftp username\n");
         break;
       case CURLE_COULDNT_RESOLVE_PROXY:
         fprintf(stderr, "Couldn't resolve proxy\n");
-        log("Couldn't resolve proxy\n");
+        camlog("Couldn't resolve proxy\n");
         break;
       case CURLE_COULDNT_RESOLVE_HOST:
         fprintf(stderr, "Unable to resolve ftp host\n");
-        log("Unable to resolve ftp host\n");
+        camlog("Unable to resolve ftp host\n");
         break;
       case CURLE_COULDNT_CONNECT:
         fprintf(stderr, "Unable to connect to ftp host\n");
-        log("Unable to connect to ftp host\n");
+        camlog("Unable to connect to ftp host\n");
         break;
       case CURLE_FTP_WEIRD_SERVER_REPLY:
         fprintf(stderr, "Wierd server reply detected\n");
-        log("Wierd server reply detected\n");
+        camlog("Wierd server reply detected\n");
         break;
       case CURLE_FTP_ACCESS_DENIED:
         fprintf(stderr, "Access denied to ftp upload\n");
-        log("Access denied to ftp upload\n");
+        camlog("Access denied to ftp upload\n");
         break;
       case CURLE_FTP_USER_PASSWORD_INCORRECT:
         fprintf(stderr, "Incorrect password for ftp login\n");
-        log("Incorrect password for ftp login\n");
+        camlog("Incorrect password for ftp login\n");
         break;
       case CURLE_FTP_WEIRD_PASS_REPLY:
         fprintf(stderr, "Wierd password reply from server\n");
-        log("Wierd password reply from server\n");
+        camlog("Wierd password reply from server\n");
         break;
       case CURLE_FTP_WEIRD_USER_REPLY:
         fprintf(stderr, "Wierd user reply from server\n");
-        log("Wierd user reply from server\n");
+        camlog("Wierd user reply from server\n");
         break;
       case CURLE_FTP_WEIRD_PASV_REPLY:
         fprintf(stderr, "Wierd passive reply from server\n");
-        log("Wierd passive reply from server\n");
+        camlog("Wierd passive reply from server\n");
         break;
       case CURLE_FTP_CANT_GET_HOST:
         fprintf(stderr, "No route to host\n");
-        log("No route to host\n");
+        camlog("No route to host\n");
         break;
       case CURLE_FTP_COULDNT_SET_BINARY:
         fprintf(stderr, "Couldn't set binary mode\n");
-        log("Couldn't set binary mode\n");
+        camlog("Couldn't set binary mode\n");
         break;
       case CURLE_PARTIAL_FILE:
         fprintf(stderr, "Only partial file uploaded\n");
-        log("Only partial file uploaded\n");
+        camlog("Only partial file uploaded\n");
         break;
       case CURLE_FTP_WRITE_ERROR:
         fprintf(stderr, "Write error\n");
-        log("Write error\n");
+        camlog("Write error\n");
         break;
       case CURLE_FTP_QUOTE_ERROR:
         fprintf(stderr, "Misquoted ftp command - check ftp config\n");
-        log("Misquoted ftp command - check ftp config\n");
+        camlog("Misquoted ftp command - check ftp config\n");
         break;
       case CURLE_WRITE_ERROR:
         fprintf(stderr, "Write error\n");
-        log("Write error\n");
+        camlog("Write error\n");
         break;
       case CURLE_MALFORMAT_USER: /* the user name is illegally specified */
         fprintf(stderr, "Malformatted username\n");
-        log("Malformatted username\n");
+        camlog("Malformatted username\n");
         break;
       case CURLE_FTP_COULDNT_STOR_FILE: /* failed FTP upload */
         fprintf(stderr, "Couldn't STOR the file\n");
-        log("Couldn't STOR the file\n");
+        camlog("Couldn't STOR the file\n");
         break;
       case CURLE_READ_ERROR: /* could open/read from file */
         fprintf(stderr, "Couldn't open temp file\n");
-        log("Couldn't open temp file\n");
+        camlog("Couldn't open temp file\n");
         break;
       case CURLE_OUT_OF_MEMORY:
         fprintf(stderr, "Out of memory\n");
-        log("Out of memory\n");
+        camlog("Out of memory\n");
         break;
       case CURLE_OPERATION_TIMEOUTED: /* the timeout time was reached */
         fprintf(stderr, "Upload timed out\n");
-        log("Upload timed out\n");
+        camlog("Upload timed out\n");
         break;
       case CURLE_FTP_PORT_FAILED: /* FTP PORT operation failed */
         fprintf(stderr, "ftp PORT failed\n");
-        log("ftp PORT failed\n");
+        camlog("ftp PORT failed\n");
         break;
       case CURLE_FILE_COULDNT_READ_FILE:
         fprintf(stderr, "Couldn't read temp file\n");
-        log("Couldn't read temp file\n");
+        camlog("Couldn't read temp file\n");
         break;
       default:
         fprintf(stderr, "unknown error, attempting to continue\n");
-        log("unknown error, attempting to continue\n");
+        camlog("unknown error, attempting to continue\n");
         break;
     }
   }
@@ -1125,13 +1125,13 @@ do_upload(char *file)
   if (ftp_do && (shot_counter >= ftp_upload_every)) {
     if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
         || !upload_blockfile) {
-      log("*** uploading via ftp\n");
+      camlog("*** uploading via ftp\n");
       ftp_upload(file, ftp_file, ftp_tmp);
-      log("shot uploaded\n");
+      camlog("shot uploaded\n");
       if (action_post_upload) {
-        log("running post upload action\n");
+        camlog("running post upload action\n");
         system(action_post_upload);
-        log("post upload action done\n");
+        camlog("post upload action done\n");
       }
     }
     shot_counter = 0;
@@ -1143,7 +1143,7 @@ do_upload(char *file)
 
     if (!upload_blockfile
         || (upload_blockfile && (stat(upload_blockfile, &st) == -1))) {
-      log("uploading via scp\n");
+      camlog("uploading via scp\n");
       snprintf(target_buf, sizeof(target_buf), "%s:%s/%s", scp_target,
                ftp_dir, ftp_tmp);
       snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir, ftp_tmp,
@@ -1156,12 +1156,12 @@ do_upload(char *file)
         ssh_args[4] = cmd_buf;
         if ((upload_successful =
              execvp_with_timeout(scp_timeout, "ssh", ssh_args))) {
-          log("shot uploaded\n");
+          camlog("shot uploaded\n");
 
           if (action_post_upload) {
-            log("running post upload action\n");
+            camlog("running post upload action\n");
             system(action_post_upload);
-            log("post upload action done\n");
+            camlog("post upload action done\n");
           }
         }
       }
@@ -1442,8 +1442,8 @@ main(int argc,
   }
 
   /* print config */
-  log("camE " VERSION " - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
-  log("grabber config: size %dx%d, input %d, norm %d, " "jpeg quality %d\n",
+  camlog("camE " VERSION " - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+  camlog("grabber config: size %dx%d, input %d, norm %d, " "jpeg quality %d\n",
       grab_width, grab_height, grab_input, grab_norm, grab_quality);
 
   imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
@@ -1491,12 +1491,12 @@ main(int argc,
       offline_done = 0;
       time(&start_shot);
       if (action_pre_shot) {
-        log("running pre-shot action\n");
+        camlog("running pre-shot action\n");
         system(action_pre_shot);
-        log("pre-shot action done\n");
+        camlog("pre-shot action done\n");
       }
 
-      log("* taking shot\n");
+      camlog("* taking shot\n");
       /* Prevent camera lag... */
       image = grab_one(&width, &height);
       imlib_context_set_image(image);
@@ -1538,11 +1538,11 @@ main(int argc,
         imlib_context_set_image(image);
       }
 
-      log("** shot taken\n");
+      camlog("** shot taken\n");
       if (action_post_shot) {
-        log("running post-shot action\n");
+        camlog("running post-shot action\n");
         system(action_post_shot);
-        log("post-shot action done\n");
+        camlog("post-shot action done\n");
       }
 
       if (flip_horizontal) {
@@ -1566,9 +1566,9 @@ main(int argc,
                && ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
                    || !upload_blockfile) && check_interface(watch_interface)) {
       /* blockfile was just created */
-      log("uploading offline image\n");
+      camlog("uploading offline image\n");
       offline_done = do_upload(offline_image);
-      log("OFFLINE\n");
+      camlog("OFFLINE\n");
     }
 
     if (!single_shot) {
@@ -1581,9 +1581,9 @@ main(int argc,
           new_delay -= end_shot;
           if (new_delay < 0)
             new_delay = 0;
-          log("Sleeping %d secs (corrected)\n", new_delay);
+          camlog("Sleeping %d secs (corrected)\n", new_delay);
         } else {
-          log("Sleeping %d secs\n", grab_delay);
+          camlog("Sleeping %d secs\n", grab_delay);
         }
       }
       if (upload_successful && (new_delay > 0))
@@ -1617,7 +1617,7 @@ execvp_with_timeout(int timeout,
     alarm(0);
     childpid = 0;
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-      log("exec failed for %s\n", file);
+      camlog("exec failed for %s\n", file);
       return 0;
     }
   }
@@ -1628,7 +1628,7 @@ void
 alarm_handler(int sig)
 {
   signal(sig, SIG_IGN);
-  log("timeout reached, abandoning\n");
+  camlog("timeout reached, abandoning\n");
   if (childpid) {
     kill(childpid, SIGTERM);
   }
