@@ -215,7 +215,7 @@ Epsilon_Exif_Info *
 epsilon_exif_info_get (Epsilon * e)
 {
   FILE *fp = NULL;
-  char *mode = "r";
+  char *mode = "rb";
   Epsilon_Exif_Info *eei = NULL;
 
   if ((fp = fopen (epsilon_file_get (e), mode)) == NULL)
