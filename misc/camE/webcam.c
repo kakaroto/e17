@@ -87,6 +87,7 @@ char *overlay_file = NULL;
 Imlib_Image overlay_im = NULL;
 int overlay_x = 0, overlay_y = 0;
 Imlib_Font title_fn, text_fn;
+char *ftp_pasvmode = "-";
 
 int v_width[5] = { 128, 160, 176, 320, 640 };
 int v_height[5] = { 96, 120, 144, 240, 480 };
