@@ -608,7 +608,7 @@ main(int argc, char **argv)
   printf("exsh: connecting to %s.\n", pipe_name);
 
 #if defined(HAVE_READLINE_HISTORY)
-  *history = NULL;
+  history = NULL;
 
   using_history();
   stifle_history(96);
