@@ -501,7 +501,7 @@ test_list(void)
     spif_list_t list;
     spif_str_t s;
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 3; i++) {
         if (i == 0) {
             TEST_NOTICE("Testing list interface class, linked_list instance:");
             list = SPIF_LIST_NEW(linked_list);
@@ -509,6 +509,8 @@ test_list(void)
             TEST_NOTICE("Testing list interface class, dlinked_list instance:");
             list = SPIF_LIST_NEW(dlinked_list);
         } else if (i == 2) {
+            TEST_NOTICE("Testing list interface class, array instance:");
+            list = SPIF_LIST_NEW(array);
         } else if (i == 3) {
         }
 

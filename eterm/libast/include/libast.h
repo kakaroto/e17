@@ -79,6 +79,7 @@
 #include <libast/tok.h>
 
 #include <libast/list_if.h>
+#include <libast/array.h>
 #include <libast/linked_list.h>
 #include <libast/dlinked_list.h>
 

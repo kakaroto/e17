@@ -43,9 +43,11 @@
 
 /* Cast the NULL pointer to a particular object type. */
 #define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))
+#define SPIF_NULL_CTYPE(type)            (SPIF_CAST_C(type) (NULL))
 
 /* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
 #define SPIF_NULLSTR_TYPE(type)          ("{ ((spif_" #type "_t) NULL) }")
+#define SPIF_NULLSTR_CTYPE(type)         ("{ ((" #type ") NULL) }")
 
 /* Our own version of the sizeof() operator since objects are actually pointers. */
 #define SPIF_SIZEOF_TYPE(type)           (sizeof(SPIF_CONST_TYPE(type)))
