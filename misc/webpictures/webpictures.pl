@@ -37,14 +37,57 @@ sub exit_application {
 
 }
 
+sub set_last_file {
+
+# This should open a filename prompt dialog.
+
+}
+
+sub save_data {
+
+	my $filename = shift;
+
+	$filename = "bubba";
+	if(!$filename) {
+		set_last_file if(!$lastfile);
+		$filename = $lastfile;
+	}
+
+	open OUTFILE,">$filename";
+
+	my $i=0;
+	while($i < $num_list_items) {
+		my $current = $clist->get_text($i,0);
+		print OUTFILE "file: $path/$current\n";
+		if($orientations{$current}) {
+			print OUTFILE "orient: $orientations{$current}\n";
+		} else {
+			print OUTFILE "orient: Left->Right\n";
+		}
+		if($descriptions{$current}) {
+			print OUTFILE "desc:\n$descriptions{$current}\n";
+		} else {
+			print OUTFILE "desc:\n\n";
+		}
+
+		$i++;
+	}
+
+	close OUTFILE;
+
+}
+
+sub save_data_as {
+
+	set_last_file;
+	save_data;
+
+}
+
 sub select_clist {
 	($widget,$row,$col,$ev,$data) = @_;
 
 	$text = $widget->get_text($row,$col);
-#check if its a file to beign with and then if its an image.
-	if (($text !~ /(bmp|gif|jpg|jpeg|png)$/i)) {
-		return;
-	}	
 #print "$text\n";
 	
 	$im = load_image Gtk::Gdk::ImlibImage($path . "/" . $text);
@@ -122,7 +165,7 @@ $vbox->pack_start($menubar,0,1,0);
 $menu = new Gtk::Menu;
 $menu->append(create_menuitem("New"));
 $menu->append(create_menuitem("Open"));
-$menu->append(create_menuitem("Save"));
+$menu->append(create_menuitem("Save",\&save_data));
 $menu->append(create_menuitem("Save As"));
 $menu->append(create_menuitem("Exit",\&exit_application));
 $menu->show;
@@ -223,11 +266,19 @@ $clist->set_column_auto_resize(0, 1);
 $clist->signal_connect('select_row', \&select_clist);
 
 
+$num_list_items = 0;
+
 if($ARGV[0]) {
 	$path = $ARGV[0];
 	foreach(`ls -1 $ARGV[0]`) {
 		chomp;
-		$clist->append($_);
+#check if its a file to begin with and then if its an image.
+		if (/(bmp|gif|jpg|jpeg|png)$/i) {
+			if(-f $path . "/" . $_) {
+				$clist->append($_);
+				$num_list_items++;
+			}
+		}	
 	}
 }
 
