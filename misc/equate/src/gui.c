@@ -92,13 +92,13 @@ static equate_button *buttons;
 void
 update_display(char *text)
 {
-   ewl_text_set_text((Ewl_Text *) display, text);
+   ewl_text_text_set((Ewl_Text *) display, text);
 }
 
 void
 update_eqn_display(char *text)
 {
-   ewl_text_set_text((Ewl_Text *) eqn_disp, text);
+   ewl_text_text_set((Ewl_Text *) eqn_disp, text);
 }
 
 void
