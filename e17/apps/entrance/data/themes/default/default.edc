@@ -649,7 +649,7 @@ collections {
             clip_to, "all_clip";
             description {
                state,    "default" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                rel1 {
                   relative, 0.0  0.0;
                   offset,   12    24;
@@ -678,7 +678,7 @@ collections {
             clip_to, "all_clip";
             description {
                state,    "default" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                rel1 {
                   relative, 0.0  1.0;
                   offset,   0    8;
@@ -701,7 +701,7 @@ collections {
             }
             description {
                state,    "enter_pass" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                rel1 {
                   relative, 0.0  1.0;
                   offset,   0    8;
@@ -730,7 +730,7 @@ collections {
             clip_to, "all_clip";
             description {
                state,    "default" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                visible,  0;
                rel1 {
                   relative, 0.0  1.0;
@@ -754,7 +754,7 @@ collections {
             }
             description {
                state,    "user_fail" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                visible,  1;
                rel1 {
                   relative, 0.0  1.0;
@@ -778,7 +778,7 @@ collections {
             }
             description {
                state,    "user_fail2" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                visible,  0;
                rel1 {
                   relative, 0.0  1.0;
@@ -802,7 +802,7 @@ collections {
             }
             description {
                state,    "pass_fail" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                visible,  1;
                rel1 {
                   relative, 0.0  1.0;
@@ -826,7 +826,7 @@ collections {
             }
             description {
                state,    "pass_fail2" 0.0;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                visible,  0;
                rel1 {
                   relative, 0.0  1.0;
@@ -856,7 +856,7 @@ collections {
             description {
                state,    "default" 0.0;
                min,      128 32;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                rel1 {
                   relative, 0.0  1.0;
                   offset,   0    8;
@@ -1062,7 +1062,7 @@ collections {
             description {
                state,    "default" 0.0;
                min,      128 32;
-               align,    0.5 1.0;
+               align,    0.5 0.0;
                rel1 {
                   relative, 0.0  1.0;
                   offset,   0    8;
