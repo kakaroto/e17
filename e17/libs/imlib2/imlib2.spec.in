@@ -168,3 +168,12 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Sep 12 2000 The Rasterman <raster@rasterman.com>
 - Redo spec file
 
+* Wed Aug 30 2000 Lyle Kempler <kempler@utdallas.edu>
+- Include imlib2-config
+
+* Sat May 20 2000 Lyle Kempler <kempler@utdallas.edu>
+- Fixed problems with requiring imlib2_view
+- Went back to imlib2_view (not imlib2-view)
+
+* Tue Nov 2 1999 Lyle Kempler <kempler@utdallas.edu>
+- Mangled imlib 1.9.8 imlib spec file into imlib2 spec file
