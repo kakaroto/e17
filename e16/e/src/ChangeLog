@@ -4411,3 +4411,15 @@ Sat Mar 25 17:15:37 GMT 2000
 
 I suspect this would be necessary too.
 
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 23:17:57 GMT 2000
+(gilbertt)
+
+Fixed a bug where the winops menu always appeared at the top of the screen,
+if "keep menus onscreen" was selected.
+
+At some point, the menu location calcs ended up before the XQueryPointer, so
+uninitialised values were being used.
+

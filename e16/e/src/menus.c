@@ -272,7 +272,9 @@ void
 ShowMenu(Menu * m, char noshow)
 {
    EWin               *ewin;
-   int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus from appearing offscreen */
+   int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus
+
+						 * from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");
@@ -313,7 +315,6 @@ ShowMenu(Menu * m, char noshow)
 	    && FindItem((char *)mode.button, 0, LIST_FINDBY_POINTER,
 			LIST_TYPE_BUTTON))
 	  {
-	     fprintf(stderr, "setting back to normal\n");
 	     mode.button->state = STATE_NORMAL;
 	     DrawButton(mode.button);
 	  }
@@ -323,6 +324,15 @@ ShowMenu(Menu * m, char noshow)
    GetWinXY(m->items[0]->win, &x, &y);
    GetWinWH(m->items[0]->win, &w, &h);
    GetWinWH(m->win, &mw, &mh);
+
+   if (!mode.button)
+     {
+	int                 dum;
+	Window              rt, ch;
+
+	XQueryPointer(disp, m->win, &rt, &ch, &(mode.x), &(mode.y),
+		      &dum, &dum, (unsigned int *)&dum);
+     }
 
    wx = 0;
    wy = 0;
@@ -340,6 +350,7 @@ ShowMenu(Menu * m, char noshow)
 		wx = root.w - (int)mw - (int)b->border.right;
 	     else
 		wx = mode.x - x - ((int)w / 2);
+
 	     if ((wx - ((int)w / 2)) < 0)
 		wx = (int)b->border.left;
 
@@ -347,18 +358,10 @@ ShowMenu(Menu * m, char noshow)
 		wy = (int)root.h - (int)mh - (int)b->border.bottom;
 	     else
 		wy = mode.y - y - ((int)h / 2);
+
 	     if ((wy - ((int)h / 2) - (int)b->border.top) < 0)
 		wy = (int)b->border.top;
 	  }
-     }
-
-   if (!mode.button)
-     {
-	int                 dum;
-	Window              rt, ch;
-
-	XQueryPointer(disp, m->win, &rt, &ch, &(mode.x), &(mode.y),
-		      &dum, &dum, (unsigned int *)&dum);
      }
 
    if ((mode.x >= 0) && (mode.y >= 0))
