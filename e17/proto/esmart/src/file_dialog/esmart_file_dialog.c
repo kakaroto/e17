@@ -13,8 +13,8 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <errno.h>
-#include <Esmart/container.h>
-#include <Esmart/Esmart_Text_Entry.h>
+#include "../container/container.h"
+#include "../entry/Esmart_Text_Entry.h"
 #include "File_Dialog.h"
 
 #include "../config.h"
