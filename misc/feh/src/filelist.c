@@ -52,7 +52,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 
   if (stat (path, &st))
     {
-      weprintf ("%s - file does not exist", path);
+      weprintf ("%s : ", path);
       return;
     }
   if (S_ISDIR (st.st_mode))

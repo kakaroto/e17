@@ -27,7 +27,7 @@ src/testimages/spears10.jpg src/testimages/spears11.jpg src/testimages/spears12.
 src/testimages/spears13.jpg src/testimages/spears14.jpg src/testimages/spears20.jpg \
 src/testimages/spears21.jpg src/testimages/spears22.jpg src/testimages/pngs/bg.png \
 src/testimages/pngs/bulb.png src/testimages/pngs/globe.png src/testimages/pngs/mail.png \
-src/testimages/pngs/mush.png src/testimages/pngs/paper.png
+src/testimages/pngs/mush.png src/testimages/pngs/paper.png src/testimages/pngs/elogo.png
 
 # `ll -1d src/test*`
 testscripts = \

@@ -19,6 +19,8 @@
  */
 
 #include "feh.h"
+void
+test_func(void);
 
 void
 init_slideshow_mode (void)
@@ -231,4 +233,48 @@ handle_keypress_event (XEvent * ev, Window win)
     {
       winwidget_destroy_all ();
     }
+ /* else if(*kbuf == 'x')
+	test_func();
+	*/
+}
+
+void
+test_func(void)
+{
+    winwidget ret=progwin;
+    int x,y,onoff;
+
+      if (ret->blank_im)
+    {
+      imlib_context_set_image (ret->blank_im);
+      imlib_free_image_and_decache ();
+    }
+
+/*  ret->blank_im = imlib_create_image (ret->w, ret->h); */
+  ret->blank_im = imlib_create_image (80, 80);
+  imlib_context_set_image (ret->blank_im);
+
+    for (y = 0; y < 8; y += 8)
+    {
+      onoff = (y / 8) & 0x1;
+      for (x = 0; x < 8; x += 8)
+        {
+          if (onoff)
+            imlib_context_set_color (144, 144, 144, 255);
+          else
+            imlib_context_set_color (100, 100, 100, 255);
+          imlib_image_fill_rectangle (x, y, 8, 8);
+          onoff++;
+          if (onoff == 2)
+            onoff = 0;
+        }
+    }
+  imlib_context_set_blend (0);
+  imlib_context_set_drawable (ret->bg_pmap);
+  imlib_context_set_image (ret->blank_im);
+  imlib_image_tile();
+  imlib_render_image_on_drawable (0, 0);
+  XSetWindowBackgroundPixmap (disp, ret->win, ret->bg_pmap);
+  XClearWindow (disp, ret->win);
+  XFlush (disp);    
 }
