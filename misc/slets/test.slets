@@ -5,6 +5,8 @@
 ##  - Lines starting with '#' are comment 
 ##  - strings should be placed between '"'s
 ##     (not needed for one-word strings)
+##  - paths starting with '@' are relative 
+##    to the slets data dir
 
 # window (w h title)
 WINDOW 640 460 "This is a test theme!"
@@ -25,7 +27,7 @@ ICON @img/floppy.png
 ICON @img/flower.png
 
 # font path (path)
-FONT_PATH @fnt
+FONT_PATH @fnt/
 
 # text color (r g b a)
 TEXT_COLOR 0 0 0 100

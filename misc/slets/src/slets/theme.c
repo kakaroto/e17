@@ -247,7 +247,7 @@ int theme_read(int argc, char **argv)
             {
              p = font_path;
              sprintf(z, "%s/%s", DATA_DIR, p+1);
-             strcpy(txt, z);
+             strcpy(font_path, z);
             }
          }
        else
