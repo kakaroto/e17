@@ -3765,3 +3765,10 @@ Tue Oct 26 14:04:00 PDT 1999
 (Raster)
 
 again.......
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 15:22:18 PDT 1999
+(KainX)
+
+Fixed another IPC syncing problem, this time with textclasses.

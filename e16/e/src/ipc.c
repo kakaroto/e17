@@ -1417,13 +1417,8 @@ IPC_TextClass(char *params, Client * c)
 		       if (txt)
 			  TextDraw(t, win, 0, 0, state, txt, x, y,
 				   99999, 99999, 17, 0);
-		       else
-			  Esnprintf(buf, sizeof(buf), "0 0");
 		       queue_up = pq;
 		    }
-		  else
-		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
-			       param1);
 	       }
 	     else if (!strcmp(param2, "query_size"))
 	       {
