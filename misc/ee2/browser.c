@@ -140,15 +140,14 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 {
   gchar lblt[255];
   char alp[255];
-  gchar *img;
   int w, h;
-  
-  gtk_clist_get_text(GTK_CLIST(clist), row, 0, &img);
   
   if (cimg) g_free(cimg);
   cimg = NULL;
-  if (img) cimg = g_strdup(img);
+  gtk_clist_get_text(GTK_CLIST(clist), row, 0, &cimg);
+  
   if(cimg){
+         cimg = g_strdup(cimg);
 	 GetFileStats(cimg);
 	 LoadImage(cimg);
 	 DrawImage(im, 0, 0);
