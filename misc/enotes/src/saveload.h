@@ -91,7 +91,7 @@ void            ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data,
 					    void *null);
-int *timer_saveload_revert (void *p);
+int             timer_saveload_revert(void *p);
 
 
 /** LOAD **/

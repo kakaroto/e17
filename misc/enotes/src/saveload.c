@@ -117,7 +117,8 @@ setup_saveload_win(void)
 	ecore_evas_callback_destroy_set(saveload->win, ecore_saveload_close);
 
 	/* Sync Timers */
-	revtim=ecore_timer_add (SYNC_DELAY, &timer_saveload_revert, saveload->tree);
+	revtim = ecore_timer_add(SYNC_DELAY, &timer_saveload_revert,
+				 saveload->tree);
 
 	/* EWL Callbacks */
 	ewl_callback_append(saveload->refreshbtn, EWL_CALLBACK_CLICKED,
@@ -154,8 +155,7 @@ fill_saveload_tree(void)
 				   (char *) get_title_by_note(p));
 		while ((p = (Evas_List *) get_cycle_next_note(p)) != NULL) {
 			if (strcmp(get_title_by_note(p), "")) {
-				setup_saveload_opt(saveload->tree,
-						   (char *)
+				setup_saveload_opt(saveload->tree, (char *)
 						   get_title_by_note(p));
 			}
 		}
@@ -201,9 +201,10 @@ ecore_saveload_close(Ecore_Evas * ee)
 	return;
 }
 
-int*
-timer_saveload_revert (void * p) {
-	ewl_saveload_revert (NULL, NULL, (Ewl_Widget*)p);
+int
+timer_saveload_revert(void *p)
+{
+	ewl_saveload_revert(NULL, NULL, (Ewl_Widget *) p);
 	return (1);
 }
 
@@ -213,7 +214,7 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 	dml("Refreshing the Saveload List", 2);
 
 	/* FIXME: Find a more efficient way of doing this. */
-	
+
 	ewl_container_reset((Ewl_Container *) p);
 	fill_saveload_tree();
 
