@@ -140,7 +140,6 @@ entice_init(Ecore_Evas * ee)
                                         CONTAINER_FILL_POLICY_FILL_X |
                                         CONTAINER_FILL_POLICY_KEEP_ASPECT);
             e_container_direction_set(e->container, 1);
-	    fprintf(stderr, "TAller than high\n");
          }
          edje_object_part_swallow(e->edje, "EnticeThumbnailArea",
                                   e->container);
@@ -182,17 +181,18 @@ entice_free(void)
 int
 entice_current_image_set(const char *file)
 {
-    if(entice && file)
-    {
-	Evas_Object *o = NULL;
-	if((o = (Evas_Object*)evas_hash_find(entice->thumb.hash, file)))
-	{
-	    entice_thumb_load_ethumb(edje_object_part_swallow_get(o,
-	    "EnticeThumb"));
-	    return(1);
-	}
-    }
-    return(0);
+   if (entice && file)
+   {
+      Evas_Object *o = NULL;
+
+      if ((o = (Evas_Object *) evas_hash_find(entice->thumb.hash, file)))
+      {
+         entice_thumb_load_ethumb(edje_object_part_swallow_get
+                                  (o, "EnticeThumb"));
+         return (1);
+      }
+   }
+   return (0);
 }
 
 /**
@@ -216,7 +216,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       Evas_Coord w, h;
       int should_fit = 0;
       char buf[PATH_MAX];
-    
+
       if ((entice->current) && entice_image_file_get(entice->current)
           && !strcmp(e_thumb_file_get(o),
                      entice_image_file_get(entice->current)))
@@ -314,41 +314,43 @@ entice_file_add(const char *file)
          {
 
             edje = edje_object_add(ecore_evas_get(entice->ee));
-            if(edje_object_file_set(edje, entice_config_theme_get(),
-                                 "EnticeThumb"))
-	    {
-		if(edje_object_part_exists(edje, "EnticeThumb"))
-		{
-		    entice->thumb.list = 
-			evas_list_append(entice->thumb.list, o);
-		    evas_object_resize(o, 48, 48);
-		    hookup_entice_thumb_signals(edje, o);
-		    edje_object_part_swallow(edje, "EnticeThumb", o);
-		    evas_object_show(edje);
-		    evas_object_show(o);
-            
-		    entice->thumb.hash = 
-			evas_hash_add(entice->thumb.hash, buf, edje);
+            if (edje_object_file_set
+                (edje, entice_config_theme_get(), "EnticeThumb"))
+            {
+               if (edje_object_part_exists(edje, "EnticeThumb"))
+               {
+                  entice->thumb.list =
+                     evas_list_append(entice->thumb.list, o);
+                  evas_object_resize(o, 48, 48);
+                  hookup_entice_thumb_signals(edje, o);
+                  edje_object_part_swallow(edje, "EnticeThumb", o);
+                  evas_object_show(edje);
+                  evas_object_show(o);
 
-		    e_container_element_append(entice->container, edje);
-		    if (evas_list_count(entice->thumb.list) == 1)
-		    _entice_thumb_load(o, NULL, NULL, NULL);
-		}
-		else
-		{
-		    fprintf(stderr, "Broken Theme!!! You didn't define an"
-		    "EnticeThumb part\n");
-		    result = 1;
-		}
-	    }
-	    else
-	    {
-		fprintf(stderr, "Broken Theme!!! You didn't define an"
-		"EnticeThumb group\n");
-		evas_object_del(edje);
-		evas_object_del(o);
-		result = 1;
-	    }
+                  entice->thumb.hash =
+                     evas_hash_add(entice->thumb.hash, buf, edje);
+
+                  e_container_element_append(entice->container, edje);
+                  if (evas_list_count(entice->thumb.list) == 1)
+                     _entice_thumb_load(o, NULL, NULL, NULL);
+               }
+               else
+               {
+                  fprintf(stderr,
+                          "Broken Theme!!! You didn't define an"
+                          "EnticeThumb part\n");
+                  result = 1;
+               }
+            }
+            else
+            {
+               fprintf(stderr,
+                       "Broken Theme!!! You didn't define an"
+                       "EnticeThumb group\n");
+               evas_object_del(edje);
+               evas_object_del(o);
+               result = 1;
+            }
          }
          else
             result = 1;
@@ -504,15 +506,14 @@ entice_file_remove(const char *file)
       if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
          entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
-         if (entice->thumb.current && entice->thumb.current->next)
-            entice->thumb.current = entice->thumb.current->next;
-         else
-            entice->thumb.current = entice->thumb.list;
 
+         if (!(entice->thumb.current = evas_list_prev(entice->thumb.current)))
+         {
+            entice->thumb.current = evas_list_last(entice->thumb.list);
+         }
          if ((obj = edje_object_part_swallow_get(o, "EnticeThumb")))
          {
-            entice->thumb.current = entice->thumb.list =
-               evas_list_remove(entice->thumb.list, obj);
+            entice->thumb.list = evas_list_remove(entice->thumb.list, obj);
             evas_object_del(obj);
          }
          e_container_element_remove(entice->container, o);
@@ -524,6 +525,7 @@ entice_file_remove(const char *file)
             edje_object_part_text_set(entice->edje, "EnticeFileDimensions",
                                       "");
             edje_object_part_text_set(entice->edje, "EnticeFileName", "");
+            entice->thumb.list = evas_list_free(entice->thumb.list);
          }
       }
       else
