@@ -1,5 +1,12 @@
 #include "E-Mountbox.h"
 
+static void
+error_exit(void)
+{
+  Esync();
+  Epplet_cleanup();
+  exit(1);
+}
 
 static void
 CallbackHelp(void *data)
@@ -145,16 +152,14 @@ SetupMounts(void)
     {
       /* Couldn't read /etc/fstab */
       Epplet_dialog_ok("Could not read mountpoint information.");
-      Epplet_cleanup();
-      exit(1);
+      error_exit();
     }
   
   /* do we have user-mountable fs's at all? */
   if (num_tiles == 0)
     {
       Epplet_dialog_ok("Could not find any usable mountpoints.");
-      Epplet_cleanup();
-      exit(1);
+      error_exit();
     }
 
   /* now, check if these are actually mounted already */
@@ -376,7 +381,7 @@ ParseFstab(void)
 	  info[i++] = strdup(token);
 	}
 
-      /* see if device is user-mountable */
+     /* see if device is user-mountable */
       if (strstr(info[3], "user"))
 	  {
 	    AddMountPoint(info[0], info[1]);
@@ -555,6 +560,7 @@ CallbackExit(void * data)
   data = NULL;
   FreeMounts();
   FreeImages();
+  Esync();
   Epplet_cleanup();
   exit(0);
 }
@@ -825,5 +831,5 @@ main(int argc, char** argv)
    SetupGraphx();
 
    Epplet_Loop();
-   exit(0);
+   error_exit();
 }
