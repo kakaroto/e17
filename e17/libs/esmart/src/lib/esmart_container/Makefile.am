@@ -19,4 +19,4 @@ libesmart_container_la_SOURCES = esmart_container.c \
 				 esmart_container_util.c
 
 libesmart_container_la_LDFLAGS = -version-info 0:9:0
-libesmart_container_la_LIBADD = @imlib_libs@ @evas_libs@ -lm
+libesmart_container_la_LIBADD = @imlib_libs@ @evas_libs@ -lltdl -lm
