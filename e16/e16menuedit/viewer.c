@@ -101,12 +101,60 @@ create_main_window(void)
 	vbox2 = gtk_vbox_new(FALSE,3);
 	gtk_widget_show(vbox2);
 	gtk_container_add(GTK_CONTAINER(frames),vbox2);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2),4);
 
-	table = gtk_table_new(4,3,FALSE);
+	table = gtk_table_new(3,3,FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table),3);
 	gtk_table_set_col_spacings(GTK_TABLE(table),3);
 	gtk_box_pack_start(GTK_BOX(vbox2),table,FALSE,FALSE,2);
+
+	alignment = gtk_alignment_new(1.0,0.5,0,0);
+	gtk_widget_show(alignment);
+	label = gtk_label_new("Description:");
+	gtk_widget_show(label);
+	gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_RIGHT);
+	gtk_container_add(GTK_CONTAINER(alignment),label);
+	gtk_table_attach(GTK_TABLE(table),alignment,0,1,0,1,
+			GTK_FILL, (GtkAttachOptions) (0),0,0);
+
+	alignment = gtk_alignment_new(1.0,0.5,0,0);
+	gtk_widget_show(alignment);
+	label = gtk_label_new("Icon:");
+	gtk_widget_show(label);
+	gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_RIGHT);
+	gtk_container_add(GTK_CONTAINER(alignment),label);
+	gtk_table_attach(GTK_TABLE(table),alignment,0,1,1,2,
+			GTK_FILL, (GtkAttachOptions) (0),0,0);
+
+	alignment = gtk_alignment_new(1.0,0.5,0,0);
+	gtk_widget_show(alignment);
+	label = gtk_label_new("Executes:");
+	gtk_widget_show(label);
+	gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_RIGHT);
+	gtk_container_add(GTK_CONTAINER(alignment),label);
+	gtk_table_attach(GTK_TABLE(table),alignment,0,1,2,3,
+			GTK_FILL, (GtkAttachOptions) (0),0,0);
+
+	entry = gtk_entry_new_with_max_length(200);
+	gtk_widget_show(entry);
+	gtk_table_attach(GTK_TABLE(table), entry, 1, 3, 0, 1,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+
+	entry = gtk_entry_new_with_max_length(200);
+	gtk_widget_show(entry);
+	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, 1, 2,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+
+	button = gtk_button_new_with_label("Browse");
+	gtk_widget_show(button);
+	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 1, 2,
+			(GtkAttachOptions) 0, (GtkAttachOptions) (0), 0, 0);
+
+	entry = gtk_entry_new_with_max_length(200);
+	gtk_widget_show(entry);
+	gtk_table_attach(GTK_TABLE(table), entry, 1, 3, 2, 3,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
 	hbox = gtk_hbox_new(FALSE,3);
 	gtk_widget_show(hbox);
