@@ -37,9 +37,9 @@ E_Biff_epplet_SOURCES = E-Biff.c mbox.c
 E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-EMix_epplet_SOURCES = Emix.c
-EMix_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-EMix_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+Emix_epplet_SOURCES = Emix.c
+Emix_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+Emix_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 
 INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
