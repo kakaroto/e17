@@ -35,7 +35,7 @@ char * entranced_cookie_new (void)
    
 
    if ((fd = open("/dev/random", O_RDONLY|O_NONBLOCK)) < 0) {
-      entranced_debug("Cookie generation failed: could not open /dev/urandom\n");
+      entranced_debug("Cookie generation failed: could not open /dev/random\n");
       return NULL;
    }
 
