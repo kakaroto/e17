@@ -29,10 +29,14 @@
 
     #define SCRIPT_PIECE()  if (script == NULL) { \
 								script = strdup(yytext); \
-							/*} else { \
-								realloc(script, strlen(script) + yyleng + 1); \
-								strncat(script, yytext, yyleng); \
-							*/} 
+							} else { \
+								char *t = NULL; \
+								int len = strlen(script) + yyleng + 1; \
+								t = (char *)malloc(sizeof(char) * len); \
+								snprintf(t, len, "%s%s", script, yytext); \
+								free(script); \
+								script = t; \
+							} 
 
     #define SCRIPT_NEW_LINE() lnum ++; SCRIPT_PIECE(); 
 
