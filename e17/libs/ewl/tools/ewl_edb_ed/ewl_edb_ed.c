@@ -65,6 +65,7 @@ int main(int argc, char ** argv) {
 		};
 	    tree = ewl_tree_new(3);
 	    ewl_container_append_child(EWL_CONTAINER(hbox), tree);
+		ewl_object_set_padding(EWL_OBJECT(tree), 2, 0, 0, 0);
 		ewl_tree_set_headers(EWL_TREE(tree), headers);
 	    ewl_widget_show(tree);
 	}
@@ -178,7 +179,7 @@ int main(int argc, char ** argv) {
 	ewl_object_set_padding(EWL_OBJECT(o), 5, 5, 2, 2);
 	ewl_widget_show(o);
 
-	o = ewl_button_new("quit");
+	o = ewl_button_with_stock_new(EWL_STOCK_QUIT);
 	ewl_container_append_child(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, win_del_cb, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);

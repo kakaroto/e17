@@ -8,3 +8,4 @@ image, "stock-pause.png"  LOSSY 98;
 image, "stock-play.png"   LOSSY 98;
 image, "stock-save.png"   LOSSY 98;
 image, "stock-stop.png"   LOSSY 98;
+image, "stock-quit.png"   LOSSY 98;

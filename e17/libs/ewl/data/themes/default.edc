@@ -28,6 +28,7 @@ data {
 	item, "/button/stock_open/group" "stock_open";
 	item, "/button/stock_pause/group" "stock_pause";
 	item, "/button/stock_play/group" "stock_play";
+	item, "/button/stock_quit/group" "stock_quit";
 	item, "/button/stock_rewind/group" "stock_rewind";
 	item, "/button/stock_save/group" "stock_save";
 	item, "/button/stock_stop/group" "stock_stop";

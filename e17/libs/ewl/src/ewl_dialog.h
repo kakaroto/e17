@@ -35,7 +35,8 @@ enum _Ewl_Response_Type
   EWL_RESPONSE_APPLY  = -12,
   EWL_RESPONSE_PLAY   = -20,
   EWL_RESPONSE_PAUSE  = -21,
-  EWL_RESPONSE_STOP   = -22
+  EWL_RESPONSE_STOP   = -22,
+  EWL_RESPONSE_QUIT   = -23,
 };
 
 /**
