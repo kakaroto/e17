@@ -1734,7 +1734,8 @@ Q: How can I move or resize the iconbox.
 <p>
 A: As described above, ALT + Right mouse button will give you the 
 _window_operations(windowops) menu, ALT + Middle mouse button will resize the
-iconbox and ALT+left mouse button will move it.
+iconbox and ALT+left mouse button will move it.  See the _Iconbox(iconbox)
+documentation for more help
 
 <page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
