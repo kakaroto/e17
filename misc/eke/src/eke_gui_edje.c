@@ -12,6 +12,8 @@ static void eke_gui_edje_win_del_cb(Ecore_Evas *ee);
 static void eke_gui_edje_win_resize_cb(Ecore_Evas *ee);
 static void eke_gui_edje_feed_container_scroll_cb(void *data, 
                         Evas_Object *o, const char *src, const char *em);
+static void eke_gui_edje_feed_select_cb(void *data, Evas_Object *o, 
+                            const char *em, const char *src);
 
 typedef struct Eke_Gui_Edje_Feed Eke_Gui_Edje_Feed;
 struct Eke_Gui_Edje_Feed
@@ -116,15 +118,24 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
         Evas_Object *list;
 
         disp->menu_item = edje_object_add(evas);
-        edje_object_file_set(disp->menu_item, file, "feed.list.item");
-
-        edje_object_size_min_get(disp->menu_item, &w, &h);
-        if ((w > 0) && (h > 0))
-            evas_object_resize(disp->menu_item, w, h);
-
-        list = evas_object_name_find(evas, "feeds.list");
-        esmart_container_element_append(list, disp->menu_item);
-        evas_object_show(disp->menu_item);
+        if(edje_object_file_set(disp->menu_item, file, "feed.list.item"))
+        {
+            edje_object_size_min_get(disp->menu_item, &w, &h);
+            if ((w > 0) && (h > 0))
+                evas_object_resize(disp->menu_item, w, h);
+            
+            evas_object_data_set(disp->menu_item, "feed", feed);
+            edje_object_signal_callback_add(disp->menu_item,
+                            "eke,feed,select", "",
+                                 eke_gui_edje_feed_select_cb, eke);
+            if((list = evas_object_name_find(evas, "feeds.list"))) {
+                esmart_container_element_append(list, disp->menu_item);
+            }
+            evas_object_show(disp->menu_item);
+        } else {
+            evas_object_del(disp->menu_item);
+            disp->menu_item = NULL;
+        }
 
         disp->body = esmart_container_new(evas);
         esmart_container_padding_set(disp->body, 0, 0, 0, 0);
@@ -141,6 +152,7 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
     if((part = edje_object_part_swallow_get(eke->gui.edje.edje, 
                                                     "feed.body"))) {
         edje_object_part_unswallow(eke->gui.edje.edje, part);
+        esmart_container_empty(part);
         evas_object_hide(part);
     }
     edje_object_part_swallow(eke->gui.edje.edje, "feed.body", disp->body);
@@ -207,6 +219,20 @@ eke_gui_edje_win_resize_cb(Ecore_Evas *ee)
     }
 }
 
+static void
+eke_gui_edje_feed_select_cb(void *data, Evas_Object *o, 
+                            const char *em, const char *src)
+{
+    Eke *eke = NULL;
+    Eke_Feed *feed = NULL;
+
+    fprintf(stderr, "%s:%s\n", em, src);
+    if((eke = (Eke*)data)) {
+        if((feed = evas_object_data_get(o, "feed"))) {
+            eke_gui_edje_feed_change(eke, feed);
+        }
+    }
+}
 
 static void
 eke_gui_edje_feed_container_scroll_cb(void *data, Evas_Object *o, 
