@@ -86,6 +86,7 @@ struct __geist_object
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
    void (*resize_event) (geist_object * obj, int x, int y);
    void (*display_props) (geist_object * obj);
+   int props_active;
 };
 
 /* allocation functions */

@@ -85,6 +85,12 @@ extern Screen *scr;
 
 extern GtkWidget *darea;
 
+typedef struct _cb_data cb_data;
+struct _cb_data
+{
+		geist_object *obj;
+		gpointer *dialog;
+};
 
 
 #endif

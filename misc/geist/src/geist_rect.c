@@ -1,10 +1,10 @@
 #include "geist_rect.h"
 
-void refresh_r_cb(GtkWidget * widget, gpointer * obj);
-void refresh_g_cb(GtkWidget * widget, gpointer * obj);
-void refresh_b_cb(GtkWidget * widget, gpointer * obj);
-void refresh_a_cb(GtkWidget * widget, gpointer * obj);
-void obj_addrect_ok_cb(GtkWidget * widget, gpointer * data);
+static void refresh_r_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_g_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_b_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_a_cb(GtkWidget * widget, gpointer * obj);
+static void geist_rect_props_ok_cb(GtkWidget * widget, gpointer * data);
 
 geist_object *
 geist_rect_new(void)
@@ -202,13 +202,26 @@ geist_rect_resize(geist_object * obj, int x, int y)
    D_RETURN_(5);
 }
 
-void
-obj_addrect_ok_cb(GtkWidget * widget, gpointer * data)
+static gboolean
+delete_event_cb (GtkWidget *wdiget, GdkEvent *event, gpointer *data)
 {
-   gtk_widget_destroy((GtkWidget *) data);
+   geist_object *obj = ((cb_data *)data)->obj;
+   obj ->props_active = 0;
+   gtk_widget_destroy((GtkWidget *) (((cb_data*)data)->dialog));
+   efree(data);
+   return TRUE;
 }
 
-void
+static void
+geist_rect_props_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   cb_data *props_data = (cb_data*) data;
+   props_data->obj->props_active = 0;
+   gtk_widget_destroy((GtkWidget *) (props_data->dialog));
+   free(data);
+}
+
+static void
 refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
@@ -218,7 +231,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
-void
+static void
 refresh_g_cb(GtkWidget * widget, gpointer * obj)
 {
 
@@ -228,7 +241,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
-void
+static void
 refresh_b_cb(GtkWidget * widget, gpointer * obj)
 {
 
@@ -238,7 +251,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
-void
+static void
 refresh_a_cb(GtkWidget * widget, gpointer * obj)
 {
 
@@ -253,10 +266,10 @@ void
 geist_rect_display_props(geist_object * obj)
 {
 
-   GtkWidget *generic, *win, *table, *title_l, *title_entry, *hbox, *cr_l, *cr, *cg_l,
+   GtkWidget *generic, *win, *table, *hbox, *cr_l, *cr, *cg_l,
       *cg, *cb_l, *cb, *ca_l, *ca, *ok;
    GtkAdjustment *a1, *a2, *a3, *a4;
-
+   cb_data *props_data= NULL;
 
    a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
@@ -264,10 +277,16 @@ geist_rect_display_props(geist_object * obj)
    a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
 
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   props_data = emalloc (sizeof(cb_data));
+   props_data->obj =obj;
+   props_data->dialog = (gpointer) win;
+   
    table = gtk_table_new(3, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(win), 5);
    gtk_container_add(GTK_CONTAINER(win), table);
 
+   
+   /*Import the generic part of the props dialog*/
    generic = geist_object_generic_properties(obj);
    gtk_table_attach(GTK_TABLE(table), generic, 0, 2, 0, 1, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
@@ -281,41 +300,40 @@ geist_rect_display_props(geist_object * obj)
    gtk_widget_show(cr_l);
 
    cr = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
-   gtk_signal_connect(GTK_OBJECT(cr), "changed",
-                      GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
    gtk_box_pack_start(GTK_BOX(hbox), cr, TRUE, FALSE, 2);
    gtk_widget_show(cr);
 
+   
    cg_l = gtk_label_new("G:");
    gtk_misc_set_alignment(GTK_MISC(cg_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), cg_l, TRUE, FALSE, 2);
    gtk_widget_show(cg_l);
+   
    cg = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
-   gtk_signal_connect(GTK_OBJECT(cg), "changed",
-                      GTK_SIGNAL_FUNC(refresh_g_cb), (gpointer) obj);
    gtk_box_pack_start(GTK_BOX(hbox), cg, TRUE, FALSE, 2);
    gtk_widget_show(cg);
 
+   
    cb_l = gtk_label_new("B:");
    gtk_misc_set_alignment(GTK_MISC(cb_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), cb_l, TRUE, FALSE, 2);
    gtk_widget_show(cb_l);
+   
    cb = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
-   gtk_signal_connect(GTK_OBJECT(cb), "changed",
-                      GTK_SIGNAL_FUNC(refresh_b_cb), (gpointer) obj);
    gtk_box_pack_start(GTK_BOX(hbox), cb, TRUE, FALSE, 2);
    gtk_widget_show(cb);
 
+   
    ca_l = gtk_label_new("A:");
    gtk_misc_set_alignment(GTK_MISC(ca_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), ca_l, TRUE, FALSE, 2);
    gtk_widget_show(ca_l);
+   
    ca = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
-   gtk_signal_connect(GTK_OBJECT(ca), "changed",
-                      GTK_SIGNAL_FUNC(refresh_a_cb), (gpointer) obj);
    gtk_box_pack_start(GTK_BOX(hbox), ca, TRUE, FALSE, 2);
    gtk_widget_show(ca);
 
+   
    gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(hbox);
@@ -323,8 +341,6 @@ geist_rect_display_props(geist_object * obj)
    ok = gtk_button_new_with_label("Ok");
    gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 2, 3, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
-   gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-                      GTK_SIGNAL_FUNC(obj_addrect_ok_cb), (gpointer) win);
    gtk_widget_show(ok);
 
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(cr), GEIST_RECT(obj)->r);
@@ -332,7 +348,18 @@ geist_rect_display_props(geist_object * obj)
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(cb), GEIST_RECT(obj)->b);
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(ca), GEIST_RECT(obj)->a);
 
-  
+   gtk_signal_connect(GTK_OBJECT(cr), "changed",
+                      GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(cg), "changed",
+                      GTK_SIGNAL_FUNC(refresh_g_cb), (gpointer) obj); 
+   gtk_signal_connect(GTK_OBJECT(ca), "changed",
+                      GTK_SIGNAL_FUNC(refresh_a_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(cb), "changed",
+                      GTK_SIGNAL_FUNC(refresh_b_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(ok), "clicked",
+                      GTK_SIGNAL_FUNC(geist_rect_props_ok_cb), (gpointer) props_data);
+   gtk_signal_connect(GTK_OBJECT(win), "delete_event",
+                      GTK_SIGNAL_FUNC(delete_event_cb), (gpointer) props_data);
 
    gtk_widget_show(table);
    gtk_widget_show(win);

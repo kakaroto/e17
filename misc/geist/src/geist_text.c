@@ -1,3 +1,4 @@
+#include "geist.h"
 #include "geist_text.h"
 
 typedef struct _addtext_ok_data addtext_ok_data;
@@ -349,12 +350,23 @@ geist_text_resize(geist_object * obj, int x, int y)
    D_RETURN_(5);
 }
 
-
-gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data)
+static gboolean 
+delete_event_cb(GtkWidget * widget, GdkEvent *event, gpointer * data)
 {
-   addtext_ok_data *ok_data = (addtext_ok_data *) data;
+   cb_data *ok_data = (cb_data *) data;
+   gtk_widget_destroy((GtkWidget *)ok_data->dialog);
+   ok_data->obj->props_active = 0;
+   free(ok_data);
+   return TRUE;
+}
 
-   gtk_widget_destroy(ok_data->win);
+gboolean 
+geist_text_props_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   cb_data *ok_data = (cb_data *) data;
+
+   gtk_widget_destroy((GtkWidget *)ok_data->dialog);
+   ok_data->obj->props_active = 0;
    free(ok_data);
    return TRUE;
 }
@@ -479,6 +491,7 @@ geist_text_display_props(geist_object * obj)
 {
    GtkWidget *generic;
    addtext_ok_data *ok_data = NULL;
+   cb_data *props_data =NULL;
    GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l,
       *cb_l, *ca_l, *ok;
    int i, num;
@@ -493,6 +506,12 @@ geist_text_display_props(geist_object * obj)
    a5 = (GtkAdjustment *) gtk_adjustment_new(12, 2, 96, 1, 2, 3);
 
    ok_data = emalloc(sizeof(addtext_ok_data));
+   ok_data->win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   props_data = emalloc(sizeof(cb_data));
+   
+   props_data->obj = obj;
+   props_data->dialog = (gpointer) (ok_data->win);
+   
    if (!ok_data)
       return;
    fonts = geist_imlib_list_fonts(&num);
@@ -500,11 +519,11 @@ geist_text_display_props(geist_object * obj)
    if (!fonts)
       printf("ARGH!\n");
 
-   ok_data->win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    table = gtk_table_new(4, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(ok_data->win), 5);
    gtk_container_add(GTK_CONTAINER(ok_data->win), table);
 
+   /*Import the generic part of the props dialog*/
    generic = geist_object_generic_properties(obj);
    gtk_table_attach(GTK_TABLE(table), generic, 0, 2, 0, 1, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
@@ -628,9 +647,10 @@ geist_text_display_props(geist_object * obj)
    gtk_signal_connect(GTK_OBJECT(ok_data->text), "changed",
                       GTK_SIGNAL_FUNC(refresh_text_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok), "clicked",
-                      GTK_SIGNAL_FUNC(obj_addtext_ok_cb), (gpointer) ok_data);
-   
-   
+                      GTK_SIGNAL_FUNC(geist_text_props_ok_cb), (gpointer) props_data);
+   	
+   gtk_signal_connect(GTK_OBJECT(ok_data->win), "delete_event",
+                      GTK_SIGNAL_FUNC(delete_event_cb), (gpointer) props_data);
    
    gtk_widget_show(ok_data->win);
 

@@ -1,5 +1,9 @@
 #include "geist_object.h"
 
+void refresh_x_cb(GtkWidget * widget, gpointer * obj);
+void refresh_y_cb(GtkWidget * widget, gpointer * obj);
+void refresh_w_cb(GtkWidget * widget, gpointer * obj);
+void refresh_h_cb(GtkWidget * widget, gpointer * obj);
 void refresh_name_cb(GtkWidget * widget, gpointer * obj);
 
 
@@ -35,6 +39,7 @@ geist_object_init(geist_object * obj)
    obj->display_props = geist_object_int_display_props;
    obj->resize_event = geist_object_int_resize;
    obj->name = estrdup("Untitled Object");
+   obj->props_active = 0;
 
    D_RETURN_(5);
 }
@@ -632,7 +637,11 @@ void
 geist_object_display_props(geist_object * obj)
 {
    D_ENTER(5);
-   obj->display_props(obj);
+   if (!obj->props_active) 
+	{
+   		obj->display_props(obj);
+		obj->props_active = 1;
+	}
    D_RETURN_(5);
 }
 
@@ -684,6 +693,37 @@ refresh_name_cb(GtkWidget * widget, gpointer * obj)
    GEIST_OBJECT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
 }
 
+void
+refresh_x_cb(GtkWidget * widget, gpointer * obj)
+{
+    geist_object_dirty (GEIST_OBJECT(obj));
+	GEIST_OBJECT(obj)->x = 
+			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+	geist_object_dirty (GEIST_OBJECT(obj));
+    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_y_cb(GtkWidget * widget, gpointer * obj)
+{
+    geist_object_dirty(GEIST_OBJECT(obj));
+	GEIST_OBJECT(obj)->y =
+			 gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+	geist_object_dirty (GEIST_OBJECT(obj));
+    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_w_cb(GtkWidget * widget, gpointer * obj)
+{
+   printf("do resize\n");
+}
+
+void
+refresh_h_cb(GtkWidget * widget, gpointer * obj)
+{
+   printf("do resize\n");
+}
 
 GtkWidget *
 geist_object_generic_properties(geist_object *obj)
@@ -700,12 +740,32 @@ geist_object_generic_properties(geist_object *obj)
    GtkWidget *alignment_l;
    GtkWidget *sizemode_combo;
    GtkWidget *alignment_combo;
+   GList *align_list = g_list_alloc();
+   GList *sizemode_list = g_list_alloc();
    
-   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
-   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
-   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
-   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 
+		   					GEIST_OBJECT_DOC(obj)->w, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 
+		   					GEIST_OBJECT_DOC(obj)->h, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 
+		   					GEIST_OBJECT_DOC(obj)->w, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 
+		   					GEIST_OBJECT_DOC(obj)->h, 1, 2, 3);
 
+   align_list = g_list_append(align_list,"ALIGN_NONE");
+   align_list = g_list_append(align_list,"ALIGN_HCENTER");
+   align_list = g_list_append(align_list,"ALIGN_VCENTER");
+   align_list = g_list_append(align_list,"ALIGN_CENTER");
+   align_list = g_list_append(align_list,"ALIGN_LEFT");
+   align_list = g_list_append(align_list,"ALIGN_RIGHT");
+   align_list = g_list_append(align_list,"ALIGN_TOP");
+   align_list = g_list_append(align_list,"ALIGN_BOTTOM");   
+   
+   sizemode_list = g_list_append(sizemode_list, "SIZEMODE_NONE");
+   sizemode_list = g_list_append(sizemode_list, "SIZEMODE_ZOOM");
+   sizemode_list = g_list_append(sizemode_list, "SIZEMODE_STRETCH");
+   
+   
    generic_props = gtk_hbox_new (FALSE, 0);
    
    table = gtk_table_new(4, 4, FALSE);
@@ -728,18 +788,19 @@ geist_object_generic_properties(geist_object *obj)
 
    sizemode_combo = gtk_combo_new ();
    gtk_table_attach(GTK_TABLE(table), sizemode_combo, 1, 4, 1, 2, GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_widget_show (sizemode_combo);
    gtk_container_set_border_width (GTK_CONTAINER (sizemode_combo), 5);
-   
+   gtk_combo_set_popdown_strings(GTK_COMBO(sizemode_combo), sizemode_list);
+   gtk_widget_show (sizemode_combo);
+      
    alignment_l = gtk_label_new ("alignment");
    gtk_table_attach(GTK_TABLE(table), alignment_l, 0, 1, 2, 3, GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(alignment_l);
 
    alignment_combo = gtk_combo_new ();
    gtk_table_attach(GTK_TABLE(table), alignment_combo, 1, 4, 2 ,3, GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_widget_show (alignment_combo);
+   gtk_combo_set_popdown_strings(GTK_COMBO(alignment_combo), align_list);
    gtk_container_set_border_width (GTK_CONTAINER (alignment_combo), 5);
-
+   gtk_widget_show (alignment_combo);
    
    hbox = gtk_hbox_new(FALSE, 0);
    gtk_table_attach(GTK_TABLE(table), hbox, 0, 4, 3, 4, GTK_FILL | GTK_EXPAND,
@@ -754,15 +815,8 @@ geist_object_generic_properties(geist_object *obj)
    gtk_box_pack_start(GTK_BOX(hbox), x, TRUE, FALSE, 2);
    gtk_widget_show(x);
 
-   w_l = gtk_label_new("y:");
-   gtk_misc_set_alignment(GTK_MISC(w_l), 1.0, 0.5);
-   gtk_box_pack_start(GTK_BOX(hbox), w_l, TRUE, FALSE, 2);
-   gtk_widget_show(w_l);
-   w = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
-   gtk_box_pack_start(GTK_BOX(hbox), w, TRUE, FALSE, 2);
-   gtk_widget_show(w);
-
-   y_l = gtk_label_new("w:");
+   
+   y_l = gtk_label_new("y:");
    gtk_misc_set_alignment(GTK_MISC(y_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), y_l, TRUE, FALSE, 2);
    gtk_widget_show(y_l);
@@ -770,6 +824,15 @@ geist_object_generic_properties(geist_object *obj)
    gtk_box_pack_start(GTK_BOX(hbox), y, TRUE, FALSE, 2);
    gtk_widget_show(y);
 
+   w_l = gtk_label_new("w:");
+   gtk_misc_set_alignment(GTK_MISC(w_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), w_l, TRUE, FALSE, 2);
+   gtk_widget_show(w_l);
+   w = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), w, TRUE, FALSE, 2);
+   gtk_widget_show(w);
+
+   
    h_l = gtk_label_new("h:");
    gtk_misc_set_alignment(GTK_MISC(h_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), h_l, TRUE, FALSE, 2);
@@ -787,17 +850,17 @@ geist_object_generic_properties(geist_object *obj)
    
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(x),
                              obj->x);
-   gtk_spin_button_set_value(GTK_SPIN_BUTTON(w),
-                             obj->y);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(y),
+                             obj->y);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(w),
                              obj->w);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(h),
                              obj->h);
 
-   
+      
    if (obj->name)
       gtk_entry_set_text(GTK_ENTRY(name), obj->name);
-/*
+
    gtk_signal_connect(GTK_OBJECT(x), "changed",
                       GTK_SIGNAL_FUNC(refresh_x_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(y), "changed",
@@ -806,8 +869,6 @@ geist_object_generic_properties(geist_object *obj)
                       GTK_SIGNAL_FUNC(refresh_w_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(h), "changed",
                       GTK_SIGNAL_FUNC(refresh_h_cb), (gpointer) obj);
-   
-   */
    gtk_signal_connect(GTK_OBJECT(name), "changed",
                       GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
    

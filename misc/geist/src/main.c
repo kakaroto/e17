@@ -165,7 +165,7 @@ main(int argc, char *argv[])
    obj_btn = gtk_button_new_with_label("Delete");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_del_cb), NULL);
-
+   gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
    obj_btn = gtk_button_new_with_label("Edit");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
@@ -562,6 +562,7 @@ gboolean obj_load_cb(GtkWidget * widget, gpointer data)
          geist_document_add_object(doc, obj);
          geist_object_show(obj);
          geist_object_raise(obj);
+		 geist_object_display_props(obj);
          geist_document_render_updates(doc);
       }
    }
@@ -589,6 +590,8 @@ gboolean obj_add_cb(GtkWidget * widget, gpointer * data)
    gtk_widget_show(file_sel);
    return TRUE;
 }
+
+
 
 gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
