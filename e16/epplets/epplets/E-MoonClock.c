@@ -26,6 +26,7 @@
  */
 
 
+#include <sys/time.h>
 #include <sys/resource.h>
 #include <stdio.h>
 #include <time.h>
@@ -47,7 +48,7 @@ moonclock_cb(void *data)
   struct tm *GMTTime, *LocalTime;
   int Year, Month, DayOfMonth;
   int ImageNumber;
-  long CurrentLocalTime, CurrentGMTTime, date;
+  time_t CurrentLocalTime, CurrentGMTTime, date;
   double UT, LocalHour, hour24();
   double TimeZone;
   CTrans c;
