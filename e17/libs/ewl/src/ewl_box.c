@@ -571,7 +571,7 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 
 	while ((c = ewd_list_next(f)) != NULL)
 	  {
-		  if (MAXIMUM_H(c) <= REQUEST_W(w))
+		  if (MAXIMUM_W(c) <= REQUEST_W(w))
 			  REQUEST_W(c) = REQUEST_W(w);
 		  else
 			  REQUEST_W(c) = MAXIMUM_W(c);
@@ -762,14 +762,14 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rw)
 			    continue;
 		    }
 
-		  if (CUSTOM_H(cw))
+		  if (CUSTOM_H(cw) != -1)
 			  REQUEST_H(cw) = CUSTOM_H(cw);
 		  else if (MAXIMUM_H(cw) >= REQUEST_H(w))
 			  REQUEST_H(cw) = REQUEST_H(w) - t - b;
 		  else
 			  REQUEST_H(cw) = CURRENT_H(cw);
 
-		  if (CUSTOM_W(cw))
+		  if (CUSTOM_W(cw) != -1)
 			  REQUEST_W(cw) = CUSTOM_W(cw);
 		  else if (MINIMUM_W(cw) < CURRENT_W(cw))
 			  REQUEST_W(cw) = MINIMUM_W(cw);
@@ -788,10 +788,13 @@ static void
 __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 {
 	Ewl_Widget *c;
-	int nw;
+	int nw, l = 0, r = 0, t = 0, b = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
+
+	if (w->ebits_object)
+		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
 	ewd_list_goto_first(f);
 
@@ -799,12 +802,17 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 
 	while ((c = ewd_list_next(f)) != NULL)
 	  {
-		  if (MAXIMUM_H(c) >= REQUEST_H(w))
-			  REQUEST_H(c) = REQUEST_H(w);
+		  if (MAXIMUM_H(c) <= REQUEST_H(w))
+			  REQUEST_H(c) = REQUEST_H(w) - t - b;
 		  else
 			  REQUEST_H(c) = MAXIMUM_H(c);
 
-		  REQUEST_W(c) = nw;
+		  if (MAXIMUM_W(c) <= nw)
+		    {
+			    REQUEST_W(c) = MAXIMUM_W(c);
+		    }
+		  else
+			  REQUEST_W(c) = nw;
 	  }
 
 	DLEAVE_FUNCTION;
