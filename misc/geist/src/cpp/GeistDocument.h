@@ -1,4 +1,4 @@
-/* main.cpp
+/* GeistDocument.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,36 +23,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef GEIST_DOCUMENT_H
+#define GEIST_DOCUMENT_H
+
 #include "geist.h"
-#include "GeistImage.h"
-#include "GeistDocument.h"
+#include "GeistCompositeObject.h"
 
-int
-main()
+class GeistDocument : public GeistCompositeObject
 {
-   GeistDebug::instance()->set_level(3);
+   public:
+       
+   GeistDocument();
+   GeistDocument(string name);
+   virtual ~GeistDocument();
+        
+   Imlib_Image get_image() { return _image; };
 
-   GeistObject *img = new GeistImage;
+ protected:
+   
+   Imlib_Image _image;
+   string _name;
+};
 
-   try
-   {
-      img->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Good. Can't add children to a leaf class.\n";
-   }
-
-   GeistObject *doc = new GeistDocument;
-
-   try
-   {
-      doc->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Ack! That should have worked!\n";
-   }
-
-   doc->render();
-}
+#endif

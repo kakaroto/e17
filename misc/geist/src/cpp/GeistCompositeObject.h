@@ -1,4 +1,4 @@
-/* main.cpp
+/* geist_composite_object.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,36 +23,30 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef GEIST_COMPOSITE_OBJECT_H
+#define GEIST_COMPOSITE_OBJECT_H
+
 #include "geist.h"
-#include "GeistImage.h"
-#include "GeistDocument.h"
+#include "geist_object.h"
 
-int
-main()
+class GeistCompositeObject : public GeistObject
 {
-   GeistDebug::instance()->set_level(3);
+  public:
+   ~GeistCompositeObject();
+   
+   // child access and management
+   virtual void add_child(GeistObject *);
+   virtual void remove_child(GeistObject *);
 
-   GeistObject *img = new GeistImage;
+   // defined for visual objects
+   virtual void render(Imlib_Image im);
+   virtual void render_partial(Imlib_Image im, Rect rect);
 
-   try
-   {
-      img->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Good. Can't add children to a leaf class.\n";
-   }
+ protected:
+   GeistCompositeObject();
+ private:
+   list <GeistObject *> _children;
+};
 
-   GeistObject *doc = new GeistDocument;
 
-   try
-   {
-      doc->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Ack! That should have worked!\n";
-   }
-
-   doc->render();
-}
+#endif

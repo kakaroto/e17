@@ -1,4 +1,4 @@
-/* main.cpp
+/* GeistObject.cpp
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -24,35 +24,40 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "geist.h"
-#include "GeistImage.h"
-#include "GeistDocument.h"
+#include "GeistObject.h"
 
-int
-main()
+//////////////////////////////////////
+// GeistObject Implementation
+
+GeistObject::GeistObject()
 {
-   GeistDebug::instance()->set_level(3);
-
-   GeistObject *img = new GeistImage;
-
-   try
-   {
-      img->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Good. Can't add children to a leaf class.\n";
-   }
-
-   GeistObject *doc = new GeistDocument;
-
-   try
-   {
-      doc->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Ack! That should have worked!\n";
-   }
-
-   doc->render();
+   D(1, "GeistObject constructor");
 }
+
+GeistObject::~GeistObject()
+{
+   D(1, "GeistObject Destructor");
+}
+
+void GeistObject::show()
+{
+   // TODO - dirty location before and after
+   this->_visible = true;
+}
+
+void GeistObject::hide()
+{
+   // TODO - dirty location before and after
+   this->_visible = false;
+}
+
+void GeistObject::render()
+{
+  render(get_image());
+}
+
+void GeistObject::render_partial(Rect rect)
+{
+  render_partial(get_image(), rect);
+}
+

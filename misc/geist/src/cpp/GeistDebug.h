@@ -1,4 +1,4 @@
-/* main.cpp
+/* geist_debug.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,36 +23,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef GEIST_DEBUG_H
+#define GEIST_DEBUG_H
+
 #include "geist.h"
-#include "GeistImage.h"
-#include "GeistDocument.h"
 
-int
-main()
-{
-   GeistDebug::instance()->set_level(3);
+// The debugger object is a singleton. Only one can exist, and it's available
+// to all of geist without being made global.
 
-   GeistObject *img = new GeistImage;
+class GeistDebug {
 
-   try
-   {
-      img->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Good. Can't add children to a leaf class.\n";
-   }
+    public:
+        static GeistDebug* instance();
+        
+        void set_level(int);
+        void print(int, const char *);
+        void print(int, const string);
+    protected:
+        // protected constructor to prevent accidental object instantiation,
+        // clients should always use instance();
+        GeistDebug();
+    private:
+        static GeistDebug* _instance;
+        int _level;
+};
 
-   GeistObject *doc = new GeistDocument;
-
-   try
-   {
-      doc->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Ack! That should have worked!\n";
-   }
-
-   doc->render();
-}
+#endif

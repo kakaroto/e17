@@ -35,7 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using std::string;
 
-#include "geist_debug.h"
+#include "GeistDebug.h"
 
 #define DEBUG
 

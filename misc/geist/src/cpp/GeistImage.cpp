@@ -1,4 +1,4 @@
-/* main.cpp
+/* GeistImage.cpp
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,36 +23,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "geist.h"
 #include "GeistImage.h"
-#include "GeistDocument.h"
 
-int
-main()
+GeistImage::GeistImage()
 {
-   GeistDebug::instance()->set_level(3);
-
-   GeistObject *img = new GeistImage;
-
-   try
-   {
-      img->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Good. Can't add children to a leaf class.\n";
-   }
-
-   GeistObject *doc = new GeistDocument;
-
-   try
-   {
-      doc->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Ack! That should have worked!\n";
-   }
-
-   doc->render();
+   D(1,"GeistImage constructor");
 }
+
+GeistImage::GeistImage(string name)
+{
+   _name = name;
+   D(1,"GeistImage constructor with name");
+   D(1, name);
+}
+
+GeistImage::~GeistImage()
+{
+   D(1,"GeistImage destructor");
+}
+

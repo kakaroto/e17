@@ -1,4 +1,4 @@
-/* geist_object.h
+/* GeistObject.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -83,6 +83,8 @@ class GeistObject
 
  protected:
 
+   // Protected constructor. You aren't allowed to make one, this is a base
+   // class :-)
    GeistObject();
    
    string _name;
@@ -108,44 +110,7 @@ class GeistCompositeObject : public GeistObject
    GeistCompositeObject();
  private:
    list <GeistObject *> _children;
-   Rect _rect;
-   bool _visible;
 };
-
-//////////////////////////////////////
-// GeistObject Implementation
-
-GeistObject::GeistObject()
-{
-   D(1, "GeistObject constructor");
-}
-
-GeistObject::~GeistObject()
-{
-   D(1, "GeistObject Destructor");
-}
-
-void GeistObject::show()
-{
-   // TODO - dirty location before and after
-   this->_visible = true;
-}
-
-void GeistObject::hide()
-{
-   // TODO - dirty location before and after
-   this->_visible = false;
-}
-
-void GeistObject::render()
-{
-  render(get_image());
-}
-
-void GeistObject::render_partial(Rect rect)
-{
-  render_partial(get_image(), rect);
-}
 
 
 //////////////////////////////////////

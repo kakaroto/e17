@@ -1,4 +1,4 @@
-/* main.cpp
+/* GeistDebug.cpp
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -24,35 +24,40 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "geist.h"
-#include "GeistImage.h"
-#include "GeistDocument.h"
+#include "GeistDebug.h"
 
-int
-main()
+GeistDebug:: GeistDebug()
 {
-   GeistDebug::instance()->set_level(3);
-
-   GeistObject *img = new GeistImage;
-
-   try
-   {
-      img->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Good. Can't add children to a leaf class.\n";
-   }
-
-   GeistObject *doc = new GeistDocument;
-
-   try
-   {
-      doc->add_child(new GeistImage);
-   }
-   catch (eNoChildren)
-   {
-      cout << "Ack! That should have worked!\n";
-   }
-
-   doc->render();
+   _level = 0;
 }
+
+GeistDebug* GeistDebug::_instance = 0;
+
+GeistDebug* GeistDebug::instance()
+{
+   if(_instance == 0)
+   {
+      // need to instantiate an instance
+      _instance = new GeistDebug;
+   }
+   return _instance;
+}
+
+void GeistDebug::set_level(int level)
+{  
+   _level = level;
+}
+
+// TODO - multiple args here
+void GeistDebug::print(int level, const char* msg)
+{
+   if(level <= _level)
+      cerr << msg << "\n";
+}
+
+void GeistDebug::print(int level, const string msg)
+{
+   if(level <= _level)
+      cerr << msg << "\n";
+}
+

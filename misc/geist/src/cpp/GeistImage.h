@@ -1,4 +1,4 @@
-/* geist_document.h
+/* GeistImage.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,42 +23,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef GEIST_DOCUMENT_H
-#define GEIST_DOCUMENT_H
+#ifndef GEIST_IMAGE_H
+#define GEIST_IMAGE_H
 
 #include "geist.h"
-#include "geist_object.h"
+#include "GeistObject.h"
 
-class GeistDocument : public GeistCompositeObject
+class GeistImage : public GeistObject
 {
    public:
        
-   GeistDocument();
-   GeistDocument(string name);
-   virtual ~GeistDocument();
-        
-   Imlib_Image get_image() { return _image; };
+   class eNoChildren { };  // can't add or remove children to a leaf
 
- protected:
-   
-   Imlib_Image _image;
-   string _name;
+   GeistImage(string name);
+   ~GeistImage();
+   GeistImage();
+
+   void render(Imlib_Image im) { D(1, "GeistImage::render()"); };
+   void render_partial(Imlib_Image im, Rect rect) { D(1, "GeistImage::render_partial()"); };
+
 };
 
-GeistDocument::GeistDocument()
-{
-   D(1,"GeistDocument constructor");
-}
-
-GeistDocument::GeistDocument(string name)
-{
-   _name = name;
-   D(1,"GeistDocument constructor with name");
-}
-
-GeistDocument::~GeistDocument()
-{
-   D(1,"GeistDocument destructor");
-}
-
 #endif
+
