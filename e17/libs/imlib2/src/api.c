@@ -1807,6 +1807,8 @@ imlib_image_attach_data_value(Imlib_Image image, char *key,
 {
    ImlibImage *im;
 
+   CHECK_PARAM_POINTER("imlib_image_attach_data_value", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_attach_data_value", "key", key);
    CAST_IMAGE(im, image);
    __imlib_AttachTag(im, key, value, data, destructor_function);
 }
@@ -1817,6 +1819,8 @@ imlib_image_get_attached_data(Imlib_Image image, char *key)
    ImlibImageTag *t;
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_data", "image", image, NULL);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_data", "key", key, NULL);
    CAST_IMAGE(im, image);
    t = __imlib_GetTag(im, key);
    if (t)
@@ -1830,6 +1834,8 @@ imlib_image_get_attached_value(Imlib_Image image, char *key)
    ImlibImageTag *t;
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_value", "image", image, 0);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_value", "key", key, 0);
    CAST_IMAGE(im, image);
    t = __imlib_GetTag(im, key);
    if (t)
@@ -1842,6 +1848,8 @@ imlib_image_remove_attached_data_value(Imlib_Image image, char *key)
 {
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER("imlib_image_remove_attached_data_value", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_remove_attached_data_value", "key", key);
    CAST_IMAGE(im, image);
    __imlib_RemoveTag(im, key);
 }
@@ -1852,6 +1860,8 @@ imlib_image_remove_and_free_attached_data_value(Imlib_Image image, char *key)
    ImlibImageTag *t;
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER("imlib_image_remove_and_free_attached_data_value", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_remove_and_free_attached_data_value", "key", key);
    CAST_IMAGE(im, image);
    t = __imlib_RemoveTag(im, key);
    __imlib_FreeTag(im, t);
@@ -1862,6 +1872,8 @@ imlib_save_image(Imlib_Image image, char *filename)
 {
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER("imlib_save_image", "image", image);
+   CHECK_PARAM_POINTER("imlib_save_image", "filename", filename);
    CAST_IMAGE(im, image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
@@ -1875,6 +1887,9 @@ imlib_save_image_with_progress_callback(Imlib_Image image, char *filename,
 {
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback", "image", image);
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback", "filename", filename);
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback", "progress_function", progress_function);
    CAST_IMAGE(im, image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
@@ -1888,6 +1903,9 @@ imlib_save_image_with_error_return(Imlib_Image image, char *filename,
 {
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "image", image);
+   CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "filename", filename);
+   CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "error_return", error_return);
    CAST_IMAGE(im, image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
@@ -1903,6 +1921,10 @@ imlib_save_image_with_progress_callback_and_error_return(Imlib_Image image,
 {
    ImlibImage *im;
       
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "image", image);
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "filename", filename);
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "progress_function", progress_function);
+   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "error_return", error_return);
    CAST_IMAGE(im, image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);

@@ -39,7 +39,6 @@ load (ImlibImage *im,
    if (!f)
       return 0;
 
-   if (!im->data)
      {
 	char buf[256], buf2[256];
 	/* read the header info */
@@ -127,9 +126,14 @@ load (ImlibImage *im,
 	  }
 	im->w = w;
 	im->h = h;
-	if (p == '8')
-	   UNSET_FLAG(im->flags, F_HAS_ALPHA);
-	im->format = strdup("pnm");
+	if (!im->format)
+	  {
+	     if (p == '8')
+		SET_FLAG(im->flags, F_HAS_ALPHA);
+	     else
+		UNSET_FLAG(im->flags, F_HAS_ALPHA);
+	     im->format = strdup("pnm");
+	  }
      }
    
    if (((!im->data) && (im->loader)) || (immediate_load) || (progress))
