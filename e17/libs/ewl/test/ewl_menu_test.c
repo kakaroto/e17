@@ -37,7 +37,6 @@ void
 __create_menu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *menu_win;
-	Ewl_Widget     *menu_box;
 	Ewl_Widget     *menu1, *menu2;
 	Ewl_Widget     *item;
 
@@ -52,20 +51,10 @@ __create_menu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(menu_win);
 
 	/*
-	 * Create the main box for holding the widgets
-	 */
-	menu_box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(menu_box), EWL_FLAG_FILL_FILL);
-	ewl_container_append_child(EWL_CONTAINER(menu_win), menu_box);
-	ewl_theme_data_set_str(menu_box,
-			       "/appearance/box/vertical/base/visible", "yes");
-	ewl_widget_show(menu_box);
-
-	/*
 	 * Create the menu
 	 */
 	menu1 = ewl_menu_new(NULL, "test menu");
-	ewl_container_append_child(EWL_CONTAINER(menu_box), menu1);
+	ewl_container_append_child(EWL_CONTAINER(menu_win), menu1);
 	ewl_widget_show(menu1);
 
 	/*

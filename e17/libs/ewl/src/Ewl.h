@@ -281,6 +281,7 @@ extern"C" {
 #include <ewl_text.h>
 #include <ewl_entry.h>
 
+#include <ewl_password.h>
 #include <ewl_seeker.h>
 #include <ewl_scrollbar.h>
 #include <ewl_spacer.h>

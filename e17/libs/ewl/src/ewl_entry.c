@@ -43,6 +43,8 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 			EWL_FLAG_FILL_HFILL);
 	ewl_container_intercept_callback(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
+	ewl_container_intercept_callback(EWL_CONTAINER(w),
+					 EWL_CALLBACK_DESELECT);
 
 	e->text = ewl_text_new(text);
 	ewl_container_append_child(EWL_CONTAINER(e), e->text);

@@ -102,9 +102,11 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Create the textarea to be displayed.
 	 */
+	/*
 	textarea = ewl_textarea_new(long_text);
 	ewl_container_append_child(EWL_CONTAINER(scrollpane), textarea);
 	ewl_widget_show(textarea);
+	*/
 
 	return;
 	ev_data = NULL;
