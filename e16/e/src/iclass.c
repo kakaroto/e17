@@ -74,7 +74,7 @@ TransparencySet(int transparency)
 #else
 
 void
-TransparencySet(int transparency)
+TransparencySet(int transparency __UNUSED__)
 {
 }
 
@@ -230,9 +230,6 @@ ImageStatePopulate(ImageState * is)
    EAllocColor(&is->lo);
    EAllocColor(&is->hihi);
    EAllocColor(&is->lolo);
-
-   if (is->transparent)
-      is->unloadable = 1;
 
    EDBUG_RETURN_;
 }
@@ -394,58 +391,56 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 {
    int                 apply, trans;
    int                 ww, hh;
-   int                 flags;
    PmapMask            pmml;
 
 #ifdef ENABLE_TRANSPARENCY
    Imlib_Image        *ii = NULL;
+   int                 flags;
 
-   switch (image_type)
+   flags = ICLASS_ATTR_OPAQUE;
+   if (Conf.theme.transparency > 0)
      {
-     case ST_UNKNWN:
-	flags = ICLASS_ATTR_OPAQUE;
-	break;
-     case ST_BORDER:
-	flags = Conf.st_trans.border;
-	break;
-     case ST_WIDGET:
-	flags = Conf.st_trans.widget;
-	break;
-     case ST_ICONBOX:
-	flags = Conf.st_trans.iconbox;
-	break;
-     case ST_MENU:
-	flags = Conf.st_trans.menu;
-	break;
-     case ST_MENU_ITEM:
-	flags = Conf.st_trans.menu_item;
-	break;
-     case ST_TOOLTIP:
-	flags = Conf.st_trans.tooltip;
-	break;
-     case ST_DIALOG:
-	flags = Conf.st_trans.dialog;
-	break;
-     case ST_HILIGHT:
-	flags = Conf.st_trans.hilight;
-	break;
-     case ST_PAGER:
-	flags = Conf.st_trans.pager;
-	break;
-     case ST_WARPLIST:
-	flags = Conf.st_trans.warplist;
-	break;
-     default:
-	flags = ICLASS_ATTR_OPAQUE;
-	break;
+	switch (image_type)
+	  {
+	  default:
+	  case ST_UNKNWN:
+	     flags = ICLASS_ATTR_OPAQUE;
+	     break;
+	  case ST_BORDER:
+	     flags = Conf.st_trans.border;
+	     break;
+	  case ST_WIDGET:
+	     flags = Conf.st_trans.widget;
+	     break;
+	  case ST_ICONBOX:
+	     flags = Conf.st_trans.iconbox;
+	     break;
+	  case ST_MENU:
+	     flags = Conf.st_trans.menu;
+	     break;
+	  case ST_MENU_ITEM:
+	     flags = Conf.st_trans.menu_item;
+	     break;
+	  case ST_TOOLTIP:
+	     flags = Conf.st_trans.tooltip;
+	     break;
+	  case ST_DIALOG:
+	     flags = Conf.st_trans.dialog;
+	     break;
+	  case ST_HILIGHT:
+	     flags = Conf.st_trans.hilight;
+	     break;
+	  case ST_PAGER:
+	     flags = Conf.st_trans.pager;
+	     break;
+	  case ST_WARPLIST:
+	     flags = Conf.st_trans.warplist;
+	     break;
+	  }
      }
-
-   /*
-    * is->transparent flags:
-    *   0x01: Use desktop background pixmap as base
-    *   0x02: Use root window as base (use only for transients, if at all)
-    *   0x04: Don't apply image mask to result
-    */
+   trans = (flags != ICLASS_ATTR_OPAQUE);
+#else
+   trans = 0;
 #endif
 
    apply = !pmm;
@@ -464,12 +459,17 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    pmm->type = 1;
    pmm->pmap = pmm->mask = 0;
 
-   trans = (Conf.theme.transparency ||
-	    (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
-	     imlib_image_has_alpha()));
-
 #ifdef ENABLE_TRANSPARENCY
-   if (flags != ICLASS_ATTR_OPAQUE)
+   /*
+    * is->transparent flags:
+    *   0x01: Use desktop background pixmap as base
+    *   0x02: Use root window as base (use only for transients, if at all)
+    *   0x04: Don't apply image mask to result
+    */
+   if (is->transparent && imlib_image_has_alpha())
+      trans = (is->transparent & 0x02) ? ICLASS_ATTR_GLASS : ICLASS_ATTR_BG;
+
+   if (trans)
      {
 	Window              cr;
 	Pixmap              bg;

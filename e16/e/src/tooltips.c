@@ -383,8 +383,6 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	       ST_TOOLTIP);
    IclassApply(tt->s_iclass[3], tt->s_win[3], 32, 32, 0, 0, STATE_NORMAL, 0,
 	       ST_TOOLTIP);
-   if (Conf.theme.transparency && tt->iclass->norm.normal->transparent == 0)
-      tt->iclass->norm.normal->transparent = 2;
    IclassApply(tt->iclass, tt->win, w, h, 0, 0, STATE_NORMAL, 0, ST_TOOLTIP);
    EMapRaised(disp, tt->s_win[0]);
    EMapRaised(disp, tt->s_win[1]);
