@@ -70,6 +70,8 @@ void estyle_callback_del(Evas_Object *obj, Evas_Callback_Type callback,
 			 void (*func) (void *_data, Evas_Object * _es,
 				       void *event_info));
 
+void estyle_set_type(Evas_Object *obj, int type);
+int  estyle_get_type(Evas_Object *obj);
 #ifdef __cplusplus
 }
 #endif

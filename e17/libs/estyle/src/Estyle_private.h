@@ -84,6 +84,12 @@ struct _estyle {
 	int spaces;
 
 	/*
+	 * A field for setting types
+	 * (What the values mean is up to the user)
+	 */
+	int type;
+	 
+	/*
 	 * Callbacks.
 	 */
 	Evas_List *callbacks;

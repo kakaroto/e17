@@ -78,6 +78,11 @@ Evas_Object *estyle_new(Evas *evas, char *text, char *style)
 	if (es->style)
 		_estyle_style_draw(es, text);
 
+	/*
+	 * default to type of 0
+	 */
+	es->type = 0;
+
 	estyle_set_text(obj, text);
 
 	return obj;
@@ -1058,4 +1063,30 @@ void estyle_callback_del(Evas_Object *obj, Evas_Callback_Type callback,
 			FREE(cb);
 		}
 	}
+}
+
+
+void
+estyle_set_type(Evas_Object *obj, int type)
+{
+	Estyle * es;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
+
+	es->type = type;
+
+}
+
+int 
+estyle_get_type(Evas_Object *obj)
+{
+	Estyle * es;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
+	
+	return es->type;
 }
