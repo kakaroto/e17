@@ -1,0 +1,50 @@
+#!/bin/sh
+# just compile th etets epplet - no icon ot installation - just a show of
+# widgets and stuff
+cc test.c epplet.c -o EppletTest.epplet -O3 `imlib-config --libs` `imlib-config --cflags`
+exit
+# digital clock epplet
+
+NAME=E-Cpu
+cc cpu.c epplet.c -o $NAME.epplet -g `imlib-config --libs` `imlib-config --cflags`
+cp -f $NAME.epplet $EBIN/$NAME.epplet
+chmod a+x $EBIN/$NAME.epplet
+if [ ! -d $EROOT/epplet_icons ]; then
+  mkdir $EROOT/epplet_icons;
+  chmod a+r+x $EROOT/epplet_icons;
+fi
+cp -f $NAME.icon $EROOT/epplet_icons/$NAME.icon
+chmod a+r $EROOT/epplet_icons/$NAME.icon
+
+NAME=E-Clock
+cc clock.c epplet.c -o $NAME.epplet -O2 `imlib-config --libs` `imlib-config --cflags`
+cp -f $NAME.epplet $EBIN/$NAME.epplet
+chmod a+x $EBIN/$NAME.epplet
+if [ ! -d $EROOT/epplet_icons ]; then
+  mkdir $EROOT/epplet_icons;
+  chmod a+r+x $EROOT/epplet_icons;
+fi
+cp -f $NAME.icon $EROOT/epplet_icons/$NAME.icon
+chmod a+r $EROOT/epplet_icons/$NAME.icon
+
+NAME=E-Load
+cc load.c epplet.c -o $NAME.epplet -O3 `imlib-config --libs` `imlib-config --cflags`
+cp -f $NAME.epplet $EBIN/$NAME.epplet
+chmod a+x $EBIN/$NAME.epplet
+if [ ! -d $EROOT/epplet_icons ]; then
+  mkdir $EROOT/epplet_icons;
+  chmod a+r+x $EROOT/epplet_icons;
+fi
+cp -f $NAME.icon $EROOT/epplet_icons/$NAME.icon
+chmod a+r $EROOT/epplet_icons/$NAME.icon
+
+NAME=E-Net
+cc net.c epplet.c -o $NAME.epplet -O3 `imlib-config --libs` `imlib-config --cflags`
+cp -f $NAME.epplet $EBIN/$NAME.epplet
+chmod a+x $EBIN/$NAME.epplet
+if [ ! -d $EROOT/epplet_icons ]; then
+  mkdir $EROOT/epplet_icons;
+  chmod a+r+x $EROOT/epplet_icons;
+fi
+cp -f $NAME.icon $EROOT/epplet_icons/$NAME.icon
+chmod a+r $EROOT/epplet_icons/$NAME.icon
