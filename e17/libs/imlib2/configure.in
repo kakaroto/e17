@@ -2,7 +2,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/Imlib2.h)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(imlib2, 1.0.1)
+AM_INIT_AUTOMAKE(imlib2, 1.0.2)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -347,7 +347,7 @@ AC_SUBST(dlopen_libs)
 
 AC_OUTPUT(imlib2-config Makefile loaders/Makefile src/Makefile test/Makefile \
           filters/Makefile demo/Makefile doc/Makefile imlib2.spec \
-	  debian/Makefile,
+	  ,
 [
 test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h;
 chmod +x imlib2-config
