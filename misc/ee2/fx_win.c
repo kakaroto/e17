@@ -8,7 +8,7 @@ fx_init(void)
   GtkWidget *nfr1, *nlbl, *vbox1, *sep, *btn;
 	GtkWidget *b1, *b2;
 	GtkWidget *v1, *c1, *l1;
-	GtkAdjustment *adj;
+	GtkAdjustment *adj, *adj2;
 
 	GtkWidget *dead = gtk_label_new("  ");
 	gtk_widget_show(dead);;
@@ -29,7 +29,8 @@ fx_init(void)
 	gtk_widget_show(l1);
 	gtk_box_pack_start(GTK_BOX(b1), l1, FALSE, TRUE, 0);
 
-	adj = (GtkAdjustment *) gtk_adjustment_new(1, 0, 100, 1, 5, 0);
+	adj  = (GtkAdjustment *) gtk_adjustment_new(1, 0, 100, 1, 5, 0);
+	adj2 = (GtkAdjustment *) gtk_adjustment_new(1, 0, 100, 1, 5, 0);
 	t1 = gtk_spin_button_new(adj, 0, 0);
 	gtk_widget_show(t1);
 	gtk_box_pack_start(GTK_BOX(b1), t1, TRUE, TRUE, 0);
@@ -49,7 +50,7 @@ fx_init(void)
 	gtk_widget_show(l1);
 	gtk_box_pack_start(GTK_BOX(b2), l1, FALSE, TRUE, 0);
 	
-	t2 = gtk_spin_button_new(adj, 0, 0);
+	t2 = gtk_spin_button_new(adj2, 0, 0);
 	gtk_widget_show(t2);
 	gtk_box_pack_start(GTK_BOX(b2), t2, TRUE, TRUE, 0);
 

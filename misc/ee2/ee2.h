@@ -77,6 +77,14 @@ void fx_init(void);
 void fx_blur(void);
 void fx_sharpen(void);
 
+void redm_init(void);
+
+void grm_init(void);
+
+void blm_init(void);
+
+void am_init(void);
+
 void check_cache(void);
 int check_cache_file(char *cache_file);
 

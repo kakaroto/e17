@@ -27,7 +27,7 @@ mod_init(void)
   gchar *titles[1]={"Electric Eyes 2"};
   gchar *clabels[255][1] = { {""} };
   int eek;
-  
+
   ModWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_container_set_border_width(GTK_CONTAINER(ModWin), 2);
   gtk_signal_connect_object(GTK_OBJECT(ModWin), "delete_event",
@@ -178,6 +178,14 @@ mod_init(void)
 			    GTK_SIGNAL_FUNC(CloseWindow), (gpointer) NULL);
   gtk_box_pack_start(GTK_BOX(box4), btn, TRUE, TRUE, 0);
   gtk_widget_show(btn);
+
+	/* initialize the other panels now */
+	browser_init();
+	redm_init();
+	grm_init();
+	blm_init();
+	am_init();
+	fx_init();
 }
 
 void
@@ -222,50 +230,3 @@ mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer data)
   default: break;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

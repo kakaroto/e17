@@ -65,9 +65,7 @@ ee2_init(int argc, char **argv)
   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->ok_button),
 		     "clicked", (GtkSignalFunc) SaveImageAs, SaveSel);
 
-  mod_init();
-  browser_init();
-  fx_init();
+	mod_init();
   about_init();
   webcam_init();
 	

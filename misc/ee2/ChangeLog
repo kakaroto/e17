@@ -358,3 +358,12 @@ kinda getting there though.
 
 -------------------------------------------------------------------------------
 
+Fri May 5 18:35:36 CDT 2000
+(dphase)
+
+Added in a bunch of new panels and fixed a bug with GtkAdjustment in the
+effects/filters panel - please not that the color modifie panels aren't
+working yet
+
+-------------------------------------------------------------------------------
+
