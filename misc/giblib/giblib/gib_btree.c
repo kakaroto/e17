@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 gib_btree *gib_btree_new(void *data, int sort_val)
 {
-	gib_btree *t = _emalloc(sizeof(gib_btree));
+	gib_btree *t = gib_emalloc(sizeof(gib_btree));
 	t->data = data;
 	t->val = sort_val;
 	t->left = NULL;
@@ -40,7 +40,7 @@ void       gib_btree_free(gib_btree *tree)
 {
 	if (tree->left) gib_btree_free(tree->left);
 	if (tree->right) gib_btree_free(tree->right);
-	_efree(tree);
+	gib_efree(tree);
 	return;
 }
 
@@ -48,21 +48,21 @@ void       gib_btree_free_and_data(gib_btree *tree)
 {
 	if (tree->left) gib_btree_free_and_data(tree->left);
 	if (tree->right) gib_btree_free_and_data(tree->right);
-	_efree(tree->data);
-	_efree(tree);
+	gib_efree(tree->data);
+	gib_efree(tree);
 	return;
 }
 
 void       gib_btree_free_leaf(gib_btree *leaf)
 {
-	_efree(leaf);
+	gib_efree(leaf);
 	return;
 }
 
 void       gib_btree_free_leaf_and_data(gib_btree *leaf)
 {
-	_efree(leaf->data);
-	_efree(leaf);
+	gib_efree(leaf->data);
+	gib_efree(leaf);
 	return;
 }
 

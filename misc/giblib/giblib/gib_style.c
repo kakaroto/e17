@@ -32,11 +32,11 @@ gib_style_new(char *name)
 {
    gib_style *s = NULL;
 
-   s = emalloc(sizeof(gib_style));
+   s = gib_emalloc(sizeof(gib_style));
 
    memset(s, 0, sizeof(gib_style));
    if (name)
-      s->name = estrdup(name);
+      s->name = gib_estrdup(name);
 
    return (s);
 }
@@ -47,7 +47,7 @@ gib_style_free(gib_style * s)
    if (s)
    {
       if (s->name)
-         efree(s->name);
+         gib_efree(s->name);
       if (s->bits)
       {
          gib_list *l;
@@ -60,7 +60,7 @@ gib_style_free(gib_style * s)
          }
          gib_list_free(s->bits);
       }
-      efree(s);
+      gib_efree(s);
    }
    return;
 }
@@ -70,7 +70,7 @@ gib_style_bit_new(int x_offset, int y_offset, int r, int g, int b, int a)
 {
    gib_style_bit *sb;
 
-   sb = emalloc(sizeof(gib_style_bit));
+   sb = gib_emalloc(sizeof(gib_style_bit));
    memset(sb, 0, sizeof(gib_style_bit));
 
    sb->x_offset = x_offset;
@@ -87,7 +87,7 @@ void
 gib_style_bit_free(gib_style_bit * s)
 {
    if (s)
-      efree(s);
+      gib_efree(s);
    return;
 }
 
@@ -105,7 +105,7 @@ gib_style_dup(gib_style * s)
 void
 gib_dup_style_bit(void **dest, void *data)
 {
-   *dest = emalloc(sizeof(gib_style_bit));
+   *dest = gib_emalloc(sizeof(gib_style_bit));
    memcpy(*dest, data, sizeof(gib_style_bit));
 
    return;
@@ -166,7 +166,7 @@ gib_style_new_from_ascii(char *file)
             if (current[l] == '\n')
                current[l] = '\0';
             if (l > 6)
-               ret->name = estrdup(current + 6);
+               ret->name = gib_estrdup(current + 6);
             continue;
          }
          else

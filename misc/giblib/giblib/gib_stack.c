@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 gib_stack *gib_stack_new()
 {
-	gib_stack *q = _emalloc(sizeof(gib_stack));
+	gib_stack *q = gib_emalloc(sizeof(gib_stack));
 	q->base = NULL;
 	return q;
 }
@@ -37,7 +37,7 @@ gib_stack *gib_stack_new()
 void       gib_stack_free(gib_stack *stack)
 {
 	gib_list_free(stack->base);
-	_efree(stack);
+	gib_efree(stack);
 	return;
 }
 
@@ -55,7 +55,7 @@ void          *gib_stack_pop(gib_stack *stack)
 	if (head) {
 		data = head->data;
 		stack->base = head->next;
-		_efree(head);
+		gib_efree(head);
 		return data;
 	}
 	return NULL;

@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 gib_queue *gib_queue_new()
 {
-	gib_queue *q = _emalloc(sizeof(gib_queue));
+	gib_queue *q = gib_emalloc(sizeof(gib_queue));
 	q->base = NULL;
 	return q;
 }
@@ -37,7 +37,7 @@ gib_queue *gib_queue_new()
 void       gib_queue_free(gib_queue *queue)
 {
 	gib_list_free(queue->base);
-	_efree(queue);
+	gib_efree(queue);
 	return;
 }
 
@@ -55,7 +55,7 @@ void          *gib_queue_next(gib_queue *queue)
 	if (head) {
 		data = head->data;
 		queue->base = head->next;
-		_efree(head);
+		gib_efree(head);
 		return data;
 	}
 	return NULL;

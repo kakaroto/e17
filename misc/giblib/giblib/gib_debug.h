@@ -30,15 +30,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
-#define emalloc(a) malloc(a)
-#define efree(a) free(a)
-#define estrdup(a) strdup(a)
-#define erealloc(a,b) realloc(a,b)
+#define gib_emalloc(a) malloc(a)
+#define gib_efree(a) free(a)
+#define gib_estrdup(a) strdup(a)
+#define gib_erealloc(a,b) realloc(a,b)
 #else
-#define emalloc(a) _emalloc(a)
-#define efree(a) _efree(a)
-#define estrdup(a) _estrdup(a)
-#define erealloc(a,b) _erealloc(a,b)
+#define gib_emalloc(a) _gib_emalloc(a)
+#define gib_efree(a) _gib_efree(a)
+#define gib_estrdup(a) _gib_estrdup(a)
+#define gib_erealloc(a,b) _gib_erealloc(a,b)
 #endif
 
 #endif

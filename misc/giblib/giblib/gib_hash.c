@@ -25,11 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "gib_hash.h"
 #include "gib_utils.h"
+#include "gib_debug.h"
 
 gib_hash_node *gib_hash_node_new(char *key, void *data)
 {
-	gib_hash_node *node = _emalloc(sizeof(gib_hash_node));
-	node->key = _estrdup(key);
+	gib_hash_node *node = gib_emalloc(sizeof(gib_hash_node));
+	node->key = gib_estrdup(key);
 	GIB_LIST(node)->data = data;
 	GIB_LIST(node)->next = NULL;
 	GIB_LIST(node)->prev = NULL;
@@ -39,21 +40,21 @@ gib_hash_node *gib_hash_node_new(char *key, void *data)
 
 void           gib_hash_node_free(gib_hash_node *node)
 {
-	_efree(node->key);
-	_efree(node);
+	gib_efree(node->key);
+	gib_efree(node);
 	return;
 }
 
 void           gib_hash_node_free_and_data(gib_hash_node *node)
 {
-	_efree(node->list.data);
+	gib_efree(node->list.data);
 	gib_hash_node_free(node);
 	return;
 }
 
 gib_hash *gib_hash_new()
 {
-	gib_hash *hash = _emalloc(sizeof(gib_hash));
+	gib_hash *hash = gib_emalloc(sizeof(gib_hash));
 	hash->base = gib_hash_node_new("__gib_hash_new",NULL);
 	return hash;
 }
@@ -61,14 +62,14 @@ gib_hash *gib_hash_new()
 void      gib_hash_free(gib_hash *hash)
 {
 	gib_list_free(GIB_LIST(hash->base));
-	_efree(hash);
+	gib_efree(hash);
 	return;
 }
 
 void      gib_hash_free_and_data(gib_hash *hash)
 {
 	gib_list_free_and_data(GIB_LIST(hash->base));
-	_efree(hash);
+	gib_efree(hash);
 	return;
 }
 

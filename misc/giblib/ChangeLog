@@ -1,3 +1,7 @@
+Tue Feb 25 13:03:01 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fix up e* symbols, prevent clashing when building static.
+
 Sat Jan 26 15:40:01 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * New lib version, 1.0.4, new giblib version, 1.2.2 - added wrapper for

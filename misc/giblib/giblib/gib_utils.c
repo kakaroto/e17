@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eprintf: print error message and exit */
 void
-eprintf(char *fmt, ...)
+gib_eprintf(char *fmt, ...)
 {
    va_list args;
 
@@ -47,7 +47,7 @@ eprintf(char *fmt, ...)
 
 /* weprintf: print warning message and continue */
 void
-weprintf(char *fmt, ...)
+gib_weprintf(char *fmt, ...)
 {
    va_list args;
 
@@ -65,51 +65,51 @@ weprintf(char *fmt, ...)
 
 /* estrdup: duplicate a string, report if error */
 char *
-_estrdup(char *s)
+_gib_estrdup(char *s)
 {
    char *t;
    if(!s)
       return NULL;
    t = (char *) malloc(strlen(s) + 1);
    if (t == NULL)
-      eprintf("estrdup(\"%.20s\") failed:", s);
+      gib_eprintf("estrdup(\"%.20s\") failed:", s);
    strcpy(t, s);
    return t;
 }
 
 /* emalloc: malloc and report if error */
 void *
-_emalloc(size_t n)
+_gib_emalloc(size_t n)
 {
    void *p;
 
    p = malloc(n);
    if (p == NULL)
-      eprintf("malloc of %u bytes failed:", n);
+      gib_eprintf("malloc of %u bytes failed:", n);
    return p;
 }
 
 /* erealloc: realloc and report if error */
 void *
-_erealloc(void *ptr, size_t n)
+_gib_erealloc(void *ptr, size_t n)
 {
    void *p;
 
    p = realloc(ptr, n);
    if (p == NULL)
-      eprintf("realloc of %p by %u bytes failed:", ptr, n);
+      gib_eprintf("realloc of %p by %u bytes failed:", ptr, n);
    return p;
 }
 
 /* efree: just do the free for now */
 void
-_efree(void *p)
+_gib_efree(void *p)
 {
    free(p);
 }
 
 char *
-stroflen(char c, int l)
+gib_stroflen(char c, int l)
 {
    static char buf[1024];
    int i = 0;

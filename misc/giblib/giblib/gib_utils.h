@@ -39,13 +39,13 @@ extern "C"
 {
 #endif
 
-void eprintf(char *fmt, ...);
-void weprintf(char *fmt, ...);
-char *_estrdup(char *s);
-void *_emalloc(size_t n);
-void _efree(void *p);
-void *_erealloc(void *ptr, size_t n);
-char *stroflen(char c, int l);
+void gib_eprintf(char *fmt, ...);
+void gib_weprintf(char *fmt, ...);
+char *_gib_estrdup(char *s);
+void *_gib_emalloc(size_t n);
+void _gib_efree(void *p);
+void *_gib_erealloc(void *ptr, size_t n);
+char *gib_stroflen(char c, int l);
 
 #ifdef __cplusplus
 }

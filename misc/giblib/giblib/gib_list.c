@@ -33,7 +33,7 @@ gib_list_new(void)
 {
    gib_list *l;
 
-   l = (gib_list *) emalloc(sizeof(gib_list));
+   l = (gib_list *) gib_emalloc(sizeof(gib_list));
    l->data = NULL;
    l->next = NULL;
    l->prev = NULL;
@@ -52,7 +52,7 @@ gib_list_free(gib_list * l)
    {
       ll = l;
       l = l->next;
-      efree(ll);
+      gib_efree(ll);
    }
 
    return;
@@ -70,8 +70,8 @@ gib_list_free_and_data(gib_list * l)
    {
       ll = l;
       l = l->next;
-      efree(ll->data);
-      efree(ll);
+      gib_efree(ll->data);
+      gib_efree(ll);
    }
    return;
 }
@@ -233,7 +233,7 @@ gib_list_pop_to_end(gib_list * root, gib_list * l)
 {
    root = gib_list_unlink(root, l);
    root = gib_list_add_end(root, l->data);
-   efree(l);
+   gib_efree(l);
 
    return (root);
 }
@@ -349,7 +349,7 @@ gib_list_randomize(gib_list * list)
    len = gib_list_length(list);
    if (len <= 1)
       return (list);
-   farray = (gib_list **) emalloc(sizeof(gib_list *) * len);
+   farray = (gib_list **) gib_emalloc(sizeof(gib_list *) * len);
    for (f = list, i = 0; f; f = f->next, i++)
    {
       farray[i] = f;
@@ -374,7 +374,7 @@ gib_list_randomize(gib_list * list)
    }
    f->prev = farray[len - 2];
    f->next = NULL;
-   efree(farray);
+   gib_efree(farray);
    return (list);
 }
 
@@ -416,7 +416,7 @@ gib_list *
 gib_list_remove(gib_list * root, gib_list * l)
 {
    root = gib_list_unlink(root, l);
-   efree(l);
+   gib_efree(l);
    return (root);
 }
 
@@ -551,7 +551,7 @@ gib_string_split(const char *string, const char *delimiter)
          char *new_string;
 
          len = s - string;
-         new_string = emalloc(sizeof(char) * (len + 1));
+         new_string = gib_emalloc(sizeof(char) * (len + 1));
 
          strncpy(new_string, string, len);
          new_string[len] = 0;
@@ -565,7 +565,7 @@ gib_string_split(const char *string, const char *delimiter)
    if (*string)
    {
       n++;
-      string_list = gib_list_add_front(string_list, estrdup((char *)string));
+      string_list = gib_list_add_front(string_list, gib_estrdup((char *)string));
    }
 
    string_list = gib_list_reverse(string_list);
@@ -617,7 +617,7 @@ gib_strjoin(const char *separator, ...)
       }
    }
    else
-      string = estrdup("");
+      string = gib_estrdup("");
    va_end(args);
 
    return string;
