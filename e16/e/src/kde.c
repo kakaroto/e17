@@ -61,6 +61,7 @@ static Atom         KDE_WIN_ICONIFIED = 0;
 static Atom         KDE_WIN_MAXIMIZED = 0;
 static Atom         KDE_WIN_STICKY = 0;
 static Atom         KDE_WIN_ICON_GEOMETRY = 0;
+static Atom         KDE_WIN_TITLE = 0;
 
 /* the modules I have to communicate to */
 typedef struct KModuleList
@@ -180,6 +181,13 @@ KDE_NewWindow(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
+   if (!getSimpleHint(ewin->win, KDE_WIN_TITLE))
+     {
+	XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
+			KDE_WIN_TITLE, 8, PropModeReplace,
+			(unsigned char *)ewin->client.title,
+			strlen(ewin->client.title));
+     }
    if (!(ewin->internal))
       KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
 
@@ -261,8 +269,18 @@ KDE_AddModule(Window win)
 	      for (i = 0; i < num; i++)
 		{
 		   if (!(lst[i]->internal))
-		      KDE_ClientMessage(win, KDE_MODULE_WIN_ADD, lst[i]->win,
-					CurrentTime);
+		     {
+			if (!getSimpleHint(lst[i]->win, KDE_WIN_TITLE))
+			  {
+			     XChangeProperty(disp, lst[i]->win, KDE_WIN_TITLE,
+					     KDE_WIN_TITLE, 8, PropModeReplace,
+					(unsigned char *)lst[i]->client.title,
+					     strlen(lst[i]->client.title));
+
+			  }
+			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD, lst[i]->win,
+					  CurrentTime);
+		     }
 		}
 	      Efree(lst);
 	   }
@@ -371,6 +389,8 @@ KDE_Init(void)
 
 	KDE_WIN_MAXIMIZED = XInternAtom(disp, "KWM_WIN_MAXIMIZED", False);
 
+	KDE_WIN_TITLE = XInternAtom(disp, "KWM_WIN_TITLE", False);
+
 	KDE_WIN_ICON_GEOMETRY = XInternAtom(disp, "KWM_WIN_ICON_GEOMETRY",
 					    False);
 
@@ -447,9 +467,9 @@ KDE_Init(void)
    SETSTR(KWM_STRING_TODESKTOP, "Move To");
    SETSTR(KWM_STRING_ONTOCURRENTDESKTOP, "Bring Here");
 
-   /* and we tell the root window to announce we're KDE compliant */
-   setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
+   KDE_SetNumDesktops();
 
+   /* and we tell the root window to announce we're KDE compliant */
    setSimpleHint(root.win, KDE_RUNNING, 1);
 
    mode.kde_support = 1;
@@ -956,12 +976,30 @@ void
 KDE_SetNumDesktops(void)
 {
 
+   char                s[32];
+   int                 i;
+
    EDBUG(6, "KDE_SetRootArea");
 
    setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
 
    KDE_SendMessagesToModules(KDE_MODULE_DESKTOP_NUMBER_CHANGE,
 			     mode.numdesktops);
+   for (i = 0; i < mode.numdesktops; i++)
+     {
+
+	if (!KDE_DESKTOP_NAME[i])
+	  {
+	     Esnprintf(s, sizeof(s), "KWM_DESKTOP_NAME_%d", i + 1);
+	     KDE_DESKTOP_NAME[i] = XInternAtom(disp, s, False);
+	  }
+	if (!getSimpleHint(root.win, KDE_DESKTOP_NAME[i]))
+	  {
+	     Esnprintf(s, sizeof(s), "Desk %d", i);
+	     XChangeProperty(disp, root.win, KDE_DESKTOP_NAME[i], XA_STRING, 8,
+			  PropModeReplace, (unsigned char *)s, strlen(s) + 1);
+	  }
+     }
 
    EDBUG_RETURN_;
 }

@@ -1877,3 +1877,11 @@ Thu Sep 16 17:10:27 PDT 1999
 (Mandrake)
 
 task list updates on new windows and old windows dying off in kpanel now (oops)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 18:36:16 PDT 1999
+(Mandrake)
+
+closer to having the client titles show up in the taskbar.  at least the
+desktops show up in the pager now.  (more kde work)
