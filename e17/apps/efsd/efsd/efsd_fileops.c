@@ -44,11 +44,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_globals.h>
 #include <efsd_io.h>
 #include <efsd_macros.h>
-#include <efsd_magic.h>
+#include <efsd_filetype.h>
 #include <efsd_main.h>
 #include <efsd_meta.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
+#include <efsd_statcache.h>
 #include <efsd_types.h>
 
 
@@ -257,7 +258,7 @@ efsd_file_start_monitor(EfsdCommand *cmd, int client)
 {  
   D_ENTER;
 
-  if (efsd_fam_start_monitor(cmd, client) >= 0)
+  if (efsd_fam_start_monitor(EFSD_FAM_MONITOR_NORMAL, cmd, client) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
@@ -279,14 +280,12 @@ efsd_file_stop_monitor(EfsdCommand *cmd, int client)
 int 
 efsd_file_stat(EfsdCommand *cmd, int client)
 {
-  struct stat   *st;
+  struct stat   *st = NULL;
   int            result;
 
   D_ENTER;
 
-  st = (struct stat*)malloc(sizeof(struct stat));
-
-  if (lstat(cmd->efsd_file_cmd.file, st) >= 0)
+  if ((st = efsd_stat(cmd->efsd_file_cmd.file)) != NULL)
     {
       D(("Stat suceeded, sending struct...\n"));
       result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
@@ -296,8 +295,6 @@ efsd_file_stat(EfsdCommand *cmd, int client)
       D(("Stat failed, sending FAILURE.\n"));
       result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
     }
-
-  FREE(st);
 
   D_RETURN_(result);
 }
@@ -321,17 +318,17 @@ efsd_file_readlink(EfsdCommand *cmd, int client)
 
 
 int  
-efsd_file_getmime(EfsdCommand *cmd, int client)
+efsd_file_getfile(EfsdCommand *cmd, int client)
 {
   static int initialized = 0;
-  char *mime = NULL;
+  char *file = NULL;
   int   result;
 
   D_ENTER;
 
   if (!initialized)
     {
-      if (efsd_magic_init())
+      if (efsd_filetype_init())
 	{
 	  D(("Magic initialization succeeded.\n"));
 	  initialized = 1;
@@ -342,14 +339,14 @@ efsd_file_getmime(EfsdCommand *cmd, int client)
 	}
     }
 
-  if ( (mime = efsd_magic_get(cmd->efsd_file_cmd.file)) != NULL)
+  if ( (file = efsd_filetype_get(cmd->efsd_file_cmd.file)) != NULL)
     {
-      D(("MIME lookup succeded: %s\n", mime));
-      result = send_reply(cmd, SUCCESS, 0, strlen(mime)+1, mime, client);
+      D(("FILE lookup succeded: %s\n", file));
+      result = send_reply(cmd, SUCCESS, 0, strlen(file)+1, file, client);
     }
   else
     {
-      D(("MIME lookup failed -- sending FAILURE.\n"));
+      D(("FILE lookup failed -- sending FAILURE.\n"));
       result = send_reply(cmd, FAILURE, 0, 0, NULL, client);
     }
 

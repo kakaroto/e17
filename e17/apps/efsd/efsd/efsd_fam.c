@@ -41,7 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 EfsdList *monitors = NULL;
 
-static EfsdFamRequest * efsd_fam_new_request(int client, EfsdCmdId id,
+static EfsdFamRequest * efsd_fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
 					     int num_options, EfsdOption *options);
 
 static void             efsd_fam_free_request(EfsdFamRequest *efr);
@@ -49,7 +49,7 @@ static void             efsd_fam_free_request(EfsdFamRequest *efr);
 /* Increment use count for file monitor, or start
    new monitor if file is not monitored yet.
  */
-static void             efsd_fam_add_monitor(EfsdCommand *com, int client);
+static void             efsd_fam_add_monitor(EfsdFamMonType type, EfsdCommand *com, int client);
 
 /* Decreases use count on file. If count drops to
    zero, monitoring is stopped.
@@ -58,7 +58,7 @@ static int              efsd_fam_del_monitor(EfsdCommand *com, int client);
 
 
 static EfsdFamRequest *
-efsd_fam_new_request(int client, EfsdCmdId id,
+efsd_fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
 		     int num_options, EfsdOption *options)
 {
   EfsdFamRequest   *efr;
@@ -66,7 +66,24 @@ efsd_fam_new_request(int client, EfsdCmdId id,
   D_ENTER;
 
   efr = NEW(EfsdFamRequest);
-  efr->client      = client;
+  efr->type        = type;
+
+  /* Okay -- this is tricky -- only the NORMAL monitor type
+     actually causes file monitoring events to be sent to
+     clients. So the question is what to fill in as client
+     numbers for the others. We just use the monitor types,
+     because they're all defined as negative ints.
+
+     We can then check whether we're already monitoring a
+     file using a specific type by simply comparing the
+     client numbers in efsd_fam_add_monitor()...
+  */
+
+  if (type != EFSD_FAM_MONITOR_NORMAL)
+    efr->client    = type;
+  else
+    efr->client    = client;
+
   efr->id          = id;
   efr->num_options = num_options;
   efr->options     = options;
@@ -97,6 +114,13 @@ void
 efsd_fam_init(void)
 {
   D_ENTER;
+
+  if ((FAMOpen(&famcon)) < 0)
+    {
+      fprintf(stderr, "Can not connect to fam -- exiting.\n");
+      exit(-1);
+    }
+
   D_RETURN;
 }
 
@@ -111,7 +135,7 @@ efsd_fam_cleanup(void)
 
 
 int
-efsd_fam_start_monitor(EfsdCommand *com, int client)
+efsd_fam_start_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
 {
   D_ENTER;
 
@@ -119,10 +143,16 @@ efsd_fam_start_monitor(EfsdCommand *com, int client)
     {
       EfsdFamMonitor  *m;
       
-      m = efsd_fam_new_monitor(com, client, FULL);
+      m = efsd_fam_new_monitor(type, com, client);
       monitors = efsd_list_prepend(monitors, m);
 
-      if (efsd_misc_file_is_dir(m->filename))
+      if (type == EFSD_FAM_MONITOR_INTERNAL)
+	{
+	  /* Placing this in an extra case saves us the stat ... */
+	  D(("Starting monitoring file %s.\n", m->filename));
+	  FAMMonitorFile(&famcon, m->filename, m->fam_req, m);
+	}
+      else if (efsd_misc_file_is_dir(m->filename))
 	{
 	  D(("Starting monitoring dir %s.\n", m->filename));
 	  FAMMonitorDirectory(&famcon, m->filename, m->fam_req, m);
@@ -135,7 +165,7 @@ efsd_fam_start_monitor(EfsdCommand *com, int client)
     }
   else
     {
-      efsd_fam_add_monitor(com, client);
+      efsd_fam_add_monitor(type, com, client);
     }
 
   D_RETURN_(0);
@@ -150,20 +180,46 @@ efsd_fam_stop_monitor(EfsdCommand *com, int client)
 }
 
 
+int              
+efsd_fam_start_monitor_internal(char *filename)
+{
+  EfsdCommand       com;
+
+  D_ENTER;
+
+  memset(&com, 0, sizeof(EfsdCommand));
+  com.efsd_file_cmd.file = filename;
+
+  D_RETURN_(efsd_fam_start_monitor(EFSD_FAM_MONITOR_INTERNAL, &com, 0));
+}
+
+
+int              
+efsd_fam_stop_monitor_internal(char *filename)
+{
+  EfsdCommand       com;
+
+  D_ENTER;
+
+  memset(&com, 0, sizeof(EfsdCommand));
+  com.efsd_file_cmd.file = filename;
+
+  D_RETURN_(efsd_fam_stop_monitor(&com, EFSD_FAM_MONITOR_INTERNAL));
+}
+
+
 int          
 efsd_fam_is_monitored(char *filename)
 {
   EfsdList *l;
+  EfsdFamMonitor *m;
 
   D_ENTER;
 
-  l = efsd_list_head(monitors);
-  
-  while (l)
+  for (l = efsd_list_head(monitors); l; l = efsd_list_next(l))
     {
-      EfsdFamMonitor *m;
-
       m = (EfsdFamMonitor *)efsd_list_data(l);
+
       if (!strcmp(m->filename, filename))
 	D_RETURN_(1);
     }
@@ -179,7 +235,7 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 
   D_ENTER;
 
-  m = efsd_fam_new_monitor(com, client, SIMPLE);
+  m = efsd_fam_new_monitor(EFSD_FAM_MONITOR_NORMAL, com, client);
 
   if (efsd_misc_file_is_dir(m->filename))
     FAMMonitorDirectory(&famcon, m->filename, m->fam_req, m);
@@ -193,7 +249,7 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 
 
 EfsdFamMonitor *         
-efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
+efsd_fam_new_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
 {
   EfsdFamRequest   *efr;
   EfsdFamMonitor   *m;
@@ -201,12 +257,13 @@ efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
   D_ENTER;
 
   m = NEW(EfsdFamMonitor);
+  memset(m, 0, sizeof(EfsdFamMonitor));
 
   m->filename  = strdup(com->efsd_file_cmd.file);
   m->fam_req   = NEW(FAMRequest);
   m->clients   = NULL;
   
-  efr = efsd_fam_new_request(client, com->efsd_file_cmd.id,
+  efr = efsd_fam_new_request(type, client, com->efsd_file_cmd.id,
 			     com->efsd_file_cmd.num_options,
 			     com->efsd_file_cmd.options);
 
@@ -223,7 +280,6 @@ efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
   
   m->clients   = efsd_list_prepend(m->clients, efr);				   
   m->use_count = 1;
-  m->type      = type;
 
   D_RETURN_(m);
 }
@@ -250,7 +306,7 @@ efsd_fam_free_monitor(EfsdFamMonitor *m)
 
 
 static void
-efsd_fam_add_monitor(EfsdCommand *com, int client)
+efsd_fam_add_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
 {
   EfsdList         *l;
   EfsdList         *l2 = NULL;
@@ -267,9 +323,6 @@ efsd_fam_add_monitor(EfsdCommand *com, int client)
       m = (EfsdFamMonitor *)efsd_list_data(l);
       if (!strcmp(m->filename, f))
 	{
-	  D(("Incrementing usecount for monitoring file %s.\n", f));
-	  m->use_count++;
-
 	  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
 	    {
 	      if (((EfsdFamRequest*)efsd_list_data(l2))->client == client)
@@ -280,13 +333,18 @@ efsd_fam_add_monitor(EfsdCommand *com, int client)
 	    {	      
 	      EfsdFamRequest *efr;
 
-	      efr = efsd_fam_new_request(client, com->efsd_file_cmd.id,
+	      D(("Incrementing usecount for monitoring file %s.\n", f));
+	      m->use_count++;
+
+	      efr = efsd_fam_new_request(type, client, com->efsd_file_cmd.id,
 					 com->efsd_file_cmd.num_options,
 					 com->efsd_file_cmd.options);
 
 	      m->clients = efsd_list_prepend(m->clients, efr);
 	      efsd_fam_force_startstop_monitor(com, client);
 	    }
+
+	  /* No need to iterate over the other monitors ... */
 
 	  D_RETURN;
 	}
@@ -322,6 +380,8 @@ efsd_fam_del_monitor(EfsdCommand *com, int client)
 	    {
 	      D(("Use count is zero -- stopping monitoring of %s.\n", f));
 	      FAMCancelMonitor(&famcon, m->fam_req);
+
+	      /* Actual cleanup happens when FAMAcknowledge is seen ... */
 	    }
 	  else
 	    {
@@ -407,16 +467,16 @@ efsd_fam_cleanup_client(int client)
 
       if (c)
 	{
+	  --(m->use_count);
 	  D(("Use count: %i\n", m->use_count));
 
-	  if (--(m->use_count) == 0)
+	  if (m->use_count == 0)
 	    {
 	      /* Use count dropped to zero -- stop monitoring. */
 	      D(("Stopping monitoring %s.\n", m->filename));
 	      FAMCancelMonitor(&famcon, m->fam_req);
-	      l = NULL;
 	    }
-	  else
+	  else if (m->use_count > 0)
 	    {
 	      if (!efsd_list_prev(c) && !efsd_list_next(c))
 		{
@@ -428,6 +488,10 @@ efsd_fam_cleanup_client(int client)
 	      /* Use count not zero, but remove client from list of users */
 	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)efsd_fam_free_request);
 	    }
+	  /* I *think* m->use_count < 0 can happen in weird cases
+	     when clients die etc. Doing nothing should be the
+	     right thing to do here ...
+	  */
 	}
 
       l = efsd_list_next(l);

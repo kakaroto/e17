@@ -151,10 +151,10 @@ sub write_magic {
 	  e_db_int_set($db_file, $key, $$magic_ptr{"value"});
 	}
     }
-  if (defined($$magic_ptr{"mime"}))
+  if (defined($$magic_ptr{"filetype"}))
     {
-      $key = $s . "mimetype";
-      e_db_str_set($db_file, $key, $$magic_ptr{"mime"});
+      $key = $s . "filetype";
+      e_db_str_set($db_file, $key, $$magic_ptr{"filetype"});
     }
 }
 
@@ -357,30 +357,14 @@ sub do_it {
 	     $item =~ s/(-+)$//;         # remove any dashes at end
 	     $item = lc($item);
 
-	     if ($level == 0)
+	     if (length($item) > 0)
 	       {
-		 if (length($item) > 0)
-		   {
-		     if (!($item =~ /^.*\/.*$/))
-		       {
-			 $item = $item . "/";
-		       }
-		     else
-		       {
-			 $item = $item . "-";
-		       }
-		   }
-	       }
-	     else
-	       {
-		 if (length($item) > 0)
-		   {
-		     $item = $item . "-";
-		   }
+		 $item = $item . "/";
 	       }
 
 	     $item =~ s/-+/-/g;
-	     $magic{"mime"} = $item;
+	     $item =~ s/\/+/\//g;
+	     $magic{"filetype"} = $item;
 
 	     write_magic(\@indices, $level, \%magic);
 	   }

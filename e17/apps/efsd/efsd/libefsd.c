@@ -377,7 +377,7 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
 
       /* sanity check -- pass only options that make sense. */
       if ((op->type == EFSD_OP_LS_GET_STAT) ||
-	  (op->type == EFSD_OP_LS_GET_MIME) ||
+	  (op->type == EFSD_OP_LS_GET_FILE) ||
 	  (op->type == EFSD_OP_LS_GET_META))
 	{
 	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
@@ -452,13 +452,15 @@ efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
   cmd.efsd_set_metadata_cmd.key = strdup(key);
   cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
   
-  if (!efsd_misc_file_exists(cmd.efsd_set_metadata_cmd.file))
+  /*
+    if (!efsd_misc_file_exists(cmd.efsd_set_metadata_cmd.file))
     {
       D(("File '%s' doesn't exist.\n",
 	 cmd.efsd_set_metadata_cmd.file));
       efsd_cmd_cleanup(&cmd);
       D_RETURN_(-1);
     }
+  */
   
   if (send_command(ec, &cmd) < 0)
     {
@@ -489,6 +491,7 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
   cmd.efsd_get_metadata_cmd.key = strdup(key);
   cmd.efsd_get_metadata_cmd.file = get_full_path(filename);
 
+  /*
   if (!efsd_misc_file_exists(cmd.efsd_get_metadata_cmd.file))
     {
       D(("File '%s' doesn't exist.\n",
@@ -496,6 +499,7 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
       efsd_cmd_cleanup(&cmd);
       D_RETURN_(-1);
     }
+  */
 
   if (send_command(ec, &cmd) < 0)
     {
@@ -665,7 +669,7 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, int num_options, ...)
 
       /* sanity check -- pass only options that make sense. */
       if ((op->type == EFSD_OP_LS_GET_STAT) ||
-	  (op->type == EFSD_OP_LS_GET_MIME) ||
+	  (op->type == EFSD_OP_LS_GET_FILE) ||
 	  (op->type == EFSD_OP_LS_GET_META))
 	{
 	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
@@ -714,10 +718,10 @@ efsd_readlink(EfsdConnection *ec, char *filename)
 
 
 EfsdCmdId      
-efsd_get_mimetype(EfsdConnection *ec, char *filename)
+efsd_get_filetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_GETMIME, filename, 0, NULL));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_GETFILE, filename, 0, NULL));
 }
 
 
@@ -738,10 +742,10 @@ efsd_op_get_metadata(char *key, EfsdDatatype type)
 
 
 EfsdOption    *
-efsd_op_get_mimetype(void)
+efsd_op_get_filetype(void)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_get_mimetype());
+  D_RETURN_(efsd_option_new_get_filetype());
 }
 
 

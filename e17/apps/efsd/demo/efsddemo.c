@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -108,6 +109,13 @@ void read_answers_selecting(EfsdConnection *ec)
 
 void handle_efsd_event(EfsdEvent *ee)
 {
+  static struct timeval tv;
+  static struct timeval tv2;
+  
+  gettimeofday(&tv2, NULL);
+  printf("%li.%li ", tv2.tv_sec-tv.tv_sec, tv2.tv_usec-tv.tv_usec);
+  tv = tv2;
+
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
@@ -281,12 +289,12 @@ void handle_efsd_event(EfsdEvent *ee)
 	      printf("target is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
 	  break;
-	case EFSD_CMD_GETMIME:
-	  printf("Getmime event %i\n", 
+	case EFSD_CMD_GETFILE:
+	  printf("Getfile event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  if (ee->efsd_reply_event.status == SUCCESS)
 	    {
-	      printf("mimetype is %s\n", (char*)ee->efsd_reply_event.data);
+	      printf("filetype is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
 	  break;
 	case EFSD_CMD_CLOSE:
@@ -360,13 +368,13 @@ main(int argc, char** argv)
       exit(0);
     }
 
-  /* MIME type tests */
+  /* FILE type tests */
   for (i = (blocking ? 1 : 2); i < argc; i++)
     {
-      if ((id = efsd_get_mimetype(ec, argv[i])) >= 0)
-	printf("Requesting mimetype for '%s'.\n", argv[i]);
+      if ((id = efsd_get_filetype(ec, argv[i])) >= 0)
+	printf("Requesting filetype for '%s'.\n", argv[i]);
       else
-	printf("Couldn't issue getmime command.\n");      
+	printf("Couldn't issue getfile command.\n");      
     }
 
   sleep(2);
@@ -439,7 +447,17 @@ main(int argc, char** argv)
   /* List contents of a directory */
   if ((id = efsd_listdir(ec, getenv("HOME"), 2,
 			 efsd_op_get_stat(),
-			 efsd_op_get_mimetype())) >= 0)
+			 efsd_op_get_filetype())) >= 0)
+    printf("Listing directory, command ID %i\n", id);
+  else
+    printf("Couldn't issue ls command.\n");
+  
+  sleep(2);
+
+  /* List again -- this tests both the stat and filetype caches */
+  if ((id = efsd_listdir(ec, getenv("HOME"), 2,
+			 efsd_op_get_stat(),
+			 efsd_op_get_filetype())) >= 0)
     printf("Listing directory, command ID %i\n", id);
   else
     printf("Couldn't issue ls command.\n");

@@ -58,14 +58,14 @@ efsd_option_new_get_metadata(char *key, EfsdDatatype type)
 
 
 EfsdOption *
-efsd_option_new_get_mimetype(void)
+efsd_option_new_get_filetype(void)
 {
   EfsdOption *eo;
 
   D_ENTER;
   eo = NEW(EfsdOption);
   memset(eo, 0, sizeof(EfsdOption));
-  eo->type = EFSD_OP_LS_GET_MIME;
+  eo->type = EFSD_OP_LS_GET_FILE;
   D_RETURN_(eo);
 }
 
@@ -109,7 +109,7 @@ efsd_option_cleanup(EfsdOption *eo)
       break;
     case EFSD_OP_LS_GET_STAT:
       break;
-    case EFSD_OP_LS_GET_MIME:
+    case EFSD_OP_LS_GET_FILE:
       break;
     case EFSD_OP_LS_GET_META:
       FREE(eo->efsd_op_ls_getmeta.key);

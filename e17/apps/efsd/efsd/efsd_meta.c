@@ -38,13 +38,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
+#include <efsd_statcache.h>
 
 static unsigned int   hash_filename(char *filename);
-static char *meta_db_get_file(char *filename);
-static int   meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
-static void *meta_db_get_data(EfsdGetMetadataCmd *egmc,
-			      char *dbfile, int *data_len);
-static char *get_full_key(char *filename, char* key);
+static char          *meta_db_get_file(char *filename);
+static int            meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
+static void          *meta_db_get_data(EfsdGetMetadataCmd *egmc,
+				       char *dbfile, int *data_len);
+static char          *get_full_key(char *filename, char* key);
 
 
 static unsigned int   
@@ -70,7 +71,7 @@ meta_db_get_file(char *filename)
   char          *path, *file;
   int            use_home_dir = FALSE;
   unsigned int   h;
-  struct stat    st;
+  struct stat   *st;
 
   D_ENTER;
 
@@ -110,7 +111,7 @@ meta_db_get_file(char *filename)
       if (efsd_misc_file_writeable(path) &&
 	  efsd_misc_file_execable(path))
 	{
-	  if (stat(path, &st) < 0)
+	  if ((st = efsd_stat(path)) == NULL)
 	    {
 	      use_home_dir = TRUE;
 	    }
@@ -118,7 +119,7 @@ meta_db_get_file(char *filename)
 	    {
 	      umask(000);
 
-	      if (mkdir(s, st.st_mode) < 0)
+	      if (mkdir(s, st->st_mode) < 0)
 		use_home_dir = TRUE;
 	      else
 		use_home_dir = FALSE;

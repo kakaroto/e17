@@ -18,14 +18,16 @@ efsd_SOURCES = \
 	efsd_fam.c \
 	efsd_fileops.h \
 	efsd_fileops.c \
+	efsd_filetype.h \
+	efsd_filetype.c \
 	efsd_globals.h \
+	efsd_hash.h \
+	efsd_hash.c \
 	efsd_io.h \
 	efsd_io.c \
 	efsd_main.h \
 	efsd_main.c \
 	efsd_macros.h \
-	efsd_magic.c \
-	efsd_magic.h \
 	efsd_meta.c \
 	efsd_meta.h \
 	efsd_queue.h \
@@ -36,6 +38,8 @@ efsd_SOURCES = \
 	efsd_misc.c \
 	efsd_options.h \
 	efsd_options.c \
+	efsd_statcache.h \
+	efsd_statcache.c \
 	efsd_types.h \
 	efsd_types.c
 

@@ -755,7 +755,7 @@ fill_command(struct iovec *iov, EfsdCommand *ec)
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
     case EFSD_CMD_READLINK:
-    case EFSD_CMD_GETMIME:
+    case EFSD_CMD_GETFILE:
       n = fill_file_cmd(iov, ec);
       break;
     case EFSD_CMD_MOVE:
@@ -800,7 +800,7 @@ fill_option(struct iovec *iov, EfsdOption *eo)
       break;
     case EFSD_OP_LS_GET_STAT:
       break;
-    case EFSD_OP_LS_GET_MIME:
+    case EFSD_OP_LS_GET_FILE:
       break;
     case EFSD_OP_LS_GET_META:
       len[len_index] = strlen(eo->efsd_op_ls_getmeta.key) + 1;
@@ -872,7 +872,7 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	case EFSD_CMD_STOPMON:
 	case EFSD_CMD_STAT:
 	case EFSD_CMD_READLINK:
-	case EFSD_CMD_GETMIME:
+	case EFSD_CMD_GETFILE:
 	  result = read_file_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_MOVE:
@@ -1004,7 +1004,7 @@ efsd_io_read_option(int sockfd, EfsdOption *eo)
 	  break;
 	case EFSD_OP_LS_GET_STAT:
 	  break;
-	case EFSD_OP_LS_GET_MIME:
+	case EFSD_OP_LS_GET_FILE:
 	  break;
 	case EFSD_OP_LS_GET_META:
 	  result = read_ls_getmeta_op(sockfd, eo);

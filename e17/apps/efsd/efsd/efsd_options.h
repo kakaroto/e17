@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* Those fill in an existing EfsdOption struct ... */
 EfsdOption  *efsd_option_new_get_stat(void);
 EfsdOption  *efsd_option_new_get_metadata(char *key, EfsdDatatype type);
-EfsdOption  *efsd_option_new_get_mimetype(void);
+EfsdOption  *efsd_option_new_get_filetype(void);
 EfsdOption  *efsd_option_new_force(void);
 EfsdOption  *efsd_option_new_recursive(void);
 

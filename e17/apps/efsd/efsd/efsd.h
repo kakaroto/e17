@@ -77,7 +77,7 @@ typedef enum efsd_command_type
   EFSD_CMD_STOPMON, 
   EFSD_CMD_STAT, 
   EFSD_CMD_READLINK, 
-  EFSD_CMD_GETMIME,
+  EFSD_CMD_GETFILE,
   EFSD_CMD_CLOSE
 }
 EfsdCommandType;
@@ -96,7 +96,7 @@ typedef enum efsd_option_type
   EFSD_OP_FS_FORCE,
   EFSD_OP_FS_RECURSIVE,
   EFSD_OP_LS_GET_STAT,
-  EFSD_OP_LS_GET_MIME,
+  EFSD_OP_LS_GET_FILE,
   EFSD_OP_LS_GET_META
 }
 EfsdOptionType;

@@ -22,24 +22,36 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_magic_h
-#define __efsd_magic_h
+#ifndef __efsd_hash_h
+#define __efsd_hash_h
 
-/* Initializes the magic tests. Returns value > 0
-   when at least a minum number of necessary db's
-   could be found.
- */
-int        efsd_magic_init(void);
+#include <efsd_list.h>
 
-/* Clears the current magic test hierarchy.
- */
-void       efsd_magic_cleanup(void);
+typedef struct efsd_hash EfsdHash;
 
-/* Returns mimetype for a given file, NULL when
-   nothing could be found. If you want to keep
-   the result around, strdup() it. Otherwise,
-   you don't have to free it.
-*/
-char      *efsd_magic_get(char *filename);
+typedef struct efsd_hash_item
+{
+  void *key;
+  void *data;
+}
+EfsdHashItem;
+
+typedef unsigned int (*EfsdHashFunc) (EfsdHash *h, void *data);
+typedef int (*EfsdCmpFunc) (void *d1, void *d2);
+typedef void (*EfsdHashItemFreeFunc) (EfsdHashItem *it);
+
+EfsdHash *efsd_hash_new(int num_buckets, int bucket_size, EfsdHashFunc hash_func,
+			EfsdCmpFunc cmp_func, EfsdHashItemFreeFunc free_func);
+
+void      efsd_hash_free(EfsdHash *h);
+int       efsd_hash_insert(EfsdHash *h, void *key, void *data);
+void     *efsd_hash_find(EfsdHash *h, void *key);
+void      efsd_hash_remove(EfsdHash *h, void *key);
+
+int       efsd_hash_num_buckets(EfsdHash *h);
+int       efsd_hash_max_bucket_size(EfsdHash *h);
+
+/* Standard hash functions: */
+unsigned int efsd_hash_string(EfsdHash *h, char *data);
 
 #endif

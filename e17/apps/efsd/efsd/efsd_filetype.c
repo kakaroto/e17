@@ -48,10 +48,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #include <efsd.h>
-#include <efsd_macros.h>
 #include <efsd_debug.h>
+#include <efsd_macros.h>
 #include <efsd_misc.h>
-#include <efsd_magic.h>
+#include <efsd_filetype.h>
+#include <efsd_hash.h>
+#include <efsd_statcache.h>
 
 
 typedef enum efsd_magic_type
@@ -110,7 +112,7 @@ typedef struct efsd_magic
   int                 mask;
   EfsdMagicTest       test;
 
-  char               *mimetype;
+  char               *filetype;
 
   struct efsd_magic  *next;
   struct efsd_magic  *kids;
@@ -118,6 +120,13 @@ typedef struct efsd_magic
 }
 EfsdMagic;
 
+
+typedef struct efsd_filetype_cache_item
+{
+  char    *filetype; /* Cached filetype */
+  time_t   time;     /* Timestamp of last calculation */ 
+}
+EfsdFiletypeCacheItem;
 
 #ifdef WORDS_BIGENDIAN
 static EfsdByteorder host_byteorder = EFSD_BYTEORDER_BIG;
@@ -162,17 +171,19 @@ static E_DB_File *magic_db = NULL;
 
 /* Filename patterns */
 static char     **patterns = NULL;
-static char     **pattern_mimetypes = NULL;
+static char     **pattern_filetypes = NULL;
 static int        num_patterns;
 
 static char     **patterns_user = NULL;
-static char     **pattern_mimetypes_user = NULL;
+static char     **pattern_filetypes_user = NULL;
 static int        num_patterns_user;
 
+static EfsdHash  *filetype_cache;
+
 /* db helper functions */
-int               e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val);
-int               e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val);
-int               e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val);
+static int        e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val);
+static int        e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val);
+static int        e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val);
 
 static EfsdMagic *magic_new(char *key, char *params);
 static void       magic_free(EfsdMagic *em);
@@ -184,16 +195,23 @@ static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
 static int        patterns_init(void);
 static void       fix_byteorder(EfsdMagic *em);
 
-static char      *magic_test_fs(char *filename);
+static char      *magic_test_fs(char *filename, struct stat *st);
 static char      *magic_test_data(char *filename);
 static char      *magic_test_pattern(char *filename);
 
-char             *get_magic_db(void);
-char             *get_sys_patterns_db(void);
-char             *get_user_patterns_db(void);
+static char      *get_magic_db(void);
+static char      *get_sys_patterns_db(void);
+static char      *get_user_patterns_db(void);
+
+static void       filetype_cache_init(void);
+static void       filetype_cache_insert(char *filename, time_t time, char *filetype);
+static void       filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time, char *filetype);
+static char      *filetype_cache_lookup(char *filename);
+
+static void       filetype_hash_item_free(EfsdHashItem *it);
 
 
-char   *
+static char   *
 get_magic_db(void)
 {
   static char s[4096] = "\0";
@@ -213,7 +231,7 @@ get_magic_db(void)
 }
 
 
-char   *
+static char   *
 get_sys_patterns_db(void)
 {
   static char s[4096] = "\0";
@@ -233,7 +251,7 @@ get_sys_patterns_db(void)
 }
 
 
-char   *
+static char   *
 get_user_patterns_db(void)
 {
   static char s[4096] = "\0";
@@ -349,8 +367,8 @@ magic_new(char *key, char *params)
   sprintf(params, "%s", "/test");
   e_db_int_get(magic_db, key, (int*)&em->test);
 
-  sprintf(params, "%s", "/mimetype");
-  em->mimetype = e_db_str_get(magic_db, key);
+  sprintf(params, "%s", "/filetype");
+  em->filetype = e_db_str_get(magic_db, key);
 
   D_RETURN_(em);
 }
@@ -366,7 +384,7 @@ magic_free(EfsdMagic *em)
 
   if (em->value)
     FREE(em->value);
-  if (em->mimetype)
+  if (em->filetype)
     FREE(em->value);
 
   FREE(em);
@@ -486,7 +504,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
   fseek(f, em->offset, SEEK_SET);
 
-  D(("Offset %i, testing '%s' mime.\n", em->offset, em->mimetype));
+  D(("Offset %i, testing '%s' file.\n", em->offset, em->filetype));
 
   switch (em->type)
     {
@@ -512,7 +530,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val == val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype);
+		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTEQUAL:
@@ -520,7 +538,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val != val_test)
 	      { 
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_SMALLER:
@@ -528,7 +546,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val < val_test)
 	      {
  		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_LARGER:
@@ -536,7 +554,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val > val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_MASK:
@@ -546,13 +564,13 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if ((val & val_test) == val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTMASK:
 	    D(("Notmask test\n"));
 	    if ((val & val_test) == 0)
-	      { D_RETURN_(em->mimetype); }
+	      { D_RETURN_(em->filetype); }
 	    break;
 	  default:
 	    D(("UNKNOWN test type!\n"));
@@ -581,7 +599,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val == val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTEQUAL:
@@ -589,7 +607,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val != val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_SMALLER:
@@ -597,7 +615,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val < val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype);
+		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_LARGER:
@@ -605,7 +623,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val > val_test)
 	      {
  		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype);
+		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_MASK:
@@ -615,7 +633,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if ((val & val_test) == val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype);
+		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTMASK:
@@ -623,7 +641,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if ((val & val_test) == 0)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  default:
@@ -649,42 +667,42 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	    if (val == val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTEQUAL:
 	    if (val != val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_SMALLER:
 	    if (val < val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_LARGER:
 	    if (val > val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_MASK:
 	    if ((val & val_test) == val_test)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype); 
+		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTMASK:
 	    if ((val & val_test) == 0)
 	      {
 		D(("...succeeded.\n"));
-		D_RETURN_(em->mimetype);
+		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  default:
@@ -707,7 +725,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	if (memcmp(s, em->value, em->value_len) == 0)
 	  {
 	    D(("...succeeded.\n"));
-	    D_RETURN_(em->mimetype);
+	    D_RETURN_(em->filetype);
 	  }
       }
       break;
@@ -785,17 +803,13 @@ magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 
 
 static char      *
-magic_test_fs(char *filename)
+magic_test_fs(char *filename, struct stat *st)
 {
   static char   s[MAXPATHLEN];
   char         *ptr;
-  struct stat   st;
   struct statfs stfs;
 
   D_ENTER;
-
-  if (stat(filename, &st) < 0)
-    D_RETURN_(NULL);
 
 #ifdef __EMX__
    sprintf(s, "%s", "hpfs");
@@ -872,29 +886,29 @@ magic_test_fs(char *filename)
 
   ptr = s + strlen(s);
     
-  if (S_ISLNK(st.st_mode))
+  if (S_ISLNK(st->st_mode))
     {
       sprintf(ptr, "%s", "/link");
     }
-  else if (S_ISDIR(st.st_mode))
+  else if (S_ISDIR(st->st_mode))
     {
       sprintf(ptr, "%s", "/dir");
     }
-  else if (S_ISCHR(st.st_mode))
+  else if (S_ISCHR(st->st_mode))
     {
       sprintf(ptr, "%s", "/chardev");
     }
 #ifndef __EMX__
-  else if (S_ISBLK(st.st_mode))
+  else if (S_ISBLK(st->st_mode))
     {
       sprintf(ptr, "%s", "/block");
     }
 #endif
-  else if (S_ISFIFO(st.st_mode))
+  else if (S_ISFIFO(st->st_mode))
     {
       sprintf(ptr, "%s", "/fifo");
     }
-  else if (S_ISSOCK(st.st_mode))
+  else if (S_ISSOCK(st->st_mode))
     {
       sprintf(ptr, "%s", "/socket");
     }
@@ -931,7 +945,7 @@ magic_test_data(char *filename)
 
       last = strlen(s)-1;
 
-      if (s[last] == '-')
+      if (s[last] == '-' || s[last] == '/')
 	s[last] = '\0';
 
       D_RETURN_(s);
@@ -958,12 +972,12 @@ patterns_init(void)
       
       if (num_patterns_user > 0)
 	{
-	  pattern_mimetypes_user = malloc(sizeof(char*) * num_patterns_user);
+	  pattern_filetypes_user = malloc(sizeof(char*) * num_patterns_user);
 	  
 	  db = e_db_open_read(s);
 	  
 	  for (i = 0; i < num_patterns_user; i++)
-	    pattern_mimetypes_user[i] = e_db_str_get(db, patterns_user[i]);
+	    pattern_filetypes_user[i] = e_db_str_get(db, patterns_user[i]);
 	  
 	  e_db_close(db);
 	}  
@@ -990,13 +1004,13 @@ patterns_init(void)
 
       if (num_patterns > 0)
 	{
-	  pattern_mimetypes = malloc(sizeof(char*) * num_patterns);
+	  pattern_filetypes = malloc(sizeof(char*) * num_patterns);
 	  
 	  D(("opening '%s'\n", s));
 	  db = e_db_open_read(s);
       
 	  for (i = 0; i < num_patterns; i++)
-	    pattern_mimetypes[i] = e_db_str_get(db, patterns[i]);
+	    pattern_filetypes[i] = e_db_str_get(db, patterns[i]);
       
 	  e_db_close(db);
 	}  
@@ -1032,7 +1046,7 @@ magic_test_pattern(char *filename)
 
       if (!fnmatch(patterns_user[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
-	  D_RETURN_(pattern_mimetypes_user[i]);
+	  D_RETURN_(pattern_filetypes_user[i]);
 	}
     }
 
@@ -1048,7 +1062,7 @@ magic_test_pattern(char *filename)
 
       if (!fnmatch(patterns[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
-	  D_RETURN_(pattern_mimetypes[i]);
+	  D_RETURN_(pattern_filetypes[i]);
 	}
     }
 
@@ -1056,8 +1070,85 @@ magic_test_pattern(char *filename)
 }
 
 
+static void       
+filetype_cache_init(void)
+{
+  D_ENTER;
+
+  filetype_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
+				 (EfsdCmpFunc)strcmp,
+				 filetype_hash_item_free);
+
+  D_RETURN;
+}
+
+
+static void       
+filetype_cache_insert(char *filename, time_t time, char *filetype)
+{
+  EfsdFiletypeCacheItem *it;
+  char *key;
+
+  D_ENTER;
+
+  key  = strdup(filename);
+
+  it = NEW(EfsdFiletypeCacheItem);
+  it->filetype = strdup(filetype);
+  it->time = time;
+
+  if (!efsd_hash_insert(filetype_cache, key, it))
+    {
+      FREE(key);
+      FREE(it->filetype);
+      FREE(it);
+    }
+  
+  D_RETURN;
+}
+
+
+static void       
+filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time,
+		      char *filetype)
+{
+  D_ENTER;
+
+  FREE(it->filetype);
+  it->filetype = strdup(filetype);
+  it->time = time;
+
+  D_RETURN;
+}
+
+static char      *
+filetype_cache_lookup(char *filename)
+{
+  D_ENTER;
+  D_RETURN_((char*)efsd_hash_find(filetype_cache, filename));
+}
+
+
+static void
+filetype_hash_item_free(EfsdHashItem *it)
+{
+  EfsdFiletypeCacheItem *filetype_it;
+
+  D_ENTER;
+
+  filetype_it = (EfsdFiletypeCacheItem*)it->data;
+
+  FREE(filetype_it->filetype);
+  FREE(it->data);
+  FREE(it->key);
+  FREE(it);
+
+  D_RETURN;
+}
+
+
 int       
-efsd_magic_init(void)
+efsd_filetype_init(void)
 {
   char        key[MAXPATHLEN];
   char       *ptr;
@@ -1086,12 +1177,14 @@ efsd_magic_init(void)
   magic_init_level(key, ptr, &magic);
   e_db_close(magic_db);
 
+  filetype_cache_init();
+
   D_RETURN_(patterns_init());
 }
 
 
 void       
-efsd_magic_cleanup(void)
+efsd_filetype_cleanup(void)
 {
   int i;
 
@@ -1103,42 +1196,93 @@ efsd_magic_cleanup(void)
   for (i = 0; i < num_patterns; i++)
     {
       FREE(patterns[i]);
-      FREE(pattern_mimetypes[i]);
+      FREE(pattern_filetypes[i]);
     }
 
   FREE(patterns);
-  FREE(pattern_mimetypes);
+  FREE(pattern_filetypes);
 
   D_RETURN;
 }
 
 
 char      *
-efsd_magic_get(char *filename)
+efsd_filetype_get(char *filename)
 {
+  struct stat    *st;
   char *result = NULL;
+  EfsdFiletypeCacheItem *cached_result = NULL;
 
   D_ENTER;
 
-  result = magic_test_fs(filename);
+  /* Okay -- if filetype is in cache, check file
+     modification time to see if regeneration of
+     filetype is necessary.
+  */
+
+  st = efsd_stat(filename);
+
+  if ((cached_result = (EfsdFiletypeCacheItem *)
+       filetype_cache_lookup(filename)) != NULL)
+    {
+      D(("Cached result found for %s\n", filename));
+      /* If stat failed, regenerate anyway */
+      if (st)
+	{
+	  if (cached_result->time == st->st_mtime)
+	    {
+	      /* File has not been changed -- use cached value. */
+	      D(("Using cached filetype on %s\n", filename));
+	      D_RETURN_(cached_result->filetype);	      
+	    }
+	}
+    }
+  
+  result = magic_test_fs(filename, st);
   if (result)
-    D_RETURN_(result);
+    {
+      if (cached_result)
+	filetype_cache_update(cached_result, st->st_mtime, result);
+      else
+	filetype_cache_insert(filename, st->st_mtime, result);
+      D_RETURN_(result);
+    }
 
   D(("magic: fs check failed.\n"));
 
   result = magic_test_data(filename);
   if (result)
-    D_RETURN_(result);
+    {
+      if (cached_result)
+	filetype_cache_update(cached_result, st->st_mtime, result);
+      else
+	filetype_cache_insert(filename, st->st_mtime, result);
+      D_RETURN_(result);
+    }
 
   D(("magic: data check failed.\n"));
 
   result = magic_test_pattern(filename);
   if (result)
-    D_RETURN_(result);
+    {
+      if (cached_result)
+	filetype_cache_update(cached_result, st->st_mtime, result);
+      else
+	filetype_cache_insert(filename, st->st_mtime, result);
+      D_RETURN_(result);
+    }
 
   D(("magic: file pattern check failed.\n"));
   
   result = "document/unknown";
+  if (result)
+    {
+      if (cached_result)
+	filetype_cache_update(cached_result, st->st_mtime, result);
+      else
+	filetype_cache_insert(filename, st->st_mtime, result);
+      D_RETURN_(result);
+    }
 
   D_RETURN_(result);
 }

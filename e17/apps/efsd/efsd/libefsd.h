@@ -181,8 +181,8 @@ EfsdCmdId      efsd_stat(EfsdConnection *ec, char *filename);
 /* Returns the file a symlink points to */
 EfsdCmdId      efsd_readlink(EfsdConnection *ec, char *filename);
 
-/* Returns the mimetype for a file */
-EfsdCmdId      efsd_get_mimetype(EfsdConnection *ec, char *filename);
+/* Returns the filetype for a file */
+EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
 
 
 /* Command options:
@@ -197,9 +197,9 @@ EfsdOption    *efsd_op_get_stat(void);
 */
 EfsdOption    *efsd_op_get_metadata(char *key, EfsdDatatype type);
 
-/* Send MIME type for all files seen in a directory
+/* Send FILE type for all files seen in a directory
 */
-EfsdOption    *efsd_op_get_mimetype(void);
+EfsdOption    *efsd_op_get_filetype(void);
 
 /* "Force" option for commands like rm, cp, as known and loved
    on the command line.

@@ -46,6 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_globals.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
+#include <efsd_statcache.h>
 
 
 mode_t         mode_755 = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
@@ -54,14 +55,14 @@ mode_t         mode_755 = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 int    
 efsd_misc_file_exists(char *filename)
 {
-  struct stat st;
+  struct stat *st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(0);
 
-  if (stat(filename, &st) < 0)
+  if ((st = efsd_stat(filename)) == NULL)
     D_RETURN_(0);
 
   D_RETURN_(1);
@@ -71,46 +72,46 @@ efsd_misc_file_exists(char *filename)
 int 
 efsd_misc_file_is_dir(char *filename)
 {
-  struct stat st;
+  struct stat *st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(0);
 
-  if (stat(filename, &st) < 0)
+  if ((st = efsd_stat(filename)) == NULL)
     D_RETURN_(0);
 
-  D_RETURN_(S_ISDIR(st.st_mode));
+  D_RETURN_(S_ISDIR(st->st_mode));
 }
 
 
 int    
 efsd_misc_file_writeable(char *filename)
 {
-  struct stat st;
+  struct stat *st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(0);
 
-  if (stat(filename, &st) < 0)
+  if ((st = efsd_stat(filename)) == NULL)
     D_RETURN_(0);
 
-  if (st.st_uid == getuid())
+  if (st->st_uid == getuid())
     {
-      if (st.st_mode & S_IWUSR)
+      if (st->st_mode & S_IWUSR)
 	D_RETURN_(1);
      }
-  else if (st.st_gid == getgid())
+  else if (st->st_gid == getgid())
     {
-      if (st.st_mode & S_IWGRP)
+      if (st->st_mode & S_IWGRP)
 	D_RETURN_(1);
     }
   else
     {
-      if (st.st_mode & S_IWOTH)
+      if (st->st_mode & S_IWOTH)
 	D_RETURN_(1);
     }
 
@@ -121,29 +122,29 @@ efsd_misc_file_writeable(char *filename)
 int    
 efsd_misc_file_execable(char *filename)
 {
-  struct stat st;
+  struct stat *st = NULL;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(0);
 
-  if (stat(filename, &st) < 0)
+  if ((st = efsd_stat(filename)) == NULL)
     D_RETURN_(0);
 
-  if (st.st_uid == getuid())
+  if (st->st_uid == getuid())
     {
-      if (st.st_mode & S_IXUSR)
+      if (st->st_mode & S_IXUSR)
 	D_RETURN_(1);
      }
-  else if (st.st_gid == getgid())
+  else if (st->st_gid == getgid())
     {
-      if (st.st_mode & S_IXGRP)
+      if (st->st_mode & S_IXGRP)
 	D_RETURN_(1);
     }
   else
     {
-      if (st.st_mode & S_IXOTH)
+      if (st->st_mode & S_IXOTH)
 	D_RETURN_(1);
     }
 

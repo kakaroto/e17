@@ -33,25 +33,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef enum
 {
-  FULL,
-  SIMPLE
+  EFSD_FAM_MONITOR_NORMAL   = -1,
+  EFSD_FAM_MONITOR_INTERNAL = -2
 }
 EfsdFamMonType;
 
 typedef struct efsd_fam_request
 {
-  int          client;
-  EfsdCmdId    id;
-  int          num_options;
-  EfsdOption  *options;
+  EfsdFamMonType        type;
+
+  int                   client;
+  EfsdCmdId             id;
+
+  int                   num_options;
+  EfsdOption           *options;
 }
 EfsdFamRequest;
 
 
 typedef struct efsd_fam_monitor
 {
-  EfsdFamMonType        type;
-
   /* filename that is monitored     */
   char                 *filename;
 
@@ -75,8 +76,8 @@ void             efsd_fam_init(void);
 void             efsd_fam_cleanup(void);
 
 /* Allocator and deallocator for a Monitor */
-EfsdFamMonitor  *efsd_fam_new_monitor(EfsdCommand *com, int client,
-				      EfsdFamMonType type);
+EfsdFamMonitor  *efsd_fam_new_monitor(EfsdFamMonType type, EfsdCommand *com,
+				      int client);
 void             efsd_fam_free_monitor(EfsdFamMonitor *m);
 
 /* This one frees the monitor and removes
@@ -88,8 +89,14 @@ void             efsd_fam_remove_monitor(EfsdFamMonitor *m);
 /* High-level API for monitoring stuff -- refcounting
    & co are handled inside. Return >= 0 on success.
 */
-int              efsd_fam_start_monitor(EfsdCommand *cmd, int client);
+int              efsd_fam_start_monitor(EfsdFamMonType type, EfsdCommand *com,
+					int client);
 int              efsd_fam_stop_monitor(EfsdCommand *cmd, int client);
+
+/* For internal monitoring of files -- specify file name directly.
+ */
+int              efsd_fam_start_monitor_internal(char *filename);
+int              efsd_fam_stop_monitor_internal(char *filename);
 
 /* Monitor filename briefly to get directory listing events.
  */
@@ -99,10 +106,9 @@ void             efsd_fam_force_startstop_monitor(EfsdCommand *cmd, int client);
  */
 int              efsd_fam_is_monitored(char *filename);
 
-/* Check for all monitors if they are requested by client i
+/* Check for all monitors if they are requested by CLIENT
    and in that case release those requests.
 */
 int              efsd_fam_cleanup_client(int client);
-
 
 #endif

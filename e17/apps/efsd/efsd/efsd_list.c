@@ -144,7 +144,10 @@ efsd_list_free(EfsdList *l, EfsdFunc free_func)
   while (l)
     {
       lnext = l->next;
-      free_func(l->data);
+      if (l->data)
+	{
+	  free_func(l->data);     
+	}
       free(l);
       l = lnext;
     }
@@ -215,4 +218,46 @@ efsd_list_data(EfsdList *l)
     D_RETURN_(NULL);
 
   D_RETURN_(l->data);
+}
+
+
+EfsdList *
+efsd_list_move_to_front(EfsdList *l, EfsdList *item)
+{
+  EfsdList *prev;
+  EfsdList *next;
+
+  D_ENTER;
+  if (!l || !item)
+    D_RETURN_(NULL);
+
+  prev = item->prev;
+  next = item->next;
+
+  /* first item already */
+  if (!prev)
+    {
+      D_RETURN_(l);
+    }
+
+  /* last item */
+  if (!next)
+    {
+      prev->next = NULL;
+      item->prev = NULL;
+      item->next = l;
+      l->prev = item;
+
+      D_RETURN_(item);
+    }      
+
+  /* middle item */
+  prev->next = next;
+  next->prev = prev;
+
+  item->next = l;
+  item->prev = NULL;
+  l->prev = item;
+
+  D_RETURN_(item);
 }
