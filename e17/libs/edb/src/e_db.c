@@ -337,8 +337,15 @@ e_db_data_get(E_DB_File * db, char *key, int *size_ret)
    flush_pending = 1;
    if (ret.dptr)
      {
+	void *data;
+	
 	*size_ret = ret.dsize;
-	return ret.dptr;
+	data = malloc(ret.dsize);
+	if (data)
+	  {
+	     memcpy(data, ret.dptr, ret.dsize);
+	     return data;
+	  }
      }
    *size_ret = 0;
    return NULL;
@@ -395,7 +402,7 @@ e_db_int_get(E_DB_File * db, char *key, int *val)
       return 0;
    v = ntohl(*dat);
    *val = v;
-/*   FREE(dat);*/
+   FREE(dat);
    return 1;
 }
 
@@ -442,7 +449,7 @@ e_db_str_get(E_DB_File * db, char *key)
    MEMCPY(dat, s, char, size);
 
    s[size] = 0;
-/*   FREE(dat);*/
+   FREE(dat);
    return s;
 }
 
