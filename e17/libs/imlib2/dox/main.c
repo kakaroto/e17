@@ -6,3 +6,9 @@ int main( int argc, char **argv )
    init_hotspot();
    return 0;
 }
+
+void  parse_args( int argc, char **argv )
+{
+   printf( "We should parse the args\n" );
+   
+}

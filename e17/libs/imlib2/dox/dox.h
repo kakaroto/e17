@@ -37,10 +37,10 @@ void  add_hotspot( char *target, int x, int y, int w, int h );
 char *check_hotspot( int x, int y );
 void  tidy_hotspots();
 
-void  load_dox( char *file );
-void  parse_dox( char *file );
-
 void  load_dss( char *file );
 
+int   __find_string( char *haystack, char *needle );
+char *__stripwhitespace( char *str );
+char *__copystr( char *str, int start, int end );
 
 #endif /* _DOX_H_ */

@@ -1,0 +1,6 @@
+<page name="test">
+  <link to="otherpage">Test Link</link>
+  <nl/>
+  Test text.
+  <image from="testimg.png"/>
+</page>

@@ -8,7 +8,7 @@ INCLUDES          = -I/usr/X11R6/include \
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = bdox
-bdox_SOURCES      = main.c dox.h hotspot.c
+bdox_SOURCES      = main.c dox.h hotspot.c style.c utils.c
 bdox_LDADD        = -lX11
 
 EXTRA_DIST = 
