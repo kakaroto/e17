@@ -56,6 +56,8 @@ __imlib_CreatePixmapsForImage(Display *d, Drawable w, Visual *v, int depth,
    ip->visual = v;
    ip->depth = depth;
    ip->image = im;
+   if (im->file)
+      ip->file = strdup(im->file);
    ip->border.left = im->border.left;
    ip->border.right = im->border.right;
    ip->border.top = im->border.top;

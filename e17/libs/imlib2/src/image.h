@@ -91,6 +91,7 @@ struct _imlibimagepixmap
    char              antialias, hi_quality, dither_mask;
    ImlibBorder       border;
    ImlibImage       *image;
+   char             *file;
    char              dirty;
    int               references;
    DATABIG           modification_count;

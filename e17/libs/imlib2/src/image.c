@@ -365,6 +365,7 @@ __imlib_ProduceImagePixmap(void)
    ip->visual = NULL;
    ip->image = NULL;
    ip->next = NULL;
+   ip->file = NULL;
    return ip;
 }
 
@@ -381,6 +382,7 @@ __imlib_ConsumeImagePixmap(ImlibImagePixmap * ip)
       XFreePixmap(ip->display, ip->pixmap);
    if (ip->mask)
       XFreePixmap(ip->display, ip->mask);
+   if (ip->file) free(ip->file);
    free(ip);
 }
 
@@ -399,7 +401,7 @@ __imlib_FindCachedImagePixmap(ImlibImage * im, int w, int h, Display * d,
    {
       /* if all the pixmap attributes match */
       if ((ip->w == w) && (ip->h == h) && (ip->depth == depth) && (!ip->dirty)
-          && (ip->image == im) && (ip->visual == v) && (ip->display == d)
+          && (ip->visual == v) && (ip->display == d)
           && (ip->source_x == sx) && (ip->source_x == sy)
           && (ip->source_w == sw) && (ip->source_h == sh)
           && (ip->colormap == cm) && (ip->antialias == aa)
@@ -408,7 +410,10 @@ __imlib_FindCachedImagePixmap(ImlibImage * im, int w, int h, Display * d,
           && (ip->border.left == im->border.left)
           && (ip->border.right == im->border.right)
           && (ip->border.top == im->border.top)
-          && (ip->border.bottom == im->border.bottom))
+          && (ip->border.bottom == im->border.bottom) &&
+	  (((im->file) && (ip->file) && !strcmp(im->file, ip->file)) ||
+	   ((!im->file) && (!ip->file) && (im == ip->image)))
+	  )
       {
          /* move the pixmap to the head of the pixmap list */
          if (previous_ip)
