@@ -36,6 +36,8 @@ void create_tree_model (GtkWidget *treeview_menu);
 void new_table_row (GtkWidget *treeview_menu);
 void delete_table_row (GtkWidget *treeview_menu);
 void save_table_to_menu (GtkWidget *treeview_menu);
+void activate_dragndrop (GtkTreeView *treeview_menu);
+void deactivate_dragndrop (GtkTreeView *treeview_menu);
 
 enum tree_columns
 {

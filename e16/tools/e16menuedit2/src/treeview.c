@@ -94,6 +94,21 @@ void create_tree_model (GtkWidget *treeview_menu)
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (treeview_menu), model);
 
+  activate_dragndrop (GTK_TREE_VIEW (treeview_menu));
+
+  g_object_unref (model); /* destroy model automatically with view */
+
+  return;
+}
+
+void deactivate_dragndrop (GtkTreeView *treeview_menu)
+{
+  gtk_tree_view_unset_rows_drag_source (GTK_TREE_VIEW (treeview_menu));
+  gtk_tree_view_unset_rows_drag_dest (GTK_TREE_VIEW (treeview_menu));
+}
+
+void activate_dragndrop (GtkTreeView *treeview_menu)
+{
   gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (treeview_menu),
                                           GDK_BUTTON1_MASK,
                                           row_targets,
@@ -104,10 +119,6 @@ void create_tree_model (GtkWidget *treeview_menu)
                                         row_targets,
                                         G_N_ELEMENTS (row_targets),
                                         GDK_ACTION_MOVE | GDK_ACTION_COPY);
-
-  g_object_unref (model); /* destroy model automatically with view */
-
-  return;
 }
 
 void new_table_row (GtkWidget *treeview_menu)
@@ -156,10 +167,10 @@ void new_table_row (GtkWidget *treeview_menu)
 
 void delete_table_row (GtkWidget *treeview_menu)
 {
-  GtkTreeIter iter;  
+  GtkTreeIter iter;
   GtkTreeModel *model;
   GtkTreeSelection *select;
-  
+
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
   select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_menu));
 
@@ -170,10 +181,10 @@ void delete_table_row (GtkWidget *treeview_menu)
 }
 
 void save_table_to_menu (GtkWidget *treeview_menu)
-{  
+{
   GtkTreeModel *model;
   int i = 0;
-  
+
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
   gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_save_func, NULL);
 

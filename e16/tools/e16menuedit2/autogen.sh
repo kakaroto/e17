@@ -3,7 +3,7 @@
 
 srcdir=`dirname $0`
 PKG_NAME="the package."
-CONFIGURE="$CONFIGURE"
+CONFIGURE="configure.in"
 
 DIE=0
 

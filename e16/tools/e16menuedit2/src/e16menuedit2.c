@@ -32,19 +32,20 @@
 #include "callbacks.h"
 #include "e16menu.h"
 #include "treeview.h"
+#include <glib-object.h>
 
 int librsvg_cmp;
 
 int main (int argc, char *argv[])
 {
+  GladeXML *main_xml;  
   GtkWidget *main_window;
   GtkWidget *treeview_menu;
-  GladeXML *main_xml;
   char app_dir[PATH_MAX];
   char package[] = "librsvg-2.0";
   char good_version[] = "2.7.1";
   char *version;
-  int i;  
+  int i;
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -61,23 +62,26 @@ int main (int argc, char *argv[])
 
   main_xml = glade_xml_new (PACKAGE_SOURCE_DIR"/e16menuedit2.glade",
                             "main_window", NULL);
+  
+  register_libglade_parent (main_xml, "main_window");
+  
 
   glade_xml_signal_autoconnect (main_xml);
-  main_window = glade_xml_get_widget (main_xml, "main_window");
+  
+
+  main_window = lookup_libglade_widget ("main_window", "main_window");
+
 
   gtk_window_set_icon_from_file (GTK_WINDOW (main_window),
                                  PACKAGE_PIXMAPS_DIR"/e16menuedit2-icon.png",
                                  NULL);
 
-  g_object_set_data (G_OBJECT (main_window),
-                     "main_xml", main_xml);
-
-  treeview_menu = glade_xml_get_widget (main_xml, "treeview_menu");
+  treeview_menu = lookup_libglade_widget ("main_window", "treeview_menu");
   create_tree_model (treeview_menu);
 
   /* bind callbacks manual. Is Glade too stupid for it? */
-  bind_toolbar_callbacks (main_xml, treeview_menu);
-  bind_menubar_callbacks (main_xml, treeview_menu);
+  bind_toolbar_callbacks (treeview_menu);
+  bind_menubar_callbacks (treeview_menu);
 
   /* create initial directories */
   sprintf (app_dir, "%s/%s/%s", homedir (getuid ()), APP_HOME, ICON_DIR);
@@ -87,8 +91,6 @@ int main (int argc, char *argv[])
   version = pkg_config_version (package);
   librsvg_cmp = version_cmp (version, good_version);
   g_free (version);
-  
-  gtk_widget_show (main_window);
 
   gtk_main ();
   return 0;

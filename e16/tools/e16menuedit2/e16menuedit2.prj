@@ -84,7 +84,9 @@ module.source.files=\
 	e16menu.c\
 	e16menu.h\
 	treeview.c\
-	treeview.h
+	treeview.h\
+	libglade_support.c\
+	libglade_support.h
 
 module.pixmap.name=pixmaps
 module.pixmap.type=

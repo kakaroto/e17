@@ -19,32 +19,46 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- *  File: file.h
+ *  File: treeview.c
  *  Created by: Andreas Volz <linux@brachttal.net>
  *
  */
 
-#ifndef _FILE_H
-#define _FILE_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <ctype.h>
-#include <pwd.h>
-#include <sys/types.h>
-#include <glib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include "libglade_support.h"
 
-char *field (char *s, int field);
-void fword (char *s, int num, char *wd);
-char *homedir (int uid);
-int mkdir_with_parent (const char *pathname, mode_t mode);
-char *strtok_left (char *s, const char *delim, unsigned int number);
-char *strsplit (char *s, char **right, int count);
-int version_cmp (char *ver1, char *ver2);
-char *pkg_config_version (char *package);
+static GHashTable *glade_hash;
 
-#endif /* _FILE_H */
+void register_libglade_parent (GladeXML *glade_xml, const char *parent_name)
+{
+  static gboolean init = FALSE;
+
+  if (!init)
+  {
+    glade_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                        g_free, NULL);
+    init = TRUE;
+  }
+
+  g_hash_table_replace (glade_hash,
+                        strdup (parent_name),
+                        glade_xml);
+
+}
+
+GtkWidget *lookup_libglade_widget (const char *parent_name,
+                                   const char *widget_name)
+{
+  GladeXML *glade_xml;
+  GtkWidget *found_widget;
+  gpointer lookup;
+
+  lookup = g_hash_table_lookup (glade_hash,
+                                parent_name);
+
+  glade_xml = (GladeXML *) lookup;
+
+  found_widget = glade_xml_get_widget (glade_xml, widget_name);
+
+  return found_widget;
+}

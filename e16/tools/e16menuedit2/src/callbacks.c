@@ -24,10 +24,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -38,65 +34,65 @@
 #include "e16menu.h"
 #include "treeview.h"
 
-void bind_toolbar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu)
+void bind_toolbar_callbacks (GtkWidget *treeview_menu)
 {
   GtkWidget *toolbar1;
   GtkWidget *toolitem1;
 
-  toolbar1 = glade_xml_get_widget (main_xml, "toolbar1");
+  toolbar1 = lookup_libglade_widget ("main_window", "toolbar1");
 
   /* bind callbacks */
-  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_save");
+  toolitem1 = lookup_libglade_widget ("main_window", "toolbutton_save");
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
                              GTK_TOOLBAR (toolbar1)->tooltips,
                              _("Save"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_toolbutton_save_clicked), treeview_menu);
 
-  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_new");
+  toolitem1 = lookup_libglade_widget ("main_window", "toolbutton_new");
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
                              GTK_TOOLBAR (toolbar1)->tooltips,
                              _("New Entry"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_toolbutton_new_clicked), treeview_menu);
 
-  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_icon");
+  toolitem1 = lookup_libglade_widget ("main_window", "toolbutton_icon");
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
                              GTK_TOOLBAR (toolbar1)->tooltips,
                              _("Choose Icon"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_toolbutton_icon_clicked), treeview_menu);
 
-  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_del");
+  toolitem1 = lookup_libglade_widget ("main_window", "toolbutton_del");
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
                              GTK_TOOLBAR (toolbar1)->tooltips,
                              _("Delete Entry"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_toolbutton_del_clicked), treeview_menu);
 
-  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_quit");
+  toolitem1 = lookup_libglade_widget ("main_window", "toolbutton_quit");
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
                              GTK_TOOLBAR (toolbar1)->tooltips,
                              _("Quit"), "");
 }
 
-void bind_menubar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu)
+void bind_menubar_callbacks (GtkWidget *treeview_menu)
 {
   GtkWidget *menuitem;
 
-  menuitem = glade_xml_get_widget (main_xml, "menu_save");
+  menuitem = lookup_libglade_widget ("main_window", "menu_save");
   g_signal_connect (menuitem, "activate",
                     G_CALLBACK (on_menu_save_activate), treeview_menu);
 
-  menuitem = glade_xml_get_widget (main_xml, "menu_new");
+  menuitem = lookup_libglade_widget ("main_window", "menu_new");
   g_signal_connect (menuitem, "activate",
                     G_CALLBACK (on_menu_new_activate), treeview_menu);
 
-  menuitem = glade_xml_get_widget (main_xml, "menu_icon");
+  menuitem = lookup_libglade_widget ("main_window", "menu_icon");
   g_signal_connect (menuitem, "activate",
                     G_CALLBACK (on_menu_icon_activate), treeview_menu);
 
-  menuitem = glade_xml_get_widget (main_xml, "menu_delete");
+  menuitem = lookup_libglade_widget ("main_window", "menu_delete");
   g_signal_connect (menuitem, "activate",
                     G_CALLBACK (on_menu_delete_activate), treeview_menu);
 
@@ -157,22 +153,22 @@ void on_menu_save_activate (GtkMenuItem *menuitem,
 void on_menu_info_activate (GtkMenuItem *menuitem,
                             gpointer user_data)
 {
-  GladeXML *info_xml;
   GtkWidget *info_window;
   GtkWidget *logo_image;
+  GladeXML *info_xml;
 
   info_xml = glade_xml_new (PACKAGE_SOURCE_DIR"/e16menuedit2.glade",
                             "info_window", NULL);
+  register_libglade_parent (info_xml, "info_window");
   glade_xml_signal_autoconnect (info_xml);
 
-  info_window = glade_xml_get_widget (info_xml, "info_window");
+  info_window = lookup_libglade_widget ("info_window", "info_window");
 
-  logo_image = glade_xml_get_widget (info_xml, "logo_image");
+  logo_image = lookup_libglade_widget ("info_window", "logo_image");
 
 
   gtk_image_set_from_file (GTK_IMAGE (logo_image),
                            PACKAGE_PIXMAPS_DIR"/e16menuedit2-icon.png");
-
 
   gtk_widget_show (info_window);
 }
@@ -235,4 +231,54 @@ void on_menu_delete_activate (GtkMenuItem *menuitem,
 
   treeview_menu = (GtkWidget*) user_data;
   delete_table_row (treeview_menu);
+}
+
+gboolean
+on_treeview_menu_button_press_event (GtkWidget *widget,
+                                     GdkEventButton *event,
+                                     gpointer user_data)
+{
+  /* Currently deactivated until GtkTreeView Drag&Drop button
+   * problem is fixed */
+  /*GtkWidget *pop_menu1;
+  GladeXML *pop_menu1_xml;
+  GtkTreeView *treeview_menu;
+
+  pop_menu1_xml = glade_xml_new (PACKAGE_SOURCE_DIR"/e16menuedit2.glade",
+                                 "pop_menu1", NULL);
+  register_libglade_parent (pop_menu1_xml, "pop_menu1");
+  glade_xml_signal_autoconnect (pop_menu1_xml);
+
+  treeview_menu = (GtkTreeView *) user_data;
+
+  pop_menu1 = lookup_libglade_widget ("pop_menu1", "pop_menu1");
+
+  if (event->button == 3)
+  {    
+    //deactivate_dragndrop (treeview_menu);
+    gtk_menu_popup (GTK_MENU (pop_menu1),
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL, // data
+                    event->button,
+                    event->time);
+  }
+  */
+  return FALSE;
+}
+
+
+gboolean
+on_pop_menu1_destroy_event             (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+  /*GtkWidget *treeview_menu;
+
+  treeview_menu = lookup_libglade_widget ("main_window", "treeview_menu");*/
+
+  //activate_dragndrop (GTK_TREE_VIEW (treeview_menu));
+
+  return FALSE;
 }

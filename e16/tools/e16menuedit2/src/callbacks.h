@@ -27,8 +27,12 @@
 #ifndef _CALLBACKS_H
 #define _CALLBACKS_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include "libglade_support.h"
 
 #define ICON_SIZE_AUTO_STRING "auto (64x64 limit)"
 #define ICON_SIZE1_STRING "64x64"
@@ -48,8 +52,8 @@
 #define ICON_SIZE6 22
 #define ICON_SIZE7 16
 
-void bind_toolbar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu);
-void bind_menubar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu);
+void bind_toolbar_callbacks (GtkWidget *treeview_menu);
+void bind_menubar_callbacks (GtkWidget *treeview_menu);
 void on_menu_save_activate (GtkMenuItem *menuitem,
                             gpointer user_data);
 void on_descrenderer_edited (GtkCellRendererText *celltext,
@@ -76,10 +80,23 @@ void on_toolbutton_icon_clicked (GtkToolButton *toolbutton,
 void on_toolbutton_del_clicked (GtkToolButton *toolbutton,
                                 gpointer user_data);
 void on_menu_new_activate (GtkMenuItem *menuitem,
-                      gpointer user_data);
+                           gpointer user_data);
 void on_menu_icon_activate (GtkMenuItem *menuitem,
-                       gpointer user_data);
+                            gpointer user_data);
 void on_menu_delete_activate (GtkMenuItem *menuitem,
-                         gpointer user_data);
-			 
+                              gpointer user_data);
+
+gboolean
+on_treeview_menu_button_press_event  (GtkWidget *widget,
+                                      GdkEventButton *event,
+                                      gpointer user_data);
+				      
+
+					
+
+
+gboolean
+on_pop_menu1_destroy_event             (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
 #endif /* _CALLBACKS_H */

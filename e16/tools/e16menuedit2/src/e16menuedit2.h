@@ -29,11 +29,11 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include <stdio.h>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 #include "nls.h"
+#include "libglade_support.h"
 
 #define to_utf8(String) g_locale_to_utf8(String,-1,0,0,0)
 #define from_utf8(String) g_locale_from_utf8(String,-1,0,0,0)

@@ -26,7 +26,9 @@ e16menuedit2_SOURCES = \
 	e16menu.c\
 	e16menu.h\
 	treeview.c\
-	treeview.h
+	treeview.h\
+	libglade_support.c\
+	libglade_support.h
 
 e16menuedit2_LDFLAGS = 
 
