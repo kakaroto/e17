@@ -204,7 +204,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    /* scale in LINESIZE Y chunks and convert to depth*/
    /*\ Get rgba and mask functions for XImage rendering \*/
    rgbaer = __imlib_GetRGBAFunction(actual_depth, bgr, hiq, ct->palette_type);
-   if (m) masker = __imlib_GetMaskFunction(hiq);
+   if (m) masker = __imlib_GetMaskFunction(dither_mask);
    for (y = 0; y < dh; y += LINESIZE)
      {
 	hh = LINESIZE;
