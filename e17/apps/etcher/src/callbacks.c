@@ -28,6 +28,7 @@ static int new_evas = 1;
 static Evas_Object o_logo = NULL;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
 static Evas_Object o_select_rect, o_select_line1, o_select_line2, o_select_line3, o_select_line4;
+static Evas_Object o_select_abs1, o_select_rel1, o_select_adj1, o_select_abs2, o_select_rel2, o_select_adj2;
 static double backing_x, backing_y, backing_w, backing_h;
 static gint draft_mode = 1;
 static gint zoom_x, zoom_y;
@@ -41,6 +42,12 @@ static void handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, 
 static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_bit_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_bit_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_adjuster_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_adjuster_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static gint view_shrink_logo(gpointer data);
 static gint view_scroll_logo(gpointer data);
 gint view_configure_handles(gpointer data);
@@ -370,8 +377,11 @@ update_visible_selection(void)
 {
    if (selected_state)
      {
+	int w, h;
+	
 	evas_move(view_evas, o_select_rect, 
-		  selected_state->o->state.x + selected_state->x, selected_state->o->state.y + selected_state->y);
+		  selected_state->o->state.x + selected_state->x, 
+		  selected_state->o->state.y + selected_state->y);
 	evas_resize(view_evas, o_select_rect, selected_state->w, selected_state->h);
 	evas_set_line_xy(view_evas, o_select_line1,
 			 selected_state->o->state.x + selected_state->x,
@@ -393,11 +403,42 @@ update_visible_selection(void)
 			 selected_state->o->state.y + selected_state->y + selected_state->h - 1,
 			 selected_state->o->state.x + selected_state->x + selected_state->w - 1,
 			 selected_state->o->state.y + selected_state->y + selected_state->h - 1);
+	evas_get_image_size(view_evas, o_select_abs1, &w, &h);
+	evas_move(view_evas, o_select_abs1, 
+		  selected_state->o->state.x + selected_state->x - w, 
+		  selected_state->o->state.y + selected_state->y - h);
+	evas_get_image_size(view_evas, o_select_rel1, &w, &h);
+	evas_move(view_evas, o_select_rel1, 
+		  selected_state->o->state.x + selected_state->x - w, 
+		  selected_state->o->state.y + selected_state->y);
+	evas_get_image_size(view_evas, o_select_adj1, &w, &h);
+	evas_move(view_evas, o_select_adj1, 
+		  selected_state->o->state.x + selected_state->x, 
+		  selected_state->o->state.y + selected_state->y - h);
+	
+	evas_get_image_size(view_evas, o_select_abs2, &w, &h);
+	evas_move(view_evas, o_select_abs2, 
+		  selected_state->o->state.x + selected_state->x + selected_state->w, 
+		  selected_state->o->state.y + selected_state->y + selected_state->h);
+	evas_get_image_size(view_evas, o_select_rel2, &w, &h);
+	evas_move(view_evas, o_select_rel2, 
+		  selected_state->o->state.x + selected_state->x + selected_state->w, 
+		  selected_state->o->state.y + selected_state->y + selected_state->h - h);
+	evas_get_image_size(view_evas, o_select_adj2, &w, &h);
+	evas_move(view_evas, o_select_adj2, 
+		  selected_state->o->state.x + selected_state->x + selected_state->w - w, 
+		  selected_state->o->state.y + selected_state->y + selected_state->h);
 	evas_show(view_evas, o_select_rect);
 	evas_show(view_evas, o_select_line1);
 	evas_show(view_evas, o_select_line2);
 	evas_show(view_evas, o_select_line3);
 	evas_show(view_evas, o_select_line4);
+	evas_show(view_evas, o_select_abs1);
+	evas_show(view_evas, o_select_rel1);
+	evas_show(view_evas, o_select_adj1);
+	evas_show(view_evas, o_select_abs2);
+	evas_show(view_evas, o_select_rel2);
+	evas_show(view_evas, o_select_adj2);
      }
    else
      {
@@ -406,6 +447,12 @@ update_visible_selection(void)
 	evas_hide(view_evas, o_select_line2);
 	evas_hide(view_evas, o_select_line3);
 	evas_hide(view_evas, o_select_line4);
+	evas_hide(view_evas, o_select_abs1);
+	evas_hide(view_evas, o_select_rel1);
+	evas_hide(view_evas, o_select_adj1);
+	evas_hide(view_evas, o_select_abs2);
+	evas_hide(view_evas, o_select_rel2);
+	evas_hide(view_evas, o_select_adj2);
      }
 }
 
@@ -585,7 +632,12 @@ handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
    state = _data;
    selected_state = state;
    if (draft_mode)
-      update_visible_selection();
+     {
+	update_visible_selection();
+	evas_put_data(_e, _o, "clicked", (void *)1);
+	evas_put_data(_e, _o, "x", (void *)_x);
+	evas_put_data(_e, _o, "y", (void *)_y);
+     }
    update_widget_from_selection();
    gtk_idle_add(view_redraw, NULL);
 }
@@ -596,6 +648,7 @@ handle_bit_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _
    Ebits_Object_Bit_State state;
 
    state = _data;
+   evas_remove_data(_e, _o, "clicked");
    gtk_idle_add(view_redraw, NULL);
 }
 
@@ -605,6 +658,143 @@ handle_bit_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
    Ebits_Object_Bit_State state;
 
    state = _data;
+   if ((draft_mode) && (selected_state))
+     {
+	if (evas_get_data(_e, _o, "clicked"))
+	  {
+	     int x, y;
+	     
+	     x = (int)evas_get_data(_e, _o, "x");
+	     y = (int)evas_get_data(_e, _o, "y");
+	     evas_put_data(_e, _o, "x", (void *)_x);
+	     evas_put_data(_e, _o, "y", (void *)_y);
+	     
+	     selected_state->description->rel1.x += (_x - x);
+	     selected_state->description->rel1.y += (_y - y);
+	     selected_state->description->rel2.x += (_x - x);
+	     selected_state->description->rel2.y += (_y - y);
+	     
+	     ebits_move(bits, backing_x, backing_y);
+	     ebits_resize(bits, backing_w + 10, backing_h + 10);
+	     ebits_resize(bits, backing_w, backing_h);
+	     update_widget_from_selection();
+	     update_visible_selection();
+	     ebits_set_state(bits, current_state);
+	  }
+     }
+   gtk_idle_add(view_redraw, NULL);
+}
+
+static void
+handle_adjuster_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   Ebits_Object_Bit_State state;
+
+   evas_put_data(_e, _o, "clicked", (void *)1);
+   evas_put_data(_e, _o, "x", (void *)_x);
+   evas_put_data(_e, _o, "y", (void *)_y);
+   gtk_idle_add(view_redraw, NULL);
+}
+
+static void
+handle_adjuster_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   evas_remove_data(_e, _o, "clicked");
+   gtk_idle_add(view_redraw, NULL);
+}
+
+static void
+handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   if (evas_get_data(_e, _o, "clicked"))
+     {
+	int x, y, dx, dy;
+	
+	x = (int)evas_get_data(_e, _o, "x");
+	y = (int)evas_get_data(_e, _o, "y");
+	evas_put_data(_e, _o, "x", (void *)_x);
+	evas_put_data(_e, _o, "y", (void *)_y);
+	dx = (_x - x);
+	dy = (_y - y);
+	
+	if (_o == o_select_abs1)
+	  {
+             selected_state->description->rel1.x += dx;
+	     selected_state->description->rel1.y += dy;
+	  }
+	else if (_o == o_select_rel1)
+	  {
+	     Ebits_Object_Bit_State state;
+	     int rw, rh;
+	     double ix, iy;
+	     
+	     state = NULL;
+	     if (selected_state->description->rel1.name)
+		state = _ebits_get_bit_name(bits, selected_state->description->rel1.name);
+	     rw = bits->state.w;
+	     rh = bits->state.h;
+	     if (state)
+	       {
+		  rw = selected_state->w;
+		  rh = selected_state->h;
+	       }
+	     rw += selected_state->description->rel1.ax;
+	     rh += selected_state->description->rel1.ay;
+	     ix = 0;
+	     iy = 0;
+	     if (rw > 0) ix = (double)dx / (double)rw;
+	     if (rh > 0) iy = (double)dy / (double)rh;
+	     selected_state->description->rel1.rx += ix;
+	     selected_state->description->rel1.ry += iy;
+	  }
+	else if (_o == o_select_adj1)
+	  {
+	     selected_state->description->rel1.ax += dx;
+	     selected_state->description->rel1.ay += dy;
+	  }
+	else if (_o == o_select_abs2)
+	  {
+             selected_state->description->rel2.x += dx;
+	     selected_state->description->rel2.y += dy;
+	  }
+	else if (_o == o_select_rel2)
+	  {
+	     Ebits_Object_Bit_State state;
+	     int rw, rh;
+	     double ix, iy;
+	     
+	     state = NULL;
+	     if (selected_state->description->rel2.name)
+		state = _ebits_get_bit_name(bits, selected_state->description->rel2.name);
+	     rw = bits->state.w;
+	     rh = bits->state.h;
+	     if (state)
+	       {
+		  rw = selected_state->w;
+		  rh = selected_state->h;
+	       }
+	     rw += selected_state->description->rel1.ax;
+	     rh += selected_state->description->rel1.ay;
+	     ix = 0;
+	     iy = 0;
+	     if (rw > 0) ix = (double)dx / (double)rw;
+	     if (rh > 0) iy = (double)dy / (double)rh;
+	     selected_state->description->rel2.rx += ix;
+	     selected_state->description->rel2.ry += iy;
+	  }
+	else if (_o == o_select_adj2)
+	  {
+	     selected_state->description->rel2.ax += dx;
+	     selected_state->description->rel2.ay += dy;
+	  }
+	     
+	ebits_move(bits, backing_x, backing_y);
+	ebits_resize(bits, backing_w + 10, backing_h + 10);
+	ebits_resize(bits, backing_w, backing_h);
+	update_widget_from_selection();
+	update_visible_selection();
+	ebits_set_state(bits, current_state);
+     }
    gtk_idle_add(view_redraw, NULL);
 }
 
@@ -1238,6 +1428,12 @@ on_view_expose_event                   (GtkWidget       *widget,
 	o_select_line2 = evas_add_line(view_evas);
 	o_select_line3 = evas_add_line(view_evas);
 	o_select_line4 = evas_add_line(view_evas);
+	o_select_abs1 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle_abs.png");
+	o_select_rel1 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle_rel.png");
+	o_select_adj1 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle_adj.png");
+	o_select_abs2 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle_abs.png");
+	o_select_rel2 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle_rel.png");
+	o_select_adj2 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle_adj.png");
 	evas_set_color(view_evas, o_select_rect, 255, 255, 255, 80);
 	evas_set_color(view_evas, o_select_line1, 200, 50, 50, 200);
 	evas_set_color(view_evas, o_select_line2, 200, 50, 50, 200);
@@ -1248,11 +1444,35 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_set_layer(view_evas, o_select_line2, 100);
 	evas_set_layer(view_evas, o_select_line3, 100);
 	evas_set_layer(view_evas, o_select_line4, 100);
+	evas_set_layer(view_evas, o_select_abs1, 100);
+	evas_set_layer(view_evas, o_select_rel1, 100);
+	evas_set_layer(view_evas, o_select_adj1, 100);
+	evas_set_layer(view_evas, o_select_abs2, 100);
+	evas_set_layer(view_evas, o_select_rel2, 100);
+	evas_set_layer(view_evas, o_select_adj2, 100);
 	evas_set_pass_events(view_evas, o_select_rect, 1);
 	evas_set_pass_events(view_evas, o_select_line1, 1);
 	evas_set_pass_events(view_evas, o_select_line2, 1);
 	evas_set_pass_events(view_evas, o_select_line3, 1);
 	evas_set_pass_events(view_evas, o_select_line4, 1);
+	evas_callback_add(view_evas, o_select_abs1, CALLBACK_MOUSE_DOWN, handle_adjuster_mouse_down, NULL);
+	evas_callback_add(view_evas, o_select_abs1, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_callback_add(view_evas, o_select_abs1, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
+	evas_callback_add(view_evas, o_select_rel1, CALLBACK_MOUSE_DOWN, handle_adjuster_mouse_down, NULL);
+	evas_callback_add(view_evas, o_select_rel1, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_callback_add(view_evas, o_select_rel1, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
+	evas_callback_add(view_evas, o_select_adj1, CALLBACK_MOUSE_DOWN, handle_adjuster_mouse_down, NULL);
+	evas_callback_add(view_evas, o_select_adj1, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_callback_add(view_evas, o_select_adj1, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
+	evas_callback_add(view_evas, o_select_abs2, CALLBACK_MOUSE_DOWN, handle_adjuster_mouse_down, NULL);
+	evas_callback_add(view_evas, o_select_abs2, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_callback_add(view_evas, o_select_abs2, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
+	evas_callback_add(view_evas, o_select_rel2, CALLBACK_MOUSE_DOWN, handle_adjuster_mouse_down, NULL);
+	evas_callback_add(view_evas, o_select_rel2, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_callback_add(view_evas, o_select_rel2, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
+	evas_callback_add(view_evas, o_select_adj2, CALLBACK_MOUSE_DOWN, handle_adjuster_mouse_down, NULL);
+	evas_callback_add(view_evas, o_select_adj2, CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_callback_add(view_evas, o_select_adj2, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
 	
 	gtk_timeout_add(50, view_scroll_logo, NULL);
 	  {

@@ -7,17 +7,17 @@
 
 static Evas_List __bit_descriptions = NULL;
 
+Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name);
 static Ebits_Object_Description _ebits_find_description(char *file);
 static char *_ebits_get_file(Ebits_Object_Bit_Description d, int state);
 static void _ebits_sync_bits(Ebits_Object_Bit_State state);
-static Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name);
 static void _ebits_evaluate_fill(Ebits_Object_Bit_State state);
 static void _ebits_calculate(Ebits_Object_Bit_State state);
 static void _ebits_object_calculate(Ebits_Object o);
 
 #define EBITS_FILE_REDIRECT "%s:/images/%s"
 
-static Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name)
+Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name)
 {
    Evas_List l;
    
