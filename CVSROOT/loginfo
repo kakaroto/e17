@@ -26,4 +26,4 @@
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # added myself (testing)
 DEFAULT /usr/bin/perl $CVSROOT/CVSROOT/commit.pl %{sVv}
-ALL $CVSROOT/CVSROOT/ciabot.pl %s $USER
+ALL /usr/bin/perl $CVSROOT/CVSROOT/ciabot.pl %s $USER
