@@ -23,6 +23,7 @@
  <!ENTITY ecore_ipc_intro SYSTEM "xml/ecore/ecore_ipc_intro.xml">
 
  <!-- evas -->
+ <!ENTITY evas_ecore_setup SYSTEM "xml/evas/evas_ecore_setup.xml">
  <!ENTITY evas_key_bindings SYSTEM "xml/evas/evas_key_bindings.xml">
 
  <!-- esmart -->
