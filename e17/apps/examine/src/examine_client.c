@@ -403,6 +403,11 @@ examine_client_get_val_cb(void)
   Ewl_Widget     *sibling;
 
   ret = strstr(examine_client_buf, "=") + 1;
+  if (ret == 1) {
+    printf("OFFENDING STRING: %s\n", examine_client_buf);
+    return;
+  }
+
   if (*ret == '"') {
     ret++;
     if (end = strstr(ret, "\""))
