@@ -2380,3 +2380,11 @@ Split the mode struct into configuration and state stuff.
 - Although purely cosmetical, this was quite a large change measured by
   amount of changed lines.
   However, over time I've had a lot of trouble figuring out which was what.
+
+-------------------------------------------------------------------------------
+
+Sun Jan 18 15:10:42 CET 2004
+(Kim)
+
+Pass the context ewin as parameter to the action handlers
+ (get rid of mode.ewin).
