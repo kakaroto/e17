@@ -63,7 +63,12 @@ int        efsd_queue_empty(EfsdQueue *q);
 int        efsd_queue_size(EfsdQueue *q);
 
 /* Queue iterator -- iterates over all items
-   that are currently queued */
+   that are currently queued. Warning -- when
+   compiled with threads, iterators lock pretty
+   aggressively, so you should try to handle
+   whatever needs to be done quickly before
+   calling efsd_queue_it_free().
+*/
 
 EfsdQueueIterator *efsd_queue_it_new(EfsdQueue *h);
 void               efsd_queue_it_free(EfsdQueueIterator *it);

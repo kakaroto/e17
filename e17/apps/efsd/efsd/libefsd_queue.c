@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <efsd_lock.h>
 #include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_misc.h>
@@ -41,7 +40,6 @@ struct efsd_queue
 {
   EfsdList      *q;
   int            size;
-  EfsdLock      *lock;
 };
 
 struct efsd_queue_iterator
@@ -61,7 +59,6 @@ efsd_queue_new(void)
   q = NEW(EfsdQueue);
   q->q = NULL;
   q->size = 0;
-  q->lock = efsd_lock_new();
 
   D_RETURN_(q);
 }
@@ -76,7 +73,6 @@ efsd_queue_free(EfsdQueue *q, EfsdFunc free_func)
     D_RETURN;
 
   efsd_list_free(q->q, free_func);
-  efsd_lock_free(q->lock);
   FREE(q);
   
   D_RETURN;
@@ -91,8 +87,6 @@ efsd_queue_append_item(EfsdQueue *q, void *data)
   if (!q || !data)
     D_RETURN;
 
-  efsd_lock_get_write_access(q->lock);
-
   if (!q->q)
     q->q = efsd_list_new(data);
   else
@@ -100,8 +94,6 @@ efsd_queue_append_item(EfsdQueue *q, void *data)
 
   q->size++;
 
-  efsd_lock_release_write_access(q->lock);
-  
   D_RETURN;
 }
 
@@ -116,13 +108,9 @@ efsd_queue_remove_item(EfsdQueue *q)
   if (!q || !q->q)
     D_RETURN_(NULL);
 
-  efsd_lock_get_write_access(q->lock);
-
   data = efsd_list_data(q->q);
   q->q = efsd_list_remove(q->q, q->q, NULL);
   q->size--;
-
-  efsd_lock_release_write_access(q->lock);
 
   D_RETURN_(data);
 }
@@ -138,9 +126,7 @@ efsd_queue_next_item(EfsdQueue *q)
   if (!q || !q->q)
     D_RETURN_(NULL);
 
-  efsd_lock_get_read_access(q->lock);
   data = efsd_list_data(q->q);
-  efsd_lock_release_read_access(q->lock);
 
   D_RETURN_(data);
 }
@@ -153,9 +139,7 @@ efsd_queue_empty(EfsdQueue *q)
 
   D_ENTER;
 
-  efsd_lock_get_read_access(q->lock);
   result = (q->q == NULL);
-  efsd_lock_release_read_access(q->lock);
 
   D_RETURN_(result);
 }
@@ -171,9 +155,7 @@ efsd_queue_size(EfsdQueue *q)
   if (!q)
     D_RETURN_(0);
 
-  efsd_lock_get_read_access(q->lock);
   size = q->size;
-  efsd_lock_release_read_access(q->lock);
 
   D_RETURN_(size);
 }
@@ -190,7 +172,6 @@ efsd_queue_it_new(EfsdQueue *q)
   
   qit->q = q;
   qit->it = q->q;
-  efsd_lock_get_write_access(qit->q->lock);
 
   D_RETURN_(qit);
 }
@@ -204,7 +185,6 @@ efsd_queue_it_free(EfsdQueueIterator *qit)
   if (!qit)
     D_RETURN;
 
-  efsd_lock_release_write_access(qit->q->lock);
   FREE(qit);
 
   D_RETURN;

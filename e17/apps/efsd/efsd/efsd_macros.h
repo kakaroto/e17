@@ -25,10 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_macros
 #define __efsd_macros
 
-#if HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <stdlib.h>
 #include <errno.h>
 

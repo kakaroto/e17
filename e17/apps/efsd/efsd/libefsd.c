@@ -40,6 +40,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define getcwd _getcwd2
 #endif
 
+#if HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_io.h>
@@ -50,6 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <libefsd_misc.h>
 #include <libefsd.h>
 
+/* Enable those if you want call debugging output! */
 char opt_nesting = FALSE;
 char opt_debug   = FALSE;
 

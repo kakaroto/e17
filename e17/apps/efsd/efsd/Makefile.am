@@ -54,10 +54,12 @@ libefsd_la_SOURCES   = 				\
 	efsd_io.h efsd_io.c 			\
 	efsd_options.h efsd_options.c 		\
 	efsd_types.h efsd_types.c 		\
-	efsd_queue.h efsd_queue.c 		\
+	efsd_queue.h libefsd_queue.c 		\
 	efsd_list.h efsd_list.c 		\
 	libefsd_misc.h libefsd_misc.c 		\
 	libefsd.c
+
+libefsd_CFLAGS = -DLIB
 
 EXTRA_DIST = gdb.scr
 

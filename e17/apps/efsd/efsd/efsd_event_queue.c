@@ -109,6 +109,8 @@ efsd_event_queue_fill_fdset(EfsdQueue *q, fd_set *fdset, int *fdsize)
 	}
     }
 
+  efsd_queue_it_free(eqi);
+
   D_RETURN;
 }
 
@@ -170,6 +172,8 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
 	  event_queue_item_free(qi);	  
 	}
     }
+
+  efsd_queue_it_free(eqi);
 
   D_RETURN_(done);
 }

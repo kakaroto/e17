@@ -25,10 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef libefsd_h
 #define libefsd_h
 
-#if HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <efsd.h>
 
 #ifdef __cplusplus

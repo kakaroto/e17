@@ -361,6 +361,7 @@ efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
 	}
     }
 
+  
   if (efsd_monitor_start(cmd, client, dir_mode, do_sort) == NULL)
     {
       errno_check(__LINE__, __FUNCTION__);
