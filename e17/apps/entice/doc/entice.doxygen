@@ -260,6 +260,16 @@ That should fetch all the libraries you'll need to run entice.
 
 
 
-@todo Theme edc walkthrough
+@todo 
+<ul>
+<li>Theme walkthrough</li>
+<li>URL(curl/wget) loading</li>
+<li>dragable for container scroll offset</li>
+<li>gallery support</li>
+<li>(esmart/ewl) file dialog</li>
+<li>XDND support</li>
+<li>file change notification(reload main image, not just thumbnail)</li>
+<li>migrate to ecore_config</li>
+</ul>
 
 */
