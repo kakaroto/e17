@@ -22,7 +22,13 @@ int main(int argc, char *argv[])
 	ewl_state_set_application_name("ewltest");
 
 	/* configure widgets  and connect callbacks */
-	win = ewl_window_new_with_values("Sampel window",320,240,"Test","Test");
+	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "Sampel window",
+									320, 240);
+	ewl_window_set_property_location(win,800,600);
+	ewl_window_set_property_size	(win,640,480);
+	ewl_window_set_property_class_hint	(win,"blah", "blah");
+	ewl_window_set_property_decor_hint	(win, TRUE);
+
 	ewl_callback_add(win, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
 
 	/* pack widget(s) into container */
