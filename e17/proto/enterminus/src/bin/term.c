@@ -263,7 +263,7 @@ Term
    execute_command(term);//, argc, argv);
    term->cursor.shape = evas_object_rectangle_add(term->evas);
    evas_object_resize(term->cursor.shape, term->font.width, term->font.height);
-   evas_object_color_set(term->cursor.shape, 100,100,100,255);	      
+   evas_object_color_set(term->cursor.shape, 100, 100, 100, 255);	      
    evas_object_layer_set(term->cursor.shape, 5);
    evas_object_show(term->cursor.shape);
    term->cursor.last_reset = ecore_time_get();

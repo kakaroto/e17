@@ -135,7 +135,7 @@ term_redraw(void *data) {
 int
 term_cursor_move_up(Term *term, int n)
 {
-   term->cur_row -= n - 1;
+   term->cur_row -= n;
    if (term->cur_row < 0)
       term->cur_row = 0;
    return term->cur_row;
@@ -145,7 +145,7 @@ term_cursor_move_up(Term *term, int n)
 int
 term_cursor_move_down(Term *term, int n)
 {
-   term->cur_row += n - 1;
+   term->cur_row += n;
    if (term->cur_row >= term->tcanvas->rows)
       term->cur_row = term->tcanvas->rows - 1;
    return term->cur_row;
@@ -269,8 +269,8 @@ term_clear_area(Term *term, int x1, int y1, int x2, int y2)
 	 if (x >= term->tcanvas->scroll_size)
 	    x -= term->tcanvas->scroll_size;
 	 tgl = &term->tcanvas->grid[x][j];
-	 if (tgl->c != ' ' && tgl->c != '\0') {
-	    tgl->c = '\0';
+	 if (tgl->c != ' ') {
+	    tgl->c = ' ';
 	    tgl->changed = 1;
 	    term->tcanvas->changed_rows[x] = 1;
 	 }
@@ -361,8 +361,8 @@ term_scroll_down(Term *term, int rows)
 
 int term_cursor_anim(Term *term) {
    int a;
-   a = 162 + 73 * cos ((ecore_time_get () - term->cursor.last_reset) * 2);
-   evas_object_color_set (term->cursor.shape, 100, 100, 100, a);
+   a = 162 + 73 * cos((ecore_time_get () - term->cursor.last_reset) * 2);
+   evas_object_color_set(term->cursor.shape, 100, 100, 100, a);
    return 1;
 }
 

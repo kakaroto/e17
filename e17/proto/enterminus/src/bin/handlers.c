@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>3
+ */
 #include "term.h"
 
 void term_handler_xterm_seq(int op, Term *term) {
@@ -142,24 +145,23 @@ int term_handler_escape_seq(Term *term) {
 	  * n == 1: Clear to Left (EL1)
 	  * n == 2: Clear All
 	  */
-	 DPRINT((stderr, "ESC [ [ n ] K  Erase in Line (EL)\n"));
-	 if(narg) {
-	    if(args[0] == 1) {
+	 DPRINT((stderr, "ESC [ [ n ] K  Erase in Line (EL) %d %d\n", term->cur_col, term->cur_row));
+	 if (narg) {
+	    if (args[0] == 1) {
 	       /* erase from start of line to cursor */
-	       term_clear_area(term, 1, term->cur_row, 
-			       term->cur_col, term->cur_row);
+	       term_clear_area(term, 1, term->cur_row + 1, 
+			       term->cur_col, term->cur_row + 1);
 	    }
-	    if(args[0] == 2) {
+	    if (args[0] == 2) {
 	       /* erase whole line */
-	       term_clear_area(term, 1, term->cur_row, 
-			       term->tcanvas->cols, term->cur_row);
+	       term_clear_area(term, 1, term->cur_row + 1, 
+			       term->tcanvas->cols, term->cur_row + 1);
 	    }
 	 }
 	 else {
 	    /* erase from cursor to end of line */
-	    term_clear_area(term, term->cur_col, 
-			    term->cur_row, 
-			    term->tcanvas->cols, term->cur_row);
+	    term_clear_area(term, term->cur_col + 1, term->cur_row + 1, 
+			    term->tcanvas->cols, term->cur_row + 1);
 	 }
 	 break;
        case 'L':

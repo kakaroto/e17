@@ -199,17 +199,29 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
    if ((term->tcanvas->cols == num_chars_w) && (term->tcanvas->rows == num_chars_h))
       return;
 
-   term->tcanvas->scroll_region_start += (term->tcanvas->rows - num_chars_h);
-   if (term->tcanvas->scroll_region_start < 0)
-      term->tcanvas->scroll_region_start += term->tcanvas->scroll_size;
-   else if (term->tcanvas->scroll_region_start >= term->tcanvas->scroll_size)
-      term->tcanvas->scroll_region_start -= term->tcanvas->scroll_size;
+   size = term->tcanvas->rows - num_chars_h;
+   if (term->cur_row < (term->tcanvas->rows / 2)) {
+      /* Change at the bottom */
+      term->tcanvas->scroll_region_end -= size;
+      if (term->tcanvas->scroll_region_end < 0)
+	 term->tcanvas->scroll_region_end += term->tcanvas->scroll_size;
+      if (term->tcanvas->scroll_region_end >= term->tcanvas->scroll_size)
+	 term->tcanvas->scroll_region_end -= term->tcanvas->scroll_size;
+   } else {
+      /* Change at the top */
+      term->tcanvas->scroll_region_start += size;
+      if (term->tcanvas->scroll_region_start < 0)
+	 term->tcanvas->scroll_region_start += term->tcanvas->scroll_size;
+      else if (term->tcanvas->scroll_region_start >= term->tcanvas->scroll_size)
+	 term->tcanvas->scroll_region_start -= term->tcanvas->scroll_size;
+   }
 
    term->tcanvas->grid[0] = realloc(term->tcanvas->grid[0],
 				    num_chars_w * term->tcanvas->scroll_size
 				    * sizeof(Term_TGlyph));
    for (x = 1; x < term->tcanvas->scroll_size; x++)
       term->tcanvas->grid[x] = &term->tcanvas->grid[x - 1][num_chars_w];
+   memset(term->tcanvas->grid[0], 0, num_chars_w * term->tcanvas->scroll_size * sizeof(Term_TGlyph));
    /* FIXME: Initialize new characters if we get bigger */
 
    /* Mark all visible characters changed */
