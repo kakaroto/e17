@@ -334,7 +334,6 @@ void erss_mouse_out_cursor_change (void *data, Evas *e, Evas_Object *obj,
   ecore_x_cursor_set(win, 0);
 }
 
-
 void erss_list_config_files (int output)
 {
 	char *str;
@@ -454,6 +453,7 @@ int main (int argc, char * const argv[])
 	int got_rc_file = FALSE;
 	char config_file[PATH_MAX];
 	char theme_file[PATH_MAX];
+   XWindowChanges xwc;
 
 	struct stat statbuf;
 
@@ -549,7 +549,6 @@ int main (int argc, char * const argv[])
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
 	win = ecore_evas_software_x11_window_get(ee);
-	ecore_x_window_prop_window_type_desktop_set(win);
 	
 	if (!ee)
 		return -1;
@@ -559,6 +558,9 @@ int main (int argc, char * const argv[])
 	ecore_evas_title_set (ee, theme_file);
 	ecore_evas_shaped_set (ee, 1);
 	ecore_evas_show (ee);
+	
+   ecore_x_window_prop_window_type_set(win, ECORE_X_WINDOW_TYPE_DESKTOP);
+   ecore_x_window_lower(win);
 
 	if (cfg->x != 0 && cfg->y != 0)
 		ecore_evas_move (ee, cfg->x, cfg->y);
