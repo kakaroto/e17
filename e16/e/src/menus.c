@@ -1259,10 +1259,10 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 #ifndef __EMX__
 		  aa = (int)st.st_ino;
 #else
-		  aa = (int)st.st_nlink
+		  aa = (int)st.st_nlink;
 #endif
 
-		     bb = (int)st.st_dev;
+		  bb = (int)st.st_dev;
 		  cc = 0;
 		  if (st.st_mtime > st.st_ctime)
 		     cc = st.st_mtime;
