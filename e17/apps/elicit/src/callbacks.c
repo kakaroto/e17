@@ -74,6 +74,9 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
       double w, h;
 
       evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
+
+      if (el->zoom < 1.0) el->zoom = 1.0;
+
       w = sw * (1 / el->zoom);
       h = sh * (1 / el->zoom);
       elicit_util_shoot(el->shot, (int)w, (int)h);
