@@ -499,7 +499,11 @@ geist_imlib_image_set_has_alpha(Imlib_Image im, int alpha)
 void
 geist_imlib_save_image(Imlib_Image im, char *file)
 {
+   char *tmp;
    imlib_context_set_image(im);
+   tmp = strrchr(file, '.');
+   if (tmp)
+      imlib_set_format(tmp + 1);
    imlib_save_image(file);
 }
 

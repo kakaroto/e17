@@ -31,6 +31,7 @@ int call_level = 0;
 int
 main(int argc, char **argv)
 {
+   char *tmp;
    Imlib_Image image;
    Imlib_Load_Error err;
 
@@ -55,6 +56,10 @@ main(int argc, char **argv)
       eprintf("no image grabbed");
 
    imlib_context_set_image(image);
+   tmp = strrchr(opt.output_file, '.');
+   if (tmp)
+      imlib_image_set_format(tmp + 1);
+
    imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
    imlib_save_image_with_error_return(opt.output_file, &err);
    if (err)
@@ -92,7 +97,8 @@ scrot_do_delay(void)
    }
 }
 
-Imlib_Image scrot_grab_shot(void)
+Imlib_Image
+scrot_grab_shot(void)
 {
    Imlib_Image im;
 
@@ -114,8 +120,7 @@ scrot_exec_app(void)
    D_RETURN_(3);
 }
 
-Imlib_Image
-scrot_sel_and_grab_image(void)
+Imlib_Image scrot_sel_and_grab_image(void)
 {
    Imlib_Image im = NULL;
    static int xfd = 0;
@@ -287,7 +292,8 @@ scrot_sel_and_grab_image(void)
    return im;
 }
 
-Window scrot_get_window(Display * display, Window window, int x, int y)
+Window
+scrot_get_window(Display * display, Window window, int x, int y)
 {
    Window source_window, target_window;
 
