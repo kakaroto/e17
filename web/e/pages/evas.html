@@ -509,7 +509,92 @@ And now with these primitives added out Evas canvas will look like this:
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
 <td><img src=img/blank.gif width=1 height=1></td></tr></table>
 
-
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Tinting and Fading</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Doing effects in Evas is almost child's play like everything else. You can
+tint and fade image objects, for example with very little effort. Let's
+start a new Evas with a single image object and a textured background.
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_0.html><img src=img/evas_recolor_eg_0_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+Now lets "tint" this object red. That's easy:
+<font face=arial,helvetica,lucida size=2><p>
+<font face=courier,clean,fixed color=#445566 size=3><pre>
+evas_set_color(evas, object, 255, 0, 0, 255);
+</pre></font>
+<font face=arial,helvetica,lucida size=2><p>
+When you set the color of an image, every pixel of that image is multiplied
+by the color value. So pseudo-code wise output.red = (pixel.red * color.red) /
+255, and the same for the green, blue and alpha channels. Here is the result
+of multiplication by RGB 255,0,0,255 :
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_1.html><img src=img/evas_recolor_eg_1_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+Now let's try tinting the cube yellow:
+<font face=arial,helvetica,lucida size=2><p>
+<font face=courier,clean,fixed color=#445566 size=3><pre>
+evas_set_color(evas, object, 255, 255, 0, 255);
+</pre></font>
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_2.html><img src=img/evas_recolor_eg_2_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+How about blue?
+<font face=arial,helvetica,lucida size=2><p>
+<font face=courier,clean,fixed color=#445566 size=3><pre>
+evas_set_color(evas, object, 0, 0, 255, 255);
+</pre></font>
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_3.html><img src=img/evas_recolor_eg_3_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+Let's try fading the cube half-out:
+<font face=arial,helvetica,lucida size=2><p>
+<font face=courier,clean,fixed color=#445566 size=3><pre>
+evas_set_color(evas, object, 255, 255, 255, 128);
+</pre></font>
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_4.html><img src=img/evas_recolor_eg_4_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+Let's try making the cube just plain darker than it normally is:
+<font face=arial,helvetica,lucida size=2><p>
+<font face=courier,clean,fixed color=#445566 size=3><pre>
+evas_set_color(evas, object, 128, 128, 128, 255);
+</pre></font>
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_5.html><img src=img/evas_recolor_eg_5_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+Finally let's try fading it out and tinting it dark-red:
+<font face=arial,helvetica,lucida size=2><p>
+<font face=courier,clean,fixed color=#445566 size=3><pre>
+evas_set_color(evas, object, 128, 0, 0, 128);
+</pre></font>
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_recolor_eg_6.html><img src=img/evas_recolor_eg_6_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+As you can see, fading images out, tinting images is almost no workat all. 
+In addition to being able to scale them, raise and lower them above and below
+other objects, have them alpha blend and more, you have a pretty simple way
+of creating complex effects within an Evas' canvas.
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Clipping</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Now lets look at clipping in Evas. Clipping is the process by which you
+"clip off" bits of what you are drawing that lie outside the area you are
+clipping to. For example - you have an image and you clip it to a box that
+is smaller than the image placed in the middle of the images location. This
+means the image will now only be drawn in the area that clips it - ie this
+rectangle. The parts of the image lying outside the bounds of this rectangle
+will never be drawn. You can also think of this as windowing - allowing
+only what you can see through the "window" (or clip region) to show through.
+In theory you can use any object as a "window", or clip object, but due to
+back-end renderer limitations, Evas only supports using rectangle objects as
+clip objects for now. Using any other kind of object has undefined results. 
+Clip objects can be used to impliment things such as viewports, windows and 
+much more - you will need to use your imagination to really use them fully.
+<font face=arial,helvetica,lucida size=2><p>
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Your event loop</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
 </td>
 <td><img src=img/blank.gif width=20 height=20></td>
 </tr><tr>
