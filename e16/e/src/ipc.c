@@ -79,6 +79,7 @@ void                IPC_DockPosition(char *params, Client * c);
 void                IPC_KDE(char *params, Client * c);
 void                IPC_MemDebug(char *params, Client * c);
 void                IPC_Remember(char *params, Client * c);
+void                IPC_Nop(char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
  * 
@@ -127,6 +128,12 @@ IPCStruct           IPCArray[] =
       IPC_Version,
       "version",
       "displays the current version of Enlightenment running",
+      NULL
+   },
+   {
+      IPC_Nop,
+      "nop",
+      "IPC No-operation - returns nop",
       NULL
    },
    {
@@ -599,6 +606,14 @@ IPCStruct           IPCArray[] =
  * IPC array just above.
  * - Mandrake
  */
+
+void
+IPC_Nop(char *params, Client * c)
+{
+   CommsSend(c, "nop");
+   params = NULL;
+   return;
+}
 
 void
 IPC_Remember(char *params, Client * c)
@@ -1332,7 +1347,7 @@ IPC_Cursor(char *params, Client * c)
 void
 IPC_TextClass(char *params, Client * c)
 {
-
+   char                pq;
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1396,11 +1411,14 @@ IPC_TextClass(char *params, Client * c)
 		       else if (!strcmp(param3, "disabled"))
 			  state = STATE_DISABLED;
 		       txt = atword(params, 7);
+		       pq = queue_up;
+		       queue_up = 0;
 		       if (txt)
 			  TextDraw(t, win, 0, 0, state, txt, x, y,
 				   99999, 99999, 17, 0);
 		       else
 			  Esnprintf(buf, sizeof(buf), "0 0");
+		       queue_up = pq;
 		    }
 		  else
 		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",

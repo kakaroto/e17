@@ -3164,3 +3164,10 @@ Wed Oct  6 17:38:58 PDT 1999
 (Raster)
 
 turn off draw queue for ipc imageclass draws...
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 20:31:02 PDT 1999
+(Raster)
+
+need to add nop ipc call - need it for syncing purposes.
