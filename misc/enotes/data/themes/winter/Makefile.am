@@ -12,6 +12,6 @@ theme_DATA = $(EETS)
 all: $(EDCS)
 
 .edc.eet:
-	edje_cc -v -id images $< $@
+	edje_cc -v -id pix $< $@
 
 
