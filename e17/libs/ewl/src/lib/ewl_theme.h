@@ -15,8 +15,6 @@
  * The remainder of this section concentrates specifically on how EWL
  * interacts with Edje.
  *
- * @image html e_mini.png
- *
  * The keys to lookup the group name for the widgets are top level data keys
  * in the themes edje file. Each widget looks up it's group name based on the
  * heirarchy it is placed inside other containers.
