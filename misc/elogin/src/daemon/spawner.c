@@ -82,7 +82,7 @@ spawn_elogin(void)
    switch (pid = fork())
    {
      case 0:
-        if(execl(ELOGIN, ELOGIN, d->name) < 0)
+        if(execl(ELOGIN, ELOGIN, d->name, NULL) < 0)
 	    exit(0); 
         break;
      case -1:
