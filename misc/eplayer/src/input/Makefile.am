@@ -1,1 +1,1 @@
-SUBDIRS = avcodec vorbis
+SUBDIRS = vorbis
