@@ -158,20 +158,24 @@ evas_text_entry_text_fix(Evas_Object * o)
 {
    Evas_Text_Entry *e = NULL;
 
-   e = evas_object_smart_data_get(o);
-   if (e->passwd)
+   if (!o)
+      return;
+   if ((e = evas_object_smart_data_get(o)))
    {
-      int i, len;
-      char buf[e->buf.size];
+      if (e->passwd)
+      {
+         int i, len;
+         char buf[e->buf.size];
 
-      len = strlen(e->buf.text);
-      memset(buf, 0, e->buf.size);
-      for (i = 0; i < len; i++)
-         buf[i] = '*';
-      edje_object_part_text_set(e->edje.o, e->edje.part, buf);
+         len = strlen(e->buf.text);
+         memset(buf, 0, e->buf.size);
+         for (i = 0; i < len; i++)
+            buf[i] = '*';
+         edje_object_part_text_set(e->edje.o, e->edje.part, buf);
+      }
+      else
+         edje_object_part_text_set(e->edje.o, e->edje.part, e->buf.text);
    }
-   else
-      edje_object_part_text_set(e->edje.o, e->edje.part, e->buf.text);
 }
 static void
 _key_down_cb(void *data, Evas * e, Evas_Object * o, void *ev)

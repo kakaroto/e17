@@ -58,8 +58,8 @@ get_my_hostname(void)
 static int
 exit_cb(void *data, int ev_type, void *ev)
 {
+    fprintf(stderr, "HELP\n");
    ecore_main_loop_quit();
-//    exit(0);
    return 1;
 }
 
@@ -71,7 +71,13 @@ static void
 window_del_cb(Ecore_Evas * ee)
 {
    ecore_main_loop_quit();
-//    exit(0);
+#if 0
+   entrance_session_free(session);
+   ecore_evas_shutdown();
+   ecore_x_shutdown();
+   ecore_shutdown();
+#endif
+   exit(0);
 }
 
 /**
@@ -286,15 +292,9 @@ set_time(void *data, Evas_Object * o, const char *emission,
 static void
 done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
 {
-   if (session->authed)
-   {
-      entrance_session_start_user_session(session);
-   }
-   else
-   {
+   if (!session->authed)
       syslog(LOG_CRIT, "Theme attempted to launch session without finishing authentication. Please fix your theme.");
-      exit(0);
-   }
+   ecore_main_loop_quit();
 }
 
 /**
@@ -374,7 +374,9 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
    if (session->config->reboot.allow)
    {
       pid_t pid;
-
+      
+      entrance_session_free(session);
+      session = NULL;
       switch (pid = fork())
       {
         case 0:
@@ -414,6 +416,8 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
 
    if (session->config->halt.allow)
    {
+      entrance_session_free(session);
+      session = NULL;
       switch (pid = fork())
       {
         case 0:
@@ -506,8 +510,9 @@ main(int argc, char *argv[])
    int g_x = WINW, g_y = WINH;
    char *theme = NULL;
    int fs_en = 1;
+   
+   session = entrance_session_new();
 
-   openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
 /*   if (argv[1])
       snprintf(buf, PATH_MAX, "%s", argv[1]);*/
    
@@ -589,12 +594,11 @@ main(int argc, char *argv[])
 #endif
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
 
-   session = entrance_session_new();
    if (ecore_evas_init())
    {
       /* init edje and set frametime to 60 fps ? */
       edje_init();
-      edje_frametime_set(1.0 / 60.0);
+      edje_frametime_set(2.0 / 60.0);
 
       /* setup our ecore_evas */
       /* testing mode decides entrance window size * * Use rendering engine
@@ -646,6 +650,7 @@ main(int argc, char *argv[])
       if (!edje_object_file_set(edje, buf, "Main"))
       {
          syslog(LOG_CRIT, "Failed to load theme %s\n", theme);
+	 entrance_session_free(session);
          exit(1);
       }
       evas_object_move(edje, 0, 0);
@@ -741,8 +746,20 @@ main(int argc, char *argv[])
 
       entrance_session_ecore_evas_set(session, e);
       entrance_session_run(session);
+      fprintf(stderr, "%s", "BING\n");
+      
+      if(session->authed) {
+	entrance_session_start_user_session(session);
+      }
       entrance_session_free(session);
       closelog();
+      ecore_evas_shutdown();
+      ecore_x_shutdown();
+      ecore_shutdown();
+   } else {
+      fprintf(stderr, "Fatal error: Could not initialize ecore_evas!\n");
+      exit(1);
    }
+
    return (0);
 }

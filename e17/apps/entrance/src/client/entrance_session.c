@@ -2,6 +2,10 @@
 #include "entrance_session.h"
 #include <X11/Xlib.h>
 #include <Esmart/container.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 /**
 @file entrance_session.c
 @brief Variables and Data relating to an instance of the interface
@@ -36,6 +40,7 @@ entrance_session_new(void)
    e = (Entrance_Session *) malloc(sizeof(struct _Entrance_Session));
    memset(e, 0, sizeof(struct _Entrance_Session));
 
+   openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
    e->auth = entrance_auth_new();
    e->config = entrance_config_parse(PACKAGE_CFG_DIR "/entrance_config.db");
    if (!e->config)
@@ -82,10 +87,10 @@ entrance_session_free(Entrance_Session * e)
 {
    if (e)
    {
-      entrance_auth_free(e->auth);
-      entrance_config_free(e->config);
-      ecore_evas_free(e->ee);
-      free(e->session);
+      if(e->auth) entrance_auth_free(e->auth);
+      if(e->config) entrance_config_free(e->config);
+      if(e->ee) ecore_evas_free(e->ee);
+      if(e->session) free(e->session);
 
       free(e);
    }
@@ -222,6 +227,7 @@ entrance_session_start_user_session(Entrance_Session * e)
 {
    char buf[PATH_MAX];
    char *session_key = NULL;
+   pid_t pid;
 
    entrance_auth_setup_environment(e->auth);
 
@@ -248,7 +254,9 @@ entrance_session_start_user_session(Entrance_Session * e)
 
    syslog(LOG_CRIT, "Executing %s", buf);
 
-   ecore_evas_shutdown();
+   ecore_evas_free(e->ee);
+   e->ee = NULL;
+
    ecore_x_sync();
 
    syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
@@ -260,27 +268,39 @@ entrance_session_start_user_session(Entrance_Session * e)
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
          syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
-         exit(1);
+	 ecore_main_loop_quit();
       }
    }
 #endif
 
-   if (initgroups(e->auth->pw->pw_name, e->auth->pw->pw_gid))
-      syslog(LOG_CRIT,
+   switch((pid = fork()))
+   {
+     case 0:
+	if (initgroups(e->auth->pw->pw_name, e->auth->pw->pw_gid))
+	    syslog(LOG_CRIT,
              "Unable to initialize group (is entrance running as root?).");
-
-   if (setgid(e->auth->pw->pw_gid))
-      syslog(LOG_CRIT, "Unable to set group id.");
-
-   if (setuid(e->auth->pw->pw_uid))
-      syslog(LOG_CRIT, "Unable to set user id.");
-
-   entrance_auth_free(e->auth); /* clear users's password out of memory */
-   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
-/*   system(buf); */
-   ecore_x_shutdown();
-   ecore_shutdown();
-   exit(0);
+	if (setgid(e->auth->pw->pw_gid))
+	    syslog(LOG_CRIT, "Unable to set group id.");
+	if (setuid(e->auth->pw->pw_uid))
+	    syslog(LOG_CRIT, "Unable to set user id.");
+	entrance_auth_free(e->auth); 
+	e->auth = NULL;
+	execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+	exit(0);
+	break;
+     case -1:
+        syslog(LOG_INFO, "FORK FAILED, UH OH");
+	exit(0);
+     default:
+	break;
+   }
+   /* clear users's password out of memory */
+   entrance_auth_clear_pass(e->auth); 
+   if (waitpid(pid, NULL, 0) == pid)
+   {
+	entrance_auth_session_end(e->auth);
+	syslog(LOG_CRIT, "User Xsession Ended");
+   }
 }
 
 static void

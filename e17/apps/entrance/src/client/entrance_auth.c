@@ -78,11 +78,11 @@ entrance_auth_new(void)
 }
 
 /**
- * entrance_auth_free
- * @e the Entrance_Auth struct to be freed
+ * entrance_auth_session_end
+ * @e the Entrance_Auth handle for this session
  */
 void
-entrance_auth_free(Entrance_Auth * e)
+entrance_auth_session_end(Entrance_Auth * e)
 {
 #if HAVE_PAM
    if (e->pam.handle)
@@ -92,8 +92,31 @@ entrance_auth_free(Entrance_Auth * e)
       e->pam.handle = NULL;
    }
 #endif
+   syslog(LOG_INFO, "Auth: Session Closed Successfully.");
+}
 
-   e->pw = struct_passwd_free(e->pw);
+/**
+ * entrance_auth_clear_pass - Clear password from memory
+ * @e the Entrance_Auth handle for this session
+ */
+void
+entrance_auth_clear_pass(Entrance_Auth * e)
+{
+   if(e->pw)
+      if(e->pw->pw_passwd)
+         free(e->pw->pw_passwd);
+   memset(e->pass, 0, sizeof(e->pass));
+}
+
+/**
+ * entrance_auth_free
+ * @e the Entrance_Auth struct to be freed
+ */
+void
+entrance_auth_free(Entrance_Auth * e)
+{
+   if(e->pw)
+      e->pw = struct_passwd_free(e->pw);
 
    memset(e->pass, 0, sizeof(e->pass));
    free(e);

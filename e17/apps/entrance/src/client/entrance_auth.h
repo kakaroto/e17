@@ -54,6 +54,8 @@ typedef struct _Entrance_Auth Entrance_Auth;
 
 Entrance_Auth *entrance_auth_new(void);
 void entrance_auth_free(Entrance_Auth * e);
+void entrance_auth_session_end(Entrance_Auth * e);
+void entrance_auth_clear_pass(Entrance_Auth * e);
 
 /* 0 on success, 1 on failure */
 int entrance_auth_cmp_pam(Entrance_Auth * e);
