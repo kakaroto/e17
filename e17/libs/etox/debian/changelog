@@ -1,8 +1,8 @@
-libetox0 (0.0.1-0.2000122401) unstable; urgency=low
+etox (0.0.1-0.2001040501) unstable; urgency=low
 
-  * a cvs release
-
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 24 Dec 2000 01:31:57 +0000
+  * a CVS release
+  
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  6 Apr 2001 01:45:37 +0000
 
 Local variables:
 mode: debian-changelog
