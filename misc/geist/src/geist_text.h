@@ -86,4 +86,12 @@ void
 geist_text_update_image(geist_text * txt, unsigned char resize);
 void geist_text_update_positioning(geist_object *obj);
 
+void geist_display_fontstyler_window(GtkWidget *widget, gpointer *obj);
+void geist_hide_fontstyler_window(void);
+void geist_update_fontstyler_window(geist_object *obj);
+void geist_clear_fontstyler_window(void);
+
+
+
+
 #endif

@@ -38,7 +38,7 @@ geist_style_new(char *name)
    memset(s, 0, sizeof(geist_style));
    if (name)
       s->name = estrdup(name);
-
+   
    D_RETURN(3, s);
 }
 
@@ -104,7 +104,6 @@ geist_style *geist_style_dup(geist_style *s)
    D_ENTER(3);
 
    ret = geist_style_new(s->name);
-
    ret->bits = geist_list_dup_special(s->bits, geist_dup_style_bit);
    
    D_RETURN(3, ret);

@@ -26,6 +26,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 #include "geist_text.h"
 
+
+int fontstyler_active = 0;
+
+/* temp copy of the style thats edited*/
+geist_style *working_copy, *temp;
+geist_object *current_obj;
+int cur = 0;
+
+/*fontstyler cb*/
+void select_row_cb(GtkWidget * clist, gint rw, gint col,
+                   GdkEventButton * event, gpointer data);
+void spinner_changed_cb(gpointer data);
+
+
+/* fontstyler widgets */
+GtkWidget *window;
+GtkWidget *e1, *e2, *e3, *e4, *e5, *e6;
+GtkWidget *list, *combo, *open_sel, *save_sel;
+
 typedef struct _addtext_ok_data addtext_ok_data;
 struct _addtext_ok_data
 {
@@ -593,10 +612,10 @@ geist_text_duplicate(geist_object * obj)
       GEIST_TEXT(ret)->style = geist_style_dup(txt->style);
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
-            NULL);
-    /*  GEIST_TEXT(ret)->im = geist_imlib_clone_image(txt->im); */
+                   NULL);
+      /*  GEIST_TEXT(ret)->im = geist_imlib_clone_image(txt->im); */
    }
-   geist_text_update_image(txt, FALSE); 
+   geist_text_update_image(txt, FALSE);
 
    D_RETURN(3, ret);
 }
@@ -633,7 +652,7 @@ refresh_size_cb(GtkWidget * widget, gpointer * obj)
    fontsize = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_change_font(txt, txt->fontname, fontsize);
    geist_text_update_image(txt, TRUE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 int
@@ -684,7 +703,7 @@ refresh_font_cb(GtkWidget * widget, gpointer * obj)
    if (!geist_text_change_font(txt, fontname, txt->fontsize))
    {
       geist_text_update_image(txt, TRUE);
-      geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+      geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
    }
 }
 
@@ -700,7 +719,7 @@ refresh_just_cb(GtkWidget * widget, gpointer * obj)
 
    txt->justification = geist_text_get_justification_from_string(just);
    geist_text_update_image(txt, FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 
@@ -712,7 +731,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->r =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 void
@@ -723,7 +742,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->g =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 void
@@ -734,7 +753,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->b =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 void
@@ -745,7 +764,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->a =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 
@@ -755,7 +774,7 @@ refresh_text_cb(GtkWidget * widget, gpointer * obj)
    geist_text_change_text(GEIST_TEXT(obj),
                           gtk_editable_get_chars(GTK_EDITABLE(widget), 0,
                                                  -1));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 GtkWidget *
@@ -763,7 +782,7 @@ geist_text_display_props(geist_object * obj)
 {
    addtext_ok_data *ok_data = NULL;
    GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l,
-      *ca_l, *just_l, *wordwrap_t;
+      *ca_l, *just_l, *wordwrap_t, *style_button;
    int i, num;
    char **fonts;
    GList *list = g_list_alloc();
@@ -894,6 +913,12 @@ geist_text_display_props(geist_object * obj)
 
    gtk_widget_show(hbox);
 
+   style_button = gtk_button_new_with_label("Edit style");
+   gtk_table_attach(GTK_TABLE(table), style_button, 0, 2, 7, 8,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(style_button);
+
+
    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordwrap_t),
                                 GEIST_TEXT(obj)->wordwrap);
 
@@ -950,6 +975,11 @@ geist_text_display_props(geist_object * obj)
                       GTK_SIGNAL_FUNC(refresh_text_cb), (gpointer) obj);
 
 
+   gtk_signal_connect(GTK_OBJECT(style_button), "clicked",
+                      GTK_SIGNAL_FUNC(geist_display_fontstyler_window),
+                      (gpointer) obj);
+
+
    return (ok_data->win);
 }
 
@@ -987,7 +1017,7 @@ refresh_wordwrap_cb(GtkWidget * widget, gpointer * data)
    GEIST_TEXT(obj)->wordwrap =
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 
    D_RETURN_(3);
 }
@@ -1000,6 +1030,525 @@ geist_text_update_positioning(geist_object * obj)
    geist_object_update_sizemode(obj);
    geist_object_update_alignment(obj);
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
+
+   D_RETURN_(3);
+}
+
+
+/*font styler dialog. should be moved to its own file I guess. Till*/
+
+void
+render_style(geist_style * style)
+{
+   /*we render the text object with the current style, but reset the style
+    * immidiately afterwards, so the object doesnt really change until OK
+    * is clicked */
+
+   D_ENTER(3);
+
+   temp = GEIST_TEXT(current_obj)->style;
+
+   GEIST_TEXT(current_obj)->style = style;
+
+   geist_object_dirty(current_obj);
+   geist_text_update_image(GEIST_TEXT(current_obj), FALSE);
+   geist_document_render_updates(current_doc, 1);
+
+   GEIST_TEXT(current_obj)->style = temp;
+
+   D_RETURN_(3);
+}
+
+void
+load_style(geist_style * style)
+{
+   geist_list *bit_list, *l;
+   int i = 0;
+
+   D_ENTER(3);
+
+   bit_list = style->bits;
+
+   gtk_clist_freeze(GTK_CLIST(list));
+   gtk_clist_clear(GTK_CLIST(list));
+   gtk_signal_handler_block_by_func(GTK_OBJECT(list), select_row_cb,  NULL);
+
+
+   for (l = bit_list; l; l = l->next)
+   {
+      geist_style_bit *bit = l->data;
+
+      gchar *buf[6];
+
+      buf[0] = g_strdup_printf("%d", bit->x_offset);
+      buf[1] = g_strdup_printf("%d", bit->y_offset);
+      buf[2] = g_strdup_printf("%d", bit->r);
+      buf[3] = g_strdup_printf("%d", bit->g);
+      buf[4] = g_strdup_printf("%d", bit->b);
+      buf[5] = g_strdup_printf("%d", bit->a);
+
+      gtk_clist_append(GTK_CLIST(list), buf);
+      gtk_clist_set_row_data(GTK_CLIST(list), i, bit);
+      i++;
+   }
+   gtk_clist_thaw(GTK_CLIST(list)); 
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(list), select_row_cb, NULL);
+   render_style(style);
+
+   D_RETURN_(3);
+}
+
+
+void
+select_row_cb(GtkWidget * clist, gint rw, gint col, GdkEventButton * event,
+              gpointer data)
+{
+   gchar *buf = NULL;
+
+   D_ENTER(3);
+
+   gtk_signal_handler_block_by_func(GTK_OBJECT(e1), spinner_changed_cb, "1");
+   gtk_signal_handler_block_by_func(GTK_OBJECT(e2), spinner_changed_cb, "2");
+   gtk_signal_handler_block_by_func(GTK_OBJECT(e3), spinner_changed_cb, "3");
+   gtk_signal_handler_block_by_func(GTK_OBJECT(e4), spinner_changed_cb, "4");
+   gtk_signal_handler_block_by_func(GTK_OBJECT(e5), spinner_changed_cb, "5");
+   gtk_signal_handler_block_by_func(GTK_OBJECT(e6), spinner_changed_cb, "6");
+
+   gtk_clist_get_text(GTK_CLIST(clist), rw, 0, &buf);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(e1), atof(buf));
+
+   gtk_clist_get_text(GTK_CLIST(clist), rw, 1, &buf);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(e2), atof(buf));
+
+   gtk_clist_get_text(GTK_CLIST(clist), rw, 2, &buf);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(e3), atof(buf));
+
+   gtk_clist_get_text(GTK_CLIST(clist), rw, 3, &buf);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(e4), atof(buf));
+
+   gtk_clist_get_text(GTK_CLIST(clist), rw, 4, &buf);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(e5), atof(buf));
+
+   gtk_clist_get_text(GTK_CLIST(clist), rw, 5, &buf);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(e6), atof(buf));
+
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(e1), spinner_changed_cb,
+                                      "1");
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(e2), spinner_changed_cb,
+                                      "2");
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(e3), spinner_changed_cb,
+                                      "3");
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(e4), spinner_changed_cb,
+                                      "4");
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(e5), spinner_changed_cb,
+                                      "5");
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(e6), spinner_changed_cb,
+                                      "6");
+   cur = rw;
+
+   D_RETURN_(3);
+}
+
+
+void
+spinner_changed_cb(gpointer data)
+{
+   geist_style_bit *bit;
+
+   D_ENTER(3);
+
+   bit = GEIST_STYLE_BIT(gtk_clist_get_row_data(GTK_CLIST(list), cur));
+
+   bit->x_offset = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e1));
+   bit->y_offset = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e2));
+
+   bit->r = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e3));
+   bit->g = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e4));
+   bit->b = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e5));
+   bit->a = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e6));
+
+   load_style(working_copy);
+   render_style(working_copy);
+
+   D_RETURN_(3);
+
+}
+
+
+void
+ok_cb(GtkWidget * widget, gpointer * data)
+{
+   D_ENTER(3);
+
+   geist_style_free(GEIST_TEXT(current_obj)->style);
+   GEIST_TEXT(current_obj)->style = working_copy;
+
+   geist_object_dirty(current_obj);
+   geist_text_update_image(GEIST_TEXT(current_obj), FALSE);
+   geist_document_render_updates(current_doc, 1);
+
+   gtk_widget_destroy(window);
+
+   D_RETURN_(3);
+}
+
+
+void
+cancel_cb(GtkWidget * widget, gpointer * data)
+{
+
+   D_ENTER(3);
+
+   geist_style_free(working_copy);
+
+   geist_object_dirty(current_obj);
+   geist_text_update_image(GEIST_TEXT(current_obj), FALSE);
+   geist_document_render_updates(current_doc, 1);
+
+   gtk_widget_destroy(window);
+
+   D_RETURN_(3);
+}
+
+void
+new_cb(GtkWidget * widget, gpointer * data)
+{
+
+   geist_list *bit_list;
+   geist_style_bit *new_bit;
+
+   D_ENTER(3);
+   new_bit = geist_style_bit_new(0, 0, 255, 255, 255, 255);
+   bit_list = working_copy->bits;
+
+   working_copy->bits = geist_list_add_at_pos(bit_list, cur+1, new_bit);
+
+   load_style(working_copy);
+   gtk_clist_select_row(GTK_CLIST(list), cur+1, 0);
+
+   D_RETURN_(3);
+}
+
+void
+delete_cb(GtkWidget * widget, gpointer * data)
+{
+
+   geist_list *bit_list, *temp;
+
+   D_ENTER(3);
+   bit_list = working_copy->bits;
+
+   temp = geist_list_nth(bit_list, cur);
+   working_copy->bits = geist_list_unlink(bit_list, temp);
+   geist_style_bit_free(GEIST_STYLE_BIT(temp));
+
+   load_style(working_copy);
+   if (cur != geist_list_length(working_copy->bits))
+      gtk_clist_select_row(GTK_CLIST(list), cur, 0);
+   else
+      gtk_clist_select_row(GTK_CLIST(list), cur - 1, 0);
+
+   D_RETURN_(3);
+}
+
+void
+raise_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_list *bit_list;
+
+   D_ENTER(3);
+
+   bit_list = working_copy->bits;
+   working_copy->bits =
+      geist_list_move_down_by_one(bit_list, geist_list_nth(bit_list, cur));
+   load_style(working_copy);
+   if (cur + 1 != geist_list_length(working_copy->bits))
+      gtk_clist_select_row(GTK_CLIST(list), cur + 1, 0);
+   else
+      gtk_clist_select_row(GTK_CLIST(list), cur, 0);
+
+
+   D_RETURN_(3);
+}
+
+void
+lower_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_list *bit_list;
+
+   D_ENTER(3);
+
+   bit_list = working_copy->bits;
+   working_copy->bits =
+      geist_list_move_up_by_one(bit_list, geist_list_nth(bit_list, cur));
+   load_style(working_copy);
+   gtk_clist_select_row(GTK_CLIST(list), cur - 1, 0);
+
+   D_RETURN_(3);
+}
+
+
+
+void
+geist_display_fontstyler_window(GtkWidget * widget, gpointer * obj)
+{
+   GtkWidget *b, *box1, *box2, *box3, *scroll;
+   GtkWidget *label, *frame;
+   GtkWidget *h1, *h2, *h3, *h4, *h6, *h7, *h8;
+   GtkWidget *box4, *box5, *box6;
+   GtkWidget *raise_btn, *lower_btn, *delete_btn, *new_btn, *cancel_btn,
+      *ok_btn;
+   GtkAdjustment *a1, *a2, *a3, *a4, *a5, *a6;
+   gchar *listt[6] = { "  X  ", "  Y  ", "  R   ", "  G  ", "  B  ", "  A  " };
+
+   D_ENTER(3);
+
+   if (fontstyler_active)
+   {
+      geist_update_fontstyler_window(GEIST_OBJECT(obj));
+      D_RETURN_(3);
+   }
+
+   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   gtk_window_set_title(GTK_WINDOW(window), "GeistFontStyler");
+   gtk_container_set_border_width(GTK_CONTAINER(window), 2);
+
+   /* adjustments for spinners */
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, -20, 20, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, -20, 20, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(255, 0, 255, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(255, 0, 255, 1, 2, 3);
+   a5 = (GtkAdjustment *) gtk_adjustment_new(255, 0, 255, 1, 2, 3);
+   a6 = (GtkAdjustment *) gtk_adjustment_new(255, 0, 255, 1, 2, 3);
+
+
+   box5 = gtk_vbox_new(FALSE, 0);
+   gtk_container_add(GTK_CONTAINER(window), box5);
+   box1 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(box5), box1, FALSE, TRUE, 2);
+   box2 = gtk_vbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(box1), box2, FALSE, TRUE, 2);
+   box3 = gtk_vbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(box1), box3, FALSE, FALSE, 0);
+
+   b = gtk_button_new_with_label("Load Style");
+   gtk_box_pack_start(GTK_BOX(box2), b, FALSE, FALSE, 1);
+   gtk_widget_show(b);
+
+   b = gtk_button_new_with_label("Save Style");
+   gtk_box_pack_start(GTK_BOX(box2), b, FALSE, FALSE, 1);
+   gtk_widget_show(b);
+
+   b = gtk_button_new_with_label("Save Style As");
+   gtk_box_pack_start(GTK_BOX(box2), b, FALSE, FALSE, 1);
+   gtk_widget_show(b);
+
+   frame = gtk_frame_new("Edit Options");
+   gtk_container_set_border_width(GTK_CONTAINER(frame), 1);
+   gtk_widget_set_usize(GTK_WIDGET(frame), 105, 150);
+   gtk_box_pack_start(GTK_BOX(box2), frame, FALSE, FALSE, 1);
+   gtk_widget_show(frame);
+
+
+   h1 = gtk_vbox_new(FALSE, 0);
+   gtk_container_set_border_width(GTK_CONTAINER(h1), 3);
+   gtk_container_add(GTK_CONTAINER(frame), h1);
+   gtk_widget_show(h1);
+
+
+   h2 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(h1), h2, FALSE, FALSE, 1);
+   gtk_widget_show(h2);
+   label = gtk_label_new("X: ");
+   gtk_box_pack_start(GTK_BOX(h2), label, FALSE, FALSE, 0);
+   gtk_widget_show(label);
+
+   e1 = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
+   gtk_box_pack_start(GTK_BOX(h2), e1, TRUE, TRUE, 0);
+   gtk_widget_show(e1);
+
+
+   h3 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(h1), h3, FALSE, FALSE, 1);
+   gtk_widget_show(h3);
+
+   label = gtk_label_new("Y: ");
+   gtk_box_pack_start(GTK_BOX(h3), label, FALSE, FALSE, 0);
+   gtk_widget_show(label);
+
+   e2 = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
+   gtk_box_pack_start(GTK_BOX(h3), e2, TRUE, TRUE, 0);
+   gtk_widget_show(e2);
+
+
+   h4 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(h1), h4, FALSE, FALSE, 1);
+   gtk_widget_show(h4);
+
+   label = gtk_label_new("R: ");
+   gtk_box_pack_start(GTK_BOX(h4), label, FALSE, FALSE, 0);
+   gtk_widget_show(label);
+
+   e3 = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
+   gtk_box_pack_start(GTK_BOX(h4), e3, TRUE, TRUE, 0);
+   gtk_widget_show(e3);
+
+
+   h6 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(h1), h6, FALSE, FALSE, 1);
+   gtk_widget_show(h6);
+
+   label = gtk_label_new("G: ");
+   gtk_box_pack_start(GTK_BOX(h6), label, FALSE, FALSE, 0);
+   gtk_widget_show(label);
+
+   e4 = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
+   gtk_box_pack_start(GTK_BOX(h6), e4, TRUE, TRUE, 0);
+   gtk_widget_show(e4);
+
+
+   h7 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(h1), h7, FALSE, FALSE, 1);
+   gtk_widget_show(h7);
+
+   label = gtk_label_new("B: ");
+   gtk_box_pack_start(GTK_BOX(h7), label, FALSE, FALSE, 0);
+   gtk_widget_show(label);
+
+   e5 = gtk_spin_button_new(GTK_ADJUSTMENT(a5), 1, 0);
+   gtk_box_pack_start(GTK_BOX(h7), e5, TRUE, TRUE, 0);
+   gtk_widget_show(e5);
+
+
+   h8 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(h1), h8, FALSE, FALSE, 1);
+   gtk_widget_show(h8);
+
+   label = gtk_label_new("A: ");
+   gtk_box_pack_start(GTK_BOX(h8), label, FALSE, FALSE, 0);
+   gtk_widget_show(label);
+
+   e6 = gtk_spin_button_new(GTK_ADJUSTMENT(a6), 1, 0);
+   gtk_box_pack_start(GTK_BOX(h8), e6, TRUE, TRUE, 0);
+   gtk_widget_show(e6);
+
+   scroll = gtk_scrolled_window_new(NULL, NULL);
+   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+                                  GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+   gtk_box_pack_start(GTK_BOX(box3), scroll, TRUE, TRUE, 1);
+   gtk_widget_show(scroll);
+
+   list = gtk_clist_new_with_titles(6, listt);
+   gtk_clist_set_selection_mode(GTK_CLIST(list), GTK_SELECTION_BROWSE);
+   gtk_clist_set_column_justification(GTK_CLIST(list), 0, GTK_JUSTIFY_LEFT);
+   gtk_container_add(GTK_CONTAINER(scroll), list);
+   gtk_widget_show(list);
+
+   box4 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(box3), box4, FALSE, FALSE, 1);
+   gtk_widget_show(box4);
+
+   new_btn = gtk_button_new_with_label("New");
+   gtk_box_pack_start(GTK_BOX(box4), new_btn, TRUE, TRUE, 1);
+   gtk_widget_show(new_btn);
+
+   raise_btn = gtk_button_new_with_label("Raise");
+   gtk_box_pack_start(GTK_BOX(box4), raise_btn, TRUE, TRUE, 1);
+   gtk_widget_show(raise_btn);
+
+   lower_btn = gtk_button_new_with_label("Lower");
+   gtk_box_pack_start(GTK_BOX(box4), lower_btn, TRUE, TRUE, 1);
+   gtk_widget_show(lower_btn);
+
+   delete_btn = gtk_button_new_with_label("Delete");
+   gtk_box_pack_start(GTK_BOX(box4), delete_btn, TRUE, TRUE, 1);
+   gtk_widget_show(delete_btn);
+
+
+   box6 = gtk_hbox_new(FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(box5), box6, TRUE, TRUE, 1);
+
+
+   ok_btn = gtk_button_new_with_label("Ok");
+   gtk_box_pack_start(GTK_BOX(box6), ok_btn, TRUE, TRUE, 1);
+   gtk_widget_show(ok_btn);
+
+   cancel_btn = gtk_button_new_with_label("Cancel");
+   gtk_box_pack_start(GTK_BOX(box6), cancel_btn, TRUE, TRUE, 1);
+   gtk_widget_show(cancel_btn);
+
+   gtk_widget_show(box1);
+   gtk_widget_show(box2);
+   gtk_widget_show(box3);
+   gtk_widget_show(box5);
+   gtk_widget_show(box6);
+
+
+
+   gtk_widget_show(window);
+
+   /*connect to callbacks */
+   gtk_signal_connect(GTK_OBJECT(window), "delete_event",
+                      GTK_SIGNAL_FUNC(geist_hide_fontstyler_window), NULL);
+   gtk_signal_connect(GTK_OBJECT(list), "select_row",
+                      GTK_SIGNAL_FUNC(select_row_cb), NULL);
+
+   gtk_signal_connect(GTK_OBJECT(e1), "changed",
+                      GTK_SIGNAL_FUNC(spinner_changed_cb), "1");
+
+   gtk_signal_connect(GTK_OBJECT(e2), "changed",
+                      GTK_SIGNAL_FUNC(spinner_changed_cb), "2");
+   gtk_signal_connect(GTK_OBJECT(e3), "changed",
+                      GTK_SIGNAL_FUNC(spinner_changed_cb), "3");
+   gtk_signal_connect(GTK_OBJECT(e4), "changed",
+                      GTK_SIGNAL_FUNC(spinner_changed_cb), "4");
+   gtk_signal_connect(GTK_OBJECT(e5), "changed",
+                      GTK_SIGNAL_FUNC(spinner_changed_cb), "5");
+   gtk_signal_connect(GTK_OBJECT(e6), "changed",
+                      GTK_SIGNAL_FUNC(spinner_changed_cb), "6");
+
+   gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked", GTK_SIGNAL_FUNC(ok_cb),
+                      NULL);
+
+   gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
+                      GTK_SIGNAL_FUNC(cancel_cb), NULL);
+
+   gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked", GTK_SIGNAL_FUNC(ok_cb),
+                      NULL);
+
+   gtk_signal_connect(GTK_OBJECT(new_btn), "clicked", GTK_SIGNAL_FUNC(new_cb),
+                      NULL);
+   gtk_signal_connect(GTK_OBJECT(delete_btn), "clicked",
+                      GTK_SIGNAL_FUNC(delete_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(raise_btn), "clicked",
+                      GTK_SIGNAL_FUNC(raise_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(lower_btn), "clicked",
+                      GTK_SIGNAL_FUNC(lower_cb), NULL);
+
+   geist_update_fontstyler_window(GEIST_OBJECT(obj));
+
+}
+
+void
+geist_hide_fontstyler_window()
+{
+   D_ENTER(3);
+
+   gtk_widget_destroy(window);
+
+   D_RETURN_(3);
+}
+
+void
+geist_update_fontstyler_window(geist_object * obj)
+{
+
+   D_ENTER(3);
+
+   current_obj = obj;
+   working_copy = geist_style_dup(GEIST_TEXT(obj)->style);
+   load_style(working_copy);
+   gtk_clist_select_row(GTK_CLIST(list), geist_list_length(working_copy->bits)-1, 0);
 
    D_RETURN_(3);
 }

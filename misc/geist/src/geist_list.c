@@ -177,41 +177,53 @@ geist_list_add_end(geist_list * root, void *data)
 }
 
 geist_list *
-geist_list_move_up_by_one(geist_list * root, geist_list * l)
+geist_list_add_at_pos(geist_list * root, int pos, void *data)
 {
-   geist_list *temp;
+   geist_list *l, *top;
 
    D_ENTER(3);
 
-   if (!l || !l->prev)
-      D_RETURN(3, root);
-
-   /* store item we link next to */
-   temp = l->prev;
-   /* remove from list */
-   root = geist_list_unlink(root, l);
-   /* add back one before */
-   l->prev = temp->prev;
-   l->next = temp;
-   if (temp->prev)
+   if (pos == geist_list_length(root))
    {
-      temp->prev->next = l;
-      temp->prev = l;
+      root = geist_list_add_end(root, data);
    }
-   if(l->prev)
+   else if (pos == 0)
    {
-      D_RETURN(3, root);
+      root = geist_list_add_front(root, data);
    }
    else
    {
-      D_RETURN(3, l);
+      top = geist_list_nth(root, pos);
+
+      if (!top)
+         D_RETURN(3, root);
+
+      l = geist_list_new();
+      l->next = top;
+      l->prev = top->prev;
+      l->data = data;
+      if (top->prev)
+         top->prev->next = l;
+
+      top->prev = l;
    }
+   D_RETURN(3, root);
+}
+
+geist_list *
+geist_list_move_up_by_one(geist_list * root, geist_list * l)
+{
+   D_ENTER(3);
+   if (l || l->prev)
+      root = geist_list_move_down_by_one(root, l->prev);
+   D_RETURN(3, root);
 }
 
 geist_list *
 geist_list_move_down_by_one(geist_list * root, geist_list * l)
 {
    geist_list *temp;
+
    D_ENTER(3);
 
    if (!l || !l->next)
@@ -224,11 +236,11 @@ geist_list_move_down_by_one(geist_list * root, geist_list * l)
    /* add back one before */
    l->next = temp->next;
    l->prev = temp;
-   if(temp->next)
+   if (temp->next)
    {
       temp->next->prev = l;
-      temp->next = l;
    }
+   temp->next = l;
 
    D_RETURN(3, root);
 }
@@ -465,6 +477,7 @@ geist_list *
 geist_list_unlink(geist_list * root, geist_list * l)
 {
    D_ENTER(4);
+
    if (!l)
       D_RETURN(4, root);
 

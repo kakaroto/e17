@@ -1,3 +1,14 @@
+Wed Oct 26 00:05:49 2000  Till Adam  <till@adam-lilienthal.de>
+        
+	*font style editor. it renders to the document in realtime, but
+	pressing cancel discards the changes. I ripped most of the gui from
+	the font style editor for efm by dphase@dphase.net. thanks dude :)
+	* fixed Dickie Giblets geist_list_move_up/down_by_one funcs and
+	added geist_list_add_at_pos for easier shuffling around of bits in
+	the list
+	* needs a clear/reset button and the load/save_style buttons need to
+	actually do something :) 
+
 Mon Oct 23 23:06:55 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Funcs to move list items up and down.

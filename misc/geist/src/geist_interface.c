@@ -1338,6 +1338,9 @@ geist_display_obj_props_window(void)
    D_ENTER(3);
    if (doc_list)
    {
+      if (obj_props_active)
+	   D_RETURN_(3);
+
       obj_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
       table = gtk_table_new(2, 4, FALSE);
       gtk_container_set_border_width(GTK_CONTAINER(obj_props_window), 5);
@@ -1741,6 +1744,9 @@ geist_display_document_props_window(void)
    D_ENTER(3);
    if (doc_list)
    {
+      if (doc_props_active)
+	   D_RETURN_(3);
+
       doc_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
       doc_hbox = gtk_hbox_new(FALSE, 0);
       gtk_container_add(GTK_CONTAINER(doc_props_window), doc_hbox);

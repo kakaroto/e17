@@ -32,7 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist_document.h"
 #include "geist_list.h"
 
-#define GEIST_FILL(O) ((geist_fill *)O)
+#define GEIST_STYLE(O) ((geist_style *)O)
+#define GEIST_STYLE_BIT(O) ((geist_style_bit *)O)
 
 struct __geist_style_bit
 {
