@@ -332,6 +332,7 @@ geist_gtk_new_document_window(geist_document * doc)
    gtk_widget_show(darea);
    current_doc = doc;
    geist_document_reset_object_list(doc);
+   geist_update_document_props_window();
    
    D_RETURN(3, mainwin);
 }
@@ -372,6 +373,7 @@ gboolean docwin_enter_cb(GtkWidget * widget, GdkEvent * event,
    {
       current_doc = doc;
       geist_document_reset_object_list(doc);
+      geist_update_document_props_window();
    }
    D_RETURN(3, FALSE);
 }
