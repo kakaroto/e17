@@ -241,6 +241,13 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	     uLongf dlen;
 	     
 	     dlen = w * h * sizeof(DATA32);
+	     im->data = malloc(w * h * sizeof(DATA32));
+	     if (!im->data)
+	       {
+		  free(ret);
+		  e_db_close(db);
+		  return 0;
+	       }
 	     uncompress((Bytef *)im->data, &dlen, (Bytef *)body, (uLongf)(size - 32));
 #ifdef WORDS_BIGENDIAN
 	       {
