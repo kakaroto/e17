@@ -2321,3 +2321,17 @@ With Imlib2, use Imlib2 font functions for TT font rendering.
 - This means that E no longer (explicitly) uses FreeType1.
 Using Imlib2 is now default configuration.
 Removed unused upgrade feature configuration.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 21 13:41:36 CET 2003
+(Kim)
+
+Fixed segfault on menu reload after recent menu code changes.
+Removed neverraise window option (didn't do as intended).
+Introduced possibility to set _XROOT* hints always on root window.
+- Breaking the protocol but making e.g. gnome-panel transparency
+  work on other than the first desktop.
+Added possibility to set some of the more obscure window options.
+Fixed pager sizing at startup.
+Cleanups.
