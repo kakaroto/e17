@@ -22,6 +22,7 @@ Added option to wrap desktop areas.
 Added option to focus windows as they are cycled in the focuslist.
 Added support for xinerama.  edge resistance between heads.  windows pop up on currently focused heads.  Maximize (all but absolute) stays on current head
 added "configpanel" IPC command so you can open config panels via eesh.
+fix for maximize to ignore iconified windows
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
