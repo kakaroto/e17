@@ -3,6 +3,8 @@
 Ewl_Widget     *main_win;
 Ewl_Widget     *main_box;
 Ewl_Widget     *display;
+Ewl_Widget     *eqn_disp;
+Mode            calc_mode;
 
 char            disp[BUFLEN];
 
@@ -87,6 +89,12 @@ update_display(char *text)
 }
 
 void
+update_eqn_display(char *text)
+{
+   ewl_text_set_text((Ewl_Text *) eqn_disp, text);
+}
+
+void
 calc_append(Ewl_Widget * w, void *ev_data, void *user_data)
 {
    char           *key;
@@ -100,7 +108,10 @@ calc_append(Ewl_Widget * w, void *ev_data, void *user_data)
    len = strlen(disp);
    memcpy(&disp[len], key, slen);
    disp[len + slen] = '\0';
-   update_display(disp);
+   if (calc_mode == SCI)
+      update_eqn_display(disp);
+   else
+      update_display(disp);
 }
 
 void
@@ -118,6 +129,8 @@ calc_clear(Ewl_Widget * w, void *ev_data, void *user_data)
 {
    equate_clear();
    update_display("0");
+   if (calc_mode == SCI)
+      update_eqn_display("");
    disp[0] = '\0';
 }
 
@@ -187,6 +200,7 @@ void
 init_gui(Equate * equate, int argc, char **argv)
 {
    if (equate) {
+      calc_mode = equate->conf.mode;
       switch (equate->conf.type) {
       case EDJE:
          //fprintf(stderr, "%s\n", equate->conf.path);
@@ -253,7 +267,7 @@ draw_ewl(Mode draw_mode)
    ewl_object_set_padding(EWL_OBJECT(main_box), 3, 3, 3, 3);
 
 
-
+   /* main display element - needed for both modes */
    ewl_object_set_fill_policy(EWL_OBJECT(main_box), EWL_FLAG_FILL_FILL);
    ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
 
@@ -261,19 +275,53 @@ draw_ewl(Mode draw_mode)
    ewl_container_append_child(EWL_CONTAINER(main_box), table);
    ewl_widget_show(table);
 
-   int             bc = count;
-   equate_button  *but = buttons;
-
    displaycell = ewl_cell_new();
    display = ewl_text_new("0");
-   ewl_object_set_alignment(EWL_OBJECT(display), EWL_FLAG_ALIGN_LEFT);
+   ewl_object_set_alignment(EWL_OBJECT(display), EWL_FLAG_ALIGN_RIGHT);
 
-   ewl_container_append_child(EWL_CONTAINER(displaycell), display);
-   ewl_grid_add(EWL_GRID(table), displaycell, 1, 1, 1, 1);
-   /* kinda thought the end col should be 4, but 1 works better... */
+   /* layout the display area, the table helps align the display even when in
+    * basic mode */
+   Ewl_Widget     *disp_table;
+   Ewl_Widget     *disp_cell[2];
 
+
+   if (calc_mode == SCI)
+      disp_table = ewl_grid_new(1, 2);
+   else
+      disp_table = ewl_grid_new(1, 1);
+   disp_cell[1] = ewl_cell_new();
+   eqn_disp = ewl_text_new("0");
+
+   if (calc_mode == SCI) {
+      ewl_object_set_alignment(EWL_OBJECT(eqn_disp), EWL_FLAG_ALIGN_LEFT);
+
+      ewl_container_append_child(EWL_CONTAINER(disp_cell[1]), eqn_disp);
+      disp_cell[2] = ewl_cell_new();
+      ewl_container_append_child(EWL_CONTAINER(disp_cell[2]), display);
+      ewl_widget_show(eqn_disp);
+   } else
+      ewl_container_append_child(EWL_CONTAINER(disp_cell[1]), display);
    ewl_widget_show(display);
+
+   ewl_container_append_child(EWL_CONTAINER(displaycell), disp_table);
+
+   ewl_widget_show(disp_cell[1]);
+   ewl_grid_add(EWL_GRID(disp_table), disp_cell[1], 1, 1, 1, 1);
+   if (calc_mode == SCI) {
+      ewl_widget_show(disp_cell[2]);
+      ewl_grid_add(EWL_GRID(disp_table), disp_cell[2], 1, 1, 2, 1);
+   }
+   ewl_widget_configure(disp_table);
+   ewl_widget_show(disp_table);
+   /* end display layout */
+
+
+   ewl_grid_add(EWL_GRID(table), displaycell, 1, 4, 1, 1);
+
    ewl_widget_show(displaycell);
+
+   int             bc = count;
+   equate_button  *but = buttons;
 
    while (bc-- > 0) {
       cell[bc] = ewl_cell_new();
