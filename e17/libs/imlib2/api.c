@@ -69,27 +69,50 @@ imlib_load_image_immediately(char *file)
       __imlib_LoadImage(file, NULL, 0, 1, 0);
 }
 
-Imlib_Image imlib_load_image_without_cache(char *file)
+Imlib_Image 
+imlib_load_image_without_cache(char *file)
 {
    return (Imlib_Image) 
       __imlib_LoadImage(file, NULL, 0, 0, 1);
 }
 
-Imlib_Image imlib_load_image_with_progress_callback_without_cache (char *file,
-								   Imlib_Progress_Function progress_function,
-								   char progress_granulatiy)
+Imlib_Image 
+imlib_load_image_with_progress_callback_without_cache (char *file,
+						       Imlib_Progress_Function progress_function,
+						       char progress_granulatiy)
 {
    return (Imlib_Image) 
       __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 1);
 }
 
-Imlib_Image imlib_load_image_immediately_without_cache(char *file)
+Imlib_Image 
+imlib_load_image_immediately_without_cache(char *file)
 {
    return (Imlib_Image) 
       __imlib_LoadImage(file, NULL, 0, 1, 1);
 }
 
-int     imlib_get_image_width(Imlib_Image image)
+void 
+imlib_free_image(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);   
+   __imlib_FreeImage(im);
+}
+
+void 
+imlib_free_image_and_decache(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   SET_FLAG(im->flags, F_INVALID);
+   __imlib_FreeImage(im);
+}
+
+int 
+imlib_get_image_width(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -97,7 +120,8 @@ int     imlib_get_image_width(Imlib_Image image)
    return im->w;
 }
 
-int     imlib_get_image_height(Imlib_Image image)
+int 
+imlib_get_image_height(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -105,7 +129,8 @@ int     imlib_get_image_height(Imlib_Image image)
    return im->h;
 }
 
-DATA32 *imlib_get_image_data(Imlib_Image image)
+DATA32 *
+imlib_get_image_data(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -117,7 +142,8 @@ DATA32 *imlib_get_image_data(Imlib_Image image)
    return im->data;
 }
 
-void    imlib_put_back_image_data(Imlib_Image image)
+void 
+imlib_put_back_image_data(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -126,7 +152,8 @@ void    imlib_put_back_image_data(Imlib_Image image)
    __imlib_DirtyPixmapsForImage(im);
 }
 
-char    imlib_image_has_alpha(Imlib_Image image)
+char 
+imlib_image_has_alpha(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -136,7 +163,8 @@ char    imlib_image_has_alpha(Imlib_Image image)
    return 0;       
 }
 
-void    imlib_set_image_never_changes_on_disk(Imlib_Image image)
+void 
+imlib_set_image_never_changes_on_disk(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -144,7 +172,8 @@ void    imlib_set_image_never_changes_on_disk(Imlib_Image image)
    UNSET_FLAG(im->flags, F_ALWAYS_CHECK_DISK); 
 }
 
-void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border)
+void 
+imlib_image_get_border(Imlib_Image image, Imlib_Border *border)
 {
    ImlibImage *im;
 
@@ -155,7 +184,8 @@ void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border)
    border->bottom = im->border.bottom;
 }
 
-void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border)
+void 
+imlib_image_set_border(Imlib_Image image, Imlib_Border *border)
 {
    ImlibImage *im;
 
@@ -172,7 +202,8 @@ void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border)
    __imlib_DirtyPixmapsForImage(im);
 }
 
-char   *imlib_image_format(Imlib_Image image)
+char *
+imlib_image_format(Imlib_Image image)
 {
    ImlibImage *im;
 

@@ -39,6 +39,10 @@ Imlib_Image imlib_load_image_with_progress_callback_without_cache (char *file,
 								   char progress_granulatiy);
 Imlib_Image imlib_load_image_immediately_without_cache(char *file);
 
+/* image destruction functions */
+void imlib_free_image(Imlib_Image image);
+void imlib_free_image_and_decache(Imlib_Image image);
+
 /* image information retrieval and basic manipulation functions */
 int     imlib_get_image_width(Imlib_Image image);
 int     imlib_get_image_height(Imlib_Image image);
@@ -50,5 +54,23 @@ void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border);
 void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border);
 char   *imlib_image_format(Imlib_Image image);
 
+void imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
+					  Drawable drawable, Visual *visual,
+					  Colormap colormap, int depth,
+					  Pixmap *pixmap_return,
+					  Pixmap *mask_return,
+					  char anti_aliased_scaling,
+					  char dithered_rendering,
+					  char create_dithered_mask);
+void imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display,
+						  Drawable drawable, Visual *visual,
+						  Colormap colormap, int depth,
+						  Pixmap *pixmap_return,
+						  Pixmap *mask_return,
+						  char anti_aliased_scaling,
+						  char dithered_rendering,
+						  char create_dithered_mask,
+						  int width, int height);
+void imlib_render_image_onto_drawable
 /* image drawing/rendering functions */
 #endif

@@ -170,6 +170,19 @@ __imlib_CleanupImageCache(void)
    char        operation = 1;
 
    current_cache = __imlib_CurrentCacheSize();
+   im_last = NULL;
+   im = images;
+   while(im)
+     {
+	im_last = im;
+	im = im->next;
+	if ((im_last->references <= 0) &&
+	    (IMAGE_IS_VALID(im_last)))
+	  {
+	     __imlib_RemoveImageFromCache(im_last);
+	     __imlib_ConsumeImage(im_last);
+	  }	
+     }
    while ((current_cache > cache_size) || (operation)); 
      {
 	im_last = NULL;
@@ -293,6 +306,19 @@ __imlib_CleanupImagePixmapCache()
    char              operation = 1;
    
    current_cache = __imlib_CurrentCacheSize();
+   ip_last = NULL;
+   ip = pixmaps;
+   while(ip)
+     {
+	ip_last = ip;
+	ip = ip->next;
+	if ((ip_last->references <= 0) &&
+	    (ip_last->dirty))
+	  {
+	     __imlib_RemoveImagePixmapFromCache(ip_last);
+	     __imlib_ConsumeImagePixmap(ip_last);
+	  }	
+     }
    while ((current_cache > cache_size) || (operation)); 
      {
 	ip_last = NULL;
