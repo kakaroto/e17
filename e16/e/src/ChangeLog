@@ -4307,3 +4307,15 @@ Sun Feb 27 15:54:11 GMT 2000
 
 remove a debugging printf
 
+
+-------------------------------------------------------------------------------
+
+Mon Feb 28 18:04:33 GMT 2000
+(gilbertt)
+
+Did what I should have in the first place: consolidated all those window
+list options into one winop: "Skip Window Lists", and one remember option.
+
+The actions are still defined to do stuff individually, but users have no
+need of that sort of granularity. Much nicer now :)
+

@@ -487,8 +487,9 @@ int                 Esnprintf(va_alist);
 #define ACTION_SKIPTASK               99
 #define ACTION_SKIPWINLIST            100
 #define ACTION_NEVERFOCUS             101
+#define ACTION_SKIPLISTS              102
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               102
+#define ACTION_NUMBEROF               103
 
 #define MODE_NONE                 0
 #define MODE_MOVE                 1
@@ -1395,9 +1396,8 @@ struct _snapshot
    int                 used;
    char                use_skipwinlist;
    char                skipwinlist;
-   char                use_skiptask;
+   char                use_skiplists;
    char                skiptask;
-   char                use_skipfocus;
    char                skipfocus;
    char                use_neverfocus;
    char                neverfocus;
@@ -2080,6 +2080,7 @@ int                 doSkipTask(void *params);
 int                 doSkipWinList(void *params);
 int                 doSkipFocus(void *params);
 int                 doNeverFocus(void *params);
+int                 doSkipLists(void *params);
 int                 doStickNoGroup(void *params);
 int                 doInplaceDesktop(void *params);
 int                 doDragButtonStart(void *params);
@@ -2762,10 +2763,7 @@ void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
 
-/* added by tom */
-void                SnapshotEwinSkipFocus(EWin * ewin);
-void                SnapshotEwinSkipTask(EWin * ewin);
-void                SnapshotEwinSkipWinList(EWin * ewin);
+void                SnapshotEwinSkipLists(EWin * ewin);
 void                SnapshotEwinNeverFocus(EWin * ewin);
 
 void                SnapshotEwinGroups(EWin * ewin, char onoff);

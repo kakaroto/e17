@@ -121,11 +121,9 @@ NewSnapshot(char *name)
    sn->groups = NULL;
    sn->num_groups = 0;
    sn->used = 0;
-   sn->use_skiptask = 0;
+   sn->use_skiplists = 0;
    sn->skiptask = 0;
-   sn->use_skipfocus = 0;
    sn->skipfocus = 0;
-   sn->use_skipwinlist = 0;
    sn->skipwinlist = 0;
    sn->use_neverfocus = 0;
    sn->neverfocus = 0;
@@ -167,11 +165,9 @@ ClearSnapshot(Snapshot * sn)
       Efree(sn->groups);
    sn->num_groups = 0;
    sn->used = 0;
-   sn->use_skiptask = 0;
+   sn->use_skiplists = 0;
    sn->skiptask = 0;
-   sn->use_skipfocus = 0;
    sn->skipfocus = 0;
-   sn->use_skipwinlist = 0;
    sn->skipwinlist = 0;
    sn->use_neverfocus = 0;
    sn->neverfocus = 0;
@@ -197,9 +193,7 @@ static char         tmp_snap_icon;
 static char         tmp_snap_shade;
 static char         tmp_snap_cmd;
 static char         tmp_snap_group;
-static char         tmp_snap_skipfocus;
-static char         tmp_snap_skiptask;
-static char         tmp_snap_skipwinlist;
+static char         tmp_snap_skiplists;
 static char         tmp_snap_neverfocus;
 
 static void         CB_ApplySnap(int val, void *data);
@@ -242,12 +236,8 @@ CB_ApplySnap(int val, void *data)
 		SnapshotEwinCmd(ewin);
 	     if (tmp_snap_group)
 		SnapshotEwinGroups(ewin, tmp_snap_group);
-	     if (tmp_snap_skipfocus)
-		SnapshotEwinSkipFocus(ewin);
-	     if (tmp_snap_skiptask)
-		SnapshotEwinSkipTask(ewin);
-	     if (tmp_snap_skipwinlist)
-		SnapshotEwinSkipWinList(ewin);
+	     if (tmp_snap_skiplists)
+		SnapshotEwinSkipLists(ewin);
 	     if (tmp_snap_neverfocus)
 		SnapshotEwinNeverFocus(ewin);
 	     SaveSnapInfo();
@@ -308,9 +298,7 @@ SnapshotEwinDialog(EWin * ewin)
    tmp_snap_shade = 0;
    tmp_snap_cmd = 0;
    tmp_snap_group = 0;
-   tmp_snap_skipfocus = 0;
-   tmp_snap_skiptask = 0;
-   tmp_snap_skipwinlist = 0;
+   tmp_snap_skiplists = 0;
    tmp_snap_neverfocus = 0;
    if (sn)
      {
@@ -334,12 +322,8 @@ SnapshotEwinDialog(EWin * ewin)
 	   tmp_snap_cmd = 1;
 	if (sn->groups)
 	   tmp_snap_group = 1;
-	if (sn->use_skipfocus)
-	   tmp_snap_skipfocus = 1;
-	if (sn->use_skiptask)
-	   tmp_snap_skiptask = 1;
-	if (sn->use_skipwinlist)
-	   tmp_snap_skipwinlist = 1;
+	if (sn->use_skiplists)
+	   tmp_snap_skiplists = 1;
 	if (sn->use_neverfocus)
 	   tmp_snap_neverfocus = 1;
      }
@@ -498,25 +482,10 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Focus Skip"));
-   DialogItemCheckButtonSetState(di, tmp_snap_skipfocus);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_skipfocus);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("TaskList Skip"));
-   DialogItemCheckButtonSetState(di, tmp_snap_skiptask);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_skiptask);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Window List Skip"));
-   DialogItemCheckButtonSetState(di, tmp_snap_skipwinlist);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_skipwinlist);
+   DialogItemCheckButtonSetState(di, tmp_snap_skiplists);
+   DialogItemCheckButtonSetPtr(di, &tmp_snap_skiplists);
+
 #if 0
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -676,39 +645,17 @@ SnapshotEwinSticky(EWin * ewin)
 }
 
 void
-SnapshotEwinSkipFocus(EWin * ewin)
+SnapshotEwinSkipLists(EWin * ewin)
 {
    Snapshot           *sn;
 
    sn = GetSnapshot(ewin);
    if (!sn)
       return;
-   sn->use_skipfocus = 1;
-   sn->skipfocus = ewin->skipfocus;
-}
-
-void
-SnapshotEwinSkipTask(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_skiptask = 1;
+   sn->use_skiplists = 1;
    sn->skiptask = ewin->skiptask;
-}
-
-void
-SnapshotEwinSkipWinList(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_skipwinlist = 1;
    sn->skipwinlist = ewin->skipwinlist;
+   sn->skipfocus = ewin->skipfocus;
 }
 
 void
@@ -853,9 +800,7 @@ SnapshotEwinAll(EWin * ewin)
    SnapshotEwinShade(ewin);
    SnapshotEwinCmd(ewin);
    SnapshotEwinGroups(ewin, ewin->num_groups);
-   SnapshotEwinSkipFocus(ewin);
-   SnapshotEwinSkipTask(ewin);
-   SnapshotEwinSkipWinList(ewin);
+   SnapshotEwinSkipLists(ewin);
    SnapshotEwinNeverFocus(ewin);
 }
 
@@ -937,16 +882,14 @@ SaveSnapInfo(void)
 		fprintf(f, "LAYER: %i\n", sn->layer);
 	     if (sn->use_sticky)
 		fprintf(f, "STICKY: %i\n", sn->sticky);
-	     /* added by tom */
-	     if (sn->use_skipfocus)
-		fprintf(f, "SKIPFOCUS: %i\n", sn->skipfocus);
-	     if (sn->use_skiptask)
-		fprintf(f, "SKIPTASK: %i\n", sn->skiptask);
-	     if (sn->use_skipwinlist)
-		fprintf(f, "SKIPWINLIST: %i\n", sn->skipwinlist);
+	     if (sn->use_skiplists)
+	       {
+		  fprintf(f, "SKIPTASK: %i\n", sn->skiptask);
+		  fprintf(f, "SKIPWINLIST: %i\n", sn->skipwinlist);
+		  fprintf(f, "SKIPFOCUS: %i\n", sn->skipfocus);
+	       }
 	     if (sn->use_neverfocus)
 		fprintf(f, "NEVERFOCUS: %i\n", sn->neverfocus);
-	  /***/
 	     if (sn->use_shade)
 		fprintf(f, "SHADE: %i\n", sn->shade);
 	     if (sn->border_name)
@@ -1119,19 +1062,19 @@ LoadSnapInfo(void)
 	     /* added by tom */
 	     else if (!strcmp(s, "SKIPFOCUS"))
 	       {
-		  sn->use_skipfocus = 1;
+		  sn->use_skiplists = 1;
 		  word(buf, 2, s);
 		  sn->skipfocus = atoi(s);
 	       }
 	     else if (!strcmp(s, "SKIPTASK"))
 	       {
-		  sn->use_skiptask = 1;
+		  sn->use_skiplists = 1;
 		  word(buf, 2, s);
 		  sn->skiptask = atoi(s);
 	       }
 	     else if (!strcmp(s, "SKIPWINLIST"))
 	       {
-		  sn->use_skipwinlist = 1;
+		  sn->use_skiplists = 1;
 		  word(buf, 2, s);
 		  sn->skipwinlist = atoi(s);
 	       }
@@ -1225,16 +1168,14 @@ MatchEwinToSnapInfo(EWin * ewin)
       ewin->layer = sn->layer;
    if (sn->use_sticky)
       ewin->sticky = sn->sticky;
-   /* added by tom */
-   if (sn->use_skipfocus)
-      ewin->skipfocus = sn->skipfocus;
-   if (sn->use_skiptask)
-      ewin->skiptask = sn->skiptask;
-   if (sn->use_skipwinlist)
-      ewin->skipwinlist = sn->skipwinlist;
+   if (sn->use_skiplists)
+     {
+	ewin->skipfocus = sn->skipfocus;
+	ewin->skiptask = sn->skiptask;
+	ewin->skipwinlist = sn->skipwinlist;
+     }
    if (sn->use_neverfocus)
       ewin->neverfocus = sn->neverfocus;
-  /***/
    if (sn->use_shade)
       ewin->shaded = sn->shade;
    if (sn->iclass_name)
@@ -1391,13 +1332,12 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 	else
 	   MakeWindowUnSticky(ewin);
      }
-   /* added by tom */
-   if (sn->use_skipfocus)
-      ewin->skipfocus = sn->skipfocus;
-   if (sn->use_skiptask)
-      ewin->skiptask = sn->skiptask;
-   if (sn->use_skipwinlist)
-      ewin->skipwinlist = sn->skipwinlist;
+   if (sn->use_skiplists)
+     {
+	ewin->skipfocus = sn->skipfocus;
+	ewin->skiptask = sn->skiptask;
+	ewin->skipwinlist = sn->skipwinlist;
+     }
    if (sn->use_neverfocus)
       ewin->neverfocus = sn->neverfocus;
   /***/
@@ -1460,9 +1400,7 @@ RememberImportantInfoForEwin(EWin * ewin)
 	SnapshotEwinSticky(ewin);
 	SnapshotEwinShade(ewin);
 	SnapshotEwinGroups(ewin, ewin->num_groups);
-	SnapshotEwinSkipFocus(ewin);
-	SnapshotEwinSkipTask(ewin);
-	SnapshotEwinSkipWinList(ewin);
+	SnapshotEwinSkipLists(ewin);
 	SnapshotEwinNeverFocus(ewin);
 	SaveSnapInfo();
      }
@@ -1489,9 +1427,7 @@ RememberImportantInfoForEwins(EWin * ewin)
 		  SnapshotEwinSticky(gwins[i]);
 		  SnapshotEwinShade(gwins[i]);
 		  SnapshotEwinGroups(gwins[i], gwins[i]->num_groups);
-		  SnapshotEwinSkipFocus(gwins[i]);
-		  SnapshotEwinSkipTask(gwins[i]);
-		  SnapshotEwinSkipWinList(gwins[i]);
+		  SnapshotEwinSkipLists(gwins[i]);
 		  SnapshotEwinNeverFocus(gwins[i]);
 		  SaveSnapInfo();
 	       }

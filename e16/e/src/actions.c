@@ -1181,11 +1181,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-						   desks.desk[gwins[i]->
-							      desktop].x),
+						   desks.
+						   desk[gwins[i]->desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-						   desks.desk[gwins[i]->
-							      desktop].y));
+						   desks.
+						   desk[gwins[i]->desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
@@ -1748,6 +1748,36 @@ doStickNoGroup(void *params)
    result = doStick(params);
    mode.nogroup = 0;
    return result;
+}
+
+int
+doSkipLists(void *params)
+{
+   EWin               *ewin;
+   char                skip;
+
+   EDBUG(6, "doSkipLists");
+
+   if (InZoom())
+      EDBUG_RETURN(0);
+   if (params)
+      ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+		      LIST_TYPE_EWIN);
+   else
+      ewin = GetFocusEwin();
+   if (!ewin)
+      EDBUG_RETURN(0);
+
+   skip = ewin->skipfocus;
+
+   ewin->skiptask = !(skip);
+   ewin->skipwinlist = !(skip);
+   ewin->skipfocus = !(skip);
+   params = NULL;
+   GNOME_SetHint(ewin);
+   RememberImportantInfoForEwin(ewin);
+
+   EDBUG_RETURN(0);
 }
 
 int
@@ -4036,6 +4066,7 @@ initFunctionArray(void)
    ActionFunctions[ACTION_SKIPTASK] = (int (*)(void *))(doSkipTask);
    ActionFunctions[ACTION_SKIPWINLIST] = (int (*)(void *))(doSkipWinList);
    ActionFunctions[ACTION_NEVERFOCUS] = (int (*)(void *))(doNeverFocus);
+   ActionFunctions[ACTION_SKIPLISTS] = (int (*)(void *))(doSkipLists);
 
    EDBUG_RETURN(0);
 }

@@ -139,6 +139,7 @@ HandleSigAlrm(int num)
    num = 0;
    EDBUG_RETURN_;
 }
+
 void
 HandleSigTerm(int num)
 {
@@ -147,6 +148,7 @@ HandleSigTerm(int num)
    doExit("error");
    EDBUG_RETURN_;
 }
+
 void
 HandleSigUsr1(int num)
 {

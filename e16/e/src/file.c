@@ -56,6 +56,7 @@ Etmp(char *s)
    n_calls++;
    EDBUG_RETURN_;
 }
+
 void
 md(char *s)
 {

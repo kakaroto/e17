@@ -946,6 +946,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
      }
    EDBUG_RETURN_;
 }
+
 void
 ICCCM_GetHints(EWin * ewin, Atom atom_change)
 {
