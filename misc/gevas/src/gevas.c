@@ -574,13 +574,13 @@ void gevas_adjust_scrollarea(GtkgEvas * ev, GtkAdjustment * plane, gint * delta)
 static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 {
 	GtkgEvas *ev;
-
-	g_return_val_if_fail(widget != NULL, FALSE);
+    
+    g_return_val_if_fail(widget != NULL, FALSE);
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), FALSE);
 
 	ev = GTK_GEVAS(widget);
 
-    /* printf("gevas_event() ev:%p type:%d\n",ev,event->type); */
+/*     printf("gevas_event() ev:%p type:%d\n",ev,event->type); */
     
     
 	ev->current_event = event;
@@ -751,6 +751,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 	}
 	ev->current_event = 0;
 
+    
 	if (event->type == GDK_BUTTON_RELEASE
         && (!event->button.x)
         && (!event->button.y)
@@ -764,12 +765,20 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
     
 	if (event->any.window == widget->window) {
 		if (GTK_WIDGET_CLASS(parent_class)->event)
-			return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);
+        {
+            return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);
+        }
 		else
-			return FALSE;
-	} else {
+        {
+            return FALSE;
+        }
 	}
-	return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);
+    else
+    {
+	}
+
+	return 0;
+    /* return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);*/
 }
 
 static void gevas_map(GtkWidget * widget)
