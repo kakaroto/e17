@@ -1,0 +1,26 @@
+dnl Process this file with autoconf to create configure.
+
+AC_INIT(src/loader_xcf.c)
+AM_INIT_AUTOMAKE(imlib2_loaders, 0.0.1)
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN	      
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_C_CONST
+
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AM_PROG_LIBTOOL
+
+AC_PATH_X
+AC_PATH_XTRA
+
+dnl Check for Imlib2.h
+AC_CHECK_HEADER(Imlib2.h, , AC_MSG_ERROR([Imlib2.h not found.]))
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+])
