@@ -1,7 +1,7 @@
 dnl# $Id$
 
 AC_INIT(api/epplet.c)
-AM_INIT_AUTOMAKE(Epplets, 0.6)
+AM_INIT_AUTOMAKE(epplets, 0.6)
 
 dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
 if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then
@@ -47,6 +47,9 @@ if test -z "$CFLAGS_GIVEN"; then
 else
   CFLAGS="$CFLAGS_GIVEN"
 fi
+for i in /usr/local/include /usr/X11R6/include /usr/dt/include /usr/openwin/include ; do
+  test -d $i && CPPFLAGS="$CPPFLAGS -I$i"
+done
 
 AC_PROG_INSTALL
 
@@ -279,6 +282,8 @@ else
 fi
 AC_DEFINE_UNQUOTED(EROOT, "$EROOT")
 AC_DEFINE_UNQUOTED(EBIN, "$EBIN")
+AC_SUBST(EROOT)
+AC_SUBST(EBIN)
 
 # Should we install E-Mixer?
 # Probably not ;-) But we may as well check!
@@ -341,7 +346,7 @@ basedir=.
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(Epplets.spec Makefile api/Makefile epplets/Makefile)
+AC_OUTPUT(epplets.spec Makefile api/Makefile epplets/Makefile)
 
 echo "creating api/epplet.h"
 sed -e "s%@EROOT@%$EROOT%g" -e "s%@EBIN@%$EBIN%g" -e "s%\${exec_prefix}%${exec_prefix}%g" -e "s%\${prefix}%${prefix}%g" ${srcdir}/api/epplet.h.in > api/epplet.h.new

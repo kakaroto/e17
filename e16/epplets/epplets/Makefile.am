@@ -14,133 +14,133 @@ EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
 
 ################ Conditional Builds ################
 E_Mixer_epplet_SOURCES = E-Mixer.c
-E_Mixer_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Mixer_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mixer_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Mixer_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) @SGI_LIBS@
 
 Emix_epplet_SOURCES = Emix.c
-Emix_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+Emix_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 Emix_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_PlayCD_epplet_SOURCES = E-PlayCD.c
-E_PlayCD_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_PlayCD_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_PlayCD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_PlayCD_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) -lcdaudio
 
 EppletTest_epplet_SOURCES = TestEpplet.c
-EppletTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+EppletTest_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 EppletConfigTest_epplet_SOURCES = ConfigTestEpplet.c
-EppletConfigTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+EppletConfigTest_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 EppletConfigTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_OpenGL_Demo_epplet_SOURCES = E-OpenGL-Demo.c
-E_OpenGL_Demo_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_OpenGL_Demo_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_OpenGL_Demo_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 ####################################################
 
 E_Exec_epplet_SOURCES = E-Exec.c
-E_Exec_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Exec_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Exec_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_SD_epplet_SOURCES = E-SD.c E-SD.h esdcloak.c utils.c utils.h esdcloak.h
-E_SD_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_SD_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_SD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) -lesd
 
 E_Load_epplet_SOURCES = E-Load.c
-E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Load_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Load_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Load_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
 
 E_Clock_epplet_SOURCES = E-Clock.c
-E_Clock_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Clock_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Clock_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_MoonClock_epplet_SOURCES = E-MoonClock.c CalcEphem.c CalcEphem.h Moon.c
-E_MoonClock_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_MoonClock_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_MoonClock_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Time_epplet_SOURCES = E-Time.c
-E_Time_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Time_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Time_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Magic_epplet_SOURCES = E-Magic.c
-E_Magic_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Magic_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Magic_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Areas_epplet_SOURCES = E-Areas.c 
-E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Areas_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Net_epplet_SOURCES = E-Net.c net.c net.h
-E_Net_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Net_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Net_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_NetFlame_epplet_SOURCES = E-NetFlame.c net.c net.h
-E_NetFlame_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_NetFlame_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_NetFlame_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Cpu_epplet_SOURCES = E-Cpu.c proc.h
-E_Cpu_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Cpu_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Cpu_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Cpu_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
 
 E_Power_epplet_SOURCES = E-Power.c
-E_Power_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Power_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Power_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Biff_epplet_SOURCES = E-Biff.c mbox.c
-E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Biff_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_MemWatch_epplet_SOURCES = E-MemWatch.c
-E_MemWatch_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_MemWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_MemWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_MemWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
 
 E_Disk_epplet_SOURCES = E-Disk.c
-E_Disk_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Disk_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Disk_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Sys_epplet_SOURCES = E-Sys.c
-E_Sys_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Sys_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Sys_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Sys_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
 
 E_Slides_epplet_SOURCES = E-Slides.c
-E_Slides_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Slides_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Slides_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Xss_epplet_SOURCES = E-Xss.c
-E_Xss_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Xss_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Xss_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_ScreenShoot_epplet_SOURCES = \
 E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h
-E_ScreenShoot_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_ScreenShoot_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_NetGraph_epplet_SOURCES = E-NetGraph.c net.c net.h
-E_NetGraph_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_NetGraph_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_NetGraph_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_ScreenSave_epplet_SOURCES = \
 E-ScreenSave.c E-ScreenSave.h cloak.c utils.c utils.h cloak.h
-E_ScreenSave_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_ScreenSave_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_UrlWatch_epplet_SOURCES = E-UrlWatch.c E-UrlWatch.h utils.c utils.h
-E_UrlWatch_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_UrlWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
 E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 E_Areas_epplet_SOURCES = E-Areas.c
-E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Areas_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
-E_Mountbox_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 INCLUDES = -I. -I$(top_builddir)/api -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include -I/usr/local/include $(X_CFLAGS) @SGI_DEFINES@
