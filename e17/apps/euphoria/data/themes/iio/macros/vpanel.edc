@@ -1,0 +1,479 @@
+#define V_PREV_REL(NAME) \
+    rel1 { to, NAME"_scrollbar_trough"; relative, 0.5 0.0; offset, -4 -8; } \
+    rel2 { to, NAME"_scrollbar_trough"; relative, 0.5 0.0; offset, 4 -1; } 
+#define V_NEXT_REL(NAME) \
+    rel1 { to, NAME"_scrollbar_trough"; relative, 0.0 1.0; offset,  -4 1; } \
+    rel2 { to, NAME"_scrollbar_trough"; relative, 1.0 1.0; offset,   4 8; } 
+#define VPANEL(NAME, BIMG, BIMG2, BW, BH, NIMG, NIMG2, NW, NH, REL1_TO, \
+	REL1_REL, REL1_OFF, REL2_TO, REL2_REL, REL2_OFF, CLIPTO) \
+      part {				\
+        name, NAME"_rect";		\
+	clip_to, CLIPTO;		\
+	type, RECT;			\
+	mouse_events, 0;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 0 0 0;		\
+	  rel1 {			\
+	    to, REL1_TO;		\
+	    relative, REL1_REL;		\
+	    offset, REL1_OFF;		\
+	  }				\
+	  rel2 {			\
+	    to, REL2_TO;		\
+	    relative, REL2_REL;		\
+	    offset, REL2_OFF;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar_trough_img";	\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 0;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 192 192 192 255;	\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 0.0;		\
+	    offset, -12 18;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, -2 -18;		\
+	  }				\
+	  image {			\
+	      normal, "border-bevel.png"; \
+	  }				\
+	  border, 3 3 3 3;		\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar_trough";	\
+	clip_to, CLIPTO;		\
+	type, RECT;			\
+	mouse_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 192 192 192 64;	\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough_img"; \
+	    relative, 0.0 0.0;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough_img";		\
+	    relative, 1.0 1.0;		\
+	    offset, 0 0;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar";		\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 1;		\
+	dragable {			\
+	    x, 0 1 0;			\
+	    y, 1 1 0;			\
+	    confine, NAME"_scrollbar_trough"; \
+	}				\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, 4 10;		\
+	  align, 0.5 0.5; 	\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.0 0.0;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 1.0 0.0;		\
+	    offset, 0 10;		\
+	  }				\
+	  image {			\
+	      normal, "vscroll-button.png"; \
+	  }				\
+	}				\
+	description {			\
+	  state, "down" 0.0;		\
+	  min, 4 20;			\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.0 0.0;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 1.0 0.0;		\
+	    offset, 0 20;		\
+	  }				\
+	  image {			\
+	      normal, "vscroll-button-clicked.png"; \
+	  }				\
+	  color, 255 255 255 127;	\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar_deco";	\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 0;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 192 192 192 192;	\
+	  rel1 {			\
+	    to, NAME"_scrollbar";	\
+	    relative, 0.5 0.5;		\
+	    offset, -3 -3;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar";	\
+	    relative, 0.5 0.5;		\
+	    offset, 3 3;		\
+	  }				\
+	  image {			\
+	      normal, "vscroll-deco.png"; \
+	  } 				\
+	  border, 3 3 3 3;		\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_back_rect";		\
+	clip_to, CLIPTO;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, 12 12;			\
+	  max, 12 12;			\
+	  rel1 { 			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.0; 		\
+	    offset, -7 -14; 		\
+	  } 				\
+          rel2 { 			\
+	   to, NAME"_scrollbar_trough"; \
+	      relative, 0.5 0.0; 	\
+	      offset, 7 4; 		\
+	  } 				\
+	  image {			\
+	    normal, "border-bevel.png";	\
+	  }				\
+	  border, 3 3 3 3;		\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_next_rect";		\
+	clip_to, CLIPTO;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, 12 12;			\
+	  max, 12 12;			\
+	  rel1 { 			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 1.0; 		\
+	    offset, -7 -4; 		\
+	  } 				\
+          rel2 { 			\
+	   to, NAME"_scrollbar_trough"; \
+	      relative, 0.5 1.0; 	\
+	      offset, 7 14; 		\
+	  } 				\
+	  image {			\
+	    normal, "border-bevel.png";	\
+	  }				\
+	  border, 3 3 3 3;		\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_back";		\
+	clip_to, CLIPTO;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, BW BH;			\
+	  max, BW BH;			\
+	  color, 255 255 255 127;	\
+	  V_PREV_REL(NAME)		\
+	  image {			\
+	    normal, BIMG;		\
+	  }				\
+	}				\
+	description {			\
+	  state, "over" 0.0;		\
+	  min, BW BH;			\
+	  max, BW BH; 			\
+	  color, 255 255 255 255;	\
+	  V_PREV_REL(NAME)		\
+	  image {			\
+	    normal, BIMG;		\
+	  }				\
+	}				\
+	description {			\
+	  state, "down" 0.0;		\
+	  min, BW BH;			\
+	  max, BW BH; 			\
+	  color, 255 255 255 255;	\
+	  V_PREV_REL(NAME)		\
+	  image {			\
+	    normal, BIMG2;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_next";		\
+	clip_to, CLIPTO;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, NW NH;			\
+	  max, NW NH;			\
+	  color, 255 255 255 127;	\
+	  V_NEXT_REL(NAME)		\
+	  image {			\
+	    normal, NIMG;		\
+	  }				\
+	}				\
+	description {			\
+	  state, "over" 0.0;		\
+	  min, NW NH;			\
+	  max, NW NH; 			\
+	  color, 255 255 255 255;	\
+	  V_NEXT_REL(NAME)		\
+	  image {			\
+	    normal, NIMG;		\
+	  }				\
+	}				\
+	description {			\
+	  state, "down" 0.0;		\
+	  min, NW NH;			\
+	  max, NW NH; 			\
+	  color, 255 255 255 255;	\
+	  V_NEXT_REL(NAME)		\
+	  image {			\
+	    normal, NIMG2;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_list";		\
+	clip_to, NAME"_list_clip";	\
+	type, RECT;			\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 229 229 229 92;	\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 0.0 0.0;		\
+	    offset, 5 10;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, -15 -10;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_list_clip";		\
+	clip_to, CLIPTO;		\
+	type, RECT;			\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 255 255 255;	\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 0.0 0.0;		\
+	    offset, 5 10;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, -15 -10;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_list_border";	\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	repeat_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  rel1 {			\
+	    to, NAME"_list";		\
+	    relative, 0.0 0.0;		\
+	    offset, -1 -1;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_list";		\
+	    relative, 1.0 1.0;		\
+	    offset, -1 -1;		\
+	  }				\
+	  image {			\
+	      normal, "border-bevel.png"; \
+	  }				\
+	  border, 3 3 3 3;		\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_wheel_rect";	\
+	clip_to, CLIPTO;		\
+	type, RECT;			\
+	mouse_events, 1;		\
+	repeat_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 0 0 0;		\
+	  rel1 {			\
+	    to, REL1_TO;		\
+	    relative, REL1_REL;		\
+	    offset, REL1_OFF;		\
+	  }				\
+	  rel2 {			\
+	    to, REL2_TO;		\
+	    relative, REL2_REL;		\
+	    offset, REL2_OFF;		\
+	  }				\
+	}				\
+      }					
+
+#define STEP_TIME 0.31
+#define SCROLL_TIME 0.3
+
+#define VPANEL_PROG(NAME, SIGBACK, SIGNEXT, SIGDRAG) \
+      program {				\
+        name, NAME"_back-in";		\
+        signal, "mouse,in";		\
+        source, NAME"_back";		\
+        action, STATE_SET "over" 0.0;	\
+        transition, DECELERATE 0.5;	\
+        target, NAME"_back";		\
+      }					\
+      program {				\
+        name, NAME"_back-out";		\
+        signal, "mouse,out";		\
+        source, NAME"_back";		\
+        action, STATE_SET "default" 0.0;\
+        transition, DECELERATE, 0.5;	\
+        target, NAME"_back";		\
+      }					\
+      program {				\
+	name, NAME"_back-down-1";	\
+	signal, "mouse,clicked,1";	\
+	source, NAME"_back";		\
+	action, DRAG_VAL_STEP -0.1 -0.1;\
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_back-down-2";	\
+	signal, "mouse,clicked,1";		\
+	source, NAME"_back";		\
+	action, SIGNAL_EMIT SIGDRAG NAME"_scrollbar"; \
+      }					\
+      program {				\
+        name, NAME"_next-in";		\
+        signal, "mouse,in";		\
+        source, NAME"_next";		\
+        action, STATE_SET "over" 0.0;	\
+        transition, DECELERATE 0.5;	\
+        target, NAME"_next";		\
+      }					\
+      program {				\
+        name, NAME"_next-out";		\
+        signal, "mouse,out";		\
+        source, NAME"_next";		\
+        action, STATE_SET "default" 0.0;\
+        transition, DECELERATE, 0.5;	\
+        target, NAME"_next";		\
+      }					\
+      program {				\
+	name, NAME"_next-down-1";	\
+	signal, "mouse,clicked,1";		\
+	source, NAME"_next";		\
+	action, DRAG_VAL_STEP 0.0 0.1;  \
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_next-down-2";	\
+	signal, "mouse,clicked,1";		\
+	source, NAME"_next";		\
+	action, SIGNAL_EMIT SIGDRAG NAME"_scrollbar"; \
+      }					\
+      program {				\
+	name, NAME"_scrollbar_move";	\
+	signal, "drag";			\
+	source, NAME"_scrollbar";	\
+	action, SIGNAL_EMIT SIGDRAG NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_up";\
+	signal, "mouse,up,1";		\
+	source, NAME"_scrollbar";	\
+	action, STATE_SET "default" 0.0;\
+	transition, DECELERATE 0.25;	\
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_down";	\
+	signal, "mouse,down,1";		\
+	source, NAME"_scrollbar";	\
+	action, STATE_SET "down" 0.0;	\
+	transition, ACCELERATE 0.25;	\
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_show";	\
+	signal, "show";			\
+	source, "";			\
+	action, DRAG_VAL_SET 0.0 0.0;   \
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_wheel_up";	\
+	signal, "mouse,wheel,0,-1";		\
+	source, NAME"_wheel_rect";	\
+	action, DRAG_VAL_STEP -0.1 -0.1;\
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_wheel_down";	\
+	signal, "mouse,wheel,0,1";		\
+	source, NAME"_wheel_rect";	\
+	action, DRAG_VAL_STEP 0.1 0.1;\
+	target, NAME"_scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_wheel";	\
+	signal, "mouse,wheel,*";			\
+	source, NAME"_wheel_rect";	\
+	action, SIGNAL_EMIT SIGDRAG NAME"_scrollbar";	\
+      }					
+/*
+      program {				\
+	name, NAME"_back-down_timer";	\
+	signal, "mouse,down,1";		\
+	source, NAME"_back";		\
+	action, SIGNAL_EMIT SIGBACK",start" NAME"_back";	\
+	in, SCROLL_TIME 0.0;			\
+      }					\
+      program {				\
+	name, NAME"_next-down_timer";	\
+	signal, "mouse,down,1";		\
+	source, NAME"_next";		\
+	action, SIGNAL_EMIT SIGNEXT",start" NAME"_next";	\
+	in, SCROLL_TIME 0.0;		\
+      }					\
+      program {				\
+	name, NAME"_back-up_timer";	\
+	signal, "mouse,up,1";		\
+	source, NAME"_back";		\
+	action, SIGNAL_EMIT SIGBACK",stop" NAME"_back";	\
+      }					\
+      program {				\
+	name, NAME"_next-up_timer";	\
+	signal, "mouse,up,1";		\
+	source, NAME"_next";		\
+	action, SIGNAL_EMIT SIGNEXT",stop" NAME"_next";	\
+      }					\
+*/

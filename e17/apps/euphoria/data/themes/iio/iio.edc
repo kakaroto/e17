@@ -1,3 +1,5 @@
+#include "macros/vpanel.edc"
+#include "macros/fd_entity.edc"
 
 #define RIGHT "right-"
 #define LEFT "left-"
@@ -39,5 +41,32 @@
 #include "programs/switch.edc" 
 	    } 
 	}
+	group { name, "esmart.filedialog"; min, 420 340; max, 6666 1200;
+	data {
+#include "hashes/containers.edc"
+	}
 
+	parts { 
+#include "collections/esmart_fd.edc" 
+	    }
+	programs { 
+#include "programs/esmart_fd.edc" 
+	    } 
+	}
+	group { name, "esmart.filedialog.file"; min, 80 20; max, 800 20;
+	    parts {
+		FD_ENTITY("file", 1.0 0.5)
+	    }
+	    programs {
+		FD_ENTITY_PROGS("file")
+	    }
+	}
+	group { name, "esmart.filedialog.directory"; min, 80 20; max, 800 20;
+	    parts {
+		FD_ENTITY("directory", 0.0 0.5)
+	    }
+	    programs {
+		FD_ENTITY_DIRECTORY_PROGS("directory")
+	    }
+	}
 }

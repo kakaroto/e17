@@ -1,0 +1,67 @@
+#define FD_ENTITY(pname, talign) \
+part { name, pname".name"; type, TEXT; mouse_events, 0; effect, NONE; \
+    description { \
+	state, "default" 0.0; visible, 1; \
+    rel1 { relative, 0.0 0.0; offset, 5 0; } \
+    rel2 { relative, 1.0 1.0; offset, -5 0; } \
+    color, 31 31 55 255; text {text,"";font,"Edje.visitor1"; \
+    size, 15; align, talign; fit, 0 0; } } \
+    description { \
+	state, "hilited" 0.0; visible, 1; \
+	rel1 { relative, 0.0 0.0; offset, 5 0; } \
+	rel2 { relative, 1.0 1.0; offset, -5 0; } \
+	color, 31 31 55 255; \
+	text {text,"";font,"Edje.visitor1"; size, 15; align, talign; fit, 0 0; } } \
+     } \
+part { name, "base"; type, RECT; mouse_events, 1; repeat_events, 1; \
+    description { state, "default" 0.0; visible, 1; \
+    rel1 { relative, 0.0 0.0; offset, 0 0; } \
+    rel2 { relative, 1.0 1.0; offset, 0 0; } \
+    color, 255 255 255 0; } \
+    description { state, "hilited" 0.0; visible, 1; \
+    rel1 { relative, 0.0 0.0; offset, 0 0; } \
+    rel2 { relative, 1.0 1.0; offset, 0 0; } \
+    color, 100 100 100 128; } } 
+#define FD_ENTITY_PROGS(pname) \
+program { name, pname"_fd_right_clicked"; signal, "mouse,clicked,3"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",unselected" ""; } \
+program { name, pname"_fd_double_clicked"; signal, "mouse,down,1,double"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",load" ""; } \
+program { name, pname"_fd_clicked_kill"; signal, "mouse,down,1,double"; \
+    source, "base"; action, ACTION_STOP; target, pname"_fd_clicked";  } \
+program { name, pname"_fd_clicked"; signal, "mouse,down,1"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",selected" ""; \
+    in, 0.25 0.0; } \
+program { name, pname"_file_mouse_in_stop"; signal, "mouse,in"; \
+    source, "base"; action, ACTION_STOP; target, pname"_file_mouse_out"; } \
+program { name, pname"_file_mouse_in_start"; signal, "mouse,in"; \
+    source, "base"; action, STATE_SET "hilited" 0.0; target, "base"; \
+    target, pname".name"; transition, ACCELERATE 0.25; } \
+program { name, pname"_file_mouse_out"; signal, "mouse,out"; \
+    source, "base"; action, STATE_SET "default" 0.0; target, "base"; \
+    target, pname".name"; transition, DECELERATE 0.25; in, 0.25 0.0; }
+#define FD_ENTITY_DIRECTORY_PROGS(pname) \
+program { name, pname"_fd_dir_triple_clicked"; signal, "mouse,down,1,triple"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",load,recursive" ""; } \
+program { name, pname"_fd_dir_double_clicked_kill"; \
+    signal, "mouse,down,1,triple"; source, "base"; \
+    action, ACTION_STOP; target, pname"_fd_dir_double_clicked"; \
+    target, pname"_fd_dir_clicked"; } \
+program { name, pname"_fd_dir_right_clicked"; signal, "mouse,clicked,3"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",unselected" ""; } \
+program { name, pname"_fd_dir_double_clicked"; signal, "mouse,down,1,double"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",load" ""; in, 0.25 0.0; } \
+program { name, pname"_fd_dir_clicked_kill"; \
+    signal, "mouse,down,1,double"; source, "base"; \
+    action, ACTION_STOP; target, pname"_fd_dir_clicked"; } \
+program { name, pname"_fd_dir_clicked"; signal, "mouse,down,1"; \
+    source, "base"; action, SIGNAL_EMIT "e,fd,"pname",selected" ""; \
+    in, 0.25 0.0; } \
+program { name, pname"_file_dir_mouse_in_stop"; signal, "mouse,in"; \
+    source, "base"; action, ACTION_STOP; target, pname"_file_dir_mouse_out"; } \
+program { name, pname"_file_dir_mouse_in_start"; signal, "mouse,in"; \
+    source, "base"; action, STATE_SET "hilited" 0.0; target, "base"; \
+    target, pname".name"; transition, ACCELERATE 0.25; } \
+program { name, pname"_file_dir_mouse_out"; signal, "mouse,out"; \
+    source, "base"; action, STATE_SET "default" 0.0; target, "base"; \
+    target, pname".name"; transition, DECELERATE 0.25; in, 0.25 0.0; }

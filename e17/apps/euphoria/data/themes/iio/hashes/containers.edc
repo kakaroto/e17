@@ -1,0 +1,16 @@
+    /* boxtype, app id, container layout */
+    item, "e,fd,container,files,direction" "vertical";
+    item, "e,fd,container,directory,direction" "vertical";
+   
+    item, "e,fd,container,files,dragbar" "files_scrollbar";
+    item, "e,fd,container,directory,dragbar" "directory_scrollbar";
+    
+    item, "e,fd,container,files" "files_list";
+    item, "e,fd,container,directory" "directory_list";
+    
+    item, "e,fd,container,scrollbar,scroll,files" "files_list";
+    item, "e,fd,container,scrollbar,scroll,directory" "directory_list";
+   
+   /* unused :( */
+    item, "e,fd,container,files,spacing" "4";
+    item, "e,fd,container,directory,spacing" "4";
