@@ -30,23 +30,26 @@ run_contents(void *data)
 int
 main(int argc, char *argv[])
 {
-   Epplet_gadget       button = NULL;
-
    atexit(Epplet_cleanup);
 
    Epplet_Init(EPPLET_NAME, EPPLET_VERSION, EPPLET_INFO, 5, 2, argc, argv, 0);
 
-   button = Epplet_create_button(NULL, NULL, 2, 2,
-				 12, 12, "CLOSE", 0, NULL, cb_close, NULL);
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 2, 2,
+				 12, 12, "CLOSE", 0, NULL, cb_close, NULL));
 
-   Epplet_gadget_show(Epplet_create_button("E-Exec", NULL, 16, 2,
-			   62, 12, NULL, 0, NULL, run_contents, NULL));
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 16, 2,
+		   12, 12, "ARROW_UP", 0, NULL, NULL, NULL));
+
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 30, 2,
+		   12, 12, "ARROW_DOWN", 0, NULL, NULL, NULL));
+
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 44, 2,
+			   12, 12, "PLAY", 0, NULL, run_contents, NULL));
 
    textbox =
       Epplet_create_textbox(NULL, NULL, 2, 15, 76, 16, 1, run_contents, NULL);
 
    Epplet_gadget_show(textbox);
-   Epplet_gadget_show(button);
 
    Epplet_show();
    Epplet_Loop();
