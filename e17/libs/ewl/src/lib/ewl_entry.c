@@ -1773,8 +1773,10 @@ ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 		size = 1;
 	}
 
-	snprintf(nformat, PATH_MAX, "font=%s size=%d", opf->font, opf->size);
-	evas_object_textblock_format_insert(e->textobj, nformat);
+  if (of[0]) {
+    snprintf(nformat, PATH_MAX, "font=%s size=%d", opf->font, opf->size);
+	  evas_object_textblock_format_insert(e->textobj, nformat);
+  }
 
 	IF_FREE(format);
 
