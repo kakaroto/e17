@@ -344,9 +344,14 @@ static void ewl_ev_mouse_move(Ecore_Event * _ev)
 	 * Trigger a focus out event before the next focus in, to allow
 	 * parents to capture focus in events on children.
 	 */
-	if (last_focused != widget && last_focused) {
-		last_focused->state &= ~EWL_STATE_HILITED;
-		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+	if (last_focused) {
+		if (last_focused != widget) {
+			last_focused->state &= ~EWL_STATE_HILITED;
+			ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+		}
+
+		if (last_focused->state & EWL_STATE_DND)
+			dnd_widget = last_focused;
 	}
 
 	if (widget && !(widget->state & EWL_STATE_DISABLED)) {
@@ -356,10 +361,10 @@ static void ewl_ev_mouse_move(Ecore_Event * _ev)
 
 		ewl_callback_call_with_event_data(widget,
 						  EWL_CALLBACK_MOUSE_MOVE, ev);
+		last_focused = widget;
 	}
-
-	if (last_focused && last_focused->state & EWL_STATE_DND)
-		dnd_widget = last_focused;
+	else
+		last_focused = NULL;
 
 	if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
 		ewl_callback_call_with_event_data(dnd_widget,
@@ -370,11 +375,6 @@ static void ewl_ev_mouse_move(Ecore_Event * _ev)
 						  EWL_CALLBACK_MOUSE_MOVE, ev);
 	else
 		dnd_widget = NULL;
-
-	if (widget && !(widget->state & EWL_STATE_DISABLED))
-		last_focused = widget;
-	else
-		last_focused = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
