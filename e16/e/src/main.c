@@ -271,6 +271,16 @@ main(int argc, char **argv)
 	}
    }
    mode.startup = 0;
+   {
+      Background         *bg;
+
+      if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BACKGROUND)))
+	 FreeDesktopBG(bg);
+      if ((bg = RemoveItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BACKGROUND)))
+	 FreeDesktopBG(bg);
+   }
    /*  SC_Kill(); */
    /* ok - paranoia - save current settings to disk */
    autosave();

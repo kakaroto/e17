@@ -2158,6 +2158,8 @@ BG_RedrawView(char nuke_old)
 	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
 	ESetWindowBackgroundPixmap(disp, win, pmap);
 	x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
+	if (x < (w - ((64 + 8) * num)))
+	   x = w - ((64 + 8) * num);
 	for (i = 0; i < num; i++)
 	  {
 	     if (((x + 64 + 8) >= 0) && (x < w))
@@ -2179,31 +2181,51 @@ BG_RedrawView(char nuke_old)
 		       XCopyArea(disp, pbg, pmap, gc, 0, 0, 64 + 8, 48 + 8, x, 0);
 		       Imlib_free_pixmap(id, pbg);
 		    }
-		  Esnprintf(s, sizeof(s), "cached/bgsel/%s", bglist[i]->name);
-		  im = ELoadImage(s);
-		  if (!im)
+		  if (!strcmp(bglist[i]->name, "NONE"))
 		    {
-		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserEDir(), bglist[i]->name);
-		       p2 = ECreatePixmap(disp, pmap, 64, 48, root.depth);
-		       SetBackgroundTo(id, p2, bglist[i], 0);
-		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
-		       im = Imlib_create_image_from_drawable(id, p2, 0, 0, 0, 64, 48);
-		       Imlib_save_image_to_ppm(id, im, s);
-		       Imlib_kill_image(id, im);
-		       EFreePixmap(disp, p2);
+		       TextClass          *tc;
+
+		       tc = FindItem("DIALOG", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_TCLASS);
+		       if (tc)
+			 {
+			    int                 tw, th;
+
+			    TextSize(tc, 0, 0, STATE_NORMAL, "No\nBackground",
+				     &tw, &th, 17);
+			    TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
+				     "No\nBackground", x + 4,
+				     4 + ((48 - th) / 2), 64, 48, 17, 512);
+			 }
 		    }
 		  else
 		    {
-		       if (nuke_old)
+		       Esnprintf(s, sizeof(s), "cached/bgsel/%s", bglist[i]->name);
+		       im = ELoadImage(s);
+		       if (!im)
 			 {
-			    Imlib_changed_image(id, im);
+			    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserEDir(), bglist[i]->name);
+			    p2 = ECreatePixmap(disp, pmap, 64, 48, id->x.depth);
+			    SetBackgroundTo(id, p2, bglist[i], 0);
+			    XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
+			    im = Imlib_create_image_from_drawable(id, p2, 0, 0, 0, 64, 48);
+			    Imlib_save_image_to_ppm(id, im, s);
 			    Imlib_kill_image(id, im);
-			    im = ELoadImage(s);
+			    EFreePixmap(disp, p2);
 			 }
-		       if (im)
+		       else
 			 {
-			    Imlib_paste_image(id, im, pmap, x + 4, 4, 64, 48);
-			    Imlib_destroy_image(id, im);
+			    if (nuke_old)
+			      {
+				 Imlib_changed_image(id, im);
+				 Imlib_kill_image(id, im);
+				 im = ELoadImage(s);
+			      }
+			    if (im)
+			      {
+				 Imlib_paste_image(id, im, pmap, x + 4, 4, 64, 48);
+				 Imlib_destroy_image(id, im);
+			      }
 			 }
 		    }
 	       }
@@ -2253,18 +2275,22 @@ static void         CB_BGAreaEvent(int val, void *data);
 static void
 CB_BGAreaEvent(int val, void *data)
 {
-   int                 x, num;
+   int                 x, num, w, h;
    Background        **bglist;
    XEvent             *ev;
 
    ev = (XEvent *) data;
+   DialogItemAreaGetSize(bg_sel, &w, &h);
    switch (ev->type)
      {
      case ButtonPress:
-	x = ev->xbutton.x + (tmp_bg_sel_sliderval * (64 + 8) / 4);
+	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+	x = (tmp_bg_sel_sliderval * (64 + 8) / 4);
+	if (x > ((num * (64 + 8)) - w))
+	   x = ((num * (64 + 8)) - w);
+	x += ev->xbutton.x;
 	x = x / (64 + 8);
 	tmp_bg_selected = x;
-	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
 	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
 	  {
 	     KeepBGimages(tmp_bg, 0);
