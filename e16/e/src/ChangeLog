@@ -3157,3 +3157,10 @@ Wed Oct  6 16:44:32 PDT 1999
 minor change in config.c - if you can't find ROOT_IMAGE menustyle, go back to
 default in dirscan menus.  Also changed the ROOT_IMAGE menustyle to 20 length
 in brushed metal
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 17:38:58 PDT 1999
+(Raster)
+
+turn off draw queue for ipc imageclass draws...

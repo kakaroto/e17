@@ -1616,7 +1616,7 @@ IPC_ActionClass(char *params, Client * c)
 void
 IPC_ImageClass(char *params, Client * c)
 {
-
+   char                pq;
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1738,7 +1738,10 @@ IPC_ImageClass(char *params, Client * c)
 			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
+		       pq = queue_up;
+		       queue_up = 0;
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
+		       queue_up = pq;
 		    }
 	       }
 	     else if (!strcmp(param2, "apply_copy"))
@@ -1770,7 +1773,10 @@ IPC_ImageClass(char *params, Client * c)
 			 {
 			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
+			    pq = queue_up;
+			    queue_up = 0;
 			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap, &mask);
+			    queue_up = pq;
 			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap, mask);
 			 }
 		    }
