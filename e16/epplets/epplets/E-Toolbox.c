@@ -212,24 +212,19 @@ parse_config(char *argv0) {
     }
   }
   if (button_cnt == 0) {
-    toolbutton_t def[] = { { NULL, NULL, "<close>", 0, 0, 1, 1, 0, "<exit>" },
-			   { NULL, "efm", NULL, 1, 0, 2, 1, 0, "efm" },
-			   { NULL, "ee2", NULL, 3, 0, 2, 1, 0, "ee2" },
-			   { NULL, NULL, "<configure>", 5, 0, 1, 1, 0, "<config>" },
-			   { NULL, NULL, "eterm.png", 0, 1, 2, 2, 0, "Eterm" },
-			   { NULL, NULL, "mail.png", 2, 1, 2, 2, 0, "Eterm -t mutt" },
-			   { NULL, NULL, "netscape.png", 4, 1, 2, 2, 0, "netscape" }
+    unsigned long j;
+    toolbutton_t def[] = { { NULL, NULL, "<close>", 0, 0, 1, 1, -1, "<exit>" },
+			   { NULL, "efm", NULL, 1, 0, 2, 1, -1, "efm" },
+			   { NULL, "ee2", NULL, 3, 0, 2, 1, -1, "ee2" },
+			   { NULL, NULL, "<configure>", 5, 0, 1, 1, -1, "<config>" },
+			   { NULL, NULL, "eterm.png", 0, 1, 2, 2, -1, "Eterm" },
+			   { NULL, NULL, "mail.png", 2, 1, 2, 2, -1, "Eterm -t mutt" },
+			   { NULL, NULL, "netscape.png", 4, 1, 2, 2, -1, "netscape" }
     };
 
     button_cnt = 7;
     buttons = (toolbutton_t *) realloc(buttons, sizeof(toolbutton_t) * (button_cnt));
-    buttons[0] = def[0];
-    buttons[1] = def[1];
-    buttons[2] = def[2];
-    buttons[3] = def[3];
-    buttons[4] = def[4];
-    buttons[5] = def[5];
-    buttons[6] = def[6];
+    for (j = 0; j < button_cnt; j++) buttons[j] = def[j];
     save_config();
   }
 }
