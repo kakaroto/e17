@@ -25,6 +25,8 @@
  */
 #include "E.h"
 
+#if ENABLE_EWMH
+
 #if DEBUG_EWMH
 #undef EDBUG
 #define EDBUG(a,b) printf(b "\n")
@@ -859,3 +861,5 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 #endif
    EDBUG_RETURN_;
 }
+
+#endif

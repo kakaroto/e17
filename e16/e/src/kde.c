@@ -22,6 +22,8 @@
  */
 #include "E.h"
 
+#if ENABLE_KDE
+
 /* This code is copyright 2000 The Enlightenment Development Team */
 /* based on code by Matthias Ettrich from KWM (http://www.kde.org)
  * and code by Alfredo Kojima in Window Maker (http://www.windowmaker.org)
@@ -1257,3 +1259,5 @@ KDE_UpdateClient(EWin * ewin)
    EDBUG_RETURN_;
 
 }
+
+#endif

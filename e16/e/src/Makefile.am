@@ -4,15 +4,6 @@ EXTRA_DIST = README ChangeLog TODO ewmh.c gnome.c kde.c
 
 bin_PROGRAMS = enlightenment
 
-if ENABLE_EWMH
-SRCS_EWMH = ewmh.c
-endif
-if ENABLE_GNOME
-SRCS_GNOME = gnome.c            
-endif
-if ENABLE_KDE
-SRCS_KDE = kde.c
-endif
 enlightenment_SOURCES = \
 	E.h			\
 	timestamp.h             \
@@ -39,11 +30,13 @@ enlightenment_SOURCES = \
 	draw.c			\
 	events.c		\
 	evhandlers.c		\
+	ewmh.c			\
 	file.c		        \
 	finders.c		\
 	focus.c 		\
 	fx.c                    \
 	globals.c		\
+	gnome.c			\
 	grabs.c			\
 	groups.c		\
 	handlers.c		\
@@ -53,6 +46,7 @@ enlightenment_SOURCES = \
 	iconify.c		\
 	init.c			\
 	ipc.c			\
+	kde.c			\
 	lists.c			\
 	main.c			\
 	memory.c		\

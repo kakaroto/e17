@@ -22,6 +22,8 @@
  */
 #include "E.h"
 
+#if ENABLE_GNOME
+
 /* WIN_WM_NAME STRING - contains a string identifier for the WM's name */
 #define XA_WIN_WM_NAME                     "_WIN_WM_NAME"
 
@@ -877,3 +879,5 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	EDBUG_RETURN_;
      }
 }
+
+#endif
