@@ -1319,13 +1319,6 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
 		    {
 		       int pi;
 
-/*		       
-		       pi = i >> 1;
-		       if ((_dither_88[x][y]) < (pi))
-			  _dither_a1[(x << 11) | (y << 8) | i] = 1;
-		       else
-			  _dither_a1[(x << 11) | (y << 8) | i] = 0;
-*/		       
 		       pi = (i * (256 - 128)) / 255;
 		       if ((_dither_88[x][y] < ((pi & 0x7f) >> 1)) && (pi < (256 - 128)))
 			  _dither_a1[(x << 11) | (y << 8) | i] = (((pi + 128) >> 7) & 0x01);
