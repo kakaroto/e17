@@ -239,7 +239,7 @@ main(int argc, char *argv[])
             ecore_evas_callback_post_render_set(ee, win_post_render_cb);
             ecore_evas_callback_pre_render_set(ee, win_pre_render_cb);
 
-            ecore_evas_name_class_set(ee, "Entice", "Main");
+            ecore_evas_name_class_set(ee, "Entice", "Entice");
             ecore_evas_title_set(ee, "Entice !!!!");
 
             evas_font_cache_set(ecore_evas_get(ee),
