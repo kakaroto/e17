@@ -391,14 +391,14 @@ feh_handle_event(XEvent * ev)
         }
         break;
      case MotionNotify:
-        while (XCheckTypedWindowEvent
-               (disp, ev->xmotion.window, MotionNotify, ev));
         if (menu_root)
         {
            feh_menu *m;
            feh_menu_item *selected_item, *mouseover_item;
 
            D(("motion notify with menus open\n"));
+           while (XCheckTypedWindowEvent
+                  (disp, ev->xmotion.window, MotionNotify, ev));
 
            if (ev->xmotion.window == menu_cover)
               break;
@@ -421,6 +421,8 @@ feh_handle_event(XEvent * ev)
         }
         else if (opt.zoom_mode)
         {
+           while (XCheckTypedWindowEvent
+                  (disp, ev->xmotion.window, MotionNotify, ev));
            /* If zoom mode is set, then a window needs zooming, 'cos button 2 
               is pressed */
            winwid = winwidget_get_from_window(ev->xmotion.window);
@@ -483,6 +485,26 @@ feh_handle_event(XEvent * ev)
                                             winwid->bg_pmap);
                  XClearWindow(disp, winwid->win);
                  XFlush(disp);
+              }
+           }
+        }
+        else
+        {
+           while (XCheckTypedWindowEvent
+                  (disp, ev->xmotion.window, MotionNotify, ev));
+           winwid = winwidget_get_from_window(ev->xmotion.window);
+           if (winwid != NULL)
+           {
+              if (winwid->type == WIN_TYPE_ABOUT)
+              {
+                 imlib_context_set_image(winwid->im);
+                 imlib_free_image();
+                 feh_load_image(&(winwid->im), winwid->file);
+                 imlib_context_set_image(winwid->im);
+                 imlib_apply_filter("bump_map_point(x=[],y=[],map=[];",
+                                    &ev->xmotion.x, &ev->xmotion.y,
+                                    winwid->file);
+                 winwidget_render_image(winwid, 0);
               }
            }
         }

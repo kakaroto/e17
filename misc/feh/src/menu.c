@@ -959,6 +959,7 @@ feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
    {
       winwid =
          winwidget_create_from_image(im, "About " PACKAGE, WIN_TYPE_ABOUT);
+      winwid->file = filelist_newitem(PREFIX "/share/feh/images/about.png");
       winwidget_show(winwid);
    }
    D_RETURN_;

@@ -63,7 +63,6 @@ init_x_and_imlib(void)
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
    imlib_context_set_dither(1);
    imlib_context_set_blend(0);
-   imlib_set_cache_size(0);
 
    /* Set up the font stuff */
    imlib_add_path_to_font_path(".");

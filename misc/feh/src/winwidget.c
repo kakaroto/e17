@@ -400,6 +400,8 @@ winwidget_destroy(winwidget winwid)
       XFreePixmap(disp, winwid->bg_pmap);
    if (winwid->name)
       free(winwid->name);
+   if((winwid->type == WIN_TYPE_ABOUT) && winwid->file)
+      feh_file_free(winwid->file);
    if (winwid->im)
    {
       imlib_context_set_image(winwid->im);
