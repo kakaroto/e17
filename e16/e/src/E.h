@@ -2252,6 +2252,7 @@ void                KDE_CheckClientHints(Window win);
 void                KDE_HintChange(Atom a);
 void                KDE_SetRootArea(void);
 void                KDE_UpdateFocusedWindow(void);
+void                KDE_SetNumDesktops(void);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);

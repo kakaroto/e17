@@ -139,9 +139,13 @@ ChangeNumberOfDesktops(int quantity)
    pnum = mode.numdesktops;
    mode.numdesktops = quantity;
    if (mode.numdesktops <= 0)
-      mode.numdesktops = 1;
+     {
+	mode.numdesktops = 1;
+     }
    else if (mode.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-      mode.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+     {
+	mode.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+     }
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
@@ -190,8 +194,13 @@ ChangeNumberOfDesktops(int quantity)
      }
    if (desks.current >= mode.numdesktops)
       GotoDesktop(mode.numdesktops - 1);
+
    GNOME_SetDeskCount();
    GNOME_SetDeskNames();
+
+   if (mode.kde_support)
+      KDE_SetNumDesktops();
+
    for (i = mode.numdesktops; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       LowerDesktop(i);
 }
