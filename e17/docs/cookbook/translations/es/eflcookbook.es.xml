@@ -38,6 +38,7 @@
 
  <!-- edje -->
  <!ENTITY edje_simple SYSTEM "xml/edje/edje_simple.es.xml">
+ <!ENTITY edje_callback SYSTEM "xml/edje/edje_callback.es.xml">
 
  <!-- etox -->
  <!ENTITY etox_overview SYSTEM "xml/etox/etox_overview.es.xml">
@@ -63,13 +64,13 @@
 
  <!-- edje edc -->
  <!ENTITY edje_embryo_toggle SYSTEM "xml/edje_edc/edje_embryo_toggle.es.xml">
-
+ <!ENTITY edje_text_effect_fade SYSTEM "xml/edje_edc/edje_text_effect_fade.es.xml">
  <!-- emotion -->
  <!ENTITY emotion_dvd_player SYSTEM "xml/emotion/emotion_dvd_player.es.xml">
  <!ENTITY emotion_media_player SYSTEM "xml/emotion/emotion_media_player.es.xml">
 ]>
 
-<book>
+<book lang="es" >
  &bookinfo;
 
  <!-- Chapters Go Here -->

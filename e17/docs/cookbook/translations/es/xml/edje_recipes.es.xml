@@ -20,6 +20,7 @@ Tanto si tu interfaz usa botones como si usa una drag-bar para enviar datos, a t
 
 
 &edje_simple;
+&edje_callback;
 
 </chapter>
 

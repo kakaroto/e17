@@ -1,0 +1,127 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>17 September 2004</date>
+</sectioninfo>
+
+<title>Receta: fundido de efecto de texto Edje</title>
+
+<para>
+Los efectos de texto pueden dar gran aspecto a tu programa. Pero ¿que pasa si
+quieres fundir esos efectos con tu texto? Edje lo hace posible y relativamente
+simple.
+</para>
+
+<para>
+Todo lo que necesitas hacer es hacer desvanecerse el atributo <literal>color3</literal> 
+conforme haces desvanecerse el atributo <literal>color</literal> del texto. <literal>color3</literal> 
+cambiará los valores de color del efecto.
+</para>
+
+<para>
+Esto es ilustrado en el siguiente ejemplo.
+</para>
+
+<example>
+<title>Fundido de efecto con texto</title>
+<programlisting>
+collections {
+    group {
+        name, "Main";
+        min, 30 30;
+
+        parts {
+            part {
+                name, "foo";
+                type, TEXT;
+                effect, SOFT_SHADOW; 
+                mouse_events, 1;
+
+                description {
+                    state, "default" 0.0;
+                    rel1 {
+                        relative, 0 0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -1 -1;
+                    }
+
+                    text {
+                        text, "foo text";
+                        font, "Vera";
+                        size, 22;
+                    }
+                    color, 255 255 255 255;
+                    color3, 0 0 0 255;
+                }
+                description {
+                    state, "out" 0.0;
+                    rel1 {
+                        relative, 0 0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -1 -1;
+                    }
+
+                    text {
+                        text, "foo text";
+                        font, "Vera";
+                        size, 22;
+                    }
+                    color, 0 0 0 0;
+                    color3, 255 255 255 0;
+                }
+            }
+        }
+        programs {
+            program {
+                name, "foo";
+                signal, "mouse,in";
+                source, "foo";
+                action, STATE_SET "out" 0.0;
+                transition, SINUSOIDAL 2.0;
+                target, "foo";
+            }
+            program {
+                name, "foo";
+                signal, "mouse,out";
+                source, "foo";
+                action, STATE_SET "default" 0.0;
+                transition, SINUSOIDAL 2.0;
+                target, "foo";
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+
+<para>
+Este ejemplo puede ser compilado a un <literal>.eet</literal> con el
+siguiente comando.
+</para>
+
+<example>
+<title>Compliación</title>
+<screen>
+zero@oberon[edje_text] -&gt; edje_cc text.edc
+</screen>
+</example>
+
+<para>
+Alterando el valor de <literal>color3</literal> junto con el valor
+<literal>color</literal> serás capaz de alterar la apariencia de tus efectos
+junto con tu texto.
+</para>
+
+</section>
