@@ -3,6 +3,8 @@
 
 void            __ewl_entry_configure(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
+void            __ewl_entry_configure_text(Ewl_Widget * w, void *ev_data,
+					   void *user_data);
 void            __ewl_entry_key_down(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data,
@@ -62,7 +64,6 @@ Ewl_Widget     *ewl_entry_new(char *text)
 void ewl_entry_init(Ewl_Entry * e, char *text)
 {
 	Ewl_Widget     *w;
-	int             pos;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -77,13 +78,14 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 
 	e->text = ewl_text_new(text);
 	ewl_container_append_child(EWL_CONTAINER(e), e->text);
+	ewl_callback_append(e->text, EWL_CALLBACK_CONFIGURE,
+			    __ewl_entry_configure_text, e);
 	ewl_widget_show(e->text);
 
 	e->cursor = ewl_cursor_new();
 	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
 
-	pos = ewl_text_get_length(EWL_TEXT(e->text)) + 1;
-	ewl_cursor_set_base(EWL_CURSOR(e->cursor), pos);
+	ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
 
 	/*
 	 * Attach necessary callback mechanisms 
@@ -184,12 +186,8 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 	int             xx, yy, ww, hh;
-	int             c_spos, c_epos, base, l;
-	int             sx = 0, sy = 0, ex = 0, ey = 0, dx = 0;
-	unsigned int    ew = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
@@ -207,14 +205,40 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_request_geometry(EWL_OBJECT(e->text), xx - e->offset, yy,
 			ww, hh);
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_entry_configure_text(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry      *e;
+	int             xx, yy, ww, hh;
+	int             c_spos, c_epos, base, l;
+	int             sx = 0, sy = 0, ex = 0, ey = 0, dx = 0;
+	unsigned int    ew = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	e = EWL_ENTRY(user_data);
+
+	l = ewl_text_get_length(EWL_TEXT(w));
+	if (!l)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * The contents are clipped starting at these positions
+	 */
+	xx = CURRENT_X(e);
+	yy = CURRENT_Y(e);
+	ww = CURRENT_W(e);
+	hh = CURRENT_H(e);
+
 	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 	c_epos = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 	base = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
 
-	l = ewl_text_get_length(EWL_TEXT(e->text));
 	if (c_spos > l) {
-		ex = sx = ewl_object_get_current_x(EWL_OBJECT(e->text)) +
-			ewl_object_get_current_w(EWL_OBJECT(e->text));
+		ex = sx = ewl_object_get_current_x(EWL_OBJECT(w)) +
+			ewl_object_get_current_w(EWL_OBJECT(w));
 		ew = 5;
 	} else {
 
@@ -222,13 +246,20 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Now position the cursor based on the current position in the
 		 * text.
 		 */
-		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_spos, &sx,
+		ewl_text_get_letter_geometry(EWL_TEXT(w), --c_spos, &sx,
 					     &sy, NULL, NULL);
 
-		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
+		ewl_text_get_letter_geometry(EWL_TEXT(w), --c_epos, &ex,
 					     &ey, &ew, NULL);
 		base--;
 	}
+
+	/*
+	 * D'oh, get the hell out of here, the entry is way too small to do
+	 * anything useful.
+	 */
+	if (ew > ww)
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Scroll the text to fit the cursor position.
@@ -243,17 +274,16 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (e->offset < 0)
 		e->offset = 0;
 
-	ewl_object_request_geometry(EWL_OBJECT(e->text),
-			ewl_object_get_current_x(EWL_OBJECT(e->text)) + dx,
-			CURRENT_Y(e), CURRENT_W(e), hh);
+	if (dx)
+		ewl_object_request_geometry(EWL_OBJECT(w),
+				ewl_object_get_current_x(EWL_OBJECT(w)) + dx,
+				CURRENT_Y(e), CURRENT_W(e), hh);
 
 	ew = (ex + ew) - sx;
 	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx + dx, yy,
 			ew, hh);
 
 	e->offset -= dx;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
