@@ -3,6 +3,7 @@
 #include <math.h>
 #include <Evas.h>
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Evas_Engine_Software_X11.h>
 #include "src/Estyle.h"
 #include "estyle-config.h"
@@ -27,12 +28,12 @@ int layer = 1000;
 int visible = 1;
 int focused = 0;
 
-static void e_idle(void *data);
-static void ecore_window_expose(Ecore_Event * ev);
-static void ecore_mouse_down(Ecore_Event * ev);
-static void ecore_mouse_move(Ecore_Event * ev);
-static void ecore_mouse_in(Ecore_Event * ev);
-static void ecore_mouse_out(Ecore_Event * ev);
+static int e_idle(void *data);
+static int ecore_window_expose(void *data, int type, void * ev);
+static int ecore_mouse_down(void *data, int type, void * ev);
+static int ecore_mouse_move(void *data, int type, void * ev);
+static int ecore_mouse_in(void *data, int type, void * ev);
+static int ecore_mouse_out(void *data, int type, void * ev);
 
 void setup(void);
 
@@ -43,37 +44,52 @@ int render_method = RENDER_ENGINE;
 Evas_Object *cursor = NULL;
 Estyle *e;
 
-static void e_idle(void *data)
+static int e_idle(void *data)
 {
 	evas_render(evas);
-	return;
+	return 1;
 	data = NULL;
 }
 
-static void ecore_window_expose(Ecore_Event * ev)
+static int ecore_window_expose(void *data, int type, void * ev)
 {
-	Ecore_Event_Window_Expose *e;
+	Ecore_X_Event_Window_Damage *e;
 
-	e = (Ecore_Event_Window_Expose *) ev->event;
+	e = (Ecore_X_Event_Window_Damage *) ev;
 	evas_damage_rectangle_add(evas, e->x, e->y, e->w, e->h);
+
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
 }
 
-static void ecore_mouse_in(Ecore_Event * ev)
+static int ecore_mouse_in(void *data, int type, void * ev)
 {
 	focused = 1;
+
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
 }
 
-static void ecore_mouse_out(Ecore_Event * ev)
+static int ecore_mouse_out(void *data, int type, void * ev)
 {
 	focused = 0;
+
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
 }
 
-static void ecore_mouse_down(Ecore_Event * ev)
+static int ecore_mouse_down(void *data, int type, void * ev)
 {
 	int index, x, y, w, h;
 
-	Ecore_Event_Mouse_Down *eemd =
-	    (Ecore_Event_Mouse_Down *) ev->event;
+	Ecore_X_Event_Mouse_Button_Down *eemd =
+	    (Ecore_X_Event_Mouse_Button_Down *) ev;
 
 	if (eemd->button == 1) {
 		if (last == string1) {
@@ -111,19 +127,22 @@ static void ecore_mouse_down(Ecore_Event * ev)
 			visible = 1;
 		}
 	}
+
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
 }
 
 /*
  * Follow the mouse around the window
  */
-static void ecore_mouse_move(Ecore_Event * ev)
+static int ecore_mouse_move(void *data, int type, void * ev)
 {
-	Ecore_Event_Mouse_Move *eemm =
-	    (Ecore_Event_Mouse_Move *) ev->event;
-	/*
-	if (focused)
-		estyle_move(e, eemm->x, eemm->y);
-		*/
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
 }
 
 
@@ -131,19 +150,17 @@ static void ecore_mouse_move(Ecore_Event * ev)
 void setup(void)
 {
 	Window win, ewin;
-	Display *disp=ecore_display_get();
+	Display *disp = ecore_x_display_get();
 
-	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE,
-				       ecore_window_expose);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN,
-				       ecore_mouse_down);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,
-				       ecore_mouse_move);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_IN,
-				       ecore_mouse_in);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_OUT,
-				       ecore_mouse_out);
-	ecore_event_filter_idle_handler_add(e_idle, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE,
+			ecore_window_expose, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+			ecore_mouse_down, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, ecore_mouse_move,
+			NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_IN, ecore_mouse_in, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, ecore_mouse_out, NULL);
+	ecore_idler_add(e_idle, NULL);
 
 #if 0
 	evas = evas_new_all(ecore_display_get(), win, 0, 0, 400, 400,
@@ -153,7 +170,7 @@ void setup(void)
 	evas=evas_new();
 #endif
 
-	ewin = ecore_window_new(0,0,0,400,400); /* evas_get_window(evas); */
+	ewin = ecore_x_window_new(0,0,0,400,400); /* evas_get_window(evas); */
 
     evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
     evas_output_size_set(evas, 400, 400);
@@ -174,17 +191,18 @@ void setup(void)
 	evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
     }
 
-	ecore_window_show(ewin);
-	ecore_window_set_events(ewin, XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE	/* |
-										   XEV_IN_OUT */ );
-	ecore_window_show(win);
+	ecore_x_window_show(ewin);
+	/* ecore_window_set_events(ewin, XEV_EXPOSE | XEV_BUTTON |
+		 XEV_MOUSE_MOVE	| XEV_IN_OUT); */ 
+	ecore_x_window_show(win);
 }
 
 int main(int argc, char *argv[])
 {
-	int i;
+	int i, w, h;
 	int curs_x, curs_y, curs_w, curs_h;
 	Evas_Object *clip_rect;
+	Evas_Object *img_test;
 	Evas_Object *bg, *et_bg, *obst;
 
 	obstacle_x = OBST_X;
@@ -219,10 +237,9 @@ int main(int argc, char *argv[])
 	if (obstacle_h < 0.0)
 		obstacle_h = 100.0;
 
-	ecore_display_init(NULL);
-	ecore_event_signal_init();
-	ecore_event_filter_init();
-	ecore_event_x_init();
+	ecore_init();
+
+	ecore_x_init(NULL);
 
 	setup();
 
@@ -248,6 +265,16 @@ int main(int argc, char *argv[])
 	evas_object_move(obst, obstacle_x, obstacle_y);
 	evas_object_color_set(obst, 255, 0, 0, 50);
 	evas_object_show(obst);
+
+	img_test = evas_object_image_add(evas);
+	evas_object_image_file_set(img_test, "/usr/share/pixmaps/dia-diagram.png", NULL);
+	evas_object_image_size_get(img_test, &w, &h);
+	printf("Image of size %d x %d\n", w, h);
+	evas_object_move(img_test, 10, 10);
+	evas_object_image_fill_set(img_test, 0, 0, w, h);
+	evas_object_resize(img_test, 5 * w, 5 * h);
+	evas_object_layer_set(img_test, 10000);
+	evas_object_show(img_test);
 
 	/*
 	 * Create a clip rectangle for bounding where the text is drawn
@@ -281,7 +308,7 @@ int main(int argc, char *argv[])
 	evas_object_color_set(cursor, 255, 255, 255, 128);
 	evas_object_show(cursor);
 
-	ecore_event_loop();
+	ecore_main_loop_begin();
 
 	estyle_free(e);
 	evas_free(evas);
