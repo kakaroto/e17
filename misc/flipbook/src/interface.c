@@ -101,6 +101,8 @@ GtkWidget *
 		menuitem = CreateMenuItem(file1,"Open Movie Using Template","",
 				"Open a new Movie Using the Template Form", NULL,
 				"open movie using template");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_open_from_template), NULL);
 		menuitem = CreateMenuItem(file1,"Open Movie Using List in File","",
 				"Open a new Movie Using a List of Filenames in a File", NULL,
 				"open movie using file");
@@ -270,7 +272,7 @@ GtkWidget *
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "percentdone",
 		   	percentdone, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(percentdone);
-	gtk_box_pack_start(GTK_BOX(hbox1), percentdone, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), percentdone, FALSE, FALSE, 3);
 	gtk_label_set_justify(GTK_LABEL(percentdone), GTK_JUSTIFY_LEFT);
 
 	gtk_widget_grab_default(VA_Flipbook);
@@ -278,6 +280,93 @@ GtkWidget *
 
 	return VA_Flipbook;
 }
+
+GtkWidget *
+create_open_template(void)
+{
+
+	GtkWidget *open_template;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *entry;
+	GtkWidget *radiobutton;
+	GtkWidget *button;
+	GSList *alignment_group = NULL;
+
+
+	open_template = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_object_set_data(GTK_OBJECT(open_template), "open_template",
+		   	open_template);
+	gtk_window_set_title(GTK_WINDOW(open_template),
+		   	"Open Movie Using Template");
+	GTK_WIDGET_SET_FLAGS(open_template, GTK_CAN_FOCUS);
+	GTK_WIDGET_SET_FLAGS(open_template, GTK_CAN_DEFAULT);
+	gtk_window_set_modal(GTK_WINDOW(open_template), TRUE);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(open_template), vbox);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+
+	label = gtk_label_new("Template: ");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+	entry = gtk_entry_new_with_max_length(200);
+	gtk_widget_show(entry);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+
+	label = gtk_label_new("(use printf (3) syntax)");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
+
+	label = gtk_label_new("First Frame Index: ");
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+
+	entry = gtk_entry_new_with_max_length(200);
+	gtk_widget_show(entry);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+
+	radiobutton = gtk_radio_button_new_with_label(alignment_group,
+				            "Read as many frames as exist");
+	alignment_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
+	gtk_widget_show(radiobutton);
+	gtk_box_pack_start(GTK_BOX(vbox), radiobutton, FALSE, FALSE, 0);
+
+	radiobutton = gtk_radio_button_new_with_label(alignment_group,
+				            "Frame Index");
+	alignment_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
+	gtk_widget_show(radiobutton);
+	gtk_box_pack_start(GTK_BOX(vbox), radiobutton, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	button = gtk_button_new_with_label("Okay");
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+	button = gtk_button_new_with_label("Cancel");
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+				            GTK_SIGNAL_FUNC (on_open_template_close), NULL);
+
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+
+	return open_template;
+}
+
 
 GtkWidget *
  create_choose_segment(void)

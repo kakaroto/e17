@@ -36,6 +36,7 @@
 
 GtkWidget *Preferences_Window=NULL;
 GtkWidget *choose_segment=NULL;
+GtkWidget *open_template=NULL;
 extern GtkWidget *file_selector;
 
 void on_open_from_file(GtkWidget *widget, gpointer user_data) {
@@ -131,7 +132,36 @@ void on_choose_movie_segment1_activate(GtkMenuItem * menuitem,
 				GTK_SIGNAL_FUNC (on_choose_movie_segment1_close), NULL);
 	}
 
-
 	return;
+
+}
+
+void on_open_template_close(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	gtk_widget_destroy (GTK_WIDGET(open_template));
+	open_template=NULL;
+
+}
+
+void on_open_from_template(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	if(!open_template) {
+		open_template = create_open_template();
+		gtk_widget_show(open_template);
+		gtk_signal_connect (GTK_OBJECT (open_template), "destroy",
+				GTK_SIGNAL_FUNC (on_open_template_close), NULL);
+		gtk_signal_connect (GTK_OBJECT (open_template), "delete_event",
+				GTK_SIGNAL_FUNC (on_open_template_close), NULL);
+
+
+	}
 
 }
