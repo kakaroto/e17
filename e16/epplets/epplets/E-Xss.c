@@ -41,7 +41,7 @@ start_hack(char *hack) {
 
   char buff[1024];
 
-  sprintf(buff, "%s -window-id %ld", hack, Epplet_get_drawingarea_window(draw_area));
+  Esnprintf(buff, sizeof(buff), "%s -window-id %ld", hack, Epplet_get_drawingarea_window(draw_area));
   Epplet_register_child_handler(child_cb, NULL);
   hack_pid = Epplet_spawn_command(buff);
 }
@@ -155,7 +155,7 @@ parse_config(void) {
     char *tmp;
     char buff[40];
 
-    sprintf(buff, "hack_%lu", hack_cnt);
+    Esnprintf(buff, sizeof(buff), "hack_%lu", hack_cnt);
     tmp = Epplet_query_config(buff);
     if (!tmp) {
       break;

@@ -141,7 +141,7 @@ zoom_cb(void *data) {
 
   char buff[1024];
 
-  sprintf(buff, zoom_cmd, filenames[CUR_PIC()]);
+  Esnprintf(buff, sizeof(buff), zoom_cmd, filenames[CUR_PIC()]);
   Epplet_spawn_command(buff);
   return;
   data = NULL;
@@ -221,7 +221,7 @@ parse_config(void) {
 
   path = Epplet_query_config("image_dir");
   if (path == NULL) {
-    sprintf(buff, "%s/.enlightenment/backgrounds", getenv("HOME"));
+    Esnprintf(buff, sizeof(buff), "%s/.enlightenment/backgrounds", getenv("HOME"));
     path = strdup(buff);
     Epplet_add_config("image_dir", buff);
   }
@@ -249,7 +249,7 @@ main(int argc, char **argv) {
   if (image_cnt == 0) {
     char err[255];
 
-    sprintf(err, "Unable to find any files in %s, nothing to do!", path);
+    Esnprintf(err, sizeof(err), "Unable to find any files in %s, nothing to do!", path);
     Epplet_dialog_ok(err);
     exit(-1);
   }

@@ -43,13 +43,13 @@ timer_cb(void *data) {
   D(("Memory:  %d%% (%lu/%lu)\n", mem_val, used, total));
   Epplet_gadget_data_changed(mem_bar);
   if (used < 1024) {
-    sprintf(buff, "M: %lub", used);
+    Esnprintf(buff, sizeof(buff), "M: %lub", used);
   } else if (used < 1024 * 1024) {
-    sprintf(buff, "M: %luK", used / 1024);
+    Esnprintf(buff, sizeof(buff), "M: %luK", used / 1024);
   } else if (used < 1024 * 1024 * 1024) {
-    sprintf(buff, "M: %luM", used / (1024 * 1024));
+    Esnprintf(buff, sizeof(buff), "M: %luM", used / (1024 * 1024));
   } else {
-    sprintf(buff, "M: %luG", used / (1024 * 1024 * 1024));
+    Esnprintf(buff, sizeof(buff), "M: %luG", used / (1024 * 1024 * 1024));
   }
   Epplet_change_label(mem_label, buff);
 
@@ -59,13 +59,13 @@ timer_cb(void *data) {
   D(("Swap:  %d%% (%lu/%lu)\n", swap_val, used, total));
   Epplet_gadget_data_changed(swap_bar);
   if (used < 1024) {
-    sprintf(buff, "S: %lub", used);
+    Esnprintf(buff, sizeof(buff), "S: %lub", used);
   } else if (used < 1024 * 1024) {
-    sprintf(buff, "S: %luK", used / 1024);
+    Esnprintf(buff, sizeof(buff), "S: %luK", used / 1024);
   } else if (used < 1024 * 1024 * 1024) {
-    sprintf(buff, "S: %luM", used / (1024 * 1024));
+    Esnprintf(buff, sizeof(buff), "S: %luM", used / (1024 * 1024));
   } else {
-    sprintf(buff, "S: %luG", used / (1024 * 1024 * 1024));
+    Esnprintf(buff, sizeof(buff), "S: %luG", used / (1024 * 1024 * 1024));
   }
   Epplet_change_label(swap_label, buff);
 

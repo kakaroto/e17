@@ -229,7 +229,7 @@ Epplet_Init(char *name,
    /* set the client machine name */
    if (!uname(&ubuf))
      {
-	sprintf(s, "%s", ubuf.nodename);
+	Esnprintf(s, sizeof(s), "%s", ubuf.nodename);
 	xtp.encoding = XA_STRING;
 	xtp.format = 8;
 	xtp.value = (unsigned char *)s;
@@ -266,11 +266,11 @@ Epplet_Init(char *name,
 	ECommsSetup(disp);
 	sleep(1);
      }
-   sprintf(s, "set clientname %s", win_name);
+   Esnprintf(s, sizeof(s), "set clientname %s", win_name);
    ECommsSend(s);
-   sprintf(s, "set version %s", win_version);
+   Esnprintf(s, sizeof(s), "set version %s", win_version);
    ECommsSend(s);
-   sprintf(s, "set info %s", win_info);
+   Esnprintf(s, sizeof(s), "set info %s", win_info);
    ECommsSend(s);
    ESYNC;
    Epplet_background_properties(win_vert);
@@ -286,12 +286,12 @@ Epplet_cleanup(void)
    char s[1024];
 
    /* remove lock file */
-   sprintf(s, "%s/.lock_%i", conf_dir, epplet_instance);
+   Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, epplet_instance);
    if (unlink(s) < 0)
      {
        char err[255];
        
-       sprintf(err, "Unable to remove lock file %s -- %s.\n",
+       Esnprintf(err, sizeof(err), "Unable to remove lock file %s -- %s.\n",
 	       s, strerror(errno));
        Epplet_dialog_ok(err);
      }
@@ -352,21 +352,21 @@ Epplet_remember(void)
 {
    char   s[1024];
 
-   sprintf(s, "remember %x none", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x layer", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x layer", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x border", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x border", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x location", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x location", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x sticky", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x sticky", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x shade", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x shade", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x group", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x group", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember %x command", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x command", (unsigned int)win);
    ECommsSend(s);
 }
 
@@ -375,7 +375,7 @@ Epplet_unremember(void)
 {
    char   s[1024];
 
-   sprintf(s, "remember %x none", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)win);
    ECommsSend(s);
    ESYNC;
 }
@@ -391,7 +391,7 @@ Epplet_imageclass_apply(char *iclass, char *state, Window ww)
 {
    char s[1024];
    
-   sprintf(s, "imageclass %s apply 0x%x %s", iclass, (unsigned int)ww, state);
+   Esnprintf(s, sizeof(s), "imageclass %s apply 0x%x %s", iclass, (unsigned int)ww, state);
    ECommsSend(s);
 }
 
@@ -404,7 +404,7 @@ Epplet_imageclass_paste(char *iclass, char *state, Window ww, int x, int y,
    static GC gc = 0;
    XGCValues gcv;
    
-   sprintf(s, "imageclass %s apply_copy 0x%x %s %i %i", iclass, (unsigned int)ww, state, w, h);
+   Esnprintf(s, sizeof(s), "imageclass %s apply_copy 0x%x %s %i %i", iclass, (unsigned int)ww, state, w, h);
    ECommsSend(s);
    msg = ECommsWaitForMessage();
    if (msg)
@@ -416,7 +416,7 @@ Epplet_imageclass_paste(char *iclass, char *state, Window ww, int x, int y,
 	XSetClipMask(disp, gc, m);
 	XSetClipOrigin(disp, gc, x, y);
 	XCopyArea(disp, p, win, gc, 0, 0, w, h, x, y);   
-	sprintf(s, "imageclass %s free_pixmap 0x%x", iclass, (unsigned int)p);
+	Esnprintf(s, sizeof(s), "imageclass %s free_pixmap 0x%x", iclass, (unsigned int)p);
 	ECommsSend(s);
      }
 }
@@ -430,7 +430,7 @@ Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap *p, Pixmap *m,
    static GC gc = 0, mgc = 0;
    XGCValues gcv;
    
-   sprintf(s, "imageclass %s apply_copy 0x%x %s %i %i", iclass, (unsigned int)win, state, w, h);
+   Esnprintf(s, sizeof(s), "imageclass %s apply_copy 0x%x %s %i %i", iclass, (unsigned int)win, state, w, h);
    ECommsSend(s);
    msg = ECommsWaitForMessage();
    if (msg)
@@ -453,7 +453,7 @@ Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap *p, Pixmap *m,
 	   XCopyArea(disp, pp, *p, gc, 0, 0, w, h, 0, 0);   
 	if (*m)
 	   XCopyArea(disp, mm, *m, mgc, 0, 0, w, h, 0, 0);
-	sprintf(s, "imageclass %s free_pixmap 0x%x", iclass, (unsigned int)pp);
+	Esnprintf(s, sizeof(s), "imageclass %s free_pixmap 0x%x", iclass, (unsigned int)pp);
 	ECommsSend(s);
      }
 }
@@ -463,7 +463,7 @@ Epplet_textclass_draw(char *iclass, char *state, Window ww, int x, int y, char *
 {
    char s[1024];
    
-   sprintf(s, "textclass %s apply 0x%x %i %i %s %s", iclass, 
+   Esnprintf(s, sizeof(s), "textclass %s apply 0x%x %i %i %s %s", iclass, 
 	   (unsigned int)ww, x, y, state, txt);
    ECommsSend(s);
 }
@@ -473,7 +473,7 @@ Epplet_textclass_get_size(char *iclass, int *w, int *h, char *txt)
 {
    char s[1024], *msg = NULL;
    
-   sprintf(s, "textclass %s query_size %s", iclass, txt);
+   Esnprintf(s, sizeof(s), "textclass %s query_size %s", iclass, txt);
    ECommsSend(s);
    msg = ECommsWaitForMessage();
    if (msg)
@@ -1156,7 +1156,7 @@ ECommsSend(char *s)
 
    for (i = 0; i < len + 1; i += 12)
      {
-	sprintf(ss, "%8x", (int)my_win);
+	Esnprintf(ss, sizeof(ss), "%8x", (int)my_win);
 	for (j = 0; j < 12; j++)
 	  {
 	     ss[8 + j] = s[i + j];
@@ -1576,7 +1576,7 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
 	  g->contents = malloc(sizeof(char) * (strlen(s) + 2));
 
 	  if (g->contents != NULL)
-	    sprintf(g->contents, "%s%c", s, c);
+	    Esnprintf(g->contents, sizeof(g->contents), "%s%c", s, c);
 
 	  free(s);
 	}
@@ -1585,7 +1585,7 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
 	  g->contents = malloc(2);
 
 	  if (g->contents != NULL)
-	    sprintf(g->contents, "%s", TheKey);
+	    Esnprintf(g->contents, sizeof(g->contents), "%s", TheKey);
 	}
 
       if (g->cursor_pos <= g->w)
@@ -1713,7 +1713,7 @@ Epplet_draw_button(Epplet_gadget eg)
      {
 	char s[1024];
 	
-	sprintf(s, "EPPLET_%s", g->std);
+	Esnprintf(s, sizeof(s), "EPPLET_%s", g->std);
 	Epplet_imageclass_get_pixmaps(s, state, 
 				      &(g->pmap), &(g->mask), g->w, g->h);
      }
@@ -2859,7 +2859,7 @@ Epplet_draw_popupbutton(Epplet_gadget eg)
      {
 	char s[1024];
 
-	sprintf(s, "EPPLET_%s", g->std);
+	Esnprintf(s, sizeof(s), "EPPLET_%s", g->std);
 	Epplet_imageclass_get_pixmaps(s, state,
                                       &(g->pmap), &(g->mask), g->w, g->h);
      }
@@ -4129,7 +4129,7 @@ Epplet_show_about(char *name)
 {
    char s[1024];
    
-   sprintf(s, "%s/dox %s/epplet_icons/%s.ABOUT", EBIN, EROOT, name);
+   Esnprintf(s, sizeof(s), "%s/dox %s/epplet_icons/%s.ABOUT", EBIN, EROOT, name);
    Epplet_spawn_command(s);
 }
 
@@ -4139,7 +4139,7 @@ Epplet_dialog_ok(char *text)
    char *s;
    
    s = malloc(strlen(text) + 32);
-   sprintf(s, "dialog_ok %s", text);
+   Esnprintf(s, sizeof(s), "dialog_ok %s", text);
    ECommsSend(s);
    free(s);
 }
@@ -4153,14 +4153,14 @@ Epplet_find_instance(char *name)
   pid_t pid;
 
   /* make sure basic dir exists */
-  sprintf(s, "%s/.enlightenment/epplet_config", getenv("HOME"));
+  Esnprintf(s, sizeof(s), "%s/.enlightenment/epplet_config", getenv("HOME"));
   if (stat(s, &st) < 0)
     {
       if (mkdir(s, S_IRWXU) < 0)
 	{
 	  char err[255];
 	  
-	  sprintf(err, "Unable to create epplet config directory %s -- %s.\n",
+	  Esnprintf(err, sizeof(err), "Unable to create epplet config directory %s -- %s.\n",
 		  s, strerror(errno));
 	  Epplet_dialog_ok(err);
 	  epplet_instance = 1;
@@ -4169,7 +4169,7 @@ Epplet_find_instance(char *name)
     }
 
   /* make sure this epplets config dir exists */
-  sprintf(s, "%s/.enlightenment/epplet_config/%s", getenv("HOME"), name);
+  Esnprintf(s, sizeof(s), "%s/.enlightenment/epplet_config/%s", getenv("HOME"), name);
   conf_dir = strdup(s);
   if (stat(s, &st) < 0)
     {
@@ -4177,7 +4177,7 @@ Epplet_find_instance(char *name)
 	{
 	  char err[255];
 	  
-	  sprintf(err, "Unable to create epplet config directory %s -- %s.\n",
+	  Esnprintf(err, sizeof(err), "Unable to create epplet config directory %s -- %s.\n",
 		  s, strerror(errno));
 	  Epplet_dialog_ok(err);
 	  epplet_instance = 1;
@@ -4189,7 +4189,7 @@ Epplet_find_instance(char *name)
      lack of insert permissions in the config directory. */
   for (i = 1; i < 256; i++)
     {
-      sprintf(s, "%s/.lock_%i", conf_dir, i);
+      Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, i);
       if (stat(s, &st) >= 0)
 	{
 	  /* Lock file exists.  Read from it. */
@@ -4249,7 +4249,7 @@ Epplet_find_instance(char *name)
   /* find out epplet's name */
   if (epplet_instance > 1)
     {
-      sprintf(s, "%s-%i", name, epplet_instance);
+      Esnprintf(s, sizeof(s), "%s-%i", name, epplet_instance);
       epplet_name = strdup(s);
     }
   else
@@ -4290,7 +4290,7 @@ Epplet_load_config(void)
     return;
 
   /* create config file name */
-  sprintf(s, "%s/%s.cfg", conf_dir, epplet_name);
+  Esnprintf(s, sizeof(s), "%s/%s.cfg", conf_dir, epplet_name);
   epplet_cfg_file = strdup(s);
   
   config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
@@ -4325,7 +4325,7 @@ Epplet_save_config(void)
      {
        char err[255];
            
-       sprintf(err, "Unable to write to config file %s -- %s.\n", epplet_cfg_file, strerror(errno));
+       Esnprintf(err, sizeof(err), "Unable to write to config file %s -- %s.\n", epplet_cfg_file, strerror(errno));
        Epplet_dialog_ok(err);
        return;
      }

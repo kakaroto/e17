@@ -300,7 +300,7 @@ Mount(MountPoint * mp)
 	return;
       if (mp->path)
 	{
-	  sprintf(s, "%s %s", MOUNT_CMD, mp->path);
+	  Esnprintf(s, sizeof(s), "%s %s", MOUNT_CMD, mp->path);
 	  if (!Epplet_run_command(s))
 	    {
 	      mp->mounted = 1;
@@ -310,7 +310,7 @@ Mount(MountPoint * mp)
 	  else
 	    {
 	      s[0] = 0;
-	      sprintf(s, "Could not mount %s.", mp->path);
+	      Esnprintf(s, sizeof(s), "Could not mount %s.", mp->path);
 	      Epplet_dialog_ok(s);
 	    }
 	}
@@ -331,7 +331,7 @@ Umount(MountPoint * mp)
 	return;
       if (mp->path)
 	{
-	  sprintf(s, "%s %s", UMOUNT_CMD, mp->path);
+	  Esnprintf(s, sizeof(s), "%s %s", UMOUNT_CMD, mp->path);
 	  if (!Epplet_run_command(s))
 	    {
 	      mp->mounted = 0;
@@ -341,7 +341,7 @@ Umount(MountPoint * mp)
 	  else
 	    {
 	      s[0] = 0;
-	      sprintf(s, "Could not unmount %s.", mp->path);
+	      Esnprintf(s, sizeof(s), "Could not unmount %s.", mp->path);
 	      Epplet_dialog_ok(s);
 	    }
 	}
@@ -589,7 +589,7 @@ CallbackButtonUp (void *data, Window win, int x, int y, int b)
 	      Epplet_gadget popup = Epplet_create_popup();
 
 	      s[0] = 0;
-	      sprintf(s, "%s at %s.", mountpoint->device, mountpoint->path);
+	      Esnprintf(s, sizeof(s), "%s at %s.", mountpoint->device, mountpoint->path);
 	      Epplet_add_popup_entry(popup, s, NULL, NULL, NULL);
 	      Epplet_pop_popup(popup, 0);
 	    }

@@ -49,11 +49,11 @@ timer_cb(void *data) {
   }
   delay = (double) secs;
 
-  sprintf(buff, "%lu days", days);
+  Esnprintf(buff, sizeof(buff), "%lu days", days);
   Epplet_change_label(label2, buff);
-  sprintf(buff, "%lu hours", hours);
+  Esnprintf(buff, sizeof(buff), "%lu hours", hours);
   Epplet_change_label(label3, buff);
-  sprintf(buff, "%lu mins", mins);
+  Esnprintf(buff, sizeof(buff), "%lu mins", mins);
   Epplet_change_label(label4, buff);
 
   fclose(fp);

@@ -89,9 +89,9 @@ save_conf(void)
 {
    char s[1024];
 
-   sprintf(s, "%f", upstream_max);
+   Esnprintf(s, sizeof(s), "%f", upstream_max);
    Epplet_modify_config("upstream_max", s);
-   sprintf(s, "%f", downstream_max);
+   Esnprintf(s, sizeof(s), "%f", downstream_max);
    Epplet_modify_config("downstream_max", s);
    Epplet_save_config();
 }

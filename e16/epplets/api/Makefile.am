@@ -3,7 +3,7 @@
 lib_LTLIBRARIES = libepplet.la
 
 include_HEADERS = epplet.h
-libepplet_la_SOURCES = epplet.c
+libepplet_la_SOURCES = epplet.c snprintf.c
 libepplet_la_DEPENDENCIES = $(top_builddir)/config.h
 libepplet_la_LDFLAGS = -version-info 1:0:1
 

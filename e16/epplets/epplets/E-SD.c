@@ -50,13 +50,13 @@ static void
 save_config (void)
 {
   char buf[10];
-  sprintf (buf, "%.2f", opt.cloak_delay);
+  Esnprintf (buf, sizeof(buf), "%.2f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  sprintf (buf, "%.2f", opt.draw_interval);
+  Esnprintf (buf, sizeof(buf), "%.2f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
-  sprintf (buf, "%d", opt.do_cloak);
+  Esnprintf (buf, sizeof(buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
-  sprintf (buf, "%d", opt.cloak_anim);
+  Esnprintf (buf, sizeof(buf), "%d", opt.cloak_anim);
   Epplet_modify_config ("CLOAK_ANIM", buf);
   Epplet_modify_config ("DIRECTORY", opt.dir);
 }

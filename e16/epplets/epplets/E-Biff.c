@@ -70,7 +70,7 @@ mailcheck_cb(void *data)
       Epplet_gadget_hide(seven);
       Epplet_gadget_show(nomail);
     }
-    sprintf(label_text, "%lu / %lu", new_cnt, total_cnt);
+    Esnprintf(label_text, sizeof(label_text), "%lu / %lu", new_cnt, total_cnt);
     Epplet_change_label(label, label_text);
   }
   Epplet_timer(mailcheck_cb, NULL, interval, "TIMER");
@@ -170,7 +170,7 @@ main(int argc, char **argv)
         }
       }
       folder_path = (char *) malloc(sizeof(MAIL_PATH "/") + strlen(username) + 1);
-      sprintf(folder_path, MAIL_PATH "/%s", username);
+      Esnprintf(folder_path, sizeof(folder_path), MAIL_PATH "/%s", username);
       D(("Generated folder path of \"%s\"\n", folder_path));
     }
     Epplet_modify_config("mailbox", folder_path);

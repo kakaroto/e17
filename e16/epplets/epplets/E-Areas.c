@@ -34,7 +34,7 @@ static void epp_dialog_ok_f(char* fmt, ...)
     va_list ap;
     char buf[1024];
     va_start(ap,fmt);
-    vsnprintf(buf,1023,fmt,ap);
+    Evsnprintf(buf,1023,fmt,ap);
     va_end(ap);
     Epplet_dialog_ok(buf);
 }
@@ -53,7 +53,7 @@ close_cb(void *data)
 static void arrow_cb(void* data)
 {
    char buf[128];
-   sprintf(buf,"goto_area %s", (char*) data);
+   Esnprintf(buf, sizeof(buf), "goto_area %s", (char*) data);
    Epplet_send_ipc(buf);
 }
 

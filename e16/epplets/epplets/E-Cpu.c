@@ -320,11 +320,11 @@ save_conf(int d1, int d2, int d3, int d4, int d5, int d6, int d7, int d8, int d9
 {
    char s[1024];
 
-   sprintf(s, "%d %d %d", d1, d2, d3);
+   Esnprintf(s, sizeof(s), "%d %d %d", d1, d2, d3);
    Epplet_modify_config("color1", s);
-   sprintf(s, "%d %d %d", d4, d5, d6);
+   Esnprintf(s, sizeof(s), "%d %d %d", d4, d5, d6);
    Epplet_modify_config("color2", s);
-   sprintf(s, "%d %d %d", d7, d8, d9);
+   Esnprintf(s, sizeof(s), "%d %d %d", d7, d8, d9);
    Epplet_modify_config("color3", s);
    Epplet_save_config();
 }

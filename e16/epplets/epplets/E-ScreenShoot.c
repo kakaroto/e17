@@ -48,19 +48,19 @@ static void
 save_config (void)
 {
   char buf[10];
-  sprintf (buf, "%d", opt.quality);
+  Esnprintf (buf, sizeof(buf), "%d", opt.quality);
   Epplet_modify_config ("QUALITY", buf);
-  sprintf (buf, "%d", opt.win);
+  Esnprintf (buf, sizeof(buf), "%d", opt.win);
   Epplet_modify_config ("WIN_AREA", buf);
-  sprintf (buf, "%.2f", opt.delay);
+  Esnprintf (buf, sizeof(buf), "%.2f", opt.delay);
   Epplet_modify_config ("SHOT_DELAY", buf);
-  sprintf (buf, "%.2f", opt.cloak_delay);
+  Esnprintf (buf, sizeof(buf), "%.2f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  sprintf (buf, "%.2f", opt.draw_interval);
+  Esnprintf (buf, sizeof(buf), "%.2f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
-  sprintf (buf, "%.2f", opt.rand_delay);
+  Esnprintf (buf, sizeof(buf), "%.2f", opt.rand_delay);
   Epplet_modify_config ("RAND_DELAY", buf);
-  sprintf (buf, "%d", opt.do_cloak);
+  Esnprintf (buf, sizeof(buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
   if (opt.rand_cloak)
     {
@@ -68,14 +68,14 @@ save_config (void)
     }
   else
     {
-      sprintf (buf, "%d", opt.cloak_anim);
+      Esnprintf (buf, sizeof(buf), "%d", opt.cloak_anim);
     }
   Epplet_modify_config ("CLOAK_ANIM", buf);
-  sprintf (buf, "%d", opt.frame);
+  Esnprintf (buf, sizeof(buf), "%d", opt.frame);
   Epplet_modify_config ("WM_FRAME", buf);
-  sprintf (buf, "%d", opt.beep);
+  Esnprintf (buf, sizeof(buf), "%d", opt.beep);
   Epplet_modify_config ("BEEP", buf);
-  sprintf (buf, "%d", opt.run_script);
+  Esnprintf (buf, sizeof(buf), "%d", opt.run_script);
   Epplet_modify_config ("RUN_SCRIPT", buf);
   Epplet_modify_config ("DIRECTORY", opt.dir);
   Epplet_modify_config ("FILE_PREFIX", opt.file_prefix);
@@ -373,21 +373,21 @@ do_shot (void *data)
   char frame_buf[10];
   char beep_buf[20];
 
-  sprintf (qual_buf, "%d", opt.quality);
+  Esnprintf (qual_buf, sizeof(qual_buf), "%d", opt.quality);
 
   filename_buf =
     _Strjoin (NULL, opt.dir, opt.file_prefix, opt.file_stamp, ".",
 	      opt.file_type, NULL);
 
   if (opt.frame)
-    sprintf (frame_buf, "-frame");
+    Esnprintf (frame_buf, sizeof(frame_buf), "-frame");
   else
     frame_buf[0] = '\0';
 
   if (opt.beep)
     beep_buf[0] = '\0';
   else
-    sprintf (beep_buf, "-silent");
+    Esnprintf (beep_buf, sizeof(beep_buf), "-silent");
 
   if (!opt.win)
     {

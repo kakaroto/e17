@@ -324,7 +324,7 @@ epplet_bandwidth(void *data)
 
   d = (double *) data;
   stream_max = d[0];
-  sprintf(s, "%f", stream_max);
+  Esnprintf(s, sizeof(s), "%f", stream_max);
   Epplet_modify_config("bandwidth", s);
   Epplet_save_config();
   Epplet_gadget_hide(pop);
@@ -379,13 +379,13 @@ save_conf(int d1, int d2, int d3, int d4, int d5,
 {
   char s[1024];
 
-  sprintf(s, "%d %d %d", d1, d2, d3);
+  Esnprintf(s, sizeof(s), "%d %d %d", d1, d2, d3);
   Epplet_modify_config("color1", s);
-  sprintf(s, "%d %d %d", d4, d5, d6);
+  Esnprintf(s, sizeof(s), "%d %d %d", d4, d5, d6);
   Epplet_modify_config("color2", s);
-  sprintf(s, "%d %d %d", d7, d8, d9);
+  Esnprintf(s, sizeof(s), "%d %d %d", d7, d8, d9);
   Epplet_modify_config("color3", s);
-  sprintf(s, "%f", stream_max);
+  Esnprintf(s, sizeof(s), "%f", stream_max);
   Epplet_modify_config("bandwidth", s);
   Epplet_modify_config("device", netdev);
   Epplet_save_config();

@@ -223,6 +223,9 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define if you have stdarg.h */
+#undef HAVE_STDARGS
+
 /* Define on System V Release 4.  */
 #undef SVR4
 

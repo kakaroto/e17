@@ -26,13 +26,13 @@ main(int argc, char **argv)
    result = Epplet_query_config_def("USE_COUNT", "0");
    use_count = atoi(result);
    use_count++;
-   snprintf(s, 1024, "%i", use_count);
+   Esnprintf(s, sizeof(s), "%i", use_count);
    Epplet_modify_config("USE_COUNT", s); 
 
-   snprintf(s, 1024, "Instance %i", Epplet_get_instance()); 
+   Esnprintf(s, sizeof(s), "Instance %i", Epplet_get_instance()); 
    Epplet_gadget_show(Epplet_create_label(10, 2, s, 0));
 
-   snprintf(s, 1024, "Used %i times.", use_count);
+   Esnprintf(s, sizeof(s), "Used %i times.", use_count);
    Epplet_gadget_show(Epplet_create_label(10, 14, s, 0));
 
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 

@@ -47,13 +47,13 @@ timer_cb(void *data) {
     /* We must have some history data to do anything. */
     if (in_blks > max_in) {
       max_in = in_blks;
-      sprintf(buff, "%lu", max_in);
+      Esnprintf(buff, sizeof(buff), "%lu", max_in);
       Epplet_modify_config("max_in", buff);
     }
     if (in_blks != in_delta) {
       in_val = (int) ((((float) in_blks) / max_in) * 100.0);
       Epplet_gadget_data_changed(in_bar);
-      sprintf(buff, "I: %lu K/s", in_blks / 4);
+      Esnprintf(buff, sizeof(buff), "I: %lu K/s", in_blks / 4);
       Epplet_change_label(in_label, buff);
     }
     in_delta = in_blks;
@@ -67,13 +67,13 @@ timer_cb(void *data) {
     /* We must have some history data to do anything. */
     if (out_blks > max_out) {
       max_out = out_blks;
-      sprintf(buff, "%lu", max_out);
+      Esnprintf(buff, sizeof(buff), "%lu", max_out);
       Epplet_modify_config("max_out", buff);
     }
     if (out_blks != out_delta) {
       out_val = (int) ((((float) out_blks) / max_out) * 100.0);
       Epplet_gadget_data_changed(out_bar);
-      sprintf(buff, "O: %lu K/s", out_blks / 4);
+      Esnprintf(buff, sizeof(buff), "O: %lu K/s", out_blks / 4);
       Epplet_change_label(out_label, buff);
     }
     out_delta = out_blks;
