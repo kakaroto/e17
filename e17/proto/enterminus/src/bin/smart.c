@@ -244,9 +244,14 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 
    size = (num_chars_h * num_chars_w) - (term->cols * term->rows);
    /* Free grid */
-   for (i = 0; i < (term->cols * term->rows); i++) {
-      gl = &term->grid[0][i];
-      if (gl->text) evas_object_del(gl->text);
+   if (size < 0) {
+      int start, end;
+      start = num_chars_h * num_chars_w;
+      end = term->cols * term->rows;
+      for (i = start; i < end; i++) {
+	 gl = &term->grid[0][i];
+	 if (gl->text) evas_object_del(gl->text);
+      }
    }
 
    if ((term->grid = realloc(term->grid,
@@ -266,11 +271,16 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
       term->grid[i] = &term->grid[i - 1][num_chars_w];
 
    /* Init grid */
-   for (i = 0; i < (num_chars_h * num_chars_w); i++) {
-      gl = &term->grid[0][i];
-      gl->text = evas_object_text_add(term->evas);
-      evas_object_layer_set(gl->text, 2);
-      evas_object_show(gl->text);
+   if (size > 0) {
+      int start, end;
+      start = term->cols * term->rows;
+      end = num_chars_h * num_chars_w;
+      for (i = start; i < end; i++) {
+	 gl = &term->grid[0][i];
+	 gl->text = evas_object_text_add(term->evas);
+	 evas_object_layer_set(gl->text, 2);
+	 evas_object_show(gl->text);
+      }
    }
 
 #if 0
