@@ -239,29 +239,8 @@
 	}				\
       }					
 
-#define SLIDER_PROG(NAME, SIGDRAG, CLIP) \
-      program {				\
-	name, NAME"_scrollbar_move";	\
-	signal, "drag";			\
-	source, NAME".scrollbar";	\
-	action, SIGNAL_EMIT SIGDRAG NAME".scrollbar";	\
-      }					\
-      program {				\
-	name, NAME"_scrollbar_mouse_up";\
-	signal, "mouse,up,1";		\
-	source, NAME".scrollbar";	\
-	action, STATE_SET "default" 0.0;\
-	transition, DECELERATE 0.25;	\
-	target, NAME".scrollbar";	\
-      }					\
-      program {				\
-	name, NAME"_scrollbar_mouse_down";	\
-	signal, "mouse,down,1";		\
-	source, NAME".scrollbar";	\
-	action, STATE_SET "down" 0.0;	\
-	transition, ACCELERATE 0.25;	\
-	target, NAME".scrollbar";	\
-      }					\
+#define SLIDER_PROG(NAME, SIGDRAG, SIGSEEK, CLIP) \
+      /* center the dragables on show */ \
       program {				\
 	name, NAME"_scrollbar_show";	\
 	signal, "show";			\
@@ -270,7 +249,42 @@
 	target, NAME".scrollbar";	\
       }					\
       program {				\
-	name, NAME"_scrollbar_mouse_in";\
+	name, NAME"_scrollbar_trough_mouse_clicked";	\
+	signal, "mouse,clicked,1";			\
+	source, NAME"_scrollbar_trough";		\
+	action, SIGNAL_EMIT SIGSEEK NAME".scrollbar"; 	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_move";	\
+	signal, "drag";			\
+	source, NAME".scrollbar";	\
+	action, SIGNAL_EMIT SIGDRAG NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_out";\
+	signal, "mouse,out";		\
+	source, NAME".scrollbar";	\
+	action, STATE_SET "default" 0.0;\
+	transition, SINUSOIDAL 0.5;	\
+	target, NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_out_kill";	\
+	signal, "mouse,in";		\
+	source, NAME".scrollbar";	\
+	action, ACTION_STOP;		\
+	target, NAME"_scrollbar_mouse_out";\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_in";	\
+	signal, "mouse,in";		\
+	source, NAME".scrollbar";	\
+	action, STATE_SET "down" 0.0;	\
+	transition, ACCELERATE 0.25;	\
+	target, NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_area_mouse_in";\
 	signal, "mouse,in";		\
 	source, NAME"_mouse_area";	\
 	action, STATE_SET "visible" 0.0;\
@@ -278,14 +292,14 @@
 	target, CLIP;			\
       }					\
       program {				\
-	name, NAME"_scrollbar_mouse_out_stop";\
+	name, NAME"_scrollbar_mouse_area_mouse_out_stop";\
 	signal, "mouse,in";		\
 	source, NAME"_mouse_area";	\
 	action, ACTION_STOP;		\
-	target, NAME"_scrollbar_mouse_out"; \
+	target, NAME"_scrollbar_mouse_area_mouse_out"; \
       }					\
       program {				\
-	name, NAME"_scrollbar_mouse_out";\
+	name, NAME"_scrollbar_mouse_area_mouse_out";\
 	signal, "mouse,out";		\
 	source, NAME"_mouse_area";	\
 	action, STATE_SET "default" 0.0;\

@@ -1,4 +1,8 @@
     SLIDER_PROG("entice.image.scroll.horizontal",
-	    "entice,image,current,drag,horizontal", "HPanningClip");
+	    "entice,image,current,align,drag,horizontal", 
+	    "entice,image,current,align,seek,horizontal", 
+	    "HPanningClip");
     SLIDER_PROG("entice.image.scroll.vertical",
-	    "entice,image,current,drag,vertical", "VPanningClip");
+	    "entice,image,current,align,drag,vertical", 
+	    "entice,image,current,align,seek,vertical", 
+	    "VPanningClip");
