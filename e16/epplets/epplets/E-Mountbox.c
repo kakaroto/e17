@@ -328,12 +328,19 @@ CallbackConfigure(void *data)
 
   if (!config_win)
     {
+#ifdef HAVE_EJECT
+      config_win =
+	Epplet_create_window_config (420, 210 , "E-Mountbox Configuration",
+				     Callback_ConfigOK, &config_win,
+				     Callback_ConfigApply, &config_win,
+				     Callback_ConfigCancel, &config_win);
+#else
       config_win =
 	Epplet_create_window_config (420, 190 , "E-Mountbox Configuration",
 				     Callback_ConfigOK, &config_win,
 				     Callback_ConfigApply, &config_win,
 				     Callback_ConfigCancel, &config_win);
-      
+#endif
       Epplet_gadget_show (Epplet_create_label (12, 10,
 					       "Default icon",
 					       2));
@@ -365,7 +372,10 @@ CallbackConfigure(void *data)
       button_add_long = Epplet_create_button("Add mountpoint type", NULL, 165, 120, 110, 16, NULL, 0, NULL, Callback_ConfigAdd, NULL);
       button_del = Epplet_create_button("Delete", NULL, 216, 140, 36, 12, NULL, 0, NULL, Callback_ConfigDel, NULL);
       arrow_right = Epplet_create_button(NULL, NULL, 257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, Callback_ConfigRight, NULL);
-      
+
+#ifdef HAVE_EJECT
+      Epplet_gadget_show(Epplet_create_togglebutton("Try to eject when unmounting", NULL, 150, 160, 145, 16, &do_eject, NULL, NULL));
+#endif
       Epplet_window_pop_context ();
     }
 
@@ -834,7 +844,7 @@ Mount(MountPoint * mp)
 	return;
       if (mp->path)
 	{
-	  Esnprintf(s, sizeof(s), "%s %s", MOUNT_CMD, mp->path);
+	  Esnprintf(s, sizeof(s), "%s %s", MOUNT, mp->path);
 	  if (!Epplet_run_command(s))
 	    {
 	      mp->mounted = 1;
@@ -865,12 +875,19 @@ Umount(MountPoint * mp)
 	return;
       if (mp->path)
 	{
-	  Esnprintf(s, sizeof(s), "%s %s", UMOUNT_CMD, mp->path);
+	  Esnprintf(s, sizeof(s), "%s %s", UMOUNT, mp->path);
 	  if (!Epplet_run_command(s))
 	    {
 	      mp->mounted = 0;
 	      anim_mount = 0;
 	      Epplet_timer(CallbackAnimate, NULL, 0, "Anim");
+#ifdef HAVE_EJECT
+	      if (do_eject)
+		{
+		  Esnprintf(s, sizeof(s), "%s %s", EJECT, mp->device);
+		  Epplet_run_command(s);
+		}
+#endif
 	    }
 	  else
 	    {

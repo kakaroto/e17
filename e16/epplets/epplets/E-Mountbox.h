@@ -19,6 +19,7 @@
  */
 
 #include "epplet.h"
+#include "config.h"
 #include <math.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -27,8 +28,6 @@
 #define FSTAB      "/etc/fstab"
 #define PROCMOUNTS "/proc/mounts"
 #define ETCMTAB    "/etc/mtab"
-#define MOUNT_CMD  "/bin/mount"
-#define UMOUNT_CMD "/bin/umount"
 
 #define __BG_IMAGE EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"
 #define __DEFAULT  EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"
@@ -90,6 +89,7 @@ Epplet_gadget   arrow_left, arrow_right, button_add, button_del, button_add_long
 Epplet_gadget   label_key, label_file;
 Window          config_win = 0;
 MountPointType *current_type = NULL;
+int             do_eject = 1;
 
 RGB_buf         window_buf = NULL;
 RGB_buf         widescreen_buf = NULL;

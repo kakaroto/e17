@@ -78,7 +78,9 @@ using the control elements below.
 <page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p>
-<p>
+You can also make E-Mountbox try to eject media after unmounting. This option
+is available only when the "eject" program is available on your system
+(if not, look at sunsite.unc.edu:/pub/Linux/utils/disk-management).
 <p>
 <p>
 <p>

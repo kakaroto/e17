@@ -286,6 +286,12 @@
 /* Do we have OpenGL? */
 #undef HAVE_LIBGL
 
+/* E-Mountbox stuff */
+#undef EJECT
+#undef MOUNT
+#undef UMOUNT
+#undef HAVE_EJECT
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:
