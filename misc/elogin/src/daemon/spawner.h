@@ -13,7 +13,7 @@
 
 #define X_SERVER "/usr/X11R6/bin/X -terminate -ac -quiet"
 /* #define X_SERVER "/usr/X11R6/bin/Xnest -terminate -geometry 640x480 -ac -full :1" */
-#define X_DISP ":0"	/* only used if DISPLAY variable is NOT set */
+#define X_DISP ":0"             /* only used if DISPLAY variable is NOT set */
 #define ELOGIN PREFIX "/bin/elogin_wrapper"
 #define PIDFILE "/var/run/elogind.pid"
 

@@ -118,7 +118,7 @@ main(int argc, char **argv)
    {
       fork_and_exit();
    }
-   
+
    /* Check to make sure elogin binary is executable */
    if (access(ELOGIN, X_OK))
    {
@@ -126,7 +126,7 @@ main(int argc, char **argv)
               "Elogin: Fatal Error: Cannot execute elogin binary. Aborting.\n");
       exit(1);
    }
-   
+
    close(0);
    close(1);
    close(2);
@@ -223,16 +223,17 @@ elogin_exit(int signum)
             /* check to see if X is still alive before restarting elogin */
             if (!waitpid(d->pid.x, &x_status, WNOHANG))
             {
-               XSync(d->display, False);
-               spawn_elogin();
+               kill(d->pid.x, SIGTERM);
+               sleep(1);
             }
             else
             {
-               kill(d->pid.x, SIGKILL);
+               /* Die Hard Like Bruce Willis */
+               kill(d->pid.x, SIGTERM);
                d->display = NULL;
-               spawn_x();
-               spawn_elogin();
             }
+            spawn_x();
+            spawn_elogin();
          }
       }
       else if (pid == d->pid.x)
@@ -243,6 +244,8 @@ elogin_exit(int signum)
             /* URM...don't try to XSync on a non-existent X process. SIGPIPE
                here */
             d->display = NULL;
+            /* Die Hard 2 */
+            kill(d->pid.x, SIGTERM);
          }
          if (d->status == LAUNCHING)
          {
