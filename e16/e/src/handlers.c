@@ -32,6 +32,9 @@ SignalHandler(int sig)
 
    EDBUG(7, "SignalHandler");
 
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SignalHandler signal=%d\n", sig);
+
    switch (sig)
      {
      case SIGHUP:

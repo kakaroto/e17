@@ -570,14 +570,20 @@ MakeExtInitWin(void)
    Atom                a;
    CARD32              val;
    int                 i;
-   Window             *retval;
    XSetWindowAttributes attr;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("MakeExtInitWin\n");
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
    XSync(disp, False);
    if (fork())
      {
 	UngrabX();
+
+	if (EventDebug(EDBUG_TYPE_SESSION))
+	   Eprintf("MakeExtInitWin - parent\n");
+
 	for (;;)
 	  {
 	     Atom                aa;
@@ -585,21 +591,31 @@ MakeExtInitWin(void)
 	     unsigned long       bytes_after, num_ret;
 	     unsigned char      *puc;
 
+	     /* Hack to give the child some space. Not foolproof. */
+	     sleep(1);
+
 	     puc = NULL;
 	     XGetWindowProperty(disp, root.win, a, 0, 0x7fffffff, True,
 				XA_CARDINAL, &aa, &format_ret, &num_ret,
 				&bytes_after, &puc);
-	     retval = (Window *) puc;
 	     XSync(disp, False);
-	     if (retval)
-		break;
+	     if (puc)
+	       {
+		  win = *((Window *) puc);
+		  XFree(puc);
+		  break;
+	       }
 	  }
-	win = *retval;
 	fflush(stdout);
-	XFree(retval);
+
+	if (EventDebug(EDBUG_TYPE_SESSION))
+	   Eprintf("MakeExtInitWin - parent - %#lx\n", win);
 
 	return win;
      }
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("MakeExtInitWin - child\n");
 
    /* on solairs connection stays up - close */
    XSetErrorHandler((XErrorHandler) NULL);
@@ -628,11 +644,10 @@ MakeExtInitWin(void)
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = True;
-   win =
-      XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-		    InputOutput, root.vis,
-		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		    CWColormap | CWBackPixel | CWBorderPixel, &attr);
+   win = XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
+		       InputOutput, root.vis,
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
    pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(d2, win, GCSubwindowMode, &gcv);
@@ -697,15 +712,15 @@ MakeExtInitWin(void)
 	cs = XCreatePixmapCursor(d2, pmap, mask, &cl, &cl, 0, 0);
 	XDefineCursor(d2, win, cs);
 	XDefineCursor(d2, w2, cs);
-	i = 1;
-	for (;;)
-	  {
 
-	     i++;
+	for (i = 1;; i++)
+	  {
 	     if (i > 12)
 		i = 1;
 
 	     Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
+	     if (EventDebug(EDBUG_TYPE_SESSION))
+		Eprintf("MakeExtInitWin - child %s\n", s);
 
 	     f = FindFile(s);
 	     im = NULL;
@@ -749,6 +764,10 @@ MakeExtInitWin(void)
  * XNextEvent(d2, &ev);
  * }
  * } */
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("MakeExtInitWin - child exit\n");
+
    exit(0);
 }
 

@@ -212,57 +212,56 @@ SaveWindowStates(void)
    FILE               *f;
    char                s[4096], ss[4096];
 
+   if (!Mode.save_ok)
+      return;
+
+   Etmp(s);
+   f = fopen(s, "w");
+   if (f == NULL)
+      return;
+
    lst = EwinListGetAll(&num);
-   if (lst)
+   for (i = 0; i < num; i++)
      {
-	Etmp(s);
-	f = fopen(s, "w");
-	if (f)
+	ewin = lst[i];
+	if ((!(ewin->internal))
+	    && ((ewin->icccm.wm_command) || (ewin->session_id)))
 	  {
-	     for (i = 0; i < num; i++)
+	     x = 0;
+	     y = 0;
+	     if (!ewin->sticky)
 	       {
-		  ewin = lst[i];
-		  if ((!(ewin->internal))
-		      && ((ewin->icccm.wm_command) || (ewin->session_id)))
-		    {
-		       x = 0;
-		       y = 0;
-		       if (!ewin->sticky)
-			 {
-			    x = desks.desk[ewin->desktop].current_area_x *
-			       root.w;
-			    y = desks.desk[ewin->desktop].current_area_y *
-			       root.h;
-			 }
-		       fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
-			       ewin->x + x, ewin->y + y, ewin->client.w,
-			       ewin->client.h, ewin->desktop, ewin->iconified,
-			       ewin->shaded, ewin->sticky, ewin->layer);
-		       if (ewin->session_id)
-			  fprintf(f, "  [SESSION_ID] %s\n", ewin->session_id);
-		       if (ewin->icccm.wm_res_name)
-			  fprintf(f, "  [NAME] %s\n", ewin->icccm.wm_res_name);
-		       if (ewin->icccm.wm_res_class)
-			  fprintf(f, "  [CLASS] %s\n",
-				  ewin->icccm.wm_res_class);
-		       if (ewin->icccm.wm_role)
-			  fprintf(f, "  [ROLE] %s\n", ewin->icccm.wm_role);
-		       if (ewin->icccm.wm_command)
-			  fprintf(f, "  [COMMAND] %s\n",
-				  ewin->icccm.wm_command);
-		    }
+		  x = desks.desk[ewin->desktop].current_area_x * root.w;
+		  y = desks.desk[ewin->desktop].current_area_y * root.h;
 	       }
-	     fclose(f);
-	     Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), root.scr);
-	     E_mv(s, ss);
-	     if (!isfile(ss))
-		Alert(_("There was an error writing the clients "
-			"session save file.\n" "You may have run out of disk "
-			"space, not have permission\n"
-			"to write to your filing system "
-			"or other similar problems.\n"));
+	     fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
+		     ewin->x + x, ewin->y + y, ewin->client.w,
+		     ewin->client.h, ewin->desktop, ewin->iconified,
+		     ewin->shaded, ewin->sticky, ewin->layer);
+	     if (ewin->session_id)
+		fprintf(f, "  [SESSION_ID] %s\n", ewin->session_id);
+	     if (ewin->icccm.wm_res_name)
+		fprintf(f, "  [NAME] %s\n", ewin->icccm.wm_res_name);
+	     if (ewin->icccm.wm_res_class)
+		fprintf(f, "  [CLASS] %s\n", ewin->icccm.wm_res_class);
+	     if (ewin->icccm.wm_role)
+		fprintf(f, "  [ROLE] %s\n", ewin->icccm.wm_role);
+	     if (ewin->icccm.wm_command)
+		fprintf(f, "  [COMMAND] %s\n", ewin->icccm.wm_command);
 	  }
      }
+   fclose(f);
+
+   Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), root.scr);
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SaveWindowStates: %s\n", ss);
+   E_mv(s, ss);
+   if (!isfile(ss))
+      Alert(_("There was an error writing the clients "
+	      "session save file.\n" "You may have run out of disk "
+	      "space, not have permission\n"
+	      "to write to your filing system "
+	      "or other similar problems.\n"));
 }
 
 static void
@@ -427,15 +426,19 @@ MatchEwinToSM(EWin * ewin)
 void
 autosave(void)
 {
-   if (Mode.startup)
+   if (!Mode.save_ok)
       return;
+
    if (Conf.autosave)
      {
 	char                s[4096];
 
 	Real_SaveSnapInfo(0, NULL);
+
 	Etmp(s);
 	SaveUserControlConfig(fopen(s, "w"));
+	if (EventDebug(EDBUG_TYPE_SESSION))
+	   Eprintf("autosave: save %s\n", GetGenericSMFile());
 	E_mv(s, GetGenericSMFile());
 	if (!isfile(GetGenericSMFile()))
 	   Alert(_("There was an error saving your autosave data - filing\n"
@@ -456,6 +459,8 @@ autosave(void)
  *      Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*", GetSMFile());
  *      system(buf); */
 
+	if (EventDebug(EDBUG_TYPE_SESSION))
+	   Eprintf("autosave: kill %s\n", GetGenericSMFile());
 	E_rm(GetGenericSMFile());
      }
 }
@@ -971,9 +976,6 @@ static void
 doSMExit(const void *params)
 {
    char                s[1024];
-   char                do_master_kill;
-
-   do_master_kill = 1;
 
    restarting = True;
 
@@ -1124,9 +1126,6 @@ doSMExit(const void *params)
    char               *real_exec;
    char                sss[FILEPATH_LEN_MAX];
    Window              w;
-   char                do_master_kill;
-
-   do_master_kill = 1;
 
    if (!params)
       SaveSession(1);

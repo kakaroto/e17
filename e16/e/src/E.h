@@ -1308,6 +1308,7 @@ typedef struct
    int                 last_button;
    Time                last_time;
    char                queue_up;
+   char                save_ok;
 }
 EMode;
 

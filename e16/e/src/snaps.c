@@ -864,15 +864,15 @@ SaveSnapInfo(void)
 
 /* save out all snapped info to disk */
 void
-Real_SaveSnapInfo(int dumval, void *dumdat)
+Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 {
    Snapshot          **lst, *sn;
    int                 i, j, num;
    char                buf[4096], s[4096];
    FILE               *f;
 
-   if (dumdat)
-      dumval = 0;
+   if (!Mode.save_ok)
+      return;
 
    Etmp(s);
    f = fopen(s, "w");
@@ -933,6 +933,8 @@ Real_SaveSnapInfo(int dumval, void *dumdat)
    fclose(f);
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("Real_SaveSnapInfo: %s\n", buf);
    E_mv(s, buf);
    if (!isfile(buf))
       Alert(_("Error saving snaps file\n"));

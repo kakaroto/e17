@@ -265,7 +265,9 @@ main(int argc, char **argv)
 
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
+
    SetupEnv();
+
    if (Conf.mapslide)
       CreateStartupDisplay(0);
 
@@ -288,6 +290,8 @@ main(int argc, char **argv)
    /* Kill the E process owning the "init window" */
    if (Mode.wm.master && init_win_ext)
      {
+	if (EventDebug(EDBUG_TYPE_SESSION))
+	   Eprintf("Kill init window %#lx\n", init_win_ext);
 	XKillClient(disp, init_win_ext);
 	init_win_ext = 0;
      }
@@ -299,6 +303,7 @@ main(int argc, char **argv)
    /* hello!  we don't have a resizemode of 5! */
    if (Conf.resizemode == 5)
       Conf.resizemode = 0;
+
    /* of course, we have to set the cursors */
    ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
    if (ec)
@@ -309,9 +314,11 @@ main(int argc, char **argv)
      }
 
    Mode.startup = 0;
+   Mode.save_ok = Mode.wm.master;
    /* ok - paranoia - save current settings to disk */
    if (root.scr == 0)
       autosave();
+
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
