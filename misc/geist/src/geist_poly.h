@@ -68,5 +68,7 @@ void geist_poly_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
                                    int *h);
 unsigned char
 geist_poly_part_is_transparent(geist_object * obj, int x, int y);
+void
+geist_poly_move_points_relative(geist_poly * poly, int x, int y);
 
 #endif

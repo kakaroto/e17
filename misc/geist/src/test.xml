@@ -52,7 +52,7 @@
 <geist:Alignment>None</geist:Alignment>
 </geist:Object>
 <geist:Object X="3" Y="406" W="240" H="0" Alias="1" Visible="16" R="255" G="0" B="0" A="255" Start_X="3" Start_Y="406" End_X="243" End_Y="406">
-<geist:Type>XXXXX</geist:Type>
+<geist:Type>Line</geist:Type>
 <geist:Name>New line</geist:Name>
 <geist:Sizemode>Stretch</geist:Sizemode>
 <geist:Alignment>None</geist:Alignment>
@@ -92,7 +92,7 @@
 <geist:Filename>/usr/local/share/geist/images/paper.png</geist:Filename>
 </geist:Object>
 <geist:Object X="5" Y="433" W="237" H="0" Alias="1" Visible="16" R="50" G="50" B="255" A="255" Start_X="5" Start_Y="433" End_X="242" End_Y="433">
-<geist:Type>XXXXX</geist:Type>
+<geist:Type>Line</geist:Type>
 <geist:Name>New line</geist:Name>
 <geist:Sizemode>Stretch</geist:Sizemode>
 <geist:Alignment>None</geist:Alignment>

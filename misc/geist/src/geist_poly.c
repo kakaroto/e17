@@ -108,11 +108,11 @@ geist_poly_update_bounds(geist_poly * poly)
    imlib_polygon_get_bounds(poly->poly, &px1, &py1, &px2, &py2);
    obj->x = px1;
    obj->y = py1;
-   obj->w = obj->rendered_w = px2 - px1;
-   obj->h = obj->rendered_h = py2 - py1;
+   obj->w = obj->rendered_w = px2 - px1 + 2;
+   obj->h = obj->rendered_h = py2 - py1 + 1;
    obj->rendered_x = 0;
    obj->rendered_y = 0;
-   printf("new poly bounds: %d,%d %dx%d\n", obj->x, obj->y, obj->w, obj->h);
+   D(4,("new poly bounds: %d,%d %dx%d\n", obj->x, obj->y, obj->w, obj->h));
 
    D_RETURN_(3);
 }
@@ -157,10 +157,8 @@ geist_poly_add_point(geist_poly * poly, int x, int y)
    if (!poly->poly)
       poly->poly = imlib_polygon_new();
    imlib_polygon_add_point(poly->poly, x, y);
-   geist_poly_update_bounds(poly);
-   x -= GEIST_OBJECT(poly)->x;
-   y -= GEIST_OBJECT(poly)->y;
    poly->points = geist_list_add_end(poly->points, geist_point_new(x, y));
+   geist_poly_update_bounds(poly);
 
    D_RETURN_(3);
 }
@@ -188,8 +186,7 @@ geist_poly_update_imlib_polygon(geist_poly * poly)
    while (l)
    {
       p = (geist_point *) l->data;
-      /* need to convert object-relative points to world points for imlib */
-      imlib_polygon_add_point(poly->poly, p->x + obj->x, p->y + obj->y);
+      imlib_polygon_add_point(poly->poly, p->x, p->y);
       l = l->next;
    }
 
@@ -338,12 +335,49 @@ geist_poly_resize(geist_object * obj, int x, int y)
 }
 
 void
+geist_poly_move_points_relative(geist_poly * poly, int x, int y)
+{
+   geist_list *l;
+   geist_point *p;
+
+   D_ENTER(3);
+
+   if (!poly || (!x && !y))
+      D_RETURN_(3);
+
+   l = poly->points;
+   if (!l)
+      D_RETURN_(3);
+
+   while (l)
+   {
+      p = (geist_point *) l->data;
+      if (p)
+      {
+         p->x += x;
+         p->y += y;
+      }
+      l = l->next;
+   }
+   poly->need_update = TRUE;
+
+   D_RETURN_(3);
+}
+
+void
 geist_poly_move(geist_object * obj, int x, int y)
 {
+   int oldx, oldy, dx, dy;
+
    D_ENTER(3);
 
    GEIST_POLY(obj)->need_update = TRUE;
+   oldx = obj->x;
+   oldy = obj->y;
    geist_object_int_move(obj, x, y);
+   dx = obj->x - oldx;
+   dy = obj->y - oldy;
+   geist_poly_move_points_relative(GEIST_POLY(obj), dx, dy);
 
    D_RETURN_(3);
 }

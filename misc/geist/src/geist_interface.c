@@ -94,6 +94,8 @@ char *object_types[] = {
    "Image",
    "Text",
    "Rect",
+   "Line",
+   "Poly",
    "XXXXX"
 };
 
@@ -941,14 +943,17 @@ gboolean obj_addpoly_cb(GtkWidget * widget, gpointer * data)
    if (doc_list)
    {
       obj = geist_poly_new();
-      geist_poly_add_point(GEIST_POLY(obj), 40,20);
-      geist_poly_add_point(GEIST_POLY(obj), 20,80);
-      geist_poly_add_point(GEIST_POLY(obj), 60,80);
+      obj->x = 5;
+      obj->y = 5;
+      geist_poly_add_point(GEIST_POLY(obj), 10,10);
+      geist_poly_add_point(GEIST_POLY(obj), 50,10);
+      geist_poly_add_point(GEIST_POLY(obj), 50,50);
+      geist_poly_add_point(GEIST_POLY(obj), 10,50);
       GEIST_POLY(obj)->r = 128;
       GEIST_POLY(obj)->g = 0;
       GEIST_POLY(obj)->b = 200;
       GEIST_POLY(obj)->a = 255;
-      GEIST_POLY(obj)->filled = TRUE;
+      GEIST_POLY(obj)->closed = TRUE;
       geist_document_add_object(current_doc, obj);
       geist_document_unselect_all(current_doc);
       row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
