@@ -1106,7 +1106,7 @@ extern int re_exec();
  * specified by @a c.  The size of the memory region is specified by
  * @a count.  Note that @a c must be a byte (char) value.
  *
- * This macro has been optimized to set as many bits simultaneously as
+ * This macro has been optimized to set as many bytes simultaneously as
  * the architecture can handle, so it should offer superior
  * performance to libc's memset() function.
  *
@@ -1589,45 +1589,473 @@ extern const char *true_vals[], *false_vals[];
 
 /******************************* OPTIONS GOOP **********************************/
 
-/* Flags for individual options */
+/**
+ * @name Option Flags
+ * Flags for individual options.
+ *
+ * Each option structure (spifopt_t_struct) has a 16-bit value called
+ * "flags" associated with it.  The lowest 5 bits (0-4) are for option
+ * types which do not require a specific value (such as boolean).  The
+ * next 5 bits (5-9) are for option types which always require a
+ * value.  Bit 10 is for abstract options, which could by definition
+ * go either way.  And the final 5 bits (11-15) are for
+ * non-type-related information, such as flagging preparsed or
+ * deprecated options.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+/*@{*/
+/** No flags.  No flags. */
 #define SPIFOPT_FLAG_NONE                 (0)
+/** Boolean option.  This flag marks a boolean option. */
 #define SPIFOPT_FLAG_BOOLEAN              (1UL << 0)
-#define SPIFOPT_FLAG_TYPEMASK_NOVALUE     (SPIFOPT_FLAG_BOOLEAN)
-#define SPIFOPT_FLAG_INTEGER              (1UL << 1)
-#define SPIFOPT_FLAG_STRING               (1UL << 2)
-#define SPIFOPT_FLAG_ARGLIST              (1UL << 3)
-#define SPIFOPT_FLAG_ABSTRACT             (1UL << 4)
-#define SPIFOPT_FLAG_TYPEMASK_VALUE       (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT)
-#define SPIFOPT_FLAG_TYPEMASK             (SPIFOPT_FLAG_TYPEMASK_NOVALUE | SPIFOPT_FLAG_TYPEMASK_VALUE)
+/** Counter option.  This flag marks a counter option. */
+#define SPIFOPT_FLAG_COUNTER              (1UL << 1)
+/** No-value type mask.  This is a bitmask to select the lower 5 bits
+ *  (those which represent options where no value is required).
+ */
+#define SPIFOPT_FLAG_TYPEMASK_NOVALUE     (0x001f)
+/** Integer option.  This flag marks an integer (numeric) option. */
+#define SPIFOPT_FLAG_INTEGER              (1UL << 5)
+/** String option.  This flag marks a string option. */
+#define SPIFOPT_FLAG_STRING               (1UL << 6)
+/** Argument list option.  This flag marks an argument list option
+ *  (such as -e/--exec).  There can be one of these at most.
+ */
+#define SPIFOPT_FLAG_ARGLIST              (1UL << 7)
+/** Value type mask.  This is a bitmask to select bits 5-9
+ *  (those which represent options where a value is required).
+ */
+#define SPIFOPT_FLAG_TYPEMASK_VALUE       (0x03e0)
+/** Abstract option.  This flag marks an abstract (client-handled)
+ *  option.
+ */
+#define SPIFOPT_FLAG_ABSTRACT             (1UL << 10)
+/** Type mask.  This is a bitmask to select all type-identifying
+ *  option flag bits (0-10, inclusive).
+ */
+#define SPIFOPT_FLAG_TYPEMASK             (0x07ff)
+/**
+ * Preparsed option.  This flag marks an option which is preparsed
+ * (i.e., parsed on the first pass, which is generally done before
+ * config files are read).
+ */
+#define SPIFOPT_FLAG_PREPARSE             (1UL << 11)
+/**
+ * Deprecated option.  This flag marks an option which has been
+ * deprecated by the author(s) of the program.  A warning message is
+ * printed whenever a deprecated option is encountered.
+ */
+#define SPIFOPT_FLAG_DEPRECATED           (1UL << 12)
+/**
+ * Array option.  This flag marks an option which, rather than taking
+ * a single value of its type, takes multiple values of its type.
+ * LibAST will allocate and return a NULL-terminated C-style array of
+ * the given type.  The absence of this flag, except for abstract
+ * options, means that multiple instances of a given flag will
+ * overwrite previous values, if any.  Abstract options are entirely
+ * client-handled, so this flag has no meaning there.
+ */
+#define SPIFOPT_FLAG_ARRAY                (1UL << 13)
+/** Modifier mask.  This is a bitmask to select all the non-type
+ *  flags; i.e., those which modify option behavior.
+ */
+#define SPIFOPT_FLAG_MODMASK              (0xf800)
+/*}@*/
 
-#define SPIFOPT_FLAG_PREPARSE             (1UL << 8)
-#define SPIFOPT_FLAG_DEPRECATED           (1UL << 9)
-
-/* Flags that control the parser's behavior */
+/**
+ * @name Parser Settings
+ * Flags which alter the behavior of the parser itself.
+ *
+ * The option parser settings structure (spifopt_settings_t_struct)
+ * has an 8-bit flag field which contains toggles affecting the
+ * parser's internal behavior.  As a general rule, these will not be
+ * flags that client programs will want to manipulate.  In the event
+ * that you do wish to manipulate these flags, use the
+ * SPIFOPT_FLAGS_*() macros.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+/*@{*/
+/** Postparse flag.  This flag denotes whether or not the initial
+ *  option parsing pass has been done.  The first call to the
+ *  spifopt_parse() function will parse only those options which have
+ *  the SPIFOPT_FLAG_TYPEMASK flag set, after which it will set this
+ *  flag.  Subsequent calls will parse only non-preparsed options.
+ */
 #define SPIFOPT_SETTING_POSTPARSE         (1UL << 0)
+/*}@*/
 
-#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d,                                             (f),  (p), m }
-#define SPIFOPT_BOOL(s, l, d, v, m)       { s, l, d,                          (SPIFOPT_FLAG_BOOLEAN), &(v), m }
-#define SPIFOPT_BOOL_PP(s, l, d, v, m)    { s, l, d,  (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
-#define SPIFOPT_BOOL_LONG(l, d, v, m)     { 0, l, d,                          (SPIFOPT_FLAG_BOOLEAN), &(v), m }
-#define SPIFOPT_BOOL_LONG_PP(l, d, v, m)  { 0, l, d,  (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
-#define SPIFOPT_INT(s, l, d, p)           { s, l, d,                          (SPIFOPT_FLAG_INTEGER), &(p), 0 }
-#define SPIFOPT_INT_PP(s, l, d, p)        { s, l, d,  (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_INT_LONG(l, d, p)         { 0, l, d,                          (SPIFOPT_FLAG_INTEGER), &(p), 0 }
-#define SPIFOPT_INT_LONG_PP(l, d, p)      { 0, l, d,  (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_STR(s, l, d, p)           { s, l, d,                           (SPIFOPT_FLAG_STRING), &(p), 0 }
-#define SPIFOPT_STR_PP(s, l, d, p)        { s, l, d,   (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_STR_LONG(l, d, p)         { 0, l, d,                           (SPIFOPT_FLAG_STRING), &(p), 0 }
-#define SPIFOPT_STR_LONG_PP(l, d, p)      { 0, l, d,   (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_ARGS(s, l, d, p)          { s, l, d,                          (SPIFOPT_FLAG_ARGLIST), &(p), 0 }
-#define SPIFOPT_ARGS_PP(s, l, d, p)       { s, l, d,  (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_ARGS_LONG(l, d, p)        { 0, l, d,                          (SPIFOPT_FLAG_ARGLIST), &(p), 0 }
-#define SPIFOPT_ARGS_LONG_PP(l, d, p)     { 0, l, d,  (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0 }
-#define SPIFOPT_ABST(s, l, d, f)          { s, l, d,                         (SPIFOPT_FLAG_ABSTRACT),  (f), 0 }
-#define SPIFOPT_ABST_PP(s, l, d, f)       { s, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
-#define SPIFOPT_ABST_LONG(l, d, f)        { 0, l, d,                         (SPIFOPT_FLAG_ABSTRACT),  (f), 0 }
-#define SPIFOPT_ABST_LONG_PP(l, d, f)     { 0, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE),  (f), 0 }
+/**
+ * @name Option Declaration Convenience Macros
+ * Macros which simplify the building of the options list.
+ *
+ * Each client program which intends to use the LibAST option parser
+ * (i.e., calls spifopt_parse() one or more times) is responsible for
+ * building its own option structure (spifopt_t) array which is then
+ * registered with LibAST using the SPIFOPT_OPTLIST_SET() macro.
+ *
+ * To simplify the declaration of this structure, a set of convenience
+ * macros is provided that will make the structure more
+ * human-readable.  Although their use is not required, it is
+ * recommended in order to enhance readability and reduce the
+ * probability of human error.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+/*@{*/
+/**
+ * Primary option declaration macro.
+ *
+ * This is the primary macro used for declaring an option.  All other
+ * option declaration convenience macros are merely simpler forms of
+ * this macro.  If you prefer, you can use this macro for all option
+ * declarations; just be sure to get the parameters right.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param f Bitwise OR of zero or more flags.
+ * @param p The pointer to where the data should be stored.  Except in
+ *          the case of function pointers (for abstract options), this
+ *          parameter will need the & operator.  See the other
+ *          convenience macros for type requirements.
+ * @param m The bitmask for a boolean option, or 0 for other types.
+ */
+#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d, f, p, m }
+/**
+ * Declare a boolean option.
+ *
+ * This macro is used to declare a simple boolean option with both a
+ * short and a long form.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "unsigned long" (or one that can be
+ *          safely typecast to/from it) to be used as a bitfield.
+ * @param m The bitmask to be set/unset within the bitfield.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_BOOL(s, l, d, v, m) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_BOOLEAN), &(v), m)
+/**
+ * Declare a pre-parsed boolean option.
+ *
+ * This macro is used to declare a boolean option with both a short
+ * and a long form which will be pre-parsed.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "unsigned long" (or one that can be
+ *          safely typecast to/from it) to be used as a bitfield.
+ * @param m The bitmask to be set/unset within the bitfield.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_BOOL_PP(s, l, d, v, m) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m)
+/**
+ * Declare a long-only boolean option.
+ *
+ * This macro is used to declare a boolean option with only a long
+ * form.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "unsigned long" (or one that can be
+ *          safely typecast to/from it) to be used as a bitfield.
+ * @param m The bitmask to be set/unset within the bitfield.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_BOOL_LONG(l, d, v, m) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_BOOLEAN), &(v), m)
+/**
+ * Declare a long-only, pre-parsed boolean option.
+ *
+ * This macro is used to declare a boolean option with only a long
+ * form which will be pre-parsed.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "unsigned long" (or one that can be
+ *          safely typecast to/from it) to be used as a bitfield.
+ * @param m The bitmask to be set/unset within the bitfield.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_BOOL_LONG_PP(l, d, v, m) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m)
+/**
+ * Declare an integer option.
+ *
+ * This macro is used to declare a simple integer option with both a
+ * short and a long form.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "int" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_INT(s, l, d, v) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_INTEGER), &(v), 0)
+/**
+ * Declare a pre-parsed integer option.
+ *
+ * This macro is used to declare an integer option with both a short
+ * and a long form which will be pre-parsed.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "int" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_INT_PP(s, l, d, v) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+/**
+ * Declare a long-only integer option.
+ *
+ * This macro is used to declare an integer option with only a long
+ * form.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "int" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_INT_LONG(l, d, v) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_INTEGER), &(v), 0)
+/**
+ * Declare a long-only, pre-parsed integer option.
+ *
+ * This macro is used to declare an integer option with only a long
+ * form which will be pre-parsed.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "int" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_INT_LONG_PP(l, d, v) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+/**
+ * Declare a string option.
+ *
+ * This macro is used to declare a simple string option with both a
+ * short and a long form.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "const char *" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_STR(s, l, d, v) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_STRING), &(v), 0)
+/**
+ * Declare a pre-parsed string option.
+ *
+ * This macro is used to declare a string option with both a short and
+ * a long form which will be pre-parsed.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "const char *" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_STR_PP(s, l, d, v) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+/**
+ * Declare a long-only string option.
+ *
+ * This macro is used to declare a string option with only a long
+ * form.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "const char *" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_STR_LONG(l, d, v) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_STRING), &(v), 0)
+/**
+ * Declare a long-only, pre-parsed string option.
+ *
+ * This macro is used to declare a string option with only a long form
+ * which will be pre-parsed.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param v A variable of type "const char *" (or one that can be
+ *          safely typecast to/from it) to store the option value.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_STR_LONG_PP(l, d, v) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+/**
+ * Declare an argument list option.
+ *
+ * This macro is used to declare a simple argument list option with
+ * both a short and a long form.
+ *
+ * @note Due to the nature of this option type and the fact that it
+ *       can consume values to the end of the command line, only one
+ *       option of this type can be declared.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param p A pointer of type "char **" (or one that can be
+ *          safely typecast to/from it) to store the NULL-terminated
+ *          argument list.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_ARGS(s, l, d, p) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ARGLIST), &(p), 0)
+/**
+ * Declare a pre-parsed argument list option.
+ *
+ * This macro is used to declare an argument list option with both a
+ * short and a long form which will be pre-parsed.
+ *
+ * @note Due to the nature of this option type and the fact that it
+ *       can consume values to the end of the command line, only one
+ *       option of this type can be declared.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param p A pointer of type "char **" (or one that can be
+ *          safely typecast to/from it) to store the NULL-terminated
+ *          argument list.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_ARGS_PP(s, l, d, p) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0)
+/**
+ * Declare a long-only argument list option.
+ *
+ * This macro is used to declare an argument list option with only a
+ * long form.
+ *
+ * @note Due to the nature of this option type and the fact that it
+ *       can consume values to the end of the command line, only one
+ *       option of this type can be declared.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param p A pointer of type "char **" (or one that can be
+ *          safely typecast to/from it) to store the NULL-terminated
+ *          argument list.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_ARGS_LONG(l, d, p) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ARGLIST), &(p), 0)
+/**
+ * Declare a long-only, pre-parsed argument list option.
+ *
+ * This macro is used to declare an argument list option with only a
+ * long form which will be pre-parsed.
+ *
+ * @note Due to the nature of this option type and the fact that it
+ *       can consume values to the end of the command line, only one
+ *       option of this type can be declared.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param p A pointer of type "char **" (or one that can be
+ *          safely typecast to/from it) to store the NULL-terminated
+ *          argument list.
+ * @see SPIFOPT_OPTION()
+ */
+#define SPIFOPT_ARGS_LONG_PP(l, d, p) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0)
+/**
+ * Declare an abstract option.
+ *
+ * This macro is used to declare a simple abstract option with both a
+ * short and a long form.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param f A function pointer of type "spifopt_abstract_handler_t"
+ *          (or one that can be safely typecast to/from it) to handle
+ *          the parsing of the option.
+ * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
+ */
+#define SPIFOPT_ABST(s, l, d, f) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ABSTRACT), f, 0)
+/**
+ * Declare a pre-parsed abstract option.
+ *
+ * This macro is used to declare an abstract option with both a short
+ * and a long form which will be pre-parsed.
+ *
+ * @param s The short form as a char, or 0 for none.
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param f A function pointer of type "spifopt_abstract_handler_t"
+ *          (or one that can be safely typecast to/from it) to handle
+ *          the parsing of the option.
+ * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
+ */
+#define SPIFOPT_ABST_PP(s, l, d, f) \
+    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), f, 0)
+/**
+ * Declare a long-only abstract option.
+ *
+ * This macro is used to declare an abstract option with only a long
+ * form.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param f A function pointer of type "spifopt_abstract_handler_t"
+ *          (or one that can be safely typecast to/from it) to handle
+ *          the parsing of the option.
+ * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
+ */
+#define SPIFOPT_ABST_LONG(l, d, f) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ABSTRACT), f, 0)
+/**
+ * Declare a long-only, pre-parsed abstract option.
+ *
+ * This macro is used to declare an abstract option with only a long
+ * form which will be pre-parsed.
+ *
+ * @param l The long form as a char *. (required)
+ * @param d The description as a char *. (required)
+ * @param f A function pointer of type "spifopt_abstract_handler_t"
+ *          (or one that can be safely typecast to/from it) to handle
+ *          the parsing of the option.
+ * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
+ */
+#define SPIFOPT_ABST_LONG_PP(l, d, f) \
+    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), f, 0)
+/*}@*/
 
+/**
+ * @name Option Flag Macros
+ * Macros which provide access to option type information.
+ *
+ * 
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+/*@{*/
 #define SPIFOPT_TYPE(opt)                 (((spifopt_t) (opt)).flags & SPIFOPT_FLAG_TYPEMASK)
 #define SPIFOPT_OPT_TYPE(n)               (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_TYPEMASK)
 #define SPIFOPT_OPT_IS_BOOLEAN(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_BOOLEAN)
@@ -1638,14 +2066,36 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_OPT_IS_PREPARSE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_PREPARSE)
 #define SPIFOPT_OPT_IS_DEPRECATED(n)      (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_DEPRECATED)
 #define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_ARGLIST))
+/*}@*/
 
+/**
+ * @name Option Structure Access Macros
+ * Macros which provide access to individual structure components.
+ *
+ * 
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+/*@{*/
 #define SPIFOPT_OPT_SHORT(n)              (SPIFOPT_OPTLIST(n).short_opt)
 #define SPIFOPT_OPT_LONG(n)               (SPIFOPT_OPTLIST(n).long_opt)
 #define SPIFOPT_OPT_DESC(n)               (SPIFOPT_OPTLIST(n).desc)
 #define SPIFOPT_OPT_FLAGS(n)              (SPIFOPT_OPTLIST(n).flags)
 #define SPIFOPT_OPT_VALUE(n)              (SPIFOPT_OPTLIST(n).value)
 #define SPIFOPT_OPT_MASK(n)               (SPIFOPT_OPTLIST(n).mask)
+/*}@*/
 
+/**
+ * @name Option Parser Settings Macros
+ * Macros which provide access to the option parser settings.
+ *
+ * 
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+/*@{*/
 #define SPIFOPT_OPTLIST(n)                (spifopt_settings.opt_list[((n) < (spifopt_settings.num_opts) ? (n) : (0))])
 #define SPIFOPT_OPTLIST_SET(l)            (spifopt_settings.opt_list = ((spifopt_t *) (l)))
 #define SPIFOPT_NUMOPTS_GET()             (spifopt_settings.num_opts)
@@ -1662,7 +2112,13 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_INDENT_SET(n)             (spifopt_settings.indent = (n))
 #define SPIFOPT_HELPHANDLER               ((spifopt_settings.help_handler) ? (spifopt_settings.help_handler) : (spifopt_usage))
 #define SPIFOPT_HELPHANDLER_SET(f)        (spifopt_settings.help_handler = (f))
+/*}@*/
 
+/**
+ * @name Type Definitions
+ *
+ */
+/*@{*/
 /**
  * Typedef for help handler function.
  *
@@ -1713,13 +2169,13 @@ typedef void (*spifopt_abstract_handler_t)(char *);
  */
 typedef struct spifopt_t_struct {
     /**
-     * Short option.
+     * Short form.
      *
      * The short (one char) form of the option.
      */
     spif_char_t short_opt;
     /**
-     * Long option.
+     * Long form.
      *
      * The long (string) form of the option.
      */
@@ -1735,7 +2191,7 @@ typedef struct spifopt_t_struct {
      *
      * The type and attribute flags for this option.
      */
-    spif_uint32_t flags;
+    spif_uint16_t flags;
     /**
      * Value pointer.
      *
@@ -1789,7 +2245,7 @@ typedef struct spifopt_settings_t_struct {
      *
      * Flags which control the behavior of the parser.
      */
-    spif_uint32_t flags;
+    spif_uint8_t flags;
     /**
      * Bad option count.
      *
@@ -1814,6 +2270,7 @@ typedef struct spifopt_settings_t_struct {
      */
     spifopt_helphandler_t help_handler;
 } spifopt_settings_t;
+/*}@*/
 
 extern spifopt_settings_t spifopt_settings;
 

@@ -134,7 +134,7 @@ unsigned long libast_debug_flags = 0;
  */
 
 /**
- * @mainpage LibAST Documentation
+ * @mainpage LibAST 0.6 Documentation
  *
  * This document describes the various features and capabilities
  * offered by LibAST, the Library of Assorted Spiffy Things.  As its
