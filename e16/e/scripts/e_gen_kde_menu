@@ -1,6 +1,6 @@
 #!/bin/sh
 ##############################################################################
-# generates a file.menu format for Enlightenment out of a KDE menu heirachy  #
+# generates a file.menu format for Enlightenment out of a KDE menu hierarchy #
 #
 # Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
 # 
@@ -99,7 +99,7 @@ fi
 if [ ! -d "$DIR" ]; then
   exit
 fi
-# if the destination dir doesnt exist - create it
+# if the destination dir doesn't exist - create it
 if [ ! -d "$ODIR" ]; then
   mkdir $ODIR
 fi

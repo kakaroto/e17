@@ -1,6 +1,6 @@
 #!/bin/sh
 ##############################################################################
-# generates a file.menu format for Enlightenment out of menu heirachies      #
+# generates a file.menu format for Enlightenment out of menu hierarchies      #
 #
 # Copyright (C) 1999 Carsten Haitzler, Geoff Harrison  and various contributors
 # 
@@ -60,7 +60,7 @@ if [ ! -f "$OUT" ]; then
 fi
 touch $OUT
 
-# generate menu looking for Epplets - you mightn't have any te.. but expect to
+# generate menu looking for Epplets - you might not have any yet.... but expect to
 OUT=$OUT_DIR"/epplets.menu"
 EPPLETS=`/bin/ls $EBIN"/"*.epplet 2> /dev/null | awk '{printf("%s ", $1);}'`
 if [ -n "$EPPLETS" ]; then

@@ -1,6 +1,6 @@
 #!/bin/sh
-##############################################################################
-# generates a file.menu format for Enlightenment out of a GNOME menu heirachy#
+###############################################################################
+# generates a file.menu format for Enlightenment out of a GNOME menu hierarchy#
 #
 # Copyright (C) 1999 Carsten Haitzler, Geoff Harrison  and various contributors
 # 
@@ -22,7 +22,7 @@
 # THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-##############################################################################
+###############################################################################
 
 # if we dont have enough arguments
 if [ $# -lt 3 ]; then
