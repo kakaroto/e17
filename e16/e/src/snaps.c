@@ -1383,6 +1383,9 @@ SnapshotEwinMatch(EWin * ewin)
    ewin->snap = sn;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
 
+   if (ewin->props.autosave)
+      sn->track_changes = 1;
+
    if (sn->use_flags & SNAP_USE_STICKY)
       EoSetSticky(ewin, sn->sticky);
 
