@@ -245,7 +245,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    filedata = seg;
    header = (tga_header *) filedata;
-   footer = (tga_footer *) (filedata + ss.st_size - sizeof(tga_footer));
+   footer = (tga_footer *) ((char *)filedata + ss.st_size - sizeof(tga_footer));
 
    /* check the footer to see if we have a v2.0 TGA file */
    if (memcmp(footer->signature, TGA_SIGNATURE, sizeof(footer->signature)) == 0)
@@ -256,11 +256,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
      }
 
    /* skip over header */
-   filedata += sizeof(tga_header);
-
+   filedata = (char *)filedata + sizeof(tga_header);
+   
    /* skip over alphanumeric ID field */
    if (header->idLength)
-      filedata += header->idLength;
+     filedata = (char *)filedata + header->idLength;
 
    /* now parse the header */
 

@@ -185,18 +185,20 @@ imlib_context_new(void)
    context->font = NULL;
    context->direction = IMLIB_TEXT_TO_RIGHT;
    context->angle = 0.0;
-   context->color = (Imlib_Color)
-   {
-   255, 255, 255, 255};
+   context->color.alpha = 255;
+   context->color.red = 255;
+   context->color.green = 255;
+   context->color.blue = 255;
    context->color_range = NULL;
    context->image = NULL;
    context->progress_func = NULL;
    context->progress_granularity = 0;
    context->dither_mask = 0;
    context->filter = NULL;
-   context->cliprect = (Imlib_Rectangle)
-   {
-   0, 0, 0, 0};
+   context->cliprect.x = 0;
+   context->cliprect.y = 0;
+   context->cliprect.w = 0;
+   context->cliprect.h = 0;
    context->encoding = IMLIB_TTF_ENCODING_ISO_8859_1;
 
    context->references = 0;
