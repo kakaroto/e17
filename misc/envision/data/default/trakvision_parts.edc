@@ -104,6 +104,30 @@
                                                 smooth, 0;
                                         }
                                 }
+                                description {
+                                        state,  "default" 1.0;
+                                        min, 10 10;
+                                        max, 10 10;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -16 4;
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -6 14;
+                                        }
+
+                                        image {
+                                                normal, "close_button_hilited.png";
+                                        }
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+
                         }
 
                         /* LCD Backdrop Image */
@@ -120,8 +144,8 @@
                                         }
 
                                         rel2 {
-                                                relative, 0.0 0.0;
-                                                offset, 193 64;
+                                                relative, 1.0 0.0;
+                                                offset, -131 64;
                                         }
 
                                         image {
@@ -184,7 +208,7 @@
 
                                         color,  181 247 255 255;
                                         text {
-                                                text, "Artist Name";       /* Text String */
+                                                text, "Video/File Name";       /* Text String */
                                                 font, "Edje.redensek";   /* Only font Vera works!  Use other and segv */
                                                 size, 12;       /* Font Size */
                                                 align, 0.0 0.1;       /* Text alignment based on rel1/rel2 */
@@ -302,13 +326,13 @@
                                 state,  "default" 0.0;
 
                                 rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 196 40;
+                                        relative, 1.0 0.0;
+                                        offset, -128 40;
                                 }
 
                                 rel2 {
-                                        relative, 0.0 0.0;
-                                        offset, 316, 86;
+                                        relative, 1.0 0.0;
+                                        offset, -6, 87;
                                 }
 
                                 image {
@@ -771,12 +795,12 @@
                                 max, 21 20;
 
                                 rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 272 17;
+                                        relative, 1.0 0.0;
+                                        offset, -52 17;
                                 }
                                 rel2 {
-                                        relative, 0.0 0.0;
-                                        offset, 295 37;
+                                        relative, 1.0 0.0;
+                                        offset, -30 37;
                                 }
 
                                 image {
@@ -981,8 +1005,8 @@
                                 }
 
                                 rel2 {
-                                        relative, 0.0 0.0;
-                                        offset, 193 86;
+                                        relative, 1.0 0.0;
+                                        offset, -131 86;
                                 }
 
                                 image {

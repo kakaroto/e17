@@ -3,9 +3,9 @@
                                 name, "quit_button_in";
                                 signal, "mouse,in";
                                 source, "quit";
-                                action, STATE_SET "active" 0.0;
+                                action, STATE_SET "default" 1.0;
                                 target, "quit";
-                                transition, LINEAR 0.5;
+                                transition, ACCELERATE 1.0;
                         }
                         program {
                                 name, "quit_button_out";
@@ -13,7 +13,7 @@
                                 source, "quit";
                                 action, STATE_SET "default" 0.0;
                                 target, "quit";
-                                transition, LINEAR 0.5;
+                                transition, DECELERATE 1.0;
                         }
                         program {
                                 name, "quit_button_click";
