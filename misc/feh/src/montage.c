@@ -27,7 +27,7 @@ init_montage_mode (void)
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
   int i, ww, hh, www, hhh, xxx, yyy;
-  int w=800, h=600;
+  int w = 800, h = 600;
   int x = 0, y = 0;
   int bg_w = 0, bg_h = 0;
   winwidget winwid;

@@ -35,7 +35,7 @@ add_file_to_filelist (char *file)
 
 /* Recursive */
 void
-add_file_to_filelist_recursively (char *path)
+add_file_to_filelist_recursively (char *path, unsigned char enough)
 {
   struct stat st;
 
@@ -49,7 +49,7 @@ add_file_to_filelist_recursively (char *path)
   if (S_ISDIR (st.st_mode))
     {
       D (("   It is a directory\n"));
-      if (opt.recursive)
+      if (!enough)
 	{
 	  struct dirent *de;
 	  DIR *dir;
@@ -78,7 +78,12 @@ add_file_to_filelist_recursively (char *path)
 		   * app. */
 		  snprintf (file, len, "%s/%s", path, de->d_name);
 
-		  add_file_to_filelist_recursively (file);
+		  /* This ensures we only go down one level if not
+		   * recursive */
+		  if (opt.recursive)
+		    add_file_to_filelist_recursively (file, 0);
+		  else
+		    add_file_to_filelist_recursively (file, 1);
 		}
 	      de = readdir (dir);
 	    }

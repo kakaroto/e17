@@ -94,7 +94,10 @@ slideshow_next_image (winwidget winwid)
 	  imlib_context_set_image (winwid->im);
 	  winwid->im_w = imlib_image_get_width ();
 	  winwid->im_h = imlib_image_get_height ();
+	  winwid->zoom_mode = 0;
+	  winwid->zoom = 0.0;
 	  winwidget_render_image (winwid);
+	  winwidget_create_blank_bg (winwid);
 	  if (winwid->name)
 	    {
 	      free (winwid->name);

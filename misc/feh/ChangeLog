@@ -1,3 +1,18 @@
+Sat Dec 18 15:45:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Okay then, there is now a checkerboard background when
+	zooming out. There is a more memory efficent way of doing this,
+	but I'll do that later...
+
+Sat Dec 18 14:31:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Wheeeee! Thanks to Raster's example code, we now have zooming
+	Raster, you are my hero :)
+	So, middle-mouse button and drag -> zoom.
+	There are some things to tidy up (eg adding a background when
+	zooming out), but these are trivial compared to getting the
+	zooming working with multiple windows, which I just did ::)
+
 Fri Dec 17 22:00:57 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Added titles to index prints. A title will only be printed if

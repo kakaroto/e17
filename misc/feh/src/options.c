@@ -51,7 +51,7 @@ init_parse_options (int argc, char **argv)
   opt.alpha_level = 0;
   opt.stretch = 0;
   opt.font = NULL;
-  opt.title_font=NULL;
+  opt.title_font = NULL;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -98,9 +98,9 @@ init_parse_options (int argc, char **argv)
 	  opt.font = argv[++i];
 	}
       else if ((!strcmp (argv[i], "--title-font")) && (argc - i > 1))
-        {
-          opt.title_font = argv[++i];
-        }
+	{
+	  opt.title_font = argv[++i];
+	}
       else if ((!strcmp (argv[i], "--bg")) && (argc - i > 1))
 	{
 	  opt.bg = 1;
@@ -129,10 +129,10 @@ init_parse_options (int argc, char **argv)
 	}
       else
 	{
-	  /* TODO If recursive is NOT set, but the only argument is a
-	   * directory name, grab all the files in there, but not
+	  /* If recursive is NOT set, but the only argument is a
+	   * directory name, we grab all the files in there, but not
 	   * subdirs */
-	  add_file_to_filelist_recursively (argv[i]);
+	  add_file_to_filelist_recursively (argv[i], 0);
 	}
     }
   if (file_num == 0)

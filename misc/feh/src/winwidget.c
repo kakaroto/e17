@@ -39,6 +39,14 @@ winwidget_allocate (void)
   ret->im = NULL;
   ret->name = NULL;
 
+  /* Zoom stuff */
+  ret->zoom_mode = 0;
+  ret->zx = 0;
+  ret->zy = 0;
+  ret->zoom = 1.0;
+  ret->timeout = 0;
+  ret->blank_im = NULL;
+
   return ret;
 }
 
@@ -58,6 +66,8 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   imlib_context_set_image (ret->im);
   ret->w = ret->im_w = imlib_image_get_width ();
   ret->h = ret->im_h = imlib_image_get_height ();
+
+  winwidget_create_blank_bg (ret);
 
   if (name)
     ret->name = strdup (name);
@@ -92,9 +102,41 @@ winwidget_create_from_file (char *filename, char *name)
   ret->w = ret->im_w = imlib_image_get_width ();
   ret->h = ret->im_h = imlib_image_get_height ();
 
+  winwidget_create_blank_bg (ret);
+
   winwidget_create_window (ret);
 
   return ret;
+}
+
+void
+winwidget_create_blank_bg (winwidget ret)
+{
+  int x, y, onoff;
+  /* For zooming out */
+  if (ret->blank_im)
+    {
+      imlib_context_set_image (ret->blank_im);
+      imlib_free_image ();
+    }
+
+  ret->blank_im = imlib_create_image (ret->w, ret->h);
+  imlib_context_set_image (ret->blank_im);
+  for (y = 0; y < ret->h; y += 8)
+    {
+      onoff = (y / 8) & 0x1;
+      for (x = 0; x < ret->w; x += 8)
+	{
+	  if (onoff)
+	    imlib_context_set_color (144, 144, 144, 255);
+	  else
+	    imlib_context_set_color (100, 100, 100, 255);
+	  imlib_image_fill_rectangle (x, y, 8, 8);
+	  onoff++;
+	  if (onoff == 2)
+	    onoff = 0;
+	}
+    }
 }
 
 static void
@@ -102,6 +144,7 @@ winwidget_create_window (winwidget ret)
 {
   XSetWindowAttributes attr;
   XClassHint *xch;
+  XSizeHints sh;
 
   D (("In winwidget_create_window\n"));
 
@@ -131,6 +174,16 @@ winwidget_create_window (winwidget ret)
   xch->res_class = "feh";
   XSetClassHint (disp, ret->win, xch);
   XFree (xch);
+  /* set the size hints */
+  sh.flags = PSize | PMinSize | PMaxSize;
+  sh.width = ret->w;
+  sh.height = ret->h;
+  sh.min_width = ret->w;
+  sh.min_height = ret->h;
+  sh.max_width = ret->w;
+  sh.max_height = ret->h;
+  XSetWMNormalHints (disp, ret->win, &sh);
+
   /* set the icons name property */
   XSetIconName (disp, ret->win, "feh");
   /* set the command hint */
@@ -159,11 +212,14 @@ winwidget_render_image (winwidget winwid)
   winwid->bg_pmap =
     XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
 
-  imlib_context_set_image (winwid->im);
   imlib_context_set_drawable (winwid->bg_pmap);
+  imlib_context_set_image (winwid->blank_im);
+  imlib_render_image_on_drawable (0, 0);
+  imlib_context_set_image (winwid->im);
   imlib_render_image_on_drawable (0, 0);
 
-  imlib_free_image ();
+  /* need to keep this around for zooming ::) */
+  /* imlib_free_image (); */
 
   if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
     {
@@ -174,6 +230,7 @@ winwidget_render_image (winwidget winwid)
 
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
+  XFlush (disp);
 }
 
 void
@@ -187,6 +244,16 @@ winwidget_destroy (winwidget winwid)
     XFreePixmap (disp, winwid->bg_pmap);
   if (winwid->name)
     free (winwid->name);
+  if (winwid->im)
+    {
+      imlib_context_set_image (winwid->im);
+      imlib_free_image_and_decache ();
+    }
+  if (winwid->blank_im)
+    {
+      imlib_context_set_image (winwid->blank_im);
+      imlib_free_image_and_decache ();
+    }
   XDestroyWindow (disp, winwid->win);
   free (winwid);
   winwid = NULL;
@@ -277,12 +344,13 @@ winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;
-  D (("In winwidget_get_from_window\n"));
+  D (("In winwidget_get_from_window, Window is %ld\n", win));
 
   for (i = 0; i < window_num; i++)
     {
       if (windows[i]->win == win)
 	return windows[i];
     }
+  D (("Oh dear, returning NULL from winwidget_get_from_window\n"));
   return NULL;
 }

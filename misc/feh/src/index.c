@@ -47,8 +47,8 @@ init_index_mode (void)
 
   /* This includes the text area for index data */
   tot_thumb_h = opt.thumb_h + text_area_h;
-  if(opt.title_font)
-      title_area_h=50;
+  if (opt.title_font)
+    title_area_h = 50;
 
   /* Time to set up the font stuff */
   imlib_add_path_to_font_path ("./ttfonts");
@@ -59,17 +59,17 @@ init_index_mode (void)
 	fn = imlib_load_font ("20thcent/6");
     }
   else
-	fn = imlib_load_font ("20thcent/6");
+    fn = imlib_load_font ("20thcent/6");
 
   if (opt.title_font)
-    { 
+    {
       title_fn = imlib_load_font (opt.title_font);
       if (!fn)
-        title_fn = imlib_load_font ("20thcent/24");
+	title_fn = imlib_load_font ("20thcent/24");
     }
   else
-        title_fn = imlib_load_font ("20thcent/24");
-  
+    title_fn = imlib_load_font ("20thcent/24");
+
   imlib_context_set_font (fn);
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
@@ -296,16 +296,17 @@ init_index_mode (void)
     }
   if (opt.verbose)
     fprintf (stdout, "\n");
-  
-  if(opt.title_font)
-  {
-  /* Put some other text on there... */
-  imlib_context_set_font (title_fn);
-  imlib_context_set_image (im_main);
-  imlib_text_draw (20, h+10 ,
-	  create_index_title_string (im_per_row * im_per_col, w, h));
-  }
-  
+
+  if (opt.title_font)
+    {
+      /* Put some other text on there... */
+      imlib_context_set_font (title_fn);
+      imlib_context_set_image (im_main);
+      imlib_text_draw (20, h + 10,
+		       create_index_title_string (im_per_row * im_per_col, w,
+						  h));
+    }
+
   if (opt.output && opt.output_file)
     {
       imlib_context_set_image (im_main);
