@@ -325,7 +325,6 @@ main(int argc, char** argv)
     }
 
   /* MIME type tests */
-  /*
   for (i = (blocking ? 1 : 2); i < argc; i++)
     {
       if ((id = efsd_get_mimetype(ec, argv[i])) >= 0)
@@ -333,7 +332,6 @@ main(int argc, char** argv)
       else
 	printf("Couldn't issue getmime command.\n");      
     }
-  */
 
   /* Create a directory */
   /*
@@ -423,7 +421,7 @@ main(int argc, char** argv)
   else
     printf("Couldn't issue stopmon command.\n");
   */
-  sleep(10);
+  sleep(60);
 
   /* Close connection to efsd. */
   if (efsd_close(ec) >= 0)

@@ -490,7 +490,7 @@
 # Michael Haardt <michael@cantor.informatik.rwth-aachen.de>
 0	beshort		0x76FF		application/squeezed
 0	beshort		0x76FE		application/crunched
-0	beshort		0x76FD		appliaction/LZH
+0	beshort		0x76FD		application/LZH
 
 # Freeze
 0	string		\037\237	application/freeze 2.1

@@ -184,6 +184,9 @@ sub do_it {
 	 # clear hash:
 	 undef(%magic);
 
+	 # clear prefix
+	 $value_prefix = "";
+
 	 # Okay -- it's a magic definition -- parse it.
 
 #	 print "$line";

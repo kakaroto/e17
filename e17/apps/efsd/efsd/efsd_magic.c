@@ -698,8 +698,9 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 	D(("Performing string test: '%s' == '%s'\n", s, (char*)em->value));
 
-	if (!strncmp(s, em->value, len))
+	if (memcmp(s, em->value, len) == 0)
 	  {
+	    D(("...succeeded.\n"));
 	    D_RETURN_(em->mimetype);
 	  }
       }
@@ -717,7 +718,7 @@ static char *
 magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
 {
   EfsdMagic *em;
-  char      *s;
+  char      *s, *ptr2;
   char      *result = NULL;
 
   D_ENTER;
@@ -727,11 +728,13 @@ magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
       if ((s = magic_test_perform(em, f)) != NULL)
 	{
 	  sprintf(ptr, "%s", s);
-	  ptr = ptr + strlen(ptr);
+	  ptr = ptr + strlen(s);
 	  result = ptr;
 
-	  if ((ptr = magic_test_level(em->kids, f, ptr, FALSE)))
-	    result = ptr;
+	  if ((ptr2 = magic_test_level(em->kids, f, ptr, FALSE)))
+	    {
+	      result = ptr = ptr2;
+	    }
 
 	  if (stop_when_found)
 	    {
@@ -1123,9 +1126,11 @@ efsd_magic_get(char *filename)
 
   D(("magic: data check failed.\n"));
 
+  /*
   result = magic_test_pattern(filename);
   if (result)
     D_RETURN_(result);
+  */
 
   D(("magic: file pattern check failed.\n"));
   
