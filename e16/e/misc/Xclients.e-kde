@@ -1,3 +1,2 @@
 #!/bin/sh
-export KDEWM=enlightenment
-exec startkde
+exec starte16 KDE

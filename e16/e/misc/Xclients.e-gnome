@@ -1,3 +1,2 @@
 #!/bin/sh
-export WINDOW_MANAGER=enlightenment
-exec gnome-session
+exec starte16 GNOME

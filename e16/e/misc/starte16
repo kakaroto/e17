@@ -1,0 +1,14 @@
+#!/bin/sh
+case "$1" in
+GNOME)
+	export WINDOW_MANAGER=enlightenment
+	exec gnome-session
+	;;
+KDE)
+	export KDEWM=enlightenment
+	exec startkde
+	;;
+*)
+	exec enlightenment
+	;;
+esac
