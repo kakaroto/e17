@@ -450,9 +450,14 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                  if (((per - pper) >= progress_granularity)
                      || (y == (im->h - 1)))
                  {
-                    l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
+		    l = y - pl;
+
+		    /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    {
                        if (data)
                           free(data);
                        fclose(f);
@@ -577,9 +582,12 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                  if (((per - pper) >= progress_granularity)
                      || (y == (im->h - 1)))
                  {
-                    l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
+                    /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    {
                        if (data)
                           free(data);
                        fclose(f);
@@ -640,9 +648,12 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                  if (((per - pper) >= progress_granularity)
                      || (y == (im->h - 1)))
                  {
-                    l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
+                     /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    {
                        if (data)
                           free(data);
                        fclose(f);
