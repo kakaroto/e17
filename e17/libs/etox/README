@@ -11,6 +11,7 @@ Todo:
 + columnar layout
 + wrapping at word breaks
 + keep wrap marker with first text on line
++ add some checks to prevent problems when wrapping to extremely small areas
 
 Progress:
 + Obstacle wrapping has the basic idea working, but needs improvement, it
