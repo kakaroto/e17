@@ -248,8 +248,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			return;
 
 		if (i->path)
-			edje_object_file_set(i->image, i->path,
-					     (i->key ? i->key : "EWL"));
+			edje_object_file_set(i->image, i->path, i->key);
 
 	} else {
 		i->image = evas_object_image_add(emb->evas);
@@ -257,8 +256,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			return;
 
 		if (i->path)
-			edje_object_file_set(i->image, i->path,
-					     (i->key ? i->key : "EWL"));
+			evas_object_image_file_set(i->image, i->path, i->key);
 	}
 
 	evas_object_layer_set(i->image, ewl_widget_get_layer_sum(w));
