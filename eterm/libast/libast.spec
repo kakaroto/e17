@@ -1,8 +1,8 @@
 Summary: Library of Assorted Spiffy Things
 Name: libast
-Version: 0.6.1
-Release: 1
-#Release: 0.%(date '+%Y%m%d')
+Version: 0.7
+#Release: 1
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz
@@ -22,7 +22,8 @@ version number that begins with 0.
 %setup -q
 
 %build
-%{configure} --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir} %{?acflags}
+%{configure} --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} \
+             --includedir=%{_includedir} --datadir=%{_datadir} %{?acflags}
 %{__make} %{?_smp_mflags} %{?mflags}
 
 %install

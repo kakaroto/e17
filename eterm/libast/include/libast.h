@@ -103,6 +103,8 @@ extern int re_exec();
 
 #include <libast/types.h>
 #include <libast/obj.h>
+
+#include <libast/mbuff.h>
 #include <libast/objpair.h>
 #include <libast/regexp.h>
 #include <libast/socket.h>

@@ -30,18 +30,60 @@ static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-static SPIF_CONST_TYPE(class) s_class = {
-    SPIF_DECL_CLASSNAME(str),
-    (spif_func_t) spif_str_new,
-    (spif_func_t) spif_str_init,
-    (spif_func_t) spif_str_done,
-    (spif_func_t) spif_str_del,
-    (spif_func_t) spif_str_show,
-    (spif_func_t) spif_str_comp,
-    (spif_func_t) spif_str_dup,
-    (spif_func_t) spif_str_type
+static SPIF_CONST_TYPE(strclass) s_class = {
+    {
+        SPIF_DECL_CLASSNAME(str),
+        (spif_func_t) spif_str_new,
+        (spif_func_t) spif_str_init,
+        (spif_func_t) spif_str_done,
+        (spif_func_t) spif_str_del,
+        (spif_func_t) spif_str_show,
+        (spif_func_t) spif_str_comp,
+        (spif_func_t) spif_str_dup,
+        (spif_func_t) spif_str_type
+    },
+    (spif_func_t) spif_str_new_from_ptr,
+    (spif_func_t) spif_str_new_from_buff,
+    (spif_func_t) spif_str_new_from_fp,
+    (spif_func_t) spif_str_new_from_fd,
+    (spif_func_t) spif_str_new_from_num,
+    (spif_func_t) spif_str_init_from_ptr,
+    (spif_func_t) spif_str_init_from_buff,
+    (spif_func_t) spif_str_init_from_fp,
+    (spif_func_t) spif_str_init_from_fd,
+    (spif_func_t) spif_str_init_from_num,
+    (spif_func_t) spif_str_append,
+    (spif_func_t) spif_str_append_char,
+    (spif_func_t) spif_str_append_from_ptr,
+    (spif_func_t) spif_str_casecmp,
+    (spif_func_t) spif_str_casecmp_with_ptr,
+    (spif_func_t) spif_str_clear,
+    (spif_func_t) spif_str_cmp,
+    (spif_func_t) spif_str_cmp_with_ptr,
+    (spif_func_t) spif_str_downcase,
+    (spif_func_t) spif_str_find,
+    (spif_func_t) spif_str_find_from_ptr,
+    (spif_func_t) spif_str_index,
+    (spif_func_t) spif_str_ncasecmp,
+    (spif_func_t) spif_str_ncasecmp_with_ptr,
+    (spif_func_t) spif_str_ncmp,
+    (spif_func_t) spif_str_ncmp_with_ptr,
+    (spif_func_t) spif_str_prepend,
+    (spif_func_t) spif_str_prepend_char,
+    (spif_func_t) spif_str_prepend_from_ptr,
+    (spif_func_t) spif_str_reverse,
+    (spif_func_t) spif_str_rindex,
+    (spif_func_t) spif_str_splice,
+    (spif_func_t) spif_str_splice_from_ptr,
+    (spif_func_t) spif_str_substr,
+    (spif_func_t) spif_str_substr_to_ptr,
+    (spif_func_t) spif_str_to_float,
+    (spif_func_t) spif_str_to_num,
+    (spif_func_t) spif_str_trim,
+    (spif_func_t) spif_str_upcase
 };
-SPIF_TYPE(class) SPIF_CLASS_VAR(str) = &s_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(str) = SPIF_CAST(class) &s_class;
+SPIF_TYPE(strclass) SPIF_STRCLASS_VAR(str) = &s_class;
 /* *INDENT-ON* */
 
 const size_t buff_inc = 4096;
@@ -129,7 +171,7 @@ spif_str_init(spif_str_t self)
 {
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_STRCLASS_VAR(str)));
     self->s = SPIF_NULL_TYPE(charptr);
     self->len = 0;
     self->size = 0;
@@ -142,7 +184,7 @@ spif_str_init_from_ptr(spif_str_t self, spif_charptr_t old)
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     REQUIRE_RVAL((old != SPIF_NULL_TYPE(charptr)), spif_str_init(self));
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_STRCLASS_VAR(str)));
     self->len = strlen(SPIF_CONST_CAST_C(char *) old);
     self->size = self->len + 1;
     self->s = SPIF_CAST(charptr) MALLOC(self->size);
@@ -155,7 +197,7 @@ spif_str_init_from_buff(spif_str_t self, spif_charptr_t buff, spif_stridx_t size
 {
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_STRCLASS_VAR(str)));
     self->size = size;
     if (buff != SPIF_NULL_TYPE(charptr)) {
         self->len = strnlen(SPIF_CONST_CAST_C(char *) buff, size);
@@ -181,7 +223,7 @@ spif_str_init_from_fp(spif_str_t self, FILE *fp)
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     ASSERT_RVAL((fp != SPIF_NULL_TYPE_C(FILE *)), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_STRCLASS_VAR(str)));
     self->size = buff_inc;
     self->len = 0;
     self->s = SPIF_CAST(charptr) MALLOC(self->size);
@@ -213,7 +255,7 @@ spif_str_init_from_fd(spif_str_t self, int fd)
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     ASSERT_RVAL((fd >= 0), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_STRCLASS_VAR(str)));
     self->size = buff_inc;
     self->len = 0;
     self->s = SPIF_CAST(charptr) MALLOC(self->size);
@@ -237,7 +279,7 @@ spif_str_init_from_num(spif_str_t self, long num)
 
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_STRCLASS_VAR(str)));
 
     snprintf(SPIF_CHARPTR_C(buff), sizeof(buff), "%ld", num);
     self->len = strlen(SPIF_CHARPTR_C(buff));

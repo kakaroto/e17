@@ -636,7 +636,7 @@ int
 test_str(void)
 {
     spif_str_t teststr, test2str;
-    spif_class_t cls;
+    spif_strclass_t cls;
     char tmp[] = "this is a test";
     spif_char_t buff[4096] = "abcde";
     char tmp2[] = "string #1\nstring #2";
@@ -650,8 +650,8 @@ test_str(void)
     TEST_PASS();
 
     TEST_BEGIN("spif_obj_get_classname() function");
-    cls = spif_obj_get_class(SPIF_OBJ(teststr));
-    TEST_FAIL_IF(cls != SPIF_CLASS_VAR(str));
+    cls = SPIF_STR_CLASS(spif_obj_get_class(SPIF_OBJ(teststr)));
+    TEST_FAIL_IF(cls != SPIF_STR_CLASS(SPIF_STRCLASS_VAR(str)));
     TEST_PASS();
 
     TEST_BEGIN("spif_str_del() function");

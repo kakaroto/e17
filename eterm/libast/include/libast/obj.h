@@ -385,7 +385,7 @@
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_ISNULL(), SPIF_OBJ_CLASS(),
  *      SPIF_CLASS_VAR(), SPIF_OBJ_CHECK_TYPE()
  */
-#define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASS(o) == SPIF_CLASS_VAR(type)))
+#define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASS(o) == SPIF_CLASS(SPIF_CLASS_VAR(type))))
 
 /**
  * Provide debugging assertion that an object is of a given type.

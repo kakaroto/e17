@@ -580,6 +580,15 @@ typedef unsigned long spif_ulong_t;
 typedef spif_char_t *spif_charptr_t;
 
 /**
+ * A pointer to a byte of data.
+ *
+ * A pointer to a byte of data.
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink
+ */
+typedef spif_uint8_t *spif_byteptr_t;
+
+/**
  * A generic, untyped pointer.
  *
  * A generic, untyped pointer.

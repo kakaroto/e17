@@ -707,3 +707,18 @@ Tue Dec 14 17:12:13 2004                        Michael Jennings (mej)
 
 0.6.1 release
 ----------------------------------------------------------------------
+Tue Dec 14 17:51:20 2004                        Michael Jennings (mej)
+
+More work from my vacation.  Turned the string class into both an
+interface and an implementation, and created a new multipurpose buffer
+class (untested) for arbitrary text/binary data.  (Think "strings with
+embedded newlines" if that helps.)
+
+Now, if someone were so inclined, (s)he could create a LibAST
+implementation of the "str" interface based on glib strings, or
+QStrings, or whatever with almost no changes to the code using the
+libast string API (once the function calls like spif_str_new() are
+replaced with macro calls like SPIF_STR_NEW()).
+
+A UTF-8-based string implementation is forthcoming.
+----------------------------------------------------------------------
