@@ -708,7 +708,7 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	c_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 	if (c_pos >= l)
-		pos = l - 1;
+		pos = l;
 	else
 		pos = c_pos;
 
