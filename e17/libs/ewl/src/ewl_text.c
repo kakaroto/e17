@@ -127,6 +127,13 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	etox_set_padding(t->tox, t->padding);
 	etox_set_font(t->tox, t->font, t->font_size);
 	etox_set_text(t->tox, ET_TEXT(t->text), ET_END);
+	{
+		double xx, yy, ww, hh;
+
+		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
+
+		etox_resize(t->tox, ww, hh);
+	}
 	etox_set_alpha(t->tox, 255);
 	etox_set_clip(t->tox, w->fx_clip_box);
 	etox_show(t->tox);
@@ -191,9 +198,14 @@ ewl_text_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
 				CURRENT_W(widget), CURRENT_H(widget));
 	}
 
-	etox_move(t->tox, CURRENT_X(t), CURRENT_Y(t));
-	etox_resize(t->tox, CURRENT_W(t), CURRENT_H(t));
+	if (t->tox)
+	  {
+		double xx, yy, ww, hh;
 
+		etox_move(t->tox, CURRENT_X(t), CURRENT_Y(t));
+		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
+		etox_resize(t->tox, ww, hh);
+	  }
 	DLEAVE_FUNCTION;
 }
 
