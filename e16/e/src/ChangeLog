@@ -2189,3 +2189,10 @@ the remember dialog not coming up bug.. fixed.. :)
 (shoudl restart correctly, exit correcttly, restart anotherwm correctly and
 restart themes correctly)
 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 13:39:22 PDT 1999
+(Raster)
+
+get rid of fprintf debug messags

@@ -217,7 +217,6 @@ SnapshotEwinDialog(EWin * ewin)
    Snapshot           *sn;
    char                s[1024];
 
-   fprintf(stderr, "show dialog\n");
    if ((d = FindItem("SNAPSHOT_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	ShowDialog(d);
