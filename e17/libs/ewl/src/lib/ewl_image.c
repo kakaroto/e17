@@ -322,14 +322,14 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!i->oh)
 		i->oh = 256;
 
-	if (ewl_object_preferred_w_get(EWL_OBJECT(i)) == EWL_OBJECT_MIN_SIZE) {
+	if (!ewl_object_preferred_inner_w_get(EWL_OBJECT(i))) {
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
 		ewl_image_scale(i, i->sw, i->sh);
 	}
 	else
-		ewl_image_scale_to(i, ewl_object_preferred_w_get(EWL_OBJECT(i)),
-				ewl_object_preferred_h_get(EWL_OBJECT(i)));
+		ewl_image_scale_to(i, ewl_object_preferred_inner_w_get(EWL_OBJECT(i)),
+				ewl_object_preferred_inner_h_get(EWL_OBJECT(i)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
