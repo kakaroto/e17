@@ -974,7 +974,7 @@ parse_null(char *buff, void *state)
 
 /**
  * @example conf_example.c
- * Example code for using the string routines.
+ * Example code for using the config file parser.
  *
  */
 
@@ -992,13 +992,105 @@ parse_null(char *buff, void *state)
  * LibAST's config file parser supports the inclusion of sub-files via
  * its %include directive, it must keep track of multiple instances of
  * this information, one for each file.  LibAST uses a structure array
- * called the File State Stack.
+ * called the file state stack.
+ *
+ * When config file parsing is initiated by a call to conf_parse(),
+ * the information for that file is pushed onto the empty stack.  For
+ * monolithic config files, the stack retains its height throughout
+ * the parsing cycle.  However, if an @c %include directive is
+ * encountered (and the file is successfully opened), a new set of
+ * data is placed atop the stack via file_push().  The new file is
+ * then parsed in its entirety, including any sub-files that it may
+ * itself include, before its information is popped off the stack and
+ * parsing of the original file can continue.
+ *
+ * Client programs should not need to modify the stack in any way.
+ * However, use of the file_peek_path() and file_peek_line() macros
+ * are encouraged, specifically for printing error/warning messages.
+ * Many of the file state stack manipulation routines should probably
+ * never be called by client programs (and are therefore marked as
+ * internal); they are, however, made available on the off chance that
+ * someone may get super-creative and do something neat with them.
+ * Just don't blame LibAST if your (ab)use of internal functions
+ * breaks the parser!
  */
 
 /**
  * @defgroup DOXGRP_CONF_CTX Context Handling
  * @ingroup DOXGRP_CONF
  *
+ * LibAST-style configuration files are organized into logical units
+ * called "contexts."  A begin/end pair is used to surround groups of
+ * directives which should be evaluated in a given context.  The begin
+ * keyword is followed by the name of the context that will follow.
+ * The end keyword may stand alone; anything after it is ignored.
  *
+ * The parser starts out in a pseudo-context called @c null for which
+ * LibAST employs a built-in handler that rejects any unexpected
+ * directives with an error message.  Any other context must be dealt
+ * with by a client-specified context handler.
+ *
+ * Context handlers defined by the client program must conform to the
+ * following specification:
+ * - Accept two parameters as follows:
+ *    -# A char * containing the line of text to be parsed
+ *    -# A void * containing optional state information, or NULL
+ * - Return a void * containing optional state information, or NULL
+ *
+ * Although nothing else is strictly @em required by LibAST, if you
+ * want your parser to actually work, it needs to handle the LibAST
+ * context handler calling conventions.  The following is a
+ * step-by-step walk-through of how LibAST calls parser functions:
+ *
+ * -# When LibAST encounters a @c begin keyword followed by a one or
+ *    more additional words (words are separated by whitespace
+ *    according to shell conventions), the word immediately following
+ *    the @c begin keyword is interpreted as the context name.
+ * -# LibAST checks its list of registered context handlers for one
+ *    that matches the given context name.  If none is found, an error
+ *    is printed, and the parser skips the entire context (until the
+ *    next @c end keyword).  Otherwise, go to the next step.
+ * -# The registered context handler function is called.  The value
+ *    #CONF_BEGIN_STRING is passed as the first parameter (which I'll
+ *    call @a buff ), and NULL is passed as the second parameter
+ *    (which I'll call @a state ).
+ * -# The context handler should handle this using a statement similar
+ *    to the following:
+ *     @code
+ *     if (*buff == CONF_BEGIN_CHAR) {
+ *     @endcode
+ *    (The value of #CONF_BEGIN_CHAR is such that it should never
+ *    occur in normal config file text.)
+ *    If the handler does not require any persistent state information
+ *    to be kept between calls, it may simply return NULL here.
+ *    Otherwise, this portion of the handler should perform any
+ *    initialization required for the state information and return a
+ *    pointer to that information.
+ * -# The value returned by the context handler is stored by LibAST
+ *    for later use, and parsing of the config file continues with the
+ *    next line.
+ * -# Each subsequent line encountered in the config file which does
+ *    not start with the keyword @c end is passed to the context
+ *    handler function as the first parameter.  The second parameter
+ *    will contain the handler's previous return value, the persistent
+ *    state information pointer.  The handler, of course, should
+ *    continue returning the state information pointer.
+ * -# Once the @c end keyword is encountered, the context handler is
+ *    called with #CONF_END_STRING as the first parameter and the
+ *    state information pointer as the second parameter.  This
+ *    situation should be caught by some code like this:
+ *     @code
+ *     if (*buff == CONF_END_CHAR) {
+ *     @endcode
+ *    Again, the handler should simply return NULL if no state
+ *    information is being kept.  Otherwise, any post-processing or
+ *    cleanup needed should be done, possibly including the freeing of
+ *    the state pointer, etc.  The handler should then return NULL.
+ * -# LibAST reverts to the aforementioned @c null context and
+ *    continues parsing as above.
+ *
+ * A sample implementation of context handlers which demonstrate use
+ * of this mechanism can be found in the @link conf_example.c config
+ * file parser example @endlink.
  */
 

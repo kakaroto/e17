@@ -1567,6 +1567,18 @@ typedef struct file_state_struct {
  */
 typedef void * (*ctx_handler_t)(char *, void *);
 /**
+ * Typedef for pointers to built-in functions.
+ *
+ * This function pointer type is used for config file built-in
+ * function handlers.  LibAST supplies several built-in functions
+ * which can be used in config files (%get(), %appname(), etc.);
+ * client programs can add their own as well.  Built-in functions take
+ * a single char * parameter, the parameter list passed to the
+ * built-in function in the config file.  They return a char *, the
+ * result string to substitute for the function call.
+ *
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
  */
 typedef char * (*conf_func_ptr_t) (char *);
 

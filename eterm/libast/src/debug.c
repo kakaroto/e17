@@ -143,13 +143,20 @@ unsigned long libast_debug_flags = 0;
  * the following pages of goop, hopefully you'll learn about the
  * miscellaneous mounds of spiffitude which await you in LibAST!
  *
- * Use the document tree to your left, or the quick links above, to
- * navigate.  Or if you prefer, select from the list of topics below.
+ * Choose a section from the list below, or pick one of the quick
+ * links at the top of the page.  If you prefer tree-style navigation,
+ * there is a hidden frame on the left-hand side of your browser
+ * window.  You can expand this frame to find the document tree
+ * (requires JavaScript!).
  *
  * @section topiclist Topic List
  *
  * -# @link DOXGRP_DEBUG   Debugging Subsystem @endlink
  * -# @link DOXGRP_MEM     Memory Management Subsystem @endlink
  * -# @link DOXGRP_STRINGS String Utility Routines @endlink
+ * -# @link DOXGRP_CONF    Configuration File Parser @endlink
+ *   -# @link DOXGRP_CONF_FSS    File State Stack @endlink
+ *   -# @link DOXGRP_CONF_CTX    Context Handling @endlink
+ * -# @link DOXGRP_OPT     Command Line Option Parser @endlink
  *
  */
