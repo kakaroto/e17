@@ -10,6 +10,11 @@ $Id$
           period now
         * src/vorbis.c, src/eplayer.c: Tidied up libao calls
         * data/eplayer.edc: buttons emit their signals on mouse_up now
+        * src/vorbis.c: Fixed a memory leak which was caused by not
+          calling ao_close() in track_close()
+        * data/eplayer.edc, src/callbacks.c, src/interface.c:
+          The playlist can be scrolled using the mousewheel now
+        * src/eplayer.c: check ao_default_driver_id() on startup
 
 2003-10-16 Tilman Sauerbeck <tilman@code-monkey.de>
         * configure.ac: Added endianess-check, added --enable-debug

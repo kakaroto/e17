@@ -7,8 +7,20 @@
 #include "interface.h"
 #include "vorbis.h"
 
+static void eplayer_free(ePlayer *player) {
+	if (!player)
+		return;
+
+	playlist_free(player->playlist);
+	mixer_free(player->mixer);
+	ao_shutdown();
+	
+	free(player);
+}
+
 static ePlayer *eplayer_new() {
 	ePlayer *player;
+	int driver;
 	ao_info *driver_info;
 
 	if (!(player = malloc(sizeof(ePlayer))))
@@ -24,24 +36,20 @@ static ePlayer *eplayer_new() {
 	player->mixer = mixer_new(MIXER_CONTROL_VOL);
 
 	ao_initialize();
-	driver_info = ao_driver_info(ao_default_driver_id());
+
+	if ((driver = ao_default_driver_id()) == -1) {
+		fprintf(stderr, "AO: Can't get default driver!\n");
+		eplayer_free(player);
+		return NULL;
+	}
+	
+	driver_info = ao_driver_info(driver);
 
 #ifdef DEBUG
 	printf("AO DEBUG: Audio Device: %s\n", driver_info->name);
 #endif
 
 	return player;
-}
-
-static void eplayer_free(ePlayer *player) {
-	if (!player)
-		return;
-
-	playlist_free(player->playlist);
-	mixer_free(player->mixer);
-	ao_shutdown();
-	
-	free(player);
 }
 
 /**
@@ -105,7 +113,8 @@ int main(int argc, const char **argv) {
 	}
 
 	if (argc == 1) {
-		printf("eVorbisPlayer v0.7  - Usage: %s playlist.m3u [file.ogg] [some/dir] ...\n\n", argv[0]);
+		printf("%s v%s  - Usage: %s playlist.m3u [file.ogg] [some/dir] ...\n\n",
+		       PACKAGE, VERSION, argv[0]);
 		return 1;
 	}
 	

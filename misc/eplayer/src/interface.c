@@ -21,12 +21,6 @@ static int app_signal_exit(void *data, int type, void *event) {
 	return 1;
 }
 
-static void window_move(Ecore_Evas *ee) {
-#ifdef DEBUG
-	printf("DEBUG: Window Move callback entered.\n");
-#endif
-}
-
 void setup_ecore(ePlayer *player) {
 	double edje_w = 0, edje_h = 0;
 
@@ -44,8 +38,6 @@ void setup_ecore(ePlayer *player) {
 	ecore_evas_borderless_set(ee, 1);
 	ecore_evas_shaped_set(ee, 1);
 	ecore_evas_show(ee);
-
-	ecore_evas_callback_move_set(ee, window_move);
 
 	player->gui.evas = ecore_evas_get(ee);
 	evas_font_path_append(player->gui.evas, DATA_DIR"/themes/fonts");
@@ -121,7 +113,7 @@ static Evas_Object *playlist_column_add(ePlayer *player,
 }
 
 void show_playlist(ePlayer *player) {
-	Evas_Object *o, *col[2];
+	Evas_Object *o;
 	Evas_List *l;
 	char *title, len[32];
 	char *name[] = {"playlist_item_title", "playlist_item_length"};
@@ -133,7 +125,7 @@ void show_playlist(ePlayer *player) {
 		title = ((PlayListItem *) l->data)->title;
 		duration = ((PlayListItem *) l->data)->duration;
 		
-		snprintf(len, sizeof (len), "%i:%02i", (duration / 60),
+		snprintf(len, sizeof(len), "%i:%02i", (duration / 60),
 		         duration % 60);
 		
 		/* add the title/length items to the container */
@@ -150,17 +142,42 @@ void show_playlist(ePlayer *player) {
 			 */
 			if (!added_cols) {
 				evas_object_geometry_get(player->gui.playlist, NULL, NULL, NULL, &h);
-				col[i] = playlist_column_add(player, w, h,
-				                             i ? CONTAINER_ALIGN_RIGHT
-				                             : CONTAINER_ALIGN_LEFT);
-				e_container_element_append(player->gui.playlist, col[i]);
+
+				player->gui.playlist_col[i] = 
+					playlist_column_add(player, w, h,
+				                        i ? CONTAINER_ALIGN_RIGHT
+				                        : CONTAINER_ALIGN_LEFT);
+				e_container_element_append(player->gui.playlist,
+				                           player->gui.playlist_col[i]);
 			}
 
-			e_container_element_append(col[i], o);
+			e_container_element_append(player->gui.playlist_col[i], o);
+		
+			/* add playlist callbacks */
+			edje_object_signal_callback_add(o,
+			                                "PLAYLIST_SCROLL_UP", "text",
+			                                cb_playlist_scroll_up,
+			                                player);
+			edje_object_signal_callback_add(o,
+			                                "PLAYLIST_SCROLL_DOWN", "text",
+			                                cb_playlist_scroll_down,
+			                                player);
+
+			/* FIXME: we're assuming that the objects minimal height
+			 * equals the text size
+			 */
+			player->gui.playlist_font_size[i] = h;
 		}
 
 		added_cols = 1;
 	}
+	
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "PLAYLIST_SCROLL_DOWN", "playlist",
+	                                cb_playlist_scroll_down, player);
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "PLAYLIST_SCROLL_UP", "playlist",
+	                                cb_playlist_scroll_up, player);
 }
 
 void refresh_volume(ePlayer *player, int read) {

@@ -1103,7 +1103,7 @@ collections {
 		part {
 			name, "playlist";
 			type, RECT;
-			mouse_events, 0;
+			mouse_events, 1;
 			
 			description {
 				state, "default" 0.0;
@@ -1435,6 +1435,20 @@ collections {
                         action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
                 }
 
+			program {
+				name, "playlist_scroll_up";
+				signal, "mouse,wheel,0,-1";
+				source, "playlist";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "playlist";
+			}
+			
+			program {
+				name, "playlist_scroll_down";
+				signal, "mouse,wheel,0,1";
+				source, "playlist";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "playlist";
+			}
+
                 program {
                         name,       "vol_decr_sig_wheel1";
                         signal,     "mouse,wheel,0,-1";
@@ -1448,7 +1462,6 @@ collections {
                         source,     "vol_decr_button";
                         action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
                 }
-
 		} /* Close Programs */
 	} /* Close Group */
 
@@ -1461,7 +1474,7 @@ collections {
 			part {
 				name, "text";
 				type, TEXT;
-				mouse_events, 0;
+				mouse_events, 1;
 
 				description {
 					color, 181 247 255 255;
@@ -1475,6 +1488,22 @@ collections {
 				}
 			}
 		}
+
+		programs {
+			program {
+				name, "text_scroll_up";
+				signal, "mouse,wheel,0,-1";
+				source, "text";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "text";
+			}
+			
+			program {
+				name, "text_scroll_down";
+				signal, "mouse,wheel,0,1";
+				source, "text";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "text";
+			}
+		}
 	}
 	
 	group {
@@ -1486,7 +1515,7 @@ collections {
 			part {
 				name, "text";
 				type, TEXT;
-				mouse_events, 0;
+				mouse_events, 1;
 
 				description {
 					color, 181 247 255 255;
@@ -1498,6 +1527,22 @@ collections {
 						align, 0.0 0.0;
 					}
 				}
+			}
+		}
+
+		programs {
+			program {
+				name, "length_scroll_up";
+				signal, "mouse,wheel,0,-1";
+				source, "text";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "text";
+			}
+			
+			program {
+				name, "length_scroll_down";
+				signal, "mouse,wheel,0,1";
+				source, "text";
+				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "text";
 			}
 		}
 	}

@@ -85,6 +85,7 @@ static int setup_ao(ePlayer *player) {
  * @param player
  */
 void track_close(ePlayer *player) {
+	ao_close(player->ao_dev);
 	ov_clear(&player->current_track);
 }
 
