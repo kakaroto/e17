@@ -2342,3 +2342,11 @@ Mon Dec 22 00:15:50 CET 2003
 (Kim)
 
 Apply window hints before saved settings.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 28 19:01:54 CET 2003
+(Kim)
+
+Fixed initially shaded borders on external windows.
+Initial pseudo-transparency support.
