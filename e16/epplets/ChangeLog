@@ -1,0 +1,6 @@
+Mon Oct 18 16:02:50 PDT 1999
+(Mandrake)
+
+fixed Makefile.am in epplets to actually build some directories it asked for.
+
+-------------------------------------------------------------------------------
