@@ -501,7 +501,6 @@ e_bg_resize_scaled(E_Background _bg, int width, int height, double scale)
         case E_BACKGROUND_TYPE_SOLID:
            break;
         default:
-	   break;
       }
    }
 }

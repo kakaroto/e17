@@ -7,6 +7,12 @@
 
 static GtkWidget *recent_menu = NULL;
 
+static GtkWidget *recent_menu = NULL;
+
+static GtkWidget *recent_menu = NULL;
+
+static GtkWidget *recent_menu = NULL;
+
 /**
  * get_spin_value - for a named GtkWidget, attempt to retrieve its data
  * @name - the name of the widget
@@ -944,6 +950,18 @@ browse_file_ok_clicked(GtkWidget * w, gpointer data)
    file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
    dirpath = get_dirpath_from_filename((char *) file);
 
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
+
+   dirpath = get_dirpath_from_filename((char *) file);
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
+
+   dirpath = get_dirpath_from_filename((char *) file);
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
+
+   dirpath = get_dirpath_from_filename((char *) file);
    snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
    free(dirpath);
 
