@@ -224,7 +224,7 @@ interp_return_key(void *data, const char *str)
          else
          {
             evas_text_entry_text_set(o, "");
-            entrance_session_reset_user(session);
+            entrance_session_user_reset(session);
             edje_object_signal_emit(e->edje.o, "EntranceUserFail", "");
             focus_swap(o, 1);
          }
@@ -233,17 +233,7 @@ interp_return_key(void *data, const char *str)
       {
          if (session->auth->user && strlen(session->auth->user) > 0)
          {
-            const char *sessionname = NULL;
-
             entrance_auth_set_pass(session->auth, str);
-            if (edje_object_part_exists(e->edje.o, "EntranceSession"))
-            {
-               sessionname =
-                  edje_object_part_text_get(e->edje.o, "EntranceSession");
-               if (session->session)
-                  free(session->session);
-               session->session = strdup(sessionname);
-            }
             if (!entrance_session_auth_user(session))
             {
                edje_object_signal_emit(e->edje.o, "EntranceUserAuthSuccess",
@@ -252,7 +242,7 @@ interp_return_key(void *data, const char *str)
             }
             else
             {
-               entrance_session_reset_user(session);
+               entrance_session_user_reset(session);
                edje_object_signal_emit(e->edje.o, "EntranceUserAuthFail", "");
                focus_swap(o, 0);
             }
@@ -387,6 +377,46 @@ session_item_selected_cb(void *data, Evas_Object * o, const char *emission,
    if (session && data)
    {
       entrance_session_xsession_set(session, (char *) data);
+   }
+}
+
+/**
+ * session_item_selected_cb - Executed when a Session is selected
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceTime" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+void
+user_selected_cb(void *data, Evas_Object * o, const char *emission,
+                 const char *source)
+{
+   if (session && data)
+   {
+      entrance_session_user_set(session, (char *) data);
+   }
+}
+
+/**
+ * session_item_selected_cb - Executed when a Session is selected
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceTime" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+void
+user_unselected_cb(void *data, Evas_Object * o, const char *emission,
+                   const char *source)
+{
+   if (session && data)
+   {
+      entrance_session_user_reset(session);
    }
 }
 
@@ -599,7 +629,7 @@ main(int argc, char *argv[])
       }
       if (edje_object_part_exists(edje, "EntranceSession"))
       {
-         entrance_session_xsession_set(session, "Enlightenment");
+         entrance_session_xsession_set(session, "Default");
       }
       if (edje_object_part_exists(edje, "EntranceSessionList"))
       {
@@ -617,7 +647,7 @@ main(int argc, char *argv[])
                                       shutdown_cb, e);
       /* 
        * It's useful to delay showing of your edje till all your
-       * callbacks have been added, otherwise show might trigger all
+       * callbacks have been added, otherwise show might not trigger all
        * the desired events 
        */
       evas_object_show(edje);

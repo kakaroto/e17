@@ -20,7 +20,7 @@ static void
 entrance_config_populate(Entrance_Config e, E_DB_File * db)
 {
    char *str;
-   int i = 0, num_session = 0;
+   int i = 0, num_session = 0, num_user;
    char buf[PATH_MAX];
    int num_fonts;
 
@@ -60,32 +60,31 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
       e->time.string = str;
    else
       e->time.string = strdup("%l:%M:%S %p");
-#if 0
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
+      char *user = NULL;
+      char *edje_file = NULL;
+
       for (i = 0; i < num_user; i++)
       {
-         eu = (Entrance_User *) malloc(sizeof(Entrance_User));
-         memset(eu, 0, sizeof(Entrance_User));
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/name", i);
-         eu->name = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/img", i);
-         eu->img = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/sys", i);
-         if (!e_db_int_get(db, buf, &(eu->sys)))
-            eu->sys = 1;
-         U = evas_list_append(U, eu);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
+         if ((user = e_db_str_get(db, buf)))
+         {
+            snprintf(buf, PATH_MAX, "/entrance/user/%d/edje", i);
+            if ((edje_file = e_db_str_get(db, buf)))
+            {
+               e->users.hash = evas_hash_add(e->users.hash, user, edje_file);
+               e->users.keys = evas_list_append(e->users.keys, user);
+            }
+            else
+               free(user);
+         }
       }
-
-      e->users = U;
    }
    else
    {
-      evas_list_append(e->users, NULL);
-      e->users = NULL;
       syslog(LOG_WARNING, "Warning: No users found.");
    }
-#endif
 
    /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))

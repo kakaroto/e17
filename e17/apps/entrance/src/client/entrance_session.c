@@ -6,6 +6,10 @@
 extern void session_item_selected_cb(void *data, Evas_Object * o,
                                      const char *emission,
                                      const char *source);
+extern void user_selected_cb(void *data, Evas_Object * o,
+                             const char *emission, const char *source);
+extern void user_unselected_cb(void *data, Evas_Object * o,
+                               const char *emission, const char *source);
 static Evas_Object *_entrance_session_icon_load(Evas_Object * o, char *file);
 static Evas_Object *_entrance_session_load_session(Entrance_Session e,
                                                    char *key);
@@ -119,13 +123,99 @@ entrance_session_auth_user(Entrance_Session e)
 }
 
 /**
- * entrance_session_reset_user: forget what we know about the current user
+ * entrance_session_user_reset: forget what we know about the current user
  */
 void
-entrance_session_reset_user(Entrance_Session e)
+entrance_session_user_reset(Entrance_Session e)
 {
-   entrance_auth_free(e->auth);
-   e->auth = entrance_auth_new();
+   Evas_Object *obj = NULL;
+
+   if (e)
+   {
+      entrance_auth_free(e->auth);
+      e->auth = entrance_auth_new();
+      if ((obj = edje_object_part_swallow_get(e->edje, "EntranceFace")))
+      {
+         edje_object_part_unswallow(e->edje, obj);
+         evas_object_del(obj);
+      }
+      edje_object_signal_emit(e->edje, "In", "EntranceUserEntry");
+   }
+}
+
+/**
+ * entrance_session_user_set: forget what we know about the current user
+ */
+void
+entrance_session_user_set(Entrance_Session e, char *key)
+{
+   int result = 0;
+   const char *file = NULL;
+   char *pass = NULL;
+   char *session = NULL;
+   Evas_Object *obj = NULL;
+
+   if (e && key)
+   {
+      if ((obj = edje_object_part_swallow_get(e->edje, "EntranceFace")))
+      {
+         edje_object_part_unswallow(e->edje, obj);
+         evas_object_del(obj);
+      }
+      if ((obj = _entrance_session_user_load(e, key)))
+      {
+         if (!entrance_auth_set_user(e->auth, key))
+         {
+            edje_object_file_get(obj, &file, NULL);
+            if ((session = edje_file_data_get(file, "session")))
+            {
+               if ((strlen(session) > 0) && (strlen(e->session) == 0))
+               {
+                  if (e->session)
+                     free(e->session);
+                  e->session = strdup(session);
+               }
+            }
+            if ((pass = edje_file_data_get(file, "password")))
+            {
+               entrance_auth_set_pass(e->auth, pass);
+               result = entrance_session_auth_user(e);
+               if (result == 0)
+               {
+                  if (edje_object_part_exists(e->edje, "EntranceFace"))
+                  {
+                     edje_object_part_swallow(e->edje, "EntranceFace", obj);
+                  }
+                  edje_object_signal_emit(e->edje, "EntranceUserAuthSuccess",
+                                          "");
+                  e->authed = 1;
+               }
+               else
+               {
+                  edje_object_signal_emit(e->edje, "EntranceUserAuthFail",
+                                          "");
+                  evas_object_del(obj);
+               }
+            }
+            else
+            {
+               if (edje_object_part_exists(e->edje, "EntranceFace"))
+               {
+                  edje_object_part_swallow(e->edje, "EntranceFace", obj);
+               }
+               edje_object_signal_emit(e->edje, "In", "EntrancePassEntry");
+               edje_object_signal_emit(e->edje, "EntranceUserAuth", "");
+               edje_object_signal_emit(e->edje, "UserSelected", "");
+            }
+         }
+         else
+         {
+            evas_object_del(obj);
+            edje_object_signal_emit(e->edje, "In", "EntrancePassEntry");
+            edje_object_signal_emit(e->edje, "EntranceUserFail", "");
+         }
+      }
+   }
 }
 
 void
@@ -310,9 +400,6 @@ entrance_session_user_list_add(Entrance_Session e)
          e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_X);
          e_container_direction_set(container, 1);
       }
-#if 0
-      entrance_swallow_users_to_container(container, cfg);
-#endif
       for (l = e->config->users.keys; l; l = l->next)
       {
          key = (char *) l->data;
@@ -324,15 +411,6 @@ entrance_session_user_list_add(Entrance_Session e)
       edje_object_part_swallow(e->edje, "EntranceUserList", container);
    }
 
-}
-
-/* 
- * 
- */
-static char *
-_entrance_session_path_resolve(Entrance_Session e, char *prefix, char *key)
-{
-   return (NULL);
 }
 
 static Evas_Object *
@@ -349,18 +427,28 @@ _entrance_session_user_load(Entrance_Session e, char *key)
 
    if ((icon = evas_hash_find(e->config->users.hash, key)))
    {
-      fprintf(stderr, "%s:%s\n", key, icon);
       edje = edje_object_add(evas_object_evas_get(e->edje));
-      snprintf(buf, PATH_MAX, "%s/users/%s", PACKAGE_DATA_DIR, icon);
+      if (icon[0] == '/')       /* absolute path */
+         snprintf(buf, PATH_MAX, "%s", icon);
+      else
+         snprintf(buf, PATH_MAX, "%s/users/%s", PACKAGE_DATA_DIR, icon);
       if ((result = edje_object_file_set(edje, buf, "User")) > 0)
       {
-         evas_object_move(edje, 0, 0);
-         evas_object_resize(edje, 48, 48);
+         Evas_Coord w, h;
+
+         edje_object_size_min_get(edje, &w, &h);
+         evas_object_move(edje, -w, -h);
+         evas_object_resize(edje, w, h);
          evas_object_layer_set(edje, 0);
 
          if (edje_object_part_exists(edje, "EntranceUser"))
          {
             edje_object_part_text_set(edje, "EntranceUser", key);
+            evas_object_show(edje);
+            edje_object_signal_callback_add(edje, "UserSelected", "",
+                                            user_selected_cb, key);
+            edje_object_signal_callback_add(edje, "UserUnSelected", "",
+                                            user_unselected_cb, key);
          }
          else
          {
@@ -370,7 +458,6 @@ _entrance_session_user_load(Entrance_Session e, char *key)
                evas_object_del(edje);
             edje = NULL;
          }
-         evas_object_show(edje);
       }
       else
       {
@@ -427,8 +514,13 @@ _entrance_session_load_session(Entrance_Session e, char *key)
       return (NULL);
 
    edje = edje_object_add(evas_object_evas_get(e->edje));
-   snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
-            e->config->theme);
+   if (e->config->theme && e->config->theme[0] == '/')	/* abs 
+	   path 
+	 */
+      snprintf(buf, PATH_MAX, "%s", e->config->theme);
+   else
+      snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
+               e->config->theme);
    if ((result = edje_object_file_set(edje, buf, "Session")) > 0)
    {
       evas_object_move(edje, 0, 0);
