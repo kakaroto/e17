@@ -1,12 +1,12 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES			= -I@top_srcdir@/src/lib \
-                 -I@top_srcdir@/src/lib/esmart_thumb \
-                 -I@top_srcdir@/src/lib/esmart_container \
-                 -I@top_srcdir@/src/lib/esmart_trans_x11 \
-                 -I@top_srcdir@/src/lib/esmart_draggies \
-                 -I@top_srcdir@/src/lib/esmart_text_entry \
-                 -I@top_srcdir@/src/lib/esmart_file_dialog \
+INCLUDES			= -I$(top_srcdir)/src/lib \
+                 -I$(top_srcdir)/src/lib/esmart_thumb \
+                 -I$(top_srcdir)/src/lib/esmart_container \
+                 -I$(top_srcdir)/src/lib/esmart_trans_x11 \
+                 -I$(top_srcdir)/src/lib/esmart_draggies \
+                 -I$(top_srcdir)/src/lib/esmart_text_entry \
+                 -I$(top_srcdir)/src/lib/esmart_file_dialog \
                  @evas_cflags@ \
                  @imlib_cflags@ \
                  @ecore_cflags@
