@@ -1380,6 +1380,7 @@ void                DeskSetCurrentArea(int ax, int ay);
 int                 DesksGetNumber(void);
 int                 DesksGetCurrent(void);
 void                DesksSetCurrent(int desk);
+void                DesksResize(int w, int h);
 
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
@@ -2079,6 +2080,7 @@ void                SettingsComposite(void);
 /* setup.c */
 void                MapUnmap(int start);
 void                SetupX(const char *dstr);
+void                RootResize(int root, int w, int h);
 
 /* size.c */
 void                MaxSize(EWin * ewin, const char *resize_type);

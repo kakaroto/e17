@@ -252,7 +252,7 @@ CommsInit(void)
 {
    char                s[1024];
 
-   comms_win = XCreateSimpleWindow(disp, VRoot.win, -100, -100, 5, 5, 0, 0, 0);
+   comms_win = ECreateEventWindow(VRoot.win, -100, -100, 5, 5);
    ERegisterWindow(comms_win);
    XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
    EventCallbackRegister(comms_win, 0, ClientHandleEvents, NULL);

@@ -33,11 +33,11 @@
 #define EWIN_CONTAINER_EVENT_MASK \
   (/* ButtonPressMask | ButtonReleaseMask | */ \
    /* StructureNotifyMask | ResizeRedirectMask | */ \
-   /* SubstructureNotifyMask | */ SubstructureRedirectMask)
+   SubstructureNotifyMask | SubstructureRedirectMask)
 
 #define EWIN_CLIENT_EVENT_MASK \
   (EnterWindowMask | LeaveWindowMask | FocusChangeMask | \
-   StructureNotifyMask | ResizeRedirectMask | \
+   /* StructureNotifyMask | */ ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask | VisibilityChangeMask)
 
 static void         EwinHandleEventsToplevel(XEvent * ev, void *prm);
@@ -1025,7 +1025,6 @@ void
 EwinReparent(EWin * ewin, Window parent)
 {
    EReparentWindow(disp, ewin->client.win, parent, 0, 0);
-   EDestroyWindow(disp, EoGetWin(ewin));
 }
 
 static void
@@ -1120,7 +1119,10 @@ EwinEventUnmap(EWin * ewin)
 	Mode.doingslide = 0;
      }
 
-   HideEwin(ewin);
+   ewin->shown = 0;
+   /* FIXME - This is to sync the client.win EXID mapped state */
+   EUnmapWindow(disp, ewin->client.win);
+   EUnmapWindow(disp, EoGetWin(ewin));
 
    ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
@@ -1135,7 +1137,8 @@ EwinEventUnmap(EWin * ewin)
    if (ewin->Close)
       ewin->Close(ewin);
 
-   EwinWithdraw(ewin);
+   if (WinGetParent(ewin->client.win) == ewin->win_container)
+      EwinWithdraw(ewin);
 }
 
 static void
@@ -1779,6 +1782,21 @@ EwinsEventsConfigure(int mode)
      }
 }
 
+static void
+EwinsTouch(void)
+{
+   int                 i, num;
+   EWin               *const *lst, *ewin;
+
+   lst = EwinListStackGet(&num);
+   for (i = num - 1; i >= 0; i--)
+     {
+	ewin = lst[i];
+	if (EwinIsMapped(ewin))
+	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+     }
+}
+
 void
 EwinsSetFree(void)
 {
@@ -1883,6 +1901,34 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
      case CirculateRequest:
 	EwinEventCirculateRequest(ewin, ev);
 	break;
+
+     case DestroyNotify:
+	EwinEventDestroy(ewin);
+	break;
+     case UnmapNotify:
+#if 0
+	if (ewin->state == EWIN_STATE_NEW)
+	  {
+	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
+		     ewin->client.win);
+	     break;
+	  }
+#endif
+	EwinEventUnmap(ewin);
+	break;
+     case MapNotify:
+	EwinEventMap(ewin);
+	break;
+     case ReparentNotify:
+	/* Check if window parent hasn't changed already (compress?) */
+	if (WinGetParent(ev->xreparent.window) != ev->xreparent.parent)
+	   break;
+	if (ev->xreparent.parent != ewin->win_container)
+	   EwinEventDestroy(ewin);
+	break;
+     case ConfigureNotify:
+	break;
+
      default:
 	Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
 		ev->type, ewin->client.win, EwinGetName(ewin));
@@ -1910,6 +1956,8 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
      case VisibilityNotify:
 	EwinEventVisibility(ewin, ev->xvisibility.state);
 	break;
+
+#if 0				/* FIXME - Remove? */
      case DestroyNotify:
 	EwinEventDestroy(ewin);
 	break;
@@ -1934,6 +1982,8 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 	if (ev->xreparent.parent == VRoot.win)
 	   EwinEventDestroy(ewin);
 	break;
+#endif
+
 #if 0
      case ConfigureRequest:
 	if (ev->xconfigurerequest.window == ewin->client.win)
@@ -2060,6 +2110,9 @@ EwinsSighan(int sig, void *prm __UNUSED__)
 	   MapUnmap(1);
 	break;
 #endif
+     case ESIGNAL_DESK_RESIZE:
+	EwinsTouch();
+	break;
      }
 }
 

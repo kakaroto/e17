@@ -117,6 +117,7 @@ void
 SetupX(const char *dstr)
 {
    char                buf[128];
+   long                mask;
 
    /* In case we are going to fork, set up the master pid */
    Mode.wm.master = 1;
@@ -287,12 +288,15 @@ SetupX(const char *dstr)
 
    /* select all the root window events to start managing */
    Mode.wm.xselect = 1;
-   XSelectInput(disp, VRoot.win,
-		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
-		LeaveWindowMask | ButtonMotionMask | PropertyChangeMask |
-		SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
-		PointerMotionMask | ResizeRedirectMask |
-		SubstructureNotifyMask);
+   mask =
+      ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
+      ButtonMotionMask | PropertyChangeMask | SubstructureRedirectMask |
+      KeyPressMask | KeyReleaseMask | PointerMotionMask |
+      SubstructureNotifyMask;
+   if (Mode.wm.window)
+      mask |= StructureNotifyMask;
+   XSelectInput(disp, VRoot.win, mask);
+
    ecore_x_sync();
    Mode.wm.xselect = 0;
 
@@ -354,4 +358,35 @@ SetupX(const char *dstr)
 
    ScreenInit();
    ZoomInit();
+}
+
+void
+RootResize(int root, int w, int h)
+{
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("RootResize %d %dx%d\n", root, w, h);
+
+   if (root)
+     {
+#if 0
+	RRoot.w = DisplayWidth(disp, RRoot.scr);
+	RRoot.h = DisplayHeight(disp, RRoot.scr);
+
+	if (w != RRoot.w || h != RRoot.h)
+	   Eprintf
+	      ("RootResize (root): Screen size mismatch: root=%dx%d event=%dx%d\n",
+	       RRoot.w, RRoot.h, w, h);
+#endif
+	RRoot.w = w;
+	RRoot.h = h;
+     }
+
+   if (w == VRoot.w && h == VRoot.h)
+      return;
+
+   EWindowSync(VRoot.win);
+   VRoot.w = w;
+   VRoot.h = h;
+
+   DesksResize(w, h);
 }

@@ -494,7 +494,7 @@ PagerDrawQueueCallback(DrawQueue * dq)
 }
 
 static void
-PagerEwinMoveResize(EWin * ewin, int resize)
+PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Pager              *p = ewin->data;
    int                 w, h;
@@ -553,9 +553,6 @@ PagerEwinMoveResize(EWin * ewin, int resize)
    lst = EwinListGetForDesk(&num, p->desktop);
    for (i = 0; i < num; i++)
       PagerEwinUpdateMini(p, lst[i]);
-
-   return;
-   resize = 0;
 }
 
 static void
@@ -2250,6 +2247,9 @@ PagersSighan(int sig, void *prm)
 	break;
      case ESIGNAL_DESK_CHANGE:
 	ForceUpdatePagersForDesktop((int)prm);
+	break;
+     case ESIGNAL_DESK_RESIZE:
+	PagersReArea();
 	break;
      case ESIGNAL_EWIN_UNMAP:
 	PagerEwinOutsideAreaUpdate((EWin *) prm);

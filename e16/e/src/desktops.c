@@ -459,6 +459,26 @@ DeskDestroy(int desk)
    desks.desk[desk] = NULL;
 }
 
+static void
+DeskResize(int desk, int w, int h)
+{
+   Desk               *d;
+
+   d = _DeskGet(desk);
+
+   if (desk > 0)
+     {
+	EResizeWindow(disp, EoGetWin(d), w, h);
+	if (!d->viewable)
+	   EMoveWindow(disp, EoGetWin(d), VRoot.w, 0);
+     }
+   BackgroundPixmapFree(d->bg);
+   RefreshDesktop(desk);
+   DeskControlsDestroy(d);
+   DeskControlsCreate(d);
+   DeskControlsShow(d);
+}
+
 Window
 DeskGetWin(int desk)
 {
@@ -555,12 +575,26 @@ DesksSetCurrent(int desk)
 }
 
 static void
-DesktopsInit(void)
+DesksInit(void)
 {
    int                 i;
 
    for (i = 0; i < Conf.desks.num; i++)
       DeskCreate(i, 0);
+}
+
+void
+DesksResize(int w, int h)
+{
+   int                 i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+      DeskResize(i, w, h);
+
+   /* Restack buttons - Hmmm. */
+   StackDesktops();
+
+   ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
 }
 
 void
@@ -1592,7 +1626,7 @@ DesktopsSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_INIT:
-	DesktopsInit();
+	DesksInit();
 	break;
 
      case ESIGNAL_CONFIGURE:

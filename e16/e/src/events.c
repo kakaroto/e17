@@ -301,9 +301,7 @@ HandleEvent(XEvent * ev)
 	break;
      case ConfigureNotify:	/* 22 */
 	if (ev->xconfigure.window == VRoot.win)
-	   DialogOK("Wheee! (ConfigureNotify)",
-		    "Screen size changed to\n%dx%d pixels",
-		    ev->xconfigure.width, ev->xconfigure.height);
+	   RootResize(0, ev->xconfigure.width, ev->xconfigure.height);
 	break;
      case ConfigureRequest:	/* 23 */
 	break;
@@ -321,9 +319,7 @@ HandleEvent(XEvent * ev)
 	{
 	   XRRScreenChangeNotifyEvent *rrev = (XRRScreenChangeNotifyEvent *) ev;
 
-	   DialogOK("Wheee! (RRScreenChangeNotify)",
-		    "Screen size changed to\n%dx%d pixels (%dx%d millimeters)",
-		    rrev->width, rrev->height, rrev->mwidth, rrev->mheight);
+	   RootResize(1, rrev->width, rrev->height);
 	}
 	break;
 #endif
