@@ -73,9 +73,9 @@ void            fill_saveload_tree(void);
 void            setup_saveload_opt(Ewl_Widget * tree, char *caption,
 				   Evas_List * p);
 void            ewl_saveload_revert(Ewl_Widget * widget, void *ev_data,
-				    Ewl_Widget * p);
+				    void *ud);
 void            ewl_saveload_close(Ewl_Widget * o, void *ev_data,
-				   Ecore_Evas * ee);
+				   void *ud);
 void            ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data,
@@ -89,8 +89,8 @@ void            load_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label);
 void            fill_load_tree(void);
 void            setup_load_opt(Ewl_Widget * tree, char *caption);
 void            ewl_load_revert(Ewl_Widget * widget, void *ev_data,
-				Ewl_Widget * p);
-void            ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee);
+				void*ud);
+void            ewl_load_close(Ewl_Widget * o, void *ev_data, void*ud);
 void            ewl_load_load(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_load_listitem_click(Ewl_Widget * o, void *ev_data,

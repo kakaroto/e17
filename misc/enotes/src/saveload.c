@@ -101,18 +101,18 @@ setup_saveload_win(void)
 
 	/* EWL Callbacks */
 	ewl_callback_append(saveload->refreshbtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_saveload_revert,
-			    (void *) saveload->tree);
+			     ewl_saveload_revert,
+			     saveload->tree);
 	ewl_callback_append(saveload->closebtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_saveload_close,
-			    (void *) saveload->win);
+			     ewl_saveload_close,
+			     saveload->win);
 	ewl_callback_append(saveload->win, EWL_CALLBACK_DELETE_WINDOW,
-			    (void *) ewl_saveload_close,
-			    (void *) saveload->win);
+			     ewl_saveload_close,
+			     saveload->win);
 	ewl_callback_append(saveload->savebtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_saveload_save, NULL);
+			     ewl_saveload_save, NULL);
 	ewl_callback_append(saveload->loadbtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_saveload_load, NULL);
+			     ewl_saveload_load, NULL);
 
 	return;
 }
@@ -174,7 +174,7 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 
 	capt = (Ewl_Widget *) ewl_text_new(caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_saveload_listitem_click, NULL);
+			     ewl_saveload_listitem_click, NULL);
 	ewl_object_fill_policy_set((Ewl_Object *) capt, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(capt);
 	d->saveload_row =
@@ -195,8 +195,9 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
  *         rebuild it from scratch. :)
  */
 void
-ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
+ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, void * ud)
 {
+	Ewl_Widget *p=ud;
 	dml("Refreshing the Saveload List", 2);
 
 	ewl_container_reset((Ewl_Container *) p);
@@ -214,8 +215,9 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
  *         callback which does the work. :)
  */
 void
-ewl_saveload_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
+ewl_saveload_close(Ewl_Widget * o, void *ev_data, void *ud)
 {
+	Ecore_Evas *ee=ud;
 	ewl_widget_destroy(saveload->win);
 	free(saveload);
 	saveload = NULL;
@@ -257,7 +259,7 @@ ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null)
 
 void
 ewl_saveload_save_by_name(char *p){
-	saveload=p;
+	saveload_selected=p;
 	ewl_saveload_save(NULL,NULL,NULL);
 }
 
@@ -379,15 +381,15 @@ setup_load_win(void)
 
 	/* EWL Callbacks */
 	ewl_callback_append(load->refreshbtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_load_revert, (void *) load->tree);
+			     ewl_load_revert,  load->tree);
 	ewl_callback_append(load->closebtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_load_close, (void *) load->win);
+			     ewl_load_close,  load->win);
 	ewl_callback_append(load->win, EWL_CALLBACK_DELETE_WINDOW,
-			    (void *) ewl_load_close, (void *) load->win);
+			     ewl_load_close,  load->win);
 	ewl_callback_append(load->loadbtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_load_load, NULL);
+			     ewl_load_load, NULL);
 	ewl_callback_append(load->deletebtn, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_load_delete, NULL);
+			     ewl_load_delete, NULL);
 
 	return;
 }
@@ -446,7 +448,7 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 
 	capt = ewl_text_new(caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
-			    (void *) ewl_load_listitem_click, NULL);
+			     ewl_load_listitem_click, NULL);
 	ewl_widget_show(capt);
 	ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
 
@@ -462,8 +464,9 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
  *         rebuild it from scratch. :)
  */
 void
-ewl_load_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
+ewl_load_revert(Ewl_Widget * widget, void *ev_data, void*ud)
 {
+	Ewl_Widget *p=ud;
 	dml("Refreshing the Load Note List", 2);
 	ewl_container_reset((Ewl_Container *) load->tree);
 	fill_load_tree();
@@ -479,8 +482,9 @@ ewl_load_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
  *         callback which does the work. :)
  */
 void
-ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
+ewl_load_close(Ewl_Widget * o, void *ev_data, void*ud)
 {
+	Ecore_Evas *ee=ud;
 	ewl_widget_destroy(load->win);
 	free(load);
 	load = NULL;

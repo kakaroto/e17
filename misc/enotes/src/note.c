@@ -525,7 +525,7 @@ const char *emission, const char *source){
 	dml("Saving a Note",2);
 	p=evas_list_data(note);
 
-	ewl_saveload_save_by_name(get_title_by_content(ewl_entry_text_get(p->content)));
+	ewl_saveload_save_by_name(get_title_by_content(ewl_entry_text_get((Ewl_Entry*)p->content)));
 	
 	return;
 }
