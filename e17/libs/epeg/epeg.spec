@@ -14,9 +14,7 @@ BuildRoot: /var/tmp/epeg-root
 Packager: The Rasterman <raster@rasterman.com>
 URL: http://www.enlightenment.org/
 BuildRequires: libjpeg-devel
-BuildRequires: zlib-devel
 Requires: libjpeg
-Requires: zlib
 
 Docdir: %{prefix}/doc
 
@@ -75,5 +73,5 @@ rm -rf $RPM_BUILD_ROOT
 %doc epeg_docs.tar.gz
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
+* Wed Oct 29 2003 The Rasterman <raster@rasterman.com>
 - Created spec file
