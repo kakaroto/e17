@@ -104,6 +104,8 @@ static bool setup_xmms(Euphoria *e) {
 	                   (XmmsCb) on_xmms_playlist_remove, e);
 	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_CLEAR,
 	                   (XmmsCb) on_xmms_playlist_clear, e);
+	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_SHUFFLE,
+	                   (XmmsCb) on_xmms_playlist_shuffle, e);
 
 	return true;
 }

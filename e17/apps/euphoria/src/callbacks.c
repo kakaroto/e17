@@ -477,6 +477,10 @@ EDJE_CB(playlist_del) {
 	if (e->playlist->current_item)
 		remove_playlist_item(e, e->playlist->current_item);
 }
+EDJE_CB(playlist_shuffle) {
+    assert(e->xmms);
+    xmmsc_playlist_shuffle(e->xmms);
+}
 
 XMMS_CB(playback_status) {
 	PlaybackState state;
@@ -595,4 +599,20 @@ XMMS_CB(playlist_remove) {
 XMMS_CB(playlist_clear) {
 	playlist_remove_all(e->playlist);
 	/* FIXME: Set the text in the player to the default */
+}
+XMMS_CB(playlist_shuffle) {
+	int i, id, *ids = NULL;
+	PlayListItem *pli = NULL;
+
+	if ((ids = xmmscs_playlist_list(e->xmms))) {
+	    for(i = 0; ids[i]; i++) {
+		if((pli = playlist_item_find_by_id(e->playlist, ids[i]))) {
+		    e_container_element_remove(pli->container, pli->edje);
+		    e_container_element_append(pli->container, pli->edje);
+		}
+		else {
+		    fprintf(stderr, "Unable to find %d: %d\n", i, ids[i]);
+		}
+	    }
+	}
 }

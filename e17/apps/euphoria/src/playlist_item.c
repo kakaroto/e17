@@ -42,7 +42,8 @@ const char *playlist_item_album_get(PlayListItem *pli) {
 
 unsigned int playlist_item_duration_get(PlayListItem *pli) {
 	void *tmp;
-
+	
+	if (!pli->properties) return 0;
 	if ((tmp = x_hash_lookup(pli->properties, "duration")))
 		return atoi(tmp) / 1000;
 	else

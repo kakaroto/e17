@@ -57,6 +57,7 @@ EDJE_CB(update_seeker);
 
 EDJE_CB(playlist_add);
 EDJE_CB(playlist_del);
+EDJE_CB(playlist_shuffle);
 
 void cb_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -70,6 +71,7 @@ XMMS_CB(playlist_list);
 XMMS_CB(playlist_add);
 XMMS_CB(playlist_remove);
 XMMS_CB(playlist_clear);
+XMMS_CB(playlist_shuffle);
 
 #endif
 
