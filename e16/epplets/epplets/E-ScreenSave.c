@@ -228,6 +228,8 @@ cloak_epplet (void *data)
       Epplet_gadget_hide (btn_conf);
       Epplet_gadget_hide (btn_help);
       Epplet_gadget_hide (btn_save);
+      Epplet_gadget_hide (btn_ctimer);
+      Epplet_gadget_hide (btn_stimer);
       Epplet_gadget_show (da);
       cloak_draw (NULL);
       cloaked = 1;
@@ -298,6 +300,8 @@ cb_in (void *data, Window w)
       Epplet_gadget_show (btn_conf);
       Epplet_gadget_show (btn_help);
       Epplet_gadget_show (btn_save);
+      Epplet_gadget_show (btn_ctimer);
+      Epplet_gadget_show (btn_stimer);
     }
   Epplet_remove_timer ("CLOAK_TIMER");
   Epplet_remove_timer ("DRAW_TIMER");
