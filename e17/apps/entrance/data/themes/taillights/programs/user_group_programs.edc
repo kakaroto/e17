@@ -7,6 +7,13 @@
 	    }
 	    program
 	    {
+		name, "user_icon_unclicked";
+		signal, "mouse,clicked,3";
+		source, "EntranceUserIcon";
+		action, SIGNAL_EMIT "UserUnSelected" "";
+	    }
+	    program
+	    {
 		name, "user_title_clicked";
 		signal, "mouse,clicked,1";
 		source, "EntranceUserName";
