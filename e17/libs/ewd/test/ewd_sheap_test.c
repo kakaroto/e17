@@ -34,5 +34,7 @@ int main()
 	while ((value = (int)ewd_sheap_extract(heap)))
 		printf("Popped %d off the heap\n", value);
 
+	ewd_sheap_destroy(heap);
+
 	return TRUE;
 }
