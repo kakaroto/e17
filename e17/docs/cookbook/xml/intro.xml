@@ -2,11 +2,11 @@
  <title>Introduction</title>
 
  <para>
-Welcome to the enlightened state of programming.  This cookbook is a collection of tips, tricks, tutorials and introductions arranged into recipe style in order to help you becomes quickly proficience and effective with the Enlightenment Foundation Libraries.  The Enlightement Foundations Libraries, refered to simples as the EFL, is a collection of libraries origionally written support the Enlightenment DR17 Window Manager.  However, as these libraries grew and were tested and deployed more and more general functionality was added bringing us to enjoy a rich and powerful set of libraries that can solve all sorts of problems and also act as a venerable alternative to the currently popular GTK and QT.
+Welcome to the enlightened state of programming.  This cookbook is a collection of tips, tricks, tutorials and introductions arranged into recipe style in order to help you quickly become proficient with the Enlightenment Foundation Libraries.  The Enlightement Foundations Libraries, refered to simply as the EFL, is a collection of libraries origionally written for use by the Enlightenment DR17 Window Manager.  However, as these libraries grew and were tested and deployed more and more, general functionality was added bringing us to enjoy a rich and powerful set of libraries that can be used to help solve all sorts of problems and act as a venerable alternative to the currently popular GTK and QT library sets.
  </para>
 
  <para>
-The EFL is a comprehensive group of C libraries that can provide for nearly any type of graphical need on nearly any platform.  The following is a consice breakdown of EFL componant libraries.
+	 The EFL is a comprehensive group of C libraries that can provide a means for almost any graphical need on many platforms.  The following is a concise breakdown of libraries which make up the EFL.
 </para>
 
 <variablelist>
@@ -28,7 +28,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	Canvas library with multiple backend engines including hardware OpenGL acceloration.  
+	Canvas library with multiple backend engines including hardware OpenGL acceleration.  
         </para>
         </listitem>
 </varlistentry>
@@ -38,7 +38,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	Modular library collection with event handling and timers, plus sockets, IPC, FB and X11 setup, teardown, and event handling, job control, configuration handling and more.
+	Modular library with event handling and timers.  It also includes sockets, IPC, both FB and X11 setup, teardown, event handling, job control, configuration handling and more.
         </para>
         </listitem>
 </varlistentry>
@@ -48,7 +48,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	A database library capabile of storing strings, values, and data for simple and centralized configuration handling.
+	A database library capabile of storing strings, values, and data for simple, consistant and centralized configuration handling.
         </para>
         </listitem>
 </varlistentry>
@@ -68,7 +68,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	An image abstraction library and toolset based on EVAS, keeping all aspects of the user interface completely seperate from application code through the use of signal passing.
+	An image abstraction library and toolkit based on EVAS, keeping all aspects of the user interface completely seperate from application code through the use of signal passing.
         </para>
         </listitem>
 </varlistentry>
@@ -88,7 +88,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	A text formating and manipulation library, complete with text stylization capabilities.
+	A text formatting and manipulation library, complete with text stylization capabilities.
         </para>
         </listitem>
 </varlistentry>
@@ -108,7 +108,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	A lightning fast thunbnailing library for JPEGs independant of other EFL componants.
+	A lightning fast thunbnailing library for JPEGs independant of other EFL components.
         </para>
         </listitem>
 </varlistentry>
@@ -118,7 +118,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	A flexable and fast thumbnailing library for PNG, XCF, GIF and JPEG.
+	A flexible and fast thumbnailing library for PNG, XCF, GIF and JPEG.
         </para>
         </listitem>
 </varlistentry>
@@ -128,7 +128,7 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
 
         <listitem>
         <para>
-	An EVAS canvas server library and toolset.
+	An EVAS canvas server library and toolkit.
         </para>
         </listitem>
 </varlistentry>
