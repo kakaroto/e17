@@ -114,10 +114,10 @@ strjoin (const char *separator, ...)
       len = strlen (s);
       s = va_arg (args, char *);
       while (s)
-        {
-          len += separator_len + strlen (s);
-          s = va_arg (args, char *);
-        }
+	{
+	  len += separator_len + strlen (s);
+	  s = va_arg (args, char *);
+	}
       va_end (args);
       string = malloc (sizeof (char) * (len + 1));
       *string = 0;
@@ -126,11 +126,11 @@ strjoin (const char *separator, ...)
       strcat (string, s);
       s = va_arg (args, char *);
       while (s)
-        {
-          strcat (string, separator);
-          strcat (string, s);
-          s = va_arg (args, char *);
-        }
+	{
+	  strcat (string, separator);
+	  strcat (string, s);
+	  s = va_arg (args, char *);
+	}
     }
   else
     string = estrdup ("");

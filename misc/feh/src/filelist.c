@@ -152,12 +152,12 @@ feh_file
 filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
-  if(!file)
-	return;
+  if (!file)
+    return;
   if (file->prev)
-	file->prev->next = file->next;
+    file->prev->next = file->next;
   else
-	list = file->next;
+    list = file->next;
   if (file->next)
     file->next->prev = file->prev;
   feh_file_free (file);
@@ -254,12 +254,12 @@ add_file_to_rm_filelist (char *file)
 void
 delete_rm_files (void)
 {
-    feh_file file;
+  feh_file file;
   D (("In delete_rm_files\n"));
   if (opt.keep_http)
     return;
   for (file = rm_filelist; file; file = file->next)
     {
-	unlink (file->filename);
+      unlink (file->filename);
     }
 }

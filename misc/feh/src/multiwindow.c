@@ -28,7 +28,7 @@ init_multiwindow_mode (void)
 
   D (("In init_multiwindow_mode\n"));
 
-    for (file = filelist; file; file = file->next)
+  for (file = filelist; file; file = file->next)
     {
       char *s = NULL;
       int len = 0;
@@ -42,13 +42,13 @@ init_multiwindow_mode (void)
 	    winwidget_show (w);
 	  w->file = file;
 	  if (opt.reload > 0)
-	      feh_add_unique_timer (cb_reload_timer, w, opt.reload);
+	    feh_add_unique_timer (cb_reload_timer, w, opt.reload);
 	}
       else
-      {
-	  D(("EEEK. Couldn't load image in multiwindow mode. ""
-		      I'm not sure if this is a problem\n"));
-      }
+	{
+	  D (("EEEK. Couldn't load image in multiwindow mode. "
+	      "I 'm not sure if this is a problem\n"));
+	}
       free (s);
     }
 }

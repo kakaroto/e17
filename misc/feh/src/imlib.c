@@ -67,7 +67,7 @@ init_x_and_imlib (void)
 }
 
 int
-feh_load_image_char (Imlib_Image ** im, char * filename)
+feh_load_image_char (Imlib_Image ** im, char *filename)
 {
   feh_file file;
   int i;

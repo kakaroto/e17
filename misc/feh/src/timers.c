@@ -143,7 +143,7 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
 }
 
 void
-feh_add_unique_timer (void (*func) (void *data),void *data, double in)
+feh_add_unique_timer (void (*func) (void *data), void *data, double in)
 {
   static long i = 0;
   char evname[20];

@@ -449,21 +449,23 @@ feh_crop_image (winwidget winwid, int x, int y, int width, int height)
   winwidget_rerender_image (winwid);
 }
 
-void reset_modify_mode(void)
+void
+reset_modify_mode (void)
 {
-    opt.modify_mode=MODIFY_MODE_NONE;
-    rectangles_on=0;
+  opt.modify_mode = MODIFY_MODE_NONE;
+  rectangles_on = 0;
 }
 
-void toggle_modify_mode(int mode)
+void
+toggle_modify_mode (int mode)
 {
-    if(opt.modify_mode==mode)
+  if (opt.modify_mode == mode)
     {
-	reset_modify_mode();
+      reset_modify_mode ();
     }
-    else
+  else
     {
-	opt.modify_mode=mode;
-	rectangles_on=1;
+      opt.modify_mode = mode;
+      rectangles_on = 1;
     }
 }

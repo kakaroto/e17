@@ -46,5 +46,5 @@ void feh_scale_half (winwidget winwid);
 void feh_scale_double (winwidget winwid);
 void set_pixmap_property (Pixmap p, Window woot);
 void feh_crop_image (winwidget winwid, int x, int y, int width, int height);
-void reset_modify_mode(void);
-void toggle_modify_mode(int mode);
+void reset_modify_mode (void);
+void toggle_modify_mode (int mode);

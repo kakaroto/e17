@@ -28,7 +28,7 @@ main (int argc, char **argv)
   if (argc < 2)
     show_usage ();
 
-  atexit(delete_rm_files);
+  atexit (delete_rm_files);
 
   init_parse_options (argc, argv);
 
