@@ -11,3 +11,5 @@ ltconfig
 config.sub
 config.guess
 libltdl
+ltmain.sh
+aclocal.m4
