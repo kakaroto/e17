@@ -5,13 +5,13 @@ Sat Oct 21 15:53:25 2000  Till Adam  <till@adam-lilienthal.de>
 	Any suggestions for the color of this thingy ? Should we make that
 	configurable? Who prefers a line rect (not filled)?
 
-Fri Oct 20 00:22:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Fri Oct 20 00:22:54 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Working text styles. There is no UI for editing/creating these
 	yet. There will be. For now, check out the outlined, soft-shadowed
 	text in the test.xml demo :-)
 
-Tue Oct 17 13:52:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Oct 17 13:52:16 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* The start of some text styles.
 
@@ -28,41 +28,41 @@ Sat Oct 15 02:27:32 2000  Lyle Kempler  <term@kempler.net>
 
 	* Added a spec file.
 
-Mon Oct  9 16:52:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Mon Oct  9 16:52:24 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More polygon work. Lots more to do, it doesn't work properly
 	right now, not in the slightest ;-)
 	* However, they are loaded and saved okay now, and you can create
 	them. That's about it though.
 
-Thu Sep 28 14:12:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Thu Sep 28 14:12:47 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed broken line clipping, a line with height 0 should
 	still be drawn, height 0 just means the damn thing is
 	horizontal :)
 
-Thu Sep 28 11:54:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Thu Sep 28 11:54:11 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial polygon object code. Not active yet (need to write
 	create/load/save code first).
 
-Mon Sep 15 17:30:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Mon Sep 15 17:30:26 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed the "rotating vertical lines makes them disappear" bug.
 	* Rewrote some line stuff with a faster, more general case.
 	* Thanks to Alex Hudson (ID-Pro) for advice on this.
 
-Sun Sep 10 01:12:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Sep 10 01:12:27 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Clear obj/docs properties on doc close
 	* Change props window on doc switch.
 
-Sun Sep 10 00:07:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Sep 10 00:07:37 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Word wrapping for text objects.
 	* Fixed bug in clipping code.
 
-Fri Sep  8 20:15:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Fri Sep  8 20:15:01 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Save image colormods.
 	* Load image colormods.
@@ -70,7 +70,7 @@ Fri Sep  8 20:15:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	* Fix text object copying
 	* Multiline text boxes work now.
 
-Fri Sep  8 18:50:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Fri Sep  8 18:50:34 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Yay. Text objects now handle multiple lines and text
 	justification. You won't see this yet, as the property box is
@@ -78,7 +78,7 @@ Fri Sep  8 18:50:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	appears to me that the GtkText widget has one of the suckiest APIs
 	I've ever seen :/
 
-Sun Aug 27 02:19:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Aug 27 02:19:03 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Yuck. Strongly dislikes the notebook UI. Having all the
 	documents in the same window means having the window the same size
@@ -91,7 +91,7 @@ Sun Aug 27 02:19:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	* May have introduced some bugs as this was a big change. Let me
 	know.
 
-Sat Aug 26 20:48:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug 26 20:48:36 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Block all the handlers when filling doc properties fields in,
 	else all the changed handlers get called.
@@ -99,7 +99,7 @@ Sat Aug 26 20:48:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	doesn't work quite right with the scrolled window. The interface
 	needs some fixing up soon.
 
-Thu Aug 24 21:25:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Thu Aug 24 21:25:25 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Urm. *spanks Till*. You don't efree() a geist_list :-) You
 	geist_list_free it :-) And you don't need to efree() a pointer
@@ -118,7 +118,7 @@ Thu Aug 24 21:25:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	the XML and images and screw with them by hand if he/she wants.
 	* We'll do font embedding too, I'm sure.
 
-Wed Aug 23 21:23:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug 23 21:23:40 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Image resizing :-) It seems to actually work too ;-)
 	* "Zoom" mode maintains the aspect ratio of the image, "Stretch"
@@ -130,14 +130,14 @@ Wed Aug 23 21:23:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	the feh-style "no AA during resize, but apply once resize has
 	finished".
 
-Wed Aug 23 17:14:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug 23 17:14:27 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Upgrade to libxml2. You'd better have it. As far as I know,
 	libxml 1.8.8 upwards will work, but I wouldn't rely on anything
 	much less than the 2.2.1 I have tested it with.
 	* Enjoy.
 
-Wed Aug 23 16:20:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug 23 16:20:39 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added "New line..." buttons and menu entry.
 	* Fixed multiple resizing of lines. This works more sanely now,
@@ -151,7 +151,7 @@ Wed Aug 23 14:12:05 2000  Till Adam    <Till_Adam@bigfoot.com>
         ^* added _update_position_relative and _update_dimensions_relative as
 	object member functions and updated the callbacks to use them. 
 
-Tue Aug 22 21:38:51 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug 22 21:38:51 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Object dirtying now uses an update rect generated by a
 	geist_object member, so objects can define their own shapes.
@@ -160,18 +160,18 @@ Tue Aug 22 21:38:51 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	before. Much faster, although the code which loops through the
 	points on the line could use some optimising I guess...
 
-Tue Aug 22 17:45:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug 22 17:45:53 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Line selection works sanely now.
 
-Tue Aug 22 04:29:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug 22 04:29:18 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* More line work
 	* Patch from nolan (email?) to implement image opacity. Looks
 	sweet and is fast, but there is a leak we can't find in there
 	somewhere, so be careful until we find it ;-)p
 
-Tue Aug 22 01:15:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug 22 01:15:40 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Big restructure of object code, made lots more functions members
 	of the object class, as lines etc need to do stuff diferently.
@@ -179,7 +179,7 @@ Tue Aug 22 01:15:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	* Resizing lines *almost* works right now, but needs some tweaking
 	;-)
 
-Mon Aug 21 19:15:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Mon Aug 21 19:15:59 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Decent, Working XML check courtesy of Dave J (the powertweak
 	guy), much better :-)
@@ -190,7 +190,7 @@ Mon Aug 21 19:15:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	* I can put the line clipping code into imlib2 if raster is
 	interested, as a seperate function of course.
 
-Sun Aug 20 01:10:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Aug 20 01:10:36 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* nolan pointed out that the _object_dirty() function dirties the
 	whole rendered image size, even if the object has been resized
@@ -198,7 +198,7 @@ Sun Aug 20 01:10:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	click-selection. Fixed now with a obj->get_rendered_area() member
 	fuction. Thanks nolan :)
 
-Fri Aug 18 00:37:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Fri Aug 18 00:37:25 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Check for libxml. Test whether it is installed to
 	<gnome-xml/parser.h> or <libxml/parser.h> (it's the same damn lib,
@@ -207,100 +207,100 @@ Fri Aug 18 00:37:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	depend on GNOME. You need libxml1 for geist right now. libxml2
 	needs a coupla bugs fixed before I switch....
 
-Thu Aug 17 00:12:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Thu Aug 17 00:12:36 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Wheeeee! Geist can load it's own file format now :-)
 	* Just make some changes, do a file/save and then load it
 	back. Yipee!
 
-Wed Aug 16 20:30:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug 16 20:30:52 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Update object list when changing current document.
 	* Freeze clist for multiple additions...
 
-Wed Aug 16 20:13:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug 16 20:13:26 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Support multiple documents. Added "Save" menu item...
 
-Tue Aug 15 18:38:17 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug 15 18:38:17 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Start of some menus and a working "Save as..." entry. This is
 	not how the menus will end up, but serves as a working test...
 
-Sun Aug 13 17:41:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Aug 13 17:41:08 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Saving to XML format. XML is a nice structured format for our
 	needs. Run geist and check the contents of test.xml after it's
 	opened up...
 	* Yes. You will need libxml installed for geist to compile now...
 
-Sat Aug 12 21:38:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug 12 21:38:21 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Start of abstracted "fill" type.
 
-Wed Aug  9 19:31:43 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug  9 19:31:43 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Object properties are now called by the objects themselves. The
 	add text button has been changed to use this code, and there is a
 	new "Edit" button to bring up properties.
 
-Wed Aug  9 00:18:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug  9 00:18:47 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Changed api to use obj->layer and layer->doc, cleaned it up a
 	lot in the process.
 
-Tue Aug  8 23:19:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug  8 23:19:35 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Patch from Tillsan for "add rectangle" and the start of some
 	object property code.
 
-Tue Aug  8 18:51:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug  8 18:51:07 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Seperated resize modes from alignment modes. API cleanup.
 
-Mon Aug  7 21:34:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Mon Aug  7 21:34:38 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Rectangle resizing
 	* Centred text resizing
 	* Centred image resizing, need to implement zoom and scale resize
 	modes for this next.
 
-Sun Aug  6 23:04:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Aug  6 23:04:59 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Moved obj->visible into state mask.
 	* Backend of resizing code in place. Objects aren't actually
 	resized yet, but drag a selection rect and see the printfs! ;)
 
-Sun Aug  6 19:20:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Aug  6 19:20:08 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* g_malloc and libc free don't mix :-) This fixes the core dump on
 	opening the file selector after deleting an object.
 	* Fixed bug with object freeing itself twice :)
 
-Sun Aug  6 02:09:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sun Aug  6 02:09:48 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added rectangle objects. They look kewl ;-)
 	* Fixed rendering bug not visible for images, but shown for
 	rects.
 	* Added rectangles to the demo :)
 
-Sat Aug  5 21:03:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 21:03:34 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Colour and transparency for text.
 
-Sat Aug  5 20:49:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 20:49:18 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Moved the checking of pixel transparency to a member function of
 	geist_object, so that different objects can determine their
 	transparency differently.
 
-Sat Aug  5 19:15:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 19:15:08 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Copy works, and handles multiple selections too.
 	* Fixed coredump when typing stuff in the text boxes ;) (My bad).
 	* Fixed some other stuffs... Urm...
 
-Sat Aug  5 16:37:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 16:37:37 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Check if object is visible when seeing if it's been clicked.
 	* Check a layer is visible before checking selections on its
@@ -314,7 +314,7 @@ Sat Aug  5 16:37:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	delete the last one. I have to fix this next.
 	* I'll do copy next too.
 
-Sat Aug  5 12:59:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 12:59:35 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed text update, removed duplicate call to
 	_text_create_image() and dirty the object before it is resized, so
@@ -329,7 +329,7 @@ Sat Aug  5 12:59:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	selection of an object, for when it's selection changes only - it
 	saves redrawing the whole thing.
 
-Sat Aug  5 12:58:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 12:58:54 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Stuff by pabs last night:
 
@@ -344,18 +344,18 @@ Sat Aug  5 12:58:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	you can adjust the text real-time.
 	- you can now load images with the "add" button.
 
-Sat Aug  5 01:04:41 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 01:04:41 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed make install to work. But now YOU HAVE TO RUN MAKE INSTALL
 	FOR GEIST TO WORK! I hope you all read that ;-)
 
-Sat Aug  5 00:55:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 00:55:52 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Oh sod it. I made it fuzzy over the neighbouring 9 pixels. Will
 	be an option in the future, but this makes it easier to select
 	textboxes.
 
-Sat Aug  5 00:44:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Sat Aug  5 00:44:08 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay. Partial rendering works again
 	* Multiple motionnotify events in the queue are reduced to one.
@@ -364,27 +364,27 @@ Sat Aug  5 00:44:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	over 9 pixels in the future, so you don't have to be too precise
 	in your clicking...
 
-Fri Aug  4 13:06:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Fri Aug  4 13:06:58 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Multiple selections (using shift-click) and dragging of multiple
 	objects.
 
-Wed Aug  2 19:18:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug  2 19:18:50 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Object selection bounding boxes.
 
-Wed Aug  2 18:28:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Wed Aug  2 18:28:15 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Text objects.
 
-Tue Aug  1 19:42:30 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Tue Aug  1 19:42:30 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Pop objects to top of layer on drag
 
-Mon Jul 31 16:47:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Mon Jul 31 16:47:36 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* It works! Renders to the gtk window and everything :)
 
-Mon Jul 31 16:47:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+Mon Jul 31 16:47:18 2000  Dickie Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial import. Object hierarchy done.
