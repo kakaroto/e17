@@ -322,7 +322,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
           && (thumb_edje =
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
-         edje_object_signal_emit(thumb_edje, "entice,thumb,unload", "");
+         edje_object_signal_emit(thumb_edje, "entice,thumb,unloaded", "");
 
       edje_object_signal_emit(entice->edje, "entice,image,display,before",
                               "");
@@ -369,7 +369,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
          {
-            edje_object_signal_emit(thumb_edje, "entice,thumb,load", "");
+            edje_object_signal_emit(thumb_edje, "entice,thumb,loaded", "");
             esmart_container_scroll_to(entice->container, thumb_edje);
          }
 
