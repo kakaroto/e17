@@ -816,7 +816,7 @@ save_image(Imlib_Image image,
         log("Error saving image %s - Out of memory", file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
-        eprintf("While loading %s - Out of file descriptors", file);
+        gib_eprintf("While loading %s - Out of file descriptors", file);
         break;
       case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
         log("Error saving image %s - Cannot write to directory", file);
