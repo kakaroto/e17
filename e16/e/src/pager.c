@@ -967,110 +967,113 @@ PagerRedraw(Pager * p, char newbg)
    b = 255;
    c2 = Imlib_best_color_match(id, &r, &g, &b);
    gc = XCreateGC(disp, p->pmap, 0, &gcv);
-   if ((newbg > 0) && (newbg < 3))
+   if (gc)
      {
-	if (!SNAP)
+	if ((newbg > 0) && (newbg < 3))
 	  {
-	     ImageClass         *ic = NULL;
-
-	     EFreePixmap(disp, p->bgpmap);
-	     ic = FindItem("PAGER_BACKGROUND", 0,
-			   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-	     if (ic)
-		IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay,
-				0, 0, STATE_NORMAL, &(p->bgpmap), NULL);
-	  }
-	else
-	  {
-	     if (desks.desk[p->desktop].bg)
+	     if (!SNAP)
 	       {
-		  char                s[4096];
-		  char               *uniq;
-		  ImlibImage         *im;
+		  ImageClass         *ic = NULL;
 
-		  uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
-		  Esnprintf(s, sizeof(s),
-			    "%s/cached/pager/%s.%i.%i.%s",
-			    UserEDir(), desks.desk[p->desktop].bg->name,
-			    (p->w / ax), (p->h / ay), uniq);
-		  Efree(uniq);
-
-		  im = Imlib_load_image(id, s);
-		  if (im)
+		  EFreePixmap(disp, p->bgpmap);
+		  ic = FindItem("PAGER_BACKGROUND", 0,
+				LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  if (ic)
+		     IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay,
+				     0, 0, STATE_NORMAL, &(p->bgpmap), NULL);
+	       }
+	     else
+	       {
+		  if (desks.desk[p->desktop].bg)
 		    {
-		       EFreePixmap(disp, p->bgpmap);
-		       Imlib_render(id, im, (p->w / ax), (p->h / ay));
-		       p->bgpmap = Imlib_copy_image(id, im);
-		       Imlib_destroy_image(id, im);
+		       char                s[4096];
+		       char               *uniq;
+		       ImlibImage         *im;
+
+		       uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
+		       Esnprintf(s, sizeof(s),
+				 "%s/cached/pager/%s.%i.%i.%s",
+				 UserEDir(), desks.desk[p->desktop].bg->name,
+				 (p->w / ax), (p->h / ay), uniq);
+		       Efree(uniq);
+
+		       im = Imlib_load_image(id, s);
+		       if (im)
+			 {
+			    EFreePixmap(disp, p->bgpmap);
+			    Imlib_render(id, im, (p->w / ax), (p->h / ay));
+			    p->bgpmap = Imlib_copy_image(id, im);
+			    Imlib_destroy_image(id, im);
+			 }
+		       else
+			 {
+			    SetBackgroundTo(id, p->bgpmap,
+					    desks.desk[p->desktop].bg, 0);
+			    im = Imlib_create_image_from_drawable(id, p->bgpmap,
+								  0, 0, 0,
+								  (p->w / ax),
+								  (p->h / ay));
+			    Imlib_save_image_to_ppm(id, im, s);
+			    Imlib_changed_image(id, im);
+			    Imlib_kill_image(id, im);
+			 }
 		    }
 		  else
 		    {
-		       SetBackgroundTo(id, p->bgpmap,
-				       desks.desk[p->desktop].bg, 0);
-		       im = Imlib_create_image_from_drawable(id, p->bgpmap,
-							     0, 0, 0,
-							     (p->w / ax),
-							     (p->h / ay));
-		       Imlib_save_image_to_ppm(id, im, s);
-		       Imlib_changed_image(id, im);
-		       Imlib_kill_image(id, im);
+		       XSetForeground(disp, gc, c1);
+		       XDrawRectangle(disp, p->bgpmap, gc, 0, 0, p->dw, p->dh);
+		       XSetForeground(disp, gc, c2);
+		       XFillRectangle(disp, p->bgpmap, gc, 1, 1,
+				      p->dw - 2, p->dh - 2);
 		    }
 	       }
-	     else
-	       {
-		  XSetForeground(disp, gc, c1);
-		  XDrawRectangle(disp, p->bgpmap, gc, 0, 0, p->dw, p->dh);
-		  XSetForeground(disp, gc, c2);
-		  XFillRectangle(disp, p->bgpmap, gc, 1, 1,
-				 p->dw - 2, p->dh - 2);
-	       }
 	  }
-     }
-   for (y = 0; y < ay; y++)
-     {
-	for (x = 0; x < ax; x++)
-	   XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->w / ax, p->h / ay,
-		     x * (p->w / ax), y * (p->h / ay));
-     }
-   for (i = desks.desk[p->desktop].num - 1; i >= 0; i--)
-     {
-	EWin               *ewin;
-	int                 wx, wy, ww, wh;
-
-	ewin = desks.desk[p->desktop].list[i];
-	if (!ewin->iconified)
+	for (y = 0; y < ay; y++)
 	  {
-	     wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-	     wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-	     ww = ((ewin->w) * (p->w / ax)) / root.w;
-	     wh = ((ewin->h) * (p->h / ay)) / root.h;
-	     PagerEwinUpdateMini(p, ewin);
-	     if (ewin->mini_pmap)
+	     for (x = 0; x < ax; x++)
+		XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->w / ax, p->h / ay,
+			  x * (p->w / ax), y * (p->h / ay));
+	  }
+	for (i = desks.desk[p->desktop].num - 1; i >= 0; i--)
+	  {
+	     EWin               *ewin;
+	     int                 wx, wy, ww, wh;
+
+	     ewin = desks.desk[p->desktop].list[i];
+	     if (!ewin->iconified)
 	       {
-		  if (ewin->mini_mask)
+		  wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
+		  wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
+		  ww = ((ewin->w) * (p->w / ax)) / root.w;
+		  wh = ((ewin->h) * (p->h / ay)) / root.h;
+		  PagerEwinUpdateMini(p, ewin);
+		  if (ewin->mini_pmap)
 		    {
-		       XSetClipMask(disp, gc, ewin->mini_mask);
-		       XSetClipOrigin(disp, gc, wx, wy);
+		       if (ewin->mini_mask)
+			 {
+			    XSetClipMask(disp, gc, ewin->mini_mask);
+			    XSetClipOrigin(disp, gc, wx, wy);
+			 }
+		       XCopyArea(disp, ewin->mini_pmap, p->pmap, gc, 0, 0, ww, wh, wx, wy);
+		       if (ewin->mini_mask)
+			  XSetClipMask(disp, gc, None);
 		    }
-		  XCopyArea(disp, ewin->mini_pmap, p->pmap, gc, 0, 0, ww, wh, wx, wy);
-		  if (ewin->mini_mask)
-		     XSetClipMask(disp, gc, None);
-	       }
-	     else
-	       {
-		  XSetForeground(disp, gc, c1);
-		  XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1, wh + 1);
-		  XSetForeground(disp, gc, c2);
-		  XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
+		  else
+		    {
+		       XSetForeground(disp, gc, c1);
+		       XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1, wh + 1);
+		       XSetForeground(disp, gc, c2);
+		       XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
+		    }
 	       }
 	  }
+	if (newbg < 2)
+	  {
+	     ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
+	     XClearWindow(disp, p->win);
+	  }
+	XFreeGC(disp, gc);
      }
-   if (newbg < 2)
-     {
-	ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
-	XClearWindow(disp, p->win);
-     }
-   XFreeGC(disp, gc);
 }
 
 void
