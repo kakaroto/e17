@@ -46,10 +46,10 @@ void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	}
         else if (!strcmp(ev->keyname, "m")){
 		if(muted == 0){
-			emotion_object_video_mute_set(emotion, 1);
+			emotion_object_audio_mute_set(emotion, 1);
 			muted = 1;
 		} else {
-			emotion_object_video_mute_set(emotion, 0);
+			emotion_object_audio_mute_set(emotion, 0);
 			muted = 0;
 		}
         }
@@ -57,14 +57,14 @@ void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_inf
 		double pos;
 
 		pos = emotion_object_position_get(obj);
-		emotion_object_position_set(obj, pos-10.0);
+		emotion_object_position_set(obj, pos-5);
 	}	
         else if (!strcmp(ev->keyname, "Up")){
 		double pos;
 		int min, sec;
 
 		pos = emotion_object_position_get(obj);
-		emotion_object_position_set(obj, pos+10.0);
+		emotion_object_position_set(obj, pos+5);
 		pos = emotion_object_position_get(obj);
 		min = pos / 60;
 		printf("Position is: %d:00\n", min);
@@ -73,13 +73,13 @@ void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_inf
 		double pos;
 
 		pos = emotion_object_position_get(obj);
-		emotion_object_position_set(obj, pos+5.0);
+		emotion_object_position_set(obj, pos+10);
 	}
         else if (!strcmp(ev->keyname, "Left")){
 		double pos;
 
 		pos = emotion_object_position_get(obj);
-		emotion_object_position_set(obj, pos-5.0);
+		emotion_object_position_set(obj, pos-10);
 	}
 
 
@@ -124,8 +124,9 @@ int main(int argc, char *argv[]){
 	emotion_object_file_set(emotion, argv[1]);
 	emotion_object_size_get(emotion, &w, &h);
 
-	ecore_evas_resize(ee, w+21, h+46);	// Resize EVAS
-	evas_object_resize(edje, w+21, h+46);	// Resize Edje
+	// Trakvision: 106 25
+	ecore_evas_resize(ee, w+25, h+106);	// Resize EVAS
+	evas_object_resize(edje, w+25, h+106);	// Resize Edje
 	//evas_object_move(emotion, 0, 0);	// Move Video 
 	evas_object_resize(emotion, w, h);	// Resize Video
 
@@ -140,9 +141,11 @@ int main(int argc, char *argv[]){
 	
 	/* Get and Display the volume */
 	volume = emotion_object_audio_volume_get(emotion);
-	printf("DEBUG: Volume is: %d\n", volume);
-	sprintf(vol_str, "%d", (int)volume);
+	printf("DEBUG: Volume is: %0f\n", volume*100);
+	sprintf(vol_str, "%2.0f", volume*100);
 	edje_object_part_text_set(edje, "vol_display_text", vol_str);
+
+	edje_object_part_text_set(edje, "video_name", argv[1]);
 
 	/* Callbacks */
         evas_object_event_callback_add(emotion, 
@@ -167,36 +170,40 @@ void quit_edjecallback(void *data, Evas_Object *obj, const char *emission, const
 void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
 	double v;
 
-	v = emotion_object_audio_volume_get(emotion);
-	v = v + 1;
-	emotion_object_audio_volume_set(emotion, v);
-	sprintf(vol_str, "%d", (int)volume);
+        v = emotion_object_audio_volume_get(emotion);
+        v = v + 0.10;
+        emotion_object_audio_volume_set(emotion, v);
+
+        sprintf(vol_str, "%2.0f", v*100);
         edje_object_part_text_set(edje, "vol_display_text", vol_str);
-	
+
+	evas_object_show(edje);
 }
 
 void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
         double v;
 
         v = emotion_object_audio_volume_get(emotion);
-        v = v - 1;
+        v = v - 0.10;
         emotion_object_audio_volume_set(emotion, v);
-        sprintf(vol_str, "%d", (int)volume);
+        sprintf(vol_str, "%2.0f", v*100);
         edje_object_part_text_set(edje, "vol_display_text", vol_str);
-
+	evas_object_show(edje);
 }
 
 void seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
 	double pos;
 
 	pos = emotion_object_position_get(emotion);
-	emotion_object_position_set(emotion, pos-30);
+	printf("DEBUG: Position is %2f - Backward\n", pos);
+	emotion_object_position_set(emotion, pos-10);
 }
 void seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
         double pos;
 
         pos = emotion_object_position_get(emotion);
-        emotion_object_position_set(emotion, pos+30);
+	printf("DEBUG: Position is %2f - Forward\n", pos);
+        emotion_object_position_set(emotion, pos+10);
 }
 
 
