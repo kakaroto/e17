@@ -143,6 +143,74 @@ E : N : L : I : G : H : T : E : N : M : E : N : T
 
 
 <p><table width="100%"><tr><td class="newstitle">
+Mon Oct 5 - <a href="mailto:benr@NO.SPAMcuddletech.com">benr</a> - Release, Merge and CVS update
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+<p>
+As mentioned in the last news update, large amounts of the EFL are nearly complete and from this
+point on CVS updates and any API or format changes will become of interest to people beyond the development
+team and testers.  And as such, we're going to be making more complete news postings of changes that
+occur, summerizing CVS commits of interest and changes that will effect work that is happening outside
+of the immediate project.
+</p>
+
+<p>
+<a href="team.html">Kim "kwo" Woelders</a> has released Enlightenment DR16.6-pre8 to the world.
+Changes since -pre7 include: fixing focus issues with dock style windows and making them sticky, 
+fixing some seg faults, moving control of the FX (Ripples/Waves) to the FX Settings dialog,
+and we no longer have to see the stupid FX Startup dialog ("You have enabled Ripples") every time
+you start or restart E.  You can find source, SRPMs and RPMs <a href="http://sourceforge.net/project/showfiles.php?group_id=2">
+in the files section of SourceForge Group Number 2</a>.
+</p>
+
+<p>
+On the EFL front, we are happy to announce that <b>Ecore has been merged!</b> This means
+that all the current lib code can be found in the main branch (HEAD), and you don't need
+to fish into SPLIT anymore.
+</p>
+
+<p>
+The rest of the CVS activity was as follows....  
+</p>
+
+<p>
+<a href="team.html">RbdPngn</a> has been 
+hard at work on EWL changing to default theme to <a href="team.html">rephorm</a>s "Winter" theme,
+as well as commiting a slew of updates to EWL, including the removal of some remaining Ebits in the codebase,
+some misc bug fixes and improvements.  RbdPngn also commited some fixes and improvements to the EWD list code, and
+made EET Efence friendly.  
+</p>
+
+<p>
+<a href="team.html">Raster</a> besides merging Ecore, added basic cursor support
+to Ecore's X module, he may be adding XCursor support as well down the road.  Raster also made a minor
+change to the Imlib2 Makefile adding libm.so to the link arguments, which has been a minor irritation on
+some platforms.   He also removed some useless linking from the makefiles of e16keyedit and e16menuedit.
+</p>
+
+<p>
+<a href="team.html">Rephorm</a> has released <a href="http://rephorm.com/rephorm/code/elicit/">elicit 0.7</a> newly
+Edjified, and has commited Elicit into E CVS (e17/apps/elicit/).  Also, remember his Iconbar code
+has been Edjified and is in E CVS as well.  He commited an Edje API change that now causes 
+edje_object_file_set() to return an int value for failure or success.  Rephorm has also been hard at work
+on a new library which you can find in CVS, but we'll hold out on saying too much for the time being.
+</p>
+
+<p><a href="team.html">Atmos</a> made more commits to entrance than I can summerize here. 
+<a href="team.html">Azundris</a> commited to Ecore a temporary solution to a problem keeping 
+servers from working with ecore_main_loop_iterate().  <a href="team.html">Gilbert</a> added
+a patch by Birger Nissen to CamE that enables a single shot mode allowing execution to just
+nab a shot and exit.  And finally, <a href="team.html">jeoparde</a> made a minor commit to
+entrance modifying the font paths, and commited spelling and grammerical correntions to
+the page you read now.</p>
+
+<p>
+There you have it, an overview of the last 3 weeks of CVS commits.  Let no one say we're lazy.
+Raster has been in Singapore on business for the last week and should be back around this week.
+If you have feedback on these types of updates, please send them our way.
+</p>
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
 Thu Sep 18 - <a href="mailto:benr@NO.SPAMcuddletech.com">benr</a> - The Big News Update
 </td></tr></table><table width="100%"><tr><td class="newsbody">
 <p>
