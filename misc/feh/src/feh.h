@@ -236,6 +236,7 @@ void winwidget_show (winwidget winwid);
 void winwidget_hide (winwidget winwid);
 void winwidget_destroy_all (void);
 void winwidget_render_image (winwidget winwid);
+void winwidget_setup_pixmaps (winwidget winwid);
 void winwidget_update_title (winwidget ret);
 winwidget winwidget_get_from_window (Window win);
 winwidget winwidget_create_from_file (feh_file *filename, char *name);
@@ -244,7 +245,6 @@ void winwidget_destroy (winwidget winwid);
 void progress (Imlib_Image im, char percent, int update_x, int update_y,
 	       int update_w, int update_h);
 void winwidget_create_window (winwidget ret, int w, int h);
-void winwidget_rerender_image (winwidget winwid);
 void feh_draw_checks (winwidget win);
 void feh_handle_timer (void);
 double feh_get_time (void);

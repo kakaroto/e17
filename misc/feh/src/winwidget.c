@@ -51,8 +51,7 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget
-winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -79,8 +78,7 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget
-winwidget_create_from_file (feh_file *file, char *name)
+winwidget winwidget_create_from_file (feh_file * file, char *name)
 {
   winwidget ret = NULL;
 
@@ -223,8 +221,10 @@ winwidget_update_title (winwidget ret)
 }
 
 void
-winwidget_render_image (winwidget winwid)
+winwidget_setup_pixmaps (winwidget winwid)
 {
+  D (("In winwidget_setup_pixmaps\n"));
+
   if (opt.full_screen)
     {
       if (!(winwid->bg_pmap))
@@ -239,9 +239,9 @@ winwidget_render_image (winwidget winwid)
 	    }
 	  winwid->bg_pmap =
 	    XCreatePixmap (disp, winwid->win, scr->width, scr->height, depth);
-	  XFillRectangle (disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width,
-			  scr->height);
 	}
+      XFillRectangle (disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width,
+		      scr->height);
     }
   else
     {
@@ -252,23 +252,20 @@ winwidget_render_image (winwidget winwid)
 	XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
     }
 
-  imlib_context_set_drawable (winwid->bg_pmap);
-  imlib_context_set_image (winwid->im);
-  if (!opt.full_screen && imlib_image_has_alpha ())
-    feh_draw_checks (winwid);
+}
 
-  imlib_context_set_image (winwid->im);
-  if (opt.full_screen)
-    {
-      int x, y;
+void
+winwidget_render_image (winwidget winwid)
+{
+  int x = 0, y = 0;
 
-      x = (scr->width - winwid->im_w) >> 1;
-      y = (scr->height - winwid->im_h) >> 1;
-      imlib_render_image_on_drawable (x, y);
-    }
-  else
+  D (("In winwidget_render_image\n"));
+
+  winwidget_setup_pixmaps (winwid);
+
+  if (!opt.full_screen)
     {
-      imlib_render_image_on_drawable (0, 0);
+      /* resize window if the image size has changed */
       if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
 	{
 	  winwid->h = winwid->im_h;
@@ -277,55 +274,23 @@ winwidget_render_image (winwidget winwid)
 	}
     }
 
-  XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
-  XClearWindow (disp, winwid->win);
-  XFlush (disp);
-}
-
-void
-winwidget_rerender_image (winwidget winwid)
-{
-  D (("In winwidget_rerender_image\n"));
-
-  if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
-    {
-      winwid->h = winwid->im_h;
-      winwid->w = winwid->im_w;
-      if (opt.full_screen)
-	{
-	  XFillRectangle (disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width,
-			  scr->height);
-	}
-      else
-	{
-	  if (winwid->bg_pmap)
-	    XFreePixmap (disp, winwid->bg_pmap);
-	  winwid->bg_pmap =
-	    XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h,
-			   depth);
-	  XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
-	}
-    }
-  imlib_context_set_blend (0);
   imlib_context_set_drawable (winwid->bg_pmap);
+  imlib_context_set_image (winwid->im);
+  imlib_context_set_blend (0);
   if (!opt.full_screen && imlib_image_has_alpha ())
     {
       feh_draw_checks (winwid);
       imlib_context_set_blend (1);
+      imlib_context_set_image (winwid->im);
     }
-  imlib_context_set_image (winwid->im);
+
   if (opt.full_screen)
     {
-      int x, y;
-
       x = (scr->width - winwid->im_w) >> 1;
       y = (scr->height - winwid->im_h) >> 1;
-      imlib_render_image_on_drawable (x, y);
     }
-  else
-    {
-      imlib_render_image_on_drawable (0, 0);
-    }
+  imlib_render_image_on_drawable (x, y);
+
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
   XFlush (disp);
@@ -380,7 +345,7 @@ winwidget_destroy_all (void)
 }
 
 int
-winwidget_loadimage (winwidget winwid, feh_file *file)
+winwidget_loadimage (winwidget winwid, feh_file * file)
 {
   D (("In winwidget_loadimage: filename %s\n", file->filename));
   return feh_load_image (&(winwid->im), file);
@@ -444,8 +409,7 @@ winwidget_unregister (winwidget win)
   XDeleteContext (disp, win->win, xid_context);
 }
 
-winwidget
-winwidget_get_from_window (Window win)
+winwidget winwidget_get_from_window (Window win)
 {
   winwidget ret = NULL;
 

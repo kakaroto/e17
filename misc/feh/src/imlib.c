@@ -218,13 +218,11 @@ void
 progress (Imlib_Image im, char percent, int update_x, int update_y,
 	  int update_w, int update_h)
 {
-  int exists = 0;
-  int dest_x = 0;
-  int dest_y = 0;
+  int new = 0, dest_x = 0, dest_y = 0;
   D (("In progressive loading callback\n"));
   if (!progwin)
     {
-      weprintf ("progwin does not exist");
+      weprintf ("progwin does not exist - this should not happen");
       return;
     }
 
@@ -233,57 +231,40 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   imlib_context_set_dither (0);
   imlib_context_set_image (im);
 
-  /* need to create a window for the image */
+  /* Is this the first progress return for a new image? */
+  /* If so, we have some stuff to set up... */
   if (progwin->im_w == 0)
     {
       progwin->w = progwin->im_w = imlib_image_get_width ();
       progwin->h = progwin->im_h = imlib_image_get_height ();
+      /* do we need to create a window for the image? */
       if (!progwin->win)
-	winwidget_create_window (progwin, progwin->w, progwin->h);
-      else
-	exists = 1;
-      if (progwin->bg_pmap)
-	XFreePixmap (disp, progwin->bg_pmap);
-      if (opt.full_screen)
 	{
-	  if (progwin->gc == None)
-	    {
-	      XGCValues gcval;
-
-	      gcval.foreground = BlackPixel (disp, DefaultScreen (disp));
-	      progwin->gc =
-		XCreateGC (disp, progwin->win, GCForeground, &gcval);
-	    }
-	  progwin->bg_pmap =
-	    XCreatePixmap (disp, progwin->win, scr->width, scr->height,
-			   depth);
-	  XFillRectangle (disp, progwin->bg_pmap, progwin->gc, 0, 0,
-			  scr->width, scr->height);
+	  winwidget_create_window (progwin, progwin->w, progwin->h);
+	  new = 1;
 	}
-      else
+
+      winwidget_setup_pixmaps (progwin);
+
+      if (!opt.full_screen)
 	{
-	  progwin->bg_pmap =
-	    XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
-			   depth);
-	  imlib_context_set_drawable (progwin->bg_pmap);
 	  feh_draw_checks (progwin);
+	  if (!new)
+	    XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
 	}
       XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
-      if (exists && !opt.full_screen)
-	XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
       XClearWindow (disp, progwin->win);
-      if (!exists)
-	XMapWindow (disp, progwin->win);
-      XSync (disp, False);
+      if (new)
+	winwidget_show (progwin);
     }
+
   imlib_context_set_image (im);
   imlib_context_set_drawable (progwin->bg_pmap);
   imlib_context_set_anti_alias (0);
   imlib_context_set_dither (0);
+  imlib_context_set_blend (0);
   if (imlib_image_has_alpha ())
     imlib_context_set_blend (1);
-  else
-    imlib_context_set_blend (0);
 
   if (opt.full_screen)
     {
@@ -410,9 +391,9 @@ feh_display_status (char stat)
   static int init_len = 0;
   int j = 0;
 
-  if(!init_len)
-	init_len = filelist_length(filelist);
-  
+  if (!init_len)
+    init_len = filelist_length (filelist);
+
   if (i)
     {
       if (reset_output)

@@ -1,3 +1,13 @@
+Tue Mar 21 15:45:02 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Major cruft removal and tidying of code path. Progressive
+	loading code slightly less complex now.
+
+Tue Mar 21 15:18:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Big optimisation for progressive loading in fullscreen mode. I
+	was recreating the pixmap at every iteration - damnit ;)
+
 Mon Mar 20 21:54:22 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Dammit. Why do I find these things *after* a release?
