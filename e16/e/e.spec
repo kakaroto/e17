@@ -53,9 +53,9 @@ else
   CFLAGS="${RPM_OPT_FLAGS}"
 fi
 if [ ! -f configure ]; then
-  CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%prefix --enable-fsstd
+  CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%prefix --enable-fsstd --enable-upgrade=no
 else
-  CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-fsstd
+  CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-fsstd --enable-upgrade=no
 fi
 make
 
