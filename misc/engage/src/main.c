@@ -48,7 +48,7 @@ main(int argc, char **argv)
 
   od_window_init();
   od_dock_init();
-#if 0
+#if 1
   // this is not getting added until we have a LOT more work done!!!
   od_tray_init();
 #endif

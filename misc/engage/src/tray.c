@@ -24,30 +24,6 @@ double tray_x = 0.0;
 int tray_width = -4;
 Window_List *tray_list = NULL;
 
-/*
- * This or something similar should probably go into ecore_x
- */
-extern Display *_ecore_x_disp;
-
-int
-ecore_x_client_message_send(Window win, Atom type, long d0, long d1,
-                            long d2, long d3, long d4)
-{
-    XEvent xev;
-
-    xev.xclient.window = win;
-    xev.xclient.type = ClientMessage;
-    xev.xclient.message_type = type;
-    xev.xclient.format = 32;
-    xev.xclient.data.l[0] = d0;
-    xev.xclient.data.l[1] = d1;
-    xev.xclient.data.l[2] = d2;
-    xev.xclient.data.l[3] = d3;
-    xev.xclient.data.l[4] = d4;
-
-    XSendEvent(_ecore_x_disp, win, False, NoEventMask, &xev);
-}
-
 static Display *display;
 static Window root, tray_container;
 static int tray_init;
@@ -65,9 +41,7 @@ od_tray_layout() {
   xpos = 0;
   oddflag = 0;
   while(tmp) {
-    /* this line sets some (skype...) to the correct position in the engage win
-       but others (psi...) to the same position rel to the main screen - bum */
-    ecore_x_window_prop_xy_set(tmp->win, xpos, 24 - oddflag);
+    ecore_x_window_move(tmp->win, xpos, 24 - oddflag);
 
     tmp = tmp->next;
     if (oddflag) {
@@ -99,13 +73,9 @@ od_tray_add(Ecore_X_Window win) {
     insert_after->next = new;
   tray_count++;
   
-  printf("adding icon %x for %s\n", win, new->title);
-  ecore_x_event_mask_set(win, ECORE_X_EVENT_MASK_WINDOW_CONFIGURE);
   XReparentWindow (display, win, tray_container, 0, 0);  
   ecore_x_window_resize(win, 24, 24);
   od_tray_layout();
-
-  /* Map the window (will go top-level until reparented) */
   ecore_x_window_show(win);
 }
 
@@ -125,7 +95,6 @@ od_tray_remove(Ecore_X_Window win) {
     return;
   
   tray_count--;
-  printf("removing icon %x for %s\n", win, tmp->title);
   if (ptr)
     ptr->next = tmp->next;
   else
@@ -149,15 +118,14 @@ od_tray_msg_cb(void *data, int type, void *event)
       od_tray_add((Ecore_X_Window) ev->data.l[2]);
       
       /* Should proto be set according to clients _XEMBED_INFO? */
-      ecore_x_client_message_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
+      ecore_x_client_message32_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
                                   CurrentTime, XEMBED_EMBEDDED_NOTIFY,
                                   0, od_window, /*proto*/1);
 
     } else if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_MESSAGE_DATA")) {
       printf("got message\n");
     }
-  } else if (type == ECORE_X_EVENT_WINDOW_DESTROY ||
-             type == ECORE_X_EVENT_WINDOW_HIDE) {
+  } else if (type == ECORE_X_EVENT_WINDOW_DESTROY) {
     od_tray_remove((Ecore_X_Window) dst->win);
   }
 
@@ -175,7 +143,7 @@ od_tray_move(double xx)
   if (xx == tray_x)
     return;
 
-  ecore_x_window_prop_xy_set(tray_container, xx, options.height - 48);
+  ecore_x_window_move(tray_container, xx, options.height - 48);
   tray_x = xx;
 }
 
@@ -195,7 +163,7 @@ od_tray_init()
   if (XGetSelectionOwner (display, selection_atom) == od_window) {
     printf("am a system tray :) :)\n");
 
-    ecore_x_client_message_send(root, ecore_x_atom_get("MANAGER"),
+    ecore_x_client_message32_send(root, ecore_x_atom_get("MANAGER"),
                                 CurrentTime, selection_atom,
                                 od_window, 0, 0);
   }
