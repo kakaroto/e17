@@ -1670,6 +1670,7 @@ Config_Desktop(FILE * ConfigFile)
    char                s1[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 ii1;
+   int                 r, g, b;
    int                 i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0, i6 = 0;
    int                 j1 = 0, j2 = 0, j3 = 0, j4 = 0, j5 = 0;
    char               *bg1 = 0;
@@ -1816,9 +1817,9 @@ Config_Desktop(FILE * ConfigFile)
 	       }
 	     break;
 	  case BG_RGB:
-	     i1 = i2 = i3 = 0;
-	     sscanf(s, "%4000s %d %d %d", s1, &i1, &i2, &i3);
-	     ESetColor(&xclr, i1, i2, i3);
+	     r = g = b = 0;
+	     sscanf(s, "%4000s %d %d %d", s1, &r, &g, &b);
+	     ESetColor(&xclr, r, g, b);
 	     if (ignore)
 		bg->bg_solid = xclr;
 	     break;

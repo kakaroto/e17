@@ -480,7 +480,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	     /* The rest that require some more work */
 	     dpmap = ECreatePixmap(disp, win, rw, rh, depth);
 	     gc = XCreateGC(disp, dpmap, 0, &gcv);
-	     if (!bg->bg_tile)
+	     if (!hasbg || !bg->bg_tile)
 	       {
 		  XSetForeground(disp, gc, bg->bg_solid.pixel);
 		  XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
