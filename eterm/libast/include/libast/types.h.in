@@ -46,6 +46,12 @@ typedef unsigned long spif_ulong_t;
 /* Char pointer that enforces signedness of char type */
 typedef spif_char_t *spif_charptr_t;
 
+/* Socket types */
+typedef struct sockaddr *spif_sockaddr_t;
+typedef struct sockaddr_in *spif_ipsockaddr_t;
+typedef struct in_addr *spif_ipaddr_t;
+typedef struct hostent *spif_hostinfo_t;
+
 /* Type for object comparisons */
 typedef enum {
   SPIF_CMP_LESS = -1,

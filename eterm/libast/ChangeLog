@@ -211,3 +211,8 @@ Wed May  1 23:21:23 2002                        Michael Jennings (mej)
 
 Fleshed out the URL class.
 ----------------------------------------------------------------------
+Tue May  7 16:37:40 2002                        Michael Jennings (mej)
+
+A few small bugfixes and some touchups.  Also work on the socket
+object.
+----------------------------------------------------------------------

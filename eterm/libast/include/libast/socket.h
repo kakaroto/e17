@@ -25,7 +25,12 @@
 #define _LIBAST_SOCKET_H_
 
 /* Cast an arbitrary object pointer to a socket. */
-#define SPIF_SOCKET(o)                      ((spif_socket_t) (socket))
+#define SPIF_SOCKET(o)                      (SPIF_CAST(socket) (o))
+#define SPIF_SOCKET_SOCKFD(o)               (SPIF_SOCKET(o)->fd)
+#define SPIF_SOCKET_SOCKADDR(o)             (SPIF_SOCKET(o)->addr)
+#define SPIF_SOCKET_SOCKADDR_IP(o)          (SPIF_CAST(ipsockaddr) (SPIF_SOCKET(o)->addr))
+#define SPIF_SOCKET_INBUFF(o)               SPIF_STR(SPIF_SOCKET(o)->input)
+#define SPIF_SOCKET_OUTBUFF(o)              SPIF_STR(SPIF_SOCKET(o)->output)
 
 /* Check to see if a pointer references an socket. */
 #define SPIF_OBJ_IS_SOCKET(o)               (SPIF_OBJ_IS_TYPE(o, socket))
@@ -43,20 +48,32 @@
 #define SPIF_SOCKET_DUP(o)                  SPIF_OBJ_DUP(o)
 #define SPIF_SOCKET_TYPE(o)                 SPIF_OBJ_TYPE(o)
 
+/* Socket flags */
+#define SPIF_SOCKET_FLAGS_OPEN              (1UL << 0)
+#define SPIF_SOCKET_FLAGS_CONNECTED         (1UL << 1)
+#define SPIF_SOCKET_FLAGS_HAVE_INPUT        (1UL << 2)
+#define SPIF_SOCKET_FLAGS_HAVE_OUTPUT       (1UL << 3)
+
 typedef struct spif_socket_t_struct *spif_socket_t;
 typedef struct spif_socket_t_struct spif_const_socket_t;
+
+#include <libast/url.h>
 
 struct spif_socket_t_struct {
     spif_const_obj_t parent;
     int fd;
-    int flags;
+    spif_uint32_t flags;
+    spif_sockaddr_t addr;
+    spif_url_t src_url, dest_url;
     spif_str_t input, output;
 };
 
 extern spif_class_t SPIF_CLASS_VAR(socket);
 extern spif_socket_t spif_socket_new(void);
+extern spif_socket_t spif_socket_new_from_url(spif_url_t);
 extern spif_bool_t spif_socket_del(spif_socket_t);
 extern spif_bool_t spif_socket_init(spif_socket_t);
+extern spif_bool_t spif_socket_init_from_url(spif_socket_t, spif_url_t);
 extern spif_bool_t spif_socket_done(spif_socket_t);
 extern spif_str_t spif_socket_show(spif_socket_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_socket_comp(spif_socket_t, spif_socket_t);

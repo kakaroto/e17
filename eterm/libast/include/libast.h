@@ -64,6 +64,13 @@
 # include <regex.h>
 #endif
 
+#include <netdb.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <netinet/udp.h>
+
 #ifdef LIBAST_X11_SUPPORT
 # include <X11/Xatom.h>
 # include <X11/X.h>

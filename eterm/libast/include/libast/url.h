@@ -25,7 +25,7 @@
 #define _LIBAST_URL_H_
 
 /* Cast an arbitrary object pointer to a url. */
-#define SPIF_URL(o)                      ((spif_url_t) (url))
+#define SPIF_URL(o)                      (SPIF_CAST(url) (o))
 
 /* Check to see if a pointer references an url. */
 #define SPIF_OBJ_IS_URL(o)               (SPIF_OBJ_IS_TYPE(o, url))

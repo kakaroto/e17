@@ -27,7 +27,6 @@
 /* Cast an arbitrary object pointer to a str. */
 #define SPIF_STR(obj)                ((spif_str_t) (obj))
 #define SPIF_STR_STR(obj)            ((const spif_charptr_t) (SPIF_STR(obj)->s))
-#define SPIF_STR_SHOW(obj)           (spif_str_show((obj), #obj))
 
 /* Check to see if a pointer references a string object. */
 #define SPIF_OBJ_IS_STR(obj)         (SPIF_OBJ_IS_TYPE(obj, str))
