@@ -1,0 +1,229 @@
+images {
+	// We dont need no stinking images!~
+}
+
+fonts {
+	font: "Vera.ttf" "Vera";
+}
+
+collections {
+	group {
+		name, "elapse";
+	min, 260, 34;
+	max, 260, 34;
+
+	parts {
+		part {
+			name, "background";
+			type, RECT;
+			mouse_events, 0;
+			
+			description {
+				state, "default" 0.0;
+				color, 0, 0, 0, 0;
+				
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 0 0;
+				}
+				
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -1 -1;
+				}
+			}
+			description {
+				state, "active" 0.0;
+				color, 96, 96, 96, 128;
+				
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 0 0;
+				}
+				
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -1 -1;
+				}
+			}
+		}
+		part {
+			name, "time";
+			type, TEXT;
+			mouse_events, 1;
+			description {
+				state, "default" 0.0;
+				color, 255 255 255 255;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 0 0;
+				}
+
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -1 -1;
+				}
+				
+				text {
+					text, "Elapse";
+					font, "Vera";
+					size, 12;
+					align, 0.5 0.5;
+				}
+			}	
+		}
+		
+		part {
+			name, "tarp";
+			type, RECT;
+			mouse_events, 1;
+			
+			description {
+				state, "default" 0.0;
+				color, 0 0 0 0;
+
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 0 0;
+				}
+				
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -1 -1;
+				}
+			}
+		}
+		part {
+			name, "quit";
+			type, TEXT;
+			mouse_events, 1;
+			effect, SOFT_OUTLINE;
+			description {
+				state, "default" 0.0;
+				color, 255 255 255 0 ;
+				color2, 0 0 0 0; 
+				align, 0.5 0.5;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, -7 12;
+				}
+				
+				rel2 {
+					relative, 0.1 0.1;
+					offset, 0 0;
+				}
+
+				text {
+					text, "[X]";
+					font, "Vera";
+					size, 7;
+				}
+			}
+			description {
+				state, "active" 0.0;
+				color,  255 255 255 255;
+				color2, 0 0 0 0;
+				align, 0.5 0.5;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, -7 12;
+				}
+				
+				rel2 {
+					relative, 0.1 0.1;
+					offset, 0 0;
+				}
+
+				text {
+					text, "[X]";
+					font, "Vera";
+					size, 7;
+				}
+			}
+			description {
+				state, "highlight" 0.0;
+				color, 255 255 255 255;
+				color2, 255 0 0 255;
+				align, 0.5 0.5;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, -7 12;
+				}
+				
+				rel2 {
+					relative, 0.1 0.1;
+					offset, 0 0;
+				}
+				
+				text {
+					text, "[X]";
+					font, "Vera";
+					size, 7;
+				}
+			}
+		}
+			
+	}
+
+	programs {
+		program {
+			name, "tarp_mouse_enter";
+			signal, "mouse,in";
+			source, "tarp";
+			action, STATE_SET "active" 0.0;
+			target, "background";
+			target, "quit";
+			transition, LINEAR 1.0;
+		}
+
+		program {
+			name, "tarp_mouse_leave";
+			signal, "mouse,out";
+			source, "tarp";
+			action, STATE_SET "default" 0.0;
+			target, "background";
+			target, "quit";
+			transition, LINEAR 1.0;
+		}
+	
+		program {
+			name, "background_activate";
+			action, STATE_SET, "active" 0.0;
+			target, "background";
+			after, "quit_mouse_activate";
+		}
+
+		program {
+			name, "quit_mouse_enter";
+			signal, "mouse,in";
+			source, "quit";
+			after, "background_activate";
+		}
+		
+		program {
+			name, "quit_mouse_leave";
+			signal, "mouse,out";
+			source, "quit";
+			action, STATE_SET "active" 0.0;
+			target, "quit";
+			transition, LINEAR 0.5;
+		}
+		
+		program {
+			name, "quit_mouse_activate";
+			action, STATE_SET "highlight" 0.0;
+			target, "quit";
+			transition, LINEAR 0.5;
+		}
+	
+		program {
+			name, "quit_mouse_clicked";
+			signal, "mouse,clicked,1";
+			source, "quit";
+			action, "SIGNAL_EMIT" "quit" "quit";
+		}
+	
+	}
+}
+
+	

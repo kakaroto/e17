@@ -1,4 +1,5 @@
 #include "Elapse.h"
+#include "config.h"
 
 int main(int argc, char *argv[])
 {
@@ -7,8 +8,8 @@ int main(int argc, char *argv[])
 
 	elapse.conf.sticky = 1;
 	elapse.conf.lower = 1;
-	strncpy(elapse.conf.theme, 
-		"/usr/local/share/elapse/themes/elapse.eet", PATH_MAX);
+	strncpy(elapse.conf.theme, PACKAGE_DATA_DIR "/themes/elapse.eet",
+			PATH_MAX);
 	elapse.conf.debug = DEBUG_LEVEL;
 	elapse.conf.format = NULL;
 

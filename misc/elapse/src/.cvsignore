@@ -1,0 +1,7 @@
+src/.deps
+src/Makefile
+src/Makefile.in
+src/config.h
+src/config.h.in
+src/elapse
+src/stamp-h1

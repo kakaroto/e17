@@ -10,7 +10,9 @@
 #include <time.h>
 
 #define DEBUG_LEVEL 5
+#ifndef PATH_MAX
 #define PATH_MAX    255	
+#endif
 
 #define DEBUG_FUCKED 	1	/* Your Fucked */
 #define DEBUG_ERROR	2	/* Recoverable Error */

@@ -16,9 +16,7 @@ void elapse_gui_init(Elapse *elapse)
 	ecore_evas_borderless_set(elapse->ee, 0);
 	
 	elapse->evas = ecore_evas_get(elapse->ee);
-	evas_font_path_append(elapse->evas, 
-			"/usr/local/share/edje/data/test/fonts");
-	
+
 	debug(DEBUG_INFO, elapse, "esmart_trans_x11_new()");
 	elapse->smart = esmart_trans_x11_new(elapse->evas);
 	evas_object_move(elapse->smart, 0, 0);
