@@ -327,7 +327,7 @@ epsilon_generate(Epsilon *e)
 	    epeg_decode_size_set(im, 
 	    THUMBNAIL_SIZE * ((double)iw/(double)ih),THUMBNAIL_SIZE);
 	}
-	epeg_quality_set(im, 75);
+	epeg_quality_set(im, 100);
 	epeg_thumbnail_comments_enable(im, 1);
 	epeg_file_output_set(im, outfile);
 	epeg_encode(im);
