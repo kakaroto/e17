@@ -931,3 +931,12 @@ the desc of ewl_window_handle_expose() for more info.
 
 - added more to ewl_window_handle_configure()
 
+-----
+20000903-1724-PDT, pabs
+
+- added realize and unrealize event types. the reason they're treated
+as events is so parent classes can add inheritable attributes (eg
+EwlButton backgrounds, etc etc etc).
+- added ewl_widget_realize() and ewl_widget_unrealize() (which just
+queue realize and unrealize events, respectively).
+

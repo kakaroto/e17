@@ -40,6 +40,12 @@ EwlEvent *ewl_event_new_by_type(EwlEventType type)
 	case EWL_EVENT_INIT:
 		ev = malloc(sizeof(EwlEventInit));
 		break;
+	case EWL_EVENT_REALIZE:
+		ev = malloc(sizeof(EwlEventRealize));
+		break;
+	case EWL_EVENT_UNREALIZE:
+		ev = malloc(sizeof(EwlEventUnrealize));
+		break;
 	case EWL_EVENT_MEDIA:
 		ev = malloc(sizeof(EwlEventMedia));
 		break;
@@ -183,6 +189,12 @@ void ewl_event_free(EwlEvent *ev)
 			break;
 		case EWL_EVENT_INIT:
 			free((EwlEventInit*)ev);
+			break;
+		case EWL_EVENT_REALIZE:
+			free((EwlEventRealize*)ev);
+			break;
+		case EWL_EVENT_UNREALIZE:
+			free((EwlEventUnrealize*)ev);
 			break;
 		case EWL_EVENT_MEDIA:
 			free((EwlEventMedia*)ev);

@@ -89,6 +89,34 @@ void       ewl_widget_free(EwlWidget *w)
 	
 }
 
+void             ewl_widget_realize(EwlWidget *widget)
+{
+	EwlEvent *ev = NULL;
+	FUNC_BGN("ewl_widget_realize");
+	if (!widget) {
+		ewl_debug("ewl_widget_realize", EWL_NULL_WIDGET_ERROR, "widget");
+	} else {
+		ev = ewl_event_new_by_type_with_widget(EWL_EVENT_REALIZE, widget);
+		ewl_event_queue(ev);
+	}
+	FUNC_END("ewl_widget_realize");
+	return;
+}
+
+void             ewl_widget_unrealize(EwlWidget *widget)
+{
+	EwlEvent *ev = NULL;
+	FUNC_BGN("ewl_widget_unrealize");
+	if (!widget) {
+		ewl_debug("ewl_widget_unrealize", EWL_NULL_WIDGET_ERROR, "widget");
+	} else {
+		ev = ewl_event_new_by_type_with_widget(EWL_EVENT_UNREALIZE, widget);
+		ewl_event_queue(ev);
+	}
+	FUNC_END("ewl_widget_unrealize");
+	return;
+}
+
 void       ewl_widget_set_flags(EwlWidget *w, EwlFlag f)
 {
 	FUNC_BGN("ewl_widget_set_flags");

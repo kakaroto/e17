@@ -200,6 +200,7 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	ewl_widget_set_flag(widget,CAN_RESIZE, TRUE);
 	win->pmap = 0;
 	win->xwin = 0;
+	win->evas = evas_new();
 
 	/* LAOD DB SHIT HERE */
 	ewl_widget_get_theme(widget,"/EwlWindow");

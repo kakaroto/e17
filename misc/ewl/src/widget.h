@@ -83,7 +83,8 @@ struct _EwlWidget	{
 	/* event mask and callbacks */
 	EwlEvCbLL      *event_callbacks;
 
-	void          (*render)(EwlWidget *wid, EwlData *data);
+	void          (*render)(EwlWidget *widget, EwlData *data);
+	void          (*realize)(EwlWidget *widget,EwlData *data);
 	Imlib_Image    *rendered;
 	Imlib_Image    *bg;
 
@@ -93,6 +94,8 @@ struct _EwlWidget	{
 /* allocation functions */
 EwlWidget       *ewl_widget_new();
 void             ewl_widget_init(EwlWidget *w);
+void             ewl_widget_realize(EwlWidget *w);
+void             ewl_widget_unrealize(EwlWidget *w);
 void             ewl_widget_free(EwlWidget *w);
 
 /* flag functions */

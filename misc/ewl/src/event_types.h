@@ -14,6 +14,9 @@ struct _EwlEventMedia	{
 	EwlEvent   event;
 };
 
+typedef EwlEvent EwlEventRealize;
+typedef EwlEvent EwlEventUnrealize;
+
 typedef struct _EwlEventShow	EwlEventShow;
 struct _EwlEventShow	{
 	EwlEvent event;
