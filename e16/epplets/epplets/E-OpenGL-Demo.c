@@ -460,7 +460,7 @@ main(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 
 	/* Lets load teh texture */
-  if((textureFile = fopen("/home/thebard/workb/test.RGB", "rb")) == NULL)
+  if((textureFile = fopen(EROOT "/epplet_data/E-OpenGL-Demo/cube_texture.RGB", "rb")) == NULL)
 	printf("Heh dipshitm it didnt work!\n");
 	else {
 		hold = fread(textureArray, sizeof(GLubyte), 3*64*64, textureFile);
