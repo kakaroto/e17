@@ -249,55 +249,55 @@ main(int argc, char **argv)
 		  {
 		    int len;
 
-            if(!strncmp(data,"-",1))
-            {
-                size_t raw_data_size = 0;
-                void* the_data       = 0;
-                size_t chunk_size    = 1024*50;
-                size_t the_data_size = chunk_size;
-                size_t data_read_size= 0;
-
-                the_data      = malloc( the_data_size );
-                raw_data_size = fread( the_data, 1, chunk_size, stdin );
-                
-                while( raw_data_size == chunk_size )
-                {
-                    data_read_size += raw_data_size;
-                    the_data_size  += chunk_size;
-                    the_data        = realloc( the_data, the_data_size );
-                    
-                    if(!the_data)
-                    {
-                        fprintf(stderr,
-                                "Out of RAM inporting stdin. Current allocation:%d\n",
-                                data_read_size);
-                        exit(-1);
-                    }
-                    raw_data_size = fread( the_data + the_data_size - chunk_size,
-                                           1, chunk_size, stdin );
-                }
-                data_read_size += raw_data_size;
-                
-                if(feof(stdin))
-                {
-                    fprintf(stdout,"Read in %d bytes\n",data_read_size);
-                }
-                else if(ferror(stdin))
-                {
-                    fprintf(stderr,
-                            "Error reading stdin at offset %d\n",data_read_size);
-                    exit(-1);
-                }
-                
-
-                e_db_data_set(db, key, the_data, data_read_size);
-            }
-            else
-            {
-                len = unescape_string(data);
-                e_db_data_set(db, key, data, len);
-            }
-            
+		    if(!strncmp(data,"-",1) && strlen(data) == 1)
+		      {
+			size_t raw_data_size = 0;
+			void* the_data       = 0;
+			size_t chunk_size    = 1024*50;
+			size_t the_data_size = chunk_size;
+			size_t data_read_size= 0;
+			
+			the_data      = malloc( the_data_size );
+			raw_data_size = fread( the_data, 1, chunk_size, stdin );
+			
+			while( raw_data_size == chunk_size )
+			  {
+			    data_read_size += raw_data_size;
+			    the_data_size  += chunk_size;
+			    the_data        = realloc( the_data, the_data_size );
+			    
+			    if(!the_data)
+			      {
+				fprintf(stderr,
+					"Out of RAM inporting stdin. Current allocation:%d\n",
+					data_read_size);
+				exit(-1);
+			      }
+			    raw_data_size = fread( the_data + the_data_size - chunk_size,
+						   1, chunk_size, stdin );
+			  }
+			data_read_size += raw_data_size;
+			
+			if(feof(stdin))
+			  {
+			    fprintf(stdout,"Read in %d bytes\n",data_read_size);
+			  }
+			else if(ferror(stdin))
+			  {
+			    fprintf(stderr,
+				    "Error reading stdin at offset %d\n",data_read_size);
+			    exit(-1);
+			  }
+			
+			
+			e_db_data_set(db, key, the_data, data_read_size);
+		      }
+		    else
+		      {
+			len = unescape_string(data);
+			e_db_data_set(db, key, data, len);
+		      }
+		    
 		  }
 		else
 		  {
