@@ -1772,6 +1772,7 @@ void                EwinChangesStart(EWin * ewin);
 void                EwinChangesProcess(EWin * ewin);
 
 void                EwinsEventsConfigure(int mode);
+void                EwinsSetFree(void);
 
 int                 BordersEventExpose(XEvent * ev);
 int                 BordersEventMouseDown(XEvent * ev);

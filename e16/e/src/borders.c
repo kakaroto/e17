@@ -3312,6 +3312,29 @@ EwinsEventsConfigure(int mode)
      }
 }
 
+void
+EwinsSetFree(void)
+{
+   int                 i, num;
+   EWin               *const *lst, *ewin;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("EwinsSetFree\n");
+
+   lst = EwinListGetStacking(&num);
+   for (i = num - 1; i >= 0; i--)
+     {
+	ewin = lst[i];
+	if (ewin->internal)
+	   continue;
+
+	/* This makes E determine the client window stacking at exit */
+	EReparentWindow(disp, ewin->client.win, VRoot.win,
+			ewin->x + ewin->border->border.left,
+			ewin->y + ewin->border->border.top);
+     }
+}
+
 /*
  * Border event handlers
  */

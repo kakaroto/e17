@@ -991,6 +991,7 @@ doSMExit(const void *params)
    if (!params)
       SaveSession(1);
    ICCCM_SetEInfoOnAll();
+   EwinsSetFree();
 
    if (disp)
       XSelectInput(disp, VRoot.win, 0);
