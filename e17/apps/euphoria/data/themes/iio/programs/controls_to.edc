@@ -9,26 +9,26 @@ program {
 ///////////////////////////////////////////////////////////////////////
 // slides
 
-program { name, "hide_Lpanel"; signal, "mouse,clicked,*"; source, LEFT "border";
+program { name, "hide_Lpanel"; signal, "mouse,clicked,*"; source, LEFT"border";
 	action, STATE_SET "slide" 0.0; transition, DECELERATE, 0.5; 
-	target, LEFT"border"; target, LEFT"border-slide"; target, LEFT "lcd";
+	target, LEFT"border"; target, LEFT"border-slide"; target, LEFT"lcd";
 	target, "trans_Rect";
 }
 
-program { name, "show_Lpanel"; signal, "mouse,clicked,*"; source, LEFT "border-slide";
+program { name, "show_Lpanel"; signal, "mouse,clicked,*"; source, LEFT"border-slide";
 	action, STATE_SET "default" 0.0; transition, DECELERATE, 0.5;
-	target, LEFT"border"; target, LEFT"border-slide"; target, LEFT "lcd";
+	target, LEFT"border"; target, LEFT"border-slide"; target, LEFT"lcd";
 	target, "trans_Rect";
 }
 
-program { name, "hide_Rpanel"; signal, "mouse,clicked,*"; source, RIGHT "border";
+program { name, "hide_Rpanel"; signal, "mouse,clicked,*"; source, RIGHT"border";
 	action, STATE_SET "slide" 0.0; transition, DECELERATE, 0.5; 
-	target, RIGHT "border"; target, RIGHT "border-slide"; target, RIGHT "lcd";
+	target, RIGHT"border"; target, RIGHT"border-slide"; target, RIGHT"lcd";
 }
 
-program { name, "show_Rpanel"; signal, "mouse,clicked,*"; source, RIGHT "border-slide";
+program { name, "show_Rpanel"; signal, "mouse,clicked,*"; source, RIGHT"border-slide";
 	action, STATE_SET "default" 0.0; transition, DECELERATE, 0.5;
-	target, RIGHT "border"; target, RIGHT "border-slide"; target, RIGHT "lcd";
+	target, RIGHT"border"; target, RIGHT"border-slide"; target, RIGHT"lcd";
 }
 ///////////////////////////////////////////////////////////////////////
 // playback signals
