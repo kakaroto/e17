@@ -92,7 +92,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         im->w = (int)w32;
         im->h = (int)h32;
         if (color_type == PNG_COLOR_TYPE_PALETTE)
-           png_set_expand(png_ptr);
+	  {
+	     png_set_expand(png_ptr);
+	     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+	       hasa = 1;
+	  }
         if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
            hasa = 1;
         if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
