@@ -29,8 +29,8 @@
 #include <gdk/gdkkeysyms.h>
 #include "config.h"
 
-void eprintf(char *fmt,...);
-void weprintf(char *fmt,...);
+void eprintf(char *fmt, ...);
+void weprintf(char *fmt, ...);
 char *estrdup(char *s);
 void *_emalloc(size_t n);
 void _efree(void *p);

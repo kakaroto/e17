@@ -40,6 +40,7 @@ geist_rect_init(geist_rect * rec)
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
    geist_object_set_type(obj, GEIST_TYPE_RECT);
+   obj->name = estrdup("New rectangle");
 
    D_RETURN_(5);
 }
@@ -212,7 +213,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->r = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_object_dirty( GEIST_OBJECT(obj));
+   geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -221,7 +222,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->g = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_object_dirty( GEIST_OBJECT(obj));
+   geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -230,7 +231,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->b = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_object_dirty( GEIST_OBJECT(obj));
+   geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -239,7 +240,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->a = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_object_dirty( GEIST_OBJECT(obj));
+   geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 

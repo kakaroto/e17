@@ -31,6 +31,8 @@ void geist_layer_raise_object(geist_object * obj);
 geist_object *geist_layer_find_clicked_object(geist_layer * layer, int x,
 
                                               int y);
-unsigned char geist_layer_remove_object(geist_layer *lay, geist_object *obj);
+unsigned char geist_layer_remove_object(geist_layer * lay,
+
+                                        geist_object * obj);
 
 #endif

@@ -34,6 +34,7 @@ geist_text_init(geist_text * txt)
    obj->sizemode = SIZEMODE_NONE;
    obj->alignment = ALIGN_CENTER;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
+   obj->name = estrdup("New text");
 
    D_RETURN_(5);
 }
@@ -221,7 +222,8 @@ geist_text_change_text(geist_text * txt, char *newtext)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
+Imlib_Image
+geist_text_create_image(geist_text * txt, int *w, int *h)
 {
    DATA8 atab[256];
    Imlib_Image im;
@@ -266,8 +268,7 @@ Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
    D_RETURN(3, im);
 }
 
-Imlib_Image
-geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 

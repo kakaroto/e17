@@ -101,7 +101,7 @@
   }
 #endif
 #else
-#define D(i,a) 
+#define D(i,a)
 #define D_ENTER(a)
 #define D_RETURN(i, a) \
   { \

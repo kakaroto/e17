@@ -23,83 +23,83 @@
 
 /* eprintf: print error message and exit */
 void
-eprintf (char *fmt, ...)
+eprintf(char *fmt, ...)
 {
-  va_list args;
+   va_list args;
 
-  fflush (stdout);
-  fprintf (stderr, "%s ERROR: ", PACKAGE);
+   fflush(stdout);
+   fprintf(stderr, "%s ERROR: ", PACKAGE);
 
-  va_start (args, fmt);
-  vfprintf (stderr, fmt, args);
-  va_end (args);
+   va_start(args, fmt);
+   vfprintf(stderr, fmt, args);
+   va_end(args);
 
-  if (fmt[0] != '\0' && fmt[strlen (fmt) - 1] == ':')
-    fprintf (stderr, "%s", strerror (errno));
-  fprintf (stderr, "\n");
-  exit (2);
+   if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
+      fprintf(stderr, "%s", strerror(errno));
+   fprintf(stderr, "\n");
+   exit(2);
 }
 
 /* weprintf: print warning message and continue */
 void
-weprintf (char *fmt, ...)
+weprintf(char *fmt, ...)
 {
-  va_list args;
+   va_list args;
 
-  fflush (stdout);
-  fprintf (stderr, "%s WARNING: ", PACKAGE);
+   fflush(stdout);
+   fprintf(stderr, "%s WARNING: ", PACKAGE);
 
-  va_start (args, fmt);
-  vfprintf (stderr, fmt, args);
-  va_end (args);
+   va_start(args, fmt);
+   vfprintf(stderr, fmt, args);
+   va_end(args);
 
-  if (fmt[0] != '\0' && fmt[strlen (fmt) - 1] == ':')
-    fprintf (stderr, "%s", strerror (errno));
-  fprintf (stderr, "\n");
+   if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
+      fprintf(stderr, "%s", strerror(errno));
+   fprintf(stderr, "\n");
 }
 
 /* estrdup: duplicate a string, report if error */
 char *
-estrdup (char *s)
+estrdup(char *s)
 {
-  char *t;
+   char *t;
 
-  t = (char *) g_malloc (strlen (s) + 1);
-  if (t == NULL)
-    eprintf ("estrdup(\"%.20s\") failed:", s);
-  strcpy (t, s);
-  return t;
+   t = (char *) g_malloc(strlen(s) + 1);
+   if (t == NULL)
+      eprintf("estrdup(\"%.20s\") failed:", s);
+   strcpy(t, s);
+   return t;
 }
 
 /* emalloc: malloc and report if error */
 void *
-_emalloc (size_t n)
+_emalloc(size_t n)
 {
-  void *p;
+   void *p;
 
-  p = g_malloc (n);
-  if (p == NULL)
-    eprintf ("g_malloc of %u bytes failed:", n);
-  return p;
+   p = g_malloc(n);
+   if (p == NULL)
+      eprintf("g_malloc of %u bytes failed:", n);
+   return p;
 }
 
 /* erealloc: realloc and report if error */
 void *
-_erealloc (void *ptr, size_t n)
+_erealloc(void *ptr, size_t n)
 {
-  void *p;
+   void *p;
 
-  p = g_realloc (ptr, n);
-  if (p == NULL)
-    eprintf ("g_realloc of %p by %u bytes failed:", ptr, n);
-  return p;
+   p = g_realloc(ptr, n);
+   if (p == NULL)
+      eprintf("g_realloc of %p by %u bytes failed:", ptr, n);
+   return p;
 }
 
 /* efree: just do the free for now */
 void
-_efree (void *p)
+_efree(void *p)
 {
-  g_free (p);
+   g_free(p);
 }
 
 char *

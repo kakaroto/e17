@@ -10,7 +10,7 @@ extern GtkWidget *obj_list;
 #define GEIST_OBJECT_DOC(o) (((geist_object *)o)->layer->doc)
 
 enum __sizemode
-{ 
+{
    SIZEMODE_NONE,
    SIZEMODE_ZOOM,
    SIZEMODE_STRETCH
@@ -29,7 +29,7 @@ enum __alignment
 };
 
 enum __resize_type
-{ 
+{
    RESIZE_NONE,
    RESIZE_LEFT,
    RESIZE_TOPLEFT,
@@ -123,22 +123,18 @@ geist_object *geist_object_int_duplicate(geist_object * obj);
 unsigned char geist_object_part_is_transparent(geist_object * obj, int x,
 
                                                int y);
-void geist_object_move(geist_object * obj, int x,
-
-                       int y);
+void geist_object_move(geist_object * obj, int x, int y);
 unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x,
 
                                                    int y);
 int geist_object_check_resize_click(geist_object * obj, int x, int y);
-void geist_object_resize(geist_object * obj, int x,
-
-                         int y);
+void geist_object_resize(geist_object * obj, int x, int y);
 void geist_object_int_resize(geist_object * obj, int x, int y);
 void geist_object_resize_object(geist_object * obj, int x, int y);
 
-void geist_object_int_display_props(geist_object *obj);
-void geist_object_display_props(geist_object *obj);
-void geist_object_dirty_selection(geist_object * obj) ;
+void geist_object_int_display_props(geist_object * obj);
+void geist_object_display_props(geist_object * obj);
+void geist_object_dirty_selection(geist_object * obj);
 void geist_object_dirty(geist_object * obj);
 
 #define geist_object_set_state(o, s) (o->state |=  s)

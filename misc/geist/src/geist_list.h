@@ -25,7 +25,8 @@
 #ifndef geist_LIST_H
 #define geist_LIST_H
 
-enum __direction {FORWARD, BACK};
+enum __direction
+{ FORWARD, BACK };
 
 struct __geist_list
 {
@@ -41,7 +42,7 @@ geist_list *geist_list_new(void);
 void geist_list_free(geist_list * l);
 geist_list *geist_list_add_front(geist_list * root, void *data);
 geist_list *geist_list_add_end(geist_list * root, void *data);
-geist_list *geist_list_pop_to_end(geist_list *root, geist_list * l);
+geist_list *geist_list_pop_to_end(geist_list * root, geist_list * l);
 geist_list *geist_list_unlink(geist_list * root, geist_list * l);
 void geist_debug_print_list(geist_list * l);
 geist_list *geist_list_cat(geist_list * root, geist_list * l);
@@ -50,14 +51,13 @@ geist_list *geist_list_last(geist_list * l);
 geist_list *geist_list_first(geist_list * l);
 geist_list *geist_list_jump(geist_list * root, geist_list * l, int direction,
 
-                        int num);
+                            int num);
 geist_list *geist_list_reverse(geist_list * l);
 geist_list *geist_list_randomize(geist_list * list);
 int geist_list_num(geist_list * root, geist_list * l);
 geist_list *geist_list_remove(geist_list * root, geist_list * l);
 geist_list *geist_list_sort(geist_list * list, geist_compare_fn cmp);
 geist_list *geist_list_sort_merge(geist_list * l1, geist_list * l2,
-
-                              geist_compare_fn cmp);
+                                  geist_compare_fn cmp);
 
 #endif
