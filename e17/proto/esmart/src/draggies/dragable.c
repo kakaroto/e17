@@ -40,38 +40,6 @@ _mouse_down_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 	      drag->first = drag->clicked = 1;
 	      drag->cx = e->canvas.x;
 	      drag->cy = e->canvas.y;
-	      switch (drag->type)
-		{
-		  /*
-		     case DRAGGIES_TYPE_RESIZE_L:
-		     ecore_evas_gravity_set(drag->ee, 4);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_R:
-		     ecore_evas_gravity_set(drag->ee, 6);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_T:
-		     ecore_evas_gravity_set(drag->ee, 2);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_B:
-		     ecore_evas_gravity_set(drag->ee, 8);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_TR:
-		     ecore_evas_gravity_set(drag->ee, 3);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_TL:
-		     ecore_evas_gravity_set(drag->ee, 1);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_BL:
-		     ecore_evas_gravity_set(drag->ee, 7);
-		     break;
-		     case DRAGGIES_TYPE_RESIZE_BR:
-		     ecore_evas_gravity_set(drag->ee, 9);
-		     break;
-		     default:
-		     ecore_evas_gravity_set(drag->ee, 1);
-		     break;
-		   */
-		}
 	    }
 	}
     }
@@ -90,7 +58,6 @@ _mouse_move_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 	  if (drag->clicked)
 	    {
 	      double dx, dy;
-	      Evas_Coord ox, oy, ow, oh;
 
 	      ecore_evas_geometry_get (drag->ee, &x, &y, &w, &h);
 	      dx = (drag->cx - e->cur.canvas.x);
@@ -98,63 +65,17 @@ _mouse_move_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 	      if ((dx < 1) && (dy < 1))
 		return;
 
-	      drag->cx = e->cur.canvas.x;
-	      drag->cy = e->cur.canvas.y;
-	      switch (drag->type)
+	      ecore_evas_move (drag->ee, x - (int) dx, y - (int) dy);
+	      if (!drag->first)
 		{
-		case DRAGGIES_TYPE_RESIZE_L:
-		  ecore_evas_move_resize (drag->ee, x + (int) dx, y,
-					  w - (int) dx, h);
-		  break;
-		case DRAGGIES_TYPE_RESIZE_R:
-		  ecore_evas_resize (drag->ee, w - (int) dx, h);
-		  drag->cx -= dx;
-		  break;
-		case DRAGGIES_TYPE_RESIZE_T:
-		  ecore_evas_move_resize (drag->ee, x, y - (int) dy,
-					  w, h + (int) dy);
-		  break;
-		case DRAGGIES_TYPE_RESIZE_B:
-		  ecore_evas_resize (drag->ee, w, h - (int) dy);
-		  drag->cy -= dy;
-		  break;
-		case DRAGGIES_TYPE_RESIZE_TL:
-		  ecore_evas_move_resize (drag->ee, x - (int) dx, y -
-					  (int) dy, w + (int) dx,
-					  h + (int) dy);
-		  break;
-		case DRAGGIES_TYPE_RESIZE_TR:
-		  ecore_evas_move_resize (drag->ee, x, y - (int) dy, w -
-					  (int) dx, h + (int) dy);
-		  drag->cy += dy;
-		  drag->cx += dx;
-		  break;
-		case DRAGGIES_TYPE_RESIZE_BL:
-		  ecore_evas_move_resize (drag->ee, x - (int) dx,
-					  y - (int) dy,
-					  w - (int) dx, h - (int) dy);
-		  break;
-		case DRAGGIES_TYPE_RESIZE_BR:
-		  /* Gravity */
-		  ecore_evas_resize (drag->ee, w - (int) dx, h - (int) dy);
-		  drag->cy -= dy;
-		  drag->cx -= dx;
-		  break;
-		  /* default: is Moving */
-		default:
-		  ecore_evas_move (drag->ee, x - (int) dx, y - (int) dy);
-		  if (!drag->first)
-		    {
-		      drag->cx = e->cur.canvas.x + dx;
-		      drag->cy = e->cur.canvas.y + dy;
-		    }
-		  else
-		    {
-		      drag->cx = e->cur.canvas.x;
-		      drag->cy = e->cur.canvas.y;
-		      drag->first = 0;
-		    }
-		  break;
+		  drag->cx = e->cur.canvas.x + dx;
+		  drag->cy = e->cur.canvas.y + dy;
+		}
+	      else
+		{
+		  drag->cx = e->cur.canvas.x;
+		  drag->cy = e->cur.canvas.y;
+		  drag->first = 0;
 		}
 	    }
 	}
@@ -212,18 +133,6 @@ esmart_draggies_button_set (Evas_Object * o, int button)
       if ((drag = (Esmart_Draggies *) evas_object_data_get (o, "Dragger")))
 	{
 	  drag->button = button;
-	}
-    }
-}
-void
-esmart_draggies_type_set (Evas_Object * o, Esmart_Draggies_Type type)
-{
-  Esmart_Draggies *drag = NULL;
-  if (o)
-    {
-      if ((drag = (Esmart_Draggies *) evas_object_data_get (o, "Dragger")))
-	{
-	  drag->type = type;
 	}
     }
 }
