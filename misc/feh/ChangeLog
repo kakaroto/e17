@@ -1,3 +1,8 @@
+Fri Aug 24 08:44:46 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Even better, you can copy a pixmap between displays :) This is
+	much faster than Xput/get. Cheers raster.
+
 Thu Aug 23 19:04:57 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay. So you can't copy a pixmap between two displays using

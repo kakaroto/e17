@@ -204,16 +204,15 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          eprintf("Can't reopen X display.");
       root2 = RootWindow(disp2, DefaultScreen(disp2));
       depth2 = DefaultDepth(disp2, DefaultScreen(disp2));
-      
       XSync(disp, False);
-      xi = XGetImage(disp, pmap_d1, 0, 0, w, h, AllPlanes, XYPixmap);
-      XFreePixmap(disp, pmap_d1);
-      
       pmap_d2 = XCreatePixmap(disp2, root2, w, h, depth2);
       gc = XCreateGC(disp2, pmap_d2, 0, &gcvalues);
-      XPutImage(disp2, pmap_d2, gc, xi, 0, 0, 0, 0, w, h);
+      XCopyArea(disp2, pmap_d1, pmap_d2, gc, 0, 0, w, h, 0, 0);
       XFreeGC(disp2, gc);
-
+      XSync(disp2, False);
+      XSync(disp, False);
+      XFreePixmap(disp, pmap_d1);
+      
       prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", True);
       prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", True);
 
