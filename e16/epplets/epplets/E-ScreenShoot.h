@@ -1,7 +1,7 @@
 Epplet_gadget btn_shoot, btn_conf, btn_close, btn_help, btn_ctimer;
 Epplet_gadget tog_win, btn_col, btn_stimer;
 Epplet_gadget sldr_qual;
-Epplet_gadget p, col_p, ctimer_p, stimer_p;
+Epplet_gadget p, col_p, ctimer_p, stimer_p, grabber_p;
 Window win;
 RGB_buf buf;
 Epplet_gadget da;
@@ -53,5 +53,6 @@ struct
   char *ftp_file;
   char *ftp_temp;
   char *ftp_dir;
+  char *grabber;
 }
 opt;

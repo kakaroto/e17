@@ -53,7 +53,7 @@ choose_random_cloak(void *data)
    {
       opt.cloak_anim = (int) (16 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
    }
-   while (opt.cloak_anim == last_anim);     /* Don't pick the same one twice in a row. */
+   while (opt.cloak_anim == last_anim);	/* Don't pick the same one twice in a row. */
    last_anim = opt.cloak_anim;
    Epplet_timer(choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
    return;
@@ -112,6 +112,7 @@ save_config(void)
    Epplet_modify_config("FTP_DIR", opt.ftp_dir);
    Epplet_modify_config("FTP_FILE", opt.ftp_file);
    Epplet_modify_config("FTP_TEMP", opt.ftp_temp);
+   Epplet_modify_config("SHOT_GRABBER", opt.grabber);
 }
 
 static void
@@ -182,6 +183,9 @@ load_config(void)
       free(opt.ftp_temp);
    opt.ftp_temp =
       _Strdup(Epplet_query_config_def("FTP_TEMP", "uploading.jpg"));
+   if (opt.grabber)
+      free(opt.grabber);
+   opt.grabber = _Strdup(Epplet_query_config_def("SHOT_GRABBER", "import"));
 }
 
 static void
@@ -363,6 +367,16 @@ cb_shot_delay(void *data)
 }
 
 static void
+cb_grabber(void *data)
+{
+   if(opt.grabber)
+      free(opt.grabber);
+   opt.grabber = _Strdup((char *) data);
+   return;
+   data = NULL;
+}
+
+static void
 cb_dont_cloak(void *data)
 {
    opt.do_cloak = 0;
@@ -521,12 +535,20 @@ cb_config(void *data)
                                   &confwin);
 
    Epplet_gadget_show(lbl =
-                      Epplet_create_label(40, 20,
+                      Epplet_create_label(40, 8,
                                           "Please choose a cloak animation",
                                           2));
    Epplet_gadget_show(btn_anim =
-                      Epplet_create_popupbutton(NULL, NULL, 20, 20, 12, 12,
+                      Epplet_create_popupbutton(NULL, NULL, 20, 8, 12, 12,
                                                 "ARROW_DOWN", p));
+
+   Epplet_gadget_show(lbl =
+                      Epplet_create_label(40, 24,
+                                          "Please choose a shot grabber",
+                                          2));
+   Epplet_gadget_show(btn_anim =
+                      Epplet_create_popupbutton(NULL, NULL, 20, 24, 12, 12,
+                                                "ARROW_DOWN", grabber_p));
 
    Epplet_gadget_show(lbl =
                       Epplet_create_label(20, 40, "Shot Directory:", 2));
@@ -653,35 +675,74 @@ do_shot(void *data)
 
    filename_buf = _Strjoin(NULL, "SCRTEMP=\"", filename, "\"", NULL);
 
-   if ((opt.frame) && (opt.win))
-      Esnprintf(frame_buf, sizeof(frame_buf), "-frame");
-   else
-      frame_buf[0] = '\0';
+   if (!strcmp(opt.grabber, "import"))
+   {
+      if ((opt.frame) && (opt.win))
+         Esnprintf(frame_buf, sizeof(frame_buf), "-frame");
+      else
+         frame_buf[0] = '\0';
 
-   if (opt.beep)
-      beep_buf[0] = '\0';
-   else
-      Esnprintf(beep_buf, sizeof(beep_buf), "-silent");
+      if (opt.beep)
+         beep_buf[0] = '\0';
+      else
+         Esnprintf(beep_buf, sizeof(beep_buf), "-silent");
 
-   if (opt.win)
-      Esnprintf(import_buf, sizeof(import_buf), "import");
-   else
-      Esnprintf(import_buf, sizeof(import_buf), "import -window root");
+      if (opt.win)
+         Esnprintf(import_buf, sizeof(import_buf), "import");
+      else
+         Esnprintf(import_buf, sizeof(import_buf), "import -window root");
 
-   if (opt.run_script)
-      script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
-   else
-      script_buf = _Strdup(" ");
+      if (opt.run_script)
+         script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
+      else
+         script_buf = _Strdup(" ");
 
-   if (opt.view_shot)
-      view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
-   else
-      view_buf = _Strdup(" ");
+      if (opt.view_shot)
+         view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
+      else
+         view_buf = _Strdup(" ");
 
-   sys =
-      _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
-               beep_buf, frame_buf, "-quality", qual_buf, "$SCRTEMP",
-               script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
+      sys =
+         _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
+                  beep_buf, frame_buf, "-quality", qual_buf, "$SCRTEMP",
+                  script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
+   }
+   else if (!strcmp(opt.grabber, "scrot"))
+   {
+      char delay_buf[20];
+
+      if (opt.delay > 0)
+         Esnprintf(delay_buf, sizeof(delay_buf), "-d %.0f", opt.delay);
+      else
+         delay_buf[0] = '\0';
+
+      if ((opt.frame) && (opt.win))
+         Esnprintf(frame_buf, sizeof(frame_buf), "-b");
+      else
+         frame_buf[0] = '\0';
+
+      if (opt.win)
+         Esnprintf(import_buf, sizeof(import_buf), "scrot -s");
+      else
+         Esnprintf(import_buf, sizeof(import_buf), "scrot");
+
+      if (opt.run_script)
+         script_buf = _Strjoin(" ", "&&", opt.script, "$SCRTEMP", NULL);
+      else
+         script_buf = _Strdup(" ");
+
+      if (opt.view_shot)
+         view_buf = _Strjoin(" ", "&&", opt.viewer, "$SCRTEMP", NULL);
+      else
+         view_buf = _Strdup(" ");
+
+      sys =
+         _Strjoin(" ", opt.do_ftp ? "" : "(", filename_buf, "&&", import_buf,
+                  delay_buf, frame_buf, "--quality", qual_buf, "$SCRTEMP",
+                  script_buf, view_buf, opt.do_ftp ? "" : ")&", NULL);
+   }
+   else
+      printf("don't know how to handle grabber %s\n", opt.grabber);
 
    system(sys);
 
@@ -707,8 +768,10 @@ cb_shoot(void *data)
    Epplet_remove_timer("SHOOT_TIMER");
    if (opt.delay < 1)
       do_shot(NULL);
-   else
+   else if (!strcmp(opt.grabber, "import"))
       Epplet_timer(do_shot, NULL, opt.delay, "SHOOT_TIMER");
+   else
+      do_shot(NULL);
    return;
    data = NULL;
 }
@@ -858,6 +921,10 @@ create_epplet_layout(void)
                           (void *) (&(shot_delays[10])));
    Epplet_add_popup_entry(stimer_p, "2 mins", NULL, cb_shot_delay,
                           (void *) (&(shot_delays[11])));
+
+   grabber_p = Epplet_create_popup();
+   Epplet_add_popup_entry(grabber_p, "import", NULL, cb_grabber, _Strdup("import"));
+   Epplet_add_popup_entry(grabber_p, "scrot", NULL, cb_grabber, _Strdup("scrot"));
 
    Epplet_gadget_show(btn_conf =
                       Epplet_create_button(NULL, NULL, 34, 2, 12, 12,
