@@ -1,12 +1,11 @@
 BUGS:
-raster: 	must update dox docs fully
 raster:         need to investigate "The icons in the iconbox have garbage three pixels to the right of where the image doesn't have transparency exept for the part where the image has transparency." issue reported.
-raster:         need to write scripts to generate file menus for app launching etc. and distribute them and have default menu config soruce them sanely
 raster:         need to fix restart/exit stuff for multihead
 raster:         reported stuff-up if you remember borders for dialog windows
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 mandrake: expose events in the dialog boxes aren't handled right.
+mandrake: need a "first time you ran enlightenment" feature to pop up Help and generate the initial menus using e_gen_menu
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work

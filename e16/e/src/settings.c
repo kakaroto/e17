@@ -1,7 +1,7 @@
 #include "E.h"
 
 static void         CB_SettingsEscape(int val, void *data);
-static void 
+static void
 CB_SettingsEscape(int val, void *data)
 {
    DialogClose((Dialog *) data);
@@ -20,7 +20,7 @@ static DItem       *pager_scan_speed_label = NULL;
 static Dialog      *pager_settings_dialog = NULL;
 
 static void         CB_ConfigurePager(int val, void *data);
-static void 
+static void
 CB_ConfigurePager(int val, void *data)
 {
    if (val < 2)
@@ -51,7 +51,7 @@ CB_ConfigurePager(int val, void *data)
 }
 
 static void         CB_PagerScanSlide(int val, void *data);
-static void 
+static void
 CB_PagerScanSlide(int val, void *data)
 {
    char                s[256];
@@ -65,7 +65,7 @@ CB_PagerScanSlide(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsPager(void)
 {
    Dialog             *d;
@@ -209,7 +209,7 @@ static char         tmp_display_warp;
 static char         tmp_clickalways;
 
 static void         CB_ConfigureFocus(int val, void *data);
-static void 
+static void
 CB_ConfigureFocus(int val, void *data)
 {
    if (val < 2)
@@ -232,7 +232,7 @@ CB_ConfigureFocus(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsFocus(void)
 {
    Dialog             *d;
@@ -418,7 +418,7 @@ static int          tmp_move;
 static int          tmp_resize;
 
 static void         CB_ConfigureMoveResize(int val, void *data);
-static void 
+static void
 CB_ConfigureMoveResize(int val, void *data)
 {
    if (val < 2)
@@ -430,7 +430,7 @@ CB_ConfigureMoveResize(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsMoveResize(void)
 {
    Dialog             *d;
@@ -584,7 +584,7 @@ static DItem       *tmp_desk_text;
 static Dialog      *tmp_desk_dialog;
 
 static void         CB_ConfigureDesktops(int val, void *data);
-static void 
+static void
 CB_ConfigureDesktops(int val, void *data)
 {
    if (val < 2)
@@ -596,7 +596,7 @@ CB_ConfigureDesktops(int val, void *data)
 }
 
 static void         CB_DesktopDisplayRedraw(int val, void *data);
-static void 
+static void
 CB_DesktopDisplayRedraw(int val, void *data)
 {
    static char         called = 0;
@@ -669,7 +669,7 @@ CB_DesktopDisplayRedraw(int val, void *data)
 		   0, 0, 99999, 99999);
 }
 
-void 
+void
 SettingsDesktops(void)
 {
    Dialog             *d;
@@ -768,7 +768,7 @@ static DItem       *tmp_area_text;
 static Dialog      *tmp_area_dialog;
 
 static void         CB_ConfigureAreas(int val, void *data);
-static void 
+static void
 CB_ConfigureAreas(int val, void *data)
 {
    if (val < 2)
@@ -789,7 +789,7 @@ CB_ConfigureAreas(int val, void *data)
 }
 
 static void         CB_AreaDisplayRedraw(int val, void *data);
-static void 
+static void
 CB_AreaDisplayRedraw(int val, void *data)
 {
    char                s[64];
@@ -847,7 +847,7 @@ CB_AreaDisplayRedraw(int val, void *data)
 		   0, 0, 99999, 99999);
 }
 
-void 
+void
 SettingsArea(void)
 {
    Dialog             *d;
@@ -990,7 +990,7 @@ static char         tmp_switch_popup;
 static char         tmp_manual_placement;
 
 static void         CB_ConfigurePlacement(int val, void *data);
-static void 
+static void
 CB_ConfigurePlacement(int val, void *data)
 {
    if (val < 2)
@@ -1003,7 +1003,7 @@ CB_ConfigurePlacement(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsPlacement(void)
 {
    Dialog             *d;
@@ -1084,7 +1084,7 @@ SettingsPlacement(void)
    ShowDialog(d);
 }
 
-void 
+void
 SettingsIcons(void)
 {
 }
@@ -1093,7 +1093,7 @@ static char         tmp_autoraise;
 static int          tmp_autoraisetime;
 
 static void         CB_ConfigureAutoraise(int val, void *data);
-static void 
+static void
 CB_ConfigureAutoraise(int val, void *data)
 {
    if (val < 2)
@@ -1105,7 +1105,7 @@ CB_ConfigureAutoraise(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsAutoRaise(void)
 {
    Dialog             *d;
@@ -1187,7 +1187,7 @@ static char         tmp_tooltips;
 static int          tmp_tooltiptime;
 
 static void         CB_ConfigureTooltips(int val, void *data);
-static void 
+static void
 CB_ConfigureTooltips(int val, void *data)
 {
    if (val < 2)
@@ -1199,7 +1199,7 @@ CB_ConfigureTooltips(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsTooltips(void)
 {
    Dialog             *d;
@@ -1279,7 +1279,7 @@ SettingsTooltips(void)
 
 static char         tmp_kde;
 static void         CB_ConfigureKDE(int val, void *data);
-static void 
+static void
 CB_ConfigureKDE(int val, void *data)
 {
    if (val < 2)
@@ -1297,7 +1297,7 @@ CB_ConfigureKDE(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsKDE(void)
 {
    Dialog             *d;
@@ -1343,7 +1343,7 @@ SettingsKDE(void)
 static char         tmp_audio;
 
 static void         CB_ConfigureAudio(int val, void *data);
-static void 
+static void
 CB_ConfigureAudio(int val, void *data)
 {
    if (val < 2)
@@ -1358,7 +1358,7 @@ CB_ConfigureAudio(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsAudio(void)
 {
    Dialog             *d;
@@ -1436,7 +1436,7 @@ static int          tmp_desktop_slide_speed;
 static int          tmp_shade_speed;
 
 static void         CB_ConfigureFX(int val, void *data);
-static void 
+static void
 CB_ConfigureFX(int val, void *data)
 {
    if (val < 2)
@@ -1476,7 +1476,7 @@ CB_ConfigureFX(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsSpecialFX(void)
 {
    Dialog             *d;
@@ -1837,7 +1837,7 @@ static int          tmp_bg_timeout;
 static void         BG_RedrawView(char nuke_old);
 
 static void         CB_ConfigureBG(int val, void *data);
-static void 
+static void
 CB_ConfigureBG(int val, void *data)
 {
    int                 i;
@@ -1906,7 +1906,7 @@ CB_ConfigureBG(int val, void *data)
 }
 
 static void         CB_DesktopMiniDisplayRedraw(int val, void *data);
-static void 
+static void
 CB_DesktopMiniDisplayRedraw(int val, void *data)
 {
    int                 w, h;
@@ -1979,7 +1979,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 }
 
 static void         CB_ConfigureNewBG(int val, void *data);
-static void 
+static void
 CB_ConfigureNewBG(int val, void *data)
 {
    char                s[1024];
@@ -2016,7 +2016,7 @@ CB_ConfigureNewBG(int val, void *data)
 }
 
 static void         CB_ConfigureRemBG(int val, void *data);
-static void 
+static void
 CB_ConfigureRemBG(int val, void *data)
 {
    Background        **bglist, *bg;
@@ -2111,7 +2111,7 @@ CB_ConfigureRemBG(int val, void *data)
 }
 
 static void         CB_ConfigureDelBG(int val, void *data);
-static void 
+static void
 CB_ConfigureDelBG(int val, void *data)
 {
    Background        **bglist, *bg;
@@ -2230,7 +2230,7 @@ CB_ConfigureDelBG(int val, void *data)
 }
 
 static void         CB_ConfigureFrontBG(int val, void *data);
-static void 
+static void
 CB_ConfigureFrontBG(int val, void *data)
 {
    int                 i;
@@ -2248,7 +2248,7 @@ CB_ConfigureFrontBG(int val, void *data)
 
 static int          tmp_bg_selected = -1;
 
-static void 
+static void
 BG_RedrawView(char nuke_old)
 {
    int                 num, i;
@@ -2353,7 +2353,7 @@ BG_RedrawView(char nuke_old)
 }
 
 static void         CB_BGAreaSlide(int val, void *data);
-static void 
+static void
 CB_BGAreaSlide(int val, void *data)
 {
    BG_RedrawView(0);
@@ -2362,7 +2362,7 @@ CB_BGAreaSlide(int val, void *data)
 }
 
 static void         CB_BGScan(int val, void *data);
-static void 
+static void
 CB_BGScan(int val, void *data)
 {
    AUDIO_PLAY("SOUND_WAIT");
@@ -2386,7 +2386,7 @@ CB_BGScan(int val, void *data)
 }
 
 static void         CB_BGAreaEvent(int val, void *data);
-static void 
+static void
 CB_BGAreaEvent(int val, void *data)
 {
    int                 x, num, w, h;
@@ -2480,7 +2480,7 @@ CB_BGAreaEvent(int val, void *data)
 }
 
 static void         CB_DesktopTimeout(int val, void *data);
-static void 
+static void
 CB_DesktopTimeout(int val, void *data)
 {
    DItem              *di;
@@ -2498,7 +2498,7 @@ CB_DesktopTimeout(int val, void *data)
    val = 0;
 }
 
-void 
+void
 BGSettingsGoTo(Background * bg)
 {
    Dialog             *bgd;
@@ -2593,7 +2593,7 @@ BGSettingsGoTo(Background * bg)
 }
 
 static void         CB_BGPrev(int val, void *data);
-static void 
+static void
 CB_BGPrev(int val, void *data)
 {
    Background        **bglist;
@@ -2622,7 +2622,7 @@ CB_BGPrev(int val, void *data)
 }
 
 static void         CB_BGNext(int val, void *data);
-static void 
+static void
 CB_BGNext(int val, void *data)
 {
    Background        **bglist;
@@ -2651,7 +2651,7 @@ CB_BGNext(int val, void *data)
 }
 
 static int          BG_SortFileCompare(Background * bg1, Background * bg2);
-static int 
+static int
 BG_SortFileCompare(Background * bg1, Background * bg2)
 {
    /* return < 0 is b1 <  b2 */
@@ -2665,7 +2665,7 @@ BG_SortFileCompare(Background * bg1, Background * bg2)
 }
 
 static void         CB_BGSortFile(int val, void *data);
-static void 
+static void
 CB_BGSortFile(int val, void *data)
 {
    Background        **bglist;
@@ -2696,7 +2696,7 @@ CB_BGSortFile(int val, void *data)
 }
 
 static void         CB_BGSortAttrib(int val, void *data);
-static void 
+static void
 CB_BGSortAttrib(int val, void *data)
 {
    Background        **bglist;
@@ -2741,7 +2741,7 @@ CB_BGSortAttrib(int val, void *data)
 }
 
 static void         CB_BGSortContent(int val, void *data);
-static void 
+static void
 CB_BGSortContent(int val, void *data)
 {
    Background        **bglist;
@@ -2767,7 +2767,7 @@ CB_BGSortContent(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsBackground(Background * bg)
 {
    Dialog             *d;
@@ -3204,7 +3204,7 @@ static char         tmp_ib_cover_hide;
 static int          tmp_ib_autoresize_anchor;
 
 static void         CB_ConfigureIconbox(int val, void *data);
-static void 
+static void
 CB_ConfigureIconbox(int val, void *data)
 {
    if (val < 2)
@@ -3235,7 +3235,7 @@ CB_ConfigureIconbox(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsIconbox(char *name)
 {
    Dialog             *d;
@@ -3527,7 +3527,7 @@ static DItem       *di_shade;
 static DItem       *di_mirror;
 
 static void         CB_ConfigureGroupEscape(int val, void *data);
-static void 
+static void
 CB_ConfigureGroupEscape(int val, void *data)
 {
    if (tmp_cfgs)
@@ -3540,7 +3540,7 @@ CB_ConfigureGroupEscape(int val, void *data)
 }
 
 static void         CB_ConfigureGroup(int val, void *data);
-static void 
+static void
 CB_ConfigureGroup(int val, void *data)
 {
    int                 i;
@@ -3560,7 +3560,7 @@ CB_ConfigureGroup(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 GroupSelectCallback(int val, void *data)
 {
    DialogItemCheckButtonSetState(di_border, tmp_cfgs[val].set_border);
@@ -3577,7 +3577,7 @@ GroupSelectCallback(int val, void *data)
    tmp_current_group = val;
 }
 
-void 
+void
 GroupFeatureChangeCallback(int val, void *data)
 {
    switch (val)
@@ -3611,7 +3611,7 @@ GroupFeatureChangeCallback(int val, void *data)
      }
 }
 
-void 
+void
 SettingsGroups(EWin * ewin)
 {
    Dialog             *d;
@@ -3807,7 +3807,7 @@ SettingsGroups(EWin * ewin)
 static GroupConfig  tmp_group_cfg;
 
 static void         CB_ConfigureDefaultGroupSettings(int val, void *data);
-static void 
+static void
 CB_ConfigureDefaultGroupSettings(int val, void *data)
 {
    if (val < 2)
@@ -3818,7 +3818,7 @@ CB_ConfigureDefaultGroupSettings(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 SettingsDefaultGroupControl(void)
 {
    Dialog             *d;
