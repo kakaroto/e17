@@ -6,16 +6,22 @@ AM_PROG_CC_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
-AM_WITH_DMALLOC
 if test X"$enable_shared" = Xyes; then
   DLLDFLAGS=-export-dynamic
   AC_SUBST(DLLDFLAGS)
 fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-# AC_CHECK_LIB(Imlib2, imlib_context_set_image, IMLIB2=yes ,[
-# echo ""
-# echo "ERROR: Imlib 2 needed"
-# echo ""
-# AC_MSG_ERROR([Fatal Error: no Imlib2 detected.])], -L/usr/X11R6/lib -L/usr/local/lib -lm -ldl -lttf -lX11 -lXext)
+
+db_lib=db
+AC_SUBST(db_lib)
+
+AC_CHECK_HEADER(db.h,
+AC_CHECK_LIB(db, db_open, ,[
+echo ""
+echo "ERROR: db library needed"
+echo ""
+AC_MSG_ERROR([Fatal Error: no db detected.]); exit], -L/usr/local/lib -ldb)
+)
+
 AC_OUTPUT(Makefile src/Makefile test/Makefile)
