@@ -3,18 +3,10 @@
 #define __EWL_FILESELECTOR_H__
 
 
-typedef struct _ewl_fileinfo Ewl_Fileinfo;
+typedef struct _ewl_fileselector_row Ewl_Fileselector_Row;
 
-#define EWL_FILEINFO(fi) ((Ewl_Fileinfo *))
-struct _ewl_fileinfo {
-	char            *name;	/* filename */
-	char            *path;	/* path to file */
-};
-
-typedef struct _ewl_dirinfo Ewl_Dirinfo;
-
-#define EWL_DIRINFO(di) ((Ewl_Dirinfo *))
-struct _ewl_dirinfo {
+#define EWL_FILESELECTOR_ROW(di) ((Ewl_Dirinfo *))
+struct _ewl_fileselector_row {
 	char            *name;	/* directory name */
 	char            *path;	/* path to directory */
 };
@@ -42,7 +34,8 @@ struct _ewl_fileselector {
 Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function file_clicked);
 void            ewl_fileselector_init(Ewl_Fileselector * fs,
 				      Ewl_Callback_Function fc);
-char *ewl_fileselector_get_filename (Ewl_Widget *row);
+
+char *ewl_fileselector_get_filename (Ewl_Fileselector *fs);
 char *ewl_fileselector_get_path (Ewl_Fileselector *fs);
 
 /*

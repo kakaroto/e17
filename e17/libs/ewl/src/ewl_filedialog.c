@@ -8,6 +8,7 @@ static void ewl_filedialog_open_init(Ewl_Filedialog * fd,
 				     Ewl_Callback_Function cb);
 
 
+
 typedef struct _open_dialog Open_Dialog;
 struct _open_dialog {
 	Ewl_Widget     *box;	/* box to hold the buttons */
@@ -106,7 +107,7 @@ void ewl_filedialog_change_entry (Ewl_Widget * w, void *ev_data,
 		void *user_data)
 {
 	Ewl_Filedialog *fd = user_data;
-	Ewl_Fileselector *fs = fd->selector;
+	Ewl_Fileselector *fs = EWL_FILESELECTOR (fd->selector);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -160,8 +161,6 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_object_set_fill_policy(EWL_OBJECT(od->open),
 				   EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(od->open, EWL_CALLBACK_CLICKED, cb, fd->selector);
-	ewl_callback_append(od->open, EWL_CALLBACK_CLICKED,
-			    ewl_filedialog_destroy_cb, NULL);
 	ewl_container_append_child(EWL_CONTAINER(od->box), od->open);
 	ewl_widget_show(od->open);
 

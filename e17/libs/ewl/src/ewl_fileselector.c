@@ -143,22 +143,15 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 }
 
 /**
- * @param row: the clicked row in the fileselector
+ * @param row: the fileselector
  * @return Returns the selected filename including its path
  * @brief Retrieve the selected filename
  */
-char *ewl_fileselector_get_filename (Ewl_Widget *row) 
+char *ewl_fileselector_get_filename (Ewl_Fileselector *fs) 
 {
-	char *s;
-	Ewl_Dirinfo *f_info = ewl_widget_get_data (EWL_WIDGET (row), 
-			"filedialog_info");
-	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	s = malloc (PATH_MAX);
-	snprintf (s, PATH_MAX, "%s/%s", f_info->path, f_info->name);
-
-	DRETURN_PTR(s, DLEVEL_STABLE);
+	DRETURN_PTR(fs->item, DLEVEL_STABLE);
 }
 
 /**
@@ -207,16 +200,14 @@ ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 {
-	struct dirent **dentries;
-	int           num, i;
-	char          dir[PATH_MAX];
-	char          file[PATH_MAX];
-	struct stat   statbuf;
-	Ewl_Widget    *items[1];
-	Ewl_Dirinfo   *d_info;
-	Ewl_Fileinfo  *f_info;
-	Ewl_Widget    *row;
-	
+	struct dirent        **dentries;
+	int                  num, i;
+	char                 dir[PATH_MAX];
+	char                 file[PATH_MAX];
+	struct stat          statbuf;
+	Ewl_Widget           *items[1];
+	Ewl_Widget           *row;
+	Ewl_Fileselector_Row *f_row;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
@@ -255,28 +246,25 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 		if (S_ISDIR(statbuf.st_mode)) {
 			row = ewl_tree_add_row (EWL_TREE (fs->dirs), NULL, items);
 			
-			d_info = NEW (Ewl_Dirinfo, 1);
-			d_info->name = strdup (dentries[num]->d_name);
-			d_info->path = strdup (dir);
-			ewl_widget_set_data (EWL_WIDGET (row), "filedialog_info", d_info);
-			
 			ewl_callback_append(row, EWL_CALLBACK_DOUBLE_CLICKED,
 					ewl_filedialog_directory_clicked_cb, fs);
 			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
 					ewl_filedialog_directory_clicked_single_cb, fs);
+			
 		} else if (S_ISREG(statbuf.st_mode)) {
 			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
 			
-			f_info = NEW (Ewl_Fileinfo, 1);
-			f_info->name = strdup (dentries[num]->d_name);
-			f_info->path = strdup (dir);
-			ewl_widget_set_data (EWL_WIDGET (row), "filedialog_info", f_info);
-
 			ewl_callback_append (row, EWL_CALLBACK_DOUBLE_CLICKED, 
 					fs->file_clicked, fs);
 			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
 					ewl_filedialog_file_clicked_cb, fs);
+			
 		}
+		
+		f_row = NEW (Ewl_Fileselector_Row, 1);
+		f_row->name = strdup (dentries[num]->d_name);
+		f_row->path = strdup (dir);
+		ewl_widget_set_data (EWL_WIDGET (row), "filedialog_info", f_row);
 	}
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -286,20 +274,21 @@ void ewl_filedialog_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 		void *user_data)
 {
 	Ewl_Fileselector *fs;
-	char file[PATH_MAX];
-	Ewl_Dirinfo *f_info = ewl_widget_get_data (EWL_WIDGET (w), "filedialog_info");
+	char *file;
+	Ewl_Fileselector_Row *f_info = ewl_widget_get_data (EWL_WIDGET (w), 
+			"filedialog_info");
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	fs = EWL_FILESELECTOR (user_data);
-	
+
+	file = malloc (PATH_MAX);
 	snprintf (file, PATH_MAX, "%s/%s", f_info->path, f_info->name);
 	printf ("Single click: %s\n", file);
 
 	fs->item = strdup (file);
 	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
-	
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -309,7 +298,8 @@ void ewl_filedialog_directory_clicked_single_cb(Ewl_Widget * w, void *ev_data,
 {
 	char dir[PATH_MAX];
 	Ewl_Fileselector *fs;
-	Ewl_Dirinfo *d_info = ewl_widget_get_data (EWL_WIDGET (w), "filedialog_info"); 
+	Ewl_Fileselector_Row *d_info = ewl_widget_get_data (EWL_WIDGET (w), 
+			"filedialog_info"); 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
@@ -327,7 +317,8 @@ void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 {
 	char dir[PATH_MAX];
 	Ewl_Fileselector *fs;
-	Ewl_Dirinfo *d_info = ewl_widget_get_data (EWL_WIDGET (w), "filedialog_info");
+	Ewl_Fileselector_Row *d_info = ewl_widget_get_data (EWL_WIDGET (w), 
+			"filedialog_info");
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
