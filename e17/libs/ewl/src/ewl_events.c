@@ -407,8 +407,8 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 						EWL_FLAG_STATE_HILITED))) {
 				ewl_object_add_state(EWL_OBJECT(last_focused),
 						EWL_FLAG_STATE_HILITED);
-				ewl_callback_call(last_focused,
-						EWL_CALLBACK_FOCUS_IN);
+				ewl_callback_call_with_event_data(last_focused,
+						EWL_CALLBACK_FOCUS_IN, ev);
 			}
 
 			ewl_callback_call_with_event_data(last_focused,
