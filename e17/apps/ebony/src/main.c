@@ -6,6 +6,7 @@
 #include "interface.h"
 #include "callbacks.h"
 #include "advanced.h"
+#include "config.h"
 
 void
 setup_evas(Display *disp, Window win, Visual *vis, Colormap cm, int w, int h)
@@ -48,7 +49,13 @@ setup_evas(Display *disp, Window win, Visual *vis, Colormap cm, int w, int h)
     evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
     evas_show(evas, o);
 }
-
+void
+show_version_and_exit(void)
+{
+    printf("%s-%s\nA background editor for Enlightenment 0.17\n", PACKAGE, 
+	    VERSION);
+    exit(0);
+}
 int
 main(int argc, char *argv[])
 {
@@ -60,12 +67,20 @@ main(int argc, char *argv[])
     bg = NULL;
     bl = NULL;
     recent_bgs = NULL;
+    bgfile[0] = '\0';
+
+    if(argc > 1) 
+    {
+	if(!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version"))
+	    show_version_and_exit();	
+	else
+	    snprintf(bgfile,PATH_MAX, "%s", argv[1]);
+    }
 
     gtk_init(&argc, &argv);
 
     win = create_ebony_window();
     
-    /* setup the evas stuffs */
     gdk_window_get_geometry(GDK_ROOT_PARENT(), &rx, &ry, &rw, &rh, &rd);
     gtk_widget_realize(GTK_WIDGET(win));
 
@@ -84,6 +99,7 @@ main(int argc, char *argv[])
     
     gtk_widget_realize(w);
 
+    /* setup the evas stuffs */
     setup_evas(GDK_WINDOW_XDISPLAY(w->window),
 		GDK_WINDOW_XWINDOW(w->window),
 		GDK_VISUAL_XVISUAL(gtk_widget_get_visual(win)),
@@ -93,15 +109,11 @@ main(int argc, char *argv[])
     
     gtk_widget_show(win);
     win_ref = win;
-    if(argv[1])
-    {
-	snprintf(bgfile,PATH_MAX, "%s", argv[1]);
-	open_bg_named(bgfile);
-    }
-    else
-    {
+    
+    if(!strlen(bgfile))
 	new_bg(NULL, NULL);
-    }
+    else
+	open_bg_named(bgfile);
     
     gtk_main();
 
