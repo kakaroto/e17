@@ -48,14 +48,31 @@ correct = 1
 # percentage of the delay to spend uploading the image,
 # 100 disables, useful values are < 40
 percent = 100
-# only for philps cams right now
+
+########################################################
+# PWC specific features (only for philps cams right now)
+
+# framerate of cam capture, lower fps -> less grainy image, more chance or
+# blurred motion
 framerate = 5
-# image settings
+
+# image settings (0-100)
 colour = 50
 brightness = 50
 contrast = 50
 hue = 50
 whiteness = 50
+
+# White balance mode
+# can be "auto", "indoor", "outdoor", "fluorescent" or "manual"
+pwc_wb_mode = auto
+# if _mode is set to manual, these two controls affect the balance
+# (0-100)
+pwc_wb_red = 50
+pwc_wb_blue = 50
+########################################################
+
+
 # where to log activity. comment out this line to disable logging
 logfile = /home/gilbertt/.camlog
 # gets the message text from here. one line allowed only. means you can do

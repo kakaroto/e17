@@ -37,7 +37,7 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
-#define VERSION "1.2"
+#define VERSION "1.3"
 
 void log(char *fmt,
          ...);
@@ -111,6 +111,9 @@ char *watch_interface = NULL;
 char *offline_image = NULL;
 int interface_active = 0;
 int device_palette;
+char *pwc_wb_mode = "auto";
+int pwc_wb_red = 50;
+int pwc_wb_blue = 50;
 
 int crop = 0;
 int crop_x = 0;
@@ -245,6 +248,7 @@ grab_init()
     struct video_window vwin;
     int shutter = -1;
     int gain = -1;
+    struct pwc_whitebalance wb;
 
     /* philips cam detected, maybe enable special features */
     log("enabling pwc-specific features\n");
@@ -266,6 +270,28 @@ grab_init()
       perror("trying to set gain");
     if (ioctl(grab_fd, VIDIOCPWCSSHUTTER, &shutter) < 0)
       perror("trying to set shutter");
+
+    wb.mode = PWC_WB_AUTO;
+    wb.manual_red = 50;
+    wb.manual_blue = 50;
+    if(!strcasecmp(pwc_wb_mode, "auto")) {
+      wb.mode = PWC_WB_AUTO;
+    } else if(!strcasecmp(pwc_wb_mode, "indoor")) {
+      wb.mode = PWC_WB_INDOOR;
+    } else if(!strcasecmp(pwc_wb_mode, "outdoor")) {
+      wb.mode = PWC_WB_OUTDOOR;
+    } else if(!strcasecmp(pwc_wb_mode, "fluorescent")) {
+      wb.mode = PWC_WB_FL;
+    } else if(!strcasecmp(pwc_wb_mode, "manual")) {
+      wb.mode = PWC_WB_MANUAL;
+      wb.manual_red = 65535 * ((float) pwc_wb_red / 100);
+      wb.manual_blue = 65535 * ((float) pwc_wb_blue / 100);
+    } else {
+      log("unknown pwc white balance mode '%s' ignored\n", pwc_wb_mode);
+    }
+    
+    if (ioctl(grab_fd, VIDIOCPWCSAWB, &wb) < 0)
+       perror("trying to set pwc white balance mode");
   }
 
   /* set image source and TV norm */
@@ -797,61 +823,65 @@ ftp_upload(char *local,
   FILE *infile;
   CURLcode ret;
   struct stat st;
-  struct curl_slist *post_commands = NULL;
+  static struct curl_slist *post_commands = NULL;
   char *passwd_string, *url_string;
 
   infile = fopen(local, "r");
 
   if (!infile) {
-    fprintf(stderr, "camE: Couldn't open temp file to upload it\n");
+    log("camE: Couldn't open temp file to upload it\n");
     perror("ftp_upload(): ");
     return;
   }
   fstat(fileno(infile), &st);
 
-  snprintf(buf, sizeof(buf), "rnfr %s", tmp);
-  post_commands = curl_slist_append(post_commands, buf);
-  snprintf(buf, sizeof(buf), "rnto %s", remote);
-  post_commands = curl_slist_append(post_commands, buf);
+  if(!post_commands) {
+    snprintf(buf, sizeof(buf), "rnfr %s", tmp);
+    post_commands = curl_slist_append(post_commands, buf);
+    snprintf(buf, sizeof(buf), "rnto %s", remote);
+    post_commands = curl_slist_append(post_commands, buf);
+  }
 
   /* init the curl session */
   if (connections < 1) {
     curl_handle = curl_easy_init();
     connections++;
+    
+    passwd_string = gib_strjoin(":", ftp_user, ftp_pass, NULL);
+    curl_easy_setopt(curl_handle, CURLOPT_USERPWD, passwd_string);
+    free(passwd_string);
+    
+    /* set URL to save to */
+    url_string = gib_strjoin("/", "ftp:/", ftp_host, ftp_dir, tmp, NULL);
+    curl_easy_setopt(curl_handle, CURLOPT_URL, url_string);
+    free(url_string);
+
+    /* no progress meter please */
+    curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1);
+  
+    /* shut up completely */
+    if (ftp_debug)
+      curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1);
+    else
+      curl_easy_setopt(curl_handle, CURLOPT_MUTE, 1);
+
+    curl_easy_setopt(curl_handle, CURLOPT_UPLOAD, 1);
+    
+    if (!ftp_passive)
+      curl_easy_setopt(curl_handle, CURLOPT_FTPPORT, ftp_interface);
+    
+    curl_easy_setopt(curl_handle, CURLOPT_POSTQUOTE, post_commands);
   }
 
   curl_easy_setopt(curl_handle, CURLOPT_INFILE, infile);
   curl_easy_setopt(curl_handle, CURLOPT_INFILESIZE, st.st_size);
-
-  passwd_string = gib_strjoin(":", ftp_user, ftp_pass, NULL);
-  curl_easy_setopt(curl_handle, CURLOPT_USERPWD, passwd_string);
-
-  /* set URL to save to */
-  url_string = gib_strjoin("/", "ftp:/", ftp_host, ftp_dir, tmp, NULL);
-  curl_easy_setopt(curl_handle, CURLOPT_URL, url_string);
-
-  /* no progress meter please */
-  curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1);
-
-  /* shut up completely */
-  if (ftp_debug)
-    curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1);
-  else
-    curl_easy_setopt(curl_handle, CURLOPT_MUTE, 1);
-
-  curl_easy_setopt(curl_handle, CURLOPT_POSTQUOTE, post_commands);
-
-  curl_easy_setopt(curl_handle, CURLOPT_UPLOAD, 1);
-
-  if (!ftp_passive)
-    curl_easy_setopt(curl_handle, CURLOPT_FTPPORT, ftp_interface);
 
   /* get it! */
   ret = curl_easy_perform(curl_handle);
   /* TODO check error */
   if (ret) {
     fprintf(stderr, "\ncamE: error sending via ftp: ");
-    log("EEEE error: ");
+    log("camE error: ");
     switch (ret) {
       case CURLE_URL_MALFORMAT:
         fprintf(stderr, "Badly formatted ftp host or directory\n");
@@ -959,11 +989,10 @@ ftp_upload(char *local,
   /* cleanup curl stuff */
   if (!ftp_keepalive) {
     curl_easy_cleanup(curl_handle);
-    curl_slist_free_all(post_commands);
     connections--;
+    curl_slist_free_all(post_commands);
+    post_commands = NULL;
   }
-  free(url_string);
-  free(passwd_string);
   fclose(infile);
 }
 
@@ -1177,6 +1206,8 @@ main(int argc,
     watch_interface = val;
   if (NULL != (val = cfg_get_str("grab", "offline_image")))
     offline_image = val;
+  if (NULL != (val = cfg_get_str("grab", "pwc_wb_mode")))
+    pwc_wb_mode = val;
   if (-1 != (i = cfg_get_int("grab", "width")))
     grab_width = i;
   if (-1 != (i = cfg_get_int("grab", "height")))
@@ -1255,6 +1286,10 @@ main(int argc,
     scale_height = i;
   if (-1 != (i = cfg_get_int("grab", "archive_shot_every")))
     archive_shot_every = i;
+  if (-1 != (i = cfg_get_int("grab", "pwc_wb_red")))
+    pwc_wb_red = i;
+  if (-1 != (i = cfg_get_int("grab", "pwc_wb_blue")))
+    pwc_wb_blue = i;
 
   if (cam_framerate > 60)
     cam_framerate = 60;
