@@ -1,13 +1,8 @@
-Fixes in 0.16.3:
-iconbox names displayed turned off WORKS now
-some odd, can't-see-how-it-could-possibly-trigger potential segfault in drawupdate code
-bounds check in icccm.c out of bounds in ICCCM_Configure()
-fixed a uninitialized memory check in buttons.c CreateButton()
-fixed an uninitialized memory area in menus.c in CreateMenu()
-Fixed a segfault: Minimize a window into an iconbox, close the iconbox and minimize the app again
-fix variable expansion for file execcing...
-fix menus to be onscreen including submenus when you have menus onscreen selected.
-added "current" window_id option to win_op ipc command
+Fixes in 0.16.4:
+gettext internationalisation support & patch
+fix to allow setting of which mouse button do what on the pager
+fix to border width handlign in icccm
+fix to warp foucs
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
