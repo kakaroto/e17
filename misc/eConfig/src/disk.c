@@ -16,7 +16,8 @@
 #include "eConfig.h"
 
 unsigned long 
-_econf_finddatapointerinpath(char *path, char *loc, unsigned long *position,
+_econf_finddatapointerinpath(char *path, char *loc,
+			     unsigned long *position,
 			     unsigned long *timestamp)
 {
 
@@ -150,7 +151,7 @@ _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
 	fseek(CONF_TABLE, 0, SEEK_END);
 	position = ftell(CONF_TABLE);
 
-	if (fwrite(data, length, 1, CONF_TABLE) < length)
+	if (!fwrite(data, length, 1, CONF_TABLE))
 	  {
 	     /* oh shit, we didn't write enough data.  maybe we need
 	      * to somehow mark all these errors into something useful
@@ -159,7 +160,8 @@ _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
 	     return 0;
 	  }
 	fclose(CONF_TABLE);
-	return position;
+	/* position is position + 1 - hack hack */
+	return position + 1;
      }
    else
      {
@@ -219,7 +221,8 @@ _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 }
 
 int 
-_econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
+_econf_new_fat_entry_to_disk(char *loc, unsigned long position,
+			     unsigned long length, char *path)
 {
 
    /* This function creates a new FAT table entry at the specified location
@@ -247,10 +250,13 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 	sprintf(tableentry.loc, "%s", loc);
 	tableentry.length = length;
 	tableentry.usage_index = 0;
+	tableentry.position = position;
 	tableentry.updated_on = _econf_timestamp();
 	fseek(FAT_TABLE, 0, SEEK_END);
 	fwrite(&tableentry, sizeof(eConfigFAT), 1, FAT_TABLE);
 	fclose(FAT_TABLE);
+	/* success, for now */
+	return 1;
      }
    else
      {
@@ -409,7 +415,20 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	  }
 	else
 	  {
+	     unsigned long       position;
+
 	     /* we need to add ourselves now */
+	     if (!(position = _econf_append_data_to_disk_at_path(path, length, data)))
+	       {
+		  /* we failed adding the data entry to disk, return an error */
+		  return -3;
+	       }
+	     if (!_econf_new_fat_entry_to_disk(loc, position - 1, length, path))
+	       {
+		  /* we failed adding the fat entry to disk, return an error */
+		  return -3;
+	       }
+
 	     return 1;
 	  }
      }

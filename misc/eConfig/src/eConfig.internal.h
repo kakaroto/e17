@@ -92,7 +92,8 @@ int                 _econf_save_data_to_disk_at_position(unsigned long position,
 unsigned long       _econf_append_data_to_disk_at_path(char *path,
 						       unsigned long length,
 						       void *data);
-int                 _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
+int                 _econf_new_fat_entry_to_disk(char *loc,
+		    unsigned long position, unsigned long length, char *path);
 unsigned long       _econf_timestamp(void);
 int                 _econf_replace_fat_entry_to_disk(char *loc, unsigned long length,
 						     char *path);
