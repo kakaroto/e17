@@ -1,8 +1,8 @@
-feh (0.6.2-0.2000030701) unstable; urgency=low
+feh (0.6.5-0.2000031001) unstable; urgency=low
 
   * A CVS release.
 
- -- Laurence J. Lane <ljlane@debian.org>  Tue,  7 Mar 2000 19:34:36 -0500
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 10 Mar 2000 20:34:58 -0500
 
 Local variables:
 mode: debian-changelog
