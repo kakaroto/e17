@@ -209,8 +209,8 @@ operates.
 Default themes and online documentation
 =======================================
 The default themes and the online documentation are provided in separate
-packages, etheme-<name>-<version>.tar.gz and edox-data-<version>.tar.gz,
-respectively.
+packages, enlightenment-theme-<name>-<version>.tar.gz and
+enlightenment-docs-<version>.tar.gz, respectively.
 These (optional) packages can be installed just like Enlightenment, i.e.
 unpack, `cd' to source directory, `./configure', `make', and `make install'.
 `configure' should be done with the same path specifications (such as
