@@ -4,11 +4,23 @@
 <img src=EPlayCD.jpg x=70 y=0>
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
-<br>
-<br>
-E-PlayCD 0.5.0
+<br><br>
+E-PlayCD 0.5.2<br>
+By Rahsheen Porter - 1999
 <p>
-Comments or suggestions? rahsheen@cc.gatech.edu. 
+E-PlayCD was one of the first Enlightenment Epplets. It allows you
+to control your CD-ROM drive to play CD's. I tried to design it in
+such a way that it would not simply lock your drive like most 
+programs do. E-PlayCD grabs the drive, sends the command, and then
+lets it go. It has CDDB support, a pop-up tracklist, a scrolling label
+showing current track info, and a volume
+slider. Most of the buttons are pretty self-explanatory, so click
+_NEXT(buttons) and I'll explain them.
+
+<p><p>
+Comments or suggestions? rahsheen@cc.gatech.edu.
+</font>
+<font face=aircut3/6 color=#ffffff>
 <p>If you don't like this epplet...fawk yeW! :)
 <p>
 Mad Props go out to:
@@ -16,3 +28,14 @@ srl (for the kickass graphics he's done, moral support, and for bitchin at me to
 <p>(that was for you Filgy)
 <p>
 * StriderZ hides
+
+<page columns=1 padding=16 name=buttons background=Edoc_bg.png linkcolor=#88dddd>
+<p align=50%>
+<font face=aircut3/16 color=#88eeff>
+Control Overview
+<font face=aircut3/12 color=#ffffff>
+<p>
+Tracks will popup a list of all the tracks and allow you to play one. Repeat
+doesn't do anything yet. Config will eventually allow you to configure the
+epplet, but right now merely forces an update of the CD information.
+<img src=E-PlayCD_Controls.png x=128 y=128>
