@@ -1936,7 +1936,6 @@ const char         *EGetSavePrefixCommon(void);
 void                EDisplayMemUse(void);
 
 /* menus.c */
-MenuStyle          *MenuStyleCreate(const char *name);
 int                 MenuStyleConfigLoad(FILE * fs);
 
 Menu               *MenuCreate(const char *name, const char *title,
@@ -1945,7 +1944,6 @@ void                MenuDestroy(Menu * m);
 void                MenuHide(Menu * m);
 void                MenuEmpty(Menu * m);
 void                MenuRepack(Menu * m);
-void                MenuRealize(Menu * m);
 MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,
 				   const char *action_params, Menu * child);
 void                MenuSetName(Menu * m, const char *name);
@@ -1965,14 +1963,6 @@ void                ShowInternalMenu(Menu ** pm, MenuStyle ** pms,
 						   MenuStyle * ms));
 
 int                 MenusActive(void);
-void                MenusHide(void);
-void                MenusShowNamed(const char *name);
-void                MenusDestroyLoaded(void);
-int                 MenusEventKeyPress(XEvent * ev);
-int                 MenusEventMouseDown(XEvent * ev);
-int                 MenusEventMouseUp(XEvent * ev);
-int                 MenusEventMouseIn(XEvent * ev);
-int                 MenusEventMouseOut(XEvent * ev);
 
 /* menus-misc.c */
 Menu               *MenuCreateFromDirectory(const char *name, Menu * parent,

@@ -96,12 +96,15 @@ struct _menu
 	EnterWindowMask | LeaveWindowMask	/* | PointerMotionMask */
 
 static void         MenuRedraw(Menu * m);
+static void         MenuRealize(Menu * m);
 static void         MenuActivateItem(Menu * m, MenuItem * mi);
 static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);
 
 static void         MenuHandleEvents(XEvent * ev, void *m);
 static void         MenuItemHandleEvents(XEvent * ev, void *mi);
 static void         MenuMaskerHandleEvents(XEvent * ev, void *prm);
+
+static void         MenusHide(void);
 
 static Menu        *active_menu = NULL;
 static MenuItem    *active_item = NULL;
@@ -398,7 +401,7 @@ MenuStyleSetName(MenuStyle * ms, const char *name)
    ms->name = Estrdup(name);
 }
 
-MenuStyle          *
+static MenuStyle   *
 MenuStyleCreate(const char *name)
 {
    MenuStyle          *ms;
@@ -642,7 +645,7 @@ MenuAddItem(Menu * m, MenuItem * item)
    m->items[m->num - 1] = item;
 }
 
-void
+static void
 MenuRealize(Menu * m)
 {
    int                 i, maxh = 0, maxw = 0;
@@ -1009,32 +1012,7 @@ MenuHideMasker(void)
      }
 }
 
-void
-MenusShowNamed(const char *name)
-{
-   Menu               *m;
-
-   m = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
-   if (m)
-     {
-	if (!FindEwinByMenu(m))	/* Don't show if already shown */
-	   MenuShow(m, 0);
-#if 0
-	Mode_menus.list[0] = m;
-	Mode_menus.current_depth = 1;
-	MenuShowMasker(m);
-	m->ref_count++;
-     }
-   else
-     {
-	Mode_menus.list[0] = NULL;
-	Mode_menus.current_depth = 0;
-	MenuHideMasker();
-#endif
-     }
-}
-
-void
+static void
 MenusDestroyLoaded(void)
 {
    Menu               *menu;
@@ -1065,30 +1043,6 @@ MenusDestroyLoaded(void)
      }
    while (found_one);
 }
-
-#if 0				/* Unused */
-void
-MenusHideByWindow(Window win)
-{
-   Menu               *m;
-   int                 i, ok;
-
-   m = FindMenu(win);
-   if (m)
-     {
-	MenuHide(m);
-	ok = 0;
-	for (i = 0; i < Mode_menus.current_depth; i++)
-	  {
-	     if (ok)
-		MenuHide(Mode_menus.list[i]);
-	     if (Mode_menus.list[i] == m)
-		ok = 1;
-	  }
-	MenuHideMasker();
-     }
-}
-#endif
 
 /*
  * Internal menus
@@ -1139,12 +1093,45 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
    return m;
 }
 
+static void
+MenusShowNamed(const char *name)
+{
+   Menu               *m;
+
+   /* Hide any menus currently up */
+   if (MenusActive())
+      MenusHide();
+
+   m = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
+   if (m)
+     {
+	if (!FindEwinByMenu(m))	/* Don't show if already shown */
+	   MenuShow(m, 0);
+#if 0
+	Mode_menus.list[0] = m;
+	Mode_menus.current_depth = 1;
+	MenuShowMasker(m);
+	m->ref_count++;
+     }
+   else
+     {
+	Mode_menus.list[0] = NULL;
+	Mode_menus.current_depth = 0;
+	MenuHideMasker();
+#endif
+     }
+}
+
 void
 ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
 		 Menu * (mcf) (const char *name, MenuStyle * ms))
 {
    Menu               *m = *pm;
    MenuStyle          *ms = *pms;
+
+   /* Hide any menus currently up */
+   if (MenusActive())
+      MenusHide();
 
    if (!ms)
      {
@@ -1181,7 +1168,7 @@ MenusActive(void)
    return Mode_menus.current_depth;
 }
 
-void
+static void
 MenusHide(void)
 {
    int                 i;
