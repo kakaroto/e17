@@ -464,7 +464,7 @@ static void ewl_text_ops_apply(Ewl_Text *ta)
 {
 	Ewl_Text_Op *op;
 
-	while ((op = ecore_dlist_remove(ta->ops))) {
+	while ((op = ecore_dlist_remove_first(ta->ops))) {
 		op->apply(ta, op);
 		ecore_dlist_append(ta->applied, op);
 	}
