@@ -186,7 +186,7 @@ ewl_callback_clear(Ewl_Widget * w)
 	for (i = 0; i < EWL_CALLBACK_MAX; i++)
 	  {
 		  if (w->callbacks[i])
-	  		ewl_callback_del_type(w, i);
+			  ewl_callback_del_type(w, i);
 	  }
 
 

@@ -76,6 +76,8 @@ main(int argc, char **argv)
 	ewl_window_resize(e_conf.main_win, 446, 300);
 	ewl_window_set_min_size(e_conf.main_win, 446, 300);
 	ewl_window_set_title(e_conf.main_win, "EWL Configuration Program");
+	ewl_callback_append(e_conf.main_win, EWL_CALLBACK_DELETE_WINDOW,
+			    ewl_config_exit_cb, NULL);
 	ewl_widget_show(e_conf.main_win);
 
 	e_conf.main_vbox = ewl_vbox_new();
@@ -91,6 +93,7 @@ main(int argc, char **argv)
 
 	e_conf.button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(e_conf.button_hbox, 5);
+	ewl_object_set_padding(EWL_OBJECT(e_conf.button_hbox), 0, 0, 0, 10);
 	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_hbox), 415, 17);
 	ewl_object_set_alignment(EWL_OBJECT(e_conf.button_hbox),
 				 EWL_ALIGNMENT_CENTER);
@@ -142,6 +145,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_evas_label);
 
 	e_conf.page_evas = ewl_vbox_new();
+	ewl_object_set_padding(EWL_OBJECT(e_conf.page_evas), 10, 5, 5, 0);
 	ewl_box_set_spacing(e_conf.page_evas, 5);
 	ewl_widget_show(e_conf.page_evas);
 
@@ -213,6 +217,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_debug_label);
 
 	e_conf.page_debug = ewl_vbox_new();
+	ewl_object_set_padding(EWL_OBJECT(e_conf.page_debug), 10, 5, 5, 0);
 	ewl_box_set_spacing(e_conf.page_debug, 5);
 	ewl_widget_show(e_conf.page_debug);
 
@@ -247,6 +252,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_fx_label);
 
 	e_conf.page_fx = ewl_vbox_new();
+	ewl_object_set_padding(EWL_OBJECT(e_conf.page_fx), 10, 5, 5, 0);
 	ewl_box_set_spacing(e_conf.page_fx, 5);
 	ewl_widget_show(e_conf.page_fx);
 
@@ -283,6 +289,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_theme_label);
 
 	e_conf.page_theme = ewl_vbox_new();
+	ewl_object_set_padding(EWL_OBJECT(e_conf.page_theme), 10, 5, 5, 0);
 	ewl_box_set_spacing(e_conf.page_theme, 5);
 	ewl_widget_show(e_conf.page_theme);
 
@@ -514,6 +521,8 @@ void
 ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 {
 	ewl_widget_destroy_recursive(e_conf.main_win);
+
+	ewl_main_quit();
 
 	return;
 	w = NULL;

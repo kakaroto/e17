@@ -1,3 +1,9 @@
+Sun Oct  02 05:22:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed segv in __ewl_widget_destroy.
+	* Fixed memleaks in the ewl_test program.
+	* Made ewl_config exit nicely.
+	* Spiffed up the notebook tab button bits.db's.
+
 Sun Oct  02 03:45:39 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added functions to change the position and alignment of the tabs in
 	  a Ewl_Notebook.
