@@ -3642,15 +3642,18 @@ Epplet_load_config_file(char *filename)
 	     {
 	       edict->entries = NULL;
 	       edict->num_entries = 0;
-
+	       s2[0] = 0;
 	       while ((fscanf(f, "%s %[^\n]\n", (char*)&s2, (char*)&s3) != EOF))
 		 {
-		   edict->num_entries++;
-		   edict->entries = realloc(edict->entries, sizeof(DictEntry) * edict->num_entries);
-		   edict->entries[edict->num_entries-1].key = NULL;
-		   edict->entries[edict->num_entries-1].value = NULL;
-		   edict->entries[edict->num_entries-1].key = strdup(s2);
-		   edict->entries[edict->num_entries-1].value = strdup(s3);
+		   if (s2[0] != '#')
+		     {
+		       edict->num_entries++;
+		       edict->entries = realloc(edict->entries, sizeof(DictEntry) * edict->num_entries);
+		       edict->entries[edict->num_entries-1].key = NULL;
+		       edict->entries[edict->num_entries-1].value = NULL;
+		       edict->entries[edict->num_entries-1].key = strdup(s2);
+		       edict->entries[edict->num_entries-1].value = strdup(s3);
+		     }
 		 }
 	       fclose(f);
 	       return 1;
