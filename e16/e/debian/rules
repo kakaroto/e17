@@ -24,7 +24,7 @@ build-stamp:
 	
 	dh_testdir
 
-	./autogen.sh $(cfg) || ./configure $(cfg)
+	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
 	
 	$(MAKE)
 
@@ -36,7 +36,7 @@ clean:
 	rm -f build-stamp
 
 	# Add here commands to clean up after the build process.
-	#-$(MAKE) clean
+	-$(MAKE) clean
 	#-$(MAKE) distclean
 
 	rm -rf build-stamp
@@ -58,16 +58,15 @@ install: build
 		xargs perl -i -pwe 's#".*?lucida.*?"#"fixed"#'
 
 	# Move files to sub-packages and remove empty directories
-	# Remove Ganymede too, who knows if it will make the cut this time
 	dh_movefiles --sourcedir=debian/enlightenment-data
-	rm -rf debian/enlightenment-data/usr/bin \
-		debian/enlightenment-data/usr/share/enlightenment/themes/BlueSteel \
-		debian/enlightenment-data/usr/share/enlightenment/themes/ShinyMetal \
-		debian/enlightenment-data/usr/share/enlightenment/themes/Ganymede \
+	cd debian/enlightenment-data/usr; rm -rf bin \
+		share/enlightenment/themes/BlueSteel \
+		share/enlightenment/themes/ShinyMetal \
+		share/enlightenment/themes/Ganymede \
 		debian/enlightenment-data/usr/share/man
 
 	# Populate /usr/share/doc/enlightenment with interesting looking stuff
-	$(INSTALL) -m 644 ABOUT-NLS INSTALL FAQ README AUTHORS NEWS \
+	$(INSTALL) -m 644 ABOUT-NLS INSTALL README AUTHORS NEWS \
 		debian/enlightenment/usr/share/doc/enlightenment/
 	$(INSTALL) -m 644 src/ChangeLog \
 		debian/enlightenment/usr/share/doc/enlightenment/changelog-src
@@ -82,6 +81,12 @@ install: build
 	perl -pi -lwe 's/^EBIN=.*/EBIN=\/usr\/bin/' \
 		debian/enlightenment/usr/bin/enlightenment.install
 
+	# *sigh*
+	-rm debian/enlightenment-theme-ganymede/usr/share/enlightenment/themes/Ganymede/dialogs/#dialogs.cfg#
+	
+	# man page
+	cp -v debian/e-utils.1 debian/enlightenment/usr/share/man/man1/
+	
 # This single target is used to build all the packages, all at once, or
 # one at a time. So keep in mind: any options passed to commands here will
 # affect _all_ packages. Anything you want to only affect one package
@@ -96,6 +101,7 @@ binary-common:
 	dh_installchangelogs
 	dh_link
 	dh_compress
+	dh_strip
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
@@ -104,11 +110,11 @@ binary-common:
 	dh_builddeb
 
 # Build architecture independant packages using the common target.
-binary-indep:
+binary-indep: build install
 	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
 
 # Build architecture dependant packages using the common target.
-binary-arch:
+binary-arch: build install
 	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
 
 # Any other binary targets build just one binary package at a time.
@@ -116,15 +122,9 @@ binary-%: build install
 	make -f debian/rules binary-common DH_OPTIONS=-p$*
 
 manpage:
-	pod2man debian/e-utilities.pod \
+	pod2man debian/e-utils.pod \
 	--center="Debian GNU/Linux" \
-	--release="woody" > debian/e-utilities.1
-
-pack:
-	cd debian; tar cvzf dh.tar.gz e* R* changelog copyright menumangler.pl  control --remove
-
-unpack:
-	cd debian; tar xzvf dh.tar.gz
+	--release="woody" > debian/e-utils.1
 	
 binary: install binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install
