@@ -12,7 +12,7 @@ INCLUDES	     = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 		       -I$(top_srcdir)/loaders
 
 pkgdir		     = $(libdir)/loaders/image
-pkg_LTLIBRARIES	     = png.la jpeg.la gif.la pnm.la argb.la tiff.la bmp.la xpm.la tga.la
+pkg_LTLIBRARIES	     = png.la jpeg.la gif.la pnm.la argb.la tiff.la bmp.la xpm.la tga.la db.la
 
 png_la_SOURCES	     = loader_png.c
 png_la_LDFLAGS	     = -no-undefined -module -avoid-version
@@ -49,3 +49,7 @@ xpm_la_LIBADD	     =
 tga_la_SOURCES       = loader_tga.c
 tga_la_LDFLAGS	     = -no-undefined -module -avoid-version
 tga_la_LIBADD	     = 
+
+db_la_SOURCES       = loader_db.c
+db_la_LDFLAGS	    = -no-undefined -module -avoid-version
+db_la_LIBADD	    = -ldb
