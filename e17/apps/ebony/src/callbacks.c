@@ -81,6 +81,35 @@ set_toggle_value(char *name, int on)
    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), on);
 }
 
+double
+get_range_value(char *name)
+{
+   GtkWidget *w;
+   
+   w = gtk_object_get_data(GTK_OBJECT(window), name);
+   return (gtk_range_get_adjustment(GTK_RANGE(w)))->value;
+}
+
+void
+test_scroll_x_value_changed            (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+   e_background_set_scroll(background,
+			   (int)get_range_value("test_scroll_x"),
+			   (int)get_range_value("test_scroll_y"));   
+   DRAW();
+}
+
+void
+test_scroll_y_value_changed            (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+   e_background_set_scroll(background,
+			   (int)get_range_value("test_scroll_x"),
+			   (int)get_range_value("test_scroll_y"));   
+   DRAW();
+}
+
 void
 display_layer(E_Background_Layer *bl)
 {
@@ -392,7 +421,7 @@ on_scroll_y_changed                    (GtkEditable     *editable,
    bl = e_get_layer_number(background, (int)get_spin_value("layer_num"));
    if (bl)
      {
-	bl->scroll.x = get_spin_value("scroll_y");
+	bl->scroll.y = get_spin_value("scroll_y");
 	e_update_background(background);
      }
 }

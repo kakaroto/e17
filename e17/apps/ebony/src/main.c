@@ -21,6 +21,13 @@ GtkWidget *filesel;
 GtkWidget *window;
 int        desk_w = 320, desk_h = 240;
 
+void
+test_scroll_x_value_changed            (GtkWidget       *widget,
+					gpointer         user_data);
+void
+test_scroll_y_value_changed            (GtkWidget       *widget,
+					gpointer         user_data);
+    
 int
 main (int argc, char *argv[])
 {
@@ -66,6 +73,14 @@ main (int argc, char *argv[])
 		     GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(window)),
 		     w->allocation.width,
 		     w->allocation.height);	
+	w = gtk_object_get_data(GTK_OBJECT(window), "test_scroll_x");
+	gtk_signal_connect(GTK_OBJECT(gtk_range_get_adjustment(GTK_RANGE(w))),
+			   "value_changed",
+			   GTK_SIGNAL_FUNC(test_scroll_x_value_changed), NULL);
+	w = gtk_object_get_data(GTK_OBJECT(window), "test_scroll_y");
+	gtk_signal_connect(GTK_OBJECT(gtk_range_get_adjustment(GTK_RANGE(w))),
+			   "value_changed",
+			   GTK_SIGNAL_FUNC(test_scroll_y_value_changed), NULL);
      }
    
      {

@@ -40,9 +40,7 @@ e_setup_evas(Display *disp, Window win, Visual *vis, Colormap cmap, int w, int h
    evas = evas_new();
    evas_set_output_method(evas, RENDER_METHOD_ALPHA_SOFTWARE);
    evas_set_output(evas, disp, win, vis, cmap);
-   printf("%i %i\n", w, h);
    evas_set_output_size(evas, w, h);
-   printf("%i %i\n", desk_w, desk_h);
    evas_set_output_viewport(evas, 0, 0, desk_w, desk_h);
    evas_set_font_cache(evas, 512 * 1024 * 1024);
    evas_set_image_cache(evas, 2 * 1024 * 1024);
@@ -236,12 +234,9 @@ e_background_save(char *file, E_Background *bg)
 	  }
 	if (bl->inlined)
 	  {
-	     printf("inlined\n");
 	     if (bl->image)
 	       {
-		  printf("image\n");
 		  sprintf(buf, "%s:/layers/%i/image", bg->file, i);
-		  printf("%s\n", buf);
 		  imlib_context_set_image(bl->image);
 		  imlib_image_set_format("db");
 		  imlib_image_attach_data_value("compression", NULL, 9, NULL);

@@ -286,14 +286,14 @@ create_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-  test_scroll_y = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 240, 1, 10, 10)));
+  test_scroll_y = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 1024, 1, 10, 10)));
   gtk_widget_ref (test_scroll_y);
   gtk_object_set_data_full (GTK_OBJECT (window), "test_scroll_y", test_scroll_y,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (test_scroll_y);
   gtk_container_add (GTK_CONTAINER (alignment5), test_scroll_y);
 
-  test_scroll_x = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 320, 1, 10, 10)));
+  test_scroll_x = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 1024, 1, 10, 10)));
   gtk_widget_ref (test_scroll_x);
   gtk_object_set_data_full (GTK_OBJECT (window), "test_scroll_x", test_scroll_x,
                             (GtkDestroyNotify) gtk_widget_unref);
