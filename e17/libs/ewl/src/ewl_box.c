@@ -19,15 +19,15 @@ typedef struct
 	 * Function pointers for getting the dimension of the widget that we
 	 * care about.
 	 */
-	int             (*pref_fill_ask) (Ewl_Object * ob);
-	void            (*pref_fill_set) (Ewl_Object * ob, int size);
-	int             (*fill_ask) (Ewl_Object * ob);
-	void            (*fill_set) (Ewl_Object * ob, int size);
+	unsigned int    (*pref_fill_ask) (Ewl_Object * ob);
+	void            (*pref_fill_set) (Ewl_Object * ob, unsigned int size);
+	unsigned int             (*fill_ask) (Ewl_Object * ob);
+	void            (*fill_set) (Ewl_Object * ob, unsigned int size);
 
-	int             (*pref_align_ask) (Ewl_Object * ob);
-	void            (*pref_align_set) (Ewl_Object * ob, int size);
-	int             (*align_ask) (Ewl_Object * ob);
-	void            (*align_set) (Ewl_Object * ob, int size);
+	unsigned int    (*pref_align_ask) (Ewl_Object * ob);
+	void            (*pref_align_set) (Ewl_Object * ob, unsigned int size);
+	unsigned int    (*align_ask) (Ewl_Object * ob);
+	void            (*align_set) (Ewl_Object * ob, unsigned int size);
 
 } Box_Orientation;
 
@@ -113,8 +113,12 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	/*
 	 * Initialize the container portion of the box
 	 */
-	ewl_container_init(EWL_CONTAINER(b), "box", __ewl_box_add,
-			__ewl_box_child_resize);
+	if (o == EWL_ORIENTATION_HORIZONTAL)
+		ewl_container_init(EWL_CONTAINER(b), "hbox", __ewl_box_add,
+				__ewl_box_child_resize);
+	else
+		ewl_container_init(EWL_CONTAINER(b), "vbox", __ewl_box_add,
+				__ewl_box_child_resize);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
 			     NULL);
@@ -161,6 +165,10 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 		DRETURN(DLEVEL_STABLE);
 
 	b->orientation = o;
+	if (o == EWL_ORIENTATION_HORIZONTAL)
+		ewl_widget_set_appearance(w, "hbox");
+	else
+		ewl_widget_set_appearance(w, "vbox");
 
 	ewl_widget_configure(w);
 
@@ -469,8 +477,6 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			 * Move to the next position for the child.
 			 */
 			*fill += info->fill_ask(child) + b->spacing;
-
-			ewl_widget_configure(EWL_WIDGET(child));
 		}
 	}
 

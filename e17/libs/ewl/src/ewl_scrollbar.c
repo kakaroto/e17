@@ -122,26 +122,22 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	ewl_seeker_set_step(EWL_SEEKER(s->seeker), 0.05);
 
 	/*
+	 * Set the appearance strings for the parts of the scrollbar
+	 */
+	ewl_widget_set_appearance(s->button_decrement, "button_increment");
+	ewl_widget_set_appearance(s->button_increment, "button_decrement");
+
+	/*
 	 * Setup a few orientation specific variables, such as appearance and
 	 * packing order.
 	 */
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 
 		/*
-		 * Set the appearance strings for the parts of the scrollbar
-		 */
-		ewl_widget_set_appearance(s->button_decrement,
-					  "/scrollbar/horizontal/button_increment");
-		ewl_widget_set_appearance(s->seeker,
-					  "/scrollbar/horizontal");
-		ewl_widget_set_appearance(s->button_increment,
-					  "/scrollbar/horizontal/button_decrement");
-
-		/*
 		 * Set the alignment of the buttons to the seeker.
 		 */
 		s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
-							      "/scrollbar/horizontal/button_order");
+							      "/hscrollbar/button_order");
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_LEFT) {
 
@@ -182,20 +178,10 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	} else {
 
 		/*
-		 * Set the appearances for the parts of the scrollbar.
-		 */
-		ewl_widget_set_appearance(s->button_decrement,
-					  "/scrollbar/vertical/button_increment");
-		ewl_widget_set_appearance(s->seeker,
-					  "/scrollbar/vertical");
-		ewl_widget_set_appearance(s->button_increment,
-					  "/scrollbar/vertical/button_decrement");
-
-		/*
 		 * Set the alignment of the buttons to the seeker.
 		 */
 		s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
-							      "/scrollbar/vertical/button_order");
+							      "/vscrollbar/button_order");
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_TOP) {
 
@@ -467,8 +453,6 @@ __ewl_scrollbar_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Request the new size for the dragbar.
 	 */
 	ewl_object_request_size(EWL_OBJECT(se->dragbar), req_w, req_h);
-
-	ewl_widget_configure(se->dragbar);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

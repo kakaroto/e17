@@ -7,8 +7,11 @@ echo -n "Regenerating default $DB"
 
 # Add keys for boxes
 echo -n "."
-edb_ed $DB add "/box/base" str "appearance/box_vertical.bits.db"
-edb_ed $DB add "/box/base/visible" str "no"
+edb_ed $DB add "/hbox/base" str "appearance/box_vertical.bits.db"
+edb_ed $DB add "/hbox/base/visible" str "no"
+
+edb_ed $DB add "/vbox/base" str "appearance/box_vertical.bits.db"
+edb_ed $DB add "/vbox/base/visible" str "no"
 
 # Add keys for buttons
 echo -n "."
@@ -78,43 +81,48 @@ edb_ed $DB add "/notebook/tab_button/label/style" str "shadow"
 
 # Add keys for seeker widget
 echo -n "."
-edb_ed $DB add "/seeker/horizontal/base" str "appearance/seeker-horizontal.bits.db"
-edb_ed $DB add "/seeker/horizontal/base/visible" str "yes"
-edb_ed $DB add "/seeker/horizontal/dragbar/base" str "appearance/seeker_drag-horizontal.bits.db"
-edb_ed $DB add "/seeker/horizontal/dragbar/base/visible" str "yes"
+edb_ed $DB add "/hseeker/base" str "appearance/seeker-horizontal.bits.db"
+edb_ed $DB add "/hseeker/base/visible" str "yes"
+edb_ed $DB add "/hseeker/button/base" str "appearance/seeker_drag-horizontal.bits.db"
+edb_ed $DB add "/hseeker/button/base/visible" str "yes"
 
-edb_ed $DB add "/seeker/vertical/base" str "appearance/seeker-vertical.bits.db"
-edb_ed $DB add "/seeker/vertical/base/visible" str "yes"
-edb_ed $DB add "/seeker/vertical/dragbar/base" str "appearance/seeker_drag-vertical.bits.db"
-edb_ed $DB add "/seeker/vertical/dragbar/base/visible" str "yes"
+edb_ed $DB add "/vseeker/base" str "appearance/seeker-vertical.bits.db"
+edb_ed $DB add "/vseeker/base/visible" str "yes"
+edb_ed $DB add "/vseeker/button/base" str "appearance/seeker_drag-vertical.bits.db"
+edb_ed $DB add "/vseeker/button/base/visible" str "yes"
 
 # Add keys for scrollbar widget
 echo -n "."
-edb_ed $DB add "/scrollbar/horizontal/base" str "appearance/scrollbar-horizontal.bits.db"
-edb_ed $DB add "/scrollbar/horizontal/base/visible" str "yes"
-edb_ed $DB add "/scrollbar/horizontal/dragbar/base" str "appearance/scrollbar_drag-horizontal.bits.db"
-edb_ed $DB add "/scrollbar/horizontal/dragbar/base/visible" str "yes"
-edb_ed $DB add "/scrollbar/horizontal/button_increment/base" str "appearance/scrollbar_inc-horizontal.bits.db"
-edb_ed $DB add "/scrollbar/horizontal/button_increment/base/visible" str "yes"
-edb_ed $DB add "/scrollbar/horizontal/button_decrement/base" str "appearance/scrollbar_dec-horizontal.bits.db"
-edb_ed $DB add "/scrollbar/horizontal/button_decrement/base/visible" str "yes"
+edb_ed $DB add "/hscrollbar/base" str "appearance/scrollbar-horizontal.bits.db"
+edb_ed $DB add "/hscrollbar/base/visible" str "yes"
+edb_ed $DB add "/hscrollbar/hseeker/button/base" str "appearance/scrollbar_drag-horizontal.bits.db"
+edb_ed $DB add "/hscrollbar/hseeker/button/base/visible" str "yes"
+edb_ed $DB add "/hscrollbar/button_increment/base" str "appearance/scrollbar_inc-horizontal.bits.db"
+edb_ed $DB add "/hscrollbar/button_increment/base/visible" str "yes"
+edb_ed $DB add "/hscrollbar/button_decrement/base" str "appearance/scrollbar_dec-horizontal.bits.db"
+edb_ed $DB add "/hscrollbar/button_decrement/base/visible" str "yes"
 
-edb_ed $DB add "/scrollbar/vertical/base" str "appearance/scrollbar-vertical.bits.db"
-edb_ed $DB add "/scrollbar/vertical/base/visible" str "yes"
-edb_ed $DB add "/scrollbar/vertical/dragbar/base" str "appearance/scrollbar_drag-vertical.bits.db"
-edb_ed $DB add "/scrollbar/vertical/dragbar/base/visible" str "yes"
-edb_ed $DB add "/scrollbar/vertical/button_increment/base" str "appearance/scrollbar_inc-vertical.bits.db"
-edb_ed $DB add "/scrollbar/vertical/button_increment/base/visible" str "yes"
-edb_ed $DB add "/scrollbar/vertical/button_decrement/base" str "appearance/scrollbar_dec-vertical.bits.db"
-edb_ed $DB add "/scrollbar/vertical/button_decrement/base/visible" str "yes"
+edb_ed $DB add "/vscrollbar/base" str "appearance/scrollbar-vertical.bits.db"
+edb_ed $DB add "/vscrollbar/base/visible" str "yes"
+edb_ed $DB add "/vscrollbar/vseeker/button/base" str "appearance/scrollbar_drag-vertical.bits.db"
+edb_ed $DB add "/vscrollbar/vseeker/button/base/visible" str "yes"
+edb_ed $DB add "/vscrollbar/button_increment/base" str "appearance/scrollbar_inc-vertical.bits.db"
+edb_ed $DB add "/vscrollbar/button_increment/base/visible" str "yes"
+edb_ed $DB add "/vscrollbar/button_decrement/base" str "appearance/scrollbar_dec-vertical.bits.db"
+edb_ed $DB add "/vscrollbar/button_decrement/base/visible" str "yes"
 
 # Add keys for separator widget
 echo -n "."
-edb_ed $DB add "/separator/base" str "appearance/separator.bits.db"
-edb_ed $DB add "/separator/base/visible" str "yes"
+edb_ed $DB add "/hseparator/base" str "appearance/separator.bits.db"
+edb_ed $DB add "/hseparator/base/visible" str "yes"
 
-edb_ed $DB add "/separator/vertical/base" str "appearance/separator.bits.db"
-edb_ed $DB add "/separator/vertical/base/visible" str "yes"
+edb_ed $DB add "/vseparator/base" str "appearance/separator.bits.db"
+edb_ed $DB add "/vseparator/base/visible" str "yes"
+
+# Add keys for cell widget
+echo -n "."
+edb_ed $DB add "/cell/base/visible" str "yes"
+edb_ed $DB add "/cell/base" str "appearance/button.bits.db"
 
 # Add keys for table widget
 echo -n "."
