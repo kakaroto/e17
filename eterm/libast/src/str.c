@@ -458,6 +458,8 @@ spif_str_set_len(spif_str_t self, size_t len)
 {
     /* Only a moron would use this function. */
     print_warning("spif_str_set_len() called.  Moron detected.\n");
+    USE_VAR(self);
+    USE_VAR(len);
 #if DEBUG <= 4
     return FALSE;
 #else
