@@ -244,7 +244,7 @@ void _e_bg_bg_eet_gen(char *filename) {
    switch(e_bg_type) {      
     case E_BG_CENTER:
       engrave_part_state_aspect_set(ps, 1.0, 1.0);
-      engrave_part_state_max_size_set(ps, w, h);
+      //engrave_part_state_max_size_set(ps, w, h);
       break;
       
     case E_BG_SCALE:

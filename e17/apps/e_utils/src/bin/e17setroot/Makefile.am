@@ -18,8 +18,7 @@ e17setroot.c
 e17setroot_LDADD = @ewl_libs@ @eet_libs@ @engrave_libs@ @imlib2_libs@ @e_libs@
 
 filesdir = $(datadir)/e_utils/data/e17setroot
-files_DATA = e17setroot_template.edc
+files_DATA = 
 
-e17setroot_template.edc:
 	
 
