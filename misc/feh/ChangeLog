@@ -1,3 +1,7 @@
+Fri Aug 25 16:41:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* rotation wasn't reset when image changed in fullscreen mode
+
 Sat Aug 19 16:07:29 2000  Paul Duncan  <pabs@pablotron.org>
 
 	* added multiple key loading to cam.  also updated the
