@@ -2895,3 +2895,11 @@ Sun Oct  3 13:09:10 PDT 1999
 (Raster)
 
 add soem smarts to icon imges to limit the size to the iconox size... :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 13:18:30 PDT 1999
+(Mandrake)
+
+patch to have only one dialog box for logging out, courtesy of
+"Daniel Erat" <erat@cats.ucsc.edu>

@@ -568,20 +568,24 @@ doSMExit(void *params)
 	     Dialog             *d;
 	     EWin               *ewin;
 
-	     AUDIO_PLAY("SOUND_LOGOUT");
-	     d = CreateDialog("LOGOUT_DIALOG");
-	     DialogSetTitle(d, "Are you sure?");
-	     DialogSetText(d,
-			   "\n"
-			   "\n"
-			   "    Are you sure you wish to log out ?    \n"
-			   "\n"
-			   "\n"
-		);
-	     DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
-	     DialogAddButton(d, "  No  ", NULL, 1);
-	     DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
-	     DialogBindKey(d, "Return", LogoutCB, 0, d);
+	     if (!(d = FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_DIALOG)))
+	       {
+		  AUDIO_PLAY("SOUND_LOGOUT");
+		  d = CreateDialog("LOGOUT_DIALOG");
+		  DialogSetTitle(d, "Are you sure?");
+		  DialogSetText(d,
+				"\n"
+				"\n"
+				"    Are you sure you wish to log out ?    \n"
+				"\n"
+				"\n"
+		     );
+		  DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
+		  DialogAddButton(d, "  No  ", NULL, 1);
+		  DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
+		  DialogBindKey(d, "Return", LogoutCB, 0, d);
+	       }
 	     ShowDialog(d);
 	     ewin = FindEwinByDialog(d);
 	     if (ewin)
@@ -1112,19 +1116,23 @@ doSMExit(void *params)
 	Dialog             *d;
 	EWin               *ewin;
 
-	d = CreateDialog("LOGOUT_DIALOG");
-	DialogSetTitle(d, "Are you sure?");
-	DialogSetText(d,
-		      "\n"
-		      "\n"
-		      "    Are you sure you wish to log out ?    \n"
-		      "\n"
-		      "\n"
-	   );
-	DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
-	DialogAddButton(d, "  No  ", NULL, 1);
-	DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
-	DialogBindKey(d, "Return", LogoutCB, 0, d);
+	if (!(d = FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_DIALOG)))
+	  {
+	     d = CreateDialog("LOGOUT_DIALOG");
+	     DialogSetTitle(d, "Are you sure?");
+	     DialogSetText(d,
+			   "\n"
+			   "\n"
+			   "    Are you sure you wish to log out ?    \n"
+			   "\n"
+			   "\n"
+		);
+	     DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
+	     DialogAddButton(d, "  No  ", NULL, 1);
+	     DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
+	     DialogBindKey(d, "Return", LogoutCB, 0, d);
+	  }
 	ShowDialog(d);
 	ewin = FindEwinByDialog(d);
 	if (ewin)
