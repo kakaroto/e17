@@ -10,6 +10,22 @@ static void          _epeg_fatal_error_handler (j_common_ptr cinfo);
 static void          _epeg_error_handler       (j_common_ptr cinfo);
 static void          _epeg_error_handler2      (j_common_ptr cinfo, int msg_level);
 
+/**
+ * Open a JPEG image by filename.
+ * @param file The file path to open.
+ * @return A handle to the opened JPEG file, with the header decoded.
+ * 
+ * This function opens the file indicated by the @p file parameter, and
+ * attempts to decode it as a jpeg file. If this failes, NULL is returned.
+ * Otherwise a valid handle to an open JPEG file is returned that can be used
+ * by other Epeg calls.
+ * 
+ * The @p file must be a pointer to a valid C string, NUL (0 byte) terminated
+ * thats is a relative or absolute file path. If not results are not
+ * determined.
+ * 
+ * See also: epeg_memory_open(), epeg_close()
+ */
 Epeg_Image *
 epeg_file_open(const char *file)
 {
@@ -24,9 +40,22 @@ epeg_file_open(const char *file)
 	return NULL;
      }
    fstat(fileno(im->in.f), &(im->stat_info));
+   im->out.quality = 75;
    return _epeg_open_header(im);
 }
 
+/**
+ * Open a JPEG image stored in memory.
+ * @param data A pointer to the memory containing the JPEG data.
+ * @param size The size of the memory segment containing the JPEG.
+ * @return  A handle to the opened JPEG, with the header decoded.
+ * 
+ * This function opens a JPEG file that is stored in memory pointed to by
+ * @p data, and that is @p size bytes in size. If successful a valid handle
+ * is returned, or on failure NULL is returned.
+ * 
+ * See also: epeg_file_open(), epeg_close()
+ */
 Epeg_Image *
 epeg_memory_open(unsigned char *data, int size)
 {
@@ -39,9 +68,19 @@ epeg_memory_open(unsigned char *data, int size)
 	epeg_close(im);
 	return NULL;
      }
+   im->out.quality = 75;
    return _epeg_open_header(im);
 }
 
+/**
+ * Return the original JPEG pixel size.
+ * @param im A handle to an opened Epeg image.
+ * @param w A pointer to the width value in pixels to be filled in.
+ * @param h A pointer to the height value in pixels to be filled in.
+ * 
+ * Returns the image size in pixels.
+ * 
+ */
 void
 epeg_size_get(Epeg_Image *im, int *w, int *h)
 {
@@ -49,6 +88,16 @@ epeg_size_get(Epeg_Image *im, int *w, int *h)
    if (h) *h = im->in.h;
 }
 
+/**
+ * Set the size of the image to decode in pixels.
+ * @param im A handle to an opened Epeg image.
+ * @param w The width of the image to decode at, in pixels.
+ * @param h The height of the image to decode at, in pixels.
+ * 
+ * Sets the size at which to deocode the JPEG image, giving an optimised load
+ * that only decodes the pixels needed.
+ * 
+ */
 void
 epeg_decode_size_set(Epeg_Image *im, int w, int h)
 {
@@ -61,6 +110,15 @@ epeg_decode_size_set(Epeg_Image *im, int w, int h)
    im->out.h = h;
 }
 
+/**
+ * Set the colorspace in which to decode the image.
+ * @param im A handle to an opened Epeg image.
+ * @param colorspace The colorspace to decode the image in.
+ * 
+ * This sets the colorspace to decode the image in. The default is EPEG_YUV8,
+ * as this is normally the native colorspace of a JPEG file, avoiding any
+ * colorspace conversions for a faster load and/or save.
+ */
 void
 epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace)
 {
@@ -69,6 +127,26 @@ epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace)
    im->color_space = colorspace;
 }
 
+/**
+ * Get a segment of decoded pixels from an image.
+ * @param im A handle to an opened Epeg image.
+ * @param x Rectangle X.
+ * @param y Rectangle Y.
+ * @param w Rectangle width.
+ * @param h Rectangle height.
+ * @return Pointer to the top left of the requested pixel block.
+ * 
+ * Return image pixels in the decoded format from the specified location
+ * rectangle bounded with the box @p x, @p y @p w X @p y. The pixel block is
+ * packed with no row padding, and it organsied from top-left to bottom right,
+ * row by row. You must free the pixel block using epeg_pixels_free() before
+ * you close the image handle, and assume the pixels to be read-only memory.
+ * 
+ * On success the pointer is returned, on failure, NULL is returned. Failure
+ * may be because the rectangle is out of the bounds of the image, memory
+ * allocations failed or the image data cannot be decoded.
+ * 
+ */
 const void *
 epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
 {
@@ -76,11 +154,9 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
    
    if (!im->pixels) _epeg_decode(im);
    if (!im->pixels) return NULL;
-   /* FIXME: doesn't handle x,w, w x h outside of image pixels!!! */
    bpp = im->in.jinfo.output_components;
    iw = im->out.w;
    ih = im->out.h;
-   printf("%i %i\n", iw, ih);
    ow = w;
    oh = h;
    ox = 0;
@@ -105,9 +181,6 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
    ww = x + ox + ow;
    hh = y + oy + oh;
 
-   printf("%i %i, %i %i,    %i %i, %i %i\n",
-	  x, ox, y, oy,     ow, ww, oh, hh);
-   printf("%i\n", bpp);
    if (im->color_space == EPEG_GRAY8)
      {
 	unsigned char *pix, *p;
@@ -270,18 +343,48 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
    return NULL;
 }
 
+/**
+ * Free requested pixel block from an image.
+ * @param im A handle to an opened Epeg image.
+ * @param data The pointer to the image pixels.
+ * 
+ * This frees the data for a block of pixels requested from image @p im.
+ * @p data must be a valid (non NULL) pointer to a pixel block taken from the
+ * image @p im by epeg_pixels_get() and mustbe called before the image is
+ * closed by epeg_close().
+ */
 void
 epeg_pixels_free(Epeg_Image *im, const void *data)
 {
    free((void *)data);
 }
 
+/**
+ * Get the image comment field as a string.
+ * @param im A handle to an opened Epeg image.
+ * @return A pointer to the loaded image comments.
+ * 
+ * This function returns the comment field as a string (NUL byte terminated)
+ * of the loaded image @p im, if there is a comment, or NULL if no comment is
+ * saved with the image. Consider the string returned to be read-only.
+ * 
+ */
 const char *
 epeg_comment_get(Epeg_Image *im)
 {
    return im->in.comment;
 }
 
+/**
+ * Get thumbnail comments of loaded image.
+ * @param im A handle to an opened Epeg image.
+ * @param info Pointer to a thumbnail info struct to be filled in.
+ * 
+ * This function retrieves thumbnail comments written by Epeg to any saved
+ * JPEG files. If no thumbnail comments were saved, the fields will be 0 in
+ * the @p info struct on return.
+ * 
+ */
 void
 epeg_thumbnail_comments_get(Epeg_Image *im, Epeg_Thumbnail_Info *info)
 {
@@ -293,6 +396,18 @@ epeg_thumbnail_comments_get(Epeg_Image *im, Epeg_Thumbnail_Info *info)
    info->mimetype = im->in.thumb_info.mime;
 }
 
+/**
+ * Set the comment field of the image for saving.
+ * @param im A handle to an opened Epeg image.
+ * @param comment The comment to set.
+ * 
+ * Set the comment for the image file for when it gets saved. This is a NUL
+ * byte terminated C string. If @p comment is NULL the output file will have
+ * no comment field.
+ * 
+ * The default comment will be any comment loaded from the input file.
+ * 
+ */
 void
 epeg_comment_set(Epeg_Image *im, const char *comment)
 {
@@ -301,6 +416,19 @@ epeg_comment_set(Epeg_Image *im, const char *comment)
    else im->out.comment = strdup(comment);
 }
 
+/**
+ * Set the encoding quality of the saved image.
+ * @param im A handle to an opened Epeg image.
+ * @param quality The quality of encoding from 0 to 100.
+ * 
+ * Set the quality of the output encoded image. Values from 0 to 100
+ * inclusive are valid, with 100 being the maximum quality, and 0 being the
+ * minimum. If the quality is set equal to or above 90%, the output U and V
+ * color planes are encoded at 1:1 with the Y plane.
+ * 
+ * The default quality is 75.
+ * 
+ */
 void
 epeg_quality_set(Epeg_Image *im, int quality)
 {
@@ -309,12 +437,31 @@ epeg_quality_set(Epeg_Image *im, int quality)
    im->out.quality = quality;
 }
 
+/**
+ * Enable thumbnail comments in saved image.
+ * @param im A handle to an opened Epeg image.
+ * @param onoff A boolean on and off enabling flag.
+ * 
+ * if @p onoff is 1, the output file will have thumbnail comments added to
+ * it, and if it is 0, it will not. The default is 0.
+ * 
+ */
 void
 epeg_thumbnail_comments_enable(Epeg_Image *im, int onoff)
 {
    im->out.thumbnail_info = onoff;
 }
 
+/**
+ * Set the output file path for the image when saved.
+ * @param im A handle to an opened Epeg image.
+ * @param file The path to the output file.
+ * 
+ * This sets the output file path name (either a full or relative path name)
+ * to where the file will be written when saved. @p file must be a NUL
+ * terminated C string conatining the path to the file to be saved to. If it is
+ * NULL, the image will not be saved to a file when calling epeg_encode().
+ */
 void
 epeg_file_output_set(Epeg_Image *im, const char *file)
 {
@@ -323,6 +470,20 @@ epeg_file_output_set(Epeg_Image *im, const char *file)
    else im->out.file = strdup(file);
 }
 
+/**
+ * Set the output file to be a block of allocated memory.
+ * @param im A handle to an opened Epeg image.
+ * @param data A pointer to a pointer to a memory block.
+ * @param size A pointer to a counter of the size of the memory block.
+ * 
+ * This sets the output encoding of the image when saved to be allocated
+ * memory. After epeg_close() is called the pointer pointed to by @p data
+ * and the integer pointed to by @p size will contain the pointer to the
+ * memory block and its size in bytes, respecitvely. The memory block can be
+ * freed with the free() function call. If the save fails the pointer to the
+ * memory block will be unaffected, as will the size.
+ * 
+ */
 void
 epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
 {
@@ -330,6 +491,15 @@ epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
    im->out.mem.size = size;
 }
 
+/**
+ * This saved the image to its specified destination.
+ * @param im A handle to an opened Epeg image.
+ * 
+ * This saves the image @p im to its destination specified by
+ * epeg_file_output_set() or epeg_memory_output_set(). The image will be
+ * encoded at the deoded pixel size, using the quality, comment and thumbnail
+ * comment settings set on the image.
+ */
 void
 epeg_encode(Epeg_Image *im)
 {
@@ -338,6 +508,15 @@ epeg_encode(Epeg_Image *im)
    _epeg_encode(im);
 }
 
+/**
+ * Close an image handle.
+ * @param im A handle to an opened Epeg image.
+ * 
+ * This closes an opened image handle and frees all memory associated with it.
+ * It does not free encoded data generated by epeg_memory_output_set() followed
+ * by epeg_encode() nor does it guarantee to free any data recieved by
+ * epeg_pixels_get(). Once an image handle is closed consider it invalid.
+ */
 void
 epeg_close(Epeg_Image *im)
 {
@@ -355,6 +534,14 @@ epeg_close(Epeg_Image *im)
    if (im->out.comment)        free(im->out.comment);
    free(im);
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -566,7 +753,7 @@ _epeg_encode(Epeg_Image *im)
    jpeg_set_defaults(&(im->out.jinfo));
    jpeg_set_quality(&(im->out.jinfo), im->out.quality, TRUE);   
    
-   if (im->in.jinfo.out_color_space == JCS_YCbCr) /* U & V are 1:1 with Y */
+   if (im->out.quality >= 90)
      {
 	im->out.jinfo.comp_info[0].h_samp_factor = 1;
 	im->out.jinfo.comp_info[0].v_samp_factor = 1;
@@ -647,219 +834,3 @@ _epeg_error_handler2(j_common_ptr cinfo, int msg_level)
    return;
    msg_level = 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*** old code. for reference only! ***/
-#if 0
-int
-jpeg_thumb(char *image, char *thumb, 
-	     int w, int h, 
-	     int quality)
-{
-   struct jpeg_decompress_struct  dinfo;
-   struct jpeg_compress_struct    cinfo;
-   struct _JPEG_error_mgr         jerr;
-   FILE                          *f_in, *f_out;
-   int                            iw, ih;
-   unsigned char                 *pixels = NULL;
-   unsigned char                **lines = NULL;
-   int                            x, y;
-   int                            scalew, scaleh, scale;
-   char                           buf[1024];
-   struct stat                    st;
-   
-   f_in = fopen(image, "r");
-   if (!f_in) return 0;
-   fstat(fileno(f_in), &st);
-   f_out = fopen(thumb, "w");
-   if (!f_out)
-     {
-	fclose(f_in);
-	return 0;
-     }
-   
-   dinfo.err = jpeg_std_error(&(jerr.pub));
-   cinfo.err = jpeg_std_error(&(jerr.pub));
-   jerr.pub.error_exit = _epeg_fatal_error_handler;
-   jerr.pub.emit_message = _epeg_error_handler2;
-   jerr.pub.output_message = _epeg_error_handler;
-   
-   if (setjmp(jerr.setjmp_buffer))
-     {
-	error:	
-	jpeg_destroy_decompress(&dinfo);
-	jpeg_destroy_compress(&cinfo);
-	if (pixels) free(pixels);
-	if (lines) free(lines);
-	fclose(f_in);
-	fclose(f_out);
-	return 0;
-     }
-
-   jpeg_create_decompress(&dinfo);
-   jpeg_save_markers(&dinfo, JPEG_APP0 + 7, 1024);
-   jpeg_save_markers(&dinfo, JPEG_COM,      65535);
-   jpeg_stdio_src(&dinfo, f_in);
-   jpeg_read_header(&dinfo, TRUE);
-   iw = dinfo.image_width;
-   ih = dinfo.image_height;
-   if (iw <= 1)
-     {
-	printf("iw <=1\n");
-	goto error;
-     }
-   if (ih <= 1)
-     {
-	printf("ih <=1\n");
-	goto error;
-     }
-   
-   /* read markers */
-     {
-	struct jpeg_marker_struct *m;
-	
-	for (m = dinfo.marker_list; m; m = m->next)
-	  {
-	     printf("Marker: %02x\n", m->marker);
-	     printf("Size: %i bytes\n", m->data_length);
-	     if (m->marker == JPEG_COM)
-	       {
-		  printf("Comment: ->%s<-\n", m->data);
-	       }
-	     else if (m->marker == (JPEG_APP0 + 7))
-	       {
-		  printf("Thumbnail Info: ->%s<-\n", m->data);
-	       }
-	  }
-     }
-   
-   /* ok scale using libjpeg!!!! */   
-   scalew = iw / w;
-   scaleh = ih / h;
-   scale = scalew;
-   if (scaleh < scalew) scale = scaleh;
-   if (scale > 8) scale = 8;
-   if (scale < 1) scale = 1;
-   dinfo.scale_num = 1;
-   dinfo.scale_denom = scale;
-   dinfo.do_fancy_upsampling = FALSE;
-   dinfo.do_block_smoothing  = FALSE;
-   dinfo.dct_method          = JDCT_IFAST;
-/*   
-   if (dinfo.out_color_space == JCS_GRAYSCALE) printf("in: GRAY\n");
-   if (dinfo.out_color_space == JCS_RGB) printf("in: RGB\n");
-   if (dinfo.out_color_space == JCS_CMYK) printf("in: CMYK\n");
-   if (dinfo.out_color_space == JCS_YCCK) printf("in: YCCK\n");
- */
-   /* not supported? */
-   if (dinfo.out_color_space == JCS_UNKNOWN) printf("in: UNKNOWN\n");
-   if (dinfo.out_color_space == JCS_YCbCr) printf("in: YUV\n");
-   /* work in YUV */
-   if (dinfo.out_color_space == JCS_RGB) dinfo.out_color_space = JCS_YCbCr;
-   jpeg_calc_output_dimensions(&dinfo);
-   printf("%i %i | %i %i\n", iw, ih, dinfo.output_width, dinfo.output_height);
-   
-   pixels = malloc(dinfo.output_width * dinfo.output_height * 
-		   dinfo.output_components);
-   lines = malloc(dinfo.output_height * sizeof(char *));
-   jpeg_start_decompress(&dinfo);
-   for (y = 0; y < dinfo.output_height; y++)
-     lines[y] = pixels + (y * dinfo.output_components * dinfo.output_width);
-   
-   while (dinfo.output_scanline < dinfo.output_height)
-     {
-	jpeg_read_scanlines(&dinfo, 
-			    &(lines[dinfo.output_scanline]), 
-			    dinfo.rec_outbuf_height);
-     }
-   
-   /* scale now.. pixel sample */
-   if ((dinfo.output_width != w) || (dinfo.output_height != h))
-     {
-	unsigned char *dst, *row, *src;
-	
-	for (y = 0; y < h; y++)
-	  {
-	     row = pixels + 
-	       (((y * dinfo.output_height) / h) *
-		dinfo.output_components * dinfo.output_width);
-	     dst = pixels + (y * dinfo.output_components * dinfo.output_width);
-	     for (x = 0; x < w; x++)
-	       {
-		  src = row + 
-		    (((x * dinfo.output_width) / w) * 
-		     dinfo.output_components);
-		  dst[0] = src[0];
-		  dst[1] = src[1];
-		  dst[2] = src[2];
-		  dst += dinfo.output_components;
-	       }
-	  }
-     }
-   
-   jpeg_create_compress(&cinfo);
-   jpeg_stdio_dest(&cinfo, f_out);
-   cinfo.image_width = w;
-   cinfo.image_height = h;
-   cinfo.input_components = dinfo.output_components;
-   cinfo.in_color_space = dinfo.out_color_space;
-   cinfo.dct_method = JDCT_IFAST;
-   jpeg_set_defaults(&cinfo);
-   jpeg_set_quality(&cinfo, quality, TRUE);   
-   if (dinfo.out_color_space == JCS_YCbCr) /* U & V are 1:1 with Y */
-     {
-	cinfo.comp_info[0].h_samp_factor = 1;
-	cinfo.comp_info[0].v_samp_factor = 1;
-	cinfo.comp_info[1].h_samp_factor = 1;
-	cinfo.comp_info[1].v_samp_factor = 1;
-	cinfo.comp_info[2].h_samp_factor = 1;
-	cinfo.comp_info[2].v_samp_factor = 1;
-     }
-   jpeg_start_compress(&cinfo, TRUE);
-   
-   jpeg_write_marker(&cinfo, JPEG_COM, "Thumbnail generated by E", 25);
-
-   snprintf(buf, sizeof(buf), "Thumb::URI\nfile://%s", image);
-   jpeg_write_marker(&cinfo, JPEG_APP0 + 7, buf, strlen(buf) + 1);
-   snprintf(buf, sizeof(buf), "Thumb::MTime\n%llu", (unsigned long long int)st.st_mtime);
-   jpeg_write_marker(&cinfo, JPEG_APP0 + 7, buf, strlen(buf) + 1);
-   snprintf(buf, sizeof(buf), "Thumb::Image::Width\n%i", iw);
-   jpeg_write_marker(&cinfo, JPEG_APP0 + 7, buf, strlen(buf) + 1);
-   snprintf(buf, sizeof(buf), "Thumb::Image::Height\n%i", iw);
-   jpeg_write_marker(&cinfo, JPEG_APP0 + 7, buf, strlen(buf) + 1);
-   snprintf(buf, sizeof(buf), "Thumb::Mimetyp\nimage/jpeg");
-   jpeg_write_marker(&cinfo, JPEG_APP0 + 7, buf, strlen(buf) + 1);
-   
-   while (cinfo.next_scanline < h)
-     jpeg_write_scanlines(&cinfo, &(lines[cinfo.next_scanline]), 1);
-   
-   jpeg_finish_decompress(&dinfo);
-   jpeg_finish_compress(&cinfo);
-   
-   jpeg_destroy_decompress(&dinfo);
-   jpeg_destroy_compress(&cinfo);
-   fclose(f_in);
-   fclose(f_out);
-   free(pixels);
-   free(lines);
-   return 1;
-}
-#endif
