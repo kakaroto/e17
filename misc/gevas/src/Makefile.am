@@ -70,4 +70,4 @@ gevas_util.c
 
 
 libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
-libgevas_la_LDFLAGS      = -version-info 1:0:1
+libgevas_la_LDFLAGS      = -version-info 2:0:2
