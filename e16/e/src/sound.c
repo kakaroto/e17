@@ -306,7 +306,7 @@ SoundInit(void)
 	Conf_sound.enable = 0;
      }
 #else
-   Conf_sound = 0;
+   Conf_sound.enable = 0;
 #endif
    EDBUG_RETURN_;
 }
