@@ -635,7 +635,7 @@ main(int argc, char *argv[])
    pid_t childpid;
    time_t start_shot;
    time_t end_shot;
-   int just_shot = 0, upload_successful = 0;
+   int just_shot = 0, upload_successful = 1;
    int new_delay;
    FILE *fp;
 
@@ -816,7 +816,7 @@ main(int argc, char *argv[])
    for (;;)
    {
       just_shot = 0;
-      upload_successful = 0;
+      upload_successful = 1;
       end_shot = 0;
       start_shot = 0;
       if ((grab_blockfile && (stat(grab_blockfile, &st) == -1))
@@ -976,5 +976,7 @@ void alarm_handler(int sig)
   signal(sig, SIG_IGN);
   log("timeout reached, abandoning\n");
   if(childpid)
+  {
      kill(childpid, SIGTERM);
+  }
 }
