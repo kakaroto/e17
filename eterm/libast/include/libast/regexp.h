@@ -43,56 +43,27 @@
 #define SPIF_REGEXP_TYPE(obj)           SPIF_OBJ_TYPE(obj)
 
 SPIF_DEFINE_OBJ(regexp) {
-  spif_const_obj_t parent;
-  spif_charptr_t s;
-  size_t mem, len;
+    SPIF_DECL_PARENT_TYPE(str);
+    spif_ptr_t data;
+    int flags;
 };
 
 extern spif_class_t SPIF_CLASS_VAR(regexp);
 extern spif_regexp_t spif_regexp_new(void);
+extern spif_regexp_t spif_regexp_new_from_str(spif_str_t);
 extern spif_regexp_t spif_regexp_new_from_ptr(spif_charptr_t);
-extern spif_regexp_t spif_regexp_new_from_buff(spif_charptr_t, size_t);
-extern spif_regexp_t spif_regexp_new_from_fp(FILE *);
-extern spif_regexp_t spif_regexp_new_from_fd(int);
-extern spif_regexp_t spif_regexp_new_from_num(long);
 extern spif_bool_t spif_regexp_del(spif_regexp_t);
 extern spif_bool_t spif_regexp_init(spif_regexp_t);
+extern spif_bool_t spif_regexp_init_from_str(spif_regexp_t, spif_str_t);
 extern spif_bool_t spif_regexp_init_from_ptr(spif_regexp_t, spif_charptr_t);
-extern spif_bool_t spif_regexp_init_from_buff(spif_regexp_t, spif_charptr_t, size_t);
-extern spif_bool_t spif_regexp_init_from_fp(spif_regexp_t, FILE *);
-extern spif_bool_t spif_regexp_init_from_fd(spif_regexp_t, int);
-extern spif_bool_t spif_regexp_init_from_num(spif_regexp_t, long);
 extern spif_bool_t spif_regexp_done(spif_regexp_t);
 extern spif_regexp_t spif_regexp_dup(spif_regexp_t);
-extern spif_cmp_t spif_regexp_cmp(spif_regexp_t, spif_regexp_t);
-extern spif_cmp_t spif_regexp_cmp_with_ptr(spif_regexp_t, spif_charptr_t);
-extern spif_cmp_t spif_regexp_casecmp(spif_regexp_t, spif_regexp_t);
-extern spif_cmp_t spif_regexp_casecmp_with_ptr(spif_regexp_t, spif_charptr_t);
-extern spif_cmp_t spif_regexp_ncmp(spif_regexp_t, spif_regexp_t, size_t);
-extern spif_cmp_t spif_regexp_ncmp_with_ptr(spif_regexp_t, spif_charptr_t, size_t);
-extern spif_cmp_t spif_regexp_ncasecmp(spif_regexp_t, spif_regexp_t, size_t);
-extern spif_cmp_t spif_regexp_ncasecmp_with_ptr(spif_regexp_t, spif_charptr_t, size_t);
-extern size_t spif_regexp_index(spif_regexp_t, spif_char_t);
-extern size_t spif_regexp_rindex(spif_regexp_t, spif_char_t);
-extern size_t spif_regexp_find(spif_regexp_t, spif_regexp_t);
-extern size_t spif_regexp_find_from_ptr(spif_regexp_t, spif_charptr_t);
-extern spif_regexp_t spif_regexp_subregexp(spif_regexp_t, spif_int32_t, spif_int32_t);
-extern spif_charptr_t spif_regexp_subregexp_to_ptr(spif_regexp_t, spif_int32_t, spif_int32_t);
-extern size_t spif_regexp_to_num(spif_regexp_t, int);
-extern double spif_regexp_to_float(spif_regexp_t);
-extern spif_bool_t spif_regexp_append(spif_regexp_t, spif_regexp_t);
-extern spif_bool_t spif_regexp_append_char(spif_regexp_t, spif_char_t);
-extern spif_bool_t spif_regexp_append_from_ptr(spif_regexp_t, spif_charptr_t);
-extern spif_bool_t spif_regexp_clear(spif_regexp_t, spif_char_t);
-extern spif_bool_t spif_regexp_trim(spif_regexp_t);
-extern spif_bool_t spif_regexp_splice(spif_regexp_t, size_t, size_t, spif_regexp_t);
-extern spif_bool_t spif_regexp_splice_from_ptr(spif_regexp_t, size_t, size_t, spif_charptr_t);
-extern spif_bool_t spif_regexp_reverse(spif_regexp_t);
-extern size_t spif_regexp_get_size(spif_regexp_t);
-extern spif_bool_t spif_regexp_set_size(spif_regexp_t, size_t);
-extern size_t spif_regexp_get_len(spif_regexp_t);
-extern spif_bool_t spif_regexp_set_len(spif_regexp_t, size_t);
-extern spif_regexp_t spif_regexp_show(spif_regexp_t, spif_charptr_t, spif_regexp_t, size_t);
+extern spif_cmp_t spif_regexp_comp(spif_regexp_t, spif_regexp_t);
+extern spif_str_t spif_regexp_show(spif_regexp_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_classname_t spif_regexp_type(spif_regexp_t);
+extern spif_bool_t spif_regexp_compile(spif_regexp_t);
+extern spif_bool_t spif_regexp_matches_str(spif_regexp_t, spif_str_t);
+extern int spif_regexp_get_flags(spif_regexp_t);
+extern spif_bool_t spif_regexp_set_flags(spif_regexp_t, spif_charptr_t);
 
 #endif /* _LIBAST_REGEXP_H_ */

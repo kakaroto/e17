@@ -300,3 +300,9 @@ Sat Aug 10 12:06:50 2002                        Michael Jennings (mej)
 
 Undefined symbol fix.  Got overzealous with my s///.
 ----------------------------------------------------------------------
+Tue Aug 13 21:38:04 2002                        Michael Jennings (mej)
+
+Working implementation of a regular expression object which supports
+(and abstracts) PCRE, POSIX, or BSD regular expression functionality.
+Also fixed some bugs with the list code and the cpp stuff.
+----------------------------------------------------------------------

@@ -40,9 +40,6 @@
 #include "config.h"
 #include "libast.h"
 
-#ifdef HAVE_REGEX_H
-# include <regex.h>
-#endif
 #ifdef HAVE_STDARG_H
 # include <stdarg.h>
 #endif

@@ -120,8 +120,6 @@ spif_dlinked_list_item_new(void)
 static spif_bool_t
 spif_dlinked_list_item_init(spif_dlinked_list_item_t self)
 {
-    spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(dlinked_list_item));
     self->data = SPIF_NULL_TYPE(obj);
     self->prev = SPIF_NULL_TYPE(dlinked_list_item);
     self->next = SPIF_NULL_TYPE(dlinked_list_item);
@@ -188,7 +186,8 @@ spif_dlinked_list_item_dup(spif_dlinked_list_item_t self)
 static spif_classname_t
 spif_dlinked_list_item_type(spif_dlinked_list_item_t self)
 {
-    return SPIF_OBJ_CLASSNAME(self);
+    USE_VAR(self);
+    return SPIF_CLASS_VAR(dlinked_list_item)->classname;
 }
 
 static spif_obj_t
@@ -297,11 +296,11 @@ spif_dlinked_list_dup(spif_dlinked_list_t self)
 
     tmp = spif_dlinked_list_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(dlinked_list));
-    tmp->head = SPIF_CAST(dlinked_list_item) SPIF_OBJ_DUP(SPIF_OBJ(self->head));
+    tmp->head = spif_dlinked_list_item_dup(self->head);
     for (src = self->head, dest = tmp->head, prev = SPIF_NULL_TYPE(dlinked_list_item);
          src->next;
          src = src->next, prev = dest, dest = dest->next) {
-        dest->next = SPIF_CAST(dlinked_list_item) SPIF_OBJ_DUP(SPIF_OBJ(src->next));
+        dest->next = spif_dlinked_list_item_dup(src->next);
         dest->prev = prev;
     }
     dest->next = SPIF_NULL_TYPE(dlinked_list_item);
@@ -344,7 +343,7 @@ spif_dlinked_list_contains(spif_dlinked_list_t self, spif_obj_t obj)
     spif_dlinked_list_item_t current;
 
     for (current = self->head; current; current = current->next) {
-        if (SPIF_OBJ_COMP(current->data, obj) == SPIF_CMP_EQUAL) {
+        if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj))) {
             return TRUE;
         }
     }
@@ -394,16 +393,18 @@ spif_dlinked_list_insert(spif_dlinked_list_t self, spif_obj_t obj)
 
     if (SPIF_DLINKED_LIST_ITEM_ISNULL(self->head)) {
         self->head = self->tail = item;
-    } else if (SPIF_CMP_IS_LESS(SPIF_OBJ_COMP(item, self->head))) {
+    } else if (SPIF_CMP_IS_LESS(spif_dlinked_list_item_comp(item, self->head))) {
         item->next = self->head;
         self->head->prev = item;
         self->head = item;
-    } else if (SPIF_CMP_IS_GREATER(SPIF_OBJ_COMP(item, self->tail))) {
+    } else if (SPIF_CMP_IS_GREATER(spif_dlinked_list_item_comp(item, self->tail))) {
         item->prev = self->tail;
         self->tail->next = item;
         self->tail = item;
     } else {
-        for (current = self->head; current->next && SPIF_CMP_IS_GREATER(SPIF_OBJ_COMP(item, current->next)); current = current->next);
+        for (current = self->head;
+             current->next && SPIF_CMP_IS_GREATER(spif_dlinked_list_item_comp(item, current->next));
+             current = current->next);
         item->next = current->next;
         item->prev = current;
         current->next->prev = item;

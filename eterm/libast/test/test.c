@@ -43,6 +43,7 @@ int test_tok(void);
 int test_url(void);
 int test_list(void);
 int test_socket(void);
+int test_regexp(void);
 
 int
 test_macros(void)
@@ -1143,6 +1144,341 @@ test_socket(void)
 }
 
 int
+test_regexp(void)
+{
+#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+    {
+        spif_charptr_t regexp_list[] = {
+            "cdefg",
+            "^abcde",
+            "efghi$",
+            "^\\d+\\.\\d+\\.\\d{1,3}\\.\\d{1,3}$",
+            "^([-\\w]+\\.){1,}(com|net|org|edu|info|biz|name|sex|[a-z]{2})$"
+        };
+        spif_str_t s;
+        spif_regexp_t rexp;
+
+        TEST_BEGIN("spif_regexp_matches_str() function");
+        s = spif_str_new_from_ptr(regexp_list[0]);
+        rexp = spif_regexp_new_from_str(s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "CDEFG");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[1]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "ABCDE");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[2]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "EFGHI");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[3]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "127.0.0.1");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4.3.7.1");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "192.168.137.111");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "812.555.1212");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "...");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[4]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_regexp_set_flags(rexp, "i");
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "www.stuff-and-other-stuff.com");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "ETERM.ORG");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "411.biz");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, ".com");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "www.@@@.com");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_del(s);
+        spif_regexp_del(rexp);
+
+        TEST_PASS();
+    }
+#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+    {
+        spif_charptr_t regexp_list[] = {
+            "cdefg",
+            "^abcde",
+            "efghi$",
+            "^([0-9]{1,3}\\.){1,3}[0-9]{1,3}$",
+            "^([-a-z0-9_]+\\.){1,}(com|net|org|edu|info|biz|name|sex|[a-z]{2})$"
+        };
+        spif_str_t s;
+        spif_regexp_t rexp;
+
+        TEST_BEGIN("spif_regexp_matches_str() function");
+        s = spif_str_new_from_ptr(regexp_list[0]);
+        rexp = spif_regexp_new_from_str(s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "CDEFG");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[1]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "ABCDE");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[2]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "EFGHI");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[3]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "127.0.0.1");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4.3.7.1");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "192.168.137.111");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "812.555.1212");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "...");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[4]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_regexp_set_flags(rexp, "i");
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "www.stuff-and-other-stuff.com");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "ETERM.ORG");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "411.biz");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, ".com");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "www.@@@.com");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_del(s);
+        spif_regexp_del(rexp);
+
+        TEST_PASS();
+    }
+#elif defined(LIBAST_REGEXP_SUPPORT_BSD)
+    {
+        spif_charptr_t regexp_list[] = {
+            "cdefg",
+            "^abcde",
+            "efghi$",
+            "^[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?$"
+        };
+        spif_str_t s;
+        spif_regexp_t rexp;
+
+        TEST_BEGIN("spif_regexp_matches_str() function");
+        s = spif_str_new_from_ptr(regexp_list[0]);
+        rexp = spif_regexp_new_from_str(s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "CDEFG");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[1]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "ABCDE");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[2]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "abcdefg");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cdefghi");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "cde");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "EFGHI");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        spif_str_init_from_ptr(s, regexp_list[3]);
+        spif_regexp_init_from_str(rexp, s);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "127.0.0.1");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4.3.7.1");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "192.168.137.111");
+        TEST_FAIL_IF(!spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "812.555.1212");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "...");
+        TEST_FAIL_IF(spif_regexp_matches_str(rexp, s));
+        spif_str_done(s);
+        spif_regexp_done(rexp);
+
+        TEST_PASS();
+    }
+#endif
+
+    TEST_PASSED("spif_regexp_t");
+    return 0;
+}
+
+int
 main(int argc, char *argv[])
 {
     int ret = 0;
@@ -1183,6 +1519,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_socket()) != 0) {
+        return ret;
+    }
+    if ((ret = test_regexp()) != 0) {
         return ret;
     }
 

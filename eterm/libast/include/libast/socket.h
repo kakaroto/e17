@@ -69,7 +69,7 @@
 #include <libast/url.h>
 
 SPIF_DEFINE_OBJ(socket) {
-    spif_const_obj_t parent;
+    SPIF_DECL_PARENT_TYPE(obj);
     spif_sockfd_t fd;
     spif_sockfamily_t fam;
     spif_socktype_t type;

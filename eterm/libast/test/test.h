@@ -27,7 +27,11 @@
 #  define TEST_NOTICE(s)                       printf("%s\n", s)
 #  define TEST_BEGIN(s)                        do {tnum = 1; printf("Testing " s "...");} while (0)
 #  define TEST_PASS()                          printf("passed (%hu).\n", tnum - 1)
-#  define TEST_FAIL(t)                         do {printf("failed (%s: %d) (%hu).\n", #t, (t), tnum); return 1;} while (0)
+#  define TEST_FAIL(t)                         do { \
+                                                   printf("failed at %s:%d (test #%hu):  Test \"%s\" returned %d.\n", \
+                                                          __FILE__, __LINE__, tnum, #t, (t)); \
+                                                   return 1; \
+                                               } while (0)
 #  define TEST_FAIL_IF(t)                      do {if (t) {TEST_FAIL(t);} tnum++;} while (0)
 #  define TEST_EXPECT(t)                       do {if (t) {TEST_PASS();} else {TEST_FAIL(t);}} while (0)
 #  define TEST_PASSED(s)                       printf("All " s " tests passed.\n\n"); return 0;

@@ -32,6 +32,7 @@
 /* Convenience macros for declaring object structures and types. */
 #define SPIF_DECL_OBJ_STRUCT(t)          struct spif_ ## t ## _t_struct
 #define SPIF_DEFINE_OBJ(t)               SPIF_DEFINE_TYPE(t, SPIF_DECL_OBJ_STRUCT(t)); SPIF_DECL_OBJ_STRUCT(t)
+#define SPIF_DECL_PARENT_TYPE(t)         SPIF_CONST_TYPE(t) parent
 
 /* Cast an arbitrary object pointer to a pointer to a nullobj.  Coincidentally,
    a nullobj *is* an arbitrary object pointer.  Even moreso than an obj. :-) */

@@ -31,9 +31,9 @@
 #define SPIF_OBJ_IS_ARRAY(o)                 (SPIF_OBJ_IS_TYPE((o), array))
 
 SPIF_DEFINE_OBJ(array) {
-  spif_obj_t parent;
-  size_t len;
-  spif_obj_t *items;
+    SPIF_DECL_PARENT_TYPE(obj);
+    size_t len;
+    spif_obj_t *items;
 };
 
 extern spif_listclass_t SPIF_CLASS_VAR(array);

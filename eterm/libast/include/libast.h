@@ -60,9 +60,6 @@
 #elif defined(HAVE_MALLOC_H)
 # include <malloc.h>
 #endif
-#ifdef HAVE_REGEX_H
-# include <regex.h>
-#endif
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -79,6 +76,22 @@
 # ifdef LIBAST_IMLIB2_SUPPORT
 #  include <Imlib2.h>
 # endif
+#endif
+
+#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#  ifdef HAVE_PCRE_H
+#    include <pcre.h>
+#  elif HAVE_PCRE_PCRE_H
+#    include <pcre/pcre.h>
+#  endif
+#elif defined(LIBAST_REGEXP_SUPPORT_POSIX) || defined(LIBAST_REGEXP_SUPPORT_BSD)
+#  ifdef HAVE_REGEX_H
+#    include <regex.h>
+#  endif
+#  ifdef LIBAST_REGEXP_SUPPORT_BSD
+extern char *re_comp();
+extern int re_exec();
+#  endif
 #endif
 
 #include <libast/types.h>

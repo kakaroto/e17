@@ -45,7 +45,7 @@
 
 
 SPIF_DEFINE_OBJ(url) {
-    spif_const_str_t parent;
+    SPIF_DECL_PARENT_TYPE(str);
     spif_str_t proto;
     spif_str_t user, passwd;
     spif_str_t host, port;

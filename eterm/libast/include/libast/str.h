@@ -44,9 +44,9 @@
 #define SPIF_STR_TYPE(obj)           SPIF_OBJ_TYPE(obj)
 
 SPIF_DEFINE_OBJ(str) {
-  spif_const_obj_t parent;
-  spif_charptr_t s;
-  size_t mem, len;
+    SPIF_DECL_PARENT_TYPE(obj);
+    spif_charptr_t s;
+    size_t mem, len;
 };
 
 extern spif_class_t SPIF_CLASS_VAR(str);

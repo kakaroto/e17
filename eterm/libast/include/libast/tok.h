@@ -49,7 +49,7 @@
 
 /* An tok object is a string tokenizer */
 SPIF_DEFINE_OBJ(tok) {
-    spif_const_obj_t parent;
+    SPIF_DECL_PARENT_TYPE(obj);
     spif_str_t src;
     spif_char_t quote, dquote, escape;
     spif_list_t tokens;

@@ -34,7 +34,7 @@ AC_DEFUN(AST_REGEXP_SUPPORT, [
                              ])
             AC_SEARCH_LIBS(pcre_compile, pcre, [GOT_PCRE_LIB=1])
             if test $GOT_PCRE_HEADER -eq 1 -a $GOT_PCRE_LIB -eq 1 ; then
-                AC_DEFINE_UNQUOTED(LIBAST_REGEXP_SUPPORT, "pcre")
+                AC_DEFINE(LIBAST_REGEXP_SUPPORT_PCRE)
                 LIBAST_REGEXP_SUPPORT="regexp-pcre"
                 $1="pcre"
             else
@@ -50,7 +50,7 @@ AC_DEFUN(AST_REGEXP_SUPPORT, [
                              ])
             AC_SEARCH_LIBS(regcomp, posix regexp regex re, [GOT_POSIXREGEXP_LIB=1])
             if test $GOT_POSIXREGEXP_HEADER -eq 1 -a $GOT_POSIXREGEXP_LIB -eq 1 ; then
-                AC_DEFINE_UNQUOTED(LIBAST_REGEXP_SUPPORT, "posix")
+                AC_DEFINE(LIBAST_REGEXP_SUPPORT_POSIX)
                 LIBAST_REGEXP_SUPPORT="regexp-posix"
                 $1="posix"
             else
@@ -66,7 +66,7 @@ AC_DEFUN(AST_REGEXP_SUPPORT, [
                              ])
             AC_SEARCH_LIBS(re_comp, bsd ucb regexp regex re, [GOT_BSD_LIB=1])
             if test $GOT_BSD_HEADER -eq 1 -a $GOT_BSD_LIB -eq 1 ; then
-                AC_DEFINE_UNQUOTED(LIBAST_REGEXP_SUPPORT, "bsd")
+                AC_DEFINE(LIBAST_REGEXP_SUPPORT_BSD)
                 LIBAST_REGEXP_SUPPORT="regexp-bsd"
                 $1="bsd"
             else

@@ -120,8 +120,6 @@ spif_linked_list_item_new(void)
 static spif_bool_t
 spif_linked_list_item_init(spif_linked_list_item_t self)
 {
-    spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(linked_list_item));
     self->data = SPIF_NULL_TYPE(obj);
     self->next = SPIF_NULL_TYPE(linked_list_item);
     return TRUE;
@@ -186,7 +184,8 @@ spif_linked_list_item_dup(spif_linked_list_item_t self)
 static spif_classname_t
 spif_linked_list_item_type(spif_linked_list_item_t self)
 {
-    return SPIF_OBJ_CLASSNAME(self);
+    USE_VAR(self);
+    return SPIF_CLASS_VAR(linked_list_item)->classname;
 }
 
 static spif_obj_t
@@ -296,9 +295,9 @@ spif_linked_list_dup(spif_linked_list_t self)
 
     tmp = spif_linked_list_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(linked_list));
-    tmp->head = SPIF_CAST(linked_list_item) SPIF_OBJ_DUP(SPIF_OBJ(self->head));
+    tmp->head = spif_linked_list_item_dup(self->head);
     for (src = self->head, dest = tmp->head; src->next; src = src->next, dest = dest->next) {
-        dest->next = SPIF_CAST(linked_list_item) SPIF_OBJ_DUP(SPIF_OBJ(src->next));
+        dest->next = spif_linked_list_item_dup(src->next);
     }
     dest->next = SPIF_NULL_TYPE(linked_list_item);
     return tmp;
@@ -337,7 +336,7 @@ spif_linked_list_contains(spif_linked_list_t self, spif_obj_t obj)
     spif_linked_list_item_t current;
 
     for (current = self->head; current; current = current->next) {
-        if (SPIF_OBJ_COMP(current->data, obj) == SPIF_CMP_EQUAL) {
+        if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj))) {
             return TRUE;
         }
     }
@@ -366,7 +365,7 @@ spif_linked_list_index(spif_linked_list_t self, spif_obj_t obj)
     size_t i;
     spif_linked_list_item_t current;
 
-    for (current = self->head, i = 0; current && (SPIF_OBJ_COMP(current->data, obj) != SPIF_CMP_EQUAL); i++, current = current->next);
+    for (current = self->head, i = 0; current && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj)); i++, current = current->next);
     return (current ? i : ((size_t) (-1)));
 }
 
@@ -380,11 +379,13 @@ spif_linked_list_insert(spif_linked_list_t self, spif_obj_t obj)
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
         self->head = item;
-    } else if (SPIF_CMP_IS_LESS(SPIF_OBJ_COMP(item, self->head))) {
+    } else if (SPIF_CMP_IS_LESS(spif_linked_list_item_comp(item, self->head))) {
         item->next = self->head;
         self->head = item;
     } else {
-        for (current = self->head; current->next && SPIF_CMP_IS_GREATER(SPIF_OBJ_COMP(item, current->next)); current = current->next);
+        for (current = self->head;
+             current->next && SPIF_CMP_IS_GREATER(spif_linked_list_item_comp(item, current->next));
+             current = current->next);
         item->next = current->next;
         current->next = item;
     }

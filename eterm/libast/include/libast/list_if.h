@@ -69,22 +69,22 @@
 typedef spif_obj_t spif_list_t;
 
 SPIF_DEFINE_OBJ(listclass) {
-  spif_const_class_t parent;
+    SPIF_DECL_PARENT_TYPE(class);
 
-  spif_func_t append;
-  spif_func_t contains;
-  spif_func_t count;
-  spif_func_t get;
-  spif_func_t index;
-  spif_func_t insert;
-  spif_func_t insert_at;
-  spif_func_t iterator;
-  spif_func_t next;
-  spif_func_t prepend;
-  spif_func_t remove;
-  spif_func_t remove_at;
-  spif_func_t reverse;
-  spif_func_t to_array;
+    spif_func_t append;
+    spif_func_t contains;
+    spif_func_t count;
+    spif_func_t get;
+    spif_func_t index;
+    spif_func_t insert;
+    spif_func_t insert_at;
+    spif_func_t iterator;
+    spif_func_t next;
+    spif_func_t prepend;
+    spif_func_t remove;
+    spif_func_t remove_at;
+    spif_func_t reverse;
+    spif_func_t to_array;
 };
 
 #endif /* _LIBAST_LIST_IF_H_ */
