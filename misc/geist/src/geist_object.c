@@ -1,4 +1,4 @@
-/* geist_object.c
+/* geist_object.cpp
 
 Copyright (C) 1999,2000 Tom Gilbert.
 

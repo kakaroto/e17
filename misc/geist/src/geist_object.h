@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 #include "geist_document.h"
 
+
 extern GtkWidget *obj_list;
 
 #define GEIST_OBJECT(O) ((geist_object *) O)

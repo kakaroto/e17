@@ -1,4 +1,4 @@
-/* geist_document.c
+/* geist_document.cpp
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
