@@ -44,7 +44,7 @@ enum {
 
 typedef struct __symbol {
 	char name[NAMEMAX];
-	 ucell addr;				/* line number for functions */
+	ucell addr;				/* line number for functions */
 	int file;					/* file number that a function appears in */
 	int local;					/* true if it is a local variable */
 	int type;
@@ -56,10 +56,10 @@ typedef struct __symbol {
 
 typedef struct {
 	int type;					/* one of the BP_xxx types */
-	 cell addr;					/* line number, or previous value */
+	cell addr;					/* line number, or previous value */
 	int file;					/* file in which the breakpoint appears */
 	int index;
-	 SYMBOL * sym;
+	SYMBOL * sym;
 } BREAKPOINT;
 
 
@@ -576,433 +576,433 @@ static cell get_symbolvalue(AMX * amx, SYMBOL * sym, int index)
 {
 
 	cell * value;
-	
-		cell base;
-	
-		
-		if (sym->type == 2 || sym->type == 4) {		/* a reference */
-		
-			amx_GetAddr(amx, sym->addr, &value);
-		
-			base = *value;
-		
+
+	cell base;
+
+
+	if (sym->type == 2 || sym->type == 4) {		/* a reference */
+
+		amx_GetAddr(amx, sym->addr, &value);
+
+		base = *value;
+
 	} else {
-		
-			base = sym->addr;
-		
+
+		base = sym->addr;
+
 	}							/* if */
-	
-		amx_GetAddr(amx, base + index * sizeof(cell), &value);
-	
-		return *value;
-	
+
+	amx_GetAddr(amx, base + index * sizeof(cell), &value);
+
+	return *value;
+
 }
 
 
 static void watch_init(void) 
 {
-	
-		int i;
-	
-		
-		for (i = 0; i < MAXWATCHES && strlen(watches[i]) > 0; i++)
-		
-			watches[i][0] = '\0';
-	
+
+	int i;
+
+
+	for (i = 0; i < MAXWATCHES && strlen(watches[i]) > 0; i++)
+
+		watches[i][0] = '\0';
+
 }
 
 
 static void watch_list(AMX * amx, int calllevel) 
 {
-	
-		int num, i, idx;
-	
-		SYMBOL * sym;
-	
-		char *indexptr;
-	
-		char name[NAMEMAX];
-	
-		
-		if (terminal == TERM_ANSI) {
-		
-			term_csrsave();
-		
-			term_csrset(1, 1);
-		
+
+	int num, i, idx;
+
+	SYMBOL * sym;
+
+	char *indexptr;
+
+	char name[NAMEMAX];
+
+
+	if (terminal == TERM_ANSI) {
+
+		term_csrsave();
+
+		term_csrset(1, 1);
+
 	}							/* if */
-	
-		
-		for (i = num = 0; i < MAXWATCHES; i++) {
-		
-			if (strlen(watches[i]) > 0) {
-			
-				strcpy(name, watches[i]);
-			
-				indexptr = strchr(name, '[');
-			
-				if (indexptr != NULL) {
-				
-					idx = atoi(indexptr + 1);
-				
-					*indexptr = '\0';
-				
+
+
+	for (i = num = 0; i < MAXWATCHES; i++) {
+
+		if (strlen(watches[i]) > 0) {
+
+			strcpy(name, watches[i]);
+
+			indexptr = strchr(name, '[');
+
+			if (indexptr != NULL) {
+
+				idx = atoi(indexptr + 1);
+
+				*indexptr = '\0';
+
 			} else {
-				
-					idx = 0;
-				
+
+				idx = 0;
+
 			}					/* if */
-			
-				printf("%d   %s\t", i + 1, watches[i]);
-			
-				if ((sym = find_symbol(&vartab, name, calllevel)) != NULL) {
-				
-					if ((sym->type == 3 || sym->type == 4) && indexptr == NULL)
-					
-						printf("(missing index)");	// ??? try to print as string
+
+			printf("%d   %s\t", i + 1, watches[i]);
+
+			if ((sym = find_symbol(&vartab, name, calllevel)) != NULL) {
+
+				if ((sym->type == 3 || sym->type == 4) && indexptr == NULL)
+
+					printf("(missing index)");	// ??? try to print as string
 
 				else if ((sym->type == 3 || sym->type == 4) && sym->length[0] > 0 && idx >= sym->length[0])
-					
-						printf("(index out of range)");
-				
-					else if (sym->type != 3 && sym->type != 4 && indexptr != NULL)
-					
-						printf("(invalid index)");
-				
-					else
-					
-						printf("%ld", get_symbolvalue(amx, sym, idx));
-				
+
+					printf("(index out of range)");
+
+				else if (sym->type != 3 && sym->type != 4 && indexptr != NULL)
+
+					printf("(invalid index)");
+
+				else
+
+					printf("%ld", get_symbolvalue(amx, sym, idx));
+
 			} else {
-				
-					printf("(unknown symbol)");
-				
+
+				printf("(unknown symbol)");
+
 			}					/* if */
-			
-				if (terminal == TERM_ANSI)
-				
-					term_clreol();
-			
-				printf("\n");
-			
-				num++;
-			
-		}						/* if */
-		
-	}							/* for */
-	
-		
-		if (terminal == TERM_ANSI) {
-		
-			if (num == 0)
-			
-				printf("(no watches)");
-		
-			for (; num < MAXWATCHES; num++) {
-			
+
+			if (terminal == TERM_ANSI)
+
 				term_clreol();
-			
-				printf("\n");
-			
+
+			printf("\n");
+
+			num++;
+
+		}						/* if */
+
+	}							/* for */
+
+
+	if (terminal == TERM_ANSI) {
+
+		if (num == 0)
+
+			printf("(no watches)");
+
+		for (; num < MAXWATCHES; num++) {
+
+			term_clreol();
+
+			printf("\n");
+
 		}						/* for */
-		
-			term_csrrestore();
-		
+
+		term_csrrestore();
+
 	} else {
-		
-			if (num > 0)
-			
-				for (i = 0; i < SCREENCOLUMNS; i++)
-				
-					printf("-");
-		
+
+		if (num > 0)
+
+			for (i = 0; i < SCREENCOLUMNS; i++)
+
+				printf("-");
+
 	}							/* if */
-	
+
 }
 
 
 static int watch_set(int number, char *name) 
 {
-	
-		if (number < 0 || number > MAXWATCHES)
-		
-			return 0;
-	
-		if (number == 0) {
-		
+
+	if (number < 0 || number > MAXWATCHES)
+
+		return 0;
+
+	if (number == 0) {
+
 		/* find an empty spot */ 
-			while (number < MAXWATCHES && strlen(watches[number]) > 0)
-			
-				number++;
-		
-			if (number >= MAXWATCHES)
-			
-				return 0;		/* watch table full */
-		
+		while (number < MAXWATCHES && strlen(watches[number]) > 0)
+
+			number++;
+
+		if (number >= MAXWATCHES)
+
+			return 0;		/* watch table full */
+
 	} else {
-		
-			number--;
-		
+
+		number--;
+
 	}							/* if */
-	
+
 	/* add the watch */ 
-		strcpy(watches[number], name);
-	
-		return 1;
-	
+	strcpy(watches[number], name);
+
+	return 1;
+
 }
 
 
 static int watch_clear(int number) 
 {
-	
-		if (number > 0 && number <= MAXWATCHES) {
-		
-			watches[number - 1][0] = '\0';
-		
-			return 1;
-		
+
+	if (number > 0 && number <= MAXWATCHES) {
+
+		watches[number - 1][0] = '\0';
+
+		return 1;
+
 	}							/* if */
-	
-		return 0;
-	
+
+	return 0;
+
 }
 
 
 static void break_init(void) 
 {
-	
-		int i;
-	
-		
-		for (i = 0; i < MAXBREAKS; i++) {
-		
-			breakpoints[i].type = BP_NONE;
-		
-			breakpoints[i].addr = 0;
-		
-			breakpoints[i].sym = NULL;
-		
-			breakpoints[i].index = -1;
-		
+
+	int i;
+
+
+	for (i = 0; i < MAXBREAKS; i++) {
+
+		breakpoints[i].type = BP_NONE;
+
+		breakpoints[i].addr = 0;
+
+		breakpoints[i].sym = NULL;
+
+		breakpoints[i].index = -1;
+
 	}							/* for */
-	
+
 }
 
 
 static void break_clear(int index) 
 {
-	
-		if (index >= 0 && index <= MAXBREAKS) {
-		
-			breakpoints[index].type = BP_NONE;
-		
-			breakpoints[index].addr = 0;
-		
-			breakpoints[index].file = -1;
-		
-			breakpoints[index].sym = NULL;
-		
-			breakpoints[index].index = -1;
-		
+
+	if (index >= 0 && index <= MAXBREAKS) {
+
+		breakpoints[index].type = BP_NONE;
+
+		breakpoints[index].addr = 0;
+
+		breakpoints[index].file = -1;
+
+		breakpoints[index].sym = NULL;
+
+		breakpoints[index].index = -1;
+
 	}							/* if */
-	
+
 }
 
 
 static int break_set(AMX * amx, char *str, int calllevel) 
 {
-	
-		int index;
-	
-		SYMBOL * sym;
-	
-		
+
+	int index;
+
+	SYMBOL * sym;
+
+
 	/* find an empty spot */ 
-		for (index = 0; index < MAXBREAKS && breakpoints[index].type != BP_NONE; index++)
-		
+	for (index = 0; index < MAXBREAKS && breakpoints[index].type != BP_NONE; index++)
+
 		/* nothing */ 
-			if (index >= MAXBREAKS)
-			
-				return -1;
-	
-		assert(breakpoints[index].sym == NULL);
-	
-		assert(breakpoints[index].addr == 0);
-	
-		assert(breakpoints[index].index == -1);
-	
-		
+		if (index >= MAXBREAKS)
+
+			return -1;
+
+	assert(breakpoints[index].sym == NULL);
+
+	assert(breakpoints[index].addr == 0);
+
+	assert(breakpoints[index].index == -1);
+
+
 	/* find type */ 
-		str = skipwhitespace(str);
-	
-		if (isdigit(*str)) {
-		
-			breakpoints[index].type = BP_CODE;
-		
-			breakpoints[index].file = curfileno;
-		
-			breakpoints[index].addr = atol(str);
-		
+	str = skipwhitespace(str);
+
+	if (isdigit(*str)) {
+
+		breakpoints[index].type = BP_CODE;
+
+		breakpoints[index].file = curfileno;
+
+		breakpoints[index].addr = atol(str);
+
 	} else if ((sym = find_symbol(&functab, str, -1)) != NULL) {
-		
-			breakpoints[index].type = BP_CODE;
-		
-			breakpoints[index].addr = sym->addr;
-		
-			breakpoints[index].file = sym->file;
-		
-			breakpoints[index].sym = sym;
-		
+
+		breakpoints[index].type = BP_CODE;
+
+		breakpoints[index].addr = sym->addr;
+
+		breakpoints[index].file = sym->file;
+
+		breakpoints[index].sym = sym;
+
 	} else {
-		
-			char *idxptr = strchr(str, '[');
-		
-			int idx = -1;
-		
-			if (idxptr != NULL) {
-			
-				idx = atoi(idxptr + 1);
-			
-				*idxptr = '\0';
-			
+
+		char *idxptr = strchr(str, '[');
+
+		int idx = -1;
+
+		if (idxptr != NULL) {
+
+			idx = atoi(idxptr + 1);
+
+			*idxptr = '\0';
+
 		}						/* if */
-		
-			if ((sym = find_symbol(&vartab, str, calllevel)) != NULL) {
-			
-				if (sym->type == 3 || sym->type == 4) {
-				
-					if (idxptr == NULL)
-					
-						return -1;	// missing index on array
+
+		if ((sym = find_symbol(&vartab, str, calllevel)) != NULL) {
+
+			if (sym->type == 3 || sym->type == 4) {
+
+				if (idxptr == NULL)
+
+					return -1;	// missing index on array
 
 				if (sym->length[0] > 0 && idx >= sym->length[0])
-					
-						return -1;	// index out of range
+
+					return -1;	// index out of range
 
 			}					/* if */
-			
-				if (sym->type != 3 && sym->type != 4 && idxptr != NULL)
-				
-					return -1;
-			
-				breakpoints[index].type = BP_DATA;
-			
-				breakpoints[index].addr = get_symbolvalue(amx, sym, idx >= 0 ? idx : 0);
-			
-				breakpoints[index].sym = sym;
-			
-				breakpoints[index].index = idx;
-			
-		} else {
-			
+
+			if (sym->type != 3 && sym->type != 4 && idxptr != NULL)
+
 				return -1;
-			
+
+			breakpoints[index].type = BP_DATA;
+
+			breakpoints[index].addr = get_symbolvalue(amx, sym, idx >= 0 ? idx : 0);
+
+			breakpoints[index].sym = sym;
+
+			breakpoints[index].index = idx;
+
+		} else {
+
+			return -1;
+
 		}						/* if */
-		
+
 	}							/* if */
-	
-		return index;
-	
+
+	return index;
+
 }
 
 
 static void break_list(void) 
 {
-	
-		int index;
-	
-		
-		for (index = 0; index < MAXBREAKS; index++) {
-		
-			if (breakpoints[index].type == BP_NONE)
-			
-				continue;
-		
-			printf("%2d  ", index);
-		
-			if (breakpoints[index].type == BP_CODE) {
-			
-				int file = breakpoints[index].file;
-			
-				printf("line: %d", breakpoints[index].addr);
-			
-				if (breakpoints[index].sym != NULL)
-				
-					printf("  func: %s", breakpoints[index].sym->name);
-			
-				else
-				
-					printf("  file: %s", skippath(filenames[file]));
-			
-				printf("\n");
-			
+
+	int index;
+
+
+	for (index = 0; index < MAXBREAKS; index++) {
+
+		if (breakpoints[index].type == BP_NONE)
+
+			continue;
+
+		printf("%2d  ", index);
+
+		if (breakpoints[index].type == BP_CODE) {
+
+			int file = breakpoints[index].file;
+
+			printf("line: %d", breakpoints[index].addr);
+
+			if (breakpoints[index].sym != NULL)
+
+				printf("  func: %s", breakpoints[index].sym->name);
+
+			else
+
+				printf("  file: %s", skippath(filenames[file]));
+
+			printf("\n");
+
 		} else {
-			
+
 			/* must be variable */ 
-				assert(breakpoints[index].sym != NULL);
-			
-				printf("var: %s", breakpoints[index].sym->name);
-			
-				if (breakpoints[index].index >= 0)
-				
-					printf("[%d]", breakpoints[index].index);
-			
-				printf("\n");
-			
+			assert(breakpoints[index].sym != NULL);
+
+			printf("var: %s", breakpoints[index].sym->name);
+
+			if (breakpoints[index].index >= 0)
+
+				printf("[%d]", breakpoints[index].index);
+
+			printf("\n");
+
 		}						/* if */
-		
+
 	}							/* for */
-	
+
 }
 
 
 static int break_check(AMX * amx, int line, int file) 
 {
-	
-		int index;
-	
-		
-		for (index = 0; index < MAXBREAKS; index++) {
-		
-			if (breakpoints[index].type == BP_CODE && breakpoints[index].addr == line 
+
+	int index;
+
+
+	for (index = 0; index < MAXBREAKS; index++) {
+
+		if (breakpoints[index].type == BP_CODE && breakpoints[index].addr == line 
 				&&breakpoints[index].file == file)
-			
+
 		{
-			
-				return index;
-			
+
+			return index;
+
 		} else if (breakpoints[index].type == BP_DATA) {
-			
-				int idx = breakpoints[index].index;
-			
-				SYMBOL * sym = breakpoints[index].sym;
-			
-				cell value;
-			
-				assert(sym != NULL);
-			
-				value = get_symbolvalue(amx, sym, idx >= 0 ? idx : 0);
-			
-				if (breakpoints[index].addr != value) {
-				
-					breakpoints[index].addr = value;
-				
-					return index;
-				
+
+			int idx = breakpoints[index].index;
+
+			SYMBOL * sym = breakpoints[index].sym;
+
+			cell value;
+
+			assert(sym != NULL);
+
+			value = get_symbolvalue(amx, sym, idx >= 0 ? idx : 0);
+
+			if (breakpoints[index].addr != value) {
+
+				breakpoints[index].addr = value;
+
+				return index;
+
 			}					/* if */
-			
+
 		}						/* if */
-		
+
 	}							/* for */
-	
-		return -1;
-	
+
+	return -1;
+
 }
 
 
 enum {
-	
+
 	GO, 
 	GO_RET, 
 	NEXT, 
@@ -1013,892 +1013,663 @@ enum {
 
 static void listcommands(char *command) 
 {
-	
-		if (command == NULL)
-		
-			command = "";
-	
-		if (strcasecmp(command, "break") == 0) {
-		
-			printf("\tBREAK\t\tlist all breakpoints\n" 
-				   "\tBREAK n\t\tset a breakpoint at line \"n\"\n" 
-		   "\tBREAK func\tset a breakpoint at function with name \"func\"\n" 
-				   "\tBREAK var\tset a breakpoint at variable \"var\"\n" 
-			"\tBREAK var[i]\tset a breakpoint at array element \"var[i]\"\n");
-		
+
+	if (command == NULL)
+
+		command = "";
+
+	if (strcasecmp(command, "break") == 0) {
+
+		printf("\tBREAK\t\tlist all breakpoints\n" 
+				"\tBREAK n\t\tset a breakpoint at line \"n\"\n" 
+				"\tBREAK func\tset a breakpoint at function with name \"func\"\n" 
+				"\tBREAK var\tset a breakpoint at variable \"var\"\n" 
+				"\tBREAK var[i]\tset a breakpoint at array element \"var[i]\"\n");
+
 	} else if (strcasecmp(command, "cbreak") == 0) {
-		
-			printf("\tCBREAK n\tremove breakpoint number \"n\"\n" 
-				   "\tCBREAK *\tremove all breakpoints\n");
-		
+
+		printf("\tCBREAK n\tremove breakpoint number \"n\"\n" 
+				"\tCBREAK *\tremove all breakpoints\n");
+
 	} else if (strcasecmp(command, "cwatch") == 0) {
-		
-			printf("\tCWATCH n\tremove watch number \"n\"\n" 
-				   "\tCWATCH *\tremove all watches\n");
-		
+
+		printf("\tCWATCH n\tremove watch number \"n\"\n" 
+				"\tCWATCH *\tremove all watches\n");
+
 	} else if (strcasecmp(command, "disp") == 0 || strcasecmp(command, "d") == 0) {
-		
-			printf("\tDISP may be abbreviated to D\n\n" 
-			 "\tDISP\t\tdisplay all variables that are currently in scope\n" 
-				   "\tDISP var\tdisplay the value of variable \"var\"\n" 
-			"\tDISP var[i]\tdisplay the value of array element \"var[i]\"\n");
-		
+
+		printf("\tDISP may be abbreviated to D\n\n" 
+				"\tDISP\t\tdisplay all variables that are currently in scope\n" 
+				"\tDISP var\tdisplay the value of variable \"var\"\n" 
+				"\tDISP var[i]\tdisplay the value of array element \"var[i]\"\n");
+
 	} else if (strcasecmp(command, "file") == 0) {
-		
-			printf("\tFILE\t\tlist all files that this program is composed off\n" 
-				   "\tFILE name\tset the current file to \"name\"\n");
-		
+
+		printf("\tFILE\t\tlist all files that this program is composed off\n" 
+				"\tFILE name\tset the current file to \"name\"\n");
+
 	} else if (strcasecmp(command, "g") == 0 || strcasecmp(command, "go") == 0) {
-		
-			printf("\tGO may be abbreviated to G\n\n" 
-			"\tGO\t\trun until the next breakpoint or program termination\n" 
-				   "\tGO RET\t\trun until the end of the current function\n" 
-				   "\tGO n\t\trun until line number \"n\"\n");
-		
+
+		printf("\tGO may be abbreviated to G\n\n" 
+				"\tGO\t\trun until the next breakpoint or program termination\n" 
+				"\tGO RET\t\trun until the end of the current function\n" 
+				"\tGO n\t\trun until line number \"n\"\n");
+
 	} else if (strcasecmp(command, "l") == 0 || strcasecmp(command, "list") == 0) {
-		
-			printf("\tLIST may be abbreviated to L\n\n" 
-				   "\tLIST\t\tdisplay 10 lines around the current line\n" 
-				   "\tLIST n\t\tdisplay 10 lines, starting from line \"n\"\n" 
-			   "\tLIST n m\tdisplay \"m\" lines, starting from line \"n\"\n" 
-				   "\tLIST FUNCS\tdisplay all functions\n" 
+
+		printf("\tLIST may be abbreviated to L\n\n" 
+				"\tLIST\t\tdisplay 10 lines around the current line\n" 
+				"\tLIST n\t\tdisplay 10 lines, starting from line \"n\"\n" 
+				"\tLIST n m\tdisplay \"m\" lines, starting from line \"n\"\n" 
+				"\tLIST FUNCS\tdisplay all functions\n" 
 				"\tLIST ON\t\tautomatically list 10 lines after each step\n" 
-				   "\tLIST OFF\tturn off automatic list\n");
-		
+				"\tLIST OFF\tturn off automatic list\n");
+
 	} else if (strcasecmp(command, "n") == 0 || strcasecmp(command, "next") == 0 
-			   ||strcasecmp(command, "quit") == 0 
-			   ||strcasecmp(command, "s") == 0 || strcasecmp(command, "step") == 0)
-		
+			||strcasecmp(command, "quit") == 0 
+			||strcasecmp(command, "s") == 0 || strcasecmp(command, "step") == 0)
+
 	{
-		
-			printf("\tno additional information\n");
-		
+
+		printf("\tno additional information\n");
+
 	} else if (strcasecmp(command, "term") == 0) {
-		
-			printf("\tTERM ANSI\tuse VT100/ANSI terminal display\n" 
-				   "\tTERM OFF\tno terminal support\n");
-		
+
+		printf("\tTERM ANSI\tuse VT100/ANSI terminal display\n" 
+				"\tTERM OFF\tno terminal support\n");
+
 	} else if (strcasecmp(command, "watch") == 0) {
-		
-			printf("\tWATCH var\tset a new watch at variable \"var\"\n" 
-				   "\tWATCH n var\tchange watch \"n\" to variable \"var\"\n");
-		
+
+		printf("\tWATCH var\tset a new watch at variable \"var\"\n" 
+				"\tWATCH n var\tchange watch \"n\" to variable \"var\"\n");
+
 	} else {
-		
-			printf("\tBREAK\t\tset breakpoint at line number or variable name\n" 
-		/* "\tCALLS\t\tshow call stack\n" ??? not yet implemented */ 
-				   "\tCBREAK\t\tremove breakpoint\n" 
-				   "\tCWATCH\t\tremove a \"watchpoint\"\n" 
-			 "\tD(isp)\t\tdisplay the value of a variable, list variables\n" 
-				   "\tFILE\t\tswitch to a file\n" 
-				   "\tG(o)\t\trun program (until breakpoint)\n" 
-				   "\tL(ist)\t\tdisplay source file and symbols\n" 
-				   "\tN(ext)\t\tRun until next line, step over functions\n" 
-				   "\tQUIT\t\texit debugger, terminate program\n" 
-				   "\tS(tep)\t\tsingle step, step into functions\n" 
-				   "\tTERM\t\tset terminal type\n" 
-				   "\tWATCH\t\tset a \"watchpoint\" on a variable\n" 
-				   "\n\tUse \"? <command name>\" to view more information on a command\n");
-		
+
+		printf("\tBREAK\t\tset breakpoint at line number or variable name\n" 
+				/* "\tCALLS\t\tshow call stack\n" ??? not yet implemented */ 
+				"\tCBREAK\t\tremove breakpoint\n" 
+				"\tCWATCH\t\tremove a \"watchpoint\"\n" 
+				"\tD(isp)\t\tdisplay the value of a variable, list variables\n" 
+				"\tFILE\t\tswitch to a file\n" 
+				"\tG(o)\t\trun program (until breakpoint)\n" 
+				"\tL(ist)\t\tdisplay source file and symbols\n" 
+				"\tN(ext)\t\tRun until next line, step over functions\n" 
+				"\tQUIT\t\texit debugger, terminate program\n" 
+				"\tS(tep)\t\tsingle step, step into functions\n" 
+				"\tTERM\t\tset terminal type\n" 
+				"\tWATCH\t\tset a \"watchpoint\" on a variable\n" 
+				"\n\tUse \"? <command name>\" to view more information on a command\n");
+
 	}							/* if */
-	
+
 }
 
 
 static int docommand(AMX * amx, int calllevel) 
 {
-	
-		static char lastcommand[10] = "";
-	
-		char line[100], command[32];
-	
-		int result, i;
-	
-		SYMBOL * sym;
-	
-		char *params;
-	
-		
-		for (;;) {
-		
-			printf("- ");
-		
-			gets(line);
-		
-			if (strlen(line) == 0)
-			
-				strcpy(line, lastcommand);
-		
-			lastcommand[0] = '\0';
-		
-			
-			result = sscanf(line, "%8s", command);
-		
-			if (result <= 0) {
-			
-				listcommands(NULL);
-			
-				continue;
-			
+
+	static char lastcommand[10] = "";
+
+	char line[100], command[32];
+
+	int result, i;
+
+	SYMBOL * sym;
+
+	char *params;
+
+
+	for (;;) {
+		printf("- ");
+		gets(line);
+		if (strlen(line) == 0)
+			strcpy(line, lastcommand);
+		lastcommand[0] = '\0';
+
+		result = sscanf(line, "%8s", command);
+		if (result <= 0) {
+			listcommands(NULL);
+			continue;
 		}						/* if */
-		
-			params = strchr(line, ' ');
-		
-			params = (params != NULL) ? skipwhitespace(params) : "";
-		
-			
-			if (strcasecmp(command, "?") == 0) {
-			
-				result = sscanf(line, "%*s %30s", command);
-			
-				listcommands(result ? command : NULL);
-			
+
+		params = strchr(line, ' ');
+		params = (params != NULL) ? skipwhitespace(params) : "";
+
+		if (strcasecmp(command, "?") == 0) {
+			result = sscanf(line, "%*s %30s", command);
+			listcommands(result ? command : NULL);
 		} else if (strcasecmp(command, "quit") == 0) {
-			
-				exit(0);
-			
+			exit(0);
 		} else if (strcasecmp(command, "g") == 0 || strcasecmp(command, "go") == 0) {
-			
-				if (strcasecmp(params, "ret") == 0)
-				
-					return GO_RET;
-			
-				stopline = atoi(params);
-			
-				return GO;
-			
+			if (strcasecmp(params, "ret") == 0)
+				return GO_RET;
+			stopline = atoi(params);
+			return GO;
 		} else if (strcasecmp(command, "s") == 0 || strcasecmp(command, "step") == 0) {
-			
-				strcpy(lastcommand, "s");
-			
-				return STEP;
-			
+			strcpy(lastcommand, "s");
+			return STEP;
 		} else if (strcasecmp(command, "n") == 0 || strcasecmp(command, "next") == 0) {
-			
-				strcpy(lastcommand, "n");
-			
-				return NEXT;
-			
+			strcpy(lastcommand, "n");
+			return NEXT;
 		} else if (strcasecmp(command, "l") == 0 || strcasecmp(command, "list") == 0) {
-			
 			/* first check a few hard cases */ 
-				if (strcasecmp(params, "funcs") == 0) {
-				
-					for (sym = functab.next; sym != NULL; sym = sym->next)
-					
-						printf("%s\t%s(%d)\n", sym->name, 
-							 skippath(filenames[sym->file]), (int) sym->addr);
-				
+			if (strcasecmp(params, "funcs") == 0) {
+				for (sym = functab.next; sym != NULL; sym = sym->next)
+					printf("%s\t%s(%d)\n", sym->name, 
+							skippath(filenames[sym->file]), (int) sym->addr);
 			} else if (strcasecmp(params, "on") == 0) {
-				
-					autolist = DEF_LIST;
-				
-					watch_list(amx, calllevel);
-				
-					source_list(curline - autolist / 2, autolist);
-				
+				autolist = DEF_LIST;
+				watch_list(amx, calllevel);
+				source_list(curline - autolist / 2, autolist);
 			} else if (strcasecmp(params, "off") == 0) {
-				
-					if (terminal == TERM_NONE)
-					
-						autolist = 1;
-				
-					else
-					
-						printf("\tCommand not supported on terminals\n");
-				
+				if (terminal == TERM_NONE)
+					autolist = 1;
+				else
+					printf("\tCommand not supported on terminals\n");
 			} else {
-				
-					int lnum, numlines;
-				
-					lnum = curline - (DEF_LIST / 2 - 1);	/* preset */
-				
-					numlines = DEF_LIST;
-				
-					sscanf(line, "%*s %d %d", &lnum, &numlines);
-				
-					lnum--;		/* if user filled in a line number, subtract 1 */
-				
-					term_restore();
-				
-					source_list(lnum, numlines);
-				
+				int lnum, numlines;
+				lnum = curline - (DEF_LIST / 2 - 1);	/* preset */
+				numlines = DEF_LIST;
+				sscanf(line, "%*s %d %d", &lnum, &numlines);
+				lnum--;		/* if user filled in a line number, subtract 1 */
+				term_restore();
+				source_list(lnum, numlines);
 			} /* if */ 
 		} else if (strcasecmp(command, "break") == 0) {
-			
-				if (*params == '\0') {
-				
-					break_list();
-				
+
+			if (*params == '\0') {
+
+				break_list();
+
 			} else {
-				
-					result = break_set(amx, params, calllevel);
-				
-					if (result < 0)
-					
-						printf("Invalid breakpoint, or table full\n");
-				
+
+				result = break_set(amx, params, calllevel);
+
+				if (result < 0)
+
+					printf("Invalid breakpoint, or table full\n");
+
 			}					/* if */
-			
+
 		} else if (strcasecmp(command, "cbreak") == 0) {
-			
-				if (*params == '*') {
-				
+
+			if (*params == '*') {
+
 				/* clear all breakpoints */ 
-					for (i = 0; i < MAXBREAKS; i++)
-					
-						break_clear(i);
-				
+				for (i = 0; i < MAXBREAKS; i++)
+
+					break_clear(i);
+
 			} else if (isdigit(*params)) {
-				
-					break_clear(atoi(params));
-				
+
+				break_clear(atoi(params));
+
 			} else {
-				
-					printf("\tInvalid command\n");
-				
+
+				printf("\tInvalid command\n");
+
 			}					/* if */
-			
+
 		} else if (strcasecmp(command, "disp") == 0 || strcasecmp(command, "d") == 0) {
-			
-				if (*params == '\0') {
-				
+
+			if (*params == '\0') {
+
 				/* display all */ 
-					for (sym = vartab.next; sym != NULL; sym = sym->next) {
-					
-						if (sym->calllevel == -1 || sym->calllevel == calllevel) {
-						
-							printf("%s\t%s\t%ld", sym->local > 0 ? "loc" : "glb", sym->name, 
-								   get_symbolvalue(amx, sym, 0));
-						
-							if (sym->type == 3 || sym->type == 4)
-							
-								printf(" [...]");	/* ??? an array (try to print as string) */
-						
-							printf("\n");
-						
+				for (sym = vartab.next; sym != NULL; sym = sym->next) {
+
+					if (sym->calllevel == -1 || sym->calllevel == calllevel) {
+
+						printf("%s\t%s\t%ld", sym->local > 0 ? "loc" : "glb", sym->name, 
+								get_symbolvalue(amx, sym, 0));
+
+						if (sym->type == 3 || sym->type == 4)
+
+							printf(" [...]");	/* ??? an array (try to print as string) */
+
+						printf("\n");
+
 					}			/* if */
-					
+
 				}				/* for */
-				
+
 			} else {
-				
-					char *indexptr = strchr(params, '[');
-				
-					if (indexptr != NULL) {
-					
-						i = atoi(indexptr + 1);
-					
-						*indexptr = '\0';
-					
+
+				char *indexptr = strchr(params, '[');
+
+				if (indexptr != NULL) {
+
+					i = atoi(indexptr + 1);
+
+					*indexptr = '\0';
+
 				} else {
-					
-						i = 0;
-					
+
+					i = 0;
+
 				}				/* if */
-				
-					if ((sym = find_symbol(&vartab, params, calllevel)) != NULL) {
-					
-						if (sym->dims > 0 && indexptr == NULL)
-						
-							printf("\tArray must be indexed\n");	// ??? try to print as string
+
+				if ((sym = find_symbol(&vartab, params, calllevel)) != NULL) {
+
+					if (sym->dims > 0 && indexptr == NULL)
+
+						printf("\tArray must be indexed\n");	// ??? try to print as string
 
 					else if (sym->dims == 0 && indexptr != NULL)
-						
-							printf("\tInvalid index, not an array\n");
-					
-						else if (sym->dims > 0 && sym->length[0] > 0 && i >= sym->length[0])
-						
-							printf("\tIndex out of range\n");
-					
-						else
-						
-							printf("%s\t%s\t%ld\n", sym->local > 0 ? "loc" : "glb", sym->name, 
-								   get_symbolvalue(amx, sym, i));
-					
+
+						printf("\tInvalid index, not an array\n");
+
+					else if (sym->dims > 0 && sym->length[0] > 0 && i >= sym->length[0])
+
+						printf("\tIndex out of range\n");
+
+					else
+
+						printf("%s\t%s\t%ld\n", sym->local > 0 ? "loc" : "glb", sym->name, 
+								get_symbolvalue(amx, sym, i));
+
 				} else {
-					
-						printf("\tSymbol not found, or not a variable\n");
-					
+
+					printf("\tSymbol not found, or not a variable\n");
+
 				}				/* if */
-				
+
 			}					/* if */
-			
+
 		} else if (strcasecmp(command, "file") == 0) {
-			
-				if (*params == '\0') {
-				
-					for (i = 0; i < MAXFILES && filenames[i] != NULL; i++)
-					
-						printf("%5d\t%s\n", i, filenames[i]);
-				
+
+			if (*params == '\0') {
+
+				for (i = 0; i < MAXFILES && filenames[i] != NULL; i++)
+
+					printf("%5d\t%s\n", i, filenames[i]);
+
 			} else {
-				
+
 				/* find the file */ 
-					int file;
-				
-					for (file = 0; file < MAXFILES; file++) {
-					
-						if (filenames[file] != NULL 
+				int file;
+
+				for (file = 0; file < MAXFILES; file++) {
+
+					if (filenames[file] != NULL 
 							&&(strcasecmp(params, filenames[file]) == 0 
-						   ||strcasecmp(params, skippath(filenames[file])) == 0))
-						
-							break;
-					
+								||strcasecmp(params, skippath(filenames[file])) == 0))
+
+						break;
+
 				}				/* for */
-				
-					if (file < MAXFILES) {
-					
-						if (curfileno != file) {
-						
-							curfileno = file;
-						
-							curline = 0;
-						
+
+				if (file < MAXFILES) {
+
+					if (curfileno != file) {
+
+						curfileno = file;
+
+						curline = 0;
+
 					}			/* if */
-					
-						if (cursource != NULL)
-						
-							source_free(cursource);
-					
-						assert(filenames[curfileno] != NULL);
-					
-						cursource = source_load(filenames[curfileno]);
-					
-						if (cursource == NULL) {
-						
-							printf("\tSource file not found or insufficient memory\n");
-						
-							continue;
-						
+
+					if (cursource != NULL)
+
+						source_free(cursource);
+
+					assert(filenames[curfileno] != NULL);
+
+					cursource = source_load(filenames[curfileno]);
+
+					if (cursource == NULL) {
+
+						printf("\tSource file not found or insufficient memory\n");
+
+						continue;
+
 					}			/* if */
-					
+
 				} else {
-					
-						printf("\tunknown file\n");
-					
+
+					printf("\tunknown file\n");
+
 				}				/* if */
-				
+
 			}					/* if */
-			
+
 		} else if (strcasecmp(command, "term") == 0) {
-			
-				int new_term = terminal;
-			
-				if (strcasecmp(params, "off") == 0)
-				
-					new_term = TERM_NONE;
-			
-				else if (strcasecmp(params, "ansi") == 0)
-				
-					new_term = TERM_ANSI;
-			
-				else
-				
-					printf("\tUnknown terminal type\n");
-			
-				if (terminal != new_term) {
-				
-					curtopline = 0;
-				
-					if (terminal != TERM_NONE)
-					
-						term_close();
-				
-					terminal = new_term;
-				
-					if (terminal != TERM_NONE) {
-					
-						autolist = DEF_LIST;
-					
-						term_open();
-					
+
+			int new_term = terminal;
+
+			if (strcasecmp(params, "off") == 0)
+
+				new_term = TERM_NONE;
+
+			else if (strcasecmp(params, "ansi") == 0)
+
+				new_term = TERM_ANSI;
+
+			else
+
+				printf("\tUnknown terminal type\n");
+
+			if (terminal != new_term) {
+
+				curtopline = 0;
+
+				if (terminal != TERM_NONE)
+
+					term_close();
+
+				terminal = new_term;
+
+				if (terminal != TERM_NONE) {
+
+					autolist = DEF_LIST;
+
+					term_open();
+
 				}				/* if */
-				
-					watch_list(amx, calllevel);
-				
-					source_list(gettopline(curline, curline - autolist / 2), autolist);
-				
-			}					/* if */
-			
-		} else if (strcasecmp(command, "watch") == 0) {
-			
-				if (isdigit(*params)) {
-				
-					i = atoi(params);
-				
-					params = skipvalue(params);
-				
-			} else {
-				
-					i = 0;
-				
-			}					/* if */
-			
-				result = watch_set(i, params);
-			
-				if (result >= 0)
-				
-					watch_list(amx, calllevel);
-			
-				else
-				
-					printf("Invalid watch, or table full\n");
-			
-		} else if (strcasecmp(command, "cwatch") == 0) {
-			
-				if (*params == '*') {
-				
-				/* clear all breakpoints */ 
-					for (i = 0; i < MAXBREAKS; i++)
-					
-						watch_clear(i);
-				
-			} else if (isdigit(*params)) {
-				
-					watch_clear(atoi(params));
-				
-			} else {
-				
-					printf("\tInvalid command\n");
-				
-			}					/* if */
-			
+
 				watch_list(amx, calllevel);
-			
+
+				source_list(gettopline(curline, curline - autolist / 2), autolist);
+
+			}					/* if */
+
+		} else if (strcasecmp(command, "watch") == 0) {
+
+			if (isdigit(*params)) {
+
+				i = atoi(params);
+
+				params = skipvalue(params);
+
+			} else {
+
+				i = 0;
+
+			}					/* if */
+
+			result = watch_set(i, params);
+
+			if (result >= 0)
+
+				watch_list(amx, calllevel);
+
+			else
+
+				printf("Invalid watch, or table full\n");
+
+		} else if (strcasecmp(command, "cwatch") == 0) {
+
+			if (*params == '*') {
+
+				/* clear all breakpoints */ 
+				for (i = 0; i < MAXBREAKS; i++)
+
+					watch_clear(i);
+
+			} else if (isdigit(*params)) {
+
+				watch_clear(atoi(params));
+
+			} else {
+
+				printf("\tInvalid command\n");
+
+			}					/* if */
+
+			watch_list(amx, calllevel);
+
 		} else {
-			
-				printf("\tInvalid command, use \"?\" to view all commands\n");
-			
+
+			printf("\tInvalid command, use \"?\" to view all commands\n");
+
 		}						/* if */
-		
+
 	}							/* for */
-	
+
 }
 
 
 static int debugproc(AMX * amx) 
 {
-	
-		static int tracelevel;
-	
-		static int calllevel;
-	
-		static SYMBOL *curfunc;
-	
-		static SYMBOL *curvar;
-	
-		int cmd, i, vclass, type, num;
-	
-		unsigned short flags;
-	
-		
-		switch (amx->dbgcode) {
-			
+	static int tracelevel;
+	static int calllevel;
+	static SYMBOL *curfunc;
+	static SYMBOL *curvar;
+	int cmd, i, vclass, type, num;
+	unsigned short flags;
+
+	switch (amx->dbgcode) {
 		case DBG_INIT:
-			
-				assert(amx->flags == AMX_FLAG_BROWSE);
-			
+			assert(amx->flags == AMX_FLAG_BROWSE);
 			/* check whether we should run */ 
-				amx_Flags(amx, &flags);
-			
-				if ((flags & AMX_FLAG_DEBUG) == 0 || curfileno != -1)
-				
-					return AMX_ERR_DEBUG;	/* the debugger cannot run */
-			
+			amx_Flags(amx, &flags);
+			if ((flags & AMX_FLAG_DEBUG) == 0 || curfileno != -1)
+				return AMX_ERR_DEBUG;	/* the debugger cannot run */
 			/* intialize the file table and other global variables */ 
-				for (i = 0; i < MAXFILES; i++)
-				
-					filenames[i] = NULL;
-			
-				cursource = NULL;
-			
-				curfileno = -1;
-			
-				stopline = 0;
-			
-				break_init();
-			
-				watch_init();
-			
-				functab.next = NULL;
-			
-				vartab.next = NULL;
-			
+			for (i = 0; i < MAXFILES; i++)
+				filenames[i] = NULL;
+			cursource = NULL;
+			curfileno = -1;
+			stopline = 0;
+			break_init();
+			watch_init();
+			functab.next = NULL;
+			vartab.next = NULL;
 			/* initialize statics here */ 
-				tracelevel = 0;
-			
-				calllevel = 0;
-			
-				curfunc = NULL;
-			
-				curvar = NULL;
-			
-				break;
-			
-		case DBG_FILE:			/* file number in curfile, filename in dbgname */
-			
-				assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
-			
-				if (amx->curfile >= MAXFILES) {
-				
-					printf("\nCritical error: too many source files\n");
-				
-					exit(1);
-				
+			tracelevel = 0;
+			calllevel = 0;
+			curfunc = NULL;
+			curvar = NULL;
+			break;
+		case DBG_FILE:		/* file number in curfile, filename in dbgname */
+			assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
+			if (amx->curfile >= MAXFILES) {
+				printf("\nCritical error: too many source files\n");
+				exit(1);
 			}					/* if */
-			
 			/* file should not already be set */ 
-				num = (int) amx->curfile;
-			
-				assert(filenames[num] == NULL);
-			
-				filenames[num] = (char *) malloc(strlen(amx->dbgname) + 1);
-			
-				if (filenames[num] != NULL) {
-				
-					strcpy(filenames[num], amx->dbgname);
-				
+			num = (int) amx->curfile;
+			assert(filenames[num] == NULL);
+			filenames[num] = (char *) malloc(strlen(amx->dbgname) + 1);
+			if (filenames[num] != NULL) {
+				strcpy(filenames[num], amx->dbgname);
 			} else {
-				
-					printf("\nCritical error: insufficient memory\n");
-				
-					exit(1);
-				
+				printf("\nCritical error: insufficient memory\n");
+				exit(1);
 			}					/* if */
-			
-				break;
-			
-		case DBG_LINE:			/* line number in curline, file number in curfile */
-			
-				if ((amx->flags & AMX_FLAG_BROWSE) != 0) {
-				
-				/* check whether there is a function symbol that needs to be adjusted */ 
-					if (curfunc != NULL) {
-					
-						curfunc->addr = amx->curline;
-					
-						curfunc->file = (int) amx->curfile;
-					
+			break;
+		case DBG_LINE:		/* line number in curline, file number in curfile */
+			if ((amx->flags & AMX_FLAG_BROWSE) != 0) {
+				/* check whether there is a function symbol that
+				 * needs to be adjusted 
+				 */ 
+				if (curfunc != NULL) {
+					curfunc->addr = amx->curline;
+					curfunc->file = (int) amx->curfile;
 				}				/* if */
-				
-					curfunc = NULL;
-				
-					break;		/* ??? could build a list with valid breakpoints */
-				
+				curfunc = NULL;
+				break;		/* ??? could build a list with valid breakpoints */
 			}					/* if */
-			
-				curline = (int) amx->curline - 1;
-			
+			curline = (int) amx->curline - 1;
 			/* check breakpoints */ 
-				if ((int) amx->curline == stopline) {
-				
-					printf("STOPPED at line %d\n", (int) amx->curline);
-				
-					tracelevel = calllevel;
-				
-					stopline = 0;
-				
+			if ((int) amx->curline == stopline) {
+				printf("STOPPED at line %d\n", (int) amx->curline);
+				tracelevel = calllevel;
+				stopline = 0;
 			} else if ((i = break_check(amx, (int) amx->curline, (int) amx->curfile)) >= 0) {
-				
-					printf("STOPPED at breakpoint %d\n", i);
-				
-					tracelevel = calllevel;
-				
+				printf("STOPPED at breakpoint %d\n", i);
+				tracelevel = calllevel;
 			}					/* if */
-			
-				if (tracelevel < calllevel)
-				
-					break;
-			
-				assert(amx->curfile >= 0 && amx->curfile < MAXFILES);
-			
-				if (curfileno != (int) amx->curfile) {
-				
-					curfileno = (int) amx->curfile;
-				
-					if (cursource != NULL)
-					
-						source_free(cursource);
-				
-					cursource = source_load(filenames[curfileno]);
-				
-					if (cursource == NULL) {
-					
-						printf("\nCritical error: source file not found or insufficient memory\n");
-					
-						exit(1);
-					
-				}				/* if */
-				
-			}					/* if */
-			
-				assert(cursource[curline] != NULL);
-			
-				term_restore();
-			
-				watch_list(amx, calllevel);
-			
-				source_list(gettopline(curline, curline - autolist / 2), autolist);
-			
-				cmd = docommand(amx, calllevel);
-			
-				switch (cmd) {
-					
-				case GO:
-					
-						tracelevel = -1;
-					
-						break;
-					
-				case GO_RET:
-					
-						tracelevel = calllevel - 1;
-					
-						break;
-					
-				case NEXT:
-					
-						tracelevel = calllevel;		/* step OVER functions */
-					
-						break;
-					
-				case STEP:
-					
-						tracelevel = calllevel + 1;		/* step INTO functions */
-					
-			}					/* switch */
-			
+			if (tracelevel < calllevel)
 				break;
-			
+			assert(amx->curfile >= 0 && amx->curfile < MAXFILES);
+			if (curfileno != (int) amx->curfile) {
+				curfileno = (int) amx->curfile;
+				if (cursource != NULL)
+					source_free(cursource);
+				cursource = source_load(filenames[curfileno]);
+				if (cursource == NULL) {
+					printf("\nCritical error: source file "
+							"not found or insufficient memory\n");
+					exit(1);
+				}				/* if */
+			}					/* if */
+			assert(cursource[curline] != NULL);
+			term_restore();
+			watch_list(amx, calllevel);
+			source_list(gettopline(curline, curline - autolist / 2), autolist);
+			cmd = docommand(amx, calllevel);
+			switch (cmd) {
+				case GO:
+					tracelevel = -1;
+					break;
+				case GO_RET:
+					tracelevel = calllevel - 1;
+					break;
+				case NEXT:
+					tracelevel = calllevel;		/* step OVER functions */
+					break;
+				case STEP:
+					tracelevel = calllevel + 1;		/* step INTO functions */
+			}					/* switch */
+			break;
 		case DBG_SYMBOL:		/* address in dbgaddr, class/type in dbgparam,
 								 * symbol name in dbgname */
-			
-				vclass = (int) (amx->dbgparam >> 8);
-			
-				type = (int) amx->dbgparam & 0xff;
-			
-				if (type == 9) {
-				
+			vclass = (int) (amx->dbgparam >> 8);
+			type = (int) amx->dbgparam & 0xff;
+			if (type == 9) {
 				/* function */ 
-					assert(vclass == 0);
-				
-					assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
-				
-					curfunc = add_symbol(&functab, amx->dbgname, type, 0, vclass, -1);
-				
+				assert(vclass == 0);
+				assert(amx->flags == (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
+				curfunc = add_symbol(&functab, amx->dbgname, type, 0,
+					   	vclass, -1);
 			} else {
-				
 				/* must modify address relative to frame */ 
-					if (vclass == 1)
-					
-						amx->dbgaddr += amx->frm;
-				
-					assert((amx->flags & AMX_FLAG_DEBUG) != 0);
-				
-					if ((amx->flags & AMX_FLAG_BROWSE) != 0)
-					
-						calllevel = -1;
-				
-					curvar = add_symbol(&vartab, amx->dbgname, type, amx->dbgaddr, vclass, calllevel);
-				
+				if (vclass == 1)
+					amx->dbgaddr += amx->frm;
+				assert((amx->flags & AMX_FLAG_DEBUG) != 0);
+				if ((amx->flags & AMX_FLAG_BROWSE) != 0)
+					calllevel = -1;
+				curvar = add_symbol(&vartab, amx->dbgname, type, amx->dbgaddr,
+					   	vclass, calllevel);
 			}					/* if */
-			
-				break;
-			
+			break;
 		case DBG_SRANGE:
-			
 			/* check whether there is a symbol that needs to be adjusted */ 
-				if (curvar != NULL) {
-				
-					curvar->length[(int) amx->dbgaddr] = (int) amx->dbgparam;
-				
-					if (curvar->dims < (int) amx->dbgaddr + 1)
-					
-						curvar->dims = (int) amx->dbgaddr + 1;
-				
-					if (amx->dbgaddr == 0)
-					
-						curvar = NULL;	/* last dimension handled */
-				
+			if (curvar != NULL) {
+				curvar->length[(int) amx->dbgaddr] = (int) amx->dbgparam;
+				if (curvar->dims < (int) amx->dbgaddr + 1)
+					curvar->dims = (int) amx->dbgaddr + 1;
+				if (amx->dbgaddr == 0)
+					curvar = NULL;	/* last dimension handled */
 			}					/* if */
-			
-				break;
-			
-		case DBG_CLRSYM:		/* stk = stack address below which locals should be removed */
-			
-				assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) == AMX_FLAG_DEBUG);
-			
-				delete_symbol(&vartab, amx->stk);
-			
-				break;
-			
+			break;
+		case DBG_CLRSYM:		/* stk = stack address below 
+								 * which locals should be removed */
+			assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) ==
+				   	AMX_FLAG_DEBUG);
+			delete_symbol(&vartab, amx->stk);
+			break;
 		case DBG_CALL:			/* function call */
-			
-				assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) == AMX_FLAG_DEBUG);
-			
-				calllevel++;
-			
-				break;
-			
+			assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) ==
+				   	AMX_FLAG_DEBUG);
+			calllevel++;
+			break;
 		case DBG_RETURN:		/* function returns */
-			
-				assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) == AMX_FLAG_DEBUG);
-			
-				calllevel--;
-			
-				if (tracelevel > calllevel)
-				
-					tracelevel = calllevel;
-			
-				break;
-			
+			assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) ==
+				   	AMX_FLAG_DEBUG);
+			calllevel--;
+			if (tracelevel > calllevel)
+				tracelevel = calllevel;
+			break;
 		case DBG_TERMINATE:	/* program ends */
-			
-				assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) == AMX_FLAG_DEBUG);
-			
-				for (i = 0; i < MAXFILES; i++)
-				
-					if (filenames[i] != NULL)
-					
-						free(filenames[i]);
-			
-				if (cursource != NULL)
-				
-					source_free(cursource);
-			
-				delete_allsymbols(&functab);
-			
-				delete_allsymbols(&vartab);
-			
-				curfileno = -1;
-			
+			assert((amx->flags & (AMX_FLAG_DEBUG | AMX_FLAG_BROWSE)) ==
+				   	AMX_FLAG_DEBUG);
+			for (i = 0; i < MAXFILES; i++)
+				if (filenames[i] != NULL)
+					free(filenames[i]);
+			if (cursource != NULL)
+				source_free(cursource);
+			delete_allsymbols(&functab);
+			delete_allsymbols(&vartab);
+			curfileno = -1;
 			/* ??? save breakpoints on exit */ 
 			/* ??? save terminal type */ 
-				break;
-			
+			break;
 	}							/* switch */
-	
-		return AMX_ERR_NONE;
-	
-}
 
+	return AMX_ERR_NONE;
+
+}
 
 static void *loadprogram(AMX * amx, char *filename) 
 {
-	
-		FILE * fp;
-	
-		AMX_HEADER hdr;
-	
-		void *program = NULL;
-	
-		
-		if ((fp = fopen(filename, "rb")) != NULL) {
-		
-			fread(&hdr, sizeof hdr, 1, fp);
-		
-			if ((program = malloc((int) hdr.stp)) != NULL) {
-			
-				rewind(fp);
-			
-				fread(program, 1, (int) hdr.size, fp);
-			
-				fclose(fp);
-			
-				memset(amx, 0, sizeof *amx);
-			
-				amx_SetDebugHook(amx, debugproc);
-			
-				if (amx_Init(amx, program) == AMX_ERR_NONE)
-				
-					return program;
-			
-				free(program);
-			
-		}						/* if */
-		
-	}							/* if */
-	
-		return NULL;
-	
-}
 
+	FILE * fp;
+	AMX_HEADER hdr;
+	void *program = NULL;
+
+	if ((fp = fopen(filename, "rb")) != NULL) {
+		fread(&hdr, sizeof hdr, 1, fp);
+		if ((program = malloc((int) hdr.stp)) != NULL) {
+			rewind(fp);
+			fread(program, 1, (int) hdr.size, fp);
+			fclose(fp);
+			memset(amx, 0, sizeof *amx);
+			amx_SetDebugHook(amx, debugproc);
+			if (amx_Init(amx, program) == AMX_ERR_NONE)
+				return program;
+			free(program);
+		}						/* if */
+	}							/* if */
+	return NULL;
+
+}
 
 int main(int argc, char *argv[]) 
 {
-	
-		extern AMX_NATIVE_INFO core_Natives[];
-	
-		extern AMX_NATIVE_INFO console_Natives[];
-	
-		extern void core_Init(void);
-	
-		extern void core_Exit(void);
-	
-		
-		AMX amx;
-	
-		cell ret;
-	
-		int err;
-	
-		void *program;
-	
-		unsigned short flags;
-	
-		
-		printf("Small command line debugger\n\n");
-	
-		if (argc != 2 || (program = loadprogram(&amx, argv[1])) == NULL) {
-		
-			printf("Usage: SDBG <filename>\n\n" 
-				   "The filename must include the extension\n");
-		
-			return 1;
-		
+
+	extern AMX_NATIVE_INFO core_Natives[];
+	extern AMX_NATIVE_INFO console_Natives[];
+	extern void core_Init(void);
+	extern void core_Exit(void);
+
+	AMX amx;
+	cell ret;
+	int err;
+	void *program;
+	unsigned short flags;
+
+	printf("Small command line debugger\n\n");
+	if (argc != 2 || (program = loadprogram(&amx, argv[1])) == NULL) {
+		printf("Usage: SDBG <filename>\n\n" 
+				"The filename must include the extension\n");
+		return 1;
 	}							/* if */
-	
-		amx_Flags(&amx, &flags);
-	
-		if ((flags & AMX_FLAG_DEBUG) == 0) {
-		
-			printf("This program has no debug information\n");
-		
-			return 1;
-		
+
+	amx_Flags(&amx, &flags);
+	if ((flags & AMX_FLAG_DEBUG) == 0) {
+		printf("This program has no debug information\n");
+		return 1;
 	}							/* if */
-	
-		
-		core_Init();
-	
-		
-		amx_Register(&amx, core_Natives, -1);
-	
-		err = amx_Register(&amx, console_Natives, -1);
-	
-		
-		if (err == AMX_ERR_NONE)
-		
-			err = amx_Exec(&amx, &ret, AMX_EXEC_MAIN, 0);
-	
-		
-		if (err != AMX_ERR_NONE)
-		
-			printf("Run time error %d on line %ld\n", err, amx.curline);
-	
-		else
-		
-			printf("Normal termination, return value %ld\n", (long) ret);
-	
-		
-		free(program);
-	
-		core_Exit();
-	
-		
-		return 0;
-	
+
+	core_Init();
+
+	amx_Register(&amx, core_Natives, -1);
+	err = amx_Register(&amx, console_Natives, -1);
+
+	if (err == AMX_ERR_NONE)
+		err = amx_Exec(&amx, &ret, AMX_EXEC_MAIN, 0);
+
+	if (err != AMX_ERR_NONE)
+		printf("Run time error %d on line %ld\n", err, amx.curline);
+	else
+		printf("Normal termination, return value %ld\n", (long) ret);
+
+	free(program);
+	core_Exit();
+
+	return 0;
+
 }
 
 
