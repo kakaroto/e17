@@ -38,11 +38,10 @@ GetUniqueBGString(Background * bg)
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
    n1 =
-      (bg->bg.solid.r << 24) | (bg->bg.solid.g << 16) | (bg->bg.
-							 solid.b << 8) | (bg->
-									  bg.tile
-									  << 7)
-      | (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
+      (bg->bg.solid.r << 24) | (bg->bg.solid.g << 16) | (bg->bg.solid.
+							 b << 8) | (bg->bg.
+								    tile << 7) |
+      (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
    n2 = (bg->bg.xjust << 16) | (bg->bg.yjust);
    n3 = (bg->bg.xperc << 16) | (bg->bg.yperc);
    n4 = (bg->top.xjust << 16) | (bg->top.yjust);

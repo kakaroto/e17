@@ -2506,6 +2506,14 @@ CB_ConfigureBG(int val, void *data)
      }
    DesktopAccounting();
    autosave();
+   /* This is kind of a hack - somehow it loses the correct current desktop
+    * information when we actually open up the dialog box, so this
+    * should fix the atom which apparently gets clobbered somewhere
+    * above here
+    * --Mandrake
+    */
+   RefreshDesktop(desks.current);
+
    data = NULL;
 }
 

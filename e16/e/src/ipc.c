@@ -985,8 +985,8 @@ IPC_DockConfig(char *params, Client * c)
 		  if (!strcmp(param2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf), "dockapp support: %s",
-				 (mode.
-				  dockapp_support) ? "enabled" : "disabled");
+				 (mode.dockapp_support) ? "enabled" :
+				 "disabled");
 		    }
 		  else if ((!strcmp(param2, "on"))
 			   || (!strcmp(param2, "enable")))
@@ -1857,8 +1857,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.normal->
-						   real_file);
+						   iclass->norm.
+						   normal->real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf), "%i %i",
@@ -5621,8 +5621,8 @@ IPC_RememberList(char *params, Client * c)
 				 lst[i]->win_title ? lst[i]->win_title : nstr,
 				 lst[i]->win_name ? lst[i]->win_name : nstr,
 				 lst[i]->win_class ? lst[i]->win_class : nstr,
-				 lst[i]->border_name ? lst[i]->
-				 border_name : nstr,
+				 lst[i]->
+				 border_name ? lst[i]->border_name : nstr,
 				 /*lst[i]->used?"yes":"no", */
 				 lst[i]->use_desktop, lst[i]->desktop,
 				 lst[i]->area_x, lst[i]->area_y, lst[i]->use_wh,

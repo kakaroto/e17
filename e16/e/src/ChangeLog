@@ -4712,3 +4712,10 @@ Wed Jul 26 11:18:29 PDT 2000
 apparently when you first open up the background settings dialog box it
 clobbers the atom that says what the base background should have in it.
 This is a hack, but fixes the symptom of the problem :)
+
+-------------------------------------------------------------------------------
+
+Wed Jul 26 11:54:23 PDT 2000
+(Mandrake)
+
+Same problem when you close the desktop background window

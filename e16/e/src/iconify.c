@@ -259,12 +259,12 @@ IconifyEwin(EWin * ewin)
 			    HideEwin(lst[i]);
 			    MoveEwin(lst[i],
 				     lst[i]->x +
-				     ((desks.
-				       desk[lst[i]->desktop].current_area_x) -
+				     ((desks.desk
+				       [lst[i]->desktop].current_area_x) -
 				      lst[i]->area_x) * root.w,
 				     lst[i]->y +
-				     ((desks.
-				       desk[lst[i]->desktop].current_area_y) -
+				     ((desks.desk
+				       [lst[i]->desktop].current_area_y) -
 				      lst[i]->area_y) * root.h);
 			    lst[i]->iconified = 4;
 			    if (lst[i] == mode.focuswin)

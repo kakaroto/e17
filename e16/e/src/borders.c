@@ -95,11 +95,11 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	    (((ewin->x + dx + ewin->w > root.w) || ((ewin->x + dx >= 0)
 						    &&
 						    ((DesktopAt
-						      (desks.
-						       desk[ewin->desktop].x +
+						      (desks.desk
+						       [ewin->desktop].x +
 						       ewin->x + dx,
-						       desks.desk[ewin->
-								  desktop].y) !=
+						       desks.
+						       desk[ewin->desktop].y) !=
 						      ewin->desktop))))))
 	   dofloat = 1;
 	if ((desks.dragdir == 2)
@@ -116,10 +116,10 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	    (((ewin->y + dy + ewin->h > root.h) || ((ewin->y + dy >= 0)
 						    &&
 						    ((DesktopAt
-						      (desks.
-						       desk[ewin->desktop].x,
-						       desks.desk[ewin->
-								  desktop].y +
+						      (desks.desk
+						       [ewin->desktop].x,
+						       desks.
+						       desk[ewin->desktop].y +
 						       ewin->y + dy) !=
 						      ewin->desktop))))))
 	   dofloat = 1;
@@ -1292,8 +1292,9 @@ CalcEwinWinpart(EWin * ewin, int i)
 	   ewin->border->part[i].geom.topleft.x.absolute +
 	   ewin->bits[topleft].x;
 	y =
-	   ((ewin->border->
-	     part[i].geom.topleft.y.percent * ewin->bits[topleft].h) >> 10) +
+	   ((ewin->
+	     border->part[i].geom.topleft.y.percent *
+	     ewin->bits[topleft].h) >> 10) +
 	   ewin->border->part[i].geom.topleft.y.absolute +
 	   ewin->bits[topleft].y;
      }
@@ -1301,12 +1302,12 @@ CalcEwinWinpart(EWin * ewin, int i)
    if (bottomright == -1)
      {
 	ox =
-	   ((ewin->
-	     border->part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
+	   ((ewin->border->
+	     part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
 	oy =
-	   ((ewin->
-	     border->part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
+	   ((ewin->border->
+	     part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -1558,8 +1559,8 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
      {
 	b =
 	   MatchEwinByFunction(ewin,
-			       (void *(*)(EWin *, WindowMatch *))
-			       MatchEwinBorder);
+			       (void
+				*(*)(EWin *, WindowMatch *))MatchEwinBorder);
 	if (b)
 	  {
 	     ewin->border = b;
@@ -2721,9 +2722,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		      (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
-							       ewin->
-							       border->border.
-							       right);
+							       ewin->border->
+							       border.right);
 	       }
 	  }
 	ewin->w = rightborderwidth + leftborderwidth;
@@ -2749,9 +2749,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		      bottomborderwidth)
 		     bottomborderwidth =
 			(ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
-							       ewin->
-							       border->border.
-							       bottom);
+							       ewin->border->
+							       border.bottom);
 	       }
 	  }
 	ewin->h = bottomborderwidth + topborderwidth;

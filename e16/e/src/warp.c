@@ -143,8 +143,8 @@ WarpFocus(int delta)
 		      && (!ewin->skipfocus) && !(ewin->shaded
 						 && !mode.warpshaded)
 		      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
-							      && !mode.
-							      warpsticky)
+							      &&
+							      !mode.warpsticky)
 		      && (!ewin->ibox) && !(ewin->iconified
 					    && !mode.warpiconified)
 		      /*&& (ewin->client.mwm_decor_title) &&

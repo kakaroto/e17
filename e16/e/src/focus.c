@@ -247,8 +247,8 @@ FocusToEWin(EWin * ewin)
 	     if ((mode.focuswin) && (ewin))
 	       {
 		  if (!
-		      (((ewin->
-			 desktop == mode.focuswin->desktop) || (ewin->sticky))
+		      (((ewin->desktop
+			 == mode.focuswin->desktop) || (ewin->sticky))
 		       && (ewin->area_x == mode.focuswin->area_x)
 		       && (ewin->area_y == mode.focuswin->area_y)))
 		     ewin = NULL;
