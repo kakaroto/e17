@@ -1,0 +1,21 @@
+Things I need to do to this thang ::)
+
+Feel free to add stuff to it. I am very happy to delete any lines other
+people add =P
+
+o Checkerboard bg [HIGH PRIORITY]
+  I currently use a checkerboard bg for zooming out. This is very cool ::)
+  But. I create one per window, at the same size as the image the window
+  contains. This is not good. It uses memory, lots of. What I need to do is
+  to create a small tile of that pattern, and tile it onto each image when
+  needed.
+
+o Setting the X background [LOW PRIORITY]
+
+o Index mode
+  Currently very hard coded, needs more options, and more dynamism. I need
+  to check font metrics and center the text, make sure it isn't too big,
+  etc.
+
+o Montage mode
+  Need to do transparent blending for images with no alpha channel
