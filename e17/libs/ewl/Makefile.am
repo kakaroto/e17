@@ -11,12 +11,12 @@ install-data-local:
 	@$(NORMAL_INSTALL)
 	if [ -d $(srcdir)/data ]; then \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir); \
-	    (cd $(srcdir); tar -cf - data/*) | (cd $(DESTDIR)$(pkgdatadir); tar -xf -); \
+	    (cd $(srcdir)/data; tar -cf - *) | (cd $(DESTDIR)$(pkgdatadir); tar -xf -) \
 	fi
 
 dist-hook:
 	if [ -d data ]; then \
-	  (cd $(srcdir); tar -cf - data/*) | (cd $(distdir); tar -xf -); \
+	  (cd $(srcdir)/data; tar -cf - *) | (cd $(distdir); tar -xf -) \
 	fi
 
 bin_SCRIPTS = ewl-config
