@@ -150,7 +150,7 @@ int main (int argc, char **argv)
      }
    else if (interactive)
      {
-	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[4];
+	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13];
 
 	im_bg = imlib_load_image("test_images/bg.png");
 	w = imlib_image_get_width(im_bg);
@@ -171,6 +171,15 @@ int main (int argc, char **argv)
 	     im_ic[1] = imlib_load_image("test_images/folder.png");
 	     im_ic[2] = imlib_load_image("test_images/mush.png");
 	     im_ic[3] = imlib_load_image("test_images/paper.png");
+	     im_ic[4] = imlib_load_image("test_images/mail.png");
+	     im_ic[5] = imlib_load_image("test_images/calc.png");
+	     im_ic[6] = imlib_load_image("test_images/cal.png");
+	     im_ic[7] = imlib_load_image("test_images/stop.png");
+	     im_ic[8] = imlib_load_image("test_images/globe.png");
+	     im_ic[9] = imlib_load_image("test_images/menu.png");
+	     im_ic[10] = imlib_load_image("test_images/tnt.png");
+	     im_ic[11] = imlib_load_image("test_images/bulb.png");
+	     im_ic[12] = imlib_load_image("test_images/lock.png");
 	     XQueryPointer(disp, win, &rt, &rt, &dum, &dum,
 			   &x, &y, &dui);
 	     if ((dui) && (x > 0) && (y > 0) && (x < w) && (y < h))
@@ -185,7 +194,7 @@ int main (int argc, char **argv)
 		    {
 		       int ic, iw, ih, ww, hh;
 		       
-		       ic = ((j * 10) + i) % 4;
+		       ic = ((j * 10) + i) % 13;
 		       iw = imlib_image_get_width(im_ic[ic]);
 		       ih = imlib_image_get_height(im_ic[ic]);
 		       ww = iw;
