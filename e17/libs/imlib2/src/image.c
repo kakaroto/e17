@@ -629,12 +629,12 @@ __imlib_ProduceLoader(char *file)
 char **
 __imlib_ListLoaders(int *num_ret)
 {
-   char **list = NULL, **l, *s, *home;
+   char **list = NULL, **l, *s;
    int num, i, pi = 0;
 
    *num_ret = 0;
    /* same for system loader path */
-   s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 6 + 1);
+   s = (char *) malloc(sizeof(SYS_LOADERS_PATH) + 6 + 1);
    sprintf(s, SYS_LOADERS_PATH "/image");
 #ifndef __EMX__   
    l = __imlib_FileDir(s, &num);
@@ -658,7 +658,6 @@ __imlib_ListLoaders(int *num_ret)
       }
       __imlib_FileFreeDirList(l, num);
    }
-   free(home);
    free(s);
 
    /* List currently contains *everything in there* we need to weed out
