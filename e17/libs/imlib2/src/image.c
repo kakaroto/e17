@@ -1074,7 +1074,6 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
 	im->key = __imlib_FileKey(file);
      }
    im->moddate = __imlib_FileModDate(file, raw_file_mode);
-   if (!im->moddate) im->moddate = __imlib_FileModDate(file, 1 - raw_file_mode);
    /* ok - just check all our loaders are up to date */
    __imlib_RescanLoaders();
    /* take a guess by extension on the best loader to use */
