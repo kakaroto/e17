@@ -330,8 +330,10 @@ SetupX()
 	Alert(_("FATAL ERROR:\n"
 		"\n"
 		"Enlightenment is unable to initialise Imlib.\n"
-		"\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	RESET_ALERT;
+		<<<<<<< setup.c
+		"\n" "This is unusual. Unable to contiune.\n" "Exiting.\n"));
+	== == == = "\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
+	>>>>>>>1.35 RESET_ALERT;
 	EExit((void *)1);
      }
    fd = Fnlib_init(id);
@@ -342,8 +344,10 @@ SetupX()
 	Alert(_("FATAL ERROR:\n"
 		"\n"
 		"Enlightenment is unable to initialise Fnlib.\n"
-		"\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	RESET_ALERT;
+		<<<<<<< setup.c
+		"\n" "This is unusual. Unable to contiune.\n" "Exiting.\n"));
+	== == == = "\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
+	>>>>>>>1.35 RESET_ALERT;
 	EExit((void *)1);
      }
    root.win = id->x.root;
@@ -430,13 +434,13 @@ SetupX()
    /* ok under Xfree Numlock and Scollock are lock modifiers and we need */
    /* to hunt them down to mask them out - EVIL EVIL EVIL hack but needed */
    {
-      XModifierKeymap    *mod;
+      XModifierKeymap *   mod;
       KeyCode             nl, sl;
       int                 i;
-      int                 masks[8] = {
+      int                 masks[8] =
+      {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
-	 Mod4Mask, Mod5Mask
-      };
+	    Mod4Mask, Mod5Mask};
 
       mod = XGetModifierMapping(disp);
       nl = XKeysymToKeycode(disp, XK_Num_Lock);
@@ -611,8 +615,7 @@ SetupX()
 
 static void         ChkDir(char *d);
 
-static void
-ChkDir(char *d)
+static void         ChkDir(char *d)
 {
    if (!isdir(d))
      {
@@ -646,8 +649,7 @@ ChkDir(char *d)
      }
 }
 
-void
-SetupDirs()
+void                SetupDirs()
 {
    char                s[1024], ss[1024], *home;
 
@@ -710,8 +712,7 @@ SetupDirs()
    EDBUG_RETURN_;
 }
 
-void
-SetupEnv()
+void                SetupEnv()
 {
    char                s[1024];
 
@@ -735,9 +736,9 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window              MakeExtInitWin(void)
 {
-   Display            *d2;
+   Display *           d2;
    Window              win;
    XGCValues           gcv;
    GC                  gc;
@@ -746,10 +747,10 @@ Window MakeExtInitWin(void)
    CARD32              val;
    int                 format_ret, i;
    unsigned long       bytes_after, num_ret;
-   Window             *retval;
+   Window *            retval;
    XSetWindowAttributes attr;
 
-   ImlibData          *imd;
+   ImlibData *         imd;
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
    XSync(disp, False);
@@ -846,9 +847,9 @@ Window MakeExtInitWin(void)
    else
      {
 	Window              w2, ww;
-	char               *f, s[1024];
+	char *              f, s[1024];
 	Pixmap              pmap, mask;
-	ImlibImage         *im;
+	ImlibImage *        im;
 	struct timeval      tv;
 	int                 dd, x, y;
 	unsigned int        mm;
@@ -926,11 +927,10 @@ Window MakeExtInitWin(void)
    exit(0);
 }
 
-void
-SetupUserInitialization(void)
+void                SetupUserInitialization(void)
 {
 
-   FILE               *f;
+   FILE *              f;
    char                file[FILEPATH_LEN_MAX];
 
    EDBUG(3, "SetupUserInitialization");

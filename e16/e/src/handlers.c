@@ -219,8 +219,13 @@ EHandleXError(Display * d, XErrorEvent * ev)
 		     "You will have to quit your current Window Manager first before\n"
 		     "you can successfully run Enlightenment.\n"
 		     "\n"
+		     <<<<<<< handlers.c
+		     "If you haven't edited your user startup files, Enlightenment\n"
+		     "can do that now for you, so when you log in again after\n"
+		     == == == =
 		     "If you haven't edited your user start-up files, Enlightenment\n"
 		     "can do that now for you, so when you log in again after\n"
+		     >>>>>>> 1.12
 		     "quitting your current window manager, you will have\n"
 		     "Enlightenment running.\n"
 		     "\n"
@@ -234,9 +239,13 @@ EHandleXError(Display * d, XErrorEvent * ev)
 			  _("YES (edit file)"), "", _("NO (do not edit)"));
 	     Alert(_
 		   ("Are you absolutely sure you want to have Enlightenment\n"
+		    <<<<<<< handlers.c
+		    "edit your startup files for you?\n" "\n"
+		    "If your startup files are highly customised this may not\n"
+		    == == == =
 		    "edit your start-up files for you?\n" "\n"
 		    "If your start-up files are highly customised this may not\n"
-		    "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
+		    >>>>>>> 1.12 "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
 	     RESET_ALERT;
 	     AddE();
 	     EExit((void *)1);

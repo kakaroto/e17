@@ -54,10 +54,10 @@ Etmp(char *s)
       n_calls = (unsigned long)time(NULL) + (unsigned long)getpid();
    Esnprintf(s, 1024, "%s/TMP_%Xl", UserEDir(), n_calls);
    n_calls++;
-   EDBUG_RETURN_;
+<<<<<<<file.c EDBUG_RETURN_}
+== == == = EDBUG_RETURN_;
 }
-
-void
+>>>>>>>1.10 void
 md(char *s)
 {
    EDBUG(9, "md");

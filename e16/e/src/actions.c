@@ -3776,10 +3776,15 @@ doZoom(void *params)
 		   "Server and thus isn't tested much.\n" "\n"
 		   "It is possible your X Server does not deal well with being\n"
 		   "asked to switch modes quickly and it may hang, glitch,\n"
+		   <<<<<<< actions.c
+		   "display artifacts or perhaps simply refuse to work.\n" "\n"
+		   "This is a warning and will only be displayed this one time.\n"
+		   "If your Server does not behave well then you will probably\n"
+		   == == == =
 		   "display artefacts or perhaps simply refuse to work.\n" "\n"
 		   "This is a warning and will only be displayed this one time.\n"
 		   "If your Server does not behave well then you will probably\n"
-		   "have to avoid using this feature.\n"));
+		   >>>>>>> 1.49 "have to avoid using this feature.\n"));
 	EDBUG_RETURN(0);
      }
    ewin = GetFocusEwin();

@@ -4148,3 +4148,10 @@ Thu Jan  6 12:23:56 PST 2000
 (Mandrake)
 
 updated copyrights to say 2000. muahahaha.  
+
+-------------------------------------------------------------------------------
+
+Mon Jan 10 18:26:39 PST 2000
+(Raster)
+
+use LC_ALL
