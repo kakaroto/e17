@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
-CFLAGS			=	-g -W -Wall -Wno-implicit -pg
+CFLAGS			=	-g -W -Wall -Wno-implicit
 INCLUDES		=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@ @ewd_cflags@
 
 bin_PROGRAMS			=	ewl_test
