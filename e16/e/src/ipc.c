@@ -529,6 +529,114 @@ doMoveConstrainedNoGroup(EWin * ewin, const char *params)
 }
 #endif
 
+typedef enum
+{
+   EWIN_OP_INVALID,
+   EWIN_OP_CLOSE,
+   EWIN_OP_KILL,
+   EWIN_OP_ICONIFY,
+   EWIN_OP_OPACITY,
+   EWIN_OP_SHADOW,
+   EWIN_OP_SHADE,
+   EWIN_OP_SHADE,
+   EWIN_OP_STICK,
+   EWIN_OP_FIXED_POS,
+   EWIN_OP_NEVER_USE_AREA,
+   EWIN_OP_FOCUS_CLICK,
+   EWIN_OP_FOCUS_NEVER,
+   EWIN_OP_TITLE,
+   EWIN_OP_MAX_WIDTH,
+   EWIN_OP_MAX_HEIGHT,
+   EWIN_OP_MAX_SIZE,
+   EWIN_OP_RAISE,
+   EWIN_OP_LOWER,
+   EWIN_OP_LAYER,
+   EWIN_OP_BORDER,
+   EWIN_OP_DESK,
+   EWIN_OP_AREA,
+   EWIN_OP_MOVE,
+   EWIN_OP_SIZE,
+   EWIN_OP_MOVE_REL,
+   EWIN_OP_SIZE_REL,
+   EWIN_OP_FOCUS,
+   EWIN_OP_FULLSCREEN,
+   EWIN_OP_SKIP_LISTS,
+   EWIN_OP_ZOOM,
+   EWIN_OP_SNAP,
+} winop_e;
+
+typedef struct
+{
+   const char         *name;
+   char                len;
+   char                ok_ipc;
+   char                ok_match;
+   char                op;
+} WinOp;
+
+static const WinOp  winops[] = {
+   {"close", 2, 1, 1, EWIN_OP_CLOSE},
+   {"kill", 0, 1, 1, EWIN_OP_KILL},
+   {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
+   {"opacity", 2, 1, 1, EWIN_OP_OPACITY},
+   {"shadow", 0, 1, 1, EWIN_OP_SHADOW},	/* Place before "shade" */
+   {"shade", 2, 1, 1, EWIN_OP_SHADE},
+   {"stick", 2, 1, 1, EWIN_OP_STICK},
+   {"fixedpos", 0, 1, 1, EWIN_OP_FIXED_POS},
+   {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
+   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
+   {"neverfocus", 0, 1, 1, EWIN_OP_FOCUS_NEVER},
+   {"title", 2, 1, 1, EWIN_OP_TITLE},
+   {"toggle_width", 0, 1, 1, EWIN_OP_MAX_WIDTH},
+   {"tw", 2, 1, 1, EWIN_OP_MAX_WIDTH},
+   {"toggle_height", 0, 1, 1, EWIN_OP_MAX_HEIGHT},
+   {"th", 0, 1, 1, EWIN_OP_MAX_HEIGHT},
+   {"toggle_size", 0, 1, 1, EWIN_OP_MAX_SIZE},
+   {"ts", 2, 1, 1, EWIN_OP_MAX_SIZE},
+   {"raise", 2, 1, 1, EWIN_OP_RAISE},
+   {"lower", 2, 1, 1, EWIN_OP_LOWER},
+   {"layer", 2, 1, 1, EWIN_OP_LAYER},
+   {"border", 2, 1, 1, EWIN_OP_BORDER},
+   {"desk", 2, 1, 1, EWIN_OP_DESK},
+   {"area", 2, 1, 1, EWIN_OP_AREA},
+   {"move", 2, 1, 1, EWIN_OP_MOVE},
+   {"resize", 0, 1, 1, EWIN_OP_SIZE},
+   {"sz", 2, 1, 1, EWIN_OP_SIZE},
+   {"move_relative", 0, 1, 1, EWIN_OP_MOVE_REL},
+   {"mr", 2, 1, 1, EWIN_OP_MOVE_REL},
+   {"resize_relative", 0, 1, 1, EWIN_OP_SIZE_REL},
+   {"sr", 2, 1, 1, EWIN_OP_SIZE_REL},
+   {"focus", 2, 1, 1, EWIN_OP_FOCUS},
+   {"fullscreen", 2, 1, 1, EWIN_OP_FULLSCREEN},
+   {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
+   {"zoom", 2, 1, 1, EWIN_OP_ZOOM},
+   {"snap", 0, 1, 1, EWIN_OP_SNAP},
+   {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */
+};
+
+static const WinOp *
+WinopFind(const char *op)
+{
+   const WinOp        *wop;
+
+   wop = winops;
+   for (; wop->name; wop++)
+     {
+	if (wop->len)
+	  {
+	     if (!strncmp(op, wop->name, wop->len))
+		break;
+	  }
+	else
+	  {
+	     if (!strcmp(op, wop->name))
+		break;
+	  }
+     }
+
+   return wop;
+}
+
 static void
 IPC_WinOps(const char *params, Client * c __UNUSED__)
 {
@@ -536,8 +644,11 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
    char                windowid[FILEPATH_LEN_MAX];
    char                operation[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
+   const char         *p;
+   const WinOp        *wop;
    unsigned int        val;
    char                on;
+   int                 a, b;
 
    if (params == NULL)
      {
@@ -566,339 +677,292 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	goto done;
      }
 
-   if (!strncmp(operation, "close", 2))
+   wop = WinopFind(operation);
+
+   switch (wop->op)
      {
+     default:
+     case EWIN_OP_INVALID:
+	IpcPrintf("Error: unknown operation");
+	break;
+
+     case EWIN_OP_CLOSE:
 	EwinOpClose(ewin);
-     }
-   else if (!strcmp(operation, "kill"))
-     {
+	break;
+
+     case EWIN_OP_KILL:
 	EwinOpKill(ewin);
-     }
-   else if (!strncmp(operation, "iconify", 2))
-     {
+	break;
+
+     case EWIN_OP_ICONIFY:
 	if (SetEwinBoolean("window iconified", &ewin->iconified, param1, 0))
 	   EwinOpIconify(ewin, !ewin->iconified);
-     }
+	break;
+
 #if USE_COMPOSITE
-   else if (!strncmp(operation, "opacity", 2))
-     {
+     case EWIN_OP_OPACITY:
 	if (!strcmp(param1, "?"))
 	  {
 	     IpcPrintf("opacity: %u", ewin->props.opacity >> 24);
+	     goto done;
 	  }
-	else
-	  {
-	     val = 0xff;
-	     sscanf(param1, "%i", &val);
-	     EwinOpSetOpacity(ewin, val);
-	  }
-     }
-   else if (!strcmp(operation, "shadow"))	/* Place before "shade" */
-     {
+	val = 0xff;
+	sscanf(param1, "%i", &val);
+	EwinOpSetOpacity(ewin, val);
+	break;
+
+     case EWIN_OP_SHADOW:
 	on = EoGetShadow(ewin);
 	if (SetEwinBoolean("shadow", &on, param1, 0))
 	   EoSetShadow(ewin, !on);
-     }
+	break;
 #endif
-   else if (!strncmp(operation, "shade", 2))
-     {
+
+     case EWIN_OP_SHADE:
 	if (SetEwinBoolean("window shaded", &ewin->shaded, param1, 0))
 	   EwinOpShade(ewin, !ewin->shaded);
-     }
-   else if (!strncmp(operation, "stick", 2))
-     {
+	break;
+
+     case EWIN_OP_STICK:
 	on = EoIsSticky(ewin);
 	if (SetEwinBoolean("window sticky", &on, param1, 0))
 	   EwinOpStick(ewin, !on);
-     }
-   else if (!strcmp(operation, "fixedpos"))
-     {
+	break;
+
+     case EWIN_OP_FIXED_POS:
 	SetEwinBoolean("window fixedpos", &ewin->fixedpos, param1, 1);
-     }
-   else if (!strcmp(operation, "never_use_area"))
-     {
+	break;
+
+     case EWIN_OP_NEVER_USE_AREA:
 	SetEwinBoolean("window never_use_area", &ewin->never_use_area, param1,
 		       1);
-     }
-   else if (!strcmp(operation, "focusclick"))
-     {
+	break;
+
+     case EWIN_OP_FOCUS_CLICK:
 	SetEwinBoolean("window focusclick", &ewin->focusclick, param1, 1);
-     }
-   else if (!strcmp(operation, "neverfocus"))
-     {
+	break;
+
+     case EWIN_OP_FOCUS_NEVER:
 	SetEwinBoolean("window neverfocus", &ewin->neverfocus, param1, 1);
-     }
-   else if (!strncmp(operation, "title", 2))
-     {
-	char               *ptr = strstr(params, "title");
+	break;
 
-	if (ptr)
+     case EWIN_OP_TITLE:
+	p = atword(params, 3);
+	if (!p)
 	  {
-	     ptr += strlen("title");
-	     while (*ptr == ' ')
-		ptr++;
-	     if (strlen(ptr))
-	       {
-		  if (!strncmp(ptr, "?", 1))
-		    {
-		       /* return the window title */
-		       IpcPrintf("window title: %s", ewin->icccm.wm_name);
-		    }
-		  else
-		    {
-		       /* set the new title */
-		       if (ewin->icccm.wm_name)
-			  Efree(ewin->icccm.wm_name);
-		       ewin->icccm.wm_name =
-			  Emalloc((strlen(ptr) + 1) * sizeof(char));
-
-		       strcpy(ewin->icccm.wm_name, ptr);
-		       XStoreName(disp, ewin->client.win, ewin->icccm.wm_name);
-		       EwinBorderUpdateInfo(ewin);
-		    }
-	       }
-	     else
-	       {
-		  /* error */
-		  IpcPrintf("Error: no title specified");
-	       }
+	     IpcPrintf("Error: no title specified");
+	     goto done;
 	  }
-     }
-   else if (!strcmp(operation, "toggle_width") || !strcmp(operation, "tw"))
-     {
+	if (!strcmp(p, "?"))
+	  {
+	     IpcPrintf("window title: %s", ewin->icccm.wm_name);
+	     goto done;
+	  }
+	_EFREE(ewin->icccm.wm_name);
+	ewin->icccm.wm_name = Estrdup(p);
+	XStoreName(disp, ewin->client.win, ewin->icccm.wm_name);
+	EwinBorderUpdateInfo(ewin);
+	break;
+
+     case EWIN_OP_MAX_WIDTH:
 	MaxWidth(ewin, param1);
-     }
-   else if (!strcmp(operation, "toggle_height") || !strcmp(operation, "th"))
-     {
+	break;
+
+     case EWIN_OP_MAX_HEIGHT:
 	MaxHeight(ewin, param1);
-     }
-   else if (!strcmp(operation, "toggle_size") || !strcmp(operation, "ts"))
-     {
+	break;
+
+     case EWIN_OP_MAX_SIZE:
 	MaxSize(ewin, param1);
-     }
-   else if (!strncmp(operation, "raise", 2))
-     {
+	break;
+
+     case EWIN_OP_RAISE:
 	EwinOpRaise(ewin);
-     }
-   else if (!strncmp(operation, "lower", 2))
-     {
+	break;
+
+     case EWIN_OP_LOWER:
 	EwinOpLower(ewin);
-     }
-   else if (!strncmp(operation, "layer", 2))
-     {
+	break;
+
+     case EWIN_OP_LAYER:
 	if (!strcmp(param1, "?"))
 	  {
 	     IpcPrintf("window layer: %d", EoGetLayer(ewin));
+	     goto done;
 	  }
-	else
-	  {
-	     val = atoi(param1);
-	     EwinOpSetLayer(ewin, val);
-	  }
-     }
-   else if (!strncmp(operation, "border", 2))
-     {
-	if (param1[0])
-	  {
-	     if (!strcmp(param1, "?"))
-	       {
-		  if (ewin->border)
-		    {
-		       if (ewin->border->name)
-			 {
-			    IpcPrintf("window border: %s", ewin->border->name);
-			 }
-		    }
-	       }
-	     else
-	       {
-		  EwinOpSetBorder(ewin, param1);
-	       }
-	  }
-	else
+	val = atoi(param1);
+	EwinOpSetLayer(ewin, val);
+	break;
+
+     case EWIN_OP_BORDER:
+	if (!param1[0])
 	  {
 	     IpcPrintf("Error: no border specified");
+	     goto done;
 	  }
-     }
-   else if (!strncmp(operation, "desk", 2))
-     {
-	if (param1[0])
+	if (!strcmp(param1, "?"))
 	  {
-	     if (!strncmp(param1, "next", 1))
-	       {
-		  EwinOpMoveToDesk(ewin, EoGetDesk(ewin) + 1);
-	       }
-	     else if (!strncmp(param1, "prev", 1))
-	       {
-		  EwinOpMoveToDesk(ewin, EoGetDesk(ewin) - 1);
-	       }
-	     else if (!strcmp(param1, "?"))
-	       {
-		  IpcPrintf("window desk: %d", EoGetDesk(ewin));
-	       }
-	     else
-	       {
-		  EwinOpMoveToDesk(ewin, atoi(param1));
-	       }
+	     IpcPrintf("window border: %s", BorderGetName(ewin->border));
+	     goto done;
 	  }
-	else
+	EwinOpSetBorder(ewin, param1);
+	break;
+
+     case EWIN_OP_DESK:
+	if (!param1[0])
 	  {
 	     IpcPrintf("Error: no desktop supplied");
+	     goto done;
 	  }
-     }
-   else if (!strncmp(operation, "area", 2))
-     {
-	int                 a, b;
-
-	if (param1[0])
+	if (!strncmp(param1, "next", 1))
 	  {
-	     if (!strcmp(param1, "?"))
-	       {
-		  IpcPrintf("window area: %d %d", ewin->area_x, ewin->area_y);
-	       }
-	     else
-	       {
-		  sscanf(params, "%*s %*s %i %i", &a, &b);
-		  MoveEwinToArea(ewin, a, b);
-	       }
+	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin) + 1);
+	  }
+	else if (!strncmp(param1, "prev", 1))
+	  {
+	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin) - 1);
+	  }
+	else if (!strcmp(param1, "?"))
+	  {
+	     IpcPrintf("window desk: %d", EoGetDesk(ewin));
 	  }
 	else
+	  {
+	     EwinOpMoveToDesk(ewin, atoi(param1));
+	  }
+	break;
+
+     case EWIN_OP_AREA:
+	if (!param1[0])
 	  {
 	     IpcPrintf("Error: no area supplied");
+	     goto done;
 	  }
-     }
-   else if (!strncmp(operation, "move", 2))
-     {
-	int                 a, b;
-
-	if (param1[0])
+	if (!strcmp(param1, "?"))
 	  {
-	     if (!strcmp(param1, "ptr"))
-	       {
-		  ActionMoveStart(ewin, 1, 0, 0);
-	       }
-	     else if (!strcmp(param1, "?"))
-	       {
-		  IpcPrintf("window location: %d %d", EoGetX(ewin),
-			    EoGetY(ewin));
-	       }
-	     else if (!strcmp(param1, "??"))
-	       {
-		  IpcPrintf("client location: %d %d",
-			    EoGetX(ewin) + ewin->border->border.left,
-			    EoGetY(ewin) + ewin->border->border.top);
-	       }
-	     else
-	       {
-		  sscanf(params, "%*s %*s %i %i", &a, &b);
-		  MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
-	       }
+	     IpcPrintf("window area: %d %d", ewin->area_x, ewin->area_y);
 	  }
 	else
 	  {
-	     IpcPrintf("Error: no coords supplied");
+	     sscanf(params, "%*s %*s %i %i", &a, &b);
+	     MoveEwinToArea(ewin, a, b);
 	  }
-     }
-   else if (!strcmp(operation, "resize") || !strcmp(operation, "sz"))
-     {
-	int                 a, b;
+	break;
 
-	if (param1[0])
+     case EWIN_OP_MOVE:
+	if (!param1[0])
 	  {
-	     if (!strcmp(param1, "ptr"))
-	       {
-		  ActionResizeStart(ewin, 0, MODE_RESIZE);
-	       }
-	     else if (!strcmp(param1, "ptr-h"))
-	       {
-		  ActionResizeStart(ewin, 0, MODE_RESIZE_H);
-	       }
-	     else if (!strcmp(param1, "ptr-v"))
-	       {
-		  ActionResizeStart(ewin, 0, MODE_RESIZE_V);
-	       }
-	     else if (!strcmp(param1, "?"))
-	       {
-		  IpcPrintf("window size: %d %d", ewin->client.w,
-			    ewin->client.h);
-	       }
-	     else if (!strcmp(param1, "??"))
-	       {
-		  IpcPrintf("frame size: %d %d", EoGetW(ewin), EoGetH(ewin));
-	       }
-	     else
-	       {
-		  sscanf(params, "%*s %*s %i %i", &a, &b);
-		  MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), a, b);
-	       }
+	     IpcPrintf("Error: no coords supplied");
+	     goto done;
 	  }
-     }
-   else if (!strcmp(operation, "move_relative") || !strcmp(operation, "mr"))
-     {
-	int                 a, b;
-
-	if (param1[0])
+	if (!strcmp(param1, "ptr"))
+	  {
+	     ActionMoveStart(ewin, 1, 0, 0);
+	  }
+	else if (!strcmp(param1, "?"))
+	  {
+	     IpcPrintf("window location: %d %d", EoGetX(ewin), EoGetY(ewin));
+	  }
+	else if (!strcmp(param1, "??"))
+	  {
+	     IpcPrintf("client location: %d %d",
+		       EoGetX(ewin) + ewin->border->border.left,
+		       EoGetY(ewin) + ewin->border->border.top);
+	  }
+	else
 	  {
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
-	     a += EoGetX(ewin);
-	     b += EoGetY(ewin);
 	     MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
 	  }
-     }
-   else if (!strcmp(operation, "resize_relative") || !strcmp(operation, "sr"))
-     {
-	int                 a, b;
+	break;
 
-	if (param1[0])
+     case EWIN_OP_SIZE:
+	if (!param1[0])
+	   goto done;
+
+	if (!strcmp(param1, "ptr"))
+	  {
+	     ActionResizeStart(ewin, 0, MODE_RESIZE);
+	  }
+	else if (!strcmp(param1, "ptr-h"))
+	  {
+	     ActionResizeStart(ewin, 0, MODE_RESIZE_H);
+	  }
+	else if (!strcmp(param1, "ptr-v"))
+	  {
+	     ActionResizeStart(ewin, 0, MODE_RESIZE_V);
+	  }
+	else if (!strcmp(param1, "?"))
+	  {
+	     IpcPrintf("window size: %d %d", ewin->client.w, ewin->client.h);
+	  }
+	else if (!strcmp(param1, "??"))
+	  {
+	     IpcPrintf("frame size: %d %d", EoGetW(ewin), EoGetH(ewin));
+	  }
+	else
 	  {
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
-	     a += ewin->client.w;
-	     b += ewin->client.h;
 	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), a, b);
 	  }
-     }
-   else if (!strncmp(operation, "focus", 2))
-     {
+	break;
+
+     case EWIN_OP_MOVE_REL:
+	if (!param1[0])
+	   goto done;
+
+	sscanf(params, "%*s %*s %i %i", &a, &b);
+	a += EoGetX(ewin);
+	b += EoGetY(ewin);
+	MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
+	break;
+
+     case EWIN_OP_SIZE_REL:
+	if (!param1[0])
+	   goto done;
+
+	sscanf(params, "%*s %*s %i %i", &a, &b);
+	a += ewin->client.w;
+	b += ewin->client.h;
+	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), a, b);
+	break;
+
+     case EWIN_OP_FOCUS:
 	if (!strcmp(param1, "?"))
 	  {
 	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
+	     goto done;
 	  }
-	else
-	  {
-	     GotoDesktopByEwin(ewin);
-	     if (ewin->iconified)
-		EwinOpIconify(ewin, 0);
-	     if (ewin->shaded)
-		EwinOpShade(ewin, 0);
-	     EwinOpRaise(ewin);
-	     FocusToEWin(ewin, FOCUS_SET);
-	  }
-     }
-   else if (!strncmp(operation, "fullscreen", 2))
-     {
+	GotoDesktopByEwin(ewin);
+	if (ewin->iconified)
+	   EwinOpIconify(ewin, 0);
+	if (ewin->shaded)
+	   EwinOpShade(ewin, 0);
+	EwinOpRaise(ewin);
+	FocusToEWin(ewin, FOCUS_SET);
+	break;
+
+     case EWIN_OP_FULLSCREEN:
 	on = ewin->st.fullscreen;
 	if (SetEwinBoolean("fullscreen", &on, param1, 0))
 	   EwinSetFullscreen(ewin, !on);
-     }
-   else if (!strncmp(operation, "skiplists", 4))
-     {
+	break;
+
+     case EWIN_OP_SKIP_LISTS:
 	if (SetEwinBoolean("skiplists", &ewin->skiptask, param1, 1))
 	   EwinOpSkipLists(ewin, ewin->skiptask);
-     }
-   else if (!strncmp(operation, "zoom", 2))
-     {
+	break;
+
+     case EWIN_OP_ZOOM:
 	if (InZoom())
 	   Zoom(NULL);
 	else
 	   Zoom(ewin);
-     }
-   else if (!strcmp(operation, "snap"))
-     {
+	break;
+
+     case EWIN_OP_SNAP:
 	SnapshotEwinSet(ewin, atword(params, 3));
-     }
-   else
-     {
-	IpcPrintf("Error: unknown operation");
+	break;
      }
 
    RememberImportantInfoForEwin(ewin);
