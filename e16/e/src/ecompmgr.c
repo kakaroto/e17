@@ -1887,7 +1887,6 @@ ECompMgrConfigGet(cfg_composite * cfg)
 void
 ECompMgrConfigSet(const cfg_composite * cfg)
 {
-   Conf_compmgr.mode = ECM_MODE_OFF;
    if (Conf_compmgr.mode == ECM_MODE_OFF)
      {
 	if (cfg->enable)
