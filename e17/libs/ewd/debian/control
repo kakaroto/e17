@@ -1,20 +1,26 @@
 Source: ewd
 Section: libs
 Priority: optional
-Maintainer: Laurence J. Lane <ljlane@debian.org>
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Build-Depends: debhelper (>> 4.0.0)
 Standards-Version: 3.5.6.0
 
 Package: libewd0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: this is ewd
- WTF is wed?  I have NFI.
+Description: Enlightenment basic data structures library
+ EWD is a data structures library used by some of the Enlightenment subsystems.
+ It contains implementations for singly and doubly linked lists, AVL trees,
+ hash tables, and plugin manipulation.
 
 Package: libewd0-dev
 Architecture: any
 Section: devel
-Depends: libewd0 (= ${Source-Version}), libc6-dev
-Description: development files for ewd
- WTF is ewd?  I have NFI.
+Depends: libewd0 (= ${Source-Version}), libc6-dev | libc-dev
+Provides: libewd-dev
+Conflicts: libewd-dev
+Description: development files for libewd0
+ This package contains the headers, symlinks and library files needed to
+ compile programs with the Ewd library.
 

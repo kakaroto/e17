@@ -4,7 +4,7 @@
 export DH_COMPAT=3
 export DH_OPTIONS
 
-INSTALL=/usr/bin/install -o root -g root
+INSTALL=/usr/bin/install -p
 package=entice
 
 configure: configure-stamp
@@ -27,9 +27,11 @@ clean:
 install: DH_OPTIONS=
 install: build 
 	dh_testdir
+	dh_testroot
 	dh_clean -k
 	dh_installdirs
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)
+	find $(CURDIR)/debian/$(package) -name CVS -a -type d -print0 |xargs -0 rm -rf
 
 binary-indep:
 
@@ -43,8 +45,8 @@ binary-arch: build install
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_installdeb
 	dh_makeshlibs
+	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums

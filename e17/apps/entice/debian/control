@@ -1,7 +1,7 @@
 Source: entice
 Section: graphics
 Priority: optional
-Maintainer: Laurence J. Lane <ljlane@debian.org>
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
 Build-Depends: debhelper (>= 3.0)
 Standards-Version: 3.5.6.0
 
@@ -9,5 +9,7 @@ Package: entice
 Architecture: any
 Section: graphics
 Depends: ${shlibs:Depends}
-Description: ummm.. e17 something blah blah blah
- dot dot dot
+Description: Image viewer based on libeet
+ Entice is a sexy-looking image viewer, with the ability to show images
+ full-screen and to view multiple images with clickable disappearing
+ thumbnails.
