@@ -69,8 +69,10 @@ but it is being worked on and is as stable as possible. It has many advanced
 features, but may also be missing some features that you would like to see.
 The version you are now running (0.16.0) is by no means the
 end of development and improvements, fixes and new exciting features are
-being worked on all the time. Please go and visit the _Web(web) site often, 
-as new versions, fixes, patches and updates will be released.
+being worked on all the time. Please visit the 
+<br>
+_Web(web) site often for
+new versions, fixes, patches and updates.
 <p align=50%>
 We hope that you enjoy using Enlightenment as much as we have enjoyed writing
 it.  We'd like to think that even if this isn't the right software for you, you
@@ -144,7 +146,7 @@ A big thanks to several companies that helped support Enlightenment.
 Red Hat Software (www.redhat.com) for allowing developers resources and time
 to work on Enlightenment.
 <p>
-VA Linux Systems (www.valinux.com) for providing hardware, bandwidth, coke, and
+VA Linux Systems (www.valinux.com) for providing hardware, bandwidth, Coke, and
 the patience to hire a couple of loony bin candidates to work on something we
 (and hopefully you) think is interesting.
 <p>
@@ -203,7 +205,7 @@ more information).
 There is an Official Enlightenment IRC channel where you can go and "hang out"
 if you want - talk to other E users, developers, get some help, drool 
 together, or whatever. #E will kill me for this but get onto any EFnet irc
-server (irc.efnet.org) then join #E. An example:
+server (irc.efnet.org) then join #E. For example:
 <p>
 BitchX your_nick irc.efnet.org<br>
 <br>
@@ -213,9 +215,9 @@ irc your_nick irc.efnet.org<br>
 <br>
 or use your favorite graphical IRC client.
 <p>
-Please remember that it can get busy with 100's of people talking at once and
-not everyone is actually listening all the time or are in the middle of a 
-conversation - be polite and patient, and have a sense of humor and you'll
+Please remember that it can get busy with 100's of people talking at once.
+Not everyone is actually listening all the time or are in the middle of a 
+conversation. Be polite and patient, and have a sense of humor and you'll
 have fun.
 
 
@@ -235,7 +237,7 @@ To receive CVS Commit mails, please go to the
 CVS Commits List mail page:
 http://www.enlightenment.org/mailman/listinfo/cvs-commits-list
 <br>
-This mailing list does not accept user-submissions, it is purely automatically
+This mailing list does not accept user-submissions. It is automatically
 generated email that is sent out whenever the enlightenment CVS server
 receives a commit.  Sometimes it can generate a lot of email, sometimes it
 doesn't.
@@ -246,7 +248,7 @@ If you would like to receive mail from the developer mailing list, please go
 to the E-develop Mailing List mail page:
 http://enlightenment.org/mailman/listinfo/e-develop.
 <br>
-This mailing list is for discussing Enlightenment, it's development, bugs,
+This mailing list is for discussing Enlightenment and it's development, bugs,
 feature requests, etc.  It is not a general chatter list.  The developers do
 read this mailing list and will often comment on subjects brought up on the
 list.
@@ -325,7 +327,7 @@ _Dragbar(dragbar) .
 On the bottom-left you'll see 3 boxes. The top box with the scrollbar attached
 will be your _Iconbox(iconbox) .
 <p>
-The other 2 boxes below are _Pagers(pager) for desktops 0 and 1. Everything
+The other 2 boxes below it are _Pagers(pager) for desktops 0 and 1. Everything
 else is your desktop background.
 
 
@@ -345,16 +347,16 @@ see an "User Menus" menu appear (example displayed on the right here).
 Applications you may have installed will appear in this menu. To launch one 
 of them simply select it from the menu.
 <p>
-Note: Menus in Enlightenment work like most menu systems. You can either hold 
+Note: Menus in Enlightenment work like most menu systems. Either hold 
 down the mouse button and navigate with the button down, releasing on the
-selection you want, or release elsewhere to not select anything, or you can
-quickly click and release, then navigate just move the mouse, and click
+selection you want, or release elsewhere to not select anything. You can also
+quickly click and release, then navigate: move the mouse, and click
 again on the item you wish to select, or elsewhere if you do not wish to
 select an entry.
 <p>
-If you wish to "stick" a menu up and leave it up so you can select items from
+To "stick" a menu up and leave it up so you can select items from
 it multiple times, click and hold down the mouse and release on the title of
-the menu (if it has a title) and it will remain up. You can move it and
+the menu (if it has one) and it will remain up. You can move it and
 manipulate it like a normal window. Close the window to unstick the menu.
 
 
@@ -371,8 +373,8 @@ manipulate it like a normal window. Close the window to unstick the menu.
 <br>
 Clicking the middle button on the desktop _background(backgrounds) will display 
 Enlightenment's main menu. You can access the other menus plus more options
-(including those to log out, restart and display Help information) from this
-menu.  A sample of this menu is shown to our left.
+from this menu (including those to log out, restart and display Help 
+information). A sample of this menu is shown to our left.
 <p>
 <br>
 <br>
@@ -400,14 +402,14 @@ your screen, normally you will bring up a _menu(rootmenu).  And of course, when 
 click on the _border(border) of a window, you will do various things.  But these
 are not the only things you can do with your mouse.
 <p>
-In enlightenment, there are several other actions that the mouse can do by
+In Enlightenment, there are several other actions that the mouse can do by
 default.  For example, by holding down the ALT key when you click the left
 mouse button anywhere in a window, you will find that you can _move(movemode) the window
 around the screen, just as if you had used the titlebar.  You can also ALT
 middle-click in a window to _resize(resizemode) it, or use ALT and right-click to bring up
 the _Window_Operations_Menu(windowops) .
 <p>
-You will find that holding down the ALT key whilst clicking the middle 
+You will find that holding down the ALT key while clicking the middle 
 mouse button on the background of your _desktop(desktops) will bring up a 
 menu with the titles of all currently active
 application windows. Selecting one of these will take you to that application.
@@ -429,20 +431,22 @@ Mouse Configuration
 <p>
 <br>
 <br>
-Enlightenment makes extensive use of the mouse, being a graphical application.
-However, there may be some features that you may be missing because of the way
+Enlightenment makes extensive use of the mouse.
+However, you may be missing some features because of the way
 that your mouse is configured on your X server.
 <p>
-If your mouse does not have a middle button you should have enabled 
-"Emulate 3 Buttons" in your X server - in which case pressing both left and 
-right mouse buttons at once will be the equivalent of pressing a middle
-mouse button. If this does not work this may not be turned on. Please see
-your X server documentation to configure this.
+If your mouse does not have a middle button you should enable
+"Emulate 3 Buttons" in your X server. This option allows you to
+emulate a three-button mouse by pressing both left and 
+right mouse buttons at once.
+If this does not work, three-button emulation  may not be enabled. See
+your X server documentation to configure this emulation.
 <p>
-This may vary from system to system. OS and X server may also vary the method 
-in which you do this, if it is possible. Not having a middle mouse button in 
-Enlightenment, or for that matter X is not a good thing as it is almost 
-assumed to be there, and is used by many applications, as well as by E.
+This may vary from system to system. The OS and X server may also 
+vary the method in which you do this, if it is possible. Not having 
+a middle mouse button in 
+Enlightenment, or for that matter X, is not a good thing as it is almost 
+assumed to be there, and is used by many applications, including E.
 
 
 
@@ -455,11 +459,11 @@ assumed to be there, and is used by many applications, as well as by E.
 <img src=E_mousewheel.png x=370 y=30>
 <img src=E_mouse.png x=410 y=330>
 <p>
-If you have a Wheel-Mouse and X is configured to understand this Enlightenment
-comes equipped with wheel support out of the box.
+If you have a Wheel-Mouse and X is configured to use it, Enlightenment
+supports it by default.
 <p>
 Rolling your wheel up on the desktop background will take you back a 
-_desktop(desktops) or by rolling your wheel downward, you will advance 
+_desktop(desktops) . Rolling your wheel downward you will advance 
 forward a desktop.
 <p>
 If this doesn't work, then it may be you haven't configured your X server to
@@ -528,25 +532,25 @@ start with).
 <font face=aircut3/12 color=#ffffff>
 <p>
 Clicking left mouse button on the iconify button will iconify the window
-and send it off to the _Iconbox(iconbox). Hitting the Maximize button will
+and send it off to the _Iconbox(iconbox) . Hitting the Maximize button will
 maximize the
 size of the application fill your screen. Hitting it again will Unmaximize, 
 bringing the window back to its normal size.
 <p>
 Clicking with the left mouse button on the close button will close the window.
 If the application that owns that window does not respond to a nice request to
-exit, then pressing right mouse button on the close button to forcibly
+exit, then press the right mouse button on the close button to forcibly
 terminate that window. This should not be used unless the application is 
 visibly "hung".
 <p>
-In addition to these methods of manipulation a window there are additional
-ways of performing these.
+In addition to these methods, there are additional ways to manipulation
+windows.
 <p>
 If you hold down the ALT key and hold down left mouse button anywhere in the
-window (on the border OR in the application part) whilst dragging, you will 
+window (on the border OR in the application part) while dragging, you will 
 move this window around. Doing the same but with the middle mouse button will
 resize the window in that direction. Clicking the right mouse button anywhere 
-in the window whilst holding down the ALT key will bring up the window 
+in the window while holding down the ALT key will bring up the window 
 operations menu.
 
 
@@ -669,16 +673,16 @@ the resolutions defined as above.
 Multiple & Virtual Desktops
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment supports both Multiple and Virtual desktops. There is a fine but 
-distinct difference between the 2, and enlightenment treats them differently.
+Enlightenment supports both Multiple and Virtual desktops. There are
+distinct difference between the two, and Enlightenment treats them differently.
 <p>
-When you start Enlightenment you will by default have 2 desktops. In
+When you start Enlightenment you will by default have two desktops. In
 Enlightenment desktops are geometrically unrelated work areas. They are 
 visually stacked on top of each other and can even be dragged down to expose
 desktops underneath.
 <p>
 The best way to imagine this is that each desktop is a sheet of paper with the
-first (desktop 0) desktop being glued in-place. You can re-shuffle the stack
+first desktop (desktop 0) being glued in-place. You can re-shuffle the stack
 of papers and slide one down to reveal a piece of paper underneath - the only
 paper you can't slide is the first one. Each desktop (or sheet) contains your
 application windows.
@@ -706,7 +710,7 @@ allocated to it and you can be looking at any screen-sized part of it at any
 time. It's just like getting more sheets of paper and taping them to the sides
 of your current sheet of paper. An easy way of changing your view is by just
 sliding your mouse in the direction of a currently unviewable part of your
-desktop and as long as you have Edge Flip enabled Enlightenment will 
+desktop. As long as you have Edge Flip enabled Enlightenment will 
 automatically scroll over to that part of the desktop.
 
 
@@ -728,7 +732,7 @@ would like to use.
 To change the number of virtual areas, use the "Virtual Desktop Settings"
 menu.  This will bring up a menu that looks something like the one on the left.
 Use the slider bars to extend the size of the virtual areas to the size that
-you best prefer.  You can also use this dialog to enable/disable edge
+you prefer. You can also use this dialog to enable/disable edge
 resistance (when your _mouse(mousebind) hits the edge of an area) moving between
 virtual areas.
 
@@ -766,7 +770,7 @@ a few of them here.
 <p>
 You can use the _Keybindings(defkeys) alt-F1 through alt-F12 for the first 12
 desktops.<br>
-You can use the _Keybindings(defkeys) ctrl-alt-left and ctrl-alt-right to
+You can use the _Keybindings(defkeys) Ctrl-Alt-Left and Ctrl-Alt-Right to
 navigate to the next/previous desktop.<br>
 You can use the _Keybindings(tut11) shift-alt-directional arrow to change
 virtual areas in a given direction.<br>
@@ -792,13 +796,13 @@ Moving Applications Between Desktops
 There are several ways that you can move applications from one desktop to
 another.  We'll go over a few of them now.
 <p>
-The first way you can move apps between desktops is using the _Pager(pager)
+The first way you can move apps between desktops is using the _Pager(pager) .
 <p>
 You can also move applications between desktops using the
-<br>_Dragbar(dragbar)
+<br>_Dragbar(dragbar) .
 <p>
 You can also move applications between desktops using the<br>
-_KDE_or_GNOME(deskenv) desktop pagers
+_KDE_or_GNOME(deskenv) desktop pagers.
 <p>
 You can also _move(movemode) a window, then bring the window with you as you
 change desktops using _keybinding(defkeys) .
@@ -877,7 +881,7 @@ options, you can select the "Pager Settings" item, and another dialog will pop
 up, that looks like the one below.
 <p>
 This dialog box will allow you to set all sorts of additional parameters, many
-of which can increase the performance of enlightenment on your system.
+of which can increase the performance of Enlightenment on your system.
 Disabling high quality snapshots and/or snapshots in general as well as
 continuous updates can seriously improve performance - these features are
 intended for high end machines.
@@ -902,8 +906,8 @@ intended for high end machines.
 <br>
 You can resize the pager to make it the size you'd like.  Hold down
 ALT and use the middle-mouse button to resize the pager in any direction. Using
-left-mouse button whilst holding ALT and dragging will move the window. Holding
-down ALT whilst pressing right-mouse button, just like any normal window will
+left-mouse button while holding ALT and dragging will move the window. Holding
+down ALT while pressing right-mouse button, just like any normal window will
 get you a window operations menu.
 <p>
 In the default theme clicking the tab on the right side of the pager with the
@@ -935,7 +939,7 @@ more by using the Middle Click _Menu(rootmenu) - select Desktop->Create New Icon
 and a new Iconbox will pop up on your desktop.  Each of these Iconboxes can
 have individual configurations, as detailed on the next page.
 <p>
-You can _move(movemode) the Iconbox around the screen using alt-leftclick
+You can _move(movemode) the Iconbox around the screen using Alt-Leftclick
 on the window, and then moving it to the desired location on the screen.  You
 can _resize(movemode) the Iconbox by alt-middleclicking on the window and
 then adjusting the size  as described in the _Mouse_Bindings(mousebind)
@@ -967,7 +971,7 @@ Iconbox location.
 <p>
 If you want to customize the images used for the icons in your iconbox, there 
 is already an example configuration supplied. To make your own configuration
-copy the icondefs.cfg file installed in your enlightenment system config 
+copy the icondefs.cfg file installed in your Enlightenment system config 
 directory (/usr/local/enlightenment/config/icondefs.cfg or 
 /usr/share/enlightenment/config/icondefs.cfg) to your ~/.enlightenment 
 directory and then edit it. On each line you will find 4 fields. The first
@@ -975,12 +979,13 @@ field is the image file to be used. The image is searched for in the usual
 search path if it is not an absolute path to the image file. The search path
 is in order: ~/.enlightenment, THEME_DIR/, ENLIGHTENMENT_ROOT/config.
 <p>
-The 2nd field on the line is a shell-glob like match for the title of a window.
-If this field is irrelevant NULL is used instead. NB: the only valid wildcard
-in the glob pattern is "*". The 3rd field is the NAME property of the window
-and the 4this the CLASS. The order of search priority is last to first, so the
-last entry in the file that matches a window's title, name and class globs will
-use the icon image defined on the first line.
+The second field on the line is a shell-glob like match for the title of 
+a window.
+If this field is irrelevant, NULL is used instead. NB: the only valid wildcard
+in the glob pattern is "*". The third field is the NAME property of the window
+and the fourth is the CLASS. The order of search priority is last to first,
+so the last entry in the file that matches a window's title, name and class 
+globs will use the icon image defined on the first line.
 
 <page columns=1 padding=16 name=iconbox4 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
@@ -989,7 +994,7 @@ If you want all windows to have an icon then use:
 <p>
 "pix/pimage.png" NULL NULL NULL
 <p>
-Is the most general match for an icon and will match ALL windows. If you
+This is the most general match for an icon and will match ALL windows. If you
 use this make sure it's at the start of the file so it will only match if no 
 other matches are found.
 <p>
@@ -1004,20 +1009,20 @@ Recovering Minimized Applications
 <p>
 There are several ways to recover an application once you have minimized it.
 The most obvious way is to use the<br>
-_Iconbox(iconbox).  Of course, you might
+_Iconbox(iconbox) .  Of course, you might
 have had some applications in your Iconbox when you accidentally closed it.  Or
 maybe you minimized some applications and forgot you didn't have an Iconbox.
 Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
 recover them and forgot to launch them.  Never fear.  You can always
 middle click on the _Dragbar(dragbar)
 and get a _menu(rootmenu) that will allow you
-to recover them.  You can also alt or ctrl middleclick on the desktop to get
-the same menus. (in case you don't have a Dragbar anymore)
+to recover them.  You can also Alt or Ctrl-Middleclick on the desktop to get
+the same menus (in case you don't have a Dragbar anymore).
 <p>
 Remember, at any time you can always create a new _Iconbox(iconbox) to catch
 your applications as they minimize, if you want to re-enable it.  Unfortunately
 you'll have to reconfigure it since each Iconbox can have its own
-_settings(settings)
+_settings(settings) .
 
 
 
@@ -1032,13 +1037,13 @@ Remembering Application Properties
 In the _window_operations(windowops) menu of every window you will see an
 entry labeled
 "Remember...". If you select this it will bring up the "Remember" dialog for
-that window (note: only one of these dialogs can be active at any one time), as
+that window (Note: only one of these dialogs can be active at any one time), as
 shown to our right.
 <p>
 This dialog lets you selectively snapshot certain attributes of that window at
 that time and have Enlightenment remember them. You may choose to only remember
 some of the attributes, and possibly not have the application started
-automatically for you. Chose what you want Enlightenment to remember about that
+automatically for you. Choose what you want Enlightenment to remember about that
 window and hit "Apply" or "OK" if you don't need the dialog anymore, and
 Enlightenment will, the next time that instance of the application is run,
 apply the current location, size, border style or any other attribute to
@@ -1085,8 +1090,8 @@ Sometimes you have a number of windows on your desktop that logically go
 together. Enlightenment allows you to group windows
 together, so that whenever you change a property of one window in a group,
 the change is reflected on the other group members. If you have a group whose
-members span multiple _desktops(desktops) , changing a property will show effect only on
-the current desktop.
+members span multiple _desktops(desktops) , changing a group's property 
+affects only windows of that group that are on the current desktop.
 <p>
 The properties that you can change for an entire group include setting the window
 border, iconifying, killing, moving, raising/lowering, sticking and shading of
@@ -1113,8 +1118,8 @@ able to configure the group individually apart from the default group settings
 <p>
 The second way is the window titlebar, which has the most important options
 directly available for convenience. Shift-click to start a group,
-ctrl-clicking to add a window to the youngest group (also referred to as the
-"current" group) and shift-ctrl-click to destroying a group. You can also click
+Ctrl-clicking to add a window to the youngest group (also referred to as the
+"current" group) and Shift-Ctrl-Click to destroying a group. You can also click
 the middle mouse button for visualizing the group(s) of a window. Click again
 to returning to the previous border.
 <p>
@@ -1132,17 +1137,17 @@ Selecting and Adding backgrounds
 <p>
 Often you will want to change the background of a particular desktop.  There
 are several ways you can do this.  But of course, to change your desktop,
-you'll need to give enlightenment some graphics to play with.  A theme may add
-a background or two to your selection, but most users tend to have lots of
-backgrounds that they like to use anyways.  To add backgrounds to your
-selection, simply make a backgrounds directory under your home directory.  To
-do this using most shells you can simply type
+you'll need to give Enlightenment some graphics to play with.  A desktop
+theme may add a background or two to your available selections, but 
+most users want to have even backgrounds to choose from.  To add backgrounds to your
+selection, make a backgrounds directory under your home directory.  To
+do this using most shells you can type
 <p>
 mkdir ~/.enlightenment/backgrounds
 <p>
-once you've done this, you should restart enlightenment - this can be done
-quickly and easily by simply hitting the ctrl-alt-end key combination.  When
-enlightenment starts up, it will rescan these directories, and add new files
+Once you've done this, you should restart Enlightenment - this can be done
+quickly and easily by simply hitting the Ctrl-Alt-End key combination.  When
+Enlightenment starts up, it will rescan these directories, and add new files
 into the background selector.
 
 
@@ -1156,7 +1161,7 @@ into the background selector.
 <p>
 <br>
 <br>
-Once you have added your backgrounds and restarted enlightenment, you should be
+Once you have added your backgrounds and restarted Enlightenment, you should be
 able to go to the root menu desktop selector.  To get to this menu, middle
 click on the desktop, select "Desktop",
 and go to Backgrounds.  You should get something that looks similar to the
@@ -1258,7 +1263,7 @@ Audio
 <br>
 Of course, Enlightenment comes preconfigured to play lots of little blips and
 beeps when you do various things on your desktop.  In order to use sound in
-enlightenment, you must have both ESounD and audiofile installed.  You can find
+Enlightenment, you must have both ESounD and audiofile installed.  You can find
 more information about these libraries from http://www.gnome.org.
 <p>
 <br>
@@ -1286,7 +1291,7 @@ _resize_modes(resizemode) .
 <p>There are several FX features disabled by default
 in a new installation, including the animated display of menus.  You can also
 enable saveunders here, which may improve or slow down the performance of
-enlightenment on your X server, depending on server and configuration.
+Enlightenment on your X server, depending on server and configuration.
 
 
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
@@ -1300,10 +1305,10 @@ Setting the Focus
 <br>
 Enlightenment offers lots of different options for focusing windows.  By
 default, it comes up in sloppy focus mode.  There are two other primary focus
-modes supported by enlightenment - click to focus and pointer focus.
+modes supported by Enlightenment - click to focus and pointer focus.
 <p>
 Click To Focus most people are familiar with.  You click on a window and it
-receives the focus from enlightenment.
+receives the focus from Enlightenment.
 <p>
 Pointer Focus gives the focus to whichever window the pointer is sitting over
 <p>
@@ -1330,7 +1335,8 @@ other advanced focus settings.
 <p>
 Here we can also enable the focuslist feature.  This feature requires Xkb to be
 enabled in your X server.  If you don't have Xkb enabled, please consult your X
-server docs to see how to do this.  The focuslist is a window list that pops up
+server documentation to see how to do this.  The focuslist is a 
+window list that pops up
 as you cycle through your focus using the ALT + TAB<br>
 _Keybinding(defkeys) .
 
@@ -1356,7 +1362,7 @@ Settings".  You can select from a list that looks similar to the one here
 above-right.  Experiment until you find one that suits you best.
 <p>
 For some serious eyecandy, try out the Translucent move mode.  This will only
-work if your X server and enlightenment are running on the same machine,
+work if your X server and Enlightenment are running on the same machine,
 however.
 
 
@@ -1392,14 +1398,19 @@ The Window Operations Menu
 The Window Operations menu is a commonly used menu that allows you to perform
 many different actions onto the current window.  
 <p>
-Close closes the window in question, Annihilate destroys the window without
-regard to the application the window belongs to. This is especially useful if
-the application refuses to respond to being Closed. 
+The Close function closes the window in question.
+Annihilate destroys the window without
+regard to the application the window belongs to, which is especially useful if
+the application refuses to respond to being closed with Close. 
 <p>
-Iconify iconifies the window. If you have an _Iconbox(iconbox) it is sent to 
-the nearest one.
+The Iconify function iconifies the window.
+If you have an 
+<br>
+_Iconbox(iconbox)
+it is sent to the nearest one.
 <p>
-Raise raises the window above any windows that may be obscuring it and Lower 
+The Raise function raises the window above any windows 
+that may be obscuring it and Lower 
 lowers it below windows it is obscuring. 
 <p>
 More on the _next(windowops2) page.
@@ -1456,12 +1467,13 @@ Setting up E to work with KDE and GNOME
 <p>
 <font face=aircut3/12 color=#ffffff>
 Enlightenment, though it strives to be its own desktop environment, also
-supports KDE and GNOME desktop environments wherever possible.  E comes set up
-to support GNOME out of the box, in fact.  To enable the KDE hints, however,
-you must launch enlightenment and then go into the "KDE Support Settings"
+supports KDE and GNOME desktop environments wherever possible.  Enlightnement
+comes set up to support GNOME out of the box, in fact. To enable 
+the KDE hints, however,
+you must launch Enlightenment and then go into the "KDE Support Settings"
 section of your _Settings(settings) menu.  From here you can enable or disable
-KDE support in your copy of enlightenment.   This setting will automatically
-save for the next time you launch enlightenment.  You should be able to launch
+KDE support in your copy of Enlightenment.   This setting will automatically
+save for the next time you launch Enlightenment.  You should be able to launch
 any of KDE's or GNOME's applications and have them supported fairly well,
 including (but not limited to) the panel or kpanel, and gmc and kfm.
 
@@ -1492,18 +1504,18 @@ Enligthenment and IPC
 <font face=aircut3/12 color=#ffffff>
 <p>
 Enlightenment has a fairly interesting IPC system that allows external
-applications (such as Eterm) to talk to enlightenment and both ask for
+applications (such as Eterm) to talk to Enlightenment and both ask for
 information and change information.  There is a program that was installed with
-enlightenment called "eesh" that is a simple shell interface to the IPC in
+Enlightenment called "eesh" that is a simple shell interface to the IPC in
 Enlightenment.  It's even got its own documentation.  You can go into
 eesh and type "help" and it should spit back a list of commands that it
 understands.
 <p>
 Note: there are many commands that will show up in E's IPC that don't
-necessarily work yet, or aren't fully implemented.  you CAN potentially do some
+necessarily work yet, or aren't fully implemented.  You CAN potentially do some
 really bizarre things to your system by using eesh, but for the most part it's
 just another interesting interface to E.  In your distribution package you
-should have received some sample scripts written in perl that interface to E
+should have received some sample scripts written in Perl that interface to E
 through eesh showing how you can externally script E to do more things outside
 E's base functionality.  Expect the IPC to flesh out even more in future
 revisions.
@@ -1516,7 +1528,7 @@ To exit eesh, hit CTRL + D (EOF)
 Editing Enlightenment's Menus
 <font face=aircut3/12 color=#ffffff>
 <p>
-The first time you run enlightenment as a user after you've installed it, it
+The first time you run Enlightenment as a user after you've installed it, it
 should create a directory under your home directory called .enlightenment.  In
 this directory, there will be a file called "file.menu" - this file controls
 the contents of your left-mouse button _Menu(rootmenu) .  The very first line
@@ -1533,8 +1545,8 @@ Where each column represents:
 Entry title , graphic for menu (or NULL) , exec "commandline"
 <font face=aircut3/12 color=#ffffff>
 <p>
-You may have several files in here, including a kde menu and a gnome menu if
-enlightenment has detected their presence during installation.  If
+You may have several files in here, including a KDE menu and a Gnome menu if
+Enlightenment has detected their presence during installation.  If
 detected, your primary apps will be located in another file called
 user_apps.menu.  Each of these files is for you to edit as desired.
 
@@ -1551,15 +1563,15 @@ Editing Your Keybindings
 <br>
 
 To set your own keybindings, all you have to do is find the keybindings.cfg
-file that was installed with enlightenment, and make a copy in your
+file that was installed with Enlightenment, and make a copy in your
 ~/.enlightenment directory.  This file is fairly long, but shouldn't be too
 difficult to edit.  Be careful!  The keybindings in this file will override ALL
 the default keybindings, as long as this file exists, so edit this file with
-extreme caution (unless you know what you're doing)
+extreme caution (unless you know what you're doing).
 <p>
 To reset your keybindings back to the default, simply remove this file from
-your ~/.enlightenment directory.  The next time you restart E it should reload
-the default keybindings into memory.
+your ~/.enlightenment directory.  The next time you restart Enlightenment
+it should reload the default keybindings into memory.
 
 <page columns=1 padding=16 name=themes background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
@@ -1567,12 +1579,12 @@ the default keybindings into memory.
 Enlightenment and Themes
 <font face=aircut3/12 color=#ffffff>
 <p>
-One of the strong points of enlightenment, of course, is that you can change
+One of the strong points of Enlightenment, of course, is that you can change
 around the complete look and feel of your desktop whenever you want to.
 Included with the 0.16.0 release are a few themes, to show off a little bit of
 this configurability.  You can select them by using the middle mouse button
 _menu(rootmenu) , going to the "Themes" selector, and then choosing a new
-theme.  Of course, there are plenty more themes for enlightenment than come
+theme.  Of course, there are plenty more themes for Enlightenment than come
 with it by default.  You can find more by going to:
 <p>
 http://e.themes.org
@@ -1583,7 +1595,7 @@ To install a new theme
 is simple: all you need to do is take the bleh.etheme file and drop it into
 your<br>
 ~/.enlightenment/themes<br>
-directory.  Once you've restarted enlightenment,
+directory.  Once you've restarted Enlightenment,
 it will automatically show up in your Themes menu, and you can choose it just
 like any other theme.
 
@@ -1602,9 +1614,9 @@ Of course, Enlightenment wouldn't be complete without just a few bits of
 eyecandy to play with.  Access them from the "Desktop" portion of your middle
 mouse button _menu(rootmenu) .
 <p>There are two toys that you can choose from:
-<p>. The ripples effect - this causes little ripplets of water to reflect on the
+<p>The ripples effect - this causes little ripplets of water to reflect on the
 bottom of your screen.
-<p>. The waves effect - similar to ripples, but this one waves up and down as
+<p>The waves effect - similar to ripples, but this one waves up and down as
 opposed to side-to-side
 <p>
 <br>
@@ -1623,15 +1635,15 @@ Included Maintenance Scripts
 <p>
 Enlightenment comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
-maintenance on the files that enlightenment creates automatically for you.
+maintenance on the files that Enlightenment creates automatically for you.
 When you select "Maintenance" you should get a menu that looks something like
 the one above-right.  You can also rebuild the _KDE_and_GNOME(deskenv) menus
-enlightenment uses from here<p>
+Enlightenment uses from here<p>
 As a warning, when you purge configuration information, the next time you
-restart enlightenment it will take longer to load.  You can monitor
-enlightenment's usage using the query tools provided.  If you change themes a
+restart Enlightenment it will take longer to load.  You can monitor
+Enlightenment's usage using the query tools provided.  If you change themes a
 lot you will probably want to purge the config file cache after you've settled
-on a theme.  This will help keep your disk usage by enlightenment down.
+on a theme.  This will help keep your disk usage by Enlightenment down.
 
 
 
@@ -1703,16 +1715,16 @@ Frequently Asked Questions: Page 2
 Q:  All My Settings Are Mangled And I Can't Fix It
 <p>
 A:  Well, if things get really messed up, you can always remove all of
-enlightenment's automatically saved files.  go into ~/.enlightenment, and
+Enlightenment's automatically saved files.  go into ~/.enlightenment, and
 remove the ...e_session* files, and then blow away the cached directory.  If
 your theme is broken, remove the user_theme.cfg file, also.  The
-next time you start enlightenment it should reset everything to the default.
+next time you start Enlightenment it should reset everything to the default.
 <p>
 <br>
 <br>
 Q: I Upgraded My Theme, But The New One Isn't Being Used
 <p>
-A: When you upgrade a theme that does not come with enlightenment, when you go
+A: When you upgrade a theme that does not come with Enlightenment, when you go
 into your ~/.enlightenment/themes directory, be sure to delete the unpacked
 directory version of your theme that should be sitting next to the theme, if it
 is there.  Otherwise when Enlightenment attempts to start the new version it
