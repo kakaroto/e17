@@ -1,0 +1,380 @@
+/* 
+
+                          --- Efsd Shell ---
+
+
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies of the Software and its documentation and acknowledgment shall be
+given in the documentation and software packages that this Software was
+used.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+*/
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <libefsd.h>
+#include <fam.h>
+
+void event_loop(EfsdConnection *ec);
+void handle_efsd_event(EfsdEvent *ee);
+
+
+void event_loop(EfsdConnection *ec)
+{
+  EfsdEvent ee;
+  fd_set    fdset;
+  int       fdsize;
+  int       fd;
+
+  fd = efsd_get_connection_fd(ec);
+
+  for ( ; ; )
+    {
+      FD_ZERO(&fdset);
+      fdsize = 0;
+
+      FD_SET(fd, &fdset);
+      if (fd > fdsize)
+	fdsize = fd;
+
+      /* Wait for next event to happen ... */
+      select(fdsize+1, &fdset, NULL, NULL, NULL);
+
+      if (FD_ISSET(fd, &fdset))
+	{
+	  
+	  while (efsd_events_pending(ec))
+	    {
+	      if (efsd_next_event(ec, &ee) >= 0)
+		handle_efsd_event(&ee);
+	    }
+	}
+    }
+}
+
+
+void handle_efsd_event(EfsdEvent *ee)
+{
+  static struct timeval tv;
+  static struct timeval tv2;
+  
+  gettimeofday(&tv2, NULL);
+  printf("%li.%li ", tv2.tv_sec-tv.tv_sec, tv2.tv_usec-tv.tv_usec);
+  tv = tv2;
+
+  switch (ee->type)
+    {
+    case EFSD_EVENT_FILECHANGE:
+      switch (ee->efsd_filechange_event.changetype)
+	{
+	case EFSD_CHANGE_CHANGED:
+	  printf("Filechange event for cmd %i: %s changed.\n", 
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_DELETED:
+	  printf("Filechange event for cmd %i: %s deleted.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_START_EXEC:
+	  printf("Filechange event for cmd %i: %s started.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_STOP_EXEC:
+	  printf("Filechange event for cmd %i: %s stopped.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_CREATED:
+	  printf("Filechange event for cmd %i: %s created.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_MOVED:
+	  printf("Filechange event for cmd %i: %s moved.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_ACKNOWLEDGE:
+	  printf("Filechange event for cmd %i: %s acked.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_EXISTS:
+	  printf("Filechange event for cmd %i: %s exists.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	case EFSD_CHANGE_END_EXISTS:
+	  printf("Filechange event for cmd %i: %s end exists.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	default:
+	  printf("Filechange event for cmd %i: %s WHAT THE HELL IS THAT?.\n",
+		 ee->efsd_filechange_event.id,
+		 ee->efsd_filechange_event.file);
+	  break;
+	}
+      break;
+    case EFSD_EVENT_REPLY:
+      switch (ee->efsd_reply_event.command.type)
+	{
+	case EFSD_CMD_REMOVE:
+	  printf("Remove event %i\n -- removing %s\n",
+		 ee->efsd_reply_event.command.efsd_file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_file_cmd.file);		 
+	  break;
+	case EFSD_CMD_MOVE:
+	  printf("Move event %i\n -- moving %s to %s\n",
+		 ee->efsd_reply_event.command.efsd_2file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
+		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
+	  break;
+	case EFSD_CMD_COPY:
+	  printf("Copy event %i\n -- copying %s to %s\n",
+		 ee->efsd_reply_event.command.efsd_2file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
+		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
+	  break;
+	case EFSD_CMD_SYMLINK:
+	  printf("Symlink event %i\n",
+		 ee->efsd_reply_event.command.efsd_2file_cmd.id);
+	  break;
+	case EFSD_CMD_LISTDIR:
+	  printf("Listdir event %i\n",
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_MAKEDIR:
+	  printf("Mkdir event %i\n -- creating %s\n",
+		 ee->efsd_reply_event.command.efsd_file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_file_cmd.file);
+	  break;
+	case EFSD_CMD_CHMOD:
+	  printf("Chmod event %i\n", 
+		 ee->efsd_reply_event.command.efsd_chmod_cmd.id);
+	  break;
+	case EFSD_CMD_SETMETA:
+	  printf("Setmeta event %i\n", 
+		 ee->efsd_reply_event.command.efsd_set_metadata_cmd.id);
+	  break;
+	case EFSD_CMD_GETMETA:
+	  printf("Getmeta event %i\n", 
+		 ee->efsd_reply_event.command.efsd_get_metadata_cmd.id);
+
+	  if (ee->efsd_reply_event.status == SUCCESS)
+	    {
+	      switch (efsd_metadata_get_type(ee))
+		{
+		case EFSD_INT:
+		  {
+		    int val;
+
+		    efsd_metadata_get_int(ee, &val);
+		    printf("File: %s, key: %s --> val: %i\n",
+			   efsd_metadata_get_file(ee),
+			   efsd_metadata_get_key(ee),
+			   val);
+		  }
+		  break;
+		case EFSD_FLOAT:
+		  {
+		    float val;
+
+		    efsd_metadata_get_float(ee, &val);
+		    printf("File: %s, key: %s --> val: %f\n",
+			   efsd_metadata_get_file(ee),
+			   efsd_metadata_get_key(ee),
+			   val);
+		  }
+		  break;
+		case EFSD_STRING:
+		  printf("File: %s, key: %s --> val: %s\n",
+			 efsd_metadata_get_file(ee),
+			 efsd_metadata_get_key(ee),
+			 efsd_metadata_get_str(ee));
+		  break;
+		default:
+		}
+	    }
+	  break;
+	case EFSD_CMD_STARTMON:
+	  printf("Startmon event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_STOPMON:
+	  printf("Stopmon event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_STAT:
+	  {
+	    struct stat *st;
+
+	    printf("Stat event %i stating file %s\n", 
+		   ee->efsd_reply_event.command.efsd_file_cmd.id,
+		   ee->efsd_reply_event.command.efsd_file_cmd.file);
+		   
+
+	    st = (struct stat*) ee->efsd_reply_event.data;
+	    
+	    if (S_ISREG(st->st_mode))
+		printf("%s is a regular file.\n",
+		       ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISLNK(st->st_mode))
+		printf("%s is a symlink.\n",
+		       ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISDIR(st->st_mode))
+	      printf("%s is a directory.\n",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	  }
+	  break;
+	case EFSD_CMD_READLINK:
+	  printf("Readlink event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  if (ee->efsd_reply_event.status == SUCCESS)
+	    {
+	      printf("target is %s\n", (char*)ee->efsd_reply_event.data);
+	    }
+	  break;
+	case EFSD_CMD_GETFILETYPE:
+	  printf("Getfile event %i on %s\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_file_cmd.file);		 
+	  if (ee->efsd_reply_event.status == SUCCESS)
+	    {
+	      printf("filetype is %s\n", (char*)ee->efsd_reply_event.data);
+	    }
+	  break;
+	case EFSD_CMD_CLOSE:
+	  printf("Close event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	default:
+	  printf("UNKNOWN event\n");
+	}
+
+      if (ee->efsd_reply_event.status == SUCCESS)
+	printf(" -- SUCCESS\n");
+      else
+	printf(" -- ERROR: %s\n", strerror(ee->efsd_reply_event.errorcode));
+      
+      break;
+    default:
+    }
+  
+  /* Cleanup memory allocated for this event */
+  efsd_event_cleanup(ee);
+}
+
+
+void 
+sighandler(int signal)
+{
+  printf("Broken pipe caught.\n");
+  exit(0);
+}
+
+
+void 
+command_line(EfsdConnection *ec)
+{
+  EfsdCmdId  id;
+  char       s[4096];
+  char      *tok;
+
+  while (fgets(s, 4096, stdin))
+    {
+      if ((tok = strtok(s, " \t\n")))
+	{
+	  if (!strcmp(tok, "ls"))
+	    {
+	      char show_all = 0;
+
+	      while ((tok = strtok(NULL, " \t\n")))
+		{
+		  if (!strcmp(tok, "-a"))
+		    show_all = 1;
+		  else
+		    {
+
+		      if (show_all)
+			{
+			  if ((id = efsd_listdir(ec, tok, 1,
+						 efsd_op_all())) < 0)
+			    printf("Couldn't issue ls command.\n");
+			}
+		      else
+			{
+			  if ((id = efsd_listdir(ec, tok, 0, NULL)) < 0)
+			    printf("Couldn't issue ls command.\n");
+			}  
+		    }
+		}
+	    }
+	}
+    }
+}
+
+
+int
+main(int argc, char** argv)
+{
+  EfsdConnection     *ec;
+  pid_t               child;
+
+  signal(SIGPIPE, sighandler);
+
+  /* Open connection to efsd. */
+  if ( (ec = efsd_open()) == NULL)
+    {
+      /* Didn't work -- likely efsd is not running. */
+      fprintf(stderr, "Oooops -- could not connect to efsd.\n");
+      exit(-1);
+    }
+  
+  /* Forked child reads results, while parent process
+     launches queries and handles command line. */
+  if ( (child = fork()) == 0)
+    {
+      event_loop(ec);
+      exit(0);
+    }
+
+  /* Parent goes interactive: */
+  command_line(ec);
+
+  /* Close connection to efsd. */
+  if (efsd_close(ec) >= 0)
+    printf ("Connection closed successfully.\n");
+
+  kill(child, SIGKILL);
+
+  return 0;
+}

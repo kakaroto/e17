@@ -349,10 +349,14 @@ efsd_remove(EfsdConnection *ec, char *filename,
   D_ENTER;
 
   va_start (ap, num_options);
-  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
 
-  if (!ops)
-    D_RETURN_(-1);
+  if (num_options > 0)
+    {
+      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
+      
+      if (!ops)
+	D_RETURN_(-1);
+    }
 
   for (i = 0, j = 0; i < num_options; i++)
     {
@@ -392,10 +396,14 @@ efsd_move(EfsdConnection *ec, char *from_file, char *to_file,
   D_ENTER;
 
   va_start (ap, num_options);
-  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
 
-  if (!ops)
-    D_RETURN_(-1);
+  if (num_options > 0)
+    {
+      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
+      
+      if (!ops)
+	D_RETURN_(-1);
+    }
 
   for (i = 0, j = 0; i < num_options; i++)
     {
@@ -436,10 +444,14 @@ efsd_copy(EfsdConnection *ec, char *from_file, char *to_file,
   D_ENTER;
 
   va_start (ap, num_options);
-  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
 
-  if (!ops)
-    D_RETURN_(-1);
+  if (num_options > 0)
+    {
+      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
+      
+      if (!ops)
+	D_RETURN_(-1);
+    }
 
   for (i = 0, j = 0; i < num_options; i++)
     {
@@ -489,10 +501,14 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
   D_ENTER;
 
   va_start (ap, num_options);
-  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
 
-  if (!ops)
-    D_RETURN_(-1);
+  if (num_options > 0)
+    {
+      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
+      
+      if (!ops)
+	D_RETURN_(-1);
+    }
 
   for (i = 0, j = 0; i < num_options; i++)
     {

@@ -40,13 +40,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fs.h>
 #include <efsd_statcache.h>
 
-
 static int data_copy(char *src_path, char *dst_path);
 static int file_copy(char *src_path, char *dst_path);
 static int dir_copy(char *src_path, char *dst_path);
 static int file_move(char *src_path, char *dst_path);
 static int dir_move(char *src_path, char *dst_path);
 static int file_remove(char *path);
+
 
 static int
 data_copy(char *src_path, char *dst_path)
@@ -92,12 +92,9 @@ data_copy(char *src_path, char *dst_path)
   if ( (dst_st = efsd_stat(dst_path)) != NULL)
     block_size = (int)dst_st->st_blksize;
 #if HAVE_ST_BLOCKS
-  if ( (src_st = efsd_stat(src_path)) != NULL)
-    {
-      if (S_ISREG(src_st->st_mode) &&
-	  (src_st->st_size / src_st->st_blksize > src_st->st_blocks))
-	check_for_holes = TRUE;
-    }
+  if (src_st && S_ISREG(src_st->st_mode) &&
+      (src_st->st_size / src_st->st_blksize > src_st->st_blocks))
+    check_for_holes = TRUE;
 #endif
 #endif
 
@@ -218,9 +215,13 @@ file_copy(char *src_path, char *dst_path)
   struct stat *src_st = NULL;
 
   D_ENTER;
+
+  if (efsd_misc_files_identical(src_path, dst_path))
+    D_RETURN_(-1);
+  
   D(("Copying file %s to %s\n", src_path, dst_path));
   
-  if ( (src_st = efsd_stat(src_path)) == NULL)
+  if ( (src_st = efsd_lstat(src_path)) == NULL)
     D_RETURN_(-1);
 
   if (S_ISLNK(src_st->st_mode))
@@ -434,8 +435,8 @@ file_remove(char *path)
   if (remove(path) == 0)
     D_RETURN_(0);
 
-  /* No. Okay, check if it's a directory. */
-  if ( (st = efsd_stat(path)) == NULL)
+  /* No. Okay. Check if it's a directory. */
+  if ( (st = efsd_lstat(path)) == NULL)
     D_RETURN_(-1);
 
   if (S_ISDIR(st->st_mode))
@@ -461,7 +462,7 @@ file_remove(char *path)
 	  if (remove(s) == 0)
 	    continue;
 
-	  if ( (st = efsd_stat(s)) == NULL)
+	  if ( (st = efsd_lstat(s)) == NULL)
 	    {
 	      /* We couldn't stat it and we couldn't
 		 remove it -- report error.
@@ -488,14 +489,14 @@ file_remove(char *path)
 	}
 
       /* We deleted everything in the directory.
-	 Report success of removing directory itself.
+	 Report result of removing directory itself.
       */
 
       closedir(dir);            
       D_RETURN_(remove(path));
     }
 
-  /* It's not a directory. Report error. */
+  /* It's not a directory either. Report error. */
 
   D_RETURN_(-1);
 }
@@ -513,6 +514,16 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
   if (!src_path || src_path[0] == '\0' ||
       !dst_path || dst_path[0] == '\0')
     D_RETURN_(-1);
+
+  if (efsd_misc_files_identical(src_path, dst_path))
+    {
+      D(("src and dst are equal in copy -- doing nothing.\n"));
+      
+      if (ops & EFSD_FS_OP_FORCE)
+	D_RETURN_(0);
+      
+      D_RETURN_(-1);
+    }
 
   D(("Copying %s to %s, rec [%s], force [%s]\n", src_path, dst_path,
      (ops & EFSD_FS_OP_RECURSIVE) ? "X" : " ",
@@ -691,6 +702,8 @@ efsd_fs_rm(char *path, EfsdFsOps ops)
   */
   if (S_ISDIR(st->st_mode) && !(ops & EFSD_FS_OP_RECURSIVE))
     D_RETURN_(-1);
+
+  /* Otherwise, try to remove and report result. */
 
   D_RETURN_(file_remove(path));
 }

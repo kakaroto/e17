@@ -208,13 +208,15 @@ EfsdOption    *efsd_op_get_metadata(char *key, EfsdDatatype type);
 */
 EfsdOption    *efsd_op_get_filetype(void);
 
-/* "Force" option for commands like rm, cp, as known and loved
-   on the command line.
+/* "Force" and "recursive" options for commands like rm, cp,
+   mv, as known and loved on the command line.
 */
 EfsdOption    *efsd_op_force(void);
 EfsdOption    *efsd_op_recursive(void);
 
-/* Include files starting with . in listings, like ls -a */
+/* Include files starting with . in listings, like ls -a.
+   They're otherwise not reported.
+*/
 EfsdOption    *efsd_op_all(void);
 
 #ifdef __cplusplus

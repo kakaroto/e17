@@ -165,13 +165,33 @@ efsd_misc_file_is_dotfile(char *filename)
     filename = slash + 1;
 
   if (*filename == '.')
+    D_RETURN_(TRUE);
+
+  D_RETURN_(FALSE);
+}
+
+
+/* Checks if file paths are identical after making
+   them chanonic -- returns < 0 on error, FALSE
+   if files differ, TRUE otherwise.
+*/
+int
+efsd_misc_files_identical(char *file1, char *file2)
+{
+  char real1[MAXPATHLEN];
+  char real2[MAXPATHLEN];
+
+  D_ENTER;
+
+  if (realpath(file1, real1) && realpath(file2, real2))
     {
-      D(("%s is a dotfile.\n", filename));
-      D_RETURN_(TRUE);
+      if (!strcmp(real1, real2))
+	D_RETURN_(TRUE);
+
+      D_RETURN_(FALSE);
     }
 
-  D(("%s is NOT a dotfile.\n", filename));
-  D_RETURN_(FALSE);
+  D_RETURN_(-1);
 }
 
 

@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static EfsdHash  *stat_cache;
 
 static void         stat_hash_item_free(EfsdHashItem *it);
+static struct stat *stat_internal(char *filename, char use_lstat);
 
 
 static void         
@@ -62,6 +63,58 @@ stat_hash_item_free(EfsdHashItem *it)
 }
 
 
+static struct stat *
+stat_internal(char *filename, char use_lstat)
+{
+  struct stat *st;
+
+  D_ENTER;
+
+  /* Check if info is still in cache: */
+  st = (struct stat*)efsd_hash_find(stat_cache, filename);
+
+  if (st)
+    {
+      /* D(("Cached stat for %s\n", filename)); */
+      D_RETURN_(st);
+    }
+
+  /* No -- we have to stat: */
+
+  st = NEW(struct stat);
+
+  if (use_lstat)
+    {
+      if (lstat(filename, st) < 0)
+	{
+	  D(("lstat() on %s failed.\n", filename));
+	  FREE(st);
+	  D_RETURN_(NULL);
+	}
+    }
+  else
+    {
+      if (stat(filename, st) < 0)
+	{
+	  D(("stat() on %s failed.\n", filename));
+	  FREE(st);
+	  D_RETURN_(NULL);
+	}
+    }
+
+  /* Insert in cache and monitor file to be
+     informed about updates:
+  */
+  efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
+  efsd_fam_start_monitor_internal(filename);
+
+  /* D(("New lstat() on %s\n", filename)); */
+
+  D_RETURN_(st);
+}
+
+
+
 void         
 efsd_stat_init(void)
 {
@@ -77,39 +130,16 @@ efsd_stat_init(void)
 struct stat *
 efsd_stat(char *filename)
 {
-  struct stat *st;
-
   D_ENTER;
+  D_RETURN_(stat_internal(filename, FALSE));
+}
 
-  /* Check if info is still in cache: */
-  st = (struct stat*)efsd_hash_find(stat_cache, filename);
 
-  if (st)
-    {
-      /* D(("Cached stat for %s\n", filename)); */
-      D_RETURN_(st);
-    }
-
-  /* No -- we have to stat(): */
-
-  st = NEW(struct stat);
-
-  if (lstat(filename, st) < 0)
-    {
-      D(("lstat() on %s failed.\n", filename));
-      FREE(st);
-      D_RETURN_(NULL);
-    }
-
-  /* Insert in cache and monitor file to be
-     informed about updates:
-  */
-  efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
-  efsd_fam_start_monitor_internal(filename);
-
-  /* D(("New lstat() on %s\n", filename)); */
-
-  D_RETURN_(st);
+struct stat *
+efsd_lstat(char *filename)
+{
+  D_ENTER;
+  D_RETURN_(stat_internal(filename, TRUE));
 }
 
 

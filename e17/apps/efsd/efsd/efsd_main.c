@@ -200,6 +200,8 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	case EFSD_OP_GET_META:
 	  D(("Trying get-meta option on file-exists event ...\n"));
 	  break;
+	case EFSD_OP_ALL:
+	  break;
 	default:
 	  D(("Nonsense listdir option (code %i)!\n", efr->options[i].type));
 	}

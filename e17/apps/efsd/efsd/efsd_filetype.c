@@ -1238,7 +1238,7 @@ efsd_filetype_get(char *filename)
      filetype is necessary.
   */
 
-  st = efsd_stat(filename);
+  st = efsd_lstat(filename);
 
   if (!st)
     {
