@@ -255,7 +255,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 		    }
 	       }
 #if ENABLE_GNOME
-	     HintsSetClientList();
+	     GNOME_SetClientList();
 #endif
 	     Efree(lst);
 	  }
@@ -348,7 +348,7 @@ DeIconifyEwin(EWin * ewin)
 		  e->iconified = 0;
 	       }
 #if ENABLE_GNOME
-	     HintsSetClientList();
+	     GNOME_SetClientList();
 #endif
 	     Efree(lst);
 	  }

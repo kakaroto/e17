@@ -1955,6 +1955,7 @@ RestackEwin(EWin * ewin)
       Eprintf("RestackEwin %#10lx %s %#10lx\n", ewin->win,
 	      (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
    XConfigureWindow(disp, ewin->win, value_mask, &xwc);
+   HintsSetClientStacking();
 
    if (Mode.mode == MODE_NONE)
      {

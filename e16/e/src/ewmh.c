@@ -362,38 +362,54 @@ void
 EWMH_SetClientList(void)
 {
    Window             *wl;
-   int                 i, nwin, num;
+   int                 i, num;
    EWin              **lst;
 
    EDBUG(6, "EWMH_SetClientList");
 
    /* Mapping order */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   wl = NULL;
-   nwin = 0;
-   if (lst)
+   if (num > 0)
      {
-	wl = Emalloc(sizeof(Window) * num);
+	wl = Emalloc(num * sizeof(Window));
 	for (i = 0; i < num; i++)
-	   wl[nwin++] = lst[i]->client.win;
-	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, wl, nwin);
-	Efree(lst);
+	   wl[i] = lst[i]->client.win;
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, wl, num);
+	Efree(wl);
      }
+   else
+     {
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, NULL, 0);
+     }
+   if (lst)
+      Efree(lst);
+
+   EDBUG_RETURN_;
+}
+
+void
+EWMH_SetClientStacking(void)
+{
+   Window             *wl;
+   int                 i, num;
+   EWin               *const *lst;
+
+   EDBUG(6, "EWMH_SetClientStacking");
 
    /* Stacking order */
-   lst = (EWin **) EwinListGetStacking(&num);
-   /* FIXME: num must be unchanged here! Check! */
-   if (num != nwin)
-      Eprintf("*** ERROR: no=%d nn=%d\n", nwin, num);
-   if (num > nwin)
-      wl = Erealloc(wl, num * sizeof(Window));
-   nwin = 0;
-   for (i = num - 1; i >= 0; i--)
-      wl[nwin++] = lst[i]->client.win;
-   _ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, wl, nwin);
-
-   if (wl)
-      Efree(wl);
+   lst = EwinListGetStacking(&num);
+   if (num > 0)
+     {
+	wl = Emalloc(num * sizeof(Window));
+	for (i = 0; i < num; i++)
+	   wl[i] = lst[num - i - 1]->client.win;
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, wl, num);
+	Efree(wl);
+     }
+   else
+     {
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, NULL, 0);
+     }
 
    EDBUG_RETURN_;
 }

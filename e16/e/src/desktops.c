@@ -1166,7 +1166,7 @@ StackDesktop(int desk)
    XRestackWindows(disp, wl, tot);
    ShowEdgeWindows();
    RaiseProgressbars();
-   HintsSetClientList();
+   HintsSetClientStacking();
 
    if (wl)
       Efree(wl);

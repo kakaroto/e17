@@ -1615,7 +1615,9 @@ doSkipLists(EWin * ewin, const void *params)
    ewin->skipwinlist = !(skip);
    ewin->skipfocus = !(skip);
    HintsSetWindowState(ewin);
-   HintsSetClientList();
+#if ENABLE_GNOME
+   GNOME_SetClientList();
+#endif
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
@@ -1629,7 +1631,9 @@ doSkipTask(EWin * ewin, const void *params)
 
    ewin->skiptask = !ewin->skiptask;
    HintsSetWindowState(ewin);
-   HintsSetClientList();
+#if ENABLE_GNOME
+   GNOME_SetClientList();
+#endif
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);

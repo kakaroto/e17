@@ -62,6 +62,17 @@ HintsSetClientList(void)
 #endif
 #if ENABLE_EWMH
    EWMH_SetClientList();
+   EWMH_SetClientStacking();
+#endif
+   EDBUG_RETURN_;
+}
+
+void
+HintsSetClientStacking(void)
+{
+   EDBUG(6, "HintsSetClientStacking");
+#if ENABLE_EWMH
+   EWMH_SetClientStacking();
 #endif
    EDBUG_RETURN_;
 }
