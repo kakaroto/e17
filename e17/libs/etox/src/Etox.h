@@ -27,6 +27,14 @@ enum _etox_bit_type
 	ETOX_BIT_TYPE_OBSTACLE = 1,
 	ETOX_BIT_TYPE_WRAP_MARKER = 2
 };
+
+typedef enum _etox_marker_placement Etox_Marker_Placement;
+enum _etox_marker_placement
+{
+	ETOX_MARKER_BEGINNING = 0,
+	ETOX_MARKER_END = 1,
+};
+
 /*
  * The context structure holds information relative to the appearance of text
  * that is added to the etox.
@@ -75,6 +83,7 @@ struct _etox_context
 		char *text;
 		char *style;
 		int r, g, b, a;
+		Etox_Marker_Placement placement;
 	} marker;
 };
 
@@ -145,6 +154,9 @@ void etox_context_set_align(Etox_Context * context, int align);
  */
 void etox_context_set_wrap_marker(Etox_Context * context, char *marker, char *style);
 void etox_context_set_wrap_marker_color(Etox_Context * context, int r, int g, int b, int a);
+Etox_Marker_Placement etox_context_get_wrap_marker_place(Etox_Context *context);
+void etox_context_set_wrap_marker_place(Etox_Context *context,
+					Etox_Marker_Placement place);
 
 /*
  * Text manipulation functions

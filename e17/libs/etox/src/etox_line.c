@@ -144,6 +144,8 @@ void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
 	evas_object_geometry_get(bit, &x, &y, &w, &h);
 
 	line->w += w;
+	if (h > line->h)
+		line->h = h;
 	line->length += estyle_length(bit);
 
         etox_selections_update(bit, line);
@@ -194,6 +196,8 @@ void etox_line_layout(Etox_Line * line)
 
 	if (!line->bits)
 		return;
+
+	etox_line_print_bits(line);
 
 	/*
 	 * Determine the horizontal alignment of the text and set the starting
@@ -436,7 +440,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	}
 
 	/* Wrap if we've found a reasonable position */
-	if (index > 0) {
+	if (index >= 0) {
 		etox_line_split(line, bit, index);
 
 		ll = evas_list_find_list(et->lines, line);
@@ -455,7 +459,10 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		estyle_set_font(marker, et->context->font,
 				et->context->font_size);
 		evas_object_show(marker);
-		etox_line_prepend(ll->data, marker);
+		if (et->context->marker.placement == ETOX_MARKER_BEGINNING)
+			etox_line_prepend(ll->data, marker);
+		else
+			etox_line_append(line, marker);
 	}
 	else
 		index = 0;
@@ -471,7 +478,6 @@ etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 	Evas_Object *split = NULL;
 
 	ll = evas_list_find_list(line->bits, bit);
-	ll = ll->next;
 
 	/*
 	 * add the newline after the current one
@@ -486,18 +492,10 @@ etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 	 */
 	if (index > 0) {
 		if (index < estyle_length(bit)) {
-			/* split the edge bit */
 			split = etox_split_bit(line, bit, index);
-			etox_line_remove(line, split);
 		}
+		ll = ll->next;
 	}
-	else {
-		split = bit;
-		etox_line_remove(line, bit);
-	}
-
-	if (split)
-		etox_line_append(newline, split);
 
 	/*
 	 * move the remaining bits to the new line

@@ -463,3 +463,24 @@ etox_context_set_wrap_marker_color(Etox_Context * context, int r, int g, int b, 
 	context->marker.b = b;
 	context->marker.a = a;
 }
+
+/*
+ * @param context: the context to change current wrapping marker
+ * @param place: the placement to use for the wrap marker
+ */
+void
+etox_context_set_wrap_marker_place(Etox_Context *context,
+				   Etox_Marker_Placement place)
+{
+	CHECK_PARAM_POINTER("context", context);
+
+	context->marker.placement = place;
+}
+
+Etox_Marker_Placement
+etox_context_get_wrap_marker_place(Etox_Context *context)
+{
+	CHECK_PARAM_POINTER_RETURN("context", context, 0);
+
+	return context->marker.placement;
+}
