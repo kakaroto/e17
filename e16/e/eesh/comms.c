@@ -53,6 +53,7 @@ CommsFindCommsWindow()
 			   &format, &num, &after, &s);
 	if (s)
 	  {
+             comms_win = 0;
 	     sscanf((char *)s, "%*s %x", (unsigned int *)&comms_win);
 	     XFree(s);
 	  }
