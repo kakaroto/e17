@@ -213,7 +213,7 @@ FocusToEWin(EWin * ewin, int why)
      {
 	if (ewin)
 	   Eprintf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
-		   ewin->icccm.wm_res_name, why);
+		   EwinGetTitle(ewin), why);
 	else
 	   Eprintf("FocusToEWin None why=%d\n", why);
      }
@@ -236,6 +236,10 @@ FocusToEWin(EWin * ewin, int why)
 	break;
 
      case FOCUS_EWIN_NEW:
+	/* Don't chase around after the windows at startup */
+	if (Mode.wm.startup)
+	   EDBUG_RETURN_;
+
 	if (Conf.focus.all_new_windows_get_focus)
 	  {
 	     do_follow = 2;
