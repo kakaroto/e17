@@ -553,3 +553,16 @@ Wed Jan 21 18:19:49 2004                        Michael Jennings (mej)
 
 Adding hash functions in preparation for a hash table implementation.
 ----------------------------------------------------------------------
+Thu Jan 22 20:42:40 2004                        Michael Jennings (mej)
+
+Added a few new hashes.
+
+Fixed a typo in the old hashes.
+
+LibAST-ized the hash tests and made new performance tests.
+
+Anybody care to comment on the validity of my performance tests?  All
+6 algorithms end up with pretty much the same results.  Do I need to
+use a dictionary instead of random "words?"  That's kinda what I'm
+thinking....
+----------------------------------------------------------------------

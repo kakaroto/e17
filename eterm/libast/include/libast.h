@@ -2590,7 +2590,7 @@ extern spifopt_settings_t spifopt_settings;
  * @return  Number of hash buckets required.
  *
  */
-#define JENKINS_HASH_SIZE(n)       (SPIF_CAST(uint32) (1UL << (n)))
+#define SPIFHASH_SIZE(n)       (SPIF_CAST(uint32) (1UL << (n)))
 
 /**
  * Calculate mask to apply to hash key to get lowest n bits.
@@ -2603,7 +2603,7 @@ extern spifopt_settings_t spifopt_settings;
  * @return  Bitmask to zero out all but the n lowest bits.
  *
  */
-#define JENKINS_HASH_MASK(n)       (SPIF_CAST(uint32) (JENKINS_HASH_SIZE(n) - 1))
+#define SPIFHASH_MASK(n)       (SPIF_CAST(uint32) (SPIFHASH_SIZE(n) - 1))
 
 /**
  * Mix 3 32-bit integer values in a reproducible, reversible manner.
@@ -2621,7 +2621,7 @@ extern spifopt_settings_t spifopt_settings;
  * @param b A 32-bit integer.
  * @param c A 32-bit integer.
  */
-#define JENKINS_MIX(a,b,c) \
+#define SPIFHASH_JENKINS_MIX(a,b,c) \
 { \
     a -= b; a -= c; a ^= (c>>13); \
     b -= c; b -= a; b ^= (a<<8);  \
@@ -2633,6 +2633,16 @@ extern spifopt_settings_t spifopt_settings;
     b -= c; b -= a; b ^= (a<<10); \
     c -= a; c -= b; c ^= (b>>15); \
 }
+
+/**
+ * A pointer to a hash function.
+ *
+ * This type is used to refer to any of the spifhash_* functions.  A
+ * variable of this type can point to any of the built-in hash
+ * functions in LibAST interchangeably.
+ *
+ */
+typedef spif_uint32_t (*spifhash_func_t)(spif_uint8_t *, spif_uint32_t, spif_uint32_t);
 /*@}*/
 
 
@@ -2725,13 +2735,16 @@ extern char *strsep(char **, char *);
 #endif
 
 /* builtin_hashes.c */
-spif_uint32_t jenkins_hash(register spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
-spif_uint32_t jenkins_hash32(register spif_uint32_t *key, register spif_uint32_t length, register spif_uint32_t seed);
+extern spif_uint32_t spifhash_jenkins(register spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
+extern spif_uint32_t spifhash_jenkins32(spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
 #if WORDS_BIGENDIAN
-#  define jenkins_hashLE(k, l, s)  jenkins_hash((k), (l), (s))
+#  define spifhash_jenkinsLE(k, l, s)  spifhash_jenkins((k), (l), (s))
 #else
-spif_uint32_t jenkins_hashLE(register spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
+extern spif_uint32_t spifhash_jenkinsLE(register spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed);
 #endif
+extern spif_uint32_t spifhash_rotating(spif_uint8_t *key, spif_uint32_t len, spif_uint32_t seed);
+extern spif_uint32_t spifhash_one_at_a_time(spif_uint8_t *key, spif_uint32_t len, spif_uint32_t seed);
+extern spif_uint32_t spifhash_fnv(spif_uint8_t *key, spif_uint32_t len, spif_uint32_t seed);
 
 /* conf.c */
 extern void spifconf_init_subsystem(void);

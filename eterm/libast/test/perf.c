@@ -38,6 +38,7 @@ size_t rep_cnt = 0, rep_mult = 100;
 
 int perf_macros(void);
 int perf_strings(void);
+int perf_hashes(void);
 int perf_options(void);
 int perf_obj(void);
 int perf_str(void);
@@ -127,6 +128,265 @@ perf_strings(void)
     PERF_END();
 
     PERF_ENDED("string");
+    return 0;
+}
+
+int
+perf_hashes(void)
+{
+    spif_uint8_t i;
+
+    for (i = 0; i < 6; i++) {
+        spifhash_func_t hash_func;
+        spif_uint32_t key_length, hash, j;
+
+        if (i == 0) {
+            PERF_NOTICE("*** Profiling Jenkins hash:");
+            hash_func = spifhash_jenkins;
+        } else if (i == 1) {
+            PERF_NOTICE("*** Profiling Jenkins32 hash:");
+            hash_func = spifhash_jenkins32;
+        } else if (i == 2) {
+#if WORDS_BIGENDIAN
+            continue;
+#else
+            PERF_NOTICE("*** Profiling JenkinsLE hash:");
+            hash_func = spifhash_jenkinsLE;
+#endif
+        } else if (i == 3) {
+            PERF_NOTICE("*** Profiling rotating hash:");
+            hash_func = spifhash_rotating;
+        } else if (i == 4) {
+            PERF_NOTICE("*** Profiling one-at-a-time hash:");
+            hash_func = spifhash_one_at_a_time;
+        } else if (i == 5) {
+            PERF_NOTICE("*** Profiling FNV hash:");
+            hash_func = spifhash_fnv;
+        }
+
+        /***
+         *** The below tests hash speed for small, medium, and
+         *** large randomly-generated keys.
+         ***/
+        PERF_SET_REPS(1000);
+
+        /*
+         * Raw hash speed for fixed-length randomly-generated key.
+         */
+#define KEYLEN 32
+        do {
+            spif_uint8_t buff[KEYLEN];
+
+            for (key_length = 0; key_length < KEYLEN; key_length++) {
+                buff[key_length] = SPIF_CAST(uint8) (rand() & 0xff);
+            }
+            PERF_BEGIN("hash speed for 32-byte key");
+            if (hash_func == spifhash_jenkins32) {
+                PERF_TEST(hash = hash_func(buff, KEYLEN / 4, hash););
+            } else {
+                PERF_TEST(hash = hash_func(buff, KEYLEN, hash););
+            }
+            PERF_END();
+        } while (0);
+#undef KEYLEN
+
+#define KEYLEN 512
+        do {
+            spif_uint8_t buff[KEYLEN];
+
+            for (key_length = 0; key_length < KEYLEN; key_length++) {
+                buff[key_length] = SPIF_CAST(uint8) (rand() & 0xff);
+            }
+            PERF_BEGIN("hash speed for 512-byte key");
+            if (hash_func == spifhash_jenkins32) {
+                PERF_TEST(hash = hash_func(buff, KEYLEN / 4, hash););
+            } else {
+                PERF_TEST(hash = hash_func(buff, KEYLEN, hash););
+            }
+            PERF_END();
+        } while (0);
+#undef KEYLEN
+
+#define KEYLEN 8192
+        do {
+            spif_uint8_t buff[KEYLEN];
+
+            for (key_length = 0; key_length < KEYLEN; key_length++) {
+                buff[key_length] = SPIF_CAST(uint8) (rand() & 0xff);
+            }
+            PERF_BEGIN("hash speed for 8192-byte key");
+            if (hash_func == spifhash_jenkins32) {
+                PERF_TEST(hash = hash_func(buff, KEYLEN / 4, hash););
+            } else {
+                PERF_TEST(hash = hash_func(buff, KEYLEN, hash););
+            }
+            PERF_END();
+        } while (0);
+#undef KEYLEN
+
+        /***
+         *** These tests measure collision rate and distribution
+         *** across a varying number of hash buckets for varying
+         *** numbers of randomly-generated alphabetical keys.
+         ***/
+
+#define KEYLEN      8
+#define HASH_BITS   16
+        /*
+         * Hash distribution for a 16-bit hash and an 8-character random word.
+         */
+#define KEYCNT      64
+        do {
+            spif_uint32_t buckets[SPIFHASH_SIZE(HASH_BITS)];
+            spif_uint32_t c_total, c_min = SPIF_CAST(uint32) (-1), c_max = 0;
+            double c_prob, avg_size;
+
+            MEMSET(buckets, 0, sizeof(buckets));
+            printf("Profiling %lu-bucket distribution for %lu-bit hashes of %lu %lu-byte random words...",
+                   SPIF_CAST_C(unsigned long) SPIFHASH_SIZE(HASH_BITS),
+                   SPIF_CAST_C(unsigned long) HASH_BITS,
+                   SPIF_CAST_C(unsigned long) KEYCNT,
+                   SPIF_CAST_C(unsigned long) KEYLEN);
+            for (j = 0; j < KEYCNT; j++) {
+                spif_uint8_t buff[KEYLEN];
+
+                for (key_length = 0; key_length < KEYLEN; key_length++) {
+                    buff[key_length] = SPIF_CAST(uint8) (rand() % 26 + 'a');
+                }
+                if (hash_func == spifhash_jenkins32) {
+                    hash = hash_func(buff, KEYLEN / 4, hash);
+                } else {
+                    hash = hash_func(buff, KEYLEN, hash);
+                }
+                buckets[((hash >> HASH_BITS) ^ (hash & 0xffff))]++;
+            }
+            tnum = j;
+            for (j = 0, c_total = 0, avg_size = 0; j < SPIFHASH_SIZE(HASH_BITS); j++) {
+                spif_uint32_t c;
+
+                c = buckets[j];
+                AT_LEAST(c_max, c);
+                AT_MOST(c_min, c);
+
+                if (c) {
+                    if (--c) {
+                        c_total += c;
+                    }
+                }
+            }
+            avg_size /= SPIFHASH_SIZE(HASH_BITS);
+            c_prob = ((SPIF_CAST_C(double) c_total) / KEYCNT * 100.0);
+            printf("%lu collisions (%lu/%lu/%.5le), %.2lf%% probability.\n",
+                   SPIF_CAST_C(unsigned long) c_total,
+                   SPIF_CAST_C(unsigned long) c_min,
+                   SPIF_CAST_C(unsigned long) c_max,
+                   avg_size, c_prob);
+        } while (0);
+#undef KEYCNT
+
+#define KEYCNT      2048
+        do {
+            spif_uint32_t buckets[SPIFHASH_SIZE(HASH_BITS)];
+            spif_uint32_t c_total, c_min = SPIF_CAST(uint32) (-1), c_max = 0;
+            double c_prob, avg_size;
+
+            MEMSET(buckets, 0, sizeof(buckets));
+            printf("Profiling %lu-bucket distribution for %lu-bit hashes of %lu %lu-byte random words...",
+                   SPIF_CAST_C(unsigned long) SPIFHASH_SIZE(HASH_BITS),
+                   SPIF_CAST_C(unsigned long) HASH_BITS,
+                   SPIF_CAST_C(unsigned long) KEYCNT,
+                   SPIF_CAST_C(unsigned long) KEYLEN);
+            for (j = 0; j < KEYCNT; j++) {
+                spif_uint8_t buff[KEYLEN];
+
+                for (key_length = 0; key_length < KEYLEN; key_length++) {
+                    buff[key_length] = SPIF_CAST(uint8) (rand() % 26 + 'a');
+                }
+                if (hash_func == spifhash_jenkins32) {
+                    hash = hash_func(buff, KEYLEN / 4, hash);
+                } else {
+                    hash = hash_func(buff, KEYLEN, hash);
+                }
+                buckets[((hash >> HASH_BITS) ^ (hash & 0xffff))]++;
+            }
+            tnum = j;
+            for (j = 0, c_total = 0, avg_size = 0; j < SPIFHASH_SIZE(HASH_BITS); j++) {
+                spif_uint32_t c;
+
+                c = buckets[j];
+                AT_LEAST(c_max, c);
+                AT_MOST(c_min, c);
+
+                if (c) {
+                    if (--c) {
+                        c_total += c;
+                    }
+                }
+            }
+            avg_size /= SPIFHASH_SIZE(HASH_BITS);
+            c_prob = ((SPIF_CAST_C(double) c_total) / KEYCNT * 100.0);
+            printf("%lu collisions (%lu/%lu/%.5le), %.2lf%% probability.\n",
+                   SPIF_CAST_C(unsigned long) c_total,
+                   SPIF_CAST_C(unsigned long) c_min,
+                   SPIF_CAST_C(unsigned long) c_max,
+                   avg_size, c_prob);
+        } while (0);
+#undef KEYCNT
+
+#define KEYCNT      32768
+        do {
+            spif_uint32_t buckets[SPIFHASH_SIZE(HASH_BITS)];
+            spif_uint32_t c_total, c_min = SPIF_CAST(uint32) (-1), c_max = 0;
+            double c_prob, avg_size;
+
+            MEMSET(buckets, 0, sizeof(buckets));
+            printf("Profiling %lu-bucket distribution for %lu-bit hashes of %lu %lu-byte random words...",
+                   SPIF_CAST_C(unsigned long) SPIFHASH_SIZE(HASH_BITS),
+                   SPIF_CAST_C(unsigned long) HASH_BITS,
+                   SPIF_CAST_C(unsigned long) KEYCNT,
+                   SPIF_CAST_C(unsigned long) KEYLEN);
+            for (j = 0; j < KEYCNT; j++) {
+                spif_uint8_t buff[KEYLEN];
+
+                for (key_length = 0; key_length < KEYLEN; key_length++) {
+                    buff[key_length] = SPIF_CAST(uint8) (rand() % 26 + 'a');
+                }
+                if (hash_func == spifhash_jenkins32) {
+                    hash = hash_func(buff, KEYLEN / 4, hash);
+                } else {
+                    hash = hash_func(buff, KEYLEN, hash);
+                }
+                buckets[((hash >> HASH_BITS) ^ (hash & 0xffff))]++;
+            }
+            tnum = j;
+            for (j = 0, c_total = 0, avg_size = 0; j < SPIFHASH_SIZE(HASH_BITS); j++) {
+                spif_uint32_t c;
+
+                c = buckets[j];
+                AT_LEAST(c_max, c);
+                AT_MOST(c_min, c);
+
+                if (c) {
+                    if (--c) {
+                        c_total += c;
+                    }
+                }
+            }
+            avg_size /= SPIFHASH_SIZE(HASH_BITS);
+            c_prob = ((SPIF_CAST_C(double) c_total) / KEYCNT * 100.0);
+            printf("%lu collisions (%lu/%lu/%.5le), %.2lf%% probability.\n",
+                   SPIF_CAST_C(unsigned long) c_total,
+                   SPIF_CAST_C(unsigned long) c_min,
+                   SPIF_CAST_C(unsigned long) c_max,
+                   avg_size, c_prob);
+        } while (0);
+#undef KEYCNT
+
+#undef HASH_BITS
+
+#undef KEYLEN
+    }
+    PERF_ENDED("hash function");
     return 0;
 }
 
@@ -329,7 +589,7 @@ perf_str(void)
 
     teststr = spif_str_new_from_ptr("abcdefg");
     PERF_BEGIN("spif_str_clear() function");
-    PERF_TEST(spif_str_clear(teststr, SPIF_CAST_C(char) (rand() % 256)););
+    PERF_TEST(spif_str_clear(teststr, SPIF_CAST_C(char) (rand() & 0xff)););
     PERF_END();
     spif_str_del(teststr);
 
@@ -447,30 +707,30 @@ perf_list(void)
 
     for (i = 0; i < 3; i++) {
         if (i == 0) {
-            PERF_NOTICE("Testing list interface class, linked_list instance:");
+            PERF_NOTICE("*** Profiling list interface class, linked_list instance:");
             testlist = SPIF_LIST_NEW(linked_list);
         } else if (i == 1) {
-            PERF_NOTICE("Testing list interface class, dlinked_list instance:");
+            PERF_NOTICE("*** Profiling list interface class, dlinked_list instance:");
             testlist = SPIF_LIST_NEW(dlinked_list);
         } else if (i == 2) {
-            PERF_NOTICE("Testing list interface class, array instance:");
+            PERF_NOTICE("*** Profiling list interface class, array instance:");
             testlist = SPIF_LIST_NEW(array);
         } else if (i == 3) {
         }
 
         PERF_BEGIN("SPIF_LIST_APPEND() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         PERF_TEST(SPIF_LIST_APPEND(testlist, spif_str_new_from_ptr(buff)););
         PERF_END();
 
         PERF_BEGIN("SPIF_LIST_PREPEND() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         PERF_TEST(SPIF_LIST_PREPEND(testlist, spif_str_new_from_ptr(buff)););
         PERF_END();
 
         s = spif_str_new();
         PERF_BEGIN("SPIF_LIST_CONTAINS() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         spif_str_init_from_ptr(s, buff);
         PERF_TEST(SPIF_LIST_CONTAINS(testlist, s));
         spif_str_done(s);
@@ -489,7 +749,7 @@ perf_list(void)
 
         s = spif_str_new();
         PERF_BEGIN("SPIF_LIST_INDEX() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         spif_str_init_from_ptr(s, buff);
         PERF_TEST(SPIF_LIST_INDEX(testlist, s));
         spif_str_done(s);
@@ -497,20 +757,20 @@ perf_list(void)
         spif_str_del(s);
 
         PERF_BEGIN("SPIF_LIST_INSERT() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         PERF_TEST(SPIF_LIST_INSERT(testlist, spif_str_new_from_ptr(buff)););
         PERF_END();
 
         len = SPIF_LIST_COUNT(testlist);
         PERF_BEGIN("SPIF_LIST_INSERT_AT() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         idx = rand() % len;
         PERF_TEST(SPIF_LIST_INSERT_AT(testlist, spif_str_new_from_ptr(buff), idx););
         PERF_END();
 
         s = spif_str_new();
         PERF_BEGIN("SPIF_LIST_REMOVE() macro");
-        buff[0] = SPIF_CAST_C(char) (rand() % 256);
+        buff[0] = SPIF_CAST_C(char) (rand() & 0xff);
         spif_str_init_from_ptr(s, buff);
         PERF_TEST(s2 = SPIF_CAST(str) SPIF_LIST_REMOVE(testlist, s); if (!SPIF_STR_ISNULL(s2)) {spif_str_del(s2);});
         spif_str_done(s);
@@ -551,6 +811,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = perf_strings()) != 0) {
+        return ret;
+    }
+    if ((ret = perf_hashes()) != 0) {
         return ret;
     }
     if ((ret = perf_options()) != 0) {
