@@ -84,6 +84,7 @@ AM_CONDITIONAL(HAVE_VORBIS, test "$have_vorbis" = "yes")
 dnl Check for libavcodec
 tmp=$LIBS
 
+AM_CONDITIONAL(HAVE_AVCODEC, false) 
 AC_ARG_ENABLE(debug,
         [  --enable-avcodec          Build AVcodec support (default: no)], 
 
@@ -103,13 +104,13 @@ AC_ARG_ENABLE(debug,
 	fi
 
 	LIBS=$tmp
-	AM_CONDITIONAL(HAVE_AVCODEC, test "$have_avcodec" = "yes") 
+	AM_CONDITIONAL(HAVE_AVCODEC, test x"$have_avcodec" = x"yes") 
 	], have_avcodec="no")
 	
 
 dnl Check for OSS
 AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h, [have_oss="yes"; break], have_oss="no")
-AM_CONDITIONAL(HAVE_OSS, test "$have_oss" = "yes")
+AM_CONDITIONAL(HAVE_OSS, test x"$have_oss" = "xyes")
 
 dnl Check for ALSA
 PKG_CHECK_MODULES(ALSA, alsa >= 0.9, have_alsa="yes", have_alsa="no")
@@ -117,7 +118,7 @@ AM_CONDITIONAL(HAVE_ALSA, test "x$have_alsa" = "xyes")
 
 dnl Check for Solaris audio stuff
 AC_CHECK_HEADER(sys/audioio.h, have_solaris="yes", have_solaris="no")
-AM_CONDITIONAL(HAVE_SOLARIS, test "$have_solaris" = "yes")
+AM_CONDITIONAL(HAVE_SOLARIS, test x"$have_solaris" = "xyes")
 
 AC_OUTPUT([
 Makefile
