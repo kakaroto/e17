@@ -165,7 +165,6 @@ init_montage_mode (void)
 
   if (bg_im)
     imlib_blend_image_onto_image (bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
-  imlib_context_set_blend (1);
 
   for (i = 0; i < file_num; i++)
     {
@@ -232,6 +231,10 @@ init_montage_mode (void)
 	      /* TODO */
 	      D (("Applying alpha options\n"));
 	    }
+	  if(imlib_image_has_alpha())
+		imlib_context_set_blend (1);
+	  else 
+		imlib_context_set_blend (0);
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 	  imlib_context_set_image (im_temp);

@@ -127,10 +127,6 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   imlib_context_set_anti_alias (0);
   imlib_context_set_dither (0);
   imlib_context_set_image (im);
-  if (imlib_image_has_alpha ())
-    imlib_context_set_blend (1);
-  else
-    imlib_context_set_blend (0);
 
   /* first time it's called */
   if (progwin->im_w == 0)
@@ -151,6 +147,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
 		       depth);
       imlib_context_set_drawable (progwin->bg_pmap);
       imlib_context_set_image (progwin->blank_im);
+      imlib_context_set_blend (0);
       imlib_render_image_on_drawable (0, 0);
       XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
       if (exists)
@@ -164,6 +161,11 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   imlib_context_set_drawable (progwin->bg_pmap);
   imlib_context_set_anti_alias (0);
   imlib_context_set_dither (0);
+  if (imlib_image_has_alpha ())
+    imlib_context_set_blend (1);
+  else
+    imlib_context_set_blend (0);
+
   imlib_render_image_part_on_drawable_at_size (update_x, update_y,
 					       update_w, update_h,
 					       update_x, update_y, update_w,

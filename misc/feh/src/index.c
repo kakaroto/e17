@@ -42,6 +42,8 @@ init_index_mode (void)
   Imlib_Font title_fn = NULL;
   int im_per_col = 0;
   int im_per_row = 0;
+  int fontwidth = 0;
+  int tw, th;
 
   D (("In init_index_mode\n"));
 
@@ -52,8 +54,8 @@ init_index_mode (void)
 
   /* Time to set up the font stuff */
   imlib_add_path_to_font_path (".");
-  imlib_add_path_to_font_path (PREFIX "/share/feh/fonts/");
-  imlib_add_path_to_font_path (PREFIX "./ttfonts/");
+  imlib_add_path_to_font_path (PREFIX "/share/feh/fonts");
+  imlib_add_path_to_font_path ("./ttfonts");
   if (opt.font)
     {
       fn = imlib_load_font (opt.font);
@@ -73,10 +75,15 @@ init_index_mode (void)
     title_fn = imlib_load_font ("20thcent/24");
 
   if ((!fn) || (!title_fn))
-      eprintf ("Error loading fonts");
+    eprintf ("Error loading fonts");
   imlib_context_set_font (fn);
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
+
+  /* Work out how high the font is */
+  imlib_get_text_size ("W", &tw, &th);
+  /* For now, allow room for 3 lines */
+  text_area_h = ((th + 2) * 3) + 5;
 
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
@@ -152,11 +159,11 @@ init_index_mode (void)
 	      if (file_num % rec_im_per_row)
 		rec_h += tot_thumb_h;
 	    }
-	  weprintf ( "The image size you requested (%d by %d) is"
-		   " NOT big\n      enough to fit the number of thumbnails specified"
-		   " (%d).\nNot all images will be shown (only %d). May I recommend a"
-		   " size of %d by %d?",
-		   w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
+	  weprintf ("The image size you requested (%d by %d) is"
+		    " NOT big\n      enough to fit the number of thumbnails specified"
+		    " (%d).\nNot all images will be shown (only %d). May I recommend a"
+		    " size of %d by %d?",
+		    w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
 	}
     }
   else if (opt.limit_h)
@@ -195,14 +202,13 @@ init_index_mode (void)
   im_main = imlib_create_image (w, h + title_area_h);
 
   if (!im_main)
-      eprintf ("Imlib error creating image");
+    eprintf ("Imlib error creating image");
 
   imlib_context_set_image (im_main);
   imlib_context_set_blend (0);
 
   if (bg_im)
     imlib_blend_image_onto_image (bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
-  imlib_context_set_blend (1);
 
   for (i = 0; i < file_num; i++)
     {
@@ -269,15 +275,19 @@ init_index_mode (void)
 	      /* TODO */
 	      D (("Applying alpha options\n"));
 	    }
+	  if(imlib_image_has_alpha())
+		imlib_context_set_blend (1);
+	  else
+		imlib_context_set_blend (0);
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 	  /* Now draw on the info text */
 	  D (("Drawing at %d,%d\n", x, y + opt.thumb_h + 10));
-	  imlib_text_draw (x, y + opt.thumb_h + 10,
+	  imlib_text_draw (x, y + opt.thumb_h + 2,
 			   chop_file_from_full_path (files[i]));
-	  imlib_text_draw (x, y + opt.thumb_h + 20,
+	  imlib_text_draw (x, y + opt.thumb_h + (th + 2) + 2,
 			   create_index_dimension_string (ww, hh));
-	  imlib_text_draw (x, y + opt.thumb_h + 30,
+	  imlib_text_draw (x, y + opt.thumb_h + 2 * (th + 2) + 2,
 			   create_index_size_string (files[i]));
 	  imlib_context_set_image (im_temp);
 	  imlib_free_image_and_decache ();
