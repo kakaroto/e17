@@ -71,6 +71,7 @@ EwlEvent *cb_ewl_event_buttonpress_translate(EwlEventTranslator *t, XEvent *xev)
 		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xbutton.window);
 	((EwlEventMousedown*)eev)->x = xev->xbutton.x;
 	((EwlEventMousedown*)eev)->y = xev->xbutton.y;
+	((EwlEventMousedown*)eev)->button = xev->xbutton.button;
 	
 	return (EwlEvent*)eev;
 }
@@ -89,6 +90,7 @@ EwlEvent *cb_ewl_event_buttonrelease_translate(EwlEventTranslator *t, XEvent *xe
 		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xbutton.window);
 	((EwlEventMouseup*)eev)->x = xev->xbutton.x;
 	((EwlEventMouseup*)eev)->y = xev->xbutton.y;
+	((EwlEventMouseup*)eev)->button = xev->xbutton.button;
 	
 	return (EwlEvent*)eev;
 }

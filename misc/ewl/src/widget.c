@@ -363,13 +363,14 @@ void             ewl_widget_set_rect(EwlWidget *widget,
 		ewl_rect_set(rect,x,y,w,h);
 		ewl_layout_set_req_rect(widget->layout,
 		                        rect);
-		if (x||y) ewl_widget_set_needs_refresh(widget);
-		if (w||h) ewl_widget_set_needs_resize(widget);
-		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);
-		if (!ev)	{
-			ewl_debug("ewl_widget_set_rect", EWL_NULL_ERROR, "ev");
-		} else {
-			ev->widget = widget;
+		if (x||y) {
+			ewl_widget_set_needs_refresh(widget);
+			ev = ewl_event_new_by_type_with_widget(EWL_EVENT_MOVE, widget);
+			ewl_event_queue(ev);
+		}
+		if (w||h) {
+			ewl_widget_set_needs_resize(widget);
+			ev = ewl_event_new_by_type_with_widget(EWL_EVENT_RESIZE,widget);
 			ewl_event_queue(ev);
 		}
 	}
@@ -398,8 +399,8 @@ static EwlBool _cb_ewl_find_event_handler(EwlLL *node, EwlData *data)
 
 void       ewl_callback_add(EwlWidget *w, EwlEventType t,
 	                        EwlBool  (*cb)(EwlWidget *widget,
-	                                      EwlEvent *ev,
-	                                      EwlData *data),
+	                                       EwlEvent   *ev,
+	                                       EwlData    *data),
                             EwlData  *data)
 {
 	FUNC_BGN("ewl_callback_add");
@@ -411,8 +412,8 @@ void       ewl_callback_add(EwlWidget *w, EwlEventType t,
 void       ewl_widget_callback_add(EwlWidget *w,
                                    EwlEventType t, 
 	                               EwlBool (*cb)(EwlWidget *widget,
-	                                             EwlEvent *ev,
-	                                             EwlData *data),
+	                                             EwlEvent  *ev,
+	                                             EwlData   *data),
                                    EwlData *data)
 {
 	EwlEvCbLL *l = NULL, *l2 = NULL;

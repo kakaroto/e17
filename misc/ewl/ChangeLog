@@ -809,3 +809,30 @@ for you richlowe).
 
 - updated entire tree to reflect cleaner state api.
 
+-----
+20000819-1045-PDT, pabs
+
+- ewl_widget_set_rect() now emits a EWL_EVENT_MOVE on the widget if
+the x or y is adjusted.
+- aded ewl_event_new_by_type_with_widget().  To emit an simple event
+(eg one that doesn't have any additional parameters that need to be
+set), you can just do the following:
+    ev = ewl_event_new_by_type_with_widget(EWL_EVENT_HAXOR, widget);
+    ewl_event_queue(ev);
+
+
+
+-----
+20000819-1049-PDT, pabs
+
+- added EWL_EVENT_MOVE hook to EWlWindows -- you _should_ be able
+to move them around now with override-redirect on, but I ahven't
+checked yet.
+- didn't work.. dont' know why yet.
+- whoops!  forgot to actually connect EwlWindows to the event
+handler. hehe. :)
+- okay it works in my sample mouseup handler, ubt not before the
+window is mapped. hmm.
+- okay works now, but it's not being exposed if it's clipped on
+the screen boundaries. hmm
+

@@ -90,6 +90,8 @@ struct _EwlEvent	{
 EwlEvent      *ewl_event_none_new();
 EwlEvent      *ewl_event_new();
 EwlEvent      *ewl_event_new_by_type(EwlEventType t);
+EwlEvent      *ewl_event_new_by_type_with_widget(EwlEventType  type,
+                                                 void         *widget);
 EwlEvent      *ewl_event_dup(EwlEvent *sev);
 void           ewl_event_free(EwlEvent *ev);
 

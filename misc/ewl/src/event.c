@@ -135,6 +135,23 @@ EwlEvent *ewl_event_new_by_type(EwlEventType type)
 	return ev;
 }
 
+EwlEvent      *ewl_event_new_by_type_with_widget(EwlEventType  type,
+                                                 void         *widget)
+{
+	EwlEvent *ev = NULL;
+	FUNC_BGN("ewl_event_new_by_type_with_widget");
+	ev = ewl_event_new_by_type(type);
+	if (!ev) {
+		ewl_debug("ewl_event_new_by_type_with_widget",
+		          EWL_NULL_ERROR, "ev");
+	} else {
+		ev->widget = widget;
+	}
+	FUNC_END("ewl_event_new_by_type_with_widget");
+	return ev;
+}
+
+
 EwlEvent *ewl_event_dup(EwlEvent *sev)
 {
 	EwlEvent *tev = ewl_event_new();

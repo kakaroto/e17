@@ -5,7 +5,7 @@
 EwlBool cb_test_option(int argc, char *argv[]);
 EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d);
 EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d);
-EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d);
+EwlBool cb_resize(EwlWidget *w, EwlEventMouseup *ev, EwlData *d);
 
 EwlWidget *win;
 int main(int argc, char *argv[])
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	ewl_set_application_name("ewltest");
 
 	/* configure widgets  and connect callbacks */
-	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "EWL Text",
+	win = ewl_window_new_with_values(EWL_WINDOW_TRANSIENT, "EWL Text",
 									320, 240);
 	ewl_window_move(win,800,600);
 	ewl_window_resize(win,640,480);
@@ -85,10 +85,20 @@ EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d)
 	return TRUE;
 }
 
-EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d)
+EwlBool cb_resize(EwlWidget *w, EwlEventMouseup *ev, EwlData *d)
 {
-	EwlState *s = ewl_state_get();
-	ewl_window_resize(win,50,50);
-	/*XResizeWindow(s->disp,((EwlWindow*)win)->xwin, 50, 50);*/
+	switch (ev->button) {
+	case 1:
+		ewl_window_resize(win,50,50);
+		break;
+	case 2:
+		ewl_window_move(win,20,20);
+		break;
+	case 3:
+		ewl_quit();
+		break;
+	default:
+		break;
+	}
 	return TRUE;
 }

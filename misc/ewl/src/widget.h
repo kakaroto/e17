@@ -125,14 +125,14 @@ void             ewl_widget_set_rect(EwlWidget *widget,
 /* public event functions */
 void             ewl_callback_add(EwlWidget *w, EwlEventType t, 
 	                              char   (*cb)(EwlWidget *widget,
-	                                           EwlEvent *ev,
+	                                           EwlEvent  *ev,
 	                                           EwlData *data),
                                   EwlData *data);
 /* private event functiosn */
 void             ewl_widget_callback_add(EwlWidget *w,
                                          EwlEventType t, 
 	                                     char   (*cb)(EwlWidget *widget,
-	                                                  EwlEvent *ev,
+	                                                  EwlEvent  *ev,
 	                                                  EwlData *data),
                                          EwlData *data);
 char             ewl_widget_handle_event(EwlWidget *w,

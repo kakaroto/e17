@@ -35,9 +35,11 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 {
 	EwlWindow         *window = (EwlWindow*) widget;
 	EwlBool            r = TRUE;
+	EwlRect           *rect = NULL;
 	EwlEventExpose    *e_ev = (EwlEventExpose*) ev;
 	EwlEventConfigure *c_ev = (EwlEventConfigure*) ev;
-	int                width  = 0,
+	int                x = 0, y = 0,
+	                   width  = 0,
 	                   height = 0;
 
 	switch(ev->type)	{
@@ -101,16 +103,23 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 				widget->layout->req->h = EWL_WINDOW_MAX_HEIGHT;
 		width = widget->layout->req->w;
 		height = widget->layout->req->h;
-		fprintf(stderr,"attempting to resize window, "
-		        "widget = %08x, width = %d, height = %d\n",
-		        (unsigned int) widget, width, height);
-		ewl_rect_free(widget->layout->rect);
-		widget->layout->rect = ewl_rect_dup(widget->layout->req);
+		if (ewl_debug_is_active())
+			fprintf(stderr,"attempting to resize window, "
+			        "widget = %08x, width = %d, height = %d\n",
+			        (unsigned int) widget, width, height);
+		rect = widget->layout->rect;
+		widget->layout->rect = ewl_rect_new_with_values(
+		                                    &(rect->x), &(rect->y),
+		                                    &(widget->layout->req->w),
+		                                    &(widget->layout->req->h));
+		ewl_rect_free(rect);
 		if (!window->xwin) {
-			fprintf(stderr, "window not realized yet");
+			if (ewl_debug_is_active())
+				fprintf(stderr, "window not realized yet\n");
 		} else {
 			XResizeWindow(ewl_get_display(),window->xwin,width,height);
-			fprintf(stderr,"done... "
+			if (ewl_debug_is_active())
+				fprintf(stderr,"done... "
 			        "widget = %08x, width = %d, height = %d\n",
 			        (unsigned int) widget, width, height);
 			if (window->pmap)	
@@ -121,6 +130,24 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 			                             window->depth);
 			ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
 			ewl_container_resize_children(widget);
+		}
+		break;
+	case EWL_EVENT_MOVE:
+		if (widget->layout->req->x < -EWL_WINDOW_MAX_WIDTH)
+			widget->layout->req->x = 0;
+		if (widget->layout->req->x > EWL_WINDOW_MAX_WIDTH)
+			widget->layout->req->x = 0;
+		if (widget->layout->req->y < -EWL_WINDOW_MAX_HEIGHT)
+			widget->layout->req->y = 0;
+		if (widget->layout->req->y > EWL_WINDOW_MAX_HEIGHT)
+			widget->layout->req->y = 0;
+		x = widget->layout->req->x;
+		y = widget->layout->req->y;
+		if (!window->xwin) {
+			if (ewl_debug_is_active())
+				fprintf(stderr,"can't move window before it's realized\n");
+		} else {
+			XMoveWindow(ewl_get_display(),window->xwin,x,y);
 		}
 		break;
 	default:
@@ -179,11 +206,13 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	/*ewl_callback_add(widget,EWL_EVENT_SHOW,_cb_sample_nested,NULL);*/
 	ewl_callback_add(widget, EWL_EVENT_HIDE,
 	                 _cb_ewl_window_event_handler, NULL);
-	ewl_callback_add(widget, EWL_EVENT_RESIZE,
-	                 _cb_ewl_window_event_handler, NULL);
 	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
 	                 _cb_ewl_window_event_handler, NULL);
 	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
+	                 _cb_ewl_window_event_handler, NULL);
+	ewl_callback_add(widget, EWL_EVENT_RESIZE,
+	                 _cb_ewl_window_event_handler, NULL);
+	ewl_callback_add(widget, EWL_EVENT_MOVE,
 	                 _cb_ewl_window_event_handler, NULL);
 
 	/* window properties */
@@ -337,30 +366,31 @@ void	ewl_window_realize(EwlWidget *widget)
 		win->mwmhints.flags = 0;
 	
 		fprintf(stderr,"ewl_window_realize: rect = ");
-		ewl_rect_dump(widget->layout->rect);
-		if (widget->layout->rect->w < 1)
+		ewl_rect_dump(widget->layout->req);
+		if (widget->layout->req->w < 1)
 				widget->layout->rect->w = 1;
-		if (widget->layout->rect->w > EWL_WINDOW_MAX_WIDTH)
+		if (widget->layout->req->w > EWL_WINDOW_MAX_WIDTH)
 				widget->layout->rect->w = EWL_WINDOW_MAX_WIDTH;
-		if (widget->layout->rect->h < 1)
-				widget->layout->rect->h = 1;
-		if (widget->layout->rect->h > EWL_WINDOW_MAX_HEIGHT)
-				widget->layout->rect->h = EWL_WINDOW_MAX_HEIGHT;
+		if (widget->layout->req->h < 1)
+				widget->layout->req->h = 1;
+		if (widget->layout->req->h > EWL_WINDOW_MAX_HEIGHT)
+				widget->layout->req->h = EWL_WINDOW_MAX_HEIGHT;
+		ewl_layout_set_rect(widget->layout,widget->layout->req);
 		
 		gc.foreground = BlackPixel(ewl_get_display(), DefaultScreen(ewl_get_display()));
 		win->gc = XCreateGC(ewl_get_display(), win->root, GCForeground, &gc);
 		win->xwin = XCreateWindow(ewl_get_display(), win->root,
-		                          widget->layout->rect->x,
-		                          widget->layout->rect->y, 
-		                          widget->layout->rect->w,
-		                          widget->layout->rect->h,
+		                          widget->layout->req->x,
+		                          widget->layout->req->y, 
+		                          widget->layout->req->w,
+		                          widget->layout->req->h,
 		                          0, win->depth,
 		                          InputOutput, win->vis,
 		                          CWOverrideRedirect | CWSaveUnder |
 		                          CWBackingStore | CWColormap |
 		                          CWBackPixel | CWBorderPixel |
 		                          CWEventMask, &win->attr);
-	
+
 		/* setting title */
 		XStoreName(ewl_get_display(), win->xwin, win->title);
 		
