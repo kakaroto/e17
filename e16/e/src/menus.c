@@ -272,16 +272,9 @@ void
 ShowMenu(Menu * m, char noshow)
 {
    EWin               *ewin;
-   int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus
-
-						 * 
-						 * * 
-						 * * * 
-						 * * * * 
-						 * * * * * 
-						 * * * * * * 
-						 * * * * * * * from appearing offscreen */
-   unsigned int        w, h, mw, mh;
+   int                 x, y;
+   int                 wx = 0, wy = 0;	/* wx, wy added to stop menus */
+   unsigned int        w, h, mw, mh;	/* from appearing offscreen */
 
    EDBUG(5, "ShowMenu");
    if ((m->num <= 0) || (!m->style))
