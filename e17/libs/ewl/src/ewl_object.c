@@ -1029,6 +1029,55 @@ inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align)
 }
 
 /**
+ * ewl_object_place - assign a specific area to an object
+ * @o: the object to place
+ * @x: the x coordinate of the available area
+ * @y: the y coordinate of the available area
+ * @w: the width of the available area
+ * @h: the height of the available area
+ *
+ * Returns no value. Attempts to fill the object to the specified area, aligns
+ * the object within that area.
+ */
+void
+ewl_object_place(Ewl_Object *o, int x, int y, unsigned int w, unsigned int h)
+{
+	int x_pos, y_pos;
+	unsigned int w_accept, h_accept;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_object_request_size(o, w, h);
+
+	w_accept = ewl_object_get_current_w(o);
+	h_accept = ewl_object_get_current_h(o);
+
+	/*
+	 * Horizontal position
+	 */
+	if (o->flags & EWL_ALIGNMENT_LEFT)
+		x_pos = x;
+	else if (o->flags & EWL_ALIGNMENT_RIGHT)
+		x_pos = x + w - w_accept;
+	else
+		x_pos = x + ((w - w_accept) / 2);
+
+	/*
+	 * Vertical position
+	 */
+	if (o->flags & EWL_ALIGNMENT_TOP)
+		y_pos = y;
+	else if (o->flags & EWL_ALIGNMENT_BOTTOM)
+		y_pos = y + h - h_accept;
+	else
+		y_pos = y + ((h - h_accept) / 2);
+
+	ewl_object_request_position(o, x_pos, y_pos);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * ewl_object_set_fill_policy - change the fill policy of the specified object
  * @o: the object to change fill policy
  * @fill: the new fill policy for the object

@@ -90,7 +90,6 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
-	DCHECK_PARAM_PTR("im", im);
 
 	w = EWL_WIDGET(i);
 

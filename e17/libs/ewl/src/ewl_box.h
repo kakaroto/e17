@@ -21,6 +21,7 @@ struct _ewl_box
 	unsigned int    spacing;
 
 	Ewl_Widget     *max_align;
+	unsigned int    homogeneous;
 };
 
 #define ewl_hbox_new() ewl_box_new(EWL_ORIENTATION_HORIZONTAL)
@@ -31,5 +32,6 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation orientation);
 int             ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void            ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o);
 void            ewl_box_set_spacing(Ewl_Box * b, int spacing);
+void            ewl_box_set_homogeneous(Ewl_Box *b, int h);
 
 #endif				/* __EWL_BOX_H__ */

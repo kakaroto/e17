@@ -53,6 +53,8 @@ static void     __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w,
 				       int size, Ewl_Orientation o);
 static void     __ewl_box_configure(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
+static void      __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data,
+					void *user_data);
 static void     __ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
 					 int *align_size);
 static void     __ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
@@ -122,7 +124,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 				__ewl_box_child_resize, __ewl_box_remove);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
-			     NULL);
+			NULL);
 
 	/*
 	 * Check if the info structs have been created yet, if not create
@@ -179,6 +181,40 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 }
 
 /**
+ * ewl_box_set_homogeneous - change the homogeneous layout of the box
+ * @b: the box to change homogeneous layout
+ * @h: the boolean value to change the layout mode to
+ *
+ * Returns no value. Boxes use homogeneous layout by default, this can be used
+ * to change that.
+ */
+void ewl_box_set_homogeneous(Ewl_Box *b, int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+
+	if (b->homogeneous == h)
+		DRETURN(DLEVEL_STABLE);
+
+	if (h) {
+		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
+				__ewl_box_configure);
+		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
+				__ewl_box_configure_homogeneous, NULL);
+	}
+	else {
+		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
+				__ewl_box_configure_homogeneous);
+		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
+				__ewl_box_configure, NULL);
+	}
+
+	b->homogeneous = h;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * ewl_box_set_spacing - changes the spacing between the objects in the box
  * @b: the box to change the spacing
  * @s: the spacing to put between the child widgets
@@ -223,8 +259,10 @@ __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Box        *b;
 
 	int             total_fill = 0;
-	int             x, y, width, height;
-	int            *fill, *align, *fill_size, *align_size;
+	int             x, y;
+	unsigned int    width, height;
+	int            *fill, *align;
+	unsigned int   *fill_size, *align_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -282,6 +320,63 @@ __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Layout the children in their appropriate positions.
 	 */
 	__ewl_box_configure_layout(b, &x, &y, fill, align, align_size);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	int             i, num;
+	int             x, y;
+	unsigned int    width, height;
+	int            *fill;
+	unsigned int   *fill_size;
+	int             remainder;
+	Ewl_Object     *child;
+	Ewl_Box        *b;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	num = ewd_list_nodes(EWL_CONTAINER(w)->children);
+	if (!num)
+		DRETURN(DLEVEL_STABLE);
+
+	b = EWL_BOX(w);
+
+	/*
+	 * Get the starting values for the dimensions of the box.
+	 */
+	x = CURRENT_X(w);
+	y = CURRENT_Y(w);
+	width = CURRENT_W(w);
+	height = CURRENT_H(w);
+
+	/*
+	 * These variables avoid large nested if's to handle different
+	 * orientations.
+	 */
+	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
+		fill = &x;
+		fill_size = &width;
+	} else {
+		fill = &y;
+		fill_size = &height;
+	}
+
+	*fill_size -= b->spacing * (num - 1);
+	remainder = *fill_size % num;
+	*fill_size = *fill_size / num;
+
+	i = 0;
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+		i++;
+		if (i == num)
+			*fill_size += remainder;
+		ewl_object_place(child, x, y, width, height);
+		*fill += *fill_size + b->spacing;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

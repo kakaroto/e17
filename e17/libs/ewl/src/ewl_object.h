@@ -86,6 +86,8 @@ inline unsigned int	ewl_object_get_maximum_w(Ewl_Object * o);
 inline unsigned	int	ewl_object_get_maximum_h(Ewl_Object * o);
 
 inline void     ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
+void            ewl_object_place(Ewl_Object *o, int x, int y, unsigned
+				 int w, unsigned int h);
 inline		Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);
 inline void     ewl_object_set_fill_policy(Ewl_Object * o,
 					   Ewl_Fill_Policy fill);
