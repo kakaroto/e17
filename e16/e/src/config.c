@@ -3035,6 +3035,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  "-nostdinc "
 		  "-undef "
 		  "-include %s/config/definitions "
+		  "-I%s "
 		  "-I%s/config "
 		  "-D ENLIGHTENMENT_VERSION=%s "
 		  "-D ENLIGHTENMENT_ROOT=%s "
@@ -3049,7 +3050,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  "-D USER_SHELL=%s "
 		  "-D ENLIGHTENMENT_VERSION_015=1 "
 		  "%s %s/cached/cfg/%s.preparsed",
-		  epp_path, ENLIGHTENMENT_ROOT, ENLIGHTENMENT_ROOT,
+		  epp_path, ENLIGHTENMENT_ROOT, themepath, ENLIGHTENMENT_ROOT,
 		  ENLIGHTENMENT_VERSION, ENLIGHTENMENT_ROOT, ENLIGHTENMENT_BIN,
 		  themepath,
 		  root.w, root.h, root.w, root.h, root.depth,

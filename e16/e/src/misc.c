@@ -272,9 +272,7 @@ SanitiseThemeDir(char *dir)
 {
    char                s[4096];
 
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "actionclasses.cfg");
-   if (!isfile(s))
-      return 0;
+   return 1;
    Esnprintf(s, sizeof(s), "%s/%s", dir, "borders.cfg");
    if (!isfile(s))
       return 0;
@@ -303,9 +301,6 @@ SanitiseThemeDir(char *dir)
    if (!isfile(s))
       return 0;
    Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
-   if (!isfile(s))
-      return 0;
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "textclasses.cfg");
    if (!isfile(s))
       return 0;
    Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");

@@ -150,8 +150,11 @@ CreateStartupDisplay(char start)
      {
 	bg_sideways = (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
 					      LIST_TYPE_BACKGROUND);
-	ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0, LIST_FINDBY_NAME,
+	ic = (ImageClass *) FindItem("STARTUP_BAR", 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_ICLASS);
+	if (!ic)
+	   ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0, LIST_FINDBY_NAME,
+					LIST_TYPE_ICLASS);
 	bg = (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_BACKGROUND);
 	if ((!ic) || (!bg))
