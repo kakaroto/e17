@@ -44,6 +44,8 @@ extern Evas_Object o_txt_panel_box1;
 extern Evas_Object o_bg_etox;
 extern Evas_Object clip_msg;
 extern Evas_Object clip_test;
+extern Evas_Object o_next_box;
+extern Evas_Object o_txt_next_box;
 
 extern Etox *e_msg;
 extern Etox *e_test;
@@ -79,11 +81,18 @@ void e_mouse_down(Ecore_Event * ev);
 void e_mouse_up(Ecore_Event * ev);
 /* when the window gets moved or resized */
 void e_window_configure(Ecore_Event * ev);
+/* when the mouse moves over a button */
+void mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 
 /* panel functions */
 void e_slide_panel_in(int v, void *data);
 void e_slide_panel_out(int v, void *data);
 void show_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void hide_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+
+/* button functions */
+void button_next_new_all(Evas _e);
+void button_next_new(Evas _e);
 
 #endif /* __ETOX_TEST_H__ */

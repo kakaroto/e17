@@ -12,6 +12,8 @@ Evas_Object clip_msg;
 Evas_Object clip_test;
 Evas_Object o_panel_box1;
 Evas_Object o_txt_panel_box1;
+Evas_Object o_next_box;
+Evas_Object o_txt_next_box;
 
 Evas evas;
 Evas_Render_Method render_method = RENDER_ENGINE;
@@ -75,7 +77,7 @@ e_slide_panel_in (int v, void *data)
   evas_get_image_size (evas, o_panel, &w, NULL);
   px = (w * sin (val * 0.5 * 3.141592654)) - w;
   evas_move (evas, o_panel, px, 0);
-  evas_move (evas, o_txt_paneltitle, px + 8, 5);
+  evas_move (evas, o_txt_paneltitle, px + 4, 5);
   evas_move (evas, o_panel_box1, px + 5, 40);
   evas_move (evas, o_txt_panel_box1, px + 8, 42);
   evas_text_get_max_ascent_descent (evas, o_txt_panel_box1, &ascent,
@@ -106,7 +108,7 @@ e_slide_panel_out (int v, void *data)
   evas_get_image_size (evas, o_panel, &w, NULL);
   px = (w * sin ((1.0 - val) * 0.5 * 3.141592654)) - w;
   evas_move (evas, o_panel, px, 0);
-  evas_move (evas, o_txt_paneltitle, px + 8, 5);
+  evas_move (evas, o_txt_paneltitle, px + 4, 5);
   evas_move (evas, o_panel_box1, px + 5, 40);
   evas_move (evas, o_txt_panel_box1, px + 8, 42);
   evas_text_get_max_ascent_descent (evas, o_txt_panel_box1, &ascent,
@@ -132,6 +134,43 @@ hide_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
   if (panel_active)
     e_slide_panel_out (0, NULL);
+}
+
+void
+button_next_new_all(Evas _e)
+{
+  Evas_Object o;
+  double ascent, descent;
+  
+  o = evas_add_image_from_file (evas, IM "panel_button1.png");
+  evas_set_image_border (evas, o, 3, 3, 3, 3);
+  evas_set_layer (evas, o, 1000);
+  evas_show (evas, o);
+  o_next_box = o;
+  o_txt_next_box = evas_add_text (evas, "andover", 24, "Next");
+  evas_set_color (evas, o_txt_next_box, 0, 0, 0, 160);
+  evas_set_layer (evas, o_txt_next_box, 1000);
+  evas_move (evas, o_next_box, 516, 150);
+  evas_move (evas, o_txt_next_box, 519, 152);
+  evas_text_get_max_ascent_descent (evas, o_txt_next_box, &ascent,
+				    &descent);
+  evas_resize (evas, o_next_box, 43, ascent - descent + 4);
+  evas_set_image_fill (evas, o_next_box, 0, 0, 43, ascent - descent + 4);
+  evas_show (evas, o_txt_next_box);
+}
+
+void
+button_next_new(Evas _e)
+{
+  Evas_Object o;
+  double ascent, descent;
+
+  evas_del_object(_e, o_txt_next_box);
+  o_txt_next_box = evas_add_text (evas, "andover", 24, "Next");
+  evas_set_color (evas, o_txt_next_box, 0, 0, 0, 160);
+  evas_set_layer (evas, o_txt_next_box, 1000);
+  evas_move (evas, o_txt_next_box, 519, 152);
+  evas_show (evas, o_txt_next_box);
 }
 
 void
@@ -188,14 +227,14 @@ e_mouse_up (Ecore_Event * ev)
 void
 mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  if ((_e = evas) && ((_o == o_txt_panel_box1)))
+  if ((_e = evas) && ((_o == o_txt_panel_box1) || (_o == o_txt_next_box)))
     evas_set_color (_e, _o, 0, 0, 0, 255);
 }
 
 void
 mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  if ((_e = evas) && ((_o == o_txt_panel_box1)))
+  if ((_e = evas) && ((_o == o_txt_panel_box1) || (_o == o_txt_next_box)))
     evas_set_color (_e, _o, 0, 0, 0, 160);
 }
 
@@ -216,7 +255,6 @@ setup (void)
   ecore_event_filter_idle_handler_add (e_idle, NULL);
   /* create a 500x400 toplevel window */
   win = ecore_window_new (0, 0, 0, win_w, win_h);
-  ecore_window_set_events (win, XEV_CONFIGURE);
   ecore_window_set_min_size (win, 600, 500);
   ecore_window_set_max_size (win, 600, 500);
   main_win = win;
@@ -281,7 +319,7 @@ setup (void)
   evas_show (evas, o_hidepanel);
 
   /* Panel title */
-  o_txt_paneltitle = evas_add_text (evas, "notepad", 17, "Etox Test");
+  o_txt_paneltitle = evas_add_text (evas, "sinon", 17, "Etox Test");
   evas_set_color (evas, o_txt_paneltitle, 255, 255, 255, 255);
   evas_set_layer (evas, o_txt_paneltitle, 250);
   evas_show (evas, o_txt_paneltitle);
@@ -297,38 +335,21 @@ setup (void)
   evas_set_layer (evas, o_txt_panel_box1, 250);
   evas_show (evas, o_txt_panel_box1);
 
-  /* Clip rectangle for bounding where the message text is drawn */
-  clip_msg = evas_add_rectangle (evas);
-  evas_show (evas, clip_msg);
-  evas_set_color (evas, clip_msg, 255, 0, 255, 255);
-  evas_move (evas, clip_msg, 40, 40);
-  evas_resize (evas, clip_msg, 520, 140);
-
-  /* Message etox */
-  e_msg = etox_new_all (evas, 40, 40, 520, 140, 255, ETOX_ALIGN_RIGHT);
-  etox_context_set_align (e_msg, ETOX_ALIGN_RIGHT);
-  etox_context_set_font (e_msg, "andover", 24);
-  etox_context_set_style (e_msg, "plain");
-  etox_context_set_color (e_msg, 255, 255, 255, 255);
-  etox_set_clip (e_msg, clip_msg);
-  etox_set_alpha (e_msg, 255);
-  etox_set_layer (e_msg, 1000);
-
   e_slide_panel_out (0, NULL);
 
   /* Callbacks */
   evas_callback_add (evas, o_showpanel, CALLBACK_MOUSE_IN, show_panel, NULL);
   evas_callback_add (evas, o_hidepanel, CALLBACK_MOUSE_IN, hide_panel, NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_UP, test_basic,
-		     NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_IN, mouse_in,
-		     NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_OUT, mouse_out,
-		     NULL);
   /*FIXME
      evas_callback_add(evas, o_logo, CALLBACK_MOUSE_DOWN, show_panel, NULL);
      evas_callback_add(evas, o_logo, CALLBACK_MOUSE_UP, show_panel, NULL);
    */
+  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_IN, mouse_in,
+		     NULL);
+  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_OUT, mouse_out,
+		     NULL);
+  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_DOWN, test_basic,
+		     NULL);
 }
 
 int
