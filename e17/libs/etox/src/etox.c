@@ -4,7 +4,7 @@
 static Evas_List _etox_break_text(Etox * et, char *text);
 static void _etox_wrap_lines(Etox * et);
 static void _etox_unwrap_lines(Etox * et);
-static void _etox_layout(Etox * et, int y);
+static void _etox_layout(Etox * et, Evas_List start, int y);
 
 /**
  * etox_new - create a new etox with default settings
@@ -195,7 +195,7 @@ void etox_hide(Etox * et)
  */
 void etox_append_text(Etox * et, char *text)
 {
-	Evas_List lines, l, ll;
+	Evas_List lines, l, ll, trail;
 	Etox_Line *end = NULL, *start;
 	int i, y;
 
@@ -203,42 +203,45 @@ void etox_append_text(Etox * et, char *text)
 	CHECK_PARAM_POINTER("text", text);
 
 	/*
-	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text.
+	 * Break the incoming text into lines
 	 */
 	lines = _etox_break_text(et, text);
-	for (l = et->lines; l; l = l->next)
+
+	/*
+	 * Find the end of the current lines. Remove it, and save it's current y
+	 * coordinate.
+	 */
+	for (trail = NULL, l = et->lines; l; l = l->next) {
 		end = l->data;
-	et->lines = evas_list_remove(et->lines, end);
+		trail = l;
+	}
 	y = end->y;
 
+	/*
+	 * Attempt to merge the last line of the old text with the first line of
+	 * the added text.
+	 */
+	start = lines->data;
+	lines = evas_list_remove(lines, start);
+	et->length -= end->length;
+	et->h -= end->h;
+	etox_line_merge(end, start);
+	et->length += end->length;
+	et->h += end->h;
+
 	for (i = 0, ll = lines; ll; ll = ll->next, i++) {
-		if (i == 0) {
-			start = ll->data;
+		start = ll->data;
 
-			/*
-			 * Need to adjust the height and length of the line to
-			 * reflect the text that was added.
-			 */
-			et->length -= start->length;
-			et->h -= start->h;
-			etox_line_merge(start, end);
-			et->length += start->length;
-			et->h += start->h;
-			et->lines = evas_list_append(et->lines, start);
-		} else {
-			start = ll->data;
+		/*
+		 * Now add the remaining lines to the end of the line
+		 * list.
+		 */
+		if (start->w > et->w)
+			et->w = start->w;
 
-			/*
-			 * Now add the remaining lines to the end of the line list.
-			 */
-			if (start->w > et->w)
-				et->w = start->w;
-
-			et->h += start->h;
-			et->length += start->length;
-			et->lines = evas_list_append(et->lines, start);
-		}
+		et->h += start->h;
+		et->length += start->length;
+		et->lines = evas_list_append(et->lines, start);
 	}
 
 	/*
@@ -249,7 +252,7 @@ void etox_append_text(Etox * et, char *text)
 	/*
 	 * Layout the lines on the etox starting at the newly added text.
 	 */
-	_etox_layout(et, y);
+	_etox_layout(et, trail, y);
 
 	/*
 	 * Destroy the temporary list of lines now that it is empty.
@@ -325,7 +328,7 @@ void etox_prepend_text(Etox * et, char *text)
 	 * Layout the lines on the etox.
 	 */
 	_etox_wrap_lines(et);
-	_etox_layout(et, et->y);
+	_etox_layout(et, et->lines, et->y);
 
 	/*
 	 * Destroy the temporary list of lines now that it is empty.
@@ -375,7 +378,7 @@ void etox_set_text(Etox * et, char *text)
 	et->lines = _etox_break_text(et, text);
 
 	_etox_wrap_lines(et);
-	_etox_layout(et, et->y);
+	_etox_layout(et, et->lines, et->y);
 
 	/*
 	 * Sum up the length and height of the text in the etox.
@@ -543,7 +546,7 @@ void etox_move(Etox * et, int x, int y)
 	 * Layout lines if appropriate.
 	 */
 	if (et->lines) {
-		_etox_layout(et, et->y);
+		_etox_layout(et, et->lines, et->y);
 	}
 
 	/*
@@ -579,7 +582,7 @@ void etox_resize(Etox * et, int w, int h)
 	        /* rewrap the lines */
 	        _etox_unwrap_lines(et);
 	        _etox_wrap_lines(et);
-		_etox_layout(et, et->y);
+		_etox_layout(et, et->lines, et->y);
 	}
 
 	/*
@@ -1166,7 +1169,7 @@ void _etox_unwrap_lines(Etox *et)
  * current position in the line list, so that should be set appropriately
  * before performing this operation.
  */
-static void _etox_layout(Etox * et, int y)
+static void _etox_layout(Etox * et, Evas_List start, int y)
 {
 	Etox_Line *line;
 	Evas_List l;
@@ -1177,7 +1180,7 @@ static void _etox_layout(Etox * et, int y)
 	 * Traverse the list displaying each line, moving down the screen after
 	 * each line.
 	 */
-	for (l = et->lines; l; l = l->next) {
+	for (l = start; l; l = l->next) {
 		line = l->data;
 		line->x = et->x;
 		line->y = y;
