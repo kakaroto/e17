@@ -6,10 +6,10 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in loaderpath.h
 
 LDFLAGS		     = -L/usr/X11R6/lib
-INCLUDES	     = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
-                       $(X_CFLAGS) -I$(prefix)/include -I$(includedir) \
-		       -I. -I$(top_srcdir) -I$(top_srcdir)/src \
-		       -I$(top_srcdir)/loaders
+INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
+                       -I$(top_srcdir)/loaders -I$(top_srcdir)/libltdl \
+                       -I/usr/X11R6/include $(X_CFLAGS) \
+                       -I$(prefix)/include -I$(includedir)
 MMX_SRCS             = asm_blend.S asm_rgba.S asm_scale.S asm_rotate.S \
 		       asm_blend_cmod.S
 MMX_OBJS             = $(MMX_SRCS:.S=.lo)

@@ -6,10 +6,10 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in				
 
 LDFLAGS              = -L/usr/X11R6/lib
-INCLUDES             = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
-                       $(X_CFLAGS) -I$(prefix)/include -I$(includedir) \
-		       -I. -I$(top_srcdir) -I$(top_srcdir)/src \
-		       -I$(top_srcdir)/loaders
+INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
+		       -I$(top_srcdir)/loaders -I$(top_srcdir)/libltdl \
+                       -I/usr/X11R6/include $(X_CFLAGS) \
+		       -I$(prefix)/include -I$(includedir)
 
 bin_PROGRAMS         = imlib2 bumpmaptest imlib2_test polytest color_spaces
 imlib2_SOURCES       = main.c

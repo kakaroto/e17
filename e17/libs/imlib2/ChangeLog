@@ -2960,3 +2960,11 @@ should no longer be necessary to build it.
 
 _______________________________________________
 
+Thu Apr  3 14:06:53 EST 2003
+(KainX)
+
+Rearranged include directory order to make sure
+local headers are found before system ones.
+
+_______________________________________________
+
