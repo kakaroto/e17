@@ -23,7 +23,7 @@ collections {
 	   relative, 1.0 1.0;
 	   offset, 0 0;
 	 }
-	 color, 0, 0, 0, 255;
+	 color, 0 0 0 255;
        }
      }
      part {
@@ -78,9 +78,9 @@ collections {
 	 image
 	 {
 	     normal, "text_display.png";
+	     border, 8 8 8 8;
 	 }
 	 color, 255 255 255 255;
-	 border, 8 8 8 8;
        }
      }
      part {
@@ -108,7 +108,7 @@ collections {
 	 {
 	     text, "";
 	     font, "Vera";
-	     size, 12;
+	     size, 14;
 	     fit, 0 0;
 	     align, 1.0 0.5;
 	 }
@@ -195,7 +195,7 @@ collections {
 	 {
 	     text, "c";
 	     font, "Vera";
-	     size, 12;
+	     size, 14;
 	     fit, 0 0;
 	     align, 0.5 0.5;
 	 }
@@ -217,7 +217,7 @@ collections {
          text {
            text, "c";
            font, "Vera";
-           size, 12;
+           size, 14;
            fit, 0 0;
            align, 0.5 0.5;
          }
@@ -230,14 +230,14 @@ collections {
 	rel1 { relative, 0.0 0.0; offset, 0 0; to, txtrel; } \
 	rel2 { relative, 1.0 1.0; offset, 0 0; to, txtrel; } \
 	color, 255 255 255 255; color3, 96 96 96 255; \
-	text { text, txtstr; font, "Vera"; size, 12; \
-	fit, 0 0; align, 0.5 0.5; } } \ 
+	text { text, txtstr; font, "Vera"; size, 14; \
+	fit, 0 0; align, 0.5 0.5; } } \
         description { \
         state, "clicked" 0.0; visible, 1; \
         rel1 { relative, 0.0 0.0; offset, 1 1; to, txtrel; } \
         rel2 { relative, 1.0 1.0; offset, 1 1; to, txtrel; } \
         color, 255 255 255 255; color3, 96 96 96 255; \
-        text { text, txtstr; font, "Vera"; size, 12; \
+        text { text, txtstr; font, "Vera"; size, 14; \
         fit, 0 0; align, 0.5 0.5; } } }
 
 #define RIGHT_OF(rel, clipname, pname, ptxtname, txt, bw, bh) \
@@ -255,8 +255,7 @@ collections {
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 1.0 0.0; offset, 0 0; to, rel; } \
 	rel2 { relative, 1.0 0.0; offset, bw bh; to, rel; } \
-	image { normal, "text_button.png"; } \
-	border, 0 0 0 6; \
+	image { normal, "text_button.png"; border, 0 0 0 6; } \
 	} } \
      TEXT_ON(pname, ptxtname, txt)
 #define SOUTH_OF(rel, clipname, pname, ptxtname, txt, bw, bh) \
@@ -274,8 +273,7 @@ collections {
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
 	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
-	image { normal, "text_button.png"; } \
-	border, 0 2 0 0; \
+	image { normal, "text_button.png"; border, 0 2 0 0; } \
 	} } \
      TEXT_ON(pname, ptxtname, txt)
 
@@ -315,7 +313,7 @@ collections {
    programs {
 #define BUTTON_CB(pname, bclip, bname, emits, cbin, cbout) \
        program { name, pname; signal, "mouse,clicked,1"; source, bname; \
-       action, SIGNAL_EMIT, emits "";  } \
+       action, SIGNAL_EMIT emits "";  } \
        program { name, cbout; signal, "mouse,down,1"; source, bname; \
        action, STATE_SET "clicked" 0.0; target, bclip; \
        transition, LINEAR 0.1; } \
