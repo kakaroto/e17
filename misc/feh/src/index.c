@@ -61,10 +61,11 @@ init_index_mode(void)
    unsigned char trans_bg = 0;
    int index_image_width, index_image_height;
    int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
+   char *s;
 
    file_num = feh_list_length(filelist);
 
-   D_ENTER;
+   D_ENTER(3);
 
    mode = "index";
 
@@ -110,7 +111,7 @@ init_index_mode(void)
          trans_bg = 1;
       else
       {
-         D(("Time to apply a background to blend onto\n"));
+         D(3,("Time to apply a background to blend onto\n"));
          if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
          {
             bg_w = feh_imlib_image_get_width(bg_im);
@@ -333,11 +334,17 @@ init_index_mode(void)
                                      0, 255);
    }
 
+   /* Create the window title at this point */
+
+    if (!opt.title)
+	   s = estrdup(PACKAGE " [index mode]");
+	else
+	   s = estrdup(feh_printf(opt.title, NULL));
+   
    if (opt.display && opt.progressive)
    {
       winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [index mode]",
-                                     WIN_TYPE_SINGLE);
+         winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
       winwidget_show(winwid);
    }
 
@@ -349,12 +356,12 @@ init_index_mode(void)
          filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
-      D(("About to load image %s\n", file->filename));
+      D(3,("About to load image %s\n", file->filename));
       if (feh_load_image(&im_temp, file, NULL) != 0)
       {
          if (opt.verbose)
             feh_display_status('.');
-         D(("Successfully loaded %s\n", file->filename));
+         D(3,("Successfully loaded %s\n", file->filename));
          www = opt.thumb_w;
          hhh = opt.thumb_h;
          ww = feh_imlib_image_get_width(im_temp);
@@ -390,7 +397,7 @@ init_index_mode(void)
          {
             DATA8 atab[256];
 
-            D(("Applying alpha options\n"));
+            D(3,("Applying alpha options\n"));
             feh_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
             feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
@@ -550,23 +557,23 @@ init_index_mode(void)
          winwidget_render_image(winwid, 0, 1);
       else
       {
-         winwid =
-            winwidget_create_from_image(im_main, PACKAGE " [index mode]",
-                                        WIN_TYPE_SINGLE);
+         winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
          winwidget_show(winwid);
       }
    }
    else
       feh_imlib_free_image_and_decache(im_main);
-   D_RETURN_;
+
+   free(s);
+   D_RETURN_(3);
 }
 
 
 char *
 chop_file_from_full_path(char *str)
 {
-   D_ENTER;
-   D_RETURN(strrchr(str, '/') + 1);
+   D_ENTER(3);
+   D_RETURN(3,strrchr(str, '/') + 1);
 }
 
 static char *
@@ -577,7 +584,7 @@ create_index_size_string(char *file)
    double kbs = 0.0;
    struct stat st;
 
-   D_ENTER;
+   D_ENTER(3);
    if (stat(file, &st))
       kbs = 0.0;
    else
@@ -587,7 +594,7 @@ create_index_size_string(char *file)
    }
 
    snprintf(str, sizeof(str), "%.2fKb", kbs);
-   D_RETURN(str);
+   D_RETURN(3,str);
 }
 
 static char *
@@ -595,9 +602,9 @@ create_index_dimension_string(int w, int h)
 {
    static char str[50];
 
-   D_ENTER;
+   D_ENTER(3);
    snprintf(str, sizeof(str), "%dx%d", w, h);
-   D_RETURN(str);
+   D_RETURN(3,str);
 }
 
 static char *
@@ -605,8 +612,8 @@ create_index_title_string(int num, int w, int h)
 {
    static char str[50];
 
-   D_ENTER;
+   D_ENTER(3);
    snprintf(str, sizeof(str),
             PACKAGE " index - %d thumbnails, %d by %d pixels", num, w, h);
-   D_RETURN(str);
+   D_RETURN(3,str);
 }

@@ -92,6 +92,7 @@ struct __fehoptions
    int slideshow_delay;
    int reload;
    int sort;
+   int debug_level;
    unsigned char adjust_reload;
 
    unsigned char mode;

@@ -36,7 +36,7 @@ init_multiwindow_mode(void)
    feh_list *l;
    feh_file *file = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
 
    mode = "multiwindow";
 
@@ -70,11 +70,11 @@ init_multiwindow_mode(void)
       }
       else
       {
-         D(
+         D(3,
            ("EEEK. Couldn't load image in multiwindow mode. "
             "I 'm not sure if this is a problem\n"));
       }
       free(s);
    }
-   D_RETURN_;
+   D_RETURN_(3);
 }

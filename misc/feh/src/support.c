@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "options.h"
 #include "support.h"
 Window ipc_win = None, my_ipc_win = None;
 Atom ipc_atom = None;
@@ -37,7 +38,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    char bgfil[2096];
    char sendbuf[4096];
 
-   D_ENTER;
+   D_ENTER(3);
 
    snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
 
@@ -45,10 +46,10 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    {
       snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
       feh_imlib_save_image(im, bgfil);
-      D(("bg saved as %s\n", bgfil));
+      D(3,("bg saved as %s\n", bgfil));
       fil = bgfil;
    }
-   D(("Setting bg %s\n", fil));
+   D(3,("Setting bg %s\n", fil));
 
    if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None))
    {
@@ -110,7 +111,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    {
       Pixmap tmppmap;
 
-      D(("Falling back to XSetRootWindowPixmap\n"));
+      D(3,("Falling back to XSetRootWindowPixmap\n"));
       if (scaled)
       {
          tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
@@ -125,7 +126,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          GC gc;
          int x, y;
 
-         D(("centering\n"));
+         D(3,("centering\n"));
          tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
          gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
          gc = XCreateGC(disp, root, GCForeground, &gcval);
@@ -147,7 +148,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       XFreePixmap(disp, tmppmap);
       XClearWindow(disp, root);
    }
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 signed char
@@ -155,23 +156,23 @@ feh_wm_get_wm_is_e(void)
 {
    static signed char e = -1;
 
-   D_ENTER;
+   D_ENTER(3);
 
    /* check if E is actually running */
    if (e == -1)
    {
       if (XInternAtom(disp, "ENLIGHTENMENT_COMMS", True) != None)
       {
-         D(("Enlightenment detected.\n"));
+         D(3,("Enlightenment detected.\n"));
          e = 1;
       }
       else
       {
-         D(("Enlightenment not detected.\n"));
+         D(3,("Enlightenment not detected.\n"));
          e = 0;
       }
    }
-   D_RETURN(e);
+   D_RETURN(3,e);
 }
 
 int
@@ -180,19 +181,19 @@ feh_wm_get_num_desks(void)
    char *buf, *ptr;
    int desks;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (!feh_wm_get_wm_is_e())
-      D_RETURN(-1);
+      D_RETURN(3,-1);
 
    buf = enl_send_and_wait("num_desks ?");
-   D(("Got from E IPC: %s\n", buf));
+   D(3,("Got from E IPC: %s\n", buf));
    ptr = buf;
    while (ptr && !isdigit(*ptr))
       ptr++;
    desks = atoi(ptr);
 
-D_RETURN(desks)}
+D_RETURN(3,desks)}
 
 Window
 enl_ipc_get_win(void)
@@ -206,15 +207,15 @@ enl_ipc_get_win(void)
    int dummy_int;
    unsigned int dummy_uint;
 
-   D_ENTER;
+   D_ENTER(3);
 
-   D(("Searching for IPC window.\n"));
+   D(3,("Searching for IPC window.\n"));
 
    prop = XInternAtom(disp, "ENLIGHTENMENT_COMMS", True);
    if (prop == None)
    {
-      D(("Enlightenment is not running.\n"));
-      D_RETURN(None);
+      D(3,("Enlightenment is not running.\n"));
+      D_RETURN(3,None);
    }
    XGetWindowProperty(disp, root, prop, 0, 14, False, AnyPropertyType, &prop2,
                       &format, &num, &after, &str);
@@ -229,7 +230,7 @@ enl_ipc_get_win(void)
           (disp, ipc_win, &dummy_win, &dummy_int, &dummy_int, &dummy_uint,
            &dummy_uint, &dummy_uint, &dummy_uint))
       {
-         D(
+         D(3,
            (" -> IPC Window property is valid, but the window doesn't exist.\n"));
          ipc_win = None;
       }
@@ -245,7 +246,7 @@ enl_ipc_get_win(void)
          }
          else
          {
-            D(
+            D(3,
               (" -> IPC Window lacks the proper atom.  I can't talk to fake IPC windows....\n"));
             ipc_win = None;
          }
@@ -253,7 +254,7 @@ enl_ipc_get_win(void)
    }
    if (ipc_win != None)
    {
-      D(
+      D(3,
         (" -> IPC Window found and verified as 0x%08x.  Registering Eterm as an IPC client.\n",
          (int) ipc_win));
       XSelectInput(disp, ipc_win,
@@ -268,7 +269,7 @@ enl_ipc_get_win(void)
    {
       my_ipc_win = XCreateSimpleWindow(disp, root, -2, -2, 1, 1, 0, 0, 0);
    }
-   D_RETURN(ipc_win);
+   D_RETURN(3,ipc_win);
 }
 
 void
@@ -282,13 +283,13 @@ enl_ipc_send(char *str)
    unsigned short len;
    XEvent ev;
 
-   D_ENTER;
+   D_ENTER(3);
    if (str == NULL)
    {
       if (last_msg == NULL)
          eprintf("eeek");
       str = last_msg;
-      D(("Resending last message \"%s\" to Enlightenment.\n", str));
+      D(3,("Resending last message \"%s\" to Enlightenment.\n", str));
    }
    else
    {
@@ -297,23 +298,23 @@ enl_ipc_send(char *str)
          free(last_msg);
       }
       last_msg = estrdup(str);
-      D(("Sending \"%s\" to Enlightenment.\n", str));
+      D(3,("Sending \"%s\" to Enlightenment.\n", str));
    }
    if (ipc_win == None)
    {
       if ((ipc_win = enl_ipc_get_win()) == None)
       {
-         D(
+         D(3,
            ("Hrm. Enlightenment doesn't seem to be running. No IPC window, no IPC.\n"));
-         D_RETURN_;
+         D_RETURN_(3);
       }
    }
    len = strlen(str);
    ipc_atom = XInternAtom(disp, "ENL_MSG", False);
    if (ipc_atom == None)
    {
-      D(("IPC error:  Unable to find/create ENL_MSG atom.\n"));
-      D_RETURN_;
+      D(3,("IPC error:  Unable to find/create ENL_MSG atom.\n"));
+      D_RETURN_(3);
    }
    for (; XCheckTypedWindowEvent(disp, my_ipc_win, ClientMessage, &ev););	/* Discard any out-of-sync messages */
    ev.xclient.type = ClientMessage;
@@ -341,14 +342,14 @@ enl_ipc_send(char *str)
       }
       XSendEvent(disp, ipc_win, False, 0, (XEvent *) & ev);
    }
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 static sighandler_t *
 enl_ipc_timeout(int sig)
 {
    timeout = 1;
-   D_RETURN((sighandler_t *) sig);
+   D_RETURN(3,(sighandler_t *) sig);
    sig = 0;
 }
 
@@ -360,7 +361,7 @@ enl_wait_for_reply(void)
    static char msg_buffer[20];
    register unsigned char i;
 
-   D_ENTER;
+   D_ENTER(3);
 
    alarm(2);
    for (;
@@ -369,13 +370,13 @@ enl_wait_for_reply(void)
    alarm(0);
    if (ev.xany.type != ClientMessage)
    {
-      D_RETURN(IPC_TIMEOUT);
+      D_RETURN(3,IPC_TIMEOUT);
    }
    for (i = 0; i < 20; i++)
    {
       msg_buffer[i] = ev.xclient.data.b[i];
    }
-   D_RETURN(msg_buffer + 8);
+   D_RETURN(3,msg_buffer + 8);
 }
 
 char *
@@ -388,11 +389,11 @@ enl_ipc_get(const char *msg_data)
    register unsigned char i;
    unsigned char blen;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (msg_data == IPC_TIMEOUT)
    {
-      D_RETURN(IPC_TIMEOUT);
+      D_RETURN(3,IPC_TIMEOUT);
    }
    for (i = 0; i < 12; i++)
    {
@@ -416,9 +417,9 @@ enl_ipc_get(const char *msg_data)
    {
       ret_msg = message;
       message = NULL;
-      D(("Received complete reply:  \"%s\"\n", ret_msg));
+      D(3,("Received complete reply:  \"%s\"\n", ret_msg));
    }
-   D_RETURN(ret_msg);
+   D_RETURN(3,ret_msg);
 }
 
 char *
@@ -428,7 +429,7 @@ enl_send_and_wait(char *msg)
    char *reply = IPC_TIMEOUT;
    sighandler_t old_alrm;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (ipc_win == None)
    {
@@ -447,11 +448,11 @@ enl_send_and_wait(char *msg)
       if (reply == IPC_TIMEOUT)
       {
          /* We timed out.  The IPC window must be AWOL.  Reset and resend message. */
-         D(("IPC timed out.  IPC window has gone. Clearing ipc_win.\n"));
+         D(3,("IPC timed out.  IPC window has gone. Clearing ipc_win.\n"));
          XSelectInput(disp, ipc_win, None);
          ipc_win = None;
       }
    }
    signal(SIGALRM, old_alrm);
-   D_RETURN(reply);
+   D_RETURN(3,reply);
 }

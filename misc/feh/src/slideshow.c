@@ -38,7 +38,7 @@ init_slideshow_mode(void)
    feh_list *l = NULL, *last = NULL;
    feh_file *file = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
 
    mode = "slideshow";
 
@@ -74,15 +74,15 @@ init_slideshow_mode(void)
    }
    if (!success)
       show_mini_usage();
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 cb_slide_timer(void *data)
 {
-   D_ENTER;
+   D_ENTER(3);
    slideshow_change_image((winwidget) data, SLIDE_NEXT);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -90,10 +90,10 @@ cb_reload_timer(void *data)
 {
    winwidget w = (winwidget) data;
 
-   D_ENTER;
+   D_ENTER(3);
    feh_reload_image(w, 0);
    feh_add_unique_timer(cb_reload_timer, w, opt.reload);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -101,12 +101,12 @@ feh_reload_image(winwidget w, int resize)
 {
    Imlib_Progress_Function pfunc = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (!w->file)
    {
       weprintf("couldn't reload, this image has no file associated with it.");
-      D_RETURN_;
+      D_RETURN_(3);
    }
 
    winwidget_free_image(w);
@@ -146,7 +146,7 @@ feh_reload_image(winwidget w, int resize)
    else
       weprintf("Couldn't reload image. Is it still there?");
 
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 
@@ -160,14 +160,14 @@ slideshow_change_image(winwidget winwid, int change)
    int jmp = 1;
    char *s;
 
-   D_ENTER;
+   D_ENTER(3);
 
    file_num = feh_list_length(filelist);
 
    /* Without this, clicking a one-image slideshow reloads it. Not very *
       intelligent behaviour :-) */
    if (file_num < 2)
-      D_RETURN_;
+      D_RETURN_(3);
 
    /* Ok. I do this in such an odd way to ensure that if the last or first *
       image is not loadable, it will go through in the right direction to *
@@ -272,7 +272,7 @@ slideshow_change_image(winwidget winwid, int change)
    if (opt.slideshow_delay >= 0)
       feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay,
                     "SLIDE_CHANGE");
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 char *
@@ -281,7 +281,7 @@ slideshow_create_name(feh_file * file)
    char *s = NULL;
    int len = 0;
 
-   D_ENTER;
+   D_ENTER(3);
    if (!opt.title)
    {
       len =
@@ -296,7 +296,7 @@ slideshow_create_name(feh_file * file)
       s = estrdup(feh_printf(opt.title, file));
    }
 
-   D_RETURN(s);
+   D_RETURN(3,s);
 }
 
 void
@@ -304,15 +304,15 @@ feh_action_run(feh_file * file)
 {
    char *sys;
 
-   D_ENTER;
-   D(("Running action %s\n", opt.action));
+   D_ENTER(3);
+   D(3,("Running action %s\n", opt.action));
 
    sys = feh_printf(opt.action, file);
 
    if (opt.verbose && !opt.list && !opt.customlist)
       fprintf(stderr, "Running action -->%s<--\n", sys);
    system(sys);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 char *
@@ -322,7 +322,7 @@ feh_printf(char *str, feh_file * file)
    char buf[20];
    static char ret[4096];
 
-   D_ENTER;
+   D_ENTER(3);
 
    ret[0] = '\0';
 
@@ -334,40 +334,57 @@ feh_printf(char *str, feh_file * file)
          switch (*c)
          {
            case 'f':
-              strcat(ret, file->filename);
+			  if (file)
+                 strcat(ret, file->filename);
               break;
            case 'n':
-              strcat(ret, file->name);
+			  if (file)
+                 strcat(ret, file->name);
               break;
            case 'w':
-              if (!file->info)
-                 feh_file_info_load(file, NULL);
-              snprintf(buf, sizeof(buf), "%d", file->info->width);
-              strcat(ret, buf);
+			  if (file)
+			  {
+                 if (!file->info)
+                    feh_file_info_load(file, NULL);
+                 snprintf(buf, sizeof(buf), "%d", file->info->width);
+                 strcat(ret, buf);
+			  }
               break;
            case 'h':
-              if (!file->info)
-                 feh_file_info_load(file, NULL);
-              snprintf(buf, sizeof(buf), "%d", file->info->height);
-              strcat(ret, buf);
+			  if (file)
+			  {
+                 if (!file->info)
+                    feh_file_info_load(file, NULL);
+                 snprintf(buf, sizeof(buf), "%d", file->info->height);
+                 strcat(ret, buf);
+			  }
               break;
            case 's':
-              if (!file->info)
-                 feh_file_info_load(file, NULL);
-              snprintf(buf, sizeof(buf), "%d", file->info->size);
-              strcat(ret, buf);
+			  if (file)
+			  {
+                 if (!file->info)
+                    feh_file_info_load(file, NULL);
+                 snprintf(buf, sizeof(buf), "%d", file->info->size);
+                 strcat(ret, buf);
+			  }
               break;
            case 'p':
-              if (!file->info)
-                 feh_file_info_load(file, NULL);
-              snprintf(buf, sizeof(buf), "%d", file->info->pixels);
-              strcat(ret, buf);
-              break;
+			  if (file)
+			  {
+			     if (!file->info)
+                    feh_file_info_load(file, NULL);
+                 snprintf(buf, sizeof(buf), "%d", file->info->pixels);
+                 strcat(ret, buf);
+              }
+			  break;
            case 't':
-              if (!file->info)
-                 feh_file_info_load(file, NULL);
-              strcat(ret, file->info->format);
-              break;
+			  if (file)
+			  {
+                 if (!file->info)
+                    feh_file_info_load(file, NULL);
+                 strcat(ret, file->info->format);
+              }
+			  break;
 		   case 'P':
 			  strcat(ret, PACKAGE);
 			  break;
@@ -407,7 +424,7 @@ feh_printf(char *str, feh_file * file)
       else
          strncat(ret, c, 1);
    }
-   D_RETURN(ret);
+   D_RETURN(3,ret);
 }
 
 void

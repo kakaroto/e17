@@ -34,7 +34,7 @@ init_list_mode(void)
    feh_file *file = NULL;
    int j = 0;
 
-   D_ENTER;
+   D_ENTER(3);
 
    mode = "list";
 
@@ -61,19 +61,19 @@ init_list_mode(void)
 void
 init_loadables_mode(void)
 {
-   D_ENTER;
+   D_ENTER(3);
    mode = "loadables";
    real_loadables_mode(1);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 init_unloadables_mode(void)
 {
-   D_ENTER;
+   D_ENTER(3);
    mode = "unloadables";
    real_loadables_mode(0);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 
@@ -83,7 +83,7 @@ real_loadables_mode(int loadable)
    feh_file *file;
    feh_list *l;
 
-   D_ENTER;
+   D_ENTER(3);
    opt.quiet = 1;
 
    for (l = filelist; l; l = l->next)

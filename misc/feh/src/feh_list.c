@@ -24,6 +24,7 @@
 
 #include "feh.h"
 #include "feh_list.h"
+#include "options.h"
 
 
 feh_list *
@@ -31,13 +32,13 @@ feh_list_new(void)
 {
    feh_list *l;
 
-   D_ENTER;
+   D_ENTER(3);
 
    l = (feh_list *) emalloc(sizeof(feh_list));
    l->data = NULL;
    l->next = NULL;
    l->prev = NULL;
-   D_RETURN(l);
+   D_RETURN(3,l);
 }
 
 feh_list *
@@ -45,14 +46,14 @@ feh_list_add_front(feh_list * root, void *data)
 {
    feh_list *l;
 
-   D_ENTER;
+   D_ENTER(3);
    l = feh_list_new();
    l->next = root;
    l->prev = NULL;
    l->data = data;
    if (root)
       root->prev = l;
-   D_RETURN(l);
+   D_RETURN(3,l);
 }
 
 feh_list *
@@ -60,15 +61,15 @@ feh_list_cat(feh_list * root, feh_list * l)
 {
    feh_list *last;
 
-   D_ENTER;
+   D_ENTER(3);
    if (!l)
-      D_RETURN(root);
+      D_RETURN(3,root);
    if (!root)
-      D_RETURN(l);
+      D_RETURN(3,l);
    last = feh_list_last(root);
    last->next = l;
    l->prev = last;
-   D_RETURN(root);
+   D_RETURN(3,root);
 }
 
 int
@@ -76,40 +77,40 @@ feh_list_length(feh_list * l)
 {
    int length;
 
-   D_ENTER;
+   D_ENTER(3);
    length = 0;
-   D(("list is %p\n", l));
+   D(3,("list is %p\n", l));
    while (l)
    {
       length++;
       l = l->next;
    }
-   D(("length is %d\n", length));
-   D_RETURN(length);
+   D(3,("length is %d\n", length));
+   D_RETURN(3,length);
 }
 
 feh_list *
 feh_list_last(feh_list * l)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (l)
    {
       while (l->next)
          l = l->next;
    }
-   D_RETURN(l);
+   D_RETURN(3,l);
 }
 
 feh_list *
 feh_list_first(feh_list * l)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (l)
    {
       while (l->prev)
          l = l->prev;
    }
-   D_RETURN(l);
+   D_RETURN(3,l);
 }
 
 feh_list *
@@ -118,11 +119,11 @@ feh_list_jump(feh_list * root, feh_list * l, int direction, int num)
    int i;
    feh_list *ret = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
    if (!root)
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
    if (!l)
-      D_RETURN(root);
+      D_RETURN(3,root);
 
    ret = l;
 
@@ -143,7 +144,7 @@ feh_list_jump(feh_list * root, feh_list * l, int direction, int num)
             ret = feh_list_last(ret);
       }
    }
-   D_RETURN(ret);
+   D_RETURN(3,ret);
 }
 
 feh_list *
@@ -151,7 +152,7 @@ feh_list_reverse(feh_list * l)
 {
    feh_list *last;
 
-   D_ENTER;
+   D_ENTER(3);
    last = NULL;
    while (l)
    {
@@ -161,7 +162,7 @@ feh_list_reverse(feh_list * l)
       last->prev = l;
    }
 
-   D_RETURN(last);
+   D_RETURN(3,last);
 }
 
 feh_list *
@@ -170,33 +171,33 @@ feh_list_randomize(feh_list * list)
    int len, r, i;
    feh_list **farray, *f, *t;
 
-   D_ENTER;
+   D_ENTER(3);
    if (!list)
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
    len = feh_list_length(list);
    if (len <= 1)
-      D_RETURN(list);
-   D(("List(%8p) has %d items.\n", list, len));
+      D_RETURN(3,list);
+   D(3,("List(%8p) has %d items.\n", list, len));
    farray = (feh_list **) malloc(sizeof(feh_list *) * len);
    for (f = list, i = 0; f; f = f->next, i++)
    {
-      D(("filelist_randomize():  farray[%d] <- %8p\n", i, f));
+      D(3,("filelist_randomize():  farray[%d] <- %8p\n", i, f));
       farray[i] = f;
    }
    srand(getpid() * time(NULL) % ((unsigned int) -1));
    for (i = 0; i < len - 1; i++)
    {
       r = (int) ((len - i - 1) * ((float) rand()) / (RAND_MAX + 1.0)) + i + 1;
-      D(("i == %d, r == %d\n", i, r));
+      D(3,("i == %d, r == %d\n", i, r));
       if (i == r)
          abort();
-      D(
+      D(3,
         ("Swapping farray[%d] (%8p) with farray[%d] (%8p)\n", i, farray[i], r,
          farray[r]));
       t = farray[i];
       farray[i] = farray[r];
       farray[r] = t;
-      D(("New values are %8p and %8p\n", farray[i], farray[r]));
+      D(3,("New values are %8p and %8p\n", farray[i], farray[r]));
    }
    list = farray[0];
    list->prev = NULL;
@@ -205,14 +206,14 @@ feh_list_randomize(feh_list * list)
    {
       f->prev = farray[i - 1];
       f->next = farray[i + 1];
-      D(
+      D(3,
         ("Rebuilding list.  At farray[%d], f == %8p, f->prev == %8p, f->next == %8p\n",
          i, f, f->prev, f->next));
    }
    f->prev = farray[len - 2];
    f->next = NULL;
    free(farray);
-   D_RETURN(list);
+   D_RETURN(3,list);
 }
 
 int
@@ -220,28 +221,28 @@ feh_list_num(feh_list * root, feh_list * l)
 {
    int i = 0;
 
-   D_ENTER;
-   D(("list is %p\n", root));
+   D_ENTER(3);
+   D(3,("list is %p\n", root));
 
    while (root)
    {
       if (root == l)
-         D_RETURN(i);
+         D_RETURN(3,i);
       i++;
       root = root->next;
    }
-   D_RETURN(-1);
+   D_RETURN(3,-1);
 }
 
 feh_list *
 feh_list_remove(feh_list * root, feh_list * l)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (!l)
-      D_RETURN(root);
+      D_RETURN(3,root);
 
    if ((!root) || ((l == root) && (!l->next)))
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
 
    if (l->prev)
       l->prev->next = l->next;
@@ -250,8 +251,8 @@ feh_list_remove(feh_list * root, feh_list * l)
    if (root == l)
       root = root->next;
    free(l);
-   D(("returning list %p, list->next %p\n", root, root->next));
-   D_RETURN(root);
+   D(3,("returning list %p, list->next %p\n", root, root->next));
+   D_RETURN(3,root);
 }
 
 feh_list *
@@ -259,12 +260,12 @@ feh_list_sort(feh_list * list, feh_compare_fn cmp)
 {
    feh_list *l1, *l2;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (!list)
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
    if (!list->next)
-      D_RETURN(list);
+      D_RETURN(3,list);
 
    l1 = list;
    l2 = list->next;
@@ -278,7 +279,7 @@ feh_list_sort(feh_list * list, feh_compare_fn cmp)
    l2 = l1->next;
    l1->next = NULL;
 
-   D_RETURN(feh_list_sort_merge
+   D_RETURN(3,feh_list_sort_merge
             (feh_list_sort(list, cmp), feh_list_sort(l2, cmp), cmp));
 }
 
@@ -287,7 +288,7 @@ feh_list_sort_merge(feh_list * l1, feh_list * l2, feh_compare_fn cmp)
 {
    feh_list list, *l, *lprev;
 
-   D_ENTER;
+   D_ENTER(3);
 
    l = &list;
    lprev = NULL;
@@ -314,5 +315,5 @@ feh_list_sort_merge(feh_list * l1, feh_list * l2, feh_compare_fn cmp)
    l->next = l1 ? l1 : l2;
    l->next->prev = l;
 
-   D_RETURN(list.next);
+   D_RETURN(3,list.next);
 }

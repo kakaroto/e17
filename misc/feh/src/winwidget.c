@@ -40,7 +40,7 @@ winwidget_allocate(void)
 {
    winwidget ret = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
    ret = emalloc(sizeof(_winwidget));
 
    ret->win = 0;
@@ -72,17 +72,17 @@ winwidget_allocate(void)
    ret->im_click_offset_y = 0;
    ret->has_rotated = 0;
 
-   D_RETURN(ret);
+   D_RETURN(3,ret);
 }
 
 winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (im == NULL)
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
 
    ret = winwidget_allocate();
    ret->type = type;
@@ -99,7 +99,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
    winwidget_create_window(ret, ret->w, ret->h);
    winwidget_render_image(ret, 1, 1);
 
-   D_RETURN(ret);
+   D_RETURN(3,ret);
 }
 
 winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
@@ -108,10 +108,10 @@ winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
    feh_file *file = FEH_FILE(list->data);
    Imlib_Progress_Function pfunc = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (!file || !file->filename)
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
 
    ret = winwidget_allocate();
    ret->file = list;
@@ -127,21 +127,21 @@ winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
    if (winwidget_loadimage(ret, file, pfunc) == 0)
    {
       winwidget_destroy(ret);
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
    }
 
    if (!opt.progressive || !ret->win)
    {
       ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
       ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
-      D(
+      D(3,
         ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
          feh_imlib_image_format(ret->im)));
       winwidget_create_window(ret, ret->w, ret->h);
       winwidget_render_image(ret, 1, 1);
    }
 
-   D_RETURN(ret);
+   D_RETURN(3,ret);
 }
 
 void
@@ -152,7 +152,7 @@ winwidget_create_window(winwidget ret, int w, int h)
    MWMHints mwmhints;
    Atom prop = None;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (opt.full_screen)
    {
@@ -239,25 +239,25 @@ winwidget_create_window(winwidget ret, int w, int h)
    XSetCommand(disp, ret->win, cmdargv, cmdargc);
 
    winwidget_register(ret);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 winwidget_update_title(winwidget ret)
 {
-   D_ENTER;
-   D(("winwid->name = %s\n", ret->name));
+   D_ENTER(3);
+   D(3,("winwid->name = %s\n", ret->name));
    if (ret->name)
       XStoreName(disp, ret->win, ret->name);
    else
       XStoreName(disp, ret->win, "feh");
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 winwidget_setup_pixmaps(winwidget winwid)
 {
-   D_ENTER;
+   D_ENTER(3);
 
    if (opt.full_screen)
    {
@@ -280,7 +280,7 @@ winwidget_setup_pixmaps(winwidget winwid)
    {
       if (!winwid->bg_pmap || winwid->had_resize)
       {
-         D(("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
+         D(3,("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
          if (winwid->bg_pmap)
             XFreePixmap(disp, winwid->bg_pmap);
 
@@ -289,7 +289,7 @@ winwidget_setup_pixmaps(winwidget winwid)
          winwid->had_resize = 0;
       }
    }
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -298,7 +298,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    int sx, sy, sw, sh, dx, dy, dw, dh;
    int calc_w, calc_h;
 
-   D_ENTER;
+   D_ENTER(3);
 
    if (!opt.full_screen && resize)
    {
@@ -325,7 +325,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    {
       int smaller;              /* Is the image smaller than screen? */
 
-      D(("Calculating for fullscreen render\n"));
+      D(3,("Calculating for fullscreen render\n"));
       smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
 
       if (!smaller || opt.auto_zoom)
@@ -404,11 +404,11 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    sw = dw / winwid->zoom;
    sh = dh / winwid->zoom;
 
-   D(
+   D(3,
      ("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
       sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
-   D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
+   D(3,("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if (winwid->has_rotated)
       feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
                                                                     bg_pmap,
@@ -431,7 +431,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 double
@@ -440,7 +440,7 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
 {
    double ratio = 0.0;
 
-   D_ENTER;
+   D_ENTER(3);
 
    ratio = ((double) orig_w / orig_h) / ((double) dest_w / dest_h);
 
@@ -451,7 +451,7 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    else
       *zoom = 1.0;
 
-   D_RETURN(ratio);
+   D_RETURN(3,ratio);
 }
 
 Pixmap
@@ -460,7 +460,7 @@ feh_create_checks(void)
    static Pixmap checks_pmap = None;
    Imlib_Image checks = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
    if (checks_pmap == None)
    {
       int onoff, x, y;
@@ -490,15 +490,15 @@ feh_create_checks(void)
       checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
       feh_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
    }
-   D_RETURN(checks_pmap);
+   D_RETURN(3,checks_pmap);
 }
 
 void
 winwidget_clear_background(winwidget w)
 {
-   D_ENTER;
+   D_ENTER(3);
    XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -507,7 +507,7 @@ feh_draw_checks(winwidget win)
    static GC gc = None;
    XGCValues gcval;
 
-   D_ENTER;
+   D_ENTER(3);
    if (gc == None)
    {
       gcval.tile = feh_create_checks();
@@ -515,13 +515,13 @@ feh_draw_checks(winwidget win)
       gc = XCreateGC(disp, win->win, GCTile | GCFillStyle, &gcval);
    }
    XFillRectangle(disp, win->bg_pmap, gc, 0, 0, win->w, win->h);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 winwidget_destroy(winwidget winwid)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (winwid->win)
    {
       winwidget_unregister(winwid);
@@ -539,7 +539,7 @@ winwidget_destroy(winwidget winwid)
    if (winwid->im)
       feh_imlib_free_image_and_decache(winwid->im);
    free(winwid);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -547,11 +547,11 @@ winwidget_destroy_all(void)
 {
    int i;
 
-   D_ENTER;
+   D_ENTER(3);
    /* Have to DESCEND the list here, 'cos of the way _unregister works */
    for (i = window_num - 1; i >= 0; i--)
       winwidget_destroy(windows[i]);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 winwidget
@@ -559,21 +559,21 @@ winwidget_get_first_window_of_type(unsigned int type)
 {
    int i;
 
-   D_ENTER;
+   D_ENTER(3);
    for (i = 0; i < window_num; i++)
       if (windows[i]->type == type)
-         D_RETURN(windows[i]);
-   D_RETURN(NULL);
+         D_RETURN(3,windows[i]);
+   D_RETURN(3,NULL);
 }
 
 int
 winwidget_loadimage(winwidget winwid, feh_file * file,
                     Imlib_Progress_Function pfunc)
 {
-   D_ENTER;
-   D(("filename %s\n", file->filename));
+   D_ENTER(3);
+   D(3,("filename %s\n", file->filename));
    progwin = winwid;
-   D_RETURN(feh_load_image(&(winwid->im), file, pfunc));
+   D_RETURN(3,feh_load_image(&(winwid->im), file, pfunc));
 }
 
 void
@@ -581,28 +581,28 @@ winwidget_show(winwidget winwid)
 {
    XEvent ev;
 
-   D_ENTER;
+   D_ENTER(3);
 
    /* feh_debug_print_winwid(winwid); */
    if (!winwid->visible)
    {
       XMapWindow(disp, winwid->win);
       /* wait for the window to map */
-      D(("Waiting for window to map\n"));
+      D(3,("Waiting for window to map\n"));
       XMaskEvent(disp, StructureNotifyMask, &ev);
-      D(("Window mapped\n"));
+      D(3,("Window mapped\n"));
       winwid->visible = 1;
    }
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 winwidget_resize(winwidget winwid, int w, int h)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (winwid && ((winwid->w != w) || (winwid->h != h)))
    {
-      D(("Really doing a resize\n"));
+      D(3,("Really doing a resize\n"));
       winwidget_clear_background(winwid);
       XResizeWindow(disp, winwid->win, w, h);
       winwid->w = w;
@@ -611,25 +611,25 @@ winwidget_resize(winwidget winwid, int w, int h)
    }
    else
    {
-      D(("No resize actually needed\n"));
+      D(3,("No resize actually needed\n"));
    }
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 winwidget_hide(winwidget winwid)
 {
-   D_ENTER;
+   D_ENTER(3);
    XUnmapWindow(disp, winwid->win);
    winwid->visible = 0;
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 static void
 winwidget_register(winwidget win)
 {
-   D_ENTER;
-   D(("window %p\n", win));
+   D_ENTER(3);
+   D(3,("window %p\n", win));
    window_num++;
    if (windows)
       windows = erealloc(windows, window_num * sizeof(winwidget));
@@ -638,7 +638,7 @@ winwidget_register(winwidget win)
    windows[window_num - 1] = win;
 
    XSaveContext(disp, win->win, xid_context, (XPointer) win);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 static void
@@ -646,7 +646,7 @@ winwidget_unregister(winwidget win)
 {
    int i, j;
 
-   D_ENTER;
+   D_ENTER(3);
    for (i = 0; i < window_num; i++)
    {
       if (windows[i] == win)
@@ -664,40 +664,40 @@ winwidget_unregister(winwidget win)
       }
    }
    XDeleteContext(disp, win->win, xid_context);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
    if (XFindContext(disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
-      D_RETURN(ret);
-   D_RETURN(NULL);
+      D_RETURN(3,ret);
+   D_RETURN(3,NULL);
 }
 
 void
 winwidget_rename(winwidget winwid, char *newname)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (winwid->name)
       free(winwid->name);
    winwid->name = estrdup(newname);
    winwidget_update_title(winwid);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
 winwidget_free_image(winwidget w)
 {
-   D_ENTER;
+   D_ENTER(3);
    if (w->im)
       feh_imlib_free_image_and_decache(w->im);
    w->im = NULL;
    w->im_w = 0;
    w->im_h = 0;
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -719,13 +719,13 @@ feh_debug_print_winwid(winwidget w)
 void
 winwidget_reset_image(winwidget winwid)
 {
-   D_ENTER;
+   D_ENTER(3);
    winwid->zoom = 1.0;
    winwid->im_x = 0;
    winwid->im_y = 0;
    winwid->im_angle = 0.0;
    winwid->has_rotated = 0;
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 void
@@ -734,7 +734,7 @@ winwidget_sanitise_offsets(winwidget winwid)
    int far_left, far_top;
    int min_x, max_x, max_y, min_y;
 
-   D_ENTER;
+   D_ENTER(3);
 
    far_left = winwid->w - (winwid->im_w * winwid->zoom);
    far_top = winwid->h - (winwid->im_h * winwid->zoom);
@@ -768,5 +768,5 @@ winwidget_sanitise_offsets(winwidget winwid)
    if (winwid->im_y < min_y)
       winwid->im_y = min_y;
 
-   D_RETURN_;
+   D_RETURN_(3);
 }

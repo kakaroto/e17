@@ -41,7 +41,7 @@ winwidget progwin = NULL;
 void
 init_x_and_imlib(void)
 {
-   D_ENTER;
+   D_ENTER(3);
 
    disp = XOpenDisplay(NULL);
    if (!disp)
@@ -67,13 +67,13 @@ init_x_and_imlib(void)
    imlib_add_path_to_font_path(".");
    if (opt.fontpath)
    {
-      D(("adding fontpath %s\n", opt.fontpath));
+      D(3,("adding fontpath %s\n", opt.fontpath));
       imlib_add_path_to_font_path(opt.fontpath);
    }
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
 
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 int
@@ -83,11 +83,11 @@ feh_load_image_char(Imlib_Image * im, char *filename,
    feh_file *file;
    int i;
 
-   D_ENTER;
+   D_ENTER(3);
    file = feh_file_new(filename);
    i = feh_load_image(im, file, pfunc);
    feh_file_free(file);
-   D_RETURN(i);
+   D_RETURN(3,i);
 }
 
 int
@@ -96,11 +96,11 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 {
    Imlib_Load_Error err;
 
-   D_ENTER;
-   D(("filename is %s\n", file->filename));
+   D_ENTER(3);
+   D(3,("filename is %s\n", file->filename));
 
    if (!file || !file->filename)
-      D_RETURN(0);
+      D_RETURN(3,0);
 
    imlib_context_set_progress_function(pfunc);
    imlib_context_set_progress_granularity(opt.progress_gran);
@@ -114,7 +114,7 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 
       tmpname = feh_http_load_image(file->filename);
       if (tmpname == NULL)
-         D_RETURN(0);
+         D_RETURN(3,0);
       *im = imlib_load_image_with_error_return(tmpname, &err);
       if (im)
       {
@@ -220,12 +220,12 @@ feh_load_image(Imlib_Image * im, feh_file * file,
                   file->filename);
            break;
       }
-      D(("Load *failed*\n"));
-      D_RETURN(0);
+      D(3,("Load *failed*\n"));
+      D_RETURN(3,0);
    }
 
-   D(("Loaded ok\n"));
-   D_RETURN(1);
+   D(3,("Loaded ok\n"));
+   D_RETURN(3,1);
 }
 
 int
@@ -235,20 +235,20 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    int dest_x = 0, dest_y = 0;
    int newwin = 0;
 
-   D_ENTER;
+   D_ENTER(3);
    if (!progwin)
    {
       weprintf("progwin does not exist - this should not happen");
-      D_RETURN(0);
+      D_RETURN(3,0);
    }
 
-   D(("progress is %d\n", percent));
+   D(3,("progress is %d\n", percent));
 
    /* Is this the first progress return for a new image? */
    /* If so, we have some stuff to set up... */
    if (progwin->im_w == 0)
    {
-      D(("First progress load. setting stuff up\n"));
+      D(3,("First progress load. setting stuff up\n"));
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
       winwidget_reset_image(progwin);
@@ -262,13 +262,13 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       if (!progwin->win)
       {
          newwin = 1;
-         D(("Need to create a window for the image\n"));
+         D(3,("Need to create a window for the image\n"));
          winwidget_create_window(progwin, progwin->im_w, progwin->im_h);
          winwidget_show(progwin);
       }
       else if (!opt.full_screen)
       {
-         D(("Resizing the window\n"));
+         D(3,("Resizing the window\n"));
          winwidget_resize(progwin, progwin->im_w, progwin->im_h);
       }
 
@@ -323,7 +323,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
 
-   D_RETURN(1);
+   D_RETURN(3,1);
    percent = 0;
 }
 
@@ -340,7 +340,7 @@ feh_http_load_image(char *url)
    char randnum[20];
    int rnum;
 
-   D_ENTER;
+   D_ENTER(3);
    snprintf(num, sizeof(num), "%04ld_", i++);
    /* Massive paranoia ;) */
    if (i > 9998)
@@ -357,12 +357,12 @@ feh_http_load_image(char *url)
    rnum = rand();
    snprintf(randnum, sizeof(randnum), "%d", rnum);
    newurl = estrjoin("?", url, randnum, NULL);
-   D(("newurl: %s\n", newurl));
+   D(3,("newurl: %s\n", newurl));
    if ((pid = fork()) < 0)
    {
       weprintf("open url: fork failed:");
       free(tmpname);
-      D_RETURN(NULL);
+      D_RETURN(3,NULL);
    }
    else if (pid == 0)
    {
@@ -384,11 +384,11 @@ feh_http_load_image(char *url)
          weprintf("url: wget failed to load URL %s\n", url);
          free(tmpname);
          free(newurl);
-         D_RETURN(NULL);
+         D_RETURN(3,NULL);
       }
    }
    free(newurl);
-   D_RETURN(tmpname);
+   D_RETURN(3,tmpname);
 }
 
 void
@@ -398,7 +398,7 @@ feh_draw_filename(winwidget w)
    int tw = 0, th = 0;
    Imlib_Image im = NULL;
 
-   D_ENTER;
+   D_ENTER(3);
    if (!fn)
    {
       if (opt.full_screen)
@@ -410,7 +410,7 @@ feh_draw_filename(winwidget w)
    if (!fn)
    {
       weprintf("Couldn't load font for filename printing");
-      D_RETURN_;
+      D_RETURN_(3);
    }
 
    /* Work out how high the font is */
@@ -433,7 +433,7 @@ feh_draw_filename(winwidget w)
 
    XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
    XClearArea(disp, w->win, 0, 0, tw, th, False);
-   D_RETURN_;
+   D_RETURN_(3);
 }
 
 unsigned char reset_output = 0;
@@ -445,9 +445,9 @@ feh_display_status(char stat)
    static int init_len = 0;
    int j = 0;
 
-   D_ENTER;
+   D_ENTER(3);
 
-   D(("filelist %p, filelist->next %p\n", filelist, filelist->next));
+   D(3,("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
    if (!init_len)
       init_len = feh_list_length(filelist);
@@ -482,5 +482,5 @@ feh_display_status(char stat)
    fprintf(stdout, "%c", stat);
    fflush(stdout);
    i++;
-   D_RETURN_;
+   D_RETURN_(3);
 }

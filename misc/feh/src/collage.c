@@ -42,8 +42,9 @@ init_collage_mode(void)
    unsigned char trans_bg = 0;
    feh_list *l, *last = NULL;
    int file_num = 0;
+   char *s;
 
-   D_ENTER;
+   D_ENTER(3);
 
    mode = "collage";
 
@@ -57,7 +58,7 @@ init_collage_mode(void)
       else
       {
 
-         D(("Time to apply a background to blend onto\n"));
+         D(3,("Time to apply a background to blend onto\n"));
          if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
          {
             bg_w = feh_imlib_image_get_width(bg_im);
@@ -92,7 +93,7 @@ init_collage_mode(void)
 
    w = opt.limit_w;
    h = opt.limit_h;
-   D(("Limiting width to %d and height to %d\n", w, h));
+   D(3,("Limiting width to %d and height to %d\n", w, h));
 
    im_main = imlib_create_image(w, h);
 
@@ -114,11 +115,17 @@ init_collage_mode(void)
       feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
    }
 
+   /* Create the title string */
+   
+   if (!opt.title)
+	  s = estrdup(PACKAGE " [collage mode]");
+   else
+	  s = estrdup(feh_printf(opt.title, NULL));
+   
    if (opt.display && opt.progressive)
    {
       winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [collage mode]",
-                                     WIN_TYPE_SINGLE);
+         winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
       winwidget_show(winwid);
    }
 
@@ -131,10 +138,10 @@ init_collage_mode(void)
          filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
-      D(("About to load image %s\n", file->filename));
+      D(3,("About to load image %s\n", file->filename));
       if (feh_load_image(&im_temp, file, NULL) != 0)
       {
-         D(("Successfully loaded %s\n", file->filename));
+         D(3,("Successfully loaded %s\n", file->filename));
          if (opt.verbose)
             feh_display_status('.');
          www = opt.thumb_w;
@@ -165,7 +172,7 @@ init_collage_mode(void)
          /* pick random coords for thumbnail */
          xxx = ((w - www) * ((double) rand() / RAND_MAX));
          yyy = ((h - hhh) * ((double) rand() / RAND_MAX));
-         D(("image going on at x=%d, y=%d\n", xxx, yyy));
+         D(3,("image going on at x=%d, y=%d\n", xxx, yyy));
 
          im_thumb =
             feh_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www,
@@ -176,7 +183,7 @@ init_collage_mode(void)
          {
             DATA8 atab[256];
 
-            D(("Applying alpha options\n"));
+            D(3,("Applying alpha options\n"));
             feh_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
             feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
@@ -237,5 +244,6 @@ init_collage_mode(void)
    }
    else
       feh_imlib_free_image_and_decache(im_main);
-   D_RETURN_;
+   free(s);
+   D_RETURN_(3);
 }
