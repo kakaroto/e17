@@ -12,7 +12,7 @@
 
 
 Epplet_gadget btn_conf, btn_close, btn_help, btn_ctimer, btn_www, btn_ftp, btn_wget;
-Epplet_gadget btn_col, lbl_url;
+Epplet_gadget btn_col, lbl_url, btn_file_url;
 Epplet_gadget p, col_p, ctimer_p, stimer_p;
 Window win;
 RGB_buf buf;
@@ -43,23 +43,19 @@ struct
 {
   int quality;
   int win;
-  int beep;
   int cloak_anim;
-  int frame;
   int do_cloak;
   int rand_cloak;
-  int run_script;
   int save_urls;
-  double delay;
+  int check_url_file;
+  int do_new_url_command;
+  int always_show_file_urls;
   double cloak_delay;
   double rand_delay;
   double draw_interval;
-  char *dir;
-  char *file_prefix;
-  char *file_stamp;
-  char *file_type;
-  char *script;
+  char *new_url_command;
   char *url_save_file;
+  char *url_file;
   char *www_command;
   char *ftp_command;
   char *get_command;

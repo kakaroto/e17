@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "epplet.h"
 #include "utils.h"
@@ -28,6 +30,7 @@
 #include "E-UrlWatch.h"
 
 static void display_string (char *string);
+static void handle_url (char *url, char *type);
 
 static void
 choose_random_cloak (void *data)
@@ -55,12 +58,18 @@ save_config (void)
   Epplet_modify_config ("DRAW_INTERVAL", buf);
   Esnprintf (buf, sizeof (buf), "%.2f", opt.rand_delay);
   Epplet_modify_config ("RAND_DELAY", buf);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.always_show_file_urls);
+  Epplet_modify_config ("ALWAYS_SHOW_FILE_URLS", buf);
 /* 
  *   Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
  *   Epplet_modify_config ("DO_CLOAK", buf);
  */
   Esnprintf (buf, sizeof (buf), "%d", opt.save_urls);
   Epplet_modify_config ("SAVE_URLS", buf);
+  Esnprintf (buf, sizeof (buf), "%d", opt.check_url_file);
+  Epplet_modify_config ("CHECK_URL_FILE", buf);
+  Esnprintf (buf, sizeof (buf), "%d", opt.do_new_url_command);
+  Epplet_modify_config ("RUN_COMMAND_ON_NEW_URL", buf);
   if (opt.rand_cloak)
     {
       strcpy (buf, "16");
@@ -74,14 +83,22 @@ save_config (void)
   Epplet_modify_config ("FTP_COMMAND", opt.ftp_command);
   Epplet_modify_config ("GET_COMMAND", opt.get_command);
   Epplet_modify_config ("URL_SAVE_FILE", opt.url_save_file);
+  Epplet_modify_config ("URL_CHECK_FILE", opt.url_file);
+  Epplet_modify_config ("NEW_URL_COMMAND", opt.new_url_command);
 }
 
 static void
 load_config (void)
 {
+  char *home = getenv ("HOME");
+  char buf[256];
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "0"));
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "8"));
   opt.save_urls = atoi (Epplet_query_config_def ("SAVE_URLS", "1"));
+  opt.check_url_file = atoi (Epplet_query_config_def ("CHECK_URL_FILE", "1"));
+  opt.always_show_file_urls = atoi (Epplet_query_config_def ("ALWAYS_SHOW_FILE_URLS", "0"));
+  opt.do_new_url_command =
+    atoi (Epplet_query_config_def ("RUN_COMMAND_ON_NEW_URL", "0"));
   if (opt.cloak_anim == 16)
     {
       opt.rand_cloak = 1;
@@ -108,8 +125,18 @@ load_config (void)
     _Strdup (Epplet_query_config_def ("GET_COMMAND", "Eterm -O -e wget"));
   if (opt.url_save_file)
     free (opt.url_save_file);
+  Esnprintf (buf, sizeof (buf), "%s/.Urls", home);
   opt.url_save_file =
-    _Strdup (Epplet_query_config_def ("URL_SAVE_FILE", "$HOME/.Urls"));
+    _Strdup (Epplet_query_config_def ("URL_SAVE_FILE", buf));
+  if (opt.url_file)
+    free (opt.url_file);
+  Esnprintf (buf, sizeof (buf), "%s/.te/.urls", home);
+  opt.url_file = _Strdup (Epplet_query_config_def ("URL_CHECK_FILE", buf));
+  if (opt.new_url_command)
+    free (opt.new_url_command);
+  opt.new_url_command =
+    _Strdup (Epplet_query_config_def
+	     ("NEW_URL_COMMAND", "esdplay /opt/sounds/Wooeep.wav &"));
 }
 
 static void
@@ -296,14 +323,6 @@ cb_cloak_delay (void *data)
 }
 
 static void
-cb_save_delay (void *data)
-{
-  opt.delay = *(int *) data;
-  return;
-  data = NULL;
-}
-
-static void
 cb_dont_cloak (void *data)
 {
   opt.do_cloak = 0;
@@ -363,11 +382,81 @@ get_url_from_paste_buffer (void)
 static char *
 get_url_from_file_list (char *file, int position)
 {
-  static char url[] = "http://www.enlighenment.org";
+  FILE *fp;
+  static char buf[256];
+  int j = 0;
 
-  return url;
-  file = NULL;
-  position = 0;
+  D (("In get_url_from_file_list\n"));
+
+  if ((fp = fopen (file, "r")) == NULL)
+    {
+      fprintf (stderr, "Unable to open file -->%s<-- for reading\n", file);
+      return "Error opening url file!";
+    }
+
+  if (position == -1)
+    {
+      while (!feof (fp))
+	fgets (buf, sizeof (buf), fp);
+      D (("In get_url_from_file_list: buf is -->%s<--\n", buf));
+    }
+  else
+    {
+      while (!feof (fp) && j++ < position)
+	fgets (buf, sizeof (buf), fp);
+      D (("In get_url_from_file_list: buf is -->%s<--\n", buf));
+    }
+
+  fclose (fp);
+
+  return buf;
+}
+
+static void
+display_url_from_file (char *url)
+{
+  /* Perform new url command (eg play a sound) */
+  if (opt.do_new_url_command && opt.new_url_command)
+    system (opt.new_url_command);
+
+  if(opt.always_show_file_urls)
+	handle_url(url,"www");
+  else
+  {
+      display_string(url);
+      Epplet_gadget_show(btn_file_url);
+  }
+
+}
+
+static void
+check_url_file (void *data)
+{
+  static off_t lastfilesize = 0;
+  off_t filesize = 0;
+  struct stat filestat;
+
+  D (("In check_url_file, url_file -->%s<--\n", opt.url_file));
+
+  if (stat (opt.url_file, &filestat) != 0)
+    {
+      D (("stat() failed on -->%s<--\n", opt.url_file));
+    }
+  else
+    {
+      filesize = filestat.st_size;
+
+      if ((filesize != lastfilesize) && (lastfilesize != 0))
+	display_url_from_file (get_url_from_file_list (opt.url_file, -1));
+
+      lastfilesize = filesize;
+    }
+
+  if (opt.check_url_file)
+    Epplet_timer (check_url_file, NULL, 1, "URLCHECK_TIMER");
+
+  return;
+  data = NULL;
 }
 
 static char *
@@ -377,8 +466,8 @@ validate_url (char *url)
   char *ret = NULL;
   static char *orig_ret = NULL;
 
-  D(("In validate_url: url -->%s<--\n",url));
-  
+  D (("In validate_url: url -->%s<--\n", url));
+
   if (orig_ret)
     free (orig_ret);
 
@@ -422,7 +511,7 @@ validate_url (char *url)
       free (temp);
     }
 
-  D(("In validate_url: ret -->%s<--\n",ret));
+  D (("In validate_url: ret -->%s<--\n", ret));
 
   /* Now some checks */
   if (strlen (ret) < 1)
@@ -454,6 +543,7 @@ static void
 reset_string (void *data)
 {
   display_string ("E-UrlWatch");
+  Epplet_gadget_hide(btn_file_url);
   return;
   data = NULL;
 }
@@ -528,14 +618,14 @@ handle_url (char *url, char *type)
   if (url == NULL)
     return;
 
-  D(("In handle_url: url -->%s<--\n", url));
+  D (("In handle_url: url -->%s<--\n", url));
 
   if ((validurl = validate_url (url)) == NULL)
     return;
 
   display_string (validurl);
 
-  D (("In handle_url: valid url -->%s<--\n", validurl));  
+  D (("In handle_url: valid url -->%s<--\n", validurl));
 
   if (!strcmp (type, "www"))
     {
@@ -571,14 +661,24 @@ cb_shoot (void *data)
   char *url;
 
   url = get_url_from_paste_buffer ();
-  
-  D(("In cb_shoot: url -->%s<--\n",url));
+
+  D (("In cb_shoot: url -->%s<--\n", url));
 
   handle_url (url, data);
 
   return;
 }
-
+static void
+cb_btn_file_url(void *data)
+{
+    if(dtext.str && strcmp(dtext.str,"E-UrlWatch"))
+    {
+	handle_url(dtext.str,"www");
+    }
+    return;
+    data=NULL;
+}
+    
 static void
 cb_color (void *data)
 {
@@ -615,6 +715,9 @@ create_epplet_layout (void)
 		      Epplet_create_button ("GET", NULL,
 					    62, 17, 28, 13,
 					    0, 0, NULL, cb_shoot, "get"));
+  btn_file_url = Epplet_create_button ("New Url in File!", NULL,
+                                            16, 2, 64, 12,
+                                            0, 0, NULL, cb_btn_file_url, NULL);
   p = Epplet_create_popup ();
   Epplet_add_popup_entry (p, "Don't Cloak", NULL, cb_dont_cloak, NULL);
   Epplet_add_popup_entry (p, "Blank Epplet", NULL,
@@ -695,6 +798,8 @@ create_epplet_layout (void)
     Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
   Epplet_register_mouse_enter_handler (cb_in, (void *) win);
   Epplet_register_mouse_leave_handler (cb_out, NULL);
+  if (opt.check_url_file)
+    Epplet_timer (check_url_file, NULL, 1, "URLCHECK_TIMER");
   display_string ("Welcome to E-UrlWatch ;-)");
 }
 

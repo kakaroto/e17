@@ -869,3 +869,20 @@ Thu Nov 25 20:48:51 GMT 1999
 
 Oops. Fixed a naughty segfault with my shoddy string handling routines.
 
+-------------------------------------------------------------------------------
+
+Fri Nov 25 19:17:05 GMT 1999
+(gilbertt)
+
+E-UrlWatch
+
+Added support for URL grabbers such as that found in TE/Epic. In the example
+of TE, urls are stripped from irc convo, and dumped into ~/.te/.urls
+If told to via the config (as it will by default), E-UrlWatch will watch
+that file, and will strip out new urls and allow you to view them at the
+touch of a button. (Or automatically if you specify). It'll also perform a
+configurable command (I use it to play a sound) when a new URL appears.
+
+Other misc cleanups have taken place, and I have very carefully hidden a
+couple of juicy bugs. Find them for me, and you win a prize ;)
+
