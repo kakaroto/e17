@@ -20,6 +20,8 @@ images
    image, "bt_rotate_l_1.png" LOSSY 95;
    image, "bt_save_1.png" LOSSY 95;
    image, "bt_slideshow_1.png" LOSSY 95;
+   image, "bt_north_1.png" LOSSY 95;
+   image, "bt_south_1.png" LOSSY 95;
    image, "bt_prev_2.png" LOSSY 95;
    image, "bt_next_2.png" LOSSY 95;
    image, "bt_zoom_normal_2.png" LOSSY 95;
@@ -84,24 +86,27 @@ collections
 		name, "EnticeImage";
 		type, IMAGE;
 		mouse_events, 1;
+//		dragable
+//		{
+//		    confine, "bg";
+//		}
 		description
 		{
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.0;
-			offset, 30 75;
-			to_y, "bg";
-			to_x, "PanelMouseArea";
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -20 -40;
+			offset, 0 0;
 			to, "bg";
 		    }
-		    color, 255 255 255 255;
+		    color, 255 255 255 0;
 		}
 		description
 		{
@@ -178,8 +183,8 @@ collections
 	    }
 	    part
 	    {
-		name, "ButtonScrollWest";
-		type, IMAGE;
+		name, "PanningClipMouseArea";
+		type, RECT;
 		mouse_events, 1;
 		description
 		{
@@ -187,19 +192,86 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.5;
-			offset, -16 -8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -90 -50;
+			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.0 0.5;
-			offset, 0 8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, 90 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "PanningClip";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -40;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 72 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -40;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 72 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollWest";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanningClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, -40 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_l.png";
+			normal, "bt_prev_1.png";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -209,19 +281,19 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.5;
-			offset, -16 -8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -72 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.0 0.5;
-			offset, 0 8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -40 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_l.png";
+			normal, "bt_prev_1.png";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -231,25 +303,26 @@ collections
 		name, "ButtonScrollEast";
 		type, IMAGE;
 		mouse_events, 1;
+		clip_to, "PanningClip";
 		description
 		{
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, 0 -8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -36 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, 16 8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -4 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_r.png";
+			normal, "bt_next_1.png";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -259,19 +332,19 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, 0 -8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -36 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, 16 8;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, -4 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_r.png";
+			normal, "bt_next_1.png";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -281,25 +354,26 @@ collections
 		name, "ButtonScrollNorth";
 		type, IMAGE;
 		mouse_events, 1;
+		clip_to, "PanningClip";
 		description
 		{
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.5 0.0;
-			offset, -8 -16;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, 0 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.5 0.0;
-			offset, 8 0;
-			to, "EnticeImage";
+			relative, 0.5 1.0;
+			offset, 32 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_t.png";
+			normal, "bt_north_1.png";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -310,18 +384,18 @@ collections
 		    rel1
 		    {
 			relative, 0.5 1.0;
-			offset, -8 0;
-			to, "EnticeImage";
+			offset, 0 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 0.5 1.0;
-			offset, 8 16;
-			to, "EnticeImage";
+			offset, 32 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_t.png";
+			normal, "bt_north_1.png";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -331,6 +405,7 @@ collections
 		name, "ButtonScrollSouth";
 		type, IMAGE;
 		mouse_events, 1;
+		clip_to, "PanningClip";
 		description
 		{
 		    state, "default" 0.0;
@@ -338,18 +413,18 @@ collections
 		    rel1
 		    {
 			relative, 0.5 1.0;
-			offset, -8 0;
-			to, "EnticeImage";
+			offset, 36 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 0.5 1.0;
-			offset, 8 16;
-			to, "EnticeImage";
+			offset, 68 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_b.png";
+			normal, "bt_south_1.png";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -360,18 +435,18 @@ collections
 		    rel1
 		    {
 			relative, 0.5 1.0;
-			offset, -8 0;
-			to, "EnticeImage";
+			offset, 36 -34;
+			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 0.5 1.0;
-			offset, 8 16;
-			to, "EnticeImage";
+			offset, 68 -2;
+			to, "bg";
 		    }
 		    image
 		    {
-			normal, "arrow_b.png";
+			normal, "bt_south_1.png";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -1521,6 +1596,15 @@ collections
 	{
 	    program
 	    {
+		name, 	"ShowPanning";
+		signal, "mouse,in";
+		source, "PanningClipMouseArea";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.3;
+		target, "PanningClip";
+	    }
+	    program
+	    {
 		name, 	"ShowPanel";
 		signal, "mouse,in";
 		source, "PanelMouseArea";
@@ -1539,19 +1623,20 @@ collections
 	    }
 	    program
 	    {
-		name, 	"HidePanel";
+		name, 	"ShowImage";
 		signal, "mouse,in";
-		source, "bg";
+		source, "EnticeImage";
 		action, STATE_SET "default" 0.0;
 		transition, DECELERATE 0.75;
 		target, "PanelClip";
+		target, "PanningClip";
 		target, "Buttons";
 	    }
 	    program
 	    {
 		name, 	"JustImage";
 		signal, "mouse,in";
-		source, "bg";
+		source, "EnticeImage";
 		action, STATE_SET "default" 0.0;
 		transition, LINEAR 0.15;
 		target, "EnticeImagePreview";
