@@ -9,6 +9,7 @@ EWLHEADERS = \
 	ewl_border.h \
 	ewl_box.h \
 	ewl_button.h \
+	ewl_button_stock.h \
 	ewl_callback.h \
 	ewl_cell.h \
 	ewl_check.h \
@@ -18,6 +19,7 @@ EWLHEADERS = \
 	ewl_container.h \
 	ewl_cursor.h \
 	ewl_debug.h \
+	ewl_dialog.h \
 	ewl_embed.h \
 	ewl_entry.h \
 	ewl_enums.h \
@@ -60,6 +62,7 @@ libewl_la_SOURCES = \
 	ewl_border.c \
 	ewl_box.c \
 	ewl_button.c \
+	ewl_button_stock.c \
 	ewl_callback.c \
 	ewl_cell.c \
 	ewl_check.c \
@@ -68,6 +71,7 @@ libewl_la_SOURCES = \
 	ewl_config.c \
 	ewl_container.c \
 	ewl_cursor.c \
+	ewl_dialog.c \
 	ewl_embed.c \
 	ewl_entry.c \
 	ewl_events.c \
