@@ -1,0 +1,6 @@
+.deps
+.libs
+esmart_file_dialog_test
+esmart_test
+Makefile
+Makefile.in
