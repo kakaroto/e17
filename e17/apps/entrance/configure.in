@@ -88,6 +88,15 @@ edje_cflags=`edje-config --cflags`
 AC_SUBST(edje_libs)
 AC_SUBST(edje_cflags)
 
+AC_PATH_GENERIC(esmart, 0.0.2, [
+	AC_SUBST(esmart_libs)
+	AC_SUBST(esmart_cflags) ],
+	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
+esmart_libs=`esmart-config --libs`
+esmart_cflags=`esmart-config --cflags`
+AC_SUBST(esmart_libs)
+AC_SUBST(esmart_cflags)
+
 have_pam=no
 AC_CHECK_HEADERS(security/pam_appl.h, [
 	LIBS="$LIBS -lpam"
