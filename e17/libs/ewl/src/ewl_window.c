@@ -23,19 +23,6 @@
 
 Ecore_List *ewl_window_list = NULL;
 
-void            ewl_window_realize_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_show_cb(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void            ewl_window_hide_cb(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void            ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_configure_cb(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-
 /**
  * @return Returns a new window on success, or NULL on failure.
  * @brief Allocate and initialize a new window
@@ -320,6 +307,8 @@ int ewl_window_init(Ewl_Window * w)
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     ewl_window_realize_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
+			     ewl_window_postrealize_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
 			     ewl_window_unrealize_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
@@ -407,7 +396,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * the drawing engine specific info it needs.
 	 */
 #ifdef HAVE_EVAS_ENGINE_GL_X11_H
-	if (!strcmp(render, "gl_x11")) {
+	if (!strcmp(render, "gl_x11") && ecore_x_display_get()) {
 		Evas_Engine_Info_GL_X11 *glinfo;
 
 		glinfo = (Evas_Engine_Info_GL_X11 *)info;
@@ -441,7 +430,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 #endif
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-	if (!strcmp(render, "software_x11")) {
+	if (!strcmp(render, "software_x11") && ecore_x_display_get()) {
 		Evas_Engine_Info_Software_X11 *sinfo;
 
 		sinfo = (Evas_Engine_Info_Software_X11 *)info;
@@ -475,6 +464,15 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_embed_set_evas(embed, evas, window->window);
 	window->render = strdup(render);
 	FREE(render);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	evas_object_pass_events_set(EWL_EMBED(w)->ev_clip, 1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
