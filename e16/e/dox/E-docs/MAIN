@@ -1385,12 +1385,22 @@ run this script whenever you add or delete programs from your system - it will
 pick up on all your KDE apps nicely right now.. :)
 
 <page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_placement_settings.png x=220 y=70>
+<img src=E_autoraise_settings.png x=10 y=270>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Window Placement and Autoraise
 <font face=aircut3/12 color=#ffffff>
 <p>
-huhuhuhuh he said butter
+These two _Settings(settings) dialogs allow you to configure various options
+for the placement of windows.  The two Dialog window options are for windows
+like the ALT+O open URL window in Netscape.  Manual Placement will force you to
+use the mouse to position every new window that attempts to map itself.
+<p>
+The Autoraise settings Dialog will allow you to set a timer event that causes a
+window to automatically raise itself to the foreground after a set time.  You
+can enable it here, as well as change the timer.  This is only useful in the
+sloppy and pointer _focus_modes(focus) .
 
 <page columns=1 padding=16 name=eesh background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
