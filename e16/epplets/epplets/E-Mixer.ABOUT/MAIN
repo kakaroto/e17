@@ -1,0 +1,18 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-Mixer
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+An Enlightenment Volume Control.
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By Tom Gilbert - 1999
+<p>
+This epplet controls your sound volume. There is a mute control too.
+<p>
+Not much else to say really :)
+<p>
+Share and Enjoy!
+<p>
+Tom Gilbert   (tom@tomgilbert.freeserve.co.uk)
