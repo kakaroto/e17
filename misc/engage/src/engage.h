@@ -82,7 +82,10 @@ OD_Window      *od_wm_window_next_by_window_class_get(const char *);
 OD_Window      *od_wm_window_prev_by_window_class_get(const char *);
 
 struct _OD_Options {
-  int             width, height, zoom;
+  int             width, height, reserve, zoom;
+#ifdef XINERAMA
+  int             head;
+#endif
   char           *icon_path, *theme, *engine;
   OD_Mode         mode;
   int             grab_min_icons, grab_app_icons;

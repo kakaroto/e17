@@ -150,6 +150,15 @@ AC_CHECK_HEADER( Esmart/Esmart_Trans_X11.h,
     have_esmart_trans="yes"  
   ])
 
+AC_ARG_ENABLE(xinerama,
+  [  --enable-xinerama  Use Xinerama],
+  [case "${enableval}" in
+    yes) xinerama=true ;;
+    no)  xinerama=false ;;
+    *)   AC_MSG_ERROR(bad value ${enableval} for --enable-xinerama) ;;
+  esac],[xinerama=false])
+  AM_CONDITIONAL(XINERAMA, test x$xinerama = xtrue)
+
 AC_OUTPUT([
 Makefile
 src/Makefile

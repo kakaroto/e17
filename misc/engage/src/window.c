@@ -6,6 +6,9 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/Xlib.h>
+#ifdef XINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -136,24 +139,56 @@ void
 od_window_init()
 {
   Ecore_X_Display *dsp;
-  Screen         *scr;
-  int             def;
+  int             x, y, xinerama;
   int             res_x, res_y;
   Evas_Object    *o;
   Evas_Object    *eventer;
 
+  xinerama = 1;
   fullheight = options.height;
   // determine the desktop size
   dsp = ecore_x_display_get();
-  def = DefaultScreen(dsp);
-  scr = ScreenOfDisplay(dsp, def);
-  res_x = scr->width;
-  res_y = scr->height;
+#ifdef XINERAMA
+  XineramaScreenInfo *screen_info;
+  int num_screens;
+
+  {
+    int event_base, error_base;
+
+    if(XineramaQueryExtension(dsp, &event_base, &error_base) &&
+       (screen_info = XineramaQueryScreens(dsp, &num_screens))) {
+      // Double check that the selected head is valid
+      if(options.head >= num_screens) {
+        fprintf(stderr, "Head %d does not exist; defaulting to head 0\n", options.head);
+        options.head = 0;
+      }
+
+      res_x = screen_info[options.head].width;
+      x     = screen_info[options.head].x_org;
+      res_y = screen_info[options.head].height;
+      y     = screen_info[options.head].y_org;
+    } else
+      xinerama = 0;
+  }
+#else
+  xinerama = 0;
+#endif
+
+  if(!xinerama) {
+    Screen         *scr;
+    int             def;
+    def = DefaultScreen(dsp);
+    scr = ScreenOfDisplay(dsp, def);
+    res_x = scr->width;
+    x     = 0;
+    res_y = scr->height;
+    y     = 0;
+  }
 
   if (!(strcmp(options.engine, "gl")))
     ee = ecore_evas_gl_x11_new(NULL, 0,
-                               (int) ((res_x - options.width) / 2.0),
-                               (int) (res_y - options.height),
+                               (int) ((res_x - options.width) / 2.0 + x),
+                               (int) (res_y - options.height + y),
                                options.width, options.height);
   else {
     if (strcmp(options.engine, "software")) {
@@ -162,8 +197,8 @@ od_window_init()
       fprintf(stderr, "         Defaulting to software engine.\n");
     }
     ee = ecore_evas_software_x11_new(NULL, 0,
-                                     (int) ((res_x - options.width) / 2.0),
-                                     (int) (res_y - options.height),
+                                     (int) ((res_x - options.width) / 2.0 + x),
+                                     (int) (res_y - options.height + y),
                                      options.width, options.height);
   }
 
@@ -200,10 +235,53 @@ od_window_init()
 
   od_window = ecore_evas_software_x11_window_get(ee);
   ecore_x_window_prop_xy_set(od_window,
-                             (int) ((res_x - options.width) / 2.0),
-                             (int) (res_y - options.height));
+                             (int) ((res_x - options.width) / 2.0 + x),
+                             (int) (res_y - options.height + y));
   ecore_x_window_prop_window_type_set(od_window, ECORE_X_WINDOW_TYPE_DOCK);
   ecore_x_window_prop_sticky_set(od_window, 1);
+
+  // Reserve a strut
+  if(options.reserve > 0) {
+    // Double check that there isn't a head below the selected head
+#ifdef XINERAMA
+    bool valid = true;
+
+    if(xinerama) {
+      int i;
+      for(i=0; i < num_screens; i++) {
+        if(i != options.head &&
+           ((screen_info[i].x_org >= screen_info[options.head].x_org &&
+             screen_info[i].x_org < screen_info[options.head].x_org
+                                    + screen_info[options.head].width) ||
+             (screen_info[i].x_org + screen_info[i].width
+              >= screen_info[options.head].x_org &&
+              screen_info[i].x_org + screen_info[i].width
+              < screen_info[options.head].x_org
+              + screen_info[options.head].width)) &&
+            screen_info[i].y_org > screen_info[options.head].y_org
+            + screen_info[options.head].height - options.reserve) {
+          fprintf(stderr, "Another head is below the selected head; no space will be reserved");
+          valid = false;
+          i = num_screens;
+        }
+      }
+    }
+
+    if(valid) {
+#endif
+      unsigned long struts[12] = { 0, 0, 0, options.reserve, 0, 0, 0, 0, 0, 0,
+                                  (res_x - options.width) / 2.0 + x,
+                                  (res_x - options.width ) / 2.0
+                                  + options.width + x };
+      ecore_x_window_prop_property_set(od_window, XInternAtom(dsp, "_NET_WM_STRUT_PARTIAL", False),
+                                       XA_CARDINAL, 32, struts, 12);
+      ecore_x_window_prop_property_set(od_window, XInternAtom(dsp, "_NET_WM_STRUT", False),
+                                       XA_CARDINAL, 32, struts, 4);
+#ifdef XINERAMA
+    }
+#endif
+  }
+  
   if (options.mode == OM_ONTOP)
     ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_ABOVE);
   else

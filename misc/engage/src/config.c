@@ -97,6 +97,14 @@ od_config_init(void)
   ecore_config_int_create_bound("engage.options.mode", OM_BELOW, 0, 1, 1, 'm',
                                 "mode",
                                 "The display mode, 0 = ontop + shaped, 1 = below + transp");
+
+  ecore_config_int_create("engage.options.reserve", 52, 'R', "reserve",
+                          "The amount of space reserved at the bottom of the screen");
+#ifdef XINERAMA
+  ecore_config_int_create("engage.options.head", 0, 'X', "head",
+                          "Which Xinerama head to display the docker on");
+#endif
+  
   ecore_config_boolean_create("engage.options.grab_min_icons", 0, 'g',
                               "grab-min",
                               "Capture the icons of minimised applications");
@@ -146,6 +154,12 @@ od_config_init(void)
   options.theme = ecore_config_theme_get("engage.options.theme");
   ecore_config_listen("theme", "engage.options.theme", theme_listener, 0, NULL);
   options.mode = ecore_config_int_get("engage.options.mode");
+
+  options.reserve = ecore_config_int_get("engage.options.reserve");
+#ifdef XINERAMA
+  options.head = ecore_config_int_get("engage.options.head");
+#endif
+  
   options.grab_min_icons =
     ecore_config_boolean_get("engage.options.grab_min_icons");
   options.grab_app_icons =
