@@ -368,7 +368,7 @@ handles will raise the windows to the top.
 <p>
 Clicking right mouse button on the titlebar or any button on the window 
 operations menu button on the top-left will display a menu that has window 
-manipulation options in it.
+manipulation options in it. 
 <p>
 Double-Clicking (clicking the mouse twice in succession really fast) will
 make the Window shade or unshade (depending if it was unshaded or shaded to 
@@ -726,4 +726,42 @@ clicking on Apply again.
 <p>
 Window Groups
 <font face=aircut3/12 color=#ffffff>
+Sometimes you have a number of windows on your desktop that logically go together,
+like for example the pager windows. Enlightenment allows you to group windows
+together, so that whenever you change a property of one window in a group,
+the change is reflected on the other group members.
+<p>
+The properties that you can change for an entire group include setting the window
+border, iconifying, killing, moving, raising/lowering, sticking and shading of
+a window.
+<p>
+To define what properties are applied to a group by default, you go to the
+_settings(settings) menu and pick the "Group Settings" option, which will give
+you a dialog window in which you can configure the settings.
+<p>
+There are two different ways for manipulating window groups. First, there's a
+submenu available in each window's operations menu called "Window Groups", which
+has all available options mentioned above.
 
+
+
+
+
+<page columns=1 padding=16 name=groups2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+Here you can also toggle an effect that is called "mirroring" of group properties:
+Enabling this will force all properties that can be in two different states (like
+shaded/unshaded, sticky/unsticky etc.) to be the same one for all group members.
+<p>
+The second way is the window titlebar, which has the most important options
+directly available for convenience. These are shift-clicking for starting a group,
+ctrl-clicking for adding a window to the youngest group (also referred to as the
+"current" group) and shift-ctrl-clicking for destroying a group. You can also click
+the middle mouse button for visualizing the group(s) of a window. Click again for
+returning to the previous borders.
+<p>
+Note that a window can be in multiple groups at the same time, so for a number of
+these options you have to indicate which group you are referring to. You can do
+this by selecting the appropriate checkboxes (showing the group members' titles)
+at the top of the dialog windows.
