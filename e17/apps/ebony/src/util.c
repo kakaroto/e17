@@ -86,6 +86,27 @@ write_ebony_bg_list_db(GList * l)
    }
 }
 
+char *
+get_dirpath_from_filename(const char *filename)
+{
+   char *result, *str;
+   int i;
+
+   result = strdup(filename);
+   i = strlen(filename);
+   while (i--)
+   {
+      if (result[i] == '/')
+         break;
+   }
+   result[i] = '\0';
+   str = strdup(result);
+   result[i] = 'e';
+
+   free(result);
+   return (str);
+}
+
 /**
  * get_shortname_for - chop the absolute path off of a bg filename
  * @filename the file to chop

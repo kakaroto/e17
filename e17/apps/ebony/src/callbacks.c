@@ -44,9 +44,11 @@ void
 on_open_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
    GtkWidget *fs;
+   char buf[PATH_MAX];
 
+   snprintf(buf, PATH_MAX, "%s/*.bg.db", bg_fileselection_dir);
    fs = gtk_file_selection_new("Load Background File");
-   gtk_file_selection_complete(GTK_FILE_SELECTION(fs), "*.bg.db");
+   gtk_file_selection_complete(GTK_FILE_SELECTION(fs), buf);
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button),
                       "clicked",
                       GTK_SIGNAL_FUNC(filemenu_load_cancel_clicked),
@@ -90,9 +92,11 @@ void
 on_save_bg_as_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
    GtkWidget *fs;
+   char buf[PATH_MAX];
 
+   snprintf(buf, PATH_MAX, "%s/new.bg.db", save_as_fileselection_dir);
    fs = gtk_file_selection_new("Save Background As File ...");
-   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), "new.bg.db");
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), buf);
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button),
                       "clicked", GTK_SIGNAL_FUNC(save_as_cancel_clicked),
                       (gpointer) fs);
@@ -884,6 +888,7 @@ on_win_bg_button_press_event(GtkWidget * widget, GdkEventKey * event,
       switch (event->keyval)
       {
         case GDK_q:
+           write_ebony_bg_list_db(recent_bgs);
            gtk_main_quit();
            break;
         case GDK_w:

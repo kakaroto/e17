@@ -3,6 +3,9 @@
 #include "callbacks.h"
 #include "interface.h"          /* i shouldn't have included this here =( */
 #include <gdk/gdkx.h>
+#include <config.h>
+
+static GtkWidget *recent_menu = NULL;
 
 /**
  * get_spin_value - for a named GtkWidget, attempt to retrieve its data
@@ -319,7 +322,7 @@ cs_cancel_button_clicked(GtkWidget * w, gpointer data)
 
 /**
  * filemenu_load_cancel_clicked - select a file and click cancel
- * @w - the ok button
+ * @w - the cancel button
  * @data - pointer to the fileselection the user chose from
  */
 void
@@ -339,7 +342,14 @@ filemenu_load_cancel_clicked(GtkWidget * w, gpointer data)
 void
 filemenu_load_ok_clicked(GtkWidget * w, gpointer data)
 {
+   char *dirpath;
+
    gchar *file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
+
+   dirpath = get_dirpath_from_filename((char *) file);
+
+   snprintf(bg_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
 
    if (file)
       open_bg_named((char *) file);
@@ -388,12 +398,22 @@ save_as_ok_clicked(GtkWidget * w, gpointer data)
    E_Background _bg;
    gchar *file;
    gchar errstr[1024];
+   char *dirpath;
 
    file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
+
+   dirpath = get_dirpath_from_filename((char *) file);
+
+   snprintf(save_as_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
+
    if (!file)
       return;
 
-   /* Save as over another file */
+
+   /* Save as over another file, load images before nuking it */
+   fill_background_images(bg);
+
    _bg = e_bg_load((char *) file);
    if (_bg)
    {
@@ -401,7 +421,6 @@ save_as_ok_clicked(GtkWidget * w, gpointer data)
       e_bg_free(_bg);
    }
 
-   fill_background_images(bg);
    e_bg_save(bg, (char *) file);
 
    open_bg_named((char *) file);
@@ -752,6 +771,17 @@ display_layer_values_for_image(E_Background_Layer _bl)
    UN(_bl);
 }
 
+void
+open_bg(GtkWidget * w, gpointer data)
+{
+   if (!data)
+      return;
+   open_bg_named((char *) data);
+   return;
+   UN(w);
+   UN(data);
+}
+
 /**
  * open_bg_named - have ebony load the bg named name
  * @name - the filename on disk
@@ -775,8 +805,7 @@ open_bg_named(char *name)
 
       snprintf(buf, 256, "Ebony - %s", name);
       gtk_window_set_title(GTK_WINDOW(bg_ref), buf);
-      /* add_bg_filename_to_recent_menu(name); */
-      /* handle_recent_bgs_append(name); */
+      handle_recent_bgs_append(name);
       e_bg_free(bg);
       display_bg(_bg);
 
@@ -911,8 +940,13 @@ void
 browse_file_ok_clicked(GtkWidget * w, gpointer data)
 {
    gchar *file;
+   char *dirpath;
 
    file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
+   dirpath = get_dirpath_from_filename((char *) file);
+
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
 
    if (file)
       set_entry_text("image_file", file);
@@ -935,4 +969,90 @@ browse_file_cancel_clicked(GtkWidget * w, gpointer data)
    return;
    UN(w);
    UN(data);
+}
+
+/**
+ * regen_recent_menu - regenerate from recent_bgs list
+ * Destroy the current widget submenu for recent bgs, recreate the submenu
+ * and show it.
+ */
+void
+regen_recent_menu(void)
+{
+   GList *l;
+   GtkWidget *mi, *w;
+   GtkWidget *menu;
+   char *short_name, *filename;
+
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "recent_bg_mi");
+
+   menu = gtk_menu_new();
+   gtk_widget_show(menu);
+   gtk_menu_item_set_submenu(GTK_MENU_ITEM(w), menu);
+
+   for (l = recent_bgs; l; l = l->next)
+   {
+      filename = (char *) l->data;
+
+      short_name = get_shortname_for(filename);
+      mi = gtk_menu_item_new_with_label(short_name);
+
+      gtk_menu_append(GTK_MENU(menu), mi);
+      gtk_signal_connect(GTK_OBJECT(mi), "activate", GTK_SIGNAL_FUNC(open_bg),
+                         (gpointer) filename);
+      gtk_widget_show(mi);
+   }
+   recent_menu = menu;
+}
+
+/**
+ * handle_recent_bgs_append - append the file to recent bg list
+ * @name - the filename on disk
+ * If the file name already exists in the list, remove it and append it to
+ * the list, if the list is full pop the first element and append the
+ * filename to the recent_bgs list
+ */
+void
+handle_recent_bgs_append(char *name)
+{
+   GList *l;
+   int ok, length;
+   char *str;
+
+   ok = 1;
+   if (!strcmp((char *) name, PACKAGE_DATA_DIR "/pixmaps/ebony.bg.db"))
+      return;
+   str = strdup((char *) name);
+   for (l = recent_bgs; l; l = l->next)
+   {
+      if (!l->data)
+      {
+         recent_bgs = g_list_remove_link(recent_bgs, l);
+      }
+      else if (!strcmp((char *) l->data, name))
+      {
+         recent_bgs = g_list_remove(recent_bgs, l->data);
+         free((char *) l->data);
+         ok = 0;
+      }
+   }
+   if (!ok)
+   {
+      char *bg_to_pop = NULL;
+
+      length = 0;
+      for (l = recent_bgs; (l) && (length < 5); l = l->next)
+         length++;
+      if (length == 4)
+      {
+         bg_to_pop = g_list_nth_data(recent_bgs, 0);
+         recent_bgs = g_list_remove(recent_bgs, (gpointer) bg_to_pop);
+         free((char *) bg_to_pop);
+      }
+      if (recent_menu)
+         gtk_widget_destroy(recent_menu);
+      recent_menu = NULL;
+   }
+   recent_bgs = g_list_append(recent_bgs, str);
+   regen_recent_menu();
 }

@@ -17,6 +17,14 @@
 #include "util.h"
 
 void
+setup_recent_menus(void)
+{
+   recent_bgs = parse_ebony_bg_list_db();
+   regen_recent_menu();
+}
+
+
+void
 init_globals(void)
 {
    win_ref = NULL;
@@ -29,6 +37,9 @@ init_globals(void)
    bg = NULL;
    bl = NULL;
    idle = 0;
+   snprintf(image_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
+   snprintf(bg_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
+   snprintf(save_as_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
 }
 
 int
@@ -96,6 +107,7 @@ main(int argc, char *argv[])
 
    set_spin_value("layer_num", 0);
 
+   setup_recent_menus();
    gtk_main();
    return 0;
 }

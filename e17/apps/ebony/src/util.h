@@ -18,4 +18,6 @@ void redraw_gradient_object(void);
 void setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
                 int h);
 void rebuild_bg_ref(void);
+char *get_dirpath_from_filename(const char *filename);
+
 #endif
