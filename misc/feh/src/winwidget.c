@@ -44,12 +44,12 @@ winwidget_allocate (void)
   ret->zy = 0;
   ret->zoom = 1.0;
   ret->timeout = 0;
-  ret->blank_im = NULL;
 
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -65,8 +65,6 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   ret->w = ret->im_w = imlib_image_get_width ();
   ret->h = ret->im_h = imlib_image_get_height ();
 
-  winwidget_create_blank_bg (ret);
-
   if (name)
     ret->name = estrdup (name);
   else
@@ -78,7 +76,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget winwidget_create_from_file (char *filename, char *name)
+winwidget
+winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -114,46 +113,10 @@ winwidget winwidget_create_from_file (char *filename, char *name)
       ret->w = ret->im_w = imlib_image_get_width ();
       ret->h = ret->im_h = imlib_image_get_height ();
       winwidget_create_window (ret, ret->w, ret->h);
-      winwidget_create_blank_bg (ret);
       winwidget_render_image (ret);
     }
 
   return ret;
-}
-
-void
-winwidget_create_blank_bg (winwidget ret)
-{
-  int x, y, onoff;
-  /* For zooming out */
-
-  D (("In winwidget_create_blank_bg\n"));
-
-  if (ret->blank_im)
-    {
-      imlib_context_set_image (ret->blank_im);
-      imlib_free_image_and_decache ();
-    }
-
-  ret->blank_im = imlib_create_image (ret->w, ret->h);
-  if (!ret->blank_im)
-    eprintf ("Couldn't create checkboard image\n");
-  imlib_context_set_image (ret->blank_im);
-  for (y = 0; y < ret->h; y += 8)
-    {
-      onoff = (y / 8) & 0x1;
-      for (x = 0; x < ret->w; x += 8)
-	{
-	  if (onoff)
-	    imlib_context_set_color (144, 144, 144, 255);
-	  else
-	    imlib_context_set_color (100, 100, 100, 255);
-	  imlib_image_fill_rectangle (x, y, 8, 8);
-	  onoff++;
-	  if (onoff == 2)
-	    onoff = 0;
-	}
-    }
 }
 
 void
@@ -228,8 +191,10 @@ winwidget_render_image (winwidget winwid)
     XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
 
   imlib_context_set_drawable (winwid->bg_pmap);
-  imlib_context_set_image (winwid->blank_im);
-  imlib_render_image_on_drawable (0, 0);
+  imlib_context_set_image (winwid->im);
+  if (imlib_image_has_alpha ())
+      feh_draw_checks (winwid);
+
   imlib_context_set_image (winwid->im);
   imlib_render_image_on_drawable (0, 0);
 
@@ -246,6 +211,19 @@ winwidget_render_image (winwidget winwid)
 }
 
 void
+feh_draw_checks (winwidget win)
+{
+  int x, y;
+
+  imlib_context_set_image (checks);
+  imlib_context_set_drawable (win->bg_pmap);
+
+  for (y = 0; y < win->im_h; y += CHECK_SIZE)
+    for (x = 0; x < win->im_w; x += CHECK_SIZE)
+      imlib_render_image_on_drawable (x, y);
+}
+
+void
 winwidget_rerender_image (winwidget winwid)
 {
   D (("In winwidget_rerender_image\n"));
@@ -258,16 +236,12 @@ winwidget_rerender_image (winwidget winwid)
 	XFreePixmap (disp, winwid->bg_pmap);
       winwid->bg_pmap =
 	XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
-      winwidget_create_blank_bg (winwid);
       XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
     }
   imlib_context_set_blend (0);
   imlib_context_set_drawable (winwid->bg_pmap);
   if (imlib_image_has_alpha ())
-    {
-      imlib_context_set_image (winwid->blank_im);
-      imlib_render_image_on_drawable (0, 0);
-    }
+      feh_draw_checks (winwid);
   if (imlib_image_has_alpha ())
     imlib_context_set_blend (1);
   imlib_context_set_image (winwid->im);
@@ -291,11 +265,6 @@ winwidget_destroy (winwidget winwid)
   if (winwid->im)
     {
       imlib_context_set_image (winwid->im);
-      imlib_free_image_and_decache ();
-    }
-  if (winwid->blank_im)
-    {
-      imlib_context_set_image (winwid->blank_im);
       imlib_free_image_and_decache ();
     }
   free (winwid);
@@ -376,7 +345,8 @@ winwidget_unregister (winwidget win)
     }
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;

@@ -125,7 +125,6 @@ slideshow_change_image (winwidget winwid, int change)
 	      winwid->im_w = imlib_image_get_width ();
 	      winwid->im_h = imlib_image_get_height ();
 	      winwidget_rerender_image (winwid);
-	      //winwidget_create_blank_bg (winwid);
 	    }
 	  if (winwid->name)
 	    {

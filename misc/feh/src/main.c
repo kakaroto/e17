@@ -117,11 +117,13 @@ main_loop (void)
 		      imlib_context_set_dither (0);
 		      imlib_context_set_blend (0);
 		      imlib_context_set_drawable (winwid->bg_pmap);
-		      imlib_context_set_image (winwid->blank_im);
-		      imlib_render_image_on_drawable (0, 0);
 		      imlib_context_set_image (winwid->im);
 		      if (imlib_image_has_alpha ())
-			imlib_context_set_blend (1);
+		      {
+			  imlib_context_set_blend (1);
+		      feh_draw_checks(winwid);
+		      }
+		      imlib_context_set_image (winwid->im);
 		      imlib_render_image_on_drawable (0, 0);
 		      XSetWindowBackgroundPixmap (disp, winwid->win,
 						  winwid->bg_pmap);
@@ -230,8 +232,7 @@ main_loop (void)
 			  imlib_context_set_dither (0);
 			  imlib_context_set_blend (0);
 			  imlib_context_set_drawable (winwid->bg_pmap);
-			  imlib_context_set_image (winwid->blank_im);
-			  imlib_render_image_on_drawable (0, 0);
+			  feh_draw_checks(winwid);
 			  imlib_context_set_image (winwid->im);
 			  if (imlib_image_has_alpha ())
 			    imlib_context_set_blend (1);
@@ -325,8 +326,7 @@ main_loop (void)
 		      imlib_context_set_dither (1);
 		      imlib_context_set_blend (0);
 		      imlib_context_set_drawable (windows[j]->bg_pmap);
-		      imlib_context_set_image (windows[j]->blank_im);
-		      imlib_render_image_on_drawable (0, 0);
+		      feh_draw_checks(windows[j]);
 		      imlib_context_set_image (windows[j]->im);
 		      if (imlib_image_has_alpha ())
 			imlib_context_set_blend (1);

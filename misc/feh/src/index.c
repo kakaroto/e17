@@ -127,94 +127,129 @@ init_index_mode (void)
   /* Here we need to whiz through the files, and look at the filenames and
    * info in the selected font, work out how much space we need, and
    * calculate the size of the image we will require */
-  {
-    x = 0;
-    y = 0;
 
-    if (opt.limit_w && opt.limit_h)
-      {
-	w = opt.limit_w;
-	h = opt.limit_h;
+  if (opt.limit_w && opt.limit_h)
+    {
+      int rec_h = 0;
 
-	/* Work out if this is big enough, and give a warning if not */
-	/* TODO */
+      w = opt.limit_w;
+      h = opt.limit_h;
 
-      }
-    else if (opt.limit_h)
-      {
-	vertical = 1;
-	h = opt.limit_h;
-	/* calc w */
-	for (i = 0; i < file_num; i++)
-	  {
-	    text_area_w = opt.thumb_w;
-	    /* Calc width of text */
-	    imlib_get_text_size (chop_file_from_full_path (files[i]), &fw,
-				 &fh);
-	    if (fw > text_area_w)
-	      text_area_w = fw;
-	    imlib_get_text_size (create_index_dimension_string
-				 (1000, 1000), &fw, &fh);
-	    if (fw > text_area_w)
-	      text_area_w = fw;
-	    imlib_get_text_size (create_index_size_string
-				 (files[i]), &fw, &fh);
-	    if (fw > text_area_w)
-	      text_area_w = fw;
+      /* Work out if this is big enough, and give a warning if not */
+      /* TODO */
 
-	    if (text_area_w > opt.thumb_w)
-	      text_area_w += 5;
+      /* Pretend we are limiting width by that specified, loop through,
+       * and see it we fit in the height specified. If not, continue the
+       * loop, and recommend the final value instead. Carry on and make
+       * the index anyway. */
 
-	    if (text_area_w > max_column_w)
-	      max_column_w = text_area_w;
+      for (i = 0; i < file_num; i++)
+	{
+	  text_area_w = opt.thumb_w;
+	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_dimension_string
+			       (1000, 1000), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
 
-	    if ((y > h - tot_thumb_h))
-	      {
-		y = 0;
-		x += max_column_w;
-		max_column_w = 0;
-	      }
+	  if (text_area_w > opt.thumb_w)
+	    text_area_w += 5;
 
-	    y += tot_thumb_h;
-	  }
-	w = x + text_area_w;
-	max_column_w = 0;
-      }
-    else if (opt.limit_w)
-      {
-	w = opt.limit_w;
-	/* calc h */
+	  if ((x > w - text_area_w))
+	    {
+	      x = 0;
+	      y += tot_thumb_h;
+	    }
 
-	for (i = 0; i < file_num; i++)
-	  {
-	    text_area_w = opt.thumb_w;
-	    imlib_get_text_size (chop_file_from_full_path (files[i]), &fw,
-				 &fh);
-	    if (fw > text_area_w)
-	      text_area_w = fw;
-	    imlib_get_text_size (create_index_dimension_string
-				 (1000, 1000), &fw, &fh);
-	    if (fw > text_area_w)
-	      text_area_w = fw;
-	    imlib_get_text_size (create_index_size_string
-				 (files[i]), &fw, &fh);
-	    if (fw > text_area_w)
-	      text_area_w = fw;
+	  x += text_area_w;
+	}
+      rec_h = y + tot_thumb_h;
 
-	    if (text_area_w > opt.thumb_w)
-	      text_area_w += 5;
+      if (h < rec_h)
+	{
+	  weprintf
+	    ("The image size you specified (%d by %d) is not large\n"
+	     "enough to hold all the thumnails you specified (%d). To fit all\n"
+	     "the thumnails, either decrease their size, choose a smaller font,\n"
+	     "or use a larger image (may I recommend %d by %d?)", opt.limit_w,
+	     opt.limit_h, file_num, opt.limit_w, rec_h);
+	}
+    }
+  else if (opt.limit_h)
+    {
+      vertical = 1;
+      h = opt.limit_h;
+      /* calc w */
+      for (i = 0; i < file_num; i++)
+	{
+	  text_area_w = opt.thumb_w;
+	  /* Calc width of text */
+	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_dimension_string
+			       (1000, 1000), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
 
-	    if ((x > w - text_area_w))
-	      {
-		x = 0;
-		y += tot_thumb_h;
-	      }
+	  if (text_area_w > opt.thumb_w)
+	    text_area_w += 5;
 
-	    x += text_area_w;
-	  }
-	h = y + tot_thumb_h;
-      }
-  }
+	  if (text_area_w > max_column_w)
+	    max_column_w = text_area_w;
+
+	  if ((y > h - tot_thumb_h))
+	    {
+	      y = 0;
+	      x += max_column_w;
+	      max_column_w = 0;
+	    }
+
+	  y += tot_thumb_h;
+	}
+      w = x + text_area_w;
+      max_column_w = 0;
+    }
+  else if (opt.limit_w)
+    {
+      w = opt.limit_w;
+      /* calc h */
+
+      for (i = 0; i < file_num; i++)
+	{
+	  text_area_w = opt.thumb_w;
+	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_dimension_string
+			       (1000, 1000), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+
+	  if (text_area_w > opt.thumb_w)
+	    text_area_w += 5;
+
+	  if ((x > w - text_area_w))
+	    {
+	      x = 0;
+	      y += tot_thumb_h;
+	    }
+
+	  x += text_area_w;
+	}
+      h = y + tot_thumb_h;
+    }
 
   x = y = 0;
 
@@ -303,17 +338,7 @@ init_index_mode (void)
 	  if (text_area_w > opt.thumb_w)
 	    text_area_w += 5;
 
-	  if (!vertical)
-	    {
-	      if (x > w - text_area_w)
-		{
-		  x = 0;
-		  y += tot_thumb_h;
-		}
-	      if (y > h - tot_thumb_h)
-		break;
-	    }
-	  else
+	  if (vertical)
 	    {
 	      if (text_area_w > max_column_w)
 		max_column_w = text_area_w;
@@ -324,6 +349,16 @@ init_index_mode (void)
 		  max_column_w = 0;
 		}
 	      if (x > w - text_area_w)
+		break;
+	    }
+	  else
+	    {
+	      if (x > w - text_area_w)
+		{
+		  x = 0;
+		  y += tot_thumb_h;
+		}
+	      if (y > h - tot_thumb_h)
 		break;
 	    }
 
@@ -358,10 +393,10 @@ init_index_mode (void)
 						  2) +
 			   2, create_index_size_string (files[i]));
 
-	  if (!vertical)
-	    x += text_area_w;
-	  else
+	  if (vertical)
 	    y += tot_thumb_h;
+	  else
+	    x += text_area_w;
 	}
     }
   if (opt.verbose)

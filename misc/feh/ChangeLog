@@ -1,3 +1,14 @@
+Wed Dec 22 21:49:10 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Memory usage down by ONE THIRD :)
+	* I finally did the checkerboard bg thing the Right Way, and saved
+	lots of wasted RAM. Hooray.
+
+Wed Dec 22 20:47:11 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* And now index mode has a go at recommending the image size for
+	you, if you specify one too small.
+
 Wed Dec 22 18:23:42 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Hehe. Found it. Little bugger. *squish*

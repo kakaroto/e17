@@ -44,6 +44,8 @@
 #define D(a) { ; }
 #endif
 
+#define CHECK_SIZE 160
+
 struct __thumbwidget
 {
   Window win;
@@ -101,7 +103,6 @@ struct __winwidget
   int zy;
   double zoom;
   int timeout;
-  Imlib_Image *blank_im;
 };
 typedef struct __winwidget _winwidget;
 typedef _winwidget *winwidget;
@@ -157,7 +158,6 @@ void handle_keypress_event (XEvent * ev, Window win);
 int winwidget_loadimage (winwidget winwid, char *filename);
 void winwidget_show (winwidget winwid);
 void winwidget_hide (winwidget winwid);
-void winwidget_create_blank_bg (winwidget ret);
 void winwidget_destroy_all (void);
 void winwidget_render_image (winwidget winwid);
 void winwidget_update_title (winwidget ret);
@@ -169,6 +169,7 @@ void progress (Imlib_Image im, char percent, int update_x, int update_y,
 	       int update_w, int update_h);
 void winwidget_create_window (winwidget ret, int w, int h);
 void winwidget_rerender_image (winwidget winwid);
+void feh_draw_checks(winwidget win);
 
 
 /* Imlib stuff */
@@ -187,3 +188,4 @@ extern int file_num;
 extern char **files;
 extern winwidget progwin;
 extern int actual_file_num;
+extern Imlib_Image *checks;

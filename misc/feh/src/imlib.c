@@ -23,6 +23,7 @@
 void
 init_x_and_imlib (void)
 {
+  int onoff, x, y;
   D (("In init_x_and_imlib\n"));
   disp = XOpenDisplay (NULL);
   if (!disp)
@@ -36,6 +37,30 @@ init_x_and_imlib (void)
   imlib_context_set_color_modifier (NULL);
   imlib_context_set_operation (IMLIB_OP_COPY);
   wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
+
+  imlib_context_set_blend (0);
+
+  checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
+
+  if (!checks)
+    eprintf ("Unable to create teeny weeny imlib image. I detect problems");
+
+  imlib_context_set_image (checks);
+  for (y = 0; y < CHECK_SIZE; y += 8)
+    {
+      onoff = (y / 8) & 0x1;
+      for (x = 0; x < CHECK_SIZE; x += 8)
+	{
+	  if (onoff)
+	    imlib_context_set_color (144, 144, 144, 255);
+	  else
+	    imlib_context_set_color (100, 100, 100, 255);
+	  imlib_image_fill_rectangle (x, y, 8, 8);
+	  onoff++;
+	  if (onoff == 2)
+	    onoff = 0;
+	}
+    }
 }
 
 int
@@ -139,16 +164,13 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
 	}
       else
 	exists = 1;
-      winwidget_create_blank_bg (progwin);
       if (progwin->bg_pmap)
 	XFreePixmap (disp, progwin->bg_pmap);
       progwin->bg_pmap =
 	XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
 		       depth);
       imlib_context_set_drawable (progwin->bg_pmap);
-      imlib_context_set_image (progwin->blank_im);
-      imlib_context_set_blend (0);
-      imlib_render_image_on_drawable (0, 0);
+      feh_draw_checks(progwin);
       XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
       if (exists)
 	XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
