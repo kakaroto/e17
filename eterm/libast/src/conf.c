@@ -39,10 +39,10 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
-static conf_var_t *conf_new_var(void);
-static void conf_free_var(conf_var_t *);
-static char *conf_get_var(const char *);
-static void conf_put_var(char *, char *);
+static spifconf_var_t *spifconf_new_var(void);
+static void spifconf_free_var(spifconf_var_t *);
+static char *spifconf_get_var(const char *);
+static void spifconf_put_var(char *, char *);
 static char *builtin_random(char *);
 static char *builtin_exec(char *);
 static char *builtin_get(char *);
@@ -54,9 +54,9 @@ static void *parse_null(char *, void *);
 
 static ctx_t *context;
 static ctx_state_t *ctx_state;
-static conf_func_t *builtins;
+static spifconf_func_t *builtins;
 static unsigned char ctx_cnt, ctx_idx, ctx_state_idx, ctx_state_cnt, fstate_cnt, builtin_cnt, builtin_idx;
-static conf_var_t *conf_vars = NULL;
+static spifconf_var_t *spifconf_vars = NULL;
 
 const char *true_vals[] = { "1", "on", "true", "yes" };
 const char *false_vals[] = { "0", "off", "false", "no" };
@@ -65,10 +65,10 @@ fstate_t *fstate;
 unsigned char fstate_idx;
 
 /***** The Config File Section *****/
-/* This function must be called before any other conf_*() function.
+/* This function must be called before any other spifconf_*() function.
    Otherwise you will be bitten by dragons.  That's life. */
 void
-conf_init_subsystem(void)
+spifconf_init_subsystem(void)
 {
 
     /* Initialize the context list and establish a catch-all "null" context */
@@ -94,22 +94,22 @@ conf_init_subsystem(void)
     /* Initialize the builtin function table */
     builtin_cnt = 10;
     builtin_idx = 0;
-    builtins = (conf_func_t *) MALLOC(sizeof(conf_func_t) * builtin_cnt);
-    MEMSET(builtins, 0, sizeof(conf_func_t) * builtin_cnt);
+    builtins = (spifconf_func_t *) MALLOC(sizeof(spifconf_func_t) * builtin_cnt);
+    MEMSET(builtins, 0, sizeof(spifconf_func_t) * builtin_cnt);
 
     /* Register the omni-present builtin functions */
-    conf_register_builtin("appname", builtin_appname);
-    conf_register_builtin("version", builtin_version);
-    conf_register_builtin("exec", builtin_exec);
-    conf_register_builtin("random", builtin_random);
-    conf_register_builtin("get", builtin_get);
-    conf_register_builtin("put", builtin_put);
-    conf_register_builtin("dirscan", builtin_dirscan);
+    spifconf_register_builtin("appname", builtin_appname);
+    spifconf_register_builtin("version", builtin_version);
+    spifconf_register_builtin("exec", builtin_exec);
+    spifconf_register_builtin("random", builtin_random);
+    spifconf_register_builtin("get", builtin_get);
+    spifconf_register_builtin("put", builtin_put);
+    spifconf_register_builtin("dirscan", builtin_dirscan);
 }
 
 /* Register a new config file context */
 unsigned char
-conf_register_context(char *name, ctx_handler_t handler)
+spifconf_register_context(char *name, ctx_handler_t handler)
 {
     if (strcasecmp(name, "null")) {
         if (++ctx_idx == ctx_cnt) {
@@ -127,7 +127,7 @@ conf_register_context(char *name, ctx_handler_t handler)
 
 /* Register a new file state structure */
 unsigned char
-conf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long line, unsigned char flags)
+spifconf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long line, unsigned char flags)
 {
 
     if (++fstate_idx == fstate_cnt) {
@@ -144,21 +144,21 @@ conf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long line, u
 
 /* Register a new builtin function */
 unsigned char
-conf_register_builtin(char *name, conf_func_ptr_t ptr)
+spifconf_register_builtin(char *name, spifconf_func_ptr_t ptr)
 {
 
     builtins[builtin_idx].name = STRDUP(name);
     builtins[builtin_idx].ptr = ptr;
     if (++builtin_idx == builtin_cnt) {
         builtin_cnt *= 2;
-        builtins = (conf_func_t *) REALLOC(builtins, sizeof(conf_func_t) * builtin_cnt);
+        builtins = (spifconf_func_t *) REALLOC(builtins, sizeof(spifconf_func_t) * builtin_cnt);
     }
     return (builtin_idx - 1);
 }
 
 /* Register a new config file context */
 unsigned char
-conf_register_context_state(unsigned char ctx_id)
+spifconf_register_context_state(unsigned char ctx_id)
 {
 
     if (++ctx_state_idx == ctx_state_cnt) {
@@ -171,15 +171,15 @@ conf_register_context_state(unsigned char ctx_id)
 }
 
 void
-conf_free_subsystem(void)
+spifconf_free_subsystem(void)
 {
-    conf_var_t *v, *tmp;
+    spifconf_var_t *v, *tmp;
     unsigned long i;
 
-    for (v = conf_vars; v;) {
+    for (v = spifconf_vars; v;) {
         tmp = v;
         v = v->next;
-        conf_free_var(tmp);
+        spifconf_free_var(tmp);
     }
     for (i = 0; i < builtin_idx; i++) {
         FREE(builtins[i].name);
@@ -193,18 +193,18 @@ conf_free_subsystem(void)
     FREE(context);
 }
 
-static conf_var_t *
-conf_new_var(void)
+static spifconf_var_t *
+spifconf_new_var(void)
 {
-    conf_var_t *v;
+    spifconf_var_t *v;
 
-    v = (conf_var_t *) MALLOC(sizeof(conf_var_t));
-    MEMSET(v, 0, sizeof(conf_var_t));
+    v = (spifconf_var_t *) MALLOC(sizeof(spifconf_var_t));
+    MEMSET(v, 0, sizeof(spifconf_var_t));
     return v;
 }
 
 static void
-conf_free_var(conf_var_t *v)
+spifconf_free_var(spifconf_var_t *v)
 {
     if (v->var) {
         FREE(v->var);
@@ -216,12 +216,12 @@ conf_free_var(conf_var_t *v)
 }
 
 static char *
-conf_get_var(const char *var)
+spifconf_get_var(const char *var)
 {
-    conf_var_t *v;
+    spifconf_var_t *v;
 
     D_CONF(("var == \"%s\"\n", var));
-    for (v = conf_vars; v; v = v->next) {
+    for (v = spifconf_vars; v; v = v->next) {
         if (!strcmp(v->var, var)) {
             D_CONF(("Found it at %010p:  \"%s\" == \"%s\"\n", v, v->var, v->value));
             return (v->value);
@@ -232,14 +232,14 @@ conf_get_var(const char *var)
 }
 
 static void
-conf_put_var(char *var, char *val)
+spifconf_put_var(char *var, char *val)
 {
-    conf_var_t *v, *loc = NULL, *tmp;
+    spifconf_var_t *v, *loc = NULL, *tmp;
 
     ASSERT(var != NULL);
     D_CONF(("var == \"%s\", val == \"%s\"\n", var, val));
 
-    for (v = conf_vars; v; loc = v, v = v->next) {
+    for (v = spifconf_vars; v; loc = v, v = v->next) {
         int n;
 
         n = strcmp(var, v->var);
@@ -254,9 +254,9 @@ conf_put_var(char *var, char *val)
                 if (loc) {
                     loc->next = v->next;
                 } else {
-                    conf_vars = v->next;
+                    spifconf_vars = v->next;
                 }
-                conf_free_var(v);
+                spifconf_free_var(v);
             }
             return;
         } else if (n < 0) {
@@ -268,10 +268,10 @@ conf_put_var(char *var, char *val)
         return;
     }
     D_CONF(("Inserting new var/val pair between \"%s\" and \"%s\"\n", ((loc) ? loc->var : "-beginning-"), ((v) ? v->var : "-end-")));
-    tmp = conf_new_var();
+    tmp = spifconf_new_var();
     if (loc == NULL) {
-        tmp->next = conf_vars;
-        conf_vars = tmp;
+        tmp->next = spifconf_vars;
+        spifconf_vars = tmp;
     } else {
         tmp->next = loc->next;
         loc->next = tmp;
@@ -366,7 +366,7 @@ builtin_get(char *param)
     } else {
         f = NULL;
     }
-    v = conf_get_var(s);
+    v = spifconf_get_var(s);
     FREE(s);
     if (v) {
         if (f) {
@@ -394,7 +394,7 @@ builtin_put(char *param)
     D_PARSE(("builtin_put(%s) called\n", param));
     var = get_word(1, param);
     val = get_word(2, param);
-    conf_put_var(var, val);
+    spifconf_put_var(var, val);
     return NULL;
 }
 
@@ -470,10 +470,10 @@ builtin_appname(char *param)
     return (STRDUP(buff));
 }
 
-/* shell_expand() takes care of shell variable expansion, quote conventions,
+/* spifconf_shell_expand() takes care of shell variable expansion, quote conventions,
    calling of built-in functions, etc.                                -- mej */
 char *
-shell_expand(char *s)
+spifconf_shell_expand(char *s)
 {
     register char *tmp;
     register char *pbuff = s, *tmp1;
@@ -575,7 +575,7 @@ shell_expand(char *s)
                       print_error("parse error in file %s, line %lu:  Mismatched parentheses\n", file_peek_path(), file_peek_line());
                       return ((char *) NULL);
                   }
-                  Command = shell_expand(Command);
+                  Command = spifconf_shell_expand(Command);
                   Output = (builtins[k].ptr) (Command);
                   FREE(Command);
                   if (Output) {
@@ -605,7 +605,7 @@ shell_expand(char *s)
                   }
                   ASSERT_RVAL(l < CONFIG_BUFF, NULL);
                   Command[l] = 0;
-                  Command = shell_expand(Command);
+                  Command = spifconf_shell_expand(Command);
                   Output = builtin_exec(Command);
                   FREE(Command);
                   if (Output) {
@@ -688,7 +688,7 @@ shell_expand(char *s)
     ASSERT_RVAL(j < CONFIG_BUFF, NULL);
     newbuff[j] = 0;
 
-    D_PARSE(("shell_expand(%s) returning \"%s\"\n", s, newbuff));
+    D_PARSE(("spifconf_shell_expand(%s) returning \"%s\"\n", s, newbuff));
     D_PARSE((" strlen(s) == %lu, strlen(newbuff) == %lu, j == %lu\n", strlen(s), strlen(newbuff), j));
 
     strcpy(s, newbuff);
@@ -702,7 +702,7 @@ shell_expand(char *s)
    If it can't find a config file, it displays a warning but continues. -- mej */
 
 char *
-conf_find_file(const char *file, const char *dir, const char *pathlist)
+spifconf_find_file(const char *file, const char *dir, const char *pathlist)
 {
 
     static char name[PATH_MAX], full_path[PATH_MAX];
@@ -715,7 +715,7 @@ conf_find_file(const char *file, const char *dir, const char *pathlist)
     REQUIRE_RVAL(file != NULL, NULL);
 
     getcwd(name, PATH_MAX);
-    D_CONF(("conf_find_file(\"%s\", \"%s\", \"%s\") called from directory \"%s\".\n", file, NONULL(dir), NONULL(pathlist), name));
+    D_CONF(("spifconf_find_file(\"%s\", \"%s\", \"%s\") called from directory \"%s\".\n", file, NONULL(dir), NONULL(pathlist), name));
 
     if (dir) {
         strcpy(name, dir);
@@ -765,12 +765,12 @@ conf_find_file(const char *file, const char *dir, const char *pathlist)
             }
         }
     }
-    D_CONF(("conf_find_file():  File \"%s\" not found in path.\n", name));
+    D_CONF(("spifconf_find_file():  File \"%s\" not found in path.\n", name));
     return ((char *) NULL);
 }
 
 FILE *
-open_config_file(char *name)
+spifconf_open_file(char *name)
 {
     FILE *fp;
     spif_cmp_t ver;
@@ -801,9 +801,9 @@ open_config_file(char *name)
     return (fp);
 }
 
-#define CONF_PARSE_RET()  do {if (!fp) {file_pop(); ctx_end();} return;} while (0)
+#define SPIFCONF_PARSE_RET()  do {if (!fp) {file_pop(); ctx_end();} return;} while (0)
 void
-conf_parse_line(FILE * fp, char *buff)
+spifconf_parse_line(FILE * fp, char *buff)
 {
     register unsigned long i = 0;
     unsigned char id;
@@ -812,14 +812,14 @@ conf_parse_line(FILE * fp, char *buff)
     ASSERT(buff != NULL);
 
     if (!(*buff) || *buff == '\n' || *buff == '#' || *buff == '<') {
-        CONF_PARSE_RET();
+        SPIFCONF_PARSE_RET();
     }
     if (fp == NULL) {
         file_push(NULL, "<argv>", NULL, 0, 0);
         ctx_begin(1);
         buff = get_pword(2, buff);
         if (!buff) {
-            CONF_PARSE_RET();
+            SPIFCONF_PARSE_RET();
         }
     }
     id = ctx_peek_id();
@@ -828,15 +828,15 @@ conf_parse_line(FILE * fp, char *buff)
     switch (*buff) {
       case '#':
       case '\0':
-          CONF_PARSE_RET();
+          SPIFCONF_PARSE_RET();
       case '%':
           if (!BEG_STRCASECMP(get_pword(1, buff + 1), "include ")) {
               char *path;
               FILE *fp;
 
-              shell_expand(buff);
+              spifconf_shell_expand(buff);
               path = get_word(2, buff + 1);
-              if ((fp = open_config_file(path)) == NULL) {
+              if ((fp = spifconf_open_file(path)) == NULL) {
                   print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(),
                               file_peek_line(), path, strerror(errno));
               } else {
@@ -848,7 +848,7 @@ conf_parse_line(FILE * fp, char *buff)
               FILE *fp;
 
               if (file_peek_preproc()) {
-                  CONF_PARSE_RET();
+                  SPIFCONF_PARSE_RET();
               }
               strcpy(fname, "Eterm-preproc-");
               fd = libast_temp_file(fname, PATH_MAX);
@@ -864,14 +864,14 @@ conf_parse_line(FILE * fp, char *buff)
               }
           } else {
               if (file_peek_skip()) {
-                  CONF_PARSE_RET();
+                  SPIFCONF_PARSE_RET();
               }
-              shell_expand(buff);
+              spifconf_shell_expand(buff);
           }
           break;
       case 'b':
           if (file_peek_skip()) {
-              CONF_PARSE_RET();
+              SPIFCONF_PARSE_RET();
           }
           if (!BEG_STRCASECMP(buff, "begin ")) {
               ctx_begin(2);
@@ -886,18 +886,18 @@ conf_parse_line(FILE * fp, char *buff)
           /* Intentional pass-through */
       default:
           if (file_peek_skip()) {
-              CONF_PARSE_RET();
+              SPIFCONF_PARSE_RET();
           }
-          shell_expand(buff);
+          spifconf_shell_expand(buff);
           ctx_poke_state((*ctx_id_to_func(id)) (buff, ctx_peek_state()));
     }
-    CONF_PARSE_RET();
+    SPIFCONF_PARSE_RET();
 }
 
-#undef CONF_PARSE_RET
+#undef SPIFCONF_PARSE_RET
 
 char *
-conf_parse(char *conf_name, const char *dir, const char *path)
+spifconf_parse(char *conf_name, const char *dir, const char *path)
 {
     FILE *fp;
     char *name = NULL, *p = ".";
@@ -907,7 +907,7 @@ conf_parse(char *conf_name, const char *dir, const char *path)
 
     *orig_dir = 0;
     if (path) {
-        if ((name = conf_find_file(conf_name, dir, path)) != NULL) {
+        if ((name = spifconf_find_file(conf_name, dir, path)) != NULL) {
             if ((p = strrchr(name, '/')) != NULL) {
                 getcwd(orig_dir, PATH_MAX);
                 *p = 0;
@@ -920,10 +920,10 @@ conf_parse(char *conf_name, const char *dir, const char *path)
             return NULL;
         }
     }
-    if ((fp = open_config_file(conf_name)) == NULL) {
+    if ((fp = spifconf_open_file(conf_name)) == NULL) {
         return NULL;
     }
-    file_push(fp, conf_name, NULL, 1, 0);	/* Line count starts at 1 because open_config_file() parses the first line */
+    file_push(fp, conf_name, NULL, 1, 0);	/* Line count starts at 1 because spifconf_open_file() parses the first line */
 
     for (; fstate_idx > 0;) {
         for (; fgets(buff, CONFIG_BUFF, file_peek_fp());) {
@@ -933,7 +933,7 @@ conf_parse(char *conf_name, const char *dir, const char *path)
                 for (; fgets(buff, CONFIG_BUFF, file_peek_fp()) && !strrchr(buff, '\n'););
                 continue;
             }
-            conf_parse_line(fp, buff);
+            spifconf_parse_line(fp, buff);
         }
         fclose(file_peek_fp());
         if (file_peek_preproc()) {
@@ -953,9 +953,9 @@ static void *
 parse_null(char *buff, void *state)
 {
 
-    if (*buff == CONF_BEGIN_CHAR) {
+    if (*buff == SPIFCONF_BEGIN_CHAR) {
         return (NULL);
-    } else if (*buff == CONF_END_CHAR) {
+    } else if (*buff == SPIFCONF_END_CHAR) {
         return (NULL);
     } else {
         print_error("Parse error in file %s, line %lu:  Not allowed in \"null\" context:  \"%s\"\n", file_peek_path(), file_peek_line(),
@@ -997,7 +997,7 @@ parse_null(char *buff, void *state)
  * this information, one for each file.  LibAST uses a structure array
  * called the file state stack.
  *
- * When config file parsing is initiated by a call to conf_parse(),
+ * When config file parsing is initiated by a call to spifconf_parse(),
  * the information for that file is pushed onto the empty stack.  For
  * monolithic config files, the stack retains its height throughout
  * the parsing cycle.  However, if an @c %include directive is
@@ -1054,15 +1054,15 @@ parse_null(char *buff, void *state)
  *    is printed, and the parser skips the entire context (until the
  *    next @c end keyword).  Otherwise, go to the next step.
  * -# The registered context handler function is called.  The value
- *    #CONF_BEGIN_STRING is passed as the first parameter (which I'll
+ *    #SPIFCONF_BEGIN_STRING is passed as the first parameter (which I'll
  *    call @a buff ), and NULL is passed as the second parameter
  *    (which I'll call @a state ).
  * -# The context handler should handle this using a statement similar
  *    to the following:
  *     @code
- *     if (*buff == CONF_BEGIN_CHAR) {
+ *     if (*buff == SPIFCONF_BEGIN_CHAR) {
  *     @endcode
- *    (The value of #CONF_BEGIN_CHAR is such that it should never
+ *    (The value of #SPIFCONF_BEGIN_CHAR is such that it should never
  *    occur in normal config file text.)
  *    If the handler does not require any persistent state information
  *    to be kept between calls, it may simply return NULL here.
@@ -1079,11 +1079,11 @@ parse_null(char *buff, void *state)
  *    state information pointer.  The handler, of course, should
  *    continue returning the state information pointer.
  * -# Once the @c end keyword is encountered, the context handler is
- *    called with #CONF_END_STRING as the first parameter and the
+ *    called with #SPIFCONF_END_STRING as the first parameter and the
  *    state information pointer as the second parameter.  This
  *    situation should be caught by some code like this:
  *     @code
- *     if (*buff == CONF_END_CHAR) {
+ *     if (*buff == SPIFCONF_END_CHAR) {
  *     @endcode
  *    Again, the handler should simply return NULL if no state
  *    information is being kept.  Otherwise, any post-processing or

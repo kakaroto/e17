@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 1997-2003, Michael Jennings
  *
@@ -116,7 +115,7 @@ static memrec_t gc_rec;
  * @ingroup DOXGRP_MEM
  */
 void
-memrec_init(void)
+spifmem_init(void)
 {
     D_MEM(("Constructing memory allocation records\n"));
     malloc_rec.ptrs = (ptr_t *) malloc(sizeof(ptr_t));
@@ -408,7 +407,7 @@ memrec_dump_resources(memrec_t *memrec)
  * @ingroup DOXGRP_MEM
  */
 void *
-libast_malloc(const char *filename, unsigned long line, size_t size)
+spifmem_malloc(const char *filename, unsigned long line, size_t size)
 {
     void *temp;
 
@@ -450,7 +449,7 @@ libast_malloc(const char *filename, unsigned long line, size_t size)
  * @ingroup DOXGRP_MEM
  */
 void *
-libast_realloc(const char *var, const char *filename, unsigned long line, void *ptr, size_t size)
+spifmem_realloc(const char *var, const char *filename, unsigned long line, void *ptr, size_t size)
 {
     void *temp;
 
@@ -463,7 +462,7 @@ libast_realloc(const char *var, const char *filename, unsigned long line, void *
 
     D_MEM(("Variable %s (%010p -> %lu) at %s:%lu\n", var, ptr, (unsigned long) size, filename, line));
     if (ptr == NULL) {
-        temp = (void *) libast_malloc(__FILE__, __LINE__, size);
+        temp = (void *) spifmem_malloc(__FILE__, __LINE__, size);
     } else {
         temp = (void *) realloc(ptr, size);
         ASSERT_RVAL(temp != NULL, ptr);
@@ -495,7 +494,7 @@ libast_realloc(const char *var, const char *filename, unsigned long line, void *
  * @ingroup DOXGRP_MEM
  */
 void *
-libast_calloc(const char *filename, unsigned long line, size_t count, size_t size)
+spifmem_calloc(const char *filename, unsigned long line, size_t count, size_t size)
 {
     void *temp;
 
@@ -532,7 +531,7 @@ libast_calloc(const char *filename, unsigned long line, size_t count, size_t siz
  * @ingroup DOXGRP_MEM
  */
 void
-libast_free(const char *var, const char *filename, unsigned long line, void *ptr)
+spifmem_free(const char *var, const char *filename, unsigned long line, void *ptr)
 {
 #if MALLOC_CALL_DEBUG
     ++free_count;
@@ -570,7 +569,7 @@ libast_free(const char *var, const char *filename, unsigned long line, void *ptr
  * @ingroup DOXGRP_MEM
  */
 char *
-libast_strdup(const char *var, const char *filename, unsigned long line, const char *str)
+spifmem_strdup(const char *var, const char *filename, unsigned long line, const char *str)
 {
     register char *newstr;
     register size_t len;
@@ -578,7 +577,7 @@ libast_strdup(const char *var, const char *filename, unsigned long line, const c
     D_MEM(("Variable %s (%010p) at %s:%lu\n", var, str, filename, line));
 
     len = strlen(str) + 1;      /* Copy NUL byte also */
-    newstr = (char *) libast_malloc(filename, line, len);
+    newstr = (char *) spifmem_malloc(filename, line, len);
     strcpy(newstr, str);
     return (newstr);
 }
@@ -593,7 +592,7 @@ libast_strdup(const char *var, const char *filename, unsigned long line, const c
  * @ingroup DOXGRP_MEM
  */
 void
-libast_dump_mem_tables(void)
+spifmem_dump_mem_tables(void)
 {
     fprintf(LIBAST_DEBUG_FD, "Dumping memory allocation table:\n");
     memrec_dump_pointers(&malloc_rec);
@@ -625,7 +624,7 @@ libast_dump_mem_tables(void)
  * @ingroup DOXGRP_MEM
  */
 Pixmap
-libast_x_create_pixmap(const char *filename, unsigned long line, Display * d, Drawable win, unsigned int w, unsigned int h,
+spifmem_x_create_pixmap(const char *filename, unsigned long line, Display * d, Drawable win, unsigned int w, unsigned int h,
                        unsigned int depth)
 {
     Pixmap p;
@@ -658,7 +657,7 @@ libast_x_create_pixmap(const char *filename, unsigned long line, Display * d, Dr
  * @ingroup DOXGRP_MEM
  */
 void
-libast_x_free_pixmap(const char *var, const char *filename, unsigned long line, Display * d, Pixmap p)
+spifmem_x_free_pixmap(const char *var, const char *filename, unsigned long line, Display * d, Pixmap p)
 {
     D_MEM(("Freeing pixmap %s (0x%08x) at %s:%lu\n", var, p, filename, line));
     if (p) {
@@ -689,7 +688,7 @@ libast_x_free_pixmap(const char *var, const char *filename, unsigned long line, 
  * @ingroup DOXGRP_MEM
  */
 void
-libast_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
+spifmem_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
 {
     D_MEM(("Registering pixmap %s (0x%08x) created by Imlib2 at %s:%lu\n", var, p, filename, line));
     if (p) {
@@ -723,7 +722,7 @@ libast_imlib_register_pixmap(const char *var, const char *filename, unsigned lon
  * @ingroup DOXGRP_MEM
  */
 void
-libast_imlib_free_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
+spifmem_imlib_free_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
 {
     D_MEM(("Freeing pixmap %s (0x%08x) at %s:%lu using Imlib2\n", var, p, filename, line));
     if (p) {
@@ -747,7 +746,7 @@ libast_imlib_free_pixmap(const char *var, const char *filename, unsigned long li
  * @ingroup DOXGRP_MEM
  */
 void
-libast_dump_pixmap_tables(void)
+spifmem_dump_pixmap_tables(void)
 {
     fprintf(LIBAST_DEBUG_FD, "Dumping X11 Pixmap allocation table:\n");
     memrec_dump_resources(&pixmap_rec);
@@ -778,7 +777,7 @@ libast_dump_pixmap_tables(void)
  * @ingroup DOXGRP_MEM
  */
 GC
-libast_x_create_gc(const char *filename, unsigned long line, Display * d, Drawable win, unsigned long mask, XGCValues * gcv)
+spifmem_x_create_gc(const char *filename, unsigned long line, Display * d, Drawable win, unsigned long mask, XGCValues * gcv)
 {
     GC gc;
 
@@ -810,9 +809,9 @@ libast_x_create_gc(const char *filename, unsigned long line, Display * d, Drawab
  * @ingroup DOXGRP_MEM
  */
 void
-libast_x_free_gc(const char *var, const char *filename, unsigned long line, Display * d, GC gc)
+spifmem_x_free_gc(const char *var, const char *filename, unsigned long line, Display * d, GC gc)
 {
-    D_MEM(("libast_x_free_gc() called for variable %s (0x%08x) at %s:%lu\n", var, gc, filename, line));
+    D_MEM(("spifmem_x_free_gc() called for variable %s (0x%08x) at %s:%lu\n", var, gc, filename, line));
     if (gc) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
             memrec_rem_var(&gc_rec, var, filename, line, (void *) gc);
@@ -833,7 +832,7 @@ libast_x_free_gc(const char *var, const char *filename, unsigned long line, Disp
  * @ingroup DOXGRP_MEM
  */
 void
-libast_dump_gc_tables(void)
+spifmem_dump_gc_tables(void)
 {
     fprintf(LIBAST_DEBUG_FD, "Dumping X11 GC allocation table:\n");
     memrec_dump_resources(&gc_rec);
@@ -858,7 +857,7 @@ libast_dump_gc_tables(void)
  * @ingroup DOXGRP_MEM
  */
 void
-free_array(void *list, size_t count)
+spiftool_free_array(void *list, size_t count)
 {
     register size_t i;
     void **l = (void **) list;
@@ -920,19 +919,19 @@ free_array(void *list, size_t count)
  *
  * @code
  * $ ./mem_example 
- * [1045859036]        mem.c |  246: libast_malloc(): 500 bytes requested at mem_example.c:27
+ * [1045859036]        mem.c |  246: spifmem_malloc(): 500 bytes requested at mem_example.c:27
  * [1045859036]        mem.c |   74: memrec_add_var(): Adding variable (0x8049a20, 500 bytes) from mem_example.c:27.
  * [1045859036]        mem.c |   75: memrec_add_var(): Storing as pointer #1 at 0x8049c18 (from 0x8049c18).
- * [1045859036]        mem.c |  329: libast_strdup(): Variable pointer (0x8049a20) at mem_example.c:36
- * [1045859036]        mem.c |  246: libast_malloc(): 16 bytes requested at mem_example.c:36
+ * [1045859036]        mem.c |  329: spifmem_strdup(): Variable pointer (0x8049a20) at mem_example.c:36
+ * [1045859036]        mem.c |  246: spifmem_malloc(): 16 bytes requested at mem_example.c:36
  * [1045859036]        mem.c |   74: memrec_add_var(): Adding variable (0x8049c40, 16 bytes) from mem_example.c:36.
  * [1045859036]        mem.c |   75: memrec_add_var(): Storing as pointer #2 at 0x8049c7c (from 0x8049c58).
- * [1045859036]        mem.c |  312: libast_free(): Variable dup (0x8049c40) at mem_example.c:39
+ * [1045859036]        mem.c |  312: spifmem_free(): Variable dup (0x8049c40) at mem_example.c:39
  * [1045859036]        mem.c |   94: memrec_find_var(): Found pointer #2 stored at 0x8049c7c (from 0x8049c58)
  * [1045859036]        mem.c |  113: memrec_rem_var(): Removing variable dup (0x8049c40) of size 16
- * [1045859036]        mem.c |  312: libast_free(): Variable dup (   (nil)) at mem_example.c:43
- * [1045859036]        mem.c |  319: libast_free(): ERROR:  Caught attempt to free NULL pointer
- * [1045859036]        mem.c |  268: libast_realloc(): Variable pointer (0x8049a20 -> 1000) at mem_example.c:46
+ * [1045859036]        mem.c |  312: spifmem_free(): Variable dup (   (nil)) at mem_example.c:43
+ * [1045859036]        mem.c |  319: spifmem_free(): ERROR:  Caught attempt to free NULL pointer
+ * [1045859036]        mem.c |  268: spifmem_realloc(): Variable pointer (0x8049a20 -> 1000) at mem_example.c:46
  * [1045859036]        mem.c |   94: memrec_find_var(): Found pointer #1 stored at 0x8049c58 (from 0x8049c58)
  * [1045859036]        mem.c |  132: memrec_chg_var(): Changing variable pointer (0x8049a20, 500 -> 0x8049c80, 1000)
  * Dumping memory allocation table:

@@ -189,7 +189,7 @@ typedef struct memrec_t_struct {
  *
  * @param ctx The context ID for the new context.
  */
-#define ctx_push(ctx)              conf_register_context_state(ctx)
+#define ctx_push(ctx)              spifconf_register_context_state(ctx)
 /**
  * Pops a context structure off the stack.  Pops a context structure
  * off the stack.
@@ -262,7 +262,7 @@ typedef struct memrec_t_struct {
                                      name = get_word(idx, buff); \
                                      ctx_name_to_id(id, name, i); \
                                      ctx_push(id); \
-                                     state = (*ctx_id_to_func(id))(CONF_BEGIN_STRING, ctx_peek_last_state()); \
+                                     state = (*ctx_id_to_func(id))(SPIFCONF_BEGIN_STRING, ctx_peek_last_state()); \
                                      ctx_poke_state(state); \
                                      FREE(name); \
                                    } while (0)
@@ -270,14 +270,14 @@ typedef struct memrec_t_struct {
  * Convenience macro for ending a context.
  *
  * This macro simplifies the ending of a context.  The context handler
- * for the context is called with CONF_END_STRING.  The old context is
+ * for the context is called with SPIFCONF_END_STRING.  The old context is
  * then popped off the stack, and the returned state is saved for the
  * parent context.
  *
  */
 #define ctx_end()                  do { \
                                      if (ctx_get_depth()) { \
-                                       state = (*ctx_id_to_func(id))(CONF_END_STRING, ctx_peek_state()); \
+                                       state = (*ctx_id_to_func(id))(SPIFCONF_END_STRING, ctx_peek_state()); \
                                        ctx_poke_state(NULL); \
                                        ctx_pop(); \
                                        id = ctx_peek_id(); \
@@ -356,7 +356,7 @@ typedef struct ctx_state_t_struct {
  * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
-typedef struct conf_func_t_struct {
+typedef struct spifconf_func_t_struct {
     /**
      * Function name.
      *
@@ -369,8 +369,8 @@ typedef struct conf_func_t_struct {
      *
      * Pointer to the handler for the built-in function.
      */
-    conf_func_ptr_t ptr;
-} conf_func_t;
+    spifconf_func_ptr_t ptr;
+} spifconf_func_t;
 
 /**
  * Linked list for user-defined config file variables.
@@ -383,7 +383,7 @@ typedef struct conf_func_t_struct {
  * @see @link DOXGRP_CONF_CTX Context Handling @endlink, builtin_get(), builtin_put()
  * @ingroup DOXGRP_CONF_CTX
  */
-typedef struct conf_var_t_struct {
+typedef struct spifconf_var_t_struct {
     /**
      * Variable name.
      *
@@ -403,8 +403,8 @@ typedef struct conf_var_t_struct {
      *
      * Pointer to the next variable in the list.
      */
-    struct conf_var_t_struct *next;
-} conf_var_t;
+    struct spifconf_var_t_struct *next;
+} spifconf_var_t;
 
 
 

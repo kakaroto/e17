@@ -94,7 +94,7 @@ test_macros(void)
 int
 test_mem(void)
 {
-    memrec_init();
+    spifmem_init();
 
     return 0;
 }
@@ -178,7 +178,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[2], "string"));
     TEST_FAIL_IF(strcmp(slist[3], "on"));
     TEST_FAIL_IF(strcmp(slist[4], "spaces"));
-    free_array(SPIF_CAST(ptr) slist, 5);
+    spiftool_free_array(SPIF_CAST(ptr) slist, 5);
 
     slist = split(NULL, "          a\t \ta        a a a a       a     ");
     TEST_FAIL_IF(!slist);
@@ -190,7 +190,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[4], "a"));
     TEST_FAIL_IF(strcmp(slist[5], "a"));
     TEST_FAIL_IF(strcmp(slist[6], "a"));
-    free_array(SPIF_CAST(ptr) slist, 7);
+    spiftool_free_array(SPIF_CAST(ptr) slist, 7);
 
     slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last");
     TEST_FAIL_IF(!slist);
@@ -200,7 +200,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[2], "third"));
     TEST_FAIL_IF(strcmp(slist[3], "fourth and fifth together"));
     TEST_FAIL_IF(strcmp(slist[4], "last"));
-    free_array(SPIF_CAST(ptr) slist, 5);
+    spiftool_free_array(SPIF_CAST(ptr) slist, 5);
 
     slist = split(NULL, "\'don\\\'t\' try this    at home \"\" ");
     TEST_FAIL_IF(!slist);
@@ -211,7 +211,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[3], "at"));
     TEST_FAIL_IF(strcmp(slist[4], "home"));
     TEST_FAIL_IF(slist[5][0]);
-    free_array(SPIF_CAST(ptr) slist, 6);
+    spiftool_free_array(SPIF_CAST(ptr) slist, 6);
 
     slist = split(":", "A:B:C:D:::E");
     TEST_FAIL_IF(!slist);
@@ -221,7 +221,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[2], "C"));
     TEST_FAIL_IF(strcmp(slist[3], "D"));
     TEST_FAIL_IF(strcmp(slist[4], "E"));
-    free_array(SPIF_CAST(ptr) slist, 5);
+    spiftool_free_array(SPIF_CAST(ptr) slist, 5);
     TEST_PASS();
 
     TEST_BEGIN("version_compare() function");
@@ -313,7 +313,7 @@ test_options(void)
     TEST_FAIL_IF(num_var != 1);
     TEST_FAIL_IF(geom_var != 3);
     FREE(file_var);
-    free_array(exec_list, -1);
+    spiftool_free_array(exec_list, -1);
 
     SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_POSTPARSE);
     SPIFOPT_OPTLIST_SET(opts2);
@@ -348,8 +348,8 @@ test_options(void)
     FREE(display);
     FREE(name);
     FREE(theme);
-    free_array(exec, -1);
-    free_array(foo, -1);
+    spiftool_free_array(exec, -1);
+    spiftool_free_array(foo, -1);
 
     TEST_PASS();
 

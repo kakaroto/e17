@@ -53,30 +53,52 @@
 # endif
 #endif
 
+/* The LibAST version string. */
 #ifndef LIBAST_VERSION
 #  define LIBAST_VERSION 0
 #endif
+
+/* Support for the X Window system. */
 #ifndef LIBAST_X11_SUPPORT
 #  define LIBAST_X11_SUPPORT 0
 #endif
+
+/* Support for the Imlib2 image library. */
 #ifndef LIBAST_IMLIB2_SUPPORT
 #  define LIBAST_IMLIB2_SUPPORT 0
 #endif
+
+/* Support for MMX instructions. */
 #ifndef LIBAST_MMX_SUPPORT
 #  define LIBAST_MMX_SUPPORT 0
 #endif
+
+/* Regexp's based on Perl's PCRE, or... */
 #ifndef LIBAST_REGEXP_SUPPORT_PCRE
 #  define LIBAST_REGEXP_SUPPORT_PCRE 0
 #endif
+
+/* ...standard POSIX regexp support, or... */
 #ifndef LIBAST_REGEXP_SUPPORT_POSIX
 #  define LIBAST_REGEXP_SUPPORT_POSIX 0
 #endif
+
+/* ...BSD-style regexp support. */
 #ifndef LIBAST_REGEXP_SUPPORT_BSD
 #  define LIBAST_REGEXP_SUPPORT_BSD 0
 #endif
+
+/* Support for backquote execution in config files. */
 #ifndef ALLOW_BACKQUOTE_EXEC
 #  define ALLOW_BACKQUOTE_EXEC 0
 #endif
+
+/* App-definable; requests 0.5 API compatibility (pollutes namespace). */
+#ifndef LIBAST_COMPAT_05_API
+#  define LIBAST_COMPAT_05_API 0
+#endif
+
+/* A bunch of security checks. */
 #ifndef HAVE_RLIMIT_MEMLOCK
 #  define HAVE_RLIMIT_MEMLOCK 0
 #endif
@@ -95,6 +117,8 @@
 #ifndef HAVE_VSNPRINTF_BUG
 #  define HAVE_VSNPRINTF_BUG 0
 #endif
+
+/* Sizes of basic variables. */
 #ifndef SIZEOF_CHAR
 #  define SIZEOF_CHAR 0
 #endif
@@ -110,6 +134,8 @@
 #ifndef SIZEOF_SHORT
 #  define SIZEOF_SHORT 0
 #endif
+
+/* Substitutes for some non-standard functions. */
 #ifndef HAVE_MEMMEM
 #  define HAVE_MEMMEM 0
 #endif
@@ -118,9 +144,6 @@
 #endif
 #ifndef HAVE_PUTENV
 #  define HAVE_PUTENV 0
-#endif
-#ifndef HAVE_SNPRINTF
-#  define HAVE_SNPRINTF 0
 #endif
 #ifndef HAVE_STRCASECHR
 #  define HAVE_STRCASECHR 0
@@ -143,9 +166,14 @@
 #ifndef HAVE_USLEEP
 #  define HAVE_USLEEP 0
 #endif
+#ifndef HAVE_SNPRINTF
+#  define HAVE_SNPRINTF 0
+#endif
 #ifndef HAVE_VSNPRINTF
 #  define HAVE_VSNPRINTF 0
 #endif
+
+/* Header checks used in libast.h */
 #ifndef TIME_WITH_SYS_TIME
 #  define TIME_WITH_SYS_TIME 0
 #endif

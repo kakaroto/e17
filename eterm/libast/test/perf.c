@@ -133,11 +133,11 @@ perf_strings(void)
 #endif
 
     PERF_BEGIN("split() function");
-    PERF_TEST(slist = split(" ", "Splitting a string on spaces"); free_array(slist, -1););
-    PERF_TEST(slist = split(NULL, "          a\t \ta        a a a a       a     "); free_array(slist, -1););
-    PERF_TEST(slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last"); free_array(slist, -1););
-    PERF_TEST(slist = split(NULL, "\'don\\\'t\' try this    at home \"\" "); free_array(slist, -1););
-    PERF_TEST(slist = split(":", "A:B:C:D:::E"); free_array(slist, -1););
+    PERF_TEST(slist = split(" ", "Splitting a string on spaces"); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = split(NULL, "          a\t \ta        a a a a       a     "); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last"); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = split(NULL, "\'don\\\'t\' try this    at home \"\" "); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = split(":", "A:B:C:D:::E"); spiftool_free_array(slist, -1););
     PERF_END();
 
     PERF_ENDED("string");
@@ -196,7 +196,7 @@ perf_options(void)
               spifopt_parse(argc1, argv1);
               spifopt_parse(argc1, argv1);
               FREE(file_var);
-              free_array(exec_list, -1);
+              spiftool_free_array(exec_list, -1);
               );
 
     SPIFOPT_OPTLIST_SET(opts2);
@@ -209,8 +209,8 @@ perf_options(void)
               FREE(display);
               FREE(name);
               FREE(theme);
-              free_array(exec, -1);
-              free_array(foo, -1);
+              spiftool_free_array(exec, -1);
+              spiftool_free_array(foo, -1);
               );
 
     PERF_END();
