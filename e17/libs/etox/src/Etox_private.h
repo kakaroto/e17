@@ -86,6 +86,7 @@ struct _Etox_Obstacle
     double x,y;
 };
 
+
 /** Internal Functions **/
 
 int		_etox_search_tokens(const char *text, const char **needles, 
@@ -110,5 +111,10 @@ double		_etox_bit_dump_line(Etox_Bit *abits, int bit_count, Etox e,
                                     double beg_x, double cur_w);
 
 Etox_Color_Bit	_etox_color_get_bit(Etox_Color color, char *member);
+
+char *		_etox_loadfile_atword(char *s, int num);
+int		_etox_loadfile_is_whitespace(const char *s);
+char *		_etox_loadfile_get_line(char *s, int size, FILE *f);
+int		_etox_loadfile_is_good(char *path);
 
 #endif

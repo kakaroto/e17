@@ -491,7 +491,7 @@ etox_set_alpha(Etox e, int alpha)
 
   if (!e) return;
   e->alpha_mod = alpha;
-
+  
   for (i = 0; i < e->num_bits; i++)                 
     for (j = 0; j < e->bit_list[i]->num_evas; j++)
       {
