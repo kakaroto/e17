@@ -242,22 +242,24 @@ cb_timer(void *data)
 	     char sNiceCPU[64];
 	     char sSystemCPU[64];
 	     char sTotalCPU[64];
-	     double val, val2, val_nice, val2_nice, val_total;
+	     double val, val2, val_nice, val2_nice, val_total, val2_total;
 	     
 	     fgets(s, 255, f);
 	     sscanf(s, "%*s %s %s %s %s", 
 		    sUserCPU, sNiceCPU, sSystemCPU, sTotalCPU);
 
-		 val = atof(sUserCPU);
+	     val = atof(sUserCPU);
 	     val_nice = atof(sNiceCPU);
 	     val_total = atof(sTotalCPU);
 		   
-	     val2 = 100 * (val - prev_val[i]) / (val_total - prev_val_total[i]);
-	     if (val2 > 100) val2 = 100;
-
-	     val2_nice = 100 * (val_nice - prev_val_nice[i]) / (val_total - prev_val_total[i]);
-	     if (val2_nice > 100) val2_nice = 100;
-
+	     val2_total = val_total - prev_val_total[i];
+	     val2 = val - prev_val[i];
+	     val2_nice = val_nice - prev_val_nice[i];
+	     val2_total += val2 + val2_nice;
+	     
+	     val2 = (100 * val2) / val2_total;
+	     val2_nice = (100 * val2_nice) / val2_total;
+	     
 	     prev_val[i] = val;
 	     prev_val_nice[i] = val_nice;
 	     prev_val_total[i] = val_total;
