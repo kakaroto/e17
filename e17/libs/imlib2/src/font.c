@@ -996,13 +996,19 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	fn = (ImlibTtfFont *)f;
         break;
      case IMLIB_FONT_TYPE_X:
-	*retw = *reth = *nextx = *nexty = 0;
+	if (retw) *retw = 0;
+	if (reth) *reth = 0;
+	if (nextx) *nextx = 0;
+	if (nexty) *nexty = 0;
 	return;
      case IMLIB_FONT_TYPE_TTF_X:
 	fn = (ImlibTtfFont *)f->xf.ttffont;
         break;
      default:
-	*retw = *reth = *nextx = *nexty = 0;
+	if (retw) *retw = 0;
+	if (reth) *reth = 0;
+	if (nextx) *nextx = 0;
+	if (nexty) *nexty = 0;
 	return;
      }
 
@@ -1032,12 +1038,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
      {
      case 0:
      case 1:
-	if (retw)
-	   *retw = tw;
-	if (reth)
-	   *reth = th;
-	if (nexty)
-	   *nexty = fn->ascent + fn->descent;
+	if (retw) *retw = tw;
+	if (reth) *reth = th;
+	if (nexty) *nexty = fn->ascent + fn->descent;
 	if (nextx)
 	  {
 #ifdef TTF_FONT_CACHE
@@ -1054,12 +1057,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
      case 2:
      case 3:
 	tw = h; th = w;
-	if (retw)
-	   *retw = tw;
-	if (reth)
-	   *reth = th;
-	if (nextx)
-	   *nextx = fn->ascent + fn->descent;
+	if (retw) *retw = tw;
+	if (reth) *reth = th;
+	if (nextx) *nextx = fn->ascent + fn->descent;
 	if (nexty)
 	  {
 #ifdef TTF_FONT_CACHE
@@ -1105,12 +1105,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	   if (yt > y2) y2 = yt;
 	   th = (int)(y2 - y1);
 	}
-	if (retw)
-	   *retw = tw;
-	if (reth)
-	   *reth = th;
-	if (nexty)
-	   *nexty = fn->ascent + fn->descent;
+	if (retw) *retw = tw;
+	if (reth) *reth = th;
+	if (nexty) *nexty = fn->ascent + fn->descent;
 	if (nextx)
 	  {
 #ifdef TTF_FONT_CACHE
@@ -1343,6 +1340,7 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
    ImlibImagePixmap    *ip;
    XRectangle           i_ret, l_ret;
    int                  x1, y1, lbearing;
+   int                 _retw, _reth, _nextx, _nexty;
 #ifndef	XMB_FONT_CACHE
    Pixmap               p, m;
    XGCValues            gcv;
@@ -1354,25 +1352,17 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
      {
      case 0:
      case 1:
-	if (retw)
-	  *retw = l_ret.width;
-	if (reth)
-	  *reth = l_ret.height;
-	if (nextx)
-	  *nextx = i_ret.width;
-	if (nexty)
-	  *nexty = i_ret.height;
+	_retw = l_ret.width;
+	_reth = l_ret.height;
+	_nextx = i_ret.width;
+	_nexty = i_ret.height;
 	break;
      case 2:
      case 3:
-	if (retw)
-	  *retw = l_ret.height;
-	if (reth)
-	  *reth = l_ret.width;
-	if (nextx)
-	  *nextx = i_ret.height;
-	if (nexty)
-	  *nexty = i_ret.width;
+	_retw = l_ret.height;
+	_reth = l_ret.width;
+	_nextx = i_ret.height;
+	_nexty = i_ret.width;
 	break;
      case 4:
 	{
@@ -1406,23 +1396,23 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 	   if (yt < y1) y1 = yt;
 	   if (yt > y2) y2 = yt;
 	   th = (int)(y2 - y1);
-	   if (retw)
-	     *retw = tw;
-	   if (reth)
-	     *reth = th;
-	   if (nextx)
-	     *nextx = i_ret.width;
-	   if (nexty)
-	     *nexty = i_ret.height;
+	   _retw = tw;
+	   _reth = th;
+	   _nextx = i_ret.width;
+	   _nexty = i_ret.height;
 	}
      }
+   if (retw) *retw = _retw;
+   if (reth) *reth = _reth;
+   if (nextx) *nextx = _nextx;
+   if (nexty) *nexty = _nexty;
 
    /* if we draw outside the image from here - give up */
    if ((x > im->w) || (y > im->h))
       return;
 
    /* if the text is completely outside the image - give up */
-   if (((x + *retw) <= 0) || ((y + *reth) <= 0))
+   if (((x + _retw) <= 0) || ((y + _reth) <= 0))
       return;
 
    im2 = __imlib_CreateImage(MAX(i_ret.width, l_ret.width),
