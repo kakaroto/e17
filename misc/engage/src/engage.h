@@ -49,7 +49,7 @@ OD_Icon        *od_icon_new_dicon(const char *command, const char *name,
 OD_Icon        *od_icon_new_minwin(Ecore_X_Window win);
 
 #ifdef HAVE_IMLIB
-void           *od_icon_grab(OD_Icon * icon, Ecore_X_Window win);
+void            od_icon_grab(OD_Icon * icon, Ecore_X_Window win);
 #endif
 void            od_icon_del(OD_Icon * od_icon);
 void            od_icon_arrow_show(OD_Icon * icon);
