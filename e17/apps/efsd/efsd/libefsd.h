@@ -483,6 +483,16 @@ EfsdCmdId      efsd_reply_id(EfsdEvent *ee);
 
 
 /**
+ * efsd_reply_data - returns data contained in a reply event
+ * @ee: The EfsdReplyEvent.
+ *
+ * Convenience function access the data returned in a reply
+ * event. Returns NULL if an error occured.
+ */
+void          *efsd_reply_data(EfsdEvent *ee);
+
+
+/**
  * efsd_start_monitor - start monitoring a directory for file events.
  * @ec: The Efsd connection
  * @filename: The name of the directory that is to be monitored.
