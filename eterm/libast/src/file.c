@@ -84,8 +84,7 @@ spiftool_temp_file(char *ftemplate, size_t len)
     }
 
     if (len) {
-        strncpy(ftemplate, buff, len);
-        ftemplate[len - 1] = 0;
+        spiftool_safe_strncpy(ftemplate, buff, len);
     }
     return (fd);
 }

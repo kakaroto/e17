@@ -123,6 +123,35 @@ test_strings(void)
 #endif
     char **slist;
 
+    TEST_BEGIN("spiftool_safe_strncpy() function");
+    s1 = MALLOC(20);
+    TEST_FAIL_IF(spiftool_safe_strncpy(s1, 20, "pneumonoultramicroscopicsilicovolcanoconiosis"));
+    TEST_FAIL_IF(strncmp(s1, "pneumonoultramicros", 20));
+    TEST_FAIL_IF(!spiftool_safe_strncpy(s1, 20, "abc"));
+    TEST_FAIL_IF(strcmp(s1, "abc"));
+    TEST_FAIL_IF(!spiftool_safe_strncpy(s1, 20, ""));
+    TEST_FAIL_IF(*s1);
+    TEST_FAIL_IF(!spiftool_safe_strncpy(s1, 20, "0123456789012345678"));
+    TEST_FAIL_IF(strncmp(s1, "0123456789012345678", 20));
+    FREE(s1);
+    TEST_PASS();
+
+    TEST_BEGIN("spiftool_safe_strncat() function");
+    s1 = MALLOC(20);
+    *s1 = 0;
+    TEST_FAIL_IF(spiftool_safe_strncat(s1, 20, "pneumonoultramicroscopicsilicovolcanoconiosis"));
+    TEST_FAIL_IF(strncmp(s1, "pneumonoultramicros", 20));
+    TEST_FAIL_IF(!spiftool_safe_strncpy(s1, 20, "abc"));
+    TEST_FAIL_IF(!spiftool_safe_strncat(s1, 20, "defg"));
+    TEST_FAIL_IF(strcmp(s1, "abcdefg"));
+    TEST_FAIL_IF(!spiftool_safe_strncat(s1, 20, ""));
+    TEST_FAIL_IF(strcmp(s1, "abcdefg"));
+    TEST_FAIL_IF(!spiftool_safe_strncpy(s1, 20, "0123456789"));
+    TEST_FAIL_IF(!spiftool_safe_strncat(s1, 20, "012345678"));
+    TEST_FAIL_IF(strncmp(s1, "0123456789012345678", 20));
+    FREE(s1);
+    TEST_PASS();
+
     TEST_BEGIN("spiftool_substr() function");
     s1 = spiftool_substr("pneumonoultramicroscopicsilicovolcanoconiosis", 8, 16);
     s2 = spiftool_substr("abc", 7, 5);

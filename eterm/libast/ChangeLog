@@ -647,3 +647,9 @@ Wed Mar 10 18:05:28 2004                        Michael Jennings (mej)
 
 Fix "make distcheck"
 ----------------------------------------------------------------------
+Tue Jun 29 17:14:13 2004                        Michael Jennings (mej)
+
+Some small fixes suggested by Charlie Gordon <gmane@chqrlie.org>.
+Minor build tweaks...updated to new release number.
+
+----------------------------------------------------------------------

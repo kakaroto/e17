@@ -2691,6 +2691,8 @@ extern void spiftool_free_array(void *, size_t);
 extern int spiftool_temp_file(char *, size_t);
 
 /* strings.c */
+extern spif_bool_t spiftool_safe_strncpy(spif_charptr_t dest, const spif_charptr_t src, spif_int32_t size);
+extern spif_bool_t spiftool_safe_strncat(spif_charptr_t dest, const spif_charptr_t src, spif_int32_t size);
 extern spif_charptr_t spiftool_substr(const spif_charptr_t, spif_int32_t, spif_int32_t);
 #if LIBAST_REGEXP_SUPPORT_POSIX && HAVE_REGEX_H
 extern spif_bool_t spiftool_regexp_match(const spif_charptr_t, const spif_charptr_t);

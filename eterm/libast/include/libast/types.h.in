@@ -590,7 +590,7 @@ typedef void * (*spif_func_t)();
  *
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
-typedef const spif_charptr_t spif_classname_t;
+typedef spif_charptr_t spif_classname_t;
 
 /*@}*/
 

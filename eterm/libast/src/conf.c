@@ -502,9 +502,10 @@ spifconf_shell_expand(char *s)
         switch (*pbuff) {
           case '~':
               D_CONF(("Tilde detected.\n"));
-              if (!in_single && !in_double && getenv("HOME")) {
-                  strncpy(newbuff + j, getenv("HOME"), max - j);
-                  cnt1 = strlen(getenv("HOME")) - 1;
+              EnvVar = getenv("HOME");
+              if (!in_single && !in_double && EnvVar && *EnvVar) {
+                  spiftool_safe_strncpy(newbuff + j, getenv("HOME"), max - j);
+                  cnt1 = strlen(EnvVar) - 1;
                   cnt2 = max - j - 1;
                   j += MIN(cnt1, cnt2);
               } else {
@@ -588,8 +589,8 @@ spifconf_shell_expand(char *s)
                   FREE(Command);
                   if (Output) {
                       if (*Output) {
+                          spiftool_safe_strncpy(newbuff + j, Output, max - j);
                           l = strlen(Output) - 1;
-                          strncpy(newbuff + j, Output, max - j);
                           cnt2 = max - j - 1;
                           j += MIN(l, cnt2);
                       } else {
@@ -618,8 +619,8 @@ spifconf_shell_expand(char *s)
                   FREE(Command);
                   if (Output) {
                       if (*Output) {
+                          spiftool_safe_strncpy(newbuff + j, Output, max - j);
                           l = strlen(Output) - 1;
-                          strncpy(newbuff + j, Output, max - j);
                           cnt2 = max - j - 1;
                           j += MIN(l, cnt2);
                       } else {
@@ -656,8 +657,8 @@ spifconf_shell_expand(char *s)
                         break;
                   }
                   EnvVar[k] = 0;
-                  if ((tmp = getenv(EnvVar))) {
-                      strncpy(newbuff, tmp, max - j);
+                  if ((tmp = getenv(EnvVar)) && *tmp) {
+                      spiftool_safe_strncpy(newbuff, tmp, max - j);
                       cnt1 = strlen(tmp) - 1;
                       cnt2 = max - j - 1;
                       j += MIN(cnt1, cnt2);
@@ -759,7 +760,7 @@ spifconf_find_file(const char *file, const char *dir, const char *pathlist)
         /* Don't try if it's too long */
         if (n > 0 && n <= maxpathlen) {
             /* Compose the /path/file combo */
-            strncpy(full_path, path, n);
+            memcpy(full_path, path, n);
             if (full_path[n - 1] != '/') {
                 full_path[n++] = '/';
             }

@@ -156,7 +156,7 @@ memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void 
     D_MEM(("Storing as pointer #%lu at %10p (from %10p).\n", memrec->cnt, p, memrec->ptrs));
     p->ptr = ptr;
     p->size = size;
-    strncpy(p->file, filename, LIBAST_FNAME_LEN);
+    spiftool_safe_strncpy(p->file, filename, LIBAST_FNAME_LEN);
     p->file[LIBAST_FNAME_LEN] = 0;
     p->line = line;
 }
@@ -267,7 +267,7 @@ memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     D_MEM(("Changing variable %s (%10p, %lu -> %10p, %lu)\n", var, oldp, p->size, newp, size));
     p->ptr = newp;
     p->size = size;
-    strncpy(p->file, filename, LIBAST_FNAME_LEN);
+    spiftool_safe_strncpy(p->file, filename, LIBAST_FNAME_LEN);
     p->line = line;
 }
 
@@ -581,6 +581,7 @@ spifmem_strdup(const char *var, const char *filename, unsigned long line, const 
     register char *newstr;
     register size_t len;
 
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(str), SPIF_NULL_TYPE_C(char *));
     USE_VAR(var);
     D_MEM(("Variable %s (%10p) at %s:%lu\n", var, str, NONULL(filename), line));
 

@@ -53,6 +53,7 @@ memmem(const void *haystack, register size_t haystacklen, const void *needle, re
     REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     REQUIRE_RVAL(needlelen > 0, SPIF_NULL_TYPE(ptr));
     REQUIRE_RVAL(haystacklen > 0, SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(haystacklen > needlelen, SPIF_NULL_TYPE(ptr));
     for (i = 0; i < len; i++) {
         if (!memcmp(hs + i, n, needlelen)) {
             return (hs + i);
@@ -193,6 +194,47 @@ strsep(char **str, register char *sep)
     return (sptr);
 }
 #endif
+
+/**
+ * Safer strncpy() with no NUL padding or wasted calculations.
+ */
+spif_bool_t
+spiftool_safe_strncpy(spif_charptr_t dest, const spif_charptr_t src, spif_int32_t size)
+{
+    spif_char_t c;
+    spif_charptr_t s = src, pbuff = dest;
+    spif_charptr_t max_pbuff = dest + size - 1;
+
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(dest), FALSE);
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(src), FALSE);
+    REQUIRE_RVAL(size > 0, FALSE);
+
+    for (; (c = *s) && (pbuff < max_pbuff); s++, pbuff++) {
+        *pbuff = c;
+    }
+    *pbuff = 0;
+    return ((c == 0) ? (TRUE) : (FALSE));
+}
+
+/**
+ * Variant of strncat() which uses the safe strncpy() replacement above.
+ */
+spif_bool_t
+spiftool_safe_strncat(spif_charptr_t dest, const spif_charptr_t src, spif_int32_t size)
+{
+    spif_int32_t len;
+
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(dest), FALSE);
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(src), FALSE);
+    REQUIRE_RVAL(size > 0, FALSE);
+
+    len = strnlen(dest, size);
+    if ((len < 0) || (len >= size)) {
+        return FALSE;
+    } else {
+        return spiftool_safe_strncpy(dest + len, size - len, src);
+    }
+}
 
 /**
  * Returns a portion of a larger string.
