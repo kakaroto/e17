@@ -18,9 +18,6 @@ typedef struct _ewl_fileselector Ewl_Fileselector;
 struct _ewl_fileselector {
 	Ewl_Box         box;
 
-	Ewl_Widget     *dbox;	/* vbox to display directories */
-	Ewl_Widget     *fbox;	/* vbox to display files */
-
 	Ewl_Widget     *dirs;	/* directory table */
 	Ewl_Widget     *files;	/* file table */
 

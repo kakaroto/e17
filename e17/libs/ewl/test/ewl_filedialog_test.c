@@ -40,12 +40,13 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(fd_win);
 
 	vbox = ewl_vbox_new ();
-	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+				EWL_FLAG_FILL_SHRINK);
 	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
 	ewl_widget_show (vbox);
 
 	button = ewl_button_new("Start filedialog");
-	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_append_child(EWL_CONTAINER(vbox), button);
 	ewl_widget_show(button);
@@ -70,7 +71,6 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 			__open_file);
 
 	ewl_object_set_minimum_size (EWL_OBJECT (w->parent->parent), 400, 300);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 	ewl_widget_show(fd);
 
