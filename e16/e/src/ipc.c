@@ -828,14 +828,6 @@ IPC_Version(const char *params __UNUSED__, Client * c __UNUSED__)
 	     e_wm_version, e_wm_date);
 }
 
-#if !USE_LIBC_MALLOC
-static void
-IPC_MemDebug(const char *params __UNUSED__, Client * c __UNUSED__)
-{
-   EDisplayMemUse();
-}
-#endif
-
 static void
 IPC_Hints(const char *params, Client * c __UNUSED__)
 {
@@ -1443,19 +1435,6 @@ IpcItem             IPCArray[] = {
     "use \"dialog_ok <message>\" to pop up a dialog box\n"},
    {
     IPC_Border, "border", NULL, "List available borders\n", NULL},
-#if !USE_LIBC_MALLOC
-   {
-    IPC_MemDebug,
-    "dump_mem_debug", NULL,
-    "Dumps memory debugging information out to e.mem.out",
-    "Use this command to have E dump its current memory debugging table\n"
-    "to the e.mem.out file. NOTE: please read comments at the top of\n"
-    "memory.c to see how to enable this. This will let you hunt memory\n"
-    "leaks, over-allocations of memory, and other " "memory-related problems\n"
-    "very easily with all pointers allocated stamped with a time, call\n"
-    "tree that led to that allocation, file and line, "
-    "and the chunk size.\n"},
-#endif
    {
     IPC_Screen, "screen", NULL, "Return screen information\n", NULL},
    {

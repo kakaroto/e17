@@ -1919,7 +1919,31 @@ const char         *EGetSavePrefix(void);
 const char         *EGetSavePrefixCommon(void);
 
 /* memory.c */
-void                EDisplayMemUse(void);
+#define Ecalloc     calloc
+#define Emalloc     malloc
+#define Efree       free
+#define Erealloc    realloc
+
+#define _EFREE(p)    do { if (p) { Efree(p); p = NULL; } } while (0)
+#define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
+
+#if USE_LIBC_STRDUP
+#define Estrdup(s) ((s) ? strdup(s) : NULL)
+#else
+char               *Estrdup(const char *s);
+#endif
+#if USE_LIBC_STRNDUP
+#define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
+#else
+char               *Estrndup(const char *s, int n);
+#endif
+#if USE_LIBC_SETENV
+#define Esetenv setenv
+#else
+int                 Esetenv(const char *name, const char *value, int overwrite);
+#endif
+char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
+
 char              **EstrlistDup(char **lst, int num);
 void                EstrlistFree(char **lst, int num);
 char               *EstrlistJoin(char **lst, int num);
@@ -2262,62 +2286,6 @@ char                InZoom(void);
 char                CanZoom(void);
 void                ZoomInit(void);
 void                Zoom(EWin * ewin);
-
-#if USE_LIBC_MALLOC
-
-#define Ecalloc     calloc
-#define Emalloc     malloc
-#define Efree       free
-#define Erealloc    realloc
-
-#elif defined(__FILE__) && defined(__LINE__)
-
-#define Ecalloc(n, x) \
-__Ecalloc(n, x, __FILE__, __LINE__)
-#define Emalloc(x) \
-__Emalloc(x, __FILE__, __LINE__)
-#define Efree(x) \
-__Efree(x, __FILE__, __LINE__)
-#define Erealloc(x, y) \
-__Erealloc(x, y, __FILE__, __LINE__)
-void               *__Ecalloc(int nmemb, int size, const char *file, int line);
-void               *__Emalloc(int size, const char *file, int line);
-void                __Efree(void *ptr, const char *file, int line);
-void               *__Erealloc(void *ptr, int size, const char *file, int line);
-
-#else
-
-/* We still want our special handling, even if they don't have file/line stuff -- mej */
-#define Ecalloc(n, x) \
-__Ecalloc(n, x, "<unknown>", 0)
-#define Emalloc(x) \
-__Emalloc(x, "<unknown>", 0)
-#define Efree(x) \
-__Efree(x, "<unknown>", 0)
-#define Erealloc(x, y) \
-__Erealloc(x, y, "<unknown>", 0)
-
-#endif
-
-#define _EFREE(p) do { if (p) { Efree(p); p = NULL; } } while (0)
-#define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
-
-#if USE_LIBC_STRDUP
-#define Estrdup(s) ((s) ? strdup(s) : NULL)
-#else
-char               *Estrdup(const char *s);
-#endif
-#if USE_LIBC_STRNDUP
-#define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
-#else
-char               *Estrndup(const char *s, int n);
-#endif
-#if USE_LIBC_SETENV
-#define Esetenv setenv
-#else
-int                 Esetenv(const char *name, const char *value, int overwrite);
-#endif
-char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
 /*
  * Global vars
