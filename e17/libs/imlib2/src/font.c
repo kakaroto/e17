@@ -396,9 +396,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	   *retw = w;
 	if (reth)
 	   *reth = h;
-	if (*nexty)
+	if (nexty)
 	   *nexty = fn->ascent + fn->descent;
-	if (*nextx)
+	if (nextx)
 	  {
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
@@ -412,9 +412,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	   *retw = h;
 	if (reth)
 	   *reth = w;
-	if (*nextx)
+	if (nextx)
 	   *nextx = fn->ascent + fn->descent;
-	if (*nexty)
+	if (nexty)
 	  {
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
