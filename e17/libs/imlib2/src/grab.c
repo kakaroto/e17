@@ -115,9 +115,14 @@ __imlib_GrabXImageToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
 			src = (DATA32 *)(xim->data + (xim->bytes_per_line * y));
 			ptr = data + ((y + iny) * ow) + inx;
 			for (x = 0; x < (w - 1); x += 2) {
-			      *ptr++ = MP(x, y) | P1(*src);
+#ifdef WORDS_BIGENDIAN
 			      *ptr++ = MP(x + 1, y) | P2(*src);
-			      src++;
+			      *ptr++ = MP(x, y) | P1(*src);
+#else
+			      *ptr++ = MP(x, y) | P1(*src);
+                             *ptr++ = MP(x + 1, y) | P2(*src);
+#endif
+                              src++;
 			}
 			if (x == (w - 1)) {
 			      pixel = XGetPixel(xim, x, y);
@@ -132,8 +137,13 @@ __imlib_GrabXImageToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
 			src = (DATA32 *)(xim->data + (xim->bytes_per_line * y));
 			ptr = data + ((y + iny) * ow) + inx;
 			for (x = 0; x < (w - 1); x += 2) {
-			      *ptr++ = MP(x, y) | P1(*src);
+#ifdef WORDS_BIGENDIAN
 			      *ptr++ = MP(x + 1, y) | P2(*src);
+                             *ptr++ = MP(x, y) | P1(*src);
+#else
+			      *ptr++ = MP(x, y) | P1(*src);
+                             *ptr++ = MP(x + 1, y) | P2(*src);
+#endif
 			      src++;
 			}
 			if (x == (w - 1)) {
@@ -173,8 +183,13 @@ __imlib_GrabXImageToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
 			src = (DATA32 *)(xim->data + (xim->bytes_per_line * y));
 			ptr = data + ((y + iny) * ow) + inx;
 			for (x = 0; x < (w - 1); x += 2) {
+#ifdef WORDS_BIGENDIAN
+                             *ptr++ = MP(x + 1, y) | P2(*src);
 			      *ptr++ = MP(x, y) | P1(*src);
-			      *ptr++ = MP(x + 1, y) | P2(*src);
+#else
+			      *ptr++ = MP(x, y) | P1(*src);
+                             *ptr++ = MP(x + 1, y) | P2(*src);
+#endif
 			      src++;
 			}
 			if (x == (w - 1)) {
@@ -190,8 +205,13 @@ __imlib_GrabXImageToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
 			src = (DATA32 *)(xim->data + (xim->bytes_per_line * y));
 			ptr = data + ((y + iny) * ow) + inx;
 			for (x = 0; x < (w - 1); x += 2) {
+#ifdef WORDS_BIGENDIAN
+                             *ptr++ = MP(x + 1, y) | P2(*src);
+                             *ptr++ = MP(x, y) | P1(*src);
+#else
 			      *ptr++ = MP(x, y) | P1(*src);
 			      *ptr++ = MP(x + 1, y) | P2(*src);
+#endif
 			      src++;
 			}
 			if (x == (w - 1)) {
