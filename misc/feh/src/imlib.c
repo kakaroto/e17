@@ -263,7 +263,6 @@ feh_http_load_image(char *url)
    basename = strrchr(url, '/') + 1;
    tmpname =
          feh_unique_filename(path, basename);
-   printf("using %s\n", tmpname);
    
    if (opt.wget_timestamp)
    {
