@@ -323,7 +323,7 @@ New features:
 
 Notes:
 
-imlib2 >= 1.1.2 is required.
+imlib2 >= 1.2.0 is required.
 
 All settings can be shown and set using eesh.
 To get a full list of settings:
