@@ -173,3 +173,10 @@ Mon Dec 20 16:59:47 PST 1999
 (Mandrake)
 
 the rest of fsck should work now.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 20 17:00:56 PST 1999
+(Mandrake)
+
+right, of course then I find a memory leak.

@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int 
+int
 eConfigFsckPath(char *path)
 {
 
@@ -81,6 +81,10 @@ eConfigFsckPath(char *path)
 				      fseek(NEW_CONF_TABLE, 0, SEEK_END);
 				      fwrite(allocedspace, tableentry.length, 1,
 					     NEW_CONF_TABLE);
+
+				      if (allocedspace)
+					 free(allocedspace);
+
 				      last_pointer = malloc(strlen(tableentry.loc) + 1);
 				      strcpy(last_pointer, tableentry.loc);
 				      tableentry.position = ftell(CONF_TABLE);
