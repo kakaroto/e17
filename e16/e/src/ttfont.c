@@ -102,13 +102,14 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *max_ascent_return, int *max_descent_return,
 	      int *lbearing_return, int *rbearing_return)
 {
-   int                 height;
+   int                 w, h;
 
    if (!f)
       return;
 
    imlib_context_set_font(f->face);
-   imlib_get_text_size(text, width_return, &height);
+   imlib_get_text_advance(text, &w, &h);
+   *width_return = w;
    if (font_ascent_return)
       *font_ascent_return = imlib_get_font_ascent();
    if (font_descent_return)
