@@ -1,6 +1,6 @@
 Summary:	Enlightenment theme: Ganymede
 Name:		e16-theme-Ganymede
-Version:	0.16
+Version:	0.16.8
 Release:	0.%(date '+%y%m%d')
 License:	BSD
 Group:		User Interface/Desktops

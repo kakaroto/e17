@@ -1,6 +1,6 @@
 Summary:	Enlightenment theme: ShinyMetal
 Name:		e16-theme-winter
-Version:	0.16
+Version:	0.16.8
 Release:	0.%(date '+%y%m%d')
 License:	BSD
 Group:		User Interface/Desktops
