@@ -4,9 +4,17 @@
 <title>EWL</title>
 
 <para>
-The Enlightenment Widget Library provides a full blown widget kit similar in feel to
-GTK, QT or MOTIF, but based apon the power of the Enlightenment Foundation Libraries.
+The Enlightened Widget Library (EWL) is a widget toolkit that builds upon the 
+foundations constructed by the other libs in the EFL. Ewl uses Evas as its rendering
+backend and its appearence is abstracted out for Edje to handle.
 </para>
+
+<para>
+EWL is similar in feel to many of the other toolkits out there including
+GTK, QT or MOTIF. The APIs differ by the concepts are the same.
+</para>
+
+&ewl_intro;
 
 </chapter>
 
