@@ -111,9 +111,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    {
       Pixmap tmppmap;
 
-      /* only a debug message to say were not using eesh this time */
-      /*eprintf("Where is that eesh thing then\n"); */
-      D(("No eesh, falling back to XSetRootWindowPixmap\n"));
+      D(("Falling back to XSetRootWindowPixmap\n"));
       if (scaled)
       {
          tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
