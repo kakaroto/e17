@@ -32,11 +32,14 @@ static const char cvs_ident[] = "$Id$";
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <ctype.h>
 #include "epplet.h"
 
 #ifndef __GNUC__
 # define __attribute__(x)
 #endif
+
+#define IMAGE_DIR   EROOT "/epplet_data/E-Toolbox/"
 
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
@@ -57,7 +60,7 @@ toolbutton_t *buttons;
 Epplet_gadget close_button, cfg_button, cfg_popup;
 unsigned long idx = 0, button_cnt = 0;
 Window config_win = None;
-int w = 3, h = 3;
+int w = 6, h = 3;
 
 static void close_cb(void *data);
 static int delete_cb(void *data, Window win);
@@ -66,6 +69,7 @@ __attribute__((unused)) static void ok_cb(void *data);
 __attribute__((unused)) static void apply_cb(void *data);
 __attribute__((unused)) static void cancel_cb(void *data);
 static void config_cb(void *data);
+static void save_config(void);
 
 static void
 close_cb(void *data)
@@ -158,14 +162,15 @@ parse_config(char *argv0) {
     char tmp_w[8], tmp_h[8];
 
     Esnprintf(tmp_w, sizeof(tmp_w), "%d", new_w);
-    Esnprintf(tmp_h, sizeof(tmp_h), "%d", new_w);
+    Esnprintf(tmp_h, sizeof(tmp_h), "%d", new_h);
     Epplet_modify_config("width", tmp_w);
     Epplet_modify_config("height", tmp_h);
     Epplet_save_config();
     Epplet_unremember();
     Epplet_cleanup();
     Esync();
-    execlp(argv0, argv0, "-w", tmp_w, "-h", tmp_h);
+    execlp(argv0, argv0, "-w", tmp_w, "-h", tmp_h, NULL);
+    fprintf(stderr, "execlp() failed -- %s\n", strerror(errno));
   }
 
   for (; 1; button_cnt++) {
@@ -198,16 +203,59 @@ parse_config(char *argv0) {
 
   }
   if (button_cnt == 0) {
-    toolbutton_t def[] = { { NULL, "Close", NULL, 0, 0, 3, 1, "<exit>" },
-			   { NULL, "Eterm", NULL, 0, 1, 3, 1, "Eterm" },
-			   { NULL, "EFM", NULL, 0, 2, 3, 1, "efm" }
+    toolbutton_t def[] = { { NULL, NULL, "<close>", 0, 0, 1, 1, "<exit>" },
+			   { NULL, "efm", NULL, 1, 0, 2, 1, "efm" },
+			   { NULL, "ee2", NULL, 3, 0, 2, 1, "ee2" },
+			   { NULL, NULL, "<configure>", 5, 0, 1, 1, "<config>" },
+			   { NULL, NULL, "eterm.png", 0, 1, 2, 2, "Eterm" },
+			   { NULL, NULL, "mail.png", 2, 1, 2, 2, "Eterm -t mutt" },
+			   { NULL, NULL, "netscape.png", 4, 1, 2, 2, "netscape" }
     };
 
-    button_cnt = 3;
+    button_cnt = 7;
     buttons = (toolbutton_t *) realloc(buttons, sizeof(toolbutton_t) * (button_cnt));
     buttons[0] = def[0];
     buttons[1] = def[1];
     buttons[2] = def[2];
+    buttons[3] = def[3];
+    buttons[4] = def[4];
+    buttons[5] = def[5];
+    buttons[6] = def[6];
+    save_config();
+  }
+}
+
+static void
+save_config(void)
+{
+  char buff[25], buff2[8];
+  unsigned long i;
+
+  for (i = 0; i < button_cnt; i++) {
+    Esnprintf(buff, sizeof(buff), "button_%lu", i);
+    Epplet_modify_config(buff, buttons[i].prog);
+    if (buttons[i].image) {
+      Esnprintf(buff, sizeof(buff), "button_%lu_image", i);
+      Epplet_modify_config(buff, buttons[i].image);
+    }
+    if (buttons[i].label) {
+      Esnprintf(buff, sizeof(buff), "button_%lu_label", i);
+      Epplet_modify_config(buff, buttons[i].label);
+    }
+
+    D(("x == %hu, y == %hu, w == %hu, h == %hu\n", buttons[i].x, buttons[i].y, buttons[i].w, buttons[i].h));
+    Esnprintf(buff, sizeof(buff), "button_%lu_x", i);
+    Esnprintf(buff2, sizeof(buff2), "%d", (int) buttons[i].x);
+    Epplet_modify_config(buff, buff2);
+    Esnprintf(buff, sizeof(buff), "button_%lu_y", i);
+    Esnprintf(buff2, sizeof(buff2), "%d", (int) buttons[i].y);
+    Epplet_modify_config(buff, buff2);
+    Esnprintf(buff, sizeof(buff), "button_%lu_w", i);
+    Esnprintf(buff2, sizeof(buff2), "%d", (int) buttons[i].w);
+    Epplet_modify_config(buff, buff2);
+    Esnprintf(buff, sizeof(buff), "button_%lu_h", i);
+    Esnprintf(buff2, sizeof(buff2), "%d", (int) buttons[i].h);
+    Epplet_modify_config(buff, buff2);
   }
 }
 
@@ -250,10 +298,38 @@ main(int argc, char **argv)
   parse_config(argv[0]);
 
   for (j = 0; j < (int) button_cnt; j++) {
-    buttons[j].gad = Epplet_create_button(buttons[j].label, buttons[j].image,
-					  (buttons[j].x * 16) + 2, (buttons[j].y * 16) + 2,
-					  (buttons[j].w - 1) * 16 + 12, (buttons[j].h - 1) * 16 + 12,
-					  NULL, None, NULL, button_cb, &buttons[j]);
+    if (buttons[j].image && *(buttons[j].image) == '<') {
+      char *std, *pbuff;
+
+      std = strdup(buttons[j].image + 1);
+      for (pbuff = std; *pbuff; pbuff++) {
+        if (*pbuff == '>') {
+          *pbuff = 0;
+        } else {
+          *pbuff = toupper(*pbuff);
+        }
+      }
+      buttons[j].gad = Epplet_create_button(NULL, NULL, (buttons[j].x * 16) + 2, (buttons[j].y * 16) + 2,
+                                            (buttons[j].w - 1) * 16 + 12, (buttons[j].h - 1) * 16 + 12,
+                                            std, None, NULL, button_cb, &buttons[j]);
+      free(std);
+    } else {
+      char *s = NULL;
+
+      if (buttons[j].image && !strchr(buttons[j].image, '/')) {
+        s = buttons[j].image;
+        buttons[j].image = (char *) malloc(sizeof(IMAGE_DIR) + strlen(s) + 1);
+        sprintf(buttons[j].image, IMAGE_DIR "%s", s);
+      }
+      buttons[j].gad = Epplet_create_button(buttons[j].label, buttons[j].image,
+                                            (buttons[j].x * 16) + 2, (buttons[j].y * 16) + 2,
+                                            (buttons[j].w - 1) * 16 + 12, (buttons[j].h - 1) * 16 + 12,
+                                            NULL, None, NULL, button_cb, &buttons[j]);
+      if (s) {
+        free(buttons[j].image);
+        buttons[j].image = s;
+      }
+    }
     Epplet_gadget_show(buttons[j].gad);
   }
 

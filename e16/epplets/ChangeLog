@@ -2069,3 +2069,13 @@ Added the first revision of E-Toolbox, a much-needed toolbar epplet.  It's
 got a lot already, but there's much more to come.  And unlike certain other
 toolbar-type epplets, this one will be done properly and cleanly. :-)
 
+-------------------------------------------------------------------------------
+
+Mon Apr 24 20:19:34 PDT 2000
+(KainX)
+
+E-Toolbox can now auto-resize itself like it should.  I also got standard
+buttons working in addition to labels and images.  The default setup is now
+prettier as well.  I also included another sample config file to give you an
+idea of the flexibility it supports.  And there's more to come, of course.
+

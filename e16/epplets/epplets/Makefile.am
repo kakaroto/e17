@@ -221,8 +221,8 @@ E-ScreenShoot-data/E-ScreenShoot_minitime2.png E-ScreenShoot-data/E-ScreenShoot_
 E-ScreenShoot-data/E-ScreenShoot_shoot.png E-ScreenShoot-data/E-ScreenShoot_time.png \
 E-ScreenShoot-data/E-ScreenShoot_win.png Emix-data/Emix.AUTHORS Emix-data/Emix.COPYING \
 Emix-data/Emix.README Emix-data/Emix.TODO E-UrlWatch-data/wooeep.wav \
-E-Magic-data/answers.txt E-Magic-data/8ball.png \
-E-OpenGL-Demo-data/cube_texture.RGB
+E-Magic-data/answers.txt E-Magic-data/8ball.png E-OpenGL-Demo-data/cube_texture.RGB \
+E-Toolbox-data/eterm.png E-Toolbox-data/mail.png E-Toolbox-data/netscape.png
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
