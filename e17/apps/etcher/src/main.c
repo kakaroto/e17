@@ -32,13 +32,15 @@ main (int argc, char *argv[])
 
    for (i=1; i<argc; i++)
      {
-	if (!strcmp(argv[i], "--no-splash")) no_splash = TRUE;
+	if (!strcmp(argv[i], "--no-splash"))
+	  {
+	    no_splash = TRUE;
+	  }
 	else if ((!strcmp(argv[i], "--help")) ||
 		 (!strcmp(argv[i], "-help")) ||
 		 (!strcmp(argv[i], "-h")))
 	  {
-	     printf("Usage: %s [--no-splash] [ebits_file_to_edit.db]\n",
-		    argv[0]);
+	     printf("Usage: %s [--no-splash] [ebits file]\n", argv[0]);
 	     exit(0);
 	  }
 	else 

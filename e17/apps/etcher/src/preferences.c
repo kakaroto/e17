@@ -3,27 +3,20 @@
 #include <Edb.h>
 #include <Evas.h>
 #include <gdk/gdkx.h>
+#include "macros.h"
 #include "preferences.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 #include "bits.h"
 
-#define QUEUE_DRAW \
-if (current_idle) gtk_idle_remove(current_idle);\
-current_idle = gtk_idle_add(view_redraw, NULL);
-
-#define QUEUE_PREF_DRAW \
-if (pref_idle) gtk_idle_remove(pref_idle);\
-pref_idle = gtk_idle_add(view_pref_redraw, NULL);
-
-extern gint       render_method;
-extern gint       zoom_method;
-extern GtkWidget *main_win;
-extern char       etcher_config[4096];
-extern Evas_Object o_bg;
-extern Evas        view_evas;
-extern guint       current_idle;
+extern gint         render_method;
+extern gint         zoom_method;
+extern GtkWidget   *main_win;
+extern char         etcher_config[4096];
+extern Evas_Object  o_bg;
+extern Evas         view_evas;
+extern guint        current_idle;
 
 GtkWidget *pref_dialog = NULL;
 GtkWidget *color_dialog = NULL;
@@ -70,7 +63,7 @@ pref_update_preview(void)
 	evas_move(pref_evas, o_pref_image, 0, 0);
 	evas_resize(pref_evas, o_pref_image, 99999, 99999);
 	evas_set_color(pref_evas, o_pref_image, colors[0], colors[1], colors[2], 255);
-	QUEUE_PREF_DRAW;
+	QUEUE_DRAW(pref_idle, view_pref_redraw);
      }
 }
 
@@ -108,7 +101,7 @@ on_pref_da_expose_event2                (GtkWidget       *widget,
 		    event->area.y,
 		    event->area.width,
 		    event->area.height);
-   QUEUE_PREF_DRAW;
+   QUEUE_DRAW(pref_idle, view_pref_redraw);
    return FALSE;
 }
 
@@ -318,7 +311,7 @@ pref_ok_clicked                          (GtkButton       *button,
 	   evas_set_color(view_evas, o_bg, r, g, b, 255);
 	e_db_flush();
      }
-   QUEUE_DRAW;
+   QUEUE_DRAW(current_idle, view_pref_redraw);
    
    gtk_widget_hide(top);
 }
