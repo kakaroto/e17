@@ -235,14 +235,18 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 			break;
 		case 2: break;
 		case 3:
-			form->popup = ewl_imenu_new(NULL, "configure");
+			form->popup = ewl_imenu_new(NULL, "Configure");
 			ewl_object_request_position(EWL_OBJECT(form->popup), ev->x, ev->y);
 			ewl_object_set_fill_policy(EWL_OBJECT(form->popup), EWL_FLAG_FILL_NONE);
 			ewl_container_append_child(EWL_CONTAINER(form->overlay), form->popup);
 			ewl_widget_show(form->popup);
 			ewl_callback_call(form->popup, EWL_CALLBACK_SELECT);
 
-			menu_item = ewl_menu_item_new(NULL, "conf item");
+			menu_item = ewl_menu_item_new(NULL, "Lay Out Horizontally");
+			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_widget_show(menu_item);
+
+			menu_item = ewl_menu_item_new(NULL, "Lay Out Vertically");
 			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 			break;

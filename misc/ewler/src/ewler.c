@@ -192,7 +192,7 @@ tool_get_name( void )
 void
 tool_set_name( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	active_tool = ewl_text_text_get( EWL_TEXT(w) );
+	active_tool = ewl_button_get_label( EWL_TEXT(w) );
 }
 
 void
@@ -225,15 +225,17 @@ add_tools_with_parent( const char *parent, Ewl_Widget *prow )
 		Ewl_Widget *text[] = { NULL, NULL };
 
 		if( widget_is_visible( class ) ) {
-			text[0] = ewl_text_new( class );
-			ewl_callback_append( text[0], EWL_CALLBACK_CLICKED,
-													 tool_set_name, NULL );
+			if( widget_get_ctor( class ) ) {
+				text[0] = ewl_button_new( class );
+				ewl_callback_append( text[0], EWL_CALLBACK_CLICKED,
+														 tool_set_name, NULL );
+			} else
+				text[0] = ewl_text_new( class );
+			ewl_object_set_fill_policy( text[0], EWL_FLAG_FILL_NONE );
 			ewl_widget_show( text[0] );
 
 			row = ewl_tree_add_row( EWL_TREE(tool_tree), EWL_ROW(prow), text );
-			ewl_callback_del_type( row->parent, EWL_CALLBACK_CLICKED );
-			ewl_object_set_fill_policy( EWL_OBJECT(row->parent), EWL_FLAG_FILL_ALL );
-			ewl_tree_set_row_expand( EWL_ROW(row), EWL_TREE_NODE_EXPANDED );
+			ewl_object_set_fill_policy( EWL_OBJECT(row->parent), EWL_FLAG_FILL_FILL );
 
 			add_tools_with_parent( class, row );
 			ewl_widget_show( row );

@@ -549,8 +549,8 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 					if( xml_attr ) {
 						ctor = dlsym( dl_handle, xml_attr );
 						if( ctor == NULL && dlerror() ) {
-							fprintf( stderr, "error processing ctor: %s\n",
-											 dlerror() );
+							fprintf( stderr, "%s: error processing ctor: %s\n",
+											 class_name, dlerror() );
 							exit( EXIT_FAILURE );
 						}
 					} else

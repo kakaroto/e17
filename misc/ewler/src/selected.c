@@ -71,7 +71,8 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_object_request_geometry(EWL_OBJECT(s),
 															CURRENT_X(w), CURRENT_Y(w),
 															CURRENT_W(w), CURRENT_H(w));
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_NONE);
+	ewl_object_set_fill_policy(EWL_OBJECT(s),
+														 ewl_object_get_fill_policy(EWL_OBJECT(w)));
 
 	ewl_callback_append(sw, EWL_CALLBACK_CONFIGURE,
 											ewler_selected_configure_cb, NULL);
