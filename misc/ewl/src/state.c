@@ -1338,6 +1338,7 @@ EwlBool    ewl_event_queue_new(EwlWidget *widget, EwlEventType type,
 		if (!ev)	{
 			ewl_debug("ewl_event_queue_new", EWL_NULL_ERROR, "ev");
 		} else {
+			ev->data = data;
 			ewl_event_queue(ev);
 			r = TRUE;
 		}

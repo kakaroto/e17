@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
 	lbl = ewl_label_new("Test EwlLabel");
 
 	/* set up window attributes */
-	ewl_window_move(win,320,240);
-	ewl_window_resize(win,640,480);
+	/*ewl_window_move(win,320,240);
+	ewl_window_resize(win,640,480);*/
 	ewl_window_set_class_hints(win,"blah", "blah");
 	ewl_window_set_decoration_hint(win, TRUE);
 

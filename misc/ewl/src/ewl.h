@@ -3,6 +3,8 @@
 
 #include "ewlcore.h"
 
+#include "ewllabel.h"
+
 #include "ewlcontainer.h"
 #include "ewlbox.h"
 #include "ewlwindow.h"

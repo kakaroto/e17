@@ -1148,3 +1148,16 @@ EwlContainer::resize_children()).
 but I can't pin it down just yet.
 
 
+-----
+20000912-2259-PDT, pabs
+
+- hmm... there's still something fishy about those ewlwindow move
+and resize functions -- disabled in the test proggy until I take
+another look at them.  might be some cruft from the pre-realize
+days.
+- added ewllabel goodies to the ewl.h header.  hte label is pretty
+much finished.  still doesn't do alignment or color, but both of
+those should be easy to add.. now if i could just fix the damn
+duplicate text bbug.. :)
+- misc cleanups
+

@@ -71,11 +71,13 @@ EwlBool      ewl_container_handle_showhide(EwlWidget *widget,
 	FUNC_BGN("ewl_container_handle_show");
 	switch (ev->type)	{
 	case EWL_EVENT_SHOW:
-		ewl_container_foreach(widget,
-		                      NULL /*ewl_container_handle_show_foreach*/,
-		                      NULL);
-		evas_show(ewl_widget_get_evas(widget),
-		          ewl_widget_get_background(widget));
+		/*ewl_container_foreach(widget,
+		                      NULL /ewl_container_handle_show_foreach/,
+		                      NULL);*/
+		if (ewl_widget_get_flag(widget,REALIZED))	{
+			evas_show(ewl_widget_get_evas(widget),
+			          ewl_widget_get_background(widget));
+		}
 	case EWL_EVENT_HIDE:
 		break;
 	default:
@@ -527,7 +529,7 @@ void         ewl_container_resize_children(EwlWidget *c)
 		ewl_widget_set_flag(c, NEEDS_REFRESH, TRUE);
 		ewl_widget_set_flag(c, NEEDS_RESIZE, FALSE);
 	} else {
-		container->resize_children(container);
+		container->resize_children(c);
 	}
 	FUNC_END("ewl_container_resize_children");
 	return;
@@ -537,9 +539,9 @@ void         ewl_container_resize_children(EwlWidget *c)
 EwlBool _cb_ewl_container_realize_children(EwlLL *node, EwlData *data)
 {
 	EwlWidget *widget = (EwlWidget*) node->data;
-	EwlEvent  *ev = ewl_event_new_by_type_with_widget(EWL_EVENT_REALIZE,
-	                                                  widget);
-	ewl_event_queue(ev);
+	fprintf(stderr, "_cb_ewl_container_realize_children(): widget = 0x%08x\n",
+	        (unsigned int) widget);
+	ewl_event_queue_new(widget, EWL_EVENT_REALIZE, NULL);
 	return TRUE;
 }
 
