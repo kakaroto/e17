@@ -1,21 +1,21 @@
-#!/bin/sh
+#!/usr/bin/perl
 ##############################################################################
-# generates a file.menu format for Enlightenment out of menu hierarchies      #
+# generates a file.menu format for Enlightenment out of menu hierarchies
 #
-# Copyright (C) 1999 Carsten Haitzler, Geoff Harrison  and various contributors
-# 
+# Copyright (C) 2003 Kim Woelders
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
 # deal in the Software without restriction, including without limitation the
 # rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
 # sell copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies of the Software, its documentation and marketing & publicity
 # materials, and acknowledgment shall be given in the documentation, materials
 # and software packages that this Software was used.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -24,94 +24,378 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##############################################################################
 
-PATH=$PATH:$EBIN:$EROOT/scripts
-export PATH
+# Likely  prefixes
+$Prefixes = "/usr/local:/usr:/opt";
 
-OUT_DIR=$ECONFDIR
-OUT=$OUT_DIR"/file.menu"
+# Where to look for GNOME2/KDE2,3 stuff
+$AppDirs = MkDirList($Prefixes, "/share/applications");
+$IconDirs = MkDirList($Prefixes, "/share/pixmaps");
+$IconDirsKDE = MkDirList($Prefixes, "/share/icons");
+$Themes = "default.kde:hicolor:locolor";
 
-WINDOWID=`eesh -ewait window_list | awk '$3 ~ "^Message$" { printf("%s ", $1)}'`
-for i in $WINDOWID; do
-  eesh -e "win_op "$i" close"
-done
+# Where to look for GNOME1 apps
+$OldGnomeDirs = MkDirList($Prefixes, "/share/gnome/apps");
+# Where to look for KDE1/2 apps
+$OldKdeDirs = MkDirList($Prefixes, "/share/applnk");
 
-eesh -e "dialog_ok Menus are being generated... Please Wait."
-WINDOWID=`eesh -ewait window_list | awk '$3 ~ "^Message$" { printf("%s ", $1)}'`
+# Pick up env vars
+$EdirUser = "$ENV{'ECONFDIR'}";
+$EdirRoot = "$ENV{'EROOT'}";
+$EdirBin  = "$ENV{'EBIN'}";
 
-e_gen_kde_menu menus_kde $OUT_DIR $OUT_DIR"/kde.menu"
-e_gen_gnome_menu menus_gnome $OUT_DIR $OUT_DIR"/gnome.menu"
-e_gen_gnome_menu menus_gnome $OUT_DIR $OUT_DIR"/gnome_user.menu" $HOME/".gnome/apps"
+$EdirUser = "$ENV{'HOME'}/.enlightenment" unless $EdirUser;
+$EdirRoot = "/usr/share/enlightenment" unless $EdirRoot;
+$EdirBin  = "/usr/bin" unless $EdirBin;
 
-# if the out dir doesnt exist - make it 
-if [ ! -d "$OUT_DIR" ]; then
-  mkdir $OUT_DIR
-fi
+$dbg      = "$ENV{'E_MENUGEN_DBG'}";
 
-# find eesh
-EESH=`which eesh`
-# generate file menu if it doesn't exist
-if [ ! -f "$OUT" ]; then
-  echo \"User Menus\" > $OUT
-  echo \"User Application list\" NULL menu \"user_apps.menu\" >> $OUT
-  echo \"KDE\" NULL menu \"kde.menu\" >> $OUT
-  echo \"GNOME\" NULL menu \"gnome.menu\" >> $OUT
-  echo \"GNOME User Menu\" NULL menu \"gnome_user.menu\" >> $OUT
-  echo \"Enlightenment Epplets\" NULL menu \"epplets.menu\" >> $OUT
-  # if we have eesh available
-  if [ -n "$EESH" ]; then
-    echo \"Restart Enlightenment\" NULL exec \"$EESH -e \'restart\'\" >> $OUT
-    echo \"Log Out\" NULL exec \"$EESH -e \'exit\'\" >> $OUT
-  fi
-fi
-touch $OUT
 
-# generate menu looking for Epplets - you might not have any yet.... but expect to
-OUT=$OUT_DIR"/epplets.menu"
-EPPLETS="`/bin/ls $EBIN"/"*.epplet 2> /dev/null`"
-if [ -n "$EPPLETS" ]; then
-  echo \"Enlightenment Epplets\" > $OUT
-  echo "$EPPLETS" | \
-    sed -e 's:\(^.*/\([^/]*\).epplet$\):\"\2\" \"'$EROOT'/epplet_icons/\2.icon\" exec \"\1\":' \
-    >> $OUT
-fi
-touch $OUT
+# Programs
+$DoConvert = `which convert`;
 
-# generate a stub user_apps menu if it doesnt exist
-OUT=$OUT_DIR"/user_apps.menu"
-if [ ! -f "$OUT" ]; then
-  echo \"User Application List\" > $OUT
-  echo \"Eterm\" NULL exec \"Eterm\" >> $OUT
-  echo \"XTerm\" NULL exec \"xterm\" >> $OUT
-  echo \"RXVT\" NULL exec \"rxvt\" >> $OUT
-  echo \"KTerm\" NULL exec \"kterm\" >> $OUT
-  echo \"Gnome Terminal\" NULL exec \"gnome-terminal\" >> $OUT
-  echo \"Netscape\" NULL exec \"netscape\" >> $OUT
-  echo \"TkRat\" NULL exec \"tkrat\" >> $OUT
-  echo \"Netscape Mail\" NULL exec \"netscape -mail -no-about-splash\" >> $OUT
-  echo \"Balsa\" NULL exec \"balsa\" >> $OUT
-  echo \"Exmh\" NULL exec \"exmh\" >> $OUT
-  echo \"Electric Eyes\" NULL exec \"ee\" >> $OUT
-  echo \"The GIMP\" NULL exec \"gimp\" >> $OUT
-  echo \"XV\" NULL exec \"xv\" >> $OUT
-  echo \"GQView\" NULL exec \"gqview\" >> $OUT
-  echo \"XMag\" NULL exec \"xmag\" >> $OUT
-  echo \"XawTV\" NULL exec \"xawtv\" >> $OUT
-  echo \"Imlib Settings\" NULL exec \"imlib_config\" >> $OUT
-  echo \"X-Chat\" NULL exec \"xchat\" >> $OUT
-  echo \"XMan\" NULL exec \"xman\" >> $OUT
-  echo \"TkMan\" NULL exec \"tkman\" >> $OUT
-  echo \"GnomeICU\" NULL exec \"gnomeicu -a\" >> $OUT
-  echo \"eMusic\" NULL exec \"emusic\" >> $OUT
-  echo \"X11Amp\" NULL exec \"x11amp\" >> $OUT
-  echo \"XMMS\" NULL exec \"xmms\" >> $OUT
-  echo \"FreeAmp\" NULL exec \"freeamp\" >> $OUT
-  echo \"Civilization\" NULL exec \"civctp\" >> $OUT
-  echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
-fi
-touch $OUT
+@CatsRemove = (
+	"Qt",
+	"GNOME",
+	"KDE",
+	"UtilityApplication",
+	"Applications",
+	"Application",
+	"X-Red-Hat-Base-Only",
+	"X-Red-Hat-BaseApplication",
+	"X-Red-Hat-Base",
+	"X-Red-Hat-ServerConfig",
+	"X-Red-Hat-Extra"
+);
 
-for i in $WINDOWID; do
-  eesh -e "win_op "$i" close"
-done
-eesh -e "reload_menus"
-eesh -e "dialog_ok Menu generation complete."
+@MainMenu = (
+	"t:User Menus",
+	"m:User Application list:user_apps.menu",
+	"m:GNOME:menus_GNOME/index.menu",
+	"m:KDE:menus_KDE/index.menu",
+	"m:Other:menus_Other/index.menu",
+	"m:Enlightenment Epplets:epplets.menu",
+	"x:Restart Enlightenment:/usr/bin/eesh -e 'restart'",
+	"x:Log Out:/usr/bin/eesh -e 'exit'"
+);
+
+@UserAppsMenu = (
+	"t:User Application List",
+	"x:Eterm:Eterm",
+	"x:XTerm:xterm",
+	"x:RXVT:rxvt",
+	"x:Mozilla:mozilla",
+	"x:Electric Eyes:ee",
+	"x:The GIMP:gimp",
+	"x:XV:xv",
+	"x:GQView:gqview",
+	"x:XMag:xmag",
+	"x:XMMS:xmms"
+);
+
+# Make : separated directory list, check that they exist
+sub MkDirList {
+	local $ll = shift;
+	local $sf = shift;
+	local $d;
+	local @r;
+	foreach $p (split(':', $ll)) {
+		$d = "$p$sf";
+		push(@r, "$d") if -d "$d";
+	}
+	return join(':', @r);
+}
+
+# Make dir if non-existing
+sub MkDir {
+	local $d = shift;
+	mkdir("$d") unless (-d "$d");
+}
+
+# Make simple menus
+sub MakeMenu {
+	local $f = shift;
+	local $m = shift;
+
+	$f = "$EdirUser/$f";
+#	return if (-f "$f");
+	open(FD, ">$f");
+	foreach $e (@$m) {
+		($t, $n, $p) = split(':', $e);
+		if ($t eq "t") {
+			print FD "\"$n\"\n";
+		} elsif ($t eq "m") {
+			print FD "\"$n\" NULL menu \"$p\"\n";
+		} elsif ($t eq "x") {
+			print FD "\"$n\" NULL exec \"$p\"\n";
+		}
+	}
+	close(FD);
+}
+
+# Process a .desktop file
+sub ProcessFile {
+	local $f = shift;
+	local $Name, $Exec, $Icon, $Cats, $Type, $File;
+	local $c;
+
+	# Global ref no
+	$N++;
+
+	$Name = $Exec = $Icon = "";
+	$Cats = shift;
+	$Type = shift;
+
+	open(FI,$f) or die "Not found: $f\n";
+	while (<FI>) {
+		if (/^Name=(.*)$/) {
+			$Name = $1;
+		} elsif (/^Exec=(.*)$/) {
+			$Exec = $1;
+		} elsif (/^Icon=(.*)$/) {
+			$Icon = $1;
+		} elsif (/^OnlyShowIn=(.*);$/) {
+			$Type = $1;
+		} elsif (/^Categories=(.*)$/) {
+			next if "$Cats";	# Given
+			$Cats = $1;
+			foreach $c (@CatsRemove) { $Cats =~ s/(^|;)$c;*/\1/g; }
+		} elsif (/^Type=(.*)$/) {
+			if ($1 ne "Application") {
+				$Name = "";
+				last;
+			}
+		}
+	}
+	close FI;
+
+	$Cats =~ s/ +$//;
+	if (!$Name || !$Exec || !$Cats) {
+		printf("Skipped: %-24s %-24s %-20s %-20s %s\n",
+			$f, $Name, $Exec, $Icon, $Cats) if $dbg ge 1;
+		return;
+	}
+
+	# Basename
+	$File = $f; $File =~ s/^.*\///;
+
+	printf("%-24s: %-24s %-20s %-20s %s\n",
+		$File, $Name, $Exec, $Icon, $Cats) if $dbg ge 3;
+
+	if (!$Type) {
+		if      ($File =~ /^gnome/) {
+			$Type = "GNOME";
+		} elsif ($File =~ /^kde/) {
+			$Type = "KDE";
+		} else {
+			$Type = "Other";
+		}
+	}
+
+	$Namx = "$Name-$N";	# Make key unique
+	$Namx =~ tr/A-Z/a-z/;	# To lower case (for sorting)
+	$File{$Namx} = $File;
+	$Name{$Namx} = $Name;
+	$Exec{$Namx} = $Exec;
+	$Icon{$Namx} = $Icon;
+	$Cats{$Namx} = $Cats;
+	$Type{$Namx} = $Type;
+}
+
+# Process all .desktop files in a directory
+sub ProcessDir {
+	local $d = shift;
+	local $dx = shift;
+	local $t = shift;
+	local @l;
+	local $f;
+
+	@l = grep /\.desktop$/, ReadDir($d);
+        foreach $f (@l) {
+		$f = "$d/$f";
+		print "- File $f\n" if $dbg ge 2;
+		ProcessFile("$f", "$dx", "$t");
+	}
+}
+
+# Process old style GNOME/KDE directories
+sub ProcessOldStyle {
+	local $t = shift;
+	local $dl = shift;
+	local $d, $d2;
+	local @d2l;
+
+	foreach $d (split(':', $dl)) {
+		print "Processing directory: $d\n" if $dbg ge 1;
+		if (! -d "$d") {
+			print "- Not found\n" if $dbg ge 1;
+			next;
+		}
+		@d2l = grep !/^\./, ReadDir($d);
+        	foreach $d2 (@d2l) {
+			print " Subdir: $d/$d2\n" if $dbg ge 1;
+			next unless -d "$d/$d2";
+			ProcessDir("$d/$d2", "$d2", "$t");
+		}
+	}
+}
+
+# Create scaled 18x18 pixel icon
+sub ScaleIcon {
+	local $f = shift;
+	local $g = $f;
+
+	return $f unless $DoConvert;
+
+	$g =~ s/^.*\///;
+	$g =~ s/\..*$//;
+	$g = "$EdirUser/icons/$g.png";
+	system("convert -geometry 18x18 $f $g");
+
+	return $g;
+}
+
+# Find that $#@! thing
+sub FindIcon {
+	local $f = shift;
+
+	return $f if (! $f);
+
+	if (-f $f) {
+		$i = ScaleIcon($f);
+		return $i;
+	}
+
+        foreach $d (split(':', $IconDirs)) {
+		$i = "$d/$f";
+		next unless -f $i;
+		$i = ScaleIcon($i);
+		return $i;
+	}
+
+        foreach $d (split(':', $IconDirsKDE)) {
+        	foreach $t (split(':', $Themes)) {
+        		foreach $u (split(':', "apps:filesystems:actions")) {
+				$i = "$d/$t/16x16/$u/$f";
+				$i = "$i.png" unless ($f =~ /\.png$/);
+				print "Testing $i\n" if $dbg >= 2;
+				return $i if -f $i;
+			}
+		}
+	}
+
+	return $f;
+}
+
+# Make the Epplets menu
+sub MakeEppsMenu {
+	local $f = shift;
+	@el = grep /\.epplet$/, ReadDir($EdirBin);
+	open(FD, ">$EdirUser/$f");
+	foreach $e (@el) {
+		$e =~ s/\.epplet$//;
+		$i = "$EdirRoot/epplet_icons/$e.icon";
+		$i = ScaleIcon("$i") if -f "$i";
+		print FD "\"$e\" \"$i\" exec \"$EdirBin/$e.epplet\"\n";
+	}
+	close(FD);
+}
+
+# Make the menu for a given app type
+sub MakeAppsMenu {
+	local $type = shift;
+	local %menus;
+	local $c, $k, $dir;
+
+	$dir = "$EdirUser/menus_$type";
+	print "Generating Menu: $type in $dir\n" if $dbg ge 1;
+	MkDir($dir);
+
+	# Sort the apps into categories
+	foreach $k (sort(keys(%Name))) {
+		next if ($Type{$k} ne $type);
+		$c = $Cats{$k};
+		$c =~ s/;.*$//;
+#		$menus{$c} = $k;
+		push(@{$menus{$c}}, $k);
+	}
+
+	# Make top- and sub-menus
+	open(FTopM, ">$dir/index.menu") or die "What? $dir/index.menu";
+	print FTopM "\"$type Menu\"\n";
+	foreach $m (sort(keys(%menus))) {
+		open(FSubM, ">$dir/$m.menu") or die "What? $dir/$m.menu";
+		print "- Submenu: $m\n" if $dbg ge 2;
+		print FTopM "\"$m\" \"\" menu \"$dir/$m.menu\"\n";
+		print FSubM "\"$m\"\n";
+		foreach $k (sort(@{$menus{$m}})) {
+			print " - Item: $k\n" if $dbg ge 2;
+			$icon = FindIcon($Icon{$k});
+			@exec = split(' ', $Exec{$k});
+			$exec = @exec[0];
+			printf FSubM "\"%s\" \"%s\" exec \"%s\"\n",
+				$Name{$k}, $icon, $exec;
+		}
+		close(FSubM);
+	}
+	close(FTopM);
+}
+
+# Return list of files in dir
+sub ReadDir {
+	local $dir = shift;
+	local @dirs;
+	opendir DH, $dir or die "*** Not a directory: $dir\n";
+	@dirs = readdir DH;
+	closedir DH;
+	return @dirs;
+}
+
+# Close all windows named "Message" (we assume they are E dialogs)
+sub CloseMessageWindows {
+	open(WL, "eesh -ewait window_list |");
+	while (<WL>) { if (/\s*(\w+) : Message$/) {
+		system("eesh -e \"win_op $1 close\""); }
+	}
+	close(WL);
+}
+
+
+##############################################################################
+# Here we go
+##############################################################################
+$N = 0;
+
+CloseMessageWindows();
+system("eesh -e \"dialog_ok Menus are being generated... Please Wait.\"");
+
+# Process old style GNOME directories
+ProcessOldStyle("GNOME", "$OldGnomeDirs");
+
+# Process old style KDE directories
+ProcessOldStyle("KDE", "$OldKdeDirs");
+
+# Process new style (GNOME2, KDE2/3) directories
+foreach $d (split(':', $AppDirs)) {
+	print "Processing directory: $d\n" if $dbg ge 1;
+	if (! -d $d) {
+		print "- Not found\n" if $dbg ge 1;
+		next;
+	}
+	ProcessDir($d);
+}
+
+# Make config root dir and scaled icon dir
+MkDir("$EdirUser");
+MkDir("$EdirUser/icons");
+
+# Make the menus
+MakeMenu("file.menu", \@MainMenu);
+MakeMenu("user_apps.menu", \@UserAppsMenu);
+MakeEppsMenu("epplets.menu");
+MakeAppsMenu("GNOME");
+MakeAppsMenu("KDE");
+MakeAppsMenu("Other");
+
+CloseMessageWindows();
+system("eesh -e 'reload_menus'");
+system("eesh -e 'dialog_ok Menu generation complete.'");
