@@ -188,13 +188,6 @@ extern Drawable     vIcDrw;
 
 typedef struct _efont Efont;
 
-#define Esetenv(var, val, overwrite) \
-{ \
-  static char envvar[1024]; \
-  sprintf(envvar, "%500s=%500s", var, val);\
-  putenv(envvar);\
-}
-
 typedef struct _root
 {
    Window              win;

@@ -152,7 +152,7 @@ __Efree(void *ptr)
    EDBUG_RETURN_;
 }
 
-#if !(defined(USE_STRDUP) && defined(HAVE_STRDUP))
+#if !USE_LIBC_STRDUP
 char               *
 Estrdup(const char *s)
 {

@@ -391,7 +391,7 @@ __Efree(void *ptr, const char *file, int line)
 }
 #endif
 
-#if !(defined(USE_STRDUP) && defined(HAVE_STRDUP))
+#if !USE_LIBC_STRDUP
 char               *
 Estrdup(const char *s)
 {
@@ -408,7 +408,7 @@ Estrdup(const char *s)
 }
 #endif
 
-#if !(defined(USE_STRDUP) && defined(HAVE_STRNDUP))
+#if !USE_LIBC_STRNDUP
 char               *
 Estrndup(const char *s, int n)
 {

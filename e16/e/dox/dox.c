@@ -342,9 +342,6 @@ main(int argc, char **argv)
 	     exit(1);
 	  }
      }
-   Esetenv("DISPLAY", DisplayString(disp), 1);
-   Esetenv("E_DATADIR", ENLIGHTENMENT_ROOT, 1);
-   Esetenv("E_BINDIR", ENLIGHTENMENT_BIN, 1);
 
    t = 16;
    GetObjects(f);

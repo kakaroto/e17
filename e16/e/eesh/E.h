@@ -48,7 +48,9 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#define USE_STRDUP  1
+#if HAVE_STRDUP
+#define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
+#endif
 
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
@@ -147,7 +149,7 @@ __Emalloc(x)
 __Erealloc(x, y)
 #endif
 
-#if defined(USE_STRDUP) && defined(HAVE_STRDUP)
+#if USE_LIBC_STRDUP
 #define Estrdup(s) ((s) ? strdup(s) : NULL)
 #else
 char               *Estrdup(const char *s);

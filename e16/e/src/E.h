@@ -26,8 +26,15 @@
 #define _GNU_SOURCE
 #include "config.h"
 
-#define USE_STRDUP  1		/* Use libc strdup if present */
-#define USE_STRNDUP 1		/* Use libc strndup if present */
+#if HAVE_STRDUP
+#define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
+#endif
+#if HAVE_STRNDUP
+#define USE_LIBC_STRNDUP 1	/* Use libc strndup if present */
+#endif
+#if HAVE_SETENV
+#define USE_LIBC_SETENV  1	/* Use libc setenv  if present */
+#endif
 #define DEBUG_EWMH  0
 
 #include <X11/Xlib.h>
@@ -273,13 +280,6 @@ int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
 int                 Esnprintf(va_alist);
 #endif
 #endif /* HAVE_SNPRINTF */
-
-#define Esetenv(var, val, overwrite) \
-{ \
-  static char envvar[FILEPATH_LEN_MAX]; \
-  Esnprintf(envvar, FILEPATH_LEN_MAX, "%s=%s", var, val);\
-  putenv(envvar);\
-}
 
 /* This is a start to providing internationalization by means */
 /* of gettext */
@@ -2348,6 +2348,11 @@ void                EdgeHandleLeave(XEvent * ev);
 void                EdgeHandleMotion(XEvent * ev);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
+#if USE_LIBC_SETENV
+#define Esetenv setenv
+#else
+int                 Esetenv(const char *name, const char *value, int overwrite);
+#endif
 
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, void *params, char constrained,
@@ -2711,12 +2716,12 @@ __Emalloc(x, "<unknown>", 0)
 __Erealloc(x, y, "<unknown>", 0)
 #endif
 
-#if defined(USE_STRDUP) && defined(HAVE_STRDUP)
+#if USE_LIBC_STRDUP
 #define Estrdup(s) ((s) ? strdup(s) : NULL)
 #else
 char               *Estrdup(const char *s);
 #endif
-#if defined(USE_STRNDUP) && defined(HAVE_STRNDUP)
+#if USE_LIBC_STRNDUP
 #define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
 #else
 char               *Estrndup(const char *s, int n);
