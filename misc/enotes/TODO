@@ -14,10 +14,13 @@
 
     BUGS & BASIC FUNCTIONALITY:
 
-I'm liking this! :)
+Some stupid segv, untracable (for me).  If you keep closing notes for long enough, you'll get it.  It happens for a reason but i havn't figured it out.
 
     FEATURES:
 
+0.2
+
+0.3
 Optional change of location for note storage to a ftp based location.
 
     MAYBE's:

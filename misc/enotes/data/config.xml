@@ -2,4 +2,5 @@
 	<render_method>software</render_method>
 	<theme>atmos</theme>
 	<intro>1</intro>
+	<welcome>1</welcome>
 </enotes>
