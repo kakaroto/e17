@@ -18,6 +18,82 @@ char load(ImlibImage *im, ImlibProgressFunction progress,char progress_granulari
 char save(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity);
 void formats(ImlibLoader *l);
 
+static FILE *rgb_txt = NULL;
+
+static void
+xpm_parse_color(char *color, int *r, int *g, int *b)
+{
+   char buf[4096];
+   
+   /* is a #ff00ff like color */
+   if (color[0] == '#')
+     {
+	int len;
+	char val[32];
+	
+	len = strlen(color) - 1;
+	if (len < 96)
+	  {
+	     int i;
+	     
+	     len /= 3;
+	     for (i = 0; i < len; i++) val[i] = color[1 + i + (0 * len)];
+	     val[i] = 0;
+	     sscanf(val, "%x", r);
+	     for (i = 0; i < len; i++) val[i] = color[1 + i + (1 * len)];
+	     val[i] = 0;
+	     sscanf(val, "%x", g);
+	     for (i = 0; i < len; i++) val[i] = color[1 + i + (2 * len)];
+	     val[i] = 0;
+	     sscanf(val, "%x", b);
+	     if (len == 1) 
+		{
+		   *r = (*r << 4) | *r;
+		   *g = (*g << 4) | *g;
+		   *b = (*b << 4) | *b;
+		}
+	     else if (len > 2)
+	       {
+		  *r >>= (len / 3) * 4;
+		  *g >>= (len / 3) * 4;
+		  *b >>= (len / 3) * 4;
+	       }
+	  }
+	return;
+     }
+   /* look in rgb txt database */
+   if (!rgb_txt)
+      rgb_txt = fopen("/usr/X11R6/lib/X11/rgb.txt", "r");
+   if (!rgb_txt)
+      return;
+   fseek(rgb_txt, 0, SEEK_SET);
+   while (fgets(buf, 4000, rgb_txt))
+     {
+	if (buf[0] != '!')
+	  {
+	     int rr, gg, bb;
+	     char name[4096];
+	     
+	     sscanf(buf, "%i %i %i %[^\n]", &rr, &gg, &bb, name);
+	     if (!strcasecmp(name, color))
+	       {
+		  *r = rr;
+		  *g = gg;
+		  *b = bb;
+		  return;
+	       }
+	  }
+     }
+}
+
+static void
+xpm_parse_done(void)
+{
+   if (rgb_txt)
+      fclose(rgb_txt);
+   rgb_txt = NULL;
+}
+
 char 
 load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, char immediate_load)
 {
@@ -47,10 +123,16 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
   /* already data in this image - dont load it again */
 
   if (im->data)
-      return 0;
+     {
+	xpm_parse_done();
+	return 0;
+     }
   f = fopen(im->file, "rb");
   if (!f)
-    return 0;
+     {
+	xpm_parse_done();
+	return 0;
+     }
   
   i = 0;
   j = 0;
@@ -97,6 +179,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 		      fprintf(stderr, "IMLIB ERROR: XPM files with colors > 32766 not supported\n");
 		      free(line);
 		      fclose(f);
+		       xpm_parse_done();
 		      return 0;
 		    }
 		  if (cpp > 5)
@@ -104,6 +187,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 		      fprintf(stderr, "IMLIB ERROR: XPM files with characters per pixel > 5 not supported\n");
 		      free(line);
 		      fclose(f);
+		       xpm_parse_done();
 		      return 0;
 		    }
 		  if (w > 32767)
@@ -111,6 +195,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 		      fprintf(stderr, "IMLIB ERROR: Image width > 32767 pixels for file\n");
 		      free(line);
 		      fclose(f);
+		       xpm_parse_done();
 		      return 0;
 		    }
 		  if (h > 32767)
@@ -118,6 +203,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 		      fprintf(stderr, "IMLIB ERROR: Image height > 32767 pixels for file\n");
 		      free(line);
 		      fclose(f);
+		       xpm_parse_done();
 		      return 0;
 		    }
 		  cmap = malloc(sizeof(struct _cmap) * ncolors);
@@ -126,6 +212,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 		    {
 		      free(line);
 		      fclose(f);
+		       xpm_parse_done();
 		      return 0;
 		    }
 
@@ -145,6 +232,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 			  free(cmap);
 			  free(line);
 			  fclose(f);
+			   xpm_parse_done();
 			  return 0;
 			}
 		      ptr = im->data;
@@ -205,16 +293,11 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 						(!strcmp(tok, "c"))) &&
 					       (!hascolor)))
 					    {
-					      XParseColor(imlib_context_get_display(),
-							  imlib_context_get_colormap(),
-							  col, &xcol);
-					      cmap[j].r = xcol.red >> 8;
-					      cmap[j].g = xcol.green >> 8;
-					      cmap[j].b = xcol.blue >> 8;
-					      if ((cmap[j].r == 255) &&
-						  (cmap[j].g == 0) &&
-						  (cmap[j].b == 255))
-						cmap[j].r = 254;
+					       r = 0; g = 0; b = 0;
+					      xpm_parse_color(col, &r, &g, &b);
+					      cmap[j].r = r;
+					      cmap[j].g = g;
+					      cmap[j].b = b;
 					      if (iscolor)
 						hascolor = 1;
 					    }
@@ -392,6 +475,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 			  fclose(f);
 			  free(cmap);
 			  free(line);
+			   xpm_parse_done();
 			  return 2;
 			}
 		      last_y = i;
@@ -430,6 +514,8 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 
   free(cmap);
   free(line);
+
+   xpm_parse_done();
 
   return 1;
 }
