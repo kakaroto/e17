@@ -2004,6 +2004,30 @@ imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
 					   (char)make_updates);
 }
 
+Imlib_Updates
+imlib_image_draw_line_clipped(int x1, int y1, int x2, int y2, int clip_xmin, int clip_xmax, int clip_ymin, int clip_ymax, char make_updates)
+{                   
+   ImlibImage *im;  
+                    
+   CHECK_PARAM_POINTER_RETURN("imlib_image_draw_line_clipped", "image", ctxt_image, NULL); 
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return NULL;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   return (Imlib_Updates)__imlib_draw_line_clipped(im, x1, y1, x2, y2, 
+                       clip_xmin, clip_xmax, clip_ymin, clip_ymax,
+                       (DATA8)ctxt_color.red, 
+                       (DATA8)ctxt_color.green,
+                       (DATA8)ctxt_color.blue,
+                       (DATA8)ctxt_color.alpha,
+                       ctxt_operation,
+                       (char)make_updates);
+}
+
+
 void 
 imlib_image_draw_rectangle(int x, int y, int width, int height)
 {

@@ -229,6 +229,9 @@ void                 imlib_apply_color_modifier(void);
 void                 imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height);
 
 Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates);
+/* draw line clipped into rectangle - results in no draw if line is not inside
+ * rectangle */
+Imlib_Updates imlib_image_draw_line_clipped(int x1, int y1, int x2, int y2, int clip_xmin, int clip_xmax, int clip_ymin, int clip_ymax, char make_updates);
 void imlib_image_draw_rectangle(int x, int y, int width, int height);
 void imlib_image_fill_rectangle(int x, int y, int width, int height);
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y);

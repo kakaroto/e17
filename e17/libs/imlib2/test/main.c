@@ -761,6 +761,8 @@ int main (int argc, char **argv)
 		  imlib_context_set_color(255, 255, 255, 255);
 		  uu = imlib_image_draw_line(200, 200, x, y, 1);
 		  up = imlib_updates_append_updates(up, uu);
+		  uu = imlib_image_draw_line_clipped(200, 0, 0, 200, 50, 100, 0, 300, 1);
+		  up = imlib_updates_append_updates(up, uu);
 	       }
 	       {
 		  static Imlib_Color_Range rg = NULL;

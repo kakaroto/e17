@@ -89,7 +89,7 @@ __imlib_FileIsFile(const char *s)
 	
 	buf = malloc(strlen(s));
 	if (!buf) return 0;
-	strcpy(buf, s);
+    strcpy(buf, s);
 	p = strrchr(buf, ':');
 	if (p) *p = 0;
 	s = buf;
@@ -100,10 +100,10 @@ __imlib_FileIsFile(const char *s)
 	return(0);
      }
    if (S_ISREG(st.st_mode))
-     {
+   {
 	if (buf) free(buf);
 	return(1);
-     }
+   }
    if (buf) free(buf);
    return(0);
 }
