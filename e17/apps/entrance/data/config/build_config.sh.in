@@ -11,7 +11,7 @@ edb_ed $DB add /entrance/auth int @auth_mode@
 #edb_ed $DB add /entrance/xinerama/screens/h int 1
 #edb_ed $DB add /entrance/xinerama/on/w int 1
 #edb_ed $DB add /entrance/xinerama/on/h int 1
-edb_ed $DB add /entrance/theme str "default.eet"
+edb_ed $DB add /entrance/theme str "default.edj"
 edb_ed $DB add /entrance/date_format str "%A %B %e, %Y"
 edb_ed $DB add /entrance/time_format str "%l:%M:%S %p"
 #edb_ed $DB add /entrance/fonts/count int 2
