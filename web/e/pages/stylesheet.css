@@ -46,20 +46,22 @@ table {
 
 a:link {
 	text-decoration: none;
-	color: #444444;
+	/* color: #444444; */
+	color: #A36209;
 	font-weight: bold;
 }
 
 a:visited {
 	text-decoration: none;
-	color: #666666;
-	font-weight: bold;
+	/* color: #666666; */
+	color: #A36209;
+	/* font-weight: bold; */
 }
 
 a:hover {
 	text-decoration: none;
 	color: #000000;
-	font-weight: bold;
+	/* font-weight: bold; */
 }
 
 /** Side Nav Bar **/
