@@ -378,7 +378,13 @@ GtkWidget *gevas_new(void)
 
 	ev = gtk_type_new(gevas_get_type());
 
-	return GTK_WIDGET(ev);
+	gevas_set_render_mode(ev, RENDER_METHOD_ALPHA_SOFTWARE);
+	gevas_set_size_request_x(ev, 200);
+	gevas_set_size_request_y(ev, 200);
+
+    ev->scrolledwindow = 0;
+
+    return GTK_WIDGET(ev);
 }
 
 /* GtkObject functions */
@@ -876,13 +882,14 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 	if (!GTK_WIDGET_DRAWABLE(widget))
 		return;
 
+  
 // XXX: doesn't work without this line.
 	evas_update_rect(ev->evas, area->x, area->y, area->width, area->height);
 
     
-/*	printf("evas_update_rect() x:%d y:%d w:%d h:%d\n",
-		area->x, area->y, area->width, area->height);
-*/
+//	printf("evas_update_rect() x:%d y:%d w:%d h:%d\n",
+//		area->x, area->y, area->width, area->height);
+
 	ev->evas_r = *area;
 
     //
@@ -909,10 +916,9 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
         evas_add_obscured_rect(ev->evas, x, 0, x+w, y );
         evas_add_obscured_rect(ev->evas, x, y+h, x+w, ah );
     }
-    
+  
 
     evas_render(ev->evas);
-//    evas_clear_obscured_rects(ev->evas);
 
 
     if (GTK_WIDGET_HAS_FOCUS(widget)) {
@@ -922,6 +928,8 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 						widget->allocation.width - 1,
 						widget->allocation.height - 1);
 	}
+
+    
 }
 
 
@@ -930,9 +938,33 @@ gint gevas_view_redraw_cb(gpointer data)
 	GtkgEvas* 	gevas = (GtkgEvas *) data;
 	GtkgEvas* 	ev = gevas;
 	GdkRectangle* 	area = &ev->evas_r;
+    GdkRectangle rect;
 
     evas_clear_obscured_rects(ev->evas);
     evas_render(ev->evas);
+
+/*
+  // Although the below code *seems* faster (due to calling paint, and thus having
+  // obscures working to block parts of the evas) the dumber code above seems faster.
+
+//    printf("gevas_view_redraw_cb %p %p\n", ev->scrolledwindow, ev->scrolledwindow_viewport);
+    {
+        GtkAdjustment* a = 0;
+    
+        a = gtk_scrolled_window_get_hadjustment( ev->scrolledwindow );
+        
+//        printf("scrolledwindow_viewport2... low:%f hi:%f val:%f pagesize:%f\n",
+//               a->lower, a->upper, a->value, a->page_size );
+
+        rect.x     = a->value;
+        rect.width = a->page_size;
+
+        a = gtk_scrolled_window_get_vadjustment( ev->scrolledwindow );
+        rect.y      = a->value;
+        rect.height = a->page_size;
+    }
+    gevas_paint( ev, &rect );
+*/
     
 	gevas->current_idle = 0;
 	return FALSE;
@@ -1020,6 +1052,33 @@ void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h ) {
 
   ev = GTK_GEVAS(object);
   evas_get_drawable_size( ev->evas, w, h );
+}
+
+
+
+void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
+{
+    GtkBin *bin;
+
+	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+	*gevas = gevas_new();
+
+	gtk_scrolled_window_add_with_viewport(
+        GTK_SCROLLED_WINDOW(*scrolledwindow), GTK_WIDGET(*gevas));
+
+    bin = GTK_BIN (*scrolledwindow);
+    if (bin->child != NULL)
+    {
+      g_return_if_fail (GTK_IS_VIEWPORT (bin->child));
+      (*gevas)->scrolledwindow_viewport = GTK_VIEWPORT(bin->child);
+    }
+    
+    (*gevas)->scrolledwindow = *scrolledwindow;
+
+
+    printf("gevas_new_gtkscrolledwindow() %p %p\n",
+           (*gevas)->scrolledwindow,
+           (*gevas)->scrolledwindow_viewport);
 }
 
 

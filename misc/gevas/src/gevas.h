@@ -137,6 +137,11 @@ struct _GtkgEvas {
 		GSList *gevasobjlist;	// simple collection of each GtkgEvas in a list.
 
 
+    // A reference to the scrolledwindow the canvas is embedded in OR 0
+    GtkWidget*   scrolledwindow; 
+    GtkViewport* scrolledwindow_viewport;
+    
+    
 	};
 
 struct _GtkgEvasClass {
@@ -156,9 +161,12 @@ struct _GtkgEvasClass {
 
 /** public **/
 
-
-void gevas_add_fontpath(GtkgEvas * ev, const gchar * path);
-void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path);
+    // Creates a gevas that is optimized in rendering for a scrolled viewport.
+    // Both gevas and scrolledwindow are assigned to new objects with this
+    // constructor call.
+    void gevas_new_gtkscrolledwindow(GtkgEvas** gevas, GtkWidget** scrolledwindow );
+    void gevas_add_fontpath(GtkgEvas * ev, const gchar * path);
+    void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path);
 
 
 /** protected **/

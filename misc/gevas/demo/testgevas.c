@@ -659,35 +659,32 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	wtoy = gtk_scrolled_window_new(NULL, NULL);
-/*  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtoy),
-                                 GTK_POLICY_AUTOMATIC,
-                                 GTK_POLICY_AUTOMATIC);
-*/
 
-	gtk_container_add(GTK_CONTAINER(window), wtoy);
+    gevas_new_gtkscrolledwindow( &gevas, &wtoy );
 
-	gevas = gevas_new();
+    // The above line is the same as these three, except that it can give more
+    // speed because gevas can optimize redraws knowing that it is in a scrolled window.
+//    wtoy = gtk_scrolled_window_new(NULL, NULL);
+//    gevas = gevas_new();
+//	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(wtoy), gevas);
 
-/* realizing the gevas here stuffs things...
-  gtk_widget_realize(GTK_WIDGET(gevas)); */
 
+    gtk_container_add(GTK_CONTAINER(window), wtoy);
+
+    
+    gtk_widget_set_usize(gevas, 3000, 3000);
+	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
 //	gevas_set_checked_bg(gevas, 1);
-
-
-/*	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); */
-	gevas_set_render_mode(gevas, RENDER_METHOD_ALPHA_SOFTWARE);
+//	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); 
+    gevas_set_render_mode(gevas, RENDER_METHOD_ALPHA_SOFTWARE);
 	gevas_set_size_request_x(gevas, 200);
 	gevas_set_size_request_y(gevas, 200);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtoy), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 
-	gtk_widget_set_usize(gevas, 3000, 3000);
-	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
 
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(wtoy), gevas);
-/*  gtk_container_add(GTK_CONTAINER(wtoy), gevas);
-  gtk_container_add(GTK_CONTAINER(window), gevas); */
 
+    
 
 	gtk_window_set_title(GTK_WINDOW(window), "gevas is Gtk Evas");
 
