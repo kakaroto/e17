@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.5.0
+%define ver      0.9.1
 %define rel      1
 %define prefix   /usr/
 
@@ -52,7 +52,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc README COPYING ChangeLog
 %attr(755,root,root) %{prefix}/bin/*
-%attr(755,root,root) %{prefix}/lib/*
 %{prefix}/share/*
 
 %doc AUTHORS
