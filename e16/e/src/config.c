@@ -2837,8 +2837,7 @@ Config_ToolTip(FILE * ConfigFile)
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     if ((drawiclass) && (bubble1) && (bubble2) && (bubble3)
-		 && (bubble4) && (tclass) && (name))
+	     if ((drawiclass) && (tclass) && (name))
 		tt = CreateToolTip(name, drawiclass, bubble1, bubble2,
 				   bubble3, bubble4, tclass, distance,
 				   tooltiphelppic);

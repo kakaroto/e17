@@ -28,102 +28,51 @@ CreateToolTip(char *name, ImageClass * ic0, ImageClass * ic1,
 	      ImageClass * ic2, ImageClass * ic3, ImageClass * ic4,
 	      TextClass * tclass, int dist, ImageClass * tooltippic)
 {
+   int                 i;
    ToolTip            *tt;
 
    EDBUG(5, "CreateToolTip");
 
+   if (ic0 == NULL || ic1 == NULL || ic2 == NULL || ic3 == NULL || ic4 == NULL
+       || tclass == NULL)
+      EDBUG_RETURN((ToolTip *) NULL);
+
    tt = Emalloc(sizeof(ToolTip));
    tt->name = duplicate(name);
    tt->iclass = ic0;
-   tt->tooltippic = NULL;
-
-   if (!tt->iclass)
-     {
-	if (tt->name)
-	   Efree(tt->name);
-	if (tt)
-	   Efree(tt);
-	EDBUG_RETURN((ToolTip *) NULL);
-     }
-
+   if (ic0)
+      ic0->ref_count++;
    tt->s_iclass[0] = ic1;
-   if (!tt->s_iclass[0])
-     {
-	if (tt->name)
-	   Efree(tt->name);
-	if (tt)
-	   Efree(tt);
-	EDBUG_RETURN((ToolTip *) NULL);
-     }
-
    tt->s_iclass[1] = ic2;
-   if (!tt->s_iclass[1])
-     {
-	if (tt->name)
-	   Efree(tt->name);
-	if (tt)
-	   Efree(tt);
-	EDBUG_RETURN((ToolTip *) NULL);
-     }
-
    tt->s_iclass[2] = ic3;
-   if (!tt->s_iclass[2])
-     {
-	if (tt->name)
-	   Efree(tt->name);
-	if (tt)
-	   Efree(tt);
-	EDBUG_RETURN((ToolTip *) NULL);
-     }
-
    tt->s_iclass[3] = ic4;
-   if (!tt->s_iclass[3])
-     {
-	if (tt->name)
-	   Efree(tt->name);
-	if (tt)
-	   Efree(tt);
-	EDBUG_RETURN((ToolTip *) NULL);
-     }
-
    tt->tclass = tclass;
-   if (!tt->tclass)
-     {
-	if (tt->name)
-	   Efree(tt->name);
-	if (tt)
-	   Efree(tt);
-	EDBUG_RETURN((ToolTip *) NULL);
-     }
-
+   if (tclass)
+      tclass->ref_count++;
+   tt->tooltippic = tooltippic;
    if (tooltippic)
-     {
-	tt->tooltippic = tooltippic;
-	tooltippic->ref_count++;
-     }
+      tooltippic->ref_count++;
 
    tt->dist = dist;
    tt->win = ECreateWindow(root.win, -10, -100, 1, 1, 1);
    tt->iwin = ECreateWindow(tt->win, -10, -100, 1, 1, 1);
-   tt->s_win[0] = ECreateWindow(root.win, -10, -100, 8, 8, 1);
-   tt->s_win[1] = ECreateWindow(root.win, -10, -100, 16, 16, 1);
-   tt->s_win[2] = ECreateWindow(root.win, -10, -100, 24, 24, 1);
-   tt->s_win[3] = ECreateWindow(root.win, -10, -100, 32, 32, 1);
+
+   for (i = 0; i < 4; i++)
+     {
+	Window              win;
+
+	win = 0;
+	if (tt->s_iclass[i])
+	  {
+	     int                 wh = (i + 1) * 8;
+
+	     win = ECreateWindow(root.win, -10, -100, wh, wh, 1);
+	     tt->s_iclass[i]->ref_count++;
+	  }
+	tt->s_win[i] = win;
+     }
+
    tt->visible = 0;
-
-   if (ic0)
-      ic0->ref_count++;
-   if (ic1)
-      ic1->ref_count++;
-   if (ic2)
-      ic2->ref_count++;
-   if (ic3)
-      ic3->ref_count++;
-   if (ic4)
-      ic4->ref_count++;
-   if (tclass)
-      tclass->ref_count++;
-
    tt->ref_count = 0;
 
    EDBUG_RETURN(tt);
