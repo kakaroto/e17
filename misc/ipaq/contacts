@@ -144,8 +144,12 @@ sub toggle_todo_item {
 
 	if($$item{enddate} ne "") {
 		$$item{enddate} = "";
+		if($prefs{hide_complete_todo}) {
+			$$item{checkbox}->show();
+		}
 	} else {
 		$$item{enddate} = `date`;
+		chomp($$item{enddate});
 		if($prefs{hide_complete_todo}) {
 			$$item{checkbox}->hide();
 		}
@@ -290,7 +294,6 @@ sub create_calendar_page {
 	$str = `cal`;
 	my ($monthyear,$daysofweek,@lines) = split /\n/, $str;
 	my ($blank,$month, $year) = split /\s+/,$monthyear;
-	print "month: $month\nyear: $year\n";
 
 	my $label = new Gtk::Label "$month, $year";
 	$page->pack_start($label,0,1,0);
@@ -313,7 +316,6 @@ sub create_calendar_page {
 
 	$row = 1;
 	foreach $line (@lines) {
-		print "$line\n";
 		$element = 0;
 		@elements = unpack "a3a3a3a3a3a3a3", $line;
 		foreach(@elements) {
