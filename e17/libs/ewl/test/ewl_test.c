@@ -1,6 +1,6 @@
 #include <Ewl.h>
 
-#define BUTTONS 10
+#define BUTTONS 12
 
 Ewl_Widget *main_win;
 Ewl_Widget *button[BUTTONS];
@@ -23,6 +23,11 @@ void __create_list_test_window(Ewl_Widget * w, void *ev_data,
 
 void __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
+
+void __create_scrollbar_test_window(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
+void __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
 
 void __create_seeker_test_window(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
@@ -104,30 +109,42 @@ main(int argc, char **argv)
 	ewl_callback_append(button[5], EWL_CALLBACK_CLICKED,
 			    __create_notebook_test_window, NULL);
 
-	button[6] = ewl_button_new("Ewl_Seeker");
+	button[6] = ewl_button_new("Ewl_Scrollbar");
 	ewl_object_set_custom_size(EWL_OBJECT(button[6]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[6]);
 	ewl_callback_append(button[6], EWL_CALLBACK_CLICKED,
-			    __create_seeker_test_window, NULL);
+			    __create_scrollbar_test_window, NULL);
 
-	button[7] = ewl_button_new("Ewl_Spinner");
+	button[7] = ewl_button_new("Ewl_ScrollPane");
 	ewl_object_set_custom_size(EWL_OBJECT(button[7]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[7]);
 	ewl_callback_append(button[7], EWL_CALLBACK_CLICKED,
-			    __create_spinner_test_window, NULL);
+			    __create_scrollpane_test_window, NULL);
 
-	button[8] = ewl_button_new("Ewl_Table");
+	button[8] = ewl_button_new("Ewl_Seeker");
 	ewl_object_set_custom_size(EWL_OBJECT(button[8]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[8]);
-
 	ewl_callback_append(button[8], EWL_CALLBACK_CLICKED,
-			    __create_table_test_window, NULL);
+			    __create_seeker_test_window, NULL);
 
-	button[9] = ewl_button_new("Ewl_Text");
+	button[9] = ewl_button_new("Ewl_Spinner");
 	ewl_object_set_custom_size(EWL_OBJECT(button[9]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[9]);
-
 	ewl_callback_append(button[9], EWL_CALLBACK_CLICKED,
+			    __create_spinner_test_window, NULL);
+
+	button[10] = ewl_button_new("Ewl_Table");
+	ewl_object_set_custom_size(EWL_OBJECT(button[10]), 100, 17);
+	ewl_container_append_child(EWL_CONTAINER(main_win), button[10]);
+
+	ewl_callback_append(button[10], EWL_CALLBACK_CLICKED,
+			    __create_table_test_window, NULL);
+
+	button[11] = ewl_button_new("Ewl_Text");
+	ewl_object_set_custom_size(EWL_OBJECT(button[11]), 100, 17);
+	ewl_container_append_child(EWL_CONTAINER(main_win), button[11]);
+
+	ewl_callback_append(button[11], EWL_CALLBACK_CLICKED,
 			    __create_text_test_window, NULL);
 
 	for (i = 0; i < BUTTONS; i++)

@@ -1,3 +1,10 @@
+Sun Nov 11 23:29:50 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Ewl_Scrollbar fixes.
+	* Ewl_Seeker cleanups and, i also added two new calls
+	  	ewl_seeker_decrease()
+		ewl_seeker_increase()
+	* Wrote a Ewl_ScrollPane widget.
+
 Sun Nov  11 00:38:40 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Now ewl_container_get_child_at_recursive() returns the last
 	  container found if no widget with the recursive flag set was found.

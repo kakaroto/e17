@@ -354,8 +354,9 @@ main(int argc, char **argv)
 			    if (fxp->create_settings_dialog)
 				    ewl_callback_append(settings_button,
 							EWL_CALLBACK_CLICKED,
-							fxp->
-							create_settings_dialog,
+							EWL_CALLBACK_FUNCTION
+							(fxp->
+							 create_settings_dialog),
 							NULL);
 			    else
 				    ewl_widget_disable(settings_button);
@@ -374,8 +375,9 @@ main(int argc, char **argv)
 			    if (fxp->create_about_dialog)
 				    ewl_callback_append(about_button,
 							EWL_CALLBACK_CLICKED,
-							fxp->
-							create_about_dialog,
+							EWL_CALLBACK_FUNCTION
+							(fxp->
+							 create_about_dialog),
 							NULL);
 			    else
 				    ewl_widget_disable(about_button);

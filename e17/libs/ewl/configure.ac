@@ -46,7 +46,7 @@ fi
 changequote([,])dnl
 
 AC_ARG_WITH(ebits,
-        [  --with-ebits=DIR          use ebits in <DIR>],
+        [  --with-ebits=DIR        use ebits in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
@@ -70,7 +70,7 @@ edb_libs=`edb-config --libs`
 edb_cflags=`edb-config --cflags`
 
 AC_ARG_WITH(ecore,
-        [  --with-ecore=DIR          use ecore in <DIR>],
+        [  --with-ecore=DIR        use ecore in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
@@ -82,7 +82,7 @@ ecore_libs=`ecore-config --libs`
 ecore_cflags=`ecore-config --cflags`
 
 AC_ARG_WITH(evas,
-        [  --with-evas=DIR          use evas in <DIR>],
+        [  --with-evas=DIR         use evas in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
@@ -94,7 +94,7 @@ evas_libs=`evas-config --libs`
 evas_cflags=`evas-config --cflags`
 
 AC_ARG_WITH(etox,
-        [  --with-etox=DIR          use etox in <DIR>],
+        [  --with-etox=DIR         use etox in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
@@ -106,7 +106,7 @@ etox_libs=`etox-config --libs`
 etox_cflags=`etox-config --cflags`
 
 AC_ARG_WITH(ewd,
-        [  --with-ewd=DIR           use ewd in <DIR>],
+        [  --with-ewd=DIR          use ewd in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
