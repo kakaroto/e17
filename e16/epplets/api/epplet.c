@@ -2549,7 +2549,7 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 	  {
 	     char               *s;
 
-	     s = (char *)malloc(strlen(g->contents));
+	     s = (char *)malloc(strlen(g->contents) + 1);
 
 	     *(g->contents + g->cursor_pos - 1) = '\0';
 	     sprintf(s, "%s%s", g->contents, (g->contents + g->cursor_pos));
