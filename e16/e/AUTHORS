@@ -59,15 +59,9 @@ Michael Jennings (KainX) <mej@eterm.org>
 
 Christian Kreibich <kreibich@informatik.tu-muenchen.de>
                    <chrisk@engr.uconn.edu>
-	        several minor patches some of which were the dox customisable
-		color patch, shading patch, and some more.. :)
-		
-		actually lots of patches and features - groups and lots of 
-		stuff (hey keep this AUTHORS file up to date)
-
-		(Ok ... Tooltip icons, menu sliding, rotated fonts,
-		labeled buttons come to my mind, oh and Ganymede of course ...
-		hey I'm not in this for the fame. -- Cheers, Christian.)
+		The whole window groups stuff, tooltip icons, menu sliding,
+		rotated fonts, labeled buttons, dox colors, window shading tweaks,
+		area wraparounds, translation, oh and Ganymede of course ...
 
 Peter Kjellerstedt <peter.kjellerstedt@axis.com>
 		Patches to fix loading of pre-parsed configuration files,
