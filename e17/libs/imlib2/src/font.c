@@ -1306,6 +1306,16 @@ __imlib_xfd_build_str_image(Display *display, Drawable drawable, Visual *v,
 	  __imlib_GrabDrawableToRGBA(hel2->im, 0, 0, hel2->w, hel2->h,
 			  display, pix, NULL, v, NULL, 1,
 			  0, 0, hel2->w, hel2->h, 0, 0);
+	     {
+		DATA32 *p, *p_end;
+		
+		p_end = hel2->im + (hel2->w * hel2->h);
+		for (p = hel2->im; p < p_end; p++)
+		  {
+		     if (p[0] & 0xffffff) p[0] = 0xffffffff;
+		     else p[0] = 0x00ffffff;
+		  }
+	     }
 
 	  if (hel==NULL)
 	    {
