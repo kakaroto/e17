@@ -672,3 +672,11 @@ Fri Nov 19 12:35:48 PST 1999
 Okay, all the conditional build stuff should be fixed up now.  I'll need some
 SGI people to test this as well as Solaris people, since it's entirely
 possible I borked them both. :-)
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 17:49:09 PST 1999
+(KainX)
+
+Fixes and cleanups to E-NetGraph.  It now does config files properly and
+includes all the options in them.
