@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-04 19:58-0400\n"
+"POT-Creation-Date: 2003-05-14 19:54+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -990,6 +990,7 @@ msgstr ""
 "Enlightenment verzió     : %s\n"
 "a kód utoljára frissítve : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment üzenetablak"
@@ -1120,24 +1121,24 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/menus.c:1973
+#: src/menus.c:1974
 msgid "Go to this Desktop"
 msgstr "Ugrás erre az asztalra"
 
-#: src/menus.c:1989
+#: src/menus.c:1990
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus.c:2052
+#: src/menus.c:2053
 msgid "Show/Hide this group"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/menus.c:2055
+#: src/menus.c:2056
 msgid "Iconify this group"
 msgstr "Csoport kicsinyítése"
 
-#: src/menus.c:2067
+#: src/menus.c:2068
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-04 19:58-0400\n"
+"POT-Creation-Date: 2003-05-14 19:54+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -1276,6 +1276,7 @@ msgstr ""
 "인라이튼먼트 버전 : %s\n"
 "현재의 코드       : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "인라이튼먼트 메시지 대화상자"
@@ -1461,24 +1462,24 @@ msgstr ""
 "포인터 값은 %x 이었습니다.\n"
 "이 에러는 %s, %d 라인에서 발생했습니다.\n"
 
-#: src/menus.c:1973
+#: src/menus.c:1974
 msgid "Go to this Desktop"
 msgstr "이 데스크탑으로 가기"
 
-#: src/menus.c:1989
+#: src/menus.c:1990
 #, c-format
 msgid "Desktop %i"
 msgstr "데스크탑 %i"
 
-#: src/menus.c:2052
+#: src/menus.c:2053
 msgid "Show/Hide this group"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/menus.c:2055
+#: src/menus.c:2056
 msgid "Iconify this group"
 msgstr "이 그룹 아이콘화"
 
-#: src/menus.c:2067
+#: src/menus.c:2068
 #, c-format
 msgid "Group %i"
 msgstr "그룹 %i"

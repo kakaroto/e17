@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-04 19:58-0400\n"
+"POT-Creation-Date: 2003-05-14 19:54+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1293,6 +1293,7 @@ msgstr ""
 "Enlightenment Versjon : %s\n"
 "koden oppdatert       : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightment dialog"
@@ -1480,24 +1481,24 @@ msgstr ""
 "Verdien til pekeren var: %x.\n"
 "Feilen oppstod ved %s, linje %d.\n"
 
-#: src/menus.c:1973
+#: src/menus.c:1974
 msgid "Go to this Desktop"
 msgstr "Skift fokus til dette skrivebordet"
 
-#: src/menus.c:1989
+#: src/menus.c:1990
 #, c-format
 msgid "Desktop %i"
 msgstr "Skriverbord nr. %i"
 
-#: src/menus.c:2052
+#: src/menus.c:2053
 msgid "Show/Hide this group"
 msgstr "Vis/Skjul denne gruppa"
 
-#: src/menus.c:2055
+#: src/menus.c:2056
 msgid "Iconify this group"
 msgstr "Ikonifiser denne gruppa"
 
-#: src/menus.c:2067
+#: src/menus.c:2068
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
