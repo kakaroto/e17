@@ -13,7 +13,7 @@ void
 elicit_cb_resize(Ecore_Evas *ee)
 {
   int w, h;
-  double sw, sh;
+  Evas_Coord sw, sh;
   Evas_Object *gui, *shot, *draggie;
 
   /* keep the gui the same size as the window */
@@ -72,7 +72,7 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
   {
     if (el->flags.shooting == 1)
     {
-      double sw, sh;
+      Evas_Coord sw, sh;
       double w, h;
 
       evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
