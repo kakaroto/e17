@@ -110,6 +110,8 @@ typedef struct _ecmwininfo ECmWinInfo;	/* TBD */
 
 struct _ecmwininfo
 {
+   EObj               *next;	/* Paint order */
+   EObj               *prev;	/* Paint order */
 #if HAS_NAME_WINDOW_PIXMAP
    Pixmap              pixmap;
 #endif
@@ -127,6 +129,7 @@ struct _ecmwininfo
    Picture             alphaPict;
    XserverRegion       borderSize;
    XserverRegion       extents;
+   XserverRegion       clip;
 #if ENABLE_SHADOWS
    Picture             shadowPict;
    Picture             shadow;
@@ -138,9 +141,6 @@ struct _ecmwininfo
    unsigned int        opacity;
 
    unsigned long       damage_sequence;	/* sequence when damage was created */
-
-   /* for drawing translucent windows */
-   XserverRegion       borderClip;
 };
 
 #if ENABLE_SHADOWS
@@ -170,6 +170,8 @@ static struct
 #if HAS_NAME_WINDOW_PIXMAP
    char                have_name_pixmap;
 #endif
+   EObj               *eo_first;
+   EObj               *eo_last;
 } Mode_compmgr;
 
 static Picture      rootPicture;
@@ -727,9 +729,10 @@ make_shadow(Display * dpy, double opacity, int width, int height)
    unsigned char       d;
    int                 x_diff;
 
-   data = malloc(swidth * sheight * sizeof(unsigned char));
+   data = calloc(swidth * sheight, sizeof(unsigned char));
    if (!data)
-      return 0;
+      return NULL;
+
    ximage = XCreateImage(dpy, DefaultVisual(dpy, DefaultScreen(dpy)),
 			 8, ZPixmap, 0,
 			 (char *)data,
@@ -737,18 +740,21 @@ make_shadow(Display * dpy, double opacity, int width, int height)
    if (!ximage)
      {
 	free(data);
-	return 0;
+	return NULL;
      }
+
    /*
     * Build the gaussian in sections
     */
 
+#if 0				/* Never used */
    /*
     * center (fill the complete data array)
     */
 
    d = sum_gaussian(gaussianMap, opacity, center, center, width, height);
    memset(data, d, sheight * swidth);
+#endif
 
    /*
     * corners
@@ -990,11 +996,13 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	w->alphaPict = None;
      }
 
-   if ((what & INV_SIZE) && w->borderClip != None)
+#if 0				/* Recalculating clip every repaint for now. */
+   if ((what & INV_SIZE) && w->clip != None)
      {
-	XFixesDestroyRegion(dpy, w->borderClip);
-	w->borderClip = None;
+	XFixesDestroyRegion(dpy, w->clip);
+	w->clip = None;
      }
+#endif
 
 #if ENABLE_SHADOWS
    if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) && w->shadow != None)
@@ -1224,6 +1232,7 @@ ECompMgrWinNew(EObj * eo)
    w->alphaPict = None;
    w->borderSize = None;
    w->extents = None;
+   w->clip = None;
 #if ENABLE_SHADOWS
    w->shadowPict = None;
    w->shadow = None;
@@ -1232,8 +1241,6 @@ ECompMgrWinNew(EObj * eo)
    w->shadow_width = 0;
    w->shadow_height = 0;
 #endif
-
-   w->borderClip = None;
 
 #if 0
    /* moved mode setting to one place */
@@ -1488,33 +1495,73 @@ ECompMgrCheckAlphaMask(ECmWinInfo * w)
 }
 
 static void
-ECompMgrRepaintObj(Picture pbuf, EObj * eo)
+ECompMgrRepaintDetermineOrder(void)
+{
+   EObj               *const *lst, *eo, *eo_prev, *eo_first;
+   int                 i, num;
+   ECmWinInfo         *w;
+
+#if 0
+   lst = EobjListStackGet(&num);
+#else
+   lst = EobjListStackGetForDesk(&num, 0 /*desk */ );
+#endif
+
+   /* Determine overall paint order, top to bottom */
+   eo_first = eo_prev = NULL;
+
+   for (i = 0; i < num; i++)
+     {
+	eo = lst[i];
+	if (!eo->cmhook)
+	   continue;
+	w = eo->cmhook;
+
+	if (!w->visible)
+	   continue;
+#if CAN_DO_USABLE
+	if (!w->usable)
+	   continue;
+#endif
+	if (!w->damaged)
+	   continue;
+	if (!w->picture)
+	   continue;
+
+	if (!eo_first)
+	   eo_first = eo;
+	w->prev = eo_prev;
+	if (eo_prev)
+	   ((ECmWinInfo *) (eo_prev->cmhook))->next = eo;
+	eo_prev = eo;
+
+#if 0
+	/*  FIXME - We should break when the repaint region (w->clip) becomes empty */
+	if (eo->type == EOBJ_TYPE_DESK && eo->x == 0 && eo->y == 0)
+	   break;
+#endif
+     }
+   if (eo_prev)
+      ((ECmWinInfo *) (eo_prev->cmhook))->next = NULL;
+
+   Mode_compmgr.eo_first = eo_first;
+   Mode_compmgr.eo_last = eo_prev;
+}
+
+static void
+ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 {
    Display            *dpy = disp;
    ECmWinInfo         *w;
 
-   /* Atm we first hook up when mapped */
-   /* Maybe do it at init/create? */
-   if (!eo->cmhook)
-      return;
    w = eo->cmhook;
-
-   if (!w->visible)
-      return;
-#if CAN_DO_USABLE
-   if (!w->usable)
-      return;
-#endif
-   if (!w->damaged)
-      return;
-   if (!w->picture)
-      return;
 
 #if 0
    ECompMgrWinSetPicts(eo);
 #endif
 
-   D2printf("ECompMgrRepaintObj %#lx %d %#lx\n", eo->win, w->mode, w->picture);
+   D2printf("ECompMgrRepaintObj %d %#lx %d %#lx\n", mode, eo->win, w->mode,
+	    w->picture);
 
    /* Region of shaped window in screen coordinates */
    if (!w->borderSize)
@@ -1522,74 +1569,79 @@ ECompMgrRepaintObj(Picture pbuf, EObj * eo)
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("Window borderSize", w->borderSize);
 
-   /* Region of window in screen coordinates */
+   /* Region of window in screen coordinates, including shadows */
    if (!w->extents)
       w->extents = win_extents(dpy, eo);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("Window extents", w->extents);
 
-#if 0
-   if (!w->borderClip)
+   if (mode == 0)
      {
-	w->borderClip = XFixesCreateRegion(dpy, 0, 0);
-	XFixesCopyRegion(dpy, w->borderClip, region);
+	/* Painting opaque windows top down, updating clip regions. */
+
+	w->clip = XFixesCreateRegion(dpy, 0, 0);
+	XFixesCopyRegion(dpy, w->clip, region);
+
+	switch (w->mode)
+	  {
+	  case WINDOW_SOLID:
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
+	     XFixesSubtractRegion(dpy, region, region, w->borderSize);
+	     XRenderComposite(dpy, PictOpSrc, w->picture, None, pbuf,
+			      0, 0, 0, 0, w->rcx, w->rcy, w->rcw, w->rch);
+	     break;
+	  }
      }
-   XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, w->borderClip);
-#endif
+   else
+     {
+	/* Painting trans stuff bottom up. */
+
+	switch (w->mode)
+	  {
+	  case WINDOW_TRANS:
+	  case WINDOW_ARGB:
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, w->clip);
+	     ECompMgrCheckAlphaMask(w);
+	     XRenderComposite(dpy, PictOpOver, w->picture, w->alphaPict, pbuf,
+			      0, 0, 0, 0, w->rcx, w->rcy, w->rcw, w->rch);
+	     break;
+	  }
 
 #if ENABLE_SHADOWS
-   switch (Conf_compmgr.shadow)
-     {
-     case ECM_SHADOWS_OFF:
-	break;
-     case ECM_SHADOWS_SHARP:
-	if (w->opacity != OPAQUE && !w->shadowPict)
-	   w->shadowPict = EPictureCreateSolid(True,
-					       (double)w->opacity /
-					       OPAQUE * 0.3, 0, 0, 0);
-	XRenderComposite(dpy, PictOpOver,
-			 w->shadowPict ? w->shadowPict : transBlackPicture,
-			 w->picture, pbuf, 0, 0, 0, 0,
-			 w->a.x + w->shadow_dx, w->a.y + w->shadow_dy,
-			 w->shadow_width, w->shadow_height);
-	break;
-     case ECM_SHADOWS_BLURRED:
-	if (w->shadow)
+	switch (Conf_compmgr.shadow)
 	  {
-	     XRenderComposite(dpy, PictOpOver, blackPicture, w->shadow,
-			      pbuf, 0, 0, 0, 0,
+	  case ECM_SHADOWS_OFF:
+	     break;
+	  case ECM_SHADOWS_SHARP:
+	     if (w->opacity != OPAQUE && !w->shadowPict)
+		w->shadowPict = EPictureCreateSolid(True,
+						    (double)w->opacity /
+						    OPAQUE * 0.3, 0, 0, 0);
+	     XFixesSubtractRegion(dpy, w->clip, w->clip, w->borderSize);
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, w->clip);
+	     XRenderComposite(dpy, PictOpOver,
+			      w->shadowPict ? w->shadowPict : transBlackPicture,
+			      w->picture, pbuf, 0, 0, 0, 0,
 			      w->a.x + w->shadow_dx, w->a.y + w->shadow_dy,
 			      w->shadow_width, w->shadow_height);
+	     break;
+	  case ECM_SHADOWS_BLURRED:
+	     if (w->shadow)
+	       {
+		  XFixesSubtractRegion(dpy, w->clip, w->clip, w->borderSize);
+		  XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, w->clip);
+		  XRenderComposite(dpy, PictOpOver, blackPicture, w->shadow,
+				   pbuf, 0, 0, 0, 0,
+				   w->a.x + w->shadow_dx, w->a.y + w->shadow_dy,
+				   w->shadow_width, w->shadow_height);
+	       }
+	     break;
 	  }
-	break;
-     }
 #endif
 
-   switch (w->mode)
-     {
-     default:
-     case WINDOW_SOLID:
-#if 0
-	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
-	XFixesSubtractRegion(dpy, region, region, w->borderSize);
-#endif
-	XRenderComposite(dpy, PictOpSrc, w->picture, None, pbuf,
-			 0, 0, 0, 0, w->rcx, w->rcy, w->rcw, w->rch);
-     case WINDOW_TRANS:
-	ECompMgrCheckAlphaMask(w);
-	XRenderComposite(dpy, PictOpOver, w->picture, w->alphaPict, pbuf,
-			 0, 0, 0, 0, w->rcx, w->rcy, w->rcw, w->rch);
-	break;
-     case WINDOW_ARGB:
-	ECompMgrCheckAlphaMask(w);
-	XRenderComposite(dpy, PictOpOver, w->picture, w->alphaPict, pbuf,
-			 0, 0, 0, 0, w->rcx, w->rcy, w->rcw, w->rch);
-	break;
+	XFixesDestroyRegion(dpy, w->clip);
+	w->clip = None;
      }
-#if 0
-   XFixesDestroyRegion(dpy, w->borderClip);
-   w->borderClip = None;
-#endif
 }
 
 static void
@@ -1597,8 +1649,7 @@ ECompMgrRepaint(void)
 {
    Display            *dpy = disp;
    XserverRegion       region = allDamage;
-   EObj               *const *lst, *eo;
-   int                 i, num;
+   EObj               *eo;
    Picture             pict, pbuf;
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
@@ -1611,26 +1662,24 @@ ECompMgrRepaint(void)
 					VRoot.depth, VRoot.vis);
    pbuf = rootBuffer;
 
-   XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
-
    /* Draw desktop background picture */
    pict = DeskBackgroundPictureGet(0);
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
+   XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
 		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
 
-#if 1
-   lst = EobjListStackGetForDesk(&num, 0 /*desk */ );
-#else
-   lst = EobjListStackGet(&num);
-#endif
+   /* Do paint order list linking */
+   ECompMgrRepaintDetermineOrder();
 
-   /* Normal objects */
-   for (i = num - 1; i >= 0; i--)
-     {
-	eo = lst[i];
-	ECompMgrRepaintObj(pbuf, eo);
-     }
+   /* Paint opaque windows top down, adjusting clip regions */
+   for (eo = Mode_compmgr.eo_first; eo;
+	eo = ((ECmWinInfo *) (eo->cmhook))->next)
+      ECompMgrRepaintObj(pbuf, region, eo, 0);
+
+   /* Paint trans windows and shadows bottom up */
+   for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
+      ECompMgrRepaintObj(pbuf, None, eo, 1);
 
    if (pbuf != rootPicture)
      {
