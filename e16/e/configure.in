@@ -13,12 +13,12 @@ AM_MAINTAINER_MODE
 AM_CONDITIONAL(FSSTD, test x$enable_fsstd = xyes)
 AC_SUBST(USE_FSSTD)
 
-#dnl reasonable guesses for where stuff is installed
-#if test "x$prefix" = "xNONE"; then
-#  prefix="/usr/local"
-#else
-#  prefix=$prefix
-#fi
+dnl reasonable guesses for where stuff is installed
+if test "x$prefix" = "xNONE"; then
+  prefix="/usr/local"
+else
+  prefix=$prefix
+fi
 
 AC_ARG_ENABLE(fsstd, [  --enable-fsstd    install files following FSSTD [default=no]], ,enable_fsstd=no)
 
@@ -162,21 +162,6 @@ AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension, XVM_LIBS=-lXxf86vm, , $X_LIBS)
 AC_SUBST(XVM_LIBS)
 AC_SUBST(XKB)
 
-#pixdata=`ls -1 $srcdir/src/pix | egrep -v '(Makefile|CVS)'`
-#snddata=`ls -1 $srcdir/src/themes/DEFAULT/snd | egrep -v '(Makefile|CVS)'`
-#t17data=`ls -1 $srcdir/src/themes/DEFAULT/tin-e/17 | egrep -v '(Makefile|CVS)'`
-#ttfdata=`ls -1 $srcdir/src/themes/DEFAULT/ttfonts | egrep -v '(Makefile|CVS)'`
-
-#pixdata=`echo $pixdata`
-#snddata=`echo $snddata`
-#t17data=`echo $t17data`
-#ttfdata=`echo $ttfdata`
-                                                                                
-#AC_SUBST(pixdata)
-#AC_SUBST(snddata)
-#AC_SUBST(t17data)
-#AC_SUBST(ttfdata)
-
 AC_CHECK_LIB(Fridge,mass_quantities_of_bass_ale)
 AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale, , [
 echo "Warning: No ales were found in your refrigerator."
@@ -185,23 +170,11 @@ echo "  We highly suggest that you rectify this situation immediately."
 
 edocdata=`ls -1 $srcdir/dox/E-docs | egrep -v '(Makefile|CVS|^e|^misc|\.sh$)'`
 edocexec=`ls -1 $srcdir/dox/E-docs | egrep '\.sh$'`
-#e17data=`ls -1 $srcdir/dox/E-docs/e/17 | egrep -v '(Makefile|CVS)'`
-#epixdata=`ls -1 $srcdir/dox/E-docs/epix | egrep -v '(Makefile|CVS)'`
-#miscdata=`ls -1 $srcdir/dox/E-docs/misc | egrep -v '(Makefile|CVS)'`
-
 edocdata=`echo $edocdata`
 edocexec=`echo $edocexec`
-#e17data=`echo $e17data`
-#epixdata=`echo $epixdata`
-#miscdata=`echo $miscdata`
 
 AC_SUBST(edocdata)
 AC_SUBST(edocexec)
-dnl#AC_SUBST(e17data)
-dnl#AC_SUBST(epixdata)
-dnl#AC_SUBST(miscdata)
-
-
 
 AC_OUTPUT([
 Makefile
