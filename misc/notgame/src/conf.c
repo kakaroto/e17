@@ -28,6 +28,7 @@ static const char cvs_ident[] = "$Id$";
 
 #include "debug.h"
 #include "conf.h"
+#include "notgame.h"
 #include "strings.h"
 
 /*

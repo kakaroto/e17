@@ -113,3 +113,8 @@ Thu Sep 16 19:30:21 PDT 1999	Michael Jennings <mej@eterm.org>
 	once you can actually add and delete players and destinations. :-)
 	
 -------------------------------------------------------------------------------
+Mon Sep 27 18:03:41 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	Code cleanups to make for a cleaner compile.
+	
+-------------------------------------------------------------------------------

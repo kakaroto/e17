@@ -30,17 +30,19 @@ static const char cvs_ident[] = "$Id$";
 #include "debug.h"
 #include "conf.h"
 #include "dest.h"
+#include "help.h"
 #include "notgame.h"
 #include "parse.h"
+#include "play.h"
 #include "players.h"
 #include "pregame.h"
 
-static void pregame_menu_init(GtkWidget *window, GtkWidget *vbox);
-static void pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox);
-static void pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox);
+static void pregame_menu_init(GtkWidget *vbox);
+static void pregame_player_frame_init(GtkWidget *vbox);
+static void pregame_dest_frame_init(GtkWidget *vbox);
 static void button_cb(GtkWidget *w, gpointer item);
-static void gamemenu_cb(gpointer item, GtkWidget *w);
-static void helpmenu_cb(gpointer item, GtkWidget *w);
+static void gamemenu_cb(gpointer item);
+static void helpmenu_cb(gpointer item);
 
 GtkWidget *pregame_win = NULL;
 
@@ -48,7 +50,6 @@ void
 pregame_init(void) {
 
   GtkWidget *vbox, *buttonbox, *button;
-  GtkWidget *dest_frame, *dest_table, *dest_groups, *dest_list;
 
   /* Create main pre-game window */
   pregame_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -62,13 +63,13 @@ pregame_init(void) {
   gtk_container_add(GTK_CONTAINER(pregame_win), vbox);
 
   /* Create menubar and pack it into the vbox */
-  pregame_menu_init(pregame_win, vbox);
+  pregame_menu_init(vbox);
 
   /* Create the player area and pack it */
-  pregame_player_frame_init(pregame_win, vbox);
+  pregame_player_frame_init(vbox);
 
   /* Create the destination area and pack it */
-  pregame_dest_frame_init(pregame_win, vbox);
+  pregame_dest_frame_init(vbox);
 
   /* The buttons at the bottom of the pre-game screen */
   buttonbox = gtk_hbutton_box_new();
@@ -100,7 +101,7 @@ pregame_init(void) {
 }
 
 static void
-pregame_menu_init(GtkWidget *window, GtkWidget *vbox) {
+pregame_menu_init(GtkWidget *vbox) {
 
   GtkWidget *menubar, *menu, *menuitem;
 
@@ -154,7 +155,7 @@ pregame_menu_init(GtkWidget *window, GtkWidget *vbox) {
 }
 
 static void
-pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
+pregame_player_frame_init(GtkWidget *vbox) {
 
   GtkWidget *player_frame, *player_table, *align, *scroller;
   GtkWidget *label;
@@ -217,10 +218,10 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 }
 
 static void
-pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
+pregame_dest_frame_init(GtkWidget *vbox) {
 
   GtkWidget *dest_frame, *dest_table, *align, *scroller;
-  GtkWidget *label, *dest_list;
+  GtkWidget *label;
   const char *cols[] = { "Destination" };
 
   dest_frame = gtk_frame_new(NULL);
@@ -294,7 +295,7 @@ button_cb(GtkWidget *w, gpointer item) {
 }
 
 static void
-gamemenu_cb(gpointer item, GtkWidget *w) {
+gamemenu_cb(gpointer item) {
 
   if (((int) item) == 1) {
     play_game();
@@ -306,7 +307,7 @@ gamemenu_cb(gpointer item, GtkWidget *w) {
 }
 
 static void
-helpmenu_cb(gpointer item, GtkWidget *w) {
+helpmenu_cb(gpointer item) {
 
   if (((int) item) == 1) {
     help_display();

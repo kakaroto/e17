@@ -31,6 +31,7 @@ static const char cvs_ident[] = "$Id$";
 #include "debug.h"
 #include "conf.h"
 #include "dest.h"
+#include "notgame.h"
 #include "parse.h"
 #include "players.h"
 #include "pregame.h"
@@ -230,12 +231,13 @@ save_config(char *filename) {
   char dt_stamp[50];
   time_t cur_time = time(NULL);
   struct tm *cur_tm;
+  const char format[] = "%s/notgame.cfg";
 
   cur_tm = localtime(&cur_time);
 
   if (!filename) {
-    filename = (char *) malloc(strlen(getenv("HOME")) + 15);
-    sprintf(filename, "%s/notgame.cfg", getenv("HOME"));
+    filename = (char *) malloc(strlen(getenv("HOME")) + sizeof(format));
+    sprintf(filename, format, getenv("HOME"));
   }
 
   if ((fp = fopen(filename, "w")) == NULL) {

@@ -37,7 +37,7 @@ static const char cvs_ident[] = "$Id$";
 #include "pregame.h"
 
 static gint close_cb(void);
-static gint click_cb(GtkWidget *button, gpointer data);
+static gint click_cb(GtkWidget *button);
 static void error_dialog(const char *msg);
 
 static GtkWidget **dest_buttons, *game_win = NULL, *label, *current_player, *quit_button, *quit_label;
@@ -97,7 +97,7 @@ computer_player(void) {
     i = (unsigned char) (((float) dest_total) * rand() / (RAND_MAX + 1.0));
   } while (!GTK_WIDGET_SENSITIVE(dest_buttons[i]));
   sleep(1);
-  click_cb(dest_buttons[i], NULL);
+  click_cb(dest_buttons[i]);
   return (0);
 }
 
@@ -223,7 +223,7 @@ play_game(void) {
   gtk_widget_show(game_win);
 
   if (!strcasecmp(player->type, "ai") || !strcasecmp(player->type, "computer")) {
-    gtk_timeout_add(COMP_DELAY, computer_player, NULL);
+    gtk_timeout_add(COMP_DELAY, (GtkFunction) computer_player, NULL);
   }
 }
 
@@ -235,7 +235,7 @@ close_cb(void) {
 }
 
 static gint
-click_cb(GtkWidget *button, gpointer data) {
+click_cb(GtkWidget *button) {
 
   unsigned short i;
   char *label_text;
@@ -263,7 +263,7 @@ click_cb(GtkWidget *button, gpointer data) {
       player = ((player_t *) (player_current->data));
       gtk_label_set_text(GTK_LABEL(current_player), player->name);
       if (!strcasecmp(player->type, "ai") || !strcasecmp(player->type, "computer")) {
-        gtk_timeout_add(COMP_DELAY, computer_player, NULL);
+        gtk_timeout_add(COMP_DELAY, (GtkFunction) computer_player, NULL);
       }
     }
   }

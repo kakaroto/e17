@@ -167,7 +167,6 @@ player_group_t *
 player_group_get_current(void) {
 
   char *name;
-  GList *entry;
 
   name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(player_groups_box)->entry));
   REQUIRE_RVAL(name != NULL, NULL);

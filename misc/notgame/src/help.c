@@ -29,12 +29,13 @@ static const char cvs_ident[] = "$Id$";
 
 #include "debug.h"
 #include "conf.h"
+#include "help.h"
 #include "notgame.h"
 #include "play.h"
 #include "pregame.h"
 
-static gint about_cb(GtkWidget *widget, GdkEvent *event);
-static gint help_cb(GtkWidget *widget, GdkEvent *event);
+static gint about_cb(void);
+static gint help_cb(void);
 static GtkWidget *about = NULL, *help = NULL;
 
 void
@@ -80,7 +81,7 @@ about_box_display(void) {
 }
 
 static gint
-about_cb(GtkWidget *widget, GdkEvent *event) {
+about_cb(void) {
 
   if (about == NULL) {
     return FALSE;
@@ -158,7 +159,7 @@ help_display(void) {
 }
 
 static gint
-help_cb(GtkWidget *widget, GdkEvent *event) {
+help_cb(void) {
 
   if (help == NULL) {
     return FALSE;

@@ -169,7 +169,6 @@ dest_group_t *
 dest_group_get_current(void) {
 
   char *name;
-  GList *entry;
 
   name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(dest_groups_box)->entry));
   REQUIRE_RVAL(name != NULL, NULL);

@@ -111,6 +111,7 @@ extern unsigned char conf_register_builtin(char *name, eterm_func_ptr_t ptr);
 extern unsigned char conf_register_context_state(unsigned char ctx_id);
 extern char *chomp(char *s);
 extern char *shell_expand(char *s);
+extern char *conf_find_file(const char *file, const char *pathlist);
 extern FILE *open_config_file(char *name);
 extern void conf_parse(char *conf_name, const char *path);
 
