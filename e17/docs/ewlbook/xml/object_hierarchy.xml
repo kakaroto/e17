@@ -54,7 +54,7 @@ window, to boxes, to scrollpanes.
 <para>
 As you progress into EWL you will notice that there is a lot of casting
 between different types. To make this easier, each cast to a particular type
-has a EWL_TYPE() macro defined. So for example there is are EWL_OBJECT(o) and
+has a EWL_TYPE() macro defined. So for example there are EWL_OBJECT(o) and
 EWL_WIDGET(o) defined to make life easier.
 </para>
 

@@ -447,11 +447,11 @@ The alignment function will accept one of:
 </para>
 <itemizedlist mark="bullet" spacing="compact">
  <title>EWL Alignment Flags</title>
- <listitem><para>EWL_FLAG_FILL_CENTER</para></listitem>
- <listitem><para>EWL_FLAG_FILL_LEFT</para></listitem>
- <listitem><para>EWL_FLAG_FILL_RIGHT</para></listitem>
- <listitem><para>EWL_FLAG_FILL_TOP</para></listitem>
- <listitem><para>EWL_FLAG_FILL_BOTTOM</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_CENTER</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_LEFT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_RIGHT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_TOP</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_BOTTOM</para></listitem>
 </itemizedlist>
 
 <para>

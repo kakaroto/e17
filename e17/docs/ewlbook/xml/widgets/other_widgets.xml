@@ -25,8 +25,8 @@
                                 combo_change_cb, NULL);
     ewl_widget_show(combo);
 
-    Ewl_widget *item1 = ewl_menu_item_new(NULL, "foo");
-    ewl_container_child_append(EWL_CONTAINER(combo));
+    Ewl_Widget *item1 = ewl_menu_item_new(NULL, "foo");
+    ewl_container_child_append(EWL_CONTAINER(combo), item1);
     ewl_widget_show(item1);
  </programlisting>
 </example>
@@ -86,12 +86,12 @@ or just display simple messages.
     ewl_object_alignment_set(EWL_OBJECT(dialog), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(dialog);
 
-    o = ewl_dialog_set_button(EWL_STOCK_OK, EWL_RESPONSE_OK);
+    o = ewl_dialog_button_add(EWL_DIALOG(dialog),"OK", EWL_RESPONSE_OK);
     ewl_container_child_append(EWL_CONTAINER(dialog), o);
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, dialog_clicked_cb, dialog);
     ewl_widget_show(o);
 
-    o = ewl_dialog_set_button(EWL_STOCK_CANCEL, EWL_RESPONSE_CANCEL);
+    o = ewl_dialog_button_left_add(EWL_DIALOG(dialog),"Cancel", EWL_RESPONSE_CANCEL);
     ewl_container_child_append(EWL_CONTAINER(dialog), o);
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, dialog_clicked_cb, dialog);
     ewl_widget_show(o);
@@ -125,11 +125,12 @@ add a <literal>Ewl_Text</literal> object into the dialog.
 </para>
 
 <para>
-Once the dialog is initialized we need to create any desired buttons. The
-buttons are created by calling <function>ewl_dialog_button_set()</function>
-this will create a button. The parameters are the label of the button and
-the response code to return from the button. There are several pre-defined
-labels, including:
+Once the dialog is initialized we need to create the desired buttons. The
+buttons are created by calling <function>ewl_dialog_button_add()</function>
+for the 'OK' button and <function>ewl_dialog_button_left_add()</function>
+for the 'Cancel' button. The parameters are the dialog, the label of the 
+button and the response code to return from the button. There are several 
+pre-defined labels available, including:
 <itemizedlist mark="bullet" spacing="compact">
  <listitem><para>EWL_STOCK_OK</para></listitem>
  <listitem><para>EWL_STOCK_APPLY</para></listitem>
