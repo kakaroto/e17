@@ -45,9 +45,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 #include <dirent.h>
 #include <stdarg.h>
+#include <time.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <giblib/giblib.h>
+
 
 #include "structs.h"
 #include "utils.h"
