@@ -991,3 +991,12 @@ Mon Nov 29 17:08:23 PST 1999
 
 This fixes the bug E-Slides demonstrated in the focus stuff.  Doesn't seem to
 break anything else as far as I can tell....
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 19:03:00 PST 1999
+(KainX)
+
+Applied and modified significantly a patch to support E-NetFlame on Solaris.
+Thanks to Tomas Calvo Gomez <tcalvo@tid.es> and Mark Bowyer
+<Moredhel@earthling.net> for supplying the Solaris-isms. :-)

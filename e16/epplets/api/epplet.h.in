@@ -26,6 +26,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#if defined(sun) && !defined(__sun__)
+# define __sun__
+#endif
+
 #if defined(HAVE_VARARGS_H) && !defined(HAVE_STDARG_H)
 # include <varargs.h>
 int     Evsnprintf(char *str, size_t count, const char *fmt, va_list args);

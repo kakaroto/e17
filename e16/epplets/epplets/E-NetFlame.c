@@ -10,6 +10,11 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "epplet.h"
+#ifdef __sun__
+# include <unistd.h>
+# include <kstat.h>
+# include <sys/sysinfo.h>
+#endif
 
 double *prev_val = NULL;
 int *load_val = NULL;
@@ -21,11 +26,17 @@ int *vspread, *hspread, *residual;
 unsigned char rm[255], gm[255], bm[255];
 char *netdev;
 double stream_max = 2000;
-double bandwidths[] = { 1000000000, 100000000, 10000000, 2000000,
-			1540000, 1000000, 512000, 256000,
-			144000, 128000, 64000, 56000,
-			33600, 28800, 14400, 9600,
-			4800, 2400, 300, 75 };
+#ifdef __sun__
+kstat_named_t kned[100];
+#endif
+double bandwidths[] =
+{
+  1000000000, 100000000, 10000000, 2000000,
+  1540000, 1000000, 512000, 256000,
+  144000, 128000, 64000, 56000,
+  33600, 28800, 14400, 9600,
+  4800, 2400, 300, 75
+};
 static int colors[] =
 {
   30, 90, 90,
@@ -90,7 +101,7 @@ static void epplet_bandwidth(void *data);
 #define UP   1
 
 /* set the flame color */
-static void 
+static void
 flame_col(int r1, int g1, int b1,
 	  int r2, int g2, int b2,
 	  int r3, int g3, int b3)
@@ -121,7 +132,7 @@ flame_col(int r1, int g1, int b1,
 }
 
 /* draw the flame to display */
-static void 
+static void
 draw_flame(void)
 {
   unsigned char *rgb, *rptr;
@@ -238,61 +249,75 @@ draw_flame(void)
 
 /* handles the timer, check /proc/net/dev to establish
  * up and down load */
-static void 
+static void
 epplet_timer(void *data)
 {
+
+#ifdef __sun__
+  kstat_ctl_t *kc;
+  kstat_t *ksp;
+#else
   static FILE *f;
-  int ok = 1;
+#endif
+  double val = -1.0, val2 = -1.0, dval, dval2;
+  char s[256], ss[32], *sp, s1[64], s2[64];
 
-  f = fopen("/proc/net/dev", "r");
-  if (f) {
-    char s[256], ss[32];
-    double val, val2, dval, dval2;
-
-    /* eat the top two lines */
-    fgets(s, 255, f);
-    fgets(s, 255, f);
-
-    while (ok) {
-      if (!fgets(s, 255, f)) {
-	ok = 0;
-      } else {
-	char *sp, s1[64], s2[64];
-
-	sp = strchr(s, ':');
-	if (sp)
-	  *sp = ' ';
-	val = 0;
-	val2 = 0;
-	sscanf(s, "%s %s %*s %*s %*s %*s %*s %*s %*s %s", ss, s1, s2);
-	val = atof(s1);
-	val2 = atof(s2);
-	if (!strcmp(ss, netdev)) {
-	  /*printf("%f val2 | %f val\n", val2, val); */
-	  dval = val - prev_val[DOWN];
-	  dval2 = val2 - prev_val[UP];
-	  prev_val[DOWN] = val;
-	  prev_val[UP] = val2;
-	  load_val[DOWN] = (int) ((dval * 800 * 3) / stream_max);
-	  load_val[UP] = (int) ((dval2 * 800 * 3) / stream_max);
-	  if (load_val[DOWN] > 100)
-	    load_val[DOWN] = 100;
-	  if (load_val[UP] > 100)
-	    load_val[UP] = 100;
-	  ok = 0;
-	}
-      }
-    }
-    fclose(f);
-    draw_flame();
-    Epplet_paste_buf(buf, win, 0, 0);
-    Epplet_timer(epplet_timer, NULL, 0.1, "TIMER");
+#ifdef __sun__
+  kc = kstat_open();
+  if (kc == NULL) {
+    return;
   }
+  ksp = kstat_lookup(kc, 0, -1, netdev);
+  if (ksp == NULL) {
+    return;
+  }
+  kstat_read(kc, ksp, &kned);
+  val = kned[0].value.ul;
+  val2 = kned[2].value.ul;
+  kstat_close(kc);
+#else
+  f = fopen("/proc/net/dev", "r");
+  if (f == NULL) {
+    return;
+  }
+  /* eat the top two lines */
+  fgets(s, sizeof(s), f);
+  fgets(s, sizeof(s), f);
+
+  for (; fgets(s, sizeof(s), f); ) {
+    sp = strchr(s, ':');
+    if (sp)
+      *sp = ' ';
+    sscanf(s, "%s %s %*s %*s %*s %*s %*s %*s %*s %s", ss, s1, s2);
+    if (!strcmp(ss, netdev)) {
+      val = atof(s1);
+      val2 = atof(s2);
+      break;
+    }
+  }
+  fclose(f);
+#endif
+  if (val != -1.0) {
+    dval = val - prev_val[DOWN];
+    dval2 = val2 - prev_val[UP];
+    prev_val[DOWN] = val;
+    prev_val[UP] = val2;
+    load_val[DOWN] = (int) ((dval * 800 * 3) / stream_max);
+    load_val[UP] = (int) ((dval2 * 800 * 3) / stream_max);
+    if (load_val[DOWN] > 100)
+      load_val[DOWN] = 100;
+    if (load_val[UP] > 100)
+      load_val[UP] = 100;
+  }
+  draw_flame();
+  Epplet_paste_buf(buf, win, 0, 0);
+  Epplet_timer(epplet_timer, NULL, 0.1, "TIMER");
+  return;
   data = NULL;
 }
 
 /* called when you close the epplet */
-static void 
+static void
 epplet_close(void *data)
 {
   Epplet_unremember();
@@ -302,7 +327,7 @@ epplet_close(void *data)
 }
 
 /* called when you select a color from the epplet color menu */
-static void 
+static void
 epplet_color(void *data)
 {
   int *d;
@@ -331,7 +356,7 @@ epplet_bandwidth(void *data)
 }
 
 /* called when the config button is pressed */
-static void 
+static void
 epplet_config(void *data)
 {
   data = NULL;
@@ -340,7 +365,7 @@ epplet_config(void *data)
 }
 
 /* called when the help button is pressed */
-static void 
+static void
 epplet_help(void *data)
 {
   data = NULL;
@@ -348,7 +373,7 @@ epplet_help(void *data)
 }
 
 /* called when the epplet gets the focus */
-static void 
+static void
 epplet_in(void *data, Window w)
 {
   Epplet_gadget_show(b_close);
@@ -360,7 +385,7 @@ epplet_in(void *data, Window w)
 }
 
 /* called when the epplet loses the focus */
-static void 
+static void
 epplet_out(void *data, Window w)
 {
   Epplet_gadget_hide(b_close);
@@ -372,7 +397,7 @@ epplet_out(void *data, Window w)
 }
 
 /* save off the color of the flame in a config file */
-static void 
+static void
 save_conf(int d1, int d2, int d3, int d4, int d5,
 	  int d6, int d7, int d8, int d9)
 {
@@ -390,7 +415,7 @@ save_conf(int d1, int d2, int d3, int d4, int d5,
 }
 
 /* load the color of the flame from a config file */
-static void 
+static void
 load_conf(void)
 {
   int d1, d2, d3, d4, d5, d6, d7, d8, d9;
@@ -404,14 +429,18 @@ load_conf(void)
   sscanf(str, "%d %d %d", &d7, &d8, &d9);
   str = Epplet_query_config_def("bandwidth", "2400");
   sscanf(str, "%lf", &stream_max);
+#ifdef __sun__
+  netdev = Epplet_query_config_def("device", "hme0");
+#else
   netdev = Epplet_query_config_def("device", "eth0");
+#endif
   flame_col(d1, d2, d3,
 	    d4, d5, d6,
 	    d7, d8, d9);
 }
 
 /* where it all begins... */
-int 
+int
 main(int argc, char **argv)
 {
   Epplet_gadget p;
@@ -458,44 +487,44 @@ main(int argc, char **argv)
   pop = Epplet_create_popupbutton("Colors", NULL, 5, 24, 36, 12, NULL, p);
   p = Epplet_create_popup();
   Epplet_add_popup_entry(p, "1 Gbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[0])));
+			 (void *) (&(bandwidths[0])));
   Epplet_add_popup_entry(p, "100 Mbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[1])));
+			 (void *) (&(bandwidths[1])));
   Epplet_add_popup_entry(p, "10 Mbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[2])));
+			 (void *) (&(bandwidths[2])));
   Epplet_add_popup_entry(p, "2 Mbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[3])));
+			 (void *) (&(bandwidths[3])));
   Epplet_add_popup_entry(p, "1.54 Mbit T1", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[4])));
+			 (void *) (&(bandwidths[4])));
   Epplet_add_popup_entry(p, "1 Mbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[5])));
+			 (void *) (&(bandwidths[5])));
   Epplet_add_popup_entry(p, "512 Kbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[6])));
+			 (void *) (&(bandwidths[6])));
   Epplet_add_popup_entry(p, "256 Kbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[7])));
+			 (void *) (&(bandwidths[7])));
   Epplet_add_popup_entry(p, "144 Kbit", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[8])));
+			 (void *) (&(bandwidths[8])));
   Epplet_add_popup_entry(p, "128 Kbit ISDN", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[9])));
+			 (void *) (&(bandwidths[9])));
   Epplet_add_popup_entry(p, "64 Kbit ISDN", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[10])));
+			 (void *) (&(bandwidths[10])));
   Epplet_add_popup_entry(p, "56 Kbit Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[11])));
+			 (void *) (&(bandwidths[11])));
   Epplet_add_popup_entry(p, "33.6 Kbit Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[12])));
+			 (void *) (&(bandwidths[12])));
   Epplet_add_popup_entry(p, "28.8 Kbit Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[13])));
+			 (void *) (&(bandwidths[13])));
   Epplet_add_popup_entry(p, "14.4 Kbit Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[14])));
-  Epplet_add_popup_entry(p, "9600 baud Modem", NULL, epplet_bandwidth, (void *)(&(bandwidths[15])));
+			 (void *) (&(bandwidths[14])));
+  Epplet_add_popup_entry(p, "9600 baud Modem", NULL, epplet_bandwidth, (void *) (&(bandwidths[15])));
   Epplet_add_popup_entry(p, "4800 baud Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[16])));
+			 (void *) (&(bandwidths[16])));
   Epplet_add_popup_entry(p, "2400 baud Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[17])));
+			 (void *) (&(bandwidths[17])));
   Epplet_add_popup_entry(p, "300 baud Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[18])));
+			 (void *) (&(bandwidths[18])));
   Epplet_add_popup_entry(p, "75 baud Modem", NULL, epplet_bandwidth,
-                         (void *)(&(bandwidths[19])));
+			 (void *) (&(bandwidths[19])));
   pop2 = Epplet_create_popupbutton("Bandwidth", NULL, 2, 14, 44, 12, NULL, p);
   Epplet_register_focus_in_handler(epplet_in, NULL);
   Epplet_register_focus_out_handler(epplet_out, NULL);
