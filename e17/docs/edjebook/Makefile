@@ -38,7 +38,7 @@ FO_ARGS = --stringparam fop.extensions 1
 #HTML_XSL = $(PREFIX)/docbook-xsl-1.61.3/html/tldp-html.xsl
 HTML_XSL = $(PREFIX)/docbook-xsl-1.64.0/html/docbook.xsl	# Gentoo DB HTML
 
-all: $(PDF) $(HTML)
+all: pdf html
 
 fo:
 	$(XSLTPROC) $(FO_ARGS) $(FO_XSL) $(FILE).xml > $(FILE).fo
