@@ -6,7 +6,6 @@ extern Evas_Object *o_bg;
 extern Evas_Object *o_logo;
 extern Evas_Object *o_panel;
 extern Evas_Object *o_showpanel;
-extern Evas_Object *o_hidepanel;
 extern Evas_Object *o_showbuttons;
 extern Evas_Object *o_arrow_l;
 extern Evas_Object *o_arrow_r;

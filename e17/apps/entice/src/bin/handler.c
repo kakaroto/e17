@@ -61,11 +61,8 @@ e_handle_resize(void)
    evas_object_resize(o_showpanel, 64, win_h);
    evas_object_layer_set(o_showpanel, 300);
    evas_object_repeat_events_set(o_showpanel, 1);
-   evas_object_move(o_hidepanel, 128, 0);
-   evas_object_resize(o_hidepanel, win_w - 128, win_h);
-   evas_object_layer_set(o_hidepanel, 400);
    // make sure buttons aren't left hanging mid-window
-   if (buttons_active == active_out || buttons_active == active_force_out) {
+   //if (buttons_active == active_out || buttons_active == active_force_out) {
       evas_object_move(o_bt_prev, win_w + 0, 0);
       evas_object_move(o_bt_next, win_w + 32, 0);
       evas_object_move(o_bt_zoom_normal, win_w + 64, 0);
@@ -75,7 +72,7 @@ e_handle_resize(void)
       evas_object_move(o_bt_full, win_w + 192, 0);
       evas_object_move(o_bt_delete, win_w + 224, 0);
       evas_object_move(o_bt_close, win_w + 256, 0);
-   }
+   //}
    evas_object_move(o_showbuttons, win_w - 288, 0);
    evas_object_layer_set(o_showbuttons, 1500);
    evas_object_repeat_events_set(o_showbuttons, 1);
@@ -96,6 +93,10 @@ e_handle_resize(void)
 	evas_object_image_size_get(o_image, &w, &h);
 	pw = w;
 	ph = h;
+	if (scale > w || scale > h) {
+	  printf("You can't zoom out that much.\n");
+	  scale = (w<h?w:h);
+	}
 	w = (int)((double)w / scale);
 	h = (int)((double)h / scale);
 	if (w > win_w)

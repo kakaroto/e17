@@ -4,15 +4,17 @@
 
 int turntable_rotation = 0;
 
-/* XXX
 void
-image_add_from_dnd(char *item)
+image_add_from_ipc(char *item)
 {
    DIR                *d;
    struct dirent      *dent;
    Image              *im;
    char                buf[4096];
 
+   if (item==NULL)
+     return;
+   printf("adding new image: %s\n", item);
    if (e_file_is_dir(item))
      {
 	d = opendir(item);
@@ -23,17 +25,9 @@ image_add_from_dnd(char *item)
 		continue;
 
 	     sprintf(buf, "%s/%s", item, dent->d_name);
-	     if (e_file_is_dir(buf))
-		image_add_from_dnd(buf);
-	     else
-	       {
-		  im = e_image_new(buf);
-		  im->subst = 1;
-		  images =
-		     evas_list_prepend_relative(images, im,
-						current_image->data);
-		  current_image = current_image->prev;
-	       }
+	     im = e_image_new(buf);
+	     im->subst = 1;
+	     images = evas_list_append(images, im);
 	  }
 	closedir(d);
      }
@@ -41,14 +35,13 @@ image_add_from_dnd(char *item)
      {
 	im = e_image_new(item);
 	im->subst = 1;
-	images = evas_list_prepend_relative(images, im, current_image->data);
-	current_image = current_image->prev;
+	images = evas_list_append(images, im);
      }
    need_thumbs = 1;
-   e_display_current_image();
+   // e_display_current_image();
    return;
 }
-*/
+
 void
 image_create_list(int argc, char **argv)
 {
@@ -97,25 +90,10 @@ image_create_list_dir(char *dir)
 	snprintf(buf, 4096, "%s/%s", dir, dent->d_name);
 	im = e_image_new(buf);
 	images = evas_list_append(images, im);
-	/* CS */
-	/* printf("%p\n",images); */
      }
    closedir(d);
 
    current_image = images;
-   /* CS */
-   /* printf("%p\n",current_image); */
-
-   /* CS */
-   /*
-    * for(l=images ; l ; l=l->next)
-    * {
-    * im=(Image*)l->data;
-    * printf("%s\n",im->file);
-    * printf("%p\n",l);
-    * printf("%p\n\n",im);
-    * }
-    */
 }
 
 void
@@ -130,9 +108,6 @@ image_create_thumbnails(void)
 	Image              *im;
 
 	im = l->data;
-
-	/* CS */
-	/* printf("%s\n",im->file); */
 
 	if (im->o_thumb) return;
 	im->o_thumb = evas_object_image_add(evas);
@@ -530,6 +505,75 @@ e_turntable_l_current_image(void)
 }
 
 void
+e_zoom_in(int x, int y)
+{
+  if (!o_image) return;
+  scale /= 1.414;
+  if (scale < 0.03125)
+    scale = 0.03125;
+  /*
+  scroll_x = ((double)(scroll_x + win_w/2 - x))*1.414;
+  scroll_y = ((double)(scroll_y + win_h/2 - y))*1.414;
+  */
+  if (x == -1)
+    scroll_x *= 1.414;
+  else
+    scroll_x = scroll_x*1.414 + (win_w/2 - x)*(0.414);
+  if (y == -1)
+    scroll_y *= 1.414;
+  else
+    scroll_y = scroll_y*1.414 + (win_w/2 - x)*(0.414);
+  //printf("scroll_x: %i, scroll_y: %i\n", scroll_x, scroll_y);
+  e_handle_resize();
+}
+
+void
+e_zoom_out(int x, int y)
+{
+  if (!o_image) return;
+  scale *= 1.414;
+  /*
+  scroll_x = ((double)(scroll_x + win_w/2 - x))/1.414;
+  scroll_y = ((double)(scroll_y + win_h/2 - y))/1.414;
+  */
+  if (x == -1)
+    scroll_x /= 1.414;
+  else
+    scroll_x = scroll_x/1.414 - (win_w/2 - x)*(0.293);
+  if (y == -1)
+    scroll_y /= 1.414;
+  else
+    scroll_y = scroll_y/1.414 - (win_w/2 - x)*(0.293);
+  //printf("scroll_x: %i, scroll_y: %i\n", scroll_x, scroll_y);
+  e_handle_resize();
+}
+
+void
+e_zoom_normal(void)
+{
+  if (!o_image) return;
+  scale = 1.0;
+  e_handle_resize();
+}
+  
+void
+e_zoom_full(void)
+{
+  double              sh, sv;
+  int                 w, h;
+
+  if (!o_image) return;
+  evas_object_image_size_get(o_image, &w, &h);
+  sh = (double)w / (double)win_w;
+  sv = (double)h / (double)win_h;
+  if (sh > sv)
+    scale = sh;
+  else
+    scale = sv;
+  e_handle_resize();
+}
+
+void
 e_delete_current_image(void)
 {
    Evas_List          *l = NULL;
@@ -669,8 +713,6 @@ e_load_prev_image(void)
 void
 e_display_current_image(void)
 {
-   int scroll_x = 0;
-   int scroll_y = 0;
    Imlib_Image im;
    DATA32 *data;
    int mustUseImlib = 0;
@@ -700,6 +742,8 @@ e_display_current_image(void)
 				       next_image_up, NULL);
 	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_MOVE,
 				       next_image_move, NULL);
+	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_WHEEL,
+				       next_image_wheel, NULL);
 	evas_object_show(o_image);
 	// if evas can't load the thing...
 	if (evas_object_image_load_error_get(o_image) != EVAS_LOAD_ERROR_NONE)
@@ -866,7 +910,22 @@ next_image_move(void *data, Evas * e, Evas_Object * obj, void *event_info)
 	else if (scroll_y < -h / 2)
 	  scroll_y = -h / 2;
 	*/
+	//printf("sx: %i, sy: %i\n", scroll_x, scroll_y);
 
 	e_handle_resize();
      }
+}
+
+void
+next_image_wheel(void *data, Evas * e, Evas_Object * obj, void *event_info)
+{
+  Evas_Event_Mouse_Wheel *ev;
+
+  ev = event_info;
+  // printf("x: %i, y: %i\n", ev->output.x, ev->output.y);
+  if (ev->z > 0) {
+    e_zoom_out(ev->output.x, ev->output.y);
+  } else {
+    e_zoom_in(ev->output.x, ev->output.y);
+  }
 }

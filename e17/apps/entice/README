@@ -18,6 +18,7 @@ images). You can instead give a directory name as a single argument, and
 it will load all images from this directory.
 
 On the TODO list at present, in order of randomness, are:
+* zooming behaviour is not quite there
 * logo fade behaviour is a bit arbitrary and will be neatened soon
 * ask for confirmation on file deletion
 * make dragged thumbnails fade gradually as they approach the trashcan
@@ -26,10 +27,15 @@ On the TODO list at present, in order of randomness, are:
   the list
 * maybe make the file info (name & size) fade out after a few seconds
 * allow for slideshow behaviour
-* allow users to rename image files from within entice
+* allow users to rename/move image files from within entice
 
 There are some known bugs also:
 * image flipping does not update the image: doing a drag or other operation
   makes the changes appear
+* moving the mouse while scrolling the imagelist breaks it heavily
+* occasionally loses keyboard focus while fullscreen and is unable to
+  recover
+* sometimes the pop-up thumbnails get stuck in an infinite loop
+
 Any bugs not mentioned here should be raised on Edevel, in #edevelop, or to
-dh286@cam.ac.uk since I appear to be the de facto maintainer.
+dh286@cam.ac.uk since I appear to be the maintainer.

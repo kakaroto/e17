@@ -8,6 +8,7 @@ bin_PROGRAMS = entice
 
 entice_SOURCES = \
 buttons.c \
+entice_ipc.c \
 event.c \
 fade.c \
 file.c \
@@ -19,6 +20,7 @@ misc.c \
 panel.c \
 thumb.c \
 buttons.h \
+entice_ipc.h \
 entice.h \
 event.h \
 fade.h \

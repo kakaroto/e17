@@ -51,7 +51,7 @@ void
 bt_close_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_close_1.png", NULL);
-   exit(0);
+   ecore_main_loop_quit();
 }
 
 void
@@ -76,20 +76,8 @@ bt_expand_down(void *data, Evas * e, Evas_Object * obj, void *event_info)
 void
 bt_expand_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   evas_object_image_file_set(obj, IM "bt_expand_1.png", NULL);
-   if (o_image)
-     {
-	double              sh, sv;
-	int                 w, h;
-
-	evas_object_image_size_get(o_image, &w, &h);
-	sh = (double)w / (double)win_w;
-	sv = (double)h / (double)win_h;
-	scale = sv;
-	if (sh > sv)
-	   scale = sh;
-	e_handle_resize();
-     }
+  evas_object_image_file_set(obj, IM "bt_expand_1.png", NULL);
+  e_zoom_full();
 }
 
 void
@@ -141,10 +129,7 @@ void
 bt_zoom_in_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_zoom_in_1.png", NULL);
-   scale /= 1.414;
-   if (scale > 0.03125)
-     scale = 0.03125;
-   e_handle_resize();
+   e_zoom_in(-1,-1);
 }
 
 void
@@ -157,8 +142,7 @@ void
 bt_zoom_normal_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_zoom_normal_1.png", NULL);
-   scale = 1.0;
-   e_handle_resize();
+   e_zoom_normal();
 }
 
 void
@@ -171,8 +155,7 @@ void
 bt_zoom_out_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_zoom_out_1.png", NULL);
-   scale *= 1.414;
-   e_handle_resize();
+   e_zoom_out(-1, -1);
 }
 
 int

@@ -29,7 +29,6 @@ void
 setup(void)
 {
    int                 i, j;
-   Ecore_X_Atom        a_entice;
    char                string[] = "entice";
 
    /* handler for when the event queue goes idle */
@@ -42,7 +41,6 @@ setup(void)
    ecore_evas_name_class_set(ecore_evas, "Entice", "Main");
    ecore_evas_size_min_set(ecore_evas, 288, 128);
    ecore_evas_size_max_set(ecore_evas, 8000, 8000);
-   a_entice = ecore_x_atom_get("_ENTICE_APP_WINDOW");
    ecore_evas_title_set(ecore_evas, string);
    evas = ecore_evas_get(ecore_evas);
    evas_output_method_set(evas, render_method);
@@ -52,35 +50,12 @@ setup(void)
    evas_font_cache_set(evas, MAX_FONT_CACHE);
    evas_image_cache_set(evas, MAX_IMAGE_CACHE);
    ecore_evas_show(ecore_evas);
-   /*
-   {
-      Evas_Engine_Info_Software_X11 *einfo;
-
-      einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(evas);
-
-      {
-	 Display            *disp;
-
-	 * the following is specific to the engine *
-	 disp = ecore_x_display_get();
-	 einfo->info.display = disp;
-	 einfo->info.visual = DefaultVisual(disp, DefaultScreen(disp));
-	 einfo->info.colormap = DefaultColormap(disp, DefaultScreen(disp));
-	 einfo->info.drawable = win;
-	 einfo->info.depth = DefaultDepth(disp, DefaultScreen(disp));
-	 einfo->info.rotation = 0;
-	 einfo->info.debug = 0;
-      }
-      evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
-   }
-   */
    /* now... create objects in the evas */
 
    o_bg = e_newim(evas, IM "bg.png");
    o_logo = e_newim(evas, IM "logo.png");
    o_panel = e_newim(evas, IM "panel.png");
    o_showpanel = evas_object_rectangle_add(evas);
-   o_hidepanel = evas_object_rectangle_add(evas);
    o_showbuttons = evas_object_rectangle_add(evas);
    o_arrow_l = e_newim(evas, IM "arrow_l.png");
    o_arrow_r = e_newim(evas, IM "arrow_r.png");
@@ -107,7 +82,6 @@ setup(void)
 
    evas_object_color_set(o_logo, 255, 255, 255, 0);
    evas_object_color_set(o_showpanel, 0, 0, 255, 0);
-   evas_object_color_set(o_hidepanel, 0, 255, 0, 0);
    evas_object_color_set(o_showbuttons, 255, 0, 0, 0);
    // evas_object_pass_events_set(o_panel, 1);
    for (j = 0; j < 2; j++)
@@ -132,7 +106,6 @@ setup(void)
    evas_object_show(o_logo);
    evas_object_show(o_panel);
    evas_object_show(o_showpanel);
-   evas_object_show(o_hidepanel);
    evas_object_resize(o_showbuttons, 288, 32);
    evas_object_show(o_showbuttons);
 
@@ -178,12 +151,6 @@ setup(void)
    evas_object_event_callback_add(o_bg, EVAS_CALLBACK_KEY_DOWN, e_key_down, NULL);
    evas_object_event_callback_add(o_bg, EVAS_CALLBACK_KEY_UP, e_key_up, NULL);
    evas_object_focus_set(o_bg, 1);
-   evas_object_event_callback_add(o_hidepanel, EVAS_CALLBACK_MOUSE_DOWN,
-				  next_image, NULL);
-   evas_object_event_callback_add(o_hidepanel, EVAS_CALLBACK_MOUSE_UP,
-				  next_image_up, NULL);
-   evas_object_event_callback_add(o_hidepanel, EVAS_CALLBACK_MOUSE_MOVE,
-				  next_image_move, NULL);
    evas_object_event_callback_add(o_showpanel, EVAS_CALLBACK_MOUSE_DOWN,
 				  next_image, NULL);
    evas_object_event_callback_add(o_showpanel, EVAS_CALLBACK_MOUSE_UP,
@@ -328,8 +295,7 @@ static int          full = 0;
 void
 e_toggle_fullscreen(void)
 {
-   static Ecore_X_Window       win = 0;
-   static int          pw = W, ph = H, px = 0, py = 0;
+   static int pw = W, ph = H, px = 0, py = 0;
    enum active_state command;
 
    if (!full)
