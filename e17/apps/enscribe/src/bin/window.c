@@ -14,6 +14,8 @@ Ens_Window
    ens_win = malloc(sizeof(Ens_Window));
    ens_win->ee = ee;
    ens_win->menus = edje_object_add(evas);
+   evas_font_path_append(ecore_evas_get(ens_win->ee), DATADIR);   
+   evas_object_text_font_set(ecore_evas_get(ens_win->ee), "VeraMono", 10);
    edje_object_file_set(ens_win->menus, DATADIR"menus.edj", "menus");
    evas_object_move(ens_win->menus, 0, 0);
    evas_object_resize(ens_win->menus, 640, 30);
@@ -31,8 +33,7 @@ Ens_Window
 void
 ens_window_tab_add(Ens_Window *ens_win) {
    Evas_Object *ta;
-
-   evas_font_path_append(ecore_evas_get(ens_win->ee), DATADIR);   
+  
    ta = esmart_textarea_add(ecore_evas_get(ens_win->ee));
    evas_object_show(ta);
    evas_object_move(ta, 0, 30);
