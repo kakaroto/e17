@@ -26,6 +26,7 @@
 %token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TO
 %token TO_X TO_Y TRANSITION TWEEN TYPE VISIBLE X Y
 %token OPEN_BRACE CLOSE_BRACE
+%token COLON QUOTE SEMICOLON
 
 %type <string> STRING
 %type <val> FLOAT
@@ -57,7 +58,7 @@ data_statement: item
 	| item data_statement
 	;
 
-item: ITEM ':' '"' STRING '"' '"' STRING '"' ';' {
+item: ITEM COLON QUOTE STRING QUOTE QUOTE STRING QUOTE SEMICOLON {
 		printf("got item %s :: %s\n", $4, $7);
 	}
 	;

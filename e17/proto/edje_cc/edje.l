@@ -110,7 +110,9 @@ y					{ KEYWORD_RETURN(Y); }
 {floating_constant} { FLOAT_RETURN(); }
 \}                  { KEYWORD_RETURN(CLOSE_BRACE); }
 \{                  { KEYWORD_RETURN(OPEN_BRACE); }
-
+[:,]		    { KEYWORD_RETURN(COLON); }
+;		    { KEYWORD_RETURN(SEMICOLON); }
+\"		    { KEYWORD_RETURN(QUOTE); }
 [ \t]+              { WHITE_SPACE(); }
 \n                  { NEW_LINE(); }
 #                   { CPP_COMMENT(); }
