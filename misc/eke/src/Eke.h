@@ -15,6 +15,8 @@
 #include <Ewl.h>
 #endif
 
+#include "eke_feed.h"
+
 typedef enum Eke_Gui_Type Eke_Gui_Type;
 enum Eke_Gui_Type {
 #if BUILD_EWL_GUI
@@ -51,6 +53,7 @@ struct Eke {
 #endif
     } gui;
 
+    Eke_Feed *current_feed;
     Ecore_Hash *feeds;
 };
 
