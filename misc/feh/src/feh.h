@@ -34,7 +34,7 @@
 #include <dirent.h>
 #include "Imlib2.h"
 
-#if 1
+#if 0
 #define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \
                printf a; fflush(stdout); }
 #else
@@ -139,6 +139,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name);
 void winwidget_destroy (winwidget winwid);
 void progress (Imlib_Image im, char percent, int update_x, int update_y,
 	       int update_w, int update_h);
+void winwidget_create_window (winwidget ret, int w, int h);
+
 
 /* Imlib stuff */
 extern Display *disp;

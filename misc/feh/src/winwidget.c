@@ -50,7 +50,8 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -79,7 +80,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget winwidget_create_from_file (char *filename, char *name)
+winwidget
+winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -99,7 +101,6 @@ winwidget winwidget_create_from_file (char *filename, char *name)
       progwin = ret;
       imlib_context_set_progress_function (progress);
       imlib_context_set_progress_granularity (10);
-      winwidget_create_window (ret, 10, 10);
     }
 
   if (winwidget_loadimage (ret, filename) == 0)
@@ -127,6 +128,9 @@ winwidget_create_blank_bg (winwidget ret)
 {
   int x, y, onoff;
   /* For zooming out */
+
+  D (("In winwidget_create_blank_bg\n"));
+
   if (ret->blank_im)
     {
       imlib_context_set_image (ret->blank_im);
@@ -152,7 +156,7 @@ winwidget_create_blank_bg (winwidget ret)
     }
 }
 
-static void
+void
 winwidget_create_window (winwidget ret, int w, int h)
 {
   XSetWindowAttributes attr;
@@ -229,9 +233,6 @@ winwidget_render_image (winwidget winwid)
   imlib_render_image_on_drawable (0, 0);
   imlib_context_set_image (winwid->im);
   imlib_render_image_on_drawable (0, 0);
-
-  /* need to keep this around for zooming ::) */
-  /* imlib_free_image (); */
 
   if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
     {
@@ -351,7 +352,8 @@ winwidget_unregister (winwidget win)
     }
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;

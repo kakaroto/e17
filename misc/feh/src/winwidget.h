@@ -22,7 +22,6 @@
 static void winwidget_unregister (winwidget win);
 static void winwidget_register (winwidget win);
 static winwidget winwidget_allocate (void);
-static void winwidget_create_window (winwidget ret, int w, int h);
 
 int window_num = 0;		/* For window list */
 winwidget *windows = NULL;	/* List of windows to loop though */

@@ -63,7 +63,6 @@ main_loop (void)
   for (;;)
     {
       XFlush (disp);
-      D(("In event loop\n"));
       while (XPending (disp))
 	{
       D(("In event loop - events pending\n"));
@@ -230,7 +229,7 @@ main_loop (void)
 
 	  /* See if any windows need updating */
 	  for (j = 0; j < window_num; j++)
-	    if (windows[j]->timeout && (!windows[j]->zoom_mode))
+	    if (windows[j]->timeout)
 	      {
 		timeout = 1;
 		D (("A window has timeout set\n"));
@@ -250,8 +249,7 @@ main_loop (void)
 	    {
 	      for (j = 0; j < window_num; j++)
 		{
-		  if ((count >= 0) && (windows[j]->timeout)
-		      && (!windows[j]->zoom_mode))
+		  if ((count == 0) && (windows[j]->timeout))
 		    {
 		      int sx, sy, sw, sh, dx, dy, dw, dh;
 
