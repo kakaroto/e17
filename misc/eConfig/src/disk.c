@@ -77,7 +77,7 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 
 }
 
-int _econf_save_data_to_desk(void *data, char *loc,unsigned long length) {
+int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
 
 	if(!data)
 		return 0;

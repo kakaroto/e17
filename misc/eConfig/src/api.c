@@ -33,6 +33,7 @@ void *eConfigGetData(char *loc, unsigned long *length) {
 	}
 
 	if((data = _econf_get_data_from_disk(loc,length))) {
+		eConfigUpdateCache();
 		return data;
 	}
 
