@@ -7,6 +7,9 @@ MAINTAINERCLEANFILES = Makefile.in imlib2_loaders.spec
 
 SUBDIRS = src debian
 
+CFLAGS_EXTRA = -I$(includedir) -I$(top_srcdir) -I$(top_srcdir)/src
+
 EXTRA_DIST = \
 imlib2_loaders.spec.in \
 imlib2_loaders.spec
+

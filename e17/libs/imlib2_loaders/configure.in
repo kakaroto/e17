@@ -17,34 +17,48 @@ AM_PROG_LIBTOOL
 AC_PATH_X
 AC_PATH_XTRA
 
-dnl Check for Imlib2.h
-AC_CHECK_HEADER(Imlib2.h, , AC_MSG_ERROR([Imlib2.h not found.]))
-
-# Test for libedb
-AC_CHECK_LIB(edb, e_db_open,
-  edb_ok=yes,
-  edb_ok=no
-  AC_MSG_WARN(*** Native EDB support will not be built (EDB library not found) ***), $EXTRA_LIBS -lz)
-if test "$edb_ok" = yes; then
-  AC_MSG_CHECKING([for Edb.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <Edb.h>],
-  edb_ok=yes,
-  edb_ok=no)
-  AC_MSG_RESULT($edb_ok)
-  if test "$edb_ok" = yes; then
-    EDBLIBS="-ledb"
-  else
-    AC_MSG_WARN(*** Native EDB support will not be built (EDB header file not found) ***)
-  fi
+AC_CHECK_PROG(IMLIB2_CONFIG_IN_PATH, imlib2-config, yes, no)
+if test $IMLIB2_CONFIG_IN_PATH = no; then
+  echo "ERROR:"
+  echo "The imlib2-config development script was not found in your execute"
+  echo "path. This may mean one of several things"
+  echo "1. You may not have installed the Imlib2-devel (or Imlib2-dev)"
+  echo "   packages."
+  echo "2. You may have Imlib2 installed somewhere not covered by your path."
+  echo ""
+  echo "If this is the case make sure you have the packages installed, AND"
+  echo "that the imlib2-config script is in your execute path (see your"
+  echo "shell's manual page on setting the \$PATH environment variable)."
+  AC_MSG_ERROR([Fatal Error: no imlib2-config detected.])
+  exit;
 fi
 
-AM_CONDITIONAL(EDB_LOADER, test "$edb_ok" = yes)
+AC_CHECK_PROG(EDB_CONFIG_IN_PATH, edb-config, yes, no)
+if test $EDB_CONFIG_IN_PATH = no; then
+  echo "WARNING:"
+  echo "The edb-config development script was not found in your execute"
+  echo "path. This may mean one of several things"
+  echo "1. You may not have installed the edb-devel (or edb-dev)"
+  echo "   packages."
+  echo "2. You may have edb installed somewhere not covered by your path."
+  echo ""
+  echo "If this is the case make sure you have the packages installed, AND"
+  echo "that the edb-config script is in your execute path (see your"
+  echo "shell's manual page on setting the \$PATH environment variable)."
+  AC_MSG_ERROR([Warning: no edb-config detected.])
+fi
 
-AC_SUBST(EDBLIBS)
+AM_CONDITIONAL(EDB_LOADER, test $EDB_CONFIG_IN_PATH = yes)
+
+imlib2_includes=`imlib2-config --cflags`
+imlib2_libs=`imlib2-config --libs`
+edb_includes=`edb-config --cflags`
+edb_libs=`edb-config --libs`
+
+AC_SUBST(imlib2_includes)
+AC_SUBST(imlib2_libs)
+AC_SUBST(edb_includes)
+AC_SUBST(edb_libs)
 
 AC_OUTPUT([
 Makefile
