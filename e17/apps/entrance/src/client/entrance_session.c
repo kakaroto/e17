@@ -344,11 +344,12 @@ entrance_session_start_user_session(Entrance_Session * e)
    char *shell = NULL;
 
    entrance_auth_setup_environment(e->auth);
-    
    if ((e->session) && (strlen(e->session) > 0))
    {
       if (!strcmp(e->session, "default"))
          snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
+      else if(e->session[0] == '/')
+	 snprintf(buf, PATH_MAX, "%s", e->session);
       else
          snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, e->session);
    } 
@@ -356,9 +357,6 @@ entrance_session_start_user_session(Entrance_Session * e)
       /* Default session */
       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
    }
-
-   /* If an absolute path was specified for the session, use that path
-      instead of passing the session name to Xsession */
 
    if (_entrance_test_en)
       snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
