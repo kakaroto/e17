@@ -8,22 +8,21 @@
 #include <string.h>
 #include <limits.h>
 #include "container.h"
+#include "container_private.h"
 
 
 static char *_find_plugin(const char *dir, const char *name)
 {
   Evas_List *files, *l;
-  char *ret = NULL, tmp[128], buf[4086];
+  char *ret = NULL, tmp[128];
 
   if (!(files = _dir_get_files(dir)))
     return NULL;
 
   for (l = files; l; l = l->next) {
-    printf("current file: %s\n", l->data);
     sscanf((char *)l->data, "%127[^.].so", tmp);
 
     if (!strcasecmp(name, tmp)) {
-      printf("match!\n");
       ret = strdup(l->data);
       break;
     }
@@ -45,7 +44,7 @@ _container_layout_plugin_new(const char *name)
   Container_Layout_Plugin *p;
 
   int (*init)(void *p);
-  char *error, path[PATH_MAX + 1];
+  char path[PATH_MAX + 1];
   char *right_name;
   int numerr;
 
@@ -62,9 +61,10 @@ _container_layout_plugin_new(const char *name)
 
   snprintf(path, sizeof(path), "%s/%s.so", CONTAINER_PLUGIN_DIR, name); 
 
-  if (numerr = lt_dlinit())
+  if ((numerr = lt_dlinit()))
   {
     fprintf(stderr, "ERROR: initting lt, %d\n", numerr);
+    fprintf(stderr, "ERROR - lt: (%s)\n", lt_dlerror());
   }
 
   if (!(p->handle = lt_dlopen(path))) {
@@ -81,6 +81,7 @@ _container_layout_plugin_new(const char *name)
     if (!(p->handle = lt_dlopen(path)))
     {
       fprintf(stderr, "ERROR: can't dlopen plugin (%s)\n", path);
+      fprintf(stderr, "ERROR - lt: (%s)\n", lt_dlerror());
       _container_layout_plugin_free(p);
       return NULL;
     }
@@ -88,24 +89,10 @@ _container_layout_plugin_new(const char *name)
   
   init = lt_dlsym(p->handle, "plugin_init");
 
-  if ((error = lt_dlerror()))
-  {
-    fprintf(stderr, "ERROR: lt (%s)\n", error);
-    
-    /*
-     * FIXME: i get errors regardless (even when working), so this is
-     * is commented out for now
-     */
-
-    /*
-    _container_layout_plugin_free(p);
-    return NULL;
-    */
-  }
-  
   if (!(*init)(p))
   {
     fprintf(stderr, "ERROR: can't init plugin\n");
+    fprintf(stderr, "ERROR - lt: (%s)\n", lt_dlerror());
     _container_layout_plugin_free(p);
     return NULL;
   }
@@ -137,6 +124,13 @@ e_container_layout_plugin_set(Evas_Object *container, const char *plugin)
   {
     fprintf(stderr, "ERROR: no container\n");
     return 0;
+  }
+
+  if (cont->plugin)
+  {
+    lt_dlclose(cont->plugin->handle);
+    _container_layout_plugin_free(cont->plugin);
+    cont->plugin = NULL;
   }
  
   if (!(cont->plugin = _container_layout_plugin_new(plugin)))

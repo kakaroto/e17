@@ -20,4 +20,4 @@ libecontainer_la_SOURCES = \
 
 libecontainer_la_LIBADD = @evas_libs@ @imlib_libs@ -lm
 libecontainer_la_LDFLAGS = -version-info 1:0:0
-libecontainer_la_CFLAGS = -g
+libecontainer_la_CFLAGS = -g -Wall

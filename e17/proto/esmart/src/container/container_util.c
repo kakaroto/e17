@@ -35,7 +35,9 @@ _container_scale_scroll(Container *cont, double old_length)
   
 }
 
-int is_dir(const char *dir) {
+int
+is_dir(const char *dir)
+{
 	struct stat st;
 
 	if (stat(dir, &st))
