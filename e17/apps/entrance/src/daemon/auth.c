@@ -4,17 +4,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <X11/Xlib.h>
-#include <X11/Xauth.h>
-#include <X11/extensions/security.h>
-#include <X11/Xos.h>
-
-#include <Ecore_X.h>
-#include <Ecore_Ipc.h>
-
-#include "Entranced.h"
+#include "auth.h"
 #include "util.h"
 #include "md5.h"
+#include "../config.h"
 
 #define BUFSIZE 512
 
@@ -251,7 +244,7 @@ entranced_auth_display_secure (Entranced_Display *d)
       free(d->authfile);
 
    /* FIXME: Config-ize */
-   snprintf(buf, PATH_MAX, "/var/lib/entrance/%s%s", d->name, ".Xauth");
+   snprintf(buf, PATH_MAX, PACKAGE_STATE_DIR"/%s%s", d->name, ".Xauth");
    d->authfile = strdup(buf);
    unlink(d->authfile);
 
@@ -273,9 +266,9 @@ entranced_auth_display_secure (Entranced_Display *d)
       XauDisposeAuth(tmp);
    }
    
+   memset(hostname, 0, sizeof(hostname));
    if (!gethostname(hostname, 1023))
    {
-      hostname[1023] = '\0';
       if (d->hostname)
          free(d->hostname);
       d->hostname = strdup(hostname);
