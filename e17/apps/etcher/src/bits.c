@@ -17,6 +17,15 @@ static void _ebits_object_calculate(Ebits_Object o);
 
 static Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name)
 {
+   Evas_List l;
+   
+   for (l = o->bits; l; l = l->next)
+     {
+	Ebits_Object_Bit_State state;
+	
+	state = l->data;
+	if (!strcmp(state->description->name, name)) return state;
+     }
    return NULL;
 }
 
@@ -233,6 +242,7 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
 {
    Evas_List l;
    
+   state->syncing = 1;
    if (state->object)
      {
 	evas_set_image_file(state->o->state.evas, state->object,
@@ -242,14 +252,15 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
    for (l = state->description->sync; l; l = l->next)
      {
 	Ebits_Object_Bit_State state2;
-	
+
 	state2 = _ebits_get_bit_name(state->o, l->data);
-	if (state2)
+	if ((state2) && (state2 != state) && (!state2->syncing))
 	  {
 	     state2->state = state->state;
 	     _ebits_sync_bits(state2);
 	  }
      }
+   state->syncing = 0;
 }
 
 static void
@@ -522,6 +533,21 @@ _ebits_find_description(char *file)
 }
 
 #ifdef EDITOR
+void
+ebits_set_state(Ebits_Object o, int st)
+{
+   Evas_List l;
+
+   for (l = o->bits; l; l = l->next)
+     {
+	Ebits_Object_Bit_State state;
+	
+	state = l->data;
+	state->state = st;
+	_ebits_sync_bits(state);
+     }
+}
+
 Ebits_Object_Description
 ebits_new_description(void)
 {

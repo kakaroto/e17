@@ -36,6 +36,7 @@ void ebits_save(Ebits_Object o, char *file);
 Ebits_Object_Bit_State ebits_new_bit(Ebits_Object o, char *file);
 Ebits_Object_Description ebits_new_description(void);
 void ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state);
+void ebits_set_state(Ebits_Object o, int st);
 #endif
 
 struct _Ebits_Object_Description
@@ -104,6 +105,7 @@ struct _Ebits_Object_Bit_State
    int                          x, y, w, h;
    int                          mouse_in;
    int                          state;
+   int                          syncing;
 #ifdef EDITOR   
    struct {
       Imlib_Image                  image;

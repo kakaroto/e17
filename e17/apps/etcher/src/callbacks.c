@@ -34,6 +34,7 @@ static gint zoom_x, zoom_y;
 
 static Ebits_Object bits = NULL;
 static Ebits_Object_Bit_State selected_state = NULL;
+static int current_state = 0;
 
 void zoom_redraw(int xx, int yy);
 static void handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
@@ -1346,7 +1347,12 @@ on_states_select_row                   (GtkCList        *clist,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-
+   if (bits)
+     {
+	current_state = row;
+	ebits_set_state(bits, current_state);
+	gtk_idle_add(view_redraw, NULL);
+     }
 }
 
 
@@ -1480,8 +1486,10 @@ on_prop_apply_clicked                  (GtkButton       *button,
 {
    update_selection_from_widget();
    ebits_move(bits, backing_x, backing_y);
+   ebits_resize(bits, backing_w + 10, backing_h + 10);
    ebits_resize(bits, backing_w, backing_h);
    update_visible_selection();
+   ebits_set_state(bits, current_state);
    gtk_idle_add(view_redraw, NULL);
 }
 
@@ -1605,7 +1613,7 @@ on_browse_normal_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
    GtkWidget *file;
-   
+
    file = create_filesel();
    gtk_object_set_data(GTK_OBJECT(file), "normal_image", (void *)1);
      {

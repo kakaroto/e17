@@ -74,6 +74,16 @@ main (int argc, char *argv[])
    
    
    main_win = create_main();
+     {
+	GtkWidget *w;
+	gchar *text;
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "states");
+	text = "Normal"; gtk_clist_append(GTK_CLIST(w), &text);
+	text = "Hilited"; gtk_clist_append(GTK_CLIST(w), &text);
+	text = "Clicked"; gtk_clist_append(GTK_CLIST(w), &text);
+	text = "Disabled"; gtk_clist_append(GTK_CLIST(w), &text);
+     }
    gtk_widget_show(main_win);
    
    gtk_main ();
