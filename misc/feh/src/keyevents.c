@@ -139,7 +139,10 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'R':
         feh_reload_image(winwid, 0);
         break;
-     case '=':
+	 case 's':
+	 case 'S':
+		slideshow_pause_toggle(winwid);
+	 case '=':
      case '+':
         if (opt.reload < SLIDESHOW_RELOAD_MAX)
            opt.reload++;

@@ -100,6 +100,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file,
                    Imlib_Progress_Function pfunc);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
+void slideshow_pause_toggle(winwidget w);
 char *slideshow_create_name(feh_file * file);
 char *chop_file_from_full_path(char *str);
 void handle_keypress_event(XEvent * ev, Window win);

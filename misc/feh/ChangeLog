@@ -1,3 +1,8 @@
+Thu Feb 15 11:25:45 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* A patch from labisso (David LaBissoniere <labiss@usit.net>)
+      to allow pausing of slideshows. Handy.
+
 Sun Jan 28 13:20:45 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* cam was using -Cwebcam, should be -Twebcam

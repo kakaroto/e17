@@ -103,6 +103,7 @@ struct __fehoptions
    unsigned int start_list_at;
    
    unsigned char mode;
+   unsigned char paused;
    
    double slideshow_delay;
 };
