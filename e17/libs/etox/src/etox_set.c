@@ -72,7 +72,8 @@ etox_set_align(Etox e, Etox_Align_Type h_align, Etox_Align_Type v_align)
   e->def.align->h = h_align;
   e->def.align->v = v_align;
 
-  _etox_rebuild(e);
+  _etox_create_evas_objects(e);
+  _etox_refresh(e);
 }
 
 void 
@@ -188,7 +189,8 @@ etox_set_color(Etox e, Etox_Color color)
 
   e->def.color = color;
 
-  _etox_rebuild(e);                                                       
+  _etox_create_evas_objects(e);
+  _etox_refresh(e);
 }
 
 void
@@ -199,11 +201,8 @@ etox_set_alpha(Etox e, int alpha)
 
   e->a = alpha;
 
-  _etox_rebuild(e);
-/*
   _etox_create_evas_objects(e);
   _etox_refresh(e);
-*/
 }
 
 void   

@@ -22,7 +22,9 @@ etox_object.c \
 etox_obstacle.c \
 etox_set.c \
 etox_str.c \
-etox_style.c
+etox_style.c \
+etox_align.c \
+etox_sort.c
 
 
 libetox_la_LIBADD       = @evas_libs@ @ewd_libs@

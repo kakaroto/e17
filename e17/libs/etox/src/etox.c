@@ -20,33 +20,26 @@ _D_etox_refresh(Etox e)
 _etox_refresh(Etox e)
 #endif
 {
-  Etox_Object et_obj;
   Evas_Object ev_obj;
 
-  if (!e->etox_objects || ewd_dlist_is_empty(e->etox_objects))
+  if (!e->evas_objects.list || ewd_list_is_empty(e->evas_objects.list))
     return;
 
-  ewd_list_goto_first(e->etox_objects);
-  while ((et_obj = (Etox_Object) ewd_list_next(e->etox_objects)))
+  ewd_list_goto_first(e->evas_objects.list);
+  while ((ev_obj = (Evas_Object) ewd_list_next(e->evas_objects.list)))
     {
-      if (!et_obj->ev_objects) 
-        break;
-      ewd_list_goto_first(et_obj->ev_objects);
-      while ((ev_obj = ewd_list_next(et_obj->ev_objects)))
-        {
-          if (e->show)
-	    evas_show(e->evas, ev_obj);
-          else
-	    evas_hide(e->evas, ev_obj);
-          if (e->raise)
-	    evas_raise(e->evas, ev_obj);
-          if (e->lower)
-	    evas_lower(e->evas, ev_obj);
-          if (e->layer)
-  	    evas_set_layer(e->evas, ev_obj, e->layer);
-          if (e->clip)
-    	    evas_set_clip(e->evas, ev_obj, e->clip);
-        }
+      if (e->show)
+	evas_show(e->evas, ev_obj);
+      else
+	evas_hide(e->evas, ev_obj);
+      if (e->raise)
+	evas_raise(e->evas, ev_obj);
+      if (e->lower)
+	evas_lower(e->evas, ev_obj);
+      if (e->layer)
+  	evas_set_layer(e->evas, ev_obj, e->layer);
+      if (e->clip)
+    	evas_set_clip(e->evas, ev_obj, e->clip);
     }
 }
 
@@ -74,7 +67,7 @@ etox_new(Evas evas, char *name)
   e->w = 100.0;
   e->h = 100.0;
   e->a = 255;
-  e->padding = 5.0;
+  e->padding = 7.0;
   
   e->show = 1;
   e->raise = 0;
@@ -83,8 +76,8 @@ etox_new(Evas evas, char *name)
   e->clip = NULL;
 
   e->def.align = malloc(sizeof(struct _Etox_Align));
-  e->def.align->v = ETOX_ALIGN_TYPE_CENTER;
-  e->def.align->h = ETOX_ALIGN_TYPE_CENTER;
+  e->def.align->v = ETOX_ALIGN_TYPE_TOP;
+  e->def.align->h = ETOX_ALIGN_TYPE_LEFT;
 
   /* FIXME: add callback */
   e->def.callback = NULL;
@@ -146,8 +139,9 @@ etox_new(Evas evas, char *name)
   e->bits = NULL;
   e->obstacles = NULL;
 
-  e->etox_objects = NULL;
-  e->evas_objects = NULL;
+  e->etox_objects.list = NULL;
+  e->etox_objects.h = 0.0;
+  e->evas_objects.list = NULL;
 
   return e;
 }
@@ -202,10 +196,10 @@ etox_free(Etox e)
     ewd_list_destroy(e->bits);
   if (e->obstacles)
     ewd_list_destroy(e->obstacles);
-  if (e->etox_objects)
-    ewd_dlist_destroy(e->etox_objects);
-  if (e->evas_objects)
-    ewd_dlist_destroy(e->evas_objects);
+  if (e->etox_objects.list)
+    ewd_list_destroy(e->etox_objects.list);
+  if (e->evas_objects.list)
+    ewd_list_destroy(e->evas_objects.list);
 }
 
 void    
@@ -258,7 +252,6 @@ etox_move(Etox e, double x, double y)
   if (!e)
     return;
 
-  /* FIXME: rebuilding the etox shouldn't be needed here.. */
   e->x = x;
   e->y = y;
 

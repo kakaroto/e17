@@ -19,11 +19,13 @@ double obstacle_w = -1.0, obstacle_h = -1.0, obstacle_x, obstacle_y;
 
 static void e_idle(void *data);
 static void ecore_window_expose(Ecore_Event *ev);
+static void ecore_mouse_down(Ecore_Event *ev);
 
 void setup(void);
 
 Evas evas;
 Evas_Render_Method render_method = RENDER_ENGINE;
+Etox e;
 
 static void
 e_idle(void *data)
@@ -40,11 +42,46 @@ ecore_window_expose(Ecore_Event *ev)
   evas_update_rect(evas, e->x, e->y, e->w, e->h);
 }
 
+static void
+ecore_mouse_down(Ecore_Event *ev)
+{
+  Ecore_Event_Mouse_Down *md;
+  static Evas_Object obj = NULL;
+  double x, y, w, h, et_x = 0.0, et_y = 0.0, pos_x = 0.0, pos_y = 0.0;
+  int index = 0;
+
+  md = (Ecore_Event_Mouse_Down *)ev->event;
+
+  printf("MOUSE_DOWN AT x=%d, y=%d\n", md->x, md->y);
+
+  etox_get_geometry(e, &et_x, &et_y, NULL, NULL);
+
+  pos_x = evas_screen_x_to_world(evas, md->x) - et_x;
+  pos_y = evas_screen_y_to_world(evas, md->y) - et_y;
+  index = etox_get_char_geometry_at_position(e, pos_x, pos_y, &x, &y, &w, &h);
+
+  printf("-> (index = %d) pos_x=%f, pos_y=%f; x=%f, y=%f, w=%f, h=%f\n", 
+         index, pos_x, pos_y, x, y, w, h);
+
+  x += et_x;
+  y += et_y;
+
+  if (!obj)
+    obj = evas_add_rectangle(evas);
+  evas_set_color(evas, obj, 0, 255, 255, 50);
+  evas_move(evas, obj, x, y);
+  evas_resize(evas, obj, w, h);
+  evas_show(evas, obj);
+}
+
 void setup(void)
 {
   Window win, ewin;
 
-  ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE, ecore_window_expose);
+  ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE, 
+                                 ecore_window_expose);
+  ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN, 
+                                 ecore_mouse_down);
   ecore_event_filter_idle_handler_add(e_idle, NULL);
   win = ecore_window_new(0, 0, 0, 400, 400);
 
@@ -55,14 +92,13 @@ void setup(void)
   ewin = evas_get_window(evas);
 
   ecore_window_show(ewin);
-  ecore_window_set_events(ewin, XEV_EXPOSE);
+  ecore_window_set_events(ewin, XEV_EXPOSE | XEV_BUTTON);
   ecore_window_show(win);
 }
 
 int
 main(int argc, char *argv[])
 {
-  Etox e;
   Etox_Style s;
   Etox_Color c;
   Evas_Object bg, et_bg, obst;
@@ -135,6 +171,7 @@ main(int argc, char *argv[])
   etox_move(e, 10, 10);
   etox_resize(e, 380, 380);
   etox_set_font(e, "notepad", 10);
+  /*  etox_set_padding(e, 10); */
 
   etox_style_add_path(PACKAGE_DATA_DIR"/style");
   etox_style_add_path("./style");
@@ -154,12 +191,12 @@ main(int argc, char *argv[])
    * a real prog..
    */
 
-  etox_set_text(e, 
-    ET_TEXT("This is just a test string.. some lame "
-    "copied stuff actually..\n\n "), ET_STYLE(s),
+  etox_set_text(e, ET_ALIGN(ETOX_ALIGN_TYPE_CENTER, ETOX_ALIGN_TYPE_LEFT),
+    ET_TEXT("This is just a test\n\tstring.. some lame "
+    "copied\n\tstuff actually.. \n\n"), ET_STYLE(s),
     ET_ALIGN(ETOX_ALIGN_TYPE_CENTER, ETOX_ALIGN_TYPE_RIGHT),
     ET_TEXT("As a result of meeting requests from users, Enlightenment over "),
-    ET_TEXT("time has done some nasty hacks, but now for the development of "),
+    ET_TEXT("time has done some nasty hacks,\nbut now for the development of "),
     ET_TEXT("version 0.17.0, we have moved a lot of the design and core code "),
     ET_COLOR(c),
     ET_TEXT("into various subsystems than generalize some back end and let us "),
@@ -173,11 +210,13 @@ main(int argc, char *argv[])
 
   etox_show(e);
 
-  /* this is useless.. just for testing.. */
-  etox_set_alpha(e, 255);
+  etox_set_alpha(e, 100);
 
-  printf("Text: %s\n", etox_get_text(e));
+  printf("Text: %s\n", etox_get_text_string(e));
+  
+  printf ("\n\n");
 
+  printf("Actual Text: %s\n", etox_get_actual_text_string(e));
 
   {
     double x, y, w, h;
@@ -185,7 +224,7 @@ main(int argc, char *argv[])
 
     etox_get_actual_geometry(e, &x, &y, &w, &h);
 
-    printf("Real rect: x=%f,y=%f,w=%f,h=%f\n", x, y, w, h);
+    printf("Actual rect: x=%f,y=%f,w=%f,h=%f\n", x, y, w, h);
 
     real_rect = evas_add_rectangle(evas);
     evas_set_color(evas, real_rect, 0, 255, 0, 50);
@@ -194,6 +233,22 @@ main(int argc, char *argv[])
     evas_show(evas, real_rect);
   }
 
+  {
+    double x, y, w, h;
+    Evas_Object char_rect;
+
+    etox_get_char_geometry_at(e, 0, &x, &y, &w, &h);
+
+    printf("Char geometry: x=%f,y=%f,w=%f,h=%f\n", x, y, w, h);
+
+    char_rect = evas_add_rectangle(evas);
+    evas_set_color(evas, char_rect, 255, 255, 0, 50);
+    evas_move(evas, char_rect, x + 10, y + 10);
+    evas_resize(evas, char_rect, w, h);
+    evas_show(evas, char_rect);
+  }
+
+/*
   {
     Evas_Object clip_rect;
 
@@ -204,6 +259,7 @@ main(int argc, char *argv[])
     evas_show(evas, clip_rect);
     etox_set_clip(e, clip_rect);
   }
+*/
 
   ecore_event_loop();
 

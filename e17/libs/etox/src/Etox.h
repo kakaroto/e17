@@ -49,7 +49,8 @@ enum _Etox_Bit_Type
    ETOX_BIT_TYPE_CALLBACK_END,
    ETOX_BIT_TYPE_COLOR_END,
    ETOX_BIT_TYPE_FONT_END,
-   ETOX_BIT_TYPE_STYLE_END
+   ETOX_BIT_TYPE_STYLE_END,
+   ETOX_BIT_STYLE_PARSE
 };
 
 typedef enum _Etox_Align_Type   	Etox_Align_Type;
@@ -70,6 +71,8 @@ typedef enum _Etox_Bit_Type		Etox_Bit_Type;
 #define ET_COLOR_END ETOX_BIT_TYPE_COLOR_END
 #define ET_FONT_END ETOX_BIT_TYPE_FONT_END
 #define ET_STYLE_END ETOX_BIT_TYPE_STYLE_END
+
+#define ET_PARSE(string) ETOX_BIT_TYPE_PARSE, string
 
 #define ET_END NULL
 
@@ -129,22 +132,25 @@ char *		etox_get_font_name(Etox e);
 int		etox_get_font_size(Etox e);
 Etox_Style	etox_get_style(Etox e);
 
-char *		etox_get_text(Etox e);
-int		etox_get_text_len(Etox e);
+int		etox_get_text_string_lenght(Etox e);
+char *		etox_get_text_string(Etox e);
+int		etox_get_actual_text_string_lenght(Etox e);
+char *		etox_get_actual_text_string(Etox e);
 
 void		etox_get_geometry(Etox e, double *x, double *y, 
 				  double *w, double *h);
 void            etox_get_actual_geometry(Etox e, double *x, double *y, 
                                   	 double *w, double *h);
 
-/* Following function isnt implemented yet. */
-void		etox_get_at(Etox e, int index,
-				double *x, double *y,
-				double *w, double *h);
-int		etox_get_at_position(Etox e, double x, double y,
-                                     double *char_x, double *char_y, 
-                                     double *char_w, double *char_h);
-int		etox_get_index_at(Etox e, double x, double y, int * i);  
+void		etox_get_char_geometry_at(Etox e, int index,
+			                  double *char_x, double *char_y,
+				          double *char_w, double *char_h);
+int		etox_get_char_geometry_at_position(Etox e, double x, double y,
+                                                   double *char_x,
+                                                   double *char_y, 
+                                                   double *char_w,
+                                                   double *char_h);
+
 
 Etox_Obstacle	etox_obstacle_add(Etox e, 
                                   double x, double y, double w, double h);
@@ -164,7 +170,7 @@ Ewd_List	*etox_style_get_paths(void);
 Etox_Color	etox_color_new(void);
 void		etox_color_set_member(Etox_Color color, char *member,
                        	              int r, int g, int b, int a);
-int		etox_color_get_member(Etox_Color color, char *member, 
+int		etox_color_get_member(Etox_Color color, char *member,
                                       int *r, int *g, int *b, int *a);
 void		etox_color_free(Etox_Color color);
 

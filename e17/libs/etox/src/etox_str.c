@@ -6,7 +6,10 @@ etox_str_remove_beginning_spaces(char *str)
 {
   char *p, *q;
 
-  for (p = str; *p == ' '; *p++);
+  if (!str || !strlen(str))
+    return NULL;
+
+  for (p = str; *p == ' '; p++);
 
   q = malloc((sizeof(char) * strlen(p)) + 1);
   strncpy(q, p, strlen(p));
@@ -20,6 +23,9 @@ etox_str_remove_ending_spaces(char *str)
 {
   char *p, *q;
   int i;
+
+  if (!str || !strlen(str))
+    return NULL;
 
   p = malloc((sizeof(char) * strlen(str)) + 1);
   strcpy(p, str);
@@ -41,6 +47,9 @@ etox_str_chop_off_beginning_string(char *str, char *chop)
 {
   char *p, *q;
 
+  if (!str || !strlen(str) || !chop || !strlen(chop))
+    return NULL;
+
   if (!(p = strstr(str, chop)))
     return str;
 
@@ -56,10 +65,11 @@ char *
 etox_str_chop_off_beginning_word(char *str)
 {
   char *p, *q;
-  
-  p = str;
 
-  for (p = str; *p != ' '; *p++);
+  if (!str || !strlen(str))
+    return NULL;
+
+  for (p = str; *p != ' '; p++);
 
   q = malloc((sizeof(char) * strlen(p)) + 1);
   strncpy(q, p, strlen(p));
@@ -73,6 +83,9 @@ etox_str_chop_off_ending_string(char *str, char *chop)
 {
   char *p;
 
+  if (!str || !strlen(str) || !chop || !strlen(chop))
+    return NULL;
+
   p = malloc((sizeof(char) * (strlen(str) - strlen(chop))) + 1);
   strncpy(p, str, strlen(str) - strlen(chop));
   p[strlen(str) - strlen(chop)] = '\0';
@@ -85,9 +98,12 @@ etox_str_chop_off_ending_word(char *str)
 {
   char *p, *q, *r;
 
+  if (!str || !strlen(str))
+    return NULL;
+
   p = etox_str_remove_ending_spaces(str);
 
-  for (q = p; strstr(q, " "); *q++);
+  for (q = p; strstr(q, " "); q++);
 
   r = etox_str_chop_off_ending_string(p, q);
   free(p);
