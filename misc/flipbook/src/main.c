@@ -9,6 +9,7 @@
 
 #include <gtk/gtk.h>
 
+#include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 
@@ -35,6 +36,11 @@ int main(int argc, char *argv[])
 	 */
 	VA_Flipbook = create_VA_Flipbook();
 	gtk_widget_show(VA_Flipbook);
+	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "destroy",
+			GTK_SIGNAL_FUNC (on_exit_application), NULL);
+	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "delete_event",
+			GTK_SIGNAL_FUNC (on_exit_application), NULL);
+
 
 	gtk_main();
 	return 0;

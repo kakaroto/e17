@@ -85,6 +85,8 @@ GtkWidget *
 				NULL,"close movie");
 		menuitem = CreateMenuItem(file1,"Exit","","Quit this application",
 				NULL,"exit");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_exit_application), NULL);
 	}
 
 	edit1 = CreateBarSubMenu(menubar1,"Edit");

@@ -35,3 +35,11 @@ Mon Dec 27 14:18:49 PST 1999
 (Mandrake)
 
 Hooked the other windows into their appropriate locations.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 15:01:57 PST 1999
+(Mandrake)
+
+Exit works now.  also closing the main window exits the app.
+now you can only have 1 of each window open at a time, also.
