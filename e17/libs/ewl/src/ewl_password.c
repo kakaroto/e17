@@ -53,7 +53,7 @@ void ewl_password_init(Ewl_Password * e, char *text)
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_password_destroy,
 			    NULL);
 
-	ewl_password_set_text(e, text);
+	ewl_password_text_set(e, text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -66,7 +66,7 @@ void ewl_password_init(Ewl_Password * e, char *text)
  *
  * Change the text of the password widget @a e to the string @a t.
  */
-void ewl_password_set_text(Ewl_Password * e, char *t)
+void ewl_password_text_set(Ewl_Password * e, char *t)
 {
 	char *vis = NULL;
 	int len;
@@ -101,7 +101,7 @@ void ewl_password_set_text(Ewl_Password * e, char *t)
  * @return Returns the password text on success, NULL on failure.
  * @brief Get the text from an password widget
  */
-char           *ewl_password_get_text(Ewl_Password * e)
+char           *ewl_password_text_get(Ewl_Password * e)
 {
 	Ewl_Widget     *w;
 
@@ -119,7 +119,7 @@ char           *ewl_password_get_text(Ewl_Password * e)
  * @return Returns the character value of the obscuring character.
  * @brief Retrieves the character used to obscure the text for a password.
  */
-char ewl_password_get_obscure(Ewl_Password * e)
+char ewl_password_obscure_get(Ewl_Password * e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, 0);
@@ -133,7 +133,7 @@ char ewl_password_get_obscure(Ewl_Password * e)
  * @return Returns no value.
  * @brief Sets the character used to obscure the text for a password.
  */
-void ewl_password_set_obscure(Ewl_Password * e, char o)
+void ewl_password_obscure_set(Ewl_Password * e, char o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -143,7 +143,7 @@ void ewl_password_set_obscure(Ewl_Password * e, char o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_password_insert_text(Ewl_Password * e, char *s)
+void ewl_password_text_insert(Ewl_Password * e, char *s)
 {
 	char           *s2, *s3;
 	int             l = 0, l2 = 0;
@@ -151,7 +151,7 @@ void ewl_password_insert_text(Ewl_Password * e, char *s)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	s2 = ewl_password_get_text(e);
+	s2 = ewl_password_text_get(e);
 	if (s)
 		l = strlen(s);
 	if (s2)
@@ -169,7 +169,7 @@ void ewl_password_insert_text(Ewl_Password * e, char *s)
 	if (s)
 		strcat(s3, s);
 
-	ewl_password_set_text(e, s3);
+	ewl_password_text_set(e, s3);
 
 	IF_FREE(s2);
 	FREE(s3);
@@ -211,7 +211,7 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 				EWL_TEXT(w)->text);
 	else if (ev->keyname) {
-		ewl_password_insert_text(e, ev->keyname);
+		ewl_password_text_insert(e, ev->keyname);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

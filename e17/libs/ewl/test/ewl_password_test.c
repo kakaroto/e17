@@ -21,11 +21,11 @@ __fetch_password_text(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *s;
 
-	s = ewl_password_get_text(EWL_PASSWORD(password[0]));
+	s = ewl_password_text_get(EWL_PASSWORD(password[0]));
 	printf("First password covers: %s\n", s);
 	FREE(s);
 
-	s = ewl_password_get_text(EWL_PASSWORD(password[1]));
+	s = ewl_password_text_get(EWL_PASSWORD(password[1]));
 	printf("Second password covers: %s\n", s);
 	FREE(s);
 
@@ -39,8 +39,8 @@ __fetch_password_text(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __set_password_text(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_password_set_text(EWL_PASSWORD(password[0]), "Play with me ?");
-	ewl_password_set_text(EWL_PASSWORD(password[1]), "E W L ! ! !");
+	ewl_password_text_set(EWL_PASSWORD(password[0]), "Play with me ?");
+	ewl_password_text_set(EWL_PASSWORD(password[1]), "E W L ! ! !");
 
 	return;
 	w = NULL;
