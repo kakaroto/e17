@@ -155,7 +155,6 @@ ActionMoveEnd(EWin * ewin)
      }
    StackDesktop(ewin->desktop);	/* Restack to "un-float" */
 
-   HideCoords();
    XSync(disp, False);
    if (Conf.movemode > 0)
      {
@@ -352,7 +351,6 @@ ActionResizeEnd(EWin * ewin)
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].no_expose = 1;
    ICCCM_Configure(ewin);
-   HideCoords();
    XSync(disp, False);
    if (Conf.resizemode > 0)
      {

@@ -27,7 +27,7 @@ static Window       c_win = 0;
 static int          cx = 0, cy = 0, cw = 0, ch = 0;
 
 void
-SetCoords(EWin * ewin)
+CoordsShow(EWin * ewin)
 {
    TextClass          *tc;
    ImageClass         *ic;
@@ -42,8 +42,6 @@ SetCoords(EWin * ewin)
 
    tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
    ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (!c_win)
-      c_win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
    if ((!ic) || (!tc))
       return;
 
@@ -56,22 +54,18 @@ SetCoords(EWin * ewin)
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
    cw += (ic->padding.left + ic->padding.right);
    ch += (ic->padding.top + ic->padding.bottom);
+
+   cx = 0;
+   cy = 0;
    if (ewin)
      {
-	md = 0;
 	if (Mode.mode == MODE_MOVE)
 	   md = Conf.movemode;
 	else
 	   md = Conf.resizemode;
-	if ((md > 0) && ((cw >= (ewin->w)) || (ch >= (ewin->h))))
+
+	if ((md == 0) || ((cw < ewin->client.w) && (ch < ewin->client.h)))
 	  {
-	     cx = 0;
-	     cy = 0;
-	  }
-	else
-	  {
-	     cx = 0;
-	     cy = 0;
 	     if (Conf.geominfomode == 1)
 	       {
 		  switch (md)
@@ -88,26 +82,27 @@ SetCoords(EWin * ewin)
 	       }
 	  }
      }
-   else
-     {
-	cx = 0;
-	cy = 0;
-     }
+
+   if (!c_win)
+      c_win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
+
+   EMoveResizeWindow(disp, c_win, cx, cy, cw, ch);
+   XRaiseWindow(disp, c_win);
+
    if (!coords_visible)
       EMapWindow(disp, c_win);
-   XRaiseWindow(disp, c_win);
-   EMoveResizeWindow(disp, c_win, cx, cy, cw, ch);
+   coords_visible = 1;
+
    pq = Mode.queue_up;
    Mode.queue_up = 0;
    IclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    TclassApply(ic, c_win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
    Mode.queue_up = pq;
    XFlush(disp);
-   coords_visible = 1;
 }
 
 void
-HideCoords(void)
+CoordsHide(void)
 {
    if (c_win)
       EUnmapWindow(disp, c_win);

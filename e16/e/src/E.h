@@ -1887,8 +1887,8 @@ int                 LoadEConfig(char *themelocation);
 void                SaveUserControlConfig(FILE * autosavefile);
 
 /* coords.c */
-void                SetCoords(EWin * ewin);
-void                HideCoords(void);
+void                CoordsShow(EWin * ewin);
+void                CoordsHide(void);
 
 /* cursors.c */
 ECursor            *CreateECursor(char *name, char *image, int native_id,
