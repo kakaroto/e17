@@ -11,6 +11,7 @@
 #include "image.h"
 #include "scale.h"
 #include "blend.h"
+#include "span.h"
 #ifndef X_DISPLAY_MISSING
 #include "context.h"
 #include "color.h"
@@ -2704,6 +2705,7 @@ Imlib_Updates
 imlib_image_draw_pixel(int x, int y, char make_updates)
 {
    ImlibImage         *im;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -2715,38 +2717,22 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
    if (!(im->data))
       return NULL;
    __imlib_DirtyImage(im);
-   if (ctx->cliprect.w == 0)
-     {
-        __imlib_draw_set_point(im, x, y,
-                               (DATA8) ctx->color.red,
-                               (DATA8) ctx->color.green,
-                               (DATA8) ctx->color.blue,
-                               (DATA8) ctx->color.alpha, ctx->operation);
-     }
-   else
-     {
-        __imlib_draw_set_point_clipped(im, x, y,
-                                       ctx->cliprect.x,
-                                       ctx->cliprect.x +
-                                       ctx->cliprect.w - 1,
-                                       ctx->cliprect.y,
-                                       ctx->cliprect.y +
-                                       ctx->cliprect.h - 1,
-                                       (DATA8) ctx->color.red,
-                                       (DATA8) ctx->color.green,
-                                       (DATA8) ctx->color.blue,
-                                       (DATA8) ctx->color.alpha,
-                                       ctx->operation);
-     }
-   if (!make_updates)
-      return (Imlib_Updates) NULL;
-   return (Imlib_Updates) __imlib_AddUpdate(NULL, x, y, 1, 1);
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   return (Imlib_Updates) __imlib_Point_DrawToImage(x, y, color, im,
+						    ctx->cliprect.x, ctx->cliprect.y,
+						    ctx->cliprect.w, ctx->cliprect.h,
+						    ctx->operation, ctx->blend,
+						    make_updates);
 }
 
 Imlib_Updates
 imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
 {
    ImlibImage         *im;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -2758,40 +2744,22 @@ imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
    if (!(im->data))
       return NULL;
    __imlib_DirtyImage(im);
-   if (ctx->cliprect.w)
-     {
-        return (Imlib_Updates) __imlib_draw_line_clipped(im, x1, y1, x2, y2,
-                                                         ctx->cliprect.x,
-                                                         ctx->cliprect.x +
-                                                         ctx->cliprect.w - 1,
-                                                         ctx->cliprect.y,
-                                                         ctx->cliprect.y +
-                                                         ctx->cliprect.h - 1,
-                                                         (DATA8) ctx->color.red,
-                                                         (DATA8) ctx->color.
-                                                         green,
-                                                         (DATA8) ctx->color.
-                                                         blue,
-                                                         (DATA8) ctx->color.
-                                                         alpha, ctx->operation,
-                                                         (char)make_updates);
-     }
-   else
-     {
-        return (Imlib_Updates) __imlib_draw_line(im, x1, y1, x2, y2,
-                                                 (DATA8) ctx->color.red,
-                                                 (DATA8) ctx->color.green,
-                                                 (DATA8) ctx->color.blue,
-                                                 (DATA8) ctx->color.alpha,
-                                                 ctx->operation,
-                                                 (char)make_updates);
-     }
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   return  (Imlib_Updates) __imlib_Line_DrawToImage(x1, y1, x2, y2, color, im,
+						    ctx->cliprect.x, ctx->cliprect.y,
+						    ctx->cliprect.w, ctx->cliprect.h,
+						    ctx->operation, ctx->blend,
+						    ctx->anti_alias, make_updates);
 }
 
 void
 imlib_image_draw_rectangle(int x, int y, int width, int height)
 {
    ImlibImage         *im;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -2802,28 +2770,21 @@ imlib_image_draw_rectangle(int x, int y, int width, int height)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   if (ctx->cliprect.w)
-     {
-        __imlib_draw_box_clipped(im, x, y, width, height, ctx->cliprect.x,
-                                 ctx->cliprect.x + ctx->cliprect.w,
-                                 ctx->cliprect.y,
-                                 ctx->cliprect.y + ctx->cliprect.h,
-                                 ctx->color.red, ctx->color.green,
-                                 ctx->color.blue, ctx->color.alpha,
-                                 ctx->operation);
-     }
-   else
-     {
-        __imlib_draw_box(im, x, y, width, height, ctx->color.red,
-                         ctx->color.green, ctx->color.blue, ctx->color.alpha,
-                         ctx->operation);
-     }
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   __imlib_Rectangle_DrawToImage(x, y, width, height, color,
+				 im, ctx->cliprect.x, ctx->cliprect.y,
+				 ctx->cliprect.w, ctx->cliprect.h,
+				 ctx->operation, ctx->blend);
 }
 
 void
 imlib_image_fill_rectangle(int x, int y, int width, int height)
 {
    ImlibImage         *im;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -2834,23 +2795,14 @@ imlib_image_fill_rectangle(int x, int y, int width, int height)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   if (ctx->cliprect.w)
-     {
-        __imlib_draw_filled_box_clipped(im, x, y, width, height,
-                                        ctx->cliprect.x,
-                                        ctx->cliprect.x + ctx->cliprect.w,
-                                        ctx->cliprect.y,
-                                        ctx->cliprect.y + ctx->cliprect.h,
-                                        ctx->color.red, ctx->color.green,
-                                        ctx->color.blue, ctx->color.alpha,
-                                        ctx->operation);
-     }
-   else
-     {
-        __imlib_draw_filled_box(im, x, y, width, height, ctx->color.red,
-                                ctx->color.green, ctx->color.blue,
-                                ctx->color.alpha, ctx->operation);
-     }
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   __imlib_Rectangle_FillToImage(x, y, width, height, color,
+				 im, ctx->cliprect.x, ctx->cliprect.y,
+				 ctx->cliprect.w, ctx->cliprect.h,
+				 ctx->operation, ctx->blend);
 }
 
 void
@@ -3731,7 +3683,7 @@ imlib_polygon_add_point(ImlibPolygon poly, int x, int y)
    if (!ctx)
       ctx = imlib_context_new();
    CHECK_PARAM_POINTER("imlib_polygon_add_point", "polygon", poly);
-   __imlib_polygon_add_point(poly, x, y);
+   __imlib_polygon_add_point((ImlibPoly) poly, x, y);
 }
 
 void
@@ -3740,13 +3692,14 @@ imlib_polygon_free(ImlibPolygon poly)
    if (!ctx)
       ctx = imlib_context_new();
    CHECK_PARAM_POINTER("imlib_polygon_free", "polygon", poly);
-   __imlib_polygon_free(poly);
+   __imlib_polygon_free((ImlibPoly) poly);
 }
 
 void
 imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
 {
    ImlibImage         *im;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -3757,27 +3710,21 @@ imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   if (ctx->cliprect.w)
-     {
-        __imlib_draw_polygon_clipped(im, poly, closed, ctx->cliprect.x,
-                                     ctx->cliprect.x + ctx->cliprect.w - 1,
-                                     ctx->cliprect.y,
-                                     ctx->cliprect.y + ctx->cliprect.h - 1,
-                                     ctx->color.red, ctx->color.green,
-                                     ctx->color.blue, ctx->color.alpha,
-                                     ctx->operation);
-     }
-   else
-     {
-        __imlib_draw_polygon(im, poly, closed, ctx->color.red, ctx->color.green,
-                             ctx->color.blue, ctx->color.alpha, ctx->operation);
-     }
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   __imlib_Polygon_DrawToImage((ImlibPoly) poly, closed, color,
+				im, ctx->cliprect.x, ctx->cliprect.y,
+				ctx->cliprect.w, ctx->cliprect.h,
+				ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 void
 imlib_image_fill_polygon(ImlibPolygon poly)
 {
    ImlibImage         *im;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -3788,13 +3735,14 @@ imlib_image_fill_polygon(ImlibPolygon poly)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-   __imlib_draw_polygon_filled(im, poly, ctx->cliprect.x,
-                               ctx->cliprect.x + ctx->cliprect.w - 1,
-                               ctx->cliprect.y,
-                               ctx->cliprect.y + ctx->cliprect.h - 1,
-                               ctx->color.red, ctx->color.green,
-                               ctx->color.blue, ctx->color.alpha,
-                               ctx->operation, ctx->anti_alias);
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   __imlib_Polygon_FillToImage((ImlibPoly) poly, color,
+				im, ctx->cliprect.x, ctx->cliprect.y,
+				ctx->cliprect.w, ctx->cliprect.h,
+				ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 void
@@ -3804,13 +3752,14 @@ imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2,
    if (!ctx)
       ctx = imlib_context_new();
    CHECK_PARAM_POINTER("imlib_polygon_get_bounds", "polygon", poly);
-   __imlib_polygon_get_bounds(poly, px1, py1, px2, py2);
+   __imlib_polygon_get_bounds((ImlibPoly) poly, px1, py1, px2, py2);
 }
 
 void
 imlib_image_draw_ellipse(int xc, int yc, int a, int b)
 {
    ImlibImage         *im;
+   DATA32             color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -3821,31 +3770,21 @@ imlib_image_draw_ellipse(int xc, int yc, int a, int b)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-
-   if (ctx->cliprect.w)
-     {
-        __imlib_draw_ellipse_clipped(im, xc, yc, a, b, ctx->cliprect.x,
-                                     ctx->cliprect.x + ctx->cliprect.w - 1,
-                                     ctx->cliprect.y,
-                                     ctx->cliprect.y + ctx->cliprect.h - 1,
-                                     ctx->color.red, ctx->color.green,
-                                     ctx->color.blue, ctx->color.alpha,
-                                     ctx->operation);
-     }
-   else
-     {
-        __imlib_draw_ellipse_clipped(im, xc, yc, a, b, 0,
-                                     im->w - 1, 0, im->h - 1,
-                                     ctx->color.red, ctx->color.green,
-                                     ctx->color.blue, ctx->color.alpha,
-                                     ctx->operation);
-     }
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   __imlib_Ellipse_DrawToImage(xc, yc, a, b, color,
+			       im, ctx->cliprect.x, ctx->cliprect.y,
+			       ctx->cliprect.w, ctx->cliprect.h,
+			       ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 void
 imlib_image_fill_ellipse(int xc, int yc, int a, int b)
 {
    ImlibImage         *im;
+   DATA32             color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -3856,13 +3795,14 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
    if (!(im->data))
       return;
    __imlib_DirtyImage(im);
-
-   __imlib_fill_ellipse(im, xc, yc, a, b, ctx->cliprect.x,
-                        ctx->cliprect.x + ctx->cliprect.w - 1,
-                        ctx->cliprect.y,
-                        ctx->cliprect.y + ctx->cliprect.h - 1, ctx->color.red,
-                        ctx->color.green, ctx->color.blue, ctx->color.alpha,
-                        ctx->operation, ctx->anti_alias);
+   A_VAL(&color) = (DATA8) ctx->color.alpha;
+   R_VAL(&color) = (DATA8) ctx->color.red;
+   G_VAL(&color) = (DATA8) ctx->color.green;
+   B_VAL(&color) = (DATA8) ctx->color.blue;
+   __imlib_Ellipse_FillToImage(xc, yc, a, b, color,
+			       im, ctx->cliprect.x, ctx->cliprect.y,
+			       ctx->cliprect.w, ctx->cliprect.h,
+			       ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 unsigned char
@@ -3870,9 +3810,8 @@ imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
 {
    if (!ctx)
       ctx = imlib_context_new();
-   CHECK_PARAM_POINTER_RETURN("imlib_polygon_contains_point", "polygon", poly,
-                              0);
-   return __imlib_polygon_contains_point(poly, x, y);
+   CHECK_PARAM_POINTER_RETURN("imlib_polygon_contains_point", "polygon", poly, 0);
+   return __imlib_polygon_contains_point((ImlibPoly) poly, x, y);
 }
 
 void

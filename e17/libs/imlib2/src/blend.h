@@ -188,7 +188,8 @@ else \
  *   b) Include source alpha in the calculation for new destination alpha?
  *      If source alpha is not used, then destination alpha is preserved.
  *      If source alpha is used, a "copy" sets the new alpha to the source
- *      alpha, and a "blend" adds them together (with saturation).
+ *      alpha, and a "blend" increases it by a factor given by the product
+ *      of the source alpha with one minus the destination alpha.
  *   c) Should the source pixels be passed through a color modifier before the
  *      calculations are performed?
  *
@@ -296,6 +297,19 @@ else \
  *
  * Notice the color values created by this operation are in the range
  * (-256, 512), and thus must be saturated at 0 and 255 (from above and below).
+ *
+ * For all the operations, when the "blend" version involves computing new
+ * destination alpha values via the use of some source alpha, we have that:
+ *
+ *    nalpha = alpha + ((255 - alpha) * (a / 255))
+ *
+ * We can use the previous argument for approximating division by 255, and
+ * calculate this by:
+ *
+ *    tmp = (255 - alpha) * a;
+ *    nalpha = alpha + ((tmp + (tmp >> 8) + 0x80) >> 8);
+ *
+ * This is again in the range [0, 255], so no saturation is needed.
  */
 
 #define BLEND_COLOR(a, nc, c, cc) \
@@ -303,58 +317,57 @@ tmp = ((c) - (cc)) * (a); \
 nc = (cc) + ((tmp + (tmp >> 8) + 0x80) >> 8);
 
 #define ADD_COLOR_WITH_ALPHA(a, nc, c, cc) \
-tmp = (cc) + (((c) * (a)) >> 8); \
-SATURATE_UPPER(nc, tmp);
+tmp = (c) * (a); \
+tmp = (cc) + ((tmp + (tmp >> 8) + 0x80) >> 8); \
+nc = (tmp | (-(tmp >> 8)));
 
 #define ADD_COLOR(nc, c, cc) \
 tmp = (cc) + (c); \
-SATURATE_UPPER(nc, tmp);
+nc = (tmp | (-(tmp >> 8)));
 
 #define SUB_COLOR_WITH_ALPHA(a, nc, c, cc) \
-tmp = (cc) - (((c) * (a)) >> 8); \
-SATURATE_LOWER((nc), (tmp));
+tmp = (c) * (a); \
+tmp = (cc) - ((tmp + (tmp >> 8) + 0x80) >> 8); \
+nc = (tmp & (~(tmp >> 8)));
 
 #define SUB_COLOR(nc, c, cc) \
 tmp = (cc) - (c); \
-SATURATE_LOWER(nc, tmp);
+nc = (tmp & (~(tmp >> 8)));
 
 #define RESHADE_COLOR_WITH_ALPHA(a, nc, c, cc) \
 tmp = (cc) + ((((c) - 127) * (a)) >> 7); \
-SATURATE_BOTH(nc, tmp);
+nc = (tmp | (-(tmp >> 8))) & (~(tmp >> 9));
 
 #define RESHADE_COLOR(nc, c, cc) \
 tmp = (cc) + (((c) - 127) << 1); \
-SATURATE_BOTH(nc, tmp);
+nc = (tmp | (-(tmp >> 8))) & (~(tmp >> 9));
 
 extern int pow_lut_initialized;
 extern DATA8 pow_lut[256][256];
 
 #define BLEND_DST_ALPHA(r1, g1, b1, a1, dest) \
-{ int _aa; \
+{ DATA8 _aa; \
 _aa = pow_lut[a1][A_VAL(dest)]; \
+BLEND_COLOR(a1, A_VAL(dest), 255, A_VAL(dest)); \
 BLEND_COLOR(_aa, R_VAL(dest), r1, R_VAL(dest)); \
 BLEND_COLOR(_aa, G_VAL(dest), g1, G_VAL(dest)); \
 BLEND_COLOR(_aa, B_VAL(dest), b1, B_VAL(dest)); \
-A_VAL(dest) = A_VAL(dest) + ((a1 * (255 - A_VAL(dest))) / 255); \
 }
 
 #define BLEND(r1, g1, b1, a1, dest) \
 BLEND_COLOR(a1, R_VAL(dest), r1, R_VAL(dest)); \
 BLEND_COLOR(a1, G_VAL(dest), g1, G_VAL(dest)); \
-BLEND_COLOR(a1, B_VAL(dest), b1, B_VAL(dest)); \
-SATURATE_UPPER(A_VAL(dest), (a1) + A_VAL(dest));
+BLEND_COLOR(a1, B_VAL(dest), b1, B_VAL(dest));
 
 #define BLEND_ADD(r1, g1, b1, a1, dest) \
 ADD_COLOR_WITH_ALPHA(a1, R_VAL(dest), r1, R_VAL(dest)); \
 ADD_COLOR_WITH_ALPHA(a1, G_VAL(dest), g1, G_VAL(dest)); \
-ADD_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest)); \
-SATURATE_UPPER(A_VAL(dest), (a1) + A_VAL(dest));
+ADD_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest));
 
 #define BLEND_SUB(r1, g1, b1, a1, dest) \
 SUB_COLOR_WITH_ALPHA(a1, R_VAL(dest), r1, R_VAL(dest)); \
 SUB_COLOR_WITH_ALPHA(a1, G_VAL(dest), g1, G_VAL(dest)); \
-SUB_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest)); \
-SATURATE_UPPER(A_VAL(dest), (a1) + A_VAL(dest));
+SUB_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest));
 
 #define BLEND_RE(r1, g1, b1, a1, dest) \
 RESHADE_COLOR_WITH_ALPHA(a1, R_VAL(dest), r1, R_VAL(dest)); \
