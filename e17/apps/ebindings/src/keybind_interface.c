@@ -63,7 +63,6 @@ gchar *action_str[] = {
    "Exit",
    "Restart",
    "Window_Stick",
-   "Sound",
    "Window_Iconify",
    "Window_Max_Size",
    "Window_Snap",
@@ -405,7 +404,7 @@ keybind_clist_row_select(GtkWidget * w, gint row, gint column,
          gtk_entry_set_editable(GTK_ENTRY(k_entry.p), FALSE);
          gtk_entry_set_text(GTK_ENTRY(k_entry.p), "");
       }
-      for (i = 0; i < 22; i++)
+      for (i = 0; i < ACTION_STR_MAX; i++)
       {
          if (!strcmp(action_str[i], temp))
          {
