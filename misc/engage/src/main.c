@@ -17,9 +17,20 @@ exit_cb(void *data, int type, void *event)
 int
 main(int argc, char **argv)
 {
-  ecore_init();
-  ecore_x_init(NULL);
-  ecore_config_init("engage");
+  if((ecore_init()) == 0) {
+      exit(0);
+  }
+  
+  if((ecore_x_init(NULL)) == 0) {
+     ecore_shutdown();
+     exit(0);
+  }
+
+  if((ecore_config_init("engage")) == ECORE_CONFIG_ERR_FAIL) {
+     ecore_x_shutdown();
+     ecore_shutdown();
+     exit(0);
+  }
 
   ecore_app_args_set(argc, (const char **) argv);
   if (od_config_init() != ECORE_CONFIG_PARSE_CONTINUE) {
