@@ -1129,8 +1129,6 @@ EwinBorderSelect(EWin * ewin)
 {
    Border             *b;
 
-   ewin->normal_border = ewin->border;
-
    /* Quit if we allready have a border that isn't the fallback one */
    b = ewin->border;
    if (b && strcmp(b->name, "__FALLBACK_BORDER"))
@@ -1779,6 +1777,9 @@ EwinSetBorder(EWin * ewin, Border * b, int apply)
      {
 	ewin->border = b;
      }
+
+   if (!ewin->st.fullscreen)
+      ewin->normal_border = b;
 }
 
 void
@@ -3220,8 +3221,8 @@ EwinSetFullscreen(EWin * ewin, int on)
 	ewin->layer = 10;
 #endif
 	ewin->fixedpos = 1;
-	ewin->st.fullscreen = 1;
-        b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
      }
    else
      {
@@ -3231,9 +3232,9 @@ EwinSetFullscreen(EWin * ewin, int on)
 	h = ewin->lh;
 	ewin->layer = ewin->ll;
 	ewin->fixedpos = 0;	/* Yeah - well */
-	ewin->st.fullscreen = 0;
 	b = ewin->normal_border;
      }
+   ewin->st.fullscreen = on;
    RaiseEwin(ewin);
    MoveResizeEwin(ewin, x, y, w, h);
    HintsSetWindowState(ewin);
