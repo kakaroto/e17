@@ -1,9 +1,5 @@
 Still left TODO
 
-* Save Routine - for modified images, shouldn't be an option unless image
-		    has been modified(i.e. rotated)
-		    Add an "EnticeImageModified" Signal
-
 * Add an entice-ish display mode to the container object in
 		    e17/proto/esmart
 
@@ -13,8 +9,6 @@ Still left TODO
 
 * Find a way to represent, what's visible currently, to the
   EnticeScroller
-
-* Hook in delete callbacks, should be pretty easy
 
 * Trash Can ? Somehow i missed this functionality in the old version
 

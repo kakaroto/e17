@@ -5,7 +5,7 @@
 
 #define DEBUG 0
 
-/* EnticeDeleteCurrent */
+/* EnticeImageDelete*/
 void
 _entice_delete_current(void *data, Evas_Object * o, const char *emission,
                        const char *source)
@@ -18,7 +18,7 @@ _entice_delete_current(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeRemoveCurrent */
+/* EnticeImageRemove*/
 void
 _entice_remove_current(void *data, Evas_Object * o, const char *emission,
                        const char *source)
@@ -57,7 +57,7 @@ _entice_image_prev(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeZoomIn */
+/* EnticeImageZoomIn */
 void
 _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
                 const char *source)
@@ -70,7 +70,7 @@ _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeZoomOut */
+/* EnticeImageZoomOut */
 void
 _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
                  const char *source)
@@ -83,7 +83,7 @@ _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeZoomDefault */
+/* EnticeImageZoomDefault */
 void
 _entice_zoom_default(void *data, Evas_Object * o, const char *emission,
                      const char *source)
@@ -96,7 +96,7 @@ _entice_zoom_default(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeZoomFit */
+/* EnticeImageZoomFit */
 void
 _entice_zoom_fit(void *data, Evas_Object * o, const char *emission,
                  const char *source)
@@ -109,7 +109,7 @@ _entice_zoom_fit(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeZoomInFocused */
+/* EnticeImageZoomInFocused */
 /* FIXME: get mouse coords from ecore, if image is under mouse center there */
 void
 _entice_zoom_in_focused(void *data, Evas_Object * o, const char *emission,
@@ -122,7 +122,7 @@ _entice_zoom_in_focused(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeZoomOutFocused */
+/* EnticeImageZoomOutFocused */
 /* FIXME: get mouse coords from ecore, if image is under mouse center there */
 void
 _entice_zoom_out_focused(void *data, Evas_Object * o, const char *emission,
@@ -136,8 +136,8 @@ _entice_zoom_out_focused(void *data, Evas_Object * o, const char *emission,
 }
 
 /* FIXME: I'm not sure how to do this with edje
- * README.theme states EnticeFitWindow should resize the window to fit the
- * image, for now I"m omitting this feature.
+ * README.theme states EnticeImageFitWindow should resize the window to
+ * fit the image, for now I"m omitting this feature.
  */
 void
 _entice_fit_window(void *data, Evas_Object * o, const char *emission,
@@ -150,7 +150,7 @@ _entice_fit_window(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeRotateLeft */
+/* EnticeImageRotateLeft */
 void
 _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
                     const char *source)
@@ -163,7 +163,7 @@ _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeRotateRight */
+/* EnticeImageRotateRight */
 void
 _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
                      const char *source)
@@ -176,7 +176,7 @@ _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeFlipHorizontal */
+/* EnticeImageFlipH */
 void
 _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
                         const char *source)
@@ -189,7 +189,7 @@ _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeFlipVertical */
+/* EnticeImageFlipV */
 void
 _entice_flip_vertical(void *data, Evas_Object * o, const char *emission,
                       const char *source)
@@ -359,7 +359,7 @@ _entice_image_modified(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeSaveCurrent */
+/* EnticeImageSave */
 void
 _entice_image_save(void *data, Evas_Object * o, const char *emission,
                    const char *source)

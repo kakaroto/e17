@@ -36,20 +36,20 @@ hookup_edje_signals(Evas_Object * o)
                     const char *source);
    } edje_callbacks;
 
-   char *signals[] = { "EnticeDeleteCurrent", "EnticeRemoveCurrent",
+   char *signals[] = { "EnticeImageDelete", "EnticeImageRemove",
       "EnticeImageNext", "EnticeImagePrev",
-      "EnticeZoomIn", "EnticeZoomOut",
-      "EnticeZoomInFocused", "EnticeZoomOutFocused",
-      "EnticeZoomDefault", "EnticeZoomFit",
-      "EnticeFitWindow", "EnticeRotateLeft",
-      "EnticeRotateRight", "EnticeFlipH",
-      "EnticeFlipV", "EnticeFullScreen",
+      "EnticeImageZoomIn", "EnticeImageZoomOut",
+      "EnticeImageZoomInFocused", "EnticeImageZoomOutFocused",
+      "EnticeImageZoomDefault", "EnticeImageZoomFit",
+      "EnticeImageFitWindow", "EnticeImageRotateLeft",
+      "EnticeImageRotateRight", "EnticeImageFlipHorizontal",
+      "EnticeImageFlipVertical", "EnticeFullScreen",
       "EnticeThumbsScrollNextStart", "EnticeThumbsScrollPrevStart",
       "EnticeThumbsScrollStop",
       "EnticeImageScrollEastStart", "EnticeImageScrollWestStart",
       "EnticeImageScrollNorthStart", "EnticeImageScrollSouthStart",
       "EnticeImageScrollStop", "EnticeImageModified",
-      "EnticeSaveCurrent", "EnticeQuit"
+      "EnticeImageSave", "EnticeQuit"
    };
    edje_callbacks funcs[] = { _entice_delete_current, _entice_remove_current,
       _entice_image_next, _entice_image_prev,
