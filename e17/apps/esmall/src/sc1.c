@@ -337,8 +337,8 @@ static void parseoptions(int argc,char **argv,char *iname,char *oname,
       case 'i':
         strcpy(incpath,ptr+1);  /* set name of include directory */
         i=strlen(incpath);
-        if (i>0 && incpath[i-1]!='\\')
-          strcat(incpath,"\\");
+		if (i>0 && incpath[i-1]!=DIRSEP_CHAR)
+			sprintf(incpath,"%s%c",incpath,DIRSEP_CHAR);
         break;
       case 'o':
         strcpy(bname,ptr+1);    /* set name of binary output file */
@@ -386,7 +386,7 @@ static void parseoptions(int argc,char **argv,char *iname,char *oname,
         *ptr=0;   /* set zero terminator at the position of the period */
       /* The output name is the input name with the extension .ASM. The
        * binary file has the extension .AMX. */
-      if ((ptr=strrchr(str,'\\'))!=NULL)
+      if ((ptr=strrchr(str,DIRSEP_CHAR))!=NULL)
         ptr++;          /* strip path */
       else
         ptr=str;
@@ -477,13 +477,13 @@ static void setconfig(char *root)
         *ptr='\0';
     #endif
     /* terminate just behind last \ or : */
-    if ((ptr=strrchr(includepath,'\\'))!=NULL || (ptr=strchr(includepath,':'))!=NULL)
+    if ((ptr=strrchr(includepath,DIRSEP_CHAR))!=NULL || (ptr=strchr(includepath,':'))!=NULL)
       *(ptr+1)='\0';
     else
       /* there was no terminating \ or : so the filename probably does not
        * contain the path */
       includepath[0]='\0';
-    strcat(includepath,"include\\");
+	sprintf(includepath,"%sinclude%c",includepath,DIRSEP_CHAR);
   } /* if */
 }
 

@@ -3,3 +3,11 @@ Fri Nov 26 12:35:34 PST 1999
 
 took a patch from Hans Lofving <hans.316@brfmasthugget.se> that should help
 fix the compile
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 10:58:46 PST 1999
+(Mandrake)
+
+applied patch from Gary V. Vaughan <gary@oranda.demon.co.uk>
+fixes some platform interoperability issues.

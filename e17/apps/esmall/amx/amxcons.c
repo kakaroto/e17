@@ -20,7 +20,7 @@
   #define amx_printf    printf
   #define amx_putchar   putchar
   #define amx_fflush    fflush
-  #define amx_getch     getch
+  #define amx_getch     getchar
 #endif
 
 static int printstring(AMX *amx,cell *cstr,cell *params,int num);

@@ -25,6 +25,14 @@
 #define PUBLIC_CHAR '@'     /* character that defines a function "public" */
 #define CTRL_CHAR   '^'     /* default control character */
 
+
+#ifdef _WIN32
+#  define DIRSEP_CHAR '\\'
+#else
+#  define DIRSEP_CHAR '/'   /* directory separator character */
+#endif
+
+
 #define _dimen_max     2    /* maximum number of array dimensions */
 #define _def_litmax  500    /* initial size of the literal pool, in "cells" */
 #define _numlabels  1000    /* maximum number of internal labels */
