@@ -278,11 +278,12 @@ int main(int argc, char ** argv) {
     ewl_widget_show(box);
 
     /* create text label */
-    label = ewl_text_new("Hello");
+    label = ewl_text_new(NULL);
     ewl_container_append_child(EWL_CONTAINER(box), label);
     ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
+    ewl_text_text_set(EWL_TEXT(label), "hello");
     ewl_widget_show(label);
 
     /* create the entry */
@@ -323,7 +324,7 @@ of text saying 'Hello' at the top and a text area. Typing in the text area and h
 
 <para>
 The 'Hello' string has had a bit of text styling applied. You can see that the text
-has had a simple colour change applied and is now set to display a drop shadow.
+has had a simple colour change applied and is displayed with a drop shadow.
 </para>
 
 <para>
@@ -415,18 +416,26 @@ two SHRINK and FILL flags.
 </para>
 
 <programlisting role="C">
-    label = ewl_text_new("Hello");
+    label = ewl_text_new(NULL);
     ewl_container_append_child(EWL_CONTAINER(box), label);
     ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
+    ewl_text_text_set(EWL_TEXT(label), "Hello");
     ewl_widget_show(label);
 </programlisting>
 <para>
 Now that we have our containing box set up, we create the actual text element
 that is going to function as our label. The label is created with a
-call to <function>ewl_text_new()</function> specifying the text
-we wish to display. Once the widget is created we attach it to the box
+call to <function>ewl_text_new()</function> in this case, we pass NULL as the value
+because we will be specifying our text after we attach some styling to the object. 
+You can also pass a text string into <function>ewl_text_new()</function> if desired.
+Just keep in mind that text styling happens for text that is added <emphasis>after</emphasis>
+the styling is attached.
+</para>
+
+<para>
+Once the widget is created we attach it to the box
 with <function>ewl_container_append_child()</function>. Next we set
 the alignment on the text object though <function>ewl_object_set_alignment()</function>.
 This specifies how the contents will be aligned within the widget itself.

@@ -49,11 +49,12 @@ int main(int argc, char ** argv) {
     ewl_widget_show(box);
  
     /* create text label */
-    label = ewl_text_new("Hello");
+    label = ewl_text_new(NULL);
     ewl_container_append_child(EWL_CONTAINER(box), label);
     ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
+    ewl_text_text_set(EWL_TEXT(label), "Hello");
     ewl_widget_show(label);
 
     /* create the entry */ 
