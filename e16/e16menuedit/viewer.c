@@ -13,39 +13,10 @@
 
 extern GtkTooltips *tooltips;
 extern GtkAccelGroup *accel_group;
-GtkWidget *descriptionfield;
-GtkWidget *iconfield;
-GtkWidget *execfield;
-GtkWidget *submenubutton;
-int execedit = 1;
-char dont_update;
-GtkCTreeNode *last_node = NULL;
-
+GtkWidget *txt_description;
+GtkWidget *txt_icon;
+GtkWidget *txt_exec;
 GtkWidget *ctree;
-GtkCTreeNode *parent;
-
-void
-on_select_submenu_box (GtkWidget * widget, gpointer user_data)
-{
-
-  if (user_data)
-    widget = NULL;
-
-  if (execedit)
-    {
-      gtk_entry_set_editable (GTK_ENTRY (execfield), FALSE);
-      gtk_widget_set_sensitive (execfield, FALSE);
-      execedit = 0;
-    }
-  else
-    {
-      gtk_entry_set_editable (GTK_ENTRY (execfield), TRUE);
-      gtk_widget_set_sensitive (execfield, TRUE);
-      execedit = 1;
-    }
-
-  return;
-}
 
 void
 load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
@@ -66,6 +37,8 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
   menufile = fopen (buf, "r");
   if (!menufile)
     return;
+
+  gtk_clist_freeze (GTK_CLIST (ctree));
 
   while (fgets (s, 4096, menufile))
     {
@@ -118,6 +91,8 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
 
   fclose (menufile);
 
+  gtk_clist_thaw (GTK_CLIST (ctree));
+
   return;
 }
 
@@ -129,6 +104,7 @@ load_menus_from_disk (void)
   char buf[1024];
   char first = 1;
   char s[4096];
+  GtkCTreeNode *parent;
 
   sprintf (buf, "%s/.enlightenment/file.menu", homedir (getuid ()));
   menufile = fopen (buf, "r");
@@ -231,6 +207,7 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
   gchar *col2 = NULL;
   gchar *col3 = NULL;
   gchar *source = NULL;
+  GtkCTreeNode *last_node = NULL;
 
   if (user_data)
     {
@@ -239,7 +216,6 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
       node = NULL;
     }
 
-  dont_update = 1;
   last_node = GTK_CTREE_NODE ((GTK_CLIST (ctree)->selection)->data);
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (last_node), 0,
 			   &col1);
@@ -250,15 +226,19 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
   gtk_ctree_get_node_info (GTK_CTREE (ctree), GTK_CTREE_NODE (last_node),
 			   &source, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
-  /* printf("source: %s, icon: %s, param: %s\n",source,col2,col3); */
-  gtk_entry_set_text (GTK_ENTRY (descriptionfield), source);
-  gtk_entry_set_text (GTK_ENTRY (iconfield), col2);
-  gtk_entry_set_text (GTK_ENTRY (execfield), col3);
+  gtk_entry_set_text (GTK_ENTRY (txt_description), source);
+  gtk_entry_set_text (GTK_ENTRY (txt_icon), col2);
+  gtk_entry_set_text (GTK_ENTRY (txt_exec), col3);
   if (GTK_CTREE_ROW (last_node)->children)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (submenubutton), TRUE);
+    {
+      gtk_entry_set_editable (GTK_ENTRY (txt_exec), FALSE);
+      gtk_widget_set_sensitive (txt_exec, FALSE);
+    }
   else
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (submenubutton), FALSE);
-  dont_update = 0;
+    {
+      gtk_entry_set_editable (GTK_ENTRY (txt_exec), TRUE);
+      gtk_widget_set_sensitive (txt_exec, TRUE);
+    }
 }
 
 GtkWidget *
@@ -279,12 +259,17 @@ create_main_window (void)
   GtkWidget *alignment;
   GtkWidget *hbox;
   GtkWidget *checkbox;
+  GtkWidget *menu;
+  GtkWidget *menuitem;
+
 
   win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (win), "menu_editor", win);
   GTK_WIDGET_SET_FLAGS (win, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (win, GTK_CAN_DEFAULT);
+  gtk_window_set_policy (GTK_WINDOW (win), TRUE, TRUE, FALSE);
   gtk_window_set_title (GTK_WINDOW (win), "E Menu Editor");
+  gtk_window_set_wmclass (GTK_WINDOW (win), "e16menuedit", "e16menuedit");
+  gtk_widget_set_usize (win, -2, 300);
 
   bigvbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (bigvbox);
@@ -294,34 +279,22 @@ create_main_window (void)
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (bigvbox), menubar, FALSE, FALSE, 0);
 
-  {
-    GtkWidget *menu;
-    GtkWidget *menuitem;
+  menu = CreateBarSubMenu (menubar, "File");
+  menuitem = CreateMenuItem (menu, "Save", "", "Save Current Data", NULL,
+			     "save data");
+  menuitem = CreateMenuItem (menu, "Save & Quit", "",
+			     "Save Current Data & Quit Application", NULL,
+			     "save quit");
+  menuitem =
+    CreateMenuItem (menu, "Quit", "", "Quit Without Saving", NULL,
+		    "quit program");
 
-    menu = CreateBarSubMenu (menubar, "File");
-    menuitem = CreateMenuItem (menu, "Save", "", "Save Current Data", NULL,
-			       "save data");
-    menuitem = CreateMenuItem (menu, "Save & Quit", "",
-			       "Save Current Data & Quit Application", NULL,
-			       "save quit");
-    menuitem =
-      CreateMenuItem (menu, "Quit", "", "Quit Without Saving", NULL,
-		      "quit program");
-
-  }
-
-  {
-    GtkWidget *menu;
-    GtkWidget *menuitem;
-
-    menu = CreateRightAlignBarSubMenu (menubar, "Help");
-    menuitem = CreateMenuItem (menu, "About", "", "About E Menu Editor",
-			       NULL, "about");
-    menuitem = CreateMenuItem (menu, "Documentation", "",
-			       "Read the Menu Editor Documentation", NULL,
-			       "read docs");
-
-  }
+  menu = CreateRightAlignBarSubMenu (menubar, "Help");
+  menuitem = CreateMenuItem (menu, "About", "", "About E Menu Editor",
+			     NULL, "about");
+  menuitem = CreateMenuItem (menu, "Documentation", "",
+			     "Read the Menu Editor Documentation", NULL,
+			     "read docs");
 
   panes = gtk_hpaned_new ();
   gtk_widget_show (panes);
@@ -332,10 +305,9 @@ create_main_window (void)
   gtk_widget_show (scrollybit);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollybit),
 				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-  gtk_paned_pack1 (GTK_PANED (panes), scrollybit, TRUE, FALSE);
+  gtk_paned_pack1 (GTK_PANED (panes), scrollybit, TRUE, TRUE);
 
   ctree = gtk_ctree_new (3, 0);
-  gtk_widget_show (ctree);
   gtk_ctree_set_line_style (GTK_CTREE (ctree), GTK_CTREE_LINES_DOTTED);
   gtk_clist_set_column_auto_resize (GTK_CLIST (ctree), 0, TRUE);
   gtk_clist_set_column_title (GTK_CLIST (ctree), 0, "Description");
@@ -346,10 +318,12 @@ create_main_window (void)
   gtk_clist_set_reorderable (GTK_CLIST (ctree), TRUE);
   gtk_signal_connect (GTK_OBJECT (ctree), "tree-select-row",
 		      GTK_SIGNAL_FUNC (selection_made), NULL);
+  gtk_widget_show (ctree);
 
   vbox = gtk_vbox_new (FALSE, 3);
+  
   gtk_widget_show (vbox);
-  gtk_paned_pack2 (GTK_PANED (panes), vbox, FALSE, TRUE);
+  gtk_paned_pack2 (GTK_PANED (panes), vbox, FALSE, FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
 
   frames = gtk_frame_new ("Edit Menu Item Properties");
@@ -361,21 +335,6 @@ create_main_window (void)
   gtk_widget_show (vbox2);
   gtk_container_add (GTK_CONTAINER (frames), vbox2);
   gtk_container_set_border_width (GTK_CONTAINER (vbox2), 4);
-
-  hbox = gtk_hbox_new (FALSE, 3);
-  gtk_widget_show (hbox);
-  gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 2);
-
-  checkbox = gtk_check_button_new_with_label ("Is Active");
-  gtk_widget_show (checkbox);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);
-  gtk_box_pack_start (GTK_BOX (hbox), checkbox, TRUE, FALSE, 2);
-
-  submenubutton = checkbox = gtk_check_button_new_with_label ("Is SubMenu");
-  gtk_widget_show (checkbox);
-  gtk_box_pack_start (GTK_BOX (hbox), checkbox, TRUE, FALSE, 2);
-  gtk_signal_connect (GTK_OBJECT (checkbox), "toggled",
-		      GTK_SIGNAL_FUNC (on_select_submenu_box), NULL);
 
   table = gtk_table_new (3, 3, FALSE);
   gtk_widget_show (table);
@@ -410,18 +369,18 @@ create_main_window (void)
   gtk_table_attach (GTK_TABLE (table), alignment, 0, 1, 2, 3,
 		    GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
-  descriptionfield = entry = gtk_entry_new_with_max_length (200);
+  txt_description = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table), entry, 1, 3, 0, 1,
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
-  gtk_signal_connect_after (GTK_OBJECT (descriptionfield), "key_press_event",
+  gtk_signal_connect_after (GTK_OBJECT (txt_description), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
 
-  iconfield = entry = gtk_entry_new_with_max_length (200);
+  txt_icon = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table), entry, 1, 2, 1, 2,
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
-  gtk_signal_connect_after (GTK_OBJECT (iconfield), "key_press_event",
+  gtk_signal_connect_after (GTK_OBJECT (txt_icon), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
 
   button = gtk_button_new_with_label ("Browse");
@@ -429,13 +388,12 @@ create_main_window (void)
   gtk_table_attach (GTK_TABLE (table), button, 2, 3, 1, 2,
 		    (GtkAttachOptions) 0, (GtkAttachOptions) (0), 0, 0);
 
-  execfield = entry = gtk_entry_new_with_max_length (200);
+  txt_exec = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table), entry, 1, 3, 2, 3,
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
-  gtk_signal_connect_after (GTK_OBJECT (execfield), "key_press_event",
+  gtk_signal_connect_after (GTK_OBJECT (txt_exec), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
-  execedit = 1;
 
   hbox = gtk_hbox_new (FALSE, 3);
   gtk_widget_show (hbox);
@@ -479,11 +437,11 @@ entries_to_ctree (GtkWidget * widget, gpointer user_data)
     return;
 
   gtk_ctree_node_set_text (GTK_CTREE (ctree), node, 0,
-			   gtk_entry_get_text (GTK_ENTRY (descriptionfield)));
+			   gtk_entry_get_text (GTK_ENTRY (txt_description)));
   gtk_ctree_node_set_text (GTK_CTREE (ctree), node, 1,
-			   gtk_entry_get_text (GTK_ENTRY (iconfield)));
+			   gtk_entry_get_text (GTK_ENTRY (txt_icon)));
   gtk_ctree_node_set_text (GTK_CTREE (ctree), node, 2,
-			   gtk_entry_get_text (GTK_ENTRY (execfield)));
+			   gtk_entry_get_text (GTK_ENTRY (txt_exec)));
 
   return;
   widget = NULL;
@@ -566,7 +524,7 @@ save_menus (GtkWidget * widget, gpointer user_data)
 			       gtk_ctree_node_nth (GTK_CTREE (ctree), 0),
 			       tree_to_gnode, NULL);
   if (write_menu (node, buf))
-    printf ("Drat. Something went Pete Tong there....\n");
+    printf ("Drat. Something went Pete Tong....\n");
   else
     printf ("Successful save\n");
 
@@ -605,7 +563,7 @@ destroy_node_data (GNode * node)
 	g_free (data->icon);
       if (data->params)
 	g_free (data->params);
-      g_free(data);
+      g_free (data);
     }
 }
 
@@ -670,7 +628,7 @@ write_menu (GNode * node, gchar * file)
 	printf ("error writing entry\n");
 	return 1;
       }
-  fclose(fp);
+  fclose (fp);
 
   return 0;
 }
@@ -679,16 +637,21 @@ gint
 write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
+
   dat = (struct entry_data *) node->data;
   if (G_NODE_IS_LEAF (node))
     {
-      fprintf (fp, "\"%s\"\t%s\texec\t\"%s\"\n", dat->desc ? dat->desc : "",
+      /* It's an entry */
+      fprintf (fp, "\"%s\"\t%s\texec\t\"%s\"\n",
+	       dat->desc[0] == '\0' ? "NULL" : dat->desc,
 	       dat->icon[0] == '\0' ? "NULL" : dat->icon,
 	       dat->params ? dat->params : "");
     }
   else
     {
-      fprintf (fp, "\"%s\"\t%s\tmenu\t\"%s\"\n", dat->desc ? dat->desc : "",
+      /* It's a submenu */
+      fprintf (fp, "\"%s\"\t%s\tmenu\t\"%s\"\n",
+	       dat->desc[0] == '\0' ? "NULL" : dat->desc,
 	       dat->icon[0] == '\0' ? "NULL" : dat->icon,
 	       dat->params ? dat->params : "");
       if (write_menu (node, dat->params))
@@ -704,18 +667,18 @@ write_menu_entry (GNode * node, FILE * fp)
 void
 write_menu_title (GNode * node, FILE * fp)
 {
+  fprintf (fp, "# Automatically generated by e16keyedit. "
+	   "Hold on to your butt.\n");
   fprintf (fp, "%s\n", ((struct entry_data *) (node->data))->desc);
 }
 
 void
 on_exit_application (GtkWidget * widget, gpointer user_data)
 {
-
-  if (user_data)
-    {
-      widget = NULL;
-    }
   gtk_exit (0);
+  return;
+  user_data = NULL;
+  widget = NULL;
 }
 
 int
@@ -730,12 +693,12 @@ main (int argc, char *argv[])
   gtk_widget_push_visual (gdk_imlib_get_visual ());
   gtk_widget_push_colormap (gdk_imlib_get_colormap ());
   main_win = create_main_window ();
-  load_menus_from_disk ();
-  gtk_widget_show (main_win);
   gtk_signal_connect (GTK_OBJECT (main_win), "destroy",
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
+  load_menus_from_disk ();
+  gtk_widget_show (main_win);
   gtk_main ();
   return 0;
 }
