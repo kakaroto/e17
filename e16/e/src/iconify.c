@@ -528,7 +528,7 @@ IB_Reconfigure(Iconbox * ib)
 }
 
 static void
-IconboxEwinMoveResize(EWin * ewin, int resize)
+IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    static int          call_depth = 0;	/* Ugly! */
    Iconbox            *ib = ewin->ibox;
@@ -539,15 +539,15 @@ IconboxEwinMoveResize(EWin * ewin, int resize)
 
    if (!Conf.theme.transparency &&
        ib->w == ewin->client.w && ib->h == ewin->client.h)
-      return;
+      goto done;
 
    ib->w = ewin->client.w;
    ib->h = ewin->client.h;
    ib->force_update = 1;
    IconboxRedraw(ib);
+
+ done:
    call_depth--;
-   return;
-   resize = 0;
 }
 
 static void
