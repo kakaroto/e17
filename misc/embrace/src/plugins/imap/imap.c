@@ -29,8 +29,9 @@
 
 #include <embrace_plugin.h>
 
-#define IDENT "EMBRACE_IMAP_PLUGIN"
 #define MAX_INTERVAL 300
+
+static EmbracePlugin *plugin = NULL;
 
 static int on_server_add (void *udata, int type, void *event)
 {
@@ -39,10 +40,11 @@ static int on_server_add (void *udata, int type, void *event)
 	char buf[256];
 	int len;
 
-	if (strcmp ((char *) udata, IDENT))
-		return 1;
-
 	mb = ecore_con_server_data_get (ev->server);
+	assert (mb);
+
+	if (mailbox_plugin_get (mb) != plugin)
+		return 1;
 
 	/* now login to the server */
 	len = snprintf (buf, sizeof (buf), "A001 LOGIN %s %s\r\n",
@@ -61,10 +63,11 @@ static int on_server_data (void *udata, int type, void *event)
 	char realbuf[1024], *buf = realbuf;
 	int num = 0, new = 0, len;
 
-	if (strcmp ((char *) udata, IDENT))
-		return 1;
-
 	mb = ecore_con_server_data_get (ev->server);
+	assert (mb);
+
+	if (mailbox_plugin_get (mb) != plugin)
+		return 1;
 
 	/* take the data and make a NUL-terminated string out of it */
 	len = sizeof (realbuf) - 1;
@@ -239,6 +242,7 @@ static void imap_shutdown ()
 
 bool embrace_plugin_init (EmbracePlugin *ep)
 {
+	plugin = ep;
 	snprintf (ep->name, sizeof (ep->name), "%s", "imap");
 
 	ep->check = imap_check;
@@ -251,9 +255,9 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 	ecore_con_init ();
 
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
-	                         on_server_add, IDENT);
+	                         on_server_add, NULL);
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
-	                         on_server_data, IDENT);
+	                         on_server_data, NULL);
 
 	return true;
 }

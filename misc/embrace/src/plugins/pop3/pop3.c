@@ -37,18 +37,21 @@ typedef enum {
 	STATE_STAT_OK
 } State;
 
-#define IDENT "EMBRACE_POP3_PLUGIN"
 #define MAX_INTERVAL 300
+
+static EmbracePlugin *plugin = NULL;
 
 static int on_server_add (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Add *ev = event;
 	MailBox *mb;
 
-	if (strcmp ((char *) udata, IDENT))
+	mb = ecore_con_server_data_get (ev->server);
+	assert (mb);
+
+	if (mailbox_plugin_get (mb) != plugin)
 		return 1;
 
-	mb = ecore_con_server_data_get (ev->server);
 	mailbox_property_set (mb, "state", (void *) STATE_CONNECTED);
 
 	return 0;
@@ -62,10 +65,12 @@ static int on_server_data (void *udata, int type, void *event)
 	char inbuf[2048], outbuf[256];
 	int num = 0, size = 0, len;
 
-	if (strcmp ((char *) udata, IDENT))
+	mb = ecore_con_server_data_get (ev->server);
+	assert (mb);
+
+	if (mailbox_plugin_get (mb) != plugin)
 		return 1;
 
-	mb = ecore_con_server_data_get (ev->server);
 	state = (State) mailbox_property_get (mb, "state");
 
 	/* take the data and make a NUL-terminated string out of it */
@@ -127,10 +132,12 @@ static int on_server_del (void *udata, int type, void *event)
 	MailBox *mb;
 	char *host;
 
-	if (strcmp ((char *) udata, IDENT))
+	mb = ecore_con_server_data_get (ev->server);
+	assert (mb);
+
+	if (mailbox_plugin_get (mb) != plugin)
 		return 1;
 
-	mb = ecore_con_server_data_get (ev->server);
 	host = (char *) mailbox_property_get (mb, "host");
 
 	if (mailbox_property_get (mb, "state") == STATE_DISCONNECTED)
@@ -285,6 +292,7 @@ static void pop3_shutdown ()
 
 bool embrace_plugin_init (EmbracePlugin *ep)
 {
+	plugin = ep;
 	snprintf (ep->name, sizeof (ep->name), "%s", "pop3");
 
 	ep->check = pop3_check;
@@ -297,11 +305,11 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 	ecore_con_init ();
 
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
-	                         on_server_add, IDENT);
+	                         on_server_add, NULL);
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
-	                         on_server_data, IDENT);
+	                         on_server_data, NULL);
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
-	                         on_server_del, IDENT);
+	                         on_server_del, NULL);
 
 	return true;
 }
