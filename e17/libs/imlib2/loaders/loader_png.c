@@ -277,6 +277,8 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    png_color_8         sig_bit;
    int                 pl = 0;
    char                pper = 0;
+   ImlibImageTag      *tag;
+   int                 quality = 75, compression;
    
    f = fopen(im->file, "wb");
    if (!f)
@@ -325,6 +327,19 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    sig_bit.blue = 8;
    sig_bit.alpha = 8;
    png_set_sBIT(png_ptr, info_ptr, &sig_bit);
+   /* compression */
+   tag = __imlib_GetTag(im, "quality");
+   if (tag)
+      quality = tag->val;
+   if (quality < 10)
+      quality = 10;
+   if (quality > 99)
+      quality = 99;   
+   /* translate to png-relevant value */
+   quality = quality / 10;
+   compression = 10 - quality;
+   /* should be 1-9 now */
+   png_set_compression_level(png_ptr, compression);
    png_write_info(png_ptr, info_ptr);
    png_set_shift(png_ptr, &sig_bit);
    png_set_packing(png_ptr);
