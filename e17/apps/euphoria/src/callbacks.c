@@ -270,6 +270,7 @@ EDJE_CB(seek_backward_stop) {
 
 EDJE_CB(euphoria_quit) {
 	xmmsc_playback_stop(e->xmms);
+	xmmsc_quit(e->xmms);
 	ecore_main_loop_quit();
 }
 
@@ -615,7 +616,7 @@ XMMS_CB(playlist_clear) {
 }
 
 XMMS_CB(playlist_shuffle) {
-	int i, id, *ids = NULL;
+	int i, *ids = NULL;
 	PlayListItem *pli = NULL;
 
 	if ((ids = xmmscs_playlist_list(e->xmms))) {
