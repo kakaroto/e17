@@ -17,7 +17,7 @@ group {
         }
         rel2 {
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
       }
       description {
@@ -100,7 +100,7 @@ group {
         rel2 {
           to, "bg";
           relative, 1.0 1.0;
-          offset, -2 - 2;
+          offset, -2 -2;
         }
       }
       description {
@@ -115,7 +115,7 @@ group {
         rel2 {
           to, "bg";
           relative, 0.0 1.0;
-          offset, -150 - 2;
+          offset, -150 -2;
         }
       }
     }
@@ -244,7 +244,7 @@ group {
         rel2 {
           to, "clip_btn_small";
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "arrow_up.png";
@@ -262,7 +262,7 @@ group {
         rel2 {
           to, "clip_btn_small";
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "arrow_up_over.png";
@@ -287,7 +287,7 @@ group {
         rel2 {
           to, "clip_btn_big";
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "arrow_dn.png";
@@ -305,7 +305,7 @@ group {
         rel2 {
           to, "clip_btn_big";
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "arrow_dn_over.png";
@@ -356,15 +356,15 @@ group {
     }
 
 
-    TEXT_BUTTON("new", "New", 0.0 0.0, 1 1, 1.0 0.25, -2 - 1);
-    TEXT_BUTTON("saveload", "Save/Load", 0.0 0.25, 1 1, 1.0 0.5, -2 - 1);
-    TEXT_BUTTON("settings", "Settings", 0.0 0.5, 1 1, 1.0 0.75, -2 - 1);
-    TEXT_BUTTON("exit", "Exit", 0.0 0.75, 1 1, 1.0 1.0, -2 - 2);
+    TEXT_BUTTON("new", "New", 0.0 0.0, 1 1, 1.0 0.25, -2 -1);
+    TEXT_BUTTON("saveload", "Save/Load", 0.0 0.25, 1 1, 1.0 0.5, -2 -1);
+    TEXT_BUTTON("settings", "Settings", 0.0 0.5, 1 1, 1.0 0.75, -2 -1);
+    TEXT_BUTTON("exit", "Exit", 0.0 0.75, 1 1, 1.0 1.0, -2 -2);
 
-    ICON("new", 0.0 1.0, 1 - 17, 0.0 1.0, 16 - 2);
-    ICON("saveload", 0.0 1.0, 18 - 17, 0.0 1.0, 33 - 2);
-    ICON("settings", 0.0 1.0, 35 - 17, 0.0 1.0, 50 - 2);
-    ICON("close", 0.0 1.0, 52 - 17, 0.0 1.0, 67 - 2);
+    ICON("new", 0.0 1.0, 1 -17, 0.0 1.0, 16 -2);
+    ICON("saveload", 0.0 1.0, 18 -17, 0.0 1.0, 33 -2);
+    ICON("settings", 0.0 1.0, 35 -17, 0.0 1.0, 50 -2);
+    ICON("close", 0.0 1.0, 52 -17, 0.0 1.0, 67 -2);
   }
 
   programs {

@@ -3,7 +3,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("up", "arrow_up", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+    BUTTON("up", "arrow_up", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
   programs {
     BUTTON_PROG("up", "")
@@ -15,7 +15,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("down", "arrow_dn", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+    BUTTON("down", "arrow_dn", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
 
   programs {
@@ -28,7 +28,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("left", "arrow_lt", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+    BUTTON("left", "arrow_lt", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
 
   programs {
@@ -41,7 +41,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("right", "arrow_rt", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+    BUTTON("right", "arrow_rt", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
 
   programs {
@@ -83,7 +83,7 @@ group {
         }
         rel2 {
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "button.png";
@@ -112,7 +112,7 @@ group {
         }
         rel2 {
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "button.png";
@@ -142,7 +142,7 @@ group {
         }
         rel2 {
           relative, 1.0 1.0;
-          offset, -1 - 1;
+          offset, -1 -1;
         }
         image {
           normal, "button.png";

@@ -124,7 +124,7 @@ collections {
           }
           rel2 {
             relative, 1.0 1.0;
-            offset, -2 - 2;
+            offset, -2 -2;
           }
         }
       }
@@ -145,7 +145,7 @@ collections {
           }
           rel2 {
             relative, 1.0 1.0;
-            offset, -2 - 2;
+            offset, -2 -2;
             to, "container_bg";
           }
           text {
@@ -168,7 +168,7 @@ collections {
           rel1 {
             to, "bg";
             relative, 1.0 1.0;
-            offset, -58 - 58;
+            offset, -58 -58;
           }
           rel2 {
             to, "bg";
