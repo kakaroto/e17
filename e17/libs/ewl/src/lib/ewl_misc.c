@@ -87,6 +87,8 @@ int ewl_init(int *argc, char **argv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+
+
 	/* check if we are already initialized */
 	if (++_ewl_init_count > 1)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
@@ -94,12 +96,12 @@ int ewl_init(int *argc, char **argv)
 	ewl_init_parse_options(argc, argv);
 
 	if (!ecore_init()) {
-		DERROR("Could not init ecore....");
+		DERROR("Could not init ecore....\n");
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!edje_init()) {
-		DERROR("Could not init edje....");
+		DERROR("Could not init edje....\n");
 		ecore_shutdown();
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
@@ -140,13 +142,13 @@ int ewl_init(int *argc, char **argv)
 	if (!use_engine) {
 		fprintf(stderr, "Cannot open display!\n");
 		ewl_shutdown();
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_config_init()) {
-		DERROR("Could not init config data.");
+		DERROR("Could not init config data.\n");
 		ewl_shutdown();
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (print_theme_keys)
@@ -158,17 +160,16 @@ int ewl_init(int *argc, char **argv)
 	}
 
 	if (!ewl_ev_init()) {
-		DERROR("Could not init event data.");
+		DERROR("Could not init event data.\n");
 		ewl_shutdown();
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_callbacks_init();
 
 	if (!ewl_theme_init()) {
-		DERROR("Could not init theme data.");
 		ewl_shutdown();
-		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_embed_list = ecore_list_new();
@@ -201,8 +202,10 @@ int ewl_shutdown()
 	ecore_list_destroy(free_evas_list);
 	ecore_list_destroy(free_evas_object_list);
 	ecore_list_destroy(child_add_list);
-	ecore_list_destroy(ewl_embed_list);
-	ecore_list_destroy(ewl_window_list);
+	if (ewl_embed_list)
+		ecore_list_destroy(ewl_embed_list);
+	if (ewl_window_list)
+		ecore_list_destroy(ewl_window_list);
 
 	edje_shutdown();
 

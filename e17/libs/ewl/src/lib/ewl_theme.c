@@ -41,7 +41,8 @@ int ewl_theme_init(void)
 			theme_name = strdup(ewl_config.theme.name);
 			theme_path = ewl_theme_path_find(theme_name);
 		}
-	}		
+	} else
+		theme_path = ewl_theme_path_find(theme_name);
 
 	/*
 	 * Fall back to the default theme.
@@ -55,7 +56,7 @@ int ewl_theme_init(void)
 	 * If we can't find a theme, no point in continuing further.
 	 */
 	if (!theme_path) {
-		DERROR("No usable theme found, exiting EWL");
+		fprintf(stderr, "No usable theme found, exiting EWL\n");
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
@@ -134,9 +135,7 @@ static char * ewl_theme_path_find(const char * name)
 			theme_found_path = strdup(theme_tmp_path);
 		}
 	}
-
 	return theme_found_path;
-
 }
 
 /**
