@@ -6,7 +6,7 @@ Standards-Version: 3.1.1.0
 
 Package: epplets
 Architecture: any
-Depends: libepplet0 (=${Source-Version}), ${shlibs:Depends}
+Depends: libepplet0 (= ${Source-Version}), ${shlibs:Depends}
 Description: Epplets for the Enlightenment Window Manager
   Epplets are small applets for the Enlightenment Window Manager. Epplets 
   are similar to dock apps for other window managers, but they take full 
@@ -23,6 +23,6 @@ Description: Epplet Shared Libraries
 
 Package: libepplet-dev
 Architecture: any
-Depends: libepplet0 (=${Source-Version}), libc6-dev
+Depends: libepplet0 (= ${Source-Version}), libc6-dev
 Description: Development files for Epplets
  Static libs and the C header file for Epplets.
