@@ -85,7 +85,7 @@ collections {
 		parts {
 			part {
 				name, "background";
-				mouse_events, 0;
+				mouse_events, 1;
 				type, IMAGE;
 
 				description {
@@ -1028,7 +1028,13 @@ collections {
 				action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
 			}
 
-
+			/* switch to "large" mode */
+			program {
+				name, "titlebar_dbl_click";
+				signal, "mouse,down,1,double";
+				source, "background";
+				action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer";
+			}
 		}
 	}
 	group {
