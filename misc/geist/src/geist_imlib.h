@@ -32,14 +32,13 @@
 #ifndef GEIST_IMLIB_H
 #define GEIST_IMLIB_H
 
-#define CLIP(x,y,w,h,xx,yy,ww,hh) \
+#define CLIP(x, y, w, h, xx, yy, ww, hh) \
 { \
-   if (yy > y) { h -= yy - y; y = yy; } \
-   if (yy + hh < y + h) { h -= y + h - (yy + hh); } \
-   if (xx > x) { w -= xx - x; x = xx; } \
-   if (xx + ww < x + w) { w -= x + w - (xx + ww); } \
+   if ((yy) > y) { h -= (yy) - y; y = (yy); } \
+   if ((yy) + hh < y + h) { h -= y + h - ((yy) + (hh)); } \
+   if ((xx) > x) { w -= (xx) - x; x = (xx); } \
+   if ((xx) + (ww) < x + w) { w -= x + w - ((xx) + (ww)); } \
 }
-
 
 int geist_imlib_load_image(Imlib_Image * im, char *filename);
 int geist_imlib_image_get_width(Imlib_Image im);
@@ -54,8 +53,8 @@ void geist_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x,
 void geist_imlib_render_image_on_drawable_with_rotation(Drawable d,
                                                         Imlib_Image im, int x,
                                                         int y, double angle,
-                                                        char dither,
 
+                                                        char dither,
                                                         char blend,
                                                         char alias);
 void geist_imlib_render_image_part_on_drawable_at_size(Drawable d,
@@ -63,13 +62,13 @@ void geist_imlib_render_image_part_on_drawable_at_size(Drawable d,
                                                        int sy, int sw, int sh,
                                                        int dx, int dy, int dw,
                                                        int dh, char dither,
-                                                       char blend,
 
+                                                       char blend,
                                                        char alias);
 void geist_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable
                                                                      d,
-                                                                     Imlib_Image
 
+                                                                     Imlib_Image
                                                                      im,
                                                                      int sx,
                                                                      int sy,
@@ -117,7 +116,6 @@ void geist_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                         char merge_alpha, int sx, int sy,
                                         int sw, int sh, int dx, int dy,
                                         int dw, int dh, char dither,
-
                                         char blend, char alias);
 void geist_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
                                                       Imlib_Image
@@ -158,9 +156,8 @@ void geist_imlib_image_sharpen(Imlib_Image im, int radius);
 void geist_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w,
                                       int h, int r, int g, int b, int a);
 DATA8 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y);
-void
-geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
-                               int y1, int xmin, int xmax, int ymin, int ymax,
-                               int r, int g, int b, int a);
+void geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
+                                    int y1, int xmin, int xmax, int ymin,
+                                    int ymax, int r, int g, int b, int a);
 
 #endif

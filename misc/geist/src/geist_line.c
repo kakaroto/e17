@@ -112,7 +112,6 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
                           int w, int h)
 {
    geist_line *line;
-   int sw, sh, dw, dh, sx, sy, dx, dy;
    int ox, oy, ow, oh;
 
    D_ENTER(5);
