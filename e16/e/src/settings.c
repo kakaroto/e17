@@ -3243,7 +3243,7 @@ SettingsSelectiveTransparency(void)
    if (Conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 6);
+	DialogItemSetColSpan(di, 7);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemTextSetText(di,
@@ -3251,7 +3251,7 @@ SettingsSelectiveTransparency(void)
 				"Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 6);
+	DialogItemSetColSpan(di, 7);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSeparatorSetOrientation(di, 0);
