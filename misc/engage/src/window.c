@@ -128,6 +128,7 @@ od_window_init()
   int             def;
   int             res_x, res_y;
   Evas_Object    *o;
+  Evas_Object    *eventer = evas_object_rectangle_add(evas);
 
   // determine the desktop size
   dsp = ecore_x_display_get();
@@ -169,7 +170,6 @@ od_window_init()
   ecore_evas_callback_focus_out_set(ee, handle_focus_out);
 
   evas = ecore_evas_get(ee);
-  Evas_Object    *eventer = evas_object_rectangle_add(evas);
 
   evas_object_color_set(eventer, 0, 0, 0, 0);
   evas_object_resize(eventer, options.width, options.height);
