@@ -12,4 +12,4 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 
 SUBDIRS		     = src demo
 
-EXTRA_DIST = README AUTHORS COPYING TODO gevas-config.h acconfig.h
+EXTRA_DIST = README AUTHORS COPYING TODO acconfig.h
