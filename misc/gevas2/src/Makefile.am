@@ -41,7 +41,8 @@ gevasevh_selectable.h     \
 gevasevh_group_selector.h \
 gevas_obj_collection.h    \
 gevas_sprite.h            \
-gevas_util.h              
+gevas_util.h              \
+gevastrans_alphawipe.h
 
 libgevas_la_SOURCES   =   \
 gevas.c                   \
@@ -65,7 +66,8 @@ gevas_obj_collection.c    \
 gevas_sprite.c            \
 gevas_util.c              \
 project.c                 \
-project.h                 
+project.h                 \
+gevastrans_alphawipe.c    
 
 libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
 libgevas_la_LDFLAGS      = -version-info 1:0:0

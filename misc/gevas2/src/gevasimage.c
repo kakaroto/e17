@@ -164,10 +164,10 @@ guint gevasimage_get_type(void)
 			"GtkgEvasImage",
 			sizeof(GtkgEvasImage),
 			sizeof(GtkgEvasImageClass),
-			(GtkClassInitFunc) gevasimage_class_init,
+			(GtkClassInitFunc)  gevasimage_class_init,
 			(GtkObjectInitFunc) gevasimage_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
+			/* reserved_1 */   NULL,
+			/* reserved_2 */   NULL,
 			(GtkClassInitFunc) NULL,
 		};
 
@@ -517,6 +517,10 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
         gtk_object_unref( GTK_OBJECT(o) );
         return 0;
     }
+
+    g_return_val_if_fail(o != NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVASIMAGE(o),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas(GTK_GEVASOBJ(o))),0);
     return o;
 }
 

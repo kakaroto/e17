@@ -90,7 +90,306 @@ enum {
 
 static guint signals[] = { 0 };
 
+#define GEVAS(ev) gevasobj_get_gevas( GTK_OBJECT(ev) )
 
+/********************************************************************************/
+/********************************************************************************/
+/********************************************************************************/
+
+static GtkgEvasObj* getActiveObject( GtkgEvasSprite* ev )
+{
+    return gevas_obj_collection_element_n( ev->col, ev->current_frame );
+}
+
+
+static Evas* _gevas_evas(GtkObject * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    return gevas_get_evas(getActiveObject( ev )->gevas);
+}
+
+static void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+
+/*     fprintf(stderr,"gevas_set_obj() should not be called on a sprite!\n" ); */
+}
+
+static void _gevasobj_ensure_obj_free(GtkObject * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+}
+
+static void _gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_set_color( GTK_GEVASOBJ( li->data ), r, g, b, a );
+    }
+}
+
+static void _gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_set_zoom_scale( GTK_GEVASOBJ( li->data ), scale );
+    }
+}
+static void _gevasobj_set_layer(GtkgEvasObj * object, int l)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_set_layer( GTK_GEVASOBJ( li->data ), l );
+    }
+}
+static int _gevasobj_get_layer(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+    return gevasobj_get_layer( getActiveObject( ev ) );
+}
+
+static void _gevasobj_raise(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_raise( GTK_GEVASOBJ( li->data ) );
+    }
+}
+
+static void _gevasobj_lower(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_lower( GTK_GEVASOBJ( li->data ) );
+    }
+}
+
+static void _gevasobj_stack_above(GtkgEvasObj * object, GtkgEvasObj * above)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_stack_above( GTK_GEVASOBJ( li->data ), above );
+    }
+}
+
+static void _gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_stack_below( GTK_GEVASOBJ( li->data ), below );
+    }
+}
+
+static void _gevasobj_resize(GtkgEvasObj * object, double w, double h)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_resize( GTK_GEVASOBJ( li->data ), w, h );
+    }
+	gevasobj_queue_redraw(object);
+}
+
+static void _gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y, double *w, double *h)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+	g_return_if_fail(GTK_IS_GEVASOBJ(getActiveObject( ev )));
+    Evas_List* li=0;
+    return gevasobj_get_geometry(getActiveObject( ev ), x, y, w, h );
+}
+
+static void _gevasobj_show(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_show( GTK_GEVASOBJ( li->data ) );
+    }
+}
+
+static void _gevasobj_hide(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_hide( GTK_GEVASOBJ( li->data ) );
+    }
+}
+
+static void _gevasobj_get_color(GtkgEvasObj * object, int *r, int *g, int *b, int *a)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+    gevasobj_get_color( getActiveObject( ev ), r, g, b, a );
+}
+
+static void _gevasobj_set_name(GtkgEvasObj * object, gchar * name)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_set_name( GTK_GEVASOBJ( li->data ), name );
+    }
+}
+
+static gchar *_gevasobj_get_name(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    Evas_List* li=0;
+    return gevasobj_get_name( getActiveObject( ev ) );
+}
+
+static int _gevasobj_get_alpha(GtkgEvasObj * object)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+    return gevasobj_get_alpha( getActiveObject( ev ) );
+}
+
+static void _gevasobj_set_alpha(GtkgEvasObj * object, int a)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_set_alpha( GTK_GEVASOBJ( li->data ), a );
+    }
+}
+
+static void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+    gevasobj_get_location( getActiveObject( ev ), x, y );
+}
+
+static void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_add_evhandler( GTK_GEVASOBJ( li->data ), h );
+    }
+}
+
+static void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_remove_evhandler( GTK_GEVASOBJ( li->data ), h );
+    }
+}
+
+
+
+
+/********************************************************************************/
+/********************************************************************************/
+/********************************************************************************/
 
 
 void gevas_sprite_add(           GtkgEvasSprite* ev, GtkgEvasSprite_T o )
@@ -100,6 +399,10 @@ void gevas_sprite_add(           GtkgEvasSprite* ev, GtkgEvasSprite_T o )
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
 	g_return_if_fail(GTK_IS_GEVASOBJ(o));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
+
+
+    ev->frame_trans_f_size++;
+    g_array_set_size( ev->frame_trans_f, ev->frame_trans_f_size );
     
     gevas_obj_collection_add( ev->col, o );
 }
@@ -113,6 +416,9 @@ void gevas_sprite_add_all(       GtkgEvasSprite* ev, GtkgEvasSprite*s)
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(s ->col));
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
 
+    ev->frame_trans_f_size += evas_list_count( s->col->selected_objs );
+    g_array_set_size( ev->frame_trans_f, ev->frame_trans_f_size );
+    
     gevas_obj_collection_add_all( ev->col, s->col );
 }
 
@@ -343,7 +649,7 @@ load_from_metadata(
 
                 printf("load_from_metadata() image_name:%s\n",image_name);
 
-                if(!(o = gevasimage_new_from_metadata( ev->gevas, image_name )))
+                if(!(o = gevasimage_new_from_metadata( GEVAS(ev), image_name )))
                 {
                     loaded=0;
                 }
@@ -440,7 +746,7 @@ sprite_load_from_metadata_f(gevas_metadata_find_edb_data* d)
             image_name = edb_lookup_str( edb, "", "%s/%d/Location", edb_prefix, idx,0 );
             printf("load_from_metadata() image_name:%s\n",image_name);
 
-            if(!(o = gevasimage_new_from_metadata( ev->gevas, image_name )))
+            if(!(o = gevasimage_new_from_metadata( GEVAS(ev), image_name )))
             {
                 gevas_obj_collection_clear( ev->col );
                 loaded=0;
@@ -487,7 +793,7 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
 	g_return_val_if_fail(loc!= NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVAS_SPRITE(ev),0);
 	g_return_val_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col),0);
-	g_return_val_if_fail(GTK_IS_GEVAS(ev->gevas),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(GEVAS(ev)),0);
 
 
     d->  edb_postfix   = loc;
@@ -496,7 +802,7 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
     data.loaded        = 0;
     
 
-    gevas_metadata_find_edb_with_data( ev->gevas, d );
+    gevas_metadata_find_edb_with_data( GEVAS(ev), d );
     return data.loaded;
 }
 #endif
@@ -512,7 +818,7 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
 	g_return_val_if_fail(loc!= NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVAS_SPRITE(ev),0);
 	g_return_val_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col),0);
-	g_return_val_if_fail(GTK_IS_GEVAS(ev->gevas),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(GEVAS(ev)),0);
     
 
     ev->metadata_load_loaded = 0;
@@ -523,9 +829,9 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
 
     sprite_load_from_metadata_f
     
-    if( gevas_get_metadata_prefix_list(ev->gevas))
+    if( gevas_get_metadata_prefix_list(GEVAS(ev)))
     {
-        g_list_foreach( gevas_get_metadata_prefix_list(ev->gevas),
+        g_list_foreach( gevas_get_metadata_prefix_list(GEVAS(ev)),
                         load_from_metadata, ev);
     }
     load_from_metadata((gpointer)no_prefix,ev);
@@ -703,7 +1009,7 @@ clock_sprite( GtkgEvasSprite* ev )
         gint size     = gevas_sprite_get_size( ev );
         GtkgEvasObj* current = 0;
         GtkgEvasObj* next    = 0;
-        
+        geTransAlphaWipe* trans = 0;
         
         if( ev->playing_backwards )  { nidx--; if(nidx<0) nidx=size; }
         else                         { nidx++; nidx %= size; }
@@ -715,9 +1021,25 @@ clock_sprite( GtkgEvasSprite* ev )
 
         printf("clock_sprite() current:%p\n",current);
         printf("clock_sprite() next   :%p\n",next);
+        {
+            Evas_Object* eo = gevasobj_get_evasobj( current );
+            printf("clock_sprite() current_eo:%p\n",eo);
+        }
         
-        gevasobj_hide( current );
-        gevasobj_show( next    );
+
+        trans = g_array_index( ev->frame_trans_f,
+                               geTransAlphaWipe*,
+                               ncurrent );
+        if( trans )
+        {
+            printf("clock_sprite() trans:%p\n", trans );
+            gevastrans_perform( trans, current, next );
+        }
+        else
+        {
+            gevasobj_hide( current );
+            gevasobj_show( next    );
+        }
         
         ev->current_frame = nidx;
     }
@@ -875,7 +1197,7 @@ gevas_sprite_get_type(void)
 			(GtkClassInitFunc) NULL,
 		};
 
-		ev_type = gtk_type_unique(gtk_object_get_type(), &ev_info);
+		ev_type = gtk_type_unique(gevasobj_get_type(), &ev_info);
 	}
 
 	return ev_type;
@@ -885,7 +1207,8 @@ static void
 gevas_sprite_class_init(GtkgEvasSpriteClass * klass)
 {
 	GtkObjectClass *object_class;
-
+    GtkgEvasObjClass* gok = (GtkgEvasObjClass*)klass;
+    
 	object_class = (GtkObjectClass *) klass;
 	parent_class = gtk_type_class(gtk_object_get_type());
 
@@ -893,6 +1216,34 @@ gevas_sprite_class_init(GtkgEvasSpriteClass * klass)
     object_class->get_arg = gevas_sprite_get_arg;
 	object_class->set_arg = gevas_sprite_set_arg;
 
+    /** Protected inherit **/
+	gok->_gevas_evas = _gevas_evas;
+	gok->_gevas_set_obj = _gevas_set_obj;
+	gok->_gevasobj_ensure_obj_free = _gevasobj_ensure_obj_free;
+
+    /** public members **/
+	gok->set_color = _gevasobj_set_color;
+	gok->set_zoom_scale = _gevasobj_set_zoom_scale;
+	gok->set_layer = _gevasobj_set_layer;
+	gok->get_layer = _gevasobj_get_layer;
+	gok->raise = _gevasobj_raise;
+	gok->lower = _gevasobj_lower;
+	gok->stack_above = _gevasobj_stack_above;
+	gok->stack_below = _gevasobj_stack_below;
+	gok->resize = _gevasobj_resize;
+	gok->get_geometry = _gevasobj_get_geometry;
+	gok->show = _gevasobj_show;
+	gok->hide = _gevasobj_hide;
+	gok->get_color = _gevasobj_get_color;
+	gok->set_name = _gevasobj_set_name;
+	gok->get_name = _gevasobj_get_name;
+	gok->get_alpha = _gevasobj_get_alpha;
+	gok->set_alpha = _gevasobj_set_alpha;
+	gok->get_location = _gevasobj_get_location;
+
+	gok->add_evhandler = _gevasobj_add_evhandler;
+	gok->remove_evhandler = _gevasobj_remove_evhandler;
+    
     /*
     signals[SIG_ADD] =
         gtk_signal_new ("add",
@@ -913,11 +1264,14 @@ gevas_sprite_class_init(GtkgEvasSpriteClass * klass)
 static void
 gevas_sprite_init(GtkgEvasSprite * ev)
 {
-    ev->gevas             = 0;
-    ev->col               = 0;
+    ev->col   = gevas_obj_collection_new( GEVAS(ev) );
+
     ev->playing_backwards = 0;
     ev->frame_delay_ms_base = 0;
     ev->frame_delay_ms = 0;
+
+    ev->frame_trans_f_size = 40;
+    ev->frame_trans_f = g_array_new( 1, 1, sizeof(geTransAlphaWipe*));
 }
 
 
@@ -928,9 +1282,9 @@ gevas_sprite_new(GtkgEvas* _gevas)
 	GtkgEvasSprite *ev;
 
 	ev = gtk_type_new(gevas_sprite_get_type());
+
+    gevasobj_set_gevas( GTK_GEVASOBJ(ev), _gevas );
     
-    ev->gevas = _gevas;
-    ev->col   = gevas_obj_collection_new(ev->gevas);
     gevas_sprite_set_default_frame_delay( ev, 40 );
     gevas_sprite_move( ev, 0, 0 );
 
@@ -1014,5 +1368,26 @@ gevas_sprite_new_from_metadata( GtkgEvas* gevas, const char* loc )
     }
 #endif
     return 0;
+}
+
+
+void gevas_sprite_set_transition_function( GtkgEvasSprite* object,
+                                           int framenum,
+                                           geTransAlphaWipe* trans )
+{
+	GtkgEvasSprite *ev;
+    g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+
+    if( ev->frame_trans_f_size < framenum )
+    {
+        ev->frame_trans_f_size += framenum;
+        g_array_set_size( ev->frame_trans_f, ev->frame_trans_f_size );
+    }
+
+    printf("gevas_sprite_set_transition_function() trans:%p\n", trans );
+    ev->frame_trans_f = g_array_insert_val( ev->frame_trans_f, framenum, trans );
+    
 }
 

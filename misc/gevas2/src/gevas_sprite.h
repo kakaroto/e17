@@ -36,6 +36,7 @@
 #include <gtk/gtkobject.h>
 #include <gtk/gtk.h>
 
+#include "gevastrans_alphawipe.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,10 +60,9 @@ extern "C" {
 
     struct _GtkgEvasSprite
     {
-        GtkObject gobj;
+        GtkgEvasObj gobj;
 
         GtkgEvasObjCollection* col;
-        GtkgEvas* gevas;
 
         // # frames to play, -1 == play forever
         gint frames_to_play; 
@@ -80,11 +80,13 @@ extern "C" {
         gint     frame_delay_ms_size;    // count(frame_delay_ms) from 0
         GArray*  frame_delay_ms;         // delay between frames from frame_delay_ms_base
                                          // elements are sizeof(gint) in frame_delay_ms 
-        
+
+        gint     frame_trans_f_size;     // count(frame_trans_f) from 0
+        GArray*  frame_trans_f;          // transition function to use between frames
     };
 
     struct _GtkgEvasSpriteClass {
-        GtkObjectClass parent_class;
+		GtkgEvasObjClass parent_class;
     };
 
 
@@ -135,7 +137,10 @@ extern "C" {
     void gevas_sprite_play_forever( GtkgEvasSprite* ev );
 
     void gevas_sprite_set_play_backwards( GtkgEvasSprite* ev, gboolean v );
-    
+
+    void gevas_sprite_set_transition_function( GtkgEvasSprite* ev,
+                                               int framenum,
+                                               geTransAlphaWipe* trans );
     
 /* package */
     

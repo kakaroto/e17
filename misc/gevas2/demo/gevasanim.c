@@ -63,6 +63,49 @@ static gint delete_event_cb(GtkWidget * window, GdkEventAny * e, gpointer data)
 	return FALSE;
 }
 
+void makeFastAnim()
+{
+    GtkgEvasSprite* sprite = 0;
+    GtkgEvasImage*  gi     = 0;
+    GtkgEvasObj*    go     = 0;
+    int i = 0;
+
+    sprite = gevas_sprite_new( gevas );
+
+    for( i=1; i<7; ++i )
+    {
+        gchar* md = g_strdup_printf( "cell%ld.png?x=270&y=120&visible=0&fill_size=1", i );
+        
+        gi = gevasimage_new_from_metadata( gevas, md );
+        gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
+
+        g_free( md );
+    }
+    gevas_sprite_set_default_frame_delay( sprite, 30 );
+    gevas_sprite_play_forever( sprite );
+}
+
+void makeSelectable( GtkgEvasObj* object )
+{
+	GtkgEvasObj *ct;
+	GtkObject *evh = gevasevh_selectable_new( evh_selector );
+    gevasevh_selectable_set_confine( GTK_GEVASEVH_SELECTABLE(evh), 1 );
+
+	gevasobj_add_evhandler(object, evh);
+	gevasevh_selectable_set_normal_gevasobj(GTK_GEVASEVH_SELECTABLE(evh), object);
+
+	ct = (GtkgEvasObj*)gevasgrad_new(gevasobj_get_gevas(GTK_OBJECT(object)));
+
+    evas_object_color_set(gevasobj_get_evasobj(GTK_OBJECT(ct)), 255, 200, 255, 200);
+    gevasgrad_add_color(ct, 120, 150, 170, 45, 8);
+	gevasgrad_add_color(ct, 200, 170, 90, 150, 16);
+    gevasgrad_set_angle(ct, 150);
+	gevasobj_resize( ct, 200,100);
+	gevasobj_set_layer(ct, 9999);
+    gevasevh_selectable_set_selected_gevasobj( evh, ct );
+}
+
+
 int main(int argc, char *argv[])
 {
 	GtkgEvasImage*  bg     = 0;
@@ -100,6 +143,14 @@ int main(int argc, char *argv[])
         gevas, "bg.png?"
         "x=0&y=0&visible=1&fill_size=1&layer=-9999&resize_x=9999&resize_y=9999" );
 
+    /* make a group selector object */
+	evh_selector = gevasevh_group_selector_new();
+    gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh_selector, GTK_GEVASOBJ(bg));
+    gevasobj_add_evhandler(GTK_GEVASOBJ(bg), evh_selector);
+    
+
+//    makeFastAnim();
+    
 
     sprite = gevas_sprite_new( gevas );
 
@@ -112,9 +163,26 @@ int main(int argc, char *argv[])
 
         g_free( md );
     }
-    gevas_sprite_set_default_frame_delay( sprite, 100 );
+    gevas_sprite_set_default_frame_delay( sprite, 2000 );
     gevas_sprite_play_forever( sprite );
 
+    /* frame transitions */
+    {
+        geTransAlphaWipe* trans = 0;
+        trans = gevastrans_alphawipe_new();
+        for( i=0; i<7; ++i )
+            gevas_sprite_set_transition_function( sprite, i, trans );
+    }
+
+    makeSelectable( sprite );
+
+
+    gi = gevasimage_new_from_metadata( gevas, "cell4.png?x=220&y=290&visible=0&fill_size=1" );
+    gevasobj_show( GTK_GEVASOBJ( gi ));
+    makeSelectable( gi );
+    
+    
+    
     gtk_main();
     return 0;
 }

@@ -241,13 +241,15 @@ void _gevasobj_ensure_obj_free(GtkObject * object)
 void _gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a)
 {
 	evas_object_color_set( EVASO(object), r, g, b, a);
+	gevasobj_queue_redraw(object);
 }
 
 void _gevasobj_set_alpha(GtkgEvasObj * object, int a)
 {
 	int r = 0, g = 0, b = 0, aa = 0;
-	evas_object_color_get(object, &r, &g, &b, &aa);
-	evas_object_color_set(object, r, g, b, a);
+	evas_object_color_get(EVASO(object), &r, &g, &b, &aa);
+	evas_object_color_set(EVASO(object), r, g, b, a);
+	gevasobj_queue_redraw(object);
 }
 
 void _gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale)
