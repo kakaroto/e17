@@ -133,8 +133,6 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
 	ewl_widget_show(e->cursor);
 
-	e->selections = NULL;
-
 	/*
 	 * Attach necessary callback mechanisms 
 	 */
@@ -887,6 +885,14 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	index = ewl_entry_coord_index_map(e, ev->x, ev->y);
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), index);
+
+	if (ev->modifiers & EWL_KEY_MODIFIER_SHIFT) {
+
+	}
+	else {
+		ewl_container_reset(EWL_CONTAINER(e));
+	}
+
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
