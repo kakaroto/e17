@@ -1,3 +1,6 @@
+Thu Sep  20 13:57:55 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a Ewl_Separator.
+
 Sat Sep  15 04:42:27 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed bug in Ewl_Entry, when calling ewl_text_set_text the cursor
 	  appeared even if the entry wasn't selected.

@@ -53,3 +53,4 @@
 #include <ewl_radiobutton.h>
 #include <ewl_cursor.h>
 #include <ewl_selection.h>
+#include <ewl_separator.h>
