@@ -309,7 +309,8 @@ PagerShow(Pager * p)
 	else
 	  {
 	     /* no snapshots ? first time ? make a row on the bottom left up */
-	     MoveResizeEwin(ewin, 0, root.h - (mode.numdesktops - p->desktop) * ewin->h,
+	     MoveResizeEwin(ewin, 0,
+			    root.h - (mode.numdesktops - p->desktop) * ewin->h,
 			    ewin->client.w, ewin->client.h);
 	  }
 	PagerRedraw(p, 1);
