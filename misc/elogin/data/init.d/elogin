@@ -22,7 +22,7 @@ case "$1" in
   ;;
   stop)
 	echo -n "Stopping Elogind: elogin"
-	kill -9 $PIDFILE 
+	kill -9 `cat $PIDFILE` 
 	echo "."
   ;;
   restart)
