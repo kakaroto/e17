@@ -3367,3 +3367,23 @@ Avoid confusion with edb. Fix null string item problem.
 Fix some remembered settings bugs.
 Fix various opacity setting bugs.
 Fix keygrabs handling (e.g. focus list staying up).
+
+-------------------------------------------------------------------------------
+
+Mon Apr  4 23:41:06 CEST 2005
+(Kim)
+
+--- 0.16.8 0.08 ---
+Correct group_op help text.
+Add option to send ICCCM ConfigureNotify's while moving (default off, was always on).
+Fix various menu animation/sliding bugs.
+Add warning if trying to enable composite when not available (Thanks emby).
+Fix button text.
+Add window op to enable/disable button grabs per client window.
+Fix menu opacity and stacking.
+Fix submenu alignment, limit number of menu items per column.
+Composite manager fixes and speedups.
+Clean up when exiting Alert().
+Remove broken -smfile command line option.
+Add -p (--config-prefix) command line option to set the configuration file prefix.
+Fix initial border assignment for internal windows.
