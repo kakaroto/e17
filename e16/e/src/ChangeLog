@@ -1267,3 +1267,10 @@ Sat Sep  4 00:41:49 PDT 1999
 (Raster)
 
 update TOTO buglist.... ooh its getting short.. :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 08:19:25 PDT 1999
+(Raster)
+
+fixed makefile.am to not nuke interactive.sh

@@ -1,6 +1,5 @@
 BUGS:
 raster: group properties are not remembered :(
-raster: in E-docs interactive.sh gets hosed on make clean
 raster: must update dox docs fully
 mark: focus swtiching in multihead between the heads gets confused... :)
 
