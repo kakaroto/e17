@@ -24,23 +24,23 @@ enum _e_menu_type
 
 struct __emenu_item
 {
-   char               *text, *icon, *exec;
-   enum _e_menu_type   type;
-   Ewd_List           *children;
+   char *text, *icon, *exec;
+   enum _e_menu_type type;
+   Ewd_List *children;
    /* submenus */
 };
 typedef struct __emenu_item emenu_item;
 
 /* create a new emenu_item */
-emenu_item         *emenu_item_new(void);
+emenu_item *emenu_item_new(void);
 
 /* free an emenu_item */
-void                emenu_item_free(emenu_item *);
+void emenu_item_free(emenu_item *);
 
 /* 
  * ewd requires a void function with a void pointer, this just typecasts and
  * calls the real free function
  */
-void                _emenu_item_free(void *);
+void _emenu_item_free(void *);
 
 #endif

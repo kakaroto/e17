@@ -10,10 +10,10 @@
 /* Creates an emenu_item: sets everything to null or 0, and initializes the
  * children list 
  */
-emenu_item         *
+emenu_item *
 emenu_item_new(void)
 {
-   emenu_item         *result;
+   emenu_item *result;
 
    result = malloc(sizeof(emenu_item));
    result->text = result->icon = result->exec = NULL;
@@ -25,6 +25,7 @@ emenu_item_new(void)
 
    return result;
 }
+
 /* used by ewd, it wants a void pointer blah blah blah */
 void
 _emenu_item_free(void *data)
@@ -36,7 +37,7 @@ _emenu_item_free(void *data)
 void
 emenu_item_free(emenu_item * m)
 {
-   if(!m)
+   if (!m)
       return;
 
    IF_FREE(m->exec);

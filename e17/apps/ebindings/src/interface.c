@@ -11,7 +11,7 @@
 /* app_exit:
  * 	Signal can be attached to widgets to quit the gtk display 
  */
-static              gint
+static gint
 app_exit(GtkWidget * w, gpointer data)
 {
    gtk_main_quit();
@@ -19,39 +19,40 @@ app_exit(GtkWidget * w, gpointer data)
    UN(w);
    UN(data);
 }
+
 /* create_main_ebindings_window
  * returns a pointer to the GtkWidget that is the created.  Creates a menu
  * and a notebook.  functions to add features to the notebook can be added
  * at the bottom.  NOTHING else needs to go in here but notebook page
  * addition function calls
  */
-GtkWidget          *
+GtkWidget *
 create_main_ebindings_window(void)
 {
-   GtkWidget          *win;
-   GtkWidget          *vbox;
-   GtkWidget          *notebook;
-   GtkWidget          *menu_bar;
-   GtkWidget          *menu1;
-   GtkWidget          *f_menu;
-   GtkWidget          *menu_quit;
-   GtkWidget          *status;
+   GtkWidget *win;
+   GtkWidget *vbox;
+   GtkWidget *notebook;
+   GtkWidget *menu_bar;
+   GtkWidget *menu1;
+   GtkWidget *f_menu;
+   GtkWidget *menu_quit;
+   GtkWidget *status;
 
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_window_set_title(GTK_WINDOW(win), "Ebindings");
    gtk_window_set_wmclass(GTK_WINDOW(win), "Ebindings", "Main");
    gtk_widget_set_usize(GTK_WIDGET(win), 600, 300);
    gtk_signal_connect(GTK_OBJECT(win), "delete_event",
-		      GTK_SIGNAL_FUNC(app_exit), NULL);
+                      GTK_SIGNAL_FUNC(app_exit), NULL);
    gtk_widget_ref(win);
    gtk_object_set_data_full(GTK_OBJECT(win), "win", win,
-			    (GtkDestroyNotify) gtk_widget_unref);
+                            (GtkDestroyNotify) gtk_widget_unref);
 
    vbox = gtk_vbox_new(FALSE, 1);
 
    notebook = gtk_notebook_new();
    gtk_object_set_data_full(GTK_OBJECT(win), "ebindings_notebook", notebook,
-			    (GtkDestroyNotify) gtk_widget_unref);
+                            (GtkDestroyNotify) gtk_widget_unref);
    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_LEFT);
 
    /* setup the status bar too */
@@ -72,7 +73,7 @@ create_main_ebindings_window(void)
    menu_quit = gtk_menu_item_new_with_label("Quit");
    gtk_menu_append(GTK_MENU(menu1), menu_quit);
    gtk_signal_connect(GTK_OBJECT(menu_quit), "activate",
-		      GTK_SIGNAL_FUNC(app_exit), NULL);
+                      GTK_SIGNAL_FUNC(app_exit), NULL);
    gtk_widget_show(menu_quit);
    /* done with boring menus blah blah */
 

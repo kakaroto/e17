@@ -20,9 +20,9 @@
 	} \
 }
 
-GtkWidget          *ebindings_statusbar;
+GtkWidget *ebindings_statusbar;
 
-gint                status_bar_clear(gpointer data);
-void                status_bar_message(gchar * message, gint delay);
+gint status_bar_clear(gpointer data);
+void status_bar_message(gchar * message, gint delay);
 
 #endif

@@ -8,20 +8,22 @@
 #include "interface.h"
 #include "ebindings.h"
 
-void                print_ebindings_version(void);
+void print_ebindings_version(void);
 
 /* Pretty complex huh ? =) */
 int
 main(int argc, char *argv[])
 {
-   int                 i;
-   GtkWidget          *win;
+   int i;
+   GtkWidget *win;
 
    gtk_init(&argc, &argv);
-   for(i = 0; i < argc; i++) {
-      if(!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v")
-	 || !strcmp(argv[i], "-V")) {
-	 print_ebindings_version();
+   for (i = 0; i < argc; i++)
+   {
+      if (!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v")
+          || !strcmp(argv[i], "-V"))
+      {
+         print_ebindings_version();
       }
    }
    win = create_main_ebindings_window();
@@ -30,6 +32,7 @@ main(int argc, char *argv[])
 
    return 0;
 }
+
 void
 print_ebindings_version(void)
 {

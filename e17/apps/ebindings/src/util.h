@@ -24,16 +24,16 @@
  * attempting to keep track of the value in the db, so when written the db
  * is cleared, then rewritten.
  */
-int                 parse_user_actions_db(void);
+int parse_user_actions_db(void);
 
 /* 
  * Write the changes back to the db, for consistency we clean out the old
  * one completely then write all the stuff back 
  */
-int                 write_user_actions_db(void);
+int write_user_actions_db(void);
 
-int                 write_user_menu_db_with_ewd_list(Ewd_List *);
-int                 read_user_menu_db_into_ewd_list(Ewd_List *);
+int write_user_menu_db_with_ewd_list(Ewd_List *);
+int read_user_menu_db_into_ewd_list(Ewd_List *);
 
 /* wrapper to open and start recursive call */
 

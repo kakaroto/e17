@@ -20,8 +20,8 @@
 #define E_ACTION_TYPE_MAX 8
 #define FOCUS_ACTION_STR_MAX 19
 
-void                add_actions_extra_notebook(GtkWidget * w,
-					       GtkWidget * note, int sheet);
+void add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet);
+
 /* @param w: widget pointing to the window
  * @param note: widget pointing to the notebook to attach to
  * @param sheet: what tab to insert as

@@ -10,37 +10,36 @@
 
 static struct
 {
-   GtkWidget          *pos;	/* position option menu */
-   GtkWidget          *ev;	/* event type option menu */
-   GtkWidget          *ac;	/* action type option menu */
-   GtkWidget          *mod;	/* modifier key option menu */
+   GtkWidget *pos;              /* position option menu */
+   GtkWidget *ev;               /* event type option menu */
+   GtkWidget *ac;               /* action type option menu */
+   GtkWidget *mod;              /* modifier key option menu */
 }
 f_menus;
-static GtkWidget   *button_e;	/* entry widget for the button number */
-static GtkWidget   *clist;	/* columned list of mouse events */
-static int          row_count;	/* the number of rows in clist */
-static int          current_row;	/* the currently selected row in the clist */
+static GtkWidget *button_e;     /* entry widget for the button number */
+static GtkWidget *clist;        /* columned list of mouse events */
+static int row_count;           /* the number of rows in clist */
+static int current_row;         /* the currently selected row in the clist */
 
 /* global variables to the focus interface */
 
-static void         focus_clist_select_row(GtkWidget * w, gint row,
-					   gint column, GdkEventButton * ev,
-					   gpointer data);
+static void focus_clist_select_row(GtkWidget * w, gint row, gint column,
+                                   GdkEventButton * ev, gpointer data);
 
-static void         window_pos_option_menu_modified(GtkWidget *, gpointer);
-static void         event_option_menu_modified(GtkWidget *, gpointer);
-static void         action_option_menu_modified(GtkWidget *, gpointer);
-static void         mod_key_option_menu_modified(GtkWidget *, gpointer);
+static void window_pos_option_menu_modified(GtkWidget *, gpointer);
+static void event_option_menu_modified(GtkWidget *, gpointer);
+static void action_option_menu_modified(GtkWidget *, gpointer);
+static void mod_key_option_menu_modified(GtkWidget *, gpointer);
 
-static void         event_change_button_cb(GtkWidget *, gpointer);
-static void         event_save_button_cb(GtkWidget *, gpointer);
-static void         event_add_button_cb(GtkWidget *, gpointer);
-static void         event_del_button_cb(GtkWidget *, gpointer);
+static void event_change_button_cb(GtkWidget *, gpointer);
+static void event_save_button_cb(GtkWidget *, gpointer);
+static void event_add_button_cb(GtkWidget *, gpointer);
+static void event_del_button_cb(GtkWidget *, gpointer);
 
 /* callbacks(commented below) */
 
 /* option menu data */
-static gchar       *mod_str[] = {
+static gchar *mod_str[] = {
    "NONE",
    "SHIFT",
    "CTRL",
@@ -61,7 +60,7 @@ static gchar       *mod_str[] = {
 };
 
 /* options based on enum _ev_modifiers in Ecore.h */
-static gchar       *e_action_str[] = {
+static gchar *e_action_str[] = {
    "Window_Move",
    "Window_Resize",
    "Window_Resize_Horizontal",
@@ -84,7 +83,7 @@ static gchar       *e_action_str[] = {
    /* count is 19 currently */
    /* based on options in e_action_init in actions.c in e17/e/src */
 };
-static gchar       *ebits_hot_spots[] = {
+static gchar *ebits_hot_spots[] = {
    "Decoration",
    "Title_Bar",
    "Close",
@@ -110,7 +109,7 @@ static gchar       *ebits_hot_spots[] = {
    "Window_Place"
       /* parts of this came from etcher class types on the properties tag */
 };
-static gchar       *e_action_type[] = {
+static gchar *e_action_type[] = {
    "Mouse In On Window Position",
    "Mouse Out On Window Position",
    "Mouse Button Down On Window Position",
@@ -133,26 +132,26 @@ void
 add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 {
 
-   GtkWidget          *tab_label;
-   GtkWidget          *hpaned;
-   GtkWidget          *hbox;
-   GtkWidget          *vbox;
-   GtkWidget          *scroller1, *scroller2;
-   GtkWidget          *frame;
-   GtkWidget          *table;
-   int                 i;
-   eaction_item       *e;
+   GtkWidget *tab_label;
+   GtkWidget *hpaned;
+   GtkWidget *hbox;
+   GtkWidget *vbox;
+   GtkWidget *scroller1, *scroller2;
+   GtkWidget *frame;
+   GtkWidget *table;
+   int i;
+   eaction_item *e;
 
-   GtkWidget          *newb, *delb, *saveb, *button_b;
-   GtkWidget          *o_menu, *menu, *option;
-   GtkWidget          *win_pos_l, *event_l, *mod_l, *action_l, *button_l;
-   GtkWidget          *disclaimer;
-   char                buf[64];
+   GtkWidget *newb, *delb, *saveb, *button_b;
+   GtkWidget *o_menu, *menu, *option;
+   GtkWidget *win_pos_l, *event_l, *mod_l, *action_l, *button_l;
+   GtkWidget *disclaimer;
+   char buf[64];
 
-   gchar              *fields[] = {
+   gchar *fields[] = {
       "Window Position", "Event", "Action", "Mouse Button", "Modifier Key"
    };
-   gchar              *key_fields[5];
+   gchar *key_fields[5];
 
    current_row = row_count = 0;
    /* setup the static globals =) */
@@ -164,8 +163,7 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    scroller1 = gtk_scrolled_window_new(NULL, NULL);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller1),
-				  GTK_POLICY_AUTOMATIC,
-				  GTK_POLICY_AUTOMATIC);
+                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
    clist = gtk_clist_new_with_titles(5, fields);
    gtk_widget_ref(clist);
@@ -177,7 +175,7 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_clist_set_column_auto_resize(GTK_CLIST(clist), 3, TRUE);
    gtk_clist_set_column_auto_resize(GTK_CLIST(clist), 4, TRUE);
    gtk_signal_connect(GTK_OBJECT(clist), "select-row",
-		      GTK_SIGNAL_FUNC(focus_clist_select_row), NULL);
+                      GTK_SIGNAL_FUNC(focus_clist_select_row), NULL);
 
    gtk_container_add(GTK_CONTAINER(scroller1), clist);
    gtk_paned_pack1(GTK_PANED(hpaned), scroller1, TRUE, FALSE);
@@ -193,23 +191,23 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    /* Row 1 */
    win_pos_l = gtk_label_new("Window Position:");
    gtk_table_attach(GTK_TABLE(table), win_pos_l, 0, 1, 0, 1, GTK_FILL, 0, 2,
-		    2);
+                    2);
 
    o_menu = gtk_option_menu_new();
    gtk_widget_ref(o_menu);
    gtk_widget_set_name(o_menu, "win_pos_menu");
-   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 0, 1, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 0, 1, GTK_FILL, 0, 2, 2);
 
    f_menus.pos = o_menu;
    menu = gtk_menu_new();
 
-   for(i = 0; i < EBITS_SPOT_MAX; i++) {
+   for (i = 0; i < EBITS_SPOT_MAX; i++)
+   {
       option = gtk_menu_item_new_with_label(ebits_hot_spots[i]);
       gtk_widget_show(option);
       gtk_signal_connect(GTK_OBJECT(option), "activate",
-			 GTK_SIGNAL_FUNC(window_pos_option_menu_modified),
-			 (gpointer) i);
+                         GTK_SIGNAL_FUNC(window_pos_option_menu_modified),
+                         (gpointer) i);
       gtk_menu_append(GTK_MENU(menu), option);
    }
    gtk_option_menu_set_menu(GTK_OPTION_MENU(o_menu), menu);
@@ -219,24 +217,23 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    /* Row 2 */
    event_l = gtk_label_new("Event Type: ");
-   gtk_table_attach(GTK_TABLE(table), event_l, 0, 1, 1, 2, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), event_l, 0, 1, 1, 2, GTK_FILL, 0, 2, 2);
 
    o_menu = gtk_option_menu_new();
    gtk_widget_ref(o_menu);
    gtk_widget_set_name(o_menu, "event_menu");
-   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 1, 2, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 1, 2, GTK_FILL, 0, 2, 2);
 
    f_menus.ev = o_menu;
    menu = gtk_menu_new();
 
-   for(i = 0; i < E_ACTION_TYPE_MAX; i++) {
+   for (i = 0; i < E_ACTION_TYPE_MAX; i++)
+   {
       option = gtk_menu_item_new_with_label(e_action_type[i]);
       gtk_widget_show(option);
       gtk_signal_connect(GTK_OBJECT(option), "activate",
-			 GTK_SIGNAL_FUNC(event_option_menu_modified),
-			 (gpointer) i);
+                         GTK_SIGNAL_FUNC(event_option_menu_modified),
+                         (gpointer) i);
       gtk_menu_append(GTK_MENU(menu), option);
    }
    gtk_option_menu_set_menu(GTK_OPTION_MENU(o_menu), menu);
@@ -246,25 +243,24 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    /* Row 3 */
    action_l = gtk_label_new("Action Request: ");
-   gtk_table_attach(GTK_TABLE(table), action_l, 0, 1, 2, 3, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), action_l, 0, 1, 2, 3, GTK_FILL, 0, 2, 2);
 
    o_menu = gtk_option_menu_new();
    gtk_widget_ref(o_menu);
    gtk_widget_set_name(o_menu, "mod_menu");
-   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 2, 3, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 2, 3, GTK_FILL, 0, 2, 2);
 
    f_menus.ac = o_menu;
 
    menu = gtk_menu_new();
 
-   for(i = 0; i < FOCUS_ACTION_STR_MAX; i++) {
+   for (i = 0; i < FOCUS_ACTION_STR_MAX; i++)
+   {
       option = gtk_menu_item_new_with_label(e_action_str[i]);
       gtk_widget_show(option);
       gtk_signal_connect(GTK_OBJECT(option), "activate",
-			 GTK_SIGNAL_FUNC(action_option_menu_modified),
-			 (gpointer) i);
+                         GTK_SIGNAL_FUNC(action_option_menu_modified),
+                         (gpointer) i);
       gtk_menu_append(GTK_MENU(menu), option);
    }
    gtk_option_menu_set_menu(GTK_OPTION_MENU(o_menu), menu);
@@ -274,19 +270,16 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    /* Row 4 */
    button_l = gtk_label_new("Button Pressed: ");
-   gtk_table_attach(GTK_TABLE(table), button_l, 0, 1, 3, 4, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), button_l, 0, 1, 3, 4, GTK_FILL, 0, 2, 2);
 
    button_e = gtk_entry_new();
    gtk_entry_set_editable(GTK_ENTRY(button_e), FALSE);
-   gtk_table_attach(GTK_TABLE(table), button_e, 1, 2, 3, 4, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), button_e, 1, 2, 3, 4, GTK_FILL, 0, 2, 2);
 
    button_b = gtk_button_new_with_label("Change");
-   gtk_table_attach(GTK_TABLE(table), button_b, 2, 3, 3, 4, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), button_b, 2, 3, 3, 4, GTK_FILL, 0, 2, 2);
    gtk_signal_connect(GTK_OBJECT(button_b), "clicked",
-		      GTK_SIGNAL_FUNC(event_change_button_cb), clist);
+                      GTK_SIGNAL_FUNC(event_change_button_cb), clist);
 
    /* Row 5 */
    mod_l = gtk_label_new("Modifier Key: ");
@@ -295,19 +288,19 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    o_menu = gtk_option_menu_new();
    gtk_widget_ref(o_menu);
    gtk_widget_set_name(o_menu, "mod_menu");
-   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 4, 5, GTK_FILL, 0, 2,
-		    2);
+   gtk_table_attach(GTK_TABLE(table), o_menu, 1, 3, 4, 5, GTK_FILL, 0, 2, 2);
 
    f_menus.mod = o_menu;
 
    menu = gtk_menu_new();
 
-   for(i = 0; i < MOD_STR_MAX; i++) {
+   for (i = 0; i < MOD_STR_MAX; i++)
+   {
       option = gtk_menu_item_new_with_label(mod_str[i]);
       gtk_widget_show(option);
       gtk_signal_connect(GTK_OBJECT(option), "activate",
-			 GTK_SIGNAL_FUNC(mod_key_option_menu_modified),
-			 (gpointer) i);
+                         GTK_SIGNAL_FUNC(mod_key_option_menu_modified),
+                         (gpointer) i);
       gtk_menu_append(GTK_MENU(menu), option);
    }
    gtk_option_menu_set_menu(GTK_OPTION_MENU(o_menu), menu);
@@ -318,21 +311,20 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
 
    scroller2 = gtk_scrolled_window_new(NULL, NULL);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller2),
-				  GTK_POLICY_AUTOMATIC,
-				  GTK_POLICY_AUTOMATIC);
+                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
    disclaimer = gtk_text_new(NULL, NULL);
    gtk_text_set_editable(GTK_TEXT(disclaimer), FALSE);
    gtk_text_insert(GTK_TEXT(disclaimer), NULL, NULL, NULL,
-		   "This is only a test, you can change values here, but \n"
-		   "this is not a good interface for handling this kind of\n"
-		   "configuration.  It does allow you to modify how the mouse\n"
-		   "interacts with windows, but some ebits knowledge is needed \n"
-		   "to change certain features.", 254);
+                   "This is only a test, you can change values here, but \n"
+                   "this is not a good interface for handling this kind of\n"
+                   "configuration.  It does allow you to modify how the mouse\n"
+                   "interacts with windows, but some ebits knowledge is needed \n"
+                   "to change certain features.", 254);
 
    gtk_container_add(GTK_CONTAINER(scroller2), disclaimer);
-   gtk_table_attach(GTK_TABLE(table), scroller2, 0, 3, 5, 6, GTK_FILL |
-		    GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
+   gtk_table_attach(GTK_TABLE(table), scroller2, 0, 3, 5, 6,
+                    GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
    /* end Rows */
 
    /* add table to the frame */
@@ -345,7 +337,7 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_widget_ref(newb);
    gtk_widget_set_name(newb, "new_focus_button");
    gtk_signal_connect(GTK_OBJECT(newb), "clicked",
-		      GTK_SIGNAL_FUNC(event_add_button_cb), clist);
+                      GTK_SIGNAL_FUNC(event_add_button_cb), clist);
 
    gtk_box_pack_start(GTK_BOX(hbox), newb, TRUE, TRUE, 2);
 
@@ -353,19 +345,18 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_widget_ref(delb);
    gtk_widget_set_name(delb, "del_focus_button");
    gtk_signal_connect(GTK_OBJECT(delb), "clicked",
-		      GTK_SIGNAL_FUNC(event_del_button_cb), clist);
+                      GTK_SIGNAL_FUNC(event_del_button_cb), clist);
    gtk_box_pack_start(GTK_BOX(hbox), delb, TRUE, TRUE, 2);
 
    saveb = gtk_button_new_with_label("Save");
    gtk_widget_ref(saveb);
    gtk_widget_set_name(saveb, "save_focus_button");
    gtk_signal_connect(GTK_OBJECT(saveb), "clicked",
-		      GTK_SIGNAL_FUNC(event_save_button_cb), clist);
+                      GTK_SIGNAL_FUNC(event_save_button_cb), clist);
    gtk_box_pack_start(GTK_BOX(hbox), saveb, TRUE, TRUE, 2);
 
    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
-   /* vbox is setup and added to the hbox, which is going to the right
-    * pane
+   /* vbox is setup and added to the hbox, which is going to the right pane 
     */
 
    gtk_paned_pack2(GTK_PANED(hpaned), vbox, FALSE, FALSE);
@@ -402,7 +393,8 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
    gtk_widget_show(tab_label);
 
    ewd_list_goto_first(action_container.focus);
-   while((e = (eaction_item *) ewd_list_next(action_container.focus))) {
+   while ((e = (eaction_item *) ewd_list_next(action_container.focus)))
+   {
       snprintf(buf, 64, "Button %d", e->button);
       key_fields[0] = g_strdup(e->name);
       key_fields[1] = g_strdup(e_action_type[e->event]);
@@ -419,7 +411,7 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
       IF_FREE(key_fields[3]);
       IF_FREE(key_fields[4]);
    }
-   if(row_count)
+   if (row_count)
       gtk_clist_select_row(GTK_CLIST(clist), 0, 0);
 
    return;
@@ -435,14 +427,14 @@ add_actions_extra_notebook(GtkWidget * w, GtkWidget * note, int sheet)
  */
 static void
 focus_clist_select_row(GtkWidget * w, gint row, gint column,
-		       GdkEventButton * ev, gpointer data)
+                       GdkEventButton * ev, gpointer data)
 {
-   gchar              *fields[5] = {
+   gchar *fields[5] = {
       "", "", "", "", ""
    };
-   int                 i;
+   int i;
 
-   if(!w)
+   if (!w)
       return;
    current_row = row;
 
@@ -454,33 +446,42 @@ focus_clist_select_row(GtkWidget * w, gint row, gint column,
    /* get text from the selected widget */
 
    /* then update the option menus and button number accordingly */
-   for(i = 0; i < EBITS_SPOT_MAX; i++) {
-      if(!strcmp(fields[0], ebits_hot_spots[i])) {
-	 gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.pos), i);
-	 break;
+   for (i = 0; i < EBITS_SPOT_MAX; i++)
+   {
+      if (!strcmp(fields[0], ebits_hot_spots[i]))
+      {
+         gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.pos), i);
+         break;
       }
    }
-   for(i = 0; i < E_ACTION_TYPE_MAX; i++) {
-      if(!strcmp(fields[1], e_action_type[i])) {
-	 gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.ev), i);
-	 break;
+   for (i = 0; i < E_ACTION_TYPE_MAX; i++)
+   {
+      if (!strcmp(fields[1], e_action_type[i]))
+      {
+         gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.ev), i);
+         break;
       }
    }
-   for(i = 0; i < FOCUS_ACTION_STR_MAX; i++) {
-      if(!strcmp(fields[2], e_action_str[i])) {
-	 gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.ac), i);
-	 break;
+   for (i = 0; i < FOCUS_ACTION_STR_MAX; i++)
+   {
+      if (!strcmp(fields[2], e_action_str[i]))
+      {
+         gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.ac), i);
+         break;
       }
    }
-   for(i = 0; i < MOD_STR_MAX; i++) {
-      if(!strcmp(fields[4], mod_str[i])) {
-	 gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.mod), i);
-	 break;
+   for (i = 0; i < MOD_STR_MAX; i++)
+   {
+      if (!strcmp(fields[4], mod_str[i]))
+      {
+         gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.mod), i);
+         break;
       }
    }
-   if((fields[3]) && (strlen(fields[3]) > 0)) {
-      gchar              *s;
-      char                buf[64];
+   if ((fields[3]) && (strlen(fields[3]) > 0))
+   {
+      gchar *s;
+      char buf[64];
 
       s = fields[3];
       s += 7;
@@ -506,13 +507,13 @@ focus_clist_select_row(GtkWidget * w, gint row, gint column,
 static void
 window_pos_option_menu_modified(GtkWidget * w, gpointer data)
 {
-   int                 i;
-   gchar              *new_pos = NULL;
+   int i;
+   gchar *new_pos = NULL;
 
-   if(!w)
+   if (!w)
       return;
 
-   i = (int)data;
+   i = (int) data;
 
    gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.pos), i);
    /* set the option upto date */
@@ -525,6 +526,7 @@ window_pos_option_menu_modified(GtkWidget * w, gpointer data)
    UN(w);
    UN(data);
 }
+
 /* 
  * event_option_menu_modified: when the option menu is modified, update
  * the clist to reflect the latest changes 
@@ -535,13 +537,13 @@ window_pos_option_menu_modified(GtkWidget * w, gpointer data)
 static void
 event_option_menu_modified(GtkWidget * w, gpointer data)
 {
-   int                 i;
-   gchar              *new_ev = NULL;
+   int i;
+   gchar *new_ev = NULL;
 
-   if(!w)
+   if (!w)
       return;
 
-   i = (int)data;
+   i = (int) data;
    gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.ev), i);
    /* update the history */
 
@@ -553,6 +555,7 @@ event_option_menu_modified(GtkWidget * w, gpointer data)
    UN(w);
    UN(data);
 }
+
 /* 
  * mod_key_option_menu_modified: when the option menu is modified, update
  * the clist to reflect the latest changes 
@@ -563,13 +566,13 @@ event_option_menu_modified(GtkWidget * w, gpointer data)
 static void
 mod_key_option_menu_modified(GtkWidget * w, gpointer data)
 {
-   int                 i;
-   gchar              *new_mod = NULL;
+   int i;
+   gchar *new_mod = NULL;
 
-   if(!w)
+   if (!w)
       return;
 
-   i = (int)data;
+   i = (int) data;
    gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.mod), i);
    /* update history */
 
@@ -580,6 +583,7 @@ mod_key_option_menu_modified(GtkWidget * w, gpointer data)
    UN(w);
    UN(data);
 }
+
 /* 
  * action_option_menu_modified: when the option menu is modified, update
  * the clist to reflect the latest changes 
@@ -590,13 +594,13 @@ mod_key_option_menu_modified(GtkWidget * w, gpointer data)
 static void
 action_option_menu_modified(GtkWidget * w, gpointer data)
 {
-   int                 i;
-   gchar              *new_ac = NULL;
+   int i;
+   gchar *new_ac = NULL;
 
-   if(!w)
+   if (!w)
       return;
 
-   i = (int)data;
+   i = (int) data;
    gtk_option_menu_set_history(GTK_OPTION_MENU(f_menus.ac), i);
    /* update history */
 
@@ -608,6 +612,7 @@ action_option_menu_modified(GtkWidget * w, gpointer data)
    UN(w);
    UN(data);
 }
+
 /*
  * event_save_button_cb: when we want to save the current focus settings.
  * @param w: pointer to the widget "Save" button
@@ -625,73 +630,84 @@ action_option_menu_modified(GtkWidget * w, gpointer data)
 static void
 event_save_button_cb(GtkWidget * w, gpointer data)
 {
-   int                 i, j, written;
-   eaction_item       *e = NULL;
-   Ewd_List           *l;
-   gchar              *tmp;
+   int i, j, written;
+   eaction_item *e = NULL;
+   Ewd_List *l;
+   gchar *tmp;
 
    action_container_focus_reinit();
    l = action_container.focus;
    /* clear out the focus list, give it a local pointer val that's easier
-    * to read 
-    */
+      to read */
 
-   for(i = 0; i < row_count; i++) {
+   for (i = 0; i < row_count; i++)
+   {
       e = eaction_item_new();
 
       gtk_clist_get_text(GTK_CLIST(data), i, 0, &tmp);
-      for(j = 0; j < EBITS_SPOT_MAX; j++) {
-	 if(!strcmp(tmp, ebits_hot_spots[j])) {
-	    e->name = strdup(tmp);
-	    break;
-	 }
+      for (j = 0; j < EBITS_SPOT_MAX; j++)
+      {
+         if (!strcmp(tmp, ebits_hot_spots[j]))
+         {
+            e->name = strdup(tmp);
+            break;
+         }
       }
-      if(!e->name) {
-	 /* no name == fatal */
-	 fprintf(stderr, "Unable to match your selection to any "
-		 "available window positions\nI'm omitting this entry %s\n",
-		 tmp);
-	 eaction_item_free(e);
-	 continue;
+      if (!e->name)
+      {
+         /* no name == fatal */
+         fprintf(stderr,
+                 "Unable to match your selection to any "
+                 "available window positions\nI'm omitting this entry %s\n",
+                 tmp);
+         eaction_item_free(e);
+         continue;
       }
 
       gtk_clist_get_text(GTK_CLIST(data), i, 1, &tmp);
-      for(j = 0; j < E_ACTION_TYPE_MAX; j++) {
-	 if(!strcmp(tmp, e_action_type[j])) {
-	    e->event = j;
-	    break;
-	 }
+      for (j = 0; j < E_ACTION_TYPE_MAX; j++)
+      {
+         if (!strcmp(tmp, e_action_type[j]))
+         {
+            e->event = j;
+            break;
+         }
       }
       tmp = NULL;
 
       gtk_clist_get_text(GTK_CLIST(data), i, 2, &tmp);
-      for(j = 0; j < FOCUS_ACTION_STR_MAX; j++) {
-	 if(!strcmp(tmp, e_action_str[j])) {
-	    e->action = strdup(tmp);
-	    break;
-	 }
+      for (j = 0; j < FOCUS_ACTION_STR_MAX; j++)
+      {
+         if (!strcmp(tmp, e_action_str[j]))
+         {
+            e->action = strdup(tmp);
+            break;
+         }
       }
       tmp = NULL;
 
       gtk_clist_get_text(GTK_CLIST(data), i, 4, &tmp);
-      for(j = 0; j < MOD_STR_MAX; j++) {
-	 if(!strcmp(tmp, mod_str[j])) {
-	    e->modifiers = j;
-	    break;
-	 }
+      for (j = 0; j < MOD_STR_MAX; j++)
+      {
+         if (!strcmp(tmp, mod_str[j]))
+         {
+            e->modifiers = j;
+            break;
+         }
       }
       tmp = NULL;
 
       gtk_clist_get_text(GTK_CLIST(data), i, 3, &tmp);
-      if((tmp) && (strlen(tmp) > 0)) {
-	 gchar              *s;
-	 char                buf[64];
+      if ((tmp) && (strlen(tmp) > 0))
+      {
+         gchar *s;
+         char buf[64];
 
-	 s = tmp;
-	 s += 7;
-	 snprintf(buf, 64, "%s", s);
-	 /* chop the word Button off the beginning */
-	 e->button = atoi(buf);
+         s = tmp;
+         s += 7;
+         snprintf(buf, 64, "%s", s);
+         /* chop the word Button off the beginning */
+         e->button = atoi(buf);
       }
       tmp = NULL;
 
@@ -703,7 +719,7 @@ event_save_button_cb(GtkWidget * w, gpointer data)
    written = write_user_actions_db();
    /* write, if successful pass the message */
 
-   if(written)
+   if (written)
       status_bar_message("Error Saving Your Focus Settings", 3000);
    else
       status_bar_message("Successfully Saved Your Focus Settings", 3000);
@@ -722,8 +738,8 @@ event_save_button_cb(GtkWidget * w, gpointer data)
 static void
 event_add_button_cb(GtkWidget * w, gpointer data)
 {
-   gchar              *fields[5];
-   gint                retval;
+   gchar *fields[5];
+   gint retval;
 
    fields[0] = g_strdup(ebits_hot_spots[0]);
    fields[1] = g_strdup(e_action_type[0]);
@@ -739,6 +755,7 @@ event_add_button_cb(GtkWidget * w, gpointer data)
    UN(w);
    UN(data);
 }
+
 /* 
  * event_del_button_cb: delete the currently selected item from the clist 
  * @param w: not used
@@ -768,9 +785,9 @@ event_del_button_cb(GtkWidget * w, gpointer data)
 static void
 event_change_button_cb(GtkWidget * w, gpointer data)
 {
-   GtkWidget          *win, *label, *frame, *align;
+   GtkWidget *win, *label, *frame, *align;
 
-   if(data)
+   if (data)
       w = NULL;
 
    win = gtk_window_new(GTK_WINDOW_POPUP);
@@ -780,30 +797,30 @@ event_change_button_cb(GtkWidget * w, gpointer data)
    gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
    align = gtk_alignment_new(0.0, 0.0, 0.0, 0.0);
    gtk_container_set_border_width(GTK_CONTAINER(align), 32);
-   label = gtk_label_new("Please press the mouse button \n"
-			 "you wish to modify this event to use \n"
-			 "from now on.");
+   label =
+      gtk_label_new("Please press the mouse button \n"
+                    "you wish to modify this event to use \n" "from now on.");
    gtk_container_add(GTK_CONTAINER(win), frame);
    gtk_container_add(GTK_CONTAINER(frame), align);
    gtk_container_add(GTK_CONTAINER(align), label);
    gtk_widget_show_all(win);
-   while(gtk_events_pending())
+   while (gtk_events_pending())
       gtk_main_iteration();
    gdk_flush();
-   while(gtk_events_pending())
+   while (gtk_events_pending())
       gtk_main_iteration();
 
    {
-      char                buf[64], buf2[64];
-      XEvent              ev;
+      char buf[64], buf2[64];
+      XEvent ev;
 
       gdk_window_set_events(win->window, GDK_BUTTON_PRESS_MASK);
       XSetInputFocus(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(win->window),
-		     RevertToPointerRoot, CurrentTime);
-      gdk_pointer_grab(win->window, TRUE, GDK_BUTTON_PRESS_MASK, NULL,
-		       NULL, CurrentTime);
+                     RevertToPointerRoot, CurrentTime);
+      gdk_pointer_grab(win->window, TRUE, GDK_BUTTON_PRESS_MASK, NULL, NULL,
+                       CurrentTime);
       XWindowEvent(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(win->window),
-		   ButtonPressMask, &ev);
+                   ButtonPressMask, &ev);
       gdk_pointer_ungrab(gdk_time_get());
 
       snprintf(buf, 64, "Button %d", ev.xbutton.button);

@@ -14,8 +14,8 @@
 
 #define DEFAULT_ICON_PIXMAP_DIR "/usr/share/pixmaps/"
 
-void                add_menu_notebook(GtkWidget * w, GtkWidget * note,
-				      int sheet);
+void add_menu_notebook(GtkWidget * w, GtkWidget * note, int sheet);
+
 /* @param w: widget pointing to the window
  * @param note: widget pointing to the notebook to attach to
  * @param sheet: what tab to insert as

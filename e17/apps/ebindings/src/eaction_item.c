@@ -7,10 +7,10 @@
  *************************************************************************/
 #include"eaction_item.h"
 
-eaction_item       *
+eaction_item *
 eaction_item_new(void)
 {
-   eaction_item       *result;
+   eaction_item *result;
 
    result = (eaction_item *) malloc(sizeof(eaction_item));
 
@@ -23,7 +23,7 @@ eaction_item_new(void)
 void
 eaction_item_free(eaction_item * e)
 {
-   if(!e)
+   if (!e)
       return;
 
    IF_FREE(e->name);
@@ -33,6 +33,7 @@ eaction_item_free(eaction_item * e)
 
    free(e);
 }
+
 void
 _eaction_item_free(void *data)
 {
@@ -48,12 +49,14 @@ action_container_init(void)
    ewd_list_set_free_cb(action_container.keys, _eaction_item_free);
    ewd_list_set_free_cb(action_container.focus, _eaction_item_free);
 }
+
 void
 action_container_free(void)
 {
    ewd_list_destroy(action_container.keys);
    ewd_list_destroy(action_container.focus);
 }
+
 void
 action_container_keys_reinit(void)
 {
@@ -61,6 +64,7 @@ action_container_keys_reinit(void)
    action_container.keys = ewd_list_new();
    ewd_list_set_free_cb(action_container.keys, _eaction_item_free);
 }
+
 void
 action_container_focus_reinit(void)
 {
