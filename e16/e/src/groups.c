@@ -174,12 +174,14 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				 for (i2 = k; i2 < ewin->num_groups - 1; i2++)
 				    ewin->groups[i2] = ewin->groups[i2 + 1];
 				 ewin->num_groups--;
-				 ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
 				 if (ewin->num_groups <= 0)
 				   {
+				      Efree(ewin->groups);
 				      ewin->groups = NULL;
 				      ewin->num_groups = 0;
 				   }
+				 else
+				    ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
 				 SaveGroups();
 				 RememberImportantInfoForEwin(ewin);
 				 return;

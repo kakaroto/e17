@@ -1757,3 +1757,11 @@ Ooops, the middle button in the titlebar did raise/lower and show/hide
 group borders at the same time. Changed show/hide group borders
 to shift-middleclick.
 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 14 18:52:24 EDT 1999
+(Christian)
+
+I hope this fixes the segfault that Technoir reported.
+
