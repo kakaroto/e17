@@ -101,26 +101,26 @@ feh_event_handle_ButtonPress(XEvent * ev)
          XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
          if (winwid->type == WIN_TYPE_ABOUT)
          {
-             if(!menu_about_win)
+            if (!menu_about_win)
                feh_menu_init_about_win();
             feh_menu_show_at_xy(menu_about_win, winwid, x, y);
          }
          else if (winwid->type == WIN_TYPE_SINGLE)
          {
-            if(!menu_single_win)
+            if (!menu_single_win)
                feh_menu_init_single_win();
             feh_menu_show_at_xy(menu_single_win, winwid, x, y);
          }
-         else if(winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+         else if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
          {
-            if(!menu_single_win)
+            if (!menu_single_win)
                feh_menu_init_thumbnail_viewer();
             feh_menu_show_at_xy(menu_thumbnail_viewer, winwid, x, y);
          }
          else
          {
-         if (!menu_main)
-            feh_menu_init_main();
+            if (!menu_main)
+               feh_menu_init_main();
             feh_menu_show_at_xy(menu_main, winwid, x, y);
          }
       }
@@ -519,7 +519,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im_w = feh_imlib_image_get_width(temp);
             winwid->im_h = feh_imlib_image_get_height(temp);
             feh_imlib_free_image_and_decache(temp);
-            winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+            if (!opt.full_screen)
+               winwidget_resize(winwid, winwid->im_w, winwid->im_h);
             winwid->has_rotated = 1;
          }
          winwid->im_angle =
