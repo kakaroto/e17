@@ -160,18 +160,20 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 
    if (!loc)
       return 0;
+   printf("we have a loc\n");
    if (!data)
       return 0;
-   if (!length)
-      return 0;
+   printf("we have a data\n");
    if (!path)
       return 0;
+   printf("we have a path\n");
 
    if (_econf_create_new_data_repository(path) < 0)
      {
 	/* we can't have this path for some reason.
 	 * returning an error
 	 */
+	printf("we can't create the repository\n");
 	return 0;
      }
    else

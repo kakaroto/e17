@@ -33,8 +33,8 @@
 #define econf_get_string(save,loc) \
 { \
 	{\
-	unsigned long tmp; \
-	save = eConfigGetData(loc,&tmp); \
+		unsigned long tmp; \
+		save = eConfigGetData(loc,&tmp); \
 	}\
 }
 
