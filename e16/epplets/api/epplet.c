@@ -8,7 +8,6 @@
 #include <sys/wait.h>
 
 static Display     *disp = NULL;
-//static Window       win = 0;
 
 static int          window_num = 0;	/* For window list */
 static Epplet_window *windows = NULL;	/* List of windows to loop though */
