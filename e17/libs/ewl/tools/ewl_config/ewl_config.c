@@ -43,6 +43,15 @@ struct _ewl_config_main
 }
 e_conf;
 
+struct _confirm_win
+{
+	Ewl_Widget *win;
+	Ewl_Widget *main_vbox, *button_hbox;
+	Ewl_Widget *text;
+	Ewl_Widget *button_save, *button_exit, *button_cancel;
+}
+confirm;
+
 Ewl_Config user_settings;
 Ewl_Config init_settings;
 Ewl_Config default_settings;
@@ -57,11 +66,14 @@ void ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_config_restore_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_config_defaults_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_config_exit_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-
+void ewl_config_create_confirm_dialog(void);
+void ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
 int
 main(int argc, char **argv)
 {
 	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
+	memset(&confirm, 0, sizeof(struct _confirm_win));
 
 	ewl_init(argc, argv);
 
@@ -520,9 +532,102 @@ ewl_config_defaults_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 {
-	ewl_widget_destroy_recursive(e_conf.main_win);
+	Ewl_Config *nc, oc;
 
-	ewl_main_quit();
+	nc = ewl_get_settings();
+	ewl_config_read_config(&oc);
+
+	if ((nc->debug.enable != oc.debug.enable ||
+	     nc->debug.level != oc.debug.level ||
+	     nc->evas.font_cache != oc.evas.font_cache ||
+	     nc->evas.image_cache != oc.evas.image_cache ||
+	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
+	     nc->fx.max_fps != oc.fx.max_fps ||
+	     nc->fx.timeout != oc.fx.timeout ||
+	     strcasecmp(nc->theme.name, oc.theme.name)) && !confirm.win)
+		ewl_config_create_confirm_dialog();
+	else
+	  {
+		  ewl_widget_destroy_recursive(e_conf.main_win);
+
+		  ewl_main_quit();
+	  }
+	return;
+	w = NULL;
+	ev_data = NULL;
+	user_data = NULL;
+}
+
+void
+ewl_config_create_confirm_dialog(void)
+{
+	confirm.win = ewl_window_new();
+	ewl_window_resize(confirm.win, 473, 264);
+	ewl_window_set_min_size(confirm.win, 473, 264);
+	ewl_widget_show(confirm.win);
+
+	confirm.main_vbox = ewl_vbox_new();
+	ewl_container_append_child(EWL_CONTAINER(confirm.win),
+				   confirm.main_vbox);
+	ewl_widget_show(confirm.main_vbox);
+
+	confirm.text = ewl_text_new();
+	ewl_object_set_padding(EWL_OBJECT(confirm.text), 0, 0, 20, 20);
+	ewl_object_set_alignment(EWL_OBJECT(confirm.text),
+				 EWL_ALIGNMENT_CENTER);
+	ewl_text_set_text(confirm.text,
+			  "You have made modifications, what would you "
+			  "like to do ?");
+	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
+				   confirm.text);
+	ewl_widget_show(confirm.text);
+
+	confirm.button_hbox = ewl_hbox_new();
+	ewl_box_set_spacing(confirm.button_hbox, 5);
+	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_hbox), 340, 17);
+	ewl_object_set_padding(EWL_OBJECT(confirm.button_hbox), 0, 0, 20, 20);
+	ewl_object_set_alignment(EWL_OBJECT(confirm.button_hbox),
+				 EWL_ALIGNMENT_CENTER);
+	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
+				   confirm.button_hbox);
+	ewl_widget_show(confirm.button_hbox);
+
+	confirm.button_save = ewl_button_new("Save & Exit");
+	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_save), 110, 17);
+	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
+				   confirm.button_save);
+	ewl_callback_append(confirm.button_save, EWL_CALLBACK_CLICKED,
+			    ewl_config_save_cb, NULL);
+	ewl_callback_append(confirm.button_save, EWL_CALLBACK_CLICKED,
+			    ewl_config_exit_cb, NULL);
+	ewl_widget_show(confirm.button_save);
+
+	confirm.button_exit = ewl_button_new("Exit without saving");
+	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_exit), 110, 17);
+	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
+				   confirm.button_exit);
+	ewl_callback_append(confirm.button_exit, EWL_CALLBACK_CLICKED,
+			    ewl_config_exit_cb, NULL);
+	ewl_widget_show(confirm.button_exit);
+
+	confirm.button_cancel = ewl_button_new("Cancel");
+	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_cancel), 110,
+				   17);
+	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
+				   confirm.button_cancel);
+	ewl_callback_append(confirm.button_cancel, EWL_CALLBACK_CLICKED,
+			    ewl_config_destroy_confirm_dialog, NULL);
+	ewl_widget_show(confirm.button_cancel);
+}
+
+void
+ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
+				  void *user_data)
+{
+	if (confirm.win)
+		ewl_widget_destroy_recursive(confirm.win);
+
+	confirm.win = NULL;
 
 	return;
 	w = NULL;
