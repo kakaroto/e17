@@ -565,7 +565,6 @@ AddToFamily(Window win)
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
-	StackDesktops();
 	UngrabX();
 	ewin->iconified = 0;
 	IconifyEwin(ewin);
@@ -602,7 +601,6 @@ AddToFamily(Window win)
 	MoveEwin(ewin, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
-	StackDesktops();
 	FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	GrabThePointer(root.win);
 	Mode.have_place_grab = 1;
@@ -647,7 +645,6 @@ AddToFamily(Window win)
 	ShowEwin(ewin);
 	SlideEwinTo(ewin, fx, fy, x, y, speed);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
-	StackDesktops();
      }
    else
      {
@@ -659,7 +656,6 @@ AddToFamily(Window win)
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
-	StackDesktops();
      }
 
    /* send synthetic configure notifies and configure the window */
@@ -2228,7 +2224,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 
 	     h = ewin->bits[i].y + ewin->bits[i].h -
 		(ewin->h - ewin->border->border.bottom);
-	     bottomborderwidth = h;
+	     if (bottomborderwidth < h)
+		bottomborderwidth = h;
 	  }
 	ewin->h = bottomborderwidth + topborderwidth;
 	break;
