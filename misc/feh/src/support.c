@@ -45,7 +45,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    {
       snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
       feh_imlib_save_image(im, bgfil);
-      printf("bg saved as %s\n", bgfil);
+      D(("bg saved as %s\n", bgfil));
       fil = bgfil;
    }
    D(("Setting bg %s\n", fil));

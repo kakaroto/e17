@@ -1,3 +1,7 @@
+Mon Jun 19 17:47:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added new background setting mode. "Set seamless." It's purdy.
+
 Mon Jun 19 14:18:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Mwahaha. Now the window is resized when rotation starts (to fit

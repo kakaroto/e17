@@ -47,6 +47,10 @@ static void feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i,
 static void feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i,
 
                                               void *data);
+static void feh_menu_cb_background_set_seamless(feh_menu * m,
+                                                feh_menu_item * i,
+
+                                                void *data);
 static void feh_menu_cb_background_set_centered(feh_menu * m,
 
                                                 feh_menu_item * i,
@@ -674,8 +678,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->
-                                                h - FEH_MENUITEM_PAD_TOP -
+                                             (((i->h
+                                                - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -690,8 +694,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -702,8 +706,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -985,6 +989,8 @@ feh_menu_init(void)
       {
          feh_menu_add_entry(menu_bg, "Set tiled", NULL, "TILED", NULL, NULL,
                             NULL);
+         feh_menu_add_entry(menu_bg, "Set seamless", NULL, "SEAMLESS", NULL,
+                            NULL, NULL);
          feh_menu_add_entry(menu_bg, "Set scaled", NULL, "SCALED", NULL, NULL,
                             NULL);
          feh_menu_add_entry(menu_bg, "Set centered", NULL, "CENTERED", NULL,
@@ -997,13 +1003,24 @@ feh_menu_init(void)
             snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
             if (opt.slideshow || opt.multiwindow)
                feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_tiled, 
+                                  feh_menu_cb_background_set_tiled,
                                   (void *) i, NULL);
             else
                feh_menu_add_entry(m, buf, NULL, NULL,
                                   feh_menu_cb_background_set_tiled_no_file,
                                   (void *) i, NULL);
          }
+
+         m = feh_menu_new();
+         m->name = estrdup("SEAMLESS");
+         for (i = 0; i < num_desks; i++)
+         {
+            snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+            feh_menu_add_entry(m, buf, NULL, NULL,
+                               feh_menu_cb_background_set_seamless,
+                               (void *) i, NULL);
+         }
+
 
          m = feh_menu_new();
          m->name = estrdup("SCALED");
@@ -1013,12 +1030,12 @@ feh_menu_init(void)
 
             if (opt.slideshow || opt.multiwindow)
                feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_scaled, 
+                                  feh_menu_cb_background_set_scaled,
                                   (void *) i, NULL);
             else
                feh_menu_add_entry(m, buf, NULL, NULL,
                                   feh_menu_cb_background_set_scaled_no_file,
-                                 (void *) i, NULL);
+                                  (void *) i, NULL);
          }
 
          m = feh_menu_new();
@@ -1042,6 +1059,9 @@ feh_menu_init(void)
          {
             feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
                                feh_menu_cb_background_set_tiled, NULL, NULL);
+            feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
+                               feh_menu_cb_background_set_seamless, NULL,
+                               NULL);
             feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
                                feh_menu_cb_background_set_scaled, NULL, NULL);
             feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
@@ -1052,6 +1072,9 @@ feh_menu_init(void)
          {
             feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
                                feh_menu_cb_background_set_tiled_no_file, NULL,
+                               NULL);
+            feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
+                               feh_menu_cb_background_set_seamless, NULL,
                                NULL);
             feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
                                feh_menu_cb_background_set_scaled_no_file,
@@ -1085,6 +1108,22 @@ feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i, void *data)
    feh_wm_set_bg(path, m->fehwin->im, 0, 0, (int) data, 1);
    free(path);
 
+   D_RETURN_;
+   i = NULL;
+}
+
+static void
+feh_menu_cb_background_set_seamless(feh_menu * m, feh_menu_item * i,
+                                    void *data)
+{
+   Imlib_Image im;
+
+   D_ENTER;
+
+   im = feh_imlib_clone_image(m->fehwin->im);
+   feh_imlib_image_tile(im);
+   feh_wm_set_bg(NULL, im, 0, 0, (int) data, 1);
+   feh_imlib_free_image_and_decache(im);
    D_RETURN_;
    i = NULL;
 }
