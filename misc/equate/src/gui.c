@@ -187,7 +187,7 @@ void
 init_gui(Equate * equate, int argc, char **argv)
 {
    if (equate) {
-      switch (equate->conf.mode) {
+      switch (equate->conf.type) {
       case EDJE:
          //fprintf(stderr, "%s\n", equate->conf.path);
          if (ecore_init()) {
@@ -197,9 +197,8 @@ init_gui(Equate * equate, int argc, char **argv)
          }
          break;
          /*
-          * case DEFAULT:
-          * case BASIC:
-          * case SCI:
+          * case DEF:
+          * case EWL:
           */
       default:
          ewl_init(&argc, argv);

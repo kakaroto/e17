@@ -33,6 +33,7 @@ typedef struct {
 
 typedef struct {
    Mode            mode;
+   UI              type;
    char            path[PATH_MAX];
 } Conf;
 

@@ -3,9 +3,14 @@
 typedef enum {
    DEFAULT,
    BASIC,
-   SCI,
-   EDJE
+   SCI
 } Mode;
+
+typedef enum {
+   DEF,
+   EWL,
+   EDJE
+} UI;
 
 // needed 'cos generated h files suck
 double          yyresult(void);

@@ -8,14 +8,19 @@ void
 print_usage(void)
 {
    printf("Equate - a calculator for Enlightenment\n");
-   printf("Version 0.0.1 (Dec 3 2003)\n");
+   printf("Version 0.0.4 (Dec 8 2003)\n");
    printf("(c)2003 by HandyAndE.\n");
    printf("Usage: equate [options]\n\n");
    printf("Supported Options:\n");
-   printf("-h, --help              Print this help text\n");
-   printf("-e, --exec        <str> Execute an equation and exit\n");
-   printf("-b, --basic             Use Equate in basic mode (default)\n");
-   printf("-s, --scientific        Use Equate in scientific mode\n");
+   printf("  -h, --help              Print this help text\n");
+   printf("  -e, --exec        <str> Execute an equation and exit\n");
+   printf("Display modes:\n");
+   printf("  -b, --basic             Use Equate in basic mode (default)\n");
+   printf("  -s, --scientific        Use Equate in scientific mode\n");
+   printf("                          (currently ignored if using --edje)\n");
+   printf("Interface types:\n");
+   printf("  -G, --edje              Use Edje (themable) interface (default)\n");
+   printf("  -g, --ewl               Use Ewl (E look) interface\n");
    exit(0);
 }
 
@@ -56,6 +61,7 @@ main(int argc, char *argv[], char *env[])
    Ecore_Config_Server *conf_srv;
 
    equate.conf.mode = DEFAULT;
+   equate.conf.type = DEF;
 
    while (nextarg < argc) {
       arg = argv[nextarg];
@@ -63,9 +69,13 @@ main(int argc, char *argv[], char *env[])
          equate.conf.mode = SCI;
       else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b"))
          equate.conf.mode = BASIC;
-      else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e")) {
+      else if (!strcmp(arg, "--edje") || !strcmp(arg, "-G"))
+         equate.conf.type = EDJE;
+      else if (!strcmp(arg, "--ewl") || !strcmp(arg, "-g"))
+         equate.conf.type = EWL;
+      else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
          exec(argv[++nextarg]);
-      }
+      
 
 
       else if (!strcmp(arg, "--help") || !strcmp(arg, "-h"))
@@ -87,13 +97,17 @@ main(int argc, char *argv[], char *env[])
 
       if (equate.conf.mode == DEFAULT)
          equate.conf.mode = ecore_config_get_int(props, "/settings/mode");
+      if (equate.conf.type == DEF)
+         equate.conf.type = ecore_config_get_int(props, "/settings/type");
    }
    if (equate.conf.mode == DEFAULT)
       equate.conf.mode = BASIC;
+   if (equate.conf.type == DEF)
+      equate.conf.type = EWL;
 
    equate_init(&equate);
 
-   init_gui(&equate);
+   init_gui(&equate, argc, argv);
 
    return 0;
 }
