@@ -132,6 +132,7 @@ part {
 
 part {
   name: "shot.grabber";
+  repeat_events: 1;
   type: RECT;
   clip_to: "shots.clip";
   description {
@@ -146,6 +147,7 @@ part {
 }
 part {
   name: "swatch.grabber";
+  repeat_events: 1;
   type: RECT;
   clip_to: "shots.clip";
   description {

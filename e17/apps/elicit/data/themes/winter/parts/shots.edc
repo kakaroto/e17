@@ -110,6 +110,7 @@ SCROLLBAR("shot", "left-panel", "left-panel", 1 0, -8 1,
   part {
     name, "shot.grabber";
     mouse_events, 1;
+    repeat_events, 1;
     type, RECT;
     clip_to, "shot-clip";
     description {

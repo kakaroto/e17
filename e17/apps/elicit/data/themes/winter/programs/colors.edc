@@ -1,10 +1,10 @@
-COLOR_PROG("red", "color,r")
-COLOR_PROG("green", "color,g")
-COLOR_PROG("blue", "color,b")
-COLOR_PROG("hue", "color,h")
-COLOR_PROG("sat", "color,s")
-COLOR_PROG("val", "color,v")
-COLOR_PROG("zoom", "zoom")
+COLOR_PROG("red","color,r")
+COLOR_PROG("green","color,g")
+COLOR_PROG("blue","color,b")
+COLOR_PROG("hue","color,h")
+COLOR_PROG("sat","color,s")
+COLOR_PROG("val","color,v")
+COLOR_PROG("zoom","zoom")
 
 program {
   name, "hex-copy";
