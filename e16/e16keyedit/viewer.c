@@ -69,7 +69,7 @@ static ActionOpt actions[] = {
 	{"Run command", 1, 1, NULL},
 
 	{"Restart Enlightenment", 7, 0, "restart"},
-	{"Exit Enlightenment", 7, 0, "logout"},
+	{"Exit Enlightenment", 7, 0, NULL},
 
 	{"Goto Next Desktop", 15, 0, NULL},
 	{"Goto Previous Deskop", 16, 0, NULL},
@@ -178,20 +178,33 @@ atword(char *s, int num)
 	cnt = 0;
 	i = 0;
 
-	while (s[i])
-	{
-		if ((s[i] != ' ') && (s[i] != '\t'))
-		{
-			if (i == 0)
+	while (s[i]) {
+		if ((s[i] != ' ') && (s[i] != '\t')) {
+			if (i == 0) {
 				cnt++;
-			else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
+			} else if ((s[i - 1] == ' ') || (s[i - 1] == '\t')) {
 				cnt++;
+			}
 			if (cnt == num)
 				return &s[i];
 		}
 		i++;
 	}
 	return NULL;
+}
+
+void
+change_action(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
+		gpointer data)
+{
+	if(data) {
+		event = NULL;
+		clist = NULL;
+		column = 0;
+	}
+
+	return;
+
 }
 
 void
@@ -276,7 +289,7 @@ static gchar *get_line(gchar * str, int num)
 	}
 }
 
-	void
+void
 on_resort_columns(GtkWidget *widget, gint column, gpointer user_data)
 {
 	static int order=0;
@@ -655,6 +668,8 @@ create_list_window(void)
 	gtk_box_pack_start(GTK_BOX(frame_vbox), scrollybit, TRUE, TRUE, 0);
 	gtk_clist_set_column_title(GTK_CLIST(act_clist), 0, "Action Used:");
 	gtk_clist_column_titles_show(GTK_CLIST(act_clist));
+	gtk_signal_connect(GTK_OBJECT(act_clist), "select_row",
+			GTK_SIGNAL_FUNC(change_action),NULL);
 	gtk_container_add(GTK_CONTAINER(scrollybit), act_clist);
 
 	{
