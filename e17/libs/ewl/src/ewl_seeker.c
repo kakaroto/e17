@@ -114,7 +114,7 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
  * @return Returns no value.
  * @brief Set the value of pointer of the seekers locator
  */
-void ewl_seeker_set_value(Ewl_Seeker * s, double v)
+void ewl_seeker_value_set(Ewl_Seeker * s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -142,7 +142,7 @@ void ewl_seeker_set_value(Ewl_Seeker * s, double v)
  * @return Returns 0 on failure, the value of the seekers locator on success.
  * @brief Retrieve the current value of the seekers locator
  */
-double ewl_seeker_get_value(Ewl_Seeker * s)
+double ewl_seeker_value_get(Ewl_Seeker * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
@@ -157,7 +157,7 @@ double ewl_seeker_get_value(Ewl_Seeker * s)
  * @return Returns no value.
  * @brief specify the range of values represented by the seeker
  */
-void ewl_seeker_set_range(Ewl_Seeker * s, double r)
+void ewl_seeker_range_set(Ewl_Seeker * s, double r)
 {
 	int             new_val;
 
@@ -180,7 +180,7 @@ void ewl_seeker_set_range(Ewl_Seeker * s, double r)
  * @return Returns 0 on failure, or the upper bound on the seeker on success.
  * @brief Retrieve the range of values represented by the seeker
  */
-double ewl_seeker_get_range(Ewl_Seeker * s)
+double ewl_seeker_range_get(Ewl_Seeker * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
@@ -198,7 +198,7 @@ double ewl_seeker_get_range(Ewl_Seeker * s)
  * Changes the amount that each increment or decrement changes the value of the
  * seeker @a s.
  */
-void ewl_seeker_set_step(Ewl_Seeker * s, double step)
+void ewl_seeker_step_set(Ewl_Seeker * s, double step)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -217,7 +217,7 @@ void ewl_seeker_set_step(Ewl_Seeker * s, double step)
  * @return Returns the step size of the seeker @a s.
  * @brief Retrieve the step size of the seeker
  */
-double ewl_seeker_get_step(Ewl_Seeker * s)
+double ewl_seeker_step_get(Ewl_Seeker * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
@@ -238,7 +238,7 @@ double ewl_seeker_get_step(Ewl_Seeker * s)
  * TRUE, the seeker will be hidden whenever the button is the full size of
  * the seeker.
  */
-void ewl_seeker_set_autohide(Ewl_Seeker *s, int v)
+void ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -265,7 +265,7 @@ void ewl_seeker_set_autohide(Ewl_Seeker *s, int v)
  * @return Returns TRUE if autohide set, otherwise FALSE.
  * @brief Retrieves the current autohide setting on a seeker
  */
-int ewl_seeker_get_autohide(Ewl_Seeker *s)
+int ewl_seeker_autohide_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -280,7 +280,7 @@ int ewl_seeker_get_autohide(Ewl_Seeker *s)
  * @return Returns no value.
  * @brief Changes the invert property on the seeker for inverting it's scale.
  */
-void ewl_seeker_set_invert(Ewl_Seeker *s, int invert)
+void ewl_seeker_invert_set(Ewl_Seeker *s, int invert)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -298,7 +298,7 @@ void ewl_seeker_set_invert(Ewl_Seeker *s, int invert)
  * @return Returns the current value of the invert property in the seeker.
  * @brief Retrieve the current invert value from a seeker.
  */
-int ewl_seeker_get_invert(Ewl_Seeker *s)
+int ewl_seeker_invert_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
@@ -521,7 +521,7 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (s->invert)
 		scale = s->range - scale;
 
-	ewl_seeker_set_value(s, scale);
+	ewl_seeker_value_set(s, scale);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -569,7 +569,7 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		step = -step;
 	value += step;
 
-	ewl_seeker_set_value(s, value);
+	ewl_seeker_value_set(s, value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

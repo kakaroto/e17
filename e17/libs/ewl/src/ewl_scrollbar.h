@@ -74,15 +74,15 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation);
 void            ewl_scrollbar_init(Ewl_Scrollbar * s,
 				   Ewl_Orientation orientation);
 
-double          ewl_scrollbar_get_value(Ewl_Scrollbar * s);
-void            ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v);
+double          ewl_scrollbar_value_get(Ewl_Scrollbar * s);
+void            ewl_scrollbar_value_set(Ewl_Scrollbar * s, double v);
 
-double          ewl_scrollbar_get_step(Ewl_Scrollbar *s);
-void            ewl_scrollbar_set_step(Ewl_Scrollbar * s, double v);
+double          ewl_scrollbar_step_get(Ewl_Scrollbar *s);
+void            ewl_scrollbar_step_set(Ewl_Scrollbar * s, double v);
 
-void            ewl_scrollbar_set_flag(Ewl_Scrollbar * s,
+void            ewl_scrollbar_flag_set(Ewl_Scrollbar * s,
 				       Ewl_ScrollBar_Flags f);
-Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s);
+Ewl_ScrollBar_Flags ewl_scrollbar_flag_get(Ewl_Scrollbar * s);
 
 /**
  * @}

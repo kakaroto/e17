@@ -422,7 +422,7 @@ void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewl_Tree *tree = EWL_TREE(w);
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	scroll = ewl_scrollpane_get_hscrollbar_value(EWL_SCROLLPANE(tree->scrollarea));
+	scroll = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(tree->scrollarea));
 	width = ewl_object_preferred_w_get(EWL_OBJECT(tree->header));
 	x = CURRENT_X(tree);
 	if (scroll > 0 && width > CURRENT_W(tree))

@@ -59,7 +59,7 @@ void rew_cb(Ewl_Widget *w, void *event, void *data ) {
 
 void video_realize_cb(Ewl_Widget *w, void *event, void *data) {
     double len = ewl_media_length_get(EWL_MEDIA(video));
-    ewl_seeker_set_range(EWL_SEEKER(seeker), len);
+    ewl_seeker_range_set(EWL_SEEKER(seeker), len);
 
     return;
     w = NULL;
@@ -74,7 +74,7 @@ void video_change_cb(Ewl_Widget *w, void *event, void *data) {
     Ewl_Text *t = (Ewl_Text *)data;
     double pos = ewl_media_position_get(EWL_MEDIA(video));
 
-    ewl_seeker_set_value(EWL_SEEKER(seeker), pos);
+    ewl_seeker_value_set(EWL_SEEKER(seeker), pos);
     ewl_media_position_time_get(EWL_MEDIA(video), &h, &m, &s);
     snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
     ewl_text_text_set(t, buf);
@@ -86,7 +86,7 @@ void video_change_cb(Ewl_Widget *w, void *event, void *data) {
 }
 
 void seeker_move_cb(Ewl_Widget *w, void *event, void *data) {
-    double val = ewl_seeker_get_value(EWL_SEEKER(seeker));
+    double val = ewl_seeker_value_get(EWL_SEEKER(seeker));
     if (ewl_media_seekable_get(EWL_MEDIA(video)))
 	    ewl_media_position_set(EWL_MEDIA(video), val);
 
@@ -240,9 +240,9 @@ int main(int argc, char ** argv) {
     ewl_container_child_append(EWL_CONTAINER(b), seeker);
     ewl_object_fill_policy_set(EWL_OBJECT(seeker), 
 	    EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-    ewl_seeker_set_value(EWL_SEEKER(seeker), 0.0);
-    ewl_seeker_set_range(EWL_SEEKER(seeker), 0.0);
-    ewl_seeker_set_step(EWL_SEEKER(seeker), 1.0);
+    ewl_seeker_value_set(EWL_SEEKER(seeker), 0.0);
+    ewl_seeker_range_set(EWL_SEEKER(seeker), 0.0);
+    ewl_seeker_step_set(EWL_SEEKER(seeker), 1.0);
     ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, video);
     ewl_widget_show(seeker);
 

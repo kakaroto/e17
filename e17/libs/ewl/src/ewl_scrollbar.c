@@ -136,8 +136,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Define the maximum value that the seeker can reach, and the
 	 * default increments it takes to get there.
 	 */
-	ewl_seeker_set_range(EWL_SEEKER(s->seeker), 1.0);
-	ewl_seeker_set_step(EWL_SEEKER(s->seeker), 0.05);
+	ewl_seeker_range_set(EWL_SEEKER(s->seeker), 1.0);
+	ewl_seeker_step_set(EWL_SEEKER(s->seeker), 0.05);
 
 	/*
 	 * Set the appearance strings for the parts of the scrollbar
@@ -194,7 +194,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		/*
 		 * Set the default value to the beginning of the seeker.
 		 */
-		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
+		ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_appearance_set(w, "hscrollbar");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
 				EWL_FLAG_FILL_HFILL);
@@ -238,7 +238,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		/*
 		 * Set the default value to the beginning of the seeker.
 		 */
-		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
+		ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_appearance_set(w, "vscrollbar");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
 				EWL_FLAG_FILL_VFILL);
@@ -252,14 +252,14 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
  * @return Returns the current value of the scrollbar @a s.
  * @brief Get the current value of the dragbar
  */
-double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
+double ewl_scrollbar_value_get(Ewl_Scrollbar * s)
 {
 	double          v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
 
-	v = ewl_seeker_get_value(EWL_SEEKER(s->seeker));
+	v = ewl_seeker_value_get(EWL_SEEKER(s->seeker));
 
 	/*
 	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
@@ -277,7 +277,7 @@ double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
  *
  * Sets the current value of the scrollbar @a s.
  */
-void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
+void ewl_scrollbar_value_set(Ewl_Scrollbar * s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -287,7 +287,7 @@ void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
 		v = 1.0 - v;
 		*/
 
-	ewl_seeker_set_value(EWL_SEEKER(s->seeker), v);
+	ewl_seeker_value_set(EWL_SEEKER(s->seeker), v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -298,13 +298,13 @@ void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
  * @brief Get the current step size of the scrollbar
  */
 double
-ewl_scrollbar_get_step(Ewl_Scrollbar *s)
+ewl_scrollbar_step_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("s", s, 0);
 
-	DRETURN_INT(ewl_seeker_get_step(EWL_SEEKER(s->seeker)), DLEVEL_STABLE);
+	DRETURN_INT(ewl_seeker_step_get(EWL_SEEKER(s->seeker)), DLEVEL_STABLE);
 }
 
 /**
@@ -315,13 +315,13 @@ ewl_scrollbar_get_step(Ewl_Scrollbar *s)
  *
  * Changes the step size of the scrollbar @a s to @a v.
  */
-void ewl_scrollbar_set_step(Ewl_Scrollbar *s, double v)
+void ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR("s", s);
 
-	ewl_seeker_set_step(EWL_SEEKER(s->seeker), v);
+	ewl_seeker_step_set(EWL_SEEKER(s->seeker), v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -334,7 +334,7 @@ void ewl_scrollbar_set_step(Ewl_Scrollbar *s, double v)
  *
  * Sets the flags @a f for the scrollbar @a s.
  */
-void ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
+void ewl_scrollbar_flag_set(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -350,7 +350,7 @@ void ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
  * @return Returns the flags from the scrollbars @a s.
  * @brief Retrieve the current flags of a scrollbar
  */
-Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
+Ewl_ScrollBar_Flags ewl_scrollbar_flag_get(Ewl_Scrollbar * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
@@ -419,7 +419,7 @@ static int ewl_scrollbar_timer(void *data)
 	s = EWL_SCROLLBAR(data);
 
 	dt = ecore_time_get() - s->start_time;
-	value = ewl_seeker_get_value(EWL_SEEKER(s->seeker));
+	value = ewl_seeker_value_get(EWL_SEEKER(s->seeker));
 
 	/*
 	 * Check the theme for a velocity setting and bring it within normal
@@ -438,7 +438,7 @@ static int ewl_scrollbar_timer(void *data)
 	value += (double)(s->direction) * 10 * (1 - exp(-dt)) *
 		 ((double)(velocity) / 100.0);
 
-	ewl_seeker_set_value(EWL_SEEKER(s->seeker), value);
+	ewl_seeker_value_set(EWL_SEEKER(s->seeker), value);
 
 	return 1;
 }

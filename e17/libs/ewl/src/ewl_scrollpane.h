@@ -44,22 +44,22 @@ struct Ewl_ScrollPane
 Ewl_Widget     *ewl_scrollpane_new(void);
 int             ewl_scrollpane_init(Ewl_ScrollPane * s);
 
-void            ewl_scrollpane_set_hscrollbar_flag(Ewl_ScrollPane * s,
+void            ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane * s,
 						   Ewl_ScrollBar_Flags f);
-void            ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s,
+void            ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane * s,
 						   Ewl_ScrollBar_Flags f);
 
-Ewl_ScrollBar_Flags ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s);
-Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s);
+Ewl_ScrollBar_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane * s);
+Ewl_ScrollBar_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane * s);
 
-double          ewl_scrollpane_get_hscrollbar_value(Ewl_ScrollPane *s);
-double          ewl_scrollpane_get_vscrollbar_value(Ewl_ScrollPane *s);
+double          ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s);
+double          ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s);
 
-void            ewl_scrollpane_set_hscrollbar_value(Ewl_ScrollPane *s, double val);
-void            ewl_scrollpane_set_vscrollbar_value(Ewl_ScrollPane *s, double val);
+void            ewl_scrollpane_hscrollbar_value_set(Ewl_ScrollPane *s, double val);
+void            ewl_scrollpane_vscrollbar_value_set(Ewl_ScrollPane *s, double val);
 
-double          ewl_scrollpane_get_hscrollbar_step(Ewl_ScrollPane *s);
-double          ewl_scrollpane_get_vscrollbar_step(Ewl_ScrollPane *s);
+double          ewl_scrollpane_hscrollbar_step_get(Ewl_ScrollPane *s);
+double          ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s);
 
 /*
  * Internally used callbacks, override at your own risk.

@@ -62,20 +62,20 @@ struct Ewl_Seeker
 Ewl_Widget     *ewl_seeker_new(Ewl_Orientation orientation);
 int             ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation);
 
-void            ewl_seeker_set_value(Ewl_Seeker * s, double v);
-double          ewl_seeker_get_value(Ewl_Seeker * s);
+void            ewl_seeker_value_set(Ewl_Seeker * s, double v);
+double          ewl_seeker_value_get(Ewl_Seeker * s);
 
-void            ewl_seeker_set_range(Ewl_Seeker * s, double r);
-double          ewl_seeker_get_range(Ewl_Seeker * s);
+void            ewl_seeker_range_set(Ewl_Seeker * s, double r);
+double          ewl_seeker_range_get(Ewl_Seeker * s);
 
-void            ewl_seeker_set_step(Ewl_Seeker * s, double step);
-double          ewl_seeker_get_step(Ewl_Seeker * s);
+void            ewl_seeker_step_set(Ewl_Seeker * s, double step);
+double          ewl_seeker_step_get(Ewl_Seeker * s);
 
-void            ewl_seeker_set_autohide(Ewl_Seeker *s, int v);
-int             ewl_seeker_get_autohide(Ewl_Seeker *s);
+void            ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
+int             ewl_seeker_autohide_get(Ewl_Seeker *s);
 
-void            ewl_seeker_set_invert(Ewl_Seeker *s, int invert);
-int             ewl_seeker_get_invert(Ewl_Seeker *s);
+void            ewl_seeker_invert_set(Ewl_Seeker *s, int invert);
+int             ewl_seeker_invert_get(Ewl_Seeker *s);
 
 void            ewl_seeker_decrease(Ewl_Seeker * s);
 void            ewl_seeker_increase(Ewl_Seeker * s);
