@@ -34,13 +34,14 @@ Requires: imlib2 = %{PACKAGE_VERSION}
 %description devel
 Headers, static libraries and documentation for Imlib2.
 
-%package demos
-Summary: Imlib2 demo programs
-Group: X11/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
-
-%description demos
-Demonstration viewer and other programs.
+#### dont build demos 
+#%package demos
+#Summary: Imlib2 demo programs
+#Group: X11/Libraries
+#Requires: imlib2 = %{PACKAGE_VERSION}
+#
+#%description demos
+#Demonstration viewer and other programs.
 
 %prep
 %setup
@@ -121,9 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/*a
 %{prefix}/include/*
 
-%files demos
-%defattr(-,root,root)
-%{prefix}/bin/imlib2-view
+#%files demos
+#%defattr(-,root,root)
+#%{prefix}/bin/imlib2-view
 
 %changelog
 * Tue Nov 2 1999 Lyle Kempler <kempler@utdallas.edu>
