@@ -3,10 +3,11 @@ Name: libast
 Version: 0.7
 #Release: 1
 Release: 0.%(date '+%Y%m%d')
-License: BSD
 Group: System Environment/Libraries
-Source: %{name}-%{version}.tar.gz
+License: BSD
 URL: http://www.eterm.org/
+Source: %{name}-%{version}.tar.gz
+#BuildSuggests: pcre-devel xorg-x11-devel imlib2-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
