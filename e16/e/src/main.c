@@ -260,9 +260,6 @@ main(int argc, char **argv)
      }
 #endif
 
-   /* Map the clients */
-   MapUnmap(1);
-
    if (!Mode.wm.restart)
       StartupWindowsCreate(0);
 
@@ -280,6 +277,9 @@ main(int argc, char **argv)
 #endif
 
    ModulesSignal(ESIGNAL_START, NULL);
+
+   /* Map the clients */
+   MapUnmap(1);
 
    RunInitPrograms();
    SpawnSnappedCmds();
