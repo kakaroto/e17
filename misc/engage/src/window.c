@@ -69,13 +69,12 @@ od_window_init()
   ecore_x_window_prop_xy_set(od_window,
                              (int) ((res_x - options.width) / 2.0),
                              (int) (res_y - options.height));
-  //ecore_x_window_prop_window_type_dock_set(od_window);
+  ecore_x_window_prop_window_type_set(od_window, ECORE_X_WINDOW_TYPE_DOCK);
   ecore_x_window_prop_sticky_set(od_window, 1);
   if (options.mode == OM_ONTOP)
     ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_ABOVE);
   else
     ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_BELOW);
-  ecore_x_window_prop_desktop_request(od_window, 4294967295L);
 
   ecore_evas_show(ee);
   
