@@ -1167,7 +1167,8 @@ RaiseDesktop(int desk)
 #if 0				/* FIXME - TBD */
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 #endif
-   HandleDrawQueue();
+   if (Mode.mode == MODE_NONE)
+      HandleDrawQueue();
    HintsSetCurrentDesktop();
    EMapWindow(disp, EoGetWin(d));
    ecore_x_sync();
@@ -1192,7 +1193,8 @@ LowerDesktop(int desk)
 #if 0				/* FIXME - TBD */
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 #endif
-   HandleDrawQueue();
+   if (Mode.mode == MODE_NONE)
+      HandleDrawQueue();
    HintsSetCurrentDesktop();
    ecore_x_sync();
 }
