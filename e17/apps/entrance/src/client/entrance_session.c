@@ -14,6 +14,7 @@ entrance_session_new(void)
    char theme_path[PATH_MAX];
 
    e = (Entrance_Session) malloc(sizeof(struct _Entrance_Session));
+   memset(e, 0, sizeof(struct _Entrance_Session)); 
 
    e->auth = entrance_auth_new();
    e->config = entrance_config_parse(PACKAGE_CFG_DIR "/entrance_config.db");
@@ -124,9 +125,9 @@ entrance_session_start_user_session(Entrance_Session e)
 	* /etc/X11. A notable exception is Gentoo, but there is a customized
 	* ebuild for this distribution. Please comment. */
    if((session_key = (char*)evas_hash_find(e->config->sessions, e->session)))
-       snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", session_key);
+       snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
    else
-       snprintf(buf, PATH_MAX, "/etc/X11/Xsession");	/* Default session */
+       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);/* Default session */
    /* If a path was specified for the session, use that path instead of
       passing the session name to Xsession */
 
