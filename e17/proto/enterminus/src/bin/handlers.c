@@ -419,8 +419,15 @@ term_handler_escape_seq(Term *term) {
 		* defaults to the full screen
 		*/
 	       DPRINT((stderr, "ESC [ [ t ; b ] r  Set Scrolling Region (CSR)\n"));
-	       term->scroll_region_start = args[0] ? args[0] - 1: 0;
-	       term->scroll_region_end = args[1] ? args[1] : term->rows;
+	       /* scroll_region_start should be 0-indexed */
+	       term->scroll_region_start = args[0] ? args[0] - 1 : 0;
+	       if (term->scroll_region_start < 0)
+		  term->scroll_region_start = 0;
+	       /* scroll_region_end should be one after the wanted row */
+	       term->scroll_region_end = args[1] ? args[1] - 1 : term->rows - 1;
+	       if (term->scroll_region_end >= term->rows)
+		  term->scroll_region_end = term->rows - 1;
+
 	       if (!narg) {
 		  /* Reset scroll region */
 		  term->scroll_in_region = 0;

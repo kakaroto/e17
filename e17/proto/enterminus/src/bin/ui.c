@@ -280,7 +280,7 @@ term_clear_area(Term *term, int x1, int y1, int x2, int y2)
 void
 term_scroll_up(Term *term, int rows)
 {
-   int i, j, x;
+   int i, j, x, y;
    Term_TGlyph *gl;
 
    if (term->scroll_in_region) {
@@ -288,6 +288,19 @@ term_scroll_up(Term *term, int rows)
       DPRINT((stderr,"Scrolling: in region between %d and %d\n",
 	      term->scroll_region_start,
 	      term->scroll_region_end));
+      for (i = term->scroll_region_start, x = term->tcanvas->pos + term->scroll_region_start;
+	   i < term->scroll_region_end; i++, x++) {
+	 if (x >= term->tcanvas->size)
+	    x = 0;
+	 y = x + rows;
+	 if (y >= term->tcanvas->size)
+	    y = 0;
+	 for (j = 0; j < term->cols; j++) {
+	    term->tcanvas->grid[x][j] = term->tcanvas->grid[y][j];
+	    gl = &term->tcanvas->grid[x][j];
+	    gl->changed = 1;
+	 }
+      }
    } else {
       DPRINT((stderr, "Scrolling: window\n"));
       term->tcanvas->pos += rows;
