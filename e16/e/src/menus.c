@@ -36,7 +36,6 @@ ShowTaskMenu(void)
    EDBUG_RETURN_;
 }
 
-/* FIXME: need to use standard named menustyle */
 void
 ShowAllTaskMenu(void)
 {
@@ -75,7 +74,6 @@ ShowAllTaskMenu(void)
    EDBUG_RETURN_;
 }
 
-/* FIXME: need to use standard named menustyle */
 void
 ShowDeskMenu(void)
 {

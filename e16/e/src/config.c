@@ -886,6 +886,12 @@ Config_Menu(FILE * ConfigFile)
 
 		  ms = FindItem(s3, 0,
 				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  if (!ms)
+		    {
+		       ms = FindItem("DEFAULT", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		    }
+
 		  if (ms)
 		    {
 		       AUDIO_PLAY("SOUND_SCANNING");
