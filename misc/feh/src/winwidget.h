@@ -70,7 +70,7 @@ MWMHints;
 
 enum win_type
 {
-   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT
+   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT, WIN_TYPE_THUMBNAIL
 };
 
 struct __winwidget
@@ -126,6 +126,7 @@ void winwidget_create_window(winwidget ret, int w, int h);
 void winwidget_clear_background(winwidget w);
 Pixmap feh_create_checks(void);
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
+void feh_debug_print_winwid(winwidget winwid);
 
 extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */

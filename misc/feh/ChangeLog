@@ -1,3 +1,14 @@
+Wed Jun 21 22:43:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Initial thumbnail mode, thanks to patches from richlowe and
+	modifications by me. Nice work dude. More to come, right now
+	there's just the click (although it works with a panned or zoomed
+	thumbnail list). To come - opening thumbs in a single window,
+	hiliting, and hey, the rest will be a surprise, okay? ;-)
+	* This is *initial* btw. I plan to properly add this to index and
+	montage modes, as it needn't be a seperate mode. There's lots of
+	duplication in the source right now, which needs to be cut down.
+
 Tue Jun 20 20:02:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed mousebutton swapping option code. It was broken for

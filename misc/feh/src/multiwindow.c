@@ -47,7 +47,6 @@ init_multiwindow_mode(void)
 
       if ((w = winwidget_create_from_file(file, s, WIN_TYPE_SINGLE)) != NULL)
       {
-         w->file = file;
          if (opt.draw_filename)
             feh_draw_filename(w);
          if (!opt.progressive)

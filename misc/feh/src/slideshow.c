@@ -52,7 +52,6 @@ init_slideshow_mode(void)
       {
          free(s);
          success = 1;
-         w->file = file;
          if (opt.draw_filename)
             feh_draw_filename(w);
          if (!opt.progressive)

@@ -64,6 +64,10 @@
 # define __attribute__(x)
 #endif
 
+#define XY_IN_RECT(x, y, rx, ry, rw, rh) \
+(((x) >= (rx)) && ((y) >= (ry)) && ((x) < ((rx) + (rw))) && ((y) < ((ry) + (rh))))
+	
+
 enum mode_type
 { MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM, MODE_ROTATE, MODE_BLUR };
 
@@ -83,6 +87,7 @@ void feh_handle_event(XEvent * ev);
 void init_x_and_imlib(void);
 void init_multiwindow_mode(void);
 void init_montage_mode(void);
+void init_thumbnail_mode(void);
 void init_collage_mode(void);
 void init_index_mode(void);
 void init_slideshow_mode(void);

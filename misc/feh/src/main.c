@@ -57,6 +57,8 @@ main(int argc, char **argv)
       init_loadables_mode();
    else if (opt.unloadables)
       init_unloadables_mode();
+   else if (opt.thumbs)
+      init_thumbnail_mode();
    else
    {
       /* Slideshow mode is the default. Because it's spiffy */

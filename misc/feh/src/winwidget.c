@@ -73,7 +73,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget
+winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -100,7 +101,8 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -110,6 +112,7 @@ winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
       D_RETURN(NULL);
 
    ret = winwidget_allocate();
+   ret->file = file;
    ret->type = type;
    if (name)
       ret->name = estrdup(name);
@@ -412,25 +415,12 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
      ("-----------\nRender image:\nsx: %d\nsy: %d\nsw: %d\nsh: %d\ndx: %d\ndy: %d\ndw: %d\ndh: %d\n",
       sx, sy, sw, sh, dx, dy, dw, dh));
 
-   D(
-     (stderr, "winwidget_render(): winwid->im_angle = %f\n",
-      winwid->im_angle));
+   D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if (winwid->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
-                                                                    bg_pmap,
-                                                                    winwid->
-                                                                    im, sx,
-                                                                    sy, sw,
-                                                                    sh, dx,
-                                                                    dy, dw,
-                                                                    dh,
-                                                                    winwid->
-                                                                    im_angle,
-                                                                    1,
-                                                                    (feh_imlib_image_has_alpha
-                                                                    (winwid->
-                                                                     im) || winwid->has_rotated),
-                                                                    alias);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
+         (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
+          winwid->im_angle, 1, (feh_imlib_image_has_alpha(winwid->im)
+                                || winwid->has_rotated), alias);
    else
       feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
                                                       winwid->im, sx, sy, sw,
@@ -461,8 +451,7 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    D_RETURN(ratio);
 }
 
-Pixmap
-feh_create_checks(void)
+Pixmap feh_create_checks(void)
 {
    static Pixmap checks_pmap = None;
    Imlib_Image checks = NULL;
@@ -570,6 +559,9 @@ winwidget_show(winwidget winwid)
    XEvent ev;
 
    D_ENTER;
+
+   /* feh_debug_print_winwid(winwid); */
+
    XMapWindow(disp, winwid->win);
    /* wait for the window to map */
    D(("Waiting for window to map\n"));
@@ -648,7 +640,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -680,3 +673,20 @@ winwidget_free_image(winwidget w)
    w->im_h = 0;
    D_RETURN_;
 }
+
+void
+feh_debug_print_winwid(winwidget w)
+{
+   printf("winwid_debug:\n" "winwid = %p\n" "win = %ld\n" "w = %d\n" "h = %d\n"
+          "im_w = %d\n" "im_h = %d\n" "im_angle = %f\n" "type = %d\n"
+          "had_resize = %d\n" "im = %p\n" "GC = %p\n" "pixmap = %ld\n"
+          "name = %s\n" "file = %p\n" "mode = %d\n" "im_x = %d\n"
+          "im_y = %d\n" "zoom = %f\n" "click_offset_x = %d\n"
+          "click_offset_y = %d\n" "im_click_offset_x = %d\n"
+          "im_click_offset_y = %d\n" "has_rotated = %d\n", w, w->win, w->w,
+          w->h, w->im_w, w->im_h, w->im_angle, w->type, w->had_resize, w->im,
+          w->gc, w->bg_pmap, w->name, w->file, w->mode, w->im_x, w->im_y,
+          w->zoom, w->click_offset_x, w->click_offset_y, w->im_click_offset_x,
+          w->im_click_offset_y, w->has_rotated);
+}
+

@@ -40,8 +40,6 @@ typedef struct _feh_menu_list feh_menu_list;
 #define MENU_ITEM_SET_SELECTED(item) \
 (item)->state = (item)->state | MENU_ITEM_STATE_SELECTED
 
-#define XY_IN_RECT(x, y, rx, ry, rw, rh) \
-(((x) >= (rx)) && ((y) >= (ry)) && ((x) < ((rx) + (rw))) && ((y) < ((ry) + (rh))))
 #define RECTS_INTERSECT(x, y, w, h, xx, yy, ww, hh) \
 ((SPANS_COMMON((x), (w), (xx), (ww))) && (SPANS_COMMON((y), (h), (yy), (hh))))
 #define SPANS_COMMON(x1, w1, x2, w2) \

@@ -28,6 +28,7 @@
 #include "timers.h"
 #include "options.h"
 #include "events.h"
+#include "thumbnail.h"
 
 feh_event_handler *ev_handler[LASTEvent];
 
@@ -138,7 +139,33 @@ feh_event_handle_ButtonPress(XEvent * ev)
       D(("Next Button Press event\n"));
       winwid = winwidget_get_from_window(ev->xbutton.window);
       if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+      {
          slideshow_change_image(winwid, SLIDE_NEXT);
+      }
+      else if ((winwid != NULL) && (winwid->type == WIN_TYPE_THUMBNAIL))
+      {
+         feh_file *thumbfile;
+         winwidget thumbwin = NULL;
+         int x, y;
+
+         x = ev->xbutton.x;
+         y = ev->xbutton.y;
+         x -= winwid->im_x;
+         y -= winwid->im_y;
+         x /= winwid->zoom;
+         y /= winwid->zoom;
+         thumbfile =
+            feh_thumbnail_get_file_from_coords(x, y);
+         if (thumbfile)
+         {
+            thumbwin =
+               winwidget_create_from_file(thumbfile, thumbfile->name,
+                                          WIN_TYPE_SINGLE);
+            if(!opt.progressive)
+            winwidget_show(thumbwin);
+         }
+      }
+
    }
    else if (ev->xbutton.button == opt.pan_button)
    {

@@ -101,8 +101,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
       if (set)
       {
-         snprintf(sendbuf, sizeof(sendbuf), "use_bg %s %d", bgname,
-                  desktop);
+         snprintf(sendbuf, sizeof(sendbuf), "use_bg %s %d", bgname, desktop);
          enl_ipc_send(sendbuf);
       }
       enl_ipc_sync();
@@ -195,7 +194,8 @@ feh_wm_get_num_desks(void)
 
 D_RETURN(desks)}
 
-Window enl_ipc_get_win(void)
+Window
+enl_ipc_get_win(void)
 {
 
    unsigned char *str = NULL;
@@ -341,7 +341,6 @@ enl_ipc_send(char *str)
       }
       XSendEvent(disp, ipc_win, False, 0, (XEvent *) & ev);
    }
-   D(("Message sent to IPC window 0x%08x.\n", ipc_win));
    D_RETURN_;
 }
 
@@ -448,9 +447,7 @@ enl_send_and_wait(char *msg)
       if (reply == IPC_TIMEOUT)
       {
          /* We timed out.  The IPC window must be AWOL.  Reset and resend message. */
-         D(
-           ("IPC timed out.  IPC window 0x%08x has gone. Clearing ipc_win.\n",
-            ipc_win));
+         D(("IPC timed out.  IPC window has gone. Clearing ipc_win.\n"));
          XSelectInput(disp, ipc_win, None);
          ipc_win = None;
       }

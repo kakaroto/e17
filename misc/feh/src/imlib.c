@@ -466,3 +466,4 @@ feh_display_status(char stat)
    i++;
    D_RETURN_;
 }
+

@@ -322,6 +322,7 @@ feh_parse_option_array(int argc, char **argv)
       {"draw_filename", 0, 0, 'd'},
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
+      {"thumbnails", 0, 0, '!'},
       {"no-menu-ctrl-mask", 0, 0, '5'},     /* okay */
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
@@ -574,6 +575,12 @@ feh_parse_option_array(int argc, char **argv)
         case '9':
            opt.no_blur_ctrl_mask = 1;
            break;
+        case '!':
+           opt.thumbs = 1;
+           opt.index_show_name = 1;
+           opt.index_show_size = 0;
+           opt.index_show_dim = 0;
+           break;
         default:
            break;
       }
@@ -780,6 +787,8 @@ show_usage(void)
            "                            images name beneath each thumbnail. Index mode\n"
            "                            enables certain other options, see INDEX MODE\n"
            "                            OPTIONS\n"
+           "      --thumnails           As --index, but clicking an image will open it in\n"
+           "                            a new viewing window\n"
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
            "      --fontpath PATH       Specify an extra directory to look in for fonts\n"
