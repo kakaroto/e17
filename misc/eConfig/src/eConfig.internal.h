@@ -30,6 +30,7 @@
 #include <sys/resource.h>
 
 #define FILEPATH_LEN_MAX 4096
+#include "../config.h"
 
 typedef struct _pathstruct {
 
@@ -81,5 +82,4 @@ int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
 unsigned long _econf_timestamp(void);
 int _econf_replace_fat_entry_to_disk(char *loc, unsigned long length,
                                      char *path);
-int _econf_create_new_data_repository(char *path);
-
+int _econf_create_new_data_repository(char *path); 
