@@ -1853,16 +1853,18 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 void                PropagateShapes(Window win);
 
 /* focus.c functions */
-#define FOCUS_SET        0
-#define FOCUS_NONE       1
-#define FOCUS_ENTER      2
-#define FOCUS_LEAVE      3
-#define FOCUS_EWIN_NEW   4
-#define FOCUS_EWIN_GONE  5
-#define FOCUS_DESK_ENTER 6
-#define FOCUS_DESK_LEAVE 7
-#define FOCUS_WARP_DONE  8
-#define FOCUS_CLICK      9
+#define FOCUS_SET         0
+#define FOCUS_NONE        1
+#define FOCUS_ENTER       2
+#define FOCUS_LEAVE       3
+#define FOCUS_EWIN_NEW    4
+#define FOCUS_EWIN_GONE   5
+#define FOCUS_DESK_ENTER  6
+#define FOCUS_DESK_LEAVE  7
+#define FOCUS_NEXT        8
+#define FOCUS_WARP_NEXT   9
+#define FOCUS_WARP_DONE  10
+#define FOCUS_CLICK      11
 
 void                FocusGetNextEwin(void);
 void                FocusGetPrevEwin(void);

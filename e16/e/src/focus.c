@@ -98,7 +98,7 @@ FocusCycle(int inc)
    ewin = lst[i];
    Efree(lst);
 
-   FocusToEWin(ewin, FOCUS_SET);
+   FocusToEWin(ewin, FOCUS_NEXT);
 
    EDBUG_RETURN_;
 }
@@ -211,6 +211,10 @@ FocusToEWin(EWin * ewin, int why)
 	   EDBUG_RETURN_;
 	break;
 
+     case FOCUS_WARP_NEXT:
+	why = FOCUS_NEXT;
+	break;
+
      case FOCUS_WARP_DONE:
 	break;
      }
@@ -255,12 +259,11 @@ FocusToEWin(EWin * ewin, int why)
 	  }
      }
 
-   if (conf.focus.raise_on_next_focus ||
+   if ((conf.focus.raise_on_next_focus && (why == FOCUS_NEXT)) ||
        (conf.focus.raise_after_next_focus && (why == FOCUS_WARP_DONE)))
       RaiseEwin(ewin);
 
-   if ((conf.focus.warp_on_next_focus && why != FOCUS_ENTER &&
-	why != FOCUS_CLICK && why != FOCUS_DESK_ENTER) ||
+   if ((conf.focus.warp_on_next_focus && (why == FOCUS_NEXT)) ||
        (conf.focus.warp_after_next_focus && (why == FOCUS_WARP_DONE)))
      {
 	if (ewin != mode.mouse_over_win)

@@ -130,7 +130,7 @@ WarpFocus(int delta)
 	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
 	   ewin = NULL;
 	if (ewin)
-	   FocusToEWin(ewin, FOCUS_SET);
+	   FocusToEWin(ewin, FOCUS_WARP_NEXT);
 	WarpFocusShowTitle(ewin);
 	Efree(lst);
      }
