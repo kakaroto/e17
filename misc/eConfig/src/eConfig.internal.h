@@ -60,6 +60,7 @@ typedef struct {
 
     PathStruct   *paths;
     eConfigData  *data;
+	time_t        updated_on;
 	unsigned long cachesize;
 
 } eConfigType;

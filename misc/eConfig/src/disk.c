@@ -37,10 +37,21 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 
 	if((paths = eConfigPaths(&num))) {
 		int i;
+		int position;
 
 		for(i=0;i<num;i++) {
+			if((position = _econf_finddatapointerinpath(paths[i],loc,length))) {
+				FILE *CONF_TABLE;
+				char confpath[FILEPATH_LEN_MAX];
+				char *allocedspace;
 
+				allocedspace = malloc(*length + 1);
+				sprintf(confpath,"%s/data",loc);
+				CONF_TABLE = fopen(confpath,"r");
 
+				fseek(CONF_TABLE,position,SEEK_SET);
+				fclose(CONF_TABLE);
+			}
 		}
 	}
 
