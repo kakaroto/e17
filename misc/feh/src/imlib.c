@@ -1,21 +1,25 @@
 /* imlib.c
  *
- * Copyright (C) 1999 Tom Gilbert
+ * Copyright (C) 2000 Tom Gilbert
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies of the Software, its documentation and marketing & publicity
+ * materials, and acknowledgment shall be given in the documentation, materials
+ * and software packages that this Software was used.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- * USA
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 #include "feh.h"
@@ -43,7 +47,7 @@ init_x_and_imlib (void)
   imlib_context_set_color_modifier (NULL);
   imlib_context_set_operation (IMLIB_OP_COPY);
   wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
-  imlib_context_set_dither (0);
+  imlib_context_set_dither (1);
   imlib_context_set_blend (0);
 
   /* Set up the font stuff */
@@ -230,7 +234,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
 
   imlib_context_set_drawable (progwin->bg_pmap);
   imlib_context_set_anti_alias (0);
-  imlib_context_set_dither (0);
+  imlib_context_set_dither (1);
   imlib_context_set_image (im);
 
   /* Is this the first progress return for a new image? */
@@ -263,7 +267,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   imlib_context_set_image (im);
   imlib_context_set_drawable (progwin->bg_pmap);
   imlib_context_set_anti_alias (0);
-  imlib_context_set_dither (0);
+  imlib_context_set_dither (1);
   imlib_context_set_blend (0);
   if (imlib_image_has_alpha ())
     imlib_context_set_blend (1);
