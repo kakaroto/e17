@@ -1813,3 +1813,16 @@ Wed Jan 19 12:32:56 PST 2000
 
 If we run out of images, don't just sit and spin like an idiot.  Tell the user
 there's a problem and let them fix it.
+
+-------------------------------------------------------------------------------
+
+Thu Jan 20 08:51:36 CST 2000
+(thebard)
+
+Cleaned up more of the Demo code. Tried to track down the case where
+Orthogonal projection is getting mapped 2 pixel up and to the right
+in the viewport. Cant figure out why its happening. For now im just
+adjusting the viewport 2 pixels down and left. Oh, also notice the
+pretty colors on teh square. I PROMISE I'll put something more interesting
+to look at in in a day or two. :P
+
