@@ -149,7 +149,7 @@ EXTRA_LIBS="-L/usr/local/lib -L/usr/X11R6/lib"
 AC_CHECK_LIB(jpeg, jpeg_destroy_decompress,
   jpeg_ok=yes,
   jpeg_ok=no
-  AC_MSG_WARN(*** Native JPEG support will not be built (JPEG library not found) ***), $EXTAR_LIBS)
+  AC_MSG_WARN(*** Native JPEG support will not be built (JPEG library not found) ***), $EXTRA_LIBS)
 if test "$jpeg_ok" = yes; then
   AC_MSG_CHECKING([for jpeglib.h])
   AC_TRY_CPP(
