@@ -81,11 +81,17 @@ static Imlib_Progress_Function ctxt_progress_func        = NULL;
 static char                    ctxt_progress_granularity = 0;
 static char                    ctxt_dither_mask          = 0;
 
-/* context setting functions */
+/* context setting/getting functions */
 void
 imlib_context_set_display(Display *display)
 {
    ctxt_display = display;
+}
+
+Display *
+imlib_context_get_display(void)
+{
+    return ctxt_display;
 }
 
 void
@@ -95,10 +101,22 @@ imlib_context_set_visual(Visual *visual)
    ctxt_depth = imlib_get_visual_depth(ctxt_display, ctxt_visual);
 }
 
+Visual *
+imlib_context_get_visual(void)
+{
+    return ctxt_visual;
+}
+
 void
 imlib_context_set_colormap(Colormap colormap)
 {
    ctxt_colormap = colormap;
+}
+
+Colormap
+imlib_context_get_colormap(void)
+{
+    return ctxt_colormap;
 }
 
 void
@@ -107,10 +125,22 @@ imlib_context_set_drawable(Drawable drawable)
    ctxt_drawable = drawable;
 }
 
+Drawable
+imlib_context_get_drawable(void)
+{
+    return ctxt_drawable;
+}
+
 void
 imlib_context_set_mask(Pixmap mask)
 {
    ctxt_mask = mask;
+}
+
+Pixmap
+imlib_context_get_mask(void)
+{
+    return ctxt_mask;
 }
 
 void
@@ -119,10 +149,22 @@ imlib_context_set_dither_mask(char dither_mask)
    ctxt_dither_mask = dither_mask;
 }
 
+char
+imlib_context_get_dither_mask(void)
+{
+    return ctxt_dither_mask;
+}
+
 void
 imlib_context_set_anti_alias(char anti_alias)
 {
    ctxt_anti_alias = anti_alias;
+}
+
+char
+imlib_context_get_anti_alias(void)
+{
+    return ctxt_anti_alias;
 }
 
 void
@@ -131,10 +173,22 @@ imlib_context_set_dither(char dither)
    ctxt_dither = dither;
 }
 
+char
+imlib_context_get_dither(void)
+{
+    return ctxt_dither;
+}
+
 void
 imlib_context_set_blend(char blend)
 {
    ctxt_blend = blend;
+}
+
+char
+imlib_context_get_blend(void)
+{
+    return ctxt_blend;
 }
 
 void
@@ -143,10 +197,22 @@ imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
    ctxt_color_modifier = color_modifier;
 }
 
+Imlib_Color_Modifier
+imlib_context_get_color_modifier(void)
+{
+    return ctxt_color_modifier;
+}
+
 void
 imlib_context_set_operation(Imlib_Operation operation)
 {
    ctxt_operation = operation;
+}
+
+Imlib_Operation
+imlib_context_get_operation(void)
+{
+    return ctxt_operation;
 }
 
 void
@@ -155,10 +221,22 @@ imlib_context_set_font(Imlib_Font font)
    ctxt_font = font;
 }
 
+Imlib_Font
+imlib_context_get_font(void)
+{
+    return ctxt_font;
+}
+
 void
 imlib_context_set_direction(Imlib_Text_Direction direction)
 {
    ctxt_direction = direction;
+}
+
+Imlib_Text_Direction
+imlib_context_get_direction(void)
+{
+    return ctxt_direction;
 }
 
 void
@@ -171,9 +249,30 @@ imlib_context_set_color(int red, int green, int blue, int alpha)
 }
 
 void
+imlib_context_get_color(int *red, int *green, int *blue, int *alpha)
+{
+    *red = ctxt_color.red;
+    *green = ctxt_color.green;
+    *blue = ctxt_color.blue;
+    *alpha = ctxt_color.alpha;
+}
+
+Imlib_Color *
+imlib_context_get_imlib_color(void)
+{
+    return &ctxt_color;
+}
+
+void
 imlib_context_set_color_range(Imlib_Color_Range color_range)
 {
    ctxt_color_range = color_range;
+}
+
+Imlib_Color_Range
+imlib_context_get_color_range(void)
+{
+    return ctxt_color_range;
 }
 
 void
@@ -182,10 +281,22 @@ imlib_context_set_progress_function(Imlib_Progress_Function progress_function)
    ctxt_progress_func = progress_function;
 }
 
+Imlib_Progress_Function
+imlib_context_get_progress_function(void)
+{
+    return ctxt_progress_func;
+}
+
 void
 imlib_context_set_progress_granularity(char progress_granularity)
 {
    ctxt_progress_granularity = progress_granularity;
+}
+
+char
+imlib_context_get_progress_granularity(void)
+{
+    return ctxt_progress_granularity;
 }
 
 void
@@ -194,6 +305,11 @@ imlib_context_set_image(Imlib_Image image)
    ctxt_image = image;
 }
 
+Imlib_Image
+imlib_context_get_image(void)
+{
+    return ctxt_image;
+}
 
 /* imlib api */
 int 
