@@ -160,7 +160,7 @@ feh_menu_new(void)
   XSetWindowAttributes attr;
   feh_menu_list *l;
   static Imlib_Image bg = NULL;
-  Imlib_Border border;
+  static Imlib_Border border;
 
   D_ENTER(4);
 
