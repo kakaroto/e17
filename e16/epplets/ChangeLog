@@ -1397,3 +1397,10 @@ Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
 
 That's the last of them! No more =P
 
+-------------------------------------------------------------------------------
+
+Sun Dec 05 19:02:45 GMT 1999
+(gilbertt)
+
+Added config dialog to E-Urlwatch, it is much more useable now :)
+
