@@ -50,13 +50,13 @@ static void
 save_config (void)
 {
   char buf[10];
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.cloak_delay);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.draw_interval);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.do_cloak);
+  Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.cloak_anim);
+  Esnprintf (buf, sizeof (buf), "%d", opt.cloak_anim);
   Epplet_modify_config ("CLOAK_ANIM", buf);
   Epplet_modify_config ("DIRECTORY", opt.dir);
 }
@@ -320,11 +320,10 @@ esd_timer (void *data)
   struct timeval tv;
   int retval;
 
-
   register short val_l = 0, val_r = 0;
   unsigned short bigl = 0, bigr = 0;
   int count, i;
-  short aubuf[4096] = { 0 };
+  short aubuf[2048] = { 0 };
   FD_ZERO (&rfds);
   FD_SET (esd.fd, &rfds);
   tv.tv_sec = 0;
@@ -352,7 +351,11 @@ esd_timer (void *data)
       esd.vol_l = bigl;
       esd.vol_r = bigr;
       esd.vol_ave = (bigl + bigr) / 2;
-
+      if (!cloaked)
+	{
+	  Epplet_gadget_data_changed (lbar);
+	  Epplet_gadget_data_changed (rbar);
+	}
     }
   else
     {
@@ -361,14 +364,13 @@ esd_timer (void *data)
 	  esd.vol_r = 0;
 	  esd.vol_l = 0;
 	  esd.vol_ave = 0;
+	  if (!cloaked)
+	    {
+	      Epplet_gadget_data_changed (lbar);
+	      Epplet_gadget_data_changed (rbar);
+	    }
 	}
     }
-
-      if (!cloaked)
-	{
-	  Epplet_gadget_data_changed (lbar);
-	  Epplet_gadget_data_changed (rbar);
-	}
 
 
 /*
@@ -454,52 +456,52 @@ create_epplet_layout (void)
   Epplet_add_popup_entry (p, "ColorShift", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[5])));
   Epplet_add_popup_entry (p, "Bouncy Ball", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[6])));
+			  (void *) (&(cloak_anims[6])));
   Epplet_add_popup_entry (p, "Atoms", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[7])));
+			  (void *) (&(cloak_anims[7])));
   Epplet_add_popup_entry (p, "Banner", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[8])));
+			  (void *) (&(cloak_anims[8])));
   Epplet_add_popup_entry (p, "SineWave", NULL, cb_cloak_anim,
-                          (void *) (&(cloak_anims[9])));
+			  (void *) (&(cloak_anims[9])));
 
   ctimer_p = Epplet_create_popup ();
   Epplet_add_popup_entry (ctimer_p, "Cloak Delay", NULL, NULL, NULL);
   Epplet_add_popup_entry (ctimer_p, "1 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[0])));
+			  (void *) (&(cloak_delays[0])));
   Epplet_add_popup_entry (ctimer_p, "2 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[1])));
+			  (void *) (&(cloak_delays[1])));
   Epplet_add_popup_entry (ctimer_p, "3 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[2])));
+			  (void *) (&(cloak_delays[2])));
   Epplet_add_popup_entry (ctimer_p, "4 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[3])));
+			  (void *) (&(cloak_delays[3])));
   Epplet_add_popup_entry (ctimer_p, "5 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[4])));
+			  (void *) (&(cloak_delays[4])));
   Epplet_add_popup_entry (ctimer_p, "10 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[5])));
+			  (void *) (&(cloak_delays[5])));
   Epplet_add_popup_entry (ctimer_p, "15 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[6])));
+			  (void *) (&(cloak_delays[6])));
   Epplet_add_popup_entry (ctimer_p, "20 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[7])));
+			  (void *) (&(cloak_delays[7])));
   Epplet_add_popup_entry (ctimer_p, "30 Sec", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[8])));
+			  (void *) (&(cloak_delays[8])));
   Epplet_add_popup_entry (ctimer_p, "1 min", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[9])));
+			  (void *) (&(cloak_delays[9])));
   Epplet_add_popup_entry (ctimer_p, "2 mins", NULL, cb_cloak_delay,
-                          (void *) (&(cloak_delays[10])));
+			  (void *) (&(cloak_delays[10])));
 
-   Epplet_gadget_show (btn_ctimer =
-                      Epplet_create_popupbutton (NULL,
-                                                 EROOT
-                                                 "/epplet_icons/E-SD_minitime.png",
-                                                 18, 31, 12, 12, NULL,
-                                                 ctimer_p));
-  
+  Epplet_gadget_show (btn_ctimer =
+		      Epplet_create_popupbutton (NULL,
+						 EROOT
+						 "/epplet_icons/E-SD_minitime.png",
+						 18, 31, 12, 12, NULL,
+						 ctimer_p));
+
   Epplet_gadget_show (btn_conf = Epplet_create_popupbutton (NULL, NULL,
 							    34, 2, 12, 12,
 							    "CONFIGURE", p));
 
 
-  
+
   da = Epplet_create_drawingarea (2, 2, 44, 44);
   win = Epplet_get_drawingarea_window (da);
   buf = Epplet_make_rgb_buf (40, 40);
@@ -542,7 +544,7 @@ main (int argc, char **argv)
   else
     esd.standby = 1;
 
-  nsamp = 4096;	    	
+  nsamp = 2048;
 /*
   last_is_full = 1;	    
   pos = 0;

@@ -489,3 +489,15 @@ Fri Nov 12 13:55:48 EST 1999
 Gee..wonder how many more commits I can get before 14:00...
 Fixed a segfault bug in E-Exec.
 
+-------------------------------------------------------------------------------
+
+Fri Nov 12 19:14:21 GMT 1999
+(gilbertt)
+
+Changes to E-SD.[ch]
+
+I'm hoping to have fixed the occasional high cpu usage my epplet seems to
+show for everyone except me...
+
+Please let me know if it worked...
+
