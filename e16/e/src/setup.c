@@ -23,6 +23,7 @@
 #include "E.h"
 #include <X11/keysym.h>
 #include <sys/time.h>
+#include <signal.h>
 
 void
 MapUnmap(int start)
@@ -179,6 +180,7 @@ SetupX(void)
 	     else
 	       {
 		  /* We are a slave */
+		  close(ConnectionNumber(disp));
 		  Mode.wm.master = 0;
 		  VRoot.scr = i;
 #ifdef SIGSTOP
