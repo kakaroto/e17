@@ -1945,7 +1945,7 @@ imlib_get_maximum_font_ascent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_ascent", "font",
                               ctxt_font, 0);
-   return ((ImlibFont *) ctxt_font)->max_ascent;
+   return ((ImlibFont *) ctxt_font)->max_ascent / 64;
 }
 
 int
@@ -1953,7 +1953,7 @@ imlib_get_maximum_font_descent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_descent", "font",
                               ctxt_font, 0);
-   return ((ImlibFont *) ctxt_font)->max_ascent;
+   return ((ImlibFont *) ctxt_font)->max_descent / 64;
 }
 
 Imlib_Color_Modifier imlib_create_color_modifier(void)

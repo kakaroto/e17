@@ -1,6 +1,6 @@
 %define ver      @VERSION@
 %define rel      1
-%define prefix   @prefix@
+%define prefix   /usr
 
 Summary: Powerful image loading and rendering library
 Name: imlib2
