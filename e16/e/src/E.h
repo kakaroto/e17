@@ -1203,8 +1203,8 @@ typedef struct
       char                all_new_windows_get_focus;
       char                new_transients_get_focus;
       char                new_transients_get_focus_if_group_focused;
-      char                raise_on_focus;
-      char                warp_on_focus;
+      char                raise_on_next;
+      char                warp_on_next;
    } focus;
    struct
    {
@@ -2235,9 +2235,8 @@ DItem              *FindDialogItem(Window win, Dialog ** dret);
 #define FOCUS_DESK_ENTER  6
 #define FOCUS_DESK_LEAVE  7
 #define FOCUS_NEXT        8
-#define FOCUS_WARP_NEXT   9
-#define FOCUS_WARP_DONE  10
-#define FOCUS_CLICK      11
+#define FOCUS_PREV        9
+#define FOCUS_CLICK      10
 
 void                FocusGetNextEwin(void);
 void                FocusGetPrevEwin(void);

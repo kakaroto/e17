@@ -427,8 +427,8 @@ SetupX(void)
    Conf.focus.all_new_windows_get_focus = 0;
    Conf.focus.new_transients_get_focus = 0;
    Conf.focus.new_transients_get_focus_if_group_focused = 1;
-   Conf.focus.raise_on_focus = 0;
-   Conf.focus.warp_on_focus = 0;
+   Conf.focus.raise_on_next = 1;
+   Conf.focus.warp_on_next = 0;
    Conf.warplist.raise_on_select = 1;
    Conf.warplist.warp_on_select = 0;
    Conf.group_config.iconify = 1;

@@ -1831,15 +1831,15 @@ IPC_AdvancedFocus(const char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  Conf.focus.raise_on_focus = 1;
+		  Conf.focus.raise_on_next = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  Conf.focus.raise_on_focus = 0;
+		  Conf.focus.raise_on_next = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (Conf.focus.raise_on_focus)
+		  if (Conf.focus.raise_on_next)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "raise_on_keyboard_focus_switch: on");
@@ -1913,15 +1913,15 @@ IPC_AdvancedFocus(const char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  Conf.focus.warp_on_focus = 1;
+		  Conf.focus.warp_on_next = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  Conf.focus.warp_on_focus = 0;
+		  Conf.focus.warp_on_next = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (Conf.focus.warp_on_focus)
+		  if (Conf.focus.warp_on_next)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "pointer_to_keyboard_focus_window: on");
@@ -5481,7 +5481,7 @@ IPC_ControlsSet(const char *s, Client * c __UNUSED__)
 	else if (!strcmp(w, "RAISE_ON_NEXT_FOCUS:"))
 	  {
 	     word(s, wd, w);
-	     Conf.focus.raise_on_focus = atoi(w);
+	     Conf.focus.raise_on_next = atoi(w);
 	  }
 	else if (!strcmp(w, "RAISE_AFTER_NEXT_FOCUS:"))
 	  {
@@ -5496,7 +5496,7 @@ IPC_ControlsSet(const char *s, Client * c __UNUSED__)
 	else if (!strcmp(w, "WARP_ON_NEXT_FOCUS:"))
 	  {
 	     word(s, wd, w);
-	     Conf.focus.warp_on_focus = atoi(w);
+	     Conf.focus.warp_on_next = atoi(w);
 	  }
 	else if (!strcmp(w, "WARP_AFTER_NEXT_FOCUS:"))
 	  {
@@ -5601,9 +5601,9 @@ IPC_ControlsGet(const char *s __UNUSED__, Client * c)
 	     Conf.focus.new_transients_get_focus,
 	     Conf.focus.new_transients_get_focus_if_group_focused,
 	     Conf.place.manual, Conf.place.manual_mouse_pointer,
-	     Conf.focus.raise_on_focus,
+	     Conf.focus.raise_on_next,
 	     Conf.warplist.raise_on_select, Conf.warplist.enable,
-	     Conf.focus.warp_on_focus,
+	     Conf.focus.warp_on_next,
 	     Conf.warplist.warp_on_select, Conf.edge_flip_resistance);
    CommsSend(c, buf);
 }

@@ -104,64 +104,52 @@ ReverseTimeout(int val, void *data __UNUSED__)
       EwinListRaise(&EwinListFocus, ewin, 0);
 }
 
-static void
-FocusCycle(int inc)
-{
-   EWin               *const *lst0;
-   EWin              **lst, *ewin;
-   int                 i, num0, num;
-
-   EDBUG(5, "FocusCycle");
-
-   /* On previous only ? */
-   RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
-   DoIn("REVERSE_FOCUS_TIMEOUT", 1.0, ReverseTimeout, 0, NULL);
-
-   lst0 = EwinListGetFocus(&num0);
-   if (lst0 == NULL)
-      EDBUG_RETURN_;
-
-   num = 0;
-   lst = NULL;
-   for (i = 0; i < num0; i++)
-     {
-	ewin = lst0[i];
-	if (FocusEwinValid(ewin, 1) || ewin->skipfocus)
-	  {
-	     num++;
-	     lst = Erealloc(lst, sizeof(EWin *) * num);
-	     lst[num - 1] = ewin;
-	  }
-     }
-
-   if (lst == NULL)
-      EDBUG_RETURN_;
-
-   for (i = 0; i < num; i++)
-     {
-	if (Mode.focuswin == lst[i])
-	   break;
-     }
-   i += inc + num;
-   i %= num;
-   ewin = lst[i];
-   Efree(lst);
-
-   FocusToEWin(ewin, FOCUS_NEXT);
-
-   EDBUG_RETURN_;
-}
-
 void
 FocusGetNextEwin(void)
 {
-   FocusCycle(1);
+   EWin               *const *lst;
+   EWin               *ewin;
+   int                 i, num;
+
+   lst = EwinListGetFocus(&num);
+   if (num <= 1)
+      return;
+
+   ewin = NULL;
+   for (i = num - 1; i >= 0; i--)
+     {
+	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1))
+	   continue;
+	ewin = lst[i];
+	break;
+     }
+
+   if (ewin)
+      FocusToEWin(ewin, FOCUS_NEXT);
 }
 
 void
 FocusGetPrevEwin(void)
 {
-   FocusCycle(-1);
+   EWin               *const *lst;
+   EWin               *ewin;
+   int                 i, num;
+
+   lst = EwinListGetFocus(&num);
+   if (num <= 1)
+      return;
+
+   ewin = NULL;
+   for (i = 0; i < num; i++)
+     {
+	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1))
+	   continue;
+	ewin = lst[i];
+	break;
+     }
+
+   if (ewin)
+      FocusToEWin(ewin, FOCUS_PREV);
 }
 
 void
@@ -215,6 +203,7 @@ void
 FocusToEWin(EWin * ewin, int why)
 {
    int                 do_follow = 0;
+   int                 do_raise = 0, do_warp = 0;
 
    EDBUG(4, "FocusToEWin");
 
@@ -229,11 +218,17 @@ FocusToEWin(EWin * ewin, int why)
 
    switch (why)
      {
+     case FOCUS_NEXT:
+     case FOCUS_PREV:
+	if (Conf.focus.raise_on_next)
+	   do_raise = 1;
+	if (Conf.focus.warp_on_next)
+	   do_warp = 1;
+	/* Fall thru */
      default:
      case FOCUS_SET:
      case FOCUS_ENTER:
      case FOCUS_LEAVE:		/* Unused */
-     case FOCUS_NEXT:
      case FOCUS_CLICK:
 	if (ewin == Mode.focuswin)
 	   EDBUG_RETURN_;
@@ -299,13 +294,6 @@ FocusToEWin(EWin * ewin, int why)
 	if (!FocusEwinValid(ewin, 0))
 	   EDBUG_RETURN_;
 	break;
-
-     case FOCUS_WARP_NEXT:
-	why = FOCUS_NEXT;
-     case FOCUS_WARP_DONE:
-	if (!FocusEwinValid(ewin, 1))
-	   EDBUG_RETURN_;
-	break;
      }
 
    if (ewin == Mode.focuswin)
@@ -330,20 +318,26 @@ FocusToEWin(EWin * ewin, int why)
 		ewin->client.win, NULL);
      }
 
-   if (Conf.focus.raise_on_focus)
+   if (do_raise)
       RaiseEwin(ewin);
 
-   if (Conf.focus.warp_on_focus)
-     {
-	if (ewin != Mode.mouse_over_ewin)
-	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-			ewin->h / 2);
-     }
+   if (do_warp && ewin != Mode.mouse_over_ewin)
+      XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
 
    RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
-   if (why != FOCUS_DESK_ENTER)
-      DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout, ewin->client.win,
-	   NULL);
+   switch (why)
+     {
+     default:
+     case FOCUS_PREV:
+	DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout, ewin->client.win,
+	     NULL);
+	break;
+     case FOCUS_DESK_ENTER:
+	break;
+     case FOCUS_NEXT:
+	EwinListRaise(&EwinListFocus, ewin, 0);
+	break;
+     }
 
    SoundPlay("SOUND_FOCUS_SET");
  done:

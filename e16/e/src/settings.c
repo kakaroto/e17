@@ -370,8 +370,8 @@ CB_ConfigureFocus(int val, void *data)
 	Conf.focus.new_transients_get_focus = tmp_popup_focus;
 	Conf.focus.new_transients_get_focus_if_group_focused =
 	   tmp_owner_popup_focus;
-	Conf.focus.raise_on_focus = tmp_raise_focus;
-	Conf.focus.warp_on_focus = tmp_warp_focus;
+	Conf.focus.raise_on_next = tmp_raise_focus;
+	Conf.focus.warp_on_next = tmp_warp_focus;
 #ifdef WITH_TARTY_WARP
 	Conf.warplist.warp_on_select = tmp_warp_after_focus;
 	Conf.warplist.raise_on_select = tmp_raise_after_focus;
@@ -406,8 +406,8 @@ SettingsFocus(void)
    tmp_new_focus = Conf.focus.all_new_windows_get_focus;
    tmp_popup_focus = Conf.focus.new_transients_get_focus;
    tmp_owner_popup_focus = Conf.focus.new_transients_get_focus_if_group_focused;
-   tmp_raise_focus = Conf.focus.raise_on_focus;
-   tmp_warp_focus = Conf.focus.warp_on_focus;
+   tmp_raise_focus = Conf.focus.raise_on_next;
+   tmp_warp_focus = Conf.focus.warp_on_next;
 #ifdef WITH_TARTY_WARP
    tmp_raise_after_focus = Conf.warplist.raise_on_select;
    tmp_warp_after_focus = Conf.warplist.warp_on_select;

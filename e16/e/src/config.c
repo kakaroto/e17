@@ -759,7 +759,7 @@ Config_Control(FILE * ConfigFile)
 	     Conf.place.ignore_struts = i2;
 	     break;
 	  case CONTROL_RAISE_ON_NEXT_FOCUS:
-	     Conf.focus.raise_on_focus = i2;
+	     Conf.focus.raise_on_next = i2;
 	     break;
 	  case CONTROL_RAISE_AFTER_NEXT_FOCUS:
 	     Conf.warplist.raise_on_select = i2;
@@ -768,7 +768,7 @@ Config_Control(FILE * ConfigFile)
 	     Conf.warplist.enable = i2;
 	     break;
 	  case CONTROL_WARP_ON_NEXT_FOCUS:
-	     Conf.focus.warp_on_focus = i2;
+	     Conf.focus.warp_on_next = i2;
 	     break;
 	  case CONTROL_WARP_AFTER_NEXT_FOCUS:
 	     Conf.warplist.warp_on_select = i2;
@@ -3898,8 +3898,8 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "3360 %i\n",
 		(int)Conf.place.manual_mouse_pointer);
 	fprintf(autosavefile, "3361 %i\n", (int)Conf.place.ignore_struts);
-	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_focus);
-	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_focus);
+	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_next);
+	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_next);
 	fprintf(autosavefile, "346 %i\n", (int)Conf.edge_flip_resistance);
 	fprintf(autosavefile, "347 %i\n", (int)Conf.pagers.enable);
 	fprintf(autosavefile, "348 %i\n", (int)Conf.pagers.hiq);

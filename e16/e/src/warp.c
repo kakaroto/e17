@@ -133,8 +133,14 @@ WarpFocus(int delta)
 	   ewin = NULL;
 	if (ewin)
 	  {
+	     if (Conf.focus.raise_on_next)
+		RaiseEwin(ewin);
+	     if (Conf.focus.warp_on_next)
+		if (ewin != Mode.mouse_over_ewin && !ewin->iconified)
+		   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
+				ewin->w / 2, ewin->h / 2);
 	     if (Conf.warplist.warpfocused)
-		FocusToEWin(ewin, FOCUS_WARP_NEXT);
+		FocusToEWin(ewin, FOCUS_SET);
 	     WarpFocusShowTitle(ewin);
 	  }
 	Efree(lst);
@@ -169,7 +175,7 @@ WarpFocusFinish(void)
 		if (ewin != Mode.mouse_over_ewin)
 		   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
 				ewin->w / 2, ewin->h / 2);
-	     FocusToEWin(ewin, FOCUS_WARP_DONE);
+	     FocusToEWin(ewin, FOCUS_SET);
 	  }
 	Efree(lst);
 
