@@ -1358,7 +1358,6 @@ typedef struct
    int                 last_button;
    Time                last_time;
    char                queue_up;
-   char                edge_flip_inhibit;
 }
 EMode;
 

@@ -938,11 +938,6 @@ doFullscreen(EWin * ewin, const void *params)
       on = 1;
    EwinSetFullscreen(ewin, on);
 
-   /* Inhibit edge flip while in fullscreen mode */
-   /* FIXME: Breaks when multiple windows enter/leave fullscreen state */
-   Mode.edge_flip_inhibit = on;
-   ShowEdgeWindows();
-
    return 0;
 }
 

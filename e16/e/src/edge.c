@@ -30,11 +30,17 @@ static void
 EdgeTimeout(int val, void *data)
 {
    int                 ax, ay, aw, ah, dx, dy, dax, day;
+   EWin               *ewin;
 
-   if (Mode.edge_flip_inhibit || (Mode.cur_menu_mode > 0))
+   if (Mode.cur_menu_mode > 0)
       return;
    if (!Conf.edge_flip_resistance)
       return;
+
+   ewin = GetEwinPointerInClient();
+   if (ewin && ewin->st.fullscreen)
+      return;
+
    throw_move_events_away = 1;
    GetCurrentArea(&ax, &ay);
    GetAreaSize(&aw, &ah);
@@ -93,7 +99,7 @@ ShowEdgeWindows(void)
 {
    int                 ax, ay, cx, cy;
 
-   if (Mode.edge_flip_inhibit || (Conf.edge_flip_resistance <= 0))
+   if (Conf.edge_flip_resistance <= 0)
      {
 	HideEdgeWindows();
 	return;
