@@ -35,6 +35,8 @@ Ewl_Widget     *ewl_textarea_new(char *text)
 void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 {
 	Ewl_Widget *w;
+	char *style;
+	int r, g, b, a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
@@ -53,6 +55,20 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 			    ewl_textarea_configure_cb, NULL);
 
 	ta->etox_context = etox_context_new();
+
+	/*
+	 * Get the default style and color based on the theme. Usually this
+	 * sort of thing is done at realize time, but the context has lots of
+	 * things that can be overridden.
+	 */
+	style = ewl_theme_data_get_str(w, "style");
+	etox_context_set_style(ta->etox_context, style);
+
+	r = ewl_theme_data_get_int(w, "color/r");
+	g = ewl_theme_data_get_int(w, "color/g");
+	b = ewl_theme_data_get_int(w, "color/b");
+	a = ewl_theme_data_get_int(w, "color/a");
+	etox_context_set_color(ta->etox_context, r, g, b, a);
 
 	if (text)
 		ewl_textarea_set_text(ta, text);
@@ -132,8 +148,9 @@ void ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR("ta", ta);
+	DCHECK_PARAM_PTR("context", context);
 
-	ta->etox_context = context;
+	etox_context_copy(ta->etox_context, context);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -145,15 +162,18 @@ void ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
  */
 Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta)
 {
+	Etox_Context *dst;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_PTR(ta->etox_context, DLEVEL_STABLE);
+	dst = etox_context_new();
+	if (dst)
+		etox_context_copy(dst, ta->etox_context);
+
+	DRETURN_PTR(dst, DLEVEL_STABLE);
 }
 
 void ewl_textarea_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int             r, g, b, a;
-	char           *style;
 	Ewl_Embed      *emb;
 	Ewl_TextArea   *ta;
 
@@ -177,30 +197,6 @@ void ewl_textarea_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (ta->etox_context) {
 		etox_context_load(ta->etox, ta->etox_context);
-		etox_context_free(ta->etox_context);
-		ta->etox_context = NULL;
-	} else {
-
-		/*
-		 * Get the default style and color based on the theme.
-		 */
-		style = ewl_theme_data_get_str(w, "style");
-
-		r = ewl_theme_data_get_int(w, "color/r");
-		g = ewl_theme_data_get_int(w, "color/g");
-		b = ewl_theme_data_get_int(w, "color/b");
-		a = ewl_theme_data_get_int(w, "color/a");
-
-		/*
-		 * Set the default style
-		 */
-		etox_context_set_style(etox_get_context(ta->etox), style);
-		IF_FREE(style);
-
-		/*
-		 * Set the default color for the text.
-		 */
-		etox_context_set_color(etox_get_context(ta->etox), r, g, b, a);
 	}
 
 	if (w->fx_clip_box)
@@ -228,8 +224,6 @@ void ewl_textarea_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	ta = EWL_TEXTAREA(w);
-
-	ta->etox_context = etox_context_save(ta->etox);
 
 	evas_object_clip_unset(ta->etox);
 	evas_object_del(ta->etox);
