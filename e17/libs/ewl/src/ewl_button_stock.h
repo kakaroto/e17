@@ -9,7 +9,7 @@ extern "C" {
 
 /**
  * @defgroup Ewl_Button_Stock Button: A Button with a Stock Icon in it.
- * @brief The button_stock class is a button with an stock icon or a
+ * @brief The button_stock class is a button with a stock icon or a
  * label. This class inherits from the Ewl_Button. Stock icons are
  * pre-defined and are referenced by an Id.
  *
@@ -22,7 +22,10 @@ extern "C" {
 #define EWL_STOCK_APPLY  "stock_apply"
 #define EWL_STOCK_CANCEL "stock_cancel"
 #define EWL_STOCK_OPEN   "stock_open"
+#define EWL_STOCK_PAUSE  "stock_pause"
+#define EWL_STOCK_PLAY   "stock_play"
 #define EWL_STOCK_SAVE   "stock_save"
+#define EWL_STOCK_STOP   "stock_stop"
 
 
 typedef struct Ewl_Stock_Item Ewl_Stock_Item;

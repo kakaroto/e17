@@ -25,7 +25,10 @@ data {
 	item, "/button/stock_cancel/group" "stock_cancel";
 	item, "/button/stock_ok/group" "stock_ok";
 	item, "/button/stock_open/group" "stock_open";
+	item, "/button/stock_pause/group" "stock_pause";
+	item, "/button/stock_play/group" "stock_play";
 	item, "/button/stock_save/group" "stock_save";
+	item, "/button/stock_stop/group" "stock_stop";
 	item, "/button/text/font" "Vera";
 	item, "/button/text/style" "none";
 	item, "/check/group" "checkbox";
