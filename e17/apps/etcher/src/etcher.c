@@ -61,7 +61,6 @@ main (int argc, char *argv[])
      pref_set_defaults();
 
    pref_init();
-
    workspace_init();
 
    {
@@ -86,6 +85,7 @@ main (int argc, char *argv[])
    
    main_win = create_toplevel();
    recent_init();
+   workspace_set_light(Green);
 
    /*******/
    gtk_widget_pop_visual();

@@ -274,6 +274,12 @@ create_toplevel (void)
   GtkWidget *hbox2;
   GtkWidget *zoomin;
   GtkWidget *zoomout;
+  GtkWidget *hbox4;
+  GtkWidget *frame13;
+  GtkWidget *lamp;
+  GtkWidget *frame14;
+  GtkWidget *coords;
+  GtkWidget *statusbar3;
   GtkAccelGroup *accel_group;
   GtkTooltips *tooltips;
 
@@ -2229,6 +2235,51 @@ create_toplevel (void)
   gtk_container_set_border_width (GTK_CONTAINER (zoomout), 2);
   gtk_tooltips_set_tip (tooltips, zoomout, _("Click to zoom out further"), NULL);
   gtk_widget_set_events (zoomout, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+
+  hbox4 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox4);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hbox4", hbox4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox4);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox4, TRUE, TRUE, 0);
+
+  frame13 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame13);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "frame13", frame13,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame13);
+  gtk_box_pack_start (GTK_BOX (hbox4), frame13, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame13), GTK_SHADOW_IN);
+
+  lamp = create_pixmap (toplevel, NULL);
+  gtk_widget_ref (lamp);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "lamp", lamp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (lamp);
+  gtk_container_add (GTK_CONTAINER (frame13), lamp);
+
+  frame14 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame14);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "frame14", frame14,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame14);
+  gtk_box_pack_start (GTK_BOX (hbox4), frame14, FALSE, TRUE, 0);
+  gtk_widget_set_usize (frame14, 70, -2);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame14), GTK_SHADOW_IN);
+
+  coords = gtk_label_new ("");
+  gtk_widget_ref (coords);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "coords", coords,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (coords);
+  gtk_container_add (GTK_CONTAINER (frame14), coords);
+
+  statusbar3 = gtk_statusbar_new ();
+  gtk_widget_ref (statusbar3);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "statusbar3", statusbar3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (statusbar3);
+  gtk_box_pack_start (GTK_BOX (hbox4), statusbar3, TRUE, TRUE, 0);
 
   gtk_signal_connect (GTK_OBJECT (toplevel), "delete_event",
                       GTK_SIGNAL_FUNC (on_main_delete_event),

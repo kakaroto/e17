@@ -3,6 +3,12 @@
 
 #include <etching.h>
 
+typedef enum lamp_color
+{
+  Green, Red
+}
+LampColor;
+
 void      workspace_init(void);
 void      workspace_set_current_etching(Etching *e);
 Etching  *workspace_get_current_etching(void);
@@ -12,6 +18,7 @@ void      workspace_remove_etching(Etching *e);
 Evas      workspace_get_evas(void);
 
 void      workspace_show_splash(void);
+void      workspace_set_light(LampColor color);
 
 void      workspace_update_selection_from_widget(void);
 void      workspace_update_widget_from_selection(void);

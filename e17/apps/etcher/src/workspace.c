@@ -19,6 +19,7 @@
 #include "etching.h"
 #include "globals.h"
 #include "interface.h"
+#include "lights.h"
 #include "macros.h"
 #include "preferences.h"
 #include "support.h"
@@ -144,6 +145,27 @@ workspace_init(void)
     evas_set_output_method(ws.view_evas, RENDER_METHOD_3D_HARDWARE);
   else
     evas_set_output_method(ws.view_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+}
+
+
+void
+workspace_set_light(LampColor color)
+{
+  GdkPixmap *gdk_pixmap;
+  GtkWidget *w;
+  GdkBitmap *mask;
+  GtkStyle  *style;
+
+  w = gtk_object_get_data(GTK_OBJECT(main_win), "lamp");
+  style = gtk_widget_get_style(main_win);
+  gtk_widget_realize(w);
+
+  if (color == Green)
+    gdk_pixmap = gdk_pixmap_create_from_xpm_d(w->window, &mask, &style->bg[GTK_STATE_NORMAL], light_green_xpm);
+  else
+    gdk_pixmap = gdk_pixmap_create_from_xpm_d(w->window, &mask, &style->bg[GTK_STATE_NORMAL], light_red_xpm);
+
+  gtk_pixmap_set(GTK_PIXMAP(w), gdk_pixmap, mask);
 }
 
 
@@ -846,11 +868,16 @@ workspace_redraw(gpointer data)
 void
 workspace_zoom_redraw(int xx, int yy)
 {
-   GtkWidget *zoom, *view;
+   GtkWidget *zoom, *view, *w;
    GdkPixmap *pmap;
    GdkGC *gc;
    int x, y;
-   
+   char s[100];
+
+   w = gtk_object_get_data(GTK_OBJECT(main_win), "coords");
+   sprintf(s, "%i, %i", xx, yy);
+   gtk_label_set_text(GTK_LABEL(w), s);
+
    view = gtk_object_get_data(GTK_OBJECT(main_win), "view");
    zoom = gtk_object_get_data(GTK_OBJECT(main_win), "zoom");
    gc = gdk_gc_new(view->window);
@@ -1470,6 +1497,11 @@ workspace_button_release_event(int x, int y, int button)
 void
 workspace_enter_notify_event(GdkEventCrossing *ev)
 {
+  GtkWidget *w;
+
+  w = gtk_object_get_data(GTK_OBJECT(main_win), "coords");
+  gtk_widget_show(w);
+
   if (ws.obj.pointer)
     {
       /* move cursor to new location first, then show it.
@@ -1484,6 +1516,11 @@ workspace_enter_notify_event(GdkEventCrossing *ev)
 void
 workspace_leave_notify_event(GdkEventCrossing *ev)
 {
+  GtkWidget *w;
+
+  w = gtk_object_get_data(GTK_OBJECT(main_win), "coords");
+  gtk_widget_hide(w);
+
   if (ws.obj.pointer)
     evas_hide(ws.view_evas, ws.obj.pointer);
   workspace_queue_draw();
