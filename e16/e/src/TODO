@@ -7,6 +7,7 @@ fixed an uninitialized memory area in menus.c in CreateMenu()
 Fixed a segfault: Minimize a window into an iconbox, close the iconbox and minimize the app again
 fix variable expansion for file execcing...
 fix menus to be onscreen including submenus when you have menus onscreen selected.
+added "current" window_id option to win_op ipc command
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
