@@ -284,7 +284,6 @@ emblem_evas_object_get(Emblem *em, const char *fname)
         evas_object_del(o);
         return NULL;
     }
-    evas_object_data_set(o, "file", strdup(fname));
     evas_object_show(o);
 
     ev = evas_object_rectangle_add(em->gui.evas);
@@ -292,6 +291,7 @@ emblem_evas_object_get(Emblem *em, const char *fname)
     evas_object_show(ev);
 
     evas_object_data_set(ob, "ev", ev);
+    evas_object_data_set(ob, "file", strdup(fname));
     evas_object_data_set(ev, "edje", ob);
 
     evas_object_intercept_move_callback_add(ob, 
