@@ -2,6 +2,8 @@
 #define _ENTRANCE_UI_CALLBACKS_H
 
 #include "entrance.h"
+#include <pwd.h>
+#include <sys/types.h>
 
 void hide_session_list(Entrance_Session e);
 void show_session_list(Entrance_Session e);
