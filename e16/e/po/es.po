@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-04-06 05:12+0200\n"
-"PO-Revision-Date: 2000-01-15 02:15-0500\n"
+"PO-Revision-Date: 2000-04-09 18:46+0200\n"
 "Last-Translator: Antonio Ognio Cesti  <ognio@altavista.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -51,11 +51,9 @@ msgstr ""
 "Ha ocurrido un error durante la ejecución de este programa:\n"
 "%s\n"
 "Este programa no ha podido ser ejecutado.\n"
-"Lo mas probable es que se deba ha que este programa no está en la\n"
-"ruta de su intérprete de comandos, cuyo valor es %s. Le sugiero que consulte "
-"con la página\n"
-"del manual para dicho intérprete de comandos y lea como modificar y agregar "
-"directorios a su\n"
+"Lo más probable es que se deba ha que este programa no está en la\n"
+"ruta de su intérprete de comandos, cuyo valor es %s. Le sugiero que consulte con la página\n"
+"del manual para dicho intérprete de comandos y lea como modificar y agregar directorios a su\n"
 "ruta de ejecución.\n"
 
 #: src/actions.c:692
@@ -71,8 +69,7 @@ msgstr ""
 "Ha ocurrido un error durante la ejecución del programa:\n"
 "%s\n"
 "Este programa no ha podido ser ejecutado.\n"
-"No estoy seguro del motivo por el cual no ha podido hacer esto. El archivo "
-"existe,\n"
+"No estoy seguro del motivo por el cual no se ha podido hacer esto. El archivo existe,\n"
 "es un archivo, y tiene permisos para ejecutarlo. Le sugiero que le de\n"
 "una mirada a esto.\n"
 
@@ -88,10 +85,8 @@ msgstr ""
 "Ha ocurrido un error durante la ejecución del programa:\n"
 "%s\n"
 "Este programa no ha podido ser ejecutado.\n"
-"Esto se debe a que el archivo existe, es un archivo, pero no se la "
-"permitido\n"
-"ejecutarlo debido a que Ud. no tiene permiso de ejecución sobre este "
-"archivo.\n"
+"Esto se debe a que el archivo existe, es un archivo, pero no sé le ha permitido\n"
+"ejecutarlo debido a que Ud. no tiene permiso de ejecución sobre este archivo.\n"
 
 #: src/actions.c:719
 #, c-format
@@ -176,7 +171,7 @@ msgstr "Ud. ha sido advertido de los peligros del modo Zoom\n"
 
 #: src/actions.c:3918
 msgid "Warning !!!"
-msgstr "Advertencia: !!!"
+msgstr "Advertencia !!!"
 
 #: src/actions.c:3919
 msgid ""
@@ -194,15 +189,15 @@ msgid ""
 "have to avoid using this feature.\n"
 msgstr ""
 "Esta función depende mucho de una función de su\n"
-"Servidor X llama Modo de Extensión Vid. Esta función existe\n"
+"Servidor X llamada Modo de Extensión Vid. Esta función existe\n"
 "en servidores XFree86, pero no es una parte muy usada del\n"
 "Servidor y por eso no ha sido muy bien probaba.\n"
 "\n"
-"Es posible que su Servidor X does no maneje bien el\n"
+"Es posible que su Servidor X no maneje bien el\n"
 "pedido de cambiar de modos rápidamente y se pueda colgar,\n"
 "mostrar restos de imágenes ó sencillamente rehusarse a trabajar.\n"
 "\n"
-"Este es un aviso y solo sera mostrado por esta única vez.\n"
+"Este es un aviso y solo será mostrado por esta única vez.\n"
 "Si su Servidor no funciona correctamente entonces probablemente\n"
 "tendrá que dejar de usar esta función.\n"
 
@@ -262,7 +257,7 @@ msgstr "Error de IPC en E"
 #: src/config.c:2952 src/config.c:3053 src/config.c:3375
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: ignorando data extra en \"%s\"\n"
+msgstr "CONFIG: ignorando datos extra en \"%s\"\n"
 
 #: src/config.c:248 src/config.c:480 src/config.c:559 src/config.c:849
 #: src/config.c:965 src/config.c:1205 src/config.c:1332 src/config.c:1438
@@ -271,7 +266,7 @@ msgstr "CONFIG: ignorando data extra en \"%s\"\n"
 #: src/config.c:3383
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: data requerida no disponible en  \"%s\"\n"
+msgstr "CONFIG: datos requeridos no disponibles en  \"%s\"\n"
 
 #: src/config.c:438 src/config.c:514
 #, c-format
@@ -281,8 +276,8 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: No soy capaz de determinar que hacer\n"
-"con el siguiente texto en medio de una definición de Texto actual:\n"
+"Advertencia: No se ha logrado determinar que hacer\n"
+"con el siguiente texto en medio de una definición de Texto activa:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
 
@@ -291,18 +286,16 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  La configuración parece no haber acabado antes\n"
-"antes de haber terminado de cargar el bloque de texto.  Probablemente los "
-"resultados no serán correctos.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar el bloque de texto.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:520
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  La configuración parece no haber acabado antes\n"
-"antes de haber terminado de cargar el bloque de SlideOuts.  Probablemente "
-"los resultados no serán correctos.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar el bloque de SlideOuts.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:811
 #, c-format
@@ -312,8 +305,8 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: No soy capaz de determinar que hacer\n"
-"el texto siguiente que está en medio de una definición de Control actual:\n"
+"Advertencia: No se ha logrado determinar que hacer\n"
+"el texto siguiente que está en medio de una definición de Control activa:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
 
@@ -322,45 +315,40 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Control.  Probablemente la salida será "
-"incorrecta.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar un bloque de Control.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:926 src/config.c:1158
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Menu.  Probablemente la salida será "
-"incorrecta.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar un bloque de Menu.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:1294
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Partes de Bordes.  Probablemente la salida "
-"será incorrecta.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar un bloque Partes de Bordes.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:1383
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Borde Principal.  Probablemente la salida "
-"será incorrecta.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar un bloque de Borde Principal.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:1600
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Botones.  Probablemente la salida será "
-"incorrecta.\n"
+"Advertencia:  Aparentemente la configuración ha concluido antes de terminar\n"
+"de cargar un bloque de Botones.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:1855 src/config.c:1933
 msgid ""
@@ -368,12 +356,11 @@ msgid ""
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Escritorios.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque de Escritorios.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:1945
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr "Huevo de Pascua!  Los Portaiconos no han sido implementados aún.\n"
+msgstr "Huevo de Pascua!  Los Portaíconos no han sido implementados aún.\n"
 
 #: src/config.c:1975
 msgid ""
@@ -381,8 +368,7 @@ msgid ""
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Portaiconos.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque de Portaíconos.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:2010
 msgid ""
@@ -390,8 +376,7 @@ msgid ""
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Sonido.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque de Sonido.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:2262
 #, c-format
@@ -401,7 +386,7 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
 "el texto siguiente que está en medio de una definición ActionClass:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
@@ -412,8 +397,7 @@ msgid ""
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque ActionClass.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque ActionClass.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:2474
 #, c-format
@@ -423,7 +407,7 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
 "el texto siguiente que está en medio de una definición ImageClass:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
@@ -434,8 +418,7 @@ msgid ""
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia:  Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque ImageClass.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque ImageClass.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:2720
 #, c-format
@@ -445,7 +428,7 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
 "el texto siguiente que está en medio de una definición ColorModifier:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
@@ -468,8 +451,8 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
-"el texto siguiente que está en medio de una definición ToolTip definition:\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
+"el texto siguiente que está en medio de una definición ToolTip:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
 
@@ -479,8 +462,7 @@ msgid ""
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia: Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque ToolTip.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque ToolTip.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:2881
 msgid ""
@@ -499,7 +481,7 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
 "el texto siguiente que está en medio de una definición de Extras:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
@@ -510,8 +492,7 @@ msgid ""
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia: Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque de Extras.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque de Extras.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:3015
 #, c-format
@@ -521,8 +502,8 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
-"el texto siguiente que está en medio de una definición actual Portaiconos:\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
+"el texto siguiente que está en medio de una definición actual Portaíconos:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
 
@@ -532,8 +513,7 @@ msgid ""
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia: Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque Portaiconos.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque Portaíconos.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:3129
 #, c-format
@@ -543,7 +523,7 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Advertencia: Incapaz de determinar que hacer con\n"
+"Advertencia: No se ha logrado determinar que hacer con\n"
 "el texto siguiente que está en medio de una definición WindowMatch:\n"
 "%s\n"
 "Esta situación será ignorada y se continuará con la ejecución...\n"
@@ -554,8 +534,7 @@ msgid ""
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
 "Advertencia: Aparentemente la configuración ha concluido antes de\n"
-"terminar de cargar un bloque WindowMatch.  Probablemente la salida será "
-"incorrecta.\n"
+"terminar de cargar un bloque WindowMatch.  Probablemente la salida será incorrecta.\n"
 
 #: src/config.c:3185
 #, c-format
@@ -624,8 +603,8 @@ msgstr ""
 "\n"
 "Si la revisión del tema es mayor que la de Enlightenment\n"
 "podría deberse a que Ud. no ha actualizado Enlightenment por\n"
-"algún tiempo y que este tema tome ventaja de\n"
-"las funciones de una versión más avanzada.\n"
+"algún tiempo y que este tema utilize características solo\n"
+"presentes en una versión más avanzada.\n"
 
 #: src/config.c:3426
 msgid "User Config Version ERROR"
@@ -672,7 +651,7 @@ msgstr ""
 "ADVERTENCIA!\n"
 "Ha ocurrido un error escribiendo en el archivo:\n"
 "%s\n"
-"Esto se puede deber a falta de espacio, quota o\n"
+"Esto se puede deber a falta de espacio, cuota o\n"
 "permisos en su sistema de archivos.\n"
 
 #: src/config.c:3665
@@ -710,12 +689,10 @@ msgstr ""
 "archivos de configuración.\n"
 "Ya que nada ha sido encontrado, Enlightenment probablemente\n"
 "no va a encontrar archivos para su  configuración en ninguna parte\n"
-"del sistema, asi que casi no tendrá ninguna configuración cargada\n"
+"del sistema, así que casi no tendrá ninguna configuración cargada\n"
 "al momento de empezar a ejecutarse. Es muy probable que este sea una\n"
-"señal de una mala instalación de Enlightenment si no existe dicho "
-"directorio.\n"
-"Las probables causas incluyen aquella en la que el paquete (binario) ha "
-"sido\n"
+"señal de una mala instalación de Enlightenment si no existe dicho directorio.\n"
+"Las probables causas incluyen aquella en la que el paquete (binario) ha sido\n"
 "mal construido, ó 'make install' no ha sido digitado\n"
 "o durante la instalación el directorio mencionado arriba\n"
 "no pudo ser copiado ó creado debido a problemas con los\n"
@@ -723,8 +700,7 @@ msgstr ""
 "que el directorio de configuración haya sido eliminado inadvertidamente\n"
 "después de la instalación.\n"
 "Este problema es serio y debe rectificarse de inmediato\n"
-"Entre en contacto con el administrador de su sistema ó responsable del "
-"paquete.\n"
+"Entre en contacto con el administrador de su sistema ó responsable del paquete.\n"
 "Si Ud. es el administrador de su propio sistema por favor\n"
 "consulte la documentación que vino con Enlightenment en busca\n"
 "de información adicional.\n"
@@ -787,12 +763,12 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Presione el botón del mouse y arrastre\n"
-"su mouse para poder arrastrar los escritorios\n"
+"Presione el botón del ratón y arrastre\n"
+"su ratón para poder arrastrar los escritorios\n"
 "hacia adelante y atrás.\n"
-"Pulse el botón derecho del mouse para obtener una lista\n"
+"Pulse el botón derecho del ratón para obtener una lista\n"
 "de todos los escritorios y sus aplicaciones.\n"
-"Pulse el botón medio del mouse para obtener una lista\n"
+"Pulse el botón medio del ratón para obtener una lista\n"
 "de todas las aplicaciones que se están ejecutando.\n"
 
 #: src/desktops.c:1121
@@ -806,9 +782,9 @@ msgid ""
 msgstr ""
 "Este es el Escritorio Raíz.\n"
 "Ud. no puede arrastrar el Escritorio Raíz.\n"
-"Pulse el botón derecho del mouse para obtener una lista\n"
+"Pulse el botón derecho del ratón para obtener una lista\n"
 "de todos los escritorios y sus aplicaciones.\n"
-"Pulse el botón medio del mouse para obtener una lista\n"
+"Pulse el botón medio del ratón para obtener una lista\n"
 "de todas las aplicaciones que se están ejecutando.\n"
 
 #: src/desktops.c:1141
@@ -1009,7 +985,7 @@ msgid ""
 "members of a group. You cannot add these windows\n"
 "to a group.\n"
 msgstr ""
-"Los Portaiconos y Pagers no pueden ser\n"
+"Los Portaíconos y Conmutadores no pueden ser\n"
 "miembros de un grupo. Ud. no puede agregar\n"
 "estas ventanas a un grupo.\n"
 
@@ -1072,7 +1048,7 @@ msgstr ""
 #: src/settings.c:2163 src/settings.c:3557 src/settings.c:3903
 #: src/settings.c:4205 src/settings.c:4346 src/settings.c:4545 src/snaps.c:552
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
 #: src/handlers.c:59
 msgid ""
@@ -1089,10 +1065,9 @@ msgstr ""
 "\n"
 "Lo más probable es que Ud. tenga instalado ó esté ejecutando un\n"
 "archivo binario de Enlightenment que fue compilado para una marca ó modelo\n"
-"de CPU que no es 100%% identico ó compatible con el suyo.\n"
+"de CPU que no es 100%% idéntico ó compatible con el suyo.\n"
 "Por favor obtenga la copia correcta para su sistema, ó de lo\n"
-"contrario vuelva a compilar Enlightenment y posiblemente aquellas librerías "
-"de\n"
+"contrario vuelva a compilar Enlightenment y posiblemente aquellas librerías de\n"
 "soporte que tiene en formato binario para ejecutar Enlightenment.\n"
 
 #: src/handlers.c:87
@@ -1247,7 +1222,7 @@ msgstr "Opciones del Portaíconos"
 
 #: src/iconify.c:2426
 msgid "This Iconbox Settings..."
-msgstr "Configuración de este Portaíconos"
+msgstr "Configurar este Portaíconos..."
 
 #: src/iconify.c:2429
 msgid "Close Iconbox"
@@ -1450,7 +1425,6 @@ msgid ""
 msgstr ""
 "ADVERTENCIA!!!!!!\n"
 "\n"
-"El error ocurrió en %s, línea %d.\n"
 "La liberación del puntero %x está intentando reasignar memoria para\n"
 "un bloque que no ha sido asignado ó que ya ha sido\n"
 "liberado.\n"
@@ -1530,15 +1504,14 @@ msgid ""
 msgstr ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
-"El archivo ejecutable de una utilidad de Enlightenment no ha sido encontrado "
-"en:\n"
+"El archivo ejecutable de una utilidad de Enlightenment no ha sido encontrado en:\n"
 "\n"
 "%s\n"
 "Este es un error fatal y Enlightenment dejará de ejecutarse.\n"
 "Por favor rectifique esta situación y asegúrese de que Enlightenment\n"
 "haya sido instalado correctamente.\n"
 "\n"
-"La razón por la que este archivo no ss encuentra puede estar en\n"
+"La razón por la que este archivo no se encuentra puede estar en\n"
 "paquetes mal construidos, la eliminación manual de dicho programa\n"
 "ó un error en la instalación de Enlightenment.\n"
 
@@ -1560,7 +1533,7 @@ msgstr ""
 "\n"
 "%s\n"
 "Este es un error fatal y Enlightenment dejará de ejecutarse.\n"
-"Por favor, rectifíque esta situación y asegúrese de que DOX\n"
+"Por favor, rectifique esta situación y asegúrese de que DOX\n"
 "se haya instalado correctamente.\n"
 
 #: src/misc.c:99
@@ -1714,15 +1687,15 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Al parecer su Servidor X cuenta con soporte para memoria compartida\n"
+"Aparentemente su Servidor X cuenta con soporte para memoria compartida\n"
 "pero no puede trabajar con pixmaps compartidos ZPixmap\n"
 "(El Servidor no señala tener soporte para ello).\n"
 "\n"
-"El Pager en Enlightenment se ejecutará lentamente en\n"
-"modo de Miniaturas si continúa ejecutando ese modo del Pager\n"
+"El Conmutador en Enlightenment se ejecutará lentamente en\n"
+"modo de Miniaturas si continúa ejecutando ese modo del Conmutador\n"
 "bajo estas condiciones.\n"
 "\n"
-"Se le sugiere que cambie la configuración de su Pager para\n"
+"Se le sugiere que cambie la configuración de su conmutador para\n"
 "inhabilitar las miniaturas y mejorar el rendimiento.\n"
 "\n"
 
@@ -1743,7 +1716,7 @@ msgstr ""
 "\n"
 "Por favor, habilite la función Pixmaps Compartidos en Imlib y\n"
 "luego reinicie Enlightenment para ganar mayor rendimiento\n"
-"en los pagers cuando el modo Miniaturas está habilitado.\n"
+"en los conmutadores cuando el modo Miniaturas está habilitado.\n"
 "\n"
 
 #: src/pager.c:558
@@ -1762,18 +1735,15 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Al parecer Ud. está ejecutando Enlightenment a través de una conexión de "
-"red\n"
+"Aparentemente Ud. está ejecutando Enlightenment a través de una conexión de red\n"
 "ó en un Servidor X que no soporta Memoria Compartida, ó Ud.\n"
 "ha inhabilitado la Memoria Compartida MIT-SHM en su configuración de Imlib.\n"
-"Esto significa que el Pager de Enlightenment se ejecutará lentamente y\n"
-"utilizará más recursos del sistema de los que usaría si la función deMemoria "
-"Compartida estuviera disponible.\n"
+"Esto significa que el Conmutador de Enlightenment se ejecutará lentamente y\n"
+"utilizará más recursos del sistema de los que usaría si la función de memoria Compartida estuviera disponible.\n"
 "\n"
-"Para mejorar el rendimiento por favor habilite la Memoria Compartida "
-"MIT-SHM\n"
+"Para mejorar el rendimiento por favor habilite la Memoria Compartida MIT-SHM\n"
 "en la configuración de Imlib , si la tiene inhabilitada, ó inhabilite la\n"
-"función Miniaturas del Pager.\n"
+"función Miniaturas del Conmutador.\n"
 "\n"
 
 #: src/pager.c:1268
@@ -1798,7 +1768,7 @@ msgstr "Opciones de Escritorio"
 
 #: src/pager.c:1301
 msgid "Pager Settings..."
-msgstr "Configuración del Pager..."
+msgstr "Configurar Conmutador..."
 
 #: src/pager.c:1306
 msgid "Snapshotting On"
@@ -1885,7 +1855,7 @@ msgstr "  No  "
 
 #: src/settings.c:87 src/settings.c:209
 msgid "Pager scanning speed:"
-msgstr "Velocidad de barrido del Pager:"
+msgstr "Velocidad de barrido del Conmutador:"
 
 #: src/settings.c:88 src/settings.c:210
 msgid "lines per second"
@@ -1893,7 +1863,7 @@ msgstr "líneas por segundo"
 
 #: src/settings.c:126
 msgid "Pager Settings"
-msgstr "Configuración del Pager"
+msgstr "Configurar Conmutador"
 
 #: src/settings.c:141
 msgid ""
@@ -1903,7 +1873,7 @@ msgstr ""
 
 #: src/settings.c:155
 msgid "Enable pager display"
-msgstr "Habilitar el uso del Pager"
+msgstr "Habilitar el uso del Conmutador"
 
 #: src/settings.c:164
 msgid "Make miniature snapshots of the screen"
@@ -1915,19 +1885,19 @@ msgstr "Suavizar miniaturas de alta calidad en modo Miniaturas"
 
 #: src/settings.c:182
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Realizar acercamiento cuando el mouse está sobre ventanas"
+msgstr "Realizar acercamiento cuando el ratón está sobre ventanas"
 
 #: src/settings.c:191
 msgid "Pop up window title when mouse is over the window"
-msgstr "Mostrar título cuando el mouse está sobre ventanas"
+msgstr "Mostrar título cuando el ratón está sobre ventanas"
 
 #: src/settings.c:200
 msgid "Continuously scan screen to update pager"
-msgstr "Barrer continuamente la pantalla para actualizar el Pager"
+msgstr "Barrer continuamente la pantalla para actualizar el Conmutador"
 
 #: src/settings.c:229
 msgid "Mouse button to select and drag windows:"
-msgstr "Botón del mouse para seleccionar y arrastrar ventanas:"
+msgstr "Botón del ratón para seleccionar y arrastrar ventanas:"
 
 #: src/settings.c:235 src/settings.c:267 src/settings.c:299
 #: src/settings.c:2045
@@ -1945,11 +1915,11 @@ msgstr "Derecho"
 
 #: src/settings.c:261
 msgid "Mouse button to select desktops:"
-msgstr "Botón del mouse para seleccionar escritorios:"
+msgstr "Botón del ratón para seleccionar escritorios:"
 
 #: src/settings.c:293
 msgid "Mouse button to display pager menu:"
-msgstr "Botón del mouse para Mostrar menú del Pager:"
+msgstr "Botón del ratón para Mostrar menú del Conmutador:"
 
 #: src/settings.c:327 src/settings.c:596 src/settings.c:764 src/settings.c:944
 #: src/settings.c:1182 src/settings.c:1287 src/settings.c:1390
@@ -1962,7 +1932,7 @@ msgstr "Aplicar"
 
 #: src/settings.c:410
 msgid "Focus Settings"
-msgstr "Configuración de enfoque"
+msgstr "Configurar enfoque"
 
 #: src/settings.c:425
 msgid ""
@@ -1972,15 +1942,15 @@ msgstr ""
 
 #: src/settings.c:439
 msgid "Focus follows pointer"
-msgstr "El enfoque sigue al puntero del mouse"
+msgstr "El enfoque sigue al puntero del ratón"
 
 #: src/settings.c:447
 msgid "Focus follows pointer sloppily"
-msgstr "El enfoque sigue al puntero del mouse sloppily"
+msgstr "El enfoque sigue al puntero del ratón lentamente"
 
 #: src/settings.c:455
 msgid "Focus follows mouse clicks"
-msgstr "El enfoque sigue los clics del mouse"
+msgstr "El enfoque sigue los clicks del ratón"
 
 #: src/settings.c:470
 msgid "Clicking in a window always raises it"
@@ -2005,7 +1975,7 @@ msgstr "Elevar ventanas en cambio de enfoque"
 
 #: src/settings.c:519
 msgid "Send mouse pointer to window on focus switch"
-msgstr "Enviar el puntero del mouse a la ventana en el cambio de enfoque"
+msgstr "Enviar el puntero del ratón a la ventana en el cambio de enfoque"
 
 #: src/settings.c:534
 msgid "Display and use focus list"
@@ -2033,11 +2003,11 @@ msgstr "Elevar ventana DESPUÉS de cambio de enfoque"
 
 #: src/settings.c:584
 msgid "Send mouse pointer to window after focus switch"
-msgstr "Enviar el puntero del mouse a la ventana DESPUÉS del cambio de enfoque"
+msgstr "Enviar el puntero del ratón a la ventana DESPUÉS del cambio de enfoque"
 
 #: src/settings.c:639
 msgid "Move & Resize Settings"
-msgstr "Configuración de Tamaño y Mover"
+msgstr "Configurar Tamaño y Movimiento"
 
 #: src/settings.c:654
 msgid ""
@@ -2047,11 +2017,11 @@ msgstr ""
 
 #: src/settings.c:668
 msgid "Move Methods:"
-msgstr "Métodos para Mover:"
+msgstr "Movimiento:"
 
 #: src/settings.c:674
 msgid "Resize Methods:"
-msgstr "Métodos para Cambiar Tamaño:"
+msgstr "Redimensionamiento:"
 
 #: src/settings.c:679 src/settings.c:686 src/settings.c:1906
 msgid "Opaque"
@@ -2067,7 +2037,7 @@ msgstr "Caja"
 
 #: src/settings.c:721 src/settings.c:728 src/settings.c:1951
 msgid "Shaded"
-msgstr "Sombreado"
+msgstr "Enrollado"
 
 #: src/settings.c:735 src/settings.c:742 src/settings.c:1966
 msgid "Semi-Solid"
@@ -2089,7 +2059,7 @@ msgstr "%i Escritorio"
 
 #: src/settings.c:879
 msgid "Multiple Desktop Settings"
-msgstr "Configuración de Escritorios Múltiples"
+msgstr "Configurar Escritorios Múltiples"
 
 #: src/settings.c:894
 msgid ""
@@ -2120,7 +2090,7 @@ msgstr ""
 
 #: src/settings.c:1066
 msgid "Virtual Desktop Settings"
-msgstr "Configuración de Escritorios Virtuales"
+msgstr "Configurar Escritorios Virtuales"
 
 #: src/settings.c:1084
 msgid ""
@@ -2138,7 +2108,7 @@ msgstr ""
 
 #: src/settings.c:1157
 msgid "Enable edge flip"
-msgstr "habilitar cambio de bordes"
+msgstr "Habilitar cambio de bordes"
 
 #: src/settings.c:1164
 msgid "Resistance at edge of screen:\n"
@@ -2146,7 +2116,7 @@ msgstr "Resistencia al borde de la pantalla:\n"
 
 #: src/settings.c:1229
 msgid "Window Placement Settings"
-msgstr "Configuración de Ubicación de Ventanas"
+msgstr "Configurar Ubicación de Ventanas"
 
 #: src/settings.c:1244
 msgid ""
@@ -2168,7 +2138,7 @@ msgstr "Ubicar ventanas manualmente"
 
 #: src/settings.c:1335
 msgid "Autoraise Settings"
-msgstr "Configuración de Autoelevar"
+msgstr "Configurar Auto elevación"
 
 #: src/settings.c:1350
 msgid ""
@@ -2182,11 +2152,11 @@ msgstr "Elevar Ventanas Automáticamente"
 
 #: src/settings.c:1372
 msgid "Autoraise delay:"
-msgstr "Demora de Autoelevar:"
+msgstr "Retardo al elevar ventanas:"
 
 #: src/settings.c:1436
 msgid "Tooltip Settings"
-msgstr "Configuración de Tooltips"
+msgstr "Etiquetas de Ayuda"
 
 #: src/settings.c:1451
 msgid ""
@@ -2196,19 +2166,19 @@ msgstr ""
 
 #: src/settings.c:1465
 msgid "Display Tooltips"
-msgstr "Mostrar Tooltips"
+msgstr "Mostrar Etiquetas de Ayuda"
 
 #: src/settings.c:1473
 msgid "Display Root Window Tips"
-msgstr "Mostrar Tips de la Ventana Raíz (Root)"
+msgstr "Mostrar etiquetas en la Ventana Raíz"
 
 #: src/settings.c:1481
 msgid "Tooltip Delay:\n"
-msgstr "Demora de Tooltips:\n"
+msgstr "Retardo al mostrar etiquetas:\n"
 
 #: src/settings.c:1544
 msgid "KDE Settings"
-msgstr "Configuración KDE"
+msgstr "Configurar KDE"
 
 #: src/settings.c:1559
 msgid ""
@@ -2236,7 +2206,7 @@ msgstr ""
 
 #: src/settings.c:1706
 msgid "Audio Settings"
-msgstr "Configuración de Audio"
+msgstr "Configurar Audio"
 
 #: src/settings.c:1721
 msgid ""
@@ -2258,7 +2228,7 @@ msgstr ""
 
 #: src/settings.c:1855
 msgid "Special FX Settings"
-msgstr "Configuración de Efectos Especiales"
+msgstr "Configurar Efectos Especiales"
 
 #: src/settings.c:1870
 msgid ""
@@ -2268,7 +2238,7 @@ msgstr ""
 
 #: src/settings.c:1893
 msgid "Slide Method:"
-msgstr "Método Desplazar:"
+msgstr "Desplazamiento:"
 
 #: src/settings.c:1899
 msgid "Slide desktops around when changing"
@@ -2280,15 +2250,15 @@ msgstr "Desplazar escritorios a la hora de limpiar"
 
 #: src/settings.c:1929
 msgid "Slide windows in when they appear"
-msgstr "Deslizar escritorios cuando estos aparecen"
+msgstr "Deslizar escritorios mientras aparecen"
 
 #: src/settings.c:1944
 msgid "Animated display of menus"
-msgstr "Mostrar animación de menúes"
+msgstr "Mostrar animación de menús"
 
 #: src/settings.c:1959
 msgid "Always pop up menus on screen"
-msgstr "Siempre hacer aparecer menúes en la pantalla"
+msgstr "Siempre hacer aparecer menús en la pantalla"
 
 #: src/settings.c:1975
 msgid "Warp pointer after moving menus"
@@ -2300,15 +2270,15 @@ msgstr "Usar saveunders para reducir la exposición de ventanas"
 
 #: src/settings.c:1993
 msgid "Animate shading and unshading of windows"
-msgstr "Animar pliegue y despliegue de ventanas"
+msgstr "Animar al enrrollar y desenrrollar ventanas"
 
 #: src/settings.c:2007
 msgid "Display desktop dragbar"
-msgstr "Mostrar Barra de Arrastrar de Escritorios"
+msgstr "Mostrar Barra de Arrastre de Escritorios"
 
 #: src/settings.c:2016
 msgid "Drag bar position:"
-msgstr "Ubicación de la Barra de Arrastrar:"
+msgstr "Ubicación de la Barra de Arrastre:"
 
 #: src/settings.c:2027
 msgid "Top"
@@ -2337,7 +2307,7 @@ msgstr "Velocidad de Desplazamiento de Aparición: (lenta)\n"
 
 #: src/settings.c:2137
 msgid "Window Shading speed: (slow)\n"
-msgstr "Velocidad de Pliegue de Ventanas: (lenta)\n"
+msgstr "Velocidad al Enrrollar Ventanas: (lenta)\n"
 
 #: src/settings.c:2419 src/settings.c:2540 src/settings.c:2795
 #: src/settings.c:2917 src/settings.c:3541
@@ -2352,7 +2322,7 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"Información de la definición de Fondo:\n"
+"Información de imagen de fondo:\n"
 "Nombre:  %s\n"
 "Archivo: %s\n"
 
@@ -2371,7 +2341,7 @@ msgstr "Fondos no utilizados son liberados después de %2i:%02i:%02i"
 
 #: src/settings.c:3189
 msgid "Desktop Background Settings"
-msgstr "Configuración de Fondo de Escritorio"
+msgstr "Configurar Fondo de Escritorio"
 
 #: src/settings.c:3205
 msgid ""
@@ -2463,7 +2433,7 @@ msgstr "Ordenar por Imagen"
 
 #: src/settings.c:3655
 msgid "Iconbox Settings"
-msgstr "Configuración del Portaíconos"
+msgstr "Configurar Portaíconos"
 
 #: src/settings.c:3673
 msgid ""
@@ -2580,7 +2550,7 @@ msgstr ""
 
 #: src/settings.c:4048
 msgid "Window Group Settings"
-msgstr "Configuración de Grupos de Ventanas"
+msgstr "Configurar Grupos de Ventanas"
 
 #: src/settings.c:4063
 msgid ""
@@ -2618,7 +2588,7 @@ msgstr "Moviendo"
 
 #: src/settings.c:4163 src/settings.c:4310
 msgid "Raising/Lowering"
-msgstr "Elevando/Ocultando"
+msgstr "Elevando / ocultando"
 
 #: src/settings.c:4173 src/settings.c:4318
 msgid "Sticking"
@@ -2626,15 +2596,15 @@ msgstr "Pegando"
 
 #: src/settings.c:4183 src/settings.c:4326
 msgid "Shading"
-msgstr "Plegando"
+msgstr "Enrollando"
 
 #: src/settings.c:4193 src/settings.c:4334
 msgid "Mirror Shade/Iconify/Stick"
-msgstr "Espejo Plegar/Iconizar/Pegar"
+msgstr "Espejo Enrollar/Iconizar/Pegar"
 
 #: src/settings.c:4249
 msgid "Default Group Control Settings"
-msgstr "Configuración de Control de Grupo por omisión"
+msgstr "Control de Grupo por Omisión"
 
 #: src/settings.c:4264
 msgid ""
@@ -2864,7 +2834,7 @@ msgstr "Escritorio"
 
 #: src/snaps.c:464
 msgid "Shaded state"
-msgstr "Estado Plegar"
+msgstr "Estado Enrollar"
 
 #: src/snaps.c:472
 msgid "Sticky state"
@@ -2911,7 +2881,7 @@ msgstr ""
 "el siguiente archivo de sonido:\n"
 "%s\n"
 "Enlightenment continuará operando, pero Ud.\n"
-"quizás deba revisar su configuración de audio.\n"
+"quizás deba revisar su configurar audio.\n"
 
 #: src/sound.c:262
 msgid "Error initialising sound"
@@ -2952,7 +2922,7 @@ msgid ""
 msgstr ""
 "El tema:\n"
 "%s\n"
-"Es un paquete de tema mal estructurado y por eso no esta siendo usado.\n"
+"presenta una estructura errónea y por eso no esta siendo usado.\n"
 "Enlightenment usará el tema por omisión en su lugar.\n"
 "\n"
 "La razón de la existencia de errores en el tema es:\n"
@@ -2960,7 +2930,7 @@ msgstr ""
 
 #: src/theme.c:354
 msgid "Bad Theme"
-msgstr "Tema con errores"
+msgstr "Tema defectuoso"
 
 #: src/tooltips.c:1037
 msgid "ToolTip Error!"
@@ -2968,7 +2938,7 @@ msgstr ""
 
 #: src/update.c:166
 msgid "Enlightenment's message of the day"
-msgstr "Enlightenment: Mensaje del Día"
+msgstr "Enlightenment - Mensaje del Día"
 
 #~ msgid "Cancel"
 #~ msgstr "Cancelar"
