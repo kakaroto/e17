@@ -1,71 +1,62 @@
-# this is NOT relocatable, unless you alter the patch!
-%define	name	ewl
-%define	ver	0.0.3
-%define	rel	1
-%define prefix  /usr
-
 Summary: Enlightenment Widget Library
-Name: %{name}
-Version: %{ver}
-Release: %{rel}
+Name: ewl
+Version: 0.0.3
+Release: 1
 Copyright: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org/pages/ewl.html
-Packager: The Rasterman <raster@rasterman.com> Term <term@twistedpath.org>
+Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
+Packager: Michael Jennings <mej@eterm.org>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
-Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
-BuildRoot: /var/tmp/%{name}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-Ewl is brub.
+EWL is a widget library which uses the E Foundation Libraries (EFL).
 
 %package devel
-Summary: Ewl headers and development libraries.
+Summary: EWL headers and development libraries.
 Group: Development/Libraries
-Requires: %{name} = %{ver}
+Requires: %{name} = %{version}
 
 %description devel
-Ewl development files
+EWL development files
 
 %prep
 %setup -q
 
 %build
-if [ -e ./configure ]
-then
-  ./configure --prefix=%{prefix}
-else
-  ./autogen.sh --prefix=%{prefix}
-fi
-make
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %post
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %postun
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
-
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%{prefix}/lib/libewl.so.*
-%{prefix}/lib/libewl.la
-%{prefix}/bin/ewl_embed_test
-%{prefix}/bin/ewl_test
-%{prefix}/share/ewl/*
+%defattr(-, root, root)
+%doc AUTHORS COPYING* NEWS README TODO
+%{_libdir}/libewl.so.*
+%{_libdir}/libewl.la
+%{_bindir}/ewl_embed_test
+%{_bindir}/ewl_test
+%{_datadir}/ewl
 
 %files devel
-%defattr(-,root,root)
-%{prefix}/share/aclocal/ewl.m4
-%{prefix}/bin/ewl_config
-%{prefix}/lib/libewl.so
-%{prefix}/lib/libewl.a
-%{prefix}/include/ewl/Ewl.h
-%{prefix}/include/ewl/ewl_*.h
-%{prefix}/bin/ewl-config
+%defattr(-, root, root)
+%doc doc/html
+%{_datadir}/aclocal/ewl.m4
+%{_bindir}/ewl_config
+%{_libdir}/libewl.so
+%{_libdir}/libewl.a
+%{_includedir}/ewl/Ewl.h
+%{_includedir}/ewl/ewl_*.h
+%{_bindir}/ewl-config

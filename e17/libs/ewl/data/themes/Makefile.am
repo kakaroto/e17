@@ -15,4 +15,4 @@ all: $(EETS)
 
 SUFFIXES = .edc .eet
 .edc.eet:
-	edje_cc -v -id $(@:%.eet=%)/bits/images $< $@
+	(cd $(top_srcdir)/data/themes ; edje_cc -v -id . `basename $<` $(top_builddir)/$@)
