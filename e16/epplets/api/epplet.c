@@ -275,8 +275,6 @@ Epplet_remember(void)
    ECommsSend(s);
    sprintf(s, "remember 0x%x border", (unsigned int)win);
    ECommsSend(s);
-   sprintf(s, "remember 0x%x desktop", (unsigned int)win);
-   ECommsSend(s);
    sprintf(s, "remember 0x%x location", (unsigned int)win);
    ECommsSend(s);
    sprintf(s, "remember 0x%x sticky", (unsigned int)win);
