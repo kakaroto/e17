@@ -65,7 +65,7 @@ AC_CHECK_FUNCS(buttox)
 
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.12.1)
-if [ "x$LIBINTL" = "x" ]; then
+if test "x$LIBINTL" = "x"; then
   LIBINTL="$INTLLIBS"
   AC_SUBST(LIBINTL)
 fi
@@ -84,7 +84,7 @@ AC_ARG_WITH(imlib2,
   [  --with-imlib2           compile with Imlib2 support [default=yes]],, with_imlib2=yes)
 
 AC_ARG_WITH(fnlib,
-  [  --with-fnlib            compile with Fnlib support [default=yes]],, with_fnlib=yes)
+  [  --with-fnlib            compile with Fnlib support (requires Imlib1) [default=no]],, with_fnlib=no)
 
 if test "x$enable_hints_ewmh" = "xyes"; then AC_DEFINE(ENABLE_EWMH, 1, [Extended Window Manager Hints]) fi
 if test "x$enable_hints_gnome" = "xyes"; then AC_DEFINE(ENABLE_GNOME, 1, [GNOME(<2.0) Hints]) fi
