@@ -38,12 +38,12 @@ draw_rotating_square()
 static void
 cb_timer(void *data)
 {
-	 spin = spin + 2.0;
+	 spin = spin + 10.0;
 	 if (spin > 360.0)
 	 	spin = spin - 360.0;
 	
 	 draw_rotating_square();
-   Epplet_timer(cb_timer, NULL, 0.01, "TIMER");   
+   Epplet_timer(cb_timer, NULL, 0, "TIMER");   
    data = NULL;
 }
 
@@ -68,7 +68,7 @@ main(int argc, char **argv)
    
    Epplet_Init("E-OpenGL-Demo", "0.1", "Enlightenment OpenGL Demo",
 	       4, 5, argc, argv, 0);
-   Epplet_timer(cb_timer, NULL, 0.01, "TIMER");
+   Epplet_timer(cb_timer, NULL, 0, "TIMER");
 
 	 Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, 60, 65));
 

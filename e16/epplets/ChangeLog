@@ -1797,3 +1797,12 @@ Wed Jan  12 21:37:20 GMT 2000
 Oops. Fixed a long standing bug in E-Urlwatch. Noone uses the ftp or get
 buttons obviously ;)
 
+-------------------------------------------------------------------------------
+
+Fri Jan 14 21:36:41 CST 2000
+(thebard)
+
+The beginnings of the OpenGL support is in. Use it, build cool stuff. Mail
+me at wmilas@rarcoa.com if something breaks or you want something
+implemented
+
