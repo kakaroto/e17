@@ -16,7 +16,7 @@ about_init(void)
 
   AboutWindow = gtk_dialog_new();
   gtk_container_set_border_width(GTK_CONTAINER(AboutWindow), 7);
-  gtk_window_set_title(GTK_WINDOW(AboutWindow), "About Electric Eyes 2\n");
+  gtk_window_set_title(GTK_WINDOW(AboutWindow), "About Electric Eyes 2");
 
   label = gtk_label_new("Electric Eyes 2\n"
                         "(C) 2000 Joshua Deere (distantPhase)\n"
