@@ -34,7 +34,7 @@ FocusEwinValid(EWin * ewin, int on_screen)
    if (!ewin)
       return 0;
 
-   if (ewin->skipfocus || ewin->neverfocus || ewin->iconified)
+   if (ewin->neverfocus || ewin->iconified)
       return 0;
 
    if (!ewin->client.need_input)
@@ -70,7 +70,7 @@ FocusEwinSelect(void)
 	lst = EwinListGetFocus(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i], 1))
+	     if (!FocusEwinValid(lst[i], 1) || ewin->skipfocus)
 		continue;
 	     ewin = lst[i];
 	     break;
@@ -126,7 +126,7 @@ FocusCycle(int inc)
    for (i = 0; i < num0; i++)
      {
 	ewin = lst0[i];
-	if (FocusEwinValid(ewin, 1))
+	if (FocusEwinValid(ewin, 1) || ewin->skipfocus)
 	  {
 	     num++;
 	     lst = Erealloc(lst, sizeof(EWin *) * num);
