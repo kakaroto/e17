@@ -836,7 +836,8 @@ main_stacktrace(void)
   snprintf(cmd, sizeof(cmd), "/bin/echo 'where\ndetach' | " DBX " %s %d", app_cmd, getpid());
 #  endif
 #else
-  print_error("Your system does not support any of the backtrace methods used.  Exiting.\n");
+  fprintf(stdout, "Your system does not support any of the backtrace methods used.  Exiting.\n");
+  main_hard_exit();
   D_RETURN;
 #endif
 
