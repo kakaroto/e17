@@ -338,7 +338,8 @@ SettingsFocus(void)
 
 static int          tmp_move;
 static int          tmp_resize;
-static int          tmp_geominfo = 1;
+static int          tmp_geominfo;
+static char         tmp_update_while_moving;
 
 /*
 static void         je_move(int, void *);
@@ -359,6 +360,7 @@ CB_ConfigureMoveResize(Dialog * d, int val, void *data __UNUSED__)
 	Conf.movres.mode_move = tmp_move;
 	Conf.movres.mode_resize = tmp_resize;
 	Conf.movres.mode_info = tmp_geominfo;
+	Conf.movres.update_while_moving = tmp_update_while_moving;
      }
    if (val)
       if ((d =
@@ -520,6 +522,7 @@ SettingsMoveResize(void)
    tmp_move = Conf.movres.mode_move;
    tmp_resize = Conf.movres.mode_resize;
    tmp_geominfo = Conf.movres.mode_info;
+   tmp_update_while_moving = Conf.movres.update_while_moving;
 
    d = DialogCreate("CONFIGURE_MOVERESIZE");
    DialogSetTitle(d, _("Move & Resize Settings"));
@@ -688,6 +691,20 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_geominfo);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Update window while moving"));
+   DialogItemCheckButtonSetState(di, tmp_update_while_moving);
+   DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

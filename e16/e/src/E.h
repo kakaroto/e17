@@ -860,6 +860,7 @@ typedef struct
       int                 mode_resize;
       int                 mode_info;
       int                 opacity;
+      char                update_while_moving;
    } movres;
    struct
    {

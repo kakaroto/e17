@@ -341,10 +341,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 
    EwinBorderCalcSizes(ewin);
 
-#if 0				/* FIXME - Make configurable? */
-   if ((Mode.mode != MODE_MOVE_PENDING && Mode.mode != MODE_MOVE)
-       || (Mode.have_place_grab))
-#endif
+   if (Mode.mode == MODE_NONE || Conf.movres.update_while_moving)
       ICCCM_Configure(ewin);
 
    if (move)
