@@ -396,6 +396,12 @@ __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 	else
 		snprintf(state, 512, "base");
 
+	if (w->ebits_object)
+	  {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	  }
 
 	snprintf(str, 512, "/appearance/button/radio/%s-checked%i/visible",
 		 state, EWL_CHECKBUTTON(b)->checked);
@@ -426,8 +432,6 @@ __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 			}
 		}
 	}
-
-	IF_FREE(v);
 
 	/*
 	 * Finally comfigure the widget to update the changes 

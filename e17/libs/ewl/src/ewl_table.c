@@ -719,11 +719,12 @@ __ewl_table_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 	/*
 	 * Destroy old image (if any)
 	 */
-	if (w->ebits_object) {
+	if (w->ebits_object)
+	  {
 		ebits_hide(w->ebits_object);
 		ebits_unset_clip(w->ebits_object);
 		ebits_free(w->ebits_object);
-	}
+	  }
 
 	/*
 	 * If we don't want to show the new graphics, then we're pretty much
@@ -750,17 +751,13 @@ __ewl_table_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 
 	if (w->ebits_object) {
 		ebits_add_to_evas(w->ebits_object, w->evas);
-		ebits_set_layer(w->ebits_object, w->object.layer);
+		ebits_set_layer(w->ebits_object, LAYER(w));
 		ebits_set_clip(w->ebits_object, w->fx_clip_box);
 
 		ebits_show(w->ebits_object);
 	}
 
       table_theme_update_end:
-	/*
-	 * We need to make sure v is not NULL when free()ing it.
-	 */
-	IF_FREE(v);
 
 	/*
 	 * Finally configure the widget to update changes 

@@ -118,6 +118,7 @@ ewl_ev_key_down(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
+
 	if (window) {
 		if (last_selected)
 			ewl_callback_call_with_event_data(last_selected,
@@ -136,6 +137,7 @@ ewl_ev_key_up(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
+
 	if (window) {
 		if (last_key)
 			ewl_callback_call_with_event_data(last_key,
@@ -154,6 +156,7 @@ ewl_ev_mouse_down(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
+
 	if (window) {
 		widget = ewl_container_get_child_at_recursive(EWL_CONTAINER
 							      (window),

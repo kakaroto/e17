@@ -9,7 +9,7 @@ static char theme_path[PATH_LEN];
 
 static Ewd_Hash *def_theme_data = NULL;
 
-static const char *theme_keys[] = {
+static void *theme_keys[] = {
 	"/appearance/box/horizontal/base",
 	"/appearance/box/horizontal/base.bits.db",
 	"/appearance/box/horizontal/base/visible", "yes",
@@ -30,7 +30,8 @@ static const char *theme_keys[] = {
 	"/appearance/button/default/selected.bits.db",
 	"/appearance/button/default/selected/visible", "yes",
 	"/appearance/button/default/text/font", "borzoib",
-	"/appearance/button/default/text/font_size", "8",
+	"/appearance/button/default/text/font_size", (void *) 8,
+	"/appearance/button/default/text/style", "Default",
 
 	"/appearance/button/check/base-checked0",
 	"/appearance/button/check/base-checked0.bits.db",
@@ -88,6 +89,9 @@ static const char *theme_keys[] = {
 	"/appearance/entry/cursor/base",
 	"/appearance/entry/cursor/base.bits.db",
 	"/appearance/entry/cursor/base/visible", "yes",
+        "/appearance/entry/default/text/font", "borzoib",
+        "/appearance/entry/default/text/font_size", (void *) 8,
+        "/appearance/entry/default/text/style", "Default",
 
 	"/appearance/list/default/base",
 	"/appearance/list/default/base.bits.db",
@@ -253,13 +257,11 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	if (!data)
 		DRETURN_PTR(NULL);
 
-
 	if (!strncmp(data, "/appearance", 11)) {
 		path = NEW(char, PATH_LEN);
 		snprintf(path, PATH_LEN, "%s%s", theme_path, data);
-		FREE(data);
 	} else			/* Absolute path given, so return it */
-		path = data;
+		path = strdup(data);
 
 	stat(path, &st);
 
@@ -270,43 +272,19 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 }
 
 /* Retrieve data from the theme */
-char *
+void *
 ewl_theme_data_get(Ewl_Widget * w, char *k)
 {
-	char *ret = NULL;
-	char *v = NULL;
+	void * ret;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	if (w) {
-		if (strlen(k) && w->theme) {
-			v = ewd_hash_get(w->theme, k);
 
-			if (v)
-				ret = strdup(v);
-		}
+	ret = ewd_hash_get(w->theme, k);
 
-		if (!ret && strlen(k)) {
-			if (w->parent) {
-				v = ewl_theme_data_get(w->parent, k);
-				if (v)
-					ret = v;
-			} else {
-				v = ewd_hash_get(def_theme_data, k);
-
-				if (v)
-					ret = strdup(v);
-			}
-		}
-	} else {
-
-		v = ewd_hash_get(def_theme_data, k);
-
-		if (v)
-			ret = strdup(v);
-
-	}
+	if (!ret)
+		ret = ewd_hash_get(def_theme_data, k);
 
 	DRETURN_PTR(ret);
 }
@@ -339,6 +317,7 @@ ewl_theme_data_set_default(char *k, char *v)
 	DLEAVE_FUNCTION;
 }
 
+/* This isn't needed yet...
 void
 ewl_theme_data_gen_default_theme_db(char *f)
 {
@@ -349,7 +328,7 @@ ewl_theme_data_gen_default_theme_db(char *f)
 	db = e_db_open(f);
 
 	while (theme_keys[++i]) {
-		snprintf(key, 512, "%s", theme_keys[i]);
+		snprintf(key, 512, "%s", (char *) theme_keys[i]);
 
 		l = strlen(key);
 
@@ -372,6 +351,7 @@ ewl_theme_data_gen_default_theme_db(char *f)
 
 	e_db_close(db);
 }
+*/
 
 void
 ewl_theme_data_set_defaults(void)
@@ -380,8 +360,8 @@ ewl_theme_data_set_defaults(void)
 	int i;
 
 	for (i = 0; theme_keys[i]; i++) {
-		str = strdup(theme_keys[i]);
-		str2 = strdup(theme_keys[++i]);
+		str = theme_keys[i];
+		str2 = theme_keys[++i];
 
 		ewd_hash_set(def_theme_data, str, str2);
 	}

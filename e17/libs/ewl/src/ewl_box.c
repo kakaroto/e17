@@ -320,8 +320,6 @@ __ewl_box_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	}
 
-	IF_FREE(v);
-
 	/*
 	 * Finally configure the widget to update changes 
 	 */

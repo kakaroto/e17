@@ -405,6 +405,12 @@ __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
 	else
 		snprintf(state, 512, "base");
 
+	if (w->ebits_object)
+	  {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	  }
 
 	snprintf(str, 512, "/appearance/button/check/%s-checked%i/visible",
 		 state, b->checked);
@@ -435,8 +441,6 @@ __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
 			}
 		}
 	}
-
-	IF_FREE(v);
 
 	/*
 	 * Finally comfigure the widget to update the changes 

@@ -8,6 +8,7 @@ typedef struct _ewl_seeker Ewl_Seeker;
 struct _ewl_seeker {
 	Ewl_Container container;
 	Ewl_Orientation orientation;
+	Ewl_Widget * drag_button;
 	double value;
 	double range;
 	double jump;

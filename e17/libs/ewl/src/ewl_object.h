@@ -22,22 +22,21 @@ struct _ewl_object {
 	int layer;
 };
 
-#define ewl_object_apply_requested(o) ewl_object_set_current_geometry(o, \
+#define ewl_object_apply_requested(o) \
+	ewl_object_set_current_geometry(EWL_OBJECT(o), \
 		REQUEST_X(o), REQUEST_Y(o), REQUEST_W(o), REQUEST_H(o));
 
 void ewl_object_init(Ewl_Object * o, int w, int h, Ewl_Fill_Policy fill,
 		     Ewl_Alignment align);
 
-void ewl_object_set_current_geometry(Ewl_Object * o, int x, int y, int w,
-				     int h);
+void ewl_object_set_current_geometry(Ewl_Object * o, int x, int y, int w,int h);
 void ewl_object_get_current_geometry(Ewl_Object * o, int *x, int *y,
 				     int *w, int *h);
 
 void ewl_object_set_current_size(Ewl_Object * o, int w, int h);
 void ewl_object_get_current_size(Ewl_Object * o, int *w, int *h);
 
-void ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w,
-				 int h);
+void ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w, int h);
 inline void ewl_object_request_x(Ewl_Object * o, int x);
 inline void ewl_object_request_y(Ewl_Object * o, int y);
 inline void ewl_object_request_w(Ewl_Object * o, int w);
@@ -61,8 +60,7 @@ void ewl_object_set_layer(Ewl_Object * o, int l);
 int ewl_object_get_layer(Ewl_Object * o);
 
 inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
-inline void ewl_object_set_fill_policy(Ewl_Object * o,
-				       Ewl_Fill_Policy fill);
+inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill);
 
 #define CURRENT_X(o) EWL_OBJECT(o)->current.x
 #define CURRENT_Y(o) EWL_OBJECT(o)->current.y
@@ -84,4 +82,4 @@ inline void ewl_object_set_fill_policy(Ewl_Object * o,
 #define VISIBLE(o) EWL_OBJECT(o)->visible
 #define LAYER(o) EWL_OBJECT(o)->layer
 
-#endif				/* __EWL_OBJECT_H__ */
+#endif /* __EWL_OBJECT_H__ */

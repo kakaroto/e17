@@ -1,6 +1,10 @@
-
-Tue May  29 18:30:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
-	* Rewrote ewl_button.c/.h feels really clean now compared to before..
-
-Wed May  9 11:15:39 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
-	* Fixed keyboard selection/navigation with the list widget
+Mon Aug  20 01:48:07 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Started the ChangeLog
+	* Fixed memleak in __ewl_button_theme_update
+	* Cleaned up Ewl_Entry to work with the new text widget and add a
+	  theme_update callback to it. + some changed in the theme code.
+	* Made ewl_theme_data_get return void *, and be a pointer to the data
+	  in the hash, this is necessery to be able to return other stuff then
+	  strings.
+	* I introduced a new bug in the Ewl_Seeker widget when playing working
+	  with the Ewl_Button widget, and fixed it.

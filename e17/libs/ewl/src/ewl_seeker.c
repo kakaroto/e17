@@ -13,12 +13,12 @@ static void __ewl_seeker_configure(Ewl_Widget * w, void *event_data,
 				   void *user_data);
 static void __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
 				      void *user_data);
-static void __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w,
+static void __ewl_seeker_drag_button_mouse_down(Ewl_Widget * w,
 					    void *event_data,
 					    void *user_data);
-static void __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *event_data,
+static void __ewl_seeker_drag_button_mouse_up(Ewl_Widget * w, void *event_data,
 					  void *user_data);
-static void __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w,
+static void __ewl_seeker_drag_button_mouse_move(Ewl_Widget * w,
 					    void *event_data,
 					    void *user_data);
 static void __ewl_seeker_mouse_up(Ewl_Widget * w, void *event_data,
@@ -46,11 +46,13 @@ ewl_seeker_new(Ewl_Orientation orientation)
 
 	__ewl_seeker_init(s, orientation);
 
+	s->drag_button = ewl_button_new(NULL);
+
 	DRETURN_PTR(EWL_WIDGET(s));
 }
 
 /*
- * Set the value and position of the pointer on the seekers dragbar
+ * Set the value and position of the pointer on the seekers drag_button
  */
 void
 ewl_seeker_set_value(Ewl_Widget * w, double v)
@@ -124,14 +126,10 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("s", s);
 
-
 	w = EWL_WIDGET(s);
 
-	/*
-	 * Initialize the widget fields and set appropriate orienation and
-	 * type
-	 */
 	memset(s, 0, sizeof(Ewl_Seeker));
+
 	if (orientation == EWL_ORIENTATION_HORIZONTAL)
 		ewl_container_init(EWL_CONTAINER(w), 100, 15,
 				   EWL_FILL_POLICY_NORMAL,
@@ -167,9 +165,7 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    __ewl_seeker_mouse_move, NULL);
 
-	/*
-	 * Set the starting range and values
-	 */
+	/* Set the starting range and values */
 	s->range = 100;
 	s->value = 0;
 
@@ -183,71 +179,65 @@ static void
 __ewl_seeker_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Seeker *s;
-	Ewl_Widget *dragbar;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SEEKER(w);
 
-	ewl_fx_clip_box_create(w);
+        w->fx_clip_box = evas_add_rectangle(w->evas);
+        evas_set_color(w->evas, w->fx_clip_box, 255, 255, 255, 255);
+        evas_set_layer(w->evas, w->fx_clip_box, LAYER(w) - 1); 
+        if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+                evas_set_clip(w->evas, w->fx_clip_box,
+                              EWL_CONTAINER(w->parent)->clip_box);
+
+        EWL_CONTAINER(w)->clip_box = evas_add_rectangle(w->evas);
+        evas_set_color(w->evas, EWL_CONTAINER(w)->clip_box, 255, 255, 255, 255);
+        evas_set_layer(w->evas, EWL_CONTAINER(w)->clip_box, LAYER(w));
+        evas_set_clip(w->evas, EWL_CONTAINER(w)->clip_box, w->fx_clip_box);
+	evas_show(w->evas, EWL_CONTAINER(w)->clip_box);
 
 	/*
-	 * We have a parent and a clip_box? ok, then we should tell evas to
-	 * use them
-	 */
-	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-		evas_set_clip(w->evas, w->fx_clip_box,
-			      EWL_CONTAINER(w->parent)->clip_box);
-
-	ewl_container_clip_box_create(EWL_CONTAINER(w));
-
-	ewl_container_show_clip(EWL_CONTAINER(w));
-
-	ewl_container_set_clip(EWL_CONTAINER(w));
-
-	/*
-	 * Create a button that will act as the dragbar and append it to the
+	 * Create a button that will act as the drag_button and append it to the
 	 * seeker.
 	 */
-	dragbar = ewl_button_new(NULL);
-
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		REQUEST_W(dragbar) = 32;
+		REQUEST_W(s->drag_button) = 32;
 
-		ewl_theme_data_set(dragbar,
+		ewl_theme_data_set(s->drag_button,
 				   "/appearance/button/default/clicked",
 				   "/appearance/seeker/horizontal/dragbar-clicked.bits.db");
-		ewl_theme_data_set(dragbar,
+		ewl_theme_data_set(s->drag_button,
 				   "/appearance/button/default/hilited",
 				   "/appearance/seeker/horizontal/dragbar-hilited.bits.db");
-		ewl_theme_data_set(dragbar,
+		ewl_theme_data_set(s->drag_button,
 				   "/appearance/button/default/base",
 				   "/appearance/seeker/horizontal/dragbar-base.bits.db");
 	} else {
-		REQUEST_H(dragbar) = 32;
-		ewl_theme_data_set(dragbar,
+		REQUEST_H(s->drag_button) = 32;
+		ewl_theme_data_set(s->drag_button,
 				   "/appearance/button/default/clicked",
 				   "/appearance/seeker/vertical/dragbar-clicked.bits.db");
-		ewl_theme_data_set(dragbar,
+		ewl_theme_data_set(s->drag_button,
 				   "/appearance/button/default/hilited",
 				   "/appearance/seeker/vertical/dragbar-hilited.bits.db");
-		ewl_theme_data_set(dragbar,
+		ewl_theme_data_set(s->drag_button,
 				   "/appearance/button/default/base",
 				   "/appearance/seeker/vertical/dragbar-base.bits.db");
 	}
 	/*
-	 * Append a callback for catching mouse movements on the dragbar and
-	 * add the dragbar to the seeker
+	 * Append a callback for catching mouse movements on the drag_button and
+	 * add the drag_button to the seeker
 	 */
-	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_seeker_dragbar_mouse_down, NULL);
-	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_seeker_dragbar_mouse_up, NULL);
-	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_MOVE,
-			    __ewl_seeker_dragbar_mouse_move, NULL);
-	ewl_container_append_child(EWL_CONTAINER(s), dragbar);
-	ewl_widget_show(EWL_WIDGET(dragbar));
+	ewl_callback_append(s->drag_button, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_seeker_drag_button_mouse_down, NULL);
+	ewl_callback_append(s->drag_button, EWL_CALLBACK_MOUSE_UP,
+			    __ewl_seeker_drag_button_mouse_up, NULL);
+	ewl_callback_append(s->drag_button, EWL_CALLBACK_MOUSE_MOVE,
+			    __ewl_seeker_drag_button_mouse_move, NULL);
+	ewl_container_append_child(EWL_CONTAINER(s), s->drag_button);
+	ewl_widget_show(s->drag_button);
 
 	ewl_widget_theme_update(w);
 
@@ -291,18 +281,17 @@ __ewl_seeker_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 
 /*
  * On a configure event we need to adjust the seeker to fit into it's new
- * coords and position as well as move the dragbar to the correct size and
+ * coords and position as well as move the drag_button to the correct size and
  * position.
  */
 static void
 __ewl_seeker_configure(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Seeker *s;
-	Ewl_Widget *dragbar;
 	double val;
 	int new_x, new_y, new_w, new_h;
 	int req_x, req_y, req_w, req_h;
-	int l, r, t, b;
+	int l = 0, r = 0, t = 0, b = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -325,36 +314,39 @@ __ewl_seeker_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	/*
 	 * Move the base ebits object to the correct size and position
 	 */
-	ebits_move(w->ebits_object, req_x, req_y);
-	ebits_resize(w->ebits_object, req_w, req_h);
+
+	if (w->ebits_object)
+	  {
+		ebits_move(w->ebits_object, REQUEST_X(w), REQUEST_Y(w));
+		ebits_resize(w->ebits_object, REQUEST_W(w), REQUEST_H(w));
+	  }
 
 	/*
 	 * Now move the clipbox to the correct size and position
 	 */
-	evas_move(w->evas, w->fx_clip_box, req_x, req_y);
-	evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+	if (w->fx_clip_box)
+	  {
+		evas_move(w->evas, w->fx_clip_box, REQUEST_X(w), REQUEST_Y(w));
+		evas_resize(w->evas, w->fx_clip_box, REQUEST_W(w),REQUEST_H(w));
+	  }
 
-	ewl_object_set_current_geometry(EWL_OBJECT(w),
-					req_x, req_y, req_w, req_h);
+	ewl_object_apply_requested(w);
 
-	/*
-	 * Get the dragbar's current size
-	 */
-	ewd_list_goto_first(EWL_CONTAINER(s)->children);
-	dragbar = ewd_list_current(EWL_CONTAINER(s)->children);
-	ewl_object_get_current_geometry(EWL_OBJECT(dragbar), &new_x,
+	ewl_object_get_current_geometry(EWL_OBJECT(s->drag_button), &new_x,
 					&new_y, &new_w, &new_h);
 
-	ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+	if (w->ebits_object)
+		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
-	if (EWL_CONTAINER(w)->clip_box) {
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
 		evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
-			  req_x + l, req_y + t);
+			  REQUEST_X(w) + l, REQUEST_Y(w) + t);
 		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
-			    req_w - (l + r), req_h - (t + b));
-	}
+			    REQUEST_W(w) - (l + r), REQUEST_H(w) - (t + b));
+	  }
 	/*
-	 * Calculate the dragbar's new position
+	 * Calculate the drag_button's new position
 	 */
 
 	val = s->value / s->range;
@@ -380,11 +372,12 @@ __ewl_seeker_configure(Ewl_Widget * w, void *event_data, void *user_data)
 		new_y += ((req_h - (t + b))) * val;
 
 	/*
-	 * Now apply the new position to the dragbar
+	 * Now apply the new position to the drag_button
 	 */
-	ewl_object_request_geometry(EWL_OBJECT(dragbar), new_x, new_y,
+	ewl_object_request_geometry(EWL_OBJECT(s->drag_button), new_x, new_y,
 				    new_w, new_h);
-	ewl_widget_configure(dragbar);
+
+	ewl_widget_configure(s->drag_button);
 
 	DLEAVE_FUNCTION;
 }
@@ -396,9 +389,8 @@ static void
 __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
 			  void *user_data)
 {
-	char *i = NULL;
 	Ewl_Seeker *s;
-	Ewl_Widget *dragbar;
+	char *i;
 	char *v;
 
 	DENTER_FUNCTION;
@@ -422,10 +414,12 @@ __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
 		v = ewl_theme_data_get(w,
 				       "/appearance/seeker/vertical/base/visible");
 
-	/*
-	 * Check if this piece should be visible, if so grab the path to it's
-	 * bit file.
-	 */
+        if (w->ebits_object) {
+                ebits_hide(w->ebits_object);
+                ebits_unset_clip(w->ebits_object);
+                ebits_free(w->ebits_object);
+        }
+
 	if (v && *v == 'y') {
 		if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
 			i = ewl_theme_image_get(w,
@@ -433,41 +427,22 @@ __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
 		else
 			i = ewl_theme_image_get(w,
 						"/appearance/seeker/vertical/base");
-		FREE(v);
-	}
 
-	/*
-	 * Destroy old image (if any)
-	 */
-	if (w->ebits_object) {
-		ebits_hide(w->ebits_object);
-		ebits_unset_clip(w->ebits_object);
-		ebits_free(w->ebits_object);
-	}
+		if (i) {
+			w->ebits_object = ebits_load(i);
+			FREE(i);
 
-	/*
-	 * If there is a base image to place, load it
-	 */
-	if (i) {
-		w->ebits_object = ebits_load(i);
-		FREE(i);
-
-		if (w->ebits_object) {
-			ebits_add_to_evas(w->ebits_object, w->evas);
-			ebits_set_layer(w->ebits_object,
-					EWL_OBJECT(w)->layer);
-			ebits_set_clip(w->ebits_object, w->fx_clip_box);
-
-			ebits_show(w->ebits_object);
+			if (w->ebits_object) {
+				ebits_add_to_evas(w->ebits_object, w->evas);
+				ebits_set_layer(w->ebits_object, LAYER(w));
+				ebits_set_clip(w->ebits_object, w->fx_clip_box);
+				ebits_show(w->ebits_object);
+			}
 		}
-	}
-
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
-
-	ewl_object_set_layer(EWL_OBJECT(dragbar),
-			     EWL_OBJECT(w)->layer + 1);
-	ewl_widget_theme_update(dragbar);
+	  }
+	ewl_object_set_layer(EWL_OBJECT(s->drag_button),
+			     LAYER(w) + 1);
+	ewl_widget_theme_update(s->drag_button);
 
 	/*
 	 * Finally configure the widget to update changes 
@@ -478,21 +453,21 @@ __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
 static void
 __ewl_seeker_mouse_move(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	Ewl_Widget *dragbar;
+	Ewl_Widget *drag_button;
 
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("event_data", event_data);
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
+	drag_button = ewd_list_current(EWL_CONTAINER(w)->children);
 
-	ewl_callback_call_with_event_data(EWL_WIDGET(dragbar),
+	ewl_callback_call_with_event_data(EWL_WIDGET(drag_button),
 					  EWL_CALLBACK_MOUSE_MOVE,
 					  event_data);
 }
 
 static void
-__ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *event_data,
+__ewl_seeker_drag_button_mouse_down(Ewl_Widget * w, void *event_data,
 				void *user_data)
 {
 	Ev_Mouse_Down *ev;
@@ -517,21 +492,21 @@ __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *event_data,
 		tmp = (y + height) - ev->y;
 
 	ewl_callback_set_user_data(w, EWL_CALLBACK_MOUSE_MOVE,
-				   __ewl_seeker_dragbar_mouse_move,
+				   __ewl_seeker_drag_button_mouse_move,
 				   (void *) tmp);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *event_data,
+__ewl_seeker_drag_button_mouse_up(Ewl_Widget * w, void *event_data,
 			      void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	ewl_callback_set_user_data(w, EWL_CALLBACK_MOUSE_MOVE,
-				   __ewl_seeker_dragbar_mouse_move,
+				   __ewl_seeker_drag_button_mouse_move,
 				   (void *) -1);
 
 	DLEAVE_FUNCTION;
@@ -541,7 +516,7 @@ __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *event_data,
  * Move the cursor to the correct position
  */
 static void
-__ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
+__ewl_seeker_drag_button_mouse_move(Ewl_Widget * w, void *event_data,
 				void *user_data)
 {
 	Ev_Mouse_Move *ev;
@@ -574,7 +549,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 		ebits_get_insets(w->parent->ebits_object, &l, &r, &t, &b);
 
 	/*
-	 * The direction of the dragbar move depends on the orientation of the
+	 * The direction of the drag_button move depends on the orientation of the
 	 * parent seeker.
 	 */
 	if (EWL_SEEKER(w->parent)->orientation ==
@@ -643,7 +618,7 @@ static void
 __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Seeker *s;
-	Ewl_Widget *dragbar;
+	Ewl_Widget *drag_button;
 	Ev_Mouse_Move *ev;
 	int x, y, width, height;
 
@@ -656,12 +631,12 @@ __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 	s = EWL_SEEKER(w);
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
-	ewl_object_get_current_geometry(EWL_OBJECT(dragbar), &x, &y,
+	drag_button = ewd_list_current(EWL_CONTAINER(w)->children);
+	ewl_object_get_current_geometry(EWL_OBJECT(drag_button), &x, &y,
 					&width, &height);
 
 	/*
-	 * A click occurred on the dragbar, so we need to increment
+	 * A click occurred on the drag_button, so we need to increment
 	 * the value by the jump amount.
 	 */
 	if (EWL_SEEKER(w)->orientation == EWL_ORIENTATION_HORIZONTAL) {

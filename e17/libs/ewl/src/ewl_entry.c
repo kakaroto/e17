@@ -2,59 +2,62 @@
 #include <Ewl.h>
 
 
-static void __ewl_entry_init(Ewl_Widget * widget);
-static void __ewl_entry_realize(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_init(Ewl_Widget * w);
+static void __ewl_entry_realize(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_entry_show(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_show(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_entry_hide(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_hide(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_entry_destroy(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_destroy(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_entry_configure(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_configure(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-static void __ewl_entry_key_down(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_entry_key_up(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_key_up(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
-static void __ewl_entry_mouse_down(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
-static void __ewl_entry_mouse_up(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_entry_select(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_select(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
-static void __ewl_entry_unselect(Ewl_Widget * widget, void *event_data,
+static void __ewl_entry_unselect(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
+static void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data,
+				void *user_data);
 
-static void __ewl_entry_delete_to_left(Ewl_Widget * widget);
-static void __ewl_entry_delete_to_right(Ewl_Widget * widget);
+static void __ewl_entry_delete_to_left(Ewl_Widget * w);
+static void __ewl_entry_delete_to_right(Ewl_Widget * w);
 
-static void __ewl_entry_move_cursor_to_start(Ewl_Widget * widget);
-static void __ewl_entry_move_cursor_to_end(Ewl_Widget * widget);
-static void __ewl_entry_move_cursor_to_left(Ewl_Widget * widget);
-static void __ewl_entry_move_cursor_to_right(Ewl_Widget * widget);
-static void __ewl_entry_insert_text(Ewl_Widget * widget, char *text);
+static void __ewl_entry_move_cursor_to_start(Ewl_Widget * w);
+static void __ewl_entry_move_cursor_to_end(Ewl_Widget * w);
+static void __ewl_entry_move_cursor_to_left(Ewl_Widget * w);
+static void __ewl_entry_move_cursor_to_right(Ewl_Widget * w);
+static void __ewl_entry_insert_text(Ewl_Widget * w, char *text);
 
 
 Ewl_Widget *
 ewl_entry_new()
 {
-	Ewl_Entry *entry = NULL;
+	Ewl_Entry *e;
 
 	DENTER_FUNCTION;
 
-	entry = NEW(Ewl_Entry, 1);
+	e = NEW(Ewl_Entry, 1);
 
-	__ewl_entry_init(EWL_WIDGET(entry));
+	__ewl_entry_init(EWL_WIDGET(e));
 
-	DRETURN_PTR(EWL_WIDGET(entry));
+	e->text = ewl_text_new();
+
+	DRETURN_PTR(EWL_WIDGET(e));
 }
 
 static void
 __ewl_entry_init(Ewl_Widget * widget)
 {
 	DENTER_FUNCTION;
-
 	DCHECK_PARAM_PTR("widget", widget);
 
 	memset(EWL_ENTRY(widget), 0, sizeof(Ewl_Entry));
@@ -62,18 +65,19 @@ __ewl_entry_init(Ewl_Widget * widget)
 	/*
 	 * Initialize the inherited container fields
 	 */
-	ewl_container_init(EWL_CONTAINER(widget), 300, 35,
+	ewl_container_init(EWL_CONTAINER(widget), 300, 16,
 			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
+
+	MAX_H(widget) = 16;
+	MIN_H(widget) = 16;
 
 	/*
 	 * Attach necessary callbacks
 	 */
 	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
 			    __ewl_entry_realize, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_SHOW, __ewl_entry_show,
-			    NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_HIDE, __ewl_entry_hide,
-			    NULL);
+	ewl_callback_append(widget, EWL_CALLBACK_SHOW, __ewl_entry_show, NULL);
+	ewl_callback_append(widget, EWL_CALLBACK_HIDE, __ewl_entry_hide, NULL);
 	ewl_callback_append(widget, EWL_CALLBACK_DESTROY,
 			    __ewl_entry_destroy, NULL);
 	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE,
@@ -90,23 +94,21 @@ __ewl_entry_init(Ewl_Widget * widget)
 			    __ewl_entry_select, NULL);
 	ewl_callback_append(widget, EWL_CALLBACK_UNSELECT,
 			    __ewl_entry_unselect, NULL);
-
-	EWL_ENTRY(widget)->text = ewl_text_new();
-
-	EWL_ENTRY(widget)->font = strdup("borzoib");
-	EWL_ENTRY(widget)->font_size = 8;
+	ewl_callback_append(widget, EWL_CALLBACK_THEME_UPDATE,
+			__ewl_entry_theme_update, NULL);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	char *image = NULL;
+	Ewl_Entry * e;
 
 	DENTER_FUNCTION;
-
 	DCHECK_PARAM_PTR("w", w);
+
+	e = EWL_ENTRY(w);
 
 	{
 		Evas_Object *clip_box;
@@ -118,187 +120,179 @@ __ewl_entry_realize(Ewl_Widget * w, void *event_data, void *user_data)
 			evas_set_clip(w->evas, clip_box,
 				      EWL_CONTAINER(w->parent)->clip_box);
 		w->fx_clip_box = clip_box;
+
 		EWL_CONTAINER(w)->clip_box = clip_box;
 
 	}
 
-	image = ewl_theme_image_get(w, "/appearance/entry/default/base");
+	__ewl_entry_theme_update(w, NULL, NULL);
 
-	w->ebits_object = ebits_load(image);
-	IF_FREE(image);
-	ebits_add_to_evas(w->ebits_object, w->evas);
-	ebits_set_layer(w->ebits_object, w->object.layer);
-
-	image = ewl_theme_image_get(w, "/appearance/entry/cursor/base");
-
-	EWL_ENTRY(w)->cursor = ebits_load(image);
-	IF_FREE(image);
-	ebits_add_to_evas(EWL_ENTRY(w)->cursor, w->evas);
-	ebits_set_layer(EWL_ENTRY(w)->cursor, w->object.layer + 3);
-
-	EWL_WIDGET(EWL_ENTRY(w)->text)->parent = w;
-	EWL_WIDGET(EWL_ENTRY(w)->text)->evas = w->evas;
-	EWL_OBJECT(EWL_ENTRY(w)->text)->layer = EWL_OBJECT(w)->layer + 1;
-	ewl_text_set_font_size(EWL_ENTRY(w)->text, 10);
-	ewl_widget_realize(EWL_WIDGET(EWL_ENTRY(w)->text));
-
-	ebits_show(w->ebits_object);
-
-	ebits_set_clip(EWL_ENTRY(w)->cursor, w->fx_clip_box);
-
-	ewl_widget_show(EWL_ENTRY(w)->text);
-
-	evas_show(w->evas, EWL_CONTAINER(w)->clip_box);
+	e->text->parent = w;
+	e->text->evas = w->evas;
+	e->text->evas_window = w->evas_window;
+	LAYER(e->text) = LAYER(w) + 1;
+	ewl_text_set_alignment(e->text, EWL_ALIGNMENT_LEFT);
+	ewl_widget_show(e->text);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_show(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_entry_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
-
-	DCHECK_PARAM_PTR("widget", widget);
-
-	evas_show(widget->evas, widget->fx_clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
-__ewl_entry_hide(Ewl_Widget * widget, void *event_data, void *user_data)
-{
-	DENTER_FUNCTION;
-
-	DCHECK_PARAM_PTR("widget", widget);
-
-	evas_hide(widget->evas, widget->fx_clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
-__ewl_entry_destroy(Ewl_Widget * widget, void *event_data, void *user_data)
-{
-	DENTER_FUNCTION;
-
-	DCHECK_PARAM_PTR("widget", widget);
-
-	ebits_hide(widget->ebits_object);
-	ebits_unset_clip(widget->ebits_object);
-	ebits_free(widget->ebits_object);
-
-	ebits_hide(EWL_ENTRY(widget)->cursor);
-	ebits_unset_clip(EWL_ENTRY(widget)->cursor);
-	ebits_free(EWL_ENTRY(widget)->cursor);
-
-	ewl_widget_destroy(EWL_ENTRY(widget)->text);
-
-	evas_hide(widget->evas, widget->fx_clip_box);
-	evas_unset_clip(widget->evas, widget->fx_clip_box);
-	evas_del_object(widget->evas, widget->fx_clip_box);
-
-	evas_hide(widget->evas, EWL_CONTAINER(widget)->clip_box);
-	evas_unset_clip(widget->evas, EWL_CONTAINER(widget)->clip_box);
-	evas_del_object(widget->evas, EWL_CONTAINER(widget)->clip_box);
-
-	ewl_callback_clear(widget);
-
-	ewl_theme_deinit_widget(widget);
-
-	FREE(widget);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
-__ewl_entry_configure(Ewl_Widget * w, void *event_data, void *user_data)
-{
-	Ewl_Entry *e;
-	int l, r, t, b;
+	Ewl_Entry * e;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
-	CURRENT_X(w) = REQUEST_X(w);
-	CURRENT_Y(w) = REQUEST_Y(w);
-	CURRENT_W(w) = REQUEST_W(w);
-	CURRENT_H(w) = REQUEST_H(w);
-
-	if (EWL_OBJECT(w)->realized) {
-		ebits_move(w->ebits_object, CURRENT_X(w), CURRENT_Y(w));
-		ebits_resize(w->ebits_object, CURRENT_W(w), CURRENT_H(w));
-
-		ewl_fx_clip_box_resize(w);
-
-		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
-
-		evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
-			  CURRENT_X(w) + l, CURRENT_Y(w) + t);
-		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
-			    CURRENT_W(w) - (l + r),
-			    CURRENT_H(w) - (t + b));
-
-		l += 2;
-
-		REQUEST_X(e->text) = CURRENT_X(w) + l;
-		REQUEST_Y(e->text) = CURRENT_Y(w) + t;
-
-		ewl_widget_configure(e->text);
-
-		ewl_entry_set_cursor_pos(w, e->cursor_pos);
-	}
+	evas_show(w->evas, w->fx_clip_box);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_key_down(Ewl_Widget * widget, void *event_data,
-		     void *user_data)
+__ewl_entry_hide(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	evas_hide(w->evas, w->fx_clip_box);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_entry_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry * e;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	e = EWL_ENTRY(w);
+
+	if (w->ebits_object)
+	  {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	  }
+
+	if (e->cursor)
+	  {
+		ebits_hide(e->cursor);
+		ebits_unset_clip(e->cursor);
+		ebits_free(e->cursor);
+	  }
+
+	ewl_widget_destroy(EWL_ENTRY(w)->text);
+
+	if (w->fx_clip_box)
+	  {
+		evas_hide(w->evas, w->fx_clip_box);
+		evas_unset_clip(w->evas, w->fx_clip_box);
+		evas_del_object(w->evas, w->fx_clip_box);
+	  }
+
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
+		evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
+		evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
+		evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
+	  }
+
+	ewl_callback_clear(w);
+
+	ewl_theme_deinit_widget(w);
+
+	FREE(w);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry *e;
+	int l = 0, r = 0, t = 0, b = 0;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	e = EWL_ENTRY(w);
+
+	ewl_object_apply_requested(w);
+
+	if (w->ebits_object)
+	  {
+		ebits_move(w->ebits_object, CURRENT_X(w), CURRENT_Y(w));
+		ebits_resize(w->ebits_object, CURRENT_W(w), CURRENT_H(w));
+		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+	  }
+
+	if (w->fx_clip_box)
+	  {
+		evas_move(w->evas, w->fx_clip_box, CURRENT_X(w), CURRENT_Y(w));
+		evas_resize(w->evas, w->fx_clip_box, CURRENT_W(w),CURRENT_H(w));
+	  }
+
+	REQUEST_X(e->text) = CURRENT_X(w) + l + 2;
+	REQUEST_Y(e->text) = CURRENT_Y(w) + t;
+	REQUEST_W(e->text) = CURRENT_W(w) - l - r;
+	REQUEST_H(e->text) = CURRENT_H(w) - t - b;
+
+	ewl_widget_configure(e->text);
+
+	ewl_entry_set_cursor_pos(w, e->cursor_pos);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ev_Key_Down *ev;
 
 	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	DCHECK_PARAM_PTR("widget", widget);
-
-	ev = (Ev_Key_Down *) event_data;
+	ev = (Ev_Key_Down *) ev_data;
 
 	if (!strcmp(ev->key, "Left")) {
-		__ewl_entry_move_cursor_to_left(widget);
+		__ewl_entry_move_cursor_to_left(w);
 	} else if (!strcmp(ev->key, "Right")) {
-		__ewl_entry_move_cursor_to_right(widget);
+		__ewl_entry_move_cursor_to_right(w);
 	} else if (!strcmp(ev->key, "Home")) {
-		__ewl_entry_move_cursor_to_start(widget);
+		__ewl_entry_move_cursor_to_start(w);
 	} else if (!strcmp(ev->key, "End")) {
-		__ewl_entry_move_cursor_to_end(widget);
+		__ewl_entry_move_cursor_to_end(w);
 	} else if (!strcmp(ev->key, "BackSpace")) {
-		__ewl_entry_delete_to_left(widget);
+		__ewl_entry_delete_to_left(w);
 	} else if (!strcmp(ev->key, "Delete")) {
-		__ewl_entry_delete_to_right(widget);
+		__ewl_entry_delete_to_right(w);
 	} else if (!strcmp(ev->key, "Return")) {
 	} else if (!strcmp(ev->key, "KP_Enter")) {
 	} else if (ev->compose && strlen(ev->compose) == 1) {
-		__ewl_entry_insert_text(widget, ev->compose);
+		__ewl_entry_insert_text(w, ev->compose);
 	}
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_key_up(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_entry_key_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ev_Mouse_Down *ev;
 	Ewl_Entry *e;
@@ -309,7 +303,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	ev = (Ev_Mouse_Down *) event_data;
+	ev = (Ev_Mouse_Down *) ev_data;
 	e = EWL_ENTRY(w);
 
 	if (ev->button == 1) {
@@ -330,41 +324,48 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 	} else if (ev->button == 3) {
 	}
 
+	printf("sdfhdfjksdfhjsdkdsf\n");
+
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_mouse_up(Ewl_Widget * widget, void *event_data,
+__ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data,
 		     void *user_data)
 {
 	DENTER_FUNCTION;
-
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_select(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Entry * e;
+
 	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	DCHECK_PARAM_PTR("widget", widget);
+	e = EWL_ENTRY(w);
 
-	ebits_show(EWL_ENTRY(widget)->cursor);
+	ebits_show(e->cursor);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_entry_unselect(Ewl_Widget * widget, void *event_data,
+__ewl_entry_unselect(Ewl_Widget * w, void *ev_data,
 		     void *user_data)
 {
+	Ewl_Entry * e;
+
 	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	DCHECK_PARAM_PTR("widget", widget);
+	e = EWL_ENTRY(w);
 
-	ebits_hide(EWL_ENTRY(widget)->cursor);
+	ebits_hide(e->cursor);
 
 	DLEAVE_FUNCTION;
 }
@@ -523,14 +524,11 @@ ewl_entry_set_cursor_pos(Ewl_Widget * w, int pos)
 		wi = 3;
 	}
 
-	EWL_OBJECT(e->cursor)->request.w = wi + 4;
-	EWL_OBJECT(e->cursor)->request.h =
-	    EWL_OBJECT(w)->current.h - t - b;
-
-	ebits_move(e->cursor,
-		   EWL_OBJECT(w)->current.x + x + l,
-		   EWL_OBJECT(w)->current.y + y + t);
-	ebits_resize(e->cursor, wi + 4, EWL_OBJECT(w)->current.h - t - b);
+	if (e->cursor)
+	  {
+		ebits_move(e->cursor, CURRENT_X(w) + x + l, CURRENT_Y(w) + y + t);
+		ebits_resize(e->cursor, wi + 4, CURRENT_H(w) - t - b);
+	  }
 
 	e->cursor_pos = pos;
 
@@ -543,6 +541,7 @@ ewl_entry_get_cursor_pos(Ewl_Widget * w)
 	Ewl_Entry *e;
 
 	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, 0);
 
 	e = EWL_ENTRY(w);
 
@@ -575,4 +574,93 @@ ewl_entry_get_text(Ewl_Widget * w)
 	e = EWL_ENTRY(w);
 
 	DRETURN_PTR(strdup(EWL_TEXT(e->text)->text));
+}
+
+static void     
+__ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+{                                          
+	Ewl_Entry *e;
+	char *v;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+        
+	/* Don't want to update anything if the widget isn't realized. */
+	if (!REALIZED(w))
+		DRETURN;
+
+	e = EWL_ENTRY(w);
+
+	v = ewl_theme_data_get(w, "/appearance/entry/default/base/visible");
+
+	if (v && !strncasecmp(v, "yes", 3)) {
+		char *i;
+
+		i = ewl_theme_image_get(w, "/appearance/entry/default/base");   
+
+		if (i) {
+                        w->ebits_object = ebits_load(i);
+        
+                        if (w->ebits_object) {
+                                ebits_add_to_evas(w->ebits_object,
+                                                  w->evas);
+                                ebits_set_layer(w->ebits_object,
+                                                EWL_OBJECT(w)->layer);
+                
+                                ebits_set_clip(w->ebits_object,
+                                               w->fx_clip_box);
+        
+                                ebits_show(w->ebits_object);
+                        }
+                }
+        }
+
+	v = ewl_theme_data_get(w, "/appearance/entry/default/cursor/visible");
+
+	if (v && !strncasecmp(v, "yes", 3))
+	  {
+		char *i;
+
+		i = ewl_theme_image_get(w, "/appearance/entry/default/cursor");
+
+		if (i)
+		  {
+			if (e->cursor)
+			  {
+				ebits_hide(e->cursor);
+				ebits_unset_clip(e->cursor);
+				ebits_free(e->cursor);
+			  }
+
+			e->cursor = ebits_load(i);
+
+			if (e->cursor)
+			  {
+				ebits_add_to_evas(e->cursor, w->evas);
+				ebits_set_layer(e->cursor, LAYER(e->cursor) +2);
+                                ebits_set_clip(e->cursor, w->fx_clip_box);
+
+                                ebits_show(e->cursor);
+
+			  }
+		  }
+	  }
+
+	if (e->text)
+	  {
+		void * t;
+
+		t = ewl_theme_data_get(w,"/appearance/entry/default/text/font");
+		ewl_text_set_font(e->text, t);
+
+		t = ewl_theme_data_get(w, "/appearance/entry/default/text/style");
+		ewl_text_set_style(e->text, t);
+
+		ewl_text_set_font_size(e->text, 8);
+	  }
+
+        /* Finally comfigure the widget to update the changes */
+        ewl_widget_configure(w);
+
+        DLEAVE_FUNCTION;
 }
