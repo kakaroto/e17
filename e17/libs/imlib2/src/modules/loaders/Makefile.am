@@ -44,48 +44,48 @@ lbm.la
 
 jpeg_la_SOURCES      = loader_jpeg.c
 jpeg_la_LDFLAGS      = -module -avoid-version
-jpeg_la_LIBADD       = @JPEGLIBS@
+jpeg_la_LIBADD       = @JPEGLIBS@ $(top_builddir)/src/lib/libImlib2.la
 
 png_la_SOURCES       = loader_png.c
 png_la_LDFLAGS       = -module -avoid-version
-png_la_LIBADD        = @PNGLIBS@
+png_la_LIBADD        = @PNGLIBS@ $(top_builddir)/src/lib/libImlib2.la
                        
 tiff_la_SOURCES      = loader_tiff.c
 tiff_la_LDFLAGS      = -module -avoid-version
-tiff_la_LIBADD       = @TIFFLIBS@
+tiff_la_LIBADD       = @TIFFLIBS@ $(top_builddir)/src/lib/libImlib2.la
 
 gif_la_SOURCES       = loader_gif.c
 gif_la_LDFLAGS       = -module -avoid-version
-gif_la_LIBADD        = @GIFLIBS@
+gif_la_LIBADD        = @GIFLIBS@ $(top_builddir)/src/lib/libImlib2.la
 
 zlib_la_SOURCES      = loader_zlib.c
 zlib_la_LDFLAGS      = -module -avoid-version
-zlib_la_LIBADD       = @ZLIBLIBS@ 
+zlib_la_LIBADD       = @ZLIBLIBS@ $(top_builddir)/src/lib/libImlib2.la
 
 bz2_la_SOURCES       = loader_bz2.c
 bz2_la_LDFLAGS       = -module -avoid-version
-bz2_la_LIBADD        = @BZ2LIBS@ 
+bz2_la_LIBADD        = @BZ2LIBS@ $(top_builddir)/src/lib/libImlib2.la
 
 pnm_la_SOURCES       = loader_pnm.c
 pnm_la_LDFLAGS       = -module -avoid-version
-pnm_la_LIBADD        = 
+pnm_la_LIBADD        = $(top_builddir)/src/lib/libImlib2.la
 
 argb_la_SOURCES      = loader_argb.c
 argb_la_LDFLAGS      = -module -avoid-version
-argb_la_LIBADD       = 
+argb_la_LIBADD       = $(top_builddir)/src/lib/libImlib2.la
 
 bmp_la_SOURCES       = loader_bmp.c
 bmp_la_LDFLAGS       = -module -avoid-version
-bmp_la_LIBADD        = 
+bmp_la_LIBADD        = $(top_builddir)/src/lib/libImlib2.la
 
 xpm_la_SOURCES       = loader_xpm.c
 xpm_la_LDFLAGS       = -module -avoid-version
-xpm_la_LIBADD        = 
+xpm_la_LIBADD        = $(top_builddir)/src/lib/libImlib2.la
 
 tga_la_SOURCES       = loader_tga.c
 tga_la_LDFLAGS       = -module -avoid-version
-tga_la_LIBADD        = 
+tga_la_LIBADD        = $(top_builddir)/src/lib/libImlib2.la
 
 lbm_la_SOURCES       = loader_lbm.c
 lbm_la_LDFLAGS       = -module -avoid-version
-lbm_la_LIBADD        = 
+lbm_la_LIBADD        = $(top_builddir)/src/lib/libImlib2.la
