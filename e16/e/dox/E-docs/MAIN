@@ -1374,15 +1374,23 @@ the window will fall back to using the DEFAULT border until you change it
 again.
 
 <page columns=1 padding=16 name=deskenv background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_kde_settings.png x=300 y=70>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Setting up E to work with KDE and GNOME
 <p>
 <font face=aircut3/12 color=#ffffff>
-NOTE: If you want your left-mouse menu back - you need to run the e_gen_menu 
-script. It will build the menus for you and install them in ~/.enlightenment.
-run this script whenever you add or delete programs from your system - it will
-pick up on all your KDE apps nicely right now.. :)
+Enlightenment, though it strives to be its own desktop environment, also
+supports KDE and GNOME desktop environments wherever possible.  E comes set up
+to support GNOME out of the box, in fact.  To enable the KDE hints, however,
+you must launch enlightenment and then go into the "KDE Support Settings"
+section of your _Settings(settings) menu.  From here you can enable or disable
+KDE support in your copy of enlightenment.   This setting will automatically
+save for the next time you launch enlightenment.  You should be able to launch
+any of KDE's or GNOME's applications and have them supported fairly well,
+including (but not limited to) the panel or kpanel, and gmc and kfm.
+
+
 
 <page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_placement_settings.png x=220 y=70>
