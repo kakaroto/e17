@@ -3087,3 +3087,13 @@ Fri Aug 20 23:35:46 CEST 2004
 --- 0.16.7.1 1 ---
 Remove empty epp/config.h causing trouble on some platforms.
 Add basic _NET_WM_WINDOW_OPACITY handling.
+
+-------------------------------------------------------------------------------
+
+Wed Aug 25 18:07:04 CEST 2004
+(Kim)
+
+--- 0.16.7.2 0.01 ---
+Bump version numbers.
+Make keys used for menu navigation configurable.
+ (patch from Alan Schmitt <alan.schmitt@polytechnique.org>).
