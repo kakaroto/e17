@@ -166,6 +166,7 @@ __imlib_BlurImage(ImlibImage *im, int rad)
 void
 __imlib_SharpenImage(ImlibImage *im, int rad)
 {
+   /* FIXME: impliment */
 }
 
 void
@@ -245,7 +246,7 @@ void
 __imlib_TileImageVert(ImlibImage *im)
 {
    DATA32 *p1, *p2, *p, *data;
-   int x, y, per, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr, gg, bb;
+   int x, y, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr, gg, bb;
    
    data = malloc(im->w * im->h * sizeof(DATA32));
    p = data;

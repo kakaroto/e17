@@ -9,6 +9,24 @@ typedef struct _imlibimagepixmap        ImlibImagePixmap;
 typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
 typedef struct _imlib_color_modifier    ImlibColorModifier;
+typedef enum   _load_error              ImlibLoadError;
+
+enum _load_error
+{
+   LOAD_ERROR_NONE,
+   LOAD_ERROR_FILE_DOES_NOT_EXIST,
+   LOAD_ERROR_FILE_IS_DIRECTORY,
+   LOAD_ERROR_PERMISSION_DENIED_TO_READ,
+   LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT,
+   LOAD_ERROR_PATH_TOO_LONG,
+   LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT,
+   LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY,
+   LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE,
+   LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS,
+   LOAD_ERROR_OUT_OF_MEMORY,
+   LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
+   LOAD_ERROR_UNKNOWN
+};
 
 enum _iflags
 {
@@ -115,11 +133,11 @@ ImlibLoader      *__imlib_FindBestLoaderForFile(char *file);
 void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
 ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
 ImlibImage       *__imlib_LoadImage(char *file,
-			    void (*progress)(ImlibImage *im, char percent,
-					     int update_x, int update_y,
-					     int update_w, int update_h),
-			    char progress_granularity, char immediate_load,
-			    char dont_cache);
+				    void (*progress)(ImlibImage *im, char percent,
+						     int update_x, int update_y,
+						     int update_w, int update_h),
+				    char progress_granularity, char immediate_load,
+				    char dont_cache, ImlibLoadError *er);
 ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
 void              __imlib_FreeImage(ImlibImage *im);
 void              __imlib_FreePixmap(Display *d, Pixmap p);

@@ -128,7 +128,9 @@ __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 	for (x = 0; x < w; x++)
 	  {
 	     a =  (*p1 >> 24) & 0xff;
-	     if (a < 255)
+	     if (a == 255)
+		*p2 = *p1;	  
+	     else if (a > 0)
 	       {
 		  b =  (*p1      ) & 0xff;
 		  g =  (*p1 >> 8 ) & 0xff;
@@ -146,8 +148,6 @@ __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		  *p2 = (nr << 16) | (ng << 8) | nb;
 	       }
-	     else
-		*p2 = *p1;	  
 	     p1++;
 	     p2++;
 	  }
@@ -171,7 +171,9 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 	for (x = 0; x < w; x++)
 	  {
 	     a =  (*p1 >> 24) & 0xff;
-	     if (a < 255)
+	     if (a == 255)
+		*p2 = *p1;	  
+	     else if (a > 0)
 	       {
 		  b =  (*p1      ) & 0xff;
 		  g =  (*p1 >> 8 ) & 0xff;
@@ -193,8 +195,6 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
-	     else
-		*p2 = *p1;	  
 	     p1++;
 	     p2++;
 	  }
@@ -328,7 +328,7 @@ __imlib_AddCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    
    for (y = 0; y < h; y++)
      {
-        DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
 	int tmp;
 	
 	p1 = src + (y * (w + src_jump));
@@ -365,7 +365,7 @@ __imlib_AddCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    
    for (y = 0; y < h; y++)
      {
-        DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
 	int tmp;
 	
 	p1 = src + (y * (w + src_jump));
@@ -484,7 +484,7 @@ __imlib_SubCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    
    for (y = 0; y < h; y++)
      {
-        DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
 	int tmp;
 	
 	p1 = src + (y * (w + src_jump));
@@ -521,7 +521,7 @@ __imlib_SubCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    
    for (y = 0; y < h; y++)
      {
-        DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
 	int tmp;
 	
 	p1 = src + (y * (w + src_jump));
@@ -641,7 +641,7 @@ __imlib_ReCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    
    for (y = 0; y < h; y++)
      {
-        DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
 	int tmp;
 	
 	p1 = src + (y * (w + src_jump));
@@ -678,7 +678,7 @@ __imlib_ReCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    
    for (y = 0; y < h; y++)
      {
-        DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
 	int tmp;
 	
 	p1 = src + (y * (w + src_jump));

@@ -13,11 +13,25 @@ typedef void * Imlib_Image;
 typedef void * Imlib_Color_Modifier;
 typedef void * Imlib_Updates;
 typedef struct _imlib_border Imlib_Border;
+typedef struct _imlib_color Imlib_Color;
+typedef struct _imlib_rectangle Imlib_Rectangle;
 typedef enum _imlib_operation Imlib_Operation;
+typedef enum _imlib_load_error Imlib_Load_Error;
+typedef enum _imlib_chanel_mask Imlib_Chanel_Mask;
 
 struct _imlib_border
 {
    int left, right, top, bottom;
+};
+
+struct _imlib_color
+{
+   int alpha, red, green, blue;
+};
+
+struct _imlib_rectangle
+{
+   int x, y, width, height;
 };
 
 enum _imlib_operation
@@ -26,6 +40,31 @@ enum _imlib_operation
    IMLIB_OP_ADD,
    IMLIB_OP_SUBTRACT,
    IMLIB_OP_RESHADE
+};
+
+enum _imlib_chanel_mask
+{
+   IMLIB_ALPHA = 1,
+   IMLIB_RED = 2,
+   IMLIB_GREEN = 4,
+   IMLIB_BLUE = 8
+};
+
+enum _imlib_load_error
+{
+   IMLIB_LOAD_ERROR_NONE,
+   IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST,
+   IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY,
+   IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ,
+   IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT,
+   IMLIB_LOAD_ERROR_PATH_TOO_LONG,
+   IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT,
+   IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY,
+   IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE,
+   IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS,
+   IMLIB_LOAD_ERROR_OUT_OF_MEMORY,
+   IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
+   IMLIB_LOAD_ERROR_UNKNOWN
 };
 
 typedef void (*Imlib_Progress_Function)(Imlib_Image *im, char percent,
@@ -48,6 +87,10 @@ Imlib_Image imlib_load_image_without_cache(char *file);
 Imlib_Image imlib_load_image_with_progress_callback_without_cache (char *file,
 								   Imlib_Progress_Function progress_function,
 								   char progress_granulatiy);
+Imlib_Image imlib_load_image_with_progress_callback_and_error_return (char *file,
+								      Imlib_Progress_Function progress_function,
+								      char progress_granulatiy,
+								      Imlib_Load_Error *error_return);
 Imlib_Image imlib_load_image_immediately_without_cache(char *file);
 
 /* image destruction functions */
@@ -212,24 +255,48 @@ void imlib_image_scroll_rect(Imlib_Image image, int x, int y,
 			     int width, int height, int delta_x,
 			     int delta_y);
 void imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x1, int y2,
-			   int red, int green, int blue, int alpha);
+			   Imlib_Color *color, Imlib_Channel_Mask, 
+			   Imlib_Operation operation);
 void imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
-				int height, int red, int green, int blue, 
-				int alpha);
+				int height, Imlib_Color *color, 
+				Imlib_Channel_Mask, Imlib_Operation operation);
 void imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
-				int height, int red, int green, int blue, 
-				int alpha);
+				int height, Imlib_Color *color, 
+				Imlib_Channel_Mask, Imlib_Operation operation);
 void imlib_image_fill_rectangle_gradient(Imlib_Image image, 
 					 int x, int y, int width, int height, 
-					 int red_top_left, int green_top_left,
-					 int blue_top_left, int alpha_top_left,
-					 int red_top_right, int green_top_right,
-					 int blue_top_right, int alpha_top_right,
-					 int red_bottom_left, int green_bottom_left,
-					 int blue_bottom_left, int alpha_bottom_left,
-					 int red_bottom_right, int green_bottom_right,
-					 int blue_bottom_right, int alpha_bottom_right,);
+					 Imlib_Color *top_left_color, 
+					 Imlib_Color *top_right_color, 
+					 Imlib_Color *bottom_left_color, 
+					 Imlib_Color *bottom_right_color,
+					 Imlib_Channel_Mask mask,
+					 Imlib_Operation operation);
 /* text functions needed */
+Imlib_Font imlib_load_font(char *font_name);
+void imlib_font_set_tab_size(Imlib_Font font, int size);
+void imlib_free_font(Imlib_Font font);
+void imlib_text_draw(Imlib_font font, Imlib_Image image, int x, int y,
+		     int width, int height, Imlib_Text_Direction direction, 
+		     char *text, Imlib_Color *color, 
+		     Imlib_Operation operation);
+void imlib_get_text_size(Imlib_font font, Imlib_Text_Direction direction, 
+			 char *text, int *width_return, 
+			 int *height_return);
+Imlib_Rectangle *imlib_get_text_in_text_size_and_position(Imlib_font font, 
+							  Imlib_Text_Direction direction, 
+							  int width, int height,
+							  char *text,
+							  int text_start_index,
+							  int text_length,
+							  int *num_rectangles_return);
+int imlib_get_character_index_and_location_in_text(Imlib_font font, 
+						   Imlib_Text_Direction direction, 
+						   int width, int height,
+						   char *text,
+						   int *x_return,
+						   int *y_return,
+						   int *width_return,
+						   int *height_return);
 
 /* FIXME: have to figure out generic saving mechanism that lets savers have */
 /* options like quality, color , compression etc. */

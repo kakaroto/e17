@@ -523,7 +523,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	      
 	      if ((XAP > 1) || (YAP > 1))
 		{
-		  for (j = 0; j < YAP; j++)
+		  for (i = 0, j = 0; j < YAP; j++)
 		    {
 		      ssptr = ypoints[dyy + y] + (j * sow);
 		      for (i = 0; i < XAP; i++)
@@ -845,7 +845,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	      
 	      if ((XAP > 1) || (YAP > 1))
 		{
-		  for (j = 0; j < YAP; j++)
+		  for (i = 0, j = 0; j < YAP; j++)
 		    {
 		      ssptr = ypoints[dyy + y] + (j * sow);
 		      for (i = 0; i < XAP; i++)

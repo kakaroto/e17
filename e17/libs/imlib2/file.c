@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -59,6 +60,26 @@ __imlib_FileIsDir(char *s)
   if (S_ISDIR(st.st_mode))
     return(1);
   return(0);
+}
+
+int
+__imlib_FilePermissions(char *s)
+{
+   struct stat         st;
+   
+   if ((!s) || (!*s))
+      return 0;
+   if (!stat(s, &st) < 0)
+      return 0;
+   return st.st_mode;
+}
+
+int 
+__imlib_FileCanRead(char *s)
+{
+   if (!(__imlib_FilePermissions(s) & (S_IRUSR | S_IRGRP | S_IROTH)))
+      return 0;
+   return (1 + access(s, R_OK));
 }
 
 char              **

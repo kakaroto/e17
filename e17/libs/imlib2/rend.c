@@ -30,7 +30,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    char anitalias, char hiq, char blend, char dither_mask,
 		    ImlibColorModifier *cmod, ImlibOp op)
 {
-   XImage   *xim, *mxim;
+   XImage   *xim = NULL, *mxim = NULL;
    Context *ct;
    DATA32   *buf = NULL, *pointer, *back = NULL;
    int       y, h, hh, jump;
@@ -222,7 +222,23 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	/* if we have a back buffer - we're blending to the bg */
 	if (back)
 	  {
-	     __imlib_BlendRGBAToRGBA(pointer, jump, back + (y * dw), 0, dw, hh); 
+	     switch (op)
+	       {
+	       case OP_COPY:
+		  __imlib_BlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
+		  break;
+	       case OP_ADD:
+		  __imlib_AddBlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
+		  break;
+	       case OP_SUBTRACT:
+		  __imlib_SubBlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
+		  break;
+	       case OP_RESHADE:
+		  __imlib_ReBlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
+		  break;
+	       default:
+		  break;
+	       }
 	     pointer = back + (y * dw);
 	     jump = 0;
 	  }

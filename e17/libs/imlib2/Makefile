@@ -70,9 +70,9 @@ LN_S = ln -s
 LTLIBOBJS = 
 MAKEINFO = makeinfo
 NM = /usr/bin/nm -B
-OBJDUMP = 
 PACKAGE = imlib
 RANLIB = ranlib
+USE_SYMBOL_UNDERSCORE = no
 VERSION = 2.0
 pkglibdir = ${libdir}/loaders
 
@@ -127,7 +127,7 @@ grab.o blend.o file.o rgbadraw.o api.o draw.o context.o updates.o \
 colormod.o
 imlib2_DEPENDENCIES =  $(top_builddir)/libltdl/libltdlc.la
 imlib2_LDFLAGS = 
-CFLAGS = -O6                     -mpentiumpro -mcpu=pentiumpro -march=pentiumpro -malign-loops=2 -malign-jumps=2 -malign-functions=2 -g  -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wpointer-arith   
+CFLAGS = -O2                     -mpentium -mcpu=pentium -march=pentium -malign-loops=2 -malign-jumps=2 -malign-functions=2 -g  -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wpointer-arith   
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)

@@ -15,6 +15,18 @@
 /* PNG stuff */
 #define PNG_BYTES_TO_CHECK 4
 
+char load (ImlibImage *im,
+	   void (*progress)(ImlibImage *im, char percent,
+			    int update_x, int update_y,
+			    int update_w, int update_h),
+	   char progress_granularity, char immediate_load);
+char save (ImlibImage *im,
+	   void (*progress)(ImlibImage *im, char percent,
+			    int update_x, int update_y,
+			    int update_w, int update_h),
+	   char progress_granularity);
+void formats (ImlibLoader *l);
+
 char 
 load (ImlibImage *im,
       void (*progress)(ImlibImage *im, char percent, 
@@ -28,7 +40,6 @@ load (ImlibImage *im,
    FILE               *f;
    png_structp         png_ptr = NULL;
    png_infop           info_ptr = NULL;
-   unsigned char      *data;
    int                 bit_depth, color_type, interlace_type;
    
    /* if immediate_load is 1, then dont delay image laoding as below, or */
@@ -134,13 +145,14 @@ load (ImlibImage *im,
 	   lines[i] = ((unsigned char *)(im->data)) + (i * w * sizeof(DATA32));
 	if (progress)
 	  {
-	     int x, y, count, prevy, pass, number_passes, per, nrows = 1;
+	     int y, count, prevy, pass, number_passes, per, nrows = 1;
 
 	     count = 0;
 	     number_passes = png_set_interlace_handling(png_ptr);
 	     for (pass = 0; pass < number_passes; pass++)
 	       {
 		  prevy = 0;
+		  per = 0;
 		  for (y = 0; y < h; y += nrows)
 		    {
 		       png_read_rows(png_ptr, &lines[y], NULL, nrows);

@@ -18,6 +18,19 @@ struct ImLib_JPEG_error_mgr
 };
 typedef struct ImLib_JPEG_error_mgr *emptr;
 
+void _JPEGFatalErrorHandler(j_common_ptr cinfo);
+char load (ImlibImage *im,
+	   void (*progress)(ImlibImage *im, char percent,
+			    int update_x, int update_y,
+			    int update_w, int update_h),
+	   char progress_granularity, char immediate_load);
+char save (ImlibImage *im,
+	   void (*progress)(ImlibImage *im, char percent,
+			    int update_x, int update_y,
+			    int update_w, int update_h),
+	   char progress_granularity);
+void formats (ImlibLoader *l);
+
 void
 _JPEGFatalErrorHandler(j_common_ptr cinfo)
 {

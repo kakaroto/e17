@@ -1,6 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
+#include <string.h>
 #include "common.h"
 #include "scale.h"
 #include "image.h"
@@ -54,7 +55,7 @@ Imlib_Image
 imlib_load_image(char *file)
 {
    return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 0, 0);
+      __imlib_LoadImage(file, NULL, 0, 0, 0, NULL);
 }
 
 Imlib_Image 
@@ -63,21 +64,21 @@ imlib_load_image_with_progress_callback(char *file,
 					char progress_granulatiy)
 {
    return (Imlib_Image) 
-      __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 0);
+      __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 0, NULL);
 }
 
 Imlib_Image 
 imlib_load_image_immediately(char *file)
 {
    return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 1, 0);
+      __imlib_LoadImage(file, NULL, 0, 1, 0, NULL);
 }
 
 Imlib_Image 
 imlib_load_image_without_cache(char *file)
 {
    return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 0, 1);
+      __imlib_LoadImage(file, NULL, 0, 0, 1, NULL);
 }
 
 Imlib_Image 
@@ -86,14 +87,51 @@ imlib_load_image_with_progress_callback_without_cache (char *file,
 						       char progress_granulatiy)
 {
    return (Imlib_Image) 
-      __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 1);
+      __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 1, NULL);
 }
 
 Imlib_Image 
 imlib_load_image_immediately_without_cache(char *file)
 {
    return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 1, 1);
+      __imlib_LoadImage(file, NULL, 0, 1, 1, NULL);
+}
+
+Imlib_Image 
+imlib_load_image_with_progress_callback_and_error_return (char *file,
+						       Imlib_Progress_Function progress_function,
+						       char progress_granulatiy,
+						       Imlib_Load_Error *error_return)
+{
+   Imlib_Image im = NULL;
+   ImlibLoadError er;
+
+   if (!__imlib_FileExists(file))
+     {
+	*error_return = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
+	return NULL;
+     }
+   if (__imlib_FileIsDir(file))
+     {
+	*error_return = IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY;
+	return NULL;
+     }
+   if (!__imlib_FileCanRead(file))
+     {
+	*error_return = IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ;
+	return NULL;
+     }
+   im = (Imlib_Image)__imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 0, &er);
+   if (im)
+      *error_return = IMLIB_LOAD_ERROR_NONE;
+   else
+     {
+	if (er == IMLIB_LOAD_ERROR_NONE)
+	   *error_return = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+	else
+           *error_return = (Imlib_Load_Error)er;	   
+     }
+   return im;
 }
 
 void 
