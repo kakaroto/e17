@@ -40,7 +40,9 @@ efsd_misc_file_is_dir(char *filename)
 {
   struct stat st;
 
-  lstat(filename, &st);
+  if (stat(filename, &st) < 0)
+    return (0);
+
   return (S_ISDIR(st.st_mode));
 }
 
