@@ -91,6 +91,11 @@ load (ImlibImage *im,
 	im->h = (int)h32;
 	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
 	   hasa = 1;
+	if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+	  {
+	     hasa = 1;
+	     hasg = 1;
+	  }
 	if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
 	   hasg = 1;
 	if (hasa)
