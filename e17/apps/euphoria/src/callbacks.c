@@ -477,9 +477,16 @@ EDJE_CB(playlist_del) {
 	if (e->playlist->current_item)
 		remove_playlist_item(e, e->playlist->current_item);
 }
+
 EDJE_CB(playlist_shuffle) {
     assert(e->xmms);
     xmmsc_playlist_shuffle(e->xmms);
+}
+
+EDJE_CB(playlist_clear) {
+    assert(e->xmms);
+    xmmsc_playback_stop(e->xmms);
+    xmmsc_playlist_clear(e->xmms);
 }
 
 XMMS_CB(playback_status) {
@@ -599,8 +606,9 @@ XMMS_CB(playlist_remove) {
 
 XMMS_CB(playlist_clear) {
 	playlist_remove_all(e->playlist);
-	/* FIXME: Set the text in the player to the default */
+	ui_zero_track_info();
 }
+
 XMMS_CB(playlist_shuffle) {
 	int i, id, *ids = NULL;
 	PlayListItem *pli = NULL;

@@ -14,6 +14,7 @@ bool ui_init_edje(Euphoria *e, const char *name);
 void ui_shutdown_edje(Euphoria *e);
 void ui_shutdown(Euphoria *e);
 
+void ui_zero_track_info(Euphoria *e);
 void ui_fill_track_info(Euphoria *e, PlayListItem *pli);
 void ui_fill_playlist(Euphoria *e);
 

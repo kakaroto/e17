@@ -289,6 +289,8 @@ static void register_callbacks(Euphoria *e) {
 		 (EdjeCb) on_edje_playlist_add},
 		{"PLAYLIST_DEL", "*",
 		 (EdjeCb) on_edje_playlist_del},
+		{"PLAYLIST_CLEAR", "*",
+		 (EdjeCb) on_edje_playlist_clear},
 		{"PLAYLIST_SHUFFLE", "*", 
 		 (EdjeCb)on_edje_playlist_shuffle}};
 
@@ -368,3 +370,11 @@ bool ui_refresh_seeker(Euphoria *e, double song_pos) {
 	return true;
 }
 
+void ui_zero_track_info(Euphoria *e) {
+	edje_object_part_text_set(e->gui.edje, "song_name", "");
+	edje_object_part_text_set(e->gui.edje, "artist_name", "");
+	edje_object_part_text_set(e->gui.edje, "album_name", "");
+	edje_object_part_text_set(e->gui.edje, "track_samplerate", "44.1");
+	edje_object_part_text_set(e->gui.edje, "track_bitrate", "192");
+	edje_object_part_text_set(e->gui.edje, "time_text", "0:00");
+}
