@@ -17,7 +17,10 @@ extern GtkAccelGroup *accel_group;
 GtkWidget *descriptionfield;
 GtkWidget *iconfield;
 GtkWidget *execfield;
+GtkWidget *submenubutton;
 int execedit=1;
+char dont_update;
+GtkCTreeNode *last_node = NULL;
 
 GtkWidget *ctree;
 GtkCTreeNode *parent;
@@ -78,7 +81,11 @@ void load_new_menu_from_disk(char *file_to_load, GtkCTreeNode *my_parent) {
 				params = field(s, 3);
 
 				text[0] = txt;
+				if(!icon)
+					icon = duplicate("");
 				text[1] = icon;
+				if(!params)
+					params = duplicate("");
 				text[2] = params;
 
 				/* printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params); */
@@ -129,12 +136,15 @@ void load_menus_from_disk(void) {
 				char *txt = NULL;
 				char *txt2 = NULL;
 				char *txt3 = NULL;
-				char *txt4 = NULL;
 
 				txt = field(s, 0);
 				text[0] = txt;
+				if(!txt2)
+					txt2 = duplicate("");
 				text[1] = txt2;
-				text[2] = txt4;
+				if(!txt3)
+					txt3 = duplicate("");
+				text[2] = txt3;
 
 				parent = gtk_ctree_insert_node (GTK_CTREE(ctree), NULL, NULL,
 					   	text, 5, NULL,NULL,NULL,NULL, FALSE, TRUE);
@@ -142,6 +152,10 @@ void load_menus_from_disk(void) {
 
 				if(txt)
 					free(txt);
+				if(txt2)
+					free(txt2);
+				if(txt3)
+					free(txt3);
 
 				first =0;
 
@@ -157,7 +171,11 @@ void load_menus_from_disk(void) {
 				params = field(s, 3);
 
 				text[0] = txt;
+				if(!icon)
+					icon = duplicate("");
 				text[1] = icon;
+				if(!params)
+					params = duplicate("");
 				text[2] = params;
 
 				/* printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params); */
@@ -186,6 +204,40 @@ void load_menus_from_disk(void) {
 	return;
 }
 
+void
+selection_made(GtkCTree *my_ctree, GList *node, gint column, gpointer user_data)
+{
+	gchar *col1 = NULL;
+	gchar *col2 = NULL;
+	gchar *col3 = NULL;
+	gchar *source = NULL;
+
+	if (user_data) {
+		my_ctree = NULL;
+		column = 0;
+		node = NULL;
+	}
+
+	dont_update = 1;
+	last_node = GTK_CTREE_NODE((GTK_CLIST(ctree)->selection)->data);
+	gtk_ctree_node_get_text(GTK_CTREE(ctree),GTK_CTREE_NODE(last_node),0,&col1);
+	gtk_ctree_node_get_text(GTK_CTREE(ctree),GTK_CTREE_NODE(last_node),1,&col2);
+	gtk_ctree_node_get_text(GTK_CTREE(ctree),GTK_CTREE_NODE(last_node),2,&col3);
+	gtk_ctree_get_node_info (GTK_CTREE(ctree),GTK_CTREE_NODE(last_node),&source,
+			NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+	/* printf("source: %s, icon: %s, param: %s\n",source,col2,col3); */
+	gtk_entry_set_text(GTK_ENTRY(descriptionfield),source);
+	gtk_entry_set_text(GTK_ENTRY(iconfield),col2);
+	gtk_entry_set_text(GTK_ENTRY(execfield),col3);
+	if(GTK_CTREE_ROW(last_node)->children) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(submenubutton),TRUE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(submenubutton),FALSE);
+	}
+	dont_update = 0;
+}
+	
 GtkWidget *
 create_main_window(void)
 {
@@ -265,6 +317,9 @@ create_main_window(void)
 	gtk_clist_set_column_title(GTK_CLIST(ctree), 2, "Params");
 	gtk_clist_column_titles_show(GTK_CLIST(ctree));
 	gtk_container_add(GTK_CONTAINER(scrollybit),ctree);
+	gtk_signal_connect(GTK_OBJECT(ctree), "tree-select-row",
+			GTK_SIGNAL_FUNC(selection_made), NULL);
+
 
 	vbox = gtk_vbox_new(FALSE,3);
 	gtk_widget_show(vbox);
@@ -290,7 +345,7 @@ create_main_window(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox),checkbox,TRUE,FALSE,2);
 
-	checkbox = gtk_check_button_new_with_label("Is SubMenu");
+	submenubutton = checkbox = gtk_check_button_new_with_label("Is SubMenu");
 	gtk_widget_show(checkbox);
 	gtk_box_pack_start(GTK_BOX(hbox),checkbox,TRUE,FALSE,2);
 	gtk_signal_connect(GTK_OBJECT(checkbox),"toggled",
@@ -402,8 +457,8 @@ main(int argc, char *argv[])
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 
 	main_win = create_main_window();
-	gtk_widget_show(main_win);
 	load_menus_from_disk();
+	gtk_widget_show(main_win);
 	gtk_signal_connect(GTK_OBJECT(main_win), "destroy",
 			GTK_SIGNAL_FUNC(on_exit_application), NULL);
 	gtk_signal_connect(GTK_OBJECT(main_win), "delete_event",
