@@ -279,7 +279,7 @@ _Desktop_Backgrounds(backgrounds)<br>
 _Tooltips(tooltips)<br>
 _Audio(audio)<br>
 _Special_Effects(fx)<br>
-_Focus_Settings(focus)<br>
+_Setting_The_Focus(focus)<br>
 _Moving_Windows(movemode)<br>
 _Resizing_Windows(resizemode)<br>
 _Window_Operations(windowops)<br>
@@ -495,6 +495,7 @@ start with).
 
 
 
+
 <page columns=1 padding=16 name=tut8 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <img src=E_window_diagram.png x=16 y=48>
@@ -531,6 +532,13 @@ in the window whilst holding down the ALT key will bring up the window
 operations menu.
 
 
+
+<page columns=1 padding=16 name=tut7 background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_border_selector.png x=300 y=40>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Changing the Window Border
+<font face=aircut3/12 color=#ffffff>
 
 
 
@@ -1190,19 +1198,28 @@ enlightenment on your X server, depending on server and configuration.
 
 
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_focus_settings.png x=320 y=60>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Focus Settings
+Setting the Focus
 <font face=aircut3/12 color=#ffffff>
 <p>
-Focus Settings are, like, cool.
+
 
 
 
 <page columns=1 padding=16 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Moving and Resizing Windows
+Moving Windows
+<font face=aircut3/12 color=#ffffff>
+<p>
+Moving Windows is cool.
+
+<page columns=1 padding=16 name=resizemode background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Resizing Windows
 <font face=aircut3/12 color=#ffffff>
 <p>
 Moving Windows is cool.
@@ -1232,6 +1249,45 @@ Window Placement and Autoraise
 <p>
 huhuhuhuh he said butter
 
+<page columns=1 padding=16 name=eesh background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Enligthenment and IPC
+<font face=aircut3/12 color=#ffffff>
+<p>
+huhuhuhuh he said butter
+
+<page columns=1 padding=16 name=editmenus background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Editing Enlightenment's Menus
+<font face=aircut3/12 color=#ffffff>
+<p>
+huhuhuhuh he said butter
+
+<page columns=1 padding=16 name=editkeys background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Editing Your Keybindings
+<font face=aircut3/12 color=#ffffff>
+<p>
+huhuhuhuh he said butter
+
+<page columns=1 padding=16 name=themes background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Enlightenment and Themes
+<font face=aircut3/12 color=#ffffff>
+<p>
+huhuhuhuh he said butter
+
+<page columns=1 padding=16 name=eyecandy background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Enlightenment's Eyecandy Feautres
+<font face=aircut3/12 color=#ffffff>
+<p>
+huhuhuhuh he said butter
 
 <page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>

@@ -1,7 +1,7 @@
 #!/bin/sh
 cat << __EOF__
 <page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
-<img src=E_logo.png x=32 y=64>
+<img src=E_logo.png x=32 y=77>
 <font face=rothwell/25 color=#ffffff>
 <p align=50%>
 Hints and tips
