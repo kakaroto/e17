@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define GEIST_COMPOSITE_OBJECT_H
 
 #include "geist.h"
-#include "geist_object.h"
+#include "GeistObject.h"
 
 class GeistCompositeObject : public GeistObject
 {
