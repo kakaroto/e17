@@ -21,6 +21,12 @@ static Entrance_Session *session = NULL;
 int _entrance_test_en = 0;
 
 /* Callbacks for entrance */
+/**
+ * get_my_hostname - get the hostname of the machine, surrounded by the
+ * before and after strings the config specifies
+ * Returns - a valid string for the hostname, Localhost on failure or
+ * whatever the system provides
+ */
 static char *
 get_my_hostname(void)
 {
@@ -49,7 +55,7 @@ get_my_hostname(void)
 }
 
 /**
- * exit_cb - waht to do if we kill it or something?
+ * exit_cb - what to do if we SIGINT(^c) it
  * @data - no clue
  * @ev_type - kill event ?
  * @ev - event data
@@ -277,9 +283,7 @@ set_time(void *data, Evas_Object * o, const char *emission,
  * @o - the evas object(Edje) that created the signal
  * @emission - the signal "type" that was emitted
  * @source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
- * localtime.  This way the interval is configurable via a program in
- * the theme and not statically bound to a value.  
+ * Ensure that the session is authed, and quit the main ecore_loop
  */
 static void
 done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
@@ -336,9 +340,7 @@ user_selected_cb(void *data, Evas_Object * o, const char *emission,
  * @o - the evas object(Edje) that created the signal
  * @emission - the signal "type" that was emitted
  * @source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
- * localtime.  This way the interval is configurable via a program in
- * the theme and not statically bound to a value.  
+ * Set the current EntranceFace part back to nothing
  */
 void
 user_unselected_cb(void *data, Evas_Object * o, const char *emission,
@@ -356,9 +358,6 @@ user_unselected_cb(void *data, Evas_Object * o, const char *emission,
  * @o - the evas object(Edje) that created the signal
  * @emission - the signal "type" that was emitted
  * @source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
- * localtime.  This way the interval is configurable via a program in
- * the theme and not statically bound to a value.  
  */
 static void
 reboot_cb(void *data, Evas_Object * o, const char *emission,
@@ -397,9 +396,6 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
  * @o - the evas object(Edje) that created the signal
  * @emission - the signal "type" that was emitted
  * @source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
- * localtime.  This way the interval is configurable via a program in
- * the theme and not statically bound to a value.  
  */
 static void
 shutdown_cb(void *data, Evas_Object * o, const char *emission,
@@ -500,6 +496,28 @@ timer_cb(void *data)
 
 /**
  * main - where it all starts !
+ * @argc - the number of arguments entrance was called with
+ * @argv - the args entrance was called with 
+ * Entrance works like this:
+ * 1.  Init Ecore
+ * 2.  Parse command line arguments
+ * 3.  Create a New Entrance_Session(Parses config for you)
+ * 4.  Init Ecore_X
+ * 5.  Init Ecore_Evas
+ * 6.  Init Edje
+ * 7.  Detect Ecore_Evas type from config, software or gl
+ * 8.  Set the cursor specified in the config
+ * 9.  Add key modifiers, setup caches and paths
+ * 10. Load theme specified in config, or from cli(cli overrides config)
+ * 11. Swallow the username and password entries into the edje
+ * 12. Detect theme part presence, swallow/setup as appropriate
+ * 13. Setup signal callbacks that our main edje might emit
+ * 14. Show the main edje
+ * 15. Emit an "In" signal on the main entry for lazy themers
+ * 16. Tell the Entrance_Sesssion that the Ecore_Evas belongs to it
+ * 17. Run.............. until ecore_main_loop_quit is called
+ * 18. If the user is authenticated, try to run their session
+ * 19. Shut down edje, ecore_evas, ecore_x, ecore
  */
 int
 main(int argc, char *argv[])
@@ -530,9 +548,6 @@ main(int argc, char *argv[])
    char *theme = NULL;
    char *config = NULL;
    int fs_en = 1;
-
-/*   if (argv[1])
-      snprintf(buf, PATH_MAX, "%s", argv[1]);*/
 
    /* Basic ecore initialization */
    if (!ecore_init())
@@ -691,7 +706,8 @@ main(int argc, char *argv[])
       evas_object_name_set(edje, "ui");
       evas_object_layer_set(edje, 0);
       entrance_session_edje_object_set(session, edje);
-
+	
+      /* Setup the entries */
       for (i = 0; i < entries_count; i++)
       {
          if (edje_object_part_exists(edje, entries[i]))
@@ -727,6 +743,9 @@ main(int argc, char *argv[])
             free(str);
          }
       }
+      /* See if we have an EntranceTime part, setup a timer to automatically
+       * update the Time
+       */
       if (edje_object_part_exists(edje, "EntranceTime"))
       {
          edje_object_signal_callback_add(edje, "Go", "EntranceTime", set_time,
@@ -734,6 +753,9 @@ main(int argc, char *argv[])
          edje_object_signal_emit(edje, "Go", "EntranceTime");
          timer = ecore_timer_add(0.5, timer_cb, edje);
       }
+      /* See if we have an EntranceDate part, setup a timer if one isn't
+       * already running to automatically update the Date 
+       */
       if (edje_object_part_exists(edje, "EntranceDate"))
       {
          edje_object_signal_callback_add(edje, "Go", "EntranceDate", set_date,
@@ -742,20 +764,35 @@ main(int argc, char *argv[])
          if (!timer)
             timer = ecore_timer_add(0.5, timer_cb, edje);
       }
+      /* See if we have an EntranceSession part, set it to the first element
+       * in the config's session list */
       if (edje_object_part_exists(edje, "EntranceSession"))
       {
          entrance_session_xsession_set(session,
                                        entrance_session_default_xsession_get
                                        (session));
       }
+      /* See if we have an EntranceSessionList part, tell the session to
+       * load the session list if it exists.
+       */
       if (edje_object_part_exists(edje, "EntranceSessionList"))
       {
          entrance_session_list_add(session);
       }
+      /* See if we have an EntranceUserList part, tell the session to
+       * load the user list if it exists.
+       */
       if (edje_object_part_exists(edje, "EntranceUserList"))
       {
          entrance_session_user_list_add(session);
       }
+
+      /**
+       * Setup Edje callbacks for signal emissions from our main edje
+       * It's useful to delay showing of your edje till all your
+       * callbacks have been added, otherwise show might not trigger all
+       * the desired events 
+       */
       edje_object_signal_callback_add(edje, "EntranceUserAuthSuccessDone", "",
                                       done_cb, e);
       edje_object_signal_callback_add(edje, "EntranceSystemReboot", "",
@@ -764,13 +801,8 @@ main(int argc, char *argv[])
                                       shutdown_cb, e);
       edje_object_signal_callback_add(edje, "SessionDefaultSet", "",
                                       _session_set, session);
-      /* 
-       * It's useful to delay showing of your edje till all your
-       * callbacks have been added, otherwise show might not trigger all
-       * the desired events 
-       */
       evas_object_show(edje);
-      /* set focus to user input */
+      /* set focus to user input by default */
       edje_object_signal_emit(edje, "In", "EntranceUserEntry");
 
 #if (X_TESTING == 0)
