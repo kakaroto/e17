@@ -155,7 +155,12 @@ data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/bits/Makefile
+data/themes/default/bits/images/Makefile
 data/themes/default/fonts/Makefile
+data/themes/skeleton/Makefile
+data/themes/skeleton/bits/Makefile
+data/themes/skeleton/bits/images/Makefile
+data/themes/skeleton/fonts/Makefile
 ], [
 chmod +x ewl-config
 ]
