@@ -7,6 +7,8 @@ AM_INIT_AUTOMAKE(imlib, 2.0)
 pkglibdir='${libdir}'/loaders
 AC_SUBST(pkglibdir)
 
+AC_C_BIGENDIAN
+
 AC_LIBLTDL_CONVENIENCE
 AC_CONFIG_SUBDIRS(libltdl)
 

@@ -2,6 +2,9 @@
 #include <X11/Xlib.h>
 #include "context.h"
 #include "rgba.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #define IS_ALIGNED_64(val) (!((val) & 0x7))
 #define IS_ALIGNED_32(val) (!((val) & 0x3))
@@ -12,7 +15,7 @@
 
 /* for PPC / Motorola / SPARC, not x86, ALPHA */
 /* dont uncomment this - i have this here for my own testing */
-/*#define __BIG_ENDIAN__*/
+/*#define WORDS_BIGENDIAN*/
 /* for data in ABGR memory model */
 
 /* NOTES: */
@@ -43,7 +46,7 @@ static DATA8 *_dither_b8;
 *dest = ((*src >> 8) & 0xf800) |           \
         ((*src >> 5) & 0x7e0) |            \
         ((*src >> 3) & 0x1f); dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB565(src, dest)                   \
 {                                                       \
  *((DATA32 *)dest) = ((src[1] >> 8) & 0xf800) |         \
@@ -79,7 +82,7 @@ static DATA8 *_dither_b8;
 *dest = (DITHER_RGBA_565_LUT_R(0)) |                          \
         (DITHER_RGBA_565_LUT_G(0)) |                          \
         (DITHER_RGBA_565_LUT_B(0)); dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB565_DITHER(src, dest)                  \
 {                                                             \
  *((DATA32 *)dest) = ((DITHER_RGBA_565_LUT_R(1))) |           \
@@ -114,7 +117,7 @@ static DATA8 *_dither_b8;
 *dest = ((*src >> 9) & 0x7c00) |           \
         ((*src >> 6) & 0x3e0) |            \
         ((*src >> 3) & 0x1f); dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB555(src, dest)                   \
 {                                                       \
  *((DATA32 *)dest) = ((src[1] >> 9) & 0x7c00) |         \
@@ -150,7 +153,7 @@ static DATA8 *_dither_b8;
 *dest = (DITHER_RGBA_555_LUT_R(0)) |                          \
         (DITHER_RGBA_555_LUT_G(0)) |                          \
         (DITHER_RGBA_555_LUT_B(0)); dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB555_DITHER(src, dest)                  \
 {                                                             \
  *((DATA32 *)dest) = ((DITHER_RGBA_555_LUT_R(1))) |           \
@@ -185,7 +188,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[((*src >> 6)  & 0x03) |                          \
                           ((*src >> 11) & 0x1c) |                          \
                           ((*src >> 16) & 0xe0)]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB332(src, dest)                                      \
 {                                                                          \
  *((DATA16 *)dest) = (_dither_color_lut[((src[1] >> 6)  & 0x03) |          \
@@ -253,7 +256,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[(DITHER_RGBA_332_LUT_R(0)) |                         \
                           (DITHER_RGBA_332_LUT_G(0)) |                         \
                           (DITHER_RGBA_332_LUT_B(0))]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE4_RGBA_RGB332_DITHER(src, dest)                                   \
 {                                                                              \
  *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_332_LUT_R(3))) |         \
@@ -327,7 +330,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[((*src RGB232_BSHIFT) RGB232_BMASK) |                          \
                           ((*src RGB232_GSHIFT) RGB232_GMASK) |                          \
                           ((*src RGB232_RSHIFT)  RGB232_RMASK)]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB232(src, dest)                                      \
 {                                                                          \
  *((DATA16 *)dest) = (_dither_color_lut[((src[1] RGB232_BSHIFT) RGB232_BMASK) |          \
@@ -395,7 +398,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[(DITHER_RGBA_232_LUT_R(0)) |                         \
                           (DITHER_RGBA_232_LUT_G(0)) |                         \
                           (DITHER_RGBA_232_LUT_B(0))]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE4_RGBA_RGB232_DITHER(src, dest)                                   \
 {                                                                              \
  *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_232_LUT_R(3))) |         \
@@ -469,7 +472,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[((*src RGB222_BSHIFT) RGB222_BMASK) |                          \
                           ((*src RGB222_GSHIFT) RGB222_GMASK) |                          \
                           ((*src RGB222_RSHIFT)  RGB222_RMASK)]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB222(src, dest)                                      \
 {                                                                          \
  *((DATA16 *)dest) = (_dither_color_lut[((src[1] RGB222_BSHIFT) RGB222_BMASK) |          \
@@ -537,7 +540,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[(DITHER_RGBA_222_LUT_R(0)) |                         \
                           (DITHER_RGBA_222_LUT_G(0)) |                         \
                           (DITHER_RGBA_222_LUT_B(0))]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE4_RGBA_RGB222_DITHER(src, dest)                                   \
 {                                                                              \
  *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_222_LUT_R(3))) |         \
@@ -611,7 +614,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[((*src RGB221_BSHIFT) RGB221_BMASK) |                          \
                           ((*src RGB221_GSHIFT) RGB221_GMASK) |                          \
                           ((*src RGB221_RSHIFT)  RGB221_RMASK)]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB221(src, dest)                                      \
 {                                                                          \
  *((DATA16 *)dest) = (_dither_color_lut[((src[1] RGB221_BSHIFT) RGB221_BMASK) |          \
@@ -679,7 +682,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[(DITHER_RGBA_221_LUT_R(0)) |                         \
                           (DITHER_RGBA_221_LUT_G(0)) |                         \
                           (DITHER_RGBA_221_LUT_B(0))]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE4_RGBA_RGB221_DITHER(src, dest)                                   \
 {                                                                              \
  *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_221_LUT_R(3))) |         \
@@ -753,7 +756,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[((*src RGB121_BSHIFT) RGB121_BMASK) |                          \
                           ((*src RGB121_GSHIFT) RGB121_GMASK) |                          \
                           ((*src RGB121_RSHIFT)  RGB121_RMASK)]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB121(src, dest)                                      \
 {                                                                          \
  *((DATA16 *)dest) = (_dither_color_lut[((src[1] RGB121_BSHIFT) RGB121_BMASK) |          \
@@ -821,7 +824,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[(DITHER_RGBA_121_LUT_R(0)) |                         \
                           (DITHER_RGBA_121_LUT_G(0)) |                         \
                           (DITHER_RGBA_121_LUT_B(0))]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE4_RGBA_RGB121_DITHER(src, dest)                                   \
 {                                                                              \
  *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_121_LUT_R(3))) |         \
@@ -895,7 +898,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[((*src RGB111_BSHIFT) RGB111_BMASK) |                          \
                           ((*src RGB111_GSHIFT) RGB111_GMASK) |                          \
                           ((*src RGB111_RSHIFT)  RGB111_RMASK)]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB111(src, dest)                                      \
 {                                                                          \
  *((DATA16 *)dest) = (_dither_color_lut[((src[1] RGB111_BSHIFT) RGB111_BMASK) |          \
@@ -963,7 +966,7 @@ static DATA8 *_dither_b8;
 *dest = _dither_color_lut[(DITHER_RGBA_111_LUT_R(0)) |                         \
                           (DITHER_RGBA_111_LUT_G(0)) |                         \
                           (DITHER_RGBA_111_LUT_B(0))]; dest++; src++
-#ifdef __BIG_ENDIAN__
+#ifdef WORDS_BIGENDIAN
 #define WRITE4_RGBA_RGB111_DITHER(src, dest)                                   \
 {                                                                              \
  *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_111_LUT_R(3))) |         \

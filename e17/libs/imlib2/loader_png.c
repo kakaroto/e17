@@ -115,19 +115,12 @@ load (ImlibImage *im,
 	if (hasa)
 	   png_set_expand(png_ptr);
         /* we want ARGB */
-	        png_set_bgr(png_ptr);
-	#ifdef __BIG_ENDIAN__
-	           png_set_swap_alpha(png_ptr);
-	#endif
-	           /* 16bit color -> 8bit color */
-	           png_set_strip_16(png_ptr);
-	/* we want ARGB */
 /* note form raster:                                                         */
 /* thanks to mustapha for helping debug this on PPC Linux remotely by        */
 /* sending across screenshots all the tiem and me figuring out form them     */
 /* what the hell was up with the colors                                      */
 /* now png loading shoudl work on big endian machines nicely                 */
-#ifdef __BIG_ENDIAN__	
+#ifdef WORDS_BIGENDIAN
 	png_set_swap_alpha(png_ptr);
 #else	
 	png_set_bgr(png_ptr);
