@@ -1,5 +1,5 @@
 if FSSTD
-escriptsdatadir = $(pkgdatadir)/bin/
+escriptsdatadir = @bindir@
 else
 escriptsdatadir = $(prefix)/enlightenment/bin
 endif
