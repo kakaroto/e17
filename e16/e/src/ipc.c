@@ -580,10 +580,52 @@ IPCStruct           IPCArray[] = {
 void
 IPC_ConfigPanel(char *params, Client * c)
 {
+   int i = 0;
+   char param[256], buf[FILEPATH_LEN_MAX], buf2[FILEPATH_LEN_MAX];
+   static char *cfg_panels[] = {
+/* I just hardcoded this list form actions.c:doConfigure() -- perhaps
+   this should be tad more dynamic?? - pabs */
+      "pager",            "pager settings dialog",
+      "focus",            "focus settings dialog",
+      "moveresize",       "move and resize settings dialog",
+      "desktops",         "multiple desktop settings dialog",
+      "area",             "virtual desktop settings dialog",
+      "placement",        "window placement settings dialog",
+      "icons",            "icons settings dialog",
+      "autoraise",        "autoraise settings dialog",
+      "tooltips",         "tooltips settings dialog",
+      "kde",              "kde settings dialog",
+      "audio",            "audio settings dialog",
+      "fx",               "special effects settings dialog",
+      "bg",               "background settings dialog",
+      "iconbox",          "iconbox settings dialog",
+      "group_defaults",   "default group settings dialog",
+      "group_membership", "group settings for focused window",
+      "remember",         "list of open remembered windows",
+      "miscellaneous",    "miscellaneous settings dialog",
+      0
+   };
 
+   buf[0] = 0;
+   buf2[0] = 0;
+   param[0]=0;
    if (params)
      {
-	doConfigure(params);
+      word(params,1,param);
+      if (!strcmp(param,"?"))
+        {
+         for(i=0; cfg_panels[i]; i+=2) {
+            Esnprintf(buf2, sizeof(buf2), "%s : %s\n", cfg_panels[i],
+               cfg_panels[i+1]);
+            strcat(buf,buf2);
+         }
+         if (strlen(buf))
+            CommsSend(c, buf);
+        }
+      else 
+        {
+         doConfigure(params);
+        }
      }
    else
      {
