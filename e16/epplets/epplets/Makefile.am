@@ -148,7 +148,7 @@ icons/E-Load.icon icons/E-MemWatch.icon icons/E-Mixer.icon icons/E-MoonClock.ico
 icons/E-Mountbox.icon icons/E-Net.icon icons/E-NetFlame.icon icons/E-Power.icon \
 icons/E-SD.icon icons/E-ScreenSave.icon icons/E-ScreenShoot.icon \
 icons/E-Slides.icon icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon \
-icons/Emix.icon
+icons/Emix.icon icons/E-UrlWatch.icon
 
 # DATA_FILES = `(cd epplets && ls -1d *-data/* 2>/dev/null | grep -v CVS)`
 
