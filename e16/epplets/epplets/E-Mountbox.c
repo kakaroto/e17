@@ -644,6 +644,8 @@ AddMountPoint(char *device, char *path)
   char           *s = NULL;
   ImlibImage     *tmp_image = NULL;
 
+  static Tile    *tail_tile = NULL;
+
   if (!tiles)
     {
       tiles = (Tile*)malloc(sizeof(Tile));
@@ -651,7 +653,7 @@ AddMountPoint(char *device, char *path)
 	{
 	  memset(tiles, 0, sizeof(Tile));
 	  num_tiles = 1;
-	  current_tile = tiles;
+	  current_tile = tail_tile = tiles;
 	}
     }
   else
@@ -660,24 +662,25 @@ AddMountPoint(char *device, char *path)
       if (newtile)
 	{
 	  memset(newtile, 0, sizeof(Tile));
-	  newtile->next = tiles;
-	  tiles->prev = newtile;
-	  current_tile = tiles = newtile;
+	  newtile->next = NULL;
+	  newtile->prev = tail_tile;
+	  tail_tile->next = newtile;
+	  tail_tile = newtile;
 	  num_tiles++;
 	}
     }
   current_tile_index = 0;
 
-  if (current_tile)
+  if (tail_tile)
     {
-      current_tile->mountpoint = (MountPoint*)malloc(sizeof(MountPoint));
-      if (current_tile->mountpoint)
+      tail_tile->mountpoint = (MountPoint*)malloc(sizeof(MountPoint));
+      if (tail_tile->mountpoint)
 	{
-	  memset(current_tile->mountpoint, 0, sizeof(MountPoint));
+	  memset(tail_tile->mountpoint, 0, sizeof(MountPoint));
 	  if (device)
-	    current_tile->mountpoint->device = strdup(device);
+	    tail_tile->mountpoint->device = strdup(device);
 	  if (path)
-	    current_tile->mountpoint->path = strdup(path);
+	    tail_tile->mountpoint->path = strdup(path);
 	}
       if (device && path)
 	{
@@ -694,18 +697,18 @@ AddMountPoint(char *device, char *path)
 		{
 		  if (strstr(tmp_dev, type->key))
 		    {
-		      current_tile->image = type->image;
+		      tail_tile->image = type->image;
 		      break;
 		    }
 		  else if (strstr(tmp_path, type->key))
 		    {
-		      current_tile->image = type->image;
+		      tail_tile->image = type->image;
 		      break;
 		    }
 		  type = type->next;
 		}
 	      
-	      if (current_tile->image == NULL)
+	      if (tail_tile->image == NULL)
 		{
 		  s = Epplet_query_config("DEFAULT");
 
@@ -723,7 +726,7 @@ AddMountPoint(char *device, char *path)
 		      default_image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
 		      Imlib_destroy_image(id, tmp_image);
 		    }
-		  current_tile->image = default_image;
+		  tail_tile->image = default_image;
 		}
 
 	      free(tmp_path);

@@ -2045,3 +2045,10 @@ Tue Mar 21 14:46:07 PST 2000
 
 Patch from Alan Schmitt <alan.schmitt@inria.fr> to fix sound command in
 E-Biff.
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 02:05:32 CEST 2000
+(Christian)
+
+E-Mountbox: Show items in the sequence they're given in fstab, not reversed.
