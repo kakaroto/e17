@@ -148,8 +148,8 @@ static void
 cb_close (void *data)
 {
   save_config ();
-  Esync ();
   Epplet_unremember ();
+  Esync ();
   exit (0);
   data = NULL;
 }
