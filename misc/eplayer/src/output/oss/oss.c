@@ -38,22 +38,29 @@ int oss_configure(int channels, int rate, int bits) {
 	else if (bits == 16)
 		format = bigendian ? AFMT_S16_BE : AFMT_S16_LE;
 
-	if (ioctl(fd, SNDCTL_DSP_SETFMT, &format) == -1)
+	if (ioctl(fd, SNDCTL_DSP_SETFMT, &format) == -1) {
+		debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set format!\n");
 		return 0;
+	}
 	
 	/* set mono/stereo mode */
 	tmp = channels - 1;
-	if (ioctl(fd, SNDCTL_DSP_STEREO, &tmp) == -1)
+	if (ioctl(fd, SNDCTL_DSP_STEREO, &tmp) == -1) {
+		debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set channels!\n");
 		return 0;
+	}
 
 	/* set samplerate */
 	tmp = rate;
-	if (ioctl(fd, SNDCTL_DSP_SPEED, &tmp) == -1)
+	if (ioctl(fd, SNDCTL_DSP_SPEED, &tmp) == -1) {
+		debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set samplerate!\n");
 		return 0;
+	}
 
 	if (tmp != rate)
-		printf("OSS: Requested samplerate = %i, using %i\n",
-		       rate, tmp);
+		debug(DEBUG_LEVEL_WARNING,
+		      "OSS: Requested samplerate = %i, using %i\n",
+		      rate, tmp);
 
 	return 1;
 }
