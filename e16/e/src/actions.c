@@ -357,25 +357,31 @@ ActionsCall(unsigned int id, EWin * ewin, void *params)
    af = &ActionFunctions[id];
 
    if (!af->ok_zoom && InZoom())
-      EDBUG_RETURN(0);
+      return 0;
    if (!af->ok_movres &&
        ((mode.mode == MODE_MOVE_PENDING) || (mode.mode == MODE_MOVE) ||
 	(mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V) ||
 	(mode.mode == MODE_RESIZE)))
-      EDBUG_RETURN(0);
+      return 0;
 
    if (af->hide_slideouts && mode.slideout)
       SlideoutsHide();
 
-   if (af->need_ewin && ewin == NULL)
+   if (af->need_ewin)
      {
-	if (params)
-	   ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
-			   LIST_TYPE_EWIN);
-	else
-	   ewin = GetFocusEwin();
+	if (ewin == NULL)
+	  {
+	     if (params)
+		ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+				LIST_TYPE_EWIN);
+	     else
+		ewin = GetContextEwin();
+	  }
 	if (ewin == NULL)
 	   return -1;
+
+	if (ewin->no_actions)
+	   return 0;
      }
 
    return ActionFunctions[id].func(ewin, params);

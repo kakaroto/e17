@@ -993,6 +993,7 @@ typedef struct _ewin
    char                skipwinlist;
    char                focusclick;
    char                neverfocus;
+   char                no_actions;
    int                 ewmh_flags;
    Menu               *menu;
    Window              shownmenu;

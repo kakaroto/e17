@@ -189,7 +189,7 @@ GetFocusEwin(void)
 EWin               *
 GetContextEwin(void)
 {
-   EDBUG(4, "GetFocusEwin");
+   EDBUG(4, "GetContextEwin");
    EDBUG_RETURN(GetFocusEwin());
 }
 
@@ -1277,6 +1277,7 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 	ewin->layer = 99;
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
+	ewin->no_actions = 1;
 	break;
      case EWIN_TYPE_ICONBOX:
 	ewin->skiptask = 1;
@@ -1320,7 +1321,7 @@ CreateEwin()
 
    EDBUG(5, "CreateEwin");
    ewin = Emalloc(sizeof(EWin));
-   ewin->win = 0;
+   memset(ewin, 0, sizeof(EWin));
    ewin->x = -1;
    ewin->y = -1;
    ewin->w = -1;
@@ -1331,44 +1332,15 @@ CreateEwin()
    ewin->ly = -1;
    ewin->lw = -1;
    ewin->lh = -1;
-   ewin->type = 0;
-   ewin->internal = 0;
-   ewin->toggle = 0;
-   ewin->client.win = 0;
    ewin->client.x = -1;
    ewin->client.y = -1;
    ewin->client.w = -1;
    ewin->client.h = -1;
-   ewin->client.title = NULL;
-   ewin->client.class = NULL;
-   ewin->client.name = NULL;
-   ewin->client.role = NULL;
-   ewin->client.command = NULL;
-   ewin->client.machine = NULL;
-   ewin->client.icon_name = NULL;
-   ewin->client.is_group_leader = 0;
-   ewin->client.no_resize_h = 0;
-   ewin->client.no_resize_v = 0;
-   ewin->client.shaped = 0;
-   ewin->client.icon_win = 0;
-   ewin->client.icon_pmap = 0;
-   ewin->client.icon_mask = 0;
-   ewin->client.start_iconified = 0;
-   ewin->client.group = 0;
    ewin->client.need_input = 1;
-   ewin->client.transient = 0;
-   ewin->client.client_leader = 0;
-   ewin->client.transient_for = 0;
-   ewin->client.already_placed = 0;
    ewin->client.aspect_min = 0.0;
    ewin->client.aspect_max = 65535.0;
    ewin->client.w_inc = 1;
    ewin->client.h_inc = 1;
-   ewin->client.grav = 0;
-   ewin->client.base_w = 0;
-   ewin->client.base_h = 0;
-   ewin->client.width.min = 0;
-   ewin->client.height.min = 0;
    ewin->client.width.max = 65535;
    ewin->client.height.max = 65535;
    ewin->client.mwm_decor_border = 1;
@@ -1382,58 +1354,16 @@ CreateEwin()
    ewin->client.mwm_func_minimize = 1;
    ewin->client.mwm_func_maximize = 1;
    ewin->client.mwm_func_close = 1;
-   ewin->border = NULL;
-   ewin->previous_border = NULL;
-   ewin->bits = NULL;
-   ewin->sticky = 0;
    ewin->desktop = desks.current;
-   ewin->groups = NULL;
-   ewin->num_groups = 0;
-   ewin->visible = 0;
-   ewin->active = 0;
-   ewin->iconified = 0;
-   ewin->parent = 0;
    ewin->layer = 4;
-   ewin->never_use_area = 0;
-   ewin->floating = 0;
    ewin->win = ECreateWindow(root.win, -10, -10, 1, 1, 1);
    ewin->win_container = ECreateWindow(ewin->win, 0, 0, 1, 1, 0);
-   ewin->shapedone = 0;
-   ewin->docked = 0;
-   ewin->shaded = 0;
-   ewin->fixedpos = 0;
 #if 0				/* ENABLE_GNOME - Not actually used */
-   ewin->expanded_x = 0;
-   ewin->expanded_y = 0;
    ewin->expanded_width = -1;
    ewin->expanded_height = -1;
 #endif
-   ewin->ignorearrange = 0;
-   ewin->skiptask = 0;
-   ewin->skip_ext_pager = 0;
-   ewin->skipwinlist = 0;
-   ewin->skipfocus = 0;
-   ewin->neverfocus = 0;
-   ewin->focusclick = 0;
-   ewin->ewmh_flags = 0;
-   ewin->menu = NULL;
-   ewin->dialog = NULL;
-   ewin->shownmenu = 0;
-   ewin->pager = NULL;
-   ewin->ibox = NULL;
    ewin->area_x = -1;
    ewin->area_y = -1;
-   ewin->session_id = NULL;
-   ewin->has_transients = 0;
-   ewin->mini_w = 0;
-   ewin->mini_h = 0;
-   ewin->mini_pmm.type = 0;
-   ewin->mini_pmm.pmap = 0;
-   ewin->mini_pmm.mask = 0;
-   ewin->snap = NULL;
-   ewin->icon_pmm.type = 0;
-   ewin->icon_pmm.pmap = 0;
-   ewin->icon_pmm.mask = 0;
 
    att.event_mask =
       StructureNotifyMask | ResizeRedirectMask | ButtonPressMask |
