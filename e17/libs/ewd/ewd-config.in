@@ -42,7 +42,7 @@ while test $# -gt 0; do
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
-      echo $includes -I$prefix/include
+      echo $includes -I$prefix/include/ewd
       ;;
     --libs)
       libdirs=-L@libdir@
