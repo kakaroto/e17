@@ -632,6 +632,7 @@ winwidget_resize(winwidget winwid, int w, int h)
       winwid->h = (h > scr->height) ? scr->height : h;
       XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
       winwid->had_resize = 1;
+      XFlush(disp);
    }
    else
    {
