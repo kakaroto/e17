@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-19 00:44+0200\n"
+"POT-Creation-Date: 2003-09-28 21:38+0200\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2216 src/buttons.c:125 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2222 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:88
 #: src/tooltips.c:970
 #, c-format
@@ -115,16 +115,16 @@ msgstr ""
 "Este programa não pode ser executado.\n"
 "Isto aconteceu porque o ficheiro não é um ficheiro regular.\n"
 
-#: src/actions.c:3268
+#: src/actions.c:3271
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Sobre o Enlightenment %s"
 
-#: src/actions.c:3284
+#: src/actions.c:3287
 msgid "Welcome to the "
 msgstr "Benvindo ao "
 
-#: src/actions.c:3284
+#: src/actions.c:3287
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -138,7 +138,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3294
+#: src/actions.c:3297
 msgid ""
 "\n"
 "\n"
@@ -148,21 +148,21 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3299 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3302 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:602 src/settings.c:974 src/settings.c:1182
 #: src/settings.c:1419 src/settings.c:1563 src/settings.c:1666
 #: src/settings.c:1774 src/settings.c:1858 src/settings.c:1939
-#: src/settings.c:2030 src/settings.c:2440 src/settings.c:3845
-#: src/settings.c:4201 src/settings.c:4504 src/settings.c:4682
-#: src/settings.c:4902 src/snaps.c:551 src/sound.c:262
+#: src/settings.c:2030 src/settings.c:2485 src/settings.c:3891
+#: src/settings.c:4247 src/settings.c:4550 src/settings.c:4728
+#: src/settings.c:4948 src/snaps.c:551 src/sound.c:262
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3455
+#: src/actions.c:3458
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " Escolha o grupo ao qual a janela irá pertencer: \n"
 
-#: src/actions.c:3810
+#: src/actions.c:3813
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -180,23 +180,23 @@ msgstr ""
 "\n"
 " Escolha outro grupo ao qual a janela pertencerá aqui:  \n"
 
-#: src/actions.c:3843
+#: src/actions.c:3846
 msgid "   Select the group to remove the window from.  "
 msgstr "   Escolha o grupo ao qual quer remover a janela.  "
 
-#: src/actions.c:3867
+#: src/actions.c:3870
 msgid "  Select the group to break  "
 msgstr "  Escolha o grupo que quer remover  "
 
-#: src/actions.c:3895
+#: src/actions.c:3898
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Foi avisado sobre os perigos do modo Zoom\n"
 
-#: src/actions.c:3898
+#: src/actions.c:3901
 msgid "Warning !!!"
 msgstr "Atenção !!!"
 
-#: src/actions.c:3899
+#: src/actions.c:3902
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -241,7 +241,7 @@ msgstr "Reiniciar"
 msgid "Exit"
 msgstr "Sair"
 
-#: src/borders.c:2218
+#: src/borders.c:2224
 msgid "Border Error!"
 msgstr ""
 
@@ -844,11 +844,11 @@ msgstr ""
 msgid "Attention !!!"
 msgstr "Atenção !!!"
 
-#: src/fx.c:256
+#: src/fx.c:240
 msgid "Starting up Ripples FX..."
 msgstr "Iniciando Ripples FX..."
 
-#: src/fx.c:257
+#: src/fx.c:241
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
@@ -871,11 +871,39 @@ msgstr ""
 "\n"
 "Para terminar este efeito, basta seleccioná-la novamente.\n"
 
-#: src/fx.c:387 src/fx.c:403
+#: src/fx.c:391
+msgid "Starting up Raindrops FX..."
+msgstr "Iniciando Efeito de Gotas de Água..."
+
+#: src/fx.c:392
+msgid ""
+"\n"
+"You have just started the Raindrops Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
+"image), you will see \"raindrops\" hit the background and\n"
+"make little splashes. This Effect can be VERY CPU intensive.\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+"\n"
+"Acabou de inicializar o Efeito Gotas de Água.\n"
+"\n"
+"Se olhar com atenção para a imagem de fundo do seu desktop, e se\n"
+"este não for uma cor solida (ie se tiver como imagem de fundo uma\n"
+"textura ou uma imagem), verá \"gotas de água\" cairem no seu\n"
+"background e fazer pequenos salpicos. Este efeito pode utilizar\n"
+"muito do seu CPU.\n"
+"\n"
+"Para terminar este efeito, basta seleciona-lo novamente.\n"
+
+#: src/fx.c:421 src/fx.c:437
 msgid "Unable to display raindrops"
 msgstr "Impossível mostrar gotas de água"
 
-#: src/fx.c:388
+#: src/fx.c:422
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -908,7 +936,7 @@ msgstr ""
 "memória partilhada.\n"
 "\n"
 
-#: src/fx.c:404
+#: src/fx.c:438
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -937,39 +965,11 @@ msgstr ""
 "./imrc e edita-lo, e ligar deste modo suporte para\n"
 "pixmaps partilhados.\n"
 
-#: src/fx.c:417
-msgid "Starting up Raindrops FX..."
-msgstr "Iniciando Efeito de Gotas de Água..."
-
-#: src/fx.c:418
-msgid ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Acabou de inicializar o Efeito Gotas de Água.\n"
-"\n"
-"Se olhar com atenção para a imagem de fundo do seu desktop, e se\n"
-"este não for uma cor solida (ie se tiver como imagem de fundo uma\n"
-"textura ou uma imagem), verá \"gotas de água\" cairem no seu\n"
-"background e fazer pequenos salpicos. Este efeito pode utilizar\n"
-"muito do seu CPU.\n"
-"\n"
-"Para terminar este efeito, basta seleciona-lo novamente.\n"
-
-#: src/fx.c:712
+#: src/fx.c:709
 msgid "Starting up Waves FX..."
 msgstr "Iniciando efeito de Ondas..."
 
-#: src/fx.c:713
+#: src/fx.c:710
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -992,11 +992,11 @@ msgstr ""
 "\n"
 "Para terminar este efeito, basta seleciona-lo novamente.\n"
 
-#: src/fx.c:876
+#: src/fx.c:901
 msgid "Starting up imagespinners FX..."
 msgstr "Iniciando imagespinners FX..."
 
-#: src/fx.c:877
+#: src/fx.c:902
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -1023,7 +1023,7 @@ msgstr ""
 "serem membros de um grupo. Não pode adicionar\n"
 "estas janelas a um grupo.\n"
 
-#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4324
+#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4370
 msgid "Window Group Error"
 msgstr "Erro no Grupo da Janela"
 
@@ -1075,12 +1075,12 @@ msgid ""
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:694 src/pager.c:1280 src/settings.c:331 src/settings.c:604
+#: src/groups.c:694 src/pager.c:1283 src/settings.c:331 src/settings.c:604
 #: src/settings.c:976 src/settings.c:1184 src/settings.c:1421
 #: src/settings.c:1565 src/settings.c:1668 src/settings.c:1776
 #: src/settings.c:1860 src/settings.c:1941 src/settings.c:2032
-#: src/settings.c:2442 src/settings.c:3847 src/settings.c:4203
-#: src/settings.c:4506 src/settings.c:4684 src/settings.c:4904 src/snaps.c:553
+#: src/settings.c:2487 src/settings.c:3893 src/settings.c:4249
+#: src/settings.c:4552 src/settings.c:4730 src/settings.c:4950 src/snaps.c:553
 msgid "Close"
 msgstr "Fechar"
 
@@ -1268,11 +1268,11 @@ msgstr "Criar Nova Caixa de Icones"
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:4741
+#: src/ipc.c:4686
 msgid "Enlightenment IPC Commands Help"
 msgstr "Ajuda de comandos do IPC do Enlightenment"
 
-#: src/ipc.c:4745 src/ipc.c:4775
+#: src/ipc.c:4690 src/ipc.c:4720
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1280,7 +1280,7 @@ msgstr ""
 "\n"
 "comandos actualmente disponíveis:\n"
 
-#: src/ipc.c:4747
+#: src/ipc.c:4692
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1290,16 +1290,16 @@ msgstr ""
 "use \"help <comando>\" para uma descrição individual\n"
 "\n"
 
-#: src/ipc.c:4777
+#: src/ipc.c:4722
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "use \"help <comando>\" para uma descrição individual\n"
 
-#: src/ipc.c:4779
+#: src/ipc.c:4724
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<comando> : <descrição>\n"
 
-#: src/ipc.c:4885
+#: src/ipc.c:4830
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1776,43 +1776,43 @@ msgstr ""
 "miniaturização do pager.\n"
 "\n"
 
-#: src/pager.c:1271
+#: src/pager.c:1274
 msgid "Window Options"
 msgstr "Opções da Janela"
 
-#: src/pager.c:1277
+#: src/pager.c:1280
 msgid "Iconify"
 msgstr "Minimizar"
 
-#: src/pager.c:1283
+#: src/pager.c:1286
 msgid "Annihilate"
 msgstr "Aniquilar"
 
-#: src/pager.c:1286
+#: src/pager.c:1289
 msgid "Stick / Unstick"
 msgstr "Colar / Descolar"
 
-#: src/pager.c:1298
+#: src/pager.c:1301
 msgid "Desktop Options"
 msgstr "Opções do Desktop"
 
-#: src/pager.c:1303
+#: src/pager.c:1306
 msgid "Pager Settings..."
 msgstr "Opções do Pager..."
 
-#: src/pager.c:1307
+#: src/pager.c:1310
 msgid "Snapshotting On"
 msgstr "Ligar Miniaturização"
 
-#: src/pager.c:1311
+#: src/pager.c:1314
 msgid "Snapshotting Off"
 msgstr "Desligar Miniaturização"
 
-#: src/pager.c:1317
+#: src/pager.c:1320
 msgid "High Quality On"
 msgstr "Ligar Alta Qualidade"
 
-#: src/pager.c:1321
+#: src/pager.c:1324
 msgid "High Quality Off"
 msgstr "Desligar Alta Qualidade"
 
@@ -1929,7 +1929,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Botão do rato para seleccionar e arrastar janelas:"
 
 #: src/settings.c:238 src/settings.c:270 src/settings.c:302
-#: src/settings.c:2324
+#: src/settings.c:2333
 msgid "Left"
 msgstr "Esquerda"
 
@@ -1938,7 +1938,7 @@ msgid "Middle"
 msgstr "Centro"
 
 #: src/settings.c:254 src/settings.c:286 src/settings.c:318
-#: src/settings.c:2331
+#: src/settings.c:2340
 msgid "Right"
 msgstr "Direita"
 
@@ -1953,9 +1953,9 @@ msgstr "Botão do rato para mostrar menu do pager"
 #: src/settings.c:330 src/settings.c:603 src/settings.c:975
 #: src/settings.c:1183 src/settings.c:1420 src/settings.c:1564
 #: src/settings.c:1667 src/settings.c:1775 src/settings.c:1859
-#: src/settings.c:1940 src/settings.c:2031 src/settings.c:2441
-#: src/settings.c:3846 src/settings.c:4202 src/settings.c:4505
-#: src/settings.c:4683 src/settings.c:4903 src/snaps.c:552
+#: src/settings.c:1940 src/settings.c:2031 src/settings.c:2486
+#: src/settings.c:3892 src/settings.c:4248 src/settings.c:4551
+#: src/settings.c:4729 src/settings.c:4949 src/snaps.c:552
 msgid "Apply"
 msgstr "Aplicar"
 
@@ -2052,23 +2052,23 @@ msgstr "Métodos de Movimentação:"
 msgid "Resize Methods:"
 msgstr "Métodos de Modificação:"
 
-#: src/settings.c:841 src/settings.c:849 src/settings.c:2185
+#: src/settings.c:841 src/settings.c:849 src/settings.c:2194
 msgid "Opaque"
 msgstr "Opaco"
 
-#: src/settings.c:857 src/settings.c:865 src/settings.c:2200
+#: src/settings.c:857 src/settings.c:865 src/settings.c:2209
 msgid "Technical"
 msgstr "Técnico"
 
-#: src/settings.c:873 src/settings.c:881 src/settings.c:2215
+#: src/settings.c:873 src/settings.c:881 src/settings.c:2224
 msgid "Box"
 msgstr "Caixa"
 
-#: src/settings.c:889 src/settings.c:897 src/settings.c:2230
+#: src/settings.c:889 src/settings.c:897 src/settings.c:2239
 msgid "Shaded"
 msgstr "Sombreado"
 
-#: src/settings.c:905 src/settings.c:913 src/settings.c:2245
+#: src/settings.c:905 src/settings.c:913 src/settings.c:2254
 msgid "Semi-Solid"
 msgstr "Semi-Solido"
 
@@ -2281,96 +2281,113 @@ msgstr ""
 "Audio não disponivel já que o Esound não\n"
 "estava presente quando foi efectuada a compilação."
 
-#: src/settings.c:2134
+#: src/settings.c:2143
 msgid "Special FX Settings"
 msgstr "Opcões para Efeitos Especiais"
 
-#: src/settings.c:2149
+#: src/settings.c:2158
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:2172
+#: src/settings.c:2181
 msgid "Slide Method:"
 msgstr "Método de Deslize:"
 
-#: src/settings.c:2178
+#: src/settings.c:2187
 msgid "Slide desktops around when changing"
 msgstr "Deslizar desktops aquando mudança"
 
-#: src/settings.c:2193
+#: src/settings.c:2202
 msgid "Slide windows around when cleaning up"
 msgstr "Deslizar janelas aquando limpeza"
 
-#: src/settings.c:2208
+#: src/settings.c:2217
 msgid "Slide windows in when they appear"
 msgstr "Deslizar janelas quando aparecem"
 
-#: src/settings.c:2223
+#: src/settings.c:2232
 msgid "Animated display of menus"
 msgstr "Mostrar menus animados"
 
-#: src/settings.c:2238
+#: src/settings.c:2247
 msgid "Always pop up menus on screen"
 msgstr "Mostrar sempre menus no ecrã"
 
-#: src/settings.c:2254
+#: src/settings.c:2263
 msgid "Warp pointer after moving menus"
 msgstr "Posicionar ponteiro após mover menus"
 
-#: src/settings.c:2263
+#: src/settings.c:2272
 msgid "Use saveunders to reduce window exposures"
 msgstr "Usar saveunders para reduzir exposições da janela"
 
-#: src/settings.c:2272
+#: src/settings.c:2281
 msgid "Animate shading and unshading of windows"
 msgstr "Animar enrolar e desenrolar das janelas"
 
-#: src/settings.c:2286
+#: src/settings.c:2295
 msgid "Display desktop dragbar"
 msgstr "Mostrar barra de arrasto do desktop"
 
-#: src/settings.c:2295
+#: src/settings.c:2304
 msgid "Drag bar position:"
 msgstr "Posição da barra de arrasto"
 
-#: src/settings.c:2306
+#: src/settings.c:2315
 msgid "Top"
 msgstr "Topo"
 
-#: src/settings.c:2313
+#: src/settings.c:2322
 msgid "Bottom"
 msgstr "Baixo"
 
-#: src/settings.c:2350
+#: src/settings.c:2359
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "Velocidade de Deslize do Desktop: (lento)\n"
 
-#: src/settings.c:2366 src/settings.c:2388 src/settings.c:2410
-#: src/settings.c:2432
+#: src/settings.c:2375 src/settings.c:2397 src/settings.c:2419
+#: src/settings.c:2441
 msgid "(fast)\n"
 msgstr "(rápido)\n"
 
-#: src/settings.c:2372
+#: src/settings.c:2381
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "Velocidade de deslize aquando limpeza: (lento)\n"
 
-#: src/settings.c:2394
+#: src/settings.c:2403
 msgid "Appear Slide speed: (slow)\n"
 msgstr "Velocidade de deslize quando aparece: (lento)\n"
 
-#: src/settings.c:2416
+#: src/settings.c:2425
 msgid "Window Shading speed: (slow)\n"
 msgstr "Velocidade ao (des)enrolar a janela: (lento)\n"
 
-#: src/settings.c:2707 src/settings.c:2828 src/settings.c:3086
-#: src/settings.c:3209 src/settings.c:3831
+#: src/settings.c:2454
+msgid "Effects"
+msgstr ""
+
+#: src/settings.c:2460
+#, fuzzy
+msgid "Enable Effect: Raindrops"
+msgstr "Impossível mostrar gotas de água"
+
+#: src/settings.c:2467
+msgid "Ripples"
+msgstr ""
+
+#: src/settings.c:2475
+msgid "Waves"
+msgstr ""
+
+#: src/settings.c:2753 src/settings.c:2874 src/settings.c:3132
+#: src/settings.c:3255 src/settings.c:3877
 msgid "-NONE-"
 msgstr "-NENHUM-"
 
-#: src/settings.c:2710 src/settings.c:2831 src/settings.c:3089
-#: src/settings.c:3212 src/settings.c:3833
+#: src/settings.c:2756 src/settings.c:2877 src/settings.c:3135
+#: src/settings.c:3258 src/settings.c:3879
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -2381,7 +2398,7 @@ msgstr ""
 "Nome: %s\n"
 "Ficheiro: %s\n"
 
-#: src/settings.c:2961 src/settings.c:2963
+#: src/settings.c:3007 src/settings.c:3009
 msgid ""
 "No\n"
 "Background"
@@ -2389,66 +2406,66 @@ msgstr ""
 "Sem\n"
 "Imagem de fundo"
 
-#: src/settings.c:3150 src/settings.c:3722
+#: src/settings.c:3196 src/settings.c:3768
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Imagens de fundo não usadas serão libertadas após %2i:%02i:%02i"
 
-#: src/settings.c:3483
+#: src/settings.c:3529
 msgid "Desktop Background Settings"
 msgstr "Opções de Imagem de Fundo do Desktop"
 
-#: src/settings.c:3499
+#: src/settings.c:3545
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:3512
+#: src/settings.c:3558
 msgid "BG Colour\n"
 msgstr "Côr da imagem de fundo\n"
 
-#: src/settings.c:3523
+#: src/settings.c:3569
 msgid "Move to Front\n"
 msgstr "Mover para a Frente\n"
 
-#: src/settings.c:3530
+#: src/settings.c:3576
 msgid "Duplicate\n"
 msgstr "Duplicar\n"
 
-#: src/settings.c:3536
+#: src/settings.c:3582
 msgid "Unlist\n"
 msgstr "Tirar da lista\n"
 
-#: src/settings.c:3542
+#: src/settings.c:3588
 msgid "Delete File\n"
 msgstr "Apagar Ficheiro\n"
 
-#: src/settings.c:3551
+#: src/settings.c:3597
 msgid "Red:\n"
 msgstr "Vermelho:\n"
 
-#: src/settings.c:3565
+#: src/settings.c:3611
 msgid "Use background image"
 msgstr "Usar imagem de fundo"
 
-#: src/settings.c:3573
+#: src/settings.c:3619
 msgid "Green:\n"
 msgstr "Verde:\n"
 
-#: src/settings.c:3587
+#: src/settings.c:3633
 msgid "Keep aspect on scale"
 msgstr "Manter aspecto à escala"
 
-#: src/settings.c:3595
+#: src/settings.c:3641
 msgid "Blue:\n"
 msgstr "Azul:\n"
 
-#: src/settings.c:3609
+#: src/settings.c:3655
 msgid "Tile image across background"
 msgstr "Duplicar imagem pelo ecrã de fundo"
 
-#: src/settings.c:3625
+#: src/settings.c:3671
 msgid ""
 "Background\n"
 "Image\n"
@@ -2462,139 +2479,139 @@ msgstr ""
 "e\n"
 "Alinhamento\n"
 
-#: src/settings.c:3706
+#: src/settings.c:3752
 msgid "Use dithering in Hi-Colour"
 msgstr "Usar dithering em Hi-Colour"
 
-#: src/settings.c:3713
+#: src/settings.c:3759
 msgid "Background overrides theme"
 msgstr "Imagem de fundo sobrepôe-se à do tema"
 
-#: src/settings.c:3769
+#: src/settings.c:3815
 msgid "Pre-scan BG's"
 msgstr "Carregar antecipadamente Imagens de Fundo"
 
-#: src/settings.c:3779
+#: src/settings.c:3825
 msgid "Sort by File"
 msgstr "Arranjar por Ficheiro"
 
-#: src/settings.c:3785
+#: src/settings.c:3831
 msgid "Sort by Attr."
 msgstr "Arranjar por Atributo"
 
-#: src/settings.c:3791
+#: src/settings.c:3837
 msgid "Sort by Image"
 msgstr "Arranjar por Imagem"
 
-#: src/settings.c:3952
+#: src/settings.c:3998
 msgid "Iconbox Settings"
 msgstr "Opções da Caixa de Ícones"
 
-#: src/settings.c:3970
+#: src/settings.c:4016
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:3981
+#: src/settings.c:4027
 msgid "Transparent background"
 msgstr "Imagem de fundo transparente"
 
-#: src/settings.c:3988
+#: src/settings.c:4034
 msgid "Hide border around inner Iconbox"
 msgstr "Esconder borda da Caixa de Ícones"
 
-#: src/settings.c:3995
+#: src/settings.c:4041
 msgid "Show icon names"
 msgstr "Mostrar nome dos ícones"
 
-#: src/settings.c:4002
+#: src/settings.c:4048
 msgid "Draw base image behind Icons"
 msgstr "Desenhar base atrás dos Ícones"
 
-#: src/settings.c:4009
+#: src/settings.c:4055
 msgid "Hide scrollbar when not needed"
 msgstr "Esconder barra quando não é necessária"
 
-#: src/settings.c:4016
+#: src/settings.c:4062
 msgid "Automatically resize to fit Icons"
 msgstr "Automaticamente ajustar pelos Ícones"
 
-#: src/settings.c:4024
+#: src/settings.c:4070
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animar quando minimizar para esta Caixa de Iconos"
 
-#: src/settings.c:4034
+#: src/settings.c:4080
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Alinhamento quando o ajuste é automático:"
 
-#: src/settings.c:4056
+#: src/settings.c:4102
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Ordem de uso de ícones (se uma falha, usa-se a próxima)"
 
-#: src/settings.c:4063
+#: src/settings.c:4109
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 "Miniatura da janela, Usar icone da aplicação, Usar Icone do Enlightenment"
 
-#: src/settings.c:4072
+#: src/settings.c:4118
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 "Usar icone da aplicação, Usar Icone do Enlightenment, Miniatura da janela"
 
-#: src/settings.c:4080
+#: src/settings.c:4126
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Usar Icone do Enlightenment, Miniatura da janela"
 
-#: src/settings.c:4094
+#: src/settings.c:4140
 msgid "Icon size"
 msgstr "Tamanho do Icone"
 
-#: src/settings.c:4117
+#: src/settings.c:4163
 msgid "Orientation:"
 msgstr "Posicionamento:"
 
-#: src/settings.c:4123
+#: src/settings.c:4169
 msgid "Scrollbar side:"
 msgstr "Tamanho da barra:"
 
-#: src/settings.c:4129
+#: src/settings.c:4175
 msgid "Scrollbar arrows:"
 msgstr "Setas da barra:"
 
-#: src/settings.c:4134
+#: src/settings.c:4180
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: src/settings.c:4141
+#: src/settings.c:4187
 msgid "Left / Top"
 msgstr "Esquerda / Topo"
 
-#: src/settings.c:4148
+#: src/settings.c:4194
 msgid "Start"
 msgstr "Inicio"
 
-#: src/settings.c:4155
+#: src/settings.c:4201
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/settings.c:4163
+#: src/settings.c:4209
 msgid "Right / Bottom"
 msgstr "Direita / Baixo"
 
-#: src/settings.c:4171
+#: src/settings.c:4217
 msgid "Both ends"
 msgstr "Ambos os lados"
 
-#: src/settings.c:4181
+#: src/settings.c:4227
 msgid "End"
 msgstr "Fim"
 
-#: src/settings.c:4191
+#: src/settings.c:4237
 msgid "None"
 msgstr "Nenhuma"
 
-#: src/settings.c:4326
+#: src/settings.c:4372
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -2604,21 +2621,21 @@ msgstr ""
 "  Esta janela não pertence a nenhum grupo.  \n"
 "\n"
 
-#: src/settings.c:4349
+#: src/settings.c:4395
 msgid "Window Group Settings"
 msgstr "Definições dos Grupos de Janelas"
 
-#: src/settings.c:4364
+#: src/settings.c:4410
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:4379
+#: src/settings.c:4425
 msgid "   Pick the group to configure:   "
 msgstr "   Escolha o grupo para configurar:   "
 
-#: src/settings.c:4415
+#: src/settings.c:4461
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -2626,77 +2643,77 @@ msgstr ""
 "  As seguintes acções serão  \n"
 "  aplicadas a todos os membros do grupo:  "
 
-#: src/settings.c:4424 src/settings.c:4595
+#: src/settings.c:4470 src/settings.c:4641
 msgid "Changing Border Style"
 msgstr "Alterando o Tipo de Janela"
 
-#: src/settings.c:4434 src/settings.c:4603
+#: src/settings.c:4480 src/settings.c:4649
 msgid "Iconifying"
 msgstr "Minimizar"
 
-#: src/settings.c:4444 src/settings.c:4611
+#: src/settings.c:4490 src/settings.c:4657
 msgid "Killing"
 msgstr "Matar"
 
-#: src/settings.c:4454 src/settings.c:4619
+#: src/settings.c:4500 src/settings.c:4665
 msgid "Moving"
 msgstr "Mover"
 
-#: src/settings.c:4464 src/settings.c:4627
+#: src/settings.c:4510 src/settings.c:4673
 msgid "Raising/Lowering"
 msgstr "Elevar/Baixar"
 
-#: src/settings.c:4474 src/settings.c:4635
+#: src/settings.c:4520 src/settings.c:4681
 msgid "Sticking"
 msgstr "Colar"
 
-#: src/settings.c:4484 src/settings.c:4643
+#: src/settings.c:4530 src/settings.c:4689
 msgid "Shading"
 msgstr "Enrolar"
 
-#: src/settings.c:4494 src/settings.c:4651
+#: src/settings.c:4540 src/settings.c:4697
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Copiar ao Enrolar/Minimizar/Colar"
 
-#: src/settings.c:4553
+#: src/settings.c:4599
 msgid "Default Group Control Settings"
 msgstr "Opções por Defeito de Controlo de Grupo"
 
-#: src/settings.c:4568
+#: src/settings.c:4614
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:4583
+#: src/settings.c:4629
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Opções do Pager"
 
-#: src/settings.c:4666
+#: src/settings.c:4712
 msgid " Global settings: "
 msgstr ""
 
-#: src/settings.c:4672
+#: src/settings.c:4718
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Opções da Janela"
 
-#: src/settings.c:4801
+#: src/settings.c:4847
 msgid "Remembered Windows Settings"
 msgstr ""
 
-#: src/settings.c:4817
+#: src/settings.c:4863
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:4872
+#: src/settings.c:4918
 msgid "Remembered Settings..."
 msgstr ""
 
-#: src/settings.c:4893
+#: src/settings.c:4939
 msgid "There are no active windows with remembered attributes."
 msgstr ""
 
