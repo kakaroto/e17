@@ -48,7 +48,7 @@ $dest_email = 'commits@picogui.org';
 # Path to your sendmail binary. If you have it at a different place (and
 # outside of $PATH), add your location at the start of the list. By all means
 # keep the trailing empty string in the array.
-@sendmail = ('sendmail', '/usr/lib/sendmail', '/usr/sbin/sendmail', '');
+@sendmail = ('/usr/sbin/sendmail', 'sendmail', '/usr/lib/sendmail', '/usr/sbin/sendmail', '');
 
 # The maximal number of lines the log message should have.
 $max_lines = 6;
