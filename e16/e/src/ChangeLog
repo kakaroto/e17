@@ -2002,3 +2002,10 @@ Sun Sep 19 13:08:30 PDT 1999
 (Mandrake)
 
 fixed a compile warning in iconify.c
+
+-------------------------------------------------------------------------------
+
+Sun Sep 19 14:28:18 PDT 1999
+(Mandrake)
+
+added another todo bug with kpanel
