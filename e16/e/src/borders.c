@@ -1163,8 +1163,7 @@ CalcEwinWinpart(EWin * ewin, int i)
 	   ewin->border->part[i].geom.topleft.x.absolute +
 	   ewin->bits[topleft].x;
 	y =
-	   ((ewin->
-	     border->part[i].geom.topleft.y.percent *
+	   ((ewin->border->part[i].geom.topleft.y.percent *
 	     ewin->bits[topleft].h) >> 10) +
 	   ewin->border->part[i].geom.topleft.y.absolute +
 	   ewin->bits[topleft].y;
@@ -1173,12 +1172,12 @@ CalcEwinWinpart(EWin * ewin, int i)
    if (bottomright == -1)
      {
 	ox =
-	   ((ewin->
-	     border->part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
+	   ((ewin->border->
+	     part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
 	oy =
-	   ((ewin->
-	     border->part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
+	   ((ewin->border->
+	     part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -2591,8 +2590,9 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		      (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
-							       ewin->border->
-							       border.right);
+							       ewin->
+							       border->border.
+							       right);
 	       }
 	  }
 	ewin->w = rightborderwidth + leftborderwidth;
@@ -2618,8 +2618,9 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		      bottomborderwidth)
 		     bottomborderwidth =
 			(ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
-							       ewin->border->
-							       border.bottom);
+							       ewin->
+							       border->border.
+							       bottom);
 	       }
 	  }
 	ewin->h = bottomborderwidth + topborderwidth;

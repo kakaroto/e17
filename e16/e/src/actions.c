@@ -1181,11 +1181,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-						   desks.desk[gwins[i]->
-							      desktop].x),
+						   desks.
+						   desk[gwins[i]->desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-						   desks.desk[gwins[i]->
-							      desktop].y));
+						   desks.
+						   desk[gwins[i]->desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
@@ -1748,6 +1748,91 @@ doStickNoGroup(void *params)
    result = doStick(params);
    mode.nogroup = 0;
    return result;
+}
+
+int
+doSkipTask(void *params)
+{
+   EWin               *ewin;
+   char                skiptask;
+
+   EDBUG(6, "doSkipTask");
+
+   if (InZoom())
+      EDBUG_RETURN(0);
+   if (params)
+      ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+		      LIST_TYPE_EWIN);
+   else
+      ewin = GetFocusEwin();
+   if (!ewin)
+      EDBUG_RETURN(0);
+
+   skiptask = ewin->skiptask;
+
+   ewin->skiptask = !(skiptask);
+   params = NULL;
+   GNOME_SetHint(ewin);
+   RememberImportantInfoForEwin(ewin);
+
+   EDBUG_RETURN(0);
+}
+
+int
+doSkipFocus(void *params)
+{
+   EWin               *ewin;
+   int                 num;
+   char                skipfocus;
+
+   EDBUG(6, "doSkipFocus");
+
+   if (InZoom())
+      EDBUG_RETURN(0);
+   if (params)
+      ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+		      LIST_TYPE_EWIN);
+   else
+      ewin = GetFocusEwin();
+   if (!ewin)
+      EDBUG_RETURN(0);
+
+   skipfocus = ewin->skipfocus;
+
+   ewin->skipfocus = !(skipfocus);
+
+   params = NULL;
+   GNOME_SetHint(ewin);
+   RememberImportantInfoForEwin(ewin);
+   EDBUG_RETURN(0);
+}
+
+int
+doSkipWinList(void *params)
+{
+   EWin               *ewin;
+   int                 num;
+   char                skipwinlist;
+
+   EDBUG(6, "doSkipWinList");
+
+   if (InZoom())
+      EDBUG_RETURN(0);
+   if (params)
+      ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+		      LIST_TYPE_EWIN);
+   else
+      ewin = GetFocusEwin();
+   if (!ewin)
+      EDBUG_RETURN(0);
+
+   skipwinlist = ewin->skipwinlist;
+
+   ewin->skipwinlist = !(skipwinlist);
+   params = NULL;
+   GNOME_SetHint(ewin);
+   RememberImportantInfoForEwin(ewin);
+   EDBUG_RETURN(0);
 }
 
 int
@@ -3922,6 +4007,9 @@ initFunctionArray(void)
    ActionFunctions[ACTION_SHADE_NG] = (int (*)(void *))(doShadeNoGroup);
    ActionFunctions[ACTION_RAISE_LOWER_NG] =
       (int (*)(void *))(doRaiseLowerNoGroup);
+   ActionFunctions[ACTION_SKIPFOCUS] = (int (*)(void *))(doSkipFocus);
+   ActionFunctions[ACTION_SKIPTASK] = (int (*)(void *))(doSkipTask);
+   ActionFunctions[ACTION_SKIPWINLIST] = (int (*)(void *))(doSkipWinList);
 
    EDBUG_RETURN(0);
 }

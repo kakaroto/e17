@@ -13,6 +13,8 @@ fix to e/dox/dox.h for freetype 1.3
 #-style comments in .menu files
 added "Warp pointer after moving menus" option to Special FX Settings
 added "Show sticky windows in focus list" option to Focus Settings
+added winops/remember options/action definitions for:
+  Skip focus, skip winlist, skip tasklist.
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)

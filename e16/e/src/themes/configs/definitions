@@ -326,6 +326,9 @@
 #define __A_STICK_NG 95
 #define __A_SHADE_NG 96
 #define __A_RAISE_LOWER_NG 97
+#define __A_SKIPFOCUS 98
+#define __A_SKIPTASK 99
+#define __A_SKIPWINLIST 100
 
 #define __MODIFIER_KEY 101
 #define __TYPE 102

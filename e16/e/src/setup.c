@@ -737,8 +737,7 @@ SetupEnv()
    return;
 }
 
-Window
-MakeExtInitWin(void)
+Window MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;

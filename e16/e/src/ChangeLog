@@ -4238,3 +4238,19 @@ and gkrellm etc out of it...
 
 Feel free to revert the commit if it's inappropriate...
 
+
+-------------------------------------------------------------------------------
+
+Mon Feb 21 20:46:52 GMT 2000
+(gilbertt)
+
+Added winops commands/remember options/action definitions for skipping
+focus, skipping tasklist, skipping winlist.
+
+The second two work well. skipfocus is not thoroughly implemented in the e
+code, ie. you can still focus =) I'm about to go through and add some logic
+for that... Then I was gonna make non-ALT button clicks on skip_focus
+windows bring up root menus...
+
+Lots of changes, so check for bugs =)
+

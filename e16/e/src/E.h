@@ -483,8 +483,11 @@ int                 Esnprintf(va_alist);
 #define ACTION_STICK_NG               95
 #define ACTION_SHADE_NG               96
 #define ACTION_RAISE_LOWER_NG         97
+#define ACTION_SKIPFOCUS              98
+#define ACTION_SKIPTASK               99
+#define ACTION_SKIPWINLIST            100
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               98
+#define ACTION_NUMBEROF               101
 
 #define MODE_NONE                 0
 #define MODE_MOVE                 1
@@ -1388,6 +1391,12 @@ struct _snapshot
    int                *groups;
    int                 num_groups;
    int                 used;
+   char                use_skipwinlist;
+   char                skipwinlist;
+   char                use_skiptask;
+   char                skiptask;
+   char                use_skipfocus;
+   char                skipfocus;
 };
 
 typedef struct _ditembutton DItemButton;
@@ -2380,8 +2389,8 @@ void                ModifyCMClass(char *name,
 				  int rnum, unsigned char *rpx,
 				  unsigned char *rpy, int gnum,
 				  unsigned char *gpx, unsigned char *gpy,
-				  int bnum, unsigned char *bpx,
 
+				  int bnum, unsigned char *bpx,
 				  unsigned char *bpy);
 
 /* config.c functions */
@@ -2508,8 +2517,8 @@ Iconbox            *SelectIconboxForEwin(EWin * ewin);
 /* slideouts.c functions */
 void                SlideWindowSizeTo(Window win, int fx, int fy,
 				      int tx, int ty,
-				      int fw, int fh, int tw, int th,
 
+				      int fw, int fh, int tw, int th,
 				      int speed);
 Slideout           *CreateSlideout(char *name, char dir);
 void                ShowSlideout(Slideout * s, Window win);
@@ -2744,6 +2753,9 @@ void                SnapshotEwinSticky(EWin * ewin);
 void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
+void                SnapshotEwinSkipFocus(EWin * ewin);
+void                SnapshotEwinSkipTask(EWin * ewin);
+void                SnapshotEwinSkipWinList(EWin * ewin);
 void                SnapshotEwinGroups(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);

@@ -1692,8 +1692,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.normal->
-						   real_file);
+						   iclass->norm.
+						   normal->real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf),
