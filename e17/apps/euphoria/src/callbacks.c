@@ -156,14 +156,27 @@ EDJE_CB(track_prev) {
 }
 
 EDJE_CB(volume_raise) {
+        int vol;
+
 	debug(DEBUG_LEVEL_INFO, "Raising volume\n");
+
+        vol = read_mixer(e);
+        set_mixer(vol + 1);
+        read_mixer(e);
+
 
 	/* FIXME */
 	ui_refresh_volume(e);
 }
 
 EDJE_CB(volume_lower) {
+        int vol;
+
 	debug(DEBUG_LEVEL_INFO, "Lowering volume\n");
+
+        vol = read_mixer(e);
+        set_mixer(vol - 1);
+        read_mixer(e);
 
 	/* FIXME */
 	ui_refresh_volume(e);

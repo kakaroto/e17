@@ -270,7 +270,10 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 	ecore_evas_resize(e->gui.ee, (int) edje_w, (int) edje_h);
 
 	setup_playlist(e);
+
+	read_mixer(e);
 	ui_refresh_volume(e);
+
 	if(e->playlist && e->playlist->current_item)
 	    ui_fill_track_info(e, e->playlist->current_item);
 
