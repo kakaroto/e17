@@ -1,9 +1,9 @@
-#include "container.h"
+#include "Esmart_Container.h"
 #include "container_private.h"
 
 /*** element API ***/
 
-void e_container_element_append(Evas_Object *container, Evas_Object *element)
+void esmart_container_element_append(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el = NULL;
@@ -20,7 +20,7 @@ void e_container_element_append(Evas_Object *container, Evas_Object *element)
   _container_elements_fix(cont);
 }
 
-void e_container_element_prepend(Evas_Object *container, Evas_Object *element)
+void esmart_container_element_prepend(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
@@ -37,7 +37,7 @@ void e_container_element_prepend(Evas_Object *container, Evas_Object *element)
   _container_elements_fix(cont);
 }
 
-void e_container_element_append_relative(Evas_Object *container,
+void esmart_container_element_append_relative(Evas_Object *container,
                                          Evas_Object *element,
                                          Evas_Object *relative)
 {
@@ -59,7 +59,7 @@ void e_container_element_append_relative(Evas_Object *container,
   _container_elements_fix(cont);
 }
 
-void e_container_element_prepend_relative(Evas_Object *container,
+void esmart_container_element_prepend_relative(Evas_Object *container,
                                           Evas_Object *element,
                                           Evas_Object *relative)
 {
@@ -81,7 +81,7 @@ void e_container_element_prepend_relative(Evas_Object *container,
   _container_elements_fix(cont);
 }
 
-void e_container_element_remove(Evas_Object *container, Evas_Object *element)
+void esmart_container_element_remove(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
@@ -90,7 +90,7 @@ void e_container_element_remove(Evas_Object *container, Evas_Object *element)
   cont = _container_fetch(container);
   if (!cont) return;
 
-  old_length = e_container_elements_length_get(container);
+  old_length = esmart_container_elements_length_get(container);
 
   el = evas_object_data_get(element, "Container_Element");
   cont->elements = evas_list_remove(cont->elements, el);
@@ -100,7 +100,7 @@ void e_container_element_remove(Evas_Object *container, Evas_Object *element)
   _container_scale_scroll(cont, old_length);
 }
 
-void e_container_element_destroy(Evas_Object *container, Evas_Object 
+void esmart_container_element_destroy(Evas_Object *container, Evas_Object 
 *element)
 {
   Container *cont;
@@ -110,7 +110,7 @@ void e_container_element_destroy(Evas_Object *container, Evas_Object
   cont = _container_fetch(container);
   if (!cont) return;
 
-  old_length = e_container_elements_length_get(container);
+  old_length = esmart_container_elements_length_get(container);
 
   el = evas_object_data_get(element, "Container_Element");
   evas_object_del (el->obj);
@@ -123,7 +123,7 @@ void e_container_element_destroy(Evas_Object *container, Evas_Object
   _container_scale_scroll(cont, old_length);
 }
 
-void e_container_empty (Evas_Object *container)
+void esmart_container_empty (Evas_Object *container)
 {
   Container *cont;
 
@@ -147,7 +147,7 @@ void e_container_empty (Evas_Object *container)
 }
 
 
-Evas_List *e_container_elements_get(Evas_Object *container)
+Evas_List *esmart_container_elements_get(Evas_Object *container)
 {
   Container *cont;
   Evas_List *l, *ll = NULL;

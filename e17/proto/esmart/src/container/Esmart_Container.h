@@ -7,9 +7,6 @@
 #include <stdio.h>
 #include <dirent.h>
 
-/* FIXME: do this right... */
-//#define CONTAINER_PLUGIN_DIR "/usr/local/share/esmart/layout"
-
 /*****
  Todo:
 
@@ -104,7 +101,7 @@ struct _Scroll_Data
   double length;
 };
 
-Evas_Object *e_container_new(Evas *evas);
+Evas_Object *esmart_container_new(Evas *evas);
 
 struct _Container_Layout_Plugin{
   void *handle;
@@ -122,69 +119,69 @@ struct _Container_Layout_Plugin{
 };
 
 
-void e_container_direction_set(Evas_Object *container, int direction);
-int  e_container_direction_get(Evas_Object *container);
+void esmart_container_direction_set(Evas_Object *container, int direction);
+int  esmart_container_direction_get(Evas_Object *container);
 
 
-void e_container_padding_set(Evas_Object *container, double l, double r,
+void esmart_container_padding_set(Evas_Object *container, double l, double r,
                              double t, double b);
-void e_container_padding_get(Evas_Object *container, double *l, double *r,
+void esmart_container_padding_get(Evas_Object *container, double *l, double *r,
                              double *t, double *b);
 
 
-void e_container_fill_policy_set(Evas_Object *container,
+void esmart_container_fill_policy_set(Evas_Object *container,
                                  Container_Fill_Policy fill);
-Container_Fill_Policy  e_container_fill_policy_get(Evas_Object *container);
+Container_Fill_Policy  esmart_container_fill_policy_get(Evas_Object *container);
 
 
-void e_container_alignment_set(Evas_Object *container,
+void esmart_container_alignment_set(Evas_Object *container,
                                Container_Alignment align);
-Container_Alignment e_container_alignment_get(Evas_Object *container);
+Container_Alignment esmart_container_alignment_get(Evas_Object *container);
 
 
-void e_container_spacing_set(Evas_Object *container,
+void esmart_container_spacing_set(Evas_Object *container,
                                 int spacing);
-int  e_container_spacing_get(Evas_Object *container);
+int  esmart_container_spacing_get(Evas_Object *container);
 
 
-void e_container_move_button_set(Evas_Object *container, int move_button);
-int  e_container_move_button_get(Evas_Object *container);
+void esmart_container_move_button_set(Evas_Object *container, int move_button);
+int  esmart_container_move_button_get(Evas_Object *container);
 
 
 /* element adding/removing */
-void e_container_element_append(Evas_Object *container, Evas_Object *element);
-void e_container_element_prepend(Evas_Object *container, Evas_Object *element);
-void e_container_element_append_relative(Evas_Object *container,
+void esmart_container_element_append(Evas_Object *container, Evas_Object *element);
+void esmart_container_element_prepend(Evas_Object *container, Evas_Object *element);
+void esmart_container_element_append_relative(Evas_Object *container,
                                          Evas_Object *element,
                                          Evas_Object *relative);
-void e_container_element_prepend_relative(Evas_Object *container,
+void esmart_container_element_prepend_relative(Evas_Object *container,
                                           Evas_Object *element,
                                           Evas_Object *relative);
-void e_container_element_remove(Evas_Object *container, Evas_Object *element);
-void e_container_element_destroy(Evas_Object *container, Evas_Object *element);
-void e_container_empty (Evas_Object *container);
-void e_container_sort(Evas_Object *container, int (*func)(void*,void*));
+void esmart_container_element_remove(Evas_Object *container, Evas_Object *element);
+void esmart_container_element_destroy(Evas_Object *container, Evas_Object *element);
+void esmart_container_empty (Evas_Object *container);
+void esmart_container_sort(Evas_Object *container, int (*func)(void*,void*));
 
-Evas_List *e_container_elements_get(Evas_Object *container);
+Evas_List *esmart_container_elements_get(Evas_Object *container);
 
 /* scrolling */
-void e_container_scroll_start(Evas_Object *container, double velocity);
-void e_container_scroll_stop(Evas_Object *container);
-void e_container_scroll(Evas_Object *container, int val);
+void esmart_container_scroll_start(Evas_Object *container, double velocity);
+void esmart_container_scroll_stop(Evas_Object *container);
+void esmart_container_scroll(Evas_Object *container, int val);
 
-void e_container_scroll_offset_set(Evas_Object *container, int val);
-int  e_container_scroll_offset_get(Evas_Object *container);
+void esmart_container_scroll_offset_set(Evas_Object *container, int val);
+int  esmart_container_scroll_offset_get(Evas_Object *container);
 
 /* callbacks */
-void e_container_callback_order_change_set(Evas_Object *obj, 
+void esmart_container_callback_order_change_set(Evas_Object *obj, 
                                            void (*func)(void *data),
                                            void *data);
 
-double e_container_elements_length_get(Evas_Object *container);
-double e_container_elements_orig_length_get(Evas_Object *container);
+double esmart_container_elements_length_get(Evas_Object *container);
+double esmart_container_elements_orig_length_get(Evas_Object *container);
 
-int e_container_layout_plugin_set(Evas_Object *container, const char *name);
+int esmart_container_layout_plugin_set(Evas_Object *container, const char *name);
 
-void e_container_scroll_to(Evas_Object *container, Evas_Object *element);
+void esmart_container_scroll_to(Evas_Object *container, Evas_Object *element);
 
 #endif

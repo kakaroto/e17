@@ -1,6 +1,9 @@
 #ifndef ESMART_FILE_DIALOG
 #define ESMART_FILE_DIALOG
 
+#include <Evas.h>
+#include <Edje.h>
+
 typedef struct _Esmart_File_Dialog Esmart_File_Dialog;
 
 #define FILE_NEW 1

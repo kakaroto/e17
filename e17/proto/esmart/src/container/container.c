@@ -8,14 +8,14 @@
 
 #include <Evas.h>
 #include <math.h>
-#include "container.h"
+#include "Esmart_Container.h"
 #include "container_private.h"
 
 int _container_scroll_timer(void *data);
 
 /*** external API ***/
 
-void e_container_sort(Evas_Object *container, int (*func)(void*,void*))
+void esmart_container_sort(Evas_Object *container, int (*func)(void*,void*))
 {
   Container *cont;
   
@@ -26,7 +26,7 @@ void e_container_sort(Evas_Object *container, int (*func)(void*,void*))
 				func);
   _container_elements_fix(cont);
 }
-void e_container_direction_set(Evas_Object *container, int direction)
+void esmart_container_direction_set(Evas_Object *container, int direction)
 {
   Container *cont;
   
@@ -39,7 +39,7 @@ void e_container_direction_set(Evas_Object *container, int direction)
   _container_elements_fix(cont);
 }
 
-int  e_container_direction_get(Evas_Object *container)
+int  esmart_container_direction_get(Evas_Object *container)
 {
   Container *cont;
   
@@ -49,7 +49,7 @@ int  e_container_direction_get(Evas_Object *container)
   return cont->direction;
 }
 
-void e_container_padding_set(Evas_Object *container, double l, double r,
+void esmart_container_padding_set(Evas_Object *container, double l, double r,
                              double t, double b)
 {
   Container *cont;
@@ -71,7 +71,7 @@ void e_container_padding_set(Evas_Object *container, double l, double r,
   _container_elements_fix(cont);
 }
 
-void e_container_padding_get(Evas_Object *container, double *l, double *r,
+void esmart_container_padding_get(Evas_Object *container, double *l, double *r,
                              double *t, double *b)
 {
   Container *cont;
@@ -84,7 +84,7 @@ void e_container_padding_get(Evas_Object *container, double *l, double *r,
   if (b) *b = cont->padding.b;
 }
 
-void e_container_scroll(Evas_Object *container, int val)
+void esmart_container_scroll(Evas_Object *container, int val)
 {
   Container *cont;
   double size, length, pad, max_scroll;
@@ -92,7 +92,7 @@ void e_container_scroll(Evas_Object *container, int val)
   if(!(cont = _container_fetch(container)))
     return;
 
-  length = e_container_elements_length_get(container);
+  length = esmart_container_elements_length_get(container);
   size = cont->direction ? cont->h : cont->w;
 
   /* don't scroll unless the elements exceed the size of the container */
@@ -115,7 +115,7 @@ void e_container_scroll(Evas_Object *container, int val)
   _container_elements_fix(cont);
 }
 
-void e_container_scroll_offset_set(Evas_Object *container, int scroll_offset)
+void esmart_container_scroll_offset_set(Evas_Object *container, int scroll_offset)
 {
   Container *cont;
   
@@ -128,7 +128,7 @@ void e_container_scroll_offset_set(Evas_Object *container, int scroll_offset)
   _container_elements_fix(cont);
 }
 
-int e_container_scroll_offset_get(Evas_Object *container)
+int esmart_container_scroll_offset_get(Evas_Object *container)
 {
   Container *cont;
   
@@ -138,7 +138,7 @@ int e_container_scroll_offset_get(Evas_Object *container)
 }
 
 
-void e_container_alignment_set(Evas_Object *container, 
+void esmart_container_alignment_set(Evas_Object *container, 
                                Container_Alignment align)
 {
   Container *cont;
@@ -154,7 +154,7 @@ void e_container_alignment_set(Evas_Object *container,
   
 }
 
-Container_Alignment e_container_alignment_get(Evas_Object *container)
+Container_Alignment esmart_container_alignment_get(Evas_Object *container)
 {
   Container *cont;
   
@@ -164,7 +164,7 @@ Container_Alignment e_container_alignment_get(Evas_Object *container)
   return cont->align;
 }
 
-void e_container_fill_policy_set(Evas_Object *container, 
+void esmart_container_fill_policy_set(Evas_Object *container, 
                                Container_Fill_Policy fill)
 {
   Container *cont;
@@ -181,7 +181,7 @@ void e_container_fill_policy_set(Evas_Object *container,
   
 }
 
-Container_Fill_Policy e_container_fill_policy_get(Evas_Object *container)
+Container_Fill_Policy esmart_container_fill_policy_get(Evas_Object *container)
 {
   Container *cont;
   
@@ -191,7 +191,7 @@ Container_Fill_Policy e_container_fill_policy_get(Evas_Object *container)
   return cont->fill;
 }
 
-void e_container_spacing_set(Evas_Object *container, int spacing)
+void esmart_container_spacing_set(Evas_Object *container, int spacing)
 {
   Container *cont;
   
@@ -204,7 +204,7 @@ void e_container_spacing_set(Evas_Object *container, int spacing)
   _container_elements_fix(cont);
 }
 
-int e_container_spacing_get(Evas_Object *container)
+int esmart_container_spacing_get(Evas_Object *container)
 {
   Container *cont;
   
@@ -214,7 +214,7 @@ int e_container_spacing_get(Evas_Object *container)
   return cont->spacing;
 }
 
-void e_container_move_button_set(Evas_Object *container, int move_button)
+void esmart_container_move_button_set(Evas_Object *container, int move_button)
 {
   Container *cont;
   
@@ -226,7 +226,7 @@ void e_container_move_button_set(Evas_Object *container, int move_button)
   cont->move_button = move_button;
 }
 
-int  e_container_move_button_get(Evas_Object *container)
+int  esmart_container_move_button_get(Evas_Object *container)
 {
   Container *cont;
   
@@ -236,7 +236,7 @@ int  e_container_move_button_get(Evas_Object *container)
   return cont->move_button;
 }
 
-void e_container_callback_order_change_set(Evas_Object *container, void (*func)(void *data), void *data)
+void esmart_container_callback_order_change_set(Evas_Object *container, void (*func)(void *data), void *data)
 {
   Container *cont;
   
@@ -248,7 +248,7 @@ void e_container_callback_order_change_set(Evas_Object *container, void (*func)(
 }
 
 double
-e_container_elements_length_get(Evas_Object *container)
+esmart_container_elements_length_get(Evas_Object *container)
 {
   Container *cont;
   Evas_List *l;
@@ -277,7 +277,7 @@ e_container_elements_length_get(Evas_Object *container)
 }
 
 void
-e_container_scroll_start(Evas_Object *container, double velocity)
+esmart_container_scroll_start(Evas_Object *container, double velocity)
 {
   Container *cont = _container_fetch(container);
   if (!cont) return;
@@ -287,7 +287,7 @@ e_container_scroll_start(Evas_Object *container, double velocity)
 }
 
 void
-e_container_scroll_stop(Evas_Object *container)
+esmart_container_scroll_stop(Evas_Object *container)
 {
   Container *cont;
 
@@ -299,7 +299,7 @@ e_container_scroll_stop(Evas_Object *container)
 }
 
 void
-e_container_scroll_to(Evas_Object *container, Evas_Object *element)
+esmart_container_scroll_to(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
@@ -314,7 +314,7 @@ e_container_scroll_to(Evas_Object *container, Evas_Object *element)
 }
 
 double
-e_container_elements_orig_length_get(Evas_Object *container)
+esmart_container_elements_orig_length_get(Evas_Object *container)
 {
   Container *cont;
   Evas_List *l;

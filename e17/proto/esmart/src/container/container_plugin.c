@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
-#include "container.h"
+#include "Esmart_Container.h"
 #include "container_private.h"
 
 
@@ -126,7 +126,7 @@ _container_layout_plugin_free(Container_Layout_Plugin *p)
 
 /* returns 0 on error, nonzero if ok */
 int
-e_container_layout_plugin_set(Evas_Object *container, const char *plugin)
+esmart_container_layout_plugin_set(Evas_Object *container, const char *plugin)
 {
   Container *cont = NULL;
 

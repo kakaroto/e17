@@ -1,5 +1,5 @@
 #include <sys/stat.h>
-#include "container.h"
+#include "Esmart_Container.h"
 #include "container_private.h"
 
 Container *
@@ -21,7 +21,7 @@ _container_scale_scroll(Container *cont, double old_length)
   int new_scroll;
   double new_length;
   
-  new_length = e_container_elements_length_get(cont->obj);
+  new_length = esmart_container_elements_length_get(cont->obj);
 
   if (new_length < (cont->direction ? cont->h : cont->w))
   {
@@ -30,7 +30,7 @@ _container_scale_scroll(Container *cont, double old_length)
   else 
     new_scroll = cont->scroll_offset * (new_length / old_length);
 
-  e_container_scroll_offset_set(cont->obj, new_scroll);
+  esmart_container_scroll_offset_set(cont->obj, new_scroll);
 
   
 }

@@ -1,7 +1,7 @@
 #ifndef CONTAINER_PRIVATE_H
 #define CONTAINER_PRIVATE_H
 
-#include "container.h"
+#include "Esmart_Container.h"
 
 Container *_container_fetch(Evas_Object *obj);
 Container_Element *_container_element_new(Container *cont, Evas_Object *obj);

@@ -1,4 +1,4 @@
-#include "container.h"
+#include "Esmart_Container.h"
 #include "container_private.h"
 
 /* smart object handlers */
@@ -24,7 +24,7 @@ static Evas_Smart *smart = NULL;
 /****** Public API *******/
 
 Evas_Object *
-e_container_new(Evas *evas)
+esmart_container_new(Evas *evas)
 {
   Evas_Object *container;
 
@@ -35,7 +35,7 @@ e_container_new(Evas *evas)
     if (!cont) printf("wtf! (%s)\n", evas_object_type_get(container));
   }
   /* load the default layout plugin */
-  if (!e_container_layout_plugin_set(container, "default"))
+  if (!esmart_container_layout_plugin_set(container, "default"))
   {
     evas_object_del(container);
     return NULL;
@@ -112,7 +112,7 @@ _container_del(Evas_Object *obj)
 
   data = _container_fetch(obj);
   
-  e_container_empty(obj);
+  esmart_container_empty(obj);
   _container_layout_plugin_free(data->plugin);
   free(data);
 }
@@ -246,7 +246,7 @@ _container_resize(Evas_Object *obj, double w, double h)
 
   if (w == data->w && h == data->h) return;
 
-  old_length = e_container_elements_length_get(obj);
+  old_length = esmart_container_elements_length_get(obj);
 
   evas_object_resize(data->clipper, w, h);
   evas_object_resize(data->grabber, w, h);

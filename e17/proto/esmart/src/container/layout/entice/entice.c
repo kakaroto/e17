@@ -1,7 +1,7 @@
 #include <Evas.h>
 #include <Ecore.h>
 #include <math.h>
-#include "../../container.h"
+#include "../../Esmart_Container.h"
 
 static int _entice_current = 0;
 static int _entice_scroll_timer (void *data);
@@ -217,9 +217,9 @@ void
 _entice_scroll_start (Container * cont, double velocity)
 {
   Scroll_Data *data;
-  double length, size;
+  double length;
 
-  length = e_container_elements_length_get (cont->obj);
+  length = esmart_container_elements_length_get (cont->obj);
   data = calloc (1, sizeof (Scroll_Data));
   data->velocity = velocity;
   data->start_time = ecore_time_get ();

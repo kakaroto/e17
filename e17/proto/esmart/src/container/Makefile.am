@@ -9,10 +9,10 @@ installed_headersdir = $(prefix)/include/Esmart/
 noinst_LTLIBRARIES = libecontainer.la
 
 installed_headers_DATA = \
-	container.h 
+	Esmart_Container.h 
 
 libecontainer_la_SOURCES = \
-	container.c container.h \
+	container.c Esmart_Container.h \
 	container_element.c \
 	container_smart.c \
 	container_plugin.c container_plugin.h \

@@ -13,7 +13,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <errno.h>
-#include "../container/container.h"
+#include "../container/Esmart_Container.h"
 #include "../entry/Esmart_Text_Entry.h"
 #include "Esmart_File_Dialog.h"
 
@@ -110,17 +110,17 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 		{
 		  if (edje_object_part_exists (data->edje, part))
 		    {
-		      container = e_container_new (e);
-		      e_container_direction_set (container, 1);
-		      e_container_fill_policy_set (container,
+		      container = esmart_container_new (e);
+		      esmart_container_direction_set (container, 1);
+		      esmart_container_fill_policy_set (container,
 						   CONTAINER_FILL_POLICY_FILL_X);
 		      if ((str = edje_object_data_get (data->edje,
 						       "e,fd,container,files,direction")))
 			{
 			  if (!strcmp (str, "horizontal"))
 			    {
-			      e_container_direction_set (container, 0);
-			      e_container_fill_policy_set (container,
+			      esmart_container_direction_set (container, 0);
+			      esmart_container_fill_policy_set (container,
 							   CONTAINER_FILL_POLICY_FILL_Y);
 			    }
 			}
@@ -140,17 +140,17 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 		{
 		  if (edje_object_part_exists (data->edje, part))
 		    {
-		      container = e_container_new (e);
-		      e_container_direction_set (container, 1);
-		      e_container_fill_policy_set (container,
+		      container = esmart_container_new (e);
+		      esmart_container_direction_set (container, 1);
+		      esmart_container_fill_policy_set (container,
 						   CONTAINER_FILL_POLICY_FILL_X);
 		      if ((str = edje_object_data_get (data->edje,
 						       "e,fd,container,directory,direction")))
 			{
 			  if (!strcmp (str, "horizontal"))
 			    {
-			      e_container_direction_set (container, 0);
-			      e_container_fill_policy_set (container,
+			      esmart_container_direction_set (container, 0);
+			      esmart_container_fill_policy_set (container,
 							   CONTAINER_FILL_POLICY_FILL_Y);
 			    }
 			}
@@ -378,10 +378,10 @@ _esmart_file_dialog_scrollbar_cb (void *data, Evas_Object * o,
 	}
       if (oo)
 	{
-	  length = e_container_elements_length_get (oo);
+	  length = esmart_container_elements_length_get (oo);
 	  edje_object_part_drag_value_get (o, source, &dx, &dy);
 	  evas_object_geometry_get (oo, &cx, &cy, &cw, &ch);
-	  if (e_container_direction_get (oo) > 0)
+	  if (esmart_container_direction_get (oo) > 0)
 	    {
 	      if (length < ch)
 		return;
@@ -393,7 +393,7 @@ _esmart_file_dialog_scrollbar_cb (void *data, Evas_Object * o,
 		return;
 	      scroll = (int) (dx * (length - cw));
 	    }
-	  e_container_scroll_offset_set (oo, -scroll);
+	  esmart_container_scroll_offset_set (oo, -scroll);
 	}
     }
 }
@@ -469,9 +469,9 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 			  edje_object_part_text_set (fddata->edje, part, "");
 			}
 		      if (fddata->directories)
-			e_container_empty (fddata->directories);
+			esmart_container_empty (fddata->directories);
 		      if (fddata->files)
-			e_container_empty (fddata->files);
+			esmart_container_empty (fddata->files);
 
 		      evas_object_show (obj);
 #if 0
@@ -952,7 +952,7 @@ _esmart_file_dialog_object_show (Evas_Object * o)
 									  di->
 									  d_name)))
 			    {
-			      e_container_element_append (data->directories,
+			      esmart_container_element_append (data->directories,
 							  obj);
 			    }
 			}
@@ -965,15 +965,15 @@ _esmart_file_dialog_object_show (Evas_Object * o)
 									   di->
 									   d_name)))
 			    {
-			      e_container_element_append (data->files, obj);
+			      esmart_container_element_append (data->files, obj);
 			    }
 			}
 		    }
 		}
 	    }
 	  closedir (dir);
-	  e_container_sort (data->files, sort_cb);
-	  e_container_sort (data->directories, sort_cb);
+	  esmart_container_sort (data->files, sort_cb);
+	  esmart_container_sort (data->directories, sort_cb);
 	  data->func (data->fdata, o, DIR_CHANGED);
 	}
       else
@@ -993,8 +993,8 @@ _esmart_file_dialog_object_hide (Evas_Object * o)
     {
       evas_object_hide (data->clip);
 
-      e_container_empty (data->directories);
-      e_container_empty (data->files);
+      esmart_container_empty (data->directories);
+      esmart_container_empty (data->files);
     }
 }
 

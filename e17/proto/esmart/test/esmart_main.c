@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
-#include "container.h"
+#include "Esmart_Container.h"
 #include "Esmart_Thumb.h"
 #include "Esmart_Trans.h"
 #include "Esmart_Draggies.h"
@@ -97,9 +97,9 @@ bg_down_cb (void *data, Evas * evas, Evas_Object * obj, void *event_info)
 
   evas_object_geometry_get (obj, &x, NULL, &w, NULL);
   if (event->canvas.x < x + w / 2)
-    e_container_scroll_start (cont, -1);
+    esmart_container_scroll_start (cont, -1);
   else
-    e_container_scroll_start (cont, 1);
+    esmart_container_scroll_start (cont, 1);
 }
 
 static void
@@ -109,7 +109,7 @@ bg_up_cb (void *data, Evas * evas, Evas_Object * obj, void *event_info)
   Evas_Object *cont = data;
 
   printf ("up!\n");
-  e_container_scroll_stop (cont);
+  esmart_container_scroll_stop (cont);
 }
 
 int
@@ -176,15 +176,15 @@ main (int argc, char *argv[])
 	}
 
 
-      cont = e_container_new (evas);
+      cont = esmart_container_new (evas);
       evas_object_move (cont, 0, 0);
       evas_object_resize (cont, 300, 120);
       evas_object_layer_set (cont, 0);
       evas_object_name_set (cont, "container");
       evas_object_show (cont);
-      e_container_padding_set (cont, 10, 10, 10, 10);
-      e_container_spacing_set (cont, 5);
-      e_container_fill_policy_set (cont,
+      esmart_container_padding_set (cont, 10, 10, 10, 10);
+      esmart_container_spacing_set (cont, 5);
+      esmart_container_fill_policy_set (cont,
 				   CONTAINER_FILL_POLICY_FILL_Y |
 				   CONTAINER_FILL_POLICY_KEEP_ASPECT);
 
@@ -200,7 +200,7 @@ main (int argc, char *argv[])
 	    {
 	      evas_object_layer_set (o, 2);
 	      evas_object_show (o);
-	      e_container_element_append (cont, o);
+	      esmart_container_element_append (cont, o);
 	    }
 	}
       evas_object_resize (cont, 300, 120);

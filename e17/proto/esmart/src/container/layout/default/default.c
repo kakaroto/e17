@@ -1,7 +1,7 @@
 #include <Evas.h>
 #include <Ecore.h>
 #include <math.h>
-#include "../../container.h"
+#include "../../Esmart_Container.h"
 
 int _container_scroll_timer(void *data);
 
@@ -39,7 +39,7 @@ _default_layout(Container *cont)
   if (cont->direction) iy += cont->scroll_offset;
   else ix += cont->scroll_offset;
 
-  L = e_container_elements_orig_length_get(cont->obj);
+  L = esmart_container_elements_orig_length_get(cont->obj);
   num = evas_list_count(cont->elements);
   
   
@@ -223,7 +223,7 @@ void _default_scroll_start(Container *cont, double velocity)
   Scroll_Data *data;
   double length, size;
 
-  length = e_container_elements_length_get(cont->obj);
+  length = esmart_container_elements_length_get(cont->obj);
   size = cont->direction ? cont->h : cont->w;
 
   /* don't scroll unless the elements exceed the size of the container */
