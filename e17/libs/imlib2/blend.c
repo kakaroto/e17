@@ -51,6 +51,7 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
       h = dst_h - dy;   
    if ((w <= 0) || (h <= 0))
       return;
+   printf("%i\n", dalpha);
    if (cm)
      {
 	switch(op)
@@ -237,7 +238,7 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  tmp = (b - bb) * a;
 		  nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -361,7 +362,7 @@ __imlib_AddBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  tmp = bb + ((b * a) >> 8);
 		  nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -523,7 +524,7 @@ __imlib_SubBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  tmp = bb - ((b * a) >> 8);
 		  nb = tmp & (~(tmp >> 8));
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -686,7 +687,7 @@ __imlib_ReBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 		  tmp = bb + (((b - 127) * a) >> 7);
 		  nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -873,7 +874,7 @@ __imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump
 		  tmp = (b - bb) * a;
 		  nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -1021,7 +1022,7 @@ __imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_j
 		  tmp = bb + ((b * a) >> 8);
 		  nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -1191,7 +1192,7 @@ __imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_j
 		  tmp = bb - ((b * a) >> 8);
 		  nb = tmp & (~(tmp >> 8));
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
@@ -1362,7 +1363,7 @@ __imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
 		  tmp = bb + (((b - 127) * a) >> 7);
 		  nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));
 		  tmp = a + aa;
-		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));
 		  *p2 = (na << 24) | (nr << 16) | 
 		     (ng << 8) | nb;
 	       }
