@@ -6,7 +6,7 @@ cflags_set=${CFLAGS+set}
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(imlib, 1.9.5)
+AM_INIT_AUTOMAKE(imlib, 1.9.8)
 
 AM_PROG_LIBTOOL
 
