@@ -145,6 +145,7 @@ __imlib_NewContext(Display *d, Visual *v, Colormap c, int depth)
 {
    Context     *ct;
    
+   printf("new context\n");
    context_counter++;
    ct = malloc(sizeof(Context));
    ct->last_use = context_counter;

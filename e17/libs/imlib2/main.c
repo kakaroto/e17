@@ -85,6 +85,11 @@ int main (int argc, char **argv)
 	     w = atoi(argv[i++]);
 	     h = atoi(argv[i]);
 	  }
+	else if (!strcmp(argv[i], "-maxcolors"))
+	  {
+	     i++;
+	     imlib_set_color_usage(atoi(argv[i]));
+	  }
 	else
 	   file = argv[i];
      }

@@ -40,7 +40,8 @@ __imlib_AllocColorTable(Display *d, Colormap cmap, DATA8 *type_return)
 	*type_return = _pal_type;
 	return color_lut;
      }
-   __imlib_AllocColors1(d, cmap);
+   color_lut = __imlib_AllocColors1(d, cmap);
+   *type_return = _pal_type;
    return color_lut;
 }
 
@@ -60,10 +61,10 @@ __imlib_AllocColors332(Display *d, Colormap cmap)
 		  XColor xcl;
 		  int val;
 		  
-		  val = (r << 5) | (r << 2) | (r >> 1);
-		  xcl.red = (unsigned short)((val << 8) | (val));
-		  val = (g << 5) | (g << 2) | (g >> 1);
-		  xcl.green = (unsigned short)((val << 8) | (val));
+		  val = (r << 6) | (r << 3) | (r);
+		  xcl.red = (unsigned short)((val << 7) | (val >> 2));
+		  val = (g << 6) | (g << 3) | (g);
+		  xcl.green = (unsigned short)((val << 7) | (val >> 2));
 		  val = (b << 6) | (b << 4) | (b << 2) | (b);
 		  xcl.blue = (unsigned short)((val << 8) | (val));
 		  if (!XAllocColor(d, cmap, &xcl))
@@ -107,8 +108,8 @@ __imlib_AllocColors232(Display *d, Colormap cmap)
 		  
 		  val = (r << 6) | (r << 4) | (r << 2) | (r);
 		  xcl.red = (unsigned short)((val << 8) | (val));
-		  val = (g << 5) | (g << 2) | (g >> 1);
-		  xcl.green = (unsigned short)((val << 8) | (val));
+		  val = (g << 6) | (g << 3) | (g);
+		  xcl.green = (unsigned short)((val << 7) | (val >> 2));
 		  val = (b << 6) | (b << 4) | (b << 2) | (b);
 		  xcl.blue = (unsigned short)((val << 8) | (val));
 		  if (!XAllocColor(d, cmap, &xcl))
