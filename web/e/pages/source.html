@@ -45,11 +45,11 @@ E : N : L : I : G : H : T : E : N : M : E : N : T
 <a class="qindex" href="news.html">News</a><br>
 <a class="qindex" href="faq.html">FAQ</a><br>
 <a class="qindex" href="docs.html">Documentation</a><br>
-<a class="qindex" href="shots.html">Screenshots</a><br>
 <a class="qindex" href="http://sourceforge.net/project/showfiles.php?group_id=2">Download</a><br>
 <a class="qindex" href="source.html">CVS</a><br>
 <a class="qindex" href="team.html">The Team</a><br>
-<a class="qindex" href="mail.html#links">Links</a><br>
+<a class="qindex" href="support.html">Support</a><br>
+<a class="qindex" href="links.html">Links</a><br>
 </p>
 </td></tr>
 </table>
@@ -64,6 +64,7 @@ E : N : L : I : G : H : T : E : N : M : E : N : T
 <p class="items">
 <a class="qindex" href="imlib.html">Imlib</a><br>
 <a class="qindex" href="download.html">Enlightenment</a><br>
+<a class="qindex" href="shots.html">Screenshots</a><br>
 <a class="qindex" href="features-0.16.html">Features</a><br>
 <a class="qindex" href="download.html">Download</a><br>
 <a class="qindex" href="http://themes.freshmeat.net/browse/60/?topic_id=60">Themes [fm]</a><br>
@@ -163,58 +164,32 @@ cvs -z3 -d:pserver:anonymous@cvs.enlightenment.sourceforge.net:/cvsroot/enlighte
 
 <table class="content" border="0" cellpadding="2" cellspacing="2" width="100%">
 <tr><td class="newstitle">Module name</td><td class="newstitle">Content</td></tr>
-<tr valign="top"><td>e17</td><td>[E17's <a href="components.html">components</a>] <a href="cvsnotes.html">[Build Notes - <b>READ THIS!</b>]</a></td></tr>
-<tr valign="top" class="team-dark"><td>e16</td><td>E 16's sources</td></tr>
-<tr valign="top"><td>eterm</td><td>Eterm's sources</td></tr>
-<tr valign="top" class="team-dark"><td>misc</td><td>Miscellaneous tools</td></tr>
-<tr valign="top"><td>web</td><td>The website</td></tr>
+<tr valign="top">
+	<td><a href="http://cvs.sourceforge.net/viewcvs.py/enlightenment/e17/">e17</a></td>
+	<td>[E17's <a href="components.html">components</a>] <a href="cvsnotes.html">[Build Notes - <b>READ THIS!</b>]</a></td>
+</tr>
+<tr valign="top" class="team-dark">
+	<td><a href="http://cvs.sourceforge.net/viewcvs.py/enlightenment/e16/">e16</a></td>
+	<td>E 16's sources</td>
+</tr>
+<tr valign="top">
+	<td><a href="http://cvs.sourceforge.net/viewcvs.py/enlightenment/eterm/">eterm</a></td>
+	<td>Eterm's sources</td>
+</tr>
+<tr valign="top" class="team-dark">
+	<td><a href="http://cvs.sourceforge.net/viewcvs.py/enlightenment/misc/">misc</a></td>
+	<td>Miscellaneous tools</td>
+</tr>
 </table>
 
-<p>For those without direct access to CVS (due to company firewalls or
-whatever) there are some other options for fetching the source code:</p>
+<br>
 
 <p><b>Browse the CVS repository online</b></p>
 <p><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/enlightenment/">http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/enlightenment/</a></p>
 <p>The entire CVS repository (including version history) is available and can
-be browsed via the web. Admire the pretty colours and syntax highlighting.</p>
+be browsed via the web.</p>
 
 <hr>
-
-<p><b>Unofficial E-CVS module tarballs</b></p>
-<p><a href="http://ftp.neep.com.au/pub/snapshots/cvs.enlightenment.sourceforge.net/">http://ftp.neep.com.au/pub/snapshots/cvs.enlightenment.sourceforge.net/</a> (HTTP)</p>
-<p><a href="ftp://ftp.neep.com.au/pub/neep/pub/snapshots/cvs.enlightenment.sourceforge.net/">ftp://ftp.neep.com.au/pub/neep/pub/snapshots/cvs.enlightenment.sourceforge.net</a> (FTP)</p>
-<p>Weekly snapshots of all the modules are available from Neep Consulting's web
-and FTP sites. Andrew tries to keep the collection vaguely up to date. As of
-August '01 the tarballs total about 36MB. Contact Andrew Shugg via the "Team"
-page if you have any enquiries or problems with these; this is not a supported
-service by the E developers.</p>
-
-<hr>
-
-<p><b>SourceForge CVS repository tarball</b></p>
-<p><a href="http://cvs.sourceforge.net/cvstarballs/enlightenment-cvsroot.tar.bz2">http://cvs.sourceforge.net/cvstarballs/enlightenment-cvsroot.tar.bz2</a></p>
-<p>Warning: this is SourceForge's nightly tarball (or daily snapshot - the
-nomenclature is inconsistent) of the <em>entire repository</em>. That means full
-CVS history on every file, Attic, the lot; it's a complete backup.  As of August
-'03 the enlightenment-cvsroot.tar.bz2 file weighs in at 259MB and is only going
-to get bigger with time. Not recommended for the faint of heart.</p>
-<p>If you download this and create your own local E CVS repository you would be
-advised to hack up some procmail script to grab diffs from the enlightenment-cvs
-mailing list as the main repository is updated. For new files and directories
-you'll probably have to manually get them using the web interface below. Again,
-this course of action is not for the faint of heart. =)</p>
-
-<p>Our CVS repository is hosted by the good boys and girls at 
-<a href="http://sourceforge.net">SourceForge</a>.  You can get more info
-about using their CVS servers in their 
-<a href="http://sourceforge.net/docman/display_doc.php?docid=763&amp;group_id=1">SourceForge CVS HOWTO</a>.</p>
-
-<p>
-Please note that E 0.17 is intended for use only by developers and
-those who have the time and programming skill to help out.  If you
-cannot get it to build and run on your own, please do not ask the
-developers for help.  Simply wait until it is released and ready for
-public consumption.</p>
 
 </td>
 </tr>

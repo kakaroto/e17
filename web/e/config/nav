@@ -16,11 +16,11 @@
 <a class="qindex" href="news.html">News</a><br>
 <a class="qindex" href="faq.html">FAQ</a><br>
 <a class="qindex" href="docs.html">Documentation</a><br>
-<a class="qindex" href="shots.html">Screenshots</a><br>
 <a class="qindex" href="http://sourceforge.net/project/showfiles.php?group_id=2">Download</a><br>
 <a class="qindex" href="source.html">CVS</a><br>
 <a class="qindex" href="team.html">The Team</a><br>
-<a class="qindex" href="mail.html#links">Links</a><br>
+<a class="qindex" href="support.html">Support</a><br>
+<a class="qindex" href="links.html">Links</a><br>
 </p>
 </td></tr>
 </table>
@@ -35,6 +35,7 @@
 <p class="items">
 <a class="qindex" href="imlib.html">Imlib</a><br>
 <a class="qindex" href="download.html">Enlightenment</a><br>
+<a class="qindex" href="shots.html">Screenshots</a><br>
 <a class="qindex" href="features-0.16.html">Features</a><br>
 <a class="qindex" href="download.html">Download</a><br>
 <a class="qindex" href="http://themes.freshmeat.net/browse/60/?topic_id=60">Themes [fm]</a><br>
