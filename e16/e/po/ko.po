@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-21 21:00-0400\n"
+"POT-Creation-Date: 2003-04-25 17:46+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -1217,19 +1217,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "ImageClass 에러!"
 
-#: src/iconify.c:2394
+#: src/iconify.c:2383
 msgid "Iconbox Options"
 msgstr "아이콘상자 옵션"
 
-#: src/iconify.c:2399
+#: src/iconify.c:2388
 msgid "This Iconbox Settings..."
 msgstr "이 아이콘상자 설정..."
 
-#: src/iconify.c:2402
+#: src/iconify.c:2391
 msgid "Close Iconbox"
 msgstr "아이콘상자 닫기"
 
-#: src/iconify.c:2404
+#: src/iconify.c:2393
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
@@ -1276,6 +1276,7 @@ msgstr ""
 "인라이튼먼트 버전 : %s\n"
 "현재의 코드       : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "인라이튼먼트 메시지 대화상자"

@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-21 21:00-0400\n"
+"POT-Creation-Date: 2003-04-25 17:46+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1242,19 +1242,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "imageclass エラー"
 
-#: src/iconify.c:2394
+#: src/iconify.c:2383
 msgid "Iconbox Options"
 msgstr "アイコンボックス オプション"
 
-#: src/iconify.c:2399
+#: src/iconify.c:2388
 msgid "This Iconbox Settings..."
 msgstr "このアイコンボックスの設定..."
 
-#: src/iconify.c:2402
+#: src/iconify.c:2391
 msgid "Close Iconbox"
 msgstr "アイコンボックスを閉じる"
 
-#: src/iconify.c:2404
+#: src/iconify.c:2393
 msgid "Create New Iconbox"
 msgstr "アイコンボックスの新規作成"
 
@@ -1301,6 +1301,7 @@ msgstr ""
 "Enlightenment バージョン: %s\n"
 "コードバージョン        : %s\n"
 
+#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment メッセージダイアログ"

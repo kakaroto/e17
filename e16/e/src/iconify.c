@@ -23,6 +23,8 @@
 #include "E.h"
 #include <math.h>
 
+#define _COORD_MODULO(a, b, c) { a = b % c; if (a < 0) a += c; }
+
 static void         IcondefChecker(int val, void *data);
 
 #define IB_ANIM_TIME 0.25
@@ -227,11 +229,6 @@ IconifyEwin(EWin * ewin)
              UpdateAppIcon(ewin, ib->icon_mode);
           }
         HideEwin(ewin);
-        MoveEwin(ewin,
-                 ewin->x + ((desks.desk[ewin->desktop].current_area_x) -
-                            ewin->area_x) * root.w,
-                 ewin->y + ((desks.desk[ewin->desktop].current_area_y) -
-                            ewin->area_y) * root.h);
         if (was_shaded != ewin->shaded)
            InstantShadeEwin(ewin);
         MakeIcon(ewin);
@@ -258,15 +255,6 @@ IconifyEwin(EWin * ewin)
                        if (!lst[i]->iconified)
                          {
                             HideEwin(lst[i]);
-                            MoveEwin(lst[i],
-                                     lst[i]->x +
-                                     ((desks.desk
-                                       [lst[i]->desktop].current_area_x) -
-                                      lst[i]->area_x) * root.w,
-                                     lst[i]->y +
-                                     ((desks.desk
-                                       [lst[i]->desktop].current_area_y) -
-                                      lst[i]->area_y) * root.h);
                             lst[i]->iconified = 4;
                             if (lst[i] == mode.focuswin)
                                FocusToEWin(NULL);
@@ -288,6 +276,7 @@ DeIconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
    Iconbox            *ib;
+   int                 x, y;
 
    EDBUG(6, "DeIconifyEwin");
    call_depth++;
@@ -302,9 +291,9 @@ DeIconifyEwin(EWin * ewin)
         RemoveMiniIcon(ewin);
         if (!ewin->sticky)
           {
-             MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
-             ewin->area_x = desks.desk[desks.current].current_area_x;
-             ewin->area_y = desks.desk[desks.current].current_area_y;
+             _COORD_MODULO(x, ewin->x, root.w);
+             _COORD_MODULO(y, ewin->y, root.h);
+             MoveEwinToDesktopAt(ewin, desks.current, x, y);
           }
         else
            ConformEwinToDesktop(ewin);
@@ -333,12 +322,10 @@ DeIconifyEwin(EWin * ewin)
                          {
                             if (!lst[i]->sticky)
                               {
+                                 _COORD_MODULO(x, lst[i]->x, root.w);
+                                 _COORD_MODULO(y, lst[i]->y, root.h);
                                  MoveEwinToDesktopAt(lst[i], desks.current,
-                                                     lst[i]->x, lst[i]->y);
-                                 lst[i]->area_x =
-                                     desks.desk[desks.current].current_area_x;
-                                 lst[i]->area_y =
-                                     desks.desk[desks.current].current_area_y;
+                                                     x, y);
                               }
                             else
                                ConformEwinToDesktop(lst[i]);
@@ -1140,6 +1127,8 @@ SelectIconboxForEwin(EWin * ewin)
                {
                   int                 dx, dy, dist;
 
+                  if (ib[i]->ewin == NULL)
+                     continue;
                   dx = (ib[i]->ewin->x + (ib[i]->ewin->w / 2)) - (ewin->x +
                                                                   (ewin->w /
                                                                    2));

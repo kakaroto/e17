@@ -1815,3 +1815,10 @@ cursor support.
 Patch from Kim Woelders <kim@woelders.dk> for further hint work.
 
 Also fixed support for KDE hints.
+
+-------------------------------------------------------------------------------
+
+Sun Apr 27 18:29:09 CEST 2003
+(Kim)
+
+Fix (de-)iconify problem related to EWMH changes.

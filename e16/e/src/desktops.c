@@ -1368,6 +1368,10 @@ ConformEwinToDesktop(EWin * ewin)
         StackDesktops();
         SetEwinToCurrentArea(ewin);
      }
+   else
+     {
+        MoveEwin(ewin, ewin->x, ewin->y);
+     }
    HintsSetWindowDesktop(ewin);
    EDBUG_RETURN_;
 }
@@ -2098,15 +2102,18 @@ DesktopAddEwinToBottom(EWin * ewin)
 void
 MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
 {
-   int                 dx, dy, pdesk;
+   int                 dx, dy;
 
    EDBUG(3, "MoveEwinToDesktopAt");
 /*   ewin->sticky = 0; */
-   pdesk = ewin->desktop;
    ewin->floating = 0;
-   DesktopRemoveEwin(ewin);
-   ewin->desktop = DESKTOPS_WRAP_NUM(num);
-   DesktopAddEwinToTop(ewin);
+   if (num != ewin->desktop)
+     {
+        DesktopRemoveEwin(ewin);
+        ForceUpdatePagersForDesktop(ewin->desktop);
+        ewin->desktop = DESKTOPS_WRAP_NUM(num);
+        DesktopAddEwinToTop(ewin);
+     }
    dx = x - ewin->x;
    dy = y - ewin->y;
    ewin->x = x;
@@ -2128,7 +2135,6 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
              Efree(lst);
           }
      }
-   ForceUpdatePagersForDesktop(pdesk);
    ForceUpdatePagersForDesktop(ewin->desktop);
    EDBUG_RETURN_;
 }
