@@ -42,7 +42,8 @@ __imlib_BestVisual(Display *d, int screen, int *depth_return)
 	     maxd = 0;
 	     for (i = 0; i < num; i++)
 	       {
-		  if (xvir[i].depth > maxd)
+		  if ((xvir[i].depth > maxd) &&
+		      (xvir[i].depth <= 24))
 		    {
 		       maxd = xvir[i].depth;
 		       v = xvir[i].visual;
