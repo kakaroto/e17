@@ -2395,12 +2395,12 @@ HandleMouseUp(XEvent * ev)
 			      {
 				 if (!gwins[i]->sticky)
 				    MoveEwinToDesktopAt(gwins[i], pp->desktop,
-							wx + (gwin_px[i] - base_x),
-							wy + (gwin_py[i] - base_y));
+						   wx + (gwin_px[i] - base_x),
+						  wy + (gwin_py[i] - base_y));
 				 else
 				    MoveEwin(gwins[i],
-					     wx + (gwin_px[i] - base_x),
-					     wy + (gwin_py[i] - base_y));
+					     ((root.w * ax) + wx + (gwin_px[i] - base_x)) % root.w,
+					     ((root.h * ay) + wy + (gwin_py[i] - base_y)) % root.h);
 			      }
 			 }
 		    }
@@ -2441,7 +2441,8 @@ HandleMouseUp(XEvent * ev)
 		    }
 		  else
 		    {
-		       int                 ndesk, nx, ny, base_x = 0, base_y = 0;
+		       int                 ndesk, nx, ny, base_x = 0, base_y = 0,
+		                           ax, ay;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -
@@ -2450,6 +2451,7 @@ HandleMouseUp(XEvent * ev)
 		       ny = (int)ev->xbutton.y_root -
 			  desks.desk[desks.current].y -
 			  ((int)p->hi_ewin->h / 2);
+		       GetAreaSize(&ax, &ay);
 
 		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
 							  mode.nogroup, &num);
@@ -2461,8 +2463,13 @@ HandleMouseUp(XEvent * ev)
 			    }
 		       for (i = 0; i < num; i++)
 			 {
-			    MoveEwin(gwins[i], nx + (gwin_px[i] - base_x),
-				     ny + (gwin_py[i] - base_y));
+			    if (!gwins[i]->sticky)
+			       MoveEwin(gwins[i], nx + (gwin_px[i] - base_x),
+					ny + (gwin_py[i] - base_y));
+			    else
+			       MoveEwin(gwins[i],
+					((root.w * ax) + nx + (gwin_px[i] - base_x)) % root.w,
+					((root.h * ay) + ny + (gwin_py[i] - base_y)) % root.h);
 			    if (!gwins[i]->sticky)
 			       MoveEwinToDesktop(gwins[i], ndesk);
 			 }

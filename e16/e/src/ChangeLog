@@ -3872,3 +3872,11 @@ Sat Nov  6 10:51:24 PST 1999
 
 removed two warnings when compiled with --disable-zoom
 
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 11:54:31 PST 1999
+(Raster)
+
+fixed sticky windows beig moved by the pager problems....... :) you can't lose
+them now anyway... :)
