@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-03-06 22:55+0100\n"
-"PO-Revision-Date: 2000-01-28 18:35-0700\n"
-"Last-Translator: Pedro Alexandre <miguel@linuxfreak.com>\n"
+"PO-Revision-Date: 2000-03-07 16:35+0100\n"
+"Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -1928,7 +1928,7 @@ msgstr "Mostrar e usar lista de foco"
 
 #: src/settings.c:512
 msgid "Include sticky windows in focus list"
-msgstr ""
+msgstr "Incluir janelas pegadas na lista de foco"
 
 #: src/settings.c:520
 msgid "Raise windows after focus switch"
@@ -2123,7 +2123,7 @@ msgstr "Mostrar sempre menus no ecrã"
 
 #: src/settings.c:1782
 msgid "Warp pointer after moving menus"
-msgstr ""
+msgstr "Posicionar ponteiro após mover menus"
 
 #: src/settings.c:1791
 msgid "Use saveunders to reduce window exposures"
@@ -2639,11 +2639,11 @@ msgstr "Nivel de empilhamento"
 
 #: src/snaps.c:485
 msgid "Window List Skip"
-msgstr ""
+msgstr "Não aparecer na Lista de Janelas"
 
 #: src/snaps.c:494
 msgid "Never Focus"
-msgstr ""
+msgstr "Nunca ter foco"
 
 #: src/snaps.c:514
 msgid "Restart application on login"
