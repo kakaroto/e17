@@ -17,7 +17,7 @@ clean:
 iconbar: $(OBJECTS)
 	$(CC) -g -o $@ $(OBJECTS) $(LIBRARIES)
 
-.o:
+.c.o:
 	$(CC)  $(INCLUDES) -c  $<
 
 install:
