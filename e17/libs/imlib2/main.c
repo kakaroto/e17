@@ -305,13 +305,13 @@ int main (int argc, char **argv)
 		       rg = imlib_create_color_range();
 		       cl.red = 255; cl.green = 255; cl.blue = 255; cl.alpha = 255;
 		       imlib_add_color_to_color_range(rg, &cl, 0);
-		       cl.red = 255; cl.green = 255; cl.blue = 160; cl.alpha = 200;
+		       cl.red = 255; cl.green = 255; cl.blue = 160; cl.alpha = 255;
 		       imlib_add_color_to_color_range(rg, &cl, 1);
-		       cl.red = 255; cl.green = 160; cl.blue = 120; cl.alpha = 140;
+		       cl.red = 255; cl.green = 160; cl.blue = 120; cl.alpha = 255;
 		       imlib_add_color_to_color_range(rg, &cl, 1);
-		       cl.red = 100; cl.green = 80; cl.blue = 100; cl.alpha = 80;
+		       cl.red = 100; cl.green = 80; cl.blue = 100; cl.alpha = 255;
 		       imlib_add_color_to_color_range(rg, &cl, 1);
-		       cl.red = 32; cl.green = 48; cl.blue = 80; cl.alpha = 0;
+		       cl.red = 32; cl.green = 48; cl.blue = 80; cl.alpha = 255;
 		       imlib_add_color_to_color_range(rg, &cl, 1);
 		    }
 		  imlib_image_fill_color_range_rectangle(im, 60, 60, 256, 256, 

@@ -1125,11 +1125,11 @@ __imlib_SaveImage(ImlibImage *im, char *file,
 		  ImlibLoadError *er)
 {
    ImlibLoader *l;
-   ImlibLoadError e;
+   char e, *pfile;
 
-   if (!im->file)
+   if (!file)
      {
-	if (*er)
+	if (er)
 	   *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	return;
      }
@@ -1150,13 +1150,19 @@ __imlib_SaveImage(ImlibImage *im, char *file,
 	return;
      }
    /* if they want an error returned - assume none by default */
-   if (*er)
+   if (er)
       *er = LOAD_ERROR_NONE;
-   if (im->file)
-      free(im->file);
    
+   /* set the filename to the saved one */
+   pfile = im->file;
+   im->file = strdup(file);
+
+   /* call the saver */
    e = l->save(im, progress, progress_granularity);
-   
+   /* set the filename back to the laoder image filename */
+   im->file = pfile;
+
+   /* if there's an error return and the save faile (e = 0) figure it out */
    if ((er) && (e == 0))
      {
 	*er = LOAD_ERROR_UNKNOWN;

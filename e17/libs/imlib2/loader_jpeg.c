@@ -202,9 +202,94 @@ save (ImlibImage *im,
 		       int update_w, int update_h),
       char progress_granularity)
 {
-	im = NULL;
-	progress = NULL;
-   return 0;
+   struct              jpeg_compress_struct cinfo;
+   struct              ImLib_JPEG_error_mgr jerr;
+   FILE               *f;
+   DATA8              *buf;
+   DATA32             *ptr;
+   JSAMPROW           *jbuf;
+   int                 y = 0, quality = 75;
+   ImlibImageTag      *tag;
+
+   /* no image data? abort */
+   if (!im->data)
+      return 0;
+   /* allocate a small buffer to convert image data */
+   buf = malloc(im->w * 3 * sizeof(DATA8));
+   if (!buf)
+      return 0;
+   f = fopen(im->file, "wb");
+   if (!f)
+     {
+	free(buf);
+	return 0;
+     }
+   /* set up error handling */
+   cinfo.err = jpeg_std_error(&(jerr.pub));
+   jerr.pub.error_exit = _JPEGFatalErrorHandler;
+   if (sigsetjmp(jerr.setjmp_buffer, 1))
+     {
+	jpeg_destroy_compress(&cinfo);
+	free(buf);
+	fclose(f);
+	return 0;
+     }
+   /* setup compress params */
+   jpeg_create_compress(&cinfo);
+   jpeg_stdio_dest(&cinfo, f);
+   cinfo.image_width      = im->w;
+   cinfo.image_height     = im->h;
+   cinfo.input_components = 3;
+   cinfo.in_color_space   = JCS_RGB;
+ 
+   /* look for tags attached to image to get extra parameters liek quality */
+   /* settigns etc. - thsi si the "api" to hint for extra information for */
+   /* saver modules */
+   tag = __imlib_GetTag(im, "quality");
+   if (tag)
+      quality = tag->val;
+   if (quality < 1)
+      quality = 1;
+   if (quality > 100)
+      quality = 100;
+
+   /* set up jepg compression parameters */
+   jpeg_set_defaults(&cinfo);
+   jpeg_set_quality(&cinfo, quality, TRUE);
+   jpeg_start_compress(&cinfo, TRUE);
+   /* get the start pointer */
+   ptr = im->data;
+   /* go one scanline at a time... and save */
+   while (cinfo.next_scanline < cinfo.image_height)
+     {
+	int i, j;
+	
+	/* convcert scaline from ARGB to RGB packed */
+	for (j = 0, i = 0; i < im->w; i++)
+	  {
+	     buf[j++] = ((*ptr) >> 16) & 0xff;
+	     buf[j++] = ((*ptr) >> 8 ) & 0xff;
+	     buf[j++] = ((*ptr)      ) & 0xff;
+	     ptr++;
+	  }	
+	/* write scanline */
+	jbuf = (JSAMPROW *)(&buf);
+	jpeg_write_scanlines(&cinfo, jbuf, 1);
+	y++;
+	if (progress)
+	  {
+	     char per;
+	     
+	     per = (char)((100 * y) / im->h);
+	     progress(im, per, 0, y, im->w, 1);
+	  }
+     }
+   /* finish off */
+   jpeg_finish_compress(&cinfo);   
+   free(buf);
+   fclose(f);
+   return 1;
+   progress = NULL;
 }
 
 void 

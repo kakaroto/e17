@@ -1863,6 +1863,8 @@ imlib_save_image(Imlib_Image image, char *filename)
    ImlibImage *im;
       
    CAST_IMAGE(im, image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_SaveImage(im, filename, NULL, 0, NULL);
 }
 
@@ -1874,6 +1876,8 @@ imlib_save_image_with_progress_callback(Imlib_Image image, char *filename,
    ImlibImage *im;
       
    CAST_IMAGE(im, image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_SaveImage(im, filename, progress_function, 
 		     progress_granulatiy, NULL);
 }
@@ -1885,6 +1889,8 @@ imlib_save_image_with_error_return(Imlib_Image image, char *filename,
    ImlibImage *im;
       
    CAST_IMAGE(im, image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_SaveImage(im, filename, NULL, 0, error_return);
 }
 
@@ -1898,6 +1904,8 @@ imlib_save_image_with_progress_callback_and_error_return(Imlib_Image image,
    ImlibImage *im;
       
    CAST_IMAGE(im, image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_SaveImage(im, filename,progress_function, 
 		     progress_granulatiy, error_return);
 }
