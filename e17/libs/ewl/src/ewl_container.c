@@ -449,14 +449,22 @@ void ewl_container_reset(Ewl_Container * c)
 	while (c->redirect)
 		c = c->redirect;
 
+	if (!c->children)
+		DRETURN(DLEVEL_STABLE);
+
 	/*
 	 * Loop through removing each child and destroying it.
 	 */
-	while ((w = ewd_list_goto_last(c->children))) {
+	ewd_list_goto_first(c->children);
+	while ((w = ewd_list_current(c->children))) {
 		if (!ewl_object_has_flags(EWL_OBJECT(w),
 					EWL_FLAG_PROPERTY_INTERNAL,
-					EWL_FLAGS_PROPERTY_MASK))
-			ewl_container_remove_child(c, w);
+					EWL_FLAGS_PROPERTY_MASK)) {
+			ewd_list_remove(c->children);
+			ewl_widget_destroy(w);
+		}
+		else
+			ewd_list_next(c->children);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

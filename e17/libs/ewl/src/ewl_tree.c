@@ -425,6 +425,9 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	if (node->expanded == EWL_TREE_NODE_COLLAPSED)
 		DRETURN(DLEVEL_STABLE);
 
+	if (!EWL_CONTAINER(node)->children)
+		DRETURN(DLEVEL_STABLE);
+
 	ewd_list_goto_first(EWL_CONTAINER(node)->children);
 	ewd_list_next(EWL_CONTAINER(node)->children);
 
