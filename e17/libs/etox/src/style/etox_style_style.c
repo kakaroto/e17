@@ -733,36 +733,36 @@ static void __etox_style_style_read(Etox_Style_Style_Info * info)
 		layer = (Etox_Style_Style_Layer *)calloc(sizeof(Etox_Style_Style_Layer),
 						     1);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/stack", i);
+		snprintf(key, sizeof(key), "/layers/%d/stack", i);
 		e_db_int_get(info->style_db, key, &layer->stack);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/size_change", i);
+		snprintf(key, sizeof(key), "/layers/%d/size_change", i);
 		e_db_int_get(info->style_db, key, &layer->size_change);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/x_offset", i);
+		snprintf(key, sizeof(key), "/layers/%d/x_offset", i);
 		e_db_float_get(info->style_db, key, &x_offset);
 		layer->x_offset = x_offset;
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/y_offset", i);
+		snprintf(key, sizeof(key), "/layers/%d/y_offset", i);
 		e_db_float_get(info->style_db, key, &y_offset);
 		layer->y_offset = y_offset;
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/relative_color", i);
+		snprintf(key, sizeof(key), "/layers/%d/relative_color", i);
 		e_db_int_get(info->style_db, key, &layer->relative_color);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/blend_alpha", i);
+		snprintf(key, sizeof(key), "/layers/%d/blend_alpha", i);
 		e_db_int_get(info->style_db, key, &layer->blend_alpha);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/color/a", i);
+		snprintf(key, sizeof(key), "/layers/%d/color/a", i);
 		e_db_int_get(info->style_db, key, &layer->a);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/color/r", i);
+		snprintf(key, sizeof(key), "/layers/%d/color/r", i);
 		e_db_int_get(info->style_db, key, &layer->r);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/color/g", i);
+		snprintf(key, sizeof(key), "/layers/%d/color/g", i);
 		e_db_int_get(info->style_db, key, &layer->g);
 
-		snprintf(key, sizeof(key)-1, "/layers/%d/color/b", i);
+		snprintf(key, sizeof(key), "/layers/%d/color/b", i);
 		e_db_int_get(info->style_db, key, &layer->b);
 
 		/*
