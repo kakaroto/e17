@@ -121,6 +121,9 @@ static ePlayer *eplayer_new() {
 
 	player->playlist = playlist_new(player->input_plugins);
 
+	playlist_item_add_cb_set(player->playlist,
+	                         show_playlist_item, player);
+
 	/* load the output plugin */
 	player->output = plugin_new(player->cfg.output_plugin,
 	                            PLUGIN_TYPE_OUTPUT);
@@ -187,9 +190,28 @@ void eplayer_playback_start(ePlayer *player, int rewind_track) {
 	               (void *) &track_play_chunk, player);
 }
 
+/**
+ * Add files/directories/m3u's to the playlist
+ *
+ * @param player
+ */
+static int load_playlist(void *data) {
+	ePlayer *player = data;
+	int i;
+
+	for (i = 1; player->args[i]; i++)
+		playlist_load_any(player->playlist, player->args[i], i > 1);
+
+	if (player->playlist->num)
+		track_open(player);
+		
+	refresh_time(player, 0);
+
+	return 0; /* stop timer */
+}
+
 int main(int argc, const char **argv) {
 	ePlayer *player;
-	int i;
 
 	if (argc == 1) {
 		printf("%s v%s  - Usage: %s playlist.m3u [file.ogg] [some/dir] ...\n\n",
@@ -200,28 +222,16 @@ int main(int argc, const char **argv) {
 	if (!(player = eplayer_new()))
 		return 1;
 	
-	/* add files/directories/m3u's to the playlist */
-	for (i = 1; i < argc; i++)
-		playlist_load_any(player->playlist, argv[i], i > 1);
-	
-	if (!player->playlist->num) {
-		debug(DEBUG_LEVEL_CRITICAL, "No files loaded!\n");
-		eplayer_free(player);
-		return 1;
-	}
-	
 	if (!setup_gui(player)) {
 		eplayer_free(player);
 		return 1;
-	}
-		
-	show_playlist(player);
+	}	
+	
+	player->args = argv;
+	ecore_timer_add(1, load_playlist, player);
 
 	refresh_volume(player);
 	ecore_timer_add(1.5, refresh_volume, player);
-
-	track_open(player);
-	refresh_time(player, 0);
 
 	debug(DEBUG_LEVEL_INFO, "Starting main loop\n");
 

@@ -1,5 +1,10 @@
 $Id$
 
+2003-11-14 Tilman Sauerbeck <tilman@¢ode-monkey.de>
+        * src/playlist.c, src/eplayer.c, src/interface.c:
+          The playlist is loaded/displayed after the GUI has been
+          initialized now.
+
 2003-11-10 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/playlist.c: Misc fixes
         * src/callbacks.c: Reset paused state on next/prev/seek

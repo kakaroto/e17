@@ -3,7 +3,7 @@
 
 #include "eplayer.h"
 
-void show_playlist(ePlayer *player);
+void show_playlist_item(PlayListItem *pli, void *data);
 int setup_gui(ePlayer *player);
 
 int refresh_volume(void *udata);

@@ -25,7 +25,12 @@ typedef struct {
 	InputPlugin *plugin; /* plugin that's used for this item */
 } PlayListItem;
 
+typedef void (*ItemAddCallback) (PlayListItem *pli, void *data);
+
 typedef struct {
+	ItemAddCallback cb;
+	void *cb_data;
+
 	int num; /* number of entries */
 	Evas_List *items;
 	Evas_List *cur_item;
@@ -35,6 +40,8 @@ typedef struct {
 
 PlayList *playlist_new(Evas_List *plugins);
 void playlist_free();
+
+void playlist_item_add_cb_set(PlayList *pl, ItemAddCallback cb, void *data);
 
 int playlist_load_file(PlayList *pl, const char *file, int append);
 int playlist_load_dir(PlayList *pl, const char *dir, int append);

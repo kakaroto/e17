@@ -26,6 +26,8 @@ typedef struct {
 } Gui;
 
 typedef struct {
+	const char **args;
+
 	PlayList *playlist;
 	Ecore_Timer *time_timer;
 

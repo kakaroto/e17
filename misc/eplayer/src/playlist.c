@@ -93,6 +93,14 @@ PlayList *playlist_new(Evas_List *plugins) {
 	return pl;
 }
 
+void playlist_item_add_cb_set(PlayList *pl, ItemAddCallback cb, void *data) {
+	if (!pl)
+		return;
+
+	pl->cb = cb;
+	pl->cb_data = data;
+}
+
 /**
  * Removes all items from a PlayList.
  *
@@ -164,7 +172,28 @@ int playlist_load_file(PlayList *pl, const char *file, int append) {
 	
 	pl->num++;
 
+	if (pl->cb)
+		pl->cb(pli, pl->cb_data);
+
 	return 1;
+}
+
+static void finish_playlist(PlayList *pl, Evas_List *list, int append) {
+	Evas_List *l;
+
+	list = evas_list_reverse(list);
+	
+	if (pl->cb)
+		for (l = list; l; l = l->next)
+			pl->cb(l->data, pl->cb_data);
+	
+	if (append)
+		playlist_append_list(pl, list);
+	else {
+		playlist_remove_all(pl);
+		pl->items = list;
+		pl->cur_item = pl->items;
+	}
 }
 
 /**
@@ -204,15 +233,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 
 	closedir(dir);
 
-	tmp = evas_list_reverse(tmp);
-	
-	if (append)
-		playlist_append_list(pl, tmp);
-	else {
-		playlist_remove_all(pl);
-		pl->items = tmp;
-		pl->cur_item = pl->items;
-	}
+	finish_playlist(pl, tmp, append);
 	
 	return 1;
 }
@@ -258,15 +279,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 
 	fclose(fp);
 
-	tmp = evas_list_reverse(tmp);
-	
-	if (append)
-		playlist_append_list(pl, tmp);
-	else {
-		playlist_remove_all(pl);
-		pl->items = tmp;
-		pl->cur_item = pl->items;
-	}
+	finish_playlist(pl, tmp, append);
 	
 	return 1;
 }
