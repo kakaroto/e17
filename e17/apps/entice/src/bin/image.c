@@ -383,7 +383,7 @@ e_rotate_l_current_image(void)
 	e_rotate_current_image(3);
 }
 
-#define TURNTABLE_COUNT 20
+#define TURNTABLE_COUNT 30
 Imlib_Image turntable_image[TURNTABLE_COUNT];
 int turntable_image_no = -1;
 
@@ -428,7 +428,7 @@ e_turntable_object_init(Evas_Object *obj)
   turntable_image_no = 0;
 }
 
-static void
+void
 e_turntable_reset()
 {
    int i;
@@ -489,7 +489,7 @@ e_turntable_object(int rotation, Evas_Object *obj)
 
    e_turntable_object_next(obj, rotation);
    ecore_add_event_timer("e_turntable_object()", 
-		   (double)60/(double)45/(double)TURNTABLE_COUNT, 
+		   (double)60/(double)33/(double)TURNTABLE_COUNT, 
 		   e_turntable_object, rotation, o_image);
 
    /* Update Display */
