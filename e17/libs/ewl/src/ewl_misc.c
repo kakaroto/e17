@@ -26,6 +26,8 @@ static unsigned int    debug_segv = 0;
 static unsigned int    use_engine = EWL_ENGINE_ALL;
 static unsigned int    phase_status = 0;
 
+static int _ewl_init_count = 0;
+
 /*
  *
  */
@@ -75,21 +77,31 @@ inline void ewl_print_warning()
 /**
  * @param argc: the argc passed into the main function
  * @param argv: the argv passed into the main function
- * @return Returns no value.
+ * @return Returns 1 or greater on success, 0 otherwise.
  * @brief Initialize the internal variables of ewl to begin the program
  *
  * Sets up necessary internal variables for executing ewl
  * functions. This should be called before any other ewl functions are used.
  */
-void ewl_init(int *argc, char **argv)
+int ewl_init(int *argc, char **argv)
 {
-	static int initialized = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	initialized++;
-	if (initialized > 1)
-		DRETURN(DLEVEL_STABLE);
+	if (++_ewl_init_count > 1)
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+
+	ewl_init_parse_options(argc, argv);
+
+	if (!ecore_init()) {
+		DERROR("Could not init ecore....");
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+    }
+
+	if (!edje_init()) {
+		DERROR("Could not init edje....");
+		ecore_shutdown();
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+    }
 
 	configure_list = ecore_list_new();
 	realize_list = ecore_list_new();
@@ -97,11 +109,6 @@ void ewl_init(int *argc, char **argv)
 	free_evas_list = ecore_list_new();
 	free_evas_object_list = ecore_list_new();
 	child_add_list = ecore_list_new();
-
-	ewl_init_parse_options(argc, argv);
-
-	ecore_init();
-	edje_init();
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	/*
@@ -131,24 +138,28 @@ void ewl_init(int *argc, char **argv)
 
 	if (!use_engine) {
 		fprintf(stderr, "ERRR: Cannot open display!\n");
-		exit(-1);
+		ewl_shutdown();
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_config_init()) {
-		DERROR("Couldn not init config data. Exiting....");
-		exit(-1);
+		DERROR("Could not init config data....");
+		ewl_shutdown();
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_ev_init()) {
-		DERROR("Could not init event data. Exiting....");
-		exit(-1);
+		DERROR("Could not init event data....");
+		ewl_shutdown();
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_callbacks_init();
 
 	if (!ewl_theme_init()) {
-		DERROR("Could not init theme data. Exiting....");
-		exit(-1);
+		DERROR("Could not init theme data....");
+		ewl_shutdown();
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_embed_list = ecore_list_new();
@@ -161,19 +172,21 @@ void ewl_init(int *argc, char **argv)
 	ewl_reread_config(NULL);
 	config_timer = ecore_timer_add(0.5, ewl_reread_config, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 }
 
 /**
- * @return Returns no value.
  * @brief Cleanup internal data structures used by ewl.
  *
  * This should be called to cleanup internal EWL data structures, if using
  * ecore directly rather than using ewl_main().
  */
-void ewl_shutdown()
+int ewl_shutdown()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (--_ewl_init_count)
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 
 	ecore_timer_del(config_timer);
 	ewl_callbacks_shutdown();
@@ -190,10 +203,20 @@ void ewl_shutdown()
 	ecore_list_destroy(ewl_window_list);
 
 	edje_shutdown();
-	ecore_x_shutdown();
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (use_engine & EWL_ENGINE_X11) 
+		ecore_x_shutdown();
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_FB_H
+	if (use_engine & EWL_ENGINE_FB)
+		ecore_fb_shutdown();
+#endif
+
 	ecore_shutdown();
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 }
 
 /**

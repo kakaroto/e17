@@ -114,7 +114,10 @@ main(int argc, char **argv)
 
 	heap_start = sbrk(0);
 
-	ewl_init(&argc, argv);
+	if (!ewl_init(&argc, argv)) {
+        fprintf(stderr, "Could not init ewl. Exiting...\n");
+        return 1;
+    }
 
 	heap_end = sbrk(0);
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
