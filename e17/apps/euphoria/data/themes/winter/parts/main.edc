@@ -7,7 +7,6 @@
 		    state, "default" 0.0;
 		    min, 199 182;
 		    max, 99999 182;
-		    border, 0 0 0 0;
 		    rel1 {
 		      relative, 0 0;
 		      offset, 0 0;
@@ -18,8 +17,8 @@
 		    }
 		    image {
 		        normal, "main.png";
+				border, 10 10 20 10;
 		    }
-		    border, 10 10 20 10;
 		}
 	    } //part
 
@@ -31,8 +30,7 @@
 		    state, "default" 0.0;
 		    min, 30 10;
 		    max, 99999 10;
-		    border, 0 0 0 0;
-                    color, WINTER_COLOR;
+			color, WINTER_COLOR;
 		    rel1 {
                       to, "main";
 		      relative, 0 0;
@@ -45,8 +43,8 @@
 		    }
 		    image {
 		        normal, "top_grad.png";
+				border, 10 10 10 10;
 		    }
-		    border, 10 10 10 10;
 		}
 	    } //part
 
@@ -67,8 +65,8 @@
 	  }
 	  image {
 	    normal, "screen.png";
+		border, 5 5 5 5;
 	  }
-	  border, 5 5 5 5;
 	}
       }
 
@@ -126,7 +124,6 @@
 
 	      description {
 	        state, "default" 0.0;
-	        border, 0 0 0 0;
 	        min, 199 10;
 		max, 99999 10;
 	        rel1 {
@@ -141,12 +138,11 @@
 	        }
 	        image {
 	          normal, "bot.png";
+			  border, 7 7 0 0;
 	        }
-	        border, 7 7 0 0;
 	      }
 	      description {
 	        state, "open" 0.0;
-	        border, 0 0 0 0;
 	        min, 199 10;
 		max, 99999 10;
 	        rel1 {
@@ -161,8 +157,8 @@
 	        }
 	        image {
 	          normal, "bot.png";
+			  border, 7 7 0 0;
 	        }
-	        border, 7 7 0 0;
 	      }
 	    } //part
 
@@ -174,8 +170,7 @@
 		    state, "default" 0.0;
 		    min, 30 10;
 		    max, 99999 10;
-		    border, 0 0 0 0;
-                    color, WINTER_COLOR;
+			color, WINTER_COLOR;
 		    rel1 {
                       to, "bottom";
 		      relative, 0 0;
@@ -188,7 +183,7 @@
 		    }
 		    image {
 		        normal, "bot_grad.png";
+				border, 10 10 10 10;
 		    }
-		    border, 10 10 10 10;
 		}
 	    } //part
