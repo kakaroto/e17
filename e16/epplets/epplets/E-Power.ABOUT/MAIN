@@ -9,9 +9,9 @@ A Laptop Battery Status Display Epplet
 <p align=50%>
 By The Rasterman - 1999
 <p>
-This epplet shows your batery's current status for your laptop, including
-a numeric percentage of the batery left and a time estimae as to how many
-hours & minutes of battery tme are left.
+This epplet shows your battery's current status for your laptop, including
+a numeric percentage of the battery left and a time estimate as to how many
+hours & minutes of battery time are left.
 <p>
 If you are recharging you will get an estimated recharge time too in brackets
 after the battery percentage value.
