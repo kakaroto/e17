@@ -940,3 +940,28 @@ EwlButton backgrounds, etc etc etc).
 - added ewl_widget_realize() and ewl_widget_unrealize() (which just
 queue realize and unrealize events, respectively).
 
+-----
+20000905-1155-PDT, pabs
+
+- EwlWindows are now using hte new EwlEventRealize/Unrealize for widgets.
+this presents an interesting predicament -- since realization doesn't
+happen right away, X calls for ewlwindows must now be done like this:
+
+EwlWindow *window = (EwlWindow*) widget;
+...
+if (!window->xwin)	{
+	ewl_widget_realize(widget);
+	sev = ewl_widget_new_by_type_with_widget(EWL_EVENT_SHOW, widget);
+	ewl_event_queue(sev);
+} else {
+	XMapWindow(ewl_get_display(), window->xwin);
+}
+...
+
+basically since hte realization is deferred, it needs to queue another
+show on the widget.  does this sound liek the correct behavior, or
+should I make some sort of priority event queue, or mvoe realize
+stuff elsewhere (although I really do think in belongs as an event --
+it allows chaining, inheritance, and all sorts of other goodies for
+free).
+

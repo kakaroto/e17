@@ -84,6 +84,7 @@ void     ewl_window_resize(EwlWidget *widget,
                            int w, int h);
 void     ewl_window_moveresize(EwlWidget *widget,
                                int x, int y, int w, int h);
+
 EwlRect *ewl_window_get_rect(EwlWidget *widget);
 
 Evas     ewl_window_get_evas(EwlWidget *widget);
@@ -96,10 +97,16 @@ EwlBool  ewl_window_handle_configure(EwlWidget *widget,
 EwlBool  ewl_window_handle_expose(EwlWidget *widget,
                                   EwlEvent *ev,
                                   EwlData *data);
+EwlBool  ewl_window_handle_realize(EwlWidget *widget,
+                                   EwlEvent  *ev,
+                                   EwlData   *data);
+EwlBool  ewl_window_handle_unrealize(EwlWidget *widget,
+                                     EwlEvent  *ev,
+                                     EwlData   *data);
 
 /* private */
 void	 ewl_window_set_render_context(EwlWidget *widget);
-void	 ewl_window_realize(EwlWidget *widget);
+/*void	 ewl_window_realize(EwlWidget *widget);*/
 void	 ewl_window_unrealize(EwlWidget *widget);
 
 EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
