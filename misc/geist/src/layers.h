@@ -27,7 +27,7 @@ void geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
                                 int y, int w, int h);
 
 void geist_layer_add_object(geist_layer * layer, geist_object * obj);
-void geist_layer_raise_object(geist_document *doc, geist_object * obj);
+void geist_layer_raise_object(geist_object * obj);
 geist_object *geist_layer_find_clicked_object(geist_layer * layer, int x,
 
                                               int y);

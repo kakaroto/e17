@@ -101,7 +101,7 @@ geist_document_unselect_all(geist_document * doc)
          if (geist_object_get_state(obj, SELECTED))
          {
             geist_object_unset_state(obj, SELECTED);
-            geist_document_dirty_object(doc, obj);
+            geist_object_dirty(obj);
          }
       }
       geist_list_free(sl);
@@ -224,7 +224,7 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
    top = geist_list_last(doc->layers);
    geist_layer_add_object(((geist_layer *) top->data), obj);
    geist_object_add_to_object_list(obj);
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(3);
 }
@@ -233,6 +233,7 @@ void
 geist_document_add_layer(geist_document * doc)
 {
    geist_layer *layer;
+
    D_ENTER(3);
 
    layer = geist_layer_new();
@@ -286,46 +287,11 @@ geist_document_render_updates(geist_document * d)
 }
 
 void
-geist_document_dirty_object(geist_document * doc, geist_object * obj)
-{
-   D_ENTER(5);
-
-   D(5,
-     ("adding dirty rect %d,%d %dx%d\n", obj->x + obj->rendered_x,
-      obj->y + obj->rendered_y, obj->rendered_w, obj->rendered_h));
-
-   doc->up =
-      imlib_update_append_rect(doc->up, obj->x + obj->rendered_x,
-                               obj->y + obj->rendered_y, obj->rendered_w,
-                               obj->rendered_h);
-   geist_document_dirty_object_selection(doc, obj);
-   D_RETURN_(5);
-}
-
-void
-geist_document_dirty_object_selection(geist_document * doc,
-                                      geist_object * obj)
-{
-   D_ENTER(5);
-
-   doc->up =
-      imlib_updates_append_updates(doc->up, obj->get_selection_updates(obj));
-
-   D_RETURN_(5);
-}
-
-void
 geist_document_remove_object(geist_document * d, geist_object * obj)
 {
-   geist_list *l;
-
    D_ENTER(3);
-   geist_document_dirty_object(d, obj);
-   for (l = d->layers; l; l = l->next)
-   {
-      if (geist_layer_remove_object(GEIST_LAYER(l->data), obj))
-         break;
-   }
+   geist_object_dirty(obj);
+   geist_layer_remove_object(obj->layer, obj);
 
    D_RETURN_(3);
 }

@@ -123,26 +123,21 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
 }
 
 void
-geist_layer_raise_object(geist_document * doc, geist_object * obj)
+geist_layer_raise_object(geist_object * obj)
 {
-   geist_list *l, *ll;
-   geist_layer *lay;
+   geist_list *ll;
    geist_object *ob;
 
    D_ENTER(4);
 
-   for (l = doc->layers; l; l = l->next)
+   for (ll = obj->layer->objects; ll; ll = ll->next)
    {
-      lay = (geist_layer *) l->data;
-      for (ll = lay->objects; ll; ll = ll->next)
+      ob = (geist_object *) ll->data;
+      if (ob == obj)
       {
-         ob = (geist_object *) ll->data;
-         if (ob == obj)
-         {
-            D(4, ("Found object %p - popping to end of list\n", obj));
-            lay->objects = geist_list_pop_to_end(lay->objects, ll);
-            D_RETURN_(4);
-         }
+         D(4, ("Found object %p - popping to end of list\n", obj));
+         obj->layer->objects = geist_list_pop_to_end(obj->layer->objects, ll);
+         D_RETURN_(4);
       }
    }
 
@@ -161,6 +156,7 @@ geist_layer_remove_object(geist_layer * lay, geist_object * obj)
       if (GEIST_OBJECT(l->data) == obj)
       {
          lay->objects = geist_list_unlink(lay->objects, l);
+         obj->layer = NULL;
          efree(l);
          D_RETURN(3, TRUE);
       }

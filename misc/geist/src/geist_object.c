@@ -65,8 +65,7 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type
-geist_object_get_type(geist_object * obj)
+geist_object_type geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -127,38 +126,38 @@ geist_object_render_partial(geist_object * obj, Imlib_Image dest, int x,
 
 
 void
-geist_object_show(geist_document * doc, geist_object * obj)
+geist_object_show(geist_object * obj)
 {
    D_ENTER(3);
 
    geist_object_set_state(obj, VISIBLE);
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(3);
 }
 
 void
-geist_object_hide(geist_document * doc, geist_object * obj)
+geist_object_hide(geist_object * obj)
 {
    D_ENTER(3);
 
    geist_object_unset_state(obj, VISIBLE);
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(3);
 }
 
 
 void
-geist_object_raise(geist_document * doc, geist_object * obj)
+geist_object_raise(geist_object * obj)
 {
    D_ENTER(3);
 
    if (!obj)
       D_RETURN_(3);
 
-   geist_layer_raise_object(doc, obj);
-   geist_document_dirty_object(doc, obj);
+   geist_layer_raise_object(obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(3);
 }
@@ -200,8 +199,7 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -209,8 +207,7 @@ geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image
-geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -218,26 +215,26 @@ geist_object_int_get_rendered_image(geist_object * obj)
 }
 
 void
-geist_object_select(geist_document * d, geist_object * obj)
+geist_object_select(geist_object * obj)
 {
    D_ENTER(5);
 
    D(4, ("setting object state SELECTED\n"));
    geist_object_set_state(obj, SELECTED);
-   geist_object_raise(d, obj);
-   geist_document_dirty_object(d, obj);
+   geist_object_raise(obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(5);
 }
 
 void
-geist_object_unselect(geist_document * d, geist_object * obj)
+geist_object_unselect(geist_object * obj)
 {
    D_ENTER(5);
 
    D(4, ("unsetting object state SELECTED\n"));
    geist_object_unset_state(obj, SELECTED);
-   geist_document_dirty_object(d, obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(5);
 }
@@ -329,8 +326,7 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates
-geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -420,8 +416,7 @@ geist_object_check_resize_click(geist_object * obj, int x, int y)
    D_RETURN(5, RESIZE_NONE);
 }
 
-Imlib_Updates
-geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -465,26 +460,26 @@ geist_object_int_part_is_transparent(geist_object * obj, int x, int y)
 }
 
 void
-geist_object_resize(geist_document * doc, geist_object * obj, int x, int y)
+geist_object_resize(geist_object * obj, int x, int y)
 {
    D_ENTER(5);
 
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
    obj->resize_event(obj, x, y);
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(5);
 }
 
 void
-geist_object_move(geist_document * doc, geist_object * obj, int x, int y)
+geist_object_move(geist_object * obj, int x, int y)
 {
    D_ENTER(3);
 
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
    obj->x = x - obj->clicked_x;
    obj->y = y - obj->clicked_y;
-   geist_document_dirty_object(doc, obj);
+   geist_object_dirty(obj);
 
    D_RETURN_(3);
 }
@@ -626,17 +621,47 @@ geist_object_resize_object(geist_object * obj, int x, int y)
 }
 
 void
-geist_object_display_props (geist_document *doc, geist_object *obj)
+geist_object_display_props(geist_object * obj)
 {
-	D_ENTER(5);
-	obj->display_props(doc, obj);
-	D_RETURN_(5);
+   D_ENTER(5);
+   obj->display_props(obj);
+   D_RETURN_(5);
 }
 
-void geist_object_int_display_props (geist_document *doc, geist_object *obj)
+void
+geist_object_int_display_props(geist_object * obj)
 {
-	D_ENTER(5);
-	printf("Nothing here yet\n");
-	D_RETURN_(5);
+   D_ENTER(5);
+   printf("Nothing here yet\n");
+   D_RETURN_(5);
 }
-	
+
+void
+geist_object_dirty(geist_object * obj)
+{
+   D_ENTER(5);
+
+   D(5,
+     ("adding dirty rect %d,%d %dx%d\n", obj->x + obj->rendered_x,
+      obj->y + obj->rendered_y, obj->rendered_w, obj->rendered_h));
+
+   GEIST_OBJECT_DOC(obj)->up =
+      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up,
+                               obj->x + obj->rendered_x,
+                               obj->y + obj->rendered_y, obj->rendered_w,
+                               obj->rendered_h);
+   geist_object_dirty_selection(obj);
+   D_RETURN_(5);
+}
+
+void
+geist_object_dirty_selection(geist_object * obj)
+{
+   D_ENTER(5);
+
+   GEIST_OBJECT_DOC(obj)->up =
+      imlib_updates_append_updates(GEIST_OBJECT_DOC(obj)->up,
+                                   obj->get_selection_updates(obj));
+
+   D_RETURN_(5);
+}

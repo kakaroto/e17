@@ -85,7 +85,7 @@ struct __geist_object
    geist_object *(*duplicate) (geist_object * obj);
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
    void (*resize_event) (geist_object * obj, int x, int y);
-   void (*display_props) (geist_document *doc, geist_object * obj);
+   void (*display_props) (geist_object * obj);
 };
 
 /* allocation functions */
@@ -101,9 +101,9 @@ void geist_object_render_selected(geist_object * obj, Imlib_Image dest,
                                   unsigned char multiple);
 void geist_object_render_partial(geist_object * obj, Imlib_Image dest, int x,
                                  int y, int w, int h);
-void geist_object_show(geist_document * doc, geist_object * obj);
-void geist_object_hide(geist_document * doc, geist_object * obj);
-void geist_object_raise(geist_document * doc, geist_object * obj);
+void geist_object_show(geist_object * obj);
+void geist_object_hide(geist_object * obj);
+void geist_object_raise(geist_object * obj);
 void geist_object_int_free(geist_object * obj);
 void geist_object_int_render(geist_object * obj, Imlib_Image dest);
 void geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
@@ -114,30 +114,32 @@ void geist_object_int_render_partial(geist_object * obj, Imlib_Image dest,
 void geist_object_add_to_object_list(geist_object * obj);
 Imlib_Image geist_object_get_rendered_image(geist_object * obj);
 Imlib_Image geist_object_int_get_rendered_image(geist_object * obj);
-void geist_object_select(geist_document * d, geist_object * obj);
+void geist_object_select(geist_object * obj);
 Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj);
 Imlib_Updates geist_object_get_selection_updates(geist_object * obj);
-void geist_object_unselect(geist_document * d, geist_object * obj);
+void geist_object_unselect(geist_object * obj);
 geist_object *geist_object_duplicate(geist_object * obj);
 geist_object *geist_object_int_duplicate(geist_object * obj);
 unsigned char geist_object_part_is_transparent(geist_object * obj, int x,
 
                                                int y);
-void geist_object_move(geist_document * doc, geist_object * obj, int x,
+void geist_object_move(geist_object * obj, int x,
 
                        int y);
 unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x,
 
                                                    int y);
 int geist_object_check_resize_click(geist_object * obj, int x, int y);
-void geist_object_resize(geist_document * doc, geist_object * obj, int x,
+void geist_object_resize(geist_object * obj, int x,
 
                          int y);
 void geist_object_int_resize(geist_object * obj, int x, int y);
 void geist_object_resize_object(geist_object * obj, int x, int y);
 
-void geist_object_int_display_props(geist_document *doc, geist_object *obj);
-void geist_object_display_props(geist_document *doc, geist_object *obj);
+void geist_object_int_display_props(geist_object *obj);
+void geist_object_display_props(geist_object *obj);
+void geist_object_dirty_selection(geist_object * obj) ;
+void geist_object_dirty(geist_object * obj);
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))

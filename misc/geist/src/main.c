@@ -359,7 +359,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
                obj->resize = resize;
                obj->clicked_x = event->x;
                obj->clicked_y = event->y;
-               geist_document_dirty_object(doc, obj);
+               geist_object_dirty( obj);
             }
             gtk_object_set_data_full(GTK_OBJECT(mainwin), "resizelist", list,
                                      NULL);
@@ -410,7 +410,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 
             for (lll = ll; lll; lll = lll->next)
             {
-               geist_document_dirty_object_selection(doc,
+               geist_object_dirty_selection(
                                                      GEIST_OBJECT(lll->data));
             }
             geist_list_free(ll);
@@ -423,7 +423,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
             /* Single click selection */
             geist_document_unselect_all(doc);
             gtk_clist_unselect_all(GTK_CLIST(obj_list));
-            geist_object_select(doc, obj);
+            geist_object_select(obj);
             row =
                gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
                                             (gpointer) obj);
@@ -443,7 +443,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
                obj->clicked_y = event->y - obj->y;
                D(2, ("setting object state DRAG\n"));
                geist_object_set_state(obj, DRAG);
-               geist_object_raise(doc, obj);
+               geist_object_raise(obj);
             }
          }
          gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list,
@@ -472,7 +472,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 
          D(2, ("unsetting object state DRAG\n"));
          geist_object_unset_state(obj, DRAG);
-         geist_document_dirty_object(doc, obj);
+         geist_object_dirty( obj);
       }
       geist_list_free(list);
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", NULL, NULL);
@@ -489,7 +489,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
             D(2, ("unsetting object state RESIZE\n"));
             geist_object_unset_state(obj, RESIZE);
             obj->resize = RESIZE_NONE;
-            geist_document_dirty_object(doc, obj);
+            geist_object_dirty( obj);
          }
          geist_list_free(list);
          gtk_object_set_data_full(GTK_OBJECT(mainwin), "resizelist", NULL,
@@ -531,7 +531,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
       {
          obj = GEIST_OBJECT(l->data);
          D(5, ("moving object to %f, %f\n", event->x, event->y));
-         geist_object_move(doc, obj, event->x, event->y);
+         geist_object_move(obj, event->x, event->y);
       }
       geist_document_render_updates(doc);
    }
@@ -544,7 +544,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
          {
             obj = GEIST_OBJECT(l->data);
             D(5, ("resizing object\n"));
-            geist_object_resize(doc, obj, event->x, event->y);
+            geist_object_resize(obj, event->x, event->y);
          }
          geist_document_render_updates(doc);
       }
@@ -569,8 +569,8 @@ gboolean obj_load_cb(GtkWidget * widget, gpointer data)
       if (obj)
       {
          geist_document_add_object(doc, obj);
-         geist_object_show(doc, obj);
-         geist_object_raise(doc, obj);
+         geist_object_show(obj);
+         geist_object_raise(obj);
          geist_document_render_updates(doc);
       }
    }
@@ -681,9 +681,9 @@ gboolean obj_vis_cb(GtkWidget * widget, gpointer * data)
    if (obj)
    {
       if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-         geist_object_show(doc, obj);
+         geist_object_show(obj);
       else
-         geist_object_hide(doc, obj);
+         geist_object_hide(obj);
       geist_document_render_updates(doc);
    }
    D_RETURN(3, TRUE);
@@ -709,10 +709,10 @@ gboolean obj_text_cb(GtkWidget * widget, gpointer * data)
    {
       if (geist_object_get_type(obj) != GEIST_TYPE_TEXT)
          D_RETURN(3, TRUE);
-      geist_document_dirty_object(doc, obj);
+      geist_object_dirty( obj);
       geist_text_change_text(GEIST_TEXT(obj),
                              estrdup(gtk_entry_get_text(GTK_ENTRY(widget))));
-      geist_document_dirty_object(doc, obj);
+      geist_object_dirty( obj);
       geist_document_render_updates(doc);
    }
    D_RETURN(3, TRUE);
@@ -758,7 +758,7 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
    obj = (geist_object *) gtk_clist_get_row_data(GTK_CLIST(widget), row);
    if (obj)
    {
-      geist_object_select(doc, obj);
+      geist_object_select(obj);
 
       selection = GTK_CLIST(widget)->selection;
       if (g_list_length(selection) > 1)
@@ -768,7 +768,7 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
          list = geist_document_get_selected_list(doc);
          for (l = list; l; l = l->next)
          {
-            geist_document_dirty_object_selection(doc, GEIST_OBJECT(l->data));
+            geist_object_dirty_selection( GEIST_OBJECT(l->data));
          }
          geist_list_free(list);
       }
@@ -812,7 +812,7 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
    obj = (geist_object *) gtk_clist_get_row_data(GTK_CLIST(widget), row);
    if (obj)
    {
-      geist_object_unselect(doc, obj);
+      geist_object_unselect(obj);
 
       selection = GTK_CLIST(widget)->selection;
       if (g_list_length(selection) > 1)
@@ -822,7 +822,7 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
          list = geist_document_get_selected_list(doc);
          for (l = list; l; l = l->next)
          {
-            geist_document_dirty_object_selection(doc, GEIST_OBJECT(l->data));
+            geist_object_dirty_selection( GEIST_OBJECT(l->data));
          }
          geist_list_free(list);
       }
@@ -1004,10 +1004,10 @@ gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
 {
 
     geist_object *obj;
-    obj = GEIST_OBJECT(geist_rect_new_of_size(50, 50, 50, 50, 100, 250, 250,
-		    250));
+    obj = GEIST_OBJECT(geist_rect_new_of_size(50, 50, 50, 50, 255, 0, 0,
+		    0));
     geist_document_add_object (doc, obj);
-    geist_object_display_props(doc, obj);
+    geist_object_display_props(obj);
     geist_document_render_updates(doc);
       
     return TRUE;

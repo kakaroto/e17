@@ -1,3 +1,8 @@
+Wed Aug  9 00:18:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Changed api to use obj->layer and layer->doc, cleaned it up a
+	lot in the process.
+
 Tue Aug  8 23:19:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Patch from Tillsan for "add rectangle" and the start of some
