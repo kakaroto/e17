@@ -53,6 +53,22 @@ main(int argc, char **argv)
    char txt[4096];
    
    win_w = 640; win_h = 480;
+  method = RENDER_METHOD_ALPHA_SOFTWARE;
+  if (argc > 1)
+    {
+       if (!strcmp(argv[1], "x11")) method = RENDER_METHOD_BASIC_HARDWARE;
+       if (!strcmp(argv[1], "soft")) method = RENDER_METHOD_ALPHA_SOFTWARE;
+       if (!strcmp(argv[1], "hard")) method = RENDER_METHOD_3D_HARDWARE;
+       if (!strcmp(argv[1], "render")) method = RENDER_METHOD_ALPHA_HARDWARE;
+       if (!strcmp(argv[1], "-h"))
+	 {
+	    printf("options:\n"
+		   "\t %s [x11 | soft | hard | render]\n"
+		   "Where the option selects the evas rendering engine.\n",
+		   argv[0]);
+	    exit(0);
+	 }
+    }
    /* the program... */
 
    /* connect to X */
@@ -62,8 +78,8 @@ main(int argc, char **argv)
    root_win = DefaultRootWindow(disp);
 
    e = evas_new_all(disp, root_win, 128, 0, win_w, win_h,
-		    RENDER_METHOD_ALPHA_SOFTWARE, 
-		    216, 4 * 1024 * 1024, 4 * 1024 * 1024,
+		    method,
+		    216, 8 * 1024 * 1024, 2 * 1024 * 1024,
 		    FNTDIR);
 
    win = evas_get_window(e);
@@ -120,7 +136,7 @@ main(int argc, char **argv)
    strcpy(txt,"~color=fg 255 2 2 255~~color=ol 0 0 0 255~~color=sh 0 0 0 255~~valign=bottom~~font=morpheus~~size=20~");
    strcat(txt,"~align=center~~size=25~~font=cinema~Th~font=morpheus~~size=20~e Gospel of Tux (v1.0)\n\n");
 
-   strcat(txt,"~font=nationff~~size=12~~color=fg 255 255 255 255~~align~In the beginning Turing created the Machine.\n\n");
+   strcat(txt,"~font=notepad~~size=12~~color=fg 255 255 255 255~~align~In the beginning Turing created the Machine.\n\n");
 
    strcat(txt,"~align=center~And the Machine was crufty and bodacious, existing in ");
    strcat(txt,"theory only. And von Neumann looked upon the Machine, ");
@@ -245,9 +261,6 @@ main(int argc, char **argv)
 	       {
 		case ConfigureNotify:
 		  /* window resized */
-		  printf("resize to %i %i\n",
-			 ev.xconfigure.width, 
-			 ev.xconfigure.height);
 		  evas_set_output_size(e, 
 				       ev.xconfigure.width, 
 				       ev.xconfigure.height);

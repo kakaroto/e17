@@ -103,7 +103,7 @@ main(int argc, char *argv[])
   disp = XOpenDisplay(NULL);
   win = DefaultRootWindow(disp);
   e = evas_new_all(disp, win, 128, 0, win_w, win_h, method,
-		   216, 8 * 1024 * 1024, 1 * 1024 * 1024,
+		   216, 8 * 1024 * 1024, 2 * 1024 * 1024,
 		   FNTDIR);
   win = evas_get_window(e);
   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
@@ -217,9 +217,6 @@ main(int argc, char *argv[])
 	  switch (ev.type)
 	    {
 	     case ConfigureNotify:
-	       printf("resize to %i %i\n",
-		      ev.xconfigure.width, 
-		      ev.xconfigure.height);
 	       evas_set_output_size(e, 
 				    ev.xconfigure.width, 
 				    ev.xconfigure.height);
