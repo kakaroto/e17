@@ -1,0 +1,4 @@
+usr/lib/lib*.so.*
+usr/share/estyle/*.db
+usr/share/estyle/fonts/*.ttf
+usr/share/estyle/styles/*.style.db

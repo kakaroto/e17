@@ -1,0 +1,15 @@
+usr/bin/ewl_config
+usr/lib/lib*.so.*
+usr/share/ewl/scripts/*.sh
+usr/share/ewl/themes/default/appearance/*.bits.db
+usr/share/ewl/themes/default/appearance/button/check/*.bits.db
+usr/share/ewl/themes/default/appearance/button/default/*.bits.db
+usr/share/ewl/themes/default/appearance/entry/default/*.bits.db
+usr/share/ewl/themes/default/appearance/fonts/*.ttf
+usr/share/ewl/themes/default/appearance/seeker/horizontal/*.bits.db
+usr/share/ewl/themes/default/appearance/styles/*.style.db
+usr/share/ewl/themes/default/appearance/window/default/*.bits.db
+usr/share/ewl/themes/default/bits/*.bits.db
+usr/share/ewl/themes/default/bits/*.eet
+usr/share/ewl/themes/default/fonts/*.ttf
+usr/share/ewl/themes/default/*.db

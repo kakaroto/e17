@@ -1,6 +1,5 @@
-entrance (0.0.2-1) unstable; urgency=low
+entrance (0.9.0-0cvs20030826) unstable; urgency=low
 
-  * Initial Release.
+  * a CVS release
 
- -- Jordan Evatt <webfreak@fallingsnow.net>  Sat,  1 Mar 2003 00:15:49 -0600
-
+ -- Sytse Wielinga <s.b.wielinga@student.utwente.nl>  Tue, 26 Aug 2003 15:35:07 +0200
