@@ -483,53 +483,6 @@ ButtonEmbedWindow(Button * ButtonToUse, Window WindowToEmbed)
    EDBUG_RETURN(0);
 }
 
-void
-ButtonFindEmptySpotFor(Button * bt, const char *listname, char dirtomove)
-{
-
-   Button            **blst;
-   int                 num = 0, i = 0, j = 0, done = 0;
-
-   blst = (Button **) ListItemTypeName(&num, LIST_TYPE_BUTTON, listname);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     for (j = 0; j < num; j++)
-	       {
-		  if ((bt->x + bt->w) <= blst[j]->x
-		      || bt->x >= (blst[j]->x + blst[j]->w))
-		    {
-		       done = 1;
-		    }
-		  else
-		    {
-		       if ((bt->y + bt->h) <= blst[j]->y
-			   || bt->y > (blst[j]->y + blst[j]->h))
-			  done = 1;
-		       else
-			  done = 0;
-		    }
-		  if (!done)
-		    {
-		       if (dirtomove == ICON_RIGHT)
-			  bt->x = blst[j]->w + blst[j]->x;
-		       else if (dirtomove == ICON_LEFT)
-			  bt->x = blst[j]->x - bt->w;
-		       else if (dirtomove == ICON_DOWN)
-			  bt->y = blst[j]->h + blst[j]->y;
-		       else if (dirtomove == ICON_UP)
-			  bt->y = blst[j]->y - bt->h;
-		    }
-	       }
-	  }
-	Efree(blst);
-     }
-   ButtonMoveToCoord(bt, bt->x, bt->y);
-
-   EDBUG_RETURN_;
-}
-
 /*
  * Functions operating on all buttons
  */

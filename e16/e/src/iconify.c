@@ -1936,7 +1936,7 @@ IB_DrawScroll(Iconbox * ib)
 	b = ib->ewin->border;
 	SyncBorderToEwin(ib->ewin);
 	if (ib->ewin->border == b)
-	   PropagateShapes(ib->ewin->win);
+	   EwinPropagateShapes(ib->ewin);
      }
 }
 
@@ -2229,7 +2229,7 @@ IconboxRedraw(Iconbox * ib)
 
    PropagateShapes(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
-   PropagateShapes(ib->ewin->win);
+   EwinPropagateShapes(ib->ewin);
 
    Mode.queue_up = pq;
 }

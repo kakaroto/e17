@@ -22,59 +22,121 @@
  */
 #include "E.h"
 
-void
-DockIt(EWin * ewin)
+static void
+DockappFindEmptySpotFor(EWin * eapp)
 {
-   ActionClass        *ac;
-   ImageClass         *ic;
-   Button             *bt;
-   char                id[32];
+   EWin              **lst, *ewin;
+   int                 num, i, j, x, y, w, h, done;
+   int                 step_right, step_down;
 
-   EDBUG(3, "DockIt");
-   Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
-   ac = 0;
-   ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (Conf.dock.startx >= 0)
+   x = eapp->x;
+   y = eapp->y;
+   w = eapp->client.w;
+   h = eapp->client.h;
+   if (!eapp->client.already_placed)
      {
-	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0,
-			  ewin->w, ewin->w, ewin->h, ewin->h,
-			  0, 0, Conf.dock.startx, 0, Conf.dock.starty, 0,
-			  0, 0, 0, 0, 1, 0, 1);
+	x = Conf.dock.startx;
+	if (x < 0)
+	   x = 0;
+	else if (x > VRoot.w - eapp->w)
+	   x = VRoot.w - eapp->w;
+
+	y = Conf.dock.starty;
+	if (y < 0)
+	   y = 0;
+	else if (y > VRoot.h - eapp->h)
+	   y = VRoot.h - eapp->h;
      }
-   else
+
+   step_right = Conf.dock.startx < VRoot.w;
+   step_down = Conf.dock.starty < VRoot.h;
+
+   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   for (j = 0; j < num; j++)
+      for (i = 0; i < num; i++)
+	{
+	   ewin = lst[i];
+
+	   /* Skip self and non-dockapps */
+	   if (ewin == eapp || !ewin->docked)
+	      continue;
+
+	   if ((x + w) <= ewin->x || x >= (ewin->x + ewin->w))
+	      done = 1;
+	   else if ((y + h) <= ewin->y || y > (ewin->y + ewin->h))
+	      done = 1;
+	   else
+	      done = 0;
+
+	   if (!done)
+	     {
+		switch (Conf.dock.dirmode)
+		  {
+		  case DOCK_RIGHT:
+		     x = ewin->x + ewin->w;
+		     if (x + w >= VRoot.w)
+		       {
+			  x = Conf.dock.startx;
+			  y += (step_down) ? h : -h;
+		       }
+		     break;
+		  case DOCK_LEFT:
+		     x = ewin->x - w;
+		     if (x < 0)
+		       {
+			  x = Conf.dock.startx - w;
+			  y += (step_down) ? h : -h;
+		       }
+		     break;
+		  case DOCK_DOWN:
+		     y = ewin->y + ewin->h;
+		     if (y + h >= VRoot.h)
+		       {
+			  y = Conf.dock.starty;
+			  x += (step_right) ? w : -w;
+		       }
+		     break;
+		  case DOCK_UP:
+		     y = ewin->y - h;
+		     if (y < 0)
+		       {
+			  y = VRoot.h - h;
+			  x += (step_right) ? w : -w;
+		       }
+		     break;
+		  }
+	     }
+	}
+   if (lst)
+      Efree(lst);
+
+   if (x < 0 || y < 0 || x + w >= VRoot.w || y + h >= VRoot.h)
      {
-	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0,
-			  ewin->w, ewin->w, ewin->h, ewin->h,
-			  0, 2046, 0, 0, 0, 1023, 0, 0, 0, 0, 1, 0, 1);
+	x = VRoot.w - w / 2;
+	y = VRoot.h - h / 2;
      }
-   UngrabX();
 
-   if (!bt)
-      EDBUG_RETURN_;
-
-   ButtonShow(bt);
-   ButtonFindEmptySpotFor(bt, "DOCK_APP_BUTTON", Conf.dock.dirmode);
-
-   AddItem(bt, "DOCK_APP_BUTTON", ewin->client.win, LIST_TYPE_BUTTON);
-
-   ButtonEmbedWindow(bt, ewin->win);
-   EMoveResizeWindow(disp, ewin->win, 0, 0, ewin->w, ewin->h);
-   ewin->fixedpos = 1;
-   ShowEwin(ewin);
-
-   EDBUG_RETURN_;
+   eapp->x = x;
+   eapp->y = y;
 }
 
 void
-DockDestroy(EWin * ewin)
+DockIt(EWin * ewin)
 {
+   ImageClass         *ic;
+   char                id[32];
 
-   Button             *bt;
+   Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
+   ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 
-   EDBUG(3, "DockDestroy");
-   bt = FindItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_BUTTON);
-   if (bt)
-      ButtonDestroy(RemoveItem
-		    (NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_BUTTON));
-   EDBUG_RETURN_;
+   UngrabX();
+
+   DockappFindEmptySpotFor(ewin);
+   ewin->client.already_placed = 1;
+
+   if (ewin->client.icon_win)
+      EMapWindow(disp, ewin->client.icon_win);
+
+   IclassApply(ic, ewin->win, ewin->client.w, ewin->client.h,
+	       0, 0, STATE_NORMAL, 0, ST_BUTTON);
 }

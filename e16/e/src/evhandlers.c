@@ -891,7 +891,7 @@ HandleConfigureRequest(XEvent * ev)
 	   if (pshaped != ewin->client.shaped)
 	     {
 		SyncBorderToEwin(ewin);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 	     }
 	}
 	ReZoom(ewin);
@@ -933,7 +933,7 @@ HandleResizeRequest(XEvent * ev)
 	   if (pshaped != ewin->client.shaped)
 	     {
 		SyncBorderToEwin(ewin);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 	     }
 	}
 	ReZoom(ewin);
@@ -1021,7 +1021,7 @@ HandleChildShapeChange(XEvent * ev)
 	b = ewin->border;
 	SyncBorderToEwin(ewin);
 	if (ewin->border == b)
-	   PropagateShapes(ewin->win);
+	   EwinPropagateShapes(ewin);
      }
 
    EDBUG_RETURN_;

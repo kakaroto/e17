@@ -389,10 +389,7 @@ AddToFamily(Window win)
 
    /* if is an afterstep/windowmaker dock app - dock it */
    if (Conf.dockapp_support && ewin->docked)
-     {
-	DockIt(ewin);
-	EDBUG_RETURN_;
-     }
+      DockIt(ewin);
 
    /* if set for borderless then dont slide it in */
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
@@ -809,7 +806,7 @@ BorderWinpartChange(EWin * ewin, int i, int force)
    BorderWinpartITclassApply(ewin, i, force);
 
    if (!ewin->shapedone || ewin->border->changes_shape)
-      PropagateShapes(ewin->win);
+      EwinPropagateShapes(ewin);
    ewin->shapedone = 1;
 
    EDBUG_RETURN_;
@@ -833,7 +830,7 @@ EwinBorderDraw(EWin * ewin, int do_shape, int queue_off)
       BorderWinpartITclassApply(ewin, i, do_shape);
 
    if (do_shape || !ewin->shapedone || ewin->border->changes_shape)
-      PropagateShapes(ewin->win);
+      EwinPropagateShapes(ewin);
    ewin->shapedone = 1;
 
    if (queue_off)
@@ -1068,11 +1065,11 @@ CalcEwinSizes(EWin * ewin)
 
 	     pq = Mode.queue_up;
 	     Mode.queue_up = 0;
-	     PropagateShapes(ewin->win);
+	     EwinPropagateShapes(ewin);
 	     Mode.queue_up = pq;
 	  }
 	else
-	   PropagateShapes(ewin->win);
+	   EwinPropagateShapes(ewin);
 	ewin->shapedone = 1;
      }
 
@@ -1105,12 +1102,12 @@ HonorIclass(char *s, int id)
 		  ewin->shapedone = 0;
 		  if (!ewin->shapedone)
 		    {
-		       PropagateShapes(ewin->win);
+		       EwinPropagateShapes(ewin);
 		    }
 		  else
 		    {
 		       if (ewin->border->changes_shape)
-			  PropagateShapes(ewin->win);
+			  EwinPropagateShapes(ewin);
 		    }
 		  ewin->shapedone = 1;
 	       }
@@ -1599,9 +1596,6 @@ EwinEventUnmap(EWin * ewin)
    if (ewin->pager)
       PagerEventUnmap(ewin->pager);
 
-   if (Conf.dockapp_support && ewin->docked)
-      DockDestroy(ewin);
-
    if (ewin == GetContextEwin())
       SlideoutsHide();
 
@@ -1769,7 +1763,7 @@ EwinBorderSetTo(EWin * ewin, Border * b)
       EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
 
    CalcEwinSizes(ewin);
-   PropagateShapes(ewin->win);
+   EwinPropagateShapes(ewin);
 
    EDBUG_RETURN_;
 }
@@ -2609,7 +2603,7 @@ EwinInstantShade(EWin * ewin, int force)
      default:
 	break;
      }
-   PropagateShapes(ewin->win);
+   EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    if (Mode.mode == MODE_NONE)
@@ -2685,7 +2679,7 @@ EwinInstantUnShade(EWin * ewin)
      default:
 	break;
      }
-   PropagateShapes(ewin->win);
+   EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    if (Mode.mode == MODE_NONE)
@@ -2759,7 +2753,7 @@ EwinShade(EWin * ewin)
 				      ShapeBounding, -(ewin->client.w - ww),
 				      0, ewin->client.win, ShapeBounding,
 				      ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -2812,7 +2806,7 @@ EwinShade(EWin * ewin)
 		   EShapeCombineShape(disp, ewin->win_container,
 				      ShapeBounding, 0, 0, ewin->client.win,
 				      ShapeBounding, ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -2865,7 +2859,7 @@ EwinShade(EWin * ewin)
 				      -(ewin->client.h - hh),
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -2919,7 +2913,7 @@ EwinShade(EWin * ewin)
 		   EShapeCombineShape(disp, ewin->win_container,
 				      ShapeBounding, 0, 0, ewin->client.win,
 				      ShapeBounding, ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -2950,7 +2944,7 @@ EwinShade(EWin * ewin)
    if (ewin->client.shaped)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
-   PropagateShapes(ewin->win);
+   EwinPropagateShapes(ewin);
 
    Mode.queue_up = pq;
 
@@ -3029,7 +3023,7 @@ EwinUnShade(EWin * ewin)
 					 ewin->border->border.right)), 0,
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -3084,7 +3078,7 @@ EwinUnShade(EWin * ewin)
 		   EShapeCombineShape(disp, ewin->win_container,
 				      ShapeBounding, 0, 0, ewin->client.win,
 				      ShapeBounding, ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -3139,7 +3133,7 @@ EwinUnShade(EWin * ewin)
 					 ewin->border->border.bottom)),
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -3194,7 +3188,7 @@ EwinUnShade(EWin * ewin)
 		   EShapeCombineShape(disp, ewin->win_container,
 				      ShapeBounding, 0, 0, ewin->client.win,
 				      ShapeBounding, ShapeSet);
-		PropagateShapes(ewin->win);
+		EwinPropagateShapes(ewin);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
 		dusec = timev2.tv_usec - timev1.tv_usec;
@@ -3222,7 +3216,7 @@ EwinUnShade(EWin * ewin)
    if (ewin->client.shaped)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
-   PropagateShapes(ewin->win);
+   EwinPropagateShapes(ewin);
 
    Mode.queue_up = pq;
 
@@ -3365,6 +3359,13 @@ BorderWinpartIndex(EWin * ewin, Window win)
      }
 
    return -1;			/* Not found */
+}
+
+void
+EwinPropagateShapes(EWin * ewin)
+{
+   if (!ewin->docked)
+      PropagateShapes(ewin->win);
 }
 
 /*
@@ -3517,7 +3518,7 @@ BorderWinpartEventExpose(XEvent * ev, EWin * ewin, int j)
    ewin->bits[j].no_expose = 0;
    ewin->bits[j].expose = 1;
    if (BorderWinpartDraw(ewin, j) && IsPropagateEwinOnQueue(ewin))
-      PropagateShapes(ewin->win);
+      EwinPropagateShapes(ewin);
    return;
    ev = NULL;
 }

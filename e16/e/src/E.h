@@ -1718,6 +1718,7 @@ const char         *EwinGetIconName(const EWin * ewin);
 int                 EwinIsOnScreen(EWin * ewin);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
 
+void                EwinPropagateShapes(EWin * ewin);
 void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinChangesStart(EWin * ewin);
 void                EwinChangesProcess(EWin * ewin);
@@ -1761,8 +1762,6 @@ ActionClass        *ButtonGetAClass(Button * b);
 int                 ButtonIsFixed(Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
-void                ButtonFindEmptySpotFor(Button * bt, const char *listname,
-					   char dirtomove);
 int                 ButtonsEventExpose(XEvent * ev);
 int                 ButtonsEventMouseDown(XEvent * ev);
 int                 ButtonsEventMouseUp(XEvent * ev);
