@@ -8,7 +8,7 @@ INCLUDES = \
 @edje_cflags@ \
 @ecore_cflags@ \
 @esmart_cflags@ \
-@imlib_cflags@
+@imlib2_cflags@
 
 bin_PROGRAMS = engage
 
@@ -22,5 +22,5 @@ window.c \
 userconfig.c
 
 
-engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @esmart_libs@ @imlib_libs@
+engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @esmart_libs@ @imlib2_libs@
 

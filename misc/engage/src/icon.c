@@ -118,7 +118,7 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   imlib_context_set_dither_mask(0);
   imlib_context_set_drawable(pmap);
 
-#if !IMLIB_CREATE_IMAGE_FROM_DRAWABLE_WORKS_WITH_MASK
+#ifdef HAVE_IMLIB
   mask = None;
 #endif
   img = imlib_create_image_from_drawable(mask, x, y, w, h, 0);
