@@ -231,10 +231,10 @@ No. The API for epplets under E17 will be completely different and
 therefore old epplets will not work.
 </td></tr></table>
 
-<p align="center">EFSD</p>
+<p align="center">Efsd</p>
 
 <p><table width="100%"><tr><td class="newstitle">
-I heard EFSD needs FAM. What's that? What's Imon?
+I heard Efsd needs FAM. What's that? What's Imon?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
 FAM is the File Alteration Monitor, a server which reports
 file modification events to clients. Imon is a Linux kernel patch
@@ -243,10 +243,10 @@ Read more about it at <a href="http://oss.sgi.com/projects/fam">SGI</a>.
 </td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
-Can I run EFSD without FAM? Do I need Imon?
+Can I run Efsd without FAM? Do I need Imon?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-At the moment, FAM is necessary to run EFSD. Imon is not required in
-order to use FAM/EFSD, but is recommended. You can get
+At the moment, FAM is necessary to run Efsd. Imon is not required in
+order to use FAM/Efsd, but is recommended. You can get
 both FAM and Imon at <a href="http://oss.sgi.com/projects/fam">SGI</a>. If the
 server is down, we have a local copy of FAM's sources up on our
 SourceForge <a href="http://sourceforge.net/project/showfiles.php?group_id=2">files page</a>.
@@ -262,24 +262,24 @@ our copy which has this problem fixed on our SourceForge
 </td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
-Why don't you add support for browsing FTP, Tarballs etc to EFSD?
+Why don't you add support for browsing FTP, Tarballs etc to Efsd?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-Because that's not EFSD's job. EFSD's job is to provide a facility
+Because that's not Efsd's job. Efsd's job is to provide a facility
 for launching file system commands and asynchronously receiving replies *on
 top* of the file system, not to extend it.
 </td></tr></table>
 
-<p align="center">EVAS</p>
+<p align="center">Evas</p>
 
 <p><table width="100%"><tr><td class="newstitle">
 <a name="a"></a>
-Why is EVAS faster with software acceleration than than when I run it
+Why is Evas faster with software acceleration than than when I run it
 with hardware acceleration switched on?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-When run with hardware acceleration EVAS uses the GL libraries on your
-system; this means that if you have Mesa installed then EVAS will use
+When run with hardware acceleration Evas uses the GL libraries on your
+system; this means that if you have Mesa installed then Evas will use
 the Mesa GL liberties. Mesa however only provides software acceleration
-and therefore will run slow compared to EVAS's in-built software mode. If
+and therefore will run slow compared to Evas's in-built software mode. If
 you have a video card that supports hardware acceleration then you should
 attempt to get the manufacturers own GL drivers for your computer and
 install them making sure that none of the Mesa libraries are left behind
@@ -288,7 +288,7 @@ and that where needed symbolic links are made to the real drivers.
 
 <p><table width="100%"><tr><td class="newstitle">
 <a name="b"></a>
-Why is 'program x' which uses EVAS so slow?
+Why is 'program x' which uses Evas so slow?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
 See last question. The chance is that the program is trying to use
 hardware acceleration by default and that you have Mesa GL libraries
@@ -311,9 +311,9 @@ on using "alien".
 
 <p><table width="100%"><tr><td class="newstitle">
 <a name="d"></a>
-Why is my CPU usage at 100% when I use a program running EVAS?
+Why is my CPU usage at 100% when I use a program running Evas?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-When used in software mode, EVAS will use a lot of CPU. In hardware
+When used in software mode, Evas will use a lot of CPU. In hardware
 mode however it depends on your OpenGL drivers. What a lot of drivers
 do is limit buffer buffer swaps to vertical blanking gaps only. This
 means that the buffers wont be swapped until the vertical blanking gap
@@ -324,7 +324,7 @@ hardware is busy then the app will sit and poll registers until the
 hardware is ready. It's basically down to your OpenGL drivers. It's worth
 noting as well that your CPU will be high whenever you run evas_test as
 it is pushing your system to try and achieve the highest frame rate it
-can, a situation that most software using EVAS will never be in.
+can, a situation that most software using Evas will never be in.
 </td></tr></table>
 
 </td>
