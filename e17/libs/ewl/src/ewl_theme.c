@@ -45,9 +45,6 @@ static void *theme_keys[] = {
 	"/appearance/entry/default/base",
 	"/appearance/entry/default/base.bits.db",
 	"/appearance/entry/default/base/visible", "yes",
-	"/appearance/entry/default/cursor",
-	"/appearance/entry/default/cursor.bits.db",
-	"/appearance/entry/default/cursor/visible", "yes",
 	"/appearance/entry/default/text/font", "borzoib",
 	"/appearance/entry/default/text/font_size", (void *) 8,
 	"/appearance/entry/default/text/style", "Default",
@@ -72,6 +69,10 @@ static void *theme_keys[] = {
 	"/appearance/seeker/vertical/dragbar",
 	"/appearance/seeker/vertical/dragbar.bits.db",
 	"/appearance/seeker/vertical/dragbar/visible", "yes",
+
+        "/appearance/selection/default/base",
+        "/appearance/selection/default/base.bits.db",
+        "/appearance/selection/default/base/visible", "yes",
 
 	"/appearance/table/default/base",
 	"/appearance/table/default/base.bits.db",

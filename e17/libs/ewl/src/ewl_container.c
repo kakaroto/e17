@@ -314,18 +314,20 @@ static void
 __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
 				  void *user_data)
 {
+	Ewl_Container * c;
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!EWL_CONTAINER(w)->children ||
-	    ewd_list_is_empty(EWL_CONTAINER(w)->children))
+	c = EWL_CONTAINER(w);
+
+	if (!c->children || ewd_list_is_empty(c->children))
 		DRETURN;
 
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	ewd_list_goto_first(c->children);
 
-	while ((child = ewd_list_remove_last(EWL_CONTAINER(w)->children)))
+	while ((child = ewd_list_remove_last(c->children)))
 		ewl_widget_destroy_recursive(child);
 
 	DLEAVE_FUNCTION;

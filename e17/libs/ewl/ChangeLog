@@ -1,10 +1,21 @@
-Wed Sep  14 01:26:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Sep  15 04:42:27 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed bug in Ewl_Entry, when calling ewl_text_set_text the cursor
+	  appeared even if the entry wasn't selected.
+	* Added a Ewl_Selection widget for selections in the Ewl_Entry and
+	  the future Ewl_TextArea.
+
+Sat Sep  15 18:59:40 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Renamed the callback EWL_CALLBACK_UNSELECT to EWL_CALLBACK_DESELECT.
+	* Made the cursor in the Ewl_Entry widget only appear when the entry
+	  is selected.
+
+Thu Sep  13 01:26:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Some minor fixed in the Ewl_Entry code.
 	* Extended the Ewl_Entry section in the test program.
 	* Removed MIN_W, MIN_H, MAX_W, and MAX_H from ewl_object.h, now we use
 	  MINIMUM_W, MINIMUM_H, MAXIMUM_W, and MAXIMUM_H only instead.
 
-Wed Sep  13 17:35:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Wed Sep  11 17:35:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Rewrote the Ewl_Entry widget to match the new code.
 	* Some minor fixes in the Ewl_Widget code.
 	* Added a Ewl_Cursor widget, that will be used in the Ewl_Entry widget

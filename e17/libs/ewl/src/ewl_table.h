@@ -1,6 +1,6 @@
 
-#ifndef __EWL_TABLE_H
-#define __EWL_TABLE_H
+#ifndef __EWL_TABLE_H__
+#define __EWL_TABLE_H__
 
 typedef struct _ewl_table Ewl_Table;
 
@@ -73,4 +73,4 @@ void ewl_table_get_row_geometry(Ewl_Widget * t,
 				unsigned int r,
 				int *x, int *y, int *w, int *h);
 
-#endif
+#endif /* __EWL_TABLE_H__ */

@@ -9,7 +9,7 @@ typedef struct _ewl_text Ewl_Text;
 struct _ewl_text
 {
 	Ewl_Widget widget;
-	Etox tox;
+	Etox * tox;
 	Etox_Color color;
 	Etox_Style style;
 

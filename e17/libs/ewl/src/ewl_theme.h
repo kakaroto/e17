@@ -13,4 +13,4 @@ void ewl_theme_data_set(Ewl_Widget * w, char *k, char *v);
 void ewl_theme_data_set_default(char *k, char *v);
 void ewl_theme_data_set_defaults(void);
 
-#endif
+#endif /* __EWL_THEME_H__ */

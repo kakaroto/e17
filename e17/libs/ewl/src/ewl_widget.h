@@ -1,5 +1,6 @@
-#ifndef __EWL_WIDGET_H
-#define __EWL_WIDGET_H
+
+#ifndef __EWL_WIDGET_H__
+#define __EWL_WIDGET_H__
 
 typedef struct _ewl_widget Ewl_Widget;
 
@@ -78,4 +79,4 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
 #define VISIBLE(w) EWL_WIDGET(w)->visible
 #define LAYER(w) EWL_WIDGET(w)->layer
 
-#endif
+#endif /* __EWL_WIDGET_H__ */

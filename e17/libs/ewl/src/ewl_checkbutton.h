@@ -4,8 +4,8 @@
  * the check button and radio button classes.
  */
 
-#ifndef __EWL_CHECKBUTTON_H
-#define __EWL_CHECKBUTTON_H
+#ifndef __EWL_CHECKBUTTON_H__
+#define __EWL_CHECKBUTTON_H__
 
 typedef struct _ewl_checkbutton Ewl_CheckButton;
 
@@ -23,4 +23,4 @@ Ewl_Widget *ewl_checkbutton_new(char *l);
 void ewl_checkbutton_set_checked(Ewl_Widget * w, int c);
 int ewl_checkbutton_is_checked(Ewl_Widget * w);
 
-#endif /* __EWL_CHECKBUTTON_H */
+#endif /* __EWL_CHECKBUTTON_H__ */

@@ -1,6 +1,6 @@
 
-#ifndef __EWL_SPINNER_H
-#define __EWL_SPINNER_H
+#ifndef __EWL_SPINNER_H__
+#define __EWL_SPINNER_H__
 
 struct _ewl_spinner
 {
@@ -25,4 +25,4 @@ void ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
 void ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
 void ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
 
-#endif
+#endif /* __EWL_SPINNER_H__ */

@@ -41,7 +41,7 @@ ewl_text_init(Ewl_Text * t)
 	ewl_widget_init(w, "/appearance/text/default");
 
 	t->font = strdup("borzoib");
-	t->font_size = 15;
+	t->font_size = 10;
 	t->text = strdup("");
 	t->color = etox_color_new();
 
@@ -140,12 +140,9 @@ __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TEXT(w);
 
-	if (t->tox)
-	  {
 		  etox_hide(t->tox);
 		  etox_unset_clip(t->tox);
 		  etox_free(t->tox);
-	  }
 
 	IF_FREE(t->text);
 

@@ -40,4 +40,4 @@ void ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t);
 void ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f);
 
-#endif
+#endif /* __EWL_CALLBACK_H__ */

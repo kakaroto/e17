@@ -194,7 +194,7 @@ ewl_ev_mouse_down(Eevent * _ev)
 		    {
 			    last_selected->state &= ~EWL_STATE_SELECTED;
 			    ewl_callback_call(last_selected,
-					      EWL_CALLBACK_UNSELECT);
+					      EWL_CALLBACK_DESELECT);
 		    }
 
 		  if (widget)

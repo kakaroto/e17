@@ -125,10 +125,9 @@ main(int argc, char **argv)
 	ewl_object_set_custom_size(EWL_OBJECT(button[8]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(vbox[2]), button[8]);
 
-/*	Nothing to see here anyways.
 	ewl_callback_append(button[8], EWL_CALLBACK_CLICKED,
 				__create_text_test_window, NULL);
-*/
+
 	ewl_widget_show(button[8]);
 
 	ewl_main();

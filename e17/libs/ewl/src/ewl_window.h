@@ -31,4 +31,4 @@ char *ewl_window_get_title(Ewl_Widget * widget);
 void ewl_window_set_borderless(Ewl_Widget * w);
 void ewl_window_move(Ewl_Widget * w, int x, int y);
 
-#endif
+#endif /* __EWL_WINDOW_H__ */

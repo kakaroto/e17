@@ -131,9 +131,6 @@ __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (EWL_WINDOW(w)->borderless)
 		e_window_hint_set_borderless(EWL_WINDOW(w)->window);
 
-/*
-	ewl_widget_configure(w);
-*/
 	DLEAVE_FUNCTION;
 }
 
@@ -152,18 +149,22 @@ __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 static void
 __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Window * win;
+
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	IF_FREE(EWL_WINDOW(w)->title);
+	win = EWL_WINDOW(w);
+
+	IF_FREE(win->title);
 
 	e_window_hide(w->evas_window);
-	e_window_hide(EWL_WINDOW(w)->window);
+	e_window_hide(win->window);
 
 	e_window_destroy(w->evas_window);
-	e_window_destroy(EWL_WINDOW(w)->window);
+	e_window_destroy(win->window);
 
-	IF_FREE(EWL_WINDOW(w)->title);
+	IF_FREE(win->title);
 
 	if (ewd_list_goto(ewl_window_list, w))
 		ewd_list_remove(ewl_window_list);
@@ -218,7 +219,7 @@ __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_set_output_viewport(w->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
 
 	if (!EWL_CONTAINER(w)->children ||
-	    ewd_list_is_empty(EWL_CONTAINER(w)->children))
+			ewd_list_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);

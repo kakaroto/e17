@@ -42,12 +42,8 @@ __create_text_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	text = ewl_text_new();
 	ewl_text_set_text(text,
-			  "The development effort for the 0.17"
-			  " a lot larger\nthan for the 0.16 series, mainly because Enlightenment"
-			  "\nis going to become a desktop shell.\n"
-			  "The subsystems created along the way for purposes of graphics\n"
-			  " handling, filesystem access etc are organized in standalone\n"
-			  "libraries  that can be used by other projects as well.");
+			  "This i just a small text, with \n"
+			  "no really meaningful text. EWL!");
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
 

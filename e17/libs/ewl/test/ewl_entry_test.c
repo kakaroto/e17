@@ -86,10 +86,11 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(entry[1]);
 
 	button_hbox = ewl_hbox_new();
-	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 206, 23);
+	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 211, 23);
 	ewl_object_set_alignment(EWL_OBJECT(button_hbox),
 				 EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button_hbox);
+	ewl_box_set_spacing(button_hbox, 5);
 	ewl_widget_show(button_hbox);
 
 	button[0] = ewl_button_new("Fetch text");

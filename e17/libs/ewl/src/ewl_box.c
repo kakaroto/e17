@@ -220,7 +220,11 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 
 		  REQUEST_H(c) = CURRENT_H(c);
 
-		  *rh -= REQUEST_H(c) + box->spacing + yp;
+		  *rh -= REQUEST_H(c) + box->spacing;
+		  if (yp < REQUEST_H(c))
+		  	*rh -= yp;
+		  else
+			*rh -= REQUEST_H(c);
 	  }
 
 	return f;
@@ -419,7 +423,11 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rw)
 
 		  REQUEST_W(c) = CURRENT_W(c);
 
-		  *rw -= REQUEST_W(c) + box->spacing - xp;
+		  *rw -= REQUEST_W(c) + box->spacing;
+                  if (xp < REQUEST_W(c))
+                        *rw -= xp;
+                  else 
+                        *rw -= REQUEST_W(c);
 	  }
 
 	return f;

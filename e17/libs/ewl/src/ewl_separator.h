@@ -1,6 +1,6 @@
 
-#ifndef __EWL_SEPARATOR_H
-#define __EWL_SEPARATOR_H
+#ifndef __EWL_SEPARATOR_H__
+#define __EWL_SEPARATOR_H__
 
 typedef struct _ewl_separator Ewl_Separator;
 

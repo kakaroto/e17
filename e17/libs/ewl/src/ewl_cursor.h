@@ -8,7 +8,7 @@ typedef struct _ewl_cursor Ewl_Cursor;
 
 struct _ewl_cursor
 {
-	Ewl_Box box;
+	Ewl_Widget widget;
 
 	int position;
 };

@@ -74,6 +74,7 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		  if (MINIMUM_H(b->label_object) > CURRENT_H(w))
 		    {
 			    REQUEST_Y(b->label_object) = CURRENT_Y(w) + 17;
+			    MINIMUM_H(w) = MINIMUM_H(b->label_object);
 			    MAXIMUM_H(w) = MINIMUM_H(b->label_object);
 		    }
 		  else
@@ -82,9 +83,11 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			    REQUEST_Y(b->label_object) +=
 				    (CURRENT_H(w) / 2) -
 				    (CURRENT_H(b->label_object) / 2);
+			    MINIMUM_H(w) = 17;
 			    MAXIMUM_H(w) = 17;
 		    }
 
+		  MINIMUM_W(w) = 17 + CURRENT_W(b->label_object);
 		  MAXIMUM_W(w) = 17 + CURRENT_W(b->label_object);
 
 		  ewl_widget_configure(b->label_object);
