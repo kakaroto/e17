@@ -5,6 +5,11 @@ if [ "$USER" = "root" ]; then
   exit
 fi
 
+abort () {
+    echo "$1 not found or command failed. Aborting!"
+    exit 1
+}
+
 echo
 echo 
 echo "NOTE:"
@@ -20,11 +25,11 @@ cd "$srcdir"
 DIE=0
 
 set -x
-aclocal
-libtoolize --ltdl --force --copy
-autoconf
-autoheader
-automake --foreign --add-missing
+aclocal || abort "aclocal"
+libtoolize --ltdl --force --copy || abort "libtoolize"
+autoheader || abort "autoheader"
+automake --foreign --add-missing || abort "automake"
+autoconf || abort "autoconf"
 
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
@@ -33,7 +38,7 @@ fi
 
 cd "$THEDIR"
 
-$srcdir/configure "$@"
+$srcdir/configure "$@" || abort "configure"
 
 set +x
 

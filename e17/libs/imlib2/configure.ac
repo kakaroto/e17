@@ -1,13 +1,14 @@
 dnl Process this file with autoconf to create configure.
 
-AC_INIT(src/Imlib2.h)
-AC_CANONICAL_SYSTEM
+AC_INIT
+AC_CONFIG_SRCDIR([src/Imlib2.h])
+AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE(imlib2, 1.0.4)
 
 AM_CONFIG_HEADER(config.h)
 
 AC_ARG_WITH(ttf,
-        [  --with-ttf=DIR     use freetype rooted at <DIR>],
+        [  --with-ttf=DIR          use freetype rooted at <DIR>],
         [CPPFLAGS="$CPPFLAGS -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
 
@@ -306,10 +307,11 @@ AC_SUBST(x_ldflags)
 AC_SUBST(x_libs)
 AC_SUBST(dlopen_libs)
 
-AC_OUTPUT(imlib2-config Makefile loaders/Makefile src/Makefile test/Makefile \
+AC_CONFIG_FILES([imlib2-config Makefile loaders/Makefile src/Makefile test/Makefile \
           filters/Makefile demo/Makefile doc/Makefile \
-	  ,
-[
+	  ])
+AC_CONFIG_COMMANDS([default],[[
 test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h;
 chmod +x imlib2-config
-])
+]],[[]])
+AC_OUTPUT
