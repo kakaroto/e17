@@ -46,7 +46,7 @@ main()
   ecore_evas_borderless_set(ee, 1);
   ecore_evas_shaped_set(ee, 1);
 
-  evas_font_path_append(ecore_evas_get(ee), "/usr/local/share/elicit/data/font/");
+  evas_font_path_append(ecore_evas_get(ee), PACKAGE_DATA_DIR);
 
 #ifdef HAVE_TRANS_BG
   {
