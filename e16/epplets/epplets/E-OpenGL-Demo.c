@@ -87,51 +87,30 @@ setup_rotating_square(void)
 static void
 setup_rotating_cube(void)
 {
-  GLfloat x=30.0;
-	GLfloat y=30.0;
-	GLfloat z=30.0;
+  static GLfloat x=30.0;
+	static GLfloat y=30.0;
+	static GLfloat z=30.0;
 
+	/* These are our 6 faces * 4 vertexes per face = 24 vertex
+     coordinates. Its a bit messy, but its a hell of alot
+     better than 24 glVertex3f() commands. */
+	GLfloat cubeVerts[] = {
+	-x, -y, -z, -x, y, -z, x, y, -z, x, -y, -z,
+	-x, -y, z, -x, y, z, x, y, z, x, -y, z,
+	-x, y, z, x, y, z, x, y, -z, -x, y, -z,
+	-x, -y, z, x, -y, z, x, -y, -z, -x, -y, -z,
+	-x, -y, z, -x, y, z, -x, y, -z, -x, -y, -z,
+	x, -y, z, x, y, z, x, y, -z, x, -y, -z};
+	
 	cubeList = glGenLists(1);
 	glNewList(cubeList, GL_COMPILE);
 	glColor3f(.447, .243, .678);
-	glBegin(GL_QUADS);
-	// Face 1 bottom
-		glVertex3f(-x, -y, -z);
-		glVertex3f(-x, y, -z);
-		glVertex3f(x, y, -z);
-    glVertex3f(x, -y, -z);
 
-	// Face 2 top
-    glVertex3f(-x, -y, z);
-    glVertex3f(-x, y, z);
-    glVertex3f(x, y, z);
-    glVertex3f(x, -y, z);
-
-	// Face 3 back
-    glVertex3f(-x, y, z);
-    glVertex3f(x, y, z);
-    glVertex3f(x, y, -z);
-    glVertex3f(-x, y, -z);
-
-	// Face 4 front
-    glVertex3f(-x, -y, z);
-    glVertex3f(x, -y, z);
-    glVertex3f(x, -y, -z);
-    glVertex3f(-x, -y, -z);
-
-	// Face 5 left
-    glVertex3f(-x, -y, z);
-    glVertex3f(-x, y, z);
-    glVertex3f(-x, y, -z);
-    glVertex3f(-x, -y, -z);
-
-	// Face 6 right
-    glVertex3f(x, -y, z);
-    glVertex3f(x, y, z);
-    glVertex3f(x, y, -z);
-    glVertex3f(x, -y, -z);
-
-	glEnd();
+	glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
+  glDrawArrays(GL_QUADS, 0, 24);
+  glDisableClientState(GL_VERTEX_ARRAY);
+	
 	glPopMatrix();
 	glEndList();
 }
@@ -149,6 +128,7 @@ draw_rotating(void)
 		break;
 	case CUBE:
 		glCallList(cubeList);
+		//testme();
 		break;
 	}
   glXSwapBuffers(dpy,win);
