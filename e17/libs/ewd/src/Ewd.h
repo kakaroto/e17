@@ -26,6 +26,8 @@
 #include <ewd_list.h>
 #include <ewd_tree.h>
 #include <ewd_hash.h>
+#include <ewd_sheap.h>
+#include <ewd_path.h>
 #include <ewd_plugin.h>
 
 #endif

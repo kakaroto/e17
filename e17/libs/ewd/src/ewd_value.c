@@ -83,10 +83,10 @@ int ewd_direct_compare(void *key1, void *key2)
 	k2 = (unsigned int) key2;
 
 	if (k1 > k2)
-		return -1;
+		return 1;
 
 	if (k1 < k2)
-		return 1;
+		return -1;
 
 	return 0;
 }
