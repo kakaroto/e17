@@ -32,7 +32,7 @@ RELEASE  = 1
 SRCS         = lvs-gui.c options.c config_file.c dynamic_array.c
 HDRS         = options.h config_file.h dynamic_array.h
 INIT_SCRIPTS = etc/rc.d/init.d/transparent_proxy etc/rc.d/init.d/ipvs
-EXTRA_DIST   = Makefile COPYING TODO ChangeLog AUTHORS README
+EXTRA_DIST   = Makefile COPYING TODO ChangeLog AUTHORS README va.xpm
 SPEC_FILE_IN = lvs-gui.spec.in
 
 ######################################################################

@@ -77,14 +77,12 @@ rm -rf $RPM_BUILD_ROOT
 %files lvs-server
 %defattr(-,root,root)
 %doc COPYING TODO ChangeLog AUTHORS README
-%attr(755,root,root) /etc/rc.d/init.d/transparent_proxy
 %attr(755,root,root) /etc/rc.d/init.d/ipvs
 
 %files back-end-server
 %defattr(-,root,root)
 %doc COPYING TODO ChangeLog AUTHORS README
 %attr(755,root,root) /etc/rc.d/init.d/transparent_proxy
-%attr(755,root,root) /etc/rc.d/init.d/ipvs
 
 %changelog
 * Mon Dec 27 1999 Horms <horms@vergenet.net>
