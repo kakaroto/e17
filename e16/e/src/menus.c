@@ -36,6 +36,23 @@ static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name,
 static Menu        *active_menu = NULL;
 static MenuItem    *active_item = NULL;
 
+static void
+GrabKeyboard(Window win)
+{
+   int                 rc;
+
+   rc = XGrabKeyboard(disp, win, False, GrabModeAsync, GrabModeAsync,
+		      CurrentTime);
+}
+
+static void
+UngrabKeyboard(void)
+{
+   int                 rc;
+
+   rc = XUngrabKeyboard(disp, CurrentTime);
+}
+
 static Menu        *
 FindMenuItem(Window win, MenuItem ** mi)
 {
@@ -133,10 +150,7 @@ MenuHide(Menu * m)
 
    ewin = FindEwinByMenu(m);
    if (ewin)
-     {
-	HideEwin(ewin);
-	EwinWithdraw(ewin);
-     }
+      HideEwin(ewin);
 
    EDBUG_RETURN_;
 }
@@ -164,10 +178,11 @@ MenuEwinClose(EWin * ewin)
 {
    if (ewin->menu == active_menu)
      {
-	XUngrabKeyboard(disp, CurrentTime);
+	UngrabKeyboard();
 	active_menu = NULL;
 	active_item = NULL;
      }
+
    ewin->menu = NULL;
 }
 
@@ -333,10 +348,8 @@ MenuShow(Menu * m, char noshow)
 			      MenuEwinInit);
    if (ewin)
      {
-#if 0				/* Do we need this? */
-	ewin->client.event_mask |= PointerMotionMask;
+	ewin->client.event_mask |= KeyPressMask;
 	XSelectInput(disp, m->win, ewin->client.event_mask);
-#endif
 
 	ewin->head = head_num;
 	if (Conf.menuslide)
@@ -384,8 +397,7 @@ MenuShow(Menu * m, char noshow)
    if (Mode.cur_menu_depth == 0)
      {
 	XSync(disp, False);
-	XGrabKeyboard(disp, m->win, True, GrabModeAsync, GrabModeAsync,
-		      CurrentTime);
+	GrabKeyboard(m->win);
      }
 
    EDBUG_RETURN_;
@@ -978,9 +990,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	if (active_menu != m)
 	  {
 	     active_menu = m;
-	     XUngrabKeyboard(disp, CurrentTime);
-	     XGrabKeyboard(disp, m->win, True, GrabModeAsync, GrabModeAsync,
-			   CurrentTime);
+	     UngrabKeyboard();
+	     GrabKeyboard(m->win);
 	  }
      }
 
@@ -2321,8 +2332,12 @@ MenusHide(void)
    Mode.cur_menu_mode = 0;
    clickmenu = 0;
 
-   /* This shouldn't be necessary but... */
-   XUngrabPointer(disp, CurrentTime);
+#if 0
+   /* If all done properly this shouldn't be necessary... */
+   UngrabKeyboard();
+   active_menu = NULL;
+   active_item = NULL;
+#endif
 }
 
 Window
@@ -2339,6 +2354,14 @@ static MenuItem    *
 MenuFindNextItem(Menu * m, MenuItem * mi, int inc)
 {
    int                 i;
+
+   if (mi == NULL)
+     {
+	if (m->num > 0)
+	   return m->items[0];
+	else
+	   return NULL;
+     }
 
    for (i = 0; i < m->num; i++)
       if (m->items[i] == mi)
@@ -2379,8 +2402,14 @@ MenusEventKeyPress(XEvent * ev)
    if (m == NULL)
       return 0;
 
-   m = active_menu;
-   mi = active_item;
+   mi = NULL;
+   if (active_menu)
+     {
+	m = active_menu;
+	mi = active_item;
+     }
+
+   /* NB! m != NULL */
 
    key = XLookupKeysym(&ev->xkey, 0);
    switch (key)
