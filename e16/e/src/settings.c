@@ -1039,8 +1039,6 @@ static char         tmp_map_slide;
 static char         tmp_cleanup_slide;
 static char         tmp_desktop_slide;
 static char         tmp_animate_shading;
-static char         tmp_dragbar;
-static int          tmp_dragdir;
 static int          tmp_slide_mode;
 static int          tmp_map_slide_speed;
 static int          tmp_cleanup_slide_speed;
@@ -1065,25 +1063,6 @@ CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.slidespeedmap = tmp_map_slide_speed;
 	Conf.slidespeedcleanup = tmp_cleanup_slide_speed;
 	Conf.desks.slidespeed = tmp_desktop_slide_speed;
-
-	if ((Conf.desks.dragdir != tmp_dragdir) ||
-	    ((tmp_dragbar) && (Conf.desks.dragbar_width < 1)) ||
-	    ((!tmp_dragbar) && (Conf.desks.dragbar_width > 0)))
-	  {
-	     Button             *b;
-
-	     if (tmp_dragbar)
-		Conf.desks.dragbar_width = 16;
-	     else
-		Conf.desks.dragbar_width = 0;
-	     Conf.desks.dragdir = tmp_dragdir;
-	     while ((b =
-		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BUTTON)))
-		ButtonDestroy(b);
-	     InitDesktopControls();
-	     ShowDesktopControls();
-	  }
      }
    autosave();
 }
@@ -1110,11 +1089,6 @@ SettingsSpecialFX(void)
    tmp_cleanup_slide = Conf.cleanupslide;
    tmp_desktop_slide = Conf.desks.slidein;
    tmp_animate_shading = Conf.animate_shading;
-   if (Conf.desks.dragbar_width < 1)
-      tmp_dragbar = 0;
-   else
-      tmp_dragbar = 1;
-   tmp_dragdir = Conf.desks.dragdir;
    tmp_slide_mode = Conf.slidemode;
    tmp_map_slide_speed = Conf.slidespeedmap;
    tmp_shade_speed = Conf.shadespeed;
@@ -1263,70 +1237,6 @@ SettingsSpecialFX(void)
 				_("Animate shading and unshading of windows"));
    DialogItemCheckButtonSetState(di, tmp_animate_shading);
    DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 4);
-   DialogItemCheckButtonSetText(di, _("Display desktop dragbar"));
-   DialogItemCheckButtonSetState(di, tmp_dragbar);
-   DialogItemCheckButtonSetPtr(di, &tmp_dragbar);
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Drag bar position:"));
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Top"));
-   DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 2);
-
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Bottom"));
-   DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 3);
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Left"));
-   DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 0);
-
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Right"));
-   DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_dragdir);
-
-   di = DialogAddItem(table, DITEM_NONE);
-
-   di = DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 4);

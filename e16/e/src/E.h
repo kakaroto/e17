@@ -1354,7 +1354,7 @@ void                ButtonDecRefcount(Button * b);
 void                ButtonSetSwallowed(Button * b);
 const char         *ButtonGetName(const Button * b);
 int                 ButtonGetRefcount(const Button * b);
-int                 ButtonGetDesktop(const Button * b);
+int                 ButtonGetDesk(const Button * b);
 void                ButtonGetGeometry(const Button * b, int *x, int *y,
 				      unsigned int *w, unsigned int *h);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
@@ -1441,12 +1441,9 @@ void                DeskGetCurrentArea(int *ax, int *ay);
 Window              DeskGetCurrentRoot(void);
 void                DeskSetCurrentArea(int ax, int ay);
 int                 DesksGetNumber(void);
-int                 DesksGetTotal(void);
 int                 DesksGetCurrent(void);
 void                DesksSetCurrent(int desk);
 
-void                InitDesktopControls(void);
-void                ShowDesktopControls(void);
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
 void                RefreshDesktop(int num);

@@ -286,6 +286,10 @@ PagerRedraw(Pager * p, char newbg)
 	return;
      }
 
+   /* Desk may be gone */
+   if (p->desktop >= DesksGetNumber())
+      return;
+
    p->update_phase = 0;
    GetAreaSize(&ax, &ay);
    DeskGetArea(p->desktop, &cx, &cy);
@@ -453,6 +457,10 @@ PagerForceUpdate(Pager * p)
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
+
+   /* Desk may be gone */
+   if (p->desktop >= DesksGetNumber())
+      return;
 
    if ((p->desktop != DesksGetCurrent()) || (!Conf.pagers.snap))
      {

@@ -319,7 +319,8 @@ RemoveItemByPtr(void *ptritem, int type)
 
    while (ptr)
      {
-	if (ptr == ptritem)
+	p = ptr->item;
+	if (p == ptritem)
 	  {
 	     if (pptr)
 	       {
@@ -329,7 +330,6 @@ RemoveItemByPtr(void *ptritem, int type)
 	       {
 		  lists[type].next = ptr->next;
 	       }
-	     p = ptr->item;
 	     if (ptr->name)
 		Efree(ptr->name);
 	     Efree(ptr);

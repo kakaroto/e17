@@ -176,6 +176,7 @@ ButtonDestroy(Button * b)
      }
 
    while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
+
    EobjListStackDel(&b->o);
 
    if (b->name)
@@ -306,6 +307,9 @@ ButtonMoveToDesktop(Button * b, int desk)
    int                 pdesk;
 
    EDBUG(3, "ButtonMoveToDesktop");
+
+   if (desk < 0 || desk >= DesksGetNumber())
+      EDBUG_RETURN_;
 
    if (EoIsSticky(b) && EoGetLayer(b) == 1)
       desk = 0;
@@ -471,7 +475,7 @@ ButtonGetRefcount(const Button * b)
 }
 
 int
-ButtonGetDesktop(const Button * b)
+ButtonGetDesk(const Button * b)
 {
    return EoGetDesk(b);
 }
@@ -617,7 +621,7 @@ ButtonDragEnd(Button * b)
      {
 	d = DesktopAt(Mode.x, Mode.y);
 	ButtonMoveToDesktop(b, d);
-	d = ButtonGetDesktop(b);
+	d = EoGetDesk(b);
 	ButtonMoveRelative(b, -DeskGetX(d), -DeskGetY(d));
      }
    else
@@ -1006,7 +1010,6 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	     break;
 	  case BUTTON_DESK:
 	     desk = atoi(s2);
-	     desk = ((unsigned int)desk) % DesksGetTotal();
 	     if (pbt)
 		ButtonMoveToDesktop(pbt, desk);
 	     break;
@@ -1234,6 +1237,7 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
      {
 	Button            **lst, *b;
 
+	IpcPrintf("Win       d  s  l     x     y     w     h name\n");
 	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
 	for (i = 0; i < num; i++)
 	  {
