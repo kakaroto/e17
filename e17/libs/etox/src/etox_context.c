@@ -11,11 +11,7 @@ Etox_Context *etox_context_new()
 {
 	Etox_Context *ret;
 
-	ret = (Etox_Context *) malloc(sizeof(Etox_Context));
-	if (!ret)
-		return NULL;
-
-	memset(ret, 0, sizeof(Etox_Context));
+	ret = (Etox_Context *) calloc(1, sizeof(Etox_Context));
 
 	return ret;
 }
@@ -39,11 +35,16 @@ Etox_Context *etox_context_save(Etox * et)
 	 * Copy the contents of the old context
 	 */
 	memcpy(ret, et->context, sizeof(Etox_Context));
+	if (et->context->style)
+		ret->style = strdup(et->context->style);
+	if (et->context->font)
+		ret->font = strdup(et->context->font);
 
-	/*
-	 * Need to increment references the style counter
-	 */
-	ret->style = strdup(et->context->style);
+	if (et->context->marker.text)
+		ret->marker.text = strdup(et->context->marker.text);
+
+	if (et->context->marker.style)
+		ret->marker.style = strdup(et->context->marker.style);
 
 	return ret;
 }
@@ -64,13 +65,23 @@ void etox_context_load(Etox * et, Etox_Context * context)
 	/*
 	 * Dereference the style before overwriting
 	 */
-	FREE(et->context->style);
-	FREE(et->context->font);
+	IF_FREE(et->context->style);
+	IF_FREE(et->context->font);
+	IF_FREE(et->context->marker.text);
+	IF_FREE(et->context->marker.style);
 
 	memcpy(et->context, context, sizeof(Etox_Context));
 
-	et->context->style = strdup(context->style);
-	et->context->font = strdup(context->font);
+	if (context->style)
+		et->context->style = strdup(context->style);
+	if (context->font)
+		et->context->font = strdup(context->font);
+
+	if (et->context->marker.text)
+		et->context->marker.text = strdup(context->marker.text);
+
+	if (et->context->marker.style)
+		et->context->marker.style = strdup(context->marker.style);
 }
 
 /**
@@ -86,6 +97,10 @@ void etox_context_free(Etox_Context * context)
 
 	IF_FREE(context->font);
 	IF_FREE(context->style);
+	IF_FREE(context->marker.text);
+	IF_FREE(context->marker.style);
+
+	FREE(context);
 }
 
 /**
@@ -184,7 +199,7 @@ void etox_context_add_callback(Etox *et, Evas_Callback_Type type,
 
 	CHECK_PARAM_POINTER("et", et);
 
-	cb = malloc(sizeof(Etox_Callback));
+	cb = calloc(1, sizeof(Etox_Callback));
 	cb->type = type;
 	cb->func = func;
 	cb->data = data;
@@ -304,7 +319,7 @@ void etox_context_set_align(Etox * et, int align)
 	et->context->flags = align;
 }
 
-/*
+/**
  * etox_context_set_soft_wrap - turns on soft wrapping of lines that are
  * longer than the etox is wide
  * @et: the etox to set for
@@ -314,15 +329,15 @@ void etox_context_set_align(Etox * et, int align)
  */
 void etox_context_set_soft_wrap(Etox *et, int boolean)
 {
-  CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("et", et);
 
-  if (boolean)
-    et->context->flags = et->context->flags | ETOX_SOFT_WRAP;
-  else
-    et->context->flags = et->context->flags & ~ETOX_SOFT_WRAP;
+	if (boolean)
+		et->context->flags = et->context->flags | ETOX_SOFT_WRAP;
+	else
+		et->context->flags = et->context->flags & ~ETOX_SOFT_WRAP;
 }
 
-/*
+/**
  * etox_set_wrap_marker - sets string to mark wrapped lines
  * @et: the etox to set for
  * @marker: the string to mark wrapped lines
@@ -332,11 +347,11 @@ void etox_context_set_soft_wrap(Etox *et, int boolean)
  */
 void etox_context_set_wrap_marker(Etox *et, char *marker, char *style)
 {
-  CHECK_PARAM_POINTER("et", et);
-  IF_FREE(et->context->marker.text);
-  IF_FREE(et->context->marker.style);
-  et->context->marker.text = strdup(marker);
-  et->context->marker.style = strdup(style);
+	CHECK_PARAM_POINTER("et", et);
+	IF_FREE(et->context->marker.text);
+	IF_FREE(et->context->marker.style);
+	et->context->marker.text = strdup(marker);
+	et->context->marker.style = strdup(style);
 }
 
 /*

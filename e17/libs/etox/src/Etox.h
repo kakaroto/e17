@@ -9,7 +9,8 @@
  * Simple alignment bitfield
  */
 typedef enum _etox_alignment Etox_Alignment;
-enum _etox_alignment {
+enum _etox_alignment
+{
 	ETOX_ALIGN_CENTER = 0,
 	ETOX_ALIGN_LEFT = 1,
 	ETOX_ALIGN_RIGHT = 2,
@@ -21,7 +22,8 @@ enum _etox_alignment {
  * The color struct simply keeps track of the various colors available
  */
 typedef struct _etox_color Etox_Color;
-struct _etox_color {
+struct _etox_color
+{
 	int a, r, g, b;
 };
 
@@ -29,7 +31,8 @@ struct _etox_color {
  * Text layout requires knowing the font layout, size, ascent and descent.
  */
 typedef struct _etox_font Etox_Font;
-struct _etox_font {
+struct _etox_font
+{
 	char *name;
 	int size, ascent, descent;
 };
@@ -39,7 +42,8 @@ struct _etox_font {
  * represents it.
  */
 typedef struct _etox_obstacle Etox_Obstacle;
-struct _etox_obstacle {
+struct _etox_obstacle
+{
 	Estyle *bit;
 	int start_line;
 	int end_line;
@@ -50,7 +54,8 @@ struct _etox_obstacle {
  * the bits used to display the text.
  */
 typedef struct _etox_style_info Etox_Style_Info;
-struct _etox_style_info {
+struct _etox_style_info
+{
 	char *name;
 	E_DB_File *style_db;
 	int references;
@@ -61,7 +66,8 @@ struct _etox_style_info {
  * that is added to the etox.
  */
 typedef struct _etox_context Etox_Context;
-struct _etox_context {
+struct _etox_context
+{
 	/*
 	 * Color for displaying the text
 	 */
@@ -100,9 +106,9 @@ struct _etox_context {
 	 */
 	struct
 	{
-	  char *text;
-	  char *style;
-	  int r, g, b, a;
+		char *text;
+		char *style;
+		int r, g, b, a;
 	} marker;
 };
 
@@ -111,7 +117,8 @@ struct _etox_context {
  * text enclosed.
  */
 typedef struct _etox Etox;
-struct _etox {
+struct _etox
+{
 	/*
 	 * Evas for drawing the text
 	 */
@@ -162,6 +169,62 @@ struct _etox {
 	 * Alpha level of clip box that is applied to the text
 	 */
 	int alpha;
+};
+
+/*
+ * Line information helps process the bits layout
+ */
+typedef struct _etox_line Etox_Line;
+struct _etox_line
+{
+
+	/*
+	 * The etox containing this line, used for getting back to necessary
+	 * etox info when drawing bits.
+	 */
+	Etox *et;
+
+	/*
+	 * This is a pointer to a list of bits
+	 */
+	Evas_List *bits;
+
+	/*
+	 * The dimensions of this line.
+	 */
+	int x, y, w, h;
+
+	/*
+	 * Flags indicating alignment, or if this is a "softline", ie. etox
+	 * wrapped the line because it was too long to fit within the etox's
+	 * bounds.
+	 */
+	char flags;
+
+	/*
+	 * Keep track of the length of text stored in this bit to avoid
+	 * needing to recalculate this often.
+	 */
+	int length;
+};
+
+/*
+ * Selection are used to manipulate previously composed etox, it is
+ * recommended to keep the number of active selections to a minimum, and if
+ * possible, compose using contexts and setup time.
+ */
+typedef struct _etox_selection Etox_Selection;
+struct _etox_selection
+{
+	Etox *etox;
+
+	struct
+	{
+		Etox_Line *line;
+		Estyle *bit;
+	} start, end;
+
+	Etox_Context *context;
 };
 
 /*
@@ -281,5 +344,43 @@ void etox_obstacle_remove(Etox * et, Etox_Obstacle * obstacle);
 void etox_obstacle_move(Etox * et, Etox_Obstacle * obstacle, int x, int y);
 void etox_obstacle_resize(Etox * et, Etox_Obstacle * obstacle, int w,
 			  int h);
+
+/*
+ * These functions select regions of the etox.
+ */
+Etox_Selection *etox_select_coords(Etox * et, int sx, int sy, int ex,
+				   int ey);
+Etox_Selection *etox_select_index(Etox * et, int si, int ei);
+Etox_Selection *etox_select_str(Etox * et, char *match, char **last);
+
+/*
+ * Release a selection that is no longer needed.
+ */
+void etox_selection_free(Etox_Selection * selected);
+void etox_selection_free_by_etox(Etox *etox);
+
+/*
+ * This function gets a rectangular bound on the selection.
+ */
+void etox_selection_bounds(Etox_Selection * selected, int *x, int *y,
+			   int *w, int *h);
+
+/*
+ * These methods alter the appearance of the selected region.
+ */
+void etox_selection_set_font(Etox_Selection * selected, char *font,
+			     int size);
+void etox_selection_set_style(Etox_Selection * selected, char *style);
+
+/*
+ * These functions manipulate callbacks on the selected region.
+ */
+void etox_selection_add_callback(Etox_Selection * selected,
+				 Evas_Callback_Type callback,
+				 void (*func) (void *data, Evas *e,
+					       Evas_Object *o, int b, int x,
+					       int y), void *data);
+void etox_selection_del_callback(Etox_Selection * selected,
+				 Evas_Callback_Type callback);
 
 #endif

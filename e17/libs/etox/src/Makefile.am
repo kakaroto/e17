@@ -14,7 +14,8 @@ Etox.h \
 etox.c \
 etox_line.c \
 etox_context.c \
-etox_obstacle.c
+etox_obstacle.c \
+etox_selection.c
 
 
 libetox_la_LIBADD       = @evas_libs@ @ewd_libs@

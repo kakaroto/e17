@@ -9,3 +9,10 @@ Todo:
 + obstacle wrapping
 + region selection
 + columnar layout
+
+Progress:
++ Index selection now gets the correct bits, need to generalize the update
+  mechanism to allow updating all lists when splitting a bit, including when
+  splitting around obstacles.
++ Also need to write generalizedthe code to wrap/rewrap the lines when bit
+  splitting has occurred.

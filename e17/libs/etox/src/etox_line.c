@@ -12,9 +12,8 @@ Etox_Line *etox_line_new(char align)
 {
 	Etox_Line *ret;
 
-	ret = (Etox_Line *) malloc(sizeof(Etox_Line));
+	ret = (Etox_Line *) calloc(1, sizeof(Etox_Line));
 	if (ret) {
-		memset(ret, 0, sizeof(Etox_Line));
 		ret->flags |= align;
 		ret->length = 1;
 	}
@@ -398,11 +397,11 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	}
 }
 
-Evas_List *
+Estyle *
 etox_line_coord_to_bit(Etox_Line *line, int x)
 {
-	int bx, by, bw, bh;
-	Evas_List *l = NULL, *ll = NULL;
+	int bx;
+	Evas_List *l = NULL;
 	Estyle *bit = NULL;
 
 	/*
@@ -411,24 +410,33 @@ etox_line_coord_to_bit(Etox_Line *line, int x)
 	l = line->bits;
 	while (l) {
 		bit = l->data;
-		estyle_geometry(bit, &bx, &by, &bw, &bh);
+		estyle_geometry(bit, &bx, NULL, NULL, NULL);
 		if (bx < x)
 			break;
 		l = l->next;
 	}
 
-	/*
-	 * The found line did not contain an intersecting bit.
-	 */
-	while (l && !bit) {
-		line = l->data;
-		ll = line->bits;
-		if (ll)
-			bit = ll->data;
+	return bit;
+}
+
+Estyle *
+etox_line_index_to_bit(Etox_Line *line, int *i)
+{
+	int len = 0;
+	Evas_List *l = NULL;
+	Estyle *bit = NULL;
+
+	l = line->bits;
+	while (l) {
+		bit = l->data;
+		len += estyle_length(bit);
+		if (*i < len)
+			break;
+		l = l->next;
 	}
 
-	if (!bit)
-		ll = NULL;
+	if (l)
+		*i -= (len - estyle_length(bit));
 
-	return ll;
+	return bit;
 }

@@ -21,16 +21,14 @@ Etox *etox_new(Evas *evas)
 	/*
 	 * Create the etox and assign it's evas to draw on.
 	 */
-	et = (Etox *) malloc(sizeof(Etox));
-	memset(et, 0, sizeof(Etox));
+	et = (Etox *) calloc(1, sizeof(Etox));
 
 	et->evas = evas;
 
 	/*
 	 * Allocate space for the default context
 	 */
-	et->context = (Etox_Context *) malloc(sizeof(Etox_Context));
-	memset(et->context, 0, sizeof(Etox_Context));
+	et->context = (Etox_Context *) calloc(1, sizeof(Etox_Context));
 
 	/*
 	 * Setup the default color
@@ -130,8 +128,9 @@ void etox_free(Etox * et)
 
 	etox_clear(et);
 	FREE(et->context->style);
+	etox_selection_free_by_etox(et);
 
-	//FIXME could this be replaced by evas_list_free ?
+	/* FIXME could this be replaced by evas_list_free ? */
 	for (l = et->obstacles; l; l = l->next) {
 		obst = l->data;
 
@@ -416,8 +415,7 @@ char *etox_get_text(Etox * et)
 	if (!et->lines)
 		return NULL;
 
-	ret = (char *) malloc((et->length + 1) * sizeof(char));
-	memset(ret, 0, (et->length + 1) * sizeof(char));
+	ret = (char *) calloc((et->length + 1), sizeof(char));
 
 	temp = ret;
 
@@ -620,7 +618,7 @@ void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h)
 }
 
 /**
- * etox_get_letter_geometry - retrieve information about a letters geometry
+ * etox_index_to_geometry - retrieve information about a letters geometry
  * @et: the etox to inquire the geometry
  * @x: a pointer to an int to store the x coordinate of the etox
  * @y: a pointer to an int to store the y coordinate of the etox
@@ -1182,4 +1180,48 @@ static void _etox_layout(Etox * et, int y)
 	et->h = y - et->y;
 
 	evas_object_resize(et->clip, et->w, et->h);
+}
+
+Etox_Line *
+_etox_coord_to_line(Etox *et, int y)
+{
+	Evas_List *l;
+	Etox_Line *line = NULL;;
+
+	l = et->lines;
+	while (l) {
+		line = l->data;
+		if (y < line->y + line->h)
+			break;
+		l = l->next;
+	}
+
+	if (!l)
+		line = NULL;
+
+	return line;
+}
+
+Etox_Line *
+_etox_index_to_line(Etox *et, int *i)
+{
+	int len = 0;
+	Evas_List *l;
+	Etox_Line *line = NULL;;
+
+	l = et->lines;
+	while (l) {
+		line = l->data;
+		len += line->length;
+		if (*i < len)
+			break;
+		l = l->next;
+	}
+
+	if (!l)
+		line = NULL;
+	else
+		*i -= len - line->length;
+
+	return line;
 }

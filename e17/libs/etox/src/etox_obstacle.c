@@ -24,9 +24,11 @@ Etox_Obstacle *etox_obstacle_new(Etox * et, int x, int y, int w, int h)
 	 * Allocate the obstacle and bit. Also, give the obstacle's bit correct
 	 * position and fixed geometry.
 	 */
-	obst = (Etox_Obstacle *) malloc(sizeof(Etox_Obstacle));
-	obst->bit = estyle_new(et->evas, "", NULL);
-	estyle_fix_geometry(obst->bit, x, y, w, h);
+	obst = (Etox_Obstacle *) calloc(1, sizeof(Etox_Obstacle));
+	if (obst) {
+		obst->bit = estyle_new(et->evas, "", NULL);
+		estyle_fix_geometry(obst->bit, x, y, w, h);
+	}
 
 	return obst;
 }
@@ -183,11 +185,10 @@ static void _etox_obstacle_line_insert(Etox_Line * line,
 			if (!bit)
 				return;
 			/*
-			   * FIXME: We need to do some bit-splitting here, just need to get
-			   * around to it.
+			 * FIXME: We need to do some bit-splitting here, just need to get
+			 * around to it.
 			 */
-			l = evas_list_prepend_relative(l, obst->bit,
-						       l->next);
+			l = evas_list_prepend_relative(l, obst->bit, l->next);
 			break;
 		}
 	}
