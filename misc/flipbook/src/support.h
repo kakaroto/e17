@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Geoff Harrison and VA Linux Systems
+ * Copyright (C) 1999 Bradtham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
