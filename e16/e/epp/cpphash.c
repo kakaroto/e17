@@ -51,9 +51,9 @@ HASHNODE           *install(unsigned char * name, int len, enum node_type type, 
  * computed a step at a time, elsewhere
  */
 int
-hashf(register const unsigned char *name, register int len, int hashsize)
+hashf(const unsigned char *name, int len, int hashsize)
 {
-   register int        r = 0;
+   int        r = 0;
 
    while (len--)
       r = HASHSTEP(r, *name++);
@@ -74,8 +74,8 @@ hashf(register const unsigned char *name, register int len, int hashsize)
 HASHNODE           *
 cpp_lookup(struct parse_file *pfile, const unsigned char *name, int len, int hash)
 {
-   register const unsigned char *bp;
-   register HASHNODE  *bucket;
+   const unsigned char *bp;
+   HASHNODE  *bucket;
 
    pfile = NULL;
    if (len < 0)
@@ -164,9 +164,9 @@ install(name, len, type, ivalue, value, hash)
      char               *value;
      int                 hash;
 {
-   register HASHNODE  *hp;
-   register int        i, bucket;
-   register unsigned char    *p, *q;
+   HASHNODE  *hp;
+   int        i, bucket;
+   unsigned char    *p, *q;
 
    if (len < 0)
      {
@@ -206,7 +206,7 @@ void
 cpp_hash_cleanup(pfile)
      cpp_reader         *pfile;
 {
-   register int        i;
+   int        i;
 
    pfile = NULL;
    for (i = HASHSIZE; --i >= 0;)

@@ -148,13 +148,13 @@ parse_number(pfile, start, olen)
      int                 olen;
 {
    struct operation    op;
-   register char      *p = start;
-   register int        c;
-   register unsigned long n = 0, nd, ULONG_MAX_over_base;
-   register int        base = 10;
-   register int        len = olen;
-   register int        overflow = 0;
-   register int        digit, largest_digit = 0;
+   char      *p = start;
+   int        c;
+   unsigned long n = 0, nd, ULONG_MAX_over_base;
+   int        base = 10;
+   int        len = olen;
+   int        overflow = 0;
+   int        digit, largest_digit = 0;
    int                 spec_long = 0;
 
    op.unsignedp = 0;
@@ -275,8 +275,8 @@ struct operation
 cpp_lex(pfile)
      cpp_reader         *pfile;
 {
-   register int        c;
-   register struct token *toktab;
+   int        c;
+   struct token *toktab;
    enum cpp_token      token;
    struct operation    op;
    unsigned char             *tok_start, *tok_end;
@@ -327,8 +327,8 @@ cpp_lex(pfile)
 	 * handles multicharacter constants and wide characters.
 	 * It is mostly copied from c-lex.c.  */
 	{
-	   register int        result = 0;
-	   register int        num_chars = 0;
+	   int        result = 0;
+	   int        num_chars = 0;
 	   unsigned            width = MAX_CHAR_TYPE_SIZE;
 	   int                 wide_flag = 0;
 	   int                 max_chars;
@@ -489,7 +489,7 @@ cpp_parse_escape(pfile, string_ptr)
      cpp_reader         *pfile;
      char              **string_ptr;
 {
-   register int        c = *(*string_ptr)++;
+   int        c = *(*string_ptr)++;
 
    switch (c)
      {
@@ -527,8 +527,8 @@ cpp_parse_escape(pfile, string_ptr)
      case '6':
      case '7':
 	{
-	   register int        i = c - '0';
-	   register int        count = 0;
+	   int        i = c - '0';
+	   int        count = 0;
 
 	   while (++count < 3)
 	     {
@@ -551,7 +551,7 @@ cpp_parse_escape(pfile, string_ptr)
 	}
      case 'x':
 	{
-	   register unsigned   i = 0, overflow = 0, digits_found = 0, digit;
+	   unsigned   i = 0, overflow = 0, digits_found = 0, digit;
 
 	   for (;;)
 	     {
@@ -683,7 +683,7 @@ cpp_parse_expr(pfile)
    struct operation    init_stack[INIT_STACK_SIZE];
    struct operation   *stack = init_stack;
    struct operation   *limit = stack + INIT_STACK_SIZE;
-   register struct operation *top = stack;
+   struct operation *top = stack;
    int                 lprio = 0, rprio = 0;
    int                 skip_evaluation = 0;
 
