@@ -26,6 +26,7 @@ static unsigned int    debug_segv = 0;
 static unsigned int    use_engine = EWL_ENGINE_ALL;
 static unsigned int    phase_status = 0;
 static unsigned int    print_theme_keys = 0;
+static unsigned int    debug_level = 0;
 
 static int _ewl_init_count = 0;
 
@@ -148,6 +149,11 @@ int ewl_init(int *argc, char **argv)
 	}
 	if (print_theme_keys)
 		ewl_config.theme.print_keys = print_theme_keys;
+
+	if (debug_level) {
+		ewl_config.debug.enable = 1;
+		ewl_config.debug.level = debug_level;
+	}
 
 	if (!ewl_ev_init()) {
 		DERROR("Could not init event data....");
@@ -354,7 +360,15 @@ static void ewl_init_parse_options(int *argc, char **argv)
 			use_engine = EWL_ENGINE_FB;
 			matched++;
 		}
-
+		else if (!strcmp(argv[i], "--ewl-debug")) {
+			if (i + i < *argc) {
+				debug_level = atoi(argv[i + 1]);
+				matched++;
+			} else {
+				debug_level = 1;
+			}
+			matched ++;
+		}
 		if (matched > 0) {
 			while (matched) {
 				ewl_init_remove_option(argc, argv, i);
