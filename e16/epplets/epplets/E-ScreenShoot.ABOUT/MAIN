@@ -1,0 +1,319 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-ScreenShoot
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+An Enlightenment Screenshot Grabber.
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By Tom Gilbert - 1999
+<p>
+This epplet takes screenshots. You'll need to have ImageMagick installed for
+anything to happen ;)
+<p>
+o _Control_Overview(overview)<br>
+o _Cloaking(cloaking)<br>
+o _What_Do_All_These_Buttons_Do???(buttons)<br>
+o _Config_File_Options(config)<br>
+o _Cloaking(cloaking)<br>
+o _Misc_Info(misc)<br>
+<p>
+Tom Gilbert   (gilbertt@tomgilbert.freeserve.co.uk)
+
+<page columns=1 padding=16 name=overview background=bg.png linkcolor=#88dddd>
+<font face=aircut3/16 color=#88eeff>
+<p align=50%>
+Control Overview
+<font face=aircut3/12 color=#ffffff>
+<img src=E_ScreenShoot_buttons.png x=100 y=70>
+<p>
+
+
+
+<page columns=1 padding=16 name=cloaking background=bg.png linkcolor=#88dddd>
+<font face=aircut3/16 color=#88eeff>
+<p align=50%>
+Cloaking
+<font face=aircut3/12 color=#ffffff>
+<img src=E_ScreenShoot_cloak.png x=80 y=290>
+<p>
+I couldn't just write a screenshot grabber. It had to do something.... Else.
+<p>
+Cloaking is it. Like it or loathe it, I think it rules!
+<p>
+Benefits:<br>
+o Hides the ugly squashed-in buttons<br>
+o Looks nice<br>
+o Makes you screenshots prettier<br>
+o Multiple instance identification. Set up two instances, one grabbing to
+your home directory as a png, and one grabbing to a web resource, using 60%
+jpg compression. Set a different cloak-animation on each, and you'll be able
+to tell them apart ;-)
+<p>
+
+
+<page columns=1 padding=16 name=buttons background=bg.png linkcolor=#88dddd>
+<font face=aircut3/16 color=#88eeff>
+<p align=50%>
+What do all these buttons do?
+<font face=aircut3/12 color=#ffffff>
+<p>
+Ok, so you are confronted with quite a few buttons, and a slider.
+<p>
+The first two buttons should be obvious. You pressed one of them to get this
+help ;-)
+<p>
+The slider controls the compression quality of your screenshot.
+High (upwards) means high quality, high file size, low vice versa. This
+option only effects jpg, png and miff output.
+<p>
+The config button in the top-right changes the cloak-mode of the epplet.
+This is kind of like a 48x48 screensaver for an epplet, and covers up all
+those crammed-in buttons with some eye-candy. Experiment with the various
+modes to see which ones you like.
+<p>
+_There's_more,_click_here_to_continue(buttons2)
+
+<page columns=1 padding=16 name=buttons2 background=bg.png linkcolor=#88dddd>
+<font face=aircut3/16 color=#88eeff>
+<p align=50%>
+What do all these buttons do? (2nd Row)
+<font face=aircut3/12 color=#ffffff>
+<p>
+The leftmost button on the second row toggles root/window mode. In root
+mode (the default), the button is not depressed. When you take a screenshot
+in this mode, the entire desktop will be captured. When in window mode
+(button depressed), you will get a crosshair cursor. Either click on a
+window with this cursor to capture only that window, or click and drag a
+recangular area to grab that instead.
+<p>
+The middle button on the second row allows you to select the cloak timeout.
+This is the delay before the epplet cloak appears.
+<p>
+The rightmost button on the second row is the screenshot delay. Use this to
+configure a delay between pressing the button, and having the shot taken. A
+short delay is useful for arranging some windows or refocusing.
+<p>
+_There's_more,_click_here_to_continue(buttons3)
+
+
+<page columns=1 padding=16 name=buttons3 background=bg.png linkcolor=#88dddd>
+<font face=aircut3/16 color=#88eeff>
+<p align=50%>
+What do all these buttons do? (3rd Row)
+<font face=aircut3/12 color=#ffffff>
+<p>
+The left-hand button on the bottom row is used to change the colour of the
+RasterFire clock-animation (whose intensity is proprtional to screenshot
+quality btw). In a future version, this popup will change the colours used
+for all cloak_animations.
+<p>
+The bottom-right button is used to take the screenshot! Use it when you're
+happy with all the options, and want to start shootin'
+<p>
+_Config_File_Options(config)<br>
+
+
+<page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Configuration File Options
+<font face=aircut3/12 color=#ffffff>
+<p>
+Once the epplet has been run once, a configuration file will be created in
+~/enlightenment/epplet_configs/E-ScreenShooter/E-ScreenShooter.cfg
+<p>
+You may edit this file to fine-tune your screenshooting options.
+<p>
+_Example_File(confile)<br>
+_Interface_Options(intopt)<br>
+_Screen-shot_Options(shotopt)<br>
+
+<page columns=1 padding=16 name=confile background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Example Configuration File
+<font face=aircut3/12 color=#112222>
+<p>
+### Automatically generated Epplet config file for E-ScreenShoot.
+<br>
+QUALITY 75
+<br>
+WIN_AREA 0
+<br>
+WM_FRAME 1
+<br>
+DO_CLOAK 1
+<br>
+BEEP 1
+<br>
+CLOAK_ANIM 1
+<br>
+SHOT_DELAY 0.0
+<br>
+CLOAK_DELAY 4.0
+<br>
+DRAW_INTERVAL 0.1
+<br>
+DIRECTORY ~/
+<br>
+FILE_PREFIX shot_
+<br>
+FILE_STAMP `date +%d-%m-%y_%H%M%S`
+<br>
+FILE_TYPE jpg
+<p>
+_Interface_Options(intopt)<br>
+_Screen-shot_Options(shotopt)<br>
+
+<page columns=1 padding=16 name=intopt background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Interface Configuration File Options
+<font face=aircut3/12 color=#ffffff>
+<p>
+<font face=aircut3/12 color=#112222>
+DO_CLOAK 1
+<br>
+<font face=aircut3/12 color=#ffffff>
+BOOLEAN 0/1: This option determines whether the applet is ever cloaked. 1
+mean yes, 0 means no.
+<br>
+<font face=aircut3/12 color=#112222>
+CLOAK_ANIM 1
+<br>
+<font face=aircut3/12 color=#ffffff>
+NUMERIC INTEGER: This determines which cloak animation to use. Don't fiddle
+with this in the config, as you can do so using the popup menu.
+<br>
+<font face=aircut3/12 color=#112222>
+CLOAK_DELAY 4.0
+<br>
+<font face=aircut3/12 color=#ffffff>
+NUMERIC FLOAT: This determines the time interval before the epplet is cloaked. Again, this
+can be changed using a popup on the epplet.
+<br>
+<font face=aircut3/12 color=#112222>
+DRAW_INTERVAL 0.1
+<br>
+<font face=aircut3/12 color=#ffffff>
+NUMERIC FLOAT: This is the frequency of cloak-animation draws. A low value
+means lots of draws, a high value means jerky, slow updates. All the
+animations are tuned to work best for a value of 0.1, but you have the
+option to change it if the mood takes you.
+<p>
+_Screen-shot_Options(shotopt)<br>
+
+
+<page columns=1 padding=16 name=shotopt background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Screen-Shot Configuration File Options
+<font face=aircut3/12 color=#ffffff>
+<p>
+<font face=aircut3/12 color=#112222>
+BEEP 1
+<br>
+<font face=aircut3/12 color=#ffffff>
+BOOLEAN 0/1: This determines whether you hear a beep just before, and just
+after the screen-shot is taken. If 1, you will get audio feedback, if 0,
+things'll be quiet.
+<br>
+<font face=aircut3/12 color=#112222>
+QUALITY 75
+<br>
+<font face=aircut3/12 color=#ffffff>
+NUMERIC INT 1-100: Screenshot quality, as a percentage. 100 is full quality,
+large filesize. This option applies only to jpg, png and miff image files.
+<br>
+<font face=aircut3/12 color=#112222>
+WIN_AREA 0
+<br>
+<font face=aircut3/12 color=#ffffff>
+BOOLEAN 0/1: This is configurable from a button on the epplet. If 1, a
+window or rectangular area will be grabbed, if 0, the whole desktop.
+<br>
+<font face=aircut3/12 color=#112222>
+WM_FRAME 1
+<br>
+<font face=aircut3/12 color=#ffffff>
+BOOLEAN 0/1: If you are grabbing single windows, do you also want the window
+manager decorations? 1 means yes, 0 means no. Does not effect
+entire-desktop shots.
+<p>
+_More_Screen-Shot_Options(shotopt2)
+
+<page columns=1 padding=16 name=shotopt2 background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Screen-Shot Configuration File Options
+<font face=aircut3/12 color=#ffffff>
+<p>
+<font face=aircut3/12 color=#112222>
+SHOT_DELAY 0.0
+<br>
+<font face=aircut3/12 color=#ffffff>
+NUMERIC FLOAT: Delay before taking shot. Can be altered using epplet popup.
+<br>
+<font face=aircut3/12 color=#112222>
+DIRECTORY ~/
+<br>
+<font face=aircut3/12 color=#ffffff>
+STRING: Directory in which to save images. Can include shell variable or
+command substitution. You must be able to write to this directory.
+<br>
+<font face=aircut3/12 color=#112222>
+FILE_PREFIX shot_
+<br>
+<font face=aircut3/12 color=#ffffff>
+STRING: Bit to stick on the front of the filename.
+<br>
+<font face=aircut3/12 color=#112222>
+FILE_STAMP `date +%d-%m-%y_%H%M%S`
+<br>
+<font face=aircut3/12 color=#ffffff>
+STRING: Middle bit of filename. I recommend the use of something similar to
+the above. This is command substitution, and uses the date program to give
+the shot a unique name.
+<br>
+<font face=aircut3/12 color=#112222>
+FILE_TYPE jpg
+<br>
+<font face=aircut3/12 color=#ffffff>
+STRING: File extension. This also determines the file type. For a list of
+possible filetypes, see man convert(1). It'll do almost any filetype you can
+think of. I recommend jpg, png, or html (yes html - try it and see!)
+<p>
+_Misc_Info(misc)<br>
+
+
+<page columns=1 padding=16 name=misc background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Miscellaneous details
+<font face=aircut3/12 color=#ffffff>
+<p>
+I like eyecandy. Not everyone does, so feel free to turn off the cloaking
+stuff.
+<p>
+Before you do so however, please do not worry about cpu usage. I have tuned
+my drawing code lots, and its fairly clean. To prevent my epplet hogging
+cpu, I have explicitly re-prioritised it to the equivalent of a NICE value
+of 10. This means cpu will only be used if there is cpu available.
+<p>
+There are lots more options in the pipeline, among them are:
+<br>
+o Auto-submission to screenshot websites.
+<br>
+o Running a script on resultant image to process screenshots further.
+<br>
+o Screenshot post-processing using convert(1)
+<br>
+o Lots more eyecandy, 'cos I love it.
+
+<p>
+
+Bug reports, feature requests, and positive vibes to:
+<br>
+gilbertt@tomgilbert.freeserve.co.uk
