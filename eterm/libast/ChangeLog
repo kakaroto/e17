@@ -287,3 +287,8 @@ will facilitate easier development of libast-based programs.
 Also added the beginnings of a regexp class with support for PCRE,
 POSIX-, and BSD-style regular expressions.
 ----------------------------------------------------------------------
+Sun Aug  4 22:38:47 2002                        Michael Jennings (mej)
+
+Apparently shared library building breaks if AC_PROG_CC isn't directly
+in configure.in.... :(
+----------------------------------------------------------------------

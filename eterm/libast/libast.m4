@@ -178,7 +178,6 @@ dnl#
 dnl# LibAST macros for standard checks
 dnl#
 AC_DEFUN(AST_STD_CHECKS, [
-    AC_PROG_CC
     AC_PROG_CPP
 
     dnl# These must be run after AC_PROG_CC but before any other macros that use
