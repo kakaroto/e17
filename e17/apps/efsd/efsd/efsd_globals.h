@@ -30,5 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 extern FAMConnection    famcon;
 extern int              clientfd[EFSD_CLIENTS];
-
+extern int              listen_fd;
+extern mode_t           mode_755;
 #endif

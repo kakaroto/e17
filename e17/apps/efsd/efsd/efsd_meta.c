@@ -65,11 +65,12 @@ static char*
 meta_db_get_file(char *filename)
 {
   /* FIXME: mutex this when adding threads! */
-  static char dbfile[MAXPATHLEN];
-  char s[MAXPATHLEN];
-  char *path, *file;
-  int   use_home_dir = FALSE;
-  unsigned int h;
+  static char    dbfile[MAXPATHLEN];
+  char           s[MAXPATHLEN];
+  char          *path, *file;
+  int            use_home_dir = FALSE;
+  unsigned int   h;
+  struct stat    st;
 
   D_ENTER;
 
@@ -94,7 +95,7 @@ meta_db_get_file(char *filename)
   if (*path == '\0')
     path = "/";
 
-  snprintf(s, MAXPATHLEN, "%s/.e_meta", path);
+  snprintf(s, MAXPATHLEN, "%s/%s", path, EFSD_META_DIR_NAME);
 
   if (efsd_misc_file_exists(s))
     {
@@ -109,10 +110,21 @@ meta_db_get_file(char *filename)
       if (efsd_misc_file_writeable(path) &&
 	  efsd_misc_file_execable(path))
 	{
-	  if (efsd_misc_mkdir(s))
-	    use_home_dir = FALSE;
+	  if (stat(path, &st) < 0)
+	    {
+	      use_home_dir = TRUE;
+	    }
 	  else
-	    use_home_dir = TRUE;
+	    {
+	      umask(000);
+
+	      if (mkdir(s, st.st_mode) < 0)
+		use_home_dir = TRUE;
+	      else
+		use_home_dir = FALSE;
+
+	      umask(077);
+	    }
 	}
       else
 	{

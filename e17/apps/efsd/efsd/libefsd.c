@@ -54,7 +54,6 @@ struct efsd_connection
   int        fd;
 };
 
-
 static int       send_command(EfsdConnection *ec, EfsdCommand *com);
 static EfsdCmdId get_next_id(void);
 static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,

@@ -700,7 +700,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	for (i = 0; i < em->value_len; i++)
 	  s[i] = fgetc(f);
 
-	D(("Performing string test: '%s' == '%s', len = %i\n", s, (char*)em->value, em->value_len));
+	D(("Performing string test for '%s', len = %i\n", (char*)em->value, em->value_len));
 
 	if (memcmp(s, em->value, em->value_len) == 0)
 	  {

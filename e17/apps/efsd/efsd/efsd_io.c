@@ -44,6 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif 
 
 #include <efsd_debug.h>
+#include <efsd_globals.h>
 #include <efsd_misc.h>
 #include <efsd_io.h>
 
@@ -715,6 +716,9 @@ fill_event(struct iovec *iov, EfsdEvent *ee)
   int n = 0;
 
   D_ENTER;
+
+  /* Reset length array index */
+  len_index = 0;
 
   switch (ee->type)
     {

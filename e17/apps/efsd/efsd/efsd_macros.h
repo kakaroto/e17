@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_macros
 #define __efsd_macros
 
+#define EFSD_META_DIR_NAME  ".e_meta"
+
 #ifndef	FALSE
 #define	FALSE	(0)
 #endif

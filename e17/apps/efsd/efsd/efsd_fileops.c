@@ -52,9 +52,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_types.h>
 
 
-static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
-				      S_IXGRP | S_IROTH | S_IXOTH);
-
 static int
 send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
 	   int data_len, void *data, int client)
@@ -189,7 +186,7 @@ efsd_file_makedir(EfsdCommand *cmd, int client)
 
   for (cur_dir = 0; cur_dir < num_dirs; cur_dir++)
     {
-      if ( (mkdir(path_dirs[cur_dir], default_mode) < 0) &&
+      if ( (mkdir(path_dirs[cur_dir], mode_755) < 0) &&
 	   ! (errno == EEXIST && efsd_misc_file_is_dir(path_dirs[cur_dir])))
 	{
 	  success = 0;

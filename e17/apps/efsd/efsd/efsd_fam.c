@@ -322,7 +322,6 @@ efsd_fam_del_monitor(EfsdCommand *com, int client)
 	    {
 	      D(("Use count is zero -- stopping monitoring of %s.\n", f));
 	      FAMCancelMonitor(&famcon, m->fam_req);
-	      monitors = efsd_list_remove(monitors, l, (EfsdFunc)efsd_fam_free_monitor);
 	    }
 	  else
 	    {
@@ -354,6 +353,32 @@ efsd_fam_del_monitor(EfsdCommand *com, int client)
     D_RETURN_(0);
 
   D_RETURN_(-1);
+}
+
+
+void             
+efsd_fam_remove_monitor(EfsdFamMonitor *mon)
+{
+  EfsdList        *l;
+  EfsdFamMonitor  *m;
+  D_ENTER;
+
+  if (mon)
+    {
+      for (l = efsd_list_head(monitors); l; l = efsd_list_next(l))
+	{
+	  m = (EfsdFamMonitor *)efsd_list_data(l);
+
+	  if (m == mon)
+	    {
+	      D(("Removing monitor.\n"));
+	      monitors = efsd_list_remove(monitors, l, (EfsdFunc)efsd_fam_free_monitor);
+	      break;
+	    }
+	}
+    }
+  
+  D_RETURN;
 }
 
 

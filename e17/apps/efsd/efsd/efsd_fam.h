@@ -79,6 +79,11 @@ EfsdFamMonitor  *efsd_fam_new_monitor(EfsdCommand *com, int client,
 				      EfsdFamMonType type);
 void             efsd_fam_free_monitor(EfsdFamMonitor *m);
 
+/* This one frees the monitor and removes
+   it from the list of monitors.
+*/
+void             efsd_fam_remove_monitor(EfsdFamMonitor *m);
+
 
 /* High-level API for monitoring stuff -- refcounting
    & co are handled inside. Return >= 0 on success.

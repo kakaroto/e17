@@ -47,8 +47,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_misc.h>
 
-static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
-				      S_IXGRP | S_IROTH | S_IXOTH);
+
+mode_t         mode_755 = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
+			   S_IXGRP | S_IROTH | S_IXOTH);
 
 int    
 efsd_misc_file_exists(char *filename)
@@ -158,7 +159,7 @@ efsd_misc_mkdir(char *filename)
   if (!filename)
     D_RETURN_(0);
 
-  if (mkdir(filename, default_mode) < 0)
+  if (mkdir(filename, mode_755) < 0)
     {
       D_RETURN_(0);
     }
