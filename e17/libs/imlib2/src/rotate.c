@@ -333,7 +333,7 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 			      im_dst->data, im_dst->w, im_dst->h,
 			      ssx, ssy, ddx1, ddy1,
-			      ssw, ssh, blend, merge_alpha, cm, op);
+			      ssw, ssh, blend, merge_alpha, cm, op, 0);
       return;
       
    }
@@ -457,7 +457,7 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       }
       __imlib_BlendRGBAToData(data, w, h, im_dst->data,
 			      im_dst->w, im_dst->h, 0, 0, l, i, w, h,
-			      blend, merge_alpha, cm, op);
+			      blend, merge_alpha, cm, op, 0);
       x = x2; y = y2;
       
    }

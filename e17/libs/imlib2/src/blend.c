@@ -117,12 +117,34 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
+__imlib_BlendRGBToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START
+
+   *p2 = 0xff000000 | (*p1 & 0x00ffffff);
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
 __imlib_CopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
 		      int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START
 
    *p2 = (*p2 & 0xff000000) | (*p1 & 0x00ffffff);
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_CopyRGBToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		      int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START
+
+   *p2 = 0xff000000 | (*p1 & 0x00ffffff);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -371,6 +393,20 @@ __imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump
 }
 
 static void
+__imlib_BlendRGBToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
+   G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
+   B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
+   A_VAL(p2) = 0xff;
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
 __imlib_CopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
 		      int w, int h, ImlibColorModifier *cm)
 {
@@ -379,6 +415,20 @@ __imlib_CopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
    G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
    B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_CopyRGBToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		      int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START
+
+   R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
+   G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
+   B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
+   A_VAL(p2) = 0xff;
 
    LOOP_END_WITH_INCREMENT
 }
@@ -587,7 +637,7 @@ __imlib_ReCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jum
 
 
 ImlibBlendFunction
-__imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha,
+__imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 			 ImlibColorModifier * cm)
 {
    ImlibBlendFunction blender = NULL;
@@ -599,10 +649,20 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha,
 	  case OP_COPY:
 	     if (merge_alpha)
 	       {
-		  if (blend)
-		     blender = __imlib_BlendRGBAToRGBACmod;
+		  if (rgb_src)
+		    {
+		       if (blend)
+			  blender = __imlib_BlendRGBToRGBACmod;
+		       else
+			  blender = __imlib_CopyRGBAToRGBACmod;
+		    }
 		  else
-		     blender = __imlib_CopyRGBAToRGBACmod;
+		    {
+		       if (blend)
+			  blender = __imlib_BlendRGBAToRGBACmod;
+		       else
+			  blender = __imlib_CopyRGBAToRGBACmod;
+		    }
 	       }
              else
 	       {
@@ -671,10 +731,22 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha,
 	  case OP_COPY:
 	     if (merge_alpha)
 	       {
-		  if (blend)
-		     blender = __imlib_BlendRGBAToRGBA;
+		  if (rgb_src)
+		    {
+		       if (blend)
+			 {
+			    blender = __imlib_BlendRGBToRGBA;
+			 }
+		       else
+			  blender = __imlib_CopyRGBAToRGBA;
+		    }
 		  else
-		     blender = __imlib_CopyRGBAToRGBA;
+		    {
+		       if (blend)
+			  blender = __imlib_BlendRGBAToRGBA;
+		       else
+			  blender = __imlib_CopyRGBAToRGBA;
+		    }
 	       }
              else
 	       {
@@ -744,7 +816,7 @@ void
 __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst, 
 			int dst_w, int dst_h, int sx, int sy, int dx, int dy,
 			int w, int h, char blend, char merge_alpha,
-			ImlibColorModifier *cm, ImlibOp op)
+			ImlibColorModifier *cm, ImlibOp op, char rgb_src)
 {
    ImlibBlendFunction blender;
 
@@ -784,8 +856,8 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
       h = dst_h - dy;   
    if ((w <= 0) || (h <= 0))
       return;
-
-   blender = __imlib_GetBlendFunction(op, blend, merge_alpha, cm);
+   
+   blender = __imlib_GetBlendFunction(op, blend, merge_alpha, rgb_src, cm);
    if (blender)
       blender(src + (sy * src_w) + sx, src_w - w, 
 	      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
@@ -805,6 +877,8 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 			  int ddx, int ddy, int ddw, int ddh, 
 			   ImlibColorModifier *cm, ImlibOp op)
 {
+   char rgb_src = 0;
+   
    if ((!(im_src->data)) && (im_src->loader) && (im_src->loader->load))
       im_src->loader->load(im_src, NULL, 0, 1);
    if ((!(im_dst->data)) && (im_dst->loader) && (im_src->loader->load))
@@ -817,16 +891,22 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
    if ((ssw == ddw) &&
        (ssh == ddh))
      {
-	if (!IMAGE_HAS_ALPHA(im_src))
-	   blend = 0;
 	if (!IMAGE_HAS_ALPHA(im_dst))
 	   merge_alpha = 0;
+	if (!IMAGE_HAS_ALPHA(im_src))
+	  {
+	     rgb_src = 1;
+	     if (merge_alpha)
+		blend = 1;
+	     else
+		blend = 0;
+	  }
 
 	__imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 				im_dst->data, im_dst->w, im_dst->h,
 				ssx, ssy,
 				ddx, ddy,
-				ssw, ssh, blend, merge_alpha, cm, op);
+				ssw, ssh, blend, merge_alpha, cm, op, rgb_src);
      }
    else
      {
@@ -941,15 +1021,21 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	  }
 	else
 	  {
-	     if (!IMAGE_HAS_ALPHA(im_src))
-		blend = 0;
 	     if (!IMAGE_HAS_ALPHA(im_dst))
 		merge_alpha = 0;
+	     if (!IMAGE_HAS_ALPHA(im_src))
+	       {
+		  rgb_src = 1;
+		  if (merge_alpha)
+		     blend = 1;
+		  else
+		     blend = 0;
+	       }
 	     __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 				     im_dst->data, im_dst->w, im_dst->h,
 				     ssx, ssy,
 				     ddx, ddy,
-				     ssw, ssh, blend, merge_alpha, cm, op);
+				     ssw, ssh, blend, merge_alpha, cm, op, rgb_src);
 	     return;
 	  }
 	/* if we are scaling the image at all make a scaling buffer */
@@ -972,10 +1058,16 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	   xup = 1;
 	if (dh > sh)
 	   yup = 1;
-	if (!IMAGE_HAS_ALPHA(im_src))
-	   blend = 0;
 	if (!IMAGE_HAS_ALPHA(im_dst))
 	   merge_alpha = 0;
+	if (!IMAGE_HAS_ALPHA(im_src))
+	  {
+	     rgb_src = 1;
+	     if (merge_alpha)
+		blend = 1;
+	     else
+		blend = 0;
+	  }
 	/* scale in LINESIZE Y chunks and convert to depth*/
 	for (y = 0; y < dh; y += LINESIZE)
 	  {
@@ -1002,7 +1094,7 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 				     im_dst->data, im_dst->w,
 				     im_dst->h,
 				     0, 0, dx, dy + y, dw, dh,
-				     blend, merge_alpha, cm, op);
+				     blend, merge_alpha, cm, op, rgb_src);
 	     h -= LINESIZE;
 	  }
 	/* free up our buffers and point tables */
