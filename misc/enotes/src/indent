@@ -1,0 +1,5 @@
+#!/bin/sh
+
+indent *.c *.h
+rm *.*~
+echo "Intendation Complete."

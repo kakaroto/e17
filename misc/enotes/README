@@ -1,0 +1,40 @@
+-----------------------------------------------------------
+|  ######          #    #   ####    #####  ######   ####  |
+|  #               ##   #  #    #     #    #       #      |
+|  #####   #####   # #  #  #    #     #    #####    ####  |
+|  #               #  # #  #    #     #    #            # |
+|  #               #   ##  #    #     #    #       #    # |
+|  ######          #    #   ####      #    ######   ####  |
+-----------------------------------------------------------
+| E-Notes is released under:                              |
+|      The GNU General Public License (GPL)               |
+|                                                         |
+| Owner: Thomas Fletcher                                  |
+|_________________________________________________________|
+
+	What Is It?
+
+E-Notes is a sticky notes system based on the enlightenment
+libraries.  It is aimed at being a functionable, easy to use
+and nice to look at themable sticky notes system which should
+prove to be helpful on many peoples unix workstations.
+
+It is programmed in C and requires autoconf, automake, aclocal,
+make, libtool, gettext, libltdl and the standard libraries.
+
+Also, libxml2 is required for E-Notes to function correctly.
+
+Not forgetting of course the enlightenment libraries:
+	Evas
+	Ecore
+        Edb
+        Edje
+	Ewl
+
+Please See AUTHORS for credits and people who help with or
+provide resources for the development of E-Notes.
+
+	For Installation Instructions please see INSTALL.
+
+	For Configuration Instructions see the documents in the
+	directory docs.

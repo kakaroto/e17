@@ -1,0 +1,20 @@
+#define DEBUG_PROG(pdownname, pupname, pclickname, psource, pclip, pemission) \
+	program { name, pdownname; signal, "mouse,down,1"; source, psource;\
+	action, STATE_SET "clicked" 0.0; target, pclip; } \
+	program { name, pupname; signal, "mouse,up,1"; source, psource;\
+	action, STATE_SET "default" 0.0; target, pclip; } \
+	program { name, pclickname; signal, "mouse,clicked,1"; source, psource;\
+	action, SIGNAL_EMIT pemission ""; }
+
+DEBUG_PROG("new_note_mouse_down", "new_note_mouse_up",
+   "new_note_mouse_clicked", "new_note_button_image",
+   "clipped_new_note", "ENOTES_NOTE_NEW") 
+DEBUG_PROG("save_note_mouse_down", "save_note_mouse_up",
+   "save_note_mouse_clicked", "file_save_load_button_image",
+   "clipped_file_save_load", "ENOTES_NOTES_SAVELOAD") 
+DEBUG_PROG("settings_mouse_down", "settings_note_mouse_up",
+   "settings_note_mouse_clicked", "file_settings_button_image",
+   "clipped_file_settings", "ENOTES_SETTINGS") 
+DEBUG_PROG("quit_enotes_mouse_down", "quit_enotes_mouse_up",
+   "quit_enotes_mouse_clicked", "file_exit_button_image",
+   "clipped_file_exit", "ENOTES_QUIT") 

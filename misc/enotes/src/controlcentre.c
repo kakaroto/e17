@@ -1,0 +1,115 @@
+/**************************************************/
+/**               E  -  N O T E S                **/
+/**                                              **/
+/**  The contents of this file are released to   **/
+/**  the public under the General Public Licence **/
+/**  Version 2.                                  **/
+/**                                              **/
+/**  By  Thomas Fletcher (www.fletch.vze.com)    **/
+/**                                              **/
+/**************************************************/
+
+
+#include "controlcentre.h"
+
+extern MainConfig *main_config;
+
+void
+setup_cc(void)
+{
+	ControlCentre   controlcentre;
+	ControlCentre  *cc = &controlcentre;
+	char           *edjefn = malloc(PATH_MAX);
+	char           *fontpath = malloc(PATH_MAX);
+
+	/* Setup the Window */
+	cc->win = ecore_evas_software_x11_new(NULL, 0, main_config->cc->x,
+					      main_config->cc->y,
+					      main_config->cc->width,
+					      main_config->cc->height);
+	ecore_evas_title_set(cc->win, "E-Notes Control Centre");
+	ecore_evas_borderless_set(cc->win, 1);
+	ecore_evas_shaped_set(cc->win, 1);
+	ecore_evas_show(cc->win);
+
+	/* Setup the Canvas, Render-Method and Font Path */
+	cc->evas = ecore_evas_get(cc->win);
+	evas_output_method_set(cc->evas,
+			       evas_render_method_lookup(main_config->
+							 render_method));
+	snprintf(fontpath, PATH_MAX, "%s/data/fonts", PACKAGE_DATA_DIR);
+	evas_font_path_append(cc->evas, fontpath);
+	free(fontpath);
+
+	/* Setup the EDJE */
+	cc->edje = edje_object_add(cc->evas);
+	snprintf(edjefn, PATH_MAX, CC_EDJE, PACKAGE_DATA_DIR,
+		 main_config->theme);
+	edje_object_file_set(cc->edje, edjefn, CC_PART);
+	free(edjefn);
+	evas_object_layer_set(cc->edje, 0);
+	evas_object_move(cc->edje, 0, 0);
+	evas_object_resize(cc->edje, main_config->cc->width,
+			   main_config->cc->height);
+	evas_object_name_set(cc->edje, "edje");
+	evas_object_show(cc->edje);
+
+	/* Ecore Callbacks */
+	ecore_evas_callback_resize_set(cc->win, cc_resize);
+	ecore_evas_callback_destroy_set(cc->win, cc_close);
+	ecore_evas_callback_delete_request_set(cc->win, cc_close);
+
+	/* Edje Callbacks */
+	edje_object_signal_callback_add(cc->edje,
+					EDJE_SIGNAL_CC_CLOSE, "",
+					(void *) cc_close, NULL);
+	edje_object_signal_callback_add(cc->edje,
+					EDJE_SIGNAL_CC_SAVELOAD, "",
+					(void *) cc_saveload, NULL);
+	edje_object_signal_callback_add(cc->edje,
+					EDJE_SIGNAL_CC_SETTINGS, "",
+					(void *) cc_settings, NULL);
+	edje_object_signal_callback_add(cc->edje, EDJE_SIGNAL_CC_NEW, "",
+					(void *) cc_newnote, NULL);
+
+	return;
+}
+
+void
+cc_resize(Ecore_Evas * ee)
+{
+	int             x, y, w, h;
+
+	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+	evas_object_resize(evas_object_name_find
+			   (ecore_evas_get(ee), "edje"), w, h);
+	return;
+}
+
+void
+cc_close(Ecore_Evas * ee)
+{
+	ecore_main_loop_quit();
+	return;
+}
+
+void
+cc_saveload(void *data)
+{
+	setup_saveload();
+	return;
+}
+
+void
+cc_newnote(void *data)
+{
+	new_note(NOTE_CONTENT);
+	return;
+}
+
+void
+cc_settings(void *data)
+{
+	setup_settings();
+	return;
+}

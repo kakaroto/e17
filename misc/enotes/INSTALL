@@ -1,0 +1,25 @@
+-----------------------------------------------------------
+|  ######          #    #   ####    #####  ######   ####  |
+|  #               ##   #  #    #     #    #       #      |
+|  #####   #####   # #  #  #    #     #    #####    ####  |
+|  #               #  # #  #    #     #    #            # |
+|  #               #   ##  #    #     #    #       #    # |
+|  ######          #    #   ####      #    ######   ####  |
+-----------------------------------------------------------
+| E-Notes is released under:                              |
+|      The GNU General Public License (GPL)               |
+|                                                         |
+| Owner: Thomas Fletcher                                  |
+|_________________________________________________________|
+
+	INSTALLATION
+
+./autogen.sh
+make
+make install   (As Root!)
+
+	UNINSTALLATION
+
+make uninstall (As Root!)
+
+NOTE: You *MUST* make install (As Root!) for E-Notes to work.

@@ -1,0 +1,183 @@
+/* 
+ * EntranceUserFail
+ * EntranceUserAuth
+ * EntranceUserAuthSuccess
+ * EntranceUserAuthFail
+ * 
+ * SessionSelected
+ * UserSelected
+ * UserUnSelected
+ *
+ */
+
+#define BUTTON_FONT_SIZE 10
+
+#define TEXT_ON(txtrel, clipname, txtpname, txtstr) \
+     part { name, txtpname; type, TEXT; mouse_events, 0; \
+        clip_to, clipname; \
+	effect, SOFT_SHADOW; description { \
+	state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 0.0; offset, 0 0; to, txtrel; } \
+	rel2 { relative, 1.0 1.0; offset, 0 0; to, txtrel; } \
+	color, 255 255 255 255; color3, 192 192 192 255; \
+	text { text, txtstr; font, "Vera"; size, BUTTON_FONT_SIZE; \
+	fit, 0 0; align, 0.5 0.5; } } }
+#define SOUTH_OF(rel, clipname, pname, ptxtname, txt) \
+     part { name, clipname; type, RECT; mouse_events, 0; \
+     clip_to, "EnotesCCClip"; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 1.0 1.0; offset, 0 48; to, rel; } \
+	color, 255 255 255 255; } \
+     description { state, "clicked" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 1.0 1.0; offset, 0 48; to, rel; } \
+	color, 255 255 255 192; } } \
+     part { name, pname; type, IMAGE; mouse_events, 1; \
+     clip_to, clipname ; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 1.0 1.0; offset, 0 48; to, rel; } \
+	image { normal, "button_default.png"; } \
+	border, 14 14 14 14; \
+	} } \
+     TEXT_ON(pname, clipname, ptxtname, txt)
+
+     part {
+	 name, "EnotesCCRect";
+	 type, RECT;
+	 mouse_events, 1;
+	 clip_to, "EnotesCCClip";
+	 description { 
+	     state, "default" 0.0; 
+	     visible, 1; 
+	     rel1 { 
+		 relative, 0.0 0.0; 
+		 offset, 4 4; 
+	     } rel2 { 
+		 relative, 1.0 1.0; 
+		 offset, -4 -4; 
+	     } 
+	     color, 255 255 255 0;
+	 }
+     }
+     part { 
+	 name, "EnotesCCClip";
+	 type, RECT; 
+	 mouse_events, 0; 
+	 description { 
+	     state, "default" 0.0; 
+	     visible, 1; 
+	     rel1 { 
+		 relative, 0.0 0.0; 
+		 offset, 0 0; 
+		 to, "EnotesCCRect";
+	     } rel2 { 
+		 relative, 1.0 1.0; 
+		 offset, 0 0; 
+		 to, "EnotesCCRect";
+	     } 
+	     color, 255 255 255 255; 
+	 }
+     }
+     part {
+       name, "clipped_new_note";
+       type, RECT;
+       mouse_events, 0;
+       clip_to, "EnotesCCClip";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 2 0;
+	   to, "EnotesCCRect";
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -2 48;
+	   to, "EnotesCCRect";
+	 }
+	 color, 255 255 255 255;
+       }
+       description 
+       {
+         state, "clicked" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 2 0;
+	   to, "EnotesCCRect";
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -2 48;
+	   to, "EnotesCCRect";
+	 }
+	 color, 255 255 255 192;
+       }
+     }
+     part {
+       name, "new_note_button_image";
+       type, IMAGE;
+       mouse_events, 1;
+       clip_to, "clipped_new_note";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 2 0;
+	   to, "EnotesCCRect";
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -2 48;
+	   to, "EnotesCCRect";
+	 }
+	 image
+	 {
+	     normal, "button_default.png";
+	 }
+	 border, 14 14 14 14;
+       }
+     }
+     part {
+       name, "new_note_button_text";
+       type, TEXT;
+       mouse_events, 0;
+       effect, SOFT_SHADOW;
+       clip_to, "EnotesCCClip"; \
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 0 0;
+	   to, "new_note_button_image";
+	 } rel2 {
+	   relative, 1.0 1.0;
+	   offset, 0 0;
+	   to, "new_note_button_image";
+	 }
+	 color, 255 255 255 255;
+	 color3, 192 192 192 255;
+	 text
+	 {
+	     text, "New...";
+	     font, "Vera";
+	     size,  BUTTON_FONT_SIZE;
+	     fit, 0 0;
+	     align, 0.5 0.5;
+	 }
+       }
+     }
+     SOUTH_OF("new_note_button_image", "clipped_file_save_load",
+     "file_save_load_button_image", "file_save_load_button_text",
+     "Save/Load")
+     SOUTH_OF("file_save_load_button_image", "clipped_file_settings",
+     "file_settings_button_image", "file_settings_button_text",
+     "Settings")
+     SOUTH_OF("file_settings_button_image", "clipped_file_exit",
+     "file_exit_button_image", "file_exit_button_text",
+     "Exit")

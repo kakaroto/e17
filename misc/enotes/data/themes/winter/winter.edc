@@ -1,0 +1,867 @@
+#define FONT "Vera"
+#define TXT_VIS 0
+#define TXT_EFFECT PLAIN
+#define CC_TXT_EFFECT PLAIN
+
+images {
+	image, "upleft.png" LOSSY 90;
+	image, "upright.png" LOSSY 90;
+	image, "up.png" LOSSY 90;
+	image, "downleft.png" LOSSY 90;
+	image, "downright.png" LOSSY 90;
+	image, "down.png" LOSSY 90;
+	image, "body.png" LOSSY 90;
+	image, "screen.png" LOSSY 90;
+
+	image, "btn.png" LOSSY 90;
+
+	image, "x1.png" LOSSY 90;
+	image, "x2.png" LOSSY 90;
+
+	image, "minus1.png" LOSSY 90;
+	image, "minus2.png" LOSSY 90;
+
+	image, "scr_down.png" LOSSY 90;
+	image, "scr_downleft.png" LOSSY 90;
+	image, "scr_downright.png" LOSSY 90;
+	image, "scr_left.png" LOSSY 90;
+	image, "scr_right.png" LOSSY 90;
+	image, "scr_up.png" LOSSY 90;
+	image, "scr_upleft.png" LOSSY 90;
+	image, "scr_upright.png" LOSSY 90;
+}
+
+collections
+{
+    group {
+	name, "Main";
+	min, 250 250;
+	max, 250 250;
+	parts {
+	    part {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 9;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 -9;
+		    }
+		    image {
+			normal, "body.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "upleft";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 5 9;
+		    }
+		    image {
+			normal, "upleft.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "upright";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -5 0;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 9;
+		    }
+		    image {
+			normal, "upright.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "up";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 0;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 9;
+		    }
+		    image {
+			normal, "up.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "downleft";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 -9;
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 5 0;
+		    }
+		    image {
+			normal, "downleft.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "downright";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 1.0;
+			offset, -5 -9;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "downright.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "down";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 5 -9;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -5 0;
+		    }
+		    image {
+			normal, "down.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "EnotesContainerOut";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    color, 255 255 255 255;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 30;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -5 -15;
+		    }
+		}
+	    }
+	    part {
+		name, "EnotesContainer";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    color, 255 255 255 255;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 5;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -5 -5;
+			to, "EnotesContainerOut";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_upleft";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 5 5;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_upleft.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_upright";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -5 0;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 5;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_upright.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_up";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 0;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 5;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_up.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_left";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 5;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 5 -5;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_left.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_right";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -5 5;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 -5;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_right.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_downleft";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 -5;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 5 0;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_downleft.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_downright";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 1.0;
+			offset, -5 -5;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_downright.png";
+		    }
+		}
+	    }
+	    part {
+		name, "scr_down";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 5 -5;
+			to, "EnotesContainerOut";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -5 0;
+			to, "EnotesContainerOut";
+		    }
+		    image {
+			normal, "scr_down.png";
+		    }
+		}
+	    }
+
+
+	    part {
+		name, "EnotesUser";
+		type, TEXT;
+		mouse_events, 0;
+		effect, TXT_EFFECT;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 15 16;
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 100 28;
+		    }
+		    color, 255 255 255 TXT_VIS;
+		    color3, 0 0 0 TXT_VIS;
+		    text {
+			text, "Fletch";
+			font, FONT;
+			size, 13;
+			fit, 0 0;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+
+	    part {
+		name, "EnotesDate";
+		type, TEXT;
+		mouse_events, 0;
+		effect, TXT_EFFECT;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -150 16;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -45 28;
+		    }
+		    color, 255 255 255 TXT_VIS;
+		    color3, 0 0 0 TXT_VIS;
+		    text {
+			text, "31/02/2004";
+			font, FONT;
+			size, 11;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+
+	    part {
+		name, "btn_close";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -20 13;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 28;
+		    }
+		    image {
+			normal, "x1.png";
+		    }
+		}
+	    }
+	    part {
+		name, "btn_minimize";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -40 13;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -25 28;
+		    }
+		    image {
+			normal, "minus1.png";
+		    }
+		}
+	    }
+
+	}
+
+    programs {
+	program {
+		name, "btn_note_exit_clicked";
+		source, "btn_close";
+		signal, "mouse,up,1";
+		action, SIGNAL_EMIT "ENOTES_QUIT" "";
+	}
+	program {
+		name, "btn_note_minimise_clicked";
+		source, "btn_minimize";
+		signal, "mouse,up,1";
+		action, SIGNAL_EMIT "ENOTES_MINIMIZE" "";
+	}
+    }
+}
+    
+    group {
+	name, "ControlCenter";
+	min, 160 185;
+	max, 160 185;
+	parts {
+	    part {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 9;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 -9;
+		    }
+		    image {
+			normal, "body.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "upleft";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 5 9;
+		    }
+		    image {
+			normal, "upleft.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "upright";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.0;
+			offset, -5 0;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 9;
+		    }
+		    image {
+			normal, "upright.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "up";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 0;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 9;
+		    }
+		    image {
+			normal, "up.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "downleft";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 -9;
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 5 0;
+		    }
+		    image {
+			normal, "downleft.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "downright";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 1.0;
+			offset, -5 -9;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "downright.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "down";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 5 -9;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -5 0;
+		    }
+		    image {
+			normal, "down.png";
+		    }
+		}
+	    }
+
+	    part {
+		name, "btn_new";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 15;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 50;
+		    }
+		    image {
+			normal, "btn.png";
+		    }
+		}
+	    }
+	    part {
+		name, "txt_new";
+		type, TEXT;
+		mouse_events, 0;
+		effect, CC_TXT_EFFECT;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 3 3;
+			to, "btn_new";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -3 -3;
+			to, "btn_new";
+		    }
+		    color, 0 0 0 255;
+		    color3, 0 0 0 255;
+		    text {
+			text, "New.";
+			font, FONT;
+			size, 14;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+
+
+	    part {
+		name, "btn_saveload";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 55;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 90;
+		    }
+		    image {
+			normal, "btn.png";
+		    }
+		}
+	    }
+	    part {
+		name, "txt_saveload";
+		type, TEXT;
+		mouse_events, 0;
+		effect, CC_TXT_EFFECT;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 3 3;
+			to, "btn_saveload";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -3 -3;
+			to, "btn_saveload";
+		    }
+		    color, 0 0 0 255;
+		    color3, 0 0 0 255;
+		    text {
+			text, "Save/Load.";
+			font, FONT;
+			size, 14;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+
+
+	    part {
+		name, "btn_settings";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 95;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 130;
+		    }
+		    image {
+			normal, "btn.png";
+		    }
+		}
+	    }
+	    part {
+		name, "txt_settings";
+		type, TEXT;
+		mouse_events, 0;
+		effect, CC_TXT_EFFECT;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 3 3;
+			to, "btn_settings";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -3 -3;
+			to, "btn_settings";
+		    }
+		    color, 0 0 0 255;
+		    color3, 0 0 0 255;
+		    text {
+			text, "Settings.";
+			font, FONT;
+			size, 14;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+
+
+	    part {
+		name, "btn_exit";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 135;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, -5 170;
+		    }
+		    image {
+			normal, "btn.png";
+		    }
+		}
+	    }
+	    part {
+		name, "txt_exit";
+		type, TEXT;
+		mouse_events, 0;
+		effect, CC_TXT_EFFECT;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 3 3;
+			to, "btn_exit";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -3 -3;
+			to, "btn_exit";
+		    }
+		    color, 0 0 0 255;
+		    color3, 0 0 0 255;
+		    text {
+			text, "Exit.";
+			font, FONT;
+			size, 14;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	}
+
+   programs {
+
+	program {
+		name, "btn_new_clicked";
+		source, "btn_new";
+		signal, "mouse,up,1";
+		action, SIGNAL_EMIT "ENOTES_NOTE_NEW" "";
+	}
+	program {
+		name, "btn_saveload_clicked";
+		source, "btn_saveload";
+		signal, "mouse,up,1";
+		action, SIGNAL_EMIT "ENOTES_NOTES_SAVELOAD" "";
+	}
+	program {
+		name, "btn_settings_clicked";
+		source, "btn_settings";
+		signal, "mouse,up,1";
+		action, SIGNAL_EMIT "ENOTES_SETTINGS" "";
+	}
+	program {
+		name, "btn_exit_clicked";
+		source, "btn_exit";
+		signal, "mouse,up,1";
+		action, SIGNAL_EMIT "ENOTES_QUIT" "";
+	}
+    }
+}
+

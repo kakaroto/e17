@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#echo "Indenting..."
+#./indent
+
+echo ""
+echo "Compiling..."
+gcc *.c `ewl-config --cflags --libs` \
+        `imlib2-config --cflags --libs` \
+        `ecore-config --cflags --libs` \
+        `evas-config --cflags --libs` \
+	`edje-config --cflags --libs` \
+	`edb-config --cflags --libs` \
+	`xml2-config --cflags --libs` \
+	-o enotes -O0 -g3

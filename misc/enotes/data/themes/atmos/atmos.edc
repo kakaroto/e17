@@ -1,0 +1,531 @@
+/**
+ * Corey Donohoe<atmos@atmos.org>
+ * enotes.edc : A favor to Fletch :)
+ * If you don't like Vera or the fontsize of the parts, change them here 
+ */
+#define TITLEFONT "Vera"
+#define DATEFONT "Vera"
+#define USERFONT "Vera"
+#define CONTENTFONT "Vera"
+#define DATEFONTSIZE 10
+#define USERFONTSIZE 10
+#define CONTENTFONTSIZE 10
+/**
+ * Two Groups : Main and Notes
+ * Main Consists of these parts:
+ * EnotesContainer : Swallow an esmart container to this edje part, then
+ * append TODO(Notes group) items to it
+ * EnotesDate: A text part formatted to user's preferred date format
+ * EnotesUser: A text part to hold user's name
+ * 
+ * Notes Consists of these parts:
+ * EnotesContent: A text part for the message
+ * 
+ */
+images {
+    image, "bg.png" LOSSY 90;
+    image, "shading.png" LOSSY 90;
+    image, "bt_close_1.png" LOSSY 90;
+    image, "bt_close_2.png" LOSSY 90;
+    image, "bt_minimize_1.png" LOSSY 90;
+    image, "bt_minimize_2.png" LOSSY 90;
+    image, "button_default.png" LOSSY 90;
+}
+
+collections
+{
+    group {
+	name, "Main";
+	min, 250 250;
+	max, 250 250;
+	parts {
+	    part {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "bg.png";
+		    }
+		    fill {
+			smooth, 0;
+			size {
+			    relative, 0.0 0.0;
+			    offset, 64 64;
+			}
+		    }
+		}
+	    }
+	    part {
+		name, "bg_shading";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "shading.png";
+		    }
+		    border, 2 2 2 2;
+		}
+	    }
+	    part {
+		name, "bg_title";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 45;
+		    }
+		    color, 192 192 192 255;
+		    color3, 255 255 255 192;
+		    text {
+			text, "Enotes";
+			font, TITLEFONT;
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "button_close";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, -28 -12;
+			to_y, "bg_title";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, -4 12;
+			to_y, "bg_title";
+		    }
+		    image {
+			normal, "bt_close_1.png";
+		    }
+		    border, 4 4 4 4;
+		}
+		description {
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, -28 -12;
+			to_y, "bg_title";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, -4 12;
+			to_y, "bg_title";
+		    }
+		    image {
+			normal, "bt_close_2.png";
+		    }
+		    border, 4 4 4 4;
+		}
+	    }
+	    part {
+		name, "button_minimize";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, -52 -12;
+			to_y, "bg_title";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, -28 12;
+			to_y, "bg_title";
+		    }
+		    image {
+			normal, "bt_minimize_1.png";
+		    }
+		    border, 4 4 4 4;
+		}
+		description {
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, -52 -12;
+			to_y, "bg_title";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, -28 12;
+			to_y, "bg_title";
+		    }
+		    image {
+			normal, "bt_minimize_2.png";
+		    }
+		    border, 4 4 4 4;
+		}
+	    }
+	    part {
+		name, "EnotesContainer";
+		type, RECT;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 15 0;
+			to_y, "bg_title";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -15 -40;
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part {
+		name, "date_description";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 5;
+			to, "EnotesContainer";
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 40 25;
+			to, "EnotesContainer";
+		    }
+		    color, 192 192 192 255;
+		    color3, 255 255 255 192;
+		    text {
+			text, "Date:";
+			font, DATEFONT;
+			size, DATEFONTSIZE;
+			fit, 0 0;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EnotesDate";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, 0 -12;
+			to, "date_description";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, 100 12;
+			to, "date_description";
+		    }
+		    color, 192 192 192 255;
+		    color3, 255 255 255 192;
+		    text {
+			text, "12/29/2003";
+			font, DATEFONT;
+			size, DATEFONTSIZE;
+			fit, 0 0;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "user_description";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.5;
+			offset, -40 -12;
+			to_x, "EnotesUser";
+			to_y, "date_description";
+		    } rel2 {
+			relative, 0.0 0.5;
+			offset, -2 12;
+			to_x, "EnotesUser";
+			to_y, "date_description";
+		    }
+		    color, 192 192 192 255;
+		    color3, 255 255 255 192;
+		    text {
+			text, "User:";
+			font, USERFONT;
+			size, USERFONTSIZE;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EnotesUser";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, -50 -12;
+			to_y, "date_description";
+			to_x, "EnotesContainer";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, 0 12;
+			to_y, "date_description";
+			to_x, "EnotesContainer";
+		    }
+		    color, 192 192 192 255;
+		    color3, 255 255 255 192;
+		    text {
+			text, "atmos";
+			font, USERFONT;
+			size, USERFONTSIZE;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	}
+	programs {
+	    program {
+		name, "mouse_down_close";
+		signal, "mouse,down,1";
+		source, "button_close";
+		action, STATE_SET "clicked" 0.0;
+		target, "button_close";
+		transition, LINEAR 0.1;
+	    }
+	    program {
+		name, "mouse_up_close";
+		signal, "mouse,up,1";
+		source, "button_close";
+		action, STATE_SET "default" 0.0;
+		target, "button_close";
+		transition, LINEAR 0.2;
+	    }
+	    program {
+		name, "mouse_clicked_close";
+		signal, "mouse,clicked,1";
+		source, "button_close";
+		action, SIGNAL_EMIT "ENOTES_QUIT" "";
+	    }
+	    program {
+		name, "mouse_down_min";
+		signal, "mouse,down,1";
+		source, "button_minimize";
+		action, STATE_SET "clicked" 0.0;
+		target, "button_minimize";
+		transition, LINEAR 0.1;
+	    }
+	    program {
+		name, "mouse_up_min";
+		signal, "mouse,up,1";
+		source, "button_minimize";
+		action, STATE_SET "default" 0.0;
+		target, "button_minimize";
+		transition, LINEAR 0.2;
+	    }
+	    program {
+		name, "mouse_clicked_min";
+		signal, "mouse,clicked,1";
+		source, "button_minimize";
+		action, SIGNAL_EMIT "ENOTES_MINIMIZE" "";
+	    }
+	}
+    }
+    group {
+	name, "Note";
+	parts {
+	    part {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    max, 9999 25;
+		    min, 100 22;
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		}
+	    }
+	    part {
+		name, "EnotesContent";
+		type, TEXT;
+		mouse_events, 1;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.5;
+			offset, 0 -10;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, 0 10;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    color3, 192 192 192 192;
+		    text {
+			text, "Wash The Dishes!";
+			font, CONTENTFONT;
+			size, CONTENTFONTSIZE;
+			fit, 0 0;
+			align, 0.0 0.5;
+		    }
+		}
+		description {
+		    state, "hilited" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.5;
+			offset, 0 -10;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, 0 10;
+			to, "bg";
+		    }
+		    color, 192 192 192 255;
+		    color3, 255 255 255 192;
+		    text {
+			text, "Wash The Dishes!";
+			font, CONTENTFONT;
+			size, CONTENTFONTSIZE;
+			fit, 0 0;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+	}
+	programs {
+	    program {
+		name, "EnotesContentMouseInStop";
+		signal, "mouse,in";
+		source, "EnotesContent";
+		action, ACTION_STOP;
+		target, "EnotesContentMouseOut";
+	    }
+	    program {
+		name, "EnotesContentMouseInStart";
+		signal, "mouse,in";
+		source, "EnotesContent";
+		action, STATE_SET "hilited" 0.0;
+		target, "EnotesContent";
+		transition, ACCELERATE 0.25;
+	    }
+	    program {
+		name, "EnotesContentMouseOut";
+		signal, "mouse,out";
+		source, "EnotesContent";
+		action, STATE_SET "default" 0.0;
+		target, "EnotesContent";
+		transition, DECELERATE 0.25;
+		in, 0.2 0.0;
+	    }
+	}
+    }
+    group {
+	name, "ControlCenter";
+	min, 160 250;
+	max, 200 350;
+	parts {
+	    part {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "bg.png";
+		    }
+		    fill {
+			smooth, 0;
+			size {
+			    relative, 0.0 0.0;
+			    offset, 64 64;
+			}
+		    }
+		}
+	    }
+	    part {
+		name, "bg_shading";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "shading.png";
+		    }
+		    border, 2 2 2 2;
+		}
+	    }
+#include "cc.edc"
+	}
+	programs {
+#include "cc_programs.edc"
+	}
+    }
+}
+

@@ -1,0 +1,29 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.0//EN">
+ 
+<book id="hello-world" lang="en">
+ 
+<bookinfo>
+<title>Hello, world</title>
+</bookinfo>
+ 
+<chapter id="introduction">
+<title>Introduction</title>
+ 
+<para>This is the introduction. It has two sections</para>
+ 
+<sect1 id="about-this-book">
+<title>About this book</title>
+
+<para>This is my first DocBook file.</para>
+
+</sect1>
+
+<sect1 id="work-in-progress">
+<title>Warning</title>
+
+<para>This is still under construction.</para>
+
+</sect1>
+
+</chapter>
+</book>
