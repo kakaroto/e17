@@ -7,7 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 LDFLAGS		     = -L$(top_builddir)/src -L$(top_builddir)/src/.libs -L/usr/X11R6/lib
 INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
-                       -I$(top_srcdir)/loaders -I$(top_srcdir)/libltdl \
+                       -I$(top_srcdir)/loaders \
                        -I/usr/X11R6/include $(X_CFLAGS) \
                        -I$(prefix)/include -I$(includedir)
 

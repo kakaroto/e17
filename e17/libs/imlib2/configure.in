@@ -113,7 +113,7 @@ if test x$mmx = xyes; then
 fi
 AM_CONDITIONAL(HAVE_MMX, test x$mmx = xyes)
 
-pkglibdir='${libdir}'/loaders
+pkglibdir='${libdir}'/imlib2_loaders
 AC_SUBST(pkglibdir)
 
 AC_C_BIGENDIAN	      

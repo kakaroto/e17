@@ -1,7 +1,7 @@
 #ifndef _DYN_FUNCTION_H_
 #define _DYN_FUNCTION_H_
 
-#include "ltdl.h"
+#include <ltdl.h>
 #include "Imlib2.h"
 #include <stdarg.h>
 
