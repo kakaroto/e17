@@ -9,38 +9,41 @@ A handy, quick, themeable image viewer.
 
 @mainpage Entice Developers and Themers Documentation
 @image html entice.png
+
 @version 1.0.0
 @author Corey Donohoe <atmos@atmos.org>
 @date 2003
 
 
 
-<UL>
-<LI><A HREF="./index.html#intro">What is Entice?</A></LI>
-<LI><A HREF="./index.html#running">How do I use it?</A><BR>
-<UL>
-    <LI><A HREF="./index.html#configops">Config File</A></LI> 
-    <LI><A HREF="./index.html#keyops">Binding Keys</A></LI> 
-    <LI><A HREF="./index.html#themes">Installing Themes</A></LI> 
-    </UL></LI>
-<LI><A HREF="./index.html#theme">Themers documentation</A><BR>
-<UL>
-    <LI><A HREF="./index.html#theme_groups">Entice's Appearance: Edje Groups</A><BR>
-    <UL>
-    <LI><A HREF="./index.html#theme_entice_image_parts">The EnticeImage Group</A></LI>
-    <LI><A HREF="./index.html#theme_entice_thumb_parts">The EnticeThumb Group</A></LI>
-    </UL></LI>
-    <LI><A HREF="./index.html#theme_signals">Communicating with Entice : Edje Signals</A><BR>
-    <UL>
-    <LI><A HREF="./index.html#theme_entice_progs">Signals your theme
-    can emit to Entice</A></LI>
-    <LI><A HREF="./index.html#theme_entice_thumb_progs">Signals your
-    thumbnails can emit to communicate with entice</A></LI>
-    <LI><A HREF="./index.html#theme_entice_entice_progs">Signals your theme should be aware of</A></LI>
-    </UL></LI>
-</UL></LI>
-<LI><A HREF="./index.html#requirements">Build Instructions</A></LI>
-</UL>
+<ul>
+<li><a href="./index.html#intro">What is Entice?</a></li>
+<li><a href="./index.html#running">How do I use it?</a>
+<ul>
+    <li><a href="./index.html#configops">Config File</a></li> 
+    <li><a href="./index.html#keyops">Binding Keys</a></li> 
+    <li><a href="./index.html#themes">Installing Themes</a></li> 
+</ul>
+</li>
+<li><a href="./index.html#theme">Themers documentation</a>
+<ul>
+    <li><a href="./index.html#theme_groups">Entice's Appearance: Edje Groups</a>
+    <ul>
+	<li><a href="./index.html#theme_entice_image_parts">The EnticeImage Group</a></li>
+	<li><a href="./index.html#theme_entice_thumb_parts">The EnticeThumb Group</a></li>
+    </ul>
+    </li>
+    <li><a href="./index.html#theme_signals">Communicating with Entice : Edje Signals</a>
+    <ul>
+	<li><a href="./index.html#theme_entice_progs">Signals your theme can emit to Entice</a></li>
+	<li><a href="./index.html#theme_entice_thumb_progs">Signals your thumbnails can emit to communicate with entice</a></li>
+	<li><a href="./index.html#theme_entice_entice_progs">Signals your theme should be aware of</a></li>
+    </ul>
+    </li>
+</ul>
+</li>
+<li><a href="./index.html#requirements">Build Instructions</a></li>
+</ul>
 
 
 
@@ -48,18 +51,18 @@ A handy, quick, themeable image viewer.
 
 @section intro What is Entice?
 
-Entice is yet another image viewer.  Why write another image viewer you
+<p>Entice is yet another image viewer.  Why write another image viewer you
 ask?  In the past entice was an application with tons of hard coded
 effects.  These effects were very pleasing to the eye, but everyone's
-entice application looked the same.  
+entice application looked the same.</p>
 @image html entice.jpg 
-Enter Edje.  With Edje in mind most
+<p> Enter Edje.  With Edje in mind most
 of entice was rewritten from the ground up.  The applications
 functionality was broken out, and Edje signals handle communication with the
 theme so the displayed items stay current.  For the themer, communication
 with entice is bidirectional, sometimes you'll have to emit signals to it,
 while other times you'll have to be aware of signals entice is emitting and
-act upon them in your theme.  
+act upon them in your theme.</p>
 
 
 @section running How do I use entice now that I've got it installed ?
@@ -103,123 +106,91 @@ directory.
 @verbatim
 $ cp winter.eet ~/.e/apps/entice/themes/
 @endverbatim
-If there were additional fonts that came with the theme, copy them to your
-user fonts directory.
-@verbatim
-$ cp *.ttf ~/.e/apps/entice/fonts/
-@endverbatim
 
 @section theme How do I theme for it ? (Edje Docs)
 
 @subsection theme_groups Edje groups that makeup Entice
-<UL>
-<LI><B>Entice</B>: the main entice edje, fills the entire window<BR>
-@subsection theme_entice_image_parts Entice Group : Edje Parts
-<UL>
-<LI><B>EnticeFileName</B>:(TEXT) the full path to the file currently displayed</LI>
-<LI><B>EnticeFileShortName</B>:(TEXT) the filename currently displayed</LI>
-<LI><B>EnticeFileShortName</B>:(TEXT) the filename currently displayed</LI>
-<LI><B>EnticeFileSize</B>:(TEXT) the size of the file currently displayed</LI>
-<LI><B>EnticeImageDimensions</B>:(TEXT) Entice sets this string to be a string "w x h" where w is the width of the image and h is the height of the image.</LI>
-<LI><B>EnticeImageHeight</B>:(TEXT) the height of the image currently displayed</LI>
-<LI><B>EnticeImageWidth</B>:(TEXT) the width of the image currently displayed</LI>
-<LI><B>EnticeImage</B>:(RECT) When the image is actually loaded by entice, it looks for this region in the theme.  If it exists, the image is swallowed here.  If you want dragability, do not confine this part.</LI>
-<LI><B>EnticeImageScroller</B>:(RECT) When the image displayed is larger than the area theme is giving it, a scroller window can appear.  Clicking in this window moves the viewport on displayed image so the clicked area is "centered"</LI>
-<LI><B>EnticeImagePreview</B>:(RECT) Thumbnails have the ability to request themselves to be "previewed".  This region swallows a copy of the thumbnail that requested previewing.</LI>  
-<LI><B>EnticeThumbnailArea</B>:(RECT) Entice contains a filelist, and the themer is allowed to create a region that that will contain a list of thumbnails.</LI>
-</UL></LI>
+<ul>
+<li name="theme_entice_image_parts">
+<h2>Entice Group : Edje Parts</h2>
+<span><em>Entice</em>: the main entice edje, fills the entire window</span>
+    <ul>
+    <li><em>entice.image.current.filename.full</em>:(TEXT) the full path to the file currently displayed</li>
+    <li><em>entice.image.current.filename.short</em>:(TEXT) the filename currently displayed</li>
+    <li><em>entice.image.current.filesize</em>:(TEXT) the size of the file currently displayed</li>
+    <li><em>entice.image.current.dimensions</em>:(TEXT) Entice sets this string to be a string "w x h" where w is the width of the image and h is the height of the image.</li>
+    <li><em>entice.image.current.height</em>:(TEXT) the height of the image currently displayed</li>
+    <li><em>entice.image.current.width</em>:(TEXT) the width of the image currently displayed</li>
+    <li><em>entice.image</em>:(RECT) When the image is actually loaded by entice, it looks for this region in the theme.  If it exists, the image is swallowed here.  If you want dragability, do not confine this part.</li>
+    <li><em>entice.scroller</em>:(RECT) When the image displayed is larger than the area theme is giving it, a scroller window can appear.  Clicking in this window moves the viewport on displayed image so the clicked area is "centered"</li>
+    <li><em>entice.preview</em>:(RECT) Thumbnails have the ability to request themselves to be "previewed".  This region swallows a copy of the thumbnail that requested previewing.</li>
+    <li><em>entice.thumbnail.area</em>:(RECT) Entice contains a filelist, and the themer is allowed to create a region that that will contain a list of thumbnails.</li>
+    </ul>
+</li>
+<li name="theme_entice_thumb_parts"><h2>EnticeThumb Group : Edje Parts</h2>
+<span><em>EnticeThumb</em>:All the thumbnails take on this look</span>
+    <ul>
+	<li><em>EnticeThumb</em>:(RECT) the decorations for thumbnails</li>
+    </ul>
+</li>
+</ul>
 
-<LI><B>EnticeThumb</B>:All the thumbnails take on this look<BR>
-@subsection theme_entice_thumb_parts  EnticeThumb Group Ejde Parts
-<UL><LI><B>EnticeThumb</B>:(RECT) the decorations for thumbnails</LI></UL>
-</LI></UL>
 @subsection theme_signals Communicating with Entice : Edje Signals
-<UL>
-<LI><B>Entice</B>: The themer can emit signals to ask for state changes in
-entice.  This includes things like telling Entice to "load the next image"
-or "delete this image from the filelist". <BR>
-@subsection theme_entice_progs Entice Group : Edje Signals
-<UL>
-<LI><B>EnticeImageDelete</B>:("") deletes the currently displayed image
-from the filelist, AND from disk</LI>
-<LI><B>EnticeImageRemove</B>:("") deletes the currently displayed image
-from the filelist</LI>
-<LI><B>EnticeImageSave</B>:("") save the currently modified image
-to disk</LI>
-<LI><B>EnticeImageNext</B>:("") load the next image in the filelist</LI>
-<LI><B>EnticeImagePrev</B>:("") load the previous image in the filelist</LI>
-<LI><B>EnticeImageZoomDefault</B>:("") sets the image's zoom scale back to
-1:1</LI>
-<LI><B>EnticeImageZoomFit</B>:("") fit the image in the specified area</LI> 
-<LI><B>EnticeImageZoomIn</B>:("") Zoom in on the image</LI> 
-<LI><B>EnticeImageZoomOut</B>:("") Zoom out on the image</LI> 
-<LI><B>EnticeImageZoomInFocused</B>:("") Zoom in on the image, focused on
-the current mouse x,y(NOT IMPLEMENTED)</LI> 
-<LI><B>EnticeImageZoomOutFocused</B>:("") Zoom out on the image, focused on
-the current mouse x,y(NOT IMPLEMENTED)</LI> 
-<LI><B>EnticeImageRotateRight</B>:("") Rotates the current image 90 degrees
-clockwise</LI>
-<LI><B>EnticeImageRotateLeft</B>:("") Rotates the current image 90 degrees
-counter-clockwise</LI>
-<LI><B>EnticeImageFlipH</B>:("") Flip the current image horizontally</LI>
-<LI><B>EnticeImageFlipV</B>:("") Flip the current image vertically</LI>
-<LI><B>EnticeImageScrollEastStart</B>:("") start a timer to pan the image
-viewport image "East"</LI>
-<LI><B>EnticeImageScrollWestStart</B>:("") start a timer to pan the image
-viewport image "West"</LI>
-<LI><B>EnticeImageScrollSouthStart</B>:("") start a timer to pan the image
-viewport image "South"</LI>
-<LI><B>EnticeImageScrollNorthStart</B>:("") start a timer to pan the image
-viewport image "North"</LI>
-<LI><B>EnticeImageScrollStop</B>:("") stops all image scrolling timers</LI>
-<LI><B>EnticeThumbScrollNextStart</B>:("") start scrolling to see additional
-elements in in the thumbnail containers</LI>
-<LI><B>EnticeThumbScrollPrevStart</B>:("") start scrolling to see images
-before those currently displayed in the container </LI>
-<LI><B>EnticeThumbScrollStop</B>:("") stops any thumbnail scrolling
-timers that are currently running.</LI>
-<LI><B>EnticeFullScreen</B>:("") Tell Entice to takeover the entire screen
-and resize itself borderless.</LI>
-<LI><B>EnticeQuit</B>:("") Tell Entice it's time to exit</LI>
-<LI><B>EnticeImageFitWindow</B>:("") Not Impelemented</LI>
-</UL></LI>
-
-<LI><B>EnticeThumb</B>:All the thumbnails take on this look<BR>
-@subsection theme_entice_thumb_progs EnticeThumb Group : Ejde Signals
-<UL>
-<LI><B>EnticeThumbPreview</B>:("") Send this thumbnail to the previewer.
-</LI>
-<LI><B>EnticeThumbLoad</B>:("") Load this thumbnail as the current image.
-</LI>
-<LI><B>EnticeThumbLoaded</B>:("") This thumbnail was selected in Entice.
-</LI>
-<LI><B>EnticeThumbUnLoaded</B>:("") This thumbnail was de-selected in Entice.
-</LI>
-<LI><B>EnticeThumbDelete</B>:("") Delete this thumbnail from entice's
-filelist and from disk.</LI>
-<LI><B>EnticeThumbRemove</B>:("") Remove this thumbnail from entice's
-filelist.</LI>
-
-</UL>
-</LI>
-<LI><B>Entice</B>:Signals your theme should trap that Entice will emit<BR>
-@subsection theme_entice_entice_progs Entice : Entice Signals
-<UL>
-<LI><B>EnticeImageDisplay</B>:("") When a new image is displayed.  </LI>
-<LI><B>EnticeImageDisplayPrep</B>:("") Right before the current image is
-freed, this is emitted.  This is useful for intercepting image display.
-</LI>
-<LI><B>EnticeImagePreviewShow</B>:("") When we have a new image in
-previewer.  </LI>
-<LI><B>EnticeImagePreviewPrep</B>:("") When we have a new image coming into
-the previewer, this is emitted right before the old preview is replaced with
-the new.
-</LI>
-<LI><B>EnticeImageModified</B>:("") When the image in memory is no longer
-consistent with the image on disk</LI>
-</UL>
-</LI>
-</UL>
+<ul> 
+    <li name="theme_entice_progs"><h2>Entice Group : Edje Signals</h2>
+    <span><em>Entice</em>: The themer can emit signals to ask for state changes in entice.  This includes things like telling Entice to "load the next image" or "delete this image from the filelist".</span>
+    <ul>
+	<li><em>entice,image,current,delete</em>:("") deletes the currently displayed image from the filelist, AND from disk</li>
+	<li><em>entice,image,current,remove</em>:("") deletes the currently displayed image from the filelist</li>
+	<li><em>entice,image,current,save</em>:("") save the currently modified image to disk</li>
+	<li><em>entice,image,next</em>:("") load the next image in the filelist</li>
+	<li><em>entice,image,prev</em>:("") load the previous image in the filelist</li>
+	<li><em>entice,image,current,zoom,reset</em>:("") sets the image's zoom scale back to 1:1</li>
+	<li><em>entice,image,current,zoom,fit</em>:("") fit the image in the specified area</li> 
+	<li><em>entice,image,current,zoom,in</em>:("") Zoom in on the image</li> 
+	<li><em>entice,image,current,zoom,out</em>:("") Zoom out on the image</li> 
+	<li><em>entice,image,current,zoom,in,focused</em>:("") Zoom in on the image, focused on the current mouse x,y(NOT IMPLEMENTED)</li> 
+	<li><em>entice,image,current,zoom,out,focused</em>:("") Zoom out on the image, focused on the current mouse x,y(NOT IMPLEMENTED)</li> 
+	<li><em>entice,image,current,rotate,right</em>:("") Rotates the current image 90 degrees clockwise</li>
+	<li><em>entice,image,current,rotate,left</em>:("") Rotates the current image 90 degrees counter-clockwise</li>
+	<li><em>entice,image,current,flip,horizontal</em>:("") Flip the current image horizontally</li>
+	<li><em>entice,image,current,flip,vertical</em>:("") Flip the current image vertically</li>
+	<li><em>entice,image,current,scroll,start,east</em>:("") start a timer to pan the image viewport image "East"</li>
+	<li><em>entice,image,current,scroll,start,west</em>:("") start a timer to pan the image viewport image "West"</li>
+	<li><em>entice,image,current,scroll,start,south</em>:("") start a timer to pan the image viewport image "South"</li>
+	<li><em>entice,image,current,scroll,start,north</em>:("") start a timer to pan the image viewport image "North"</li>
+	<li><em>entice,image,current,scroll,stop</em>:("") stops all image scrolling timers</li>
+	<li><em>entice,thumbnail,scroll,start,next</em>:("") start scrolling to see additional elements in in the thumbnail containers</li>
+	<li><em>entice,thumbnail,scroll,start,prev</em>:("") start scrolling to see images before those currently displayed in the container </li>
+	<li><em>entice,thumbnail,scroll,stop</em>:("") stops any thumbnail scrolling timers that are currently running.</li>
+	<li><em>entice,fullscreen</em>:("") Tell Entice to takeover the entire screen and resize itself borderless.</li>
+	<li><em>entice,quit</em>:("") Tell Entice it's time to exit</li>
+	<li><em>entice,image,fit,window</em>:("") Not Impelemented</li>
+    </ul>
+</li>
+<li name="theme_entice_thumb_progs">
+<h2>EnticeThumb Group : Edje Signals</h2>
+<span><em>entice.thumb</em>:All the thumbnails take on this look</span>
+    <ul>
+	<li><em>entice,thumb,preview</em>:("") Send this thumbnail to the previewer.  </li>
+	<li><em>entice,thumb,load</em>:("") Load this thumbnail as the current image.  </li>
+	<li><em>entice,thumb,previewing</em>:("") This thumbnail was selected in Entice.  </li>
+	<li><em>entice,thumb,</em>:("") This thumbnail was de-selected in Entice.  </li>
+	<li><em>entice,thumb,delete</em>:("") Delete this thumbnail from entice's filelist and from disk.</li>
+	<li><em>entice,thumb,remove</em>:("") Remove this thumbnail from entice's filelist.</li>
+    </ul>
+</li>
+<li name="theme_entice_progs"><h2>Entice : Entice Signals</h2>
+<span><em>Entice</em>:Signals your theme should trap that Entice will emit</span>
+    <ul>
+	<li><em>entice,image,display</em>:("") When a new image is displayed.  </li>
+	<li><em>entice,image,display,before</em>:("") Right before the current image is freed, this is emitted.  This is useful for intercepting image display.  </li>
+	<li><em>entice,image,modified</em>:("") When the image in memory is no longer consistent with the image on disk</li>
+	<li><em>entice,preview,show</em>:("") When we have a new image in previewer.  </li>
+	<li><em>entice,preview,show,before</em>:("") When we have a new image coming into the previewer, this is emitted right before the old preview is replaced with the new.  </li>
+    </ul>
+</li>
+</ul>
 
 @section requirements What does Entice require?
 
