@@ -39,8 +39,9 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_container_show_notify(EWL_CONTAINER(s),
-				  ewl_scrollpane_child_show_cb);
+				  ewl_scrollpane_child_resize_cb);
 	ewl_container_resize_notify(EWL_CONTAINER(s),
+				    (Ewl_Child_Resize)
 				    ewl_scrollpane_child_resize_cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
@@ -378,9 +379,9 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 /*
- * Actually add the child to the box rather than the scrollpane itself.
+ * This handles all of the various size affecting callbacks.
  */
-void ewl_scrollpane_child_show_cb(Ewl_Container * parent, Ewl_Widget * child)
+void ewl_scrollpane_child_resize_cb(Ewl_Container * parent, Ewl_Widget * child)
 {
 	int pw, ph;
 	Ewl_ScrollPane *s;
@@ -392,56 +393,13 @@ void ewl_scrollpane_child_show_cb(Ewl_Container * parent, Ewl_Widget * child)
 
 	s = EWL_SCROLLPANE(parent);
 
-	if (child == s->vscrollbar) {
-		pw = PREFERRED_W(parent) +
-			ewl_object_get_preferred_w(EWL_OBJECT(child));
-		ph = MAX(PREFERRED_H(parent),
-				ewl_object_get_preferred_h(EWL_OBJECT(child)));
-	}
-	else if (child == s->hscrollbar) {
-		pw = MAX(PREFERRED_W(parent),
-				ewl_object_get_preferred_w(EWL_OBJECT(child)));
-		ph = PREFERRED_H(parent) +
-			ewl_object_get_preferred_h(EWL_OBJECT(child));
-	}
-	else {
-		pw = PREFERRED_W(parent) +
-			ewl_object_get_preferred_w(EWL_OBJECT(child));
-		ph = PREFERRED_H(parent) +
-			ewl_object_get_preferred_h(EWL_OBJECT(child));
-	}
+	pw = ewl_object_get_preferred_w(EWL_OBJECT(s->hscrollbar)) +
+		ewl_object_get_preferred_w(EWL_OBJECT(s->box));
+	ph = ewl_object_get_preferred_h(EWL_OBJECT(s->vscrollbar)) +
+		ewl_object_get_preferred_h(EWL_OBJECT(s->box));
 
 	ewl_object_set_preferred_w(EWL_OBJECT(parent), pw);
 	ewl_object_set_preferred_h(EWL_OBJECT(parent), ph);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
- * Update the preferred size of the scrollpane when the inner box changes.
- */
-void
-ewl_scrollpane_child_resize_cb(Ewl_Container * parent, Ewl_Widget * child,
-			      int size, Ewl_Orientation o)
-{
-	Ewl_ScrollPane *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	s = EWL_SCROLLPANE(parent);
-
-	/*
-	 * Update the preferred size of the scrollpane to that of the box.
-	 */
-	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_object_set_preferred_w(EWL_OBJECT(parent),
-				ewl_object_get_preferred_w(EWL_OBJECT(s->box)) +
-				ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar)));
-	}
-	else
-		ewl_object_set_preferred_h(EWL_OBJECT(parent),
-				ewl_object_get_preferred_h(EWL_OBJECT(s->box)) +
-				ewl_object_get_preferred_h(EWL_OBJECT(s->hscrollbar)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
