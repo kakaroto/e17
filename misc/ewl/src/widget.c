@@ -233,6 +233,19 @@ char            *ewl_widget_get_type_string(EwlWidget *w)
 }
 
 
+EwlBool    ewl_widget_is_realized(EwlWidget *widget)
+{
+	EwlBool r = FALSE;
+	FUNC_BGN("ewl_widget_is_realized");
+	if (!widget)	{
+		ewl_debug("ewl_widget_is_realized",EWL_NULL_ERROR,"w");
+	} else {
+		r = ewl_widget_get_flag(widget,REALIZED);
+	}
+	FUNC_END("ewl_widget_is_realized");
+	return r;
+}
+
 EwlBool    ewl_widget_is_visible(EwlWidget *w)
 {
 	EwlBool r = 0;
@@ -587,7 +600,7 @@ void   ewl_widget_render(EwlWidget *w)
 {
 	int width  = 0,
 	    height = 0;
-	unsigned int data = 0xff000000;
+	/*unsigned int data = 0xff000000;*/
 	FUNC_BGN("ewl_widget_render");
 	if (!w)	{
 		ewl_debug("ewl_widget_render",EWL_NULL_WIDGET_ERROR, "w");
