@@ -1,6 +1,6 @@
 #!/bin/sh
 ##############################################################################
-# generates a file.menu format for Enlightenment out of menu heirachies      #
+# generates user X initialization files to start enlightenment               #
 #
 # Copyright (C) 1999 Carsten Haitzler, Geoff Harrison  and various contributors
 # 
@@ -76,10 +76,10 @@ echo "# startup file - and ALWAYS run things before it with an & at the end." >>
 echo "# For example:" >> $HOME"/.xsession"
 echo "#   xterm &" >> $HOME"/.xsession"
 echo "#   kpanel &" >> $HOME"/.xsession"
-echo "# It is suggested to use Enlightenment's Rememebr dialog for having apps" >> $HOME"/.xsession"
+echo "# It is suggested to use Enlightenment's Remember dialog for having apps" >> $HOME"/.xsession"
 echo "# spawned automatically on login." >> $HOME"/.xsession"
 echo "exec "$EBIN"/enlightenment" >> $HOME"/.xsession"
-# make excutable
+# make executable
 chmod a+r+x $HOME"/.xsession"
 ln -s $HOME"/.xsession" $HOME"/.xinitrc"
 ln -s $HOME"/.xsession" $HOME"/.Xclients"
@@ -87,11 +87,11 @@ echo "Done."
 if [ -e $HOME"/.enlightenment" ]; then
   if [ -e $HOME"/.enlightenment/.initialized" ]; then
     echo "You have installed Enlightenment 0.16 or greater already and have"
-    echo "run it before. Everything shoudl be fine."
+    echo "run it before. Everything should be fine."
   else
     echo "You seem to have had either an Enlightenment version earlier than"
-    echo "0.16.0 installed or a 0.16 dveelopment snapshot. Your .enlightenment"
-    echo "directory will be renamed to .enlightenment.old just incase."
+    echo "0.16.0 installed or a 0.16 development snapshot. Your .enlightenment"
+    echo "directory will be renamed to .enlightenment.old just in case."
     mv $HOME"/.enlightenment" $HOME"/.enlightenment.old"
   fi
 fi
