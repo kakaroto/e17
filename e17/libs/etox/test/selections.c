@@ -6,19 +6,32 @@
 
 #define IM PACKAGE_DATA_DIR"/images/"
 
+int win_w = 500, win_h = 200;
 Ecore_Evas *ee;
 Evas *evas;
 Evas_Object *bg;
 Etox *etox;
 char msg[] =
-	    "The Etox Test utility consists in a series\n"
-	    "of test suites designed to exercise all of\n"
+	    "The Etox Test utility consists in a series "
+	    "of test suites designed to exercise all of "
 	    "the etox functions.\n"
-	    "Informational messages will be displayed here,\n"
-	    "the test text will be presented in the colored\n"
+	    "Informational messages will be displayed here, "
+	    "the test text will be presented in the colored "
 	    "rectangle below.\n"
-	    "To start a test suite, select it from the\n"
-	    "navigation panel on the left.\n";
+	    "To start a test suite, select it from the "
+	    "navigation panel on the left.";
+
+void
+window_resize(Ecore_Evas *ee)
+{
+	evas_output_size_get(evas, &win_w, &win_h);
+	evas_object_resize(bg, win_w, win_h);
+	evas_object_image_fill_set(bg, 0, 0, win_w, win_h);
+	etox_resize(etox, win_w, win_h);
+
+	return;
+	ee = NULL;
+}
 
 int main(int argc, const char **argv)
 {
@@ -31,7 +44,7 @@ int main(int argc, const char **argv)
 	if (!ecore_evas_init())
 		return -1;
 
-	ee= ecore_evas_software_x11_new(NULL, 0, 0, 0, 500, 200);
+	ee= ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
 	if (!ee)
 		return 1;
 
@@ -46,13 +59,13 @@ int main(int argc, const char **argv)
 
 	evas_object_image_file_set(bg, IM "bg.png", NULL);
 	evas_object_move(bg, 0, 0);
-	evas_object_resize(bg, 500, 200);
-	evas_object_image_fill_set(bg, 0, 0, 500, 200);
+	evas_object_resize(bg, win_w, win_h);
+	evas_object_image_fill_set(bg, 0, 0, win_w, win_h);
 	evas_object_show(bg);
 
 	/* Create message etox */
-	etox = etox_new_all(evas, 10, 10, 480, 180, 255, ETOX_ALIGN_LEFT |
-			ETOX_ALIGN_BOTTOM);
+	etox = etox_new_all(evas, 0, 0, win_w, win_h, 255,
+			ETOX_ALIGN_LEFT | ETOX_ALIGN_BOTTOM);
 	etox_context_set_font(etox, "sinon", 14);
 	etox_context_set_color(etox, 0, 255, 0, 255);
 	etox_context_set_style(etox, "shadow");
@@ -101,6 +114,8 @@ int main(int argc, const char **argv)
 	}
 
 	etox_append_text(etox, "Well slap my ass and call me Sally!");
+
+	ecore_evas_callback_resize_set(ee, window_resize);
 
 	ecore_main_loop_begin();
 

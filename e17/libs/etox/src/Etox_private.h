@@ -33,9 +33,12 @@ struct _etox_bit
 };
 
 void etox_layout(Etox * et);
+Estyle * etox_split_bit(Etox_Line *line, Estyle *bit, int index);
 
 Etox_Line * etox_coord_to_line(Etox *et, int y);
 Etox_Line * etox_index_to_line(Etox *et, int *i);
+
+void etox_print_lines(Etox *et);
 
 #include "etox_line.h"
 #include "etox_obstacle.h"

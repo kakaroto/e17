@@ -21,53 +21,18 @@ Etox *etox_new(Evas *evas)
 	et = (Etox *) calloc(1, sizeof(Etox));
 
 	et->evas = evas;
+	evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
 
 	/*
-	 * Allocate space for the default context
+	 * Allocate the default context
 	 */
-	et->context = (Etox_Context *) calloc(1, sizeof(Etox_Context));
-
-	/*
-	 * Setup the default color
-	 */
-	et->context->r = 255;
-	et->context->g = 255;
-	et->context->b = 255;
-	et->context->a = 255;
-
-	/*
-	 * Setup the default style
-	 */
-	et->context->style = strdup("outline");
-
-	/*
-	 * Set up the default font
-	 */
-	evas_font_path_append(evas,
-			PACKAGE_DATA_DIR "/fonts");
-	et->context->font = strdup("nationff");
-	et->context->font_size = 14;
-
-	/*
-	 * Setup the default alignment
-	 */
-	et->context->flags = ETOX_ALIGN_LEFT | ETOX_ALIGN_BOTTOM;
+	et->context = etox_context_new();
 
 	/*
 	 * Set the clip rectangle for the etox
 	 */
 	et->clip = evas_object_rectangle_add(evas);
 	evas_object_color_set(et->clip, 255, 255, 255, 255);
-
-	/*
-	 * Set up a default blank wrap marker
-	 */
-	et->context->marker.text = "";
-	et->context->marker.style = "plain";
-	et->context->marker.r = 255;
-	et->context->marker.g = 255;
-	et->context->marker.b = 255;
-	et->context->marker.a = 255;
 
 	return et;
 }
@@ -96,7 +61,7 @@ Etox *etox_new_all(Evas *evas, int x, int y, int w, int h, int alpha,
 	 * passed in to etox_new_all.
 	 */
 	et = etox_new(evas);
-	et->context->flags = align;
+	et->context->flags = align | ETOX_SOFT_WRAP;
 	et->x = x;
 	et->y = y;
 	et->w = w;
@@ -122,14 +87,15 @@ void etox_free(Etox * et)
 	CHECK_PARAM_POINTER("et", et);
 
 	etox_clear(et);
-	FREE(et->context->style);
+	etox_context_free(et->context);
 	etox_selection_free_by_etox(et);
 
-	for (l = et->obstacles; l; l = evas_list_remove(l, obst)) {
+	l = et->obstacles;
+	while (l) {
 		obst = l->data;
+		l = evas_list_remove(l, obst);
 		FREE(obst);
 	}
-
 }
 
 /**
@@ -628,6 +594,8 @@ void etox_resize(Etox * et, int w, int h)
 
 	if (et->w == w && et->h == h)
 		return;
+
+	et->w = w;
 
 	/*
 	 * Layout lines if appropriate.
@@ -1130,6 +1098,8 @@ void etox_layout(Etox * et)
 		if ((et->context->flags & ETOX_SOFT_WRAP) && (line->w > et->w))
 				etox_line_wrap(et, line);
 
+		etox_print_lines(et);
+
 		l = l->next;
 		y += line->h;
 	}
@@ -1185,4 +1155,17 @@ etox_index_to_line(Etox *et, int *i)
 		*i -= len - line->length;
 
 	return line;
+}
+
+void
+etox_print_lines(Etox *et)
+{
+	int i = 0;
+	Evas_List *l;
+
+	for (l = et->lines; l; l = l->next) {
+		printf("Line %d:\n", i);
+		etox_line_print_bits(l->data);
+		i++;
+	}
 }

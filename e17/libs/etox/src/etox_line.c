@@ -404,6 +404,9 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		while (isspace(tmp[index]))
 			index++;
 		FREE(tmp);
+	}
+
+	if (index < estyle_length(bit)) {
 
 		etox_line_split(line, bit, index);
 		ll = evas_list_find_list(et->lines, line);
@@ -434,31 +437,45 @@ etox_line_split(Etox_Line *line, Estyle *bit, int index)
 	Etox_Line *newline;
 	Estyle *split = NULL;
 
-	etox_line_remove(line, bit);
+	ll = evas_list_find_list(line->bits, bit);
+	ll = ll->next;
 
-	/* split the edge bit */
-	split = estyle_split(bit, index);
-	etox_line_append(line, bit);
+	/*
+	 * add the newline after the current one
+	 */
+	newline = etox_line_new(line->flags | ETOX_LINE_WRAPPED);
+	newline->et = line->et;
+	line->et->lines = evas_list_append_relative(line->et->lines, newline,
+			line);
 
-	/* if split successful, set up the new bit */
-	if (split) {
+	/*
+	 * If the bit starts on the boundary, simply move it to the next line.
+	 */
+	if (index) {
+		/* split the edge bit */
+		split = etox_split_bit(line, bit, index);
+		etox_line_remove(line, split);
+	}
+	else {
+		split = bit;
+		etox_line_remove(line, bit);
+	}
 
-		newline = etox_line_new(line->flags | ETOX_LINE_WRAPPED);
-		newline->et = line->et;
-		etox_line_append(newline, split);
+	etox_line_append(newline, split);
 
-		ll = evas_list_find_list(line->bits, bit);
+	/*
+	 * move the remaining bits to the new line
+	 */
+	while (ll) {
+		/*
+		 * Immediately move to the next object, as the node in the
+		 * list pointed to by ll will get removed.
+		 */
+		bit = ll->data;
+		ll = ll->next;
 
-		/* move the remaining bits to the new line */
-		for (ll = ll->next; ll; ll = ll->next) {
-			bit = ll->data;
-			etox_line_remove(line, bit);
-			etox_line_append(newline, bit);
-		}
-
-		/* add the newline after the current one */
-		line->et->lines = evas_list_append_relative(line->et->lines,
-				newline, line);
+		etox_line_remove(line, bit);
+		etox_line_append(newline, bit);
 	}
 }
 
@@ -466,6 +483,7 @@ void
 etox_line_unwrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *l, *prevline;
+	Estyle *marker;
 
 	if (!et->lines)
 		return;
@@ -479,7 +497,9 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 			break;
 
 		/* remove the wrap marker bit */
-		line->bits = evas_list_remove(line->bits, line->bits->data);
+		marker = line->bits->data;
+		line->bits = evas_list_remove(line->bits, marker);
+		estyle_free(marker);
 
 		/* remove the line from the list */
 		et->lines = evas_list_remove(et->lines, line);
@@ -534,4 +554,16 @@ etox_line_index_to_bit(Etox_Line *line, int *i)
 		*i -= (len - estyle_length(bit));
 
 	return bit;
+}
+
+void
+etox_line_print_bits(Etox_Line *line)
+{
+	int i = 0;
+	Evas_List *l;
+
+	for (l = line->bits; l; l = l->next) {
+		printf("\tBit %d: %s\n", i, estyle_get_text(l->data));
+		i++;
+	}
 }

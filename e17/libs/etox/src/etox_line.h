@@ -19,5 +19,6 @@ void etox_line_split(Etox_Line *line, Estyle *bit, int index);
 void etox_line_unwrap(Etox *et, Etox_Line *line);
 Estyle *etox_line_coord_to_bit(Etox_Line *line, int x);
 Estyle *etox_line_index_to_bit(Etox_Line *line, int *i);
+void etox_line_print_bits(Etox_Line *line);
 
 #endif

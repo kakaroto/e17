@@ -1,13 +1,14 @@
 #include "Etox_test.h"
 
 /* globals */
-Evas_Object *clip_msg;
 Evas_Object *clip_test;
 Evas_Object *o_next_box;
 Evas_Object *o_txt_next_box;
 Evas_Object *o_prev_box;
 Evas_Object *o_txt_prev_box;
 Evas_List *pbuttons;
+Evas_Object *o_bg;
+Evas_Object *o_bg_etox;
 
 Ecore_Evas *ee;
 Evas *evas;
@@ -28,6 +29,41 @@ double get_time(void)
 	gettimeofday(&timev, NULL);
 	return (double) timev.tv_sec +
 	    (((double) timev.tv_usec) / 1000000);
+}
+
+void window_resize(Ecore_Evas *ee)
+{
+	double pw;
+	int ex, ey, ew, eh;
+
+	evas_output_size_get(evas, &win_w, &win_h);
+	evas_object_resize(o_bg, win_w, win_h);
+	evas_object_image_fill_set(o_bg, 0, 0, win_w, win_h);
+
+	evas_object_geometry_get(o_panel, NULL, NULL, &pw, NULL);
+	evas_object_resize(o_panel, pw, win_h);
+	evas_object_image_fill_set(o_panel, 0, 0, pw, win_h);
+
+	ey = win_h / 2;
+	ew = win_w - pw - 20;
+	eh = ey - 10;
+	ex = pw + 10;
+	ey += 10;
+
+	etox_move(e_msg, ex, 10);
+	etox_resize(e_msg, ew, eh);
+
+	evas_object_move(o_bg_etox, ex, ey);
+	evas_object_resize(o_bg_etox, ew, eh);
+
+	evas_object_move(clip_test, ex, ey);
+	evas_object_resize(clip_test, ew, eh);
+
+	etox_move(e_test, ex, ey);
+	etox_resize(e_test, ew, eh);
+
+	return;
+	ee = NULL;
 }
 
 int e_mouse_move(void *data, int type, void * ev)
@@ -213,25 +249,24 @@ prev_test(void *_data, Evas *_e, Evas_Object *_o,
 
 void setup(void)
 {
+	double pw;
+	int ex, ey, ew, eh;
 	double width, height;
-	Evas_Object *o_bg;
-	Evas_Object *o_bg_etox;
 	char msg[] =
-	    "The Etox Test utility consists in a series\n"
-	    "of test suites designed to exercise all of\n"
+	    "The Etox Test utility consists in a series "
+	    "of test suites designed to exercise all of "
 	    "the etox functions.\n"
-	    "Informational messages will be displayed here,\n"
-	    "the test text will be presented in the colored\n"
+	    "Informational messages will be displayed here, "
+	    "the test text will be presented in the colored "
 	    "rectangle below.\n"
-	    "To start a test suite, select it from the\n"
+	    "To start a test suite, select it from the "
 	    "navigation panel on the left.\n";
 
 	/* Create interface */
 
 	/* Background */
 	o_bg = evas_object_image_add(evas);
-	evas_object_image_file_set(o_bg, IM "bg.png",
-			IM "bg.png");
+	evas_object_image_file_set(o_bg, IM "bg.png", IM "bg.png");
 	evas_object_resize(o_bg, win_w, win_h);
 	evas_object_image_fill_set(o_bg, 0, 0, win_w, win_h);
 	evas_object_move(o_bg, 0, 0);
@@ -241,21 +276,21 @@ void setup(void)
 	/* Panel */
 	setup_panel(evas);
 
-	/* Setup message etox */
-	/* Clip rectangle for bounding where the message text is drawn */
-	clip_msg = evas_object_rectangle_add(evas);
-	evas_object_show(clip_msg);
-	evas_object_move(clip_msg, 120, 10);
-	evas_object_resize(clip_msg, 520, 160);
+	evas_object_geometry_get(o_panel, NULL, NULL, &pw, NULL);
+
+	ey = win_h / 2;
+	ew = win_w - pw - 20;
+	eh = ey - 10;
+	ex = pw + 10;
+	ey += 10;
 
 	/* Create message etox */
-	e_msg = etox_new_all(evas, 120, 20, 520, 140, 255, ETOX_ALIGN_LEFT);
+	e_msg = etox_new_all(evas, ex, 10, ew, eh , 255, ETOX_ALIGN_LEFT);
 	etox_context_set_align(e_msg, ETOX_ALIGN_LEFT);
 	etox_context_set_font(e_msg, "sinon", 14);
 	etox_context_set_style(e_msg, "shadow");
 	etox_context_set_color(e_msg, 225, 225, 225, 255);
 	etox_set_text(e_msg, msg);
-	etox_set_clip(e_msg, clip_msg);
 	etox_set_alpha(e_msg, 255);
 	etox_set_layer(e_msg, 1000);
 	etox_show(e_msg);
@@ -263,23 +298,20 @@ void setup(void)
 	/* Setup test etox */
 	/* Setup test etox background */
 	o_bg_etox = evas_object_rectangle_add(evas);
-	evas_object_move(o_bg_etox, 40, 200);
-	evas_object_resize(o_bg_etox, 520, 260);
+	evas_object_move(o_bg_etox, ex, ey);
+	evas_object_resize(o_bg_etox, ew, eh);
 	evas_object_color_set(o_bg_etox, 0, 100, 100, 100);
 	evas_object_layer_set(o_bg_etox, 100);
 	evas_object_show(o_bg_etox);
 
 	/* Clip rectangle for bounding where the test text is drawn */
 	clip_test = evas_object_rectangle_add(evas);
-	evas_object_color_set(clip_test, 255, 0, 255, 255);
-	evas_object_move(clip_test, 40, 200);
-	evas_object_resize(clip_test, 520, 260);
+	evas_object_move(clip_test, ex, ey);
+	evas_object_resize(clip_test, ew, eh);
 	evas_object_show(clip_test);
 
 	/* Create test etox */
-	e_test =
-	    etox_new_all(evas, 50, 200, 520, 260, 255, ETOX_ALIGN_CENTER);
-	etox_context_set_align(e_test, ETOX_ALIGN_CENTER);
+	e_test = etox_new_all(evas, ex, ey, ew, eh, 255, ETOX_ALIGN_CENTER);
 	etox_context_set_font(e_test, "sinon", 14);
 	etox_context_set_style(e_test, "plain");
 	etox_context_set_color(e_test, 225, 225, 225, 255);
@@ -353,6 +385,8 @@ void setup(void)
 
 int main(int argc, const char **argv)
 {
+	Ecore_X_Window win;
+
 	ecore_init();
 	ecore_app_args_set(argc, argv);
 
@@ -362,7 +396,7 @@ int main(int argc, const char **argv)
 	ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
 	if (!ee)
 		return 1;
-
+	win = ecore_evas_software_x11_window_get(ee);
 	ecore_evas_title_set(ee, "Etox Selection Test");
 	ecore_evas_show(ee);
 
@@ -378,6 +412,8 @@ int main(int argc, const char **argv)
 
 	/* program does its data setup here */
 	setup();
+
+	ecore_evas_callback_resize_set(ee, window_resize);
 
 	/* and now loop forever handling events */
 	ecore_main_loop_begin();

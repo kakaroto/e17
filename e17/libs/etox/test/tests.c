@@ -17,13 +17,14 @@ Evas_List *basic_tests()
 void test_basic_init()
 {
 	char msg[] =
-	    "This series of tests will exercise the most basic\n"
-	    "functions of etox, reading and displaying text with\n"
+	    "This series of tests will exercise the most basic "
+	    "functions of etox, reading and displaying text with "
 	    "basic formatting.\n"
 	    "\n"
-	    "In addition, prepending, appending and inserting text\n"
+	    "In addition, prepending, appending and inserting text "
 	    "in an existing etox will be tested.\n"
-	    "\n" "Click Next to begin the tests.";
+	    "\n"
+	    "Click Next to begin the tests.";
 
 	etox_set_text(e_msg, msg);
 
@@ -35,9 +36,10 @@ void test_basic_init()
 void test_basic_get()
 {
 	char msg[] =
-	    "The sample text shown below was retrieved from\n"
+	    "The sample text shown below was retrieved from "
 	    "the text in this message etox.\n"
-	    "\n" "The function used was etox_get_text.";
+	    "\n"
+	    "The function used was etox_get_text.";
 
 	char *string;
 
@@ -56,9 +58,10 @@ void test_basic_set()
 {
 	char msg[] =
 	    "The text in an etox can be changed on the fly.\n"
-	    "The sample paragraph shown below replaced the\n"
+	    "The sample paragraph shown below replaced the "
 	    "text shown in the previous test.\n"
-	    "\n" "The function used was etox_set_text.";
+	    "\n"
+	    "The function used was etox_set_text.";
 
 	char string[] =
 	    "\n"
@@ -77,15 +80,17 @@ void test_basic_set()
 void test_basic_append()
 {
 	char msg[] =
-	    "Text can be appended to the text already existent\n"
+	    "Text can be appended to the text already existent "
 	    "in the etox.\n"
 	    "\n"
-	    "The second paragraph shown below was appended\n"
-	    "at the end of the etox through etox_append_text.\n";
+	    "The second paragraph shown below was appended "
+	    "at the end of the etox through etox_append_text.";
 
 	char string[] =
 	    "The Tao that is seen\n"
-	    "Is not the true Tao\n" "Until you bring fresh toner.\n" "\n";
+	    "Is not the true Tao\n"
+	    "Until you bring fresh toner.\n"
+	    "\n";
 
 	/* Change message */
 	etox_set_text(e_msg, msg);
@@ -99,15 +104,17 @@ void test_basic_append()
 void test_basic_prepend()
 {
 	char msg[] =
-	    "Text can be appended to the text already existent\n"
+	    "Text can be prepended to the text already existent "
 	    "in the etox.\n"
 	    "\n"
-	    "The second paragraph shown below was appended\n"
-	    "at the end of the etox through etox_append_text.\n";
+	    "The second paragraph shown below was prepended "
+	    "at the beginning of the etox through etox_prepend_text.";
 
 	char string[] =
 	    "The Tao that is seen\n"
-	    "Is not the true Tao\n" "Until you bring fresh toner.\n" "\n";
+	    "Is not the true Tao\n"
+	    "Until you bring fresh toner.\n"
+	    "\n";
 
 	/* Change message */
 	etox_set_text(e_msg, msg);
@@ -121,15 +128,17 @@ void test_basic_prepend()
 void test_basic_insert()
 {
 	char msg[] =
-	    "Text can be appended to the text already existent\n"
+	    "Text can be inserted to the text already existent "
 	    "in the etox.\n"
 	    "\n"
-	    "The second paragraph shown below was appended\n"
-	    "at the end of the etox through etox_append_text.\n";
+	    "The second paragraph shown below was inserted "
+	    "into the etox through etox_insert_text.";
 
 	char string[] =
 	    "The Tao that is seen\n"
-	    "Is not the true Tao\n" "Until you bring fresh toner.\n" "\n";
+	    "Is not the true Tao\n"
+	    "Until you bring fresh toner.\n"
+	    "\n";
 
 	/* Change message */
 	etox_set_text(e_msg, msg);
@@ -156,16 +165,18 @@ Evas_List *style_tests()
 void test_style_init()
 {
 	char msg[] =
-	    "The text can be applied to the etox with a\n"
+	    "The text can be applied to the etox with a "
 	    "stylized effect.\n"
 	    "\n"
-	    "Click the Next button to cycle through the available\n"
+	    "Click the Next button to cycle through the available "
 	    "text styles.\n"
-	    "\n" "A style-less sample paragraph is shown below.\n";
+	    "\n"
+	    "A style-less sample paragraph is shown below.";
 
 	char string[] =
 	    "Chaos reigns within.\n"
-	    "Stop, reflect, and reboot.\n" "Order shall return.\n";
+	    "Stop, reflect, and reboot.\n"
+	    "Order shall return.\n";
 
 
 	etox_set_text(e_msg, msg);

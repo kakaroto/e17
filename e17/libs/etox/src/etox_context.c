@@ -9,11 +9,45 @@
  */
 Etox_Context *etox_context_new()
 {
-	Etox_Context *ret;
+	Etox_Context *context;
 
-	ret = (Etox_Context *) calloc(1, sizeof(Etox_Context));
+	context = (Etox_Context *) calloc(1, sizeof(Etox_Context));
 
-	return ret;
+	/*
+	 * Setup the default color
+	 */
+	context->r = 255;
+	context->g = 255;
+	context->b = 255;
+	context->a = 255;
+
+	/*
+	 * Setup the default style
+	 */
+	context->style = strdup("none");
+
+	/*
+	 * Set up the default font
+	 */
+	context->font = strdup("nationff");
+	context->font_size = 14;
+
+	/*
+	 * Setup the default alignment
+	 */
+	context->flags = ETOX_ALIGN_LEFT | ETOX_ALIGN_BOTTOM | ETOX_SOFT_WRAP;
+
+	/*
+	 * Set up a default blank wrap marker
+	 */
+	context->marker.text = "+";
+	context->marker.style = "plain";
+	context->marker.r = 255;
+	context->marker.g = 0;
+	context->marker.b = 0;
+	context->marker.a = 255;
+
+	return context;
 }
 
 /**
@@ -301,7 +335,7 @@ int etox_context_get_align(Etox * et)
 {
 	CHECK_PARAM_POINTER_RETURN("et", et, FALSE);
 
-	return et->context->flags;
+	return et->context->flags & ETOX_ALIGN_MASK;
 }
 
 /*
@@ -315,7 +349,7 @@ void etox_context_set_align(Etox * et, int align)
 {
 	CHECK_PARAM_POINTER("et", et);
 
-	et->context->flags = align;
+	et->context->flags = align | (et->context->flags & ~ETOX_ALIGN_MASK);
 }
 
 /**
@@ -331,9 +365,9 @@ void etox_context_set_soft_wrap(Etox *et, int boolean)
 	CHECK_PARAM_POINTER("et", et);
 
 	if (boolean)
-		et->context->flags = et->context->flags | ETOX_SOFT_WRAP;
+		et->context->flags |= ETOX_SOFT_WRAP;
 	else
-		et->context->flags = et->context->flags & ~ETOX_SOFT_WRAP;
+		et->context->flags &= ~ETOX_SOFT_WRAP;
 }
 
 /**

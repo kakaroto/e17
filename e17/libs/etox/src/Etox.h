@@ -18,6 +18,8 @@ enum _etox_alignment
 	ETOX_ALIGN_BOTTOM = 8
 };
 
+#define ETOX_ALIGN_MASK 0xF
+
 /*
  * The color struct simply keeps track of the various colors available
  */
@@ -250,6 +252,7 @@ void etox_hide(Etox * et);
 /*
  * Context management functions
  */
+Etox_Context *etox_context_new();
 Etox_Context *etox_context_save(Etox * et);
 void etox_context_load(Etox * et, Etox_Context * context);
 void etox_context_free(Etox_Context * context);
