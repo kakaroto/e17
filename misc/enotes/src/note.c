@@ -779,7 +779,9 @@ get_title_by_content(char *content)
 	if (newlength == 0)
 		newlength = TITLE_LENGTH;
 
-	return ((char *) strndup(content, newlength));
+	cont = malloc((newlength * sizeof(char)) + 1);
+	snprintf(cont, newlength, "%s", content);
+	return cont;
 }
 
 /**
