@@ -77,7 +77,7 @@ static bool config_load(Config *cfg, const char *file) {
 	E_DB_File *edb;
 	char *str;
 	int val = 0;
-	
+
 	if (!cfg || !file || !*file)
 		return false;
 
@@ -86,17 +86,17 @@ static bool config_load(Config *cfg, const char *file) {
 
 	if (e_db_int_get(edb, "/eplayer/time_display_show_left", &val))
 		cfg->time_display = !!val;
-	
+
 	if ((str = e_db_str_get(edb, "/eplayer/evas_engine"))) {
 		snprintf(cfg->evas_engine, sizeof(cfg->evas_engine), str);
 		free(str);
 	}
-	
+
 	if ((str = e_db_str_get(edb, "/eplayer/output_plugin"))) {
 		snprintf(cfg->output_plugin, sizeof(cfg->output_plugin), str);
 		free(str);
 	}
-	
+
 	if ((str = e_db_str_get(edb, "/eplayer/theme"))) {
 		snprintf(cfg->theme, sizeof(cfg->theme), str);
 		free(str);
@@ -109,7 +109,7 @@ static bool config_load(Config *cfg, const char *file) {
 
 static void eplayer_free(ePlayer *player) {
 	Evas_List *l;
-	
+
 	if (!player)
 		return;
 
@@ -124,12 +124,12 @@ static void eplayer_free(ePlayer *player) {
 
 	for (l = player->input_plugins; l; l = l->next)
 		plugin_free(l->data);
-	
+
 	pthread_mutex_destroy(&player->playback_stop_mutex);
 	pthread_mutex_destroy(&player->playback_next_mutex);
-	
+
 	ui_deinit(player);
-	
+
 	free(player);
 }
 
@@ -163,11 +163,11 @@ static ePlayer *eplayer_new(const char **args) {
 
 	/* load config */
 	config_init(&player->cfg);
-	
+
 	snprintf(cfg_file, sizeof(cfg_file),
 	         "%s/.e/apps/" PACKAGE "/" PACKAGE ".db",
 	         getenv("HOME"));
-	
+
 	if (!config_load(&player->cfg, cfg_file)) {
 		snprintf(cfg_file, sizeof(cfg_file),
 		         SYSCONF_DIR "/" PACKAGE ".db");
@@ -216,7 +216,7 @@ void eplayer_playback_stop(ePlayer *player) {
 	pthread_mutex_unlock(&player->playback_stop_mutex);
 
 	pthread_join(player->playback_thread, NULL);
-	
+
 	edje_object_signal_emit(player->gui.edje, "PLAYBACK_STOPPED",
 	                        "ePlayer");
 }
@@ -247,7 +247,7 @@ bool eplayer_playback_start(ePlayer *player, bool rewind_track) {
 	PlayListItem *pli;
 
 	assert(player);
-	
+
 	if (!(pli = playlist_current_item_get(player->playlist)))
 		return false;
 
@@ -264,7 +264,7 @@ bool eplayer_playback_start(ePlayer *player, bool rewind_track) {
 
 	pthread_create(&player->playback_thread, NULL,
 	               (void *) &track_play_chunk, player);
-	
+
 	edje_object_signal_emit(player->gui.edje, "PLAYBACK_STARTED",
 	                        "ePlayer");
 
@@ -293,7 +293,7 @@ static int load_playlist(void *data) {
 
 	if (player->playlist->num)
 		track_open(player);
-	
+
 	ui_refresh_time(player, 0);
 	ui_refresh_seeker(player, 0);
 
@@ -330,14 +330,14 @@ int main(int argc, const char **argv) {
 	handle_args(argc, (char **) argv);
 
 	lt_dlinit();
-	
+
 	if (!(player = eplayer_new(argv)))
 		return 1;
-	
+
 	if (!ui_init(player)) {
 		eplayer_free(player);
 		return 1;
-	}	
+	}
 
 	/* the playlist is loaded in an Ecore_Idler, so the GUI
 	 * will be drawn first
@@ -354,7 +354,7 @@ int main(int argc, const char **argv) {
 	eplayer_free(player);
 
 	lt_dlexit();
-	
+
 	return 0;
 }
 

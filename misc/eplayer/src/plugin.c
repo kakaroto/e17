@@ -59,7 +59,7 @@ void *plugin_new(const char *file, PluginType type) {
 		plugin_free(p);
 		return NULL;
 	}
-	
+
 	if (!p->name) {
 		fprintf(stderr, "Cannot load plugin '%s':"
 		        "plugin name not set!\n", file);
@@ -77,7 +77,7 @@ void *plugin_new(const char *file, PluginType type) {
  */
 void plugin_free(void *plugin) {
 	InputPlugin *p = plugin;
-	
+
 	if (!plugin)
 		return;
 
