@@ -78,3 +78,11 @@ work here, but I'll need lots of testing.
 
 PLEASE remove all .lock files from ~/.enlightenment/epplet_config/*/ and close
 all running epplets before running any new ones!
+
+-------------------------------------------------------------------------------
+
+Sun Oct 24 13:05:15 PDT 1999
+(KainX)
+
+Added Epplet_query_config_data_with_def().  See the header file for syntax.
+For some reason, the compiler didn't like it when I spelled out "default."

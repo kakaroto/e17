@@ -3942,6 +3942,25 @@ Epplet_query_config_data(char *key)
   return ((char *) NULL);
 }
 
+char *
+Epplet_query_config_data_with_def(char *key, char *def)
+{
+  int i;
+  ConfigItem *ci;
+
+  if (config_dict)
+    {
+      for (i = 0; i < config_dict->num_entries; i++)
+	{
+          ci = &(config_dict->entries[i]);
+	  if ((ci->key) && !strcmp(key, ci->key))
+            /* we've found the key */
+            return (ci->value);
+	}
+    }
+  return (def);
+}
+
 void
 Epplet_modify_config_data(char *key, char *value)
 {

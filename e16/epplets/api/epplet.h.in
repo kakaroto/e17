@@ -364,6 +364,10 @@ int             Epplet_get_instance(void);
 /* Here you can query a config setting.                                     */
 char           *Epplet_query_config_data(char *key);
 
+/* Same as above, but returns the value of default instead of NULL if no    */
+/* match is found.                                                          */
+char           *Epplet_query_config_data_with_def(char *key, char *def);
+
 /* Use this to change or add a config setting.                              */
 void            Epplet_modify_config_data(char *key, char *value);
 
