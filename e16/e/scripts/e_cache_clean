@@ -34,12 +34,8 @@ if [ $# -lt 1 ]; then
 fi
 
 if [ $1 = "all" ]; then
-  rm -rf $ECACHEDIR/cached/bgsel/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/bgsel/.* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/cfg/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/cfg/.* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/pager/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/pager/.* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/*/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/*/.* >/dev/null 2>&1
   eesh -e "dialog_ok All caches purged."
   exit
 fi

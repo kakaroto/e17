@@ -25,7 +25,8 @@
 ##############################################################################
 
 # Likely  prefixes
-$Prefixes = "/usr/local:/usr:/opt:/opt/kde";
+$Prefixes = "/usr/local:/usr:/opt::/opt/kde:$ENV{'KDEDIR'}";
+$Prefixes = RemoveDuplcates($Prefixes);
 
 # Where to look for GNOME2/KDE2,3 stuff
 $AppDirs = MkDirList($Prefixes, "/share/applications:/share/applications/kde");
@@ -126,13 +127,27 @@ $DoConvert = `which convert`;
 	"x:XMMS:xmms"
 );
 
+# Remove duplicates and nulls in ':' separated dir list
+sub RemoveDuplcates {
+	local $dl = shift;
+	local @r;
+	local %h;
+	foreach $p (split(':', $dl)) {
+		next unless $p;
+		next if $h{$p};
+		$h{$p} = $p;
+		push @r, $p;
+	}
+	return join(':', @r);
+}
+
 # Make : separated directory list, check that they exist
 sub MkDirList {
-	local $ll = shift;
+	local $dl = shift;
 	local $sf = shift;
 	local $d;
 	local @r;
-	foreach $p (split(':', $ll)) {
+	foreach $p (split(':', $dl)) {
 		foreach $q (split(':', $sf)) {
 			$d = "$p$q";
 			push(@r, "$d") if -d "$d";

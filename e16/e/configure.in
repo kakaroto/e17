@@ -195,7 +195,6 @@ config/Makefile
 config/pix/Makefile
 themes/Makefile
 scripts/Makefile
-scripts/enlightenment.install
 misc/Makefile
 po/Makefile.in
 intl/Makefile
