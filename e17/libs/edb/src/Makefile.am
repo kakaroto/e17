@@ -38,13 +38,13 @@ db.c          hash_func.c    log_register.c   os_map.c \
 db_am.c       hash_page.c    mp_bh.c          os_oflags.c \
 db_appinit.c  db_apprec.c    db_byteorder.c   db_err.c     db_log2.c \
 db_region.c   db_salloc.c    db_shash.c \
-btree.h       db_185.h       db_join.h    lock.h      mutex_ext.h  txn_auto.h \
+btree.h       db_185.h.in    db_join.h    lock.h      mutex_ext.h  txn_auto.h \
 btree_auto.h  db_am.h        db_page.h    lock_ext.h  os.h         txn_ext.h \
 btree_ext.h   db_auto.h      db_shash.h   log.h       os_ext.h     xa.h \
 clib_ext.h    db_cxx.h       db_swap.h    log_auto.h  os_jump.h    xa_ext.h \
 common_ext.h  db_dispatch.h  hash.h       log_ext.h   queue.h \
 cxx_int.h     db_ext.h       hash_auto.h  mp.h        shqueue.h \
-db.h          db_int.h       hash_ext.h   mp_ext.h    txn.h
+db.h.in       db_int.h.in    hash_ext.h   mp_ext.h    txn.h
 
 EXTRA_DIST = \
 LICENSE \
