@@ -72,9 +72,11 @@ static void docont (void);
 static void addwhile (int *ptr);
 static void delwhile (void);
 static int *readwhile (void);
+
 constval tagname_tab = {
   "", 0, NULL
 };				/* tagname table */
+
 static symbol *curfunc = NULL;	/* pointer to current function */
 static int lastst = 0;		/* last executed statement type */
 static int listing = _no;	/* create .ASM file? */
@@ -83,6 +85,7 @@ static int rettype = 0;		/* the type that a "return" expression should have */
 static int skipinput = 0;	/* number of lines to skip from the first input file */
 static int wq[_wqtabsz];	/* "while queue", internal stack for nested loops */
 static int *wqptr;		/* pointer to next entry */
+
 #if !defined NO_MAIN
 int
 main (int argc, char **argv)
@@ -94,12 +97,14 @@ main (int argc, char **argv)
   return sc_main (argc, argv);
 }
 #endif /*  */
+
 /*  "main" of the compiler
  */
 #if defined __cplusplus
 extern "C"
 #endif				/*  */
-  int
+
+int
 sc_main (int argc, char **argv)
 {
   int entry;
@@ -193,20 +198,24 @@ sc_main (int argc, char **argv)
       return 0;
     }				/* if */
 }
+
 #if defined __cplusplus
 extern "C"
 #endif				/*  */
-  int
+
+int
 sc_addconstant (char *name, cell value, int tag)
 {
   errflag = 1;			/* make sure error engine is silenced */
   add_constant (name, value, _global, tag);
   return 1;
 }
+
 #if defined __cplusplus
 extern "C"
 #endif				/*  */
-  int
+
+int
 sc_addtag (char *name)
 {
   cell val;
@@ -235,6 +244,7 @@ sc_addtag (char *name)
   append_constval (&tagname_tab, name, next);
   return next;
 }
+
 static void
 initglobals (void)
 {
@@ -279,6 +289,7 @@ initglobals (void)
   outf = NULL;			/* file written to */
   wqptr = wq;			/* initialize while queue pointer */
 }
+
 /* Parsing command line options is indirectly recursive: parseoptions()
  * calls parserespf() to handle options in a a response file and
  * parserespf() calls parseoptions() at its turn after having created
@@ -286,6 +297,7 @@ initglobals (void)
  */
 static void parserespf (char *filename, char *iname, char *oname,
 			char *bname, char *ename, char *pname, char *incpath);
+
 static void
 parseoptions (int argc, char **argv, char *iname, char *oname,
 	      char *bname, char *ename, char *pname, char *incpath)
@@ -413,6 +425,7 @@ parseoptions (int argc, char **argv, char *iname, char *oname,
 	}			/* if */
     }				/* for */
 }
+
 static void
 parserespf (char *filename, char *iname, char *oname,
 	    char *bname, char *ename, char *pname, char *incpath)
@@ -456,6 +469,7 @@ parserespf (char *filename, char *iname, char *oname,
   free (argv);
   free (string);
 }
+
 static void
 setopt (int argc, char **argv, char *iname, char *oname, char *bname,
 	char *ename, char *pname, char *incpath)
@@ -474,6 +488,7 @@ setopt (int argc, char **argv, char *iname, char *oname, char *bname,
   if (strlen (iname) == 0)
     about ();
 }
+
 static void
 setconfig (char *root)
 {
@@ -499,6 +514,7 @@ setconfig (char *root)
       sprintf (includepath, "%sinclude%c", includepath, DIRSEP_CHAR);
     }				/* if */
 }
+
 static void
 about (void)
 {
@@ -532,6 +548,7 @@ about (void)
     }				/* if */
   exit (0);
 }
+
 static void
 setconstants (void)
 {
@@ -554,6 +571,7 @@ setconstants (void)
   add_constant ("language", 1, _global, 0);
   add_constant ("compiler", 1, _global, 0);
 }
+
 /*  parse       - process all input text
  *
  *  At this level, only static declarations and function definitions are legal.
@@ -609,6 +627,7 @@ parse (void)
 	}			/* switch */
     }				/* while */
 }
+
 /*  dumplits
  *
  *  Dump the literal pool (strings etc.)
@@ -641,6 +660,7 @@ dumplits (void)
 	}			/* while */
     }				/* while */
 }
+
 /*  dumpzero
  *
  *  Dump zero's for default initial values
@@ -661,6 +681,7 @@ dumpzero (int count)
       stgwrite ((i == 0 || count == 0) ? "\n" : " ");
     }				/* while */
 }
+
 /*  declglb     - declare global symbols
  *
  *  Declare a static (global) variable. Global variables are stored in
@@ -725,6 +746,7 @@ declglb (void)
   while (matchtoken (','));	/* enddo *//* more? */
   needtoken (__termX);		/* if not comma, must be semicolumn */
 }
+
 /*  declloc     - declare local symbols
  *
  *  Declare local (automatic) variables. Since these variables are relative
@@ -888,6 +910,7 @@ declloc (int isstatic)
   needtoken (__termX);		/* if not comma, must be semicolumn */
   return ident;
 }
+
 static cell
 calc_arraysize (int dim[], int numdim, int cur)
 {
@@ -895,6 +918,7 @@ calc_arraysize (int dim[], int numdim, int cur)
     return 0;
   return dim[cur] + (dim[cur] * calc_arraysize (dim, numdim, cur + 1));
 }
+
 /*  initials
  *
  *  Initialize global objects and local arrays.
@@ -977,6 +1001,7 @@ initials (int ident, int tag, cell * size, int dim[], int numdim)
   if (*size == 0)
     *size = litidx - curlit;	/* number of elements defined */
 }
+
 /*  initvector
  *  Initialize a single dimensional array
  */
@@ -1038,6 +1063,7 @@ initvector (int ident, int tag, cell size, int fillzero)
     }				/* if */
   return size;
 }
+
 /*  init
  *
  *  Evaluate one initializer.
@@ -1060,6 +1086,7 @@ init (int ident, int *tag)
     }				/* if */
   return i;
 }
+
 /*  needsub
  *
  *  Get required array size
@@ -1080,6 +1107,7 @@ needsub (int *tag)
   needtoken (']');
   return val;			/* return array size */
 }
+
 /*  decl_const  - declare a single constant
  *
  */
@@ -1100,6 +1128,7 @@ decl_const (int vclass)
   /* add_constant() checks for duplicate definitions */
   add_constant (constname, val, vclass, tag);
 }
+
 /*  decl_enum   - declare enumerated constants
  *
  */
@@ -1151,6 +1180,7 @@ decl_enum (int vclass)
   if (strlen (enumname) > 0)
     add_constant (enumname, value, vclass, tag);
 }
+
 /*
  *  Finds a function in the global symbol table or creates a new entry.
  *  It does some basic processing and error checking.
@@ -1194,6 +1224,7 @@ fetchfunc (char *name, int tag)
     }				/* if */
   return sym;
 }
+
 /* This routine adds symbolic information for each argument.
  */
 static void
@@ -1221,6 +1252,7 @@ define_args (void)
       sym = sym->next;
     }				/* while */
 }
+
 static void
 funcstub (int native)
 {
@@ -1264,6 +1296,7 @@ funcstub (int native)
   litidx = 0;			/* clear the literal pool */
   delete_symbols (&loctab, 0, _yes);	/* clear local variables queue */
 }
+
 /*  newfunc    - begin a function
  *
  *  This routine is called from "parse" and tries to make a function
@@ -1365,6 +1398,7 @@ newfunc (int fpublic)
   assert (loctab.next == NULL);
   curfunc = NULL;
 }
+
 static int
 argcompare (arginfo * a1, arginfo * a2)
 {
@@ -1394,6 +1428,7 @@ argcompare (arginfo * a1, arginfo * a2)
     }				/* if */
   return result;
 }
+
 /*  declargs()
  *
  *  This routine adds an entry in the local symbol table for each argument
@@ -1490,6 +1525,7 @@ declargs (symbol * sym)
   sym->usage |= _prototyped;
   return argcnt;
 }
+
 /*  doarg       - declare one argument type
  *
  *  this routine is called from "declargs()" and adds an entry in the local
@@ -1573,6 +1609,7 @@ doarg (char *name, int ident, int offset, int tag, arginfo * arg)
 	argsym->usage |= _read;	/* because references are passed back */
     }				/* if */
 }
+
 /*  testsymbols - test for unused local variables
  *
  *  "Public" functions are excluded from the check, since these
@@ -1629,6 +1666,7 @@ testsymbols (symbol * root, int level, int testlabs, int testconst)
     }				/* while */
   return entry;
 }
+
 static constval *
 insert_constval (constval * prev, constval * next, char *name, cell val)
 {
@@ -1642,6 +1680,7 @@ insert_constval (constval * prev, constval * next, char *name, cell val)
   prev->next = eq;
   return eq;
 }
+
 constval *
 append_constval (constval * table, char *name, cell val)
 {
@@ -1651,6 +1690,7 @@ append_constval (constval * table, char *name, cell val)
     /* nothing */ ;
   return insert_constval (prev, NULL, name, val);
 }
+
 constval *
 find_constval (constval * table, char *name)
 {
@@ -1663,6 +1703,7 @@ find_constval (constval * table, char *name)
     }				/* while */
   return NULL;
 }
+
 #if 0
 static int
 delete_constval (constval * table, char *name)
@@ -1683,6 +1724,7 @@ delete_constval (constval * table, char *name)
   return _no;
 }
 #endif /*  */
+
 static void
 delete_consttable (constval * table)
 {
@@ -1694,6 +1736,7 @@ delete_consttable (constval * table)
       eq = next;
     }				/* while */
 }
+
 /*  add_constant
  *
  *  Adds a symbol to the #define symbol table.
@@ -1725,6 +1768,7 @@ add_constant (char *name, cell val, int vclass, int tag)
   /* constant doesn't exist yet, an entry must be created */
   addsym (name, val, _constexpr, vclass, tag, _define);
 }
+
 /*  statement           - The Statement Parser
  *
  *  This routine is called whenever the parser needs to know what statement
@@ -1839,6 +1883,7 @@ statement (int *lastindent)
     }				/* switch */
   return;
 }
+
 static void
 compound (void)
 {
@@ -1867,6 +1912,7 @@ compound (void)
 					   * function) */
   ncmp -= 1;			/* decrease compound statement level */
 }
+
 /*  doexpr
  *
  *  Global references: stgidx   (referred to only)
@@ -1895,6 +1941,7 @@ doexpr (int comma, int chkeffect, int allowarray, int *tag)
   // comma, chkeffect & allowarray are all three _yes
   // tag == NULL
 }
+
 /*  constexpr
  *
  *  Global references: stgidx   (referred to only)
@@ -1913,6 +1960,7 @@ constexpr (cell * val, int *tag)
     error (8);			/* must be constant expression */
   return constant;
 }
+
 /*  test
  *
  *  In the case a "simple assignment" operator ("=") is used within a test,
@@ -1972,6 +2020,7 @@ test (int label, int parens, int invert)
   // for ( ;; ) loop notes:
   // parens & invert are both _no
 }
+
 static void
 doif (void)
 {
@@ -1999,6 +2048,7 @@ doif (void)
       setlabel (flab2);		/* print true label */
     }				/* endif */
 }
+
 static void
 dowhile (void)
 {
@@ -2011,6 +2061,7 @@ dowhile (void)
   setlabel (wq[_wqexit]);	/* exit label */
   delwhile ();			/* delete queue entry */
 }
+
 /*
  *  Note that "continue" will in this case not jump to the top of the loop, but
  *  to the end: just before the TRUE-or-FALSE testing code.
@@ -2031,6 +2082,7 @@ dodo (void)
   delwhile ();
   needtoken (__termX);
 }
+
 static void
 dofor (void)
 {
@@ -2099,6 +2151,7 @@ dofor (void)
       ncmp = save_ncmp;		/* reset 'compound statement' nesting level */
     }				/* if */
 }
+
 /* The switch statement is incompatible with its C sibling:
  * 1. the cases are not drop through
  * 2. only one instruction may appear below each case, use a compound
@@ -2247,6 +2300,7 @@ doswitch (void)
   delete_consttable (&caselist);	/* clear list of case labels */
   lastst = __switchX;
 }
+
 static void
 doassert (void)
 {
@@ -2276,6 +2330,7 @@ doassert (void)
     }				/* if */
   needtoken (__termX);
 }
+
 static void
 dogoto (void)
 {
@@ -2309,6 +2364,7 @@ dolabel (void)
   setstk (-declared * sizeof (cell));
   sym->usage |= _define;	/* label is now defined */
 }
+
 /*  fetchlab
  *
  *  Finds a label from the (local) symbol table or adds one to it.
@@ -2335,6 +2391,7 @@ fetchlab (char *name)
     }				/* if */
   return sym;
 }
+
 /*  doreturn
  *
  *  Global references: rettype  (altered)
@@ -2367,6 +2424,7 @@ doreturn (void)
 						   * local variables */
   ffret ();
 }
+
 static void
 dobreak (void)
 {
@@ -2378,6 +2436,7 @@ dobreak (void)
   modstk (((int) declared - ptr[_wqbr]) * sizeof (cell));
   jumplabel (ptr[_wqexit]);
 }
+
 static void
 docont (void)
 {
@@ -2389,6 +2448,7 @@ docont (void)
   modstk (((int) declared - ptr[_wqcont]) * sizeof (cell));
   jumplabel (ptr[_wqloop]);
 }
+
 static void
 doexit (void)
 {
@@ -2399,6 +2459,7 @@ doexit (void)
     }				/* if */
   ffabort (_exit);
 }
+
 void
 addwhile (int *ptr)
 {
@@ -2418,12 +2479,14 @@ addwhile (int *ptr)
       k += 1;
     }				/* while */
 }
+
 void
 delwhile (void)
 {
   if (wqptr > wq)
     wqptr -= _wqsiz;
 }
+
 int *
 readwhile (void)
 {
