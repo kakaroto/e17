@@ -1,6 +1,7 @@
 %{
-#include <math.h>  /* For math functions, cos(), sin(), etc. */
-#include "calc.h"  /* Contains definition of `symrec'        */
+#include <math.h>               /* For math functions, cos(), sin(), etc. */
+#include "calc.h"               /* Contains definition of `symrec'        */
+#include "Equate.h"
 
 #define YYERROR_VERBOSE
 
@@ -50,77 +51,106 @@ exp:      NUM                  { $$ = $1;                         }
 ;
 /* End of grammar */
 %%
-
-
 #include <stdio.h>
 #include "lex.yy.c"
 
 void
-yyerror (const char *s)  /* Called by yyparse on error */
-{
-  printf ("%s\n", s);
+yyerror(const char *s)
+{                               /* Called by yyparse on error */
+   printf("%s\n", s);
 }
 
-double yyresult (void)
+double
+yyresult(void)
 {
-  return _result;
+   return _result;
 }
 
-struct init
+void
+equate_clear(void)
 {
-  char *fname;
-  double (*fnct)(double);
+   yy_scan_string("0");
+   yyparse();
+   tmp[0] = '\0';
+}
+
+void
+equate_append(char *str)
+{
+   int             len, slen;
+
+   len = strlen(tmp);
+   slen = strlen(str);
+   memcpy(&tmp[len], str, slen);
+   tmp[len + slen] = '\0';
+}
+
+double
+equate_eval(void)
+{
+
+   yy_scan_string(tmp);
+   yyparse();
+
+   tmp[0] = '\0';
+   return yyresult();
+}
+
+struct init {
+   char           *fname;
+   double          (*fnct) (double);
 };
 
-struct init arith_fncts[] =
-{
-  "sin",  sin,
-  "cos",  cos,
-  "tan", tan,
-  "ln",   log,
-  "exp",  exp,
-  "sqrt", sqrt,
-  0, 0
+struct init     arith_fncts[] = {
+   "sin", sin,
+   "cos", cos,
+   "tan", tan,
+   "ln", log,
+   "exp", exp,
+   "sqrt", sqrt,
+   0, 0
 };
 
 /* The symbol table: a chain of `struct symrec'.  */
-symrec *sym_table = (symrec *) 0;
+symrec         *sym_table = (symrec *) 0;
 
 /* Put arithmetic functions in table. */
 void
-init_table (void)
+equate_init(void)
 {
-  int i;
-  symrec *ptr;
-  for (i = 0; arith_fncts[i].fname != 0; i++)
-    {
-      ptr = putsym (arith_fncts[i].fname, FNCT);
+   int             i;
+   symrec         *ptr;
+
+   for (i = 0; arith_fncts[i].fname != 0; i++) {
+      ptr = putsym(arith_fncts[i].fname, FNCT);
       ptr->value.fnctptr = arith_fncts[i].fnct;
-    }
+   }
+
+   tmp[0] = '\0';
 }
 
-symrec *
-putsym (const char *sym_name, int sym_type)
+symrec         *
+putsym(const char *sym_name, int sym_type)
 {
-  symrec *ptr;
-  ptr = (symrec *) malloc (sizeof (symrec));
-  ptr->name = (char *) malloc (strlen (sym_name) + 1);
-  strcpy (ptr->name,sym_name);
-  ptr->type = sym_type;
-  ptr->value.var = 0; /* set value to 0 even if fctn.  */
-  ptr->next = (struct symrec *)sym_table;
-  sym_table = ptr;
-  return ptr;
+   symrec         *ptr;
+
+   ptr = (symrec *) malloc(sizeof(symrec));
+   ptr->name = (char *) malloc(strlen(sym_name) + 1);
+   strcpy(ptr->name, sym_name);
+   ptr->type = sym_type;
+   ptr->value.var = 0;          /* set value to 0 even if fctn.  */
+   ptr->next = (struct symrec *) sym_table;
+   sym_table = ptr;
+   return ptr;
 }
 
-symrec *
-getsym (const char *sym_name)
+symrec         *
+getsym(const char *sym_name)
 {
-  symrec *ptr;
-  for (ptr = sym_table; ptr != (symrec *) 0;
-       ptr = (symrec *)ptr->next)
-    if (strcmp (ptr->name,sym_name) == 0)
-      return ptr;
-  return 0;
-}
+   symrec         *ptr;
 
+   for (ptr = sym_table; ptr != (symrec *) 0; ptr = (symrec *) ptr->next)
+      if (strcmp(ptr->name, sym_name) == 0)
+         return ptr;
+   return 0;
+}

@@ -7,7 +7,6 @@ Ewl_Widget     *main_win;
 Ewl_Widget     *main_box;
 Ewl_Widget     *display;
 
-char            tmp[BUFLEN];
 char            disp[BUFLEN];
 
 typedef struct equate_button {
@@ -94,13 +93,12 @@ void
 calc_append(Ewl_Widget * w, void *ev_data, void *user_data)
 {
    char           *key;
-   int             len, slen;
-
+   int             len,slen;
    key = (char *) user_data;
-   len = strlen(tmp);
    slen = strlen(key);
-   memcpy(&tmp[len], key, slen);
-   tmp[len + slen] = '\0';
+   
+   equate_append(key);
+   
    len = strlen(disp);
    memcpy(&disp[len], key, slen);
    disp[len + slen] = '\0';
@@ -112,22 +110,16 @@ calc_exec(void)
 {
    char            res[BUFLEN];
 
-   yy_scan_string(tmp);
-   yyparse();
-
-   snprintf(res, BUFLEN, "%.10g", yyresult());
+   snprintf(res, BUFLEN, "%.10g", equate_eval());
    update_display(res);
-   tmp[0] = '\0';
    disp[0] = '\0';
 }
 
 void
 calc_clear(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+   equate_clear();
    update_display("0");
-   yy_scan_string("0");
-   yyparse();
-   tmp[0] = '\0';
    disp[0] = '\0';
 }
 
@@ -216,7 +208,6 @@ draw_interface(mode draw_mode)
    Ewl_Widget     *cell[count];
    Ewl_Widget     *displaycell;
 
-   tmp[0] = '\0';
    disp[0] = '\0';
 
    main_win = ewl_window_new();

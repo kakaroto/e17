@@ -1,3 +1,10 @@
+#ifndef _EQUATE_CALC_H
+#define _EQUATE_CALC_H
+/* Functions the gui calls                           */
+void equate_clear(void);
+void equate_append(char *str);
+double equate_eval(void);
+
 /* Fonctions type.                                   */
 typedef double (*func_t) (double);
 
@@ -22,3 +29,4 @@ extern symrec *sym_table;
 symrec *putsym (const char *, int);
 symrec *getsym (const char *);
 
+#endif

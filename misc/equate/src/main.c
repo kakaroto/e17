@@ -2,7 +2,8 @@
 #include <stdio.h>
 
 void
-print_usage(void) {
+print_usage(void)
+{
    printf("Equate - a calculator for Enlightenment\n");
    printf("Version 0.0.1 (Dec 3 2003)\n");
    printf("(c)2003 by HandyAndE.\n");
@@ -37,7 +38,7 @@ main(int argc, char *argv[], char *env[])
 
 
       else if (!strcmp(arg, "--help") || !strcmp(arg, "-h"))
-         help=1;
+         help = 1;
       else
          printf("Unrecognised option \"%s\", perhapse try --help?\n", arg);
 
@@ -45,16 +46,15 @@ main(int argc, char *argv[], char *env[])
    }
 
    if (help) {
-     print_usage();
-     return 0;
+      print_usage();
+      return 0;
    }
 
-   init_table ();
+   equate_init();
    if (exec) {
-      yy_scan_string(exec);
-      yyparse();
+      equate_append(exec);
 
-      printf("%.10g\n", yyresult());
+      printf("%.10g\n", equate_eval());
       return 0;
    }
 

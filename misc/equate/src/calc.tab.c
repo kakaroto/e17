@@ -12,8 +12,9 @@
 
 #line 1 "calc.y"
 
-#include <math.h>  /* For math functions, cos(), sin(), etc. */
-#include "calc.h"  /* Contains definition of `symrec'        */
+#include <math.h>               /* For math functions, cos(), sin(), etc. */
+#include "calc.h"               /* Contains definition of `symrec'        */
+#include "Equate.h"
 
 #define YYERROR_VERBOSE
 
@@ -23,7 +24,7 @@ yyerror (const char *s);
 double _result;
 
 
-#line 13 "calc.y"
+#line 14 "calc.y"
 #ifndef YYSTYPE
 typedef union {
 double     val;  /* For returning numbers.                   */
@@ -98,8 +99,8 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    35,    36,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49
+       0,    36,    37,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50
 };
 #endif
 
@@ -884,51 +885,51 @@ yyreduce:
   switch (yyn) {
 
 case 2:
-#line 36 "calc.y"
+#line 37 "calc.y"
 { printf ("result:\t%.10g\n", yyvsp[0].val); _result = yyvsp[0].val;;
     break;}
 case 3:
-#line 39 "calc.y"
+#line 40 "calc.y"
 { yyval.val = yyvsp[0].val;                         ;
     break;}
 case 4:
-#line 40 "calc.y"
+#line 41 "calc.y"
 { yyval.val = yyvsp[0].tptr->value.var;              ;
     break;}
 case 5:
-#line 41 "calc.y"
+#line 42 "calc.y"
 { yyval.val = yyvsp[0].val; yyvsp[-2].tptr->value.var = yyvsp[0].val;     ;
     break;}
 case 6:
-#line 42 "calc.y"
+#line 43 "calc.y"
 { yyval.val = (*(yyvsp[-3].tptr->value.fnctptr))(yyvsp[-1].val); ;
     break;}
 case 7:
-#line 43 "calc.y"
+#line 44 "calc.y"
 { yyval.val = yyvsp[-2].val + yyvsp[0].val;                    ;
     break;}
 case 8:
-#line 44 "calc.y"
+#line 45 "calc.y"
 { yyval.val = yyvsp[-2].val - yyvsp[0].val;                    ;
     break;}
 case 9:
-#line 45 "calc.y"
+#line 46 "calc.y"
 { yyval.val = yyvsp[-2].val * yyvsp[0].val;                    ;
     break;}
 case 10:
-#line 46 "calc.y"
+#line 47 "calc.y"
 { yyval.val = yyvsp[-2].val / yyvsp[0].val;                    ;
     break;}
 case 11:
-#line 47 "calc.y"
+#line 48 "calc.y"
 { yyval.val = -yyvsp[0].val;                        ;
     break;}
 case 12:
-#line 48 "calc.y"
+#line 49 "calc.y"
 { yyval.val = pow (yyvsp[-2].val, yyvsp[0].val);               ;
     break;}
 case 13:
-#line 49 "calc.y"
+#line 50 "calc.y"
 { yyval.val = yyvsp[-1].val;                         ;
     break;}
 }
@@ -1164,79 +1165,108 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 52 "calc.y"
-
-
+#line 53 "calc.y"
 
 #include <stdio.h>
 #include "lex.yy.c"
 
 void
-yyerror (const char *s)  /* Called by yyparse on error */
-{
-  printf ("%s\n", s);
+yyerror(const char *s)
+{                               /* Called by yyparse on error */
+   printf("%s\n", s);
 }
 
-double yyresult (void)
+double
+yyresult(void)
 {
-  return _result;
+   return _result;
 }
 
-struct init
+void
+equate_clear(void)
 {
-  char *fname;
-  double (*fnct)(double);
+   yy_scan_string("0");
+   yyparse();
+   tmp[0] = '\0';
+}
+
+void
+equate_append(char *str)
+{
+   int             len, slen;
+
+   len = strlen(tmp);
+   slen = strlen(str);
+   memcpy(&tmp[len], str, slen);
+   tmp[len + slen] = '\0';
+}
+
+double
+equate_eval(void)
+{
+
+   yy_scan_string(tmp);
+   yyparse();
+
+   tmp[0] = '\0';
+   return yyresult();
+}
+
+struct init {
+   char           *fname;
+   double          (*fnct) (double);
 };
 
-struct init arith_fncts[] =
-{
-  "sin",  sin,
-  "cos",  cos,
-  "atan", atan,
-  "ln",   log,
-  "exp",  exp,
-  "sqrt", sqrt,
-  0, 0
+struct init     arith_fncts[] = {
+   "sin", sin,
+   "cos", cos,
+   "tan", tan,
+   "ln", log,
+   "exp", exp,
+   "sqrt", sqrt,
+   0, 0
 };
 
 /* The symbol table: a chain of `struct symrec'.  */
-symrec *sym_table = (symrec *) 0;
+symrec         *sym_table = (symrec *) 0;
 
 /* Put arithmetic functions in table. */
 void
-init_table (void)
+equate_init(void)
 {
-  int i;
-  symrec *ptr;
-  for (i = 0; arith_fncts[i].fname != 0; i++)
-    {
-      ptr = putsym (arith_fncts[i].fname, FNCT);
+   int             i;
+   symrec         *ptr;
+
+   for (i = 0; arith_fncts[i].fname != 0; i++) {
+      ptr = putsym(arith_fncts[i].fname, FNCT);
       ptr->value.fnctptr = arith_fncts[i].fnct;
-    }
+   }
+
+   tmp[0] = '\0';
 }
 
-symrec *
-putsym (const char *sym_name, int sym_type)
+symrec         *
+putsym(const char *sym_name, int sym_type)
 {
-  symrec *ptr;
-  ptr = (symrec *) malloc (sizeof (symrec));
-  ptr->name = (char *) malloc (strlen (sym_name) + 1);
-  strcpy (ptr->name,sym_name);
-  ptr->type = sym_type;
-  ptr->value.var = 0; /* set value to 0 even if fctn.  */
-  ptr->next = (struct symrec *)sym_table;
-  sym_table = ptr;
-  return ptr;
+   symrec         *ptr;
+
+   ptr = (symrec *) malloc(sizeof(symrec));
+   ptr->name = (char *) malloc(strlen(sym_name) + 1);
+   strcpy(ptr->name, sym_name);
+   ptr->type = sym_type;
+   ptr->value.var = 0;          /* set value to 0 even if fctn.  */
+   ptr->next = (struct symrec *) sym_table;
+   sym_table = ptr;
+   return ptr;
 }
 
-symrec *
-getsym (const char *sym_name)
+symrec         *
+getsym(const char *sym_name)
 {
-  symrec *ptr;
-  for (ptr = sym_table; ptr != (symrec *) 0;
-       ptr = (symrec *)ptr->next)
-    if (strcmp (ptr->name,sym_name) == 0)
-      return ptr;
-  return 0;
-}
+   symrec         *ptr;
 
+   for (ptr = sym_table; ptr != (symrec *) 0; ptr = (symrec *) ptr->next)
+      if (strcmp(ptr->name, sym_name) == 0)
+         return ptr;
+   return 0;
+}
