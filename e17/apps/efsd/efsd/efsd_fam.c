@@ -412,8 +412,6 @@ efsd_fam_cleanup_client(int client)
 	      /* Use count dropped to zero -- stop monitoring. */
 	      D(("Stopping monitoring %s.\n", m->filename));
 	      FAMCancelMonitor(&famcon, m->fam_req);
-
-	      monitors = efsd_list_remove(monitors, l, (EfsdFunc)efsd_fam_free_monitor);
 	      l = NULL;
 	    }
 	  else
