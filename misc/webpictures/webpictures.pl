@@ -42,11 +42,11 @@ sub select_clist {
 	($widget,$row,$col,$ev,$data) = @_;
 
 	$text = $widget->get_text($row,$col);
-	#check if its a file to beign with and then if its an image.
-	if (!-f $text || $text !~ /(bmp|gif|jpg|jpeg|png)$/i) {
+#check if its a file to beign with and then if its an image.
+	if (($text !~ /(bmp|gif|jpg|jpeg|png)$/i)) {
 		return;
 	}	
-	#print "$text\n";
+#print "$text\n";
 	
 	$im = load_image Gtk::Gdk::ImlibImage($path . "/" . $text);
 	$im->render(300,300);
