@@ -54,6 +54,7 @@ data {
 	item, "/hseeker/group" "htrough";
 	item, "/hseparator/group" "hline";
 	item, "/imenu/group" "dialog";
+	item, "/menu/group" "menu";
 	item, "/menubar/group" "menubar";
 	item, "/menuitem/group" "menuitem";
 	item, "/paned/first/group" "pane";
