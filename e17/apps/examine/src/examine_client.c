@@ -371,6 +371,8 @@ examine_client_revert(examine_prop * target)
       ewl_text_text_set(EWL_TEXT(sibling), bugfix);
     }
     break;
+  case PT_NIL:
+    break;
   default:                     /* PT_STR, PT_RGB */
     free(target->value.ptr);
     target->value.ptr = strdup(target->oldvalue.ptr);
@@ -408,11 +410,13 @@ examine_client_save(examine_prop * target)
     }
     break;
   default:                     /* PT_STR, PT_RGB */
+#if 0
 printf("$%x, %s, %p, %p\n",target->type,target->key,target->value.ptr,target->oldvalue.ptr);
 if(target->value.ptr)
   printf("|%s|\n",target->value.ptr);
 if(target->oldvalue.ptr)
   printf("|%s|\n",target->oldvalue.ptr);
+#endif
 
     if (target->value.ptr &&
         (!target->oldvalue.ptr ||
@@ -443,7 +447,7 @@ examine_client_get_val_cb(void)
   examine_prop   *prop;
   Ewl_Widget     *sibling;
 
-printf("|%s|\n",examine_client_buf);
+/* printf("|%s|\n",examine_client_buf); */
 
   if ((ret = strchr(examine_client_buf, '=')) == NULL) {
     if(strcasecmp(examine_client_buf,"<undefined>"))
