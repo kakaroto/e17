@@ -22,10 +22,14 @@ New features:
 - An iconbox can be configured to act as System Tray
   (middle mouse->Desktop->Create Systray).
 - Possibility to run programs on initial startup and on restart.
+- Possibility to track changes in remembered settings.
+- Window operations by window matches (class, name, transient, ...),
+  e.g. for making all windows of a certain type sticky, put it on a certain
+  layer, etc. (see matches.cfg).
 
 Notes:
 
-imlib2 >= 1.2.0 is required.
+NB!!! imlib2 >= 1.2.0 is required.
 
 All settings can be shown and set using eesh.
 To get a full list of settings:
@@ -60,6 +64,8 @@ $ eesh set misc.session.cmd_start <script>
 to set the "start" script.
 The "init" script is executed only the first time e16 starts during an X
 session, and the "start" script is executed every time e16 (re)starts.
+
+Do not rename ~/.enlightenment to ~/.e16. It will only cause trouble.
 
 
 Configuration files
