@@ -39,6 +39,11 @@
 
 #include "epplet.h"
 #include <errno.h>
+#ifdef HAVE_STDARG_H
+# include <stdarg.h>
+#elif defined(HAVE_VARARGS_H)
+# include <varargs.h>
+#endif
 
 /* 
  * Shamelessly snarfed from sane... 
@@ -83,9 +88,9 @@ Evsnprintf(char *str, size_t count, const char *fmt, va_list args)
    return (strlen(str));
 }
 
-#ifdef HAVE_STDARGS
+#ifdef HAVE_STDARG_H
 int
-Esnprintf(char *str, size_t count, const char *fmt,...)
+Esnprintf(char *str, size_t count, const char *fmt, ...)
 #else
 int
 Esnprintf(va_alist)
@@ -93,7 +98,7 @@ Esnprintf(va_alist)
 
 #endif
 {
-#ifndef HAVE_STDARGS
+#ifndef HAVE_STDARG_H
    char               *str;
    size_t              count;
    char               *fmt;

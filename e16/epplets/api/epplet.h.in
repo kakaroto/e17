@@ -26,15 +26,19 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#if defined(HAVE_VARARGS_H) && !defined(HAVE_STDARG_H)
+# include <varargs.h>
+int     Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
+int     Esnprintf(va_alist);
+#else
+/* If they don't have stdarg.h, they have bigger problems.... */
+# include <stdarg.h>
+int     Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
+int     Esnprintf(char *str, size_t count, const char *fmt, ...);
+#endif
+
 #define EROOT "@EROOT@"
 #define EBIN  "@EBIN@"
-
-int     Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
-#ifdef HAVE_STDARGS
-int     Esnprintf(char *str, size_t count, const char *fmt,...);
-#else
-int     Esnprintf(va_alist);
-#endif
 
 /****************************************************************************/
 /* Data structures & primitives                                             */
