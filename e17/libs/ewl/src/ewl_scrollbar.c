@@ -197,7 +197,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_appearance_set(w, "hscrollbar");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
-				EWL_FLAG_FILL_HFILL);
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 
@@ -241,7 +241,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_appearance_set(w, "vscrollbar");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
-				EWL_FLAG_FILL_VFILL);
+				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
