@@ -61,12 +61,10 @@ init_thumbnail_mode(void)
    int thumbnailcount = 0;
    feh_file *file = NULL;
    gib_list *l, *last = NULL;
-   int file_num = 0, lines;
+   int lines;
    int index_image_width, index_image_height;
    int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
    char *s;
-
-   file_num = gib_list_length(filelist);
 
    D_ENTER(3);
 
@@ -202,7 +200,7 @@ init_thumbnail_mode(void)
                   "enough to hold all the thumnails you specified (%d). To fit all\n"
                   "the thumnails, either decrease their size, choose a smaller font,\n"
                   "or use a larger image (may I recommend %d by %d?)",
-                  opt.limit_w, opt.limit_h, file_num, opt.limit_w, rec_h);
+                  opt.limit_w, opt.limit_h, filelist_len, opt.limit_w, rec_h);
       }
    }
    else if (opt.limit_h)
@@ -349,6 +347,7 @@ init_thumbnail_mode(void)
       if (last)
       {
          filelist = feh_file_remove_from_list(filelist, last);
+         filelist_len--;
          last = NULL;
       }
       D(4, ("About to load image %s\n", file->filename));

@@ -1,3 +1,9 @@
+Sat Jan 03 19:04:11 EST 2004  Paul Duncan <pabs@pablotron.org>,
+
+  * removed extraneous XFlush
+  * switched to global file list length (avoid recalculating it
+    constantly)
+
 Tue May 27 14:55:02 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Released 1.2.6

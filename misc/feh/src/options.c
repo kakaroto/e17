@@ -107,7 +107,8 @@ init_parse_options(int argc, char **argv)
    if(opt.bgmode)
       D_RETURN_(4);
 
-   if (gib_list_length(filelist) == 0)
+   filelist_len = gib_list_length(filelist);
+   if (!filelist_len)
       show_mini_usage();
 
    check_options();

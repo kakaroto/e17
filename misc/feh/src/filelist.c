@@ -28,10 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 gib_list *filelist = NULL;
+int       filelist_len = 0;
 gib_list *current_file = NULL;
 extern int errno;
-int file_num = 0;
-
 
 static gib_list *rm_filelist = NULL;
 

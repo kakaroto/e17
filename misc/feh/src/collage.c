@@ -41,14 +41,11 @@ init_collage_mode(void)
    feh_file *file = NULL;
    unsigned char trans_bg = 0;
    gib_list *l, *last = NULL;
-   int file_num = 0;
    char *s;
 
    D_ENTER(4);
 
    mode = "collage";
-
-   file_num = gib_list_length(filelist);
 
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
@@ -136,6 +133,7 @@ init_collage_mode(void)
       if (last)
       {
          filelist = feh_file_remove_from_list(filelist, last);
+         filelist_len--;
          last = NULL;
       }
       D(3,("About to load image %s\n", file->filename));

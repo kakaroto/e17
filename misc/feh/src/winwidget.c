@@ -274,7 +274,7 @@ winwidget_update_title(winwidget ret)
   name = ret->name ? ret->name : "feh";
   XStoreName(disp, ret->win, name);
   XSetIconName(disp, ret->win, name);
-  XFlush(disp);
+  /* XFlush(disp); */
   D_RETURN_(4);
 }
 

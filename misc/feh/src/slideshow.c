@@ -56,6 +56,7 @@ init_slideshow_mode(void)
       if (last)
       {
          filelist = feh_file_remove_from_list(filelist, last);
+         filelist_len--;
          last = NULL;
       }
       current_file = l;
@@ -176,17 +177,15 @@ slideshow_change_image(winwidget winwid, int change)
 {
    int success = 0;
    gib_list *last = NULL;
-   int i = 0, file_num = 0;
+   int i = 0;
    int jmp = 1;
    char *s;
 
    D_ENTER(4);
 
-   file_num = gib_list_length(filelist);
-
    /* Without this, clicking a one-image slideshow reloads it. Not very *
       intelligent behaviour :-) */
-   if (file_num < 2)
+   if (filelist_len < 2)
       D_RETURN_(4);
 
    /* Ok. I do this in such an odd way to ensure that if the last or first *
@@ -205,7 +204,7 @@ slideshow_change_image(winwidget winwid, int change)
    }
 
    /* The for loop prevents us looping infinitely */
-   for (i = 0; i < file_num; i++)
+   for (i = 0; i < filelist_len; i++)
    {
       winwidget_free_image(winwid);
       switch (change)
@@ -217,12 +216,12 @@ slideshow_change_image(winwidget winwid, int change)
            current_file = gib_list_jump(filelist, current_file, BACK, 1);
            break;
         case SLIDE_JUMP_FWD:
-           if (file_num < 5)
+           if (filelist_len < 5)
               jmp = 1;
-           else if (file_num < 40)
+           else if (filelist_len < 40)
               jmp = 2;
            else
-              jmp = file_num / 20;
+              jmp = filelist_len / 20;
            if (!jmp)
               jmp = 2;
            current_file = gib_list_jump(filelist, current_file, FORWARD, jmp);
@@ -231,12 +230,12 @@ slideshow_change_image(winwidget winwid, int change)
            change = SLIDE_NEXT;
            break;
         case SLIDE_JUMP_BACK:
-           if (file_num < 5)
+           if (filelist_len < 5)
               jmp = 1;
-           else if (file_num < 40)
+           else if (filelist_len < 40)
               jmp = 2;
            else
-              jmp = file_num / 20;
+              jmp = filelist_len / 20;
            if (!jmp)
               jmp = 2;
            current_file = gib_list_jump(filelist, current_file, BACK, jmp);
@@ -252,6 +251,7 @@ slideshow_change_image(winwidget winwid, int change)
       if (last)
       {
          filelist = feh_file_remove_from_list(filelist, last);
+         filelist_len--;
          last = NULL;
       }
       s = slideshow_create_name(FEH_FILE(current_file->data));
@@ -474,6 +474,7 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
 
       doomed = current_file;
       slideshow_change_image(winwid, SLIDE_NEXT);
+      filelist_len--;
       if (do_delete)
          filelist = feh_file_rm_and_free(filelist, doomed);
       else
@@ -491,6 +492,7 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
    else if ((winwid->type == WIN_TYPE_SINGLE)
             || (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER))
    {
+      filelist_len--;
       if (do_delete)
          filelist = feh_file_rm_and_free(filelist, winwid->file);
       else
