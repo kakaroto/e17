@@ -232,6 +232,9 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
      }
 
    HideEwin(ewin);
+   /* Save position at which the window was iconified in req_x/y */
+   ewin->req_x = ewin->x;
+   ewin->req_y = ewin->y;
 
    if (was_shaded != ewin->shaded)
       EwinInstantShade(ewin, 0);
@@ -241,25 +244,26 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 
    if (ewin->has_transients)
      {
-	EWin              **lst;
+	EWin              **lst, *e;
 	int                 i, num;
 
 	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
+	for (i = 0; i < num; i++)
 	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (!lst[i]->iconified)
-		    {
-		       HideEwin(lst[i]);
-		       lst[i]->iconified = 4;
-		    }
-	       }
-#if ENABLE_GNOME
-	     GNOME_SetClientList();
-#endif
-	     Efree(lst);
+	     e = lst[i];
+	     if (e->iconified)
+		continue;
+
+	     HideEwin(e);
+	     e->iconified = 4;
+	     e->req_x = e->x;
+	     e->req_y = e->y;
 	  }
+	if (lst)
+	   Efree(lst);
+#if ENABLE_GNOME
+	GNOME_SetClientList();
+#endif
      }
 
    HintsSetWindowState(ewin);
@@ -292,33 +296,40 @@ DeIconifyEwin(EWin * ewin)
 
    RemoveMiniIcon(ewin);
 
-   dx = ewin->w / 2;
-   dy = ewin->h / 2;
-   x = (ewin->x + dx) % VRoot.w;
-   if (x < 0)
-      x += VRoot.w;
-   x -= dx;
-   y = (ewin->y + dy) % VRoot.h;
-   if (y < 0)
-      y += VRoot.h;
-   y -= dy;
+   x = ewin->req_x;
+   y = ewin->req_y;
 
-   dx = x - ewin->x;
-   dy = y - ewin->y;
+   /* If we iconified an offscreen window, get it back on screen */
+   if (x + ewin->w <= 4 || x > VRoot.w - 4 ||
+       y + ewin->h <= 4 || y > VRoot.h - 4)
+     {
+	dx = ewin->w / 2;
+	dy = ewin->h / 2;
+	x = (ewin->x + dx) % VRoot.w;
+	if (x < 0)
+	   x += VRoot.w;
+	x -= dx;
+	y = (ewin->y + dy) % VRoot.h;
+	if (y < 0)
+	   y += VRoot.h;
+	y -= dy;
+     }
 
-   if (!ewin->sticky)
-      MoveEwinToDesktopAt(ewin, desks.current, ewin->x + dx, ewin->y + dy);
+   dx = x - ewin->req_x;
+   dy = y - ewin->req_y;
+
+   if (ewin->sticky)
+      MoveEwin(ewin, x, y);
    else
-      MoveEwin(ewin, ewin->x + dx, ewin->y + dy);
+      MoveEwinToDesktopAt(ewin, desks.current, x, y);
 
    SoundPlay("SOUND_DEICONIFY");
    ewin->iconified = 0;
+
    ib = SelectIconboxForEwin(ewin);
-   if (ib)
-     {
-	if (ib->animate)
-	   IB_Animate(0, ewin, ib->ewin);
-     }
+   if (ib && ib->animate)
+      IB_Animate(0, ewin, ib->ewin);
+
    RaiseEwin(ewin);
    ShowEwin(ewin);
    ICCCM_DeIconify(ewin);
@@ -330,29 +341,27 @@ DeIconifyEwin(EWin * ewin)
 	int                 i, num;
 
 	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
+	for (i = 0; i < num; i++)
 	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  e = lst[i];
+	     e = lst[i];
+	     if (e->iconified != 4)
+		continue;
 
-		  if (e->iconified != 4)
-		     continue;
+	     if (e->sticky)
+		MoveEwin(e, e->req_x + dx, e->req_y + dy);
+	     else
+		MoveEwinToDesktopAt(e, desks.current,
+				    e->req_x + dx, e->req_y + dy);
 
-		  if (!e->sticky)
-		     MoveEwinToDesktopAt(e, desks.current,
-					 e->x + dx, e->y + dy);
-		  else
-		     MoveEwin(e, e->x + dx, e->y + dy);
-		  RaiseEwin(e);
-		  ShowEwin(e);
-		  e->iconified = 0;
-	       }
-#if ENABLE_GNOME
-	     GNOME_SetClientList();
-#endif
-	     Efree(lst);
+	     RaiseEwin(e);
+	     ShowEwin(e);
+	     e->iconified = 0;
 	  }
+	if (lst)
+	   Efree(lst);
+#if ENABLE_GNOME
+	GNOME_SetClientList();
+#endif
      }
 
    HintsSetWindowState(ewin);
