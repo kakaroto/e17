@@ -1,8 +1,4 @@
-if FSSTD
-edocdatadir = $(pkgdatadir)/E-docs
-else
-edocdatadir = $(prefix)/enlightenment/E-docs
-endif
+edocdatadir = $(ENLIGHTENMENT_ROOT)/E-docs
 
 edocdata_DATA = @edocdata@
 edocdata_SCRIPTS = @edocexec@

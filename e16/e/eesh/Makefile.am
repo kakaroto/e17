@@ -14,7 +14,7 @@ eesh_SOURCES = \
 
 LDADD = $(X_PRE_LIBS) $(X_LIBS) -lX11 $(X_EXTRA_LIBS) -lm
 
-INCLUDES=$(IMLIB_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/intl
+INCLUDES = $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\"
 

@@ -7,14 +7,13 @@ ENLIGHTENMENT_VERSION=$ENLIGHTENMENT_MAJOR.$ENLIGHTENMENT_MINOR.$ENLIGHTENMENT_M
 
 AM_INIT_AUTOMAKE(enlightenment, $ENLIGHTENMENT_VERSION)
 AM_MAINTAINER_MODE
-AM_CONDITIONAL(FSSTD, test x$enable_fsstd = xyes)
-AC_SUBST(USE_FSSTD)
 
 dnl reasonable guesses for where stuff is installed
 if test "x$prefix" = "xNONE"; then
   prefix="/usr/local"
-else
-  prefix=$prefix
+fi
+if test "x$exec_prefix" = "xNONE"; then
+  exec_prefix=$prefix
 fi
 
 AM_CONFIG_HEADER(config.h)
@@ -91,16 +90,14 @@ dnl The following test must come after AM_GNU_GETTEXT as it relies on
 dnl ${DATADIRNAME} being defined.
 
 if test "x$enable_fsstd" = "xyes"; then
-	ENLIGHTENMENT_ROOT=${datadir}/enlightenment
-	ENLIGHTENMENT_BIN=${bindir}
 	LOCALEDIR=${prefix}/${DATADIRNAME}/locale
-	USE_FSSTD=yes
 else
-	ENLIGHTENMENT_ROOT=${prefix}/enlightenment
-	ENLIGHTENMENT_BIN=${prefix}/enlightenment/bin
+	datadir=${prefix}
+	exec_prefix=${prefix}/enlightenment
 	LOCALEDIR=${prefix}/enlightenment/locale
-	USE_FSSTD=no
 fi
+ENLIGHTENMENT_ROOT=`eval echo ${datadir}/enlightenment`
+ENLIGHTENMENT_BIN=`eval echo ${bindir}`
 
 if test "x$enable_sound" = "xyes"; then
 AM_PATH_ESD(0.2.17,AC_DEFINE(HAVE_LIBESD, 1, [libesd.so]),[

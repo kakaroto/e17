@@ -2026,3 +2026,10 @@ Added ENLIGHTENMENT_VERSION property to root window.
 Added possibility to configure not to use fnlib (configure --without-fnlib).
 
 No global var should be named "id".
+
+-------------------------------------------------------------------------------
+
+Tue Jul 15 20:31:23 CEST 2003
+(Kim)
+
+Fix broken configure/install.

@@ -1,8 +1,4 @@
-if FSSTD
-ebackupdir = $(prefix)/share/enlightenment/config/backup
-else
-ebackupdir = $(prefix)/enlightenment/config/backup
-endif
+ebackupdir = $(ENLIGHTENMENT_ROOT)/config/backup
 
 ebackup_DATA = 
 

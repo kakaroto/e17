@@ -1,10 +1,6 @@
 SUBDIRS = configs
 
-if FSSTD
-ethemedir = $(prefix)/share/enlightenment/themes
-else
-ethemedir = $(prefix)/enlightenment/themes
-endif
+ethemedir = $(ENLIGHTENMENT_ROOT)/themes
 
 EXTRA_DIST = BrushedMetal-Tigert.etheme ShinyMetal.etheme BlueSteel.etheme Ganymede.etheme  BrushedMetal-Tigert.etheme.ja ShinyMetal.etheme.ja BlueSteel.etheme.ja Ganymede.etheme.ja BrushedMetal-Tigert.etheme.pl ShinyMetal.etheme.pl
 

@@ -1,8 +1,4 @@
-if FSSTD
-epixdir = $(prefix)/share/enlightenment/config/pix
-else
-epixdir = $(prefix)/enlightenment/config/pix
-endif
+epixdir = $(ENLIGHTENMENT_ROOT)/config/pix
 
 epix_DATA = wait1.png wait2.png wait3.png wait4.png \
             wait5.png wait6.png wait7.png wait8.png \

@@ -27,11 +27,7 @@ keybindings.rh.cfg \
 keybindings.rh.cfg.pl \
 menus.rh.cfg
 
-if FSSTD
-configdatadir = $(prefix)/share/enlightenment/config
-else
-configdatadir = $(prefix)/enlightenment/config
-endif
+configdatadir = $(ENLIGHTENMENT_ROOT)/config
 
 EXTRA_DIST = $(configdata_DATA) config.ja
 
