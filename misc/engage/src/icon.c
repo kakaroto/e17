@@ -183,27 +183,22 @@ od_object_resize_intercept_cb(void *data, Evas_Object * o,
   evas_object_resize(o, w, h);
 }
 
-
-OD_Icon        *
-od_icon_new(const char *winclass, const char *name, const char *icon_file)
+void
+od_icon_reload(OD_Icon * in)
 {
   const char     *icon_part = NULL;
-  OD_Icon        *ret = NULL;
-  char           *path;
+  char           *path, *winclass, *name, *icon_file;
 
   Evas_Object    *icon = NULL;
   Evas_Object    *pic = NULL;
   Evas_Object    *tt_txt = NULL;
   Evas_Object    *tt_shd = NULL;
 
-  assert(winclass);
-  assert(name);
-  assert(icon_file);
-
-  ret = (OD_Icon *) malloc(sizeof(OD_Icon));
-  memset(ret, 0, sizeof(OD_Icon));
-  ret->name = strdup(name);
-  icon = ret->icon = edje_object_add(evas);
+  icon = in->icon;
+  winclass = in->winclass;
+  name = in->name;
+  icon_file = in->icon_file;
+  pic = in->pic;
 
   path = ecore_config_theme_with_path_from_name_get(options.theme);
   if (edje_object_file_set(icon, path, "Main") > 0) {
@@ -245,7 +240,8 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
                                                 od_object_resize_intercept_cb,
                                                 NULL);
     }
-    ret->pic = pic;
+
+    in->pic = pic;
     evas_object_layer_set(pic, 100);
     evas_object_move(pic, -50, -50);
     evas_object_resize(pic, 32, 32);
@@ -254,13 +250,13 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
       edje_object_part_swallow(icon, "EngageIcon", pic);
     } else {
       evas_object_del(pic);
-      ret->pic = NULL;
+      in->pic = NULL;
     }
     if (edje_object_part_exists(icon, "EngageName")) {
       edje_object_part_text_set(icon, "EngageName", name);
     } else {
-      tt_txt = ret->tt_txt = evas_object_text_add(evas);
-      tt_shd = ret->tt_shd = evas_object_text_add(evas);
+      tt_txt = in->tt_txt = evas_object_text_add(evas);
+      tt_shd = in->tt_shd = evas_object_text_add(evas);
       evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
       evas_object_text_text_set(tt_txt, name);
       evas_object_color_set(tt_txt,
@@ -278,18 +274,43 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
       evas_object_layer_set(tt_shd, 199);
     }
     edje_object_signal_callback_add(icon, "engage,app,*", "*",
-                                    od_icon_edje_app_cb, ret);
+                                    od_icon_edje_app_cb, in);
     edje_object_signal_callback_add(icon, "engage,window,minimize*", "*",
-                                    od_icon_edje_win_minimize_cb, ret);
+                                    od_icon_edje_win_minimize_cb, in);
     edje_object_signal_callback_add(icon, "engage,window,raise*", "*",
-                                    od_icon_edje_win_raise_cb, ret);
+                                    od_icon_edje_win_raise_cb, in);
     evas_object_layer_set(icon, 100);
     evas_object_show(icon);
   } else {
     evas_object_del(icon);
-    ret->icon = NULL;
+    in->icon = NULL;
   }
   free(path);
+
+#ifdef HAVE_IMLIB
+  if (options.grab_min_icons != 0)
+    od_icon_grab(in, in->data.minwin.window);
+#endif
+
+}
+
+OD_Icon        *
+od_icon_new(const char *winclass, const char *name, const char *icon_file)
+{
+  OD_Icon        *ret = NULL;
+
+  assert(winclass);
+  assert(name);
+  assert(icon_file);
+
+  ret = (OD_Icon *) malloc(sizeof(OD_Icon));
+  memset(ret, 0, sizeof(OD_Icon));
+  ret->winclass = strdup(winclass);
+  ret->name = strdup(name);
+  ret->icon_file = strdup(icon_file);
+  ret->icon = edje_object_add(evas);
+
+  od_icon_reload(ret);
 
   return ret;
 }

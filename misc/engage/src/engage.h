@@ -51,6 +51,8 @@ OD_Icon        *od_icon_new_dicon(const char *command, const char *name,
 OD_Icon        *od_icon_new_minwin(Ecore_X_Window win);
 
 void            od_icon_grab(OD_Icon * icon, Ecore_X_Window win);
+void            od_icon_reload(OD_Icon * in);
+
 void            od_icon_del(OD_Icon * od_icon);
 void            od_icon_arrow_show(OD_Icon * icon);
 void            od_icon_arrow_hide(OD_Icon * icon);
@@ -113,7 +115,7 @@ struct _OD_Dock {
 struct _OD_Icon {
   Evas_Object    *icon, *pic, *tt_txt, *tt_shd, *arrow;
   unsigned        state;        // see above
-  char           *name;
+  char           *name, *icon_file, *winclass;
   double          x, y;         // relative to evas
   double          scale;
   double          start_time;

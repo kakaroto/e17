@@ -24,6 +24,22 @@ zoom_listener(const char *key, const Ecore_Config_Type type, const int tag,
   options.zoom = ecore_config_int_get(key);
 }
 
+theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
+                  void *data)    
+{ 
+  char           *path;
+  Evas_List      *icons;
+  options.theme = ecore_config_theme_get(key);
+
+  path = ecore_config_theme_with_path_get(key);
+  
+  icons = dock.icons;
+  while (icons) {
+    od_icon_reload((OD_Icon *)icons->data);
+    icons = evas_list_next(icons);
+  }
+} 
+
 int
 od_config_init(void)
 {
@@ -85,6 +101,7 @@ od_config_init(void)
   options.height = ecore_config_int_get("engage.options.height");
   options.engine = ecore_config_string_get("engage.options.engine");
   options.theme = ecore_config_theme_get("engage.options.theme");
+  ecore_config_listen("theme", "engage.options.theme", theme_listener, 0, NULL);
   options.mode = ecore_config_int_get("engage.options.mode");
   options.grab_min_icons =
     ecore_config_int_get("engage.options.grab_min_icons");
