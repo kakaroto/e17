@@ -1,3 +1,11 @@
+Thu Dec 23 20:45:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* We can now draw selection rectangles on windows using XORed
+	lines. This rules. Once the editing functions and menus are in
+	place, we'll use them to do stuff :)
+	* For now, press r to toggle line drawing, so you can see it for
+	yourself. Click and drag lmb to see.
+
 Wed Dec 22 23:37:27 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* More stuff from Andrew (hoss), we're starting to add stuff for

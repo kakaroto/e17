@@ -33,3 +33,4 @@ winwidget progwin = NULL;
 int actual_file_num = 0;
 Imlib_Image *checks=NULL;
 int rectangles_on=0;
+Window root=0;

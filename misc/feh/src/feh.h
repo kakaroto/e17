@@ -106,11 +106,10 @@ struct __winwidget
 
   /* hoss - rectangle drawing stuff */
   int rectangle_drawing_mode;
-  int startrecx;
-  int startrecy;
-  int endrecx;
-  int endrecy;
-  Imlib_Image *rec_im;
+  int rec_x;
+  int rec_y;
+  int rec_w;
+  int rec_h;
 };
 typedef struct __winwidget _winwidget;
 typedef _winwidget *winwidget;
@@ -198,3 +197,4 @@ extern winwidget progwin;
 extern int actual_file_num;
 extern Imlib_Image *checks;
 extern int rectangles_on;
+extern Window root;

@@ -31,6 +31,7 @@ init_x_and_imlib (void)
   vis = DefaultVisual (disp, DefaultScreen (disp));
   depth = DefaultDepth (disp, DefaultScreen (disp));
   cm = DefaultColormap (disp, DefaultScreen (disp));
+  root = RootWindow (disp, DefaultScreen (disp));
   imlib_context_set_display (disp);
   imlib_context_set_visual (vis);
   imlib_context_set_colormap (cm);

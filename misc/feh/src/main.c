@@ -53,6 +53,7 @@ main (int argc, char **argv)
 void
 main_loop (void)
 {
+  static int x = -9999, y = -9999;
   winwidget winwid = NULL;
   XEvent ev;
   int timeout = 0;
@@ -100,31 +101,17 @@ main_loop (void)
 		  winwid = winwidget_get_from_window (ev.xbutton.window);
 		  if (winwid != NULL)
 		    {
-		      {		/* hoss */
+		      {
+			/* Draw some selection boundaries */
 			if ((rectangles_on) && (!rectangle_drawing_mode))
 			  {
 			    rectangle_drawing_mode = 1;
 			    winwid->rectangle_drawing_mode = 1;
 			    /* reset the rectangle dimensions */
-			    winwid->startrecx = 0;
-			    winwid->startrecy = 0;
-			    winwid->endrecx = 0;
-			    winwid->endrecy = 0;
-			  }
-			else if (rectangles_on)
-			  {
-			    rectangle_drawing_mode = 0;
-			    winwid->rectangle_drawing_mode = 0;
-			    /* rectangles finished - need to redraw the pic without
-			     * the rectangle (dimensions kept).
-			     */
-			    imlib_context_set_image (winwid->im);
-			    imlib_context_set_drawable (winwid->bg_pmap);
-			    imlib_render_image_on_drawable (0, 0);
-			    XSetWindowBackgroundPixmap (disp, winwid->win,
-							winwid->bg_pmap);
-			    XClearWindow (disp, winwid->win);
-			    XFlush (disp);
+			    winwid->rec_x = 0;
+			    winwid->rec_y = 0;
+			    winwid->rec_w = 0;
+			    winwid->rec_h = 0;
 			  }
 			else if (opt.slideshow)
 			  {
@@ -188,6 +175,24 @@ main_loop (void)
 	      D (("Received ButtonRelease event\n"));
 	      switch (ev.xbutton.button)
 		{
+		case 1:
+		  D (("Button 1 Release event\n"));
+		  winwid = winwidget_get_from_window (ev.xbutton.window);
+		  if (winwid != NULL)
+		    {
+		      if ((rectangles_on) && (rectangle_drawing_mode))
+			{
+			  rectangle_drawing_mode = 0;
+			  winwid->rectangle_drawing_mode = 0;
+
+			  /* Maybe we could just redraw the "dirty"
+			   * area, it would be less expensive */
+			  XClearWindow (disp, winwid->win);
+
+			  x = -9999;
+			  y = -9999;
+			}
+		    }
 		case 2:
 		  D (("Button 2 Release event\n"));
 		  winwid = winwidget_get_from_window (ev.xbutton.window);
@@ -206,29 +211,80 @@ main_loop (void)
 		}
 	      break;
 	    case MotionNotify:
-	      /* hoss */
 	      if (rectangle_drawing_mode)
 		{
 		  winwid = winwidget_get_from_window (ev.xmotion.window);
-		  if (winwid != NULL)
+		  if ((winwid) && (winwid->rectangle_drawing_mode))
 		    {
-		      if (winwid->rectangle_drawing_mode)
+		      GC gc;
+		      XGCValues gcv;
+		      while (XCheckTypedWindowEvent
+			     (disp, winwid->win, MotionNotify, &ev));
+
+		      gcv.function = GXxor;
+		      gcv.foreground = WhitePixel(disp, DefaultScreen(disp));
+		      gc = XCreateGC (disp, winwid->win, GCFunction | GCForeground, &gcv);
+
+		      /* Overwrite old rectangle */
+		      if (x != -9999)
 			{
-			  int x = -9999, y = -9999;
-			  while (XCheckTypedWindowEvent
-				 (disp, winwid->win, MotionNotify, &ev));
-			  x = ev.xmotion.x;
-			  y = ev.xmotion.y;
-
-			  if (!winwid->startrecx)
-			    winwid->startrecx = x;
-			  if (!winwid->startrecy)
-			    winwid->startrecy = y;
-
-			  winwid->endrecx = x - winwid->startrecx;
-			  winwid->endrecy = y - winwid->startrecy;
-
+			  /* down right */
+			  if ((winwid->rec_x < x) && (winwid->rec_y < y))
+			    XDrawRectangle (disp, winwid->win, gc,
+					    winwid->rec_x, winwid->rec_y,
+					    x - winwid->rec_x,
+					    y - winwid->rec_y);
+			  /* up left */
+			  else if ((x < winwid->rec_x) && (y < winwid->rec_y))
+			    XDrawRectangle (disp, winwid->win, gc,
+					    x, y,
+					    winwid->rec_x - x,
+					    winwid->rec_y - y);
+			  /* down left */
+			  else if ((x < winwid->rec_x) && (winwid->rec_y < y))
+			    XDrawRectangle (disp, winwid->win, gc,
+					    x, winwid->rec_y,
+					    winwid->rec_x - x,
+					    y - winwid->rec_y);
+			  /* up right */
+			  else if ((winwid->rec_x < x) && (y < winwid->rec_y))
+			    XDrawRectangle (disp, winwid->win, gc,
+					    winwid->rec_x, y,
+					    x - winwid->rec_x,
+					    winwid->rec_y - y);
 			}
+		      x = ev.xmotion.x;
+		      y = ev.xmotion.y;
+
+		      if (!winwid->rec_x)
+			winwid->rec_x = x;
+		      if (!winwid->rec_y)
+			winwid->rec_y = y;
+
+		      winwid->rec_w = x - winwid->rec_x;
+		      winwid->rec_h = y - winwid->rec_y;
+
+		      /* down right */
+		      if ((winwid->rec_x < x) && (winwid->rec_y < y))
+			XDrawRectangle (disp, winwid->win, gc,
+					winwid->rec_x, winwid->rec_y,
+					x - winwid->rec_x, y - winwid->rec_y);
+		      /* up left */
+		      else if ((x < winwid->rec_x) && (y < winwid->rec_y))
+			XDrawRectangle (disp, winwid->win, gc,
+					x, y,
+					winwid->rec_x - x, winwid->rec_y - y);
+		      /* down left */
+		      else if ((x < winwid->rec_x) && (winwid->rec_y < y))
+			XDrawRectangle (disp, winwid->win, gc,
+					x, winwid->rec_y,
+					winwid->rec_x - x, y - winwid->rec_y);
+		      /* up right */
+		      else if ((winwid->rec_x < x) && (y < winwid->rec_y))
+			XDrawRectangle (disp, winwid->win, gc,
+					winwid->rec_x, y,
+					x - winwid->rec_x, winwid->rec_y - y);
+		      XFreeGC (disp, gc);
 		    }
 		}
 	      /* If zoom mode is set, then a window needs zooming, 'cos
@@ -242,14 +298,12 @@ main_loop (void)
 		      if (winwid->zoom_mode)
 			{
 			  int sx, sy, sw, sh, dx, dy, dw, dh;
-			  int x = -9999, y = -9999;
 			  while (XCheckTypedWindowEvent
 				 (disp, winwid->win, MotionNotify, &ev));
-			  x = ev.xmotion.x;
-			  y = ev.xmotion.y;
 
 			  winwid->zoom =
-			    ((double) x - (double) winwid->zx) / 32.0;
+			    ((double) ev.xmotion.x -
+			     (double) winwid->zx) / 32.0;
 			  if (winwid->zoom < 0)
 			    winwid->zoom =
 			      1.0 +

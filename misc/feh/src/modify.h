@@ -29,15 +29,15 @@ void feh_flip_h (winwidget winwid);
 void feh_flip_v (winwidget winwid);
 void feh_modify_brightness (winwidget winwid, double value);
 void feh_modify_brightness_to_rectangle (winwidget winwid, double value,
-					 int x0, int y0, int width,
+					 int x, int y, int width,
 					 int height);
 void feh_modify_gamma (winwidget winwid, double value);
-void feh_modify_gamma_to_rectangle (winwidget winwid, double value, int x0,
-				    int y0, int width, int height);
+void feh_modify_gamma_to_rectangle (winwidget winwid, double value, int x,
+				    int y, int width, int height);
 void feh_modify_contrast (winwidget winwid, double value);
-void feh_modify_contrast_to_rectangle (winwidget winwid, double value, int x0,
-				       int y0, int width, int height);
-void feh_image_resize_to (winwidget winwid, int new_x, int new_y);
+void feh_modify_contrast_to_rectangle (winwidget winwid, double value, int x,
+				       int y, int width, int height);
+void feh_image_resize_to (winwidget winwid, int new_width, int new_height);
 void feh_scale_minus_10per (winwidget winwid);
 void feh_scale_plus_10per (winwidget winwid);
 void feh_scale_max_y (winwidget winwid);

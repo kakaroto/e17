@@ -22,7 +22,7 @@
 #include "modify.h"
 
 void
-set_pixmap_property (Pixmap p, Window woot)
+set_pixmap_property (Pixmap p, Window root)
 {
 
   Atom prop_root, prop_esetroot, type;
@@ -35,12 +35,12 @@ set_pixmap_property (Pixmap p, Window woot)
 
   if (prop_root != None && prop_esetroot != None)
     {
-      XGetWindowProperty (disp, woot, prop_root, 0L, 1L, False,
+      XGetWindowProperty (disp, root, prop_root, 0L, 1L, False,
 			  AnyPropertyType, &type, &format, &length, &after,
 			  &data_root);
       if (type == XA_PIXMAP)
 	{
-	  XGetWindowProperty (disp, woot, prop_esetroot, 0L, 1L, False,
+	  XGetWindowProperty (disp, root, prop_esetroot, 0L, 1L, False,
 			      AnyPropertyType, &type, &format, &length,
 			      &after, &data_esetroot);
 	  if (data_root && data_esetroot)
@@ -60,12 +60,12 @@ set_pixmap_property (Pixmap p, Window woot)
   /* The call above should have created it.  If that failed, we can't continue. */
   if (prop_root == None || prop_esetroot == None)
     {
-      fprintf (stderr, "Esetroot:  creation of pixmap property failed.\n");
+      weprintf ("creation of pixmap property failed");
       exit (1);
     }
-  XChangeProperty (disp, woot, prop_root, XA_PIXMAP, 32, PropModeReplace,
+  XChangeProperty (disp, root, prop_root, XA_PIXMAP, 32, PropModeReplace,
 		   (unsigned char *) &p, 1);
-  XChangeProperty (disp, woot, prop_esetroot, XA_PIXMAP, 32, PropModeReplace,
+  XChangeProperty (disp, root, prop_esetroot, XA_PIXMAP, 32, PropModeReplace,
 		   (unsigned char *) &p, 1);
   XSetCloseDownMode (disp, RetainPermanent);
   XFlush (disp);
@@ -80,12 +80,10 @@ feh_set_background (winwidget winwid, int weeble)
     }
   else
     {
-      Window woot;
-      Pixmap pwoot;
+      Pixmap proot;
       Screen *scr;
       int x, y;
 
-      woot = RootWindow (disp, DefaultScreen (disp));
       scr = ScreenOfDisplay (disp, DefaultScreen (disp));
       imlib_context_set_image (winwid->im);
 
@@ -102,9 +100,9 @@ feh_set_background (winwidget winwid, int weeble)
 	  x = imlib_image_get_width ();
 	  y = imlib_image_get_height ();
 
-	  pwoot = XCreatePixmap (disp, woot, x, y, depth);
-	  imlib_context_set_drawable (pwoot);
-	  XResizeWindow (disp, woot, x, y);
+	  proot = XCreatePixmap (disp, root, x, y, depth);
+	  imlib_context_set_drawable (proot);
+	  XResizeWindow (disp, root, x, y);
 	  imlib_render_image_on_drawable (0, 0);
 	  imlib_free_image_and_decache ();
 	}
@@ -121,9 +119,9 @@ feh_set_background (winwidget winwid, int weeble)
 	  x = imlib_image_get_width ();
 	  y = imlib_image_get_height ();
 
-	  pwoot = XCreatePixmap (disp, woot, scr->width, scr->height, depth);
-	  imlib_context_set_drawable (pwoot);
-	  XResizeWindow (disp, woot, scr->width, scr->height);
+	  proot = XCreatePixmap (disp, root, scr->width, scr->height, depth);
+	  imlib_context_set_drawable (proot);
+	  XResizeWindow (disp, root, scr->width, scr->height);
 	  imlib_render_image_part_on_drawable_at_size (0, 0,
 						       x, y,
 						       (scr->width - x) / 2,
@@ -148,9 +146,9 @@ feh_set_background (winwidget winwid, int weeble)
 	  x = imlib_image_get_width ();
 	  y = imlib_image_get_height ();
 
-	  pwoot = XCreatePixmap (disp, woot, scr->width, scr->height, depth);
-	  imlib_context_set_drawable (pwoot);
-	  XResizeWindow (disp, woot, scr->width, scr->height);
+	  proot = XCreatePixmap (disp, root, scr->width, scr->height, depth);
+	  imlib_context_set_drawable (proot);
+	  XResizeWindow (disp, root, scr->width, scr->height);
 	  imlib_render_image_part_on_drawable_at_size (0, 0,
 						       x, y,
 						       (scr->width - x) / 2,
@@ -162,9 +160,9 @@ feh_set_background (winwidget winwid, int weeble)
 	{
 	  int xcount, ycount;
 
-	  pwoot = XCreatePixmap (disp, woot, scr->width, scr->height, depth);
-	  imlib_context_set_drawable (pwoot);
-	  XResizeWindow (disp, woot, scr->width, scr->height);
+	  proot = XCreatePixmap (disp, root, scr->width, scr->height, depth);
+	  imlib_context_set_drawable (proot);
+	  XResizeWindow (disp, root, scr->width, scr->height);
 
 	  for (ycount = 0; ycount < scr->height; ycount += winwid->im_h)
 	    {
@@ -179,14 +177,14 @@ feh_set_background (winwidget winwid, int weeble)
 		}
 	    }
 	}
-      set_pixmap_property (pwoot, woot);
+/*      set_pixmap_property (proot, root); */
 
       XFlush (disp);
-      XSetWindowBackgroundPixmap (disp, woot, pwoot);
-      XClearWindow (disp, woot);
+      XSetWindowBackgroundPixmap (disp, root, proot);
+      XClearWindow (disp, root);
 
-      XFreePixmap (disp, pwoot);
-      XDestroyWindow (disp, woot);
+      XFreePixmap (disp, proot);
+      XDestroyWindow (disp, root);
     }
 }
 
@@ -272,17 +270,19 @@ feh_modify_brightness (winwidget winwid, double value)
 }
 
 void
-feh_modify_brightness_to_rectangle (winwidget winwid, double value, int x0,
-				    int y0, int width, int height)
+feh_modify_brightness_to_rectangle (winwidget winwid, double value, int x,
+				    int y, int width, int height)
 {
   Imlib_Color_Modifier color_modifier;
   if (value > 1.0)
+    return;
+	if (width == 0 || height == 0)
     return;
   imlib_context_set_image (winwid->im);
   color_modifier = imlib_create_color_modifier ();
   imlib_context_set_color_modifier (color_modifier);
   imlib_modify_color_modifier_brightness (value);
-  imlib_apply_color_modifier_to_rectangle (x0, y0, width, height);
+  imlib_apply_color_modifier_to_rectangle (x, y, width, height);
   imlib_free_color_modifier ();
   winwidget_rerender_image (winwid);
 }
@@ -303,17 +303,19 @@ feh_modify_gamma (winwidget winwid, double value)
 }
 
 void
-feh_modify_gamma_to_rectangle (winwidget winwid, double value, int x0, int y0,
+feh_modify_gamma_to_rectangle (winwidget winwid, double value, int x, int y,
 			       int width, int height)
 {
   Imlib_Color_Modifier color_modifier;
   if (value > 0.9)
     return;
+  if (width == 0 || height == 0)
+    return;
   imlib_context_set_image (winwid->im);
   color_modifier = imlib_create_color_modifier ();
   imlib_context_set_color_modifier (color_modifier);
   imlib_modify_color_modifier_gamma (value);
-  imlib_apply_color_modifier_to_rectangle (x0, y0, width, height);
+  imlib_apply_color_modifier_to_rectangle (x, y, width, height);
   imlib_free_color_modifier ();
   winwidget_rerender_image (winwid);
 }
@@ -334,24 +336,26 @@ feh_modify_contrast (winwidget winwid, double value)
 }
 
 void
-feh_modify_contrast_to_rectangle (winwidget winwid, double value, int x0,
-				  int y0, int width, int height)
+feh_modify_contrast_to_rectangle (winwidget winwid, double value, int x,
+				  int y, int width, int height)
 {
   Imlib_Color_Modifier color_modifier;
   if (value > 0.9)
+    return;
+  if (width == 0 || height == 0)
     return;
   imlib_context_set_image (winwid->im);
   color_modifier = imlib_create_color_modifier ();
   imlib_context_set_color_modifier (color_modifier);
   imlib_modify_color_modifier_contrast (value);
-  imlib_apply_color_modifier_to_rectangle (x0, y0, width, height);
+  imlib_apply_color_modifier_to_rectangle (x, y, width, height);
   imlib_free_color_modifier ();
   winwidget_rerender_image (winwid);
 }
 
 /*  The main resize function */
 void
-feh_image_resize_to (winwidget winwid, int new_x, int new_y)
+feh_image_resize_to (winwidget winwid, int new_width, int new_height)
 {
   Imlib_Image new_im = NULL;
 
@@ -359,7 +363,7 @@ feh_image_resize_to (winwidget winwid, int new_x, int new_y)
 
   new_im = imlib_create_cropped_scaled_image (0, 0,
 					      winwid->im_w, winwid->im_h,
-					      new_x, new_y);
+					      new_width, new_height);
   imlib_free_image_and_decache ();
   winwid->im = new_im;
   imlib_context_set_image (winwid->im);
