@@ -29,6 +29,14 @@ void refresh_sizemode_cb(GtkWidget * widget, gpointer * obj);
 void refresh_alignment_cb(GtkWidget * widget, gpointer * obj);
 void geist_update_statusbar(geist_document * doc);
 
+typedef struct _geist_confirmation_dialog_data {
+	GtkWidget *dialog;
+	gboolean value;
+	GMainLoop *loop;
+} geist_confirmation_dialog_data;
+
+gboolean geist_confirmation_dialog_new_with_text (char *text);
+
 
 char *object_types[] = {
    "None",
@@ -839,7 +847,7 @@ gboolean
 menu_cb(GtkWidget * widget, gpointer * data)
 {
    char *item;
-
+	
    D_ENTER(3);
 
    item = (char *) data;
@@ -853,8 +861,8 @@ menu_cb(GtkWidget * widget, gpointer * data)
    }
    else if (!strcmp(item, "save doc as"))
       geist_document_save_as(current_doc);
-   else if (!strcmp(item, "new doc"))
-   {
+	else if (!strcmp(item, "new doc"))
+   {		
       geist_document *doc = geist_document_new(500, 500);
 
       geist_gtk_new_document_page(doc);
@@ -1361,4 +1369,85 @@ geist_update_props_window(void)
                                       refresh_sizemode_cb, NULL);
 
    D_RETURN_(3);
+}
+
+
+void
+conf_ok_cb (GtkWidget *widget, gpointer data)
+{
+	geist_confirmation_dialog_data *dialog = (geist_confirmation_dialog_data*)data;
+	
+	dialog->value = TRUE;
+	gtk_widget_destroy(dialog->dialog);
+	g_main_quit(dialog->loop);
+}
+
+void
+conf_cancel_cb (GtkWidget *widget, gpointer data)
+{
+	geist_confirmation_dialog_data *dialog = (geist_confirmation_dialog_data*)data;
+	
+	dialog->value = FALSE;
+	gtk_widget_destroy(dialog->dialog);
+	g_main_quit(dialog->loop);
+}
+
+gboolean
+geist_confirmation_dialog_new_with_text (char *text)
+{
+	geist_confirmation_dialog_data *data;
+	GMainLoop *loop;
+	gboolean ret;
+	
+	GtkWidget *dialog, *label, *ok_button, *cancel_button, *table;
+	D_ENTER(3);
+	data = (geist_confirmation_dialog_data *) emalloc
+			(sizeof(geist_confirmation_dialog_data));
+	
+	dialog = gtk_window_new (GTK_WINDOW_DIALOG);
+	table = gtk_table_new (2, 2, TRUE);
+	
+	loop = g_main_new(FALSE);
+	
+	data->dialog = dialog;
+	data->value = TRUE;
+	data->loop = loop;
+	
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+	gtk_container_set_border_width(GTK_CONTAINER(table), 5);
+	
+	gtk_container_add(GTK_CONTAINER(dialog), table);
+	gtk_widget_show(table);
+	
+	label = gtk_label_new(text);
+	gtk_table_attach_defaults(GTK_TABLE(table), label, 0,2,0,1);
+	gtk_widget_show(label);
+	
+	ok_button = gtk_button_new_with_label("Ok");
+	gtk_table_attach_defaults(GTK_TABLE(table), ok_button, 
+										0, 1, 1, 2);
+	gtk_container_set_border_width(GTK_CONTAINER(ok_button), 5);
+	gtk_widget_show(ok_button);
+	
+	cancel_button = gtk_button_new_with_label("Cancel");
+	gtk_table_attach_defaults(GTK_TABLE(table), cancel_button, 
+										1, 2, 1, 2);
+	gtk_container_set_border_width(GTK_CONTAINER(cancel_button), 5);
+	gtk_widget_show(cancel_button);
+	
+	gtk_signal_connect (GTK_OBJECT(ok_button), "clicked",
+								GTK_SIGNAL_FUNC(conf_ok_cb),(gpointer) data);
+	gtk_signal_connect (GTK_OBJECT(cancel_button), "clicked",
+								GTK_SIGNAL_FUNC(conf_cancel_cb),(gpointer) data);
+	
+	gtk_widget_show(dialog);
+	
+	g_main_run(loop);
+	g_main_destroy(loop);
+	
+	ret = data->value;
+	efree(data);
+	
+	D_RETURN(3, ret);
+	
 }
