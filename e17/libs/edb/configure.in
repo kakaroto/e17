@@ -24,4 +24,12 @@ echo ""
 AC_MSG_ERROR([Fatal Error: no db detected.]); exit], -L/usr/local/lib -ldb)
 )
 
-AC_OUTPUT(Makefile src/Makefile test/Makefile)
+db_ldflags="-ldb"
+db_cflags=""
+AC_SUBST(db_ldflags)
+AC_SUBST(db_cflags)
+
+AC_OUTPUT([Makefile src/Makefile test/Makefile edb-config],
+[
+chmod +x edb-config
+])
