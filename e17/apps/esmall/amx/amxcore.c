@@ -143,9 +143,6 @@ static proplist *list_finditem(proplist * root, cell id, char *name, cell value,
 
 #endif							/*  */
 
-#if !defined _MSC_VER
-#pragma argsused
-#endif							/*  */
 static cell AMX_NATIVE_CALL numargs(AMX * amx, cell * params)
 {
 
@@ -155,6 +152,7 @@ static cell AMX_NATIVE_CALL numargs(AMX * amx, cell * params)
 
 	cell bytes;
 
+	params = NULL;
 
 	hdr = (AMX_HEADER *) amx->base;
 
@@ -219,7 +217,7 @@ static cell AMX_NATIVE_CALL setarg(AMX * amx, cell * params)
 	value += params[2] * sizeof(cell);
 
 	/* verify the address */
-	if (value < 0 || value >= amx->hea && value < amx->stk)
+	if ((value < 0) || ((value >= amx->hea) && (value < amx->stk)))
 		return 0;
 
 	/* set the value indirectly */
@@ -230,12 +228,10 @@ static cell AMX_NATIVE_CALL setarg(AMX * amx, cell * params)
 }
 
 
-#if !defined _MSC_VER
-#pragma argsused
-#endif							/*  */
 static cell AMX_NATIVE_CALL heapspace(AMX * amx, cell * params)
 {
 
+	params = NULL;
 	return amx->stk - amx->hea;
 
 }
@@ -276,6 +272,7 @@ static cell AMX_NATIVE_CALL funcidx(AMX * amx, cell * params)
 }
 
 
+int amx_StrPack(cell * dest, cell * source);
 int amx_StrPack(cell * dest, cell * source)
 {
 
@@ -330,6 +327,7 @@ int amx_StrPack(cell * dest, cell * source)
 }
 
 
+int amx_StrUnpack(cell * dest, cell * source);
 int amx_StrUnpack(cell * dest, cell * source)
 {
 
@@ -461,23 +459,19 @@ static cell AMX_NATIVE_CALL strunpack(AMX * amx, cell * params)
 }
 
 
-#if !defined _MSC_VER
-#pragma argsused
-#endif							/*  */
 static cell AMX_NATIVE_CALL core_tolower(AMX * amx, cell * params)
 {
 
+	amx = NULL;
 	return tolower((int) params[1]);
 
 }
 
 
-#if !defined _MSC_VER
-#pragma argsused
-#endif							/*  */
 static cell AMX_NATIVE_CALL core_toupper(AMX * amx, cell * params)
 {
 
+	amx = NULL;
 	return toupper((int) params[1]);
 
 }
@@ -650,9 +644,7 @@ static cell AMX_NATIVE_CALL existproperty(AMX * amx, cell * params)
 static unsigned long IL_StandardRandom_seed;
 
 #define IL_RMULT 1103515245L
-#if !defined _MSC_VER
-#pragma argsused
-#endif							/*  */
+
 static cell AMX_NATIVE_CALL core_random(AMX * amx, cell * params)
 {
 
@@ -660,6 +652,8 @@ static cell AMX_NATIVE_CALL core_random(AMX * amx, cell * params)
 
 	unsigned long result;
 
+
+	amx = NULL;
 
 	lo = IL_StandardRandom_seed & 0xffff;
 
@@ -687,6 +681,7 @@ static cell AMX_NATIVE_CALL core_random(AMX * amx, cell * params)
 }
 
 
+void core_Init(void);
 void core_Init(void)
 {
 
@@ -699,6 +694,7 @@ void core_Init(void)
 }
 
 
+void core_Exit(void);
 void core_Exit(void)
 {
 
