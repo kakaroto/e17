@@ -477,3 +477,52 @@ feh_display_status(char stat)
    i++;
    D_RETURN_;
 }
+
+void
+feh_smooth_image(winwidget w)
+{
+   int sx, sy, sw, sh, dx, dy, dw, dh;
+
+   D_ENTER;
+
+   if (w->zoom > 1.0)
+   {
+      dx = 0;
+      dy = 0;
+      dw = w->w;
+      dh = w->h;
+
+      sx = w->zx - (w->zx / w->zoom);
+      sy = w->zy - (w->zy / w->zoom);
+      sw = w->w / w->zoom;
+      sh = w->h / w->zoom;
+   }
+   else
+   {
+      dw = w->w * w->zoom;
+      dh = w->h * w->zoom;
+
+      dx = w->zx - (w->zx * w->zoom);
+      dy = w->zy - (w->zy * w->zoom);
+
+      sx = 0;
+      sy = 0;
+
+      sw = w->w;
+      sh = w->h;
+   }
+   imlib_context_set_anti_alias(1);
+   imlib_context_set_dither(1);
+   imlib_context_set_blend(0);
+   imlib_context_set_drawable(w->bg_pmap);
+   feh_draw_checks(w);
+   imlib_context_set_image(w->im);
+   if (imlib_image_has_alpha())
+      imlib_context_set_blend(1);
+   imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
+                                               dh);
+   XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
+   XClearWindow(disp, w->win);
+   imlib_context_set_anti_alias(0);
+   D_RETURN_;
+}
