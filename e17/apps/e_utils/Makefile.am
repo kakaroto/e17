@@ -8,7 +8,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       stamp-h.in
 
 install-data-local:
-        @$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/data; then \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/data; \
 	  for d in $(srcdir)/data/*; do \
