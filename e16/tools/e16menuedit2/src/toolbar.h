@@ -28,19 +28,11 @@
 #define _TOOLBAR_H
 
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-void create_toolbar (GtkWidget *toolbar1, GtkWidget *treeview_menu);
-
-enum toolbar_buttons
-{
-  TB_NEW,
-  TB_CHANGE_ICON,
-  TB_SAVE,
-  TB_DELETE,
-  TB_QUIT
-};
+void bind_toolbar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu);
 
 #endif /* _TOOLBAR_H */

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-29 00:04+0200\n"
+"POT-Creation-Date: 2004-07-30 00:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: English <linux@brachttal.net>\n"
@@ -16,46 +16,50 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/icon_chooser.c:61
+#: src/icon_chooser.c:63
 msgid "Select Icon..."
 msgstr ""
 
-#: src/icon_chooser.c:97
+#: src/icon_chooser.c:99
 msgid "Icon size:"
 msgstr ""
 
-#: src/treeview.c:129 src/toolbar.c:40
+#: src/treeview.c:129 e16menuedit2.glade.h:8
 msgid "New Entry"
 msgstr ""
 
-#: src/toolbar.c:49
+#: e16menuedit2.glade.h:1
 msgid "Change Icon"
 msgstr ""
 
-#: src/toolbar.c:58
-msgid "Save Menu"
-msgstr ""
-
-#: src/toolbar.c:67
-msgid "Delete Entry or Submenu"
-msgstr ""
-
-#: src/toolbar.c:76
-msgid "Quit Menu Editor"
-msgstr ""
-
-#: e16menuedit2.glade.h:1
-msgid "E Menu Editor"
-msgstr ""
-
 #: e16menuedit2.glade.h:2
-msgid "File"
+msgid "Delete Entry"
 msgstr ""
 
 #: e16menuedit2.glade.h:3
-msgid "Quit"
+msgid "E16 Menu Editor"
 msgstr ""
 
 #: e16menuedit2.glade.h:4
+msgid "Edit"
+msgstr ""
+
+#: e16menuedit2.glade.h:5
+msgid "File"
+msgstr ""
+
+#: e16menuedit2.glade.h:6
+msgid "Help"
+msgstr ""
+
+#: e16menuedit2.glade.h:7
+msgid "Info"
+msgstr ""
+
+#: e16menuedit2.glade.h:9
+msgid "Quit"
+msgstr ""
+
+#: e16menuedit2.glade.h:10
 msgid "Save"
 msgstr ""

@@ -28,52 +28,45 @@
 #include "callbacks.h"
 #include "nls.h"
 
-void create_toolbar (GtkWidget *toolbar1, GtkWidget *treeview_menu)
+void bind_toolbar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu)
 {
-  GtkToolItem *toolitem1;
+  GtkWidget *toolbar1;
+  GtkWidget *toolitem1;
 
-  /* new entry toolbar button */
-  toolitem1 = gtk_tool_button_new_from_stock (GTK_STOCK_NEW);
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_NEW);
-  gtk_widget_show (GTK_WIDGET (toolitem1));
-  gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
+  toolbar1 = glade_xml_get_widget (main_xml, "toolbar1");
+
+  /* bind callbacks */
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_save");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Save"), "");
+  g_signal_connect (toolitem1, "clicked",
+                    G_CALLBACK (on_toolbutton_save_clicked), treeview_menu);
+
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_new");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
                              _("New Entry"), "");
   g_signal_connect (toolitem1, "clicked",
-                    G_CALLBACK (on_new_button), treeview_menu);
+                    G_CALLBACK (on_toolbutton_new_clicked), treeview_menu);
 
-  /* change icon toolbar button */
-  toolitem1 = gtk_tool_button_new_from_stock (GTK_STOCK_SELECT_COLOR);
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_CHANGE_ICON);
-  gtk_widget_show (GTK_WIDGET (toolitem1));
-  gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             _("Change Icon"), "");
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_icon");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Choose Icon"), "");
   g_signal_connect (toolitem1, "clicked",
-                    G_CALLBACK (on_change_icon_button), treeview_menu);
+                    G_CALLBACK (on_toolbutton_icon_clicked), treeview_menu);
 
-  /* save toolbar button */
-  toolitem1 = gtk_tool_button_new_from_stock (GTK_STOCK_SAVE);
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_SAVE);
-  gtk_widget_show (GTK_WIDGET (toolitem1));
-  gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             _("Save Menu"), "");
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_del");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Delete Entry"), "");
   g_signal_connect (toolitem1, "clicked",
-                    G_CALLBACK (on_save_button), treeview_menu);
+                    G_CALLBACK (on_toolbutton_del_clicked), treeview_menu);
 
-  /* delete toolbar button */
-  toolitem1 = gtk_tool_button_new_from_stock (GTK_STOCK_DELETE);
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_DELETE);
-  gtk_widget_show (GTK_WIDGET (toolitem1));
-  gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             _("Delete Entry or Submenu"), "");
-  g_signal_connect (toolitem1, "clicked",
-                    G_CALLBACK (on_delete_button), treeview_menu);
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_quit");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Quit"), "");
 
-  /* quit toolbar button */
-  toolitem1 = gtk_tool_button_new_from_stock (GTK_STOCK_QUIT);
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_QUIT);
-  gtk_widget_show (GTK_WIDGET (toolitem1));
-  gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             _("Quit Menu Editor"), "");
-  g_signal_connect (toolitem1, "clicked",
-                    G_CALLBACK (gtk_main_quit), NULL);
 }

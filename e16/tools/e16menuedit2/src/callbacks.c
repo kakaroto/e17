@@ -38,50 +38,6 @@
 #include "e16menu.h"
 #include "treeview.h"
 
-void on_menu_save_activate (GtkMenuItem *menuitem,
-                        gpointer user_data)
-{
-  GtkWidget *treeview_menu;
-
-  treeview_menu = (GtkWidget*) user_data;
-  save_table_to_menu (treeview_menu);
-}
-
-void on_menu_quit_activate (GtkMenuItem *menuitem,
-                        gpointer user_data)
-{
-  gtk_main_quit ();
-}
-
-void on_new_button (GtkButton *button, gpointer user_data)
-{
-  GtkWidget *treeview_menu;
-
-  treeview_menu = (GtkWidget*) user_data;
-  new_table_row (treeview_menu);
-}
-
-void on_change_icon_button (GtkButton *button, gpointer user_data)
-{
-  open_icon_chooser ((GtkWidget *) user_data);
-
-}
-void on_save_button (GtkButton *button, gpointer user_data)
-{
-  GtkWidget *treeview_menu;
-
-  treeview_menu = (GtkWidget*) user_data;
-  save_table_to_menu (treeview_menu);
-}
-
-void on_delete_button (GtkButton *button, gpointer user_data)
-{
-  GtkWidget *treeview_menu;
-
-  treeview_menu = (GtkWidget*) user_data;
-  delete_table_row (treeview_menu);
-}
-
 void on_descrenderer_edited (GtkCellRendererText *celltext,
                              const gchar *string_path,
                              const gchar *new_text,
@@ -122,4 +78,66 @@ void on_iconcolumn_clicked (GtkTreeViewColumn *treeviewcolumn,
                             gpointer user_data)
 
 {
+}
+
+
+void on_menu_save_activate (GtkMenuItem *menuitem,
+                            gpointer user_data)
+{
+  GtkWidget *treeview_menu;
+
+  treeview_menu = (GtkWidget*) user_data;
+  save_table_to_menu (treeview_menu);
+}
+
+void on_menu_quit_activate (GtkMenuItem *menuitem,
+                            gpointer user_data)
+{
+  gtk_main_quit ();
+}
+
+void on_menu_info_activate (GtkMenuItem *menuitem,
+                            gpointer user_data)
+{
+
+}
+
+void
+on_toolbutton_save_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+  GtkWidget *treeview_menu;
+
+  treeview_menu = (GtkWidget*) user_data;
+  save_table_to_menu (treeview_menu);
+}
+
+
+void
+on_toolbutton_new_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+  GtkWidget *treeview_menu;
+
+  treeview_menu = (GtkWidget*) user_data;
+  new_table_row (treeview_menu);
+}
+
+
+void
+on_toolbutton_icon_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+  open_icon_chooser ((GtkWidget *) user_data);
+}
+
+
+void
+on_toolbutton_del_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+  GtkWidget *treeview_menu;
+
+  treeview_menu = (GtkWidget*) user_data;
+  delete_table_row (treeview_menu);
 }

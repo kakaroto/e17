@@ -1,8 +1,7 @@
 BUGS:
-- handle the librsvg bug with autodetect > 2.7.1 (and compressed svg)
+- bind menu callbacks in sourcecode to get treeview pointer
 
 FEATURES:
 - Gnome2 panel and desktop Drag&Drop support
 - KDE Drag&Drop support?
 - add docs in generic format
-

@@ -30,13 +30,9 @@
 #include <gtk/gtk.h>
 
 void on_menu_save_activate (GtkMenuItem *menuitem,
-                        gpointer user_data);
+                            gpointer user_data);
 void on_menu_quit_activate (GtkMenuItem *menuitem,
-                        gpointer user_data);			
-void on_new_button (GtkButton *button, gpointer user_data);
-void on_change_icon_button (GtkButton *button, gpointer user_data);
-void on_save_button (GtkButton *button, gpointer user_data);
-void on_delete_button (GtkButton *button, gpointer user_data);
+                            gpointer user_data);
 void on_descrenderer_edited (GtkCellRendererText *celltext,
                              const gchar *string_path,
                              const gchar *new_text,
@@ -47,6 +43,24 @@ void on_paramsrenderer_edited (GtkCellRendererText *celltext,
                                gpointer data);
 void on_iconcolumn_clicked (GtkTreeViewColumn *treeviewcolumn,
                             gpointer user_data);
+void on_menu_info_activate (GtkMenuItem *menuitem,
+                            gpointer user_data);
+void
+on_toolbutton_save_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_toolbutton_new_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_toolbutton_icon_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_toolbutton_del_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
 
 #define ICON_SIZE_AUTO_STRING "auto (64x64 limit)"
 #define ICON_SIZE1_STRING "64x64"

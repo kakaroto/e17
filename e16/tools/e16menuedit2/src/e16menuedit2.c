@@ -41,7 +41,6 @@ int main (int argc, char *argv[])
   GtkWidget *main_window;
   GtkWidget *treeview_menu;
   GladeXML *main_xml;
-  GtkWidget *toolbar1;  
   char app_dir[PATH_MAX];
   char package[] = "librsvg-2.0";
   char good_version[] = "2.7.1";
@@ -77,8 +76,8 @@ int main (int argc, char *argv[])
   treeview_menu = glade_xml_get_widget (main_xml, "treeview_menu");
   create_tree_model (treeview_menu);
 
-  toolbar1 = glade_xml_get_widget (main_xml, "toolbar1");
-  create_toolbar (toolbar1, treeview_menu);
+  /* bind callbacks manual. Is Glade too stupid for it? */
+  bind_toolbar_callbacks (main_xml, treeview_menu);
 
   /* create initial directories */
   sprintf (app_dir, "%s/%s/%s", homedir (getuid ()), APP_HOME, ICON_DIR);
