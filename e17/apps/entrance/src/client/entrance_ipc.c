@@ -136,26 +136,28 @@ entrance_ipc_init(pid_t server_pid)
       return FALSE;
 
    memset(buf, 0, sizeof(buf));
-     {
-	struct stat st;
-	mode_t mask;
-	char *p;
-	
-	mask = S_IRUSR | S_IWUSR | S_IXUSR;
-	strncpy(buf, PACKAGE_STATE_DIR, sizeof(buf));
-	p = buf;
-	p = strchr(p, '/');
-	while (p)
-	  {
-	     *p = 0;
-	     if (stat(buf, &st) < 0) mkdir(buf, mask);
-	     *p = '/';
-	     p++;
-	     p = strchr(p, '/');
-	  }
-	if (stat(buf, &st) < 0) mkdir(buf, mask);
-     }
-	
+   {
+      struct stat st;
+      mode_t mask;
+      char *p;
+
+      mask = S_IRUSR | S_IWUSR | S_IXUSR;
+      strncpy(buf, PACKAGE_STATE_DIR, sizeof(buf));
+      p = buf;
+      p = strchr(p, '/');
+      while (p)
+      {
+         *p = 0;
+         if (stat(buf, &st) < 0)
+            mkdir(buf, mask);
+         *p = '/';
+         p++;
+         p = strchr(p, '/');
+      }
+      if (stat(buf, &st) < 0)
+         mkdir(buf, mask);
+   }
+
    snprintf(buf, PATH_MAX, "%s_%d", PACKAGE_STATE_DIR "/" IPC_TITLE,
             server_pid);
    if (ipc_title)

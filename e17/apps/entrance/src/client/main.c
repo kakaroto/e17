@@ -108,28 +108,25 @@ focus_swap(Evas_Object * o, int selecto)
    Evas_Object *oo = NULL;
 
    if (!strcmp(esmart_text_entry_edje_part_get(o), "EntrancePassEntry"))
-     {
-	if ((oo =
-	     evas_object_name_find(evas_object_evas_get(o),
-				   "EntranceUserEntry")))
-	  {
-	     esmart_text_entry_text_set(oo, "");
-	  }
-	esmart_text_entry_text_set(o, "");
-     }
+   {
+      if ((oo =
+           evas_object_name_find(evas_object_evas_get(o),
+                                 "EntranceUserEntry")))
+      {
+         esmart_text_entry_text_set(oo, "");
+      }
+      esmart_text_entry_text_set(o, "");
+   }
    else if (!strcmp(esmart_text_entry_edje_part_get(o), "EntranceUserEntry"))
-     {
-	oo =
-	  evas_object_name_find(evas_object_evas_get(o),
-				"EntrancePassEntry");
-     }
+   {
+      oo =
+         evas_object_name_find(evas_object_evas_get(o), "EntrancePassEntry");
+   }
    if (oo)
-     {
-	selecto ? evas_object_focus_set(oo, 0) :
-	evas_object_focus_set(o, 0);
-	selecto ? evas_object_focus_set(o, 1) :
-	evas_object_focus_set(oo, 1);
-     }
+   {
+      selecto ? evas_object_focus_set(oo, 0) : evas_object_focus_set(o, 0);
+      selecto ? evas_object_focus_set(o, 1) : evas_object_focus_set(oo, 1);
+   }
 }
 
 /**
@@ -146,41 +143,44 @@ interp_return_key(void *data, const char *str)
    o = (Evas_Object *) data;
 
    if (!strcmp(esmart_text_entry_edje_part_get(o), "EntranceUserEntry"))
-     {
-	if (!entrance_auth_set_user(session->auth, str))
-	  {
-	     edje_object_signal_emit(esmart_text_entry_edje_object_get(o), "EntranceUserAuth", "");
-	     if ((eu = evas_hash_find(session->config->users.hash, str)))
-               entrance_session_user_set(session, eu);
-	     focus_swap(o, 0);
-	  }
-	else
-	  {
-	     esmart_text_entry_text_set(o, "");
-	     entrance_session_user_reset(session);
-	     edje_object_signal_emit(esmart_text_entry_edje_object_get(o), "EntranceUserFail", "");
-	     focus_swap(o, 1);
-	  }
-     }
+   {
+      if (!entrance_auth_set_user(session->auth, str))
+      {
+         edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
+                                 "EntranceUserAuth", "");
+         if ((eu = evas_hash_find(session->config->users.hash, str)))
+            entrance_session_user_set(session, eu);
+         focus_swap(o, 0);
+      }
+      else
+      {
+         esmart_text_entry_text_set(o, "");
+         entrance_session_user_reset(session);
+         edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
+                                 "EntranceUserFail", "");
+         focus_swap(o, 1);
+      }
+   }
    if (!strcmp(esmart_text_entry_edje_part_get(o), "EntrancePassEntry"))
-     {
-	if (session->auth->user && strlen(session->auth->user) > 0)
-	  {
-	     entrance_auth_set_pass(session->auth, str);
-	     if (!entrance_session_auth_user(session))
-	       {
-		  session->authed = 1;
-		  edje_object_signal_emit(esmart_text_entry_edje_object_get(o), "EntranceUserAuthSuccess",
-					  "");
-	       }
-	     else
-	       {
-		  entrance_session_user_reset(session);
-		  edje_object_signal_emit(esmart_text_entry_edje_object_get(o), "EntranceUserAuthFail", "");
-		  focus_swap(o, 0);
-	       }
-	  }
-     }
+   {
+      if (session->auth->user && strlen(session->auth->user) > 0)
+      {
+         entrance_auth_set_pass(session->auth, str);
+         if (!entrance_session_auth_user(session))
+         {
+            session->authed = 1;
+            edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
+                                    "EntranceUserAuthSuccess", "");
+         }
+         else
+         {
+            entrance_session_user_reset(session);
+            edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
+                                    "EntranceUserAuthFail", "");
+            focus_swap(o, 0);
+         }
+      }
+   }
 }
 
 /**

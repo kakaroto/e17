@@ -168,222 +168,234 @@ interp_return_key(void *data, const char *str)
    int size = 0;
 
    o = (Evas_Object *) data;
-      size = strlen(str);
+   size = strlen(str);
 #if DEBUG
-      if (!str)
-         fprintf(stderr, "STRING IS NULL!!!!\n");
-      else
-         fprintf(stderr, "Entry Sent %s(%d)\n", str, size);
+   if (!str)
+      fprintf(stderr, "STRING IS NULL!!!!\n");
+   else
+      fprintf(stderr, "Entry Sent %s(%d)\n", str, size);
 #endif
-      if (esmart_text_entry_edje_part_get(o))
+   if (esmart_text_entry_edje_part_get(o))
+   {
+#if DEBUG
+      fprintf(stderr, "%s set its text\n",
+              esmart_text_entry_edje_part_get(o));
+#endif
+      if ((old =
+           evas_hash_find(ecco.hashes, esmart_text_entry_edje_part_get(o))))
       {
-#if DEBUG
-         fprintf(stderr, "%s set its text\n", esmart_text_entry_edje_part_get(o));
-#endif
-         if ((old = evas_hash_find(ecco.hashes, esmart_text_entry_edje_part_get(o))))
+         evas_hash_del(ecco.hashes, esmart_text_entry_edje_part_get(o), old);
+      }
+      else
+      {
+         fprintf(stderr, "Unable to find old entry for %s\n",
+                 esmart_text_entry_edje_part_get(o));
+      }
+      if (size > 0)
+      {
+         new_str = strdup(str);
+      }
+      else
+      {
+         new_str = strdup("");
+      }
+      if ((old =
+           evas_hash_find(ecco.entries, esmart_text_entry_edje_part_get(o))))
+      {
+         if (!strcmp(old, "ecco,entry,focus,in,greeting,before"))
          {
-            evas_hash_del(ecco.hashes, esmart_text_entry_edje_part_get(o), old);
+            if (ecco.config->before.string)
+               free(ecco.config->before.string);
+            ecco.config->before.string = new_str;
+            ecco.hashes =
+               evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o),
+                             new_str);
          }
-         else
+         else if (!strcmp(old, "ecco,entry,focus,in,greeting,after"))
          {
-            fprintf(stderr, "Unable to find old entry for %s\n",
-                    esmart_text_entry_edje_part_get(o));
+            if (ecco.config->after.string)
+               free(ecco.config->after.string);
+            ecco.config->after.string = new_str;
+            ecco.hashes =
+               evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o),
+                             new_str);
          }
-         if (size > 0)
+         else if (!strcmp(old, "ecco,entry,focus,in,date"))
          {
-            new_str = strdup(str);
+            if (ecco.config->date.string)
+               free(ecco.config->date.string);
+            ecco.config->date.string = new_str;
+            ecco.hashes =
+               evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o),
+                             new_str);
          }
-         else
+         else if (!strcmp(old, "ecco,entry,focus,in,time"))
          {
-            new_str = strdup("");
+            if (ecco.config->time.string)
+               free(ecco.config->time.string);
+            ecco.config->time.string = new_str;
+            ecco.hashes =
+               evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o),
+                             new_str);
          }
-         if ((old = evas_hash_find(ecco.entries, esmart_text_entry_edje_part_get(o))))
+         else if (!strcmp(old, "ecco,entry,focus,in,session,current,session"))
          {
-            if (!strcmp(old, "ecco,entry,focus,in,greeting,before"))
+            if (ecco.current_session)
             {
-               if (ecco.config->before.string)
-                  free(ecco.config->before.string);
-               ecco.config->before.string = new_str;
+               if (ecco.current_session->session)
+                  free(ecco.current_session->session);
+               ecco.current_session->session = new_str;
                ecco.hashes =
-                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
+                  evas_hash_add(ecco.hashes,
+                                esmart_text_entry_edje_part_get(o), new_str);
             }
-            else if (!strcmp(old, "ecco,entry,focus,in,greeting,after"))
+         }
+         else if (!strcmp(old, "ecco,entry,focus,in,session,current,name"))
+         {
+            Evas_List *l = NULL;
+
+            if (ecco.current_session)
             {
-               if (ecco.config->after.string)
-                  free(ecco.config->after.string);
-               ecco.config->after.string = new_str;
-               ecco.hashes =
-                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
-            }
-            else if (!strcmp(old, "ecco,entry,focus,in,date"))
-            {
-               if (ecco.config->date.string)
-                  free(ecco.config->date.string);
-               ecco.config->date.string = new_str;
-               ecco.hashes =
-                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
-            }
-            else if (!strcmp(old, "ecco,entry,focus,in,time"))
-            {
-               if (ecco.config->time.string)
-                  free(ecco.config->time.string);
-               ecco.config->time.string = new_str;
-               ecco.hashes =
-                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
-            }
-            else
-               if (!strcmp
-                   (old, "ecco,entry,focus,in,session,current,session"))
-            {
-               if (ecco.current_session)
+               fprintf(stderr, "%s:%s:%s\n", str, new_str,
+                       ecco.current_session->name);
+               if (strcmp(new_str, ecco.current_session->name))
                {
-                  if (ecco.current_session->session)
-                     free(ecco.current_session->session);
-                  ecco.current_session->session = new_str;
+                  ecco.config->sessions.hash =
+                     evas_hash_del(ecco.config->sessions.hash,
+                                   ecco.current_session->name,
+                                   ecco.current_session);
+                  if ((l =
+                       evas_list_find_list(ecco.config->sessions.keys,
+                                           ecco.current_session->name)))
+                  {
+                     free(l->data);
+                     l->data = new_str;
+                  }
+                  ecco.current_session->name = new_str;
+                  ecco.config->sessions.hash =
+                     evas_hash_add(ecco.config->sessions.hash,
+                                   ecco.current_session->name,
+                                   ecco.current_session);
+
+                  esmart_container_empty(ecco.container.sessions);
+                  edje_object_signal_emit(ecco.edje, "ecco,show,sessions",
+                                          "");
                   ecco.hashes =
-                     evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
+                     evas_hash_add(ecco.hashes,
+                                   esmart_text_entry_edje_part_get(o),
+                                   new_str);
+               }
+               else
+               {
+                  free(new_str);
                }
             }
-            else if (!strcmp(old, "ecco,entry,focus,in,session,current,name"))
+            else
             {
+               free(new_str);
+            }
+         }
+         else if (!strcmp(old, "ecco,entry,focus,in,user,current,name"))
+         {
+            if (ecco.current_user)
+            {
+
                Evas_List *l = NULL;
 
-               if (ecco.current_session)
+               if (strcmp(new_str, ecco.current_user->name))
                {
                   fprintf(stderr, "%s:%s:%s\n", str, new_str,
-                          ecco.current_session->name);
-                  if (strcmp(new_str, ecco.current_session->name))
+                          ecco.current_user->name);
+                  ecco.config->users.hash =
+                     evas_hash_del(ecco.config->users.hash,
+                                   ecco.current_user->name,
+                                   ecco.current_user);
+                  if ((l =
+                       evas_list_find_list(ecco.config->users.keys,
+                                           ecco.current_user->name)))
                   {
-                     ecco.config->sessions.hash =
-                        evas_hash_del(ecco.config->sessions.hash,
-                                      ecco.current_session->name,
-                                      ecco.current_session);
-                     if ((l =
-                          evas_list_find_list(ecco.config->sessions.keys,
-                                              ecco.current_session->name)))
-                     {
-                        free(l->data);
-                        l->data = new_str;
-                     }
-                     ecco.current_session->name = new_str;
-                     ecco.config->sessions.hash =
-                        evas_hash_add(ecco.config->sessions.hash,
-                                      ecco.current_session->name,
-                                      ecco.current_session);
-
-                     esmart_container_empty(ecco.container.sessions);
-                     edje_object_signal_emit(ecco.edje, "ecco,show,sessions",
-                                             "");
-                     ecco.hashes =
-                        evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
+                     fprintf(stderr, "AAAH %s\n", (char *) l->data);
+                     free(l->data);
+                     l->data = new_str;
                   }
                   else
                   {
-                     free(new_str);
+                     fprintf(stderr, "LEAKAGE !!!\n");
                   }
-               }
-               else
-               {
-                  free(new_str);
-               }
-            }
-            else if (!strcmp(old, "ecco,entry,focus,in,user,current,name"))
-            {
-               if (ecco.current_user)
-               {
+                  ecco.current_user->name = new_str;
+                  ecco.config->users.hash =
+                     evas_hash_add(ecco.config->users.hash,
+                                   ecco.current_user->name,
+                                   ecco.current_user);
 
-                  Evas_List *l = NULL;
-
-                  if (strcmp(new_str, ecco.current_user->name))
-                  {
-                     fprintf(stderr, "%s:%s:%s\n", str, new_str,
-                             ecco.current_user->name);
-                     ecco.config->users.hash =
-                        evas_hash_del(ecco.config->users.hash,
-                                      ecco.current_user->name,
-                                      ecco.current_user);
-                     if ((l =
-                          evas_list_find_list(ecco.config->users.keys,
-                                              ecco.current_user->name)))
-                     {
-                        fprintf(stderr, "AAAH %s\n", (char *) l->data);
-                        free(l->data);
-                        l->data = new_str;
-                     }
-                     else
-                     {
-                        fprintf(stderr, "LEAKAGE !!!\n");
-                     }
-                     ecco.current_user->name = new_str;
-                     ecco.config->users.hash =
-                        evas_hash_add(ecco.config->users.hash,
-                                      ecco.current_user->name,
-                                      ecco.current_user);
-
-                     esmart_container_empty(ecco.container.users);
-                     edje_object_signal_emit(ecco.edje, "ecco,show,users",
-                                             "");
-                     ecco.hashes =
-                        evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
-                  }
-                  else
-                  {
-                     free(new_str);
-                  }
-               }
-               else
-               {
-                  free(new_str);
-               }
-            }
-            else if (!strcmp(old, "ecco,entry,focus,in,user,current,session"))
-            {
-               if (ecco.current_user)
-               {
-                  if (ecco.current_user->session)
-                     free(ecco.current_user->session);
-                  ecco.current_user->session = new_str;
+                  esmart_container_empty(ecco.container.users);
+                  edje_object_signal_emit(ecco.edje, "ecco,show,users", "");
                   ecco.hashes =
-                     evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
-               }
-            }
-            else if (!strcmp(old, "ecco,entry,focus,in,remember,n"))
-            {
-               snprintf(buf, PATH_MAX, "%s", str);
-               ecco.config->users.remember_n = atoi(buf);
-               ecco.hashes =
-                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
-            }
-            else if (!strcmp(old, "ecco,entry,focus,in,theme"))
-            {
-               snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
-                        new_str);
-               if (is_valid_theme_eet(o, buf))
-               {
-                  fprintf(stderr, "You found a valid eet\n");
-                  if (ecco.config->theme)
-                     free(ecco.config->theme);
-                  ecco.config->theme = new_str;
-                  ecco.hashes =
-                     evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
+                     evas_hash_add(ecco.hashes,
+                                   esmart_text_entry_edje_part_get(o),
+                                   new_str);
                }
                else
                {
-                  fprintf(stderr, "You found a invalid eet\n");
-                  esmart_text_entry_text_set(o, ecco.config->theme);
                   free(new_str);
                }
             }
             else
             {
-               fprintf(stderr, "Unknown signal, %s\n", old);
+               free(new_str);
+            }
+         }
+         else if (!strcmp(old, "ecco,entry,focus,in,user,current,session"))
+         {
+            if (ecco.current_user)
+            {
+               if (ecco.current_user->session)
+                  free(ecco.current_user->session);
+               ecco.current_user->session = new_str;
+               ecco.hashes =
+                  evas_hash_add(ecco.hashes,
+                                esmart_text_entry_edje_part_get(o), new_str);
+            }
+         }
+         else if (!strcmp(old, "ecco,entry,focus,in,remember,n"))
+         {
+            snprintf(buf, PATH_MAX, "%s", str);
+            ecco.config->users.remember_n = atoi(buf);
+            ecco.hashes =
+               evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o),
+                             new_str);
+         }
+         else if (!strcmp(old, "ecco,entry,focus,in,theme"))
+         {
+            snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s", new_str);
+            if (is_valid_theme_eet(o, buf))
+            {
+               fprintf(stderr, "You found a valid eet\n");
+               if (ecco.config->theme)
+                  free(ecco.config->theme);
+               ecco.config->theme = new_str;
+               ecco.hashes =
+                  evas_hash_add(ecco.hashes,
+                                esmart_text_entry_edje_part_get(o), new_str);
+            }
+            else
+            {
+               fprintf(stderr, "You found a invalid eet\n");
+               esmart_text_entry_text_set(o, ecco.config->theme);
+               free(new_str);
             }
          }
          else
          {
-            fprintf(stderr, "Unknown signal for %s\n", esmart_text_entry_edje_part_get(o));
+            fprintf(stderr, "Unknown signal, %s\n", old);
          }
       }
+      else
+      {
+         fprintf(stderr, "Unknown signal for %s\n",
+                 esmart_text_entry_edje_part_get(o));
+      }
+   }
 }
 
 /*=========================================================================

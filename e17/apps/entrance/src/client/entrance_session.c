@@ -348,12 +348,13 @@ entrance_session_start_user_session(Entrance_Session * e)
    {
       if (!strcmp(e->session, "default"))
          snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
-      else if(e->session[0] == '/')
-	 snprintf(buf, PATH_MAX, "%s", e->session);
+      else if (e->session[0] == '/')
+         snprintf(buf, PATH_MAX, "%s", e->session);
       else
          snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, e->session);
-   } 
-   else {
+   }
+   else
+   {
       /* Default session */
       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
    }
