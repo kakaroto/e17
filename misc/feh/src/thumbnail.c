@@ -46,7 +46,7 @@ init_thumbnail_mode(void)
    int w = 800, h = 600, ww = 0, hh = 0, www, hhh, xxx, yyy;
    int x = 0, y = 0;
    int bg_w = 0, bg_h = 0;
-   winwidget winwid;
+   winwidget winwid = NULL;
    Imlib_Image bg_im = NULL, im_thumb = NULL;
    int tot_thumb_h;
    int text_area_h = 50;
@@ -324,6 +324,15 @@ init_thumbnail_mode(void)
                                      0, 255);
    }
 
+   if (opt.display && opt.progressive)
+   {
+      winwid =
+         winwidget_create_from_image(im_main, PACKAGE " [thumbnail mode]",
+                                     WIN_TYPE_THUMBNAIL);
+      winwidget_show(winwid);
+   }
+
+
    for (l = filelist; l; l = l->next)
    {
       file = FEH_FILE(l->data);
@@ -492,6 +501,8 @@ init_thumbnail_mode(void)
             feh_display_status('x');
          last = l;
       }
+      if (opt.display && opt.progressive)
+         winwidget_render_image(winwid, 1, 0);
    }
    if (opt.verbose)
       fprintf(stdout, "\n");
@@ -527,10 +538,16 @@ init_thumbnail_mode(void)
 
    if (opt.display)
    {
-      winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [index mode]",
-                                     WIN_TYPE_THUMBNAIL);
-      winwidget_show(winwid);
+      if (opt.progressive && winwid)
+         winwidget_render_image(winwid, 1, 1);
+      else
+      {
+
+         winwid =
+            winwidget_create_from_image(im_main, PACKAGE " [thumbnail mode]",
+                                        WIN_TYPE_THUMBNAIL);
+         winwidget_show(winwid);
+      }
    }
    else
       feh_imlib_free_image_and_decache(im_main);
@@ -633,6 +650,25 @@ feh_thumbnail_get_file_from_coords(int x, int y)
            thumbnails[i]->h))
       {
          return (thumbnails[i]->file);
+      }
+   }
+   D(("No matching %d %d", x, y));
+   return (NULL);
+}
+
+feh_thumbnail *
+feh_thumbnail_get_thumbnail_from_coords(int x, int y)
+{
+   int i;
+
+   for (i = 0; i < num_thumbs; i++)
+   {
+      D(("%d times through\n", i));
+      if (XY_IN_RECT
+          (x, y, thumbnails[i]->x, thumbnails[i]->y, thumbnails[i]->w,
+           thumbnails[i]->h))
+      {
+         return (thumbnails[i]);
       }
    }
    D(("No matching %d %d", x, y));

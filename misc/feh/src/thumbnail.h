@@ -17,8 +17,9 @@ typedef struct thumbnail {
 
 
 void feh_thumbnail_add(feh_file *fil, int x, int y, int w, int h);
-feh_file * feh_thumbnail_get_file_from_coords(int x, int y);
-
+feh_file* feh_thumbnail_get_file_from_coords(int x, int y);
+feh_thumbnail* feh_thumbnail_get_thumbnail_from_coords(int x, int y);
+	
 	
 	
 #endif

@@ -155,8 +155,8 @@ feh_event_handle_ButtonPress(XEvent * ev)
          if (thumbfile)
          {
             thumbwin =
-               winwidget_create_from_file(feh_list_add_front(NULL, thumbfile), thumbfile->name,
-                                          WIN_TYPE_SINGLE);
+               winwidget_create_from_file(feh_list_add_front(NULL, thumbfile),
+                                          thumbfile->name, WIN_TYPE_SINGLE);
             if (!opt.progressive)
                winwidget_show(thumbwin);
          }
@@ -549,6 +549,42 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im = temp;
             feh_imlib_free_image_and_decache(im2);
          }
+         else if (winwid->type == WIN_TYPE_THUMBNAIL)
+         {
+            feh_thumbnail *thumbnail;
+            int x, y;
+
+            x = ev->xbutton.x;
+            y = ev->xbutton.y;
+            x -= winwid->im_x;
+            y -= winwid->im_y;
+            x /= winwid->zoom;
+            y /= winwid->zoom;
+            thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
+            D(("He steps up for the kick...\n"));
+            if (thumbnail)
+            {
+               Imlib_Image origwin;
+
+               D((stderr, "It's good\n"));
+
+               D((stderr, "Who's your daddy\n"));
+               origwin = feh_imlib_clone_image(winwid->im);
+               imlib_context_set_image(winwid->im);
+               feh_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
+                                              thumbnail->y, thumbnail->w,
+                                              thumbnail->h, 50, 255, 50, 100);
+               feh_imlib_render_image_on_drawable(winwid->win, winwid->im, 0,
+                                                  0, 0, 1, 1);
+               feh_imlib_free_image_and_decache(winwid->im);
+               winwid->im = origwin;
+               /*imlib_free_image(); */
+            }
+
+
+         }
+
+
       }
    }
    D_RETURN_;

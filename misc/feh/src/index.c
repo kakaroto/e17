@@ -481,6 +481,7 @@ init_index_mode(void)
             y += tot_thumb_h;
          else
             x += text_area_w;
+
          if (opt.display && opt.progressive)
             winwidget_render_image(winwid, 1, 0);
       }
