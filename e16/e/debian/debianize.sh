@@ -120,6 +120,7 @@ END
 
 cat > "debian/enlightenment-theme-brushedmetal.links" <<- "END"
 usr/share/doc/enlightenment-docs usr/share/doc/enlightenment-theme-brushedmetal
+usr/share/enlightenment/themes/BrushedM usr/share/enlightenment/themes/BrushedMetal-Tigert
 END
 
 cat > "debian/enlightenment-theme-brushedmetal.postinst" <<- "END"
@@ -129,7 +130,7 @@ set -e
 
 update-alternatives --install /usr/share/enlightenment/themes/DEFAULT \
 enlightenment-theme-default \
-/usr/share/enlightenment/themes/BrushedMetal 50
+/usr/share/enlightenment/themes/BrushedMetal-Tigert 50
 
 #DEBHELPER#
 
@@ -345,7 +346,7 @@ cat > "debian/enlightenment-theme-brushedmetal.prerm" <<- "END"
 set -e
 
 update-alternatives --remove enlightenment-theme-default \
- /usr/share/enlightenment/themes/BrushedMetal
+ /usr/share/enlightenment/themes/BrushedMetal-Tigert
 
 #DEBHELPER#
 
