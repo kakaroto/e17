@@ -7,8 +7,7 @@
 	    mouse_events,  1; \
 	    description { \
 	       state,    "default" 0.0; \
-	       border, 3 3 3 3; \
-	       min, 6 6 6 6; \
+	       min, 6 6; \
 	       color_class, "background"; \
 	       rel1 { \
 		  relative, 0.0  0.0; \
@@ -20,11 +19,11 @@
 	       } \
 	       image { \
 		  normal, IMAGE1; \
+		  border, 3 3 3 3; \
 	       } \
 	    } \
 	    description { \
 	       state,    "over" 0.0; \
-	       border, 3 3 3 3; \
 	       color_class, "highlight"; \
                color, 229 239 255 255; \
 	       rel1 { \
@@ -37,12 +36,13 @@
 	       } \
 	       image { \
 		  normal, IMAGE1; \
+		  border, 3 3 3 3; \
 	       } \
 	    } \
 	    description { \
 	       state,    "clicked" 0.0; \
 	       border, 3 3 3 3; \
-	       min, 6 6 6 6; \
+	       min, 6 6; \
                color, 229 239 255 255; \
 	       rel1 { \
 		  relative, 0.0  0.0; \
@@ -63,7 +63,7 @@
 	    description { \
 	       state,    "default" 0.0; \
 	       border, 3 3 3 3; \
-	       min, 6 6 6 6; \
+	       min, 6 6; \
 	       rel1 { \
 		  relative, 0.0  0.0; \
 		  offset,   0    0; \

@@ -18,7 +18,7 @@
               description { 
                   state,    "default" 0.0; 
                   border, 3 3 3 3; 
-                  min, 6 6 6 6; 
+                  min, 6 6; 
                   color_class, "background"; 
                   rel1 { 
                       relative, 0.0  0.0; 
@@ -52,7 +52,7 @@
               description { 
                   state,    "clicked" 0.0; 
                   border, 3 3 3 3; 
-                  min, 6 6 6 6; 
+                  min, 6 6; 
                   color, 229 239 255 255; 
                   rel1 { 
                     relative, 0.0  0.0; 
