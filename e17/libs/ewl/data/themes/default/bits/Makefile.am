@@ -1,6 +1,7 @@
 EDCS =  button.edc \
 	checkbox.edc \
 	entry.edc \
+	filedialog.edc \
 	misc.edc \
 	progressbar.edc \
 	radio.edc \
