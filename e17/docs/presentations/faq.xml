@@ -1,0 +1,127 @@
+<faq>
+	<section>
+		<summary>
+			Frequently asked questions
+	
+			This is a list of questions you can expect based on past 
+			presentations related to enlightenment. Yes most of these questions 
+			are in the faq on the website, but we all know how many end users 
+			read that before asking questions.
+		</summary>
+	</section>
+	<section>
+		<item>
+			<question>
+				Is enlightenment development dead?
+			</question>
+			<answer>
+				No, enlightenment has been in constant development since 
+				it's inception. We did not release a window manager for 3 years,
+				because it was not apriority that the current developers wanted 
+				to spend their limited time on. Kim Woelders stepped up and 
+				made extensive improvements that called for new releases.
+			</answer>
+		</item>
+		<item>
+			<question>
+				How many active developers are there?
+			</question>
+			<answer>
+				There are 10 developers making regular commits, and 42 
+				developers with CVS access.
+			</answer>
+		</item>
+		<item>
+			<question>
+				How active is CVS (average time between cvs commits)?
+			</question>
+			<answer>
+				Approximately 1.58 hours between commits. This number is 
+				slightly on the high side because of an issue with the 
+				commit bot.
+			</answer>
+		</item>
+		<item>
+			<question>
+				How long until DR17?
+			</question>
+			<answer>
+				No time estimates are given because the code is developed 
+				in spare time only. Without a schedule of regular working hours,
+				development time is impossible to estimate.
+			</answer>
+		</item>
+		<item>
+			<question>
+				Why is there so much bloat in E?
+			</question>
+			<answer>
+				Bloat? What bloat? Most claims of bloat in E are from '97 
+				or '98, at which time Enlightenment really pushed the boundaries
+				of the hardware. These days, E could be considered one of the 
+				lighter environments out there, and will happily run on old 
+				pentium class hardware.
+			</answer>
+		</item>
+		<item>
+			<question>
+				Why are you making ANOTHER wm like gnome or kde?
+			</question>
+			<answer>
+				Enlightenment pre-dates gnome and kde. It was originally 
+				used by gnome as the default window manager. Until recently, 
+				Enlightenment focused solely on window management. While there 
+				will be some overlap between the EFL and the other environments,
+				we aim to work with their applications and environments as much 
+				as possible.
+			</answer>
+		</item>
+		<item>
+			<question>
+				How fast will the new e apps work?
+			</question>
+			<answer>
+				This will depend on the application to a large degree. The 
+				overall goal is to make the libraries as fast and flexile as 
+				possible, so that apps can target their specific platform.
+			</answer>
+		</item>
+		<item>
+			<question>
+				How much memory or cpu will the libs use?
+			</question>
+			<answer>
+				As little as possible to accomplish the necessary 
+				functionality. At this point, all of the core libraries can run 
+				fit into about 1.1 MB of storage. At runtime, the memory use 
+				varies depending on architecture and application, but 
+				demonstrations have shown the libraries being used on devices 
+				with minimal memory.
+			</answer>
+		</item>
+		<item>
+			<question>
+				Where do the libs run (portability)?
+			</question>
+			<answer>
+				Currently tested platforms include: Linux (x86, powerpc, ARM, 
+				Sparc), Solaris, and Mac OS X. Some libraries have been tested 
+				on Windows 2000 and CE.
+			</answer>
+		</item>
+		<item>
+			<question>
+				Why are you redoing a lot of work being done in fd.o?
+			</question>
+			<answer>
+				We're not. The freedesktop group was formed to specify ways that
+				applications and libraries can communicate through X. We are 
+				making use of these standards where ever it is technically 
+				reasonable. In fact, our abstractions may help the fd.o group, 
+				as standards groups often require at least 2 separate 
+				implementations of a proposal before it is accepted as a 
+				standard.
+			</answer>
+		</item>
+	</section>
+</faq>
