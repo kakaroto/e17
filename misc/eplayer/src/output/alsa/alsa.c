@@ -153,16 +153,14 @@ static snd_mixer_elem_t *get_master() {
 }
 
 static void init_master() {
-	long min, max;
+	long min = 0, max = 0;
 	int vol[2] = {0};
 	
 	snd_mixer_selem_get_playback_volume_range(master_ctrl, &min, &max);
 	snd_mixer_selem_set_playback_volume_range(master_ctrl, 0, 100);
 
-	if (!alsa_volume_get(vol, &vol[1]))
-		return;
-
-	alsa_volume_set(vol[0] / max * 100, vol[1] / max * 100);
+	if (alsa_volume_get(vol, &vol[1]))
+		alsa_volume_set(vol[0] * 100 / max, vol[1] * 100 / max);
 }
 
 static snd_mixer_t *open_mixer() {
