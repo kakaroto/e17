@@ -1,10 +1,11 @@
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_Ipc.h>
-#include "spawner.h"
+#include "Entranced.h"
+#include "util.h"
 
 /* Globals */
-/* Entranced_Spawner_Display *d; */
+/* Entranced_Display *d; */
 static Ecore_Event_Handler *_e_handler = NULL;
 static Ecore_Event_Handler *_d_handler = NULL;
 static Ecore_Event_Filter *_e_filter = NULL;
@@ -65,15 +66,15 @@ Entranced_Fork_And_Exit(void)
 
 /**
  * Create a new display context.
- * @return A pointer to an Entranced_Spawner_Display handle for the new context
+ * @return A pointer to an Entranced_Display handle for the new context
  */
-Entranced_Spawner_Display *
-Entranced_Spawner_Display_New(void)
+Entranced_Display *
+Entranced_Display_New(void)
 {
-   Entranced_Spawner_Display *d;
+   Entranced_Display *d;
 
-   d = malloc(sizeof(Entranced_Spawner_Display));
-   memset(d, 0, sizeof(Entranced_Spawner_Display));
+   d = malloc(sizeof(Entranced_Display));
+   memset(d, 0, sizeof(Entranced_Display));
    /* TODO: Config-ize these parameters */
    d->xprog = strdup(X_SERVER);
    d->attempts = 5;
@@ -90,7 +91,7 @@ Entranced_Spawner_Display_New(void)
  * @param d The spawner display context that will handle this server
  */
 void
-Entranced_Spawn_X(Entranced_Spawner_Display * d)
+Entranced_Spawn_X(Entranced_Display * d)
 {
    int i = 0;
 
@@ -112,7 +113,7 @@ Entranced_Spawn_X(Entranced_Spawner_Display * d)
  * @return The status of the display context after the launch attempt
  */
 pid_t
-Entranced_Start_Server_Once(Entranced_Spawner_Display * d)
+Entranced_Start_Server_Once(Entranced_Display * d)
 {
    double start_time;
    char x_cmd[PATH_MAX];
@@ -175,7 +176,7 @@ Entranced_Start_Server_Once(Entranced_Spawner_Display * d)
  * @param d The spawner display context that this session will use
  */
 void
-Entranced_Spawn_Entrance(Entranced_Spawner_Display * d)
+Entranced_Spawn_Entrance(Entranced_Display * d)
 {
    char entrance_cmd[PATH_MAX];
 
@@ -191,14 +192,14 @@ Entranced_Spawn_Entrance(Entranced_Spawner_Display * d)
 int
 Entranced_Respawn_Reset(void *data)
 {
-   _DEBUG("Respawn timer reset.\n");
+   entranced_debug("Respawn timer reset.\n");
    is_respawning = 0;
    respawn_timer = NULL;
    return 0;
 }
 
 int
-Entranced_X_Restart(Entranced_Spawner_Display * d)
+Entranced_X_Restart(Entranced_Display * d)
 {
 
    /* Attempt to restart X server */
@@ -253,7 +254,7 @@ _Entranced_SIGUSR(int sig)
 {
 /*    Ecore_Event_Signal_User *e = (Ecore_Event_Signal_User *) event; */
 
-   _DEBUG("SIGUSR event triggered.\n");
+   entranced_debug("SIGUSR event triggered.\n");
 
    /* X sends SIGUSR1 to let us know it is ready */
 /*    if (e->number == 1)*/
@@ -265,18 +266,18 @@ int
 Entranced_Exe_Exited(void *data, int type, void *event)
 {
    Ecore_Event_Exe_Exit *e = (Ecore_Event_Exe_Exit *) event;
-   Entranced_Spawner_Display *d = (Entranced_Spawner_Display *) data;
+   Entranced_Display *d = (Entranced_Display *) data;
 
-   _DEBUG("Ecore_Event_Exe_Exit triggered.\n");
+   entranced_debug("Ecore_Event_Exe_Exit triggered.\n");
 
    if (is_respawning)
    {
-      _DEBUG("Event ignored.\n");
+      entranced_debug("Event ignored.\n");
       return 1;
    }
    else
    {
-      _DEBUG("Processing Event.\n");
+      entranced_debug("Processing Event.\n");
    }
 
    is_respawning = 1;
@@ -337,7 +338,7 @@ Entranced_Exe_Exited(void *data, int type, void *event)
 int
 Entranced_Signal_Exit(void *data, int type, void *event)
 {
-   _DEBUG("Ecore_Signal_Exit_Triggered\n");
+   entranced_debug("Ecore_Signal_Exit_Triggered\n");
    syslog(LOG_INFO, "Caught exit signal.");
    syslog(LOG_INFO, "Display and display manager are shutting down.");
    ecore_main_loop_quit();
@@ -347,7 +348,7 @@ Entranced_Signal_Exit(void *data, int type, void *event)
 void
 Entranced_AtExit(void)
 {
-   _DEBUG("Entranced exits.\n");
+   entranced_debug("Entranced exits.\n");
 }
 
 /*
@@ -358,12 +359,13 @@ main(int argc, char **argv)
 {
    int c;
    int nodaemon = 0;            /* TODO: Config-ize this variable */
-   Entranced_Spawner_Display *d;
+   Entranced_Display *d;
    struct option d_opt[] = {
-      {"config", 1, 0, 1},
-      {"display", 1, 0, 1},
-      {"nodaemon", 0, 0, 1},
-      {"help", 0, 0, 2},
+      {"config", 1, 0, 'c'},
+      {"display", 1, 0, 'd'},
+      {"nodaemon", 0, 0, 'n'},
+      {"help", 0, 0, 'h'},
+      {"verbose", 0, 0, 'v'},
       {0, 0, 0, 0}
    };
    pid_t entranced_pid = getpid();
@@ -376,12 +378,12 @@ main(int argc, char **argv)
    openlog("entranced", LOG_NOWAIT, LOG_DAEMON);
 
    /* Set up a spawner context */
-   d = Entranced_Spawner_Display_New();
+   d = Entranced_Display_New();
 
    /* Parse command-line options */
    while (1)
    {
-      c = getopt_long_only(argc, argv, "c:d:", d_opt, NULL);
+      c = getopt_long_only(argc, argv, "c:d:nhv", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
@@ -393,10 +395,10 @@ main(int argc, char **argv)
            d->name = strdup(optarg);
            setenv("DISPLAY", optarg, 1);
            break;
-        case 1:
+        case 'n':
            nodaemon = 1;
            break;
-        case 2:
+        case 'h':
            /* This should probably in a separate usage function, but bleh */
            printf("Entranced - Launcher for the Entrance Display Manager\n");
            printf("Usage: %s [OPTION] ...\n\n", argv[0]);
@@ -405,6 +407,7 @@ main(int argc, char **argv)
            printf("  -c CONFIG          Specify config file for greeter\n");
            printf("  -d DISPLAY         Connect to an existing X server\n");
            printf("  -help              Display this help message\n");
+           /*printf("  -verbose           Display extra debugging info\n");*/
            printf
               ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
            printf
@@ -415,6 +418,9 @@ main(int argc, char **argv)
               ("try to use entranced or you may get unexpected results. Instead, launch\n");
            printf("entrance directly by typing \"entrance\".\n\n");
            exit(0);
+
+        /*case 'v':
+           config.debuglevel = 1;*/
 
       }
    }
@@ -487,12 +493,12 @@ main(int argc, char **argv)
    Entranced_Spawn_Entrance(d);
 
    /* Main program loop */
-   _DEBUG("Entering main loop.\n");
+   entranced_debug("Entering main loop.\n");
    ecore_main_loop_begin();
    ecore_main_loop_quit();
 
    /* Shut down */
-   _DEBUG("Exited main loop! Shutting down...\n");
+   entranced_debug("Exited main loop! Shutting down...\n");
    ecore_exe_terminate(d->e_exe);
    kill(d->pid.x, SIGTERM);
    sleep(5);
