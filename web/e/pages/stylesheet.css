@@ -66,6 +66,7 @@ a.qindex:link
  text-decoration: none;
  color: #444444;
  font-weight: normal;
+ font-size: small;
 }
 a.qindex:visited
 {
@@ -172,4 +173,11 @@ td.newsbody
  padding: 4px;
  text-align: left;
  font-size: 12;
+}
+
+strong.qindex
+{
+ text-decoration: none;
+ color: #444444;
+ font-size: small;
 }
