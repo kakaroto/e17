@@ -108,3 +108,12 @@ Sun Oct 31 18:59:05 PST 1999
 
 internal API is cleaning up now.  I think I've figured out how to resolve my
 problem
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 20:01:43 PST 1999
+(Mandrake)
+
+cleaned up API some more, added local tags to saving, working on fat entries to
+disk, realizing the need for a fsck() command, etc.  Things are still coming
+along smoothly

@@ -124,6 +124,23 @@ int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 
 }
 
+int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path) {
+
+	/* This function creates a new FAT table entry at the specified location
+	 * *path for the variable *loc of length length. 
+	 * This function is for internal use by eConfig only
+	 */
+
+	if(!path)
+		return 0;
+	if(!loc)
+		return 0;
+	if(!length)
+		return 0;
+
+	return 0;
+
+}
 
 int _econf_save_data_to_disk(void *data, char *loc, unsigned long length, char local) {
 
