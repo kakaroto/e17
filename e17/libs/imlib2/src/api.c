@@ -1837,7 +1837,7 @@ imlib_image_query_pixel(int x, int y, Imlib_Color *color_return)
      }
    p = im->data + (im->w * y) + x;
    color_return->red = ((*p) >> 16) & 0xff;
-   color_return->green = ((*p) >> 0) & 0xff;
+   color_return->green = ((*p) >> 8) & 0xff;
    color_return->blue = (*p) & 0xff;
    color_return->alpha = ((*p) >> 24) & 0xff;
 }
