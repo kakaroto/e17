@@ -4,9 +4,12 @@ dnl Process this file with autoconf to produce a configure script.
 rm -f config.cache
 
 AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 AM_INIT_AUTOMAKE(e_modules, 0.0.1)
 AM_CONFIG_HEADER(config.h)
-
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -14,6 +17,10 @@ AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
+
+MODULE_ARCH="$target_os-$target_cpu"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 if test "x${bindir}" = 'x${exec_prefix}/bin'; then
   if test "x${exec_prefix}" = "xNONE"; then
@@ -130,6 +137,7 @@ AC_ARG_WITH(edje-config,
 [
   EDJE_CONFIG=$withval;
   echo "using "$EDJE_CONFIG" for edje-config";
+/
 ],[
   PROG="edje-config";
   AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
@@ -164,8 +172,10 @@ AC_ARG_WITH(enlightenment-config,
 ])
 e_cflags=`$E_CONFIG --cflags`
 e_libs=`$E_CONFIG --libs`
+e_modules=`$E_CONFIG --module-dir`
 AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
+AC_SUBST(e_modules)
 	
 
 AC_OUTPUT([

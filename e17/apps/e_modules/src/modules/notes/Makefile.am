@@ -13,7 +13,7 @@ INCLUDES               = -I. \
 			 -I$(includedir) \
 			 @esmart_cflags@ \
 			 @e_cflags@
-pkgdir                 = $(libdir)/e_modules/notes
+pkgdir                 = @e_modules@/notes/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 		         e_mod_main.h
