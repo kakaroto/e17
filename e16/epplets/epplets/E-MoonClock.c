@@ -1,5 +1,5 @@
 /*
- *
+
  *      E-MoonClock v0.1 (C) 1999 Michael Lea (mikelea@charm.net)
  *
  *              - Shows Moon Phase....
@@ -43,33 +43,36 @@ static void out_cb(void *data, Window w);
 
 static void
 moonclock_cb(void *data)
-{  
-  struct tm           *GMTTime, *LocalTime;
-  int                 Year, Month, DayOfMonth;
-  int       ImageNumber, rv;
-  long                CurrentLocalTime, CurrentGMTTime, date;
-  double              UT, LocalHour, hour24();
-  double     TimeZone;
-  CTrans              c;
-  char buf[128];
+{
+  struct tm *GMTTime, *LocalTime;
+  int Year, Month, DayOfMonth;
+  int ImageNumber, rv;
+  long CurrentLocalTime, CurrentGMTTime, date;
+  double UT, LocalHour, hour24();
+  double TimeZone;
+  CTrans c;
+  static char buf[1024];
 
-  
-  CurrentGMTTime = time(CurrentTime); GMTTime = gmtime(&CurrentGMTTime);
-  UT = GMTTime->tm_hour + GMTTime->tm_min/60.0 + GMTTime->tm_sec/3600.0;
-  Year = GMTTime->tm_year+1900;
-  Month = GMTTime->tm_mon+1;
+
+  CurrentGMTTime = time(CurrentTime);
+  GMTTime = gmtime(&CurrentGMTTime);
+  UT = GMTTime->tm_hour + GMTTime->tm_min / 60.0 + GMTTime->tm_sec / 3600.0;
+  Year = GMTTime->tm_year + 1900;
+  Month = GMTTime->tm_mon + 1;
   DayOfMonth = GMTTime->tm_mday;
-  date = Year*10000 + Month*100 + DayOfMonth;
-  CurrentLocalTime = CurrentGMTTime; LocalTime = localtime(&CurrentLocalTime);
-  LocalHour = LocalTime->tm_hour + LocalTime->tm_min/60.0 + LocalTime->tm_sec/3600.0;
+  date = Year * 10000 + Month * 100 + DayOfMonth;
+  CurrentLocalTime = CurrentGMTTime;
+  LocalTime = localtime(&CurrentLocalTime);
+  LocalHour = LocalTime->tm_hour + LocalTime->tm_min / 60.0 + LocalTime->tm_sec / 3600.0;
   TimeZone = UT - LocalHour;
 
 
   CalcEphem(date, UT, &c);
-  
-  ImageNumber = (int)(c.MoonPhase * 60.0 + 0.5);
-  if (ImageNumber > 59) ImageNumber = 0;
-  
+
+  ImageNumber = (int) (c.MoonPhase * 60.0 + 0.5);
+  if (ImageNumber > 59)
+    ImageNumber = 0;
+
   rv = Esnprintf(buf, sizeof(buf), EROOT "/epplet_data/E-MoonClock/E-MoonClock-%02d.png", ImageNumber);
   moon_pixmap = Epplet_create_image(2, 2, 43, 43, buf);
   Epplet_gadget_show(moon_pixmap);
@@ -78,7 +81,7 @@ moonclock_cb(void *data)
 
   return;
 
-  data=NULL;
+  data = NULL;
 
 }
 static void
@@ -123,7 +126,7 @@ out_cb(void *data, Window w)
 
 int
 main(int argc, char **argv)
-{  
+{
   int prio;
 
   prio = getpriority(PRIO_PROCESS, getpid());
@@ -131,9 +134,9 @@ main(int argc, char **argv)
   atexit(Epplet_cleanup);
   Epplet_Init("E-MoonClock", "0.1", "Enlightenment MoonClock Epplet", 3, 3, argc, argv, 0);
   Epplet_load_config();
-  
+
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  help_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0, NULL, help_cb, NULL);  
+  help_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0, NULL, help_cb, NULL);
   moon_pixmap = Epplet_create_image(2, 2, 43, 43, moon_image);
   Epplet_gadget_show(moon_pixmap);
   Epplet_show();

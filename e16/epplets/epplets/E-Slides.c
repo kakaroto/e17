@@ -54,7 +54,7 @@ Epplet_gadget close_button, play_button, pause_button, prev_button, next_button,
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
 char **filenames = NULL, *path, *zoom_cmd;
-unsigned char paused = 0, auto_setbg = AUTOBG_OFF;
+unsigned char paused = 0, auto_setbg = AUTOBG_OFF, maintain_aspect=0;
 Window zoom_win = None;
 int w = 3, h = 3;
 
@@ -190,9 +190,37 @@ set_background(int tiled, int keep_aspect) {
 }
 
 static void
+aspect_change_image(Epplet_gadget pic, int ww, int hh, char *filename)
+{
+    ImlibImage *im = NULL;
+    double ratio = 0.0;
+    int neww = 0, newh = 0;
+
+    im = Imlib_load_image(Epplet_get_imlib_data(), filename);
+
+    ratio = (double)im->rgb_width / (double)im->rgb_height;
+    ratio /= (double)ww/(double)hh;
+    Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
+
+    if(ratio > 1.0) {
+	neww = ww;
+	newh = (double) hh / ratio;
+    } else if(ratio == 1.0) {
+	neww = ww;
+	newh = hh;
+    } else {
+	neww = (double)ww * ratio;
+	newh = hh;
+    }
+    Epplet_change_image(pic, neww, newh, filename);
+}
+
+static void
 change_image(void *data) {
 
   ImlibImage *im = NULL;
+  double ratio = 0.0;
+  int new_w = 0, new_h = 0;
 
   /* Test-load each image to make sure it's a valid image file. */
   for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL));) {
@@ -202,7 +230,18 @@ change_image(void *data) {
   }
   Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
 
-  Epplet_change_image(picture, (w * 16 - 6), (h * 16 - 6), filenames[idx]);
+  new_w = (w * 16 - 6);
+  new_h = (h * 16 - 6);
+  if (maintain_aspect) {
+    ratio = ((double) im->rgb_width / im->rgb_height) / ((double) new_w / new_h);
+    if (ratio > 1.0) {
+	new_h /= ratio;
+    } else if (ratio != 1.0) {
+	new_w *= ratio;
+    }
+  }
+
+  Epplet_change_image(picture, new_w, new_h, filenames[idx]);
   INC_PIC();
   switch (auto_setbg) {
     case AUTOBG_TILED:    set_background(1, 1); break;
@@ -349,6 +388,7 @@ parse_config(void) {
   } else if (!strcasecmp(s, "scaled_with_aspect")) {
     auto_setbg = AUTOBG_PSCALED;
   }
+  maintain_aspect = atoi(Epplet_query_config_def("maintain_aspect", "0"));
 }
 
 int

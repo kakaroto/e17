@@ -1410,3 +1410,12 @@ Mon Dec  6 12:53:49 PST 1999
 (KainX)
 
 Patches to E-MoonClock from Valdis Kletnieks <valdis.kletnieks@vt.edu>.
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:31:34 PST 1999
+(KainX)
+
+Applied Tom's patch to E-Slides to support maintaining the aspect ratio when
+displaying images in the epplet window.  Also cleaned up the E-MoonClock code
+and set the buffer size to 1024 so that everyone will hush. =)
