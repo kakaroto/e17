@@ -3789,7 +3789,7 @@ Epplet_find_instance(char *name)
 	      continue;
 	    }
 	}
-      if ((fd = open(s, (O_WRONLY | O_EXCL | O_CREAT))) < 0)
+      if ((fd = open(s, (O_WRONLY | O_EXCL | O_CREAT), 0600)) < 0)
 	{
 	  /* Apparently another process just came in under us and created it.  Next! */
 	  continue;

@@ -86,3 +86,11 @@ Sun Oct 24 13:05:15 PDT 1999
 
 Added Epplet_query_config_data_with_def().  See the header file for syntax.
 For some reason, the compiler didn't like it when I spelled out "default."
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 16:49:48 PDT 1999
+(KainX)
+
+Added a mode for open() since apparently some systems don't default to
+(0666 | umask) like they should. :(
