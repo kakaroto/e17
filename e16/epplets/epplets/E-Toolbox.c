@@ -240,7 +240,7 @@ cancel_cb(void *data)
 static void
 config_cb(void *data)
 {
-  __attribute__((unused)) char buff[128];
+  char buff[128];
   unsigned long h, y, i;
 
   if (config_win) {
