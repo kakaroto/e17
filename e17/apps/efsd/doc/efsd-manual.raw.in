@@ -588,9 +588,10 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	<para>
 	When <classname>EfsdEvent.type</classname> is <constant>EFSD_EVENT_REPLY</constant>,
 	<classname>EfsdEvent.command</classname> contains the command that caused this
-	reply event, <classname>EfsdEvent.status</classname> is the outcome (either <constant>
-	SUCCESS</constant> or <constant>FAILURE</constant>), <classname>EfsdEvent.errorcode</classname>
-	is the value of the <function>errno</function> variable when an error occurred,
+	reply event, <classname>EfsdEvent.errorcode</classname> is the result (a value of 0
+	means the operation was completed successfully, otherwise the field contains the
+	value of the <function>errno</function> variable and can be processed using
+	<function>strerror</function> etc) of the command,
 	<classname>EfsdEvent.data_len</classname> is the length of any received binary data
 	in bytes, and <classname>EfsdEvent.data</classname> is a pointer to the data itself.	
 	</para>
