@@ -314,7 +314,7 @@ void imlib_get_color_modifier_tables(Imlib_Color_Modifier color_modifier,
 				     DATA8 *green_table,
 				     DATA8 *blue_table,
 				     DATA8 *alpha_table);
-void imlib_rset_color_modifier(Imlib_Color_Modifier color_modifier);
+void imlib_reset_color_modifier(Imlib_Color_Modifier color_modifier);
 void imlib_apply_color_modifier(Imlib_Image image, 
 				Imlib_Color_Modifier color_modifier);
 void imlib_apply_color_modifier_to_rectangle(Imlib_Image image, 

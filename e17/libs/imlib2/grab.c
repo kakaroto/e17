@@ -36,13 +36,12 @@ __imlib_GrabDrawableToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
    DATA8               rtab[256], gtab[256], btab[256];
    XColor              cols[256];
 
-   /* FIXME: oh isnt used - i wonder if there's a bug looming... */   
+   /* FIXME: oh isnt used - i wonder if there's a bug looming... */
    oh = 0;
    origx = x;
    origy = y;
    origw = w;
    origh = h;
-   /* FIXME:  hmm - need to co-ordinate this with the app */
    if (grab)
       XGrabServer(d);
    prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
