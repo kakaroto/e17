@@ -66,12 +66,7 @@
     #define VAL_RETURN(x)   col += yyleng; \
                             if (!comment) return (x);
 
-    #define STRING_RETURN() yylval.string = (char *)malloc(yyleng - 1); \
-                            { \
-                                char *c = yytext; \
-                                snprintf(yylval.string, yyleng - 1, "%s", ++c); \
-                            } \
-                            VAL_RETURN(STRING);
+    #define STRING_RETURN() VAL_RETURN(STRING);
 
     #define FLOAT_RETURN()  yylval.val = atof(yytext); \
                             VAL_RETURN(FLOAT);
@@ -179,7 +174,30 @@ VERTICAL			{ KEYWORD_RETURN(VERTICAL); }
 visible				{ KEYWORD_RETURN(VISIBLE); }
 x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
-(\"[^\"]*\")*       { STRING_RETURN(); }
+(\"[^\"]*\")*       {{ 
+                        char *tmp = NULL;
+                        int i = 0;
+
+                        yylval.string = (char *)calloc(yyleng - 1, sizeof(char));
+
+                        for(i = 0; i < yyleng; i++) {
+                            if (yytext[i] == '"') {
+                                if (tmp != NULL) {
+                                    yytext[i] = '\0';
+                                    strcat(yylval.string, tmp);
+                                    tmp = NULL;
+                                }
+                                continue;
+                            }
+
+                            if (tmp == NULL)
+                                tmp = yytext + i;
+                        }
+                        if (tmp != NULL)
+                            strcat(yylval.string, tmp);
+
+                        STRING_RETURN(); 
+                    }}
 {floating_constant} { FLOAT_RETURN(); }
 \+					{ KEYWORD_RETURN(PLUS); }
 \-					{ KEYWORD_RETURN(MINUS); }
