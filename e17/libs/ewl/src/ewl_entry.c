@@ -133,7 +133,6 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_widget_internal_set(e->cursor, TRUE);
 	ewl_object_fill_policy_set(EWL_OBJECT(e->cursor), EWL_FLAG_FILL_SHRINK);
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
-	ewl_widget_show(e->cursor);
 
 	/*
 	 * Attach necessary callback mechanisms 
@@ -373,8 +372,6 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit)
 	if (edit) {
 		ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
 				ewl_entry_key_down_cb, NULL);
-
-		ewl_widget_show(e->cursor);
 	}
 	else {
 		ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN,
@@ -1047,6 +1044,9 @@ void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
+	if (e->cursor && !VISIBLE(e->cursor))
+		ewl_widget_show(e->cursor);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1058,6 +1058,9 @@ void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
+
+	if (e->cursor && VISIBLE(e->cursor))
+		ewl_widget_hide(e->cursor)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
