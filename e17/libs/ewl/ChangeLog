@@ -1,3 +1,6 @@
+Thu Sep  06 16:22:54 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Changed a few function calls to match raster's changes to ebits.
+
 Thu Sep  06 04:36:46 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added
 	    void ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)

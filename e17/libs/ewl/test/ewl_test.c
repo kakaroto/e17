@@ -39,11 +39,12 @@ main(int argc, char ** argv)
 		"The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 		__close_main_widow, NULL);
-	ewl_window_resize(main_win, 297, 82);
-	ewl_window_set_min_size(main_win, 297, 82);
+	ewl_window_resize(main_win, 297, 68);
+	ewl_window_set_min_size(main_win, 307, 68);
 	ewl_widget_show(main_win);
 
 	main_hbox = ewl_hbox_new();
+	ewl_box_set_spacing(main_hbox, 5);
 	ewl_container_append_child(EWL_CONTAINER(main_win), main_hbox);
 	ewl_theme_data_set(main_hbox,
 		"/appearance/box/horizontal/base/visible", "no");
@@ -52,7 +53,6 @@ main(int argc, char ** argv)
 	vbox[0] = ewl_vbox_new();
 	ewl_box_set_spacing(vbox[0], 5);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox[0]);
-	ewl_widget_set_data(vbox[0], "/y_padding", (void *) 5);
 	ewl_theme_data_set(vbox[0],
 		"/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(vbox[0]);
@@ -74,15 +74,13 @@ main(int argc, char ** argv)
         button[2] = ewl_button_new("Ewl_Entry");
 	ewl_object_set_custom_size(button[2], 100, 17);
         ewl_container_append_child(EWL_CONTAINER(vbox[0]), button[2]);
-/*	Need to rewrite this widget, so lets not use this part until then
 	ewl_callback_append(button[2], EWL_CALLBACK_CLICKED,
                                 __create_entry_test_window, NULL);
-*/        ewl_widget_show(button[2]);
+        ewl_widget_show(button[2]);
 
         vbox[1] = ewl_vbox_new();
         ewl_box_set_spacing(vbox[1], 5);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox[1]);
-	ewl_widget_set_data(vbox[1], "/y_padding", (void *) 5);
 	ewl_theme_data_set(vbox[1], 
 		"/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(vbox[1]);
@@ -106,7 +104,6 @@ main(int argc, char ** argv)
         vbox[2] = ewl_vbox_new();
         ewl_box_set_spacing(vbox[2], 5);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox[2]);
-	ewl_widget_set_data(vbox[2], "/y_padding", (void *) 5);
 	ewl_theme_data_set(vbox[2], 
 		"/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(vbox[2]);

@@ -2,57 +2,54 @@
 #include <Ewl.h>
 #include <Etox.h>
 
-static void __ewl_text_init(Ewl_Widget * widget);
-static void __ewl_text_realize(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
-static void __ewl_text_destroy(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-static void __ewl_text_configure(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
+void ewl_text_init(Ewl_Text * t);
+static void __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_text_configure(Ewl_Widget * w, void *ev_data,void *user_data);
+
 #define START_W 2048
 #define START_H 2048
 
 Ewl_Widget *
 ewl_text_new()
 {
-	Ewl_Text *text = NULL;
+	Ewl_Text *t;
 
 	DENTER_FUNCTION;
 
-	text = NEW(Ewl_Text, 1);
+	t = NEW(Ewl_Text, 1);
 
-	__ewl_text_init(EWL_WIDGET(text));
+	memset(t, 0, sizeof(Ewl_Text));
+	ewl_text_init(t);
 
-	DRETURN_PTR(EWL_WIDGET(text));
+	DRETURN_PTR(EWL_WIDGET(t));
 }
 
-static void
-__ewl_text_init(Ewl_Widget * widget)
+void
+ewl_text_init(Ewl_Text * t)
 {
-	Ewl_Text *text = EWL_TEXT(widget);
+	Ewl_Widget * w;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("t", t);
 
-	/*
-	 * Clear and initialize the text structure
-	 */
-	memset(text, 0, sizeof(Ewl_Text));
-	ewl_widget_init(widget, "/appearance/text/default");
+	w = EWL_WIDGET(t);
 
-	text->font = strdup("borzoib");
-	text->font_size = 15;
-	text->text = strdup("");
-	text->color = etox_color_new();
+	ewl_widget_init(w, "/appearance/text/default");
+
+	t->font = strdup("borzoib");
+	t->font_size = 15;
+	t->text = strdup("");
+	t->color = etox_color_new();
 
 	/*
 	 * Set up appropriate callbacks for specific events
 	 */
-	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_text_realize, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_DESTROY, __ewl_text_destroy,
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_text_destroy,
 			NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
 			NULL);
 
 	DLEAVE_FUNCTION;
@@ -174,12 +171,15 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_text_set_text(Ewl_Text * t, char *text)
+ewl_text_set_text(Ewl_Widget * w, char *text)
 {
+	Ewl_Text * t;
 	char * ot;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	ot = t->text;
 
@@ -206,20 +206,28 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 }
 
 char *
-ewl_text_get_text(Ewl_Text * t)
+ewl_text_get_text(Ewl_Widget * w)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	t = EWL_TEXT(w);
 
 	DRETURN_PTR(t->text ? strdup(t->text) : NULL);
 }
 
 void
-ewl_text_set_font(Ewl_Text * t, char *f)
+ewl_text_set_font(Ewl_Widget * w, char *f)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("f", f);
+
+	t = EWL_TEXT(w);
 
 	IF_FREE(t->font);
 
@@ -231,19 +239,27 @@ ewl_text_set_font(Ewl_Text * t, char *f)
 }
 
 char *
-ewl_text_get_font(Ewl_Text * t)
+ewl_text_get_font(Ewl_Widget * w)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	t = EWL_TEXT(w);
 
 	DRETURN_PTR(t->font ? strdup(t->font) : NULL);
 }
 
 void
-ewl_text_set_font_size(Ewl_Text * t, int s)
+ewl_text_set_font_size(Ewl_Widget * w, int s)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	t->font_size = s;
 
@@ -253,19 +269,27 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
 }
 
 int
-ewl_text_get_font_size(Ewl_Text * t)
+ewl_text_get_font_size(Ewl_Widget * w)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("t", t, 0);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+
+	t = EWL_TEXT(w);
 
 	DRETURN_INT(t->font_size);
 }
 
 void
-ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
+ewl_text_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	etox_color_set_member(t->color, "EWL", r, g, b, a);
 
@@ -273,10 +297,14 @@ ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 }
 
 void
-ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
+ewl_text_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	etox_color_get_member(t->color, "EWL", r, g, b, a);
 
@@ -284,10 +312,14 @@ ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
 }
 
 void
-ewl_text_set_style(Ewl_Text * t, char * s)
+ewl_text_set_style(Ewl_Widget * w, char * s)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	if (!s || (s && !strlen(s)))
 		t->style = etox_style_new("Default");
@@ -298,11 +330,15 @@ ewl_text_set_style(Ewl_Text * t, char * s)
 }
 
 void
-ewl_text_get_text_geometry(Ewl_Text * t, double *xx, double *yy,
+ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
 			double *ww, double *hh)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	etox_get_geometry(t->tox, xx, yy, ww, hh);
 
@@ -310,11 +346,15 @@ ewl_text_get_text_geometry(Ewl_Text * t, double *xx, double *yy,
 }
 
 void
-ewl_text_get_letter_geometry(Ewl_Text * t, int i,
+ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
 			     double *xx, double *yy, double *ww, double *hh)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	etox_get_at(t->tox, i, xx, yy, ww, hh);
 
@@ -322,11 +362,15 @@ ewl_text_get_letter_geometry(Ewl_Text * t, int i,
 }
 
 void
-ewl_text_get_letter_geometry_at(Ewl_Text * t, double x, double y,
+ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
 				double *tx, double *ty, double *tw, double *th)
 {
+	Ewl_Text * t;
+
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
 
 	etox_get_at_position(t->tox, x, y, tx, ty, tw, th);
 
@@ -334,14 +378,16 @@ ewl_text_get_letter_geometry_at(Ewl_Text * t, double x, double y,
 }
 
 void
-ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
+ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
 {
+	Ewl_Text * t;
 	Etox_Align_Type h_align, v_align;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("w", w);
 
-	EWL_OBJECT(t)->align = a;
+	t = EWL_TEXT(w);
+	EWL_OBJECT(w)->align = a;
 
 	if (!t->tox)
 		DRETURN;

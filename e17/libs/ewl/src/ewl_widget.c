@@ -244,9 +244,23 @@ ewl_widget_update_appearance(Ewl_Widget *w, char *state)
 	if (!w->ebits_object)
 		DRETURN;
 
-	ebits_set_bit_state(w->ebits_object, "Base", state);
+	ebits_set_named_bit_state(w->ebits_object, "Base", state);
 
 	DRETURN;
+}
+
+void
+ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("p", p);
+
+	w->parent = p;
+
+	ewl_callback_call(w, EWL_CALLBACK_REPARENT);
+
+	DLEAVE_FUNCTION;
 }
 
 /*

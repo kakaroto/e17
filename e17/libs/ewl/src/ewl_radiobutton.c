@@ -135,9 +135,9 @@ __ewl_radiobutton_update_check(Ewl_Widget * w)
 	if (w->ebits_object)
 	  {
 		if (cb->checked)
-			ebits_set_bit_state(w->ebits_object, "Check","clicked");
+			ebits_set_named_bit_state(w->ebits_object, "Check","clicked");
 		else
-			ebits_set_bit_state(w->ebits_object, "Check", "normal");
+			ebits_set_named_bit_state(w->ebits_object, "Check", "normal");
 	  }
 
 	DLEAVE_FUNCTION;
