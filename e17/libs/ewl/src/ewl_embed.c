@@ -533,6 +533,7 @@ ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y, unsigned int mods)
 void
 ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y, int z, int dir, unsigned int mods)
 {
+	Ewl_Widget *w;
 	Ewl_Event_Mouse_Wheel ev;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -542,17 +543,17 @@ ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 	ev.z = z;
 	ev.dir = dir;
 
-	if (!last_focused) {
+	w = last_focused;
+	if (!w) {
 		ewl_callback_call_with_event_data(EWL_WIDGET(embed),
 						  EWL_CALLBACK_MOUSE_WHEEL,
 						  &ev);
 	}
 
-	while (last_focused) {
-		ewl_callback_call_with_event_data(last_focused,
-						  EWL_CALLBACK_MOUSE_WHEEL,
+	while (w) {
+		ewl_callback_call_with_event_data(w, EWL_CALLBACK_MOUSE_WHEEL,
 						  &ev);
-		last_focused = last_focused->parent;
+		w = w->parent;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
