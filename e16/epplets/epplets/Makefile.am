@@ -153,6 +153,7 @@ E-Cpu.ABOUT/bg.png E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/E-Mixer-standard.png \
 E-Mixer.ABOUT/E-Mixer-tall.png E-Mixer.ABOUT/E-Mixer-wide.png \
 E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/shot.png \
 E-Mountbox.ABOUT/shot_unmounted.png E-NetFlame.ABOUT/MAIN  \
+E-OpenGL-Demo.ABOUT/MAIN \
 E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
@@ -219,8 +220,8 @@ E-Magic-data/answers.txt E-Magic-data/8ball.png
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD
+NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo
+NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo
 BG_SRC = E-Cpu.ABOUT/bg.png
 FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
 

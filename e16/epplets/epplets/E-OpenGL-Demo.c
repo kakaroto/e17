@@ -32,7 +32,7 @@
 #include "config.h"
 #include "epplet.h"
 
-Epplet_gadget da, b_close;
+Epplet_gadget da, b_close, b_help;
 Window	win;
 Display *dpy;
 static GLfloat spin = 0.0;
@@ -41,6 +41,7 @@ static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
 static void cb_timer(void *data);
 static void cb_close(void *data);
+static void cb_help(void *data);
 static void raw_rotating_square(void);
 
 #define DEBUG 0
@@ -84,8 +85,8 @@ cb_in(void *data, Window w)
 {
 	if (w == Epplet_get_main_window()) {
 		Epplet_gadget_show(b_close);
+		Epplet_gadget_show(b_help);
 	}
-	return;
 	data = NULL;
 }
 
@@ -94,9 +95,16 @@ cb_out(void *data, Window w)
 {
 	if (w == Epplet_get_main_window()) {
 		Epplet_gadget_hide(b_close);
+		Epplet_gadget_hide(b_help);
 	}
-	return;
 	data = NULL;
+}
+
+static void
+cb_help(void *data)
+{
+	data = NULL;
+	Epplet_show_about("E-OpenGL-Demo");
 }
 
 int
@@ -120,7 +128,8 @@ main(int argc, char **argv)
 
 	b_close = Epplet_create_button(NULL, NULL, 0, 0, 0, 0, "CLOSE", win, NULL,
     cb_close, NULL);
-
+	b_help = Epplet_create_button(NULL, NULL, 14, 0, 0, 0, "HELP", win, NULL,
+		cb_help, NULL);
   Epplet_register_focus_in_handler(cb_in, NULL);
   Epplet_register_focus_out_handler(cb_out, NULL);
 
@@ -139,7 +148,6 @@ main(int argc, char **argv)
 	Epplet_show();
 	draw_rotating_square();
 	
-	/* sleep(20); */
 	Epplet_Loop();
 	return 0;
 }
