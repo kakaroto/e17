@@ -39,7 +39,7 @@ typedef struct _Elogin_Config Elogin_Config;
 
 #define ENTRY_OFFSET 30
 
-#define XINERAMA_HEADS 2
+#define XINERAMA_HEADS 1
 
 #define PERCENT_LOGO_HORIZONTAL_PLACEMENT 0.5
 #define PERCENT_LOGO_VERTICAL_PLACEMENT 0.5

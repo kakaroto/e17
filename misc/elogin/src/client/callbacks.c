@@ -74,12 +74,12 @@ elogin_start_x(E_Login_Auth e)
       fprintf(stderr, "Unable to open PAM session. Aborting.\n");
       exit(1);
    }
-   if ((setgid(e->pam.pw->pw_gid)) < 0)
-      fprintf(stderr, "Unable to set group id\n");
-   if ((setuid(e->pam.pw->pw_uid)) < 0)
-      fprintf(stderr, "Unable to set user id\n");
-   if ((initgroups(e->pam.pw->pw_name, e->pam.pw->pw_gid) < 0))
+   if (initgroups(e->pam.pw->pw_name, e->pam.pw->pw_gid))
       fprintf(stderr, "Unable to initialize group\n");
+   if (setgid(e->pam.pw->pw_gid))
+      fprintf(stderr, "Unable to set group id\n");
+   if (setuid(e->pam.pw->pw_uid))
+      fprintf(stderr, "Unable to set user id\n");
 
    e_login_auth_free(e);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
