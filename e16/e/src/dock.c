@@ -57,7 +57,9 @@ DockIt(EWin * ewin)
 
    AddItem(bt, "DOCK_APP_BUTTON", ewin->client.win, LIST_TYPE_BUTTON);
 
-   ButtonEmbedWindow(bt, ewin->client.win);
+   ButtonEmbedWindow(bt, ewin->win);
+   EMoveResizeWindow(disp, ewin->win, 0, 0, ewin->w, ewin->h);
+   ewin->fixedpos = 1;
    ShowEwin(ewin);
 
    EDBUG_RETURN_;
