@@ -55,11 +55,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 0 0;
+			offset, 0 2;
 			to, "session_list_border";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, 0 0;
+			offset, 0 -2;
 			to, "session_list_border";
 		    }
 		    image

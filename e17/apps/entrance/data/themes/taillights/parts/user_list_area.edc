@@ -56,11 +56,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 10 0;
+			offset, 10 2;
 			to, "user_list_border";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, -10 0;
+			offset, -10 -2;
 			to, "user_list_border";
 		    }
 		    image
@@ -108,7 +108,7 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 3 -160;
+			offset, 3 -300;
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 0.0;
