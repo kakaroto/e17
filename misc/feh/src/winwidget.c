@@ -50,8 +50,7 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget
-winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -80,8 +79,7 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget
-winwidget_create_from_file (char *filename, char *name)
+winwidget winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -98,6 +96,7 @@ winwidget_create_from_file (char *filename, char *name)
 
   if (opt.progressive)
     {
+      D (("Progressive loading enabled\n"));
       progwin = ret;
       imlib_context_set_progress_function (progress);
       imlib_context_set_progress_granularity (10);
@@ -250,9 +249,13 @@ void
 winwidget_destroy (winwidget winwid)
 {
   D (("In winwidget_destroy\n"));
+  if (winwid->win)
+    XDestroyWindow (disp, winwid->win);
   winwidget_unregister (winwid);
-  if (winwid->visible)
-    winwidget_hide (winwid);
+  /*
+     if (winwid->visible)
+     winwidget_hide (winwid);
+   */
   if (winwid->bg_pmap)
     XFreePixmap (disp, winwid->bg_pmap);
   if (winwid->name)
@@ -267,8 +270,6 @@ winwidget_destroy (winwidget winwid)
       imlib_context_set_image (winwid->blank_im);
       imlib_free_image_and_decache ();
     }
-  if(winwid->win)
-	XDestroyWindow (disp, winwid->win);
   free (winwid);
   winwid = NULL;
 }
@@ -353,8 +354,7 @@ winwidget_unregister (winwidget win)
     }
 }
 
-winwidget
-winwidget_get_from_window (Window win)
+winwidget winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;

@@ -1,3 +1,8 @@
+Sun Dec 19 02:58:35 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Fixed a number of bugs introduced by the new progressive loading
+	and zooming code ::)
+
 Sat Dec 18 22:11:02 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Whee. Progressive loading works :) It can be disabled with -P,

@@ -39,8 +39,9 @@ init_multiwindow_mode (void)
 	      NULL)
 	    {
 	      free (s);
-	      winwidget_show (w);
 	      success = 1;
+	      if (!opt.progressive)
+		winwidget_show (w);
 	      break;
 	    }
 	  else
@@ -66,7 +67,10 @@ init_multiwindow_mode (void)
 	  snprintf (s, len, PACKAGE " - %s", files[i]);
 
 	  if ((w = winwidget_create_from_file (files[i], s)) != NULL)
-	    winwidget_show (w);
+	    {
+	      if (!opt.progressive)
+		winwidget_show (w);
+	    }
 	  free (s);
 	}
     }

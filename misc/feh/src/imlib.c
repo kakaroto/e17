@@ -123,7 +123,10 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
     int exists=0;
   D (("In progressive loading callback\n"));
   if (!progwin)
-    return;
+  {
+	fprintf(stderr,"progwin does not exist\n");
+	return;
+  }
 
   imlib_context_set_drawable (progwin->bg_pmap);
   imlib_context_set_anti_alias (0);
@@ -154,7 +157,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
       if(exists)
 	    XResizeWindow(disp,progwin->win,progwin->w, progwin->h);
       XClearWindow (disp, progwin->win);
-      if(exists)
+      if(!exists)
 	    XMapWindow (disp, progwin->win);
       XSync (disp, False);
     }
