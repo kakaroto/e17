@@ -189,7 +189,7 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
 {
    time_t t;
    struct tm *tm;
-   char line[128];
+   char line[255], title_line[255];
    int len;
    char *msg;
    Imlib_Font title_fn, text_fn;
@@ -197,7 +197,9 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
 
    time(&t);
    tm = localtime(&t);
-   strftime(line, 127, grab_text, tm);
+   strftime(line, 254, grab_text, tm);
+   if(title_text)
+   strftime(title_line, 254, title_text, tm);
 
    msg = get_message();
    if (msg)
@@ -216,13 +218,13 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
       if (title_fn)
       {
          imlib_context_set_font(title_fn);
-         imlib_get_text_size(title_text, &w, &h);
+         imlib_get_text_size(title_line, &w, &h);
          x = width - w - 2;
          y = 2;
          imlib_context_set_color(bg_r, bg_g, bg_b, bg_a);
          imlib_image_fill_rectangle(x - 2, y - 1, w + 4, h + 2);
          imlib_context_set_color(title_r, title_g, title_b, title_a);
-         imlib_text_draw(x, y, title_text);
+         imlib_text_draw(x, y, title_line);
       }
    }
 
