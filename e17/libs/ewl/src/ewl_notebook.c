@@ -547,10 +547,10 @@ __ewl_notebook_configure_top(Ewl_Widget * w, void *ev_data, void *user_data)
 	height = CURRENT_H(n) / 2;
 
 	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	ewl_object_get_current_size(EWL_OBJECT(n->tab_box), &width, &height);
+	height = ewl_object_get_current_h(EWL_OBJECT(n->tab_box));
 
-	ewl_object_request_position(EWL_OBJECT(n->tab_box), CURRENT_X(w),
-				    CURRENT_Y(w));
+	ewl_object_place(EWL_OBJECT(n->tab_box), CURRENT_X(w), CURRENT_Y(w),
+			 width, height);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w) + height;
 	height = CURRENT_H(w) - height;
@@ -596,16 +596,14 @@ __ewl_notebook_configure_bottom(Ewl_Widget * w, void *ev_data, void *user_data)
 	height = CURRENT_H(n) / 2;
 
 	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	ewl_object_get_current_size(EWL_OBJECT(n->tab_box), &width, &height);
+	height = ewl_object_get_current_h(EWL_OBJECT(n->tab_box));
 
-	ewl_object_request_position(EWL_OBJECT(n->tab_box), CURRENT_X(w),
-				    CURRENT_Y(w));
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w) + height;
 	height = CURRENT_H(w) - height;
 
-	ewl_object_request_position(EWL_OBJECT(n->tab_box), CURRENT_X(w),
-				    CURRENT_Y(w) + CURRENT_H(w) - height);
+	ewl_object_place(EWL_OBJECT(n->tab_box), CURRENT_X(w),
+			 CURRENT_Y(w) + CURRENT_H(w) - height, width, height);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 	height = CURRENT_H(w) - height;
@@ -629,14 +627,14 @@ __ewl_notebook_configure_left(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	n = EWL_NOTEBOOK(w);
 
-	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	ewl_object_get_current_size(EWL_OBJECT(n->tab_box), &width, &height);
-
 	width = CURRENT_W(n) / 2;
 	height = CURRENT_H(n);
 
-	ewl_object_request_position(EWL_OBJECT(n->tab_box), CURRENT_X(w),
-				    CURRENT_Y(w));
+	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
+	width = ewl_object_get_current_w(EWL_OBJECT(n->tab_box));
+
+	ewl_object_place(EWL_OBJECT(n->tab_box), CURRENT_X(w), CURRENT_Y(w),
+			 width, height);
 	x = CURRENT_X(w) + width;
 	y = CURRENT_Y(w);
 	width = CURRENT_W(w) - width;
@@ -658,15 +656,15 @@ __ewl_notebook_configure_right(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	n = EWL_NOTEBOOK(w);
 
-	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	ewl_object_get_current_size(EWL_OBJECT(n->tab_box), &width, &height);
-
 	width = CURRENT_W(n) / 2;
 	height = CURRENT_H(n);
 
-	ewl_object_request_position(EWL_OBJECT(n->tab_box),
-				    CURRENT_X(w) + CURRENT_W(w) - width,
-				    CURRENT_Y(w));
+	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
+	width = ewl_object_get_current_w(EWL_OBJECT(n->tab_box));
+
+	ewl_object_place(EWL_OBJECT(n->tab_box),
+			 CURRENT_X(w) + CURRENT_W(w) - width, CURRENT_Y(w),
+			 width, height);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 	width = CURRENT_W(w) - width;

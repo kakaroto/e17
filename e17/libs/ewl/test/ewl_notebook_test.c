@@ -33,7 +33,6 @@ __notebook_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!ewl_radiobutton_is_checked(w))
 		return;
 
-	/*
 	if (w == button_aleft)
 		ewl_notebook_set_tabs_alignment(user_data, EWL_FLAG_ALIGN_LEFT);
 	else if (w == button_acenter)
@@ -46,7 +45,6 @@ __notebook_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (w == button_abottom)
 		ewl_notebook_set_tabs_alignment(user_data,
 						EWL_FLAG_ALIGN_BOTTOM);
-						*/
 
 	return;
 	w = NULL;
@@ -120,6 +118,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 
 	button_acenter = ewl_radiobutton_new("Center");
 	ewl_radiobutton_set_chain(button_acenter, button_aleft);
+	ewl_radiobutton_set_checked(button_acenter, 1);
 	ewl_container_append_child(EWL_CONTAINER(avbox), button_acenter);
 	ewl_callback_append(button_acenter, EWL_CALLBACK_VALUE_CHANGED,
 			    __notebook_change_alignment, notebook);
