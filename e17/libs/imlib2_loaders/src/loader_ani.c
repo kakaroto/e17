@@ -230,11 +230,13 @@ ani_load (MsAni *ani)
   MsChunk *last_chunk;
   MsChunk *chunk;
 
-  if (!ani || !ani->chunks)
+  if (!ani)
     return;
 
   ani->chunks = ani_load_chunk(ani);
   last_chunk = ani->chunks;
+  if (!last_chunk)
+    return;
 
   while ( (chunk = ani_load_chunk(ani)) != NULL)
     {
