@@ -723,6 +723,7 @@ struct _ewin
    char                skipwinlist;
    char                focusclick;
    char                neverfocus;
+   char                no_button_grabs;
    char                no_actions;
    void               *data;	/* Data hook for internal windows */
    int                 area_x;

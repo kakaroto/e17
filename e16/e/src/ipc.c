@@ -462,31 +462,41 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 #endif
 
      case EWIN_OP_SHADE:
-	if (SetEwinBoolean("window shaded", &ewin->shaded, param1, 0))
+	if (SetEwinBoolean("shaded", &ewin->shaded, param1, 0))
 	   EwinOpShade(ewin, !ewin->shaded);
 	break;
 
      case EWIN_OP_STICK:
 	on = EoIsSticky(ewin);
-	if (SetEwinBoolean("window sticky", &on, param1, 0))
+	if (SetEwinBoolean("sticky", &on, param1, 0))
 	   EwinOpStick(ewin, !on);
 	break;
 
      case EWIN_OP_FIXED_POS:
-	SetEwinBoolean("window fixedpos", &ewin->fixedpos, param1, 1);
+	SetEwinBoolean("fixedpos", &ewin->fixedpos, param1, 1);
 	break;
 
      case EWIN_OP_NEVER_USE_AREA:
-	SetEwinBoolean("window never_use_area", &ewin->never_use_area, param1,
-		       1);
+	SetEwinBoolean("never_use_area", &ewin->never_use_area, param1, 1);
 	break;
 
      case EWIN_OP_FOCUS_CLICK:
-	SetEwinBoolean("window focusclick", &ewin->focusclick, param1, 1);
+	SetEwinBoolean("focusclick", &ewin->focusclick, param1, 1);
 	break;
 
      case EWIN_OP_FOCUS_NEVER:
-	SetEwinBoolean("window neverfocus", &ewin->neverfocus, param1, 1);
+	SetEwinBoolean("neverfocus", &ewin->neverfocus, param1, 1);
+	break;
+
+     case EWIN_OP_NO_BUTTON_GRABS:
+	if (SetEwinBoolean
+	    ("no_button_grabs", &ewin->no_button_grabs, param1, 1))
+	  {
+	     if (ewin->no_button_grabs)
+		UnGrabButtonGrabs(ewin);
+	     else
+		GrabButtonGrabs(ewin);
+	  }
 	break;
 
      case EWIN_OP_TITLE:
@@ -498,7 +508,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	if (!strcmp(p, "?"))
 	  {
-	     IpcPrintf("window title: %s", ewin->icccm.wm_name);
+	     IpcPrintf("title: %s", ewin->icccm.wm_name);
 	     goto done;
 	  }
 	_EFREE(ewin->icccm.wm_name);
@@ -1361,6 +1371,7 @@ IpcItem             IPCArray[] = {
     "  win_op <windowid> <fixedpos/never_use_area>\n"
     "  win_op <windowid> <focus/focusclick/neverfocus>\n"
     "  win_op <windowid> <fullscreen/iconify/shade/stick>\n"
+    "  win_op <windowid> no_button_grabs\n"
     "  win_op <windowid> <raise/lower>\n"
     "  win_op <windowid> skiplists\n"
     "  win_op <windowid> snap <what>\n"

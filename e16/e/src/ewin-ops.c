@@ -39,6 +39,7 @@ static const WinOp  winops[] = {
    {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
    {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
    {"neverfocus", 0, 1, 1, EWIN_OP_FOCUS_NEVER},
+   {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
    {"title", 2, 1, 1, EWIN_OP_TITLE},
    {"toggle_width", 0, 1, 0, EWIN_OP_MAX_WIDTH},
    {"tw", 2, 1, 0, EWIN_OP_MAX_WIDTH},
