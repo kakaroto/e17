@@ -39,6 +39,14 @@ The "SWITCH_GROUP" signal is special. It will reload the Edje using the
 group "foo" (src argument). This way, you can easily implement
 collapsed/expanded states etc.
 
+ePlayer itself also emits signals:
+
+    action,     SIGNAL_EMIT "PLAYBACK_STARTED" "ePlayer";
+    action,     SIGNAL_EMIT "PLAYBACK_STOPPED" "ePlayer";
+
+The first signal is emitted whenever ePlayer starts playing a track,
+the second signal is emitted when playback is stopped.
+
 The Edje provides the following parts for text display, etc:
 
     Part: "title"            -> Window Title

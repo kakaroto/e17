@@ -44,11 +44,11 @@ EDJE_CB(play) {
 	switch (state) {
 		case PLAYBACK_STATE_STOPPED:
 		case PLAYBACK_STATE_PAUSED: /* continue playback */
-			res = eplayer_playback_start(player, 0);
+			res = eplayer_playback_start(player, false);
 			break;
 		case PLAYBACK_STATE_PLAYING: /* restart from beginning */
 			eplayer_playback_stop(player);
-			res = eplayer_playback_start(player, 1);
+			res = eplayer_playback_start(player, true);
 			break;
 		default:
 			assert(0);
@@ -91,7 +91,7 @@ EDJE_CB(pause) {
 			return;
 			break;
 		case PLAYBACK_STATE_PAUSED:
-			eplayer_playback_start(player, 0);
+			eplayer_playback_start(player, false);
 			state = PLAYBACK_STATE_PLAYING;
 			break;
 		case PLAYBACK_STATE_PLAYING:
@@ -125,8 +125,8 @@ EDJE_CB(track_next) {
 		play = player->cfg.repeat;
 
 	if (play) {
-		eplayer_playback_start(player, 1);
-		state = PLAYBACK_STATE_PLAYING;
+		if (eplayer_playback_start(player, true))
+			state = PLAYBACK_STATE_PLAYING;
 	} else {
 		/* refresh track info parts, but don't start playing yet */
 		track_open(player);
@@ -155,8 +155,8 @@ EDJE_CB(track_prev) {
 	/* Get the previous list item */
 	playlist_current_item_prev(player->playlist);
 
-	eplayer_playback_start(player, 1);
-	state = PLAYBACK_STATE_PLAYING;
+	if (eplayer_playback_start(player, true))
+		state = PLAYBACK_STATE_PLAYING;
 }
 
 EDJE_CB(volume_raise) {
@@ -214,11 +214,9 @@ EDJE_CB(playlist_item_play) {
 	eplayer_playback_stop(player);
 
 	playlist_current_item_set(player->playlist, pli);
-	eplayer_playback_start(player, 1);
-	state = PLAYBACK_STATE_PLAYING;
-
-	/* pass the signal to the main edje */
-	edje_object_signal_emit(player->gui.edje, "PLAYLIST_ITEM_PLAY", "ePlayer");
+	
+	if (eplayer_playback_start(player, true))
+		state = PLAYBACK_STATE_PLAYING;
 }
 
 EDJE_CB(playlist_item_remove) {
@@ -265,8 +263,9 @@ EDJE_CB(seek_forward) {
 	 */
 	eplayer_playback_stop(player);
 	pli->plugin->set_current_pos(pli->plugin->get_current_pos() + 5);
-	eplayer_playback_start(player, 0);
-	state = PLAYBACK_STATE_PLAYING;
+	
+	if (eplayer_playback_start(player, false))
+		state = PLAYBACK_STATE_PLAYING;
 }
 
 EDJE_CB(seek_backward) {
@@ -278,14 +277,11 @@ EDJE_CB(seek_backward) {
 
 	eplayer_playback_stop(player);
 
-	if (cur_time < 6) /* restart from the beginning */
-		eplayer_playback_start(player, 1);
-	else {
+	if (cur_time >= 6)
 		pli->plugin->set_current_pos(cur_time - 5);
-		eplayer_playback_start(player, 0);
-	}
-	
-	state = PLAYBACK_STATE_PLAYING;
+
+	if (eplayer_playback_start(player, cur_time < 6))
+		state = PLAYBACK_STATE_PLAYING;
 }
 
 EDJE_CB(seek_forward_start) {

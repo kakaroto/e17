@@ -4,6 +4,8 @@ $Id$
         * src/eplayer.c, src/interface.c, src/playlist.c,
           src/playlist_item.c: Each PlayListItem object now
           has its own Edje object
+        * data/README, src/eplayer.c: Added two signals,
+          PLAYBACK_STARTED and PLAYBACK_STOPPED
 
 2004-01-24 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/eplayer.c, src/plugin.c: Switched to libltdl

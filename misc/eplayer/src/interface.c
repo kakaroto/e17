@@ -168,7 +168,11 @@ bool ui_init_edje(ePlayer *player, const char *name) {
 
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
 
-	player->gui.edje = edje_object_add(player->gui.evas);
+	if (!(player->gui.edje = edje_object_add(player->gui.evas))) {
+		debug(DEBUG_LEVEL_CRITICAL, "Cannot create Edje!\n");
+		return false;
+	}
+
 	evas_object_name_set(player->gui.edje, "main_edje");
 
 	if (!edje_object_file_set(player->gui.edje,
