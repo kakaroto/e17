@@ -168,11 +168,11 @@ destroy_main_window(Ewl_Widget * main_win, void *ev_data, void *user_data)
 void
 key_press(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-   Ecore_X_Event_Key_Down *ev;
+   Ewl_Event_Key_Down *ev;
 
    ev = ev_data;
 
-   if (ev->key_compose && !strcmp(ev->key_compose, "q"))
+   if (ev->keyname && !strcmp(ev->keyname, "q"))
       equate_quit();
    else
       if ((!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname, "KP_Enter") ||
@@ -181,16 +181,16 @@ key_press(Ewl_Widget * w, void *ev_data, void *user_data)
    else if (!strcmp(ev->keyname, "Escape"))
       calc_clear();
    else
-      do_key(ev->key_compose, EWL_CALLBACK_MOUSE_DOWN);
+      do_key(ev->keyname, EWL_CALLBACK_MOUSE_DOWN);
 }
 
 void
 key_un_press(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-   Ecore_X_Event_Key_Up *ev;
+   Ewl_Event_Key_Up *ev;
 
    ev = ev_data;
-   do_key(ev->key_compose, EWL_CALLBACK_MOUSE_UP);
+   do_key(ev->keyname, EWL_CALLBACK_MOUSE_UP);
 }
 
 int
@@ -409,7 +409,7 @@ draw_ewl(Mode draw_mode)
                           but->callback, but->cmd);
       ewl_container_append_child(EWL_CONTAINER(cell[bc]), button[bc]);
       ewl_box_set_homogeneous(EWL_BOX(button[bc]), TRUE);
-      ewl_object_set_alignment((EWL_BUTTON(button[bc])->label_object),
+      ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
                                EWL_FLAG_ALIGN_CENTER);
       ewl_grid_add(EWL_GRID(table), cell[bc], but->col,
                    but->col + but->height - 1, but->row,
