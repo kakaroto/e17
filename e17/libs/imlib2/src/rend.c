@@ -19,6 +19,10 @@
 
 void
 __imlib_generic_render(DATA32 *src, int jump, int w, int h, int dx, int dy, 
+		       XImage *xim, Visual *v, Context *ct);
+
+void
+__imlib_generic_render(DATA32 *src, int jump, int w, int h, int dx, int dy, 
 		       XImage *xim, Visual *v, Context *ct)
 {
    unsigned int x, y, r, g, b, val, hh;
@@ -132,7 +136,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    int       psx, psy, psw, psh;
    int       actual_depth = 0;
    char      shm = 0;
-   ImlibRGBAFunction rgbaer, masker;
+   ImlibRGBAFunction rgbaer, masker = NULL;
    ImlibBlendFunction blender = NULL;
    int       do_mmx;
 

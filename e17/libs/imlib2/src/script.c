@@ -30,14 +30,14 @@
 IVariable *vars, *current_var, *curtail;
 
 
-int __imlib_find_string( char *haystack, char *needle )
+static int __imlib_find_string( char *haystack, char *needle )
 {
    if(  strstr( haystack, needle ) != NULL )
      return ( strstr( haystack, needle ) - haystack );
    return 0;
 }
 
-char *__imlib_stripwhitespace( char *str )
+static char *__imlib_stripwhitespace( char *str )
 {
    int i, strt = 0, in_quote = 0;
    char *tmpstr = calloc( strlen(str)+1, sizeof(char) );
@@ -53,7 +53,7 @@ char *__imlib_stripwhitespace( char *str )
    return str;
 }
 
-char *__imlib_copystr( char *str, int start, int end )
+static char *__imlib_copystr( char *str, int start, int end )
 {
    int i = 0;
    char *rstr = calloc( 1024, sizeof( char ) );
@@ -66,7 +66,7 @@ char *__imlib_copystr( char *str, int start, int end )
    return NULL;
 }
 
-void __imlib_script_tidyup_params( IFunctionParam *param )
+static void __imlib_script_tidyup_params( IFunctionParam *param )
 {
    if( param->next ){
       __imlib_script_tidyup_params( param->next );
@@ -77,10 +77,40 @@ void __imlib_script_tidyup_params( IFunctionParam *param )
    free( param );
 }
 
+static void __imlib_script_delete_variable( IVariable *var )
+{
+   if( var->next != NULL )
+     __imlib_script_delete_variable( var->next );
+   free( var );
+}
+
+void __imlib_script_tidyup(void)
+{
+   __imlib_script_delete_variable( vars );
+}
+
+void *__imlib_script_get_next_var(void)
+{
+   if( current_var != NULL )
+     current_var = current_var->next;
+   if( current_var != NULL )
+     return current_var->ptr;
+   else
+     return NULL;
+}
+
+void __imlib_script_add_var( void *ptr )
+{
+   curtail->next = malloc( sizeof( IVariable ) );
+   curtail = curtail->next;
+   curtail->ptr = ptr;
+   curtail->next = NULL;
+}
+
 IFunctionParam *__imlib_script_parse_parameters( Imlib_Image im, char *parameters )
 {
    int i = 0, in_quote = 0, depth=0, start=0, value_start=0;
-   char *key = NULL, *value = NULL;
+   char *value = NULL;
    IFunctionParam *rootptr, *ptr;
    
    D( "(--) ===> Entering __imlib_script_parse_parameters()" );
@@ -181,9 +211,7 @@ Imlib_Image __imlib_script_parse_function( Imlib_Image im, char *function )
 Imlib_Image __imlib_script_parse( Imlib_Image im, char *script, va_list param_list )
 {
    int i = 0, in_quote = 0, start = 0, depth = 0;
-   char *scriptbuf = NULL, *function, *paramstr;
-   IFunction *func = NULL;
-   IFunctionParam *params = NULL;
+   char *scriptbuf = NULL, *function;
    
    D( "(--) Script Parser Start." );
    if( script != NULL && strlen(script) > 0 )
@@ -237,32 +265,3 @@ Imlib_Image __imlib_script_parse( Imlib_Image im, char *script, va_list param_li
    }
 }
 
-void __imlib_script_delete_variable( IVariable *var )
-{
-   if( var->next != NULL )
-     __imlib_script_delete_variable( var->next );
-   free( var );
-}
-
-void __imlib_script_tidyup()
-{
-   __imlib_script_delete_variable( vars );
-}
-
-void *__imlib_script_get_next_var()
-{
-   if( current_var != NULL )
-     current_var = current_var->next;
-   if( current_var != NULL )
-     return current_var->ptr;
-   else
-     return NULL;
-}
-
-void __imlib_script_add_var( void *ptr )
-{
-   curtail->next = malloc( sizeof( IVariable ) );
-   curtail = curtail->next;
-   curtail->ptr = ptr;
-   curtail->next = NULL;
-}

@@ -12,7 +12,7 @@
 #include "dynamic_filters.h"
 
 void  init( struct imlib_filter_info *info );
-void  deinit();
+void  deinit(void);
 void  *exec( char *filter, void *im, pIFunctionParam params );
 
 void init( struct imlib_filter_info *info )
@@ -30,7 +30,7 @@ void init( struct imlib_filter_info *info )
 
 }
 
-void deinit()
+void deinit(void)
 {
    return;
 }

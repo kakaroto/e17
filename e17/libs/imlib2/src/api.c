@@ -1741,7 +1741,6 @@ int
 imlib_get_text_inset(const char *text)
 {
    ImlibFont *fn;
-   int w, h;
 
    CHECK_PARAM_POINTER_RETURN("imlib_get_text_advance", "font", ctxt_font, 0);
    CHECK_PARAM_POINTER_RETURN("imlib_get_text_advance", "text", text, 0);

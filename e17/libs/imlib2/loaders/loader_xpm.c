@@ -102,7 +102,6 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
    int                 pc, c, i, j, k, w, h, ncolors, cpp, comment, transp, quote,
    context, len, done, r, g, b;
    char                *line, s[256], tok[128], col[256];
-   XColor              xcol;
    int                 lsz = 256;
    struct _cmap
      {
@@ -112,7 +111,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
      } *cmap;
    
    short               lookup[128 - 32][128 - 32];
-   float               per = 0.0, per_inc;
+   float               per = 0.0, per_inc = 0.0;
    int                 last_per = 0, last_y = 0;
    
    done = 0;

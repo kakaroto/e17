@@ -31,7 +31,6 @@ pImlibExternalFilter __imlib_LoadFilter( char *file )
 {
    ImlibExternalFilter *ptr;
    struct imlib_filter_info *info;
-   int i = 0;
 
    printf( "Loading filter %s\n", file );
    MALLOCSHOW;
@@ -78,7 +77,7 @@ pImlibExternalFilter __imlib_LoadFilter( char *file )
    return ptr;
 }
 
-void __imlib_dynamic_filters_init()
+static void __imlib_dynamic_filters_init()
 {
    char **list;
    int num_filters, i = 0;
@@ -118,7 +117,7 @@ void __imlib_dynamic_filters_init()
    }
 }
 
-void __imlib_dynamic_filters_deinit()
+static void __imlib_dynamic_filters_deinit()
 {
 }
 

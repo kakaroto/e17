@@ -137,7 +137,7 @@ __imlib_CalcXPoints(int sw, int dw, int b1, int b2)
 static int *
 __imlib_CalcApoints(int s, int d, int b1, int b2, int up)
 {
-   int *p, i, v, j = 0, rv = 0;
+   int *p, i, j = 0, rv = 0;
 
    if (d < 0) {
       rv = 1;
@@ -303,7 +303,7 @@ __imlib_ScaleAARGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 		    int dx, int dy, int dw, int dh, int dow, int sow)
 {
    DATA32 *sptr, *dptr;
-   int x, y, i, j, end;
+   int x, y, end;
    DATA32 **ypoints = isi->ypoints;
    int *xpoints = isi->xpoints;
    int *xapoints = isi->xapoints;
@@ -380,7 +380,6 @@ __imlib_ScaleAARGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r, g, b, a;
-		       int rr, gg, bb, aa;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)
@@ -948,7 +947,7 @@ __imlib_ScaleAARGB(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 		   int dx, int dy, int dw, int dh, int dow, int sow)
 {
    DATA32 *sptr, *dptr;
-   int x, y, i, j, end;
+   int x, y, end;
    DATA32 **ypoints = isi->ypoints;
    int *xpoints = isi->xpoints;
    int *xapoints = isi->xapoints;
@@ -1017,7 +1016,6 @@ __imlib_ScaleAARGB(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
 		  for (x = dxx; x < end; x++)
 		    {
 		       int r = 0, g = 0, b = 0;
-		       int rr = 0, gg = 0, bb = 0;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)

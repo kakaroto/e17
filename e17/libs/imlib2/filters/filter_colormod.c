@@ -63,7 +63,7 @@ colormod(Imlib_Image im, pIFunctionParam par)
 	DATA8 a_b[256], r_b[256], g_b[256], b_b[256];
         pIFunctionParam ptr;
 	int x = 0, y = 0, h, w, i;
-	double v;
+	double v=0.0;
 
 	imlib_context_set_image(im);
 	w = imlib_image_get_width();
@@ -168,7 +168,7 @@ colormod(Imlib_Image im, pIFunctionParam par)
 	return im;
 }
 
-void
+static void
 init(struct imlib_filter_info *info)
 {
    char *filters[] = { "colormod" };
@@ -184,13 +184,13 @@ init(struct imlib_filter_info *info)
    
 }
 
-void
+static void
 deinit()
 {
 	return;
 }
 
-void *
+static void *
 exec(char *filter, void *im, pIFunctionParam par)
 {
 	if (!strcmp(filter, "colormod"))

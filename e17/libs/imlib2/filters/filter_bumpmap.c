@@ -227,7 +227,7 @@ bump_map_point(Imlib_Image im, pIFunctionParam par)
 	return im;
 }
 
-void
+static void
 init(struct imlib_filter_info *info)
 {
    char *filters[] = { "bump_map_point", "bump_map" };
@@ -243,13 +243,13 @@ init(struct imlib_filter_info *info)
    
 }
 
-void
+static void
 deinit()
 {
 	return;
 }
 
-void *
+static void *
 exec(char *filter, void *im, pIFunctionParam par)
 {
 	if (!strcmp(filter, "bump_map"))

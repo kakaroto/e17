@@ -168,7 +168,6 @@ void
 __imlib_FilterImage(ImlibImage *im, ImlibFilter *fil)
 {
    int x, y, a, r, g, b, ad, rd, gd, bd;
-   ImlibFilterPixel *pix;
    DATA32 *data, *p1, *p2;
 
    data = malloc(im->w * im->h * sizeof(DATA32));

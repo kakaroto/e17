@@ -35,7 +35,7 @@ RGBQUAD;
 #define BI_RLE4      2
 #define BI_BITFIELDS 3
 
-int ReadleShort(FILE *file, unsigned short *ret)
+static int ReadleShort(FILE *file, unsigned short *ret)
 {
    unsigned char b[2];
    
@@ -46,7 +46,7 @@ int ReadleShort(FILE *file, unsigned short *ret)
    return 1;
 }
 
-int ReadleLong(FILE *file, unsigned long *ret)
+static int ReadleLong(FILE *file, unsigned long *ret)
 {
    unsigned char b[4];
    
@@ -63,7 +63,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 {
    FILE *f;
    char pper = 0;
-   int pl = 0, alpha = 0;
+   int pl = 0;
    char type[2];
    unsigned long size, offset, headSize, comp, imgsize, j, k, l;
    unsigned short tmpShort, planes, bitcount, ncols, skip;

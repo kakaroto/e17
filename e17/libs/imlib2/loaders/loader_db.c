@@ -231,9 +231,9 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    int                 alpha = 0;
    char                 file[4096], key[4096], *cp;
    DATA32              *header;
-   DATA32              *buf, *buf2;
+   DATA32              *buf;
    E_DB_File           *db;
-   int                  compression = 0, size;
+   int                  compression = 0, size = 0;
    DATA32              *ret;
    
    
@@ -330,7 +330,6 @@ save (ImlibImage *im, ImlibProgressFunction progress,
      }
    if (compression == 0)
      {
-	int y;
 	memcpy(&(buf[8]), im->data, im->w * im->h * sizeof(DATA32));
 	header[4] = compression;
 #ifdef WORDS_BIGENDIAN
