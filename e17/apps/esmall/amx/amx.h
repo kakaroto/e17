@@ -17,9 +17,6 @@ extern "C" {
 #define AMX_NATIVE_CALL
 #endif	/*  */
 /* calling convention for all interface functions and callback functions */ 
-#if !defined AMXAPI
-#define AMXAPI
-#endif	/*  */
 	
 #define AMX_VERSION     1       /* current file format version */
 	
@@ -35,10 +32,10 @@ extern "C" {
 	
 	typedef cell(AMX_NATIVE_CALL * AMX_NATIVE) (struct __amx * amx, cell * params);
 	
-	typedef int (AMXAPI * AMX_CALLBACK) (struct __amx * amx, cell index, 
+	typedef int (* AMX_CALLBACK) (struct __amx * amx, cell index, 
 										 cell * result, cell * params);
 	
-	typedef int (AMXAPI * AMX_DEBUG) (struct __amx * amx);
+	typedef int (* AMX_DEBUG) (struct __amx * amx);
 	
 	
 #if defined _MSC_VER
@@ -205,51 +202,51 @@ extern "C" {
 	
 #define AMX_USERTAG(a,b,c,d)    ((a) | ((b)<<8) | ((long)(c)<<16) | ((long)(d)<<24))
 	
-	int AMXAPI amx_Allot(AMX * amx, int cells, cell * amx_addr, cell ** native_addr);
+	int amx_Allot(AMX * amx, int cells, cell * amx_addr, cell ** native_addr);
 	
-	int AMXAPI amx_Callback(AMX * amx, cell index, cell * result, cell * params);
+	int amx_Callback(AMX * amx, cell index, cell * result, cell * params);
 	
-	int AMXAPI amx_Debug(AMX * amx);	/* default debug procedure, does nothing */
+	int amx_Debug(AMX * amx);	/* default debug procedure, does nothing */
 	
-	int AMXAPI amx_Exec(AMX * amx, cell * retval, int index, int numparams,...);
+	int amx_Exec(AMX * amx, cell * retval, int index, int numparams,...);
 	
-	int AMXAPI amx_FindPublic(AMX * amx, char *name, int *index);
+	int amx_FindPublic(AMX * amx, char *name, int *index);
 	
-	int AMXAPI amx_Flags(AMX * amx, unsigned short *flags);
+	int amx_Flags(AMX * amx, unsigned short *flags);
 	
-	int AMXAPI amx_GetAddr(AMX * amx, cell v, cell ** addr);
+	int amx_GetAddr(AMX * amx, cell v, cell ** addr);
 	
-	int AMXAPI amx_GetPublic(AMX * amx, int index, char *funcname);
+	int amx_GetPublic(AMX * amx, int index, char *funcname);
 	
-	int AMXAPI amx_GetString(char *dest, cell * source);
+	int amx_GetString(char *dest, cell * source);
 	
-	int AMXAPI amx_GetUserData(AMX * amx, long tag, void **ptr);
+	int amx_GetUserData(AMX * amx, long tag, void **ptr);
 	
-	int AMXAPI amx_Init(AMX * amx, void *program);
+	int amx_Init(AMX * amx, void *program);
 	
-	int AMXAPI amx_InitJIT(AMX * amx, void *reloc_table, void *native_code);
+	int amx_InitJIT(AMX * amx, void *reloc_table, void *native_code);
 	
-	int AMXAPI amx_NameLength(AMX * amx, int *length);
+	int amx_NameLength(AMX * amx, int *length);
 	
-	 AMX_NATIVE_INFO * AMXAPI amx_NativeInfo(char *name, AMX_NATIVE func);
+	 AMX_NATIVE_INFO * amx_NativeInfo(char *name, AMX_NATIVE func);
 	
-	int AMXAPI amx_NumPublics(AMX * amx, int *number);
+	int amx_NumPublics(AMX * amx, int *number);
 	
-	int AMXAPI amx_RaiseError(AMX * amx, int error);
+	int amx_RaiseError(AMX * amx, int error);
 	
-	int AMXAPI amx_Register(AMX * amx, AMX_NATIVE_INFO * list, int number);
+	int amx_Register(AMX * amx, AMX_NATIVE_INFO * list, int number);
 	
-	int AMXAPI amx_Release(AMX * amx, cell amx_addr);
+	int  amx_Release(AMX * amx, cell amx_addr);
 	
-	int AMXAPI amx_SetCallback(AMX * amx, AMX_CALLBACK callback);
+	int  amx_SetCallback(AMX * amx, AMX_CALLBACK callback);
 	
-	int AMXAPI amx_SetDebugHook(AMX * amx, AMX_DEBUG debug);
+	int  amx_SetDebugHook(AMX * amx, AMX_DEBUG debug);
 	
-	int AMXAPI amx_SetString(cell * dest, char *source, int pack);
+	int  amx_SetString(cell * dest, char *source, int pack);
 	
-	int AMXAPI amx_SetUserData(AMX * amx, long tag, void *ptr);
+	int  amx_SetUserData(AMX * amx, long tag, void *ptr);
 	
-	int AMXAPI amx_StrLen(cell * cstring, int *length);
+	int  amx_StrLen(cell * cstring, int *length);
 	
 	
 #ifdef  __cplusplus
