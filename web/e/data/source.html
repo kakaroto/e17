@@ -5,9 +5,23 @@
 <p>All of Enlightenments developement occurs directly in CVS.  You can
 pull the code directly from CVS using the following CVS commands: </p>
 
-<p><b>cvs -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment login </b></p>
+<p>
+<pre>
+cvs -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment login
+cvs -z3 -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment co <i>modulename</i>
+</pre>
+</p>
 
-<p><b>cvs -z3 -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment co </b><i>modulename</i></p>
+<p>Use the following as module names:</p>
+
+<table class="content" border="0" cellpadding="2" cellspacing="2" width="60%">
+<tr><td class="newstitle">Module name</td><td class="newstitle">Content</td></tr>
+<tr valign="top"><td>e17</td><td>E 17's <a href="components.html">components</a></td></tr>
+<tr valign="top" class="team-dark"><td>e16</td><td>E 16's sources</td></tr>
+<tr valign="top"><td>eterm</td><td>Eterm's sources</td></tr>
+<tr valign="top" class="team-dark"><td>misc</td><td>Miscellaneous tools</td></tr>
+<tr valign="top"><td>web</td><td>The website</td></tr>
+</table>
 
 <p>Our CVS server is hosted by <a href="http://www.sourceforge.com">SourceForge</a>.  You can get more info
 about using CVS in their <a href="http://sourceforge.net/docman/display_doc.php?docid=763&amp;group_id=1">CVS HOWTO</a>, 
