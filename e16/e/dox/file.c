@@ -22,7 +22,7 @@
  *  */
 
 #include "dox.h"
-#ifdef HAVE_WCTYPE_H
+#ifdef USE_WORD_MB
 # include <wctype.h>
 #endif
 
@@ -113,7 +113,7 @@ word(char *s, int num, char *wd)
    return;
 }
 
-#ifdef HAVE_WCTYPE_H
+#ifdef USE_WORD_MB
 void
 word_mb(char *s, int num, char *wd, int *spaceflag)
 {

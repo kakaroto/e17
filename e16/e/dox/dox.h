@@ -181,6 +181,10 @@ extern Drawable     vIcDrw;
 #define ENCOING_ISO_8859_3 2
 #define ENCOING_ISO_8859_4 3
 
+#if defined(HAVE_WCTYPE_H) && defined(HAVE_WCHAR_T)
+#define USE_WORD_MB
+#endif
+
 typedef struct _efont Efont;
 
 typedef struct _root
@@ -298,7 +302,10 @@ void                TextDraw(TextState * ts, Window win, char *text,
 
 void                freestrlist(char **l, int num);
 void                word(char *s, int num, char *wd);
+
+#ifdef USE_WORD_MB
 void                word_mb(char *s, int num, char *wd, int *spaceflag);
+#endif
 int                 findLocalizedFile(char *fname);
 
 void                AddPage(Object * obj);
