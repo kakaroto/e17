@@ -188,6 +188,8 @@ ActionMoveEnd(EWin * ewin)
 	XUngrabPointer(disp, CurrentTime);
      }
 
+   EwinUpdateAfterMoveResize(ewin, 0);
+
    EDBUG_RETURN(0);
 }
 
@@ -357,6 +359,9 @@ ActionResizeEnd(EWin * ewin)
    mode.firstlast = 0;
    ForceUpdatePagersForDesktop(desks.current);
    RememberImportantInfoForEwin(ewin);
+
+   EwinUpdateAfterMoveResize(ewin, 1);
+
    EDBUG_RETURN(0);
 }
 

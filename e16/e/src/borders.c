@@ -1639,6 +1639,25 @@ EwinSetBorderByName(EWin * ewin, const char *name, int apply)
 }
 
 void
+EwinUpdateAfterMoveResize(EWin * ewin, int resize)
+{
+   printf("EwinUpdateAfterMoveResize: %4d\n", resize);
+   if (ewin->dialog)
+      DialogMove(ewin->dialog);
+   else if (ewin->menu)
+      MenuMove(ewin->menu);
+   else if (resize && ewin->pager)
+      PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
+   else if (resize && ewin->ibox)
+      IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
+
+   PagerEwinOutsideAreaUpdate(ewin);
+   ForceUpdatePagersForDesktop(ewin->desktop);
+}
+
+#if 0
+
+void
 ResizeEwin(EWin * ewin, int w, int h)
 {
    char                resize = 0;
@@ -1822,6 +1841,115 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
    call_depth--;
    EDBUG_RETURN_;
 }
+
+#else
+
+#define MR_FLAGS_MOVE   1
+#define MR_FLAGS_RESIZE 2
+
+static void
+doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
+{
+   static int          call_depth = 0;
+   int                 dx = 0, dy = 0;
+   char                move = 0, resize = 0;
+
+   EDBUG(3, "MoveResizeEwin");
+   if (call_depth > 256)
+      EDBUG_RETURN_;
+   call_depth++;
+
+   printf("doMoveResizeEwin: %4d %4d %d %4d %4d %s\n", x, y, w, h, flags,
+	  ewin->client.name);
+   if (flags & MR_FLAGS_MOVE)
+     {
+	dx = x - ewin->x;
+	dy = y - ewin->y;
+	if ((dx != 0) || (dy != 0))
+	   move = 1;
+	ewin->x = x;
+	ewin->y = y;
+	ewin->reqx = x;
+	ewin->reqy = y;
+     }
+
+   if (flags & MR_FLAGS_RESIZE)
+     {
+	if ((w != ewin->client.w) || (h != ewin->client.h))
+	   resize = 2;
+	ewin->client.w = w;
+	ewin->client.h = h;
+	ICCCM_MatchSize(ewin);
+
+	if (!ewin->shaded)
+	  {
+	     ewin->w = ewin->client.w + ewin->border->border.left +
+		ewin->border->border.right;
+	     ewin->h = ewin->client.h + ewin->border->border.top +
+		ewin->border->border.bottom;
+	  }
+     }
+
+   EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+
+   if (move)
+      DetermineEwinArea(ewin);
+
+   if ((mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
+       || (mode.have_place_grab))
+      ICCCM_Configure(ewin);
+
+   CalcEwinSizes(ewin);
+
+   if (move && ewin->has_transients)
+     {
+	EWin              **lst;
+	int                 i, num;
+
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (!((mode.flipp) && (lst[i]->floating))
+		      && (lst[i]->client.mwm_decor_border
+			  || lst[i]->client.mwm_decor_resizeh
+			  || lst[i]->client.mwm_decor_title
+			  || lst[i]->client.mwm_decor_menu
+			  || lst[i]->client.mwm_decor_minimize
+			  || lst[i]->client.mwm_decor_maximize))
+		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
+	       }
+	     Efree(lst);
+	  }
+     }
+
+   if ((mode.mode == MODE_NONE) /* && (move || resize) */ )
+      EwinUpdateAfterMoveResize(ewin, resize);
+
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+MoveEwin(EWin * ewin, int x, int y)
+{
+   doMoveResizeEwin(ewin, x, y, 0, 0, MR_FLAGS_MOVE);
+}
+
+void
+ResizeEwin(EWin * ewin, int w, int h)
+{
+   doMoveResizeEwin(ewin, 0, 0, w, h, MR_FLAGS_RESIZE);
+}
+
+void
+MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
+{
+   doMoveResizeEwin(ewin, x, y, w, h, MR_FLAGS_MOVE | MR_FLAGS_RESIZE);
+}
+
+#endif
 
 #if 0				/* Unused */
 void

@@ -1704,6 +1704,7 @@ void                deleteHint(Window win, Atom atom);
 
 /* borders.c */
 void                KillEwin(EWin * ewin, int nogroup);
+void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                MoveEwin(EWin * ewin, int x, int y);
 void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
