@@ -18,7 +18,10 @@ FixUpBadFocus(int val, void *data)
    if (ewin)
      {
 	if (win != ewin->client.win)
-	   XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
+	  {
+	     ICCCM_Focus(ewin);
+	     FocusToEWin(ewin);
+	  }
 	if (mode.kde_support)
 	   KDE_UpdateFocusedWindow();
      }

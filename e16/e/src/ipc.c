@@ -1486,28 +1486,20 @@ IPC_ImageClass(char *params, Client * c)
 		       word(params, 4, state);
 		       win = (Window) strtol(winptr, (char **)NULL, 0);
 		       if (!strcmp(state, "hilited"))
-			 {
-			    st = STATE_HILITED;
-			 }
+			  st = STATE_HILITED;
 		       else if (!strcmp(state, "clicked"))
-			 {
-			    st = STATE_CLICKED;
-			 }
+			  st = STATE_CLICKED;
 		       else if (!strcmp(state, "disabled"))
-			 {
-			    st = STATE_DISABLED;
-			 }
+			  st = STATE_DISABLED;
 		       else
-			 {
-			    st = STATE_NORMAL;
-			 }
+			  st = STATE_NORMAL;
 		       if ((hptr = atword(params, 6)))
 			 {
 			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
-		       Esnprintf(buf, sizeof(buf), "imageclass apply done.\n");
+		       Esnprintf(buf, sizeof(buf), "done.");
 		    }
 	       }
 	     else if (!strcmp(param2, "apply_copy"))
@@ -1526,25 +1518,15 @@ IPC_ImageClass(char *params, Client * c)
 		       word(params, 4, state);
 		       win = (Window) strtol(winptr, (char **)NULL, 0);
 		       if (!strcmp(state, "hilited"))
-			 {
-			    st = STATE_HILITED;
-			 }
+			  st = STATE_HILITED;
 		       else if (!strcmp(state, "clicked"))
-			 {
-			    st = STATE_CLICKED;
-			 }
+			  st = STATE_CLICKED;
 		       else if (!strcmp(state, "disabled"))
-			 {
-			    st = STATE_DISABLED;
-			 }
+			  st = STATE_DISABLED;
 		       else
-			 {
-			    st = STATE_NORMAL;
-			 }
+			  st = STATE_NORMAL;
 		       if (!(hptr = atword(params, 6)))
-			 {
-			    Esnprintf(buf, sizeof(buf), "Error:  missing width and/or height\n");
-			 }
+			  Esnprintf(buf, sizeof(buf), "Error:  missing width and/or height");
 		       else
 			 {
 			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
@@ -1561,7 +1543,7 @@ IPC_ImageClass(char *params, Client * c)
 		  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					      LIST_TYPE_ICLASS);
 		  if (i)
-		     Esnprintf(buf, sizeof(buf), "%u references remain.\n",
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
 			       i->ref_count);
 	       }
 	     else if (!strcmp(param2, "query"))
@@ -1571,26 +1553,26 @@ IPC_ImageClass(char *params, Client * c)
 		  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					      LIST_TYPE_ICLASS);
 		  if (i)
-		     Esnprintf(buf, sizeof(buf), "ImageClass %s found.\n",
+		     Esnprintf(buf, sizeof(buf), "ImageClass %s found",
 			       i->name);
 		  else
-		     Esnprintf(buf, sizeof(buf), "ImageClass %s not found.\n",
+		     Esnprintf(buf, sizeof(buf), "ImageClass %s not found",
 			       param1);
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown operation specified\n");
+			    "Error: unknown operation specified");
 	       }
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no class specified\n");
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])

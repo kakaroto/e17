@@ -90,65 +90,6 @@ NukeBoringevents(XEvent * ev, int num)
    if ((last >= 0) && (!throw_move_events_away))
       ok[last] = 1;
    throw_move_events_away = 0;
-   /* look for paired enter / leave events for windows that contain no click */
-   /* events for those windows whilst mouse is in them */
-   for (i = 0; i < num; i++)
-     {
-	if (ev[i].type == EnterNotify)
-	  {
-	     Window              win;
-	     char                is_ok;
-
-	     first = -1;
-	     last = -1;
-	     win = ev[i].xany.window;
-	     /* if its a normal window we created - not an event window */
-	     if (FindXID(win))
-	       {
-		  first = i;
-		  for (j = i + 1; j < num; j++)
-		    {
-		       if ((ev[j].xany.window == win) &&
-			   ((ev[j].type == LeaveNotify) ||
-			    (ev[j].type == UnmapNotify) ||
-			    (ev[j].type == DestroyNotify)))
-			 {
-			    last = j;
-			    break;
-			 }
-		    }
-		  if ((first >= 0) && (last > first))
-		    {
-		       is_ok = 0;
-		       for (j = first + 1; j <= last; j++)
-			 {
-			    if (ev[j].xany.window == win)
-			      {
-				 if ((ev[j].type == ButtonPress) ||
-				     (ev[j].type == ButtonRelease))
-				   {
-				      is_ok = 1;
-				      break;
-				   }
-			      }
-			 }
-		       if (!is_ok)
-			 {
-			    for (j = first; j <= last; j++)
-			      {
-				 if (ev[j].xany.window == win)
-				   {
-				      if ((ev[j].type == EnterNotify) ||
-					  (ev[j].type == LeaveNotify) ||
-					  (ev[j].type == MotionNotify))
-					 ok[j] = 0;
-				   }
-			      }
-			 }
-		    }
-	       }
-	  }
-     }
    /* compress all shapenotify events for a window and onyl take the last one */
    /* as beign valid */
    for (i = 0; i < num; i++)
@@ -308,6 +249,10 @@ HandleEvent(XEvent * ev)
        (ev->type == ButtonPress) || (ev->type == ButtonRelease) ||
        (ev->type == EnterNotify) || (ev->type == LeaveNotify))
      {
+	if (ev->type == EnterNotify)
+	   fprintf(stderr, "enter %x\n", ev->xcrossing.window);
+	if (ev->type == LeaveNotify)
+	   fprintf(stderr, "leave %x\n", ev->xcrossing.window);
 	if (((ev->type == KeyPress) || (ev->type == KeyRelease)) &&
 	    (ev->xkey.root != root.win))
 	  {
