@@ -104,8 +104,39 @@ library is a big time saver and core infrastructure library that can be used
 to do all the basic things applications need to do, with minimal code and
 effort.
 </p><p>
+The best way to describe ecore is as the cement between the bricks. It holds
+things together very nicely. In the later examples a lot of the setup and
+infrastructure are thanks to ecore.
+</p><p>
 <img src=img/sys_edje.png width=318 height=100>
 </p><p>
+Edje is one of the more unique parts of EFL, combining many things that
+<a href=http://www.macromedia.com>Shockwave/FLASH</a> can do with some things
+it can't, but instead of being designed as a player, it is designed as a
+slave library to be used by an application to enhance the applications
+content and display via external compressed data files. It is being expanded
+continuously, and thanks to its simple design is easy to improve. This is the
+theme engine behind Enlightenment 0.17 and beyond and at last formalises
+Enlightenment themes in a simple and consistent manner.
+</p><p>
+A Quick list of its features:
+<ul>
+<li>Scaleable bitmap images</li>
+<li>Highly compressed inlined images</li>
+<li>Lossless and lossy compression with or without alpha channel</li>
+<li>Inlined compressed truetype fonts</li>
+<li>Multiple inbuilt font effects</li>
+<li>Automatic font sizing based on size or area</li>
+<li>Text compression and ellipsis based cutting</li>
+<li>Rectangle objects</li>
+<li>Configurable color scheme system</li>
+<li>Ability to embed Edje objects within Edje objects</li>
+<li>Embryo scripting language for complex interactions</li>
+<li>Sandboxed scripts so they cannot do much damage</li>
+<li>Alpha blending</li>
+<li>Completely scalable and resizable layout and interface metrics</li>
+<li>Completely calculated tweened animation for ultra-smooth display</li>
+</ul>
 </p><p>
 <img src=img/sys_embryo.png width=318 height=100>
 </p><p>
