@@ -567,7 +567,9 @@ ctree_to_emenu_item_gnode(GtkCTree *tree, guint depth, GNode *node,
 							GtkCTreeNode *cnode, gpointer data)
 {
 	emenu_item *e = NULL;
-	char *fields[4];
+	char *fields[4] = 	{
+		"", "", "", ""
+	};
 
 	e = emenu_item_new();
 	gtk_ctree_node_get_text(GTK_CTREE(tree), GTK_CTREE_NODE(cnode), 1,
@@ -584,7 +586,7 @@ ctree_to_emenu_item_gnode(GtkCTree *tree, guint depth, GNode *node,
 	e->exec = strdup(fields[2]);
 
 	if(!strcmp(fields[3], ""))	{
-	
+		/* shouldn't ever happen =) */
 	} else if(!strcmp(fields[3], "Separator"))	{
 		e->type = E_MENU_SEPARATOR;
 		IF_FREE(e->text);
@@ -600,6 +602,7 @@ ctree_to_emenu_item_gnode(GtkCTree *tree, guint depth, GNode *node,
 			IF_FREE(e->exec);
 			e->exec = strdup("");
 			/* make sure this won't get written ever */
+			/* now we have a nice spacer in the menu */
 		}
 		else if(e->exec[0] == '\0')	{
 			fprintf(stderr, "ERROR: Tried inserting an entry with no "
