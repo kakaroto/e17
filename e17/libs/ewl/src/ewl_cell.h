@@ -15,6 +15,11 @@
  */
 
 typedef struct Ewl_Cell Ewl_Cell;
+
+/**
+* @def EWL_CELL(t)
+* Typecast a pointer to an Ewl_Cell pointer.
+*/
 #define EWL_CELL(t) ((Ewl_Cell *)t)
 
 /**
