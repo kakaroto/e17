@@ -64,7 +64,7 @@ scrot_parse_option_array(int argc, char **argv)
    int optch = 0, cmdx = 0;
 
    /* Now to pass some optionarinos */
-   while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) !=
+   while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) !=
           EOF)
    {
       switch (optch)
