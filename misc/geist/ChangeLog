@@ -1,3 +1,9 @@
+Sat Aug  5 20:49:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Moved the checking of pixel transparency to a member function of
+	geist_object, so that different objects can determine their
+	transparency differently.
+
 Sat Aug  5 19:15:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Copy works, and handles multiple selections too.

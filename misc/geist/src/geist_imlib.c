@@ -436,9 +436,13 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    w = imlib_image_get_width();
    h = imlib_image_get_height();
 
+   if((x>w) || (y>h))
+      return 1;
+   
    imlib_image_query_pixel(x - 1, y, &c);
    ave += c.alpha;
    num++;
+
    if (x > 0)
    {
       imlib_image_query_pixel(x - 1, y, &c);
@@ -476,8 +480,6 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
       num++;
    }
    ave = ave / num;
-
-  D(5,("average value %d\n", ave));
 
 /* TODO Make this fuzziness an OPTION */
    if (ave < 5)

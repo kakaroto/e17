@@ -46,6 +46,7 @@
 #define HALF_SEL_HEIGHT 2 
 
 extern int call_level;
+extern gint obj_sel_handler, obj_unsel_handler;
 
 struct {
 unsigned char debug_level;

@@ -27,10 +27,8 @@ geist_text_init(geist_text * txt)
    geist_object_init(obj);
    obj->free = geist_text_free;
    obj->render = geist_text_render;
-   obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_text_render_partial;
    obj->get_rendered_image = geist_text_get_rendered_image;
-   obj->get_selection_updates = geist_object_int_get_selection_updates;
    obj->duplicate = geist_text_duplicate;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
 

@@ -29,10 +29,8 @@ geist_image_init(geist_image * img)
    geist_object_init(obj);
    obj->free = geist_image_free;
    obj->render = geist_image_render;
-   obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_image_render_partial;
    obj->get_rendered_image = geist_image_get_rendered_image;
-   obj->get_selection_updates = geist_object_int_get_selection_updates;
    obj->duplicate = geist_image_duplicate;
    geist_object_set_type(obj, GEIST_TYPE_IMAGE);
 
@@ -44,6 +42,7 @@ geist_image_new_from_file(int x, int y, char *filename)
 {
    geist_image *img;
    geist_object *obj;
+   char *txt;
 
    D_ENTER(5);
 
@@ -58,6 +57,12 @@ geist_image_new_from_file(int x, int y, char *filename)
 
    img->filename = estrdup(filename);
 
+   free(obj->name);
+   if ((txt = strrchr(img->filename, '/') + 1) != NULL)
+      obj->name = estrdup(txt);
+   else
+      obj->name = estrdup(txt);
+   
    obj->x = x;
    obj->y = y;
 
@@ -196,8 +201,7 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image
-geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -219,7 +223,9 @@ geist_image_duplicate(geist_object * obj)
    {
       ret->visible = obj->visible;
       GEIST_IMAGE(ret)->alias = img->alias;
-      ret->name = g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object", NULL);
+      ret->name =
+         g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
+                   NULL);
    }
 
    D_RETURN(3, ret);

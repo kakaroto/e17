@@ -103,10 +103,9 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
    for (l = layer->objects; l; l = l->next)
    {
       obj = ((geist_object *) l->data);
-      if(obj->visible && (XY_IN_RECT(x, y, obj->x, obj->y, obj->w, obj->h)))
+      if (obj->visible && (XY_IN_RECT(x, y, obj->x, obj->y, obj->w, obj->h)))
       {
-         if (!geist_imlib_image_part_is_transparent
-             (geist_object_get_rendered_image(obj), x - obj->x, y - obj->y))
+         if (!geist_object_part_is_transparent(obj, x - obj->x, y - obj->y))
             ret = obj;
       }
    }

@@ -36,6 +36,7 @@ struct __geist_object
    Imlib_Image (*get_rendered_image) (geist_object * obj);
    Imlib_Updates (*get_selection_updates) (geist_object * obj);
    geist_object *(*duplicate) (geist_object *obj);
+   unsigned char (*part_is_transparent) (geist_object *obj, int x, int y);
 };
 
 /* allocation functions */
@@ -64,6 +65,8 @@ Imlib_Updates geist_object_get_selection_updates(geist_object * obj);
 void geist_object_unselect(geist_document * d, geist_object * obj);
 geist_object *geist_object_duplicate(geist_object *obj);
 geist_object *geist_object_int_duplicate(geist_object *obj);
+unsigned char geist_object_part_is_transparent(geist_object * obj, int x, int y);
+unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x, int y);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

@@ -28,6 +28,7 @@ geist_object_init(geist_object * obj)
    obj->render_partial = geist_object_int_render_partial;
    obj->get_rendered_image = geist_object_int_get_rendered_image;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
+   obj->part_is_transparent = geist_object_int_part_is_transparent;
    obj->sizemode = SIZEMODE_ZOOM;
    obj->name = estrdup("Untitled Object");
 
@@ -229,8 +230,18 @@ geist_object_add_to_object_list(geist_object * obj)
    list[1] =
       (char *)
       geist_imlib_image_get_filename(geist_object_get_rendered_image(obj));
+
+   gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
+   gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
+
+
    row = gtk_clist_append(GTK_CLIST(obj_list), list);
    gtk_clist_set_row_data(GTK_CLIST(obj_list), row, (gpointer) obj);
+
+   gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_sel_handler);
+   gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_unsel_handler);
+
+
    D_RETURN_(3);
 }
 
@@ -282,20 +293,20 @@ Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 
    up =
       imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH,
-                                obj->y - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
-                                2 * HALF_SEL_HEIGHT);
+                               obj->y - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
+                               2 * HALF_SEL_HEIGHT);
    up =
       imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH + obj->w,
-                                obj->y - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
-                                2 * HALF_SEL_HEIGHT);
+                               obj->y - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
+                               2 * HALF_SEL_HEIGHT);
    up =
       imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH,
-                                obj->y - HALF_SEL_HEIGHT + obj->h,
-                                2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
+                               obj->y - HALF_SEL_HEIGHT + obj->h,
+                               2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
    up =
       imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH + obj->w,
-                                obj->y - HALF_SEL_HEIGHT + obj->h,
-                                2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
+                               obj->y - HALF_SEL_HEIGHT + obj->h,
+                               2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
 
    D_RETURN(3, up);
 }
@@ -308,18 +319,38 @@ Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
    D_RETURN(3, obj->get_selection_updates(obj));
 }
 
-geist_object *geist_object_duplicate(geist_object *obj)
+geist_object *
+geist_object_duplicate(geist_object * obj)
 {
    D_ENTER(3);
 
    D_RETURN(3, obj->duplicate(obj));
 }
-   
-geist_object *geist_object_int_duplicate(geist_object *obj)
+
+geist_object *
+geist_object_int_duplicate(geist_object * obj)
 {
    D_ENTER(3);
 
    printf("IMPLEMENT!\n");
 
    D_RETURN(3, NULL);
+}
+
+unsigned char
+geist_object_part_is_transparent(geist_object * obj, int x, int y)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, obj->part_is_transparent(obj, x, y));
+}
+
+unsigned char
+geist_object_int_part_is_transparent(geist_object * obj, int x, int y)
+{
+   D_ENTER(3);
+
+   D_RETURN(3,
+            geist_imlib_image_part_is_transparent
+            (geist_object_get_rendered_image(obj), x, y));
 }
