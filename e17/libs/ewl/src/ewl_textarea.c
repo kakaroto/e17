@@ -23,6 +23,12 @@ void __ewl_textarea_delete_to_left(Ewl_TextArea * ta);
 void __ewl_textarea_delete_to_right(Ewl_TextArea * ta);
 
 
+/**
+ * ewl_textarea_new - allocate a new text area widget
+ *
+ * Returns a pointer to a newly allocated text area widget on success, NULL on
+ * failure.
+ */
 Ewl_Widget *
 ewl_textarea_new(void)
 {
@@ -43,6 +49,14 @@ ewl_textarea_new(void)
 	DRETURN_PTR(EWL_WIDGET(ta), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_textarea_set_text - set the text of a text area widget
+ * @ta: the text area widget to set the text
+ * @text: the text to set in the text area widget @ta
+ *
+ * Returns no value. Sets the text of the text area widget @ta to a copy of
+ * the contents of @text.
+ */
 void
 ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 {
@@ -50,11 +64,17 @@ ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 	DCHECK_PARAM_PTR("ta", ta);
 	DCHECK_PARAM_PTR("text", text);
 
-	ewl_text_set_text(ta->text, text);
+	ewl_text_set_text(EWL_TEXT(ta->text), text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_textarea_get_text - retrieve the text of a text widget
+ * @ta: the text widget to retrieve text contents
+ *
+ * Returns a pointer to a copy of the text in @ta on success, NULL on failure.
+ */
 char *
 ewl_textarea_get_text(Ewl_TextArea * ta)
 {
@@ -63,12 +83,18 @@ ewl_textarea_get_text(Ewl_TextArea * ta)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
 
-	text = ewl_text_get_text(ta->text);
+	text = ewl_text_get_text(EWL_TEXT(ta->text));
 
 	DRETURN_PTR(text, DLEVEL_STABLE);
 }
 
-
+/**
+ * ewl_textarea_init - initialize the fields and callbacks of a text area
+ * @ta: the text area to be initialized
+ *
+ * Returns no value. Sets the internal fields and callbacks of a text area to
+ * their defaults.
+ */
 void
 ewl_textarea_init(Ewl_TextArea * ta)
 {
@@ -228,7 +254,7 @@ __ewl_textarea_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 			  l = i = strlen(str);
 	  }
 	else
-		ewl_text_get_index_at(ta->text, ev->x, ev->y, &i);
+		i = ewl_text_get_index_at(EWL_TEXT(ta->text), ev->x, ev->y);
 
 	ewl_cursor_set_position(ta->cursor, i + 1);
 
@@ -263,15 +289,15 @@ __ewl_textarea_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	c_pos = ewl_cursor_get_position(ta->cursor);
 
-	ewl_text_get_letter_geometry(ta->text, --c_pos, &req_x, &req_y,
-				     &req_w, &req_h);
+	ewl_text_get_letter_geometry(EWL_TEXT(ta->text), --c_pos, &req_x,
+			&req_y, &req_w, &req_h);
 
 	str = EWL_TEXT(ta->text)->text;
 
 	if (str && (l = strlen(str)) && c_pos >= l)
 	  {
-		  ewl_text_get_letter_geometry(ta->text, l - 1, &req_x,
-					       &req_y, &req_w, &req_h);
+		  ewl_text_get_letter_geometry(EWL_TEXT(ta->text), l - 1,
+				  &req_x, &req_y, &req_w, &req_h);
 		  req_x += req_w + CURRENT_X(ta->text);
 		  req_y += CURRENT_Y(ta->text);
 		  req_w = 5;

@@ -1,9 +1,15 @@
 #include <Ewl.h>
 
-static void __ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o);
 static void __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
 
+/**
+ * ewl_separator_new - allocate a new separator widget
+ * @o: the orientation of the newly allocated separator widget
+ *
+ * Returns a pointer to the newly alloacted separator widget on success, NULL
+ * on failure.
+ */
 Ewl_Widget *
 ewl_separator_new(Ewl_Orientation o)
 {
@@ -19,8 +25,8 @@ ewl_separator_new(Ewl_Orientation o)
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
-static void
-__ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
+void
+ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 {
 	Ewl_Widget *w;
 

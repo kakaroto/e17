@@ -183,7 +183,7 @@ ewl_notebook_remove_first_page(Ewl_Notebook * n)
 	np = ewd_list_goto_first(n->pages);
 
 	if (np == n->visible_np)
-		DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
+		DRETURN_PTR(ewl_notebook_remove_visible(n), DLEVEL_STABLE);
 
 	if (!np)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -239,7 +239,7 @@ ewl_notebook_remove_last_page(Ewl_Notebook * n)
 	np = ewd_list_goto_last(n->pages);
 
 	if (np == n->visible_np)
-		DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
+		DRETURN_PTR(ewl_notebook_remove_visible(n), DLEVEL_STABLE);
 
 	if (!np)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -296,7 +296,7 @@ ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 	np = ewd_list_goto_index(n->pages, i);
 
 	if (np == n->visible_np)
-		DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
+		DRETURN_PTR(ewl_notebook_remove_visible(n), DLEVEL_STABLE);
 
 	if (!np)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);

@@ -29,6 +29,12 @@ void __ewl_entry_delete_to_left(Ewl_Widget * w);
 void __ewl_entry_delete_to_right(Ewl_Widget * w);
 
 
+/**
+ * ewl_spinner_new - allocate a new spinner widget
+ *
+ * Returns a pointer to a newly allocated spinner widget on success, NULL on
+ * failure.
+ */
 Ewl_Widget *
 ewl_spinner_new()
 {
@@ -54,65 +60,113 @@ ewl_spinner_new()
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_spinner_set_value - set the current value of a spinner widget
+ * @s: the spinner widget to set the current value
+ * @value: the value to set for the spinner @s
+ *
+ * Returns no value. Sets the current value of the spinner @s to @value.
+ */
 void
-ewl_spinner_set_value(Ewl_Widget * w, double value)
+ewl_spinner_set_value(Ewl_Spinner * s, double value)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_value(w, value);
+	__ewl_spinner_set_value(EWL_WIDGET(s), value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_spinner_get_value - get the current value of a spinner widget
+ * @s: the spinner widget to retrieve the value
+ *
+ * Returns the current value of the spinner @s on success, -1.0 on failure.
+ */
 double
-ewl_spinner_get_value(Ewl_Widget * widget)
+ewl_spinner_get_value(Ewl_Spinner * s)
 {
-	DCHECK_PARAM_PTR_RET("widget", widget, -1.00);
+	DCHECK_PARAM_PTR_RET("s", s, -1.00);
 
-	return __ewl_spinner_get_value(widget);
+	return __ewl_spinner_get_value(EWL_WIDGET(s));
 }
 
+/**
+ * ewl_spinner_set_digits - set the number of digits displayed by a spinner
+ * @s: the widget to change the number of digits displayed
+ * @digits: the number of digits to display for the spinner @s
+ *
+ * Returns no value. Changes the digits displayed by @s to @digits.
+ */
 void
-ewl_spinner_set_digits(Ewl_Widget * widget, int digits)
+ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
 {
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_digits(widget, digits);
+	__ewl_spinner_set_digits(EWL_WIDGET(s), digits);
 }
 
+/**
+ * ewl_spinner_set_min_val - set the minimum value possible for a spinner
+ * @s: the spinner to change the minimum possible value
+ * @val: the new minimum possible value for @s
+ *
+ * Returns no value. Sets the smallest value that @s can obtain to @val.
+ */
 void
-ewl_spinner_set_min_val(Ewl_Widget * widget, double val)
+ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
 {
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_min_val(widget, val);
+	__ewl_spinner_set_min_val(EWL_WIDGET(s), val);
 }
 
+/**
+ * ewl_spinner_set_max_val - set the maximum value possible for a spinner
+ * @s: the spinner to change the maximum possible value
+ * @val: the new maximum possible value for @s
+ *
+ * Returns no value. Sets the largest value that @s can obtain to @val.
+ */
 void
-ewl_spinner_set_max_val(Ewl_Widget * widget, double val)
+ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
 {
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_max_val(widget, val);
+	__ewl_spinner_set_max_val(EWL_WIDGET(s), val);
 }
 
+/**
+ * ewl_spinner_set_step - set the increment between each click of the spinner
+ * @s: the spinner to change increment step
+ * @step: the new increment between clicks of the spinner @s
+ *
+ * Returns no value. Changes the increment that @s changes by with each click
+ * of it's spinner buttons to @step.
+ */
 void
-ewl_spinner_set_step(Ewl_Widget * w, double step)
+ewl_spinner_set_step(Ewl_Spinner * s, double step)
 {
-	Ewl_Spinner *s;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("s", s);
 
-	s = EWL_SPINNER(w);
+	w = EWL_WIDGET(s);
 
 	s->step = step;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
+/**
+ * ewl_spinner_init - initialize a spinner to default values and callbacks
+ * @s: the spinner to initialize
+ *
+ * Returns no value. Sets the fields and callbacks of the spinner @s their
+ * default values.
+ */
 void
 ewl_spinner_init(Ewl_Spinner * s)
 {

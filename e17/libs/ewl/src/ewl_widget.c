@@ -179,6 +179,8 @@ ewl_widget_destroy(Ewl_Widget * w)
 
 	ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 
+	IF_FREE(w);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -514,8 +516,6 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	 * type so we don't get a segfault.
 	 */
 	ewl_callback_clear(w);
-
-	IF_FREE(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -31,23 +31,23 @@ struct _ewl_notebook
 
 Ewl_Widget *ewl_notebook_new(void);
 void ewl_notebook_init(Ewl_Notebook * n);
-void ewl_notebook_append_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l);
-void ewl_notebook_prepend_page(Ewl_Widget * w, Ewl_Widget * c,
+void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * c, Ewl_Widget * l);
+void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * c,
 			       Ewl_Widget * l);
-void ewl_notebook_insert_page(Ewl_Widget * w, Ewl_Widget * c,
+void ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * c,
 			      Ewl_Widget * l, int p);
 
-Ewl_NotebookPage *ewl_notebook_remove_first_page(Ewl_Widget * w);
-Ewl_NotebookPage *ewl_notebook_remove_last_page(Ewl_Widget * w);
-Ewl_NotebookPage *ewl_notebook_remove_page(Ewl_Widget * w, int i);
-Ewl_NotebookPage *ewl_notebook_remove_visible(Ewl_Widget * w);
+Ewl_NotebookPage *ewl_notebook_remove_first_page(Ewl_Notebook * n);
+Ewl_NotebookPage *ewl_notebook_remove_last_page(Ewl_Notebook * n);
+Ewl_NotebookPage *ewl_notebook_remove_page(Ewl_Notebook * n, int i);
+Ewl_NotebookPage *ewl_notebook_remove_visible(Ewl_Notebook * n);
 
-void ewl_notebook_set_tabs_alignment(Ewl_Widget * w, Ewl_Alignment a);
-Ewl_Alignment ewl_notebook_get_tabs_alignment(Ewl_Widget * w);
+void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, Ewl_Alignment a);
+Ewl_Alignment ewl_notebook_get_tabs_alignment(Ewl_Notebook * n);
 
-void ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p);
-Ewl_Position ewl_notebook_get_tabs_position(Ewl_Widget * w);
+void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p);
+Ewl_Position ewl_notebook_get_tabs_position(Ewl_Notebook * n);
 
-void ewl_notebook_set_flags(Ewl_Widget * w, Ewl_Notebook_Flags flags);
+void ewl_notebook_set_flags(Ewl_Notebook * n, Ewl_Notebook_Flags flags);
 
 #endif /* __EWL_NOTEBOOK_H__ */

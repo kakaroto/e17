@@ -1,11 +1,6 @@
 
 #include <Ewl.h>
 
-/*
-#define _EBITS_INTERNAL 1
-#include <Ebits_Private.h>
-*/
-static void __ewl_image_init(Ewl_Image * i);
 static void __ewl_image_realize(Ewl_Widget * w, void *ev_data,
 				void *user_data);
 static void __ewl_image_configure(Ewl_Widget * w, void *ev_data,
@@ -16,6 +11,13 @@ void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data);
 
 static Ewl_Image_Type __ewl_image_get_type(const char *i);
 
+/**
+ * ewl_image_load - allocates a new image widget with specified image contents
+ * @i: the path to the image to be displayed by the image widget
+ *
+ * Returns a pointer to the newly allocated image widget on success, NULL on
+ * failure.
+ */
 Ewl_Widget *
 ewl_image_load(const char *i)
 {
@@ -30,7 +32,7 @@ ewl_image_load(const char *i)
 	image = NEW(Ewl_Image, 1);
 
 	ZERO(image, Ewl_Image, 1);
-	__ewl_image_init(image);
+	ewl_image_init(image);
 
 	image->type = __ewl_image_get_type(i);
 	image->path = strdup(i);
@@ -38,17 +40,25 @@ ewl_image_load(const char *i)
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_image_set_file - change the image file displayed by an image widget
+ * @i: the image widget to change the displayed image
+ * @im: the path to the new image to be displayed by @i
+ *
+ * Returns no value. Set the image displayed by @i to the one found at the
+ * path @im.
+ */
 void
-ewl_image_set_file(Ewl_Widget * w, const char *im)
+ewl_image_set_file(Ewl_Image * i, const char *im)
 {
-	Ewl_Image *i;
+	Ewl_Widget *w;
 	int ww = 0, hh = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("i", i);
 	DCHECK_PARAM_PTR("im", im);
 
-	i = EWL_IMAGE(w);
+	w = EWL_WIDGET(i);
 
 	IF_FREE(i->path);
 
@@ -105,8 +115,15 @@ ewl_image_set_file(Ewl_Widget * w, const char *im)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_image_init(Ewl_Image * i)
+/**
+ * ewl_image_init - initialize an image widget to default values and callbacks
+ * @i: the image widget to initialize
+ *
+ * Returns no value. Sets the fields and callbacks of @i to their default
+ * values.
+ */
+void
+ewl_image_init(Ewl_Image * i)
 {
 	Ewl_Widget *w;
 

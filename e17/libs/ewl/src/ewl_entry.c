@@ -62,7 +62,7 @@ ewl_entry_set_text(Ewl_Widget * w, char *t)
 
 	e = EWL_ENTRY(w);
 
-	ewl_text_set_text(e->text, t);
+	ewl_text_set_text(EWL_TEXT(e->text), t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -77,7 +77,7 @@ ewl_entry_get_text(Ewl_Widget * w)
 
 	e = EWL_ENTRY(w);
 
-	DRETURN_PTR(ewl_text_get_text(e->text), DLEVEL_STABLE);
+	DRETURN_PTR(ewl_text_get_text(EWL_TEXT(e->text)), DLEVEL_STABLE);
 }
 
 void
@@ -192,8 +192,8 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	c_pos = ewl_cursor_get_position(e->cursor);
 
-	ewl_text_get_letter_geometry(e->text, --c_pos, &xx2, &yy2, &ww2,
-				     &hh2);
+	ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_pos, &xx2, &yy2,
+			&ww2, &hh2);
 
 	str = EWL_TEXT(e->text)->text;
 
@@ -224,10 +224,10 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		  yy = CURRENT_Y(e->text);
 		  ww = 0;
 
-		  ewl_text_get_letter_geometry(e->text, ss, &sx, &sy, &sw,
-					       &sh);
-		  ewl_text_get_letter_geometry(e->text, ss + ee, &ex, &ey,
-					       &ew, &eh);
+		  ewl_text_get_letter_geometry(EWL_TEXT(e->text), ss, &sx, &sy,
+				  &sw, &sh);
+		  ewl_text_get_letter_geometry(EWL_TEXT(e->text), ss + ee,
+				  &ex, &ey, &ew, &eh);
 
 		  xx += sx;
 		  ww += sw;
@@ -334,9 +334,9 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 			  len = index = strlen(str);
 	  }
 	else
-		ewl_text_get_index_at(e->text, ev->x,
+		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
 				      CURRENT_Y(e->text) +
-				      (CURRENT_H(e->text) / 2), &index);
+				      (CURRENT_H(e->text) / 2));
 
 	ewl_cursor_set_position(e->cursor, index + 1);
 
@@ -382,7 +382,7 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (w->state & EWL_STATE_PRESSED)
 	  {
 		  int ss, ee;
-		  int index;
+		  int index = 0;
 
 		  ewl_widget_show(e->selection);
 
@@ -390,11 +390,10 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 		  if (ev->x > CURRENT_X(e->text) &&
 		      ev->x < CURRENT_X(e->text) + CURRENT_W(e->text))
 		    {
-			    ewl_text_get_index_at(e->text, (ev->x),
-						  (CURRENT_Y(e->text)
-						   +
-						   (CURRENT_H
-						    (e->text) / 2)), &index);
+			    index = ewl_text_get_index_at(EWL_TEXT(e->text),
+					    (ev->x), (CURRENT_Y(e->text) +
+						      (CURRENT_H
+						       (e->text) / 2)));
 
 			    ee = index - ss;
 
@@ -476,11 +475,11 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 				       "/appearance/entry/default/text/style");
 
 	if (font)
-		ewl_text_set_font(e->text, font);
+		ewl_text_set_font(EWL_TEXT(e->text), font);
 	if (size)
-		ewl_text_set_font_size(e->text, size);
+		ewl_text_set_font_size(EWL_TEXT(e->text), size);
 	if (style)
-		ewl_text_set_style(e->text, style);
+		ewl_text_set_style(EWL_TEXT(e->text), style);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

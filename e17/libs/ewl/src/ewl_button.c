@@ -83,7 +83,7 @@ ewl_button_init(Ewl_Button * b, char *label)
 		  b->label_object = ewl_text_new();
 		  ewl_widget_set_appearance(b->label_object,
 					    "/appearance/button/label");
-		  ewl_text_set_text(b->label_object, label);
+		  ewl_text_set_text(EWL_TEXT(b->label_object), label);
 		  ewl_object_set_alignment(EWL_OBJECT(b->label_object),
 					   EWL_ALIGNMENT_CENTER);
 		  ewl_container_append_child(EWL_CONTAINER(b),
@@ -241,15 +241,15 @@ __ewl_button_update_label(Ewl_Button * b)
 	tmp = ewl_theme_data_get_str(w, key);
 
 	if (tmp)
-		ewl_text_set_font(b->label_object, tmp);
+		ewl_text_set_font(EWL_TEXT(b->label_object), tmp);
 
 	snprintf(key, PATH_LEN, "%s/text/font_size", w->appearance);
 	itmp = ewl_theme_data_get_int(w, key);
 
 	if (itmp)
-		ewl_text_set_font_size(b->label_object, itmp);
+		ewl_text_set_font_size(EWL_TEXT(b->label_object), itmp);
 
-	ewl_text_set_text(b->label_object, b->label);
+	ewl_text_set_text(EWL_TEXT(b->label_object), b->label);
 	ewl_widget_show(b->label_object);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

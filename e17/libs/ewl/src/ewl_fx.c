@@ -56,7 +56,7 @@ ewl_fx_init(void)
 }
 
 /**
- * ewl_fx_init - initialize any fx variables that must be set up ahead of time
+ * ewl_fx_deinit - deinit any fx variables that must be set up ahead of time
  * 
  * Returns no value. The programmer should not call this, it is used by
  * ewl_deinit, and nothing else.

@@ -94,7 +94,7 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 	char *ot;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
 	w = EWL_WIDGET(t);
 
@@ -136,7 +136,7 @@ ewl_text_get_text(Ewl_Text * t)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
 	w = EWL_WIDGET(t);
 
@@ -154,13 +154,13 @@ ewl_text_get_text(Ewl_Text * t)
 void
 ewl_text_set_font(Ewl_Text * t, char *f)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("f", f);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	IF_FREE(t->font);
 
@@ -224,14 +224,14 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
  * Returns the font size of the text widget on success, 0 on failure.
  */
 int
-ewl_text_get_font_size(Ewl_Widget * w)
+ewl_text_get_font_size(Ewl_Text * t)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	DRETURN_INT(t->font_size, DLEVEL_STABLE);
 }
@@ -248,14 +248,14 @@ ewl_text_get_font_size(Ewl_Widget * w)
  * new color values specified.
  */
 void
-ewl_text_set_color(Ewl_Widget * w, int r, int g, int b, int a)
+ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	etox_color_set_member(t->color, "EWL", r, g, b, a);
 	ewl_widget_configure(w);
@@ -274,29 +274,37 @@ ewl_text_set_color(Ewl_Widget * w, int r, int g, int b, int a)
  * Returns no value. Stores the color values into any non-NULL color pointers.
  */
 void
-ewl_text_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
+ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	etox_color_get_member(t->color, "EWL", r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_text_set_style - set the text style for a text widget
+ * @t: the text widget to set the text style
+ * @s: the name of the style to be set for the text
+ *
+ * Returns no value. Changes the text style of the text widget @t to the style
+ * identified by the name @s.
+ */
 void
-ewl_text_set_style(Ewl_Widget * w, char *s)
+ewl_text_set_style(Ewl_Text * t, char *s)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	if (!s || (s && !strlen(s)))
 		t->style = etox_style_new("Default");
@@ -308,16 +316,28 @@ ewl_text_set_style(Ewl_Widget * w, char *s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_text_get_text_geometry - retrieve the geometry of a text widget
+ * @t: the text widget to retrieve geometry
+ * @xx: a pointer to an integer to store the x coordinate
+ * @yy: a pointer to an integer to store the y coordinate
+ * @ww: a pointer to an integer to store the width
+ * @hh: a pointer to an integer to store the height
+ *
+ * Returns no value. Stores the position and size of the text in the text
+ * widget @t into the integers pointed to by @xx, @yy, @ww, and @hh
+ * respectively.
+ */
 void
-ewl_text_get_text_geometry(Ewl_Widget * w, int *xx, int *yy, int *ww, int *hh)
+ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 	double nxx, nyy, nww, nhh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	etox_get_geometry(t->tox, &nxx, &nyy, &nww, &nhh);
 
@@ -333,17 +353,29 @@ ewl_text_get_text_geometry(Ewl_Widget * w, int *xx, int *yy, int *ww, int *hh)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_text_get_letter_geometry - retrieve the geomtry of a specific letter
+ * @t: the widget that holds the text to retrieve a letters geometry
+ * @i: the index of the letter in the text to retrieve geometry
+ * @xx: a pointer to an integer to store the x coordinate of the letter
+ * @yy: a pointer to an integer to store the y coordinate of the letter
+ * @ww: a pointer to an integer to store the width of the letter
+ * @hh: a pointer to an integer to store the height of the letter
+ *
+ * Returns no value. Stores the geometry of the letter at index @i of the text
+ * widget @t into @xx, @yy, @ww, and @hh respectively.
+ */
 void
-ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
-			     int *xx, int *yy, int *ww, int *hh)
+ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy, int *ww,
+		int *hh)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 	double nxx, nyy, nww, nhh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	etox_get_char_geometry_at(t->tox, i, &nxx, &nyy, &nww, &nhh);
 
@@ -359,17 +391,30 @@ ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_text_get_letter_geometry_at - get the letter geometry at coordinates
+ * @t: the text widget to get the letter geometry by coordinates
+ * @x: the x coordinate to check for letter geometry
+ * @y: the y coordinate to check for letter geometry
+ * @tx: the x coordinate of the letter that intersects @x, @y
+ * @ty: the y coordinate of the letter that intersects @x, @y
+ * @tw: the width of the letter that intersects @x, @y
+ * @th: the height of the letter that intersects @x, @y
+ *
+ * Returns no value. Stores the geometry of a letter at specified coordinates
+ * @x, @y of text widget @t into @tx, @ty, @tw, and @th.
+ */
 void
-ewl_text_get_letter_geometry_at(Ewl_Widget * w, int x, int y,
+ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 				int *tx, int *ty, int *tw, int *th)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 	double xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
 	etox_get_char_geometry_at_position(t->tox, (double) x, (double) y,
 					   &xx, &yy, &ww, &hh);
@@ -386,16 +431,23 @@ ewl_text_get_letter_geometry_at(Ewl_Widget * w, int x, int y,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_text_set_alignment - set the alignment of the text in a text widget
+ * @t: the text widget to change text alignment
+ * @a: the new alignment for the text in @t
+ *
+ * Returns no value. Changes the alignment of the text in @t to @a.
+ */
 void
-ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
+ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 	Etox_Align_Type h_align, v_align;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 	EWL_OBJECT(w)->alignment = a;
 
 	if (!t->tox)
@@ -425,23 +477,29 @@ ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_text_get_index_at(Ewl_Widget * w, int x, int y, int *index)
+/**
+ * ewl_text_get_index_at - get the index of the letter at coordinates
+ * @t: the text widget to find the letter index by coordinates
+ * @x: the x coordinate to check for the letter index
+ * @y: the y coordinate to check for the letter index
+ *
+ * Returns the index of the letter at the coordinates @x, @y in the text
+ * widget @t.
+ */
+int
+ewl_text_get_index_at(Ewl_Text * t, int x, int y)
 {
-	Ewl_Text *t;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
 
-	t = EWL_TEXT(w);
+	w = EWL_WIDGET(t);
 
-	if (index)
-		*index = etox_get_char_geometry_at_position(t->tox,
+	DRETURN_INT(DLEVEL_STABLE, etox_get_char_geometry_at_position(t->tox,
 							    (double) x,
 							    (double) y, NULL,
-							    NULL, NULL, NULL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+							    NULL, NULL, NULL));
 }
 
 static void

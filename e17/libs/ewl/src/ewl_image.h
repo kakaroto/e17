@@ -23,6 +23,7 @@ struct _ewl_image
 };
 
 Ewl_Widget *ewl_image_load(const char *i);
-void ewl_image_set_file(Ewl_Widget * w, const char *im);
+void ewl_image_init(Ewl_Image * i);
+void ewl_image_set_file(Ewl_Image * i, const char *im);
 
 #endif /* __EWL_IMAGE_H__ */
