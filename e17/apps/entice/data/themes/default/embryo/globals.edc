@@ -1,4 +1,26 @@
     script {
 	public mouse_x;
 	public mouse_y;
+	public preview_state;
+	public preview_animate(val, Float: pos) {
+	    new Float:x = 0.0;
+	    new Float:y = 0.0;
+	    if(val == 0) {
+		x = sin(3.14 * pos);
+		y = cos(1.57 * pos);
+	    }
+	    else if(val == 1){
+		x = sin(3.14 * pos);
+		y = 1 - cos(1.57 * pos);
+	    }
+	    else if(val == 2){
+		x = 1 - sin(3.14 * pos);
+		y = cos(1.57 * pos);
+	    }
+	    else if(val == 3){
+		x = 1 - sin(3.14 * pos);
+		y = 1 - cos(1.57 * pos);
+	    }
+	    set_drag(PART:"entice.preview", x, y);
+	}
     }
