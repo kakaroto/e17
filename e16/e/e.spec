@@ -11,7 +11,7 @@ Copyright: GPL
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{ver}.tar.gz
 BuildRoot: /tmp/e-%{ver}-root
-Packager: The Rasterman <raster@redhat.com>
+Packager: Mandrake <mandrake@valinux.com>
 URL: http://www.enlightenment.org
 Requires: imlib >= 1.9.8
 Requires: fnlib >= 0.5
@@ -83,4 +83,3 @@ rm -rf $RPM_BUILD_ROOT
 %doc INSTALL
 %doc README
 %doc FAQ
-%doc TODO
