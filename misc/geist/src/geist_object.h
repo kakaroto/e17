@@ -83,6 +83,7 @@ struct __geist_object
    geist_object *(*duplicate) (geist_object * obj);
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
    void (*resize_event) (geist_object * obj, int x, int y);
+   void (*display_props) (geist_document *doc, geist_object * obj);
 };
 
 /* allocation functions */
@@ -133,6 +134,8 @@ void geist_object_resize(geist_document * doc, geist_object * obj, int x,
 void geist_object_int_resize(geist_object * obj, int x, int y);
 void geist_object_resize_object(geist_object * obj, int x, int y);
 
+void geist_object_int_display_props(geist_document *doc, geist_object *obj);
+void geist_object_display_props(geist_document *doc, geist_object *obj);
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))

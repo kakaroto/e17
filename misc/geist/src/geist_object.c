@@ -29,6 +29,7 @@ geist_object_init(geist_object * obj)
    obj->get_rendered_image = geist_object_int_get_rendered_image;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
    obj->part_is_transparent = geist_object_int_part_is_transparent;
+   obj->display_props = geist_object_int_display_props;
    obj->resize_event = geist_object_int_resize;
    obj->name = estrdup("Untitled Object");
 
@@ -623,3 +624,19 @@ geist_object_resize_object(geist_object * obj, int x, int y)
 
    D_RETURN_(5);
 }
+
+void
+geist_object_display_props (geist_document *doc, geist_object *obj)
+{
+	D_ENTER(5);
+	obj->display_props(doc, obj);
+	D_RETURN_(5);
+}
+
+void geist_object_int_display_props (geist_document *doc, geist_object *obj)
+{
+	D_ENTER(5);
+	printf("Nothing here yet\n");
+	D_RETURN_(5);
+}
+	

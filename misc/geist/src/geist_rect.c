@@ -1,5 +1,12 @@
 #include "geist_rect.h"
 
+void refresh_r_cb(GtkWidget * widget, gpointer * obj);
+void refresh_g_cb(GtkWidget * widget, gpointer * obj);
+void refresh_b_cb(GtkWidget * widget, gpointer * obj);
+void refresh_a_cb(GtkWidget * widget, gpointer * obj);
+void obj_addrect_ok_cb(GtkWidget * widget, gpointer * data);
+
+geist_document *current_doc;
 
 geist_object *
 geist_rect_new(void)
@@ -30,6 +37,7 @@ geist_rect_init(geist_rect * rec)
    obj->render_partial = geist_rect_render_partial;
    obj->duplicate = geist_rect_duplicate;
    obj->part_is_transparent = geist_text_part_is_transparent;
+   obj->display_props = geist_rect_display_props;
    obj->resize_event = geist_rect_resize;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
@@ -190,7 +198,161 @@ geist_rect_resize(geist_object * obj, int x, int y)
 
    D(5, ("resize to %d,%d\n", x, y));
 
-   geist_object_resize_object(obj,x,y);
+   geist_object_resize_object(obj, x, y);
 
    D_RETURN_(5);
+}
+
+void
+obj_addrect_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   gtk_widget_destroy((GtkWidget *) data);
+}
+
+void
+refresh_r_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_RECT(obj)->r = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
+   geist_document_render_updates(current_doc);
+}
+
+void
+refresh_g_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_RECT(obj)->g = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
+   geist_document_render_updates(current_doc);
+}
+
+void
+refresh_b_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_RECT(obj)->b = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
+   geist_document_render_updates(current_doc);
+}
+
+void
+refresh_a_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_RECT(obj)->a = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
+   geist_document_render_updates(current_doc);
+}
+
+void
+geist_rect_display_props(geist_document * doc, geist_object * obj)
+{
+
+   GtkWidget *win, *table, *title_l, *title_entry, *hbox, *cr_l, *cr, *cg_l,
+      *cg, *cb_l, *cb, *ca_l, *ca, *ok;
+   GtkAdjustment *a1, *a2, *a3, *a4;
+   char a[4096], r[4096], g[4006], b[4096];
+
+
+   current_doc = doc;
+
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
+
+   win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   table = gtk_table_new(2, 4, FALSE);
+   gtk_container_set_border_width(GTK_CONTAINER(win), 5);
+   gtk_container_add(GTK_CONTAINER(win), table);
+
+
+
+   title_l = gtk_label_new("title:");
+   gtk_misc_set_alignment(GTK_MISC(title_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), title_l, 0, 1, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(title_l);
+
+   title_entry = gtk_entry_new();
+   gtk_table_attach(GTK_TABLE(table), title_entry, 1, 2, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(title_entry);
+
+   hbox = gtk_hbox_new(FALSE, 0);
+
+   cr_l = gtk_label_new("R:");
+   gtk_misc_set_alignment(GTK_MISC(cr_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cr_l, TRUE, FALSE, 2);
+   gtk_widget_show(cr_l);
+
+   cr = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
+   gtk_signal_connect(GTK_OBJECT(cr), "changed",
+                      GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), cr, TRUE, FALSE, 2);
+   gtk_widget_show(cr);
+
+   cg_l = gtk_label_new("G:");
+   gtk_misc_set_alignment(GTK_MISC(cg_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cg_l, TRUE, FALSE, 2);
+   gtk_widget_show(cg_l);
+   cg = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
+   gtk_signal_connect(GTK_OBJECT(cg), "changed",
+                      GTK_SIGNAL_FUNC(refresh_g_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), cg, TRUE, FALSE, 2);
+   gtk_widget_show(cg);
+
+   cb_l = gtk_label_new("B:");
+   gtk_misc_set_alignment(GTK_MISC(cb_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cb_l, TRUE, FALSE, 2);
+   gtk_widget_show(cb_l);
+   cb = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
+   gtk_signal_connect(GTK_OBJECT(cb), "changed",
+                      GTK_SIGNAL_FUNC(refresh_b_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), cb, TRUE, FALSE, 2);
+   gtk_widget_show(cb);
+
+   ca_l = gtk_label_new("A:");
+   gtk_misc_set_alignment(GTK_MISC(ca_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), ca_l, TRUE, FALSE, 2);
+   gtk_widget_show(ca_l);
+   ca = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
+   gtk_signal_connect(GTK_OBJECT(ca), "changed",
+                      GTK_SIGNAL_FUNC(refresh_a_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), ca, TRUE, FALSE, 2);
+   gtk_widget_show(ca);
+
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 3, 4, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(hbox);
+
+   ok = gtk_button_new_with_label("Ok");
+   gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 4, 5, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_signal_connect(GTK_OBJECT(ok), "clicked",
+                      GTK_SIGNAL_FUNC(obj_addrect_ok_cb), (gpointer) win);
+   gtk_widget_show(ok);
+
+
+   sprintf(r, "%d", GEIST_RECT(obj)->r);
+   sprintf(g, "%d", GEIST_RECT(obj)->g);
+   sprintf(b, "%d", GEIST_RECT(obj)->b);
+   sprintf(a, "%d", GEIST_RECT(obj)->a);
+
+   gtk_entry_set_text(GTK_ENTRY(cr), r);
+   gtk_entry_set_text(GTK_ENTRY(cg), g);
+   gtk_entry_set_text(GTK_ENTRY(cb), b);
+   gtk_entry_set_text(GTK_ENTRY(ca), a);
+
+   if (GEIST_RECT(obj)->name)
+      gtk_entry_set_text(GTK_ENTRY(title_entry), GEIST_RECT(obj)->name);
+
+
+   gtk_widget_show(table);
+   gtk_widget_show(win);
+
+
+   D_RETURN_(5);
+
 }

@@ -67,6 +67,8 @@ gboolean obj_text_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data);
 gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data);
+gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data);
+
 
 int
 main(int argc, char *argv[])
@@ -164,9 +166,15 @@ main(int argc, char *argv[])
    gtk_widget_show(obj_btn);
    obj_btn = gtk_button_new_with_label("Add Text");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
-                      GTK_SIGNAL_FUNC(obj_addtext_cb), NULL);
+	   GTK_SIGNAL_FUNC(obj_addtext_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
+    obj_btn = gtk_button_new_with_label("Add Rectangle");
+   gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
+	   GTK_SIGNAL_FUNC(obj_addrect_cb), NULL);
+   gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
+   gtk_widget_show(obj_btn);
+
    obj_btn = gtk_button_new_with_label("Copy");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_cpy_cb), NULL);
@@ -881,16 +889,16 @@ gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data)
 
 gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
 {
+
    addtext_ok_data *ok_data = NULL;
-   GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l,
-      *ca_l, *ok;
+   GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l, *ca_l, *ok;
    int i, num;
    char **fonts;
    GList *list = g_list_alloc();
 
    ok_data = emalloc(sizeof(addtext_ok_data));
    if (!ok_data)
-      return TRUE;
+	 return TRUE;
    fonts = geist_imlib_list_fonts(&num);
    if (!fonts)
       printf("ARGH!\n");
@@ -989,3 +997,19 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
 
    return TRUE;
 }
+
+
+
+gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
+{
+
+    geist_object *obj;
+    obj = GEIST_OBJECT(geist_rect_new_of_size(50, 50, 50, 50, 100, 250, 250,
+		    250));
+    geist_document_add_object (doc, obj);
+    geist_object_display_props(doc, obj);
+    geist_document_render_updates(doc);
+      
+    return TRUE;
+}
+
