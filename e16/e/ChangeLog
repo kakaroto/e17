@@ -3159,3 +3159,21 @@ Added shade/unshade using mouse wheel to title bar actions.
 Fix _NET_WM_MOVERESIZE (button case).
 Don't update pager if not visible.
 Avoid problems due to recursive menus.
+
+-------------------------------------------------------------------------------
+
+Thu Dec  2 22:00:21 CET 2004
+(Kim)
+
+--- 0.16.7.2 0.07 ---
+Fix button stacking.
+Fix initially iconified windows.
+Attempt to fix pointer grab problem.
+Reduce size of H/V resize only regions.
+Fix remembered settings for apps setting WM_WINDOW_ROLE to random like value
+ "<name>-<pid>-<something>-<time>".
+Simplify eesh, enable one-liners like "eesh wl a".
+Fix some session management property types.
+More pointer grab fixes.
+Still more pointer grab stuff.
+Stack desktop windows below buttons.
