@@ -276,7 +276,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 
 	closedir(dir);
 
-	if (!pl->cur_item->data)
+	if (!pl->cur_item || !pl->cur_item->data)
 		pl->cur_item = pl->items;
 
 	return 1;
