@@ -301,6 +301,7 @@ _entrance_session_icon_load(Evas_Object * o, char *file)
          snprintf(buf, PATH_MAX, "%s/images/sessions/default.png",
                   PACKAGE_DATA_DIR);
          result = evas_object_image_add(evas_object_evas_get(o));
+	 evas_object_image_file_set(result, buf, NULL);
       }
    }
    evas_object_move(result, -999, -999);
