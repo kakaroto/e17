@@ -25,3 +25,11 @@ EXTRA_DIST = README AUTHORS COPYING etox.m4 etox.spec
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = etox.m4
+
+docs:
+	        $(MAKE) -C $(top_srcdir)/doc docs
+
+if HAVE_JADE
+html-docs:
+	        $(MAKE) -C $(top_srcdir)/doc html-docs
+endif
