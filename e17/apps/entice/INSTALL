@@ -1,5 +1,15 @@
 COMPILING and INSTALLING:
 
+Prerequisites: 
+e17/libs/edb
+e17/libs/eet
+e17/libs/imlib2
+e17/libs/imlib2_loaders
+e17/libs/evas
+e17/libs/ecore
+e17/libs/edje
+e17/proto/esmart
+
 If you got a official release tar archive do:
     ./configure
     

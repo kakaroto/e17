@@ -4,8 +4,8 @@ dnl Process this file with autoconf to produce a configure script.
 rm -f config.cache
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(entice, 0.7.0)
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(entice, 0.9.0)
+AM_CONFIG_HEADER(src/config.h)
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -64,18 +64,18 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-PROG="imlib2-config";
-AC_PATH_PROG(IMLIB2_CONFIG, $PROG, "", $PATH)
-if [ test -z $IMLIB2_CONFIG ]; then
+PROG="esmart-config";
+AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
+if [ test -z $ESMART_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   echo "FATAL ERROR. ABORT.";
   exit -1;
 fi
-imlib2_cflags=`$IMLIB2_CONFIG --cflags`
-imlib2_libs=`$IMLIB2_CONFIG --libs`
-AC_SUBST(imlib2_cflags)
-AC_SUBST(imlib2_libs)
+esmart_cflags=`$ESMART_CONFIG --cflags`
+esmart_libs=`$ESMART_CONFIG --libs`
+AC_SUBST(esmart_cflags)
+AC_SUBST(esmart_libs)
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
@@ -116,9 +116,26 @@ ecore_libs=`$ECORE_CONFIG --libs`
 AC_SUBST(ecore_cflags)
 AC_SUBST(ecore_libs)
 
+PROG="edje-config";
+AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
+if [ test -z $EDJE_CONFIG ]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
+AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
+
 AC_OUTPUT([
 Makefile 
 src/Makefile 
 src/bin/Makefile
+data/Makefile
+data/fonts/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
 ])
 

@@ -5,4 +5,4 @@ Nolan Goodnight <n_goodnight@coloradocollege.edu>
 Daniel Hulme <dh286@cam.ac.uk>
   update to ecore2 and general code rewriting
 Corey Donohoe <atmos@atmos.org>
-  initial framework for IPC support under ecore2
+  migration to edje and initial IPC subsystem

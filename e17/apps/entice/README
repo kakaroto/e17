@@ -1,15 +1,8 @@
-Entice 0.6.0
+Entice 0.9.0
 
-Entice is an image viewer using the new e17 libraries. To compile this
-you need ecore (from the SPLIT tree, until raster merges it back in -
-ecore SPLIT is the Way of the Future, and apps are being updated to use
-it), evas, and Imlib. Soon it will also require edje.
+Entice is an image viewer using enlightenment libraries. You need CVS
 
-Simple installation insturctions:
-./autogen.sh
-make
-su
-make install
+Simple installation insturctions in INSTALL
 
 Entice currently takes no commandline options. It takes as arguments a
 list of images to load. Run with no arguments it tries to load all files
@@ -17,25 +10,24 @@ from the working directory (currently it even tries files that aren't
 images). You can instead give a directory name as a single argument, and
 it will load all images from this directory.
 
-On the TODO list at present, in order of randomness, are:
-* zooming behaviour is not quite there
-* logo fade behaviour is a bit arbitrary and will be neatened soon
-* ask for confirmation on file deletion
-* make dragged thumbnails fade gradually as they approach the trashcan
-  rather than suddenly as the cursor passes its boundary
-* maybe add the ability to drag images from one position to another in
-  the list
-* maybe make the file info (name & size) fade out after a few seconds
-* allow for slideshow behaviour
-* allow users to rename/move image files from within entice
+Entice will generate a ~/.entice.db file the first time you run it
+This file contains your keybinds, evas rendering engine, and preferred theme
 
-There are some known bugs also:
-* image flipping does not update the image: doing a drag or other operation
-  makes the changes appear
-* moving the mouse while scrolling the imagelist breaks it heavily
-* occasionally loses keyboard focus while fullscreen and is unable to
-  recover
-* sometimes the pop-up thumbnails get stuck in an infinite loop
+Theme: /entice/theme 
+* Entice will try to load the filename here in this order.
+ - 1. Whether the path is absolute or relative and the file exists
+ - 2. Whether the file exists in ~/.entice/
+ - 3. Whether the file exists in $PACKAGE_DATA_DIR/themes/
+ - 4. Otherwise it falls back to the default theme
+Engine: /entice/engine - int
+ - 1. Set this to 0 for software rendering
+ - 2. Set this to 1 for gl rendering
+Keys: This is slightly more complex
+  * /entice/keys/[down|up]/[0-9]+/signal - the signal emission to emit 
+  * /entice/keys/[down|up]/[0-9]+/symbol - the key that emits this signal
+  
+  Ideally you'll be able to rebind your keys dynamically in entice in the
+  future. =)
 
-Any bugs not mentioned here should be raised on Edevel, in #edevelop, or to
-dh286@cam.ac.uk since I appear to be the maintainer.
+Any bugs/patches/functionality requests should be raised on Edevel, in
+#edevelop, or to either atmos@atmos.org or dh286@cam.ac.uk via email
