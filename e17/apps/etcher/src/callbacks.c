@@ -559,10 +559,6 @@ update_image_list(void)
 {
   GtkWidget * w;
   Evas_List l;
-  Ebits_Object_Bit_State selected = NULL;
-	
-  if (selected_state)
-    selected = selected_state;
   
   w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 
@@ -581,7 +577,7 @@ update_image_list(void)
       row = gtk_clist_append(GTK_CLIST(w), &text);
       if (selected_state)
 	{
-	  if (state == selected)
+	  if (state == selected_state)
 	    gtk_clist_select_row(GTK_CLIST(w), row, 0);
 	}
     }
@@ -777,6 +773,7 @@ handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 	evas_put_data(_e, _o, "x", (void *)_x);
 	evas_put_data(_e, _o, "y", (void *)_y);
      }
+   update_image_list();
    update_widget_from_selection();
    QUEUE_DRAW;
 }
@@ -1508,31 +1505,16 @@ void
 on_delete1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-   GtkWidget *w;
-   
    if (selected_state)
      {
-	Evas_List l;
 	ebits_del_bit(bits, selected_state);
 	selected_state = NULL;
 	update_visible_selection();
 	update_widget_from_selection();
 	QUEUE_DRAW;
-	
-	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
-	gtk_clist_freeze(GTK_CLIST(w));
-	gtk_clist_clear(GTK_CLIST(w));
-	for (l = bits->bits; l; l = l->next)
-	  {
-	     Ebits_Object_Bit_State state;
-	     gchar *text;
-	     
-	     state = l->data;
-	     text = state->description->name;
-	     if (!text) text = "";
-	     gtk_clist_append(GTK_CLIST(w), &text);
-	  }
-	gtk_clist_thaw(GTK_CLIST(w));
+
+	update_relative_combos();
+	update_image_list();
      }
 }
 
@@ -2019,31 +2001,16 @@ void
 on_delete_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
-   GtkWidget *w;
-   
    if (selected_state)
      {
-	Evas_List l;
 	ebits_del_bit(bits, selected_state);
 	selected_state = NULL;
 	update_visible_selection();
 	update_widget_from_selection();
 	QUEUE_DRAW;
 	
-	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
-	gtk_clist_freeze(GTK_CLIST(w));
-	gtk_clist_clear(GTK_CLIST(w));
-	for (l = bits->bits; l; l = l->next)
-	  {
-	     Ebits_Object_Bit_State state;
-	     gchar *text;
-	     
-	     state = l->data;
-	     text = state->description->name;
-	     if (!text) text = "";
-	     gtk_clist_append(GTK_CLIST(w), &text);
-	  }
-	gtk_clist_thaw(GTK_CLIST(w));
+	update_relative_combos();
+	update_image_list();
      }
 }
 
