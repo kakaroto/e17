@@ -438,8 +438,8 @@ main(int argc, char** argv)
 
   /* List contents of a directory */
   if ((id = efsd_listdir(ec, getenv("HOME"), 2,
-			 efsd_op_ls_get_stat(),
-			 efsd_op_ls_get_mimetype())) >= 0)
+			 efsd_op_get_stat(),
+			 efsd_op_get_mimetype())) >= 0)
     printf("Listing directory, command ID %i\n", id);
   else
     printf("Couldn't issue ls command.\n");
@@ -466,7 +466,7 @@ main(int argc, char** argv)
 
   /* Start monitoring home directory */
 
-  if ((id = efsd_start_monitor(ec, "/dev")) >= 0)
+  if ((id = efsd_start_monitor(ec, "/dev", 1, efsd_op_get_stat())) >= 0)
     printf("Starting monitor, command ID %i\n", id);
   else
     printf("Couldn't issue startmon command.\n");
@@ -480,7 +480,7 @@ main(int argc, char** argv)
      monitor be in-/decremented.
   */
 
-  sleep(10);
+  sleep(30);
 
   /* Stop monitoring home directory */
 

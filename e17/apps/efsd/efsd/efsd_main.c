@@ -336,6 +336,19 @@ efsd_handle_fam_events(void)
 				D(("write() error when writing FAM event.\n"));
 			      }
 			  }
+
+			if (famev.code == FAMExists)
+			  {
+			    if (famev.filename[0] != '/')
+			      {
+				snprintf(s, MAXPATHLEN, "%s/%s", m->filename, famev.filename); 
+				efsd_handle_listdir_options(s, efr);
+			      }
+			    else
+			      {
+				efsd_handle_listdir_options(famev.filename, efr);
+			      }
+			  }
 		      }
 		  }
 

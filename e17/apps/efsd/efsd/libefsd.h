@@ -166,8 +166,11 @@ char          *efsd_metadata_get_file(EfsdEvent *ee);
 void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
 
 /* Start/stop a FAM monitor for a given file or directory.
+   Add options as desired, like with efsd_listdir().
  */
-EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename);
+EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename,
+				  int num_options, ...);
+
 EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
 
 /* Returns the full file stats in the generated reply,
@@ -186,23 +189,23 @@ EfsdCmdId      efsd_get_mimetype(EfsdConnection *ec, char *filename);
  */
 
 /* Send stat events for all files seen in a directory: */
-EfsdOption    *efsd_op_ls_get_stat(void);
+EfsdOption    *efsd_op_get_stat(void);
 
 /* Send metadata for certain key and data type for all files
    seen in a directory. The key is duplicated inside, i.e.
    you need not allocate a copy of the string before passing.
 */
-EfsdOption    *efsd_op_ls_get_metadata(char *key, EfsdDatatype type);
+EfsdOption    *efsd_op_get_metadata(char *key, EfsdDatatype type);
 
 /* Send MIME type for all files seen in a directory
 */
-EfsdOption    *efsd_op_ls_get_mimetype(void);
+EfsdOption    *efsd_op_get_mimetype(void);
 
 /* "Force" option for commands like rm, cp, as known and loved
    on the command line.
 */
-EfsdOption    *efsd_op_fs_force(void);
-EfsdOption    *efsd_op_fs_recursive(void);
+EfsdOption    *efsd_op_force(void);
+EfsdOption    *efsd_op_recursive(void);
 
 #ifdef __cplusplus
 }

@@ -28,11 +28,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd.h>
 
 /* Those fill in an existing EfsdOption struct ... */
-EfsdOption  *efsd_option_new_ls_get_stat(void);
-EfsdOption  *efsd_option_new_ls_get_metadata(char *key, EfsdDatatype type);
-EfsdOption  *efsd_option_new_ls_get_mimetype(void);
-EfsdOption  *efsd_option_new_fs_force(void);
-EfsdOption  *efsd_option_new_fs_recursive(void);
+EfsdOption  *efsd_option_new_get_stat(void);
+EfsdOption  *efsd_option_new_get_metadata(char *key, EfsdDatatype type);
+EfsdOption  *efsd_option_new_get_mimetype(void);
+EfsdOption  *efsd_option_new_force(void);
+EfsdOption  *efsd_option_new_recursive(void);
 
 /* ... and this one cleans up. The struct is NOT freed. */
 void    efsd_option_cleanup(EfsdOption *eo);

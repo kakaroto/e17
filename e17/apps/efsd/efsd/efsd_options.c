@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 
 EfsdOption *
-efsd_option_new_ls_get_stat(void)
+efsd_option_new_get_stat(void)
 {
   EfsdOption *eo;
 
@@ -43,7 +43,7 @@ efsd_option_new_ls_get_stat(void)
 
 
 EfsdOption *
-efsd_option_new_ls_get_metadata(char *key, EfsdDatatype type)
+efsd_option_new_get_metadata(char *key, EfsdDatatype type)
 {
   EfsdOption *eo;
 
@@ -58,7 +58,7 @@ efsd_option_new_ls_get_metadata(char *key, EfsdDatatype type)
 
 
 EfsdOption *
-efsd_option_new_ls_get_mimetype(void)
+efsd_option_new_get_mimetype(void)
 {
   EfsdOption *eo;
 
@@ -71,7 +71,7 @@ efsd_option_new_ls_get_mimetype(void)
 
 
 EfsdOption *
-efsd_option_new_fs_force(void)
+efsd_option_new_force(void)
 {
   EfsdOption *eo;
 
@@ -84,7 +84,7 @@ efsd_option_new_fs_force(void)
 
 
 EfsdOption *
-efsd_option_new_fs_recursive(void)
+efsd_option_new_recursive(void)
 {
   EfsdOption *eo;
 

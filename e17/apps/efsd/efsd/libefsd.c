@@ -643,10 +643,49 @@ efsd_metadata_get_file(EfsdEvent *ee)
 
 
 EfsdCmdId      
-efsd_start_monitor(EfsdConnection *ec, char *filename)
+efsd_start_monitor(EfsdConnection *ec, char *filename, int num_options, ...)
+
 {
+  va_list ap;
+  int i, j, result;
+  EfsdOption *op;
+  EfsdOption *ops = NULL;
+
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_STARTMON, filename, 0, NULL));
+
+  va_start (ap, num_options);
+  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
+
+  if (!ops)
+    D_RETURN_(-1);
+
+  for (i = 0, j = 0; i < num_options; i++)
+    {
+      op = va_arg(ap, EfsdOption*);
+
+      /* sanity check -- pass only options that make sense. */
+      if ((op->type == EFSD_OP_LS_GET_STAT) ||
+	  (op->type == EFSD_OP_LS_GET_MIME) ||
+	  (op->type == EFSD_OP_LS_GET_META))
+	{
+	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
+	  ops[j-1] = *op; 
+	}
+      else
+	{
+	  efsd_option_cleanup(op);
+	}
+
+      /* Yes. This does not clean up any strings etc pointed
+	 to -- but that gets cleaned up in file_cmd().
+      */
+      FREE(op);
+    }
+
+  result = file_cmd(ec, EFSD_CMD_STARTMON, filename, num_options, ops);
+  va_end (ap);
+
+  D_RETURN_(result);
 }
 
 
@@ -683,40 +722,40 @@ efsd_get_mimetype(EfsdConnection *ec, char *filename)
 
 
 EfsdOption    *
-efsd_op_ls_get_stat(void)
+efsd_op_get_stat(void)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_ls_get_stat());
+  D_RETURN_(efsd_option_new_get_stat());
 }
 
 
 EfsdOption    *
-efsd_op_ls_get_metadata(char *key, EfsdDatatype type)
+efsd_op_get_metadata(char *key, EfsdDatatype type)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_ls_get_metadata(key, type));
+  D_RETURN_(efsd_option_new_get_metadata(key, type));
 }
 
 
 EfsdOption    *
-efsd_op_ls_get_mimetype(void)
+efsd_op_get_mimetype(void)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_ls_get_mimetype());
+  D_RETURN_(efsd_option_new_get_mimetype());
 }
 
 
 EfsdOption    *
-efsd_op_fs_force(void)
+efsd_op_force(void)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_fs_force());
+  D_RETURN_(efsd_option_new_force());
 }
 
 
 EfsdOption    *
-efsd_op_fs_recursive(void)
+efsd_op_recursive(void)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_fs_recursive());
+  D_RETURN_(efsd_option_new_recursive());
 }
