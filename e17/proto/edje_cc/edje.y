@@ -50,8 +50,18 @@ fonts:  FONTS OPEN_BRACE statement CLOSE_BRACE
 	;
 images:  IMAGES OPEN_BRACE statement CLOSE_BRACE
 	;
-data:  DATA OPEN_BRACE statement CLOSE_BRACE 
+data:  DATA OPEN_BRACE data_statement CLOSE_BRACE 
 	;
+
+data_statement: item 
+	| item data_statement
+	;
+
+item: ITEM ':' '"' STRING '"' '"' STRING '"' ';' {
+		printf("got item %s :: %s\n", $4, $7);
+	}
+	;
+
 statement: STRING 
 	|
 	;
