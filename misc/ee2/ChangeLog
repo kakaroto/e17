@@ -160,6 +160,8 @@ Thu Feb 17 13:31:54 EST 2000
 
 Added preliminary autoconf & autmake stuff.
 
+-------------------------------------------------------------------------------
+
 Fri Feb 18 13:47:56 CST 2000
 (dphase)
 
@@ -190,3 +192,11 @@ woooo, all the imageops are back and running using the new drawing code :)
 
 -------------------------------------------------------------------------------
 
+Fri Feb 25 21:36:56 CET 2000
+(Christian)
+
+Additions to Makefile.am for "make install" support. I couldn't get configure's
+substitution mechanism to work (substituting @datadir@ gives me
+"${prefix}/share" in the code) so I'm doing the substitution in the Makefile.
+
+-------------------------------------------------------------------------------

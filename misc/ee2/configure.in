@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(ee2.h)
+AC_INIT(ee2.c)
 AM_INIT_AUTOMAKE(ee2, 0.1.0)
 
 AC_PROG_CC

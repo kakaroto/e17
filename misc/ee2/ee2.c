@@ -251,8 +251,8 @@ int main(int argc, char **argv)
 		LoadImage(argv[1]);
 		gtk_widget_show(BrWin);
 	} else {
-		sprintf(currentimage, "./ee2.png");
-		LoadImage("./ee2.png");
+		sprintf(currentimage, SPLASH_IMAGE_FILE);
+		LoadImage(SPLASH_IMAGE_FILE);
 	}
 
         gtk_window_set_default_size(GTK_WINDOW(MainWindow), imlib_image_get_width(), imlib_image_get_height());

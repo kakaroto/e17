@@ -18,6 +18,9 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+/* the splash image location */
+#define SPLASH_IMAGE_FILE "@SPLASH_IMAGE_FILE@ee2.png"
+
 /* functions */
 void AddList(char *foo);
 void LoadImage(char *imagetoload);
