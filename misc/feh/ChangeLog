@@ -1,3 +1,12 @@
+Fri Jun 23 14:46:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Mwahahaha. Asynchronous events for index, thumbnails and
+	collages. All events are handled while the images are
+	generated. You can quit, bring up menus, zoom, pan and rotate, all
+	whilst the image is still being created. Much better.
+	* Pass the progress function around instead of using the
+	context. Kills two bugs.
+
 Fri Jun 23 14:11:56 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Documentation fixups.

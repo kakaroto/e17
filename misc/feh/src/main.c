@@ -42,6 +42,8 @@ main(int argc, char **argv)
    init_parse_options(argc, argv);
 
    init_x_and_imlib();
+   
+   feh_event_init();
 
    if (opt.index)
       init_index_mode();
@@ -63,8 +65,6 @@ main(int argc, char **argv)
       opt.slideshow = 1;
       init_slideshow_mode();
    }
-
-   feh_event_init();
 
    /* main event loop */
    while (feh_main_iteration(1));

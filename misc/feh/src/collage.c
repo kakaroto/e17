@@ -56,7 +56,7 @@ init_collage_mode(void)
       {
 
       D(("Time to apply a background to blend onto\n"));
-      if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
+      if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
       {
          bg_w = feh_imlib_image_get_width(bg_im);
          bg_h = feh_imlib_image_get_height(bg_im);
@@ -129,7 +129,7 @@ init_collage_mode(void)
          last = NULL;
       }
       D(("About to load image %s\n", file->filename));
-      if (feh_load_image(&im_temp, file) != 0)
+      if (feh_load_image(&im_temp, file, NULL) != 0)
       {
          D(("Successfully loaded %s\n", file->filename));
          if (opt.verbose)
@@ -193,7 +193,11 @@ init_collage_mode(void)
             feh_display_status('x');
       }
       if (opt.display && opt.progressive)
-         winwidget_render_image(winwid, 1, 0);
+      {
+         winwidget_render_image(winwid, 0, 0);
+         if(!feh_main_iteration(0))
+               exit(0);
+      }
    }
    if (opt.verbose)
       fprintf(stdout, "\n");
@@ -217,7 +221,7 @@ init_collage_mode(void)
    if (opt.display)
    {
       if (opt.progressive && winwid)
-         winwidget_render_image(winwid, 1, 1);
+         winwidget_render_image(winwid, 0, 1);
       else
       {
          winwid =

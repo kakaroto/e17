@@ -538,7 +538,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
 
             x = ev->xmotion.x - winwid->im_x;
             y = ev->xmotion.y - winwid->im_y;
-            orig_im = feh_imlib_clone_image(winwid->im);
+            orig_im = winwid->im;
+            winwid->im = feh_imlib_clone_image(orig_im);
             imlib_context_set_image(winwid->im);
             imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
                                "/share/feh/images/about.png);", &x, &y);
@@ -561,7 +562,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
                {
                   Imlib_Image origwin;
 
-                  origwin = feh_imlib_clone_image(winwid->im);
+                  origwin = winwid->im;
+                  winwid->im = feh_imlib_clone_image(origwin);
                   feh_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
                                                  thumbnail->y, thumbnail->w,
                                                  thumbnail->h, 50, 50, 255,

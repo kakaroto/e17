@@ -77,20 +77,20 @@ init_x_and_imlib(void)
 }
 
 int
-feh_load_image_char(Imlib_Image * im, char *filename)
+feh_load_image_char(Imlib_Image * im, char *filename, Imlib_Progress_Function pfunc)
 {
    feh_file *file;
    int i;
 
    D_ENTER;
    file = feh_file_new(filename);
-   i = feh_load_image(im, file);
+   i = feh_load_image(im, file, pfunc);
    feh_file_free(file);
    D_RETURN(i);
 }
 
 int
-feh_load_image(Imlib_Image * im, feh_file * file)
+feh_load_image(Imlib_Image * im, feh_file * file, Imlib_Progress_Function pfunc)
 {
    Imlib_Load_Error err;
 
@@ -100,6 +100,9 @@ feh_load_image(Imlib_Image * im, feh_file * file)
    if (!file || !file->filename)
       D_RETURN(0);
 
+   imlib_context_set_progress_function(pfunc);
+   imlib_context_set_progress_granularity(opt.progress_gran);
+   
    /* Handle URLs */
    if ((!strncmp(file->filename, "http://", 7))
        || (!strncmp(file->filename, "ftp://", 6)))

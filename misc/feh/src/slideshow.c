@@ -51,14 +51,13 @@ init_slideshow_mode(void)
       }
       current_file = l;
       s = slideshow_create_name(file->filename);
-      if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) !=
-          NULL)
+      if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) != NULL)
       {
          free(s);
          success = 1;
          if (opt.draw_filename)
             feh_draw_filename(w);
-            winwidget_show(w);
+         winwidget_show(w);
          if (opt.slideshow_delay >= 0)
             feh_add_timer(cb_slide_timer, w, opt.slideshow_delay,
                           "SLIDE_CHANGE");
@@ -99,9 +98,11 @@ cb_reload_timer(void *data)
 void
 feh_reload_image(winwidget w)
 {
+   Imlib_Progress_Function pfunc = NULL;
+
    D_ENTER;
 
-   if(!w->file)
+   if (!w->file)
    {
       weprintf("couldn't reload, this image has no file associated with it.");
       D_RETURN_;
@@ -110,14 +111,9 @@ feh_reload_image(winwidget w)
    winwidget_free_image(w);
 
    if (opt.progressive)
-   {
-      /* Yeah, we have to do this stuff for progressive loading, so the
-         callback knows it's got to create a new image... */
-      progwin = w;
-      imlib_context_set_progress_function(progressive_load_cb);
-      imlib_context_set_progress_granularity(opt.progress_gran);
-   }
-   if ((feh_load_image(&(w->im), FEH_FILE(w->file->data))) != 0)
+      pfunc = progressive_load_cb;
+
+   if ((winwidget_loadimage(w, FEH_FILE(w->file->data), pfunc)) != 0)
    {
       if (!opt.progressive)
       {
@@ -142,6 +138,7 @@ feh_reload_image(winwidget w)
 void
 slideshow_change_image(winwidget winwid, int change)
 {
+   Imlib_Progress_Function pfunc = NULL;
    int success = 0;
    feh_list *last = NULL;
    int i = 0, file_num = 0;
@@ -221,16 +218,12 @@ slideshow_change_image(winwidget winwid, int change)
          filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
+      winwidget_rename(winwid,
+                       slideshow_create_name(FEH_FILE(current_file->data)->
+                                             filename));
       if (opt.progressive)
-      {
-         /* Yeah, we have to do this stuff for progressive loading, so the
-            callback knows it's got to create a new image... */
-         progwin = winwid;
-         imlib_context_set_progress_function(progressive_load_cb);
-         imlib_context_set_progress_granularity(opt.progress_gran);
-      }
-      winwidget_rename(winwid, slideshow_create_name(FEH_FILE(current_file->data)->filename));
-      if ((feh_load_image(&(winwid->im), FEH_FILE(current_file->data))) != 0)
+         pfunc = progressive_load_cb;
+      if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data), pfunc)) != 0)
       {
          success = 1;
          winwid->mode = MODE_NORMAL;
@@ -389,7 +382,9 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
          /* No more images. Game over ;-) */
          winwidget_destroy(winwid);
       }
-      winwidget_rename(winwid, slideshow_create_name(FEH_FILE(winwid->file->data)->filename));
+      winwidget_rename(winwid,
+                       slideshow_create_name(FEH_FILE(winwid->file->data)->
+                                             filename));
    }
    else if (opt.multiwindow)
    {

@@ -144,9 +144,8 @@ feh_menu_new(void)
    l->next = menus;
    menus = l;
 
-   imlib_context_set_progress_function(NULL);
    if (!bg)
-      feh_load_image_char(&bg, opt.menu_bg);
+      feh_load_image_char(&bg, opt.menu_bg, NULL);
    if (bg)
       m->bg = feh_imlib_clone_image(bg);
 
@@ -1207,8 +1206,7 @@ feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
-   imlib_context_set_progress_function(NULL);
-   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png") != 0)
+   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png", NULL) != 0)
    {
       winwid =
          winwidget_create_from_image(im, "About " PACKAGE, WIN_TYPE_ABOUT);

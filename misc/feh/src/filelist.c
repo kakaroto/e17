@@ -334,7 +334,7 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
       D_RETURN(1);
    }
 
-   if (im || feh_load_image(&im, file))
+   if (im || feh_load_image(&im, file, NULL))
    {
       file->info = feh_file_info_new();
 

@@ -108,6 +108,7 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
 {
    winwidget ret = NULL;
    feh_file *file = FEH_FILE(list->data);
+   Imlib_Progress_Function pfunc = NULL;
 
    D_ENTER;
 
@@ -123,14 +124,9 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
       ret->name = estrdup(file->filename);
 
    if (opt.progressive)
-   {
-      D(("Progressive loading enabled\n"));
-      progwin = ret;
-      imlib_context_set_progress_function(progressive_load_cb);
-      imlib_context_set_progress_granularity(opt.progress_gran);
-   }
+      pfunc =  progressive_load_cb;
 
-   if (winwidget_loadimage(ret, file) == 0)
+   if (winwidget_loadimage(ret, file, pfunc) == 0)
    {
       winwidget_destroy(ret);
       D_RETURN(NULL);
@@ -552,11 +548,12 @@ winwidget_destroy_all(void)
 }
 
 int
-winwidget_loadimage(winwidget winwid, feh_file * file)
+winwidget_loadimage(winwidget winwid, feh_file * file, Imlib_Progress_Function pfunc)
 {
    D_ENTER;
    D(("filename %s\n", file->filename));
-   D_RETURN(feh_load_image(&(winwid->im), file));
+   progwin = winwid;
+   D_RETURN(feh_load_image(&(winwid->im), file, pfunc));
 }
 
 void
