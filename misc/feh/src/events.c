@@ -164,6 +164,10 @@ feh_event_handle_ButtonPress(XEvent * ev)
             winwid->im_click_offset_x = 0;
          if (winwid->im_click_offset_y < 0)
             winwid->im_click_offset_y = 0;
+          if (winwid->im_click_offset_x > winwid->im_w)
+            winwid->im_click_offset_x = winwid->im_w;
+          if (winwid->im_click_offset_y > winwid->im_h)
+            winwid->im_click_offset_y = winwid->im_h;
          winwidget_render_image(winwid, 0, 0);
       }
    }
