@@ -825,8 +825,9 @@ void etox_style_geometry(Etox_Style * es, int *x, int *y, int *w, int *h)
  * Returns no value. The dimensions of the found character are stored in
  * @char_x, @char_y, @char_w, and @char_h.
  */
-void etox_style_text_at(Evas_Object *obj, int index, Evas_Coord *x, Evas_Coord *y,
-		    Evas_Coord *w, Evas_Coord *h)
+void
+etox_style_text_at(Evas_Object *obj, int index, Evas_Coord *x, Evas_Coord *y,
+		   Evas_Coord *w, Evas_Coord *h)
 {
 	Etox_Style * es;
 

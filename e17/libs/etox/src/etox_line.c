@@ -630,41 +630,43 @@ void
 etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
 			    Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 {
-  Evas_Object *bit = NULL;
-  Evas_List *l;
-  int sum = 0;
+	Evas_Object *bit = NULL;
+	Evas_List *l;
+	int sum = 0;
 
-  /* find the bit containing the character */
-  for (l = line->bits; l; l = l->next)
-  {
-    int length;
+	/* find the bit containing the character */
+	for (l = line->bits; l; l = l->next) {
+	int length;
     
-    bit = l->data;
-    length = etox_style_length(bit);
+		bit = l->data;
+		length = etox_style_length(bit);
 
-    if (sum + length > index)
-      break;
+		if (sum + length > index)
+			break;
 
-    sum += length;
+		sum += length;
 
-    if (!l->next)
-      bit = NULL;
-  }
+		if (!l->next)
+			bit = NULL;
+	}
 
-  /* No bit intersects, so set the geometry to the end of the
-   * line, with the average character width on the line
-   */
-  if (!bit)
-  {
-    if (h) *h = line->h;
-    if (w) *w = line->w / line->length;
-    if (y) *y = line->y;
-    if (x) *x = line->x + line->w;
-    return;
-  }
-
-  /* get the geometry from the bit */
-  etox_style_text_at(bit, index - sum, x, y, w, h); 
+	/*
+	 * No bit intersects, so set the geometry to the end of the
+	 * line, with the average character width on the line
+	 */
+	if (!bit) {
+		if (h)
+			*h = line->h;
+		if (w)
+			*w = line->w / line->length;
+		if (y)
+			*y = line->y;
+		if (x)
+			*x = line->x + line->w;
+	}
+	else
+		/* get the geometry from the bit */
+		etox_style_text_at(bit, index - sum, x, y, w, h); 
 }
 
 void

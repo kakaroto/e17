@@ -319,7 +319,7 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 		et->h -= end->h;
 		etox_line_merge_prepend(start, end);
 		etox_line_free(start);
-		et->length += end->length;
+		et->length += end->length + 1;
 		et->h += end->h;
 		if (end->w > et->tw)
 			et->tw = end->w;
@@ -526,7 +526,7 @@ char *etox_get_text(Evas_Object * obj)
 	 * etox_get_length() includes the \n's at the end of each line
 	 * whereas et->length does not.
 	 */
-	ret = (char *) calloc(etox_get_length(obj), sizeof(char));
+	ret = (char *) calloc(et->length, sizeof(char));
 
 	temp = ret;
 
@@ -708,7 +708,7 @@ etox_get_length(Evas_Object *obj)
 	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
 
 	et = evas_object_smart_data_get(obj);
-	return et->length + evas_list_count(et->lines) - 1;
+	return et->length;
 }
 
 
@@ -900,8 +900,8 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 {
 	Etox *et;
 	int sum;
-	Evas_Object *bit;
 	Etox_Line *line = NULL;
+	Evas_Object *bit = NULL;
 	Evas_Coord tx, ty, tw, th;
 	Evas_List *l;
 
@@ -934,17 +934,15 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 			break;
 	}
 
-	if (!line || !line->bits)
-		return sum;
+	if (!line)
+		line = et->lines->last->data;
 
 	/*
 	 * Bring the coordinate into the line if it falls outside, this may
 	 * happen with centered or right alignment.
 	 */
-	bit = line->bits->data;
-	evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
-	if (xc < tx)
-		xc = tx;
+	if (xc < line->x)
+		xc = line->x;
 
 	/*
 	 * Find the bit that contains the character, be sure to check that
@@ -964,7 +962,6 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 	 * character's index.
 	 */
 	if (!l) {
-		bit = line->bits->data;
 
 		/*
 		 * Estimate the average width and height of the line.
@@ -980,10 +977,11 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 		 */
 		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 		if (x)
-			*x = tx + line->w;
+			*x = tx + tw;
 		if (y)
 			*y = line->y;
-	} else {
+	}
+	else {
 
 		/*
 		 * Now get the actual geometry from the bit
@@ -1248,9 +1246,10 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 		bit = etox_style_new(et->evas, text, et->context->style);
 		evas_object_smart_member_add(bit, et->smart_obj);
 		evas_object_color_set(bit, et->context->r, et->context->g,
-				 et->context->b, et->context->a);
+				      et->context->b, et->context->a);
 		evas_object_clip_set(bit, et->clip);
-		etox_style_set_font(bit, et->context->font, et->context->font_size);
+		etox_style_set_font(bit, et->context->font,
+				    et->context->font_size);
 		etox_line_append(line, bit);
 		evas_object_show(bit);
 	}
