@@ -45,6 +45,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 */
 	ewl_container_set_redirect(EWL_CONTAINER(menu),
 				   EWL_CONTAINER(menu->popbox));
+	ewl_widget_set_internal(menu->popbox, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
