@@ -1,0 +1,123 @@
+group {
+  name: "express.buddy";
+  data {
+    item: "default.w" "75";
+    item: "default.h" "75";
+  }
+  parts {
+  
+    part {
+      name: "express.buddy.icon";
+      type: SWALLOW;
+      clip_to: "clip.icon";
+      description {
+        state: "default" 0.0;
+        aspect: 1 1;
+        rel2 {
+          to_y: "express.buddy.name";
+          relative: 1 0;
+          offset: -1 -3;
+        }
+      }
+    }
+
+    part {
+      name: "clip.icon";
+      type: RECT;
+      description {
+        state: "default" 0.0;
+        color: 255 255 255 128;
+      }
+      description {
+        state: "active" 0.0;
+        color: 255 255 255 255;
+      }
+      description {
+        state: "chatting" 0.0;
+        color: 255 255 255 128;
+      }
+      description {
+        state: "new_message" 0.0;
+        color: 255 255 255 128;
+      }
+    }
+
+    part {
+      name: "express.buddy.name";
+      type: TEXT;
+      description {
+        state: "default" 0.0;
+        color: 0 0 0 128;
+        rel1 {
+          relative: 0 1;
+          offset: 0 -11;
+        }
+        rel2 {
+          offset: -1 -1;
+        }
+        text {
+          text: "name";
+          font: "font.buddyname";
+          size: 10;
+          min: 1 1;
+          align: 0.5 0.5;
+        }
+      }
+      description {
+        state: "active" 0.0;
+        inherit: "default" 0.0;
+        color: 0 0 0 255;
+      }
+      description {
+        state: "chatting" 0.0;
+        inherit: "default" 0.0;
+        color: 0 130 0 128;
+      }
+      description {
+        state: "new_message" 0.0;
+        inherit: "default" 0.0;
+        color: 130 0 0 128;
+      }
+    }
+  
+  }
+  programs {
+    program {
+      name: "activate";
+      signal: "active";
+      source: "*";
+      action: STATE_SET "active" 0.0;
+      transition: DECELERATE 0.25;
+      target: "clip.icon";
+      target: "express.buddy.name";
+    }
+    program {
+      name: "deactivate";
+      signal: "unactive";
+      source: "*";
+      action: STATE_SET "default" 0.0;
+      transition: DECELERATE 0.25;
+      target: "clip.icon";
+      target: "express.buddy.name";
+    }
+    program {
+      name: "chatting";
+      signal: "chatting";
+      source: "*";
+      action: STATE_SET "chatting" 0.0;
+      transition: DECELERATE 0.25;
+      target: "clip.icon";
+      target: "express.buddy.name";
+    }
+    program {
+      name: "new_message";
+      signal: "new_message";
+      source: "*";
+      action: STATE_SET "new_message" 0.0;
+      transition: DECELERATE 0.25;
+      target: "clip.icon";
+      target: "express.buddy.name";
+    }
+  
+  }
+}

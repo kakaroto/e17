@@ -1,0 +1,24 @@
+/*****************************************************
+ *  eim.edc
+ *  by rephorm
+ *
+ *  initial design for an efl IM client
+ *
+ ***************************************************/
+
+#define WINTER_BLUE 229 239 255
+#define WINTER_COLOR WINTER_BLUE
+
+images {
+#include "images.edc"
+}
+
+fonts {
+  font: "Vera.ttf" "font.buddyname";
+}
+
+collections {
+#include "base.edc"
+#include "message.edc"
+#include "buddy.edc"
+}

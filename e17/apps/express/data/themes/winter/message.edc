@@ -1,0 +1,121 @@
+group {
+  name: "express.message";
+
+  parts {
+    
+    part {
+      name: "balloon";
+      description {
+        state: "default" 0.0;
+        image.normal: "balloon.png";
+        image.border: 10 8 5 11;
+        color_class: "express.message.received";
+        rel1 {
+          to_x: "express.message.icon";
+          relative: 1 0;
+          offset: -3 0;
+        }
+        rel2 {
+          to_y: "express.message.icon";
+          relative: 1 0;
+          offset: -41 0;
+        }
+      }
+      description {
+        state: "right" 0.0;
+        image.normal: "balloon2.png";
+        image.border: 5 13 5 11;
+        color_class: "express.message.sent";
+        rel1 {
+          relative: 0 0;
+          offset: 40 0;
+        }
+        rel2 {
+          to: "express.message.icon";
+          relative: 0 0;
+          offset: 2 0;
+        }
+      }
+    }
+
+    part {
+      name: "express.message.icon";
+      type: SWALLOW;
+      description {
+        state: "default" 0.0;
+        rel1.relative: 0 1;
+        rel1.offset: 0 -33;
+        rel2.relative: 0 1;
+        rel2.offset: 32 -1;
+      }
+      description {
+        state: "right" 0.0;
+        rel1.relative: 1 1;
+        rel1.offset: -33 -33;
+        rel2.relative: 1 1;
+        rel2.offset: -1 -1;
+      }
+    }
+
+    part {
+      name: "express.message.text";
+      type: SWALLOW;
+      description {
+        state: "default" 0.0;
+        rel1 {
+          to: "balloon";
+          relative: 0 0;
+          offset: 13 13;
+        }
+        rel2 {
+          to: "balloon";
+          relative: 1 1;
+          offset: -10 -16;
+        }
+      }
+      description {
+        state: "right" 0.0;
+        rel1 {
+          to: "balloon";
+          relative: 0 0;
+          offset: 10 13;
+        }
+        rel2 {
+          to: "balloon";
+          relative: 1 1;
+          offset: -13 -16;
+        }
+      }
+    }
+
+/*
+    part {
+      name: "";
+      description {
+        state: "default" 0.0;
+      }
+    }
+    */
+  }
+
+  programs {
+    program {
+      name: "received";
+      signal: "sender";
+      source: "user";
+      action: STATE_SET "right" 0.0;
+      target: "balloon";
+      target: "express.message.icon";
+      target: "express.message.text";
+    }
+    program {
+      name: "sent";
+      signal: "sender";
+      source: "buddy";
+      action: STATE_SET "default" 0.0;
+      target: "balloon";
+      target: "express.message.icon";
+      target: "express.message.text";
+    }
+  }
+}
