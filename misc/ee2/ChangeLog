@@ -200,3 +200,12 @@ substitution mechanism to work (substituting @datadir@ gives me
 "${prefix}/share" in the code) so I'm doing the substitution in the Makefile.
 
 -------------------------------------------------------------------------------
+
+Fri Feb 25 13:16:43 PST 2000
+(KainX)
+
+Did a complete overhaul on the code.  Functionality hasn't changed, but the
+code is much more organized and streamlined.  There will be interface changes
+to come.
+
+-------------------------------------------------------------------------------

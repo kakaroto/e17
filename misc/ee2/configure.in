@@ -11,7 +11,9 @@ AM_PATH_GTK(1.2.0, ,AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
 AC_CHECK_LIB(Imlib2, imlib_context_set_visual,,AC_MSG_ERROR(Cannot find Imlib2.))
 AC_CHECK_HEADER(Imlib2.h,,AC_MSG_ERROR(Cannot find Imlib2 header files.))
 
-AC_OUTPUT([
-Makefile
-])
+DATA_DIR=`eval eval eval eval eval echo "${datadir}/${PACKAGE}"`
+AC_DEFINE_UNQUOTED(DATA_DIR, "$DATA_DIR")
+
+AM_CONFIG_HEADER(config.h)
+AC_OUTPUT(Makefile)
 

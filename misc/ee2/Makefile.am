@@ -1,19 +1,16 @@
+AUTOMAKE_OPTIONS = foreign
+
 bin_PROGRAMS = ee2
 
-ee2_SOURCES = 		\
-	ee2.h		\
-	ee2.c
+ee2_SOURCES = about.c browser.c menus.c ee2.c ee2.h
 
 CFLAGS := $(CPPFLAGS) $(CFLAGS) `gtk-config --cflags` 
 
 ee2_LDFLAGS = `gtk-config --libs`
 
-pkgdata_DATA = 		\
-	ee2.png		\
-	ee2-alpha.png
+IMAGES = ee2.png ee2-alpha.png
+EXTRA_DIST = $(IMAGES)
 
-ee2.o:  ee2.c ee2.h
-	$(COMPILE) -c ee2.c
-
-ee2.h:	ee2.h.in
-	sed 's/@SPLASH_IMAGE_FILE@/'`echo $(pkgdatadir) | sed 's/\//\\\\\//g'`'\//' ee2.h.in > ee2.h 
+install-data-hook:
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	for i in $(IMAGES); do $(INSTALL_DATA) $$i $(DESTDIR)$(pkgdatadir) ; done
