@@ -170,7 +170,7 @@ AC_CHECK_LIB(Xtst, XTestQueryExtension, XTST_LIBS=-lXtst, , $X_LIBS)
 AC_SUBST(XTST_LIBS)
 AC_CHECK_LIB(Xext, XkbQueryExtension, AC_DEFINE(WITH_TARTY_WARP), , $X_LIBS)
 
-AC_ARG_ENABLE(upgrade, [  --enable-zoom    compile with zoom support
+AC_ARG_ENABLE(zoom, [  --enable-zoom    compile with zoom support
 [default=yes]], ,enable_zoom=yes)
 
 if test "x$enable_zoom" = "xyes"; then
