@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-08 12:38+1000\n"
+"POT-Creation-Date: 2003-07-12 07:20+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: src/actions.c:273 src/borders.c:2216 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
-#: src/tooltips.c:1021
+#: src/tooltips.c:970
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u 参照残っています\n"
@@ -256,7 +256,7 @@ msgstr "button エラー"
 msgid "ColorModClass Error!"
 msgstr "colormodifier エラー"
 
-#: src/comms.c:2073
+#: src/comms.c:2053
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -273,29 +273,29 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2076
+#: src/comms.c:2056
 msgid "E IPC Error"
 msgstr "E IPC エラー"
 
-#: src/config.c:240 src/config.c:474 src/config.c:553 src/config.c:867
-#: src/config.c:984 src/config.c:1225 src/config.c:1353 src/config.c:1458
-#: src/config.c:1674 src/config.c:1922 src/config.c:1994 src/config.c:2089
-#: src/config.c:2347 src/config.c:2564 src/config.c:2828 src/config.c:2922
-#: src/config.c:3002 src/config.c:3105 src/config.c:3417
+#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:881
+#: src/config.c:998 src/config.c:1239 src/config.c:1367 src/config.c:1472
+#: src/config.c:1688 src/config.c:1936 src/config.c:2008 src/config.c:2103
+#: src/config.c:2361 src/config.c:2578 src/config.c:2842 src/config.c:2935
+#: src/config.c:2969 src/config.c:3118 src/config.c:3353
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータを無視\n"
 
-#: src/config.c:246 src/config.c:480 src/config.c:561 src/config.c:873
-#: src/config.c:990 src/config.c:1231 src/config.c:1359 src/config.c:1466
-#: src/config.c:1682 src/config.c:1928 src/config.c:2000 src/config.c:2097
-#: src/config.c:2353 src/config.c:2572 src/config.c:2834 src/config.c:3111
-#: src/config.c:3425
+#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:887
+#: src/config.c:1004 src/config.c:1245 src/config.c:1373 src/config.c:1480
+#: src/config.c:1696 src/config.c:1942 src/config.c:2014 src/config.c:2111
+#: src/config.c:2367 src/config.c:2586 src/config.c:2848 src/config.c:3124
+#: src/config.c:3361
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
 
-#: src/config.c:437 src/config.c:515
+#: src/config.c:451 src/config.c:529
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -308,7 +308,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:444
+#: src/config.c:458
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
@@ -316,7 +316,7 @@ msgstr ""
 "Warning:  textclass.cfg ファイル内の文字設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:522
+#: src/config.c:536
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
@@ -324,7 +324,7 @@ msgstr ""
 "Warning:  slideouts.cfg ファイル内のスライド設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:834
+#: src/config.c:848
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -337,7 +337,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:841
+#: src/config.c:855
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
@@ -345,7 +345,7 @@ msgstr ""
 "Warning:  control.cfg ファイル内の各種設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:951 src/config.c:1184
+#: src/config.c:965 src/config.c:1198
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
@@ -353,7 +353,7 @@ msgstr ""
 "Warning:  menus.cfg ファイル内のメニュー設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1321
+#: src/config.c:1335
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
@@ -361,7 +361,7 @@ msgstr ""
 "Warning:  border.cfg ファイル内のウィンドウ枠部品の設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1411
+#: src/config.c:1425
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
@@ -369,7 +369,7 @@ msgstr ""
 "Warning:  borders.cfg ファイル内のウィンドウ枠全体の設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1630
+#: src/config.c:1644
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
@@ -377,7 +377,7 @@ msgstr ""
 "Warning:  buttons.cfg ファイル内のウィンドウのボタン設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1886 src/config.c:1969
+#: src/config.c:1900 src/config.c:1983
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -385,11 +385,11 @@ msgstr ""
 "Warning:  desktops.cfg ファイル内のデスクトップ背景設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:1981
+#: src/config.c:1995
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "イースターエッグです! アイコンボックスはまだ実装されていません\n"
 
-#: src/config.c:2012
+#: src/config.c:2026
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -397,7 +397,7 @@ msgstr ""
 "Warning:  iconbox.cfg ファイル内のアイコンボックス設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2048
+#: src/config.c:2062
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -405,7 +405,7 @@ msgstr ""
 "Warning:  sound.cfg 内のサウンド設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2302
+#: src/config.c:2316
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -418,7 +418,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2317
+#: src/config.c:2331
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -426,7 +426,7 @@ msgstr ""
 "Warning:  actionclasses.cfg ファイル内の ACLASS 設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2516
+#: src/config.c:2530
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -439,7 +439,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2524
+#: src/config.c:2538
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -447,7 +447,7 @@ msgstr ""
 "Warning:  imageclasses.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2764
+#: src/config.c:2778
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -460,7 +460,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2789
+#: src/config.c:2803
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -470,7 +470,7 @@ msgstr ""
 "きちんと最後まで書かれていないようです。\n"
 "出力は良くないでしょう。\n"
 
-#: src/config.c:2882
+#: src/config.c:2895
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -483,7 +483,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2890
+#: src/config.c:2903
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -491,7 +491,7 @@ msgstr ""
 "Warning: tooltips.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2929
+#: src/config.c:2942
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -499,28 +499,7 @@ msgstr ""
 "Warning: 設定ファイル内の特殊効果設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2966
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current Extras definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"Warning: 設定ファイルの Extras 定義部分の途中に出てきた次の文字列を\n"
-"どうしたらいいか決定できません :\n"
-"%s\n"
-"無視して次に行きます...\n"
-
-#: src/config.c:2975
-msgid ""
-"Warning: Configuration appears to have ended before we were\n"
-"Done loading an Extras block.  Outcome is likely not good.\n"
-msgstr ""
-"Warning: 設定ファイル内の Extras 設定部分が\n"
-"きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
-
-#: src/config.c:3066
+#: src/config.c:3033
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -533,7 +512,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3075
+#: src/config.c:3042
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -541,7 +520,28 @@ msgstr ""
 "Warning: iconbox.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3182
+#: src/config.c:3079
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Extras definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Warning: 設定ファイルの Extras 定義部分の途中に出てきた次の文字列を\n"
+"どうしたらいいか決定できません :\n"
+"%s\n"
+"無視して次に行きます...\n"
+
+#: src/config.c:3088
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an Extras block.  Outcome is likely not good.\n"
+msgstr ""
+"Warning: 設定ファイル内の Extras 設定部分が\n"
+"きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
+
+#: src/config.c:3195
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -554,7 +554,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3190
+#: src/config.c:3203
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -562,7 +562,7 @@ msgstr ""
 "Warning: windowmatches.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3240
+#: src/config.c:3239
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -579,23 +579,23 @@ msgstr ""
 "原因は次のどちらかが考えられます : そのプログラムが存在しないため、\n"
 "存在してもあなたに実行許可がないため。\n"
 
-#: src/config.c:3245
+#: src/config.c:3244
 msgid "error"
 msgstr "エラー"
 
-#: src/config.c:3434
+#: src/config.c:3370
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:3435 src/config.c:3465
+#: src/config.c:3371 src/config.c:3401
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:3436 src/config.c:3466
+#: src/config.c:3372 src/config.c:3402
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:3438
+#: src/config.c:3374
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -632,11 +632,11 @@ msgstr ""
 "しなかったのでしょう。そのテーマは Enlightenment の新しいバージョン\n"
 "で追加された新機能を採用しているのです。\n"
 
-#: src/config.c:3464
+#: src/config.c:3400
 msgid "User Config Version ERROR"
 msgstr "ユーザ設定ファイルのバージョンエラー"
 
-#: src/config.c:3468
+#: src/config.c:3404
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -665,7 +665,7 @@ msgstr ""
 "こうすれば、再び設定ファイルを好きなように変更できます。\n"
 "\n"
 
-#: src/config.c:3691
+#: src/config.c:3690
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -680,7 +680,7 @@ msgstr ""
 "ディスクの空き容量がなかったり、quota の制限だったり、\n"
 "書き込み禁止だったりするのが原因かもしれません。\n"
 
-#: src/config.c:3700
+#: src/config.c:3699
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -731,27 +731,27 @@ msgstr ""
 "ドキュメントを読んでさらなる情報を得てください。\n"
 "\n"
 
-#: src/config.c:3765
+#: src/config.c:3764
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
-#: src/config.c:4205
+#: src/config.c:4203
 msgid "Recover system config?"
 msgstr "システムの設定の復旧をしますか？"
 
-#: src/config.c:4205
+#: src/config.c:4203
 msgid "Yes, Attempt recovery"
 msgstr "はい、復旧を試みます"
 
-#: src/config.c:4206
+#: src/config.c:4204
 msgid "Restart and try again"
 msgstr "再起動してもう一度試してみる"
 
-#: src/config.c:4206
+#: src/config.c:4204
 msgid "Quit and give up"
 msgstr "あきらめて終了する"
 
-#: src/config.c:4208
+#: src/config.c:4206
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1242,19 +1242,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "imageclass エラー"
 
-#: src/iconify.c:2383
+#: src/iconify.c:2364
 msgid "Iconbox Options"
 msgstr "アイコンボックス オプション"
 
-#: src/iconify.c:2388
+#: src/iconify.c:2369
 msgid "This Iconbox Settings..."
 msgstr "このアイコンボックスの設定..."
 
-#: src/iconify.c:2391
+#: src/iconify.c:2372
 msgid "Close Iconbox"
 msgstr "アイコンボックスを閉じる"
 
-#: src/iconify.c:2393
+#: src/iconify.c:2374
 msgid "Create New Iconbox"
 msgstr "アイコンボックスの新規作成"
 
@@ -1262,11 +1262,11 @@ msgstr "アイコンボックスの新規作成"
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:4893
+#: src/ipc.c:4862
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC コマンド ヘルプ"
 
-#: src/ipc.c:4897 src/ipc.c:4936
+#: src/ipc.c:4866 src/ipc.c:4905
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1274,7 +1274,7 @@ msgstr ""
 "\n"
 "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:4899
+#: src/ipc.c:4868
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1284,15 +1284,15 @@ msgstr ""
 "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 "\n"
 
-#: src/ipc.c:4938
+#: src/ipc.c:4907
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 
-#: src/ipc.c:4940
+#: src/ipc.c:4909
 msgid "<command> : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
-#: src/ipc.c:5046
+#: src/ipc.c:5015
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -2835,7 +2835,7 @@ msgstr ""
 "リリースされたものでしたら、Enlightenment の開発者はそのサーバを\n"
 "使ったこともなければ、それについて聞いたこともありません。\n"
 
-#: src/setup.c:624
+#: src/setup.c:623
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2846,7 +2846,7 @@ msgstr ""
 "致命的な状況です。\n"
 "このファイルを消してください。\n"
 
-#: src/setup.c:631
+#: src/setup.c:630
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2859,7 +2859,7 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/setup.c:640
+#: src/setup.c:639
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2872,7 +2872,7 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/setup.c:648
+#: src/setup.c:647
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -3031,7 +3031,7 @@ msgstr ""
 msgid "Bad Theme"
 msgstr "だめなテーマです"
 
-#: src/tooltips.c:1023
+#: src/tooltips.c:972
 msgid "ToolTip Error!"
 msgstr "tooltip エラー"
 

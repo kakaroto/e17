@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-08 12:38+1000\n"
+"POT-Creation-Date: 2003-07-12 07:20+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: src/actions.c:273 src/borders.c:2216 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
-#: src/tooltips.c:1021
+#: src/tooltips.c:970
 #, c-format
 msgid "%u references remain\n"
 msgstr ""
@@ -249,7 +249,7 @@ msgstr ""
 msgid "ColorModClass Error!"
 msgstr ""
 
-#: src/comms.c:2073
+#: src/comms.c:2053
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -260,29 +260,29 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/comms.c:2076
+#: src/comms.c:2056
 msgid "E IPC Error"
 msgstr "Enlightenment Inter Process Communication fout"
 
-#: src/config.c:240 src/config.c:474 src/config.c:553 src/config.c:867
-#: src/config.c:984 src/config.c:1225 src/config.c:1353 src/config.c:1458
-#: src/config.c:1674 src/config.c:1922 src/config.c:1994 src/config.c:2089
-#: src/config.c:2347 src/config.c:2564 src/config.c:2828 src/config.c:2922
-#: src/config.c:3002 src/config.c:3105 src/config.c:3417
+#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:881
+#: src/config.c:998 src/config.c:1239 src/config.c:1367 src/config.c:1472
+#: src/config.c:1688 src/config.c:1936 src/config.c:2008 src/config.c:2103
+#: src/config.c:2361 src/config.c:2578 src/config.c:2842 src/config.c:2935
+#: src/config.c:2969 src/config.c:3118 src/config.c:3353
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
-#: src/config.c:246 src/config.c:480 src/config.c:561 src/config.c:873
-#: src/config.c:990 src/config.c:1231 src/config.c:1359 src/config.c:1466
-#: src/config.c:1682 src/config.c:1928 src/config.c:2000 src/config.c:2097
-#: src/config.c:2353 src/config.c:2572 src/config.c:2834 src/config.c:3111
-#: src/config.c:3425
+#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:887
+#: src/config.c:1004 src/config.c:1245 src/config.c:1373 src/config.c:1480
+#: src/config.c:1696 src/config.c:1942 src/config.c:2014 src/config.c:2111
+#: src/config.c:2367 src/config.c:2586 src/config.c:2848 src/config.c:3124
+#: src/config.c:3361
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIGURATIE: benodigde gegevens ontbreken in \"%s\"\n"
 
-#: src/config.c:437 src/config.c:515
+#: src/config.c:451 src/config.c:529
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -295,7 +295,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:444
+#: src/config.c:458
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
@@ -304,7 +304,7 @@ msgstr ""
 "klaar zijn met het laden van het huidige tekstblok. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:522
+#: src/config.c:536
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
@@ -313,7 +313,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige slideout. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:834
+#: src/config.c:848
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -326,7 +326,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:841
+#: src/config.c:855
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
@@ -335,7 +335,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige control. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:951 src/config.c:1184
+#: src/config.c:965 src/config.c:1198
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
@@ -344,7 +344,7 @@ msgstr ""
 "klaar zijn met het laden van het huidige menu. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:1321
+#: src/config.c:1335
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
@@ -353,7 +353,7 @@ msgstr ""
 "klaar zijn met het laden van het huidige BorderPart. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:1411
+#: src/config.c:1425
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
@@ -362,7 +362,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige Main Border. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:1630
+#: src/config.c:1644
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
@@ -371,7 +371,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige Button. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:1886 src/config.c:1969
+#: src/config.c:1900 src/config.c:1983
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -380,11 +380,11 @@ msgstr ""
 "klaar zijn met het laden van de huidige Desktop. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:1981
+#: src/config.c:1995
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Grapje! Ikoondozen zijn nog niet geimplementeerd\n"
 
-#: src/config.c:2012
+#: src/config.c:2026
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -393,7 +393,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige Iconbox. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2048
+#: src/config.c:2062
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -402,7 +402,7 @@ msgstr ""
 "klaar zijn met het laden van het huidige Sound. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2302
+#: src/config.c:2316
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -415,7 +415,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:2317
+#: src/config.c:2331
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -424,7 +424,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige ActionClass. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2516
+#: src/config.c:2530
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -437,7 +437,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:2524
+#: src/config.c:2538
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -446,7 +446,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige ImageClass. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2764
+#: src/config.c:2778
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -459,7 +459,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:2789
+#: src/config.c:2803
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -469,7 +469,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige ColorModifier. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2882
+#: src/config.c:2895
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -482,7 +482,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:2890
+#: src/config.c:2903
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -491,7 +491,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige ToolTip. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2929
+#: src/config.c:2942
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -500,29 +500,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige FX. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:2966
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current Extras definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"Waarschuwing: ik kan niet bepalen wat te doen met\n"
-"de volgende tekst in het midden van de huidige Extras definitie:\n"
-"%s\n"
-"Zal negeren en doorgaan...\n"
-
-#: src/config.c:2975
-msgid ""
-"Warning: Configuration appears to have ended before we were\n"
-"Done loading an Extras block.  Outcome is likely not good.\n"
-msgstr ""
-"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
-"klaar zijn met het laden van de huidige Extras. Resultaat zal\n"
-"waarschijnlijk niet ok zijn.\n"
-
-#: src/config.c:3066
+#: src/config.c:3033
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -535,7 +513,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:3075
+#: src/config.c:3042
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -544,7 +522,29 @@ msgstr ""
 "klaar zijn met het laden van de huidige Iconbox. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:3182
+#: src/config.c:3079
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Extras definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige Extras definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
+
+#: src/config.c:3088
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an Extras block.  Outcome is likely not good.\n"
+msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Extras. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
+
+#: src/config.c:3195
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -557,7 +557,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:3190
+#: src/config.c:3203
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -566,7 +566,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige WindowMatch. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:3240
+#: src/config.c:3239
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -583,23 +583,23 @@ msgstr ""
 "Dit komt waarschijnlij omdat het programma niet bestaat\n"
 "of omdat U het niet kan uitvoeren.\n"
 
-#: src/config.c:3245
+#: src/config.c:3244
 msgid "error"
 msgstr "fout"
 
-#: src/config.c:3434
+#: src/config.c:3370
 msgid "Theme versioning ERROR"
 msgstr "Thema versie fout"
 
-#: src/config.c:3435 src/config.c:3465
+#: src/config.c:3371 src/config.c:3401
 msgid "Restart with Defaults"
 msgstr "Herstarten met standaard instellingen"
 
-#: src/config.c:3436 src/config.c:3466
+#: src/config.c:3372 src/config.c:3402
 msgid "Abort and Exit"
 msgstr "Afbreken en afsluiten"
 
-#: src/config.c:3438
+#: src/config.c:3374
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -620,11 +620,11 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:3464
+#: src/config.c:3400
 msgid "User Config Version ERROR"
 msgstr "Gebruikers Configuratie Versie FOUT"
 
-#: src/config.c:3468
+#: src/config.c:3404
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -641,7 +641,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3691
+#: src/config.c:3690
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -656,7 +656,7 @@ msgstr ""
 "Dit kan zijn vanwege een gebrek aan schijfruimte, quota\n"
 "of bestandspermissies.\n"
 
-#: src/config.c:3700
+#: src/config.c:3699
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -684,27 +684,27 @@ msgid ""
 "additional information.\n"
 msgstr ""
 
-#: src/config.c:3765
+#: src/config.c:3764
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
-#: src/config.c:4205
+#: src/config.c:4203
 msgid "Recover system config?"
 msgstr "Systeem configuratie redden ?"
 
-#: src/config.c:4205
+#: src/config.c:4203
 msgid "Yes, Attempt recovery"
 msgstr "Ja, probeer te redden"
 
-#: src/config.c:4206
+#: src/config.c:4204
 msgid "Restart and try again"
 msgstr "Herstart en probeer opnieuw"
 
-#: src/config.c:4206
+#: src/config.c:4204
 msgid "Quit and give up"
 msgstr "Stop en geef op"
 
-#: src/config.c:4208
+#: src/config.c:4206
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1067,19 +1067,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr ""
 
-#: src/iconify.c:2383
+#: src/iconify.c:2364
 msgid "Iconbox Options"
 msgstr "Icoonbox Opties"
 
-#: src/iconify.c:2388
+#: src/iconify.c:2369
 msgid "This Iconbox Settings..."
 msgstr "Instellingen van deze Icoonbox"
 
-#: src/iconify.c:2391
+#: src/iconify.c:2372
 msgid "Close Iconbox"
 msgstr "Sluit Icoonbox"
 
-#: src/iconify.c:2393
+#: src/iconify.c:2374
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
@@ -1087,11 +1087,11 @@ msgstr "Maak een nieuwe Icoonbox"
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:4893
+#: src/ipc.c:4862
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:4897 src/ipc.c:4936
+#: src/ipc.c:4866 src/ipc.c:4905
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1099,22 +1099,22 @@ msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:4899
+#: src/ipc.c:4868
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:4938
+#: src/ipc.c:4907
 msgid "use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:4940
+#: src/ipc.c:4909
 msgid "<command> : <description>\n"
 msgstr ""
 
-#: src/ipc.c:5046
+#: src/ipc.c:5015
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -2443,7 +2443,7 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/setup.c:624
+#: src/setup.c:623
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2451,7 +2451,7 @@ msgid ""
 "Please remove this file\n"
 msgstr ""
 
-#: src/setup.c:631
+#: src/setup.c:630
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2460,7 +2460,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:640
+#: src/setup.c:639
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2469,7 +2469,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:648
+#: src/setup.c:647
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2606,7 +2606,7 @@ msgstr ""
 msgid "Bad Theme"
 msgstr ""
 
-#: src/tooltips.c:1023
+#: src/tooltips.c:972
 msgid "ToolTip Error!"
 msgstr ""
 
