@@ -1013,22 +1013,24 @@ MenuShowMasker(Menu * m)
    ewin = FindEwinByMenu(m);
    if ((ewin) && (!Mode_menus.cover_win))
      {
-	Window              parent;
-	Window              wl[2];
+	EObj               *eo;
 
-	parent = ewin->parent;
 	Mode_menus.cover_win =
-	   ECreateEventWindow(parent, 0, 0, VRoot.w, VRoot.h);
+	   ECreateEventWindow(ewin->parent, 0, 0, VRoot.w, VRoot.h);
 	Mode_menus.win_covered = EoGetWin(ewin);
-	wl[0] = Mode_menus.win_covered;
-	wl[1] = Mode_menus.cover_win;
+	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_OTHER);
+	EobjSetDesk(eo, EoGetDesk(ewin));
+	EobjSetLayer(eo, 20);
+	EobjListStackLower(eo);
 	XSelectInput(disp, Mode_menus.cover_win,
 		     ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		     LeaveWindowMask);
-	XRestackWindows(disp, wl, 2);
 	EMapWindow(disp, Mode_menus.cover_win);
 	EventCallbackRegister(Mode_menus.cover_win, 0, MenuMaskerHandleEvents,
 			      NULL);
+#if 1				/* FIXME - Too expensive */
+	StackDesktop(EoGetDesk(ewin));
+#endif
      }
 }
 
@@ -1037,6 +1039,7 @@ MenuHideMasker(void)
 {
    if (Mode_menus.cover_win)
      {
+	EobjUnregister(Mode_menus.cover_win);
 	EDestroyWindow(disp, Mode_menus.cover_win);
 	Mode_menus.cover_win = 0;
 	Mode_menus.win_covered = 0;

@@ -158,8 +158,7 @@ EobjInit(EObj * eo, int type, int x, int y, int w, int h)
 #endif
 }
 
-#if USE_COMPOSITE
-EObj               *
+static EObj        *
 EobjCreate(Window win, int type)
 {
    EObj               *eo;
@@ -167,8 +166,10 @@ EobjCreate(Window win, int type)
 
    if (!XGetWindowAttributes(disp, win, &attr))
       return NULL;
+#if 0
    if (!attr.override_redirect)
       return NULL;
+#endif
 
    eo = Ecalloc(1, sizeof(EObj));
 
@@ -179,7 +180,7 @@ EobjCreate(Window win, int type)
    return eo;
 }
 
-void
+static void
 EobjDestroy(EObj * eo)
 {
    _EFREE(eo->name);
@@ -219,15 +220,20 @@ EobjUnregister(Window win)
    eo = EobjListStackFind(win);
    if (!eo)
       return;
+#if 0
    if (eo->type != EOBJ_TYPE_OVERR)
       return;
+#endif
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjUnregister: %#lx %s\n", win, eo->name);
 
    EobjListStackDel(eo);
+
+   EobjDestroy(eo);
 }
 
+#if USE_COMPOSITE
 Pixmap
 EobjGetPixmap(const EObj * eo)
 {

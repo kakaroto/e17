@@ -1548,11 +1548,10 @@ void                EdgeWindowsHide(void);
 /* eobj.c */
 void                EobjInit(EObj * eo, int type, int x, int y, int w, int h);
 
-#if USE_COMPOSITE
-EObj               *EobjCreate(Window win, int type);
-void                EobjDestroy(EObj * eo);
 EObj               *EobjRegister(Window win, int type);
 void                EobjUnregister(Window win);
+
+#if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 #endif

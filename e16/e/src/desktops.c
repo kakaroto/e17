@@ -1310,10 +1310,6 @@ StackDesktop(int desk)
 	   continue;
 
 	_APPEND_TO_WIN_LIST(eo->win);
-#if 0				/* FIXME */
-	if (EoGetWin(ewin) == Mode.menus.win_covered)
-	   _APPEND_TO_WIN_LIST(Mode.menus.cover_win);
-#endif
      }
 
    if (EventDebug(EDBUG_TYPE_STACKING))
