@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDCS =  elapse.edc
 
-EETS = $(EDCS:%.edc=%.eet)
+EETS = $(EDCS:%.edc=%.edj)
 
 EXTRA_DIST = $(EDCS)
 CLEANFILES = $(EETS)
@@ -12,6 +12,6 @@ theme_DATA = $(EETS)
 
 all: $(EETS)
 
-SUFFIXES = .edc .eet
-.edc.eet:
-	edje_cc -v -id $(@:%.eet=%)/images $< $@
+SUFFIXES = .edc .edj
+.edc.edj:
+	edje_cc -v -id $(@:%.edj=%)/images $< $@

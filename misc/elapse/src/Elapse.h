@@ -21,25 +21,29 @@
 #define DEBUG_INFO	4	/* Information Only */
 
 typedef struct {
-	int	 	sticky;
-	int 		lower;
-	char		theme[PATH_MAX];
-	int		debug;
-	char 		*format;
+    int	 	    sticky;
+    int 		lower;
+    int         below;
+    enum        {TRANSPARENT, SHAPE} alpha;
+    char		theme[PATH_MAX];
+    int		    debug;
+    char 		*format;
 } Config;
 
 typedef struct {
-	Config 		conf;
-	Evas		*evas;
-	Ecore_Evas 	*ee;
-	Ecore_Timer	*timer;
-	Evas_Object	*edje;
-	Evas_Object	*smart;
+    Config 		conf;
+    Evas		*evas;
+    Ecore_Evas 	*ee;
+    Ecore_Timer	*timer;
+    Evas_Object	*edje;
+    Evas_Object	*smart;
+    Evas_Object	*shape;
 } Elapse;
 
 /* gui.c */
 void elapse_gui_init(Elapse *elapse, int argc, const char **argv);
 void elapse_cb_window_move(Ecore_Evas *ee);
+void resize_cb(Ecore_Evas *ee);
 
 /* main.c */
 void show_help(void);
