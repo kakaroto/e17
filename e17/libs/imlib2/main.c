@@ -59,10 +59,10 @@ int main (int argc, char **argv)
 	   file = argv[i];
      }
    printf("init\n");
-   RGBA_init();
+   __imlib_RGBA_init();
    disp = XOpenDisplay(NULL);
    printf("load\n");
-   im = LoadImage(file, NULL, 0, 0, 0);
+   im = __imlib_LoadImage(file, NULL, 0, 0, 0);
    if (!im)
       printf("load fialed\n");
    if (w < 0)
@@ -87,13 +87,13 @@ int main (int argc, char **argv)
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
    if (depth == 8)
-      AllocColorTable(disp, DefaultColormap(disp, DefaultScreen(disp)));
+      __imlib_AllocColorTable(disp, DefaultColormap(disp, DefaultScreen(disp)));
    XSync(disp, False);
    printf("rend\n");
    gettimeofday(&timev,NULL);
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
-   SetMaxXImageCount(disp, 5);  
+   __imlib_SetMaxXImageCount(disp, 5);  
    if (loop)
      {
 	for (i = 0; i < w; i++)
@@ -106,7 +106,7 @@ int main (int argc, char **argv)
 	     /*	  
 	      if (((w - i) > 0) && ((((w - i) * h) / w) > 0))
 	      m = XCreatePixmap(disp, win, (w - i), ((w - i) * h) / w, 1);
-	      */	  RenderImage(disp, im, 
+	      */	  __imlib_RenderImage(disp, im, 
 				      win, m, 
 				      vis, 
 				      DefaultColormap(disp, DefaultScreen(disp)), 
@@ -124,7 +124,7 @@ int main (int argc, char **argv)
      }
    else
      {
-	RenderImage(disp, im, 
+	__imlib_RenderImage(disp, im, 
 		    win, 0, 
 		    vis, 
 		    DefaultColormap(disp, DefaultScreen(disp)), 

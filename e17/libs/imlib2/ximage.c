@@ -28,33 +28,33 @@ TmpXError(Display * d, XErrorEvent * ev)
 }
 
 void
-SetMaxXImageCount(Display *d, int num)
+__imlib_SetMaxXImageCount(Display *d, int num)
 {
   list_max_count = num;
-  FlushXImage(d);
+  __imlib_FlushXImage(d);
 }
 
 int
-GetMaxXImageCount(Display *d)
+__imlib_GetMaxXImageCount(Display *d)
 {
   return list_max_count;
 }
 
 void
-SetMaxXImageTotalSize(Display *d, int num)
+__imlib_SetMaxXImageTotalSize(Display *d, int num)
 {
   list_max_mem = num;
-  FlushXImage(d);
+  __imlib_FlushXImage(d);
 }
 
 int
-GetMaxXImageTotalSize(Display *d)
+__imlib_GetMaxXImageTotalSize(Display *d)
 {
   return list_max_mem;
 }
 
 void
-FlushXImage(Display *d)
+__imlib_FlushXImage(Display *d)
 {
   int i;
   XImage *xim;
@@ -101,7 +101,7 @@ FlushXImage(Display *d)
 
 /* free (consume == opposite of produce) the XImage (mark as unused) */
 void
-ConsumeXImage(Display *d, XImage *xim)
+__imlib_ConsumeXImage(Display *d, XImage *xim)
 {
   int i;
 
@@ -114,7 +114,7 @@ ConsumeXImage(Display *d, XImage *xim)
 	  /* we have a match = mark as unused */
 	  list_used[i] = 0;
 	  /* flush the XImage list to get rud of stuff we dont want */
-	  FlushXImage(d);
+	  __imlib_FlushXImage(d);
 	  /* return */
 	  return;
 	}
@@ -124,7 +124,7 @@ ConsumeXImage(Display *d, XImage *xim)
 /* create a new XImage or find it on our list of currently available ones so */
 /* we dont need to create a new one */
 XImage *
-ProduceXImage(Display *d, Visual *v, int depth, int w, int h, char *shared)
+__imlib_ProduceXImage(Display *d, Visual *v, int depth, int w, int h, char *shared)
 {
   XImage                  *xim;
   int                      i;
@@ -276,7 +276,7 @@ ProduceXImage(Display *d, Visual *v, int depth, int w, int h, char *shared)
       list_d[list_num - 1] = d;
     }
   /* flush unused images from the image list */
-  FlushXImage(d);
+  __imlib_FlushXImage(d);
   /* return out image */
   return xim;
 }

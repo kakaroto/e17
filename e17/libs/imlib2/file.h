@@ -1,13 +1,13 @@
 #ifndef __FILE
 #define __FILE 1
-char               *FileExtension(char *file);
-int                 FileExists(char *s);
-int                 FileIsFile(char *s);
-int                 FileIsDir(char *s);
-char              **FileDir(char *dir, int *num);
-void                FileFreeDirList(char **l, int num);
-void                FileDel(char *s);
-time_t              FileModDate(char *s);
-char               *FileHomeDir(int uid);
-char               *FileField(char *s, int field);
+char               *__imlib_FileExtension(char *file);
+int                 __imlib_FileExists(char *s);
+int                 __imlib_FileIsFile(char *s);
+int                 __imlib_FileIsDir(char *s);
+char              **__imlib_FileDir(char *dir, int *num);
+void                __imlib_FileFreeDirList(char **l, int num);
+void                __imlib_FileDel(char *s);
+time_t              __imlib_FileModDate(char *s);
+char               *__imlib_FileHomeDir(int uid);
+char               *__imlib_FileField(char *s, int field);
 #endif

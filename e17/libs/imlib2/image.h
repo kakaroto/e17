@@ -32,8 +32,8 @@ struct _imlibimage
    ImlibBorder       border;
    int               references;
    ImlibLoader      *loader;
-   ImlibImage       *next;
    char             *format;
+   ImlibImage       *next;
 };
 
 struct _imlibimagepixmap
@@ -43,8 +43,12 @@ struct _imlibimagepixmap
    Display          *display;
    Visual           *visual;
    int               depth;
-   int               mode_count;
+   int               source_x, source_y, source_w, source_h;
+   Colormap          colormap;
+   char              antialias, hi_quality, dither_mask;
+   ImlibBorder       border;
    ImlibImage       *image;
+   char              dirty;
    int               references;
    ImlibImagePixmap *next;
 };
@@ -68,46 +72,51 @@ struct _imlibloader
    ImlibLoader  *next;
 };
 
-void              SetCacheSize(int size);
-int               GetCacheSize(void);
-ImlibImage       *ProduceImage(void);
-void              ConsumeImage(ImlibImage *im);
-ImlibImage       *FindCachedImage(char *file);
-void              AddImageToCache(ImlibImage *im);
-void              RemoveImageFromCache(ImlibImage *im);
-void              CleanupImageCache(void);
-ImlibImagePixmap *ProduceImagePixmap(void);
-void              ConsumeImagePixmap(ImlibImagePixmap *ip);
-ImlibImagePixmap *FindCachedImagePixmap(ImlibImage *im, int w, int h, 
+void              __imlib_SetCacheSize(int size);
+int               __imlib_GetCacheSize(void);
+ImlibImage       *__imlib_ProduceImage(void);
+void              __imlib_ConsumeImage(ImlibImage *im);
+ImlibImage       *__imlib_FindCachedImage(char *file);
+void              __imlib_AddImageToCache(ImlibImage *im);
+void              __imlib_RemoveImageFromCache(ImlibImage *im);
+void              __imlib_CleanupImageCache(void);
+ImlibImagePixmap *__imlib_ProduceImagePixmap(void);
+void              __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip);
+ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, 
 					Display *d, Visual *v,
-					int depth, int mode_count);
-void              AddImagePixmapToCache(ImlibImagePixmap *ip);
-void              RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
-void              CleanupImagePixmapCache();
-ImlibLoader      *ProduceLoader(char *file);
-char            **ListLoaders(int *num_ret);
-void              ConsumeLoader(ImlibLoader *l);
-void              RescanLoaders(void);
-void              RemoveAllLoaders(void);
-void              LoadAllLoaders(void);
-ImlibLoader      *FindBestLoaderForFile(char *file);
-ImlibImage       *LoadImage(char *file,
+					int depth, int sx, int sy, 
+					int sw, int sh, Colormap cm,
+					char aa, char hiq, char dmask);
+void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
+void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
+void              __imlib_CleanupImagePixmapCache();
+ImlibLoader      *__imlib_ProduceLoader(char *file);
+char            **__imlib_ListLoaders(int *num_ret);
+void              __imlib_ConsumeLoader(ImlibLoader *l);
+void              __imlib_RescanLoaders(void);
+void              __imlib_RemoveAllLoaders(void);
+void              __imlib_LoadAllLoaders(void);
+ImlibLoader      *__imlib_FindBestLoaderForFile(char *file);
+ImlibImage       *__imlib_LoadImage(char *file,
 			    void (*progress)(ImlibImage *im, char percent,
 					     int update_x, int update_y,
 					     int update_w, int update_h),
 			    char progress_granularity, char immediate_load,
 			    char dont_cache);
-ImlibImagePixmap *FindImlibImagePixmapByID(Display *d, Pixmap p);
-void              FreeImage(ImlibImage *im);
-void              FreePixmap(Display *d, Pixmap p);
+ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
+void              __imlib_FreeImage(ImlibImage *im);
+void              __imlib_FreePixmap(Display *d, Pixmap p);
+void              __imlib_FlushCache(void);
+void              __imlib_DirtyPixmapsForImage(ImlibImage *im);
+void              __imlib_DirtyImage(ImlibImage *im);
 
-# define IMAGE_HAS_ALPHA(im) (im->flags & F_HAS_ALPHA)
-# define IMAGE_IS_UNLOADED(im) (im->flags & F_UNLOADED)
-# define IMAGE_IS_UNCACHEABLE(im) (im->flags & F_UNCACHEABLE)
-# define IMAGE_ALWAYS_CHECK_DISK(im) (im->flags & F_ALWAYS_CHECK_DISK)
-# define IMAGE_IS_VALID(im) (!(im->flags & F_INVALID))
+# define IMAGE_HAS_ALPHA(im) ((im)->flags & F_HAS_ALPHA)
+# define IMAGE_IS_UNLOADED(im) ((im)->flags & F_UNLOADED)
+# define IMAGE_IS_UNCACHEABLE(im) ((im)->flags & F_UNCACHEABLE)
+# define IMAGE_ALWAYS_CHECK_DISK(im) ((im)->flags & F_ALWAYS_CHECK_DISK)
+# define IMAGE_IS_VALID(im) (!((im)->flags & F_INVALID))
 
-# define SET_FLAG(flags, f) (flags |= f)
-# define UNSET_FLAG(flags, f) (flags &= (~f))
+# define SET_FLAG(flags, f) ((flags) |= (f))
+# define UNSET_FLAG(flags, f) ((flags) &= (~f))
 
 #endif

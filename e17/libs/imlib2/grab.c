@@ -18,8 +18,8 @@ Tmp_HandleXError(Display * d, XErrorEvent * ev)
 }
 
 DATA32 *
-GrabDrawableToRGBA(Display *d, Drawable p, Pixmap m, Visual *v, Colormap cm, 
-		   int depth, int x, int y, int w, int h, char domask)
+__imlib_GrabDrawableToRGBA(Display *d, Drawable p, Pixmap m, Visual *v, Colormap cm, 
+			   int depth, int x, int y, int w, int h, char domask)
 {
    XErrorHandler       prev_erh = NULL;
    XWindowAttributes   xatt, ratt;

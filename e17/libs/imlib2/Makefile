@@ -1,7 +1,7 @@
 INSTALL  = install
 
 SRCS     = rend.c ximage.c scale.c main.c rgba.c image.c color.c grab.c \
-           blend.c file.c
+           blend.c file.c draw.c rgbadraw.c api.c
 OBJS     = $(SRCS:.c=.o)
 BINDIR   = /usr/local/bin
 BIN      = imlib2

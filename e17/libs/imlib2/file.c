@@ -8,10 +8,10 @@
 #include <pwd.h>
 #include "file.h"
 
-static void FileFieldWord(char *s, int num, char *wd);
+static void __imlib_FileFieldWord(char *s, int num, char *wd);
 
 char               *
-FileExtension(char *file)
+__imlib_FileExtension(char *file)
 {
   char               *p;
 
@@ -22,7 +22,7 @@ FileExtension(char *file)
 }
 
 int
-FileExists(char *s)
+__imlib_FileExists(char *s)
 {
   struct stat         st;
 
@@ -34,7 +34,7 @@ FileExists(char *s)
 }
 
 int
-FileIsFile(char *s)
+__imlib_FileIsFile(char *s)
 {
   struct stat         st;
 
@@ -48,7 +48,7 @@ FileIsFile(char *s)
 }
 
 int
-FileIsDir(char *s)
+__imlib_FileIsDir(char *s)
 {
   struct stat         st;
 
@@ -62,7 +62,7 @@ FileIsDir(char *s)
 }
 
 char              **
-FileDir(char *dir, int *num)
+__imlib_FileDir(char *dir, int *num)
 {
   int                 i, dirlen;
   int                 done = 0;
@@ -129,7 +129,7 @@ FileDir(char *dir, int *num)
 }
 
 void
-FileFreeDirList(char **l, int num)
+__imlib_FileFreeDirList(char **l, int num)
 {
   if (!l)
     return;
@@ -141,7 +141,7 @@ FileFreeDirList(char **l, int num)
 }
 
 void
-FileDel(char *s)
+__imlib_FileDel(char *s)
 {
   if ((!s) || (!*s))
     return;
@@ -150,7 +150,7 @@ FileDel(char *s)
 }
 
 time_t
-FileModDate(char *s)
+__imlib_FileModDate(char *s)
 {
   struct stat         st;
 
@@ -168,7 +168,7 @@ FileModDate(char *s)
 }
 
 char               *
-FileHomeDir(int uid)
+__imlib_FileHomeDir(int uid)
 {
   static int          usr_uid = -1;
   static char        *usr_s = NULL;
@@ -206,12 +206,12 @@ FileHomeDir(int uid)
 /* word 5 = Foo */
 
 char               *
-FileField(char *s, int field)
+__imlib_FileField(char *s, int field)
 {
   char                buf[4096];
 
   buf[0] = 0;
-  FileFieldWord(s, field + 1, buf);
+  __imlib_FileFieldWord(s, field + 1, buf);
   if (buf[0])
     {
       if ((!strcmp(buf, "NULL")) ||
@@ -232,7 +232,7 @@ FileField(char *s, int field)
 
 
 static void
-FileFieldWord(char *s, int num, char *wd)
+__imlib_FileFieldWord(char *s, int num, char *wd)
 {
   char               *cur, *start, *end;
   int                 count, inword, inquote, len;

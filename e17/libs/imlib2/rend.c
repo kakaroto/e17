@@ -6,7 +6,6 @@
 #include "ximage.h"
 #include "rend.h"
 #include "rgba.h"
-#include "image.h"
 #include "color.h"
 #include "grab.h"
 #include "blend.h"
@@ -22,12 +21,12 @@ if ((x + w) > ww) {w = ww - x;} \
 if ((y + h) > hh) {h = hh - y;}
 
 void
-RenderImage(Display *d, ImlibImage *im, 
-	    Drawable w, Drawable m, 
-	    Visual *v, Colormap cm, int depth, 
-	    int sx, int sy, int sw, int sh, 
-	    int dx, int dy, int dw, int dh, 
-	    char anitalias, char hiq, char blend, char dither_mask)
+__imlib_RenderImage(Display *d, ImlibImage *im, 
+		    Drawable w, Drawable m, 
+		    Visual *v, Colormap cm, int depth, 
+		    int sx, int sy, int sw, int sh, 
+		    int dx, int dy, int dw, int dh, 
+		    char anitalias, char hiq, char blend, char dither_mask)
 {
   XImage   *xim, *mxim;
   DATA32   *buf = NULL, *pointer, *back = NULL;
@@ -85,10 +84,10 @@ RenderImage(Display *d, ImlibImage *im,
   if (!((sw == dw) && (sh == dh)))
     {
       /* need to calculate ypoitns and xpoints array */
-      ypoints = CalcYPoints(im->data, im->w, im->h, sch, im->border.top, im->border.bottom);
+      ypoints = __imlib_CalcYPoints(im->data, im->w, im->h, sch, im->border.top, im->border.bottom);
       if (!ypoints)
 	return;
-      xpoints = CalcXPoints(im->w, scw, im->border.left, im->border.right);
+      xpoints = __imlib_CalcXPoints(im->w, scw, im->border.left, im->border.right);
       if (!xpoints)
 	{
 	  free(ypoints);
@@ -97,14 +96,14 @@ RenderImage(Display *d, ImlibImage *im,
       /* calculate aliasing counts */
       if (anitalias)
 	{
-	  yapoints = CalcApoints(im->h, sch, im->border.top, im->border.bottom);
+	  yapoints = __imlib_CalcApoints(im->h, sch, im->border.top, im->border.bottom);
 	  if (!yapoints)
 	    {
 	      free(ypoints);
 	      free(xpoints);
 	      return;
 	    }
-	  xapoints = CalcApoints(im->w, scw, im->border.left, im->border.right);
+	  xapoints = __imlib_CalcApoints(im->w, scw, im->border.left, im->border.right);
 	  if (!xapoints)
 	    {
 	      free(yapoints);
@@ -115,9 +114,9 @@ RenderImage(Display *d, ImlibImage *im,
 	}
     }
   if ((blend) && (IMAGE_HAS_ALPHA(im)))
-    back = GrabDrawableToRGBA(d, w, 0, v, cm, depth, dx, dy, dw, dh, 0);
+    back = __imlib_GrabDrawableToRGBA(d, w, 0, v, cm, depth, dx, dy, dw, dh, 0);
   /* get a new XImage - or get one from the cached list */
-  xim = ProduceXImage(d, v, depth, dw, dh, &shm);
+  xim = __imlib_ProduceXImage(d, v, depth, dw, dh, &shm);
   if (!xim)
     {
       if (anitalias)
@@ -136,10 +135,10 @@ RenderImage(Display *d, ImlibImage *im,
     depth = 32;
   if (m)
     {
-      mxim = ProduceXImage(d, v, 1, dw, dh, &shm);
+      mxim = __imlib_ProduceXImage(d, v, 1, dw, dh, &shm);
       if (!mxim)
 	{
-	  ConsumeXImage(d, xim);
+	  __imlib_ConsumeXImage(d, xim);
 	  if (anitalias)
 	    {
 	      free(xapoints);
@@ -159,9 +158,9 @@ RenderImage(Display *d, ImlibImage *im,
       buf = malloc(dw * LINESIZE * sizeof(int));
       if (!buf)
 	{
-	  ConsumeXImage(d, xim);
+	  __imlib_ConsumeXImage(d, xim);
 	  if (m)
-	    ConsumeXImage(d, mxim);
+	    __imlib_ConsumeXImage(d, mxim);
 	  if (anitalias)
 	    {
 	      free(xapoints);
@@ -194,12 +193,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  if (anitalias)
 	    {
 	      if (IMAGE_HAS_ALPHA(im))
-		ScaleAARGBA(ypoints, xpoints, buf, xapoints, yapoints, xup, yup, dx, dy + y, 0, 0, dw, hh, dw, im->w);
+		__imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, yapoints, xup, yup, dx, dy + y, 0, 0, dw, hh, dw, im->w);
 	      else
-		ScaleAARGB(ypoints, xpoints, buf, xapoints, yapoints, xup, yup, dx, dy + y, 0, 0, dw, hh, dw, im->w);
+		__imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints, yapoints, xup, yup, dx, dy + y, 0, 0, dw, hh, dw, im->w);
 	    }
 	  else
-	    ScaleSampleRGBA(ypoints, xpoints, buf, dx, dy + y, 0, 0, dw, hh, dw);
+	    __imlib_ScaleSampleRGBA(ypoints, xpoints, buf, dx, dy + y, 0, 0, dw, hh, dw);
 	  jump = 0;
 	  pointer = buf;
 	}
@@ -211,7 +210,7 @@ RenderImage(Display *d, ImlibImage *im,
       /* if we have a back buffer - we're blending to the bg */
       if (back)
 	{
-	  BlendRGBAToRGBA(pointer, jump, back + (y * dw), 0, dw, hh); 
+	  __imlib_BlendRGBAToRGBA(pointer, jump, back + (y * dw), 0, dw, hh); 
 	  pointer = back + (y * dw);
 	  jump = 0;
 	}
@@ -221,12 +220,12 @@ RenderImage(Display *d, ImlibImage *im,
       if (depth == 16)
 	{
 	  if (hiq)
-	    RGBA_to_RGB565_dither(pointer, jump, 
+	    __imlib_RGBA_to_RGB565_dither(pointer, jump, 
 				  ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
 				  (xim->bytes_per_line / sizeof(DATA16)) - dw,
 				  dw, hh, dx, dy + y); 
 	  else
-	    RGBA_to_RGB565_fast(pointer, jump, 
+	    __imlib_RGBA_to_RGB565_fast(pointer, jump, 
 				((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
 				(xim->bytes_per_line / sizeof(DATA16)) - dw,
 				dw, hh, dx, dy + y); 
@@ -234,14 +233,14 @@ RenderImage(Display *d, ImlibImage *im,
       /* FIXME: need to handle different RGB ordering */
       else if (depth == 24)
 	{
-	    RGBA_to_RGB888_fast(pointer, jump, 
+	    __imlib_RGBA_to_RGB888_fast(pointer, jump, 
 				 ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
 				 xim->bytes_per_line - (dw * 3),
 				 dw, hh, dx, dy + y); 
 	}
       else if (depth == 32)
 	{
-	    RGBA_to_RGB8888_fast(pointer, jump, 
+	    __imlib_RGBA_to_RGB8888_fast(pointer, jump, 
 				 ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
 				 (xim->bytes_per_line / sizeof(DATA32)) - dw,
 				 dw, hh, dx, dy + y); 
@@ -251,12 +250,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  if (_pal_type == 0)
 	    {
 	      if (hiq)
-		RGBA_to_RGB332_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB332_dither(pointer, jump, 
 				      ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				      (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				      dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB332_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB332_fast(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
@@ -264,12 +263,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  else if (_pal_type == 1)
 	    {
 	      if (hiq)
-		RGBA_to_RGB232_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB232_dither(pointer, jump, 
 				      ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				      (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				      dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB232_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB232_fast(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
@@ -277,12 +276,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  else if (_pal_type == 2)
 	    {
 	      if (hiq)
-		RGBA_to_RGB222_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB222_dither(pointer, jump, 
 				      ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				      (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				      dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB222_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB222_fast(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
@@ -290,12 +289,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  else if (_pal_type == 3)
 	    {
 	      if (hiq)
-		RGBA_to_RGB221_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB221_dither(pointer, jump, 
 				      ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				      (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				      dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB221_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB221_fast(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
@@ -303,12 +302,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  else if (_pal_type == 4)
 	    {
 	      if (hiq)
-		RGBA_to_RGB121_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB121_dither(pointer, jump, 
 				      ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				      (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				      dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB121_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB121_fast(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
@@ -316,12 +315,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  else if (_pal_type == 5)
 	    {
 	      if (hiq)
-		RGBA_to_RGB111_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB111_dither(pointer, jump, 
 				      ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				      (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				      dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB111_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB111_fast(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
@@ -329,12 +328,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  else if (_pal_type == 6)
 	    {
 	      if (hiq)
-		RGBA_to_RGB1_dither(pointer, jump, 
+		__imlib_RGBA_to_RGB1_dither(pointer, jump, 
 				    ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				    (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				    dw, hh, dx, dy + y); 
 	      else
-		RGBA_to_RGB1_fast(pointer, jump, 
+		__imlib_RGBA_to_RGB1_fast(pointer, jump, 
 				  ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
 				  (xim->bytes_per_line / sizeof(DATA8)) - dw,
 				  dw, hh, dx, dy + y); 
@@ -343,12 +342,12 @@ RenderImage(Display *d, ImlibImage *im,
       else if (depth == 15)
 	{
 	  if (hiq)
-	    RGBA_to_RGB555_dither(pointer, jump, 
+	    __imlib_RGBA_to_RGB555_dither(pointer, jump, 
 				  ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
 				  (xim->bytes_per_line / sizeof(DATA16)) - dw,
 				  dw, hh, dx, dy + y); 
 	  else
-	    RGBA_to_RGB555_fast(pointer, jump, 
+	    __imlib_RGBA_to_RGB555_fast(pointer, jump, 
 				((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
 				(xim->bytes_per_line / sizeof(DATA16)) - dw,
 				dw, hh, dx, dy + y); 
@@ -358,12 +357,12 @@ RenderImage(Display *d, ImlibImage *im,
 	  memset(((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
 		 0x0, mxim->bytes_per_line * hh);
 	  if (dither_mask)
-	    RGBA_to_A1_dither(pointer, jump, 
+	    __imlib_RGBA_to_A1_dither(pointer, jump, 
 			      ((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
 			      (mxim->bytes_per_line) - (dw >> 3),
 			      dw, hh, dx, dy + y); 
 	  else
-	    RGBA_to_A1_fast(pointer, jump, 
+	    __imlib_RGBA_to_A1_fast(pointer, jump, 
 			    ((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
 			    (mxim->bytes_per_line) - (dw >> 3),
 			    dw, hh, dx, dy + y); 
@@ -417,8 +416,8 @@ RenderImage(Display *d, ImlibImage *im,
   /* wait for the write to be done */
   if (shm)
     XSync(d, False);
-  ConsumeXImage(d, xim);
+  __imlib_ConsumeXImage(d, xim);
   if (m)
-    ConsumeXImage(d, mxim);    
+    __imlib_ConsumeXImage(d, mxim);    
 }
 
