@@ -651,8 +651,6 @@ reconnect:
         if (q)
           *q = '\0';
         if (!strcasecmp(p, "exit") || !strcasecmp(p, "quit")) {
-          if (f)
-            free(f);
           break;
         }
 #ifdef HAVE_READLINE_HISTORY
@@ -661,8 +659,6 @@ reconnect:
         ret = parse_line(&server, p);
         if ((ret < ECORE_CONFIG_ERR_SUCC) && (ret != ECORE_CONFIG_ERR_IGNORED))
           printf(ERR "error #%d: \"%s.\"\n", -ret, ecore_config_error(ret));
-        if (f)
-          free(f);
       } else
         break;
     }

@@ -195,7 +195,7 @@ draw_tree(examine_prop * prop_item)
       ewl_callback_append(EWL_ENTRY(entries[1])->text,
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
     } else
-      entries[1] = ewl_text_new("unknown");
+      entries[1] = ewl_entry_new("unknown");
     prop_item->w = entries[1];
     examine_client_get_val(prop_item->key);
 
