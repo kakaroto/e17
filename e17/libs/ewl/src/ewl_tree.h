@@ -54,6 +54,7 @@ struct _ewl_tree_node
 	Ewl_Container container; /**< Inherit from Ewl_Container */
 	Ewl_Tree *tree; /**< Pointer to the tree this is inside */
 	Ewl_Widget *row; /**< The child row */
+	Ewl_Widget *handle; /**< The child row */
 	int expanded; /**< Indicator of expansion state */
 };
 
@@ -92,7 +93,7 @@ Ewl_Row *ewl_tree_find_row(Ewl_Tree *tree, int row);
  */
 void ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-void ewl_tree_node_clicked_cb(Ewl_Widget * w, void *ev_data,
+void ewl_tree_node_toggle_cb(Ewl_Widget * w, void *ev_data,
 			   void *user_data);
 
 void ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
