@@ -31,21 +31,22 @@ feh_handle_timer (void)
 {
   fehtimer ft;
 
-  D (("In feh_handle_timer\n"));
+  D_ENTER;
   if (!first_timer)
     {
-      D (("   No timer to handle, returning\n"));
+      D (("No timer to handle, returning\n"));
       return;
     }
   ft = first_timer;
   first_timer = first_timer->next;
-  D (("   Executing timer function now\n"));
+  D (("Executing timer function now\n"));
   (*(ft->func)) (ft->data);
-  D (("   Freeing the timer\n"));
+  D (("Freeing the timer\n"));
   if (ft && ft->name)
     free (ft->name);
   if (ft)
     free (ft);
+  D_LEAVE;
 }
 
 double
@@ -53,8 +54,9 @@ feh_get_time (void)
 {
   struct timeval timev;
 
-  D (("In feh_get_time\n"));
+  D_ENTER;
   gettimeofday (&timev, NULL);
+  D_LEAVE;
   return (double) timev.tv_sec + (((double) timev.tv_usec) / 1000000);
 }
 
@@ -63,16 +65,17 @@ feh_remove_timer (char *name)
 {
   fehtimer ft, ptr, pptr;
 
-  D (("In feh_remove_timer, removing %s\n", name));
+  D_ENTER;
+  D (("removing %s\n", name));
   pptr = NULL;
   ptr = first_timer;
   while (ptr)
     {
-      D (("   Stepping through event list\n"));
+      D (("Stepping through event list\n"));
       ft = ptr;
       if (!strcmp (ft->name, name))
 	{
-	  D (("   Found it. Removing\n"));
+	  D (("Found it. Removing\n"));
 	  if (pptr)
 	    pptr->next = ft->next;
 	  else
@@ -83,11 +86,13 @@ feh_remove_timer (char *name)
 	    free (ft->name);
 	  if (ft)
 	    free (ft);
+          D_LEAVE;
 	  return;
 	}
       pptr = ptr;
       ptr = ptr->next;
     }
+  D_LEAVE;
 }
 
 void
@@ -96,7 +101,8 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
   fehtimer ft, ptr, pptr;
   double tally;
 
-  D (("In feh_add_timer, adding timer %s for %f seconds time\n", name, in));
+  D_ENTER;
+  D (("adding timer %s for %f seconds time\n", name, in));
   feh_remove_timer (name);
   ft = malloc (sizeof (_fehtimer));
   ft->next = NULL;
@@ -132,6 +138,7 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
 	      ft->in -= tally;
 	      if (ft->next)
 		ft->next->in -= ft->in;
+              D_LEAVE;
 	      return;
 	    }
 	  pptr = ptr;
@@ -144,6 +151,7 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
       ft->in -= tally;
     }
   D (("ft->in = %f\n", ft->in));
+  D_LEAVE;
 }
 
 void
@@ -151,11 +159,13 @@ feh_add_unique_timer (void (*func) (void *data), void *data, double in)
 {
   static long i = 0;
   char evname[20];
+  D_ENTER;
   snprintf (evname, sizeof (evname), "T_%ld", i);
-  D (("In feh_add_unique_timer, adding timer with unique name %s\n", evname));
+  D (("adding timer with unique name %s\n", evname));
   feh_add_timer (func, data, in, evname);
   i++;
   /* Mega paranoia ;) */
   if (i > 1000000)
     i = 0;
+  D_LEAVE;
 }

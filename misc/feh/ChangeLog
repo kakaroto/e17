@@ -1,3 +1,8 @@
+Mon Apr 24 19:53:23 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Changed some of the debugging macros.
+	* Found and fixed wasted extra loops in option file parsing.
+
 Mon Apr 24 16:48:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Feh is hereby rereleased under a less restrictive license. Much

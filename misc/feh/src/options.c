@@ -35,7 +35,7 @@ static char *theme;
 void
 init_parse_options (int argc, char **argv)
 {
-  D (("In init_parse_options\n"));
+  D_ENTER;
 
   /* For setting the command hint on X windows */
   cmdargc = argc;
@@ -69,12 +69,13 @@ init_parse_options (int argc, char **argv)
   check_options ();
 
   feh_prepare_filelist ();
+  D_LEAVE;
 }
 
 static void
 feh_check_theme_options (int arg, char **argv)
 {
-  D (("In feh_check_theme_options\n"));
+  D_ENTER;
   if (!theme)
     {
       /* This prevents screw up when running src/feh or ./feh */
@@ -84,11 +85,12 @@ feh_check_theme_options (int arg, char **argv)
       else
 	theme = estrdup (argv[0]);
     }
-  D(("Theme name is %s\n", theme));
+  D (("Theme name is %s\n", theme));
 
   feh_load_options_for_theme (theme);
 
   free (theme);
+  D_LEAVE;
   return;
   arg = 0;
 }
@@ -101,7 +103,7 @@ feh_load_options_for_theme (char *theme)
   char *rcpath;
   char s[1024], s1[1024], s2[1024];
 
-  D (("In feh_load_options_for_theme\n"));
+  D_ENTER;
 
   home = getenv ("HOME");
   if (!home)
@@ -110,28 +112,34 @@ feh_load_options_for_theme (char *theme)
   else
     {
       rcpath = estrjoin ("/", home, ".fehrc", NULL);
-      D (("   Trying %s for config\n", rcpath));
+      D (("Trying %s for config\n", rcpath));
       fp = fopen (rcpath, "r");
       free (rcpath);
     }
   if (!fp && ((fp = fopen ("/etc/fehrc", "r")) == NULL))
-    return;
+    {
+      D_LEAVE;
+      return;
+    }
 
   /* Oooh. We have an options file :) */
   for (; fgets (s, sizeof (s), fp);)
     {
+      s1[0] = '\0';
+      s2[0] = '\0';
       sscanf (s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
       if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#'))
 	continue;
-      D (("  Got theme/options pair %s/%s\n", s1, s2));
+      D (("Got theme/options pair %s/%s\n", s1, s2));
       if (!strcmp (s1, theme))
 	{
-	  D (("  A match. Using options %s\n", s2));
-	  feh_parse_options_from_string(s2);
+	  D (("A match. Using options %s\n", s2));
+	  feh_parse_options_from_string (s2);
 	  break;
 	}
     }
   fclose (fp);
+  D_LEAVE;
 }
 
 static void
@@ -139,13 +147,17 @@ feh_parse_environment_options (void)
 {
   char *opts;
 
-  D (("In feh_parse_environment_options\n"));
+  D_ENTER;
 
   if ((opts = getenv ("FEH_OPTIONS")) == NULL)
-    return;
+    {
+      D_LEAVE;
+      return;
+    }
 
   /* We definitely have some options to parse */
   feh_parse_options_from_string (opts);
+  D_LEAVE;
 }
 
 /* FIXME This function is a crufty bitch ;) */
@@ -158,7 +170,7 @@ feh_parse_options_from_string (char *opts)
   char *t;
   int i = 0;
 
-  D (("In feh_parse_options_from_string\n"));
+  D_ENTER;
   /* So we don't reinvent the wheel (not again, anyway), we use the
    * getopt_long function to do this parsing as well. This means it has to
    * look like the real argv ;)
@@ -192,6 +204,7 @@ feh_parse_options_from_string (char *opts)
       free (list[i]);
   if (list)
     free (list);
+  D_LEAVE;
 }
 
 static void
@@ -248,7 +261,7 @@ feh_parse_option_array (int argc, char **argv)
   };
   int optch = 0, cmdx = 0;
 
-  D (("In feh_parse_option_array\n"));
+  D_ENTER;
 
   /* Now to pass some optionarinos */
   while ((optch = getopt_long (argc, argv, stropts, lopts, &cmdx)) != EOF)
@@ -266,10 +279,10 @@ feh_parse_option_array (int argc, char **argv)
 	  break;
 	case 'm':
 	  opt.montage = 1;
-          break;
-        case 'g':
-          opt.collage = 1;
-          break;
+	  break;
+	case 'g':
+	  opt.collage = 1;
+	  break;
 	case 'i':
 	  opt.index = 1;
 	  opt.index_show_name = 1;
@@ -376,10 +389,10 @@ feh_parse_option_array (int argc, char **argv)
 	  break;
 	case 'C':
 	  theme = estrdup (optarg);
-          break;
-        case '=':
-          opt.fontpath = estrdup (optarg);
-          break;
+	  break;
+	case '=':
+	  opt.fontpath = estrdup (optarg);
+	  break;
 	case 'f':
 	  opt.font = estrdup (optarg);
 	  break;
@@ -434,16 +447,19 @@ feh_parse_option_array (int argc, char **argv)
 
   /* So that we can safely be called again */
   optind = 1;
+  D_LEAVE;
 }
 
 
 static void
 check_options (void)
 {
+  D_ENTER;
   if ((opt.montage + opt.index + opt.collage) > 1)
     {
-      weprintf ("you can't use montage mode, collage mode or index mode together.\n"
-		"   I'm going with index");
+      weprintf
+	("you can't use montage mode, collage mode or index mode together.\n"
+	 "   I'm going with index");
       opt.montage = 0;
       opt.collage = 0;
     }
@@ -466,7 +482,8 @@ check_options (void)
       opt.multiwindow = 0;
     }
 
-  if (opt.list && (opt.multiwindow || opt.montage || opt.index || opt.collage))
+  if (opt.list
+      && (opt.multiwindow || opt.montage || opt.index || opt.collage))
     {
       weprintf ("list mode can't be combined with other processing modes,\n"
 		"   list mode disabled.");
@@ -487,6 +504,7 @@ check_options (void)
 		"loadables only will be shown\n");
       opt.unloadables = 0;
     }
+  D_LEAVE;
 }
 
 void
@@ -526,8 +544,8 @@ show_usage (void)
 	   "                            Verbose and quiet modes are not mutually exclusive,\n"
 	   "                            the first controls informational messages, the\n"
 	   "                            second only errors.\n"
-           "  -C THEME                  Load options from config file with name THEME\n"
-           "                            see man feh for more info\n"
+	   "  -C THEME                  Load options from config file with name THEME\n"
+	   "                            see man feh for more info\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
 	   "  -c, --randomize           When viewing multiple files in a slideshow,\n"
@@ -579,9 +597,9 @@ show_usage (void)
 	   "                            images specified using FILE... When montage mode\n"
 	   "                            is selected, certain other options become\n"
 	   "                            available. See MONTAGE MODE OPTIONS\n"
-           "  -g, --collage             Same as montage mode, but the thumbnails are\n"
-           "                            distributed randomly. You must specify width and\n"
-           "                            height or supply a background image or both\n"
+	   "  -g, --collage             Same as montage mode, but the thumbnails are\n"
+	   "                            distributed randomly. You must specify width and\n"
+	   "                            height or supply a background image or both\n"
 	   "  -i, --index               Enable Index mode. Index mode is similar to\n"
 	   "                            montage mode, and accepts the same options. It\n"
 	   "                            creates an index print of thumbails, printing the\n"
@@ -627,7 +645,7 @@ show_usage (void)
 	   "  -f FONT                   Use FONT to print the information under each\n"
 	   "                            thumbnail. FONT should be defined in the form\n"
 	   "                            fontname/size(points). eg -f myfont/12\n"
-           "     --fontpath PATH        Specify an extra directory to look in for fonts\n"
+	   "     --fontpath PATH        Specify an extra directory to look in for fonts\n"
 	   "  -T,--title-font FONT      Use FONT to print a title on the index, if no\n"
 	   "                            font is specified, a title will not be printed\n"
 	   " SLIDESHOW KEYS\n"

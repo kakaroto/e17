@@ -33,7 +33,7 @@ handle_keypress_event (XEvent * ev, Window win)
   XKeyEvent *kev;
   winwidget winwid = NULL;
 
-  D (("In handle_keypress_event\n"));
+  D_ENTER;
 
   winwid = winwidget_get_from_window (win);
   if (winwid == NULL)
@@ -82,26 +82,29 @@ handle_keypress_event (XEvent * ev, Window win)
 	slideshow_change_image (winwid, SLIDE_LAST);
       break;
     case XK_Return:
-      if(opt.action)
-      {
+      if (opt.action)
+	{
 	  if (opt.slideshow)
-	  {
-	      feh_action_run(winwid);
+	    {
+	      feh_action_run (winwid);
 	      slideshow_change_image (winwid, SLIDE_NEXT);
-	  }
-	  else if(opt.multiwindow)
-	  {
-	      feh_action_run(winwid);
-	      winwidget_destroy(winwid);
-	  }
-      }
+	    }
+	  else if (opt.multiwindow)
+	    {
+	      feh_action_run (winwid);
+	      winwidget_destroy (winwid);
+	    }
+	}
       break;
     default:
       break;
     }
 
   if (len <= 0 || len > (int) sizeof (kbuf))
-    return;
+    {
+      D_LEAVE;
+      return;
+    }
 
   kbuf[len] = '\0';
 
@@ -126,4 +129,5 @@ handle_keypress_event (XEvent * ev, Window win)
     default:
       break;
     }
+  D_LEAVE;
 }

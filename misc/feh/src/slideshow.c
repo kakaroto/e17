@@ -32,7 +32,7 @@ init_slideshow_mode (void)
   char *s = NULL;
   feh_file *file = NULL, *last = NULL;
 
-  D (("In init_slideshow_mode\n"));
+  D_ENTER;
 
   for (file = filelist; file; file = file->next)
     {
@@ -67,20 +67,22 @@ init_slideshow_mode (void)
     }
   if (!success)
     show_mini_usage ();
+  D_LEAVE;
 }
 
 void
 cb_slide_timer (void *data)
 {
-  D (("In cb_slide_timer\n"));
+  D_ENTER;
   slideshow_change_image ((winwidget) data, SLIDE_NEXT);
+  D_LEAVE;
 }
 
 void
 cb_reload_timer (void *data)
 {
   winwidget w = (winwidget) data;
-  D (("In cb_reload_timer\n"));
+  D_ENTER;
 
   if (w->im)
     {
@@ -93,7 +95,7 @@ cb_reload_timer (void *data)
       /* Yeah, we have to do this stuff for progressive loading, so
        * the callback knows it's got to create a new image... */
       progwin = w;
-      imlib_context_set_progress_function (progress);
+      imlib_context_set_progress_function (progressive_load_cb);
       imlib_context_set_progress_granularity (10);
       w->im_w = 0;
       w->im_h = 0;
@@ -118,6 +120,7 @@ cb_reload_timer (void *data)
     eprintf ("Couldn't reload image. Is it still there?");
 
   feh_add_unique_timer (cb_reload_timer, w, opt.reload);
+  D_LEAVE;
 }
 
 void
@@ -127,7 +130,7 @@ slideshow_change_image (winwidget winwid, int change)
   feh_file *last = NULL;
   int i = 0, file_num = 0;
 
-  D (("In slideshow_change_image\n"));
+  D_ENTER;
 
   file_num = filelist_length (filelist);
 
@@ -186,7 +189,7 @@ slideshow_change_image (winwidget winwid, int change)
 	  /* Yeah, we have to do this stuff for progressive loading, so
 	   * the callback knows it's got to create a new image... */
 	  progwin = winwid;
-	  imlib_context_set_progress_function (progress);
+          imlib_context_set_progress_function (progressive_load_cb);
 	  imlib_context_set_progress_granularity (10);
 	  winwid->im_w = 0;
 	  winwid->im_h = 0;
@@ -226,6 +229,7 @@ slideshow_change_image (winwidget winwid, int change)
   if (opt.slideshow_delay >= 0)
     feh_add_timer (cb_slide_timer, winwid, opt.slideshow_delay,
 		   "SLIDE_CHANGE");
+  D_LEAVE;
 }
 
 char *
@@ -233,11 +237,13 @@ slideshow_create_name (char *filename)
 {
   char *s = NULL;
   int len = 0;
+  D_ENTER;
   len = strlen (PACKAGE " [slideshow mode] - ") + strlen (filename) + 1;
   s = emalloc (len);
   snprintf (s, len, PACKAGE " [%d of %d] - %s",
 	    filelist_num (filelist, current_file) + 1,
 	    filelist_length (filelist), filename);
+  D_LEAVE;
   return s;
 }
 
@@ -245,14 +251,15 @@ void
 feh_action_run (winwidget w)
 {
   char *sys;
-  D (("In feh_action_run\n"));
-  D (("   Running action %s\n", opt.action));
+  D_ENTER;
+  D (("Running action %s\n", opt.action));
 
   sys = feh_printf (opt.action, w);
 
   if (opt.verbose)
     fprintf (stderr, "Running action -->%s<--\n", sys);
   system (sys);
+  D_LEAVE;
 }
 
 char *
@@ -261,7 +268,7 @@ feh_printf (char *str, winwidget w)
   char *c;
   char buf[20];
   static char ret[4096];
-  D (("In feh_printf\n"));
+  D_ENTER;
 
   ret[0] = '\0';
 
@@ -315,5 +322,6 @@ feh_printf (char *str, winwidget w)
       else
 	strncat (ret, c, 1);
     }
+  D_LEAVE;
   return ret;
 }

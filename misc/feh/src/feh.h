@@ -43,18 +43,31 @@
 #include "utils.h"
 #include "getopt.h"
 
-#if 0
-#define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \
-               printf a; fflush(stdout); }
+#if 1
+#ifdef __GNUC__
+#define D(a)    { printf("%s +%u %s()     ",__FILE__,__LINE__,__FUNCTION__); \
+    printf a; fflush(stdout); }
+#define D_ENTER { printf("%s +%u %s() >>> Entering\n",__FILE__,__LINE__,__FUNCTION__); \
+    fflush(stdout); }
+#define D_LEAVE { printf("%s +%u %s() <<< Leaving\n",__FILE__,__LINE__,__FUNCTION__); \
+    fflush(stdout); }
 #else
-#define D(a) { ; }
+#define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \
+    printf a; fflush(stdout); }
+#define D_ENTER
+#define D_LEAVE
+#endif
+#else
+#define D(a)
+#define D_ENTER
+#define D_LEAVE
 #endif
 
 #define CHECK_SIZE 160
 
 #ifndef __GNUC__
 # define __attribute__(x)
-#endif              
+#endif
 
 struct __thumbwidget
 {
@@ -103,7 +116,7 @@ struct __feh_file
 
   /* info stuff */
   feh_file_info *info;
-  
+
   feh_file *next;
   feh_file *prev;
 };
@@ -116,7 +129,7 @@ struct __feh_file_info
   int pixels;
   unsigned char has_alpha;
   char *format;
-  char *extension;    
+  char *extension;
 };
 
 enum winwidget_type
@@ -132,7 +145,8 @@ enum filelist_recuse
 
 enum sort_type
 { SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH, SORT_HEIGHT, SORT_PIXELS,
-    SORT_SIZE, SORT_FORMAT };
+  SORT_SIZE, SORT_FORMAT
+};
 
 struct __winwidget
 {
@@ -222,8 +236,8 @@ fehoptions;
 void show_usage (void);
 void show_version (void);
 void main_loop (void);
-void feh_handle_event(XEvent *ev);
-void feh_smooth_image(winwidget w);
+void feh_handle_event (XEvent * ev);
+void feh_smooth_image (winwidget w);
 void init_x_and_imlib (void);
 void init_multiwindow_mode (void);
 void init_parse_options (int argc, char **argv);
@@ -234,7 +248,7 @@ void init_slideshow_mode (void);
 void init_list_mode (void);
 void init_loadables_mode (void);
 void init_unloadables_mode (void);
-int feh_load_image (Imlib_Image ** im, feh_file *file);
+int feh_load_image (Imlib_Image ** im, feh_file * file);
 void add_file_to_filelist_recursively (char *path, unsigned char level);
 void feh_prepare_filelist (void);
 void show_mini_usage (void);
@@ -242,10 +256,10 @@ void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);
 char *chop_file_from_full_path (char *str);
 void handle_keypress_event (XEvent * ev, Window win);
-void feh_action_run(winwidget w);
-char *feh_printf(char *str, winwidget w);
+void feh_action_run (winwidget w);
+char *feh_printf (char *str, winwidget w);
 
-int winwidget_loadimage (winwidget winwid, feh_file *filename);
+int winwidget_loadimage (winwidget winwid, feh_file * filename);
 void winwidget_show (winwidget winwid);
 void winwidget_hide (winwidget winwid);
 void winwidget_destroy_all (void);
@@ -253,11 +267,11 @@ void winwidget_render_image (winwidget winwid);
 void winwidget_setup_pixmaps (winwidget winwid);
 void winwidget_update_title (winwidget ret);
 winwidget winwidget_get_from_window (Window win);
-winwidget winwidget_create_from_file (feh_file *filename, char *name);
+winwidget winwidget_create_from_file (feh_file * filename, char *name);
 winwidget winwidget_create_from_image (Imlib_Image * im, char *name);
 void winwidget_destroy (winwidget winwid);
-void progress (Imlib_Image im, char percent, int update_x, int update_y,
-	       int update_w, int update_h);
+void progressive_load_cb (Imlib_Image im, char percent, int update_x,
+			  int update_y, int update_w, int update_h);
 void winwidget_create_window (winwidget ret, int w, int h);
 void feh_draw_checks (winwidget win);
 void feh_handle_timer (void);
@@ -274,35 +288,35 @@ void delete_rm_files (void);
 int feh_load_image_char (Imlib_Image ** im, char *filename);
 void feh_draw_filename (winwidget w);
 void feh_display_status (char stat);
-void real_loadables_mode(int loadable);
+void real_loadables_mode (int loadable);
 
 
-feh_file *filelist_addtofront (feh_file *root, feh_file *newfile);
+feh_file *filelist_addtofront (feh_file * root, feh_file * newfile);
 feh_file *filelist_newitem (char *filename);
-feh_file *filelist_remove_file (feh_file *list, feh_file *file);
-void feh_file_free (feh_file *file);
-int filelist_length (feh_file *file);
-feh_file *filelist_last (feh_file *file);
-feh_file *filelist_first (feh_file *file);
-feh_file *feh_file_rm_and_free (feh_file *list, feh_file *file);
-int filelist_num (feh_file *list, feh_file *file);
-feh_file *filelist_reverse (feh_file *list);
-feh_file *filelist_randomize (feh_file *list);
-typedef int (feh_compare_fn)(feh_file *file1, feh_file *file2);
-feh_file_info *feh_file_info_new(void);
-void feh_file_info_free(feh_file_info *info);
-int feh_file_info_load (feh_file *file);
-feh_file *feh_list_sort (feh_file *list, feh_compare_fn cmp);
-feh_file *feh_list_sort_merge (feh_file *l1,
-                                    feh_file *l2, feh_compare_fn cmp);
-int feh_cmp_name (feh_file *file1, feh_file *file2); 
-int feh_cmp_filename (feh_file *file1, feh_file *file2); 
-int feh_cmp_width (feh_file *file1, feh_file *file2); 
-int feh_cmp_height (feh_file *file1, feh_file *file2); 
-int feh_cmp_pixels (feh_file *file1, feh_file *file2); 
-int feh_cmp_size (feh_file *file1, feh_file *file2); 
-int feh_cmp_format (feh_file *file1, feh_file *file2); 
-feh_file *feh_file_info_preload(feh_file *list);
+feh_file *filelist_remove_file (feh_file * list, feh_file * file);
+void feh_file_free (feh_file * file);
+int filelist_length (feh_file * file);
+feh_file *filelist_last (feh_file * file);
+feh_file *filelist_first (feh_file * file);
+feh_file *feh_file_rm_and_free (feh_file * list, feh_file * file);
+int filelist_num (feh_file * list, feh_file * file);
+feh_file *filelist_reverse (feh_file * list);
+feh_file *filelist_randomize (feh_file * list);
+typedef int (feh_compare_fn) (feh_file * file1, feh_file * file2);
+feh_file_info *feh_file_info_new (void);
+void feh_file_info_free (feh_file_info * info);
+int feh_file_info_load (feh_file * file);
+feh_file *feh_list_sort (feh_file * list, feh_compare_fn cmp);
+feh_file *feh_list_sort_merge (feh_file * l1,
+			       feh_file * l2, feh_compare_fn cmp);
+int feh_cmp_name (feh_file * file1, feh_file * file2);
+int feh_cmp_filename (feh_file * file1, feh_file * file2);
+int feh_cmp_width (feh_file * file1, feh_file * file2);
+int feh_cmp_height (feh_file * file1, feh_file * file2);
+int feh_cmp_pixels (feh_file * file1, feh_file * file2);
+int feh_cmp_size (feh_file * file1, feh_file * file2);
+int feh_cmp_format (feh_file * file1, feh_file * file2);
+feh_file *feh_file_info_preload (feh_file * list);
 
 
 /* Imlib stuff */

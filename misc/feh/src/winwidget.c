@@ -30,6 +30,7 @@ winwidget_allocate (void)
 {
   winwidget ret = NULL;
 
+  D_ENTER;
   ret = emalloc (sizeof (_winwidget));
 
   ret->win = 0;
@@ -52,14 +53,16 @@ winwidget_allocate (void)
 
   ret->gc = None;
 
+  D_LEAVE;
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
-  D (("In winwidget_create_from_image\n"));
+  D_ENTER;
 
   if (im == NULL)
     return NULL;
@@ -79,17 +82,22 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   winwidget_create_window (ret, ret->w, ret->h);
   winwidget_render_image (ret);
 
+  D_LEAVE;
   return ret;
 }
 
-winwidget winwidget_create_from_file (feh_file * file, char *name)
+winwidget
+winwidget_create_from_file (feh_file * file, char *name)
 {
   winwidget ret = NULL;
 
-  D (("In winwidget_create_from_file\n"));
+  D_ENTER;
 
   if (!file || !file->filename)
-    return NULL;
+    {
+      D_LEAVE;
+      return NULL;
+    }
 
   ret = winwidget_allocate ();
   if (name)
@@ -101,7 +109,7 @@ winwidget winwidget_create_from_file (feh_file * file, char *name)
     {
       D (("Progressive loading enabled\n"));
       progwin = ret;
-      imlib_context_set_progress_function (progress);
+      imlib_context_set_progress_function (progressive_load_cb);
       imlib_context_set_progress_granularity (10);
     }
 
@@ -109,6 +117,7 @@ winwidget winwidget_create_from_file (feh_file * file, char *name)
     {
       if (opt.progressive)
 	winwidget_destroy (ret);
+      D_LEAVE;
       return NULL;
     }
 
@@ -121,6 +130,7 @@ winwidget winwidget_create_from_file (feh_file * file, char *name)
       winwidget_render_image (ret);
     }
 
+  D_LEAVE;
   return ret;
 }
 
@@ -132,7 +142,7 @@ winwidget_create_window (winwidget ret, int w, int h)
   MWMHints mwmhints;
   Atom prop = None;
 
-  D (("In winwidget_create_window\n"));
+  D_ENTER;
 
   if (opt.full_screen)
     {
@@ -208,9 +218,9 @@ winwidget_create_window (winwidget ret, int w, int h)
       XSetWMNormalHints (disp, ret->win, &xsz);
     }
   else
-  {
+    {
       XSizeHints xsz;
-      
+
       xsz.flags = PSize | PMinSize | PMaxSize;
       xsz.width = w;
       xsz.height = h;
@@ -219,28 +229,31 @@ winwidget_create_window (winwidget ret, int w, int h)
       xsz.min_height = h;
       xsz.max_height = h;
       XSetWMNormalHints (disp, ret->win, &xsz);
-  }
+    }
   /* set the icons name property */
   XSetIconName (disp, ret->win, "feh");
   /* set the command hint */
   XSetCommand (disp, ret->win, cmdargv, cmdargc);
 
   winwidget_register (ret);
+  D_LEAVE;
 }
 
 void
 winwidget_update_title (winwidget ret)
 {
+  D_ENTER;
   if (ret->name)
     XStoreName (disp, ret->win, ret->name);
   else
     XStoreName (disp, ret->win, "feh");
+  D_LEAVE;
 }
 
 void
 winwidget_setup_pixmaps (winwidget winwid)
 {
-  D (("In winwidget_setup_pixmaps\n"));
+  D_ENTER;
 
   if (opt.full_screen)
     {
@@ -268,7 +281,7 @@ winwidget_setup_pixmaps (winwidget winwid)
       winwid->bg_pmap =
 	XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
     }
-
+  D_LEAVE;
 }
 
 void
@@ -276,7 +289,7 @@ winwidget_render_image (winwidget winwid)
 {
   int x = 0, y = 0;
 
-  D (("In winwidget_render_image\n"));
+  D_ENTER;
 
   winwidget_setup_pixmaps (winwid);
 
@@ -311,12 +324,14 @@ winwidget_render_image (winwidget winwid)
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
   XFlush (disp);
+  D_LEAVE;
 }
 
 void
 feh_draw_checks (winwidget win)
 {
   int x, y;
+  D_ENTER;
 
   if (opt.full_screen)
     return;
@@ -327,12 +342,13 @@ feh_draw_checks (winwidget win)
   for (y = 0; y < win->h; y += CHECK_SIZE)
     for (x = 0; x < win->w; x += CHECK_SIZE)
       imlib_render_image_on_drawable (x, y);
+  D_LEAVE;
 }
 
 void
 winwidget_destroy (winwidget winwid)
 {
-  D (("In winwidget_destroy\n"));
+  D_ENTER;
   winwidget_unregister (winwid);
   if (winwid->win)
     XDestroyWindow (disp, winwid->win);
@@ -346,25 +362,28 @@ winwidget_destroy (winwidget winwid)
       imlib_free_image_and_decache ();
     }
   free (winwid);
-  winwid = NULL;
+  D_LEAVE;
 }
 
 void
 winwidget_destroy_all (void)
 {
   int i;
-  D (("In winwidget_destroy_all\n"));
+  D_ENTER;
   /* Have to DESCEND the list here, 'cos of the way _unregister works.
    * I'll re-implement the list at some point. A linked list
    * beckons :) */
   for (i = window_num - 1; i >= 0; i--)
     winwidget_destroy (windows[i]);
+  D_LEAVE;
 }
 
 int
 winwidget_loadimage (winwidget winwid, feh_file * file)
 {
-  D (("In winwidget_loadimage: filename %s\n", file->filename));
+  D_ENTER;
+  D (("filename %s\n", file->filename));
+  D_LEAVE;
   return feh_load_image (&(winwid->im), file);
 }
 
@@ -372,26 +391,30 @@ void
 winwidget_show (winwidget winwid)
 {
   XEvent ev;
+  D_ENTER;
   XMapWindow (disp, winwid->win);
   /* wait for the window to map */
-  D (("In winwidget_show: Waiting for window to map\n"));
+  D (("Waiting for window to map\n"));
   XMaskEvent (disp, StructureNotifyMask, &ev);
-  D (("In winwidget_show: Window mapped\n"));
+  D (("Window mapped\n"));
   winwid->visible = 1;
+  D_LEAVE;
 }
 
 void
 winwidget_hide (winwidget winwid)
 {
-  D (("In winwidget_hide\n"));
+  D_ENTER;
   XUnmapWindow (disp, winwid->win);
   winwid->visible = 0;
+  D_LEAVE;
 }
 
 static void
 winwidget_register (winwidget win)
 {
-  D (("In winwidget_register, window %p\n", win));
+  D_ENTER;
+  D (("window %p\n", win));
   window_num++;
   if (windows)
     windows = erealloc (windows, window_num * sizeof (winwidget));
@@ -400,13 +423,14 @@ winwidget_register (winwidget win)
   windows[window_num - 1] = win;
 
   XSaveContext (disp, win->win, xid_context, (XPointer) win);
+  D_LEAVE;
 }
 
 static void
 winwidget_unregister (winwidget win)
 {
   int i, j;
-  D (("In winwidget_unregister\n"));
+  D_ENTER;
   for (i = 0; i < window_num; i++)
     {
       if (windows[i] == win)
@@ -424,15 +448,23 @@ winwidget_unregister (winwidget win)
 	}
     }
   XDeleteContext (disp, win->win, xid_context);
+  D_LEAVE;
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
   winwidget ret = NULL;
 
-  D (("About to XFindContext\n"));
+  D_ENTER;
   if (XFindContext (disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
-    return ret;
+    {
+      D_LEAVE;
+      return ret;
+    }
   else
-    return NULL;
+    {
+      D_LEAVE;
+      return NULL;
+    }
 }

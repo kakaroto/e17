@@ -30,7 +30,7 @@ init_list_mode (void)
   feh_file *file;
   int j = 0;
 
-  D (("In init_list_mode\n"));
+  D_ENTER;
 
   if (opt.longlist)
     printf
@@ -51,23 +51,24 @@ init_list_mode (void)
 		file->info->has_alpha ? 'X' : '-', file->name);
     }
 
+  D_LEAVE;
   exit (0);
 }
 
 void
 init_loadables_mode (void)
 {
-  D (("In init_loadables_mode\n"));
-
+  D_ENTER;
   real_loadables_mode (1);
+  D_LEAVE;
 }
 
 void
 init_unloadables_mode (void)
 {
-  D (("In init_unloadables_mode\n"));
-
+  D_ENTER;
   real_loadables_mode (0);
+  D_LEAVE;
 }
 
 
@@ -76,6 +77,7 @@ real_loadables_mode (int loadable)
 {
   feh_file *file;
 
+  D_ENTER;
   opt.quiet = 1;
 
   for (file = filelist; file; file = file->next)
@@ -97,5 +99,6 @@ real_loadables_mode (int loadable)
 	    fprintf (stdout, "%s\n", file->filename);
 	}
     }
+  D_LEAVE;
   exit (0);
 }

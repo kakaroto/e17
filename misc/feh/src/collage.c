@@ -37,9 +37,9 @@ init_collage_mode (void)
   feh_file *file, *last = NULL;
   int file_num = 0;
 
+  D_ENTER;
+  
   file_num = filelist_length (filelist);
-
-  D (("In init_collage_mode\n"));
 
   /* Initialise random numbers */
   srand (getpid () * time (NULL) % ((unsigned int) -1));
@@ -84,7 +84,7 @@ init_collage_mode (void)
 
   w = opt.limit_w;
   h = opt.limit_h;
-  D (("   Limiting width to %d and height to %d\n", w, h));
+  D (("Limiting width to %d and height to %d\n", w, h));
 
   im_main = imlib_create_image (w, h);
 
@@ -104,10 +104,10 @@ init_collage_mode (void)
 	  filelist = filelist_remove_file (filelist, last);
 	  last = NULL;
 	}
-      D (("   About to load image %s\n", file->filename));
+      D (("About to load image %s\n", file->filename));
       if (feh_load_image (&im_temp, file) != 0)
 	{
-	  D (("   Successfully loaded %s\n", file->filename));
+	  D (("Successfully loaded %s\n", file->filename));
 	  if (opt.verbose)
 	    feh_display_status ('.');
 	  www = opt.thumb_w;
@@ -194,4 +194,5 @@ init_collage_mode (void)
       imlib_context_set_image (im_main);
       imlib_free_image_and_decache ();
     }
+  D_LEAVE;
 }

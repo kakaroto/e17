@@ -28,6 +28,7 @@
 int
 main (int argc, char **argv)
 {
+    D_ENTER;
   atexit (delete_rm_files);
 
   init_parse_options (argc, argv);
@@ -56,6 +57,7 @@ main (int argc, char **argv)
     }
 
   main_loop ();
+  D_LEAVE;
   return 0;
 }
 
@@ -70,7 +72,8 @@ main_loop (void)
   double t3 = 0.0, pt, t1 = 0.0, t2 = 0.0;
   fehtimer ft;
 
-  D (("In main_loop, window_num is %d\n", window_num));
+  D_ENTER;
+  D (("window_num is %d\n", window_num));
   if (window_num == 0)
     exit (0);
 
@@ -171,6 +174,7 @@ main_loop (void)
       if (window_num == 0)
 	exit (0);
     }
+  D_LEAVE;
 }
 
 void
@@ -178,7 +182,7 @@ feh_handle_event (XEvent * ev)
 {
   winwidget winwid = NULL;
 
-  D (("In feh_handle_event\n"));
+  D_ENTER;
 
   switch (ev->type)
     {
@@ -204,7 +208,7 @@ feh_handle_event (XEvent * ev)
 	      winwid = winwidget_get_from_window (ev->xbutton.window);
 	      if (winwid != NULL)
 		{
-		  D (("  Enabling zoom mode\n"));
+		  D (("Enabling zoom mode\n"));
 		  opt.zoom_mode = 1;
 		  winwid->zoom_mode = 1;
 		  winwid->zx = ev->xbutton.x;
@@ -361,6 +365,7 @@ feh_handle_event (XEvent * ev)
     default:
       break;
     }
+  D_LEAVE;
 }
 
 
@@ -369,7 +374,7 @@ feh_smooth_image (winwidget w)
 {
   int sx, sy, sw, sh, dx, dy, dw, dh;
 
-  D (("In feh_smooth_image\n"));
+  D_ENTER;
 
   if (w->zoom > 1.0)
     {
@@ -410,4 +415,5 @@ feh_smooth_image (winwidget w)
   XFlush (disp);
   w->timeout = 0;
   opt.timeout = 0;
+  D_LEAVE;
 }

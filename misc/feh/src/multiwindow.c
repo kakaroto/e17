@@ -30,7 +30,7 @@ init_multiwindow_mode (void)
   winwidget w = NULL;
   feh_file *file;
 
-  D (("In init_multiwindow_mode\n"));
+  D_ENTER;
 
   for (file = filelist; file; file = file->next)
     {
@@ -57,4 +57,5 @@ init_multiwindow_mode (void)
 	}
       free (s);
     }
+  D_LEAVE;
 }

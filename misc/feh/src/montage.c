@@ -39,9 +39,8 @@ init_montage_mode (void)
   feh_file *file, *last = NULL;
   int file_num = 0;
 
+  D_ENTER;
   file_num = filelist_length (filelist);
-
-  D (("In init_montage_mode\n"));
 
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
@@ -87,12 +86,12 @@ init_montage_mode (void)
       h = opt.limit_h;
       im_per_col = h / opt.thumb_h;
       im_per_row = w / opt.thumb_w;
-      D (("   Limiting width to %d and height to %d\n", w, h));
+      D (("Limiting width to %d and height to %d\n", w, h));
       D (
-	 ("   The image will be %d thumbnails wide by %d high\n", im_per_row,
+	 ("The image will be %d thumbnails wide by %d high\n", im_per_row,
 	  im_per_col));
       D (
-	 ("   You asked for %d thumbnails, this image is big enough for %d\n",
+	 ("You asked for %d thumbnails, this image is big enough for %d\n",
 	  file_num, im_per_row * im_per_col));
       if (file_num > (im_per_row * im_per_col))
 	{
@@ -139,9 +138,9 @@ init_montage_mode (void)
 	w += opt.thumb_w;
       if ((bg_im) && (w < bg_w))
 	w = bg_w;
-      D (("   Width will be %d - Height limited to %d\n", w, h));
+      D (("Width will be %d - Height limited to %d\n", w, h));
       D (
-	 ("   The image will be %d thumbnails wide by %d high\n", im_per_row,
+	 ("The image will be %d thumbnails wide by %d high\n", im_per_row,
 	  im_per_col));
     }
   else if (opt.limit_w)
@@ -157,9 +156,9 @@ init_montage_mode (void)
 	h += opt.thumb_h;
       if ((bg_im) && (h < bg_h))
 	h = bg_h;
-      D (("   Width limited to %d - Height will be %d\n", w, h));
+      D (("Width limited to %d - Height will be %d\n", w, h));
       D (
-	 ("   The image will be %d thumbnails wide by %d high\n", im_per_row,
+	 ("The image will be %d thumbnails wide by %d high\n", im_per_row,
 	  im_per_col));
     }
 
@@ -181,10 +180,10 @@ init_montage_mode (void)
 	  filelist = filelist_remove_file (filelist, last);
 	  last = NULL;
 	}
-      D (("   About to load image %s\n", file->filename));
+      D (("About to load image %s\n", file->filename));
       if (feh_load_image (&im_temp, file) != 0)
 	{
-	  D (("   Successfully loaded %s\n", file->filename));
+	  D (("Successfully loaded %s\n", file->filename));
 	  if (opt.verbose)
 	    feh_display_status ('.');
 	  www = opt.thumb_w;
@@ -285,4 +284,5 @@ init_montage_mode (void)
       imlib_context_set_image (im_main);
       imlib_free_image_and_decache ();
     }
+  D_LEAVE;
 }
