@@ -95,7 +95,7 @@ default to the size of the Evas itself.
 </para>
 
 <para>
-Etox uses the concept of contexts.  A <term>context</term> is a set of parameters such as color, font, alignment, styles, and markers that
+Etox uses the concept of contexts.  A <literal>context</literal> is a set of parameters such as color, font, alignment, styles, and markers that
 are applied to a certain set of text.  Each Etox object has at least one context associated with it which is created when calling
 <function>etox_new()</function>.  For this reason the <function>etox_context_new()</function> function <emphasis>only</emphasis> needs
 to be called when creating additional contexts. 
@@ -122,7 +122,7 @@ that work wrapping will not work unless soft wrapping has already been turned on
 </para>
 
 <para>
-A final note about wrapping is that by default wrapping will insert a <term>wrap marker</term> into your output string, a "+" (plus) sign by default.
+A final note about wrapping is that by default wrapping will insert a <literal>wrap marker</literal> into your output string, a "+" (plus) sign by default.
 This marker indicates that a wrap has occured and is printed  as the first charrector on the next line of the wrap.  Your string will therefore
 likely look more like this: "This is my (wrap) +string."  If you would prefer that Etox silently wrap without a marker, simply set the marker
 to being nothing using the <function>etox_context_set_wrap_marker()</function> function.

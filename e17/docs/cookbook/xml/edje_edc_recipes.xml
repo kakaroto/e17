@@ -14,8 +14,8 @@ Edje callbacks in your application code.
 
 <para>
 An EDC is broken into several major sections describing the images and fonts that are used
-in the interface, descriptions of how the various <term>parts</term> of the interface are
-laid out, and descriptions of actions or <term>programs</term> that occur when your interface
+in the interface, descriptions of how the various <literal>parts</literal> of the interface are
+laid out, and descriptions of actions or <literal>programs</literal> that occur when your interface
 is interacted with.  This functionality can be further supplimented by employing Embryo's
 scripting language to add C like programability into the Edje EDC itself.
 </para>
