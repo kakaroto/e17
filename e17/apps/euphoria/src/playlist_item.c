@@ -5,7 +5,7 @@
 
 #include <config.h>
 #include <Edje.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <xmms/xmmsclient.h>
 #include <stdio.h>
 #include <assert.h>
@@ -116,7 +116,7 @@ void playlist_item_free(PlayListItem *pli) {
 	}
 
 	if (pli->container && pli->edje)
-		e_container_element_destroy(pli->container, pli->edje);
+		esmart_container_element_destroy(pli->container, pli->edje);
 
 	free(pli);
 }
@@ -224,7 +224,7 @@ bool playlist_item_show(PlayListItem *pli) {
 	                                (EdjeCb) on_edje_playlist_item_remove,
 	                                udata);
 
-	e_container_element_append(pli->container, pli->edje);
+	esmart_container_element_append(pli->container, pli->edje);
 
 	return true;
 }

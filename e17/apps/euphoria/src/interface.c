@@ -5,7 +5,7 @@
 
 #include <config.h>
 #include <assert.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Edje.h>
 #include <Ewl.h>
@@ -326,15 +326,15 @@ static void setup_playlist(Euphoria *e) {
 	if (!edje_object_part_exists(e->gui.edje, "playlist"))
 		return;
 
-	e->gui.playlist = e_container_new(e->gui.evas);
+	e->gui.playlist = esmart_container_new(e->gui.evas);
 	assert(e->gui.playlist);
 
 	evas_object_name_set(e->gui.playlist, "PlayList");
 	evas_object_data_set(e->gui.playlist, "Euphoria", e);
 
-	e_container_direction_set(e->gui.playlist, 1);
-	e_container_spacing_set(e->gui.playlist, 0);
-	e_container_fill_policy_set(e->gui.playlist,
+	esmart_container_direction_set(e->gui.playlist, 1);
+	esmart_container_spacing_set(e->gui.playlist, 0);
+	esmart_container_fill_policy_set(e->gui.playlist,
 	                            CONTAINER_FILL_POLICY_FILL_X);
 
 	edje_object_part_swallow(e->gui.edje, "playlist",

@@ -5,7 +5,7 @@
 
 #include <config.h>
 #include <Edje.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <ewl/Ewl.h>
 #include <assert.h>
 #include "euphoria.h"
@@ -183,7 +183,7 @@ EDJE_CB(playlist_scroll_up) {
 	                                      "PlaylistFontSize");
 
 	/* it's * 3 because we're scrolling 3 elements at once */
-	e_container_scroll(e->gui.playlist, size * 3);
+	esmart_container_scroll(e->gui.playlist, size * 3);
 }
 
 EDJE_CB(playlist_scroll_down) {
@@ -191,7 +191,7 @@ EDJE_CB(playlist_scroll_down) {
 	                                      "PlaylistFontSize");
 
 	/* it's * 3 because we're scrolling 3 elements at once */
-	e_container_scroll(e->gui.playlist, size * -3);
+	esmart_container_scroll(e->gui.playlist, size * -3);
 }
 
 EDJE_CB(playlist_item_play) {
@@ -215,7 +215,7 @@ EDJE_CB(playlist_item_remove) {
 }
 
 EDJE_CB(playlist_item_selected) {
-	Evas_List *items = e_container_elements_get(e->gui.playlist);
+	Evas_List *items = esmart_container_elements_get(e->gui.playlist);
 	Evas_List *l;
 
 	for (l = items; l; l = l->next)
@@ -666,8 +666,8 @@ static void playlist_refill(struct _Euphoria *e) {
 		id = (unsigned int) l->data;
 
 		if ((pli = playlist_item_find_by_id(e->playlist, id))) {
-			e_container_element_remove(pli->container, pli->edje);
-			e_container_element_append(pli->container, pli->edje);
+			esmart_container_element_remove(pli->container, pli->edje);
+			esmart_container_element_append(pli->container, pli->edje);
 		} else
 			fprintf(stderr, "Unable to find id %d\n", id);
 	}
