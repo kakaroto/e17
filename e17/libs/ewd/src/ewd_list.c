@@ -1,5 +1,3 @@
-#include <../config.h>
-
 #include <Ewd.h>
 #include <ewd_list_private.h>
 
@@ -35,7 +33,7 @@ int ewd_list_init(Ewd_List *list)
 
 	memset(list, 0, sizeof(Ewd_List));
 
-	EWD_INIT_STRUCT_LOCK(list);
+	EWD_INIT_LOCKS(list);
 
 	return TRUE;
 }
@@ -47,16 +45,22 @@ int ewd_list_init(Ewd_List *list)
  */
 void ewd_list_destroy(Ewd_List * list)
 {
+	void *data;
+
 	CHECK_PARAM_POINTER("list", list);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
-	while (list->first)
-		_ewd_list_remove_first(list);
+	while (list->first) {
+		data = _ewd_list_remove_first(list);
+		if (list->free_func)
+			list->free_func(data);
+	}
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_DESTROY_LOCKS(list);
 
-	IF_FREE(list);
+	FREE(list);
 }
 
 /*
@@ -72,11 +76,11 @@ int ewd_list_set_free_cb(Ewd_List * list, Ewd_Free_Cb free_func)
 {
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
 	list->free_func = free_func;
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return TRUE;
 }
@@ -88,27 +92,18 @@ int ewd_list_set_free_cb(Ewd_List * list, Ewd_Free_Cb free_func)
  */
 int ewd_list_is_empty(Ewd_List * list)
 {
-	int ret;
+	int ret = TRUE;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
-	ret = _ewd_list_is_empty(list);
-	EWD_UNLOCK_STRUCT(list);
-
-	return ret;
-}
-
-/* Check to see if the list has any data in it */
-int _ewd_list_is_empty(Ewd_List * list)
-{
-	if (!list)
-		return FALSE;
+	EWD_READ_LOCK_STRUCT(list);
 
 	if (list->nodes)
-		return FALSE;
+		ret = FALSE;
 
-	return TRUE;
+	EWD_READ_UNLOCK_STRUCT(list);
+
+	return ret;
 }
 
 /*
@@ -122,24 +117,13 @@ int ewd_list_index(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
-	ret = _ewd_list_index(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_READ_LOCK_STRUCT(list);
+
+	ret = list->index;
+
+	EWD_READ_UNLOCK_STRUCT(list);
 
 	return ret;
-}
-
-/* Find the current position in the list */
-int _ewd_list_index(Ewd_List * list)
-{
-	int index;
-
-	if (!list)
-		return FALSE;
-
-	index = list->index;
-
-	return index;
 }
 
 /*
@@ -149,28 +133,17 @@ int _ewd_list_index(Ewd_List * list)
  */
 int ewd_list_nodes(Ewd_List * list)
 {
-	int ret;
+	int ret = 0;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
-	ret = _ewd_list_nodes(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_READ_LOCK_STRUCT(list);
+
+	ret = list->nodes;
+
+	EWD_READ_UNLOCK_STRUCT(list);
 
 	return ret;
-}
-
-/* Find the current position in the list */
-int _ewd_list_nodes(Ewd_List * list)
-{
-	int index;
-
-	if (!list)
-		return FALSE;
-
-	index = list->nodes;
-
-	return index;
 }
 
 /*
@@ -185,9 +158,11 @@ int ewd_list_append(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
+
 	ret = _ewd_list_append(list, data);
-	EWD_UNLOCK_STRUCT(list);
+
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -205,21 +180,19 @@ int _ewd_list_append(Ewd_List * list, void *data)
 		return FALSE;
 
 	if (list->last) {
-		EWD_LOCK_STRUCT(list->last);
+		EWD_WRITE_LOCK_STRUCT(list->last);
 		list->last->next = end;
-		EWD_UNLOCK_STRUCT(list->last);
+		EWD_WRITE_UNLOCK_STRUCT(list->last);
 	}
 
-	EWD_LOCK_STRUCT(end);
+	EWD_WRITE_LOCK_STRUCT(end);
 	end->data = data;
-	EWD_UNLOCK_STRUCT(end);
+	EWD_WRITE_UNLOCK_STRUCT(end);
 
 	list->last = end;
 
 	if (list->first == NULL) {
-
 		list->first = list->current = end;
-
 		list->index = 1;
 	}
 
@@ -240,9 +213,9 @@ int ewd_list_prepend(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_prepend(list, data);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -261,10 +234,10 @@ int _ewd_list_prepend(Ewd_List * list, void *data)
 		return FALSE;
 
 	/* Put it at the beginning of the list */
-	EWD_LOCK_STRUCT(start);
+	EWD_WRITE_LOCK_STRUCT(start);
 	start->next = list->first;
 	start->data = data;
-	EWD_UNLOCK_STRUCT(start);
+	EWD_WRITE_UNLOCK_STRUCT(start);
 
 	list->first = start;
 
@@ -294,9 +267,9 @@ int ewd_list_insert(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_insert(list, data);
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -324,17 +297,17 @@ int _ewd_list_insert(Ewd_List * list, void *data)
 		return FALSE;
 
 	/* Setup the fields of the new node */
-	EWD_LOCK_STRUCT(new);
+	EWD_WRITE_LOCK_STRUCT(new);
 	new->data = data;
 	new->next = list->current;
-	EWD_UNLOCK_STRUCT(new);
+	EWD_WRITE_UNLOCK_STRUCT(new);
 
 	/* And hook the node into the list */
-	_ewd_list_goto_index(list, _ewd_list_index(list) - 1);
+	_ewd_list_goto_index(list, ewd_list_index(list) - 1);
 
-	EWD_LOCK_STRUCT(list->current);
+	EWD_WRITE_LOCK_STRUCT(list->current);
 	list->current->next = new;
-	EWD_UNLOCK_STRUCT(list->current);
+	EWD_WRITE_UNLOCK_STRUCT(list->current);
 
 	list->current = new;
 	list->index++;
@@ -348,28 +321,29 @@ int _ewd_list_insert(Ewd_List * list, void *data)
  * Parameters: 1. list - the list to remove the current item
  * Returns: TRUE on success, FALSE on error
  */
-int ewd_list_remove(Ewd_List * list)
+void *ewd_list_remove(Ewd_List * list)
 {
-	int ret;
+	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_remove(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
 
 /* Remove the current item from the list */
-int _ewd_list_remove(Ewd_List * list)
+void *_ewd_list_remove(Ewd_List * list)
 {
+	void *ret = NULL;
 	Ewd_List_Node *old;
 
 	if (!list)
 		return FALSE;
 
-	if (_ewd_list_is_empty(list))
+	if (ewd_list_is_empty(list))
 		return FALSE;
 
 	if (!list->current)
@@ -383,19 +357,42 @@ int _ewd_list_remove(Ewd_List * list)
 
 	old = list->current;
 
-	_ewd_list_goto_index(list, ewd_list_index(list));
+	_ewd_list_goto_index(list, ewd_list_index(list) - 1);
 
-	EWD_LOCK_STRUCT(list->current);
-	EWD_LOCK_STRUCT(old);
+	EWD_WRITE_LOCK_STRUCT(list->current);
+	EWD_WRITE_LOCK_STRUCT(old);
 
 	list->current->next = old->next;
 	old->next = NULL;
+	ret = old->data;
+	old->data = NULL;
 
-	EWD_UNLOCK_STRUCT(old);
-	EWD_UNLOCK_STRUCT(list->current);
+	EWD_WRITE_UNLOCK_STRUCT(old);
+	EWD_WRITE_UNLOCK_STRUCT(list->current);
 
-	ewd_list_node_destroy(old, list->free_func);
+	ewd_list_node_destroy(old, NULL);
 	list->nodes--;
+
+	return ret;
+}
+
+/*
+ * Description: Remove and destroy the data in the list at current position
+ * Parameters: 1. list - the list to remove the data from
+ * Returns: TRUE on success, FALSE on error
+ */
+int ewd_list_remove_destroy(Ewd_List *list)
+{
+	void *data;
+
+	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
+
+	EWD_WRITE_LOCK_STRUCT(list);
+	data = _ewd_list_remove(list);
+	if (list->free_func)
+		list->free_func(data);
+
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return TRUE;
 }
@@ -405,28 +402,29 @@ int _ewd_list_remove(Ewd_List * list)
  * Parameters: 1. list - the list to remove the current item
  * Returns: TRUE on success, FALSE on error
  */
-int ewd_list_remove_first(Ewd_List * list)
+void *ewd_list_remove_first(Ewd_List * list)
 {
-	int ret;
+	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_remove_first(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
 
 /* Remove the first item from the list */
-int _ewd_list_remove_first(Ewd_List * list)
+void *_ewd_list_remove_first(Ewd_List * list)
 {
+	void *ret = NULL;
 	Ewd_List_Node *old;
 
 	if (!list)
 		return FALSE;
 
-	if (_ewd_list_is_empty(list))
+	if (ewd_list_is_empty(list))
 		return FALSE;
 
 	if (!list->first)
@@ -444,10 +442,15 @@ int _ewd_list_remove_first(Ewd_List * list)
 	if (list->last == old)
 		list->last = list->first;
 
-	ewd_list_node_destroy(old, list->free_func);
+	EWD_WRITE_LOCK_STRUCT(old);
+	ret = old->data;
+	old->data = NULL;
+	EWD_WRITE_UNLOCK_STRUCT(old);
+
+	ewd_list_node_destroy(old, NULL);
 	list->nodes--;
 
-	return TRUE;
+	return ret;
 }
 
 /*
@@ -455,29 +458,30 @@ int _ewd_list_remove_first(Ewd_List * list)
  * Parameters: 1. list - the list to remove the last node from
  * Returns: TRUE on success, FALSE on error
  */
-int ewd_list_remove_last(Ewd_List * list)
+void *ewd_list_remove_last(Ewd_List * list)
 {
-	int ret;
+	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_remove_last(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
 
 /* Remove the last item from the list */
-int _ewd_list_remove_last(Ewd_List * list)
+void *_ewd_list_remove_last(Ewd_List * list)
 {
+	void *ret = NULL;
 	int index;
 	Ewd_List_Node *old;
 
 	if (!list)
 		return FALSE;
 
-	if (_ewd_list_is_empty(list))
+	if (ewd_list_is_empty(list))
 		return FALSE;
 
 	if (!list->last)
@@ -487,20 +491,24 @@ int _ewd_list_remove_last(Ewd_List * list)
 	if (list->current == list->last)
 		index = list->nodes - 1;
 	else
-		index = _ewd_list_index(list);
+		index = ewd_list_index(list);
 
 	_ewd_list_goto_index(list, list->nodes - 1);
 	list->last = list->current;
 	_ewd_list_goto_index(list, index);
 
-	EWD_LOCK_STRUCT(old);
-	old->next = NULL;
-	EWD_UNLOCK_STRUCT(old);
+	EWD_WRITE_LOCK_STRUCT(old);
+	if (old) {
+		old->next = NULL;
+		ret = old->data;
+		old->data = NULL;
+	}
+	EWD_WRITE_UNLOCK_STRUCT(old);
 
-	ewd_list_node_destroy(old, list->free_func);
+	ewd_list_node_destroy(old, NULL);
 	list->nodes--;
 
-	return TRUE;
+	return ret;
 }
 
 /* 
@@ -515,9 +523,9 @@ int ewd_list_goto_index(Ewd_List * list, int index)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_goto_index(list, index);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -531,10 +539,10 @@ int _ewd_list_goto_index(Ewd_List *list, int index)
 	if (!list)
 		return FALSE;
 
-	if (_ewd_list_is_empty(list))
+	if (ewd_list_is_empty(list))
 		return FALSE;
 
-	if (index > _ewd_list_nodes(list) || index < 0)
+	if (index > ewd_list_nodes(list) || index < 0)
 		return FALSE;
 
 	_ewd_list_goto_first(list);
@@ -558,9 +566,9 @@ int ewd_list_goto(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_goto(list, data);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -577,21 +585,21 @@ int _ewd_list_goto(Ewd_List * list, void *data)
 	index = 1;
 
 	node = list->first;
-	EWD_LOCK_STRUCT(node);
+	EWD_READ_LOCK_STRUCT(node);
 	while (node && node->data) {
 		if (node->data == data)
 			break;
-		EWD_UNLOCK_STRUCT(node);
+		EWD_READ_UNLOCK_STRUCT(node);
 
 		node = node->next;
 
-		EWD_LOCK_STRUCT(node);
+		EWD_READ_LOCK_STRUCT(node);
 		index++;
 	}
 
+	EWD_READ_UNLOCK_STRUCT(node);
 	if (!node)
 		return FALSE;
-	EWD_UNLOCK_STRUCT(node);
 
 	list->current = node;
 	list->index = index;
@@ -600,7 +608,9 @@ int _ewd_list_goto(Ewd_List * list, void *data)
 }
 
 /*
- * Description: :
+ * Description: Move the current pointer to the first item in the list
+ * Parameters: 1. list - the list to move the current pointer in
+ * Returns: TRUE on success, FALSE on an error
  */
 int ewd_list_goto_first(Ewd_List *list)
 {
@@ -608,9 +618,11 @@ int ewd_list_goto_first(Ewd_List *list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
+
 	ret = _ewd_list_goto_first(list);
-	EWD_UNLOCK_STRUCT(list);
+
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -618,7 +630,6 @@ int ewd_list_goto_first(Ewd_List *list)
 /* Set the current position to the start of the list */
 int _ewd_list_goto_first(Ewd_List * list)
 {
-
 	if (!list)
 		return FALSE;
 
@@ -628,15 +639,20 @@ int _ewd_list_goto_first(Ewd_List * list)
 	return TRUE;
 }
 
+/*
+ * Description: Move the pointer to current to the last item in the list
+ * Parameters: 1. list - the list to move the current pointer in
+ * Returns: TRUE on success, FALSE on error
+ */
 int ewd_list_goto_last(Ewd_List * list)
 {
 	int ret;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_goto_last(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -653,13 +669,18 @@ int _ewd_list_goto_last(Ewd_List * list)
 	return TRUE;
 }
 
+/*
+ * Description: Retrieve the data in the current node
+ * Parameters: 1. list - the list to retrieve the current data from
+ * Returns: NULL on error, the data in current on success
+ */
 void *ewd_list_current(Ewd_List * list)
 {
 	void *ret;
 
-	EWD_LOCK_STRUCT(list);
+	EWD_READ_LOCK_STRUCT(list);
 	ret = _ewd_list_current(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -674,20 +695,25 @@ void *_ewd_list_current(Ewd_List * list)
 	if (!list->current)
 		return NULL;
 
-	EWD_LOCK_STRUCT(list->current);
+	EWD_READ_LOCK_STRUCT(list->current);
 	ret = list->current->data;
-	EWD_UNLOCK_STRUCT(list->current);
+	EWD_READ_UNLOCK_STRUCT(list->current);
 
 	return ret;
 }
 
+/*
+ * Description: Retrieve the data at the current node and move to the next
+ * Parameters: 1. list - the list to move to the next item
+ * Returns: NULL on error or empty list, data in current node on success
+ */
 void *ewd_list_next(Ewd_List * list)
 {
 	void *data;
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	data = _ewd_list_next(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return data;
 }
@@ -703,89 +729,47 @@ void *_ewd_list_next(Ewd_List * list)
 	if (!list->current)
 		return NULL;
 
-	EWD_LOCK_STRUCT(list->current);
+	EWD_READ_LOCK_STRUCT(list->current);
 	if (list->current == list->current->next)
 		return NULL;
 
 	ret = list->current;
-	EWD_UNLOCK_STRUCT(list->current);
+	EWD_READ_UNLOCK_STRUCT(list->current);
 
 	list->current = list->current->next;
 	list->index++;
 
-	EWD_LOCK_STRUCT(ret);
+	EWD_WRITE_LOCK_STRUCT(ret);
 	data = ret->data;
-	EWD_UNLOCK_STRUCT(ret);
+	EWD_WRITE_UNLOCK_STRUCT(ret);
 
 	return data;
 }
 
-/* Initialize a node to starting values */
-int ewd_list_node_init(Ewd_List_Node * node)
-{
-
-	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
-
-	node->next = NULL;
-	node->data = NULL;
-
-	EWD_INIT_STRUCT_LOCK(node);
-
-	return TRUE;
-}
-
-/* Remove all nodes from the list */
+/* 
+ * Description: Remove all nodes from the list
+ * Parameters: 1. list - the list that will have it's nodes removed
+ * Returns: TRUE on success, FALSE on error
+ */
 int ewd_list_clear(Ewd_List * list)
 {
+	void *data;
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
-	if (_ewd_list_is_empty(list))
+	if (ewd_list_is_empty(list))
 		return TRUE;
 
 	_ewd_list_goto_first(list);
 
 	if (list->current) {
-		_ewd_list_remove(list);
+		data = _ewd_list_remove(list);
+		if (list->free_func)
+			list->free_func(data);
 	}
 
-	EWD_UNLOCK_STRUCT(list);
-
-	return TRUE;
-}
-
-/* Allocate and initialize a new list node */
-Ewd_List_Node *ewd_list_node_new()
-{
-	Ewd_List_Node *new;
-
-	new = malloc(sizeof(Ewd_List_Node));
-
-	if (!new)
-		return NULL;
-
-	if (!ewd_list_node_init(new)) {
-		IF_FREE(new);
-		return NULL;
-	}
-
-	return new;
-}
-
-int ewd_list_node_destroy(Ewd_List_Node * node, Ewd_Free_Cb free_func)
-{
-	CHECK_PARAM_POINTER_RETURN("node", node,
-			FALSE);
-
-	EWD_LOCK_STRUCT(node);
-
-	if (free_func)
-		free_func(node->data);
-
-	EWD_UNLOCK_STRUCT(node);
-
-	FREE(node);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return TRUE;
 }
@@ -802,13 +786,14 @@ int ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_READ_LOCK_STRUCT(list);
 	ret = _ewd_list_for_each(list, function);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK_STRUCT(list);
 
 	return ret;
 }
 
+/* The real meat of executing the function for each data node */
 int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 {
 	int i, index;
@@ -817,8 +802,8 @@ int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 	if (!list || !function)
 		return FALSE;
 
-	index = _ewd_list_index(list);
-	nodes = _ewd_list_nodes(list);
+	index = ewd_list_index(list);
+	nodes = ewd_list_nodes(list);
 	_ewd_list_goto_first(list);
 
 	for (i = 0; i < nodes; i++) {
@@ -826,6 +811,56 @@ int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 	}
 
 	_ewd_list_goto_index(list, index);
+
+	return TRUE;
+}
+
+/* Initialize a node to starting values */
+int ewd_list_node_init(Ewd_List_Node * node)
+{
+
+	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
+
+	node->next = NULL;
+	node->data = NULL;
+
+	EWD_INIT_LOCKS(node);
+
+	return TRUE;
+}
+
+/* Allocate and initialize a new list node */
+Ewd_List_Node *ewd_list_node_new()
+{
+	Ewd_List_Node *new;
+
+	new = malloc(sizeof(Ewd_List_Node));
+
+	if (!new)
+		return NULL;
+
+	if (!ewd_list_node_init(new)) {
+		FREE(new);
+		return NULL;
+	}
+
+	return new;
+}
+
+/* Here we actually call the function to free the data and free the node */
+int ewd_list_node_destroy(Ewd_List_Node * node, Ewd_Free_Cb free_func)
+{
+	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
+
+	EWD_WRITE_LOCK_STRUCT(node);
+
+	if (free_func)
+		free_func(node->data);
+
+	EWD_WRITE_UNLOCK_STRUCT(node);
+	EWD_DESTROY_LOCKS(node);
+
+	FREE(node);
 
 	return TRUE;
 }
