@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -97,8 +98,7 @@ MaxHeight(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (
-			   (((ewin->desktop == lst[i]->desktop)
+		       if ((((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (!(lst[i]->ignorearrange))
@@ -180,8 +180,7 @@ MaxHeight(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (
-			   (((ewin->desktop == lst[i]->desktop)
+		       if ((((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (lst[i]->never_use_area)
@@ -298,8 +297,7 @@ MaxWidth(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (
-			   (((ewin->desktop == lst[i]->desktop)
+		       if ((((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (!(lst[i]->ignorearrange))
@@ -517,8 +515,7 @@ MaxSize(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (
-			   (((ewin->desktop == lst[i]->desktop)
+		       if ((((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (!(lst[i]->ignorearrange))
@@ -539,8 +536,7 @@ MaxSize(EWin * ewin, char *resize_type)
 				ewin->border->border.bottom);
 		  for (i = 0; i < num; i++)
 		    {
-		       if (
-			   ((ewin->desktop == lst[i]->desktop)
+		       if (((ewin->desktop == lst[i]->desktop)
 			    || (lst[i]->sticky)) && (!(lst[i]->floating))
 			   && (lst[i] != ewin) && (!(lst[i]->ignorearrange))
 			   && SPANS_COMMON(y, h, lst[i]->y, lst[i]->h))
@@ -637,8 +633,7 @@ MaxSize(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (
-			   ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
+		       if (((lst[i] != ewin) && (!(lst[i]->ignorearrange))
 			    && !(lst[i]->iconified)) && (!(lst[i]->floating))
 			   &&
 			   (((ewin->desktop

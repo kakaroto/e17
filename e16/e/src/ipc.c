@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -327,7 +328,8 @@ IPCStruct           IPCArray[] = {
     "deskslide <on/off> (slide in desktops on desktop change)\n"
     "mapslide <on/off> (slide in new windows)\n"
     "raindrops <on/off> (raindrops will appear across your desktop)\n"
-    "menu_animate <on/off> (toggles the animation of menus " "as they appear)\n"
+    "menu_animate <on/off> (toggles the animation of menus "
+    "as they appear)\n"
     "animate_win_shading <on/off> (toggles the animation of "
     "window shading)\n"
     "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
@@ -985,8 +987,8 @@ IPC_DockConfig(char *params, Client * c)
 		  if (!strcmp(param2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf), "dockapp support: %s",
-				 (mode.dockapp_support) ? "enabled" :
-				 "disabled");
+				 (mode.
+				  dockapp_support) ? "enabled" : "disabled");
 		    }
 		  else if ((!strcmp(param2, "on"))
 			   || (!strcmp(param2, "enable")))
@@ -1857,8 +1859,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.
-						   normal->real_file);
+						   iclass->norm.normal->
+						   real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf), "%i %i",
@@ -5541,8 +5543,8 @@ IPC_RememberList(char *params, Client * c)
    Snapshot          **lst;
    int                 i, j, num, f;
    char                buf[FILEPATH_LEN_MAX * 2],	/* hope 2x doesn't break anything */
-                       buf2[FILEPATH_LEN_MAX], fullstr[FILEPATH_LEN_MAX],
-      nstr[] = "null";
+   
+                         buf2[FILEPATH_LEN_MAX], fullstr[FILEPATH_LEN_MAX], nstr[] = "null";
 
    buf[0] = 0;
    buf2[0] = 0;
@@ -5621,8 +5623,8 @@ IPC_RememberList(char *params, Client * c)
 				 lst[i]->win_title ? lst[i]->win_title : nstr,
 				 lst[i]->win_name ? lst[i]->win_name : nstr,
 				 lst[i]->win_class ? lst[i]->win_class : nstr,
-				 lst[i]->
-				 border_name ? lst[i]->border_name : nstr,
+				 lst[i]->border_name ? lst[i]->
+				 border_name : nstr,
 				 /*lst[i]->used?"yes":"no", */
 				 lst[i]->use_desktop, lst[i]->desktop,
 				 lst[i]->area_x, lst[i]->area_y, lst[i]->use_wh,

@@ -74,8 +74,7 @@ CommsFindCommsWindow()
 	  {
 	     if (!EGetGeometry
 		 (disp, comms_win, &rt, &dint, &dint, &duint, &duint, &duint,
-		  &duint))
-		comms_win = 0;
+		  &duint)) comms_win = 0;
 	     s = NULL;
 	     if (comms_win)
 	       {
@@ -707,8 +706,8 @@ HandleComms(XEvent * ev)
 			    else if (a->modifiers == (ShiftMask | Mod1Mask))
 			       mod = 6;
 			    else if (a->modifiers ==
-				     (ShiftMask | ControlMask | Mod1Mask))
-			       mod = 7;
+				     (ShiftMask | ControlMask | Mod1Mask)) mod =
+				  7;
 			    else if (a->modifiers == (Mod2Mask))
 			       mod = 8;
 			    else if (a->modifiers == (Mod3Mask))
@@ -728,15 +727,15 @@ HandleComms(XEvent * ev)
 			    else if (a->modifiers == (Mod4Mask | ControlMask))
 			       mod = 16;
 			    else if (a->modifiers ==
-				     (Mod4Mask | ControlMask | ShiftMask))
-			       mod = 17;
+				     (Mod4Mask | ControlMask | ShiftMask)) mod =
+				  17;
 			    else if (a->modifiers == (Mod5Mask | ShiftMask))
 			       mod = 18;
 			    else if (a->modifiers == (Mod5Mask | ControlMask))
 			       mod = 19;
 			    else if (a->modifiers ==
-				     (Mod5Mask | ControlMask | ShiftMask))
-			       mod = 20;
+				     (Mod5Mask | ControlMask | ShiftMask)) mod =
+				  20;
 			    if (a->action->params)
 			       Esnprintf(buf2, sizeof(buf2), "%s %i %i %s\n",
 					 key, mod, a->action->Type,
@@ -1542,8 +1541,7 @@ HandleComms(XEvent * ev)
 	     while (
 		    (b =
 		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BUTTON)))
-		DestroyButton(b);
+				LIST_TYPE_BUTTON))) DestroyButton(b);
 	     InitDesktopControls();
 	     ShowDesktopControls();
 	  }

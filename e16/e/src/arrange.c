@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -425,12 +426,12 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	       {
 		  a1 =
 		     (spaces[k].x + (spaces[k].w >> 1)) - (floating[i].x +
-							   (floating[i].w >>
-							    1));
+							   (floating[i].
+							    w >> 1));
 		  a2 =
 		     (spaces[k].y + (spaces[k].h >> 1)) - (floating[i].y +
-							   (floating[i].h >>
-							    1));
+							   (floating[i].
+							    h >> 1));
 		  if (a1 >= 0)
 		    {
 		       sorted[num_sorted].x = spaces[k].x;
@@ -724,8 +725,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 				    screens[i].y_org + screens[i].height;
 				 screen_snap_dist =
 				    mode.constrained ? (screens[i].width +
-							screens[i].height) :
-				    mode.screen_snap_dist;
+							screens[i].
+							height) : mode.
+				    screen_snap_dist;
 			      }
 			 }
 		    }
@@ -765,8 +767,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	       {
 		  if (lst[i])
 		    {
-		       if (
-			   ((ewin->desktop == lst[i]->desktop)
+		       if (((ewin->desktop == lst[i]->desktop)
 			    || (lst[i]->sticky)) && (!(lst[i]->floating))
 			   && (!(lst[i]->iconified))
 			   && (!(lst[i]->ignorearrange)))
@@ -801,8 +802,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	       {
 		  if (lst[i])
 		    {
-		       if (
-			   ((ewin->desktop == lst[i]->desktop)
+		       if (((ewin->desktop == lst[i]->desktop)
 			    || (lst[i]->sticky)) && (!(lst[i]->floating))
 			   && (!(lst[i]->iconified))
 			   && (!(lst[i]->ignorearrange)))
@@ -837,8 +837,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	       {
 		  if (lst[i])
 		    {
-		       if (
-			   ((ewin->desktop == lst[i]->desktop)
+		       if (((ewin->desktop == lst[i]->desktop)
 			    || (lst[i]->sticky)) && (!(lst[i]->floating))
 			   && (!(lst[i]->iconified))
 			   && (!(lst[i]->ignorearrange)))
@@ -873,8 +872,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	       {
 		  if (lst[i])
 		    {
-		       if (
-			   ((ewin->desktop == lst[i]->desktop)
+		       if (((ewin->desktop == lst[i]->desktop)
 			    || (lst[i]->sticky)) && (!(lst[i]->floating))
 			   && (!(lst[i]->iconified))
 			   && (!(lst[i]->ignorearrange)))
@@ -983,8 +981,7 @@ ArrangeEwin(EWin * ewin)
 	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1));
 	     for (i = 0; i < num; i++)
 	       {
-		  if (
-		      ((blst[i]->desktop == ewin->desktop)
+		  if (((blst[i]->desktop == ewin->desktop)
 		       || ((blst[i]->desktop == 0) && (blst[i]->sticky)))
 		      && (blst[i]->visible))
 		    {

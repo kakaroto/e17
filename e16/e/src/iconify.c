@@ -2450,8 +2450,8 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
    mi = CreateMenuItem(_("Close Iconbox"), NULL, ACTION_KILL, NULL, NULL);
    AddItemToMenu(p_menu, mi);
    mi =
-      CreateMenuItem(_("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX, NULL,
-		     NULL);
+      CreateMenuItem(_("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX,
+		     NULL, NULL);
    AddItemToMenu(p_menu, mi);
    AddItem(p_menu, p_menu->name, 0, LIST_TYPE_MENU);
    Esnprintf(s, sizeof(s), "named %s", p_menu->name);

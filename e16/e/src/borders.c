@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -81,48 +82,44 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	   || (desks.current != ewin->desktop)))
      {
 	if ((desks.dragdir == 0)
-	    &&
-	    (((ewin->x + dx < 0) || ((ewin->x + dx + ewin->w <= root.w)
-				     &&
-				     ((DesktopAt
-				       (desks.desk[ewin->desktop].x + ewin->x +
-					dx + ewin->w - 1,
-					desks.desk[ewin->desktop].y) !=
-				       ewin->desktop))))))
-	   dofloat = 1;
+	    && (((ewin->x + dx < 0) || ((ewin->x + dx + ewin->w <= root.w)
+					&&
+					((DesktopAt
+					  (desks.desk[ewin->desktop].x +
+					   ewin->x + dx + ewin->w - 1,
+					   desks.desk[ewin->desktop].y) !=
+					  ewin->desktop)))))) dofloat = 1;
 	if ((desks.dragdir == 1)
-	    &&
-	    (((ewin->x + dx + ewin->w > root.w) || ((ewin->x + dx >= 0)
-						    &&
-						    ((DesktopAt
-						      (desks.desk
-						       [ewin->desktop].x +
-						       ewin->x + dx,
-						       desks.
-						       desk[ewin->desktop].y) !=
-						      ewin->desktop))))))
+	    && (((ewin->x + dx + ewin->w > root.w) || ((ewin->x + dx >= 0)
+						       &&
+						       ((DesktopAt
+							 (desks.desk
+							  [ewin->desktop].x +
+							  ewin->x + dx,
+							  desks.
+							  desk[ewin->desktop].
+							  y) !=
+							 ewin->desktop))))))
 	   dofloat = 1;
 	if ((desks.dragdir == 2)
-	    &&
-	    (((ewin->y + dy < 0) || ((ewin->y + dy + ewin->h <= root.h)
-				     &&
-				     ((DesktopAt
-				       (desks.desk[ewin->desktop].x,
-					desks.desk[ewin->desktop].y + ewin->y +
-					dy + ewin->h - 1) != ewin->desktop))))))
-	   dofloat = 1;
+	    && (((ewin->y + dy < 0) || ((ewin->y + dy + ewin->h <= root.h)
+					&&
+					((DesktopAt
+					  (desks.desk[ewin->desktop].x,
+					   desks.desk[ewin->desktop].y +
+					   ewin->y + dy + ewin->h - 1) !=
+					  ewin->desktop)))))) dofloat = 1;
 	if ((desks.dragdir == 3)
-	    &&
-	    (((ewin->y + dy + ewin->h > root.h) || ((ewin->y + dy >= 0)
-						    &&
-						    ((DesktopAt
-						      (desks.desk
-						       [ewin->desktop].x,
-						       desks.
-						       desk[ewin->desktop].y +
-						       ewin->y + dy) !=
-						      ewin->desktop))))))
-	   dofloat = 1;
+	    && (((ewin->y + dy + ewin->h > root.h) || ((ewin->y + dy >= 0)
+						       &&
+						       ((DesktopAt
+							 (desks.desk
+							  [ewin->desktop].x,
+							  desks.
+							  desk[ewin->desktop].y
+							  + ewin->y + dy) !=
+							 ewin->desktop))))))
+	      dofloat = 1;
 	if (dofloat)
 	   FloatEwinAt(ewin, ewin->x + desks.desk[ewin->desktop].x,
 		       ewin->y + desks.desk[ewin->desktop].y);
@@ -625,8 +622,7 @@ AddToFamily(Window win)
 		       ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1));
 		       for (i = 0; i < num; i++)
 			 {
-			    if (
-				((blst[i]->desktop == ewin->desktop)
+			    if (((blst[i]->desktop == ewin->desktop)
 				 || ((blst[i]->desktop == 0)
 				     && (blst[i]->sticky)))
 				&& (blst[i]->visible))
@@ -1096,7 +1092,7 @@ SyncBorderToEwin(EWin * ewin)
    EDBUG(4, "SyncBorderToEwin");
    b = ewin->border;
    ICCCM_GetShapeInfo(ewin);
-/*   SetEwinBorder(ewin); */
+   /*   SetEwinBorder(ewin); */
    SetEwinToBorder(ewin, ewin->border);
    if (b != ewin->border)
      {
@@ -1184,14 +1180,14 @@ ChangeEwinWinpart(EWin * ewin, int i)
 
    EDBUG(3, "ChangeEwinWinpart");
    state = ewin->bits[i].state;
-   IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win, ewin->bits[i].w,
-	       ewin->bits[i].h, ewin->active, ewin->sticky, state,
-	       ewin->bits[i].expose);
+   IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
+	       ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
+	       state, ewin->bits[i].expose);
    if (ewin->border->part[i].flags == FLAG_TITLE)
       TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
-		  state, ewin->bits[i].expose, ewin->border->part[i].tclass,
-		  ewin->client.title);
+		  ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		  ewin->sticky, state, ewin->bits[i].expose,
+		  ewin->border->part[i].tclass, ewin->client.title);
    if (ewin->bits[i].win)
       ChangeEwinWinpartContents(ewin, i);
    if (!ewin->shapedone)
@@ -1292,8 +1288,7 @@ CalcEwinWinpart(EWin * ewin, int i)
 	   ewin->border->part[i].geom.topleft.x.absolute +
 	   ewin->bits[topleft].x;
 	y =
-	   ((ewin->
-	     border->part[i].geom.topleft.y.percent *
+	   ((ewin->border->part[i].geom.topleft.y.percent *
 	     ewin->bits[topleft].h) >> 10) +
 	   ewin->border->part[i].geom.topleft.y.absolute +
 	   ewin->bits[topleft].y;
@@ -2682,13 +2677,13 @@ CalcEwinWinpart(ewin, i);
 *mh = 0; \
 for (i = 0; i < ewin->border->num_winparts; i++) \
 { \
-if (ewin->border->part[i].keep_for_shade) \
-{ \
-if (*mw < (ewin->bits[i].w + ewin->bits[i].x)) \
-*mw = ewin->bits[i].w + ewin->bits[i].x; \
-if (*mh < (ewin->bits[i].h + ewin->bits[i].y)) \
-*mh = ewin->bits[i].h + ewin->bits[i].y; \
-} \
+	if (ewin->border->part[i].keep_for_shade) \
+	{ \
+		if (*mw < (ewin->bits[i].w + ewin->bits[i].x)) \
+			*mw = ewin->bits[i].w + ewin->bits[i].x; \
+				if (*mh < (ewin->bits[i].h + ewin->bits[i].y)) \
+					*mh = ewin->bits[i].h + ewin->bits[i].y; \
+	} \
 }
 
 void

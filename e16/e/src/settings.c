@@ -1423,6 +1423,10 @@ static char         tmp_switch_popup;
 static char         tmp_manual_placement;
 static char         tmp_manual_placement_mouse_pointer;
 
+#ifdef HAS_XINERAMA
+static char         tmp_extra_head;
+#endif
+
 static void         CB_ConfigurePlacement(int val, void *data);
 static void
 CB_ConfigurePlacement(int val, void *data)
@@ -1434,6 +1438,10 @@ CB_ConfigurePlacement(int val, void *data)
 	mode.manual_placement = tmp_manual_placement;
 	mode.manual_placement_mouse_pointer =
 	   tmp_manual_placement_mouse_pointer;
+#ifdef HAS_XINERAMA
+	if (xinerama_active)
+	   mode.extra_head = tmp_extra_head;
+#endif
      }
    autosave();
    data = NULL;
@@ -1459,6 +1467,7 @@ SettingsPlacement(void)
    tmp_switch_popup = mode.switchfortransientmap;
    tmp_manual_placement = mode.manual_placement;
    tmp_manual_placement_mouse_pointer = mode.manual_placement_mouse_pointer;
+   tmp_extra_head = mode.extra_head;
 
    d = CreateDialog("CONFIGURE_PLACEMENT");
    DialogSetTitle(d, _("Window Placement Settings"));
@@ -1520,6 +1529,21 @@ SettingsPlacement(void)
    DialogItemCheckButtonSetText(di, _("Place windows under mouse"));
    DialogItemCheckButtonSetState(di, tmp_manual_placement_mouse_pointer);
    DialogItemCheckButtonSetPtr(di, &tmp_manual_placement_mouse_pointer);
+
+#ifdef HAS_XINERAMA
+   if (xinerama_active)
+     {
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetColSpan(di, 2);
+	DialogItemCheckButtonSetText(di,
+				     _
+				     ("Place windows on another head when full"));
+	DialogItemCheckButtonSetState(di, tmp_extra_head);
+	DialogItemCheckButtonSetPtr(di, &tmp_extra_head);
+     }
+#endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

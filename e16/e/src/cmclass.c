@@ -114,9 +114,10 @@ FreeCMClass(ColorModifierClass * cm)
 }
 
 ColorModifierClass *
-CreateCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
-	      int gnum, unsigned char *gpx, unsigned char *gpy, int bnum,
-	      unsigned char *bpx, unsigned char *bpy)
+CreateCMClass(char *name, int rnum, unsigned char *rpx,
+	      unsigned char *rpy, int gnum,
+	      unsigned char *gpx, unsigned char *gpy,
+	      int bnum, unsigned char *bpx, unsigned char *bpy)
 {
    ColorModifierClass *cm;
 

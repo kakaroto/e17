@@ -263,7 +263,8 @@ cp(char *s, char *ss)
    EDBUG_RETURN_;
 }
 
-time_t moddate(char *s)
+time_t
+moddate(char *s)
 {
    struct stat         st;
 
@@ -1092,7 +1093,7 @@ findLocalizedFile(char *fname)
 
    tmp = strdup(fname);
    lang = strdup(lang);		/* lang may be in static space, thus it must
-				 * * be duplicated before we change it below */
+				 * * * be duplicated before we change it below */
    p[0] = lang + strlen(lang);
    p[1] = strchr(lang, '.');
    p[2] = strchr(lang, '_');

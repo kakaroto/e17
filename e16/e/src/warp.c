@@ -143,8 +143,8 @@ WarpFocus(int delta)
 		      && (!ewin->skipfocus) && !(ewin->shaded
 						 && !mode.warpshaded)
 		      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
-							      &&
-							      !mode.warpsticky)
+							      && !mode.
+							      warpsticky)
 		      && (!ewin->ibox) && !(ewin->iconified
 					    && !mode.warpiconified)
 		      /*&& (ewin->client.mwm_decor_title) &&
@@ -292,8 +292,7 @@ WarpFocusShowTitle(EWin * ewin)
      {
 	if (!FindItem
 	    ((char *)warptitles_ewin[i], 0, LIST_FINDBY_POINTER,
-	     LIST_TYPE_EWIN))
-	   warptitles_ewin[i] = NULL;
+	     LIST_TYPE_EWIN)) warptitles_ewin[i] = NULL;
 	if (warptitles_ewin[i])
 	  {
 	     if (ewin == warptitles_ewin[i])

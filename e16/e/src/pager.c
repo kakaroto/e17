@@ -89,8 +89,8 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 	     return;
 	  }
 	px_buf =
-	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1, 32,
-			0);
+	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1,
+			32, 0);
 	if (!px_buf)
 	  {
 	     XDestroyImage(px_grab);
@@ -1315,8 +1315,8 @@ PagerShowMenu(Pager * p, int x, int y)
    if (SNAP)
      {
 	mi =
-	   CreateMenuItem(_("High Quality On"), NULL, ACTION_SET_PAGER_HIQ, "1",
-			  NULL);
+	   CreateMenuItem(_("High Quality On"), NULL, ACTION_SET_PAGER_HIQ,
+			  "1", NULL);
 	AddItemToMenu(p_menu, mi);
 
 	mi =

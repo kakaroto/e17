@@ -208,8 +208,7 @@ HandleDrawQueue()
 	       {
 		  if (FindItem
 		      ((char *)(lst[i]->pager), 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_PAGER))
-		     PagerForceUpdate(lst[i]->pager);
+		       LIST_TYPE_PAGER)) PagerForceUpdate(lst[i]->pager);
 /*            printf("P %x\n", lst[i]->win); */
 	       }
 	     else if (lst[i]->d)
@@ -305,8 +304,8 @@ ECreatePixImg(Window win, int w, int h)
 	return NULL;
      }
    pi->xim =
-      XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL, pi->shminfo, w,
-		      h);
+      XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL, pi->shminfo,
+		      w, h);
    if (!pi->xim)
      {
 	Efree(pi->shminfo);
@@ -523,7 +522,9 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 				       ((s2->xim->bits_per_pixel) >> 3)) + ((j +
 									     oy)
 									    *
-									    s2->xim->bytes_per_line));
+									    s2->
+									    xim->
+									    bytes_per_line));
 		  ptr3 =
 		     (unsigned int *)(dst->xim->data +
 				      ((ox) *

@@ -36,7 +36,8 @@ AddEToFile(char *file)
       "gwm",
       "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm",
       "uwm",
-      "amiwm", "dtwm", "4dwm", "scwm", "fvwm95", "fvwm95-2", "tvtwm", "bowman",
+      "amiwm", "dtwm", "4dwm", "scwm", "fvwm95", "fvwm95-2", "tvtwm",
+      "bowman",
       "qwm", "icewm", "qvwm", "gnome-session", "xsm", "startkde"
    };
    int                 wmnum = 33;
@@ -253,8 +254,8 @@ CreateStartupDisplay(char start)
 
 	for (k = 0; k <= 1024; k += spd)
 	  {
-	     if (bg_sideways)	/* so we can have two different slide methods */
-	       {
+	     if (bg_sideways)
+	       {		/* so we can have two different slide methods */
 		  ty = (root.w / 2);
 		  xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
 		  x = ty;

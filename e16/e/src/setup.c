@@ -617,11 +617,8 @@ SetupX()
    SetAreaSize(2, 1);
 
 #ifdef HAS_XINERAMA
-   {
-
-      xinerama_active = XineramaIsActive(disp);
-
-   }
+   xinerama_active = XineramaIsActive(disp);
+   mode.extra_head = 0;
 #endif
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; task_menu[i++] = NULL);
@@ -759,7 +756,8 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window
+MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;

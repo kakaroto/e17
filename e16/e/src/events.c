@@ -582,15 +582,16 @@ HButtonPress(XEvent * ev)
 	   fprintf(stderr,
 		   "%08x (%5ix%5i %i) : " "%x %x %x %x %x %x %x %x "
 		   "%x %x %x %x %x %x %x %x " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h, pb->depth,
-		   pb->stack[0], pb->stack[1], pb->stack[2], pb->stack[3],
-		   pb->stack[4], pb->stack[5], pb->stack[6], pb->stack[7],
-		   pb->stack[8], pb->stack[9], pb->stack[10], pb->stack[11],
-		   pb->stack[12], pb->stack[13], pb->stack[14], pb->stack[15],
-		   pb->stack[16], pb->stack[17], pb->stack[18], pb->stack[19],
-		   pb->stack[20], pb->stack[21], pb->stack[22], pb->stack[23],
-		   pb->stack[24], pb->stack[25], pb->stack[26], pb->stack[27],
-		   pb->stack[28], pb->stack[29], pb->stack[30], pb->stack[31]);
+		   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h,
+		   pb->depth, pb->stack[0], pb->stack[1], pb->stack[2],
+		   pb->stack[3], pb->stack[4], pb->stack[5], pb->stack[6],
+		   pb->stack[7], pb->stack[8], pb->stack[9], pb->stack[10],
+		   pb->stack[11], pb->stack[12], pb->stack[13], pb->stack[14],
+		   pb->stack[15], pb->stack[16], pb->stack[17], pb->stack[18],
+		   pb->stack[19], pb->stack[20], pb->stack[21], pb->stack[22],
+		   pb->stack[23], pb->stack[24], pb->stack[25], pb->stack[26],
+		   pb->stack[27], pb->stack[28], pb->stack[29], pb->stack[30],
+		   pb->stack[31]);
 	}
       fprintf(stderr, "Total %i, %i of them bitmaps\n", count, mcount);
       XFreeGC(disp, gc);

@@ -77,7 +77,7 @@ GetNextFocusEwin(void)
 		 && (!ewin->skipfocus) && (!ewin->neverfocus)
 		 && (!ewin->iconified) && (!ewin->menu) && (!ewin->pager)
 		 && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
-							 * * * (ewin->client.mwm_decor_border) */
+							 * * * * (ewin->client.mwm_decor_border) */
 		)
 	       {
 		  num++;
@@ -483,10 +483,11 @@ NewDeskFocus(void)
      }
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       XSelectInput(disp, desks.desk[i].win,
-		   SubstructureNotifyMask | ButtonPressMask | ButtonReleaseMask
-		   | EnterWindowMask | LeaveWindowMask | ButtonMotionMask |
-		   PropertyChangeMask | SubstructureRedirectMask | KeyPressMask
-		   | KeyReleaseMask | PointerMotionMask);
+		   SubstructureNotifyMask | ButtonPressMask |
+		   ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
+		   ButtonMotionMask | PropertyChangeMask |
+		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
+		   PointerMotionMask);
    if ((mode.focusmode == FOCUS_POINTER) || (mode.focusmode == FOCUS_SLOPPY))
      {
 	ewin = GetEwinPointerInClient();

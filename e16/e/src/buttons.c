@@ -24,10 +24,10 @@
 
 Button             *
 CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
-	     TextClass * tclass, char *label, char ontop, int flags, int minw,
-	     int maxw, int minh, int maxh, int xo, int yo, int xa, int xr,
-	     int ya, int yr, int xsr, int xsa, int ysr, int ysa, char simg,
-	     int desk, char sticky)
+	     TextClass * tclass, char *label, char ontop, int flags,
+	     int minw, int maxw, int minh, int maxh, int xo, int yo,
+	     int xa, int xr, int ya, int yr, int xsr, int xsa, int ysr,
+	     int ysa, char simg, int desk, char sticky)
 {
    Button             *b;
 
@@ -92,8 +92,8 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
       ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
 		    -100, -100, 50, 50, 0);
    XSelectInput(disp, b->win,
-		ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
-		ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
+		ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask
+		| ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
 		PointerMotionMask);
    b->x = -1;
    b->y = -1;

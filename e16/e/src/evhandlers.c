@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
@@ -486,52 +487,54 @@ HandleMotion(XEvent * ev)
 		  {
 		     /* jump out of snap horizontally */
 		     if ((ndx != dx)
-			 &&
-			 (((gwins
-			    [i]->x == 0)
-			   &&
-			   (!(IN_RANGE
-			      (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
-			  || ((gwins[i]->x == (root.w - gwins[i]->w))
+			 && (((gwins[i]->x == 0)
 			      &&
 			      (!(IN_RANGE
 				 (gwins[i]->reqx, gwins[i]->x,
-				  screen_snap_dist)))) || ((gwins[i]->x != 0)
-							   && (gwins[i]->x !=
-							       (root.w -
-								gwins[i]->w)
-							       &&
-							       (!(IN_RANGE
-								  (gwins
-								   [i]->reqx,
-								   gwins[i]->x,
-								   mode.edge_snap_dist)))))))
+				  screen_snap_dist))))
+			     || ((gwins[i]->x == (root.w - gwins[i]->w))
+				 &&
+				 (!(IN_RANGE
+				    (gwins[i]->reqx, gwins[i]->x,
+				     screen_snap_dist)))) || ((gwins[i]->x != 0)
+							      && (gwins[i]->x !=
+								  (root.w -
+								   gwins[i]->w)
+								  &&
+								  (!(IN_RANGE
+								     (gwins
+								      [i]->reqx,
+								      gwins
+								      [i]->x,
+								      mode.
+								      edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
 		       }
 		     /* jump out of snap vertically */
 		     if ((ndy != dy)
-			 &&
-			 (((gwins
-			    [i]->y == 0)
-			   &&
-			   (!(IN_RANGE
-			      (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
-			  || ((gwins[i]->y == (root.h - gwins[i]->h))
+			 && (((gwins[i]->y == 0)
 			      &&
 			      (!(IN_RANGE
 				 (gwins[i]->reqy, gwins[i]->y,
-				  screen_snap_dist)))) || ((gwins[i]->y != 0)
-							   && (gwins[i]->y !=
-							       (root.h -
-								gwins[i]->h)
-							       &&
-							       (!(IN_RANGE
-								  (gwins
-								   [i]->reqy,
-								   gwins[i]->y,
-								   mode.edge_snap_dist)))))))
+				  screen_snap_dist))))
+			     || ((gwins[i]->y == (root.h - gwins[i]->h))
+				 &&
+				 (!(IN_RANGE
+				    (gwins[i]->reqy, gwins[i]->y,
+				     screen_snap_dist)))) || ((gwins[i]->y != 0)
+							      && (gwins[i]->y !=
+								  (root.h -
+								   gwins[i]->h)
+								  &&
+								  (!(IN_RANGE
+								     (gwins
+								      [i]->reqy,
+								      gwins
+								      [i]->y,
+								      mode.
+								      edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -974,8 +977,7 @@ HandleMotion(XEvent * ev)
 		ydist = offy;
 
 	     /* only if any active menus are partially off screen then scroll */
-	     if (
-		 (((xdist > 0) && (x1 < x_org))
+	     if ((((xdist > 0) && (x1 < x_org))
 		  || ((xdist < 0) && (x2 >= (x_org + my_width))))
 		 || (((ydist > 0) && (y1 < y_org))
 		     || ((ydist < 0) && (y2 >= (y_org + my_height)))))
@@ -1116,8 +1118,7 @@ HandleMotion(XEvent * ev)
 			  di->item.slider.wanted_val += dx;
 			  di->item.slider.val =
 			     di->item.slider.lower +
-			     (((di->
-				item.slider.wanted_val *
+			     (((di->item.slider.wanted_val *
 				(di->item.slider.upper -
 				 di->item.slider.lower)) /
 			       (di->item.slider.base_w -
@@ -1129,8 +1130,8 @@ HandleMotion(XEvent * ev)
 			  di->item.slider.wanted_val += dy;
 			  di->item.slider.val =
 			     di->item.slider.lower +
-			     ((((di->item.
-				 slider.base_h - di->item.slider.knob_h -
+			     ((((di->
+				 item.slider.base_h - di->item.slider.knob_h -
 				 di->item.slider.wanted_val) *
 				(di->item.slider.upper -
 				 di->item.slider.lower)) /
@@ -1788,9 +1789,10 @@ HandleMouseDown(XEvent * ev)
    if (mode.tooltips)
       DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
 
-   if ((((float)(ev->xbutton.time - last_time) / 1000) < mode_double_click_time)
-       && ((int)(ev->xbutton.button) == (int)(last_button)))
-      double_click = 1;
+   if (
+       (((float)(ev->xbutton.time - last_time) / 1000) <
+	mode_double_click_time)
+       && ((int)(ev->xbutton.button) == (int)(last_button))) double_click = 1;
    last_time = ev->xbutton.time;
    last_button = ev->xbutton.button;
 
@@ -2036,8 +2038,8 @@ HandleMouseDown(XEvent * ev)
 	   EWin              **gwins;
 
 	   gwins =
-	      ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE, mode.nogroup,
-					 &num);
+	      ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+					 mode.nogroup, &num);
 	   gwin_px = calloc(num, sizeof(int));
 	   gwin_py = calloc(num, sizeof(int));
 
@@ -2643,7 +2645,8 @@ HandleMouseUp(XEvent * ev)
 			   (!((p->hi_ewin->ibox) || ((ewin->client.need_input)
 						     && ((ewin->skiptask)
 							 ||
-							 (ewin->skipwinlist))))))
+							 (ewin->
+							  skipwinlist))))))
 		    {
 		       char                was_shaded;
 
@@ -2669,13 +2672,13 @@ HandleMouseUp(XEvent * ev)
 				 MoveEwin(gwins[i],
 					  gwin_px[i] +
 					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_x) -
+					    [gwins[i]->desktop].
+					    current_area_x) -
 					   p->hi_ewin->area_x) * root.w,
 					  gwin_py[i] +
-					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_y) -
+					  ((desks.
+					    desk[gwins[i]->desktop].
+					    current_area_y) -
 					   p->hi_ewin->area_y) * root.h);
 				 if (was_shaded != gwins[i]->shaded)
 				    InstantShadeEwin(gwins[i]);

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -36,8 +37,8 @@ static void         SkipTillEnd(FILE * ConfigFile);
 #define SKIP_If_EXISTS(name, type) \
 if (FindItem(name, 0, LIST_FINDBY_NAME, type)) \
 {\
-SkipTillEnd(ConfigFile);\
-return;\
+	SkipTillEnd(ConfigFile);\
+		return;\
 }
 
 static void
@@ -806,6 +807,11 @@ Config_Control(FILE * ConfigFile)
 	     break;
 	  case CONTROL_CLICK_ALWAYS:
 	     mode.clickalways = i2;
+	     break;
+	  case CONFIG_EXTRA_HEAD:
+#ifdef HAS_XINERAMA
+	     mode.extra_head = i2;
+#endif
 	     break;
 	  case CONTROL_ICONTEXT:
 	     {
@@ -3632,7 +3638,7 @@ FindNoThemeFile(char *file)
      }
 #endif
 
-/* look in ~/.enlightenment first */
+   /* look in ~/.enlightenment first */
    Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
    if (findLocalizedFile(s) || isfile(s))
       EDBUG_RETURN(duplicate(s));
@@ -3766,10 +3772,10 @@ LoadEConfig(char *themelocation)
 	     {
 		is_autosave = 1;
 		/* This file is always preprocessed at a known location: */
-/*          
- * if (exists(GetSMFile()))
- * LoadOpenConfigFile(OpenConfigFileForReading(GetSMFile(), 0));
- * else */
+		/*          
+		 * if (exists(GetSMFile()))
+		 * LoadOpenConfigFile(OpenConfigFileForReading(GetSMFile(), 0));
+		 * else */
 		EDBUG(5, "Dummy-LoadOpenConfigFile");
 		LoadOpenConfigFile(OpenConfigFileForReading
 				   (GetGenericSMFile(), 0));
@@ -3803,7 +3809,7 @@ SaveUserControlConfig(FILE * autosavefile)
    Button            **blst;
    Background        **bglist;
 
-/*   ColorModifierClass **cmlist; */
+   /*   ColorModifierClass **cmlist; */
    Iconbox           **iblist;
    ActionClass        *ac;
    Action             *aa;
@@ -3894,6 +3900,9 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1368 %i\n", (int)mode.showroottooltip);
 	fprintf(autosavefile, "1369 %i %i %i\n", (int)mode.pager_sel_button,
 		(int)mode.pager_win_button, (int)mode.pager_menu_button);
+#ifdef  HAS_XINERAMA
+	fprintf(autosavefile, "2013 %i\n", (int)mode.extra_head);
+#endif
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
 	if (mode.keybinds_changed)
@@ -4042,8 +4051,7 @@ SaveUserControlConfig(FILE * autosavefile)
 		       if (blst[i]->flags)
 			 {
 			    flags = 0;
-			    if (
-				((blst[i]->flags & FLAG_FIXED_HORIZ)
+			    if (((blst[i]->flags & FLAG_FIXED_HORIZ)
 				 && (blst[i]->flags & FLAG_FIXED_VERT))
 				|| (blst[i]->flags & FLAG_FIXED))
 			       flags = 2;
@@ -4099,32 +4107,32 @@ SaveUserControlConfig(FILE * autosavefile)
 	     Efree(iblist);
 	  }
 	fprintf(autosavefile, "1000\n");
-/* disabled - memory leak somewhere.....
- * cmlist = (ColorModifierClass **) ListItemType(&num,
- * LIST_TYPE_COLORMODIFIER);
- * if ((cmlist) && (num > 0))
- * {
- * for (i = num - 1; i >= 0; i--)
- * {
- * fprintf(autosavefile, "15 999\n");
- * fprintf(autosavefile, "100 %s\n", cmlist[i]->name);
- * fprintf(autosavefile, "600");
- * for (j = 0; j < cmlist[i]->red.num; j++)
- * fprintf(autosavefile, " %i,%i", cmlist[i]->red.px[j],
- * cmlist[i]->red.py[j]);
- * fprintf(autosavefile, "\n601");
- * for (j = 0; j < cmlist[i]->green.num; j++)
- * fprintf(autosavefile, " %i,%i", cmlist[i]->green.px[j],
- * cmlist[i]->green.py[j]);
- * fprintf(autosavefile, "\n602");
- * for (j = 0; j < cmlist[i]->blue.num; j++)
- * fprintf(autosavefile, " %i,%i", cmlist[i]->blue.px[j],
- * cmlist[i]->blue.py[j]);
- * fprintf(autosavefile, "\n1000\n");
- * }
- * Efree(cmlist);
- * }
- */
+	/* disabled - memory leak somewhere.....
+	 * cmlist = (ColorModifierClass **) ListItemType(&num,
+	 * LIST_TYPE_COLORMODIFIER);
+	 * if ((cmlist) && (num > 0))
+	 * {
+	 * for (i = num - 1; i >= 0; i--)
+	 * {
+	 * fprintf(autosavefile, "15 999\n");
+	 * fprintf(autosavefile, "100 %s\n", cmlist[i]->name);
+	 * fprintf(autosavefile, "600");
+	 * for (j = 0; j < cmlist[i]->red.num; j++)
+	 * fprintf(autosavefile, " %i,%i", cmlist[i]->red.px[j],
+	 * cmlist[i]->red.py[j]);
+	 * fprintf(autosavefile, "\n601");
+	 * for (j = 0; j < cmlist[i]->green.num; j++)
+	 * fprintf(autosavefile, " %i,%i", cmlist[i]->green.px[j],
+	 * cmlist[i]->green.py[j]);
+	 * fprintf(autosavefile, "\n602");
+	 * for (j = 0; j < cmlist[i]->blue.num; j++)
+	 * fprintf(autosavefile, " %i,%i", cmlist[i]->blue.px[j],
+	 * cmlist[i]->blue.py[j]);
+	 * fprintf(autosavefile, "\n1000\n");
+	 * }
+	 * Efree(cmlist);
+	 * }
+	 */
 	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
 	if ((bglist) && (num > 0))
 	  {

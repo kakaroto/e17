@@ -439,6 +439,7 @@
 #define __COVER_HIDE 2010
 #define __RESIZE_ANCHOR 2011
 #define __ICONBOX_ANIMATE 2012
+#define __EXTRA_HEAD 2013
 
 #define __HORIZONTAL 0
 #define __VERTICAL 1

@@ -38,10 +38,11 @@ GetUniqueBGString(Background * bg)
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
    n1 =
-      (bg->bg.solid.r << 24) | (bg->bg.solid.g << 16) | (bg->bg.solid.
-							 b << 8) | (bg->bg.
-								    tile << 7) |
-      (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
+      (bg->bg.solid.r << 24) | (bg->bg.solid.g << 16) | (bg->bg.
+							 solid.b << 8) | (bg->
+									  bg.tile
+									  << 7)
+      | (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
    n2 = (bg->bg.xjust << 16) | (bg->bg.yjust);
    n3 = (bg->bg.xperc << 16) | (bg->bg.yperc);
    n4 = (bg->top.xjust << 16) | (bg->top.yjust);
@@ -412,9 +413,9 @@ FreeDesktopBG(Background * bg)
 
 Background         *
 CreateDesktopBG(char *name, ImlibColor * solid, char *bg, char tile,
-		char keep_aspect, int xjust, int yjust, int xperc, int yperc,
-		char *top, char tkeep_aspect, int txjust, int tyjust,
-		int txperc, int typerc)
+		char keep_aspect, int xjust, int yjust, int xperc,
+		int yperc, char *top, char tkeep_aspect, int txjust,
+		int tyjust, int txperc, int typerc)
 {
    ImlibData          *imd;
    Background         *d;

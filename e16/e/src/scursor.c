@@ -37,7 +37,8 @@ static Window       sc_window = 0;
 static Atom         sc_atom = 0;
 static ImlibData   *imd = NULL;
 
-Window SC_GetDestWin(void)
+Window
+SC_GetDestWin(void)
 {
    return 0;
 }
@@ -253,8 +254,8 @@ SC_Init(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    sc_window =
-      XCreateWindow(sc_disp, root.win, 0, 0, 32, 32, 0, root.depth, InputOutput,
-		    root.vis,
+      XCreateWindow(sc_disp, root.win, 0, 0, 32, 32, 0, root.depth,
+		    InputOutput, root.vis,
 		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		    CWColormap | CWBackPixel | CWBorderPixel, &attr);
    XSelectInput(sc_disp, sc_window,
@@ -262,8 +263,8 @@ SC_Init(void)
 		ButtonReleaseMask);
    sc_atom = XInternAtom(disp, "ENLIGHTENMENT_SOFT_CURSOR", False);
    val = sc_window;
-   XChangeProperty(sc_disp, root.win, sc_atom, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)&val, 1);
+   XChangeProperty(sc_disp, root.win, sc_atom, XA_CARDINAL, 32,
+		   PropModeReplace, (unsigned char *)&val, 1);
    pmap = ECreatePixmap(sc_disp, sc_window, 16, 16, 1);
    mask = ECreatePixmap(sc_disp, sc_window, 16, 16, 1);
    gc = XCreateGC(sc_disp, pmap, 0, &gcv);

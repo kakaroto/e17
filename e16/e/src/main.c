@@ -157,7 +157,8 @@ main(int argc, char **argv)
 	     {
 		no_overwrite = 1;
 	     }
-	   else if ((!strcmp("-help", argv[j])) || (!strcmp("--help", argv[j]))
+	   else if ((!strcmp("-help", argv[j]))
+		    || (!strcmp("--help", argv[j]))
 		    || (!strcmp("-h", argv[j])) || (!strcmp("-?", argv[j])))
 	     {
 		printf("enlightenment options:                      \n"
@@ -172,7 +173,8 @@ main(int argc, char **argv)
 		       "\t-display display_name                     \n");
 		exit(0);
 	     }
-	   else if ((!strcmp("-v", argv[j])) || (!strcmp("-version", argv[j]))
+	   else if ((!strcmp("-v", argv[j]))
+		    || (!strcmp("-version", argv[j]))
 		    || (!strcmp("--version", argv[j]))
 		    || (!strcmp("-v", argv[j])))
 	     {
@@ -373,13 +375,11 @@ main(int argc, char **argv)
    if (
        (bg =
 	RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
-		   LIST_TYPE_BACKGROUND)))
-      FreeDesktopBG(bg);
+		   LIST_TYPE_BACKGROUND))) FreeDesktopBG(bg);
    if (
        (bg =
 	RemoveItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-		   LIST_TYPE_BACKGROUND)))
-      FreeDesktopBG(bg);
+		   LIST_TYPE_BACKGROUND))) FreeDesktopBG(bg);
 #ifdef SIGCONT
    for (i = 0; i < child_count; i++)
       kill(e_children[i], SIGCONT);

@@ -318,8 +318,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
       gc = XCreateGC(disp, win, 0, &gcv);
 
    if (ts->style.orientation == FONT_TO_RIGHT
-       || ts->style.orientation == FONT_TO_LEFT)
-      textwidth_limit = w;
+       || ts->style.orientation == FONT_TO_LEFT) textwidth_limit = w;
    else
       textwidth_limit = h;
 
@@ -483,8 +482,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 			    int                 mlen;
 
 			    new_line[0] = 0;
-			    if (MB_CUR_MAX > 1 && wc_len > 0)	/* if multibyte locale,... */
-			      {
+			    if (MB_CUR_MAX > 1 && wc_len > 0)
+			      {	/* if multibyte locale,... */
 				 mlen = mblen(lines[i], MB_CUR_MAX);
 				 if (mlen < 0)
 				    mlen = 1;

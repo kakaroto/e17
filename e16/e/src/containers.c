@@ -31,8 +31,8 @@
  */
 
 Container          *
-InitializeContainer(char *name, ImageClass * iclass, int width, int height,
-		    char orientation)
+InitializeContainer(char *name, ImageClass * iclass, int width,
+		    int height, char orientation)
 {
    Container          *bc;
 

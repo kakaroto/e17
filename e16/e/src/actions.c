@@ -187,8 +187,8 @@ UnGrabButtonGrabs(EWin * ewin)
 }
 
 Action             *
-CreateAction(char event, char anymod, int mod, int anybut, int but, char anykey,
-	     char *key, char *tooltipstring)
+CreateAction(char event, char anymod, int mod, int anybut, int but,
+	     char anykey, char *key, char *tooltipstring)
 {
    Action             *act;
 
@@ -1192,11 +1192,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-						   desks.
-						   desk[gwins[i]->desktop].x),
+						   desks.desk[gwins[i]->
+							      desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-						   desks.
-						   desk[gwins[i]->desktop].y));
+						   desks.desk[gwins[i]->
+							      desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
@@ -1383,13 +1383,11 @@ doCleanup(void *params)
 		  floating[j].p = ((EWin *) lst[i])->layer;
 		  floating[j++].h = ((EWin *) lst[i])->h;
 	       }
-	     else
-		if (
-		    ((((EWin *) lst[i])->desktop == desks.current)
-		     || (((EWin *) lst[i])->sticky))
-		    && (((EWin *) lst[i])->layer != 4)
-		    && (((EWin *) lst[i])->layer != 0)
-		    && (!((EWin *) lst[i])->menu))
+	     else if (((((EWin *) lst[i])->desktop == desks.current)
+		       || (((EWin *) lst[i])->sticky))
+		      && (((EWin *) lst[i])->layer != 4)
+		      && (((EWin *) lst[i])->layer != 0)
+		      && (!((EWin *) lst[i])->menu))
 	       {
 		  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
 		  fixed[k].data = lst[i];
@@ -1429,8 +1427,7 @@ doCleanup(void *params)
 	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k));
 	     for (i = 0; i < num; i++)
 	       {
-		  if (
-		      ((blst[i]->desktop == desks.current)
+		  if (((blst[i]->desktop == desks.current)
 		       || ((blst[i]->desktop == 0) && (blst[i]->sticky)))
 		      && (blst[i]->visible))
 		    {
@@ -2231,13 +2228,11 @@ doDragdirSet(void *params)
 	while (
 	       (b =
 		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+			   LIST_TYPE_BUTTON))) DestroyButton(b);
 	while (
 	       (b =
 		RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+			   LIST_TYPE_BUTTON))) DestroyButton(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2266,8 +2261,7 @@ doDragbarOrderSet(void *params)
 	while (
 	       (b =
 		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+			   LIST_TYPE_BUTTON))) DestroyButton(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2290,8 +2284,7 @@ doDragbarWidthSet(void *params)
 	while (
 	       (b =
 		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+			   LIST_TYPE_BUTTON))) DestroyButton(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -2314,8 +2307,7 @@ doDragbarLengthSet(void *params)
 	while (
 	       (b =
 		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BUTTON)))
-	   DestroyButton(b);
+			   LIST_TYPE_BUTTON))) DestroyButton(b);
 	InitDesktopControls();
 	ShowDesktopControls();
      }
@@ -3647,7 +3639,6 @@ doInsertKeys(void *params)
 		  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset));
 
 		       j++)
-
 		    {
 		       if (!strncmp(ks[j].ch, &(s[i]), strlen(ks[j].ch)))
 			 {

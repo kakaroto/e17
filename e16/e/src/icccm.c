@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -1296,8 +1297,8 @@ ICCCM_GetMainEInfo(void)
    int                 num, dummy, i;
 
    a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2, &dummy,
-		      &lnum, &ldummy, (unsigned char **)&c);
+   XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2,
+		      &dummy, &lnum, &ldummy, (unsigned char **)&c);
    num = (int)lnum;
    if ((num > 0) && (c))
      {
@@ -1315,8 +1316,8 @@ ICCCM_GetMainEInfo(void)
    c = NULL;
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2, &dummy,
-		      &lnum, &ldummy, (unsigned char **)&c);
+   XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2,
+		      &dummy, &lnum, &ldummy, (unsigned char **)&c);
    num = (int)lnum;
    if ((num > 0) && (c))
      {

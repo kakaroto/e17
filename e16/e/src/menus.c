@@ -620,8 +620,7 @@ DestroyMenu(Menu * m)
 	       {
 		  if (FindItem
 		      ((char *)m->items[i]->child, 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_MENU))
-		     DestroyMenu(m->items[i]->child);
+		       LIST_TYPE_MENU)) DestroyMenu(m->items[i]->child);
 	       }
 	     if (m->items[i]->text)
 		Efree(m->items[i]->text);
@@ -769,8 +768,8 @@ RealizeMenu(Menu * m)
    att.event_mask = PointerMotionMask;
    XChangeWindowAttributes(disp, m->win, CWEventMask, &att);
    att.event_mask =
-      ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
-      PointerMotionMask;
+      ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask
+      | PointerMotionMask;
    for (i = 0; i < m->num; i++)
      {
 	if (m->items[i]->child)

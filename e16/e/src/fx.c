@@ -415,7 +415,8 @@ FX_raindrops_timeout(int val, void *data)
 	  }
 	if (!before)
 	   DIALOG_OK(_("Starting up Raindrops FX..."),
-		     _("\n" "You have just started the Raindrops Effect.\n" "\n"
+		     _("\n" "You have just started the Raindrops Effect.\n"
+		       "\n"
 		       "If you look closely on your desktop background, and if it\n"
 		       "doesn't have a solid colour (i.e. has a background texture or\n"
 		       "image), you will see \"raindrops\" hit the background and\n"
@@ -499,8 +500,7 @@ FX_raindrops_timeout(int val, void *data)
 			  fx_raindrops[i].y = root.h - fx_raindrop_size;
 		       if (i != j)
 			 {
-			    if (
-				((fx_raindrops[i].x >= fx_raindrops[j].x)
+			    if (((fx_raindrops[i].x >= fx_raindrops[j].x)
 				 && (fx_raindrops[i].x <
 				     fx_raindrops[j].x + fx_raindrop_size)
 				 && (fx_raindrops[i].y >= fx_raindrops[j].y)

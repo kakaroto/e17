@@ -1229,6 +1229,9 @@ typedef struct _emode
    char                new_transients_get_focus_if_group_focused;
    char                manual_placement;
    char                manual_placement_mouse_pointer;
+#ifdef HAS_XINERAMA
+   char                extra_head;
+#endif
    char                raise_on_next_focus;
    char                raise_after_next_focus;
    signed char         display_warp;

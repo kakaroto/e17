@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -126,7 +127,8 @@ GetNetText(char *URL)
 
 }
 
-time_t GetNetFileDate(char *URL)
+time_t
+GetNetFileDate(char *URL)
 {
 
 #ifdef AUTOUPGRADE

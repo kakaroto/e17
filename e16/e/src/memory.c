@@ -26,13 +26,13 @@
 /* uncomment MEM_OUT to get full debug output. to make this work you have to */
 /* put a file in the directory (cwd) you run E from calle e.sym              */
 /* to generate the e.sym file do:                                            */
-     /*                                                                */
-     /* nm enlightenment | grep " T " > e.sym                          */
-     /* nm enlightenment | grep " t " > e.sym2                         */
-     /* cat e.sym >> e.sym2                                            */
-     /* sort < e.sym2 > e.sym                                          */
-     /* rm e.sym2                                                      */
-     /*                                                                */
+	 /*                                                                */
+	 /* nm enlightenment | grep " T " > e.sym                          */
+	 /* nm enlightenment | grep " t " > e.sym2                         */
+	 /* cat e.sym >> e.sym2                                            */
+	 /* sort < e.sym2 > e.sym                                          */
+	 /* rm e.sym2                                                      */
+	 /*                                                                */
 /* do that whenever you recompile enlightenment and place the e.sym file in  */
 /* the current working directory of enlightenment                            */
 /*                                                                           */

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -43,8 +44,8 @@ CreateProgressbar(char *name, int width, int height)
    p->h = height;
    p->win = ECreateWindow(root.win, p->x, p->y, p->w - (p->h * 5), p->h, 1);
    p->n_win =
-      ECreateWindow(root.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5), p->h,
-		    1);
+      ECreateWindow(root.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5),
+		    p->h, 1);
    p->p_win = ECreateWindow(root.win, p->x, p->y + p->h, 1, p->h, 1);
    /* FIXME: need to use other image and textclasses */
 
@@ -94,8 +95,8 @@ SetProgressbar(Progressbar * p, int progress)
    Esnprintf(s, sizeof(s), "%i%%", p->value);
    pq = queue_up;
    queue_up = 0;
-   TclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0, p->tnc,
-	       s);
+   TclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
+	       p->tnc, s);
    IclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0);
    EResizeWindow(disp, p->p_win, w, p->h);
    queue_up = pq;

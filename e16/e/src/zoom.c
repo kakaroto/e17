@@ -262,4 +262,5 @@ Zoom(EWin * ewin)
 {
    ewin = NULL;
 }
+
 #endif
