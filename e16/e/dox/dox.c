@@ -36,10 +36,6 @@
 #include <X11/extensions/Xinerama.h>
 #endif
 
-#include <Imlib.h>
-#if USE_FNLIB
-#include <Fnlib.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -80,26 +76,24 @@ typedef struct _mwmhints {
 	INT32 inputMode;
 } MWMHints;
 
-#include "title.xpm"
-#include "prev1.xpm"
-#include "prev2.xpm"
-#include "next1.xpm"
-#include "next2.xpm"
-#include "exit1.xpm"
-#include "exit2.xpm"
-
 Display *disp;
-ImlibData *pImlibData;
+Root     root;
+
+#if !USE_IMLIB2
+ImlibData   *pI1Ctx;
+ImlibImage  *pIcImg;
+Drawable     vIcDrw;
+#endif
 #if USE_FNLIB
 FnlibData *pFnlibData;
 #endif
 Window win_main, win_title, win_exit, win_next, win_prev, win_text, win_cover;
 int w, h, t;
-ImlibImage *im_text;
-ImlibImage *im_title;
-ImlibImage *im_prev1, *im_prev2;
-ImlibImage *im_next1, *im_next2;
-ImlibImage *im_exit1, *im_exit2;
+Imlib_Image *im_text;
+Imlib_Image *im_title;
+Imlib_Image *im_prev1, *im_prev2;
+Imlib_Image *im_next1, *im_next2;
+Imlib_Image *im_exit1, *im_exit2;
 char *docdir;
 
 Window CreateWindow(Window parent, int x, int y, int ww, int hh);
@@ -117,7 +111,7 @@ Window CreateWindow(Window parent, int x, int y, int ww, int hh)
 
 	attr.backing_store = NotUseful;
 	attr.override_redirect = False;
-	attr.colormap = Imlib_get_colormap(pImlibData);
+	attr.colormap = root.cmap;
 	attr.border_pixel = 0;
 	attr.background_pixel = 0;
 	attr.save_under = False;
@@ -126,8 +120,8 @@ Window CreateWindow(Window parent, int x, int y, int ww, int hh)
 	mwm.decorations = 0;
 	mwm.inputMode = 0;
 /*   a = XInternAtom(disp, "_MOTIF_WM_HINTS", False); */
-	win = XCreateWindow(disp, parent, x, y, ww, hh, 0, pImlibData->x.depth,
-						InputOutput, Imlib_get_visual(pImlibData),
+	win = XCreateWindow(disp, parent, x, y, ww, hh, 0, root.depth,
+						InputOutput, root.vis,
 						CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 						CWColormap | CWBackPixel | CWBorderPixel, &attr);
 	XSetWindowBackground(disp, win, 0);
@@ -146,6 +140,46 @@ Window CreateWindow(Window parent, int x, int y, int ww, int hh)
 	XSetWMNormalHints(disp, win, &hnt);
 	return win;
 }
+
+static Imlib_Image *
+LoadImage(const char *file)
+{
+	Imlib_Image *im;
+	char                tmp[4096];
+
+	sprintf(tmp, "%s/E-docs/%s", ENLIGHTENMENT_ROOT, file);
+	findLocalizedFile(tmp);
+	im = imlib_load_image(tmp);
+
+	return im;
+}
+
+static void
+ApplyImage1(Window win, Imlib_Image *im)
+{
+	Pixmap pmap = 0, mask = 0;
+
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(win);
+	imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+	XSetWindowBackgroundPixmap(disp, win, pmap);
+	IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
+}
+
+static void
+ApplyImage2(Window win, Imlib_Image *im)
+{
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(win);
+	imlib_render_image_on_drawable(0, 0);
+}
+
+#if USE_IMLIB2
+#define ApplyImage3(win, im) \
+	XClearWindow(disp, win)
+#else
+#define ApplyImage3 ApplyImage2
+#endif
 
 #define FREE_LINKS \
 ll = l; \
@@ -188,8 +222,10 @@ int main(int argc, char **argv)
 	char *s, *docfile = NULL;
 	Pixmap draw = 0;
 	Link *l = NULL, *ll = NULL;
-	ImlibBorder ibd;
+	Imlib_Border ibd;
+#if !USE_IMLIB2
 	ImlibInitParams params;
+#endif
 	int *page_hist = NULL;
 	int page_hist_len = 1;
 	int page_hist_pos = 0;
@@ -215,27 +251,34 @@ int main(int argc, char **argv)
 	/* I dont want any internationalisation of my numeric input & output */
 	setlocale(LC_NUMERIC, "C");
 
+	root.scr = DefaultScreen(disp);
+#if USE_IMLIB2
+	root.win = DefaultRootWindow(disp);
+	root.vis = DefaultVisual(disp, root.scr);
+	root.depth = DefaultDepth(disp, root.scr);
+	root.cmap = DefaultColormap(disp, root.scr);
+
+	imlib_set_color_usage(128);
+
+	imlib_context_set_display(disp);
+	imlib_context_set_visual(root.vis);
+	imlib_context_set_colormap(root.cmap);
+	imlib_context_set_dither(1);
+	imlib_context_set_dither_mask(0);
+#else
 	params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
 	params.imagecachesize = (w * h * 3 * 2);
 	params.pixmapcachesize = (w * h * 3 * 2 * 8);
-	pImlibData = Imlib_init_with_params(disp, &params);
-	Imlib_set_render_type(pImlibData, RT_DITHER_TRUECOL);
-#if USE_FNLIB
-	pFnlibData = Fnlib_init(pImlibData);
+	pI1Ctx = Imlib_init_with_params(disp, &params);
+	Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL);
+	root.win = pI1Ctx->x.root;
+	root.vis = Imlib_get_visual(pI1Ctx);
+	root.depth = pI1Ctx->x.depth;
+	root.cmap = Imlib_get_colormap(pI1Ctx);
 #endif
-
-	im_title = Imlib_create_image_from_xpm_data(pImlibData, title_xpm);
-	ibd.left = 50;
-	ibd.right = 2;
-	ibd.top = 2;
-	ibd.bottom = 2;
-	Imlib_set_image_border(pImlibData, im_title, &ibd);
-	im_prev1 = Imlib_create_image_from_xpm_data(pImlibData, prev1_xpm);
-	im_prev2 = Imlib_create_image_from_xpm_data(pImlibData, prev2_xpm);
-	im_next1 = Imlib_create_image_from_xpm_data(pImlibData, next1_xpm);
-	im_next2 = Imlib_create_image_from_xpm_data(pImlibData, next2_xpm);
-	im_exit1 = Imlib_create_image_from_xpm_data(pImlibData, exit1_xpm);
-	im_exit2 = Imlib_create_image_from_xpm_data(pImlibData, exit2_xpm);
+#if USE_FNLIB
+	pFnlibData = Fnlib_init(pI1Ctx);
+#endif
 
 	if (argc < 2) {
 		printf("usage:\n"
@@ -243,6 +286,7 @@ int main(int argc, char **argv)
 			   argv[0]);
 		exit(1);
 	}
+
 	docdir = ".";
 	docfile = "MAIN";
 	for (i = 1; i < argc; i++) {
@@ -259,6 +303,20 @@ int main(int argc, char **argv)
 	s = malloc(strlen(docdir) + strlen(docfile) + 2 + 20);
 	sprintf(s, "%s/%s", docdir, docfile);
 	findLocalizedFile(s);
+
+	im_title = LoadImage("title.xpm");
+	imlib_context_set_image(im_title);
+	ibd.left = 50;
+	ibd.right = 2;
+	ibd.top = 2;
+	ibd.bottom = 2;
+	imlib_image_set_border(&ibd);
+	im_prev1 = LoadImage("prev1.xpm");
+	im_prev2 = LoadImage("prev2.xpm");
+	im_next1 = LoadImage("next1.xpm");
+	im_next2 = LoadImage("next2.xpm");
+	im_exit1 = LoadImage("exit1.xpm");
+	im_exit2 = LoadImage("exit2.xpm");
 
 #ifndef __EMX__
 	f = fopen(s, "r");
@@ -301,7 +359,7 @@ int main(int argc, char **argv)
 			int num;
 			XineramaScreenInfo *screens;
 
-			XQueryPointer(disp, pImlibData->x.root, &rt, &ch, &pointer_x, &pointer_y,
+			XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y,
 						  &d, &d, &ud);
 
 			screens = XineramaQueryScreens(disp, &num);
@@ -326,32 +384,35 @@ int main(int argc, char **argv)
 
 	}
 #endif
-	win_main = CreateWindow(pImlibData->x.root, wx, wy, w, h + t);
-	win_title = CreateWindow(win_main, 0, 0, (w - 64 - 64 - t), t);
-	win_prev = CreateWindow(win_main, (w - 64 - 64 - t), 0, 64, t);
+	win_main = CreateWindow(root.win, wx, wy, w, h + t);
+	win_title = XCreateSimpleWindow(disp, win_main, 0, 0, (w - 64 - 64 - t), t, 0, 0, 0);
+	win_prev = XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t), 0, 64, t, 0, 0, 0);
+	win_next = XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t) + 64, 0, 64, t, 0, 0, 0);
+	win_exit = XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t) + 64 + 64, 0, t, t, 0, 0, 0);
+	win_text = XCreateSimpleWindow(disp, win_main, 0, t, w, h, 0, 0, 0);
 	XSelectInput(disp, win_prev, ButtonPressMask | ButtonReleaseMask);
-	win_next = CreateWindow(win_main, (w - 64 - 64 - t) + 64, 0, 64, t);
 	XSelectInput(disp, win_next, ButtonPressMask | ButtonReleaseMask);
-	win_exit = CreateWindow(win_main, (w - 64 - 64 - t) + 64 + 64, 0, t, t);
 	XSelectInput(disp, win_exit, ButtonPressMask | ButtonReleaseMask);
-	win_text = CreateWindow(win_main, 0, t, w, h);
 	XSelectInput(disp, win_text, ButtonPressMask | ButtonReleaseMask |
 				 KeyPressMask | KeyReleaseMask | PointerMotionMask);
-	draw = XCreatePixmap(disp, win_text, w, h, pImlibData->x.depth);
-	XSetWindowBackgroundPixmap(disp, win_text, draw);
-	Imlib_apply_image(pImlibData, im_title, win_title);
-	Imlib_apply_image(pImlibData, im_exit1, win_exit);
-	Imlib_apply_image(pImlibData, im_next1, win_next);
-	Imlib_apply_image(pImlibData, im_prev1, win_prev);
+
+	draw = XCreatePixmap(disp, win_text, w, h, root.depth);
+
+	ApplyImage1(win_title, im_title);
+	ApplyImage1(win_prev, im_prev1);
+	ApplyImage1(win_next, im_next1);
+	ApplyImage1(win_exit, im_exit1);
 
 	l = RenderPage(draw, pagenum, w, h);
+	UPDATE_NOW;
 
-	XMapWindow(disp, win_text);
-	XMapWindow(disp, win_exit);
-	XMapWindow(disp, win_next);
-	XMapWindow(disp, win_prev);
 	XMapWindow(disp, win_title);
+	XMapWindow(disp, win_prev);
+	XMapWindow(disp, win_next);
+	XMapWindow(disp, win_exit);
+	XMapWindow(disp, win_text);
 	XMapWindow(disp, win_main);
+
 	XSync(disp, False);
 	page_hist = malloc(sizeof(int));
 
@@ -409,11 +470,11 @@ int main(int argc, char **argv)
 			break;
 			case ButtonPress:
 			if (ev.xbutton.window == win_prev)
-				Imlib_apply_image(pImlibData, im_prev2, win_prev);
+				ApplyImage2(win_prev, im_prev2);
 			else if (ev.xbutton.window == win_next)
-				Imlib_apply_image(pImlibData, im_next2, win_next);
+				ApplyImage2(win_next, im_next2);
 			else if (ev.xbutton.window == win_exit)
-				Imlib_apply_image(pImlibData, im_exit2, win_exit);
+				ApplyImage2(win_exit, im_exit2);
 			else {
 				int x, y;
 
@@ -499,7 +560,7 @@ int main(int argc, char **argv)
 			break;
 			case ButtonRelease:
 			if (ev.xbutton.window == win_prev) {
-				Imlib_apply_image(pImlibData, im_prev1, win_prev);
+				ApplyImage3(win_prev, im_prev1);
 				FREE_LINKS;
 				page_hist_pos--;
 				if (page_hist_pos < 0)
@@ -510,7 +571,7 @@ int main(int argc, char **argv)
 			} else if (ev.xbutton.window == win_next) {
 				int prev_pagenum;
 
-				Imlib_apply_image(pImlibData, im_next1, win_next);
+				ApplyImage3(win_next, im_next1);
 				prev_pagenum = pagenum;
 				pagenum++;
 				pagenum = FixPage(pagenum);
@@ -529,7 +590,7 @@ int main(int argc, char **argv)
 					UPDATE;
 				}
 			} else if (ev.xbutton.window == win_exit) {
-				Imlib_apply_image(pImlibData, im_exit1, win_exit);
+				ApplyImage3(win_exit, im_exit1);
 				exit(0);
 			}
 			break;
@@ -553,14 +614,17 @@ int main(int argc, char **argv)
 						GC gc;
 						XGCValues gcv;
 						int r, g, b;
+						XColor xclr;
 
 						if (pl != ll) {
 							if (pl) {
 								UPDATE_NOW;
 							}
 							GetLinkColors(pagenum, &r, &g, &b);
+							ESetColor(&xclr, r, g, b);
+							EAllocColor(&xclr);
 							gc = XCreateGC(disp, win_text, 0, &gcv);
-							XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
+							XSetForeground(disp, gc, xclr.pixel);
 							XDrawRectangle(disp, win_text, gc, ll->x, ll->y,
 										   ll->w, ll->h);
 							XFreeGC(disp, gc);

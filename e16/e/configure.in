@@ -191,7 +191,7 @@ echo "Warning: No ales were found in your refrigerator."
 echo "  We highly suggest that you rectify this situation immediately."
 ])
 
-edocdata=`ls -1 $srcdir/dox/E-docs | egrep -v '(Makefile|CVS|^e|^misc|\.sh$)'`
+edocdata=`ls -1 $srcdir/dox/E-docs | egrep -v '(Makefile|CVS|^misc|\.sh$)'`
 edocexec=`ls -1 $srcdir/dox/E-docs | egrep '\.sh$'`
 edocdata=`echo $edocdata`
 edocexec=`echo $edocexec`

@@ -10,13 +10,6 @@ dox_SOURCES = \
         ttfont.c \
 	text.c \
 	dox.c \
-	title.xpm \
-	prev1.xpm \
-	prev2.xpm \
-	next1.xpm \
-	next2.xpm \
-	exit1.xpm \
-	exit2.xpm \
 	dox.h
 
 LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) $(XINERAMA_LIBS) -lm

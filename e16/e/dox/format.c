@@ -515,7 +515,7 @@ RenderPage(Window win, int page_num, int w, int h)
    int                 x, y;
    int                 justification = 0;
    int                 firstp = 1;
-   ImlibImage         *im;
+   Imlib_Image        *im;
    int                 wastext = 0;
 
    ts.fontname = NULL;
@@ -526,12 +526,8 @@ RenderPage(Window win, int page_num, int w, int h)
    ts.style.spacing = 0;
    ts.font = NULL;
 #endif
-   ts.fg_col.r = 0;
-   ts.fg_col.g = 0;
-   ts.fg_col.b = 0;
-   ts.bg_col.r = 0;
-   ts.bg_col.g = 0;
-   ts.bg_col.b = 0;
+   ESetColor(&ts.fg_col, 0, 0, 0);
+   ESetColor(&ts.bg_col, 0, 0, 0);
    ts.effect = 0;
    ts.efont = NULL;
    ts.xfont = NULL;
@@ -549,11 +545,13 @@ RenderPage(Window win, int page_num, int w, int h)
 
 	sprintf(tmp, "%s/%s", docdir, pg->background);
 	findLocalizedFile(tmp);
-	im = Imlib_load_image(pImlibData, tmp);
+	im = imlib_load_image(tmp);
 	if (im)
 	  {
-	     Imlib_paste_image(pImlibData, im, win, 0, 0, w, h);
-	     Imlib_destroy_image(pImlibData, im);
+	     imlib_context_set_image(im);
+	     imlib_context_set_drawable(win);
+	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	     imlib_free_image();
 	  }
      }
    for (i = 0; i < pg->count; i++)
@@ -574,14 +572,16 @@ RenderPage(Window win, int page_num, int w, int h)
 		  char                tmp[4096];
 
 		  sprintf(tmp, "%s/%s", docdir, img->src);
-		  im = Imlib_load_image(pImlibData, tmp);
+		  im = imlib_load_image(tmp);
 		  if (im)
 		    {
-		       img->w = im->rgb_width;
-		       img->h = im->rgb_height;
-		       Imlib_paste_image(pImlibData, im, win, img->x, img->y,
-					 im->rgb_width, im->rgb_height);
-		       Imlib_destroy_image(pImlibData, im);
+	     	       imlib_context_set_image(im);
+		       img->w = imlib_image_get_width();
+		       img->h = imlib_image_get_height();
+		       imlib_context_set_drawable(win);
+		       imlib_render_image_on_drawable_at_size(img->x, img->y,
+							      img->w, img->h);
+		       imlib_free_image();
 		    }
 		  if (img->link)
 		    {
@@ -615,12 +615,8 @@ RenderPage(Window win, int page_num, int w, int h)
 		Fnlib_free_font(pFnlibData, ts.font);
 	     ts.font = NULL;
 #endif
-	     ts.fg_col.r = 0;
-	     ts.fg_col.g = 0;
-	     ts.fg_col.b = 0;
-	     ts.bg_col.r = 0;
-	     ts.bg_col.g = 0;
-	     ts.bg_col.b = 0;
+	     ESetColor(&ts.fg_col, 0, 0, 0);
+	     ESetColor(&ts.bg_col, 0, 0, 0);
 	     ts.effect = 0;
 	     if (ts.efont)
 		Efont_free(ts.efont);
@@ -634,9 +630,7 @@ RenderPage(Window win, int page_num, int w, int h)
 	     ts.xfontset_ascent = 0;
 	     ts.height = 0;
 	     ts.fontname = fn->face;
-	     ts.fg_col.r = fn->r;
-	     ts.fg_col.g = fn->g;
-	     ts.fg_col.b = fn->b;
+	     ESetColor(&ts.fg_col, fn->r, fn->g, fn->b);
 	     TextStateLoadFont(&ts);
 	     break;
 	  case P:
@@ -915,20 +909,15 @@ RenderPage(Window win, int page_num, int w, int h)
 			    if (link > 1)
 			      {
 				 int                 rr, gg, bb;
-				 int                 r, g, b;
 				 int                 extra;
 				 GC                  gc;
 				 XGCValues           gcv;
 
 				 gc = XCreateGC(disp, win, 0, &gcv);
-				 rr = ts.fg_col.r;
-				 gg = ts.fg_col.g;
-				 bb = ts.fg_col.b;
-				 r = ts.fg_col.r = pg->linkr;
-				 g = ts.fg_col.g = pg->linkg;
-				 b = ts.fg_col.b = pg->linkb;
-				 XSetForeground(disp, gc,
-				      Imlib_best_color_match(pImlibData, &r, &g, &b));
+				 EGetColor(&ts.fg_col, &rr, &gg, &bb);
+				 ESetColor(&ts.fg_col, pg->linkr, pg->linkg, pg->linkb);
+				 EAllocColor(&ts.fg_col);
+				 XSetForeground(disp, gc, ts.fg_col.pixel);
 				 TextSize(&ts, txt_disp, &tw, &th, 17);
 				 extra = ((xspace - tw) * justification) >> 10;
 				 TextDraw(&ts, win, link_txt, x + off + lx + extra, y,
@@ -939,9 +928,7 @@ RenderPage(Window win, int page_num, int w, int h)
 					   y + ts.xfontset_ascent,
 					   x + off + lx + lw + extra,
 					   y + ts.xfontset_ascent);
-				 ts.fg_col.r = rr;
-				 ts.fg_col.g = gg;
-				 ts.fg_col.b = bb;
+				 ESetColor(&ts.fg_col, rr, gg, bb);
 				 link = 0;
 				 XFreeGC(disp, gc);
 				 {
