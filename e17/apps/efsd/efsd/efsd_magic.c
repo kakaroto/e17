@@ -1126,11 +1126,9 @@ efsd_magic_get(char *filename)
 
   D(("magic: data check failed.\n"));
 
-  /*
   result = magic_test_pattern(filename);
   if (result)
     D_RETURN_(result);
-  */
 
   D(("magic: file pattern check failed.\n"));
   
