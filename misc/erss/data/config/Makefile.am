@@ -19,5 +19,7 @@ newsforge.cfg \
 e-cvs.cfg \
 linuxtoday.cfg \
 nyt_sci.cfg \
-nyt_tech.cfg
+nyt_tech.cfg \
+yahoonews.cfg \
+googlenews.cfg
 
