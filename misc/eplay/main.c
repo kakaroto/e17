@@ -1,8 +1,8 @@
 /*
    Module       : main.c
-   Purpose      : GDK/Imlib Quick Image Viewer (qiv)
-   More         : see qiv README
-   Homepage     : http://www.klografx.de/
+   Purpose      : GDK/Imlib Quick Image Viewer 
+   More         : see eplay README
+   Homepage     : http://mandrake.net
    Policy       : GNU GPL
  */
 
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 		filter_images(&images, image_names);
 
 	if (!images) {				/* No images to display */
-		g_print("\nqiv: cannot load any images.\n");
+		g_print("\neplay: cannot load any images.\n");
 		usage(argv[0], 1);
 	}
 	image_idx = 0;				/* Display first image first */
@@ -54,16 +54,16 @@ int main(int argc, char **argv)
 	cmap = gdk_colormap_get_system();
 
 	if (!gdk_color_alloc(cmap, &text_background_color))
-		fprintf(stderr, "qiv: couldn't allocate color (text_background_color)\n");
+		fprintf(stderr, "eplay: couldn't allocate color (text_background_color)\n");
 
 	if (!gdk_color_alloc(cmap, &color_blue)) {
-		fprintf(stderr, "qiv: couldn't allocate color (color_blue),\nusing black...\n");
+		fprintf(stderr, "eplay: couldn't allocate color (color_blue),\nusing black...\n");
 	}
 	color_bg.red = 0;
 	color_bg.green = 0;
 	color_bg.blue = 0;
 	if (!gdk_color_alloc(cmap, &color_bg)) {
-		fprintf(stderr, "qiv: couldn't allocate color (color_bg)");
+		fprintf(stderr, "eplay: couldn't allocate color (color_bg)");
 	}
 	screen_x = gdk_screen_width();
 	screen_y = gdk_screen_height();
@@ -77,13 +77,13 @@ int main(int argc, char **argv)
 			p[i] = NULL;
 	}
 
-	qiv_load_image();			/* Load & display the first image */
+	eplay_load_image();			/* Load & display the first image */
 
 	/* Setup callbacks */
-	gdk_event_handler_set((GdkEventFunc) qiv_handle_event, NULL, NULL);
-	g_timeout_add_full(G_PRIORITY_LOW, delay, (GSourceFunc) qiv_handle_timer, &slide, NULL);
+	gdk_event_handler_set((GdkEventFunc) eplay_handle_event, NULL, NULL);
+	g_timeout_add_full(G_PRIORITY_LOW, delay, (GSourceFunc) eplay_handle_timer, &slide, NULL);
 
-	MainLoop = g_main_new(TRUE);	/* Allocate qiv main loop */
+	MainLoop = g_main_new(TRUE);	/* Allocate eplay main loop */
 	g_main_run(MainLoop);		/* Run the loop */
 
 	/*  main loop will never return */
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 	return (0);
 }
 
-void qiv_exit(int code)
+void eplay_exit(int code)
 {
 	g_main_destroy(MainLoop);
 	finish(SIGTERM);			/* deprecated, subject to change */
@@ -102,11 +102,11 @@ void qiv_exit(int code)
  *    Slideshow
  */
 
-void qiv_handle_timer(gpointer data)
+void eplay_handle_timer(gpointer data)
 {
 	if (*(char *) data || slide) {
 		image_idx = (image_idx + 1 + images) % images;
-		qiv_load_image();
+		eplay_load_image();
 	}
 }
 
@@ -115,22 +115,22 @@ void qiv_handle_timer(gpointer data)
  *    Handle GDK events 
  */
 
-void qiv_handle_event(GdkEvent * ev)
+void eplay_handle_event(GdkEvent * ev)
 {
 	gboolean exit_slideshow = FALSE;
 	switch (ev->type) {
 		case GDK_DELETE:
-			qiv_exit(0);
+			eplay_exit(0);
 			break;
 
 		case GDK_BUTTON_RELEASE:
-			qiv_exit(0);
+			eplay_exit(0);
 			break;
 
 			/* Use release instead of press (Fixes bug with junk being sent
 			   to underlying xterm window on exit) */
 		case GDK_KEY_PRESS:
-			qiv_exit(0);
+			eplay_exit(0);
 			break;
 		default:
 			break;

@@ -1,9 +1,9 @@
 /*
    Module       : utils.c
-   Purpose      : Various utilities for qiv
-   More         : see qiv README
+   Purpose      : Various utilities for eplay
+   More         : see eplay README
    Policy       : GNU GPL
-   Homepage     : http://www.klografx.de/
+   Homepage     : http://mandrake.net
  */
 
 #include <string.h>
@@ -12,10 +12,10 @@
 #include <gdk/gdkx.h>
 #include "eplay.h"
 
-/* copy current image to .qiv-trash */
+/* copy current image to .eplay-trash */
 int move2trash(char *filename)
 {
-	char *trashdir = ".qiv-trash";
+	char *trashdir = ".eplay-trash";
 	char *ptr, *ptr2;
 	char trashfile[1024];
 	int i = 0;

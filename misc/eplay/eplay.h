@@ -65,10 +65,10 @@ extern int bg_set;
 
 /* main.c */
 
-void qiv_exit(int);
-void qiv_load_image();
-void qiv_handle_timer(gpointer);
-void qiv_handle_event(GdkEvent *);
+void eplay_exit(int);
+void eplay_load_image();
+void eplay_handle_timer(gpointer);
+void eplay_handle_event(GdkEvent *);
 
 /* options.c */
 
@@ -86,7 +86,7 @@ void set_bg_color(char *);
 
 /* image.c */
 
-void qiv_load_image();
+void eplay_load_image();
 void set_desktop_image();
 void zoom_in(gint *, gint *, gint *, gint *);
 void zoom_out(gint *, gint *, gint *, gint *);

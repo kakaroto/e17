@@ -1,8 +1,8 @@
 /*
    Module       : options.c
    Purpose      : Read and evaluate commandline options
-   More         : see qiv README
-   Homepage     : http://www.klografx.de/
+   More         : see eplay README
+   Homepage     : http://mandrake.net
  */
 
 #include "eplay.h"

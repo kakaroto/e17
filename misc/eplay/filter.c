@@ -1,8 +1,8 @@
 /*
    Module       : filter.c
    Purpose      : Filter images based on their extension
-   More         : see qiv README
-   Homepage     : http://www.klografx.de/
+   More         : see eplay README
+   Homepage     : http://mandrake.net
    Policy       : GNU GPL
  */
 

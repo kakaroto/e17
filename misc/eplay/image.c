@@ -16,7 +16,7 @@
  *    Load & display image
  */
 
-void qiv_load_image()
+void eplay_load_image()
 {
 
 	if (im) {
