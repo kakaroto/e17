@@ -89,7 +89,8 @@ Usage: equate [options]");
    /* load and read our settings */
    ecore_config_load();
 
-   if ((parse_ret = ecore_config_args_parse(argc, argv))
+   ecore_app_args_set(argc, argv);
+   if ((parse_ret = ecore_config_args_parse())
        == ECORE_CONFIG_PARSE_EXIT) {
 // don't do this, as we have hooks to put in
 //     ecore_config_shutdown();

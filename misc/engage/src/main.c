@@ -21,14 +21,14 @@ main(int argc, char **argv)
   ecore_x_init(NULL);
   ecore_config_init("engage");
 
-  if (od_config_init(argc, argv) != ECORE_CONFIG_PARSE_CONTINUE) {
+  ecore_app_args_set(argc, (const char **) argv);
+  if (od_config_init() != ECORE_CONFIG_PARSE_CONTINUE) {
     ecore_config_shutdown();
     ecore_x_shutdown();
     ecore_shutdown();
     exit(0);
   }
 
-  ecore_app_args_set(argc, (const char **) argv);
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
   ecore_evas_init();
   ewl_init(&argc, argv);

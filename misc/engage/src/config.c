@@ -25,7 +25,7 @@ zoom_listener(const char *key, const Ecore_Config_Type type, const int tag,
 }
 
 int
-od_config_init(int argc, char **argv)
+od_config_init(void)
 {
   int             ret;
 
@@ -79,7 +79,7 @@ od_config_init(int argc, char **argv)
                             "Time taken (in seconds) for new icons to appear");
 
   ecore_config_load();
-  ret = ecore_config_args_parse(argc, argv);
+  ret = ecore_config_args_parse();
 
   options.width = ecore_config_int_get("engage.options.width");
   options.height = ecore_config_int_get("engage.options.height");
