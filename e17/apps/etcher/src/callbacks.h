@@ -149,3 +149,11 @@ on_button2_clicked                     (GtkButton       *button,
 void
 on_3d_hardware_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_file_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_file_cancel_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);

@@ -21,7 +21,13 @@ static Evas_Object o_logo = NULL;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
 static double backing_x, backing_y, backing_w, backing_h;
 
-static gint
+static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static gint view_shrink_logo(gpointer data);
+static gint view_scroll_logo(gpointer data);
+
+gint
 view_redraw(gpointer data)
 {
    evas_render(view_evas);
@@ -122,7 +128,7 @@ handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
      }
 }
 
-static gint
+gint
 view_configure_handles(gpointer data)
 {
    int w, h;
@@ -172,7 +178,7 @@ view_configure_handles(gpointer data)
    gtk_idle_add(view_redraw, NULL);
 }
 
-static gint
+gint
 view_create_handles(gpointer data)
 {
    evas_show(view_evas, o_handle1 = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/handle1.png"));
@@ -273,12 +279,42 @@ view_scroll_logo(gpointer data)
 }
 
 
+void
+on_file_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *top;
+   
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   gtk_widget_destroy(top);
+}
+
+
+void
+on_file_cancel_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *top;
+   
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   gtk_widget_destroy(top);
+}
 
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+   GtkWidget *file;
+   GtkWidget *entry;
+   gchar *name;
+   
+   entry = gtk_object_get_data(GTK_OBJECT(main_win), "file");
+   name = gtk_entry_get_text(GTK_ENTRY(entry));
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "open", (gpointer)1);
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
+   gtk_widget_show(file);
 }
 
 
@@ -286,7 +322,11 @@ void
 on_save1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+   GtkWidget *entry;
+   gchar *name;
+   
+   entry = gtk_object_get_data(GTK_OBJECT(main_win), "file");
+   name = gtk_entry_get_text(GTK_ENTRY(entry));
 }
 
 
@@ -294,7 +334,17 @@ void
 on_save_as1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+   GtkWidget *file;
+   GtkWidget *entry;
+   gchar *name;
+   
+   entry = gtk_object_get_data(GTK_OBJECT(main_win), "file");
+   name = gtk_entry_get_text(GTK_ENTRY(entry));
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "open", (gpointer)1);
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
+   gtk_widget_show(file);
 }
 
 
@@ -327,7 +377,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
    int w, h, ew;
-
+   
    if (o_logo)
      {
 	evas_del_object(view_evas, o_logo);
@@ -385,7 +435,8 @@ on_view_enter_notify_event             (GtkWidget       *widget,
                                         GdkEventCrossing *event,
                                         gpointer         user_data)
 {
-   evas_show(view_evas, o_pointer);
+   if (o_pointer)
+      evas_show(view_evas, o_pointer);
    gtk_idle_add(view_redraw, NULL);
    return FALSE;
 }
@@ -396,7 +447,8 @@ on_view_leave_notify_event             (GtkWidget       *widget,
                                         GdkEventCrossing *event,
                                         gpointer         user_data)
 {
-   evas_hide(view_evas, o_pointer);
+   if (o_pointer)
+      evas_hide(view_evas, o_pointer);
    gtk_idle_add(view_redraw, NULL);
    return FALSE;
 }

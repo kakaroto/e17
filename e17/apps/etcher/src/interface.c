@@ -415,7 +415,7 @@ create_main (void)
    gtk_widget_pop_visual();
    gtk_widget_pop_colormap();
    /*******/
-
+   
   gtk_widget_ref (view);
   gtk_object_set_data_full (GTK_OBJECT (main), "view", view,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1986,6 +1986,12 @@ create_filesel (void)
   gtk_signal_connect (GTK_OBJECT (filesel), "delete_event",
                       GTK_SIGNAL_FUNC (on_filesel_delete_event),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (file_ok), "clicked",
+                      GTK_SIGNAL_FUNC (on_file_ok_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (file_cancel), "clicked",
+                      GTK_SIGNAL_FUNC (on_file_cancel_clicked),
+                      NULL);
 
   return filesel;
 }
@@ -2005,6 +2011,7 @@ create_render_method (void)
   render_method = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (render_method), "render_method", render_method);
   gtk_window_set_title (GTK_WINDOW (render_method), _("Select your display method"));
+  GTK_WINDOW (render_method)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_position (GTK_WINDOW (render_method), GTK_WIN_POS_MOUSE);
   gtk_window_set_modal (GTK_WINDOW (render_method), TRUE);
   gtk_window_set_policy (GTK_WINDOW (render_method), FALSE, TRUE, TRUE);
