@@ -1512,6 +1512,7 @@ main(int argc,
                                          scale_width, scale_height, 1, 0, 0);
         gib_imlib_free_image_and_decache(image);
         image = tmp_image;
+        imlib_context_set_image(image);
       }
 
       log("** shot taken\n");
