@@ -1963,7 +1963,7 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    }
 
    /* clip spans to image size */
-   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w - 1, 0, im->h - 1);
+   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w, 0, im->h - 1);
 
    /* clip to clip rect if it's there */
    if (clip)
@@ -1983,7 +1983,8 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
 	free(table2);
 	return;
      }
-   if (maxy >= im->h) maxy = im->h - 1;
+   if (maxy >= im->h)
+     maxy = im->h - 1;
    {
       do
       {
@@ -1996,7 +1997,8 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
   	   if (x1 < clip_xmin) x1 = clip_xmin;
        if (x2 > clip_xmax) x2 = clip_xmax;
      }
-     span(im, miny, x1, x2, r, g, b, a, op);
+     if((x1 != x2) && (x1 < im->w))
+       span(im, miny, x1, x2, r, g, b, a, op);
      miny++;
       }
       while (miny < maxy);
@@ -2421,9 +2423,10 @@ __spanlist_clip(edgeRec * table1, edgeRec * table2, int *sy, int *ey,
 
       if (pt2->x < pt1->x)
          exchange(double, pt2->x, pt1->x);
-
-      pt1->x = MAX(pt1->x, xmin);
-      pt2->x = MIN(pt2->x, xmax);
+      if(pt1->x < xmax) {
+        pt1->x = MAX(pt1->x, xmin);
+        pt2->x = MIN(pt2->x, xmax);
+      }
       iy1++;
    }
    while (iy1 <= iy2);
