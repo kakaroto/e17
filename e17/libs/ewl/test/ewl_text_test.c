@@ -36,7 +36,7 @@ __create_text_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(text_win);
 
 	text = ewl_text_new();
-	ewl_text_set_text(text,
+	ewl_text_set_text(EWL_TEXT(text),
 			  "Enlightenment Widget Library\n"
 			  "\n"
 			  "Bla bla bla bla bla bla bla bla bla\n"

@@ -20,7 +20,7 @@ ewl_separator_new(Ewl_Orientation o)
 	s = NEW(Ewl_Separator, 1);
 	ZERO(s, Ewl_Separator, 1);
 
-	__ewl_separator_init(s, o);
+	ewl_separator_init(s, o);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }

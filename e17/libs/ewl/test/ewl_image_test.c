@@ -78,7 +78,7 @@ __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		img = ewd_dlist_goto_last(images);
 
 	ewl_entry_set_text(entry_path, img);
-	ewl_image_set_file(image, img);
+	ewl_image_set_file(EWL_IMAGE(image), img);
 
 	ewl_widget_configure(image_win);
 
@@ -101,7 +101,7 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	  {
 		  ewd_dlist_append(images, img);
 		  ewd_dlist_goto_last(images);
-		  ewl_image_set_file(image, img);
+		  ewl_image_set_file(EWL_IMAGE(image), img);
 	  }
 	else
 		printf("ERROR: %s does not exist\n", img);
@@ -129,7 +129,7 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		img = ewd_dlist_goto_first(images);
 
 	ewl_entry_set_text(entry_path, img);
-	ewl_image_set_file(image, img);
+	ewl_image_set_file(EWL_IMAGE(image), img);
 
 	ewl_widget_configure(image_win);
 

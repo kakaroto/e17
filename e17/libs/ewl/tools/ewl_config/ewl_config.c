@@ -155,8 +155,8 @@ main(int argc, char **argv)
 	/* Evas Page */
 
 	e_conf.page_evas_label = ewl_text_new();
-	ewl_text_set_text(e_conf.page_evas_label, "Evas Settings");
-	ewl_text_set_font_size(e_conf.page_evas_label, 8);
+	ewl_text_set_text(EWL_TEXT(e_conf.page_evas_label), "Evas Settings");
+	ewl_text_set_font_size(EWL_TEXT(e_conf.page_evas_label), 8);
 	ewl_widget_show(e_conf.page_evas_label);
 
 	e_conf.page_evas = ewl_vbox_new();
@@ -165,7 +165,8 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_evas);
 
 	e_conf.render_method_label = ewl_text_new();
-	ewl_text_set_text(e_conf.render_method_label, "Render Method");
+	ewl_text_set_text(EWL_TEXT(e_conf.render_method_label),
+			"Render Method");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.render_method_label);
 	ewl_widget_show(e_conf.render_method_label);
@@ -192,43 +193,46 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.render_method_x11);
 
 	e_conf.font_cache_label = ewl_text_new();
-	ewl_text_set_text(e_conf.font_cache_label, "Font Cache (kB)");
+	ewl_text_set_text(EWL_TEXT(e_conf.font_cache_label), "Font Cache (kB)");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.font_cache_label);
 	ewl_widget_show(e_conf.font_cache_label);
 
 	e_conf.font_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.font_cache, (1024.0 * 0.5));
-	ewl_spinner_set_max_val(e_conf.font_cache, (1024.0 * 256));
-	ewl_spinner_set_digits(e_conf.font_cache, 0);
-	ewl_spinner_set_step(e_conf.font_cache, 1.0);
+	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.font_cache), (1024.0 * 0.5));
+	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.font_cache), (1024.0 * 256));
+	ewl_spinner_set_digits(EWL_SPINNER(e_conf.font_cache), 0);
+	ewl_spinner_set_step(EWL_SPINNER(e_conf.font_cache), 1.0);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.font_cache);
 	ewl_widget_show(e_conf.font_cache);
 
 	e_conf.image_cache_label = ewl_text_new();
-	ewl_text_set_text(e_conf.image_cache_label, "Image Cache (kB)");
+	ewl_text_set_text(EWL_TEXT(e_conf.image_cache_label),
+			"Image Cache (kB)");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.image_cache_label);
 	ewl_widget_show(e_conf.image_cache_label);
 
 	e_conf.image_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.image_cache, (1024.0 * 0.5));
-	ewl_spinner_set_max_val(e_conf.image_cache, (1024.0 * 256));
-	ewl_spinner_set_digits(e_conf.image_cache, 0);
-	ewl_spinner_set_step(e_conf.image_cache, 1.0);
+	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.image_cache),
+			(1024.0 * 0.5));
+	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.image_cache),
+			(1024.0 * 256));
+	ewl_spinner_set_digits(EWL_SPINNER(e_conf.image_cache), 0);
+	ewl_spinner_set_step(EWL_SPINNER(e_conf.image_cache), 1.0);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.image_cache);
 	ewl_widget_show(e_conf.image_cache);
 
-	ewl_notebook_append_page(e_conf.notebook, e_conf.page_evas,
-				 e_conf.page_evas_label);
+	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
+		e_conf.page_evas, e_conf.page_evas_label);
 
 	/* Debug Page */
 
 	e_conf.page_debug_label = ewl_text_new();
-	ewl_text_set_text(e_conf.page_debug_label, "Debug Settings");
-	ewl_text_set_font_size(e_conf.page_debug_label, 8);
+	ewl_text_set_text(EWL_TEXT(e_conf.page_debug_label), "Debug Settings");
+	ewl_text_set_font_size(EWL_TEXT(e_conf.page_debug_label), 8);
 	ewl_widget_show(e_conf.page_debug_label);
 
 	e_conf.page_debug = ewl_vbox_new();
@@ -242,27 +246,27 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.enable_debug);
 
 	e_conf.debug_level_label = ewl_text_new();
-	ewl_text_set_text(e_conf.debug_level_label, "Debug Level");
+	ewl_text_set_text(EWL_TEXT(e_conf.debug_level_label), "Debug Level");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_debug),
 				   e_conf.debug_level_label);
 	ewl_widget_show(e_conf.debug_level_label);
 
 	e_conf.debug_level = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.debug_level, 0.0);
-	ewl_spinner_set_max_val(e_conf.debug_level, 20.0);
-	ewl_spinner_set_digits(e_conf.debug_level, 0);
-	ewl_spinner_set_step(e_conf.debug_level, 1);
+	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.debug_level), 0.0);
+	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.debug_level), 20.0);
+	ewl_spinner_set_digits(EWL_SPINNER(e_conf.debug_level), 0);
+	ewl_spinner_set_step(EWL_SPINNER(e_conf.debug_level), 1);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_debug),
 				   e_conf.debug_level);
 	ewl_widget_show(e_conf.debug_level);
 
-	ewl_notebook_append_page(e_conf.notebook, e_conf.page_debug,
-				 e_conf.page_debug_label);
+	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
+			e_conf.page_debug, e_conf.page_debug_label);
 
 	/* FX Page */
 	e_conf.page_fx_label = ewl_text_new();
-	ewl_text_set_text(e_conf.page_fx_label, "FX Settings");
-	ewl_text_set_font_size(e_conf.page_fx_label, 8);
+	ewl_text_set_text(EWL_TEXT(e_conf.page_fx_label), "FX Settings");
+	ewl_text_set_font_size(EWL_TEXT(e_conf.page_fx_label), 8);
 	ewl_widget_show(e_conf.page_fx_label);
 
 	e_conf.page_fx = ewl_vbox_new();
@@ -272,22 +276,23 @@ main(int argc, char **argv)
 
 
 	e_conf.global_label = ewl_text_new();
-	ewl_text_set_text(e_conf.global_label, "Global Settings");
+	ewl_text_set_text(EWL_TEXT(e_conf.global_label), "Global Settings");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.global_label);
 	ewl_widget_show(e_conf.global_label);
 
 	e_conf.global_fps_label = ewl_text_new();
-	ewl_text_set_text(e_conf.global_fps_label, "Frames Per Second");
+	ewl_text_set_text(EWL_TEXT(e_conf.global_fps_label),
+			"Frames Per Second");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.global_fps_label);
 	ewl_widget_show(e_conf.global_fps_label);
 
 	e_conf.global_fps = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.global_fps, 1.0);
-	ewl_spinner_set_max_val(e_conf.global_fps, 80.0);
-	ewl_spinner_set_digits(e_conf.global_fps, 1);
-	ewl_spinner_set_step(e_conf.global_fps, 1.0);
+	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.global_fps), 1.0);
+	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.global_fps), 80.0);
+	ewl_spinner_set_digits(EWL_SPINNER(e_conf.global_fps), 1);
+	ewl_spinner_set_step(EWL_SPINNER(e_conf.global_fps), 1.0);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.global_fps);
 	ewl_widget_show(e_conf.global_fps);
@@ -307,7 +312,7 @@ main(int argc, char **argv)
 		  ewl_widget_show(e_conf.fx_separator1);
 
 		  e_conf.plugins_label = ewl_text_new();
-		  ewl_text_set_text(e_conf.plugins_label, "Plugins");
+		  ewl_text_set_text(EWL_TEXT(e_conf.plugins_label), "Plugins");
 		  ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 					     e_conf.plugins_label);
 		  ewl_widget_show(e_conf.plugins_label);
@@ -339,7 +344,7 @@ main(int argc, char **argv)
 			      }
 
 			    label = ewl_text_new();
-			    ewl_text_set_text(label, name);
+			    ewl_text_set_text(EWL_TEXT(label), name);
 			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
 					     label, 1, 1, i, i);
 			    ewl_widget_show(label);
@@ -388,13 +393,13 @@ main(int argc, char **argv)
 		    }
 	  }
 
-	ewl_notebook_append_page(e_conf.notebook, e_conf.page_fx,
+	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook), e_conf.page_fx,
 				 e_conf.page_fx_label);
 
 	/* Theme Page */
 	e_conf.page_theme_label = ewl_text_new();
-	ewl_text_set_text(e_conf.page_theme_label, "Theme Settings");
-	ewl_text_set_font_size(e_conf.page_theme_label, 8);
+	ewl_text_set_text(EWL_TEXT(e_conf.page_theme_label), "Theme Settings");
+	ewl_text_set_font_size(EWL_TEXT(e_conf.page_theme_label), 8);
 	ewl_widget_show(e_conf.page_theme_label);
 
 	e_conf.page_theme = ewl_vbox_new();
@@ -404,7 +409,7 @@ main(int argc, char **argv)
 
 
 	e_conf.theme_name_label = ewl_text_new();
-	ewl_text_set_text(e_conf.theme_name_label, "Theme Name");
+	ewl_text_set_text(EWL_TEXT(e_conf.theme_name_label), "Theme Name");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_theme),
 				   e_conf.theme_name_label);
 	ewl_widget_show(e_conf.theme_name_label);
@@ -419,8 +424,8 @@ main(int argc, char **argv)
 				   e_conf.theme_cache);
 	ewl_widget_show(e_conf.theme_cache);
 
-	ewl_notebook_append_page(e_conf.notebook, e_conf.page_theme,
-				 e_conf.page_theme_label);
+	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
+			e_conf.page_theme, e_conf.page_theme_label);
 
 	ewl_set_settings(&init_settings);
 
@@ -501,15 +506,17 @@ ewl_set_settings(Ewl_Config * c)
 	else
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
 
-	ewl_spinner_set_value(e_conf.font_cache,
+	ewl_spinner_set_value(EWL_SPINNER(e_conf.font_cache),
 			      (double) (c->evas.font_cache) / 1024.0);
-	ewl_spinner_set_value(e_conf.image_cache,
+	ewl_spinner_set_value(EWL_SPINNER(e_conf.image_cache),
 			      (double) (c->evas.image_cache) / 1024.0);
 
 	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
-	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
+	ewl_spinner_set_value(EWL_SPINNER(e_conf.debug_level),
+			(double) (c->debug.level));
 
-	ewl_spinner_set_value(e_conf.global_fps, (double) (c->fx.fps));
+	ewl_spinner_set_value(EWL_SPINNER(e_conf.global_fps),
+			(double) (c->fx.fps));
 
 	ewl_entry_set_text(e_conf.theme_name, c->theme.name);
 
@@ -532,9 +539,11 @@ ewl_get_settings(void)
 		c->evas.render_method = strdup("x11");
 
 	c->evas.font_cache =
-		(float) (ewl_spinner_get_value(e_conf.font_cache)) * 1024.0;
+		(float)(ewl_spinner_get_value(EWL_SPINNER(e_conf.font_cache)))
+		* 1024.0;
 	c->evas.image_cache =
-		(float) (ewl_spinner_get_value(e_conf.image_cache)) * 1024.0;
+		(float)(ewl_spinner_get_value(EWL_SPINNER(e_conf.image_cache)))
+		* 1024.0;
 
 	if (ewl_checkbutton_is_checked(e_conf.enable_debug))
 		c->debug.enable = 1;
@@ -546,7 +555,7 @@ ewl_get_settings(void)
 
 	if (c->debug.enable)
 		c->debug.level =
-			(int) (ewl_spinner_get_value(e_conf.debug_level));
+			(int)(ewl_spinner_get_value(EWL_SPINNER(e_conf.debug_level)));
 
 	c->theme.name = ewl_entry_get_text(e_conf.theme_name);
 
@@ -554,7 +563,7 @@ ewl_get_settings(void)
 		c->theme.name = strdup("default");
 
 	c->theme.cache = ewl_checkbutton_is_checked(e_conf.theme_cache);
-	c->fx.fps = ewl_spinner_get_value(e_conf.global_fps);
+	c->fx.fps = ewl_spinner_get_value(EWL_SPINNER(e_conf.global_fps));
 
 	return c;
 }
@@ -682,7 +691,7 @@ ewl_config_create_confirm_dialog(void)
 	ewl_object_set_padding(EWL_OBJECT(confirm.text), 0, 0, 20, 20);
 	ewl_object_set_alignment(EWL_OBJECT(confirm.text),
 				 EWL_ALIGNMENT_CENTER);
-	ewl_text_set_text(confirm.text,
+	ewl_text_set_text(EWL_TEXT(confirm.text),
 			  "You have made modifications, what would you "
 			  "like to do ?");
 	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),

@@ -85,8 +85,8 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	n = NEW(Ewl_Widget, 2);
 
 	tab = ewl_text_new();
-	ewl_text_set_text(tab, "Main");
-	ewl_text_set_font_size(tab, 8);
+	ewl_text_set_text(EWL_TEXT(tab), "Main");
+	ewl_text_set_font_size(EWL_TEXT(tab), 8);
 	ewl_widget_show(tab);
 
 	main_vbox = ewl_vbox_new();
@@ -94,7 +94,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new();
-	ewl_text_set_text(text, "Main");
+	ewl_text_set_text(EWL_TEXT(text), "Main");
 	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
@@ -106,7 +106,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(avbox);
 
 	alabel = ewl_text_new();
-	ewl_text_set_text(alabel, "Tabs Alignment");
+	ewl_text_set_text(EWL_TEXT(alabel), "Tabs Alignment");
 	ewl_container_append_child(EWL_CONTAINER(avbox), alabel);
 	ewl_widget_show(alabel);
 
@@ -152,7 +152,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(pvbox);
 
 	plabel = ewl_text_new();
-	ewl_text_set_text(plabel, "Tabs Position");
+	ewl_text_set_text(EWL_TEXT(plabel), "Tabs Position");
 	ewl_container_append_child(EWL_CONTAINER(pvbox), plabel);
 	ewl_widget_show(plabel);
 
@@ -206,8 +206,8 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	n = NEW(Ewl_Widget, 2);
 
 	tab = ewl_text_new();
-	ewl_text_set_text(tab, label);
-	ewl_text_set_font_size(tab, 8);
+	ewl_text_set_text(EWL_TEXT(tab), label);
+	ewl_text_set_font_size(EWL_TEXT(tab), 8);
 	ewl_widget_show(tab);
 
 	main_vbox = ewl_vbox_new();
@@ -215,7 +215,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new();
-	ewl_text_set_text(text, label);
+	ewl_text_set_text(EWL_TEXT(text), label);
 	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
@@ -338,7 +338,7 @@ __create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		n = __notebook_create_main_page(notebook);
 
-		ewl_notebook_prepend_page(notebook, n[0], n[1]);
+		ewl_notebook_prepend_page(EWL_NOTEBOOK(notebook), n[0], n[1]);
 	}
 
 	return;
