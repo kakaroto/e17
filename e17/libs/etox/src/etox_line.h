@@ -12,7 +12,7 @@ void etox_line_remove(Etox_Line * line, Evas_Object * bit);
 void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2);
 void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2);
 void etox_line_minimize(Etox_Line * line);
-void etox_line_get_text(Etox_Line * line, char *buf);
+void etox_line_get_text(Etox_Line * line, char *buf, int len);
 
 int etox_line_wrap(Etox *et, Etox_Line *line);
 void etox_line_split(Etox_Line *line, Evas_Object *bit, int index);

@@ -356,7 +356,7 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
  * Returns no value. Saves the text from the line @line into the char buffer
  * @buf.
  */
-void etox_line_get_text(Etox_Line * line, char *buf)
+void etox_line_get_text(Etox_Line * line, char *buf, int len)
 {
 	char *temp;
 	Evas_Object *es;
@@ -384,7 +384,8 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 			temp = "\t";
 		else
 			temp = etox_style_get_text(es);
-		strcat(buf, temp);
+		if (snprintf(buf, len, "%s%s", buf, temp) < len)
+			fprintf(stderr, "WARNING! Etox concatenated a line.");
 		free(temp);
 	}
 	line->length = sum;

@@ -693,7 +693,7 @@ char *etox_get_text(Evas_Object * obj)
 	 */
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
-		etox_line_get_text(line, temp);
+		etox_line_get_text(line, temp, et->length);
 
 		/*
 		 * FIXME: Currently, in etox_line_get_text(), line->length
@@ -1093,7 +1093,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 	}
 
 	if (!et->lines)
-		return;
+		return sum;
 
 	if (!line)
 		line = et->lines->last->data;
