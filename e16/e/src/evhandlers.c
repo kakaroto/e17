@@ -813,6 +813,7 @@ HandleConfigureRequest(XEvent * ev)
 	      * ev->xconfigurerequest.value_mask &
 	      * (CWSibling | CWStackMode), &xwc); */
 	  }
+#if 0				/* Let's try disabling this */
 	/* this ugly workaround here is because x11amp is very brain-dead */
 	/* and sets its minunum and maximm sizes the same - fair enough */
 	/* to ensure it doesnt get resized - BUT hwne it shades itself */
@@ -830,6 +831,7 @@ HandleConfigureRequest(XEvent * ev)
 	   ewin->client.height.min = h;
 	if (h > ewin->client.height.max)
 	   ewin->client.height.max = h;
+#endif
 
 	if (ev->xconfigurerequest.value_mask & (CWX | CWY))
 	  {
