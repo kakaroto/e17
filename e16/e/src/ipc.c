@@ -1675,45 +1675,32 @@ IPC_DialogOK(const char *params, Client * c)
 }
 
 static void
-IPC_SetFocus(const char *params, Client * c)
+IPC_SetFocus(const char *params, Client * c __UNUSED__)
 {
+   char                param1[FILEPATH_LEN_MAX];
    EWin               *ewin;
-   char                buf[FILEPATH_LEN_MAX];
 
-   buf[0] = 0;
+   if (params == NULL)
+      return;
 
-   if (params)
+   sscanf(params, "%1000s", param1);
+
+   if (!strcmp(param1, "?"))
      {
-	if (!strcmp(params, "?"))
-	  {
-	     ewin = GetFocusEwin();
-	     if (ewin)
-	       {
-		  Esnprintf(buf, sizeof(buf), "focused: %#lx",
-			    ewin->client.win);
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "focused: none");
-	       }
-	  }
+	ewin = GetFocusEwin();
+	if (ewin)
+	   IpcPrintf("focused: %#lx\n", ewin->client.win);
 	else
-	  {
-	     unsigned int        win;
-
-	     sscanf(params, "%x", &win);
-	     ewin = FindEwinByChildren(win);
-	     if (ewin)
-		FocusToEWin(ewin, FOCUS_SET);
-	  }
+	   IpcPrintf("focused: none\n");
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no window selected");
+	ewin = IpcFindEwin(param1);
+	if (ewin)
+	   FocusToEWin(ewin, FOCUS_SET);
+	else
+	   IpcPrintf("No matching EWin found\n");
      }
-
-   if (buf[0])
-      CommsSend(c, buf);
 }
 
 static void
@@ -6459,25 +6446,22 @@ ipccmp(void *p1, void *p2)
 }
 
 static void
-IPC_Help(const char *params, Client * c)
+IPC_Help(const char *params, Client * c __UNUSED__)
 {
    char                buf[FILEPATH_LEN_MAX];
-   char                buf2[FILEPATH_LEN_MAX];
-   int                 i, l, numIPC;
+   int                 i, numIPC;
    IPCStruct         **lst, *ipc;
+   const char         *nick;
 
-   buf[0] = 0;
-   buf2[0] = 0;
    numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
 
-   Esnprintf(buf, sizeof(buf), _("Enlightenment IPC Commands Help"));
+   IpcPrintf(_("Enlightenment IPC Commands Help"));
 
    if (!params)
      {
-	strcat(buf, _("\ncommands currently available:\n"));
-	strcat(buf,
-	       _("use \"help all\" for descriptions of each command\n"
-		 "use \"help <command>\" for an individual description\n\n"));
+	IpcPrintf(_("\ncommands currently available:\n"));
+	IpcPrintf(_("use \"help all\" for descriptions of each command\n"
+		    "use \"help <command>\" for an individual description\n\n"));
 
 	lst = (IPCStruct **) Emalloc(numIPC * sizeof(IPCStruct *));
 
@@ -6486,17 +6470,16 @@ IPC_Help(const char *params, Client * c)
 
 	Quicksort((void **)lst, 0, numIPC - 1, ipccmp);
 
-	l = strlen(buf);
 	for (i = 0; i < numIPC; i++)
 	  {
 	     ipc = lst[i];
-	     l += sprintf(buf + l, "  %-16s %-3s  ", ipc->commandname,
-			  (ipc->nick) ? ipc->nick : "");
+	     nick = (ipc->nick) ? ipc->nick : "";
+	     IpcPrintf("  %-18s %-3s  ", ipc->commandname, nick);
 	     if ((i % 3) == 2)
-		l += sprintf(buf + l, "\n");
+		IpcPrintf("\n");
 	  }
 	if (i % 3)
-	   l += sprintf(buf + l, "\n");
+	   IpcPrintf("\n");
 
 	Efree(lst);
      }
@@ -6504,29 +6487,21 @@ IPC_Help(const char *params, Client * c)
      {
 	if (!strcmp(params, "all"))
 	  {
-	     strcat(buf, _("\ncommands currently available:\n"));
-	     strcat(buf,
-		    _("use \"help <command>\" "
-		      "for an individual description\n"));
-	     strcat(buf, _("      <command>   : <description>\n"));
+	     IpcPrintf(_("\ncommands currently available:\n"));
+	     IpcPrintf(_("use \"help <command>\" "
+			 "for an individual description\n"));
+	     IpcPrintf(_("      <command>   : <description>\n"));
 
-	     l = strlen(buf);
 	     for (i = 0; i < numIPC; i++)
 	       {
 		  ipc = &IPCArray[i];
-
-		  if (ipc->nick)
-		     sprintf(buf2, "%s", ipc->nick);
-		  else
-		     buf2[0] = '\0';
-
-		  l += sprintf(buf + l, "%14s %3s: %s\n",
-			       ipc->commandname, buf2, ipc->help_text);
+		  nick = (ipc->nick) ? ipc->nick : "";
+		  IpcPrintf("%18s %3s: %s\n",
+			    ipc->commandname, nick, ipc->help_text);
 	       }
 	  }
 	else
 	  {
-	     l = strlen(buf);
 	     for (i = 0; i < numIPC; i++)
 	       {
 		  ipc = &IPCArray[i];
@@ -6535,19 +6510,15 @@ IPC_Help(const char *params, Client * c)
 		     continue;
 
 		  if (ipc->nick)
-		     sprintf(buf2, " (%s)", ipc->nick);
+		     sprintf(buf, " (%s)", ipc->nick);
 		  else
-		     buf2[0] = '\0';
+		     buf[0] = '\0';
 
-		  l += sprintf(buf + l,
-			       " : %s%s\n--------------------------------\n%s\n",
-			       ipc->commandname, buf2, ipc->help_text);
+		  IpcPrintf(" : %s%s\n--------------------------------\n%s\n",
+			    ipc->commandname, buf, ipc->help_text);
 		  if (ipc->extended_help_text)
-		     l += sprintf(buf + l, "%s\n", ipc->extended_help_text);
+		     IpcPrintf("%s\n", ipc->extended_help_text);
 	       }
 	  }
      }
-
-   if (buf)
-      CommsSend(c, buf);
 }
