@@ -126,7 +126,7 @@ void __ewl_check_update_check(Ewl_Widget * w, void *ev_data, void *user_data)
 	cb = EWL_CHECK(w);
 
 	if (cb->checked)
-		ewl_widget_update_appearance(w, "clicked");
+		ewl_widget_update_appearance(w, "checked");
 	else
 		ewl_widget_update_appearance(w, "normal");
 
