@@ -173,8 +173,8 @@ typedef enum Ewl_Window_Flags Ewl_Window_Flags;
 
 enum Ewl_Window_Flags
 {
-	EWL_WINDOW_AUTO_SIZE = 1,
-	EWL_WINDOW_BORDERLESS = 2
+	EWL_WINDOW_BORDERLESS = 1,
+	EWL_WINDOW_USER_CONFIGURE = 2
 };
 
 typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;

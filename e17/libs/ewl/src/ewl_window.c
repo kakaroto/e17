@@ -522,13 +522,21 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Now give the windows the appropriate size and adjust the evas as
 	 * well.
 	 */
-	ecore_x_window_resize(win->window, width, height);
-	ecore_x_window_resize(EWL_EMBED(win)->evas_window, width, height);
+	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
+		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
+	else {
+		ecore_x_window_resize(win->window, width, height);
+
+	}
+
+	if (EWL_EMBED(win)->evas_window != win->window)
+		ecore_x_window_resize(EWL_EMBED(win)->evas_window, width,
+				      height);
 	evas_output_size_set(EWL_EMBED(win)->evas, width, height);
 	evas_output_viewport_set(EWL_EMBED(win)->evas,
-			ewl_object_get_current_x(EWL_OBJECT(w)),
-			ewl_object_get_current_y(EWL_OBJECT(w)),
-			width, height);
+				 ewl_object_get_current_x(EWL_OBJECT(w)),
+				 ewl_object_get_current_y(EWL_OBJECT(w)),
+				 width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

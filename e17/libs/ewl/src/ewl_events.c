@@ -117,6 +117,7 @@ int ewl_ev_window_configure(void *data, int type, void *e)
 	 * Configure events really only need to occur on resize.
 	 */
 	if (CURRENT_W(window) != ev->w || CURRENT_H(window) != ev->h) {
+		window->flags |= EWL_WINDOW_USER_CONFIGURE;
 		ewl_object_request_geometry(EWL_OBJECT(window), 0, 0, ev->w,
 					    ev->h);
 	}
