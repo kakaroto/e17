@@ -5,13 +5,19 @@ Spawner_Display *spawner_display_new(void);
 static void spawn_entrance(void);
 static void spawn_x(void);
 static int start_server_once(Spawner_Display * d);
-void entrance_exit(int signum);
-void x_exit(int signum);
+void session_exit(void);
+void daemon_exit(void);
+void x_server_dead(void);
+void handle_sigchild(void);
+void handle_sigterm(void);
+void handle_sigusr1(void);
 double get_time(void);
 
 /* globals */
 Spawner_Display *d;
 sigset_t d_sig;
+sigset_t empty_sig;
+int term_sig = 0, child_sig = 0, usr1_sig = 0;
 
 /**
  * write_entranced_pidfile - write the entranced pid to the specified pidfile
@@ -139,6 +145,7 @@ main(int argc, char **argv)
 {
    int c;
    int nodaemon = 0;
+   struct sigaction act;
    struct option d_opt[] = {
       {"nodaemon", 0, 0, 1},
       {"help", 0, 0, 2},
@@ -202,6 +209,7 @@ main(int argc, char **argv)
       fork_and_exit();
 
    /* Set up signals */
+   sigemptyset(&empty_sig);
    sigemptyset(&d_sig);
    sigaddset(&d_sig, SIGTERM);
    sigaddset(&d_sig, SIGCHLD);
@@ -223,9 +231,17 @@ main(int argc, char **argv)
    }
 
    /* register child signal handler */
-   signal(SIGCHLD, entrance_exit);
-   signal(SIGUSR1, entrance_exit);
-   signal(SIGTERM, entrance_exit);
+   act.sa_handler = handle_sigchild;
+   act.sa_mask = d_sig;
+   sigaction(SIGCHLD, &act, NULL);
+
+   act.sa_handler = handle_sigusr1;
+   act.sa_mask = d_sig;
+   sigaction(SIGUSR1, &act, NULL);
+
+   act.sa_handler = handle_sigterm;
+   act.sa_mask = d_sig;
+   sigaction(SIGTERM, &act, NULL);
 
    /* setup a spawner context */
    d = spawner_display_new();
@@ -246,7 +262,17 @@ main(int argc, char **argv)
    spawn_entrance();
 
    for (;;)
-      pause();
+   {
+      if (term_sig)
+         daemon_exit();
+      if (child_sig)
+         x_server_dead();
+      if (usr1_sig)
+         session_exit();
+
+      term_sig = child_sig = usr1_sig = 0;
+      sigsuspend(&empty_sig);
+   }
 
    closelog();
    
@@ -309,7 +335,7 @@ spawn_entrance(void)
               exit(1);
            }
 		   
-		   /* Process Monitor */
+	   /* Process Monitor */
            if (pid)
            {
               /* Wait for client session process to die, then destroy this
@@ -349,29 +375,18 @@ spawn_entrance(void)
         d->pid.client = pid;
         break;
    }
-   sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
+
+   /* This ought to be taken care of by sigsuspend(), 
+	* ensure complete atomicity */
+   /* sigprocmask(SIG_UNBLOCK, &d_sig, NULL); */
 
 }
 
-/* entrance_exit */
-void
-entrance_exit(int signum)
+int
+x_pid_check(void)
 {
-   int status = 0;
    pid_t pid;
-
-   /* Prevent signal collision */
-   sigprocmask(SIG_BLOCK, &d_sig, NULL);
-
-   /* Terminate X session */
-   if (signum == SIGTERM)
-   {
-      syslog(LOG_CRIT, "Received SIGTERM, closing session.");
-      kill(d->pid.x, SIGTERM);
-      sleep(1);
-      kill(d->pid.x, SIGKILL);
-      exit(0);
-   }
+   int status;
 
    /* A pause, in case X died as well...allow things * to settle down */
    usleep(500000);
@@ -381,26 +396,20 @@ entrance_exit(int signum)
    {
       pid = waitpid(-1, &status, WNOHANG);
       if (pid == d->pid.x)
-         break;
+         return 1;
    }
    while (pid > 0);
 
-   /* The session process has died */
-   if (signum == SIGUSR1 && pid != d->pid.x)
-   {
-      syslog(LOG_INFO, "Session has apparently ended.");
-      x_server_killall();
+   return 0;
+}
 
-      /* Attend to any waiting zombies */
-      while (waitpid(-1, &status, WNOHANG) > 0);
-
-      spawn_entrance();
-      sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
-      return;
-   }
+void
+x_server_dead(void)
+{
+   int status;
 
    /* SIGCHLD received. This most likely means that X died. */
-   if (pid == d->pid.x)
+   if (x_pid_check())
    {
       syslog(LOG_CRIT, "X server died.");
 
@@ -433,7 +442,77 @@ entrance_exit(int signum)
       syslog(LOG_INFO, "Started new X server, spawning entrance...");
       spawn_entrance();
    }
-   sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
+}
+
+void
+session_exit(void)
+{
+   pid_t pid;
+   int status;
+
+   pid = x_pid_check();
+
+   /* The session process has died */
+   if (!x_pid_check())
+   {
+      syslog(LOG_INFO, "Session has apparently ended.");
+      /* Clean up windows */
+	  x_server_killall();
+
+	  /* Terminate X server */
+      kill(d->pid.x, SIGTERM);
+	  sleep(3);
+	  kill(d->pid.x, SIGKILL);
+      d->display = NULL;
+
+
+      /* Attend to any waiting zombies */
+      while (waitpid(-1, &status, WNOHANG) > 0);
+
+      /* Restart X server */
+	  spawn_x();
+      if (d->status == NOT_RUNNING)
+      {
+         free(d);
+         syslog(LOG_CRIT, "Could not start X server.");
+         exit(1);
+      }
+
+      spawn_entrance();
+      return;
+   }
+}
+
+void
+daemon_exit(void)
+{
+   syslog(LOG_CRIT, "Received SIGTERM, closing session.");
+   kill(d->pid.x, SIGTERM);
+   sleep(1);
+   kill(d->pid.x, SIGKILL);
+   closelog();
+   exit(0);
+}
+
+/* indicate that a sigchild has occurred */
+void
+handle_sigchild(void)
+{
+   child_sig = 1;
+}
+
+/* indicate that a sigterm has occurred */
+void
+handle_sigterm(void)
+{
+   term_sig = 1;
+}
+
+/* indicate that a sigusr1 has occurred */
+void
+handle_sigusr1(void)
+{
+   usr1_sig = 1;
 }
 
 /* spawn_x */
