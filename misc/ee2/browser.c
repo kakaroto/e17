@@ -22,14 +22,18 @@ browser_init(void)
 {
   GtkWidget *scroller, *hbox1, *hbox2, *vbox1, *vbox2,
     *frame1, *frame2, *btn, *sep, *cbtn;
+  GtkWidget *nfr1, *nlbl;
 	
   gchar *titles[1]={"Images"};
 
-  hbox1 = gtk_hbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(nfr1), hbox1);
-	
+  nfr1 = gtk_frame_new("Main");
+  gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
+  gtk_widget_show(nfr1);
+  printf("asdf\n");
+  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, NULL, 1);
+  
   vbox2 = gtk_vbox_new(FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(hbox1), vbox2, TRUE, TRUE, 0);
+  gtk_container_add(GTK_CONTAINER(nfr1), vbox2);
 
   scroller = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller),
@@ -41,7 +45,8 @@ browser_init(void)
 
   /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
-  gtk_widget_set_usize(BrClist, 360, 330);
+  gtk_clist_set_row_height(GTK_CLIST(BrClist), 37);
+  gtk_widget_set_usize(BrClist, 360, 355);
   gtk_container_add(GTK_CONTAINER(scroller), BrClist);
   gtk_clist_set_selection_mode(GTK_CLIST(BrClist), GTK_SELECTION_BROWSE);
   gtk_signal_connect(GTK_OBJECT(BrClist), "select_row",
@@ -111,6 +116,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
   gchar lblt[255];
   char alp[255];
   int w, h;
+  GdkPixmap *tp = NULL;
 	
   if (cimg) g_free(cimg);
   cimg = NULL;
@@ -137,8 +143,15 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 	    EFile.Size,
 	    (ctime(&EFile.ModTime)),
 	    alp);
-    /*gtk_label_set_text(GTK_LABEL(infol), lblt);*/
+    gtk_label_set_text(GTK_LABEL(infol), lblt);
     prev_draw(im, area2->allocation.width, area2->allocation.height);
+    /* the below is the thumbnail, disregard now, though it works */
+    /*printf("%s\n", currentimage);
+    tp = gdk_pixmap_new(area2->window, 35, 35, d);
+    imlib_context_set_drawable(GDK_WINDOW_XWINDOW(tp));
+    imlib_render_image_on_drawable_at_size(0, 0, 35, 35);
+    gtk_clist_set_pixtext(GTK_CLIST(BrClist), row, column,
+    currentimage, 5, tp, NULL);*/
   }
 }
 
@@ -204,7 +217,7 @@ prev_draw(Imlib_Image *im, int w, int h)
 	
   imlib_blend_image_onto_image(im, 1, 0, 0, ww, hh, 0, 0, ww, hh);
   imlib_render_image_on_drawable_at_size(0, 0, w, h);
-	
+
   XFreePixmap(disp_t, pm_t);
   imlib_context_set_drawable(None);
 }
@@ -215,3 +228,20 @@ b_config(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
   prev_draw(im, event->width, event->height);
   return TRUE;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

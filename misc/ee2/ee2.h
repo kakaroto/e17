@@ -33,7 +33,7 @@
 
 /* global widgets */
 GtkWidget *MainWindow, *area, *RootMenu, *FileSel, *SaveSel, *ModWin,
-  *ModList, *ModMdi, *BrWin, *BrClist, *area2, *infol, *nfr1, *nlbl;
+  *ModList, *ModMdi, *BrWin, *BrClist, *area2, *infol;
 
 /* Variables */
 extern Imlib_Image *im, *bimg, *bg;

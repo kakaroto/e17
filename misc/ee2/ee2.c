@@ -65,8 +65,8 @@ ee2_init(int argc, char **argv)
 		     "clicked", (GtkSignalFunc) SaveImageAs, SaveSel);
 
   mod_init();
-  about_init();
   browser_init();
+  about_init();
   webcam_init();
 	
   /* make sure everything is peachy for caching */

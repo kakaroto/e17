@@ -25,7 +25,7 @@ mod_init(void)
   GtkWidget *frame1, *frame2, *frame3; /* frames */
   GtkWidget *btn;
   gchar *titles[1]={"Electric Eyes 2"};
-  gchar *clabels[255][1] = {""};
+  gchar *clabels[255][1] = { {""} };
   int eek;
   
   ModWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -126,15 +126,10 @@ mod_init(void)
 
   ModMdi = gtk_notebook_new();
   gtk_widget_show(ModMdi);
-  gtk_widget_set_usize(ModMdi, 400, 400);
+  gtk_widget_set_usize(ModMdi, 400, 420);
   gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ModMdi), FALSE);
   gtk_notebook_set_scrollable(GTK_NOTEBOOK(ModMdi), FALSE);
   gtk_box_pack_start(GTK_BOX(box3), ModMdi, TRUE, TRUE, 0);
-
-  nfr1 = gtk_frame_new("Main");
-  gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
-  gtk_widget_show(nfr1);
-  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, NULL, 1);
 
   frame3 = gtk_frame_new(NULL);
   gtk_container_set_border_width(GTK_CONTAINER(frame3), 3);
