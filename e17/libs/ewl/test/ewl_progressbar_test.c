@@ -21,6 +21,7 @@ int __increment_progress(void *data)
 				progress_timer[i] = NULL;
 			}
 		}
+		return 0;
 	}
 
 	val += 1;
