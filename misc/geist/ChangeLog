@@ -1,3 +1,9 @@
+Wed Aug  9 19:31:43 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Object properties are now called by the objects themselves. The
+	add text button has been changed to use this code, and there is a
+	new "Edit" button to bring up properties.
+
 Wed Aug  9 00:18:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Changed api to use obj->layer and layer->doc, cleaned it up a

@@ -65,12 +65,10 @@ main(int argc, char *argv[])
 
       *obj_text_l;
 
+   opt.debug_level = 5;
    D_ENTER(3);
 
-   opt.debug_level = 5;
-
    printf("%s - version %s\n", PACKAGE, VERSION);
-
 
    gtk_init(&argc, &argv);
 
@@ -170,7 +168,7 @@ main(int argc, char *argv[])
    obj_btn = gtk_button_new_with_label("Delete");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_del_cb), NULL);
-   gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
+
    gtk_widget_show(obj_btn);
    obj_btn = gtk_button_new_with_label("Edit");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
@@ -180,7 +178,6 @@ main(int argc, char *argv[])
    gtk_table_attach(GTK_TABLE(obj_table), obj_btn_hbox, 0, 3, 0, 1,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(obj_btn_hbox);
-   gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    obj_name_l = gtk_label_new("Name:");
    gtk_misc_set_alignment(GTK_MISC(obj_name_l), 1.0, 0.5);
    gtk_table_attach(GTK_TABLE(obj_table), obj_name_l, 0, 1, 2, 3,
@@ -228,7 +225,7 @@ main(int argc, char *argv[])
                                                        PREFIX
                                                        "/share/geist/images/laet.jpg"));
    geist_document_add_object(doc,
-                             geist_text_new_with_text(0, 405, "20thcent/16",
+                             geist_text_new_with_text(0, 405, "20thcent", 16,
                                                       "Some pr0n - I have to.",
                                                       255, 100, 100, 255));
    geist_document_add_object(doc,
@@ -259,7 +256,7 @@ main(int argc, char *argv[])
                              geist_rect_new_of_size(325, 5, 100, 100, 255,
                                                     100, 250, 120));
    geist_document_add_object(doc,
-                             geist_text_new_with_text(275, 15, "20thcent/20",
+                             geist_text_new_with_text(275, 15, "20thcent", 20,
                                                       "So this is geist...",
                                                       128, 255, 100, 100));
    geist_document_add_object(doc,
@@ -661,18 +658,18 @@ obj_del_cb(GtkWidget * widget, gpointer * data)
 }
 
 gboolean
-obj_edit_cb(GtkWidget *widget, gpointer *data)
+obj_edit_cb(GtkWidget * widget, gpointer * data)
 {
-	geist_object *obj;
-	geist_list *l , *list;
-	
-	D_ENTER(3);
-	
-	list = geist_document_get_selected_list(doc);
-	for (l = list; l ; l = l->next) 
-	{
-	  obj = GEIST_OBJECT(l->data);
-      geist_object_display_props (obj);
+   geist_object *obj;
+   geist_list *l, *list;
+
+   D_ENTER(3);
+
+   list = geist_document_get_selected_list(doc);
+   for (l = list; l; l = l->next)
+   {
+      obj = GEIST_OBJECT(l->data);
+      geist_object_display_props(obj);
    }
    geist_list_free(list);
    D_RETURN(3, TRUE);
@@ -880,18 +877,19 @@ obj_unsel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
 gboolean
 obj_addtext_cb(GtkWidget * widget, gpointer * data)
 {
-	
+
    int row;
    geist_object *obj;
 
-   obj = GEIST_OBJECT(geist_text_new_with_text(50, 50, "cinema.ttf/12","New Text",50, 50, 255, 0));
+   obj =
+      GEIST_OBJECT(geist_text_new_with_text
+                   (50, 50, "cinema.ttf", 12, "New Text", 50, 50, 255, 0));
    geist_document_add_object(doc, obj);
-   
-   row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
-                                      (gpointer) obj);
-   if (row != -1) 
-	  gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
-   
+
+   row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
+   if (row != -1)
+      gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
+
    geist_object_display_props(obj);
    geist_document_render_updates(doc);
 
@@ -909,12 +907,11 @@ obj_addrect_cb(GtkWidget * widget, gpointer * data)
 
    obj = GEIST_OBJECT(geist_rect_new_of_size(50, 50, 50, 50, 255, 0, 0, 0));
    geist_document_add_object(doc, obj);
-   
-   row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
-                                      (gpointer) obj);
-   if (row != -1) 
-	  gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
-   
+
+   row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
+   if (row != -1)
+      gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
+
    geist_object_display_props(obj);
    geist_document_render_updates(doc);
 

@@ -341,10 +341,11 @@ geist_rect_display_props(geist_object * obj)
    gtk_widget_show(ok);
 
 
-   gtk_spin_button_set_value (cr, GEIST_RECT(obj)->r);
-   gtk_spin_button_set_value (cg, GEIST_RECT(obj)->g);
-   gtk_spin_button_set_value (cb, GEIST_RECT(obj)->b);
-   gtk_spin_button_set_value (ca, GEIST_RECT(obj)->a);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(cr), GEIST_RECT(obj)->r);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(cg), GEIST_RECT(obj)->g);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(cb), GEIST_RECT(obj)->b);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ca), GEIST_RECT(obj)->a);
+
    
    if (GEIST_RECT(obj)->name)
       gtk_entry_set_text(GTK_ENTRY(title_entry), GEIST_RECT(obj)->name);

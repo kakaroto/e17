@@ -25,7 +25,7 @@
 #ifndef DDEBUG_H
 #define DDEBUG_H
 
-/* #define DDEBUG  */
+/* #define DDEBUG */
 
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
