@@ -532,6 +532,70 @@ void ewl_notebook_set_tabs_visible(Ewl_Notebook * n, int show)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param n: the notebook to switch tabs
+ * @param t: the tab number to switch to
+ * @return Returns no value.
+ * @brief Switches to the tab number @a t in the notebook widget @a n.
+ *
+ * The notebook @a n switches to the tab number @a t where @a t is between 0
+ * and the number of widgets in the notebook.
+ */
+void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
+{
+	int i = 0;
+	Ewl_Container *c;
+	Ewl_Widget *child = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(n);
+
+	if (!ewd_list_nodes(c->children) || t > ewd_list_nodes(c->children))
+		DRETURN(DLEVEL_STABLE);
+
+	i = 0;
+	ewd_list_goto_first(c->children);
+	while (i != t && (child = ewd_list_next(c->children))) {
+		if (child != n->tab_box)
+			i++;
+	}
+
+	if (child == n->visible_page)
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_widget_hide(n->visible_page);
+	n->visible_page = child;
+	ewl_widget_show(child);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param n: the notebook to retrieve the current visible page number
+ * @return Returns the current page number on success.
+ * @brief Retrieves the position of the current page in the notebook @a n.
+ */
+int ewl_notebook_get_visible_page(Ewl_Notebook *n)
+{
+	int i = 0;
+	Ewl_Container *c;
+	Ewl_Widget *child = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(n);
+
+	ewd_list_goto_first(c->children);
+	while (child != n->visible_page &&
+			(child = ewd_list_next(c->children))) {
+		if (child != n->tab_box)
+			i++;
+	}
+
+	DRETURN_INT(i, DLEVEL_STABLE);
+}
+
 void
 __ewl_notebook_configure_top(Ewl_Widget * w, void *ev_data, void *user_data)
 {
@@ -563,7 +627,8 @@ __ewl_notebook_configure_top(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_notebook_tabcb(Ewl_Widget *widget, void *ev_data, void *user_data) {
+void __ewl_notebook_tabcb(Ewl_Widget *widget, void *ev_data, void *user_data)
+{
 	Ewl_Widget *page;
 	Ewl_Notebook *nb;
 	

@@ -39,4 +39,7 @@ Ewl_Position    ewl_notebook_get_tabs_position(Ewl_Notebook * n);
 
 void            ewl_notebook_set_tabs_visible(Ewl_Notebook * n, int show);
 
+void            ewl_notebook_set_visible_page(Ewl_Notebook *n, int t);
+int             ewl_notebook_get_visible_page(Ewl_Notebook *n);
+
 #endif				/* __EWL_NOTEBOOK_H__ */
