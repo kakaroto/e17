@@ -2103,12 +2103,6 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
 	evas_show(view_evas, o_edge3);
 	evas_show(view_evas, o_edge4);
 	evas_show(view_evas, o_backing);
-	evas_show(view_evas, o_select_abs1);
-	evas_show(view_evas, o_select_rel1);
-	evas_show(view_evas, o_select_adj1);
-	evas_show(view_evas, o_select_abs2);
-	evas_show(view_evas, o_select_rel2);
-	evas_show(view_evas, o_select_adj2);
 	if (selected_state)
 	  {
 	     evas_show(view_evas, o_select_rect);
@@ -2116,6 +2110,12 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
 	     evas_show(view_evas, o_select_line2);
 	     evas_show(view_evas, o_select_line3);
 	     evas_show(view_evas, o_select_line4);
+	     evas_show(view_evas, o_select_abs1);
+	     evas_show(view_evas, o_select_rel1);
+	     evas_show(view_evas, o_select_adj1);
+	     evas_show(view_evas, o_select_abs2);
+	     evas_show(view_evas, o_select_rel2);
+	     evas_show(view_evas, o_select_adj2);
 	  }
      }
    else
@@ -2129,12 +2129,6 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
 	evas_hide(view_evas, o_edge3);
 	evas_hide(view_evas, o_edge4);
 	evas_hide(view_evas, o_backing);
-	evas_hide(view_evas, o_select_abs1);
-	evas_hide(view_evas, o_select_rel1);
-	evas_hide(view_evas, o_select_adj1);
-	evas_hide(view_evas, o_select_abs2);
-	evas_hide(view_evas, o_select_rel2);
-	evas_hide(view_evas, o_select_adj2);
 	if (selected_state)
 	  {
 	     evas_hide(view_evas, o_select_rect);
@@ -2142,6 +2136,12 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
 	     evas_hide(view_evas, o_select_line2);
 	     evas_hide(view_evas, o_select_line3);
 	     evas_hide(view_evas, o_select_line4);
+	     evas_hide(view_evas, o_select_abs1);
+	     evas_hide(view_evas, o_select_rel1);
+	     evas_hide(view_evas, o_select_adj1);
+	     evas_hide(view_evas, o_select_abs2);
+	     evas_hide(view_evas, o_select_rel2);
+	     evas_hide(view_evas, o_select_adj2);
 	  }
      }
    QUEUE_DRAW;
