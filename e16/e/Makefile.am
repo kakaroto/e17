@@ -1,8 +1,8 @@
 SUBDIRS = \
+        scripts \
 	dox \
 	eesh \
 	epp \
-	src \
-	scripts
+	src
 
-EXTRA_DIST = e.spec configure configure.in TODO econfig.h.in
+EXTRA_DIST = e.spec configure configure.in econfig.h.in
