@@ -136,7 +136,6 @@ int ewl_ev_window_delete(void *data, int type, void *_ev)
 	ev = _ev;
 
 	window = ewl_window_find_window(ev->win);
-
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 

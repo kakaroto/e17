@@ -35,10 +35,8 @@ static void     __ewl_widget_mouse_up(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            __ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data,
 						void *user_data);
-/* FIXME: Enable with Edje
 static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
- */
 
 void __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t,
 		int *b);
@@ -103,11 +101,8 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_widget_mouse_up,
 			    NULL);
-	/*
-	 * FIXME: Enable this when edje themes are used
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_widget_mouse_move,
 			    NULL);
-	 */
 
 	ewl_widget_set_appearance(w, appearance);
 
@@ -1128,6 +1123,14 @@ __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
 	} else
 		ewl_widget_set_state(w, "normal");
+}
+
+static void
+__ewl_widget_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	if (w->theme_object) {
+		edje_object_signal_emit(w->theme_object, "mouse,move", "EWL");
+	}
 }
 
 void

@@ -466,34 +466,39 @@ void ewl_configure_cancel_request(Ewl_Widget *w)
  */
 void ewl_realize_request(Ewl_Widget *w)
 {
-	Ewl_Widget *search;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
-
-	/*
-	 * Search the list for a child widget of this widget.
-	 */
-	ewd_list_goto_first(realize_list);
-	while ((search = ewd_list_current(realize_list))) {
-		Ewl_Widget *parent;
-
-		parent = search;
-		while ((parent = parent->parent)) {
-			if (parent == w) {
-				ewd_list_insert(realize_list, w);
-				DRETURN(DLEVEL_STABLE);
-			}
-		}
-
-		ewd_list_next(realize_list);
+	if (!ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
+		if (w->parent && !REALIZED(w->parent))
+			DRETURN(DLEVEL_STABLE);
 	}
 
+	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
+
 	ewd_list_append(realize_list, w);
+}
+
+void ewl_child_add_place(Ewl_Widget *w)
+{
+	if (ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL))
+		ewd_list_append(child_add_list, w);
+	else {
+		Ewl_Widget *p;
+
+		ewd_list_goto_first(child_add_list);
+		while ((p = ewd_list_current(child_add_list))) {
+			if (ewl_container_parent_of(p, w)) {
+				ewd_list_insert(child_add_list, w);
+				DRETURN(DLEVEL_STABLE);
+			}
+			else
+				ewd_list_next(child_add_list);
+		}
+	}
+	ewd_list_prepend(child_add_list, w);
 }
 
 void ewl_realize_queue()
@@ -514,8 +519,10 @@ void ewl_realize_queue()
 			ewl_object_remove_queued(EWL_OBJECT(w),
 					EWL_FLAG_QUEUED_RSCHEDULED);
 			ewl_widget_realize(EWL_WIDGET(w));
-			ewd_list_prepend(child_add_list, w);
+
 		}
+
+		ewl_child_add_place(w);
 	}
 
 	/*

@@ -23,10 +23,8 @@ void __ewl_embed_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 void __ewl_embed_smart_add(Evas_Object *obj);
 void __ewl_embed_smart_del(Evas_Object *obj);
 void __ewl_embed_smart_layer_set(Evas_Object *obj, int l);
-void __ewl_embed_smart_raise(Evas_Object *obj);
-void __ewl_embed_smart_lower(Evas_Object *obj);
-void __ewl_embed_smart_stack_above(Evas_Object *obj, Evas_Object *above);
-void __ewl_embed_smart_stack_below(Evas_Object *obj, Evas_Object *below);
+void __ewl_embed_smart_layer_adjust(Evas_Object *obj);
+void __ewl_embed_smart_layer_adjust_rel(Evas_Object *obj, Evas_Object *above);
 void __ewl_embed_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 void __ewl_embed_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 void __ewl_embed_smart_show(Evas_Object *obj);
@@ -143,9 +141,11 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ecore_X_Window evas_window)
 	if (!embedded_smart) {
 		embedded_smart = evas_smart_new(name, __ewl_embed_smart_add,
 			__ewl_embed_smart_del, __ewl_embed_smart_layer_set,
-			__ewl_embed_smart_raise, __ewl_embed_smart_lower,
-			__ewl_embed_smart_stack_above,
-			__ewl_embed_smart_stack_below, __ewl_embed_smart_move,
+			__ewl_embed_smart_layer_adjust,
+			__ewl_embed_smart_layer_adjust,
+			__ewl_embed_smart_layer_adjust_rel,
+			__ewl_embed_smart_layer_adjust_rel,
+			__ewl_embed_smart_move,
 			__ewl_embed_smart_resize, __ewl_embed_smart_show,
 			__ewl_embed_smart_hide, __ewl_embed_smart_color_set,
 			__ewl_embed_smart_clip_set,
@@ -441,55 +441,42 @@ void __ewl_embed_smart_del(Evas_Object *obj)
 
 void __ewl_embed_smart_layer_set(Evas_Object *obj, int l)
 {
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * FIXME: Need to relayer the EWL stuff, this will require some work.
-	 */
+	emb = evas_object_smart_data_get(obj);
+	ewl_widget_set_layer(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_embed_smart_raise(Evas_Object *obj)
+void __ewl_embed_smart_layer_adjust(Evas_Object *obj)
 {
+	int l;
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * FIXME: Need to relayer the EWL stuff, this will require some work.
-	 */
+	l = evas_object_layer_get(obj);
+
+	emb = evas_object_smart_data_get(obj);
+	ewl_widget_set_layer(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_embed_smart_lower(Evas_Object *obj)
+void __ewl_embed_smart_layer_adjust_rel(Evas_Object *obj, Evas_Object *rel)
 {
+	int l;
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * FIXME: Need to relayer the EWL stuff, this will require some work.
-	 */
+	l = evas_object_layer_get(obj);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_embed_smart_stack_above(Evas_Object *obj, Evas_Object *above)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	/*
-	 * FIXME: Need to relayer the EWL stuff, this will require some work.
-	 */
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_embed_smart_stack_below(Evas_Object *obj, Evas_Object *below)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	/*
-	 * FIXME: Need to relayer the EWL stuff, this will require some work.
-	 */
+	emb = evas_object_smart_data_get(obj);
+	ewl_widget_set_layer(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
