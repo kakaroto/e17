@@ -99,17 +99,15 @@ char *erss_time_format ()
 	return str;
 }
 
-int erss_set_time (void *data) {
+int erss_set_time (void *data)
+{
 	char *str;
 	char text[100];
 
 	str = erss_time_format ();
 	if (last_time)
-		snprintf (text, sizeof (text), "Time now: %s  Last update: %s", 
-				str, last_time);
-	else
-		snprintf (text, sizeof (text), "Time now: %s", str);
-	
+		snprintf (text, sizeof (text), "Last update: %s", last_time);
+
 	edje_object_part_text_set (tid, "clock", text);
 
 	free (str);
@@ -556,7 +554,6 @@ int main (int argc, char * const argv[])
 	ecore_evas_borderless_set (ee, cfg->borderless);
 	snprintf(theme_file, PATH_MAX, "erss - %s", config_file);
 	ecore_evas_title_set (ee, theme_file);
-	ecore_evas_shaped_set (ee, 1);
    ecore_x_window_prop_layer_set(win, -1);
 	ecore_evas_show (ee);
 	
@@ -643,8 +640,7 @@ int main (int argc, char * const argv[])
 
 	erss_connect (NULL);
 	ecore_timer_add (cfg->update_rate, erss_connect, NULL); 
-	ecore_timer_add (1, erss_set_time, NULL);
-	
+
 	ecore_main_loop_begin ();
 
 	ecore_evas_shutdown ();

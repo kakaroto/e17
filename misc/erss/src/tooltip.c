@@ -18,13 +18,13 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 {
 	Erss_Tooltip *tt;
 	int x, y, w, h;
+	double ew, eh;
 	
 	tt = malloc (sizeof (Erss_Tooltip));
 	memset (tt, 0, sizeof (Erss_Tooltip));
 
 	tt->ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 250, 80);
 	ecore_evas_borderless_set (tt->ee, TRUE);
-	ecore_evas_shaped_set (tt->ee, TRUE);
 	tt->win = ecore_evas_software_x11_window_get(ee);
 	ecore_x_window_prop_window_type_set (tt->win, ECORE_X_WINDOW_TYPE_UTILITY);
 	ecore_evas_geometry_get (tt->ee, &x, &y, &w, &h);
@@ -47,21 +47,33 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 	evas_object_name_set(tt->bg, "background");
 	evas_object_show (tt->bg);
 
-	tt->etox = etox_new_all(tt->evas, x + 5, y + 5, w - 10 , h - 20, 
+	tt->etox = etox_new_all(tt->evas, x + 5, y + 5, w - 10 , h - 10, 
 			255, ETOX_ALIGN_LEFT);
+	etox_context_set_wrap_marker(etox_get_context(tt->etox), NULL, NULL);
 	etox_context_set_align(etox_get_context(tt->etox), ETOX_ALIGN_LEFT);
 	etox_context_set_font(etox_get_context(tt->etox), "Vera", 10);
 	etox_context_set_style(etox_get_context(tt->etox), "shadow");
 	etox_context_set_color(etox_get_context(tt->etox), 225, 225, 225, 255);
 	etox_set_soft_wrap(tt->etox, 1);
+	etox_set_word_wrap(tt->etox, 1);
 	etox_set_alpha(tt->etox, 255);
 	evas_object_layer_set(tt->etox, 1000);
 	etox_set_text (tt->etox, description);
 	evas_object_show (tt->etox);
+	evas_object_geometry_get(tt->etox, NULL, NULL, &ew, &eh);
+
+	if (eh > ew) {
+		double scale = ew / eh;
+		ew = ew / scale;
+		eh *= scale;
+		evas_object_resize(tt->etox, ew, eh);
+		evas_object_geometry_get(tt->etox, NULL, NULL, &ew, &eh);
+	}
 
 	ecore_evas_callback_move_set (tt->ee, erss_window_move_tooltip);
 	ecore_evas_callback_resize_set(tt->ee, erss_window_resize);
-	
+	ecore_evas_resize(tt->ee, ew + 10, eh + 10);
+
 	return tt;
 }
 
