@@ -1,10 +1,13 @@
+%define revision 0.01
+%define rev_name -%{revision}
+
 Summary:	Enlightenment theme: BlueSteel
 Name:		e16-theme-BlueSteel
 Version:	0.16.8
-Release:	0.%(date '+%y%m%d')
+Release:	%{revision}%{?_vendorsuffix:.%{_vendorsuffix}}
 License:	BSD
 Group:		User Interface/Desktops
-Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}%{rev_name}.tar.gz
 Prefix:		%{_prefix}
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
@@ -18,7 +21,7 @@ The BlueSteel theme for Enlightenment.
 This is part of the Enlightenment distribution.
 
 %prep
-%setup
+%setup -n %{name}-%{version}%{rev_name}
 
 %build
 CFLAGS="${RPM_OPT_FLAGS}"

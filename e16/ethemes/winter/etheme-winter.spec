@@ -13,7 +13,7 @@ URL:		http://www.enlightenment.org/
 Requires: e16 >= 0.16.8
 
 %description
-The ShinyMetal theme for Enlightenment.
+The winter theme for Enlightenment.
 This is part of the Enlightenment distribution.
 
 %prep
@@ -42,10 +42,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/e16/*
 
 %changelog
-
-* Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16-0.01
-- Tidy ups.
-- Fix download url.
-- Use License rather than Copyright.
-- Remove Packager to avoid people creating mis-attributed packages.
 

@@ -1,11 +1,14 @@
+%define revision 0.06
+%define rev_name -%{revision}
+
 Summary: The Enlightenment window manager.
 Name: e16
 Version: 0.16.8
-Release: 0.06%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: %{revision}%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
-Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
+Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}%{rev_name}.tar.gz
 #BuildSuggests: esound-devel
 BuildRequires: imlib2-devel freetype-devel xorg-x11-devel
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
@@ -30,7 +33,7 @@ define their own policy, down to every last detail.
 This package will install the Enlightenment window manager.
 
 %prep
-%setup
+%setup -n %{name}-%{version}%{rev_name}
 
 %build
 CFLAGS="${RPM_OPT_FLAGS}"
