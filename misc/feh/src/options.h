@@ -63,6 +63,7 @@ struct __fehoptions
    unsigned char progress_gran;
    unsigned char scale_down;
    unsigned char builtin_http;
+   unsigned char wget_timestamp;
 
    char *output_file;
    char *bg_file;

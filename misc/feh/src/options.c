@@ -303,7 +303,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+      "a:A:b:BcC:dD:e:f:Fg:GhH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -333,6 +333,7 @@ feh_parse_option_array(int argc, char **argv)
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
       {"thumbnails", 0, 0, 't'},
+      {"wget-timestamp", 0, 0, 'G'},
       {"builtin", 0, 0, 'Q'},
       {"menu-ctrl-mask", 0, 0, '5'},        /* okay */
       {"scale-down", 0, 0, '.'},            /* okay */
@@ -420,6 +421,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'l':
            opt.list = 1;
+           break;
+        case 'G':
+           opt.wget_timestamp = 1;
            break;
         case 'Q':
            opt.builtin_http = 1;
@@ -799,6 +803,9 @@ show_usage(void)
            "                            if caching, on exit. This option prevents this\n"
            "                            so that you get to keep the local copies.\n"
            "                            They will be in /tmp with \"feh\" in the name.\n"
+           "  -G, --wget-timestamp      When viewing http images with reload set (eg\n"
+           "                            webcams), try to only reload the image if the\n"
+           "                            remote file has changed.\n"
            "  -l, --list                Don't display images. Analyse them and display an\n"
            "                            'ls' style listing. Useful in scripts hunt out\n"
            "                            images of a certain size/resolution/type etc.\n"
@@ -993,7 +1000,7 @@ feh_create_default_config(char *rcfile)
            "# ================================================\n" "\n"
            "# Webcam mode, simply specify the url(s).\n"
            "# e.g. feh -Cwebcam http://cam1 http://cam2\n"
-           "webcam --multiwindow --keep-http --reload 30\n" "\n"
+           "webcam --multiwindow --reload 20\n" "\n"
            "# Create an index of the current directory. This version uses . as the\n"
            "# current dir, so you don't even need any commandline arguments.\n"
            "mkindex -iVO index.jpg .\n" "\n" "# More ambitious version...\n"

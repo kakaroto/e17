@@ -1,3 +1,20 @@
+Sun Jan 28 13:20:45 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* cam was using -Cwebcam, should be -Twebcam
+	* default generated ~/.fehrc used --keep-http in webcam mode, this
+	is probably not what most people want for the default, so I
+	removed it. Either blow away your ~/.fehrc or make this change
+	yourself to get it....
+	* Maybe fixed a memleak. I hope so, but it will take 3 days of
+	running cam to find out :-)
+	* After an idea and partial patch from KainX, added -G,
+	--wget-timestamp to use wget timestamping when downloading http
+	images. Useful when watching webcams, the idea is that wget only
+	downloads the webcam if it has changed since the last time. Nice
+	bandwidth saver. However, there is currently a bug in wget that
+	prevents this from working. KainX found it and I think he reported
+	it, so the next version should contain a fix.
+
 Wed Jan 17 20:33:31 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Reverted to using wget by default - the builtin stuff isn't

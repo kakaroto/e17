@@ -300,10 +300,24 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    }
 
    if (progwin->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
-         (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
-          dest_x + update_x, dest_y + update_y, update_w, update_h,
-          progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
+                                                                    bg_pmap,
+                                                                    im,
+                                                                    update_x,
+                                                                    update_y,
+                                                                    update_w,
+                                                                    update_h,
+                                                                    dest_x +
+                                                                    update_x,
+                                                                    dest_y +
+                                                                    update_y,
+                                                                    update_w,
+                                                                    update_h,
+                                                                    progwin->
+                                                                    im_angle,
+                                                                    1,
+                                                                    feh_imlib_image_has_alpha
+                                                                    (im), 0);
    else
       feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
                                                       update_x, update_y,
@@ -326,6 +340,8 @@ feh_http_load_image(char *url)
 {
    char *tmp;
    char *tmpname;
+   char *tmpname_timestamper = NULL;
+   char *basename;
    char num[10];
    static long int i = 1;
    char *newurl = NULL;
@@ -342,15 +358,26 @@ feh_http_load_image(char *url)
    do
    {
       snprintf(num, sizeof(num), "%06ld", i++);
+      basename = strrchr(url, '/') + 1;
       tmpname =
          estrjoin("", opt.keep_http ? "feh_" : "/tmp/feh_", num, "_",
-                  strrchr(url, '/') + 1, NULL);
+                  basename, NULL);
    }
    while (stat(tmpname, &st) == 0);
 
-   rnum = rand();
-   snprintf(randnum, sizeof(randnum), "%d", rnum);
-   newurl = estrjoin("?", url, randnum, NULL);
+   if (opt.wget_timestamp)
+      tmpname_timestamper = estrjoin("", "/tmp/feh_", basename, NULL);
+
+   if (opt.wget_timestamp)
+   {
+      newurl = estrdup(url);
+   }
+   else
+   {
+      rnum = rand();
+      snprintf(randnum, sizeof(randnum), "%d", rnum);
+      newurl = estrjoin("?", url, randnum, NULL);
+   }
    D(3, ("newurl: %s\n", newurl));
 
    if (opt.builtin_http)
@@ -394,6 +421,7 @@ feh_http_load_image(char *url)
       {
          weprintf("couldn't work out hostname from %s:", newurl);
          free(tmpname);
+         free(newurl);
          D_RETURN(4, NULL);
       }
 
@@ -404,6 +432,7 @@ feh_http_load_image(char *url)
          weprintf("error resolving host %s:", hostname);
          free(hostname);
          free(tmpname);
+         free(newurl);
          D_RETURN(4, NULL);
       }
 
@@ -419,6 +448,7 @@ feh_http_load_image(char *url)
          weprintf("error opening socket:");
          free(tmpname);
          free(hostname);
+         free(newurl);
          D_RETURN(4, NULL);
       }
       if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1)
@@ -426,12 +456,11 @@ feh_http_load_image(char *url)
          weprintf("error connecting socket:");
          free(tmpname);
          free(hostname);
+         free(newurl);
          D_RETURN(4, NULL);
       }
 
-      get_url = strchr(newurl, '/') + 1;
-      get_url = strchr(get_url, '/') + 1;
-      /* Need initial / here, so no +1 this time. */
+      get_url = strchr(newurl, '/') + 2;
       get_url = strchr(get_url, '/');
 
       get_string = estrjoin(" ", "GET", get_url, "HTTP/1.0", NULL);
@@ -459,6 +488,7 @@ feh_http_load_image(char *url)
          free(query_string);
          free(tmpname);
          free(hostname);
+         free(newurl);
          weprintf("error sending over socket:");
          D_RETURN(4, NULL);
       }
@@ -466,6 +496,7 @@ feh_http_load_image(char *url)
       free(host_string);
       free(query_string);
       free(hostname);
+      free(newurl);
 
       while ((size = read(sockno, &buf, OUR_BUF_SIZE)))
       {
@@ -577,18 +608,26 @@ feh_http_load_image(char *url)
       {
          weprintf("open url: fork failed:");
          free(tmpname);
+         free(newurl);
          D_RETURN(4, NULL);
       }
       else if (pid == 0)
       {
-         if (opt.verbose)
-            execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname,
-                   NULL);
+         char *quiet = NULL;
+
+         if (!opt.verbose)
+            quiet = estrdup("-q");
+
+         if (opt.wget_timestamp)
+         {
+            execlp("wget", "wget", "-N", "-O", tmpname_timestamper, newurl,
+                   quiet, NULL);
+         }
          else
-            execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O",
-                   tmpname, NULL);
-         execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname,
-                NULL);
+         {
+            execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname,
+                   quiet, NULL);
+         }
          eprintf("url: exec failed: wget:");
       }
       else
@@ -601,6 +640,14 @@ feh_http_load_image(char *url)
             free(tmpname);
             free(newurl);
             D_RETURN(4, NULL);
+         }
+         if (opt.wget_timestamp)
+         {
+            char cmd[2048];
+
+            snprintf(cmd, sizeof(cmd), "/bin/cp %s %s", tmpname_timestamper,
+                     tmpname);
+            system(cmd);
          }
       }
    }
