@@ -91,11 +91,11 @@ what size the object is to be and how to fill the image object with the
 image data, and Evas handles the rest. This makes dealing with images in
 Evas childs play. Here is a quick example of how it would work:
 @:para@
-<pre>
+@:pre@
 object = evas_add_image_from_file(evas, "flower.png");
 evas_move(evas, object, 10.0, 30.0);
 evas_show(evas, object);
-</pre>
+@:_pre@
 @:para@
 And it would look something like this:
 @:para@
@@ -105,10 +105,10 @@ By default image bojects are the size of the original image (in pixels). If
 we wish to make the object larger and have the image scale up or down in
 size we could do:
 @:para@
-<pre>
+@:pre@
 evas_resize(evas, object, 320.0, 240.0);
 evas_set_image_fill(evas, object, 0.0, 0.0, 320.0, 240.0);
-</pre>
+@:_pre@
 @:para@
 Now our canvas would look like this:
 @:para@
@@ -119,10 +119,10 @@ with this image we loaded, but we want it to tile (repeat) starting the tile
 at coordinate 0,0 relative to the to-left corner of the image object area,
 but have the tiled image size be 20x50.
 @:para@
-<pre>
+@:pre@
 evas_resize(evas, object, 300.0, 200.0);
 evas_set_image_fill(evas, object, 0.0, 0.0, 20.0, 50.0);
-</pre>
+@:_pre@
 @:para@
 Our result would be something like this:
 @:para@
@@ -167,12 +167,12 @@ reference in evas as "myfont", Evas will look in the directories (in the
 order given) for a "myfont.ttf" file. It is case sensitive, but this system
 proves to be nice and simple. Here is a simple example.
 @:para@
-<pre>
+@:pre@
 object = evas_add_text(evas, "notepad", 18, "Here is a line of text!");
 evas_move(evas, object, 120.0, 50.0);
 evas_set_color(evas, object, 0, 0, 0, 255);
 evas_show(evas, object);
-</pre>
+@:_pre@
 @:para@
 This should create a text object with its top-left starting at 120.0, 50.0
 in the Evas, with the notepad font at size 18, with the text "Here is a line
@@ -184,11 +184,11 @@ This is what it would look like:
 As you can see - it is really easy to create some text in an Evas canvas,
 and it is just as easy to change its contents with calls such as the following
 @:para@
-<pre>
+@:pre@
 evas_set_text(evas, object, "Some new text here");
 evas_set_font(evas, object, "arial", 30);
 evas_set_color(evas, object, 255, 0, 0, 255);
-</pre>
+@:_pre@
 @:para@
 Just modifying the properties of an object this way directly leads to it
 changing as you would expect. There are enough text query calls too to
@@ -215,7 +215,7 @@ lighting and shadow effects and many other things.
 Creating and managing these objects, like almost everything else, is also
 childs play. take a look at this:
 @:para@
-<pre>
+@:pre@
 object = evas_add_gradient_box(evas);
 evas_move(evas, object, 150.0, 100.0);
 evas_resize(evas, object, 200.0, 120.0);
@@ -229,7 +229,7 @@ evas_set_gradient(evas, object, gradient);
 evas_gradient_free(gradient);
 evas_set_angle(evas, object, 290.0);
 evas_show(evas, object);
-</pre>
+@:_pre@
 @:para@
 The program we are developing looks now something like this:
 @:para@
@@ -268,6 +268,53 @@ At your disposal you also have Rectangles, Lines and Polygons too. You can
 use these to fill in backgrounds, simulate circles (with polygons) and much
 more. They are versatile and simple and let you do basic drawing withotu
 requiring on-disk data to generate it from.
+@:para@
+@:pre@
+object = evas_add_rectangle(evas);
+evas_move(evas, object, 20.0, 130.0);
+evas_resize(evas, object, 50.0, 70.0);
+evas_set_color(evas, object, 20.0, 50.0, 100.0, 130.0);
+evas_show(evas, object);
+@:_pre@
+@:para@
+Here we add a simple rectangle thats blue-ish and partially transparent.
+It's easy to add - no problems. It may seem a fair bit of setup code, but
+now we can just move, resize, show hide etc. the object whenever we want a
+change - evas does all the rest for us - including layering, obscuring,
+figuring how to re-render it and optimizing the rendering to only render
+what changed and much much much more.
+@:para@
+@:pre@
+object = evas_add_poly(evas);
+evas_add_point(evas, object, 0.0, 0.0);
+evas_add_point(evas, object, 150.0, 80.0);
+evas_add_point(evas, object, 210.0, 150.0);
+evas_add_point(evas, object, 80.0, 110.0);
+evas_add_point(evas, object, 20.0, 30.0);
+evas_set_color(evas, object, 200.0, 40.0, 0.0, 130.0);
+evas_move(evas, object, 20.0, 220.0);
+evas_show(evas, object);
+@:_pre@
+@:para@
+A polygon, reddish/orange, parially transparent with 5 points. We create the
+polygon relative to the top left of its bounding box then just move it where
+we want it later - this makes it easy to just move polygons around withotu
+having to reset their coordinates. Just like with polygons - Evas handles
+optimizing all the other stuff surrounding these objects for us.
+@:para@
+@:pre@
+object = evas_add_line(evas);
+evas_set_line_xy(evas, object, 220.0, 240.0, 390.0, 380.0);
+evas_set_color(evas, object, 30.0, 80.0, 80.0, 200.0);
+evas_show(evas, object);
+@:_pre@
+@:para@
+And a line. Anti-aliased. Simple. Just Chnage its color and coordinates when
+you want. Evas does the rest.
+@:para@
+And now with these primitives added out Evas canvas will look like this:
+@:para@
+<a href=evas_primitives_eg_0.html><img src=img/evas_primitives_eg_0_thumb.png width=80 height=80 border=1></a>
 @:para@
 @tile_area_end@
 
