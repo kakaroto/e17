@@ -912,7 +912,6 @@ ImageStateRealize(ImageState * is)
 void
 FreePmapMask(PmapMask * pmm)
 {
-
    /* type !=0: Created by imlib_render_pixmaps_for_whole_image... */
    if (pmm->pmap)
      {

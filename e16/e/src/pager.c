@@ -184,7 +184,7 @@ PagerCreate(void)
 	did_dialog = 1;
      }
    GetAreaSize(&ax, &ay);
-   p = Emalloc(sizeof(Pager));
+   p = Ecalloc(1, sizeof(Pager));
    p->name = NULL;
    attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;

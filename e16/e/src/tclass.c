@@ -109,8 +109,7 @@ CreateTextState()
 
    EDBUG(6, "CreateTextState");
 
-   ts = Emalloc(sizeof(TextState));
-
+   ts = Ecalloc(1, sizeof(TextState));
    if (!ts)
       EDBUG_RETURN(NULL);
 
