@@ -31,9 +31,8 @@ RELEASE  = 1
 
 SRCS         = lvs-gui.c
 INIT_SCRIPTS = etc/rc.d/init.d/transparent_proxy etc/rc.d/init.d/ipvs
-EXTRA_DIST = \
-  Makefile \
-  COPYING
+EXTRA_DIST   = Makefile COPYING TODO ChangeLog AUTHORS
+SPEC_FILE_IN = lvs-gui.spec.in
 
 ######################################################################
 # No user servicable parts below here
@@ -41,7 +40,9 @@ EXTRA_DIST = \
 
 DISTNAME     = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)
 RPMDISTNAME  = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)-$(RELEASE)
-DISTFILES    = $(SRCS) $(EXTRA_DIST) $(INIT_SCRIPTS)
+SPEC_FILE    = $(SPEC_FILE_IN:.in=)
+DISTFILES    = $(SRCS) $(EXTRA_DIST) $(INIT_SCRIPTS) \
+$(SPEC_FILE) $(SPEC_FILE_IN)
 
 
 CP       = cp
@@ -73,16 +74,13 @@ install-client-strip \
 install-server-strip \
 all
 
-all: lvs-gui
+all: lvs-gui  $(SPEC_FILE)
 
 lvs-gui: $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LIBS)
 
 clean:
-	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"*
-
-.c.o:
-	$(CC) -I/usr/local/include `gtk-config --cflags` `imlib-config --cflags-gdk` -O2 -c $< -o $@
+	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"* $(SPEC_FILE)
 
 install: install-client install-server
 	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi
@@ -102,11 +100,11 @@ install-server:
 install-strip: install-server-strip install-client-strip
 
 install-server-strip: install-server
-	$(STRIP) $(BINDIR)/$(BIN)
 
 install-client-strip: install-client
+	$(STRIP) $(BINDIR)/$(BIN)
 
-dist:
+dist: $(SPEC_FILE)
 	$(RM) -rf $(DISTNAME)/
 	$(MKDIR) $(DISTNAME)/
 	@for i in $(DISTFILES); do \
@@ -126,3 +124,14 @@ dist:
 	@$(ECHO) "############################################################"
 	@$(ECHO) "# $(DISTNAME).tar.gz is ready for distribution"
 	@$(ECHO) "############################################################"
+
+%: %.in Makefile
+	sed \
+		-e "s/@PACKAGE@/$(PACKAGE)/" \
+		-e "s/@MAJOR@/$(MAJOR)/" \
+		-e "s/@MINOR@/$(MINOR)/" \
+		-e "s/@PATCH@/$(PATCH)/" \
+		-e "s/@RELEASE@/$(RELEASE)/" < $< > $@
+.c.o:
+	$(CC) -I/usr/local/include `gtk-config --cflags` `imlib-config --cflags-gdk` -O2 -c $< -o $@
+

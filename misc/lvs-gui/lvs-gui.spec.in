@@ -1,0 +1,87 @@
+%define ver      @MAJOR@.@MINOR@.@PATCH@
+%define rel      @RELEASE@
+%define name     @PACKAGE@
+%define prefix   /usr
+
+Summary: GUI to configure the Linux Virtual Server
+Name: lvs-gui
+Version: %ver
+Release: %rel
+Copyright: BSD Type
+URL: http://www.linuxvirtualserver.org/
+Packager: Horms <horms@vergenet.net>
+Vendor: VA Linux Systems
+Group: Applications/System
+Source: ftp://vergenet.net/pub/lvs-gui/%name-%{PACKAGE_VERSION}.tar.gz
+BuildRoot: /var/tmp/%name-%{PACKAGE_VERSION}-root
+Docdir: %{prefix}/doc
+
+%description
+LVS GUI
+A simple GUI to enable configuration of a Linunx Virtual Server
+
+%package lvs-server
+Release: %release
+Summary: Init scripts for LVS servers for use with lvs-gui
+Group: Applications/System
+Requires: ipvsadm
+
+%description lvs-server
+Init scripts required by LVS servers that are to be configured by lvs-gui
+
+%package back-end-server
+Release: %release
+Summary: Init scripts for back-end servers for use with lvs-gui
+Group: Applications/System
+
+%description back-end-server
+Init scripts required by back-end servers that are to be configured by lvs-gui
+
+%prep
+%setup
+
+%build
+CFLAGS="${RPM_OPT_FLAGS}" make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p ${RPM_BUILD_ROOT}/
+
+BUILD_ROOT=${RPM_BUILD_ROOT} make install-strip
+
+%clean
+rm -rf $RPM_BUILD_DIR/%name-%{ver}
+rm -rf $RPM_BUILD_ROOT
+
+%post lvs-server
+/sbin/chkconfig --add ipvs
+
+%post back-end-server
+/sbin/chkconfig --add transparent_proxy
+
+%postun
+
+%preun lvs-server
+/sbin/chkconfig --del ipvs
+
+%preun back-end-server
+/sbin/chkconfig --del transparent_proxy
+
+%files
+%defattr(-,root,root)
+%doc COPYING TODO ChangeLog AUTHORS
+%attr(755,root,root) %{prefix}/bin/lvs-gui
+
+%files lvs-server
+%defattr(-,root,root)
+%attr(755,root,root) /etc/rc.d/init.d/transparent_proxy
+%attr(755,root,root) /etc/rc.d/init.d/ipvs
+
+%files back-end-server
+%defattr(-,root,root)
+%attr(755,root,root) /etc/rc.d/init.d/transparent_proxy
+%attr(755,root,root) /etc/rc.d/init.d/ipvs
+
+%changelog
+* Mon Dec 27 1999 Horms <horms@vergenet.net>
+- created for version 0.0.0
