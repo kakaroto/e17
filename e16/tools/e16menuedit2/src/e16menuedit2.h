@@ -35,6 +35,7 @@
 #include <popt.h>
 #include "nls.h"
 #include "libglade_support.h"
+#include "regex_func.h"
 
 #define to_utf8(String) g_locale_to_utf8(String,-1,0,0,0)
 #define from_utf8(String) g_locale_from_utf8(String,-1,0,0,0)
@@ -61,6 +62,12 @@ struct global_variables
   char *glade_file;
   char *epath;
   int emenu;
+  regex_t re_mark;
+  regex_t re_char;
+  regex_t re_space;
+  char *pattern_mark;
+  char *pattern_char;
+  char *pattern_space;
 };
 
 /* app_errno codes */

@@ -88,77 +88,49 @@ GtkTreeModel *load_menus_from_disk (void)
     {
       if (first)
       {
-        gchar *text[3];
-        char *txt = NULL;
-        char *txt2 = NULL;
-        char *txt3 = NULL;
+        gchar **data;
 
-        txt = field (s, 0);
-        text[0] = g_locale_to_utf8 (txt, -1, NULL, NULL, NULL);
-        txt2 = g_strdup ("");
-        text[1] = g_locale_to_utf8 (txt2, -1, NULL, NULL, NULL);
-        txt3 = g_strdup (buf);
-        text[2] = g_locale_to_utf8 (txt3, -1, NULL, NULL, NULL);
+	menu_regex (s, &data);
 
+	data[3] = strdup (to_utf8 (buf));
+      
         gtk_tree_store_append (store, &iter, NULL);
         gtk_tree_store_set (store, &iter,
-                            COL_DESCRIPTION, text[0],
-                            COL_ICON, gdk_pixbuf_new_from_file (text[1], NULL),
-                            COL_ICONNAME, text[1],
-                            COL_PARAMS, text[2],
+                            COL_DESCRIPTION, data[0],
+                            COL_ICON, gdk_pixbuf_new_from_file (data[1], NULL),
+                            COL_ICONNAME, data[1],
+                            COL_PARAMS, data[3],
                             -1);
 
-        //printf("mainitem: %s, %s, %s\n",txt,txt2,txt3);
-
-        if (txt)
-          g_free (txt);
-        if (txt2)
-          g_free (txt2);
-        if (txt3)
-          g_free (txt3);
-
+	g_free (data[0]);
+	g_free (data[1]);
+	g_free (data[2]);
+	g_free (data[3]);
+	g_free (data);
         first = 0;
       }
       else
       {
-        char *txt = NULL, *icon = NULL, *act = NULL, *params = NULL;
-        gchar *text[3];
-
-        txt = field (s, 0);
-        icon = field (s, 1);
-        act = field (s, 2);
-        params = field (s, 3);
-
-        text[0] = g_locale_to_utf8 (txt, -1, NULL, NULL, NULL);
-        if (!icon)
-          icon = g_strdup ("");
-        text[1] = g_locale_to_utf8 (icon, -1, NULL, NULL, NULL);
-        if (!params)
-          params = g_strdup ("");
-        text[2] = g_locale_to_utf8 (params, -1, NULL, NULL, NULL);
-
-        //printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params);
+        gchar **data;
+      
+	menu_regex (s, &data);
 
         gtk_tree_store_append (store, &sub_iter, &iter);
         gtk_tree_store_set (store, &sub_iter,
-                            COL_DESCRIPTION, text[0],
-                            COL_ICON, gdk_pixbuf_new_from_file (icon, NULL),
-                            COL_ICONNAME, text[1],
-                            COL_PARAMS, text[2],
+                            COL_DESCRIPTION, data[0],
+                            COL_ICON, gdk_pixbuf_new_from_file (data[1], NULL),
+                            COL_ICONNAME, data[1],
+                            COL_PARAMS, data[3],
                             -1);
 
-        if (!strcasecmp (act, "menu"))
-          load_sub_menu_from_disk (params, store, &sub_iter);
+        if (!strcasecmp (data[2], "menu"))
+          load_sub_menu_from_disk (data[3], store, &sub_iter);
 
-        if (txt)
-          g_free (txt);
-        if (icon)
-          g_free (icon);
-        if (act)
-          g_free (act);
-        if (params)
-          g_free (params);
-
+	g_free (data[0]);
+	g_free (data[1]);
+	g_free (data[2]);
+	g_free (data[3]);
+	g_free (data);
       }
     }
   }
@@ -202,45 +174,28 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
       if (first)
         first = 0;
       else
-      {
-        char *txt = NULL, *icon = NULL, *act = NULL, *params = NULL;
-        gchar *text[3];
-
-        txt = field (s, 0);
-        icon = field (s, 1);
-        act = field (s, 2);
-        params = field (s, 3);
-
-        text[0] = g_locale_to_utf8 (txt, -1, NULL, NULL, NULL);
-        if (!icon)
-          icon = g_strdup ("");
-        text[1] = g_locale_to_utf8 (icon, -1, NULL, NULL, NULL);
-        if (!params)
-          params = g_strdup ("");
-        text[2] = g_locale_to_utf8 (params, -1, NULL, NULL, NULL);
-
-        /* printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params); */
+      {        
+        gchar **data;
+      
+	menu_regex (s, &data);
 
         gtk_tree_store_append (store, &sub_iter, iter);
         gtk_tree_store_set (store, &sub_iter,
-                            COL_DESCRIPTION, text[0],
-                            COL_ICON, gdk_pixbuf_new_from_file (icon, NULL),
-                            COL_ICONNAME, text[1],
-                            COL_PARAMS, text[2],
+                            COL_DESCRIPTION, data[0],
+                            COL_ICON, gdk_pixbuf_new_from_file (data[1], NULL),
+                            COL_ICONNAME, data[1],
+                            COL_PARAMS, data[3],
                             -1);
 
 
-        if (!strcasecmp (act, "menu"))
-          load_sub_menu_from_disk (params, store, &sub_iter);
+        if (!strcasecmp (data[2], "menu"))
+          load_sub_menu_from_disk (data[3], store, &sub_iter);
 
-        if (txt)
-          g_free (txt);
-        if (icon)
-          g_free (icon);
-        if (act)
-          g_free (act);
-        if (params)
-          g_free (params);
+	g_free (data[0]);
+	g_free (data[1]);
+	g_free (data[2]);
+	g_free (data[3]);
+	g_free (data);
       }
     }
   }
@@ -321,8 +276,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
       sprintf (buffer, "\"%s\"\n", description);
 #ifdef WRITE_FILE    
-      fprintf (menu_ptr2, "%s", g_locale_from_utf8 (buffer,
-               -1, NULL, NULL, NULL));
+      fprintf (menu_ptr2, "%s", from_utf8 (buffer));
       fclose (menu_ptr2);
 #else
       g_print ("write header to: \"%s\"\n", menu_file[depth]);
@@ -333,8 +287,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
                icon[0] == '\0' ? "NULL" : icon,
                params[0] == '\0' ? "" : params);
 #ifdef WRITE_FILE      
-      fprintf (menu_ptr, "%s", g_locale_from_utf8 (buffer,
-               -1, NULL, NULL, NULL));
+      fprintf (menu_ptr, "%s", from_utf8 (buffer));
 #else
       g_print ("write menu to: \"%s\"\n", menu_file[depth-1]);
 #endif /* WRITE_FILE */     
@@ -346,8 +299,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
                icon[0] == '\0' ? "NULL" : icon,
                params[0] == '\0' ? "" : params);
 #ifdef WRITE_FILE
-      fprintf (menu_ptr, "%s", g_locale_from_utf8 (buffer,
-               -1, NULL, NULL, NULL));
+      fprintf (menu_ptr, "%s", from_utf8 (buffer));
 #else
       g_print ("write exec to: \"%s\"\n", menu_file[depth-1]);
 #endif /*WRITE_FILE */    
@@ -368,8 +320,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
     sprintf (buffer, "\"%s\"\n", description);
 #ifdef WRITE_FILE  
-    fprintf (menu_ptr2, "%s", g_locale_from_utf8 (buffer,
-             -1, NULL, NULL, NULL));
+    fprintf (menu_ptr2, "%s", from_utf8 (buffer));
     fclose (menu_ptr2);
 #else
     g_print ("write first header to: \"%s\"\n", menu_file[depth]);

@@ -26,6 +26,8 @@
 
 #include "file.h"
 
+extern struct global_variables gv;
+
 char *homedir (int uid)
 {
   char *s;
@@ -52,96 +54,127 @@ char *homedir (int uid)
           ((getenv ("TMPDIR") == NULL) ? "/tmp" : getenv ("TMPDIR")));
 }
 
-char *field (char *s, int field)
+int compile_regex ()
 {
-  char buf[4096];
+  int status;
 
-  buf[0] = 0;
-  fword (s, field + 1, buf);
-  if (buf[0])
-  {
-    if ((!strcmp (buf, "NULL")) || (!strcmp (buf, "(null)")))
-      return (NULL);
-    return (g_strdup (buf));
-  }
-  return NULL;
+  char pattern_mark[] = "\"([^\"]*)\"[[:space:]]*";
+  char pattern_char[] = "([^[[:space:]]*)[[:space:]]*";
+  char pattern_space[] = "[[:space:]]*(.*)";
+
+  status = regcomp (&gv.re_mark, pattern_mark, REG_EXTENDED);
+  status = regcomp (&gv.re_char, pattern_char, REG_EXTENDED);
+  status = regcomp (&gv.re_space, pattern_space, REG_EXTENDED);
+
+  gv.pattern_mark = strdup (pattern_mark);
+  gv.pattern_char = strdup (pattern_char);
+  gv.pattern_space = strdup (pattern_space);
 }
 
-void fword (char *s, int num, char *wd)
+int menu_regex (char *line, gchar ***data_ptr)
 {
-  char *cur, *start, *end;
-  int count, inword, inquote, len;
+  struct substrings *ss = NULL;
+  int numsub = 0;
+  int maxsub = 1;
+  int status;
+  char err_buf[1024];
+  char **data;
+  int i, n;
 
-  if (!s)
-    return;
-  if (!wd)
-    return;
-  *wd = 0;
-  if (num <= 0)
-    return;
-  cur = s;
-  count = 0;
-  inword = 0;
-  inquote = 0;
-  start = NULL;
-  end = NULL;
-  while ((*cur) && (count < num))
+  data = malloc (4 * sizeof (*data));
+
+  *data_ptr = data;
+
+  line = strdup (line);
+  printf ("%s\n", line);
+
+  /* cut spaces */
+  if (line[0] == ' ')
   {
-    if (inword)
+    status = regex_sub2 (&gv.re_space, line, gv.pattern_space,
+                         &ss, maxsub, &numsub);
+
+    if (numsub >= 1)
     {
-      if (inquote)
-      {
-        if (*cur == '"')
-        {
-          inquote = 0;
-          inword = 0;
-          end = cur;
-          count++;
-        }
-      }
-      else
-      {
-        if (isspace (*cur))
-        {
-          end = cur;
-          inword = 0;
-          count++;
-        }
-      }
+      free (line);
+      line = strdup (ss[1].match);
     }
-    else
+
+    for (i = 0; i < numsub; i++)
     {
-      if (!isspace (*cur))
-      {
-        if (*cur == '"')
-        {
-          inquote = 1;
-          start = cur + 1;
-        }
-        else
-          start = cur;
-        inword = 1;
-      }
+      free (ss[i].match);
+      free (ss[i].start);
+      free (ss[i].end);
     }
-    if (count == num)
-      break;
-    cur++;
+    free (ss);
   }
-  if (!start)
-    return;
-  if (!end)
-    end = cur;
-  if (end <= start)
-    return;
-  len = (int) (end - start);
-  if (len > 4000)
-    len = 4000;
-  if (len > 0)
+
+  /* parse data array */
+  for (n = 0; n < 4; n++)
   {
-    strncpy (wd, start, len);
-    wd[len] = 0;
+    data[n] = strdup ("");
+
+    if (line[0] == '\"')
+    {
+      status = regex_sub2 (&gv.re_mark, line, gv.pattern_mark,
+                           &ss, maxsub, &numsub);
+      if (status != 0)
+      {
+        regerror (status, &gv.re_mark, err_buf, (size_t) 1024);
+        printf ("regex exec: %s\n", err_buf);
+      }
+
+      if (numsub >= 1)
+      {
+        free (line);
+        line = strdup (ss[0].end);
+
+        free (data[n]);
+        data[n] = g_strdup (to_utf8 (ss[1].match));
+      }
+
+      for (i = 0; i < numsub; i++)
+      {
+        free (ss[i].match);
+        free (ss[i].start);
+        free (ss[i].end);
+      }
+      free (ss);
+
+      printf ("match \": %s\n", data[n]);
+    }
+    else if (line[0] != ' ')
+    {
+      status = regex_sub2 (&gv.re_char, line, gv.pattern_char,
+                           &ss, maxsub, &numsub);
+      if (status != 0)
+      {
+        regerror (status, &gv.re_char, err_buf, (size_t) 1024);
+        printf ("regex exec: %s\n", err_buf);
+      }
+
+      if (numsub >= 1)
+      {
+
+        free (line);
+        line = strdup (ss[0].end);
+        free (data[n]);
+        data[n] = g_strdup (to_utf8 (ss[1].match));
+      }
+
+      for (i = 0; i < numsub; i++)
+      {
+        free (ss[i].match);
+        free (ss[i].start);
+        free (ss[i].end);
+      }
+      free (ss);
+
+      printf ("match char: %s\n", data[n]);
+    }
   }
-  return;
+
+  return 0;
 }
 
 int mkdir_with_parent (const char *pathname, mode_t mode)
@@ -328,7 +361,7 @@ char *e16_version ()
   g_free (argv_child[1]);
 
   ret_val = read (stdout_child, buf, buf_len);
-  
+
   sscanf (buf, "Enlightenment-Version: enlightenment-%s\n", buf2);
 
   if (ret_val == 0)
@@ -381,14 +414,14 @@ int run_help (char *help_app, char *help_dir, char *help_file)
 
   /* Is there a better way to get the users current language? */
   locale = setlocale (LC_MESSAGES, NULL);
-  
+
   /* If no locale is available use 'C' and free it later */
   if (!locale)
   {
     locale_failed = TRUE;
     locale = g_strdup_printf ("C");
   }
-  
+
   params = g_strdup_printf ("%s/%s/%s", help_dir,
                             locale, help_file);
 #ifdef DEBUG
@@ -427,13 +460,13 @@ int run_help (char *help_app, char *help_dir, char *help_file)
       if (help_missing)
       {
         locale_tmp = strdup (locale_fallback);
-	g_free (locale_fallback);
+        g_free (locale_fallback);
         locale_fallback = get_fallback_locale (locale_tmp);
         g_free (locale_tmp);
         g_free (params);
         params = g_strdup_printf ("%s/%s/%s", help_dir,
                                   locale_fallback, help_file);
-	g_free (locale_fallback);
+        g_free (locale_fallback);
 	#ifdef DEBUG
         DEBUG_OUTPUT printf ("Try help fallback4: %s\n", params);
         #endif /* DEBUG */  
@@ -441,7 +474,7 @@ int run_help (char *help_app, char *help_dir, char *help_file)
       }
       else
       {
-	g_free (locale_fallback);
+        g_free (locale_fallback);
       }
     }
   }
@@ -456,7 +489,7 @@ int run_help (char *help_app, char *help_dir, char *help_file)
     argv_child[0] = help_app;
     argv_child[1] = params;
     argv_child[2] = NULL;
-  
+
     #ifdef DEBUG
     DEBUG_OUTPUT printf ("Try exec help: %s %s\n", help_app, params);
     #endif /* DEBUG */

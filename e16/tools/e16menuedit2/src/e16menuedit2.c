@@ -59,6 +59,9 @@ int main (int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 
+  /* compile some regex patterns */
+  compile_regex ();
+
   /* set log level for app exit */
   g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
@@ -118,13 +121,12 @@ int main (int argc, char *argv[])
 
     fclose (fz_properties);
   }
-
   g_free (filename_properties);
 
   gtk_main ();
 
   free (gv.epath);
-  g_free (gv.glade_file);
+  g_free (gv.glade_file);  
 
   return 0;
 }

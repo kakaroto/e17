@@ -1,7 +1,6 @@
 BUGS:
 - compressed svg?
 - size columns with mouse
-- Bug with "------" NULL entries
 
 FEATURES:
 - Gnome2 panel and desktop Drag&Drop support

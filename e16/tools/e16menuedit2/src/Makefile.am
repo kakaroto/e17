@@ -20,7 +20,8 @@ e16menuedit2_SOURCES = \
         treeview.c\
         treeview.h\
         libglade_support.c\
-        libglade_support.h
+        libglade_support.h\
+	regex_func.c\
+	regex_func.h
 
-e16menuedit2_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) 
-
+e16menuedit2_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)

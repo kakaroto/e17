@@ -86,7 +86,9 @@ module.source.files=\
 	treeview.c\
 	treeview.h\
 	libglade_support.c\
-	libglade_support.h
+	libglade_support.h\
+	regex_func.c\
+	regex_func.h
 
 module.pixmap.name=pixmaps
 module.pixmap.type=
