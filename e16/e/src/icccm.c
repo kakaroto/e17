@@ -1173,39 +1173,35 @@ ICCCM_GetEInfo(EWin * ewin)
    num = (int)lnum;
    if ((num >= 8) && (c))
      {
-	if (Mode.startup)
+	ewin->desktop = c[0];
+	ewin->sticky = c[1];
+	ewin->client.x = c[2];
+	ewin->client.y = c[3];
+	ewin->iconified = c[4];
+	ewin->shaded = c[5];
+	if (ewin->sticky)
+	   ewin->desktop = -1;
+	if (ewin->iconified)
 	  {
-	     ewin->desktop = c[0];
-	     ewin->sticky = c[1];
-	     ewin->client.x = c[2];
-	     ewin->client.y = c[3];
-	     ewin->iconified = c[4];
-	     ewin->shaded = c[5];
-	     if (ewin->sticky)
-		ewin->desktop = -1;
-	     if (ewin->iconified)
-	       {
-		  ewin->client.start_iconified = 1;
-		  ewin->iconified = 0;
-	       }
-	     ewin->client.already_placed = 1;
-	     if (num >= 9)
-	       {
-		  ewin->client.w = c[6];
-		  ewin->client.h = c[7];
-	       }
-	     XFree(c);
-
-	     puc = NULL;
-	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
-				XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
-	     str = (char *)puc;
-	     num = (int)lnum;
-	     if ((num > 0) && (str))
-		EwinSetBorderByName(ewin, str, 0);
-	     XFree(str);
+	     ewin->client.start_iconified = 1;
+	     ewin->iconified = 0;
 	  }
-	EDBUG_RETURN(1);
+	ewin->client.already_placed = 1;
+	if (num >= 9)
+	  {
+	     ewin->client.w = c[6];
+	     ewin->client.h = c[7];
+	  }
+	XFree(c);
+
+	puc = NULL;
+	XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
+			   XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
+	str = (char *)puc;
+	num = (int)lnum;
+	if ((num > 0) && (str))
+	   EwinSetBorderByName(ewin, str, 0);
+	XFree(str);
      }
    EDBUG_RETURN(0);
 }

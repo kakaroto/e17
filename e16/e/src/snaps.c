@@ -871,7 +871,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
    char                buf[4096], s[4096];
    FILE               *f;
 
-   if (!Mode.save_ok)
+   if (!Mode.wm.save_ok)
       return;
 
    Etmp(s);

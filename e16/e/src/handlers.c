@@ -121,27 +121,53 @@ SignalHandler(int sig)
    EDBUG_RETURN_;
 }
 
+static void
+doSignalsSetup(int setup)
+{
+   static const int    signals[] = {
+      SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGFPE, SIGSEGV, SIGPIPE,
+      SIGALRM, SIGTERM, SIGUSR1, SIGUSR2, SIGCHLD, SIGBUS
+   };
+   unsigned int        i, sig;
+   struct sigaction    sa;
+
+   /*
+    * We may be here after a fork/exec within in a signal handler.
+    * Therefore, lets just clear the blocked signals.
+    */
+   sigemptyset(&sa.sa_mask);
+   sigprocmask(SIG_SETMASK, &sa.sa_mask, (sigset_t *) NULL);
+
+   for (i = 0; i < sizeof(signals) / sizeof(int); i++)
+     {
+	sig = signals[i];
+	if (Mode.wm.coredump &&
+	    (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV || sig == SIGBUS))
+	   continue;
+
+	if (setup)
+	  {
+	     sa.sa_handler = SignalHandler;
+	     sa.sa_flags = (sig == SIGCHLD) ? SA_RESTART : 0;
+	  }
+	else
+	  {
+	     sa.sa_handler = SIG_DFL;
+	     sa.sa_flags = 0;
+	  }
+	sigemptyset(&sa.sa_mask);
+	sigaction(sig, &sa, (struct sigaction *)0);
+     }
+}
+
 void
 SignalsSetup(void)
 {
    /* This function will set up all the signal handlers for E */
 
-   static const int    signals[] = {
-      SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGFPE, SIGSEGV, SIGPIPE,
-      SIGALRM, SIGTERM, SIGUSR1, SIGUSR2, SIGCHLD, SIGBUS
-   };
-   unsigned int        i;
-   struct sigaction    sa;
-
    EDBUG(6, "SignalsSetup");
 
-   for (i = 0; i < sizeof(signals) / sizeof(int); i++)
-     {
-	sa.sa_handler = SignalHandler;
-	sa.sa_flags = (signals[i] == SIGCHLD) ? SA_RESTART : 0;
-	sigemptyset(&sa.sa_mask);
-	sigaction(signals[i], &sa, (struct sigaction *)0);
-     }
+   doSignalsSetup(1);
 
    EDBUG_RETURN_;
 }
@@ -153,6 +179,7 @@ SignalsRestore(void)
 
    EDBUG(6, "SignalsRestore");
 
+#if 0
    signal(SIGHUP, SIG_DFL);
    signal(SIGINT, SIG_DFL);
    signal(SIGQUIT, SIG_DFL);
@@ -170,6 +197,9 @@ SignalsRestore(void)
    signal(SIGTSTP, SIG_DFL);
 #endif
    signal(SIGBUS, SIG_IGN);
+#else
+   doSignalsSetup(0);
+#endif
 
    EDBUG_RETURN_;
 }
@@ -183,7 +213,7 @@ EHandleXError(Display * d, XErrorEvent * ev)
    if ((ev->request_code == X_ChangeWindowAttributes)
        && (ev->error_code == BadAccess))
      {
-	if ((!no_overwrite) && (Mode.xselect))
+	if ((!no_overwrite) && (Mode.wm.xselect))
 	  {
 	     AlertX(_("Another Window Manager is already running"),
 		    _("OK (edit file)"), "", _("Cancel (do NOT edit)"),

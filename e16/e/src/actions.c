@@ -689,7 +689,7 @@ runApp(const char *exe, const char *params)
 	     exit(0);
 	  }
 
-	if (!Mode.startup)
+	if (!Mode.wm.startup)
 	  {
 	     path = pathtofile(exe);
 	     if (!path)

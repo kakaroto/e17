@@ -278,7 +278,7 @@ SetupX(void)
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
    /* select all the root window events to start managing */
-   Mode.xselect = 1;
+   Mode.wm.xselect = 1;
    XSelectInput(disp, VRoot.win,
 		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		LeaveWindowMask | ButtonMotionMask | PropertyChangeMask |
@@ -286,7 +286,7 @@ SetupX(void)
 		PointerMotionMask | ResizeRedirectMask |
 		SubstructureNotifyMask);
    XSync(disp, False);
-   Mode.xselect = 0;
+   Mode.wm.xselect = 0;
 
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)

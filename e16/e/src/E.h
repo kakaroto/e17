@@ -1261,13 +1261,16 @@ typedef struct
       char                single;	/* No slaves */
       pid_t               master_pid;
       int                 master_screen;
+      char                startup;
+      char                xselect;
+      char                exiting;
+      char                save_ok;
+      char                coredump;
    } wm;
    int                 debug;
    int                 mode;
    char                place;
    char                flipp;
-   char                startup;
-   char                xselect;
    int                 next_move_x_plus, next_move_y_plus;
    Button             *button;
    int                 resize_detail;
@@ -1307,7 +1310,6 @@ typedef struct
    int                 last_button;
    Time                last_time;
    char                queue_up;
-   char                save_ok;
 }
 EMode;
 

@@ -40,8 +40,9 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    GC                  gc;
    XGCValues           gcv;
 
-   if (Mode.startup)
+   if (Mode.wm.startup)
       return;
+
    GrabX();
    spd = 0.00001;
    gcv.subwindow_mode = IncludeInferiors;

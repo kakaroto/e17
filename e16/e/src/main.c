@@ -64,7 +64,7 @@ main(int argc, char **argv)
    /* Init state variable struct */
    memset(&Mode, 0, sizeof(EMode));
    Mode.mode = MODE_NONE;
-   Mode.startup = 1;
+   Mode.wm.startup = 1;
 
 /*  unsetenv("LD_PRELOAD"); */
 
@@ -77,6 +77,9 @@ main(int argc, char **argv)
    str = getenv("EDBUG_FLAGS");
    if (str)
       EventDebugInit(str);
+   str = getenv("EDBUG_COREDUMP");
+   if (str)
+      Mode.wm.coredump = 1;
 
    EDBUG(1, "main");
 
@@ -313,8 +316,8 @@ main(int argc, char **argv)
 	ec->inroot = 1;
      }
 
-   Mode.startup = 0;
-   Mode.save_ok = Mode.wm.master;
+   Mode.wm.startup = 0;
+   Mode.wm.save_ok = Mode.wm.master;
    /* ok - paranoia - save current settings to disk */
    if (VRoot.scr == 0)
       autosave();
@@ -368,9 +371,9 @@ main(int argc, char **argv)
    if (Mode.firsttime)
       runDocBrowser();
 
-   Mode.startup = 1;
+   Mode.wm.startup = 1;
    SpawnSnappedCmds();
-   Mode.startup = 0;
+   Mode.wm.startup = 0;
 
    ThemeBadDialog();
 

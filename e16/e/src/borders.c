@@ -441,7 +441,7 @@ AddToFamily(Window win)
      }
 
    if ((!ewin->client.transient) && (Conf.manual_placement)
-       && (!ewin->client.already_placed) && (!Mode.startup) && (!Mode.place))
+       && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))
      {
 	cangrab = GrabThePointer(VRoot.win);
 	if ((cangrab == GrabNotViewable) || (cangrab == AlreadyGrabbed)
@@ -1132,7 +1132,8 @@ Adopt(Window win)
    SessionGetInfo(ewin, 0);
    MatchEwinToSM(ewin);
    MatchEwinToSnapInfo(ewin);
-   ICCCM_GetEInfo(ewin);
+   if (Mode.wm.startup)
+      ICCCM_GetEInfo(ewin);
 
    if (!ewin->border)
       EwinSetBorderInit(ewin);
@@ -1226,7 +1227,7 @@ EwinCreate(Window win)
    ewin = Emalloc(sizeof(EWin));
    memset(ewin, 0, sizeof(EWin));
 
-   ewin->state = (Mode.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
+   ewin->state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
    ewin->x = -1;
    ewin->y = -1;
    ewin->w = -1;

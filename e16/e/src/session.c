@@ -212,7 +212,7 @@ SaveWindowStates(void)
    FILE               *f;
    char                s[4096], ss[4096];
 
-   if (!Mode.save_ok)
+   if (!Mode.wm.save_ok)
       return;
 
    Etmp(s);
@@ -426,7 +426,7 @@ MatchEwinToSM(EWin * ewin)
 void
 autosave(void)
 {
-   if (!Mode.save_ok)
+   if (!Mode.wm.save_ok)
       return;
 
    if (Conf.autosave)
@@ -919,9 +919,8 @@ SetSMID(const char *smid)
 #endif /* HAVE_X11_SM_SMLIB_H */
 }
 
-static void         doSMExit(const void *params);
 static void
-LogoutCB(int val, void *data)
+LogoutCB(int val __UNUSED__, void *data __UNUSED__)
 {
 #ifdef HAVE_X11_SM_SMLIB_H
    if (sm_conn)
@@ -932,11 +931,8 @@ LogoutCB(int val, void *data)
    else
 #endif /* HAVE_X11_SM_SMLIB_H */
      {
-	doSMExit(NULL);
+	SessionExit(NULL);
      }
-   return;
-   val = 0;
-   data = NULL;
 }
 
 void
@@ -988,6 +984,10 @@ doSMExit(const void *params)
       SaveSession(1);
    if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
       SetEInfoOnAll();
+
+   if (disp)
+      XSelectInput(disp, VRoot.win, 0);
+
    if ((!params) || (!strcmp((char *)s, "exit")))
      {
 	callback_die(sm_conn, NULL);
@@ -1231,6 +1231,13 @@ doSMExit(const void *params)
 int
 SessionExit(const void *param)
 {
+   if (Mode.wm.exiting++)
+     {
+	/* This may be possible during nested signal handling */
+	Eprintf("SessionExit already in progress ... now exiting\n");
+	exit(1);
+     }
+
    doSMExit(param);
    return 0;
 }
