@@ -387,7 +387,7 @@ eke_parse_rdf_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
             eke_feed_item_description_set(item, ptr);
             IF_FREE(ptr);
 
-        } else if (!strcasecmp(node->name, "dc:date")) {
+        } else if (!strcasecmp(node->name, "date")) {
             tmp = node->xmlChildrenNode;
             ptr = xmlNodeListGetString(doc, tmp, 1);
             strtrim(ptr);
