@@ -506,73 +506,65 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
   fseek(f, em->offset, SEEK_SET);
 
-  D(("Offset %i, testing '%s' file.\n", em->offset, em->filetype));
-
   switch (em->type)
     {
     case EFSD_MAGIC_8:
       {
 	u_int8_t val, val_test;
 
-	D(("Performing byte test.\n"));
-	
 	val_test = *((u_int8_t*)em->value);
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
 	  {
-	    D(("Using mask: %x\n", (u_int16_t)em->mask));
 	    val &= (u_int8_t)em->mask;
 	  }
 
 	switch (em->test)
 	  {
 	  case EFSD_MAGIC_TEST_EQUAL:
-	    D(("Equality test\n"));
 	    if (val == val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Equality test ...succeeded.\n"));
 		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTEQUAL:
-	    D(("Unequality test\n"));
 	    if (val != val_test)
 	      { 
-		D(("...succeeded.\n"));
+		D(("Unequality test ...succeeded.\n"));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_SMALLER:
-	    D(("Smaller test\n"));
 	    if (val < val_test)
 	      {
- 		D(("...succeeded.\n"));
+		D(("Smaller test ...succeeded.\n"));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_LARGER:
-	    D(("Larger test\n"));
 	    if (val > val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Larger test ...succeeded.\n"));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_MASK:
-	    D(("Mask test: %x == %x?\n",
-	       (val & val_test),
-	       val_test));
 	    if ((val & val_test) == val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Mask test: %x == %x? succeeded.\n",
+		   (val & val_test),
+		   val_test));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTMASK:
-	    D(("Notmask test\n"));
 	    if ((val & val_test) == 0)
-	      { D_RETURN_(em->filetype); }
+	      {
+		D(("Notmask test succeeded.\n"));
+		D_RETURN_(em->filetype);
+	      }
 	    break;
 	  default:
 	    D(("UNKNOWN test type!\n"));
@@ -583,66 +575,57 @@ magic_test_perform(EfsdMagic *em, FILE *f)
       {
 	u_int16_t val, val_test;
 
-	D(("Performing short test.\n"));
-
 	val_test = *((u_int16_t*)em->value);
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
 	  {
-	    D(("Using mask: %x\n", (u_int16_t)em->mask));
 	    val &= (u_int16_t)em->mask;
 	  }
 
 	switch (em->test)
 	  {
 	  case EFSD_MAGIC_TEST_EQUAL:
-	    D(("Equality test\n"));
 	    if (val == val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Equality test ...succeeded.\n"));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTEQUAL:
-	    D(("Unequality test\n"));
 	    if (val != val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Unequality test ...succeeded.\n"));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_SMALLER:
-	    D(("Smaller test\n"));
 	    if (val < val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Smaller test ...succeeded.\n"));
 		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_LARGER:
-	    D(("Larger test\n"));
 	    if (val > val_test)
 	      {
- 		D(("...succeeded.\n"));
+		D(("Larger test ...succeeded.\n"));
 		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_MASK:
-	    D(("Mask test: %x == %x?\n",
-	       (val & val_test),
-	       val_test));
 	    if ((val & val_test) == val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Mask test: %x == %x? succeeded.\n",
+		   (val & val_test),
+		   val_test));
 		D_RETURN_(em->filetype);
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTMASK:
-	    D(("Notmask test\n"));
 	    if ((val & val_test) == 0)
 	      {
-		D(("...succeeded.\n"));
+		D(("Notmask test ...succeeded.\n"));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
@@ -661,49 +644,47 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	if (em->use_mask)
 	  val &= (u_int32_t)em->mask;
 
-	D(("Performing long test: %x == %x\n", val, *((u_int32_t*)em->value)));
-
 	switch (em->test)
 	  {
 	  case EFSD_MAGIC_TEST_EQUAL:
 	    if (val == val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Long test: %x == %x succeeded.\n", val, *((u_int32_t*)em->value)));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTEQUAL:
 	    if (val != val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Long test: %x != %x succeeded.\n", val, *((u_int32_t*)em->value)));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_SMALLER:
 	    if (val < val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Long test: %x < %x succeeded.\n", val, *((u_int32_t*)em->value)));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_LARGER:
 	    if (val > val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Long test: %x > %x succeeded.\n", val, *((u_int32_t*)em->value)));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_MASK:
 	    if ((val & val_test) == val_test)
 	      {
-		D(("...succeeded.\n"));
+		D(("Long test: %x & %x succeeded.\n", val, *((u_int32_t*)em->value)));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
 	  case EFSD_MAGIC_TEST_NOTMASK:
 	    if ((val & val_test) == 0)
 	      {
-		D(("...succeeded.\n"));
+		D(("Long test: %x & %x == 0 succeeded.\n", val, *((u_int32_t*)em->value)));
 		D_RETURN_(em->filetype);
 	      }
 	    break;
@@ -720,21 +701,17 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 	for (i = 0; i < em->value_len; i++)
 	  s[i] = fgetc(f);
 
-	D(("Performing string test for '%s', len = %i\n", (char*)em->value, em->value_len));
-
 	/* Fixme: add remaining string tests. */
 
 	if (memcmp(s, em->value, em->value_len) == 0)
 	  {
-	    D(("...succeeded.\n"));
+	    D(("String test for '%s', len = %i succeeded.\n", (char*)em->value, em->value_len));
 	    D_RETURN_(em->filetype);
 	  }
       }
       break;
     default:
     }
-
-  D(("...failed.\n"));
 
   D_RETURN_(NULL);
 }

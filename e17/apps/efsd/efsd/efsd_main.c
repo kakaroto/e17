@@ -412,7 +412,10 @@ efsd_handle_connections(void)
 	  fdwset_ptr = &fdwset;
 	}
 
-      /* Wait for next event to happen ... */
+      /* Wait for next event to happen -- can be either an incoming
+         command, or queued events can now be sent to formerly
+         clogged clients ... no timeout.
+      */
       while ((n = select(fdsize+1, &fdrset, fdwset_ptr, NULL, NULL)) < 0)
 	{
 	  if (errno == EINTR)
