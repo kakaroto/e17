@@ -15,7 +15,7 @@
  *
  * @section intro Introduction
  *
- * The Enlightenment Widget Library (EWL) is a widget toolkit based on the
+ * The Enlightened Widget Library (EWL) is a widget toolkit based on the
  * libraries provided for Enlightenment 17 development. Rendering is performed
  * using Evas, a fast abstracted canvas library that supports multiple
  * backends. The appearances of the widgets are described by Edje files,
