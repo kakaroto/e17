@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 
 #include <Evas.h>
+#include <Edb.h>
 #include <gdk/gdkx.h>
 
 #include <stdio.h>
@@ -18,6 +19,7 @@
 #include "bits.h"
 
 extern GtkWidget *main_win;
+extern char etcher_config[4096];
 
 Evas view_evas = NULL;
 gint render_method = 0;
@@ -780,6 +782,9 @@ on_file_ok_clicked                     (GtkButton       *button,
 	      update_widget_from_selection();
 	   }
 	gtk_idle_add(view_redraw, NULL);
+	E_DB_STR_SET(etcher_config, "/paths/bit", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "new_image"))
      {
@@ -834,10 +839,30 @@ on_file_ok_clicked                     (GtkButton       *button,
 		gtk_clist_select_row(GTK_CLIST(w), row, 0);
 	  }
 	gtk_clist_thaw(GTK_CLIST(w));
+	E_DB_STR_SET(etcher_config, "/paths/image", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
+     }
+   else if (gtk_object_get_data(GTK_OBJECT(top), "bit_image"))
+     {
+	E_DB_STR_SET(etcher_config, "/paths/image", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "save"))
      {
-	if (bits) ebits_save(bits, gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	char *file;
+	GtkWidget *w;
+	
+	if (bits->description->file) free(bits->description->file);
+	file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(top));
+	bits->description->file = strdup(file);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "file");
+	gtk_entry_set_text(GTK_ENTRY(w), file);
+	if (bits) ebits_save(bits, file);
+	E_DB_STR_SET(etcher_config, "/paths/bit", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
      }
    gtk_widget_destroy(top);
 }
@@ -867,7 +892,20 @@ on_open1_activate                      (GtkMenuItem     *menuitem,
    
    file = create_filesel();
    gtk_object_set_data(GTK_OBJECT(file), "open", (gpointer)1);
-   gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/bit", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	else
+	   gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
+	e_db_flush();
+     }
    gtk_widget_show(file);
 }
 
@@ -898,6 +936,18 @@ on_save_as1_activate                   (GtkMenuItem     *menuitem,
    
    file = create_filesel();
    gtk_object_set_data(GTK_OBJECT(file), "save", (gpointer)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/bit", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	e_db_flush();
+     }
    gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
    gtk_widget_show(file);
 }
@@ -907,7 +957,12 @@ void
 on_preferences1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+   GtkWidget *dialog;
+   
+   dialog = create_render_method();
+   gtk_widget_show(dialog);
+   
+   gtk_main ();
 }
 
 
@@ -923,7 +978,32 @@ void
 on_delete1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+   GtkWidget *w;
+   
+   if (selected_state)
+     {
+	Evas_List l;
+	ebits_del_bit(bits, selected_state);
+	selected_state = NULL;
+	update_visible_selection();
+	update_widget_from_selection();
+	gtk_idle_add(view_redraw, NULL);
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_freeze(GTK_CLIST(w));
+	gtk_clist_clear(GTK_CLIST(w));
+	for (l = bits->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state;
+	     gchar *text;
+	     
+	     state = l->data;
+	     text = state->description->name;
+	     if (!text) text = "";
+	     gtk_clist_append(GTK_CLIST(w), &text);
+	  }
+	gtk_clist_thaw(GTK_CLIST(w));
+     }
 }
 
 
@@ -1214,6 +1294,18 @@ on_new_image_clicked                   (GtkButton       *button,
    
    file = create_filesel();
    gtk_object_set_data(GTK_OBJECT(file), "new_image", (void *)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/image", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	e_db_flush();
+     }
    gtk_widget_show(file);
 }
 
@@ -1374,6 +1466,8 @@ on_software_clicked                    (GtkButton       *button,
    
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    render_method = 0;
+   E_DB_INT_SET(etcher_config, "/display/render_method", (int)render_method);   
+   e_db_flush();
    gtk_widget_destroy(top);
    gtk_main_quit();
 }
@@ -1386,6 +1480,8 @@ on_3d_hardware_clicked                 (GtkButton       *button,
    
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    render_method = 1;
+   E_DB_INT_SET(etcher_config, "/display/render_method", (int)render_method);
+   e_db_flush();
    gtk_widget_destroy(top);
    gtk_main_quit();
 }

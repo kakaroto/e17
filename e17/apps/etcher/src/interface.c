@@ -2138,7 +2138,7 @@ create_render_method (void)
   gtk_container_set_border_width (GTK_CONTAINER (frame2), 8);
   gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
 
-  label59 = gtk_label_new (_("Please select your preferred canvas display method.\n\nWARNING! 3D Accelerated Display may be VERY SLOW\nif your installation of OpenGL does not support 3D Hardware\nacceleration (i.e. it only does software rendering). If that is\nthe case choose software rendering."));
+  label59 = gtk_label_new (_("Please select your preferred display method.\n\nWARNING! 3D Accelerated Display may be VERY SLOW\nif your installation of OpenGL does not support 3D Hardware\nacceleration (i.e. it only does software rendering). If that is\nthe case choose software rendering.\n\nSTABILITY WARNING!!!!!!!!!!!!\nBe aware that as of the writing of this software (September, 2000)\nOpenGL acceleration under X, especially Linux, is unstable and\nbuggy. There as a liklihood that you may see rendering bugs, find\nyour XServer crashing or locking up solidly, or even experience\nsystem crashes (reboot required). These are bugs in the OpenGL\nacceleration drivers for your XServer and graphics card. Do not\nuse 3D hardware output if you experience problems. You may try\nupgrading your drivers and/or XServer for better performance,\ncorrectness and stability.\n\nYou have been warned."));
   gtk_widget_ref (label59);
   gtk_object_set_data_full (GTK_OBJECT (render_method), "label59", label59,
                             (GtkDestroyNotify) gtk_widget_unref);

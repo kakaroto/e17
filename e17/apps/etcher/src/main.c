@@ -6,11 +6,14 @@
 #include <gdk/gdkx.h>
 
 #include <Evas.h>
+#include <Edb.h>
+#include <stdlib.h>
 
 #include "interface.h"
 #include "support.h"
 
 GtkWidget *main_win;
+char etcher_config[4096];
 extern Evas view_evas;
 extern gint render_method;
 
@@ -20,6 +23,7 @@ GdkColormap *gdk_cmap = NULL;
 int
 main (int argc, char *argv[])
 {
+   int config_ok = 0, config_render_method;
    
 #ifdef ENABLE_NLS
    bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -28,7 +32,12 @@ main (int argc, char *argv[])
 
    gtk_set_locale ();
    gtk_init (&argc, &argv);
-   
+
+   g_snprintf(etcher_config, sizeof(etcher_config), "%s/.etcher.db", getenv("HOME"));
+   E_DB_INT_GET(etcher_config, "/display/render_method", 
+		config_render_method, config_ok);
+   e_db_flush();
+   if (!config_ok)
      {
 	GtkWidget *dialog;
 	
@@ -36,6 +45,10 @@ main (int argc, char *argv[])
 	gtk_widget_show(dialog);
 	
 	gtk_main ();
+     }
+   else
+     {
+	render_method = config_render_method;
      }
 
    view_evas = evas_new();

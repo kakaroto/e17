@@ -4056,12 +4056,25 @@ Tile Integer
       <widget>
 	<class>GtkLabel</class>
 	<name>label59</name>
-	<label>Please select your preferred canvas display method.
+	<label>Please select your preferred display method.
 
 WARNING! 3D Accelerated Display may be VERY SLOW
 if your installation of OpenGL does not support 3D Hardware
 acceleration (i.e. it only does software rendering). If that is
-the case choose software rendering.</label>
+the case choose software rendering.
+
+STABILITY WARNING!!!!!!!!!!!!
+Be aware that as of the writing of this software (September, 2000)
+OpenGL acceleration under X, especially Linux, is unstable and
+buggy. There as a liklihood that you may see rendering bugs, find
+your XServer crashing or locking up solidly, or even experience
+system crashes (reboot required). These are bugs in the OpenGL
+acceleration drivers for your XServer and graphics card. Do not
+use 3D hardware output if you experience problems. You may try
+upgrading your drivers and/or XServer for better performance,
+correctness and stability.
+
+You have been warned.</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
