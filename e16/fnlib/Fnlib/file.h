@@ -4,14 +4,16 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <string.h>
+#include <sys/types.h> /* In EMX sys/types.h must be before dirent.h */
 #include <fcntl.h>
 #include <dirent.h>
 #include <signal.h>
 #include <time.h>
 #include <math.h>
+#ifndef __EMX__
 #include <pwd.h>
+#endif
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 

@@ -24,7 +24,11 @@
 #endif
 
 #ifndef SYSTEM_FNRC
+#ifndef __EMX__
 #define SYSTEM_FNRC "/etc/fnrc"
+#else
+#define SYSTEM_FNRC "/Xfree86/lib/x11/enlightenment/fnrc"
+#endif
 #endif /* endef SYSTEM_FNRC */
 
 #define FONT_TO_RIGHT 0

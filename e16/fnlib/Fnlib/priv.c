@@ -1,13 +1,21 @@
 #include "Fnlib.h"
 #include "file.h"
 
+#ifdef __EMX__
+extern char *__XOS2RedirRoot(const char *);
+#endif
+
 void
 _fnlib_read_cfg(FnlibData * fd, char *file)
 {
   FILE               *f;
   char                s[2048], ss[2048];
 
+#ifndef __EMX__
   f = fopen(file, "r");
+#else
+  f = fopen(file, "rt");
+#endif
   if (!f)
     return;
   while (fgets(s, 2048, f))
@@ -15,9 +23,14 @@ _fnlib_read_cfg(FnlibData * fd, char *file)
       sscanf(s, "%s", ss);
       if (s[0] != '#')
 	{
-	  if (!strcasecmp("FontDir", ss))
+	  if (!stricmp("FontDir", ss))
 	    {
 	      sscanf(s, "%*s %s", ss);
+#ifdef __EMX__
+	      if (ss[0] == '/' && isdir(__XOS2RedirRoot(ss)))
+		Fnlib_add_dir(fd, __XOS2RedirRoot(ss));
+	      else
+#endif
 	      if (isdir(ss))
 		Fnlib_add_dir(fd, ss);
 	    }

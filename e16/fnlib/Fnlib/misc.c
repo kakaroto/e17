@@ -1,6 +1,9 @@
-
 #include "Fnlib.h"
 #include "file.h"
+
+#ifdef __EMX__
+extern char *__XOS2RedirRoot(const char *);
+#endif
 
 FnlibChar          *_fnlib_get_char(FnlibData * fd, FnlibFont * fn, char orientation,
 				    int size, int index);
@@ -24,7 +27,11 @@ Fnlib_init(ImlibData * id)
   fd->num_dirs = 0;
   fd->num_fonts = 0;
   fd->font = NULL;
+#ifndef __EMX__
   _fnlib_read_cfg(fd, SYSTEM_FNRC);
+#else
+  _fnlib_read_cfg(fd, __XOS2RedirRoot(SYSTEM_FNRC));
+#endif
   home = homedir(getuid());
   if (home)
     {
@@ -88,7 +95,7 @@ Fnlib_load_font(FnlibData * fd, char *name)
   char               *fdir, **dir, s[2048];
   int                 i, j, num, found;
   FILE               *f;
-
+  
   fdir = NULL;
   for (i = 0; i < fd->num_fonts; i++)
     {
@@ -123,7 +130,11 @@ Fnlib_load_font(FnlibData * fd, char *name)
     return NULL;
 /*   snprintf(s, 2048, "%s/fontinfo", fdir); */
   sprintf(s, "%s/fontinfo", fdir);
+#ifndef __EMX__
   f = fopen(s, "r");
+#else
+  f = fopen(s, "rt");
+#endif
   if (!f)
     {
       free(fdir);
