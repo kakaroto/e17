@@ -182,10 +182,10 @@ gib_btree *gib_btree_find_by_data(gib_btree *tree, unsigned char (*find_func)(gi
 		return tree;
 	r = gib_btree_find_by_data(tree->left,find_func,data);
 	if (r)
-		return tree->left;
+		return r;
 	r = gib_btree_find_by_data(tree->right,find_func,data);
 	if (r)
-		return tree->right;
+		return r;
 	
 	return NULL;
 

@@ -33,6 +33,7 @@ CFLAGS="$CFLAGS -Wall"
 
 AC_OUTPUT([
 Makefile
+giblib.spec
 giblib-config
 giblib/Makefile
 ], [

@@ -5,6 +5,6 @@ SUBDIRS = giblib
 docs_DATA = README AUTHORS ChangeLog TODO
 docsdir = $(prefix)/doc/giblib
 
-EXTRA_DIST= $(docs_DATA)
+EXTRA_DIST= giblib.spec $(docs_DATA)
 
 bin_SCRIPTS = giblib-config
