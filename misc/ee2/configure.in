@@ -9,6 +9,7 @@ AC_HEADER_STDC
 
 AM_PATH_GTK(1.2.0, ,AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
 AC_CHECK_LIB(Imlib2, imlib_context_set_visual,,AC_MSG_ERROR(Cannot find Imlib2.))
+LIBS="$LIBS -lm"
 AC_CHECK_HEADER(Imlib2.h,,AC_MSG_ERROR(Cannot find Imlib2 header files.))
 
 if test "${prefix}" = "NONE"; then
