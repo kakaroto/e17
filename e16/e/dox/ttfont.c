@@ -44,8 +44,9 @@ ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
 }
 
 void
-EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * f, Visual * vis __UNUSED__, Colormap cm)
+EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
+		  const char *text, Efont * f, Visual * vis __UNUSED__,
+		  Colormap cm)
 {
    Imlib_Image         im;
    int                 w, h, ascent, descent;
@@ -77,7 +78,7 @@ Efont_free(Efont * f)
 }
 
 Efont              *
-Efont_load(char *file, int size)
+Efont_load(const char *file, int size)
 {
    char                s[4096];
    Efont              *f;
@@ -100,13 +101,15 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *max_ascent_return, int *max_descent_return,
 	      int *lbearing_return __UNUSED__, int *rbearing_return __UNUSED__)
 {
-   int                 height;
+   int                 w, h;
 
    if (!f)
       return;
 
    imlib_context_set_font(f->face);
-   imlib_get_text_size(text, width_return, &height);
+   imlib_get_text_advance(text, &w, &h);
+   if (width_return)
+      *width_return = w;
    if (font_ascent_return)
       *font_ascent_return = imlib_get_font_ascent();
    if (font_descent_return)
@@ -370,7 +373,7 @@ destroy_font_raster(TT_Raster_Map * rmap)
 }
 
 static TT_Raster_Map *
-calc_size(Efont * f, int *width, int *height, char *text)
+calc_size(Efont * f, int *width, int *height, const char *text)
 {
    int                 i, upm, ascent, descent, pw, ph;
    TT_Instance_Metrics imetrics;
@@ -413,8 +416,8 @@ calc_size(Efont * f, int *width, int *height, char *text)
 }
 
 static void
-render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f, char *text,
-	    int *xor, int *yor)
+render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f,
+	    const char *text, int *xor, int *yor)
 {
    TT_Glyph_Metrics    metrics;
    TT_Instance_Metrics imetrics;
@@ -739,8 +742,8 @@ handle_x_error(Display * d, XErrorEvent * ev)
 }
 
 void
-EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * f, Visual * vis, Colormap cm)
+EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y,
+		  const char *text, Efont * f, Visual * vis, Colormap cm)
 {
    XImage             *xim;
    XShmSegmentInfo     shminfo;
@@ -1005,7 +1008,7 @@ Efont_free(Efont * f)
 }
 
 Efont              *
-Efont_load(char *file, int size)
+Efont_load(const char *file, int size)
 {
    TT_Error            error;
    TT_Glyph_Metrics    metrics;

@@ -283,10 +283,10 @@ void                Efont_extents(Efont * f, const char *text,
 				  int *max_ascent_return,
 				  int *max_descent_return,
 				  int *lbearing_return, int *rbearing_return);
-Efont              *Efont_load(char *file, int size);
+Efont              *Efont_load(const char *file, int size);
 void                Efont_free(Efont * f);
 void                EFont_draw_string(Display * disp, Drawable win, GC gc,
-				      int x, int y, char *text,
+				      int x, int y, const char *text,
 				      Efont * font, Visual * vis, Colormap cm);
 
 void                TextStateLoadFont(TextState * ts);

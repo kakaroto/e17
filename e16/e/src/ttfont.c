@@ -45,7 +45,8 @@ ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
 
 void
 EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
-		  const char *text, Efont * f, Visual * vis, Colormap cm)
+		  const char *text, Efont * f, Visual * vis __UNUSED__,
+		  Colormap cm)
 {
    Imlib_Image         im;
    int                 w, h, ascent, descent;
@@ -62,8 +63,6 @@ EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
    imlib_text_draw(0, 0, text);
    imlib_render_image_on_drawable(x, y - ascent);
    imlib_free_image();
-   return;
-   vis = NULL;
 }
 
 void
@@ -100,7 +99,7 @@ void
 Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *font_descent_return, int *width_return,
 	      int *max_ascent_return, int *max_descent_return,
-	      int *lbearing_return, int *rbearing_return)
+	      int *lbearing_return __UNUSED__, int *rbearing_return __UNUSED__)
 {
    int                 w, h;
 
@@ -109,7 +108,8 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 
    imlib_context_set_font(f->face);
    imlib_get_text_advance(text, &w, &h);
-   *width_return = w;
+   if (width_return)
+      *width_return = w;
    if (font_ascent_return)
       *font_ascent_return = imlib_get_font_ascent();
    if (font_descent_return)
@@ -118,10 +118,6 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
       *max_ascent_return = imlib_get_maximum_font_ascent();
    if (max_descent_return)
       *max_descent_return = imlib_get_maximum_font_descent();
-
-   return;
-   lbearing_return = NULL;
-   rbearing_return = NULL;
 }
 
 #else /* USE_IMLIB1 */
