@@ -368,12 +368,12 @@ load (ImlibImage *im,
 		    {
 		       for (x = 0; x < w; x++)
 			 {
-			    *ptr2 = 0xff000000 | 
+			    *ptr2 = (ptr[3] << 24) |  
 			       (ptr[0] << 16) | 
 			       (ptr[1] << 8) |  
 			       ptr[2];
 			    ptr2++;
-			    ptr += 3;
+			    ptr += 4;
 			 }
 		    }
 		  else
@@ -424,42 +424,103 @@ save (ImlibImage *im,
       char progress_granularity)
 {
    FILE               *f;
-   DATA8              *buf;
+   DATA8              *buf, *bptr;
    DATA32             *ptr;
-   int                 y = 0, quality = 75;
-   ImlibImageTag      *tag;
-
+   int                 x, y, pl = 0;
+   char                pper = 0;
+   
    /* no image data? abort */
    if (!im->data)
       return 0;
-   /* allocate a small buffer to convert image data */
-   buf = malloc(im->w * 3 * sizeof(DATA8));
-   if (!buf)
-      return 0;
    f = fopen(im->file, "wb");
    if (!f)
+      return 0;
+   /* if the image has a useful alpha channel */
+   if (im->flags & F_HAS_ALPHA)
      {
-	free(buf);
-	return 0;
-     }
-   /* look for tags attached to image to get extra parameters liek quality */
-   /* settigns etc. - thsi si the "api" to hint for extra information for */
-   /* saver modules */
-   tag = __imlib_GetTag(im, "quality");
-   if (tag)
-      quality = tag->val;
-   if (quality < 1)
-      quality = 1;
-   if (quality > 100)
-      quality = 100;
-
-     {
-	if (progress)
+	/* allocate a small buffer to convert image data */
+	buf = malloc(im->w * 4 * sizeof(DATA8));
+	if (!buf)
 	  {
-	     char per;
-	     
-	     per = (char)((100 * y) / im->h);
-	     progress(im, per, 0, y, im->w, 1);
+	     fclose(f);
+	     return 0;
+	  }
+	ptr = im->data;
+	fprintf(f, 
+		"P8\n"
+		"# PNM File written by Imlib2\n"
+		"%i %i\n"
+		"255\n", im->w, im->h);
+	for (y = 0; y < im->h; y++)
+	  {
+	     bptr = buf;
+	     for (x = 0; x < im->w; x++)
+	       {
+		  bptr[0] = ((*ptr) >> 16) & 0xff;
+		  bptr[1] = ((*ptr) >> 8 ) & 0xff;
+		  bptr[2] = ((*ptr)      ) & 0xff;
+		  bptr[3] = ((*ptr) >> 24) & 0xff;
+		  bptr += 4;
+		  ptr++;
+	       }
+	     fwrite(buf, im->w * 4, 1, f);
+	     if (progress)
+	       {
+		  char per;
+		  int l;
+		  
+		  per = (char)((100 * y) / im->h);
+		  if ((per - pper) >= progress_granularity)
+		    {
+		       l = y - pl;
+		       progress(im, per, 0, (y - l), im->w, l);
+		       pper = per;
+		       pl = y;
+		    }
+	       }
+	  }
+     }
+   else
+     {
+	/* allocate a small buffer to convert image data */
+	buf = malloc(im->w * 3 * sizeof(DATA8));
+	if (!buf)
+	  {
+	     fclose(f);
+	     return 0;
+	  }
+	ptr = im->data;
+	fprintf(f, 
+		"P6\n"
+		"# PNM File written by Imlib2\n"
+		"%i %i\n"
+		"255\n", im->w, im->h);
+	for (y = 0; y < im->h; y++)
+	  {
+	     bptr = buf;
+	     for (x = 0; x < im->w; x++)
+	       {
+		  bptr[0] = ((*ptr) >> 16) & 0xff;
+		  bptr[1] = ((*ptr) >> 8 ) & 0xff;
+		  bptr[2] = ((*ptr)      ) & 0xff;
+		  bptr += 3;
+		  ptr++;
+	       }
+	     fwrite(buf, im->w * 3, 1, f);
+	     if (progress)
+	       {
+		  char per;
+		  int l;
+		  
+		  per = (char)((100 * y) / im->h);
+		  if ((per - pper) >= progress_granularity)
+		    {
+		       l = y - pl;
+		       progress(im, per, 0, (y - l), im->w, l);
+		       pper = per;
+		       pl = y;
+		    }
+	       }
 	  }
      }
    /* finish off */
