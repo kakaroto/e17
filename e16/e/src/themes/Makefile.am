@@ -15,15 +15,15 @@ THEMES_PL = BrushedMetal-Tigert ShinyMetal
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(ethemedir)
 	for t in $(THEMES); do \
-		gzip -d -c < $(srcdir)/$$t.etheme | (cd $(DESTDIR)$(ethemedir); rm -rf $$t; mkdir $$t; cd $$t; tar -xmf -); \
+		gzip -d -c < $(srcdir)/$$t.etheme | (cd $(DESTDIR)$(ethemedir); mkdir -p $$t; cd $$t; tar -xmf -); \
 	done
 # Japanese
 	for t in $(THEMES_JA); do \
-		gzip -d -c < $(srcdir)/$$t.etheme.ja | (cd $(DESTDIR)$(ethemedir); rm -rf $$t; mkdir $$t; cd $$t; tar -xmf -); \
+		gzip -d -c < $(srcdir)/$$t.etheme.ja | (cd $(DESTDIR)$(ethemedir); mkdir -p $$t; cd $$t; tar -xmf -); \
 	done
 #Polish
 	for t in $(THEMES_PL); do \
-		gzip -d -c < $(srcdir)/$$t.etheme.pl | (cd $(DESTDIR)$(ethemedir); rm -rf $$t; mkdir $$t; cd $$t; tar -xmf -); \
+		gzip -d -c < $(srcdir)/$$t.etheme.pl | (cd $(DESTDIR)$(ethemedir); mkdir -p $$t; cd $$t; tar -xmf -); \
 	done
 	if [ -n "$(USER)" ]; then chown -R $(USER) $(DESTDIR)$(ethemedir); else chown -R root $(DESTDIR)$(ethemedir); fi
 
