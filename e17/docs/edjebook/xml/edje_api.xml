@@ -100,10 +100,12 @@ argument, a void pointer to any data you want passed to the callback function.
 
         ...
 
-void prev_file(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
+void prev_file(void *user_data, Evas_Object *obj, const char *em, const char *src){
+        player_session *data;
 
         printf("DEBUG: Previous File Called\n");        /* Report what we're doing for debugging purposes */
 
+        data = user_data;
         ecore_idler_del(data->play_idler);      /* Stop the current playing stream */
 
         data->play_list = evas_list_prev(data->play_list);      /* Get the previous list item */
