@@ -94,6 +94,7 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Container *c;
 	Ewl_Object *child;
 	int x;
+	int i = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -103,7 +104,6 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	x = CURRENT_X(w);
 	ewd_list_goto_first(c->children);
 
-	int i = 0;
 	while ((child = ewd_list_next(c->children))) {
 		ewl_object_request_position(child, x, CURRENT_Y(w));
 
