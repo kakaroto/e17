@@ -1031,3 +1031,11 @@ Mon Aug 23 14:06:19 PDT 1999
 
 fixed group remembering, some other group stuff, iconfication stuff, alertbox 
 stuff - god - almost everything got a fix somewhere... :) 
+
+-------------------------------------------------------------------------------
+
+Mon Aug 23 16:17:33 PDT 1999
+(Raster)
+
+menus stay onscreen with menusonscreen on top and left sides now. :) also side
+ways starup screen patch in :)

@@ -310,11 +310,15 @@ ShowMenu(Menu * m, char noshow)
 	   wx = root.w - (int)mw - ((int)mw - (int)w);
 	else
 	   wx = mode.x - x - ((int)w / 2);
-
+	if ((wx - ((int)w / 2)) < 0)
+	   wx = 0;
+	   
 	if (mode.y + (int)mh > (int)root.h)
 	   wy = (int)root.h - (int)mh;
 	else
 	   wy = mode.y - y - ((int)h / 2);
+	if ((wy - ((int)h / 2)) < 0)
+	   wy = 0;
      }
 
    if ((mode.x >= 0) && (mode.y >= 0))

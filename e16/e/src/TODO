@@ -6,6 +6,7 @@ user: finer grained control on selecting icon display policy
 kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
+raster: group properties are not remembered :(
 raster: tooltips fro pager names and iconbox names runs off right edge
 raster: add dnd to iconbox
 raster: icoify animation suport
