@@ -1,0 +1,13 @@
+Source: erss
+Section: x11
+Priority: optional
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Build-Depends: libedb1-dev, libevas2-dev, libecore1-dev, libedje0-dev, libewd0-dev, debhelper (>> 4.0.0)
+Standards-Version: 3.6.1.0
+
+Package: erss
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: erss
+ EFL libs based RSS feed reader.

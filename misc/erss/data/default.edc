@@ -1,0 +1,118 @@
+
+collections {
+  group {
+    name, "erss";
+    
+    parts {
+    
+      part {
+        name, "header";
+				type, TEXT;
+				effect, SOFT_SHADOW;
+
+        description {
+          state, "default" 0.0;
+          color, 255 255 255 128;
+					text {
+						text, "test 1";
+						font, "Vera";
+						size, 13;
+						fit, 0 0;
+						align, 0.0 1.0;
+					}
+        }
+
+			}
+
+		}
+	}
+
+	group {
+		name, "erss_clock";
+
+		parts {
+			part {
+				name, "clock";
+				type, TEXT;
+				effect, SOFT_SHADOW;
+
+				description {
+				state, "default" 0.0;
+				color, 255 255 255 100;
+					text {
+						text, "";
+						font, "Vera";
+						size, 8;
+						fit, 0 0;
+						align, 0.0 1.0;
+					}
+				}
+			}
+		
+
+		}
+	}
+
+	group {
+		name, "erss_item";
+
+		parts {
+
+			part {
+				name, "article";
+				type, TEXT;
+				effect, SOFT_SHADOW;
+
+				description {
+					state, "default" 0.0;
+					color, 255 255 255 128;
+					text {
+					  text, "";
+						font, "Vera";
+						size, 9;
+						fit, 0 0;
+						align, 0.0 1.0;
+					}
+				}
+        
+				description {
+          state, "over" 0.0;
+          color, 255 255 255 255;
+					text {
+						text, "test 2";
+						font, "Vera";
+						size, 9;
+						fit, 0 0;
+						align, 0.0 1.0;
+					}
+        }
+			}
+		}
+
+		programs {
+			program {
+				name, "exec";
+				signal, "mouse,clicked,1";
+				source, "article";
+				action, SIGNAL_EMIT "exec" "erss2";
+			}
+			program {
+				name, "item.over";
+				signal, "mouse,in";
+				source, "article";
+				action, STATE_SET "over" 0.0;
+				transition, LINEAR, 0.0;
+				target, "article";
+			}
+
+			program {
+				name, "item.out";
+				signal, "mouse,out";
+				source, "article";
+				action, STATE_SET "default" 0.0;
+				transition, SINUSOIDAL, 0.8;
+				target, "article";
+			}
+	}
+
+}
