@@ -811,7 +811,7 @@ main(int argc, char *argv[])
       {
          syslog(LOG_CRIT, "Failed to load theme %s\n", buf);
          entrance_session_free(session);
-         exit(1);
+         exit(EXITCODE);
       }
       evas_object_move(edje, 0, 0);
       evas_object_resize(edje, g_x, g_y);
