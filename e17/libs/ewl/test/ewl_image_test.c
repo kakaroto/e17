@@ -7,6 +7,8 @@ Ewl_Widget     *image_box;
 Ewl_Widget     *image;
 Ewd_DList      *images;
 Ewl_Widget     *entry_path;
+Ewl_Widget	*note_box;
+Ewl_Widget	*note;
 
 
 void            __create_image_test_window(Ewl_Widget * w, void *ev_data,
@@ -196,17 +198,19 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
 	ewl_object_set_alignment(EWL_OBJECT(button_hbox), EWL_ALIGNMENT_CENTER);
-	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 112, 38);
+	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 300, 26);
 	ewl_container_append_child(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
 
-	button_prev = ewl_button_new(NULL);
-	button_load = ewl_button_new(NULL);
-	button_next = ewl_button_new(NULL);
+	button_prev = ewl_button_new("Previous");
+	button_load = ewl_button_new("Load");
+	button_next = ewl_button_new("Next");
 
-	ewl_object_set_custom_size(EWL_OBJECT(button_prev), 32, 32);
-	ewl_object_set_custom_size(EWL_OBJECT(button_load), 32, 32);
-	ewl_object_set_custom_size(EWL_OBJECT(button_next), 32, 32);
+/*
+	ewl_object_set_custom_size(EWL_OBJECT(button_prev), 32, NULL);
+	ewl_object_set_custom_size(EWL_OBJECT(button_load), 32, NULL);
+	ewl_object_set_custom_size(EWL_OBJECT(button_next), 32, NULL);
+*/
 
 	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_prev);
 	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_load);
@@ -267,6 +271,20 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(button_load);
 	ewl_widget_show(button_next);
 
+
+	note_box = ewl_hbox_new();
+	ewl_container_append_child(EWL_CONTAINER(image_box), note_box);
+	ewl_object_set_alignment(EWL_OBJECT(note_box), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_maximum_h(EWL_OBJECT(note_box), 20);
+	ewl_widget_show(note_box);
+
+	note = ewl_text_new("These buttons don't do shit.");
+	ewl_text_set_color(EWL_TEXT(note), 255, 0, 0, 255);
+	ewl_container_append_child(EWL_CONTAINER(note_box), note);
+	ewl_widget_show(note);
+
+
+
 	image_file = NULL;
 
 	if ((__image_exists(PACKAGE_DATA_DIR "/images/e17-border.bits.db"))
@@ -280,6 +298,9 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (image_file)
 		ewd_dlist_append(images, image_file);
+
+	        ewl_widget_show(image);
+
 
 	return;
 	ev_data = NULL;
