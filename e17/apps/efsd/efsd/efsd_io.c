@@ -90,7 +90,6 @@ read_data(int sockfd, void *dest, int size)
   while (num_left)
     {
     again:
-      errno = 0;
       num_read = read(sockfd, ptr, num_left);
 
       if (num_read < 0)
@@ -166,48 +165,55 @@ write_data(int sockfd, void *data, int size)
   int             result;
   struct timeval  t0;
   struct timeval  t1;
+  int             num_left, num_written;
+  char           *ptr;
 
   D_ENTER;
 
   if (sockfd < 0)
     D_RETURN_(-1);
 
+  ptr = (char*)data;
+  num_left = size;
+  num_written = 0;
+
   gettimeofday(&t0, NULL);
 
-  for ( ; ; )
+  while (num_left)
     {
-      if ( (result = write(sockfd, data, size)) != size)
+    again:
+      num_written = write(sockfd, ptr, num_left);
+
+      if (num_written < 0)
 	{
-	  if (result < 0)
+	  if (errno == EAGAIN)
 	    {
-	      if (errno == EAGAIN)
+	      gettimeofday(&t1, NULL);
+	      if (t0.tv_sec < t1.tv_sec &&
+		  t0.tv_usec < t1.tv_usec)
 		{
-		  gettimeofday(&t1, NULL);
-		  if (t0.tv_sec < t1.tv_sec &&
-		      t0.tv_usec < t1.tv_usec)
-		    {
-		      D_RETURN_(-1);
-		    }
-		}
-	      else if (errno == EPIPE)
-		{
-		  D(("Broken pipe in write_data()\n"));
 		  D_RETURN_(-1);
 		}
-	      else		
-		{
-		  perror("Write error:");
-		  D_RETURN_(-1);
-		}
+	      else
+		goto again;
+	    }
+	  else if (errno == EPIPE)
+	    {
+	      D(("Broken pipe in write_data()\n"));
+	      D_RETURN_(-1);
+	    }
+	  else		
+	    {
+	      perror("Write error:");
+	      D_RETURN_(-1);
 	    }
 	}
-      else
-	{
-	  break;
-	}
+
+      num_left -= num_written;
+      ptr += num_written;
     }
 
-  D_RETURN_(0);  
+  D_RETURN_(size - num_left);  
 }
 
 
