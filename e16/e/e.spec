@@ -14,6 +14,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Obsoletes: enlightenment < 0.16.8
+Requires: imlib2 >= 1.2.0
 
 %description
 Enlightenment is a window manager for the X Window System that
