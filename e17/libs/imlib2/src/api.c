@@ -1,23 +1,27 @@
 #include "config.h"
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
+#endif
 #include <string.h>
 #include <stdarg.h>
 #include "common.h"
 #include "colormod.h"
 #include "image.h"
 #include "scale.h"
-#include "context.h"
-#include "rgba.h"
-#include "color.h"
-#include "file.h"
-#include "grab.h"
 #include "blend.h"
+#ifndef X_DISPLAY_MISSING
+#include "context.h"
+#include "color.h"
+#include "grab.h"
 #include "rend.h"
-#include "draw.h"
-#include "updates.h"
+#include "rgba.h"
 #include "ximage.h"
+#include "draw.h"
+#endif
+#include "file.h"
+#include "updates.h"
 #include "rgbadraw.h"
 #include "Imlib2.h"
 #ifdef HAVE_FREETYPE_FREETYPE_H
@@ -66,12 +70,14 @@ typedef void (*Imlib_Internal_Progress_Function) (void *, char, int, int, int,
 typedef void (*Imlib_Internal_Data_Destructor_Function) (void *, void *);
 
 /* context - all operations use this context for their state */
+#ifndef X_DISPLAY_MISSING
 static Display *ctxt_display = NULL;
 static Visual *ctxt_visual = NULL;
 static Colormap ctxt_colormap = 0;
 static int ctxt_depth = 0;
 static Drawable ctxt_drawable = 0;
 static Pixmap ctxt_mask = 0;
+#endif
 static char ctxt_anti_alias = 1;
 static char ctxt_dither = 0;
 static char ctxt_blend = 1;
@@ -109,6 +115,7 @@ imlib_context_get_cliprect(int *x, int *y, int *w, int *h)
    *h = ctxt_cliprect.h;
 }
 
+#ifndef X_DISPLAY_MISSING
 void
 imlib_context_set_display(Display * display)
 {
@@ -169,6 +176,7 @@ imlib_context_get_mask(void)
 {
    return ctxt_mask;
 }
+#endif
 
 void
 imlib_context_set_dither_mask(char dither_mask)
@@ -366,17 +374,23 @@ imlib_set_cache_size(int bytes)
 int
 imlib_get_color_usage(void)
 {
+#ifndef X_DISPLAY_MISSING
    return (int) _max_colors;
+#else
+   return 256;
+#endif
 }
 
 void
 imlib_set_color_usage(int max)
 {
+#ifndef X_DISPLAY_MISSING
    if (max < 2)
       max = 2;
    else if (max > 256)
       max = 256;
    _max_colors = max;
+#endif
 }
 
 void
@@ -386,6 +400,7 @@ imlib_flush_loaders(void)
    LTDL_Exit();
 }
 
+#ifndef X_DISPLAY_MISSING
 int
 imlib_get_visual_depth(Display * display, Visual * visual)
 {
@@ -404,6 +419,7 @@ imlib_get_best_visual(Display * display, int screen, int *depth_return)
                               depth_return, NULL);
    return __imlib_BestVisual(display, screen, depth_return);
 }
+#endif
 
 Imlib_Image
 imlib_load_image(const char *file)
@@ -765,6 +781,7 @@ imlib_image_set_has_alpha(char has_alpha)
       UNSET_FLAG(im->flags, F_HAS_ALPHA);
 }
 
+#ifndef X_DISPLAY_MISSING
 void
 imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
                                      Pixmap * mask_return)
@@ -877,6 +894,7 @@ imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
                        ctxt_anti_alias, ctxt_dither, ctxt_blend, 0,
                        ctxt_color_modifier, ctxt_operation);
 }
+#endif
 
 void
 imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
@@ -969,6 +987,7 @@ imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
    return NULL;
 }
 
+#ifndef X_DISPLAY_MISSING
 Imlib_Image
 imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
                                  int height, char need_to_grab_x)
@@ -1147,6 +1166,7 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
                                      ctxt_colormap, ctxt_depth, x, y, width,
                                      height, domask, need_to_grab_x);
 }
+#endif
 
 Imlib_Image
 imlib_clone_image(void)
@@ -1343,6 +1363,7 @@ imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y, int width,
    u->h = height;
 }
 
+#ifndef X_DISPLAY_MISSING
 void
 imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
 {
@@ -1369,6 +1390,7 @@ imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
    }
    __imlib_SetMaxXImageCount(ctxt_display, 0);
 }
+#endif
 
 Imlib_Updates
 imlib_updates_init(void)
@@ -2659,6 +2681,7 @@ imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
                                    ctxt_color_modifier, ctxt_operation);
 }
 
+#ifndef X_DISPLAY_MISSING
 void
 imlib_render_image_on_drawable_skewed(int source_x, int source_y,
                                       int source_width, int source_height,
@@ -2709,6 +2732,7 @@ imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
                              ctxt_dither_mask, ctxt_color_modifier,
                              ctxt_operation);
 }
+#endif
 
 void
 imlib_image_filter(void)

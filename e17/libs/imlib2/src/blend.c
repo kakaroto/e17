@@ -1,5 +1,4 @@
 #include "common.h"
-#include <X11/Xlib.h>
 #include <math.h>
 #include "colormod.h"
 #include "image.h"

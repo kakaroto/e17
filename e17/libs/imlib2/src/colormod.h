@@ -9,7 +9,6 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
-#include <X11/Xlib.h>
 #include "image.h"
 
 typedef struct _imlib_color_modifier    ImlibColorModifier;

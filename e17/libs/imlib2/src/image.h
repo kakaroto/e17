@@ -1,10 +1,17 @@
 #ifndef __IMAGE
 # define __IMAGE 1
 
+#include "common.h"
+#ifndef X_DISPLAY_MISSING
+#include <X11/Xlib.h>
+#endif
+
 #include "ltdl.h"		/* for lt_dlhandle definition */
 
 typedef struct _imlibimage              ImlibImage;
+#ifndef X_DISPLAY_MISSING
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
+#endif
 typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
 typedef struct _imlibimagetag           ImlibImageTag;
@@ -79,6 +86,7 @@ struct _imlibimage
    ImlibImageTag    *tags;
 };
 
+#ifndef X_DISPLAY_MISSING
 struct _imlibimagepixmap
 {
    int               w, h;
@@ -97,6 +105,7 @@ struct _imlibimagepixmap
    DATABIG           modification_count;
    ImlibImagePixmap *next;
 };
+#endif
 
 struct _imlibloader
 {
@@ -129,6 +138,7 @@ void              __imlib_AddImageToCache(ImlibImage *im);
 void              __imlib_RemoveImageFromCache(ImlibImage *im);
 int               __imlib_CurrentCacheSize(void);
 void              __imlib_CleanupImageCache(void);
+#ifndef X_DISPLAY_MISSING
 ImlibImagePixmap *__imlib_ProduceImagePixmap(void);
 void              __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip);
 ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, 
@@ -141,6 +151,7 @@ ImlibImagePixmap *__imlib_FindCachedImagePixmapByID(Display *d, Pixmap p);
 void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
 void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
 void              __imlib_CleanupImagePixmapCache(void);
+#endif
 ImlibLoader      *__imlib_ProduceLoader(char *file);
 char            **__imlib_ListLoaders(int *num_ret);
 char            **__imlib_TrimLoaderList(char **list, int *num);
@@ -157,11 +168,19 @@ ImlibImage       *__imlib_LoadImage(const char *file,
 				    ImlibProgressFunction progress,
 				    char progress_granularity, char immediate_load,
 				    char dont_cache, ImlibLoadError *er);
+#ifndef X_DISPLAY_MISSING
 ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
+#endif
 void              __imlib_FreeImage(ImlibImage *im);
+#ifndef X_DISPLAY_MISSING
 void              __imlib_FreePixmap(Display *d, Pixmap p);
+#endif
 void              __imlib_FlushCache(void);
+#ifndef X_DISPLAY_MISSING
 void              __imlib_DirtyPixmapsForImage(ImlibImage *im);
+#else
+#define	__imlib_DirtyPixmapsForImage(x)	/* x */
+#endif
 void              __imlib_DirtyImage(ImlibImage *im);
 void              __imlib_SaveImage(ImlibImage *im, const char *file,
 				    ImlibProgressFunction progress,

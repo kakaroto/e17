@@ -6,7 +6,9 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
+#endif
 #include "image.h"
 #include "file.h"
 #include "loaderpath.h"
@@ -16,7 +18,9 @@ extern char *__XOS2RedirRoot(const char *);
 #endif
 
 static ImlibImage *images = NULL;
+#ifndef X_DISPLAY_MISSING
 static ImlibImagePixmap *pixmaps = NULL;
+#endif
 static ImlibLoader *loaders = NULL;
 static int cache_size = 4096 * 1024;
 
@@ -122,7 +126,9 @@ __imlib_SetCacheSize(int size)
 {
    cache_size = size;
    __imlib_CleanupImageCache();
+#ifndef X_DISPLAY_MISSING
    __imlib_CleanupImagePixmapCache();
+#endif
 }
 
 /* return the cache size */
@@ -153,7 +159,9 @@ __imlib_ProduceImage(void)
 void
 __imlib_ConsumeImage(ImlibImage * im)
 {
+#ifndef X_DISPLAY_MISSING
 ImlibImagePixmap *ip;
+#endif
   
    __imlib_FreeAllTags(im);
    if (im->file)
@@ -163,6 +171,7 @@ ImlibImagePixmap *ip;
    if (im->format)
       free(im->format);
    free(im);
+#ifndef X_DISPLAY_MISSING
    ip = pixmaps;
    while (ip)
      {
@@ -173,6 +182,7 @@ ImlibImagePixmap *ip;
 	  }
 	ip = ip->next;
      }
+#endif
 }
 
 ImlibImage *
@@ -241,7 +251,9 @@ int
 __imlib_CurrentCacheSize(void)
 {
    ImlibImage *im;
+#ifndef X_DISPLAY_MISSING
    ImlibImagePixmap *ip;
+#endif
    int current_cache = 0;
 
    /* go through the image cache */
@@ -259,6 +271,7 @@ __imlib_CurrentCacheSize(void)
             im = im->next;
             __imlib_RemoveImageFromCache(tmp_im);
             __imlib_ConsumeImage(tmp_im);
+#ifndef X_DISPLAY_MISSING
 	    ip = pixmaps;
 	    while (ip)
 	      {
@@ -269,6 +282,7 @@ __imlib_CurrentCacheSize(void)
 		   }
 		 ip = ip->next;
 	      }
+#endif
             continue;
          }
          /* it's valid but has 0 ref's - append to cache size count */
@@ -277,6 +291,7 @@ __imlib_CurrentCacheSize(void)
       }
       im = im->next;
    }
+#ifndef X_DISPLAY_MISSING
    /* go through the pixmaps */
    ip = pixmaps;
    while (ip)
@@ -317,6 +332,7 @@ __imlib_CurrentCacheSize(void)
       }
       ip = ip->next;
    }
+#endif
    return current_cache;
 }
 
@@ -365,6 +381,7 @@ __imlib_CleanupImageCache(void)
    }
 }
 
+#ifndef X_DISPLAY_MISSING
 /* create a pixmap cache data struct */
 ImlibImagePixmap *
 __imlib_ProduceImagePixmap(void)
@@ -532,6 +549,7 @@ __imlib_CleanupImagePixmapCache(void)
       current_cache = __imlib_CurrentCacheSize();
    }
 }
+#endif
 
 #define LOADERS_UNINITIALISED -4444
 
@@ -1163,7 +1181,8 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    return im;
 }
 
-/* find an imagepixmap cache enctyr by the display and pixmap id */
+#ifndef X_DISPLAY_MISSING
+/* find an imagepixmap cache entry by the display and pixmap id */
 ImlibImagePixmap *
 __imlib_FindImlibImagePixmapByID(Display * d, Pixmap p)
 {
@@ -1187,6 +1206,7 @@ __imlib_FindImlibImagePixmapByID(Display * d, Pixmap p)
    }
    return NULL;
 }
+#endif
 
 /* free and image - if its uncachable and refcoutn is 0 - free it in reality */
 void
@@ -1211,6 +1231,7 @@ __imlib_FreeImage(ImlibImage * im)
 }
 
 
+#ifndef X_DISPLAY_MISSING
 /* free a cached pixmap */
 void
 __imlib_FreePixmap(Display * d, Pixmap p)
@@ -1245,9 +1266,9 @@ __imlib_FreePixmap(Display * d, Pixmap p)
    }
 }
 
-/* mark all pixmaps generated from this image as diryt so the cache code */
-/* wont pick up on them again sicne they are now invalid sicn ehte original */
-/* data they were generated form has changed */
+/* mark all pixmaps generated from this image as dirty so the cache code */
+/* wont pick up on them again since they are now invalid since the original */
+/* data they were generated from has changed */
 void
 __imlib_DirtyPixmapsForImage(ImlibImage * im)
 {
@@ -1264,6 +1285,7 @@ __imlib_DirtyPixmapsForImage(ImlibImage * im)
    }
    __imlib_CleanupImagePixmapCache();
 }
+#endif
 
 /* dirty and image by settings its invalid flag */
 void

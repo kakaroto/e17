@@ -1,6 +1,6 @@
+#include "common.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include "common.h"
 #include "color.h"
 
 DATA8  _pal_type = 0;

@@ -13,19 +13,22 @@ INCLUDES	     = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 
 lib_LTLIBRARIES      = libImlib2.la
 include_HEADERS      = Imlib2.h
-libImlib2_la_SOURCES = rend.c ximage.c scale.c rgba.c image.c color.c grab.c \
-                       blend.c file.c rgbadraw.c api.c draw.c context.c \
+libImlib2_la_SOURCES = scale.c image.c blend.c file.c rgbadraw.c api.c \
 		       updates.c colormod.c font.c format.c grad.c rotate.c \
 		       filter.c script.c dynamic_filters.c \
-                       Imlib2.h image.h scale.h blend.h context.h updates.h \
-		       color.h draw.h rend.h ximage.h colormod.h file.h \
-		       rgba.h common.h grab.h rgbadraw.h font.h format.h \
+                       Imlib2.h image.h scale.h blend.h updates.h colormod.h \
+		       file.h common.h rgbadraw.h font.h format.h \
 		       rotate.h grad.h filter.h script.h dynamic_filters.h \
 		       asm_blend.S asm_rgba.S asm_scale.S asm_rotate.S \
 		       asm_blend_cmod.S
-libImlib2_la_LIBADD   = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
-                       -lX11 -lXext -lttf $(LDFLAGS)
-libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
+EXTRA_libImlib2_la_SOURCES = rend.c ximage.c rgba.c color.c grab.c draw.c \
+			     context.c color.h context.h draw.h grab.h rend.h \
+			     rgba.h ximage.h
+
+libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ \
+                       $(top_builddir)/libltdl/libltdlc.la \
+                       $(x_libs) -lttf $(LDFLAGS)
+libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(X_OBJS)
 libImlib2_la_LDFLAGS      = -version-info 1:0:0
 
 SYS_LOADERS_PATH = @pkglibdir@

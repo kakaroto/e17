@@ -1,3 +1,4 @@
+#include "common.h"
 #include <stdio.h>
 #include <ctype.h>
 #ifdef __EMX__

@@ -10,7 +10,6 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
-#include <X11/Xlib.h>
 #include "image.h"
 #include "file.h"
 #include "dynamic_filters.h"

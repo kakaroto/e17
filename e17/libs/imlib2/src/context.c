@@ -1,5 +1,5 @@
-#include <X11/Xlib.h>
 #include "common.h"
+#include <X11/Xlib.h>
 #include "image.h"
 #include "context.h"
 #include "color.h"

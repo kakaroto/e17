@@ -10,7 +10,9 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
+#endif
 #include "Imlib2.h"
 #include "image.h"
 #include "file.h"

@@ -1,6 +1,5 @@
 #include "config.h"
 #include "common.h"
-#include <X11/Xlib.h>
 #include "colormod.h"
 #include "image.h"
 #include "blend.h"

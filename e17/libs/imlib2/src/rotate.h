@@ -1,7 +1,6 @@
 #ifndef __ROTATE
 #define __ROTATE 1
 
-#include <X11/Xlib.h>
 #include "image.h"
 #include "colormod.h"
 #include "blend.h"

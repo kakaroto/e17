@@ -1,11 +1,8 @@
-#include <X11/Xlib.h>
-#include <math.h>
 #include "common.h"
+#include <math.h>
 #include "colormod.h"
 #include "image.h"
 #include "scale.h"
-#include "context.h"
-#include "rgba.h"
 #include "blend.h"
 #include "updates.h"
 #include "rgbadraw.h"

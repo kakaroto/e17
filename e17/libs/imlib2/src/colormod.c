@@ -2,7 +2,6 @@
 #include "colormod.h"
 #include "file.h"
 #include "loaderpath.h"
-#include <X11/Xlib.h>
 #include <math.h>
 #include "image.h"
 #include "blend.h"

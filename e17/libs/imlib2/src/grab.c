@@ -1,10 +1,10 @@
+#include "common.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include "common.h"
 #include "grab.h"
 
 static char         _x_err = 0;

@@ -1,7 +1,7 @@
+#include "common.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
-#include "common.h"
 #include "colormod.h"
 #include "image.h"
 #include "scale.h"
