@@ -25,6 +25,7 @@
  */
 struct _Entrance_Session
 {
+   char *display;               /* The display the session is running on */
    char *session;               /* the current session in context */
    Ecore_Evas *ee;              /* the ecore_evas */
    Evas_Object *edje;           /* the main theme edje */
@@ -37,7 +38,7 @@ struct _Entrance_Session
 
 typedef struct _Entrance_Session Entrance_Session;
 
-Entrance_Session *entrance_session_new(const char *config);
+Entrance_Session *entrance_session_new(const char *config, char *display);
 void entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee);
 void entrance_session_free(Entrance_Session * e);
 void entrance_session_run(Entrance_Session * e);

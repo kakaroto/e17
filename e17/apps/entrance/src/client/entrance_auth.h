@@ -58,6 +58,7 @@ struct _Entrance_Auth
    char user[PATH_MAX];
    char pass[PATH_MAX];
    char **env;
+   char *display;
 };
 typedef struct _Entrance_Auth Entrance_Auth;
 

@@ -660,9 +660,10 @@ main(int argc, char *argv[])
    }
 
    if (!entrance_ipc_init(server_pid))
-      return -1;
+      return -1; 
 
-   session = entrance_session_new(config);
+   session = entrance_session_new(config, display);
+
    if (config)
       free(config);
 

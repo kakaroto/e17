@@ -27,12 +27,13 @@ static void _entrance_session_user_list_fix(Entrance_Session * e);
 
 /**
  * entrance_session_new: allocate a new  Entrance_Session
- * @param config - parse this config file instead of the normal system one
+ * @param config Parse this config file instead of the normal system one
+ * @param config The display this session will be running on
  * @return a valid Entrance_Session
  * Also Allocates the auth, and parse the config struct 
  */
 Entrance_Session *
-entrance_session_new(const char *config)
+entrance_session_new(const char *config, char *display)
 {
    Entrance_Session *e;
    char *db;
@@ -46,7 +47,9 @@ entrance_session_new(const char *config)
    memset(e, 0, sizeof(struct _Entrance_Session));
 
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
+   e->display = display;
    e->auth = entrance_auth_new();
+   e->auth->display = display;
    e->config = entrance_config_parse(db);
    if (!e->config)
    {

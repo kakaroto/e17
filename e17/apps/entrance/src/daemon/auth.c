@@ -233,7 +233,7 @@ int
 entranced_auth_display_secure (Entranced_Display *d)
 {
    FILE              *auth_file;
-/* FILE              *host_file; */
+   FILE              *host_file;
    char              buf[PATH_MAX];
    char              hostname[1024];
 
@@ -285,7 +285,6 @@ entranced_auth_display_secure (Entranced_Display *d)
 
    fclose(auth_file);
    setenv("XAUTHORITY", d->authfile, TRUE);
-#if 0
    /* Write host access file */
    snprintf(buf, PATH_MAX, "/etc/X%d.hosts", d->dispnum);
    if (!(host_file = fopen(buf, "w")))
@@ -295,7 +294,6 @@ entranced_auth_display_secure (Entranced_Display *d)
    }
    fprintf(host_file, "%s\n", d->hostname);
    fclose(host_file);
-#endif
    entranced_debug("entranced_auth_display_secure: Successfully set up access for %s (localhost)\n", d->name);
 
    return TRUE;

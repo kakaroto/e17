@@ -126,11 +126,6 @@ Entranced_Start_Server_Once(Entranced_Display * d)
 
    x_ready = 0;
 
-   /* Set display name */
-   if (d->name)
-      free(d->name);
-   d->name = strdup(getenv("DISPLAY"));
-
    /* Create server auth cookie */
    if (!entranced_auth_display_secure(d))
    {
@@ -139,7 +134,8 @@ Entranced_Start_Server_Once(Entranced_Display * d)
    }
    
    snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", X_SERVER, d->authfile, d->name);
-   
+   entranced_debug("Entranced_Start_Server_Once: Executing %s\n", x_cmd);
+
    /* x_exe = ecore_exe_run(d->xprog, d); */
    switch (xpid = fork())
    {
@@ -165,7 +161,10 @@ Entranced_Start_Server_Once(Entranced_Display * d)
         }
 
         if (!x_ready)
+        {
+           entranced_debug("Entranced_Start_Server_Once: Attempt to start X server failed.\n");
            d->status = NOT_RUNNING;
+        }
         else
            d->status = RUNNING;
 
@@ -380,7 +379,6 @@ main(int argc, char **argv)
    int nodaemon = 0;            /* TODO: Config-ize this variable */
    Entranced_Display *d;
    char *str = NULL;
-   char *disp = NULL;
    struct option d_opt[] = {
       {"config", 1, 0, 'c'},
       {"display", 1, 0, 'd'},
@@ -395,7 +393,6 @@ main(int argc, char **argv)
    ecore_init();
    ecore_app_args_set(argc, (const char **) argv);
 
-   putenv("DISPLAY");           /* Not sure why this is here :) */
    openlog("entranced", LOG_NOWAIT, LOG_DAEMON);
 
    /* Set up a spawner context */
@@ -415,7 +412,6 @@ main(int argc, char **argv)
            break;
         case 'd':
            d->name = strdup(optarg);
-           setenv("DISPLAY", optarg, 1);
            break;
         case 'n':
            nodaemon = 1;
@@ -447,14 +443,12 @@ main(int argc, char **argv)
       }
    }
 
-   /* TODO: Config-ize this */
-   if (!getenv("DISPLAY"))
-      setenv("DISPLAY", X_DISP, 1);
+   if (!d->name)
+      d->name = strdup(X_DISP);
    
-   disp = getenv("DISPLAY");
-   str = strstr(disp, ":");
+   str = strstr(d->name, ":");
 
-   if(!str || str >= (disp + strlen(disp) - 1))
+   if(!str || str >= (d->name + strlen(d->name) - 1))
       d->dispnum = 0;
    else
       d->dispnum = atoi(str + 1);

@@ -326,6 +326,9 @@ entrance_auth_setup_environment(Entrance_Auth * e)
    setenv("USER", e->pw->pw_name, 1);
    setenv("LOGNAME", e->pw->pw_name, 1);
 
+   if (e->display)
+      setenv("DISPLAY", e->display, 1);
+
    size = (strlen(_PATH_MAILDIR) + strlen(e->pw->pw_name) + 2);
    mail = (char *) malloc(sizeof(char) * size);
    snprintf(mail, size, "%s/%s", _PATH_MAILDIR, e->pw->pw_name);
