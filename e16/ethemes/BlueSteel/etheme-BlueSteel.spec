@@ -19,7 +19,7 @@ URL:		http://www.enlightenment.org/
 Requires: enlightenment >= 0.16.7
 
 %description
-The etheme-BlueSteel theme for Enlightenment.
+The BlueSteel theme for Enlightenment.
 This is part of the Enlightenment distribution.
 
 %changelog
