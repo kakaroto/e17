@@ -12,7 +12,7 @@
 extern Evas e_area;
 extern Evas_Object e_img;
 extern Evas_Object e_checks;
-extern Evas_Object e_btn1;
+extern Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
 extern GtkWidget *area, *window;
 extern GdkVisual *gdk_vis;
 extern GdkColormap *gdk_cmap;
@@ -104,15 +104,35 @@ void
 r_evas_toolbar_init()
 {
    /* Create the toolbar, but do not display */
-   int w, h;
+	 e_bs = evas_add_image_from_file(e_area, "../img/toolbar_shadow.png");
+   e_btn1 = evas_add_image_from_file(e_area, "../img/button_open.png");
+	 e_btn2 = evas_add_image_from_file(e_area, "../img/button_save.png");
+	 e_btn3 = evas_add_image_from_file(e_area, "../img/button_browse.png");
+	 e_btn4 = evas_add_image_from_file(e_area, "../img/button_info.png");
+	 e_btn5 = evas_add_image_from_file(e_area, "../img/button_close.png");
+	 
+	 evas_move(e_area, e_bs, 3, 3);
+   evas_move(e_area, e_btn1, 3, 3);
+	 evas_move(e_area, e_btn2, 24, 3);
+	 evas_move(e_area, e_btn3, 45, 3);
+	 evas_move(e_area, e_btn4, 66, 3);
+	 evas_move(e_area, e_btn5, 87, 3);
+	 
+	 evas_resize(e_area, e_bs, 115, 30);
+   evas_resize(e_area, e_btn1, 21, 21);
+	 evas_resize(e_area, e_btn2, 21, 21);
+	 evas_resize(e_area, e_btn3, 21, 21);
+	 evas_resize(e_area, e_btn4, 21, 21);
+	 evas_resize(e_area, e_btn5, 21, 21);
    
-   e_btn1 = evas_add_image_from_file(e_area, "../img/toolbar.png");
-   evas_get_image_size(e_area, e_btn1, &w, &h);
-   evas_move(e_area, e_btn1, 0, 0);
-   evas_resize(e_area, e_btn1, w, h);
-   evas_set_layer(e_area, e_checks, 0);
+	 evas_set_layer(e_area, e_checks, 0);
    evas_set_layer(e_area, e_img, 1);
+	 evas_set_layer(e_area, e_bs, 2);
    evas_set_layer(e_area, e_btn1, 2);
+	 evas_set_layer(e_area, e_btn2, 2);
+	 evas_set_layer(e_area, e_btn3, 2);
+	 evas_set_layer(e_area, e_btn4, 2);
+	 evas_set_layer(e_area, e_btn5, 2);
 }
 
 int
@@ -120,12 +140,19 @@ r_evas_load(char *img)
 {
    /* Load an image onto the Evas_Object 'e_img' */
    int w, h;
+
+	 /* If there is already an image in the object, destroy it */
+	 if(e_img)
+		 evas_del_object(e_area, e_img);
    
    e_img = evas_add_image_from_file(e_area, img);
    evas_get_image_size(e_area, e_img, &w, &h);
    evas_show(e_area, e_img);
    evas_move(e_area, e_img, 0, 0);
    evas_resize(e_area, e_img, w, h);
+
+	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_DOWN, r_cb_m_down, NULL);
+	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_UP, r_m_up, NULL);
    
    gtk_widget_set_usize(GTK_WIDGET(area), w, h);
    gtk_widget_set_usize(GTK_WIDGET(window), w, h);

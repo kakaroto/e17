@@ -12,7 +12,7 @@
 void
 r_gtk_init()
 {
-   extern GtkWidget *window, *area;
+   extern GtkWidget *window, *area, *filesel;
    
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_window_set_title(GTK_WINDOW(window), "Retina - Nothing Loaded...");
@@ -36,6 +36,12 @@ r_gtk_init()
    gtk_signal_connect(GTK_OBJECT(area), "button_release_event",
 		      GTK_SIGNAL_FUNC(r_gtk_area_b_release), NULL);
    gtk_widget_show(area);
+
+	 filesel = gtk_file_selection_new("Retina - Load Image...");
+	 gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button),
+	 	"clicked", (GtkSignalFunc) r_filesel_openfile, filesel);
+	 gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->cancel_button),
+		"clicked", (GtkSignalFunc) r_filesel_hide, filesel);
 }
 
 gboolean

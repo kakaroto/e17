@@ -13,10 +13,12 @@
 Evas e_area;
 Evas_Object e_img;
 Evas_Object e_checks;
-Evas_Object e_btn1, e_btn2, e_btn3;
+Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
 
 /* Global GTK+ Variables */
 GtkWidget *window, *area;
+GtkWidget *filesel;
+GtkWidget *bwin, *list;
 GdkVisual *gdk_vis;
 GdkColormap *gdk_cmap;
 Visual *vis;
@@ -50,8 +52,9 @@ main(int argc, char **argv)
       r_evas_load("../img/retina.png");
    }
    
-   /* Toolbar stuff */
+   /* Other initializers */
    r_evas_toolbar_init();
+	 r_browser_init();
    
    /* Evas Callback attachments */
    r_cb_init();
