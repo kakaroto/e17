@@ -606,7 +606,7 @@ XMMS_CB(playlist_remove) {
 
 XMMS_CB(playlist_clear) {
 	playlist_remove_all(e->playlist);
-	ui_zero_track_info();
+	ui_zero_track_info(e);
 }
 
 XMMS_CB(playlist_shuffle) {
