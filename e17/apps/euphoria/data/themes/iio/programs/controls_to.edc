@@ -99,7 +99,7 @@ program { name, "play_click"; signal, "mouse,down,*";source, PLAY;
 program { name, "play_unclick"; signal, "mouse,up,*"; source, PLAY;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PLAY;
 }
-program { name, "play_click"; signal, "mouse,down,*"; source, PLAY;
+program { name, "play_click_emission"; signal, "mouse,down,*"; source, PLAY;
 	action, SIGNAL_EMIT "PLAY" PLAY; }
 
 #define PREV "prev_button"
@@ -137,7 +137,7 @@ program { name, "next_click"; signal, "mouse,down,*"; source, NEXT;
 program { name, "next_unclick"; signal, "mouse,up,*"; source, NEXT;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, NEXT;
 }
-program { name, "next_click"; signal, "mouse,down,*"; source, NEXT;
+program { name, "next_click_emission"; signal, "mouse,down,*"; source, NEXT;
 	action, SIGNAL_EMIT "PLAY_NEXT" NEXT; }
 
 #define PAUSE "pause_button"
@@ -155,7 +155,7 @@ program { name, "pause_click"; signal, "mouse,down,*"; source, PAUSE;
 program { name, "pause_unclick"; signal, "mouse,up,*"; source, PAUSE;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PAUSE;
 }
-program { name, "pause_click"; signal, "mouse,down,*"; source, PAUSE;
+program { name, "pause_click_emission"; signal, "mouse,down,*"; source, PAUSE;
 	action, SIGNAL_EMIT "PAUSE" PAUSE; }
 
 #define STOP "stop_button"
@@ -174,7 +174,7 @@ program { name, "stop_click"; signal, "mouse,down,*"; source, STOP;
 program { name, "stop_unclick"; signal, "mouse,up,*"; source, STOP;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, STOP;
 }
-program { name, "stop_click"; signal, "mouse,down,*"; source, STOP;
+program { name, "stop_click_emission"; signal, "mouse,down,*"; source, STOP;
 	action, SIGNAL_EMIT "STOP" STOP; }
 ///////////////////////////////////////////////////////////////////////
 

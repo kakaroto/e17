@@ -52,7 +52,7 @@
                         }
 
                         program {
-                                name,       "previous_click";
+                                name,       "previous_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "previous_button";
                                 /* Emit signal to handler "previous file", from part/sender "previous_button" */
@@ -146,7 +146,7 @@
                         }
 
                         program {
-                                name,       "play_click";
+                                name,       "play_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "play_button";
                                 action,     SIGNAL_EMIT "PLAY" "play_button";
@@ -190,7 +190,7 @@
                         }
 
                         program {
-                                name,       "pause_click";
+                                name,       "pause_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "pause_button";
                                 action,     SIGNAL_EMIT "PAUSE" "pause_button";
@@ -248,7 +248,7 @@
                                 target,     "next_button";
                         }
                         program {
-                                name,       "next_click";
+                                name,       "next_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "next_button";
                                 action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";

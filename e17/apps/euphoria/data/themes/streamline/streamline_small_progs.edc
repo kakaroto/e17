@@ -19,7 +19,7 @@
                                 target,     "previous_button";
                         }
                         program {
-                                name,       "previous_click";
+                                name,       "previous_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "previous_button";
                                 action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
@@ -44,7 +44,7 @@
                                 target,     "play_button";
                         }
                         program {
-                                name,      "play_click";
+                                name,      "play_click_emission";
                                 signal,    "mouse,up,1";
                                 source,    "play_button";
                                 action,    SIGNAL_EMIT "PLAY" "play_button";
@@ -69,7 +69,7 @@
                                 target,     "pause_button";
                         }
                         program {
-                                name,      "pause_click";
+                                name,      "pause_click_emission";
                                 signal,    "mouse,up,1";
                                 source,    "pause_button";
                                 action,    SIGNAL_EMIT "PAUSE" "pause_button";
@@ -93,7 +93,7 @@
                                 target,     "next_button";
                         }
                         program {
-                                name,       "next_click";
+                                name,       "next_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "next_button";
                                 action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
@@ -119,7 +119,7 @@
                                 target,     "quit_button";
                         }
                         program {
-                                name,       "quit_click";
+                                name,       "quit_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "quit_button";
                                 action,     SIGNAL_EMIT "QUIT" "quit";
