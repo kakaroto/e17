@@ -550,9 +550,12 @@ menu, however.  Select the "Set Border Style" menu, and you will be presented
 with a list of available borders in this theme.  The most common use for this
 is to make an application shed its border, using the BORDERLESS border type.
 <p>
-If you want to remember the
-border style for the next time you run this application, you can always use the
-_Remember(properties) dialog to remember the current window border.
+You can always click with ALT + Right mouse button anywhere in the window to 
+bring up the window operations menu again.
+<p>
+If you want to remember the border style for the next time you run this 
+application, you can always use the _Remember(properties) dialog to remember 
+the current window border.
 
 
 
@@ -1348,6 +1351,14 @@ huhuhuhuh he said butter
 Frequently Asked Questions
 <p>
 <font face=aircut3/12 color=#ffffff>
-
-
-
+<p>
+Q: I can't find my iconbox, or change its settings.
+<br>
+A: There are two possibilities here.
+<p>
+1. You don't have an iconbox on your desktop right now. Just middle-click and 
+select Desktop/Create new iconbox
+<p>
+2. Your iconbox is set to transparent and borderless. Just minimise a window, 
+right click on it and everything will be froody.
+<p>
