@@ -40,7 +40,7 @@ EFreePixmap(Display * display, Pixmap pixmap)
    XFreePixmap(display, pixmap);
 }
 
-Window 
+Window
 ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
 {
    EXID               *xid;
@@ -587,7 +587,7 @@ DelXID(Window win)
      }
 }
 
-Window 
+Window
 ECreateEventWindow(Window parent, int x, int y, int w, int h)
 {
    Window              win;
@@ -604,7 +604,7 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
  * create a window which will accept the keyboard focus when no other 
  * windows have it
  */
-Window 
+Window
 ECreateFocusWindow(Window parent, int x, int y, int w, int h)
 {
    Window              win;
@@ -739,7 +739,7 @@ WinExists(Window win)
    EDBUG_RETURN(0);
 }
 
-Window 
+Window
 WindowAtXY_0(Window base, int bx, int by, int x, int y)
 {
    Window             *list = NULL;
@@ -787,7 +787,7 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
    EDBUG_RETURN(base);
 }
 
-Window 
+Window
 WindowAtXY(int x, int y)
 {
    Window             *list = NULL;

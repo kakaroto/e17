@@ -123,28 +123,33 @@ IPCStruct           IPCArray[] =
       "help",
       "gives you this help screen",
       "Additional parameters will retrieve help on many topics - "
-      "\"help <command>\".\nuse \"help all\" for a list of commands."},
+      "\"help <command>\".\nuse \"help all\" for a list of commands."
+   },
    {
       IPC_Version,
       "version",
       "displays the current version of Enlightenment running",
-      NULL},
+      NULL
+   },
    {
       IPC_Nop,
       "nop",
       "IPC No-operation - returns nop",
-      NULL},
+      NULL
+   },
    {
       IPC_Copyright,
       "copyright",
       "displays copyright information for Enlightenment",
-      NULL},
+      NULL
+   },
    {
       IPC_AutoSave,
       "autosave",
       "toggle the Automatic Saving Feature",
       "Use \"autosave ?\" to list the current status\n"
-      "use \"autosave on\" or \"autosave off\" to toggle the status"},
+      "use \"autosave on\" or \"autosave off\" to toggle the status"
+   },
    {
       IPC_DefaultTheme,
       "default_theme",
@@ -152,34 +157,40 @@ IPCStruct           IPCArray[] =
       "Use \"default_theme ?\" to get the current default theme\n"
       "use \"default_theme /path/to/theme\"\n"
       "you can retrieve a list of available themes from the "
-      "\"list_themes\" command"},
+      "\"list_themes\" command"
+   },
    {
       IPC_Restart,
       "restart",
       "Restart Enlightenment",
-      NULL},
+      NULL
+   },
    {
       IPC_RestartWM,
       "restart_wm",
       "Restart another window manager",
       "Use \"restart_wm <wmname>\" to start another window manager.\n"
-      "Example: \"restart_wm fvwm\""},
+      "Example: \"restart_wm fvwm\""
+   },
    {
       IPC_RestartTheme,
       "restart_theme",
       "Restart with another theme",
       "Use \"restart_theme <themename>\" to restart enlightenment "
-      "with another theme\nExample: \"restart_theme icE\""},
+      "with another theme\nExample: \"restart_theme icE\""
+   },
    {
       IPC_Exit,
       "exit",
       "Exit Enlightenment",
-      NULL},
+      NULL
+   },
    {
       IPC_ForceSave,
       "save_config",
       "Force Enlightenment to save settings now",
-      NULL},
+      NULL
+   },
    {
       IPC_SMFile,
       "sm_file",
@@ -187,12 +198,14 @@ IPCStruct           IPCArray[] =
       "Average users are encouraged not to touch this setting.\n"
       "Use \"sm_file ?\" to retrieve the current session management "
       "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
-      "to change."},
+      "to change."
+   },
    {
       IPC_ListThemes,
       "list_themes",
       "List currently available themes",
-      NULL},
+      NULL
+   },
    {
       IPC_GotoDesktop,
       "goto_desktop",
@@ -200,7 +213,9 @@ IPCStruct           IPCArray[] =
       "Use \"goto_desktop num\" to go to a specific desktop.\n"
       "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
       "the next and\n     previous desktop\n"
-   "Use \"goto_desktop ?\" to find out what desktop you are " "currently on"},
+      "Use \"goto_desktop ?\" to find out what desktop you are "
+      "currently on"
+   },
    {
       IPC_GotoArea,
       "goto_area",
@@ -209,13 +224,15 @@ IPCStruct           IPCArray[] =
       "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
       "prev <vert/horiz>\" to go to the next and\n     "
       "previous areas\nUse \"goto_area ?\" to find out what area "
-      "you are currently on"},
+      "you are currently on"
+   },
    {
       IPC_ShowIcons,
       "show_icons",
       "Toggle the display of icons on the desktop",
       "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
-      "Use \"show_icons ?\" to retrieve the current setting"},
+      "Use \"show_icons ?\" to retrieve the current setting"
+   },
    {
       IPC_FocusMode,
       "focus_mode",
@@ -230,7 +247,8 @@ IPCStruct           IPCArray[] =
       "pointer: The focus will follow the mouse pointer\n"
       "sloppy: in sloppy-focus, the focus follows the mouse, "
       "but when over\n    "
-      "the desktop background the last window does not lose the focus"},
+      "the desktop background the last window does not lose the focus"
+   },
    {
       IPC_AdvancedFocus,
       "advanced_focus",
@@ -255,20 +273,24 @@ IPCStruct           IPCArray[] =
       "   window that created them.\n"
       "switch_to_popup_location: switch to where a popup window appears\n"
       "focus_list: display and use focus list (requires XKB)\n"
-      "manual_placement: place all new windows by hand"},
+      "manual_placement: place all new windows by hand"
+   },
    {
       IPC_NumDesks,
       "num_desks",
       "Change the number of available desktops",
       "Use \"num_desks <num>\" to change the available number of desktops.\n"
-      "Use \"num_desks ?\" to retrieve the current setting"},
+      "Use \"num_desks ?\" to retrieve the current setting"
+   },
    {
       IPC_NumAreas,
       "num_areas",
       "Change the size of the virtual desktop",
       "Use \"num_areas <width> <height>\" to change the size of the "
       "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
-  "virtual destkops\nUse \"num_areas ?\" to retrieve the " "current setting"},
+      "virtual destkops\nUse \"num_areas ?\" to retrieve the "
+      "current setting"
+   },
    {
       IPC_WinOps,
       "win_op",
@@ -293,13 +315,16 @@ IPCStruct           IPCArray[] =
       "win_op <windowid> raise\n"
       "win_op <windowid> lower\n"
       "win_op <windowid> layer <0-100,4=normal>\n"
-  "<windowid> may be substituted with \"current\" to use the current window"},
+      "<windowid> may be substituted with \"current\" to use the "
+      "current window"
+   },
    {
       IPC_WinList,
       "window_list",
       "Get a list of currently open windows and their Titles",
       "the list will be returned in the following "
-      "format - \"window_id : title\""},
+      "format - \"window_id : title\""
+   },
    {
       IPC_ButtonShow,
       "button_show",
@@ -308,13 +333,15 @@ IPCStruct           IPCArray[] =
       "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
       "(removes all buttons and the dragbar)\n\"button_show\" "
       "(removes all buttons)\n \"button_show buttons CONFIG*\" "
-      "(removes all buttons with CONFIG in the start)"},
+      "(removes all buttons with CONFIG in the start)"
+   },
    {
       IPC_ActiveNetwork,
       "active_network",
       "Enable or disable networking",
       "use \"active_network <on/off>\" to toggle\n"
-      "use \"active_network ?\" to test status"},
+      "use \"active_network ?\" to test status"
+   },
    {
       IPC_FX,
       "fx",
@@ -328,7 +355,8 @@ IPCStruct           IPCArray[] =
       "raindrops <on/off> (raindrops will appear across your desktop)\n"
       "menu_animate <on/off> (toggles the animation of menus "
       "as they appear)\n"
-    "animate_win_shading <on/off> (toggles the animation of window shading)\n"
+      "animate_win_shading <on/off> (toggles the animation of "
+      "window shading)\n"
       "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
       "dragbar <on/off/left/right/top/bottom> (changes "
       "location of dragbar)\n"
@@ -342,7 +370,8 @@ IPCStruct           IPCArray[] =
       "a window will\n   resist moving against another window\n"
       "audio <on/off> (changes state of audio)\n"
       "-  seconds for tooltips and autoraise can have less than one second\n"
-      "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
+      "   (i.e. 0.5) or greater (1.3, 3.5, etc)"
+   },
    {
       IPC_DockPosition,
       "dock",
@@ -350,19 +379,22 @@ IPCStruct           IPCArray[] =
       "use \"dock direction <up/down/left/right/?>\" to set or "
       "test direction\n"
       "use \"dock start_pos ?\" to test the starting x y coords\n"
-      "use \"dock start_pos x y\" to set the starting x y coords"},
+      "use \"dock start_pos x y\" to set the starting x y coords"
+   },
    {
       IPC_MoveMode,
       "move_mode",
       "Toggle the Window move mode",
       "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
-      "to set\nuse \"move_mode ?\" to get the current mode"},
+      "to set\nuse \"move_mode ?\" to get the current mode"
+   },
    {
       IPC_ResizeMode,
       "resize_mode",
       "Toggle the Window resize mode",
       "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
-      "to set\nuse \"resize_mode ?\" to get the current mode"},
+      "to set\nuse \"resize_mode ?\" to get the current mode"
+   },
    {
       IPC_Pager,
       "pager",
@@ -374,7 +406,9 @@ IPCStruct           IPCArray[] =
       "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
       "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
       "use \"pager title <on/off>\" to toggle title display in the pager\n"
-  "use \"pager scanrate <#>\" to toggle number of line update " "per second"},
+      "use \"pager scanrate <#>\" to toggle number of line update "
+      "per second"
+   },
    {
       IPC_InternalList,
       "internal_list",
@@ -382,18 +416,21 @@ IPCStruct           IPCArray[] =
       "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
       "to retrieve a list of various internal window types.\n"
       "(note that listing internal_ewin  doesn't retrieve "
-      "dialogs currently)\n"},
+      "dialogs currently)\n"
+   },
    {
       IPC_SetFocus,
       "set_focus",
       "Set/Retrieve focused window",
       "use \"set_focus <win_id>\" to focus a new window\n"
-      "use \"set_focus ?\" to retrieve the currently focused window"},
+      "use \"set_focus ?\" to retrieve the currently focused window"
+   },
    {
       IPC_DialogOK,
       "dialog_ok",
       "Pop up a dialog box with an OK button",
-      "use \"dialog_ok <message>\" to pop up a dialog box."},
+      "use \"dialog_ok <message>\" to pop up a dialog box."
+   },
    {
       IPC_ListClassMembers,
       "list_class",
@@ -402,39 +439,46 @@ IPCStruct           IPCArray[] =
       "available classes are:\n"
       "sounds\n"
       "actions\n"
-      "backgrounds\n" "borders\n" "text\n" "images\n" "cursors\n" "buttons"},
+      "backgrounds\n" "borders\n" "text\n" "images\n" "cursors\n" "buttons"
+   },
    {
       IPC_PlaySoundClass,
       "play_sound",
       "Plays a soundclass via E",
       "use \"play_sound <soundclass>\" to play a sound.\n"
-      "use \"list_class sounds\" to get a list of available sounds"},
+      "use \"list_class sounds\" to get a list of available sounds"
+   },
    {
       IPC_SoundClass,
       "soundclass",
       "Create/Delete soundclasses",
       "use \"soundclass create <classname> <filename>\" to create\n"
-      "use \"soundclass delete <classname>\" to delete"},
+      "use \"soundclass delete <classname>\" to delete"
+   },
    {
       IPC_ImageClass,
       "imageclass",
       "Create/delete/modify/apply an ImageClass",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_ActionClass,
       "actionclass",
       "Create/Delete/Modify an ActionClass",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_ColorModifierClass,
       "colormod",
       "Create/Delete/Modify a ColorModifierClass",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_TextClass,
       "textclass",
       "Create/Delete/Modify/apply a TextClass",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_Background,
       "background",
@@ -443,43 +487,51 @@ IPCStruct           IPCArray[] =
       "use \"background <name>\" to delete a background.\n"
       "use \"background <name> ?\" to show current values.\n"
       "use \"background <name> <type> <value> to create / modify.\n"
-      "(get available types from \"background <name> ?\"."},
+      "(get available types from \"background <name> ?\"."
+   },
    {
       IPC_Border,
       "border",
       "Create/Delete/Modify a Border",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_Cursor,
       "cursor",
       "Create/Delete/Modify a Cursor",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_Button,
       "button",
       "Create/Delete/Modify a Button",
-      "This doesn't do anything yet."},
+      "This doesn't do anything yet."
+   },
    {
       IPC_GeneralInfo,
       "general_info",
       "Retrieve some general information",
       "use \"general_info <info>\" to retrieve information\n"
-      "available info is: screen_size"},
+      "available info is: screen_size"
+   },
    {
       IPC_Modules,
       "module",
       "Load/Unload/List Modules",
-      NULL},
+      NULL
+   },
    {
       IPC_ReloadMenus,
       "reload_menus",
       "Reload menus.cfg without restarting (Asmodean_)",
-      NULL},
+      NULL
+   },
    {
       IPC_GroupInfo,
       "group_info",
       "Retrieve some info on groups",
-      "use \"group_info [group_index]\""},
+      "use \"group_info [group_index]\""
+   },
    {
       IPC_GroupOps,
       "group_op",
@@ -491,7 +543,8 @@ IPCStruct           IPCArray[] =
       "  group_op <windowid> add [<group_index>]\n"
       "  group_op <windowid> remove [<group_index>]\n"
       "  group_op <windowid> break [<group_index>]\n"
-      "  group_op <windowid> showhide\n"},
+      "  group_op <windowid> showhide\n"
+   },
    {
       IPC_Group,
       "group",
@@ -506,12 +559,14 @@ IPCStruct           IPCArray[] =
       "  group <groupid> set_border <on/off/?>\n"
       "  group <groupid> stick <on/off/?>\n"
       "  group <groupid> shade <on/off/?>\n"
-      "  group <groupid> mirror <on/off/?>\n"},
+      "  group <groupid> mirror <on/off/?>\n"
+   },
    {
       IPC_KDE,
       "kde",
       "Turns on and off KDE support",
-      "use \"kde on\" and \"kde off\" to enable/disable support"},
+      "use \"kde on\" and \"kde off\" to enable/disable support"
+   },
    {
       IPC_MemDebug,
       "dump_mem_debug",
@@ -521,7 +576,8 @@ IPCStruct           IPCArray[] =
       "memory.c to see how to enable this. This will let you hunt memory\n"
       "leaks, over-allocations of memory, and other memory-related problems\n"
       "very easily with all pointers allocated stamped with a time, call\n"
-    "tree that led to that allocation, file and line, and the chunk size.\n"},
+      "tree that led to that allocation, file and line, and the chunk size.\n"
+   },
    {
       IPC_Remember,
       "remember",
@@ -529,12 +585,14 @@ IPCStruct           IPCArray[] =
       "usage:\n"
       "  remember <windowid> <parameter>\n"
       "  where parameter is one of: all, none, border, desktop, size,\n"
-      "  location, layer, sticky, icon, shade, group, dialog, command\n"},
+      "  location, layer, sticky, icon, shade, group, dialog, command\n"
+   },
    {
       IPC_CurrentTheme,
       "current_theme",
       "Returns the name of the currently used theme",
-      ""}
+      NULL
+   }
 };
 
 /* the functions */

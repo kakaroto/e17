@@ -263,7 +263,7 @@ cp(char *s, char *ss)
    EDBUG_RETURN_;
 }
 
-time_t 
+time_t
 moddate(char *s)
 {
    struct stat         st;

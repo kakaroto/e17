@@ -1882,7 +1882,7 @@ DialogItemAreaSetSize(DItem * di, int w, int h)
    di->item.area.h = h;
 }
 
-Window 
+Window
 DialogItemAreaGetWindow(DItem * di)
 {
    return di->item.area.area_win;

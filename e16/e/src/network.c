@@ -126,7 +126,7 @@ GetNetText(char *URL)
 
 }
 
-time_t 
+time_t
 GetNetFileDate(char *URL)
 {
 
