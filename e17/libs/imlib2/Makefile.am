@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in
 
-SUBDIRS		     = src filters doc loaders test demo
+SUBDIRS		     = src filters doc loaders test demo libltdl
 
 bin_SCRIPTS = imlib2-config
 

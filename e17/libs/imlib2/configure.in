@@ -1,7 +1,9 @@
 dnl Process this file with autoconf to create configure.
 
-AC_INIT
-AC_CONFIG_SRCDIR([src/Imlib2.h])
+dnl# This stuff does not work for autoconf-2.13
+dnl# AC_INIT
+dnl# AC_CONFIG_SRCDIR([src/Imlib2.h])
+AC_INIT([src/Imlib2.h])
 AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE(imlib2, 1.1.1)
 
@@ -118,16 +120,14 @@ AC_SUBST(pkglibdir)
 
 AC_C_BIGENDIAN	      
 
-AC_LIBLTDL_CONVENIENCE
-
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_C_CONST
 
-AM_ENABLE_SHARED
-dnl AM_DISABLE_STATIC
-AC_LIBTOOL_DLOPEN
-dnl AC_LIBTOOL_WIN32_DLL
+dnl# This doesn't work right.
+dnl# AC_LIBLTDL_CONVENIENCE
+dnl# AC_LIB_LTDL
+
 AM_PROG_LIBTOOL
 AM_WITH_DMALLOC
 
@@ -206,8 +206,9 @@ AC_SUBST(X_OBJS)
 
 # This is necessary so that .o files in LIBOBJS are also built via
 # the ANSI2KNR-filtering rules.
-LIB@&t@OBJS=`echo "$LIB@&t@OBJS" |
-             sed 's,\.[[^.]]* ,$U&,g;s,\.[[^.]]*$,$U&,'`
+dnl# Doesn't work with autoconf-2.13!
+dnl# LIB@&t@OBJS=`echo "$LIB@&t@OBJS" |
+dnl#              sed 's,\.[[^.]]* ,$U&,g;s,\.[[^.]]*$,$U&,'`
 LTLIBOBJS=`echo "$LIB@&t@OBJS" |
            sed 's,\.[[^.]]* ,.lo ,g;s,\.[[^.]]*$,.lo,'`
 AC_SUBST(LTLIBOBJS)
@@ -416,10 +417,15 @@ AC_SUBST(freetype_libs)
 dnl AC_SUBST(freetype_libs)
 dnl AC_SUBST(freetype_includes)
 
-AC_CONFIG_FILES([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
-          filters/Makefile demo/Makefile doc/Makefile \
-	  ])
-AC_CONFIG_COMMANDS([default],[[
-chmod +x imlib2-config
-]],[[]])
-AC_OUTPUT
+dnl# This stuff is not compatible with autoconf-2.13
+dnl# AC_CONFIG_FILES([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
+dnl#           filters/Makefile demo/Makefile doc/Makefile libltdl/Makefile \
+dnl# 	  ])
+dnl# AC_CONFIG_COMMANDS([default],[[
+dnl# chmod +x imlib2-config
+dnl# ]],[[]])
+dnl# AC_OUTPUT
+
+AC_OUTPUT([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
+           filters/Makefile demo/Makefile doc/Makefile libltdl/Makefile \
+          ])

@@ -1,12 +1,12 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
 Version: 1.1.1
-Release: 1
+Release: 2
 Copyright: BSD
 Group: System Environment/Libraries
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
-Packager: Lyle Kempler <term@twistedpath.org>, Joakim Bodin <bodin@dreamhosted.com>
+Packager: Michael Jennings <mej@eterm.org>
 URL: http://www.rasterman.com/raster/imlib.html
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
