@@ -164,13 +164,10 @@ interp_return_key(void *data, const char *str)
    char *old = NULL;
    char *new_str = NULL;
    Evas_Object *o = NULL;
-   Esmart_Text_Entry *e = NULL;
 
    int size = 0;
 
    o = (Evas_Object *) data;
-   if ((e = evas_object_smart_data_get(o)))
-   {
       size = strlen(str);
 #if DEBUG
       if (!str)
@@ -178,19 +175,19 @@ interp_return_key(void *data, const char *str)
       else
          fprintf(stderr, "Entry Sent %s(%d)\n", str, size);
 #endif
-      if (e->edje.part)
+      if (esmart_text_entry_edje_part_get(o))
       {
 #if DEBUG
-         fprintf(stderr, "%s set its text\n", e->edje.part);
+         fprintf(stderr, "%s set its text\n", esmart_text_entry_edje_part_get(o));
 #endif
-         if ((old = evas_hash_find(ecco.hashes, e->edje.part)))
+         if ((old = evas_hash_find(ecco.hashes, esmart_text_entry_edje_part_get(o))))
          {
-            evas_hash_del(ecco.hashes, e->edje.part, old);
+            evas_hash_del(ecco.hashes, esmart_text_entry_edje_part_get(o), old);
          }
          else
          {
             fprintf(stderr, "Unable to find old entry for %s\n",
-                    e->edje.part);
+                    esmart_text_entry_edje_part_get(o));
          }
          if (size > 0)
          {
@@ -200,7 +197,7 @@ interp_return_key(void *data, const char *str)
          {
             new_str = strdup("");
          }
-         if ((old = evas_hash_find(ecco.entries, e->edje.part)))
+         if ((old = evas_hash_find(ecco.entries, esmart_text_entry_edje_part_get(o))))
          {
             if (!strcmp(old, "ecco,entry,focus,in,greeting,before"))
             {
@@ -208,7 +205,7 @@ interp_return_key(void *data, const char *str)
                   free(ecco.config->before.string);
                ecco.config->before.string = new_str;
                ecco.hashes =
-                  evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
             }
             else if (!strcmp(old, "ecco,entry,focus,in,greeting,after"))
             {
@@ -216,7 +213,7 @@ interp_return_key(void *data, const char *str)
                   free(ecco.config->after.string);
                ecco.config->after.string = new_str;
                ecco.hashes =
-                  evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
             }
             else if (!strcmp(old, "ecco,entry,focus,in,date"))
             {
@@ -224,7 +221,7 @@ interp_return_key(void *data, const char *str)
                   free(ecco.config->date.string);
                ecco.config->date.string = new_str;
                ecco.hashes =
-                  evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
             }
             else if (!strcmp(old, "ecco,entry,focus,in,time"))
             {
@@ -232,7 +229,7 @@ interp_return_key(void *data, const char *str)
                   free(ecco.config->time.string);
                ecco.config->time.string = new_str;
                ecco.hashes =
-                  evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
             }
             else
                if (!strcmp
@@ -244,7 +241,7 @@ interp_return_key(void *data, const char *str)
                      free(ecco.current_session->session);
                   ecco.current_session->session = new_str;
                   ecco.hashes =
-                     evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                     evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
                }
             }
             else if (!strcmp(old, "ecco,entry,focus,in,session,current,name"))
@@ -278,7 +275,7 @@ interp_return_key(void *data, const char *str)
                      edje_object_signal_emit(ecco.edje, "ecco,show,sessions",
                                              "");
                      ecco.hashes =
-                        evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                        evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
                   }
                   else
                   {
@@ -327,7 +324,7 @@ interp_return_key(void *data, const char *str)
                      edje_object_signal_emit(ecco.edje, "ecco,show,users",
                                              "");
                      ecco.hashes =
-                        evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                        evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
                   }
                   else
                   {
@@ -347,7 +344,7 @@ interp_return_key(void *data, const char *str)
                      free(ecco.current_user->session);
                   ecco.current_user->session = new_str;
                   ecco.hashes =
-                     evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                     evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
                }
             }
             else if (!strcmp(old, "ecco,entry,focus,in,remember,n"))
@@ -355,7 +352,7 @@ interp_return_key(void *data, const char *str)
                snprintf(buf, PATH_MAX, "%s", str);
                ecco.config->users.remember_n = atoi(buf);
                ecco.hashes =
-                  evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                  evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
             }
             else if (!strcmp(old, "ecco,entry,focus,in,theme"))
             {
@@ -368,7 +365,7 @@ interp_return_key(void *data, const char *str)
                      free(ecco.config->theme);
                   ecco.config->theme = new_str;
                   ecco.hashes =
-                     evas_hash_add(ecco.hashes, e->edje.part, new_str);
+                     evas_hash_add(ecco.hashes, esmart_text_entry_edje_part_get(o), new_str);
                }
                else
                {
@@ -384,10 +381,9 @@ interp_return_key(void *data, const char *str)
          }
          else
          {
-            fprintf(stderr, "Unknown signal for %s\n", e->edje.part);
+            fprintf(stderr, "Unknown signal for %s\n", esmart_text_entry_edje_part_get(o));
          }
       }
-   }
 }
 
 /*=========================================================================
@@ -418,7 +414,7 @@ _key_focus_in(void *data, Evas_Object * o, const char *emission,
 #endif
       if (ecco.entry)
       {
-         esmart_text_entry_focus_set(ecco.entry, 1);
+         evas_object_focus_set(ecco.entry, 1);
          if ((edje_object_part_exists(ecco.edje, str)))
          {
             if ((bstr = edje_object_part_text_get(ecco.edje, str)))
@@ -1997,7 +1993,7 @@ main(int argc, char *argv[])
          evas_object_layer_set(o, -1);
          esmart_text_entry_max_chars_set(o, PATH_MAX);
          esmart_text_entry_is_password_set(o, 0);
-         esmart_text_entry_focus_set(o, 1);
+         evas_object_focus_set(o, 1);
          esmart_text_entry_return_key_callback_set(o, interp_return_key, o);
          ecco.entry = o;
 

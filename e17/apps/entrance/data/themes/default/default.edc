@@ -944,7 +944,7 @@ collections {
             clip_to, "user_entry_clip";
             description {
                state,    "default" 0.0;
-               align,    1.0 0.5;
+               align,    0.0 0.5;
                rel1 {
                   relative, 0.0  0.0;
                   offset,   0    0;
@@ -1149,7 +1149,7 @@ collections {
             clip_to, "pass_entry_clip";
             description {
                state,    "default" 0.0;
-               align,    1.0 0.5;
+               align,    0.0 0.5;
                rel1 {
                   relative, 0.0  0.0;
                   offset,   0    0;
