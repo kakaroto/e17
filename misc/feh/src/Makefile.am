@@ -5,6 +5,7 @@ LDFLAGS           = -L/usr/X11R6/lib
 INCLUDES          = -I/usr/X11R6/include \
 $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
 -DPREFIX=\""$(prefix)"\"
+LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = feh
 feh_SOURCES       = main.c main.h getopt.c getopt.h feh.h options.c \

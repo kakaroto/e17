@@ -1,3 +1,7 @@
+Tue Apr 11 18:20:21 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Make included getopt actually work if needed :)
+
 Sat Mar 25 17:42:43 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Event loop and zooming tweak.

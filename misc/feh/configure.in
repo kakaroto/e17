@@ -12,12 +12,13 @@ AC_PROG_MAKE_SET
 
 AM_MAINTAINER_MODE
 
-dnl I'm only checking for imlib2. If you have this installed, you prolly
-dnl have the libs it needs.
 AC_CHECK_LIB(Imlib2, imlib_load_image, , [
 echo "ERROR:  You need libImlib2 to build feh.";
              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
 LIBS="$LIBS -lm"
+
+AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o"])
+AC_SUBST(LIBOBJS)
 
 echo "checking for pr0n.... found"
 
