@@ -673,6 +673,9 @@ e_display_current_image(void)
    scroll_y = 0;
    scroll_sx = 0;
    scroll_sy = 0;
+   Imlib_Image im;
+   DATA32 *data;
+   int mustUseImlib = 0;
 
    e_turntable_reset();
    if (o_mini_image)
@@ -700,11 +703,29 @@ e_display_current_image(void)
 	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_MOVE,
 				       next_image_move, NULL);
 	evas_object_show(o_image);
+	// if evas can't load the thing...
 	if (evas_object_image_load_error_get(o_image) != EVAS_LOAD_ERROR_NONE)
 	  {
+	    // try Imlib
+
+	    mustUseImlib = 1;
+	    im = imlib_load_image(((Image *)(current_image->data))->file);
+	    if (im) {
+	      int w, h;
+	      enum active_state command = active_out;
+	      
+	      e_fade_logo(&command);
+	      imlib_context_set_image(im);
+	      w = imlib_image_get_width();
+	      h = imlib_image_get_height();
+	      data = imlib_image_get_data_for_reading_only();
+	      evas_object_image_size_set(o_image, w, h);
+	      evas_object_image_data_set(o_image, data);
+	    } else { // we really can't load it
 	     enum active_state command = active_in;
+
 	     e_fade_logo(&command);
-	     sprintf(txt_info[0], "Error LoadingFile: %s",
+	     sprintf(txt_info[0], "Error Loading File: %s",
 		     ((Image *) (current_image->data))->file);
 	     *txt_info[1] = '\0';
 	     sprintf(title, "Entice (Error Loading): %s",
@@ -712,11 +733,14 @@ e_display_current_image(void)
 	     ecore_evas_title_set(ecore_evas, title);
 	     evas_object_del(o_image);
 	     o_image = NULL;
+	    }
 	  }
 	else
 	  {
 	     int                 w, h;
+	     enum active_state command = active_out;
 
+	     e_fade_logo(&command);
 	     evas_object_image_size_get(o_image, &w, &h);
 	     sprintf(txt_info[0], "File: %s",
 		     ((Image *) (current_image->data))->file);
@@ -742,9 +766,16 @@ e_display_current_image(void)
      {
 	o_mini_image = evas_object_image_add(evas);
 	evas_object_image_smooth_scale_set(o_mini_image, 0);
-	evas_object_image_file_set(o_mini_image,
-				   ((Image *) (current_image->data))->file,
-				   NULL);
+	if (mustUseImlib) {
+	  evas_object_image_data_set(o_mini_image, data);
+	  imlib_image_put_back_data(data);
+	} else {
+	  evas_object_image_file_set(o_mini_image,
+				      ((Image *) (current_image->data))->file,
+				      NULL);
+	}
+	evas_object_show(o_mini_image);
+
      }
    e_handle_resize();
    e_fix_icons();
