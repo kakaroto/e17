@@ -915,3 +915,10 @@ Sun Nov 28 01:12:11 GMT 1999
 
 Added some help dox for E-UrlWatch.
 
+-------------------------------------------------------------------------------
+
+Sun Nov 28 20:04:45 GMT 1999
+(gilbertt)
+
+Fixed some overzealous free()ing (no checks) in Epplet_gadget_destroy()
+

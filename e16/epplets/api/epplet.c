@@ -3708,7 +3708,8 @@ Epplet_gadget_destroy(Epplet_gadget gadget)
 		   free(g->entry[i].label);
 		if (g->entry[i].image)
 		   free(g->entry[i].image);
-		Epplet_gadget_destroy(g->entry[i].gadget);
+		if (g->entry[i].gadget)
+		   Epplet_gadget_destroy(g->entry[i].gadget);
 	     }
 	   XDestroyWindow(disp, g->win);
 	   XDeleteContext(disp, g->win, xid_context);
