@@ -259,7 +259,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   rgba_image.rgba.put.separate = put_separate_and_raster;
                }
           }
-	if (rgba_image.rgba.samplesperpixel == 8)
+/*	if (rgba_image.rgba.samplesperpixel == 8)*/
+	if (rgba_image.rgba.bitspersample == 8)
 	  {
 	     if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
 				   rast, width, height))
