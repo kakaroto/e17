@@ -12,7 +12,7 @@
 #include <Edje.h>
 #include <Ecore_Evas.h>
 #include <limits.h>
-#include <File_Dialog.h>
+#include <Esmart_File_Dialog.h>
 
 #include "../src/config.h"
 
