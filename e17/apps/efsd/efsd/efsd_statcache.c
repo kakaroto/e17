@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 
 static EfsdHash  *stat_cache;
+static EfsdHash  *lstat_cache;
 
 static void         stat_hash_item_free(EfsdHashItem *it);
 static struct stat *stat_internal(char *filename, char use_lstat);
@@ -71,8 +72,11 @@ stat_internal(char *filename, char use_lstat)
   D_ENTER;
 
   /* Check if info is still in cache: */
-  st = (struct stat*)efsd_hash_find(stat_cache, filename);
-
+  if (use_lstat)
+    st = (struct stat*)efsd_hash_find(lstat_cache, filename);
+  else
+    st = (struct stat*)efsd_hash_find(stat_cache, filename);
+  
   if (st)
     {
       /* D(("Cached stat for %s\n", filename)); */
@@ -108,7 +112,11 @@ stat_internal(char *filename, char use_lstat)
   /* Insert in cache and monitor file to be
      informed about updates:
   */
-  efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
+  if (use_lstat)
+    efsd_hash_insert(lstat_cache, (void*)strdup(filename), (void*)st);
+  else
+    efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
+  
   efsd_fam_start_monitor_internal(filename);
 
   /* D(("New lstat() on %s\n", filename)); */
@@ -125,6 +133,9 @@ efsd_stat_init(void)
 
   stat_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
 			     (EfsdCmpFunc)strcmp, stat_hash_item_free);
+
+  lstat_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
+			      (EfsdCmpFunc)strcmp, stat_hash_item_free);
   
   D_RETURN;
 }
@@ -150,27 +161,23 @@ void
 efsd_stat_update(char *filename)
 {
   struct stat *st;
-  char         not_found = FALSE;
 
   D_ENTER;
 
-  st = (struct stat*)efsd_hash_find(stat_cache, filename);
-
-  if (!st)
+  if ((st = (struct stat*)efsd_hash_find(stat_cache, filename)))
     {
-      D(("stat info not found for file %s\n", filename));
-      st = NEW(struct stat);
-      not_found = TRUE;
-    }
-  
-  if (stat(filename, st) < 0)
-    {
-      D(("stat() on %s failed.\n", filename));
+      if (stat(filename, st) < 0)
+	{
+	  D(("stat() on %s failed.\n", filename));
+	}
     }
 
-  if (not_found)
+  if ((st = (struct stat*)efsd_hash_find(lstat_cache, filename)))
     {
-      efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
+      if (lstat(filename, st) < 0)
+	{
+	  D(("stat() on %s failed.\n", filename));
+	}
     }
 
   D_RETURN;
@@ -183,6 +190,7 @@ efsd_stat_remove(char *filename)
   D_ENTER;
   
   efsd_hash_remove(stat_cache, filename);
+  efsd_hash_remove(lstat_cache, filename);
 
   D_RETURN;
 }
