@@ -34,21 +34,25 @@ e_thumb_new (Evas * evas, const char *file)
   if (file)
     {
       E_Thumb *e = NULL;
-      Evas_Smart *s = NULL;
-      s = evas_smart_new ("E_Thumb",
-			  _e_thumb_add,
-			  _e_thumb_del,
-			  _e_thumb_layer_set,
-			  _e_thumb_raise,
-			  _e_thumb_lower,
-			  _e_thumb_stack_above,
-			  _e_thumb_stack_below,
-			  _e_thumb_move,
-			  _e_thumb_resize,
-			  _e_thumb_show,
-			  _e_thumb_hide,
-			  _e_thumb_color_set,
-			  _e_thumb_clip_set, _e_thumb_clip_unset, NULL);
+      static Evas_Smart *s = NULL;
+
+      if (!s)
+	{
+	  s = evas_smart_new ("E_Thumb",
+			      _e_thumb_add,
+			      _e_thumb_del,
+			      _e_thumb_layer_set,
+			      _e_thumb_raise,
+			      _e_thumb_lower,
+			      _e_thumb_stack_above,
+			      _e_thumb_stack_below,
+			      _e_thumb_move,
+			      _e_thumb_resize,
+			      _e_thumb_show,
+			      _e_thumb_hide,
+			      _e_thumb_color_set,
+			      _e_thumb_clip_set, _e_thumb_clip_unset, NULL);
+	}
       result = evas_object_smart_add (evas, s);
 
       if ((e = (E_Thumb *) evas_object_smart_data_get (result)))
@@ -142,16 +146,14 @@ e_thumb_evas_object_get (Evas_Object * o)
 	      imlib_context_set_image (tmp);
 
 	      result = evas_object_image_add (evas_object_evas_get (o));
-	      evas_object_image_alpha_set (result, 1);
 	      if (e->info->w == 0)
 		e->info->w = imlib_image_get_width ();
 	      if (e->info->h == 0)
 		e->info->h = imlib_image_get_height ();
 	      evas_object_image_size_set (result, e->info->w, e->info->h);
-
+	      evas_object_image_alpha_set (result, imlib_image_has_alpha ());
 	      evas_object_image_data_copy_set (result,
-					       imlib_image_get_data_for_reading_only
-					       ());
+					       imlib_image_get_data ());
 	      imlib_free_image_and_decache ();
 	    }
 	}
@@ -187,29 +189,31 @@ e_thumb_freshen (Evas_Object * o)
 	{
 	  if (epsilon_exists (e->e) == EPSILON_FAIL)
 	    {
+	      if (e->info)
+		epsilon_info_free (e->info);
+	      e->info = NULL;
 	      if (e->image)
 		evas_object_del (e->image);
-	      if (epsilon_exists (e->e) == EPSILON_FAIL)
+	      e->image = NULL;
+
+	      if (epsilon_generate (e->e) == EPSILON_OK)
 		{
-		  if (epsilon_generate (e->e) == EPSILON_OK)
+		  result = EPSILON_OK;
+		  evas_image_cache_flush (evas_object_evas_get (o));
+		  e->image = evas_object_image_add (evas_object_evas_get (o));
+		  evas_object_image_file_set (e->image,
+					      epsilon_thumb_file_get (e->
+								      e),
+					      NULL);
+		  if (!evas_object_image_load_error_get (e->image))
 		    {
-		      result = EPSILON_OK;
-		      evas_image_cache_flush (evas_object_evas_get (o));
-		      e->image =
-			evas_object_image_add (evas_object_evas_get (o));
-		      evas_object_image_file_set (e->image,
-						  epsilon_thumb_file_get (e->
-									  e),
-						  NULL);
-		      if (!evas_object_image_load_error_get (e->image))
-			{
-			  evas_object_image_size_get (e->image, &e->tw,
-						      &e->th);
-			  evas_object_repeat_events_set (e->image, 1);
-			  evas_object_show (e->image);
-			  evas_object_resize (o, e->w, e->h);
-			}
+		      evas_object_image_size_get (e->image, &e->tw, &e->th);
+		      evas_object_repeat_events_set (e->image, 1);
+		      evas_object_show (e->image);
+		      evas_object_resize (o, e->w, e->h);
 		    }
+		  if (!e->info)
+		    e->info = epsilon_info_get (e->e);
 		}
 	    }
 	}
