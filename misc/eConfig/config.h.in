@@ -27,3 +27,4 @@
 /* Version number of package */
 #undef VERSION
 
+#undef HAVE_STDARGS
