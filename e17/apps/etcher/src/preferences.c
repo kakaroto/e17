@@ -128,7 +128,7 @@ pref_colors_cancel(GtkWidget *widget,  gpointer data)
   if (grid_image_file)
     free(grid_image_file);
   grid_image_file = strdup(grid_image_file_old);
-
+  
   gtk_widget_hide(color_dialog);
 }
 
@@ -253,6 +253,9 @@ pref_ok_clicked                          (GtkButton       *button,
    else
       zoom_method = 1;
    
+   E_DB_INT_SET(etcher_config, "/grid/r", colors[0]);
+   E_DB_INT_SET(etcher_config, "/grid/g", colors[1]);
+   E_DB_INT_SET(etcher_config, "/grid/b", colors[2]);
    E_DB_INT_SET(etcher_config, "/display/render_method", (int)render_method);
    E_DB_INT_SET(etcher_config, "/display/zoom_method", (int)zoom_method);
    E_DB_STR_SET(etcher_config, "/grid/image", grid_image_file);
@@ -261,6 +264,7 @@ pref_ok_clicked                          (GtkButton       *button,
    imlib_context_set_image(im_old);
    imlib_context_set_drawable(pm_old);
 
+   gtk_widget_hide(color_dialog);
    gtk_widget_hide(top);
 }
 
@@ -284,6 +288,7 @@ pref_cancel_clicked                      (GtkButton       *button,
        grid_image_file = strdup(grid_image_file_old);
      }
 
+   gtk_widget_hide(color_dialog);
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    gtk_widget_hide(top);
 }
@@ -326,11 +331,6 @@ pref_color_changed(GtkWidget *widget, GtkColorSelection * colorsel)
   colors[0] = (DATA8)(255 * color[0]);
   colors[1] = (DATA8)(255 * color[1]);
   colors[2] = (DATA8)(255 * color[2]);
-
-  E_DB_INT_SET(etcher_config, "/grid/r", colors[0]);
-  E_DB_INT_SET(etcher_config, "/grid/g", colors[1]);
-  E_DB_INT_SET(etcher_config, "/grid/b", colors[2]);
-  e_db_flush();
 
   pref_update_preview();
 }
