@@ -29,30 +29,77 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+#define NEXT_ARG()       D_OPTIONS(("NEXT_ARG()\n")); i++; opt = argv[i]; continue
+#define NEXT_LETTER()    D_OPTIONS(("NEXT_LETTER(%s)\n", opt)); if (*(opt + 1)) {opt++;} else {NEXT_ARG();} continue
+#define NEXT_LOOP()      D_OPTIONS(("NEXT_LOOP()\n")); if (islong || val_ptr) {NEXT_ARG();} else {NEXT_LETTER();} NOP
+#define SHOULD_PARSE(j)  ((SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && !SPIFOPT_OPT_IS_PREPARSE(j)) \
+                           || (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && SPIFOPT_OPT_IS_PREPARSE(j)))
+
 spifopt_settings_t spifopt_settings;
+
+static const char *
+get_option_type_string(spif_uint32_t type)
+{
+    switch (type) {
+        case SPIFOPT_FLAG_BOOLEAN: return "(bool)"; break;
+        case SPIFOPT_FLAG_INTEGER: return "(int)"; break;
+        case SPIFOPT_FLAG_ARGLIST: return "(strs)"; break;
+        default: return "(str)";
+    }
+    ASSERT_NOTREACHED_RVAL(NULL);
+}
 
 static void
 usage(void)
 {
-    unsigned short i, col;
+    spif_uint16_t i, col, l_long = 0, l_desc = 0;
+
+    /* Find the longest long option and the longest description. */
+    for (i = 0; i < SPIFOPT_NUMOPTS_GET(); i++) {
+        MAX_IT(l_long, strlen(SPIFOPT_OPT_LONG(i)));
+        MAX_IT(l_desc, strlen(SPIFOPT_OPT_DESC(i)));
+    }
+    l_long += 2;  /* Add 2 for the "--" */
+    l_desc += 7;  /* Add 7 for the type and a space */
 
     printf("%s %s\n\n", libast_program_name, libast_program_version);
     printf("Usage:\n\n");
-    printf("%7s %17s %40s\n", "POSIX", "GNU", "Description");
-    printf("%8s %10s %41s\n", "=======", "===============================",
-           "=========================================");
-    for (i = 0; i < SPIFOPT_NUMOPTS_GET(); i++) {
-        printf("%*s", (int) spifopt_settings.indent, " ");
+    printf("POSIX ");
+
+    for (col = 0; col < (l_long - 3) / 2; col++) printf(" ");
+    printf("GNU");
+    for (col = 0; col < (l_long - 3) / 2; col++) printf(" ");
+    if (!(l_long % 2)) {
+        printf(" ");
+    }
+    printf("  ");
+
+    for (col = 0; col < (l_desc - 11) / 2; col++) printf(" ");
+    printf("Description");
+    for (col = 0; col < (l_desc - 11) / 2; col++) printf(" ");
+    if (!(l_desc % 2)) {
+        printf(" ");
+    }
+
+    printf("\n");
+    printf("----- ");
+
+    for (col = 0; col < l_long; col++) printf("-");
+    printf("  ");
+    for (col = 0; col < l_desc; col++) printf("-");
+    printf("\n");
+
+    for (i = 0, l_long -= 2; i < SPIFOPT_NUMOPTS_GET(); i++) {
         if (SPIFOPT_OPT_SHORT(i)) {
-            printf("-%c, ", SPIFOPT_OPT_SHORT(i));
+            printf(" -%c   ", SPIFOPT_OPT_SHORT(i));
         } else {
-            printf("    ");
+            printf("      ");
         }
         printf("--%s", SPIFOPT_OPT_LONG(i));
-        for (col = strlen(SPIFOPT_OPT_LONG(i)); col < 30; col++) {
+        for (col = strlen(SPIFOPT_OPT_LONG(i)); col < l_long; col++) {
             printf(" ");
         }
-        printf("%s\n", SPIFOPT_OPT_DESC(i));
+        printf("  %-6s %s\n", get_option_type_string(SPIFOPT_OPT_TYPE(i)), SPIFOPT_OPT_DESC(i));
     }
     exit(EXIT_FAILURE);
 }
@@ -62,6 +109,7 @@ find_long_option(char *opt)
 {
     spif_int32_t j;
 
+    D_OPTIONS(("opt == \"%s\"\n", NONULL(opt)));
     /* Check to see if we have a long option that matches this. */
     for (j = 0; j < SPIFOPT_NUMOPTS_GET(); j++) {
         size_t l;
@@ -86,6 +134,7 @@ find_short_option(char opt)
 {
     spif_int32_t j;
 
+    D_OPTIONS(("opt == \"%c\"\n", opt));
     for (j = 0; j < SPIFOPT_NUMOPTS_GET(); j++) {
         if (SPIFOPT_OPT_SHORT(j) == opt) {
             D_OPTIONS(("Match found at %d:  %c == %c\n", j, SPIFOPT_OPT_SHORT(j), opt));
@@ -103,7 +152,6 @@ find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
     char *val_ptr;
 
     if ((val_ptr = strchr(arg, '=')) != NULL) {
-        *val_ptr = 0;
         val_ptr++;
         *hasequal = 1;
     } else {
@@ -112,7 +160,7 @@ find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
         }
         *hasequal = 0;
     }
-    D_OPTIONS(("hasequal == %d  val_ptr == %10.8p \"%s\"\n", hasequal, val_ptr, (val_ptr ? val_ptr : "(nil)")));
+    D_OPTIONS(("hasequal == %d  val_ptr == %10.8p \"%s\"\n", *hasequal, val_ptr, (val_ptr ? val_ptr : "(nil)")));
     return val_ptr;
 }
 
@@ -126,19 +174,104 @@ find_value_short(char *arg, char *next_arg)
     } else if (next_arg != NULL) {
         val_ptr = next_arg;
     }
-    D_OPTIONS(("val_ptr == %10.8p \"%s\"\n", val_ptr, (val_ptr ? val_ptr : "(nil)")));
+    D_OPTIONS(("val_ptr == %10.8p \"%s\"\n", val_ptr, NONULL(val_ptr)));
     return val_ptr;
 }
 
-#define NEXT_ARG()     i++; opt = argv[i]; continue
-#define NEXT_LETTER()  opt++; continue
-#define NEXT_LOOP()    if (islong) {NEXT_ARG();} else {NEXT_LETTER();} NOP
+static spif_bool_t
+handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
+{
+    D_OPTIONS(("Boolean option detected\n"));
+    if (val_ptr && islong) {
+        /* There's a value, so let's see what it is. */
+        if (BOOL_OPT_ISTRUE(val_ptr)) {
+            if (SHOULD_PARSE(n)) {
+                D_OPTIONS(("\"%s\" == TRUE\n", val_ptr));
+                *((unsigned long *) SPIFOPT_OPT_VALUE(n)) |= SPIFOPT_OPT_MASK(n);
+            }
+        } else if (BOOL_OPT_ISFALSE(val_ptr)) {
+            if (SHOULD_PARSE(n)) {
+                D_OPTIONS(("\"%s\" == FALSE\n", val_ptr));
+                *((unsigned long *) SPIFOPT_OPT_VALUE(n)) &= ~SPIFOPT_OPT_MASK(n);
+            }
+        } else {
+            if (SHOULD_PARSE(n)) {
+                D_OPTIONS(("Forcing option --%s to TRUE\n", SPIFOPT_OPT_LONG(n)));
+                *((unsigned long *) SPIFOPT_OPT_VALUE(n)) |= SPIFOPT_OPT_MASK(n);
+            }
+            return FALSE;
+        }
+    } else {
+        if (SHOULD_PARSE(n)) {
+            /* No value, or it was a short option, so pretend it was true. */
+            if (islong) {
+                D_OPTIONS(("Forcing option --%s to TRUE\n", SPIFOPT_OPT_LONG(n)));
+            } else {
+                val_ptr = NULL;
+                D_OPTIONS(("Forcing option -%c to TRUE\n", SPIFOPT_OPT_SHORT(n)));
+            }
+            *((unsigned long *) SPIFOPT_OPT_VALUE(n)) |= SPIFOPT_OPT_MASK(n);
+        }
+    }
+    return TRUE;
+}
+
+static void
+handle_integer(spif_int32_t n, char *val_ptr)
+{
+    D_OPTIONS(("Integer option detected\n"));
+    *((int *) SPIFOPT_OPT_VALUE(n)) = strtol(val_ptr, (char **) NULL, 0);
+}
+
+static void
+handle_string(spif_int32_t n, char *val_ptr)
+{
+    D_OPTIONS(("String option detected\n"));
+    *((const char **) SPIFOPT_OPT_VALUE(n)) = STRDUP(val_ptr);
+}
+
+static void
+handle_arglist(spif_int32_t n, char *val_ptr, unsigned char hasequal,
+               spif_int32_t i, int argc, char *argv[])
+{
+    char **tmp;
+    register unsigned short k;
+
+    D_OPTIONS(("Argument list option detected\n"));
+    if (hasequal) {
+        /* There's an equals sign, so just parse the rest of this option into words. */
+        tmp = (char **) MALLOC(sizeof(char *) * (num_words(val_ptr) + 1));
+
+        for (k = 0; val_ptr; k++) {
+            tmp[k] = get_word(1, val_ptr);
+            val_ptr = get_pword(2, val_ptr);
+            D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
+        }
+        tmp[k] = (char *) NULL;
+        *((char ***) SPIFOPT_OPT_VALUE(n)) = tmp;
+    } else {
+        unsigned short len = argc - i;
+
+        /* No equals sign, so use the rest of the command line and break. */
+        tmp = (char **) MALLOC(sizeof(char *) * (argc - i + 1));
+
+        for (k = 0; k < len; k++) {
+            tmp[k] = STRDUP(argv[k + i]);
+            D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
+        }
+        tmp[k] = (char *) NULL;
+        *((char ***) SPIFOPT_OPT_VALUE(n)) = tmp;
+    }
+}
 
 void
 spifopt_parse(int argc, char *argv[])
 {
     spif_int32_t i, j;
     char *opt;
+
+    REQUIRE(argc > 1);
+    REQUIRE(argv != NULL);
 
     /* Process each command line arg one-by-one. */
     for (i = 1, opt = argv[1]; i < argc; ) {
@@ -147,16 +280,20 @@ spifopt_parse(int argc, char *argv[])
 
         D_OPTIONS(("argv[%d] == \"%s\", opt == \"%s\"\n", i, argv[i], opt));
 
-        /* If it's not an option, skip it. */
-        if (*opt != '-') {
-            NEXT_ARG();
+        if (opt == argv[i]) {
+            /* If it's not an option, skip it. */
+            if (*opt != '-') {
+                NEXT_ARG();
+            } else {
+                opt++;
+            }
         }
 
         /* If the second character is also a hyphen, it's a long option. */
-        if (*(opt + 1) == '-') {
+        if (*opt == '-') {
             islong = 1;
             /* Skip the leading "--" */
-            opt += 2;
+            opt++;
             D_OPTIONS(("Long option detected\n"));
             if ((j = find_long_option(opt)) == -1) {
                 NEXT_ARG();
@@ -167,11 +304,17 @@ spifopt_parse(int argc, char *argv[])
             }
         }
 
-        /* Only continue if this is a pre-parse option and we're pre-parsing, or
-           if this is a post-parse option and we're post-parsing. */
-        if ((SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && !SPIFOPT_OPT_IS_PREPARSE(j))
-            || (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && SPIFOPT_OPT_IS_PREPARSE(j))) {
-            NEXT_LOOP();
+        /* If a value was passed to this option, set val_ptr to point to it. */
+        if (SPIFOPT_OPT_NEEDS_VALUE(j)) {
+            if (islong) {
+                val_ptr = find_value_long(argv[i], argv[i + 1], &hasequal);
+            } else {
+                val_ptr = find_value_short(opt, argv[i + 1]);
+            }
+            if (val_ptr == argv[i + 1]) {
+                i++;
+                opt += strlen(opt);
+            }
         }
 
         /* If this option is deprecated, print a warning before continuing. */
@@ -192,21 +335,11 @@ spifopt_parse(int argc, char *argv[])
             spif_str_del(warn);
         }
 
-        /* If a value was passed to this option, set val_ptr to point to it. */
-        if (islong) {
-            val_ptr = find_value_long(argv[i], argv[i + 1], &hasequal);
-        } else {
-            val_ptr = find_value_short(opt, argv[i + 1]);
-        }
-        if (val_ptr == argv[i + 1]) {
-            i++;
-        }
-
         /* Make sure that options which require a parameter have them. */
         if (SPIFOPT_OPT_NEEDS_VALUE(j)) {
             if (val_ptr == NULL) {
                 if (islong) {
-                    print_error("long option --%s requires a%s value\n", opt,
+                    print_error("long option --%s requires a%s value\n", SPIFOPT_OPT_LONG(j),
                                 (SPIFOPT_OPT_IS_INTEGER(j)
                                  ? ("n integer")
                                  : (SPIFOPT_OPT_IS_STRING(j)
@@ -215,7 +348,7 @@ spifopt_parse(int argc, char *argv[])
                                        ? "n argument list"
                                        : ""))));
                 } else {
-                    print_error("option -%c requires a%s value\n", *opt,
+                    print_error("option -%c requires a%s value\n", SPIFOPT_OPT_SHORT(j),
                                 (SPIFOPT_OPT_IS_INTEGER(j)
                                  ? ("n integer")
                                  : (SPIFOPT_OPT_IS_STRING(j)
@@ -237,72 +370,34 @@ spifopt_parse(int argc, char *argv[])
         }
 
         if (SPIFOPT_OPT_IS_BOOLEAN(j)) {
-            D_OPTIONS(("Boolean option detected\n"));
-            if (val_ptr) {
-                /* There's a value, so let's see what it is. */
-                if (BOOL_OPT_ISTRUE(val_ptr)) {
-                    D_OPTIONS(("\"%s\" == TRUE\n", val_ptr));
-                    *((unsigned long *) SPIFOPT_OPT_VALUE(j)) |= SPIFOPT_OPT_MASK(j);
-                } else if (BOOL_OPT_ISFALSE(val_ptr)) {
-                    D_OPTIONS(("\"%s\" == FALSE\n", val_ptr));
-                    *((unsigned long *) SPIFOPT_OPT_VALUE(j)) &= ~SPIFOPT_OPT_MASK(j);
-                } else {
-                    if (islong) {
-                        print_error("unrecognized boolean value \"%s\" for option --%s\n",
-                                    val_ptr, opt);
-                    } else {
-                        print_error("unrecognized boolean value \"%s\" for option -%c\n",
-                                    val_ptr, *opt);
-                    }
-                    CHECK_BAD();
-                }
-            } else {
-                /* No value, so pretend it was true. */
-                D_OPTIONS(("Forcing option --%s to TRUE\n", opt));
-                *((unsigned long *) SPIFOPT_OPT_VALUE(j)) |= SPIFOPT_OPT_MASK(j);
+            if (!handle_boolean(j, val_ptr, islong)) {
+                i--;
             }
         } else if (SPIFOPT_OPT_IS_ABSTRACT(j)) {
-            D_OPTIONS(("Abstract option detected\n"));
-            ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))();
+            if (SHOULD_PARSE(j)) {
+                D_OPTIONS(("Abstract option detected\n"));
+                ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))();
+            }
         } else if (SPIFOPT_OPT_IS_STRING(j)) {
-            D_OPTIONS(("String option detected\n"));
-            *((const char **) SPIFOPT_OPT_VALUE(j)) = STRDUP(val_ptr);
+            if (SHOULD_PARSE(j)) {
+                handle_string(j, val_ptr);
+            }
         } else if (SPIFOPT_OPT_IS_INTEGER(j)) {
-            D_OPTIONS(("Integer option detected\n"));
-            *((int *) SPIFOPT_OPT_VALUE(j)) = strtol(val_ptr, (char **) NULL, 0);
+            if (SHOULD_PARSE(j)) {
+                handle_integer(j, val_ptr);
+            }
         } else if (SPIFOPT_OPT_IS_ARGLIST(j)) {
-            char **tmp;
-            register unsigned short k;
-
-            D_OPTIONS(("arglist option detected\n"));
-            if (hasequal) {
-                /* There's an equals sign, so just parse the rest of this option into words. */
-                tmp = (char **) MALLOC(sizeof(char *) * (num_words(val_ptr) + 1));
-
-                for (k = 0; val_ptr; k++) {
-                    tmp[k] = get_word(1, val_ptr);
-                    val_ptr = get_pword(2, val_ptr);
-                    D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
-                }
-                tmp[k] = (char *) NULL;
-                *((char ***) SPIFOPT_OPT_VALUE(j)) = tmp;
-            } else {
-                unsigned short len = argc - i;
-
-                    /* No equals sign, so use the rest of the command line and break. */
-                tmp = (char **) MALLOC(sizeof(char *) * (argc - i + 1));
-
-                for (k = 0; k < len; k++) {
-                    tmp[k] = STRDUP(argv[k + i]);
-                    D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
-                }
-                tmp[k] = (char *) NULL;
-                *((char ***) SPIFOPT_OPT_VALUE(j)) = tmp;
+            if (SHOULD_PARSE(j)) {
+                handle_arglist(j, val_ptr, hasequal, i, argc, argv);
+            }
+            if (!hasequal) {
                 break;
             }
         } else if (SPIFOPT_OPT_IS_ABSTRACT_VALUE(j)) {
-            D_OPTIONS(("Abstract/value option detected\n"));
-            ((spifopt_abstract_value_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
+            if (SHOULD_PARSE(j)) {
+                D_OPTIONS(("Abstract/value option detected\n"));
+                ((spifopt_abstract_value_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
+            }
         }
         NEXT_LOOP();
     }

@@ -47,21 +47,6 @@
 # include <stdarg.h>
 #endif
 
-/******************************* OBJECT GOOP ***********************************/
-
-/* Macros to allocate and deallocate memory for an object.  For use only in
-   object constructors/destructors, not in end-user programs. */
-#define SPIF_ALLOC(type)             SPIF_CAST(type) MALLOC(SPIF_SIZEOF_TYPE(type))
-#define SPIF_DEALLOC(obj)            FREE(obj)
-
-/* Macros for specifying the classname variables for each class type.  Each subclass of
-   spif_obj_t must define this variable using these macros. */
-#define SPIF_DECL_CLASSNAME(type)    "!spif_" #type "_t!"
-
-/* The declaration of an interface class. */
-#define SPIF_DECL_IFCLASS(if, type)  spif_const_ ## if ## _ifclass_t SPIF_IFCLASS_VAR(if, type)
-
-
 /******************************** MSGS GOOP ***********************************/
 extern char *libast_program_name, *libast_program_version;
 

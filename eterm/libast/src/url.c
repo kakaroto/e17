@@ -85,7 +85,7 @@ spif_url_del(spif_url_t self)
 spif_bool_t
 spif_url_init(spif_url_t self)
 {
-    spif_obj_init(SPIF_OBJ(self));
+    spif_str_init(SPIF_STR(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     return TRUE;
 }
@@ -93,7 +93,7 @@ spif_url_init(spif_url_t self)
 spif_bool_t
 spif_url_init_from_str(spif_url_t self, spif_str_t other)
 {
-    spif_obj_init(SPIF_OBJ(self));
+    spif_str_init_from_ptr(SPIF_STR(self), SPIF_STR_STR(other));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     return TRUE;
 }
@@ -101,7 +101,7 @@ spif_url_init_from_str(spif_url_t self, spif_str_t other)
 spif_bool_t
 spif_url_init_from_ptr(spif_url_t self, spif_charptr_t other)
 {
-    spif_obj_init(SPIF_OBJ(self));
+    spif_str_init_from_ptr(SPIF_STR(self), other);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
     return TRUE;
 }

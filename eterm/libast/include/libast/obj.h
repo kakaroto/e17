@@ -32,11 +32,22 @@
 #define SPIF_TYPE(type)                  spif_ ## type ## _t
 #define SPIF_CONST_TYPE(type)            spif_const_ ## type ## _t
 
+/* Macros to allocate and deallocate memory for an object.  For use only in
+   object constructors/destructors, not in end-user programs. */
+#define SPIF_ALLOC(type)                 SPIF_CAST(type) MALLOC(SPIF_SIZEOF_TYPE(type))
+#define SPIF_DEALLOC(obj)                FREE(obj)
+
+/* Macros for specifying the classname variables for each class type.  Each subclass of
+   spif_obj_t must define this variable using these macros. */
+#define SPIF_DECL_CLASSNAME(type)        "!spif_" #type "_t!"
+
 /* Typecast macros */
 #define SPIF_CAST_C(type)                (type)
 #define SPIF_CONST_CAST_C(type)          (const type)
 #define SPIF_CAST(type)                  (SPIF_TYPE(type))
 #define SPIF_CONST_CAST(type)            (const SPIF_TYPE(type))
+#define SPIF_CAST_PTR(type)              (SPIF_TYPE(type) *)
+#define SPIF_CONST_CAST_PTR(type)        (const SPIF_TYPE(type) *)
 
 /* Cast the NULL pointer to a particular object type. */
 #define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))

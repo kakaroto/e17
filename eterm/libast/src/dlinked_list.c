@@ -61,6 +61,7 @@ static spif_bool_t spif_dlinked_list_prepend(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_remove(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_remove_at(spif_dlinked_list_t, size_t);
 static spif_bool_t spif_dlinked_list_reverse(spif_dlinked_list_t);
+static spif_obj_t *spif_dlinked_list_to_array(spif_dlinked_list_t);
 
 /* *INDENT-OFF* */
 static spif_const_class_t dli_class = {
@@ -100,7 +101,8 @@ static spif_const_listclass_t dl_class = {
     (spif_memberfunc_t) spif_dlinked_list_prepend,
     (spif_memberfunc_t) spif_dlinked_list_remove,
     (spif_memberfunc_t) spif_dlinked_list_remove_at,
-    (spif_memberfunc_t) spif_dlinked_list_reverse
+    (spif_memberfunc_t) spif_dlinked_list_reverse,
+    (spif_memberfunc_t) spif_dlinked_list_to_array
 };
 spif_listclass_t SPIF_CLASS_VAR(dlinked_list) = &dl_class;
 /* *INDENT-ON* */
@@ -556,6 +558,12 @@ spif_dlinked_list_remove_at(spif_dlinked_list_t self, size_t idx)
 
 static spif_bool_t
 spif_dlinked_list_reverse(spif_dlinked_list_t self)
+{
+
+}
+
+static spif_obj_t *
+spif_dlinked_list_to_array(spif_dlinked_list_t self)
 {
 
 }

@@ -36,6 +36,7 @@ int test_macros(void);
 int test_mem(void);
 int test_strings(void);
 int test_snprintf(void);
+int test_options(void);
 int test_obj(void);
 int test_str(void);
 int test_tok(void);
@@ -203,6 +204,103 @@ int
 test_snprintf(void)
 {
 
+    return 0;
+}
+
+int
+test_options(void)
+{
+    spif_uint32_t test_flag_var = 0;
+    char *file_var = NULL, **exec_list = NULL;
+    long num_var = 0, geom_var = 0;
+    char *argv1[] = { "test", "-abvf", "somefile", "-n1", "-g", "3", "-e", "help", "me", "rhonda", NULL };
+    int argc1 = 10;
+    spifopt_t opts1[] = {
+        SPIFOPT_BOOL('a', "agony", "scream in agony", test_flag_var, 0x01),
+        SPIFOPT_BOOL('b', "bogus", "mark as bogus", test_flag_var, 0x02),
+        SPIFOPT_BOOL('c', "crap", "spew some random crap", test_flag_var, 0x04),
+        SPIFOPT_BOOL_LONG("dillhole", "are you a dillhole?", test_flag_var, 0x08),
+        SPIFOPT_ARGS('e', "exec", "what to exec", exec_list),
+        SPIFOPT_STR('f', "file", "set the filename", file_var),
+        SPIFOPT_INT('g', "geom", "geometry", geom_var),
+        SPIFOPT_INT('n', "num", "number", num_var),
+        SPIFOPT_BOOL_PP('v', "verbose", "be verbose", test_flag_var, 0x10)
+    };
+    char *display = NULL, *name = NULL, *theme = NULL, **exec = NULL, **foo = NULL;
+    long color = 0;
+    spif_uint32_t options = 0;
+    static void handle_buttonbar(void) {options |= 0x20;}
+    static void handle_theme(char *val_ptr) {theme = STRDUP(val_ptr);}
+    char *argv2[] = { "test", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com", "--scrollbar",
+                      "--buttonbar", "no", "--login=0", "-mvd", "foo:0", "--color", "4", "--foo", "blah", "-d", "eatme", NULL };
+    int argc2 = 18;
+    spifopt_t opts2[] = {
+        SPIFOPT_STR_PP('d', "display", "X display to connect to", display),
+        SPIFOPT_ARGS_PP('e', "exec", "command to run", exec),
+        SPIFOPT_BOOL_PP('l', "login", "login shell", options, 0x01),
+        SPIFOPT_BOOL('m', "map-alert", "raise window on beep", options, 0x02),
+        SPIFOPT_STR('n', "name", "name", name),
+        SPIFOPT_BOOL('r', "reverse-video", "enable reverse video", options, 0x04),
+        SPIFOPT_ABSV_PP('t', "theme", "theme to use", handle_theme),
+        SPIFOPT_BOOL_PP('v', "visual-bell", "enable visual bell", options, 0x08),
+        SPIFOPT_BOOL_LONG("scrollbar", "enable scrollbar", options, 0x10),
+        SPIFOPT_ABST_LONG("buttonbar", "enable buttonbar", handle_buttonbar),
+        SPIFOPT_INT_LONG("color", "pick a color", color),
+        SPIFOPT_ARGS_LONG("foo", "foo", foo)
+    };
+
+    TEST_BEGIN("spifopt_parse() function");
+    SPIFOPT_OPTLIST_SET(opts1);
+    SPIFOPT_NUMOPTS_SET(sizeof(opts1) / sizeof(spifopt_t));
+    SPIFOPT_ALLOWBAD_SET(0);
+    spifopt_parse(argc1, argv1);
+    TEST_FAIL_IF(test_flag_var != 0x10);
+    TEST_FAIL_IF(file_var != NULL);
+    TEST_FAIL_IF(exec_list != NULL);
+    TEST_FAIL_IF(num_var != 0);
+    TEST_FAIL_IF(geom_var != 0);
+    spifopt_parse(argc1, argv1);
+    TEST_FAIL_IF(test_flag_var != 0x13);
+    TEST_FAIL_IF(file_var == NULL);
+    TEST_FAIL_IF(strcmp(file_var, "somefile"));
+    TEST_FAIL_IF(exec_list == NULL);
+    TEST_FAIL_IF(num_var != 1);
+    TEST_FAIL_IF(geom_var != 3);
+
+    SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_POSTPARSE);
+    SPIFOPT_OPTLIST_SET(opts2);
+    SPIFOPT_NUMOPTS_SET(sizeof(opts2) / sizeof(spifopt_t));
+    SPIFOPT_ALLOWBAD_SET(0);
+    spifopt_parse(argc2, argv2);
+    TEST_FAIL_IF(strcmp(display, "foo:0"));
+    TEST_FAIL_IF(name != NULL);
+    TEST_FAIL_IF(strcmp(theme, "mytheme"));
+    TEST_FAIL_IF(exec == NULL);
+    TEST_FAIL_IF(strcmp(exec[0], "ssh"));
+    TEST_FAIL_IF(strcmp(exec[1], "foo@bar.com"));
+    TEST_FAIL_IF(exec[2] != NULL);
+    TEST_FAIL_IF(foo != NULL);
+    TEST_FAIL_IF(color != 0);
+    TEST_FAIL_IF(options != 0x09);
+    spifopt_parse(argc2, argv2);
+    TEST_FAIL_IF(strcmp(display, "foo:0"));
+    TEST_FAIL_IF(strcmp(name, "This is a name"));
+    TEST_FAIL_IF(strcmp(theme, "mytheme"));
+    TEST_FAIL_IF(exec == NULL);
+    TEST_FAIL_IF(strcmp(exec[0], "ssh"));
+    TEST_FAIL_IF(strcmp(exec[1], "foo@bar.com"));
+    TEST_FAIL_IF(exec[2] != NULL);
+    TEST_FAIL_IF(foo == NULL);
+    TEST_FAIL_IF(strcmp(foo[0], "blah"));
+    TEST_FAIL_IF(strcmp(foo[1], "-d"));
+    TEST_FAIL_IF(strcmp(foo[2], "eatme"));
+    TEST_FAIL_IF(foo[3] != NULL);
+    TEST_FAIL_IF(color != 4);
+    TEST_FAIL_IF(options != 0x3f);
+
+    TEST_PASS();
+
+    TEST_PASSED("options");
     return 0;
 }
 
@@ -788,6 +886,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_snprintf()) != 0) {
+        return ret;
+    }
+    if ((ret = test_options()) != 0) {
         return ret;
     }
     if ((ret = test_obj()) != 0) {

@@ -50,6 +50,7 @@ static spif_bool_t spif_array_prepend(spif_array_t, spif_obj_t);
 static spif_obj_t spif_array_remove(spif_array_t, spif_obj_t);
 static spif_obj_t spif_array_remove_at(spif_array_t, size_t);
 static spif_bool_t spif_array_reverse(spif_array_t);
+static spif_obj_t *spif_array_to_array(spif_array_t);
 
 /* *INDENT-OFF* */
 static spif_const_listclass_t a_class = {
@@ -76,7 +77,8 @@ static spif_const_listclass_t a_class = {
     (spif_memberfunc_t) spif_array_prepend,
     (spif_memberfunc_t) spif_array_remove,
     (spif_memberfunc_t) spif_array_remove_at,
-    (spif_memberfunc_t) spif_array_reverse
+    (spif_memberfunc_t) spif_array_reverse,
+    (spif_memberfunc_t) spif_array_to_array
 };
 spif_listclass_t SPIF_CLASS_VAR(array) = &a_class;
 /* *INDENT-ON* */
@@ -348,6 +350,12 @@ spif_array_remove_at(spif_array_t self, size_t idx)
 
 static spif_bool_t
 spif_array_reverse(spif_array_t self)
+{
+
+}
+
+static spif_obj_t *
+spif_array_to_array(spif_array_t self)
 {
 
 }
