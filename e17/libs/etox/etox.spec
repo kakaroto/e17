@@ -1,12 +1,8 @@
 # this is NOT relocatable, unless you alter the patch!
 %define	name	etox
-%define	ver	0.0.1
+%define	ver	0.9.0
 %define	rel	1
 %define prefix  /usr
-
-# NB: Raster and I talked about it, and heh says evas_test shouldn't be in
-# the rpms, since it's not geared at all towards end users. I'm commenting
-# out and withholding the patch to honor that..
 
 Summary: Enlightened Text Object Library
 Name: %{name}
@@ -15,26 +11,23 @@ Release: %{rel}
 Copyright: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org/efm.html
-Packager: Term <kempler@utdallas.edu>
+Packager: Azundris <edevel@azundris.com>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root
-Requires: evas >= 0.0.1
-
-#Patch1: evas_test-fix.patch
+Requires: evas >= 1.0.0
 
 %description
-Evas is an advanced canvas library, providing three backends for
-rendering: X11 (without some features like alpha-blending), imlib2, or
-OpenGL (hardware accelerated). Due to its simple API, evas can be
-developed with rapidly, and cleanly.
-
-Install evas if you want to develop applications against the only
-hardware-accelerated canvas library, or if you want to try out the
-applications under development.
+Suri tolar sadam bel Fanganka. Yasdima Araob lom Yasdira sha Jerana. Sorcha
+rafiere Sorcha faan rana. Suri Sorcha sade ki suri Nylara zune ki larom resvis
+Yasdira sha Felta. Duilor wa Llantor sha Gísdí Eyad rafieris tugom Araob. Suri
+tolar daknam Nylara lom Araob sha Felta. Nylara yare lan Alhan. Bilam tolar
+daknam rana wa Yasdira sha Felta lom Araob. Tolar munen lan Fanganka. Bilam
+pacha lan Rhan Loft. »¿Nylara sade tugom Yaori? Yasdima tugom Nylara sha Rhan
+Loft.« Tolar yasdimen Sorcha.
 
 %package devel
-Summary: Enlightened Canvas Library headers and development libraries.
+Summary: Enlightened Text Layout Library headers and development libraries.
 Group: Development/Libraries
 Requires: %{name} = %{ver}
 
@@ -62,13 +55,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{prefix}/lib/libevas.so.*
-%{prefix}/bin/evas_*
-%{prefix}/share/evas/*
+%{prefix}/lib/libetox.so.*
+%{prefix}/lib/libetox.la
+%{prefix}/bin/etox_test
+%{prefix}/bin/etox_selections
+%{prefix}/share/etox/*
 
 %files devel
 %defattr(-,root,root)
-%{prefix}/lib/libevas.so
-%{prefix}/lib/libevas.*a
-%{prefix}/include/Evas.h
-%{prefix}/bin/evas-config
+%{prefix}/lib/libetox.so
+%{prefix}/lib/libetox.a
+%{prefix}/include/Etox.h
+%{prefix}/bin/etox-config
+%{prefix}/share/aclocal/etox.m4
