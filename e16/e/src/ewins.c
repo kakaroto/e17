@@ -1074,6 +1074,12 @@ EwinEventUnmap(EWin * ewin)
    if (ewin->state == EWIN_STATE_WITHDRAWN)
       return;
 
+   if (ewin->iconified)
+      ewin->state = EWIN_STATE_ICONIC;
+   else
+      ewin->state = EWIN_STATE_WITHDRAWN;
+   ewin->shown = 0;
+
    ActionsEnd(ewin);
 
    if (ewin == GetContextEwin())
@@ -1093,7 +1099,6 @@ EwinEventUnmap(EWin * ewin)
 	Mode.doingslide = 0;
      }
 
-   ewin->shown = 0;
    /* FIXME - This is to sync the client.win EXID mapped state */
    EUnmapWindow(ewin->client.win);
    EUnmapWindow(EoGetWin(ewin));
@@ -1101,12 +1106,7 @@ EwinEventUnmap(EWin * ewin)
    ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
    if (ewin->iconified)
-     {
-	ewin->state = EWIN_STATE_ICONIC;
-	return;
-     }
-
-   ewin->state = EWIN_STATE_WITHDRAWN;
+      return;
 
    if (ewin->Close)
       ewin->Close(ewin);
