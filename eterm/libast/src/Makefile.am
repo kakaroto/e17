@@ -4,6 +4,8 @@ lib_LTLIBRARIES = libast.la
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/include/$(PACKAGE)
 
-libast_la_SOURCES = conf.c debug.c file.c linked_list.c mem.c msgs.c obj.c str.c strings.c snprintf.c tok.c
+libast_la_SOURCES = \
+    conf.c debug.c dlinked_list.c file.c linked_list.c \
+    mem.c msgs.c obj.c str.c strings.c snprintf.c tok.c
 
 libast_la_LDFLAGS = -version-info 2:0:1

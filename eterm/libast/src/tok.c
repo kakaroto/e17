@@ -143,18 +143,17 @@ spif_tok_done(spif_tok_t self)
         size_t i;
 
         for (i = 0; i < self->count; i++) {
-            spif_str_done(SPIF_STR(self->token[i]));
+            spif_str_del(SPIF_STR(self->token[i]));
         }
         FREE(self->token);
         self->token = ((spif_str_t *) (NULL));
         self->count = 0;
     }
-    if (!SPIF_OBJ_ISNULL(self->sep)) {
-        spif_str_done(SPIF_STR(self->sep));
+    if (!SPIF_STR_ISNULL(self->sep)) {
+        spif_str_del(SPIF_STR(self->sep));
         self->sep = SPIF_NULL_TYPE(str);
     }
     spif_str_done(SPIF_STR(self));
-    spif_str_init(SPIF_STR(self));
     return TRUE;
 }
 
@@ -276,7 +275,7 @@ spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t inde
 spif_cmp_t
 spif_tok_comp(spif_tok_t self, spif_tok_t other)
 {
-    return spif_obj_comp(SPIF_OBJ(self), SPIF_OBJ(other));
+    return spif_str_cmp(SPIF_STR(self), SPIF_STR(other));
 }
 
 spif_tok_t

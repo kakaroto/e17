@@ -172,3 +172,7 @@ Thu Apr 11 23:47:26 2002                        Michael Jennings (mej)
 
 Not needed...
 ----------------------------------------------------------------------
+Mon Apr 15 23:50:40 2002                        Michael Jennings (mej)
+
+A doubly-linked list implementation of the list interface.
+----------------------------------------------------------------------

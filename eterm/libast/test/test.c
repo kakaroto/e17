@@ -501,11 +501,13 @@ test_list(void)
     spif_list_t list;
     spif_str_t s;
 
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < 2; i++) {
         if (i == 0) {
             TEST_NOTICE("Testing list interface class, linked_list instance:");
             list = SPIF_LIST_NEW(linked_list);
         } else if (i == 1) {
+            TEST_NOTICE("Testing list interface class, dlinked_list instance:");
+            list = SPIF_LIST_NEW(dlinked_list);
         } else if (i == 2) {
         } else if (i == 3) {
         }
@@ -670,13 +672,6 @@ test_list(void)
         TEST_PASS();
 
         SPIF_SHOW(list, stdout);
-
-        if (i == 0) {
-            TEST_PASSED("linked_list");
-        } else if (i == 1) {
-        } else if (i == 2) {
-        } else if (i == 3) {
-        }
     }
 
 

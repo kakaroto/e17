@@ -80,6 +80,7 @@
 
 #include <libast/list_if.h>
 #include <libast/linked_list.h>
+#include <libast/dlinked_list.h>
 
 /******************************* GENERIC GOOP *********************************/
 #define USE_VAR(x)   (void) x

@@ -25,10 +25,13 @@
 #define _LIBAST_TOK_H_
 
 /* Cast an arbitrary object pointer to a tok. */
-#define SPIF_TOK(obj)                ((spif_tok_t) (obj))
+#define SPIF_TOK(obj)                (SPIF_CAST(tok) (obj))
 
 /* Check to see if a pointer references a tokenizer object. */
 #define SPIF_OBJ_IS_TOK(obj)         (SPIF_OBJ_IS_TYPE(obj, tok))
+
+/* Check to see if a tokenizer object is NULL. */
+#define SPIF_TOK_ISNULL(obj)         (SPIF_TOK(obj) == SPIF_NULL_TYPE(tok))
 
 /* Types for the tokenizer object. */
 typedef struct spif_tok_t_struct *spif_tok_t;
