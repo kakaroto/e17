@@ -10,7 +10,6 @@
 #define DATADIR PACKAGE_DATA_DIR
 
 #include "callbacks.h"
-#include "action.h"
 #include "util.h"
 
 typedef struct _Elicit Elicit;
