@@ -940,7 +940,7 @@ main_initialize(char *appname)
   signal(SIGALRM,   main_cleanup_sighandler);
   signal(SIGBUS,    main_cleanup_sighandler);
 #ifdef SIGEMT
-  signal(SIGEMT, main_cleanup_sighandler);
+  signal(SIGEMT,    main_cleanup_sighandler);
 #endif
   signal(SIGHUP,    main_cleanup_sighandler);
   signal(SIGINT,    main_cleanup_sighandler);
@@ -958,7 +958,7 @@ main_initialize(char *appname)
   signal(SIGXCPU,   main_cleanup_sighandler);
   signal(SIGXFSZ,   main_cleanup_sighandler);
 #endif
-  signal(SIGPIPE, SIG_IGN);
+  signal(SIGPIPE,   SIG_IGN);
 
   signal(SIGQUIT,   main_crash_sighandler);
   signal(SIGSEGV,   main_crash_sighandler);

@@ -84,8 +84,6 @@ dca_search(EfsdDynCharArray *a, const char *s, int *index)
       i = (lower + upper)/2;
       cmp = strcmp(a->array[i], s);  
 
-      printf("Comparing %s %s\n", a->array[i], s);  
-      
       if (cmp == 0)
 	{
 	  *index = i;

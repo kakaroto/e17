@@ -162,6 +162,14 @@
           <para>&efsd; Architecture</para>
         </caption>
       </mediaobject>
+
+      <para>
+        As can be seen in the Figure, multiple clients talk to &efsd; through &lefsd;. &efsd; in turn
+	is composed of a number of subsystems which handle command-specific tasks, accessing the
+	filesystem through system calls into the kernel. <link linkend="monitoring">Monitoring of files</link>
+	is done through <function>libfam</function> and <function>FAM</function>, the File Alteration
+        Monitor (available at <ulink url="http://oss.sgi.com/projects/fam"><citetitle>SGI's oss site</citetitle></ulink>).
+      </para>
     </section>
   </chapter>
 
@@ -196,6 +204,13 @@ if ( (ec = efsd_open()) == NULL)
      /* Oops. Couldn't establish connection.
       * Is Efsd really running ? 
       */
+  }
+
+/* ... various efsd commands ... */
+
+if (efsd_close(ec) < 0)
+  {
+     /* Ouch. Error when closing connection. */
   }
 	  </programlisting>
 	</para>
@@ -287,20 +302,139 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 
       <section>
 	<title>Receiving Events</title>
+        <para>
+	There are two basic ways of receiving events from &efsd; in your client:
+	Using <function>select()</function> to wait on events on file descriptors,
+	or using %lefsd;'s convenience functions which block and wait until events
+	arrive.
+        </para>
 	<section>
-	  <title>Using <function>select()</function></title>
+	  <title>Using <function>select()</function> and File Descriptors</title>
           <para>
+	  This is the more sophisticated and flexible way, well-suited for complex
+	  event loops. Use <link linkend="API-efsd-get-connection-fd"><function>
+	  efsd_get_connection_fd()</function></link> to get the connection's file
+	  descriptor. You can then <function>ioctl()</function> this descriptor to
+	  enable e.g. nonblocking mode, then use <function>select()</function> as
+	  usual. If you're not familiar with <function>select()</function>, have a
+	  look at <link linkend="bib-apue"><citation>Stevens 1998</citation></link> or
+	  <link linkend="bib-unp"><citation>Stevens 1992</citation></link>.
           </para>
+	  <para>
+	    The code in this case then usually looks like this:
+
+	  <programlisting>  
+EfsdConnection *ec;
+fd_set          fdset;
+int             fd, fdsize = 0;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection.
+      * Is Efsd really running ?
+      */
+  }
+
+fd = efsd_get_connection_fd(ec);
+
+FD_ZERO(&amp;fdset);
+
+/* Set desired filedescriptors here, also maybe
+ * create other fd_sets ...
+ */
+
+/* ... */
+
+FD_SET(fd, &amp;fdset);
+if (fd > fdsize)
+  fdsize = fd;
+
+select(fdsize + 1, &amp;fdset, NULL, NULL, NULL);
+
+/* Check for events on Efsd's descriptor */
+
+if (FD_ISSET(fd, &amp;fdset))
+  {	  
+    EfsdEvent ee;
+
+    /* Efsd events have arrived -- now loop while
+     * there are events pending in the arrival queue.
+     */
+   
+    while (efsd_events_pending(ec))
+      {
+	 if (efsd_next_event(ec, &amp;ee) >= 0)
+           {
+              /* Handle the event */
+	      /* ... */
+
+              /* Now clean up: */
+              efsd_event_cleanup(&amp;ee);
+           }
+	 else
+           {
+              /* Error while reading event. */
+           }
+      }
+  }
+	    </programlisting>
+	    After adding the file descriptors to an <classname>fd_set</classname>,
+            you <function>select()</function> the <classname>fd_set</classname>
+            and check &efsd;'s file descriptor when <function>select()</function> returns.
+	    One or more &efsd; events may have arrived. To read them, loop while
+	    <link linkend="API-efsd-events-pending"><function>efsd_events_pending()
+	    </function></link> returns a value greater than zero. You read the event
+            into an <classname>EfsdEvent</classname> structure.
+
+	  <caution>
+	    <title>After you finished handling the event, you need to clean up the structure.</title>
+            <para>
+              Use <link linkend="API-efsd-event-cleanup"><function>efsd_event_cleanup()</function></link>
+              to release any memore that was read into the <classname>EfsdEvent</classname> structure.
+            </para>
+	  </caution>
+	  </para>
         </section>
 	<section>
-	  <title>Using Blocking Wait</title>
+	  <title>Using &lefsd; and Blocking Waits</title>
           <para>
+	    When you're not using complex event loops, a simpler way is to use
+	    &lefsd;'s convenience functions for reading &efsd; events. The code
+	    looks like this:
+
+	  <programlisting>  
+EfsdConnection *ec;
+EfsdEvent ee;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection.
+      * Is Efsd really running ?
+      */
+  }
+
+while (efsd_wait_event(ec, &amp;ee) >= 0)
+  {
+     /* Handle the event */
+     /* ... */
+
+     /* Now clean up: */
+     efsd_event_cleanup(&amp;ee);
+  }
+	  </programlisting>
+
+	    After establishing the connection to &efsd; your event handler simply
+            sits in a loop that calls <link linkend="API-efsd-wait-event">
+	    <function>efsd_wait_event()</function></link> and blocks until an event
+	    arrives . As before, after handling the event,
+	    you need to clean up using <link linkend="API-efsd-event-cleanup"><function>
+            efsd_event_cleanup()</function></link>.
           </para>
         </section>
       </section>
 
       <section id="monitoring">
-	<title id="monitoring.title">Monitoring Files</title>
+	<title id="monitoring.title">Monitoring and Listing Files</title>
 	<para>
 	</para>
       </section>
@@ -314,6 +448,12 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 
       <section>
         <title>Handling Filetypes</title>
+	  <para>
+	  </para>
+      </section>
+
+      <section>
+        <title>Other File Commands</title>
 	  <para>
 	  </para>
       </section>
@@ -360,7 +500,7 @@ EfsdOptions *ops;
 
 /* Connection setup, etc. */
 
-/* Assemble an EfsdOptions object, containing 2 options:
+/* Assemble an EfsdOptions structure, containing 2 options:
  * one to list all files (as in ls -a), and one to request
  * alphabetical sorting of the listed files.
  */
@@ -386,7 +526,7 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 	  The other case is when you need to assemble options dynamically, at runtime
 	  <footnote><para><link linkend="efsdshell">&efsdsh;</link> is an example of an application
           where this happens.</para></footnote>. Just create an <classname>EfsdOptions</classname>
-          object using <function>efsd_ops_create()</function>, and then add options created via
+          structure using <function>efsd_ops_create()</function>, and then add options created via
           <function>efsd_op_XXX()</function> using <function>efsd_ops_add()</function>.
 
 	  <programlisting>  
@@ -414,7 +554,13 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
      /* Could not send command. Continue accordingly. */
   }
 	  </programlisting>
-
+        <note>
+	  <title>If you don't want to give any options, just pass NULL as <classname>EfsdOptions</classname>.</title>
+	  <para></para>
+	</note>
+	
+	</para>
+	<para>
         When using options on a file monitoring request (like <link linkend="API-efsd-start-monitor-dir">
         <function>efsd_start_monitor_dir()</function></link>), you are guaranteed to receive
         the <constant>EFSD_FILE_EXISTS</constant> events before any results of options applied
@@ -466,7 +612,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	  </listitem>
 	  <listitem>
 	    <para>Static functions use the same sub-prefix, but don't have the
-	      <function>efsd</function> prefix.
+	      <function>efsd_</function> prefix.
 	    </para>
 	  </listitem>
 	</itemizedlist>
@@ -567,6 +713,40 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
     <para>
     </para>
   </chapter>
+  
+  <bibliography>
+
+    <biblioentry id="bib-unp">
+      <bookbiblio>
+	<author>	  
+	  <firstname>W. R.</firstname>
+	  <surname>Stevens</surname>
+	</author>
+	<title>UNIX Network Programming</title>
+	<edition>Second Edition</edition>
+	<volumenum>Volume 1</volumenum>
+	<publisher>
+	  <publishername>Prentice-Hall</publishername>
+	</publisher>
+	<date>1998</date>
+      </bookbiblio>
+    </biblioentry>	
+      
+    <biblioentry id="bib-apue">
+      <bookbiblio>
+	<author>
+	  <firstname>W. R.</firstname>
+	  <surname>Stevens</surname>
+	</author>
+	<title>Advanced Programming in the UNIX Environment</title>
+	<publisher>
+	  <publishername>Addison-Wesley</publishername>
+	</publisher>
+	<date>1992</date>
+      </bookbiblio>
+    </biblioentry>	
+
+  </bibliography>
       
 </book>
 
