@@ -71,7 +71,7 @@ void ewl_widget_destroy_recursive(Ewl_Widget * widget);
 void ewl_widget_configure(Ewl_Widget * widget);
 void ewl_widget_theme_update(Ewl_Widget * w);
 void ewl_widget_set_data(Ewl_Widget * w, char * k, void * v);
-void ewl_widget_del_data(Ewl_Widget * w, char * k);
+void * ewl_widget_del_data(Ewl_Widget * w, char * k);
 void * ewl_widget_get_data(Ewl_Widget * w, char * k);
 
 #endif

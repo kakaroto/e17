@@ -164,7 +164,7 @@ ewl_widget_set_data(Ewl_Widget * w, char * k, void * v)
 	DLEAVE_FUNCTION;
 }
 
-void
+void *
 ewl_widget_del_data(Ewl_Widget * w, char * k)
 {
 	DENTER_FUNCTION;
@@ -174,9 +174,7 @@ ewl_widget_del_data(Ewl_Widget * w, char * k)
 	if (!w->data)
 		DRETURN;
 
-	ewd_hash_remove(w->data, k);
-
-	DLEAVE_FUNCTION;
+	DRETURN_PTR(ewd_hash_remove(w->data, k))
 }
 
 void *
