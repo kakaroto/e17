@@ -1,9 +1,8 @@
 #include "erss.h"
-#include "parse.h"
-#include "parse_config.h"
-#include "ls.h"
+#include "parse_config.h"      /* Erss_Config, Erss_Rc_Config  */
+#include "ls.h"                /* erss_list_config_files() */
 
-Erss_Config *cfg = NULL;
+Erss_Config    *cfg = NULL;
 Erss_Rc_Config *rc = NULL;
 
 
@@ -96,6 +95,11 @@ int erss_parse_rc_file ()
 
 	return TRUE;
 }
+
+
+
+
+
 
 void erss_parse_config_file (char *file)
 {
@@ -283,5 +287,4 @@ void erss_parse_config_file (char *file)
 		
 	if (!cfg->prefix)
 		cfg->prefix = strdup(" . ");
-
 }

@@ -9,14 +9,14 @@ typedef struct _erss_config {
 	char *item_url;
 	char *item_description;
 
-	int update_rate;
-	int clock;
-	int num_stories;
+	int   update_rate;
+	int   clock;
+	int   num_stories;
 
-	int x;
-	int y;
+	int   x;
+	int   y;
 
-	int borderless;
+	int   borderless;
 
 	char *prefix;
 
@@ -27,19 +27,19 @@ typedef struct _erss_config {
 
 
 typedef struct _erss_rc_config {
-	char *config;
-	char *theme;
-	char *browser;
-	char *proxy;
-	int proxy_port;
-	int clock;
-	double tooltip_delay;
+	char   *config;
+	char   *theme;
+	char   *browser;
+	char   *proxy;
+	int     proxy_port;
+	int     clock;
+	double  tooltip_delay;
 } Erss_Rc_Config;
 
 
 
-extern Erss_Config *cfg;
+extern Erss_Config    *cfg;
 extern Erss_Rc_Config *rc;
 
-int erss_parse_rc_file ();
+int  erss_parse_rc_file ();
 void erss_parse_config_file (char *file);

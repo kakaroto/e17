@@ -66,9 +66,9 @@ int main (int argc, char * const argv[])
 	char        theme_file[PATH_MAX];
 	char       *config=NULL;
 	struct stat statbuf;
-	erss_feed   f;
+	Erss_Feed   f;
 
-	memset(&f,0,sizeof(erss_feed));
+	memset(&f,0,sizeof(Erss_Feed));
 
 	cfg = NULL;
 

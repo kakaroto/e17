@@ -1,12 +1,10 @@
 #include "erss.h"
-#include "parse.h"
-#include "parse_config.h"
-#include "tooltip.h"
-#include "gui.h"
+#include "parse.h"          /* ERSS_PARSE_* */
+#include "parse_config.h"   /* cfg */
 
 
 
-static Erss_Article *erss_story_new (erss_feed *f)
+static Erss_Article *erss_story_new (Erss_Feed *f)
 {
 	f->item=malloc(sizeof(Erss_Article));
 	memset(f->item,0,sizeof(Erss_Article));
@@ -17,13 +15,13 @@ static Erss_Article *erss_story_new (erss_feed *f)
 	return f->item;
 }
 
-static void erss_story_end (erss_feed *f)
+static void erss_story_end (Erss_Feed *f)
 {
 	ewd_list_append (f->list, f->item);
 	f->item = NULL;
 }
 
-char *erss_desc_clean (char *description) {
+static char *erss_desc_clean (char *description) {
 	/* remove potential tags. not using libXML here, contents may not
 	   be well-formed...  */
 
@@ -49,12 +47,11 @@ char *erss_desc_clean (char *description) {
 	return description;
 }
 
-static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
+static void erss_parse_story (Erss_Feed *f, xmlNodePtr cur)
 {
-	Erss_Tooltip *tt = NULL;
-	char *text;
+	char    *text;
 	xmlChar *str;
-	int i;
+	int      i;
 
 	cur = cur->xmlChildrenNode;
 
@@ -77,19 +74,8 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 
 			snprintf (text, i, " %s %s", cfg->prefix, str);
 
-			f->item->obj = edje_object_add (evas);
-			edje_object_file_set (f->item->obj, cfg->theme, "erss_item");
-			evas_object_show (f->item->obj);
+			f->item->title = text;
 
-			evas_object_event_callback_add (f->item->obj,
-					EVAS_CALLBACK_MOUSE_IN, erss_mouse_in_cursor_change, NULL);
-			evas_object_event_callback_add (f->item->obj,
-					EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, NULL);
-
-			e_container_element_append(cont, f->item->obj);
-			edje_object_part_text_set (f->item->obj, "article", text);
-
-			free (text);
 			xmlFree (str);
 		}
 
@@ -97,12 +83,6 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 			if (!strcmp(cur->name, cfg->item_url) && f->item) {
 				str = xmlNodeListGetString(f->doc, cur->xmlChildrenNode, 1);
 				f->item->url = strdup (str);
-
-				edje_object_signal_callback_add (f->item->obj, "exec*", "*",
-						erss_mouse_click_item, f->item->url);
-				edje_object_signal_emit (f->item->obj, "mouse,in", "article");
-				edje_object_signal_emit (f->item->obj, "mouse,out", "article");
-
 				xmlFree (str);
 			}
 		}
@@ -112,19 +92,8 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 				char *desc;
 
 				if((str = xmlNodeListGetString(f->doc, cur->xmlChildrenNode, 1))) {
-					if((desc = erss_desc_clean(str))) {
-						if((tt = erss_tooltip_new (desc))) {
-							if (f->item->obj) {
-								evas_object_event_callback_add (f->item->obj,
-																								EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
-								evas_object_event_callback_add (f->item->obj,
-																								EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
-							}
-						} /*
-						if (f->item->description)
-							free (f->item->description); */
+					if((desc = erss_desc_clean(str)))
 						f->item->description=desc;
-					}
 					xmlFree (str);
 				}
 			}
@@ -134,9 +103,10 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 	}
 }
 
-int erss_parse (erss_feed *f)
+int erss_parse (Erss_Feed *f)
 {
 	xmlNodePtr cur;
+	int        ret;
 
 	if (f->doc == NULL ) {
 		fprintf(stderr, "%s warn: buffer not parsed successfully.\n", PACKAGE);
@@ -151,21 +121,23 @@ int erss_parse (erss_feed *f)
 		return ERSS_PARSE_EMPTY;
 	}
 
+	ret=ewd_list_nodes (f->list);
 	cur = cur->xmlChildrenNode;
+
 	while (cur != NULL) {
-		if (ewd_list_nodes (f->list) >= cfg->num_stories)
-			return cfg->num_stories;
+		if (ewd_list_nodes (f->list) >= cfg->num_stories) {
+			ret=cfg->num_stories;
+			break;
+		}
 
 		if (cfg->item_root) {
 			if (!strcmp(cur->name, cfg->item_root)) {
 				erss_parse_story (f, cur);
 			}
-		} else {
-			if (!strcmp(cur->name, cfg->item_start)) {
-				erss_story_new (f);
-				erss_parse_story (f, cur);
-				erss_story_end (f);
-			}
+		} else if (!strcmp(cur->name, cfg->item_start)) {
+			erss_story_new (f);
+			erss_parse_story (f, cur);
+			erss_story_end (f);
 		}
 
 		cur = cur->next;
@@ -173,5 +145,5 @@ int erss_parse (erss_feed *f)
 
 	xmlFreeDoc(f->doc);
 
-	return ewd_list_nodes (f->list);
+	return ret;
 }

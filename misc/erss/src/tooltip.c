@@ -1,10 +1,29 @@
 #include "erss.h"
-#include "parse.h"
-#include "parse_config.h"
-#include "tooltip.h"
-#include "gui.h"
+#include "parse_config.h"       /* rc */
+#include "gui.h"                /* erss_window_resize() */
+#include "tooltip.h"            /* Erss_Tooltip */
 
-void erss_window_move_tooltip (Ecore_Evas * ee)
+
+
+typedef struct _erss_tooltip {
+   Evas *evas;
+   Ecore_Evas *ee;
+   Ecore_X_Window win;
+   Evas_Object *bg;
+   Evas_Object *etox;
+
+   int x;
+   int y;
+
+   Ecore_Timer *timer;
+} Erss_Tooltip;
+
+
+
+
+
+
+static void erss_window_move_tooltip (Ecore_Evas * ee)
 {
 	int x, y, w, h;
 	Evas_Object *o = NULL;
@@ -15,7 +34,7 @@ void erss_window_move_tooltip (Ecore_Evas * ee)
 			esmart_trans_x11_freshen(o, x, y, w, h);
 }
 
-Erss_Tooltip *erss_tooltip_new (char *description)
+static Erss_Tooltip *erss_tooltip_new (char *description)
 {
 	Erss_Tooltip *tt;
 	int x, y, w, h;
@@ -82,7 +101,7 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 	return tt;
 }
 
-void erss_tooltip_hide (Erss_Tooltip *tt)
+static void erss_tooltip_hide (Erss_Tooltip *tt)
 {
 	ecore_evas_hide (tt->ee);
 
@@ -90,7 +109,7 @@ void erss_tooltip_hide (Erss_Tooltip *tt)
 		ecore_timer_del (tt->timer);
 }
 
-void erss_tooltip_show (Erss_Tooltip *tt)
+static void erss_tooltip_show (Erss_Tooltip *tt)
 {
 	tt->timer = NULL;
 
@@ -99,7 +118,7 @@ void erss_tooltip_show (Erss_Tooltip *tt)
 }
 
 
-int erss_tooltip_timer (void *data)
+static int erss_tooltip_timer (void *data)
 {
 	Erss_Tooltip *tt = data;
 
@@ -108,7 +127,7 @@ int erss_tooltip_timer (void *data)
 	return FALSE;
 }
 
-void erss_tooltip_mouse_in (void *data, Evas *e, Evas_Object *obj, 
+static void erss_tooltip_mouse_in (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
 	Evas_Event_Mouse_In *ev = event_info;
@@ -120,7 +139,7 @@ void erss_tooltip_mouse_in (void *data, Evas *e, Evas_Object *obj,
 	tt->timer = ecore_timer_add (rc->tooltip_delay, erss_tooltip_timer, tt);
 }
 
-void erss_tooltip_mouse_out (void *data, Evas *e, Evas_Object *obj, 
+static void erss_tooltip_mouse_out (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
 	Erss_Tooltip *tt = data;
@@ -130,3 +149,16 @@ void erss_tooltip_mouse_out (void *data, Evas *e, Evas_Object *obj,
 	}
 
 } 
+
+int erss_tooltip_for(Erss_Article *item) {
+    Erss_Tooltip *tt;
+
+    if(item && (tt = erss_tooltip_new (item->description))) {
+      evas_object_event_callback_add (item->obj,
+				      EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
+      evas_object_event_callback_add (item->obj,
+				      EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
+      return TRUE;
+    }
+    return FALSE;
+}

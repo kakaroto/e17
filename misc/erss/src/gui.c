@@ -1,5 +1,15 @@
 #include "erss.h"
-#include "parse_config.h"
+#include "parse_config.h"      /* rc, cfg */
+#include "tooltip.h"           /* Erss_Tooltip, erss_tooltip_new() */
+
+
+
+typedef enum {
+  ERSS_GAI_SUCC=0,
+  ERSS_GAI_FAIL=-1,
+  ERSS_GAI_NOFEED=-2,
+  ERSS_GAI_NOITEM=-3
+} erss_gai_error;
 
 
 
@@ -13,9 +23,12 @@ Evas_Object *bg=NULL,
 
 
 
+
+
+
 int erss_set_time (void *data)
 {
-	erss_feed *f=(erss_feed *)data;
+	Erss_Feed *f=(Erss_Feed *)data;
 	char      *str;
 	char       text[100];
 
@@ -77,8 +90,8 @@ void erss_window_resize(Ecore_Evas *ee)
 
 
 
-void erss_mouse_click_item (void *data, Evas_Object *o, const char *sig, 
-		const char *src)
+static void erss_mouse_click_item (void *data, Evas_Object *o,
+				   const char *sig, const char *src)
 {
 	char *url = data;
 	char  c[1024];
@@ -92,8 +105,8 @@ void erss_mouse_click_item (void *data, Evas_Object *o, const char *sig,
 	ecore_exe_run (c, NULL);
 }
 
-void erss_mouse_in_cursor_change (void *data, Evas *e, Evas_Object *obj,
-		void *event_info)
+static void erss_mouse_in_cursor_change (void *data, Evas *e, Evas_Object *obj,
+					 void *event_info)
 {
 	Ecore_X_Window win;
 
@@ -102,13 +115,71 @@ void erss_mouse_in_cursor_change (void *data, Evas *e, Evas_Object *obj,
 		ecore_x_cursor_shape_set(win, ECORE_X_CURSOR_HAND2);
 }
 
-void erss_mouse_out_cursor_change (void *data, Evas *e, Evas_Object *obj,
-		void *event_info)
+static void erss_mouse_out_cursor_change (void *data, Evas *e,
+					  Evas_Object *obj, void *event_info)
 {
 	Ecore_X_Window win;
   
 	win = ecore_evas_software_x11_window_get(ee);
 	ecore_x_cursor_set(win, 0);
+}
+
+
+
+
+
+
+erss_gai_error erss_gui_add_item(Erss_Feed *f,Erss_Article *item) {
+  if(!f)
+    return ERSS_GAI_NOFEED;
+  if(!item)
+    return ERSS_GAI_NOITEM;
+
+  /* fprintf(stderr, "%s: %p -- %s\n", __FUNCTION__, item, item->title); */
+
+  if(item->title) {
+    item->obj = edje_object_add (evas);
+    edje_object_file_set (item->obj, cfg->theme, "erss_item");
+    evas_object_show (item->obj);
+
+    evas_object_event_callback_add (item->obj,
+				    EVAS_CALLBACK_MOUSE_IN, erss_mouse_in_cursor_change, NULL);
+    evas_object_event_callback_add (item->obj,
+				    EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, NULL);
+
+    e_container_element_append(cont, item->obj);
+    edje_object_part_text_set (item->obj, "article", item->title);
+  }
+
+  if(item->url) {
+    edje_object_signal_callback_add (item->obj, "exec*", "*",
+				     erss_mouse_click_item, item->url);
+    edje_object_signal_emit (item->obj, "mouse,in", "article");
+    edje_object_signal_emit (item->obj, "mouse,out", "article");
+  }
+
+  if (item->description && item->obj)
+    erss_tooltip_for(item);
+
+  return ERSS_GAI_SUCC;
+}
+
+
+
+int erss_gui_add_items(Erss_Feed *f) {
+  int c=0;
+
+  if (!f)
+    return -1;
+
+  if (f->list) {
+    Erss_Article *item = ewd_list_goto_first (f->list);
+    while ((item = ewd_list_next(f->list))) {
+      if(erss_gui_add_item(f,item)==ERSS_GAI_SUCC)
+	c++;
+    }
+  }
+  return c;
 }
 
 
@@ -152,8 +223,6 @@ int erss_gui_init (char *config) {
 	evas = ecore_evas_get (ee);
 
 	evas_font_path_append (evas, PACKAGE_DATA_DIR"/fonts/");
-
-/*	erss_net_connect(&f); */
 
 	ecore_evas_geometry_get (ee, &x, &y, &w, &h);
 	

@@ -6,4 +6,4 @@ typedef enum {
   ERSS_PARSE_EMPTY=-2
 } erss_parse_error;
 
-int erss_parse (erss_feed *);
+int erss_parse (Erss_Feed *);

@@ -1,11 +1,11 @@
 #include "erss.h"
 #include "parse.h"             /* erss_parse() */
 #include "parse_config.h"      /* cfg, rc */
-#include "gui.h"               /* erss_set_time() */
+#include "gui.h"               /* erss_set_time(), erss_gui_add_items() */
 
 int erss_net_poll (void *data)
 {
-	erss_feed *f=(erss_feed *)data;
+	Erss_Feed *f=(Erss_Feed *)data;
 
 	if (f->waiting_for_reply) {
 		fprintf (stderr, "%s warning: client has not received all information ", 
@@ -53,7 +53,7 @@ int erss_net_poll (void *data)
 
 static int erss_net_server_add (void *data, int type, void *event)
 {
-	erss_feed *f=(erss_feed *)data;
+	Erss_Feed *f=(Erss_Feed *)data;
 	char       c[1024];
 
 	/*
@@ -77,7 +77,7 @@ static int erss_net_server_add (void *data, int type, void *event)
 
 static int erss_net_server_data (void *data, int type, void *event)
 {
-	erss_feed                   *f = (erss_feed *)data;
+	Erss_Feed                   *f = (Erss_Feed *)data;
 	Ecore_Con_Event_Server_Data *e = event;
 
 	if (f->total_connects == 1)
@@ -96,7 +96,7 @@ static int erss_net_server_data (void *data, int type, void *event)
 
 static int erss_net_server_del (void *data, int type, void *event)
 {
-	erss_feed                  *f=(erss_feed *)data;
+	Erss_Feed                  *f=(Erss_Feed *)data;
 	Ecore_Con_Event_Server_Del *e = event;
 	char         *buf = f->main_buffer;
 	char         *temp;
@@ -152,6 +152,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	f->doc = xmlParseMemory (temp, f->main_bufsize - (temp - f->main_buffer));
 
 	erss_parse (f);
+	erss_gui_add_items (f);
 
 	ecore_con_server_del (e->server);
 	f->server = NULL;
@@ -159,7 +160,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	if (ewd_list_is_empty (f->list)) {
 		if (buf) 
 			printf ("%s\n", temp);
-	 else 
+		else 
 			printf ("%s error: could not connect to '%s'\n", PACKAGE, cfg->url);
 
 		fprintf (stderr, "\n%s error: parsing data\n", PACKAGE);
@@ -183,7 +184,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	return 1;
 }
 
-void erss_net_connect(erss_feed *f) {
+void erss_net_connect(Erss_Feed *f) {
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
 							 erss_net_server_add, f);
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,

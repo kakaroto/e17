@@ -62,7 +62,7 @@ typedef struct _erss_feed {
   Ewd_List         *list;
   xmlDocPtr         doc;
   Erss_Article     *item;
-} erss_feed;
+} Erss_Feed;
 
 
 char *erss_time_format ();

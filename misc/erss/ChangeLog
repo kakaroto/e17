@@ -1,3 +1,13 @@
+2003-02-21 Azundris <edevel@azundris.com>
+	* refactoring: remove most global variables (=> Erss_Feed)
+	* refactoring: make unecessarily global functions static
+	* refactoring: separate data handling from presentation --
+	               this may be a Good Thing, but it is also a
+	               solid foundation for conditional redraws
+	               (don't flicker when there is no new data)
+	               and stream aggregation (show ten latest of
+	               these five sites (giving 1o, not 5o items))
+
 2003-02-20 Azundris <edevel@azundris.com>
         * remove potential tags from tooltips
 
