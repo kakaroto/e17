@@ -182,7 +182,6 @@ main(int argc, char **argv)
    desks.desk[0].viewable = 0;
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);
-   /* multihead - let children continue after stop */
    {
       int                 i;
 
@@ -278,7 +277,8 @@ main(int argc, char **argv)
    mode.startup = 0;
    /*  SC_Kill(); */
    /* ok - paranoia - save current settings to disk */
-   autosave();
+   if (root.scr == 0)
+      autosave();
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);

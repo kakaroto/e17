@@ -1943,8 +1943,12 @@ Config_ActionClass(FILE * ConfigFile)
 	  case ACLASS_NAME:
 	     ac = RemoveItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 	     if (!ac)
-		ac = RemoveItem(s2, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
+	       {
+		  ac = RemoveItem(s2, 0,
+				  LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
+		  if (!strcmp(s2, "KEYBINDINGS"))
+		     mode.keybinds_changed = 1;
+	       }
 	     if (ac)
 		RemoveActionClass(ac);
 	     ac = CreateAclass(s2);
@@ -3636,84 +3640,87 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1367 %i\n", (int)mode.clickalways);
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
-	ac = (ActionClass *) FindItem("KEYBINDINGS", 0,
-				      LIST_FINDBY_NAME,
-				      LIST_TYPE_ACLASS_GLOBAL);
-	if ((ac) && (ac->num > 0))
+	if (mode.keybinds_changed)
 	  {
-	     fprintf(autosavefile, "11 999\n");
-	     fprintf(autosavefile, "100 %s\n", ac->name);
-	     fprintf(autosavefile, "102 7\n");
-	     for (i = 0; i < ac->num; i++)
+	     ac = (ActionClass *) FindItem("KEYBINDINGS", 0,
+					   LIST_FINDBY_NAME,
+					   LIST_TYPE_ACLASS_GLOBAL);
+	     if ((ac) && (ac->num > 0))
 	       {
-		  aa = ac->list[i];
-		  if ((aa) && (aa->action) && (aa->event == EVENT_KEY_DOWN) &&
-		      (aa->key_str))
+		  fprintf(autosavefile, "11 999\n");
+		  fprintf(autosavefile, "100 %s\n", ac->name);
+		  fprintf(autosavefile, "102 7\n");
+		  for (i = 0; i < ac->num; i++)
 		    {
-		       int                 mod;
+		       aa = ac->list[i];
+		       if ((aa) && (aa->action) && (aa->event == EVENT_KEY_DOWN) &&
+			   (aa->key_str))
+			 {
+			    int                 mod;
 
-		       /* next action */
-		       if (i > 0)
-			  fprintf(autosavefile, "105\n");
-		       /* key */
-		       fprintf(autosavefile, "427 %s\n", aa->key_str);
-		       /* event */
-		       fprintf(autosavefile, "428 4\n");
-		       /* modifier */
-		       mod = 0;
-		       if (aa->modifiers == (ControlMask))
-			  mod = 902;
-		       else if (aa->modifiers == (Mod1Mask))
-			  mod = 903;
-		       else if (aa->modifiers == (Mod2Mask))
-			  mod = 904;
-		       else if (aa->modifiers == (Mod3Mask))
-			  mod = 905;
-		       else if (aa->modifiers == (Mod4Mask))
-			  mod = 906;
-		       else if (aa->modifiers == (Mod5Mask))
-			  mod = 907;
-		       else if (aa->modifiers == (ShiftMask))
-			  mod = 900;
-		       else if (aa->modifiers == (ControlMask | Mod1Mask))
-			  mod = 910;
-		       else if (aa->modifiers == (ShiftMask | ControlMask))
-			  mod = 911;
-		       else if (aa->modifiers == (ShiftMask | Mod1Mask))
-			  mod = 912;
-		       else if (aa->modifiers == (ShiftMask | ControlMask
-						  | Mod1Mask))
-			  mod = 913;
-		       else if (aa->modifiers == (ControlMask | Mod4Mask))
-			  mod = 914;
-		       else if (aa->modifiers == (ShiftMask | Mod4Mask))
-			  mod = 915;
-		       else if (aa->modifiers == (ControlMask | ShiftMask
-						  | Mod4Mask))
-			  mod = 916;
-		       else if (aa->modifiers == (ControlMask | Mod5Mask))
-			  mod = 917;
-		       else if (aa->modifiers == (ShiftMask | Mod5Mask))
-			  mod = 918;
-		       else if (aa->modifiers == (ControlMask | ShiftMask
-						  | Mod5Mask))
-			  mod = 919;
-		       else if (aa->modifiers == (Mod2Mask | ShiftMask))
-			  mod = 920;
-		       else if (aa->modifiers == (Mod2Mask | ControlMask))
-			  mod = 921;
-		       else if (aa->modifiers == (Mod2Mask | Mod1Mask))
-			  mod = 922;
-		       fprintf(autosavefile, "101 %i\n", mod);
-		       /* action */
-		       if (aa->action->params)
-			  fprintf(autosavefile, "104 %i %s\n", aa->action->Type,
-				  (char *)aa->action->params);
-		       else
-			  fprintf(autosavefile, "104 %i\n", aa->action->Type);
+			    /* next action */
+			    if (i > 0)
+			       fprintf(autosavefile, "105\n");
+			    /* key */
+			    fprintf(autosavefile, "427 %s\n", aa->key_str);
+			    /* event */
+			    fprintf(autosavefile, "428 4\n");
+			    /* modifier */
+			    mod = 0;
+			    if (aa->modifiers == (ControlMask))
+			       mod = 902;
+			    else if (aa->modifiers == (Mod1Mask))
+			       mod = 903;
+			    else if (aa->modifiers == (Mod2Mask))
+			       mod = 904;
+			    else if (aa->modifiers == (Mod3Mask))
+			       mod = 905;
+			    else if (aa->modifiers == (Mod4Mask))
+			       mod = 906;
+			    else if (aa->modifiers == (Mod5Mask))
+			       mod = 907;
+			    else if (aa->modifiers == (ShiftMask))
+			       mod = 900;
+			    else if (aa->modifiers == (ControlMask | Mod1Mask))
+			       mod = 910;
+			    else if (aa->modifiers == (ShiftMask | ControlMask))
+			       mod = 911;
+			    else if (aa->modifiers == (ShiftMask | Mod1Mask))
+			       mod = 912;
+			    else if (aa->modifiers == (ShiftMask | ControlMask
+						       | Mod1Mask))
+			       mod = 913;
+			    else if (aa->modifiers == (ControlMask | Mod4Mask))
+			       mod = 914;
+			    else if (aa->modifiers == (ShiftMask | Mod4Mask))
+			       mod = 915;
+			    else if (aa->modifiers == (ControlMask | ShiftMask
+						       | Mod4Mask))
+			       mod = 916;
+			    else if (aa->modifiers == (ControlMask | Mod5Mask))
+			       mod = 917;
+			    else if (aa->modifiers == (ShiftMask | Mod5Mask))
+			       mod = 918;
+			    else if (aa->modifiers == (ControlMask | ShiftMask
+						       | Mod5Mask))
+			       mod = 919;
+			    else if (aa->modifiers == (Mod2Mask | ShiftMask))
+			       mod = 920;
+			    else if (aa->modifiers == (Mod2Mask | ControlMask))
+			       mod = 921;
+			    else if (aa->modifiers == (Mod2Mask | Mod1Mask))
+			       mod = 922;
+			    fprintf(autosavefile, "101 %i\n", mod);
+			    /* action */
+			    if (aa->action->params)
+			       fprintf(autosavefile, "104 %i %s\n", aa->action->Type,
+				       (char *)aa->action->params);
+			    else
+			       fprintf(autosavefile, "104 %i\n", aa->action->Type);
+			 }
 		    }
+		  fprintf(autosavefile, "1000\n");
 	       }
-	     fprintf(autosavefile, "1000\n");
 	  }
 	{
 	   char              **slist;

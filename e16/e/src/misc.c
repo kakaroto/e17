@@ -71,6 +71,8 @@ EExit(void *code)
 
    if (master_pid == getpid())
      {
+	int                 i;
+
 	exitcode = (int)code;
 	SoundExit();
 	if (mustdel)
@@ -80,6 +82,8 @@ EExit(void *code)
 	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
 	     system(sss);
 	  }
+	for (i = 0; i < child_count; i++)
+	   kill(e_children[i], SIGCONT);
      }
    SaveSnapInfo();
 

@@ -1193,6 +1193,7 @@ typedef struct _emode
      Window              kde_dock;
      int                 kde_support;
      char                clickalways;
+     char                keybinds_changed;
   }
 EMode;
 

@@ -200,7 +200,7 @@ SetupX()
    master_screen = root.scr;
 
    /* Start up on multiple heads, if appropriate */
-   if (display_screens > 1 && 0 == single_screen_mode)
+   if ((display_screens > 1) && (!single_screen_mode))
      {
 	int                 i;
 	char                subdisplay[255];
@@ -220,12 +220,13 @@ SetupX()
 		  if (pid)
 		    {
 		       child_count++;
-		       e_children = Erealloc(e_children, sizeof(pid_t) * child_count);
+		       e_children = Erealloc(e_children, sizeof(pid_t) *
+					     child_count);
 		       e_children[child_count - 1] = pid;
 		    }
 		  else
 		    {
-		       kill(getpid(), SIGSTOP);
+		       pause();
 		       /* Find the point to concatenate the screen onto */
 		       dispstr = strchr(subdisplay, ':');
 		       if (NULL != dispstr)
@@ -340,6 +341,7 @@ SetupX()
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
    /* slect all the root window events to start managing */
+   mode.xselect = 1;
    XSelectInput(disp, root.win,
 		ButtonPressMask | ButtonReleaseMask |
 		EnterWindowMask | LeaveWindowMask | ButtonMotionMask |
@@ -560,6 +562,7 @@ SetupX()
    mode.group_config.shade = 1;
    mode.group_config.mirror = 1;
    mode.clickalways = 0;
+   mode.keybinds_changed = 0;
 
    desks.dragdir = 2;
    desks.dragbar_width = 16;

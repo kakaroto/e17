@@ -4126,11 +4126,11 @@ IPC_ForceSave(char *params, Client * c)
    c = NULL;
    params = NULL;
 
+   if (!(master_pid == getpid()))
+      return;
    if (mode.autosave)
-/*    SaveUserControlConfig(fopen(GetSMFile(), "w")); */
       SaveUserControlConfig(fopen(GetGenericSMFile(), "w"));
    else
-/*    rm(GetSMFile()); */
       rm(GetGenericSMFile());
    return;
 }

@@ -390,36 +390,26 @@ autosave(void)
 {
    if (mode.startup)
       return;
-   if (mode.autosave)
+   if (master_pid == getpid())
      {
-	char                s[4096];
+	if (mode.autosave)
+	  {
+	     char                s[4096];
 
-	SaveSnapInfo();
-	Etmp(s);
-	SaveUserControlConfig(fopen(s, "w"));
-	rm(GetGenericSMFile());
-	mv(s, GetGenericSMFile());
-	if (!isfile(GetGenericSMFile()))
-	   Alert("There was an error saving your autosave data - filing\n"
-		 "system problems.\n"
-	      );
-/*      
- * if (strcmp(GetSMFile(), GetGenericSMFile()))
- * {
- * if (exists(GetGenericSMFile()))
- * rm(GetGenericSMFile());
- * symlink(GetSMFile(), GetGenericSMFile());
- * }
- */
-     }
-   else
-     {
-/*      char                buf[1024];
- * 
- * * Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*", GetSMFile());
- * * 
- * * system(buf); */
-	rm(GetGenericSMFile());
+	     SaveSnapInfo();
+	     Etmp(s);
+	     SaveUserControlConfig(fopen(s, "w"));
+	     rm(GetGenericSMFile());
+	     mv(s, GetGenericSMFile());
+	     if (!isfile(GetGenericSMFile()))
+		Alert("There was an error saving your autosave data - filing\n"
+		      "system problems.\n"
+		   );
+	  }
+	else
+	  {
+	     rm(GetGenericSMFile());
+	  }
      }
 }
 
@@ -521,7 +511,7 @@ doSMExit(void *params)
 		  w = MakeExtInitWin();
 		  XCloseDisplay(disp);
 		  disp = NULL;
-
+		  CommsBroadcastToSlaveWMs("exit quit");
 		  if (themepath[0] != 0)
 		    {
 		       Esnprintf(sss, sizeof(sss),
@@ -555,13 +545,17 @@ doSMExit(void *params)
 		  sscanf(params, "%*s %1000s", s);
 		  Esnprintf(sss, sizeof(sss),
 			 "exec %s -ext_init_win %i -theme %s", command, w, s);
+		  CommsBroadcastToSlaveWMs("exit quit");
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	     else
 	       {
+		  sscanf(params, "%*s %1000s", s);
+		  Esnprintf(sss, sizeof(sss),
+			    "restart_theme %s", s);
 		  if (sound_fd >= 0)
 		     close(sound_fd);
-		  CommsSendToMasterWM("restart_theme");
+		  CommsSendToMasterWM(sss);
 		  do_master_kill = 0;
 	       }
 	  }
@@ -578,6 +572,7 @@ doSMExit(void *params)
 		     strncpy(s, atword(params, 2), 1000);
 		  real_exec = (char *)Emalloc(strlen(s) + 6);
 		  sprintf(real_exec, "exec %s", s);
+		  CommsBroadcastToSlaveWMs("exit quit");
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec",
 			real_exec, NULL);
 	       }

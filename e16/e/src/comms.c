@@ -738,6 +738,7 @@ HandleComms(XEvent * ev)
 	int                 i, l;
 	char                buf[FILEPATH_LEN_MAX], *sp, *ss;
 
+	mode.keybinds_changed = 1;
 	ac = (ActionClass *) RemoveItem("KEYBINDINGS", 0,
 					LIST_FINDBY_NAME,
 					LIST_TYPE_ACLASS_GLOBAL);
