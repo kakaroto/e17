@@ -4,7 +4,7 @@
 <p align=50%>
 <br>
 Enlightenment<br>
-0.16 devel snap
+version 0.16.0
 <br>
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
@@ -16,12 +16,12 @@ _Website(web)<br>
 _IRC(irc)<br>
 _Email(email)<br>
 <br>
-_Tutorial(tut)<br>
+_User_Documentation(tut)<br>
 _Interactive_Hints(INPUT.interactive.sh)<br>
 <br>
 <font face=aircut3/10 color=#ffffff>
-Please read the tutorial if you are new to Enlightenment or just upgraded as
-there may be new features you may be missing out on.
+Please read the Documentation if you are new to Enlightenment or just upgraded
+as there may be new features you may be missing out on.
 
 
 
@@ -41,7 +41,7 @@ of your desktop(s).
 <p align=50%>
 It is a large and complex program and is by no means perfect, but it is being
 worked on and is as stable as possible. It has many advanced features as well
-as possibly missing some features. This version (0.15.5) is by no means the
+as possibly missing some features. This version (0.16.0) is by no means the
 end of development and improvements, fixes and new exciting features are
 being worked on all the time. Please go and visit the _Web(web) site often, 
 as new versions, fixes, patches and updates will be released.
@@ -79,15 +79,14 @@ And many others.
 <p>
 A big thanks to several companies that helped support Enlightenment.
 <p>
-2rad Networks (www.2rad.net) for providing servers and bandwidth to run the
-Enlightenment web site.
-<p>
 Red Hat Software (www.redhat.com) for allowing developers resources and time
 to work on Enlightenment.
 <p>
-VA Linux Systems (www.linux.com) for providing hardware, bandwidth and coke.
+VA Linux Systems (www.valinux.com) for providing hardware, bandwidth, coke, and
+the patience to hire a couple of loony bin candidates to work on something we
+(and hopefully you) think is interesting.
 <p>
-Xi Graphics (www.xig.com) for providing Xservers.
+Xi Graphics (www.xig.com) for providing X servers to test out code on.
 <p>
 Not only should these people be thanked, but the whole E community - those on
 the E mailing list, on #E on IRC on EFnet and all E users who have provided
@@ -163,23 +162,27 @@ have fun.
 <page columns=1 padding=16 name=email background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p>
-There is a mailing-list for Enlightenment.If you wish to take part in general 
-and development related discussions concerning Enlightenment you can join
-by mailing:
+CVS Commit List Mail
 <p>
-e-develop-request@rasterman.com
+To receive CVS Commit mails, please go to the
+CVS Commits List mail page:
+http://www.enlightenment.org/mailman/listinfo/cvs-commits-list
+<br>
+This mailing list does not accept user-submissions, it is purely automatically
+generated email that is sent out whenever the enlightenment CVS server
+receives a commit.  Sometimes it can generate a lot of email, sometimes it
+doesn't.
 <p>
-and put only one word in your body of the mail:
+Developer Mailing List
 <p>
-subscribe
+If you would like to receive mail from the developer mailing list, please go
+to the E-develop Mailing List mail page:
+http://enlightenment.org/mailman/listinfo/e-develop.
+<br>
+This mailing list is for discussing Enlightenment, it's development, bugs,
+feature requests, etc.  It is not a general chatter list.  The developers do
+read this mailing list and will often comment on subjects of relevancy.
 <p>
-This should subscribe you to the mailing list. If you are only interested in 
-announcements, please mail your subscribe request as above to:
-<p>
-e-announce-request@rasterman.com
-<p>
-instead.
-
 
 
 
@@ -192,10 +195,11 @@ instead.
 <br>
 <br>
 <br>
-This small tutorial is intended to take you step by step through Enlightenment
+This Documentation is intended to take you step by step through Enlightenment
 and its default setup, how to use it, modify settings, and put it to use for
 you. When you have finished reading each page please press the NEXT button on
-the top of this window to go to the next page.
+the top of this window to go to the next page, or use the _Index(docindex)
+button to take you to the Online Docs index
 <p>
 If you are reading this right now you have managed to get Enlightenment itself
 installed correctly and are either running Enlightenment for the first time or
@@ -204,9 +208,40 @@ you on a quick tour of the desktop you will have before you.
 <p>
 Please remember that if you use a theme other than the default (Brushed Metal)
 that is may look slightly or completely different to the contents of this
-tutorial. Some behavior may also vary.
+User Documenation. Some behavior may also vary.
 
 
+
+<page columns=2 padding=16 name=docindex background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+Documentation Index
+<p>
+_Basic_Intro(tut2)
+<br>
+_Using_Root_Menus(tut3)
+<br>
+_Mouse_Configuration(tut5)
+<br>
+_Using_The_Window_Border(tut7)
+<br>
+_Default_Keybindings(tut10)
+<br>
+_Virtual_Desktops(desktops)
+<br>
+_The_Dragbar(dragbar)
+<br>
+_The_Pager(pager)
+<br>
+_The_Iconbox(iconbox)
+<br>
+_Remembering_App_Properties(properties)
+<br>
+_Intro_To_Settings(settings)
+<br>
+_Window_Groups(groups)
+<br>
+_Desktop_Backgrounds(backgrounds)
 
 
 
@@ -767,3 +802,39 @@ Note that a window can be in multiple groups at the same time, so for a number o
 these options you have to indicate which group you are referring to. You can do
 this by selecting the appropriate checkboxes (showing the group members' titles)
 at the top of the dialog windows.
+
+
+<page columns=1 padding=16 name=backgrounds background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Selecting and Adding backgrounds
+<font face=aircut3/12 color=#ffffff>
+<p>
+Often you will want to change the background of a particular desktop.  There
+are several ways you can do this.  But of course, to change your desktop,
+you'll need to give enlightenment some graphics to play with.  A theme may add
+a background or two to your selection, but most users tend to have lots of
+backgrounds that they like to use anyways.  To add backgrounds to your
+selection, simply make a backgrounds directory under your home directory.  To
+do this using most shells you can simply type
+<p>
+mkdir ~/.enlightenment/backgrounds
+<p>
+once you've done this, you should restart enlightenment - this can be done
+quickly and easily by simply hitting the ctrl-alt-end key combination.  When
+enlightenment starts up, it will rescan these directories, and add new files
+into the background selector.
+
+
+
+
+
+
+<page columns=1 padding=16 name=backgrounds2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+Once you have done this, you should be able to go to the root menu desktop
+selector.  To get to this menu, middle click on the desktop, select "Desktop",
+and go to Backgrounds.  You should get something that looks similar to the
+image at the right.
+
