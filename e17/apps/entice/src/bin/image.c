@@ -499,8 +499,14 @@ e_turntable_object(int rotation, Evas_Object *obj)
 static void
 e_turntable_current_image(int rotation)
 {
+   int w;
+   int h;
    if (!current_image || !current_image->data)
        return;
+
+   evas_object_image_size_get(o_image, &w, &h);
+   if (turntable_image_no < 0 && w * h * 4 > 1048576)
+      return;
 
    e_turntable_object_init(o_image);
    e_turntable_object(rotation, o_image);
