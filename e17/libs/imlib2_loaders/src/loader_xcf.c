@@ -787,7 +787,7 @@ read_tiles_into_data(Tile* tiles, int num_cols, int width,
   DATA8* ptr;
   DATA8* ptr2;
   Tile*  t;
-
+  int    warned=0;
 
   if (tiles)
     {
@@ -844,8 +844,9 @@ read_tiles_into_data(Tile* tiles, int num_cols, int width,
 			A_VAL(ptr) = *(ptr2+1);			
 		      }
 		    /* else use colors themselves */
-		    else
+		    else if(warned==0)
 		      {
+			warned++;
 			fprintf (stderr, "There's nothing to see here. 2 bpp without colormap not implemented yet.\n");
 		      }
 		    break;
@@ -854,7 +855,11 @@ read_tiles_into_data(Tile* tiles, int num_cols, int width,
 		  {
 		    if (image->cmap)
 		      {
-			fprintf (stderr, "There's nothing to see here. 3 bpp with colormap not implemented yet.\n");
+			if(warned==0)
+			  {
+			    warned++;
+			    fprintf (stderr, "There's nothing to see here. 3 bpp with colormap not implemented yet.\n");
+			  }
 		      }
 		    else
 		      {
