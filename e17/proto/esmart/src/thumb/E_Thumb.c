@@ -146,7 +146,7 @@ e_thumb_evas_object_get (Evas_Object * o)
 	      if (e->info->w == 0)
 		e->info->w = imlib_image_get_width ();
 	      if (e->info->h == 0)
-		e->info->w = imlib_image_get_height ();
+		e->info->h = imlib_image_get_height ();
 	      evas_object_image_size_set (result, e->info->w, e->info->h);
 
 	      evas_object_image_data_copy_set (result,
