@@ -8,6 +8,8 @@
 #include <Imlib2.h>
 #include <E.h>
 
+#include "config.h"
+
 enum Ebg_Bg_Types
 {
      EBG_BG_TILE = 1,
@@ -167,7 +169,7 @@ void ebg_eet_gen(char *filename) {
 
    file = ebg_file_getfile(filename);
    dir = ebg_file_getdir(filename);
-   edc = strdup("/tmp/e17setroot/e17setroot_template.edc ");
+   edc = strdup(PACKAGE_DATA_DIR "/data/e17setroot/e17setroot_template.edc ");
    edj = strdup("edje_cc -id ");
 
    filenoext = ebg_file_stripext(filename);
