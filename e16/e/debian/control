@@ -10,7 +10,7 @@ Recommends: enlightenment
 Provides: enlightenment-theme
 Description: cK's Ganymede theme for E
  This is cK's Ganymede theme. It contains pretty much everything that E
- can currently do, including configurable pulldown menues, lots of borders,
+ can currently do, including configurable pulldown menses, lots of borders,
  themes for Eterm and gkrellm, and documentation. The dominant colors are
  bright copper and dark blue. Fully up to date with the E-0.16.0 specs.
  The author can be reached at chrisk@engr.uconn.edu.
@@ -30,24 +30,27 @@ Architecture: all
 Recommends: enlightenment
 Provides: enlightenment-theme
 Description: Hunchback's BlueSteel theme for E
- This theme really shows off what you can do with enlightenmnet.  It's by
- Daniel Erat, and shows off antialiased text, extensively shaped windows, and
+ This theme really shows off what you can do with enlightenment.  It's by
+ Daniel Erat, and shows off anti-aliased text, extensively shaped windows, and
  is compliant with the 0.16.0 theme spec.
 
 Package: enlightenment
 Architecture: any
 Depends: ${shlibs:Depends}
 Replaces: enlightenment-nosound, enlightenment-sound, enlightenment-theme-brushedmetal, enlightenment-dox
-Recommends: enlightenment-theme-shinymetal (>= 0.16.0-6)
-Conflicts: dox, enlightenment-dox, enlightenment-docs, enlightenment-theme
-Suggests: esound
+Recommends: enlightenment-theme, esound
+Conflicts: dox, enlightenment-dox, enlightenment-docs, enlightenment-theme (<< 0.16.0-6)
+Suggests: eterm
 Description: The Enlightenment Window Manager
- The Enlightenment Window Manager (Developer Release), or "E", whose motto 
- is "Time to rethink everything". It allows complete user control of almost
- every possible setting.  This is  accomplished through its use of themes.
- It now includes support for root menus, iconification, docking, GNOME and
- KDE integration, and much more.
+ Enlightenment - the window manager that dares to do what others don't.
+ It features KDE and GNOME integration, multi-program sound support, 
+ iconification, sliding desktops, docking, epplets, and much more. 
+ Enlightenment takes the concepts of themes to another level - everything 
+ can be changed. The visual components of themes are a rich set of graphical 
+ images in a variety of formats. Theme makers can unleash their artistic 
+ talents without bounds. Themes are not limited to just different colors
+ and background images on the same old desktop.
  .
- Enlightenment features the BrushedMetal theme, designed by gimp legend, tigert. 
- It is predominately grey with the subtle texture of - you guessed it - brushed 
- metal.  The menus in particular look superb.
+ Enlightenment features the BrushedMetal theme, designed by gimp legend, 
+ tigert. It is predominately grey with the subtle texture of - you guessed 
+ it - brushed metal.  The menus in particular look superb.
