@@ -11,8 +11,8 @@ EwlBool _cb_ewl_theme_find_db(EwlLL *node, EwlData *data)
 	EwlBool      r = FALSE;
 	struct stat  stats;
 	EwlThemeFindClass *find_data = (EwlThemeFindClass*) data;
-	char        *app = ewl_state_get_application_name(),
-	            *theme = ewl_state_get_theme(),
+	char        *app = ewl_get_application_name(),
+	            *theme = ewl_get_theme(),
 	            *path  = (char*) (node->data),
 	            *db = (char*) find_data->widget,
 	            *buf = NULL;
@@ -91,7 +91,7 @@ EwlBool _cb_test(EwlLL *node, EwlData *data)
 
 char         *ewl_theme_find_db(char *name)
 {
-	EwlLL *pl = ewl_state_get_path_list(),
+	EwlLL *pl = ewl_get_path_list(),
 	      *fl = NULL;
 	char  *path  = NULL;
 	EwlThemeFindClass find_data;
@@ -123,7 +123,7 @@ EwlBool _cb_ewl_theme_find_file(EwlLL *node, EwlData *data)
 	EwlBool      r = FALSE;
 	struct stat  stats;
 	EwlThemeFindClass *find_data = (EwlThemeFindClass*) data;
-	char        *theme = ewl_state_get_theme(),
+	char        *theme = ewl_get_theme(),
 	            *path  = (char*) (node->data),
 	            *file = (char*) find_data->widget,
 	            *buf = NULL;
@@ -169,7 +169,7 @@ EwlBool _cb_ewl_theme_find_file(EwlLL *node, EwlData *data)
 
 char         *ewl_theme_find_file(char *name)
 {
-	EwlLL *pl = ewl_state_get_path_list(),
+	EwlLL *pl = ewl_get_path_list(),
 	      *fl = NULL;
 	char  *path  = NULL;
 	EwlThemeFindClass find_data;

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	/* initialize ewl */
 	/*ewl_debug_enable();*/
 	ewl_init(&argc, &argv);
-	ewl_state_set_application_name("ewltest");
+	ewl_set_application_name("ewltest");
 
 	/* configure widgets  and connect callbacks */
 	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "EWL Text",

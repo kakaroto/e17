@@ -13,9 +13,9 @@
 #include "translators.h"
 
 /* from state.h */
-extern EwlLL *ewl_state_get_path_list();
-extern char  *ewl_state_get_application_name();
-extern char  *ewl_state_get_theme();
+extern EwlLL *ewl_get_path_list();
+extern char  *ewl_get_application_name();
+extern char  *ewl_get_theme();
 
 char         *ewl_theme_find_db(char *name);   /* searches the given paht */
 char         *ewl_theme_find_file(char *name); /* same, but for media */

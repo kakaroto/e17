@@ -770,3 +770,42 @@ flag).
 - misc cleanups to main.c (callbacks should be EWlBool, not char :P).
 - sanity checks on the value passed to XResizeWindow().. whoops. :)
 
+-----
+20000819-0111-PDT, pabs
+
+- got the resize bug. turns out you couldn't resize the widgets
+(which i would have seen hours ago had i turned debugging on).
+- okay so  now the resize shit works, and hte resize shit in the
+button callback works, but only if you resize the window once.
+I'll tackle this one tomorrow. 
+
+-----
+20000819-0219-PDT, pabs
+
+- clenaed up state.h -- added helper funcs (see below), ordered
+functions in a more logical order,  labeled everything so 
+coders can grok 'em easily, and moved the internal functions to
+a section marked private. cleaned up state.c a little bit (just 
+for you richlowe).
+- added wrapper functions forstate calls.  hers' a list:
+    ewl_set_application_name()
+    ewl_get_application_name()
+    ewl_set_theme()
+    ewl_get_theme()
+    ewl_insert_path()
+    ewl_remove_path()
+    ewl_get_path_list()
+    ewl_get_path_strings()
+    ewl_render_antialiased_set()
+    ewl_render_dithered_set()
+    ewl_render_antialiased_get()
+    ewl_render_dithered_get()
+    ewlg_set_display()
+    ewlg_get_display()
+
+
+-----
+20000819-0241-PDT, pabs
+
+- updated entire tree to reflect cleaner state api.
+

@@ -33,7 +33,6 @@ EwlWidget   *ewl_window_new_with_values(EwlWindowType type, char *title,
 EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
                                      EwlData *data)
 {
-	EwlState          *s = ewl_state_get();
 	EwlWindow         *window = (EwlWindow*) widget;
 	EwlBool            r = TRUE;
 	EwlEventExpose    *e_ev = (EwlEventExpose*) ev;
@@ -47,12 +46,12 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		ewl_rect_dump(widget->layout->rect);
 		if (!window->xwin)
 			ewl_window_realize(widget);
-		XMapWindow(s->disp, window->xwin);
+		XMapWindow(ewl_get_display(), window->xwin);
 		break;
 	case EWL_EVENT_HIDE:
 		ewl_widget_set_flag(widget, VISIBLE, FALSE);
 		/* ewl_window_unrealize(widget) */
-		XUnmapWindow(s->disp, window->xwin);
+		XUnmapWindow(ewl_get_display(), window->xwin);
 		break;
 	case EWL_EVENT_EXPOSE:
 		if (e_ev->count)
@@ -68,12 +67,12 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		                       widget->layout->rect->w,
 		                       widget->layout->rect->h,
 		                       0.0,
-		                       ewl_state_render_dithered_get(),
+		                       ewl_render_dithered_get(),
 		                       FALSE,  /* don't blend onto the drawable */
-		                       ewl_state_render_antialiased_get());
+		                       ewl_render_antialiased_get());
 
-		XSetWindowBackgroundPixmap(s->disp, window->xwin, window->pmap);
-		XClearWindow(s->disp, window->xwin);
+		XSetWindowBackgroundPixmap(ewl_get_display(), window->xwin, window->pmap);
+		XClearWindow(ewl_get_display(), window->xwin);
 		break;
 	case EWL_EVENT_CONFIGURE:
 		/* set up new window rect and shit here */
@@ -83,8 +82,8 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		widget->layout->rect = ewl_rect_new_with_values(0, 0, 
 		                                                &width, &height);
 		if (window->pmap)	
-			XFreePixmap(s->disp,window->pmap);
-		window->pmap = XCreatePixmap(s->disp,
+			XFreePixmap(ewl_get_display(),window->pmap);
+		window->pmap = XCreatePixmap(ewl_get_display(),
 		                             window->xwin,
 		                             width, height,
 		                             window->depth);
@@ -110,13 +109,13 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		if (!window->xwin) {
 			fprintf(stderr, "window not realized yet");
 		} else {
-			XResizeWindow(s->disp,window->xwin,width,height);
+			XResizeWindow(ewl_get_display(),window->xwin,width,height);
 			fprintf(stderr,"done... "
 			        "widget = %08x, width = %d, height = %d\n",
 			        (unsigned int) widget, width, height);
 			if (window->pmap)	
-				XFreePixmap(s->disp,window->pmap);
-			window->pmap = XCreatePixmap(s->disp,
+				XFreePixmap(ewl_get_display(),window->pmap);
+			window->pmap = XCreatePixmap(ewl_get_display(),
 			                             window->xwin,
 			                             width, height,
 			                             window->depth);
@@ -281,16 +280,13 @@ EwlWidget *ewl_window_find_by_xwin(Window xwin)
 /* MAYBE THIS SHOULD BE A PUSH/POP AND SAVED IN THE STATE STRUCT INSTEAD?*/
 void         ewl_window_set_render_context(EwlWidget *widget)
 {
-	EwlState  *s = ewl_state_get();
 	EwlWindow *window = (EwlWindow*) widget;
 	FUNC_BGN("ewl_window_set_render_context");
-	if (!s)	{
-		ewl_debug("ewl_window_set_render_context", EWL_NULL_ERROR, "s");
-	} else if (!window)	{
+	if (!window)	{
 		ewl_debug("ewl_window_set_render_context", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
-		imlib_context_set_display(s->disp);
+		imlib_context_set_display(ewl_get_display());
 		imlib_context_set_visual(window->vis);
 		imlib_context_set_colormap(window->cm);
 	}
@@ -300,26 +296,23 @@ void         ewl_window_set_render_context(EwlWidget *widget)
 
 void	ewl_window_realize(EwlWidget *widget)
 {
-	EwlState	*s		= ewl_state_get();
 	EwlWindow	*win	= (EwlWindow *) widget;
 	XGCValues             gc;
 	Atom				  wmhints;
 
 	FUNC_BGN("ewl_window_realize");
-	if (!s)	{
-		ewl_debug("ewl_window_realize", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
+	if (!win)	{
 		ewl_debug("ewl_window_realize", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
 		fprintf(stderr, "realizing window 0x%08x\n", (unsigned int)win);
 
-		win->screen = ScreenOfDisplay(s->disp, DefaultScreen(s->disp));
-		win->vis = DefaultVisual(s->disp, DefaultScreen(s->disp));
-		win->depth = DefaultDepth(s->disp, DefaultScreen(s->disp));
-		win->cm = DefaultColormap(s->disp,DefaultScreen(s->disp));
-		win->root = RootWindow(s->disp,DefaultScreen(s->disp));
-		/*wid->root = DefaultRootWindow(s->disp);*/
+		win->screen = ScreenOfDisplay(ewl_get_display(), DefaultScreen(ewl_get_display()));
+		win->vis = DefaultVisual(ewl_get_display(), DefaultScreen(ewl_get_display()));
+		win->depth = DefaultDepth(ewl_get_display(), DefaultScreen(ewl_get_display()));
+		win->cm = DefaultColormap(ewl_get_display(),DefaultScreen(ewl_get_display()));
+		win->root = RootWindow(ewl_get_display(),DefaultScreen(ewl_get_display()));
+		/*wid->root = DefaultRootWindow(ewl_get_display());*/
 		win->xid = XUniqueContext();
 		
 		/* init X attributes */
@@ -354,9 +347,9 @@ void	ewl_window_realize(EwlWidget *widget)
 		if (widget->layout->rect->h > EWL_WINDOW_MAX_HEIGHT)
 				widget->layout->rect->h = EWL_WINDOW_MAX_HEIGHT;
 		
-		gc.foreground = BlackPixel(s->disp, DefaultScreen(s->disp));
-		win->gc = XCreateGC(s->disp, win->root, GCForeground, &gc);
-		win->xwin = XCreateWindow(s->disp, win->root,
+		gc.foreground = BlackPixel(ewl_get_display(), DefaultScreen(ewl_get_display()));
+		win->gc = XCreateGC(ewl_get_display(), win->root, GCForeground, &gc);
+		win->xwin = XCreateWindow(ewl_get_display(), win->root,
 		                          widget->layout->rect->x,
 		                          widget->layout->rect->y, 
 		                          widget->layout->rect->w,
@@ -369,13 +362,13 @@ void	ewl_window_realize(EwlWidget *widget)
 		                          CWEventMask, &win->attr);
 	
 		/* setting title */
-		XStoreName(s->disp, win->xwin, win->title);
+		XStoreName(ewl_get_display(), win->xwin, win->title);
 		
 		/* setting class hint */
  		win->xclass_hint = XAllocClassHint();
 		win->xclass_hint->res_name = win->name_hint;
 		win->xclass_hint->res_class = win->class_hint;
-		XSetClassHint(s->disp, win->xwin, win->xclass_hint);
+		XSetClassHint(ewl_get_display(), win->xwin, win->xclass_hint);
 		/*XFree(win->xclass_hint);*/
 		
 		/* Setting up decor */
@@ -383,10 +376,10 @@ void	ewl_window_realize(EwlWidget *widget)
 			fprintf(stderr, "We want decor!\n");
 		} else if (win->decoration_hint == FALSE) {
 			fprintf(stderr, "Ixnay on the decor-ay!\n");
-			wmhints = XInternAtom(s->disp, "_MOTIF_WM_HINTS", True);
+			wmhints = XInternAtom(ewl_get_display(), "_MOTIF_WM_HINTS", True);
 			if (wmhints != None) {
 				MWMHints decorhints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
-				XChangeProperty(s->disp, win->xwin, wmhints, wmhints, 32,
+				XChangeProperty(ewl_get_display(), win->xwin, wmhints, wmhints, 32,
 					PropModeReplace, (unsigned char *)&decorhints,
 					sizeof(MWMHints)/4);
 			}
@@ -398,18 +391,15 @@ void	ewl_window_realize(EwlWidget *widget)
 
 void	ewl_window_unrealize(EwlWidget *widget)
 {
-	EwlState	*s		= ewl_state_get();
 	EwlWindow	*win	= (EwlWindow *) widget;
 
 	FUNC_BGN("ewl_window_unrealize");
-	if (!s)	{
-		ewl_debug("ewl_window_unrealize", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
+	if (!win)	{
 		ewl_debug("ewl_window_unrealize", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
 		fprintf(stdout, "Unrealizing window 0x%08x\n", (unsigned int)win);
-		XUnmapWindow(s->disp, win->xwin);
+		XUnmapWindow(ewl_get_display(), win->xwin);
 	}
 	FUNC_END("ewl_window_unrealize");
 	return;

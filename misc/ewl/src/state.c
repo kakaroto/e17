@@ -182,6 +182,131 @@ void       ewl_state_set(EwlState *s)
 	return;
 }
 
+
+void       ewl_set_application_name(char *name)
+{
+	FUNC_BGN("ewl_set_application_name");
+	ewl_state_set_application_name(name);
+	FUNC_END("ewl_set_application_name");
+	return;
+}
+
+char      *ewl_get_application_name()
+{
+	char *temp = NULL;
+	FUNC_BGN("ewl_get_application_name");
+	temp = ewl_state_get_application_name();
+	FUNC_END("ewl_get_application_name");
+	return temp;
+}
+
+void       ewl_set_theme(char *name)
+{
+	FUNC_BGN("ewl_set_theme");
+	ewl_state_set_theme(name);
+	FUNC_END("ewl_set_theme");
+	return;
+}
+
+char      *ewl_get_theme()
+{
+	char *temp = NULL;
+	FUNC_BGN("ewl_get_theme");
+	temp = ewl_state_get_theme();
+	FUNC_END("ewl_get_theme");
+	return temp;
+}
+
+
+void       ewl_insert_path(char *path)
+{
+	FUNC_BGN("ewl_insert_path");
+	ewl_state_insert_path(path);
+	FUNC_END("ewl_insert_path");
+	return;
+}
+
+void       ewl_remove_path(char *path)
+{
+	FUNC_BGN("ewl_remove_path");
+	ewl_state_remove_path(path);
+	FUNC_END("ewl_remove_path");
+	return;
+}
+
+EwlLL     *ewl_get_path_list()
+{
+	EwlLL *l = NULL;
+	FUNC_BGN("ewl_get_path_list");
+	l = ewl_state_get_path_list();
+	FUNC_END("ewl_get_path_list");
+	return l;
+}
+
+
+char     **ewl_get_path_strings(int *length)
+{
+	char **temp = NULL;
+	FUNC_BGN("ewl_get_path_strings");
+	temp = ewl_state_get_path_strings(length);
+	FUNC_END("ewl_get_path_strings");
+	return temp;
+}
+
+
+void       ewl_render_antialiased_set(EwlBool a)
+{
+	FUNC_BGN("ewl_render_antialiased_set");
+	ewl_state_render_antialiased_set(a);
+	FUNC_END("ewl_render_antialiased_set");
+	return;
+}
+
+void       ewl_render_dithered_set(EwlBool d)
+{
+	FUNC_BGN("ewl_render_dithered_set");
+	ewl_state_render_dithered_set(d);
+	FUNC_END("ewl_render_dithered_set");
+	return;
+}
+
+EwlBool    ewl_render_antialiased_get()
+{
+	EwlBool r = FALSE;
+	FUNC_BGN("ewl_render_antialiased_get");
+	r = ewl_state_render_antialiased_get();
+	FUNC_END("ewl_render_antialiased_get");
+	return r;
+}
+
+EwlBool    ewl_render_dithered_get()
+{
+	EwlBool r = FALSE;
+	FUNC_BGN("ewl_render_dithered_get");
+	r = ewl_state_render_dithered_get();
+	FUNC_END("ewl_render_dithered_get");
+	return r;
+}
+
+
+void       ewl_set_display(Display *disp)
+{
+	FUNC_BGN("ewl_set_display");
+	ewl_state_set_display(disp);
+	FUNC_END("ewl_set_display");
+	return;
+}
+
+Display   *ewl_get_display()
+{
+	Display *disp = NULL;
+	FUNC_BGN("ewl_get_display");
+	disp = ewl_state_get_display();
+	FUNC_END("ewl_get_display");
+	return disp;
+}
+
+
 void       ewl_state_set_application_name(char *name)
 {
 	EwlState *s = ewl_state_get();
@@ -390,6 +515,35 @@ void       ewl_state_render_dithered_set(char d)
 	return;
 }
 
+
+void       ewl_state_set_display(Display *disp)
+{
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_state_set_display");
+	if (!s) {
+		ewl_debug("ewl_state_set_display", EWL_NULL_ERROR, "s");
+	} else if (!disp) {
+		ewl_debug("ewl_state_set_display", EWL_NULL_ERROR, "disp");
+	} else {
+		s->disp = disp;
+	}
+	FUNC_END("ewl_state_set_display");
+	return;
+}
+
+Display   *ewl_state_get_display()
+{
+	EwlState *s = ewl_state_get();
+	Display  *disp = NULL;
+	FUNC_BGN("ewl_state_get_display");
+	if (!s) {
+		ewl_debug("ewl_state_get_display", EWL_NULL_ERROR, "s");
+	} else {
+		disp = s->disp;
+	}
+	FUNC_END("ewl_state_get_display");
+	return disp;
+}
 
 /* EwlState_Result ewl_state_dynreg_insert(); */
 /* EwlState_Result ewl_state_dynreg_remove(); */

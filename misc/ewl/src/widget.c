@@ -526,9 +526,9 @@ static EwlBool _cb_ewl_widget_render_layers(EwlLL *node, EwlData *data)
 					im->rect->w,
 					im->rect->h,
 					0.0,
-					ewl_state_render_dithered_get(),
+					ewl_render_dithered_get(),
 					1,
-					ewl_state_render_antialiased_get());
+					ewl_render_antialiased_get());
 			} else if (!im->rect)	{
 				ewl_debug("_cb_ewl_widget_render_layers",
 				          EWL_NULL_ERROR, "im->rect");
@@ -573,7 +573,7 @@ void   ewl_widget_render(EwlWidget *w)
 		                        0, 0,
 		                        width, height,
 		                        w->layout->rect->w, w->layout->rect->h,
-		                        ewl_state_render_antialiased_get());
+		                        ewl_render_antialiased_get());
 		if (ewl_debug_is_active())
 			fprintf(stderr, "ewl_widget_render(): new w->rendered = %08x\n",
 			        (unsigned int) w->rendered);
@@ -626,8 +626,8 @@ void   ewl_widget_render_onto_parent(EwlWidget *w)
 		                                 ewl_layout_get_w(w->layout),
 		                                 ewl_layout_get_h(w->layout),
 		                                 0.0,
-		                                 ewl_state_render_dithered_get(), 1,
-		                                 ewl_state_render_antialiased_get());
+		                                 ewl_render_dithered_get(), 1,
+		                                 ewl_render_antialiased_get());
 	}
 
 	FUNC_END("ewl_widget_render_onto_parent");
