@@ -28,3 +28,6 @@ struct entry_data
    gchar              *icon;
    gchar              *params;
 };
+void delete_entry (GtkWidget * widget, gpointer user_data);
+void insert_entry (GtkWidget * widget, gpointer user_data);
+void entries_to_ctree (GtkWidget * widget, gpointer user_data);
