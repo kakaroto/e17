@@ -307,7 +307,7 @@ action, this what the program actually does.  Actions can change part states, st
 signals.  In this case the action STATE_SET still change state to "clicked".  The following double (0.0) is currently
 unused and should simply be set to 0.0.  The target argument that follows is the part or program on which the action acts
 apon.   The final keyword, after, optionally defines another program to be run after the current program completes.
-When a signal is recieved all the programs which accept the incoming signal and match the source will be run, and
+When a signal is received all the programs which accept the incoming signal and match the source will be run, and
 in this way very often the keyword "after" is not required, however it can still be used for some crafty purposes which we'll explore later.
 After's can also be used as a looping mechignism, by specifying the current program to re-run after it completes, however it
 should be noted that any signal specified for the program must be met on every run of that program, even if it loops back
