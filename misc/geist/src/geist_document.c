@@ -18,6 +18,7 @@ geist_document_new(int w, int h)
    d->pmap = XCreatePixmap(disp, root, w, h, depth);
    d->bg_fill = geist_fill_new_coloured(255, 255, 255, 255);
    d->name = estrdup("New document");
+   geist_document_add_layer(d);
 
    D_RETURN(3, d);
 }
@@ -329,6 +330,17 @@ geist_document_dirty_selection(geist_document * doc)
       geist_object_dirty_selection(GEIST_OBJECT(l->data));
 
    geist_list_free(list);
+
+   D_RETURN_(3);
+}
+
+void geist_document_rename(geist_document *d, char *name)
+{
+   D_ENTER(3);
+
+   if(d->name)
+      efree(d->name);
+   d->name = estrdup(name);
 
    D_RETURN_(3);
 }

@@ -61,8 +61,7 @@ geist_document_save_as(geist_document * doc)
    D_RETURN_(3);
 }
 
-gboolean
-file_save_ok_cb(GtkWidget * widget, gpointer * data)
+gboolean file_save_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
    geist_document *doc;
@@ -72,7 +71,12 @@ file_save_ok_cb(GtkWidget * widget, gpointer * data)
    filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
    doc = gtk_object_get_data(GTK_OBJECT(data), "doc");
    if (doc)
+   {
+      if (doc->filename)
+         efree(doc->filename);
+      doc->filename = estrdup(filename);
       geist_project_save_xml(doc, filename);
+   }
    gtk_widget_destroy(GTK_WIDGET(data));
 
    D_RETURN(3, TRUE);

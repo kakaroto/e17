@@ -403,3 +403,26 @@ geist_list_sort_merge(geist_list * l1, geist_list * l2, geist_compare_fn cmp)
 
    D_RETURN(4, list.next);
 }
+
+geist_list *
+geist_list_nth(geist_list * root, unsigned int num)
+{
+   unsigned int i;
+   geist_list *l;
+
+   D_ENTER(4);
+
+   if (num > (unsigned int) geist_list_length(root))
+   {
+      weprintf("BUG: there aren't that many files in this list\n");
+      D_RETURN(4, root);
+   }
+   l = root;
+   for (i = 0; l; ++i)
+   {
+      if (i == num)
+         D_RETURN(4, l);
+      l = l->next;
+   }
+   D_RETURN(4, root);
+}

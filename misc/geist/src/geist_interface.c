@@ -41,18 +41,39 @@ geist_create_main_window(void)
    menubar = gtk_menu_bar_new();
    gtk_widget_show(menubar);
    gtk_box_pack_start(GTK_BOX(mvbox), menubar, FALSE, FALSE, 0);
+   
    menu = geist_gtk_create_submenu(menubar, "File");
+
+   menuitem =
+      geist_gtk_create_menuitem(menu, "Save", "", "Save Document",
+                                (GtkFunction) menu_cb, "save doc");
+ 
    menuitem =
       geist_gtk_create_menuitem(menu, "Save as...", "", "Save Document As...",
                                 (GtkFunction) menu_cb, "save doc as");
 
+   
    nbook = gtk_notebook_new();
    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(nbook), GTK_POS_BOTTOM);
    gtk_widget_show(nbook);
+   gtk_signal_connect(GTK_OBJECT(nbook), "switch_page",
+                      GTK_SIGNAL_FUNC(nbook_switch_page_cb), NULL);
+
    gtk_box_pack_start(GTK_BOX(mvbox), nbook, TRUE, TRUE, 0);
 
    gtk_object_set_data(GTK_OBJECT(mainwin), "notebook", nbook);
    D_RETURN(3, mainwin);
+}
+
+void
+nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
+                     guint page_num)
+{
+   D_ENTER(3);
+
+   current_doc = GEIST_DOCUMENT((geist_list_nth(doc_list, page_num))->data);
+
+   D_RETURN_(3);
 }
 
 GtkWidget *
@@ -141,12 +162,15 @@ geist_gtk_new_document_page(GtkWidget * parent, int w, int h, char *name)
    D_ENTER(3);
 
    current_doc = doc = geist_document_new(w, h);
+   geist_document_rename(doc, name);
+   doc_list = geist_list_add_end(doc_list, doc);
 
    hwid = gtk_hbox_new(TRUE, 0);
    gtk_widget_show(hwid);
    label = gtk_label_new(name);
    gtk_widget_show(label);
    gtk_notebook_append_page(GTK_NOTEBOOK(parent), hwid, label);
+   gtk_object_set_data(GTK_OBJECT(parent), "doc", doc);
 
    vwid = gtk_vbox_new(TRUE, 0);
    gtk_widget_show(vwid);
@@ -703,11 +727,17 @@ menu_cb(GtkWidget * widget, gpointer * data)
 
    item = (char *) data;
 
-   if (!strcmp(item, "save doc as"))
+   if(!strcmp(item, "save doc"))
+   {
+      if(current_doc->filename)
+         geist_project_save_xml(current_doc, current_doc->filename);
+      else
+         geist_document_save_as(current_doc);
+   }
+   else if (!strcmp(item, "save doc as"))
       geist_document_save_as(current_doc);
    else
       printf("IMPLEMENT ME!\n");
 
    D_RETURN(3, TRUE);
 }
-

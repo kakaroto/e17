@@ -14,7 +14,7 @@
 #include "geist_interface.h"
 
 int call_level = 0;
-
+geist_list *doc_list = NULL;
 
 int
 main(int argc, char *argv[])
@@ -40,8 +40,6 @@ main(int argc, char *argv[])
    doc->bg_fill->g = 216;
    doc->bg_fill->b = 237;
    doc->bg_fill->a = 255;
-
-   geist_document_add_layer(doc);
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(0, 0,
@@ -94,7 +92,9 @@ main(int argc, char *argv[])
                              geist_rect_new_of_size(25, 175, 200, 300, 50,
                                                     255, 255, 0));
 
-
+   geist_document_render_full(doc);
+   
+   doc = geist_gtk_new_document_page(nbook, 200,200,"Second document");
    geist_document_render_full(doc);
 
    gtk_main();

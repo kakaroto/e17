@@ -76,5 +76,6 @@ extern Screen *scr;
 
 extern GtkWidget *mainwin;
 extern geist_document *current_doc;
+extern geist_list *doc_list;
 
 #endif

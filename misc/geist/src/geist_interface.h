@@ -39,6 +39,8 @@ GtkWidget *geist_create_main_window(void);
 GtkWidget *geist_create_object_list(void);
 geist_document *
 geist_gtk_new_document_page(GtkWidget * parent, int w, int h, char *name);
+void nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
+                     guint page_num);
 
 
 

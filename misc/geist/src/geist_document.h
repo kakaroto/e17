@@ -14,6 +14,7 @@
 struct __geist_document
 {
    char *name;
+   char *filename;
    geist_list *layers;
    geist_fill *bg_fill;
    int w;
@@ -47,5 +48,6 @@ void geist_document_render_selection_partial(geist_document * doc, int x,
 void geist_document_remove_object(geist_document * d, geist_object * obj);
 void geist_document_dirty_selection(geist_document * doc);
 void geist_document_render_full(geist_document * d);
+void geist_document_rename(geist_document *d, char *name);
 
 #endif

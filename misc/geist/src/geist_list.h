@@ -59,5 +59,6 @@ geist_list *geist_list_remove(geist_list * root, geist_list * l);
 geist_list *geist_list_sort(geist_list * list, geist_compare_fn cmp);
 geist_list *geist_list_sort_merge(geist_list * l1, geist_list * l2,
                                   geist_compare_fn cmp);
+geist_list *geist_list_nth(geist_list * root, unsigned int num);
 
 #endif
