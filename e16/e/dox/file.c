@@ -669,7 +669,7 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 
    while (s[i])
      {
-	int          len, oldflg;
+	int          len, oldflg=0;
 
 
 	len = mblen( s + i, strlen( s + i ) );
