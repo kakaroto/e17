@@ -1,6 +1,6 @@
 #include "Etcher.h"
 
-static Etcher_File *etcher_file = 0;
+Etcher_File *etcher_file = 0;
 
 void
 etcher_parse_init()
@@ -60,7 +60,24 @@ etcher_parse_group()
 }
 
 void
-etcher_parse_group_name(void *name)
+etcher_parse_group_data(char *key, char *value)
+{
+  Etcher_Group *group;
+  Etcher_Data *data;
+
+  data = (Etcher_Data *)calloc(1, sizeof(Etcher_Data));
+  data->key = (char *)strdup(key);
+  data->value = (char *)strdup(value);
+
+  etcher_file->data = evas_list_append(etcher_file->data, data);
+
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+
+  group->data = evas_list_append(group->data, data);;
+}
+
+void
+etcher_parse_group_name(char *name)
 {
   Etcher_Group *group;
 
@@ -106,7 +123,7 @@ etcher_parse_part()
 }
 
 void
-etcher_parse_part_name(void *name)
+etcher_parse_part_name(char *name)
 {
   Etcher_Group *group;
   Etcher_Part *part;
@@ -205,6 +222,19 @@ etcher_parse_part_dragable_y(int y, int step, int count)
   part->dragable.y = y;
   part->dragable.step.y = step;
   part->dragable.count.y = count;
+}
+
+void
+etcher_parse_part_dragable_confine(char *confine)
+{
+  Etcher_Group *group;
+  Etcher_Part *part;
+
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+  part = evas_list_data(evas_list_last(group->parts));
+
+  if (part->dragable.confine) free (part->dragable.confine);
+  part->dragable.confine = (char *)strdup(confine);
 }
 
 void
@@ -313,7 +343,7 @@ etcher_parse_state_max(double w, double h)
 }
 
 void
-etcher_parse_state_aspect(double w, double h, Etcher_Aspect_Preference prefer)
+etcher_parse_state_aspect(double w, double h)
 {
   Etcher_Group *group;
   Etcher_Part *part;
@@ -325,6 +355,19 @@ etcher_parse_state_aspect(double w, double h, Etcher_Aspect_Preference prefer)
 
   state->aspect.w = w;
   state->aspect.h = h;
+}
+
+void
+etcher_parse_state_aspect_preference(Etcher_Aspect_Preference prefer)
+{
+  Etcher_Group *group;
+  Etcher_Part *part;
+  Etcher_Part_State *state;
+
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+  part = evas_list_data(evas_list_last(group->parts));
+  state = evas_list_data(evas_list_last(part->states));
+
   state->aspect.prefer = prefer;
 }
 
@@ -499,8 +542,8 @@ etcher_parse_state_image_normal(char *name)
 
   for (l = etcher_file->images; l; l = l->next)
   {
-    Etcher_Image *im;
-    if (!strcmp(im->name, name))
+    Etcher_Image *im = l->data;
+    if (im && !strcmp(im->name, name))
     {
       state->image.normal = im;
       return;
@@ -523,8 +566,8 @@ etcher_parse_state_image_tween(char *name)
 
   for (l = etcher_file->images; l; l = l->next)
   {
-    Etcher_Image *im;
-    if (!strcmp(im->name, name))
+    Etcher_Image *im = l->data;
+    if (im && !strcmp(im->name, name))
     {
       state->image.tween = evas_list_append(state->image.tween, im);
       return;
@@ -548,6 +591,21 @@ etcher_parse_state_border(int l, int r, int t, int b)
   state->border.r = r;
   state->border.t = t;
   state->border.b = b;
+}
+
+void
+etcher_parse_state_color_class(char *color_class)
+{
+  Etcher_Group *group;
+  Etcher_Part *part;
+  Etcher_Part_State *state;
+
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+  part = evas_list_data(evas_list_last(group->parts));
+  state = evas_list_data(evas_list_last(part->states));
+
+  if (state->color_class) free(state->color_class);
+  state->color_class = (char *)strdup(color_class);
 }
 
 void
@@ -618,7 +676,7 @@ etcher_parse_state_fill_smooth(int smooth)
 }
 
 void
-etcher_parse_state_fill_pos_rel(double x, double y)
+etcher_parse_state_fill_origin_relative(double x, double y)
 {
   Etcher_Group *group;
   Etcher_Part *part;
@@ -633,7 +691,7 @@ etcher_parse_state_fill_pos_rel(double x, double y)
 }
 
 void
-etcher_parse_state_fill_rel(double x, double y)
+etcher_parse_state_fill_size_relative(double x, double y)
 {
   Etcher_Group *group;
   Etcher_Part *part;
@@ -648,7 +706,7 @@ etcher_parse_state_fill_rel(double x, double y)
 }
 
 void
-etcher_parse_state_fill_pos_abs(int x, int y)
+etcher_parse_state_fill_origin_offset(int x, int y)
 {
   Etcher_Group *group;
   Etcher_Part *part;
@@ -663,7 +721,7 @@ etcher_parse_state_fill_pos_abs(int x, int y)
 }
 
 void
-etcher_parse_state_fill_abs(int x, int y)
+etcher_parse_state_fill_size_offset(int x, int y)
 {
   Etcher_Group *group;
   Etcher_Part *part;
@@ -874,6 +932,7 @@ etcher_parse_program_in(double in1, double in2)
   program->in2 = in2;
 }
 
+/* handle different action types */
 void
 etcher_parse_program_action(Etcher_Action action)
 {

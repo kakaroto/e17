@@ -20,23 +20,23 @@
     #define SCRIPT_START()  BEGIN(SC_SCRIPT); 
 
     #define SCRIPT_END()    BEGIN(INITIAL); \
-							if (script) { \
-								yylval.string = strdup(script); \
-								free(script); \
-							} \
-							script = NULL; \
-							VAL_RETURN(SCRIPT);
+			        if (script) { \
+				yylval.string = strdup(script); \
+				free(script); \
+				} \
+				script = NULL; \
+				VAL_RETURN(SCRIPT);
 
     #define SCRIPT_PIECE()  if (script == NULL) { \
-								script = strdup(yytext); \
-							} else { \
-								char *t = NULL; \
-								int len = strlen(script) + yyleng + 1; \
-								t = (char *)malloc(sizeof(char) * len); \
-								snprintf(t, len, "%s%s", script, yytext); \
-								free(script); \
-								script = t; \
-							} 
+                                script = strdup(yytext); \
+			    } else { \
+				char *t = NULL; \
+				int len = strlen(script) + yyleng + 1; \
+				t = (char *)malloc(sizeof(char) * len); \
+				snprintf(t, len, "%s%s", script, yytext); \
+				free(script); \
+				script = t; \
+			    } 
 
     #define SCRIPT_NEW_LINE() lnum ++; SCRIPT_PIECE(); 
 

@@ -11,6 +11,8 @@
 	extern int lnum;
 	extern int col;
 
+        int section;
+
 %}
 
 %union {
@@ -62,10 +64,10 @@ edjes: /* blank */ |
            yyclearin;
        }
        ;
-collections:  COLLECTIONS OPEN_BRACE collection_statement CLOSE_BRACE
+collections:  COLLECTIONS {section = GROUPS; } OPEN_BRACE  collection_statement CLOSE_BRACE { section = BASE; }
 	;
 
-fonts:  FONTS OPEN_BRACE font_statement CLOSE_BRACE
+fonts:  FONTS { section = FONTS; } OPEN_BRACE font_statement CLOSE_BRACE { section = BASE; }
 	;
 
 font_statement: font
@@ -73,11 +75,12 @@ font_statement: font
 	;
 
 font: FONT COLON STRING STRING SEMICOLON {
+                etcher_parse_font($3, $4);
                 printf("got font '%s' named (%s)\n", $3, $4);
 	}
 	;
 
-images:  IMAGES OPEN_BRACE image_statement CLOSE_BRACE
+images:  IMAGES { section = IMAGES; } OPEN_BRACE image_statement CLOSE_BRACE { section = BASE; }
 	;
 
 image_statement: image
@@ -85,9 +88,11 @@ image_statement: image
 	;
 
 image: IMAGE COLON STRING image_type SEMICOLON {
+                etcher_parse_image($3, $4, 0);
 		printf("got image '%s' of type %d\n", $3, $4);
 	}
 	| IMAGE COLON STRING image_type FLOAT SEMICOLON {
+                etcher_parse_image($3, $4, $5);
 		printf("got image '%s' of type %d (%f)\n", $3, $4, $5);
 	}
 	;
@@ -98,26 +103,39 @@ image_type: RAW { $$ = ETCHER_IMAGE_TYPE_RAW; }
 	| USER { $$ = ETCHER_IMAGE_TYPE_EXTERNAL; }
 	;
 
-data:  DATA OPEN_BRACE data_statement CLOSE_BRACE 
+/* don't set a section here yet (since BASE and GROUP have data sects) */
+data:  DATA OPEN_BRACE data_statement CLOSE_BRACE
+        | DATA OPEN_BRACE CLOSE_BRACE
 	;
 
 data_statement: item 
 	| item data_statement
 	;
 
-item: ITEM COLON STRING STRING SEMICOLON {
-		printf("got item %s :: %s\n", $3, $4);
+item: ITEM  COLON STRING STRING SEMICOLON {
+                switch (section)
+                {
+                  case BASE:
+                    etcher_parse_data($3, $4);
+                    break;
+                  case GROUP:
+                    etcher_parse_group_data($3, $4);
+                    break;
+                  default:
+                    break;
+                }
+	        printf("got item %s :: %s\n", $3, $4);
 	}
 	;
 
-programs: PROGRAMS OPEN_BRACE program_statement CLOSE_BRACE
+programs: PROGRAMS { section = PROGRAMS; } OPEN_BRACE program_statement CLOSE_BRACE { section = BASE; }
 	;
 
 program_statement: program
 	| program program_statement
 	;
 
-program: PROGRAM OPEN_BRACE program_body CLOSE_BRACE
+program: PROGRAM { etcher_parse_program(); section = PROGRAM; } OPEN_BRACE program_body CLOSE_BRACE { section = PROGRAMS; }
 	;
 
 program_body: /* blank */ 
@@ -137,21 +155,38 @@ program_cmd: name
 	;
 
 name: NAME COLON STRING SEMICOLON {
+                switch(section)
+                {
+                  case GROUP:
+                    etcher_parse_group_name($3);
+                    break;
+                  case PART:
+                    etcher_parse_part_name($3);
+                    break;
+                  case PROGRAM:
+                    etcher_parse_program_name($3);
+                    break;
+                  default:
+                    break;
+                }
 		printf("name: %s\n", $3);
 	}
 	;
 
 program_signal: SIGNAL COLON STRING SEMICOLON {
+                etcher_parse_program_signal($3);
 		printf("signal: %s\n", $3);
 	}
 	;
 
 program_source: SOURCE COLON STRING SEMICOLON {
+                etcher_parse_program_source($3);
 		printf("source: %s\n", $3);
 	}
 	;
 
 program_in: IN COLON FLOAT FLOAT SEMICOLON {
+                etcher_parse_program_in($3, $4);
 		printf("in %f %f\n", $3, $4);
 	}
 	;
@@ -179,6 +214,7 @@ action_type: SIGNAL_EMIT { $$ = ETCHER_ACTION_SIGNAL_EMIT; }
 	;
 
 program_transition: TRANSITION COLON transition_type FLOAT SEMICOLON {
+                etcher_parse_program_transition($3, $4);
 		printf("transition %d %f\n", $3, $4);
 	}
 	;
@@ -190,11 +226,13 @@ transition_type: LINEAR { $$ = ETCHER_TRANSITION_LINEAR; }
 	;
 
 program_target: TARGET COLON STRING SEMICOLON {
+                etcher_parse_program_target($3);
 		printf("targeting %s\n", $3);
 	}
 	;
 
 program_after: AFTER COLON STRING SEMICOLON {
+                etcher_parse_program_after($3);
 		printf("after %s\n", $3);
 	}
 	;
@@ -203,7 +241,7 @@ collection_statement: group
 	| group collection_statement
 	;
 
-group: GROUP OPEN_BRACE group_foo CLOSE_BRACE
+group: GROUP { etcher_parse_group(); section = GROUP; } OPEN_BRACE group_foo CLOSE_BRACE { section = GROUPS; }
 	;
 
 group_foo: 
@@ -232,23 +270,48 @@ group_preamble_entry: name
 	;
 
 min: MIN COLON FLOAT FLOAT SEMICOLON {
+                switch(section)
+                {
+                  case GROUP:
+                    etcher_parse_group_min($3, $4);
+                    break;
+                  case STATE:
+                    etcher_parse_state_min($3, $4);
+                    break;
+                  case TEXT:
+                    etcher_parse_state_text_min($3, $4);
+                    break;
+                  default: 
+                    break;
+                }
 		printf("min %f %f\n", $3, $4);
 	}
 	;
 
 max: MAX COLON FLOAT FLOAT SEMICOLON {
+                switch(section)
+                {
+                  case GROUP:
+                    etcher_parse_group_max($3, $4);
+                    break;
+                  case STATE:
+                    etcher_parse_state_max($3, $4);
+                    break;
+                  default: 
+                    break;
+                }
 		printf("max %f %f\n", $3, $4);
 	}
 	;
 
-parts: PARTS OPEN_BRACE parts_statement CLOSE_BRACE
+parts: PARTS { section = PARTS; } OPEN_BRACE parts_statement CLOSE_BRACE { section = BASE; }
 	;
 
 parts_statement: part
 	| part parts_statement
 	;
 
-part: PART OPEN_BRACE part_foo CLOSE_BRACE
+part: PART { etcher_parse_part(); section = PART; } OPEN_BRACE part_foo CLOSE_BRACE { section = PARTS; }
 	;
 
 part_foo: 
@@ -270,6 +333,7 @@ part_preamble_entry: name
     ; 
 
 type: TYPE COLON part_type SEMICOLON {
+                etcher_parse_part_type($3);
 		printf("type %d\n", $3);
 	}
 	;
@@ -281,6 +345,7 @@ part_type: IMAGE { $$ = ETCHER_PART_TYPE_IMAGE; }
 	;
 
 effect: EFFECT COLON effect_type SEMICOLON {
+                etcher_parse_part_effect($3);
 		printf("effect %d\n", $3);
 	}
 	;
@@ -295,26 +360,31 @@ effect_type: NONE { $$ = ETCHER_TEXT_EFFECT_NONE; }
 	;
 
 mouse_events: MOUSE_EVENTS COLON FLOAT SEMICOLON {
+                etcher_parse_part_mouse_events($3);
 		printf("mouse event %f\n", $3);
 	}
 	;
 
 repeat_events: REPEAT_EVENTS COLON FLOAT SEMICOLON {
+                etcher_parse_part_repeat_events($3);
 		printf("repeat events %d\n", $3);
 	}
 	;
 
 clip_to: CLIP_TO COLON STRING SEMICOLON {
+                etcher_parse_part_clip_to($3);
 		printf("clip to (%s)\n", $3);
 	}
 	;
 
 color_class: COLOR_CLASS COLON STRING SEMICOLON {
+                etcher_parse_state_color_class($3);
 		printf("color class %s\n", $3);
 	}
 	;
 
 text_class: TEXT_CLASS COLON STRING SEMICOLON {
+                etcher_parse_state_text_text_class($3);
 		printf("text class %s\n", $3);
 	}
 	;
@@ -327,7 +397,7 @@ part_body_entry: dragable
 	| description
 	;
 
-dragable: DRAGABLE OPEN_BRACE dragable_statement CLOSE_BRACE
+dragable: DRAGABLE { section = DRAGABLE; } OPEN_BRACE dragable_statement CLOSE_BRACE { section = PART; }
 	;
 
 dragable_statement: dragable_body
@@ -340,21 +410,24 @@ dragable_body: x
 	;
 
 x: X COLON FLOAT FLOAT FLOAT SEMICOLON {
+                etcher_parse_part_dragable_x($3, $4, $5);
 		printf("x %f %f %f\n", $3, $4, $5);
 	}
 	;
 
 y: Y COLON FLOAT FLOAT FLOAT SEMICOLON {
+                etcher_parse_part_dragable_y($3, $4, $5);
 		printf("y %f %f %f\n", $3, $4, $5);
 	}
 	;
 
 confine: CONFINE COLON STRING SEMICOLON {
+                etcher_parse_part_dragable_confine($3);
 		printf("confine %s\n", $3);
 	}
 	;
 
-description: DESCRIPTION OPEN_BRACE desc_foo CLOSE_BRACE
+description: DESCRIPTION { etcher_parse_state(); section = STATE; } OPEN_BRACE desc_foo CLOSE_BRACE { section = PART; }
 	;
 
 desc_foo:
@@ -377,31 +450,39 @@ desc_preamble_entry: state
 	;
 
 state: STATE COLON STRING FLOAT SEMICOLON {
+                etcher_parse_state_name($3, $4);
 		printf("state %s %f\n", $3, $4);
 	}
 	;
 
 visible: VISIBLE COLON FLOAT SEMICOLON {
+                etcher_parse_state_visible($3);
 		printf("visible %f\n", $3);
 	}
 	;
 
 align: ALIGN COLON FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_align($3, $4);
+                /* FIXME what about text align? */
 		printf("align %f %f\n", $3, $4);
 	}
 	;
 
 step: STEP COLON FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_step($3, $4);
+                /* FIXME what about drag step? */
 		printf("step %f %f\n", $3, $4);
 	}
 	;
 
 aspect: ASPECT COLON FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_aspect($3, $4);
 		printf("aspect %f %f\n", $3, $4);
 	}
 	;
 
 aspect_preference: ASPECT_PREFERENCE COLON aspect_pref_type SEMICOLON {
+                etcher_parse_state_aspect_preference($3);
 		printf("aspect_preference %d\n", $3);
 	}
 	;
@@ -428,10 +509,10 @@ desc_body_entry: rel1
 	| text
 	;
 
-rel1: REL1 OPEN_BRACE rel_statement CLOSE_BRACE
+rel1: REL1 {section = REL1;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STATE;}
 	;
 
-rel2: REL2 OPEN_BRACE rel_statement CLOSE_BRACE
+rel2: REL2 {section = REL2;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STATE;}
 	;
 
 rel_statement: rel_body
@@ -446,31 +527,100 @@ rel_body: relative
 	;
 
 relative: RELATIVE COLON FLOAT FLOAT SEMICOLON {
+                switch(section)
+                {
+                  case REL1:
+                    etcher_parse_state_rel1_relative($3, $4);
+                    break;
+                  case REL2:
+                    etcher_parse_state_rel2_relative($3, $4);
+                    break;
+                  case ORIGIN:
+                    etcher_parse_state_fill_origin_relative($3, $4);
+                    break;
+                  case SIZE:
+                    etcher_parse_state_fill_size_relative($3, $4);
+                    break;
+                  default: 
+                    break;
+                }
 		printf("relative %f %f\n", $3, $4);
 	}
 	;
 
 offset: OFFSET COLON FLOAT FLOAT SEMICOLON {
+                switch(section)
+                {
+                  case REL1:
+                    etcher_parse_state_rel1_offset($3, $4);
+                    break;
+                  case REL2:
+                    etcher_parse_state_rel2_offset($3, $4);
+                    break;
+                  case ORIGIN:
+                    etcher_parse_state_fill_origin_offset($3, $4);
+                    break;
+                  case SIZE:
+                    etcher_parse_state_fill_size_offset($3, $4);
+                    break;
+                  default: 
+                    break;
+                }
 		printf("offset %f %f\n", $3, $4);
 	}
 	;
 
 to: TO COLON STRING SEMICOLON {
+                switch(section)
+                {
+                  case REL1:
+                    printf("rel1 ");
+                    etcher_parse_state_rel1_to($3);
+                    break;
+                  case REL2:
+                    printf("rel2 ");
+                    etcher_parse_state_rel2_to($3);
+                    break;
+                  default: 
+                    printf("Error: \"to\" not allowed here %d, %d", lnum, col);
+                }
 		printf("to %s\n", $3);
 	}
 	;
 
 to_x: TO_X COLON STRING SEMICOLON {
+                switch(section)
+                {
+                  case REL1:
+                    etcher_parse_state_rel1_to_x($3);
+                    break;
+                  case REL2:
+                    etcher_parse_state_rel2_to_x($3);
+                    break;
+                  default: 
+                    break;
+                }
 		printf("to_x %s\n", $3);
 	}
 	;
 
 to_y: TO_Y COLON STRING SEMICOLON {
+                switch(section)
+                {
+                  case REL1:
+                    etcher_parse_state_rel1_to_y($3);
+                    break;
+                  case REL2:
+                    etcher_parse_state_rel2_to_y($3);
+                    break;
+                  default: 
+                    break;
+                }
 		printf("to_y %s\n", $3);
 	}
 	;
 
-image: IMAGE OPEN_BRACE image_statement CLOSE_BRACE
+image: IMAGE { section = IMAGE; } OPEN_BRACE image_statement CLOSE_BRACE { section = STATE; }
 	;
 
 image_statement: image_body
@@ -482,21 +632,24 @@ image_body: normal
 	;
 
 normal: NORMAL COLON STRING SEMICOLON {
+                etcher_parse_state_image_normal($3);
 		printf("normal %s\n", $3);
 	}
 	;
 
 tween: TWEEN COLON STRING SEMICOLON {
+                etcher_parse_state_image_tween($3);
 		printf("tween %s\n", $3);
 	}
 	;
 
 border: BORDER COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_border($3, $4, $5, $6);
 		printf("border %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 
-fill: FILL OPEN_BRACE fill_statement CLOSE_BRACE
+fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE { section = STATE; }
 	;
 
 fill_statement: fill_body
@@ -509,11 +662,12 @@ fill_body: smooth
 	;
 
 smooth: SMOOTH COLON FLOAT SEMICOLON {
+                etcher_parse_state_fill_smooth($3);
 		printf("smooth %f\n", $3);
 	}
 	;
 
-origin: ORIGIN OPEN_BRACE origin_statement CLOSE_BRACE
+origin: ORIGIN { section = ORIGIN; } OPEN_BRACE origin_statement CLOSE_BRACE { section = FILL; }
 	;
 
 origin_statement: origin_body
@@ -524,30 +678,34 @@ origin_body: relative
 	| offset
 	;
 
-size: SIZE OPEN_BRACE origin_statement CLOSE_BRACE
+size: SIZE { section = SIZE; } OPEN_BRACE origin_statement CLOSE_BRACE { section = FILL; }
 	;
 
 color_class: COLOR_CLASS COLON STRING SEMICOLON {
+                etcher_parse_state_color_class($3);
 		printf("colour class %s\n", $3);
 	}
 	;
 
 color: COLOR COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_color($3, $4, $5, $6);
 		printf("color %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 
 color2: COLOR2 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_color2($3, $4, $5, $6);
 		printf("color2 %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 		
 color3: COLOR3 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_color3($3, $4, $5, $6);
 		printf("color3 %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 
-text: TEXT OPEN_BRACE text_statement CLOSE_BRACE
+text: TEXT { section = TEXT; } OPEN_BRACE text_statement CLOSE_BRACE { section = STATE; }
 	;
 
 text_statement: text_body
@@ -564,26 +722,31 @@ text_body: text_entry
 	;
 
 text_entry: TEXT COLON STRING SEMICOLON {
+                etcher_parse_state_text_text($3);
 		printf("text (%s)\n", $3);
 	}
 	;
 
 text_class: TEXT_CLASS COLON STRING SEMICOLON {
+                etcher_parse_state_text_text_class($3);
 		printf("text_class %s\n", $3);
 	}
 	;
 
 font_entry: FONT COLON STRING SEMICOLON {
+                etcher_parse_state_text_font($3);
 		printf("font %s\n", $3);
 	}
 	;
 
 size_entry: SIZE COLON FLOAT SEMICOLON {
+                etcher_parse_state_text_size($3);
 		printf("size %f\n", $3);
 	}
 	;
 
 fit: FIT COLON FLOAT FLOAT SEMICOLON {
+                etcher_parse_state_text_fit($3, $4);
 		printf("fit %f %f\n", $3, $4);
 	}
 	;

@@ -19,6 +19,7 @@ typedef struct _Etcher_Part Etcher_Part;
 typedef struct _Etcher_Program Etcher_Program;
 typedef struct _Etcher_Part_State Etcher_Part_State;
 
+typedef enum _Etcher_Parse_Sectoin Etcher_Parse_Section;
 
 
 enum _Etcher_Image_Type
@@ -116,6 +117,7 @@ struct _Etcher_Group
 
   Evas_List *parts;
   Evas_List *programs;
+  Evas_List *data;
 };
 
 struct _Etcher_Part
@@ -134,6 +136,8 @@ struct _Etcher_Part
     {
       int x, y;
     } step, count; 
+    char *confine;
+
   } dragable;
 
   Evas_List *states;
@@ -204,6 +208,8 @@ struct _Etcher_Part_State
     int l, r, t, b;
   } border;
 
+  char *color_class;
+
   struct
   {
     int r, g, b, a;
@@ -242,5 +248,29 @@ struct _Etcher_Part_State
 
 
 };
+
+enum Etcher_Parse_Section
+{
+BASE,
+COLLECTIONS,
+DATA,
+DESCRIPTION,
+DRAGABLE,
+FILL,
+FONT,
+FONTS,
+GROUP,
+GROUPS,
+IMAGES,
+PART,
+PARTS,
+PROGRAM,
+PROGRAMS,
+REL1,
+REL2,
+SCRIPT,
+TEXT
+};
+
 
 #endif
