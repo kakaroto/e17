@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-04 12:33+0200\n"
+"POT-Creation-Date: 2003-05-04 19:58-0400\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -1317,7 +1317,6 @@ msgstr ""
 "Версия Enlightenment : %s\n"
 "Код текущий на       : %s\n"
 
-#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Диалог сообщения Enlightenment"
@@ -1507,24 +1506,24 @@ msgstr ""
 "pointer = %x.\n"
 "Ошибка возникла в %s, строка %d.\n"
 
-#: src/menus.c:1967
+#: src/menus.c:1973
 msgid "Go to this Desktop"
 msgstr "Перейти на этот рабочий стол"
 
-#: src/menus.c:1983
+#: src/menus.c:1989
 #, c-format
 msgid "Desktop %i"
 msgstr "Рабочий стол %i"
 
-#: src/menus.c:2046
+#: src/menus.c:2052
 msgid "Show/Hide this group"
 msgstr "Показать/спрятать эту группу"
 
-#: src/menus.c:2049
+#: src/menus.c:2055
 msgid "Iconify this group"
 msgstr "Свернуть эту группу"
 
-#: src/menus.c:2061
+#: src/menus.c:2067
 #, c-format
 msgid "Group %i"
 msgstr "Группа %i"

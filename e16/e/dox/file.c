@@ -625,13 +625,13 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
    }                   *cc, char_class_tbl[] = {
 #ifdef linux
 	/* Will be supported on glibc 2.1.3 or later */
-	{"jspace"}, {"jhira"}, {"jkata"}, {"jkanji"}, {"jdigit"},/* Japanese */
-	{"hangul"}, {"hanja"},                                   /* Korean    */
+	{"jspace", 0}, {"jhira", 0}, {"jkata", 0}, {"jkanji", 0}, {"jdigit", 0},/* Japanese */
+	{"hangul", 0}, {"hanja", 0},                                   /* Korean    */
 	/* {"?????"}, {"?????"},*/                               /* Chinese   */
 #endif
 #ifdef sgi
 	  /* SGI IRIX (Japanese, Chinese, Korean, etc..) */
-	  {"special"}, {"phonogram"}, {"ideogram"},
+	  {"special", 0}, {"phonogram", 0}, {"ideogram", 0},
 #endif
 #ifdef sun
 	/* {"?????"}, {"?????"},*/
@@ -639,7 +639,7 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 #ifdef hpux
 	/* {"?????"}, {"?????"},*/
 #endif
-	  {NULL}
+	  {NULL, 0}
    };
 
 

@@ -1842,3 +1842,10 @@ Use _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR to hide them as desi
 (fixes menu's in taskbar problem).
 (Re)enable focusing of dock type windows.
 Commented out some unused code (ewin->expanded_*).
+
+-------------------------------------------------------------------------------
+
+Sun May  4 21:14:35 EDT 2003
+(KainX)
+
+Fix a seg fault during restart.  Also some cleanups.

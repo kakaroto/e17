@@ -1525,6 +1525,13 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
 #else
    f = fopen(file, "rt");
 #endif
+   if (!f)
+     {
+        fprintf(stderr, "Unable to open menu file %s -- %s\n", file,
+                strerror(errno));
+        return;
+     }
+
    while (fgets(s, 4096, f))
      {
         s[strlen(s) - 1] = 0;

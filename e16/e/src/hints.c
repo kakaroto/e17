@@ -184,7 +184,9 @@ HintsSetWindowState(EWin * ewin)
 void
 HintsSetWindowHints(EWin * ewin)
 {
+#if ENABLE_KDE
    int                 kde_support = 0;
+#endif
 
    EDBUG(6, "HintsSetWindowHints");
 #if ENABLE_KDE

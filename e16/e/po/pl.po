@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-04 12:33+0200\n"
+"POT-Creation-Date: 2003-05-04 19:58-0400\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -1296,7 +1296,6 @@ msgstr ""
 "Wersja Enlightenment : %s\n"
 "kod jest aktualny na : %s\n"
 
-#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Okno wiadomo¶ci Enlightenment"
@@ -1483,24 +1482,24 @@ msgstr ""
 "Warto¶æ wska¼nika wynosi³a %x.\n"
 "B³±d wyst±pi³ w %s, linia %d.\n"
 
-#: src/menus.c:1967
+#: src/menus.c:1973
 msgid "Go to this Desktop"
 msgstr "Przejd¼ do tego Pulpitu"
 
-#: src/menus.c:1983
+#: src/menus.c:1989
 #, c-format
 msgid "Desktop %i"
 msgstr "Pulpit %i"
 
-#: src/menus.c:2046
+#: src/menus.c:2052
 msgid "Show/Hide this group"
 msgstr "Poka¿/Ukryj t± grupê"
 
-#: src/menus.c:2049
+#: src/menus.c:2055
 msgid "Iconify this group"
 msgstr "Zwiñ t± grupê do ikony"
 
-#: src/menus.c:2061
+#: src/menus.c:2067
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"

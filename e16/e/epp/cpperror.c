@@ -23,6 +23,7 @@
  * what you give them.   Help stamp out software-hoarding!  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "header.h"
 
 /* Print the file names and line numbers of the #include

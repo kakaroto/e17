@@ -77,6 +77,7 @@ if (__xim) XDestroyImage(__xim);}
 #include <time.h>
 #include <math.h>
 #include <pwd.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>

@@ -214,7 +214,7 @@ EExit(void *code)
      {
         int                 i;
 
-        exitcode = code;
+        exitcode = (long)code;
         SoundExit();
         if (mustdel)
           {

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-04 12:33+0200\n"
+"POT-Creation-Date: 2003-05-04 19:58-0400\n"
 "PO-Revision-Date: 2000-04-09 18:46+0200\n"
 "Last-Translator: Antonio Ognio Cesti  <ognio@altavista.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -1320,7 +1320,6 @@ msgstr ""
 "Versión de Enlightenment: %s\n"
 "Código actualizado al   : %s\n"
 
-#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Diálogo de Mensajes de Enlightenment"
@@ -1509,24 +1508,24 @@ msgstr ""
 "El valor del apuntador fue %x.\n"
 "El error ocurrió en %s, línea %d.\n"
 
-#: src/menus.c:1967
+#: src/menus.c:1973
 msgid "Go to this Desktop"
 msgstr "Ir a este Escritorio"
 
-#: src/menus.c:1983
+#: src/menus.c:1989
 #, c-format
 msgid "Desktop %i"
 msgstr "Escritorio %i"
 
-#: src/menus.c:2046
+#: src/menus.c:2052
 msgid "Show/Hide this group"
 msgstr "Mostrar/Ocultar este grupo"
 
-#: src/menus.c:2049
+#: src/menus.c:2055
 msgid "Iconify this group"
 msgstr "Iconizar este grupo"
 
-#: src/menus.c:2061
+#: src/menus.c:2067
 #, c-format
 msgid "Group %i"
 msgstr "Grupo %i"

@@ -4199,7 +4199,7 @@ do_pragma(pfile, keyword, buf, limit)
 
 	fname = p + 1;
 	p = (unsigned char *)index(fname, '\"');
-	fname_len = p != NULL ? p - fname : strlen((char *)fname);
+	fname_len = (int) (((int) (p != NULL)) ? ((int) (p - fname)) : ((int) (strlen((char *)fname))));
 
 	for (ptr = pfile->all_include_files; ptr; ptr = ptr->next)
 	  {

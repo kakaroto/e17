@@ -484,7 +484,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
    if (!val)
       goto exit;
 
-   if (val[0] == 0xFFFFFFFF)
+   if ((unsigned)val[0] == 0xFFFFFFFF)
      {
         /* It is possible to distinguish between "sticky" and "on all desktops". */
         /* E doesn't */
@@ -545,7 +545,7 @@ EWMH_GetWindowState(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+static void
 EWMH_GetWindowType(EWin * ewin)
 {
    Atom               *p_atoms, atom;
@@ -647,6 +647,7 @@ do_set(int is_set, int action)
           return !is_set;
           break;
      }
+   return -1;
 }
 
 void
@@ -704,7 +705,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == _NET_WM_DESKTOP)
      {
-        if (event->data.l[0] == 0xFFFFFFFF)
+        if ((unsigned)event->data.l[0] == 0xFFFFFFFF)
           {
              if (!ewin->sticky)
                 MakeWindowSticky(ewin);
