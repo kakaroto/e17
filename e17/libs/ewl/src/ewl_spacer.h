@@ -4,6 +4,8 @@
 
 /**
  * @file ewl_spacer.h
+ * Defines an Ewl_Widget to be used for adding space between widgets in a
+ * layout.
  */
 
 /**

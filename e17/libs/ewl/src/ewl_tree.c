@@ -24,11 +24,11 @@ static void __ewl_tree_row_select(Ewl_Widget *w, void *ev_data,
 				  void *user_data);
 
 /**
- * ewl_tree_new - allocate and initialize a new tree widget
- * @columns: the number of columns to display
+ * @param columns: the number of columns to display
+ * @return Returns NULL on failure, a new tree widget on success.
+ * @brief Allocate and initialize a new tree widget
  *
- * Returns NULL on failure, a newly allocated and initialized widget on
- * success. The paramater @columns can be modified at a later time to display
+ * The paramater @a columns can be modified at a later time to display
  * a different number of columns.
  */
 Ewl_Widget *ewl_tree_new(unsigned short columns)
@@ -53,13 +53,14 @@ Ewl_Widget *ewl_tree_new(unsigned short columns)
 }
 
 /**
- * ewl_tree_init - initialize the contents of a tree widget
- * @tree: the tree widget to be initialized
- * @columns: the number of columns in the tree
+ * @param tree: the tree widget to be initialized
+ * @param columns: the number of columns in the tree
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the contents of a tree widget
  *
- * Returns TRUE on success, FALSE on failure. The contents of the tree widget
- * @tree are initialized to their defaults, and the number of columns to
- * display is set to @columns.
+ * The contents of the tree widget
+ * @a tree are initialized to their defaults, and the number of columns to
+ * display is set to @a columns.
  */
 int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 {
@@ -103,12 +104,12 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 }
 
 /**
- * ewl_tree_set_headers - change the widgets in a trees column headers
- * @tree: the tree to change column headers
- * @headers: the array of widget pointers containing the new headers
+ * @param tree: the tree to change column headers
+ * @param headers: the array of widget pointers containing the new headers
+ * @return Returns no value.
+ * @brief Change the widgets in a trees column headers
  *
- * Returns no value. Stores the widgets in @headers to the header row of
- * @tree.
+ * Stores the widgets in @a headers to header row of @a tree.
  */
 void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 {
@@ -135,12 +136,11 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 }
 
 /**
- * ewl_tree_add_row - add a group of widgets to a row in the tree
- * @tree: the tree to hold the widgets
- * @prow: the parent row of the new row for the added widgets
- * @children: a NULL terminated array of widgets to add to the tree
- *
- * Returns a pointer to the newly created row on success, NULL on failure.
+ * @param tree: the tree to hold the widgets
+ * @param prow: the parent row of the new row for the added widgets
+ * @param children: a NULL terminated array of widgets to add to the tree
+ * @return Returns a pointer to a new row on success, NULL on failure.
+ * @brief Add a group of widgets to a row in the tree
  */
 Ewl_Widget *
 ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
@@ -220,12 +220,12 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 }
 
 /**
- * ewl_tree_add_text_row - add a row of text to a tree
- * @tree: the tree to hold the new text row
- * @prow: the parent row of the new text row
- * @text: the array of strings that hold the text to be added
+ * @param tree: the tree to hold the new text row
+ * @param prow: the parent row of the new text row
+ * @param text: the array of strings that hold the text to be added
+ * @brief Add a row of text to a tree
  *
- * Returns a pointer to the newly created row on success, NULL on failure.
+ * @return Returns a pointer to a new row on success, NULL on failure.
  */
 Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
@@ -256,11 +256,12 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 }
 
 /**
- * ewl_tree_remove_row - remove a specified row from the tree
- * @tree: the tree to remove a row from
- * @row: the row to be removed from the tree
+ * @param tree: the tree to remove a row from
+ * @param row: the row to be removed from the tree
+ * @return Returns no value.
+ * @brief Remove a specified row from the tree
  *
- * Returns no value. Removes @row from @tree if it is present in @tree. The
+ * Removes @a row from @a tree if it is present in @a tree. The
  * widgets in the row will not be destroyed, so they can be accessed at a
  * later time.
  */
@@ -285,11 +286,12 @@ void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
 }
 
 /**
- * ewl_tree_destroy_row - destroy a specified row from the tree
- * @tree: the tree to destroy a row from
- * @row: the row to be destroyed from the tree
+ * @param tree: the tree to destroy a row from
+ * @param row: the row to be destroyed from the tree
+ * @return Returns no value.
+ * @brief Destroy a specified row from the tree
  *
- * Returns no value. Removes @row from @tree if it is present in @tree. The
+ * Removes @a row from @a tree if it is present in @a tree. The
  * widgets in the row will be destroyed, so they should not be accessed at a
  * later time.
  */
@@ -310,12 +312,13 @@ void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row)
 }
 
 /**
- * ewl_tree_set_columns - change the number of columns displayed in a tree
- * @tree: the tree to change the number of columns
- * @columns: the new number of columns to be displayed
+ * @param tree: the tree to change the number of columns
+ * @param columns: the new number of columns to be displayed
+ * @return Returns no value.
+ * @brief Change the number of columns displayed in a tree
  *
- * Returns no value. The number of columns displayed in @tree is changed to
- * @columns. When rows are added, pre-existing rows have empty contents in the
+ * The number of columns displayed in @a tree is changed to
+ * @a columns. When rows are added, pre-existing rows have empty contents in the
  * additional columns which are appended. When rows are removed, previously
  * existing rows destroy column contents that are removed from the end. If you
  * need finer grain control over where columns are added or removed, see
@@ -332,11 +335,12 @@ void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns)
 }
 
 /**
- * ewl_tree_set_row_expand - set the expand state of a specific row
- * @row: the row to change the expanded state
- * @expanded: the new expanded state for the row
+ * @param row: the row to change the expanded state
+ * @param expanded: the new expanded state for the row
+ * @return Returns no value.
+ * @brief Set the expand state of a specific row
  *
- * Returns no value. Changes the expanded state of @row to @expanded, which
+ * Changes the expanded state of @a row to @a expanded, which
  * should be TRUE or FALSE.
  */
 void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
@@ -362,9 +366,8 @@ void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 }
 
 /**
- * ewl_tree_node_new - allocate and initialize a new node
- *
- * Returns a newly allocated node on success, NULL on failure.
+ * @return Returns a newly allocated node on success, NULL on failure.
+ * @brief Allocate and initialize a new node
  */
 Ewl_Widget *ewl_tree_node_new()
 {
@@ -386,11 +389,11 @@ Ewl_Widget *ewl_tree_node_new()
 }
 
 /**
- * ewl_tree_node_init - initialize the node fields of an inheriting object
- * @node: the node object to initialize
+ * @param node: the node object to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the node fields of an inheriting object
  *
- * Returns TRUE on success, FALSE on failure. The fields of the @node object
- * are initialized to their defaults.
+ * The fields of the @a node object are initialized to their defaults.
  */
 int ewl_tree_node_init(Ewl_Tree_Node *node)
 {
@@ -414,10 +417,9 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 }
 
 /**
- * ewl_tree_node_collapse - collapse a node in the tree
- * @node: the node in the tree to collapse
- *
- * Returns no value. Hides the rows below a node @node.
+ * @param node: the node in the tree to collapse
+ * @return Returns no value. Hides the rows below @a node.
+ * @brief Collapse a node in the tree
  */
 void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 {
@@ -444,10 +446,9 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 }
 
 /**
- * ewl_tree_node_expand - expand a node in the tree
- * @node: the node in the tree to expand
- *
- * Returns no value. Hides the rows below a node @node.
+ * @param node: the node in the tree to expand
+ * @return Returns no value. Hides the rows below @a node.
+ * @brief Expand a node in the tree
  */
 void ewl_tree_node_expand(Ewl_Tree_Node *node)
 {

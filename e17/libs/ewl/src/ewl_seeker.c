@@ -21,11 +21,9 @@ void            __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
 
 
 /**
- * ewl_seeker_new - allocate and initialize a new seeker with orientation
- *
- * @o: the orientation for the new seeker
- *
- * Returns NULL on failure, or a pointer to the new seeker on success.
+ * @param o: the orientation for the new seeker
+ * @return Returns NULL on failure, or a pointer to the new seeker on success.
+ * @brief Allocate and initialize a new seeker with orientation
  */
 Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
 {
@@ -46,12 +44,13 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
 
 
 /**
- * ewl_seeker_init - initialize the seeker to some sane starting values
- * @s: the seeker to be initialized
- * @orientation: the orientation of the seeker
+ * @param s: the seeker to be initialized
+ * @param orientation: the orientation of the seeker
+ * @return Returns no value.
+ * @brief Initialize the seeker to some sane starting values
  *
- * Returns no value. Initializes the seeker @s to the orientation @orientation
- * to default values and callbacks.
+ * Initializes the seeker @a s to the orientation @a orientation to default
+ * values and callbacks.
  */
 void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 {
@@ -129,12 +128,11 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 
 
 /**
- * ewl_seeker_set_value - set the value of pointer of the seekers locator
  *
- * @s: the seeker whose value will be changed
- * @v: the new value of the locator, it will be checked against the valid range
- *
- * Returns no value.
+ * @param s: the seeker whose value will be changed
+ * @param v: the new value of the locator, checked against the valid range
+ * @return Returns no value.
+ * @brief Set the value of pointer of the seekers locator
  */
 void ewl_seeker_set_value(Ewl_Seeker * s, double v)
 {
@@ -160,11 +158,9 @@ void ewl_seeker_set_value(Ewl_Seeker * s, double v)
 
 
 /**
- * ewl_seeker_get_value - retrieve the current value of the seekers locator
- *
- * @s: the seekers to retrieve the value
- *
- * Returns 0 on failure, the value of the seekers locator on success.
+ * @param s: the seekers to retrieve the value
+ * @return Returns 0 on failure, the value of the seekers locator on success.
+ * @brief Retrieve the current value of the seekers locator
  */
 double ewl_seeker_get_value(Ewl_Seeker * s)
 {
@@ -176,12 +172,10 @@ double ewl_seeker_get_value(Ewl_Seeker * s)
 
 
 /**
- * ewl_seeker_set_range - specify the range of values represented by the seeker
- *
- * @s: the seeker to change the range
- * @r: the largest bound on the range of the seekers value
- *
- * Returns no value.
+ * @param s: the seeker to change the range
+ * @param r: the largest bound on the range of the seekers value
+ * @return Returns no value.
+ * @brief specify the range of values represented by the seeker
  */
 void ewl_seeker_set_range(Ewl_Seeker * s, double r)
 {
@@ -202,11 +196,9 @@ void ewl_seeker_set_range(Ewl_Seeker * s, double r)
 
 
 /**
- * ewl_seeker_get_range - retrieve the range of values represented by the seeker
- *
- * @s: the seeker to return the range of values
- *
- * Returns 0 on failure, or the upper bound on the seeker on success.
+ * @param s: the seeker to return the range of values
+ * @return Returns 0 on failure, or the upper bound on the seeker on success.
+ * @brief Retrieve the range of values represented by the seeker
  */
 double ewl_seeker_get_range(Ewl_Seeker * s)
 {
@@ -218,12 +210,13 @@ double ewl_seeker_get_range(Ewl_Seeker * s)
 
 
 /**
- * ewl_seeker_set_step - set the steps between increments
- * @s: the seeker to change step
- * @step: the new step value for the seeker
+ * @param s: the seeker to change step
+ * @param step: the new step value for the seeker
+ * @return Returns no value.
+ * @brief Set the steps between increments
  *
- * Returns no value. Changes the amount that each increment or decrement
- * changes the value of the seeker @s.
+ * Changes the amount that each increment or decrement changes the value of the
+ * seeker @a s.
  */
 void ewl_seeker_set_step(Ewl_Seeker * s, double step)
 {
@@ -240,10 +233,9 @@ void ewl_seeker_set_step(Ewl_Seeker * s, double step)
 
 
 /**
- * ewl_seeker_get_step - retrieve the step size of the seeker
- * @s: the seeker to retrieve step size
- *
- * Returns the step size of the seeker @s.
+ * @param s: the seeker to retrieve step size
+ * @return Returns the step size of the seeker @a s.
+ * @brief Retrieve the step size of the seeker
  */
 double ewl_seeker_get_step(Ewl_Seeker * s)
 {
@@ -257,11 +249,11 @@ double ewl_seeker_get_step(Ewl_Seeker * s)
 
 
 /**
- * ewl_seeker_increase - increase the value of a seeker by it's step size
- * @s: the seeker to increase
+ * @param s: the seeker to increase
+ * @return Returns no value.
+ * @brief Increase the value of a seeker by it's step size
  *
- * Returns no value. Increases the value of the seeker @s by one increment of
- * it's step size.
+ * Increases the value of the seeker @a s by one increment of it's step size.
  */
 void ewl_seeker_increase(Ewl_Seeker * s)
 {
@@ -284,11 +276,11 @@ void ewl_seeker_increase(Ewl_Seeker * s)
 
 
 /**
- * ewl_seeker_decrease - decrease the value of a seeker by it's step size
- * @s: the seeker to decrease
+ * @param s: the seeker to decrease
+ * @return Returns no value.
+ * @brief Decrease the value of a seeker by it's step size
  *
- * Returns no value. Decreases the value of the seeker @s by one increment of
- * it's step size.
+ * Decreases the value of the seeker @a s by one increment of it's step size.
  */
 void ewl_seeker_decrease(Ewl_Seeker * s)
 {

@@ -2,22 +2,53 @@
 #ifndef __EWL_SEEKER_H__
 #define __EWL_SEEKER_H__
 
-typedef struct _ewl_seeker Ewl_Seeker;
+/**
+ * @file ewl_seeker.h
+ * Defines an Ewl_Widget with a draggable button enclosed, used to select a
+ * value from a range.
+ *
+ * @todo Add value labels and hash marks.
+ */
 
+/**
+ * The Ewl_Seeker provides a means to select a value from a range using a
+ * draggable button.
+ */
+typedef struct Ewl_Seeker Ewl_Seeker;
+
+/**
+ * @def EWL_SEEKER(seeker)
+ * Typecasts a pointer to an Ewl_Seeker pointer.
+ */
 #define EWL_SEEKER(seeker) ((Ewl_Seeker *) seeker)
 
-struct _ewl_seeker {
-	Ewl_Container   container;
-	Ewl_Orientation orientation;
-	Ewl_Widget     *dragbar;
-	double          value;
-	double          range;
-	double          step;
+/**
+ * @struct Ewl_Seeker
+ * Inherits from Ewl_Container and creates internal Ewl_Widget's to provide a
+ * range and a draggable area to select a value from that range.
+ */
+struct Ewl_Seeker
+{
+	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Orientation orientation; /**< Indicates layout direction */
+	Ewl_Widget     *dragbar; /**< Draggable widget for selecting value */
+	double          value; /**< Currently chosen value */
+	double          range; /**< Total selectable range */
+	double          step; /**< Size of increments in the range */
 
-	int             dragstart;
+	int             dragstart; /**< The coordinate where the drag starts */
 };
 
+/**
+ * @def ewl_vseeker_new()
+ * Shorthand to allocate a vertical seeker.
+ */
 #define ewl_vseeker_new() ewl_seeker_new(EWL_ORIENTATION_VERTICAL);
+
+/**
+ * @def ewl_hseeker_new()
+ * Shorthand to allocate a horizontal seeker.
+ */
 #define ewl_hseeker_new() ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
 
 Ewl_Widget     *ewl_seeker_new(Ewl_Orientation orientation);

@@ -1,29 +1,45 @@
 #ifndef _EWL_TREE_H
 #define _EWL_TREE_H
 
+/**
+ * @file ewl_tree.h
+ * Defines a widget for laying out other widgets in a tree or list like
+ * manner.
+ */
 
-typedef struct _ewl_tree Ewl_Tree;
+typedef struct Ewl_Tree Ewl_Tree;
+
+/**
+ * @def EWL_TREE(t)
+ * Typecasts a pointer to an Ewl_Tree pointer.
+ */
 #define EWL_TREE(t) ((Ewl_Tree *)t)
 
-/*
+/**
+ * @struct Ewl_Tree
  * The tree is a columnar listing, where items in the list may be nested below
  * other items.
  */
-struct _ewl_tree
+struct Ewl_Tree
 {
-	Ewl_Container container;
+	Ewl_Container container; /**< Inherit from Ewl_Container */
 
-	unsigned short ncols;
-	unsigned short nrows;
+	unsigned short ncols; /**< Number of columns in tree */
+	unsigned short nrows; /**< Number of rows in tree */
 
 	unsigned int **colbases;
 	unsigned int **colbounds;
-	Ewl_Widget *header;
+	Ewl_Widget *header; /**< Array of widgets in the header */
 
-	Ewl_Widget *selected;
+	Ewl_Widget *selected; /**< The currently selected row */
 };
 
 typedef struct _ewl_tree_node Ewl_Tree_Node;
+
+/**
+ * @def EWL_TREE_NODE(t)
+ * Typecasts a pointer to an Ewl_Tree_Node pointer.
+ */
 #define EWL_TREE_NODE(t) ((Ewl_Tree_Node *)t)
 
 /*
@@ -32,10 +48,10 @@ typedef struct _ewl_tree_node Ewl_Tree_Node;
  */
 struct _ewl_tree_node
 {
-	Ewl_Container container;
-	Ewl_Tree *tree;
-	Ewl_Widget *row;
-	int expanded;
+	Ewl_Container container; /**< Inherit from Ewl_Container */
+	Ewl_Tree *tree; /**< Pointer to the tree this is inside */
+	Ewl_Widget *row; /**< The child row */
+	int expanded; /**< Indicator of expansion state */
 };
 
 /*
