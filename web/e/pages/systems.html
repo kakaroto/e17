@@ -150,6 +150,44 @@ aspects that may be of great interest to developers outside of the project to
 create some interesting or even amazing tools.
 </p><p>
 <img src=img/sys_evas.png width=318 height=100>
+</p>
+<img src=img/sys_evas_shot1.png width=240 height=320 class=sshot align=right alt="Evas performance test program" hspace=16 vspace=16>
+<p>
+Evas is a display canvas. This is different to the usual "immediate mode"
+display system that most programmers are used to and exists at the Xlib, GDI
+and even OpenGL levels when doing graphics programming. The difference is
+that the programmer has to call routines to DRAW the screen or updated
+display by drawing one operation at a time, such as draw line, paste image,
+draw box, paste text. When the screen needs an update these operations are
+done again by the code, normally from the bottom-most element in the draw to
+the top (painters algorithm). This is "immediate mode" drawing. Evas is
+different. It is structural by nature, so instead of drawing, you describe
+the canvas contents (or scene) in terms of primitives (images, lines, boxes,
+polygons, text strings etc.) and properties (colour, stacking, size, etc.).
+The drawing itself is handled by the canvas, which acts as a state machine,
+not actually doing any "hard work" until the canvas's render call is
+executed, at which time it evaluates the previous and the current state and
+appropriately updates the screen without the programmer having to know how
+this is done.
+</p>
+<img src=img/sys_evas_shot2.png width=240 height=320 class=sshot align=left alt="Ecore Evas test program" hspace=16 vspace=16>
+<p>
+Evas is a very core part of the <a href=efl.html>EFL</a>. It is the rendering
+and display management engine that sits under anything you see on a screen.
+It does all the work of managing display objects, their state, state changes,
+layering, rendering and scaling, image loading, text rendering, update
+handling, optimizing the display pipeline to avoid work and more. It does a
+lot of the grunt work of display, and is portable beyond
+<a href=http://www.x.org>X</a>. It even runs in the framebuffer directly
+without needing <a href=http://www.x.org>X</a>, under
+<a href=http://www.trolltech.com/products/qtopia/index.html>Trolltech's
+Qtopia</a>, on <a href=http://www.directfb.org>DirectFB</a>, can
+render into a memory buffer, and use <a href=http://www.opengl.org/>OpenGL</a>
+to accelerate rendering. It is extremely flexible and very powerful, saving a
+lot of time writing repetitive drawing routines that often end up not
+performing optimally as to do so takes a lot of time, care and effort that
+most programmers would not want to spend, because it distracts from the
+important work of making their application.
 </p><p>
 </p><p>
 <img src=img/sys_ecore.png width=318 height=100>
