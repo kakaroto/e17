@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "This feature is not yet fully implemented, so this test is boring :("
+./feh $1 -V -o _test11.jpg --alpha 150 -m --bg testimages/heidi.jpg --thumb-width 100 --thumb-height 100 testimages/*

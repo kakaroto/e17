@@ -1,0 +1,2 @@
+#!/bin/bash
+./feh $1 -A -V -o _test02.jpg -m --bg testimages/heidi.jpg --thumb-width 100 --thumb-height 100 testimages/*

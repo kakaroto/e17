@@ -1,0 +1,2 @@
+#!/bin/bash
+./feh $1 -V testimages/1.jpg testimages/2.jpg testimages/3.jpg testimages/4.jpg

@@ -1,0 +1,2 @@
+#!/bin/bash
+./feh $1 testimages/nell05.jpg
