@@ -22,6 +22,7 @@ void term_tcanvas_bg_color_set(Term *term, int c) {
 void term_tcanvas_glyph_push(Term *term, char c) {
 
    Term_TGlyph *gl;
+   int j;
    gl = &term->tcanvas->grid[term->tcanvas->cur_col + (term->tcanvas->cur_row * term->tcanvas->cols)];
    gl->changed = 1;
    gl->c = c;
@@ -33,6 +34,11 @@ void term_tcanvas_glyph_push(Term *term, char c) {
    if(term->tcanvas->cur_col > term->tcanvas->cols) {
       term->tcanvas->cur_col = 0;
       term->tcanvas->cur_row++;
+      for(j = 0; j <= term->tcanvas->cols; j++) {
+	 gl = & term->tcanvas->grid[j + (term->tcanvas->cols * term->tcanvas->cur_row)];
+	 gl->c = ' ';
+	 gl->changed = 1;
+      }
    }
    
    return;   
@@ -71,8 +77,18 @@ int term_tcanvas_data(void *data) {
 	  case '\n': /* newline */
 	    term->tcanvas->cur_col = 0;
 	    term->tcanvas->cur_row++;
-
 	    /* TODO: Remember to scroll */
+	    
+	      {
+		 int j;
+		 Term_TGlyph *gl;
+		 for(j = 0; j <= term->tcanvas->cols; j++) {
+		    gl = & term->tcanvas->grid[j + (term->tcanvas->cols * term->tcanvas->cur_row)];
+		    gl->c = ' ';
+		    gl->changed = 1;
+		 }
+	      }	    
+	    
 	    if(term->tcanvas->cur_row >= term->tcanvas->scroll_region_end) {
 	       term_scroll_up(term, term->tcanvas->cur_row - term->tcanvas->scroll_region_end);
 	       term->tcanvas->cur_row = term->tcanvas->scroll_region_end;

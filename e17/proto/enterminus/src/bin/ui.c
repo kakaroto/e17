@@ -72,9 +72,10 @@ void term_redraw(void *data) {
 	    continue;
 	 }
 	 
-	 if(i + term->tcanvas->scroll_region_start + 1 < (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
+	 if(i + term->tcanvas->scroll_region_start <= (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
 	    gl = &term->grid[j + (term->tcanvas->cols * i)];
-	 } else {	    
+	 } else {
+	    printf("Overflowing: [cur_row=%d] [start: %d, end: %d] [ig=%d]\n",term->tcanvas->cur_row,term->tcanvas->scroll_region_start,term->tcanvas->scroll_region_end,ig);	    
 	    gl = &term->grid[j + (term->tcanvas->cols * ig)];
 	 }
 	 
@@ -120,8 +121,7 @@ void term_redraw(void *data) {
 	 evas_object_show(gl->text);
 	 tgl->changed = 0;
       }
-      if(i + term->tcanvas->scroll_region_start +1 > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
-	 printf("Overflowing: [cur_row=%d] [start: %d, end: %d] [ig=%d]\n",term->tcanvas->cur_row,term->tcanvas->scroll_region_start,term->tcanvas->scroll_region_end,ig);
+      if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {	 
 	 ig++;
       }
       i2++;
@@ -231,11 +231,11 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
 	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * (i + term->tcanvas->scroll_region_start))];
-	 //if(tgl->c != ' ' && tgl->c != '\0') {
+	 if(tgl->c != ' ' && tgl->c != '\0') {
 	    tgl->c = '\0';
 	    tgl->changed = 1;
 	    term->tcanvas->changed_rows[i + term->tcanvas->scroll_region_start] = 1;
-	 //}
+	 }
       }   
    }
 }
@@ -243,38 +243,56 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
 void term_scroll_up(Term *term, int rows) {
 
    
-   int i, j = term->tcanvas->scroll_region_start;
+   int i, i2, j;
    int x,y;
    Term_TGlyph *gl;   
+      
+   if(term->tcanvas->scroll_region_end + rows >
+      (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
+      printf("End gone past max scroll buffer, wrapping\n");                  
+      term->tcanvas->scroll_region_end = rows - (((term->tcanvas->rows-1) * 
+	term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_end);
+      /* we going back to the top, clear the rows we want to overwrite */
+      for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
+	 term->tcanvas->changed_rows[i] = 1;
+	 for(j = 0; j <= term->tcanvas->cols; j++) {
+	    gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
+	    gl->c = ' ';
+	    gl->changed = 1;
+	 }
+      }
+   } else {
+      term->tcanvas->scroll_region_end+=rows;
+      
+   }
+   
+   if(term->tcanvas->scroll_region_start + rows >
+      (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
+      printf("Start gone past scroll area max, going back to start\n");      
+      term->tcanvas->scroll_region_start = rows - (((term->tcanvas->rows-1) * 
+	term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_start);
+   } else {
+      term->tcanvas->scroll_region_start+= rows;
+   }
             
-   term->tcanvas->scroll_region_start+= rows;
-   term->tcanvas->scroll_region_end+=rows;
-   
-   /* TODO: check for boundaries */
-   if(term->tcanvas->cur_row >
-      (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-      printf("Gone past scroll area max, going back to start\n");
-      term->tcanvas->scroll_region_end = rows - 1;
-      term->tcanvas->cur_row = rows - 1;      
-   }
-   if(term->tcanvas->scroll_region_start > 
-      (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-      term->tcanvas->scroll_region_start = 0;
-   }
-   
-   
    /* fix this and make it set changed flags properly */
+
+   if(term->tcanvas->scroll_region_start < term->tcanvas->scroll_region_end)
+     i2 = term->tcanvas->scroll_region_end;
+   else
+     i2 = (term->tcanvas->rows - 1) * term->tcanvas->scroll_size;
    
-   for(i = 0;
-       i <= term->tcanvas->scroll_size*term->tcanvas->rows;
+   for(i = term->tcanvas->scroll_region_start;
+       i <= i2;
        i++) {
       term->tcanvas->changed_rows[i] = 1;
+      for(j = 0; j <= term->tcanvas->cols; j++) {
+	 gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
+	 gl->changed = 1;
+      }
    }
-        
-   for(x = 0; x < term->tcanvas->cols*term->tcanvas->rows*term->tcanvas->scroll_size; x++) {	     
-      gl = &term->tcanvas->grid[x];
-      gl->changed = 1;
-   }
+
+
    
    
    if(term->tcanvas->scroll_in_region) {
