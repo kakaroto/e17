@@ -1344,6 +1344,7 @@ IPC_TextClass(char *params, Client * c)
 	       {
 		  TextClass          *t;
 
+		  fprintf(stderr, "%s\n", params);
 		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_TCLASS);
 		  if (t)
@@ -1354,11 +1355,11 @@ IPC_TextClass(char *params, Client * c)
 		       Window              win;
 
 		       word(params, 3, param3);
-		       win = (Window) atoi(param3);
+		       win = (Window) strtol(param3, (char **)NULL, 0);
 		       word(params, 4, param3);
-		       x = (Window) atoi(param3);
+		       x = atoi(param3);
 		       word(params, 5, param3);
-		       y = (Window) atoi(param3);
+		       y = atoi(param3);
 		       word(params, 6, param3);
 		       state = STATE_NORMAL;
 		       if (!strcmp(param3, "normal"))
@@ -1372,7 +1373,7 @@ IPC_TextClass(char *params, Client * c)
 		       txt = atword(params, 7);
 		       if (txt)
 			  TextDraw(t, win, 0, 0, state, txt, x, y,
-				   99999, 99999, 17, t->justification);
+				   99999, 99999, 17, 0);
 		       else
 			  Esnprintf(buf, sizeof(buf), "0 0");
 		    }
