@@ -94,9 +94,9 @@ FreeCMClass(ColorModifierClass * cm)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "Error : still have %u references\n",
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
 		  cm->ref_count);
-	DIALOG_OK("ColorModClass Error", stuff);
+	DIALOG_OK(_("ColorModClass Error!"), stuff);
 
 	EDBUG_RETURN_;
 

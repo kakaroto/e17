@@ -270,9 +270,9 @@ RemoveActionClass(ActionClass * ActionClassToRemove)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "reference count is still: %u\n",
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
 		  ActionClassToRemove->ref_count);
-	DIALOG_OK("ActionClass Error!", stuff);
+	DIALOG_OK(_("ActionClass Error!"), stuff);
 	EDBUG_RETURN_;
      }
    while (RemoveItemByPtr(ActionClassToRemove, LIST_TYPE_ACLASS));

@@ -2470,8 +2470,9 @@ FreeBorder(Border * b)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "%u references remain\n", b->ref_count);
-	DIALOG_OK("Border Error!", stuff);
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+		  b->ref_count);
+	DIALOG_OK(_("Border Error!"), stuff);
 	EDBUG_RETURN_;
      }
    while (RemoveItemByPtr(b, LIST_TYPE_BORDER));

@@ -123,8 +123,9 @@ DestroyButton(Button * b)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "%u references remain", b->ref_count);
-	DIALOG_OK("Button Error", stuff);
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+		  b->ref_count);
+	DIALOG_OK(_("Button Error!"), stuff);
 
 	EDBUG_RETURN_;
      }

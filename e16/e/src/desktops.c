@@ -420,8 +420,9 @@ FreeDesktopBG(Background * bg)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "%u references remain", bg->ref_count);
-	DIALOG_OK("Background Error!", stuff);
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+					 bg->ref_count);
+	DIALOG_OK(_("Background Error!"), stuff);
 
 	EDBUG_RETURN_;
      }
@@ -1106,26 +1107,23 @@ InitDesktopControls()
 	     if (i > 0)
 	       {
 		  ac->tooltipstring =
-		     duplicate(_
-			       ("Hold down the mouse button " "and drag\n"
-				"the mouse to be able to " "drag the desktop\n"
-				"back and forth.\n" "Click right mouse button "
-				"for a list of all\n" "Desktops and their "
-				"applications.\n" "Click middle mouse button "
-				"for a list of all\n" "applications currently"
-				" running.\n"));
+		     duplicate(_("Hold down the mouse button and drag\n"
+				 "the mouse to be able to drag the desktop\n"
+				 "back and forth.\n"
+			        "Click right mouse button for a list of all\n"
+				 "Desktops and their applications.\n"
+			       "Click middle mouse button for a list of all\n"
+				 "applications currently running.\n"));
 	       }
 	     else
 	       {
 		  ac->tooltipstring =
-		     duplicate(_
-			       ("This is the Root desktop.\n"
-				"You cannot drag the " "root desktop around.\n"
-				"Click right mouse button "
-				"for a list of all\n" "Desktops and their "
-				"applications.\n" "Click middle mouse button "
-				"for a list of all\n" "applications currently "
-				"running.\n"));
+		     duplicate(_("This is the Root desktop.\n"
+				 "You cannot drag the root desktop around.\n"
+			        "Click right mouse button for a list of all\n"
+				 "Desktops and their applications.\n"
+			       "Click middle mouse button for a list of all\n"
+				 "applications currently running.\n"));
 	       }
 	  }
 	Esnprintf(s, sizeof(s), "RAISEBUTTON_DESKTOP_%i", i);
@@ -1140,9 +1138,8 @@ InitDesktopControls()
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_RAISE, param);
 	     ac2->tooltipstring =
-		duplicate(_
-			  ("Click here to raise this desktop\n"
-			   "to the top.\n"));
+		duplicate(_("Click here to raise this desktop\n"
+			    "to the top.\n"));
 	  }
 	Esnprintf(s, sizeof(s), "LOWERBUTTON_DESKTOP_%i", i);
 	ac3 = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
@@ -1156,9 +1153,8 @@ InitDesktopControls()
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_LOWER, param);
 	     ac3->tooltipstring =
-		duplicate(_
-			  ("Click here to lower this desktop\n"
-			   "to the bottom.\n"));
+		duplicate(_("Click here to lower this desktop\n"
+			    "to the bottom.\n"));
 	  }
 	b = NULL;
 

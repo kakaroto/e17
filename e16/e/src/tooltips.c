@@ -1032,9 +1032,9 @@ FreeToolTip(ToolTip * tt)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "Error: %u references remain\n",
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
 		  tt->ref_count);
-	DIALOG_OK("ToolTip Error", stuff);
+	DIALOG_OK(_("ToolTip Error!"), stuff);
      }
    EDBUG_RETURN_;
 }

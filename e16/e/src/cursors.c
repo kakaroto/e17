@@ -107,9 +107,9 @@ FreeECursor(ECursor * ec)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "Error: %u references remain\n",
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
 		  ec->ref_count);
-	DIALOG_OK("ECursor Error", stuff);
+	DIALOG_OK(_("ECursor Error!"), stuff);
 
 	return;
      }

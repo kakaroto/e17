@@ -108,9 +108,9 @@ FreeImageClass(ImageClass * i)
      {
 	char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), "Error: %u references remain\n",
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
 		  i->ref_count);
-	DIALOG_OK("ImageClass Error", stuff);
+	DIALOG_OK(_("ImageClass Error!"), stuff);
 	EDBUG_RETURN_;
      }
    while (RemoveItemByPtr(i, LIST_TYPE_ICLASS));
