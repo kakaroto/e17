@@ -389,10 +389,8 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    int                 apply, trans;
    int                 ww, hh;
    PmapMask            pmml;
-   Pixmap              mask = 0;
 
 #ifdef ENABLE_TRANSPARENCY
-   Pixmap              pmap = 0;
    Imlib_Image        *ii = NULL;
 
    /*
@@ -471,19 +469,45 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 #endif
 #endif
 	  }
-#endif
+
 	pmm->type = 1;
 	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
 						     w, h);
-	mask = pmm->mask;
-#ifdef ENABLE_TRANSPARENCY
 	if (ii && make_mask && (is->transparent & 0x04) == 0)
 	  {
-	     /* Make the scaled clip mask to be used (is this really the way?) */
+	     Pixmap              pmap = 0, mask = 0;
+	     GC                  gc;
+	     XGCValues           gcv;
+
 	     imlib_context_set_image(is->im);
-	     imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
+	     if (imlib_image_has_alpha())
+	       {
+		  /* Due to the blending the mask will always be 0 here */
+
+		  /* Make the scaled clip mask to be used */
+		  imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w,
+							       h);
+
+		  /* And now some uglyness to make a single "Imlib2 pixmap/mask" thing */
+
+		  /* Replace the pmap with the previously blended one */
+		  gc = XCreateGC(disp, pmm->pmap, 0, &gcv);
+		  XCopyArea(disp, pmm->pmap, pmap, gc, 0, 0, w, h, 0, 0);
+		  XFreeGC(disp, gc);
+
+		  /* Free the old pixmap without associated mask */
+		  imlib_free_pixmap_and_mask(pmm->pmap);
+
+		  /* We now have the copied pixmap with proper mask */
+		  pmm->pmap = pmap;
+		  pmm->mask = mask;
+	       }
 	  }
-#endif
+#else
+	pmm->type = 1;
+	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
+						     w, h);
+#endif /* ENABLE_TRANSPARENCY */
      }
    else
      {
@@ -526,7 +550,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	       {
 		  ESetWindowBackgroundPixmap(disp, win, pmm->pmap);
 		  EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
-				    mask, ShapeSet);
+				    pmm->mask, ShapeSet);
 	       }
 	  }
 	else
@@ -586,8 +610,6 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
      }
 
 #ifdef ENABLE_TRANSPARENCY
-   if (pmap)
-      imlib_free_pixmap_and_mask(pmap);
    if (ii)
      {
 	imlib_context_set_image(ii);
