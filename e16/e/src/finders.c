@@ -80,6 +80,51 @@ FindEwinByChildren(Window win)
 }
 
 EWin               *
+FindEwinByPartial(const char *match, int type)
+{
+   EWin               *ewin = NULL;
+   EWin              **ewins;
+   int                 i, num, len;
+   char                ewinid[FILEPATH_LEN_MAX];
+
+   EDBUG(6, "FindEwinByPartial");
+
+   len = strlen(match);
+   if (len <= 0)
+      goto exit;
+
+   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   if (ewins == NULL)
+      goto exit;
+
+   for (i = 0; i < num; i++)
+     {
+	if (type == '+')
+	  {
+	     /* Match start of window ID */
+	     sprintf(ewinid, "%x", (unsigned)ewins[i]->client.win);
+	     if (strncmp(ewinid, match, len))
+		continue;
+	  }
+	else if (type == '=')
+	  {
+	     /* Match name (substring) */
+	     if (!strstr(ewins[i]->client.title, match))
+		continue;
+	  }
+	else
+	   goto exit;
+
+	ewin = ewins[i];
+	break;
+     }
+   Efree(ewins);
+
+ exit:
+   EDBUG_RETURN(ewin);
+}
+
+EWin               *
 FindEwinByDecoration(Window win)
 {
    EWin               *ewin;

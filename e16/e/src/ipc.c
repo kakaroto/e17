@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "timestamp.h"
+#include <ctype.h>
 
 typedef struct _IPCstruct
 {
@@ -3621,14 +3622,14 @@ IPC_WinList(char *params, Client * c)
 	     if (params)
 	       {
 		  Esnprintf(buf, sizeof(buf),
-			    "%8x : %s :: %d : %d %d : %d %d\n",
+			    "0x%x : %s :: %d : %d %d : %d %d %dx%d\n",
 			    e->client.win, e->client.title,
 			    (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
-			    e->x, e->y);
+			    e->x, e->y, e->w, e->h);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "%8x : %s\n", e->client.win,
+		  Esnprintf(buf, sizeof(buf), "0x%x : %s\n", e->client.win,
 			    e->client.title);
 	       }
 	     if (!ret)
@@ -3735,492 +3736,454 @@ static void
 IPC_WinOps(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
+   EWin               *ewin;
 
-   buf[0] = 0;
-   if (params)
+   char                windowid[FILEPATH_LEN_MAX];
+   char                operation[FILEPATH_LEN_MAX];
+   char                param1[FILEPATH_LEN_MAX];
+   unsigned int        win;
+
+   if (params == NULL)
      {
+	Esnprintf(buf, sizeof(buf), "Error: no window specified");
+	goto exit;
+     }
 
-	char                windowid[FILEPATH_LEN_MAX];
-	char                operation[FILEPATH_LEN_MAX];
-	char                param1[FILEPATH_LEN_MAX];
-	unsigned int        win;
+   win = 0;
+   buf[0] = 0;
+   windowid[0] = 0;
+   operation[0] = 0;
+   param1[0] = 0;
 
-	windowid[0] = 0;
-	operation[0] = 0;
-	param1[0] = 0;
-	word(params, 1, windowid);
-	if (!strcmp(windowid, "current"))
+   word(params, 1, windowid);
+   if (!strcmp(windowid, "current"))
+     {
+	ewin = GetFocusEwin();
+     }
+   else if (isdigit(windowid[0]))
+     {
+	sscanf(windowid, "%x", &win);
+	ewin = FindEwinByChildren(win);
+     }
+   else if (windowid[0] == '+')
+     {
+	ewin = FindEwinByPartial(windowid + 1, '+');
+     }
+   else if (windowid[0] == '=')
+     {
+	ewin = FindEwinByPartial(windowid + 1, '=');
+     }
+   else
+     {
+	ewin = FindEwinByPartial(windowid, '=');
+     }
+   if (!ewin)
+     {
+	Esnprintf(buf, sizeof(buf), "Error: no such window: %8x", win);
+	goto exit;
+     }
+
+   word(params, 2, operation);
+   if (!operation[0])
+     {
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	goto exit;
+     }
+
+   if (!strncmp(operation, "close", 2))
+     {
+	ICCCM_Delete(ewin);
+	ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_SCLASS));
+     }
+   else if (!strncmp(operation, "annihiliate", 2))
+     {
+	EDestroyWindow(disp, ewin->client.win);
+	ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_SCLASS));
+     }
+   else if (!strncmp(operation, "iconify", 2))
+     {
+	word(params, 3, param1);
+	if (param1[0])
 	  {
-	     EWin               *ewin;
-
-	     ewin = GetFocusEwin();
-	     if (ewin)
+	     if (!strcmp(param1, "on"))
 	       {
-		  win = ewin->client.win;
+		  if (!ewin->iconified)
+		     IconifyEwin(ewin);
+	       }
+	     else if (!strcmp(param1, "off"))
+	       {
+		  if (ewin->iconified)
+		     DeIconifyEwin(ewin);
+	       }
+	     else if (!strcmp(param1, "?"))
+	       {
+		  if (ewin->iconified)
+		     Esnprintf(buf, sizeof(buf), "window iconified: yes");
+		  else
+		     Esnprintf(buf, sizeof(buf), "window iconified: no");
 	       }
 	     else
 	       {
-		  return;
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else
 	  {
-	     sscanf(windowid, "%x", &win);
+	     if (ewin->iconified)
+		DeIconifyEwin(ewin);
+	     else
+		IconifyEwin(ewin);
 	  }
-	word(params, 2, operation);
-	if (!operation[0])
+     }
+   else if (!strncmp(operation, "shade", 2))
+     {
+	word(params, 3, param1);
+	if (param1[0])
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-	  }
-	else
-	  {
-	     EWin               *ewin;
-
-	     ewin = FindEwinByChildren(win);
-	     if (!ewin)
+	     if (!strcmp(param1, "on"))
 	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
-			    win);
+		  if (!ewin->shaded)
+		     ShadeEwin(ewin);
+	       }
+	     else if (!strcmp(param1, "off"))
+	       {
+		  if (ewin->shaded)
+		     UnShadeEwin(ewin);
+	       }
+	     else if (!strcmp(param1, "?"))
+	       {
+		  if (ewin->shaded)
+		     Esnprintf(buf, sizeof(buf), "window shaded: yes");
+		  else
+		     Esnprintf(buf, sizeof(buf), "window shaded: no");
 	       }
 	     else
 	       {
-		  if (!strcmp(operation, "close"))
-		    {
-		       ICCCM_Delete(ewin);
-		       ApplySclass(FindItem
-				   ("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_SCLASS));
-		    }
-		  else if (!strcmp(operation, "annihiliate"))
-		    {
-		       EDestroyWindow(disp, ewin->client.win);
-		       ApplySclass(FindItem
-				   ("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_SCLASS));
-		    }
-		  else if (!strcmp(operation, "iconify"))
-		    {
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "on"))
-			      {
-				 if (!ewin->iconified)
-				    IconifyEwin(ewin);
-			      }
-			    else if (!strcmp(param1, "off"))
-			      {
-				 if (ewin->iconified)
-				    DeIconifyEwin(ewin);
-			      }
-			    else if (!strcmp(param1, "?"))
-			      {
-				 if (ewin->iconified)
-				    Esnprintf(buf, sizeof(buf),
-					      "window iconified: yes");
-				 else
-				    Esnprintf(buf, sizeof(buf),
-					      "window iconified: no");
-			      }
-			    else
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "Error: unknown mode specified");
-			      }
-			 }
-		       else
-			 {
-			    if (ewin->iconified)
-			       DeIconifyEwin(ewin);
-			    else
-			       IconifyEwin(ewin);
-			 }
-		    }
-		  else if (!strcmp(operation, "shade"))
-		    {
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "on"))
-			      {
-				 if (!ewin->shaded)
-				    ShadeEwin(ewin);
-			      }
-			    else if (!strcmp(param1, "off"))
-			      {
-				 if (ewin->shaded)
-				    UnShadeEwin(ewin);
-			      }
-			    else if (!strcmp(param1, "?"))
-			      {
-				 if (ewin->shaded)
-				    Esnprintf(buf, sizeof(buf),
-					      "window shaded: yes");
-				 else
-				    Esnprintf(buf, sizeof(buf),
-					      "window shaded: no");
-			      }
-			    else
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "Error: unknown mode specified");
-			      }
-			 }
-		       else
-			 {
-			    if (ewin->shaded)
-			       UnShadeEwin(ewin);
-			    else
-			       ShadeEwin(ewin);
-			 }
-		    }
-		  else if (!strcmp(operation, "stick"))
-		    {
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "on"))
-			      {
-				 if (!ewin->sticky)
-				    MakeWindowSticky(ewin);
-			      }
-			    else if (!strcmp(param1, "off"))
-			      {
-				 if (ewin->sticky)
-				    MakeWindowUnSticky(ewin);
-			      }
-			    else if (!strcmp(param1, "?"))
-			      {
-				 if (ewin->sticky)
-				    Esnprintf(buf, sizeof(buf),
-					      "window sticky: yes");
-				 else
-				    Esnprintf(buf, sizeof(buf),
-					      "window sticky: no");
-			      }
-			    else
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "Error: unknown mode specified");
-			      }
-			 }
-		       else
-			 {
-			    if (ewin->sticky)
-			       MakeWindowUnSticky(ewin);
-			    else
-			       MakeWindowSticky(ewin);
-			 }
-		    }
-		  else if (!strcmp(operation, "title"))
-		    {
-		       char               *ptr = strstr(params, "title");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else
+	  {
+	     if (ewin->shaded)
+		UnShadeEwin(ewin);
+	     else
+		ShadeEwin(ewin);
+	  }
+     }
+   else if (!strncmp(operation, "stick", 2))
+     {
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     if (!strcmp(param1, "on"))
+	       {
+		  if (!ewin->sticky)
+		     MakeWindowSticky(ewin);
+	       }
+	     else if (!strcmp(param1, "off"))
+	       {
+		  if (ewin->sticky)
+		     MakeWindowUnSticky(ewin);
+	       }
+	     else if (!strcmp(param1, "?"))
+	       {
+		  if (ewin->sticky)
+		     Esnprintf(buf, sizeof(buf), "window sticky: yes");
+		  else
+		     Esnprintf(buf, sizeof(buf), "window sticky: no");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else
+	  {
+	     if (ewin->sticky)
+		MakeWindowUnSticky(ewin);
+	     else
+		MakeWindowSticky(ewin);
+	  }
+     }
+   else if (!strncmp(operation, "title", 2))
+     {
+	char               *ptr = strstr(params, "title");
 
-		       if (ptr)
-			  ptr += strlen("title");
-		       if (ptr)
-			 {
-			    while (*ptr == ' ')
-			       ptr++;
-			    if (strlen(ptr))
-			      {
-				 if (!strncmp(ptr, "?", 1))
-				   {
-				      /* return the window title */
-				      Esnprintf(buf, sizeof(buf),
-						"window title: %s",
-						ewin->client.title);
-				   }
-				 else
-				   {
-				      /* set the new title */
-				      if (ewin->client.title)
-					 Efree(ewin->client.title);
-				      ewin->client.title =
-					 Emalloc((strlen(ptr) + 1) *
-						 sizeof(char));
-
-				      strcpy(ewin->client.title, ptr);
-				      XStoreName(disp, ewin->client.win,
-						 ewin->client.title);
-				      DrawEwin(ewin);
-				   }
-			      }
-			    else
-			      {
-				 /* error */
-				 Esnprintf(buf, sizeof(buf),
-					   "Error: no title specified");
-			      }
-			 }
-		    }
-		  else if (!strcmp(operation, "toggle_width"))
+	if (ptr)
+	   ptr += strlen("title");
+	if (ptr)
+	  {
+	     while (*ptr == ' ')
+		ptr++;
+	     if (strlen(ptr))
+	       {
+		  if (!strncmp(ptr, "?", 1))
 		    {
-		       word(params, 3, param1);
-		       MaxWidth(ewin, param1);
-		    }
-		  else if (!strcmp(operation, "toggle_height"))
-		    {
-		       word(params, 3, param1);
-		       MaxHeight(ewin, param1);
-		    }
-		  else if (!strcmp(operation, "toggle_size"))
-		    {
-		       word(params, 3, param1);
-		       MaxSize(ewin, param1);
-		    }
-		  else if (!strcmp(operation, "raise"))
-		    {
-		       RaiseEwin(ewin);
-		    }
-		  else if (!strcmp(operation, "lower"))
-		    {
-		       LowerEwin(ewin);
-		    }
-		  else if (!strcmp(operation, "layer"))
-		    {
-		       word(params, 3, param1);
-		       if (!strcmp(param1, "?"))
-			 {
-			    Esnprintf(buf, sizeof(buf),
-				      "window layer: %d", ewin->layer);
-			 }
-		       else
-			 {
-			    ewin->layer = atoi(param1);
-			    RaiseEwin(ewin);
-			    RememberImportantInfoForEwin(ewin);
-			 }
-		    }
-		  else if (!strcmp(operation, "border"))
-		    {
-		       Border             *b;
-
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "?"))
-			      {
-				 if (ewin->border)
-				   {
-				      if (ewin->border->name)
-					{
-					   Esnprintf(buf, sizeof(buf),
-						     "window border: %s",
-						     ewin->border->name);
-					}
-				   }
-			      }
-			    else
-			      {
-				 b = (Border *) FindItem(param1, 0,
-							 LIST_FINDBY_NAME,
-							 LIST_TYPE_BORDER);
-				 if ((b) && (b != ewin->border))
-				   {
-				      ewin->border_new = 1;
-				      SetEwinToBorder(ewin, b);
-				      ICCCM_MatchSize(ewin);
-				      MoveResizeEwin(ewin, ewin->x, ewin->y,
-						     ewin->client.w,
-						     ewin->client.h);
-				   }
-			      }
-			 }
-		       else
-			 {
-			    Esnprintf(buf, sizeof(buf),
-				      "Error: no border specified");
-			 }
-		    }
-		  else if (!strcmp(operation, "desk"))
-		    {
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "next"))
-			      {
-				 MoveEwinToDesktop(ewin, ewin->desktop + 1);
-				 RaiseEwin(ewin);
-				 ICCCM_Configure(ewin);
-				 ewin->sticky = 0;
-			      }
-			    else if (!strcmp(param1, "prev"))
-			      {
-				 MoveEwinToDesktop(ewin, ewin->desktop - 1);
-				 RaiseEwin(ewin);
-				 ICCCM_Configure(ewin);
-				 ewin->sticky = 0;
-			      }
-			    else if (!strcmp(param1, "?"))
-			      {
-				 Esnprintf(buf, sizeof(buf), "window desk: %d",
-					   ewin->desktop);
-			      }
-			    else
-			      {
-				 MoveEwinToDesktop(ewin, atoi(param1));
-				 RaiseEwin(ewin);
-				 ICCCM_Configure(ewin);
-				 ewin->sticky = 0;
-			      }
-			 }
-		       else
-			 {
-			    Esnprintf(buf, sizeof(buf),
-				      "Error: no desktop supplied");
-			 }
-		    }
-		  else if (!strcmp(operation, "area"))
-		    {
-		       int                 a, b;
-
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "?"))
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "window area: %d %d", ewin->area_x,
-					   ewin->area_y);
-			      }
-			    else
-			      {
-				 sscanf(params, "%*s %*s %i %i", &a, &b);
-				 MoveEwinToArea(ewin, a, b);
-			      }
-			 }
-		       else
-			 {
-			    Esnprintf(buf, sizeof(buf),
-				      "Error: no area supplied");
-			 }
-		    }
-		  else if (!strcmp(operation, "raise"))
-		    {
-		       RaiseEwin(ewin);
-		    }
-		  else if (!strcmp(operation, "lower"))
-		    {
-		       LowerEwin(ewin);
-		    }
-		  else if (!strcmp(operation, "move"))
-		    {
-		       int                 a, b;
-
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "?"))
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "window location: %d %d", ewin->x,
-					   ewin->y);
-			      }
-			    else if (!strcmp(param1, "??"))
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "client location: %d %d",
-					   ewin->x + ewin->border->border.left,
-					   ewin->y + ewin->border->border.top);
-			      }
-			    else
-			      {
-				 sscanf(params, "%*s %*s %i %i", &a, &b);
-				 MoveResizeEwin(ewin, a, b, ewin->client.w,
-						ewin->client.h);
-			      }
-			 }
-		       else
-			 {
-			    Esnprintf(buf, sizeof(buf),
-				      "Error: no coords supplied");
-			 }
-		    }
-		  else if (!strcmp(operation, "resize"))
-		    {
-		       int                 a, b;
-
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    if (!strcmp(param1, "?"))
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "window size: %d %d", ewin->client.w,
-					   ewin->client.h);
-			      }
-			    else if (!strcmp(param1, "??"))
-			      {
-				 Esnprintf(buf, sizeof(buf),
-					   "frame size: %d %d", ewin->w,
-					   ewin->h);
-			      }
-			    else
-			      {
-				 sscanf(params, "%*s %*s %i %i", &a, &b);
-				 MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
-			      }
-			 }
-		    }
-		  else if (!strcmp(operation, "move_relative"))
-		    {
-		       int                 a, b;
-
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    sscanf(params, "%*s %*s %i %i", &a, &b);
-			    a += ewin->x;
-			    b += ewin->y;
-			    MoveResizeEwin(ewin, a, b, ewin->client.w,
-					   ewin->client.h);
-			 }
-		    }
-		  else if (!strcmp(operation, "resize_relative"))
-		    {
-		       int                 a, b;
-
-		       word(params, 3, param1);
-		       if (param1[0])
-			 {
-			    sscanf(params, "%*s %*s %i %i", &a, &b);
-			    a += ewin->client.w;
-			    b += ewin->client.h;
-			    MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
-			 }
-		    }
-		  else if (!strcmp(operation, "focus"))
-		    {
-		       word(params, 3, param1);
-		       if (!strcmp(param1, "?"))
-			 {
-			    if (ewin == GetFocusEwin())
-			      {
-				 Esnprintf(buf, sizeof(buf), "focused: yes");
-			      }
-			    else
-			      {
-				 Esnprintf(buf, sizeof(buf), "focused: no");
-			      }
-			 }
-		       else
-			 {
-			    FocusToEWin(ewin);
-			 }
+		       /* return the window title */
+		       Esnprintf(buf, sizeof(buf),
+				 "window title: %s", ewin->client.title);
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: unknown operation");
+		       /* set the new title */
+		       if (ewin->client.title)
+			  Efree(ewin->client.title);
+		       ewin->client.title =
+			  Emalloc((strlen(ptr) + 1) * sizeof(char));
+
+		       strcpy(ewin->client.title, ptr);
+		       XStoreName(disp, ewin->client.win, ewin->client.title);
+		       DrawEwin(ewin);
 		    }
 	       }
+	     else
+	       {
+		  /* error */
+		  Esnprintf(buf, sizeof(buf), "Error: no title specified");
+	       }
+	  }
+     }
+   else if (!strcmp(operation, "toggle_width") || !strcmp(operation, "tw"))
+     {
+	word(params, 3, param1);
+	MaxWidth(ewin, param1);
+     }
+   else if (!strcmp(operation, "toggle_height") || !strcmp(operation, "th"))
+     {
+	word(params, 3, param1);
+	MaxHeight(ewin, param1);
+     }
+   else if (!strcmp(operation, "toggle_size") || !strcmp(operation, "ts"))
+     {
+	word(params, 3, param1);
+	MaxSize(ewin, param1);
+     }
+   else if (!strncmp(operation, "raise", 2))
+     {
+	RaiseEwin(ewin);
+     }
+   else if (!strncmp(operation, "lower", 2))
+     {
+	LowerEwin(ewin);
+     }
+   else if (!strncmp(operation, "layer", 2))
+     {
+	word(params, 3, param1);
+	if (!strcmp(param1, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "window layer: %d", ewin->layer);
+	  }
+	else
+	  {
+	     ewin->layer = atoi(param1);
+	     RaiseEwin(ewin);
+	     RememberImportantInfoForEwin(ewin);
+	  }
+     }
+   else if (!strncmp(operation, "border", 2))
+     {
+	Border             *b;
+
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     if (!strcmp(param1, "?"))
+	       {
+		  if (ewin->border)
+		    {
+		       if (ewin->border->name)
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "window border: %s", ewin->border->name);
+			 }
+		    }
+	       }
+	     else
+	       {
+		  b = (Border *) FindItem(param1, 0,
+					  LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+		  if ((b) && (b != ewin->border))
+		    {
+		       ewin->border_new = 1;
+		       SetEwinToBorder(ewin, b);
+		       ICCCM_MatchSize(ewin);
+		       MoveResizeEwin(ewin, ewin->x, ewin->y,
+				      ewin->client.w, ewin->client.h);
+		    }
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no border specified");
+	  }
+     }
+   else if (!strncmp(operation, "desk", 2))
+     {
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     if (!strncmp(param1, "next", 1))
+	       {
+		  MoveEwinToDesktop(ewin, ewin->desktop + 1);
+		  RaiseEwin(ewin);
+		  ICCCM_Configure(ewin);
+		  ewin->sticky = 0;
+	       }
+	     else if (!strncmp(param1, "prev", 1))
+	       {
+		  MoveEwinToDesktop(ewin, ewin->desktop - 1);
+		  RaiseEwin(ewin);
+		  ICCCM_Configure(ewin);
+		  ewin->sticky = 0;
+	       }
+	     else if (!strcmp(param1, "?"))
+	       {
+		  Esnprintf(buf, sizeof(buf), "window desk: %d", ewin->desktop);
+	       }
+	     else
+	       {
+		  MoveEwinToDesktop(ewin, atoi(param1));
+		  RaiseEwin(ewin);
+		  ICCCM_Configure(ewin);
+		  ewin->sticky = 0;
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no desktop supplied");
+	  }
+     }
+   else if (!strncmp(operation, "area", 2))
+     {
+	int                 a, b;
+
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     if (!strcmp(param1, "?"))
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "window area: %d %d", ewin->area_x, ewin->area_y);
+	       }
+	     else
+	       {
+		  sscanf(params, "%*s %*s %i %i", &a, &b);
+		  MoveEwinToArea(ewin, a, b);
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no area supplied");
+	  }
+     }
+   else if (!strncmp(operation, "move", 2))
+     {
+	int                 a, b;
+
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     if (!strcmp(param1, "?"))
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "window location: %d %d", ewin->x, ewin->y);
+	       }
+	     else if (!strcmp(param1, "??"))
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "client location: %d %d",
+			    ewin->x + ewin->border->border.left,
+			    ewin->y + ewin->border->border.top);
+	       }
+	     else
+	       {
+		  sscanf(params, "%*s %*s %i %i", &a, &b);
+		  MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no coords supplied");
+	  }
+     }
+   else if (!strcmp(operation, "resize") || !strcmp(operation, "sz"))
+     {
+	int                 a, b;
+
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     if (!strcmp(param1, "?"))
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "window size: %d %d", ewin->client.w,
+			    ewin->client.h);
+	       }
+	     else if (!strcmp(param1, "??"))
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "frame size: %d %d", ewin->w, ewin->h);
+	       }
+	     else
+	       {
+		  sscanf(params, "%*s %*s %i %i", &a, &b);
+		  MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
+	       }
+	  }
+     }
+   else if (!strcmp(operation, "move_relative") || !strcmp(operation, "mr"))
+     {
+	int                 a, b;
+
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     sscanf(params, "%*s %*s %i %i", &a, &b);
+	     a += ewin->x;
+	     b += ewin->y;
+	     MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
+	  }
+     }
+   else if (!strcmp(operation, "resize_relative") || !strcmp(operation, "sr"))
+     {
+	int                 a, b;
+
+	word(params, 3, param1);
+	if (param1[0])
+	  {
+	     sscanf(params, "%*s %*s %i %i", &a, &b);
+	     a += ewin->client.w;
+	     b += ewin->client.h;
+	     MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
+	  }
+     }
+   else if (!strncmp(operation, "focus", 2))
+     {
+	word(params, 3, param1);
+	if (!strcmp(param1, "?"))
+	  {
+	     if (ewin == GetFocusEwin())
+	       {
+		  Esnprintf(buf, sizeof(buf), "focused: yes");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "focused: no");
+	       }
+	  }
+	else
+	  {
+	     FocusToEWin(ewin);
 	  }
      }
    else
      {
-	Esnprintf(buf, sizeof(buf), "Error: no window specified");
+	Esnprintf(buf, sizeof(buf), "Error: unknown operation");
      }
 
+ exit:
    if (buf[0])
       CommsSend(c, buf);
 }

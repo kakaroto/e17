@@ -2154,6 +2154,7 @@ void                HandleMouseOut(XEvent * ev);
 
 EWin               *FindEwinByBase(Window win);
 EWin               *FindEwinByChildren(Window win);
+EWin               *FindEwinByPartial(const char *win, int type);
 EWin               *FindEwinByDecoration(Window win);
 Button             *FindButton(Window win);
 ActionClass        *FindActionClass(Window win);
