@@ -52,6 +52,7 @@ char *temp_file = "/tmp/webcam.jpg";
 pid_t childpid = 0;
 int ftp_passive = 1;
 int ftp_do = 1;
+int ftp_keepalive = 1;
 char *scp_target = NULL;
 char *grab_device = "/dev/video0";
 char *grab_text = "";           /* strftime */
@@ -126,6 +127,9 @@ int v_force = 0;
 int bw_percent = 100;
 int delay_correct = 0;
 int reinit_device = 0;
+
+int connections = 0;
+CURL *curl_handle = NULL;
 
 struct video_picture cam_pic;
 
@@ -742,7 +746,6 @@ ftp_upload(char *local, char *remote, char *tmp)
    char buf[2096];
    FILE *infile;
    CURLcode ret;
-   CURL *curl_handle;
    struct stat st;
    struct curl_slist *post_commands = NULL;
    char *passwd_string, *url_string;
@@ -763,7 +766,10 @@ ftp_upload(char *local, char *remote, char *tmp)
    post_commands = curl_slist_append(post_commands, buf);
 
    /* init the curl session */
-   curl_handle = curl_easy_init();
+   if(connections < 1) {
+     curl_handle = curl_easy_init();
+     connections++;
+   }
 
    curl_easy_setopt(curl_handle, CURLOPT_INFILE, infile);
    curl_easy_setopt(curl_handle, CURLOPT_INFILESIZE, st.st_size);
@@ -904,8 +910,11 @@ ftp_upload(char *local, char *remote, char *tmp)
    }
 
    /* cleanup curl stuff */
-   curl_easy_cleanup(curl_handle);
-   curl_slist_free_all(post_commands);
+   if(!ftp_keepalive) {
+     curl_easy_cleanup(curl_handle);
+     curl_slist_free_all(post_commands);
+     connections--;
+   }
    free(url_string);
    free(passwd_string);
    fclose(infile);
@@ -1080,6 +1089,8 @@ main(int argc, char *argv[])
       ftp_debug = i;
    if (-1 != (i = cfg_get_int("ftp", "do")))
       ftp_do = i;
+   if (-1 != (i = cfg_get_int("ftp", "keepalive")))
+      ftp_keepalive = i;
    if (-1 != (i = cfg_get_int("ftp", "timeout")))
       ftp_timeout = i;
    if (NULL != (val = cfg_get_str("ftp", "interface")))
@@ -1358,6 +1369,7 @@ main(int argc, char *argv[])
          /* blockfile was just created */
          log("uploading offline image\n");
          offline_done = do_upload(offline_image);
+         log("OFFLINE\n");
       }
       new_delay = grab_delay;
       if (just_shot && upload_successful)
