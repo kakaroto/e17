@@ -8,51 +8,50 @@
 
 @mainpage Entrance Developers and Themers Documentation
 @image html entrance.png
-@version 1.0.0
-@author Ibukun Olumuyiwa <ibukun@computer.org>
+@author Ibukun Olumuyiwa <ibukun@computer.org> 
 @author Corey Donohoe <atmos@atmos.org>
 @date 2003-2004
 
-<OL>
-<LI><A HREF="index.html#intro">What is Entrance?</A>
-<LI><A HREF="./index.html#running">How do I use it?</A><BR>
-<UL>
-    <LI><A HREF="./index.html#config">Config File</A></LI> 
-    <LI><A HREF="./index.html#config_theme">Setting the Entrance Theme</A></LI> 
-    <LI><A HREF="./index.html#config_auth">Setting the Authentication Type</A></LI> 
-    <LI><A HREF="./index.html#config_pointer">Setting the pointer image</A></LI> 
-    <LI><A HREF="./index.html#config_datetime">Setting up date and time
-    formatting</A></LI> 
-    <LI><A HREF="./index.html#config_system">Enabling/Disabling Shutdown and
-    Reboot</A></LI> 
-    <LI><A HREF="./index.html#config_engine">Setting the Evas Engine</A></LI> 
-    <LI><A HREF="./index.html#config_users">Setting up user lists</A></LI>
-    <LI><A HREF="./index.html#config_sessions">Setting up XSessions</A></LI>
-    </UL></LI>
-<LI><A HREF="./index.html#theme">Themers documentation</A><BR>
-<UL>
-    <LI><A HREF="./index.html#theme_groups">Entrance's Appearance: Edje Groups</A><BR>
-    <UL>
-    <LI><A HREF="./index.html#theme_entrance_session_parts">The Entrance Group</A></LI>
-    <LI><A HREF="./index.html#theme_entrance_session_parts">The EntranceSession Group</A></LI>
-    <LI><A HREF="./index.html#theme_entrance_user_parts">The EntranceUser Group</A></LI>
-    </UL></LI>
-    <LI><A HREF="./index.html#theme_signals">Communicating with Entrance : Edje Signals</A><BR>
-    <UL>
-    <LI><A HREF="./index.html#theme_entrance_progs">Signals your theme
-    can emit to Entrance</A></LI>
-    <LI><A HREF="./index.html#theme_entrance_session_progs">Signals your
-    Session can emit to Entrance</A></LI>
-    <LI><A HREF="./index.html#theme_entrance_progs">Signals your
-    User Icons can emit to Entrance</A></LI>
-    <LI><A HREF="./index.html#theme_entrance_progs">Signals your theme should be aware of</A></LI>
-    </UL></LI>
-    <LI><A HREF="index.html#example1">Theme Example 1</A>
-    <LI><A HREF="index.html#example2">Theme Example 2</A>
-    <LI><A HREF="index.html#example3">Theme Example 3</A>
-</UL></LI>
-<LI><A HREF="index.html#requirements">What does Entrance require?</A>
-</OL>
+<ol>
+<li><a href="index.html#intro">What is Entrance?</a>
+<li><a href="./index.html#running">How do I use it?</a><BR>
+<ul>
+    <li><a href="./index.html#config">Config File</a></li> 
+    <li><a href="./index.html#config_theme">Setting the Entrance Theme</a></li> 
+    <li><a href="./index.html#config_auth">Setting the Authentication Type</a></li> 
+    <li><a href="./index.html#config_pointer">Setting the pointer image</a></li> 
+    <li><a href="./index.html#config_datetime">Setting up date and time
+    formatting</a></li> 
+    <li><a href="./index.html#config_system">Enabling/Disabling Shutdown and
+    Reboot</a></li> 
+    <li><a href="./index.html#config_engine">Setting the Evas Engine</a></li> 
+    <li><a href="./index.html#config_users">Setting up user lists</a></li>
+    <li><a href="./index.html#config_sessions">Setting up XSessions</a></li>
+    </ul></li>
+<li><a href="./index.html#theme">Themers documentation</a><BR>
+<ul>
+    <li><a href="./index.html#theme_groups">Entrance's Appearance: Edje Groups</a><BR>
+    <ul>
+    <li><a href="./index.html#theme_entrance_session_parts">The Entrance Group</a></li>
+    <li><a href="./index.html#theme_entrance_session_parts">The EntranceSession Group</a></li>
+    <li><a href="./index.html#theme_entrance_user_parts">The EntranceUser Group</a></li>
+    </ul></li>
+    <li><a href="./index.html#theme_signals">Communicating with Entrance : Edje Signals</a><BR>
+    <ul>
+    <li><a href="./index.html#theme_entrance_progs">Signals your theme
+    can emit to Entrance</a></li>
+    <li><a href="./index.html#theme_entrance_session_progs">Signals your
+    Session can emit to Entrance</a></li>
+    <li><a href="./index.html#theme_entrance_progs">Signals your
+    User Icons can emit to Entrance</a></li>
+    <li><a href="./index.html#theme_entrance_progs">Signals your theme should be aware of</a></li>
+    </ul></li>
+    <li><a href="index.html#example1">Theme Example 1</a>
+    <li><a href="index.html#example2">Theme Example 2</a>
+    <li><a href="index.html#example3">Theme Example 3</a>
+</ul></li>
+<li><a href="index.html#requirements">What does Entrance require?</a>
+</ol>
 
 @section intro What is Entrance?
 Entrance <I>[en-'trans]</I>, v.<BR>
@@ -307,26 +306,26 @@ collections {
 }
 @endverbatim
 
-If everything worked ok, you should get something like <A
-HREF="Example1.jpg">Example1</A>.  So what's worth taking notice of? 
+If everything worked ok, you should get something like <a
+href="Example1.jpg">Example1</a>.  So what's worth taking notice of? 
 The group "Main" is what entrance loads and fills the screen with.<BR>
-<B>Edje Parts</B><UL>
-<LI><B>EntranceUserEntry:</B> is a text part, this is where keyboard
+<B>Edje Parts</B><ul>
+<li><B>EntranceUserEntry:</B> is a text part, this is where keyboard
 input goes if the system is in a state accepting username
 input.<B>REQUIRED</B>
-<LI> <B>EntrancePassEntry:</B> is a text part, this is where keyboard
+<li> <B>EntrancePassEntry:</B> is a text part, this is where keyboard
 input goes if the system is in a state accepting the user's
 password.<B>REQUIRED</B>
-</UL>
-<B>Edje Signals</B><UL>
-<LI><B>EntranceUserAuthSuccess:</B> Entrance emits this signal when the
+</ul>
+<B>Edje Signals</B><ul>
+<li><B>EntranceUserAuthSuccess:</B> Entrance emits this signal when the
 user successfully authenticates.  A program must always exist in your
 theme that catches this signal.  The idea behind this is that you can
 have neat effects after the user successfully logs in.  
-<LI><B>EntranceUserAuthSuccessDone:</B> It's the themer's job to let
+<li><B>EntranceUserAuthSuccessDone:</B> It's the themer's job to let
 Entrance know that it's done and the user's session should start by
 emitting this signal.
-</UL>
+</ul>
 
 @section example2 Example Two
 You're probably thinking that Example 1 was really lame, and
@@ -334,7 +333,7 @@ contemplating skipping Example Two because it's just too basic, but bare
 with me.  Example Two shows off a few of the built in features that
 themers can take advantage of.  This is where your creativity steps in,
 presenting these builtins in a pleasing manner.  You can see a preview
-of it <A HREF="Example2.jpg">here</A>. Notice it's still not the
+of it <a href="Example2.jpg">here</a>. Notice it's still not the
 prettiest thing, but it was made without specifying a single image file.
 :)
 
@@ -777,87 +776,87 @@ after, "errorreset"; }
 }
 @endverbatim
 <B>Oy!</B> That's a lot!  Most notably Example2 has a second Edje group
-defined,"Session".<BR><P>Entrance will use the "Session" group as
+defined,"Session".<BR><p>Entrance will use the "Session" group as
 a template and fill in the different parts with system specific session
 information.<BR>
-<B>Edje Parts</B><UL> 
-<LI><B>EntranceSessionTitle</B>, Is a text part, the text will be set by
+<B>Edje Parts</B><ul> 
+<li><B>EntranceSessionTitle</B>, Is a text part, the text will be set by
 the system to the appropriate session's name.
-<LI><B>EntranceSessionIcon</B>.  Is a rect part, the icon is swallowed
+<li><B>EntranceSessionIcon</B>.  Is a rect part, the icon is swallowed
 into this area if present.
-</UL>
-<B>Edje Signals</B><UL> 
-<LI><B>SessionSelected:</B> Your "Session" edje emits this signal when
+</ul>
+<B>Edje Signals</B><ul> 
+<li><B>SessionSelected:</B> Your "Session" edje emits this signal when
 it requests entrance to accept it as the new chosen session.
-<LI><B>SessionUnSelected:</B> Your "Session" edje emits this signal when
+<li><B>SessionUnSelected:</B> Your "Session" edje emits this signal when
 it requests Entrance to deselect it as the current x session.
-</UL>
-<P>Now lets focus our attention back to the "Main" group.  <BR>
-<B>Edje Parts</B><UL>
-<LI><B>EntranceHostname:</B> EntranceHostname is a text part that will
+</ul>
+<p>Now lets focus our attention back to the "Main" group.  <BR>
+<B>Edje Parts</B><ul>
+<li><B>EntranceHostname:</B> EntranceHostname is a text part that will
 be filled with the greeting specified in the system configuration.
-<LI><B>EntranceTime:</B> EntranceTime is a text part that will be filled
+<li><B>EntranceTime:</B> EntranceTime is a text part that will be filled
 with the current time every second.  The time format is specified in the
 system configuration.  If this part is present, it'll display the right
 time :)
-<LI><B>EntranceDate:</B> EntranceDate is a text part that will be filled
+<li><B>EntranceDate:</B> EntranceDate is a text part that will be filled
 with the current date.  The format for the date is specified in the
 system configuration file.
-<LI><B>EntranceSession:</B> EntranceSession is a rect part that will
+<li><B>EntranceSession:</B> EntranceSession is a rect part that will
 swallow the currently selected session.  If this part is present, an
 instance of the "Session" group will be swallow to this rectangle.
-<LI><B>EntranceFace:</B> EntranceFace is a rect part that will swallow
+<li><B>EntranceFace:</B> EntranceFace is a rect part that will swallow
 the currently selected user icon.  If this part is present a unique
 edje specific to that user will be displayed in that region.
-<LI><B>EntranceSessionList</B> EntranceSessionList is a rect part that
+<li><B>EntranceSessionList</B> EntranceSessionList is a rect part that
 will swallow a list of "Session" group edjes.  The sessions available on
 each system may vary, Entrance will properly pack all the available
 xsessions into this area that the system configuration specifies.  
-<LI><B>EntranceUserList</B> EntranceUserList is a rect part that will
+<li><B>EntranceUserList</B> EntranceUserList is a rect part that will
 swallow a list of users the system knows about.  The themer need only
 define the area they should be swallowed into, Entrance will handle
 adding them.
-</UL>
-<B>Edje Signals</B><UL>
-<LI><B>EntranceUserFail:</B> Emitted if the username entered in
+</ul>
+<B>Edje Signals</B><ul>
+<li><B>EntranceUserFail:</B> Emitted if the username entered in
 EntranceUserEntry is unknown to the system.
 signal.
-<LI><B>EntranceUserAuthFail:</B> Emitted if the password entered in the
+<li><B>EntranceUserAuthFail:</B> Emitted if the password entered in the
 EntrancePassEntry fails to authenticate with the system.
-</UL>
+</ul>
 
 @section example3 Example Three
 
 Example Three is the fun and powerful part of Entrance.  As you might have
-noticed during <A HREF="index.html#example2">Example Two</A> we're starting to
+noticed during <a href="index.html#example2">Example Two</a> we're starting to
 have more and more edje parts in this theme.  Before long we could have a few
 thousand lines of .edc code that could end up being tough to understand.  Let's
-divert our attention to a <A HREF="./EntranceThemeTemplate.tar.gz">theme
-template</A>.  This is a stripped down framework from the example that follows,
+divert our attention to a <a href="./EntranceThemeTemplate.tar.gz">theme
+template</a>.  This is a stripped down framework from the example that follows,
 and should serve as a decent skeleton for anyone wanting to write their own
 Entrance theme.  Armed with this theme template, it's time for the themer to
-brainstorm.</P>
-<P>You have to have some sort of idea of what you want your login screen to
+brainstorm.</p>
+<p>You have to have some sort of idea of what you want your login screen to
 look like to go any further.  My idea coming into Example 3 was
-<UL>
-<LI>Use all the signals available in Entrance
-<LI>Keep the different parts of the code readable as an example
-<LI>Allow for minimization of the SessionList and UserList
-<LI>Have some sort of animation when no EntranceFace is displayed
-<LI>Have nice borders for every "window" in the theme
-<LI>"Shake Off" bad user and password input
-<LI>Make it pretty
-</UL>
+<ul>
+<li>Use all the signals available in Entrance
+<li>Keep the different parts of the code readable as an example
+<li>Allow for minimization of the SessionList and UserList
+<li>Have some sort of animation when no EntranceFace is displayed
+<li>Have nice borders for every "window" in the theme
+<li>"Shake Off" bad user and password input
+<li>Make it pretty
+</ul>
 
-So I hit the web and found a high resolution photo that <A
-HREF="http://www.cozmo85.net">a friend</A> had taken, and I had my
-background.  I've always been very impressed by the themes <A
-HREF="http://tokyo.cored.org">Tokyo</A> comes up with, and I pieced together
-the borders from his e16 theme "Presence" in <A
-HREF="http://www.gimp.org">The Gimp</A>.  Gathering images was a lengthy
+So I hit the web and found a high resolution photo that <a
+href="http://www.cozmo85.net">a friend</a> had taken, and I had my
+background.  I've always been very impressed by the themes <a
+hreft="http://tokyo.cored.org">Tokyo</a> comes up with, and I pieced together
+the borders from his e16 theme "Presence" in <a
+hreft="http://www.gimp.org">The Gimp</a>.  Gathering images was a lengthy
 process, but after digging around in other themes long enough I was ready to
-begin.  </P>
-<P>Using the template file above, I started working on the theme part by
+begin.  </p>
+<p>Using the template file above, I started working on the theme part by
 part, testing it as I went along. 
 @verbatim
 $ ./cg
@@ -875,7 +874,7 @@ What follows the main edc for Example3, titled "Headlights".  A short divx4
 capture(poor quality) is available <a
 href="http://www.atmos.org/files/entrance.avi">here</a>.  A screenshot of
 this theme doesn't do it justice, the animation present has to be captured
-by video.  The complete <A HREF="./EntranceExample3.tar.gz">source code</A>
+by video.  The complete <a href="./EntranceExample3.tar.gz">source code</a>
 and images are available, and the reader is encouraged to disect this source
 code.  
 
@@ -1109,31 +1108,31 @@ collections {
 Perhaps it's just me, but this edc reads a lot smoother than the first two.
 Perhaps because we can see the different components of the Edje at a much
 higher level, or perhaps because this one has comments describing what each
-of the #include operations are doing.</P>
-<P>Somethings to perhaps keep in mind as you're writing themes might be
-<UL>
-<LI>Keep the main .edc simple enough that even someone who isn't an edje
+of the #include operations are doing.</p>
+<p>Somethings to perhaps keep in mind as you're writing themes might be
+<ul>
+<li>Keep the main .edc simple enough that even someone who isn't an edje
 wizard could walk up to this theme and change the background to one that
 they'd prefer.
-<LI>Planning it out on the frontend will save you tons of rewriting
-</UL>
-</P>
-<P>If you found this theme tutorial useful or useless please let <A
-HREF="mailto:atmos@atmos.org">me</A> known.</P>
+<li>Planning it out on the frontend will save you tons of rewriting
+</ul>
+</p>
+<p>If you found this theme tutorial useful or useless please let <a
+href="http://www.atmos.org/contact/">me</a> known.</p>
 
 @section requirements What does Entrance require?
 
-The only distribution we're currently aware of supporting Entrance is <A
-HREF="http://www.gentoo.org/">Gentoo</A>.  You can compile it from cvs
+The only distribution we're currently aware of supporting Entrance is <a
+href="http://www.gentoo.org/">Gentoo</a>.  You can compile it from cvs
 using the following libraries if you're brave.
 
 Entrance relies on a lot of libraries most notably
   - Edb (library)
+  - Eet (library)
   - Evas (library)
+  - Ecore (library)
   - Edje (library)
   - Esmart (library)
-  - Ecore (library)
-  - Ecore_Evas (library)
 
 There is no need to reinvent the wheel all the time.
 
@@ -1148,62 +1147,35 @@ There is no need to reinvent the wheel all the time.
   sudo make install
   cd
 
-2. You need Evas from cvs
+2. You need eet from cvs
+
+  cvs co e17/libs/edb
+  cd e17/libs/edb
+  ./autogen.sh
+  ./configure
+  make
+  sudo make install
+  cd
+
+3. You need Evas from cvs
 
   cvs co e17/libs/evas
   cd e17/libs/evas
   ./autogen.sh
-  ./configure \
-  --enable-software-x11 \
-  --enable-gl-x11 \
-  --enable-image-loader-png \
-  --enable-image-loader-jpeg \
-  --enable-image-loader-eet \
-  --enable-cpu-c \
-  --enable-cpu-mmx \
-  --enable-cpu-p2-only \
-  --enable-scale-smooth \
-  --enable-scale-sample \
-  --enable-convert-8-rgb-332 \
-  --enable-convert-8-rgb-666 \
-  --enable-convert-8-rgb-232 \
-  --enable-convert-8-rgb-222 \
-  --enable-convert-8-rgb-221 \
-  --enable-convert-8-rgb-121 \
-  --enable-convert-8-rgb-111 \
-  --enable-convert-16-rgb-565 \
-  --enable-convert-16-rgb-555 \
-  --enable-convert-16-rgb-rot-0 \
-  --enable-convert-16-rgb-rot-90 \
-  --enable-convert-16-rgb-rot-270 \
-  --enable-convert-32-rgb-8888 \
-  --enable-convert-32-rgbx-8888 \
-  --enable-convert-32-bgr-8888 \
-  --enable-convert-32-bgrx-8888 \
-  --enable-convert-32-rgb-rot-0 \
-  --enable-convert-32-rgb-rot-90 \
-  --enable-convert-32-rgb-rot-270
   make
   sudo make install
   cd
   
-3. You need Ecore from cvs
+4. You need Ecore from cvs
 
   cvs co e17/libs/ecore
   cd e17/libs/ecore
   ./autogen.sh
-  ./configure \
-  --enable-ecore-x \
-  --enable-ecore-evas \
-  --enable-ecore-evas-gl \
-  --enable-ecore-job \
-  --enable-ecore-con \
-  --enable-ecore-ipc
   make
   sudo make install
   cd
 
-4. You need Edje from cvs
+5. You need Edje from cvs
 
   cvs co e17/libs/edje
   cd e17/libs/edje
@@ -1212,7 +1184,7 @@ There is no need to reinvent the wheel all the time.
   sudo make install
   cd
 
-5. You need Esmart from cvs
+6. You need Esmart from cvs
 
   cvs co e17/proto/esmart
   cd e17/proto/esmart
@@ -1221,7 +1193,7 @@ There is no need to reinvent the wheel all the time.
   sudo make install
   cd
 
-7. You need entice from cvs
+7. You need entrance from cvs
 
   cvs co e17/apps/entrance
   cd e17/apps/entrance
@@ -1233,9 +1205,13 @@ There is no need to reinvent the wheel all the time.
 @endverbatim
 
 @todo 
-<UL>
-<LI>Theme edc walkthrough
-<LI>Separate user icons out like sessions are
-</UL>
+<ul>
+<li>XDMCP Work
+<li>Update Themeing namespace to something cleaner</li>
+<li>Redocument theme api...AFTER namespace cleanup</li>
+<li>User and Initial boot autologin...</li>
+<li>Config opt whether to show theme post auth on autologin, or to just
+start the session immediately.</li>
+</ul>
 
 */
