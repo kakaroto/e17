@@ -672,6 +672,7 @@ _Desktop_Backgrounds(backgrounds) section.
 
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
+<img src=E_dragbar.png x=10 y=315>
 <p>
 The Dragbar
 <font face=aircut3/12 color=#ffffff>
