@@ -54,10 +54,30 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy, 
    if (!p_grab)
      {
 	px_grab = XGetImage(disp, src, 0, sy, sw, 1, 0xffffffff, ZPixmap);
+	if (!px_grab)
+	   return;
 	if (HIQ)
 	   px_grab2 = XGetImage(disp, src, 0, sy + (sh / 2), sw, 1, 0xffffffff, ZPixmap);
+	if (!px_grab2)
+	  {
+	     XDestroyImage(px_grab);
+	     return;
+	  }
 	px_buf = XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1, 32, 0);
+	if (!px_buf)
+	  {
+	     XDestroyImage(px_grab);
+	     XDestroyImage(px_grab2);
+	     return;
+	  }
 	px_buf->data = malloc(px_buf->bytes_per_line * px_buf->height);
+	if (!px_buf->data)
+	  {
+	     XDestroyImage(px_grab);
+	     XDestroyImage(px_grab2);
+	     XDestroyImage(px_buf);
+	     return;
+	  }
      }
    if (HIQ)
      {
@@ -235,6 +255,8 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 	       }
 	     px_grab = XGetImage(disp, pmap, 0, 0, sw, dh * 2, 0xffffffff, ZPixmap);
 	     EFreePixmap(disp, pmap);
+	     if (!px_grab)
+		return;
 	  }
 	else
 	  {
@@ -248,9 +270,22 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 	       }
 	     px_grab = XGetImage(disp, pmap, 0, 0, sw, dh, 0xffffffff, ZPixmap);
 	     EFreePixmap(disp, pmap);
+	     if (!px_grab)
+		return;
 	  }
 	px_buf = XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, dw, dh, 32, 0);
+	if (!px_buf)
+	  {
+	     XDestroyImage(px_grab);
+	     return;
+	  }
 	px_buf->data = malloc(px_buf->bytes_per_line * px_buf->height);
+	if (!px_buf->data)
+	  {
+	     XDestroyImage(px_buf);
+	     XDestroyImage(px_grab);
+	     return;
+	  }
      }
    if (HIQ)
      {
