@@ -1106,7 +1106,7 @@ HonorIclass(char *s, int id)
  * Derive frame window position from client window and border properties
  */
 void
-EwinGetPosition(EWin * ewin, int *px, int *py)
+EwinGetPosition(const EWin * ewin, int *px, int *py)
 {
    int                 x, y, bw, frame_lr, frame_tb;
 
@@ -1733,10 +1733,9 @@ EwinSetBorder(EWin * ewin, Border * b, int apply)
 	if (ewin->border != b)
 	  {
 	     EwinSetBorderTo(ewin, b);
-	     EwinGetGeometry(ewin);
 	     ICCCM_MatchSize(ewin);
-	     MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
-			    ewin->client.h);
+	     MoveResizeEwin(ewin, ewin->x, ewin->y,
+			    ewin->client.w, ewin->client.h);
 	  }
      }
    else
