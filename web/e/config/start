@@ -4,7 +4,7 @@
   <td colspan="2">
     <table border="0" width="100%">
       <tr>
-        <td align="left"><a href="/pages/main.html"><img src="img/enlightenment.gif" alt="E logo" border="0" height="79" width="386"></a></td>
+        <td align="left"><a href="/pages/main.html"><img src="/pages/img/enlightenment.gif" alt="E logo" border="0" height="79" width="386"></a></td>
         <td align="right">
 	  Stable Version: 16.5<br>
 	  CVS Version: 17.0<br>
