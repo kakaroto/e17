@@ -87,12 +87,9 @@ hookup_edje_signals(Evas_Object * o)
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "*", funcs[i], NULL);
 
-#if 0
-   edje_object_signal_callback_add(o, "drag,stop", "entice.image",
-                                   _entice_image_drag_stop, NULL);
-   edje_object_signal_callback_add(o, "drag,start", "entice.image",
-                                   _entice_image_drag_start, NULL);
-#endif
+
+   edje_object_signal_callback_add(o, "drag,set", "*",
+                                   _entice_image_align_drag, NULL);
    return;
 }
 
@@ -351,10 +348,12 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          {
             entice_image_zoom_set(new_current,
                                   entice_image_zoom_get(entice->current));
-	    entice_image_x_align_set(new_current, 
-		    entice_image_x_align_get(entice->current));
-	    entice_image_y_align_set(new_current, 
-		    entice_image_y_align_get(entice->current));
+            entice_image_x_align_set(new_current,
+                                     entice_image_x_align_get(entice->
+                                                              current));
+            entice_image_y_align_set(new_current,
+                                     entice_image_y_align_get(entice->
+                                                              current));
             if (entice_image_zoom_fit_get(entice->current))
                should_fit = 1;
             entice_current_free();
@@ -975,53 +974,6 @@ entice_save_image(void)
    }
 }
 void
-entice_dragable_image_fix(Evas_Coord x, Evas_Coord y)
-{
-   Evas_Coord xx, yy;
-   Evas_Coord dx, dy;
-   Evas_Coord w, h;
-   Evas_Object *swallowed = NULL;
-
-   if (entice && entice->current)
-   {
-      if ((swallowed =
-           edje_object_part_swallow_get(entice->edje, "entice.image")))
-      {
-         edje_object_part_geometry_get(entice->edje, "entice.image", &xx, &yy,
-                                       NULL, NULL);
-         dx = x - xx;
-         dy = y - yy;
-	 fprintf(stderr, "Align changed\n");
-         entice_image_x_align_set(entice->current, -dx);
-         entice_image_y_align_set(entice->current, -dy);
-         edje_object_part_drag_value_set(entice->edje, "entice.image", dx,
-                                         dy);
-         evas_object_geometry_get(entice->current, &x, &y, &w, &h);
-         evas_damage_rectangle_add(ecore_evas_get(entice->ee), x, y, w, h);
-      }
-   }
-}
-void
-entice_dragable_image_set(int state)
-{
-   static Evas_Coord x = 0.0;
-   static Evas_Coord y = 0.0;
-
-   if (entice && entice->current)
-   {
-      if (state == 0)
-      {
-         entice_dragable_image_fix(x, y);
-         x = y = 0.0;
-      }
-      else
-      {
-         edje_object_part_geometry_get(entice->edje, "entice.image", &x, &y,
-                                       NULL, NULL);
-      }
-   }
-}
-void
 entice_thumb_load_ethumb(Evas_Object * o)
 {
    if (entice && entice->edje && o)
@@ -1032,16 +984,30 @@ entice_thumb_load_ethumb(Evas_Object * o)
 void
 entice_image_horizontal_align_set(double align)
 {
+   Evas_Coord w, h;
+
    if (entice && entice->edje && entice->current)
    {
+      evas_object_geometry_get(entice->current, NULL, NULL, &w, &h);
       entice_image_x_align_set(entice->current, align);
+      edje_object_part_drag_value_set(entice->edje,
+                                      "entice.image.scroll.horizontal.scrollbar",
+                                      align, 0.0);
+      evas_object_resize(entice->current, w, h);
    }
 }
 void
 entice_image_vertical_align_set(double align)
 {
+   Evas_Coord w, h;
+
    if (entice && entice->edje && entice->current)
    {
+      evas_object_geometry_get(entice->current, NULL, NULL, &w, &h);
       entice_image_y_align_set(entice->current, align);
+      edje_object_part_drag_value_set(entice->edje,
+                                      "entice.image.scroll.vertical.scrollbar",
+                                      0.0, align);
+      evas_object_resize(entice->current, w, h);
    }
 }

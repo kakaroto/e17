@@ -36,6 +36,8 @@ struct _Entice_Image
    int fit;
    int quality;                 /* int value for saving quality */
    double zoom;                 /* the current zoom percentage */
+   int button;                  /* the drag button */
+   int dragging;                /* whether we're currently dragging */
    struct
    {
       double x, y;
@@ -83,8 +85,8 @@ void entice_image_geometry_get(Evas_Object * o, Evas_Coord * x,
                                Evas_Coord * h);
 void entice_image_x_align_set(Evas_Object * o, double align);
 void entice_image_y_align_set(Evas_Object * o, double align);
-double entice_image_x_align_get(Evas_Object *o);
-double entice_image_y_align_get(Evas_Object *o);
+double entice_image_x_align_get(Evas_Object * o);
+double entice_image_y_align_get(Evas_Object * o);
 void entice_image_save_quality_set(Evas_Object * o, int quality);
 
 #endif

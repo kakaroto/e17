@@ -52,8 +52,8 @@ win_resize_cb(Ecore_Evas * ee)
    if (ee)
    {
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-      if(!ecore_evas_fullscreen_get(ee))
-	entice_config_geometry_set(x, y, w, h);
+      if (!ecore_evas_fullscreen_get(ee))
+         entice_config_geometry_set(x, y, w, h);
       entice_resize(w, h);
    }
 }

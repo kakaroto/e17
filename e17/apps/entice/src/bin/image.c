@@ -10,12 +10,77 @@
 #include <limits.h>
 #include <Ecore.h>
 #include "image.h"
+#include "entice.h"
 
 #define DEBUG 0
 
 static void entice_image_resize(Evas_Object * o, Evas_Coord w, Evas_Coord h);
 static int _entice_image_scroll_timer(void *data);
 
+static void
+_im_down_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get((Evas_Object *) data)))
+   {
+      im->dragging = 1;
+   }
+}
+static void
+_im_up_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get((Evas_Object *) data)))
+   {
+      im->dragging = 0;
+   }
+}
+static void
+_im_move_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
+{
+   Entice_Image *im = NULL;
+   Evas_Coord dx = 0.0, dy = 0.0;
+   Evas_Coord ww = 0.0, hh = 0.0;
+   Evas_Event_Mouse_Move *e = NULL;
+
+   if ((im = evas_object_smart_data_get((Evas_Object *) data)))
+   {
+      if (im->dragging)
+      {
+         if ((e = (Evas_Event_Mouse_Move *) ev))
+         {
+            dx = e->cur.canvas.x - e->prev.canvas.x;
+            dy = e->cur.canvas.y - e->prev.canvas.y;
+            ww = im->iw / im->zoom;
+            hh = im->ih / im->zoom;
+            /* get the offset alignment */
+            if (ww > im->w)
+               im->align.x -= (double) dx / (double) ww;
+            else
+               im->align.x += (double) dx / (double) ww;
+            if (hh > im->h)
+               im->align.y -= (double) dy / (double) hh;
+            else
+               im->align.y += (double) dy / (double) hh;
+
+            /* keep it bounded */
+            if (im->align.x < 0.0)
+               im->align.x = 0.0;
+            else if (im->align.x > 1.0)
+               im->align.x = 1.0;
+            if (im->align.y < 0.0)
+               im->align.y = 0.0;
+            else if (im->align.y > 1.0)
+               im->align.y = 1.0;
+
+            entice_image_vertical_align_set(im->align.y);
+            entice_image_horizontal_align_set(im->align.x);
+         }
+      }
+   }
+}
 double
 entice_image_x_align_get(Evas_Object * o)
 {
@@ -23,20 +88,23 @@ entice_image_x_align_get(Evas_Object * o)
 
    if ((im = evas_object_smart_data_get(o)))
    {
-      return(im->align.x);
+      return (im->align.x);
    }
-   return(0.5);
+   return (0.5);
 }
+
 double
 entice_image_y_align_get(Evas_Object * o)
 {
    Entice_Image *im = NULL;
+
    if ((im = evas_object_smart_data_get(o)))
    {
-      return(im->align.y);
+      return (im->align.y);
    }
-   return(0.5);
+   return (0.5);
 }
+
 void
 entice_image_x_align_set(Evas_Object * o, double align)
 {
@@ -759,7 +827,13 @@ entice_image_new(Evas_Object * image)
       evas_object_clip_set(im->obj, im->clip);
       evas_object_show(im->obj);
       evas_object_pass_events_set(im->clip, 1);
-      evas_object_pass_events_set(im->obj, 1);
+      evas_object_repeat_events_set(im->obj, 1);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_DOWN,
+                                     _im_down_cb, o);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_UP,
+                                     _im_up_cb, o);
+      evas_object_event_callback_add(im->obj, EVAS_CALLBACK_MOUSE_MOVE,
+                                     _im_move_cb, o);
       evas_object_move(im->obj, 0, 0);
 
       im->iw = w;
@@ -790,97 +864,3 @@ entice_image_save_quality_set(Evas_Object * o, int quality)
          im->quality = quality;
    }
 }
-
-/*==========================================================================
- * Test app for entice_image by itself
- * #define TESTING to 1 at the top of the file
- *========================================================================*/
-#if TESTING
-#include<Ecore.h>
-#include<Ecore_Evas.h>
-
-static Evas_Object *bg = NULL;
-
-/**
- * exit_cb - called when the app exits(window is killed)
- * @ev_type -
- * @ev - 
- * @data -
- */
-static int
-exit_cb(int ev_type, void *ev, void *data)
-{
-   ecore_main_loop_quit();
-   return (0);
-}
-
-/**
- * window_resize_cb - when the ecore_evas is resized by the user
- * @ee - the Ecore_Evas that was resized 
- */
-static void
-window_resize_cb(Ecore_Evas * ee)
-{
-   int w, h;
-
-   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
-   evas_object_resize(bg, (Evas_Coord) w, (Evas_Coord) h);
-}
-
-/**
- * window_del_cb - callback for when the ecore_evas is deleted
- * @ee - the Ecore_Evas that was deleted
- */
-static void
-window_del_cb(Ecore_Evas * ee)
-{
-   ecore_main_loop_quit();
-}
-
-/**
- * main - your C apps start here, duh.
- * @argc - unused
- * @argv - unused
- */
-int
-main(int argc, const char *argv[])
-{
-   Evas *evas = NULL;
-   Ecore_Evas *e = NULL;
-   Evas_Object *o = NULL, *oo = NULL;
-
-   if (argc < 2)
-      return (1);
-   ecore_init();
-   ecore_app_args_set(argc, argv);
-
-   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
-
-   if (ecore_evas_init())
-   {
-      e = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 120);
-      ecore_evas_title_set(e, "Entice Image Test");
-      ecore_evas_callback_delete_request_set(e, window_del_cb);
-      ecore_evas_callback_resize_set(e, window_resize_cb);
-
-      evas = ecore_evas_get(e);
-      bg = evas_object_rectangle_add(evas);
-      evas_object_move(bg, 0, 0);
-      evas_object_resize(bg, 300, 120);
-      evas_object_color_set(bg, 89, 94, 97, 255);
-      evas_object_layer_set(bg, 0);
-      evas_object_show(bg);
-
-      o = evas_object_image_add(evas);
-      evas_object_image_file_set(o, argv[1], NULL);
-
-      oo = entice_image_new(o);
-      evas_object_move(oo, 0, 0);
-      evas_object_resize(oo, 300, 120);
-      evas_object_show(oo);
-      ecore_evas_show(e);
-   }
-   ecore_main_loop_begin();
-   return (0);
-}
-#endif
