@@ -43,6 +43,8 @@ void            ewl_spectrum_rgb_set(Ewl_Spectrum * sp,
 						 int r, int g, int b);
 void            ewl_spectrum_hsv_set(Ewl_Spectrum * sp,
 						 float h, float s, float v);
+void            ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, 
+					     int *r, int *g, int *b, int *a);
 
 /*
  * Internally used callbacks, override at your own risk.
