@@ -46,7 +46,7 @@ char               *e_db_str_get(E_DB_File * db, char *key);
 /* your string list would be: */
 /* "blah", "hello", "nym", "goodbye", "flim", "boo:" */
 char              **e_db_dump_multi_field(char *file, char *file2, int *num_ret);
-/* retunr a list of strings of the kesy in the db */
+/* return a list of strings of the keys in the db */
 char              **e_db_dump_key_list(char *file, int *num_ret);
 
 /* conveience macros to make setting and getting values form a db easy */ 
