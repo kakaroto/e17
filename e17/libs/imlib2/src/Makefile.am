@@ -8,9 +8,8 @@ MAINTAINERCLEANFILES = Makefile.in loaderpath.h
 LDFLAGS		     = -L/usr/X11R6/lib
 INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
                        -I$(top_srcdir)/loaders -I$(top_srcdir)/libltdl \
-                       -I/usr/X11R6/include $(X_CFLAGS) \
-                       -I$(prefix)/include -I$(includedir) \
-		       $(freetype_cflags)
+                       $(freetype_cflags) -I/usr/X11R6/include $(X_CFLAGS) \
+                       -I$(prefix)/include -I$(includedir)
 MMX_SRCS             = asm_blend.S asm_rgba.S asm_scale.S asm_rotate.S \
 		       asm_blend_cmod.S
 MMX_OBJS             = $(MMX_SRCS:.S=.lo)
@@ -34,12 +33,12 @@ libImlib2_la_LDFLAGS      = -version-info 2:0:1
 if HAVE_MMX
 libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ $(MMX_OBJS) \
                        $(top_builddir)/libltdl/libltdlc.la \
-                       $(x_libs) $(freetype_libs) $(LDFLAGS)
+                       $(x_libs) $(freetype_libs) $(LDFLAGS) -lm
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(X_OBJS) $(MMX_OBJS)
 else
 libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ \
                        $(top_builddir)/libltdl/libltdlc.la \
-                       $(x_libs) $(freetype_libs) $(LDFLAGS)
+                       $(x_libs) $(freetype_libs) $(LDFLAGS) -lm
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(X_OBJS)
 endif
 
