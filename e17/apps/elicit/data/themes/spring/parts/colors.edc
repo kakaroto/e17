@@ -1,0 +1,127 @@
+      part {
+        name, "col-clip";
+        type, RECT;
+        description {
+          state, "default" 0.0;
+          color, 128 128 207 128;
+          rel1 {
+            to, "rgb-inset";
+            relative, 0 0;
+            offset, 2 2;
+          }
+          rel2 {
+            to, "rgb-inset";
+            relative, 1 1;
+            offset, -3 -3;
+          }
+        }
+      }
+      
+      part {
+        name, "rgb-dots";
+        description {
+          state, "default" 0.0;
+          min, 5 21;
+          max, 5 21;
+          rel1 {
+            to, "rgb-inset";
+            relative, 0.0 0.0;
+            offset, 4 1;
+          }
+          rel2 {
+            to, "rgb-inset";
+            relative, 0.0 1.0;
+            offset, 9 -2;
+          }
+          image {
+            normal, "rgb-dots.png";
+          }
+        }
+      }
+
+    part { 
+      name, "red-val"; 
+      clip_to, "col-clip"; 
+      type, TEXT; 
+      description { 
+        state, "default" 0.0; 
+        align, 0.0 0.5; 
+        rel1 { 
+          to, "rgb-dots"; 
+          relative, 1.0 0.0; 
+          offset, 2 -1; 
+        } 
+        rel2 { 
+          to, "rgb-dots"; 
+          relative, 1.0 0.0; 
+          offset, 20 6; 
+        } 
+        color, 0 0 0 200; 
+        text { 
+          text, "255"; 
+          font, "spring-italic"; 
+          size, 7; 
+          fit, 0 0; 
+          min, 1 1; 
+          align, 0.0 0.5; 
+        } 
+      } 
+    } 
+
+    part { 
+      name, "green-val"; 
+      clip_to, "col-clip"; 
+      type, TEXT; 
+      description { 
+        state, "default" 0.0; 
+        align, 0.0 0.5; 
+        rel1 { 
+          to, "rgb-dots"; 
+          relative, 1.0 0.0; 
+          offset, 2 7; 
+        } 
+        rel2 { 
+          to, "rgb-dots"; 
+          relative, 1.0 0.0; 
+          offset, 20 14; 
+        } 
+        color, 0 0 0 200; 
+        text { 
+          text, "255"; 
+          font, "spring-italic"; 
+          size, 7; 
+          fit, 0 0; 
+          min, 1 1; 
+          align, 0.0 0.5; 
+        } 
+      } 
+    } 
+
+    part { 
+      name, "blue-val"; 
+      clip_to, "col-clip"; 
+      type, TEXT; 
+      description { 
+        state, "default" 0.0; 
+        align, 0.0 0.5; 
+        rel1 { 
+          to, "rgb-dots"; 
+          relative, 1.0 0.0; 
+          offset, 2 15; 
+        } 
+        rel2 { 
+          to, "rgb-dots"; 
+          relative, 1.0 0.0; 
+          offset, 20 22; 
+        } 
+        color, 0 0 0 200; 
+        text { 
+          text, "255"; 
+          font, "spring-italic"; 
+          size, 7; 
+          fit, 0 0; 
+          min, 1 1; 
+          align, 0.0 0.5; 
+        } 
+      } 
+    } 

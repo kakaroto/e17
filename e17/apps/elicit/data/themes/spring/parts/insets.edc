@@ -1,0 +1,138 @@
+      part {
+        name, "rgb-inset";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 50 9999;
+          rel1 {
+            to, "main";
+            relative, 0.0 0.0;
+            offset, 3 3;
+          }
+          rel2 {
+            to, "main";
+            relative, 0.0 0.0;
+            offset, 32 38;
+          }
+          image {
+            normal, "inset.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+
+      part {
+        name, "button-inset";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 50 9999;
+          rel1 {
+            to, "main";
+            relative, 1.0 0.0;
+            offset, -31 3;
+          }
+          rel2 {
+            to, "main";
+            relative, 1.0 1.0;
+            offset, -4 -4;
+          }
+          image {
+            normal, "inset.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+    //-- shot --//
+      part {
+        name, "shot";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "shot-border";
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            to, "shot-border";
+            relative, 1.0 1.0;
+            offset, -2 -2;
+          }
+          image {
+            normal, "inset-bg.png";
+          }
+        }
+      }
+      part {
+        name, "shot-border";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to_x, "rgb-inset";
+            to_y, "main";
+            relative, 1.0 0.0;
+            offset, 1 3;
+          }
+          rel2 {
+            to_x, "button-inset";
+            to_y, "main";
+            relative, 0.0 1.0;
+            offset, -2 -4;
+          }
+          image {
+            normal, "inset-border.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+      
+  //-- swatch --//
+      part {
+        name, "swatch";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "swatch-border";
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            to, "swatch-border";
+            relative, 1.0 1.0;
+            offset, -2 -2;
+          }
+          image {
+            normal, "inset-bg.png";
+          }
+        }
+      }
+      part {
+        name, "swatch-border";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 50 50;
+          rel1 {
+            to, "main";
+            relative, 0.0 1.0;
+            offset, 3 -33;
+          }
+          rel2 {
+            to, "main";
+            relative, 0.0 1.0;
+            offset, 32 -4;
+          }
+          image {
+            normal, "inset-border.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+
+

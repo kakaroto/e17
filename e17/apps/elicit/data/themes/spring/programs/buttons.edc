@@ -1,0 +1,5 @@
+BUTTON_PROG("x", "", "elicit,quit");
+BUTTON_PROG("dropper", "elicit,pick,start", "elicit,pick,stop");
+BUTTON_PROG("target", "elicit,shoot,start", "elicit,shoot,stop");
+//TOGGLE_BUTTON_PROG("plus", "elicit,switch,expanded", "elicit,switch,elicit");
+TOGGLE_BUTTON_PROG("plus", "expand", "contract");

@@ -1,0 +1,42 @@
+program {
+  name, "expand.1";
+  signal, "expand";
+  source, "*";
+  action, SIGNAL_EMIT "elicit,resize,+0,+100" "";
+  after, "expand.2";
+}
+program {
+  name, "expand.2";
+  action, STATE_SET "start" 0.0;
+  transition, LINEAR 0.0;
+  target, "main";
+  after, "expand.3";
+}
+program {
+  name, "expand.3";
+  action, STATE_SET "default" 0.0;
+  transition, DECELERATE 1.0;
+  target, "main";
+}
+
+
+program {
+  name, "contract.1";
+  signal, "contract";
+  source, "*";
+  action, STATE_SET "start" 0.0;
+  transition, DECELERATE 1.0;
+  target, "main";
+  after, "contract.2";
+}
+program {
+  name, "contract.2";
+  action, SIGNAL_EMIT "elicit,resize,+0,-100" "";
+  after, "contract.3";
+}
+program {
+  name, "contract.3";
+  action, STATE_SET "default" 0.0;
+  transition, LINEAR 0.0;
+  target, "main";
+}

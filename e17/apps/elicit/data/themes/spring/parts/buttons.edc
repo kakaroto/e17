@@ -1,0 +1,15 @@
+  // ------- buttons ----------- //
+BUTTON("x", "x1.png", "x2.png", 10, 9,
+       "button-inset", 1 0, -13 5,
+       "button-inset", 1 0, -3 14)
+TOGGLE_BUTTON("plus", "plus1.png", "plus2.png",
+              "minus1.png", "minus2.png", 9, 10,
+              "button-inset", 0 0, 5 4,
+              "button-inset", 0 0, 14 14)
+BUTTON("target", "target1.png", "target2.png", 17, 17,
+       "button-inset", 0 0, 1 18,
+       "button-inset", 1 0, -1 35)
+BUTTON("dropper", "dropper1.png", "dropper2.png", 18, 18,
+       "button-inset", 0 0, 1 41,
+       "button-inset", 1 0, -1 59)
+
