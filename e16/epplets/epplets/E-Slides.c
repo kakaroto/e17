@@ -57,12 +57,14 @@ Epplet_gadget cfg_tb_path, cfg_tb_delay, cfg_tb_zoom;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
 char **filenames = NULL, *path, *zoom_cmd;
-unsigned char paused = 0, auto_setbg = AUTOBG_OFF, maintain_aspect = 0;
-int cfg_auto_setbg = AUTOBG_OFF, cfg_maintain_aspect = 0;
+unsigned char paused = 0, randomize = 0, auto_setbg = AUTOBG_OFF, maintain_aspect = 0;
+int cfg_auto_setbg = AUTOBG_OFF, cfg_maintain_aspect = 0, cfg_randomize = 0;
 Window zoom_win = None, config_win = None;
 int w = 3, h = 3;
 
 static char **dirscan(char *dir, unsigned long *num);
+static char **randomize_file_list(char **names, unsigned long num);
+static char **sort_file_list(char **names, unsigned long num);
 static void set_background(int tiled, int keep_aspect);
 static void change_image(void *data);
 static void close_cb(void *data);
@@ -82,8 +84,7 @@ static unsigned char get_images(char *image_path);
 static char **
 dirscan(char *dir, unsigned long *num)
 {
-  int i, dirlen;
-  int done = 0;
+  unsigned long i, dirlen;
   DIR *dirp;
   char **names;
   struct dirent *dp;
@@ -147,9 +148,39 @@ dirscan(char *dir, unsigned long *num)
   names = (char **) realloc(names, dirlen * sizeof(char *));
   D((" -> Final directory length is %lu.  List moved to %8p\n", *num, names));
 
+  if (randomize) {
+    randomize_file_list(names, dirlen);
+  } else {
+    sort_file_list(names, dirlen);
+  }
+  return (names);
+}
+
+static char **
+randomize_file_list(char **names, unsigned long len)
+{
+  int r;
+  unsigned long i;
+  char *tmp;
+
+  for (i = 0; i < len - 1; i++) {
+    r = (int) ((len - i - 1) * ((float) rand()) / (RAND_MAX + 1.0)) + i + 1;
+    tmp = names[i];
+    names[i] = names[r];
+    names[r] = tmp;
+  }
+  return (names);
+}
+
+static char **
+sort_file_list(char **names, unsigned long len)
+{
+  unsigned long i;
+  unsigned char done = 0;
+
   while (!done) {
     done = 1;
-    for (i = 0; i < dirlen - 1; i++) {
+    for (i = 0; i < len - 1; i++) {
       if (strcmp(names[i], names[i + 1]) > 0) {
 	char *tmp;
 
@@ -427,6 +458,18 @@ apply_config(void)
   zoom_cmd = strdup(Epplet_textbox_contents(cfg_tb_zoom));
   Epplet_modify_config("zoom_prog", zoom_cmd);
 
+  if (randomize != cfg_randomize) {
+    if (cfg_randomize) {
+      randomize_file_list(filenames, image_cnt);
+    } else {
+      sort_file_list(filenames, image_cnt);
+    }
+    idx = 0;
+  }
+  randomize = cfg_randomize;
+  sprintf(buff, "%d", randomize);
+  Epplet_modify_config("randomize", buff);
+
   maintain_aspect = cfg_maintain_aspect;
   sprintf(buff, "%d", maintain_aspect);
   Epplet_modify_config("maintain_aspect", buff);
@@ -477,7 +520,7 @@ config_cb(void *data)
     return;
   }
 
-  config_win = Epplet_create_window_config(200, 230, "E-Slides Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+  config_win = Epplet_create_window_config(200, 250, "E-Slides Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
 
   Epplet_gadget_show(Epplet_create_label(4, 4, "Directory to scan for images:", 2));
   Epplet_gadget_show(cfg_tb_path = Epplet_create_textbox(NULL, path, 4, 18, 192, 20, 2, NULL, NULL));
@@ -502,7 +545,11 @@ config_cb(void *data)
   cfg_maintain_aspect = maintain_aspect;
   Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 175, 12, 12, &cfg_maintain_aspect, NULL, NULL));
   Epplet_gadget_show(Epplet_create_label(20, 175, "Maintain aspect ratio when", 2));
-  Epplet_gadget_show(Epplet_create_label(20, 189, "displaying images in epplet?", 2));
+  Epplet_gadget_show(Epplet_create_label(20, 190, "displaying images in epplet?", 2));
+
+  cfg_randomize = randomize;
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 210, 12, 12, &cfg_randomize, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 210, "Randomize image list?", 2));
 
   Epplet_window_show(config_win);
   Epplet_window_pop_context();
@@ -541,6 +588,7 @@ parse_config(void)
     auto_setbg = AUTOBG_PSCALED;
   }
   maintain_aspect = atoi(Epplet_query_config_def("maintain_aspect", "0"));
+  randomize = atoi(Epplet_query_config_def("randomize", "0"));
 }
 
 static unsigned char
@@ -586,6 +634,7 @@ main(int argc, char **argv)
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(Epplet_cleanup);
+  srand(getpid() * time(NULL) % ((unsigned int) -1));
 
   for (j = 1; j < argc; j++) {
     if ((!strcmp("-w", argv[j])) && (argc - j > 1)) {

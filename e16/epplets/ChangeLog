@@ -2199,6 +2199,7 @@ Finally got around to restructuring E-Biff.  I think you'll like the new look.
 -------------------------------------------------------------------------------
 
 Tue Jul 25 19:46:51 GMT 2000
+(gilbertt)
 
 Added ftp support to E-Screenshooter on fusion94's request. See config
 dialog for details. The ftp password is stored in plaintext I'm afraid ;-)
@@ -2214,3 +2215,11 @@ around to this for a little while...
 
 Hope it's okay for now..
 
+-------------------------------------------------------------------------------
+
+Sat Jul 29 19:23:46 PDT 2000
+(KainX)
+
+Added a randomizing function to E-Slides.
+
+-------------------------------------------------------------------------------
