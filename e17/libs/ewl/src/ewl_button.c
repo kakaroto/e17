@@ -64,7 +64,7 @@ int ewl_button_init(Ewl_Button * b, char *label)
  * @return Returns no value.
  * @brief Change the label of the specified button
  */
-void ewl_button_set_label(Ewl_Button * b, char *l)
+void ewl_button_label_set(Ewl_Button * b, char *l)
 {
 	Ewl_Widget     *w;
 
@@ -93,7 +93,7 @@ void ewl_button_set_label(Ewl_Button * b, char *l)
  * @return A newly allocated copy of the label on the button.
  * @brief Retrieve the label of the specified button
  */
-char *ewl_button_get_label(Ewl_Button *b)
+char *ewl_button_label_get(Ewl_Button *b)
 {
 	char *val = NULL;
 

@@ -121,7 +121,7 @@ void ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 
 	button = ecore_list_next(EWL_CONTAINER(row)->children);
 	for (i = 0; i < tree->ncols && button; i++) {
-		ewl_button_set_label(EWL_BUTTON(button), headers[i]);
+		ewl_button_label_set(EWL_BUTTON(button), headers[i]);
 		button = ecore_list_next(EWL_CONTAINER(row)->children);
 	}
 
