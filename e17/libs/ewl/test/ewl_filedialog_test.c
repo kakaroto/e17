@@ -86,7 +86,7 @@ void __open_file (Ewl_Widget *row, void *ev_data, void *user_data)
 	Ewl_Fileselector *fs = user_data;
 	
 	printf("file open from test program: %s\n",
-	    ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
+			ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
 
 	row = NULL;
 	ev_data = NULL;

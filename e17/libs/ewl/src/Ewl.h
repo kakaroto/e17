@@ -302,6 +302,7 @@ extern"C" {
 #include <ewl_textarea.h>
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
+#include <ewl_tooltip.h>
 
 #include <ewl_tree.h>
 

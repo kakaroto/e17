@@ -51,6 +51,7 @@ installed_headers_DATA = \
 	ewl_textarea.h \
 	ewl_table.h \
 	ewl_tree.h \
+	ewl_tooltip.h \
 	ewl_theme.h \
 	ewl_widget.h \
 	ewl_window.h
@@ -97,6 +98,7 @@ libewl_la_SOURCES = \
 	ewl_textarea.c \
 	ewl_theme.c \
 	ewl_tree.c \
+	ewl_tooltip.c \
 	ewl_widget.c \
 	ewl_window.c
 

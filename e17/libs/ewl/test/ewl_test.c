@@ -17,6 +17,11 @@ void
 __realize_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	printf("Main window realized with theme_object %p\n", w->theme_object);
+
+	return;
+	w = NULL;
+	ev_data = NULL;
+	user_data = NULL;
 }
 
 int
@@ -39,6 +44,7 @@ main(int argc, char **argv)
 		{ "Progressbar", __create_progressbar_test_window },
 		{ "Spinner", __create_spinner_test_window },
 		{ "Textarea", __create_textarea_test_window },
+		{ "Tooltip", __create_tooltip_test_window },
 		{ "Tree", __create_tree_test_window },
 		
 		{ 0, 0 }

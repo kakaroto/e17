@@ -46,6 +46,8 @@ void            __create_table_test_window(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 void            __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
+void            __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, 
+		            void *user_data);
 void            __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
 void            __create_selectionbook_test_window(Ewl_Widget * w,
