@@ -76,7 +76,7 @@ HandleDrawQueue()
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->d == dq->d) && (dq->d->item) &&
-		      (dq->d->item == dq->di))
+		  /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
 		    {
 		       if (dq->x < lst[i]->x)
 			 {
