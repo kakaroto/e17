@@ -266,7 +266,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry *e;
 	char *evd = NULL;
-	Ecore_X_Event_Key_Down *ev;
+	Ewl_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -294,8 +294,8 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				EWL_TEXT(w)->text);
 		FREE(evd);
 	}
-	else if (ev->key_compose) {
-		ewl_entry_insert_text(e, ev->key_compose);
+	else if (ev->keyname) {
+		ewl_entry_insert_text(e, ev->keyname);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -306,7 +306,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ecore_X_Event_Mouse_Button_Down *ev;
+	Ewl_Event_Mouse_Down *ev;
 	Ewl_Entry      *e;
 	int             index = 0, len = 0;
 
@@ -344,7 +344,7 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             index = 0;
-	Ecore_X_Event_Mouse_Move *ev;
+	Ewl_Event_Mouse_Move *ev;
 	Ewl_Entry      *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

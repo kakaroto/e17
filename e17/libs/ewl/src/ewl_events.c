@@ -1,11 +1,37 @@
-
 #include <Ewl.h>
 
+#ifdef HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
 
 extern Ewl_Widget     *last_selected;
 extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
 extern Ewl_Widget     *dnd_widget;
+
+extern Ewd_List       *embed_list;;
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+int ewl_ev_x_window_expose(void *data, int type, void *_ev);
+int ewl_ev_x_window_configure(void *data, int type, void *_ev);
+int ewl_ev_x_window_delete(void *data, int type, void *_ev);
+
+int ewl_ev_x_key_down(void *data, int type, void *_ev);
+int ewl_ev_x_key_up(void *data, int type, void *_ev);
+int ewl_ev_x_mouse_down(void *data, int type, void *_ev);
+int ewl_ev_x_mouse_up(void *data, int type, void *_ev);
+int ewl_ev_x_mouse_move(void *data, int type, void *_ev);
+int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
+int ewl_ev_x_paste(void *data, int type, void *_ev);
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_FB
+int ewl_ev_fb_key_down(void *data, int type, void *_ev);
+int ewl_ev_fb_key_up(void *data, int type, void *_ev);
+int ewl_ev_fb_mouse_down(void *data, int type, void *_ev);
+int ewl_ev_fb_mouse_up(void *data, int type, void *_ev);
+int ewl_ev_fb_mouse_move(void *data, int type, void *_ev);
+#endif
 
 
 /**
@@ -16,42 +42,60 @@ int ewl_ev_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	/*
 	 * Register dispatching functions for window events.
 	 */
 	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE,
-				ewl_ev_window_expose, NULL);
+				ewl_ev_x_window_expose, NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE,
-				ewl_ev_window_configure, NULL);
+				ewl_ev_x_window_configure, NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DELETE_REQUEST,
-				ewl_ev_window_delete, NULL);
+				ewl_ev_x_window_delete, NULL);
 
 	/*
 	 * Register dispatching functions for keyboard events.
 	 */
-	ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, ewl_ev_key_down, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, ewl_ev_key_up, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, ewl_ev_x_key_down,
+				NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, ewl_ev_x_key_up, NULL);
 
 	/*
 	 * Finally, register dispatching functions for mouse events.
 	 */
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
-				ewl_ev_mouse_down, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, ewl_ev_mouse_up,
-				NULL);
+				ewl_ev_x_mouse_down, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
+				ewl_ev_x_mouse_up, NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
-				ewl_ev_mouse_move, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, ewl_ev_mouse_out,
+				ewl_ev_x_mouse_move, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, ewl_ev_x_mouse_out,
 				NULL);
 
 	/*
 	 * Selection callbacks to allow for pasting.
 	 */
-	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, ewl_ev_paste,
+	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, ewl_ev_x_paste,
 				NULL);
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_FB
+	ecore_event_handler_add(ECORE_FB_EVENT_KEY_DOWN, ewl_ev_fb_key_down,
+				NULL);
+	ecore_event_handler_add(ECORE_FB_EVENT_KEY_UP, ewl_ev_fb_key_up,
+				NULL);
+	ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_DOWN, ewl_ev_fb_mouse_down,
+				NULL);
+	ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_UP, ewl_ev_fb_mouse_up,
+				NULL);
+	ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, ewl_ev_fb_mouse_move,
+				NULL);
+#endif
 
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 
 /**
  * @param data: user specified data passed to the function
@@ -62,7 +106,7 @@ int ewl_ev_init(void)
  *
  * Dispatches the expose event to the appropriate window for handling.
  */
-int ewl_ev_window_expose(void *data, int type, void * e)
+int ewl_ev_x_window_expose(void *data, int type, void * e)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
@@ -94,7 +138,7 @@ int ewl_ev_window_expose(void *data, int type, void * e)
  *
  * Dispatches a configure even to the appropriate ewl window.
  */
-int ewl_ev_window_configure(void *data, int type, void *e)
+int ewl_ev_x_window_configure(void *data, int type, void *e)
 {
 	/*
 	 * When a configure event occurs, we must update the windows geometry
@@ -134,7 +178,7 @@ int ewl_ev_window_configure(void *data, int type, void *e)
  *
  * Dispatches the delete event to the appropriate ewl window.
  */
-int ewl_ev_window_delete(void *data, int type, void *e)
+int ewl_ev_x_window_delete(void *data, int type, void *e)
 {
 	/*
 	 * Retrieve the appropriate ewl_window using the x window id that is
@@ -165,9 +209,8 @@ int ewl_ev_window_delete(void *data, int type, void *e)
  *
  * Dispatches the key down event to the appropriate ewl window.
  */
-int ewl_ev_key_down(void *data, int type, void *e)
+int ewl_ev_x_key_down(void *data, int type, void *e)
 {
-	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Down *ev;
 
@@ -180,30 +223,7 @@ int ewl_ev_key_down(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	/*
-	 * If a widget has been selected then we send the keystroke to the
-	 * appropriate widget.
-	 */
-	if (!last_key || !ewl_container_parent_of(EWL_WIDGET(embed),
-				last_key)) {
-		if (last_selected)
-			last_key = last_selected;
-		else
-			last_key = EWL_WIDGET(embed);
-	}
-
-	/*
-	 * Dispatcher of key down events, these get sent to the last widget
-	 * selected, and every parent above it.
-	 */
-	temp = last_key;
-	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED)))
-			ewl_callback_call_with_event_data(temp,
-					EWL_CALLBACK_KEY_DOWN, ev);
-		temp = temp->parent;
-	}
+	ewl_embed_feed_key_down(embed, ev->keyname);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -217,9 +237,8 @@ int ewl_ev_key_down(void *data, int type, void *e)
  *
  * Dispatches the key up event to the appropriate ewl window.
  */
-int ewl_ev_key_up(void *data, int type, void *e)
+int ewl_ev_x_key_up(void *data, int type, void *e)
 {
-	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Up *ev;
 
@@ -231,18 +250,7 @@ int ewl_ev_key_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	/*
-	 * Dispatcher of key up events, these get sent to the last widget
-	 * selected, and every parent above it.
-	 */
-	temp = last_key;
-	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED)))
-			ewl_callback_call_with_event_data(temp,
-					EWL_CALLBACK_KEY_UP, ev);
-		temp = temp->parent;
-	}
+	ewl_embed_feed_key_up(embed, ev->keyname);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -258,10 +266,8 @@ int ewl_ev_key_up(void *data, int type, void *e)
  * Dispatches the mouse down event to the appropriate ewl window.
  * Also determines the widgets clicked state.
  */
-int ewl_ev_mouse_down(void *data, int type, void *e)
+int ewl_ev_x_mouse_down(void *data, int type, void *e)
 {
-	Ewl_Widget     *widget = NULL;
-	Ewl_Widget     *temp = NULL;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Down *ev;
 
@@ -273,58 +279,7 @@ int ewl_ev_mouse_down(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
-			ev->x, ev->y);
-
-	/*
-	 * Save the newly selected widget for further reference, do this prior
-	 * to triggering the callback to avoid funkiness if the callback
-	 * causes the widget to be destroyed.
-	 */
-	temp = last_selected;
-	last_key = last_selected = widget;
-
-	/*
-	 * Determine whether this widget has already been selected, if not,
-	 * deselect the previously selected widget and notify it of the
-	 * change. Then select the new widget and notify it of the selection.
-	 */
-	if (widget != temp) {
-		if (temp) {
-			ewl_object_remove_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_SELECTED);
-			ewl_callback_call(temp, EWL_CALLBACK_DESELECT);
-		}
-
-		if (widget && !(ewl_object_has_state(EWL_OBJECT(widget),
-					EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_add_state(EWL_OBJECT(widget),
-					EWL_FLAG_STATE_SELECTED);
-			ewl_callback_call(widget, EWL_CALLBACK_SELECT);
-		}
-	}
-
-	/*
-	 * While the mouse is down the widget has a pressed state, the widget
-	 * and its parents are notified in this change of state.
-	 */
-	temp = widget;
-	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_add_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_PRESSED);
-			ewl_callback_call_with_event_data(temp,
-					EWL_CALLBACK_MOUSE_DOWN, ev);
-
-			if (ev->double_click) {
-				ewl_callback_call_with_event_data(temp,
-						EWL_CALLBACK_DOUBLE_CLICKED,
-						ev);
-			}
-		}
-		temp = temp->parent;
-	}
+	ewl_embed_feed_mouse_down(embed, ev->button, ev->x, ev->y);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -340,9 +295,8 @@ int ewl_ev_mouse_down(void *data, int type, void *e)
  * Dispatches the mouse up event to the appropriate ewl window.
  * Also determines the widgets clicked state.
  */
-int ewl_ev_mouse_up(void *data, int type, void *e)
+int ewl_ev_x_mouse_up(void *data, int type, void *e)
 {
-	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Up *ev;
 
@@ -354,23 +308,7 @@ int ewl_ev_mouse_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	/*
-	 * When the mouse is released the widget no longer has a pressed state,
-	 * the widget and its parents are notified in this change of state.
-	 */
-	temp = last_selected;
-	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
-				EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_remove_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_PRESSED);
-			ewl_callback_call_with_event_data(temp,
-					EWL_CALLBACK_MOUSE_UP, ev);
-
-		}
-
-		temp = temp->parent;
-	}
+	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -385,9 +323,8 @@ int ewl_ev_mouse_up(void *data, int type, void *e)
  *
  * Dispatches the mouse move event to the appropriate ewl window.
  */
-int ewl_ev_mouse_move(void *data, int type, void *e)
+int ewl_ev_x_mouse_move(void *data, int type, void *e)
 {
-	Ewl_Widget     *widget;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Move *ev;
 
@@ -399,61 +336,7 @@ int ewl_ev_mouse_move(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
-			ev->x, ev->y);
-
-	/*
-	 * Defocus all widgets up to the level of a shared parent of old and
-	 * newly focused widgets.
-	 */
-	while (last_focused && (widget != last_focused) &&
-			!ewl_container_parent_of(last_focused, widget)) {
-		ewl_object_remove_state(EWL_OBJECT(last_focused),
-				EWL_FLAG_STATE_HILITED);
-		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-		last_focused = last_focused->parent;
-	}
-
-	/*
-	 * Pass out the movement event up the chain, allows parents to
-	 * react to mouse movement in their children.
-	 */
-	last_focused = widget;
-	while (last_focused) {
-
-		if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
-					EWL_FLAG_STATE_DISABLED))) {
-
-			/*
-			 * First mouse move event in a widget marks it focused.
-			 */
-			if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
-						EWL_FLAG_STATE_HILITED))) {
-				ewl_object_add_state(EWL_OBJECT(last_focused),
-						EWL_FLAG_STATE_HILITED);
-				ewl_callback_call_with_event_data(last_focused,
-						EWL_CALLBACK_FOCUS_IN, ev);
-			}
-
-			ewl_callback_call_with_event_data(last_focused,
-					EWL_CALLBACK_MOUSE_MOVE, ev);
-		}
-		last_focused = last_focused->parent;
-	}
-
-	last_focused = widget;
-
-	if (dnd_widget && ewl_object_has_state(EWL_OBJECT(dnd_widget),
-				EWL_FLAG_STATE_DND))
-		ewl_callback_call_with_event_data(dnd_widget,
-						  EWL_CALLBACK_MOUSE_MOVE, ev);
-
-	if (last_selected && ewl_object_has_state(EWL_OBJECT(last_selected),
-				EWL_FLAG_STATE_PRESSED))
-		ewl_callback_call_with_event_data(last_selected,
-						  EWL_CALLBACK_MOUSE_MOVE, ev);
-	else
-		dnd_widget = NULL;
+	ewl_embed_feed_mouse_move(embed, ev->x, ev->y);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -467,14 +350,11 @@ int ewl_ev_mouse_move(void *data, int type, void *e)
  *
  * Dispatches the mouse out event to the appropriate ewl window.
  */
-int ewl_ev_mouse_out(void *data, int type, void *e)
+int ewl_ev_x_mouse_out(void *data, int type, void *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	while (last_focused) {
-		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-		last_focused = last_focused->parent;
-	}
+	ewl_embed_feed_mouse_out();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -488,7 +368,7 @@ int ewl_ev_mouse_out(void *data, int type, void *e)
  *
  * Dispatches the mouse out event to the appropriate ewl window.
  */
-int ewl_ev_paste(void *data, int type, void *e)
+int ewl_ev_x_paste(void *data, int type, void *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -496,3 +376,123 @@ int ewl_ev_paste(void *data, int type, void *e)
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_FB
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the key down event information
+ * @return Returns no value.
+ * @brief Handles key down events in windows
+ *
+ * Dispatches the key down event to the appropriate ewl window.
+ */
+int ewl_ev_fb_key_down(void *data, int type, void *e)
+{
+	Ewl_Widget     *temp;
+	Ewl_Embed      *embed;
+	Ecore_Fb_Event_Key_Down *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = e;
+
+	embed = ewd_list_goto_first(embed_list);
+
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_ev_feed_key_down(embed, ev->keyname);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the key up event information
+ * @return Returns no value.
+ * @brief Handles key down events in windows
+ *
+ * Dispatches the key down event to the appropriate ewl window.
+ */
+int ewl_ev_fb_key_up(void *data, int type, void *e)
+{
+	Ewl_Widget     *temp;
+	Ewl_Embed      *embed;
+	Ecore_Fb_Event_Key_Up *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = e;
+
+	embed = ewd_list_goto_first(embed_list);
+
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_ev_feed_key_down(embed, ev->keyname);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse down event information
+ * @return Returns no value.
+ * @brief Handles mouse down events in windows
+ *
+ * Dispatches the mouse down event to the appropriate ewl window.
+ * Also determines the widgets clicked state.
+ */
+int ewl_ev_fb_mouse_down(void *data, int type, void *e)
+{
+	Ewl_Embed      *embed;
+	Ecore_Fb_Event_Mouse_Button_Down *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = e;
+
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_embed_feed_mouse_down(embed, ev->button, ev->x, ev->y);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse move event information
+ * @return Returns no value.
+ * @brief Handles mouse move events in windows
+ *
+ * Dispatches the mouse move event to the appropriate ewl window.
+ */
+int ewl_ev_fb_mouse_move(void *data, int type, void *e)
+{
+	Ewl_Widget     *widget;
+	Ewl_Embed      *embed;
+	Ecore_Fb_Event_Mouse_Move *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = e;
+
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_embed_feed_mouse_move(embed, ev->x, ev->y);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+#endif

@@ -13,6 +13,7 @@ Ewl_Widget     *ewl_spectrum_new()
 {
 	Ewl_Spectrum *sp = NULL;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	sp = NEW(Ewl_Spectrum, 1);
 	if (!sp)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);

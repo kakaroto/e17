@@ -568,7 +568,6 @@ ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 	Ewl_Embed      *emb;
-	char            key[PATH_MAX];
 	Evas_Coord      x, y, width, height;
 
 
@@ -586,34 +585,22 @@ ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		/*
 		 * Setup the default font.
 		 */
-		snprintf(key, PATH_MAX, "%s/font", w->appearance);
-		t->font = ewl_theme_data_get_str(w, key);
-
-		snprintf(key, PATH_MAX, "%s/font_size", w->appearance);
-		t->font_size = ewl_theme_data_get_int(w, key);
+		t->font = ewl_theme_data_get_str(w, "font");
+		t->font_size = ewl_theme_data_get_int(w, "font_size");
 	}
 
 	estyle_set_font(t->estyle, t->font, t->font_size);
 
-	if (!t->style) {
-		/*
-		 * Setup the default style alignment and text.
-		 */
-		snprintf(key, PATH_MAX, "%s/style", w->appearance);
-		t->style = ewl_theme_data_get_str(w, key);
-	}
+	if (!t->style)
+		t->style = ewl_theme_data_get_str(w, "style");
 
 	estyle_set_style(t->estyle, t->style);
 
 	if (!(t->overrides & EWL_TEXT_OVERRIDE_COLOR)) {
-		snprintf(key, PATH_MAX, "%s/color/r", w->appearance);
-		t->r = ewl_theme_data_get_int(w, key);
-		snprintf(key, PATH_MAX, "%s/color/g", w->appearance);
-		t->g = ewl_theme_data_get_int(w, key);
-		snprintf(key, PATH_MAX, "%s/color/b", w->appearance);
-		t->b = ewl_theme_data_get_int(w, key);
-		snprintf(key, PATH_MAX, "%s/color/a", w->appearance);
-		t->a = ewl_theme_data_get_int(w, key);
+		t->r = ewl_theme_data_get_int(w, "color/r");
+		t->g = ewl_theme_data_get_int(w, "color/g");
+		t->b = ewl_theme_data_get_int(w, "color/b");
+		t->a = ewl_theme_data_get_int(w, "color/a");
 	}
 
 	/*

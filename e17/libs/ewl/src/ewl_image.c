@@ -367,7 +367,7 @@ static Ewl_Image_Type ewl_image_get_type(const char *i)
 	if (l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
 		return EWL_IMAGE_TYPE_EDJE;
 
-	return EWL_IMAGE_TYPE_NORMAL;
+	DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
 }
 
 
@@ -375,7 +375,7 @@ void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
-	Ecore_X_Event_Mouse_Button_Down *ev;
+	Ewl_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -394,7 +394,7 @@ void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
-	Ecore_X_Event_Mouse_Button_Up *ev;
+	Ewl_Event_Mouse_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -413,7 +413,7 @@ void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
-	Ecore_X_Event_Mouse_Move *ev;
+	Ewl_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

@@ -34,7 +34,7 @@ Ewl_Widget     *ewl_textarea_new(char *text)
  */
 void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
@@ -51,6 +51,8 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_textarea_configure_cb, NULL);
+
+	ta->etox_context = etox_context_new();
 
 	if (text)
 		ewl_textarea_set_text(ta, text);
@@ -111,6 +113,7 @@ char           *ewl_textarea_get_text(Ewl_TextArea * ta)
  */
 Evas_Object    *ewl_textarea_get_etox(Ewl_TextArea * ta)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
 
 	DRETURN_PTR(ta->etox, DLEVEL_STABLE);
@@ -177,25 +180,16 @@ void ewl_textarea_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		etox_context_free(ta->etox_context);
 		ta->etox_context = NULL;
 	} else {
-		char key[PATH_MAX];
 
 		/*
 		 * Get the default style and color based on the theme.
 		 */
-		snprintf(key, PATH_MAX, "%s/style", w->appearance);
-		style = ewl_theme_data_get_str(w, key);
+		style = ewl_theme_data_get_str(w, "style");
 
-		snprintf(key, PATH_MAX, "%s/r", w->appearance);
-		r = ewl_theme_data_get_int(w, key);
-
-		snprintf(key, PATH_MAX, "%s/g", w->appearance);
-		g = ewl_theme_data_get_int(w, key);
-
-		snprintf(key, PATH_MAX, "%s/b", w->appearance);
-		b = ewl_theme_data_get_int(w, key);
-
-		snprintf(key, PATH_MAX, "%s/a", w->appearance);
-		a = ewl_theme_data_get_int(w, key);
+		r = ewl_theme_data_get_int(w, "color/r");
+		g = ewl_theme_data_get_int(w, "color/g");
+		b = ewl_theme_data_get_int(w, "color/b");
+		a = ewl_theme_data_get_int(w, "color/a");
 
 		/*
 		 * Set the default style

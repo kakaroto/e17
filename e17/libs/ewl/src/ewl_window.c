@@ -358,7 +358,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Prepare the base rendering region for the evas, such as the X
 	 * window for the X11 based engines, or the surfaces for directfb.
 	 */
-#if defined(HAVE_EVAS_ENGINE_GL_X11_H) || defined(HAVE_EVAS_ENGINE_SOFTWARE_X11_H)
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(render, "x11")) {
 		window->window = ecore_x_window_new(0, window->x, window->y,
 						ewl_object_get_current_w(o),
@@ -386,7 +386,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		glinfo = (Evas_Engine_Info_GL_X11 *)info;
 
 		glinfo->info.display = ecore_x_display_get();
-		glinfo->info.visual = glinfo->func.best_depth_get(
+		glinfo->info.visual = glinfo->func.best_visual_get(
 				glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
 		glinfo->info.colormap = glinfo->func.best_colormap_get(

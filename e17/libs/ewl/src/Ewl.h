@@ -272,6 +272,7 @@ extern"C" {
 #include <stdint.h>
 #include <string.h>
 #include <limits.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

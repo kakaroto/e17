@@ -529,10 +529,13 @@ void ewl_realize_request(Ewl_Widget *w)
 	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
 
 	ewd_list_append(realize_list, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_child_add_place(Ewl_Widget *w)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL))
 		ewd_list_append(child_add_list, w);
 	else {
@@ -549,6 +552,8 @@ void ewl_child_add_place(Ewl_Widget *w)
 		}
 	}
 	ewd_list_prepend(child_add_list, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_realize_queue()
@@ -628,6 +633,8 @@ int ewl_in_realize_phase()
 
 void ewl_destroy_request(Ewl_Widget *w)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
@@ -646,6 +653,8 @@ void ewl_destroy_request(Ewl_Widget *w)
 	 */
 	if (ewl_object_get_recursive(EWL_OBJECT(w)))
 		ewl_container_destroy(EWL_CONTAINER(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_evas_destroy(Evas *evas)

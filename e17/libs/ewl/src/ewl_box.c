@@ -755,6 +755,8 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w, int size,
 static void
 ewl_box_setup()
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (!vertical) {
 		vertical = NEW(Box_Orientation, 1);
 		if (!vertical)

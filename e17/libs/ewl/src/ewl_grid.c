@@ -499,6 +499,8 @@ void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c)
 	Ewl_Grid       *g;
 	Ewl_Grid_Child *cdata;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	g = EWL_GRID(p);
 
 	cdata = ewl_widget_get_data(c, (void *) g);

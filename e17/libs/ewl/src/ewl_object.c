@@ -92,6 +92,7 @@ ewl_object_get_current_size(Ewl_Object * o, int *w, int *h)
  */
 int ewl_object_get_current_x(Ewl_Object * o)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(CURRENT_X(o) - PADDING_LEFT(o) - INSET_LEFT(o),
@@ -105,6 +106,7 @@ int ewl_object_get_current_x(Ewl_Object * o)
  */
 int ewl_object_get_current_y(Ewl_Object * o)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(CURRENT_Y(o) - PADDING_TOP(o) - INSET_TOP(o),
@@ -120,6 +122,7 @@ int ewl_object_get_current_w(Ewl_Object * o)
 {
 	int w;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	w = CURRENT_W(o);
@@ -148,6 +151,7 @@ int ewl_object_get_current_h(Ewl_Object * o)
 {
 	int h;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	h = CURRENT_H(o);
@@ -318,6 +322,7 @@ int ewl_object_get_preferred_w(Ewl_Object * o)
 {
 	int add, temp;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	add = INSET_HORIZONTAL(o) + PADDING_HORIZONTAL(o);
@@ -343,6 +348,7 @@ int ewl_object_get_preferred_h(Ewl_Object * o)
 {
 	int add, temp;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	add = INSET_VERTICAL(o) + PADDING_VERTICAL(o);
@@ -962,6 +968,7 @@ void ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t, int *b)
  */
 int ewl_object_top_padding(Ewl_Object * o)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(PADDING_TOP(o), DLEVEL_STABLE);
@@ -974,6 +981,7 @@ int ewl_object_top_padding(Ewl_Object * o)
  */
 int ewl_object_bottom_padding(Ewl_Object * o)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(PADDING_BOTTOM(o), DLEVEL_STABLE);
@@ -986,6 +994,7 @@ int ewl_object_bottom_padding(Ewl_Object * o)
  */
 int ewl_object_left_padding(Ewl_Object * o)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(PADDING_LEFT(o), DLEVEL_STABLE);
@@ -998,6 +1007,7 @@ int ewl_object_left_padding(Ewl_Object * o)
  */
 int ewl_object_right_padding(Ewl_Object * o)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(PADDING_RIGHT(o), DLEVEL_STABLE);
@@ -1142,6 +1152,8 @@ inline void ewl_object_set_alignment(Ewl_Object * o, unsigned int align)
 
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

@@ -177,8 +177,7 @@ static void ewl_theme_init_font_path()
 	 */
 	font_paths = ewd_list_new();
 	if (font_paths) {
-		snprintf(key, PATH_MAX, "/theme/font_path");
-		font_path = ewl_theme_data_get_str(NULL, key);
+		font_path = ewl_theme_data_get_str(NULL, "/theme/font_path");
 
 		if (font_path) {
 			if (*font_path == '/')
@@ -243,6 +242,7 @@ void ewl_theme_shutdown_widget(Ewl_Widget * w)
  */
 char           *ewl_theme_path()
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
 }
 
@@ -252,6 +252,7 @@ char           *ewl_theme_path()
  */
 E_DB_File *ewl_theme_get_db()
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DRETURN_PTR(theme_db, DLEVEL_STABLE);
 }
 
@@ -341,11 +342,20 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
 	char           *ret = NULL;
 	char           *temp = NULL;
+	char            key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
+	/*
+	 * Use the widget's appearance string to build a relative theme key.
+	 */
+	if (w)
+		snprintf(key, PATH_MAX, "%s/%s", w->appearance, k);
+	else
+		strcpy(key, k);
+
+	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w && w->theme)
 			ret = ewd_hash_get(w->theme, temp);
 
@@ -386,11 +396,20 @@ int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 {
 	int             ret = 0;
 	char           *temp;
+	char            key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
-	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
+	/*
+	 * Use the widget's appearance string to build a relative theme key.
+	 */
+	if (w)
+		snprintf(key, PATH_MAX, "%s/%s", w->appearance, k);
+	else
+		strcpy(key, k);
+
+	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w->theme)
 			ret = (int) (ewd_hash_get(w->theme, temp));
 		else

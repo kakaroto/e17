@@ -42,7 +42,6 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 {
 	Ewl_Widget     *w;
-	char            key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -149,8 +148,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Set the alignment of the buttons to the seeker.
 	 */
-	snprintf(key, PATH_MAX, "%s/button_order", w->appearance);
-	s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s), key);
+	s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
+						      "button_order");
 
 	/*
 	 * Setup a few orientation specific variables, such as appearance and
@@ -416,7 +415,6 @@ static int ewl_scrollbar_timer(void *data)
 	double          dt;
 	double          value;
 	int             velocity;
-	char            tmp[PATH_MAX];
 
 	s = EWL_SCROLLBAR(data);
 
@@ -427,8 +425,7 @@ static int ewl_scrollbar_timer(void *data)
 	 * Check the theme for a velocity setting and bring it within normal
 	 * useable bounds.
 	 */
-	snprintf(tmp, PATH_MAX, "%s/velocity", EWL_WIDGET(s)->appearance);
-	velocity = ewl_theme_data_get_int(EWL_WIDGET(s), tmp);
+	velocity = ewl_theme_data_get_int(EWL_WIDGET(s), "velocity");
 	if (velocity < 1)
 		velocity = 1;
 	else if (velocity > 10)

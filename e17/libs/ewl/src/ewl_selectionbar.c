@@ -351,6 +351,7 @@ int ewl_selectionbar_open_bar_timer(void *ev_data)
 	Ewl_Selectionbar *s;
 	int retval = 0;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	ecore_timer_del(close_timer);
 
 	w = EWL_WIDGET(ev_data);
@@ -386,6 +387,7 @@ int ewl_selectionbar_close_bar_timer(void *ev_data)
 	Ewl_Selectionbar *s;
 	int retval = 0;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	ecore_timer_del(open_timer);
 
 	w = EWL_WIDGET(ev_data);
@@ -428,7 +430,7 @@ ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
 	Ewl_Widget     *child;
 	Ewl_Object     *o;
 	Ewd_List       *children;
-	Ecore_X_Event_Mouse_Move *ev;
+	Ewl_Event_Mouse_Move *ev;
 	Ewl_Selectionbar *s;
 	int             x, old_x;
 

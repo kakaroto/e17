@@ -458,7 +458,8 @@ char           *ewl_widget_get_appearance(Ewl_Widget * w)
 
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
-	return (w->appearance ? strdup(w->appearance) : NULL);
+	DRETURN_PTR(w->appearance ? strdup(w->appearance) : NULL,
+		    DLEVEL_STABLE);
 }
 
 /**
@@ -984,12 +985,10 @@ void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int             len;
 	int             l = 0, r = 0, t = 0, b = 0;
 	int             i_l = 0, i_r = 0, i_t = 0, i_b = 0;
 	int             p_l = 0, p_r = 0, p_t = 0, p_b = 0;
 	char           *i = NULL;
-	char           *key = NULL;
 	char           *group = NULL;
 	Evas_Coord      width, height;
 	Ewl_Embed      *emb = NULL;
@@ -1043,26 +1042,12 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	p_b = b - p_b;
 
 	/*
-	 * Calculate the length of the base key string, then allocate
-	 * the memory for it plus room for placing /visible at the end.
-	 */
-	len = strlen(w->appearance) + 7;
-	key = NEW(char, len);
-	if (!key)
-		DRETURN(DLEVEL_STABLE);
-
-	/*
 	 * Retrieve the path to the theme file that will be loaded
 	 * return if no file to be loaded. Also get the group name in the
 	 * theme file.
 	 */
-	snprintf(key, len, "%s/file", w->appearance);
-	i = ewl_theme_image_get(w, key);
-
-	snprintf(key, len, "%s/group", w->appearance);
-	group = ewl_theme_data_get_str(w, key);
-
-	FREE(key);
+	i = ewl_theme_image_get(w, "file");
+	group = ewl_theme_data_get_str(w, "group");
 
 	if (group) {
 		emb = ewl_embed_find_by_widget(w);
@@ -1291,6 +1276,7 @@ void ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
@@ -1298,33 +1284,40 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_widget_set_state(w, "mouse,down,0");
 	else
 		ewl_widget_set_state(w, "mouse,in");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_set_state(w, "mouse,out");
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	Ecore_X_Event_Mouse_Button_Down *e = ev_data;
+	Ewl_Event_Mouse_Down *e = ev_data;
 	char state[14];
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,down,%i", e->button);
 	ewl_widget_set_state(w, state);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
@@ -1335,14 +1328,17 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 						  ev_data);
 	} else
 		ewl_widget_set_state(w, "mouse,out");
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (w->theme_object) {
 		edje_object_signal_emit(w->theme_object, "mouse,move", "EWL");
 	}
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void

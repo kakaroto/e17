@@ -184,7 +184,7 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	int len;
 	char *tmp;
 	Ewl_Password *e;
-	Ecore_X_Event_Key_Down *ev;
+	Ewl_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -209,8 +209,8 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				"KP_Enter"))
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 				EWL_TEXT(w)->text);
-	else if (ev->key_compose) {
-		ewl_password_insert_text(e, ev->key_compose);
+	else if (ev->keyname) {
+		ewl_password_insert_text(e, ev->keyname);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

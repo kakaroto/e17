@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 static void ewl_spinner_calc_value(Ewl_Spinner *s, double val);
@@ -11,6 +10,7 @@ Ewl_Widget     *ewl_spinner_new()
 {
 	Ewl_Spinner    *s = NULL;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	s = NEW(Ewl_Spinner, 1);
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -84,6 +84,8 @@ void ewl_spinner_init(Ewl_Spinner * s)
 			    ewl_spinner_decrease_value_cb, w);
 	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -346,7 +348,7 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry              *e;
 	Ewl_Spinner            *s;
-	Ecore_X_Event_Key_Down *ev;
+	Ewl_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -372,19 +374,10 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_entry_delete_to_left(e);
 	else if (!strcmp(ev->keyname, "Delete"))
 		ewl_entry_delete_to_right(e);
-	else if (ev->key_compose && (ev->key_compose[0] == '0' ||
-				 ev->key_compose[0] == '1' ||
-				 ev->key_compose[0] == '2' ||
-				 ev->key_compose[0] == '3' ||
-				 ev->key_compose[0] == '4' ||
-				 ev->key_compose[0] == '5' ||
-				 ev->key_compose[0] == '6' ||
-				 ev->key_compose[0] == '7' ||
-				 ev->key_compose[0] == '8' ||
-				 ev->key_compose[0] == '9' ||
-				 ev->key_compose[0] == '.' ||
-				 ev->key_compose[0] == '-'))
-		ewl_entry_insert_text(e, ev->key_compose);
+	else if (ev->keyname && (isdigit(ev->keyname[0]) ||
+				 ev->keyname[0] == '.' ||
+				 ev->keyname[0] == '-'))
+		ewl_entry_insert_text(e, ev->keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

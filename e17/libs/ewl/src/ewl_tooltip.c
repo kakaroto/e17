@@ -145,7 +145,7 @@ void
 ewl_tooltip_parent_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Tooltip *t = user_data;
-	Ecore_X_Event_Mouse_Move *e = ev_data;
+	Ewl_Event_Mouse_Move *e = ev_data;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

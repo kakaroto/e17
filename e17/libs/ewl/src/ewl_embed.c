@@ -1,5 +1,10 @@
 #include <Ewl.h>
 
+extern Ewl_Widget     *last_selected;
+extern Ewl_Widget     *last_key;
+extern Ewl_Widget     *last_focused;
+extern Ewl_Widget     *dnd_widget;
+
 Ewd_List       *ewl_embed_list = NULL;
 Evas_Smart     *embedded_smart = NULL;
 
@@ -199,6 +204,292 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ecore_X_Window evas_window)
 	}
 
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed where the key event is to occur
+ * @param keyname: the key press to trigger
+ * @return Returns no value.
+ * @brief Sends the event for a key press into an embed.
+ */
+void ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname)
+{
+	Ewl_Widget *temp;
+	Ewl_Event_Key_Down ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR("keyname", keyname);
+
+	ev.keyname = strdup(keyname);
+
+	/*
+	 * If a widget has been selected then we send the keystroke to the
+	 * appropriate widget.
+	 */
+	if (!last_key || !ewl_container_parent_of(EWL_WIDGET(embed),
+				last_key)) {
+		if (last_selected)
+			last_key = last_selected;
+		else
+			last_key = EWL_WIDGET(embed);
+	}
+
+	/*
+	 * Dispatcher of key down events, these get sent to the last widget
+	 * selected, and every parent above it.
+	 */
+	temp = last_key;
+	while (temp) {
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_DISABLED)))
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_KEY_DOWN, &ev);
+		temp = temp->parent;
+	}
+
+	FREE(ev.keyname);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
+ * @param embed: the embed where the key event is to occur
+ * @param keyname: the key release to trigger
+ * @return Returns no value.
+ * @brief Sends the event for a key release into an embed.
+ */
+void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname)
+{
+	Ewl_Widget *temp;
+	Ewl_Event_Key_Up ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR("keyname", keyname);
+
+	ev.keyname = strdup(keyname);
+
+	/*
+	 * Dispatcher of key up events, these get sent to the last widget
+	 * selected, and every parent above it.
+	 */
+	temp = last_key;
+	while (temp) {
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_DISABLED)))
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_KEY_UP, &ev);
+		temp = temp->parent;
+	}
+
+	FREE(ev.keyname);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
+ * @param embed: the embed where the mouse event is to occur
+ * @param b: the number of the button pressed
+ * @return Returns no value.
+ * @brief Sends the event for a mouse button press into an embed.
+ */
+void ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y)
+{
+	int double_click = 0;
+	Ewl_Event_Mouse_Down ev;
+	Ewl_Widget *temp = NULL;
+	Ewl_Widget *widget = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
+			x, y);
+
+	/*
+	 * Save the newly selected widget for further reference, do this prior
+	 * to triggering the callback to avoid funkiness if the callback
+	 * causes the widget to be destroyed.
+	 */
+	temp = last_selected;
+	last_key = last_selected = widget;
+
+	/*
+	 * Determine whether this widget has already been selected, if not,
+	 * deselect the previously selected widget and notify it of the
+	 * change. Then select the new widget and notify it of the selection.
+	 */
+	if (widget != temp) {
+		if (temp) {
+			ewl_object_remove_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_SELECTED);
+			ewl_callback_call(temp, EWL_CALLBACK_DESELECT);
+		}
+
+		if (widget && !(ewl_object_has_state(EWL_OBJECT(widget),
+					EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_add_state(EWL_OBJECT(widget),
+					EWL_FLAG_STATE_SELECTED);
+			ewl_callback_call(widget, EWL_CALLBACK_SELECT);
+		}
+	}
+
+	ev.x = x;
+	ev.y = y;
+	ev.button = b;
+
+	/*
+	 * While the mouse is down the widget has a pressed state, the widget
+	 * and its parents are notified in this change of state.
+	 */
+	temp = widget;
+	while (temp) {
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_add_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_PRESSED);
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_MOUSE_DOWN, &ev);
+
+			if (double_click) {
+				ewl_callback_call_with_event_data(temp,
+						EWL_CALLBACK_DOUBLE_CLICKED,
+						&ev);
+			}
+		}
+		temp = temp->parent;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
+ * @param embed: the embed where the mouse event is to occur
+ * @param b: the number of the button released
+ * @return Returns no value.
+ * @brief Sends the event for a mouse button release into an embed.
+ */
+void ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y)
+{
+	Ewl_Widget *temp;
+	Ewl_Event_Mouse_Up ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+
+	ev.x = x;
+	ev.y = y;
+	ev.button = b;
+
+	/*
+	 * When the mouse is released the widget no longer has a pressed state,
+	 * the widget and its parents are notified in this change of state.
+	 */
+	temp = last_selected;
+	while (temp) {
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+				EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_remove_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_PRESSED);
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_MOUSE_UP, &ev);
+
+		}
+
+		temp = temp->parent;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y)
+{
+	Ewl_Widget *widget;
+	Ewl_Event_Mouse_Move ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
+			x, y);
+
+	ev.x = x;
+	ev.y = y;
+
+	/*
+	 * Defocus all widgets up to the level of a shared parent of old and
+	 * newly focused widgets.
+	 */
+	while (last_focused && (widget != last_focused) &&
+			!ewl_container_parent_of(last_focused, widget)) {
+		ewl_object_remove_state(EWL_OBJECT(last_focused),
+				EWL_FLAG_STATE_HILITED);
+		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+		last_focused = last_focused->parent;
+	}
+
+	/*
+	 * Pass out the movement event up the chain, allows parents to
+	 * react to mouse movement in their children.
+	 */
+	last_focused = widget;
+	while (last_focused) {
+
+		if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
+					EWL_FLAG_STATE_DISABLED))) {
+
+			/*
+			 * First mouse move event in a widget marks it focused.
+			 */
+			if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
+						EWL_FLAG_STATE_HILITED))) {
+				ewl_object_add_state(EWL_OBJECT(last_focused),
+						EWL_FLAG_STATE_HILITED);
+				ewl_callback_call_with_event_data(last_focused,
+						EWL_CALLBACK_FOCUS_IN, &ev);
+			}
+
+			ewl_callback_call_with_event_data(last_focused,
+					EWL_CALLBACK_MOUSE_MOVE, &ev);
+		}
+		last_focused = last_focused->parent;
+	}
+
+	last_focused = widget;
+
+	if (dnd_widget && ewl_object_has_state(EWL_OBJECT(dnd_widget),
+				EWL_FLAG_STATE_DND))
+		ewl_callback_call_with_event_data(dnd_widget,
+						  EWL_CALLBACK_MOUSE_MOVE, &ev);
+
+	if (last_selected && ewl_object_has_state(EWL_OBJECT(last_selected),
+				EWL_FLAG_STATE_PRESSED))
+		ewl_callback_call_with_event_data(last_selected,
+						  EWL_CALLBACK_MOUSE_MOVE, &ev);
+	else
+		dnd_widget = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Sends a mouse out event to the last focused widget
+ */
+void ewl_embed_feed_mouse_out()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	while (last_focused) {
+		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+		last_focused = last_focused->parent;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -577,8 +868,7 @@ ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_ev_mouse_out(NULL, ECORE_X_EVENT_MOUSE_OUT,
-			ecore_event_current_event_get());
+	ewl_embed_feed_mouse_out();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -587,10 +877,14 @@ static void
 ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
 			     void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Mouse_Down *ev = event_info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_ev_mouse_down(NULL, ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
-			ecore_event_current_event_get());
+	embed = evas_object_smart_data_get(obj);
+	ewl_embed_feed_mouse_down(embed, ev->button, ev->canvas.x,
+				  ev->canvas.y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -599,10 +893,14 @@ static void
 ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
 			   void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Mouse_Up *ev = event_info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_ev_mouse_up(NULL, ECORE_X_EVENT_MOUSE_BUTTON_UP,
-			ecore_event_current_event_get());
+	embed = evas_object_smart_data_get(obj);
+	ewl_embed_feed_mouse_up(embed, ev->button, ev->canvas.x,
+				  ev->canvas.y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -611,10 +909,13 @@ static void
 ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
 			     void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Mouse_Up *ev = event_info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_ev_mouse_move(NULL, ECORE_X_EVENT_MOUSE_MOVE,
-			ecore_event_current_event_get());
+	embed = evas_object_smart_data_get(obj);
+	ewl_embed_feed_mouse_move(embed, ev->canvas.x, ev->canvas.y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -632,10 +933,13 @@ static void
 ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 			   void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Key_Down *ev = event_info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_ev_key_down(NULL, ECORE_X_EVENT_KEY_DOWN,
-			ecore_event_current_event_get());
+	embed = evas_object_smart_data_get(obj);
+	ewl_embed_feed_key_down(embed, ev->keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -644,10 +948,13 @@ static void
 ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 			 void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Key_Down *ev = event_info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_ev_key_up(NULL, ECORE_X_EVENT_KEY_UP,
-			ecore_event_current_event_get());
+	embed = evas_object_smart_data_get(obj);
+	ewl_embed_feed_key_up(embed, ev->keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

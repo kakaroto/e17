@@ -287,6 +287,8 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	int             new_w, new_h;
 	Ewl_Container  *c;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DCHECK_PARAM_PTR("w", w);
 
 	if (!size || ewl_in_realize_phase() || !REALIZED(w))

@@ -28,6 +28,7 @@ inline void     ewl_print_warning(void);
 
 #define DRETURN(lvl) \
 { \
+	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tReturn in %s();\n", \
@@ -38,6 +39,7 @@ inline void     ewl_print_warning(void);
 
 #define DRETURN_PTR(ptr, lvl) \
 { \
+	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tReturning %p in %s();\n", \
@@ -48,6 +50,7 @@ inline void     ewl_print_warning(void);
 
 #define DRETURN_FLOAT(num, lvl) \
 { \
+	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tReturning %f in %s();\n", \
@@ -58,6 +61,7 @@ inline void     ewl_print_warning(void);
 
 #define DRETURN_INT(num, lvl) \
 { \
+	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tReturning %i in %s();\n", \
