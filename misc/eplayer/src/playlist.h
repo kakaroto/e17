@@ -3,33 +3,33 @@
 
 #include <Evas.h>
 #include <limits.h>
+#include "plugin.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define PLAYLIST_ITEM_COMMENT_LEN 256
-
 typedef struct {
 	char file[PATH_MAX + 1];
 
-	/* vorbis comments: */
-	char artist[PLAYLIST_ITEM_COMMENT_LEN];
-	char title[PLAYLIST_ITEM_COMMENT_LEN];
-	char album[PLAYLIST_ITEM_COMMENT_LEN];
-	int duration;
+	char comment[COMMENT_ID_NUM][MAX_COMMENT_LEN];
 
+	int duration;
 	int channels; /* number of channels */
-	long rate; /* bitrate */
+	long sample_rate; /* sample rate */
+
+	InputPlugin *plugin; /* plugin that's used for this item */
 } PlayListItem;
 
 typedef struct {
 	int num; /* number of entries */
 	Evas_List *items;
 	Evas_List *cur_item;
+
+	Evas_List *plugins; /* lists all available plugins */
 } PlayList;
 
-PlayList *playlist_new();
+PlayList *playlist_new(Evas_List *plugins);
 void playlist_free();
 
 int playlist_load_file(PlayList *pl, const char *file, int append);

@@ -4,7 +4,7 @@
 #include <sys/ioctl.h>
 #include <assert.h>
 #include <config.h>
-#include "../../output_plugin.h"
+#include "../../plugin.h"
 
 #ifdef HAVE_SYS_SOUNDCARD_H
 # include <sys/soundcard.h>
@@ -53,9 +53,20 @@ int oss_configure(int channels, int rate, int bits, int bigendian) {
 }
 
 int oss_play(unsigned char *data, int len) {
+	int written;
+	
 	assert(fd != -1);
 
-	return (write(fd, data, len) != -1);
+	while (len > 0) {
+		if ((written = write(fd, data, len)) > 0) {
+			/* success: play next sample */
+			len -= written;
+			data += written;
+		} else
+			return 0;
+	}
+	
+	return 1;
 }
 
 static int open_mixer(int rw) {
@@ -108,7 +119,7 @@ int oss_volume_set(int left, int right) {
 	return (ret != -1);
 }
 
-int output_plugin_init(OutputPlugin *op) {
+int plugin_init(OutputPlugin *op) {
 	op->configure = oss_configure;
 	op->play = oss_play;
 	op->volume_get = oss_volume_get;

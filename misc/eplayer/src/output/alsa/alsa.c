@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <assert.h>
-#include "../../output_plugin.h"
+#include "../../plugin.h"
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
@@ -87,12 +87,7 @@ int alsa_play(unsigned char *data, int len) {
 			/* success: play the next frame */
 			frames -= written;
 			data += written * frame_size;
-			
-			continue;
-		}
-
-		/* error handling */
-		if (written == -EAGAIN)
+		} else if (written == -EAGAIN)
 			continue;
 		else if (written == -EPIPE)
 			snd_pcm_prepare(pcm);
@@ -188,7 +183,7 @@ static snd_mixer_t *open_mixer() {
 	return mixer;
 }
 
-int output_plugin_init(OutputPlugin *op) {
+int plugin_init(OutputPlugin *op) {
 	op->configure = alsa_configure;
 	op->play = alsa_play;
 	op->volume_get = alsa_volume_get;

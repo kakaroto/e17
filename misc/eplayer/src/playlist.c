@@ -1,24 +1,10 @@
 #include <config.h>
-#include <vorbis/vorbisfile.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <limits.h>
 #include <dirent.h>
 #include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include "playlist.h"
-
-static int is_dir (const char *dir) {
-	struct stat st;
-
-	if (stat(dir, &st))
-		return 0;
-
-	return (S_ISDIR(st.st_mode));
-}
+#include "eplayer.h"
 
 /**
  * Removes leading and trailing whitespace from a string.
@@ -55,68 +41,21 @@ static char *strstrip(char *str) {
 }
 
 /**
- * Searches a Vorbis comment for title, artist and album and stores
- * them in a PlayListItem.
+ * Fills a PlayListItem's comments/info fields.
  *
- * @param pli The PlayListItem to store the comments in
- * @param comment The Vorbis comment to search.
+ * @param pli The PlayListItem to store the comments/info stuff in.
  */
-void playlist_item_read_comments(PlayListItem *pli,
-                                 vorbis_comment *comment) {
-#define NUM_COMMENTS 3
-	char *cmt, *key[NUM_COMMENTS] = {"artist=", "title=", "album="};
-	char *dest[NUM_COMMENTS] = {pli->artist, pli->title, pli->album};
-	int i, j, len[NUM_COMMENTS];
-
-	for (i = 0; i < NUM_COMMENTS; i++)
-		len[i] = strlen (key[i]);
-
-	for (i = 0; i < comment->comments; i++) {
-		cmt = comment->user_comments[i];
-
-		for (j = 0; j < NUM_COMMENTS; j++)
-			if (!strncmp(cmt, key[j], len[j])) {
-				snprintf(dest[j], PLAYLIST_ITEM_COMMENT_LEN,
-				         "%s", &cmt[len[j]]);
-		}
-	}
-#undef NUM_COMMENTS
-}
-
-/**
- * Creates a new PlayListItem object.
- *
- * @param file File to load.
- * @return The new PlayListItem object.
- */
-PlayListItem *playlist_item_new(const char *file) {
-	PlayListItem *pli;
-	FILE *fp;
-	OggVorbis_File vf = {0};
-	vorbis_info *info;
-
-	if (!(fp = fopen(file, "rb")) || ov_open(fp, &vf, NULL, 0))
-		return NULL;
+void playlist_item_get_info(PlayListItem *pli) {
+	int i;
 	
-	if (!(pli = malloc(sizeof(PlayListItem))))
-		return NULL;
-
-	memset(pli, 0, sizeof(PlayListItem));
-	snprintf(pli->file, sizeof(pli->file), "%s", file);
-
-	/* read the vorbis comments etc */
-	playlist_item_read_comments(pli, ov_comment(&vf, -1));
-
-	/* get bitrate and number of channels */
-	info = ov_info(&vf, -1);
-	pli->channels = info->channels;
-	pli->rate = info->rate;
+	pli->sample_rate = pli->plugin->get_sample_rate();
+	pli->channels = pli->plugin->get_channels();
+	pli->duration = pli->plugin->get_duration();
+	pli->sample_rate = pli->plugin->get_sample_rate();
 	
-	pli->duration = ov_time_total(&vf, -1);
-
-	ov_clear(&vf);	/* ov_clear closes the file, too */
-
-	return pli;
+	for (i = 0; i < COMMENT_ID_NUM; i++)
+		snprintf(pli->comment[i], MAX_COMMENT_LEN, "%s",
+		         pli->plugin->get_comment(i));
 }
 
 /**
@@ -130,17 +69,61 @@ void playlist_item_free(PlayListItem *pli) {
 }
 
 /**
+ * Creates a new PlayListItem object.
+ *
+ * @param file File to load.
+ * @return The new PlayListItem object.
+ */
+PlayListItem *playlist_item_new(Evas_List *plugins, const char *file) {
+	PlayListItem *pli;
+	Evas_List *l;
+	InputPlugin *ip;
+
+	if (!(pli = malloc(sizeof(PlayListItem))))
+		return NULL;
+	
+	memset(pli, 0, sizeof(PlayListItem));
+
+	/* find the plugin for this file */
+	for (l = plugins; l; l = l->next) {
+		ip = l->data;
+
+		if (ip->open(file)) {
+			pli->plugin = ip;
+			break;
+		}
+	}
+
+	if (!pli->plugin) {
+#ifdef DEBUG
+		printf("No plugin found for %s!\n", file);
+#endif
+
+		playlist_item_free(pli);
+		return NULL;
+	}
+
+	snprintf(pli->file, sizeof(pli->file), "%s", file);
+	playlist_item_get_info(pli);
+
+	return pli;
+}
+
+/**
  * Creates a new PlayList object.
  *
+ * @param plugins
  * @return The newly created PlayList.
  */
-PlayList *playlist_new() {
+PlayList *playlist_new(Evas_List *plugins) {
 	PlayList *pl;
 
 	if (!(pl = malloc(sizeof(PlayList))))
 		return NULL;
 
 	memset(pl, 0, sizeof(PlayList));
+
+	pl->plugins = plugins;
 
 	return pl;
 }
@@ -203,7 +186,7 @@ void playlist_free(PlayList *pl) {
 int playlist_load_file(PlayList *pl, const char *file, int append) {
 	PlayListItem *pli;
 	
-	if (!pl || !(pli = playlist_item_new(file)))
+	if (!pl || !(pli = playlist_item_new(pl->plugins, file)))
 		return 0;
 
 	if (!append)
@@ -213,6 +196,8 @@ int playlist_load_file(PlayList *pl, const char *file, int append) {
 
 	if (!append)
 		pl->cur_item = pl->items;
+	
+	pl->num++;
 
 	return 1;
 }
@@ -237,15 +222,20 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 	/* ignore "." and ".." */
 	while ((entry = readdir(dir))
 	       && (!strcmp(entry->d_name, ".")
-	       || strcmp(entry->d_name, "..")));
+	       || !strcmp(entry->d_name, "..")));
+
+	if (!entry)
+		return 0;
 	
 	/* real entries: load directories recursively */
-	while ((entry = readdir(dir))) {
+	do {
 		if (is_dir(entry->d_name))
 			playlist_load_dir(pl, entry->d_name, 1);
-		else if ((pli = playlist_item_new(entry->d_name)))
+		else if ((pli = playlist_item_new(pl->plugins, entry->d_name))) {
 			tmp = evas_list_prepend(tmp, pli);
-	}
+			pl->num++;
+		}
+	} while ((entry = readdir(dir)));
 
 	closedir(dir);
 
@@ -284,15 +274,16 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	ptr = strrchr(dir, '/');
 	*ptr = 0;
 
-	while (fgets (buf, sizeof (buf), fp)) {
+	while (fgets(buf, sizeof (buf), fp)) {
 		if (!(ptr = strstrip(buf)) || !*ptr || *ptr == '#')
 			continue;
-		else if (*ptr != '/') { /* if it's a relative path, prepend the directory */
+		else if (*ptr != '/') {
+			/* if it's a relative path, prepend the directory */
 			snprintf(path, sizeof(path), "%s/%s", dir, buf);
 			ptr = path;
 		}
 
-		if ((pli = playlist_item_new(ptr))) {
+		if ((pli = playlist_item_new(pl->plugins, ptr))) {
 			tmp = evas_list_prepend(tmp, pli);
 			pl->num++;
 		}
@@ -315,7 +306,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 }
 
 /**
- * Add a M3U file, an Ogg file or a directory to a PlayList.
+ * Add a M3U file, a media file or a directory to a PlayList.
  *
  * @param pl
  * @param path
@@ -328,13 +319,11 @@ int playlist_load_any(PlayList *pl, const char *path, int append) {
 	if (is_dir(path))
 		return playlist_load_dir(pl, path, append);
 
-	/* FIXME we check for m3u or ogg using the suffix :/ */
+	/* FIXME we check for m3u using the suffix :/ */
 	ptr = (char *) &path[strlen(path) - 3];
 
-	if (!strcasecmp(ptr, "ogg"))
-		return playlist_load_file(pl, path, append);
-	else if (!strcasecmp(ptr, "m3u"))
+	if (!strcasecmp(ptr, "m3u"))
 		return playlist_load_m3u(pl, path, append);
 	else
-		return 0;
+		return playlist_load_file(pl, path, append);
 }

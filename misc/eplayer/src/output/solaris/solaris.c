@@ -4,7 +4,7 @@
 #include <sys/ioctl.h>
 #include <assert.h>
 #include <config.h>
-#include "../../output_plugin.h"
+#include "../../plugin.h"
 #include <sys/audioio.h>
 
 static int fd = -1;
@@ -32,9 +32,20 @@ int solaris_configure(int channels, int rate, int bits, int bigendian) {
 }
 
 int solaris_play(unsigned char *data, int len) {
+	int written;
+	
 	assert(fd != -1);
 
-	return (write(fd, data, len) != -1);
+	while (len > 0) {
+		if ((written = write(fd, data, len)) > 0) {
+			/* success: play next sample */
+			len -= written;
+			data += written;
+		} else
+			return 0;
+	}
+
+	return 1;
 }
 
 int solaris_volume_get(int *left, int *right) {
@@ -90,7 +101,7 @@ int solaris_volume_set(int left, int right) {
 	return (ret != -1);
 }
 
-int output_plugin_init(OutputPlugin *op) {
+int plugin_init(OutputPlugin *op) {
 	op->configure = solaris_configure;
 	op->play = solaris_play;
 	op->shutdown = solaris_shutdown;

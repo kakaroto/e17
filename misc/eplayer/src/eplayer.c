@@ -5,9 +5,54 @@
 #include <Ecore_Evas.h>
 #include <Edb.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <dirent.h>
 #include "eplayer.h"
 #include "interface.h"
-#include "vorbis.h"
+#include "track.h"
+
+int is_dir(const char *dir) {
+	struct stat st;
+
+	if (stat(dir, &st))
+		return 0;
+
+	return (S_ISDIR(st.st_mode));
+}
+
+static Evas_List *load_input_plugins() {
+	Evas_List *list = NULL;
+	InputPlugin *ip;
+	DIR *dir;
+	struct dirent *entry;
+	char name[128];
+
+	if (!(dir = opendir(PLUGIN_DIR "/input")))
+		return NULL;
+
+	/* ignore "." and ".." */
+	while ((entry = readdir(dir))
+	       && (!strcmp(entry->d_name, ".")
+	       || !strcmp(entry->d_name, "..")));
+
+	if (!entry)
+		return NULL;
+	
+	/* real entries */
+	do {
+		if (!is_dir(entry->d_name)) {
+			/* get the plugin name from the filename */
+			sscanf(entry->d_name, "lib%[^.].so", name);
+			
+			if ((ip = plugin_new(name, PLUGIN_TYPE_INPUT)))
+				list = evas_list_prepend(list, ip);
+		}
+	} while ((entry = readdir(dir)));
+
+	closedir(dir);
+
+	return list;
+}
 
 static void config_init(Config *cfg) {
 	snprintf(cfg->evas_engine, sizeof(cfg->evas_engine),
@@ -44,15 +89,19 @@ static int config_load(Config *cfg, const char *file) {
 }
 
 static void eplayer_free(ePlayer *player) {
+	Evas_List *l;
+	
 	if (!player)
 		return;
 
 	playlist_free(player->playlist);
 
-	if (player->output) {
-		player->output->shutdown();
-		output_plugin_free(player->output);
-	}
+	/* unload plugins */
+	if (player->output)
+		plugin_free(player->output);
+
+	for (l = player->input_plugins; l; l = l->next)
+		plugin_free(l->data);
 	
 	free(player);
 }
@@ -65,8 +114,6 @@ static ePlayer *eplayer_new() {
 		return NULL;
 
 	memset(player, 0, sizeof(ePlayer));
-
-	player->playlist = playlist_new();
 
 	/* load config */
 	config_init(&player->cfg);
@@ -86,8 +133,13 @@ static ePlayer *eplayer_new() {
 		}
 	}
 
+	player->input_plugins = load_input_plugins();
+
+	player->playlist = playlist_new(player->input_plugins);
+
 	/* load the output plugin */
-	player->output = output_plugin_new(player->cfg.output_plugin);
+	player->output = plugin_new(player->cfg.output_plugin,
+	                            PLUGIN_TYPE_OUTPUT);
 
 	if (!player->output) {
 		fprintf(stderr, "Cannot load %s output plugin!\n",
@@ -123,8 +175,8 @@ void eplayer_playback_stop(ePlayer *player, int rewind_track) {
 	}
 
 	if (rewind_track) {
-		vorbis_close(player);
-		vorbis_open(player);
+		track_close(player);
+		track_open(player);
 	}
 }
 
@@ -136,19 +188,19 @@ void eplayer_playback_stop(ePlayer *player, int rewind_track) {
  */
 void eplayer_playback_start(ePlayer *player, int rewind_track) {
 	if (rewind_track) {
-		vorbis_close(player);
-		vorbis_open(player);
+		track_close(player);
+		track_open(player);
 	}
 
 	/* start the playloop */
-	player->play_idler = ecore_idler_add(vorbis_play_chunk, player);
-	player->time_timer = ecore_timer_add(0.5, vorbis_update_time,
+	player->play_idler = ecore_idler_add(track_play_chunk, player);
+	player->time_timer = ecore_timer_add(0.5, track_update_time,
 	                                     player);
 }
 
 int main(int argc, const char **argv) {
 	ePlayer *player;
-	int args;
+	int i;
 
 	if (!(player = eplayer_new()))
 		return 1;
@@ -160,12 +212,18 @@ int main(int argc, const char **argv) {
 	}
 	
 	/* Parse Args */
-	for (args = 1; args < argc; args++) {
+	for (i = 1; i < argc; i++) {
 #ifdef DEBUG
-		printf("Adding file to playlist: %s\n", argv[args]);
+		printf("Adding file to playlist: %s\n", argv[i]);
 #endif
 		
-		playlist_load_any(player->playlist, argv[args], args > 1);
+		playlist_load_any(player->playlist, argv[i], i > 1);
+	}
+	
+	if (!player->playlist->num) {
+		fprintf(stderr, "No files loaded!\n");
+		eplayer_free(player);
+		return 1;
 	}
 	
 	if (!setup_gui(player)) {
@@ -178,7 +236,7 @@ int main(int argc, const char **argv) {
 	refresh_volume(player);
 	ecore_timer_add(1.5, refresh_volume, player);
 
-	vorbis_open(player);
+	track_open(player);
 	refresh_time(player, 0);
 
 #ifdef DEBUG

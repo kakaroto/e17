@@ -2,9 +2,8 @@
 #define __EPLAYER_H
 
 #include <Ecore.h>
-#include <vorbis/vorbisfile.h>
 #include "playlist.h"
-#include "output_plugin.h"
+#include "plugin.h"
 
 typedef enum {
 	TIME_DISPLAY_ELAPSED,
@@ -30,8 +29,8 @@ typedef struct {
 	Ecore_Idler *play_idler;
 	Ecore_Timer *time_timer;
 
-	OggVorbis_File current_track;
 	OutputPlugin *output;
+	Evas_List *input_plugins; /* lists all available input plugins */
 
 	Config cfg;
 	Gui gui;
@@ -39,6 +38,8 @@ typedef struct {
 
 void eplayer_playback_stop(ePlayer *player, int rewind_track);
 void eplayer_playback_start(ePlayer *player, int rewind_track);
+
+int is_dir(const char *dir);
 
 #endif
 

@@ -1,4 +1,4 @@
-# $Id$
+dnl $Id$
 
 AC_INIT(src/eplayer.c)
 
@@ -42,15 +42,19 @@ dnl I'd like to use XIPH_PATH_VORBIS here, but it seems to be quite
 dnl unstable and there's no pkgconfig file either :/
 tmp=$LIBS
 
-AC_CHECK_LIB(vorbis, vorbis_info_init, ,
-	AC_MSG_ERROR(Cannot find libvorbis))
+AC_CHECK_LIB(vorbis, vorbis_info_init,
+	[have_vorbis="yes"; LIBS="$LIBS -lvorbis"], have_vorbis="no")
 
-AC_CHECK_LIB(vorbisfile, ov_open, ,
-	AC_MSG_ERROR(Cannot find libvorbisfile))
+if test "x$have_vorbis" = "xyes"; then
+	AC_CHECK_LIB(vorbisfile, ov_open,
+		[
+			VORBIS_LIBS="-lvorbis -lvorbisfile -logg"
+			AC_SUBST(VORBIS_LIBS)
+		], have_vorbis="no")
+fi
 
-VORBIS_LIBS="-lvorbis -lvorbisfile -logg"
-AC_SUBST(VORBIS_LIBS)
 LIBS=$tmp
+AM_CONDITIONAL(HAVE_VORBIS, test "$have_vorbis" = "yes")
 
 AC_PATH_GENERIC(ecore, , ,
 	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
@@ -84,6 +88,8 @@ data/images/Makefile
 etc/Makefile
 m4/Makefile
 src/Makefile
+src/input/Makefile
+src/input/vorbis/Makefile
 src/output/Makefile
 src/output/alsa/Makefile
 src/output/oss/Makefile
@@ -92,6 +98,12 @@ src/output/solaris/Makefile
 
 echo
 echo "$PACKAGE $VERSION"
+echo
+echo
+echo "Input Plugins"
+echo
+echo "Ogg Vorbis....: $have_vorbis"
+echo
 echo
 echo "Output Plugins"
 echo

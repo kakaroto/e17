@@ -4,7 +4,7 @@
 #include <Esmart/container.h>
 #include <Edje.h>
 #include "callbacks.h"
-#include "vorbis.h"
+#include "track.h"
 
 static int app_signal_exit(void *data, int type, void *event) {
 #ifdef DEBUG
@@ -130,7 +130,7 @@ void show_playlist(ePlayer *player) {
 
 	for (l = player->playlist->items; l; l = l->next) {
 		/* get the information we want to display */
-		title = ((PlayListItem *) l->data)->title;
+		title = ((PlayListItem *) l->data)->comment[COMMENT_ID_TITLE];
 		duration = ((PlayListItem *) l->data)->duration;
 		
 		snprintf(len, sizeof(len), "%i:%02i", duration / 60,

@@ -95,7 +95,7 @@ collections {
                                 }
                                 color,  255 255 255 255;
                                 text {
-                                        text, "eVorbisPlayer - Edje Edition";       /* Text String */
+                                        text, "ePlayer - Edje Edition";
                                         font, "Vera";   /* Only font Vera works!  Use other and segv */
                                         size, 6;       /* Font Size */
                                         align,   0.5 1.0;       /* Text alignment based on rel1/rel2 */

@@ -1,10 +1,7 @@
 #include <config.h>
 #include <Edje.h>
-#include <vorbis/codec.h>
-#include <sys/ioctl.h>
 #include <assert.h>
 #include "eplayer.h"
-#include "vorbis.h"
 #include "interface.h"
 
 /**
@@ -12,19 +9,19 @@
  *
  * @param udata Pointer to an ePlayer struct.
  */
-int vorbis_play_chunk(void *udata) {
+int track_play_chunk(void *udata) {
 	ePlayer *player = udata;
-	long bytes_read;
-	int big_endian = 0;
-	static char pcmout[4096];
+	PlayListItem *pli = player->playlist->cur_item->data;
+	InputPlugin *plugin = pli->plugin;
+	int bytes_read, big_endian = 0;
+	static unsigned char pcmout[8192];
 
 #ifdef WORDS_BIGENDIAN
 	big_endian = 1;
 #endif
-
+	
 	/* read the data ... */
-	bytes_read = ov_read(&player->current_track, pcmout, sizeof(pcmout),
-	                     big_endian, 2, 1, NULL);
+	bytes_read = plugin->read(pcmout, sizeof(pcmout), big_endian);
 	
 	if (bytes_read) /* ...and play it */
 		player->output->play(pcmout, bytes_read);
@@ -38,13 +35,13 @@ int vorbis_play_chunk(void *udata) {
 	return !!bytes_read;
 }
 
-int vorbis_update_time(void *udata) {
+int track_update_time(void *udata) {
 	ePlayer *player = udata;
 	PlayListItem *current_item = player->playlist->cur_item->data;
 	static int old_time = -1;
 	int cur_time;
 
-	cur_time = ov_time_tell(&player->current_track);
+	cur_time = current_item->plugin->get_current_pos();
 	
 	if (player->cfg.time_display == TIME_DISPLAY_LEFT)
 		cur_time = current_item->duration - cur_time;
@@ -67,7 +64,7 @@ static int prepare_output(ePlayer *player) {
 #endif
 
 	return player->output->configure(current->channels,
-	                                 current->rate,
+	                                 current->sample_rate,
 	                                 16, bigendian);
 }
 
@@ -76,8 +73,10 @@ static int prepare_output(ePlayer *player) {
  *
  * @param player
  */
-void vorbis_close(ePlayer *player) {
-	ov_clear(&player->current_track);
+void track_close(ePlayer *player) {
+	PlayListItem *pli = player->playlist->cur_item->data;
+	
+	pli->plugin->close();
 }
 
 /**
@@ -85,22 +84,20 @@ void vorbis_close(ePlayer *player) {
  *
  * @param player
  */
-void vorbis_open(ePlayer *player) {
+void track_open(ePlayer *player) {
 	PlayListItem *pli;
-	FILE *fp;
 
 	assert(player->playlist->cur_item);
 	pli = player->playlist->cur_item->data;
 
-	if (!(fp = fopen (pli->file, "rb"))
-	    || ov_open(fp, &player->current_track, NULL, 0)) {
-		fprintf (stderr, "ERROR: Can't open file '%s'\n", pli->file);
-		return;
-	}
+	pli->plugin->open(pli->file);
 
-	edje_object_part_text_set(player->gui.edje, "song_name", pli->title);
-	edje_object_part_text_set(player->gui.edje, "artist_name", pli->artist);
-	edje_object_part_text_set(player->gui.edje, "album_name", pli->album);
+	edje_object_part_text_set(player->gui.edje, "song_name",
+	                          pli->comment[COMMENT_ID_TITLE]);
+	edje_object_part_text_set(player->gui.edje, "artist_name",
+	                          pli->comment[COMMENT_ID_ARTIST]);
+	edje_object_part_text_set(player->gui.edje, "album_name",
+	                          pli->comment[COMMENT_ID_ALBUM]);
 	edje_object_part_text_set(player->gui.edje, "time_text", "0:00");
 
 	if (!prepare_output(player)) {
@@ -110,38 +107,5 @@ void vorbis_open(ePlayer *player) {
 		edje_object_signal_emit(player->gui.edje,
 		                        "PLAY_NEXT", "next_button");
 	}
-}
-
-void cb_seek_forward(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src) {
-	ePlayer *player = udata;
-
-#ifdef DEBUG
-	printf("DEBUG: Seeking forward\n");
-#endif
-
-	/* We don't care if you seek past the file, the play loop
-	 * will catch EOF and play next file
-	 */
-	ov_time_seek(&player->current_track,
-	             ov_time_tell(&player->current_track) + 5);
-}
-
-void cb_seek_backward(void *udata, Evas_Object *obj,
-                      const char *emission, const char *src) {
-	ePlayer *player = udata;
-	double cur_time = ov_time_tell(&player->current_track);
-	
-	/* Lets not seek backward if there isn't a point */
-	if (cur_time < 6) {
-		printf("You arent even 5 secs into the stream!\n");
-		return;
-	} 
-
-#ifdef DEBUG
-	printf("DEBUG: Seeking backward - Current Pos: %lf\n", cur_time);
-#endif
-	
-	ov_time_seek(&player->current_track, cur_time - 5);
 }
 

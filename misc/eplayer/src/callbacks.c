@@ -2,13 +2,20 @@
 #include <Edje.h>
 #include <Esmart/container.h>
 #include "eplayer.h"
-#include "vorbis.h"
+#include "track.h"
 #include "interface.h"
 
 static int paused = 0;
 
-void cb_play(ePlayer *player, Evas *e, Evas_Object *obj,
-             void *event_info) {
+/**
+ * Starts/resumes playback.
+ *
+ * @param player
+ * @param e
+ * @param o
+ * @param event
+ */
+void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
 #ifdef DEBUG
 	printf("Play callback entered\n");
 #endif
@@ -21,8 +28,15 @@ void cb_play(ePlayer *player, Evas *e, Evas_Object *obj,
 	}
 }
 
-void cb_pause(ePlayer *player, Evas *e, Evas_Object *obj,
-              void *event_info) {
+/**
+ * Pauses/resumes playback.
+ *
+ * @param player
+ * @param e
+ * @param o
+ * @param event
+ */
+void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
 #ifdef DEBUG
 	printf("Pause callback entered\n");
 #endif
@@ -41,11 +55,11 @@ void cb_pause(ePlayer *player, Evas *e, Evas_Object *obj,
  *
  * @param player
  * @param e
- * @param obj
- * @param event_info
+ * @param o
+ * @param event
  */
-void cb_track_next(ePlayer *player, Evas *e, Evas_Object *obj,
-                   void *event_info) {
+void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
+                   void *event) {
 #ifdef DEBUG
 	printf("DEBUG: Next File Called\n");
 #endif
@@ -60,12 +74,21 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *obj,
 		 * but don't start playing yet.
 		 */
 		player->playlist->cur_item = player->playlist->items;
-		vorbis_open(player); /* refresh track info parts */
+		track_open(player); /* refresh track info parts */
 	}
 }
 
-void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *obj,
-                   void *event_info) {
+/**
+ * Moves to the previous track and plays it, except when we're
+ * at the first track already.
+ *
+ * @param player
+ * @param e
+ * @param o
+ * @param event
+ */
+void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
+                   void *event) {
 #ifdef DEBUG
 	printf("DEBUG: Previous File Called\n");
 #endif
@@ -115,7 +138,7 @@ void cb_volume_lower(ePlayer *player, Evas_Object *obj,
 void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
                             const char *emission, const char *src) {
 	player->cfg.time_display = !player->cfg.time_display;
-	vorbis_update_time(player);
+	track_update_time(player);
 }
 
 /**
@@ -142,4 +165,35 @@ void cb_playlist_scroll_up(void *udata, Evas_Object *obj,
 void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
                              const char *emission, const char *src) {
 	playlist_scroll(udata, -1);
+}
+
+void cb_seek_forward(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src) {
+	ePlayer *player = udata;
+	PlayListItem *pli = player->playlist->cur_item->data;
+
+#ifdef DEBUG
+	printf("DEBUG: Seeking forward\n");
+#endif
+
+	/* We don't care if you seek past the file, the play loop
+	 * will catch EOF and play next file
+	 */
+	pli->plugin->set_current_pos(pli->plugin->get_current_pos() + 5);
+}
+
+void cb_seek_backward(void *udata, Evas_Object *obj,
+                      const char *emission, const char *src) {
+	ePlayer *player = udata;
+	PlayListItem *pli = player->playlist->cur_item->data;
+	int cur_time = pli->plugin->get_current_pos();
+	
+#ifdef DEBUG
+	printf("DEBUG: Seeking backward - Current Pos: %i\n", cur_time);
+#endif
+
+	if (cur_time < 6) /* restart from the beginning */
+		eplayer_playback_start(player, 1);
+	else
+		pli->plugin->set_current_pos(cur_time - 5);
 }
