@@ -107,7 +107,6 @@ main(int argc, char **argv)
 	    edje_object_signal_emit(o, "window,borderless,off", "");
 	if((str = edje_object_data_get(o, "iconbar,window")))
 	{
-	    fprintf(stderr, "iconbar,window is %s\n", str);
 #ifdef HAVE_TRANS_BG
 	    if(!strcmp(str, "trans"))
 	    {
@@ -127,7 +126,7 @@ main(int argc, char **argv)
 		fprintf(stderr,"iconbar compiled without trans support\n");
 	    }
 #endif
-	    if(!strcmp(str, "shaped"))
+	    else if(!strcmp(str, "shaped"))
 	    {
 		ecore_evas_shaped_set(ee, 1);
 	    }
