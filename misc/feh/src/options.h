@@ -104,6 +104,7 @@ struct __fehoptions
    int debug_level;
    int geom_w;
    int geom_h;
+   int default_zoom;
    unsigned char adjust_reload;
    unsigned int start_list_at;
    

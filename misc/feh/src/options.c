@@ -376,6 +376,7 @@ feh_parse_option_array(int argc, char **argv)
       {"bg-scale", 1, 0, 202},
       {"bg-seamless", 1, 0, 203},
       {"menu-style", 1, 0, 204},
+      {"zoom", 1, 0, 205},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -644,6 +645,9 @@ feh_parse_option_array(int argc, char **argv)
            free(opt.menu_style);
            opt.menu_style = estrdup(optarg);
            break;
+        case 205:
+           opt.default_zoom = atoi(optarg);
+           break;
         default:
            break;
       }
@@ -788,6 +792,10 @@ show_usage(void)
            "  -F, --full-screen         Make the window fullscreen\n"
            "  -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode,\n"
            "                            is affected by the option --stretch\n"
+           "      --zoom PERCENT        Zooms images by a PERCENT, when in full screen\n"
+           "                            mode or when window geometry is fixed. If combined\n"
+           "                            with --auto-zoom, zooming will be limited to the\n"
+           "                            the size.\n"
            "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
            "                            instead of opening multiple files in slideshow\n"
            "                            mode, multiple windows will be opened.\n"

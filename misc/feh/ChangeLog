@@ -1,3 +1,23 @@
+Wed Jan 30 13:29:21 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Jens Laas <jens.laas@data.slu.se>
+  * Adds --zoom option. Here's what he said about it:
+    > What it does:
+    > zooms images by a fixed amount but never larger than the screen.
+    > Why:
+    > This is nice if you got a collection of images where some are small and
+    > can stand a small zoom. Large images are unaffected.
+    > When does it work, and how?
+    > You have to be in fullscreen mode _and_ have auto-zoom turned on.
+    > "feh -FZ --zoom 130 imagefile" will do the trick.
+    > -zoom percent  -- is the new switch.
+    >                   100 = orignal size,
+    >                   130 is 30% larger.
+  * I tweaked it abit to allow it to work (differently) without -Z.
+    feh -F --zoom 200 will zoom each image to 200%, regardless of the
+    resulting size. feh -FZ --zoom 200 will zoom each image up to a maximum
+    of 200%, but without generating an image larger than the screen.
+
 Sat Jan 26 16:20:43 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Use giblib fontstyles for menus, instead of hardcoding the shadow.
