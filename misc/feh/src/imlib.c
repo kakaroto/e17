@@ -337,7 +337,12 @@ feh_draw_filename (winwidget w)
   Imlib_Image *im = NULL;
 
   if (!fn)
-    fn = imlib_load_font ("20thcent/16");
+  {
+      if(opt.full_screen)
+	    fn = imlib_load_font ("20thcent/16");
+      else
+	    fn = imlib_load_font ("20thcent/10");
+  }
 
   if (!fn)
     {

@@ -146,6 +146,8 @@ main_loop (void)
 			  XSetWindowBackgroundPixmap (disp, winwid->win,
 						      winwid->bg_pmap);
 			  XClearWindow (disp, winwid->win);
+			  if (opt.draw_filename)
+			    feh_draw_filename (winwid);
 			  XFlush (disp);
 			}
 		    }

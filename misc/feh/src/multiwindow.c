@@ -37,10 +37,12 @@ init_multiwindow_mode (void)
       snprintf (s, len, PACKAGE " - %s", file->filename);
 
       if ((w = winwidget_create_from_file (file, s)) != NULL)
-	{
+      {
+	  w->file = file;
+	  if(opt.draw_filename)
+		feh_draw_filename(w);
 	  if (!opt.progressive)
 	    winwidget_show (w);
-	  w->file = file;
 	  if (opt.reload > 0)
 	    feh_add_unique_timer (cb_reload_timer, w, opt.reload);
 	}
