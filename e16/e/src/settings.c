@@ -1147,7 +1147,7 @@ CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
      {
 	Conf.save_under = tmp_saveunders;
 	Conf.menus.warp = tmp_warpmenus;
-	Conf.menus.slide = tmp_animated_menus;
+	Conf.menus.animate = tmp_animated_menus;
 	Conf.menus.onscreen = tmp_menusonscreen;
 	Conf.mapslide = tmp_map_slide;
 	Conf.cleanupslide = tmp_cleanup_slide;
@@ -1178,7 +1178,7 @@ SettingsSpecialFX(void)
 
    tmp_saveunders = Conf.save_under;
    tmp_warpmenus = Conf.menus.warp;
-   tmp_animated_menus = Conf.menus.slide;
+   tmp_animated_menus = Conf.menus.animate;
    tmp_menusonscreen = Conf.menus.onscreen;
    tmp_map_slide = Conf.mapslide;
    tmp_cleanup_slide = Conf.cleanupslide;

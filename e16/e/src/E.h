@@ -845,7 +845,7 @@ typedef struct
    } hints;
    struct
    {
-      char                slide;
+      char                animate;
       char                onscreen;
       char                warp;
       int                 opacity;

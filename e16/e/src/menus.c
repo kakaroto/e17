@@ -357,7 +357,7 @@ MenuShow(Menu * m, char noshow)
 	ESelectInput(m->win, ewin->client.event_mask);
 
 	ewin->head = head_num;
-	if (Conf.menus.slide)
+	if (Conf.menus.animate)
 	   EwinInstantShade(ewin, 0);
 	ICCCM_Cmap(NULL);
 	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
@@ -365,7 +365,7 @@ MenuShow(Menu * m, char noshow)
 	if (!noshow)
 	  {
 	     ShowEwin(ewin);
-	     if (Conf.menus.slide)
+	     if (Conf.menus.animate)
 		EwinUnShade(ewin);
 	  }
      }
@@ -1353,7 +1353,7 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 			   ewin2->border->border.top);
 		  RaiseEwin(ewin2);
 		  ShowEwin(ewin2);
-		  if (Conf.menus.slide)
+		  if (Conf.menus.animate)
 		     EwinUnShade(ewin2);
 		  Mode_menus.list[Mode_menus.current_depth++] = mi->child;
 	       }
@@ -1590,7 +1590,7 @@ MenusSetEvents(int on)
 static void
 SubmenuShowTimeout(int val __UNUSED__, void *dat)
 {
-   int                 mx, my;
+   int                 mx, my, xo, yo;
    unsigned int        mw, mh;
    Menu               *m;
    MenuItem           *mi;
@@ -1617,18 +1617,10 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
       return;
 
    EGetGeometry(mi->win, NULL, &mx, &my, &mw, &mh, NULL, NULL);
-   MoveEwin(ewin2,
-	    EoGetX(ewin) + ewin->border->border.left + mx + mw,
-	    EoGetY(ewin) + ewin->border->border.top + my -
-	    ewin2->border->border.top);
-   RaiseEwin(ewin2);
-   ShowEwin(ewin2);
 
-   if (Conf.menus.slide)
-      EwinUnShade(ewin2);
-
-   if (Mode_menus.list[Mode_menus.current_depth - 1] != mi->child)
-      Mode_menus.list[Mode_menus.current_depth++] = mi->child;
+   /* Sub-menu offsets relative to parent menu origin */
+   xo = ewin->border->border.left + mx + mw;
+   yo = ewin->border->border.top + my - ewin2->border->border.top;
 
    if (Conf.menus.onscreen)
      {
@@ -1637,13 +1629,20 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 	int                 fy[256];
 	int                 tx[256];
 	int                 ty[256];
-	int                 i;
+	int                 i, ww, hh;
 	int                 xdist = 0, ydist = 0;
 
-	if (EoGetX(ewin2) + EoGetW(ewin2) > VRoot.w)
-	   xdist = VRoot.w - (EoGetX(ewin2) + EoGetW(ewin2));
-	if (EoGetY(ewin2) + EoGetH(ewin2) > VRoot.h)
-	   ydist = VRoot.h - (EoGetY(ewin2) + EoGetH(ewin2));
+	/* Size of new submenu (may be shaded atm.) */
+	ww = mi->child->w + ewin2->border->border.left +
+	   ewin2->border->border.right;
+	hh = mi->child->h + ewin2->border->border.top +
+	   ewin2->border->border.bottom;
+
+	if (EoGetX(ewin) + xo + ww > VRoot.w)
+	   xdist = VRoot.w - (EoGetX(ewin) + xo + ww);
+	if (EoGetY(ewin) + yo + hh > VRoot.h)
+	   ydist = VRoot.h - (EoGetY(ewin) + yo + hh);
+
 	if ((xdist != 0) || (ydist != 0))
 	  {
 	     for (i = 0; i < Mode_menus.current_depth; i++)
@@ -1674,6 +1673,18 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 			     mi->text_w / 2, mi->text_h / 2);
 	  }
      }
+
+   Mode.move.check = 0;		/* Bypass on-screen checks */
+   MoveEwin(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
+   Mode.move.check = 1;
+   RaiseEwin(ewin2);
+   ShowEwin(ewin2);
+
+   if (Conf.menus.animate)
+      EwinUnShade(ewin2);
+
+   if (Mode_menus.list[Mode_menus.current_depth - 1] != mi->child)
+      Mode_menus.list[Mode_menus.current_depth++] = mi->child;
 }
 
 static void
@@ -2254,7 +2265,7 @@ IpcItem             MenusIpcArray[] = {
 #define N_IPC_FUNCS (sizeof(MenusIpcArray)/sizeof(IpcItem))
 
 static const CfgItem MenusCfgItems[] = {
-   CFG_ITEM_BOOL(Conf.menus, slide, 0),
+   CFG_ITEM_BOOL(Conf.menus, animate, 0),
    CFG_ITEM_BOOL(Conf.menus, onscreen, 1),
    CFG_ITEM_BOOL(Conf.menus, warp, 1),
    CFG_ITEM_INT(Conf.menus, opacity, 220),
