@@ -109,6 +109,24 @@ echo "        libXext.so installed and that it is located in the X libraries";
 echo "        directory shown above.  If it is in a different directory, try using";
 echo "        the --x-libraries parameter to configure.";
              AC_MSG_ERROR([Fatal:  libXext not found.])], $X_LIBS $SUBLIBS)
+dnl#
+dnl* I hope I'm doing this right
+dnl#
+AC_CHECK_LIB(GL, glXChooseVisual, GL_LIBS="GL", [
+echo "Warning Will Robinson. No OpenGL! Install Mesa or you favorite hardware GLX.";
+             ], $X_LIBS $SUBLIBS)
+
+GL_PROGS=""
+
+if test "$GL_LIBS" = "GL"; then
+	AC_CHECK_HEADERS(GL/glx.h,[P_GL="GL"], [echo "Warning Will Robinson. No OpenGL headers! Install Mesa our your favorite hardware GLX."])
+	if test "$P_GL" = "GL"; then
+	X_LIBS="-lGL $X_LIBS"
+	AC_DEFINE(HAVE_LIBGL)
+	GL_PROGS="E-OpenGL-Demo.epplet"
+	AC_MSG_WARN([*** Building for GLX. Grab your ankles and kiss your ass goodbye! ***])
+	fi
+fi
 
 AC_CHECK_PROG(IMLIB_CONFIG, imlib-config, imlib-config, no)
 
@@ -291,6 +309,7 @@ AC_SUBST(GTLIBS)
 AC_SUBST(THREADLIBS)
 AC_SUBST(TEST_PROGS)
 AC_SUBST(MIXER_PROGS)
+AC_SUBST(GL_PROGS)
 AC_SUBST(SGI_LIBS)
 AC_SUBST(SGI_DEFINES)
 
