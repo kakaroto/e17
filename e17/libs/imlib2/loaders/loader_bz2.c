@@ -20,7 +20,7 @@ static int uncompress_file (FILE *fp, int dest)
 {
 	BZFILE *bf;
 	DATA8 outbuf[OUTBUF_SIZE];
-	int cont = 1, bytes, error;
+	int bytes, error;
 
 	bf = BZ2_bzReadOpen (&error, fp, 0, 0, NULL, 0);
 

@@ -47,8 +47,6 @@ static void         put_separate_and_raster(TIFFRGBAImage *, uint32 *, uint32,
                                             unsigned char *);
 static void         raster(TIFFRGBAImage_Extra * img, uint32 * raster, uint32 x,
                            uint32 y, uint32 w, uint32 h);
-static void         error_handler(const char *module, const char *fmt,
-                                  va_list ap);
 char                load(ImlibImage * im, ImlibProgressFunction progress,
                          char progress_granularity, char immediate_load);
 char                save(ImlibImage * im, ImlibProgressFunction progress,
@@ -300,7 +298,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    DATA32              pixel, *data = im->data;
    double              alpha_factor;
    uint32              x, y;
-   uint8               r, g, b, a;
+   uint8               r, g, b, a = 0;
    int                 has_alpha = IMAGE_HAS_ALPHA(im);
    int                 i = 0, pl = 0;
    char                pper = 0;

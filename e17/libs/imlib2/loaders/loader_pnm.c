@@ -134,7 +134,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    if (((!im->data) && (im->loader)) || (immediate_load) || (progress))
      {
         DATA8              *data = NULL;        /* for the binary versions */
-        DATA8              *ptr;
+        DATA8              *ptr = NULL;
         int                *idata = NULL;       /* for the ASCII versions */
         int                *iptr;
         char                buf2[256];
@@ -593,7 +593,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     if (progress)
                       {
                          char                per;
-                         int                 l;
+                         int                 l = 0;
 
                          per = (char)((100 * y) / im->h);
                          if (((per - pper) >= progress_granularity)
@@ -662,7 +662,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     if (progress)
                       {
                          char                per;
-                         int                 l;
+                         int                 l = 0;
 
                          per = (char)((100 * y) / im->h);
                          if (((per - pper) >= progress_granularity)
