@@ -749,12 +749,12 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     else
 		ewin->client.command = NULL;
 	  }
-      else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
+	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
 	  {
-	     EWin **lst;
-	     int i, lnum, ok = 1;
-	     
-	     lst = (EWin **)ListItemType(&lnum, LIST_TYPE_EWIN);
+	     EWin              **lst;
+	     int                 i, lnum, ok = 1;
+
+	     lst = (EWin **) ListItemType(&lnum, LIST_TYPE_EWIN);
 	     if (lst)
 	       {
 		  for (i = 0; i < lnum; i++)
@@ -764,7 +764,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 			 {
 			    ok = 0;
 			    i = lnum;
-			 }			    
+			 }
 		    }
 		  Efree(lst);
 	       }

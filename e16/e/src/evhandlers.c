@@ -883,14 +883,14 @@ HandleMotion(XEvent * ev)
 	     GetAreaSize(&ax, &ay);
 	     dx = mode.x - mode.px;
 	     dy = mode.y - mode.py;
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager) && 
+	     if ((p->hi_ewin) && (!p->hi_ewin->pager) &&
 		 (!p->hi_ewin->fixedpos))
 	       {
 		  GetWinXY(p->hi_win, &x, &y);
 		  XRaiseWindow(disp, p->hi_win);
 		  EMoveWindow(disp, p->hi_win, x + dx, y + dy);
 	       }
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager) && 
+	     if ((p->hi_ewin) && (!p->hi_ewin->pager) &&
 		 (!p->hi_ewin->fixedpos))
 	       {
 		  Window              dw;
@@ -2208,11 +2208,32 @@ HandleMouseUp(XEvent * ev)
 	       }
 	     if ((mode.mode == MODE_PAGER_DRAG) && (p->hi_ewin))
 	       {
+		  ewin = NULL;
+		  for (i = 0; i < desks.desk[desks.current].num; i++)
+		    {
+		       EWin               *ew;
+
+		       ew = desks.desk[desks.current].list[i];
+		       if (((ew->pager) || (ew->ibox)) &&
+			   ((ew->desktop == desks.current) ||
+			    (ew->sticky)))
+			 {
+			    if ((mode.x >= (ew->x + ew->border->border.left)) &&
+				(mode.x < (ew->x + ew->w - ew->border->border.right)) &&
+				(mode.y >= (ew->y + ew->border->border.top)) &&
+				(mode.y < (ew->y + ew->h - ew->border->border.bottom)))
+			      {
+				 ewin = ew;
+				 i = desks.desk[desks.current].num;
+			      }
+			 }
+		    }
 		  ewin = GetEwinPointerInClient();
 		  if ((ewin) && (ewin->pager))
 		    {
 		       Pager              *pp;
 		       int                 x, y, ax, ay, cx, cy, px, py;
+		       int                 wx, wy;
 		       Window              dw;
 
 		       pp = ewin->pager;
@@ -2220,16 +2241,36 @@ HandleMouseUp(XEvent * ev)
 		       cy = desks.desk[pp->desktop].current_area_y;
 		       GetAreaSize(&ax, &ay);
 		       GetWinXY(p->hi_win, &x, &y);
-		       XTranslateCoordinates(disp, pp->win, root.win, 0, 0, &px, &py, &dw);
-		       MoveEwinToDesktopAt(p->hi_ewin, pp->desktop,
-					   ((x - px) - (cx * (pp->w / ax))) *
-					   (root.w / (pp->w / ax)),
-					   ((y - py) - (cy * (pp->h / ay))) *
-					   (root.h / (pp->h / ay)));
+		       XTranslateCoordinates(disp, pp->win, root.win, 0, 0,
+					     &px, &py, &dw);
+		       wx = ((x - px) - (cx * (pp->w / ax))) *
+			  (root.w / (pp->w / ax));
+		       wy = ((y - py) - (cy * (pp->h / ay))) *
+			  (root.h / (pp->h / ay));
+		       if (((wx + p->hi_ewin->w) < 0) ||
+			   ((wy + p->hi_ewin->h) < 0) ||
+			   (wx >= root.w) ||
+			   (wy >= root.h))
+			 {
+			    int                 ndesk, nx, ny;
+
+			    ndesk = desks.current;
+			    nx = (int)ev->xbutton.x_root -
+			       desks.desk[desks.current].x -
+			       ((int)p->hi_ewin->w / 2);
+			    ny = (int)ev->xbutton.y_root -
+			       desks.desk[desks.current].y -
+			       ((int)p->hi_ewin->h / 2);
+			    MoveEwin(p->hi_ewin, nx, ny);
+			    MoveEwinToDesktop(p->hi_ewin, ndesk);
+			 }
+		       else
+			  MoveEwinToDesktopAt(p->hi_ewin, pp->desktop, wx, wy);
 		    }
 		  else if ((ewin) && (ewin->ibox) &&
 			   (!((p->hi_ewin->ibox) ||
-			      ((ewin->client.need_input) && ((ewin->skiptask) || (ewin->skipwinlist)))
+			      ((ewin->client.need_input) &&
+			       ((ewin->skiptask) || (ewin->skipwinlist)))
 			    )))
 		    {
 		       char                was_shaded;
@@ -2253,9 +2294,11 @@ HandleMouseUp(XEvent * ev)
 		       int                 ndesk, nx, ny;
 
 		       ndesk = desks.current;
-		       nx = (int)ev->xbutton.x_root - desks.desk[desks.current].x -
+		       nx = (int)ev->xbutton.x_root -
+			  desks.desk[desks.current].x -
 			  ((int)p->hi_ewin->w / 2);
-		       ny = (int)ev->xbutton.y_root - desks.desk[desks.current].y -
+		       ny = (int)ev->xbutton.y_root -
+			  desks.desk[desks.current].y -
 			  ((int)p->hi_ewin->h / 2);
 		       MoveEwin(p->hi_ewin, nx, ny);
 		       MoveEwinToDesktop(p->hi_ewin, ndesk);

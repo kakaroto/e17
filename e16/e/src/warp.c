@@ -123,7 +123,8 @@ WarpFocus(int delta)
 		  if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 		      (ewin->x + ewin->w > 0) && (ewin->x < root.w) &&
 		      (ewin->y + ewin->h > 0) && (ewin->y < root.h) &&
-		  (!ewin->skipfocus) && (!ewin->internal) && (!ewin->shaded) &&
+		      (!ewin->skipfocus) && (!ewin->shaded) &&
+		      (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) &&
 		      (!ewin->iconified) && (ewin->client.mwm_decor_title) &&
 		      (ewin->client.mwm_decor_border))
 		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);

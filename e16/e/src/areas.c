@@ -241,7 +241,8 @@ SetCurrentArea(int ax, int ay)
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->desktop == desks.current) &&
-		      (!lst[i]->sticky) && (!lst[i]->fixedpos))
+		      (!lst[i]->sticky) && (!lst[i]->fixedpos) &&
+		      (!lst[i]->iconified))
 		    {
 		       if ((lst[i]->floating) && (mode.movemode > 0))
 			 {
@@ -270,7 +271,8 @@ SetCurrentArea(int ax, int ay)
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->desktop == desks.current) &&
-		      (!lst[i]->sticky) && (!lst[i]->fixedpos))
+		      (!lst[i]->sticky) && (!lst[i]->fixedpos) &&
+		      (!lst[i]->iconified))
 		    {
 		       if (!lst[i]->floating)
 			 {
@@ -301,7 +303,8 @@ SetCurrentArea(int ax, int ay)
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->desktop == desks.current) &&
-		      (!lst[i]->sticky) && (!lst[i]->fixedpos))
+		      (!lst[i]->sticky) && (!lst[i]->fixedpos) &&
+		      (!lst[i]->iconified))
 		    {
 		       /* if we're moving this window and its not opaque move */
 		       /* warp it across withotu remebering the xy stuff */

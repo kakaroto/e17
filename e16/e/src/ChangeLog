@@ -1614,3 +1614,20 @@ Fri Sep 10 17:47:28 PDT 1999
 (Raster)
 
 and get commands form the first window for a group only :)
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 12:33:21 PDT 1999
+(Raster)
+
+* ignore mouse events shilst sliding off to a new desktop area with edge resist
+on, and we're abotu to warp the pointer anyway.. so just ignore the extra 
+mouse events.
+
+* dont slide iconified windows around when moving virtual desktops
+
+* account for border of window when dropping pager mini ewin on other pagers
+and stuff so you cant accidentally drop it off screen, also ignore othr windows
+apart from pagers and iconboxes when doing the drop.
+
+* flim

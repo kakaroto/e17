@@ -216,6 +216,8 @@ EdgeHandleMotion(XEvent * ev)
      }
 }
 
+extern char         throw_move_events_away;
+
 void
 EdgeTimeout(int val, void *data)
 {
@@ -225,6 +227,7 @@ EdgeTimeout(int val, void *data)
       return;
    if (!mode.edge_flip_resistance)
       return;
+   throw_move_events_away = 1;
    GetCurrentArea(&ax, &ay);
    GetAreaSize(&aw, &ah);
    dx = 0;

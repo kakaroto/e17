@@ -1,6 +1,7 @@
 #include "E.h"
 #include <errno.h>
 
+char                throw_move_events_away = 0;
 void                DeskAccountTimeout(int val, void *data);
 
 HandleStruct        HArray[] =
@@ -86,8 +87,9 @@ NukeBoringevents(XEvent * ev, int num)
 	     last = i;
 	  }
      }
-   if (last >= 0)
+   if ((last >= 0) && (!throw_move_events_away))
       ok[last] = 1;
+   throw_move_events_away = 0;
    /* look for paired enter / leave events for windows that contain no click */
    /* events for those windows whilst mouse is in them */
    for (i = 0; i < num; i++)
