@@ -43,7 +43,8 @@ struct Ewl_Embed
 
 Ewl_Widget     *ewl_embed_new();
 int             ewl_embed_init(Ewl_Embed * win);
-Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas);
+Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas,
+				   Ecore_X_Window evas_window);
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(Ecore_X_Window win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);

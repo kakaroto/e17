@@ -117,15 +117,19 @@ int ewl_embed_init(Ewl_Embed * w)
 /**
  * @param emb: the embedded container to change the target evas
  * @param evas: the new evas to draw the container and it's contents
+ * @param evas_window: the window containing the evas, for event dispatching
  * @return Returns an evas smart object on success, NULL on failure.
  * @brief Change the evas used by the embedded container
  *
  * The returned smart object can be used to manipulate the area used by EWL
  * through standard evas functions.
  */
-Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
+Evas_Object *
+ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ecore_X_Window evas_window)
 {
 	Ewl_Widget *w;
+	Ewd_List   *paths;
+	char       *font_path;
 	char *name = "EWL Embedded Smart Object";
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -134,6 +138,7 @@ Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 	DCHECK_PARAM_PTR_RET("evas", evas, NULL);
 
 	emb->evas = evas;
+	emb->evas_window = evas_window;
 
 	if (!embedded_smart) {
 		embedded_smart = evas_smart_new(name, __ewl_embed_smart_add,
@@ -196,6 +201,11 @@ Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 				EVAS_CALLBACK_KEY_UP, __ewl_embed_evas_key_up,
 				emb);
 	}
+
+	paths = ewl_theme_font_path_get();
+	ewd_list_goto_first(paths);
+	while ((font_path = ewd_list_next(paths)))
+		evas_font_path_append(evas, font_path);
 
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
 }

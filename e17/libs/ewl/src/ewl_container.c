@@ -571,7 +571,7 @@ void ewl_container_destroy(Ewl_Container * c)
 
 /*
  * When reparenting a container, it's children need the updated information
- * about the container, such as evas and evas_window.
+ * about the container, such as the evas.
  */
 void __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {

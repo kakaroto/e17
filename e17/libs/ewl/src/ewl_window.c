@@ -224,10 +224,9 @@ int ewl_window_init(Ewl_Window * w)
 void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Object       *o;
+	Evas             *evas;
 	Ewl_Embed        *embed;
 	Ewl_Window       *window;
-	char             *font_path;
-	Ewd_List         *paths;
 	char             *render;
 	Evas_Engine_Info *info = NULL;
 
@@ -261,24 +260,22 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!render)
 		render = strdup("software_x11");
 
-	embed->evas = evas_new();
-	evas_output_method_set(embed->evas,
-			evas_render_method_lookup(render));
+	evas = evas_new();
+	evas_output_method_set(evas, evas_render_method_lookup(render));
 
-	info = evas_engine_info_get(embed->evas);
+	info = evas_engine_info_get(evas);
 	if (!info) {
 		fprintf(stderr, "Unable to use %s engine for rendering, "
 				"falling back to software_x11\n", render);
 		FREE(render);
 		render = strdup("software_x11");
-		evas_output_method_set(embed->evas,
-				evas_render_method_lookup(render));
-		info = evas_engine_info_get(embed->evas);
+		evas_output_method_set(evas, evas_render_method_lookup(render));
+		info = evas_engine_info_get(evas);
 	}
 
-	evas_output_size_set(embed->evas, ewl_object_get_current_w(o),
+	evas_output_size_set(evas, ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
-	evas_output_viewport_set(embed->evas, ewl_object_get_current_x(o),
+	evas_output_viewport_set(evas, ewl_object_get_current_x(o),
 			ewl_object_get_current_y(o),
 			ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
@@ -319,14 +316,9 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 #endif
 
-	evas_engine_info_set(embed->evas, info);
+	evas_engine_info_set(evas, info);
 
-	paths = ewl_theme_font_path_get();
-	ewd_list_goto_first(paths);
-	while ((font_path = ewd_list_next(paths)))
-		evas_font_path_append(embed->evas, font_path);
-
-	embed->evas_window = window->window;
+	ewl_embed_set_evas(embed, evas, window->window);
 
 	if (window->flags & EWL_WINDOW_BORDERLESS)
 		ecore_x_window_prop_borderless_set(window->window, 1);
