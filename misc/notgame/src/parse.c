@@ -57,8 +57,8 @@ parse_player_group(char *buff, void *state) {
   } else if (*buff == CONF_END_CHAR) {
     ASSERT(state != NULL);
     group = (player_group_t *) state;
-    if (!player_group_add(group)) {
-      free(group);  /* Duplicate group, so delete the structure */
+    if (group->name == NULL || !player_group_add(group)) {
+      free(group);  /* Duplicate/invalid group, so delete the structure */
     }
     return (NULL);
   } else {
@@ -70,7 +70,7 @@ parse_player_group(char *buff, void *state) {
       player = (player_t *) malloc(sizeof(player_t));
       player->name = Word(2, buff);
       player->type = Word(3, buff);
-      if (!player_group_add_player(group, player)) {
+      if (player->name == NULL || player->type == NULL || !player_group_add_player(group, player)) {
         free(player);
       }
     } else {
@@ -93,8 +93,8 @@ parse_dest_group(char *buff, void *state) {
   } else if (*buff == CONF_END_CHAR) {
     ASSERT(state != NULL);
     group = (dest_group_t *) state;
-    if (!dest_group_add(group)) {
-      free(group);  /* Duplicate group, so delete the structure */
+    if (group->name == NULL || !dest_group_add(group)) {
+      free(group);  /* Duplicate/invalid group, so delete the structure */
     }
     return (NULL);
   } else {
@@ -105,7 +105,7 @@ parse_dest_group(char *buff, void *state) {
     } else if (!BEG_STRCASECMP(buff, "dest")) {
       dest = (dest_t *) malloc(sizeof(dest_t));
       dest->name = Word(2, buff);
-      if (!dest_group_add_dest(group, dest)) {
+      if (dest->name == NULL || !dest_group_add_dest(group, dest)) {
         free(dest);
       }
     } else {
@@ -164,6 +164,8 @@ save_player(player_t *player, FILE *fp) {
 
   ASSERT(player != NULL);
   ASSERT(fp != NULL);
+  REQUIRE(player->name != NULL);
+  REQUIRE(player->type != NULL);
 
   if (strpbrk(player->name, " \t\'")) {
     fprintf(fp, "  player \"%s\" ", player->name);
@@ -182,6 +184,7 @@ save_player_group(player_group_t *group, FILE *fp) {
 
   ASSERT(group != NULL);
   ASSERT(fp != NULL);
+  REQUIRE(group->name != NULL);
 
   fprintf(fp, "begin player_group\n");
   if (strpbrk(group->name, " \t\'")) {
@@ -199,6 +202,7 @@ save_dest(dest_t *dest, FILE *fp) {
 
   ASSERT(dest != NULL);
   ASSERT(fp != NULL);
+  REQUIRE(dest->name != NULL);
 
   if (strpbrk(dest->name, " \t\'")) {
     fprintf(fp, "  dest \"%s\"\n", dest->name);
@@ -212,6 +216,7 @@ save_dest_group(dest_group_t *group, FILE *fp) {
 
   ASSERT(group != NULL);
   ASSERT(fp != NULL);
+  REQUIRE(group->name != NULL);
 
   fprintf(fp, "begin dest_group\n");
   if (strpbrk(group->name, " \t\'")) {

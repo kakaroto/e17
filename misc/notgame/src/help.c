@@ -59,7 +59,6 @@ about_box_display(void) {
   gtk_container_add(GTK_CONTAINER(about), vbox);
 
   label = gtk_label_new(PACKAGE " " VERSION " -- The Not Game for Gtk+\n"
-                        "by Michael Jennings\n"
                         "Copyright 1999, Michael Jennings\n\n"
                         "Original concept and Java implementation by Rob Coffey.  Concept\n"
                         "and name used with permission.\n\n"

@@ -129,3 +129,12 @@ Fri Oct  1 19:29:09 PDT 1999	Michael Jennings <mej@eterm.org>
 	Adding, deleting, and modifying players within a player group works.
 	
 -------------------------------------------------------------------------------
+Wed Oct  6 16:06:13 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	This is the first fully-playable, fully-functional, full-featured
+	version.  It has everything in it that I want to put in for the 1.0
+	release.  If you're interested, please put it through its paces.  Let
+	me know if you find any bugs.  I've christened it 0.9, signifying that
+	it is the 1.0 beta.
+	
+-------------------------------------------------------------------------------

@@ -240,7 +240,7 @@ click_cb(GtkWidget *button) {
   unsigned short i;
   char *label_text;
 
-  D(("click_cb():  button == 0x%08x, data == 0x%08x\n", (int) button, (int) data));
+  D(("click_cb():  button == 0x%08x\n", (int) button));
 
   if (GTK_IS_BUTTON(button)) {
     gtk_widget_set_sensitive(button, FALSE);

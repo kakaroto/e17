@@ -289,7 +289,7 @@ button_cb(GtkWidget *w, gpointer item) {
     /* Edit Player Group */
     player_group_edit_dialog();
   } else if (((int) item) == 3) {
-    /* Add Destination */
+    dest_group_edit_dialog();
   } else {
     print_warning("button_cb():  Invalid button handle 0x%08x", (int) item);
   }

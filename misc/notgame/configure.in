@@ -1,7 +1,7 @@
 dnl# $Id$
 
 AC_INIT(src/notgame.c)
-AM_INIT_AUTOMAKE(notgame, 0.1)
+AM_INIT_AUTOMAKE(notgame, 0.9)
 
 dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
 if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then

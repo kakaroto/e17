@@ -4,65 +4,49 @@
 # your home directory.  Call it "notgame.cfg" of course. :-)
 
 begin player_group
-  name "VA People"
-  player Chris human
-  player horms human
-  player mandrake human
-  player Michael human
-  player raster human
-  player San human
+  name "Testing Computer Play"
+  player "Computer 1" ai
+  player "Computer 2" ai
+  player "Computer 3" ai
 end
 
 begin player_group
-  name "The Den"
-  player horms human
-  player mandrake human
-  player Michael human
-  player raster human
-  player San human
+  name "Testing Player vs. Computer"
+  player Computer ai
+  player Michael person
 end
 
 begin player_group
   name "Lots of Made-Up People"
-  player Fred human
-  player Joe human
-  player Bob human
-  player Shirley human
-  player "Shirley Not" human
-  player Hoss human
+  player Bob person
+  player Fred person
+  player Hoss person
+  player Joe person
+  player Shirley person
+  player "Shirley Not" person
 end
 
 begin dest_group
   name "Fast Food"
   dest "Arby's"
   dest "Burger King"
-  dest "McDonalds"
-  dest "Subway"
+  dest "Java Street Cafe"
+  dest "Kal's Barbeque"
+  dest McDonalds
+  dest Subway
   dest "Wendy's"
 end
 
 begin dest_group
   name "Sit Down"
+  dest "Armadillo's"
+  dest Cuban
   dest "Denny's"
   dest "Gumba's"
   dest "Hobee's"
-  dest "Java Street Cafe"
-  dest "Kal's BBQ"
-  dest "Mandarin"
-  dest "Sneha"
+  dest "Mongolian Barbeque"
+  dest Sneha
+  dest Spoons
+  dest "Stoddard's"
 end
-
-begin player_group
-  name Robots
-  player AI1 AI
-  player AI2 ai
-  player AI3 computer
-  player AI4 Computer
-end player_group
-
-begin player_group
-  name Mixed
-  player Michael nerd
-  player HAL computer
-end player_group
 
