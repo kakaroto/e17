@@ -163,6 +163,9 @@ void ewl_container_child_append(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
+	if (pc == child->parent)
+		DRETURN(DLEVEL_STABLE);
+
 	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
 		DWARNING("Attempting to make a child a parent of itself");
 		DRETURN(DLEVEL_STABLE);
@@ -192,6 +195,9 @@ void ewl_container_child_prepend(Ewl_Container * pc, Ewl_Widget * child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (pc == child->parent)
+		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
 		DWARNING("Attempting to make a child a parent of itself");
@@ -225,6 +231,9 @@ ewl_container_child_insert(Ewl_Container * pc, Ewl_Widget * child, int index)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (pc == child->parent)
+		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
 		DWARNING("Attempting to make a child a parent of itself");

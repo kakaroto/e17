@@ -36,13 +36,14 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_selectionbar_test.c \
 					ewl_selectionbook_test.c \
 					ewl_spinner_test.c \
+					ewl_statusbar_test.c \
 					ewl_table_test.c \
 					ewl_textarea_test.c \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c
 
 # ewl_test_LDFLAGS		=	
-ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
+ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@ -lMallocDebug
 
 ewl_embed_test_DEPENDENCIES	=	$(top_builddir)/src/libewl.la
 ewl_embed_test_SOURCES		=	ewl_embed_test.c

@@ -754,6 +754,9 @@ void ewl_garbage_collect()
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	while ((w = ecore_list_remove_first(destroy_list))) {
+		if (ewl_object_queued_has(EWL_OBJECT(w),
+					  EWL_FLAG_QUEUED_CSCHEDULED))
+			ewl_configure_cancel_request(w);
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		FREE(w);

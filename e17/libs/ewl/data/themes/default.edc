@@ -67,6 +67,9 @@ data {
 	item, "/spinner/button_increment/group" "vscroll-mini-up";
 	item, "/spinner/acceleration" "5";
 	item, "/spinner/velocity" "5";
+	item, "/statusbar/group" "statusbar";
+	item, "/statusbar/text/font" "Vera";
+	item, "/statusbar/text/font_size" "10";
 	item, "/text/font" "Vera";
 	item, "/text/style" "none";
 	item, "/textarea/group" "textarea";
@@ -76,7 +79,8 @@ data {
 	item, "/theme/name" "winter";
 	item, "/tooltip/group" "dialog";
 	item, "/tree/group" "tree";
-	item, "/node/group" "treenode";
+	item, "/node/row/group" "treerow";
+	/* item, "/node/group" "treenode"; */
 	item, "/vscrollbar/button_decrement/group" "vscroll-down";
 	item, "/vscrollbar/button_increment/group" "vscroll-up";
 	item, "/vseeker/group" "vtrough";
@@ -96,6 +100,7 @@ data {
 }
 
 collections {
+#include "default/bits/tree-row.edc"
 #include "default/bits/button-groups.edc"
 #include "default/bits/cell-groups.edc"
 #include "default/bits/checkbox-groups.edc"
@@ -108,6 +113,7 @@ collections {
 #include "default/bits/radio-groups.edc"
 #include "default/bits/scrollbar-groups.edc"
 #include "default/bits/stock-groups.edc"
+#include "default/bits/statusbar-groups.edc"
 #include "default/bits/tree-groups.edc"
 #include "default/bits/window-groups.edc"
 }

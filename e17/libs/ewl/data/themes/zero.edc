@@ -71,6 +71,9 @@ data {
     item, "/spinner/button_increment/group" "spinner-up";
     item, "/spinner/acceleration" "5";
     item, "/spinner/velocity" "5";
+	item, "/statusbar/group" "statusbar";
+	item, "/statubar/text/font" "vio";
+	item, "/statusbar/text/font_size" "12";
     item, "/text/color/a" "255";
     item, "/text/font" "Vera";
     item, "/text/font_size" "10";
@@ -104,6 +107,7 @@ collections {
 #include "zero/bits/radio-groups.edc"
 #include "zero/bits/scrollbar-groups.edc"
 #include "zero/bits/spinner-groups.edc"
+#include "zero/bits/statusbar-groups.edc"
 #include "zero/bits/stock-groups.edc"
 #include "zero/bits/tree-groups.edc"
 #include "zero/bits/window-groups.edc"

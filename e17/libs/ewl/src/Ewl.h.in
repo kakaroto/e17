@@ -357,6 +357,7 @@ extern"C" {
 #include <ewl_scrollpane.h>
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
+#include <ewl_statusbar.h>
 #include <ewl_tooltip.h>
 
 #include <ewl_tree.h>

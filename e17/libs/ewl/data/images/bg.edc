@@ -1,14 +1,15 @@
-#define STR(x) #x
-#define CATSTR(x, y) STR(x## y)
+#define STR(x) "x"
+ /* #define CATSTR(x, y) STR(x## y)
 #define CATPNG(x, y) STR(x##y.png)
+*/
 #define TOUR_IMAGE(PNAME) \
-	image, CATPNG(PNAME,) LOSSY 80; \
-	image, CATPNG(PNAME,1) LOSSY 80; \
-	image, CATPNG(PNAME,2) LOSSY 80; \
-	image, CATPNG(PNAME,3) LOSSY 80;
+	image, STR(PNAME)".png" LOSSY 98; \
+	image, STR(PNAME)"1.png" LOSSY 98; \
+	image, STR(PNAME)"2.png" LOSSY 98; \
+	image, STR(PNAME)"3.png" LOSSY 98;
 #define TOUR_PART(PNAME, ASPECT) \
 description { \
-	state, #PNAME 0.0; \
+	state, PNAME 0.0; \
 	aspect, ASPECT ASPECT; \
 	align, 0.5 0.5; \
 	rel1 { \
@@ -20,7 +21,7 @@ description { \
 		offset, -1 -1; \
 	} \
 	image { \
-		normal, CATPNG(PNAME,); \
+		normal, STR(PNAME)".png"; \
 	} \
 } \
 description { \
@@ -36,32 +37,32 @@ description { \
 		offset, -1 -1; \
 	} \
 	image { \
-		tween, CATPNG(PNAME,1); \
-		tween, CATPNG(PNAME,2); \
-		normal, CATPNG(PNAME,3); \
+		tween, STR(PNAME)"1.png"; \
+		tween, STR(PNAME)"2.png"; \
+		normal, STR(PNAME)"3.png"; \
 	} \
 }
 
-#define TOUR_PROG(PNAME, PNEXT, TARGET) \
+#define TOUR_PROG(PNAME, TEXT, PNEXT, TARGET) \
 	program { \
-		name, CATSTR(PNAME,_start); \
+		name, STR(PNAME)"_start"; \
 		signal, PNAME; \
 		source, "*"; \
 		action, STATE_SET STR(PNAME) 0.0; \
 		transition, LINEAR 0.0; \
 		target, STR(TARGET); \
-		after, CATSTR(PNAME,_continue); \
+		after, STR(PNAME)"_continue"; \
+		action, SIGNAL_EMIT TEXT STR(PNAME); \
 	} \
 	program { \
-		name, CATSTR(PNAME,_continue); \
+		name, STR(PNAME)"_continue"; \
 		action, STATE_SET STR(PNAME) 1.0; \
 		transition, LINEAR 20.0; \
 		target, STR(TARGET); \
-		after, CATSTR(PNEXT,_trigger); \
+		after, STR(PNEXT)"_trigger"; \
 	} \
 	program { \
-		name, CATSTR(PNEXT,_trigger); \
-		action, SIGNAL_EMIT "start_fade" "fader"; \
+		name, STR(PNEXT)"_trigger"; \
 		action, SIGNAL_EMIT STR(PNEXT) "tour"; \
 	}
 
@@ -269,12 +270,8 @@ collections {
 				name,       "fader";
 				signal,     "start_fade";
 				source,     "*";
-				action,     STATE_SET "fade" 0.0;
-				transition, LINEAR 1.0;
-				target,     "fade";
-				after,      "defader";
+				action,     SIGNAL_EMIT "entrance" "tour";
 			}
-
 			program {
 				name,       "defader";
 				action,     STATE_SET "default" 0.0;
@@ -290,10 +287,10 @@ collections {
 			// 	action,     SIGNAL_EMIT "elicit" "tour";
 			// }
 
-			TOUR_PROG(elicit, entrance, display);
-			TOUR_PROG(entrance, entice, display);
-			TOUR_PROG(entice, evidence, display);
-			TOUR_PROG(evidence,, display);
+			TOUR_PROG(elicit,"Elicit",entrance,display);
+			TOUR_PROG(entrance,"Entrance",entice,display);
+			TOUR_PROG(entice,"Entice",evidence,display);
+			TOUR_PROG(evidence,"Evidence",,display);
 
 		}
 

@@ -34,6 +34,7 @@ void __create_seeker_test_window        (Ewl_Widget * w, void *ev_data, void *us
 void __create_selectionbar_test_window  (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_selectionbook_test_window (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_spinner_test_window       (Ewl_Widget * w, void *ev_data, void *user_data);
+void __create_statusbar_test_window     (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_table_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_textarea_test_window      (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_tooltip_test_window       (Ewl_Widget * w, void *ev_data, void *user_data);

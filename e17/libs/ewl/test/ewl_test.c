@@ -86,6 +86,7 @@ main(int argc, char **argv)
 		{ "Password",    __create_password_test_window,    "ewl_password_test.c" },
 		{ "Progressbar", __create_progressbar_test_window, "ewl_progressbar_test.c" },
 		{ "Spinner",     __create_spinner_test_window,     "ewl_spinner_test.c" },
+		{ "Statusbar",   __create_statusbar_test_window,   "ewl_statusbar_test.c" },
 		{ "Textarea",    __create_textarea_test_window,    "ewl_textarea_test.c" },
 		{ "Tooltip",     __create_tooltip_test_window,     "ewl_tooltip_test.c" },
 		{ "Tree",        __create_tree_test_window,        "ewl_tree_test.c" },
@@ -130,10 +131,11 @@ main(int argc, char **argv)
 		"Defines the Ewl_Paned to hold two resizable panes of content.",
 		"Defines the Ewl_Password class to allow\n"
 			"for single line obscured text.",
-		"Provides a statusbar from a given value.",
+		"Provides a progress bar from a given value.",
 		"Provides a field for entering numerical\n"
 			"values, along with buttons to increment\n"
 			"and decrement the value.",
+		"Provides a statusbar for the window.",
 		"Defines a class for multi-line text layout\n"
 			"and formatting.",
 		"Defines a widget for displaying short\n"

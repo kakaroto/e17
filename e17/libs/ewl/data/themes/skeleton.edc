@@ -38,6 +38,9 @@ data {
 	item, "/spacer/group" "spacer";
 	item, "/spinner/button_decrement/group" "vscroll-mini-down";
 	item, "/spinner/button_increment/group" "vscroll-mini-up";
+	item, "/statusbar/group" "statusbar";
+	item, "/statusbar/text/font" "Vera";
+	item, "/statusbar/text/font_size" "10";
 	item, "/text/color/b" "255";
 	item, "/text/color/g" "255";
 	item, "/text/color/r" "255";
@@ -76,5 +79,6 @@ collections {
 #include "skeleton/bits/progressbar-groups.edc"
 #include "skeleton/bits/radio-groups.edc"
 #include "skeleton/bits/scrollbar-groups.edc"
+#include "skeleton/bits/statusbar-groups.edc"
 #include "skeleton/bits/window-groups.edc"
 }
