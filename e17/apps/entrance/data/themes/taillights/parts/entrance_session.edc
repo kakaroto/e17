@@ -160,7 +160,7 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, 0 0;
-			to, "EntranceSession";
+			to_y, "EntranceSession";
 		    } rel2 {
 			relative, 1.0 1.0;
 			offset, 0 0;
