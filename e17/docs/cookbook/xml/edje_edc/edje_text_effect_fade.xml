@@ -85,7 +85,7 @@ collections {
         }
         programs {
             program {
-                name, "foo";
+                name, "mouse.in";
                 signal, "mouse,in";
                 source, "foo";
                 action, STATE_SET "out" 0.0;
@@ -93,7 +93,7 @@ collections {
                 target, "foo";
             }
             program {
-                name, "foo";
+                name, "mouse.out";
                 signal, "mouse,out";
                 source, "foo";
                 action, STATE_SET "default" 0.0;
