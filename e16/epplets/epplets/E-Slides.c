@@ -15,6 +15,10 @@
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
+#define PREV_PIC()      do {if (idx == 1) idx = image_cnt - 1; else if (idx == 0) idx = image_cnt - 2; else idx -= 2;} while (0)
+#define NEXT_PIC()      ((void) 0)
+#define INC_PIC()       do {idx++; if (idx == image_cnt) idx = 0;} while (0)
+
 Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, picture;
 ImlibImage *im = NULL;
 unsigned long idx = 0, image_cnt = 0;
@@ -110,10 +114,7 @@ change_image(void *data) {
   Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
 
   Epplet_change_image(picture, 42, 42, filenames[idx]);
-  idx++;
-  if (idx == image_cnt) {
-    idx = 0;
-  }
+  INC_PIC();
 
   Epplet_remove_timer("CHANGE_IMAGE");
   if (!paused) {
@@ -147,7 +148,7 @@ play_cb(void *data) {
   switch (op) {
     case -1:
       /* Previous image */
-      idx -= 2;
+      PREV_PIC();
       change_image(NULL);
       break;
     case 0:
@@ -166,6 +167,7 @@ play_cb(void *data) {
       break;
     case 2:
       /* Next image */
+      NEXT_PIC();
       change_image(NULL);
       break;
     default:
