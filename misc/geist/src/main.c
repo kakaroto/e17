@@ -10,6 +10,7 @@
 #include "geist_image.h"
 #include "geist_gtk.h"
 #include "geist_text.h"
+#include "geist_rect.h"
 #include "layers.h"
 
 int call_level = 0;
@@ -207,22 +208,20 @@ main(int argc, char *argv[])
                                                        "/share/geist/images/laet.jpg"));
    geist_document_add_object(doc,
                              geist_text_new_with_text(0, 405, "20thcent/16",
-                                                      "Some pr0n - I have to.", 255, 100,100,255));
+                                                      "Some pr0n - I have to.",
+                                                      255, 100, 100, 255));
    geist_document_add_object(doc,
                              geist_image_new_from_file(220, 140,
                                                        PREFIX
                                                        "/share/geist/images/elogo.png"));
-
    geist_document_add_object(doc,
                              geist_image_new_from_file(125, 5,
                                                        PREFIX
                                                        "/share/geist/images/globe.png"));
-
    geist_document_add_object(doc,
                              geist_image_new_from_file(175, 125,
                                                        PREFIX
                                                        "/share/geist/images/bulb.png"));
-
    geist_document_add_object(doc,
                              geist_image_new_from_file(375, 145,
                                                        PREFIX
@@ -231,19 +230,24 @@ main(int argc, char *argv[])
                              geist_image_new_from_file(415, 200,
                                                        PREFIX
                                                        "/share/geist/images/mail.png"));
-
    geist_document_add_object(doc,
                              geist_image_new_from_file(445, 305,
                                                        PREFIX
                                                        "/share/geist/images/mush.png"));
-
    geist_document_add_object(doc,
                              geist_image_new_from_file(315, 405,
                                                        PREFIX
                                                        "/share/geist/images/paper.png"));
    geist_document_add_object(doc,
+                             geist_rect_new_of_size(325, 5, 100, 100, 255,
+                                                    100, 250, 120));
+   geist_document_add_object(doc,
                              geist_text_new_with_text(275, 15, "20thcent/20",
-                                                      "So this is geist...", 128, 255, 100, 100));
+                                                      "So this is geist...",
+                                                      128, 255, 100, 100));
+   geist_document_add_object(doc,
+                             geist_rect_new_of_size(25, 175, 200, 300, 50,
+                                                    255, 255, 0));
 
 
    geist_document_render(doc);
@@ -257,26 +261,25 @@ main(int argc, char *argv[])
    D_RETURN(3, 0);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
-
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
-{
-   D_ENTER(3);
-   gtk_exit(0);
-   D_RETURN(3, FALSE);
-}
-
 
 gboolean
-configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-             gpointer user_data)
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+   D_ENTER(3);
+   gtk_exit(0);
+   D_RETURN(3, FALSE);
+}
+
+
+gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+                      gpointer user_data)
 {
    D_ENTER(3);
 
@@ -285,8 +288,7 @@ configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint
-evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -382,7 +384,8 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_list *list, *l;
    geist_object *obj;
@@ -408,7 +411,8 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint
+evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_list *l, *list;
    geist_object *obj;
@@ -448,7 +452,8 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
    D_RETURN(5, 1);
 }
 
-gboolean obj_load_cb(GtkWidget * widget, gpointer data)
+gboolean
+obj_load_cb(GtkWidget * widget, gpointer data)
 {
    geist_object *obj = NULL;
    char *path;
@@ -473,13 +478,15 @@ gboolean obj_load_cb(GtkWidget * widget, gpointer data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data)
+gboolean
+obj_load_cancel_cb(GtkWidget * widget, gpointer data)
 {
    gtk_widget_destroy((GtkWidget *) data);
    return TRUE;
 }
 
-gboolean obj_add_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_add_cb(GtkWidget * widget, gpointer * data)
 {
    GtkWidget *file_sel = gtk_file_selection_new("Add an Image");
 
@@ -494,7 +501,8 @@ gboolean obj_add_cb(GtkWidget * widget, gpointer * data)
    return TRUE;
 }
 
-gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *new;
    geist_list *l, *list;
@@ -531,7 +539,8 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_del_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
    geist_list *l, *list;
@@ -559,7 +568,8 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_vis_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_vis_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
    geist_list *list;
@@ -586,7 +596,8 @@ gboolean obj_vis_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_text_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_text_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
    geist_list *list;
@@ -615,7 +626,8 @@ gboolean obj_text_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_name_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_name_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
    geist_list *list;
@@ -643,8 +655,9 @@ gboolean obj_name_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
-                    GdkEventButton * event, gpointer * data)
+gboolean
+obj_sel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+           gpointer * data)
 {
    GList *selection;
    geist_object *obj;
@@ -697,8 +710,9 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
-                      GdkEventButton * event, gpointer * data)
+gboolean
+obj_unsel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+             gpointer * data)
 {
    GList *selection;
    geist_object *obj;

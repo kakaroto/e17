@@ -62,7 +62,7 @@ geist_image_new_from_file(int x, int y, char *filename)
       obj->name = estrdup(txt);
    else
       obj->name = estrdup(txt);
-   
+
    obj->x = x;
    obj->y = y;
 
@@ -81,8 +81,6 @@ geist_image_free(geist_object * obj)
    if (!img)
       D_RETURN_(5);
 
-   if (img->name)
-      free(img->name);
    if (img->filename)
       free(img->filename);
    if (img->im)
@@ -141,17 +139,14 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    sx = x - obj->x;
    sy = y - obj->y;
-   sw = sx + w;
-   sh = sy + h;
 
    if (sx < 0)
       sx = 0;
    if (sy < 0)
       sy = 0;
-   if (sw > geist_imlib_image_get_width(im->im))
-      sw = geist_imlib_image_get_width(im->im);
-   if (sh > geist_imlib_image_get_height(im->im))
-      sh = geist_imlib_image_get_height(im->im);
+
+   sw = obj->w - sx;
+   sh = obj->h - sy;
 
    if (sw > w)
       sw = w;
@@ -201,7 +196,8 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 

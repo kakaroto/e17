@@ -36,7 +36,8 @@ geist_text_init(geist_text * txt)
 }
 
 geist_object *
-geist_text_new_with_text(int x, int y, char *fontname, char *text, int a, int r, int g, int b)
+geist_text_new_with_text(int x, int y, char *fontname, char *text, int a,
+                         int r, int g, int b)
 {
    geist_text *txt;
    geist_object *obj;
@@ -145,17 +146,14 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    sx = x - obj->x;
    sy = y - obj->y;
-   sw = sx + w;
-   sh = sy + h;
 
    if (sx < 0)
       sx = 0;
    if (sy < 0)
       sy = 0;
-   if (sw > geist_imlib_image_get_width(im->im))
-      sw = geist_imlib_image_get_width(im->im);
-   if (sh > geist_imlib_image_get_height(im->im))
-      sh = geist_imlib_image_get_height(im->im);
+
+   sw = obj->w - sx;
+   sh = obj->h - sy;
 
    if (sw > w)
       sw = w;
@@ -197,7 +195,8 @@ geist_text_change_text(geist_text * txt, char *newtext)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
+Imlib_Image
+geist_text_create_image(geist_text * txt, int *w, int *h)
 {
    DATA8 atab[256];
    Imlib_Image im;
@@ -234,21 +233,21 @@ Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
 
 
    /* todo - put offset, margin, color etc into txt struct */
-   geist_imlib_text_draw(im, txt->fn, 0, 0, txt->text, IMLIB_TEXT_TO_RIGHT, txt->r,
-                         txt->g, txt->b, txt->a);
+   geist_imlib_text_draw(im, txt->fn, 0, 0, txt->text, IMLIB_TEXT_TO_RIGHT,
+                         txt->r, txt->g, txt->b, txt->a);
 
    D_RETURN(3, im);
 }
 
-Imlib_Image
-geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
    D_RETURN(3, GEIST_TEXT(obj)->im);
 }
 
-geist_object *geist_text_duplicate(geist_object *obj)
+geist_object *
+geist_text_duplicate(geist_object * obj)
 {
    geist_object *ret;
    geist_text *txt;
@@ -257,12 +256,16 @@ geist_object *geist_text_duplicate(geist_object *obj)
 
    txt = GEIST_TEXT(obj);
 
-   ret = geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text, txt->a, txt->r, txt->g, txt->b);
+   ret =
+      geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text,
+                               txt->a, txt->r, txt->g, txt->b);
    if (ret)
    {
       ret->visible = obj->visible;
       GEIST_IMAGE(ret)->alias = txt->alias;
-      ret->name = g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object", NULL);
+      ret->name =
+         g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
+                   NULL);
    }
 
    D_RETURN(3, ret);

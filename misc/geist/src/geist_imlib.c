@@ -124,10 +124,16 @@ geist_imlib_free_image(Imlib_Image im)
    imlib_free_image();
 }
 
-const char *geist_imlib_image_get_filename(Imlib_Image im)
+const char *
+geist_imlib_image_get_filename(Imlib_Image im)
 {
-	imlib_context_set_image(im);
-	return imlib_image_get_filename();
+   if (im)
+   {
+      imlib_context_set_image(im);
+      return imlib_image_get_filename();
+   }
+   else
+      return NULL;
 }
 
 void
@@ -289,7 +295,8 @@ geist_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
    imlib_get_text_size(text, w, h);
 }
 
-Imlib_Image geist_imlib_clone_image(Imlib_Image im)
+Imlib_Image
+geist_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
@@ -341,10 +348,10 @@ geist_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dh = 0;
 }
 
-Imlib_Image geist_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
-                                                    int sy, int sw, int sh,
-                                                    int dw, int dh,
-                                                    char alias)
+Imlib_Image
+geist_imlib_create_cropped_scaled_image(Imlib_Image im, int sx, int sy,
+                                        int sw, int sh, int dw, int dh,
+                                        char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -397,7 +404,8 @@ geist_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
    imlib_image_draw_line(x1, y1, x2, y2, make_updates);
 }
 
-Imlib_Image geist_imlib_create_rotated_image(Imlib_Image im, double angle)
+Imlib_Image
+geist_imlib_create_rotated_image(Imlib_Image im, double angle)
 {
    imlib_context_set_image(im);
    return (imlib_create_rotated_image(angle));
@@ -424,8 +432,7 @@ geist_imlib_image_sharpen(Imlib_Image im, int radius)
    imlib_image_sharpen(radius);
 }
 
-DATA8
-geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
+DATA8 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
 {
    Imlib_Color c;
    int num = 0;
@@ -436,9 +443,9 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    w = imlib_image_get_width();
    h = imlib_image_get_height();
 
-   if((x>w) || (y>h))
+   if ((x > w) || (y > h))
       return 1;
-   
+
    imlib_image_query_pixel(x - 1, y, &c);
    ave += c.alpha;
    num++;

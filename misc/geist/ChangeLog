@@ -1,3 +1,10 @@
+Sun Aug  6 02:09:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added rectangle objects. They look kewl ;-)
+	* Fixed rendering bug not visible for images, but shown for
+	rects.
+	* Added rectangles to the demo :)
+
 Sat Aug  5 21:03:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Colour and transparency for text.

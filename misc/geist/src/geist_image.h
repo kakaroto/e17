@@ -8,7 +8,6 @@
 
 struct __geist_image {
    geist_object object;
-   char *name;
    char *filename;
    int w;
    int h;
