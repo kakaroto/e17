@@ -127,6 +127,12 @@ static void    Epplet_prune_events(XEvent *ev, int num);
 static void    Epplet_handle_child(int num);
 static void    Epplet_find_instance(char *name);
 
+ImlibData *
+Epplet_get_imlib_data(void)
+{
+   return (id);
+}
+
 void 
 Epplet_send_ipc(char *s)
 {
@@ -3948,11 +3954,11 @@ Epplet_add_config(char *key, char *value)
       config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
       memset(config_dict, 0, sizeof(ConfigDict));
     }
-  if (config_dict)
+  if (config_dict && key)
     {
       config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
       config_dict->entries[config_dict->num_entries].key = strdup(key);
-      config_dict->entries[config_dict->num_entries].value = strdup(value);
+      config_dict->entries[config_dict->num_entries].value = (value ? strdup(value) : strdup(""));
       config_dict->num_entries++;
     }
 }

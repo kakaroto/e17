@@ -5,7 +5,7 @@ bindir = $(EBIN)
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet Emix.epplet \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet EppletConfigTest.epplet \
-E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet
+E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -62,6 +62,10 @@ E_Disk_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Sys_epplet_SOURCES = E-Sys.c
 E_Sys_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Sys_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_Slides_epplet_SOURCES = E-Slides.c
+E_Slides_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Slides_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 Emix_epplet_SOURCES = Emix.c
 Emix_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la

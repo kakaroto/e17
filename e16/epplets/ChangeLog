@@ -244,3 +244,13 @@ The trouble with using a .1f format string for something which will
 accept a < 0.1 value, is that the value is written as 0.
 This is clearly not a good idea, and led to an interesting 5 minutes
 bug-hunt.
+
+-------------------------------------------------------------------------------
+
+Thu Nov  4 16:00:26 PST 1999
+(KainX)
+
+E-Slides, a slideshow epplet.  This is just the initial version; more features
+coming soon.  :-)
+
+Also some API additions/bugfixes.

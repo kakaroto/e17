@@ -80,6 +80,8 @@ void   Epplet_unremember(void);
 Window Epplet_get_main_window(void);
 /* return the X display connection used */
 Display *Epplet_get_display(void);
+/* return the ImlibData pointer being used */
+ImlibData *Epplet_get_imlib_data(void);
 
 /****************************************************************************/
 /* IPC calls                                                                */
