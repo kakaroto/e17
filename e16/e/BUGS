@@ -23,11 +23,13 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-? eesh/libedit ?
+- Shaded window borders are not drawn correctly after restart.
 
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- Iconify/deiconfy changes window position if mostly off-screen.
 
 - Language/font handling is broken when using imlib2 to draw text.
 
