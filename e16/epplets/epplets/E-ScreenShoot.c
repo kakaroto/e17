@@ -110,7 +110,7 @@ load_config (void)
   opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.1"));
   if (opt.dir)
     free (opt.dir);
-  opt.dir = _Strdup (Epplet_query_config_def ("DIRECTORY", "~/"));
+  opt.dir = _Strdup (Epplet_query_config_def ("DIRECTORY", "$HOME/"));
   if (opt.file_prefix)
     free (opt.file_prefix);
   opt.file_prefix =

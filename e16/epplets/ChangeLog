@@ -389,3 +389,16 @@ calling Esync() before exiting. :-)
 
 Now if only I could talk Tom into putting a newline at the end of his
 ChangeLog entries.... ;-)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 21:08:12 GMT 1999
+(gilbertt)
+
+Changed ~/ to $HOME/ in the default E-ScreenShoot directory config, for
+those people with strange obscure machines that just don't play ball :-P
+
+Oh, and just for KainX, there follows TWO newlines. One for this entry, and
+one to make up for the last omission. ;-)
+
+
