@@ -69,10 +69,13 @@ void equate_parse_sub() {
 
 void equate_clear() {
   equate_clear_node(root);
+  root=NULL;
   printf("clear\n");
 }
 
 void equate_clear_node(equate_node *node) {
+  if (!node)
+    return;
   if (node->payload.left) 
     equate_clear_node(node->payload.left);
   if (node->right)
