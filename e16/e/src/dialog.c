@@ -896,6 +896,7 @@ DialogAddItem(DItem * dii, int type)
 	di->item.radio_button.first = NULL;
 	di->item.radio_button.radio_orig_w = 10;
 	di->item.radio_button.radio_orig_h = 10;
+	di->item.radio_button.event_func = NULL;
 	break;
      case DITEM_SLIDER:
 	di->item.slider.horizontal = 1;
@@ -1854,6 +1855,12 @@ DialogItemTextSetText(DItem * di, char *text)
    if (di->item.text.text)
       Efree(di->item.text.text);
    di->item.text.text = duplicate(text);
+}
+
+void
+DialogItemRadioButtonSetEventFunc(DItem * di, void (*func) (int val, void *data))
+{
+   di->item.radio_button.event_func = func;
 }
 
 void

@@ -4646,3 +4646,12 @@ Mon Apr 24 15:33:47 PDT 2000
 
 Patch from Bob Arendt <rdarendt@cwcom.net> for move/resize geometry
 box location.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 24 15:57:55 PDT 2000
+(KainX)
+
+Patch from Johannes Erdfelt <jerdfelt@valinux.com> to give a demo of
+each of the move types in the move/resize settings dialog.  Really
+cool. :-)

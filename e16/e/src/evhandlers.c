@@ -2912,6 +2912,11 @@ HandleMouseIn(XEvent * ev)
 		     if (di->item.area.event_func)
 			(di->item.area.event_func) (0, ev);
 		  }
+		else if (di->type == DITEM_RADIOBUTTON)
+		  {
+		     if (di->item.radio_button.event_func)
+			(di->item.radio_button.event_func) (di->item.radio_button.val, ev);
+		  }
 		di->hilited = 1;
 		DialogDrawItems(d, di, 0, 0, 99999, 99999);
 	     }
@@ -3031,6 +3036,11 @@ HandleMouseOut(XEvent * ev)
 		  {
 		     if (di->item.area.event_func)
 			(di->item.area.event_func) (0, ev);
+		  }
+		else if (di->type == DITEM_RADIOBUTTON)
+		  {
+		     if (di->item.radio_button.event_func)
+			(di->item.radio_button.event_func) (di->item.radio_button.val, NULL);
 		  }
 		di->hilited = 0;
 		DialogDrawItems(d, di, 0, 0, 99999, 99999);

@@ -1519,6 +1519,7 @@ struct _ditemradiobutton
      int                *val_ptr;
      DItem              *next;
      DItem              *first;
+     void                (*event_func) (int val, void *data);
   };
 
 #define DITEM_NONE         0
@@ -2858,6 +2859,7 @@ void                DialogItemsRealize(Dialog * d);
 void                DialogItemButtonSetText(DItem * di, char *text);
 void                DialogItemCheckButtonSetText(DItem * di, char *text);
 void                DialogItemTextSetText(DItem * di, char *text);
+void                DialogItemRadioButtonSetEventFunc(DItem * di, void (*func) (int val, void *data));
 void                DialogItemCheckButtonSetState(DItem * di, char onoff);
 void                DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr);
 void                DialogItemTableSetOptions(DItem * di, int num_columns,
@@ -3013,6 +3015,7 @@ void                SettingsBackground(Background * bg);
 void                SettingsIconbox(char *name);
 void                SettingsGroups(EWin * ewin);
 void                SettingsDefaultGroupControl(void);
+void                RemoveRememberedWindow(EWin * ewin);
 void                SettingsRemember(void);
 void                SettingsMiscellaneous(void);
 
