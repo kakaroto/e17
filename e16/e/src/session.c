@@ -398,7 +398,7 @@ MatchEwinToSM(EWin * ewin)
 
 	     matches[i].used = 1;
 	     ewin->client.already_placed = 1;
-	     ewin->iconified = matches[i].iconified;
+	     ewin->client.start_iconified = matches[i].iconified;
 	     ewin->sticky = matches[i].sticky;
 	     ewin->shaded = matches[i].shaded;
 	     ewin->layer = matches[i].layer;
