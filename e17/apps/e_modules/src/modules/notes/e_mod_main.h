@@ -24,7 +24,7 @@ struct _Note
    E_Menu     *config_menu;
    E_Menu     *config_menu_bg;
    E_Menu     *config_menu_trans;   
-   Note_Face  *face;
+   Evas_List  *faces;
    
    E_Config_DD *conf_edd;
    Config      *conf;
@@ -37,6 +37,7 @@ struct _Note_Face
    Evas            *evas;   
    Evas_Object     *note_object;
    Evas_Object     *note_edje;
+   Evas_Object     *event_object;
    Evas_Coord       xx, yy, ww;
    E_Gadman_Client *gmc;
    E_Menu          *menu;   

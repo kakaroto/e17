@@ -1,3 +1,4 @@
+* bug: when we move a note, we cant get focus events on it any more (mouse_in)
 * add Contiguration -> Options -> Background (color changes?) (done, refine)
 * add Contiguration -> Options -> Transparency (0% 25% 50% 75% 100%) (add cb)
 * allow for multiple note creation

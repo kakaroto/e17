@@ -25,6 +25,10 @@ static void _note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int  _note_face_init           (Note_Face *nf);
 static void _note_face_free           (Note_Face *nf);
+static int  _note_face_add            (Note *n);
+static void _note_face_focus          (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _note_face_unfocus        (void *data, Evas *e, Evas_Object *obj, void *event_info);
+  
 
 char          *_note_module_dir;
 static int     _note_count;
@@ -108,7 +112,6 @@ static Note *
 _note_init (E_Module *m)
 {
    Note *n;
-   Evas_List *managers, *l, *l2;
  
    _note_count = 0;
    n = calloc(1, sizeof(Note));
@@ -136,6 +139,16 @@ _note_init (E_Module *m)
    E_CONFIG_LIMIT(n->conf->width, 48, 800);
    E_CONFIG_LIMIT(n->conf->bgcolor, 0, 10);
    
+   if(!_note_face_add(n))
+     return NULL;
+        
+   return n;
+}
+
+int
+_note_face_add(Note *n)
+{       
+   Evas_List *managers, *l, *l2;
    managers = e_manager_list ();
    for (l = managers; l; l = l->next)
      {
@@ -144,32 +157,38 @@ _note_init (E_Module *m)
 	man = l->data;
 	for (l2 = man->containers; l2; l2 = l2->next)
 	  {
+	  
 	     E_Container *con;
 	     Note_Face  *nf;
 	     
 	     con = l2->data;
+	     
 	     nf = calloc(1, sizeof(Note_Face));
 	     if (nf)
 	       {
-		  n->face = nf;
+		  n->faces = evas_list_append(n->faces, nf);
 		  nf->note = n;
 		  nf->con   = con;
 		  nf->evas  = con->bg_evas;
 		  if (!_note_face_init(nf))
-		    return NULL;
+		    return 0;
 	       }
 	  }
-     }
-   
-   return n;
+     }   
+   return 1;
 }
 
 static void
 _note_shutdown (Note *n)
 {
+   Evas_List *l;
    free(n->conf);
    E_CONFIG_DD_FREE(n->conf_edd);
-   _note_face_free(n->face);
+   l = n->faces;
+   while(l) {      
+      _note_face_free(l->data);
+      l = l->next;
+   }
    free(n);
 }
 
@@ -260,7 +279,11 @@ _note_config_menu_new (Note *n)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Transparency");
    e_menu_item_submenu_set(mi, n->config_menu_trans);
-      
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Add Note");
+   e_menu_item_callback_set (mi, _note_face_add, n);   
+   
    return mn;
 }
 
@@ -271,9 +294,9 @@ _note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi)
    Evas_Object *bg;
       
    n = (Note *)data;
-   bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 187, 243, 168, 100);
-   esmart_textarea_bg_set(n->face->note_object, bg);
+//   bg = evas_object_rectangle_add(n->face->evas);
+//   evas_object_color_set(bg, 187, 243, 168, 100);
+//   esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
 static void
@@ -283,9 +306,9 @@ _note_menu_bgcolor_yellow (void *data, E_Menu *m, E_Menu_Item *mi)
    Evas_Object *bg;
       
    n = (Note *)data;
-   bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 245, 248, 27, 100);
-   esmart_textarea_bg_set(n->face->note_object, bg);
+//   bg = evas_object_rectangle_add(n->face->evas);
+//   evas_object_color_set(bg, 245, 248, 27, 100);
+//   esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
 static void
@@ -295,9 +318,9 @@ _note_menu_bgcolor_white (void *data, E_Menu *m, E_Menu_Item *mi)
    Evas_Object *bg;
       
    n = (Note *)data;
-   bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 255, 255, 255, 100);
-   esmart_textarea_bg_set(n->face->note_object, bg);
+//   bg = evas_object_rectangle_add(n->face->evas);
+//   evas_object_color_set(bg, 255, 255, 255, 100);
+//   esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
 static void
@@ -307,9 +330,9 @@ _note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi)
    Evas_Object *bg;
       
    n = (Note *)data;
-   bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 149, 207, 226, 100);
-   esmart_textarea_bg_set(n->face->note_object, bg);
+//   bg = evas_object_rectangle_add(n->face->evas);
+//   evas_object_color_set(bg, 149, 207, 226, 100);
+//   esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
 
@@ -339,6 +362,26 @@ _note_config_menu_del (Note *n, E_Menu *m)
 //     }
 //}
 
+static void
+_note_face_focus(void *data, Evas *e, Evas_Object *obj,
+		 void *event_info)
+{
+   Evas_Event_Mouse_In *ev = event_info;
+   Note_Face *nf = data;
+   printf("Note focused!\n");   
+   esmart_textarea_focus_set(nf->note_object, 1);
+}
+
+static void
+_note_face_unfocus(void *data, Evas *e, Evas_Object *obj,
+		 void *event_info)
+{
+   Evas_Event_Mouse_In *ev = event_info;
+   Note_Face *nf = data;
+   printf("Note unfocused!\n");
+   esmart_textarea_focus_set(nf->note_object, 0);
+}
+
 static int
 _note_face_init (Note_Face *nf)
 {
@@ -349,15 +392,28 @@ _note_face_init (Note_Face *nf)
    
    /* set up the note object */
    o = esmart_textarea_add (nf->evas);
+   nf->note_object = o;      
    evas_output_viewport_get(nf->evas, NULL, NULL, &ww, &hh);
    nf->ww = ww;
    evas_object_move (o, 0, hh - nf->note->conf->height + 3);
    //evas_object_resize (o, nf->ww, nf->note->conf->height);
    evas_object_resize(o, nf->note->conf->width, nf->note->conf->height);
    evas_object_pass_events_set(o, 1);
-   evas_object_layer_set (o, 20);
-   evas_object_show (o);
-   nf->note_object = o;
+   evas_object_layer_set (o, 1);
+   esmart_textarea_focus_set(o, 0);
+   evas_object_show (o);   
+   
+   o = evas_object_rectangle_add(nf->evas);
+   nf->event_object = o;
+   evas_object_layer_set(o, 2);
+   evas_object_repeat_events_set(o, 1);
+   evas_object_color_set(o, 100, 0, 0, 100);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, 
+				  _note_face_focus, nf);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, 
+				  _note_face_unfocus, nf);
+   evas_object_show(o);
+   
    
    evas_event_freeze(nf->con->bg_evas);
    
@@ -406,11 +462,16 @@ _note_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chang
      {
       case E_GADMAN_CHANGE_MOVE_RESIZE:
 	e_gadman_client_geometry_get(nf->gmc, &x, &y, &w, &h);
+	
 	evas_object_move(nf->note_object, x, y);
 	evas_object_resize(nf->note_object, w, h);
+	
+	evas_object_move(nf->event_object, x, y);
+	evas_object_resize(nf->event_object, w, h);
 	break;
       case E_GADMAN_CHANGE_RAISE:
 	evas_object_raise(nf->note_object);
+	evas_object_raise(nf->event_object);	
 	break;
       case E_GADMAN_CHANGE_EDGE:
       case E_GADMAN_CHANGE_ZONE:
@@ -428,10 +489,12 @@ _note_face_free(Note_Face *nf)
     e_object_del(E_OBJECT(nf->gmc));
 
    evas_object_del (nf->note_object);
+   evas_object_del (nf->event_object);   
    _note_count--;
    free (nf);
 }
 
+/* this is NOT used */
 static int 
 _note_cb_event_container_resize(void *data, int type, void *event)
 {
@@ -449,5 +512,8 @@ _note_cb_event_container_resize(void *data, int type, void *event)
    evas_object_move (o, 0, hh - nf->note->conf->height + 3);
    evas_object_resize (o,  nf->note->conf->width, nf->note->conf->height);
    
+   o = nf->event_object;   
+   evas_object_move (o, 0, hh - nf->note->conf->height + 3);
+   evas_object_resize (o,  nf->note->conf->width, nf->note->conf->height);      
    return 1;
 }
