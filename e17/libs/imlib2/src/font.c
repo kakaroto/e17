@@ -635,7 +635,13 @@ __imlib_calc_size(ImlibFont *fn, int *width, int *height, const char *text)
 	if (i == 0)
 	   pw += ((-gmetrics.bearingX) / 64);
 	if (text[i + 1] == 0)
-	   pw += (gmetrics.bbox.xMax / 64);
+	  {
+	     /* special code just for tridge - maaaaate */
+	     if (gmetrics.bbox.xMax == 0)
+	       pw += gmetrics.advance / 64;
+	     else
+	       pw += (gmetrics.bbox.xMax / 64);
+	  }
 	else
 	   pw += gmetrics.advance / 64;
      }
