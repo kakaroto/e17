@@ -38,6 +38,10 @@ struct __gib_stack {
 	gib_list *base;
 };
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 gib_stack *gib_stack_new();
 void       gib_stack_free(gib_stack *stack);
@@ -47,5 +51,10 @@ void      *gib_stack_pop(gib_stack *stack);
 void      *gib_stack_peek(gib_stack *stack);
 
 unsigned char  gib_stack_pending(gib_stack *stack);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /*_GIB_QUEUE_H_*/

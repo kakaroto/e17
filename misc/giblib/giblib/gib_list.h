@@ -45,6 +45,11 @@ struct __gib_list
 
 typedef int (gib_compare_fn) (void *data1, void *data2);
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 gib_list *gib_list_new(void);
 void gib_list_free(gib_list * l);
 gib_list *gib_list_add_front(gib_list * root, void *data);
@@ -81,5 +86,10 @@ gib_list *gib_list_find(gib_list *root, unsigned char (*find_func)(gib_list *nod
 gib_list *gib_list_find_by_data(gib_list *root, void *data);
 
 gib_list *gib_string_split(const char *string, const char *delimiter);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

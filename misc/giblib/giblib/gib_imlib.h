@@ -42,6 +42,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    if ((xx) + (ww) < x + w) { w -= x + w - ((xx) + (ww)); } \
 }
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 int gib_imlib_load_image(Imlib_Image * im, char *filename);
 int gib_imlib_image_get_width(Imlib_Image im);
 int gib_imlib_image_get_height(Imlib_Image im);
@@ -164,5 +169,10 @@ Imlib_Image gib_imlib_create_image_from_drawable(Drawable d, Pixmap mask,
                                                  char need_to_grab_x);
 void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a);
 void gib_imlib_parse_fontpath(char *path);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

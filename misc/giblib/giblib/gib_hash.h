@@ -47,6 +47,11 @@ struct __gib_hash_node
    char     *key;
 };
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 gib_hash_node *gib_hash_node_new(char *key, void *data);
 void           gib_hash_node_free(gib_hash_node *node);
 void           gib_hash_node_free_and_data(gib_hash_node *node);
@@ -60,5 +65,9 @@ void     *gib_hash_get(gib_hash *hash, char *key);
 void      gib_hash_remove(gib_hash *hash, char *key);
 
 void      gib_hash_foreach(gib_hash *hash, void (*foreach_cb)(gib_hash_node *node, void *data), void *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* GIB_HASH_H */

@@ -38,6 +38,10 @@ struct __gib_queue {
 	gib_list *base;
 };
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 gib_queue *gib_queue_new();
 void       gib_queue_free(gib_queue *queue);
@@ -48,5 +52,10 @@ unsigned char  gib_queue_pending(gib_queue *queue);
 
 void          *gib_queue_next(gib_queue *queue);
 void          *gib_queue_peek(gib_queue *queue);
+
+#ifdef __cplusplus
+extern "C"
+}
+#endif
 
 #endif /*_GIB_QUEUE_H_*/

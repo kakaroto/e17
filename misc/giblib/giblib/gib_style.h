@@ -48,6 +48,11 @@ struct __gib_style
    char *name;
 };
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 gib_style_bit *gib_style_bit_new(int x_offset, int y_offset, int r, int g, int b, int a);
 gib_style *gib_style_new(char *name);
 void gib_style_bit_free(gib_style_bit *s);
@@ -57,5 +62,10 @@ void gib_dup_style_bit(void **dest, void *data);
 gib_style *gib_style_new_from_acsii(char *file);
 void gib_style_save_ascii(gib_style * style, char *file);
 gib_style *gib_style_new_from_ascii(char *file);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

@@ -34,6 +34,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <giblib/giblib_config.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 void eprintf(char *fmt, ...);
 void weprintf(char *fmt, ...);
 char *_estrdup(char *s);
@@ -41,5 +46,9 @@ void *_emalloc(size_t n);
 void _efree(void *p);
 void *_erealloc(void *ptr, size_t n);
 char *stroflen(char c, int l);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -45,6 +45,11 @@ enum _gib_btree_traverse_order {
 	GIB_POST
 };
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 gib_btree *gib_btree_new(void *data, int sort_val);
 void       gib_btree_free(gib_btree *tree);
 void       gib_btree_free_and_data(gib_btree *tree);
@@ -61,4 +66,9 @@ gib_btree *gib_btree_find(gib_btree *tree, int val);
 gib_btree *gib_btree_find_by_data(gib_btree *tree, unsigned char (*find_func)(gib_btree *tree, void *data), void *data);
 
 void      gib_btree_traverse(gib_btree *tree, void (*traverse_cb)(gib_btree *tree, void *data), int order, void *data);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* _BIG_BTREE_H */
