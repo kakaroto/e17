@@ -60,6 +60,7 @@ AC_SUBST(edb_libs)
 
 AC_OUTPUT([
 Makefile
+etcher.spec
 src/Makefile
 intl/Makefile
 po/Makefile.in
