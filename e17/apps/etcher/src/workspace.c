@@ -672,8 +672,8 @@ workspace_update_selection_from_widget(void)
 	bits->description->min.h = get_spin("bit_min_v");
 	bits->description->max.w = get_spin("bit_max_h");
 	bits->description->max.h = get_spin("bit_max_v");
-	bits->description->prefered.w = get_spin("bit_pref_h");
-	bits->description->prefered.h = get_spin("bit_pref_v");
+	bits->description->preferred.w = get_spin("bit_pref_h");
+	bits->description->preferred.h = get_spin("bit_pref_v");
 	bits->description->padding.l = get_spin("bit_pad_l");
 	bits->description->padding.r = get_spin("bit_pad_r");
 	bits->description->padding.t = get_spin("bit_pad_t");
@@ -819,8 +819,8 @@ workspace_update_widget_from_selection(void)
 	set_spin("bit_min_v", bits->description->min.h);
 	set_spin("bit_max_h", bits->description->max.w);
 	set_spin("bit_max_v", bits->description->max.h);
-	set_spin("bit_pref_h", bits->description->prefered.w);
-	set_spin("bit_pref_v", bits->description->prefered.h);
+	set_spin("bit_pref_h", bits->description->preferred.w);
+	set_spin("bit_pref_v", bits->description->preferred.h);
 	set_spin("bit_pad_l", bits->description->padding.l);
 	set_spin("bit_pad_r", bits->description->padding.r);
 	set_spin("bit_pad_t", bits->description->padding.t);
