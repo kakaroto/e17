@@ -1,16 +1,79 @@
 #include "ewl-config.h"
 #include <Ewl.h>
 
-Ewl_Widget *label = NULL;
-
-#define TRANS_TIME 2.0
-Ecore_Timer *transition = NULL;
-
-int trigger_tour(void *data)
+void
+entrance_text(void *data, Evas_Object *obj, const char *emission,
+		const char *source)
 {
-	ewl_text_text_set(EWL_TEXT(label), NULL);
-	transition = NULL;
-	return 0;
+	Ewl_Widget *label = data;
+	char *text = "\nEntrance [en-'trans], v.\n"
+			"  1: to carry away with delight,\n"
+			"     wonder, or rapture\n"
+			"  2: to put into a trance\n"
+			"Entrance is the Enlightenment\n"
+			"Display Manager. And like\n"
+			"Enlightenment, it takes beauty\n"
+			"and customization to new levels\n";
+
+	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
+	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_text_set(EWL_TEXT(label), "Entrance");
+
+	ewl_text_style_set(EWL_TEXT(label), "none");
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_text_append(EWL_TEXT(label), text);
+}
+
+void
+elicit_text(void *data, Evas_Object *obj, const char *emission,
+		const char *source)
+{
+	Ewl_Widget *label = data;
+	char *text = "\nElicit is a tool for examining\n"
+		     "images on your desktop,\n"
+		     "providing both a global color\n"
+		     "picker and a zoom tool.\n"
+		     "Graphic artists and designers\n"
+		     "can quickly examine graphics\n"
+		     "without needed to rely on\n"
+		     "larger tools for simple\n"
+		     "examinations and color checks.";
+
+	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
+	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_text_set(EWL_TEXT(label), "Elicit");
+
+	ewl_text_style_set(EWL_TEXT(label), "none");
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_text_append(EWL_TEXT(label), text);
+}
+
+void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *label = user_data;
+
+	ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
+	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_text_append(EWL_TEXT(label), "Welcome to Enlightenment!\n");
+	ewl_text_style_set(EWL_TEXT(label), "none");
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_text_append(EWL_TEXT(label), "We hope you enjoy your stay.\n"
+					      "Please visit us at:\n");
+	ewl_text_color_set(EWL_TEXT(label), 0, 0, 255, 190);
+	ewl_text_text_append(EWL_TEXT(label), "http://www.enlightenment.org/");
+	ewl_text_color_set(EWL_TEXT(label), 0, 0, 0, 255);
+}
+
+void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	edje_object_signal_callback_add(w->theme_object, "elicit", "tour",
+			elicit_text, user_data);
+	edje_object_signal_callback_add(w->theme_object, "entrance", "tour",
+			entrance_text, user_data);
 }
 
 void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)
@@ -23,7 +86,6 @@ void button_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *logo = user_data;
 	ewl_widget_set_state(logo, "start_tour");
-	transition = ecore_timer_add(TRANS_TIME, trigger_tour, NULL);
 }
 
 void quit_demo(Ewl_Widget *w, void *ev_data, void *user_data)
@@ -38,6 +100,7 @@ int main(int argc, char **argv)
 	Ewl_Widget *hbox;
 	Ewl_Widget *button;
 	Ewl_Widget *logo;
+	Ewl_Widget *label;
 	char tmp[PATH_MAX];
 
 	ewl_init(&argc, argv);
@@ -60,30 +123,27 @@ int main(int argc, char **argv)
 	ewl_container_append_child(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 
+	/*
+	 * Create the label first so we can pass it to the logo's callbacks
+	 */
+	label = ewl_text_new(NULL);
+
+	/*
+	 * Setup the custom logo which becomes the tour display area.
+	 */
 	logo = NEW(Ewl_Widget, 1);
 	ewl_widget_init(logo, "demo_logo");
-	ewl_callback_append(logo, EWL_CALLBACK_REALIZE, test_cb, "realize logo");
+	ewl_callback_append(logo, EWL_CALLBACK_REALIZE, realize_logo_cb, label);
 	ewl_callback_append(logo, EWL_CALLBACK_CONFIGURE, test_cb, "configure logo");
 	ewl_theme_data_set_str(logo, "/demo_logo/file", tmp);
 	ewl_theme_data_set_str(logo, "/demo_logo/group", "tour");
-	ewl_object_set_preferred_size(EWL_OBJECT(logo), 100, 100);
+	ewl_object_set_preferred_size(EWL_OBJECT(logo), 150, 150);
 	ewl_object_set_fill_policy(EWL_OBJECT(logo), EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(logo), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(vbox), logo);
 	ewl_widget_show(logo);
 
-	label = ewl_text_new(NULL);
-	ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
-	ewl_text_text_append(EWL_TEXT(label), "Welcome to Enlightenment!\n");
-	ewl_text_style_set(EWL_TEXT(label), "none");
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 9);
-	ewl_text_text_append(EWL_TEXT(label), "We hope you enjoy your stay.\n"
-					      "Please visit us at:\n");
-	ewl_text_color_set(EWL_TEXT(label), 0, 0, 255, 190);
-	ewl_text_text_append(EWL_TEXT(label), "http://www.enlightenment.org/");
+	start_text(label, NULL, label);
 	ewl_container_append_child(EWL_CONTAINER(vbox), label);
 	ewl_widget_show(label);
 
