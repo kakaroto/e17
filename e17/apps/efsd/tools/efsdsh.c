@@ -321,7 +321,7 @@ print_help(void)
 	 "-a                    All files, also those starting\n"
          "                      with a dot.\n"
 	 "-s                    Get stat as well.\n" 
-	 "-t                    Get filet type as well.\n\n"
+	 "-t                    Get file type as well.\n\n"
 	 "For cp, mv, rm:\n"
 	 "-f                    Force. Ignore nonexistant files\n"
 	 "                      when removing, or existing ones\n"
