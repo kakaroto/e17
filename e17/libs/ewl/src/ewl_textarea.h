@@ -37,8 +37,8 @@ struct Ewl_Text
 	char           *text;         /**< The initial text in the text */
 	Evas_Object    *etox;         /**< Etox does the actual layout work */
 	Etox_Context   *context; /**< Contains various format settings */
-	Ecore_List     *ops;          /**< Series of operations to apply */
-	Ecore_List     *applied;      /**< Applied set of operations */
+	Ecore_DList    *ops;          /**< Series of operations to apply */
+	Ecore_DList    *applied;      /**< Applied set of operations */
 };
 
 typedef enum

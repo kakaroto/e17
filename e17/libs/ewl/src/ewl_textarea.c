@@ -2,6 +2,8 @@
 
 static void ewl_text_ops_apply(Ewl_Text *ta);
 static void ewl_text_op_free(void *data);
+static Ewl_Text_Op *ewl_text_op_relevant_find(Ewl_Text *ta,
+					      Ewl_Text_Op_Type type);
 static void ewl_text_update_size(Ewl_Text * ta);
 
 /*
@@ -74,11 +76,11 @@ void ewl_text_init(Ewl_Text * ta, char *text)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_text_configure_cb, NULL);
 
-	ta->ops = ecore_list_new();
-	ta->applied = ecore_list_new();
+	ta->ops = ecore_dlist_new();
+	ta->applied = ecore_dlist_new();
 
-	ecore_list_set_free_cb(ta->ops, ewl_text_op_free);
-	ecore_list_set_free_cb(ta->applied, ewl_text_op_free);
+	ecore_dlist_set_free_cb(ta->ops, ewl_text_op_free);
+	ecore_dlist_set_free_cb(ta->applied, ewl_text_op_free);
 
 	if (text)
 		ewl_text_text_set(ta, text);
@@ -175,7 +177,7 @@ void ewl_text_color_set(Ewl_Text *ta, int r, int g, int b, int a)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_color_new(ta, r, g, b, a);
-	ecore_list_append(ta->ops, op);
+	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
 
@@ -197,11 +199,63 @@ void ewl_text_font_set(Ewl_Text *ta, char *font, int size)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_font_new(ta, font, size);
-	ecore_list_append(ta->ops, op);
+	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to change font
+ * @param font: the name of the font
+ * @param size: the size of the font
+ * @brief Changes the currently applied font of the text to specified values
+ * @return Returns no value.
+ */
+char *ewl_text_font_get(Ewl_Text *ta)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Font *opf;
+	char *font = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+
+	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
+	opf = (Ewl_Text_Op_Font *)op;
+	if (opf && opf->font) {
+		font = strdup(opf->font);
+	}
+
+	DRETURN_PTR(font, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_relevant_find(Ewl_Text *ta, Ewl_Text_Op_Type type)
+{
+	Ecore_DList *l;
+	void *(*traverse)(Ecore_DList *l);
+	Ewl_Text_Op *op = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (REALIZED(ta)) {
+		l = ta->applied;
+		ecore_dlist_goto_first(l);
+		traverse = ecore_dlist_next;
+	}
+	else {
+		l = ta->ops;
+		ecore_dlist_goto_last(l);
+		traverse = ecore_dlist_previous;
+	}
+
+	while ((op = traverse(ta->ops)))
+		if (op->type == type)
+			break;
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
 }
 
 /**
@@ -322,9 +376,9 @@ static void ewl_text_ops_apply(Ewl_Text *ta)
 {
 	Ewl_Text_Op *op;
 
-	while ((op = ecore_list_remove(ta->ops))) {
+	while ((op = ecore_dlist_remove(ta->ops))) {
 		op->apply(ta, op);
-		ecore_list_append(ta->applied, op);
+		ecore_dlist_append(ta->applied, op);
 	}
 }
 
@@ -360,10 +414,10 @@ void ewl_text_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	ta = EWL_TEXT(w);
-	ecore_list_destroy(ta->ops);
+	ecore_dlist_destroy(ta->ops);
 	ta->ops = NULL;
 
-	ecore_list_destroy(ta->applied);
+	ecore_dlist_destroy(ta->applied);
 	ta->applied = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
