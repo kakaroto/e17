@@ -233,7 +233,9 @@ int
 entranced_auth_display_secure (Entranced_Display *d)
 {
    FILE              *auth_file;
+#if 0
    FILE              *host_file;
+#endif
    char              buf[PATH_MAX];
    char              hostname[1024];
 
@@ -285,6 +287,12 @@ entranced_auth_display_secure (Entranced_Display *d)
 
    fclose(auth_file);
    setenv("XAUTHORITY", d->authfile, TRUE);
+
+   /* TODO: This will become a config option -- perhaps desirable for
+    *       single-user systems, but not multi-user machines.
+    *       For now it is disabled.
+    */
+#if 0
    /* Write host access file */
    snprintf(buf, PATH_MAX, "/etc/X%d.hosts", d->dispnum);
    if (!(host_file = fopen(buf, "w")))
@@ -294,6 +302,8 @@ entranced_auth_display_secure (Entranced_Display *d)
    }
    fprintf(host_file, "%s\n", d->hostname);
    fclose(host_file);
+#endif
+   
    entranced_debug("entranced_auth_display_secure: Successfully set up access for %s (localhost)\n", d->name);
 
    return TRUE;
@@ -353,7 +363,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
    }
 
    /* Open file and write auth entries */
-   if(!(auth_file = fopen(d->client.authfile, "a+")))
+   if(!(auth_file = fopen(d->client.authfile, "r+")))
    {
       syslog(LOG_CRIT, "entranced_auth_user_add: Open auth file %s failed after lock", d->client.authfile);
       XauUnlockAuth (d->client.authfile);
@@ -411,7 +421,7 @@ entranced_auth_user_remove (Entranced_Display *d)
    }
 
    /* Open the file */
-   if (!(auth_file = fopen(d->client.authfile, "a+")))
+   if (!(auth_file = fopen(d->client.authfile, "r+")))
    {
       XauUnlockAuth(d->client.authfile);
       free(d->client.authfile);

@@ -357,6 +357,8 @@ Entranced_Exe_Exited(void *data, int type, void *event)
       return 1;
    }
 
+   entranced_auth_user_remove(d);
+
    Entranced_Spawn_Entrance(d);
 
    return 1;
