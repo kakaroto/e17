@@ -123,6 +123,20 @@ edje_libs=`$EDJE_CONFIG --libs`
 AC_SUBST(edje_cflags)
 AC_SUBST(edje_libs)
 
+PROG="ewl-config";
+AC_PATH_PROG(EWL_CONFIG, $PROG, "", $PATH)
+if [ test -z $EWL_CONFIG ]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+ewl_cflags=`$EWL_CONFIG --cflags`
+ewl_libs=`$EWL_CONFIG --libs`
+AC_SUBST(ewl_cflags)
+AC_SUBST(ewl_libs)
+
+
 have_esmart_trans="no"
 dnl Make sure the esmart header/lib is available
 AC_CHECK_HEADER( Esmart/Esmart_Trans.h, 
