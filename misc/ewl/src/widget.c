@@ -45,13 +45,14 @@ void       ewl_widget_init(EwlWidget *w)
 
 	w->name = 0;
 	w->type = EWL_WIDGET;
-	w->parent = 0;
+	w->parent = NULL;
 	w->root = 0;
 	w->flags = 0;
 	ewl_widget_set_flag(w, NEEDS_RESIZE, TRUE);
 	ewl_widget_set_flag(w, NEEDS_REFRESH, TRUE);
 	ewl_widget_set_flag(w, CAN_RESIZE, TRUE);
 
+	ewl_widget_set_rect(w,&t,&t,&t,&t);
 	ewl_widget_set_padding(w,&t,&t,&t,&t);
 	w->layers=  0;
 	w->layout = ewl_layout_new();
@@ -306,6 +307,63 @@ EwlBool    ewl_widget_can_resize(EwlWidget *w)
 	FUNC_END("ewl_widget_can_resize");
 	return r;
 }
+
+void             ewl_widget_moveresize(EwlWidget *widget,
+                                       int x, int y, int w, int h)
+{
+	FUNC_BGN("ewl_widget_moveresize");
+	ewl_widget_set_rect(widget,&x,&y,(w>-1)?&w:0,(h>-1)?&h:0);
+	FUNC_END("ewl_widget_moveresize");
+	return;
+}
+
+void             ewl_widget_move(EwlWidget *widget, int x, int y)
+{
+	FUNC_BGN("ewl_widget_move");
+	ewl_widget_set_rect(widget,&x,&y,0,0);
+	FUNC_END("ewl_widget_move");
+	return;
+}
+
+void             ewl_widget_resize(EwlWidget *widget, int w, int h)
+{
+	FUNC_BGN("ewl_widget_resize");
+	ewl_widget_set_rect(widget,0,0,&w,&h);
+	FUNC_END("ewl_widget_resize");
+	return;
+}
+
+EwlRect         *ewl_widget_get_rect(EwlWidget *widget)
+{
+	EwlRect *rect = NULL;
+	FUNC_BGN("ewl_widget_get_rect");
+	if (!widget) {
+		ewl_debug("ewl_widget_get_rect", EWL_NULL_WIDGET_ERROR, "widget");
+	} else {
+		rect = ewl_layout_get_rect(widget->layout);
+	}
+	FUNC_END("ewl_widget_get_rect");
+	return rect;
+}
+
+
+void             ewl_widget_set_rect(EwlWidget *widget,
+                                     int *x, int *y, int *w, int *h)
+{
+	FUNC_BGN("ewl_widget_set_rect");
+	if (!widget) {
+		ewl_debug("ewl_widget_set_rect", EWL_NULL_WIDGET_ERROR, "widget");
+	} else if (!ewl_widget_can_resize(widget)) {
+		ewl_debug("ewl_widget_set_rect", EWL_GENERIC_ERROR,
+		          "widget cannot be resized");
+	} else {
+		ewl_layout_set_rect(widget->layout,ewl_rect_new_with_values(x,y,w,h));
+		if (w||h) ewl_widget_set_needs_resize(widget);
+	}
+	FUNC_END("ewl_widget_set_rect");
+	return;
+}
+
 
 /*static char _cb_exec_ewhe(EwlLL *node, EwlData *data)
 {

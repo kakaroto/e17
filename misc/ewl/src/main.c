@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
 	/* configure widgets  and connect callbacks */
 	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "Sampel window",
 									320, 240);
-	ewl_window_set_property_location(win,800,600);
-	ewl_window_set_property_size	(win,640,480);
-	ewl_window_set_property_class_hint	(win,"blah", "blah");
-	ewl_window_set_property_decor_hint	(win, TRUE);
+	ewl_window_move(win,800,600);
+	ewl_window_resize(win,640,480);
+	ewl_window_set_class_hints(win,"blah", "blah");
+	ewl_window_set_decoration_hint(win, TRUE);
 
 	ewl_callback_add(win, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
 
@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 	ewl_window_pack(win,box);
 	ewl_widget_show(box);
 	ewl_widget_show(win);
-	ewl_widget_show(box);
 
 	/* DEBUGGING */
 	fprintf(stderr, "win = 0x%08x\nbox = 0x%08x\nbtn = 0x%08x\n",

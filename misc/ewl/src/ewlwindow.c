@@ -44,18 +44,14 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 	switch(ev->type)	{
 	case EWL_EVENT_SHOW:
 		ewl_widget_set_flag(widget, VISIBLE, TRUE);
-		/* Call this to actually do XCreateWindow */
 		if (!window->xwin)
-		{
 			ewl_window_realize(widget);
-		}
-		/*fprintf(stderr,"_cb_ewl_win_show called.\n");*/
+		XMapWindow(s->disp, window->xwin);
 		break;
 	case EWL_EVENT_HIDE:
 		ewl_widget_set_flag(widget, VISIBLE, FALSE);
-//		XUnmapWindow(s->disp, window->xwin);
-		ewl_window_unrealize(widget);
-		/*fprintf(stderr,"_cb_ewl_win_hide called.\n");*/
+		/* ewl_window_unrealize(widget) */
+		XUnmapWindow(s->disp, window->xwin);
 		break;
 	case EWL_EVENT_EXPOSE:
 		if (e_ev->count)
@@ -115,6 +111,7 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 	EwlContainer         *container = (EwlContainer*) win;
 	EwlState             *s = ewl_state_get();
 	XGCValues             gc;
+	char                 *str = NULL;
 	int                   t = 0;
 
 	FUNC_BGN("ewl_window_init");
@@ -129,6 +126,7 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 	ewl_container_set_max_children(widget, 1);
 	ewl_widget_set_type(widget,EWL_WINDOW);
 	win->pmap = 0;
+	win->xwin = 0;
 
 	/* LAOD DB SHIT HERE */
 	ewl_widget_get_theme(widget,"/EwlWindow");
@@ -155,23 +153,42 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
 	                 _cb_ewl_window_event_handler, NULL);
 
-	/* init ewl attributes */
-	if (w==-1)
-		w = EWL_DEFAULT_WINDOW_WIDTH;
-	if (h==-1)
-		h = EWL_DEFAULT_WINDOW_HEIGHT;
-
-	/* Lets setup some properties. */
+	/* window properties */
 	win->type	= type;
-	win->title	= title?title:EWL_DEFAULT_WINDOW_TITLE;
-	win->x		= EWL_DEFAULT_WINDOW_X;
-	win->y		= EWL_DEFAULT_WINDOW_Y;
-	win->w		= w;
-	win->h		= h;
-	win->name	= EWL_DEFAULT_WINDOW_NAME_H;
-	win->class 	= EWL_DEFAULT_WINDOW_CLASS_H;
 
-	win->decor_hint = TRUE;
+	if (w==-1) {
+		if (ewl_theme_get_int("/EwlWindow/width", &t))
+			w = t;
+		else 
+			w = EWL_DEFAULT_WINDOW_WIDTH;
+	}
+	if (h==-1) {
+		if (ewl_theme_get_int("/EwlWindow/height", &t))
+			h = t;
+		else 
+			h = EWL_DEFAULT_WINDOW_HEIGHT;
+	}
+	ewl_widget_moveresize(widget,0,0,w,h);
+		
+	if (!title)
+		title = ewl_theme_get_string("/EwlWindow/title");
+	if (!title)
+		title = EWL_DEFAULT_WINDOW_TITLE;
+	win->title = title;
+
+	str = ewl_theme_get_string("/EwlWindow/name_hint");
+	if (str)
+		win->name_hint = str;
+	else 
+		win->name_hint  = EWL_DEFAULT_WINDOW_NAME_H;
+
+	str = ewl_theme_get_string("/EwlWindow/class_hint");
+	if (str)
+		win->name_hint = str;
+	else 
+		win->name_hint  = EWL_DEFAULT_WINDOW_NAME_H;
+
+	win->decoration_hint = TRUE;
 
 	win->screen = ScreenOfDisplay(s->disp, DefaultScreen(s->disp));
 	win->vis = DefaultVisual(s->disp, DefaultScreen(s->disp));
@@ -206,7 +223,6 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 
 	gc.foreground = BlackPixel(s->disp, DefaultScreen(s->disp));
 	win->gc = XCreateGC(s->disp, win->root, GCForeground, &gc);
-
 
 	FUNC_END("ewl_window_init");
 	return;
@@ -293,28 +309,34 @@ void	ewl_window_realize(EwlWidget *widget)
 		          "window");
 	} else {
 		fprintf(stdout, "Realizing window 0x%08x\n", (unsigned int)win);
-		win->xwin = XCreateWindow(s->disp, win->root, win->x, win->y, 
-						win->w, win->h, 0, win->depth,
-		            	InputOutput, win->vis,
-		            	CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		            	CWColormap | CWBackPixel | CWBorderPixel |CWEventMask,
-		            	&win->attr);
+		win->xwin = XCreateWindow(s->disp, win->root,
+		                          widget->layout->rect->x,
+		                          widget->layout->rect->y, 
+		                          widget->layout->rect->w,
+		                          widget->layout->rect->h,
+		                          0, win->depth,
+		                          InputOutput, win->vis,
+		                          CWOverrideRedirect | CWSaveUnder |
+		                          CWBackingStore | CWColormap |
+		                          CWBackPixel | CWBorderPixel |
+		                          CWEventMask, &win->attr);
 		
 		/* setting title */
 		XStoreName(s->disp, win->xwin, win->title);
 		
 		/* setting class hint */
- 		win->class_hint = XAllocClassHint();
-		win->class_hint->res_name = win->name;
-		win->class_hint->res_class = win->class;
-		XSetClassHint(s->disp, win->xwin, win->class_hint);
-		XFree(win->class_hint);
+ 		win->xclass_hint = XAllocClassHint();
+		win->xclass_hint->res_name = win->name_hint;
+		win->xclass_hint->res_class = win->class_hint;
+		XSetClassHint(s->disp, win->xwin, win->xclass_hint);
+		/*XFree(win->xclass_hint);*/
 		
 		/* Setting up decor */
-		if (win->decor_hint == TRUE) {
+#if 0
+		if (win->decoration_hint == TRUE) {
 			fprintf(stdout, "We want decor!\n");
 		}
-		else if (win->decor_hint == FALSE) {
+		else if (win->decoration_hint == FALSE) {
 			fprintf(stdout, "Ixnay on the decor-ay!\n");
 			wmhints = XInternAtom(s->disp, "_MOTIF_WM_HINTS", True);
 			if (wmhints != None) {
@@ -324,8 +346,7 @@ void	ewl_window_realize(EwlWidget *widget)
 					sizeof(MWMHints)/4);
 			}
 		}
-		/* Map our window */
-		XMapWindow(s->disp, win->xwin);
+#endif
 	}
 	FUNC_END("ewl_window_new_from_properties");
 	return;
@@ -350,111 +371,143 @@ void	ewl_window_unrealize(EwlWidget *widget)
 	return;
 }
 
-void	ewl_window_set_property_title(EwlWidget *widget, char *title)
+void	ewl_window_set_title(EwlWidget *widget, char *title)
 {
-	EwlState	*s		= ewl_state_get();
 	EwlWindow	*win	= (EwlWindow *) widget;
 
-	FUNC_BGN("ewl_window_set_property_title");
-	if (!s)	{
-		ewl_debug("ewl_window_set_property_title", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
-		ewl_debug("ewl_window_set_property_title", EWL_NULL_WIDGET_ERROR,
+	FUNC_BGN("ewl_window_set_title");
+	if (!win)	{
+		ewl_debug("ewl_window_set_title", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
 		win->title	=	title?title:EWL_DEFAULT_WINDOW_TITLE;
 	}
-	FUNC_END("ewl_window_set_property_title");
+	FUNC_END("ewl_window_set_title");
 	return;
 }
 
-void	ewl_window_set_property_location(EwlWidget *widget, int x, int y)
+char   *ewl_window_get_title(EwlWidget *widget)
 {
-	EwlState	*s	= ewl_state_get();
-	EwlWindow	*win	= (EwlWindow *) widget;
-
-	FUNC_BGN("ewl_window_set_property_location");
-	if (!s)	{
-		ewl_debug("ewl_window_set_property_location", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
-		ewl_debug("ewl_window_set_property_location", EWL_NULL_WIDGET_ERROR,
-		          "window");
+	EwlWindow *window = (EwlWindow*) widget;
+	char *title = NULL;
+	FUNC_BGN("ewl_window_get_title");
+	if (!window) {
+		ewl_debug("ewl_window_geT_title", EWL_NULL_WIDGET_ERROR, "window");
 	} else {
-
-		if (x==-1)
-			x = EWL_DEFAULT_WINDOW_X;
-		if (y==-1)
-			y = EWL_DEFAULT_WINDOW_Y;
-	
-		win->x	=	x;
-		win->y	=	y;
-
+		title = e_string_dup(window->title);
 	}
-	FUNC_END("ewl_window_set_property_location");
-	return;
+	FUNC_END("ewl_window_get_title");
+	return title;
 }
 
-void	ewl_window_set_property_size(EwlWidget *widget, int w, int h)
+void	ewl_window_set_class_hints(EwlWidget *widget, 
+                                  char *name, char *klass)
 {
-	EwlState	*s	= ewl_state_get();
-	EwlWindow	*win	= (EwlWindow *) widget;
-
-	FUNC_BGN("ewl_window_set_property_size");
-	if (!s)	{
-		ewl_debug("ewl_window_set_property_size", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
-		ewl_debug("ewl_window_set_property_size", EWL_NULL_WIDGET_ERROR,
-		          "window");
-	} else {
-
-		if (w==-1)
-			w = EWL_DEFAULT_WINDOW_X;
-		if (h==-1)
-			h = EWL_DEFAULT_WINDOW_Y;
-	
-		win->w	=	w;
-		win->h	=	h;
-	
-	}
-	FUNC_END("ewl_window_set_property_size");
-	return;
-}
-
-void	ewl_window_set_property_class_hint(EwlWidget *widget, 
-											char *name, char *class)
-{
-	EwlState	*s	= ewl_state_get();
 	EwlWindow	*win = (EwlWindow *) widget;
 
-	FUNC_BGN("ewl_window_set_property_class_hint");
-	if (!s)	{
-		ewl_debug("ewl_window_set_property_class_hint", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
-		ewl_debug("ewl_window_set_property_class_hint", EWL_NULL_WIDGET_ERROR,
+	FUNC_BGN("ewl_window_set_class_hints");
+	if (!win)	{
+		ewl_debug("ewl_window_set_class_hint", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
-		win->name = name;
-		win->class = class;
+		if (win->name_hint) free(win->name_hint);
+		win->name_hint  = name;
+		if (win->class_hint) free(win->class_hint);
+		win->class_hint = klass;
 	}
-	FUNC_END("ewl_window_set_property_class_hint");
+	FUNC_END("ewl_window_set_class_hint");
 	return;
 }
 
-void	ewl_window_set_property_decor_hint(EwlWidget *widget, 
-											EwlBool decor_hint)
+void	ewl_window_set_decoration_hint(EwlWidget *widget, 
+											EwlBool decoration_hint)
 {
-	EwlState	*s	= ewl_state_get();
 	EwlWindow	*win = (EwlWindow *) widget;
 
-	FUNC_BGN("ewl_window_set_property_decor_hint");
-	if (!s)	{
-		ewl_debug("ewl_window_set_property_decor_hint", EWL_NULL_ERROR, "s");
-	} else if (!win)	{
-		ewl_debug("ewl_window_set_property_decor_hint", EWL_NULL_WIDGET_ERROR,
+	FUNC_BGN("ewl_window_set_decoration_hint");
+	if (!win)	{
+		ewl_debug("ewl_window_set_decoration_hint", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
-		win->decor_hint	=	decor_hint; /*?decor_hint:TRUE; */
+		win->decoration_hint	=	decoration_hint; /*?decoration_hint:TRUE; */
 	}
-	FUNC_END("ewl_window_set_property_decor_hint");
+	FUNC_END("ewl_window_set_decoration_hint");
 	return;
 }
+
+
+char    *ewl_window_get_name_hint(EwlWidget *widget)
+{
+	char      *hint = NULL;
+	EwlWindow *window = (EwlWindow*) widget;
+	FUNC_BGN("ewl_window_get_name_hint");
+	if (!window) {
+		ewl_debug("ewl_window_get_name_hint", EWL_NULL_WIDGET_ERROR,
+		          "window");
+	} else {
+		hint = e_string_dup(window->name_hint);
+	}
+	FUNC_END("ewl_window_get_name_hint");
+	return hint;
+}
+
+char    *ewl_window_get_class_hint(EwlWidget *widget)
+{
+	char      *hint = NULL;
+	EwlWindow *window = (EwlWindow*) widget;
+	FUNC_BGN("ewl_window_get_class_hint");
+	if (!window) {
+		ewl_debug("ewl_window_get_class_hint", EWL_NULL_WIDGET_ERROR,
+		          "window");
+	} else {
+		hint = e_string_dup(window->class_hint);
+	}
+	FUNC_END("ewl_window_get_class_hint");
+	return hint;
+}
+
+EwlBool  ewl_window_get_decoration_hint(EwlWidget *widget)
+{
+	EwlBool hint = FALSE;
+	EwlWindow *window = (EwlWindow*) widget;
+	FUNC_BGN("ewl_window_get_decoration_hint");
+	if (!window) {
+		ewl_debug("ewl_window_get_decoration_hint", EWL_NULL_WIDGET_ERROR,
+		          "window");
+	} else {
+		hint = window->decoration_hint;
+	}
+	FUNC_END("ewl_window_get_decoration_hint");
+	return hint;
+}
+
+void	ewl_window_move(EwlWidget *widget, int x, int y)
+{
+	FUNC_BGN("ewl_window_move");
+	fprintf(stderr,"ewl_window_move: widget=0x%08x, x = %8d, y = %8d\n",
+		(unsigned int) widget, x, y);
+	/*ewl_widget_set_rect(widget,&x,&y,0,0);*/
+	FUNC_END("ewl_window_move");
+	return;
+}
+
+void	ewl_window_resize(EwlWidget *widget, int w, int h)
+{
+	FUNC_BGN("ewl_window_resize");
+	fprintf(stderr,"ewl_window_resize: widget=0x%08x, x = %8d, y = %8d\n",
+		(unsigned int) widget, h, w);
+	/*ewl_widget_set_rect(widget,0,0, (w>-1)?(&w):0,(h>-1)?(&h):0);*/
+	FUNC_END("ewl_window_resize");
+	return;
+}
+
+void	ewl_window_moveresize(EwlWidget *widget, int x, int y, int w, int h)
+{
+	FUNC_BGN("ewl_window_moveresize");
+	fprintf(stderr,"ewl_window_moveresize: widget=0x%08x, x = %8d, y = %8d\n",
+		(unsigned int) widget, w, h);
+	/*ewl_widget_set_rect(widget,&x, &y, (w>-1)?(&w):0, (h>-1)?(&h):0);*/
+	FUNC_END("ewl_window_moveresize");
+	return;
+}
+

@@ -28,6 +28,14 @@ typedef enum _EwlWinType EwlWinType;
 struct _EwlWindow	{
 	EwlContainer     container;
 	
+	/* window properties */
+	XSetWindowAttributes	attr;
+	EwlWinType	 	 type;
+	char			*title;
+	char            *name_hint;
+	char            *class_hint;
+	EwlBool			 decoration_hint;				 
+
 	/* x junk */
 	Screen          *screen;
 	int              depth;
@@ -39,17 +47,7 @@ struct _EwlWindow	{
 	GC               gc;
 	Pixmap           pmap; /* everything is rendered into this pixmap */
 	
-	/* window properties below here */
-	XSetWindowAttributes	attr;
-	EwlWinType	 	 type;
-	char			*title;
-	int				 x, y;
-	int				 w, h;
-	char            *name;
-	char            *class;
-
-	XClassHint		 *class_hint;
-	EwlBool			 decor_hint;				 
+	XClassHint		 *xclass_hint;
 	MWMHints		 mwmhints;
 };
 
@@ -63,17 +61,32 @@ void         ewl_window_pack(EwlWidget *window, EwlWidget *child);
 
 EwlWidget   *ewl_window_find_by_xwin(Window xwin);
 
-void	ewl_window_set_render_context		(EwlWidget *widget);
-void	ewl_window_realize					(EwlWidget *widget);
-void	ewl_window_unrealize					(EwlWidget *widget);
-void	ewl_window_set_property_title		(EwlWidget *widget, char *title);
-void    ewl_window_set_property_location	(EwlWidget *widget, int x, int y);
-void    ewl_window_set_property_size		(EwlWidget *widget, int w, int h);
-void    ewl_window_set_property_class_hint	(EwlWidget *widget,
-											char *name, char *class);
-void	ewl_window_set_property_decor_hint	(EwlWidget *widget, 
-											EwlBool decor_hint);
+/* property helper functions */
+void	 ewl_window_set_title(EwlWidget *widget, char *title);
+char    *ewl_window_get_title(EwlWidget *widget);
+
+void     ewl_window_set_class_hints(EwlWidget *widget,
+                                   char *name, char *klass);
+void	 ewl_window_set_decoration_hint(EwlWidget *widget, 
+                                        EwlBool decor_hint);
+char    *ewl_window_get_name_hint(EwlWidget *widget);
+char    *ewl_window_get_class_hint(EwlWidget *widget);
+EwlBool  ewl_window_get_decoration_hint(EwlWidget *widget);
+
+void     ewl_window_move(EwlWidget *widget,
+                         int x, int y);
+void     ewl_window_resize(EwlWidget *widget,
+                           int w, int h);
+void     ewl_window_moveresize(EwlWidget *widget,
+                               int x, int y, int w, int h);
+EwlRect *ewl_window_get_rect(EwlWidget *widget);
+
+
 /* private */
+void	 ewl_window_set_render_context(EwlWidget *widget);
+void	 ewl_window_realize(EwlWidget *widget);
+void	 ewl_window_unrealize(EwlWidget *widget);
+
 EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
                                      EwlData *data);
 

@@ -713,3 +713,23 @@ transparent one. :)
 Added window property code to set values and hints etc before window creation.
 See main.c for example. =)
 
+-----
+20000818-1653-PDT, pabs
+
+- added EwlWindow helper funcs ewl_window_move/resize_moveresize/get_rect()
+- windows should still map themselves in the SHOW callback, not in the
+  realize handler -- shame shame x5rings. :P
+- moved rect-related code for EwlWindows to EWlWidget::layout->rect.
+- added ewl_widget_move/resize/moveresize/set_rect/get_rect().  the
+  calls above fore ewlwidnows are just wrappers for these calls, which
+  are all wrappers for the set_rect() call. :)
+- misc cleanups to the ewlwindow.h
+- mysterious resize bug has just cropped up -- iv'e commented out the
+  code in the new ewl_window_*() funcs, so it' somewhere else.
+
+The bug mentioned above will attempt to create and map a 65kx65k 
+window -- X will get pissed off and probably crash.  In other words,
+FOR THE LOVE OF GOD DON'T RUN THIS UNLESS YOU KNOW WHAT YOU'RE DOING.
+We'll let y'all know when it's fixed (probalby sometime tonight or
+tomorrow).
+

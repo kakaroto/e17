@@ -110,6 +110,18 @@ void             ewl_widget_set_needs_resize(EwlWidget *w);
 void             ewl_widget_set_needs_refresh(EwlWidget *w);
 char             ewl_widget_can_resize(EwlWidget *w);
 
+/* public widget resize functions */
+void             ewl_widget_moveresize(EwlWidget *widget,
+                                       int x, int y, int w, int h);
+void             ewl_widget_move(EwlWidget *widget, int x, int y);
+void             ewl_widget_resize(EwlWidget *widget, int w, int h);
+
+EwlRect         *ewl_widget_get_rect(EwlWidget *widget);
+
+/* private widget resize functions */
+void             ewl_widget_set_rect(EwlWidget *widget,
+                                     int *x, int *y, int *w, int *h);
+
 /* public event functions */
 void             ewl_callback_add(EwlWidget *w, EwlEventType t, 
 	                              char   (*cb)(EwlWidget *widget,
