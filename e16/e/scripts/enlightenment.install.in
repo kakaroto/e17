@@ -27,7 +27,7 @@
 PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin:"$EBIN
 export PATH
 
-if [ -e $HOME"/.xsession" ] || [ -e $HOME"/.xinitrc" ] || [ -e $HOME"/.Xclients" ]; then
+if [ -f $HOME"/.xsession" ] || [ -f $HOME"/.xinitrc" ] || [ -f $HOME"/.Xclients" ]; then
   echo 
   echo "******************************* WARNING *****************************"
   echo "* You already have X login startup files. They will be backed up as *"
@@ -37,13 +37,13 @@ if [ -e $HOME"/.xsession" ] || [ -e $HOME"/.xinitrc" ] || [ -e $HOME"/.Xclients"
   echo
   sleep 3
   #get rid of backup files
-  if [ -e $HOME"/.xsession.old" ]; then
+  if [ -f $HOME"/.xsession.old" ]; then
     rm -f $HOME"/.xsession.old"
   fi
-  if [ -e $HOME"/.xinitrc.old" ]; then
+  if [ -f $HOME"/.xinitrc.old" ]; then
     rm -f $HOME"/.xinitrc.old"
   fi
-  if [ -e $HOME"/.Xclients.old" ]; then
+  if [ -f $HOME"/.Xclients.old" ]; then
     rm -f $HOME"/.Xclients.old"
   fi
   # rename current files
@@ -84,8 +84,8 @@ chmod a+r+x $HOME"/.xsession"
 ln -s $HOME"/.xsession" $HOME"/.xinitrc"
 ln -s $HOME"/.xsession" $HOME"/.Xclients"
 echo "Done."
-if [ -e $HOME"/.enlightenment" ]; then
-  if [ -e $HOME"/.enlightenment/.initialized" ]; then
+if [ -f $HOME"/.enlightenment" ]; then
+  if [ -f $HOME"/.enlightenment/.initialized" ]; then
     echo "You have installed Enlightenment 0.16 or greater already and have"
     echo "run it before. Everything should be fine."
   else
