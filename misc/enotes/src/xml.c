@@ -125,6 +125,7 @@ xml_write_end(XmlWriteHandle * h)
 	xmlTextWriterEndElement(h->writer);
 	xmlTextWriterEndDocument(h->writer);
 	xmlFreeTextWriter(h->writer);
+	xmlCleanupParser();
 	free(h);
 	return;
 }

@@ -99,7 +99,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	evas_font_path_append(p->evas, fontpath);
 
 	/* Draggable Setup */
-	p->dragger = esmart_draggies_new(p->win);
+	p->dragger = (Evas_Object *) esmart_draggies_new(p->win);
 	evas_object_name_set(p->dragger, "dragger");
 	evas_object_move(p->dragger, 0, 0);
 	evas_object_resize(p->dragger, main_config->cc->width,
