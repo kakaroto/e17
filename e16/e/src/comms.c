@@ -22,7 +22,7 @@
  */
 #include "E.h"
 
-void 
+void
 CommsSetup()
 {
    char                s[1024];
@@ -42,7 +42,7 @@ CommsSetup()
    EDBUG_RETURN_;
 }
 
-void 
+void
 CommsFindCommsWindow()
 {
    unsigned char      *s;
@@ -90,7 +90,7 @@ CommsFindCommsWindow()
    EDBUG_RETURN_;
 }
 
-void 
+void
 CommsSend(Client * c, char *s)
 {
    char                ss[21];
@@ -131,7 +131,7 @@ CommsSend(Client * c, char *s)
  * When we are running in multi-head, connect to the master wm process
  * and send the message
  */
-void 
+void
 CommsSendToMasterWM(char *s)
 {
    Window              otherrootwin;
@@ -179,7 +179,7 @@ CommsSendToMasterWM(char *s)
  * When we are running in multi-head, connect to the slave wm processes
  * and broadcast the message
  */
-void 
+void
 CommsBroadcastToSlaveWMs(char *s)
 {
    Window              otherrootwin;
@@ -292,7 +292,7 @@ CommsGet(Client ** c, XEvent * ev)
    EDBUG_RETURN(msg);
 }
 
-void 
+void
 CommsBroadcast(char *s)
 {
    char              **l;
@@ -336,7 +336,7 @@ MakeClient(Window win)
    EDBUG_RETURN(c);
 }
 
-void 
+void
 ListFreeClient(void *ptr)
 {
    Client             *c;
@@ -367,7 +367,7 @@ ListFreeClient(void *ptr)
    EDBUG_RETURN_;
 }
 
-void 
+void
 DeleteClient(Client * c)
 {
    Client             *cc;
@@ -378,7 +378,7 @@ DeleteClient(Client * c)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleComms(XEvent * ev)
 {
    Client             *c;
@@ -2217,7 +2217,7 @@ HandleComms(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 DisplayClientInfo(Client * c, int onoff)
 {
    EDBUG(6, "DisplayClientInfo");
@@ -2228,7 +2228,7 @@ DisplayClientInfo(Client * c, int onoff)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HideClientInfo()
 {
    EDBUG(6, "HideClientInfo");

@@ -4105,3 +4105,10 @@ you can get an extended list using "window_list extended"
 returns the following format:
 "window_id : title :: desktop : area_x area_y : x_coordinate y_coordinate
 
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 22:29:49 PST 1999
+(Mandrake)
+
+fixed minor ipc help indention problem
