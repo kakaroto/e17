@@ -27,6 +27,8 @@
 #ifndef AUDIOFILE_H
 #define AUDIOFILE_H
 
+typedef struct _AF_VirtualFile AF_VirtualFile;
+
 #include <sys/types.h>
 #include "aupvlist.h"
 
@@ -412,6 +414,7 @@ int afIdentifyNamedFD (int, const char *filename, int *implemented);
 
 AFfilehandle afOpenFile (const char *filename, const char *mode,
 	AFfilesetup setup);
+AFfilehandle afOpenVirtualFile(AF_VirtualFile *vfile, const char *mode, AFfilesetup setup);
 AFfilehandle afOpenFD (int fd, const char *mode, AFfilesetup setup);
 AFfilehandle afOpenNamedFD (int fd, const char *mode, AFfilesetup setup,
 	const char *filename);

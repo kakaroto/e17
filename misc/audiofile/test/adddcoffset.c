@@ -26,6 +26,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef __USE_SGI_HEADERS__
 #include <dmedia/audiofile.h>
@@ -36,7 +37,7 @@
 void adddcoffset (float offset, char *infilename, char *outfilename);
 void usageerror (void);
 
-main (int ac, char **av)
+int main (int ac, char **av)
 {
 	float	offset;
 
@@ -45,6 +46,7 @@ main (int ac, char **av)
 
 	offset = atof(av[1]);
 	adddcoffset(offset, av[2], av[3]);
+	return 0;
 }
 
 void adddcoffset (float offset, char *infilename, char *outfilename)
@@ -53,7 +55,6 @@ void adddcoffset (float offset, char *infilename, char *outfilename)
 	int				channelCount, frameCount;
 	short			*buffer;
 	int				i;
-	float			average = 0;
 
 	AFfilesetup		outfilesetup = afNewFileSetup();
 	AFfilehandle	outfile;
@@ -75,7 +76,7 @@ void adddcoffset (float offset, char *infilename, char *outfilename)
 		return;
 	}
 
-	printf("afGetFrameCount: %d\n", afGetFrameCount(infile, AF_DEFAULT_TRACK));
+	printf("afGetFrameCount: %d\n", (int)afGetFrameCount(infile, AF_DEFAULT_TRACK));
 	printf("afGetChannels: %d\n", afGetChannels(infile, AF_DEFAULT_TRACK));
 
 	buffer = (short *) malloc(frameCount * channelCount * sizeof (short));

@@ -13,9 +13,10 @@ libaudiofile_la_SOURCES = \
 	wave.c wavewrite.c wave.h \
 	ulaw.c g711.c g711.h \
 	afinternal.h aupvinternal.h byteorder.h extended.h compression.h error.h \
-	block.h util.h
+	block.h util.h \
+	af_vfs.c
 
-include_HEADERS = audiofile.h aupvlist.h
+include_HEADERS = audiofile.h aupvlist.h af_vfs.h
 
-#CFLAGS = -Wall -g
-CFLAGS = -Wall -DNDEBUG
+CFLAGS = -Wall -g
+#CFLAGS = -Wall -DNDEBUG

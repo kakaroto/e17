@@ -48,10 +48,9 @@ int main (int argc, char **argv)
 	char	*infilename, *outfilename;
 	int		format = AF_FILE_UNKNOWN;
 
-	int				version;
 	AFfilehandle	infile, outfile;
 	AFfilesetup		outfilesetup;
-	int				sampleFormat, sampleWidth, byteOrder, channelCount;
+	int				sampleFormat, sampleWidth, channelCount;
 	char			*buffer;
 
 	AFframecount	frameCount;

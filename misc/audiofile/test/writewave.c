@@ -26,16 +26,19 @@
 	and writing code.
 */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
 
 #ifdef __USE_SGI_HEADERS__
 #include <dmedia/audiofile.h>
 #else
 #include <audiofile.h>
 #endif
-
-#include <stdlib.h>
-#include <unistd.h>
 
 #define TEST_FILE "/tmp/test.wave"
 

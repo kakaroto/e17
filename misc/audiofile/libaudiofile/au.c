@@ -48,16 +48,16 @@ int _af_parseau (AFfilehandle file)
 	u_int32_t	id, offset, length, encoding, sampleRate, channelCount;
 
 	assert(file != NULL);
-	assert(file->fp != NULL);
+	assert(file->fh != NULL);
 
-	fread(&id, 4, 1, file->fp);
+	af_fread(&id, 4, 1, file->fh);
 	assert(!memcmp(&id, ".snd", 4));
 
-	fread(&offset, 4, 1, file->fp);
-	fread(&length, 4, 1, file->fp);
-	fread(&encoding, 4, 1, file->fp);
-	fread(&sampleRate, 4, 1, file->fp);
-	fread(&channelCount, 4, 1, file->fp);
+	af_fread(&offset, 4, 1, file->fh);
+	af_fread(&length, 4, 1, file->fh);
+	af_fread(&encoding, 4, 1, file->fh);
+	af_fread(&sampleRate, 4, 1, file->fh);
+	af_fread(&channelCount, 4, 1, file->fh);
 
 	offset = BENDIAN_TO_HOST_INT32(offset);
 	length = BENDIAN_TO_HOST_INT32(length);

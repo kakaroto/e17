@@ -28,16 +28,15 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 
-main (int ac, char **av)
+int main (int ac, char **av)
 {
-	AUpvlist	list, formatlist;
+	AUpvlist	formatlist;
 	long		*flist;
 	long		*larray;
-	char		*cvalue;
 	long		lvalue;
 	int			i, formatcount;
-	int			param;
 
 	formatlist = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_IDS, 0, 0, 0);
 	formatcount = afQueryLong(AF_QUERYTYPE_FILEFMT, AF_QUERY_ID_COUNT, 0, 0, 0);
@@ -48,31 +47,30 @@ main (int ac, char **av)
 
 	for (i=0; i<formatcount; i++)
 	{
-		int		count;
 		long	format;
 		char	*formatstring;
 
 		format = flist[i];
-		printf("format = %d\n", format);
+		printf("format = %ld\n", format);
 		formatstring = afQueryPointer(AF_QUERYTYPE_FILEFMT, AF_QUERY_NAME,
 			format, 0, 0);
 		printf("format = %s\n", formatstring);
 
 		lvalue = afQueryLong(AF_QUERYTYPE_INST, AF_QUERY_SUPPORTED,
 			format, 0, 0);
-		printf("instrument query: supported: %d\n", lvalue);
+		printf("instrument query: supported: %ld\n", lvalue);
 
 		lvalue = afQueryLong(AF_QUERYTYPE_INST, AF_QUERY_ID_COUNT,
 			format, 0, 0);
-		printf("instrument query: id count: %d\n", lvalue);
+		printf("instrument query: id count: %ld\n", lvalue);
 
 		lvalue = afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_SUPPORTED,
 			format, 0, 0);
-		printf("instrument parameter query: supported: %d\n", lvalue);
+		printf("instrument parameter query: supported: %ld\n", lvalue);
 
 		lvalue = afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_ID_COUNT,
 			format, 0, 0);
-		printf("instrument parameter query: id count: %d\n", lvalue);
+		printf("instrument parameter query: id count: %ld\n", lvalue);
 
 		larray = afQueryPointer(AF_QUERYTYPE_INSTPARAM, AF_QUERY_IDS,
 			format, 0, 0);
@@ -82,11 +80,12 @@ main (int ac, char **av)
 			int	i;
 			for (i=0; i<lvalue; i++)
 			{
-				printf("instrument parameter query: id: %d\n", larray[i]);
-				printf("	type of parameter: %d\n",
+				printf("instrument parameter query: id: %ld\n", larray[i]);
+				printf("	type of parameter: %ld\n",
 					afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_TYPE,
 						format, larray[i], 0));
 				printf("	name of parameter: %s\n",
+				       (char *)
 					afQueryPointer(AF_QUERYTYPE_INSTPARAM, AF_QUERY_NAME,
 						format, larray[i], 0));
 			}
@@ -94,4 +93,6 @@ main (int ac, char **av)
 		}
 	}
 	free(flist);
+
+	return 0;
 }

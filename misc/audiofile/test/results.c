@@ -34,7 +34,7 @@
 #include <audiofile.h>
 #endif
 
-main (int ac, char **av)
+int main (int ac, char **av)
 {
 	int result;
 
@@ -44,4 +44,6 @@ main (int ac, char **av)
 	printf("\nafSyncFile(NULL) = %d\n", result);
 	result = afCloseFile(NULL);
 	printf("\nafCloseFile(NULL) = %d\n", result);
+
+	return 0;
 }

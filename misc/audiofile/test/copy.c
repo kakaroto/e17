@@ -35,14 +35,14 @@
 #include <audiofile.h>
 #endif
 
-main (int ac, char **av)
+int main (int ac, char **av)
 {
 	AFframecount	frameCount;
 	AFfilehandle	inputFile, outputFile;
 	AFfilesetup		outputSetup;
 	float			frameSize;
 	void			*buffer;
-	int				format;
+	int format = 0;
 
 	if (ac < 3)
 		exit(-1);
@@ -76,4 +76,6 @@ main (int ac, char **av)
 
 	afWriteFrames(outputFile, AF_DEFAULT_TRACK, buffer, frameCount);
 	afCloseFile(outputFile);
+
+	return 0;
 }

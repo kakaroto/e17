@@ -42,25 +42,25 @@
 #include "byteorder.h"
 
 int _af_parseaiff (AFfilehandle file);
-static void ParseFVER (AFfilehandle file, FILE *fp, u_int32_t type, size_t size);
-static void ParseAESD (AFfilehandle file, FILE *fp, u_int32_t type, size_t size);
-static void ParseMiscellaneous (AFfilehandle file, FILE *fp, u_int32_t type,
+static void ParseFVER (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size);
+static void ParseAESD (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size);
+static void ParseMiscellaneous (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type,
 	size_t size);
-static void ParseINST (AFfilehandle file, FILE *fp, u_int32_t type, size_t size);
-static void ParseMARK (AFfilehandle file, FILE *fp, u_int32_t type, size_t size);
-static void ParseCOMM (AFfilehandle file, FILE *fp, u_int32_t type, size_t size);
-static void ParseSSND (AFfilehandle file, FILE *fp, u_int32_t type, size_t size);
+static void ParseINST (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size);
+static void ParseMARK (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size);
+static void ParseCOMM (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size);
+static void ParseSSND (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size);
 
 /*
 	FVER chunks are only present in AIFF-C files.
 */
-static void ParseFVER (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseFVER (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
 	u_int32_t	timestamp;
 
 	assert(!memcmp(&type, "FVER", 4));
 
-	fread(&timestamp, sizeof (u_int32_t), 1, fp);
+	af_fread(&timestamp, sizeof (u_int32_t), 1, fh);
 	timestamp = BENDIAN_TO_HOST_INT32(timestamp);
 	/* timestamp holds the number of seconds since January 1, 1904. */
 }
@@ -68,7 +68,7 @@ static void ParseFVER (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 /*
 	Parse AES recording data.
 */
-static void ParseAESD (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseAESD (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
 	unsigned char	aesChannelStatusData[24];
 
@@ -76,7 +76,7 @@ static void ParseAESD (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	assert(size == 24);
 
 	file->aesDataPresent = 1;
-	fread(aesChannelStatusData, 1, 24, fp);
+	af_fread(aesChannelStatusData, 1, 24, fh);
 	memcpy(file->aesData, aesChannelStatusData, 24);
 }
 
@@ -84,9 +84,9 @@ static void ParseAESD (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	Parse miscellaneous data chunks such as name, author, copyright,
 	and annotation chunks.
 */
-static void ParseMiscellaneous (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseMiscellaneous (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
-	int	misctype;
+	int	misctype = 0;
 
 	assert(!memcmp(&type, "NAME", 4) || !memcmp(&type, "AUTH", 4) ||
 		!memcmp(&type, "(c) ", 4) || !memcmp(&type, "ANNO", 4) ||
@@ -127,7 +127,7 @@ static void ParseMiscellaneous (AFfilehandle file, FILE *fp, u_int32_t type, siz
 		as Irix, but until a 64-bit audio file format comes out, I'm not
 		going to worry about it.
 	*/
-	file->miscellaneous[file->miscellaneousCount - 1].offset = ftell(fp);
+	file->miscellaneous[file->miscellaneousCount - 1].offset = af_ftell(fh);
 	file->miscellaneous[file->miscellaneousCount - 1].position = 0;
 }
 
@@ -135,7 +135,7 @@ static void ParseMiscellaneous (AFfilehandle file, FILE *fp, u_int32_t type, siz
 	Parse instrument chunks, which contain information about using
 	sound data as a sampled instrument.
 */
-static void ParseINST (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseINST (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
 	u_int8_t	baseNote, detune, lowNote, highNote, lowVelocity, highVelocity;
 	u_int16_t	gain;
@@ -149,13 +149,13 @@ static void ParseINST (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	file->instruments =
 		(struct _Instrument *) malloc(1 * sizeof (struct _Instrument));
 
-	fread(&baseNote, sizeof (u_int8_t), 1, fp);
-	fread(&detune, sizeof (u_int8_t), 1, fp);
-	fread(&lowNote, sizeof (u_int8_t), 1, fp);
-	fread(&highNote, sizeof (u_int8_t), 1, fp);
-	fread(&lowVelocity, sizeof (u_int8_t), 1, fp);
-	fread(&highVelocity, sizeof (u_int8_t), 1, fp);
-	fread(&gain, sizeof (u_int16_t), 1, fp);
+	af_fread(&baseNote, sizeof (u_int8_t), 1, fh);
+	af_fread(&detune, sizeof (u_int8_t), 1, fh);
+	af_fread(&lowNote, sizeof (u_int8_t), 1, fh);
+	af_fread(&highNote, sizeof (u_int8_t), 1, fh);
+	af_fread(&lowVelocity, sizeof (u_int8_t), 1, fh);
+	af_fread(&highVelocity, sizeof (u_int8_t), 1, fh);
+	af_fread(&gain, sizeof (u_int16_t), 1, fh);
 	gain = BENDIAN_TO_HOST_INT16(gain);
 
 	file->instruments[0].id = AF_DEFAULT_INST;
@@ -175,18 +175,18 @@ static void ParseINST (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 		baseNote, detune, lowNote, highNote, lowVelocity, highVelocity, gain);
 #endif
 
-	fread(&sustainLoopPlayMode, sizeof (u_int16_t), 1, fp);
+	af_fread(&sustainLoopPlayMode, sizeof (u_int16_t), 1, fh);
 	sustainLoopPlayMode = BENDIAN_TO_HOST_INT16(sustainLoopPlayMode);
-	fread(&sustainLoopBegin, sizeof (u_int16_t), 1, fp);
+	af_fread(&sustainLoopBegin, sizeof (u_int16_t), 1, fh);
 	sustainLoopBegin = BENDIAN_TO_HOST_INT16(sustainLoopBegin);
-	fread(&sustainLoopEnd, sizeof (u_int16_t), 1, fp);
+	af_fread(&sustainLoopEnd, sizeof (u_int16_t), 1, fh);
 	sustainLoopEnd = BENDIAN_TO_HOST_INT16(sustainLoopEnd);
 
-	fread(&releaseLoopPlayMode, sizeof (u_int16_t), 1, fp);
+	af_fread(&releaseLoopPlayMode, sizeof (u_int16_t), 1, fh);
 	releaseLoopPlayMode = BENDIAN_TO_HOST_INT16(releaseLoopPlayMode);
-	fread(&releaseLoopBegin, sizeof (u_int16_t), 1, fp);
+	af_fread(&releaseLoopBegin, sizeof (u_int16_t), 1, fh);
 	releaseLoopBegin = BENDIAN_TO_HOST_INT16(releaseLoopBegin);
-	fread(&releaseLoopEnd, sizeof (u_int16_t), 1, fp);
+	af_fread(&releaseLoopEnd, sizeof (u_int16_t), 1, fh);
 	releaseLoopEnd = BENDIAN_TO_HOST_INT16(releaseLoopEnd);
 
 #ifdef DEBUG
@@ -214,14 +214,14 @@ static void ParseINST (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 /*
 	Parse marker chunks, which contain the positions and names of loop markers.
 */
-static void ParseMARK (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseMARK (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
 	int			i;
 	u_int16_t	numMarkers;
 
 	assert(!memcmp(&type, "MARK", 4));
 
-	fread(&numMarkers, sizeof (u_int16_t), 1, fp);
+	af_fread(&numMarkers, sizeof (u_int16_t), 1, fh);
 	numMarkers = BENDIAN_TO_HOST_INT16(numMarkers);
 
 	file->markerCount = numMarkers;
@@ -231,15 +231,16 @@ static void ParseMARK (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	{
 		u_int16_t		markerID;
 		u_int32_t		markerPosition;
-		unsigned char	sizeByte, *markerName;
+		unsigned char	sizeByte;
+		char		*markerName;
 
-		fread(&markerID, sizeof (u_int16_t), 1, fp);
+		af_fread(&markerID, sizeof (u_int16_t), 1, fh);
 		markerID = BENDIAN_TO_HOST_INT16(markerID);
-		fread(&markerPosition, sizeof (u_int32_t), 1, fp);
+		af_fread(&markerPosition, sizeof (u_int32_t), 1, fh);
 		markerPosition = BENDIAN_TO_HOST_INT32(markerPosition);
-		fread(&sizeByte, sizeof (unsigned char), 1, fp);
+		af_fread(&sizeByte, sizeof (unsigned char), 1, fh);
 		markerName = malloc(sizeByte + 1);
-		fread(markerName, sizeof (unsigned char), sizeByte, fp);
+		af_fread(markerName, sizeof (unsigned char), sizeByte, fh);
 
 		markerName[sizeByte] = '\0';
 
@@ -251,7 +252,7 @@ static void ParseMARK (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 #endif
 
 		if ((sizeByte % 2) == 0)
-			fseek(fp, 1, SEEK_CUR);
+			af_fseek(fh, 1, SEEK_CUR);
 
 		file->markers[i].id = markerID;
 		file->markers[i].position = markerPosition;
@@ -264,7 +265,7 @@ static void ParseMARK (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	sampling rate, the number of sample frames, and the number of
 	sound channels.
 */
-static void ParseCOMM (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseCOMM (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
 	u_int16_t		numChannels;
 	u_int32_t		numSampleFrames;
@@ -273,16 +274,16 @@ static void ParseCOMM (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 
 	assert(!memcmp(&type, "COMM", 4));
 
-	fread(&numChannels, sizeof (u_int16_t), 1, fp);
+	af_fread(&numChannels, sizeof (u_int16_t), 1, fh);
 	file->channelCount = BENDIAN_TO_HOST_INT16(numChannels);
 
-	fread(&numSampleFrames, sizeof (u_int32_t), 1, fp);
+	af_fread(&numSampleFrames, sizeof (u_int32_t), 1, fh);
 	file->frameCount = BENDIAN_TO_HOST_INT32(numSampleFrames);
 
-	fread(&sampleSize, sizeof (u_int16_t), 1, fp);
+	af_fread(&sampleSize, sizeof (u_int16_t), 1, fh);
 	file->sampleWidth = BENDIAN_TO_HOST_INT16(sampleSize);
 
-	fread(sampleRate, 10, 1, fp);
+	af_fread(sampleRate, 10, 1, fh);
 	file->sampleRate = ConvertFromIeeeExtended(sampleRate);
 }
 
@@ -290,15 +291,15 @@ static void ParseCOMM (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	Parse the stored sound chunk, which usually contains little more
 	than the sound data.
 */
-static void ParseSSND (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
+static void ParseSSND (AFfilehandle file, AF_VirtualFile *fh, u_int32_t type, size_t size)
 {
 	u_int32_t	offset, blockSize;
 
 	assert(!memcmp(&type, "SSND", 4));
 
-	fread(&offset, sizeof (u_int32_t), 1, fp);
+	af_fread(&offset, sizeof (u_int32_t), 1, fh);
 	offset = BENDIAN_TO_HOST_INT32(offset);
-	fread(&blockSize, sizeof (u_int32_t), 1, fp);
+	af_fread(&blockSize, sizeof (u_int32_t), 1, fh);
 	blockSize = BENDIAN_TO_HOST_INT32(blockSize);
 
 	/*
@@ -312,7 +313,7 @@ static void ParseSSND (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 	printf("block size: %d\n", blockSize);
 #endif
 
-	file->dataStart = ftell(fp) + offset;
+	file->dataStart = af_ftell(fh) + offset;
 
 #ifdef DEBUG
 	printf("data start: %d\n", file->dataStart);
@@ -324,17 +325,16 @@ static void ParseSSND (AFfilehandle file, FILE *fp, u_int32_t type, size_t size)
 int _af_parseaiff (AFfilehandle file)
 {
 	u_int32_t	type, size, formtype;
-	char		*buffer;
 	size_t		index = 0;
 	int			hasCOMM = 0;
 
 	assert(file != NULL);
-	assert(file->fp != NULL);
+	assert(file->fh != NULL);
 
-	fread(&type, 4, 1, file->fp);
-	fread(&size, 4, 1, file->fp);
+	af_fread(&type, 4, 1, file->fh);
+	af_fread(&size, 4, 1, file->fh);
 	size = BENDIAN_TO_HOST_INT32(size);
-	fread(&formtype, 4, 1, file->fp);
+	af_fread(&formtype, 4, 1, file->fh);
 
 	assert(!memcmp(&type, "FORM", 4));
 	assert(!memcmp(&formtype, "AIFF", 4) || !memcmp(&formtype, "AIFC", 4));
@@ -364,9 +364,9 @@ int _af_parseaiff (AFfilehandle file)
 #ifdef DEBUG
 		printf("index: %d\n", index);
 #endif
-		fread(&chunkid, 4, 1, file->fp);
+		af_fread(&chunkid, 4, 1, file->fh);
 /*		chunkid = BENDIAN_TO_HOST_INT32(chunkid); */
-		fread(&chunksize, 4, 1, file->fp);
+		af_fread(&chunksize, 4, 1, file->fh);
 		chunksize = BENDIAN_TO_HOST_INT32(chunksize);
 
 #ifdef DEBUG
@@ -377,29 +377,29 @@ int _af_parseaiff (AFfilehandle file)
 		if (!memcmp("COMM", &chunkid, 4))
 		{
 				hasCOMM = 1;
-				ParseCOMM(file, file->fp, chunkid, chunksize);
+				ParseCOMM(file, file->fh, chunkid, chunksize);
 		}
 		else if (!memcmp("FVER", &chunkid, 4))
-				ParseFVER(file, file->fp, chunkid, chunksize);
+				ParseFVER(file, file->fh, chunkid, chunksize);
 		else if (!memcmp("INST", &chunkid, 4))
-				ParseINST(file, file->fp, chunkid, chunksize);
+				ParseINST(file, file->fh, chunkid, chunksize);
 		else if (!memcmp("MARK", &chunkid, 4))
-				ParseMARK(file, file->fp, chunkid, chunksize);
+				ParseMARK(file, file->fh, chunkid, chunksize);
 		else if (!memcmp("AESD", &chunkid, 4))
-				ParseAESD(file, file->fp, chunkid, chunksize);
+				ParseAESD(file, file->fh, chunkid, chunksize);
 		else if (!memcmp("NAME", &chunkid, 4) ||
 			!memcmp("AUTH", &chunkid, 4) ||
 			!memcmp("(c) ", &chunkid, 4) ||
 			!memcmp("ANNO", &chunkid, 4) ||
 			!memcmp("APPL", &chunkid, 4) ||
 			!memcmp("MIDI", &chunkid, 4))
-				ParseMiscellaneous(file, file->fp, chunkid, chunksize);
+				ParseMiscellaneous(file, file->fh, chunkid, chunksize);
 		/*
 			The sound data chunk is required if there are more than
 			zero sample frames.
 		*/
 		else if (!memcmp("SSND", &chunkid, 4))
-				ParseSSND(file, file->fp, chunkid, chunksize);
+				ParseSSND(file, file->fh, chunkid, chunksize);
 
 		index += chunksize + 8;
 
@@ -407,7 +407,7 @@ int _af_parseaiff (AFfilehandle file)
 		if ((index % 2) != 0)
 			index++;
 
-		fseek(file->fp, index + 8, SEEK_SET);
+		af_fseek(file->fh, index + 8, SEEK_SET);
 	}
 
 	if (!hasCOMM)

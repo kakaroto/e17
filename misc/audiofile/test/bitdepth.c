@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	AFfilehandle	file;
 	AFframecount	frameCount;
@@ -53,4 +53,6 @@ main (int argc, char **argv)
 	for (i=0; i<frameCount; i+=4)
 		printf("%d %d %d %d\n", buffer[i], buffer[i+1], buffer[i+2], buffer[i+3]);
 	afCloseFile(file);
+
+	return 0;
 }

@@ -44,12 +44,12 @@ void usage (void)
 	exit(0);
 }
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	AFfilehandle	outfile;
 	AFfilesetup		outfilesetup;
-	short			buffer[] = {0x1122, 0x3344, 0x5566, 0x7788,
-								0x99aa, 0xbbcc, 0xddee, 0xff00};
+	unsigned short		buffer[] = {0x1122, 0x3344, 0x5566, 0x7788,
+					    0x99aa, 0xbbcc, 0xddee, 0xff00};
 	int				format = AF_FILE_AIFF;
 
 	if (argc < 3)
@@ -85,4 +85,6 @@ main (int argc, char **argv)
 	afCloseFile(outfile);
 
 	afFreeFileSetup(outfilesetup);
+
+	return 0;
 }

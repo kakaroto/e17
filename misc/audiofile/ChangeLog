@@ -1,3 +1,32 @@
+1999-08-21  Kjartan Maraas  <kmaraas@online.no>
+
+	* */*c: Even more warning fixes - initialize vars, add 'int' as return
+	type of a function, and include headers.
+	
+1999-08-20 Elliot Lee <sopwith@redhat.com>
+	* */*.c: More warning fixes - remove unused variables, add 'int' as return type
+	of main(), and include some more header files.
+
+1999-08-18 Anders Carlsson  <anders.carlsson@tordata.se>
+
+	* Fixed compiler warnings.
+
+1999-08-16 Elliot Lee <sopwith@redhat.com>
+	* libaudiofile/af_vfs.[ch]: Virtualize file access.
+	* libaudiofile/*.[ch]: Use the new virtualized file access routines.
+
+1999-05-09  Michael Pruett  <michael@68k.org>
+
+	* bread.c, ulaw.c: If more sample frames are requested than
+	remain in the file, limit the number of sample frames that can
+	be returned.  This bug was brought to my attention by Scott
+	Heavner.
+	* test/sgi.[ch]: These files contain SGI Audio Library routines
+	used in SGI-specific test programs.
+	* test/irixread.c, test/irixtest.c, test/irixtestloop.c: These
+	programs now use the routines contained in sgi.[ch] and are more
+	robust.
+
 1999-05-23  Raja R Harinath  <harinath@cs.umn.edu>
 
 	* test/miscread.c: Include <config.h>.

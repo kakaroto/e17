@@ -111,8 +111,6 @@ int AUpvsetvaltype (AUpvlist list, int item, int type)
 
 int AUpvsetval (AUpvlist list, int item, void *val)
 {
-	int	size;
-
 	assert(list);
 	assert(list->items);
 	assert(item >= 0);
@@ -158,8 +156,6 @@ int AUpvgetvaltype (AUpvlist list, int item, int *type)
 
 int AUpvgetval (AUpvlist list, int item, void *val)
 {
-	int	size;
-
 	assert(list);
 	assert(list->items);
 	assert(item >= 0);

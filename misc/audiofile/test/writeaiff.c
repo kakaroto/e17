@@ -25,7 +25,10 @@
 	This program tests the validity of the AIFF file reading and writing
 	code.
 */
+
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #ifdef __USE_SGI_HEADERS__
 #include <dmedia/audiofile.h>
@@ -35,6 +38,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #define TEST_FILE "/tmp/test.aiff"
 

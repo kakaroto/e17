@@ -1,7 +1,7 @@
 /*
 	Audio File Library
 
-	Copyright 1998, Michael Pruett <michael@68k.org>
+	Copyright 1998-1999, Michael Pruett <michael@68k.org>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -20,7 +20,7 @@
 */
 
 /*
-	testloop.c
+	irixtestloop.c
 
 	This file reads the loop points from a file (presumably AIFF) and
 	loops that part of the file several times.  Audio output is routed
@@ -34,12 +34,26 @@
 #include <dmedia/audio.h>
 #include <dmedia/audiofile.h>
 
-main (int ac, char **av)
+#include "sgi.h"
+
+const int REPEAT_COUNT = 3;
+
+void usage (void)
+{
+	printf("usage: irixtestloop file\n");
+	printf("where file is of a format which contains a loop (e.g. AIFF)\n");
+	exit(-1);
+}
+
+main (int argc, char **argv)
 {
 	AFfilehandle	file;
+	void			*buffer;
+
 	AFframecount	frameCount;
-	int				sampleFormat, sampleWidth, channelCount;
-	char			*buffer;
+	int				frameSize, sampleFormat, sampleWidth, channelCount;
+	double			sampleRate;
+
 	int				*loopids, *markids;
 	int				i, loopCount, markCount;
 	int				startmarkid, endmarkid;
@@ -48,12 +62,22 @@ main (int ac, char **av)
 	ALport			outport;
 	ALconfig		outportconfig;
 
-	file = afOpenFile(av[1], "r", NULL);
+	if (argc < 2)
+		usage();
+
+	file = afOpenFile(argv[1], "r", NULL);
 	frameCount = afGetFrameCount(file, AF_DEFAULT_TRACK);
+	frameSize = afGetFrameSize(file, AF_DEFAULT_TRACK, 1);
 	channelCount = afGetChannels(file, AF_DEFAULT_TRACK);
-	printf("frame count: %d\n", frameCount);
 	afGetSampleFormat(file, AF_DEFAULT_TRACK, &sampleFormat, &sampleWidth);
-	buffer = (char *) malloc(frameCount * sampleWidth);
+	sampleRate = afGetRate(file, AF_DEFAULT_TRACK);
+
+	printf("frame count: %d\n", frameCount);
+	printf("frame size: %d bytes\n", frameSize);
+	printf("channel count: %d\n", channelCount);
+	printf("sample rate: %.2f Hz\n", sampleRate);
+
+	buffer = malloc(frameCount * frameSize);
 	afReadFrames(file, AF_DEFAULT_TRACK, buffer, frameCount);
 
 	loopCount = afGetLoopIDs(file, AF_DEFAULT_INST, NULL);
@@ -82,17 +106,23 @@ main (int ac, char **av)
 	afCloseFile(file);
 
 	outportconfig = alNewConfig();
-	alSetWidth(outportconfig, AL_SAMPLE_16);
-	alSetChannels(outportconfig, 2);
+	alSetChannels(outportconfig, channelCount);
+	setwidth(outportconfig, sampleWidth);
 
 	outport = alOpenPort("dick", "w", outportconfig);
+	setrate(outport, sampleRate);
+
 	alWriteFrames(outport, buffer, startloop);
-	for (i=0; i<3; i++)
+	for (i=0; i<REPEAT_COUNT; i++)
 	{
 		printf("starting iteration %d: %d, %d, %d\n", i, endloop, startloop, endloop - startloop);
 		alWriteFrames(outport, buffer + startloop * channelCount * (sampleWidth / 8), endloop - startloop);
 	}
 
+	waitport(outport);
+
 	alClosePort(outport);
 	alFreeConfig(outportconfig);
+
+	free(buffer);
 }

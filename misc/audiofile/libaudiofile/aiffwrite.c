@@ -52,12 +52,12 @@ void aiffOpenFileWrite (AFfilehandle file)
 {
 	u_int32_t	fileSize = HOST_TO_BENDIAN_INT32(0);
 
-	fwrite("FORM", 4, 1, file->fp);
-	fwrite(&fileSize, 4, 1, file->fp);
+	af_fwrite("FORM", 4, 1, file->fh);
+	af_fwrite(&fileSize, 4, 1, file->fh);
 	if (file->fileFormat == AF_FILE_AIFF)
-		fwrite("AIFF", 4, 1, file->fp);
+		af_fwrite("AIFF", 4, 1, file->fh);
 	else if (file->fileFormat == AF_FILE_AIFFC)
-		fwrite("AIFC", 4, 1, file->fp);
+		af_fwrite("AIFC", 4, 1, file->fh);
 	else
 		assert(0);
 
@@ -91,7 +91,6 @@ int aiffWriteFrames (const AFfilehandle file, int track, void *samples, const in
 int aiffSyncFile (AFfilehandle file)
 {
 	u_int32_t	length;
-	ssize_t		result;
 
 	assert(file);
 
@@ -102,32 +101,30 @@ int aiffSyncFile (AFfilehandle file)
 	if (file->dataStart != 0)
 	{
 		/* get the length of the file */
-		fseek(file->fp, 0, SEEK_END);
-		length = ftell(file->fp);
+		af_fseek(file->fh, 0, SEEK_END);
+		length = af_ftell(file->fh);
 		length -= 8;
 		length = HOST_TO_BENDIAN_INT32(length);
 
 		/* set the length of the FORM chunk */
-		fseek(file->fp, 4, SEEK_SET);
-		fwrite(&length, 4, 1, file->fp);
+		af_fseek(file->fh, 4, SEEK_SET);
+		af_fwrite(&length, 4, 1, file->fh);
 
 		/* Update the SSND chunk's chunk size. */
-		fseek(file->fp, file->dataStart - 12, SEEK_SET);
+		af_fseek(file->fh, file->dataStart - 12, SEEK_SET);
 		length =
 			file->frameCount * ((file->sampleWidth + 7) / 8) * file->channelCount + 8;
 		length = HOST_TO_BENDIAN_INT32(length);
-		fwrite(&length, 4, 1, file->fp);
+		af_fwrite(&length, 4, 1, file->fh);
 
 		/* Update the COMM chunk's count of sample frames. */
-		fseek(file->fp, 12, SEEK_SET);
+		af_fseek(file->fh, 12, SEEK_SET);
 		if (file->fileFormat == AF_FILE_AIFFC)
 			WriteFVER(file);
 
 		WriteCOMM(file);
 		WriteAESD(file);
 	}
-
-	fflush(file->fp);
 
 	return 0;
 }
@@ -144,39 +141,39 @@ static void WriteCOMM (const AFfilehandle file)
 	if (file->fileFormat == AF_FILE_AIFFC)
 		size = 38;
 
-	fwrite("COMM", 4, 1, file->fp);
+	af_fwrite("COMM", 4, 1, file->fh);
 	size = HOST_TO_BENDIAN_INT32(size);
-	fwrite(&size, 4, 1, file->fp);
+	af_fwrite(&size, 4, 1, file->fh);
 
 	/* number of channels, 2 bytes */
 	sb = HOST_TO_BENDIAN_INT16(file->channelCount);
-	fwrite(&sb, 2, 1, file->fp);
+	af_fwrite(&sb, 2, 1, file->fh);
 
 	/* number of sample frames, 4 bytes */
 	lb = HOST_TO_BENDIAN_INT32(file->frameCount);
-	fwrite(&lb, 4, 1, file->fp);
+	af_fwrite(&lb, 4, 1, file->fh);
 
 	/* sample size, 2 bytes */
 	sb = HOST_TO_BENDIAN_INT16(file->sampleWidth);
-	fwrite(&sb, 2, 1, file->fp);
+	af_fwrite(&sb, 2, 1, file->fh);
 
 	/* sample rate, 10 bytes */
 	ConvertToIeeeExtended(file->sampleRate, eb);
-	fwrite(eb, 10, 1, file->fp);
+	af_fwrite(eb, 10, 1, file->fh);
 
 	if (file->fileFormat == AF_FILE_AIFFC)
 	{
 		char	sizeByte, zero = 0;
 		char	compressionName[] = "not compressed";
 
-		fwrite("NONE", 4, 1, file->fp);
+		af_fwrite("NONE", 4, 1, file->fh);
 
 		sizeByte = strlen(compressionName);
 
-		fwrite(&sizeByte, 1, 1, file->fp);
-		fwrite(compressionName, sizeByte, 1, file->fp);
+		af_fwrite(&sizeByte, 1, 1, file->fh);
+		af_fwrite(compressionName, sizeByte, 1, file->fh);
 		if ((sizeByte % 2) == 0)
-			fwrite(&zero, 1, 1, file->fp);
+			af_fwrite(&zero, 1, 1, file->fh);
 	}
 }
 
@@ -198,23 +195,22 @@ static void WriteAESD (const AFfilehandle file)
 	if (!file->aesDataPresent)
 		return;
 
-	fwrite("AESD", 4, 1, file->fp);
+	af_fwrite("AESD", 4, 1, file->fh);
 
 	size = HOST_TO_BENDIAN_INT32(size);
-	fwrite(&size, 4, 1, file->fp);
+	af_fwrite(&size, 4, 1, file->fh);
 
-	fwrite(file->aesData, 24, 1, file->fp);
+	af_fwrite(file->aesData, 24, 1, file->fh);
 }
 
 /* WriteSSND is believed to be endian-clean. */
 static AFframecount WriteSSND (const AFfilehandle file, void *samples, size_t count)
 {
 	u_int32_t	length, chunkSize, frameSize, zero = 0;
-	u_int32_t	lb;
 	AFframecount	finalCount = 0;
 
 	assert(file);
-	assert(file->fp);
+	assert(file->fh);
 	assert(samples);
 
 #ifdef DEBUG
@@ -233,26 +229,26 @@ static AFframecount WriteSSND (const AFfilehandle file, void *samples, size_t co
 
 	if (file->dataStart == 0)
 	{
-		fwrite("SSND", 4, 1, file->fp);
+		af_fwrite("SSND", 4, 1, file->fh);
 		/* initial size set to zero */
-		fwrite(&zero, 4, 1, file->fp);
+		af_fwrite(&zero, 4, 1, file->fh);
 
 		/* offset */
-		fwrite(&zero, 4, 1, file->fp);
+		af_fwrite(&zero, 4, 1, file->fh);
 		/* block size */
-		fwrite(&zero, 4, 1, file->fp);
+		af_fwrite(&zero, 4, 1, file->fh);
 
-		file->dataStart = ftell(file->fp);
+		file->dataStart = af_ftell(file->fh);
 	}
 
 	finalCount = _af_blockWriteFrames(file, AF_DEFAULT_TRACK, samples, count);
 
 #if 0
 	/* seek to the four-byte length indicator for the SSND chunk */
-	fseek(file->fp, file->dataStart - 12, SEEK_SET);
+	af_fseek(file->fh, file->dataStart - 12, SEEK_SET);
 	lb = HOST_TO_BENDIAN_INT32(chunkSize);
-	fwrite(&lb, 4, 1, file->fp);
-	fseek(file->fp, 0, SEEK_END);
+	af_fwrite(&lb, 4, 1, file->fh);
+	af_fseek(file->fh, 0, SEEK_END);
 #endif
 
 	return finalCount;
@@ -280,40 +276,40 @@ static void WriteINST (AFfilehandle file)
 	instrumentdata.releaseLoopEnd =
 		HOST_TO_BENDIAN_INT16(afGetLoopEnd(file, AF_DEFAULT_INST, 2));
 
-	fwrite("INST", 4, 1, file->fp);
-	fwrite(&length, 4, 1, file->fp);
+	af_fwrite("INST", 4, 1, file->fh);
+	af_fwrite(&length, 4, 1, file->fh);
 
 	instrumentdata.baseNote =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_MIDI_BASENOTE);
-	fwrite(&instrumentdata.baseNote, 1, 1, file->fp);
+	af_fwrite(&instrumentdata.baseNote, 1, 1, file->fh);
 	instrumentdata.detune =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_NUMCENTS_DETUNE);
-	fwrite(&instrumentdata.detune, 1, 1, file->fp);
+	af_fwrite(&instrumentdata.detune, 1, 1, file->fh);
 	instrumentdata.lowNote =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_MIDI_LONOTE);
-	fwrite(&instrumentdata.lowNote, 1, 1, file->fp);
+	af_fwrite(&instrumentdata.lowNote, 1, 1, file->fh);
 	instrumentdata.highNote =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_MIDI_HINOTE);
-	fwrite(&instrumentdata.highNote, 1, 1, file->fp);
+	af_fwrite(&instrumentdata.highNote, 1, 1, file->fh);
 	instrumentdata.lowVelocity =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_MIDI_LOVELOCITY);
-	fwrite(&instrumentdata.lowVelocity, 1, 1, file->fp);
+	af_fwrite(&instrumentdata.lowVelocity, 1, 1, file->fh);
 	instrumentdata.highVelocity =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_MIDI_HIVELOCITY);
-	fwrite(&instrumentdata.highVelocity, 1, 1, file->fp);
+	af_fwrite(&instrumentdata.highVelocity, 1, 1, file->fh);
 
 	instrumentdata.gain =
 		afGetInstParamLong(file, AF_DEFAULT_INST, AF_INST_NUMDBS_GAIN);
 	instrumentdata.gain = HOST_TO_BENDIAN_INT16(instrumentdata.gain);
-	fwrite(&instrumentdata.gain, 2, 1, file->fp);
+	af_fwrite(&instrumentdata.gain, 2, 1, file->fh);
 
-	fwrite(&instrumentdata.sustainLoopPlayMode, 2, 1, file->fp);
-	fwrite(&instrumentdata.sustainLoopBegin, 2, 1, file->fp);
-	fwrite(&instrumentdata.sustainLoopEnd, 2, 1, file->fp);
+	af_fwrite(&instrumentdata.sustainLoopPlayMode, 2, 1, file->fh);
+	af_fwrite(&instrumentdata.sustainLoopBegin, 2, 1, file->fh);
+	af_fwrite(&instrumentdata.sustainLoopEnd, 2, 1, file->fh);
 
-	fwrite(&instrumentdata.releaseLoopPlayMode, 2, 1, file->fp);
-	fwrite(&instrumentdata.releaseLoopBegin, 2, 1, file->fp);
-	fwrite(&instrumentdata.releaseLoopEnd, 2, 1, file->fp);
+	af_fwrite(&instrumentdata.releaseLoopPlayMode, 2, 1, file->fh);
+	af_fwrite(&instrumentdata.releaseLoopBegin, 2, 1, file->fh);
+	af_fwrite(&instrumentdata.releaseLoopEnd, 2, 1, file->fh);
 }
 
 /* This function is probably fairly endian-clean. */
@@ -328,24 +324,23 @@ static void WriteMARK (AFfilehandle file)
 
 	length = 0;
 
-	fwrite("MARK", 4, 1, file->fp);
-	fwrite(&length, 4, 1, file->fp);
+	af_fwrite("MARK", 4, 1, file->fh);
+	af_fwrite(&length, 4, 1, file->fh);
 
-	start = ftell(file->fp);
+	start = af_ftell(file->fh);
 
 	numMarkers = file->markerCount;
 	markids = (int *) malloc(numMarkers * sizeof (int));
 	afGetMarkIDs(file, AF_DEFAULT_TRACK, markids);
 
 	sb = HOST_TO_BENDIAN_INT16(numMarkers);
-	fwrite(&sb, 2, 1, file->fp);
+	af_fwrite(&sb, 2, 1, file->fh);
 
 	for (i=0; i<numMarkers; i++)
 	{
 		u_int8_t	namelength, zero = 0;
 		u_int16_t	id;
 		u_int32_t	position;
-		ssize_t		result;
 
 		id = markids[i];
 		position = afGetMarkPosition(file, AF_DEFAULT_TRACK, id);
@@ -353,20 +348,20 @@ static void WriteMARK (AFfilehandle file)
 		id = HOST_TO_BENDIAN_INT16(id);
 		position = HOST_TO_BENDIAN_INT32(position);
 
-		fwrite(&id, 2, 1, file->fp);
-		fwrite(&position, 4, 1, file->fp);
+		af_fwrite(&id, 2, 1, file->fh);
+		af_fwrite(&position, 4, 1, file->fh);
 
 		/* Write the strings in Pascal style. */
 		assert(file->markers[i].name);
 		namelength = strlen(file->markers[i].name);
-		fwrite(&namelength, 1, 1, file->fp);
-		fwrite(file->markers[i].name, 1, namelength, file->fp);
+		af_fwrite(&namelength, 1, 1, file->fh);
+		af_fwrite(file->markers[i].name, 1, namelength, file->fh);
 
 		if ((namelength % 2) == 0)
-			fwrite(&zero, 1, 1, file->fp);
+			af_fwrite(&zero, 1, 1, file->fh);
 	}
 
-	end = ftell(file->fp);
+	end = af_ftell(file->fh);
 	length = end - start;
 
 #ifdef DEBUG
@@ -374,11 +369,11 @@ static void WriteMARK (AFfilehandle file)
 	printf(" length: %d\n", end - start);
 #endif
 
-	fseek(file->fp, start - 4, SEEK_SET);
+	af_fseek(file->fh, start - 4, SEEK_SET);
 
 	length = HOST_TO_BENDIAN_INT32(length);
-	fwrite(&length, 4, 1, file->fp);
-	fseek(file->fp, end, SEEK_SET);
+	af_fwrite(&length, 4, 1, file->fh);
+	af_fseek(file->fh, end, SEEK_SET);
 }
 
 /* This function is endian-clean. */
@@ -386,15 +381,15 @@ static void WriteFVER (AFfilehandle file)
 {
 	u_int32_t	chunkSize, timeStamp;
 
-	fwrite("FVER", 4, 1, file->fp);
+	af_fwrite("FVER", 4, 1, file->fh);
 
 	chunkSize = 4;
 	chunkSize = HOST_TO_BENDIAN_INT32(chunkSize);
-	fwrite(&chunkSize, 4, 1, file->fp);
+	af_fwrite(&chunkSize, 4, 1, file->fh);
 
 	timeStamp = AIFCVersion1;
 	timeStamp = HOST_TO_BENDIAN_INT32(timeStamp);
-	fwrite(&timeStamp, 4, 1, file->fp);
+	af_fwrite(&timeStamp, 4, 1, file->fh);
 }
 
 /*
@@ -432,13 +427,13 @@ static void WriteMiscellaneous (AFfilehandle file)
 
 		chunkSize = HOST_TO_BENDIAN_INT32(misc->size);
 
-		fwrite(&chunkType, 4, 1, file->fp);
-		fwrite(&chunkSize, 4, 1, file->fp);
-		misc->offset = ftell(file->fp);
+		af_fwrite(&chunkType, 4, 1, file->fh);
+		af_fwrite(&chunkSize, 4, 1, file->fh);
+		misc->offset = af_ftell(file->fh);
 		/*
 			Skip the appropriate number of bytes, leaving room for a
 			pad byte.
 		*/
-		fseek(file->fp, misc->size + (misc->size % 2), SEEK_CUR);
+		af_fseek(file->fh, misc->size + (misc->size % 2), SEEK_CUR);
 	}
 }

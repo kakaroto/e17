@@ -35,7 +35,9 @@
 	If this test fails, something in the Audio File Library is broken.
 */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #ifdef __USE_SGI_HEADERS__
 #include <dmedia/audiofile.h>
@@ -117,6 +119,9 @@ int main (int argc, char **argv)
 		ensure(frames[i] == readframes[i],
 			"data written does not match data read");
 	}
+
+	ensure(afGetTrackBytes(file, AF_DEFAULT_TRACK) == 16,
+		"track byte count is incorrect");
 
 	ensure(afGetFrameCount(file, AF_DEFAULT_TRACK) == 16,
 		"frame count is incorrect");

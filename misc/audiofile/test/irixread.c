@@ -1,7 +1,7 @@
 /*
 	Audio File Library
 
-	Copyright 1998, Michael Pruett <michael@68k.org>
+	Copyright 1998-1999, Michael Pruett <michael@68k.org>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -20,11 +20,17 @@
 */
 
 /*
-	read.c
+	irixread.c
 
 	This program reads and plays a given audio file using Irix's
 	default audio output device.  This file will not work on any
 	operating system other than Irix.
+
+	The only difference between this program and irixtest is that this
+	program does not load the entire audio track into memory at once.
+	Only a small number of frames are read into a buffer and then
+	written to the audio port.  While there are more frames to be
+	read, this process is repeated.
 */
 
 #include <stdio.h>
@@ -32,6 +38,10 @@
 #include <sys/types.h>
 #include <dmedia/audio.h>
 #include <dmedia/audiofile.h>
+
+#include "sgi.h"
+
+const int BUFFERED_FRAME_COUNT = 65536;
 
 void usage (void)
 {
@@ -42,13 +52,10 @@ void usage (void)
 main (int ac, char **av)
 {
 	AFfilehandle	file;
-	AFframecount	frameCount;
-	int				frameSize, channelCount;
+	AFframecount	count, frameCount;
+	int				frameSize, channelCount, sampleFormat, sampleWidth;
 	char			*buffer;
-	int				*loopids, *markids;
-	int				i, loopCount, markCount;
-	int				startmarkid, endmarkid;
-	AFframecount	startloop, endloop, count;
+	double			sampleRate;
 
 	ALport			outport;
 	ALconfig		outportconfig;
@@ -60,24 +67,33 @@ main (int ac, char **av)
 	frameCount = afGetFrameCount(file, AF_DEFAULT_TRACK);
 	frameSize = afGetFrameSize(file, AF_DEFAULT_TRACK, 1);
 	channelCount = afGetChannels(file, AF_DEFAULT_TRACK);
+	sampleRate = afGetRate(file, AF_DEFAULT_TRACK);
+	afGetSampleFormat(file, AF_DEFAULT_TRACK, &sampleFormat, &sampleWidth);
+
 	printf("frame count: %d\n", frameCount);
-	afSetVirtualByteOrder(file, AF_DEFAULT_TRACK, AF_BYTEORDER_BIGENDIAN);
-	buffer = (char *) malloc(65536 * frameSize);
+	printf("frame size: %d bytes\n", frameSize);
+	printf("channel count: %d\n", channelCount);
+	printf("sample rate: %.2f Hz\n", sampleRate);
+	buffer = (char *) malloc(BUFFERED_FRAME_COUNT * frameSize);
 
 	outportconfig = alNewConfig();
-	alSetWidth(outportconfig, AL_SAMPLE_16);
+	setwidth(outportconfig, sampleWidth);
 	alSetChannels(outportconfig, channelCount);
 
-	count = afReadFrames(file, AF_DEFAULT_TRACK, buffer, 65536);
+	count = afReadFrames(file, AF_DEFAULT_TRACK, buffer, BUFFERED_FRAME_COUNT);
 
 	outport = alOpenPort("dick", "w", outportconfig);
+	setrate(outport, sampleRate);
 
 	do
 	{
 		printf("count = %d\n", count);
 		alWriteFrames(outport, buffer, count);
+
 	}
-	while (count = afReadFrames(file, AF_DEFAULT_TRACK, buffer, 65536));
+	while (count = afReadFrames(file, AF_DEFAULT_TRACK, buffer, BUFFERED_FRAME_COUNT));
+
+	waitport(outport);
 
 	alClosePort(outport);
 	alFreeConfig(outportconfig);

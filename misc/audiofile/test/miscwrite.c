@@ -19,15 +19,18 @@
 	MA 02111-1307, USA.
 */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#include <sys/types.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
 
 #ifdef __USE_SGI_HEADERS__
 #include <dmedia/audiofile.h>
 #else
-#include "audiofile.h"
+#include <audiofile.h>
 #endif
 
 char copyright[] = "1998 Michael Pruett";

@@ -91,21 +91,21 @@ static int writeframes (AFfilehandle file, int track, void *samples, const int c
 
 	frameSize = (file->sampleWidth / 8) * file->channelCount;
 
-	fseek(file->fp, file->dataStart, SEEK_SET);
-	fseek(file->fp, file->currentFrame * frameSize, SEEK_CUR);
+	af_fseek(file->fh, file->dataStart, SEEK_SET);
+	af_fseek(file->fh, file->currentFrame * frameSize, SEEK_CUR);
 
 	if (file->virtualByteOrder == AF_BYTEORDER_BIGENDIAN)
 	{
-		fwrite(samples, 1, frameSize * count, file->fp);
+		af_fwrite(samples, 1, frameSize * count, file->fh);
 	}
 	else
 	{
 		if (file->sampleWidth == 8)
-			fwrite(samples, 1, frameSize * count, file->fp);
+			af_fwrite(samples, 1, frameSize * count, file->fh);
 		else if (file->sampleWidth == 16)
-			writeswapblock16(file->fp, samples, file->channelCount * count);
+			writeswapblock16(file->fh, samples, file->channelCount * count);
 		else if (file->sampleWidth == 32)
-			writeswapblock32(file->fp, samples, file->channelCount * count);
+			writeswapblock32(file->fh, samples, file->channelCount * count);
 	}
 
 	file->frameCount += count;
@@ -131,20 +131,20 @@ static void writeheader (AFfilehandle file)
 	auheader.sampleRate = HOST_TO_BENDIAN_INT32(file->sampleRate);
 	auheader.channelCount = HOST_TO_BENDIAN_INT32(file->channelCount);
 
-	if (fseek(file->fp, 0, SEEK_SET) != 0)
+	if (af_fseek(file->fh, 0, SEEK_SET) != 0)
 		_af_error(AF_BAD_LSEEK);
 
-	fwrite(&auheader.id, sizeof (u_int32_t), 1, file->fp);
-	fwrite(&auheader.offset, sizeof (u_int32_t), 1, file->fp);
-	fwrite(&auheader.length, sizeof (u_int32_t), 1, file->fp);
-	fwrite(&auheader.encoding, sizeof (u_int32_t), 1, file->fp);
-	fwrite(&auheader.sampleRate, sizeof (u_int32_t), 1, file->fp);
-	fwrite(&auheader.channelCount, sizeof (u_int32_t), 1, file->fp);
+	af_fwrite(&auheader.id, sizeof (u_int32_t), 1, file->fh);
+	af_fwrite(&auheader.offset, sizeof (u_int32_t), 1, file->fh);
+	af_fwrite(&auheader.length, sizeof (u_int32_t), 1, file->fh);
+	af_fwrite(&auheader.encoding, sizeof (u_int32_t), 1, file->fh);
+	af_fwrite(&auheader.sampleRate, sizeof (u_int32_t), 1, file->fh);
+	af_fwrite(&auheader.channelCount, sizeof (u_int32_t), 1, file->fh);
 }
 
 static u_int32_t auencodingtype (AFfilehandle file)
 {
-	u_int32_t	encoding;
+	u_int32_t	encoding = 0;
 
 	if (file->compression != NULL &&
 		file->compression->type == AF_COMPRESSION_G711_ULAW)

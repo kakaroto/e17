@@ -1,5 +1,6 @@
 %define  ver     @VERSION@
-%define  rel     1
+%define  RELEASE 1
+%define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
 
 Summary: Library to handle various audio file formats
@@ -29,7 +30,7 @@ Libraries, include files, etc you can use to develop audiofile applications.
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix
-make
+make $MAKE_FLAGS
 
 %install
 

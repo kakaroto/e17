@@ -41,13 +41,13 @@ bitdepth_SOURCES = bitdepth.c
 
 writeaiff_SOURCES = writeaiff.c
 
-irixread_SOURCES = irixread.c
+irixread_SOURCES = irixread.c sgi.c
 irixread_LDADD = -laudio $(top_builddir)/libaudiofile/libaudiofile.la
 
-irixtest_SOURCES = irixtest.c
+irixtest_SOURCES = irixtest.c sgi.c sgi.h
 irixtest_LDADD = -laudio $(top_builddir)/libaudiofile/libaudiofile.la
 
-irixtestloop_SOURCES = irixtestloop.c
+irixtestloop_SOURCES = irixtestloop.c sgi.c
 irixtestloop_LDADD = -laudio $(top_builddir)/libaudiofile/libaudiofile.la
 
 linuxtest_SOURCES = linuxtest.c

@@ -229,7 +229,7 @@ int afCloseFile (AFfilehandle file)
 	if (result != 0)
 		return result;
 
-	result = fclose(file->fp);
+	result = af_fclose(file->fh);
 
 	/* fclose returns -1 on error. */
 	if (result != 0)
@@ -265,16 +265,9 @@ int afCloseFile (AFfilehandle file)
 	return 0;
 }
 
-static AFfilehandle _afOpenFileWrite (const char *filename, const char *mode,
-	AFfilesetup setup)
+static AFfilehandle _afOpenFileWrite2 (AF_VirtualFile *vf, AFfilesetup setup)
 {
-	FILE			*fp;
 	AFfilehandle	filehandle;
-	char			data[12];
-
-	fp = fopen(filename, mode);
-	if (fp == NULL)
-		return AF_NULL_FILEHANDLE;
 
 	filehandle = malloc(sizeof (struct _AFfilehandle));
 	if (filehandle == NULL)
@@ -292,7 +285,7 @@ static AFfilehandle _afOpenFileWrite (const char *filename, const char *mode,
 
 	filehandle->aesDataPresent = setup->aesDataPresent;
 
-	filehandle->fp = fp;
+	filehandle->fh = vf;
 	filehandle->markerCount = 0;
 	filehandle->markers = NULL;
 	filehandle->loopCount = 0;
@@ -371,21 +364,29 @@ static AFfilehandle _afOpenFileWrite (const char *filename, const char *mode,
 	return filehandle;
 }
 
-AFfilehandle afOpenFile(const char *filename, const char *mode, AFfilesetup setup)
+#if 0
+/* Not used any more */
+static AFfilehandle _afOpenFileWrite (const char *filename, const char *mode,
+	AFfilesetup setup)
 {
 	FILE			*fp;
-	AFfilehandle	filehandle;
-	char			data[12];
-
-	if (!strcmp(mode, "w"))
-		return _afOpenFileWrite(filename, mode, setup);
 
 	fp = fopen(filename, mode);
 	if (fp == NULL)
-	{
-		_af_error(AF_BAD_OPEN);
 		return AF_NULL_FILEHANDLE;
-	}
+
+	return _afOpenFileWrite2(af_virtual_file_new_for_file(fp), setup);
+}
+#endif
+
+AFfilehandle
+afOpenVirtualFile(AF_VirtualFile *vfile, const char *mode, AFfilesetup setup)
+{
+	AFfilehandle	filehandle;
+	char			data[12];
+
+	if(!strcmp(mode, "w"))
+	  return _afOpenFileWrite2 (vfile, setup);
 
 	filehandle = malloc(sizeof (struct _AFfilehandle));
 	if (filehandle == NULL)
@@ -394,10 +395,10 @@ AFfilehandle afOpenFile(const char *filename, const char *mode, AFfilesetup setu
 		return NULL;
 	}
 
-	fread(data, 1, 12, fp);
-	fseek(fp, 0, SEEK_SET);
+	af_fread(data, 1, 12, vfile);
+	af_fseek(vfile, 0, SEEK_SET);
 
-	filehandle->fp = fp;
+	filehandle->fh = vfile;
 	filehandle->currentFrame = 0;
 	filehandle->markerCount = 0;
 	filehandle->markers = NULL;
@@ -473,6 +474,20 @@ AFfilehandle afOpenFile(const char *filename, const char *mode, AFfilesetup setu
 	return filehandle;
 }
 
+AFfilehandle afOpenFile(const char *filename, const char *mode, AFfilesetup setup)
+{
+	FILE			*fp;
+
+	fp = fopen(filename, mode);
+	if (fp == NULL)
+	{
+		_af_error(AF_BAD_OPEN);
+		return AF_NULL_FILEHANDLE;
+	}
+
+	return afOpenVirtualFile(af_virtual_file_new_for_file(fp), mode, setup);
+}
+
 int afGetFileFormat (AFfilehandle file, int *version)
 {
 	assert(file);
@@ -518,8 +533,6 @@ AFfileoffset afGetTrackBytes (AFfilehandle file, int track)
 */
 float afGetFrameSize (AFfilehandle file, int track, int stretch3to4)
 {
-	float	frameSize;
-
 	assert(file);
 	assert(track == AF_DEFAULT_TRACK);
 
@@ -557,7 +570,7 @@ AFframecount afSeekFrame (AFfilehandle file, int track, AFframecount frame)
 
 	file->currentFrame = frame;
 
-	if (fseek(file->fp, file->dataStart + frameSize * frame, SEEK_SET) != 0)
+	if (af_fseek(file->fh, file->dataStart + frameSize * frame, SEEK_SET) != 0)
 	{
 		_af_error(AF_BAD_LSEEK);
 		return -1;

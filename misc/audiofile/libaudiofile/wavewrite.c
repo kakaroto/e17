@@ -62,32 +62,32 @@ static void WriteFormat (const AFfilehandle file)
 
 	assert(file != NULL);
 
-	fwrite("fmt ", 4, 1, file->fp);
+	af_fwrite("fmt ", 4, 1, file->fh);
 	chunkSize = 16;
 	chunkSize = HOST_TO_LENDIAN_INT32(chunkSize);
-	fwrite(&chunkSize, 4, 1, file->fp);
+	af_fwrite(&chunkSize, 4, 1, file->fh);
 
 	formatTag = WAVE_FORMAT_PCM;
 	formatTag = HOST_TO_LENDIAN_INT16(formatTag);
-	fwrite(&formatTag, 2, 1, file->fp);
+	af_fwrite(&formatTag, 2, 1, file->fh);
 	formatTag = LENDIAN_TO_HOST_INT16(formatTag);
 
 	channelCount = file->channelCount;
 	channelCount = HOST_TO_LENDIAN_INT16(channelCount);
-	fwrite(&channelCount, 2, 1, file->fp);
+	af_fwrite(&channelCount, 2, 1, file->fh);
 
 	sampleRate = file->sampleRate;
 	sampleRate = HOST_TO_LENDIAN_INT32(sampleRate);
-	fwrite(&sampleRate, 4, 1, file->fp);
+	af_fwrite(&sampleRate, 4, 1, file->fh);
 
 	averageBytesPerSecond =
 		file->channelCount * file->sampleRate * (file->sampleWidth / 8);
 	averageBytesPerSecond = HOST_TO_LENDIAN_INT32(averageBytesPerSecond);
-	fwrite(&averageBytesPerSecond, 4, 1, file->fp);
+	af_fwrite(&averageBytesPerSecond, 4, 1, file->fh);
 
 	blockAlign = file->channelCount * (file->sampleWidth / 8);
 	blockAlign = HOST_TO_LENDIAN_INT16(blockAlign);
-	fwrite(&blockAlign, 2, 1, file->fp);
+	af_fwrite(&blockAlign, 2, 1, file->fh);
 
 	if (formatTag == WAVE_FORMAT_PCM)
 	{
@@ -95,7 +95,7 @@ static void WriteFormat (const AFfilehandle file)
 
 		bitsPerSample = file->sampleWidth;
 		bitsPerSample = HOST_TO_LENDIAN_INT16(bitsPerSample);
-		fwrite(&bitsPerSample, 2, 1, file->fp);
+		af_fwrite(&bitsPerSample, 2, 1, file->fh);
 	}
 }
 
@@ -118,12 +118,12 @@ static int WriteData (const AFfilehandle file, int track, void *samples,
 
 	if (file->dataStart == 0)
 	{
-		fwrite("data", 4, 1, file->fp);
-		fwrite(&chunkSize, 4, 1, file->fp);
-		file->dataStart = ftell(file->fp);
+		af_fwrite("data", 4, 1, file->fh);
+		af_fwrite(&chunkSize, 4, 1, file->fh);
+		file->dataStart = af_ftell(file->fh);
 	}
 
-	fseek(file->fp, file->dataStart + file->currentFrame * frameSize, SEEK_SET);
+	af_fseek(file->fh, file->dataStart + file->currentFrame * frameSize, SEEK_SET);
 
 	return _af_blockWriteFrames(file, track, samples, count);
 }
@@ -137,9 +137,9 @@ int waveWriteFrames (const AFfilehandle file, int track, void *samples,
 	{
 		u_int32_t	zero = 0;
 
-		fwrite("RIFF", 4, 1, file->fp);
-		fwrite(&zero, 4, 1, file->fp);
-		fwrite("WAVE", 4, 1, file->fp);
+		af_fwrite("RIFF", 4, 1, file->fh);
+		af_fwrite(&zero, 4, 1, file->fh);
+		af_fwrite("WAVE", 4, 1, file->fh);
 
 		WriteFormat(file);
 	}
@@ -159,16 +159,16 @@ int waveSyncFile (AFfilehandle file)
 			((file->sampleWidth + 7) / 8);
 
 		dataLength = HOST_TO_LENDIAN_INT32(dataLength);
-		fseek(file->fp, file->dataStart - 4, SEEK_SET);
-		fwrite(&dataLength, 4, 1, file->fp);
+		af_fseek(file->fh, file->dataStart - 4, SEEK_SET);
+		af_fwrite(&dataLength, 4, 1, file->fh);
 
-		fseek(file->fp, 0, SEEK_END);
-		fileLength = ftell(file->fp);
+		af_fseek(file->fh, 0, SEEK_END);
+		fileLength = af_ftell(file->fh);
 		fileLength -= 8;
 		fileLength = HOST_TO_LENDIAN_INT32(fileLength);
 
-		fseek(file->fp, 4, SEEK_SET);
-		fwrite(&fileLength, 4, 1, file->fp);
+		af_fseek(file->fh, 4, SEEK_SET);
+		af_fwrite(&fileLength, 4, 1, file->fh);
 	}
 
 	return 0;

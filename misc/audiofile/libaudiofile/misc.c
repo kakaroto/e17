@@ -188,7 +188,7 @@ int afWriteMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 	else
 	{
 		off_t	currentPosition;
-		currentPosition = ftell(file->fp);
+		currentPosition = af_ftell(file->fh);
 
 /*
 		if (miscellaneous->offset == 0)
@@ -199,7 +199,7 @@ int afWriteMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 		}
 */
 
-		fseek(file->fp, miscellaneous->offset + miscellaneous->position,
+		af_fseek(file->fh, miscellaneous->offset + miscellaneous->position,
 			SEEK_SET);
 
 		assert(bytes + miscellaneous->position <= miscellaneous->size);
@@ -209,9 +209,9 @@ int afWriteMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 			return -1;
 		}
 
-		result = fwrite(buf, bytes, 1, file->fp);
+		result = af_fwrite(buf, bytes, 1, file->fh);
 
-		fseek(file->fp, currentPosition, SEEK_SET);
+		af_fseek(file->fh, currentPosition, SEEK_SET);
 	}
 
 	return result;
@@ -236,7 +236,7 @@ int afReadMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 		off_t	position;
 		ssize_t	result;
 
-		position = ftell(file->fp);
+		position = af_ftell(file->fh);
 
 		assert(miscellaneous->size);
 		assert(miscellaneous->position + bytes <= miscellaneous->size);
@@ -250,9 +250,9 @@ int afReadMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 		if (miscellaneous->position + bytes > miscellaneous->size)
 			_af_error(AF_BAD_MISCSEEK);
 
-		fseek(file->fp, miscellaneous->offset + miscellaneous->position, SEEK_SET);
-		result = fread(buf, bytes, 1, file->fp);
-		fseek(file->fp, position, SEEK_SET);
+		af_fseek(file->fh, miscellaneous->offset + miscellaneous->position, SEEK_SET);
+		result = af_fread(buf, bytes, 1, file->fh);
+		af_fseek(file->fh, position, SEEK_SET);
 		return result;
 	}
 }

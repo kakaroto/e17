@@ -1,7 +1,7 @@
 /*
 	Audio File Library
 
-	Copyright 1998, Michael Pruett <michael@68k.org>
+	Copyright 1998-1999, Michael Pruett <michael@68k.org>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -29,9 +29,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <dmedia/audio.h>
 #include <dmedia/audiofile.h>
+
+#include "sgi.h"
 
 void usage (void)
 {
@@ -44,11 +47,8 @@ main (int argc, char **argv)
 	AFfilehandle	file;
 	AFframecount	frameCount;
 	int				sampleFormat, sampleWidth, channelCount, frameSize;
+	double			sampleRate;
 	char			*buffer;
-	int				*loopids, *markids;
-	int				i, loopCount, markCount;
-	int				startmarkid, endmarkid;
-	AFframecount	startloop, endloop;
 
 	ALport			outport;
 	ALconfig		outportconfig;
@@ -57,6 +57,7 @@ main (int argc, char **argv)
 		usage();
 
 	file = afOpenFile(argv[1], "r", NULL);
+
 	frameCount = afGetFrameCount(file, AF_DEFAULT_TRACK);
 	printf("frame count: %d\n", frameCount);
 
@@ -64,38 +65,32 @@ main (int argc, char **argv)
 	printf("frame size: %d\n", frameSize);
 
 	channelCount = afGetChannels(file, AF_DEFAULT_TRACK);
+	printf("channel count: %d\n", channelCount);
+
+	sampleRate = afGetRate(file, AF_DEFAULT_TRACK);
+	printf("sample rate: %.2f\n", sampleRate);
 
 	afGetSampleFormat(file, AF_DEFAULT_TRACK, &sampleFormat, &sampleWidth);
 
-	afSetVirtualByteOrder(file, AF_DEFAULT_TRACK, AF_BYTEORDER_BIGENDIAN);
-	buffer = (char *) malloc(frameCount * frameSize * 2);
+	/* Allocate memory to store the samples and read them from the file. */
+	buffer = (char *) malloc(frameCount * frameSize);
 	afReadFrames(file, AF_DEFAULT_TRACK, buffer, frameCount);
 
 	afCloseFile(file);
 
 	outportconfig = alNewConfig();
-
-	if (sampleWidth <= 8)
-	{
-		printf("width 8\n");
-		alSetWidth(outportconfig, AL_SAMPLE_8);
-	}
-	else if (sampleWidth <= 16)
-	{
-		printf("width 16\n");
-		alSetWidth(outportconfig, AL_SAMPLE_16);
-	}
-	else if (sampleWidth <= 24)
-	{
-		printf("width 24\n");
-		alSetWidth(outportconfig, AL_SAMPLE_24);
-	}
-
+	setwidth(outportconfig, sampleWidth);
 	alSetChannels(outportconfig, channelCount);
 
 	outport = alOpenPort("dick", "w", outportconfig);
-	alWriteFrames(outport, buffer, frameCount * frameSize);
+	setrate(outport, sampleRate);
+
+	alWriteFrames(outport, buffer, frameCount);
+
+	waitport(outport);
 
 	alClosePort(outport);
 	alFreeConfig(outportconfig);
+
+	free(buffer);
 }

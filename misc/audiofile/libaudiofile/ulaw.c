@@ -37,10 +37,10 @@
 #include "byteorder.h"
 #include "compression.h"
 
-AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
-	void *samples, const int frameCount);
-AFframecount _af_g711_ulawWriteFrames (const AFfilehandle file, int track,
-	void *samples, const int frameCount);
+static AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
+					     void *samples, int frameCount);
+static AFframecount _af_g711_ulawWriteFrames (const AFfilehandle file, int track,
+					      void *samples, const int frameCount);
 
 struct _codec g711_ulaw_codec =
 {
@@ -58,8 +58,8 @@ struct _Compression g711_ulaw_compression =
 	_af_blockReadFrames is used for reading uncompressed sampled sound
 	data from RIFF WAVE or AIFF files.
 */
-AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
-	void *samples, const int frameCount)
+static AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
+	void *samples, int frameCount)
 {
 	size_t		done = 0, sampleCount;
 	u_int16_t	*buffer16 = (u_int16_t *) samples;
@@ -73,11 +73,23 @@ AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
 	/* ulaw codec assertions. */
 	assert(file->sampleWidth == 16);
 
-	frameSize = file->channelCount;
+	/*
+		For ulaw compression, each sample is one byte, so each frame is
+		channelCount bytes.
+	*/
 	channelCount = file->channelCount;
+	frameSize = channelCount;
+
+	assert(file->currentFrame <= file->frameCount);
+
+	if (file->currentFrame + frameCount > file->frameCount)
+		frameCount = file->frameCount - file->currentFrame;
+
+	assert(file->currentFrame + frameCount <= file->frameCount);
+
 	sampleCount = frameCount * channelCount;
 
-	if (fseek(file->fp, file->dataStart + file->currentFrame * frameSize,
+	if (af_fseek(file->fh, file->dataStart + file->currentFrame * frameSize,
 		SEEK_SET) != 0)
 	{
 		_af_error(AF_BAD_LSEEK);
@@ -90,7 +102,7 @@ AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
 
 		while (done < sampleCount)
 		{
-			if (fread(&datum, 1, 1, file->fp) < 1)
+			if (af_fread(&datum, 1, 1, file->fh) < 1)
 			{
 				_af_error(AF_BAD_READ);
 				break;
@@ -114,8 +126,8 @@ AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
 	return done;
 }
 
-AFframecount _af_g711_ulawWriteFrames (AFfilehandle file, int track,
-	void *samples, int frameCount)
+static AFframecount _af_g711_ulawWriteFrames (AFfilehandle file, int track,
+					      void *samples, int frameCount)
 {
 	size_t		done = 0, sampleCount;
 	u_int16_t	*buffer16 = (u_int16_t *) samples;
@@ -133,7 +145,7 @@ AFframecount _af_g711_ulawWriteFrames (AFfilehandle file, int track,
 	channelCount = file->channelCount;
 	sampleCount = frameCount * channelCount;
 
-	if (fseek(file->fp, file->dataStart + file->currentFrame * frameSize/2,
+	if (af_fseek(file->fh, file->dataStart + file->currentFrame * frameSize/2,
 		SEEK_SET) != 0)
 	{
 		_af_error(AF_BAD_LSEEK);
@@ -160,7 +172,7 @@ AFframecount _af_g711_ulawWriteFrames (AFfilehandle file, int track,
 
 			ulawdatum = _af_linear2ulaw(datum);
 
-			if (fwrite(&ulawdatum, 1, 1, file->fp) < 1)
+			if (af_fwrite(&ulawdatum, 1, 1, file->fh) < 1)
 			{
 				_af_error(AF_BAD_WRITE);
 				break;

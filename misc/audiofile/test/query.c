@@ -28,8 +28,9 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 
-main (int ac, char **av)
+int main (int ac, char **av)
 {
 	AUpvlist	list, formatlist;
 	long		*flist;
@@ -37,7 +38,6 @@ main (int ac, char **av)
 	char		*cvalue;
 	long		lvalue;
 	int			i, formatcount;
-	int			param;
 
 	formatlist = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_IDS, 0, 0, 0);
 	formatcount = afQueryLong(AF_QUERYTYPE_FILEFMT, AF_QUERY_ID_COUNT, 0, 0, 0);
@@ -49,11 +49,10 @@ main (int ac, char **av)
 
 	for (i=0; i<formatcount; i++)
 	{
-		int		count;
 		long	format;
 
 		format = flist[i];
-		printf("format = %d\n", format);
+		printf("format = %ld\n", format);
 
 		list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_NAME, format, 0, 0);
 		AUpvgetval(list, 0, &cvalue);
@@ -72,13 +71,13 @@ main (int ac, char **av)
 
 		list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_IMPLEMENTED, format, 0, 0);
 		AUpvgetval(list, 0, &lvalue);
-		printf("AUpvgetval: implemented: %d\n", lvalue);
+		printf("AUpvgetval: implemented: %ld\n", lvalue);
 		AUpvfree(list);
 
 		list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_COMPRESSION_TYPES,
 			AF_QUERY_VALUE_COUNT, format, 0);
 		AUpvgetval(list, 0, &lvalue);
-		printf("AUpvgetval: compression types: %d\n", lvalue);
+		printf("AUpvgetval: compression types: %ld\n", lvalue);
 		AUpvfree(list);
 
 		list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_COMPRESSION_TYPES,
@@ -88,7 +87,7 @@ main (int ac, char **av)
 		{
 			int	i;
 			for (i=0; i<lvalue; i++)
-				printf("larray[%d]: %d\n", i, larray[i]);
+				printf("larray[%d]: %ld\n", i, larray[i]);
 		}
 		free(larray);
 		AUpvfree(list);
@@ -96,19 +95,20 @@ main (int ac, char **av)
 		list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_SAMPLE_FORMATS,
 			AF_QUERY_DEFAULT, format, 0);
 		AUpvgetval(list, 0, &lvalue);
-		printf("AUpvgetval: sample format: %d\n", lvalue);
+		printf("AUpvgetval: sample format: %ld\n", lvalue);
 		AUpvfree(list);
 
 		list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_SAMPLE_SIZES,
 			AF_QUERY_DEFAULT, format, 0);
 		AUpvgetval(list, 0, &lvalue);
-		printf("AUpvgetval: sample size: %d\n", lvalue);
+		printf("AUpvgetval: sample size: %ld\n", lvalue);
 		AUpvfree(list);
 	}
 
 	list = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_ID_COUNT, 0, 0, 0);
 	AUpvgetval(list, 0, &lvalue);
-	printf("AUpvgetval: id count: %d\n", lvalue);
+	printf("AUpvgetval: id count: %ld\n", lvalue);
 	AUpvfree(list);
 	free(flist);
+	return 0;
 }

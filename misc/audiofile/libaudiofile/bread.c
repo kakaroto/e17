@@ -54,14 +54,31 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 	assert(samples);
 	assert(frameCount >= 0);
 
+#ifdef DEBUG
+	printf("**currentFrame = %ld\n", file->currentFrame);
+	printf("**file->frameCount = %ld\n", file->frameCount);
+	printf("**requested frameCount = %d\n", frameCount);
+#endif
+
 	frameSize = (file->sampleWidth + 7) / 8 * file->channelCount;
 
 	channelCount = file->channelCount;
 
-	sampleCount = frameCount * file->channelCount;
-	fseek(file->fp, file->dataStart + file->currentFrame * frameSize, SEEK_SET);
+	af_fseek(file->fh, file->dataStart + file->currentFrame * frameSize, SEEK_SET);
 
-	file->currentFrame += frameCount;
+	assert(file->currentFrame <= file->frameCount);
+
+	if (file->currentFrame + frameCount > file->frameCount)
+		frameCount = file->frameCount - file->currentFrame;
+
+	assert(file->currentFrame + frameCount <= file->frameCount);
+
+	sampleCount = frameCount * channelCount;
+
+#ifdef DEBUG
+	printf("**adjusted frameCount = %d\n", frameCount);
+	printf("**adjusted sampleCount = %d\n", sampleCount);
+#endif
 
 	if (file->sampleWidth <= 8)
 	{
@@ -72,7 +89,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_TWOSCOMP:
 				while (done < sampleCount)
 				{
-					if (fread(&datum, 1, 1, file->fp) < 1)
+					if (af_fread(&datum, 1, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -85,7 +102,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_UNSIGNED:
 				while (done < sampleCount)
 				{
-					if (fread(&datum, 1, 1, file->fp) < 1)
+					if (af_fread(&datum, 1, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -111,7 +128,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_TWOSCOMP:
 				while (done < sampleCount)
 				{
-					if (fread(&datum, 2, 1, file->fp) < 1)
+					if (af_fread(&datum, 2, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -126,7 +143,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_UNSIGNED:
 				while (done < sampleCount)
 				{
-					if (fread(&datum, 2, 1, file->fp) < 1)
+					if (af_fread(&datum, 2, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -155,7 +172,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_TWOSCOMP:
 				while (done < sampleCount)
 				{
-					if (fread(threeBytes, 3, 1, file->fp) < 1)
+					if (af_fread(threeBytes, 3, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -196,7 +213,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_TWOSCOMP:
 				while (done < sampleCount)
 				{
-					if (fread(&datum, 4, 1, file->fp) < 1)
+					if (af_fread(&datum, 4, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -212,7 +229,7 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 			case AF_SAMPFMT_UNSIGNED:
 				while (done < sampleCount)
 				{
-					if (fread(&datum, 4, 1, file->fp) < 1)
+					if (af_fread(&datum, 4, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_READ);
 						break;
@@ -233,6 +250,20 @@ int _af_blockReadFrames (AFfilehandle file, int track, void *samples,
 		}
 	}
 
+#ifdef DEBUG
+	printf("**sampleCount = %d\n", sampleCount);
+	printf("**done = %d\n", done);
+	printf("**done/channelcount = %d\n", done/channelCount);
+#endif
+
+	/*
+		Make done represent the number of sample frames rather than samples.
+		Update the file's current frame to reflect how many sample
+		frames were actually read.
+	*/
+
 	done /= channelCount;
+	file->currentFrame += done;
+
 	return done;
 }

@@ -39,13 +39,10 @@
 int main (int argc, char **argv)
 {
 	AUpvlist		list;
-	int				parameter;
-	int				i, size;
+	int				size;
 	AFfilehandle	file;
 
 	long	fuck = 99;
-	char	*dick;
-	double	fuckstick;
 
 	if (argc != 2)
 	{
@@ -66,18 +63,18 @@ int main (int argc, char **argv)
 	afGetInstParams(file, AF_DEFAULT_INST, list, 4);
 
 	AUpvgetval(list, 0, &fuck);
-	printf("AUpvgetval: %d\n", fuck);
+	printf("AUpvgetval: %ld\n", fuck);
 
 	AUpvgetval(list, 1, &fuck);
-	printf("AUpvgetval: %d\n", fuck);
+	printf("AUpvgetval: %ld\n", fuck);
 
 	AUpvgetval(list, 2, &fuck);
-	printf("AUpvgetval: %d\n", fuck);
+	printf("AUpvgetval: %ld\n", fuck);
 
 	AUpvgetval(list, 3, &fuck);
-	printf("AUpvgetval: %d\n", fuck);
+	printf("AUpvgetval: %ld\n", fuck);
 
 	afCloseFile(file);
 
-	exit(0);
+	return 0;
 }

@@ -222,6 +222,8 @@ AUpvlist afQuery (int querytype, int arg1, int arg2, int arg3, int arg4)
 			_af_error(AF_BAD_QUERYTYPE);
 			return AU_NULL_PVLIST;
 	}
+
+	return AU_NULL_PVLIST;
 }
 
 
@@ -434,8 +436,6 @@ void *afQueryPointer (int querytype, int arg1, int arg2, int arg3, int arg4)
 
 AUpvlist _afQueryInstrument (int arg1, int arg2, int arg3, int arg4)
 {
-	AUpvlist	list;
-
 	_af_error(AF_BAD_NOT_IMPLEMENTED);
 	return AU_NULL_PVLIST;
 
@@ -478,8 +478,6 @@ AUpvlist _afQueryInstrument (int arg1, int arg2, int arg3, int arg4)
 
 AUpvlist _afQueryInstrumentParameter (int arg1, int arg2, int arg3, int arg4)
 {
-	AUpvlist	list;
-
 	_af_error(AF_BAD_NOT_IMPLEMENTED);
 	return AU_NULL_PVLIST;
 
@@ -507,8 +505,6 @@ AUpvlist _afQueryInstrumentParameter (int arg1, int arg2, int arg3, int arg4)
 
 AUpvlist _afQueryLoop (int arg1, int arg2, int arg3, int arg4)
 {
-	AUpvlist	list;
-
 	_af_error(AF_BAD_NOT_IMPLEMENTED);
 	return AU_NULL_PVLIST;
 

@@ -55,7 +55,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 
 	sampleCount = frameCount * file->channelCount;
 
-	if (fseek(file->fp, file->dataStart + file->currentFrame * frameSize,
+	if (af_fseek(file->fh, file->dataStart + file->currentFrame * frameSize,
 		SEEK_SET) != 0)
 	{
 		_af_error(AF_BAD_LSEEK);
@@ -81,7 +81,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 				while (done < sampleCount)
 				{
 					datum = *buffer8++;
-					if (fwrite(&datum, 1, 1, file->fp) < 1)
+					if (af_fwrite(&datum, 1, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;
@@ -96,7 +96,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 					datum = *buffer8++;
 					/* Convert datum to an unsigned integer. */
 					datum ^= 128;
-					if (fwrite(&datum, 1, 1, file->fp) < 1)
+					if (af_fwrite(&datum, 1, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;
@@ -122,7 +122,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 					datum = *buffer16++;
 					if (file->byteOrder != file->virtualByteOrder)
 						datum = _af_byteswapint16(datum);
-					if (fwrite(&datum, 2, 1, file->fp) < 1)
+					if (af_fwrite(&datum, 2, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;
@@ -138,7 +138,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 					if (file->byteOrder != file->virtualByteOrder)
 						datum = _af_byteswapint16(datum);
 					datum ^= 0x8000;
-					if (fwrite(&datum, 2, 1, file->fp) < 1)
+					if (af_fwrite(&datum, 2, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;
@@ -175,7 +175,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 						threeBytes[2] = datum >> 16;
 					}
 
-					if (fwrite(threeBytes, 3, 1, file->fp) < 1)
+					if (af_fwrite(threeBytes, 3, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;
@@ -202,7 +202,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 					datum = *buffer32++;
 					if (file->byteOrder != file->virtualByteOrder)
 						datum = _af_byteswapint32(datum);
-					if (fwrite(&datum, 4, 1, file->fp) < 1)
+					if (af_fwrite(&datum, 4, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;
@@ -219,7 +219,7 @@ int _af_blockWriteFrames (AFfilehandle file, int track, void *samples,
 						datum = _af_byteswapint32(datum);
 					/* Convert datum to a signed integer. */
 					datum ^= 0x80000000;
-					if (fwrite(&datum, 4, 1, file->fp) < 1)
+					if (af_fwrite(&datum, 4, 1, file->fh) < 1)
 					{
 						_af_error(AF_BAD_WRITE);
 						break;

@@ -40,13 +40,13 @@
 #include "byteorder.h"
 #include "wave.h"
 
-static void ParseFormat (AFfilehandle filehandle, FILE *fp, u_int32_t id,
+static void ParseFormat (AFfilehandle filehandle, AF_VirtualFile *fp, u_int32_t id,
 	size_t size);
-static void ParseData (AFfilehandle filehandle, FILE *fp, u_int32_t id,
+static void ParseData (AFfilehandle filehandle, AF_VirtualFile *fp, u_int32_t id,
 	size_t size);
 int _af_parsewave (AFfilehandle file);
 
-static void ParseFormat (AFfilehandle filehandle, FILE *fp, u_int32_t id,
+static void ParseFormat (AFfilehandle filehandle, AF_VirtualFile *fp, u_int32_t id,
 	size_t size)
 {
 	u_int16_t	formatTag, channelCount;
@@ -57,38 +57,47 @@ static void ParseFormat (AFfilehandle filehandle, FILE *fp, u_int32_t id,
 	assert(fp != NULL);
 	assert(!memcmp(&id, "fmt ", 4));
 
-	fread(&formatTag, 1, 2, fp);
+	af_fread(&formatTag, 1, 2, fp);
 	formatTag = LENDIAN_TO_HOST_INT16(formatTag);
 
 	/* only PCM format data is supported at the present */
 	assert(formatTag == WAVE_FORMAT_PCM);
 
-	fread(&channelCount, 1, 2, fp);
+	af_fread(&channelCount, 1, 2, fp);
 	channelCount = LENDIAN_TO_HOST_INT16(channelCount);
 	filehandle->channelCount = channelCount;
 
-	fread(&sampleRate, 1, 4, fp);
+	af_fread(&sampleRate, 1, 4, fp);
 	sampleRate = LENDIAN_TO_HOST_INT32(sampleRate);
 	filehandle->sampleRate = sampleRate;
 
-	fread(&averageBytesPerSecond, 1, 4, fp);
+	af_fread(&averageBytesPerSecond, 1, 4, fp);
 	averageBytesPerSecond = LENDIAN_TO_HOST_INT32(averageBytesPerSecond);
 
-	fread(&blockAlign, 1, 2, fp);
+	af_fread(&blockAlign, 1, 2, fp);
 	blockAlign = LENDIAN_TO_HOST_INT16(blockAlign);
 
 	if (formatTag == WAVE_FORMAT_PCM)
 	{
 		u_int16_t	bitsPerSample;
 
-		fread(&bitsPerSample, 1, 2, fp);
+		af_fread(&bitsPerSample, 1, 2, fp);
 		bitsPerSample = LENDIAN_TO_HOST_INT16(bitsPerSample);
 
 		filehandle->sampleWidth = bitsPerSample;
+
+		assert(bitsPerSample > 0 && bitsPerSample <= 32);
+
+#if 0
+		if (bitsPerSample <= 8)
+			filehandle->sampleFormat = AF_SAMPFMT_UNSIGNED;
+		else
+#endif
+			filehandle->sampleFormat = AF_SAMPFMT_TWOSCOMP;
 	}
 }
 
-static void ParseData (AFfilehandle filehandle, FILE *fp, u_int32_t id,
+static void ParseData (AFfilehandle filehandle, AF_VirtualFile *fp, u_int32_t id,
 	size_t size)
 {
 	u_int32_t	frameSize;
@@ -97,9 +106,10 @@ static void ParseData (AFfilehandle filehandle, FILE *fp, u_int32_t id,
 	assert(fp != NULL);
 	assert(!memcmp(&id, "data", 4));
 
-	frameSize = filehandle->channelCount * (filehandle->sampleWidth / 8);
+	/* We always round up to the nearest byte for the frame size. */
+	frameSize = filehandle->channelCount * ((filehandle->sampleWidth + 7) / 8);
 
-	filehandle->dataStart = ftell(fp);
+	filehandle->dataStart = af_ftell(fp);
 	filehandle->trackBytes = size;
 	filehandle->frameCount = size / frameSize;
 }
@@ -111,12 +121,12 @@ int _af_parsewave (AFfilehandle file)
 	int			hasFormat = 0, hasData = 0;
 
 	assert(file != NULL);
-	assert(file->fp != NULL);
+	assert(file->fh != NULL);
 
-	fread(&type, 4, 1, file->fp);
-	fread(&size, 4, 1, file->fp);
+	af_fread(&type, 4, 1, file->fh);
+	af_fread(&size, 4, 1, file->fh);
 	size = LENDIAN_TO_HOST_INT32(size);
-	fread(&formtype, 4, 1, file->fp);
+	af_fread(&formtype, 4, 1, file->fh);
 
 	assert(!memcmp(&type, "RIFF", 4));
 	assert(!memcmp(&formtype, "WAVE", 4));
@@ -135,9 +145,9 @@ int _af_parsewave (AFfilehandle file)
 #ifdef DEBUG
 		printf("index: %d\n", index);
 #endif
-		fread(&chunkid, 4, 1, file->fp);
+		af_fread(&chunkid, 4, 1, file->fh);
 
-		fread(&chunksize, 4, 1, file->fp);
+		af_fread(&chunksize, 4, 1, file->fh);
 		chunksize = LENDIAN_TO_HOST_INT32(chunksize);
 
 #ifdef DEBUG
@@ -147,12 +157,12 @@ int _af_parsewave (AFfilehandle file)
 
 		if (memcmp(&chunkid, "data", 4) == 0)
 		{
-			ParseData(file, file->fp, chunkid, chunksize);
+			ParseData(file, file->fh, chunkid, chunksize);
 			hasData = 1;
 		}
 		else if (memcmp(&chunkid, "fmt ", 4) == 0)
 		{
-			ParseFormat(file, file->fp, chunkid, chunksize);
+			ParseFormat(file, file->fh, chunkid, chunksize);
 			hasFormat = 1;
 		}
 
@@ -162,7 +172,7 @@ int _af_parsewave (AFfilehandle file)
 		if ((index % 2) != 0)
 			index++;
 
-		fseek(file->fp, index + 8, SEEK_SET);
+		af_fseek(file->fh, index + 8, SEEK_SET);
 	}
 
 	/* The data chunk and the format chunk are required. */

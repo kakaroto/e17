@@ -34,6 +34,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include "audiofile.h"
+#include "af_vfs.h"
 #include "compression.h"
 
 struct _AFfilesetup
@@ -111,7 +112,8 @@ struct _Miscellaneous
 
 struct _AFfilehandle
 {
-	FILE	*fp;
+        AF_VirtualFile *fh;
+
 	int 	channelCount;
 	int 	sampleWidth, sampleFormat;
 	double  sampleRate;

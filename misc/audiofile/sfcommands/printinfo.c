@@ -82,6 +82,11 @@ void printfileinfo (char *filename)
 				byteOrder == AF_BYTEORDER_BIGENDIAN ?
 					"big endian" : "little endian");
 			break;
+		case AF_SAMPFMT_UNSIGNED:
+			printf("%d-bit integer (unsigned, %s)\n", sampleWidth,
+				byteOrder == AF_BYTEORDER_BIGENDIAN ?
+					"big endian" : "little endian");
+			break;
 		case AF_SAMPFMT_FLOAT:
 			break;
 		case AF_SAMPFMT_DOUBLE:
