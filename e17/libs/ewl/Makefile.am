@@ -15,11 +15,3 @@ EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec
 m4datadir = $(datadir)/aclocal
 m4data_DATA = ewl.m4
 
-docs:
-	$(MAKE) -C $(top_srcdir)/doc docs
-
-if HAVE_JADE
-html-docs:
-	$(MAKE) -C $(top_srcdir)/doc html-docs
-endif
-

@@ -9,8 +9,8 @@ static char     *theme_path = NULL;
 static E_DB_File *theme_db = NULL;
 
 static Ecore_List *font_paths = NULL;
-static Ewd_Hash *cached_theme_data = NULL;
-static Ewd_Hash *def_theme_data = NULL;
+static Ecore_Hash *cached_theme_data = NULL;
+static Ecore_Hash *def_theme_data = NULL;
 
 static void ewl_theme_init_font_path(void);
 
@@ -34,7 +34,7 @@ int ewl_theme_init(void)
 	/*
 	 * Alloacte and clear the default theme 
 	 */
-	def_theme_data = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+	def_theme_data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	if (!def_theme_data)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -158,7 +158,7 @@ void ewl_theme_shutdown()
 	}
 
 	if (def_theme_data) {
-		ewd_hash_destroy(def_theme_data);
+		ecore_hash_destroy(def_theme_data);
 		def_theme_data = NULL;
 	}
 }
@@ -228,7 +228,7 @@ void ewl_theme_shutdown_widget(Ewl_Widget * w)
 	 * We destroy def_theme_data from else where.. 
 	 */
 	if (w->theme && w->theme != def_theme_data)
-		ewd_hash_destroy(w->theme);
+		ecore_hash_destroy(w->theme);
 
 	else
 		w->theme = NULL;
@@ -356,13 +356,13 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w && w->theme)
-			ret = ewd_hash_get(w->theme, temp);
+			ret = ecore_hash_get(w->theme, temp);
 
 		if (!ret && def_theme_data)
-			ret = ewd_hash_get(def_theme_data, temp);
+			ret = ecore_hash_get(def_theme_data, temp);
 
 		if (!ret && ewl_config.theme.cache && cached_theme_data)
-			ret = ewd_hash_get(cached_theme_data, temp);
+			ret = ecore_hash_get(cached_theme_data, temp);
 
 		if (!ret) {
 			if (theme_db)
@@ -373,9 +373,9 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 			if (ret && ewl_config.theme.cache) {
 				if (!cached_theme_data)
 					cached_theme_data =
-						ewd_hash_new(ewd_str_hash,
-								ewd_str_compare);
-				ewd_hash_set(cached_theme_data, temp,
+						ecore_hash_new(ecore_str_hash,
+								ecore_str_compare);
+				ecore_hash_set(cached_theme_data, temp,
 						strdup(ret));
 			}
 		}
@@ -410,9 +410,9 @@ int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w->theme)
-			ret = (int) (ewd_hash_get(w->theme, temp));
+			ret = (int) (ecore_hash_get(w->theme, temp));
 		else
-			ret = (int) (ewd_hash_get(def_theme_data, temp));
+			ret = (int) (ecore_hash_get(def_theme_data, temp));
 
 		if (!ret) {
 			if (theme_db)
@@ -451,12 +451,12 @@ void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->theme || w->theme == def_theme_data)
-		w->theme = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	if (v)
-		ewd_hash_set(w->theme, k, strdup(v));
+		ecore_hash_set(w->theme, k, strdup(v));
 	else
-		ewd_hash_set(w->theme, k, v);
+		ecore_hash_set(w->theme, k, v);
 
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
@@ -483,9 +483,9 @@ void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->theme || w->theme == def_theme_data)
-		w->theme = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-	ewd_hash_set(w->theme, k, (void *) v);
+	ecore_hash_set(w->theme, k, (void *) v);
 
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
@@ -508,7 +508,7 @@ void ewl_theme_data_set_default_str(char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewd_hash_set(def_theme_data, k, strdup(v));
+	ecore_hash_set(def_theme_data, k, strdup(v));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -526,7 +526,7 @@ void ewl_theme_data_set_default_int(char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewd_hash_set(def_theme_data, k, (void *) v);
+	ecore_hash_set(def_theme_data, k, (void *) v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

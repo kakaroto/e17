@@ -4,7 +4,7 @@ static Ewl_Widget *image_button;
 Ewl_Widget     *image_win;
 Ewl_Widget     *image_box;
 Ewl_Widget     *image;
-Ewd_DList      *images;
+Ecore_DList      *images;
 Ewl_Widget     *entry_path;
 Ewl_Widget	*note_box;
 Ewl_Widget	*note;
@@ -14,12 +14,12 @@ __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *str;
 
-	ewd_dlist_goto_first(images);
+	ecore_dlist_goto_first(images);
 
-	while ((str = ewd_dlist_remove_last(images)) != NULL)
+	while ((str = ecore_dlist_remove_last(images)) != NULL)
 		FREE(str);
 
-	ewd_dlist_destroy(images);
+	ecore_dlist_destroy(images);
 
 	ewl_widget_destroy(w);
 
@@ -50,11 +50,11 @@ __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *img = NULL;
 
-	ewd_dlist_previous(images);
-	img = ewd_dlist_current(images);
+	ecore_dlist_previous(images);
+	img = ecore_dlist_current(images);
 
 	if (!img)
-		img = ewd_dlist_goto_last(images);
+		img = ecore_dlist_goto_last(images);
 
 	ewl_entry_set_text(EWL_ENTRY(entry_path), img);
 	ewl_image_set_file(EWL_IMAGE(image), img);
@@ -75,8 +75,8 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	img = ewl_entry_get_text(EWL_ENTRY(entry_path));
 
 	if (img && __image_exists(img)) {
-		ewd_dlist_append(images, img);
-		ewd_dlist_goto_last(images);
+		ecore_dlist_append(images, img);
+		ecore_dlist_goto_last(images);
 		ewl_image_set_file(EWL_IMAGE(image), img);
 	} else
 		printf("ERROR: %s does not exist\n", img);
@@ -95,11 +95,11 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *img = NULL;
 
-	ewd_dlist_next(images);
-	img = ewd_dlist_current(images);
+	ecore_dlist_next(images);
+	img = ecore_dlist_current(images);
 
 	if (!img)
-		img = ewd_dlist_goto_first(images);
+		img = ecore_dlist_goto_first(images);
 
 	ewl_entry_set_text(EWL_ENTRY(entry_path), img);
 	ewl_image_set_file(EWL_IMAGE(image), img);
@@ -124,7 +124,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	image_button = w;
 
-	images = ewd_dlist_new();
+	images = ecore_dlist_new();
 
 	image_win = ewl_window_new();
 	ewl_window_set_title(EWL_WINDOW(image_win), "Image Test");
@@ -162,7 +162,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(image);
 
 	if (image_file)
-		ewd_dlist_append(images, image_file);
+		ecore_dlist_append(images, image_file);
 
 	entry_path = ewl_entry_new(image_file);
 	ewl_container_append_child(EWL_CONTAINER(image_box), entry_path);
@@ -270,7 +270,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 		image_file = strdup("../data/images/e17-border.bits.db");
 
 	if (image_file)
-		ewd_dlist_append(images, image_file);
+		ecore_dlist_append(images, image_file);
 
 	        ewl_widget_show(image);
 

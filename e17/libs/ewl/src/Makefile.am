@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @ewd_cflags@ @etox_cflags@
+INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @etox_cflags@
 
 lib_LTLIBRARIES = libewl.la
 

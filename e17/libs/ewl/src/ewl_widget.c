@@ -325,9 +325,9 @@ void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->data)
-		w->data = ewd_hash_new(ewd_direct_hash, ewd_direct_compare);
+		w->data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
-	ewd_hash_set(w->data, k, v);
+	ecore_hash_set(w->data, k, v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -371,7 +371,7 @@ void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
 	if (!w->data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	DRETURN_PTR(ewd_hash_get(w->data, k), DLEVEL_STABLE);
+	DRETURN_PTR(ecore_hash_get(w->data, k), DLEVEL_STABLE);
 }
 
 /**

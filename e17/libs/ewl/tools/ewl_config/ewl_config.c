@@ -158,8 +158,8 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.render_method_software_x11);
 
 	e_conf.render_method_gl_x11 = ewl_radiobutton_new("GL X11 Engine");
-	ewl_radiobutton_set_chain(e_conf.render_method_gl_x11,
-				  e_conf.render_method_software_x11);
+	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(e_conf.render_method_gl_x11),
+				  EWL_RADIOBUTTON(e_conf.render_method_software_x11));
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.render_method_gl_x11);
 	ewl_widget_show(e_conf.render_method_gl_x11);

@@ -1,6 +1,6 @@
 #include "ewl_test.h"
 
-#define ROWS 10
+#define ROWS 2000
 #define COLS 4
 #define NEST 3
 

@@ -45,8 +45,8 @@ struct Ewl_Widget
 	char           *inheritance; /**< Key to lookup inhertiance of widget */
 	int             layer; /**< Current layer of widget on canvas */
 
-	Ewd_Hash       *theme; /**< Overriding theme settings of this widget */
-	Ewd_Hash       *data; /**< Arbitrary data attached to this widget */
+	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
+	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */
 };
 
 /*

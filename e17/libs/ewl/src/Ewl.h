@@ -264,7 +264,6 @@ extern"C" {
 #include <Ecore.h>
 #include <Edb.h>
 #include <Etox.h>
-#include <Ewd.h>
 
 #include <stdio.h>
 #include <stdlib.h>

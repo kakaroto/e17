@@ -6,7 +6,7 @@ static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
 static void          ewl_callback_unregister(Ewl_Callback * cb);
 
 static int           callback_id = 0;
-static Ewd_Hash     *cb_registration = NULL;
+static Ecore_Hash     *cb_registration = NULL;
 
 /**
  * @return Returns no value.
@@ -24,7 +24,7 @@ static Ewd_Hash     *cb_registration = NULL;
  */
 void ewl_callbacks_init()
 {
-	cb_registration = ewd_hash_new(ewl_callback_hash,
+	cb_registration = ecore_hash_new(ewl_callback_hash,
 				       ewl_callback_compare);
 }
 
@@ -37,7 +37,7 @@ void ewl_callbacks_init()
  */
 void ewl_callbacks_shutdown()
 {
-	ewd_hash_destroy(cb_registration);
+	ecore_hash_destroy(cb_registration);
 }
 
 /*
@@ -57,10 +57,10 @@ static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb)
 
 	DCHECK_PARAM_PTR_RET("cb", cb, NULL);
 
-	found = ewd_hash_get(cb_registration, cb);
+	found = ecore_hash_get(cb_registration, cb);
 	if (!found) {
 		cb->id = ++callback_id;
-		ewd_hash_set(cb_registration, cb, cb);
+		ecore_hash_set(cb_registration, cb, cb);
 		found = cb;
 	} else
 		FREE(cb);
@@ -85,7 +85,7 @@ static void ewl_callback_unregister(Ewl_Callback * cb)
 
 	cb->references--;
 	if (cb->references < 1) {
-		ewd_hash_remove(cb_registration, cb);
+		ecore_hash_remove(cb_registration, cb);
 		FREE(cb);
 	}
 
