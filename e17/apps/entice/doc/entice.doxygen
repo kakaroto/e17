@@ -39,6 +39,7 @@ do, and it's entice's job to do it right.
 
 Entice relies on a lot of libraries most notably
   - Edb (library)
+  - Eet (library)
   - Evas (library)
   - Edje (library)
   - Esmart (library)
@@ -46,32 +47,38 @@ Entice relies on a lot of libraries most notably
   - Ecore (library)
   - Ecore_Evas (library)
 
-There is no need to reinvent the wheel all the time.
+The following instructions assume you've checked out the e17 directory
+from cvs.  You'll notice most of these directories have a script called
+conf-e-x11.sh which contain the long list of configure opts listed
+below.  If you're on a BSD substitute gmake for make.
 
 @verbatim
 1. You need Edb from cvs
-
-  cvs co e17/libs/edb
   cd e17/libs/edb
   ./autogen.sh
-  ./configure
   make
   sudo make install
-  cd
+  cd ..
 
-2. You need Imlib2 > 1.1.0 - the more loaders, the more entice will be able to view. If you're using cvs
+2. You need Eet from cvs
 
-  cvs co e17/libs/imlib2
-  cd e17/libs/imlib2
+  cd eet
   ./autogen.sh
   make
   sudo make install
-  cd
+  cd ..
 
-3. You need Evas from cvs
+3. You need Imlib2 > 1.1.0 - the more loaders, the more entice will be able to view. If you're using cvs
 
-  cvs co e17/libs/evas
-  cd e17/libs/evas
+  cd imlib2
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+
+4. You need Evas from cvs
+
+  cd evas
   ./autogen.sh
   ./configure \
   --enable-software-x11 \
@@ -79,6 +86,7 @@ There is no need to reinvent the wheel all the time.
   --enable-image-loader-png \
   --enable-image-loader-jpeg \
   --enable-image-loader-eet \
+  --enable-image-loader-edb \
   --enable-cpu-c \
   --enable-cpu-mmx \
   --enable-cpu-p2-only \
@@ -105,12 +113,11 @@ There is no need to reinvent the wheel all the time.
   --enable-convert-32-rgb-rot-270
   make
   sudo make install
-  cd
+  cd ..
   
-4. You need Ecore from cvs
+5. You need Ecore from cvs
 
-  cvs co e17/libs/ecore
-  cd e17/libs/ecore
+  cd ecore
   ./autogen.sh
   ./configure \
   --enable-ecore-x \
@@ -121,30 +128,27 @@ There is no need to reinvent the wheel all the time.
   --enable-ecore-ipc
   make
   sudo make install
-  cd
+  cd ..
 
-5. You need Edje from cvs
+6. You need Edje from cvs
 
-  cvs co e17/libs/edje
-  cd e17/libs/edje
+  cd edje
   ./autogen.sh
   make
   sudo make install
-  cd
+  cd ..
 
-6. You need Esmart from cvs
+7. You need Esmart from cvs
 
-  cvs co e17/proto/esmart
-  cd e17/proto/esmart
+  cd ../proto/esmart
   ./autogen.sh
   make
   sudo make install
-  cd
+  cd ..
 
-7. You need entice from cvs
+8. You need entice from cvs
 
-  cvs co e17/apps/entice
-  cd e17/apps/entice
+  cd ../apps/entice
   ./autogen.sh
   make
   sudo make install
