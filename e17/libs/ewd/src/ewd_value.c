@@ -62,9 +62,6 @@ unsigned int ewd_str_hash(void *key)
 					(sizeof(unsigned int) * 8)));
 	}
 
-	if (!strcmp(k, "abash"))
-		fprintf(stderr, "abash hashed to %u\n", value);
-
 	return value;
 }
 

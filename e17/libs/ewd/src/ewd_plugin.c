@@ -47,6 +47,8 @@ ewd_plugin_load(int group_id, char *plugin_name)
 
 	ewd_list_append(loaded_plugins, plugin);
 
+	FREE(path);
+
 	return plugin;
 }
 

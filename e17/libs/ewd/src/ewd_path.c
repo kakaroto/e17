@@ -203,9 +203,9 @@ ewd_path_group_available(int group_id)
 
 		while ((d = readdir(dir)) != NULL)
 		  {
-			char ppath[1024];
+			char ppath[PATH_MAX];
 			char *ext;
-			char n[1024];
+			char n[PATH_MAX];
 			int l;
 
 			if (!strncmp(d->d_name, ".", 1))
@@ -216,7 +216,7 @@ ewd_path_group_available(int group_id)
 			if (!ext || strncmp(ext, ".so", 3))
 				continue;
 
-			snprintf(ppath, 1024, "%s/%s", path, d->d_name);
+			snprintf(ppath, PATH_MAX, "%s/%s", path, d->d_name);
 
 			stat(ppath, &st);
 
@@ -225,7 +225,7 @@ ewd_path_group_available(int group_id)
 
 			l = strlen(d->d_name);
 
-			snprintf(n, l - 2, "%s", d->d_name);
+			strncpy(n, d->d_name, l - 2);
 
 			if (!avail)
 				avail = ewd_list_new();
