@@ -166,13 +166,14 @@ epsilon_info_get(Epsilon *e)
 {
   FILE *fp = NULL;
   Epsilon_Info *p = NULL;
-  
-  if(!e || !epsilon_thumb_file_get(e)) return(p);
 #ifdef HAVE_EPEG_H
     Epeg_Image *im;
     Epeg_Thumbnail_Info info;
     int len = 0;
-    
+#endif
+  
+  if(!e || !epsilon_thumb_file_get(e)) return(p);
+#ifdef HAVE_EPEG_H
     len = strlen(e->thumb);
     if((len > 4) && 
 	(
