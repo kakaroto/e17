@@ -24,5 +24,8 @@ char **eConfigPaths(int *num);
 
 void eConfigInit(void);
 
-void *eConfigReturnDataByLoc(char *loc);
-void *eConfigReturnDataByID(unsigned long id);
+void *eConfigGetData(char *loc, int *length);
+void eConfigUnloadData(char *loc);
+int eConfigStoreData(char *loc, void *data, int *length, char local);
+
+int eConfigExportData(char *loc,char local);

@@ -3,6 +3,7 @@ lib_LTLIBRARIES = libeConfig.la
 include_HEADERS = eConfig.h
 
 libeConfig_la_SOURCES = \
+    api.c               \
     init.c              \
 	load.c      	    \
     eConfig.internal.h  \
