@@ -2,8 +2,9 @@ BUGS:
 raster: 	must update dox docs fully
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		some groups stuff, like groups on multiple desktops, hammering on this whole raise/lower/raiselower stuff etc.
-mandrake:   kontrol-center seems to crash E when you click on desktop. needs fixing
+mandrake:   kontrol-center seems to crash E when you click on just about anything. needs fixing
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
+mandrake:   apparently only having one desktop makes the kde taskbar not show any apps
 
 FEATURES:
 raster: 	add dnd to iconbox
