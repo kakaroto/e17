@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <sys/time.h>
 
 #if 0
 #define DELETE_EWIN_REFERENCE(ew, ew_ref) \

@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <sys/time.h>
 
 void
 SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,

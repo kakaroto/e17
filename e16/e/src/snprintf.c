@@ -36,6 +36,7 @@
 
 #include "E.h"
 #include <errno.h>
+#include <ctype.h>
 
 /* 
  * Shamelessly snarfed from sane... 

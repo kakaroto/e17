@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "conf.h"
+#include <ctype.h>
 
 #ifdef __EMX__
 #include <process.h>
