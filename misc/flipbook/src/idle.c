@@ -41,3 +41,10 @@
 #include "hooks.h"
 #include "idle.h"
 
+gint play_movie(gpointer data) {
+
+	if(data)
+		return 1;
+
+	return 0;
+}

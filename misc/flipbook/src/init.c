@@ -43,8 +43,8 @@
 
 void initialize_player(void) {
 
-	set_current_framerate("###.## frames/sec");
-	set_current_drawrate("###.## MB/sec (###.## Mpixel/sec)");
-	set_current_missed("#### frames of #### (## %)");
+	set_current_framerate("000.00 frames/sec");
+	set_current_drawrate("000.00 MB/sec (000.00 Mpixel/sec)");
+	set_current_missed("0000 frames of 0000 (100%)");
 
 }
