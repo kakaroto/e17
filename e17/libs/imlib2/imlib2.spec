@@ -136,12 +136,18 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS COPYING README ChangeLog doc/index.html doc/imlib2.gif doc/blank.gif
 %{_libdir}/lib*.so.*
+/usr/share/imlib2/data/fonts/*.ttf
+/usr/share/imlib2/data/images/*.png
 %{_bindir}/*
 
 %files devel
 %defattr(-, root, root, 0755)
 %{_libdir}/libImlib2.so
 %{_libdir}/*.a
+%{_libdir}/imlib2/loaders/*.a
+%{_libdir}/imlib2/loaders/*.la
+%{_libdir}/imlib2/filters/*.a
+%{_libdir}/imlib2/filters/*.la
 %{_libdir}/*.la
 %{_libdir}/pkgconfig/imlib2.pc
 %{_includedir}/*

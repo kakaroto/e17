@@ -11,7 +11,6 @@ URL: http://www.enlightenment.org/pages/efl.html
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
 Requires: evas >= 1.0.0 imlib2 libjpeg ecore epsilon 
 Requires: edje freetype eet edb embryo
 #BuildSuggests: xorg-x11-devel 

@@ -72,7 +72,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ewl-config
 %{_bindir}/ewl_test
 %{_bindir}/ewl_embed_test
-%{_bindir}/ewl_media_test
 %{_bindir}/ewl_simple_test
 
 %changelog
