@@ -10,5 +10,7 @@ echo "Running aclocal..."; aclocal $ACLOCAL_FLAGS -I m4 \
 && echo "Running automake..."; automake --add-missing --copy --gnu
 
 echo
-echo "Bootstrap complete, now run ./configure"
+echo "Bootstrap complete, running ./configure"
 echo
+
+./configure
