@@ -1152,7 +1152,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
    int yy, xx, tmp;
    DATA32 *p;
    DATA8 nr, ng, nb, rr, gg, bb, aa, na;
-   
+
    if (x < 0)
      {
 	w += x;
@@ -1180,7 +1180,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
      case OP_COPY:
 	for (yy = 0; yy < h; yy++)
 	  {
-	     p = im->data + (y * im->w) + x;
+	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  BLEND(r, g, b, a, *p);
@@ -1191,7 +1191,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
      case OP_ADD:
 	for (yy = 0; yy < h; yy++)
 	  {
-	     p = im->data + (y * im->w) + x;
+	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  BLEND_ADD(r, g, b, a, *p);
@@ -1202,7 +1202,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
      case OP_SUBTRACT:
 	for (yy = 0; yy < h; yy++)
 	  {
-	     p = im->data + (y * im->w) + x;
+	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  BLEND_SUB(r, g, b, a, *p);
@@ -1213,7 +1213,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
      case OP_RESHADE:
 	for (yy = 0; yy < h; yy++)
 	  {
-	     p = im->data + (y * im->w) + x;
+	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  BLEND_RE(r, g, b, a, *p);
