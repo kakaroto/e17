@@ -573,7 +573,7 @@ timer_val_compare(void *data)
 
 	if (p->txt_title != NULL) {
 		tmp = get_title_by_note_struct(p);
-		if (strcmp(p->txt_title, tmp)) {
+		if (tmp == NULL || strcmp(p->txt_title, tmp)) {
 			if (saveload != NULL)
 				ewl_saveload_revert(NULL, NULL, saveload->tree);
 
@@ -762,6 +762,9 @@ get_title_by_content(char *content)
 	char           *cont = content;
 	int             a = 0;
 	int             newlength = 0;
+
+	if (!content)
+		return NULL;
 
 	while (a < TITLE_LENGTH && cont != NULL) {
 		if (!strncmp(cont, "\n", 1)) {
