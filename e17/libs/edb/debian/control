@@ -14,7 +14,9 @@ Provides: libedb0, libedba1
 Suggests: edb-tools (= ${Source-Version})
 Depends: ${shlibs:Depends}
 Description: Enlightenment's db convenience wrapper library
- Enlightenment's db convenience wrapper library
+ Edb is a database library based on Sleepycat's Berkeley DB. It's main purpose
+ is providing a fast database system for Enlightenment, while maintaining a
+ stable and easy-to-use API.
 
 Package: libedb1-dev
 Architecture: any
@@ -23,15 +25,15 @@ Conflicts: libedb-dev, libedba-dev
 Replaces: libedb-dev, libedba-dev
 Provides: libedb-dev, libedba-dev
 Depends: libedb1 (= ${Source-Version}), libc6-dev | libc-dev
-Description: Enlightenment's db convenience wrapper library.
+Description: Enlightenment's db convenience wrapper library
  Library and header files for developing programs that use
- Enlightenment's db convenience wrapper library
+ Enlightenment's db convenience wrapper library.
 
 Package: edb-tools
 Architecture: any
 Section: utils
 Depends: ${shlibs:Depends}
-Description: Tools for editing edb files.
+Description: Tools for editing edb files
  Tools for editing files used by Enlightenment's db convenience wrapper
  library. This package contains edb_gtk_ed and edb_vt_ed, for gtk-based and
  curses-based editing; a command line editor is provided by libedb1.
