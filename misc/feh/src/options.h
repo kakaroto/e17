@@ -97,7 +97,6 @@ struct __fehoptions
    unsigned char no_rotate_ctrl_mask;
    unsigned char no_blur_ctrl_mask;
    unsigned char no_pan_ctrl_mask;
-   unsigned char geom;
 
    int thumb_w;
    int thumb_h;
@@ -106,6 +105,9 @@ struct __fehoptions
    int reload;
    int sort;
    int debug_level;
+   int geom_flags;
+   int geom_x;
+   int geom_y;
    int geom_w;
    int geom_h;
    int default_zoom;

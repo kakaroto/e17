@@ -397,6 +397,7 @@ feh_parse_option_array(int argc, char **argv)
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
+   int geomret;
 
    D_ENTER(4);
 
@@ -461,9 +462,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.reverse = 1;
            break;
         case 'g':
-           XParseGeometry(optarg, &i, &i, &opt.geom_w, &opt.geom_h);
-           if ((opt.geom_w > 1) && (opt.geom_h > 1))
-              opt.geom = 1;
+           opt.geom_flags = XParseGeometry(optarg, &opt.geom_x, &opt.geom_y, &opt.geom_w, &opt.geom_h);
            break;
         case 'N':
            opt.no_menus = 1;

@@ -1927,7 +1927,7 @@ feh_menu_func_gen_options(feh_menu * m,
                             opt.auto_zoom);
   feh_menu_add_toggle_entry(mm, "Freeze Window Size", NULL, NULL,
                             feh_menu_cb_opt_freeze_window, NULL, NULL,
-                            opt.geom);
+                            opt.geom_flags);
   feh_menu_add_toggle_entry(mm, "Fullscreen", NULL, NULL,
                             feh_menu_cb_opt_fullscreen, NULL, NULL,
                             m->fehwin->full_screen);
@@ -2050,11 +2050,12 @@ feh_menu_cb_opt_freeze_window(feh_menu * m,
 {
   MENU_ITEM_TOGGLE(i);
   if (MENU_ITEM_IS_ON(i)) {
-    opt.geom = TRUE;
+    opt.geom_flags = (WidthValue | HeightValue);
     opt.geom_w = m->fehwin->w;
     opt.geom_h = m->fehwin->h;
-  } else
-    opt.geom = FALSE;
+  } else {
+    opt.geom_flags = 0;
+  }
 }
 
 static void

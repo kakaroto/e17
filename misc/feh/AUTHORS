@@ -32,6 +32,9 @@ Panagiotis Issaris <takis.issaris@skynet.be>
 Jon Bernard <jbernard@roanoke.edu>
     - xinerama bugfix
 
+Maciej Kalisiak <mac@dgp.toronto.edu>
+    - large image/zoom bugfix
+
 Thanks to:
 Michael Jennings <mej@eterm.org>
     - Makefile Fixes, moral support

@@ -160,6 +160,8 @@ winwidget_create_window(winwidget ret,
   XClassHint *xch;
   MWMHints mwmhints;
   Atom prop = None;
+  int x = 0;
+  int y = 0;
 
   D_ENTER(4);
 
@@ -173,9 +175,27 @@ winwidget_create_window(winwidget ret,
       h = xinerama_screens[xinerama_screen].height;
     }
 #endif /* HAVE_LIBXINERAMA */
-  } else if (opt.geom) {
-    w = opt.geom_w;
-    h = opt.geom_h;
+  } else if (opt.geom_flags) {
+    if (opt.geom_flags & WidthValue) {
+      w = opt.geom_w;
+    }
+    if (opt.geom_flags & HeightValue) {
+      h = opt.geom_h;
+    }
+    if (opt.geom_flags & XValue) {
+      if (opt.geom_flags & XNegative) {
+        x = scr->width - opt.geom_x;
+      } else {
+        x = opt.geom_x;
+      }
+    }
+    if (opt.geom_flags & YValue) {
+      if (opt.geom_flags & YNegative) {
+        y = scr->height - opt.geom_y;
+      } else {
+        y = opt.geom_y;
+      }
+    }
   } else if (opt.screen_clip) {
     if (w > scr->width)
       w = scr->width;
@@ -192,8 +212,8 @@ winwidget_create_window(winwidget ret,
 #endif /* HAVE_LIBXINERAMA */
   }
 
-  ret->x = 0;
-  ret->y = 0;
+  ret->x = x;
+  ret->y = y;
   ret->w = w;
   ret->h = h;
   ret->visible = False;
@@ -225,7 +245,7 @@ winwidget_create_window(winwidget ret,
     mwmhints.flags = 0;
 
   ret->win =
-    XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0, depth,
+    XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0, depth,
                   InputOutput, vis,
                   CWOverrideRedirect | CWSaveUnder | CWBackingStore |
                   CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
@@ -245,14 +265,14 @@ winwidget_create_window(winwidget ret,
   XFree(xch);
 
   /* Size hints */
-  if (ret->full_screen) {
+  if (ret->full_screen || opt.geom_flags) {
     XSizeHints xsz;
 
     xsz.flags = USPosition;
-    xsz.x = 0;
-    xsz.y = 0;
+    xsz.x = x;
+    xsz.y = y;
     XSetWMNormalHints(disp, ret->win, &xsz);
-    XMoveWindow(disp, ret->win, 0, 0);
+    XMoveWindow(disp, ret->win, x, y);
   }
 
   /* set the icon name property */
@@ -338,7 +358,7 @@ winwidget_render_image(winwidget winwid,
   winwidget_setup_pixmaps(winwid);
 
   if (!winwid->full_screen
-      && ((gib_imlib_image_has_alpha(winwid->im)) || (opt.geom)
+      && ((gib_imlib_image_has_alpha(winwid->im)) || (opt.geom_flags)
           || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
           || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
           || (winwid->has_rotated)))
@@ -354,7 +374,7 @@ winwidget_render_image(winwidget winwid,
                      winwid->im_h * winwid->zoom);
   }
 
-  if (resize && (winwid->full_screen || opt.geom)) {
+  if (resize && (winwid->full_screen || opt.geom_flags)) {
     int smaller;                /* Is the image smaller than screen? */
     int max_w, max_h;
 
@@ -367,9 +387,13 @@ winwidget_render_image(winwidget winwid,
         max_h = xinerama_screens[xinerama_screen].height;
       }
 #endif /* HAVE_LIBXINERAMA */
-    } else if (opt.geom) {
-      max_w = opt.geom_w;
-      max_h = opt.geom_h;
+    } else {
+      if (opt.geom_flags & WidthValue) {
+        max_w = opt.geom_w;
+      }
+      if (opt.geom_flags & HeightValue) {
+        max_h = opt.geom_h;
+      }
     }
 
     D(4, ("Calculating for fullscreen/fixed geom render\n"));
@@ -442,21 +466,16 @@ winwidget_render_image(winwidget winwid,
   if (dy < 0)
     dy = 0;
 
-  if (winwid->im_x < 0) {
-    if (winwid->zoom < 1.0)
-      sx = 0 - (winwid->im_x * winwid->zoom);
-    else
-      sx = 0 - (winwid->im_x / winwid->zoom);
-  } else
+  if (winwid->im_x < 0)
+    sx = 0 - (winwid->im_x / winwid->zoom);
+  else
     sx = 0;
 
-  if (winwid->im_y < 0) {
-    if (winwid->zoom < 1.0)
-      sy = 0 - (winwid->im_y * winwid->zoom);
-    else
-      sy = 0 - (winwid->im_y / winwid->zoom);
-  } else
+  if (winwid->im_y < 0)
+    sy = 0 - (winwid->im_y / winwid->zoom);
+  else
     sy = 0;
+  
   calc_w = winwid->im_w * winwid->zoom;
   calc_h = winwid->im_h * winwid->zoom;
   dw = (winwid->w - winwid->im_x);
@@ -755,7 +774,7 @@ winwidget_resize(winwidget winwid,
                  int h)
 {
   D_ENTER(4);
-  if (opt.geom) {
+  if (opt.geom_flags) {
     winwid->had_resize = 1;
     return;
   }

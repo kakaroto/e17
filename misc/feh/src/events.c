@@ -149,15 +149,18 @@ feh_event_handle_ButtonPress(XEvent * ev)
             winwid->im_x = (scr_width - winwid->im_w) >> 1;
             winwid->im_y = (scr_height - winwid->im_h) >> 1;
          }
-         else if (opt.geom)
-         {
-            winwid->im_x = (opt.geom_w - winwid->im_w) >> 1;
-            winwid->im_y = (opt.geom_h - winwid->im_h) >> 1;
-         }
          else
          {
-            winwid->im_x = 0;
-            winwid->im_y = 0;
+           if (opt.geom_flags & WidthValue) {
+             winwid->im_x = (opt.geom_w - winwid->im_w) >> 1;
+           } else {
+             winwid->im_x = 0;
+           }
+           if (opt.geom_flags & HeightValue) {
+             winwid->im_y = (opt.geom_h - winwid->im_h) >> 1;
+           } else {
+              winwid->im_y = 0;
+           }
          }
          if (winwid->im_click_offset_x < 30)
             winwid->im_click_offset_x = 30;
@@ -356,7 +359,7 @@ feh_event_handle_ConfigureNotify(XEvent * ev)
             w->w = ev->xconfigure.width;
             w->h = ev->xconfigure.height;
             w->had_resize = 1;
-            if (opt.geom)
+            if (opt.geom_flags & WidthValue || opt.geom_flags & HeightValue)
             {
                opt.geom_w = w->w;
                opt.geom_h = w->h;
@@ -558,7 +561,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im_w = gib_imlib_image_get_width(temp);
             winwid->im_h = gib_imlib_image_get_height(temp);
             gib_imlib_free_image_and_decache(temp);
-            if (!winwid->full_screen && !opt.geom)
+            if (!winwid->full_screen && !opt.geom_flags)
                winwidget_resize(winwid, winwid->im_w, winwid->im_h);
             winwid->has_rotated = 1;
          }
