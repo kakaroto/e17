@@ -1,0 +1,19 @@
+/* $Id$ */
+
+group {
+	min, 125 60;
+	max, 125 60;
+	name, "MailBox";
+
+	parts {
+#include "parts/mailbox_background.edc"
+#include "parts/mailbox_icon.edc"
+#include "parts/mailbox_title.edc"
+#include "parts/mailbox_countunseen.edc"
+#include "parts/mailbox_counttotal.edc"
+	}
+
+	programs {
+#include "programs/mailbox.edc"
+	}
+}

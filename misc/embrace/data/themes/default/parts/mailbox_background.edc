@@ -1,0 +1,10 @@
+/* $Id$ */
+
+part {
+	name, "background";
+	type, RECT;
+
+	description {
+		state, "default" 0.0;
+	}
+}

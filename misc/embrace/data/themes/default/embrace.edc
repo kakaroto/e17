@@ -1,0 +1,32 @@
+/* $Id$ */
+
+group {
+	min, 100 60;
+	max, 5000 5000;
+	name, "Embrace";
+
+	parts {
+		part {
+			name, "background";
+			type, RECT;
+
+			description {
+				state, "default" 0.0;
+				color, 255 255 255 255;
+			}
+		}
+
+		part {
+			name, "Container";
+			type, RECT;
+
+			description {
+				state, "default" 0.0;
+
+				rel1 {
+					offset, 0 5;
+				}
+			}
+		}
+	}
+}

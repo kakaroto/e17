@@ -1,0 +1,23 @@
+/* $Id$ */
+
+part {
+	name, "MailBoxCountUnseen";
+	type, TEXT;
+
+	description {
+		color, 128 128 128 255;
+
+		rel1 {
+			relative, 1.0 0.0;
+			offset, 5 17;
+			to, "icon";
+		}
+
+		text {
+			text, "MailBoxCountUnseen";
+			font, "Vera";
+			size, 8;
+			align, 0.0 0.0;
+		}
+	}
+}

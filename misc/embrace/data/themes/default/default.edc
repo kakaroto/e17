@@ -1,0 +1,11 @@
+/* $Id$ */
+
+images {
+	image, "email.png" RAW;
+	image, "email_new.png" RAW;
+}
+
+collections {
+#include "embrace.edc"
+#include "mailbox.edc"
+}

@@ -1,0 +1,32 @@
+Embrace
+=======
+
+About
+-----
+
+Embrace is a mail-checker which is based on the Enlightenment Foundation
+Libraries.
+It monitors your mailboxes and the current count of total and new mails
+in them.
+
+Embrace uses Edje for the user interface. Plugins are used for the
+mailbox monitoring. Embrace currently ships with plugins for POP3,
+mbox and maildir mailboxes.
+
+For more information about the themes, please refer to README in
+data/themes/<name>/README.
+
+Installation
+------------
+
+Please see INSTALL.
+
+
+Configuration
+-------------
+
+To use Embrace, you will have to create an EDB first, which tells
+Embrace what mailboxes you want to have monitored etc.
+
+For an example, please see create_embrace_cfg.sh, which can be found
+in the Embrace data directory.
