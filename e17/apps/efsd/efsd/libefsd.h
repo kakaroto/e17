@@ -152,6 +152,9 @@ EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key,
    not a reply to a command of type EFSD_CMD_GETMETA,
    or when the type of the metadata does not match
    the type requested, greater than zero otherwise.
+
+   No memory is allocated for returned pointers, so
+   nothing needs to be freed.
 */
 EfsdDatatype   efsd_metadata_get_type(EfsdEvent *ee);
 int            efsd_metadata_get_int(EfsdEvent *ee, int *val);

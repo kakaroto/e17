@@ -143,7 +143,7 @@ efsd_handle_client_command(EfsdCommand *command, int client)
       break;
     case EFSD_CMD_GETFILETYPE:
       D(("Handling GETFILETYPE\n"));
-      result = efsd_file_getfile(command, client);
+      result = efsd_file_getfiletype(command, client);
       break;
     case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
@@ -188,7 +188,7 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	case EFSD_OP_GET_FILETYPE:
 	  D(("Trying getfile option on file-exists event on '%s'...\n", filename));
 	  ec.type = EFSD_CMD_GETFILETYPE;
-	  if (efsd_file_getfile(&ec, efr->client) < 0)
+	  if (efsd_file_getfiletype(&ec, efr->client) < 0)
 	    {
 	      D(("Get-file option for file-exists event failed -- queued.\n"));
 	    }

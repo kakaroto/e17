@@ -134,7 +134,7 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_BIG;
 static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
 #endif
 
-/* These are taken from the stat(1) source code: */
+/* These are mostly taken from the stat(1) source code: */
 
 #define	AFFS_SUPER_MAGIC      0xADFF
 #define EXT_SUPER_MAGIC       0x137D
@@ -142,10 +142,10 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
 #define EXT2_SUPER_MAGIC      0xEF53
 #define HPFS_SUPER_MAGIC      0xF995E849
 #define ISOFS_SUPER_MAGIC     0x9660
-#define MINIX_SUPER_MAGIC     0x137F /* orig. minix */
-#define MINIX_SUPER_MAGIC2    0x138F /* 30 char minix */
-#define MINIX2_SUPER_MAGIC    0x2468 /* minix V2 */
-#define MINIX2_SUPER_MAGIC2   0x2478 /* minix V2, 30 char names */
+#define MINIX_SUPER_MAGIC     0x137F
+#define MINIX_SUPER_MAGIC2    0x138F
+#define MINIX2_SUPER_MAGIC    0x2468
+#define MINIX2_SUPER_MAGIC2   0x2478
 #define MSDOS_SUPER_MAGIC     0x4d44
 #define NCP_SUPER_MAGIC       0x564c
 #define NFS_SUPER_MAGIC       0x6969
@@ -158,7 +158,8 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
 #define UFS_MAGIC             0x00011954
 #define _XIAFS_SUPER_MAGIC    0x012FD16D
 #define	NTFS_SUPER_MAGIC      0x5346544e
-
+#define XFS_SUPER_MAGIC       0x58465342
+#define REISERFS_SUPER_MAGIC  0x52654973
 
 /* The root node of the magic checks tree. Its test-related
    entries aren't used, it's only a container for the first
@@ -272,7 +273,7 @@ get_user_patterns_db(void)
 
 
 
-int               
+static int               
 e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
 {
   int result;
@@ -286,7 +287,7 @@ e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
 }
 
 
-int               
+static int               
 e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val)
 {
   int result;
@@ -300,7 +301,7 @@ e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val)
 }
 
 
-int               
+static int               
 e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val)
 {
   int result;
@@ -879,6 +880,12 @@ magic_test_fs(char *filename, struct stat *st)
     case NTFS_SUPER_MAGIC:
       sprintf(s, "%s", "ntfs");
       break;
+    case XFS_SUPER_MAGIC:
+      sprintf(s, "%s", "xfs");
+      break;
+    case REISERFS_SUPER_MAGIC:
+      sprintf(s, "%s", "reiserfs");
+      break;
     default:
       sprintf(s, "%s", "unknown-fs");
     }
@@ -1223,12 +1230,18 @@ efsd_filetype_get(char *filename)
 
   st = efsd_stat(filename);
 
+  /* If it's a link, get stat of link target instead */
   if (S_ISLNK(st->st_mode))
     {
       if (realpath(filename, realfile))
 	{
 	  filename = realfile;
 	  st = efsd_stat(filename);
+	  D(("Link substitution succeeded.\n"));
+	}
+      else
+	{
+	  D(("Link substitution failed.\n"));
 	}
     }
 
@@ -1247,6 +1260,8 @@ efsd_filetype_get(char *filename)
 	    }
 	}
     }
+
+  D(("Calculating filetype on %s\n", filename));
 
   /* Filetype is not in cache or file has been modified, re-test: */
   

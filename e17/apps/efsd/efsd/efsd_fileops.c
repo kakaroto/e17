@@ -318,7 +318,7 @@ efsd_file_readlink(EfsdCommand *cmd, int client)
 
 
 int  
-efsd_file_getfile(EfsdCommand *cmd, int client)
+efsd_file_getfiletype(EfsdCommand *cmd, int client)
 {
   static int initialized = 0;
   char *file = NULL;

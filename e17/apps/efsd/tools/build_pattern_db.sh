@@ -61,6 +61,7 @@ $DB "*.h"       $STR "text/h"
 $DB "*.h++"     $STR "text/h"
 $DB "Makefile"  $STR "text/makefile"
 $DB "*.o"       $STR "binary/object"
+$DB "core"      $STR "binary/core"
 $DB "*~"        $STR "document/backup"
 
 $DB "*.epplet"  $STR "application/enlightenment-epplet"
