@@ -2983,3 +2983,10 @@ Mon Oct  4 12:25:23 PDT 1999
 
 removed apply button from groups break dialog since it was breaking all sorts
 of stuff.
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 12:56:07 PDT 1999
+(Raster)
+
+patch to stop possible endless loops in ipc for menu reloading
