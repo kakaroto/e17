@@ -54,7 +54,7 @@ binary-indep: DH_OPTIONS=-i
 binary-arch: DH_OPTIONS=-a
 binary-arch: build install
 	# Need this version of debhelper for DH_OPTIONS to work.
-	dh_testversion 2
+	#dh_testversion 2 2
 	dh_testdir
 	dh_testroot
 	dh_installdocs

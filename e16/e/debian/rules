@@ -41,7 +41,7 @@ install: build
 
 binary-indep: SHELL = DH_OPTIONS="-i" $(sh)
 binary-indep: build install
-	dh_testversion 2
+	#dh_testversion 2 2
 	dh_testdir
 	dh_testroot
 	dh_installdocs -v
@@ -55,7 +55,7 @@ binary-indep: build install
 
 binary-arch: SHELL = DH_OPTIONS="-a" $(sh)
 binary-arch: build install
-	dh_testversion 2
+	#dh_testversion 2 2
 	dh_testdir
 	dh_testroot
 	dh_installdocs -v
