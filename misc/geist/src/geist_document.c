@@ -17,6 +17,7 @@ geist_document_new(int w, int h)
    d->im = imlib_create_image(w, h);
    d->pmap = XCreatePixmap(disp, root, w, h, depth);
    d->bg_fill = geist_fill_new_coloured(255, 255, 255, 255);
+   d->name = estrdup("New document");
 
    D_RETURN(3, d);
 }

@@ -12,7 +12,6 @@
 struct __geist_rect
 {
    geist_object object;
-   char *name;
    int r, g, b, a;
 };
 

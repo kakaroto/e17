@@ -64,15 +64,6 @@ opt;
 
 void imlib_init(GtkWidget * area);
 
-enum GeistObjectTypes
-{
-   GEIST_TYPE_OBJECT,
-   GEIST_TYPE_IMAGE,
-   GEIST_TYPE_TEXT,
-   GEIST_TYPE_RECT
-};
-typedef unsigned int geist_object_type;
-
 
 /* Imlib stuff */
 extern Display *disp;

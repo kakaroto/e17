@@ -16,8 +16,6 @@ struct __geist_text
    int fontsize;
    char *text;
    Imlib_Font fn;
-   int w;
-   int h;
    Imlib_Image im;
    int alias;
    int r, g, b, a;

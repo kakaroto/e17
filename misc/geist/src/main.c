@@ -12,6 +12,7 @@
 #include "geist_text.h"
 #include "geist_rect.h"
 #include "geist_layer.h"
+#include "geist_document_xml.h"
 
 int call_level = 0;
 GtkWidget *mainwin, *darea, *evbox, *scrollwin, *viewport;
@@ -238,6 +239,8 @@ main(int argc, char *argv[])
    gtk_widget_set_usize(scrollwin, doc->w, doc->h);
 
    geist_document_render_to_window(doc);
+   
+   geist_project_save_xml(doc, "test.xml");
 
    gtk_main();
    D_RETURN(3, 0);

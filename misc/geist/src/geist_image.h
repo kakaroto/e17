@@ -10,8 +10,6 @@ struct __geist_image
 {
    geist_object object;
    char *filename;
-   int w;
-   int h;
    Imlib_Image im;
    int alias;
 };

@@ -9,6 +9,20 @@ extern GtkWidget *obj_list;
 #define GEIST_OBJECT(O) ((geist_object *) O)
 #define GEIST_OBJECT_DOC(o) (((geist_object *)o)->layer->doc)
 
+extern char *object_types[];
+extern char *object_sizemodes[];
+extern char *object_alignments[];
+
+typedef enum __geist_object_type
+{
+   GEIST_TYPE_OBJECT,
+   GEIST_TYPE_IMAGE,
+   GEIST_TYPE_TEXT,
+   GEIST_TYPE_RECT
+}
+geist_object_type;
+
+
 enum __sizemode
 {
    SIZEMODE_NONE,
@@ -29,6 +43,7 @@ enum __alignment
    ALIGN_BOTTOM,
    ALIGN_MAX
 };
+
 
 enum __resize_type
 {
@@ -54,6 +69,7 @@ struct __geist_object
    geist_object_type type;
    char *name;
    geist_layer *layer;
+   int alpha;
    /* Object position/size */
    int x;
    int y;
@@ -88,7 +104,6 @@ struct __geist_object
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
    void (*resize_event) (geist_object * obj, int x, int y);
    GtkWidget *(*display_props) (geist_object * obj);
-   int props_active;
    /* object properties window */
    GtkWidget *props_window;
 };
@@ -146,8 +161,10 @@ void geist_object_show_properties(geist_object * obj);
 void geist_object_update_sizemode(geist_object * obj);
 void geist_object_update_alignment(geist_object * obj);
 void geist_object_get_resize_box_coords(geist_object * obj, int resize,
-
                                         int *x, int *y);
+char *geist_object_get_type_string(geist_object * obj);
+char *geist_object_get_sizemode_string(geist_object * obj);
+char *geist_object_get_alignment_string(geist_object * obj);
 
 
 

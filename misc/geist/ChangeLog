@@ -1,3 +1,10 @@
+Sun Aug 13 17:41:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Saving to XML format. XML is a nice structured format for our
+	needs. Run geist and check the contents of test.xml after it's
+	opened up...
+	* Yes. You will need libxml installed for geist to compile now...
+
 Sat Aug 12 21:38:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Start of abstracted "fill" type.

@@ -12,6 +12,7 @@ geist_layer_new(void)
    memset(l, 0, sizeof(geist_layer));
 
    l->visible = TRUE;
+   l->name = estrdup("New layer");
 
    D_RETURN(3, l);
 }
