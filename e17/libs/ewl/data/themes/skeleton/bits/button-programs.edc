@@ -1,7 +1,7 @@
       programs {
           program {
 	      name, "normal";
-	      signal, "default";
+	      signal, "mouse,out";
 	      source, "*";
 	      action, STATE_SET "default" 0.0;
 	      transition, LINEAR, 0.0;
