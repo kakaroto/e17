@@ -194,6 +194,7 @@ void _estyle_style_draw(Estyle *es, char *text)
 	while ((layer = _estyle_heap_item(info->layers, i))) {
 		ob = __estyle_style_layer_draw(layer, es, text);
 		((Estyle_Style *) es->style)->bits = evas_list_append( ((Estyle_Style *)es->style)->bits, ob );
+		evas_object_smart_member_add(es->smart_obj, ob);
 		i++;
 	}
 
@@ -698,6 +699,7 @@ static void __estyle_style_read(Estyle_Style_Info * info)
 	int layers;
 	char key[1024];
 	Estyle_Style_Layer *layer;
+	float x_offset, y_offset;
 
 	if (!info->style_db)
 		return;
@@ -735,10 +737,12 @@ static void __estyle_style_read(Estyle_Style_Info * info)
 		e_db_int_get(info->style_db, key, &layer->size_change);
 
 		sprintf(key, "/layers/%d/x_offset", i);
-		e_db_int_get(info->style_db, key, &layer->x_offset);
+		e_db_float_get(info->style_db, key, &x_offset);
+		layer->x_offset = x_offset;
 
 		sprintf(key, "/layers/%d/y_offset", i);
-		e_db_int_get(info->style_db, key, &layer->y_offset);
+		e_db_float_get(info->style_db, key, &y_offset);
+		layer->y_offset = y_offset;
 
 		sprintf(key, "/layers/%d/relative_color", i);
 		e_db_int_get(info->style_db, key, &layer->relative_color);

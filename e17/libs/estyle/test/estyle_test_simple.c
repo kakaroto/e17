@@ -42,7 +42,7 @@ Evas *evas;
 int render_method = RENDER_ENGINE;
 #endif
 Evas_Object *cursor = NULL;
-Estyle *e;
+Evas_Object *e;
 
 static int e_idle(void *data)
 {
@@ -86,7 +86,8 @@ static int ecore_mouse_out(void *data, int type, void * ev)
 
 static int ecore_mouse_down(void *data, int type, void * ev)
 {
-	int index, x, y, w, h;
+	int index;
+	double x, y, w, h;
 
 	Ecore_X_Event_Mouse_Button_Down *eemd =
 	    (Ecore_X_Event_Mouse_Button_Down *) ev;
@@ -109,7 +110,7 @@ static int ecore_mouse_down(void *data, int type, void * ev)
 		if (index < 0)
 			printf("Click occurred outside of estyle\n");
 		else {
-			printf("Clicked letter %c at %d, %d size %d x %d\n",
+			printf("Clicked letter %c at %g, %g size %g x %g\n",
 				last[index], x, y, w, h);
 			evas_object_move(cursor, x, y);
 			evas_object_resize(cursor, w, h);
@@ -200,7 +201,7 @@ void setup(void)
 int main(int argc, char *argv[])
 {
 	int i, w, h;
-	int curs_x, curs_y, curs_w, curs_h;
+	double curs_x, curs_y, curs_w, curs_h;
 	Evas_Object *clip_rect;
 	Evas_Object *img_test;
 	Evas_Object *bg, *et_bg, *obst;
@@ -289,10 +290,10 @@ int main(int argc, char *argv[])
 	 * Create an estyle.
 	 */
 	e = estyle_new(evas, string1, "raised");
-	estyle_move(e, 100, 100);
-	estyle_set_color(e, 128, 255, 255, 255);
-	estyle_set_clip(e, clip_rect);
-	estyle_show(e);
+	evas_object_move(e, 100, 100);
+	evas_object_color_set(e, 128, 255, 255, 255);
+	evas_object_clip_set(e, clip_rect);
+	evas_object_show(e);
 	estyle_text_at(e, 0, &curs_x, &curs_y, &curs_w, &curs_h);
 
 	printf("size: %d\n",estyle_get_font_size(e));

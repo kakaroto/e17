@@ -2,6 +2,12 @@
 #define _ESTYLE_PRIVATE_H
 
 #include "Estyle.h"
+
+/*
+ * The estyle holds all information necessary for display and layout of the text
+ */
+typedef struct _estyle Estyle;
+
 #include "../estyle-config.h"
 #include "estyle_heap.h"
 #include "estyle_color.h"
@@ -14,12 +20,12 @@ enum _estyle_bit_flags {
 	ESTYLE_BIT_VISIBLE = 2,
 };
 
-typedef void (*Estyle_Callback_Function) (void *_data, Estyle * _es,
+typedef void (*Estyle_Callback_Function) (void *_data, Evas_Object * _es,
 					  void *event_info);
 
 typedef struct _estyle_callback Estyle_Callback;
 struct _estyle_callback {
-	Estyle *estyle;
+	Evas_Object *obj;
 	Evas_Callback_Type type;
 	void *data;
 	Estyle_Callback_Function callback;
@@ -42,7 +48,7 @@ struct _estyle {
 	 * case of a tab character, the width of the bit does not match the
 	 * width of the actual character printed.
 	 */
-	int x, y, w, h;
+	double x, y, w, h;
 
 	/*
 	 * The flags field is used to indicate that the bit is not to be moved
@@ -59,6 +65,11 @@ struct _estyle {
 	 * The visual representation of the text.
 	 */
 	Evas_Object *bit;
+
+	/*
+	 * The smart object to tie the structure together.
+	 */
+	Evas_Object *smart_obj;
 
 	/*
 	 * Keep track of the length of text stored in this bit to avoid
@@ -85,5 +96,14 @@ struct _estyle {
 #define BIT_MERGEABLE(es1, es2) (es1 && es2 && \
 		!(es1->flags & ESTYLE_BIT_FIXED) && \
 		!(es2->flags & ESTYLE_BIT_FIXED) && es1 != es2)
+
+void estyle_free(Evas_Object *obj);
+void estyle_show(Evas_Object *obj);
+void estyle_hide(Evas_Object *obj);
+void estyle_move(Evas_Object *obj, double x, double y);
+void estyle_set_layer(Evas_Object *obj, int layer);
+void estyle_set_color(Evas_Object *obj, int r, int g, int b, int a);
+void estyle_set_clip(Evas_Object *obj, Evas_Object *clip);
+void estyle_unset_clip(Evas_Object *obj);
 
 #endif

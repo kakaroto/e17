@@ -12,6 +12,7 @@ void __estyle_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
 				  void *event_info);
 
 static int estyle_setup_complete = 0;
+Evas_Smart *estyle_smart = NULL;
 
 /**
  * estyle_new - create a estyle with specified text
@@ -22,9 +23,10 @@ static int estyle_setup_complete = 0;
  * Returns a pointer to the newly allocated estyle on success, NULL on
  * failure. The estyle doesn't get displayed until estyle_show gets called.
  */
-Estyle *estyle_new(Evas *evas, char *text, char *style)
+Evas_Object *estyle_new(Evas *evas, char *text, char *style)
 {
 	Estyle *es;
+	Evas_Object *obj = NULL;
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
 
@@ -32,6 +34,12 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
 	 * Check to see if the internal data structures has been completed.
 	 */
 	if (!estyle_setup_complete) {
+		estyle_smart = evas_smart_new("estyle_smart", NULL,
+				estyle_free, estyle_set_layer, NULL,
+				NULL, NULL, NULL,
+				estyle_move, NULL, estyle_show,
+				estyle_hide, estyle_set_color, estyle_set_clip,
+				estyle_unset_clip, NULL);
 		_estyle_color_init();
 		_estyle_style_add_path(PACKAGE_DATA_DIR "/styles");
 		estyle_setup_complete = 1;
@@ -51,6 +59,11 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
 	es->bit = evas_object_text_add(es->evas);
 	evas_object_text_font_set(es->bit, DEFAULT_FONT, DEFAULT_SIZE);
 
+	obj = evas_object_smart_add(evas, estyle_smart);
+	evas_object_smart_member_add(obj, es->bit);
+	evas_object_smart_data_set(obj, es);
+	es->smart_obj = obj;
+
 	/*
 	 * Set some default colors, font, and font size.
 	 */
@@ -61,13 +74,13 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
 	 */
 	if (style)
 		es->style = _estyle_style_instance(style);
-	estyle_set_color(es, 255, 255, 255, 255);
+	estyle_set_color(obj, 255, 255, 255, 255);
 	if (es->style)
 		_estyle_style_draw(es, text);
 
-	estyle_set_text(es, text);
+	estyle_set_text(obj, text);
 
-	return es;
+	return obj;
 }
 
 /**
@@ -76,11 +89,12 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
  *
  * Returns no value. Frees the data in @es as well as @es itself.
  */
-void estyle_free(Estyle *es)
+void estyle_free(Evas_Object *obj)
 {
 	Evas_List *l;
+	Estyle *es;
 
-	CHECK_PARAM_POINTER("es", es);
+	es = evas_object_smart_data_get(obj);
 
 	if (es->bit)
 		evas_object_del(es->bit);
@@ -103,9 +117,11 @@ void estyle_free(Estyle *es)
  *
  * Returns no value. Updates the display to reflect changes to @estyle.
  */
-void estyle_show(Estyle *es)
+void estyle_show(Evas_Object *obj)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
+
+	es = evas_object_smart_data_get(obj);
 
 	es->flags |= ESTYLE_BIT_VISIBLE;
 	_estyle_style_show(es);
@@ -119,9 +135,11 @@ void estyle_show(Estyle *es)
  *
  * Returns no value
  */
-void estyle_hide(Estyle *es)
+void estyle_hide(Evas_Object *obj)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
+
+	es = evas_object_smart_data_get(obj);
 
 	es->flags &= ~ESTYLE_BIT_VISIBLE;
 	_estyle_style_hide(es);
@@ -136,9 +154,11 @@ void estyle_hide(Estyle *es)
  *
  * Returns no value. Moves the requested estyle into the requested position.
  */
-void estyle_move(Estyle * es, int x, int y)
+void estyle_move(Evas_Object *obj, double x, double y)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
+
+	es = evas_object_smart_data_get(obj);
 
 	if (es->x == x && es->y == y)
 		return;
@@ -146,8 +166,8 @@ void estyle_move(Estyle * es, int x, int y)
 	es->x = x;
 	es->y = y;
 	evas_object_move(es->bit, 
-	      (double)(x + (es->style ? es->style->info->left_push : 0)),
-	      (double)(y + (es->style ? es->style->info->top_push : 0)));
+	      (x + (es->style ? es->style->info->left_push : 0)),
+	      (y + (es->style ? es->style->info->top_push : 0)));
 	
 	if (es->style)
 		_estyle_style_move(es);
@@ -164,9 +184,13 @@ void estyle_move(Estyle * es, int x, int y)
  * Returns no value. Retrieves the color of the estyle into the integer pointers
  * @r, @g, @b and @a.
  */
-void estyle_get_color(Estyle * es, int *r, int *g, int *b, int *a)
+void estyle_get_color(Evas_Object *obj, int *r, int *g, int *b, int *a)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
 
 	if (r)
 		*r = es->color->r;
@@ -189,9 +213,11 @@ void estyle_get_color(Estyle * es, int *r, int *g, int *b, int *a)
  * Returns no value. Changes the color of the estyle to that represented by
  * @r, @g, @b and @a.
  */
-void estyle_set_color(Estyle * es, int r, int g, int b, int a)
+void estyle_set_color(Evas_Object *obj, int r, int g, int b, int a)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle * es;
+
+	es = evas_object_smart_data_get(obj);
 
 	es->color = _estyle_color_instance(r, g, b, a);
 	evas_object_color_set(es->bit, r, g, b, a);
@@ -231,10 +257,14 @@ void estyle_lookup_color_db(char *name, int *r, int *g, int *b, int *a)
  * estyle_set_color_db - set the color of an estyle based on color name
  * @es: the estyle to change the color
  */
-void estyle_set_color_db(Estyle *es, char *name)
+void estyle_set_color_db(Evas_Object *obj, char *name)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
+
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("name", name);
+
+	es = evas_object_smart_data_get(obj);
 
 	es->color = _estyle_color_instance_db(name);
 	evas_object_color_set(es->bit, es->color->r, es->color->g,
@@ -249,9 +279,13 @@ void estyle_set_color_db(Estyle *es, char *name)
  *
  * Returns the name the style or NULL if no style specified.
  */
-char *estyle_get_style(Estyle *es)
+char *estyle_get_style(Evas_Object *obj)
 {
-	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+	Estyle *es;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	es = evas_object_smart_data_get(obj);
 
 	if (!es->style)
 		return NULL;
@@ -266,14 +300,17 @@ char *estyle_get_style(Estyle *es)
  *
  * Returns no value. The style of @es is changed to @name.
  */
-void estyle_set_style(Estyle *es, char *name)
+void estyle_set_style(Evas_Object *obj, char *name)
 {
 	int layer;
 	const char *text;
 	Evas_Object *clip;
+	Estyle *es;
 
-	CHECK_PARAM_POINTER("es", es);
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("name", name);
+
+	es = evas_object_smart_data_get(obj);
 
 	/*
 	 * Set the style for this particular es.
@@ -293,7 +330,7 @@ void estyle_set_style(Estyle *es, char *name)
 	_estyle_style_draw(es, (char *)text);
 
 	layer = evas_object_layer_get(es->bit);
-	estyle_set_layer(es, layer);
+	estyle_set_layer(obj, layer);
 
 	_estyle_style_move(es);
 
@@ -314,13 +351,16 @@ void estyle_set_style(Estyle *es, char *name)
  * Returns a pointer to a copy of the text in the estyle @es on success, NULL
  * on failure.
  */
-char *estyle_get_text(Estyle * es)
+char *estyle_get_text(Evas_Object *obj)
 {
 	int scount, i;
 	const char *text;
 	char *temp = NULL;
+	Estyle * es;
 
-	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	es = evas_object_smart_data_get(obj);
 
 	text = evas_object_text_text_get(es->bit);
 	if (text) {
@@ -345,12 +385,15 @@ char *estyle_get_text(Estyle * es)
  * Returns no value. Changes the text in @es to @text and updates the display
  * if visible.
  */
-void estyle_set_text(Estyle *es, char *text)
+void estyle_set_text(Evas_Object *obj, char *text)
 {
 	int i, scount;
 	char *temp;
+	Estyle *es;
 
-	CHECK_PARAM_POINTER("es", es);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
 
 	/*
 	 * Wheee!! what fun, to get the sizing right when spaces end the
@@ -414,11 +457,12 @@ int estyle_get_layer(Estyle * es)
  * Returns no value. Changes the layer of @es to @layer along with all of
  * it's style bits.
  */
-void estyle_set_layer(Estyle *es, int layer)
+void estyle_set_layer(Evas_Object *obj, int layer)
 {
+	Estyle *es;
 	int index = 0;
 
-	CHECK_PARAM_POINTER("es", es);
+	es = evas_object_smart_data_get(obj);
 
 	evas_object_layer_set(es->bit, layer - 1);
 
@@ -441,11 +485,14 @@ void estyle_set_layer(Estyle *es, int layer)
  *
  * Returns a pointer to a copy of the current font of the estyle @es.
  */
-char *estyle_get_font(Estyle * es)
+char *estyle_get_font(Evas_Object *obj)
 {
 	char *font;
 	double size;
-	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+	Estyle * es;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+	es = evas_object_smart_data_get(obj);
 	evas_object_text_font_get(es->bit, &font, &size);
 	return font;
 }
@@ -456,11 +503,14 @@ char *estyle_get_font(Estyle * es)
  *
  * Returns the font size (an int) or FALSE if an error occurs.
  */  
-int estyle_get_font_size(Estyle *es)
+int estyle_get_font_size(Evas_Object *obj)
 {
 	char *font;
 	double size;
-	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+	Estyle *es;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
+	es = evas_object_smart_data_get(obj);
 	evas_object_text_font_get(es->bit, &font, &size);
 	return (int)size;
 }
@@ -472,10 +522,14 @@ int estyle_get_font_size(Estyle *es)
  *
  * Returns no value. Changes the font for the specified estyle to @name.
  */
-void estyle_set_font(Estyle *es, char *font, int size)
+void estyle_set_font(Evas_Object *obj, char *font, int size)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
+
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("font", font);
+
+	es = evas_object_smart_data_get(obj);
 
 	evas_object_text_font_set(es->bit, font, size);
 	if (es->style)
@@ -504,17 +558,34 @@ Evas_Object *estyle_get_clip(Estyle *es)
  *
  * Returns no value. Sets the clip box of the estyle to @clip.
  */
-void estyle_set_clip(Estyle *es, Evas_Object *clip)
+void estyle_set_clip(Evas_Object *obj, Evas_Object *clip)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle *es;
 
-	if (clip)
-		evas_object_clip_set(es->bit, clip);
-	else
-		evas_object_clip_unset(es->bit);
+	es = evas_object_smart_data_get(obj);
+
+	evas_object_clip_set(es->bit, clip);
 
 	if (es->style)
 		_estyle_style_set_clip(es, clip);
+}
+
+/**
+ * estyle_unset_clip - unset the clip box for the estyle
+ * @es: the estyle to unset the clip box
+ *
+ * Returns no value. Unsets the clip box of the estyle.
+ */
+void estyle_unset_clip(Evas_Object *obj)
+{
+	Estyle *es;
+
+	es = evas_object_smart_data_get(obj);
+
+	evas_object_clip_unset(es->bit);
+
+	if (es->style)
+		_estyle_style_set_clip(es, NULL);
 }
 
 /**
@@ -525,12 +596,17 @@ void estyle_set_clip(Estyle *es, Evas_Object *clip)
  * Returns TRUE if the bits are able to be merged, otherwise FALSE. Appends the
  * text in @es2 to the text in @es1 and destroys @es2.
  */
-int estyle_merge(Estyle *es1, Estyle *es2)
+int estyle_merge(Evas_Object *obj1, Evas_Object *obj2)
 {
+	Estyle *es1;
+	Estyle *es2;
 	char *new_text, *text1, *text2;
 
-	CHECK_PARAM_POINTER_RETURN("es1", es1, FALSE);
-	CHECK_PARAM_POINTER_RETURN("es2", es2, FALSE);
+	CHECK_PARAM_POINTER_RETURN("obj1", obj1, FALSE);
+	CHECK_PARAM_POINTER_RETURN("obj2", obj2, FALSE);
+
+	es1 = evas_object_smart_data_get(obj1);
+	es2 = evas_object_smart_data_get(obj2);
 
 	if (!BIT_MERGEABLE(es1, es2))
 		return FALSE;
@@ -554,11 +630,11 @@ int estyle_merge(Estyle *es1, Estyle *es2)
 	strcpy(new_text, text1);
 	strcat(new_text, text2);
 
-	estyle_set_text(es1, new_text);
+	estyle_set_text(obj1, new_text);
 
 	FREE(new_text);
 
-	estyle_free(es2);
+	evas_object_del(obj2);
 
 	return TRUE;
 }
@@ -571,14 +647,17 @@ int estyle_merge(Estyle *es1, Estyle *es2)
  * Returns the newly created estyle on success, NULL on failure. The old
  * estyle is updated to reflect the changes.
  */
-Estyle *estyle_split(Estyle *es, unsigned int index)
+Evas_Object *estyle_split(Evas_Object *obj, unsigned int index)
 {
+	Estyle *es;
 	char temp;
 	char *content;
-	Estyle *new_es;
+	Evas_Object *new_es;
 	int r, g, b, a;
 
-	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	es = evas_object_smart_data_get(obj);
 
 	/*
 	 * Don't bother to split if it will result in an empty string.
@@ -589,7 +668,7 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
 	/*
 	 * Retrieve the contents of the estyle to be split.
 	 */
-	content = estyle_get_text(es);
+	content = estyle_get_text(obj);
 	if (!content)
 		return NULL;
 
@@ -608,7 +687,7 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
 	 */
 	temp = content[index];
 	content[index] = '\0';
-	estyle_set_text(es, content);
+	estyle_set_text(obj, content);
 
 	/*
 	 * Now place the content from index onwards into a new estyle.
@@ -620,14 +699,14 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
 	/*
 	 * Give this new estyle the same settings as the previous estyle.
 	 */
-	estyle_set_clip(new_es, estyle_get_clip(es));
-	estyle_set_font(new_es, estyle_get_font(es),
-			estyle_get_font_size(es));
+	evas_object_clip_set(new_es, estyle_get_clip(es));
+	estyle_set_font(new_es, estyle_get_font(obj),
+			estyle_get_font_size(obj));
 
 	/*
 	 * Set the new color for the estyle.
 	 */
-	estyle_get_color(es, &r, &g, &b, &a);
+	estyle_get_color(obj, &r, &g, &b, &a);
 	estyle_set_color(new_es, r, g, b, a);
 
 	/*
@@ -649,9 +728,13 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
  *
  * Returns the length of the text in the estyle @es.
  */
-inline int estyle_length(Estyle * es)
+inline int estyle_length(Evas_Object *obj)
 {
-	CHECK_PARAM_POINTER_RETURN("es", es, FALSE);
+	Estyle * es;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, FALSE);
+
+	es = evas_object_smart_data_get(obj);
 
 	return es->length;
 }
@@ -693,26 +776,26 @@ void estyle_geometry(Estyle * es, int *x, int *y, int *w, int *h)
  * Returns no value. The dimensions of the found character are stored in
  * @char_x, @char_y, @char_w, and @char_h.
  */
-void estyle_text_at(Estyle * es, int index, int *char_x, int *char_y,
-		    int *char_w, int *char_h)
+void estyle_text_at(Evas_Object *obj, int index, double *x, double *y,
+		    double *w, double *h)
 {
-	double xx, yy, ww, hh;
+	Estyle * es;
 
-	CHECK_PARAM_POINTER("es", es);
+	CHECK_PARAM_POINTER("obj", obj);
 
-	evas_object_text_char_pos_get(es->bit, index,  &xx, &yy, &ww, &hh);
+	es = evas_object_smart_data_get(obj);
 
-	if (char_x)
-		*char_x = D2I_ROUND(xx) + es->x;
-	if (char_y)
-		*char_y = D2I_ROUND(yy) + es->y;
-	if (char_w)
-		*char_w = D2I_ROUND(ww) + (es->style ? 
-			es->style->info->left_push
+	evas_object_text_char_pos_get(es->bit, index,  x, y, w, h);
+
+	if (x)
+		*x += es->x;
+	if (y)
+		*y += es->y;
+	if (w)
+		*w += (es->style ?  es->style->info->left_push
 			+ es->style->info->right_push : 0);
-        if (char_h)
-		*char_h = D2I_ROUND(hh) + (es->style ? 
-			es->style->info->top_push
+        if (h)
+		*h += (es->style ?  es->style->info->top_push
 			+ es->style->info->bottom_push : 0);
 }
 
@@ -730,28 +813,28 @@ void estyle_text_at(Estyle * es, int index, int *char_x, int *char_y,
  * dimensions of the found character are stored in @char_x, @char_y, @char_w,
  * and @char_h.
  */
-int estyle_text_at_position(Estyle * es, int x, int y, int *char_x,
-			    int *char_y, int *char_w, int *char_h)
+int estyle_text_at_position(Evas_Object *obj, double x, double y, double *xx,
+			    double *yy, double *ww, double *hh)
 {
 	int ret;
-	double xx = 0, yy = 0, ww = 0, hh = 0;
+	Estyle * es;
 
-	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
 
-	ret = evas_object_text_char_coords_get(es->bit, (double)(x - es->x),
-			(double)(y - es->y), &xx, &yy, &ww, &hh);
+	es = evas_object_smart_data_get(obj);
 
-	if (char_x)
-		*char_x = D2I_ROUND(xx) + es->x;
-	if (char_y)
-		*char_y = D2I_ROUND(yy) + es->y;
-	if (char_w)
-		*char_w = D2I_ROUND(ww) + (es->style ? 
-			es->style->info->left_push
+	ret = evas_object_text_char_coords_get(es->bit, x - es->x,
+			y - es->y, xx, yy, ww, hh);
+
+	if (xx)
+		*xx += es->x;
+	if (yy)
+		*yy += es->y;
+	if (ww)
+		*ww += (es->style ?  es->style->info->left_push
 			+ es->style->info->right_push : 0);
-	if (char_h)
-		*char_h = D2I_ROUND(hh) + (es->style ? 
-			es->style->info->top_push
+	if (hh)
+		*hh += (es->style ?  es->style->info->top_push
 			+ es->style->info->bottom_push : 0);
 
 	return ret;
@@ -763,9 +846,13 @@ int estyle_text_at_position(Estyle * es, int x, int y, int *char_x,
  *
  * Returns 0 if the estyle does not have fixed geometry, > 0 otherwise.
  */
-inline int estyle_fixed(Estyle * es)
+inline int estyle_fixed(Evas_Object *obj)
 {
-	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+	Estyle * es;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
+
+	es = evas_object_smart_data_get(obj);
 
 	return es->flags & ESTYLE_BIT_FIXED;
 }
@@ -781,9 +868,14 @@ inline int estyle_fixed(Estyle * es)
  * Returns no value. Fixes the reported geometry of @es to @x, @y, @w, and @h
  * respectively.
  */
-void estyle_fix_geometry(Estyle * es, int x, int y, int w, int h)
+void estyle_fix_geometry(Evas_Object *obj, double x, double y,
+		double w, double h)
 {
-	CHECK_PARAM_POINTER("es", es);
+	Estyle * es;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
 
 	es->flags |= ESTYLE_BIT_FIXED;
 	es->x = x;
@@ -799,17 +891,15 @@ void estyle_fix_geometry(Estyle * es, int x, int y, int w, int h)
  * Returns no value. Removes the fixed property of the estyle and updates its
  * geometry to the actual geometry of the contents.
  */
-void estyle_unfix_geometry(Estyle * es)
+void estyle_unfix_geometry(Evas_Object *obj)
 {
-	double x, y, w, h;
+	Estyle * es;
 
-	CHECK_PARAM_POINTER("es", es);
+	CHECK_PARAM_POINTER("obj", obj);
 
-	evas_object_geometry_get(es->bit, &x, &y, &w, &h);
-	es->x = D2I_ROUND(x);
-	es->y = D2I_ROUND(y);
-	es->w = D2I_ROUND(w);
-	es->h = D2I_ROUND(h);
+	es = evas_object_smart_data_get(obj);
+
+	evas_object_geometry_get(es->bit, &es->x, &es->y, &es->w, &es->h);
 }
 
 /*
@@ -856,23 +946,22 @@ void __estyle_update_dimensions(Estyle *es)
  * Returns no value. Adds a callback to @es that will be triggered when event
  * @callback occurs, function @func will be called with argument @data.
  */
-void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
-			 void (*func) (void *_data, Estyle * _es, 
-				       void *event_info), void *data)
+void estyle_callback_add(Evas_Object *obj, Evas_Callback_Type callback,
+			       Estyle_Callback_Function func, void * data)
 {
+	Estyle * es;
 	Estyle_Callback *cb;
 	Evas_List *l;
 
-	if (!es)
-		return;
-	if (!es->evas)
-		return;
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
 
 	/*
 	 * Allocate the new estyle callback
 	 */
 	cb = malloc(sizeof(Estyle_Callback));
-	cb->estyle = es;
+	cb->obj = obj;
 	cb->type = callback;
 	cb->data = data;
 	cb->callback = func;
@@ -904,7 +993,7 @@ void __estyle_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
 				  void *event_info)
 {
 	Estyle_Callback *cb = _data;
-	cb->callback(cb->data, cb->estyle, event_info);
+	cb->callback(cb->data, cb->obj, event_info);
 }
 
 /*
@@ -914,15 +1003,15 @@ void __estyle_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
  *
  * Returns no value.
  */
-void estyle_callback_del(Estyle * es, Evas_Callback_Type callback,
+void estyle_callback_del(Evas_Object *obj, Evas_Callback_Type callback,
 		Estyle_Callback_Function func)
 {
 	Evas_List *l;
+	Estyle * es;
 
-	if (!es)
-		return;
-	if (!es->evas)
-		return;
+	CHECK_PARAM_POINTER("obj", obj);
+
+	es = evas_object_smart_data_get(obj);
 
 	for (l = es->callbacks; l; l = l->next) {
 		Estyle_Callback *cb;

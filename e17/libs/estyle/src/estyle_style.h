@@ -9,7 +9,7 @@
 typedef struct _estyle_style_layer Estyle_Style_Layer;
 struct _estyle_style_layer {
 	int stack;
-	int x_offset, y_offset;
+	double x_offset, y_offset;
 	int size_change;
 
 	int a, r, g, b;
@@ -25,7 +25,7 @@ struct _estyle_style_info {
 	char *name;
 	E_DB_File *style_db;
 	Estyle_Heap *layers;
-	int left_push, right_push, top_push, bottom_push;
+	double left_push, right_push, top_push, bottom_push;
 
 	int references;
 };
