@@ -925,8 +925,8 @@ _epeg_scale(Epeg_Image *im)
    unsigned char *dst, *row, *src;
    int            x, y, w, h, i;
    
-   if ((im->in.w == im->out.w) && (im->in.h == im->out.h)) return 1;
-   if (im->scaled) return 1;
+   if ((im->in.w == im->out.w) && (im->in.h == im->out.h)) return 0;
+   if (im->scaled) return 0;
    
    im->scaled = 1;
    w = im->out.w;
@@ -1049,7 +1049,7 @@ _epeg_encode(Epeg_Image *im)
 {
    void  *data = NULL;
    size_t size = 0;
-   
+
    if (im->out.f) return 1;
    
    if (im->out.file)
