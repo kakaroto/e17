@@ -102,13 +102,13 @@ nanosleep(unsigned long nsec) {
 char *
 strcasestr(const char *haystack, register const char *needle)
 {
-    register const char *t;
+    register const spif_uchar_t *t;
     register size_t len;
 
     REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     len = strlen(needle);
-    for (t = haystack; t && *t; t++) {
+    for (t = SPIF_CAST_PTR(uchar) haystack; t && *t; t++) {
         if (!strncasecmp(t, needle, len)) {
             return ((char *) t);
         }

@@ -191,7 +191,7 @@
  *
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
-#define SPIF_DECL_CLASSNAME(type)        "!spif_" #type "_t!"
+#define SPIF_DECL_CLASSNAME(type)        SPIF_CAST(charptr) "!spif_" #type "_t!"
 /*@}*/
 
 /*@{*/
@@ -363,6 +363,22 @@
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
 #define SPIF_NULLSTR_TYPE_C(type)         "{ ((" #type ") NULL) }"
+
+/**
+ * Returns a string representing a NULL value of a pointer to the
+ * specified base type.
+ *
+ * This macro returns a string which shows the NULL value typecast to
+ * a pointer to the specified type.  This is a convenience macro used
+ * primarily by the "show" method of various objects.
+ *
+ * @param type The type basename.
+ * @return     A string representation of a NULL pointer to an object
+ *             of the specified type.
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink
+ */
+#define SPIF_NULLSTR_TYPE_PTR(type)      "{ ((spif_" #type "_t *) NULL) }"
 
 /**
  * Returns whether or not a generic pointer is NULL.

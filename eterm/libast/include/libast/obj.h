@@ -642,12 +642,13 @@
  */
 #define SPIF_OBJ_SHOW_NULL(t, n, b, i, tmp)  do { \
                                                memset(tmp, ' ', (i)); \
-                                               snprintf(tmp + (i), sizeof(tmp) - (i), "(spif_" #t "_t) %s:  " SPIF_NULLSTR_TYPE(t) "\n", \
+                                               snprintf(SPIF_CAST_C(char *) tmp + (i), sizeof(tmp) - (i), \
+                                                        "(spif_" #t "_t) %s:  " SPIF_NULLSTR_TYPE(t) "\n", \
                                                         NONULL(n)); \
                                                if (SPIF_STR_ISNULL(b)) { \
-                                                 (b) = spif_str_new_from_ptr(tmp); \
+                                                 (b) = spif_str_new_from_ptr(SPIF_CAST(charptr) tmp); \
                                                } else { \
-                                                 spif_str_append_from_ptr((b), tmp); \
+                                                 spif_str_append_from_ptr((b), SPIF_CAST(charptr) tmp); \
                                                } \
                                              } while (0)
 

@@ -2760,7 +2760,7 @@ extern unsigned char spifconf_register_fstate(FILE *fp, char *path, char *outfil
 extern unsigned char spifconf_register_builtin(char *name, spifconf_func_ptr_t ptr);
 extern unsigned char spifconf_register_context_state(unsigned char ctx_id);
 extern void spifconf_free_subsystem(void);
-extern char *spifconf_shell_expand(char *);
+extern spif_charptr_t spifconf_shell_expand(spif_charptr_t);
 extern char *spifconf_find_file(const char *file, const char *dir, const char *pathlist);
 extern FILE *spifconf_open_file(char *name);
 extern void spifconf_parse_line(FILE *fp, char *buff);

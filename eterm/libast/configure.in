@@ -60,6 +60,14 @@ if test $DEBUG -eq 0 ; then
     AC_WARN(*** not have access to any libast debugging routines! ***)
 fi
 
+AC_ARG_WITH(pedantry,
+    [  --with-pedantry         add -Werror -std=c99 -pedantic to CFLAGS],
+    [
+        if test "$withval" != "no"; then
+            CFLAGS="$CFLAGS -Wall -Werror -std=c99 -pedantic"
+        fi
+    ])
+
 AST_X11_SUPPORT()
 AST_IMLIB2_SUPPORT()
 AST_MMX_SUPPORT()

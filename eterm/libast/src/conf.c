@@ -480,19 +480,19 @@ builtin_appname(char *param)
 
 /* spifconf_shell_expand() takes care of shell variable expansion, quote conventions,
    calling of built-in functions, etc.                                -- mej */
-char *
-spifconf_shell_expand(char *s)
+spif_charptr_t
+spifconf_shell_expand(spif_charptr_t s)
 {
-    register char *tmp;
-    register char *pbuff = s, *tmp1;
-    register unsigned long j, k, l = 0;
-    char newbuff[CONFIG_BUFF];
-    unsigned char in_single = 0, in_double = 0;
-    unsigned long cnt1 = 0, cnt2 = 0;
-    const unsigned long max = CONFIG_BUFF - 1;
-    char *Command, *Output, *EnvVar;
+    register spif_charptr_t tmp;
+    register spif_charptr_t pbuff = s, tmp1;
+    register spif_uint32_t j, k, l = 0;
+    spif_char_t newbuff[CONFIG_BUFF];
+    spif_uint8_t in_single = 0, in_double = 0;
+    spif_uint32_t cnt1 = 0, cnt2 = 0;
+    const spif_uint32_t max = CONFIG_BUFF - 1;
+    spif_charptr_t Command, Output, EnvVar;
 
-    ASSERT_RVAL(s != NULL, (char *) NULL);
+    ASSERT_RVAL(s != NULL, SPIF_NULL_TYPE(charptr));
 
 #if 0
     newbuff = (char *) MALLOC(CONFIG_BUFF);
@@ -502,10 +502,10 @@ spifconf_shell_expand(char *s)
         switch (*pbuff) {
           case '~':
               D_CONF(("Tilde detected.\n"));
-              EnvVar = getenv("HOME");
+              EnvVar = SPIF_CAST(charptr) getenv("HOME");
               if (!in_single && !in_double && EnvVar && *EnvVar) {
-                  spiftool_safe_strncpy(newbuff + j, getenv("HOME"), max - j);
-                  cnt1 = strlen(EnvVar) - 1;
+                  spiftool_safe_strncpy(newbuff + j, EnvVar, max - j);
+                  cnt1 = strlen(SPIF_CAST_C(char *) EnvVar) - 1;
                   cnt2 = max - j - 1;
                   j += MIN(cnt1, cnt2);
               } else {
@@ -554,7 +554,10 @@ spifconf_shell_expand(char *s)
               for (k = 0, pbuff++; builtins[k].name != NULL; k++) {
                   D_PARSE(("Checking for function %%%s, pbuff == \"%s\"\n", builtins[k].name, pbuff));
                   l = strlen(builtins[k].name);
-                  if (!strncasecmp(builtins[k].name, pbuff, l) && ((pbuff[l] == '(') || (pbuff[l] == ' ' && pbuff[l + 1] == ')'))) {
+                  if (!strncasecmp(builtins[k].name, SPIF_CAST_C(char *) pbuff, l)
+                      && ((pbuff[l] == '(')
+                          || (pbuff[l] == ' '
+                              && pbuff[l + 1] == ')'))) {
                       break;
                   }
               }
@@ -562,7 +565,7 @@ spifconf_shell_expand(char *s)
                   newbuff[j] = *pbuff;
               } else {
                   D_CONF(("Call to built-in function %s detected.\n", builtins[k].name));
-                  Command = (char *) MALLOC(CONFIG_BUFF);
+                  Command = SPIF_CAST(charptr) MALLOC(CONFIG_BUFF);
                   pbuff += l;
                   if (*pbuff != '(')
                       pbuff++;
@@ -582,15 +585,15 @@ spifconf_shell_expand(char *s)
                   *(--tmp1) = 0;
                   if (l) {
                       libast_print_error("parse error in file %s, line %lu:  Mismatched parentheses\n", file_peek_path(), file_peek_line());
-                      return ((char *) NULL);
+                      return SPIF_NULL_TYPE(charptr);
                   }
                   Command = spifconf_shell_expand(Command);
-                  Output = (builtins[k].ptr) (Command);
+                  Output = SPIF_CAST(charptr) (builtins[k].ptr) (SPIF_CAST_C(char *) Command);
                   FREE(Command);
                   if (Output) {
                       if (*Output) {
                           spiftool_safe_strncpy(newbuff + j, Output, max - j);
-                          l = strlen(Output) - 1;
+                          l = strlen(SPIF_CAST_C(char *) Output) - 1;
                           cnt2 = max - j - 1;
                           j += MIN(l, cnt2);
                       } else {
@@ -607,7 +610,7 @@ spifconf_shell_expand(char *s)
 #if ALLOW_BACKQUOTE_EXEC
               D_CONF(("Backquotes detected.  Evaluating expression.\n"));
               if (!in_single) {
-                  Command = (char *) MALLOC(CONFIG_BUFF);
+                  Command = SPIF_CAST(charptr) MALLOC(CONFIG_BUFF);
                   l = 0;
                   for (pbuff++; *pbuff && *pbuff != '`' && l < max; pbuff++, l++) {
                       Command[l] = *pbuff;
@@ -615,12 +618,12 @@ spifconf_shell_expand(char *s)
                   ASSERT_RVAL(l < CONFIG_BUFF, NULL);
                   Command[l] = 0;
                   Command = spifconf_shell_expand(Command);
-                  Output = builtin_exec(Command);
+                  Output = SPIF_CAST(charptr) builtin_exec(SPIF_CAST_C(char *) Command);
                   FREE(Command);
                   if (Output) {
                       if (*Output) {
                           spiftool_safe_strncpy(newbuff + j, Output, max - j);
-                          l = strlen(Output) - 1;
+                          l = strlen(SPIF_CAST_C(char *) Output) - 1;
                           cnt2 = max - j - 1;
                           j += MIN(l, cnt2);
                       } else {
@@ -641,7 +644,7 @@ spifconf_shell_expand(char *s)
           case '$':
               D_CONF(("Environment variable detected.  Evaluating.\n"));
               if (!in_single) {
-                  EnvVar = (char *) MALLOC(128);
+                  EnvVar = SPIF_CAST(charptr) MALLOC(128);
                   switch (*(++pbuff)) {
                     case '{':
                         for (pbuff++, k = 0; *pbuff != '}' && k < 127; k++, pbuff++)
@@ -657,9 +660,10 @@ spifconf_shell_expand(char *s)
                         break;
                   }
                   EnvVar[k] = 0;
-                  if ((tmp = getenv(EnvVar)) && *tmp) {
+                  tmp = SPIF_CAST(charptr) getenv(SPIF_CAST_C(char *) EnvVar);
+                  if (tmp && *tmp) {
                       spiftool_safe_strncpy(newbuff, tmp, max - j);
-                      cnt1 = strlen(tmp) - 1;
+                      cnt1 = strlen(SPIF_CAST_C(char *) tmp) - 1;
                       cnt2 = max - j - 1;
                       j += MIN(cnt1, cnt2);
                   }
@@ -698,9 +702,11 @@ spifconf_shell_expand(char *s)
     newbuff[j] = 0;
 
     D_PARSE(("spifconf_shell_expand(%s) returning \"%s\"\n", s, newbuff));
-    D_PARSE((" strlen(s) == %lu, strlen(newbuff) == %lu, j == %lu\n", strlen(s), strlen(newbuff), j));
+    D_PARSE((" strlen(s) == %lu, strlen(newbuff) == %lu, j == %lu\n",
+             strlen(SPIF_CAST_C(char *) s),
+             strlen(SPIF_CAST_C(char *) newbuff), j));
 
-    strcpy(s, newbuff);
+    strcpy(SPIF_CAST_C(char *) s, SPIF_CAST_C(char *) newbuff);
 #if 0
     FREE(newbuff);
 #endif
@@ -843,7 +849,7 @@ spifconf_parse_line(FILE * fp, char *buff)
               char *path;
               FILE *fp;
 
-              spifconf_shell_expand(buff);
+              spifconf_shell_expand(SPIF_CAST(charptr) buff);
               path = spiftool_get_word(2, buff + 1);
               if ((fp = spifconf_open_file(path)) == NULL) {
                   libast_print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(),
@@ -875,7 +881,7 @@ spifconf_parse_line(FILE * fp, char *buff)
               if (file_peek_skip()) {
                   SPIFCONF_PARSE_RET();
               }
-              spifconf_shell_expand(buff);
+              spifconf_shell_expand(SPIF_CAST(charptr) buff);
           }
           break;
       case 'b':
@@ -897,7 +903,7 @@ spifconf_parse_line(FILE * fp, char *buff)
           if (file_peek_skip()) {
               SPIFCONF_PARSE_RET();
           }
-          spifconf_shell_expand(buff);
+          spifconf_shell_expand(SPIF_CAST(charptr) buff);
           ctx_poke_state((*ctx_id_to_func(id)) (buff, ctx_peek_state()));
     }
     SPIFCONF_PARSE_RET();

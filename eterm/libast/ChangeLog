@@ -657,3 +657,7 @@ Tue Jun 29 17:23:34 2004                        Michael Jennings (mej)
 
 Oops, forgot some re-ordering.
 ----------------------------------------------------------------------
+Fri Jul 16 19:20:48 2004                        Michael Jennings (mej)
+
+Working on cleaning some things up for portability and C99-compliance.
+----------------------------------------------------------------------

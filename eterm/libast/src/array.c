@@ -292,7 +292,7 @@ spif_array_del(spif_array_t self)
 static spif_str_t
 spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
     spif_listidx_t i;
 
     if (SPIF_LIST_ISNULL(self)) {
@@ -301,19 +301,20 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_array_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
-        spif_str_append_from_ptr(buff, tmp);
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) tmp);
     }
 
     if (SPIF_ARRAY_ISNULL(self->items)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE_C(spif_obj_t *));
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE_PTR(obj));
     } else {
         for (i = 0; i < self->len; i++) {
             spif_obj_t o = self->items[i];
-            sprintf(tmp, "item %d", i);
+            sprintf(SPIF_CAST_C(char *) tmp, "item %d", i);
             if (SPIF_OBJ_ISNULL(o)) {
                 char tmp2[4096];
 
@@ -325,8 +326,8 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
-    spif_str_append_from_ptr(buff, tmp);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
+    spif_str_append_from_ptr(buff, SPIF_CAST(charptr) tmp);
     return buff;
 }
 
@@ -785,7 +786,7 @@ spif_array_reverse(spif_array_t self)
 
     ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), FALSE);
     for (i = 0, j = self->len - 1; i < j; i++, j--) {
-        BINSWAP(self->items[i], self->items[j]);
+        SWAP(self->items[i], self->items[j]);
     }
     return TRUE;
 }
@@ -877,7 +878,7 @@ spif_array_iterator_del(spif_array_iterator_t self)
 static spif_str_t
 spif_array_iterator_show(spif_array_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_ITERATOR_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(iterator, name, buff, indent, tmp);
@@ -885,21 +886,23 @@ spif_array_iterator_show(spif_array_iterator_t self, spif_charptr_t name, spif_s
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_iterator_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_array_iterator_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    buff = spif_array_show(self->subject, "subject", buff, indent + 2);
+    buff = spif_array_show(self->subject, SPIF_CAST(charptr) "subject", buff, indent + 2);
 
     memset(tmp, ' ', indent + 2);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "  (spif_listidx_t) current_index:  %lu\n",
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "  (spif_listidx_t) current_index:  %lu\n",
              SPIF_CAST_C(unsigned long) self->current_index);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
