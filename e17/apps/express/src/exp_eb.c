@@ -49,6 +49,7 @@ exp_eb_init(const char *eb_dir)
     EXP_EB_EVENT_DIALOG = ecore_event_type_new();
     EXP_EB_EVENT_BUDDY_LOGIN = ecore_event_type_new();
     EXP_EB_EVENT_BUDDY_LOGOUT = ecore_event_type_new();
+    EXP_EB_EVENT_MESSAGE = ecore_event_type_new();
 
     if (*eb_dir == '~')
     {
