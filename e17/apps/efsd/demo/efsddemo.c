@@ -203,6 +203,32 @@ void handle_efsd_event(EfsdEvent *ee)
 	case EFSD_CMD_GETMETA:
 	  printf("Getmeta event %i\n", 
 		 ee->efsd_reply_event.command.efsd_get_metadata_cmd.id);
+
+	  if (ee->efsd_reply_event.status == SUCCESS)
+	    {
+	      switch (ee->efsd_reply_event.command.efsd_get_metadata_cmd.datatype)
+		{
+		case EFSD_INT:
+		  printf("File: %s, key: %s --> val: %i\n",
+			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.file,
+			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.key,
+			 *((int*)ee->efsd_reply_event.data));
+		  break;
+		case EFSD_FLOAT:
+		  printf("File: %s, key: %s --> val: %f\n",
+			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.file,
+			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.key,
+			 *((float*)ee->efsd_reply_event.data));
+		  break;
+		case EFSD_STRING:
+		  printf("File: %s, key: %s --> val: %s\n",
+			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.file,
+			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.key,
+			 (char*)ee->efsd_reply_event.data);
+		  break;
+		default:
+		}
+	    }
 	  break;
 	case EFSD_CMD_STARTMON:
 	  printf("Startmon event %i\n", 
@@ -335,8 +361,44 @@ main(int argc, char** argv)
 
   sleep(2);
 
+  /* Set some metadata */
+
+  {
+    int   x = 123;
+    char *icon = "/path/to/some/icon.png";
+
+    if ((id = efsd_set_metadata(ec, "/x", "efsddemo.c", EFSD_INT,
+				sizeof(int), &x)) >= 0)
+      printf("Setting metadata, command ID %i\n", id);
+    else
+      printf("Couldn't issue setmetadata command.\n");
+
+    x = 321;
+ 
+    if ((id = efsd_set_metadata(ec, "/icon/normal", "/bin/ls", EFSD_STRING,
+				strlen(icon)+1, icon)) >= 0)
+      printf("Setting metadata, command ID %i\n", id);
+    else
+      printf("Couldn't issue setmetadata command.\n");
+  }
+  
+
+  sleep(2);
+
+  /* Get some metadata */
+  if ((id = efsd_get_metadata(ec, "/x", "efsddemo.c", EFSD_INT)) >= 0)
+    printf("Getting metadata, command ID %i\n", id);
+  else
+    printf("Couldn't issue getmetadata command.\n");
+
+  if ((id = efsd_get_metadata(ec, "/icon/normal", "/bin/ls", EFSD_STRING)) >= 0)
+    printf("Getting metadata, command ID %i\n", id);
+  else
+    printf("Couldn't issue getmetadata command.\n");
+
+  sleep(2);
+
   /* Create a directory */
-  /*
   {
     char s[4096];
 
@@ -345,27 +407,48 @@ main(int argc, char** argv)
     strcat(s, "//yep//efsd/can/create/dir/trees/////");
     id = efsd_makedir(ec, s);
   }
+
   sleep(2);
-  */
 
 
   /* Remove a file */
-  /*
+
   if ((id = efsd_remove(ec, "some-crappy-file-that-wont-exist")) >= 0)
     printf("Removing file, command ID %i\n", id);
   else
     printf("Couldn't issue rm command.\n");
+
   sleep(2);
-  */
 
 
-  /*
   if ((id = efsd_move(ec, "raster-is-flim.demo", "cK-is-flim.demo")) >= 0)
     printf("Moving file, command ID %i\n", id);
   else
     printf("Couldn't issue mv command.\n");
+
   sleep(2);
-  */
+
+  /* Set some metadata */
+
+  {
+    int x = 123;
+
+    if ((id = efsd_set_metadata(ec, "/x", "efsddemo.c", EFSD_INT,
+				sizeof(int), &x)) >= 0)
+      printf("Setting metadata, command ID %i\n", id);
+    else
+      printf("Couldn't issue setmetadata command.\n");
+  }
+  
+  sleep(2);
+
+  /* Get some metadata */
+  if ((id = efsd_get_metadata(ec, "/x", "efsddemo.c", EFSD_INT)) >= 0)
+    printf("Getting metadata, command ID %i\n", id);
+  else
+    printf("Couldn't issue getmetadata command.\n");
+  
+  sleep(2);
 
   /* List contents of a directory */
   if ((id = efsd_listdir(ec, getenv("HOME"), 2,

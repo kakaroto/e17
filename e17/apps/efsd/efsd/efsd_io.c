@@ -342,8 +342,9 @@ read_set_metadata_cmd(int sockfd, EfsdCommand *ec)
   count2 += count;
   
   i = ec->efsd_set_metadata_cmd.data_len;
+
   ec->efsd_set_metadata_cmd.data = malloc(i);
-  if ((count = read_data(sockfd, &(ec->efsd_set_metadata_cmd.data), i)) != i)
+  if ((count = read_data(sockfd, ec->efsd_set_metadata_cmd.data, i)) != i)
     D_RETURN_(-1);
   count2 += count;
 
@@ -382,7 +383,7 @@ read_get_metadata_cmd(int sockfd, EfsdCommand *ec)
   if ((count = read_string(sockfd, &(ec->efsd_get_metadata_cmd.file))) < 0)
     D_RETURN_(-1);
   count2 += count;
-  
+
   D_RETURN_(count2);
 }
 
@@ -623,9 +624,9 @@ fill_get_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_set_metadata_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &len[len_index];
-  iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = &ec->efsd_set_metadata_cmd.datatype;
+  iov[n].iov_len    = sizeof(EfsdDatatype);
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_get_metadata_cmd.key;
   iov[n].iov_len    = len[len_index];
@@ -636,7 +637,7 @@ fill_get_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
 
   len_index += 2;
 
-  D_RETURN_(n);
+  D_RETURN_(n+1);
 }
 
 

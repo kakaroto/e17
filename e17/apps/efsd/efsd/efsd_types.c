@@ -197,7 +197,7 @@ efsd_cmd_cleanup(EfsdCommand *ec)
       FREE(ec->efsd_2file_cmd.file2);
       break;
     case EFSD_CMD_SETMETA:
-      FREE(ec->efsd_set_metadata_cmd.data);
+      /* FREE(ec->efsd_set_metadata_cmd.data);*/
       FREE(ec->efsd_set_metadata_cmd.key);
       FREE(ec->efsd_set_metadata_cmd.file);
       break;
@@ -226,13 +226,14 @@ efsd_event_cleanup(EfsdEvent *ev)
     {
     case EFSD_EVENT_REPLY:
       FREE(ev->efsd_reply_event.data);
+      efsd_cmd_cleanup(&ev->efsd_reply_event.command);
       break;
     case EFSD_EVENT_FILECHANGE:
       FREE(ev->efsd_filechange_event.file);
-      /* This does *not* clean up the contained command! */
       break;
     default:
       D(("Warning -- unknown event type.\n"));
-    }
+    }  
+
   D_RETURN;
 }

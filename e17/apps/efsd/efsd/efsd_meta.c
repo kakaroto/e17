@@ -29,6 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <Edb.h>
 
@@ -37,22 +39,101 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_misc.h>
 
+static unsigned int   hash_filename(char *filename);
 static char *meta_db_get_file(char *filename);
 static int   meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
-static void *meta_db_get_data(EfsdGetMetadataCmd *egmc, char *dbfile, int *data_len);
-static char *get_full_key(char *file, char* key);
+static void *meta_db_get_data(EfsdGetMetadataCmd *egmc,
+			      char *dbfile, int *data_len);
+static char *get_full_key(char *filename, char* key);
+
+
+static unsigned int   
+hash_filename(char *s)
+{
+  unsigned int hash;
+
+  D_ENTER;
+
+  for (hash = 0; *s != '\0'; s++)
+    hash = (32*hash + *s);
+
+  D_RETURN_(hash);
+}
 
 
 static char*
 meta_db_get_file(char *filename)
 {
-  char *dbfile = NULL;
+  /* FIXME: mutex this when adding threads! */
+  static char dbfile[MAXPATHLEN];
+  char s[MAXPATHLEN];
+  char *path, *file;
+  int   use_home_dir = FALSE;
+  unsigned int h;
 
   D_ENTER;
 
   if (!filename || filename[0] == '\0' || filename[0] != '/')
     D_RETURN_(NULL);
   
+  path = filename;
+
+  file = strrchr(filename, '/');
+  if (!file)
+    {
+      /* Something's wrong -- this is supposed to be
+	 a chanonical path ...
+      */
+      D(("Couldn't find '/' in filename '%s'\n", filename));
+      D_RETURN_(NULL);
+    }
+
+  *file = '\0';
+  file++;
+
+  if (*path == '\0')
+    path = "/";
+
+  snprintf(s, MAXPATHLEN, "%s/.e_meta", path);
+
+  if (efsd_misc_file_exists(s))
+    {
+      if (efsd_misc_file_writeable(s) &&
+	  efsd_misc_file_execable(s))
+	use_home_dir = FALSE;
+      else
+	use_home_dir = TRUE;
+    }
+  else
+    {
+      if (efsd_misc_file_writeable(path) &&
+	  efsd_misc_file_execable(path))
+	{
+	  if (efsd_misc_mkdir(s))
+	    use_home_dir = FALSE;
+	  else
+	    use_home_dir = TRUE;
+	}
+      else
+	{
+	  use_home_dir = TRUE;
+	}
+    }
+
+  *(file-1) = '/';
+  h = hash_filename(filename);
+
+  if (use_home_dir)
+    {
+      snprintf(dbfile, MAXPATHLEN, "%s/%u.db",
+	       efsd_misc_get_user_dir(), h);
+    }
+  else
+    {
+      snprintf(dbfile, MAXPATHLEN, "%s/%u.db",
+	       s, h);
+    }  
+
   D_RETURN_(dbfile);
 }
 
@@ -73,6 +154,8 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
   switch (esmc->datatype)
     {
     case EFSD_INT:
+      D(("Setting metadata key '%s' to int value %i\n",
+	 key, *((int*)esmc->data)));
       e_db_int_set(db, key, *((int*)esmc->data));
       break;
     case EFSD_FLOAT:
@@ -87,22 +170,25 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
     default:
       D(("Unknown data type!\n"));
       e_db_close(db);
+      e_db_flush();
       D_RETURN_(0);
     }
 
   e_db_close(db);
+  e_db_flush();
 
   D_RETURN_(1);
 }
 
 
 static void *
-meta_db_get_data(EfsdGetMetadataCmd *egmc, char *dbfile, int *data_len)
+meta_db_get_data(EfsdGetMetadataCmd *egmc,
+		 char *dbfile, int *data_len)
 {
-  void      *result;
-  char      *key;
-  int        success = FALSE;
-  E_DB_File *db;
+  void        *result;
+  char        *key;
+  int          success = FALSE;
+  E_DB_File   *db;
 
   D_ENTER;
 
@@ -161,17 +247,24 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc, char *dbfile, int *data_len)
 
 
 static char *
-get_full_key(char *file, char *key)
+get_full_key(char *filename, char *key)
 {
+  static char s[MAXPATHLEN];
+
   D_ENTER;
-  D_RETURN_(NULL);
+  
+  /* FIXME: mutex this when adding threads! */
+
+  snprintf(s, MAXPATHLEN, "%s:%i:%s", filename, geteuid(), key);
+
+  D_RETURN_(s);
 }
 
 
 int 
 efsd_meta_set(EfsdCommand *ec)
 {
-  char *dbfile = NULL;
+  char               *dbfile = NULL;
   EfsdSetMetadataCmd *esmc;
 
   D_ENTER;
@@ -189,7 +282,7 @@ efsd_meta_set(EfsdCommand *ec)
 void *
 efsd_meta_get(EfsdCommand *ec, int *data_len)
 {
-  char *dbfile = NULL;
+  char               *dbfile = NULL;
   EfsdGetMetadataCmd *egmc;
 
   D_ENTER;

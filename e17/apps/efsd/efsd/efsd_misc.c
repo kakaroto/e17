@@ -85,6 +85,72 @@ efsd_misc_file_is_dir(char *filename)
 
 
 int    
+efsd_misc_file_writeable(char *filename)
+{
+  struct stat st;
+
+  D_ENTER;
+
+  if (!filename)
+    D_RETURN_(0);
+
+  if (stat(filename, &st) < 0)
+    D_RETURN_(0);
+
+  if (st.st_uid == getuid())
+    {
+      if (st.st_mode & S_IWUSR)
+	D_RETURN_(1);
+     }
+  else if (st.st_gid == getgid())
+    {
+      if (st.st_mode & S_IWGRP)
+	D_RETURN_(1);
+    }
+  else
+    {
+      if (st.st_mode & S_IWOTH)
+	D_RETURN_(1);
+    }
+
+  D_RETURN_(0);
+}
+
+
+int    
+efsd_misc_file_execable(char *filename)
+{
+  struct stat st;
+
+  D_ENTER;
+
+  if (!filename)
+    D_RETURN_(0);
+
+  if (stat(filename, &st) < 0)
+    D_RETURN_(0);
+
+  if (st.st_uid == getuid())
+    {
+      if (st.st_mode & S_IXUSR)
+	D_RETURN_(1);
+     }
+  else if (st.st_gid == getgid())
+    {
+      if (st.st_mode & S_IXGRP)
+	D_RETURN_(1);
+    }
+  else
+    {
+      if (st.st_mode & S_IXOTH)
+	D_RETURN_(1);
+    }
+
+  D_RETURN_(0);
+}
+
+
+int    
 efsd_misc_mkdir(char *filename)
 {
   D_ENTER;
