@@ -324,10 +324,10 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 	if (EWD_LIST(list)->index > EWD_LIST(list)->nodes)
 		EWD_LIST(list)->index = EWD_LIST(list)->nodes;
 
-	if (index < ewd_list_index(EWD_LIST(list)))
-		increment = 1;
-	else
+	if (index < EWD_LIST(list)->index)
 		increment = -1;
+	else
+		increment = 1;
 
 	for (i = EWD_LIST(list)->index; i != index; i += increment) {
 		if (increment > 0)
