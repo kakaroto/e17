@@ -31,7 +31,7 @@ pImlibExternalFilter __imlib_LoadFilter( char *file )
    ImlibExternalFilter *ptr;
    struct imlib_filter_info *info;
 
-   printf( "Loading filter %s\n", file );
+   /* printf( "Loading filter %s\n", file ); */
    MALLOCSHOW;
    ptr = malloc( sizeof( ImlibExternalFilter ) );
    ptr->filename = strdup(file);
