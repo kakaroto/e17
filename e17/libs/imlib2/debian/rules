@@ -16,20 +16,17 @@ export DH_COMPAT=2
 export DH_OPTIONS
 
 INSTALL=/usr/bin/install
+package=libimlib2
 
 configure: configure-stamp
 configure-stamp:
 	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
 	touch configure-stamp
 
-
 build: configure build-stamp
 build-stamp:
 	dh_testdir
-
-
 	$(MAKE) 
-
 	touch build-stamp
 
 clean:
@@ -48,20 +45,16 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	$(MAKE) install DESTDIR=$(shell pwd)/debian/libimlib2/
-	$(INSTALL) -d debian/libimlib2-dev/usr/share/man/man1
-	$(INSTALL) -d debian/libimlib2-dev/usr/lib/loaders/{filter,image}
-	$(INSTALL) debian/imlib2-config.1 debian/libimlib2-dev/usr/share/man/man1
-	mv debian/libimlib2/usr/include debian/libimlib2-dev/usr
-	mv debian/libimlib2/usr/lib/*.{so,la,a} debian/libimlib2-dev/usr/lib/
-	mv debian/libimlib2/usr/lib/loaders/image/*.{a,la} debian/libimlib2-dev/usr/lib/loaders/image
-	mv debian/libimlib2/usr/lib/loaders/filter/*.{a,la} debian/libimlib2-dev/usr/lib/loaders/filter
-	mv debian/libimlib2/usr/bin debian/libimlib2-dev/usr
-
-	$(INSTALL) -d debian/libimlib2-dev/usr/share/doc/libimlib2-dev/html
-	$(INSTALL) -m 644 doc/*.{html,gif} debian/libimlib2-dev/usr/share/doc/libimlib2-dev/html
-
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/$(package)/
 	
+	$(INSTALL) -d debian/$(package)-dev/usr/share/man/man1
+	$(INSTALL) -d debian/$(package)-dev/usr/lib
+	$(INSTALL) debian/imlib2-config.1 debian/$(package)-dev/usr/share/man/man1
+	mv debian/$(package)/usr/{include,bin} debian/$(package)-dev/usr
+	mv debian/$(package)/usr/lib/*.{so,la,a} debian/$(package)-dev/usr/lib/
+
+	$(INSTALL) -d debian/$(package)-dev/usr/share/doc/$(package)-dev/html
+	$(INSTALL) -m 644 doc/*.{html,gif} debian/$(package)-dev/usr/share/doc/$(package)-dev/html
 
 binary-indep:
 
@@ -74,7 +67,6 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installdocs AUTHORS README
-	dh_installexamples
 	dh_installchangelogs
 	dh_strip
 	dh_compress
@@ -87,4 +79,5 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install ${loaders} filter install-base
+.PHONY: build clean binary-indep binary-arch binary install 
+

@@ -1,13 +1,13 @@
-Source: imlib2
+Source: libimlib2
 Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: libedba1-dev, libjpeg62-dev, libpng2-dev, libtiff3g-dev, zlib1g-dev, libungif3g-dev | giflib3g-dev | libungif4-dev , xlibs-dev, freetype2-dev, debhelper (>= 2.0)
-Standards-Version: 3.1.1.1
+Build-Depends: libedb1-dev, libjpeg62-dev, libpng2-dev, libtiff3g-dev, zlib1g-dev, libungif3g-dev | giflib3g-dev | libungif4-dev , xlibs-dev, freetype2-dev, debhelper (>= 2.0)
+Standards-Version: 3.2.1.0
 
 Package: libimlib2
-Architecture: any
 Section: libs
+Architecture: any
 Depends: ${shlibs:Depends}
 Description: Powerful image loading and rendering library
  Imlib2 is an advanced replacement library for libraries like 
@@ -22,6 +22,6 @@ Package: libimlib2-dev
 Architecture: any
 Section: devel
 Architecture: any
-Depends: libimlib2 (= ${Source-Version}), libc6-dev, libedba1-dev, libjpeg62-dev, libpng2-dev, libtiff3g-dev, zlib1g-dev, libungif3g-dev | giflib3g-dev | libungif4-dev, xlibs-dev, freetype2-dev
+Depends: libimlib2 (= ${Source-Version}), libc6-dev, libedb1-dev, libjpeg62-dev, libpng2-dev, libtiff3g-dev, zlib1g-dev, libungif3g-dev | giflib3g-dev | libungif4-dev, xlibs-dev, freetype2-dev
 Description: Imlib2 headers, static libraries and documentation
  Headers, static libraries and documentation for Imlib2.
