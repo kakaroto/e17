@@ -122,7 +122,7 @@ endif
 
 libewl_la_SOURCES = \
 	$(EWLSOURCES) \
-	$(EWLEMOTIONHEADERS)
+	$(EWLEMOTIONSOURCES)
 
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
