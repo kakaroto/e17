@@ -50,7 +50,6 @@ static void
 _im_move_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
    Entice_Image *im = NULL;
-   Evas_Coord dx = 0.0, dy = 0.0;
    Evas_Coord ox = 0.0, oy = 0.0;
    Evas_Coord ww = 0.0, hh = 0.0;
    Evas_Coord idx = 0.0, idy = 0.0;
