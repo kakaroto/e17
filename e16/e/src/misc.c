@@ -23,7 +23,7 @@
 #include "E.h"
 #include <signal.h>
 
-void                EdgeTimeout(int val, void *data);
+static void         EdgeTimeout(int val, void *data);
 
 static char        *userDir = NULL;
 static char        *cacheDir = NULL;
@@ -314,7 +314,7 @@ EdgeHandleMotion(XEvent * ev)
 
 extern char         throw_move_events_away;
 
-void
+static void
 EdgeTimeout(int val, void *data)
 {
    int                 ax, ay, aw, ah, dx, dy, dax, day;
