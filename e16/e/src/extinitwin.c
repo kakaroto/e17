@@ -64,14 +64,14 @@ ExtInitWinMain(void)
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
 
-   pmap = ecore_x_pixmap_new(win, VRoot.w, VRoot.h, VRoot.depth);
+   pmap = XCreatePixmap(disp, win, VRoot.w, VRoot.h, VRoot.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
    XCopyArea(disp, VRoot.win, pmap, gc, 0, 0, VRoot.w, VRoot.h, 0, 0);
    XSetWindowBackgroundPixmap(disp, win, pmap);
    XMapRaised(disp, win);
-   ecore_x_pixmap_del(pmap);
-   ecore_x_gc_del(gc);
+   XFreePixmap(disp, pmap);
+   XFreeGC(disp, gc);
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
    ecore_x_window_prop_window_set(VRoot.win, a, &win, 1);
@@ -96,17 +96,17 @@ ExtInitWinMain(void)
 			 CWOverrideRedirect | CWBackingStore | CWColormap |
 			 CWBackPixel | CWBorderPixel, &attr);
 
-      pmap = ecore_x_pixmap_new(w2, 16, 16, 1);
-      gc = ecore_x_gc_new(pmap);
+      pmap = XCreatePixmap(disp, w2, 16, 16, 1);
+      gc = XCreateGC(disp, pmap, 0, NULL);
       XSetForeground(disp, gc, 0);
       XFillRectangle(disp, pmap, gc, 0, 0, 16, 16);
-      ecore_x_gc_del(gc);
+      XFreeGC(disp, gc);
 
-      mask = ecore_x_pixmap_new(w2, 16, 16, 1);
-      gc = ecore_x_gc_new(mask);
+      mask = XCreatePixmap(disp, w2, 16, 16, 1);
+      gc = XCreateGC(disp, mask, 0, NULL);
       XSetForeground(disp, gc, 0);
       XFillRectangle(disp, mask, gc, 0, 0, 16, 16);
-      ecore_x_gc_del(gc);
+      XFreeGC(disp, gc);
 
       cs = XCreatePixmapCursor(disp, pmap, mask, &cl, &cl, 0, 0);
       XDefineCursor(disp, win, cs);

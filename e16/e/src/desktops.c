@@ -1733,7 +1733,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
 	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
 	     XSetWindowBorderWidth(disp, wins[i], 1);
-	     pmap = ecore_x_pixmap_new(wins[i], 64, 48, VRoot.depth);
+	     pmap = ECreatePixmap(wins[i], 64, 48, VRoot.depth);
 	     ESetWindowBackgroundPixmap(wins[i], pmap);
 
 	     bg = DeskGetBackground(i);
@@ -1747,7 +1747,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 				     ST_UNKNWN);
 	       }
 
-	     ecore_x_pixmap_del(pmap);
+	     EFreePixmap(pmap);
 	  }
      }
 

@@ -89,15 +89,15 @@ FX_ripple_timeout(int val, void *data)
 	fx_ripple_win = DeskGetCurrentRoot();
 
 	fx_ripple_above =
-	   ecore_x_pixmap_new(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
-			      GetWinDepth(fx_ripple_win));
+	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
+			 GetWinDepth(fx_ripple_win));
 	if (gc)
-	   XFreeGC(disp, gc);
+	   EFreeGC(gc);
 	if (gc1)
-	   XFreeGC(disp, gc1);
+	   EFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = XCreateGC(disp, fx_ripple_win, GCSubwindowMode, &gcv);
-	gc1 = XCreateGC(disp, fx_ripple_win, 0L, &gcv);
+	gc = ECreateGC(fx_ripple_win, GCSubwindowMode, &gcv);
+	gc1 = ECreateGC(fx_ripple_win, 0L, &gcv);
 
 	FX_ripple_info();
      }
@@ -150,7 +150,7 @@ FX_Ripple_Init(const char *name)
 static void
 FX_Ripple_Desk(void)
 {
-   ecore_x_pixmap_del(fx_ripple_above);
+   EFreePixmap(fx_ripple_above);
    fx_ripple_count = 0;
    fx_ripple_above = 0;
 }
@@ -262,12 +262,12 @@ FX_raindrops_timeout(int val, void *data)
 	  }
 	fx_raindrops_win = desks.desk[DesksGetCurrent()].win;
 	if (gc)
-	   XFreeGC(disp, gc);
+	   EFreeGC(gc);
 	if (gc1)
-	   XFreeGC(disp, gc1);
+	   EFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = XCreateGC(disp, fx_raindrops_win, GCSubwindowMode, &gcv);
-	gc1 = XCreateGC(disp, fx_raindrops_win, 0L, &gcv);
+	gc = ECreateGC(fx_raindrops_win, GCSubwindowMode, &gcv);
+	gc1 = ECreateGC(fx_raindrops_win, 0L, &gcv);
 	fx_raindrops_draw =
 	   ECreatePixImg(fx_raindrops_win, fx_raindrop_size, fx_raindrop_size);
 	if (!fx_raindrops_draw)
@@ -534,15 +534,15 @@ FX_Wave_timeout(int val, void *data)
 	fx_wave_win = DeskGetCurrentRoot();
 
 	fx_wave_above =
-	   ecore_x_pixmap_new(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2,
-			      GetWinDepth(fx_wave_win));
+	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2,
+			 GetWinDepth(fx_wave_win));
 	if (gc)
-	   XFreeGC(disp, gc);
+	   EFreeGC(gc);
 	if (gc1)
-	   XFreeGC(disp, gc1);
+	   EFreeGC(gc1);
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = XCreateGC(disp, fx_wave_win, GCSubwindowMode, &gcv);
-	gc1 = XCreateGC(disp, fx_wave_win, 0L, &gcv);
+	gc = ECreateGC(fx_wave_win, GCSubwindowMode, &gcv);
+	gc1 = ECreateGC(fx_wave_win, 0L, &gcv);
 
 	FX_Wave_info();
      }
@@ -644,7 +644,7 @@ FX_Waves_Init(const char *name __UNUSED__)
 static void
 FX_Waves_Desk(void)
 {
-   ecore_x_pixmap_del(fx_wave_above);
+   EFreePixmap(fx_wave_above);
    fx_wave_count = 0;
    fx_wave_above = 0;
 }

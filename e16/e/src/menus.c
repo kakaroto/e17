@@ -894,7 +894,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	GetWinXY(mi->win, &x, &y);
 
 	mi_pmm->type = 0;
-	mi_pmm->pmap = ecore_x_pixmap_new(mi->win, w, h, VRoot.depth);
+	mi_pmm->pmap = ECreatePixmap(mi->win, w, h, VRoot.depth);
 	mi_pmm->mask = None;
 
 	ic = (mi->child) ? m->style->sub_iclass : m->style->item_iclass;
@@ -902,7 +902,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 
 	if (!m->style->use_item_bg)
 	  {
-	     gc = ecore_x_gc_new(m->pmm.pmap);
+	     gc = ECreateGC(m->pmm.pmap, 0, NULL);
 	     XCopyArea(disp, m->pmm.pmap, mi_pmm->pmap, gc, x, y, w, h, 0, 0);
 	     if ((mi->state != STATE_NORMAL) || (mi->child))
 	       {
@@ -918,7 +918,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 		  XCopyArea(disp, pmm.pmap, mi_pmm->pmap, gc, 0, 0, w, h, 0, 0);
 		  FreePmapMask(&pmm);
 	       }
-	     ecore_x_gc_del(gc);
+	     EFreeGC(gc);
 	  }
 	else
 	  {

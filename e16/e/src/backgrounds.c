@@ -573,14 +573,14 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	else if (hasbg && !hasfg && bg->bg_tile && !TransparencyEnabled())
 	  {
 	     /* BG only, tiled */
-	     dpmap = ecore_x_pixmap_new(win, w, h, depth);
-	     gc = ecore_x_gc_new(dpmap);
+	     dpmap = ECreatePixmap(win, w, h, depth);
+	     gc = ECreateGC(dpmap, 0, NULL);
 	  }
 	else
 	  {
 	     /* The rest that require some more work */
-	     dpmap = ecore_x_pixmap_new(win, rw, rh, depth);
-	     gc = ecore_x_gc_new(dpmap);
+	     dpmap = ECreatePixmap(win, rw, rh, depth);
+	     gc = ECreateGC(dpmap, 0, NULL);
 	     if (!hasbg || !bg->bg_tile)
 	       {
 		  XSetForeground(disp, gc, bg->bg_solid.pixel);
@@ -643,7 +643,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	if (dpmap)
 	  {
 	     if (!gc)
-		gc = ecore_x_gc_new(dpmap);
+		gc = ECreateGC(dpmap, 0, NULL);
 	     XSetClipMask(disp, gc, 0);
 	     XSetTile(disp, gc, dpmap);
 	     XSetTSOrigin(disp, gc, 0, 0);
@@ -654,7 +654,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	else
 	  {
 	     if (!gc)
-		gc = ecore_x_gc_new(win);
+		gc = ECreateGC(win, 0, NULL);
 	     XSetClipMask(disp, gc, 0);
 	     XSetFillStyle(disp, gc, FillSolid);
 	     XSetForeground(disp, gc, bg->bg_solid.pixel);
@@ -664,7 +664,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
      }
 
    if (gc)
-      ecore_x_gc_del(gc);
+      EFreeGC(gc);
 
    imlib_context_set_dither(rt);
 }
@@ -1337,7 +1337,7 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", EDirUserCache(),
 		     BackgroundGetName(tmp_bg));
-	   p2 = ecore_x_pixmap_new(VRoot.win, 64, 48, VRoot.depth);
+	   p2 = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
 	   BackgroundApply(tmp_bg, p2, 0);
 	   imlib_context_set_drawable(p2);
 	   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
@@ -1345,7 +1345,7 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	   imlib_image_set_format("png");
 	   imlib_save_image(s);
 	   imlib_free_image_and_decache();
-	   ecore_x_pixmap_del(p2);
+	   EFreePixmap(p2);
 	   BG_RedrawView(1);
 	}
      }
@@ -1390,11 +1390,11 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
 			 tmp_bg->top.yjust, tmp_bg->top.xperc,
 			 tmp_bg->top.yperc);
 
-   pmap = ecore_x_pixmap_new(win, w, h, VRoot.depth);
+   pmap = ECreatePixmap(win, w, h, VRoot.depth);
    ESetWindowBackgroundPixmap(win, pmap);
    BackgroundApply(bg, pmap, 0);
    EClearWindow(win);
-   ecore_x_pixmap_del(pmap);
+   EFreePixmap(pmap);
 
    BackgroundDestroy(bg);
 }
@@ -1580,8 +1580,8 @@ BG_RedrawView(char nuke_old)
    win = DialogItemAreaGetWindow(bg_sel);
    DialogItemAreaGetSize(bg_sel, &w, &h);
 
-   pmap = ecore_x_pixmap_new(win, w, h, VRoot.depth);
-   gc = ecore_x_gc_new(pmap);
+   pmap = ECreatePixmap(win, w, h, VRoot.depth);
+   gc = ECreateGC(pmap, 0, NULL);
 
    XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
@@ -1641,7 +1641,7 @@ BG_RedrawView(char nuke_old)
 		    {
 		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
 				 EDirUserCache(), BackgroundGetName(bglist[i]));
-		       p2 = ecore_x_pixmap_new(pmap, 64, 48, VRoot.depth);
+		       p2 = ECreatePixmap(pmap, 64, 48, VRoot.depth);
 		       BackgroundApply(bglist[i], p2, 0);
 		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
 		       imlib_context_set_drawable(p2);
@@ -1651,7 +1651,7 @@ BG_RedrawView(char nuke_old)
 		       imlib_image_set_format("png");
 		       imlib_save_image(s);
 		       imlib_free_image_and_decache();
-		       ecore_x_pixmap_del(p2);
+		       EFreePixmap(p2);
 		    }
 		  else
 		    {
@@ -1674,8 +1674,8 @@ BG_RedrawView(char nuke_old)
 	  }
 	x += (64 + 8);
      }
-   ecore_x_gc_del(gc);
-   ecore_x_pixmap_del(pmap);
+   EFreeGC(gc);
+   EFreePixmap(pmap);
    Efree(bglist);
 
    EClearWindow(win);

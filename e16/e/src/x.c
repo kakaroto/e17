@@ -515,13 +515,13 @@ EShapeCombineMaskTiled(Window win, int dest, int x, int y,
    gcv.tile = pmap;
    gcv.ts_x_origin = 0;
    gcv.ts_y_origin = 0;
-   tm = ecore_x_pixmap_new(win, w, h, 1);
-   gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
+   tm = ECreatePixmap(win, w, h, 1);
+   gc = ECreateGC(tm, GCFillStyle | GCTile |
 		  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
    XFillRectangle(disp, tm, gc, 0, 0, w, h);
-   XFreeGC(disp, gc);
+   EFreeGC(gc);
    EShapeCombineMask(win, dest, x, y, tm, op);
-   ecore_x_pixmap_del(tm);
+   EFreePixmap(tm);
 }
 
 void
@@ -897,7 +897,7 @@ EWindowGetShapePixmap(Window win)
    int                 rect_num, rect_ord;
 
    GetWinWH(win, &w, &h);
-   mask = ecore_x_pixmap_new(win, w, h, 1);
+   mask = ECreatePixmap(win, w, h, 1);
 
    gc = XCreateGC(disp, mask, 0, NULL);
    XSetForeground(disp, gc, 0);

@@ -144,7 +144,7 @@ main(int argc, char **argv)
    ecore_x_sync();
 
    gcv.subwindow_mode = IncludeInferiors;
-   gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
+   gc = ECreateGC(disp, win, GCSubwindowMode, &gcv);
    for (;; j++)
      {
 	for (i = 3; i < argc; i++)

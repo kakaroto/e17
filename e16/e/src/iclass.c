@@ -810,9 +810,9 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		  /* And now some uglyness to make a single "Imlib2 pixmap/mask" thing */
 
 		  /* Replace the pmap with the previously blended one */
-		  gc = ecore_x_gc_new(pmm->pmap);
+		  gc = ECreateGC(pmm->pmap, 0, NULL);
 		  XCopyArea(disp, pmm->pmap, pmap, gc, 0, 0, w, h, 0, 0);
-		  ecore_x_gc_del(gc);
+		  EFreeGC(gc);
 
 		  /* Free the old pixmap without associated mask */
 		  imlib_free_pixmap_and_mask(pmm->pmap);
@@ -1098,9 +1098,9 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
      {
 	GC                  gc;
 
-	gc = ecore_x_gc_new(win);
+	gc = ECreateGC(win, 0, NULL);
 	ImagestateDrawBevel(is, win, gc, w, h);
-	ecore_x_gc_del(gc);
+	EFreeGC(gc);
      }
 }
 
@@ -1152,27 +1152,27 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 		  Pixmap              tp = 0, tm = 0;
 		  XGCValues           gcv;
 
-		  tp = ecore_x_pixmap_new(win, w, h, VRoot.depth);
+		  tp = ECreatePixmap(win, w, h, VRoot.depth);
 		  gcv.fill_style = FillTiled;
 		  gcv.tile = pmm->pmap;
 		  gcv.ts_x_origin = 0;
 		  gcv.ts_y_origin = 0;
-		  gc = XCreateGC(disp, tp, GCFillStyle | GCTile |
+		  gc = ECreateGC(tp, GCFillStyle | GCTile |
 				 GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
 		  XFillRectangle(disp, tp, gc, 0, 0, w, h);
-		  XFreeGC(disp, gc);
+		  EFreeGC(gc);
 		  if (pmm->mask)
 		    {
-		       tm = ecore_x_pixmap_new(win, w, h, 1);
+		       tm = ECreatePixmap(win, w, h, 1);
 		       gcv.fill_style = FillTiled;
 		       gcv.tile = pmm->mask;
 		       gcv.ts_x_origin = 0;
 		       gcv.ts_y_origin = 0;
-		       gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
+		       gc = ECreateGC(tm, GCFillStyle | GCTile |
 				      GCTileStipXOrigin | GCTileStipYOrigin,
 				      &gcv);
 		       XFillRectangle(disp, tm, gc, 0, 0, w, h);
-		       XFreeGC(disp, gc);
+		       EFreeGC(gc);
 		    }
 		  FreePmapMask(pmm);
 		  pmm->type = 0;
@@ -1199,17 +1199,17 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	if (pmm->pmap)
 	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = ecore_x_pixmap_new(win, w, h, VRoot.depth);
+	pmap = ECreatePixmap(win, w, h, VRoot.depth);
 	pmm->type = 0;
 	pmm->pmap = pmap;
 	pmm->mask = 0;
 
-	gc = ecore_x_gc_new(pmap);
+	gc = ECreateGC(pmap, 0, NULL);
 	/* bg color */
 	XSetForeground(disp, gc, is->bg.pixel);
 	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
 	ImagestateDrawBevel(is, pmap, gc, w, h);
-	ecore_x_gc_del(gc);
+	EFreeGC(gc);
      }
 }
 
@@ -1222,7 +1222,7 @@ FreePmapMask(PmapMask * pmm)
    if (pmm->pmap)
      {
 	if (pmm->type == 0)
-	   ecore_x_pixmap_del(pmm->pmap);
+	   EFreePixmap(pmm->pmap);
 	else
 	   imlib_free_pixmap_and_mask(pmm->pmap);
 	pmm->pmap = 0;
@@ -1231,7 +1231,7 @@ FreePmapMask(PmapMask * pmm)
    if (pmm->mask)
      {
 	if (pmm->type == 0)
-	   ecore_x_pixmap_del(pmm->mask);
+	   EFreePixmap(pmm->mask);
 	pmm->mask = 0;
      }
 }

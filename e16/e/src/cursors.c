@@ -68,8 +68,8 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	XQueryBestCursor(disp, VRoot.win, w, h, &ww, &hh);
 	if ((w > ww) || (h > hh))
 	  {
-	     ecore_x_pixmap_del(pmap);
-	     ecore_x_pixmap_del(mask);
+	     EFreePixmap(pmap);
+	     EFreePixmap(mask);
 	     Efree(img);
 	     return NULL;
 	  }
@@ -79,8 +79,8 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 
 	curs = 0;
 	curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);
-	ecore_x_pixmap_del(pmap);
-	ecore_x_pixmap_del(mask);
+	EFreePixmap(pmap);
+	EFreePixmap(mask);
 	Efree(img);
      }
    else

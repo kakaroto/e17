@@ -325,7 +325,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
       return;
 
    if (!gc)
-      gc = ecore_x_gc_new(win);
+      gc = ECreateGC(win, 0, NULL);
 
    if (ts->style.orientation == FONT_TO_RIGHT ||
        ts->style.orientation == FONT_TO_LEFT)
@@ -379,8 +379,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ecore_x_pixmap_new(VRoot.win, wid + 2, ascent + descent + 2,
-				      GetWinDepth(win));
+		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
+				 GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2,
@@ -425,7 +425,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		ecore_x_pixmap_del(drawable);
+		EFreePixmap(drawable);
 	     yy += ascent + descent;
 	  }
      }
@@ -521,8 +521,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ecore_x_pixmap_new(VRoot.win, ret2.width + 2,
-				      ret2.height + 2, GetWinDepth(win));
+		   ECreatePixmap(VRoot.win, ret2.width + 2,
+				 ret2.height + 2, GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1,
@@ -568,7 +568,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 			     yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
 			     ret2.height + 2, ts);
 	     if (drawable != win)
-		ecore_x_pixmap_del(drawable);
+		EFreePixmap(drawable);
 	     yy += ret2.height;
 	  }
      }
@@ -617,8 +617,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ecore_x_pixmap_new(VRoot.win, wid + 2, ascent + descent + 2,
-				      GetWinDepth(win));
+		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
+				 GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -662,7 +662,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		ecore_x_pixmap_del(drawable);
+		EFreePixmap(drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
@@ -713,8 +713,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ecore_x_pixmap_new(VRoot.win, wid + 2, ascent + descent + 2,
-				      GetWinDepth(win));
+		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
+				 GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -758,7 +758,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		ecore_x_pixmap_del(drawable);
+		EFreePixmap(drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
