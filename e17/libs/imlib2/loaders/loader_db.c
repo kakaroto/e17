@@ -279,7 +279,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    if(!tmp)
       return 0;
    *tmp++ = '\0';
-   if(!tmp)
+   if(!*tmp)
       return 0;
    strcpy(key, tmp);
    
