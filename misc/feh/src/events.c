@@ -78,6 +78,14 @@ feh_event_handle_ButtonPress(XEvent * ev)
    winwidget winwid = NULL;
    int scr_width, scr_height;
 
+   D_ENTER(4);
+
+   /* get the heck out if it's a mouse-click on the
+      cover, we'll hide the menus on release */
+   if (ev->xbutton.window == menu_cover) {
+      D_RETURN_(4);
+   }
+
    scr_width = scr->width;
    scr_height = scr->height;
 #ifdef HAVE_LIBXINERAMA
@@ -87,17 +95,13 @@ feh_event_handle_ButtonPress(XEvent * ev)
     }
 #endif /* HAVE_LIBXINERAMA */
 
-   D_ENTER(4);
-
-   /* get the heck out if it's a mouse-click on the
-      cover, we'll hide the menus on release */
-   if (ev->xbutton.window == menu_cover) {
-      D_RETURN_(4);
+   winwid = winwidget_get_from_window(ev->xbutton.window);
+   if (winwid && winwid->caption_entry) {
+     D_RETURN_(4);
    }
 
    if (!opt.no_menus && EV_IS_MENU_BUTTON(ev)) {
       D(3, ("Menu Button Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL) {
         winwidget_show_menu(winwid);
       }
@@ -106,7 +110,6 @@ feh_event_handle_ButtonPress(XEvent * ev)
             && ((opt.no_rotate_ctrl_mask)
                 || (ev->xbutton.state & ControlMask)))
    {
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
          opt.mode = MODE_ROTATE;
@@ -117,7 +120,6 @@ feh_event_handle_ButtonPress(XEvent * ev)
    else if ((ev->xbutton.button == opt.blur_button)
             && ((opt.no_blur_ctrl_mask) || (ev->xbutton.state & ControlMask)))
    {
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
          opt.mode = MODE_BLUR;
@@ -128,7 +130,6 @@ feh_event_handle_ButtonPress(XEvent * ev)
    else if (ev->xbutton.button == opt.next_button)
    {
       D(3, ("Next Button Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
          D(3, ("Next button, but could be pan mode\n"));
@@ -142,7 +143,6 @@ feh_event_handle_ButtonPress(XEvent * ev)
    else if (ev->xbutton.button == opt.zoom_button)
    {
       D(3, ("Zoom Button Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
          D(3, ("Zoom mode baby!\n"));
@@ -193,21 +193,18 @@ feh_event_handle_ButtonPress(XEvent * ev)
    else if (ev->xbutton.button == opt.reload_button)
    {
       D(3, ("Reload Button Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
          feh_reload_image(winwid, 0);
    }
    else if (ev->xbutton.button == 4 /* this is bad */ )
    {
       D(3, ("Button 4 Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
          slideshow_change_image(winwid, SLIDE_PREV);
    }
    else if (ev->xbutton.button == 5 /* this is bad */ )
    {
       D(3, ("Button 5 Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
          slideshow_change_image(winwid, SLIDE_NEXT);
    }
@@ -243,6 +240,11 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       }
       D_RETURN_(4);
    }
+   
+   winwid = winwidget_get_from_window(ev->xbutton.window);
+   if (winwid && winwid->caption_entry) {
+     D_RETURN_(4);
+   }
 
    if ((ev->xbutton.button == opt.menu_button)
        &&
@@ -253,7 +255,6 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       winwidget_destroy_all();
    else if (ev->xbutton.button == opt.next_button)
    {
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (opt.mode == MODE_PAN)
       {
          if (winwid != NULL)
@@ -320,7 +321,6 @@ feh_event_handle_ButtonRelease(XEvent * ev)
             || (ev->xbutton.button == opt.zoom_button))
    {
       D(3, ("Mode-based Button Release event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
          D(3, ("Disabling mode\n"));
@@ -334,7 +334,6 @@ feh_event_handle_ButtonRelease(XEvent * ev)
             && ((opt.no_blur_ctrl_mask) || (ev->xbutton.state & ControlMask)))
    {
       D(3, ("Blur Button Release event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
          D(3, ("Disabling Blur mode\n"));

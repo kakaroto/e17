@@ -56,6 +56,7 @@ winwidget_allocate(void)
   ret->file = NULL;
   ret->type = WIN_TYPE_UNSET;
   ret->visible = 0;
+  ret->caption_entry = 0;
 
   /* Zoom stuff */
   ret->mode = MODE_NORMAL;

@@ -40,4 +40,49 @@ char *stroflen(char, int);
 char *feh_unique_filename(char *path, char *basename);
 char *ereadfile(char *path);
 
+#define ESTRAPPEND(a,b) \
+  {\
+    char *____newstr;\
+    if (!(a)) {\
+      a = estrdup(b);\
+    } else {\
+      ____newstr = emalloc(strlen(a) + strlen(b) + 1);\
+      strcpy(____newstr, (a));\
+      strcat(____newstr, (b));\
+      free(a);\
+      (a) = ____newstr;\
+    }\
+  }
+
+#define ESTRAPPEND_CHAR(a,b) \
+  {\
+    char *____newstr;\
+    int ____len;\
+    if (!(a)) {\
+      (a) = emalloc(2);\
+      (a)[0] = (b);\
+      (a)[1] = '\0';\
+    } else {\
+      ____len = strlen((a));\
+      ____newstr = emalloc(____len + 2);\
+      strcpy(____newstr, (a));\
+      ____newstr[____len] = (b);\
+      ____newstr[____len+1] = '\0';\
+      free(a);\
+      (a) = ____newstr;\
+    }\
+  }
+    
+#define ESTRTRUNC(string,chars) \
+  {\
+    int ____len;\
+    if (string) {\
+      ____len = strlen(string);\
+      if (____len >= (chars)) {\
+        (string)[strlen(string) - chars] = '\0';\
+      }\
+    }\
+  }
+
+
 #endif

@@ -102,6 +102,52 @@ handle_keypress_event(XEvent * ev, Window win)
    winwid = winwidget_get_from_window(win);
    if (winwid == NULL)
       D_RETURN_(4);
+
+   if (winwid->caption_entry) {
+     switch(keysym) {
+       case XK_Return:
+         if (kev->state & ControlMask) {
+           /* insert actual newline */
+           ESTRAPPEND(FEH_FILE(winwid->file->data)->caption, "\n");
+           winwidget_render_image(winwid, 0, 0);
+         } else {
+           /* finish caption entry, write to captions file */
+           FILE *fp;
+           char *caption_filename;
+           caption_filename = build_caption_filename(FEH_FILE(winwid->file->data));
+           winwid->caption_entry = 0;
+           fp = fopen(caption_filename, "w");
+           if (!fp) {
+             weprintf("couldn't write to captions file %s:", caption_filename);
+             D_RETURN_(4);
+           }
+           fprintf(fp, "%s", FEH_FILE(winwid->file->data)->caption);
+           fclose(fp);
+         }
+         break;
+       case XK_BackSpace:
+         /* backspace */
+         ESTRTRUNC(FEH_FILE(winwid->file->data)->caption, 1);
+         winwidget_render_image(winwid, 0, 0);
+         break;
+       case XK_Escape:
+         /* cancel, revert caption */
+         winwid->caption_entry = 0;
+         free(FEH_FILE(winwid->file->data)->caption);
+         FEH_FILE(winwid->file->data)->caption = NULL;
+         winwidget_render_image(winwid, 0, 0);
+         break;
+       default:
+         if(isascii(keysym)) {
+           /* append to caption */
+           ESTRAPPEND_CHAR(FEH_FILE(winwid->file->data)->caption, keysym);
+           winwidget_render_image(winwid, 0, 0);
+         }
+         break;
+     }
+     D_RETURN_(4);
+   }
+   
    
    switch (keysym)
    {
@@ -183,23 +229,18 @@ handle_keypress_event(XEvent * ev, Window win)
         winwidget_render_image(winwid, 0, 0);
         break;
      case XK_KP_Add:
-        /* winwid->mode = MODE_ZOOM; */
         winwid->zoom = winwid->zoom * 1.25;
         winwidget_render_image(winwid, 0, 0);
         break;
      case XK_KP_Subtract:
-        /* winwid->mode = MODE_ZOOM; */
         winwid->zoom = winwid->zoom * 0.75;
         winwidget_render_image(winwid, 0, 0);
 	break;
      case XK_KP_Multiply:
-        /* winwid->mode = MODE_ZOOM; */
         winwid->zoom = 1;
         winwidget_render_image(winwid, 0, 0);
 	break;
      case XK_KP_Divide:
-        /* winwid->mode = MODE_ZOOM; */
-        /* feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, scr->width, scr->height); */
         feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
         winwidget_render_image(winwid, 0, 0);
 	break;
@@ -228,6 +269,11 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'q':
      case 'Q':
         winwidget_destroy_all();
+        break;
+     case 'c':
+     case 'C':
+        if (opt.caption_path)
+          winwid->caption_entry = 1;
         break;
      case 'r':
      case 'R':

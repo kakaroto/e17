@@ -97,6 +97,8 @@ struct __winwidget
    /* Stuff for zooming */
    unsigned char mode;
 
+   unsigned char caption_entry; /* are we in caption entry mode? */
+
    /* New stuff */
    int im_x;                    /* image offset from window top left */
    int im_y;                    /* image offset from window top left */

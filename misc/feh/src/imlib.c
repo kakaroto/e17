@@ -730,6 +730,29 @@ feh_draw_filename(winwidget w)
    D_RETURN_(4);
 }
 
+char *build_caption_filename(feh_file *file) {
+  char *caption_filename;
+  char *s, *dir;
+  s = strrchr(file->filename, '/');
+  if (s) {
+    dir = estrdup(file->filename);
+    s = strrchr(dir, '/');
+    *s = '\0';
+  } else {
+    dir = estrdup(".");
+  }
+  caption_filename = estrjoin("",
+                              dir,
+                              "/",
+                              opt.caption_path,
+                              "/",
+                              file->name,
+                              ".txt",
+                              NULL);
+  free(dir);
+  return caption_filename;
+}
+
 void
 feh_draw_caption(winwidget w)
 {
@@ -758,27 +781,9 @@ feh_draw_caption(winwidget w)
 
    if (!file->caption) {
       char *caption_filename;
-      char *s, *dir;
-      s = strrchr(file->filename, '/');
-      if (s) {
-        dir = estrdup(file->filename);
-        s = strrchr(dir, '/');
-        *s = '\0';
-      } else {
-        dir = estrdup(".");
-      }
-      caption_filename = estrjoin("",
-                                  dir,
-                                  "/",
-                                  opt.caption_path,
-                                  "/",
-                                  file->name,
-                                  ".txt",
-                                  NULL);
-
+      caption_filename = build_caption_filename(file);
       /* read caption from file */
       file->caption = ereadfile(caption_filename);
-      free(dir);
       free(caption_filename);
    }
 
@@ -828,6 +833,8 @@ feh_draw_caption(winwidget w)
              
    if (th > w->h)
      th = w->h;
+   if (tw > w->w)
+     tw = w->w;
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
