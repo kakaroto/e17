@@ -63,6 +63,7 @@ typedef struct workspace
   gint             draft_mode;
   gint             zoom_x, zoom_y;
   gint             zoom_scale;
+  LampColor        color;
 }
 Workspace;
 
@@ -141,6 +142,7 @@ workspace_init(void)
   ws.draft_mode = 1;
   ws.new_evas = 1;
   ws.view_evas = evas_new();
+  ws.color = Red;
   if (pref_get_render_method() == Hardware)
     evas_set_output_method(ws.view_evas, RENDER_METHOD_3D_HARDWARE);
   else
@@ -160,12 +162,16 @@ workspace_set_light(LampColor color)
   style = gtk_widget_get_style(main_win);
   gtk_widget_realize(w);
 
-  if (color == Green)
-    gdk_pixmap = gdk_pixmap_create_from_xpm_d(w->window, &mask, &style->bg[GTK_STATE_NORMAL], light_green_xpm);
-  else
-    gdk_pixmap = gdk_pixmap_create_from_xpm_d(w->window, &mask, &style->bg[GTK_STATE_NORMAL], light_red_xpm);
+  if (ws.color != color)
+    {
+      if (color == Green)
+	gdk_pixmap = gdk_pixmap_create_from_xpm_d(w->window, &mask, &style->bg[GTK_STATE_NORMAL], light_green_xpm);
+      else
+	gdk_pixmap = gdk_pixmap_create_from_xpm_d(w->window, &mask, &style->bg[GTK_STATE_NORMAL], light_red_xpm);
+      ws.color = color;
 
-  gtk_pixmap_set(GTK_PIXMAP(w), gdk_pixmap, mask);
+      gtk_pixmap_set(GTK_PIXMAP(w), gdk_pixmap, mask);
+    }
 }
 
 
@@ -230,6 +236,11 @@ workspace_set_current_etching(Etching *e)
       w = gtk_object_get_data(GTK_OBJECT(main_win), "file");
       gtk_entry_set_text(GTK_ENTRY(w), etching_get_filename(e));
       
+      if (etching_is_dirty(e))
+	workspace_set_light(Red);
+      else
+	workspace_set_light(Green);
+
       E_DB_STR_SET(pref_get_config(), "/paths/bit", etching_get_filename(e));
       e_db_flush();
     }
@@ -318,6 +329,7 @@ workspace_add_item(char *filename)
   workspace_update_relative_combos();
   workspace_update_image_list();
   workspace_update_sync_list();
+  etching_set_dirty(ws.e);
   
   E_DB_STR_SET(pref_get_config(), "/paths/image", filename);
   e_db_flush();
@@ -1059,6 +1071,7 @@ handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	  ws.backing_y += (_y - y);
 	}
       workspace_configure_handles(NULL);
+      etching_set_dirty(ws.e);
     }
 }
 
@@ -1123,6 +1136,7 @@ handle_bit_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 	  workspace_update_widget_from_selection();
 	  workspace_update_visible_selection();
 	  ebits_set_state(bits, etching_get_current_state(ws.e));
+	  etching_set_dirty(ws.e);
 	}
      }
   workspace_queue_draw();
@@ -1241,6 +1255,7 @@ handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x
       workspace_update_widget_from_selection(); /* that used to be a "simple_update..." call */
       workspace_update_visible_selection();
       ebits_set_state(bits, etching_get_current_state(ws.e));
+      etching_set_dirty(ws.e);
     }
 
   workspace_queue_draw();
@@ -1796,6 +1811,7 @@ workspace_raise_selection(void)
       workspace_update_widget_from_selection();
       workspace_update_visible_selection();
       workspace_queue_draw();
+      etching_set_dirty(ws.e);
     }
 }
 
@@ -1822,6 +1838,7 @@ workspace_lower_selection(void)
       workspace_update_widget_from_selection();
       workspace_update_visible_selection();
       workspace_queue_draw();
+      etching_set_dirty(ws.e);
     }
 }
 
@@ -1839,6 +1856,7 @@ workspace_delete_selection(void)
       workspace_update_relative_combos();
       workspace_update_image_list();
       workspace_update_sync_list();
+      etching_set_dirty(ws.e);
     }
 }
 
@@ -1854,6 +1872,7 @@ workspace_reset_selection(void)
   ws.backing_w = ew - 64;
   ws.backing_h = eh - 64;
   workspace_configure_handles(NULL);
+  etching_set_dirty(ws.e);
 }
 
 
@@ -1933,4 +1952,5 @@ workspace_apply_settings(void)
   ebits_set_state(etching_get_bits(ws.e), etching_get_current_state(ws.e));
   workspace_update_widget_from_selection();
   workspace_queue_draw();
+  etching_set_dirty(ws.e);
 }

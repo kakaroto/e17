@@ -52,6 +52,10 @@ create_toplevel (void)
   GtkWidget *help1_menu;
   GtkAccelGroup *help1_menu_accels;
   GtkWidget *about1;
+  GtkWidget *hpaned1;
+  GtkWidget *frame15;
+  GtkWidget *tree1;
+  GtkWidget *themenotebook;
   GtkWidget *table1;
   GtkWidget *scrolledwindow1;
   GtkWidget *viewport1;
@@ -274,6 +278,10 @@ create_toplevel (void)
   GtkWidget *hbox2;
   GtkWidget *zoomin;
   GtkWidget *zoomout;
+  GtkWidget *guinotebook;
+  GtkWidget *empty_notebook_page;
+  GtkWidget *fontnotebook;
+  GtkWidget *cursornotebook;
   GtkWidget *hbox4;
   GtkWidget *frame13;
   GtkWidget *lamp;
@@ -289,6 +297,7 @@ create_toplevel (void)
 
   toplevel = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (toplevel), "toplevel", toplevel);
+  gtk_widget_set_usize (toplevel, 600, -2);
   gtk_window_set_title (GTK_WINDOW (toplevel), _("Etcher"));
   gtk_window_set_policy (GTK_WINDOW (toplevel), FALSE, TRUE, TRUE);
   gtk_window_set_wmclass (GTK_WINDOW (toplevel), "Main", "Etcher");
@@ -508,12 +517,44 @@ create_toplevel (void)
   gtk_widget_show (about1);
   gtk_container_add (GTK_CONTAINER (help1_menu), about1);
 
+  hpaned1 = gtk_hpaned_new ();
+  gtk_widget_ref (hpaned1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hpaned1", hpaned1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hpaned1);
+  gtk_box_pack_start (GTK_BOX (vbox1), hpaned1, TRUE, TRUE, 0);
+  gtk_paned_set_gutter_size (GTK_PANED (hpaned1), 10);
+  gtk_paned_set_position (GTK_PANED (hpaned1), 0);
+
+  frame15 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame15);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "frame15", frame15,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame15);
+  gtk_paned_pack1 (GTK_PANED (hpaned1), frame15, FALSE, TRUE);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame15), GTK_SHADOW_IN);
+
+  tree1 = gtk_tree_new ();
+  gtk_widget_ref (tree1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tree1", tree1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (tree1);
+  gtk_container_add (GTK_CONTAINER (frame15), tree1);
+
+  themenotebook = gtk_notebook_new ();
+  gtk_widget_ref (themenotebook);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "themenotebook", themenotebook,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (themenotebook);
+  gtk_paned_pack2 (GTK_PANED (hpaned1), themenotebook, TRUE, TRUE);
+  gtk_container_set_border_width (GTK_CONTAINER (themenotebook), 5);
+
   table1 = gtk_table_new (3, 3, FALSE);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (themenotebook), table1);
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow1);
@@ -2235,6 +2276,35 @@ create_toplevel (void)
   gtk_container_set_border_width (GTK_CONTAINER (zoomout), 2);
   gtk_tooltips_set_tip (tooltips, zoomout, _("Click to zoom out further"), NULL);
   gtk_widget_set_events (zoomout, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+
+  guinotebook = gtk_label_new (_("GUI Bits"));
+  gtk_widget_ref (guinotebook);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "guinotebook", guinotebook,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (guinotebook);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (themenotebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (themenotebook), 0), guinotebook);
+
+  empty_notebook_page = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (empty_notebook_page);
+  gtk_container_add (GTK_CONTAINER (themenotebook), empty_notebook_page);
+
+  fontnotebook = gtk_label_new (_("Font Styles"));
+  gtk_widget_ref (fontnotebook);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "fontnotebook", fontnotebook,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (fontnotebook);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (themenotebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (themenotebook), 1), fontnotebook);
+
+  empty_notebook_page = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (empty_notebook_page);
+  gtk_container_add (GTK_CONTAINER (themenotebook), empty_notebook_page);
+
+  cursornotebook = gtk_label_new (_("Cursors"));
+  gtk_widget_ref (cursornotebook);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "cursornotebook", cursornotebook,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (cursornotebook);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (themenotebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (themenotebook), 2), cursornotebook);
 
   hbox4 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox4);
