@@ -37,6 +37,8 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
+#define VERSION "1.2"
+
 void log(char *fmt, ...);
 
 char *ftp_host = "www";
@@ -172,17 +174,17 @@ find_palette(int fd, struct video_mmap *vid)
 {
    if (try_palette(fd, VIDEO_PALETTE_RGB24, 24))
    {
-      printf("negotiated palette RGB24\n");
+      log("negotiated palette RGB24\n");
       return VIDEO_PALETTE_RGB24;
    }
    if (try_palette(fd, VIDEO_PALETTE_YUV420P, 16))
    {
-      printf("negotiated palette YUV420P\n");
-      return VIDEO_PALETTE_YUV420P; 
+      log("negotiated palette YUV420P\n");
+      return VIDEO_PALETTE_YUV420P;
    }
    if (try_palette(fd, VIDEO_PALETTE_YUV420, 16))
    {
-      printf("negotiated palette YUV420\n");
+      log("negotiated palette YUV420\n");
       return VIDEO_PALETTE_YUV420;
    }
    fprintf(stderr,
@@ -210,13 +212,13 @@ grab_init()
       exit(1);
    }
 
-   if(ioctl(grab_fd, VIDIOCGPICT, &cam_pic) < 0)
+   if (ioctl(grab_fd, VIDIOCGPICT, &cam_pic) < 0)
       perror("getting pic info");
-   cam_pic.contrast = 65535 * ((float)cam_contrast / 100);
-   cam_pic.brightness = 65535 * ((float)cam_brightness / 100);
-   cam_pic.hue = 65535 * ((float)cam_hue / 100);
-   cam_pic.colour = 65535 * ((float)cam_colour / 100);
-   cam_pic.whiteness = 65535 * ((float)cam_whiteness / 100);
+   cam_pic.contrast = 65535 * ((float) cam_contrast / 100);
+   cam_pic.brightness = 65535 * ((float) cam_brightness / 100);
+   cam_pic.hue = 65535 * ((float) cam_hue / 100);
+   cam_pic.colour = 65535 * ((float) cam_colour / 100);
+   cam_pic.whiteness = 65535 * ((float) cam_whiteness / 100);
    if (ioctl(grab_fd, VIDIOCSPICT, &cam_pic) < 0)
       perror("setting cam pic");
    device_palette = find_palette(grab_fd, &grab_buf);
@@ -227,7 +229,7 @@ grab_init()
    grab_buf.height = grab_height;
 
    ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
-   printf("%s detected\n", grab_cap.name);
+   log("%s detected\n", grab_cap.name);
 
    /* special philips features */
    if (sscanf(grab_cap.name, "Philips %d webcam", &type) > 0)
@@ -237,7 +239,7 @@ grab_init()
       int gain = -1;
 
       /* philips cam detected, maybe enable special features */
-      printf("enabling pwc-specific features\n");
+      log("enabling pwc-specific features\n");
 
       ioctl(grab_fd, VIDIOCGWIN, &vwin);
       if (vwin.flags & PWC_FPS_MASK)
@@ -250,7 +252,7 @@ grab_init()
       /* Turning off snapshot mode */
       vwin.flags &= ~(PWC_FPS_SNAPSHOT);
 
-      if(ioctl(grab_fd, VIDIOCSWIN, &vwin) < 0)
+      if (ioctl(grab_fd, VIDIOCSWIN, &vwin) < 0)
          perror("trying to set extra pwc flags");
 
       if (ioctl(grab_fd, VIDIOCPWCSAGC, &gain) < 0)
@@ -476,8 +478,8 @@ grab_one(int *width, int *height)
    int i = 0;
    int j = lag_reduce;
 
-   if(grab_fd == -1)
-     grab_init();
+   if (grab_fd == -1)
+      grab_init();
 
    if (j == 0)
       j++;
@@ -916,6 +918,21 @@ check_interface(char *watch_interface)
    return if_nametoindex(watch_interface);
 }
 
+void version(void)
+{
+   printf("camE version %s\n", VERSION);
+   exit(0);
+}
+
+void usage(void)
+{
+   printf("usage: camE [OPTION]\n");
+   printf("       -c FILE    Use config file FILE\n");
+   printf("       -f         Don't fork to background\n");
+   printf("       -h -v      This message\n");
+   exit(0);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -930,12 +947,34 @@ main(int argc, char *argv[])
    int just_shot = 0, upload_successful = 1;
    int new_delay;
    FILE *fp;
+   int ch;
+   int dont_fork = 0;
+   char *config_file = NULL;
 
-   if ((argc >= 2) && (!strcmp(argv[1], "-f")))
+   while ((ch = getopt(argc, argv, "c:fhv")) != EOF)
    {
-      /* don't fork */
+      switch (ch)
+      {
+        case 'c':
+           config_file = strdup(optarg);
+           break;
+        case 'f':
+           dont_fork = 1;
+           break;
+        case 'h':
+           usage();
+           break;
+        case 'v':
+           version();
+           break;
+        case '?':
+        default:
+           usage();
+           break;
+      }
    }
-   else
+
+   if (!dont_fork)
    {
       /* fork and die */
       if ((childpid = fork()) < 0)
@@ -948,9 +987,15 @@ main(int argc, char *argv[])
    }
 
    /* read config */
-   sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
-   fprintf(stderr, "reading config file: %s\n", filename);
-   cfg_parse_file(filename);
+   if (config_file)
+   {
+      cfg_parse_file(config_file);
+   }
+   else
+   {
+      sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
+      cfg_parse_file(filename);
+   }
 
    if (NULL != (val = cfg_get_str("ftp", "host")))
       ftp_host = val;
@@ -1103,17 +1148,7 @@ main(int argc, char *argv[])
       cam_framerate = 60;
    if (cam_framerate < 1)
       cam_framerate = 1;
-
-   /* print config */
-   fprintf(stderr, "camE v1.2 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
-   fprintf(stderr,
-           "grabber config: size %dx%d, input %d, norm %d, "
-           "jpeg quality %d\n", grab_width, grab_height, grab_input,
-           grab_norm, grab_quality);
-   if (ftp_do)
-      fprintf(stderr, "ftp config:\n  %s@%s:%s\n  %s => %s\n", ftp_user,
-              ftp_host, ftp_dir, ftp_tmp, ftp_file);
-
+   
    /* clear logfile */
    if (logfile)
    {
@@ -1121,6 +1156,15 @@ main(int argc, char *argv[])
       if (fp)
          fclose(fp);
    }
+
+   /* print config */
+   log("camE " VERSION " - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   log("grabber config: size %dx%d, input %d, norm %d, "
+           "jpeg quality %d\n", grab_width, grab_height, grab_input,
+           grab_norm, grab_quality);
+   if (ftp_do)
+      log("ftp config:\n  %s@%s:%s\n  %s => %s\n", ftp_user,
+              ftp_host, ftp_dir, ftp_tmp, ftp_file);
 
    /* init everything */
    grab_init();
