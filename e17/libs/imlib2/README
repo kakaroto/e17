@@ -15,11 +15,20 @@ This is a complete rewrite over the Imlib 1.x series. The architecture is
 more modular, simple, and flexible. See index.html in the doc/ directory
 for more information.
 
+Imlib2 requires several libraries to be already installed. These are:
+
+edb              ftp://ftp.enlightenment.org/pub/e/e17/libs/
+libjpeg          http://www.ijg.org/
+libpng           http://www.libpng.org/pub/png/libpng.html
+freetype 1.2     http://www.freetype.org/
+
+
 For examples of this library in use, seek:
 
 Eterm            http://www.eterm.org/ (CVS version only, currently)
 feh              http://www.linuxbrit.co.uk/feh.html
 geist            http://www.linuxbrit.co.uk/geist.html
+
 
 A blurb about each of the directories:
 
