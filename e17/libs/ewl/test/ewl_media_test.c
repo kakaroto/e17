@@ -1,5 +1,4 @@
 #include <Ewl.h>
-#include <ewl_media.h>
 
 static Ewl_Widget *video;
 static Ewl_Widget *fd_win;
