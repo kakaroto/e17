@@ -68,6 +68,8 @@ __imlib_CreatePixmapsForImage(Display *d, Drawable w, Visual *v, int depth,
    ip->dither_mask = dither_mask;
    ip->hi_quality = hiq;
    ip->references = 1;
+   ip->pixmap = pmap;
+   ip->mask = mask;
    __imlib_AddImagePixmapToCache(ip);
    return 1;
 }

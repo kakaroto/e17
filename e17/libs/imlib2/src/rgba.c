@@ -3253,8 +3253,7 @@ __imlib_RGBA_to_A1_fast(DATA32 *src , int src_jump,
    
    w = width;
    h = height;
-   
-   memset(dest, 0, (((w + 7) >> 3) + dest_jump) * height);
+
    for (y = 0; y < h; y++)
      {
 	for (x = 0; x < w; x++)
@@ -3279,7 +3278,6 @@ __imlib_RGBA_to_A1_dither(DATA32 *src , int src_jump,
    w = width + dx;
    h = height + dy;
 
-   memset(dest, 0, (((width + 7) >> 3) + dest_jump) * height);   
    for (y = dy; y < h; y++)
      {
 	for (x = dx; x < w; x++)

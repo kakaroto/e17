@@ -370,7 +370,7 @@ __imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, Display *d, Visual *
      {
 	/* if all the pixmap attributes match */
 	if ((ip->w == w) && (ip->h == h) && (ip->depth == depth) && 
-	    (!ip->dirty) &&
+	    (!ip->dirty) && (ip->image == im) &&
 	    (ip->visual == v) && (ip->display == d) && 
 	    (ip->source_x == sx) && (ip->source_x == sy) &&
 	    (ip->source_w == sw) && (ip->source_h == sh) &&

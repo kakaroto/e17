@@ -29,7 +29,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    Visual *v, Colormap cm, int depth, 
 		    int sx, int sy, int sw, int sh, 
 		    int dx, int dy, int dw, int dh, 
-		    char anitalias, char hiq, char blend, char dither_mask,
+		    char antialias, char hiq, char blend, char dither_mask,
 		    ImlibColorModifier *cmod, ImlibOp op)
 {
    XImage   *xim = NULL, *mxim = NULL;
@@ -100,7 +100,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     return;
 	  }
 	/* calculate aliasing counts */
-	if (anitalias)
+	if (antialias)
 	  {
 	     yapoints = __imlib_CalcApoints(im->h, sch, im->border.top, im->border.bottom);
 	     if (!yapoints)
@@ -139,7 +139,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    xim = __imlib_ProduceXImage(d, v, depth, dw, dh, &shm);
    if (!xim)
      {
-	if (anitalias)
+	if (antialias)
 	  {
 	     free(xapoints);
 	     free(yapoints);
@@ -159,7 +159,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	if (!mxim)
 	  {
 	     __imlib_ConsumeXImage(d, xim);
-	     if (anitalias)
+	     if (antialias)
 	       {
 		  free(xapoints);
 		  free(yapoints);
@@ -181,7 +181,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     __imlib_ConsumeXImage(d, xim);
 	     if (m)
 		__imlib_ConsumeXImage(d, mxim);
-	     if (anitalias)
+	     if (antialias)
 	       {
 		  free(xapoints);
 		  free(yapoints);
@@ -210,7 +210,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	if (ypoints)
 	  {
 	     /* scale the imagedata for this LINESIZE lines chunk of image data */
-	     if (anitalias)
+	     if (antialias)
 	       {
 		  if (IMAGE_HAS_ALPHA(im))
 		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, 
@@ -467,10 +467,10 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	free(ypoints);
 	free(xpoints);
      }
-   if (anitalias)
+   if (antialias)
      {
-	free(yapoints);
-	free(xapoints);
+	if (yapoints) free(yapoints);
+	if (xapoints) free(xapoints);
      }
    if (back)
       free(back);
