@@ -12,6 +12,7 @@
 #include "image.h"
 #include "file.h"
 #include "loaderpath.h"
+#include "Imlib2.h"
 
 static ImlibImage  *images = NULL;
 
@@ -1069,36 +1070,36 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
         if (er)
           {
              /* set to a default fo no error */
-             *er = LOAD_ERROR_NONE;
+             *er = IMLIB_LOAD_ERROR_NONE;
              /* if the errno is set */
              if (errno != 0)
                {
                   /* default to unknown error */
-                  *er = LOAD_ERROR_UNKNOWN;
+                  *er = IMLIB_LOAD_ERROR_UNKNOWN;
                   /* standrad fopen() type errors translated */
                   if (errno == EEXIST)
-                     *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+                     *er = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
                   else if (errno == EISDIR)
-                     *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+                     *er = IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY;
                   else if (errno == EISDIR)
-                     *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+                     *er = IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY;
                   else if (errno == EACCES)
-                     *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
+                     *er = IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ;
                   else if (errno == ENAMETOOLONG)
-                     *er = LOAD_ERROR_PATH_TOO_LONG;
+                     *er = IMLIB_LOAD_ERROR_PATH_TOO_LONG;
                   else if (errno == ENOENT)
-                     *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
+                     *er = IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
                   else if (errno == ENOTDIR)
-                     *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
+                     *er = IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
                   else if (errno == EFAULT)
-                     *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
+                     *er = IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
                   else if (errno == ELOOP)
-                     *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
+                     *er = IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
                   else if (errno == ENOMEM)
-                     *er = LOAD_ERROR_OUT_OF_MEMORY;
+                     *er = IMLIB_LOAD_ERROR_OUT_OF_MEMORY;
                   else if (errno == EMFILE)
-                     *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
-                  if (*er != LOAD_ERROR_UNKNOWN)
+                     *er = IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+                  if (*er != IMLIB_LOAD_ERROR_UNKNOWN)
                     {
                        /* free the stuct we created */
                        __imlib_ConsumeImage(im);
@@ -1248,7 +1249,7 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    if (!file)
      {
         if (er)
-           *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+           *er = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
         return;
      }
    /* ok - just check all our loaders are up to date */
@@ -1268,7 +1269,7 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    if (!l)
      {
         if (er)
-           *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+           *er = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
         /* set the filename back to the laoder image filename */
         free(im->file);
         im->file = pfile;
@@ -1276,7 +1277,7 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
      }
    /* if they want an error returned - assume none by default */
    if (er)
-      *er = LOAD_ERROR_NONE;
+      *er = IMLIB_LOAD_ERROR_NONE;
 
    /* call the saver */
    e = l->save(im, progress, progress_granularity);
@@ -1287,32 +1288,32 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    /* if there's an error return and the save faile (e = 0) figure it out */
    if ((er) && (e == 0))
      {
-        *er = LOAD_ERROR_UNKNOWN;
+        *er = IMLIB_LOAD_ERROR_UNKNOWN;
         if (errno == EEXIST)
-           *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+           *er = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
         else if (errno == EISDIR)
-           *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+           *er = IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY;
         else if (errno == EISDIR)
-           *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+           *er = IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY;
         else if (errno == EACCES)
-           *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
+           *er = IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
         else if (errno == ENAMETOOLONG)
-           *er = LOAD_ERROR_PATH_TOO_LONG;
+           *er = IMLIB_LOAD_ERROR_PATH_TOO_LONG;
         else if (errno == ENOENT)
-           *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
+           *er = IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
         else if (errno == ENOTDIR)
-           *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
+           *er = IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
         else if (errno == EFAULT)
-           *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
+           *er = IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
         else if (errno == ELOOP)
-           *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
+           *er = IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
         else if (errno == ENOMEM)
-           *er = LOAD_ERROR_OUT_OF_MEMORY;
+           *er = IMLIB_LOAD_ERROR_OUT_OF_MEMORY;
         else if (errno == EMFILE)
-           *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+           *er = IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
         else if (errno == ENOSPC)
-           *er = LOAD_ERROR_OUT_OF_DISK_SPACE;
+           *er = IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE;
         else if (errno == EROFS)
-           *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
+           *er = IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
      }
 }

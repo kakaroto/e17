@@ -7,6 +7,7 @@
 #endif
 
 #include <dlfcn.h>
+#include <Imlib2.h>
 
 typedef struct _imlibimage              ImlibImage;
 #ifdef BUILD_X11
@@ -20,25 +21,6 @@ typedef int (*ImlibProgressFunction)(ImlibImage *im, char percent,
 				      int update_x, int update_y,
 				      int update_w, int update_h);
 typedef void (*ImlibDataDestructorFunction)(ImlibImage *im, void *data);
-
-enum _load_error
-{
-   LOAD_ERROR_NONE,
-   LOAD_ERROR_FILE_DOES_NOT_EXIST,
-   LOAD_ERROR_FILE_IS_DIRECTORY,
-   LOAD_ERROR_PERMISSION_DENIED_TO_READ,
-   LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT,
-   LOAD_ERROR_PATH_TOO_LONG,
-   LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT,
-   LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY,
-   LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE,
-   LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS,
-   LOAD_ERROR_OUT_OF_MEMORY,
-   LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
-   LOAD_ERROR_PERMISSION_DENIED_TO_WRITE,
-   LOAD_ERROR_OUT_OF_DISK_SPACE,   
-   LOAD_ERROR_UNKNOWN
-};
 
 enum _iflags
 {
@@ -55,7 +37,6 @@ enum _iflags
 };
 
 typedef enum   _iflags                  ImlibImageFlags;
-typedef enum   _load_error              ImlibLoadError;
 
 struct _imlibborder
 {

@@ -70,6 +70,7 @@ enum _imlib_TTF_encoding
 
 typedef enum _imlib_operation Imlib_Operation;
 typedef enum _imlib_load_error Imlib_Load_Error;
+typedef enum _imlib_load_error ImlibLoadError;
 typedef enum _imlib_text_direction Imlib_Text_Direction;
 typedef enum _imlib_TTF_encoding Imlib_TTF_Encoding;
 
