@@ -248,12 +248,12 @@ AC_DEFINE(NO_AUTO_RESPAWN)
 fi
 
 AC_ARG_ENABLE(new-remember,
-[  --enable-new-remember   use if you have a version of enlightenment >= 0.16.4],
+[  --disable-new-remember  use if you have a version of enlightenment <= 0.16.4],
             if test "$enableval" = "yes"; then
-               AC_MSG_RESULT(yes)
-	       AC_DEFINE(NEW_REMEMBER)
+	       AC_MSG_RESULT(yes)
 	       else
-	       AC_MSG_RESULT(no)
+               AC_MSG_RESULT(no)
+	       AC_DEFINE(NEW_REMEMBER)
 	       fi,
 	       AC_MSG_RESULT(no)
 )
@@ -353,6 +353,9 @@ else
   mv api/epplet.h.new api/epplet.h
 fi
 
+echo
+echo "If you are running Enlightenment < 0.16.4, you *must* configure"
+echo "with epplets with --disable-new-remember."
 echo
 echo "Now type 'make' to build $PACKAGE $VERSION."
 echo "Then type 'make install' to install."
