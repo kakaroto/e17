@@ -91,15 +91,16 @@ _esmart_trans_x11_screengrab_get(Evas *evas, Evas_Object *old, int x, int y, int
    imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(), DefaultScreen(ecore_x_display_get())));
    imlib_context_set_drawable(DefaultRootWindow(ecore_x_display_get()));
    im = imlib_create_image_from_drawable(0, x, y, w, h, 1);
-   imlib_context_set_image(im);
-   imlib_image_set_format("argb");
    new = evas_object_image_add(evas);
    evas_object_image_alpha_set(new, 0);
    evas_object_image_size_set(new, w, h);
-   evas_object_image_data_copy_set(new, imlib_image_get_data_for_reading_only());
-   imlib_image_set_format("png");
-   imlib_save_image("/home/ibukun/test.png");
-   imlib_free_image_and_decache();
+   if (im)
+   {
+      imlib_context_set_image(im);
+      imlib_image_set_format("argb");
+      evas_object_image_data_copy_set(new, imlib_image_get_data_for_reading_only());
+      imlib_free_image_and_decache();
+   }
 
    evas_object_image_fill_set(new, 0, 0, w, h);
    evas_object_resize(new, w, h);
@@ -198,11 +199,17 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
                   oy = -y;
                   y = 0;
                }
+
+	       if (w <= 0)
+		 w = 1;
+
+	       if (h <= 0)
+		 h = 1;
                
                offscreen = 1;
-               im = imlib_create_image_from_drawable(0, px, py, pw, ph, 1);
-               dest = imlib_create_image(w, h);
-               imlib_context_set_image(dest);
+               dest = imlib_create_image_from_drawable(0, px, py, pw, ph, 1);
+               im = imlib_create_image(w, h);
+               imlib_context_set_image(im);
                imlib_image_clear();
                imlib_context_set_cliprect(0, 0, w, h);
 
@@ -211,20 +218,23 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
 
                for (sy = 0; sy < (h + dy); sy += ph)
                   for (sx = 0; sx < (w + dx); sx += pw)
-                     imlib_blend_image_onto_image(im, 1, 0, 0, pw, ph, 
+                     imlib_blend_image_onto_image(dest, 1, 0, 0, pw, ph, 
                                                   sx - dx, sy - dy, pw, ph);
                   
-               imlib_context_set_image(im);
-               imlib_free_image_and_decache();
                imlib_context_set_image(dest);
+               imlib_free_image_and_decache();
+               imlib_context_set_image(im);
             }
 
-            imlib_image_set_format("argb");
             new = evas_object_image_add(evas);
             evas_object_image_alpha_set(new, 0);
             evas_object_image_size_set(new, w, h);
-            evas_object_image_data_copy_set(new, imlib_image_get_data_for_reading_only());
-            imlib_free_image_and_decache();
+	    if (im)
+	    {
+               imlib_image_set_format("argb");
+               evas_object_image_data_copy_set(new, imlib_image_get_data_for_reading_only());
+               imlib_free_image_and_decache();
+	    }
 
             evas_object_image_fill_set(new, 0, 0, w, h);
             evas_object_resize(new, w, h);
