@@ -675,9 +675,7 @@ e16menuedit2 v0.2</property>
 		      <property name="items" translatable="yes">mozilla
 firefox
 epiphany
-konqueror
-dillo
-opera</property>
+konqueror</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -762,33 +760,19 @@ opera</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="properties_cancel">
-	      <property name="border_width">10</property>
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-cancel</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <signal name="clicked" handler="gtk_widget_destroy" object="properties_window" last_modification_time="Sat, 28 Aug 2004 14:18:43 GMT"/>
-	    </widget>
-	    <packing>
-	      <property name="padding">0</property>
-	      <property name="expand">False</property>
-	      <property name="fill">True</property>
-	    </packing>
+	    <placeholder/>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="properties_ok">
+	    <widget class="GtkButton" id="properties_close">
 	      <property name="border_width">10</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label">gtk-ok</property>
+	      <property name="label">gtk-close</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
-	      <signal name="clicked" handler="on_properties_ok_clicked" last_modification_time="Sat, 28 Aug 2004 14:20:29 GMT"/>
+	      <signal name="clicked" handler="on_properties_close_clicked" last_modification_time="Wed, 06 Oct 2004 14:48:43 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

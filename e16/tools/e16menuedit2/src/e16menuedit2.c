@@ -35,6 +35,7 @@
 #include "treeview.h"
 
 int librsvg_cmp;
+char *browser;
 
 int main (int argc, char *argv[])
 {
@@ -46,7 +47,12 @@ int main (int argc, char *argv[])
   char package[] = "librsvg-2.0";
   char good_version[] = "2.7.1";
   char *version;
-  int i;  
+  int i;
+
+  FILE *fz_properties;
+  gchar *filename_properties;
+  char key[KEY_LENGTH];
+  char value[VALUE_LENGTH];
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -95,6 +101,25 @@ int main (int argc, char *argv[])
 
   print_statusbar (_("Menu successfully loaded!"));
 
+  /* read some properties */
+  filename_properties = g_strdup_printf ("%s/%s/properties",
+                                         homedir (getuid ()), APP_HOME);
+
+  fz_properties = fopen (filename_properties, "r");
+  if (fz_properties != NULL)
+  {
+    fscanf (fz_properties, "%s = %s", key, value);
+
+    g_free (browser);
+    browser = g_malloc (strlen (value)+1);
+    strncpy (browser, value, strlen (value)+1);
+
+    fclose (fz_properties);
+  }
+
+  g_free (filename_properties);
+
+
   gtk_main ();
   return 0;
 }
@@ -115,4 +140,35 @@ void print_statusbar (const gchar *format, ...)
   gtk_statusbar_push (GTK_STATUSBAR (main_statusbar),
                       0,
                       str);
+}
+
+gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
+                       GtkTreeIter *iter, gpointer user_data)
+{
+  gchar *value;
+  gchar *tree_path_str;
+  GtkWidget *comboboxentry1;
+
+  comboboxentry1 = lookup_libglade_widget ("properties_window", "comboboxentry1");
+
+  gtk_tree_model_get (model, iter, 0, &value, -1);
+
+  tree_path_str = gtk_tree_path_to_string(path);
+
+  if (!strcmp (value, (char*) user_data))
+  {
+    gtk_combo_box_set_active (GTK_COMBO_BOX (comboboxentry1),
+                              atoi (tree_path_str));
+
+    g_free (browser);
+    browser = g_malloc (strlen (value)+1);
+    strncpy (browser, value, strlen (value)+1);
+
+    g_free(tree_path_str);
+    return TRUE;
+  }
+
+  g_free(tree_path_str);
+
+  return FALSE;
 }

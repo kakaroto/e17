@@ -42,5 +42,7 @@
 #define ICON_DIR "icons"
 
 void print_statusbar (const gchar *format, ...);
-
+gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
+                       GtkTreeIter *iter, gpointer user_data);
+		       
 #endif /* _E16MENUEDIT_H */

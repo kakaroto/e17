@@ -34,6 +34,8 @@
 #include "e16menu.h"
 #include "treeview.h"
 
+extern char *browser;
+
 void bind_toolbar_callbacks (GtkWidget *treeview_menu)
 {
   GtkWidget *toolbar1;
@@ -289,11 +291,12 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
 {
   int help_error;
 
-  help_error = run_help ("yelp", YELP_HELP_DIR, PACKAGE".xml");
+  help_error = run_help ("elp", YELP_HELP_DIR, PACKAGE".xml");
 
   if (help_error)
   {
-    help_error = run_help ("mozilla", PACKAGE_DOC_DIR, PACKAGE".html");
+    g_print ("running browser: %s\n", browser);
+    help_error = run_help (browser, PACKAGE_DOC_DIR, PACKAGE".html");
 
     if (help_error)
     {
@@ -309,6 +312,11 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   GtkWidget *properties_window;
   GladeXML *properties_xml;
   GtkWidget *comboboxentry1;
+  FILE *fz_properties;
+  gchar *filename_properties;
+  char key[KEY_LENGTH];
+  char value[VALUE_LENGTH];
+  GtkTreeModel* treemodel;
 
   properties_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
                                   "properties_window", NULL);
@@ -322,13 +330,70 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   gtk_combo_box_set_active (GTK_COMBO_BOX (comboboxentry1), 0);
 
   gtk_window_set_icon_from_file (GTK_WINDOW (properties_window),
-                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png",                                 NULL);
+                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png", NULL);
+
+  filename_properties = g_strdup_printf ("%s/%s/properties",
+                                         homedir (getuid ()), APP_HOME);
+
+  fz_properties = fopen (filename_properties, "r");
+  if (fz_properties != NULL)
+  {
+    fscanf (fz_properties, "%s = %s", key, value);
+
+    treemodel = gtk_combo_box_get_model (GTK_COMBO_BOX (comboboxentry1));
+
+    gtk_tree_model_foreach (GTK_TREE_MODEL(treemodel), browser_func,
+                            (gpointer) value);
+
+    fclose (fz_properties);
+  }
+
+  g_free (filename_properties);
 }
 
-
 void
-on_properties_ok_clicked               (GtkButton       *button,
+on_properties_close_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
+  FILE *fz_properties;
+  gchar *filename_properties;
+  G_CONST_RETURN gchar *value;
+  GtkWidget *comboboxentry1;
+  GtkTreeIter iter;
+  gboolean valid;
+  GtkTreeModel* treemodel;
+  GtkWidget *properties_window;
 
+  filename_properties = g_strdup_printf ("%s/%s/properties",
+                                         homedir (getuid ()), APP_HOME);
+
+  fz_properties = fopen (filename_properties, "w");
+  if (fz_properties != NULL)
+  {
+    comboboxentry1 = lookup_libglade_widget ("properties_window", "comboboxentry1");
+
+    valid = gtk_combo_box_get_active_iter (GTK_COMBO_BOX (comboboxentry1), &iter);
+
+    if (valid)
+    {
+      treemodel = gtk_combo_box_get_model (GTK_COMBO_BOX (comboboxentry1));
+
+      gtk_tree_model_get (treemodel, &iter,
+                          0, &value,
+                          -1);
+
+      g_free (browser);
+      browser = g_malloc (strlen (value)+1);
+      strncpy (browser, value, strlen (value)+1);
+
+      fprintf (fz_properties, "%s = %s\n", "browser", value);
+    }
+    fclose (fz_properties);
+  }
+
+  properties_window = lookup_libglade_widget ("properties_window", "properties_window");
+
+  gtk_widget_destroy (GTK_WIDGET (properties_window));
+
+  g_free (filename_properties);
 }

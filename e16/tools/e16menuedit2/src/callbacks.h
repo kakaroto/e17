@@ -52,6 +52,10 @@
 #define ICON_SIZE6 22
 #define ICON_SIZE7 16
 
+/* defines for parser */
+#define KEY_LENGTH 50
+#define VALUE_LENGTH 100
+
 void bind_toolbar_callbacks (GtkWidget *treeview_menu);
 void bind_menubar_callbacks (GtkWidget *treeview_menu);
 void on_menu_save_activate (GtkMenuItem *menuitem,
@@ -103,7 +107,7 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 					
 void
-on_properties_ok_clicked               (GtkButton       *button,
+on_properties_close_clicked            (GtkButton       *button,
                                         gpointer         user_data);
 
 #endif /* _CALLBACKS_H */
