@@ -2,14 +2,13 @@ Source: xfonts-nexus
 Build-Depends-Indep: xutils, debhelper (>= 2.0.0)
 Section: x11
 Priority: optional
-Maintainer: Simon Horman <horms@vergenet.net>
-Standards-Version: 3.5.8
+Maintainer: Simon Horman <horms@debian.org>
+Standards-Version: 3.6.1
 
 Package: xfonts-nexus
 Architecture: all
 Depends: xbase-clients
 Replaces: xfont-nexus
-Provides: xfont-nexus
 Conflicts: xfont-nexus
 Description: Nexus font for X
  A sans-serif, fixed with font with iso8859 encoding.

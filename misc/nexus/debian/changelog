@@ -1,3 +1,10 @@
+xfonts-nexus (0.0.2-5) unstable; urgency=low
+
+  * Removed spurious provides that resulted in this package 
+    conflicting with itself. #238832
+
+ -- Simon Horman <horms@debian.org>  Mon, 22 Mar 2004 16:11:18 +0900
+
 xfonts-nexus (0.0.2-4) unstable; urgency=low
 
   * Minor typo in description. closes: Bug#189004
