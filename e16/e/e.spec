@@ -1,16 +1,18 @@
 Summary:	The Enlightenment window manager.
 Name:		e16
 Version:	0.16.8
-Release:	0.01
+Release:	0.01%{?_vendorsuffix:.%{_vendorsuffix}}
 License:	BSD
 Group:		User Interface/Desktops
+URL:		http://www.enlightenment.org/
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
+#BuildSuggests: esound-devel
+BuildRequires:  imlib2-devel freetype-devel xorg-x11-devel
+Packager:       %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor:         %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution:   %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix:		%{_prefix}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
-URL:		http://www.enlightenment.org/
-
-Requires: imlib2
-Requires: esound >= 0.2.13
 
 %description
 Enlightenment is a window manager for the X Window System that
@@ -31,21 +33,22 @@ This package will install the Enlightenment window manager.
 %build
 CFLAGS="${RPM_OPT_FLAGS}"
 ENLIGHTENMENT_RELEASE=%{release}
-export CFLAGS ENLIGHTENMENT_RELEASE
+AC_FLAGS="--prefix=%{_prefix} --mandir=%{_mandir} --enable-fsstd --enable-hints-gnome --enable-xrandr"
+export CFLAGS ENLIGHTENMENT_RELEASE AC_FLAGS
 if [ ! -f configure ]; then
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-hints-gnome --enable-xrandr
+  ./autogen.sh $AC_FLAGS
 else
-  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-hints-gnome --enable-xrandr
+  %{configure} $AC_FLAGS %{?acflags}
 fi
-make
+%{__make} %{?mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
+test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
+%{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
