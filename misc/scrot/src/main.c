@@ -117,11 +117,9 @@ Imlib_Image
 scrot_sel_and_grab_image(void)
 {
    Imlib_Image im = NULL;
-   int x = 0, y = 0, w = 0, h = 0;
    static int xfd = 0;
    static int fdsize = 0;
    XEvent ev;
-   struct timeval tval;
    fd_set fdset;
    int count = 0, done = 0;
    int rx = 0, ry = 0, rw = 0, rh = 0, btn_pressed = 0;
@@ -129,7 +127,7 @@ scrot_sel_and_grab_image(void)
    int dont_care;
    Window not_interested;
    Cursor cursor;
-   Window target;
+   Window target = None;
    GC gc;
    XGCValues gcval;
 
@@ -205,7 +203,6 @@ scrot_sel_and_grab_image(void)
               }
               break;
            case ButtonPress:
-              D(2, ("button press event, window %d\n", ev.xbutton.window));
               btn_pressed = 1;
               rx = ev.xbutton.x;
               ry = ev.xbutton.y;

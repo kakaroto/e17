@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "scrot.h"
 #include "options.h"
 
-static void check_options(void);
 static void feh_parse_option_array(int argc, char **argv);
 scrotoptions opt;
 
