@@ -10,6 +10,7 @@
 e='enlightenment'
 
 eh_installdir ( ) {
+  eh_echo "creating dir(s) $@"
   /usr/bin/install -g root -o root -d -m 755 "$@"
 }
 
@@ -33,7 +34,8 @@ spoon ( ) {
 # place Debian menu stubs in menus.cfg
 eh_menufilter ( ) {
 eh_echo "adding Debian menu stub to menus.cfg"
-perl -lwne '/^__E_CFG_VERSION 0$/ and print("$_\n\n", qw@BEGIN_NEW_FILE_MENU("DEBIAN_MENU", "ROOT", "/etc/enlightenment/menus/Debian.menu")@, "\nEND_MENU") or /^ADD_MENU_SUBMENU_TEXT_ITEM.*APPS_SUBMENU/ and print("$_\n", qw@ADD_MENU_SUBMENU_TEXT_ITEM("Debian",        "DEBIAN_MENU")@) or print;' src/themes/configs/menus.cfg > debian/$e/usr/share/$e/config/menus.cfg
+perl -lwne '/^__E_CFG_VERSION 0$/ and print("$_\n\n", qw@BEGIN_NEW_FILE_MENU("DEBIAN_MENU", "ROOT", "/etc/enlightenment/menus/debian.menu")@, "\nEND_MENU") or /^ADD_MENU_SUBMENU_TEXT_ITEM.*APPS_SUBMENU/ and print("$_\n", qw@ADD_MENU_SUBMENU_TEXT_ITEM("Debian",        "DEBIAN_MENU")@) or print;' src/themes/configs/menus.cfg > debian/$e/usr/share/$e/config/menus.cfg
+eh_installdir debian/$e/etc/$e/menus
 }
 
 # IF this is a CVS source tree, expand debhelper files
@@ -62,7 +64,6 @@ eh_unpacktheme ( ) {
 eh_installthemes ( ) {
   eh_unpacktheme "$e-theme-bluesteel"  "BlueSteel"
   eh_unpacktheme "$e-theme-shinymetal" "ShinyMetal"
-  eh_unpacktheme "$e-theme-ganymede"   "Ganymede" 
   eh_unpacktheme "$e"                  "BrushedMetal-Tigert"
 }
 
@@ -73,15 +74,17 @@ eh_makfilefilter ( ) {
 
 eh_undocumented ( ) {
   eh_echo "adding undocumented man page links"
-  local needdocs=$(cd debian/enlightenment/usr/bin ; ls | sed '/^enlightenment$/d;s/$/.1/' | xargs)
+  local needdocs=$(cd debian/$e/usr/bin ; ls | sed  '/^enlightenment$/d; s#$#.1#' | xargs)
   eh_echo "$needdocs"
   dh_undocumented -p $e $needdocs
+  eh_installdir debian/$e/usr/share/doc/$e
+  cp src/ChangeLog debian/$e/usr/share/doc/$e/changelog
 }
 
 eh_clean ( ) {
   rm -f core `find . \( -name '*.orig' -o -name '*.rej' -o -name '*~' \
     -o -name '*.bak' -o -name '#*#' -o -name '.*.orig' \
-    -o -name '.*.rej' -o -name '.SUMS' \) -print`
+    -o -name '.*.rej' -o -name '.SUMS' -o -name '*.old' \) -print`
 }
 
 # install meta function
@@ -89,19 +92,47 @@ eh_install ( ) {
   eh_menufilter
   eh_installthemes
   eh_undocumented
+  perl -pi -lwe 's/^EBIN=.*/EBIN=\/usr\/bin/' debian/$e/usr/bin/$e.install
   eh_clean
 }
 
 #ehrc# This is a regex target that begins the data section.
 
-#file:enlightenment-theme-bluesteel.README.debian
-#See /usr/share/doc/enlightenment/ for additional information.
+#file:enlightenment-theme-bluesteel.README.Debian
+#See the enlightenment package's /usr/share/doc/enlightenment/ 
+#for additional information.
 
-#file:enlightenment-theme-ganymede.README.debian
-#See /usr/share/doc/enlightenment/ for additional information.
+#file:enlightenment-theme-shinymetal.README.Debian
+#See the enlightenment package's /usr/share/doc/enlightenment/ 
+#for additional information.
 
-#file:enlightenment-theme-shinymetal.README.debian
-#See /usr/share/doc/enlightenment/ for additional information.
+#file:enlightenment.README.Debian
+#Enlightenment for Debian/GNU Linux
+#----------------------------------
+#
+#NOTES for users of KDE/GNOME and those not using KDE/GNOME:
+#  There are a number of config files with pretty obvious names
+#  in /usr/share/enlightenment/config. You can go there and
+#  copy or the appropriate files to the normal names. As an
+#  example:
+#  
+#    cp keybindings.gmc.cfg keybindings.cfg
+#    
+#  This can also be accomplished by copying the appropriate
+#  files to $HOME/.enlightenment/
+#
+#Visit http://www.debian.org for the latest official Debian binary and
+#source code enlightenment packages.
+#
+#Visit http://www.debian.org/~ljlane/ for the latest bug tracking,
+#news, and pre/experimental package releases of Enlightenment for
+#Debian.
+#
+#Visit http://www.enlightenment.org/ for the latest enlightenment news
+#and source code.
+#
+#
+#Laurence J. Lane <ljlane@debian.org>, Fri,  5 Nov 1999 20:33:57 -0500
 
 #file:enlightenment.conffiles
 #/etc/menu-methods/enlightenment
@@ -116,72 +147,89 @@ eh_install ( ) {
 #file:enlightenment.menu-method
 ##!/usr/sbin/install-menu
 #
-#compat="menu-1"
+#compat="menu-1";
+#!include menu.h
 #
-#genmenu=replacewith(parent($section), "/", "_") ".menu"
-#rootprefix="/etc/enlightenment/menus"
-#treewalk="cm"
-#rootsection="Debian"
+#compat="menu-2";
 #
-## Limit usage to root for now until we figure out how to convince the
-## E menu to ignore the system menus if user menus exist
-#onlyrunasroot=true
+## choose a terminal program here:
+#  function term_prog()="Eterm";
+#  #function term_prog()="rxvt";
+#  #function term_prog()="xterm";
 #
-#function quote($target)= "\"" $target "\""
-#function tick($target)= "\'" $target "\'"
+#treewalk=c(m);
+#rootprefix="/etc/enlightenment/menus/";
+#userprefix="$HOME/.enlightenment/menus_debian/";
+#mainmenutitle="Debian Menu";
 #
-## choose your term here, uncomment one
-#function term()="Eterm -T"
-##function term()="xterm -T"
-##function term()="rxvt -title"
+#function menu_sh() = prefix() "debian_menu_sh";
+#prerun="set -e; rm -f " prefix() "debian*menu/" menu_sh();
+#postrun="set -e; cat " menu_sh() "| sed 's/_debian/debian/g' | sh; rm -f " menu_sh();
 #
-#function menu()= quote(prefix() "/" replacewith($section , "/", "_") ".menu")
+#function quote($text)= "\"" $text "\"";
+#function tick($text)= "\'" $text "\'";
 #
-#function icon_select()=ifelse($icon32x32, $icon32x32, \
-#     ifelse($icon16x16, $icon16x16, $icon))
-#function icon()= quote(ifelse(icon_select(),icon_select(),"NULL"))
+#function space()= "   ";
+#function newline()="\n";
 #
-#function title()= quote(esc($title,"\""))
+#function entry($com)= quote(esc(title(),"\"")) space() 
+#                      quote(ifelse(icon(),icon(),"NULL")) space() 
+#		      quote("exec") space() 
+#		      $com;
 #
-#function x11()= quote($command)
-#function text()= quote(term() " " tick(esc($title,"\"")) " -e " $command)
-#function wm()= quote("eesh -e " tick("restart_wm " $command))
+#function term($com)= term_prog() " -T " tick(title()) " -e " $com;
 #
-#function menu_entry($name,$icon,$action,$parameters)=\
-#firstentry(quote(basename($section)) "\n")\
-#print($name "  " $icon "  " $action " " $parameters "\n")
+#supported;
+#  wm=         entry(quote("eesh -e restart_wm " $command) newline());
+#  x11=        entry(quote($command) newline());
+#  text=       entry(quote(term($command)) newline());
+#endsupported;
 #
-#supported
-#   x11=  menu_entry( title(), icon(), quote("exec"), x11())
-#   text= menu_entry( title(), icon(), quote("exec"), text())
-#   wm= menu_entry( title(), icon(), quote("exec"), wm())
-#endsupported
+#function etitle()= tolower(replacewith($section,"/","_") ".menu");
 #
-#submenutitle= menu_entry( title(), icon(), quote("menu"), menu())
+#startmenu= "cat > " prefix() etitle() " << END" newline() quote(title()) newline();
 #
-## this stuff is unused, but has proven to be a pain if not defined
-#preoutput=""
-#postoutput=""
-#startmenu=""
-#endmenu=""
+#endmenu= "END" newline() newline();
+#
+#submenutitle="\""title()"\"  NULL   menu \"" prefix() etitle() "\"\n";
+#
+#genmenu="debian_menu_sh";
+
+#file:enlightenment.postinst
+##!/bin/sh -e
+#
+#if test -x /usr/sbin/register-window-manager >/dev/null 2>&1; then
+#	/usr/sbin/register-window-manager --add /usr/bin/enlightenment
+#fi
+#
+##DEBHELPER#
+#
+#exit 0
+
+#file:enlightenment.postrm
+##!/bin/sh -e
+#
+#if test "$1" = "purge" -a -x /usr/sbin/register-window-manager; then
+#   /usr/sbin/register-window-manager --remove /usr/bin/enlightenment
+#fi
+#
+##DEBHELPER#
+#
+#exit 0
 #
 
 #file:enlightenment.preinst
-##!/bin/sh
+##!/bin/sh -e
 #
-#themedir='/usr/share/enlightenment/themes'
+#dpkg --assert-long-filenames 2>&1 > /dev/null || { echo "requires dpkg (>= 1.4.17)"; exit 1; }
 #
-#if [ -L "$themedir/BrushedMetal-Tigert" ]; then
-#  echo "WARNING: removing $themedir/BrushedMetal-Tigert symlink"
-#  rm -v "$themedir/BrushedMetal-Tigert"
-#fi
+#theme_dir='/usr/share/enlightenment/themes'
 #
-#if [ -d "$theme_dir/BrushedMetal" ]; then 
-#  echo "WARNING: It is recommended to remove them \"$themedir/BrushedMetal\" dir."
-#fi
-#
-#if [ -d "$themedir/bmt" ]; then
-#  echo "WARNING: It is recommended to remove the \"$themedir/bmt\" dir."
+#if test -f "$themedir/BrushedMetal-Tigert"; then
+#  local date=$(date -R | tr ' ' '_')
+#  echo "warning: attempting to move $themedir/BrushedMetal-Tigert to $themedir/BrushedMetal-Tigert.$date"
+#  mv -v "$themedir/BrushedMetal-Tigert" "$themedir/BrushedMetal-Tigert.$date"
+#  echo "You should probably remove $themedir/BrushedMetal-Tigert.$date"
 #fi
 #
 ##DEBHELPER#
@@ -189,11 +237,9 @@ eh_install ( ) {
 #exit 0
 
 #file:enlightenment.prerm
-##!/bin/sh
-#set -e
+##!/bin/sh -e
 #
-#menu_dir='/etc/enlightenment/menus'
-#find "${menu_dir}" -type f -name 'Debian_*.menu' -print0 | xargs -0r rm -f
+#find /etc/enlightenment/menus/ -type f -name 'debian*.menu' -print0 | xargs -0r rm -f
 #
 ##DEBHELPER#
 #

@@ -27,15 +27,14 @@ build:
 clean:
 	dh_testdir
 	dh_testroot
-	-$(MAKE) clean
-	-$(MAKE) distclean
-	dh_clean *.old debian/install debian/build
+	-$(MAKE) clean distclean
+	dh_clean *.old debian/{install,build}
 
 install: SHELL = DH_OPTIONS="-A" $(sh)
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean
+	dh_clean -k
 	$(MAKE) install DESTDIR=$(shell pwd)/debian/${e}
 	$(ESHELL) eh_install
 	touch debian/$@ 
@@ -45,7 +44,7 @@ binary-indep: build install
 	dh_testversion 2
 	dh_testdir
 	dh_testroot
-	dh_installdocs
+	dh_installdocs -v
 	dh_installchangelogs
 	dh_compress
 	dh_fixperms
@@ -59,7 +58,7 @@ binary-arch: build install
 	dh_testversion 2
 	dh_testdir
 	dh_testroot
-	dh_installdocs
+	dh_installdocs -v
 	dh_installchangelogs
 	dh_compress
 	dh_installmenu
