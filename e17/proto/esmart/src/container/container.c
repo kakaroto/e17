@@ -74,6 +74,17 @@ void e_container_padding_get(Evas_Object *container, double *l, double *r,
   if (b) *b = cont->padding.b;
 }
 
+void e_container_scroll(Evas_Object *container, int val)
+{
+  Container *cont;
+  
+  if((cont = _container_fetch(container)))
+  {
+      cont->scroll_offset += val; 
+      _container_elements_fix(cont);
+  }
+}
+
 void e_container_scroll_offset_set(Evas_Object *container, int scroll_offset)
 {
   Container *cont;
