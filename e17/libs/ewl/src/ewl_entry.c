@@ -312,7 +312,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				EWL_TEXT(w)->text);
 		FREE(evd);
 	}
-	else if (ev->keyname) {
+	else if (ev->keyname && strlen(ev->keyname) == 1) {
 		ewl_entry_insert_text(e, ev->keyname);
 	}
 
