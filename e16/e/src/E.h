@@ -1980,7 +1980,6 @@ int                 MenusActive(void);
 void                MenusHide(void);
 void                MenusShowNamed(const char *name);
 void                MenusDestroyLoaded(void);
-void                MenusHideByWindow(Window win);
 int                 MenusEventKeyPress(XEvent * ev);
 int                 MenusEventMouseDown(XEvent * ev);
 int                 MenusEventMouseUp(XEvent * ev);

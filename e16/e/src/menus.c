@@ -170,7 +170,10 @@ void
 MenuHide(Menu * m)
 {
    if (m->win)
-      EUnmapWindow(disp, m->win);
+     {
+	EUnmapWindow(disp, m->win);
+	EReparentWindow(disp, m->win, VRoot.win, 0, 0);
+     }
 
    MenuActivateItem(m, NULL);
 
@@ -1066,6 +1069,7 @@ MenusDestroyLoaded(void)
    while (found_one);
 }
 
+#if 0				/* Unused */
 void
 MenusHideByWindow(Window win)
 {
@@ -1087,6 +1091,7 @@ MenusHideByWindow(Window win)
 	MenuHideMasker();
      }
 }
+#endif
 
 /*
  * Internal menus
