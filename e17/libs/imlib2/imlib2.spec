@@ -90,11 +90,17 @@ Group: System Environment/Libraries
 %description loader_xpm
 XPM image loader/saver for Imlib2
 
-%package loader_gzbz2
-Summary: Imlib2 .gz/.bz2 loader
+%package loader_bz2
+Summary: Imlib2 .bz2 loader
 Group: System Environment/Libraries
-%description loader_gzbz2
-Gzip/Bzip2 compressed image loader/saver for Imlib2
+%description loader_bz2
+Bzip2 compressed image loader/saver for Imlib2
+
+%package loader_gz
+Summary: Imlib2 .gz loader
+Group: System Environment/Libraries
+%description loader_gz
+gz compressed image loader/saver for Imlib2
 
 %prep
 rm -rf $RPM_BUILD_ROOT
@@ -178,8 +184,13 @@ test -x /sbin/ldconfig && /sbin/ldconfig
 %files loader_xpm
 %attr(755,root,root) %{_libdir}/imlib2_loaders/image/xpm.*
 
-%files loader_gzbz2
-%attr(755,root,root) %{_libdir}/imlib2_loaders/image/gzbz2.*
+%files loader_bz2
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/bz2.*
+
+%files loader_gz
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/zlib.*
+
+
 
 %changelog
 * Mon Jan 8 2001 The Rasterman <raster@rasterman.com>
