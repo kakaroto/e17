@@ -1935,6 +1935,7 @@ Mon Jan 31 17:51:43 EST 2000
 (Christian)
 
 E-Mixer didn't cleanup.
+
 -------------------------------------------------------------------------------
 
 Tue Feb  1 12:26:41 PST 2000
@@ -1948,3 +1949,11 @@ Wed Feb  2 13:53:44 EST 2000
 (Christian)
 
 "Eject" support for E-Mountbox.
+
+-------------------------------------------------------------------------------
+
+Sat Feb  5 03:20:49 GMT 2000
+(gilbertt)
+
+Preliminary wheelmouse support for sliders.
+

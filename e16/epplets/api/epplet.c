@@ -3881,6 +3881,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     {
 		GadButton          *g;
 
+		if (ev->xbutton.button > 3)
+		      break;
 		g = (GadButton *) gadget;
 		g->clicked = 1;
 		Epplet_draw_button(gadget);
@@ -3891,11 +3893,16 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadHSlider         *g;
 
 		g = (GadHSlider *) gadget;
-		g->clicked = 1;
+		if(ev->xbutton.button<4)
+		      g->clicked = 1;
 		if (ev->xbutton.window == g->win)
 		  {
-		     if (ev->xbutton.x > (((*(g->val)) * g->w) /
-					  (g->max - g->min + 1)))
+		      if (ev->xbutton.button == 4) 
+			  (*(g->val)) += g->jump;
+		      else if (ev->xbutton.button == 5)
+			  (*(g->val)) -= g->jump;
+		      else if (ev->xbutton.x > (((*(g->val)) * g->w) /
+			  (g->max - g->min + 1)))
 			(*(g->val)) += g->jump;
 		     else
 			(*(g->val)) -= g->jump;
@@ -3914,10 +3921,15 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadVSlider         *g;
 
 		g = (GadVSlider *) gadget;
-		g->clicked = 1;
+		if(ev->xbutton.button<4)
+		      g->clicked = 1;
 		if (ev->xbutton.window == g->win)
-		  {
-		     if (ev->xbutton.y > (((*(g->val)) * g->h) /
+		{
+		     if (ev->xbutton.button == 4)  
+                          (*(g->val)) -= g->jump;
+                      else if (ev->xbutton.button == 5)
+                          (*(g->val)) += g->jump;
+                      else  if (ev->xbutton.y > (((*(g->val)) * g->h) /
 					  (g->max - g->min + 1)))
 			(*(g->val)) += g->jump;
 		     else
@@ -3936,6 +3948,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     {
 		GadToggleButton    *g;
 
+		if (ev->xbutton.button > 3)
+		      break;
 		g = (GadToggleButton *) gadget;
 		g->clicked = 1;
 		Epplet_draw_togglebutton(gadget);
@@ -3945,6 +3959,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     {
 		GadPopupButton     *g;
 
+		if (ev->xbutton.button > 3)
+		      break;
 		g = (GadPopupButton *) gadget;
 		g->clicked = 1;
 		Epplet_draw_popupbutton(gadget);
@@ -4034,6 +4050,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     {
 		GadButton          *g;
 
+		if (ev->xbutton.button > 3)
+		      break;
 		g = (GadButton *) gadget;
 		g->clicked = 0;
 		Epplet_draw_button(gadget);
@@ -4064,7 +4082,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadHSlider         *g;
 
 		g = (GadHSlider *) gadget;
-		g->clicked = 0;
+		if(ev->xbutton.button<4)
+		    g->clicked = 0;
 		Epplet_draw_hslider(gadget);
 	     }
 	     break;
@@ -4073,7 +4092,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadVSlider         *g;
 
 		g = (GadVSlider *) gadget;
-		g->clicked = 0;
+		if(ev->xbutton.button<4)
+		      g->clicked = 0;
 		Epplet_draw_vslider(gadget);
 	     }
 	     break;
@@ -4081,6 +4101,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     {
 		GadToggleButton    *g;
 
+		if (ev->xbutton.button > 3)
+		      break;
 		g = (GadToggleButton *) gadget;
 		g->clicked = 0;
 		if (g->hilited)
@@ -4099,6 +4121,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     {
 		GadPopupButton     *g;
 
+		if (ev->xbutton.button > 3)
+		      break;
 		g = (GadPopupButton *) gadget;
 		g->clicked = 0;
 		if (g->popped)
