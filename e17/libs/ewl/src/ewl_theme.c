@@ -20,68 +20,23 @@ static void *theme_keys[] = {
 	"/appearance/button/default/base",
 	"/appearance/button/default/base.bits.db",
 	"/appearance/button/default/base/visible", "yes",
-	"/appearance/button/default/clicked",
-	"/appearance/button/default/clicked.bits.db",
-	"/appearance/button/default/clicked/visible", "yes",
-	"/appearance/button/default/hilited",
-	"/appearance/button/default/hilited.bits.db",
-	"/appearance/button/default/hilited/visible", "yes",
-	"/appearance/button/default/selected",
-	"/appearance/button/default/selected.bits.db",
-	"/appearance/button/default/selected/visible", "yes",
 	"/appearance/button/default/text/font", "borzoib",
 	"/appearance/button/default/text/font_size", (void *) 8,
 	"/appearance/button/default/text/style", "Default",
 
-	"/appearance/button/check/base-checked0",
-	"/appearance/button/check/base-checked0.bits.db",
-	"/appearance/button/check/base-checked0/visible", "yes",
-	"/appearance/button/check/base-checked1",
-	"/appearance/button/check/base-checked1.bits.db",
-	"/appearance/button/check/base-checked1/visible", "yes",
-	"/appearance/button/check/clicked-checked0",
-	"/appearance/button/check/clicked-checked0.bits.db",
-	"/appearance/button/check/clicked-checked0/visible", "yes",
-	"/appearance/button/check/clicked-checked1",
-	"/appearance/button/check/clicked-checked1.bits.db",
-	"/appearance/button/check/clicked-checked1/visible", "yes",
-	"/appearance/button/check/hilited-checked0",
-	"/appearance/button/check/hilited-checked0.bits.db",
-	"/appearance/button/check/hilited-checked0/visible", "yes",
-	"/appearance/button/check/hilited-checked1",
-	"/appearance/button/check/hilited-checked1.bits.db",
-	"/appearance/button/check/hilited-checked1/visible", "yes",
-	"/appearance/button/check/selected-checked0",
-	"/appearance/button/check/selected-checked0.bits.db",
-	"/appearance/button/check/selected-checked0/visible", "yes",
-	"/appearance/button/check/selected-checked1",
-	"/appearance/button/check/selected-checked1.bits.db",
-	"/appearance/button/check/selected-checked1/visible", "yes",
+        "/appearance/button/check/base",
+        "/appearance/button/check/base.bits.db",
+        "/appearance/button/check/base/visible", "yes",
+        "/appearance/button/check/text/font", "borzoib",
+        "/appearance/button/check/text/font_size", (void *) 8,
+        "/appearance/button/check/text/style", "Default",
 
-	"/appearance/button/radio/base-checked0",
-	"/appearance/button/radio/base-checked0.bits.db",
-	"/appearance/button/radio/base-checked0/visible", "yes",
-	"/appearance/button/radio/base-checked1",
-	"/appearance/button/radio/base-checked1.bits.db",
-	"/appearance/button/radio/base-checked1/visible", "yes",
-	"/appearance/button/radio/clicked-checked0",
-	"/appearance/button/radio/clicked-checked0.bits.db",
-	"/appearance/button/radio/clicked-checked0/visible", "yes",
-	"/appearance/button/radio/clicked-checked1",
-	"/appearance/button/radio/clicked-checked1.bits.db",
-	"/appearance/button/radio/clicked-checked1/visible", "yes",
-	"/appearance/button/radio/hilited-checked0",
-	"/appearance/button/radio/hilited-checked0.bits.db",
-	"/appearance/button/radio/hilited-checked0/visible", "yes",
-	"/appearance/button/radio/hilited-checked1",
-	"/appearance/button/radio/hilited-checked1.bits.db",
-	"/appearance/button/radio/hilited-checked1/visible", "yes",
-	"/appearance/button/radio/selected-checked0",
-	"/appearance/button/radio/selected-checked0.bits.db",
-	"/appearance/button/radio/selected-checked0/visible", "yes",
-	"/appearance/button/radio/selected-checked1",
-	"/appearance/button/radio/selected-checked1.bits.db",
-	"/appearance/button/radio/selected-checked1/visible", "yes",
+	"/appearance/button/radio/base",
+	"/appearance/button/radio/base.bits.db",
+	"/appearance/button/radio/base/visible", "yes",
+        "/appearance/button/radio/text/font", "borzoib",
+        "/appearance/button/radio/text/font_size", (void *) 8,
+        "/appearance/button/radio/text/style", "Default",
 
 	"/appearance/entry/default/base",
 	"/appearance/entry/default/base.bits.db",
@@ -113,13 +68,6 @@ static void *theme_keys[] = {
 	"/appearance/seeker/vertical/dragbar",
 	"/appearance/seeker/vertical/dragbar.bits.db",
 	"/appearance/seeker/vertical/dragbar/visible", "yes",
-
-	"/appearance/separator/horizontal/base",
-	"/appearance/separator/horizontal/base.bits.db",
-	"/appearance/separator/horizontal/base/visible", "yes",
-	"/appearance/separator/vertical/base",
-	"/appearance/separator/vertical/base.bits.db",
-	"/appearance/separator/vertical/base/visible", "yes",
 
 	"/appearance/table/default/base",
 	"/appearance/table/default/base.bits.db",
@@ -282,13 +230,13 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 void *
 ewl_theme_data_get(Ewl_Widget * w, char *k)
 {
-	void * ret;
+	void * ret = NULL;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-
-	ret = ewd_hash_get(w->theme, k);
+	if (w->theme)
+		ret = ewd_hash_get(w->theme, k);
 
 	if (!ret)
 		ret = ewd_hash_get(def_theme_data, k);
@@ -309,7 +257,8 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 
 	ewd_hash_set(w->theme, k, v);
 
-	ewl_widget_theme_update(w);
+	if (REALIZED(w))
+		ewl_widget_theme_update(w);
 
 	DLEAVE_FUNCTION;
 }

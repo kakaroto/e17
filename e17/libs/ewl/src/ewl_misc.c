@@ -44,6 +44,7 @@ ewl_init(int argc, char **argv)
 	if ((ewl_theme_init()) == -1)
 		DERROR("Couldn't init theme data.. Exiting....");
 
+	ewl_window_list = ewd_list_new();
 	e_event_filter_idle_handler_add(ewl_idle_render, NULL);
 
 	DLEAVE_FUNCTION;
@@ -53,6 +54,18 @@ void
 ewl_main()
 {
 	DENTER_FUNCTION;
+
+	/* If we have any windows at this point, we want to configure them
+	   to layout the children correct */
+	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list))
+	  {
+		Ewl_Widget * w;
+
+		ewd_list_goto_first(ewl_window_list);
+
+		while ((w = ewd_list_next(ewl_window_list)) != NULL)
+			ewl_widget_configure(w);
+	  }
 
 	e_event_loop();
 
@@ -66,7 +79,12 @@ ewl_idle_render(void *data)
 
 	DENTER_FUNCTION;
 
-	if (!ewl_window_list || ewd_list_is_empty(ewl_window_list))
+	if (!ewl_window_list) {
+		DERROR("FATAL ERROR: EWL has not been initialized\n");
+		exit(1);
+	}
+
+	if (ewd_list_is_empty(ewl_window_list))
 		DRETURN;
 
 	ewd_list_goto_first(ewl_window_list);

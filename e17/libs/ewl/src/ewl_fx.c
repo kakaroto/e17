@@ -25,47 +25,6 @@ ewl_fx_init()
 }
 
 void
-ewl_fx_clip_box_create(Ewl_Widget * widget)
-{
-	DENTER_FUNCTION;
-
-	CHECK_PARAM_POINTER("widget", widget);
-
-	if (widget->fx_clip_box)
-		return;
-
-	widget->fx_clip_box = evas_add_rectangle(widget->evas);
-	evas_move(widget->evas, widget->fx_clip_box,
-		  EWL_OBJECT(widget)->current.x,
-		  EWL_OBJECT(widget)->current.y);
-	evas_resize(widget->evas, widget->fx_clip_box,
-		    EWL_OBJECT(widget)->current.w,
-		    EWL_OBJECT(widget)->current.h);
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255,
-		       255);
-	evas_set_layer(widget->evas, widget->fx_clip_box,
-		       EWL_OBJECT(widget)->layer - 1);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_fx_clip_box_resize(Ewl_Widget * widget)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
-	if (!widget->fx_clip_box)
-		return;
-
-	evas_move(widget->evas, widget->fx_clip_box,
-		  EWL_OBJECT(widget)->request.x,
-		  EWL_OBJECT(widget)->request.y);
-	evas_resize(widget->evas, widget->fx_clip_box,
-		    EWL_OBJECT(widget)->request.w,
-		    EWL_OBJECT(widget)->request.h);
-}
-
-void
 ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 	   void (*func) (Ewl_Widget * widget, void *func_data),
 	   void *func_data)
@@ -77,6 +36,9 @@ ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 	CHECK_PARAM_POINTER("widget", widget);
 
 	timer = NEW(Ewl_FX_Timer, 1);
+	if (!timer)
+		DRETURN;
+
 	memset(timer, 0, sizeof(Ewl_FX_Timer));
 
 	timer->widget = widget;

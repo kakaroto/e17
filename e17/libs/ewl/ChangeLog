@@ -1,3 +1,17 @@
+Thu Sep  06 03:01:56 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Made the Ewl_CheckButton & Ewl_RadioButton use  Nathan's new code.
+	* Created new ebits for the Ewl_Button, Ewl_CheckButton &
+	  Ewl_RadioButton to work with Nathan's code.
+
+Wed Sep  05 14:30:22 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed some minor bugs from Nathan's changes. They were mostly typos.
+
+Tue Sep  04 00:00:00 2001 Nathan Ingersoll <ningerso@d.umn.edu>
+        * Major restructuring of widget heirarchy to eliminate code redundancy.
+          Widgets now make extensive use of callbacks to achieve inheritance in
+          the methods as well as the data structures.
+        * Ripped out large amounts of now redundant code.
+
 Tue Aug  21 20:41:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed minor bug in the Ewl_Callbck code.
 	* Cleaned up the test program a bit.

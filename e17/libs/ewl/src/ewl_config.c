@@ -21,24 +21,25 @@ ewl_config_init(void)
 	if ((open_user_config()) != -1) {
 		config_db = user_config;
 		return 1;
-	} else if ((open_system_config()) != -1) {
+	}
+
+	if ((open_system_config()) != -1) {
 		config_db = system_config;
 		return 1;
-	} else {
-		if ((create_user_config()) != -1) {
-			if ((open_user_config()) != -1) {
-				config_db = user_config;
-				return 1;
-			} else {
-				DERROR
-				    ("Failed to open user config, I was able"
-				     "to create it tough.");
-				return -1;
-			}
+	}
+
+	if ((create_user_config()) != -1) {
+		if ((open_user_config()) != -1) {
+			config_db = user_config;
+			return 1;
 		} else {
-			DERROR("Failed to create user config.");
+			DERROR("Failed to open user config, I was able"
+					"to create it though.");
 			return -1;
 		}
+	} else {
+		DERROR("Failed to create user config.");
+		return -1;
 	}
 }
 

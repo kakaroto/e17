@@ -2,8 +2,7 @@
 #include <Ewl.h>
 
 void
-ewl_object_init(Ewl_Object * o, int w, int h, Ewl_Fill_Policy fill,
-		Ewl_Alignment align)
+ewl_object_init(Ewl_Object * o)
 {
 	DCHECK_PARAM_PTR("o", o);
 
@@ -12,11 +11,11 @@ ewl_object_init(Ewl_Object * o, int w, int h, Ewl_Fill_Policy fill,
 	MAX_W(o) = 1 << 30;
 	MAX_H(o) = 1 << 30;
 
-	CURRENT_W(o) = REQUEST_W(o) = w;
-	CURRENT_H(o) = REQUEST_H(o) = h;
+	CURRENT_W(o) = REQUEST_W(o) = 100;
+	CURRENT_H(o) = REQUEST_H(o) = 100;
 
-	o->fill = fill;
-	o->align = align;
+	o->fill = EWL_FILL_POLICY_NORMAL;
+	o->align = EWL_ALIGNMENT_LEFT;
 }
 
 void
@@ -193,54 +192,6 @@ ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h)
 }
 
 inline void
-ewl_object_set_realized(Ewl_Object * o, int r)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	o->realized = r;
-}
-
-inline int
-ewl_object_is_realized(Ewl_Object * o)
-{
-	DCHECK_PARAM_PTR_RET("o", o, -1);
-
-	return o->realized;
-}
-
-inline void
-ewl_object_set_visible(Ewl_Object * o, int v)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	o->visible = v;
-}
-
-int
-ewl_object_is_visible(Ewl_Object * o)
-{
-	DCHECK_PARAM_PTR_RET("o", o, -1);
-
-	return o->visible;
-}
-
-inline void
-ewl_object_set_layer(Ewl_Object * o, int l)
-{
-	DCHECK_PARAM_PTR("o", o);
-
-	o->layer = l;
-}
-
-inline int
-ewl_object_get_layer(Ewl_Object * o)
-{
-	DCHECK_PARAM_PTR_RET("o", o, 0);
-
-	return o->layer;
-}
-
-inline void
 ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align)
 {
 	DCHECK_PARAM_PTR("o", o);
@@ -259,7 +210,7 @@ ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 inline Ewl_Alignment
 ewl_object_get_alignment(Ewl_Object * o)
 {
-	DCHECK_PARAM_PTR("o", o);
+	DCHECK_PARAM_PTR_RET("o", o, EWL_ALIGNMENT_LEFT);
 
 	return o->align;
 
@@ -268,7 +219,7 @@ ewl_object_get_alignment(Ewl_Object * o)
 inline Ewl_Fill_Policy
 ewl_object_get_fill_policy(Ewl_Object * o)
 {
-	DCHECK_PARAM_PTR("o", o);
+	DCHECK_PARAM_PTR_RET("o", o, EWL_FILL_POLICY_NORMAL);
 
 	return o->fill;
 }

@@ -8,8 +8,6 @@ static void __ewl_spinner_show(Ewl_Widget * widget, void *ev_data,
 			       void *user_data);
 static void __ewl_spinner_hide(Ewl_Widget * widget, void *ev_data,
 			       void *user_data);
-static void __ewl_spinner_destroy(Ewl_Widget * widget, void *ev_data,
-				  void *user_data);
 static void __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
 				    void *user_data);
 static void __ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data,
@@ -31,7 +29,10 @@ ewl_spinner_new()
 	Ewl_Spinner *spinner = NULL;
 
 	spinner = NEW(Ewl_Spinner, 1);
+	if (!spinner)
+		DRETURN_PTR(NULL);
 
+	memset(spinner, 0, sizeof(Ewl_Spinner));
 	__ewl_spinner_init(spinner);
 
 	return EWL_WIDGET(spinner);
@@ -89,9 +90,8 @@ __ewl_spinner_init(Ewl_Spinner * spinner)
 {
 	DCHECK_PARAM_PTR("spinner", spinner);
 
-	memset(spinner, 0, sizeof(Ewl_Spinner));
-	ewl_widget_init(EWL_WIDGET(spinner), 100, 15,
-			EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_LEFT);
+	ewl_widget_init(EWL_WIDGET(spinner), "/appearance/spinner");
+	ewl_object_set_minimum_size(EWL_OBJECT(spinner), 100, 15);
 
 	EWL_WIDGET(spinner)->recursive = TRUE;
 
@@ -102,8 +102,6 @@ __ewl_spinner_init(Ewl_Spinner * spinner)
 			    __ewl_spinner_show, NULL);
 	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_HIDE,
 			    __ewl_spinner_hide, NULL);
-	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_DESTROY,
-			    __ewl_spinner_destroy, NULL);
 	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_CONFIGURE,
 			    __ewl_spinner_configure, NULL);
 
@@ -191,28 +189,6 @@ __ewl_spinner_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_spinner_destroy(Ewl_Widget * widget, void *ev_data, void *user_data)
-{
-	Ewl_Widget *c;
-	DCHECK_PARAM_PTR("widget", widget);
-
-	while ((c =
-		ewd_list_remove_last(EWL_CONTAINER(widget)->children)) !=
-	       NULL)
-		ewl_widget_destroy(c);
-
-	evas_hide(widget->evas, widget->fx_clip_box);
-	evas_unset_clip(widget->evas, widget->fx_clip_box);
-	evas_del_object(widget->evas, widget->fx_clip_box);
-
-	ewl_callback_clear(widget);
-
-	ewl_theme_deinit_widget(widget);
-
-	FREE(widget);
-}
-
-static void
 __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
@@ -247,8 +223,6 @@ __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_current_geometry(EWL_OBJECT(w),
 					REQUEST_X(w), REQUEST_Y(w),
 					REQUEST_W(s->entry) + 12, 30);
-
-	ewl_fx_clip_box_resize(w);
 }
 
 static void

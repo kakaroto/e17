@@ -5,13 +5,9 @@
 static void __ewl_text_init(Ewl_Widget * widget);
 static void __ewl_text_realize(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
-static void __ewl_text_show(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
-static void ewl_text_hide(Ewl_Widget * w, void *ev_data,
-			  void *user_data);
-static void ewl_text_destroy(Ewl_Widget * w, void *ev_data,
+static void __ewl_text_destroy(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void ewl_text_configure(Ewl_Widget * w, void *ev_data,
+static void __ewl_text_configure(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 #define START_W 2048
 #define START_H 2048
@@ -42,8 +38,7 @@ __ewl_text_init(Ewl_Widget * widget)
 	 * Clear and initialize the text structure
 	 */
 	memset(text, 0, sizeof(Ewl_Text));
-	ewl_widget_init(widget, START_W, START_H, EWL_FILL_POLICY_NORMAL,
-			EWL_ALIGNMENT_LEFT);
+	ewl_widget_init(widget, "/appearance/text/default");
 
 	text->font = strdup("borzoib");
 	text->font_size = 15;
@@ -55,11 +50,9 @@ __ewl_text_init(Ewl_Widget * widget)
 	 */
 	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
 			    __ewl_text_realize, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_SHOW, __ewl_text_show, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_HIDE, ewl_text_hide, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_DESTROY, ewl_text_destroy,
+	ewl_callback_append(widget, EWL_CALLBACK_DESTROY, __ewl_text_destroy,
 			NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE, ewl_text_configure,
+	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
 			NULL);
 
 	DLEAVE_FUNCTION;
@@ -77,21 +70,14 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TEXT(w);
 
-	w->fx_clip_box = evas_add_rectangle(w->evas);
-	evas_set_color(w->evas, w->fx_clip_box, 255, 255, 255, 255);
-	evas_set_layer(w->evas, w->fx_clip_box, LAYER(w) - 1);
-	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-		evas_set_clip(w->evas, w->fx_clip_box,
-				EWL_CONTAINER(w->parent)->clip_box);
-
 	t->style = etox_style_new("Default");
 
 	/*
 	 * Determine the proper vertical alignment
 	 */
-	if (t->align & EWL_ALIGNMENT_BOTTOM)
+	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_BOTTOM)
 		v_align = ETOX_ALIGN_TYPE_BOTTOM;
-	else if (t->align & EWL_ALIGNMENT_TOP)
+	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_TOP)
 		v_align = ETOX_ALIGN_TYPE_TOP;
 	else
 		v_align = ETOX_ALIGN_TYPE_CENTER;
@@ -99,9 +85,9 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Determine the proper horizontal alignment
 	 */
-	if (t->align & EWL_ALIGNMENT_RIGHT)
+	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_RIGHT)
 		h_align = ETOX_ALIGN_TYPE_RIGHT;
-	else if (t->align & EWL_ALIGNMENT_LEFT)
+	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_LEFT)
 		h_align = ETOX_ALIGN_TYPE_LEFT;
 	else
 		h_align = ETOX_ALIGN_TYPE_CENTER;
@@ -142,29 +128,7 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_text_show(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	evas_show(w->evas, w->fx_clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
-ewl_text_hide(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	evas_hide(w->evas, w->fx_clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
-ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text * t;
 
@@ -172,13 +136,6 @@ ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
-
-	if (w->fx_clip_box)
-	  {
-		evas_hide(w->evas, w->fx_clip_box);
-		evas_unset_clip(w->evas, w->fx_clip_box);
-		evas_del_object(w->evas, w->fx_clip_box);
-	  }
 
 	if (t->tox)
 	  {
@@ -189,17 +146,11 @@ ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(t->text);
 
-	ewl_theme_deinit_widget(w);
-
-	ewl_callback_clear(w);
-
-	FREE(w);
-
 	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text * t;
 
@@ -207,15 +158,6 @@ ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
-
-	ewl_object_apply_requested(EWL_OBJECT(w));
-
-	if (w->fx_clip_box) {
-		evas_move(w->evas, w->fx_clip_box,
-				CURRENT_X(w), CURRENT_Y(w));
-		evas_resize(w->evas, w->fx_clip_box,
-				CURRENT_W(w), CURRENT_H(w));
-	}
 
 	if (t->tox)
 	  {
@@ -225,22 +167,19 @@ ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		etox_resize(t->tox, START_W, START_H);
 		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
 		etox_resize(t->tox, ww, hh);
-		ewl_object_set_custom_size(t, ww, hh);
+		ewl_object_set_custom_size(EWL_OBJECT(w), ww, hh);
 	  }
 
 	DLEAVE_FUNCTION;
 }
 
 void
-ewl_text_set_text(Ewl_Widget * w, const char *text)
+ewl_text_set_text(Ewl_Text * t, char *text)
 {
-	Ewl_Text * t;
 	char * ot;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	ot = t->text;
 
@@ -257,7 +196,8 @@ ewl_text_set_text(Ewl_Widget * w, const char *text)
 		etox_set_text(t->tox, ET_TEXT(t->text), ET_END);
 		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
 		etox_resize(t->tox, ww, hh);
-		ewl_widget_configure(w);
+		ewl_object_set_custom_size(EWL_OBJECT(t), ww, hh);
+		ewl_widget_configure(EWL_WIDGET(t));
 	  }
 
 	IF_FREE(ot);
@@ -266,28 +206,20 @@ ewl_text_set_text(Ewl_Widget * w, const char *text)
 }
 
 char *
-ewl_text_get_text(Ewl_Widget * w)
+ewl_text_get_text(Ewl_Text * t)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
 	DRETURN_PTR(t->text ? strdup(t->text) : NULL);
 }
 
 void
-ewl_text_set_font(Ewl_Widget * w, char *f)
+ewl_text_set_font(Ewl_Text * t, char *f)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("f", f);
-
-	t = EWL_TEXT(w);
 
 	IF_FREE(t->font);
 
@@ -299,27 +231,19 @@ ewl_text_set_font(Ewl_Widget * w, char *f)
 }
 
 char *
-ewl_text_get_font(Ewl_Widget * w)
+ewl_text_get_font(Ewl_Text * t)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
 	DRETURN_PTR(t->font ? strdup(t->font) : NULL);
 }
 
 void
-ewl_text_set_font_size(Ewl_Widget * w, int s)
+ewl_text_set_font_size(Ewl_Text * t, int s)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	t->font_size = s;
 
@@ -329,27 +253,19 @@ ewl_text_set_font_size(Ewl_Widget * w, int s)
 }
 
 int
-ewl_text_get_font_size(Ewl_Widget * w)
+ewl_text_get_font_size(Ewl_Text * t)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("w", w, 0);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
 
 	DRETURN_INT(t->font_size);
 }
 
 void
-ewl_text_set_color(Ewl_Widget * w, int r, int g, int b, int a)
+ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	etox_color_set_member(t->color, "EWL", r, g, b, a);
 
@@ -357,23 +273,21 @@ ewl_text_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 }
 
 void
-ewl_text_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
+ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
 {
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
+
+	etox_color_get_member(t->color, "EWL", r, g, b, a);
 
 	DLEAVE_FUNCTION;
 }
 
 void
-ewl_text_set_style(Ewl_Widget * w, char * s)
+ewl_text_set_style(Ewl_Text * t, char * s)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	if (!s || (s && !strlen(s)))
 		t->style = etox_style_new("Default");
@@ -384,15 +298,11 @@ ewl_text_set_style(Ewl_Widget * w, char * s)
 }
 
 void
-ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
+ewl_text_get_text_geometry(Ewl_Text * t, double *xx, double *yy,
 			double *ww, double *hh)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	etox_get_geometry(t->tox, xx, yy, ww, hh);
 
@@ -400,15 +310,11 @@ ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
 }
 
 void
-ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
+ewl_text_get_letter_geometry(Ewl_Text * t, int i,
 			     double *xx, double *yy, double *ww, double *hh)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	etox_get_at(t->tox, i, xx, yy, ww, hh);
 
@@ -416,15 +322,11 @@ ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
 }
 
 void
-ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
+ewl_text_get_letter_geometry_at(Ewl_Text * t, double x, double y,
 				double *tx, double *ty, double *tw, double *th)
 {
-	Ewl_Text * t;
-
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
+	DCHECK_PARAM_PTR("t", t);
 
 	etox_get_at_position(t->tox, x, y, tx, ty, tw, th);
 
@@ -432,24 +334,21 @@ ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
 }
 
 void
-ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
+ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
 {
 	Etox_Align_Type h_align, v_align;
-	Ewl_Text * t;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("t", t);
 
-	t = EWL_TEXT(w);
-
-	t->align = a;
+	EWL_OBJECT(t)->align = a;
 
 	if (!t->tox)
 		DRETURN;
 
-        if (t->align & EWL_ALIGNMENT_BOTTOM)
+        if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_BOTTOM)
                 v_align = ETOX_ALIGN_TYPE_BOTTOM;
-        else if (t->align & EWL_ALIGNMENT_TOP)
+        else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_TOP)
                 v_align = ETOX_ALIGN_TYPE_TOP;
         else
                 v_align = ETOX_ALIGN_TYPE_CENTER;
@@ -457,9 +356,9 @@ ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
         /*
          * Determine the proper horizontal alignment
          */
-        if (t->align & EWL_ALIGNMENT_RIGHT)
+        if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_RIGHT)
                 h_align = ETOX_ALIGN_TYPE_RIGHT;
-        else if (t->align & EWL_ALIGNMENT_LEFT)
+        else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_LEFT)
                 h_align = ETOX_ALIGN_TYPE_LEFT;
         else
                 h_align = ETOX_ALIGN_TYPE_CENTER;

@@ -28,7 +28,8 @@ __toggle_child_fill_policy(Ewl_Widget * w, void * ev_data, void * user_data)
 	if (f == EWL_FILL_POLICY_NORMAL)
 	  {
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
-		ewl_object_set_custom_size(EWL_OBJECT(w), 0, 0);
+		ewl_object_set_minimum_size(EWL_OBJECT(w), 100, 17);
+		ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 1 << 30);
 		ewl_button_set_label(w, "Fill");
 		ewl_widget_configure(w->parent);
 	  }
@@ -127,7 +128,7 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	Ewl_Widget * hbox[3];
 	Ewl_Widget * hbox_button[2][3];
 
-	ewl_callback_del_type(w, EWL_CALLBACK_CLICKED);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_box_test_window);
 
 	box_button = w;
 

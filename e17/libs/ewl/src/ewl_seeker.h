@@ -12,6 +12,8 @@ struct _ewl_seeker {
 	double value;
 	double range;
 	double jump;
+
+	int dragstart;
 };
 
 Ewl_Widget *ewl_seeker_new(Ewl_Orientation orientation);

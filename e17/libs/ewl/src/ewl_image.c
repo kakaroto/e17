@@ -12,8 +12,6 @@ static void __ewl_image_show(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
 static void __ewl_image_hide(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_image_destroy(Ewl_Widget * w, void *ev_data,
-				void *user_data);
 static void __ewl_image_configure(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 
@@ -308,15 +306,13 @@ __ewl_image_init(Ewl_Image * i)
 
 	w = EWL_WIDGET(i);
 
-	ewl_widget_init(w, 0, 0, EWL_FILL_POLICY_NORMAL,
-			EWL_ALIGNMENT_CENTER);
+	ewl_widget_init(w, NULL);
+	ewl_callback_clear(w);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_image_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_image_hide, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_image_destroy,
-			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_image_configure, NULL);
 
@@ -335,28 +331,22 @@ __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	i = EWL_IMAGE(w);
 
-	ewl_fx_clip_box_create(w);
-
-	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-		evas_set_clip(w->evas, w->fx_clip_box,
-			      EWL_CONTAINER(w->parent)->clip_box);
-
 	switch (i->type) {
-	case EWL_IMAGE_TYPE_NORMAL:
-		i->image = evas_add_image_from_file(w->evas, i->path);
-		evas_set_layer(w->evas, i->image, LAYER(w));
-		evas_set_clip(w->evas, i->image, w->fx_clip_box);
-		evas_show(w->evas, i->image);
-		break;
-	case EWL_IMAGE_TYPE_EBITS:
-		i->image = ebits_load(i->path);
-		ebits_add_to_evas(i->image, w->evas);
-		ebits_set_layer(i->image, LAYER(w));
-		ebits_set_clip(i->image, w->fx_clip_box);
-		ebits_show(i->image);
-		break;
-	default:
-		break;
+		case EWL_IMAGE_TYPE_NORMAL:
+			i->image = evas_add_image_from_file(w->evas, i->path);
+			evas_set_layer(w->evas, i->image, LAYER(w));
+			evas_set_clip(w->evas, i->image, w->fx_clip_box);
+			evas_show(w->evas, i->image);
+			break;
+		case EWL_IMAGE_TYPE_EBITS:
+			i->image = ebits_load(i->path);
+			ebits_add_to_evas(i->image, w->evas);
+			ebits_set_layer(i->image, LAYER(w));
+			ebits_set_clip(i->image, w->fx_clip_box);
+			ebits_show(i->image);
+			break;
+		default:
+			break;
 	}
 
 	DLEAVE_FUNCTION;
@@ -375,12 +365,6 @@ __ewl_image_show(Ewl_Widget * w, void *ev_data, void *user_data)
 
 static void
 __ewl_image_hide(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-
-}
-
-static void
-__ewl_image_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 }
@@ -413,8 +397,6 @@ __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_current_geometry(EWL_OBJECT(w),
 					REQUEST_X(w), REQUEST_Y(w),
 					REQUEST_W(w), REQUEST_H(w));
-
-	ewl_fx_clip_box_resize(w);
 
 	DLEAVE_FUNCTION;
 }

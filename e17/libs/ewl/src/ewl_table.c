@@ -11,17 +11,11 @@ static void __ewl_table_hide(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
 static void __ewl_table_destroy(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_table_destroy_recursive(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
 static void __ewl_table_configure(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-static void __ewl_table_theme_update(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
 
 /* make the configure callback smaller by spliting up big stuff into
  * small functions... */
-static void __ewl_table_configure_gfx(Ewl_Widget * w);
-static void __ewl_table_configure_children(Ewl_Widget * w);
 Ewd_List *__ewl_table_fill_normal(Ewl_Widget * w, int *rem_w, int *rem_h);
 void __ewl_table_fill_fillers(Ewl_Widget * w,
 			      int rem_w, int rem_h, Ewd_List * l);
@@ -42,7 +36,10 @@ ewl_table_new_all(unsigned int homogeneous,
 	Ewl_Table *t;
 
 	t = NEW(Ewl_Table, 1);
+	if (!t)
+		DRETURN_PTR(NULL);
 
+	memset(t, 0, sizeof(Ewl_Table));
 	__ewl_table_init(t);
 
 	t->columns = columns;
@@ -82,7 +79,7 @@ ewl_table_attach(Ewl_Widget * t, Ewl_Widget * c,
 	child->start_row = start_row - 1;
 	child->end_row = end_row - 1;
 
-	ewl_widget_set_data(c, t, child);
+	ewl_widget_set_data(c, (void *)t, child);
 
 	ewl_container_append_child(EWL_CONTAINER(t), c);
 }
@@ -102,10 +99,10 @@ ewl_table_detach(Ewl_Widget * t, unsigned int c, unsigned int r)
 	w = ewl_table_get_child(t, c, r);
 	ewl_container_remove_child(EWL_CONTAINER(t), w);
 
-	child = ewl_widget_get_data(w, t);
+	child = ewl_widget_get_data(w, (void *)t);
 
 	if (child) {
-		ewl_widget_del_data(w, t);
+		ewl_widget_del_data(w, (void *)t);
 		FREE(child);
 	}
 }
@@ -208,7 +205,7 @@ ewl_table_get_child(Ewl_Widget * t, unsigned int c, unsigned int r)
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
 	while ((w = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL) {
-		child = ewl_widget_get_data(w, t);
+		child = ewl_widget_get_data(w, (void *)t);
 
 		if (child && child->start_col <= c &&
 		    child->end_col >= c && child->start_row <= r &&
@@ -245,9 +242,8 @@ __ewl_table_init(Ewl_Table * t)
 {
 	DCHECK_PARAM_PTR("t", t);
 
-	memset(t, 0, sizeof(Ewl_Table));
-	ewl_container_init(EWL_CONTAINER(t), 10, 10,
-			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
+	ewl_container_init(EWL_CONTAINER(t), "/appearance/table");
+	ewl_object_set_alignment(EWL_OBJECT(t), EWL_ALIGNMENT_CENTER);
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REALIZE,
 			    __ewl_table_realize, NULL);
@@ -255,14 +251,10 @@ __ewl_table_init(Ewl_Table * t)
 			    __ewl_table_show, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_HIDE,
 			    __ewl_table_hide, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_DESTROY,
+	ewl_callback_prepend(EWL_WIDGET(t), EWL_CALLBACK_DESTROY,
 			    __ewl_table_destroy, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_DESTROY_RECURSIVE,
-			    __ewl_table_destroy_recursive, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
 			    __ewl_table_configure, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_THEME_UPDATE,
-			    __ewl_table_theme_update, NULL);
 
 }
 
@@ -326,99 +318,17 @@ __ewl_table_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	if (EWL_TABLE(w)->ebits_bg) {
-		ebits_hide(EWL_TABLE(w)->ebits_bg);
-		ebits_unset_clip(EWL_TABLE(w)->ebits_bg);
-		ebits_free(EWL_TABLE(w)->ebits_bg);
-	}
-
-	if (w->fx_clip_box) {
-		evas_hide(w->evas, w->fx_clip_box);
-		evas_unset_clip(w->evas, w->fx_clip_box);
-		evas_del_object(w->evas, w->fx_clip_box);
-	}
-
-	if (EWL_CONTAINER(w)->clip_box) {
-		evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
-		evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
-		evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
-	}
-
 	IF_FREE(EWL_TABLE(w)->col_w);
 	IF_FREE(EWL_TABLE(w)->row_h);
 
-/*	IF_FREE(EWL_TABLE(w)->custom_col_w); */
-
-	ewl_callback_clear(w);
-
-	ewl_theme_deinit_widget(w);
-
-	FREE(w);
-
 	DLEAVE_FUNCTION;
-}
-
-/*
- * Recursively destroy the table and it's children
- */
-static void
-__ewl_table_destroy_recursive(Ewl_Widget * w, void *ev_data,
-			      void *user_data)
-{
-	Ewl_Table_Child *child;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	if (!EWL_CONTAINER(w)->children)
-		DLEAVE_FUNCTION;
-
-	while ((child =
-		ewd_list_remove_last(EWL_CONTAINER(w)->children)) != NULL)
-	{
-		ewl_widget_destroy_recursive(child->widget);
-		FREE(child);
-	}
-
-	DLEAVE_FUNCTION;
-}
-
-/*
- * This callback configures the table and it's child widgets
- */
-static void
-__ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	__ewl_table_configure_children(w);
-	__ewl_table_configure_gfx(w);
-}
-
-/*
- * Configure the graphics of the table
- */
-void
-__ewl_table_configure_gfx(Ewl_Widget * w)
-{
-	int t_req_x, t_req_y, t_req_w, t_req_h;
-
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_object_requested_geometry(EWL_OBJECT(w), &t_req_x, &t_req_y,
-				      &t_req_w, &t_req_h);
-
-	if (EWL_TABLE(w)->ebits_bg) {
-		ebits_move(EWL_TABLE(w)->ebits_bg, t_req_x, t_req_y);
-		ebits_resize(EWL_TABLE(w)->ebits_bg, t_req_w, t_req_h);
-	}
-
-	ewl_fx_clip_box_resize(w);
 }
 
 /*
  * Reassign sizes and positions to each of the child widgets
  */
-void
-__ewl_table_configure_children(Ewl_Widget * w)
+static void
+__ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int rem_w, rem_h;
 	Ewd_List *fillers;
@@ -457,7 +367,7 @@ __ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w,
 	used_w += req_w;
 	used_h += req_h;
 
-	child = ewl_widget_get_data(c, w);
+	child = ewl_widget_get_data(c, (void *)w);
 	if (!child)
 		return;
 
@@ -579,7 +489,7 @@ __ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h,
 	num = ewd_list_nodes(l);
 	ewd_list_goto_first(l);
 	for (c = ewd_list_next(l); c; c = ewd_list_next(l)) {
-		child = ewl_widget_get_data(c, w);
+		child = ewl_widget_get_data(c, (void *)w);
 		if (child) {
 			total_cols +=
 			    child->end_col - child->start_col + 1;
@@ -592,7 +502,7 @@ __ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h,
 	for (c = ewd_list_next(l); c; c = ewd_list_next(l)) {
 		int i, x, y, cols, rows, req_w, req_h;
 
-		child = ewl_widget_get_data(c, w);
+		child = ewl_widget_get_data(c, (void *)w);
 		if (!child)
 			continue;
 
@@ -666,7 +576,7 @@ __ewl_table_layout_children(Ewl_Table * w)
 	 */
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
-		Ewl_Table_Child *c = ewl_widget_get_data(child, w);
+		Ewl_Table_Child *c = ewl_widget_get_data(child, (void *)w);
 
 		/*
 		 * Ok, now that we have offset tables put each child at its
@@ -685,83 +595,4 @@ __ewl_table_layout_children(Ewl_Table * w)
 	}
 
 	ewl_widget_configure(child);
-}
-
-
-/*
- * Read in any changes to the theme and redraw any elements that are necessary
- */
-static void
-__ewl_table_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Table *b;
-	char *i;
-	char *v;
-
-	DENTER_FUNCTION;
-
-	DCHECK_PARAM_PTR("w", w);
-
-	/*
-	 * Shouldn't do anything if the widget isn't realized yet 
-	 */
-	if (!w->object.realized)
-		DRETURN;
-
-	b = EWL_TABLE(w);
-
-	/*
-	 * Check if GFX should be visible or not 
-	 */
-	v = ewl_theme_data_get(w,
-			       "/appearance/table/default/base/visible");
-
-	/*
-	 * Destroy old image (if any)
-	 */
-	if (w->ebits_object)
-	  {
-		ebits_hide(w->ebits_object);
-		ebits_unset_clip(w->ebits_object);
-		ebits_free(w->ebits_object);
-	  }
-
-	/*
-	 * If we don't want to show the new graphics, then we're pretty much
-	 * finished. Lots of people say goto's are evile, but this is the type
-	 * of case where they are probably a better choice than alternate
-	 * approaches.
-	 */
-	if (!v || strncasecmp(v, "yes", 3) != 0)
-		goto table_theme_update_end;
-
-	/*
-	 * Determine the path to the bit file we want.
-	 */
-	i = ewl_theme_image_get(w, "/appearance/table/default/base");
-
-	if (!i)
-		goto table_theme_update_end;
-
-	/*
-	 * Load our new theme bits
-	 */
-	w->ebits_object = ebits_load(i);
-	FREE(i);
-
-	if (w->ebits_object) {
-		ebits_add_to_evas(w->ebits_object, w->evas);
-		ebits_set_layer(w->ebits_object, LAYER(w));
-		ebits_set_clip(w->ebits_object, w->fx_clip_box);
-
-		ebits_show(w->ebits_object);
-	}
-
-      table_theme_update_end:
-
-	/*
-	 * Finally configure the widget to update changes 
-	 */
-	ewl_widget_configure(w);
-
 }

@@ -16,6 +16,7 @@
 typedef enum _ewl_callback_type Ewl_Callback_Type;
 
 enum _ewl_callback_type {
+	EWL_CALLBACK_EXPOSE,
 	EWL_CALLBACK_REALIZE,
 	EWL_CALLBACK_SHOW,
 	EWL_CALLBACK_HIDE,
@@ -80,6 +81,10 @@ enum _ewl_alignment {
 	EWL_ALIGNMENT_BOTTOM = 0x20
 };
 
+/*
+ * Fill policy identifies to containers whether child widgets should be
+ * stretched to fill available space or keep their current size.
+ */
 typedef enum _ewl_fill_policy Ewl_Fill_Policy;
 
 enum _ewl_fill_policy {
@@ -87,13 +92,15 @@ enum _ewl_fill_policy {
 	EWL_FILL_POLICY_FILL
 };
 
-typedef enum _ewl_position Ewl_Position;
+/*
+ * Visibility identifies whether a widget is shown and has been realized
+ */
+typedef enum _ewl_visibility Ewl_Visibility;
 
-enum _ewl_position {
-	EWL_POSITION_TOP,
-	EWL_POSITION_LEFT,
-	EWL_POSITION_RIGHT,
-	EWL_POSITION_BOTTOM
+enum _ewl_visibility {
+	EWL_VISIBILITY_HIDDEN = 0x0,
+	EWL_VISIBILITY_SHOWN = 0x1,
+	EWL_VISIBILITY_REALIZED = 0x2
 };
 
 #endif				/* __EWL_ENUMS_H__ */

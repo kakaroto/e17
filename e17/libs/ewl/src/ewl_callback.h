@@ -28,8 +28,6 @@ int ewl_callback_append(Ewl_Widget * widget, Ewl_Callback_Type type,
 			Ewl_Cb_Func func, void *user_data);
 int ewl_callback_prepend(Ewl_Widget * widget, Ewl_Callback_Type type,
 			 Ewl_Cb_Func func, void *user_data);
-void ewl_callback_del(Ewl_Widget * widget, Ewl_Callback_Type type,
-		      int cb_id);
 void ewl_callback_clear(Ewl_Widget * widget);
 void ewl_callback_call(Ewl_Widget * widget, Ewl_Callback_Type type);
 void ewl_callback_call_with_event_data(Ewl_Widget * widget,
@@ -38,5 +36,6 @@ void ewl_callback_call_with_event_data(Ewl_Widget * widget,
 void ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 				Ewl_Cb_Func func, void *user_data);
 void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t);
+void ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f);
 
 #endif

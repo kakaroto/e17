@@ -26,12 +26,13 @@ __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	Ewl_Widget * check_button[2];
 	Ewl_Widget * radio_button[2];
 
-	button_button = w;
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_button_test_window);
 
-	ewl_callback_del_type(w, EWL_CALLBACK_CLICKED);
+	button_button = w;
 
 	button_win = ewl_window_new();
 	ewl_window_resize(button_win, 92, 167);
+	ewl_window_set_min_size(button_win, 92, 167);
 	ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,
 		__destroy_button_test_window, NULL);
 	ewl_widget_show(button_win);
@@ -44,11 +45,13 @@ __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	button[0] = ewl_button_new("With Label");
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button[0]);
 	ewl_object_set_alignment(EWL_OBJECT(button[0]), EWL_ALIGNMENT_LEFT);
+	ewl_object_set_custom_size(EWL_OBJECT(button[0]), 100, 17);
 	ewl_widget_show(button[0]);
 
 	button[1] = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button[1]);
 	ewl_object_set_alignment(EWL_OBJECT(button[1]), EWL_ALIGNMENT_LEFT);
+	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 17);
 	ewl_widget_show(button[1]);
 
 	check_button[0] = ewl_checkbutton_new("With Label");

@@ -15,12 +15,10 @@ typedef struct _ewl_container Ewl_Container;
 struct _ewl_container {
 	Ewl_Widget widget;
 	Ewd_List *children;
-	Ewd_Free_Cb free_cb;
 	Evas_Object clip_box;
 };
 
-void ewl_container_init(Ewl_Container * widget, int w, int h,
-			Ewl_Fill_Policy fill, Ewl_Alignment align);
+void ewl_container_init(Ewl_Container * widget, char *appearance);
 void ewl_container_append_child(Ewl_Container * parent,
 				Ewl_Widget * child);
 void ewl_container_prepend_child(Ewl_Container * parent,

@@ -8,7 +8,7 @@
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
-/*#ifdef _DEBUG*/
+#ifdef _DEBUG
 
 #define DENTER_FUNCTION \
 { \
@@ -86,7 +86,7 @@
 	fprintf(stderr, (str)); \
 }
 
-/*
+
 #else
 
 #define DENTER_FUNCTION
@@ -99,7 +99,7 @@
 #define DWARNING(str)
 #define DSUMMARY
 
-#endif * _DEBUG */
+#endif /* _DEBUG */
 
 #define DCHECK_PARAM_PTR(str, ptr) \
 { \
