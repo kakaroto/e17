@@ -1778,8 +1778,9 @@ Config_Button(FILE * ConfigFile)
 	     break;
 	  case BUTTON_DESK:
 	     desk = atoi(s2);
+	     desk = ((unsigned int)desk) % ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 	     if (pbt)
-		pbt->desktop = desk;
+		ButtonMoveToDesktop(pbt, desk);
 	     break;
 	  case BUTTON_STICKY:
 	     sticky = atoi(s2);

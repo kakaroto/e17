@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #define DECLARE_STRUCT_BACKGROUND
+#define DECLARE_STRUCT_BUTTON
 #include "E.h"
 #include "timestamp.h"
 #include <ctype.h>
@@ -1621,13 +1622,17 @@ IPC_ListClassMembers(const char *params, Client * c)
 	  }
 	else if (!strcmp(params, "buttons"))
 	  {
-	     Button            **lst;
+	     Button            **lst, *b;
 
 	     lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
 	     for (i = 0; i < num; i++)
 	       {
+		  b = lst[i];
 		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", ButtonGetName(lst[i]));
+		  Esnprintf(buf2, sizeof(buf2),
+			    "%#lx %2d %2d %2d %5d+%5d %5dx%5d %s\n", b->win,
+			    b->desktop, b->sticky, b->ontop, b->x, b->y, b->w,
+			    b->h, ButtonGetName(b));
 		  if (buf)
 		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
 		  else

@@ -672,11 +672,10 @@ DesktopAt(int x, int y)
 static void
 MoveStickyWindowsToCurrentDesk(void)
 {
-   EWin               *const *lst, *ewin, *last_ewin;
+   EWin               *const *lst, *ewin;
    int                 i, num;
 
    lst = EwinListGetStacking(&num);
-   last_ewin = NULL;
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
@@ -690,7 +689,23 @@ MoveStickyWindowsToCurrentDesk(void)
 	EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
 	HintsSetWindowArea(ewin);
 	HintsSetWindowDesktop(ewin);
-	last_ewin = ewin;
+     }
+}
+
+static void
+MoveStickyButtonsToCurrentDesk(void)
+{
+   Button            **lst, *btn;
+   int                 i, num;
+
+   lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   for (i = 0; i < num; i++)
+     {
+	btn = lst[i];
+	if (!btn->sticky || btn->internal)
+	   continue;
+
+	ButtonMoveToDesktop(btn, desks.current);
      }
 }
 
@@ -940,6 +955,7 @@ RaiseDesktop(int desk)
    StackDesktops();
    desks.current = desk;
    MoveStickyWindowsToCurrentDesk();
+   MoveStickyButtonsToCurrentDesk();
    StackDesktop(desks.current);
    FocusNewDesk();
    FX_DeskChange();
@@ -970,6 +986,7 @@ LowerDesktop(int desk)
    StackDesktops();
    desks.current = desks.order[0];
    MoveStickyWindowsToCurrentDesk();
+   MoveStickyButtonsToCurrentDesk();
    StackDesktop(desks.current);
    FocusNewDesk();
    FX_DeskChange();
@@ -1062,69 +1079,58 @@ StackDesktop(int desk)
     * Build the window stack, top to bottom
     */
 
-   wl2 = ListProgressWindows(&wnum);
-   if (wl2)
+   if (desk == 0)
      {
-	for (i = 0; i < wnum; i++)
-	   _APPEND_TO_WIN_LIST(wl2[i]);
-	Efree(wl2);
-     }
-   if (init_win_ext)
-     {
-	_APPEND_TO_WIN_LIST(init_win_ext);
-     }
-   if (init_win1)
-     {
-	_APPEND_TO_WIN_LIST(init_win1);
-	_APPEND_TO_WIN_LIST(init_win2);
+	wl2 = ListProgressWindows(&wnum);
+	if (wl2)
+	  {
+	     for (i = 0; i < wnum; i++)
+		_APPEND_TO_WIN_LIST(wl2[i]);
+	     Efree(wl2);
+	  }
+	if (init_win_ext)
+	  {
+	     _APPEND_TO_WIN_LIST(init_win_ext);
+	  }
+	if (init_win1)
+	  {
+	     _APPEND_TO_WIN_LIST(init_win1);
+	     _APPEND_TO_WIN_LIST(init_win2);
+	  }
      }
 
    lst = EwinListGetStacking(&wnum);
    blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
 
-   /* Sticky buttons */
-   if (blst)
-     {
-	for (i = 0; i < bnum; i++)
-	  {
-	     if (!blst[i]->sticky || blst[i]->internal)
-		continue;
-
-	     _APPEND_TO_WIN_LIST(blst[i]->win);
-	  }
-     }
-
    /* Floating EWins */
-   if (lst)
+   for (i = 0; i < wnum; i++)
      {
-	for (i = 0; i < wnum; i++)
-	  {
-	     if (!lst[i]->floating)
-		continue;
+	ewin = lst[i];
+	if (!ewin->floating || EwinGetDesk(ewin) != desk)
+	   continue;
 
-	     _APPEND_TO_WIN_LIST(lst[i]->win);
-	  }
+	_APPEND_TO_WIN_LIST(ewin->win);
      }
 
-   /* The virtual desktop windows */
-   for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+   /* "Above" buttons */
+   for (i = 0; i < bnum; i++)
      {
-	if (desks.order[i] == 0)
-	   break;
+	if (blst[i]->internal || blst[i]->desktop != desk ||
+	    blst[i]->ontop != 1)
+	   continue;
 
-	_APPEND_TO_WIN_LIST(desks.desk[desks.order[i]].win);
+	_APPEND_TO_WIN_LIST(blst[i]->win);
      }
 
-   /* Non-sticky, "above" buttons */
-   if (blst)
+   if (desk == 0)
      {
-	for (i = 0; i < bnum; i++)
+	/* The virtual desktop windows */
+	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	  {
-	     if (blst[i]->desktop != desk || blst[i]->ontop != 1 ||
-		 blst[i]->sticky || blst[i]->internal)
-		continue;
+	     if (desks.order[i] == 0)
+		break;
 
-	     _APPEND_TO_WIN_LIST(blst[i]->win);
+	     _APPEND_TO_WIN_LIST(desks.desk[desks.order[i]].win);
 	  }
      }
 
@@ -1132,7 +1138,7 @@ StackDesktop(int desk)
    for (i = 0; i < wnum; i++)
      {
 	ewin = lst[i];
-	if (EwinGetDesk(ewin) != desk || ewin->floating)
+	if (ewin->floating || EwinGetDesk(ewin) != desk)
 	   continue;
 
 	_APPEND_TO_WIN_LIST(ewin->win);
@@ -1140,21 +1146,25 @@ StackDesktop(int desk)
 	   _APPEND_TO_WIN_LIST(Mode.menus.cover_win);
      }
 
-   /* Non-sticky, "below" buttons */
-   if (blst)
+   /* "Normal" buttons */
+   for (i = 0; i < bnum; i++)
      {
-	for (i = 0; i < bnum; i++)
-	  {
-	     if (blst[i]->desktop != desk || blst[i]->ontop != -1 ||
-		 blst[i]->sticky || blst[i]->internal)
-		continue;
+	if (blst[i]->internal || blst[i]->desktop != desk ||
+	    blst[i]->ontop != 0)
+	   continue;
 
-	     _APPEND_TO_WIN_LIST(blst[i]->win);
-	  }
+	_APPEND_TO_WIN_LIST(blst[i]->win);
      }
 
-   /* The current (virtual) root window */
-   _APPEND_TO_WIN_LIST(desks.desk[desk].win);
+   /* "Below" buttons */
+   for (i = 0; i < bnum; i++)
+     {
+	if (blst[i]->internal || blst[i]->desktop != desk ||
+	    blst[i]->ontop != -1)
+	   continue;
+
+	_APPEND_TO_WIN_LIST(blst[i]->win);
+     }
 
    if (EventDebug(EDBUG_TYPE_STACKING))
      {

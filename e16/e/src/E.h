@@ -1748,7 +1748,7 @@ void                ButtonHide(Button * b);
 void                ButtonToggle(Button * b);
 void                ButtonDraw(Button * b);
 void                ButtonDrawWithState(Button * b, int state);
-void                ButtonMoveToDesktop(Button * b, int num);
+void                ButtonMoveToDesktop(Button * b, int desk);
 void                ButtonMoveToCoord(Button * b, int x, int y);
 void                ButtonMoveRelative(Button * b, int dx, int dy);
 void                ButtonIncRefcount(Button * b);

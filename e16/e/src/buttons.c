@@ -65,6 +65,8 @@ ButtonCreate(const char *name, ImageClass * iclass, ActionClass * aclass,
    b->ontop = ontop;
    b->flags = flags;
    b->sticky = sticky;
+   if (sticky && ontop == 1)
+      desk = 0;
    b->desktop = desk;
    b->visible = 0;
    b->geom.width.min = minw;
@@ -251,22 +253,17 @@ ButtonShow(Button * b)
 }
 
 void
-ButtonMoveToDesktop(Button * b, int num)
+ButtonMoveToDesktop(Button * b, int desk)
 {
    EDBUG(3, "ButtonMoveToDesktop");
 
-   if (b->sticky)
-     {
-	b->desktop = 0;
-	EReparentWindow(disp, b->win, desks.desk[0].win, b->x, b->y);
-	XRaiseWindow(disp, b->win);
-     }
-   else
-     {
-	b->desktop = num;
-	EReparentWindow(disp, b->win, desks.desk[DESKTOPS_WRAP_NUM(num)].win,
-			b->x, b->y);
-     }
+   if (b->sticky && b->ontop == 1)
+      desk = 0;
+   if (b->desktop == desk)
+      EDBUG_RETURN_;
+
+   b->desktop = desk;
+   EReparentWindow(disp, b->win, desks.desk[desk].win, b->x, b->y);
 
    EDBUG_RETURN_;
 }
