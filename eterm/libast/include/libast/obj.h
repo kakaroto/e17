@@ -193,7 +193,7 @@
  */
 #define SPIF_DEFINE_PROPERTY_FUNC(otype, vtype, name)  \
   SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
-    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self-> ## name) : (SPIF_NULL_TYPE(vtype))); } \
+    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self->name) : (SPIF_NULL_TYPE(vtype))); } \
   SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, SPIF_TYPE(vtype) new_ ## name) \
     { \
         if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
@@ -223,7 +223,7 @@
  */
 #define SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(otype, vtype, name)  \
   SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
-    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self-> ## name) : (SPIF_CAST(vtype) (0))); } \
+    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self->name) : (SPIF_CAST(vtype) (0))); } \
   SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, SPIF_TYPE(vtype) new_ ## name) \
     { \
         if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
