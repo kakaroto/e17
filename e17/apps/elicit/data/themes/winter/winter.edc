@@ -1,0 +1,53 @@
+// --- Winter theme for elicit --- //
+// Author: Rephorm
+// reCreated: Feb '04
+//
+
+#include "macros/button.inc"
+#include "macros/color.inc"
+
+fonts
+{
+  font, "Vera.ttf" "Vera";
+}
+
+images
+{
+  image, "base.png" LOSSY 98;
+  image, "left-border.png" LOSSY 98;
+  image, "left-panel.png" LOSSY 98;
+  image, "left-shadow.png" LOSSY 98;
+  image, "roundedbox.png" LOSSY 98;
+  image, "dropper.png" LOSSY 98;
+  image, "dropper2.png" LOSSY 98;
+  image, "target.png" LOSSY 98;
+  image, "target2.png" LOSSY 98;
+  image, "x.png" LOSSY 98;
+  image, "x2.png" LOSSY 98;
+  image, "arrow-up.png" LOSSY 98;
+  image, "arrow-dn.png" LOSSY 98;
+}
+
+collections {
+  group {
+    name, "elicit";
+    min, 180 125;
+    parts {
+#include "parts/main.edc"
+#include "parts/buttons.edc"
+#include "parts/colors.edc"
+    }
+
+
+    
+// ------------------------ programs ----------------------------- //
+
+    programs {
+#include "programs/buttons.edc"
+#include "programs/panel.edc"
+#include "programs/colors.edc"
+    }
+
+  }
+}
+
