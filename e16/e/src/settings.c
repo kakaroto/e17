@@ -1467,7 +1467,9 @@ SettingsPlacement(void)
    tmp_switch_popup = mode.switchfortransientmap;
    tmp_manual_placement = mode.manual_placement;
    tmp_manual_placement_mouse_pointer = mode.manual_placement_mouse_pointer;
+#ifdef HAS_XINERAMA
    tmp_extra_head = mode.extra_head;
+#endif
 
    d = CreateDialog("CONFIGURE_PLACEMENT");
    DialogSetTitle(d, _("Window Placement Settings"));
@@ -2066,8 +2068,9 @@ CB_ConfigureFX(int val, void *data)
 	if ((desks.dragdir != tmp_dragdir)
 	    || ((tmp_dragbar) && (desks.dragbar_width < 1)) || ((!tmp_dragbar)
 								&&
-								(desks.dragbar_width
-								 > 0)))
+								(desks.
+								 dragbar_width >
+								 0)))
 	  {
 	     Button             *b;
 
