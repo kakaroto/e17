@@ -133,7 +133,7 @@ ewl_widget_theme_update(Ewl_Widget * w)
 }
 
 void
-ewl_widget_set_data(Ewl_Widget * w, char *k, void *v)
+ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -149,7 +149,7 @@ ewl_widget_set_data(Ewl_Widget * w, char *k, void *v)
 }
 
 void
-ewl_widget_del_data(Ewl_Widget * w, char *k)
+ewl_widget_del_data(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -162,7 +162,7 @@ ewl_widget_del_data(Ewl_Widget * w, char *k)
 }
 
 void *
-ewl_widget_get_data(Ewl_Widget * w, char *k)
+ewl_widget_get_data(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("w", w, NULL);

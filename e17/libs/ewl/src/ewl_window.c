@@ -208,15 +208,15 @@ __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (w->ebits_object) {
 		ebits_resize(w->ebits_object, CURRENT_W(w), CURRENT_H(w));
 		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+	}
 
-		if (EWL_CONTAINER(w)->clip_box) {
-			evas_move(w->evas,
-				  EWL_CONTAINER(w)->clip_box, l, t);
-			evas_resize(w->evas,
-				    EWL_CONTAINER(w)->clip_box,
-				    CURRENT_W(w) - (l + r),
-				    CURRENT_H(w) - (t + b));
-		}
+	if (EWL_CONTAINER(w)->clip_box) {
+		evas_move(w->evas,
+			  EWL_CONTAINER(w)->clip_box, l, t);
+		evas_resize(w->evas,
+			    EWL_CONTAINER(w)->clip_box,
+			    CURRENT_W(w) - (l + r),
+			    CURRENT_H(w) - (t + b));
 	}
 
 	if (win->bg_rect) {

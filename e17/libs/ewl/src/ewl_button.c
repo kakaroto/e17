@@ -481,8 +481,6 @@ __ewl_button_update_label(Ewl_Widget * w)
 {
 	Ewl_Button *b;
 	void *tmp;
-	int fs;
-
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);

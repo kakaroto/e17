@@ -38,7 +38,6 @@ struct _ewl_widget {
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
 /* Returns a allocated widget structure */
-Ewl_Widget *ewl_widget_new();
 void ewl_widget_init(Ewl_Widget * w, int req_w, int req_h,
 		     Ewl_Fill_Policy fill, Ewl_Alignment align);
 void ewl_widget_reparent(Ewl_Widget * parent, Ewl_Widget * widget);
@@ -49,8 +48,8 @@ void ewl_widget_destroy(Ewl_Widget * widget);
 void ewl_widget_destroy_recursive(Ewl_Widget * widget);
 void ewl_widget_configure(Ewl_Widget * widget);
 void ewl_widget_theme_update(Ewl_Widget * w);
-void ewl_widget_set_data(Ewl_Widget * w, char *k, void *v);
-void ewl_widget_del_data(Ewl_Widget * w, char *k);
-void *ewl_widget_get_data(Ewl_Widget * w, char *k);
+void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v);
+void ewl_widget_del_data(Ewl_Widget * w, void *k);
+void *ewl_widget_get_data(Ewl_Widget * w, void *k);
 
 #endif

@@ -23,8 +23,6 @@ typedef struct _ewl_box_child Ewl_Box_Child;
 
 struct _ewl_box_child {
 	Ewl_Widget *widget;
-	Ewl_Alignment alignment;
-	Ewl_Fill_Policy fill_policy;
 	int x_padding;
 	int y_padding;
 };
@@ -34,11 +32,7 @@ struct _ewl_box_child {
 
 
 Ewl_Widget *ewl_box_new(Ewl_Orientation orientation);
-void ewl_box_set_orientation(Ewl_Box * w, Ewl_Orientation orientation);
-void ewl_box_set_spacing(Ewl_Box * w, unsigned int spacing);
-void ewl_box_append_child(Ewl_Box * w, Ewl_Widget * c, Ewl_Fill_Policy fp,
-			  Ewl_Alignment a, int x_padding, int y_padding);
-void ewl_box_prepend_child(Ewl_Box * w, Ewl_Widget * c, Ewl_Fill_Policy fp,
-			   Ewl_Alignment a, int x_padding, int y_padding);
+void ewl_box_set_orientation(Ewl_Widget * w, Ewl_Orientation o);
+void ewl_box_set_spacing(Ewl_Widget * w, unsigned int spacing);
 
 #endif				/* __EWL_BOX_H__ */

@@ -1,6 +1,10 @@
+Mon Aug  20 16:30:28 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Re-imported an old ewl_box.c and integrated it with all new stuff.
+	* Cleaned up some paramenter names in some code.
+
 Mon Aug  20 01:48:07 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
-	* Started the ChangeLog
-	* Fixed memleak in __ewl_button_theme_update
+	* Started the ChangeLog.
+	* Fixed memleak in __ewl_button_theme_update.
 	* Cleaned up Ewl_Entry to work with the new text widget and add a
 	  theme_update callback to it. + some changed in the theme code.
 	* Made ewl_theme_data_get return void *, and be a pointer to the data

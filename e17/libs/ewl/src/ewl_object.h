@@ -75,11 +75,24 @@ inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill);
 #define MAX_W(o) EWL_OBJECT(o)->maximum.w
 #define MAX_H(o) EWL_OBJECT(o)->maximum.h
 
+#define MAXIMUM_W(o) EWL_OBJECT(o)->maximum.w
+#define MAXIMUM_H(o) EWL_OBJECT(o)->maximum.h
+
 #define MIN_W(o) EWL_OBJECT(o)->minimum.w
 #define MIN_H(o) EWL_OBJECT(o)->minimum.h
+
+#define MINIMUM_W(o) EWL_OBJECT(o)->minimum.w
+#define MINIMUM_H(o) EWL_OBJECT(o)->minimum.h
 
 #define REALIZED(o) EWL_OBJECT(o)->realized
 #define VISIBLE(o) EWL_OBJECT(o)->visible
 #define LAYER(o) EWL_OBJECT(o)->layer
+
+#define ewl_object_set_custom_size(o, w, h) \
+	MAXIMUM_W(o) = w; \
+	MAXIMUM_H(o) = h; \
+	MINIMUM_W(o) = w; \
+	MINIMUM_H(o) = h; 
+
 
 #endif /* __EWL_OBJECT_H__ */

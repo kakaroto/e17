@@ -3,19 +3,19 @@
 
 static void __ewl_table_init(Ewl_Table * t);
 
-static void __ewl_table_realize(Ewl_Widget * w, void *event_data,
+static void __ewl_table_realize(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_table_show(Ewl_Widget * w, void *event_data,
+static void __ewl_table_show(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_table_hide(Ewl_Widget * w, void *event_data,
+static void __ewl_table_hide(Ewl_Widget * w, void *ev_data,
 			     void *user_data);
-static void __ewl_table_destroy(Ewl_Widget * w, void *event_data,
+static void __ewl_table_destroy(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_table_destroy_recursive(Ewl_Widget * w, void *event_data,
+static void __ewl_table_destroy_recursive(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
-static void __ewl_table_configure(Ewl_Widget * w, void *event_data,
+static void __ewl_table_configure(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-static void __ewl_table_theme_update(Ewl_Widget * w, void *event_data,
+static void __ewl_table_theme_update(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 
 /* make the configure callback smaller by spliting up big stuff into
@@ -66,14 +66,13 @@ ewl_table_new_all(unsigned int homogeneous,
 
 void
 ewl_table_attach(Ewl_Widget * t, Ewl_Widget * c,
-		 unsigned int start_col,
-		 unsigned int end_col, unsigned int start_row,
-		 unsigned int end_row)
+		 unsigned int start_col, unsigned int end_col,
+		 unsigned int start_row, unsigned int end_row)
 {
 	Ewl_Table_Child *child;
 
-	CHECK_PARAM_POINTER("t", t);
-	CHECK_PARAM_POINTER("c", c);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("c", c);
 
 	child = NEW(Ewl_Table_Child, 1);
 	memset(child, 0, sizeof(Ewl_Table_Child));
@@ -94,7 +93,7 @@ ewl_table_detach(Ewl_Widget * t, unsigned int c, unsigned int r)
 	Ewl_Widget *w;
 	Ewl_Table_Child *child;
 
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	if (!EWL_CONTAINER(t)->children ||
 	    ewd_list_is_empty(EWL_CONTAINER(t)->children))
@@ -104,6 +103,7 @@ ewl_table_detach(Ewl_Widget * t, unsigned int c, unsigned int r)
 	ewl_container_remove_child(EWL_CONTAINER(t), w);
 
 	child = ewl_widget_get_data(w, t);
+
 	if (child) {
 		ewl_widget_del_data(w, t);
 		FREE(child);
@@ -113,7 +113,7 @@ ewl_table_detach(Ewl_Widget * t, unsigned int c, unsigned int r)
 void
 ewl_table_resize(Ewl_Widget * t, unsigned int c, unsigned int r)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 
 	EWL_TABLE(t)->columns = c;
@@ -125,7 +125,7 @@ ewl_table_resize(Ewl_Widget * t, unsigned int c, unsigned int r)
 unsigned int
 ewl_table_get_columns(Ewl_Widget * t)
 {
-	CHECK_PARAM_POINTER_RETURN("t", t, 0);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
 
 	return EWL_TABLE(t)->columns;
 }
@@ -133,7 +133,7 @@ ewl_table_get_columns(Ewl_Widget * t)
 unsigned int
 ewl_table_get_rows(Ewl_Widget * t)
 {
-	CHECK_PARAM_POINTER_RETURN("t", t, 0);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
 
 	return EWL_TABLE(t)->rows;
 }
@@ -141,7 +141,7 @@ ewl_table_get_rows(Ewl_Widget * t)
 void
 ewl_table_set_homogeneous(Ewl_Widget * t, unsigned int h)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	EWL_TABLE(t)->homogeneous = h;
 
@@ -151,7 +151,7 @@ ewl_table_set_homogeneous(Ewl_Widget * t, unsigned int h)
 void
 ewl_table_set_col_spacing(Ewl_Widget * t, unsigned int cs)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	EWL_TABLE(t)->col_spacing = cs;
 
@@ -161,7 +161,7 @@ ewl_table_set_col_spacing(Ewl_Widget * t, unsigned int cs)
 void
 ewl_table_set_row_spacing(Ewl_Widget * t, unsigned int rs)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	EWL_TABLE(t)->row_spacing = rs;
 
@@ -174,7 +174,7 @@ ewl_table_set_row_spacing(Ewl_Widget * t, unsigned int rs)
 void
 ewl_table_column_set_width(Ewl_Widget * t, unsigned int c, unsigned int w)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 /*
 	EWL_TABLE(t)->custom_col_w[c - 1] = w;
@@ -188,7 +188,7 @@ ewl_table_column_set_width(Ewl_Widget * t, unsigned int c, unsigned int w)
 void
 ewl_table_get_column_width(Ewl_Widget * t, unsigned int c, unsigned int *w)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	if (EWL_TABLE(t)->col_w[c - 1])
 		*w = EWL_TABLE(t)->col_w[c - 1];
@@ -203,7 +203,7 @@ ewl_table_get_child(Ewl_Widget * t, unsigned int c, unsigned int r)
 	Ewl_Widget *w;
 	Ewl_Table_Child *child;
 
-	CHECK_PARAM_POINTER_RETURN("t", t, NULL);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
@@ -226,7 +226,7 @@ void
 ewl_table_get_row_geometry(Ewl_Widget * t, unsigned int r, int *x, int *y,
 			   int *w, int *h)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	if (x);
 
@@ -243,7 +243,7 @@ ewl_table_get_row_geometry(Ewl_Widget * t, unsigned int r, int *x, int *y,
 static void
 __ewl_table_init(Ewl_Table * t)
 {
-	CHECK_PARAM_POINTER("t", t);
+	DCHECK_PARAM_PTR("t", t);
 
 	memset(t, 0, sizeof(Ewl_Table));
 	ewl_container_init(EWL_CONTAINER(t), 10, 10,
@@ -270,11 +270,11 @@ __ewl_table_init(Ewl_Table * t)
  * Draw the table
  */
 static void
-__ewl_table_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_table_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Evas_Object *clip_box;
 
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	clip_box = evas_add_rectangle(w->evas);
 	evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
@@ -299,9 +299,9 @@ __ewl_table_realize(Ewl_Widget * w, void *event_data, void *user_data)
  * Display the table
  */
 static void
-__ewl_table_show(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_table_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	evas_show(w->evas, w->fx_clip_box);
 }
@@ -310,9 +310,9 @@ __ewl_table_show(Ewl_Widget * w, void *event_data, void *user_data)
  * Hide the table
  */
 static void
-__ewl_table_hide(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_table_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	evas_hide(w->evas, w->fx_clip_box);
 }
@@ -321,10 +321,10 @@ __ewl_table_hide(Ewl_Widget * w, void *event_data, void *user_data)
  * Destroy the table, but don't destroy child widgets
  */
 static void
-__ewl_table_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_table_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	if (EWL_TABLE(w)->ebits_bg) {
 		ebits_hide(EWL_TABLE(w)->ebits_bg);
@@ -362,13 +362,13 @@ __ewl_table_destroy(Ewl_Widget * w, void *event_data, void *user_data)
  * Recursively destroy the table and it's children
  */
 static void
-__ewl_table_destroy_recursive(Ewl_Widget * w, void *event_data,
+__ewl_table_destroy_recursive(Ewl_Widget * w, void *ev_data,
 			      void *user_data)
 {
 	Ewl_Table_Child *child;
 
 	DENTER_FUNCTION;
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	if (!EWL_CONTAINER(w)->children)
 		DLEAVE_FUNCTION;
@@ -387,7 +387,7 @@ __ewl_table_destroy_recursive(Ewl_Widget * w, void *event_data,
  * This callback configures the table and it's child widgets
  */
 static void
-__ewl_table_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	__ewl_table_configure_children(w);
 	__ewl_table_configure_gfx(w);
@@ -401,7 +401,7 @@ __ewl_table_configure_gfx(Ewl_Widget * w)
 {
 	int t_req_x, t_req_y, t_req_w, t_req_h;
 
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	ewl_object_requested_geometry(EWL_OBJECT(w), &t_req_x, &t_req_y,
 				      &t_req_w, &t_req_h);
@@ -423,7 +423,7 @@ __ewl_table_configure_children(Ewl_Widget * w)
 	int rem_w, rem_h;
 	Ewd_List *fillers;
 
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	/*
 	 * Layout the normal children first, that returns a list of the filler
@@ -522,7 +522,7 @@ __ewl_table_fill_normal(Ewl_Widget * w, int *rem_w, int *rem_h)
 	Ewd_List *fillers = NULL;
 	Ewl_Widget *c = NULL;
 
-	CHECK_PARAM_POINTER_RETURN("w", w, 0);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
 
 	/*
 	 * Grab the size so we know how much room we have to split the
@@ -570,8 +570,8 @@ __ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h,
 	Ewl_Table_Child *child;
 
 	DENTER_FUNCTION;
-	CHECK_PARAM_POINTER("w", w);
-	CHECK_PARAM_POINTER("l", l);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("l", l);
 
 	/*
 	 * Determine the number of rows and columns remaining 
@@ -636,7 +636,7 @@ __ewl_table_layout_children(Ewl_Table * w)
 	int i;
 	int *x_offsets, *y_offsets;
 
-	CHECK_PARAM_POINTER("w", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	/*
 	 * Keep a temporary table of offsets so that we only have to compute
@@ -692,7 +692,7 @@ __ewl_table_layout_children(Ewl_Table * w)
  * Read in any changes to the theme and redraw any elements that are necessary
  */
 static void
-__ewl_table_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_table_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Table *b;
 	char *i;
