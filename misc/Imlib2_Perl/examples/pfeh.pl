@@ -68,7 +68,6 @@ sub render
 {
 	print("expose_event\n");
 	Imlib2::render_image_on_drawable(0,0);
-	Imlib2::free_image();
 
 }	
 
