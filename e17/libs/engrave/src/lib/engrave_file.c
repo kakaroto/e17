@@ -363,7 +363,7 @@ engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
         Engrave_Data *ed = l->data;
         const char *data_key = engrave_data_key_get(ed);
 
-        if (!strcmp(key, data_key) && (strlen(key) == strlen(data_key)))
+        if (!strcmp(key, data_key))
             return ed;
     }
 }

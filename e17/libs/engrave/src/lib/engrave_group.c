@@ -379,7 +379,7 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
         Engrave_Data *ed = l->data;
         const char *data_key = engrave_data_key_get(ed);
 
-        if (!strcmp(key, data_key) && (strlen(key) == strlen(data_key)))
+        if (!strcmp(key, data_key))
             return ed;
     }
 }
