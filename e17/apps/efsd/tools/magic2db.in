@@ -242,7 +242,8 @@ sub do_it {
                         (&(?:0x)??[0-9a-fA-F]+)?? \s+        # possibly, a mask for the value
 	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|  # test for either a num. value
                         (?:\\\s+|\S)+\S|[^x]{1}) \s+         # or a string
-	                (\S+\s*)+$/x)                    # and finally, the comment.
+	                (\S.*)\s+$/x)                        # and finally, the comment.
+#	                (\S+\s*)+$/x)                        # and finally, the comment.
 	   {
 	     $level = length($1);
 

@@ -93,10 +93,31 @@
     <section id="why">
       <title id="why.title">Why use it?</title>
       <para>
+	Assume the following situation: you're writing an application that needs
+	to perform typical filesystem-related tasks, possibly multiple ones at the
+	same time, such as copying or moving files (see the list of commands in
+	Section <link linkend="sending-commands" endterm="sending-commands.title"></link>)
+	which may consume a lot of time. Additionally, the application needs to
+	stay responsive to user input and/or other events while these commands
+	are executed.	
+      </para>
+      <para>
+	A possible solution is to code the needed functionality and make it run in
+	separate threads. This is both a duplication of effort and can also quickly
+	become nontrivial from a synchronization point of view.
+      </para>
+      <para>
+	Enter &efsd;. &efsd gives you all the functionality mentioned above,
+	accessible through a simple API, in an efficient, parallelized implementation.
+	&efsd; integrates many commonly needed filesystem commands in one software
+	package. See Section <link linkend="using-efsd" endterm="using-efsd.title"></link>
+	for details about enabling your application to use &efsd; and Section
+	<link linkend="efsd-arch" endterm="efsd-arch.title"></link> to get an
+	idea about the way &efsd works.
       </para>
     </section>
-    <section>
-      <title>Using &efsd; in Your Application</title>
+    <section id="using-efsd">
+      <title id="using-efsd.title">Using &efsd; in Your Application</title>
       <para>
 	What is usually referred to as &efsd; actually comes in two parts -
         the &efsd; server daemon and a library to be used by the clients, called
@@ -140,12 +161,11 @@
 	</itemizedlist>
       </para>
     </section>
-    <section>
-      <title>&efsd; Architecture Overview</title>
+    <section id="efsd-arch">
+      <title id="efsd-arch.title">&efsd; Architecture Overview</title>
       <para>
 	The purpose of this section is to give an overview of the general architecture of &efsd;,
-	to give the user a rough idea of how it works, what are smart things to do when programming
-         &lefsd; and what are not.
+	and to give the user an idea of how it works.
       </para>
 	  
       <mediaobject>
@@ -164,12 +184,20 @@
       </mediaobject>
 
       <para>
-        As can be seen in the Figure, multiple clients talk to &efsd; through &lefsd;. &efsd; in turn
+        As can be seen above, multiple clients talk to &efsd; through &lefsd;. &efsd; in turn
 	is composed of a number of subsystems which handle command-specific tasks, accessing the
-	filesystem through system calls into the kernel. <link linkend="monitoring">Monitoring of files</link>
-	is done through <function>libfam</function> and <function>FAM</function>, the File Alteration
-        Monitor (available at <ulink url="http://oss.sgi.com/projects/fam"><citetitle>SGI's oss site</citetitle></ulink>).
+	filesystem through system calls as well as <function>libfam</function> and <function>FAM</function>,
+        the File Alteration Monitor (available at <ulink url="http://oss.sgi.com/projects/fam">
+	<citetitle>SGI's oss site</citetitle></ulink>), for <link linkend="monitoring">monitoring of files</link>.
       </para>
+
+      <para>
+	To use &efsd;, applications establish a communication channel with &efsd
+	using &lefsd;.  Using this connection, they then send commands to the
+	daemon, which starts to execute them upon reception. When execution is
+	finished, a reply containing details such as the result of the operation
+        is asynchronously sent back to the client application, which was able
+	to continue work on other outstanding tasks in the meantime.
     </section>
   </chapter>
 
@@ -215,8 +243,8 @@ if (efsd_close(ec) < 0)
 	  </programlisting>
 	</para>
       </section>
-      <section>
-	<title>Sending Commands</title>
+      <section id="sending-commands">
+	<title id="sending-commands.title">Sending Commands</title>
 	<para>
 	  After opening a connection, the client is ready to launch commands.
 	  You can send commands for the following tasks:
@@ -586,9 +614,17 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  <link linkend="eventtypes" endterm="eventtypes.title"></link>.
 	</para>
 	<para>
-	  Because a directory monitor causes potentially a lot of communication traffic
-	  (for all the <constant>EFSD_FILE_EXIST</constant> events), it is a good idea
-	  to consider passing options along with the command, that launch other commands
+	  The same event-based technique for getting the directory contents can also be
+	  used to just get a directory listing, using <link linkend="API-efsd-listdir">
+          <function>efsd_listdir()</function></link>. It causes <constant>EFSD_FILE_EXIST</constant>
+	  events to be sent to the requesting client just like when a full monitor is
+	  requested. You do not, however, get events when files in the directory are
+	  changed afterwards.
+	</para> 
+	<para>
+	  Because a directory monitor and a directory listing potentially cause a lot of
+	  communication traffic (for all the <constant>EFSD_FILE_EXIST</constant> events),
+	  it is a good idea to consider passing options along with the command, that launch other commands
 	  on every reported file. See <link linkend="options" endterm="options.title"></link>
 	  for details.
 	</para>
@@ -668,10 +704,96 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </para>
       </section>
 
-      <section>
-        <title>Handling Filetypes</title>
-	  <para>
-	  </para>
+      <section id="filetypes">
+        <title id="filetypes.title">Handling Filetypes</title>
+        <para>
+	  Oftentimes an application needs to know details about a file it needs to read or
+	  modify. Oftentimes, GUI environments create security risks when simplistic
+	  mechanisms are used to associate files and applications working on those files.
+	  Oftentimes, simple file name patterns are used to take a guess about the type of
+	  a file.
+	</para>
+        <para>
+	  The well-known UNIX <command>file</command> command uses a smarter approach: it
+	  uses a multi-level approach that examines files, with each level providing less
+	  reliable information in case a previous level failed. Roughly, files are scanned
+	  on the OS level (exmining the result of <function>stat()</function> results) and
+	  searched for typical <emphasis>magic</emphasis> bytestrings in order to reliably
+	  determine the file's type. See the manpage for more details.
+        </para>
+        <para>
+	  &efsd; uses a similar approach that extends the concept of MIME types from
+	  two-level descriptions (such as <emphasis>text/html</emphasis>) to descriptions
+          of arbitrary depth. It is then up to the client application to make as much
+	  use of the calculated file type as necessary. As an example, a typical reply
+	  received when requesting the file type of an MP3 file would be
+	  <emphasis>audio/mp3/128-kbit-s/44-1-khz/jstereo</emphasis>.
+        </para>
+        <para>
+	  First &efsd; checks whether the file to examine is an ordinary file. If not,
+	  it examines the result of <function>statfs</function> and <function>stat</function>
+	  calls and returns a filetype such as <emphasis>dir/ext2</emphasis> or
+	  <emphasis>dir/reiserfs</emphasis>. If it is a common readable file, magic
+	  tests are performed. If those tests also fail, &efsd; falls back to ordinary
+	  filename extension matching. Should those also fail, the default fallback type
+          is <emphasis>document/unknown</emphasis>.
+	</para>
+        <para>
+          To request a filetype, use <link linkend="API-efsd-get-filetype"><function>
+          efsd_get_filetype()</function></link>. The code pattern is as follows:
+	  <programlisting>  
+EfsdConnection *ec;
+EfsdCmdId id;
+EfsdEvent ee;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection.
+      * Is Efsd really running ?
+      */
+  }
+
+/* Request the filetype: */
+
+if ( (id = efsd_get_filetype(ec, "/foo/bar")) < 0)
+  {
+     /* Could not send command. Continue accordingly. */
+  }
+
+/* In the event loop, examine the result: */
+
+while (efsd_wait_event(ec, &amp;ee) >= 0)
+  {
+     /* Handle the event */
+
+     switch (ee.type)
+      {
+        /* ... */
+        case EFSD_EVENT_REPLY:
+
+          switch (ee.efsd_reply_event.command.type)
+	   {
+	     /* ... */
+
+             case EFSD_CMD_GETFILETYPE:
+               if (ee.efsd_reply_event.status == SUCCESS)
+	         {
+	           printf("Filetype of file %s is %s\n",
+                          efsd_reply_filename(&amp;ee),
+                          (char*)ee.efsd_reply_event.data);
+	         }
+	       break;
+
+             /* ... */
+           }
+	}
+  
+     /* Cleanup memory allocated for this event */
+  
+     efsd_event_cleanup(&amp;ee);
+  }
+	  </programlisting>
+        </para>
       </section>
 
       <section>

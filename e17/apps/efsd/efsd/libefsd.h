@@ -532,7 +532,7 @@ EfsdCmdId      efsd_readlink(EfsdConnection *ec, char *filename);
  * @ec: The Efsd connection.
  * @filename: The name of the file whose type is to be computed.
  *
- * This function returns the filetyp of a file, using a fairly
+ * This function returns the filetype of a file, using a fairly
  * sophisticated algorithm not unlike that of the file(1) command.
  */
 EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
