@@ -231,6 +231,9 @@ create_toplevel (void)
   GtkWidget *borwse_hilited;
   GtkWidget *browse_normal;
   GtkWidget *browse_disabled;
+  GtkWidget *label67;
+  GtkWidget *img_selected;
+  GtkWidget *browse_selected;
   GtkWidget *label36;
   GtkWidget *table9;
   GtkObject *bit_pad_l_adj;
@@ -1558,28 +1561,28 @@ create_toplevel (void)
   gtk_table_attach (GTK_TABLE (table2), class_combo, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  class_combo_items = g_list_append (class_combo_items, _("Decoration"));
-  class_combo_items = g_list_append (class_combo_items, _("Title_Bar"));
-  class_combo_items = g_list_append (class_combo_items, _("Close"));
-  class_combo_items = g_list_append (class_combo_items, _("Iconify"));
-  class_combo_items = g_list_append (class_combo_items, _("Raise"));
-  class_combo_items = g_list_append (class_combo_items, _("Lower"));
-  class_combo_items = g_list_append (class_combo_items, _("Raise_Lower"));
-  class_combo_items = g_list_append (class_combo_items, _("Max_Size"));
-  class_combo_items = g_list_append (class_combo_items, _("Full_Screen"));
-  class_combo_items = g_list_append (class_combo_items, _("Shade"));
-  class_combo_items = g_list_append (class_combo_items, _("Menu"));
-  class_combo_items = g_list_append (class_combo_items, _("Resize"));
-  class_combo_items = g_list_append (class_combo_items, _("Resize_Horizontal"));
-  class_combo_items = g_list_append (class_combo_items, _("Resize_Vertical"));
-  class_combo_items = g_list_append (class_combo_items, _("Icon"));
-  class_combo_items = g_list_append (class_combo_items, _("State"));
-  class_combo_items = g_list_append (class_combo_items, _("Load"));
-  class_combo_items = g_list_append (class_combo_items, _("Geometry"));
-  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Trough"));
-  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Bar"));
-  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Arrow1"));
-  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Arrow2"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Decoration"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Title_Bar"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Close"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Iconify"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Raise"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Lower"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Raise_Lower"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Max_Size"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Full_Screen"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Shade"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Menu"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Resize"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Resize_Horizontal"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Resize_Vertical"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Icon"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("State"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Load"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Geometry"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Scrollbar_Trough"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Scrollbar_Bar"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Scrollbar_Arrow1"));
+  class_combo_items = g_list_append (class_combo_items, (gpointer) _("Scrollbar_Arrow2"));
   gtk_combo_set_popdown_strings (GTK_COMBO (class_combo), class_combo_items);
   g_list_free (class_combo_items);
 
@@ -1642,35 +1645,35 @@ create_toplevel (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_combo_set_case_sensitive (GTK_COMBO (color_class_combo), TRUE);
-  color_class_combo_items = g_list_append (color_class_combo_items, "");
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Title BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Title FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Border BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Border FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Border Button BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Border Button FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Button BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Button FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Pointer BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Pointer FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Background BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Background FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Selected BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Selected FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Sticky BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Sticky FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Disabled BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Disabled FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("List BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("List FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Menu BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Menu FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Viewport BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Viewport FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Base BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Base FG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Gadget BG"));
-  color_class_combo_items = g_list_append (color_class_combo_items, _("Gadget FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) "");
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Title BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Title FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Border BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Border FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Border Button BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Border Button FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Button BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Button FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Pointer BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Pointer FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Background BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Background FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Selected BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Selected FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Sticky BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Sticky FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Disabled BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Disabled FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("List BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("List FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Menu BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Menu FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Viewport BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Viewport FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Base BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Base FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Gadget BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, (gpointer) _("Gadget FG"));
   gtk_combo_set_popdown_strings (GTK_COMBO (color_class_combo), color_class_combo_items);
   g_list_free (color_class_combo_items);
 
@@ -1706,7 +1709,7 @@ create_toplevel (void)
   gtk_widget_show (label10);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 5), label10);
 
-  table7 = gtk_table_new (7, 5, FALSE);
+  table7 = gtk_table_new (8, 5, FALSE);
   gtk_widget_ref (table7);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "table7", table7,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1722,7 +1725,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_l", border_l,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_l);
-  gtk_table_attach (GTK_TABLE (table7), border_l, 1, 2, 5, 6,
+  gtk_table_attach (GTK_TABLE (table7), border_l, 1, 2, 6, 7,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1732,7 +1735,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_r", border_r,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_r);
-  gtk_table_attach (GTK_TABLE (table7), border_r, 2, 3, 5, 6,
+  gtk_table_attach (GTK_TABLE (table7), border_r, 2, 3, 6, 7,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1742,7 +1745,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_t", border_t,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_t);
-  gtk_table_attach (GTK_TABLE (table7), border_t, 3, 4, 5, 6,
+  gtk_table_attach (GTK_TABLE (table7), border_t, 3, 4, 6, 7,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1752,7 +1755,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_b", border_b,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_b);
-  gtk_table_attach (GTK_TABLE (table7), border_b, 4, 5, 5, 6,
+  gtk_table_attach (GTK_TABLE (table7), border_b, 4, 5, 6, 7,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1761,7 +1764,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator7", hseparator7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator7);
-  gtk_table_attach (GTK_TABLE (table7), hseparator7, 0, 5, 4, 5,
+  gtk_table_attach (GTK_TABLE (table7), hseparator7, 0, 5, 5, 6,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1797,7 +1800,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "img_disabled", img_disabled,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (img_disabled);
-  gtk_table_attach (GTK_TABLE (table7), img_disabled, 1, 4, 3, 4,
+  gtk_table_attach (GTK_TABLE (table7), img_disabled, 1, 4, 4, 5,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1806,7 +1809,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "label61", label61,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label61);
-  gtk_table_attach (GTK_TABLE (table7), label61, 1, 2, 6, 7,
+  gtk_table_attach (GTK_TABLE (table7), label61, 1, 2, 7, 8,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1815,7 +1818,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "label62", label62,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label62);
-  gtk_table_attach (GTK_TABLE (table7), label62, 3, 4, 6, 7,
+  gtk_table_attach (GTK_TABLE (table7), label62, 3, 4, 7, 8,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1854,7 +1857,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "label40", label40,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label40);
-  gtk_table_attach (GTK_TABLE (table7), label40, 0, 1, 3, 4,
+  gtk_table_attach (GTK_TABLE (table7), label40, 0, 1, 4, 5,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label40), 7.45058e-09, 0.5);
@@ -1864,7 +1867,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "label41", label41,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label41);
-  gtk_table_attach (GTK_TABLE (table7), label41, 0, 1, 5, 6,
+  gtk_table_attach (GTK_TABLE (table7), label41, 0, 1, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label41), 7.45058e-09, 0.5);
@@ -1874,7 +1877,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "label60", label60,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label60);
-  gtk_table_attach (GTK_TABLE (table7), label60, 0, 1, 6, 7,
+  gtk_table_attach (GTK_TABLE (table7), label60, 0, 1, 7, 8,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label60), 7.45058e-09, 0.5);
@@ -1884,14 +1887,14 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "tile_h_combo", tile_h_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tile_h_combo);
-  gtk_table_attach (GTK_TABLE (table7), tile_h_combo, 2, 3, 6, 7,
+  gtk_table_attach (GTK_TABLE (table7), tile_h_combo, 2, 3, 7, 8,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_usize (tile_h_combo, 52, -2);
   gtk_combo_set_value_in_list (GTK_COMBO (tile_h_combo), TRUE, TRUE);
-  tile_h_combo_items = g_list_append (tile_h_combo_items, _("Fill"));
-  tile_h_combo_items = g_list_append (tile_h_combo_items, _("Tile"));
-  tile_h_combo_items = g_list_append (tile_h_combo_items, _("Tile Integer"));
+  tile_h_combo_items = g_list_append (tile_h_combo_items, (gpointer) _("Fill"));
+  tile_h_combo_items = g_list_append (tile_h_combo_items, (gpointer) _("Tile"));
+  tile_h_combo_items = g_list_append (tile_h_combo_items, (gpointer) _("Tile Integer"));
   gtk_combo_set_popdown_strings (GTK_COMBO (tile_h_combo), tile_h_combo_items);
   g_list_free (tile_h_combo_items);
 
@@ -1908,14 +1911,14 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "tile_v_combo", tile_v_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tile_v_combo);
-  gtk_table_attach (GTK_TABLE (table7), tile_v_combo, 4, 5, 6, 7,
+  gtk_table_attach (GTK_TABLE (table7), tile_v_combo, 4, 5, 7, 8,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_usize (tile_v_combo, 52, -2);
   gtk_combo_set_value_in_list (GTK_COMBO (tile_v_combo), TRUE, TRUE);
-  tile_v_combo_items = g_list_append (tile_v_combo_items, _("Fill"));
-  tile_v_combo_items = g_list_append (tile_v_combo_items, _("Tile"));
-  tile_v_combo_items = g_list_append (tile_v_combo_items, _("Tile Integer"));
+  tile_v_combo_items = g_list_append (tile_v_combo_items, (gpointer) _("Fill"));
+  tile_v_combo_items = g_list_append (tile_v_combo_items, (gpointer) _("Tile"));
+  tile_v_combo_items = g_list_append (tile_v_combo_items, (gpointer) _("Tile Integer"));
   gtk_combo_set_popdown_strings (GTK_COMBO (tile_v_combo), tile_v_combo_items);
   g_list_free (tile_v_combo_items);
 
@@ -1959,7 +1962,35 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "browse_disabled", browse_disabled,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browse_disabled);
-  gtk_table_attach (GTK_TABLE (table7), browse_disabled, 4, 5, 3, 4,
+  gtk_table_attach (GTK_TABLE (table7), browse_disabled, 4, 5, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label67 = gtk_label_new (_("Selected"));
+  gtk_widget_ref (label67);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label67", label67,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label67);
+  gtk_table_attach (GTK_TABLE (table7), label67, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label67), 0, 0.5);
+
+  img_selected = gtk_entry_new ();
+  gtk_widget_ref (img_selected);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "img_selected", img_selected,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (img_selected);
+  gtk_table_attach (GTK_TABLE (table7), img_selected, 1, 4, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  browse_selected = gtk_button_new_with_label (_("Browse..."));
+  gtk_widget_ref (browse_selected);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "browse_selected", browse_selected,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (browse_selected);
+  gtk_table_attach (GTK_TABLE (table7), browse_selected, 4, 5, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2455,6 +2486,9 @@ create_toplevel (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (browse_disabled), "clicked",
                       GTK_SIGNAL_FUNC (on_browse_disabled_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (browse_selected), "clicked",
+                      GTK_SIGNAL_FUNC (on_browse_selected_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (zoom), "expose_event",
                       GTK_SIGNAL_FUNC (on_zoom_expose_event),

@@ -449,6 +449,8 @@ workspace_update_selection_from_widget(void)
 	  prev_i2 = g_strdup(selected->description->hilited.image);
 	if (selected->description->clicked.image)
 	  prev_i3 = g_strdup(selected->description->clicked.image);
+        if (selected->description->selected.image)
+          prev_i3 = g_strdup(selected->description->selected.image);
 	if (selected->description->disabled.image)
 	  prev_i4 = g_strdup(selected->description->disabled.image);
 	
@@ -458,6 +460,7 @@ workspace_update_selection_from_widget(void)
 	get_entry("img_normal", &(selected->description->normal.image));
 	get_entry("img_hilited", &(selected->description->hilited.image));
 	get_entry("img_clicked", &(selected->description->clicked.image));
+	get_entry("img_selected", &(selected->description->selected.image));
 	get_entry("img_disabled", &(selected->description->disabled.image));
 	selected->description->border.l = get_spin("border_l");
 	selected->description->border.r = get_spin("border_r");
@@ -497,6 +500,17 @@ workspace_update_selection_from_widget(void)
 		selected->clicked.image = NULL;
 	      }
 	  }
+        if ((selected->description->selected.image) && (prev_i1) &&
+            (strcmp(selected->description->selected.image, prev_i1)))
+          {
+            selected->selected.saved = 0;
+            if (selected->selected.image)
+              {
+                imlib_context_set_image(selected->selected.image);
+                imlib_free_image();
+                selected->selected.image = NULL;
+              }
+          }
 	if ((selected->description->disabled.image) && (prev_i1) &&
 	    (strcmp(selected->description->disabled.image, prev_i1)))
 	  {
@@ -622,6 +636,7 @@ workspace_update_widget_from_selection(void)
       set_entry("img_normal", selected->description->normal.image);
       set_entry("img_hilited", selected->description->hilited.image);
       set_entry("img_clicked", selected->description->clicked.image);
+      set_entry("img_selected", selected->description->selected.image);
       set_entry("img_disabled", selected->description->disabled.image);
       set_spin("border_l", selected->description->border.l);
       set_spin("border_r", selected->description->border.r);
@@ -1427,6 +1442,21 @@ workspace_set_clicked_image(char *filename)
   w = gtk_object_get_data(GTK_OBJECT(main_win), "img_clicked");
   gtk_entry_set_text(GTK_ENTRY(w), filename);
   E_DB_STR_SET(pref_get_config(), "/paths/image", filename); 
+  e_db_flush();
+}
+
+
+void                     
+workspace_set_selected_image(char *filename)
+{
+  GtkWidget *w;
+  
+  if (!filename)
+    return;
+  
+  w = gtk_object_get_data(GTK_OBJECT(main_win), "img_selected");
+  gtk_entry_set_text(GTK_ENTRY(w), filename);
+  E_DB_STR_SET(pref_get_config(), "/paths/image", filename);
   e_db_flush();
 }
 

@@ -69,6 +69,10 @@ on_file_ok_clicked                     (GtkButton       *button,
     {
       workspace_set_clicked_image(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
     }
+  else if (gtk_object_get_data(GTK_OBJECT(top), "selected_image"))
+    {
+      workspace_set_selected_image(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+    }
   else if (gtk_object_get_data(GTK_OBJECT(top), "disabled_image"))
     {
       workspace_set_disabled_image(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
@@ -464,6 +468,14 @@ on_browse_normal_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
   filedialog_show(NormalImageMode);
+}
+
+
+void
+on_browse_selected_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  filedialog_show(SelectedImageMode);
 }
 
 

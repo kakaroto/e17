@@ -239,3 +239,7 @@ on_cancel_clicked                      (GtkButton       *button,
 void
 on_etchings1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_browse_selected_clicked             (GtkButton       *button,
+                                        gpointer         user_data);

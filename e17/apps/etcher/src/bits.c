@@ -350,6 +350,7 @@ _ebits_image_state_saved(Ebits_Object_Bit_State state, int s)
 	if (state->description->hilited.image) return state->hilited.saved;
 	if (state->description->clicked.image) return state->clicked.saved;
 	if (state->description->disabled.image) return state->disabled.saved;
+	if (state->description->selected.image) return state->selected.saved;
      }
    if (s == 1)
      {
@@ -357,6 +358,7 @@ _ebits_image_state_saved(Ebits_Object_Bit_State state, int s)
 	if (state->description->clicked.image) return state->clicked.saved;
 	if (state->description->normal.image) return state->normal.saved;
 	if (state->description->disabled.image) return state->disabled.saved;
+	if (state->description->selected.image) return state->selected.saved;
      }
    if (s == 2)
      {
@@ -364,6 +366,7 @@ _ebits_image_state_saved(Ebits_Object_Bit_State state, int s)
 	if (state->description->hilited.image) return state->hilited.saved;
 	if (state->description->normal.image) return state->normal.saved;
 	if (state->description->disabled.image) return state->disabled.saved;
+	if (state->description->selected.image) return state->selected.saved;
      }
    if (s == 3)
      {
@@ -371,6 +374,15 @@ _ebits_image_state_saved(Ebits_Object_Bit_State state, int s)
 	if (state->description->normal.image) return state->normal.saved;
 	if (state->description->hilited.image) return state->hilited.saved;
 	if (state->description->clicked.image) return state->clicked.saved;
+	if (state->description->selected.image) return state->selected.saved;
+     }
+   if (s == 4)
+     {
+        if (state->description->selected.image) return state->selected.saved;
+        if (state->description->disabled.image) return state->disabled.saved;
+        if (state->description->normal.image) return state->normal.saved;
+        if (state->description->hilited.image) return state->hilited.saved;
+        if (state->description->clicked.image) return state->clicked.saved;
      }
    return 0;
 }
@@ -385,6 +397,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, int state)
 	if (d->hilited.image) return d->hilited.image;
 	if (d->clicked.image) return d->clicked.image;
 	if (d->disabled.image) return d->disabled.image;
+	if (d->selected.image) return d->selected.image;
      }
    if (state == 1)
      {
@@ -392,6 +405,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, int state)
 	if (d->clicked.image) return d->clicked.image;
 	if (d->normal.image) return d->normal.image;
 	if (d->disabled.image) return d->disabled.image;
+	if (d->selected.image) return d->selected.image;
      }
    if (state == 2)
      {
@@ -399,6 +413,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, int state)
 	if (d->hilited.image) return d->hilited.image;
 	if (d->normal.image) return d->normal.image;
 	if (d->disabled.image) return d->disabled.image;
+	if (d->selected.image) return d->selected.image;
      }
    if (state == 3)
      {
@@ -406,6 +421,15 @@ _ebits_get_file(Ebits_Object_Bit_Description d, int state)
 	if (d->normal.image) return d->normal.image;
 	if (d->hilited.image) return d->hilited.image;
 	if (d->clicked.image) return d->clicked.image;
+	if (d->selected.image) return d->selected.image;
+     }
+   if (state == 4)
+     {
+        if (d->selected.image) return d->selected.image;
+        if (d->disabled.image) return d->disabled.image;
+        if (d->normal.image) return d->normal.image;
+        if (d->hilited.image) return d->hilited.image;
+        if (d->clicked.image) return d->clicked.image;
      }
    return "";
 }
@@ -513,6 +537,8 @@ _ebits_find_description(char *file)
 	     bit->clicked.image = e_db_str_get(db, key);
 	     snprintf(key, sizeof(key), "/bits/bit/%i/disabled/image", i);
 	     bit->disabled.image = e_db_str_get(db, key);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/selected/image", i);
+	     bit->selected.image = e_db_str_get(db, key);
 	     
 	     snprintf(key, sizeof(key), "/bits/bit/%i/border/l", i);
 	     e_db_int_get(db, key, &(bit->border.l));
@@ -650,6 +676,8 @@ _ebits_evaluate(Ebits_Object_Bit_State state)
       state->clicked.image = imlib_load_image(state->description->clicked.image);
    if (state->description->disabled.image)
       state->disabled.image = imlib_load_image(state->description->disabled.image);
+   if (state->description->selected.image)
+         state->selected.image = imlib_load_image(state->description->selected.image);
    _ebits_object_calculate(state->o);
 }
 
@@ -679,6 +707,11 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
 	imlib_context_set_image(state->disabled.image);
 	imlib_free_image_and_decache();
      }
+   if (state->selected.image)
+     {
+        imlib_context_set_image(state->selected.image);
+        imlib_free_image_and_decache();
+     }
    if (state->description->name) free(state->description->name);
    if (state->description->class) free(state->description->class);
    if (state->description->color_class) free(state->description->color_class);
@@ -686,6 +719,7 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
    if (state->description->hilited.image) free(state->description->hilited.image);
    if (state->description->clicked.image) free(state->description->clicked.image);
    if (state->description->disabled.image) free(state->description->disabled.image);
+   if (state->description->selected.image) free(state->description->selected.image);
    if (state->description->rel1.name) free(state->description->rel1.name);
    if (state->description->rel2.name) free(state->description->rel2.name);
    for (l = state->description->sync; l; l = l->next) free(l->data);
@@ -818,6 +852,15 @@ Ebits_Object ebits_load(char *file)
 		state->disabled.image = imlib_load_image(bit->disabled.image);
 #endif
 	  }
+        if (bit->selected.image)
+          {
+             snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->selected.image);
+             state->selected.image = imlib_load_image(image);
+#ifdef LENIENT
+             if (!state->selected.image)
+                state->selected.image = imlib_load_image(bit->selected.image);
+#endif
+          }
 #endif
      }
    return o;
@@ -847,6 +890,7 @@ void ebits_free(Ebits_Object o)
 		  if (bit->hilited.image) free(bit->hilited.image);
 		  if (bit->clicked.image) free(bit->clicked.image);
 		  if (bit->disabled.image) free(bit->disabled.image);
+		  if (bit->selected.image) free(bit->selected.image);
 		  if (bit->rel1.name) free(bit->rel1.name);
 		  if (bit->rel2.name) free(bit->rel2.name);
 		  for (ll = bit->sync; ll; ll = ll->next) free(ll->data);
@@ -886,6 +930,11 @@ void ebits_free(Ebits_Object o)
 		  imlib_context_set_image(state->disabled.image);
 		  imlib_free_image_and_decache();
 	       }
+             if (state->selected.image)
+               {
+                  imlib_context_set_image(state->selected.image);
+                  imlib_free_image_and_decache();
+               }
 #endif
 	     free(state);
 	  }
@@ -914,6 +963,7 @@ void ebits_add_to_evas(Ebits_Object o, Evas e)
 	if (state->hilited.image) state->hilited.saved = 1;
 	if (state->clicked.image) state->clicked.saved = 1;
 	if (state->disabled.image) state->disabled.saved = 1;
+	if (state->selected.image) state->selected.saved = 1;
 #endif	
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
@@ -1128,6 +1178,14 @@ void ebits_save(Ebits_Object o, char *file)
 	     imlib_save_image(image);
 	     state->disabled.saved = 1;
 	  }
+        if ((state->selected.image) && (bit->selected.image))
+          {
+             snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->selected.image);
+             imlib_context_set_image(state->selected.image);
+             imlib_image_set_format("db");
+             imlib_save_image(image);
+             state->selected.saved = 1;
+          }
      }
    /* save bit info */
    for (i = 0, l = d->bits; l; l = l->next, i++)
@@ -1153,6 +1211,8 @@ void ebits_save(Ebits_Object o, char *file)
 	if (bit->clicked.image) e_db_str_set(db, key, bit->clicked.image);
 	snprintf(key, sizeof(key), "/bits/bit/%i/disabled/image", i);
 	if (bit->disabled.image) e_db_str_set(db, key, bit->disabled.image);
+        snprintf(key, sizeof(key), "/bits/bit/%i/selected/image", i);
+        if (bit->selected.image) e_db_str_set(db, key, bit->selected.image);
 	
 	snprintf(key, sizeof(key), "/bits/bit/%i/border/l", i);
 	e_db_int_set(db, key, bit->border.l);

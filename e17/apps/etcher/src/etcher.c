@@ -101,6 +101,7 @@ main (int argc, char *argv[])
 	text = "Hilited"; gtk_clist_append(GTK_CLIST(w), &text);
 	text = "Clicked"; gtk_clist_append(GTK_CLIST(w), &text);
 	text = "Disabled"; gtk_clist_append(GTK_CLIST(w), &text);
+	text = "Selected"; gtk_clist_append(GTK_CLIST(w), &text);
      }
    gtk_widget_show(main_win);
    

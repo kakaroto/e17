@@ -121,6 +121,22 @@ filedialog_show(FileDialogMode mode)
 	  }
       }
       break;
+    case SelectedImageMode:
+      {
+        gtk_object_set_data(GTK_OBJECT(file), "selected_image", (void *)1);
+
+        E_DB_STR_GET(pref_get_config(), "/paths/image", dir, ok);
+        if (ok)
+          {
+            gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+            free(dir);
+          }
+        else
+          {
+            gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
+          }
+      }
+      break;
     case DisabledImageMode:
       {
 	gtk_object_set_data(GTK_OBJECT(file), "disabled_image", (void *)1);

@@ -64,7 +64,7 @@ struct _Ebits_Object_Bit_Description
    char *color_class;
    struct {
       char *image;
-   } normal, hilited, clicked, disabled;
+   } normal, hilited, clicked, disabled, selected;
    struct {
       int l, r, t, b;
    } border;
@@ -113,7 +113,7 @@ struct _Ebits_Object_Bit_State
    struct {
       int                          saved;
       Imlib_Image                  image;
-   } normal, hilited, clicked, disabled;
+   } normal, hilited, clicked, disabled, selected;
 #endif   
 };
 

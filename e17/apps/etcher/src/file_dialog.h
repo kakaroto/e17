@@ -8,6 +8,7 @@ typedef enum filedialog_mode
   NormalImageMode,
   HilitedImageMode,
   ClickedImageMode,
+  SelectedImageMode,
   DisabledImageMode,
   GridImageMode,
   SaveAsMode

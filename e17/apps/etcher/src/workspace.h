@@ -30,6 +30,7 @@ void      workspace_update_visible_selection(void);
 void      workspace_set_normal_image(char *filename);
 void      workspace_set_hilited_image(char *filename);
 void      workspace_set_clicked_image(char *filename);
+void      workspace_set_selected_image(char *filename);
 void      workspace_set_disabled_image(char *filename);
 
 void      workspace_set_grid_image(char *filename);
