@@ -2308,6 +2308,47 @@ Epplet_add_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
 }
 
 void
+Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num)
+{
+   GadPopup *g;
+   int i;
+   
+   g = (GadPopup *)gadget;
+   if (!g->entry)
+     return;
+
+   if(entry_num<0)
+     entry_num=g->entry_num-entry_num;
+   if(g->entry_num<entry_num)
+     return;
+
+   if(g->entry[entry_num].label)
+   {
+     free(g->entry[entry_num].label);
+     g->entry[entry_num].label=NULL;
+   }
+   if(g->entry[entry_num].image)
+   {
+     free(g->entry[entry_num].image);
+     g->entry[entry_num].image=NULL;
+   }
+
+  g->entry_num--;
+  for(i=entry_num;i<g->entry_num;i++){
+     *((g->entry)+i)=*((g->entry)+i+1);
+  }
+
+  if(g->entry_num)
+    g->entry = realloc(g->entry, sizeof(GadPopup) * g->entry_num);
+  else
+  {
+    free(g->entry);
+    g->entry=NULL;
+  }
+  g->changed = 1;
+}
+
+void
 Epplet_popup_arrange_contents(Epplet_gadget gadget)
 {
    GadPopup *g;
