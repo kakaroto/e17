@@ -85,6 +85,7 @@ Graham A MacDonald <graham@34southpark.freeserve.co.uk>
 
 Martin Tyler <mtx@boo.org>
 		groups menu feature patch
+		modules/ipc segfault fix.
 
 Jesse Michael <jessem@revlabs.com>
 		pointing out buffer overflow segfault problems in the IPC
