@@ -243,7 +243,6 @@ static void
 entrance_window_prepare(Entrance_Session e)
 {
    int iw, ih;
-   e->bg = NULL;
 
    e->bg = NULL;
 
