@@ -88,12 +88,17 @@ RGBA_Load(char *file, int *w, int *h)
 }
 
 char 
-load (ImlibImage *im)
+load (ImlibImage *im,
+      void (*progress)(ImlibImage *im, char percent, 
+		       int update_x, int update_y, 
+		       int update_w, int update_h),
+      char progress_granularity, char immediate_load)
 {
    int w, h;
    DATA32 *data;
    
-   /* alreayd data in this image - dont load it again */
+   /* if immediate_load is 1, then dont delay image laoding as below, or */
+   /* already data in this image - dont load it again */
    if (im->data)
       return 0;
    /* ok - this is not 100% right. */
@@ -117,7 +122,7 @@ load (ImlibImage *im)
    if (data)
      {
 	im->data = data;
-	im->flags = F_HAS_ALPHA;
+	SET_FLAG(im->flags, F_HAS_ALPHA);
 	/* setting the width to somthign > 0 means you managed to load */
 	/* the image */	
 	im->w = w;
@@ -134,7 +139,11 @@ load (ImlibImage *im)
 }
 
 char 
-save (ImlibImage *im)
+save (ImlibImage *im,
+      void (*progress)(ImlibImage *im, char percent, 
+		       int update_x, int update_y, 
+		       int update_w, int update_h),
+      char progress_granularity)
 {
    /* if we cant do this - just return 0 */
    return 0;

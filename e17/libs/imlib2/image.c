@@ -544,7 +544,11 @@ FindBestLoaderForFile(char *file)
 }
 
 ImlibImage *
-LoadImage(char *file)
+LoadImage(char *file, 
+	  void (*progress)(ImlibImage *im, char percent,
+			   int update_x, int update_y,
+			   int update_w, int update_h),
+	  char progress_granularity, char immediate_load, char dont_cache)
 {
    ImlibImage  *im;
    ImlibLoader *best_loader;
@@ -563,7 +567,7 @@ LoadImage(char *file)
 	if (current_modified_time > im->moddate)
 	  {
 	     /* invalidate image */
-	     im->flags &= F_INVALID;
+	     SET_FLAG(im->flags, F_INVALID);
 	  }
 	else
 	  {
@@ -583,7 +587,7 @@ LoadImage(char *file)
    /* take a guess by extension on the best loader to use */
    best_loader = FindBestLoaderForFile(file);
    if (best_loader)
-      best_loader->load(im);
+      best_loader->load(im, progress, progress_granularity, immediate_load);
    /* width is still 0 - the laoder didnt manage to do anything */
    if (im->w == 0)
      {
@@ -594,7 +598,7 @@ LoadImage(char *file)
 	  {
 	     /* if its not the best loader that alreayd failed - try load */
 	     if (l != best_loader)
-		l->load(im);
+		l->load(im, progress, progress_granularity, immediate_load);
 	     /* if it failed - advance */
 	     if (im->w == 0)
 	       {
@@ -622,18 +626,14 @@ LoadImage(char *file)
 	ConsumeImage(im);
 	return NULL;
      }
-#if 0   
-   /* FIXME: need to turn this png loading function into a loader andf then */
-   /* remove the below stuff */
-   im->data = RGBA_Load(file, &(im->w), &(im->h));
-   im->flags = F_HAS_ALPHA;
-#endif
-   
    
    /* the laod succeeded - make sure the image is refernenced then add */
-   /* it to our cache */
+   /* it to our cache if dont_cache isnt set */
    im->references = 1;
-   AddImageToCache(im);
+   if (!dont_cache)
+      AddImageToCache(im);
+   else
+      SET_FLAG(im->flags, F_UNCACHEABLE);
    return im;
 }
 
@@ -676,4 +676,3 @@ FreePixmap(Display *d, Pixmap p)
 	CleanupImagePixmapCache();
      }
 }
-

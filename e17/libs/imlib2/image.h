@@ -1,7 +1,7 @@
 #ifndef __IMAGE
 # define __IMAGE 1
 
-typedef enum   _iflags                  Iflags;
+typedef enum   _iflags                  ImlibImageFlags;
 typedef struct _imlibimage              ImlibImage;
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
 typedef struct _imlibborder             ImlibBorder;
@@ -9,12 +9,12 @@ typedef struct _imlibloader             ImlibLoader;
 
 enum _iflags
 {
-   F_NONE = 0,
-   F_HAS_ALPHA = (1 << 0),
-   F_UNLOADED = (1 << 1),
-   F_UNCACHEABLE = (1 << 2),
+   F_NONE              = 0,
+   F_HAS_ALPHA         = (1 << 0),
+   F_UNLOADED          = (1 << 1),
+   F_UNCACHEABLE       = (1 << 2),
    F_ALWAYS_CHECK_DISK = (1 << 3),
-   F_INVALID = (1 << 4)
+   F_INVALID           = (1 << 4)
 };
 
 struct _imlibborder
@@ -27,7 +27,7 @@ struct _imlibimage
    char             *file;
    int               w, h;
    DATA32           *data;
-   Iflags            flags;
+   ImlibImageFlags   flags;
    time_t            moddate;
    ImlibBorder       border;
    int               references;
@@ -55,8 +55,16 @@ struct _imlibloader
    int           num_formats;
    char        **formats;
    void         *handle;
-   char        (*load)(ImlibImage *im);
-   char        (*save)(ImlibImage *im);
+   char        (*load)(ImlibImage *im,
+		       void (*progress)(ImlibImage *im, char percent,
+					int update_x, int update_y,
+					int update_w, int update_h),
+		       char progress_granularity, char immediate_load);
+   char        (*save)(ImlibImage *im,
+		       void (*progress)(ImlibImage *im, char percent,
+					int update_x, int update_y,
+					int update_w, int update_h),
+		       char progress_granularity);
    ImlibLoader  *next;
 };
 
@@ -83,7 +91,12 @@ void              RescanLoaders(void);
 void              RemoveAllLoaders(void);
 void              LoadAllLoaders(void);
 ImlibLoader      *FindBestLoaderForFile(char *file);
-ImlibImage       *LoadImage(char *file);
+ImlibImage       *LoadImage(char *file,
+			    void (*progress)(ImlibImage *im, char percent,
+					     int update_x, int update_y,
+					     int update_w, int update_h),
+			    char progress_granularity, char immediate_load,
+			    char dont_cache);
 ImlibImagePixmap *FindImlibImagePixmapByID(Display *d, Pixmap p);
 void              FreeImage(ImlibImage *im);
 void              FreePixmap(Display *d, Pixmap p);
@@ -93,5 +106,8 @@ void              FreePixmap(Display *d, Pixmap p);
 # define IMAGE_IS_UNCACHEABLE(im) (im->flags & F_UNCACHEABLE)
 # define IMAGE_ALWAYS_CHECK_DISK(im) (im->flags & F_ALWAYS_CHECK_DISK)
 # define IMAGE_IS_VALID(im) (!(im->flags & F_INVALID))
+
+# define SET_FLAG(flags, f) (flags |= f)
+# define UNSET_FLAG(flags, f) (flags &= (~f))
 
 #endif

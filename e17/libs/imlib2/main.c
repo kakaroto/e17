@@ -62,7 +62,7 @@ int main (int argc, char **argv)
    RGBA_init();
    disp = XOpenDisplay(NULL);
    printf("load\n");
-   im = LoadImage(file);
+   im = LoadImage(file, NULL, 0, 0, 0);
    if (!im)
       printf("load fialed\n");
    if (w < 0)
