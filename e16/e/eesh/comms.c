@@ -49,11 +49,11 @@ CommsFindCommsWindow()
    if (a != None)
      {
 	s = NULL;
-	XGetWindowProperty(disp, root.win, a, 0, 14, False, AnyPropertyType, &ar,
-			   &format, &num, &after, &s);
+	XGetWindowProperty(disp, root.win, a, 0, 14, False, AnyPropertyType,
+			   &ar, &format, &num, &after, &s);
 	if (s)
 	  {
-             comms_win = 0;
+	     comms_win = 0;
 	     sscanf((char *)s, "%*s %x", (unsigned int *)&comms_win);
 	     XFree(s);
 	  }
@@ -68,8 +68,8 @@ CommsFindCommsWindow()
 	     if (comms_win)
 	       {
 		  XGetWindowProperty(disp, comms_win, a, 0, 14, False,
-				  AnyPropertyType, &ar, &format, &num, &after,
-				     &s);
+				     AnyPropertyType, &ar, &format, &num,
+				     &after, &s);
 		  if (s)
 		     XFree(s);
 		  else

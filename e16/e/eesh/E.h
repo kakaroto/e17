@@ -67,42 +67,42 @@
 #define LIST_TYPE_CLIENT         1
 
 typedef struct _list
-  {
-     int                 type;
-     char               *name;
-     int                 id;
-     void               *item;
+{
+   int                 type;
+   char               *name;
+   int                 id;
+   void               *item;
 
-     struct _list       *next;
-  }
+   struct _list       *next;
+}
 List;
 
 typedef struct _client
-  {
-     char               *name;
-     Window              win;
-     char               *msg;
-     char               *clientname;
-     char               *version;
-     char               *author;
-     char               *email;
-     char               *web;
-     char               *address;
-     char               *info;
-     Pixmap              pmap;
-  }
+{
+   char               *name;
+   Window              win;
+   char               *msg;
+   char               *clientname;
+   char               *version;
+   char               *author;
+   char               *email;
+   char               *web;
+   char               *address;
+   char               *info;
+   Pixmap              pmap;
+}
 Client;
 
 typedef struct _root
-  {
-     Window              win;
-     Visual             *vis;
-     int                 depth;
-     Colormap            cmap;
-     int                 scr;
-     int                 w, h;
-     Window              focuswin;
-  }
+{
+   Window              win;
+   Visual             *vis;
+   int                 depth;
+   Colormap            cmap;
+   int                 scr;
+   int                 w, h;
+   Window              focuswin;
+}
 Root;
 
 int                 EExit(void *code);
@@ -219,11 +219,17 @@ extern int          debug_level;
 }
 #endif
 
-void                Alert(char *fmt,...);
+void                Alert(char *fmt, ...);
 void                InitStringList(void);
-void                AssignIgnoreFunction(int (*FunctionToAssign) (void *), void *params);
-void                AssignRestartFunction(int (*FunctionToAssign) (void *), void *params);
-void                AssignExitFunction(int (*FunctionToAssign) (void *), void *params);
+void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
+
+					 void *params);
+void                AssignRestartFunction(int (*FunctionToAssign) (void *),
+
+					  void *params);
+void                AssignExitFunction(int (*FunctionToAssign) (void *),
+
+				       void *params);
 void                AssignTitleText(char *text);
 void                AssignIgnoreText(char *text);
 void                AssignRestartText(char *text);

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
 
@@ -41,7 +42,7 @@ int                 call_level;
 int                 debug_level;
 
 void
-Alert(char *fmt,...)
+Alert(char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;

@@ -24,16 +24,18 @@
 #include "E.h"
 #include <sys/time.h>
 #ifdef __EMX__
-#include <io.h> /* for select() in EMX */
+#include <io.h>			/* for select() in EMX */
 #endif
 #include <sys/types.h>
 #include <unistd.h>
 
 extern char         waitonly;
 
-static int stdin_state;
-void restore_stdin_state(void);
-void restore_stdin_state(void) {
+static int          stdin_state;
+void                restore_stdin_state(void);
+void
+restore_stdin_state(void)
+{
    fcntl(0, F_SETFL, stdin_state);
 }
 
@@ -59,24 +61,23 @@ main(int argc, char **argv)
 	  {
 	     if (i != (argc - 1))
 	       {
-                  command = argv[++i];
+		  command = argv[++i];
 	       }
 	  }
 	else if (!strcmp(argv[i], "-ewait"))
 	  {
 	     waitonly = 1;
 	     if (i != (argc - 1))
-                command = argv[++i];
+		command = argv[++i];
 	  }
-        else if (!strcmp(argv[i], "-display"))
-          {
+	else if (!strcmp(argv[i], "-display"))
+	  {
 	     if (i != (argc - 1))
-                display_name = duplicate(argv[++i]);
-          }
+		display_name = duplicate(argv[++i]);
+	  }
 	else if ((!strcmp(argv[i], "-h")) ||
 		 (!strcmp(argv[i], "--h")) ||
-		 (!strcmp(argv[i], "-help")) ||
-		 (!strcmp(argv[i], "--help")))
+		 (!strcmp(argv[i], "-help")) || (!strcmp(argv[i], "--help")))
 	  {
 	     printf("%s [ -e \"Command to Send to Enlightenment then exit\"]\n"
 		    "     [ -ewait \"Command to Send to E then wait for a reply then exit\"]\n",
@@ -109,18 +110,18 @@ main(int argc, char **argv)
 
    if (command)
      {
-        CommsSend(e, command);
-        if (!waitonly)
-          {
-             XSync(disp, False);
-             exit(0);
-          }
+	CommsSend(e, command);
+	if (!waitonly)
+	  {
+	     XSync(disp, False);
+	     exit(0);
+	  }
      }
 
    XSync(disp, False);
    j = 0;
    stdin_state = fcntl(0, F_GETFL, 0);
-   atexit( restore_stdin_state );
+   atexit(restore_stdin_state);
    fcntl(0, F_SETFL, O_NONBLOCK);
    for (;;)
      {

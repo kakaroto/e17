@@ -1,3 +1,4 @@
+
 /*
  *  Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -52,7 +53,8 @@ FindItem(char *name, int id, int find_by, int type)
      {
 	while (ptr)
 	  {
-	     if ((ptr->type == type) && (!strcmp(name, ptr->name)) && (ptr->id == id))
+	     if ((ptr->type == type) && (!strcmp(name, ptr->name))
+		 && (ptr->id == id))
 		EDBUG_RETURN(ptr->item);
 	     ptr = ptr->next;
 	  }
@@ -140,7 +142,8 @@ RemoveItem(char *name, int id, int find_by, int type)
      {
 	while (ptr)
 	  {
-	     if ((ptr->type == type) && (!strcmp(name, ptr->name)) && (ptr->id == id))
+	     if ((ptr->type == type) && (!strcmp(name, ptr->name))
+		 && (ptr->id == id))
 	       {
 		  if (pptr)
 		     pptr->next = ptr->next;
