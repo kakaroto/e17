@@ -44,11 +44,11 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, 13 2;
-			to_y, "bottom_bar";
+			to, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
 			offset, 63 -2;
-			to_y, "bottom_bar";
+			to, "bottom_bar";
 		    }
 		    image
 		    {
@@ -66,11 +66,11 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, 13 2;
-			to_y, "bottom_bar";
+			to, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
 			offset, 63 -2;
-			to_y, "bottom_bar";
+			to, "bottom_bar";
 		    }
 		    image
 		    {
@@ -88,11 +88,11 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, 13 2;
-			to_y, "bottom_bar";
+			to, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
 			offset, 63 -2;
-			to_y, "bottom_bar";
+			to, "bottom_bar";
 		    }
 		    image
 		    {
@@ -135,11 +135,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.0;
-			offset, -197 2;
+			offset, -200 1;
 			to, "entrance_session_button";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, 3 -2;
+			offset, -3 -3;
 			to, "entrance_session_button";
 		    }
 		    color, 255 255 255 0;

@@ -138,12 +138,32 @@
 		    rel1
 		    {
 			relative, 1.0 0.0;
-			offset, -50 6;
+			offset, 5 6;
+			to, "EntranceSessionTitle";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -10 -6;
+			offset, 45 -6;
+			to, "EntranceSessionTitle";
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "hilited" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 0 1;
+			to, "EntranceSessionTitle";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 49 -1;
+			to, "EntranceSessionTitle";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -162,15 +182,14 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 10 0;
-			to_x, "base";
-			to_y, "EntranceSessionIcon";
+			offset, 10 5;
+			to, "base";
 		    }
 		    rel2
 		    {
-			relative, 0.0 1.0;
-			offset, -10 0;
-			to, "EntranceSessionIcon";
+			relative, 1.0 1.0;
+			offset, -0 -5;
+			to, "base";
 		    }
 		    color, 255 255 255 192;
 		    color2, 0 0 0 128;
@@ -191,15 +210,14 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 10 0;
-			to_x, "base";
-			to_y, "EntranceSessionIcon";
+			offset, 10 5;
+			to, "base";
 		    }
 		    rel2
 		    {
-			relative, 0.0 1.0;
-			offset, -5 0;
-			to, "EntranceSessionIcon";
+			relative, 1.0 1.0;
+			offset, 0 -5;
+			to, "base";
 		    }
 		    color, 255 255 255 255;
 		    color2, 0 0 0 255;

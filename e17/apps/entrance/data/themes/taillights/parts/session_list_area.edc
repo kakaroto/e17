@@ -169,7 +169,7 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, -250 -SESSION_LIST_HEIGHT;
+			offset, -260 -SESSION_LIST_HEIGHT;
 		    } rel2 {
 			relative, 1.0 0.5;
 			offset, -30 SESSION_LIST_HEIGHT;

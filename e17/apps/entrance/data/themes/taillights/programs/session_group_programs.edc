@@ -13,6 +13,7 @@
 		action, STATE_SET "hilited" 0.0;
 		target, "base";
 		target, "base_clip";
+		target, "EntranceSessionIcon";
 		target, "EntranceSessionTitle";
 		transition, ACCELERATE 0.3;
 	    }
@@ -32,6 +33,7 @@
 		action, STATE_SET "default" 0.0;
 		target, "base";
 		target, "base_clip";
+		target, "EntranceSessionIcon";
 		target, "EntranceSessionTitle";
 		transition, DECELERATE 0.4;
 		in, 0.2 0.0;
