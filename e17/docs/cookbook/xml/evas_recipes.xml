@@ -1,41 +1,4 @@
 <!-- EVAS Recipes -->
-<!-- 
-###################################################
-This example section is commented out:
-
-<section>
-<title>Recipe: Example</title>
-
-<para>
-This is the first paragraph of the recipe.
-</para>
-
-<example>
-<title>Code Example Title</title>
-<programlisting>
-// Sample EDC
-images {
-        image,  "background.png" LOSSY 95;
-}
-
-collections {
-   group {
-      name, "test";
-      min, 32 32;
-      max, 1024 768;
-	...
-</programlisting>               
-</example> 
-
-<para>
-Another paragraph.  Don't forget to replace less-than and greater-than 
-symbols with the proper &lt; and &gt; even in your program listings.
-</para>
-</section>
-#################################################
--->
-
-<!--	\/ \/ \/ CONTENT \/ \/ \/	-->
 
 <chapter>
 <title>EVAS</title>
@@ -59,19 +22,8 @@ and white only terminal to 16 color VGA to 256 color and all the way up through
 15, 16, 24 and 32bit color. 
 </para>
 
-<section>
-  <sectioninfo>
-	<firstname>Norman</firstname>
-	<surname>Walsh</surname>
-	<othername>technikolor</othername>
-  </sectioninfo>
-<title>Recipe: Key Binds, using EVAS Key Events</title>
-
-<para>
-This is my recipe!
-</para>
-
-</section>
+&evas_key_bindings;
 
 </chapter>
+
 

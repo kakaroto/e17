@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3CR1//EN"
         "file:///usr/share/sgml/docbook/xml-dtd-4.3CR1/docbookx.dtd" [
+
+ <!-- This is the main book info -->
  <!ENTITY bookinfo SYSTEM "xml/bookinfo.xml">
  <!ENTITY intro SYSTEM "xml/intro.xml">
  <!ENTITY imlib_recipes SYSTEM "xml/imlib_recipes.xml">
@@ -12,6 +14,17 @@
  <!ENTITY edje_edc_recipes SYSTEM "xml/edje_edc_recipes.xml">
  <!ENTITY edje_recipes SYSTEM "xml/edje_recipes.xml">
  <!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.xml">
+
+ <!-- ecore -->
+ <!ENTITY ecore_config_intro SYSTEM "xml/ecore/ecore_config_intro.xml">
+ <!ENTITY ecore_ipc_intro SYSTEM "xml/ecore/ecore_ipc_intro.xml">
+
+ <!-- evas -->
+ <!ENTITY evas_key_bindings SYSTEM "xml/evas/evas_key_bindings.xml">
+
+ <!-- esmart -->
+ <!ENTITY esmart_trans_intro SYSTEM "xml/esmart/esmart_trans_intro.xml">
+ <!ENTITY esmart_container_intro SYSTEM "xml/esmart/esmart_container_intro.xml">
 ]>
 
 <book>
@@ -29,4 +42,5 @@
  &edje_edc_recipes;
  &ewl_recipes;
 </book>
+
 

@@ -13,7 +13,7 @@ ABOUT THIS DOCUMENT
 as the popular O'Reilly cookbooks (example: http://cookbooks.oreilly.com/).
 Any is free to contribute to this document, and as such is a perpetual
 work-in-progress.  The document is split into chapters, each covering
-a diffrent componant, or set of componants, that make up the collective
+a different component, or set of components, that make up the collective
 EFL.  
 
 
@@ -25,7 +25,7 @@ HOW TO CONTRIBUTE
 recipe is in the form of a problem (or task) and solution.
 The key to a good recipe, just as a cooking recipe, is to be complete.
 Whenever possible or practical you should include complete code
-examples, from the pre-proccessor directives (#include...) to the final
+examples, from the pre-processor directives (#include...) to the final
 closing bracket, so that inexperienced or new coders aren't confused 
 by where your code snippet goes.
  [ More here ]
@@ -40,9 +40,8 @@ experienced with, or give a rats ass about DocBook itself.  The
 important thing is to concentrate on the content.
 
 	In the xml/ directory are several XML files, which 
-are individual chapters of the document.  There is a commented
-out example of how to add a recipe in each file, but lets review
-the basics of DocBook/XML...
+are individual chapters of the document.  There is an example
+of how to add a recipe below, but lets review the basics of DocBook/XML...
 
 	DocBook comes in a variety of flavors, including SGML
 and XML.  We're using XML, which if your new to XML in general, looks
@@ -50,8 +49,8 @@ and works very much like HTML.  Unlike HTML, however, you MUST close
 each tag, there is no tag in XML which can stand alone without being
 closed, so everything is done in open/close pairs.  A <book> is made up
 of <chapter>s which are made up of <para>graphs and <section>s, which are
-themeselves made up of <para>graphs.  Each <section> and <chapter>
-can be given a <title>.  Like HTML, certain charrectors are special
+themselves made up of <para>graphs.  Each <section> and <chapter>
+can be given a <title>.  Like HTML, certain characters are special
 and can not be used literally, so the "&" symbol becomes "&amp;", the
 "<" symbol becomes "&lt;", and the ">" symbol becomes "&gt;".
 
@@ -60,14 +59,14 @@ and can not be used literally, so the "&" symbol becomes "&amp;", the
 <programlisting>, which works similarly to the HTML <pre> tag
 to maintain program indentation, etc.  <figure>s and <example>s are 
 special because they can have <title>s which are listed in figure index
-in the begining of the book.  <figure>s can also include <graphic>s
+in the beginning of the book.  <figure>s can also include <graphic>s
 for screenshots.  In the img/ directory you can place your graphics
 to be included.  Remember that because files in the xml/ directory 
 are included into the main DocBook/XML document in the root directory
-before being rendered that your refereances to images should
+before being rendered that your references to images should
 be in the form "img/my_shot.png", not "../img/my_shot.png".
 SVG, JPEG, PNG and other formats can be used in DocBook/XML, but
-for portablity purposes it is recommended that you confine yourself
+for portability purposes it is recommended that you confine yourself
 to using PNG.
 
 	The framework of the document is in place, therefore
@@ -77,13 +76,43 @@ to know how to add a new section to each chapter that will be your
 recipe.  There should be 1 new section per recipe.  Sub-sections
 for a recipe can be used, but are discouraged.
 
+    Each individual section is written in a separate file to 
+allow easier maintenance of the book. Each of these files resides
+in a directory related to the chapter in reference. So all ecore
+sections are in the ecore directory.
+
+    An individual section has a format as seen below. Once the section
+is written an entry needs to be made into the chapter xml file and
+an entry into the eflcookbook.xml file.
+
+    Into the eflcookbook.xml file you will need to add something
+like:
+
+ <!ENTITY ecore_ipc_intro SYSTEM "xml/ecore/ecore_ipc_intro.xml">
+
+This sets up an XML entity reference to your section. Then into the
+chapter file you will add an entry like:
+ 
+ &ecore_ipc_intro;
+
+Where you want the section to appear. The value is the 2nd parameter
+to the ENTITY tag above.
+
 	The following is an example of what you would add:
 
 --------------------------------------------------------------------
 <section>
+<sectioninfo>
+ <author>
+  <firstname>Ben</firstname>
+  <lastname>Rockwood</lastname>
+  <email>benr@cuddletech.com</email>
+ </author>
+ <data>2 July 2004</data>
+</sectioninfo>
+
 <title>Recipe: Simple Drag-N-Drop</title>
 <!-- This is a DocBook/XML comment -->
-<!-- Recipe added by: Ben Rockwood -->
 
 <para>
 This is the first paragraph of the recipe about
@@ -111,7 +140,7 @@ symbols with the proper &lt;, &amp; and &gt; even in your program listings.
 </para>
 
 <figure>
-<title>An illistration or screenshot </title>
+<title>An illustration or screenshot </title>
 <graphic format='PNG' align='center' fileref='img/my_image.png' />
 </figure>
 
@@ -132,17 +161,16 @@ point_calc.c: In function `points_calc':
 --------------------------------------------------------------------
 
 	You can use as many <para>graphs as you need, and line breaks in the XML 
-source, like XML, are unimportant.  The only place your indentation/line-breaks
+source, like HTML, are unimportant.  The only place your indentation/line-breaks
 will matter is within the <programlisting> or <screen> tags.  I'll point out
 putting a slash at the end of a tag will close it at the same time, so
 <para /> is functionally the same as <para></para>, as you see in the
 <graphic>s tag above.
 
 	Thats it!  Pretty simple.  At least 90% of your recipe will
-be in <para>'s, and for the rest just follow the examples in each file, 
-or refer back here.  Don't bother trying to get fancy with your syntax;
-simplicity is best.  Just remember to make sure you close all your tags,
-and you'll do fine.
+be in <para>'s, and for the rest just follow the example above. 
+Don't bother trying to get fancy with your syntax; simplicity is best.  
+Just remember to make sure you close all your tags, and you'll do fine.
 
 
 
@@ -166,7 +194,7 @@ being on your system:
 	http://docbook.org/xml/index.html
 
 	Install each of the above and modify the Makefile as needed to
-fit your enviroment.  Gentoo installs of the XSL and DTDs are possbile, but 
+fit your environment.  Gentoo installs of the XSL and DTDs are possible, but 
 personally discouraged.  
 
 	!!!!!!!!!!!!!NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
