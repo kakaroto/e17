@@ -39,7 +39,7 @@ main (int argc, char *argv[])
 		  printf ("Source Image Height: %d\n", info->h);
 		  printf ("Source Image Mtime: %d\n", (int) info->mtime);
 		  fprintf (stderr, "Trying EXIF Info: ");
-		  if (epsilon_info_has_exif_get (info))
+		  if (epsilon_info_exif_get (info))
 		    {
 			fprintf (stderr, "Found!\n");
 #if 0
