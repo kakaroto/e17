@@ -1,0 +1,146 @@
+<!--
+#######################################################
+EDB introduction
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>26 July 2004</date>
+</sectioninfo>
+
+<title>Receta: introducci&#243;n a EDB</title>
+
+<para>
+EDB provee un potente backend de base de datos para usar en tu aplicaci&#243;n. Esta receta es una simple introducci&#243;n 
+que abrir&#225; una base de datose, escribir&#225; varias claves y las volver&#225; a leer.
+</para>
+
+<para>
+<example>
+<title>introducci&#243;n a EDB</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Edb.h&gt;
+
+#define INT_KEY     "/int/val"
+#define STR_KEY     "/str/val"
+#define FLT_KEY     "/float/val"
+
+int main(int argc, char ** argv) {
+    E_DB_File *db_file = NULL;
+    char *str;
+    int i;
+    float f;
+
+    if (argc &lt; 2) {
+        printf("Need db file\n");
+        return 0;
+    }
+
+    db_file = e_db_open(argv[1]);
+    if (db_file == NULL) {
+        printf("Error opening db file (%s)\n", argv[1]);
+        return 0;
+    }
+
+    printf("Adding values...\n");
+    e_db_int_set(db_file, INT_KEY, 42);
+    e_db_float_set(db_file, FLT_KEY, 3.14159);
+    e_db_str_set(db_file, STR_KEY, "My cats breath smells like...");
+
+    printf("Reading values...\n");
+    if (e_db_int_get(db_file, INT_KEY, &amp;i))
+        printf("Retrieved (%s) with value (%d)\n", INT_KEY, i);
+
+    if (e_db_float_get(db_file, FLT_KEY, &amp;f))
+        printf("Retrieved (%s) with value (%f)\n", FLT_KEY, f);
+
+    if ((str = e_db_str_get(db_file, STR_KEY)) != NULL) {
+        printf("Retrieved (%s) with value (%s)\n", STR_KEY, str);
+        free(str);
+    }
+
+    e_db_close(db_file);
+    e_db_flush();
+
+    return 1;
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+Para usar WDB debes incluir &lt;Edb.h&gt; en tu archivo para tener acceso a la API. El ptincipio del programa
+es bastante est&#225;ndar. Tengo una tendencia a hacer errores tecleando as&#237; que defin&#237; las diferentes claves que ir&#233;
+usando. En cuanto tenemos el nombre de archivo intentamos abrir/crear la base de datos.
+</para>
+
+<para>
+La base de datos ser&#225; abierta, o si no existe, creada con la llamada a <function>e_db_open()</function> 
+que devolver&#225; NULL en caso de encontrar alg&#250;n error.
+</para>
+
+<para>
+Una vez la base de datos ha sido abierta podemos excribir nuestros valores. Esto se hace por medio de las
+tres llamadas: <function>e_db_int_set()</function>, <function>e_db_float_set()</function> y 
+<function>e_db_str_set()</function>.Tambien puedes introducir datos gen&#233;ricos en un archivo de base de datos
+con <function>e_db_data_set()</function>.
+</para>
+
+<para>
+Junto con datos normales, puedes introducir metadatos sobre la base de datos en el propio archivo. Estos datos
+no se pueden ser recuperados con los m&#233;todos normales get/set. Estas propiedades se asignan con
+<function>e_db_property_set()</function>
+</para>
+
+<para>
+Cada uno de los m&#233;todos de asignaci&#243;n de tipos toma tres par&#225;metros:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>E_DB_File *db</para></listitem>
+ <listitem><para>char *key</para></listitem>
+ <listitem><para>value</para></listitem>
+</itemizedlist>
+El par&#225;metro <literal>value</literal> es del tipo correspondiente al m&#233;todo, int, float, char * or void * for _int_set, 
+_float_set, _str_set y _data_set respectivamente.
+</para>
+
+<para>
+Una vez los valores est&#225;n en la base de datos pueden ser recuperados con los m&#233;todos de acceso.
+Cada uno de estos m&#233;todos toma tres par&#225;metros y devuelve un int. El valor de retorno es 1 en caso
+de acceso con &#233;xito y 0 en otro caso.
+</para>
+
+<para>
+Como con los m&#233;todos de asignaci&#243;n, los par&#225;metros de los m&#233;todos de acceso son la base de datos, la clave, 
+y un puntero al lugar donde escribir el valor.
+</para>
+
+<para>
+En cuanto terminemos con la base de datos podemos cerrarla con una llamada a
+<function>e_db_close()</function>. La llamada a <function>e_db_close()</function> no garantiza 
+que la base de datos haya sido escrita a disco, para esto llamamos a <function>e_db_flush()</function>
+que escribir&#225; los contenidos a disco.
+</para>
+
+<para>
+<example>
+<title>Compiling</title>
+<screen>
+zero@oberon [edb] -&gt; gcc -o edb edb_ex.c \
+	`edb-config --cflags --libs`
+</screen>
+</example>
+Si ejecutas el programa deber&#237;as ver los valores imprimidos a la pantalla, y despues de la ejecuci&#243;n habr&#225;
+un archivo .db con el nombre especificado. Entonces puedes echar un vistazo a la base de datos con
+<command>edb_gtk_ed</command> y ver los valores introducidos.
+</para>
+
+</section>
+
+

@@ -1,0 +1,70 @@
+<!--
+#######################################################
+Setup an Evas using Ecore_Evas
+#######################################################
+-->
+<section>
+  <sectioninfo>
+   <author>
+	<firstname>Ben</firstname>
+	<surname>Rockwood</surname>
+	<othername>technikolor</othername>
+   </author>
+  </sectioninfo>
+<title>Receta: Usando Ecore_Evas para simplificar inicialización de canvas X11 </title>
+
+<para>
+Evas es una librer'ia potente y simple de usar, pero antes de establecer un canvas un drawable X11 tiene que ser configurado. Configurar manualmente X11 puede ser una tarea frustrante y caótica que te impide concentrarte en lo que realmente quieres hacer: desarrolar una aplicación Evas. Pero todo esto puede ser evitado usando el modulo Ecore_Evas de ecore para hacer todo el trabajo sucio por ti.
+</para>
+
+<para>
+El siguiente ejemplo es una plantilla básica que puede ser usada como punto de partida para cualquier aplicación Evas que quieras construir, significativamente reduciendo tiempo de desarrollo.
+</para>
+
+<example>
+<title>Plantilla Ecore_Evas</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+
+#define WIDTH 400
+#define HEIGHT 400
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+
+int main(){
+
+        ecore_init();
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "Ecore_Evas Template");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, "fonts/");
+
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 244, 243, 242, 255);
+        evas_object_show(base_rect);
+
+        /* Insert Object Here */
+
+        ecore_main_loop_begin();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+Detelles completos sobre Ecore_Evas pueden encontrarse en el capítulo de Ecore en este libro, pero esta Plantilla básica debería permitirte jugar con Evas inmediatamente. Las llamadas importantes que remarcar son <function>ecore_evas_borderless_set()</function> que define si la ventana Evas está enmarcada por tu gestor de ventanas o sin borde , y <function>evas_font_path_append()</function> que define el/los path(s) de fuentes utilizados por tu aplicación Evas.
+</para>
+
+</section>
+

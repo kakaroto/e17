@@ -1,0 +1,52 @@
+<!-- EPEG and Epsilon  Recipes -->
+
+<chapter>
+<title>Epeg y Epsilon </title>
+
+<para>
+En esta era moderna de fotograf&#237;a digital la presentaci&#243;n se convierte en un 
+problema debido al enorme volumen de im&#225;genes que son creadas. Diferentemente a 
+los viejos tiempos cuando el film se usaba con mesura ahora generamos cientos o 
+miles de im&#225;genes en una semana. La soluci&#243;n a este problema de presentaci&#243;n es 
+el thumbnail, una im&#225;gen escalada en peque&#241;o que puede ser indexada en una tabla 
+o aplicaci&#243;n y r&#225;pidamente escaneada visualmente para encontrar las im&#225;genes que 
+desees. Pero el escalado de imagen es una operaci&#243;n muy intensiva, aunque podr&#237;a 
+tomar soko un segundo para tu potente Athlon el escalar una fotograf&#237;a 1600x1200 
+a tu resoluci&#243;n requerida, si tienes 2000 fotograf&#237;as eso tomar&#225; 30 minutos, y 
+esto asume que no haces la operaci&#243;n manualmente en un editor como Photoshop o 
+GIMP. El problema claramente pide una herramienta que pueda escalar im&#225;genes con 
+gran velocidad y eficiencia, con tanto control disponible como sea posible. La 
+soluci&#243;n son dos librer&#237;as EFL : Epeg y Epsilon.
+</para>
+
+<para>
+Epeg fu&#233; escrita por Raster para manejar exactamente el problema mencionado arriba 
+con sus galer&#237;as de im&#225;genes en rasterman.com. Es el thumbnailer m&#225;s r&#225;pido del planeta. 
+Con un API simple de usar, puede ser integrado en cualquier aplicaci&#243;n que quieras. 
+El &#250;nico inconveviente que tiene es que solo maneja JPEGs ( de ah&#237; su nombre ), pero 
+esto apenas es un problema considerando que todas las c&#225;maras en el mercado usan JPEG 
+como formato de salida por defecto.
+</para>
+
+<para>
+Epsilon fu&#233; escrito por Atmos, inspirado por la velocidad de Epeg pero en respuesta a una 
+necesidad de capacidad de thumbnailing multiformato.
+Epeg puede manejar JPEG, PNG, XCF, y GIF. Obviamente dado que no es una librer&#237;a espec&#237;fica 
+JPEG no maneja JPEG tan r&#225;pido como Epeg, pero puede usar a la propia Epeg para ganar las 
+ventajas de velocidad que &#233;sta provee. Epsilon, a diferencia de Epeg, es conforme al 
+<ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink> 
+de freedesktop.org. Como tal, extrae todos los thumbnails en la estructura de directorios 
+especificada en el est&#225;ndar (~/.thumbnails/) en lugar de a un lugar definido por el programador.
+</para>
+
+<para>
+Ambas librer&#241;ias hacen tareas tan espec&#237;ficas que las API son muy simples de usar. Epeg tiene 
+solo 17 funciones y Epsilon solo 9 haciendo estas librer&#237;as muy f&#225;ciles de aprender y 
+usar en tus aplicaciones inmediatamente.
+</para>
+
+ &epeg_simple;
+ &epsilon_simple;
+
+</chapter>
+

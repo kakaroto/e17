@@ -1,0 +1,112 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>11 July 2004</date>
+</sectioninfo>
+
+<title>Receta: Thumbnailing simple con Epsilon</title>
+
+<para>
+Epsilon crea thumbnails que son conformes al <ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink>
+de freedesktop.org. Thumbnails pueden ser creados para una variedad de formatos, incluyendo soporte nativo 
+PNG , soporte Epeg, o cualquier formato soportado por Imlib2. Miremos una simple aplicaci&#243;n Epsilon 
+similar al ejemplo Epeg anterior. 
+</para>
+
+
+<example>
+<title>Thumbnail simple Epsilon</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Epsilon.h&gt;
+
+int main(int argc, char *argv[]){
+
+        Epsilon * image = NULL;
+        Epsilon_Info *info;
+
+        if(argc &lt; 1) {
+                printf("Usage: %s input_image\n", argv[0]);
+                return(1);
+        }
+
+        epsilon_init();
+
+        image = epsilon_new(argv[1]);
+
+        info = epsilon_info_get(image);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], info-&gt;w, info-&gt;h);
+
+
+        if (epsilon_generate(image) == EPSILON_OK) {
+                printf("Thumbnail created!\n");
+        } else {
+                printf("Generation failed\n");
+        }
+        epsilon_free(image);
+
+        return(0);
+}
+</programlisting>
+</example>
+
+<para>
+Puede ser compilado de la siguiente manera:
+</para>
+
+<example>
+<programlisting>
+gcc `epsilon-config --libs --cflags` epsilon-simple.c -o epsilon-simple
+</programlisting>
+</example>
+
+<para>
+Observar&#225;s casi inmediatamente que no se acepta ning&#250;n nombre de archivo de entrada, ni se usa ninguna 
+funci&#243;n de salida. El Thumbnail Managing Standard especifica que todos los thumbnails han de ser 
+creados en el arbol de directorios ~/.thumbnail. Este almac&#233;n central de thumbnails permite compartir 
+thumbnails entre multiple applicaciones que se adhieren al est&#225;ndar. Tras compilar y ejecutar el c&#243;digo 
+de ejemplo con una imagen busca la imagen en ~/.thumbnails/large. Los thumbnails tambi&#233;n se nombran de 
+acuerdo con el est&#225;ndar, reemplazando el nombre original con una suma de comprobaci&#243;n MD5 de manera que 
+incluso si la imagen cambia de nombre el thumbnail no necesita ser regenerado.
+</para>
+
+<para>
+En nuestro ejemplo empezamos verificando que obtenemos una imagen de entrada para hacer un thumbnail 
+y entonces inicializamos Epsilon usando <function>epsilon_init</function> function. 
+<function>epsilon_new</function> accepta un &#250;nico argumento, la imagen de la que hacer el thumbnail, 
+y devuelve un puntero a epsilon que es usado por otras funciones. 
+</para>
+
+<para>
+Epsilon tiene la habilidad de obtener algo de informaci&#243;n b&#225;sica de tus im&#225;genes. En el ejemplo de arriba 
+usamos <function>epsilon_info_get</function> para devolver una estructura <returnvalue>Epsilon_Info</returnvalue> 
+conteniendo ek tiempo de modificaci&#243;n de la imagen de entrada ( mtime ), lugar ( URI ), anchura, altura, 
+y tipo MIME. Aqu&#237; simplemente damos la anchura y altura de la imagen usando los elementos <varname>w</varname> 
+y <varname>h</varname> de la estructura info.
+</para>
+
+<para>
+<function>epsilon_generate</function> es el peso pesado. Esta funci&#243;n generar&#225; el thumbnail y lo colocar&#225; 
+en el lugar apropiado. Su valor de retorno indica el &#233;xito ( o no ), para el cual la cabecera Epsilon 
+provee definiciones de macro CPP:
+<varname>EPSILON_FAIL</varname> y <varname>EPSILON_OK</varname>.
+</para>
+
+<para>
+La limpieza se efect&#250;a mediante <function>epsilon_free</function>.
+</para>
+
+<para>
+Epsilon, como aqu&#237; se ha visto, es muy simple de usar e integrar en cualquier aplicaci&#243;n que se apoye 
+en thumbnails. No solo se provee un simple API sino tambi&#233;n integraci&#243;n con el est&#225;ndar reinante de 
+thumbnailing sin costo extra. &#226;ra informaci&#243;n adicional sobre Epsilon, mira los documentos Doxygen de 
+Epsilon en Enlightenment.org. 
+</para>
+
+</section>
+

@@ -1,0 +1,395 @@
+<!--
+#######################################################
+a toggle in edje/embryo
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Corey</firstname>
+    <surname>Donohoe</surname>
+    <email>atmos@atmos.org</email>
+    <othername>'atmos'</othername>
+  </author>
+  <date>11 July 2004</date>
+</sectioninfo>
+
+<title>Receta: conmutador Edje/Embryo</title>
+
+<para>
+Hace un largo tiempo <ulink url="http://www.rasterman.com">Raster</ulink> hizo Edje, y era bueno. Los cavern&#237;cloas 
+que descubrieron Edje en las paredes de las cavernas (#edevelop) estaban maravillados, pero pronto hab&#237;an
+muchas desventajas. Dada la suficiente creatividad pod&#237;as hacer cosas, conmutadores por ejemplo, pero era
+alquimia hacerlo apropiadamente. Para prop&#243;sito hist&#243;rico, se provee un conmutador Edje sin Embryo , tan retorcido
+como es. Mira el ejemplo <link linkend="ex-Edje_no_Embryo">Edje without Embryo</link> mas abajo.
+</para>
+
+<para>
+Notar&#225;s que tienes que hablar en se&#241;ales a tu aplicaci&#243;n para determinar el estado de tu conmutador. As&#237; que 
+sin mas pre&#225;mbulo, aqui hay un conmutador Edje usando Embryo, de una manera <emphasis>mucho</emphasis> 
+mas elegante.
+</para>
+
+<para>
+El scripting Embryo dentro de Edje, en lo sucesivo scripting EE, te da variables. Puedes tener enteros, n&#250;meros
+en punto flotante, y cadenas. Esto significa basicamente que puedes tener algo de l&#243;gica de programaci&#243;n en
+tus edjes. Nada comlejo, como estructuras compejas, pero variables simples contenidas en un grupo podr&#237;an asemejarse 
+a los miembros de estructuras.
+</para>
+
+<para>
+La primera parte de EE es escoger tus variables. En este simple ejemplo solo tenemos una variable, y la involucras 
+en un grupo edje declarando un bloque <emphasis>script { ... }</emphasis>. <emphasis>button_toggle_state</emphasis> 
+es implicitamente un entero, y ser&#225; usado como variable booleana para permitirnos saber si el bot&#243;n de conmutaci&#243;n
+est&#225; activado o desactivado. Lo bueno de esta variable es que la podemos usar como una manera de comunicaci&#243;n 
+entre nuestra aplicaci&#243;n y nuestro edje. Adem&#225;s puedes estar tranquilo sabiendo ( asumiendo que lo hiciste correctamente ) 
+que ninguna artima&#241;a de edje va a lanzar tu aplicaci&#243;n al limbo.
+</para>
+
+<para>
+<example>
+<title>Creando la variable</title>
+<programlisting>
+collections {
+    group {
+        name: "Toggler";
+	script {
+	    public button_toggle_state;
+	}
+	parts {
+	    part {
+		...
+	    }
+	}
+	programs {
+	    program {
+		...
+	    }
+	}
+    }
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+La segunda parte del scripting EE es inicializar las variables. En su mayor parte puedes asumir que estas 
+variables se inicializar&#225;n a cero, pero es buena costumbre iniciarlas t&#250; mismo. Edje emite una se&#241;al 
+&quot;load&quot; cuando el grupo es cargado en memoria, esta es tu oportunidad para iniciar tus variables embryo.
+
+<example>
+<title>Inicializando variables</title>
+<programlisting>
+program {
+    name: "group_loaded";
+    signal: "load";
+    source: "";
+    script {
+	set_int(button_toggle_state, 0);
+    }
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+La tercera parte es propiamente dar un aspecto a tu edje. Para este ejemplo 
+se usan rect&#225;ngulos, pero im&#225;genes e incluso texto deber&#237;an tambien funcionar correctamente.
+Hay un objeto de background simplemente por consistencia, y hay un rect&#225;ngulo llamado &quot;toggler&quot;.
+toggler tiene dos estados, el estado por defecto ( implicitamente deshabilitado ) y habilitado. Cuando 
+toggler es pulsado deber&#237;a ( lo adivinaste ) cambiar al otro estado. off -&gt; on, on -&gt; off. toggler
+va a tener su estado por defecto ( deshabilitado ) de color rojo, y su estado habilitado azul de manera que 
+puedan ser f&#225;cilmente diferenciados. El background va a ser blanco porque no es rojo o azul :D
+</para>
+
+<para>
+<example>
+<title>El bot&#243;n conmutador</title>
+<programlisting>
+collections {
+    group {
+        name: "Toggler";
+        script {
+            public button_toggle_state;
+        }
+        parts {
+            part {
+                name: "background";
+                type: RECT;
+                mouse_events: 0;
+                description {
+		    state: "default" 0.0;
+                    color: 255 255 255 255;
+                    rel1 { relative: 0.0 0.0; offset: 0 0; }
+                    rel2 { relative: 1.0 1.0; offset: 0 0; }
+                }
+            }
+            part {
+                name: "toggle";
+                type: RECT;
+                mouse_events: 1;
+                description {
+                    state: "default" 0.0;
+                    color: 255 0 0 255;
+                    rel1 { relative: 0.0 0.0; offset: 10 10; }
+                    rel2 { relative: 1.0 1.0; offset: -10 -10; }
+                }
+                description {
+                    state: "on" 0.0;
+                    color: 0 0 255 255;
+                    rel1 { relative: 0.0 0.0; offset: 10 10; }
+                    rel2 { relative: 1.0 1.0; offset: -10 -10; }
+                }
+            }
+        }
+        programs {
+            program {
+                name: "group_loaded";
+                signal: "load";
+                source: "";
+                script {
+                    set_int(button_toggle_state, 0);
+                }
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+La cuarta parte est&#225; conect&#225;ndose en los eventos de rat&#243;n para provocar la conmutaci&#243;n como 
+programas edje. No solo cambiando la variable Embryo, sino tambien la apariencia de nuestro edje. 
+Este ejemplo usa pulsaci&#243;n normal de bot&#243;n izquierdo para cambiar el estado del conmutador, en 
+t&#233;rminos de edje "mouse,clicked,1". Este ejemplo no usa una llamada a la funci&#243;n incorporada en Embryo 
+<emphasis>set_state</emphasis> , sino que emite se&#241;ales que son recibidas por otros programas. El razonamiento
+tras esta aproximaci&#243;n es permitir transiciones visuales suaves entre los dos estados. La llamada a 
+la funci&#243;n Embryo set?state es un cambio de estado inmediato, y no tiene un aspecto tan agradable como 
+la transici&#243;n SINUSOIDAL usada en los siguientes fragmentos.
+</para>
+
+<para>
+<example>
+<title>Hooking into the mouse events</title>
+<programlisting>
+collections {
+    group {
+        name: "Toggler";
+        script {
+            public button_toggle_state;
+        }
+        parts {
+            part {
+                 ...
+            }
+	}
+	programs {
+	    program {
+                name: "toggle_icon_mouse_clicked";
+                signal: "mouse,clicked,1";
+                source: "toggle";
+                script {
+		    if(get_int(button_toggle_state) == 0) {
+			set_int(button_toggle_state, 1);
+                        emit("toggle,on", "");
+                    }
+                    else {
+                        set_int(button_toggle_state, 0);
+			emit("toggle,off", "");
+		    }
+		}
+            }
+            program {
+                name: "toggle_on";
+                signal: "toggle,on";
+                source: "";
+                action: STATE_SET "on" 0.0;
+                target: "toggle";
+		transition: SINUSOIDAL 0.5;
+            }
+	    program {
+		name: "toggle_off";
+                signal: "toggle,off";
+                source: "";
+                action: STATE_SET "default" 0.0;
+                target: "toggle";
+                transition: SINUSOIDAL 0.5;
+             }
+         }
+     }
+ }
+</programlisting>
+</example>
+</para>
+
+<para>
+La quinta parte es sopesar el escenario presentado. Esta es solo la punta del iceberg con respecto al scripting EE.
+Puedes a&#241;adir muchas mas variables para llevar la pista de estados internos que no est&#225;n relacionados en absoluto con 
+tus aplicaciones. Hay matizaciones entre esto y el uso pr&#225;ctico de las variables Embryo, sin embargo entender 
+estos bloques b&#225;sicos har&#225; mucho mas simple el escribir o trabajar con aplicaciones scriptadas en EE mucho 
+mas simple.
+</para>
+
+<para>
+ <itemizedlist mark="bullet" spacing="compact">
+  <listitem><para>&#191;Que hay de malo en la t&#233;cnica aqu&#237; presentada?</para></listitem>
+  <listitem><para>&#191;Que pasa si la aplicaci&#243;n quiere el conmutador &quot;on&quot; por defecto?</para></listitem>
+ </itemizedlist>
+</para>
+
+<para>
+Puedes usar una script similar a la siguiente para construir este ejemplo.
+<example>
+<title>Build script</title>
+<programlisting>
+#!/bin/sh -e
+THEME="default"
+APPNAME=""
+edje_cc -v $THEME.edc $THEME.eet
+if [ $? = "0" ]; then
+    if [ "$APPNAME" = "" ]; then
+	echo "Build was successful"
+    else
+	PREFIX=`dirname \`which $APPNAME\` | sed 's/bin//'`
+	sudo cp $THEME.eet $PREFIX"share/$APPNAME/themes/"
+	echo -n "Installed theme to "
+	echo $PREFIX"share/$APPNAME/themes/"
+    fi
+else
+    echo "Building failed"
+fi
+</programlisting>
+</example>
+</para>
+
+<para>
+<example id="ex-Edje_no_Embryo">
+<title>Edje toggle without Embryo</title>
+<programlisting>
+images { }
+
+collections {
+    group {
+        name, "Rephorm";
+        min, 50 50;
+        max, 75 75;
+        parts {
+            part {
+                name, "Clip";
+                type, RECT;
+                mouse_events, 0;
+                description {
+                    state, "default" 0.0;
+                    visible, 1;
+                    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 255 255 255 255;
+                }
+                description {
+                    state, "hidden" 0.0;
+                    visible, 1; 
+		    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 255 255 255 128;
+                }
+            }
+            part {
+                name, "On";
+                type, RECT;
+                mouse_events, 1;
+                clip_to, "Clip";
+                description {
+                    state, "default" 0.0;
+                    visible, 0;
+                    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 255 0 0 0;
+                }
+                description {
+                    state, "visible" 0.0;
+                    visible, 1;
+                    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 255 0 0 255;
+                }
+            }
+            part {
+                name, "Off";
+                type, RECT;
+                mouse_events, 1;
+                clip_to, "Clip";
+                description {
+                    state, "default" 0.0;
+                    visible, 1;
+                    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 0 0 255 255;
+                }
+                description {
+                    state, "visible" 0.0;
+                    visible, 0;
+                    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 0 0 255 0;
+                }
+            }
+            part {
+                name, "Grabber";
+                type, RECT;
+                mouse_events, 1;
+                repeat_events, 1;
+                clip_to, "Clip";
+                description {
+                    state, "default" 0.0;
+                    visible, 1;
+                    rel1 { relative, 0.0 0.0; offset, 5 5; } 
+		    rel2 { relative, 1.0 1.0; offset, -5 -5; }
+                    color, 255 255 255 0;
+                }
+            }
+        }
+        programs {
+            program {
+                name, "ToggleOn";
+                signal, "mouse,clicked,1";
+                source, "Off";
+                action, STATE_SET "visible" 0.0;
+                target, "Off";
+                target, "On";
+                transition, SINUSOIDAL 0.5;
+            }
+            program {
+                name, "ToggleOff";
+                signal, "mouse,clicked,1";
+                source, "On";
+                action, STATE_SET "default" 0.0;
+                target, "Off";
+                target, "On";
+                transition, SINUSOIDAL 0.5;
+            }
+            program {
+                name, "GrabberIn";
+                signal, "mouse,in";
+                source, "Grabber";
+                action, STATE_SET "default" 0.0;
+                target, "Clip";
+                transition, SINUSOIDAL 0.5;
+            }
+            program {
+		    name, "GrabberOut";
+                signal, "mouse,out";
+                source, "Grabber";
+                action, STATE_SET "hidden" 0.0;
+                target, "Clip";
+                transition, SINUSOIDAL 0.5;
+	    }
+        }
+    }
+}
+</programlisting>
+</example>
+</para>
+</section>
+
+

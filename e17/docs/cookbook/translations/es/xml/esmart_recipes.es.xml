@@ -1,0 +1,16 @@
+<!-- Esmart Recipes -->
+
+<chapter>
+<title>Esmart</title>
+
+<para>
+Esmart provee una variedad de objetos inteligentes EVAS que proveen una potencia significativa a tus aplicaciones
+basadas en EVAS y EFL.
+</para>
+
+&esmart_trans_intro;
+&esmart_container_intro;
+
+</chapter>
+
+

@@ -1,0 +1,17 @@
+<!-- Etox Recipes -->
+
+<chapter>
+<title>Etox</title>
+
+<para>
+Etox es una librer&#205;a avanzada de composici&#243;n y maquetado de texto basada en Evas, que permite funcionalidad 
+mayor y mas all&#225; de la provista por Evas. Es capaz de simplificar como mostrar, mover, redimensionar, poner 
+en capas, y recortar el texto, as&#205; como alinear texto, ajustar, y modificar. Etox puede incluso inteligentemente 
+ajustar obst&#225;culos y aplicar <emphasis>styles</emphasis> predefinidos. Casi cualquier aspecto de manejo de 
+texto puede ser manejado f&#225;cil y eficientemente con Etox.
+</para>
+
+ &etox_overview;
+
+</chapter>
+

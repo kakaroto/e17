@@ -1,0 +1,54 @@
+<!-- EDB & EET Recipes -->
+
+<chapter>
+<title>EDB &amp; EET</title>
+
+<para>
+EDB es una librer&#205;a de conveniencia de base de datos envolviendo Berkeley DB 2.7.7 por Sleepycat Software. 
+Su intenci&#211;n es hacer f&#225;cil, r&#225;pido'eficiente y portable el acceder a informaci&#211;n de bases de datos.
+</para>
+
+<para>
+EET es una librer&#205;a m&#237;nima dise&#241;ada para escribir trozos arbitrarios de datos a un archivo y opcionalmente
+comprime cada trozo ( de manera semejante a un archivo zip ) y permite una veloz lectura de acceso aleatorio
+mas tarde. No hace un archivo zip, dado que un zip tiene mas complejidad de la necesaria, y fue mas
+simple implementar esto una vez aqu&#237;.
+</para>
+
+<para>
+EDB provee un m&#233;todo excelente de almacenar y recuperar informaci&#243;n de configuraci&#243;n de la aplicaci&#243;n, aunque
+puede ser usado de una manera mucho mas extensiva que esa. Ebits, el predecesor de Edje, incluso usaba EDB como
+contenedor para temas Ebits previamente a EET. Una Edb consiste de una serie de pares valor/clave, que pueden consistir 
+de una variedad de tipos de datos, incluyendo enteros, valores en punto flotante, cadenas, y datos binarios.
+La API simplificada provee funciones simples, completas, y unificadas para gestionar y acceder tu base de datos.
+</para>
+
+<para>
+Adicionalmente a la librer&#205;a, hay disponible una variedad de herramientas para acceder y modificar tus EDBs. 
+edb_ed provee un simple interfaz de linea de comandos que puede ser f&#225;cilmente programado en scripts, especialmente
+&#250;til para uso con GNU autotools. edb_vt_ed provee un interfaz ncurses f&#225;cil de usar. Finalmente, edb_gtk_ed
+provee un interfaz elegante y sencillo, especialmente &#250;til para la edici&#243;n por el usuario final de los datos
+contenidos en EDBs.
+</para>
+
+<para>
+Eet es extremadamente r&#225;pida, peque&#241;a y simple. Los archivos Eet pueden ser peque&#241;os y altamente comprimidos, 
+haciendolos &#243;ptimos para enviar por internet sin tener que archivar, comprimir o descomprimir, e instalarlos. 
+Permiten lecturas de acceso aleatorio veloces como el rayo una vez creados, haciendolos perfectos para
+almacenar datos que son escritos una sola vez ( o raramente ) y leidos muchas veces, pero el programa no quiere
+tener que leerlo todo a la vez.
+</para>
+
+<para>
+Tambien puede codificar y descodificar estructuras de datos en memoria, as&#237; como datos de imagen para grabar 
+a archivos Eet o para enviar por la red a otras m&#225;quinas, o simplemente escribir a archivos arbitrarios en 
+el sistema. Todos los datos son codificados en manera independiente de la plataforma y pueden ser le&#237;dos y
+escritos por cualquier arquitectura.
+</para>
+
+&edb_shell_file_create;
+&edb_intro;
+&edb_key_get;
+
+</chapter>
+

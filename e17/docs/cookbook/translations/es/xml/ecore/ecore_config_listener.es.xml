@@ -1,0 +1,185 @@
+<!--
+#######################################
+Ecore config listener example
+#######################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>26 July 2004</date>
+</sectioninfo>
+
+<title>Receta: Oyentes Ecore Config</title>
+<para>
+Cuando se usa Ecore Config para manejar la configuración de tu aplicación esbueno ser notificado cuando esa configuración ha sido cambiada. Esto se consigue mediante el uso de oyentes en Ecore_Config.
+</para>
+
+<para>
+<example>
+<title>Oyente Ecore_Config</title>
+<programlisting>
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Config.h&gt;
+
+static int listener_cb(const char *key, const Ecore_Config_Type type,
+            const int tag, void *data);
+
+enum {
+    EX_ITEM,
+    EX_STR_ITEM,
+    EX_FLOAT_ITEM
+};
+
+int main(int argc, char ** argv) {
+    int i;
+    float j;
+    char *str;
+
+    if (!ecore_init()) {
+        printf("Cannot init ecore");
+        return 1;
+    }
+
+    if (ecore_config_init("foo") != ECORE_CONFIG_ERR_SUCC) {
+        printf("Cannot init Ecore_Config");
+        ecore_shutdown();
+        return 1;
+    }
+
+    ecore_config_int_default("/int/example", 1);
+    ecore_config_string_default("/string/example", "String");
+    ecore_config_float_default("/float/example", 2.22);
+
+    ecore_config_listen("int_ex", "/int/example", listener_cb, 
+                                                EX_ITEM, NULL);
+    ecore_config_listen("str_ex", "/string/example", listener_cb, 
+                                                EX_STR_ITEM, NULL);
+    ecore_config_listen("float_ex", "/float/example", listener_cb, 
+                                                EX_FLOAT_ITEM, NULL);
+
+    ecore_main_loop_begin();
+    ecore_config_shutdown();
+    ecore_shutdown();
+    return 0;
+}
+
+static int listener_cb(const char *key, const Ecore_Config_Type type,
+                                            const int tag, void *data) {
+
+    switch(tag) {
+        case EX_ITEM:
+            {
+                int i = ecore_config_int_get(key);
+                printf("int_example :: %d\n", %i);
+            }
+            break;
+
+        case EX_STR_ITEM:
+            {
+                char *str = ecore_config_string_get(key);
+                printf("str :: %s\n", %str);
+                free(str);
+            }
+            break;
+
+        case EX_FLOAT_ITEM:
+            {
+                float f = ecore_config_float_get(key);
+                printf("float :: %f\n", %f);
+            }
+            break;
+
+        default:
+            printf("Unknown tag (%d)\n", tag);
+            break;
+    }
+}
+</programlisting>
+</example>
+Ecore_Config es iniciado de la manera habitual, y creamos algunas claves por defecto como normalmente ocurre. Las partes interesantes entran en juego con las llamadas a <function>ecore_config_listen()</function>. Esta es la llamada que le dice a Ecore_Config que queremos ser notificados de cambios en la configuración.
+<function>ecore_config_listen()</function> toma cinco parametros:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>name</para></listitem>
+ <listitem><para>key</para></listitem>
+ <listitem><para>listener callback</para></listitem>
+ <listitem><para>id tag</para></listitem>
+ <listitem><para>user data</para></listitem>
+</itemizedlist>
+El campo <literal>name</literal>es una cadena de nombre dado por ti para identificar este callback de oyente.
+<literal>key</literal> es el nombre de la clave en la cual quieres escuchar, este será el mismo que el nombre de clave dado en las llamadas _default arriba.
+<literal>listener callback</literal> es la función callback a ser ejecutada en caso de cambio.
+<literal>id tag</literal> es una etiqueta numérica que puede ser dada a cada oyente y será pasada a la función callback. Finalmente, <literal>user data</literal> son los dats que quieras que sean pasados al callback cuando se ejecute.
+</para>
+
+<para>
+La función callback tiene una firma semejante a:
+<programlisting>
+int listener_cb(const char *key, const Ecore_Config_Type type,
+                                    const int tag, void *data);
+</programlisting>
+<literal>key</literal> es el nombre de clave en el que escuchar.
+El parámetro <literal>type</literal> contendrá el tipo Ecore_Config. Este puede ser uno de:
+</para>
+
+<variablelist mark="bullet" spacing="compact" termlength="15">
+ <varlistentry>
+  <term>PT_NIL</term>
+  <listitem><para>Propiedad sin valor</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>PT_INT</term>
+  <listitem><para>Propiedad Integer</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>PT_FLT</term>
+  <listitem><para>Propiedad Float</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>PT_STR</term>
+  <listitem><para>Propiedad String</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>PT_RGB</term>
+  <listitem><para>Propiedad Colour</para></listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>PT_THM</term>
+  <listitem><para>Propiedad Theme</para></listitem>
+ </varlistentry>
+</variablelist>
+
+<para>
+El parámetro <literal>tag</literal> es el valor por defecto que fue dado en la llamada de creación de oyente mas arriba. Finalmente, <literal>data</literal> son cualesquiera datos adjuntados al oyente cuando fue creado.
+</para>
+
+<para>
+Si quieres eliminar el oyente en un momento posterior usa
+<function>ecore_config_deaf()</function>. Esta toma tres parámetros:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>name</para></listitem>
+ <listitem><para>key</para></listitem>
+ <listitem><para>listener callback</para></listitem>
+</itemizedlist>
+Cada uno de estos parámetros corresponde al parámetro dado en la llamada inicial a <function>ecore_config_listen()</function>.
+</para>
+
+<para>
+<example>
+<title>Compilación</title>
+<screen>
+zero@oberon [ecore_config] -&gt; gcc -o ecfg ecfg_listener.c \
+    `ecore-config --cflags --libs`
+</screen>
+</example>
+Si ejecutas el programa verás los valores por defecto escritos en la pantalla. Si lanzas ahora examine como sigue:
+<screen>zero@oberon [ecore_config] -&gt; examine foo</screen> (foo es el nombre dado a <function>ecore_config_init()</function>). Deberías entonces ser capaz de modificar la configuración de la aplicación y, tras pulsar 'save', ver en la consola los valores modificados. 
+</para>
+
+</section>
+
+

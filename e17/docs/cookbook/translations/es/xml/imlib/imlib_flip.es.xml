@@ -1,0 +1,84 @@
+<!--
+#######################################################
+A simple Imlib2 image flipping recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Receta: Reflexión de Imagen</title>
+
+<para>
+Imlib2 contiene funciones para hacer reflexión de imagen. Esto puede ser hecho horizontal, vertical, o diagonalmente. Esta receta mostrará como implementar esta funcionalidad.
+</para>
+
+<example>
+<title>Reflexión de Imagen</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img;
+    int dir = 0;
+
+    if (argc != 4) {
+        fprintf(stderr, "Usage: %s [in_img] [dir] [out_img]\n", argv[0]);
+        return 1;
+    }
+
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+
+    dir = atoi(argv[2]);
+    switch(dir) {
+        case HORIZONTAL:
+            imlib_image_flip_horizontal();
+            break;
+
+        case VERTICAL:
+            imlib_image_flip_vertical();
+            break;
+
+        case DIAGONAL:
+            imlib_image_flip_diagonal();
+            break;
+
+        default:
+            fprintf(stderr, "Unknown value\n");
+            return 1;
+    }
+    imlib_save_image(argv[3]);
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Este ejemplo hace una mínima comprobación de argumentos, entonces carga la imagen de entrada usando <function>imlib_load_image()</function>, pasando el nombre de archivo a cargar.
+<function>imlib_load_image()</function> devolverá el objeto Imlib_Image, o NULL si la carga falla. En cuanto tenemos el objeto Image lo seleccionamos como contexto actual con una llamada a <function>imlib_context_set_image()</function>. Esto le dice a Imlib2 que esta es la imagen con la que queremos trabajar y todas las operaciones de Imlib2 funcionarán con esta imagen. Con el contexto de imagen configurado decidimos el tipo de reflexión que queremos efectuar. Esto se hace con una de las llamadas: <function>imlib_image_flip_horizontal()</function>,
+<function>imlib_image_flip_vertical()</function>, y 
+<function>imlib_image_flip_diagonal()</function>. La rotación diagonal esencialmente coge la esquina superior izquierda y la hace la esquina inferior derecha, y viceversa. Una vez la imagen es reflejada llamamos <function>imlib_save_image()</function> dándole el nuevo nombre de archivo y ya hemos terminado.
+</para>
+
+<para>
+Esto debería darte un ejemplo de reflexión de imagen con Imlib2. Necesitará mejoras antes de ser puesto en una aplicación real pero la base está ahí.
+</para>
+
+</section>
+
+

@@ -1,0 +1,26 @@
+<!-- Edje Recipes -->
+
+<chapter>
+<title>Edje</title>
+
+<para>
+Edje es una compleja librer&#237;a de dise&#241;o gr&#225;fico y maquetaci&#243;n. Su prop&#243;sito es abstraer todo 
+elemento del interfaz de tu aplicaci&#243;n Evas del propio c&#243;digo.
+</para>
+
+<para>
+Una aplicaci&#243;n Edje consiste en dos partes: El c&#243;digo C que forma tu aplicaci&#243;n y una colecci&#243;n de objetos
+edje ( EDC ) que describe cada elemento de tu interfaz. Ambas est&#225;n conectadas por se&#241;ales que son emitidas 
+desde tu EDC y recibidas por callbacks en el c&#243;digo de tu aplicaci&#243;n. Usando este modelo de se&#241;ales el
+c&#243;digo de tu aplicaci&#243;n est&#225; completamente desinteresado en que aspecto tiene tu interfaz, mientras reciba
+una se&#241;al. Y como las se&#241;ales son procesadas por callbacks, no hay requerimiento de que tu interfaz envie cada 
+se&#241;al disponible, haciendo posible aplicaciones en gran escala y aplicaciones de tama&#241;o "demo" con un &#250;nico binario. 
+Tanto si tu interfaz usa botones como si usa una drag-bar para enviar datos, a tu aplicaci&#243;n no le importa.
+</para>
+
+
+&edje_simple;
+
+</chapter>
+
+

@@ -1,0 +1,148 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>12 July 2004</date>
+</sectioninfo>
+
+<title>Receta: Perspectiva general de Etox</title>
+
+<para>
+Para empezar a usar Etox r&#225;pidamente, es &#250;til un ejemplo simple. En el siguiente c&#243;digo de ejemplo crearemos 
+un Evas X11 usando Ecore_Evas y entonces pondremos algo de texto Etox en &#233;l.
+</para>
+
+<example>
+<title>ejemplo Etox</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Etox.h&gt;
+
+#define WIDTH 400
+#define HEIGHT 200
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+        Evas_Object *   etox;
+        Etox_Context *  context;
+
+int main(){
+
+        ecore_init();
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "ETOX Test");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, ".");
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 255, 255, 255, 255);
+        evas_object_show(base_rect);
+
+   etox = etox_new(evas);
+        evas_object_resize(etox, WIDTH, HEIGHT);
+
+
+   context = etox_get_context(etox);
+        etox_context_set_color(context, 0, 0, 0, 255);
+        etox_context_set_font(context, "Vera", 32);
+        etox_context_set_align(context, ETOX_ALIGN_LEFT);
+
+        etox_set_soft_wrap(etox, 1);
+        etox_set_text(etox, "Welcome to the world of Etox!");
+
+        evas_object_show(etox);
+
+        ecore_main_loop_begin();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+Este ejemplo puede compilarse de la siguiente manera:
+</para>
+
+<example>
+<programlisting>
+gcc `etox-config --libs --cflags` `ecore-config --libs --cflags` etox-test.c -o etox-test
+</programlisting>
+</example>
+
+<para>
+La mayor&#237;a de este ejemplo son funciones est&#225;ndar Ecore_Evas as&#237; que nos concentraremos en las partes 
+relacionadas con Etox. Observa que usamos la funci&#243;n Evas<function>evas_font_path_append()</function> 
+para definir nuestro path de fuentes, esto es algo que Etox no har&#225; por t&#237;.
+</para>
+
+<para>
+Tu texto Etox siempre empezar&#225; a&#241;adiendo un nuevo Etox usando la funci&#243;n <function>etox_new()</function> 
+que devuelve un Evas_Object. Como tu Etox es un objeto Evas puede ser manipulado como tal. Las funciones de ajuste
+como recortar y ajustar son dependientes del tama&#241;o del propio Etox, por lo tanto <function>evas_object_resize()</function>
+necesita ser llamada para definir el tama&#241;o apropiado del Etox. Observa que el area del objeto <emphasis>no</emphasis>
+ser&#225; igual por defecto al tama&#241;o del propio Evas.
+</para>
+
+<para>
+Etox usa el concepto de contextos. Un <literal>context</literal> es un conjunto de par&#225;metros como color, 
+fuente, alineaci&#243;n, estilo, y marcas que son aplicados a un cierto conjunto de texto. Cada objeto Etox tiene 
+al menos un contexto asociado con &#233;l que es creado cuando se llama a <function>etox_new()</function>. 
+Por esta raz&#243;n la funci&#243;n <function>etox_context_new()</function> function <emphasis>solo</emphasis> necesita 
+ser llamada cuando se crean contextos adicionales.
+</para>
+
+<para>
+Una vez has usado <function>etox_new()</function> para a&#241;adir tu objeto Etox necesitas usar <function>etox_get_context()</function>
+para devolver un puntero a <varname>Etox_Context</varname> que puede entonces ser pasado a otras funciones de contexto para
+modificar los atributos de tu texto. En el ejemplo cambiamos el color, fuente y alineaci&#243;n de nuestro contexto.
+</para>
+
+<para>
+Dos de las car&#225;cteristicas mas interesantes y simplisticas de Etox son su habilidad de inteligentemente ajustar 
+texto y de interpretar un car&#225;cter de newline est&#225;ndar de C ( \n ) como ajuste. Esas son caracter&#237;sticas que el
+propio Evas no proporciona, es responsabilidad del programador asegurar que el texto no se sale del canvas..  
+</para>
+
+<para>
+El ajustado inteligente viene en dos formas que no son mutuamente exclusivas. La primera es el ajustado suave, 
+que ajustar&#225; el texto cuando un car&#225;cter vaya a exceder la anchura del canvas. La segunda es ajuste de palabra, 
+que ajustar&#225; texto cuando una palabra vaya a exceder la anchura del canvas. Tipicamente la segunda manera es deseable 
+de manera que obtengamos "Esta es (ajuste) mi cadena" en lugar de "Esta es m(ajuste)i cadena". Observa, sin embargo, 
+que el ajuste de palabra no funcionar&#225; a menos que el ajuste suave haya sido ya habilitado, por lo tanto el ajuste 
+de palabra requiere llamar a <emphasis>ambas</emphasis> funciones, <function>etox_set_soft_wrap()</function> y 
+<function>etox_set_word_wrap()</function> functions.
+</para>
+
+<para>
+Una nota final sobre el ajuste es que por defecto el ajuste insertar&#225; un <literal>wrap marker</literal> 
+en tu cadena de salida, un signo "+" por defecto. Esta marca indica que un ajuste ha ocurrido y es impresa 
+como primer car&#225;cter en la siguiente linea. Tu cadena por lo tanto ser&#225; mas bien como esto: "Esta es mi (ajuste) +cadena".
+Si prefieres que Etox ajuste silenciosamente sin marca, simplemente configura la marca a ser nada usando 
+la funci&#243;n <function>etox_context_set_wrap_marker()</function>.
+</para>
+
+<para>
+Las cadenas de texto Etox se configuran usando <function>etox_set_text()</function>. Es importante observar 
+que la cadena se aplica al propio Etox y no al contexto. No hay asociaci&#243;n directa entre la cadena y el 
+contexto, que facilita facil modificaci&#243;n del mostrado del texto sin tener que cambiar el contexto, o viceversa.
+</para>
+
+<para>
+Aunque este es un ejemplo muy simple del uso de Etox, mucho m&#225;s puede ser hecho y como puedes ver el API es 
+simple y limpio, rellenando muchas de las necesidades de manejo de texto que Evas no provee.
+</para>
+
+
+</section>
+

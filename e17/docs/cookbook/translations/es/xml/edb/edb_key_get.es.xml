@@ -1,0 +1,68 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>27 July 2004</date>
+</sectioninfo>
+
+<title>Receta: recuperaci&#243;n de claves EDB</title>
+
+<para>
+La API EDB hace una tarea simple el recuperar todas las claves disponibles en la base de datos. Estas claves
+pueden entonces ser usadas para determinar los tipos del objeto en la base de datos, o simplemente para recuperar el objeto.
+</para>
+
+<para>
+<example>
+<title>recuperaci&#243;n de claves EDB</title>
+<programlisting>
+#include &lt;Edb.h&gt;
+
+int main(int argc, char ** argv) {
+    char ** keys;
+    int num_keys, i;
+
+    if (argc &lt; 2) 
+        return 0;
+
+    keys = e_db_dump_key_list(argv[1], &amp;num_keys);
+    for(i = 0; i &lt; num_keys; i++) {
+        printf("key: %s\n", keys[i]);
+        free(keys[i]); 
+    }
+    free(keys);
+    return 1;
+}
+</programlisting>
+</example>
+Recuperar las claves se hace simplemente mediante la llamada a 
+<function>e_db_dump_key_list()</function>. Esto devolver&#225; un array de cadenas clave char **.
+Estas cadenas, y el propio array, debe ser liberado (free) por la aplicaci&#243;n. 
+<function>e_db_dump_key_list()</function> devolver&#225; tambien el n&#250;mero de claves en el array en el 
+par&#225;metro <literal>num_keys</literal>.
+</para>
+
+<para>
+Notar&#225;s que no necesitamos abrir la base de datos para llamar a <function>e_db_dump_key_list()</function>. 
+Esta funci&#243;n trabaja en el archivo en s&#237; mismo, en lugar de en un objeto db.
+</para>
+
+<para>
+<example>
+<title>Compilaci&#243;n</title>
+<screen>
+zero@oberon [edb] -&gt; gcc -o edb edb_ex.c \
+	`edb-config --cflags --libs`
+</screen>
+</example>
+Ejecutar  el programa deber&#237;a producir un listado de todas las claves en la base de datos dada. Esto puede
+ser verificado mirando la base de datos con una herramienta externa como <command>edb_gtk_ed</command>.
+</para>
+
+</section>
+
+

@@ -1,0 +1,67 @@
+<!--
+#######################################################
+A simple Imlib2 90 degree rotation example
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Receta: Rotación de imagen de 90 grados</title>
+
+<para>
+Con una cámara digital es a veces deseable rotar tu imagen 90, 180 o 270 grados. Esta receta enseñará como hacer esto fácilmente con Imlib2. Esta receta no pondrá bordes negros alrededor de la imagen como visto en el ejemplo de rotación libre.
+</para>
+
+<example>
+<title>rotación de imagen de 90 grados</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img;
+    int dir = 0;
+
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s [in_img] [out_img]\n", argv[0]);
+        return 1;
+    }
+    
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+    imlib_image_orientate(1);
+    imlib_save_image(argv[2]);
+    return 0;
+}   
+</programlisting>
+</example>
+<para>
+Tras una mínima comprobación de errores cargamos la imagen a ser rotada con una llamada a <function>imlib_load_image()</function>.
+Esta función acepta un nombre de archivo y devuelve el objeto Imlib_Image, o NULL en caso de error de carga. Una vez la imagen ha sido cargada la seleccionamos como imagen de contexto actual, la imagen en la cual Imlib2 hará todas sus operaciones, con <function>imlib_context_set_image()</function>.
+La rotación es hecha mediante la llamada a <function>imlib_image_orientate()</function>.
+El parámetro para _orientate cambia la cantidad de rotación. Los valores posibles son:
+[1, 2, 3] siendo su significado rotación en el sentido de las agujas del reloj por [90, 180, 270] grados respectivamente. Una vez la imagen es rotada llamamos <function>imlib_save_image()</function> dando el nombre de archivo de la nueva imagen para que Imlib2 grabe la imagen rotada.
+</para>
+
+<para>
+Con este ejemplo en tus manos deberías ser capaz de rotar imágenes rápidamente en intervalos de 90 grados usando Imlib2.
+</para>
+
+</section>
+
+

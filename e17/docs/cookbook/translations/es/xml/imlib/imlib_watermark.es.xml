@@ -1,0 +1,91 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>technikolor</othername>
+  </author>
+  <date>6 July 2004</date>
+</sectioninfo>
+
+<title>Receta: marcado al agua para imágenes</title>
+
+
+<para>
+Con tanta gente poniendo tantas imágenes online es fácil olvidar de donde vinieron y dificil asegurar que material con copyright no es inadvertidamente mal utilizado. Simplemente añadiendo una imagen de marca de agua, como el logo de tu site, a cada una de tus imágenes puede resolver ambos problemas. Pero añadir marcas de agua manualmente es una tarea larga y repetitiva. Imlib2 puede fácilmente ser usada para resolver este problema. Lo que necesitamos hacer es tomar una imagen de entrada, y especificar una marca al agua ( tu logo ), posicionar la marca en la imagen de entrada, y entonces grabarla a una nueva imagen que usaremos en el site. La aplicación sería algo así:
+</para>
+
+<example>
+<title>Imlib2 WaterMark Program</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+#include &lt;Imlib2.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+
+    Imlib_Image image_input, image_watermark, image_output;
+    int     w_input, h_input;
+    int     w_watermark, h_watermark;
+    char    watermark[] = "watermark.png";
+
+    if(argc &gt; 1)  {
+        printf("Input image is: %s\n", argv[1]);
+        printf("Watermark is: %s\n", watermark);
+    }
+    else {
+        printf("Usage: %s input_image output_imagename\n", argv[0]);
+        exit(1);
+    }
+
+    image_input = imlib_load_image(argv[1]);
+    if(image_input) {
+        imlib_context_set_image(image_input);
+        w_input = imlib_image_get_width();
+        h_input = imlib_image_get_height();
+        printf("Input size is: %d by %d\n", w_input, h_input);
+        image_output = imlib_clone_image();
+    }
+
+    image_watermark = imlib_load_image(watermark);
+    if(image_watermark) {
+        imlib_context_set_image(image_watermark);
+        w_watermark = imlib_image_get_width();
+        h_watermark = imlib_image_get_height();
+        printf("WaterMark size is: %d by %d\n", 
+		w_watermark, h_watermark);
+    }
+
+    if(image_output) {
+        int dest_x, dest_y;
+
+        dest_x = w_input - w_watermark;
+        dest_y = h_input - h_watermark;
+        imlib_context_set_image(image_output);
+
+        imlib_blend_image_onto_image(image_watermark, 0, 
+		0, 0, w_watermark, h_watermark, 
+		dest_x, dest_y, w_watermark, h_watermark);
+        imlib_save_image(argv[2]);
+        printf("Wrote watermarked image to filename: %s\n", argv[2]);
+    }
+
+
+        return(0);
+}
+
+</programlisting>
+</example>
+
+<para>
+Mirando el ejemplo, primero hacemos una comprobación básica de argumentos, aceptando una imagen de entrada como primer argumento y un nombre de imagen de salida para nuestra copia marcada al agua.
+Usando <function>imlib_load_image()</function> cargamos la imagen de entrada y entonces obtenemos sus dimensiones usando las funciones get.
+Con <function>imlib_clone_image()</function> podemos crear una copia de la imagen de entrada, que será la base de nuestra imagen marcada al agua de salida. Despues cargamos la imagen de marca de agua, y observa que usamos <function>imlib_context_set_image()</function> para cambiar el contexto de la imágen de entrada a la imagen de marca de agua. Ahora obtenemos las dimensiones de la imagen tambien.
+En el bloque final hacemos dos cálculos simples para determinar el posicionamiento de la marca de agua en la imagen de output, en este caso quiero la marca de agua en la esquina inferior derecha. La función mágica que realmente hace el trabajo en este programa es <function>imlib_blend_image_onto_image()</function>. Observa que cambiamos el contexto a la imagen de salida antes de continuar. La función de blend, como su nombre indica ( to blend = mezclar ), mezcla dos imágenes juntas a las que referimos como fuente y destino. La función de mezcla mezcla una imagen fuente sobre la imagen en contexto actual, a la que designamos como destino. Los argumentos proporcionados a <function>imlib_blend_image_onto_image()</function> pueden parecer truculentos, necesitamos decirle que fuente utilizar ( la marca de agua ), si mezclar o on el canal alfa ( 0 para no ), las dimensiones de la imagen fuente ( x, y, w, h ), y las dimensiones de la imagen destino ( x, y, w, h ). Notarás que en el ejemplo colocamos las posiciones x, y de la imagen de fuente ( marca de agua ) a 0 y usamos la anchura completa. El destino ( imagen de entrada ) se coloca en la esquina inferior derecha menos las dimensiones de la marca de agua, y entonces especificamos la anchura y altura de la marca de agua. Finalmente, usamos  <function>imlib_save_image()</function> para grabar la imagen de salida.
+</para>
+
+<para>
+Aunque este ejemplo debería ser significativamente mejorado para uso real, esboza la base del mezclado Imlib2 para resolver un problema muy común eficientemente.
+</para>
+</section>

@@ -1,0 +1,129 @@
+<!--
+#######################################################
+Setting up key bindings in evas
+#######################################################
+-->
+<section>
+  <sectioninfo>
+   <author>
+	<firstname>Ben</firstname>
+	<surname>Rockwood</surname>
+	<othername>technikolor</othername>
+   </author>
+  </sectioninfo>
+<title>Receta: Vínculos de teclado, usando eventos de teclado EVAS</title>
+
+<para>
+Muchas aplicaciones proveen vínculos de teclado para operaciones comunmente usadas. Bien aceptando texto en maneras que las EFL no esperan, o simplemente una manera de vincular la tecla + a subir el volumen de un mezclador, los vínculos de teclado pueden añadir la pequeña funcionalidad que hace tu aplicación un éxito.
+</para>
+
+<para>
+El siguiente código es una simple y completa aplicación útil para explorar vínculos de teclado usando callbacks de evento EVAS. Crea una ventana negra de 100 por 100 píxels en la cual puedes presionar teclas.
+</para>
+
+<example>
+<title>Captura de teclado usando eventos EVAS</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+
+#define WIDTH 100
+#define HEIGHT 100
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+
+static int main_signal_exit(void *data, int ev_type, void *ev)
+{
+   ecore_main_loop_quit();
+   return 1;
+}
+
+void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        Evas_Event_Key_Down *ev;
+
+        ev = (Evas_Event_Key_Down *)event_info;
+        printf("You hit key: %s\n", ev->keyname);
+}
+
+int main(){
+        ecore_init();
+        ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, 
+			main_signal_exit, NULL);
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "EVAS KeyBind Example");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+   evas = ecore_evas_get(ee);
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 0, 0, 0, 255);
+        evas_object_focus_set(base_rect, 1);
+        evas_object_show(base_rect);
+
+        evas_object_event_callback_add(base_rect, 
+			EVAS_CALLBACK_KEY_DOWN, key_down, NULL);      
+
+        ecore_main_loop_begin();
+        
+        ecore_evas_shutdown();
+        ecore_shutdown();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+Puedes compilar este ejemplo de la siguiente manera:
+</para>
+
+<example>
+<title>Compilación de vínvulos de teclado EVAS</title>
+<programlisting>
+gcc `evas-config --libs --cflags` `ecore-config --libs --cflags` \
+> key_test.c -o key_test
+</programlisting>
+</example>
+
+<para>
+En este ejemplo el canvas es iniciado de la manera habitual usando Ecore_Evas para hacer el trabajo sucio. La magia ocurre en <function>evas_object_event_callback_add()</function>
+</para>
+
+<programlisting>
+        evas_object_event_callback_add(base_rect,
+                        EVAS_CALLBACK_KEY_DOWN, key_down, NULL);
+</programlisting>
+
+<para>
+Añadiendo un callback a base_rect, que actua como background del canvas, podemos ejecutar una función ( <function>key_down()</function> en este caso ) cuando encontremos un evento de tecla pulsada definido en <filename>Evas.h</filename> como EVAS_CALLBACK_KEY_DOWN.
+</para>
+
+<para>
+Hay una cosa muy importante que hacer además de definir el callback: capturar el foco. La función <function>evas_object_focus_set()</function> captura el foco en un objeto Evas dado. Es el objeto que tiene el foco el que aceptará los eventos, aún cuando tu explicitamente defines el objeto Evas al cual el callback está vinculado. Y solo un objeto puede tener el foco a la vez. El problema mas común encontrado con los callbacks Evas es olvidar capturar el foco.
+</para>
+
+<programlisting>
+void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        Evas_Event_Key_Down *ev;
+
+        ev = (Evas_Event_Key_Down *)event_info;
+        printf("You hit key: %s\n", ev->keyname);
+}
+</programlisting>
+
+<para>
+La función <function>key_down()</function> es llamada cuando un evento de tecla pulsada ocurre despues de definir su callback. La declaración de la función es la de un callback estándar Evas ( ver <filename>Evas.h</filename> ). La pieza importante de información que necesitamos saber es que tecla fue pulsada, que está contenida en la structura Evas <varname>event_info</varname>. Tras iniciar la estructura <varname>Evas_Event_Key_Down</varname> como visto arriba podemos acceder el elemento <varname>keyname</varname> para determinar que tecla fue pulsada.
+</para>
+
+<para>
+En la mayoria de los casos probablemente usarás un <function>switch</function> o <function>if</function>s anidados para definir que teclas hacen que cosa, y se recomienda que esta funcioonalidad sea complementada con una configuración EDB para proveer centralización y facil expansion de la configuración de vínculos de teclado de tus aplicaciones.
+</para>
+
+</section>
+
+

@@ -1,0 +1,163 @@
+<chapter>
+ <title>Introducción</title>
+
+ <para>
+Bienvenido al estado iluminado de la programación. Este libro es una colección de ideas, trucos, tutoriales e introducciones dispuestas en estilo receta con objeto de ayudarte a convertirte rapidamente en compentente y efectivocon las Enlightenment Foundation Libraries. Las Enlightenment Foundation Libraries, llamadas simplemente EFL, son simplemente una colección de librerías originalmente escritas para soportar el gestor de ventanas Enlightenment DR17. Sin embargo, tal como las librerías crecieron y fueron sometidas a prueba e implantadas mayor y mas general funcionalidad fue añadida llevándonos a disfrutar un conjunto de librerías rico y potente que puede resolver todo tipo de problemas y tambien actuar como una venerable alternativa a las actualmente populares GTK y QT.
+</para>
+
+ <para>
+Las EFL son un grupo exhaustivo de librerías C que puden encargarse de casi cualquier necesidad gráfica en casi cualquier plataforma. La siguiente es una concisa descomposición de las librerías que componen EFL.
+</para>
+
+<variablelist>
+ <title>Lista de componentes EFL</title>
+
+<varlistentry>
+	<term>Imlib2</term>
+
+	<listitem>
+	<para>
+	Librería completa de manipulación de imagen, incluyendo renderizado a drawables X11.
+	</para>
+	</listitem>
+</varlistentry>
+
+
+<varlistentry>
+        <term>EVAS</term>
+
+        <listitem>
+        <para>
+	Librería de canvas con varios motores de backend incluyendo aceleración hardware OpenGL.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Ecore</term>
+
+        <listitem>
+        <para>
+    Colección modular de librerías con manejo de eventos y temporizadores, mas sockets, IPC, inicialización, manejo de eventos, y finalización  de FB y X, control de tareas, manejo de configuración, y más.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EDB</term>
+
+        <listitem>
+        <para>
+	Una librería de base de datos capaz de almacenar cadenas, valores, y datos para manejo de configuración simple y centralizado.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EET</term>
+
+        <listitem>
+        <para>
+	Un flexible formato de contenedor para almacenar imagenes binarias y datos.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Edje</term>
+
+        <listitem>
+        <para>
+    Una librería y conjunto de herramientas de abstracción de imagen basado en EVAS, manteniendo todos los aspectos de interfaz de usuario completamente separados del codigo de la aplicación mediante el uso del paso de señales.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Embryo</term>
+
+        <listitem>
+        <para>
+	Un lenguage de scripting tipicamente usado con Edje para control avanzado.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Etox</term>
+
+        <listitem>
+        <para>
+    Una librería de formateado y manipulación de texto, completa con capacidades de estilización de texto.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Esmart</term>
+
+        <listitem>
+        <para>
+    Una librería consistente de varios objetos inteligentes EVAS para facil reutilización, incluyendo el popular hack de transparencia.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Epeg</term>
+
+        <listitem>
+        <para>
+	Una librería de thumbnailing veloz como el rayo para JPEG independiente de otros componentes EFL.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Epsilon</term>
+
+        <listitem>
+        <para>
+	Una librería de thumbnailing flexible y rápida para PNG, XCF, GIF y JPEG.
+	A flexable and fast thumbnailing library for PNG, XCF, GIF and JPEG.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Evoak</term>
+
+        <listitem>
+        <para>
+    Una librería y conjunto de herrramientas de servidor canvas EVAS.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EWL</term>
+
+        <listitem>
+        <para>
+	Una completa librería de widgets.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Emotion</term>
+
+        <listitem>
+        <para>
+    Una librería de objetos EVAS para reproducción de video y DVD utilizando libxine.
+        </para>
+        </listitem>
+</varlistentry>
+
+</variablelist>
+
+
+
+</chapter>
+
+

@@ -1,0 +1,22 @@
+<!-- Emotion Recipes -->
+
+<chapter>
+<title>Emotion</title>
+
+<para>
+Emotion es una librer&#237;a de objetos de v&#237;deo y media dise&#241;ada para interacuar con Evas y Ecore
+para proveer objetos "video" y "audio" que pueden ser movidos, redimensionados y posicionados 
+como cualquier objeto normal, pero pueden reproducir video y audio y pueden ser controlados desde 
+una API de control de alto nivel permitiendo al programador montar r&#225;pidamente un sistema multimedia 
+con un trabajo m&#237;nimo. Emotion provee un sistema de capas de descodifici&#243;n modular donde un m&#243;dulo 
+descodificador puede ser incorporado separadamente para proveer recursos de descodificaci&#243;n para 
+Emotion. Emotion actualmente tiene un m&#243;dulo descodificador que usa XINE como descodificador, permiti&#233;ndole 
+reproducir DVDs, AVIs, MOVs, WMVs y muchos m&#225;s. Su programa de prueba es ya un &#250;til reproductor DVD ( sin 
+un bonito interfaz ) y puede reproducir varias fuentes de v&#237;deo con semi-translucencia y m&#225;s.
+</para>
+
+ &emotion_dvd_player;
+ &emotion_media_player;
+
+</chapter>
+

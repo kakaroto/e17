@@ -1,0 +1,103 @@
+<!--
+#######################################
+Introduction to Ecore_Config
+#######################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>25 April 2004</date>
+</sectioninfo>
+
+<title>Receta: Introducción a la configuración de Ecore</title>
+
+<para>
+El modulo Ecore_Config provee al programadorcon una manera muy simple de preparar archivos de configuración para su programa. Esta receta dará un ejemplo de como integrar los principios de Ecore_Config en tu programa y utilizarla para conseguir datos de configuración.
+</para>
+
+<example>
+<title>Programa simple Ecore_Config</title>
+<programlisting>
+#include &lt;Ecore_Config.h&gt;
+
+int main(int argc, char ** argv) {
+    int i;
+    float j;
+    char *str;
+
+    if (ecore_config_init("foo") != ECORE_CONFIG_ERR_SUCC) {
+        printf("Cannot init Ecore_Config");
+        return 1;
+    }
+
+    ecore_config_int_default("/int_example", 1);
+    ecore_config_string_default("/this/is/a/string/example", "String");
+    ecore_config_float_default("/float/example", 2.22);
+
+    ecore_config_load();
+
+    i = ecore_config_int_get("/int_example");
+    str = ecore_config_string_get("/this/is/a/string/example");
+    j = ecore_config_float_get("/float/example");
+
+    printf("str is (%s)\n", str);
+    printf("i is (%d)\n", i);
+    printf("j is (%f)\n", j);
+
+    free(str);
+
+    ecore_config_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Como puedes ver el uso básico de Ecore?Config es simple. El sistema es inicializado con una llamada a <function>ecore_config_init</function>. El nombre del programa controla donde Ecore_Config mirará por tu base de datos de configuración. El directorio y nombre de archivo son: ~/.e/apps/NOMBRE_DEL_PROGRAMA/config.db.
+</para>
+
+<para>
+Para cada variable de configuración que recibes de Ecore_Config, puedes asignar un valor por defecto por si acaso el usuario no tiene un archivo config.db. Los valores por defecto son asignados con ecore_config_*_default donde * es uno de los tipos Ecore_Config. El primer parámetro es la clave bajo la cual va a ser accedida. Estas claves deben de ser únicas en tu programa. El valor pasado es del tipo apropiado para esta llamada.
+</para>
+
+<para>
+La llamada a <function>ecore_config_load</function> leerá los valores del archivo config.db en Ecore_Config. Despues de lo cual podemos acceder los ficheros con los métodos ecore_config_*_get ( de nuevo * es el tipo de datos deseado ). Estas rutinas toman el nombre de clave para este item y retornan el valor asociado con esa clave. Cada función retorna un tipo que corresponde al nombre de llamada a la función.
+call will read the values from the config.db file into Ecore_Config. 
+</para>
+
+<para>
+<function>ecore_config_shutdown</function> es llamada entonces para terminar el sistema Ecore_Config antes de salir del programa.
+</para>
+
+<example>
+<title>Comando de compilación</title>
+<programlisting>
+gcc -o ecore_config_example ecore_config_example.c `ecore-config --cflags --libs`
+</programlisting>
+</example>
+<para>
+Para compilar el programa puedes usar la script ecore-config para conseguir toda la información de librería y enlazado requerida para Ecore_Config.
+Si ejecutas este programa tal cual recibirás como output los valores puestos en ecore_config. Una vez sabes que el programa está trabajando, puedes crear un archivo config.db simple para leer los valores.
+</para>
+
+<example>
+<title>Script simple config.db (build_cfg_db.sh)</title>
+<programlisting>
+#!/bin/sh
+
+DB=config.db
+
+edb_ed $DB add /int_example int 2
+edb_ed $DB add /this/is/a/string/example str "this is a string"
+edb_ed $DB add /float/example float 42.10101
+</programlisting>
+</example>
+<para>
+Cuando build_cfg_db.sh sea ejecutada creará un archivo config.db en el directorio actual. Este archivo puede entonces ser copiado en ~/.e/apps/NOMBRE_DEL_PROGRAMA/config.db donde NOMBRE_DEL_PROGRAMA es el valor pasado en ecore_config_init. Una vez que el archivo sea copiado en su lugar, ejecutar el programa de nuevo mostrará los valores dados en el archivo config en lugar de los valores por defecto. Puedes especificar tantas o tan pocas de las claves de configuración en el archivo config y Ecore_Config mostrará el valor de usuario o el valor por defecto.
+</para>
+</section>
+

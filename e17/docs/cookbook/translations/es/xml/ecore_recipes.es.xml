@@ -1,0 +1,36 @@
+<!-- Ecore & Modules Recipes -->
+
+<chapter>
+<title>Ecore</title>
+
+<para>
+&#194;&#191;Que es ecore ? Ecore es la capa central de abstracción de eventos y abstracción X que permite hacer selecciones, Xdnd, cosas de X en general, y cilos de evento, eventos de tiempo desocupado y tiempo expirado, de una manera rápida, optimizada y conveniente. Es una librería separada de manera que cualquiera puede hacer uso del trabajo puesto en Ecore para hacer este trabajo fácil para aplicaciones.
+</para>
+
+<para>
+Ecore es completamente modular. En su base están los temporizadores y manejadores de eventos, y funciones de inicialización y cierre. Los módulos de abstracción para Ecore incluyen:
+</para>
+
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>Ecore X</para></listitem>
+ <listitem><para>Ecore FB</para></listitem>
+ <listitem><para>Ecore EVAS</para></listitem>
+ <listitem><para>Ecore TXT</para></listitem>
+ <listitem><para>Ecore Job</para></listitem>
+ <listitem><para>Ecore IPC</para></listitem>
+ <listitem><para>Ecore Con</para></listitem>
+ <listitem><para>Ecore Config</para></listitem>
+</itemizedlist>
+
+<para>
+Ecore es tan modular y potente que puede ser muy util incluso en programación no gráfica. Como ejemplo, varios servidores web han sido escritos basados solo en Ecore y el módulo Ecore_Con para abstraer comunicación pro socket.
+</para>
+
+&ecore_config_intro;
+&ecore_config_listener;
+&ecore_ipc_intro;
+&ecore_timers;
+
+</chapter>
+
+
