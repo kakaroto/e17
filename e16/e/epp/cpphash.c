@@ -51,10 +51,7 @@ HASHNODE           *install(unsigned char * name, int len, enum node_type type, 
  * computed a step at a time, elsewhere
  */
 int
-hashf(name, len, hashsize)
-     register const unsigned char *name;
-     register int        len;
-     int                 hashsize;
+hashf(register const unsigned char *name, register int len, int hashsize)
 {
    register int        r = 0;
 
@@ -75,11 +72,7 @@ hashf(name, len, hashsize)
  * Otherwise, compute the hash code.
  */
 HASHNODE           *
-cpp_lookup(pfile, name, len, hash)
-     struct parse_file  *pfile;
-     const unsigned char       *name;
-     int                 len;
-     int                 hash;
+cpp_lookup(struct parse_file *pfile, const unsigned char *name, int len, int hash)
 {
    register const unsigned char *bp;
    register HASHNODE  *bucket;

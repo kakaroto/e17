@@ -286,7 +286,8 @@ static HOST_WIDE_INT eval_if_expression(cpp_reader * pfile, unsigned char * buf,
 					int length);
 
 static int          change_newlines();
-extern int          hashf();
+extern int          hashf(register const unsigned char *name, register int len,
+		int hashsize);
 static int          file_size_and_mode(int fd, int *mode_pointer,
 				       long int *size_pointer);
 static struct arglist *read_token_list(cpp_reader * pfile, int *error_flag);
