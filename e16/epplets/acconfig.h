@@ -85,6 +85,9 @@
 /* Define if you have a working `mmap' system call.  */
 #undef HAVE_MMAP
 
+/* Define if you have e >= 0.16.4 */
+#undef NEW_REMEMBER
+
 /* Define if system calls automatically restart after interruption
    by a signal.  */
 #undef HAVE_RESTARTABLE_SYSCALLS

@@ -1972,3 +1972,14 @@ Sun Feb 27 13:05:15 GMT 2000
 Epplet-side fix for the "millions of remember requests" bug.
 I'll implement a better fix when I add a new ipc call to e :)
 
+-------------------------------------------------------------------------------
+
+Sun Feb 27 14:52:36 GMT 2000
+(gilbertt)
+
+Okay. E has the new ipc call. However, because epplets can't demand that
+people have e > 0.16.4, the old behaviour is the default. Please ./configure
+--enable-new-remember to test the new behaviour. (You'll need cvs e as of 2
+seconds ago) It should be much streamlined. Especially for you guys on
+interesting hardware =)
+
