@@ -130,6 +130,7 @@ static void hilight_current_track(Euphoria *e) {
 EDJE_CB(track_next) {
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
 
+	xmmsc_result_unref(xmmsc_playlist_set_next(e->xmms, 0, 1));
 	xmmsc_result_unref(xmmsc_playback_next(e->xmms));
 
 	if (playback_state != PLAYBACK_STATE_PLAYING)
@@ -149,7 +150,8 @@ EDJE_CB(track_prev) {
 		return;
 #endif
 
-	xmmsc_result_unref(xmmsc_playback_prev(e->xmms));
+	xmmsc_result_unref(xmmsc_playlist_set_next(e->xmms, 0, -1));
+	xmmsc_result_unref(xmmsc_playback_next(e->xmms));
 
 	if (playback_state != PLAYBACK_STATE_PLAYING)
 		xmmsc_result_unref(xmmsc_playback_start(e->xmms));
@@ -210,7 +212,7 @@ EDJE_CB(playlist_scroll_down) {
 EDJE_CB(playlist_item_play) {
 	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
 
-	xmmsc_result_unref(xmmsc_playback_jump(e->xmms, pli->id));
+	xmmsc_result_unref(xmmsc_playlist_set_next(e->xmms, 1, pli->id));
 	xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 }
 
@@ -315,7 +317,7 @@ EDJE_CB(switch_group) {
 	ui_shutdown_edje(e);
 	ui_init_edje(e, src);
 
-	xmmsc_result_unref(xmmsc_playback_current_id(e->xmms));
+	xmmsc_result_unref(xmmsc_playlist_current_id(e->xmms));
 
 	playlist_container_set(e->playlist, e->gui.playlist);
 	signal_playback_state(e);
@@ -587,6 +589,7 @@ XMMS_CB(playback_playtime) {
 
 static void handle_current_id(struct _Euphoria *e,
                               xmmsc_result_t *res) {
+	PlayListItem *pli;
 	unsigned int id = 0;
 
 	assert(e);
@@ -595,11 +598,13 @@ static void handle_current_id(struct _Euphoria *e,
 	if (!xmmsc_result_get_uint (res, &id))
 		return;
 
-	if (playlist_set_current(e->playlist, id))
+	if ((pli = playlist_set_current(e->playlist, id))) {
 		hilight_current_track(e);
+		ui_fill_track_info(e, pli);
+	}
 }
 
-XMMS_CB(playback_current_id) {
+XMMS_CB(playlist_current_id) {
 	handle_current_id(e, res);
 	XMMS_CB_FINISH(res);
 }
@@ -666,7 +671,7 @@ XMMS_CB(playlist_list) {
 	xmmsc_result_unref(res);
 
 	/* hack: get the current id */
-	res2 = xmmsc_playback_current_id(e->xmms);
+	res2 = xmmsc_playlist_current_id(e->xmms);
 	xmmsc_result_wait(res2);
 	handle_current_id(e, res2);
 	xmmsc_result_unref(res2);
@@ -705,7 +710,7 @@ XMMS_CB(playlist_changed) {
 			playlist_item_add(e->playlist, id);
 			break;
 		case XMMSC_PLAYLIST_REMOVE:
-			if (xmmscs_playback_current_id(e->xmms) == id)
+			if (xmmscs_playlist_current_id(e->xmms) == id)
 				xmmsc_playback_stop(e->xmms);
 
 			if ((pli = playlist_item_find_by_id(e->playlist, id)))

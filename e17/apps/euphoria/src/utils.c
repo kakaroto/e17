@@ -5,9 +5,11 @@
 
 #include <config.h>
 #include <Evas.h>
+#include <Edje.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <limits.h>
@@ -125,7 +127,7 @@ int read_mixer(Euphoria *e) {
         }
         if (mixer_fd == -1) {
                 printf("MIXER: Can't open mixer device\n");
-                return;
+                return 0;
         }
 
         if (mixer_fd != -1) {

@@ -68,7 +68,7 @@ void cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 XMMS_CB(playback_status);
 XMMS_CB(playback_playtime);
-XMMS_CB(playback_current_id);
+XMMS_CB(playlist_current_id);
 XMMS_CB(playlist_mediainfo);
 XMMS_CB(playlist_entry_changed);
 XMMS_CB(playlist_list);

@@ -85,8 +85,8 @@ static bool setup_xmms(Euphoria *e) {
 	                  (XmmsCb) on_xmms_playback_status, e);
 	XMMS_CALLBACK_SET(e->xmms, xmmsc_playback_playtime,
 	                  (XmmsCb) on_xmms_playback_playtime, e);
-	XMMS_CALLBACK_SET(e->xmms, xmmsc_playback_current_id,
-	                  (XmmsCb) on_xmms_playback_current_id, e);
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playlist_current_id,
+	                  (XmmsCb) on_xmms_playlist_current_id, e);
 	XMMS_CALLBACK_SET(e->xmms, xmmsc_playlist_entry_changed,
 	                  (XmmsCb) on_xmms_playlist_entry_changed, e);
 	XMMS_CALLBACK_SET(e->xmms, xmmsc_playlist_list,
@@ -95,11 +95,6 @@ static bool setup_xmms(Euphoria *e) {
 	                  (XmmsCb) on_xmms_playlist_changed, e);
 	/*XMMS_CALLBACK_SET(e->xmms, xmmsc_get_vis_data,
 	                  (XmmsCb) on_xmms_visdata, e);*/
-
-	xmmsc_playback_status(e->xmms);
-	xmmsc_playback_playtime(e->xmms);
-	xmmsc_playlist_list(e->xmms);
-	xmmsc_playback_current_id(e->xmms);
 
 	return true;
 }

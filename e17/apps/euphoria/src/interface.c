@@ -422,7 +422,6 @@ static void file_dialog_cb(void *data, Evas_Object *efd, int type)
     char buf[PATH_MAX];
     Euphoria *e = NULL;
     Evas_List *l = NULL;
-    Ecore_Evas *ee = NULL;
     const char *directory = NULL;
     
     if((e = (Euphoria*)data))
@@ -454,12 +453,9 @@ static void file_dialog_cb(void *data, Evas_Object *efd, int type)
 }
 bool ui_init_esmart_file_dialog(Euphoria *e)
 {
-    int zero = 0;
-    char buf[PATH_MAX];
     Ecore_Evas *ee = NULL;
     Evas_Object *o = NULL;
     Evas_Object *efd = NULL;
-    Evas_Object *edje = NULL;
     Evas_Object *trans = NULL;
     Evas_Object *dragger = NULL;
     Evas_Coord w = 320, h = 240;
