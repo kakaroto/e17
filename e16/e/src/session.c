@@ -435,15 +435,15 @@ MatchEwinToSM(EWin * ewin)
 void
 autosave(void)
 {
-   if (!Mode.wm.save_ok)
+   char                s[4096];
+
+   if (!Mode.wm.save_ok || !Conf.autosave)
       return;
 
-   if (Conf.autosave)
+   Real_SaveSnapInfo(0, NULL);
+
+   if (Mode.wm.master)
      {
-	char                s[4096];
-
-	Real_SaveSnapInfo(0, NULL);
-
 	Etmp(s);
 	SaveUserControlConfig(fopen(s, "w"));
 	if (EventDebug(EDBUG_TYPE_SESSION))
@@ -453,19 +453,6 @@ autosave(void)
 	   Alert(_("There was an error saving your autosave data - filing\n"
 		   "system problems.\n"));
      }
-#if 0				/* Why nuke it? */
-   else
-     {
-/*      char                buf[1024];
- *
- *      Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*", GetSMFile());
- *      system(buf); */
-
-	if (EventDebug(EDBUG_TYPE_SESSION))
-	   Eprintf("autosave: kill %s\n", GetGenericSMFile());
-	E_rm(GetGenericSMFile());
-     }
-#endif
 }
 
 #ifdef HAVE_X11_SM_SMLIB_H
