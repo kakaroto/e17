@@ -690,3 +690,9 @@ gib_imlib_load_font(char *name)
    weprintf("failed to even load fixed! Attempting to find any font.");
    return imlib_load_font("*");
 }
+
+void gib_imlib_image_orientate(Imlib_Image im, int orientation)
+{
+  imlib_context_set_image(im);
+  imlib_image_orientate(orientation);
+}

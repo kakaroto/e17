@@ -1,3 +1,8 @@
+Sat Jan 26 15:40:01 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * New lib version, 1.0.4, new giblib version, 1.2.2 - added wrapper for
+    set_orientation.
+
 Sun Jan 13 21:20:16 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
 
 	* Fix for set_format dumbness.
