@@ -1865,3 +1865,10 @@ Fri May 16 20:09:45 CEST 2003
 
 Ignore internal buttons when placing windows (+I don't like duplicated code).
 Include .mo files in RPM's.
+
+-------------------------------------------------------------------------------
+
+Sun May 18 13:47:31 CEST 2003
+(Kim)
+
+Ignore internal buttons when stacking (+Only One stacking function).
