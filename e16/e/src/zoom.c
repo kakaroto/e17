@@ -145,7 +145,7 @@ GetZoomEWin(void)
 void
 ReZoom(EWin * ewin)
 {
-   if (InZoom())
+   if ((InZoom()) && (ewin != zoom_last_ewin))
      {
 	Zoom(NULL);
 	Zoom(ewin);
@@ -172,7 +172,8 @@ ZoomInit(void)
    if (XHasDGA())
      {
 	FillStdVidModes();
-	zoom_can = 1;
+	if (std_vid_modes_num > 1)
+	   zoom_can = 1;
      }
 }
 
@@ -185,7 +186,7 @@ Zoom(EWin * ewin)
      {
 	if (zoom_last_ewin)
 	  {
-	     XUngrabPointer(disp, CurrentTime);
+/*           XUngrabPointer(disp, CurrentTime); */
 	     MoveEwin(zoom_last_ewin, zoom_last_x, zoom_last_y);
 	     ICCCM_Configure(zoom_last_ewin);
 	     XDestroyWindow(disp, zoom_mask_1);
@@ -205,6 +206,7 @@ Zoom(EWin * ewin)
 	MoveEwin(ewin, -ewin->border->border.left,
 		 -ewin->border->border.top);
 	ICCCM_Configure(ewin);
+	FocusToEWin(ewin);
 /*      XGrabPointer(disp, ewin->client.win, False, 0,
  * ButtonPressMask | ButtonReleaseMask |
  * PointerMotionMask | ButtonMotionMask |

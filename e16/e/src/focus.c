@@ -25,37 +25,6 @@
 static void         ReverseTimeout(int val, void *data);
 static void         AutoraiseTimeout(int val, void *data);
 
-/* static void         FixUpBadFocus(int val, void *data);
- * 
- * This function seems un-necessary now -- Mandrake
- * 
- * static void
- * FixUpBadFocus(int val, void *data)
- * {
- * EWin               *ewin;
- * Window              win;
- * int                 revert;
- * 
- * return;
- * if (mode.focusmode == FOCUS_CLICK)
- * return;
- * XGetInputFocus(disp, &win, &revert);
- * ewin = FindItem("", win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
- * if (ewin)
- * {
- * if (win != ewin->client.win)
- * {
- * FocusToEWin(ewin);
- * if (mode.kde_support)
- * KDE_UpdateFocusedWindow();
- * }
- * }
- * return;
- * val = 0;
- * data = NULL;
- * }
- */
-
 /* Mostly stolen from the temporary 'ToolTipTimeout' */
 static void
 AutoraiseTimeout(int val, void *data)
@@ -323,7 +292,6 @@ FocusToEWin(EWin * ewin)
 		       ButtonPressMask,
 		       GrabModeSync, GrabModeAsync, None, None);
      }
-/*   DoIn("FIXUP_FOCUS", 0.25, FixUpBadFocus, 0, NULL); */
    if (!ewin)
      {
 	XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
@@ -357,7 +325,7 @@ FocusToEWin(EWin * ewin)
 	AUDIO_PLAY("SOUND_FOCUS_SET");
 	ICCCM_Focus(mode.focuswin);
      }
-   ReZoom(mode.focuswin);
+/*   ReZoom(mode.focuswin); */
    if ((mode.autoraise) && (mode.focuswin) && (!mode.focuswin->menu) &&
        (mode.focusmode != FOCUS_CLICK))
       DoIn("AUTORAISE_TIMEOUT", mode.autoraisetime, AutoraiseTimeout,

@@ -1025,6 +1025,11 @@ Config_Menu(FILE * ConfigFile)
 		       else
 			  ok = 0;
 		    }
+		  else if (act == ACTION_ZOOM)
+		    {
+		       if (!CanZoom())
+			  ok = 0;
+		    }
 		  if (ok)
 		    {
 		       params = atword(s, 3);

@@ -3641,12 +3641,39 @@ int
 doZoom(void *params)
 {
    EWin               *ewin;
+   char                s[1024];
 
    EDBUG(6, "doZoom");
 
    if (!(CanZoom()))
       EDBUG_RETURN(0);
 
+   Esnprintf(s, sizeof(s), "%s/.zoom_warn", UserEDir());
+   if (!exists(s))
+     {
+	FILE               *f;
+
+	f = fopen(s, "w");
+	if (f)
+	  {
+	     fprintf(f, "You have been warned abotu the dangers of Zoom mode\n");
+	     fclose(f);
+	  }
+	DIALOG_OK("Warning !!!",
+		  "This feature is heavily reliant on a feature of your\n"
+	       "X Server called the Vid Mode Extension. This feature exists\n"
+		  "in XFree86 Servers, but is not a heavily used part of the\n"
+		  "Server and thus isn't tested much.\n"
+		  "\n"
+		"It is possible your X Server does not deal well with being\n"
+		  "asked to switch modes quickly and it may hang, glitch,\n"
+		  "display artifacts or perhaps simply refuse to work.\n"
+		  "\n"
+	       "This is a warning and will only be displayed this one time.\n"
+		"If your Server does not behave well then you will probably\n"
+		  "have to avoid using this feature.\n");
+	EDBUG_RETURN(0);
+     }
    ewin = GetFocusEwin();
 
    if (!ewin)

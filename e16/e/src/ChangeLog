@@ -3065,3 +3065,10 @@ Tue Oct  5 12:06:49 PDT 1999
 
 __WINDOWS_KEY was the wrang meta modifier - chnage the definitions define...
 add a windowskey+left mosue and ctrl+left mouse optison to briugn up menus
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 14:23:51 PDT 1999
+(Raster)
+
+add dialogs to warn about zoom mode etc......
