@@ -257,14 +257,16 @@ void _e_bg_bg_eet_gen(char *filename) {
       break;
       
     case E_BG_TILE:
-      engrave_part_state_max_size_set(ps, w, h);
-      engrave_part_state_fill_size_relative_set(ps, 0, 0);
+      /* FIXME: This is a temp until dj2 fixes engrave */
+      //engrave_part_state_max_size_set(ps, w, h);
+      engrave_part_state_fill_size_relative_set(ps, 0.1, 0.1);
       engrave_part_state_fill_size_offset_set(ps, w, h);
       break;
       
     default:
-      engrave_part_state_max_size_set(ps, w, h);
-      engrave_part_state_fill_size_relative_set(ps, 0, 0);
+      /* FIXME: This is a temp until dj2 fixes engrave */
+      //engrave_part_state_max_size_set(ps, w, h);
+      engrave_part_state_fill_size_relative_set(ps, 0.1, 0.1);
       engrave_part_state_fill_size_offset_set(ps, w, h);
       break;
    }
