@@ -2500,3 +2500,14 @@ Redraw borders after move when theme transparency is on. Cleanups.
 Refresh only relevant windows after desk switch.
 Do not require dox to be installed.
 Attempt to improve on quoting when parsing configuration files.
+
+-------------------------------------------------------------------------------
+
+Mon Mar  8 00:00:40 CET 2004
+(Kim)
+
+Fix cursor colors (patch from Smoke <conrad@ceibhion.dhs.org>).
+Improve on menu transparency. Avoid some unnecessary redraws.
+Show a bit more debug info for ConfigureRequest events.
+Skip transparency stuff for offscreen windows.
+Don't always set move mode for windows with transients or in group to opaque.
