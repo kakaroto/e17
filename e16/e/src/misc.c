@@ -190,25 +190,11 @@ EExit(void *code)
 	XSelectInput(disp, root.win, 0);
 	XCloseDisplay(disp);
      }
+
    XSetErrorHandler((XErrorHandler) NULL);
    XSetIOErrorHandler((XIOErrorHandler) NULL);
-   signal(SIGHUP, SIG_DFL);
-   signal(SIGINT, SIG_DFL);
-   signal(SIGQUIT, SIG_DFL);
-   signal(SIGILL, SIG_DFL);
-   signal(SIGABRT, SIG_DFL);
-   signal(SIGFPE, SIG_IGN);
-   signal(SIGSEGV, SIG_IGN);
-   signal(SIGPIPE, SIG_DFL);
-   signal(SIGALRM, SIG_DFL);
-   signal(SIGTERM, SIG_DFL);
-   signal(SIGUSR1, SIG_DFL);
-   signal(SIGUSR2, SIG_DFL);
-   signal(SIGCHLD, SIG_DFL);
-#ifdef SIGTSTP
-   signal(SIGTSTP, SIG_DFL);
-#endif
-   signal(SIGBUS, SIG_IGN);
+
+   SignalsRestore();
 
    if (master_pid == getpid())
      {

@@ -228,7 +228,7 @@ main(int argc, char **argv)
    SetSMUserThemePath(themepath);
 
    /* run most of the setup */
-   SetupSignals();
+   SignalsSetup();
    SetupX();
    BlumFlimFrub();
    ZoomInit();

@@ -215,25 +215,12 @@ SC_Init(void)
 	XFree(retval);
 	return;
      }
+
    XSetErrorHandler((XErrorHandler) NULL);
    XSetIOErrorHandler((XIOErrorHandler) NULL);
-   signal(SIGHUP, SIG_DFL);
-   signal(SIGINT, SIG_DFL);
-   signal(SIGQUIT, SIG_DFL);
-   signal(SIGILL, SIG_DFL);
-   signal(SIGABRT, SIG_DFL);
-   signal(SIGFPE, SIG_IGN);
-   signal(SIGSEGV, SIG_IGN);
-   signal(SIGPIPE, SIG_DFL);
-   signal(SIGALRM, SIG_DFL);
-   signal(SIGTERM, SIG_DFL);
-   signal(SIGUSR1, SIG_DFL);
-   signal(SIGUSR2, SIG_DFL);
-   signal(SIGCHLD, SIG_DFL);
-#ifdef SIGTSTP
-   signal(SIGTSTP, SIG_DFL);
-#endif
-   signal(SIGBUS, SIG_IGN);
+
+   SignalsRestore();
+
    sc_disp = XOpenDisplay(DisplayString(disp));
    XGrabServer(sc_disp);
 #ifdef HAVE_LIBXTST

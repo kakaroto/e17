@@ -110,93 +110,6 @@ MapUnmap(int start)
 }
 
 void
-SetupSignals()
-{
-
-   /* This function will set up all the signal handlers for E */
-
-   struct sigaction    sa;
-
-   EDBUG(6, "SetupSignals");
-
-   sa.sa_handler = HandleSigHup;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGHUP, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigInt;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGINT, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigQuit;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGQUIT, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigIll;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGILL, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigAbrt;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGABRT, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigFpe;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGFPE, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigSegv;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGSEGV, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigPipe;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGPIPE, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigAlrm;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGALRM, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigTerm;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGTERM, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigUsr1;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGUSR1, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigUsr2;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGUSR2, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigChild;
-#ifndef __EMX__
-   sa.sa_flags = SA_RESTART;
-#else
-   sa.sa_flags = 0;
-#endif
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGCHLD, &sa, (struct sigaction *)0);
-
-   sa.sa_handler = HandleSigBus;
-   sa.sa_flags = 0;
-   sigemptyset(&sa.sa_mask);
-   sigaction(SIGBUS, &sa, (struct sigaction *)0);
-
-   EDBUG_RETURN_;
-}
-
-void
 SetupX()
 {
 
@@ -777,26 +690,12 @@ MakeExtInitWin(void)
 
 	return win;
      }
+
    /* on solairs connection stays up - close */
    XSetErrorHandler((XErrorHandler) NULL);
    XSetIOErrorHandler((XIOErrorHandler) NULL);
-   signal(SIGHUP, SIG_DFL);
-   signal(SIGINT, SIG_DFL);
-   signal(SIGQUIT, SIG_DFL);
-   signal(SIGILL, SIG_DFL);
-   signal(SIGABRT, SIG_DFL);
-   signal(SIGFPE, SIG_IGN);
-   signal(SIGSEGV, SIG_IGN);
-   signal(SIGPIPE, SIG_IGN);
-   signal(SIGALRM, SIG_DFL);
-   signal(SIGTERM, SIG_DFL);
-   signal(SIGUSR1, SIG_DFL);
-   signal(SIGUSR2, SIG_DFL);
-   signal(SIGCHLD, SIG_DFL);
-#ifdef SIGTSTP
-   signal(SIGTSTP, SIG_DFL);
-#endif
-   signal(SIGBUS, SIG_IGN);
+
+   SignalsRestore();
 
    d2 = XOpenDisplay(DisplayString(disp));
    close(ConnectionNumber(disp));

@@ -32,7 +32,6 @@
 #include <X11/Xlocale.h>
 #include <X11/cursorfont.h>
 #include <X11/extensions/shape.h>
-/*#include <X11/extensions/XTest.h> */
 #include <X11/extensions/XShm.h>
 #include <Imlib.h>
 #if USE_FNLIB
@@ -1834,28 +1833,15 @@ void                SetupFallbackClasses(void);
 void                SetupInit(void);
 
 void                MapUnmap(int start);
-void                SetupSignals(void);
 void                SetupX(void);
 void                SetupDirs(void);
 void                SetupEnv(void);
 Window              MakeExtInitWin(void);
 void                SetupUserInitialization(void);
 
-void                HandleSigHup(int num);
-void                HandleSigInt(int num);
-void                HandleSigQuit(int num);
-void                HandleSigIll(int num);
-void                HandleSigAbrt(int num);
-void                HandleSigFpe(int num);
-void                HandleSigSegv(int num);
-void                HandleSigPipe(int num);
-void                HandleSigAlrm(int num);
-void                HandleSigTerm(int num);
-void                HandleSigUsr1(int num);
-void                HandleSigUsr2(int num);
-void                HandleSigChild(int num);
-void                HandleSigTstp(int num);
-void                HandleSigBus(int num);
+/* handlers.c functions */
+void                SignalsSetup(void);
+void                SignalsRestore(void);
 void                EHandleXError(Display * d, XErrorEvent * ev);
 void                HandleXIOError(Display * d);
 
