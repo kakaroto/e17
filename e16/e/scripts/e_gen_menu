@@ -28,7 +28,7 @@ if [ ! -f "$OUT" ]; then
   echo \"GNOME\" NULL menu \"gnome.menu\" >> $OUT
   # if we have eesh available
   if [ -n "$EESH" ]; then
-    echo \"Restart Enlightenment\" NULL exec \"$EESH -e \'restart\ q'\" >> $OUT
+    echo \"Restart Enlightenment\" NULL exec \"$EESH -e \'restart\'\" >> $OUT
     echo \"Log Out\" NULL exec \"$EESH -e \'exit\'\" >> $OUT
   fi
 fi
@@ -61,7 +61,7 @@ if [ ! -f "$OUT" ]; then
   echo \"eMusic\" NULL exec \"emusic\" >> $OUT
   echo \"X11Amp\" NULL exec \"x11amp\" >> $OUT
   echo \"XMMS\" NULL exec \"xmms\" >> $OUT
-  echo \"FreeAMp\" NULL exec \"freeamp\" >> $OUT
+  echo \"FreeAmp\" NULL exec \"freeamp\" >> $OUT
   echo \"Civilization\" NULL exec \"civctp\" >> $OUT
   echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
 fi
