@@ -42,7 +42,6 @@ AC_SUBST(SYSCONF_DIR)
 AC_ARG_ENABLE(debug,
 	[  --enable-debug          debug build (default: no)], [
 		DEBUG_LVL=999
-		CFLAGS=`echo "$CFLAGS -g -Wall" | sed s/" -s"//`
 	], DEBUG_LVL=1)
 
 AC_DEFINE_UNQUOTED([DEBUG_LEVEL], $DEBUG_LVL, [
