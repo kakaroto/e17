@@ -1228,6 +1228,11 @@ typedef struct
    } pagers;
    struct
    {
+      char                manual;
+      char                manual_mouse_pointer;
+   } place;
+   struct
+   {
       char                enable;
       int                 edge_snap_dist;
       int                 screen_snap_dist;
@@ -1285,8 +1290,6 @@ typedef struct
    char                save_under;
    char                menuslide;
    char                menusonscreen;
-   char                manual_placement;
-   char                manual_placement_mouse_pointer;
    char                warpmenus;
    int                 edge_flip_resistance;
    GroupConfig         group_config;

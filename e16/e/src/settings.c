@@ -1462,9 +1462,8 @@ CB_ConfigurePlacement(int val, void *data)
      {
 	Conf.focus.transientsfollowleader = tmp_with_leader;
 	Conf.focus.switchfortransientmap = tmp_switch_popup;
-	Conf.manual_placement = tmp_manual_placement;
-	Conf.manual_placement_mouse_pointer =
-	   tmp_manual_placement_mouse_pointer;
+	Conf.place.manual = tmp_manual_placement;
+	Conf.place.manual_mouse_pointer = tmp_manual_placement_mouse_pointer;
 #ifdef HAS_XINERAMA
 	if (xinerama_active)
 	   Conf.extra_head = tmp_extra_head;
@@ -1491,8 +1490,8 @@ SettingsPlacement(void)
 
    tmp_with_leader = Conf.focus.transientsfollowleader;
    tmp_switch_popup = Conf.focus.switchfortransientmap;
-   tmp_manual_placement = Conf.manual_placement;
-   tmp_manual_placement_mouse_pointer = Conf.manual_placement_mouse_pointer;
+   tmp_manual_placement = Conf.place.manual;
+   tmp_manual_placement_mouse_pointer = Conf.place.manual_mouse_pointer;
 #ifdef HAS_XINERAMA
    tmp_extra_head = Conf.extra_head;
 #endif

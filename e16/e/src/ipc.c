@@ -2038,15 +2038,15 @@ IPC_AdvancedFocus(const char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  Conf.manual_placement = 1;
+		  Conf.place.manual = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  Conf.manual_placement = 0;
+		  Conf.place.manual = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (Conf.manual_placement)
+		  if (Conf.place.manual)
 		    {
 		       Esnprintf(buf, sizeof(buf), "manual_placement: on");
 		    }
@@ -2064,15 +2064,15 @@ IPC_AdvancedFocus(const char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  Conf.manual_placement_mouse_pointer = 1;
+		  Conf.place.manual_mouse_pointer = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  Conf.manual_placement_mouse_pointer = 0;
+		  Conf.place.manual_mouse_pointer = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (Conf.manual_placement_mouse_pointer)
+		  if (Conf.place.manual_mouse_pointer)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "manual_placement_mouse_pointer: on");
@@ -5484,12 +5484,12 @@ IPC_ControlsSet(const char *s, Client * c __UNUSED__)
 	else if (!strcmp(w, "MANUAL_PLACEMENT:"))
 	  {
 	     word(s, wd, w);
-	     Conf.manual_placement = atoi(w);
+	     Conf.place.manual = atoi(w);
 	  }
 	else if (!strcmp(w, "MANUAL_PLACEMENT_MOUSE_POINTER:"))
 	  {
 	     word(s, wd, w);
-	     Conf.manual_placement_mouse_pointer = atoi(w);
+	     Conf.place.manual_mouse_pointer = atoi(w);
 	  }
 	else if (!strcmp(w, "RAISE_ON_NEXT_FOCUS:"))
 	  {
@@ -5613,7 +5613,7 @@ IPC_ControlsGet(const char *s __UNUSED__, Client * c)
 	     Conf.focus.all_new_windows_get_focus,
 	     Conf.focus.new_transients_get_focus,
 	     Conf.focus.new_transients_get_focus_if_group_focused,
-	     Conf.manual_placement, Conf.manual_placement_mouse_pointer,
+	     Conf.place.manual, Conf.place.manual_mouse_pointer,
 	     Conf.focus.raise_on_next_focus,
 	     Conf.focus.raise_after_next_focus, Conf.warplist.enable,
 	     Conf.focus.warp_on_next_focus,

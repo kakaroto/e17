@@ -486,7 +486,7 @@ SetupX(void)
    Conf.menuslide = 0;
    Conf.menusonscreen = 1;
    Conf.warpmenus = 1;
-   Conf.manual_placement = 0;
+   Conf.place.manual = 0;
    Conf.edge_flip_resistance = 15;
 
 #ifdef USE_IMLIB2

@@ -489,7 +489,7 @@ AddToFamily(Window win)
 	ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
      }
 
-   if ((!ewin->client.transient) && (Conf.manual_placement)
+   if ((!ewin->client.transient) && (Conf.place.manual)
        && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))
      {
 	cangrab = GrabThePointer(VRoot.win);
@@ -511,9 +511,8 @@ AddToFamily(Window win)
    y = ewin->y;
    if ((!ewin->client.already_placed) && (!manplace))
      {
-
 	/* Place the window below the mouse pointer */
-	if (Conf.manual_placement_mouse_pointer)
+	if (Conf.place.manual_mouse_pointer)
 	  {
 	     int                 rx, ry, wx, wy;
 	     unsigned int        mask;
@@ -556,8 +555,8 @@ AddToFamily(Window win)
 	  {
 	     ewin->client.already_placed = 1;
 	     ArrangeEwinXY(ewin, &x, &y);
-	  }			/* (Conf.manual_placement_mouse_pointer) */
-     }				/* ((!ewin->client.already_placed) && (!manplace)) */
+	  }
+     }
 
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)

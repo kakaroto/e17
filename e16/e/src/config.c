@@ -750,10 +750,10 @@ Config_Control(FILE * ConfigFile)
 	     Conf.focus.new_transients_get_focus_if_group_focused = i2;
 	     break;
 	  case CONTROL_MANUAL_PLACEMENT:
-	     Conf.manual_placement = i2;
+	     Conf.place.manual = i2;
 	     break;
 	  case CONTROL_MANUAL_PLACEMENT_MOUSE_POINTER:
-	     Conf.manual_placement_mouse_pointer = i2;
+	     Conf.place.manual_mouse_pointer = i2;
 	     break;
 	  case CONTROL_RAISE_ON_NEXT_FOCUS:
 	     Conf.focus.raise_on_next_focus = i2;
@@ -3893,9 +3893,9 @@ SaveUserControlConfig(FILE * autosavefile)
 		(int)Conf.focus.new_transients_get_focus);
 	fprintf(autosavefile, "342 %i\n",
 		(int)Conf.focus.new_transients_get_focus_if_group_focused);
-	fprintf(autosavefile, "343 %i\n", (int)Conf.manual_placement);
+	fprintf(autosavefile, "343 %i\n", (int)Conf.place.manual);
 	fprintf(autosavefile, "3360 %i\n",
-		(int)Conf.manual_placement_mouse_pointer);
+		(int)Conf.place.manual_mouse_pointer);
 	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_next_focus);
 	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_next_focus);
 	fprintf(autosavefile, "346 %i\n", (int)Conf.edge_flip_resistance);
