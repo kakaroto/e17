@@ -38,8 +38,10 @@ Ewd_List *ewd_list_new()
 	Ewd_List *list = NULL;
 
 	list = (Ewd_List *)malloc(sizeof(Ewd_List));
+	/*
 	if (!list)
 		return NULL;
+	*/
 
 	if (!ewd_list_init(list)) {
 		FREE(list);
@@ -199,7 +201,7 @@ inline int ewd_list_append(Ewd_List * list, void *data)
 }
 
 /* For adding items to the end of the list */
-int _ewd_list_append(Ewd_List * list, Ewd_List_Node *end)
+static int _ewd_list_append(Ewd_List * list, Ewd_List_Node *end)
 {
 	if (list->last) {
 		EWD_WRITE_LOCK(list->last);
@@ -243,7 +245,7 @@ inline int ewd_list_prepend(Ewd_List * list, void *data)
 }
 
 /* For adding items to the beginning of the list */
-int _ewd_list_prepend(Ewd_List * list, Ewd_List_Node *start)
+static int _ewd_list_prepend(Ewd_List * list, Ewd_List_Node *start)
 {
 	/* Put it at the beginning of the list */
 	EWD_WRITE_LOCK(start);
@@ -290,38 +292,38 @@ inline int ewd_list_insert(Ewd_List * list, void *data)
 }
 
 /* For adding items in front of the current position in the list */
-int _ewd_list_insert(Ewd_List * list, Ewd_List_Node *new)
+static int _ewd_list_insert(Ewd_List * list, Ewd_List_Node *new_node)
 {
 	/*
 	 * If the current point is at the beginning of the list, then it's the
 	 * same as prepending it to the list.
 	 */
 	if (list->current == list->first)
-		return _ewd_list_prepend(list, new);
+		return _ewd_list_prepend(list, new_node);
 
 	if (list->current == NULL) {
 		int ret_value;
 
-		ret_value = _ewd_list_append(list, new);
+		ret_value = _ewd_list_append(list, new_node);
 		list->current = list->last;
 
 		return ret_value;
 	}
 
 	/* Setup the fields of the new node */
-	EWD_WRITE_LOCK(new);
-	new->next = list->current;
-	EWD_WRITE_UNLOCK(new);
+	EWD_WRITE_LOCK(new_node);
+	new_node->next = list->current;
+	EWD_WRITE_UNLOCK(new_node);
 
 	/* And hook the node into the list */
 	_ewd_list_goto_index(list, ewd_list_index(list) - 1);
 
 	EWD_WRITE_LOCK(list->current);
-	list->current->next = new;
+	list->current->next = new_node;
 	EWD_WRITE_UNLOCK(list->current);
 
 	/* Now move the current item to the inserted item */
-	list->current = new;
+	list->current = new_node;
 	list->index++;
 	list->nodes++;
 
@@ -809,7 +811,7 @@ int ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 }
 
 /* The real meat of executing the function for each data node */
-int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
+static int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 {
 	void *value;
 
@@ -840,19 +842,16 @@ int ewd_list_node_init(Ewd_List_Node * node)
 /* Allocate and initialize a new list node */
 Ewd_List_Node *ewd_list_node_new()
 {
-	Ewd_List_Node *new;
+	Ewd_List_Node *new_node;
 
-	new = malloc(sizeof(Ewd_List_Node));
+	new_node = malloc(sizeof(Ewd_List_Node));
 
-	if (!new)
-		return NULL;
-
-	if (!ewd_list_node_init(new)) {
-		FREE(new);
+	if (!ewd_list_node_init(new_node)) {
+		FREE(new_node);
 		return NULL;
 	}
 
-	return new;
+	return new_node;
 }
 
 /* Here we actually call the function to free the data and free the node */
@@ -1144,7 +1143,7 @@ int ewd_dlist_remove_destroy(Ewd_DList *list)
 	return ewd_list_remove_destroy(list);
 }
 
-void *_ewd_dlist_remove_first(Ewd_DList *list)
+static void *_ewd_dlist_remove_first(Ewd_DList *list)
 {
 	void *ret;
 
@@ -1197,7 +1196,7 @@ void *ewd_dlist_goto_index(Ewd_DList * list, int index)
 
 /* This is the non-threadsafe version, use this inside internal functions that
  * already lock the list */
-void *_ewd_dlist_goto_index(Ewd_DList *list, int index)
+static void *_ewd_dlist_goto_index(Ewd_DList *list, int index)
 {
 	int i, increment;
 
@@ -1331,7 +1330,7 @@ void *ewd_dlist_previous(Ewd_DList * list)
 	return data;
 }
 
-void *_ewd_dlist_previous(Ewd_DList * list)
+static void *_ewd_dlist_previous(Ewd_DList * list)
 {
 	void *data = NULL;
 
@@ -1410,19 +1409,19 @@ int ewd_dlist_clear(Ewd_DList * list)
  */
 Ewd_DList_Node *ewd_dlist_node_new()
 {
-	Ewd_DList_Node *new;
+	Ewd_DList_Node *new_node;
 
-	new = malloc(sizeof(Ewd_DList_Node));
+	new_node = malloc(sizeof(Ewd_DList_Node));
 
-	if (!new)
+	if (!new_node)
 		return NULL;
 
-	if (!ewd_dlist_node_init(new)) {
-		FREE(new);
+	if (!ewd_dlist_node_init(new_node)) {
+		FREE(new_node);
 		return NULL;
 	}
 
-	return new;
+	return new_node;
 }
 
 /*

@@ -52,40 +52,40 @@ int tree_for_each_node_value(Ewd_Tree_Node * node,
  */
 Ewd_Tree *ewd_tree_new(Ewd_Compare_Cb compare_func)
 {
-	Ewd_Tree *new;
+	Ewd_Tree *new_tree;
 
-	new = EWD_TREE(malloc(sizeof(Ewd_Tree)));
-	if (!new)
+	new_tree = EWD_TREE(malloc(sizeof(Ewd_Tree)));
+	if (!new_tree)
 		return NULL;
 
-	if (!ewd_tree_init(new, compare_func)) {
-		IF_FREE(new);
+	if (!ewd_tree_init(new_tree, compare_func)) {
+		IF_FREE(new_tree);
 		return NULL;
 	}
 
-	return new;
+	return new_tree;
 }
 
 /*
  * Description: Initialize a tree structure to some sane initial values
- * Parameters: 1. new - the new tree structure to be initialized
+ * Parameters: 1. new_tree - the new tree structure to be initialized
  *             2. compare_func - the function used to compare node keys, this is
  *                               usually NULL since a direct comparison is
  *                               most common
  * Returns: TRUE on successful initialization, FALSE on an error
  */
-int ewd_tree_init(Ewd_Tree * new, Ewd_Compare_Cb compare_func)
+int ewd_tree_init(Ewd_Tree * new_tree, Ewd_Compare_Cb compare_func)
 {
-	CHECK_PARAM_POINTER_RETURN("new", new, FALSE);
+	CHECK_PARAM_POINTER_RETURN("new_tree", new_tree, FALSE);
 
-	memset(new, 0, sizeof(Ewd_Tree));
+	memset(new_tree, 0, sizeof(Ewd_Tree));
 
 	if (!compare_func)
-		new->compare_func = ewd_direct_compare;
+		new_tree->compare_func = ewd_direct_compare;
 	else
-		new->compare_func = compare_func;
+		new_tree->compare_func = compare_func;
 
-	EWD_INIT_LOCKS(new);
+	EWD_INIT_LOCKS(new_tree);
 
 	return TRUE;
 }
@@ -115,20 +115,20 @@ int ewd_tree_set_free_cb(Ewd_Tree * tree, Ewd_Free_Cb free_func)
  * Parameters: None.
  * Returns: FALSE if the operation fails, otherwise TRUE
  */
-int ewd_tree_node_init(Ewd_Tree_Node * new)
+int ewd_tree_node_init(Ewd_Tree_Node * new_node)
 {
-	CHECK_PARAM_POINTER_RETURN("new", new, FALSE);
+	CHECK_PARAM_POINTER_RETURN("new_node", new_node, FALSE);
 
-	new->key = NULL;
-	new->value = NULL;
+	new_node->key = NULL;
+	new_node->value = NULL;
 
-	new->parent = NULL;
-	new->right_child = NULL;
-	new->left_child = NULL;
+	new_node->parent = NULL;
+	new_node->right_child = NULL;
+	new_node->left_child = NULL;
 
-	new->max_left = new->max_right = 0;
+	new_node->max_left = new_node->max_right = 0;
 
-	EWD_INIT_LOCKS(new);
+	EWD_INIT_LOCKS(new_node);
 
 	return TRUE;
 }
@@ -140,18 +140,18 @@ int ewd_tree_node_init(Ewd_Tree_Node * new)
  */
 Ewd_Tree_Node *ewd_tree_node_new()
 {
-	Ewd_Tree_Node *new;
+	Ewd_Tree_Node *new_node;
 
-	new = EWD_TREE_NODE(malloc(sizeof(Ewd_Tree_Node)));
-	if (!new)
+	new_node = EWD_TREE_NODE(malloc(sizeof(Ewd_Tree_Node)));
+	if (!new_node)
 		return NULL;
 
-	if (!ewd_tree_node_init(new)) {
-		IF_FREE(new);
+	if (!ewd_tree_node_init(new_node)) {
+		IF_FREE(new_node);
 		return NULL;
 	}
 
-	return new;
+	return new_node;
 }
 
 /*

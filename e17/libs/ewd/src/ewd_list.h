@@ -61,13 +61,14 @@ inline void *ewd_list_next(Ewd_List * list);
 /* Check to see if there is any data in the list */
 int ewd_list_is_empty(Ewd_List * list);
 
-/* Remove every node in the list without free'ing it */
+/* Remove every node in the list without freeing the list itself */
 int ewd_list_clear(Ewd_List * list);
+/* Free the list and it's contents */
 void ewd_list_destroy(Ewd_List *list);
 
 /* Creating and initializing list nodes */
 Ewd_List_Node *ewd_list_node_new();
-int ewd_list_node_init(Ewd_List_Node *new);
+int ewd_list_node_init(Ewd_List_Node *newNode);
 
 /* Destroying nodes */
 int ewd_list_node_destroy(Ewd_List_Node * _e_node, Ewd_Free_Cb free_func);

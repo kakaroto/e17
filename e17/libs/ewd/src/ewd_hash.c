@@ -29,6 +29,7 @@ static int _ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value);
 static int _ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd,
 		Ewd_Free_Cb valued);
 
+
 /*
  * Description: Create and initialize a new hash
  * Parameters: 1. hash_func - the function for determining hash position
@@ -37,14 +38,16 @@ static int _ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd,
  */
 Ewd_Hash *ewd_hash_new(Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 {
-	Ewd_Hash *new = (Ewd_Hash *)malloc(sizeof(Ewd_Hash));
+	Ewd_Hash *new_hash = (Ewd_Hash *)malloc(sizeof(Ewd_Hash));
+	if (!new_hash)
+		return NULL;
 
-	if (!ewd_hash_init(new, hash_func, compare)) {
-		FREE(new);
+	if (!ewd_hash_init(new_hash, hash_func, compare)) {
+		FREE(new_hash);
 		return NULL;
 	}
 
-	return new;
+	return new_hash;
 }
 
 /*

@@ -74,7 +74,7 @@ int ewd_tree_for_each_node_value(Ewd_Tree * tree,
 
 /* Some basic node functions */
 /* Initialize a node */
-int ewd_tree_node_init(Ewd_Tree_Node * new);
+int ewd_tree_node_init(Ewd_Tree_Node * new_node);
 /* Allocate and initialize a new node */
 Ewd_Tree_Node *ewd_tree_node_new();
 /* Free the desired node */
