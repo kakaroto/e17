@@ -53,8 +53,9 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ecore_list_goto(parent->children, w);
 	index = ecore_list_index(parent->children);
 
-	if (!ewl_container_init(EWL_CONTAINER(s), "entry"))
+	if (!ewl_box_init(EWL_BOX(s), EWL_ORIENTATION_VERTICAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_set_appearance(sw, "entry");
 
 	ewl_container_insert_child(parent, sw, index);
 	ewl_container_append_child(EWL_CONTAINER(s), w);
@@ -66,8 +67,8 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 											ewler_selected_configure_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 											ewler_selected_realize_cb, NULL);
-	ewl_callback_prepend(sw, EWL_CALLBACK_DESTROY,
-											 ewler_selected_destroy_cb, NULL);
+	ewl_callback_append(sw, EWL_CALLBACK_DESELECT,
+											ewler_selected_deselect_cb, NULL);
 
 	s->index = index;
 	s->selected = w;
@@ -104,10 +105,8 @@ ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	x = CURRENT_X(s);
 	y = CURRENT_Y(s);
 
-	if( x != CURRENT_X(s->selected) || y != CURRENT_Y(s->selected) ) {
-		printf( "setting position : (\n" );
+	if( x != CURRENT_X(s->selected) || y != CURRENT_Y(s->selected) )
 		ewl_object_request_position(EWL_OBJECT(s->selected), x, y);
-	}
 	if( width != CURRENT_W(s) || height != CURRENT_H(s) )
 		ewl_object_set_preferred_size(EWL_OBJECT(s), width, height);
 
@@ -133,16 +132,23 @@ ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewler_selected_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewler_Selected *s;
+	int x, y, width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = EWLER_SELECTED(w);
 
+	ewl_object_get_current_geometry(EWL_OBJECT(s), &x, &y, &width, &height);
 	ewl_container_insert_child(EWL_CONTAINER(w->parent), s->selected, s->index);
-	
+	ewl_object_request_geometry(EWL_OBJECT(s->selected), x, y, width, height);
+#if 0
+	ewl_object_set_preferred_size(EWL_OBJECT(s->selected), width, height);
+#endif
+
+
 	s->selected = NULL;
 	s->index = -1;
 

@@ -15,6 +15,7 @@ ewler_SOURCES = \
 	inspector.c inspector.h \
 	main.c \
 	project.c project.h \
+	selected.c selected.h \
 	widgets.c widgets.h
 
 ewler_LDADD = @ewl_libs@ @xml2_libs@

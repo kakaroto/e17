@@ -6,6 +6,7 @@
 #include "form.h"
 #include "inspector.h"
 #include "widgets.h"
+#include "selected.h"
 
 static Ewl_Widget *inspector_win;
 static Ewler_Form *active_form = NULL;
@@ -180,7 +181,10 @@ __populate_tree( void *val )
 
 	switch( data->type->w.w_type ) {
 		case WIDGET_STRING_TYPE:
-			ewl_entry_set_text( EWL_ENTRY(row_elems[1]), data->w_str.value );
+			if( data->w_str.value )
+				ewl_entry_set_text( EWL_ENTRY(row_elems[1]), data->w_str.value );
+			else
+				ewl_entry_set_text( EWL_ENTRY(row_elems[1]), "" );
 			break;
 		case WIDGET_INTEGER_TYPE:
 			sprintf( buf, "%ld", data->w_int.value );
@@ -213,7 +217,10 @@ inspector_subupdate( Ewl_Container *c )
 
 	ewl_container_child_iterate_begin( c );
 
-	row = ewl_container_next_child( c );
+	while( (row = ewl_container_next_child(c)) != EWL_TREE_NODE(c)->row )
+		;
+
+	row = EWL_TREE_NODE(c)->row;
 
 	cell = ewl_row_get_column( EWL_ROW(row), 1 );
 
@@ -230,7 +237,10 @@ inspector_subupdate( Ewl_Container *c )
 
 			switch( data->type->w.w_type ) {
 				case WIDGET_STRING_TYPE:
-					ewl_entry_set_text( EWL_ENTRY(entry), data->w_str.value );
+					if( data->w_str.value )
+						ewl_entry_set_text( EWL_ENTRY(entry), data->w_str.value );
+					else
+						ewl_entry_set_text( EWL_ENTRY(entry), "" );
 					break;
 				case WIDGET_INTEGER_TYPE:
 					sprintf( buf, "%ld", data->w_int.value );
@@ -240,7 +250,7 @@ inspector_subupdate( Ewl_Container *c )
 		}
 	}
 
-	while( (node = ewl_container_next_child( EWL_CONTAINER(c)) ) )
+	while( (node = ewl_container_next_child(c)) )
 		inspector_subupdate( EWL_CONTAINER(node) );
 }
 
@@ -258,7 +268,7 @@ inspector_update( void )
 void
 inspector_reset( void )
 {
-	Ewl_Widget *s;
+	Ewl_Widget *s, *w;
 	Ecore_List *info;
 
 	if( !active_form ) {
@@ -268,16 +278,16 @@ inspector_reset( void )
 
 	s = ecore_list_goto_first( active_form->selected );
 
-	if( s == active_widget ) {
+	if( s && ewler_selected_get(EWLER_SELECTED(s)) == active_widget ) {
 		inspector_update();
 		return;
 	}
 
 	ewl_container_reset( EWL_CONTAINER(inspector_tree) );
 	
-	if( s ) {
-		info = widget_get_info( s );
-		active_widget = s;
+	if( (w = ewler_selected_get(EWLER_SELECTED(s))) ) {
+		info = widget_get_info(w);
+		active_widget = w;
 
 		prow = NULL;
 		ecore_list_for_each( info, __populate_tree );
