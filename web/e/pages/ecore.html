@@ -158,6 +158,7 @@ the setup needed to create an X11 EVAS:
 
 <div class="code">
 <pre>
+#include &lt;stdio.h&gt;
 #include &lt;Ecore_Evas.h&gt;
                                 
 #define WIDTH 200               
@@ -187,7 +188,7 @@ int main(int argc, char **argv){
 
 
    base_rect = evas_object_rectangle_add(evas);
-        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_resize(base_rect, WIDTH, HEIGHT);
         evas_object_color_set(base_rect, 244, 243, 242, 255);
         evas_object_show(base_rect);
 
