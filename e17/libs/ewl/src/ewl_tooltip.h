@@ -18,6 +18,9 @@ struct _ewl_tooltip {
 	double      delay;  /**< how long before tooltip will display in secs */
 	int         hide;   /**< flag to enable/disable tooltip */
 
+	int         x;
+	int         y;
+
 	Ecore_Timer *timer; /**< pointer to the focus timer */
 };
 

@@ -29,13 +29,14 @@ void ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 	ewl_floater_init (EWL_FLOATER(w), parent);
 	ewl_widget_set_appearance (EWL_WIDGET (w), "tooltip");
 
-	t->text = ewl_text_new ("test text");
+	t->text = ewl_text_new ("test tooltip");
 	ewl_object_set_alignment (EWL_OBJECT(t->text),
-			EWL_FLAG_ALIGN_CENTER);
+			EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT);
 	ewl_container_append_child (EWL_CONTAINER(w), t->text);
+
 	ewl_widget_show (t->text);
 
-	t->delay = 3.5;
+	t->delay = 1.5;
 	t->hide = FALSE;
 
 	if (parent) {
@@ -51,8 +52,7 @@ void ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 		ewl_callback_append (parent, EWL_CALLBACK_MOUSE_DOWN,
 				ewl_tooltip_parent_mouse_down, t);
 	}
-
-
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -61,7 +61,7 @@ void ewl_tooltip_set_text (Ewl_Tooltip *t, char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-
+	ewl_text_set_text (EWL_TEXT (t), text);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -84,9 +84,10 @@ int ewl_tooltip_focus_timer (void *data)
 	if (t->hide)
 		return FALSE;
 
-	printf ("Opening tooltip after %lf secs\n", t->delay);
-
+	ewl_object_request_position (EWL_WIDGET (t), t->x, t->y);
 	ewl_widget_show (EWL_WIDGET (t));
+
+	printf ("Opening tooltip after %lf secs\n", t->delay);
 
 	t->timer = NULL;
 
@@ -116,17 +117,23 @@ void ewl_tooltip_parent_mouse_down(Ewl_Widget * w, void *ev_data, void *user_dat
 void ewl_tooltip_parent_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Tooltip *t = user_data;
+	Ecore_X_Event_Mouse_Move *e = ev_data;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	if (t->hide)
 		return;
+	
+	t->x = e->x;
+	t->y = e->y;
+
+	printf ("X: %d Y: %d\n", e->x, e->y);
+	
 
 	if (!t->timer) {
 		t->timer = ecore_timer_add (t->delay, ewl_tooltip_focus_timer, t);
 	}
-
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
