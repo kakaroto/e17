@@ -984,3 +984,93 @@ efsd_op_sort(void)
   D_ENTER;
   D_RETURN_(efsd_option_new_sort());
 }
+
+
+char          *
+efsd_reply_filename(EfsdEvent *ee)
+{
+  D_ENTER;
+
+  if (!ee)
+    D_RETURN_(NULL);
+
+  if (ee->type == EFSD_EVENT_FILECHANGE)
+    D_RETURN_(ee->efsd_filechange_event.file);
+
+  switch (ee->efsd_reply_event.command.type)
+    {
+    case EFSD_CMD_REMOVE:
+    case EFSD_CMD_MOVE:
+    case EFSD_CMD_COPY:
+    case EFSD_CMD_SYMLINK:
+    case EFSD_CMD_LISTDIR:
+    case EFSD_CMD_MAKEDIR:
+    case EFSD_CMD_STARTMON_FILE:
+    case EFSD_CMD_STARTMON_DIR:
+    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STAT:
+    case EFSD_CMD_LSTAT:
+    case EFSD_CMD_READLINK:
+    case EFSD_CMD_GETFILETYPE:      
+      D_RETURN_(ee->efsd_reply_event.command.efsd_file_cmd.files[0]);
+      break;
+    case EFSD_CMD_CHMOD:
+      D_RETURN_(ee->efsd_reply_event.command.efsd_chmod_cmd.file);
+      break;
+    case EFSD_CMD_SETMETA:
+      D_RETURN_(ee->efsd_reply_event.command.efsd_set_metadata_cmd.file);
+      break;
+    case EFSD_CMD_GETMETA:
+      D_RETURN_(ee->efsd_reply_event.command.efsd_get_metadata_cmd.file);
+      break;
+    case EFSD_CMD_CLOSE:
+    default:
+    }
+
+  D_RETURN_(NULL);
+}
+
+
+EfsdCmdId      
+efsd_reply_id(EfsdEvent *ee)
+{
+  D_ENTER;
+
+  if (!ee)
+    D_RETURN_(-1);
+
+  if (ee->type == EFSD_EVENT_FILECHANGE)
+    D_RETURN_(ee->efsd_filechange_event.id);
+
+  switch (ee->efsd_reply_event.command.type)
+    {
+    case EFSD_CMD_REMOVE:
+    case EFSD_CMD_MOVE:
+    case EFSD_CMD_COPY:
+    case EFSD_CMD_SYMLINK:
+    case EFSD_CMD_LISTDIR:
+    case EFSD_CMD_MAKEDIR:
+    case EFSD_CMD_STARTMON_FILE:
+    case EFSD_CMD_STARTMON_DIR:
+    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STAT:
+    case EFSD_CMD_LSTAT:
+    case EFSD_CMD_READLINK:
+    case EFSD_CMD_GETFILETYPE:      
+      D_RETURN_(ee->efsd_reply_event.command.efsd_file_cmd.id);
+      break;
+    case EFSD_CMD_CHMOD:
+      D_RETURN_(ee->efsd_reply_event.command.efsd_chmod_cmd.id);
+      break;
+    case EFSD_CMD_SETMETA:
+      D_RETURN_(ee->efsd_reply_event.command.efsd_set_metadata_cmd.id);
+      break;
+    case EFSD_CMD_GETMETA:
+      D_RETURN_(ee->efsd_reply_event.command.efsd_get_metadata_cmd.id);
+      break;
+    case EFSD_CMD_CLOSE:
+    default:
+    }
+
+  D_RETURN_(-1);
+}

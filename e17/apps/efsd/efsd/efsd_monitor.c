@@ -176,10 +176,7 @@ monitor_request_free(EfsdMonitorRequest *emr)
   D_ENTER;
 
   for (i = 0; i < emr->num_options; i++)
-    {
-      printf("Cleanup option %i, type: %i\n", i, emr->options[i].type);
-      efsd_option_cleanup(&emr->options[i]);
-    }
+    efsd_option_cleanup(&emr->options[i]);
 
   FREE(emr->options);
   FREE(emr);
@@ -650,6 +647,9 @@ efsd_monitor_cleanup_client(int client)
       else
 	m->client_use_count--;
       
+      D("Client %i found monitoring %s, use count now (%i/%i)\n",
+	client, m->filename, m->internal_use_count, m->client_use_count);
+
       if (m->client_use_count == 0 && m->internal_use_count == 0)
 	{
 	  /* Use count dropped to zero -- stop monitoring. */
@@ -658,8 +658,8 @@ efsd_monitor_cleanup_client(int client)
 	}
       else
 	{
-	  if ((client == EFSD_CLIENT_INTERNAL && m->internal_use_count > 0) ||
-	      (client != EFSD_CLIENT_INTERNAL && m->client_use_count > 0))
+	  if ((client == EFSD_CLIENT_INTERNAL && m->internal_use_count >= 0) ||
+	      (client != EFSD_CLIENT_INTERNAL && m->client_use_count >= 0))
 	    {
 	      if (!efsd_list_prev(c) && !efsd_list_next(c))
 		{
@@ -668,6 +668,7 @@ efsd_monitor_cleanup_client(int client)
 		  exit(-1);
 		}
 	      
+	      D("Removing client %i from monitor for %s\n", client, m->filename);
 	      /* Use count not zero, but remove client from list of users */
 	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)monitor_request_free);
 	    }

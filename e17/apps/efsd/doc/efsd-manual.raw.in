@@ -67,7 +67,7 @@
 
   <chapter id="libefsd">
     <title>The EFSD Library</title>
-!I@toplevel_abs@/efsd/libefsd.c
+!I@toplevel_abs@/efsd/libefsd.h
   </chapter>
 
 </book>

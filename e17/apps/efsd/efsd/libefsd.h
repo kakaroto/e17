@@ -206,6 +206,21 @@ char          *efsd_metadata_get_file(EfsdEvent *ee);
  */
 void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
 
+
+/* Convenience function to access the filenames in reply or
+   filechange events. If the event is a reply event and the
+   contained command is an efsd_file_cmd, it returns the first file
+   (efsd_file_cmd.files[0]). Returns NULL if the event is not an
+   efsd_reply_event.
+ */
+char          *efsd_reply_filename(EfsdEvent *ee);
+
+/* Convenience function to access the command ID in reply or
+   filechange events. Returns -1 if no ID is contained in the event.
+ */
+EfsdCmdId      efsd_reply_id(EfsdEvent *ee);
+
+
 /* Start/stop a FAM monitor for a given file or directory.
  *  Add options as desired, like with efsd_listdir().
  */

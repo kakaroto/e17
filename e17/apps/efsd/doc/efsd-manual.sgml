@@ -69,33 +69,40 @@
     <title>The EFSD Library</title>
 <refentry>
 <refmeta>
-<refentrytitle><phrase id="API-efsd-get-connection-fd">efsd_get_connection_fd</phrase></refentrytitle>
+<refentrytitle><phrase id="API-efsd-open">efsd_open</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
- <refname>efsd_get_connection_fd</refname>
+ <refname>efsd_open</refname>
  <refpurpose>
-   Returns file descriptor of an Efsd connection.
+   Creates and returns an efsd connection. 
  </refpurpose>
 </refnamediv>
 <refsynopsisdiv>
  <title>Synopsis</title>
   <funcsynopsis>
-   <funcdef>int <function>efsd_get_connection_fd </function></funcdef>
-   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <funcdef>EfsdConnection * <function>efsd_open </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
   </funcsynopsis>
 </refsynopsisdiv>
 <refsect1>
  <title>Arguments</title>
  <variablelist>
   <varlistentry>
-   <term><parameter>ec</parameter></term>
+   <term><parameter>void</parameter></term>
    <listitem>
     <para>
-      The Efsd connection
     </para>
    </listitem>
   </varlistentry>
  </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Returns pointer to a new Efsd connection object.
+ </para>
 </refsect1>
 </refentry>
 
