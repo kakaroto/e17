@@ -693,6 +693,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	WINOP_GET_BOOL(ewin->neverfocus, args);
 	break;
 
+     case EWIN_OP_NO_BUTTON_GRABS:
+	WINOP_GET_BOOL(ewin->no_button_grabs, args);
+	break;
+
      case EWIN_OP_FULLSCREEN:
 	WINOP_GET_BOOL(ewin->st.fullscreen, args);
 	break;

@@ -124,7 +124,6 @@ EwinCreate(Window win, int type)
    EChangeWindowAttributes(EoGetWin(ewin), CWEventMask | CWDontPropagate, &att);
    ewin->client.win = win;
    FocusEwinSetGrabs(ewin);
-   GrabButtonGrabs(ewin);
 
    EobjListStackAdd(&ewin->o, 0);
    EobjListFocusAdd(&ewin->o, 0);
@@ -522,6 +521,7 @@ Adopt(EWin * ewin, Window win)
    ICCCM_GetGeoms(ewin, 0);
    HintsGetWindowHints(ewin);
    SessionGetInfo(ewin, 0);
+
 #if 0				/* Do we want this? */
    MatchEwinToSM(ewin);
 #endif
@@ -529,7 +529,10 @@ Adopt(EWin * ewin, Window win)
    SnapshotEwinMatch(ewin);	/* Saved settings */
    if (Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
+
    EoSetOpacity(ewin, ewin->ewmh.opacity);
+   if (!ewin->no_button_grabs)
+      GrabButtonGrabs(ewin);
 
    ICCCM_MatchSize(ewin);
 
@@ -578,7 +581,9 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
 
    WindowMatchEwinOps(ewin);	/* Window matches */
    SnapshotEwinMatch(ewin);	/* Saved settings */
+
    EoSetOpacity(ewin, ewin->ewmh.opacity);
+   GrabButtonGrabs(ewin);
 
    ICCCM_MatchSize(ewin);
 
