@@ -1,12 +1,11 @@
-/*	program {
-	    name, "LoginAreaview";
+	program {
+	    name, "LoginAreaShow";
 	    source, "";
-	    signal, "EntranceUserAuth";
-	    action, STATE_SET "visible" 0.0;
-	    target, "login_mouse_area";
+	    signal, "show";
+	    action, STATE_SET "visible" 1.0;
+	    target, "login_area_clip";
 	    transition, SINUSOIDAL 0.5;
 	}
-*/
 	program {
 	    name, "ToPass";
 	    source, "";
