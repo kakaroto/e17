@@ -8,6 +8,7 @@ Bug in KDE support where maximizing a window would go taller than the screen if 
 Fixed a bug in KDE support where windows would place themselves underneath the kpanel
 Added a configure option for --disable-zoom for alpha platforms XFree (they have a bug there)
 Fixed a bug where selecting a window on another desktop using kpanel wouldn't change the current desktop in kpanel (workaround for kpanel bug)
+Fixed a bug where sticky windows could be moved using the pager - you could lose sticky windows this way
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
