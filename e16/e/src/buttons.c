@@ -28,14 +28,14 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
       b->aclass->ref_count++;
 
    b->tclass = tclass;
-   if (b->tclass)
-      b->tclass->ref_count++;
 
    if ((!b->tclass) && (b->label))
      {
 	b->tclass = FindItem("__FALLBACK_TCLASS", 0, LIST_FINDBY_NAME,
 			     LIST_TYPE_TCLASS);
      }
+   if (b->tclass)
+      b->tclass->ref_count++;
 
    b->label = label;
 

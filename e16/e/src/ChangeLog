@@ -1571,3 +1571,10 @@ Fri Sep 10 14:14:11 PDT 1999
 (Raster)
 
 try this fix for focus loss (extra check for multihead case)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 14:59:58 PDT 1999
+(Raster)
+
+more ref count to after discovery of the objetc, not before.. :)
