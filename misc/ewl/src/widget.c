@@ -243,13 +243,8 @@ void       ewl_widget_set_needs_resize(EwlWidget *w)
 		if (!ewl_widget_get_flag(w,DONT_PROPAGATE_RESIZE) && w->parent) {
 			ewl_widget_set_needs_resize(w->parent);
 		} else if (!w->parent) {
-			ev = ewl_event_new_by_type(EWL_EVENT_CONFIGURE);
-			if (!ev) {
-				ewl_debug("ewl_widget_set_needs_resize",EWL_NULL_ERROR,"ev");
-			} else {
-				ev->widget = w;
-				ewl_event_queue(ev);
-			}
+			ev = ewl_event_new_by_type_with_widget(EWL_EVENT_CONFIGURE,w);
+			ewl_event_queue(ev);
 		}
 	}
 	FUNC_END("ewl_widget_set_needs_resize");
@@ -271,7 +266,7 @@ EwlBool    ewl_widget_needs_refresh(EwlWidget *w)
 
 void       ewl_widget_set_needs_refresh(EwlWidget *w)
 {
-	EwlEvent *ev = NULL;
+	EwlEventExpose *ev = NULL;
 	FUNC_BGN("ewl_widget_set_needs_refresh");
 	if (!w) {
 		ewl_debug("ewl_widget_set_needs_refresh", EWL_NULL_WIDGET_ERROR,"w");
@@ -281,12 +276,14 @@ void       ewl_widget_set_needs_refresh(EwlWidget *w)
 		if (!ewl_widget_get_flag(w,DONT_PROPAGATE_REFRESH) && w->parent) {
 			ewl_widget_set_needs_refresh(w->parent);
 		} else if (!w->parent) {
-			ev = ewl_event_new_by_type(EWL_EVENT_EXPOSE);
+			ev = (EwlEventExpose*) ewl_event_new_by_type_with_widget(
+			                                         EWL_EVENT_EXPOSE,w);
+			
 			if (!ev) {
 				ewl_debug("ewl_widget_set_needs_refresh",EWL_NULL_ERROR,"ev");
 			} else {
-				ev->widget = w;
-				ewl_event_queue(ev);
+				ev->rect = ewl_widget_get_rect(w);
+				ewl_event_queue((EwlEvent*)ev);
 			}
 		}
 	}
@@ -555,6 +552,8 @@ void   ewl_widget_render(EwlWidget *w)
 	} else if (!ewl_widget_get_flag(w,NEEDS_RESIZE)&&
 	           !ewl_widget_get_flag(w,NEEDS_REFRESH))	{
 		/* doesn't need refresh */
+		fprintf(stderr,"widget 0x%08x doesn't need a resize or a refresh.\n",
+		        (unsigned int) w);
 	} else if (!w->render)	{
 		/* no render callback */
 		if (w->rendered)
@@ -833,7 +832,7 @@ void             ewl_widget_imlayer_show(EwlWidget *widget, char *name)
 			          "layer");
 		} else {
 			ewl_imlayer_show(layer);
-			ewl_widget_set_needs_resize(widget);
+			ewl_widget_set_needs_refresh(widget);
 		}
 	}
 	FUNC_END("ewl_widget_imlayer_show");
@@ -860,7 +859,7 @@ void             ewl_widget_imlayer_hide(EwlWidget *widget, char *name)
 			          "layer");
 		} else {
 			ewl_imlayer_hide(layer);
-			ewl_widget_set_needs_resize(widget);
+			ewl_widget_set_needs_refresh(widget);
 		}
 	}
 	FUNC_END("ewl_widget_imlayer_hide");

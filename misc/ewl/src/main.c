@@ -76,10 +76,12 @@ EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d)
 	else if (ev->type==EWL_EVENT_MOUSEMOVE)
 		sprintf(evtype,"move");
 
-	if (w->type == EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEDOWN) {
+	if (w->type==EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEDOWN) {
 		ewl_widget_imlayer_show(w, "clicked");
+		fprintf(stderr,"showing imlayer\n");
 	} else if (w->type==EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEUP) {
 		ewl_widget_imlayer_hide(w, "clicked");
+		fprintf(stderr,"hiding imlayer\n");
 	}
 
 	fprintf(stderr,"mouse%s in widget 0x%08x\n", evtype, (unsigned int) w);

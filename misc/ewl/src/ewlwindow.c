@@ -133,7 +133,7 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 				fprintf(stderr, "window not realized yet\n");
 		} else {
 			XResizeWindow(ewl_get_display(),window->xwin,width,height);
-			if (ewl_debug_is_active())
+			/*if (ewl_debug_is_active())
 				fprintf(stderr,"done... "
 			        "widget = %08x, width = %d, height = %d\n",
 			        (unsigned int) widget, width, height);
@@ -142,9 +142,9 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 			window->pmap = XCreatePixmap(ewl_get_display(),
 			                             window->xwin,
 			                             width, height,
-			                             window->depth);
+			                             window->depth);*/
 			ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
-			ewl_container_resize_children(widget);
+			/*ewl_container_resize_children(widget);*/
 		}
 		break;
 	case EWL_EVENT_MOVE:

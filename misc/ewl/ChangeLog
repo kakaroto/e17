@@ -868,3 +868,8 @@ comparisons).
 
 - added ewl_widget_imlayer_show/hide/get_by_name()
 
+-----
+20000822-1623-PDT, pabs
+
+- misc cleanups.
+
