@@ -1,3 +1,4 @@
+Oct 19, 2001		Missed a change, sync files to e.
 Oct 18,	2001		Fixup for ecore changes.  Lots of renames.  No
 			functional changes in this commit (it builds again...)
 			ecore_key_press_translate... -> keypress ??? You know

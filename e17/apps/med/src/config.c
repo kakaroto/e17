@@ -13,21 +13,21 @@ static char cfg_root[] = "";
     } \
 }
 
-static char cfg_grabs_db[4096] = "";
-static char cfg_settings_db[4096] = "";
-static char cfg_actions_db[4096] = "";
-static char cfg_borders_db[4096] = "";
-static char cfg_apps_menu_db[4096] = "";
-static char cfg_menus_dir[4096] = "";
-static char cfg_entries_dir[4096] = "";
-static char cfg_selections_dir[4096] = "";
-static char cfg_scrollbars_dir[4096] = "";
-static char cfg_guides_dir[4096] = "";
-static char cfg_user_dir[4096] = "";
-static char cfg_images_dir[4096] = "";
-static char cfg_cursors_dir[4096] = "";
-static char cfg_backgrounds_dir[4096] = "";
-static char cfg_fonts_dir[4096] = "";
+static char cfg_grabs_db[PATH_MAX] = "";
+static char cfg_settings_db[PATH_MAX] = "";
+static char cfg_actions_db[PATH_MAX] = "";
+static char cfg_borders_db[PATH_MAX] = "";
+static char cfg_apps_menu_db[PATH_MAX] = "";
+static char cfg_menus_dir[PATH_MAX] = "";
+static char cfg_entries_dir[PATH_MAX] = "";
+static char cfg_selections_dir[PATH_MAX] = "";
+static char cfg_scrollbars_dir[PATH_MAX] = "";
+static char cfg_guides_dir[PATH_MAX] = "";
+static char cfg_user_dir[PATH_MAX] = "";
+static char cfg_images_dir[PATH_MAX] = "";
+static char cfg_cursors_dir[PATH_MAX] = "";
+static char cfg_backgrounds_dir[PATH_MAX] = "";
+static char cfg_fonts_dir[PATH_MAX] = "";
 
 char *
 e_config_get(char *type)
@@ -81,7 +81,7 @@ e_config_get(char *type)
 void
 e_config_init(void)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
 #if 1 /* for now don't do this. i think a cp -r will be needed later anyway */
    if (!e_file_is_dir(e_config_user_dir())) e_file_mkdir(e_config_user_dir());
@@ -104,6 +104,9 @@ e_config_init(void)
    if (!e_file_exists(buf))
      e_file_cp(PACKAGE_DATA_DIR"/data/config/behavior/default/apps_menu.db", buf);
    sprintf(buf, "%sappearance/borders/border.bits.db",  e_config_user_dir());
+#endif
+#if 0   
+   ts();
 #endif
 }
 
@@ -143,3 +146,196 @@ e_config_user_dir(void)
 #endif   
    return cfg_user_dir;
 }
+
+void
+e_config_type_add_node(E_Config_Base_Type *base, char *prefix, 
+		       E_Config_Datatype type, E_Config_Base_Type *list_type,
+		       int offset,
+		       int def_int,
+		       float def_float,
+		       char *def_str)
+{
+   E_Config_Node *cfg_node;
+   
+   cfg_node = NEW(E_Config_Node, 1);
+   ZERO(cfg_node, E_Config_Node, 1);
+   
+   cfg_node->prefix    = strdup(prefix);
+   cfg_node->type      = type;
+   cfg_node->sub_type  = list_type;
+   cfg_node->offset    = offset;
+   cfg_node->def_int   = def_int;
+   cfg_node->def_float = def_float;
+   if (cfg_node->def_str) 
+     {
+	e_strdup(cfg_node->def_str, def_str);
+     }
+   base->nodes = evas_list_append(base->nodes, cfg_node);
+}
+
+E_Config_Base_Type *
+e_config_type_new(void)
+{
+   E_Config_Base_Type *t;
+   
+   t = NEW(E_Config_Base_Type, 1);
+   ZERO(t, E_Config_Base_Type, 1);
+   return t;
+}
+
+void *
+e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
+{
+   E_DB_File *db;
+   char buf[PATH_MAX];
+   Evas_List l;
+   char *data;
+   
+   if (!e_file_exists(file)) return NULL;
+   db = e_db_open_read(file);
+   if (!db) return NULL;
+   data = NEW(char, type->size);
+   ZERO(data, char , type->size);
+   for (l = type->nodes; l; l = l->next)
+     {
+	E_Config_Node *node;
+	
+	node = l->data;
+	
+	switch (node->type)
+	  {
+	   case E_CFG_TYPE_INT:
+	       {
+		  int val;
+		  
+		  val = 0;
+		  sprintf(buf, "%s/%s", prefix, node->prefix);
+		  if (e_db_int_get(db, buf, &val))
+		    (*((int *)(&(data[node->offset])))) = val;
+		  else
+		    (*((int *)(&(data[node->offset])))) = node->def_int;
+	       }
+	     break;
+	   case E_CFG_TYPE_STR:
+	       {
+		  char *val;
+		  
+		  sprintf(buf, "%s/%s", prefix, node->prefix);
+		  if ((val = e_db_str_get(db, buf)))
+		    (*((char **)(&(data[node->offset])))) = val;
+		  else
+		    e_strdup((*((char **)(&(data[node->offset])))), node->def_str);
+	       }
+	     break;
+	   case E_CFG_TYPE_FLOAT:
+	       {
+		  float val;
+		  
+		  val = 0;
+		  sprintf(buf, "%s/%s", prefix, node->prefix);
+		  if (e_db_float_get(db, buf, &val))
+		    (*((float *)(&(data[node->offset])))) = val;
+		  else
+		    (*((float *)(&(data[node->offset])))) = node->def_float;
+	       }
+	     break;
+	   case E_CFG_TYPE_LIST:
+	       {
+		  Evas_List l2;
+		  int i, count;
+		  
+		  l2 = NULL;
+		  sprintf(buf, "%s/%s/count", prefix, node->prefix);
+		  count = 0;		  
+		  e_db_int_get(db, buf, &count);
+		  for (i = 0; i < count; i++)
+		    {
+		       void *data2;
+		       
+		       sprintf(buf, "%s/%s/%i", prefix, node->prefix, i);
+		       data2 = e_config_load(file, buf, node->sub_type);
+		       l2 = evas_list_append(l2, data2);
+		    }
+		  (*((Evas_List *)(&(data[node->offset])))) = l2;
+	       }
+	     break;
+	   case E_CFG_TYPE_KEY:
+	       {
+		  char *val;
+		  
+		  sprintf(buf, "%s/%s", prefix, node->prefix);
+		  (*((char **)(&(data[node->offset])))) = strdup(buf);
+	       }
+	     break;
+	   default:
+	     break;
+	  }
+     }
+   e_db_close(db);
+   return data;
+}
+
+
+#if 0
+typedef struct _list_base List_Base;
+typedef struct _list_element List_Element;
+
+struct _list_base
+{
+   Evas_List elements;
+};
+
+struct _list_element
+{
+   char *name;
+   int   size;
+   float perc;
+};
+
+/* eg: */
+void ts(void)
+{
+   /* define the different config types and structs to the config engine */
+   E_Config_Base_Type *cf_list;
+   E_Config_Base_Type *cf_element;
+   
+   cf_element = e_config_type_new();
+   E_CONFIG_NODE(cf_element, "name", E_CFG_TYPE_STR, NULL,   List_Element, name, 0, 0, "DEFAULT_NAME"); 
+   E_CONFIG_NODE(cf_element, "size", E_CFG_TYPE_INT, NULL,   List_Element, size, 777, 0, NULL); 
+   E_CONFIG_NODE(cf_element, "perc", E_CFG_TYPE_FLOAT, NULL, List_Element, perc, 0, 3.1415, NULL); 
+   
+   cf_list = e_config_type_new();
+   E_CONFIG_NODE(cf_list, "list", E_CFG_TYPE_LIST, cf_element, List_Base, elements, 0, 0, NULL);
+
+   /* now test it */
+     {
+	List_Base *cfg_data;
+	
+	/* load the base data type from the base of the test db file */
+	cfg_data = e_config_load("test.db", "", cf_list);
+	/* no data file? */
+	if (!cfg_data)
+	  {
+	     printf("no load!\n");
+	  }
+	/* got data */
+	else
+	  {
+	     Evas_List l;
+	     
+	     for (l = cfg_data->elements; l; l = l->next)
+	       {
+		  List_Element *cfg_element;
+		  
+		  printf("element\n");
+		  cfg_element = l->data;
+		  printf("... name %s\n", cfg_element->name);
+		  printf("... size %i\n", cfg_element->size);
+		  printf("... perc %3.3f\n", cfg_element->perc);
+	       }
+	  }
+	exit(0);
+     }
+}
+
+#endif

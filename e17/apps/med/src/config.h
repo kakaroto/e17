@@ -39,7 +39,7 @@ static E_Config_File _var = {_src, 0.0}
 #define E_CONFIG_CHECK_VALIDITY(_var, _src) \
 { \
 double __time; \
-__time = e_get_time(); \
+__time = ecore_get_time(); \
 if (_var.last_fetch < (__time - 5.0)) { \
 _var.last_fetch = __time;
 #define E_CONFIG_CHECK_VALIDITY_END \
@@ -85,7 +85,7 @@ static E_Config_Element _var = { _src, _key, 0.0, E_CFG_DATAT_T, \
 #define E_CFG_VALIDITY_CHECK(_var) \
 { \
 double __time; \
-__time = e_get_time(); \
+__time = ecore_get_time(); \
 if (_var.last_fetch < (__time - 5.0)) { \
 int __cfg_ok = 0; \
 _var.last_fetch = __time;
@@ -151,5 +151,72 @@ char *e_config_get(char *type);
 void  e_config_init(void);
 void  e_config_set_user_dir(char *dir);
 char *e_config_user_dir(void);
+
+typedef struct _e_config_base_type E_Config_Base_Type;
+typedef struct _e_config_node      E_Config_Node;
+typedef struct _e_config_value     E_Config_Value;
+typedef enum   _e_config_datatype  E_Config_Datatype;
+
+enum _e_config_datatype
+{
+   E_CFG_TYPE_INT,
+   E_CFG_TYPE_STR,
+   E_CFG_TYPE_FLOAT,
+   E_CFG_TYPE_LIST,
+   E_CFG_TYPE_KEY
+};
+
+struct _e_config_base_type
+{
+   int size;
+   Evas_List nodes;
+};
+
+struct _e_config_node
+{
+   char               *prefix;
+   E_Config_Datatype   type;
+   int                 offset;
+   E_Config_Base_Type *sub_type;
+   int                 def_int;
+   float               def_float;
+   char               *def_str;
+};
+
+#define E_CONFIG_NODE(var, prefix, type, sub, struct_type, struct_member, def_int, def_float, def_str) \
+{ \
+  struct_type _cfg_dummy; \
+  char *_cfg_p1, *_cfg_p2; \
+  int _cfg_offset; \
+  \
+  _cfg_p1 = (char *)(&(_cfg_dummy)); \
+  _cfg_p2 = (char *)(&(_cfg_dummy.struct_member)); \
+  _cfg_offset = (int)(_cfg_p2 - _cfg_p1); \
+  \
+  e_config_type_add_node(var, prefix, type, sub, _cfg_offset, def_int, def_float, def_str); \
+  var->size = sizeof(struct_type); \
+}
+
+E_Config_Value *e_config_value_get_int(E_Config_Value *handle, char *file,
+				       char *prefix, char *key,
+				       int *val_ret, int default_val);
+E_Config_Value *e_config_value_get_str(E_Config_Value *handle, char *file,
+				       char *prefix, char *key,
+				       char **val_ret, char *default_val);
+E_Config_Value *e_config_value_get_float(E_Config_Value *handle, char *file,
+					 char *prefix, char *key,
+					 float *val_ret, float default_val);
+E_Config_Base_Type *e_config_type_new(void);
+void                e_config_type_add_node(E_Config_Base_Type *base, 
+					   char *prefix,
+					   E_Config_Datatype type, 
+					   E_Config_Base_Type *list_type,
+					   int offset,
+					   int def_int,
+					   float def_float,
+					   char *def_str);
+void               *e_config_load(char *file, 
+				  char *prefix,
+				  E_Config_Base_Type *type);
 
 #endif
