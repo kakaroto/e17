@@ -35,538 +35,43 @@ typedef struct _IPCstruct
 }
 IPCStruct;
 
-/* IPC array member function declarations */
+static size_t       bufsiz;
+static char        *bufptr;
 
-/* this is needed for the IPC array below to not give us any warnings
- * during compiletime.  Since we don't use these anywhere else and I
- * don't expect us to ever, we're not going to bother putting them in
- * E.h
- * --Mandrake
- */
+static void
+IpcPrintInit(void)
+{
+   bufsiz = 0;
+   bufptr = NULL;
+}
 
-static void         IPC_Help(const char *params, Client * c);
-static void         IPC_Version(const char *params, Client * c);
-static void         IPC_Copyright(const char *params, Client * c);
-static void         IPC_AutoSave(const char *params, Client * c);
-static void         IPC_DefaultTheme(const char *params, Client * c);
-static void         IPC_Restart(const char *params, Client * c);
-static void         IPC_RestartWM(const char *params, Client * c);
-static void         IPC_RestartTheme(const char *params, Client * c);
-static void         IPC_Exit(const char *params, Client * c);
-static void         IPC_ForceSave(const char *params, Client * c);
-static void         IPC_SMFile(const char *params, Client * c);
-static void         IPC_ListThemes(const char *params, Client * c);
-static void         IPC_GotoDesktop(const char *params, Client * c);
-static void         IPC_ShowIcons(const char *params, Client * c);
-static void         IPC_FocusMode(const char *params, Client * c);
-static void         IPC_AdvancedFocus(const char *params, Client * c);
-static void         IPC_NumDesks(const char *params, Client * c);
-static void         IPC_NumAreas(const char *params, Client * c);
-static void         IPC_WinOps(const char *params, Client * c);
-static void         IPC_WinList(const char *params, Client * c);
-static void         IPC_GotoArea(const char *params, Client * c);
-static void         IPC_ButtonShow(const char *params, Client * c);
-static void         IPC_FX(const char *params, Client * c);
-static void         IPC_MoveMode(const char *params, Client * c);
-static void         IPC_ResizeMode(const char *params, Client * c);
-static void         IPC_GeomInfoMode(const char *params, Client * c);
-static void         IPC_Pager(const char *params, Client * c);
-static void         IPC_InternalList(const char *params, Client * c);
-static void         IPC_SetFocus(const char *params, Client * c);
-static void         IPC_DialogOK(const char *params, Client * c);
-static void         IPC_SoundClass(const char *params, Client * c);
-static void         IPC_ImageClass(const char *params, Client * c);
-static void         IPC_TextClass(const char *params, Client * c);
-static void         IPC_ActionClass(const char *params, Client * c);
-static void         IPC_ColorModifierClass(const char *params, Client * c);
-static void         IPC_Border(const char *params, Client * c);
-static void         IPC_Button(const char *params, Client * c);
-static void         IPC_Background(const char *params, Client * c);
-static void         IPC_Cursor(const char *params, Client * c);
-static void         IPC_PlaySoundClass(const char *params, Client * c);
-static void         IPC_ListClassMembers(const char *params, Client * c);
-static void         IPC_GeneralInfo(const char *params, Client * c);
-static void         IPC_DockConfig(const char *params, Client * c);
-static void         IPC_MemDebug(const char *params, Client * c);
-static void         IPC_Remember(const char *params, Client * c);
-static void         IPC_CurrentTheme(const char *params, Client * c);
-static void         IPC_Nop(const char *params, Client * c);
-static void         IPC_Xinerama(const char *params, Client * c);
-static void         IPC_ConfigPanel(const char *params, Client * c);
-static void         IPC_RememberList(const char *params, Client * c);
+static void
+IpcPrintFlush(Client * c)
+{
+   if (bufptr == NULL)
+      return;
 
-/* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
- * 
- * IPC_ReloadMenus(...) / reload_menus - Reloads menus from menus.cfg */
+   CommsSend(c, bufptr);
+   Efree(bufptr);
+   bufsiz = 0;
+   bufptr = NULL;
+}
 
-static void         IPC_ReloadMenus(const char *params, Client * c);
+static void
+IpcPrintf(const char *fmt, ...)
+{
+   char                tmp[FILEPATH_LEN_MAX];
+   int                 len;
+   va_list             args;
 
-static void         IPC_GroupInfo(const char *params, Client * c);
-static void         IPC_GroupOps(const char *params, Client * c);
-static void         IPC_Group(const char *params, Client * c);
-static void         IPC_Hints(const char *params, Client * c);
-static void         IPC_Debug(const char *params, Client * c);
+   va_start(args, fmt);
+   len = Evsnprintf(tmp, sizeof(tmp), fmt, args);
+   va_end(args);
 
-/* the IPC Array */
-
-/* the format of an IPC member of the IPC array is as follows:
- * {
- *    NameOfMyFunction,
- *    "command_name",
- *    "quick-help explanation",
- *    "extended help data"
- *    "may go on for several lines, be sure\n"
- *    "to add line feeds when you need them and to \"quote\"\n"
- *    "properly"
- * }
- *
- * when you add a function into this array, make sure you also add it into
- * the declarations above and also put the function in this file.  PLEASE
- * if you add a new function in, add help to it also.  since my end goal
- * is going to be to have this whole IPC usable by an end-user or to your
- * scripter, it should be easy to learn to use without having to crack
- * open the source code.
- * --Mandrake
- */
-
-IPCStruct           IPCArray[] = {
-   {
-    IPC_Help,
-    "help", "?",
-    "gives you this help screen",
-    "Additional parameters will retrieve help on many topics - "
-    "\"help <command>\".\nuse \"help all\" for a list of commands."},
-   {
-    IPC_Version,
-    "version", "ver",
-    "displays the current version of Enlightenment running",
-    NULL},
-   {
-    IPC_Nop,
-    "nop", NULL,
-    "IPC No-operation - returns nop",
-    NULL},
-   {
-    IPC_Copyright,
-    "copyright", NULL,
-    "displays copyright information for Enlightenment",
-    NULL},
-   {
-    IPC_AutoSave,
-    "autosave", NULL,
-    "toggle the Automatic Saving Feature",
-    "Use \"autosave ?\" to list the current status\n"
-    "use \"autosave on\" or \"autosave off\" to toggle the status"},
-   {
-    IPC_DefaultTheme,
-    "default_theme", NULL,
-    "toggle the default theme",
-    "Use \"default_theme ?\" to get the current default theme\n"
-    "use \"default_theme /path/to/theme\"\n"
-    "you can retrieve a list of available themes from the "
-    "\"list_themes\" command"},
-   {
-    IPC_Restart,
-    "restart", NULL,
-    "Restart Enlightenment",
-    NULL},
-   {
-    IPC_RestartWM,
-    "restart_wm", NULL,
-    "Restart another window manager",
-    "Use \"restart_wm <wmname>\" to start another window manager.\n"
-    "Example: \"restart_wm fvwm\""},
-   {
-    IPC_RestartTheme,
-    "restart_theme", NULL,
-    "Restart with another theme",
-    "Use \"restart_theme <themename>\" to restart enlightenment "
-    "with another theme\nExample: \"restart_theme icE\""},
-   {
-    IPC_Exit,
-    "exit", "q",
-    "Exit Enlightenment",
-    NULL},
-   {
-    IPC_ForceSave,
-    "save_config", "s",
-    "Force Enlightenment to save settings now",
-    NULL},
-   {
-    IPC_SMFile,
-    "sm_file", NULL,
-    "Change the default prefix used for session saves",
-    "Average users are encouraged not to touch this setting.\n"
-    "Use \"sm_file ?\" to retrieve the current session management "
-    "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
-    "to change."},
-   {
-    IPC_ListThemes,
-    "list_themes", "tl",
-    "List currently available themes",
-    NULL},
-   {
-    IPC_GotoDesktop,
-    "goto_desktop", "sd",
-    "Change currently active destkop",
-    "Use \"goto_desktop num\" to go to a specific desktop.\n"
-    "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
-    "the next and\n     previous desktop\n"
-    "Use \"goto_desktop ?\" to find out what desktop you are " "currently on"},
-   {
-    IPC_GotoArea,
-    "goto_area", "sa",
-    "Change currently active area",
-    "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
-    "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
-    "prev <vert/horiz>\" to go to the next and\n     "
-    "previous areas\nUse \"goto_area ?\" to find out what area "
-    "you are currently on"},
-   {
-    IPC_ShowIcons,
-    "show_icons", NULL,
-    "Obsolete - Toggle the display of icons on the desktop",
-    "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
-    "Use \"show_icons ?\" to retrieve the current setting"},
-   {
-    IPC_FocusMode,
-    "focus_mode", "sf",
-    "Change the current focus mode setting",
-    "Use \"focus_mode <mode>\" to change the focus mode.\n"
-    "Use \"focus_mode ?\" to retrieve the current setting\n" "Focus Types:\n"
-    "click: This is the traditional click-to-focus mode.\n"
-    "clicknograb: This is a similar focus mode, but without the "
-    "grabbing of the click\n    "
-    "(you cannot click anywhere in a window to focus it)\n"
-    "pointer: The focus will follow the mouse pointer\n"
-    "sloppy: in sloppy-focus, the focus follows the mouse, "
-    "but when over\n    "
-    "the desktop background the last window does not lose the focus"},
-   {
-    IPC_AdvancedFocus,
-    "advanced_focus", "sfa",
-    "Toggle Advanced Focus Settings",
-    "use \"advanced_focus <option> <on/off/?>\" to change.\n"
-    "the options you may set are:\n"
-    "new_window_focus : all new windows get the keyboard focus\n"
-    "new_popup_window_focus : all new transient windows get focus\n"
-    "new_popup_of_owner_focus : transient windows from apps that have\n"
-    "   focus already may receive focus\n"
-    "raise_on_keyboard_focus_switch: Raise windows when switching focus\n"
-    "   with the keyboard\n"
-    "raise_after_keyboard_focus_switch: Raise windows after switching "
-    "focus\n" "   with the keyboard\n"
-    "pointer_to_keyboard_focus_window: Send the pointer to the focused\n"
-    "   window when changing focus with the keyboard\n"
-    "pointer_after_keyboard_focus_window: Send the pointer to the " "focused\n"
-    "   window after changing focus with the keyboard\n"
-    "transients_follow_leader: popup windows appear together with the\n"
-    "   window that created them.\n"
-    "switch_to_popup_location: switch to where a popup window appears\n"
-    "focus_list: display and use focus list (requires XKB)\n"
-    "manual_placement: place all new windows by hand\n"
-    "manual_placement_mouse_pointer: place all new windows under mouse pointer"},
-   {
-    IPC_NumDesks,
-    "num_desks", "snd",
-    "Change the number of available desktops",
-    "Use \"num_desks <num>\" to change the available number of desktops.\n"
-    "Use \"num_desks ?\" to retrieve the current setting"},
-   {
-    IPC_NumAreas,
-    "num_areas", "sna",
-    "Change the size of the virtual desktop",
-    "Use \"num_areas <width> <height>\" to change the size of the "
-    "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
-    "virtual destkops\nUse \"num_areas ?\" to retrieve the " "current setting"},
-   {
-    IPC_WinOps,
-    "win_op", "wop",
-    "Change a property of a specific window",
-    "Use \"win_op <windowid> <property> <value>\" to change the "
-    "property of a window\nYou can use the \"window_list\" "
-    "command to retrieve a list of available windows\n"
-    "You can use ? after most of these commands to receive the current\n"
-    "status of that flag\n"
-    "available win_op commands are:\n"
-    "  win_op <windowid> <close/annihilate>\n"
-    "  win_op <windowid> <iconify/shade/stick>\n"
-    "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
-    "          (or none for absolute)\n"
-    "  win_op <windowid> border <BORDERNAME>\n"
-    "  win_op <windowid> desk <desktochangeto/next/prev>\n"
-    "  win_op <windowid> area <x> <y>\n"
-    "  win_op <windowid> <raise/lower>\n"
-    "  win_op <windowid> <move/resize> <x> <y>\n"
-    "          (you can use ? and ?? to retreive client and frame locations)\n"
-    "  win_op <windowid> focus\n"
-    "  win_op <windowid> title <title>\n"
-    "  win_op <windowid> layer <0-100,4=normal>\n"
-    "  win_op <windowid> <fixedpos/never_use_area/focusclick/neverfocus>\n"
-    "<windowid> may be substituted with \"current\" to use the current window"},
-   {
-    IPC_WinList,
-    "window_list", "wl",
-    "Get a list of currently open windows",
-    "the list will be returned in the following "
-    "format - \"window_id : title\"\n"
-    "you can get an extended list using \"window_list extended\"\n"
-    "returns the following format:\n\"window_id : title :: "
-    "desktop : area_x area_y : x_coordinate y_coordinate\""},
-   {
-    IPC_ButtonShow,
-    "button_show", NULL,
-    "Show or Hide buttons on desktop",
-    "use \"button_show <button/buttons/all_buttons_except/all> "
-    "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
-    "(removes all buttons and the dragbar)\n\"button_show\" "
-    "(removes all buttons)\n \"button_show buttons CONFIG*\" "
-    "(removes all buttons with CONFIG in the start)"},
-   {
-    IPC_FX,
-    "fx", NULL,
-    "Toggle various effects on/off",
-    "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
-    "Use \"fx <effect> ?\" to get the current mode\n"
-    "the following effects are available\n"
-    "ripples <on/off> (ripples that act as a water effect on the screen)\n"
-    "deskslide <on/off> (slide in desktops on desktop change)\n"
-    "mapslide <on/off> (slide in new windows)\n"
-    "raindrops <on/off> (raindrops will appear across your desktop)\n"
-    "menu_animate <on/off> (toggles the animation of menus "
-    "as they appear)\n"
-    "animate_win_shading <on/off> (toggles the animation of "
-    "window shading)\n"
-    "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
-    "dragbar <on/off/left/right/top/bottom> (changes " "location of dragbar)\n"
-    "tooltips <on/off/#> (changes state of tooltips and "
-    "seconds till popup)\n"
-    "autoraise <on/off/#> (changes state of autoraise and "
-    "seconds till raise)\n"
-    "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
-    "   of time to push for resistance to give)\n"
-    "edge_snap_resistance <#/?> (changes the number of pixels that "
-    "a window will\n   resist moving against another window\n"
-    "audio <on/off> (changes state of audio)\n"
-    "-  seconds for tooltips and autoraise can have less than one second\n"
-    "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
-   {
-    IPC_DockConfig,
-    "dock", NULL,
-    "Enable/Disable dock, or change dock position and direction",
-    "use \"dock support <on/off/?>\" to test, enable, or disable the dock\n"
-    "use \"dock direction <up/down/left/right/?>\" to set or "
-    "test direction\n"
-    "use \"dock start_pos ?\" to test the starting x y coords\n"
-    "use \"dock start_pos x y\" to set the starting x y coords"},
-   {
-    IPC_MoveMode,
-    "move_mode", "smm",
-    "Toggle the Window move mode",
-    "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
-    "to set\nuse \"move_mode ?\" to get the current mode"},
-   {
-    IPC_ResizeMode,
-    "resize_mode", "srm",
-    "Toggle the Window resize mode",
-    "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
-    "to set\nuse \"resize_mode ?\" to get the current mode"},
-   {
-    IPC_GeomInfoMode,
-    "geominfo_mode", "sgm",
-    "Change position of geometry info display during Window move or resize",
-    "use \"geominfo_mode <center/corner/never>\" "
-    "to set\nuse \"geominfo_mode ?\" to get the current mode"},
-   {
-    IPC_Pager,
-    "pager", NULL,
-    "Toggle the status of the Pager and various pager settings",
-    "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
-    "to get the current mode\n"
-    "use \"pager <#> <on/off/?>\" to toggle or test any desktop's pager\n"
-    "use \"pager hiq <on/off>\" to toggle high quality pager\n"
-    "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
-    "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
-    "use \"pager title <on/off>\" to toggle title display in the pager\n"
-    "use \"pager scanrate <#>\" to toggle number of line update " "per second"},
-   {
-    IPC_InternalList,
-    "internal_list", "il",
-    "Retrieve a list of internal items",
-    "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
-    "to retrieve a list of various internal window types.\n"
-    "(note that listing internal_ewin  doesn't retrieve "
-    "dialogs currently)\n"},
-   {
-    IPC_SetFocus,
-    "set_focus", "wf",
-    "Set/Retrieve focused window",
-    "use \"set_focus <win_id>\" to focus a new window\n"
-    "use \"set_focus ?\" to retrieve the currently focused window"},
-   {
-    IPC_DialogOK,
-    "dialog_ok", "dok",
-    "Pop up a dialog box with an OK button",
-    "use \"dialog_ok <message>\" to pop up a dialog box."},
-   {
-    IPC_ListClassMembers,
-    "list_class", "cl",
-    "List all members of a class",
-    "use \"list_class <classname>\" to get back a list of class members\n"
-    "available classes are:\n" "sounds\n" "actions\n" "backgrounds\n"
-    "borders\n" "text\n" "images\n" "cursors\n" "buttons"},
-   {
-    IPC_PlaySoundClass,
-    "play_sound", "ps",
-    "Plays a soundclass via E",
-    "use \"play_sound <soundclass>\" to play a sound.\n"
-    "use \"list_class sounds\" to get a list of available sounds"},
-   {
-    IPC_SoundClass,
-    "soundclass", NULL,
-    "Create/Delete soundclasses",
-    "use \"soundclass create <classname> <filename>\" to create\n"
-    "use \"soundclass delete <classname>\" to delete"},
-   {
-    IPC_ImageClass,
-    "imageclass", NULL,
-    "Create/delete/modify/apply an ImageClass",
-    "This doesn't do anything yet."},
-   {
-    IPC_ActionClass,
-    "actionclass", NULL,
-    "Create/Delete/Modify an ActionClass",
-    "This doesn't do anything yet."},
-   {
-    IPC_ColorModifierClass,
-    "colormod", NULL,
-    "Create/Delete/Modify a ColorModifierClass",
-    "This doesn't do anything yet."},
-   {
-    IPC_TextClass,
-    "textclass", NULL,
-    "Create/Delete/Modify/apply a TextClass",
-    "This doesn't do anything yet."},
-   {
-    IPC_Background,
-    "background", NULL,
-    "Create/Delete/Modify a Background",
-    "use \"background\" to list all defined backgrounds.\n"
-    "use \"background <name>\" to delete a background.\n"
-    "use \"background <name> ?\" to show current values.\n"
-    "use \"background <name> <type> <value> to create / modify.\n"
-    "(get available types from \"background <name> ?\"."},
-   {
-    IPC_Border,
-    "border", NULL,
-    "Create/Delete/Modify a Border",
-    "This doesn't do anything yet."},
-   {
-    IPC_Cursor,
-    "cursor", NULL,
-    "Create/Delete/Modify a Cursor",
-    "This doesn't do anything yet."},
-   {
-    IPC_Button,
-    "button", NULL,
-    "Create/Delete/Modify a Button",
-    "This doesn't do anything yet."},
-   {
-    IPC_GeneralInfo,
-    "general_info", NULL,
-    "Retrieve some general information",
-    "use \"general_info <info>\" to retrieve information\n"
-    "available info is: screen_size"},
-   {
-    IPC_ReloadMenus,
-    "reload_menus", NULL,
-    "Reload menus.cfg without restarting (Asmodean_)",
-    NULL},
-   {
-    IPC_GroupInfo,
-    "group_info", "gl",
-    "Retrieve some info on groups",
-    "use \"group_info [group_index]\""},
-   {
-    IPC_GroupOps,
-    "group_op", "gop",
-    "Group operations",
-    "use \"group_op <windowid> <property> [<value>]\" to perform "
-    "group operations on a window.\n" "Available group_op commands are:\n"
-    "  group_op <windowid> start\n"
-    "  group_op <windowid> add [<group_index>]\n"
-    "  group_op <windowid> remove [<group_index>]\n"
-    "  group_op <windowid> break [<group_index>]\n"
-    "  group_op <windowid> showhide\n"},
-   {
-    IPC_Group,
-    "group", "gc",
-    "Group commands",
-    "use \"group <groupid> <property> <value>\" to set group properties.\n"
-    "Available group commands are:\n"
-    "  group <groupid> num_members <on/off/?>\n"
-    "  group <groupid> iconify <on/off/?>\n"
-    "  group <groupid> kill <on/off/?>\n" "  group <groupid> move <on/off/?>\n"
-    "  group <groupid> raise <on/off/?>\n"
-    "  group <groupid> set_border <on/off/?>\n"
-    "  group <groupid> stick <on/off/?>\n"
-    "  group <groupid> shade <on/off/?>\n"
-    "  group <groupid> mirror <on/off/?>\n"},
-   {
-    IPC_MemDebug,
-    "dump_mem_debug", NULL,
-    "Dumps memory debugging information out to e.mem.out",
-    "Use this command to have E dump its current memory debugging table\n"
-    "to the e.mem.out file. NOTE: please read comments at the top of\n"
-    "memory.c to see how to enable this. This will let you hunt memory\n"
-    "leaks, over-allocations of memory, and other " "memory-related problems\n"
-    "very easily with all pointers allocated stamped with a time, call\n"
-    "tree that led to that allocation, file and line, "
-    "and the chunk size.\n"},
-   {
-    IPC_Remember,
-    "remember", NULL,
-    "Remembers parameters for client window ID x",
-    "usage:\n" "  remember <windowid> <parameter>...\n"
-    "  where parameter is one of: all, none, border, desktop, size,\n"
-    "  location, layer, sticky, icon, shade, group, dialog, command\n"
-    "  Multiple parameters may be given."},
-   {
-    IPC_CurrentTheme,
-    "current_theme", "tc",
-    "Returns the name of the currently used theme",
-    NULL},
-   {
-    IPC_Xinerama,
-    "xinerama", NULL,
-    "return xinerama information about your current system",
-    NULL},
-   {
-    IPC_ConfigPanel,
-    "configpanel", NULL,
-    "open up a config window",
-    "usage:\n" "  configpanel <panelname>\n"
-    "  where panelname is one of the following: focus, moveresize,\n"
-    "  desktops, area, placement, icons, autoraise, tooltips,\n"
-    "  audio, fx, bg, group_defaults, remember"},
-   {
-    IPC_RememberList,
-    "list_remember", "rl",
-    "Retrieve a list of remembered windows and their attributes.",
-    "usage:\n" "  list_remember [full]\n"
-    "  Retrieve a list of remembered windows.  with full, the list\n"
-    "  includes the window's remembered attributes."},
-   {
-    IPC_Hints,
-    "hints", NULL,
-    "Set hint options.",
-    "usage:\n" "  hints xroot <normal/root>"},
-   {
-    IPC_Debug,
-    "debug", NULL,
-    "Set debug options.",
-    "usage:\n" "  debug events <EvNo>:<EvNo>..."}
-};
+   bufptr = Erealloc(bufptr, bufsiz + len + 1);
+   strcpy(bufptr + bufsiz, tmp);
+   bufsiz += len;
+}
 
 static int
 SetEwinBoolean(char *buf, int len, const char *txt, char *item,
@@ -597,14 +102,7 @@ SetEwinBoolean(char *buf, int len, const char *txt, char *item,
    return 0;
 }
 
-/* the functions */
-
-/* below here are all the functions that belong to the IPC.
- * If you're going to add a function to the IPC system don't forget to
- * add the prototype at the top of the file and also to add it into the
- * IPC array just above.
- * - Mandrake
- */
+/* The IPC functions */
 
 static void
 IPC_ConfigPanel(const char *params, Client * c)
@@ -4362,107 +3860,6 @@ IPC_AutoSave(const char *params, Client * c)
       CommsSend(c, buf);
 }
 
-static int
-ipccmp(void *p1, void *p2)
-{
-   return strcmp(((IPCStruct *) p1)->commandname,
-		 ((IPCStruct *) p2)->commandname);
-}
-
-static void
-IPC_Help(const char *params, Client * c)
-{
-   char                buf[FILEPATH_LEN_MAX];
-   char                buf2[FILEPATH_LEN_MAX];
-   int                 i, l, numIPC;
-   IPCStruct         **lst, *ipc;
-
-   buf[0] = 0;
-   buf2[0] = 0;
-   numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
-
-   Esnprintf(buf, sizeof(buf), _("Enlightenment IPC Commands Help"));
-
-   if (!params)
-     {
-	strcat(buf, _("\ncommands currently available:\n"));
-	strcat(buf,
-	       _("use \"help all\" for descriptions of each command\n"
-		 "use \"help <command>\" for an individual description\n\n"));
-
-	lst = (IPCStruct **) Emalloc(numIPC * sizeof(IPCStruct *));
-
-	for (i = 0; i < numIPC; i++)
-	   lst[i] = &IPCArray[i];
-
-	Quicksort((void **)lst, 0, numIPC - 1, ipccmp);
-
-	l = strlen(buf);
-	for (i = 0; i < numIPC; i++)
-	  {
-	     ipc = lst[i];
-	     l += sprintf(buf + l, "  %-16s %-3s  ", ipc->commandname,
-			  (ipc->nick) ? ipc->nick : "");
-	     if ((i % 3) == 2)
-		l += sprintf(buf + l, "\n");
-	  }
-	if (i % 3)
-	   l += sprintf(buf + l, "\n");
-
-	Efree(lst);
-     }
-   else
-     {
-	if (!strcmp(params, "all"))
-	  {
-	     strcat(buf, _("\ncommands currently available:\n"));
-	     strcat(buf,
-		    _("use \"help <command>\" "
-		      "for an individual description\n"));
-	     strcat(buf, _("      <command>   : <description>\n"));
-
-	     l = strlen(buf);
-	     for (i = 0; i < numIPC; i++)
-	       {
-		  ipc = &IPCArray[i];
-
-		  if (ipc->nick)
-		     sprintf(buf2, "%s", ipc->nick);
-		  else
-		     buf2[0] = '\0';
-
-		  l += sprintf(buf + l, "%14s %3s: %s\n",
-			       ipc->commandname, buf2, ipc->help_text);
-	       }
-	  }
-	else
-	  {
-	     l = strlen(buf);
-	     for (i = 0; i < numIPC; i++)
-	       {
-		  ipc = &IPCArray[i];
-		  if (strcmp(params, ipc->commandname) &&
-		      (ipc->nick == NULL || strcmp(params, ipc->nick)))
-		     continue;
-
-		  if (ipc->nick)
-		     sprintf(buf2, " (%s)", ipc->nick);
-		  else
-		     buf2[0] = '\0';
-
-		  l += sprintf(buf + l,
-			       " : %s%s\n--------------------------------\n%s\n",
-			       ipc->commandname, buf2, ipc->help_text);
-		  if (ipc->extended_help_text)
-		     l += sprintf(buf + l, "%s\n", ipc->extended_help_text);
-	       }
-	  }
-     }
-
-   if (buf)
-      CommsSend(c, buf);
-}
-
 static void
 IPC_Copyright(const char *params, Client * c)
 {
@@ -4530,42 +3927,6 @@ IPC_Version(const char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-}
-
-/* The IPC Handler */
-/* this is the function that actually loops through the IPC array
- * and finds the command that you were trying to run, and then executes it.
- * you shouldn't have to touch this function
- * - Mandrake
- */
-
-int
-HandleIPC(const char *params, Client * c)
-{
-   int                 i;
-   int                 numIPC;
-   char                w[FILEPATH_LEN_MAX];
-   IPCStruct          *ipc;
-
-   numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
-
-   word(params, 1, w);
-   for (i = 0; i < numIPC; i++)
-     {
-	ipc = &IPCArray[i];
-	if (!strcmp(w, ipc->commandname) ||
-	    (ipc->nick && !strcmp(w, ipc->nick)))
-	  {
-	     word(params, 2, w);
-	     if (w)
-		ipc->func(atword(params, 2), c);
-	     else
-		ipc->func(NULL, c);
-	     return 1;
-	  }
-     }
-
-   return 0;
 }
 
 #if 0				/* Not implemented */
@@ -5106,4 +4467,2092 @@ IPC_Debug(const char *params, Client * c)
      }
 
    CommsSend(c, buf);
+}
+
+static void
+IPC_ClientSet(const char *params, Client * c)
+{
+   char                param1[FILEPATH_LEN_MAX], param2[FILEPATH_LEN_MAX];
+
+   word(params, 1, param1);
+   word(params, 2, param2);
+
+   if (!strcmp(param1, "clientname"))
+     {
+	if (c->clientname)
+	   Efree(c->clientname);
+	c->clientname = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "version"))
+     {
+	if (c->version)
+	   Efree(c->version);
+	c->version = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "author"))
+     {
+	if (c->author)
+	   Efree(c->author);
+	c->author = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "email"))
+     {
+	if (c->email)
+	   Efree(c->email);
+	c->email = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "web"))
+     {
+	if (c->web)
+	   Efree(c->web);
+	c->web = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "address"))
+     {
+	if (c->address)
+	   Efree(c->address);
+	c->address = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "info"))
+     {
+	if (c->info)
+	   Efree(c->info);
+	c->info = Estrdup(param2);
+     }
+   else if (!strcmp(param1, "pixmap"))
+     {
+	c->pmap = 0;
+	sscanf(param2, "%x", (int *)&c->pmap);
+     }
+}
+
+static void
+IPC_Reply(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX], param2[FILEPATH_LEN_MAX];
+
+   word(params, 1, param1);
+
+   if (!strcmp(param1, "imageclass"))
+     {
+	/* Reply format "reply imageclass NAME 24243" */
+	word(params, 2, param1);
+	word(params, 3, param2);
+	HonorIclass(param1, atoi(param2));
+     }
+}
+
+static void
+IPC_ThemeGet(const char *params __UNUSED__, Client * c)
+{
+   char               *s1;
+
+   s1 = ThemeGetDefault();
+   if (s1)
+     {
+	CommsSend(c, s1);
+	Efree(s1);
+     }
+   else
+      CommsSend(c, "");
+}
+
+static void
+IPC_ThemeSet(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX], sss[FILEPATH_LEN_MAX];
+
+   word(params, 1, param1);
+
+   if (exists(param1))
+     {
+	ThemeSetDefault(param1);
+	Esnprintf(sss, sizeof(sss), "restart_theme %s", param1);
+	SessionExit(sss);
+     }
+}
+
+static void
+IPC_BackgroundsList(const char *params, Client * c)
+{
+   char                param1[FILEPATH_LEN_MAX];
+   Background        **bg;
+   int                 i, num, len = 0;
+   char               *buf = NULL;
+
+   word(params, 1, param1);
+
+   bg = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+   if (bg)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     len += strlen(bg[i]->name) + 1;
+	     if (buf)
+		buf = Erealloc(buf, len + 1);
+	     else
+	       {
+		  buf = Erealloc(buf, len + 1);
+		  buf[0] = 0;
+	       }
+	     strcat(buf, bg[i]->name);
+	     strcat(buf, "\n");
+	  }
+	Efree(bg);
+     }
+   if (buf)
+     {
+	CommsSend(c, buf);
+	Efree(buf);
+     }
+   else
+      CommsSend(c, "");
+}
+
+static void
+IPC_BackgroundDestroy(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX];
+
+   word(params, 1, param1);
+
+   BackgroundDestroyByName(param1);
+}
+
+static void
+IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX], w[FILEPATH_LEN_MAX];
+   Background         *bg;
+   int                 i, wd;
+
+   word(params, 1, param1);
+
+   bg = (Background *) FindItem(param1, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BACKGROUND);
+   if (bg)
+     {
+	wd = 2;
+	w[0] = ' ';
+	while (w[0])
+	  {
+	     w[0] = 0;
+	     word(params, wd++, w);
+	     if (w[0])
+	       {
+		  i = atoi(w);
+		  DesktopSetBg(i, bg, 1);
+	       }
+	  }
+     }
+}
+
+static void
+IPC_BackgroundUseNone(const char *params, Client * c __UNUSED__)
+{
+   char                w[FILEPATH_LEN_MAX];
+   int                 i, wd;
+
+   wd = 1;
+   w[0] = ' ';
+   while (w[0])
+     {
+	w[0] = 0;
+	word(params, wd++, w);
+	if (w[0])
+	  {
+	     i = atoi(w);
+	     DesktopSetBg(i, NULL, 1);
+	  }
+     }
+}
+
+static void
+IPC_BackgroundUsed(const char *params, Client * c)
+{
+   char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
+   Background         *bg;
+   int                 i;
+
+   word(params, 1, param1);
+
+   bg = (Background *) FindItem(param1, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BACKGROUND);
+   buf[0] = 0;
+   if (bg)
+     {
+	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+	  {
+	     if (desks.desk[i].bg == bg)
+	       {
+		  Esnprintf(param1, sizeof(param1), "%i\n", i);
+		  strcat(buf, param1);
+	       }
+	  }
+     }
+   CommsSend(c, buf);
+}
+
+static void
+IPC_KeybindingsGet(const char *params __UNUSED__, Client * c)
+{
+   ActionClass        *ac;
+   Action             *a;
+   int                 i, mod;
+   char               *buf = NULL, buf2[FILEPATH_LEN_MAX];
+
+   ac = (ActionClass *) FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
+				 LIST_TYPE_ACLASS_GLOBAL);
+   if (ac)
+     {
+	for (i = 0; i < ac->num; i++)
+	  {
+	     a = ac->list[i];
+	     if ((a) && (a->action) && (a->event == EVENT_KEY_DOWN))
+	       {
+		  char               *key;
+
+		  key = XKeysymToString(XKeycodeToKeysym(disp, a->key, 0));
+		  if (key)
+		    {
+		       mod = 0;
+		       if (a->modifiers == (ControlMask))
+			  mod = 1;
+		       else if (a->modifiers == (Mod1Mask))
+			  mod = 2;
+		       else if (a->modifiers == (ShiftMask))
+			  mod = 3;
+		       else if (a->modifiers == (ControlMask | Mod1Mask))
+			  mod = 4;
+		       else if (a->modifiers == (ShiftMask | ControlMask))
+			  mod = 5;
+		       else if (a->modifiers == (ShiftMask | Mod1Mask))
+			  mod = 6;
+		       else if (a->modifiers ==
+				(ShiftMask | ControlMask | Mod1Mask))
+			  mod = 7;
+		       else if (a->modifiers == (Mod2Mask))
+			  mod = 8;
+		       else if (a->modifiers == (Mod3Mask))
+			  mod = 9;
+		       else if (a->modifiers == (Mod4Mask))
+			  mod = 10;
+		       else if (a->modifiers == (Mod5Mask))
+			  mod = 11;
+		       else if (a->modifiers == (Mod2Mask | ShiftMask))
+			  mod = 12;
+		       else if (a->modifiers == (Mod2Mask | ControlMask))
+			  mod = 13;
+		       else if (a->modifiers == (Mod2Mask | Mod1Mask))
+			  mod = 14;
+		       else if (a->modifiers == (Mod4Mask | ShiftMask))
+			  mod = 15;
+		       else if (a->modifiers == (Mod4Mask | ControlMask))
+			  mod = 16;
+		       else if (a->modifiers ==
+				(Mod4Mask | ControlMask | ShiftMask))
+			  mod = 17;
+		       else if (a->modifiers == (Mod5Mask | ShiftMask))
+			  mod = 18;
+		       else if (a->modifiers == (Mod5Mask | ControlMask))
+			  mod = 19;
+		       else if (a->modifiers ==
+				(Mod5Mask | ControlMask | ShiftMask))
+			  mod = 20;
+		       if (a->action->params)
+			  Esnprintf(buf2, sizeof(buf2), "%s %i %i %s\n",
+				    key, mod, a->action->Type,
+				    (char *)a->action->params);
+		       else
+			  Esnprintf(buf2, sizeof(buf2), "%s %i %i\n", key,
+				    mod, a->action->Type);
+		       if (buf)
+			 {
+			    buf = Erealloc(buf, strlen(buf) + strlen(buf2) + 1);
+			    strcat(buf, buf2);
+			 }
+		       else
+			  buf = Estrdup(buf2);
+		    }
+	       }
+	  }
+     }
+
+   if (buf)
+     {
+	CommsSend(c, buf);
+	Efree(buf);
+     }
+   else
+      CommsSend(c, "\n");
+}
+
+static void
+IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
+{
+   ActionClass        *ac;
+   Action             *a;
+   int                 i, l;
+   char                buf[FILEPATH_LEN_MAX];
+   const char         *sp, *ss;
+
+   Mode.keybinds_changed = 1;
+
+   ac = (ActionClass *) RemoveItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_ACLASS_GLOBAL);
+   if (ac)
+      RemoveActionClass(ac);
+
+   ac = CreateAclass("KEYBINDINGS");
+   AddItem(ac, ac->name, 0, LIST_TYPE_ACLASS_GLOBAL);
+
+   ss = atword(params, 1);
+   if (ss)
+     {
+	i = 0;
+	l = strlen(ss);
+	while (i < l)
+	  {
+	     char                key[256];
+	     int                 mod = 0;
+	     int                 act_id = 0;
+	     int                 j = 0;
+
+	     /* put line in buf */
+	     sp = &(ss[i]);
+	     while ((sp[j]) && (sp[j] != '\n'))
+	       {
+		  buf[j] = sp[j];
+		  j++;
+	       }
+	     buf[j] = 0;
+	     if (sp[j] == '\n')
+		j++;
+	     i += j;
+	     /* parse the line */
+	     sscanf(buf, "%250s %i %i", key, &mod, &act_id);
+	     if (mod == 0)
+		mod = 0;
+	     else if (mod == 1)
+		mod = ControlMask;
+	     else if (mod == 2)
+		mod = Mod1Mask;
+	     else if (mod == 3)
+		mod = ShiftMask;
+	     else if (mod == 4)
+		mod = ControlMask | Mod1Mask;
+	     else if (mod == 5)
+		mod = ShiftMask | ControlMask;
+	     else if (mod == 6)
+		mod = ShiftMask | Mod1Mask;
+	     else if (mod == 7)
+		mod = ShiftMask | ControlMask | Mod1Mask;
+	     else if (mod == 8)
+		mod = Mod2Mask;
+	     else if (mod == 9)
+		mod = Mod3Mask;
+	     else if (mod == 10)
+		mod = Mod4Mask;
+	     else if (mod == 11)
+		mod = Mod5Mask;
+	     else if (mod == 12)
+		mod = Mod2Mask | ShiftMask;
+	     else if (mod == 13)
+		mod = Mod2Mask | ControlMask;
+	     else if (mod == 14)
+		mod = Mod2Mask | Mod1Mask;
+	     else if (mod == 15)
+		mod = Mod4Mask | ShiftMask;
+	     else if (mod == 16)
+		mod = Mod4Mask | ControlMask;
+	     else if (mod == 17)
+		mod = Mod4Mask | ControlMask | ShiftMask;
+	     else if (mod == 18)
+		mod = Mod5Mask | ShiftMask;
+	     else if (mod == 19)
+		mod = Mod5Mask | ControlMask;
+	     else if (mod == 20)
+		mod = Mod5Mask | ControlMask | ShiftMask;
+	     a = CreateAction(4, 0, mod, 0, 0, 0, key, NULL);
+	     GrabActionKey(a);
+	     AddAction(ac, a);
+	     if (atword(buf, 4))
+		AddToAction(a, act_id, Estrdup(atword(buf, 4)));
+	     else
+		AddToAction(a, act_id, NULL);
+	  }
+     }
+}
+
+static void
+IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
+{
+   Background         *bg;
+   ColorModifierClass *cm;
+   int                 i;
+   char                buf[FILEPATH_LEN_MAX], buf2[FILEPATH_LEN_MAX];
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s %1000s", buf, buf2);
+   bg = (Background *) FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   cm = (ColorModifierClass *) FindItem(buf2, 0, LIST_FINDBY_NAME,
+					LIST_TYPE_COLORMODIFIER);
+   if ((bg) && (bg->cmclass != cm))
+     {
+	if (!strcmp(buf, "(null)"))
+	  {
+	     bg->cmclass->ref_count--;
+	     bg->cmclass = NULL;
+	  }
+	else if (cm)
+	  {
+	     bg->cmclass->ref_count--;
+	     bg->cmclass = cm;
+	  }
+	if (bg->pmap)
+	   imlib_free_pixmap_and_mask(bg->pmap);
+	bg->pmap = 0;
+	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+	  {
+	     if ((desks.desk[i].bg == bg) && (desks.desk[i].viewable))
+		RefreshDesktop(i);
+	  }
+     }
+}
+
+static void
+IPC_BackgroundColormodifierGet(const char *params, Client * c)
+{
+   char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
+   Background         *bg;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", param1);
+   bg = (Background *) FindItem(param1, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BACKGROUND);
+   Esnprintf(buf, sizeof(buf), "(null)");
+   if ((bg) && (bg->cmclass))
+      Esnprintf(buf, sizeof(buf), "%s", bg->cmclass->name);
+   CommsSend(c, buf);
+}
+
+static void
+IPC_ColormodifierDelete(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
+   ColorModifierClass *cm;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", param1);
+   cm = (ColorModifierClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					LIST_TYPE_COLORMODIFIER);
+   Esnprintf(buf, sizeof(buf), "(null)");
+   if (cm)
+      FreeCMClass(cm);
+}
+
+static void
+IPC_ColormodifierGet(const char *params, Client * c)
+{
+   char                param1[FILEPATH_LEN_MAX];
+   char                buf[FILEPATH_LEN_MAX], buf2[FILEPATH_LEN_MAX];
+   ColorModifierClass *cm;
+   int                 i;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", param1);
+   cm = (ColorModifierClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					LIST_TYPE_COLORMODIFIER);
+   Esnprintf(buf, sizeof(buf), "(null)");
+   if (cm)
+     {
+	Esnprintf(buf, sizeof(buf), "%i", (int)(cm->red.num));
+	for (i = 0; i < cm->red.num; i++)
+	  {
+	     Esnprintf(buf2, sizeof(buf2), " %i", (int)(cm->red.px[i]));
+	     strcat(buf, buf2);
+	     Esnprintf(buf2, sizeof(buf2), " %i", (int)(cm->red.py[i]));
+	     strcat(buf, buf2);
+	  }
+	Esnprintf(buf2, sizeof(buf2), "\n%i", (int)(cm->green.num));
+	strcat(buf, buf2);
+	for (i = 0; i < cm->green.num; i++)
+	  {
+	     Esnprintf(buf2, sizeof(buf2), " %i", (int)(cm->green.px[i]));
+	     strcat(buf, buf2);
+	     Esnprintf(buf2, sizeof(buf2), " %i", (int)(cm->green.py[i]));
+	     strcat(buf, buf2);
+	  }
+	Esnprintf(buf2, sizeof(buf2), "\n%i", (int)(cm->red.num));
+	strcat(buf, buf2);
+	for (i = 0; i < cm->blue.num; i++)
+	  {
+	     Esnprintf(buf2, sizeof(buf2), " %i", (int)(cm->blue.px[i]));
+	     strcat(buf, buf2);
+	     Esnprintf(buf2, sizeof(buf2), " %i", (int)(cm->blue.py[i]));
+	     strcat(buf, buf2);
+	  }
+     }
+   CommsSend(c, buf);
+}
+
+static void
+IPC_ColormodifierSet(const char *params, Client * c __UNUSED__)
+{
+   char                w[FILEPATH_LEN_MAX];
+   ColorModifierClass *cm;
+   int                 i, j, k;
+   char               *name;
+   int                 rnum = 0, gnum = 0, bnum = 0;
+   unsigned char      *rpx = NULL, *rpy = NULL;
+   unsigned char      *gpx = NULL, *gpy = NULL;
+   unsigned char      *bpx = NULL, *bpy = NULL;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", w);
+   cm = (ColorModifierClass *) FindItem(w, 0, LIST_FINDBY_NAME,
+					LIST_TYPE_COLORMODIFIER);
+   name = Estrdup(w);
+   i = 2;
+   word(params, i++, w);
+   rnum = atoi(w);
+   j = 0;
+   rpx = Emalloc(rnum);
+   rpy = Emalloc(rnum);
+   while (j < rnum)
+     {
+	word(params, i++, w);
+	k = atoi(w);
+	rpx[j] = k;
+	word(params, i++, w);
+	k = atoi(w);
+	rpy[j++] = k;
+     }
+   word(params, i++, w);
+   gnum = atoi(w);
+   j = 0;
+   gpx = Emalloc(gnum);
+   gpy = Emalloc(gnum);
+   while (j < gnum)
+     {
+	word(params, i++, w);
+	k = atoi(w);
+	gpx[j] = k;
+	word(params, i++, w);
+	k = atoi(w);
+	gpy[j++] = k;
+     }
+   word(params, i++, w);
+   bnum = atoi(w);
+   j = 0;
+   bpx = Emalloc(bnum);
+   bpy = Emalloc(bnum);
+   while (j < bnum)
+     {
+	word(params, i++, w);
+	k = atoi(w);
+	bpx[j] = k;
+	word(params, i++, w);
+	k = atoi(w);
+	bpy[j++] = k;
+     }
+   if (cm)
+      ModifyCMClass(name, rnum, rpx, rpy, gnum, gpx, gpy, bnum, bpx, bpy);
+   else
+     {
+	cm = CreateCMClass(name, rnum, rpx, rpy, gnum, gpx, gpy, bnum, bpx,
+			   bpy);
+	AddItem(cm, cm->name, 0, LIST_TYPE_COLORMODIFIER);
+     }
+   Efree(name);
+   if (rpx)
+      Efree(rpx);
+   if (rpy)
+      Efree(rpy);
+   if (gpx)
+      Efree(gpx);
+   if (gpy)
+      Efree(gpy);
+   if (bpx)
+      Efree(bpx);
+   if (bpy)
+      Efree(bpy);
+}
+
+static void
+IPC_BackgroundGet(const char *params, Client * c)
+{
+   char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
+   Background         *bg;
+   int                 r, g, b;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", param1);
+
+   Esnprintf(buf, sizeof(buf), "(null)");
+
+   bg = (Background *) FindItem(param1, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BACKGROUND);
+   if (bg)
+     {
+	EGetColor(&(bg->bg_solid), &r, &g, &b);
+	if ((bg->bg.file) && (bg->top.file))
+	   Esnprintf(buf, sizeof(buf),
+		     "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
+		     bg->name, r, g, b, bg->bg.file, bg->bg_tile,
+		     bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
+		     bg->bg.xperc, bg->bg.yperc, bg->top.file,
+		     bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
+		     bg->top.xperc, bg->top.yperc);
+	else if ((!(bg->bg.file)) && (bg->top.file))
+	   Esnprintf(buf, sizeof(buf),
+		     "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
+		     bg->name, r, g, b, "(null)", bg->bg_tile,
+		     bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
+		     bg->bg.xperc, bg->bg.yperc, bg->top.file,
+		     bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
+		     bg->top.xperc, bg->top.yperc);
+	else if ((bg->bg.file) && (!(bg->top.file)))
+	   Esnprintf(buf, sizeof(buf),
+		     "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
+		     bg->name, r, g, b, bg->bg.file, bg->bg_tile,
+		     bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
+		     bg->bg.xperc, bg->bg.yperc, "(null)",
+		     bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
+		     bg->top.xperc, bg->top.yperc);
+	else if ((!(bg->bg.file)) && (!(bg->top.file)))
+	   Esnprintf(buf, sizeof(buf),
+		     "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
+		     bg->name, r, g, b, "(null)", bg->bg_tile,
+		     bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
+		     bg->bg.xperc, bg->bg.yperc, "(null)",
+		     bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
+		     bg->top.xperc, bg->top.yperc);
+     }
+   CommsSend(c, buf);
+}
+
+static void
+IPC_BackgroundSet(const char *params, Client * c __UNUSED__)
+{
+   char                name[FILEPATH_LEN_MAX];
+   Background         *bg;
+   XColor              xclr;
+   int                 i, r, g, b;
+   char                bgf[FILEPATH_LEN_MAX], topf[FILEPATH_LEN_MAX];
+   int                 updated = 0, tile, keep_aspect, tkeep_aspect;
+   int                 xjust, yjust, xperc, yperc;
+   int                 txjust, tyjust, txperc, typerc;
+
+   if (params == NULL)
+      return;
+
+   name[0] = bgf[0] = topf[0] = '\0';
+   r = 99;
+   i = sscanf(params,
+	      "%4000s %i %i %i %4000s %i %i %i %i %i %i %4000s %i %i %i %i %i",
+	      name, &r, &g, &b,
+	      bgf, &tile, &keep_aspect, &xjust, &yjust, &xperc, &yperc,
+	      topf, &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
+   ESetColor(&xclr, r, g, b);
+   bg =
+      (Background *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+   if (bg)
+     {
+	if (xclr.red != bg->bg_solid.red)
+	   updated = 1;
+	if (xclr.green != bg->bg_solid.green)
+	   updated = 1;
+	if (xclr.blue != bg->bg_solid.blue)
+	   updated = 1;
+	bg->bg_solid = xclr;
+
+	if ((bg->bg.file) && (bgf))
+	  {
+	     if (strcmp(bg->bg.file, bgf))
+		updated = 1;
+	  }
+	else
+	   updated = 1;
+	if (bg->bg.file)
+	   Efree(bg->bg.file);
+	bg->bg.file = (bgf[0]) ? Estrdup(bgf) : NULL;
+	if ((int)tile != bg->bg_tile)
+	   updated = 1;
+	if ((int)keep_aspect != bg->bg.keep_aspect)
+	   updated = 1;
+	if (xjust != bg->bg.xjust)
+	   updated = 1;
+	if (yjust != bg->bg.yjust)
+	   updated = 1;
+	if (xperc != bg->bg.xperc)
+	   updated = 1;
+	if (yperc != bg->bg.yperc)
+	   updated = 1;
+	bg->bg_tile = (char)tile;
+	bg->bg.keep_aspect = (char)keep_aspect;
+	bg->bg.xjust = xjust;
+	bg->bg.yjust = yjust;
+	bg->bg.xperc = xperc;
+	bg->bg.yperc = yperc;
+
+	if ((bg->top.file) && (topf))
+	  {
+	     if (strcmp(bg->top.file, topf))
+		updated = 1;
+	  }
+	else
+	   updated = 1;
+	if (bg->top.file)
+	   Efree(bg->top.file);
+	bg->top.file = (topf[0]) ? Estrdup(topf) : NULL;
+	if ((int)tkeep_aspect != bg->top.keep_aspect)
+	   updated = 1;
+	if (txjust != bg->top.xjust)
+	   updated = 1;
+	if (tyjust != bg->top.yjust)
+	   updated = 1;
+	if (txperc != bg->top.xperc)
+	   updated = 1;
+	if (typerc != bg->top.yperc)
+	   updated = 1;
+	bg->top.keep_aspect = (char)tkeep_aspect;
+	bg->top.xjust = txjust;
+	bg->top.yjust = tyjust;
+	bg->top.xperc = txperc;
+	bg->top.yperc = typerc;
+	if (updated)
+	  {
+	     if (bg->pmap)
+		imlib_free_pixmap_and_mask(bg->pmap);
+	     bg->pmap = 0;
+
+	     for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+	       {
+		  if (desks.desk[i].bg == bg)
+		     DesktopSetBg(i, bg, 0);
+	       }
+	  }
+     }
+   else
+     {
+	bg = BackgroundCreate(name, &xclr, bgf, tile, keep_aspect, xjust,
+			      yjust, xperc, yperc, topf, tkeep_aspect,
+			      txjust, tyjust, txperc, typerc);
+     }
+}
+
+static void
+IPC_BackgroundApply(const char *params, Client * c)
+{
+   char                name[FILEPATH_LEN_MAX];
+   Window              win = 0;
+   Background         *bg;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%lx %1000s", &win, name);
+   bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BACKGROUND);
+   if (bg)
+      BackgroundApply(bg, win, 0);
+   CommsSend(c, "done");
+}
+
+static void
+IPC_ControlsSet(const char *s, Client * c __UNUSED__)
+{
+   char                w[FILEPATH_LEN_MAX];
+   int                 wd;
+   int                 a, b;
+   int                 ax, ay;
+   char                dragbar_change = 0;
+
+   wd = 2;
+   w[0] = 0;
+   while (atword(s, wd))
+     {
+	word(s, wd, w);
+	wd++;
+	if (!strcmp(w, "FOCUSMODE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.mode = atoi(w);
+	  }
+	else if (!strcmp(w, "DOCKAPP_SUPPORT:"))
+	  {
+	     word(s, wd, w);
+	     Conf.dock.dirmode = atoi(w);
+	  }
+	else if (!strcmp(w, "DOCKDIRMODE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.dockapp_support = atoi(w);
+	  }
+	else if (!strcmp(w, "ICONDIRMODE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.primaryicondir = atoi(w);
+	  }
+	else if (!strcmp(w, "MOVEMODE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.movemode = atoi(w);
+#if !USE_IMLIB2
+	     if ((prImlib_Context) && (Conf.movemode == 5))
+		Conf.movemode = 3;
+#endif
+	  }
+	else if (!strcmp(w, "RESIZEMODE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.resizemode = atoi(w);
+	     if (Conf.resizemode == 5)
+		Conf.resizemode = 3;
+	  }
+	else if (!strcmp(w, "SLIDEMODE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.slidemode = atoi(w);
+	  }
+	else if (!strcmp(w, "CLEANUPSLIDE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.cleanupslide = atoi(w);
+	  }
+	else if (!strcmp(w, "MAPSLIDE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.mapslide = atoi(w);
+	  }
+	else if (!strcmp(w, "SLIDESPEEDMAP:"))
+	  {
+	     word(s, wd, w);
+	     Conf.slidespeedmap = atoi(w);
+	  }
+	else if (!strcmp(w, "SLIDESPEEDCLEANUP:"))
+	  {
+	     word(s, wd, w);
+	     Conf.slidespeedcleanup = atoi(w);
+	  }
+	else if (!strcmp(w, "SHADESPEED:"))
+	  {
+	     word(s, wd, w);
+	     Conf.shadespeed = atoi(w);
+	  }
+	else if (!strcmp(w, "DESKTOPBGTIMEOUT:"))
+	  {
+	     word(s, wd, w);
+	     Conf.backgrounds.timeout = atoi(w);
+	  }
+	else if (!strcmp(w, "SOUND:"))
+	  {
+	     word(s, wd, w);
+	     Conf.sound = atoi(w);
+	     if (Conf.sound)
+		SoundInit();
+	     else
+		SoundExit();
+	  }
+	else if (!strcmp(w, "BUTTONMOVERESISTANCE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.button_move_resistance = atoi(w);
+	  }
+	else if (!strcmp(w, "AUTOSAVE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.autosave = atoi(w);
+	  }
+	else if (!strcmp(w, "MEMORYPARANOIA:"))
+	  {
+	     word(s, wd, w);
+	     Conf.memory_paranoia = atoi(w);
+	  }
+	else if (!strcmp(w, "MENUSLIDE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.menuslide = atoi(w);
+	  }
+	else if (!strcmp(w, "NUMDESKTOPS:"))
+	  {
+	     word(s, wd, w);
+	     ChangeNumberOfDesktops(atoi(w));
+	  }
+	else if (!strcmp(w, "TOOLTIPS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.tooltips.enable = atoi(w);
+	  }
+	else if (!strcmp(w, "TIPTIME:"))
+	  {
+	     word(s, wd, w);
+	     Conf.tooltips.delay = atof(w);
+	  }
+	else if (!strcmp(w, "AUTORAISE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.autoraise.enable = atoi(w);
+	  }
+	else if (!strcmp(w, "AUTORAISETIME:"))
+	  {
+	     word(s, wd, w);
+	     Conf.autoraise.delay = atof(w);
+	  }
+	else if (!strcmp(w, "DOCKSTARTX:"))
+	  {
+	     word(s, wd, w);
+	     Conf.dock.startx = atoi(w);
+	  }
+	else if (!strcmp(w, "DOCKSTARTY:"))
+	  {
+	     word(s, wd, w);
+	     Conf.dock.starty = atoi(w);
+	  }
+	else if (!strcmp(w, "SAVEUNDER:"))
+	  {
+	     word(s, wd, w);
+	     Conf.save_under = atoi(w);
+	  }
+	else if (!strcmp(w, "DRAGDIR:"))
+	  {
+	     word(s, wd, w);
+	     if (Conf.desks.dragdir != atoi(w))
+		dragbar_change = 1;
+	     Conf.desks.dragdir = atoi(w);
+	  }
+	else if (!strcmp(w, "DRAGBARWIDTH:"))
+	  {
+	     word(s, wd, w);
+	     if (Conf.desks.dragbar_width != atoi(w))
+		dragbar_change = 1;
+	     Conf.desks.dragbar_width = atoi(w);
+	  }
+	else if (!strcmp(w, "DRAGBARORDERING:"))
+	  {
+	     word(s, wd, w);
+	     if (Conf.desks.dragbar_ordering != atoi(w))
+		dragbar_change = 1;
+	     Conf.desks.dragbar_ordering = atoi(w);
+	  }
+	else if (!strcmp(w, "DRAGBARLENGTH:"))
+	  {
+	     word(s, wd, w);
+	     if (Conf.desks.dragbar_length != atoi(w))
+		dragbar_change = 1;
+	     Conf.desks.dragbar_length = atoi(w);
+	  }
+	else if (!strcmp(w, "DESKSLIDEIN:"))
+	  {
+	     word(s, wd, w);
+	     Conf.desks.slidein = atoi(w);
+	  }
+	else if (!strcmp(w, "DESKSLIDESPEED:"))
+	  {
+	     word(s, wd, w);
+	     Conf.desks.slidespeed = atoi(w);
+	  }
+	else if (!strcmp(w, "HIQUALITYBG:"))
+	  {
+	     word(s, wd, w);
+	     Conf.backgrounds.hiquality = atoi(w);
+	  }
+	else if (!strcmp(w, "TRANSIENTSFOLLOWLEADER:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.transientsfollowleader = atoi(w);
+	  }
+	else if (!strcmp(w, "SWITCHFORTRANSIENTMAP:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.switchfortransientmap = atoi(w);
+	  }
+	else if (!strcmp(w, "SHOWICONS:"))
+	  {
+	     /* Obsolete */
+	  }
+	else if (!strcmp(w, "ALL_NEW_WINDOWS_GET_FOCUS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.all_new_windows_get_focus = atoi(w);
+	  }
+	else if (!strcmp(w, "NEW_TRANSIENTS_GET_FOCUS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.new_transients_get_focus = atoi(w);
+	  }
+	else if (!strcmp(w, "NEW_TRANSIENTS_GET_FOCUS_IF_GROUP_FOCUSED:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.new_transients_get_focus_if_group_focused = atoi(w);
+	  }
+	else if (!strcmp(w, "MANUAL_PLACEMENT:"))
+	  {
+	     word(s, wd, w);
+	     Conf.manual_placement = atoi(w);
+	  }
+	else if (!strcmp(w, "MANUAL_PLACEMENT_MOUSE_POINTER:"))
+	  {
+	     word(s, wd, w);
+	     Conf.manual_placement_mouse_pointer = atoi(w);
+	  }
+	else if (!strcmp(w, "RAISE_ON_NEXT_FOCUS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.raise_on_next_focus = atoi(w);
+	  }
+	else if (!strcmp(w, "RAISE_AFTER_NEXT_FOCUS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.raise_after_next_focus = atoi(w);
+	  }
+	else if (!strcmp(w, "DISPLAY_WARP:"))
+	  {
+	     word(s, wd, w);
+	     Conf.warplist.enable = atoi(w);
+	  }
+	else if (!strcmp(w, "WARP_ON_NEXT_FOCUS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.warp_on_next_focus = atoi(w);
+	  }
+	else if (!strcmp(w, "WARP_AFTER_NEXT_FOCUS:"))
+	  {
+	     word(s, wd, w);
+	     Conf.focus.warp_after_next_focus = atoi(w);
+	  }
+	else if (!strcmp(w, "EDGE_FLIP_RESISTANCE:"))
+	  {
+	     word(s, wd, w);
+	     Conf.edge_flip_resistance = atoi(w);
+	     ShowEdgeWindows();
+	  }
+	else if (!strcmp(w, "AREA_SIZE:"))
+	  {
+	     w[0] = 0;
+	     word(s, wd, w);
+	     if (w[0])
+		a = atoi(w);
+	     else
+		a = 0;
+	     wd++;
+	     w[0] = 0;
+	     word(s, wd, w);
+	     if (w[0])
+		b = atoi(w);
+	     else
+		b = 0;
+	     if ((a > 0) && (b > 0))
+		SetAreaSize(a, b);
+	  }
+	wd++;
+     }
+   if (dragbar_change)
+     {
+	Button             *btn;
+
+	while ((btn = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+				 LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+	   ButtonDestroy(btn);
+	InitDesktopControls();
+	ShowDesktopControls();
+     }
+   FocusFix();
+
+   GetAreaSize(&ax, &ay);
+   GetCurrentArea(&a, &b);
+   if (a >= ax)
+     {
+	SetCurrentArea(ax - 1, b);
+	GetCurrentArea(&a, &b);
+     }
+   if (b >= ay)
+      SetCurrentArea(a, ay - 1);
+}
+
+static void
+IPC_ControlsGet(const char *s __UNUSED__, Client * c)
+{
+   char                buf[FILEPATH_LEN_MAX];
+   int                 a, b;
+
+   GetAreaSize(&a, &b);
+   Esnprintf(buf, sizeof(buf),
+	     "FOCUSMODE: %i\n" "DOCKAPP_SUPPORT: %i\n" "DOCKDIRMODE: %i\n"
+	     "ICONDIRMODE: %i\n" "MOVEMODE: %i\n" "RESIZEMODE: %i\n"
+	     "SLIDEMODE: %i\n" "CLEANUPSLIDE: %i\n" "MAPSLIDE: %i\n"
+	     "SLIDESPEEDMAP: %i\n" "SLIDESPEEDCLEANUP: %i\n"
+	     "SHADESPEED: %i\n" "DESKTOPBGTIMEOUT: %i\n" "SOUND: %i\n"
+	     "BUTTONMOVERESISTANCE: %i\n" "AUTOSAVE: %i\n"
+	     "MEMORYPARANOIA: %i\n" "TOOLTIPS: %i\n" "TIPTIME: %f\n"
+	     "AUTORAISE: %i\n" "AUTORAISETIME: %f\n" "DOCKSTARTX: %i\n"
+	     "DOCKSTARTY: %i\n" "SAVEUNDER: %i\n" "MENUSLIDE: %i\n"
+	     "NUMDESKTOPS: %i\n" "DRAGDIR: %i\n" "DRAGBARWIDTH: %i\n"
+	     "DRAGBARORDERING: %i\n" "DRAGBARLENGTH: %i\n"
+	     "DESKSLIDEIN: %i\n" "DESKSLIDESPEED: %i\n" "HIQUALITYBG: %i\n"
+	     "TRANSIENTSFOLLOWLEADER: %i\n" "SWITCHFORTRANSIENTMAP: %i\n"
+	     "AREA_SIZE: %i %i\n"
+	     "ALL_NEW_WINDOWS_GET_FOCUS: %i\n"
+	     "NEW_TRANSIENTS_GET_FOCUS: %i\n"
+	     "NEW_TRANSIENTS_GET_FOCUS_IF_GROUP_FOCUSED: %i\n"
+	     "MANUAL_PLACEMENT: %i\n"
+	     "MANUAL_PLACEMENT_MOUSE_POINTER: %i\n"
+	     "RAISE_ON_NEXT_FOCUS: %i\n" "RAISE_AFTER_NEXT_FOCUS: %i\n"
+	     "DISPLAY_WARP: %i\n" "WARP_ON_NEXT_FOCUS: %i\n"
+	     "WARP_AFTER_NEXT_FOCUS: %i\n" "EDGE_FLIP_RESISTANCE: %i\n",
+	     Conf.focus.mode, Conf.dockapp_support, Conf.dock.dirmode,
+	     Conf.primaryicondir, Conf.movemode, Conf.resizemode,
+	     Conf.slidemode, Conf.cleanupslide, Conf.mapslide,
+	     Conf.slidespeedmap, Conf.slidespeedcleanup, Conf.shadespeed,
+	     Conf.backgrounds.timeout, Conf.sound,
+	     Conf.button_move_resistance, Conf.autosave,
+	     Conf.memory_paranoia, Conf.tooltips.enable,
+	     Conf.tooltips.delay, Conf.autoraise.enable,
+	     Conf.autoraise.delay, Conf.dock.startx, Conf.dock.starty,
+	     Conf.save_under, Conf.menuslide, Conf.desks.num,
+	     Conf.desks.dragdir, Conf.desks.dragbar_width,
+	     Conf.desks.dragbar_ordering, Conf.desks.dragbar_length,
+	     Conf.desks.slidein, Conf.desks.slidespeed,
+	     Conf.backgrounds.hiquality, Conf.focus.transientsfollowleader,
+	     Conf.focus.switchfortransientmap, a, b,
+	     Conf.focus.all_new_windows_get_focus,
+	     Conf.focus.new_transients_get_focus,
+	     Conf.focus.new_transients_get_focus_if_group_focused,
+	     Conf.manual_placement, Conf.manual_placement_mouse_pointer,
+	     Conf.focus.raise_on_next_focus,
+	     Conf.focus.raise_after_next_focus, Conf.warplist.enable,
+	     Conf.focus.warp_on_next_focus,
+	     Conf.focus.warp_after_next_focus, Conf.edge_flip_resistance);
+   CommsSend(c, buf);
+}
+
+static void
+IPC_CallRaw(const char *params, Client * c __UNUSED__)
+{
+   const char         *par;
+   int                 aid;
+
+   if (params == NULL)
+      return;
+
+   aid = -1;
+   sscanf(params, "%i", &aid);
+   par = atword(params, 2);
+   ActionsCall(aid, NULL, par);
+}
+
+#define SS(s) ((s) ? (s) : NoText)
+static const char   NoText[] = "-NONE-";
+
+static void
+EwinShowInfo1(const EWin * ewin)
+{
+   Border              NoBorder, *border;
+
+   border = ewin->border;
+   if (border == NULL)
+     {
+	border = &NoBorder;
+	memset(border, 0, sizeof(Border));
+     }
+
+   IpcPrintf("***CLIENT***\n"
+	     "CLIENT_WIN_ID:          %#10lx\n"
+	     "FRAME_WIN_ID:           %#10lx\n"
+	     "CONTAINER_WIN_ID:       %#10lx\n"
+	     "FRAME_X,Y:              %5i , %5i\n"
+	     "FRAME_WIDTH,HEIGHT:     %5i , %5i\n"
+	     "BORDER_NAME:            %s\n"
+	     "BORDER_BORDER:          %5i , %5i , %5i , %5i\n"
+	     "DESKTOP_NUMBER:         %5i\n"
+	     "MEMBER_OF_GROUPS:       %5i\n"
+	     "DOCKED:                 %5i\n"
+	     "STICKY:                 %5i\n"
+	     "VISIBLE:                %5i\n"
+	     "ICONIFIED:              %5i\n"
+	     "SHADED:                 %5i\n"
+	     "ACTIVE:                 %5i\n"
+	     "LAYER:                  %5i\n"
+	     "NEVER_USE_AREA:         %5i\n"
+	     "FLOATING:               %5i\n"
+	     "CLIENT_WIDTH,HEIGHT:    %5i , %5i\n"
+	     "ICON_WIN_ID:            %#10lx\n"
+	     "ICON_PIXMAP,MASK_ID:    %#10lx , %#10lx\n"
+	     "CLIENT_GROUP_LEADER_ID: %#10lx\n"
+	     "CLIENT_NEEDS_INPUT:     %5i\n"
+	     "TRANSIENT:              %5i\n"
+	     "TITLE:                  %s\n"
+	     "CLASS:                  %s\n"
+	     "NAME:                   %s\n"
+	     "COMMAND:                %s\n"
+	     "MACHINE:                %s\n"
+	     "ICON_NAME:              %s\n"
+	     "IS_GROUP_LEADER:        %5i\n"
+	     "NO_RESIZE_HORIZONTAL:   %5i\n"
+	     "NO_RESIZE_VERTICAL:     %5i\n"
+	     "SHAPED:                 %5i\n"
+	     "MIN_WIDTH,HEIGHT:       %5i , %5i\n"
+	     "MAX_WIDTH,HEIGHT:       %5i , %5i\n"
+	     "BASE_WIDTH,HEIGHT:      %5i , %5i\n"
+	     "WIDTH,HEIGHT_INC:       %5i , %5i\n"
+	     "ASPECT_MIN,MAX:         %5.5f , %5.5f\n"
+	     "MWM_BORDER:             %5i\n"
+	     "MWM_RESIZEH:            %5i\n"
+	     "MWM_TITLE:              %5i\n"
+	     "MWM_MENU:               %5i\n"
+	     "MWM_MINIMIZE:           %5i\n"
+	     "MWM_MAXIMIZE:           %5i\n",
+	     ewin->client.win, ewin->win, ewin->win_container,
+	     ewin->x, ewin->y, ewin->w, ewin->h,
+	     border->name,
+	     border->border.left, border->border.right,
+	     border->border.top, border->border.bottom,
+	     ewin->desktop,
+	     ewin->num_groups, ewin->docked, ewin->sticky,
+	     ewin->visible, ewin->iconified, ewin->shaded,
+	     ewin->active, ewin->layer, ewin->never_use_area,
+	     ewin->floating, ewin->client.w, ewin->client.h,
+	     ewin->client.icon_win,
+	     ewin->client.icon_pmap, ewin->client.icon_mask,
+	     ewin->client.group,
+	     ewin->client.need_input, ewin->client.transient,
+	     SS(ewin->icccm.wm_name), SS(ewin->icccm.wm_res_class),
+	     SS(ewin->icccm.wm_res_name), SS(ewin->icccm.wm_command),
+	     SS(ewin->icccm.wm_machine), SS(ewin->icccm.wm_icon_name),
+	     ewin->client.is_group_leader,
+	     ewin->client.no_resize_h, ewin->client.no_resize_v,
+	     ewin->client.shaped,
+	     ewin->client.width.min, ewin->client.height.min,
+	     ewin->client.width.max, ewin->client.height.max,
+	     ewin->client.base_w, ewin->client.base_h,
+	     ewin->client.w_inc, ewin->client.h_inc,
+	     ewin->client.aspect_min, ewin->client.aspect_max,
+	     ewin->client.mwm_decor_border, ewin->client.mwm_decor_resizeh,
+	     ewin->client.mwm_decor_title, ewin->client.mwm_decor_menu,
+	     ewin->client.mwm_decor_minimize, ewin->client.mwm_decor_maximize);
+}
+
+static void
+EwinShowInfo2(const EWin * ewin)
+{
+   Border              NoBorder, *border;
+
+   border = ewin->border;
+   if (border == NULL)
+     {
+	border = &NoBorder;
+	memset(border, 0, sizeof(Border));
+     }
+
+   IpcPrintf("WM_NAME                 %s\n"
+	     "WM_ICON_NAME            %s\n"
+	     "WM_CLASS name.class     %s.%s\n"
+	     "WM_COMMAND              %s\n"
+	     "WM_CLIENT_MACHINE       %s\n"
+	     "Client window           %#10lx   x,y=%4i,%4i   wxh=%4ix%4i\n"
+	     "Frame window            %#10lx   x,y=%4i,%4i   wxh=%4ix%4i\n"
+	     "Container window        %#10lx\n"
+	     "Border                  %s   lrtb=%3i, %3i, %3i, %3i\n"
+	     "Icon window, pixmap, mask %#10lx, %#10lx, %#10lx\n"
+	     "Is client group leader  %i      Client group leader %#10lx\n"
+	     "Has transients          %i      Transient for %#10lx\n"
+	     "No resize H/V           %i/%i       Shaped      =%i\n"
+	     "Base, min, max, inc w/h %ix%i, %ix%i, %ix%i %ix%i\n"
+	     "Aspect min, max         %5.5f, %5.5f\n"
+	     "MWM border=%i resizeh=%i title=%i menu=%i minimize=%i maximize=%i\n"
+	     "NeedsInput  =%i   FocusNever  =%i   FocusClick  =%i\n"
+	     "NeverUseArea=%i   FixedPos    =%i\n"
+	     "Desktop     =%i   Layer       =%i\n"
+	     "Iconified   =%i   Sticky      =%i   Shaded      =%i   Docked      =%i\n"
+	     "State       =%i   Visible     =%i   Active      =%i   Floating    =%i\n"
+	     "Member of groups        %i\n",
+	     SS(ewin->icccm.wm_name),
+	     SS(ewin->icccm.wm_icon_name),
+	     SS(ewin->icccm.wm_res_name), SS(ewin->icccm.wm_res_class),
+	     SS(ewin->icccm.wm_command),
+	     SS(ewin->icccm.wm_machine),
+	     ewin->client.win,
+	     ewin->client.x, ewin->client.y, ewin->client.w, ewin->client.h,
+	     ewin->win, ewin->x, ewin->y, ewin->w, ewin->h,
+	     ewin->win_container,
+	     border->name,
+	     border->border.left, border->border.right,
+	     border->border.top, border->border.bottom,
+	     ewin->client.icon_win,
+	     ewin->client.icon_pmap, ewin->client.icon_mask,
+	     ewin->client.is_group_leader, ewin->client.group,
+	     ewin->has_transients, ewin->client.transient_for,
+	     ewin->client.no_resize_h, ewin->client.no_resize_v,
+	     ewin->client.shaped,
+	     ewin->client.base_w, ewin->client.base_h,
+	     ewin->client.width.min, ewin->client.height.min,
+	     ewin->client.width.max, ewin->client.height.max,
+	     ewin->client.w_inc, ewin->client.h_inc,
+	     ewin->client.aspect_min, ewin->client.aspect_max,
+	     ewin->client.mwm_decor_border, ewin->client.mwm_decor_resizeh,
+	     ewin->client.mwm_decor_title, ewin->client.mwm_decor_menu,
+	     ewin->client.mwm_decor_minimize, ewin->client.mwm_decor_maximize,
+	     ewin->client.need_input, ewin->neverfocus, ewin->focusclick,
+	     ewin->never_use_area, ewin->fixedpos,
+	     ewin->desktop, ewin->layer,
+	     ewin->iconified, ewin->sticky, ewin->shaded, ewin->docked,
+	     ewin->state, ewin->visible, ewin->active, ewin->floating,
+	     ewin->num_groups);
+}
+
+static void
+IPC_EwinInfo(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX];
+   EWin               *ewin;
+   unsigned int        win;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", param1);
+
+   if (!strcmp(param1, "all"))
+     {
+	EWin               *const *lst;
+	int                 i, num;
+
+	lst = EwinListGetAll(&num);
+	for (i = 0; i < num; i++)
+	   EwinShowInfo1(lst[i]);
+     }
+   else
+     {
+	sscanf(params, "%8x", &win);
+	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin)
+	  {
+	     EwinShowInfo1(ewin);
+	  }
+	else
+	  {
+	     IpcPrintf("No matching EWin found\n");
+	  }
+     }
+}
+
+static void
+IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX];
+   EWin               *ewin;
+   unsigned int        win;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%1000s", param1);
+
+   if (!strcmp(param1, "all"))
+     {
+	EWin               *const *lst;
+	int                 i, num;
+
+	lst = EwinListGetAll(&num);
+	for (i = 0; i < num; i++)
+	   EwinShowInfo2(lst[i]);
+     }
+   else
+     {
+	sscanf(params, "%8x", &win);
+	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin)
+	  {
+	     EwinShowInfo2(ewin);
+	  }
+	else
+	  {
+	     IpcPrintf("No matching EWin found\n");
+	  }
+     }
+}
+
+static void
+IPC_MiscInfo(const char *params __UNUSED__, Client * c)
+{
+   char                buf[FILEPATH_LEN_MAX];
+   char                buf3[FILEPATH_LEN_MAX];
+
+   Esnprintf(buf, sizeof(buf), "stuff:\n");
+   if (Mode.focuswin)
+     {
+	Esnprintf(buf3, sizeof(buf3), "mode.focuswin - %8x\n",
+		  (unsigned)Mode.focuswin->client.win);
+	strcat(buf, buf3);
+     }
+   if (Mode.cur_menu_mode)
+     {
+	strcat(buf, "cur_menu_mode is set\n");
+     }
+   CommsSend(c, buf);
+}
+
+/* the IPC Array */
+
+/* the format of an IPC member of the IPC array is as follows:
+ * {
+ *    NameOfMyFunction,
+ *    "command_name",
+ *    "quick-help explanation",
+ *    "extended help data"
+ *    "may go on for several lines, be sure\n"
+ *    "to add line feeds when you need them and to \"quote\"\n"
+ *    "properly"
+ * }
+ *
+ * when you add a function into this array, make sure you also add it into
+ * the declarations above and also put the function in this file.  PLEASE
+ * if you add a new function in, add help to it also.  since my end goal
+ * is going to be to have this whole IPC usable by an end-user or to your
+ * scripter, it should be easy to learn to use without having to crack
+ * open the source code.
+ * --Mandrake
+ */
+static void         IPC_Help(const char *params, Client * c);
+
+IPCStruct           IPCArray[] = {
+   {
+    IPC_Help,
+    "help", "?",
+    "gives you this help screen",
+    "Additional parameters will retrieve help on many topics - "
+    "\"help <command>\".\nuse \"help all\" for a list of commands."},
+   {
+    IPC_Version,
+    "version", "ver",
+    "displays the current version of Enlightenment running",
+    NULL},
+   {
+    IPC_Nop,
+    "nop", NULL,
+    "IPC No-operation - returns nop",
+    NULL},
+   {
+    IPC_Copyright,
+    "copyright", NULL,
+    "displays copyright information for Enlightenment",
+    NULL},
+   {
+    IPC_AutoSave,
+    "autosave", NULL,
+    "toggle the Automatic Saving Feature",
+    "Use \"autosave ?\" to list the current status\n"
+    "use \"autosave on\" or \"autosave off\" to toggle the status"},
+   {
+    IPC_DefaultTheme,
+    "default_theme", NULL,
+    "toggle the default theme",
+    "Use \"default_theme ?\" to get the current default theme\n"
+    "use \"default_theme /path/to/theme\"\n"
+    "you can retrieve a list of available themes from the "
+    "\"list_themes\" command"},
+   {
+    IPC_Restart,
+    "restart", NULL,
+    "Restart Enlightenment",
+    NULL},
+   {
+    IPC_RestartWM,
+    "restart_wm", NULL,
+    "Restart another window manager",
+    "Use \"restart_wm <wmname>\" to start another window manager.\n"
+    "Example: \"restart_wm fvwm\""},
+   {
+    IPC_RestartTheme,
+    "restart_theme", NULL,
+    "Restart with another theme",
+    "Use \"restart_theme <themename>\" to restart enlightenment "
+    "with another theme\nExample: \"restart_theme icE\""},
+   {
+    IPC_Exit,
+    "exit", "q",
+    "Exit Enlightenment",
+    NULL},
+   {
+    IPC_ForceSave,
+    "save_config", "s",
+    "Force Enlightenment to save settings now",
+    NULL},
+   {
+    IPC_SMFile,
+    "sm_file", NULL,
+    "Change the default prefix used for session saves",
+    "Average users are encouraged not to touch this setting.\n"
+    "Use \"sm_file ?\" to retrieve the current session management "
+    "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
+    "to change."},
+   {
+    IPC_ListThemes,
+    "list_themes", "tl",
+    "List currently available themes",
+    NULL},
+   {
+    IPC_GotoDesktop,
+    "goto_desktop", "sd",
+    "Change currently active destkop",
+    "Use \"goto_desktop num\" to go to a specific desktop.\n"
+    "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
+    "the next and\n     previous desktop\n"
+    "Use \"goto_desktop ?\" to find out what desktop you are " "currently on"},
+   {
+    IPC_GotoArea,
+    "goto_area", "sa",
+    "Change currently active area",
+    "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
+    "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
+    "prev <vert/horiz>\" to go to the next and\n     "
+    "previous areas\nUse \"goto_area ?\" to find out what area "
+    "you are currently on"},
+   {
+    IPC_ShowIcons,
+    "show_icons", NULL,
+    "Obsolete - Toggle the display of icons on the desktop",
+    "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
+    "Use \"show_icons ?\" to retrieve the current setting"},
+   {
+    IPC_FocusMode,
+    "focus_mode", "sf",
+    "Change the current focus mode setting",
+    "Use \"focus_mode <mode>\" to change the focus mode.\n"
+    "Use \"focus_mode ?\" to retrieve the current setting\n" "Focus Types:\n"
+    "click: This is the traditional click-to-focus mode.\n"
+    "clicknograb: This is a similar focus mode, but without the "
+    "grabbing of the click\n    "
+    "(you cannot click anywhere in a window to focus it)\n"
+    "pointer: The focus will follow the mouse pointer\n"
+    "sloppy: in sloppy-focus, the focus follows the mouse, "
+    "but when over\n    "
+    "the desktop background the last window does not lose the focus"},
+   {
+    IPC_AdvancedFocus,
+    "advanced_focus", "sfa",
+    "Toggle Advanced Focus Settings",
+    "use \"advanced_focus <option> <on/off/?>\" to change.\n"
+    "the options you may set are:\n"
+    "new_window_focus : all new windows get the keyboard focus\n"
+    "new_popup_window_focus : all new transient windows get focus\n"
+    "new_popup_of_owner_focus : transient windows from apps that have\n"
+    "   focus already may receive focus\n"
+    "raise_on_keyboard_focus_switch: Raise windows when switching focus\n"
+    "   with the keyboard\n"
+    "raise_after_keyboard_focus_switch: Raise windows after switching "
+    "focus\n" "   with the keyboard\n"
+    "pointer_to_keyboard_focus_window: Send the pointer to the focused\n"
+    "   window when changing focus with the keyboard\n"
+    "pointer_after_keyboard_focus_window: Send the pointer to the " "focused\n"
+    "   window after changing focus with the keyboard\n"
+    "transients_follow_leader: popup windows appear together with the\n"
+    "   window that created them.\n"
+    "switch_to_popup_location: switch to where a popup window appears\n"
+    "focus_list: display and use focus list (requires XKB)\n"
+    "manual_placement: place all new windows by hand\n"
+    "manual_placement_mouse_pointer: place all new windows under mouse pointer"},
+   {
+    IPC_NumDesks,
+    "num_desks", "snd",
+    "Change the number of available desktops",
+    "Use \"num_desks <num>\" to change the available number of desktops.\n"
+    "Use \"num_desks ?\" to retrieve the current setting"},
+   {
+    IPC_NumAreas,
+    "num_areas", "sna",
+    "Change the size of the virtual desktop",
+    "Use \"num_areas <width> <height>\" to change the size of the "
+    "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
+    "virtual destkops\nUse \"num_areas ?\" to retrieve the " "current setting"},
+   {
+    IPC_WinOps,
+    "win_op", "wop",
+    "Change a property of a specific window",
+    "Use \"win_op <windowid> <property> <value>\" to change the "
+    "property of a window\nYou can use the \"window_list\" "
+    "command to retrieve a list of available windows\n"
+    "You can use ? after most of these commands to receive the current\n"
+    "status of that flag\n"
+    "available win_op commands are:\n"
+    "  win_op <windowid> <close/annihilate>\n"
+    "  win_op <windowid> <iconify/shade/stick>\n"
+    "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
+    "          (or none for absolute)\n"
+    "  win_op <windowid> border <BORDERNAME>\n"
+    "  win_op <windowid> desk <desktochangeto/next/prev>\n"
+    "  win_op <windowid> area <x> <y>\n"
+    "  win_op <windowid> <raise/lower>\n"
+    "  win_op <windowid> <move/resize> <x> <y>\n"
+    "          (you can use ? and ?? to retreive client and frame locations)\n"
+    "  win_op <windowid> focus\n"
+    "  win_op <windowid> title <title>\n"
+    "  win_op <windowid> layer <0-100,4=normal>\n"
+    "  win_op <windowid> <fixedpos/never_use_area/focusclick/neverfocus>\n"
+    "<windowid> may be substituted with \"current\" to use the current window"},
+   {
+    IPC_WinList,
+    "window_list", "wl",
+    "Get a list of currently open windows",
+    "the list will be returned in the following "
+    "format - \"window_id : title\"\n"
+    "you can get an extended list using \"window_list extended\"\n"
+    "returns the following format:\n\"window_id : title :: "
+    "desktop : area_x area_y : x_coordinate y_coordinate\""},
+   {
+    IPC_ButtonShow,
+    "button_show", NULL,
+    "Show or Hide buttons on desktop",
+    "use \"button_show <button/buttons/all_buttons_except/all> "
+    "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
+    "(removes all buttons and the dragbar)\n\"button_show\" "
+    "(removes all buttons)\n \"button_show buttons CONFIG*\" "
+    "(removes all buttons with CONFIG in the start)"},
+   {
+    IPC_FX,
+    "fx", NULL,
+    "Toggle various effects on/off",
+    "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
+    "Use \"fx <effect> ?\" to get the current mode\n"
+    "the following effects are available\n"
+    "ripples <on/off> (ripples that act as a water effect on the screen)\n"
+    "deskslide <on/off> (slide in desktops on desktop change)\n"
+    "mapslide <on/off> (slide in new windows)\n"
+    "raindrops <on/off> (raindrops will appear across your desktop)\n"
+    "menu_animate <on/off> (toggles the animation of menus "
+    "as they appear)\n"
+    "animate_win_shading <on/off> (toggles the animation of "
+    "window shading)\n"
+    "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
+    "dragbar <on/off/left/right/top/bottom> (changes " "location of dragbar)\n"
+    "tooltips <on/off/#> (changes state of tooltips and "
+    "seconds till popup)\n"
+    "autoraise <on/off/#> (changes state of autoraise and "
+    "seconds till raise)\n"
+    "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
+    "   of time to push for resistance to give)\n"
+    "edge_snap_resistance <#/?> (changes the number of pixels that "
+    "a window will\n   resist moving against another window\n"
+    "audio <on/off> (changes state of audio)\n"
+    "-  seconds for tooltips and autoraise can have less than one second\n"
+    "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
+   {
+    IPC_DockConfig,
+    "dock", NULL,
+    "Enable/Disable dock, or change dock position and direction",
+    "use \"dock support <on/off/?>\" to test, enable, or disable the dock\n"
+    "use \"dock direction <up/down/left/right/?>\" to set or "
+    "test direction\n"
+    "use \"dock start_pos ?\" to test the starting x y coords\n"
+    "use \"dock start_pos x y\" to set the starting x y coords"},
+   {
+    IPC_MoveMode,
+    "move_mode", "smm",
+    "Toggle the Window move mode",
+    "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
+    "to set\nuse \"move_mode ?\" to get the current mode"},
+   {
+    IPC_ResizeMode,
+    "resize_mode", "srm",
+    "Toggle the Window resize mode",
+    "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
+    "to set\nuse \"resize_mode ?\" to get the current mode"},
+   {
+    IPC_GeomInfoMode,
+    "geominfo_mode", "sgm",
+    "Change position of geometry info display during Window move or resize",
+    "use \"geominfo_mode <center/corner/never>\" "
+    "to set\nuse \"geominfo_mode ?\" to get the current mode"},
+   {
+    IPC_Pager,
+    "pager", NULL,
+    "Toggle the status of the Pager and various pager settings",
+    "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
+    "to get the current mode\n"
+    "use \"pager <#> <on/off/?>\" to toggle or test any desktop's pager\n"
+    "use \"pager hiq <on/off>\" to toggle high quality pager\n"
+    "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
+    "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
+    "use \"pager title <on/off>\" to toggle title display in the pager\n"
+    "use \"pager scanrate <#>\" to toggle number of line update " "per second"},
+   {
+    IPC_InternalList,
+    "internal_list", "il",
+    "Retrieve a list of internal items",
+    "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
+    "to retrieve a list of various internal window types.\n"
+    "(note that listing internal_ewin  doesn't retrieve "
+    "dialogs currently)\n"},
+   {
+    IPC_SetFocus,
+    "set_focus", "wf",
+    "Set/Retrieve focused window",
+    "use \"set_focus <win_id>\" to focus a new window\n"
+    "use \"set_focus ?\" to retrieve the currently focused window"},
+   {
+    IPC_DialogOK,
+    "dialog_ok", "dok",
+    "Pop up a dialog box with an OK button",
+    "use \"dialog_ok <message>\" to pop up a dialog box."},
+   {
+    IPC_ListClassMembers,
+    "list_class", "cl",
+    "List all members of a class",
+    "use \"list_class <classname>\" to get back a list of class members\n"
+    "available classes are:\n" "sounds\n" "actions\n" "backgrounds\n"
+    "borders\n" "text\n" "images\n" "cursors\n" "buttons"},
+   {
+    IPC_PlaySoundClass,
+    "play_sound", "ps",
+    "Plays a soundclass via E",
+    "use \"play_sound <soundclass>\" to play a sound.\n"
+    "use \"list_class sounds\" to get a list of available sounds"},
+   {
+    IPC_SoundClass,
+    "soundclass", NULL,
+    "Create/Delete soundclasses",
+    "use \"soundclass create <classname> <filename>\" to create\n"
+    "use \"soundclass delete <classname>\" to delete"},
+   {
+    IPC_ImageClass,
+    "imageclass", NULL,
+    "Create/delete/modify/apply an ImageClass",
+    "This doesn't do anything yet."},
+   {
+    IPC_ActionClass,
+    "actionclass", NULL,
+    "Create/Delete/Modify an ActionClass",
+    "This doesn't do anything yet."},
+   {
+    IPC_ColorModifierClass,
+    "colormod", NULL,
+    "Create/Delete/Modify a ColorModifierClass",
+    "This doesn't do anything yet."},
+   {
+    IPC_TextClass,
+    "textclass", NULL,
+    "Create/Delete/Modify/apply a TextClass",
+    "This doesn't do anything yet."},
+   {
+    IPC_Background,
+    "background", NULL,
+    "Create/Delete/Modify a Background",
+    "use \"background\" to list all defined backgrounds.\n"
+    "use \"background <name>\" to delete a background.\n"
+    "use \"background <name> ?\" to show current values.\n"
+    "use \"background <name> <type> <value> to create / modify.\n"
+    "(get available types from \"background <name> ?\"."},
+   {
+    IPC_Border,
+    "border", NULL,
+    "Create/Delete/Modify a Border",
+    "This doesn't do anything yet."},
+   {
+    IPC_Cursor,
+    "cursor", NULL,
+    "Create/Delete/Modify a Cursor",
+    "This doesn't do anything yet."},
+   {
+    IPC_Button,
+    "button", NULL,
+    "Create/Delete/Modify a Button",
+    "This doesn't do anything yet."},
+   {
+    IPC_GeneralInfo,
+    "general_info", NULL,
+    "Retrieve some general information",
+    "use \"general_info <info>\" to retrieve information\n"
+    "available info is: screen_size"},
+   {
+    IPC_ReloadMenus,
+    "reload_menus", NULL,
+    "Reload menus.cfg without restarting (Asmodean_)",
+    NULL},
+   {
+    IPC_GroupInfo,
+    "group_info", "gl",
+    "Retrieve some info on groups",
+    "use \"group_info [group_index]\""},
+   {
+    IPC_GroupOps,
+    "group_op", "gop",
+    "Group operations",
+    "use \"group_op <windowid> <property> [<value>]\" to perform "
+    "group operations on a window.\n" "Available group_op commands are:\n"
+    "  group_op <windowid> start\n"
+    "  group_op <windowid> add [<group_index>]\n"
+    "  group_op <windowid> remove [<group_index>]\n"
+    "  group_op <windowid> break [<group_index>]\n"
+    "  group_op <windowid> showhide\n"},
+   {
+    IPC_Group,
+    "group", "gc",
+    "Group commands",
+    "use \"group <groupid> <property> <value>\" to set group properties.\n"
+    "Available group commands are:\n"
+    "  group <groupid> num_members <on/off/?>\n"
+    "  group <groupid> iconify <on/off/?>\n"
+    "  group <groupid> kill <on/off/?>\n" "  group <groupid> move <on/off/?>\n"
+    "  group <groupid> raise <on/off/?>\n"
+    "  group <groupid> set_border <on/off/?>\n"
+    "  group <groupid> stick <on/off/?>\n"
+    "  group <groupid> shade <on/off/?>\n"
+    "  group <groupid> mirror <on/off/?>\n"},
+   {
+    IPC_MemDebug,
+    "dump_mem_debug", NULL,
+    "Dumps memory debugging information out to e.mem.out",
+    "Use this command to have E dump its current memory debugging table\n"
+    "to the e.mem.out file. NOTE: please read comments at the top of\n"
+    "memory.c to see how to enable this. This will let you hunt memory\n"
+    "leaks, over-allocations of memory, and other " "memory-related problems\n"
+    "very easily with all pointers allocated stamped with a time, call\n"
+    "tree that led to that allocation, file and line, "
+    "and the chunk size.\n"},
+   {
+    IPC_Remember,
+    "remember", NULL,
+    "Remembers parameters for client window ID x",
+    "usage:\n" "  remember <windowid> <parameter>...\n"
+    "  where parameter is one of: all, none, border, desktop, size,\n"
+    "  location, layer, sticky, icon, shade, group, dialog, command\n"
+    "  Multiple parameters may be given."},
+   {
+    IPC_CurrentTheme,
+    "current_theme", "tc",
+    "Returns the name of the currently used theme",
+    NULL},
+   {
+    IPC_Xinerama,
+    "xinerama", NULL,
+    "return xinerama information about your current system",
+    NULL},
+   {
+    IPC_ConfigPanel,
+    "configpanel", NULL,
+    "open up a config window",
+    "usage:\n" "  configpanel <panelname>\n"
+    "  where panelname is one of the following: focus, moveresize,\n"
+    "  desktops, area, placement, icons, autoraise, tooltips,\n"
+    "  audio, fx, bg, group_defaults, remember"},
+   {
+    IPC_RememberList,
+    "list_remember", "rl",
+    "Retrieve a list of remembered windows and their attributes",
+    "usage:\n" "  list_remember [full]\n"
+    "  Retrieve a list of remembered windows.  with full, the list\n"
+    "  includes the window's remembered attributes."},
+   {
+    IPC_Hints,
+    "hints", NULL,
+    "Set hint options",
+    "usage:\n" "  hints xroot <normal/root>"},
+   {
+    IPC_Debug,
+    "debug", NULL,
+    "Set debug options",
+    "usage:\n" "  debug events <EvNo>:<EvNo>..."},
+   {
+    IPC_ClientSet, "set", NULL, "Set client parameters", NULL},
+   {
+    IPC_Reply, "reply", NULL, "TBD", NULL},
+   {
+    IPC_ThemeGet, "get_default_theme", NULL, "TBD", NULL},
+   {
+    IPC_ThemeSet, "set_default_theme", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundsList, "list_bg", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundDestroy, "del_bg", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundUse, "use_bg", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundUseNone, "use_no_bg", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundUsed, "uses_bg", NULL, "TBD", NULL},
+   {
+    IPC_KeybindingsGet, "get_keybindings", NULL, "TBD", NULL},
+   {
+    IPC_KeybindingsSet, "set_keybindings", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundColormodifierSet, "set_bg_colmod", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundColormodifierGet, "get_bg_colmod", NULL, "TBD", NULL},
+   {
+    IPC_ColormodifierDelete, "del_colmod", NULL, "TBD", NULL},
+   {
+    IPC_ColormodifierGet, "get_colmod", NULL, "TBD", NULL},
+   {
+    IPC_ColormodifierSet, "set_colmod", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundGet, "get_bg", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundSet, "set_bg", NULL, "TBD", NULL},
+   {
+    IPC_BackgroundApply, "draw_bg_to", NULL, "TBD", NULL},
+   {
+    IPC_ControlsSet, "set_controls", NULL, "TBD", NULL},
+   {
+    IPC_ControlsGet, "get_controls", NULL, "TBD", NULL},
+   {
+    IPC_CallRaw, "call_raw", NULL, "TBD", NULL},
+   {
+    IPC_EwinInfo, "get_client_info", NULL, "Show client window info", NULL},
+   {
+    IPC_EwinInfo2, "win_info", "wi", "Show client window info", NULL},
+   {
+    IPC_MiscInfo, "dump_info", NULL, "TBD", NULL},
+};
+
+/* The IPC Handler */
+/* this is the function that actually loops through the IPC array
+ * and finds the command that you were trying to run, and then executes it.
+ * you shouldn't have to touch this function
+ * - Mandrake
+ */
+int
+HandleIPC(const char *params, Client * c)
+{
+   int                 i;
+   int                 numIPC;
+   char                w[FILEPATH_LEN_MAX];
+   IPCStruct          *ipc;
+
+   IpcPrintInit();
+
+   word(params, 1, w);
+
+   numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
+   for (i = 0; i < numIPC; i++)
+     {
+	ipc = &IPCArray[i];
+	if (!strcmp(w, ipc->commandname) ||
+	    (ipc->nick && !strcmp(w, ipc->nick)))
+	  {
+	     word(params, 2, w);
+	     if (w)
+		ipc->func(atword(params, 2), c);
+	     else
+		ipc->func(NULL, c);
+
+	     IpcPrintFlush(c);
+	     return 1;
+	  }
+     }
+
+   return 0;
+}
+
+static int
+ipccmp(void *p1, void *p2)
+{
+   return strcmp(((IPCStruct *) p1)->commandname,
+		 ((IPCStruct *) p2)->commandname);
+}
+
+static void
+IPC_Help(const char *params, Client * c)
+{
+   char                buf[FILEPATH_LEN_MAX];
+   char                buf2[FILEPATH_LEN_MAX];
+   int                 i, l, numIPC;
+   IPCStruct         **lst, *ipc;
+
+   buf[0] = 0;
+   buf2[0] = 0;
+   numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
+
+   Esnprintf(buf, sizeof(buf), _("Enlightenment IPC Commands Help"));
+
+   if (!params)
+     {
+	strcat(buf, _("\ncommands currently available:\n"));
+	strcat(buf,
+	       _("use \"help all\" for descriptions of each command\n"
+		 "use \"help <command>\" for an individual description\n\n"));
+
+	lst = (IPCStruct **) Emalloc(numIPC * sizeof(IPCStruct *));
+
+	for (i = 0; i < numIPC; i++)
+	   lst[i] = &IPCArray[i];
+
+	Quicksort((void **)lst, 0, numIPC - 1, ipccmp);
+
+	l = strlen(buf);
+	for (i = 0; i < numIPC; i++)
+	  {
+	     ipc = lst[i];
+	     l += sprintf(buf + l, "  %-16s %-3s  ", ipc->commandname,
+			  (ipc->nick) ? ipc->nick : "");
+	     if ((i % 3) == 2)
+		l += sprintf(buf + l, "\n");
+	  }
+	if (i % 3)
+	   l += sprintf(buf + l, "\n");
+
+	Efree(lst);
+     }
+   else
+     {
+	if (!strcmp(params, "all"))
+	  {
+	     strcat(buf, _("\ncommands currently available:\n"));
+	     strcat(buf,
+		    _("use \"help <command>\" "
+		      "for an individual description\n"));
+	     strcat(buf, _("      <command>   : <description>\n"));
+
+	     l = strlen(buf);
+	     for (i = 0; i < numIPC; i++)
+	       {
+		  ipc = &IPCArray[i];
+
+		  if (ipc->nick)
+		     sprintf(buf2, "%s", ipc->nick);
+		  else
+		     buf2[0] = '\0';
+
+		  l += sprintf(buf + l, "%14s %3s: %s\n",
+			       ipc->commandname, buf2, ipc->help_text);
+	       }
+	  }
+	else
+	  {
+	     l = strlen(buf);
+	     for (i = 0; i < numIPC; i++)
+	       {
+		  ipc = &IPCArray[i];
+		  if (strcmp(params, ipc->commandname) &&
+		      (ipc->nick == NULL || strcmp(params, ipc->nick)))
+		     continue;
+
+		  if (ipc->nick)
+		     sprintf(buf2, " (%s)", ipc->nick);
+		  else
+		     buf2[0] = '\0';
+
+		  l += sprintf(buf + l,
+			       " : %s%s\n--------------------------------\n%s\n",
+			       ipc->commandname, buf2, ipc->help_text);
+		  if (ipc->extended_help_text)
+		     l += sprintf(buf + l, "%s\n", ipc->extended_help_text);
+	       }
+	  }
+     }
+
+   if (buf)
+      CommsSend(c, buf);
 }

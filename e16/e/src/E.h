@@ -845,8 +845,7 @@ typedef struct _winclient
    int                 x, y, w, h, bw;
    Colormap            cmap;
    Window              icon_win;
-   Pixmap              icon_pmap;
-   Pixmap              icon_mask;
+   Pixmap              icon_pmap, icon_mask;
    char                start_iconified;
    Window              group;
    Window              client_leader;
@@ -874,7 +873,6 @@ typedef struct _winclient
    char                mwm_func_minimize;
    char                mwm_func_maximize;
    char                mwm_func_close;
-   unsigned int        app_state;
    long                event_mask;
 }
 WinClient;
