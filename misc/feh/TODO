@@ -30,3 +30,6 @@ o Montage mode
 o Menu.
   Need to create a right-click menu for doing stuff with. Maybe I'll steal
   the menu code from Eterm ;-)
+
+o Slideshow mode
+  Move to next image on timer. User-defined interval. (Pinch DoIn from e ;)

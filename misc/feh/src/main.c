@@ -77,6 +77,11 @@ main_loop (void)
 	    case Expose:
 	      D (("Received Expose event\n"));
 	      break;
+	    case KeyPress:
+	      D (("Received KeyPress event\n"));
+	      if (opt.slideshow)
+		handle_keypress_event (&ev, ev.xkey.window);
+	      break;
 	    case ButtonPress:
 	      D (("Received ButtonPress event\n"));
 	      switch (ev.xbutton.button)
@@ -87,7 +92,7 @@ main_loop (void)
 		    {
 		      winwid = winwidget_get_from_window (ev.xbutton.window);
 		      if (winwid != NULL)
-			slideshow_next_image (winwid);
+			slideshow_change_image (winwid, SLIDE_NEXT);
 		    }
 		  break;
 		case 2:

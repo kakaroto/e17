@@ -51,9 +51,25 @@ init_slideshow_mode (void)
 }
 
 void
-slideshow_next_image (winwidget winwid)
+slideshow_change_image (winwidget winwid, int change)
 {
   int i;
+  int success = 0;
+
+  /* Ok. I do this in such an odd way to ensure that if the last or first
+   * image is not loadable, it will go through in the right direction to
+   * find the correct one. Otherwise SLIDE_LAST would try the last file,
+   * then loop forward to find a loadable one. */
+  if (change == SLIDE_FIRST)
+    {
+      opt.cur_slide = file_num - 1;
+      change = SLIDE_NEXT;
+    }
+  else if (change == SLIDE_LAST)
+    {
+      opt.cur_slide = 0;
+      change = SLIDE_PREV;
+    }
 
   /* The for loop prevents us looping infinitely */
   for (i = 0; i < file_num; i++)
@@ -65,17 +81,19 @@ slideshow_next_image (winwidget winwid)
 	  imlib_context_set_image (winwid->im);
 	  imlib_free_image_and_decache ();
 	}
-
-      opt.cur_slide++;
-      if (opt.cur_slide >= file_num)
+      if (change == SLIDE_NEXT)
 	{
-	  opt.cur_slide = 0;
-	  /* If we keep images in cache, we need to uncomment the next
-	   * line */
-	  /* Been through them all, so they are cached. Cached images
-	   * don't call the progress callback function */
-	  /* opt.progressive=0; */
+	  opt.cur_slide++;
+	  if (opt.cur_slide >= file_num)
+	    opt.cur_slide = 0;
 	}
+      else if (change == SLIDE_PREV)
+	{
+	  opt.cur_slide--;
+	  if (opt.cur_slide < 0)
+	    opt.cur_slide = file_num - 1;
+	}
+
       D (("file_num %d, currently %d\n", file_num, opt.cur_slide));
       if (opt.progressive)
 	{
@@ -86,10 +104,10 @@ slideshow_next_image (winwidget winwid)
 	  winwid->im_h = 0;
 	  winwid->w = 0;
 	  winwid->h = 0;
-	  D (("Setting stuff to zero\n"));
 	}
       if ((feh_load_image (&(winwid->im), files[opt.cur_slide])) != 0)
 	{
+	  success = 1;
 	  winwid->zoom_mode = 0;
 	  winwid->zoom = 0.0;
 	  if (!opt.progressive)
@@ -109,6 +127,13 @@ slideshow_next_image (winwidget winwid)
 	  break;
 	}
     }
+  if (!success)
+    {
+      /* We didn't manage to load any files. Maybe the last one in the
+       * show was deleted? */
+      fprintf (stderr, PACKAGE " - No more slides in show\n");
+      exit (0);
+    }
 }
 
 char *
@@ -123,4 +148,67 @@ slideshow_create_name (char *filename)
     }
   snprintf (s, len, PACKAGE " [slideshow mode] - %s", filename);
   return s;
+}
+
+void
+handle_keypress_event (XEvent * ev, Window win)
+{
+  int len;
+  static char kbuf[20];
+  KeySym keysym;
+  XKeyEvent *kev;
+  winwidget winwid = NULL;
+
+  D (("In handle_keypress_event\n"));
+
+  winwid = winwidget_get_from_window (win);
+  if (winwid == NULL)
+    return;
+
+  kev = (XKeyEvent *) ev;
+  len =
+    XLookupString (&ev->xkey, (char *) kbuf, sizeof (kbuf), &keysym, NULL);
+
+  switch (keysym)
+    {
+    case XK_Left:
+      slideshow_change_image (winwid, SLIDE_PREV);
+      break;
+    case XK_Right:
+      slideshow_change_image (winwid, SLIDE_NEXT);
+      break;
+    case XK_Delete:
+      /* I could do with some confirmation here */
+      unlink (files[opt.cur_slide]);
+      files[opt.cur_slide]=NULL;
+      slideshow_change_image (winwid, SLIDE_NEXT);
+      break;
+    case XK_Home:
+    case XK_KP_Home:
+      slideshow_change_image (winwid, SLIDE_FIRST);
+      break;
+    case XK_End:
+    case XK_KP_End:
+      slideshow_change_image (winwid, SLIDE_LAST);
+      break;
+    default:
+      break;
+    }
+
+  if (len <= 0 || len > (int) sizeof (kbuf))
+    return;
+
+  kbuf[len] = '\0';
+  if (*kbuf == 'n' || *kbuf == 'N' || *kbuf == ' ')
+    {
+      slideshow_change_image (winwid, SLIDE_NEXT);
+    }
+  else if (*kbuf == 'p' || *kbuf == 'P' || *kbuf == '\b')
+    {
+      slideshow_change_image (winwid, SLIDE_PREV);
+    }
+  else if (*kbuf == 'q' || *kbuf == 'Q')
+    {
+      winwidget_destroy_all ();
+    }
 }

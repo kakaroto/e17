@@ -1,3 +1,16 @@
+Sun Dec 19 18:55:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Slideshow mode now has keyboard control ::)
+	Mouse button 1 still changes slides, but you now have:
+	p, P, <BACKSPACE>, <LEFT>  Goto previous slide
+	n, N, <SPACE>, <RIGHT>     Goto next slide
+	<HOME>                     Goto first slide
+	<END>                      Goto last slide
+	<DELETE>                   Delete the file currently being viewed
+	q, Q                       Quit the slideshow
+
+	More to come.
+
 Sun Dec 19 15:43:07 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Big performance improvements in the main loop. Squashed another

@@ -23,6 +23,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/Xos.h>
+#include <X11/keysym.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -55,6 +56,9 @@ enum winwidget_type
 { WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
   WINWIDGET_INDEX_IMAGE
 };
+
+enum slide_change
+{ SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST };
 
 struct __winwidget
 {
@@ -123,9 +127,10 @@ void init_slideshow_mode (void);
 int feh_load_image (Imlib_Image ** im, char *filename);
 void add_file_to_filelist_recursively (char *path, unsigned char enough);
 void show_mini_usage (void);
-void slideshow_next_image (winwidget winwid);
+void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);
 char *chop_file_from_full_path (char *str);
+void handle_keypress_event (XEvent * ev, Window win);
 
 int winwidget_loadimage (winwidget winwid, char *filename);
 void winwidget_show (winwidget winwid);
