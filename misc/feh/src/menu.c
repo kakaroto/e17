@@ -915,6 +915,8 @@ feh_menu_init(void)
    menu_main = feh_menu_new();
    menu_main->name = estrdup("MAIN");
 
+   printf("num desks: %d\n", feh_wm_get_num_desks());
+   
    feh_menu_add_entry(menu_main, "File", NULL, "FILE", NULL, NULL, NULL);
    if (opt.slideshow || opt.multiwindow)
    {

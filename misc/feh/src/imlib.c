@@ -585,3 +585,37 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    }
    D_RETURN_;
 }
+
+int
+feh_wm_get_num_desks(void)
+{
+   FILE *eesh;
+   char buf[1024];
+   char ebuf[1024];
+   int desks = 0;
+   struct stat st;
+   char *ptr;
+
+   D_ENTER;
+
+   snprintf(ebuf, sizeof(ebuf), "%s/eesh",
+            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
+   snprintf(buf, sizeof(buf), "%s/eesh -ewait \"num_desks ?\"",
+            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
+
+   if ((stat(ebuf, &st)) == -1)
+      D_RETURN(-1);
+
+   eesh = popen(buf, "r");
+   if (eesh == NULL)
+      D_RETURN(-1);
+
+   fgets(buf, sizeof(buf), eesh);
+   ptr=buf;
+   while(ptr && !isdigit(*ptr))
+      ptr++;
+   desks = atoi(ptr);
+
+   pclose(eesh);
+   D_RETURN(desks);
+}

@@ -110,6 +110,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete);
 void feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
                 int desktop, int set);
+int feh_wm_get_num_desks(void);
 
 
 /* Imlib stuff */
