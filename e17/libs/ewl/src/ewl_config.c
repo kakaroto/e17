@@ -18,37 +18,28 @@ static int open_system_config(void);
 int
 ewl_config_init(void)
 {
-	if ((open_user_config()) != -1)
-	  {
-		  config_db = user_config;
-		  return 1;
-	  }
-	else if ((open_system_config()) != -1)
-	  {
-		  config_db = system_config;
-		  return 1;
-	  }
-	else
-	  {
-		  if ((create_user_config()) != -1)
-		    {
-			    if ((open_user_config()) != -1)
-			      {
-				      config_db = user_config;
-				      return 1;
-			      }
-			    else
-			      {
-				      DERROR("Failed to open user config, I was able" "to create it tough.");
-				      return -1;
-			      }
-		    }
-		  else
-		    {
-			    DERROR("Failed to create user config.");
-			    return -1;
-		    }
-	  }
+	if ((open_user_config()) != -1) {
+		config_db = user_config;
+		return 1;
+	} else if ((open_system_config()) != -1) {
+		config_db = system_config;
+		return 1;
+	} else {
+		if ((create_user_config()) != -1) {
+			if ((open_user_config()) != -1) {
+				config_db = user_config;
+				return 1;
+			} else {
+				DERROR
+				    ("Failed to open user config, I was able"
+				     "to create it tough.");
+				return -1;
+			}
+		} else {
+			DERROR("Failed to create user config.");
+			return -1;
+		}
+	}
 }
 
 static int
@@ -59,11 +50,10 @@ create_user_config(void)
 
 	home = getenv("HOME");
 
-	if (!home)
-	  {
-		  DWARNING("Failed to fetch environment variable HOME\n");
-		  return -1;
-	  }
+	if (!home) {
+		DWARNING("Failed to fetch environment variable HOME\n");
+		return -1;
+	}
 
 	snprintf(path, 256, "%s/.e/ewl/config/system.db", home);
 
@@ -88,11 +78,10 @@ open_user_config(void)
 
 	home = getenv("HOME");
 
-	if (!home)
-	  {
-		  DWARNING("Failed to fetch environment variable HOME\n");
-		  return -1;
-	  }
+	if (!home) {
+		DWARNING("Failed to fetch environment variable HOME\n");
+		return -1;
+	}
 
 	snprintf(path, 256, "%s/.e/ewl/config/system.db", home);
 
@@ -133,22 +122,19 @@ ewl_config_set_str(const char *k, const char *v)
 		snprintf(k2, kl, "%s", k);
 		snprintf(v2, vl, "%s", v);
 
-		if (!user_config)
-		  {
-			  if ((create_user_config()) != -1)
-				  open_user_config();
-		  }
+		if (!user_config) {
+			if ((create_user_config()) != -1)
+				open_user_config();
+		}
 
-		if (user_config)
-		  {
-			  e_db_str_set(user_config, k2, v2);
-			  e_db_flush();
-		  }
-		else
-		  {
-			  DWARNING("Somehow i can't write to the user config, check permissions.");
-			  return -1;
-		  }
+		if (user_config) {
+			e_db_str_set(user_config, k2, v2);
+			e_db_flush();
+		} else {
+			DWARNING
+			    ("Somehow i can't write to the user config, check permissions.");
+			return -1;
+		}
 	}
 
 	return 1;
@@ -168,22 +154,19 @@ ewl_config_set_int(const char *k, const int v)
 		snprintf(k2, kl, "%s", k);
 		v2 = v;
 
-		if (!user_config)
-		  {
-			  if ((create_user_config()) != -1)
-				  open_user_config();
-		  }
+		if (!user_config) {
+			if ((create_user_config()) != -1)
+				open_user_config();
+		}
 
-		if (user_config)
-		  {
-			  e_db_int_set(user_config, k2, v2);
-			  e_db_flush();
-		  }
-		else
-		  {
-			  DWARNING("Somehow i can't write to the user config, check permissions.");
-			  return -1;
-		  }
+		if (user_config) {
+			e_db_int_set(user_config, k2, v2);
+			e_db_flush();
+		} else {
+			DWARNING
+			    ("Somehow i can't write to the user config, check permissions.");
+			return -1;
+		}
 	}
 
 	return 1;
@@ -203,22 +186,19 @@ ewl_config_set_float(const char *k, const float v)
 		snprintf(k2, kl, "%s", k);
 		v2 = v;
 
-		if (!user_config)
-		  {
-			  if ((create_user_config()) != -1)
-				  open_user_config();
-		  }
+		if (!user_config) {
+			if ((create_user_config()) != -1)
+				open_user_config();
+		}
 
-		if (user_config)
-		  {
-			  e_db_float_set(user_config, k2, v2);
-			  e_db_flush();
-		  }
-		else
-		  {
-			  DWARNING("Somehow i can't write to the user config, check permissions.");
-			  return -1;
-		  }
+		if (user_config) {
+			e_db_float_set(user_config, k2, v2);
+			e_db_flush();
+		} else {
+			DWARNING
+			    ("Somehow i can't write to the user config, check permissions.");
+			return -1;
+		}
 	}
 
 	return 1;
@@ -287,17 +267,16 @@ ewl_config_get_render_method()
 
 	str = ewl_config_get_str("/evas/render_method");
 
-	if (str)
-	  {
-		  if (!strcasecmp(str, "software"))
-			  return RENDER_METHOD_ALPHA_SOFTWARE;
-		  else if (!strcasecmp(str, "hardware"))
-			  return RENDER_METHOD_3D_HARDWARE;
-		  else if (!strcasecmp(str, "x11"))
-			  return RENDER_METHOD_BASIC_HARDWARE;
+	if (str) {
+		if (!strcasecmp(str, "software"))
+			return RENDER_METHOD_ALPHA_SOFTWARE;
+		else if (!strcasecmp(str, "hardware"))
+			return RENDER_METHOD_3D_HARDWARE;
+		else if (!strcasecmp(str, "x11"))
+			return RENDER_METHOD_BASIC_HARDWARE;
 
-		  FREE(str);
-	  }
+		FREE(str);
+	}
 
 	return RENDER_METHOD_ALPHA_SOFTWARE;
 }

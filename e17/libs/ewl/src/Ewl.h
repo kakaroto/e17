@@ -2,6 +2,7 @@
 #include <Ecore.h>
 #include <Edb.h>
 #include <Evas.h>
+#include <Etox.h>
 #define LIBRARY_NAME "EWL"
 #include <Ewd.h>
 

@@ -2,8 +2,7 @@
 #ifndef __EWL_SPINNER_H
 #define __EWL_SPINNER_H
 
-struct _ewl_spinner
-{
+struct _ewl_spinner {
 	Ewl_Widget widget;
 	double min_val;
 	double max_val;

@@ -13,8 +13,7 @@
 typedef struct _ewl_entry Ewl_Entry;
 #define EWL_ENTRY(entry) ((Ewl_Entry *) entry)
 
-struct _ewl_entry
-{
+struct _ewl_entry {
 	Ewl_Container container;
 	Ebits_Object cursor;
 	int cursor_pos;
@@ -26,9 +25,9 @@ struct _ewl_entry
 };
 
 Ewl_Widget *ewl_entry_new();
-void ewl_entry_set_text(Ewl_Widget * widget, const char *text);
-char *ewl_entry_get_text(Ewl_Widget * widget);
-void ewl_entry_set_cursor_pos(Ewl_Widget * widget, int pos);
-int ewl_entry_get_cursor_pos(Ewl_Widget * widget);
+void ewl_entry_set_text(Ewl_Widget * w, const char *t);
+char *ewl_entry_get_text(Ewl_Widget * w);
+void ewl_entry_set_cursor_pos(Ewl_Widget * w, int p);
+int ewl_entry_get_cursor_pos(Ewl_Widget * w);
 
-#endif /* __EWL_ENTRY_H__ */
+#endif				/* __EWL_ENTRY_H__ */

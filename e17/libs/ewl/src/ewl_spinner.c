@@ -90,8 +90,8 @@ __ewl_spinner_init(Ewl_Spinner * spinner)
 	DCHECK_PARAM_PTR("spinner", spinner);
 
 	memset(spinner, 0, sizeof(Ewl_Spinner));
-	ewl_widget_init(EWL_WIDGET(spinner), EWL_WIDGET_SPINNER, 100, 15,
-			400, 15);
+	ewl_widget_init(EWL_WIDGET(spinner), 100, 15,
+			EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_LEFT);
 
 	EWL_WIDGET(spinner)->recursive = TRUE;
 
@@ -213,8 +213,7 @@ __ewl_spinner_destroy(Ewl_Widget * widget, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_spinner_configure(Ewl_Widget * w, void *ev_data,
-			void *user_data)
+__ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
 
@@ -230,23 +229,24 @@ __ewl_spinner_configure(Ewl_Widget * w, void *ev_data,
 	REQUEST_H(s->entry) = 20;
 
 	REQUEST_X(s->button_increase) = REQUEST_X(s->entry) +
-				REQUEST_W(s->entry) + 2;
+	    REQUEST_W(s->entry) + 2;
 	REQUEST_Y(s->button_increase) = REQUEST_Y(s->entry);
 	REQUEST_W(s->button_increase) = 10;
 	REQUEST_H(s->button_increase) = 10;
 
-        REQUEST_X(s->button_decrease) = REQUEST_X(s->entry) +
-                                REQUEST_W(s->entry) + 2;
-        REQUEST_Y(s->button_decrease) = REQUEST_Y(s->entry) + 10;
-        REQUEST_W(s->button_decrease) = 10;
-        REQUEST_H(s->button_decrease) = 10;
+	REQUEST_X(s->button_decrease) = REQUEST_X(s->entry) +
+	    REQUEST_W(s->entry) + 2;
+	REQUEST_Y(s->button_decrease) = REQUEST_Y(s->entry) + 10;
+	REQUEST_W(s->button_decrease) = 10;
+	REQUEST_H(s->button_decrease) = 10;
 
 	ewl_widget_configure(s->entry);
 	ewl_widget_configure(s->button_increase);
 	ewl_widget_configure(s->button_decrease);
 
 	ewl_object_set_current_geometry(EWL_OBJECT(w),
-		REQUEST_X(w), REQUEST_Y(w), REQUEST_W(s->entry) + 12, 30);
+					REQUEST_X(w), REQUEST_Y(w),
+					REQUEST_W(s->entry) + 12, 30);
 
 	ewl_fx_clip_box_resize(w);
 }
@@ -289,7 +289,7 @@ __ewl_spinner_set_value(Ewl_Widget * widget, double value)
 	str = malloc(64);
 	snprintf(str, 64, format, EWL_SPINNER(widget)->value);
 
-	ewl_entry_set_text(s->entry, str);
+	ewl_entry_set_text(EWL_WIDGET(s->entry), str);
 
 	FREE(format);
 	FREE(str);

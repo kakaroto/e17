@@ -8,8 +8,7 @@
  */
 typedef struct _ewl_window Ewl_Window;
 
-struct _ewl_window
-{
+struct _ewl_window {
 	Ewl_Container widget;
 	Window window;
 	Evas_Object bg_rect;

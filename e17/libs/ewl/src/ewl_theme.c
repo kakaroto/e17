@@ -144,13 +144,12 @@ ewl_theme_init(void)
 		str = strdup("default");
 
 	home = getenv("HOME");
-	if (!home)
-	  {
-		  DERROR("Environment variable HOME not defined\n"
-			 "Try export HOME=/home/user in a bash like environemnt or\n"
-			 "setenv HOME=/home/user in a sh like environment.\n");
-		  return -1;
-	  }
+	if (!home) {
+		DERROR("Environment variable HOME not defined\n"
+		       "Try export HOME=/home/user in a bash like environemnt or\n"
+		       "setenv HOME=/home/user in a sh like environment.\n");
+		return -1;
+	}
 
 	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, str);
 
@@ -158,19 +157,18 @@ ewl_theme_init(void)
 	 * Check the users theme dir to make sure it exists and is a dir 
 	 */
 	stat(theme_path, &st);
-	if (!S_ISDIR(st.st_mode))
-	  {
+	if (!S_ISDIR(st.st_mode)) {
 
-		  /*
-		   * Theme dir is ok, now get the specified theme's path 
-		   */
-		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
-			   "/themes/%s", str);
-		  stat(theme_path, &st);
+		/*
+		 * Theme dir is ok, now get the specified theme's path 
+		 */
+		snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
+			 "/themes/%s", str);
+		stat(theme_path, &st);
 
-		  if (!S_ISDIR(st.st_mode))
-			  DERROR("No theme dir =( exiting....");
-	  }
+		if (!S_ISDIR(st.st_mode))
+			DERROR("No theme dir =( exiting....");
+	}
 
 	IF_FREE(str);
 
@@ -228,13 +226,12 @@ ewl_theme_font_path()
 	/*
 	 * No font path specified yet, so build it up 
 	 */
-	if (!font_path)
-	  {
-		  font_path = NEW(char, PATH_LEN);
+	if (!font_path) {
+		font_path = NEW(char, PATH_LEN);
 
-		  snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
-			   theme_path);
-	  }
+		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
+			 theme_path);
+	}
 
 	return font_path;
 }
@@ -257,13 +254,11 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 		DRETURN_PTR(NULL);
 
 
-	if (!strncmp(data, "/appearance", 11))
-	  {
-		  path = NEW(char, PATH_LEN);
-		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
-		  FREE(data);
-	  }
-	else			/* Absolute path given, so return it */
+	if (!strncmp(data, "/appearance", 11)) {
+		path = NEW(char, PATH_LEN);
+		snprintf(path, PATH_LEN, "%s%s", theme_path, data);
+		FREE(data);
+	} else			/* Absolute path given, so return it */
 		path = data;
 
 	stat(path, &st);
@@ -284,42 +279,34 @@ ewl_theme_data_get(Ewl_Widget * w, char *k)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	if (w)
-	  {
-		  if (strlen(k) && w->theme)
-		    {
-			    v = ewd_hash_get(w->theme, k);
+	if (w) {
+		if (strlen(k) && w->theme) {
+			v = ewd_hash_get(w->theme, k);
 
-			    if (v)
-				    ret = strdup(v);
-		    }
+			if (v)
+				ret = strdup(v);
+		}
 
-		  if (!ret && strlen(k))
-		    {
-			    if (w->parent)
-			      {
-				      v = ewl_theme_data_get(w->parent, k);
-				      if (v)
-					      ret = v;
-			      }
-			    else
-			      {
-				      v = ewd_hash_get(def_theme_data, k);
+		if (!ret && strlen(k)) {
+			if (w->parent) {
+				v = ewl_theme_data_get(w->parent, k);
+				if (v)
+					ret = v;
+			} else {
+				v = ewd_hash_get(def_theme_data, k);
 
-				      if (v)
-					      ret = strdup(v);
-			      }
-		    }
-	  }
-	else
-	  {
+				if (v)
+					ret = strdup(v);
+			}
+		}
+	} else {
 
-		  v = ewd_hash_get(def_theme_data, k);
+		v = ewd_hash_get(def_theme_data, k);
 
-		  if (v)
-			  ret = strdup(v);
+		if (v)
+			ret = strdup(v);
 
-	  }
+	}
 
 	DRETURN_PTR(ret);
 }
@@ -361,26 +348,25 @@ ewl_theme_data_gen_default_theme_db(char *f)
 
 	db = e_db_open(f);
 
-	while (theme_keys[++i])
-	  {
-		  snprintf(key, 512, "%s", theme_keys[i]);
+	while (theme_keys[++i]) {
+		snprintf(key, 512, "%s", theme_keys[i]);
 
-		  l = strlen(key);
+		l = strlen(key);
 
-		  jj = 0;
+		jj = 0;
 
-		  for (j = l - 7; j < l; j++)
-			  str[jj++] = key[j];
+		for (j = l - 7; j < l; j++)
+			str[jj++] = key[j];
 
-		  if (!strncasecmp(str, "visible", 7))
-			  snprintf(val, 512, "yes");
-		  else
-			  snprintf(val, 512, "%s.bits.db", theme_keys[i]);
+		if (!strncasecmp(str, "visible", 7))
+			snprintf(val, 512, "yes");
+		else
+			snprintf(val, 512, "%s.bits.db", theme_keys[i]);
 
-		  e_db_str_set(db, key, val);
+		e_db_str_set(db, key, val);
 
-		  ++i;
-	  }
+		++i;
+	}
 
 	e_db_flush();
 
@@ -393,11 +379,10 @@ ewl_theme_data_set_defaults(void)
 	char *str, *str2;
 	int i;
 
-	for (i = 0; theme_keys[i]; i++)
-	  {
-		  str = strdup(theme_keys[i]);
-		  str2 = strdup(theme_keys[++i]);
+	for (i = 0; theme_keys[i]; i++) {
+		str = strdup(theme_keys[i]);
+		str2 = strdup(theme_keys[++i]);
 
-		  ewd_hash_set(def_theme_data, str, str2);
-	  }
+		ewd_hash_set(def_theme_data, str, str2);
+	}
 }

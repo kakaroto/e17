@@ -5,10 +5,8 @@
 typedef struct _ewl_table Ewl_Table;
 #define EWL_TABLE(table) ((Ewl_Table *) table)
 
-struct _ewl_table
-{
-	Ewl_Container widget;
-	Ewl_Alignment alignment;
+struct _ewl_table {
+	Ewl_Container container;
 	Ebits_Object ebits_bg;
 	unsigned int columns;
 	unsigned int rows;
@@ -17,17 +15,13 @@ struct _ewl_table
 	unsigned int row_spacing;
 	unsigned int *col_w;
 	unsigned int *row_h;
-	unsigned int *custom_col_w;
 };
 
 typedef struct _ewl_table_child Ewl_Table_Child;
 #define EWL_TABLE_CHILD(child) ((Ewl_Table_Child *) child)
 
-struct _ewl_table_child
-{
+struct _ewl_table_child {
 	Ewl_Widget *widget;
-	Ewl_Alignment alignment;
-	Ewl_Fill_Policy fill_policy;
 	unsigned int start_col;
 	unsigned int end_col;
 	unsigned int start_row;
@@ -44,8 +38,6 @@ Ewl_Widget *ewl_table_new_all(unsigned int homogeneous,
 
 void ewl_table_attach(Ewl_Widget * t,
 		      Ewl_Widget * c,
-		      Ewl_Alignment alignment,
-		      Ewl_Fill_Policy fill_policy,
 		      unsigned int start_col,
 		      unsigned int end_col,
 		      unsigned int start_row, unsigned int end_row);
@@ -64,20 +56,11 @@ void ewl_table_set_col_spacing(Ewl_Widget * t, unsigned int cs);
 
 void ewl_table_set_row_spacing(Ewl_Widget * t, unsigned int rs);
 
-void ewl_table_set_alignment(Ewl_Widget * t, Ewl_Alignment a);
-
 void ewl_table_column_set_width(Ewl_Widget * t,
 				unsigned int c, unsigned int w);
 
 void ewl_table_get_column_width(Ewl_Widget * t,
 				unsigned int c, unsigned int *w);
-
-void ewl_table_child_set_alignment(Ewl_Widget * t,
-				   unsigned int c,
-				   unsigned int r, Ewl_Alignment a);
-
-Ewl_Alignment ewl_table_child_get_alignment(Ewl_Widget * t,
-					    unsigned int c, unsigned int r);
 
 Ewl_Widget *ewl_table_get_child(Ewl_Widget * t,
 				unsigned int c, unsigned int r);

@@ -52,11 +52,10 @@ ewl_ev_window_expose(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (window)
-	  {
-		  evas_update_rect(EWL_WIDGET(window)->evas, ev->x, ev->y,
-				   ev->w, ev->h);
-	  }
+	if (window) {
+		evas_update_rect(EWL_WIDGET(window)->evas, ev->x, ev->y,
+				 ev->w, ev->h);
+	}
 }
 
 static void
@@ -68,15 +67,14 @@ ewl_ev_window_configure(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window(ev->win);
-	if (window)
-	  {
-		  EWL_OBJECT(window)->request.x = ev->x;
-		  EWL_OBJECT(window)->request.y = ev->y;
-		  EWL_OBJECT(window)->request.w = ev->w;
-		  EWL_OBJECT(window)->request.h = ev->h;
-		  ewl_callback_call(EWL_WIDGET(window),
-				    EWL_CALLBACK_CONFIGURE);
-	  }
+	if (window) {
+		EWL_OBJECT(window)->request.x = ev->x;
+		EWL_OBJECT(window)->request.y = ev->y;
+		EWL_OBJECT(window)->request.w = ev->w;
+		EWL_OBJECT(window)->request.h = ev->h;
+		ewl_callback_call(EWL_WIDGET(window),
+				  EWL_CALLBACK_CONFIGURE);
+	}
 }
 
 static void
@@ -86,11 +84,10 @@ ewl_ev_window_reparent(Eevent * _ev)
 	Ewl_Window *window;
 
 	window = ewl_window_find_window(ev->win);
-	if (window)
-	  {
-		  ewl_callback_call(EWL_WIDGET(window),
-				    EWL_CALLBACK_REPARENT);
-	  }
+	if (window) {
+		ewl_callback_call(EWL_WIDGET(window),
+				  EWL_CALLBACK_REPARENT);
+	}
 }
 
 /*
@@ -106,11 +103,10 @@ ewl_ev_window_delete(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window(ev->win);
-	if (window)
-	  {
-		  ewl_callback_call(EWL_WIDGET(window),
-				    EWL_CALLBACK_DELETE_WINDOW);
-	  }
+	if (window) {
+		ewl_callback_call(EWL_WIDGET(window),
+				  EWL_CALLBACK_DELETE_WINDOW);
+	}
 }
 
 static void
@@ -122,14 +118,13 @@ ewl_ev_key_down(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (window)
-	  {
-		  if (last_selected)
-			  ewl_callback_call_with_event_data(last_selected,
-							    EWL_CALLBACK_KEY_DOWN,
-							    ev);
-		  last_key = last_selected;
-	  }
+	if (window) {
+		if (last_selected)
+			ewl_callback_call_with_event_data(last_selected,
+							  EWL_CALLBACK_KEY_DOWN,
+							  ev);
+		last_key = last_selected;
+	}
 }
 
 static void
@@ -141,13 +136,12 @@ ewl_ev_key_up(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (window)
-	  {
-		  if (last_key)
-			  ewl_callback_call_with_event_data(last_key,
-							    EWL_CALLBACK_KEY_UP,
-							    ev);
-	  }
+	if (window) {
+		if (last_key)
+			ewl_callback_call_with_event_data(last_key,
+							  EWL_CALLBACK_KEY_UP,
+							  ev);
+	}
 }
 
 static void
@@ -160,40 +154,36 @@ ewl_ev_mouse_down(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (window)
-	  {
-		  widget = ewl_container_get_child_at_recursive(EWL_CONTAINER
-								(window),
-								ev->x, ev->y);
+	if (window) {
+		widget = ewl_container_get_child_at_recursive(EWL_CONTAINER
+							      (window),
+							      ev->x,
+							      ev->y);
 
-		  if (widget != last_selected)
-		    {
-			    if (last_selected)
-			      {
-				      last_selected->state &=
-					      ~EWL_STATE_SELECTED;
-				      ewl_callback_call(last_selected,
-							EWL_CALLBACK_UNSELECT);
-			      }
-			    if (widget)
-			      {
-				      widget->state |= EWL_STATE_SELECTED;
-				      ewl_callback_call(widget,
-							EWL_CALLBACK_SELECT);
-			      }
-		    }
+		if (widget != last_selected) {
+			if (last_selected) {
+				last_selected->state &=
+				    ~EWL_STATE_SELECTED;
+				ewl_callback_call(last_selected,
+						  EWL_CALLBACK_UNSELECT);
+			}
+			if (widget) {
+				widget->state |= EWL_STATE_SELECTED;
+				ewl_callback_call(widget,
+						  EWL_CALLBACK_SELECT);
+			}
+		}
 
-		  if (widget)
-		    {
-			    widget->state |= EWL_STATE_PRESSED;
-			    ewl_callback_call_with_event_data(widget,
-							      EWL_CALLBACK_MOUSE_DOWN,
-							      ev);
-		    }
+		if (widget) {
+			widget->state |= EWL_STATE_PRESSED;
+			ewl_callback_call_with_event_data(widget,
+							  EWL_CALLBACK_MOUSE_DOWN,
+							  ev);
+		}
 
-		  last_selected = widget;
-		  mouse_down = 1;
-	  }
+		last_selected = widget;
+		mouse_down = 1;
+	}
 }
 
 static void
@@ -206,13 +196,12 @@ ewl_ev_mouse_up(Eevent * _ev)
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
 	if (window)
-		if (last_selected)
-		  {
-			  last_selected->state &= ~EWL_STATE_PRESSED;
-			  ewl_callback_call_with_event_data(last_selected,
-							    EWL_CALLBACK_MOUSE_UP,
-							    ev);
-		  }
+		if (last_selected) {
+			last_selected->state &= ~EWL_STATE_PRESSED;
+			ewl_callback_call_with_event_data(last_selected,
+							  EWL_CALLBACK_MOUSE_UP,
+							  ev);
+		}
 }
 
 static void
@@ -225,46 +214,44 @@ ewl_ev_mouse_move(Eevent * _ev)
 	ev = _ev->event;
 
 	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (window)
-	  {
-		  widget = ewl_container_get_child_at_recursive(EWL_CONTAINER
-								(window),
-								ev->x, ev->y);
+	if (window) {
+		widget = ewl_container_get_child_at_recursive(EWL_CONTAINER
+							      (window),
+							      ev->x,
+							      ev->y);
 
-		  if (widget)
-		    {
-			    widget->state |= EWL_STATE_HILITED;
-			    if (last_focused != widget)
-				    ewl_callback_call(widget,
-						      EWL_CALLBACK_FOCUS_IN);
+		if (widget) {
+			widget->state |= EWL_STATE_HILITED;
+			if (last_focused != widget)
+				ewl_callback_call(widget,
+						  EWL_CALLBACK_FOCUS_IN);
 
-			    ewl_callback_call_with_event_data(widget,
-							      EWL_CALLBACK_MOUSE_MOVE,
-							      ev);
-		    }
-		  if (last_focused != widget && last_focused)
-		    {
-			    last_focused->state &= ~EWL_STATE_HILITED;
-			    ewl_callback_call(last_focused,
-					      EWL_CALLBACK_FOCUS_OUT);
-		    }
+			ewl_callback_call_with_event_data(widget,
+							  EWL_CALLBACK_MOUSE_MOVE,
+							  ev);
+		}
+		if (last_focused != widget && last_focused) {
+			last_focused->state &= ~EWL_STATE_HILITED;
+			ewl_callback_call(last_focused,
+					  EWL_CALLBACK_FOCUS_OUT);
+		}
 
-		  if (last_focused && last_focused->state & EWL_STATE_DND)
-			  dnd_widget = last_focused;
+		if (last_focused && last_focused->state & EWL_STATE_DND)
+			dnd_widget = last_focused;
 
-		  if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
-			  ewl_callback_call_with_event_data(dnd_widget,
-							    EWL_CALLBACK_MOUSE_MOVE,
-							    ev);
+		if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
+			ewl_callback_call_with_event_data(dnd_widget,
+							  EWL_CALLBACK_MOUSE_MOVE,
+							  ev);
 
-		  if (last_selected &&
-		      last_selected->state & EWL_STATE_PRESSED)
-			  ewl_callback_call_with_event_data(last_selected,
-							    EWL_CALLBACK_MOUSE_MOVE,
-							    ev);
-		  else
-			  dnd_widget = NULL;
+		if (last_selected &&
+		    last_selected->state & EWL_STATE_PRESSED)
+			ewl_callback_call_with_event_data(last_selected,
+							  EWL_CALLBACK_MOUSE_MOVE,
+							  ev);
+		else
+			dnd_widget = NULL;
 
-		  last_focused = widget;
-	  }
+		last_focused = widget;
+	}
 }

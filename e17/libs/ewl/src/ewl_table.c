@@ -54,9 +54,10 @@ ewl_table_new_all(unsigned int homogeneous,
 	t->col_w = NEW(int, columns);
 	memset(t->col_w, 0, columns * sizeof(int));
 
-	t->custom_col_w = NEW(int, columns);
-	memset(t->custom_col_w, 0, columns * sizeof(int));
-
+	/*
+	 * t->custom_col_w = NEW(int, columns);
+	 * memset(t->custom_col_w, 0, columns * sizeof(int));
+	 */
 	t->row_h = NEW(int, rows);
 	memset(t->row_h, 0, rows * sizeof(int));
 
@@ -64,12 +65,11 @@ ewl_table_new_all(unsigned int homogeneous,
 }
 
 void
-ewl_table_attach(Ewl_Widget * t, Ewl_Widget * c, Ewl_Alignment alignment,
-		 Ewl_Fill_Policy fill_policy, unsigned int start_col,
+ewl_table_attach(Ewl_Widget * t, Ewl_Widget * c,
+		 unsigned int start_col,
 		 unsigned int end_col, unsigned int start_row,
 		 unsigned int end_row)
 {
-	int layer;
 	Ewl_Table_Child *child;
 
 	CHECK_PARAM_POINTER("t", t);
@@ -78,29 +78,20 @@ ewl_table_attach(Ewl_Widget * t, Ewl_Widget * c, Ewl_Alignment alignment,
 	child = NEW(Ewl_Table_Child, 1);
 	memset(child, 0, sizeof(Ewl_Table_Child));
 
-	child->widget = c;
-	child->alignment = alignment;
-	child->fill_policy = fill_policy;
 	child->start_col = start_col - 1;
 	child->end_col = end_col - 1;
 	child->start_row = start_row - 1;
 	child->end_row = end_row - 1;
 
-	if (!EWL_CONTAINER(t)->children)
-		EWL_CONTAINER(t)->children = ewd_list_new();
+	ewl_widget_set_data(c, t, child);
 
-	c->parent = t;
-	c->evas = t->evas;
-	c->evas_window = t->evas_window;
-	layer = ewl_object_get_layer(EWL_OBJECT(t));
-	ewl_object_set_layer(EWL_OBJECT(t), layer + 1);
-
-	ewd_list_append(EWL_CONTAINER(t)->children, child);
+	ewl_container_append_child(EWL_CONTAINER(t), c);
 }
 
 void
 ewl_table_detach(Ewl_Widget * t, unsigned int c, unsigned int r)
 {
+	Ewl_Widget *w;
 	Ewl_Table_Child *child;
 
 	CHECK_PARAM_POINTER("t", t);
@@ -109,19 +100,14 @@ ewl_table_detach(Ewl_Widget * t, unsigned int c, unsigned int r)
 	    ewd_list_is_empty(EWL_CONTAINER(t)->children))
 		return;
 
-	ewd_list_goto_first(EWL_CONTAINER(t)->children);
+	w = ewl_table_get_child(t, c, r);
+	ewl_container_remove_child(EWL_CONTAINER(t), w);
 
-	while ((child = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
-	  {
-		  if (child->start_col + 1 <= c &&
-		      child->end_col + 1 >= c &&
-		      child->start_row <= r && child->end_row >= r)
-		    {
-			    ewd_list_remove(EWL_CONTAINER(t)->children);
-			    FREE(child);
-			    break;
-		    }
-	  }
+	child = ewl_widget_get_data(w, t);
+	if (child) {
+		ewl_widget_del_data(w, t);
+		FREE(child);
+	}
 }
 
 void
@@ -133,7 +119,7 @@ ewl_table_resize(Ewl_Widget * t, unsigned int c, unsigned int r)
 	EWL_TABLE(t)->columns = c;
 	EWL_TABLE(t)->rows = r;
 
-	REALLOC(EWL_TABLE(t)->custom_col_w, int, c);
+/*	REALLOC(EWL_TABLE(t)->custom_col_w, int, c); */
 }
 
 unsigned int
@@ -182,14 +168,6 @@ ewl_table_set_row_spacing(Ewl_Widget * t, unsigned int rs)
 	ewl_widget_configure(t);
 }
 
-void
-ewl_table_set_alignment(Ewl_Widget * t, Ewl_Alignment a)
-{
-	CHECK_PARAM_POINTER("t", t);
-
-	EWL_TABLE(t)->alignment = a;
-}
-
 /*
  * Set the width of the specified column
  */
@@ -198,8 +176,9 @@ ewl_table_column_set_width(Ewl_Widget * t, unsigned int c, unsigned int w)
 {
 	CHECK_PARAM_POINTER("t", t);
 
+/*
 	EWL_TABLE(t)->custom_col_w[c - 1] = w;
-
+*/
 	ewl_widget_configure(t);
 }
 
@@ -216,74 +195,26 @@ ewl_table_get_column_width(Ewl_Widget * t, unsigned int c, unsigned int *w)
 }
 
 /*
- * Set the alignment of the child at the specified row and column
- */
-void
-ewl_table_child_set_alignment(Ewl_Widget * t,
-			      unsigned int c, unsigned int r, Ewl_Alignment a)
-{
-	Ewl_Table_Child *child;
-
-	CHECK_PARAM_POINTER("t", t);
-
-	if (!EWL_CONTAINER(t)->children ||
-	    ewd_list_is_empty(EWL_CONTAINER(t)->children))
-		return;
-
-	while ((child = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
-	  {
-		  if (child->start_col + 1 <= c &&
-		      child->end_col + 1 >= c &&
-		      child->start_row <= r && child->end_row >= r)
-		    {
-			    child->alignment = a;
-			    break;
-		    }
-	  }
-}
-
-/*
- * Determine the alignment of the child at the specified row and column
- */
-Ewl_Alignment
-ewl_table_child_get_alignment(Ewl_Widget * t, unsigned int c, unsigned int r)
-{
-	Ewl_Table_Child *child;
-
-	CHECK_PARAM_POINTER_RETURN("t", t, FALSE);
-
-	ewd_list_goto_first(EWL_CONTAINER(t)->children);
-
-	while ((child = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
-	  {
-		  if (child->start_col <= c &&
-		      child->end_col >= c && child->start_row <= r &&
-		      child->end_row >= r)
-			  return child->alignment;
-	  }
-
-	return FALSE;
-}
-
-/*
  * Get the child at the specified row and column
  */
 Ewl_Widget *
 ewl_table_get_child(Ewl_Widget * t, unsigned int c, unsigned int r)
 {
+	Ewl_Widget *w;
 	Ewl_Table_Child *child;
 
 	CHECK_PARAM_POINTER_RETURN("t", t, NULL);
 
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
-	while ((child = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
-	  {
-		  if (child->start_col <= c &&
-		      child->end_col >= c && child->start_row <= r &&
-		      child->end_row >= r)
-			  return child->widget;
-	  }
+	while ((w = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL) {
+		child = ewl_widget_get_data(w, t);
+
+		if (child && child->start_col <= c &&
+		    child->end_col >= c && child->start_row <= r &&
+		    child->end_row >= r)
+			return w;
+	}
 
 	return NULL;
 }
@@ -315,8 +246,8 @@ __ewl_table_init(Ewl_Table * t)
 	CHECK_PARAM_POINTER("t", t);
 
 	memset(t, 0, sizeof(Ewl_Table));
-	ewl_container_init(EWL_CONTAINER(t), EWL_WIDGET_TABLE, 1, 1, 2048,
-			   2048);
+	ewl_container_init(EWL_CONTAINER(t), 10, 10,
+			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REALIZE,
 			    __ewl_table_realize, NULL);
@@ -341,32 +272,25 @@ __ewl_table_init(Ewl_Table * t)
 static void
 __ewl_table_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
+	Evas_Object *clip_box;
+
 	CHECK_PARAM_POINTER("w", w);
 
-	{
-		Evas_Object *clip_box;
+	clip_box = evas_add_rectangle(w->evas);
+	evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+	evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
+	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+		evas_set_clip(w->evas, clip_box,
+			      EWL_CONTAINER(w->parent)->clip_box);
+	w->fx_clip_box = clip_box;
 
-		clip_box = evas_add_rectangle(w->evas);
-		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
-		evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
-		if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-			evas_set_clip(w->evas, clip_box,
-				      EWL_CONTAINER(w->parent)->clip_box);
-		w->fx_clip_box = clip_box;
+	clip_box = evas_add_rectangle(w->evas);
+	evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+	evas_set_layer(w->evas, clip_box, LAYER(w));
+	evas_set_clip(w->evas, clip_box, w->fx_clip_box);
+	evas_show(w->evas, clip_box);
 
-	}
-
-	{
-		Evas_Object *clip_box;
-
-		clip_box = evas_add_rectangle(w->evas);
-		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
-		evas_set_layer(w->evas, clip_box, LAYER(w));
-		evas_set_clip(w->evas, clip_box, w->fx_clip_box);
-		evas_show(w->evas, clip_box);
-
-		EWL_CONTAINER(w)->clip_box = clip_box;
-	}
+	EWL_CONTAINER(w)->clip_box = clip_box;
 
 	ewl_widget_theme_update(w);
 }
@@ -402,27 +326,28 @@ __ewl_table_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	DENTER_FUNCTION;
 	CHECK_PARAM_POINTER("w", w);
 
-	ebits_hide(EWL_TABLE(w)->ebits_bg);
-	ebits_unset_clip(EWL_TABLE(w)->ebits_bg);
-	ebits_free(EWL_TABLE(w)->ebits_bg);
+	if (EWL_TABLE(w)->ebits_bg) {
+		ebits_hide(EWL_TABLE(w)->ebits_bg);
+		ebits_unset_clip(EWL_TABLE(w)->ebits_bg);
+		ebits_free(EWL_TABLE(w)->ebits_bg);
+	}
 
-	if (w->fx_clip_box)
-	  {
-		  evas_hide(w->evas, w->fx_clip_box);
-		  evas_unset_clip(w->evas, w->fx_clip_box);
-		  evas_del_object(w->evas, w->fx_clip_box);
-	  }
+	if (w->fx_clip_box) {
+		evas_hide(w->evas, w->fx_clip_box);
+		evas_unset_clip(w->evas, w->fx_clip_box);
+		evas_del_object(w->evas, w->fx_clip_box);
+	}
 
-	if (EWL_CONTAINER(w)->clip_box)
-	  {
-		  evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
-		  evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
-		  evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
-	  }
+	if (EWL_CONTAINER(w)->clip_box) {
+		evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
+		evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
+		evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
+	}
 
 	IF_FREE(EWL_TABLE(w)->col_w);
 	IF_FREE(EWL_TABLE(w)->row_h);
-	IF_FREE(EWL_TABLE(w)->custom_col_w);
+
+/*	IF_FREE(EWL_TABLE(w)->custom_col_w); */
 
 	ewl_callback_clear(w);
 
@@ -450,10 +375,10 @@ __ewl_table_destroy_recursive(Ewl_Widget * w, void *event_data,
 
 	while ((child =
 		ewd_list_remove_last(EWL_CONTAINER(w)->children)) != NULL)
-	  {
-		  ewl_widget_destroy_recursive(child->widget);
-		  FREE(child);
-	  }
+	{
+		ewl_widget_destroy_recursive(child->widget);
+		FREE(child);
+	}
 
 	DLEAVE_FUNCTION;
 }
@@ -481,11 +406,10 @@ __ewl_table_configure_gfx(Ewl_Widget * w)
 	ewl_object_requested_geometry(EWL_OBJECT(w), &t_req_x, &t_req_y,
 				      &t_req_w, &t_req_h);
 
-	if (EWL_TABLE(w)->ebits_bg)
-	  {
-		  ebits_move(EWL_TABLE(w)->ebits_bg, t_req_x, t_req_y);
-		  ebits_resize(EWL_TABLE(w)->ebits_bg, t_req_w, t_req_h);
-	  }
+	if (EWL_TABLE(w)->ebits_bg) {
+		ebits_move(EWL_TABLE(w)->ebits_bg, t_req_x, t_req_y);
+		ebits_resize(EWL_TABLE(w)->ebits_bg, t_req_w, t_req_h);
+	}
 
 	ewl_fx_clip_box_resize(w);
 }
@@ -517,79 +441,77 @@ __ewl_table_configure_children(Ewl_Widget * w)
  * to indicate space used
  */
 void
-__ewl_table_normal_span(Ewl_Table * w, Ewl_Table_Child * child, int *rem_w,
+__ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w,
 			int *rem_h)
 {
 	int i;
-	int c_span = 1;
-	int r_span = 1;
+	int col_span = 1;
+	int row_span = 1;
 	int req_w, req_h;
 	int used_w = 0, used_h = 0;
 	int x, y;
+	Ewl_Table_Child *child;
 
-	ewl_object_requested_geometry(EWL_OBJECT
-				      (child->widget),
-				      &x, &y, &req_w, &req_h);
+	ewl_object_requested_geometry(EWL_OBJECT(c), &x, &y, &req_w,
+				      &req_h);
 	used_w += req_w;
 	used_h += req_h;
 
-	c_span += child->start_col - child->end_col;
+	child = ewl_widget_get_data(c, w);
+	if (!child)
+		return;
+
+	col_span += child->start_col - child->end_col;
 
 	/*
 	 * Split up the size of the child between the col's
 	 * it spans 
 	 */
-	for (i = child->start_col; i <= child->end_col; i++)
-	  {
-		  /*
-		   * Only assign the column this width if another child doesn't
-		   * need more.
-		   */
-		  if (req_w / c_span > w->col_w[i])
-		    {
-			    w->col_w[i] = req_w / c_span;
-			    *rem_w -= (req_w / c_span) + w->col_spacing;
-		    }
-	  }
+	for (i = child->start_col; i <= child->end_col; i++) {
+		/*
+		 * Only assign the column this width if another child doesn't
+		 * need more.
+		 */
+		if (req_w / col_span > w->col_w[i]) {
+			w->col_w[i] = req_w / col_span;
+			*rem_w -= (req_w / col_span) + w->col_spacing;
+		}
+	}
 
 	/*
 	 * The child may have been shorted some of the width it needs, if so
 	 * tack it on the end
 	 */
-	if ((req_w % c_span) + (req_w / c_span) > w->col_w[i - 1])
-	  {
-		  w->col_w[i - 1] += req_w % c_span;
-		  *rem_w -= req_w % c_span;
-	  }
+	if ((req_w % col_span) + (req_w / col_span) > w->col_w[i - 1]) {
+		w->col_w[i - 1] += req_w % col_span;
+		*rem_w -= req_w % col_span;
+	}
 
-	r_span += child->start_row - child->end_row;
+	row_span += child->start_row - child->end_row;
 
 	/*
 	 * Split up the size of the child between the row's it
 	 * * spans 
 	 */
-	for (i = 0; i <= r_span; i++)
-	  {
-		  /*
-		   * Only assign the row this height if another child doesn't
-		   * need more.
-		   */
-		  if (req_h > w->row_h[i])
-		    {
-			    w->row_h[i] = req_h / r_span;
-			    *rem_h -= (req_h / r_span) + w->row_spacing;
-		    }
-	  }
+	for (i = 0; i <= row_span; i++) {
+		/*
+		 * Only assign the row this height if another child doesn't
+		 * need more.
+		 */
+		if (req_h > w->row_h[i]) {
+			w->row_h[i] = req_h / row_span;
+			*rem_h -= (req_h / row_span) + w->row_spacing;
+		}
+	}
 
 	/*
 	 * The child has been shorted some of the height it needs, so tack it
 	 * on the end.
 	 */
-	if ((req_w % r_span) + (req_h / r_span) > w->row_h[i - 1])
-	  {
-		  w->row_h[i - 1] += req_h % r_span;
-		  *rem_h -= req_h % r_span;
-	  }
+	if ((req_w % row_span) + (req_h / row_span) > w->row_h[i - 1]) {
+		w->row_h[i - 1] += req_h % row_span;
+		*rem_h -= req_h % row_span;
+	}
 }
 
 /* Fill in the widgets that request their sizes normally and are not resized */
@@ -598,7 +520,7 @@ __ewl_table_fill_normal(Ewl_Widget * w, int *rem_w, int *rem_h)
 {
 	int x, y;
 	Ewd_List *fillers = NULL;
-	Ewl_Table_Child *child = NULL;
+	Ewl_Widget *c = NULL;
 
 	CHECK_PARAM_POINTER_RETURN("w", w, 0);
 
@@ -617,36 +539,34 @@ __ewl_table_fill_normal(Ewl_Widget * w, int *rem_w, int *rem_h)
 	 * * add any filler children to the list of fillers that will be
 	 * * returned 
 	 */
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
-	  {
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
 
-		  /*
-		   * Normal children are given their requested space, otherwise
-		   * we add them to the list of children to assign the remaining
-		   * space.
-		   */
-		  if (child->fill_policy == EWL_FILL_POLICY_NORMAL)
-		    {
-			    __ewl_table_normal_span(EWL_TABLE(w), child,
-						    rem_w, rem_h);
-		    }
-		  else
-		    {
-			    if (!fillers)
-				    fillers = ewd_list_new();
-			    ewd_list_append(fillers, child);
-		    }
-	  }
+		/*
+		 * Normal children are given their requested space, otherwise
+		 * we add them to the list of children to assign the remaining
+		 * space.
+		 */
+		if (EWL_OBJECT(c)->fill == EWL_FILL_POLICY_NORMAL) {
+			__ewl_table_normal_span(EWL_TABLE(w), c, rem_w,
+						rem_h);
+		} else {
+			if (!fillers)
+				fillers = ewd_list_new();
+			ewd_list_append(fillers, c);
+		}
+	}
 
 	return fillers;
 }
 
 /* Fill in widgets that are stretched to fill the column they occupy */
 void
-__ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h, Ewd_List * l)
+__ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h,
+			 Ewd_List * l)
 {
 	int total_cols = 0, total_rows = 0;
 	int num, r_size, c_size;
+	Ewl_Widget *c;
 	Ewl_Table_Child *child;
 
 	DENTER_FUNCTION;
@@ -658,47 +578,53 @@ __ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h, Ewd_List * l)
 	 */
 	num = ewd_list_nodes(l);
 	ewd_list_goto_first(l);
-	for (child = ewd_list_next(l); child; child = ewd_list_next(l))
-	  {
-		  total_cols += child->end_col - child->start_col + 1;
-		  total_rows += child->end_row - child->start_row + 1;
-	  }
+	for (c = ewd_list_next(l); c; c = ewd_list_next(l)) {
+		child = ewl_widget_get_data(c, w);
+		if (child) {
+			total_cols +=
+			    child->end_col - child->start_col + 1;
+			total_rows +=
+			    child->end_row - child->start_row + 1;
+		}
+	}
 
 	ewd_list_goto_first(l);
-	for (child = ewd_list_next(l); child; child = ewd_list_next(l))
-	  {
-		  int i, x, y, cols, rows, req_w, req_h;
+	for (c = ewd_list_next(l); c; c = ewd_list_next(l)) {
+		int i, x, y, cols, rows, req_w, req_h;
 
-		  /*
-		   * Determine the number of rows and columns this item uses 
-		   */
-		  cols = child->end_col - child->start_col + 1;
-		  rows = child->end_row - child->start_row + 1;
-		  ewl_object_requested_geometry(EWL_OBJECT(child->widget),
-						&x, &y, &req_w, &req_h);
+		child = ewl_widget_get_data(c, w);
+		if (!child)
+			continue;
 
-		  /*
-		   * Now find the pixels each item will use 
-		   */
-		  r_size = rem_h * (float) rows / (float) total_rows;
-		  c_size = rem_w * (float) cols / (float) total_rows;
+		/*
+		 * Determine the number of rows and columns this item uses 
+		 */
+		cols = child->end_col - child->start_col + 1;
+		rows = child->end_row - child->start_row + 1;
+		ewl_object_requested_geometry(EWL_OBJECT(child->widget),
+					      &x, &y, &req_w, &req_h);
 
-		  /*
-		   * Loop through and assign the allocation of each row and column
-		   */
-		  for (i = child->start_row; i < child->end_row; i++)
-		    {
-			    int test;
+		/*
+		 * Now find the pixels each item will use 
+		 */
+		r_size = rem_h * (float) rows / (float) total_rows;
+		c_size = rem_w * (float) cols / (float) total_rows;
 
-			    test = req_w / cols;
-			    if (test > EWL_TABLE(w)->col_w[i])
-				    EWL_TABLE(w)->col_w[i] = test;
+		/*
+		 * Loop through and assign the allocation of each row and column
+		 */
+		for (i = child->start_row; i < child->end_row; i++) {
+			int test;
 
-			    test = req_h / rows;
-			    if (test > EWL_TABLE(w)->row_h[i])
-				    EWL_TABLE(w)->row_h[i] = test;
-		    }
-	  }
+			test = req_w / cols;
+			if (test > EWL_TABLE(w)->col_w[i])
+				EWL_TABLE(w)->col_w[i] = test;
+
+			test = req_h / rows;
+			if (test > EWL_TABLE(w)->row_h[i])
+				EWL_TABLE(w)->row_h[i] = test;
+		}
+	}
 
 	DLEAVE_FUNCTION;
 }
@@ -706,7 +632,7 @@ __ewl_table_fill_fillers(Ewl_Widget * w, int rem_w, int rem_h, Ewd_List * l)
 static void
 __ewl_table_layout_children(Ewl_Table * w)
 {
-	Ewl_Table_Child *child;
+	Ewl_Widget *child;
 	int i;
 	int *x_offsets, *y_offsets;
 
@@ -739,24 +665,26 @@ __ewl_table_layout_children(Ewl_Table * w)
 	 * Loop through the children and determine their starting offsets
 	 */
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children)))
-	  {
-		  /*
-		   * Ok, now that we have offset tables put each child at its
-		   * required offset.
-		   */
-		  ewl_object_set_current_geometry(EWL_OBJECT(child->widget),
-						  x_offsets[child->
-							    start_col - 1],
-						  y_offsets[child->
-							    start_row - 1],
-						  CURRENT_W(child->widget),
-						  CURRENT_H(child->widget));
-		  printf("Placed child %p at (%d, %d) dim %dx%d\n",
-			 child->widget, CURRENT_X(child->widget),
-			 CURRENT_Y(child->widget), CURRENT_W(child->widget),
-			 CURRENT_H(child->widget));
-	  }
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+		Ewl_Table_Child *c = ewl_widget_get_data(child, w);
+
+		/*
+		 * Ok, now that we have offset tables put each child at its
+		 * required offset.
+		 */
+		ewl_object_set_current_geometry(EWL_OBJECT(child),
+						x_offsets[c->start_col -
+							  1],
+						y_offsets[c->start_row -
+							  1],
+						CURRENT_W(child),
+						CURRENT_H(child));
+		printf("Placed child %p at (%d, %d) dim %dx%d\n", child,
+		       CURRENT_X(child), CURRENT_Y(child),
+		       CURRENT_W(child), CURRENT_H(child));
+	}
+
+	ewl_widget_configure(child);
 }
 
 
@@ -785,17 +713,17 @@ __ewl_table_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 	/*
 	 * Check if GFX should be visible or not 
 	 */
-	v = ewl_theme_data_get(w, "/appearance/table/default/base/visible");
+	v = ewl_theme_data_get(w,
+			       "/appearance/table/default/base/visible");
 
 	/*
 	 * Destroy old image (if any)
 	 */
-	if (w->ebits_object)
-	  {
-		  ebits_hide(w->ebits_object);
-		  ebits_unset_clip(w->ebits_object);
-		  ebits_free(w->ebits_object);
-	  }
+	if (w->ebits_object) {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	}
 
 	/*
 	 * If we don't want to show the new graphics, then we're pretty much
@@ -820,14 +748,13 @@ __ewl_table_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 	w->ebits_object = ebits_load(i);
 	FREE(i);
 
-	if (w->ebits_object)
-	  {
-		  ebits_add_to_evas(w->ebits_object, w->evas);
-		  ebits_set_layer(w->ebits_object, w->object.layer);
-		  ebits_set_clip(w->ebits_object, w->fx_clip_box);
+	if (w->ebits_object) {
+		ebits_add_to_evas(w->ebits_object, w->evas);
+		ebits_set_layer(w->ebits_object, w->object.layer);
+		ebits_set_clip(w->ebits_object, w->fx_clip_box);
 
-		  ebits_show(w->ebits_object);
-	  }
+		ebits_show(w->ebits_object);
+	}
 
       table_theme_update_end:
 	/*

@@ -9,8 +9,8 @@ extern Ewl_Widget *dnd_widget;
 
 
 void
-ewl_widget_init(Ewl_Widget * w, int type, int req_w, int req_h,
-		int max_w, int max_h)
+ewl_widget_init(Ewl_Widget * w, int req_w, int req_h, Ewl_Fill_Policy fill,
+		Ewl_Alignment align)
 {
 	DCHECK_PARAM_PTR("w", w);
 
@@ -18,16 +18,11 @@ ewl_widget_init(Ewl_Widget * w, int type, int req_w, int req_h,
 	 * Set up the necessary theme structures 
 	 */
 	ewl_theme_init_widget(EWL_WIDGET(w));
-	w->type = type;
 
 	/*
 	 * Set size fields on the object 
 	 */
-	MAX_W(w) = max_w;
-	MAX_H(w) = max_h;
-
-	MIN_W(w) = CURRENT_W(w) = REQUEST_W(w) = req_w;
-	MIN_H(w) = CURRENT_H(w) = REQUEST_H(w) = req_h;
+	ewl_object_init(EWL_OBJECT(w), req_w, req_h, fill, align);
 
 	DLEAVE_FUNCTION;
 }
@@ -138,18 +133,7 @@ ewl_widget_theme_update(Ewl_Widget * w)
 }
 
 void
-ewl_widget_set_type(Ewl_Widget * w, Ewl_Widget_Type t)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	w->type = t;
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_widget_set_data(Ewl_Widget * w, char * k, void * v)
+ewl_widget_set_data(Ewl_Widget * w, char *k, void *v)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -164,8 +148,8 @@ ewl_widget_set_data(Ewl_Widget * w, char * k, void * v)
 	DLEAVE_FUNCTION;
 }
 
-void *
-ewl_widget_del_data(Ewl_Widget * w, char * k)
+void
+ewl_widget_del_data(Ewl_Widget * w, char *k)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -174,11 +158,11 @@ ewl_widget_del_data(Ewl_Widget * w, char * k)
 	if (!w->data)
 		DRETURN;
 
-	DRETURN_PTR(ewd_hash_remove(w->data, k))
+	DLEAVE_FUNCTION;
 }
 
 void *
-ewl_widget_get_data(Ewl_Widget * w, char * k)
+ewl_widget_get_data(Ewl_Widget * w, char *k)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("w", w, NULL);

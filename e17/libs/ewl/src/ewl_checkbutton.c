@@ -73,8 +73,8 @@ __ewl_checkbutton_init(Ewl_CheckButton * b, const char *l)
 	 * Blank out the structure and initialize it's theme
 	 */
 	memset(b, 0, sizeof(Ewl_CheckButton));
-	ewl_container_init(EWL_CONTAINER(b), EWL_WIDGET_BUTTON, 16, 16, 16,
-			   16);
+	ewl_container_init(EWL_CONTAINER(b), 16, 16,
+			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
 
 	w = EWL_WIDGET(b);
 
@@ -178,16 +178,15 @@ __ewl_checkbutton_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	if (EWL_CONTAINER(w)->children &&
-	    !ewd_list_is_empty(EWL_CONTAINER(w)->children))
-	  {
-		  Ewl_Widget *c;
+	    !ewd_list_is_empty(EWL_CONTAINER(w)->children)) {
+		Ewl_Widget *c;
 
-		  ewd_list_goto_first(EWL_CONTAINER(w)->children);
+		ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-		  while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
-			 != NULL)
-			  ewl_widget_show(c);
-	  }
+		while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
+		       != NULL)
+			ewl_widget_show(c);
+	}
 
 	evas_show(w->evas, w->fx_clip_box);
 
@@ -215,19 +214,17 @@ __ewl_checkbutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	cb = EWL_CHECKBUTTON(w);
 
-	if (w->ebits_object)
-	  {
-		  ebits_hide(w->ebits_object);
-		  ebits_unset_clip(w->ebits_object);
-		  ebits_free(w->ebits_object);
-	  }
+	if (w->ebits_object) {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	}
 
-	if (w->fx_clip_box)
-	  {
-		  evas_hide(w->evas, w->fx_clip_box);
-		  evas_unset_clip(w->evas, w->fx_clip_box);
-		  evas_del_object(w->evas, w->fx_clip_box);
-	  }
+	if (w->fx_clip_box) {
+		evas_hide(w->evas, w->fx_clip_box);
+		evas_unset_clip(w->evas, w->fx_clip_box);
+		evas_del_object(w->evas, w->fx_clip_box);
+	}
 
 	ewl_callback_clear(w);
 
@@ -273,42 +270,38 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
 				      &req_w, &req_h);
 
-	if (w->ebits_object)
-	  {
-		  ebits_move(w->ebits_object, req_x, req_y);
-		  ebits_resize(w->ebits_object, req_w, req_h);
-	  }
+	if (w->ebits_object) {
+		ebits_move(w->ebits_object, req_x, req_y);
+		ebits_resize(w->ebits_object, req_w, req_h);
+	}
 
-	if (w->fx_clip_box)
-	  {
-		  evas_move(w->evas, w->fx_clip_box, req_x, req_y);
-		  evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
-	  }
+	if (w->fx_clip_box) {
+		evas_move(w->evas, w->fx_clip_box, req_x, req_y);
+		evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+	}
 
-	if (EWL_CONTAINER(w)->clip_box)
-	  {
-		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
-			    req_y);
-		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
-			      req_h);
-	  }
+	if (EWL_CONTAINER(w)->clip_box) {
+		evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
+			  req_y);
+		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
+			    req_h);
+	}
 
-	if (b->label_object)
-	  {
-		  ewl_object_get_current_size(EWL_OBJECT(b->label_object),
-					      &cur_w, &cur_h);
+	if (b->label_object) {
+		ewl_object_get_current_size(EWL_OBJECT(b->label_object),
+					    &cur_w, &cur_h);
 
-		  ewl_object_request_geometry(EWL_OBJECT(b->label_object),
-					      req_x + 19,
-					      req_y + ((req_h / 2) -
-						       (cur_h / 2)), cur_w,
-					      cur_h);
+		ewl_object_request_geometry(EWL_OBJECT(b->label_object),
+					    req_x + 19,
+					    req_y + ((req_h / 2) -
+						     (cur_h / 2)), cur_w,
+					    cur_h);
 
-		  ewl_widget_configure(b->label_object);
+		ewl_widget_configure(b->label_object);
 
-		  ewl_object_get_current_size(EWL_OBJECT(b->label_object),
-					      &cur_w, &cur_h);
-	  }
+		ewl_object_get_current_size(EWL_OBJECT(b->label_object),
+					    &cur_w, &cur_h);
+	}
 
 	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y,
 					19 + cur_w, req_h);
@@ -343,7 +336,8 @@ __ewl_checkbutton_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
+			     void *user_data)
 {
 	Ewl_CheckButton *b;
 
@@ -384,7 +378,8 @@ __ewl_checkbutton_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
+			       void *user_data)
 {
 	Ewl_CheckButton *b;
 	char *v;
@@ -416,33 +411,30 @@ __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	v = ewl_theme_data_get(w, str);
 
-	if (v && !strncasecmp(v, "yes", 3))
-	  {
-		  char *i;
+	if (v && !strncasecmp(v, "yes", 3)) {
+		char *i;
 
-		  snprintf(str, 512, "/appearance/button/check/%s-checked%i",
-			   state, b->checked);
+		snprintf(str, 512, "/appearance/button/check/%s-checked%i",
+			 state, b->checked);
 
-		  i = ewl_theme_image_get(w, str);
+		i = ewl_theme_image_get(w, str);
 
-		  if (i)
-		    {
-			    w->ebits_object = ebits_load(i);
-			    FREE(i);
+		if (i) {
+			w->ebits_object = ebits_load(i);
+			FREE(i);
 
-			    if (w->ebits_object)
-			      {
-				      ebits_add_to_evas(w->ebits_object,
-							w->evas);
-				      ebits_set_layer(w->ebits_object,
-						      EWL_OBJECT(w)->layer);
-				      ebits_set_clip(w->ebits_object,
-						     w->fx_clip_box);
+			if (w->ebits_object) {
+				ebits_add_to_evas(w->ebits_object,
+						  w->evas);
+				ebits_set_layer(w->ebits_object,
+						EWL_OBJECT(w)->layer);
+				ebits_set_clip(w->ebits_object,
+					       w->fx_clip_box);
 
-				      ebits_show(w->ebits_object);
-			      }
-		    }
-	  }
+				ebits_show(w->ebits_object);
+			}
+		}
+	}
 
 	IF_FREE(v);
 

@@ -5,8 +5,7 @@
 typedef struct _ewl_seeker Ewl_Seeker;
 #define EWL_SEEKER(seeker) ((Ewl_Seeker *) seeker)
 
-struct _ewl_seeker
-{
+struct _ewl_seeker {
 	Ewl_Container container;
 	Ewl_Orientation orientation;
 	double value;
@@ -23,4 +22,4 @@ double ewl_seeker_get_value(Ewl_Widget * w);
 void ewl_seeker_set_range(Ewl_Widget * w, double r);
 double ewl_seeker_get_range(Ewl_Widget * w);
 
-#endif /* __EWL_SEEKER_H__ */
+#endif				/* __EWL_SEEKER_H__ */

@@ -31,7 +31,8 @@ static void __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *event_data,
 					 void *user_data);
 static void __ewl_radiobutton_mouse_up(Ewl_Widget * w, void *event_data,
 				       void *user_data);
-static void __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
+static void __ewl_radiobutton_theme_update(Ewl_Widget * w,
+					   void *event_data,
 					   void *user_data);
 
 
@@ -58,8 +59,8 @@ __ewl_radiobutton_init(Ewl_RadioButton * b, const char *label)
 	 * Blank out the structure and initialize it's theme
 	 */
 	memset(b, 0, sizeof(Ewl_RadioButton));
-	ewl_container_init(EWL_CONTAINER(b), EWL_WIDGET_BUTTON, 16, 16,
-			   16, 16);
+	ewl_container_init(EWL_CONTAINER(b), 16, 16,
+			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_LEFT);
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
@@ -138,7 +139,8 @@ ewl_radiobutton_set_radioed(Ewl_Widget * w, int c)
 
 
 static void
-__ewl_radiobutton_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_radiobutton_realize(Ewl_Widget * w, void *event_data,
+			  void *user_data)
 {
 	Ewl_RadioButton *b;
 	Ewl_Widget *t;
@@ -154,15 +156,14 @@ __ewl_radiobutton_realize(Ewl_Widget * w, void *event_data, void *user_data)
 		evas_set_clip(w->evas, w->fx_clip_box,
 			      EWL_CONTAINER(w->parent)->clip_box);
 
-	if (EWL_BUTTON(b)->label)
-	  {
-		  t = ewl_text_new();
-		  ewl_text_set_text(t, EWL_BUTTON(b)->label);
-		  ewl_text_set_font_size(t, 10);
-		  ewl_container_append_child(EWL_CONTAINER(b), t);
+	if (EWL_BUTTON(b)->label) {
+		t = ewl_text_new();
+		ewl_text_set_text(t, EWL_BUTTON(b)->label);
+		ewl_text_set_font_size(t, 10);
+		ewl_container_append_child(EWL_CONTAINER(b), t);
 
-		  ewl_widget_realize(t);
-	  }
+		ewl_widget_realize(t);
+	}
 
 	ewl_widget_theme_update(w);
 
@@ -176,16 +177,15 @@ __ewl_radiobutton_show(Ewl_Widget * w, void *event_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	if (EWL_CONTAINER(w)->children &&
-	    !ewd_list_is_empty(EWL_CONTAINER(w)->children))
-	  {
-		  Ewl_Widget *c;
+	    !ewd_list_is_empty(EWL_CONTAINER(w)->children)) {
+		Ewl_Widget *c;
 
-		  ewd_list_goto_first(EWL_CONTAINER(w)->children);
+		ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-		  while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
-			 != NULL)
-			  ewl_widget_show(c);
-	  }
+		while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
+		       != NULL)
+			ewl_widget_show(c);
+	}
 
 	evas_show(w->evas, w->fx_clip_box);
 
@@ -204,7 +204,8 @@ __ewl_radiobutton_hide(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_radiobutton_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_radiobutton_destroy(Ewl_Widget * w, void *event_data,
+			  void *user_data)
 {
 	Ewl_RadioButton *b;
 
@@ -213,12 +214,11 @@ __ewl_radiobutton_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 
 	b = EWL_RADIOBUTTON(w);
 
-	if (w->ebits_object)
-	  {
-		  ebits_hide(w->ebits_object);
-		  ebits_unset_clip(w->ebits_object);
-		  ebits_free(w->ebits_object);
-	  }
+	if (w->ebits_object) {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	}
 
 	evas_hide(w->evas, w->fx_clip_box);
 	evas_unset_clip(w->evas, w->fx_clip_box);
@@ -252,7 +252,8 @@ __ewl_radiobutton_destroy_recursive(Ewl_Widget * w, void *event_data,
 }
 
 static void
-__ewl_radiobutton_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_radiobutton_configure(Ewl_Widget * w, void *event_data,
+			    void *user_data)
 {
 	Ewl_RadioButton *b;
 	Ewl_Widget *t;
@@ -267,18 +268,17 @@ __ewl_radiobutton_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
 				      &req_w, &req_h);
 
-	if (w->ebits_object)
-	  {
-		  ebits_move(w->ebits_object, req_x, req_y);
-		  ebits_resize(w->ebits_object, req_w, req_h);
+	if (w->ebits_object) {
+		ebits_move(w->ebits_object, req_x, req_y);
+		ebits_resize(w->ebits_object, req_w, req_h);
 
-		  evas_move(w->evas, w->fx_clip_box, req_x, req_y);
-		  evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
-		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
-			    req_y);
-		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
-			      req_h);
-	  }
+		evas_move(w->evas, w->fx_clip_box, req_x, req_y);
+		evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+		evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
+			  req_y);
+		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
+			    req_h);
+	}
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 	t = ewd_list_current(EWL_CONTAINER(w)->children);
@@ -304,7 +304,8 @@ __ewl_radiobutton_configure(Ewl_Widget * w, void *event_data, void *user_data)
 
 
 static void
-__ewl_radiobutton_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_radiobutton_focus_in(Ewl_Widget * w, void *event_data,
+			   void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -315,7 +316,8 @@ __ewl_radiobutton_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_radiobutton_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_radiobutton_focus_out(Ewl_Widget * w, void *event_data,
+			    void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -346,7 +348,8 @@ __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *event_data,
 }
 
 static void
-__ewl_radiobutton_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_radiobutton_mouse_up(Ewl_Widget * w, void *event_data,
+			   void *user_data)
 {
 	Ewl_RadioButton *b;
 
@@ -399,33 +402,30 @@ __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 
 	v = ewl_theme_data_get(w, str);
 
-	if (v && !strncasecmp(v, "yes", 3))
-	  {
-		  char *i;
+	if (v && !strncasecmp(v, "yes", 3)) {
+		char *i;
 
-		  snprintf(str, 512, "/appearance/button/radio/%s-checked%i",
-			   state, EWL_CHECKBUTTON(b)->checked);
+		snprintf(str, 512, "/appearance/button/radio/%s-checked%i",
+			 state, EWL_CHECKBUTTON(b)->checked);
 
-		  i = ewl_theme_image_get(w, str);
+		i = ewl_theme_image_get(w, str);
 
-		  if (i)
-		    {
-			    w->ebits_object = ebits_load(i);
-			    FREE(i);
+		if (i) {
+			w->ebits_object = ebits_load(i);
+			FREE(i);
 
-			    if (w->ebits_object)
-			      {
-				      ebits_add_to_evas(w->ebits_object,
-							w->evas);
-				      ebits_set_layer(w->ebits_object,
-						      EWL_OBJECT(w)->layer);
-				      ebits_set_clip(w->ebits_object,
-						     w->fx_clip_box);
+			if (w->ebits_object) {
+				ebits_add_to_evas(w->ebits_object,
+						  w->evas);
+				ebits_set_layer(w->ebits_object,
+						EWL_OBJECT(w)->layer);
+				ebits_set_clip(w->ebits_object,
+					       w->fx_clip_box);
 
-				      ebits_show(w->ebits_object);
-			      }
-		    }
-	  }
+				ebits_show(w->ebits_object);
+			}
+		}
+	}
 
 	IF_FREE(v);
 

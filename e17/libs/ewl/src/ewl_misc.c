@@ -23,11 +23,10 @@ ewl_init(int argc, char **argv)
 	if (ewl_options.xdisplay)
 		xdisplay = ewl_options.xdisplay;
 
-	if (!e_display_init(xdisplay))
-	  {
-		  fprintf(stderr, "ERRR: Cannot connect to X display!\n");
-		  exit(-1);
-	  }
+	if (!e_display_init(xdisplay)) {
+		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
+		exit(-1);
+	}
 
 	e_event_filter_init();
 	e_ev_signal_init();
@@ -72,11 +71,11 @@ ewl_idle_render(void *data)
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
-	  {
-		  if (widget->evas)
-			  evas_render(widget->evas);
-	  }
+	while ((widget =
+		EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL) {
+		if (widget->evas)
+			evas_render(widget->evas);
+	}
 
 	DRETURN;
 	data = NULL;
@@ -89,13 +88,12 @@ ewl_main_quit()
 
 	DENTER_FUNCTION;
 
-	if (ewl_window_list)
-	  {
-		  ewd_list_goto_first(ewl_window_list);
+	if (ewl_window_list) {
+		ewd_list_goto_first(ewl_window_list);
 
-		  while ((widget = ewd_list_next(ewl_window_list)) != NULL)
-			  ewl_widget_destroy_recursive(widget);
-	  }
+		while ((widget = ewd_list_next(ewl_window_list)) != NULL)
+			ewl_widget_destroy_recursive(widget);
+	}
 
 	exit(-1);
 }
@@ -115,7 +113,7 @@ static void
 ewl_parse_option_array(int argc, char **argv)
 {
 	char stropts[] =
-		"a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+	    "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
 	static struct option lopts[] = {
 		{"ewl_debug-level", 1, 0, '@'},
@@ -127,28 +125,27 @@ ewl_parse_option_array(int argc, char **argv)
 	DENTER_FUNCTION;
 
 	while ((optch =
-		getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
-	  {
-		  switch (optch)
-		    {
-		    case 0:
-			    break;
+		getopt_long_only(argc, argv, stropts, lopts,
+				 &cmdx)) != EOF) {
+		switch (optch) {
+		case 0:
+			break;
 
-		    case '@':
-			    ewl_options.debug_level = atoi(optarg);
-			    D(0,
-			      ("Setting debug level to %i",
-			       ewl_options.debug_level));
-			    break;
+		case '@':
+			ewl_options.debug_level = atoi(optarg);
+			D(0,
+			  ("Setting debug level to %i",
+			   ewl_options.debug_level));
+			break;
 
-		    case '$':
-			    ewl_options.xdisplay = optarg;
-			    break;
+		case '$':
+			ewl_options.xdisplay = optarg;
+			break;
 
-		    default:
-			    break;
-		    }
-	  }
+		default:
+			break;
+		}
+	}
 
 	DLEAVE_FUNCTION;
 }

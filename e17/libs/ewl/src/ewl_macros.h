@@ -9,7 +9,7 @@
 #define __EWL_MACROS_H__
 
 #undef NEW
-#define NEW(dat, num) malloc(sizeof(dat) * (num)); \
+#define NEW(dat, num) malloc(sizeof(dat) * (num));
 
 #undef REALLOC
 #define REALLOC(dat, type, num) \
@@ -35,4 +35,4 @@
 	if (dat) free(dat); dat = NULL; \
 }
 
-#endif /* __EWL_MACROS_H__ */
+#endif				/* __EWL_MACROS_H__ */

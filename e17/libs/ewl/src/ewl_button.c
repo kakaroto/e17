@@ -12,8 +12,10 @@
 static void __ewl_button_init(Ewl_Button * b, char *label);
 static void __ewl_button_realize(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_button_hide(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_button_show(Ewl_Widget * w, void *ev_data,
+			      void *user_data);
+static void __ewl_button_hide(Ewl_Widget * w, void *ev_data,
+			      void *user_data);
 static void __ewl_button_destroy(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
 static void __ewl_button_destroy_recursive(Ewl_Widget * w, void *ev_data,
@@ -46,9 +48,6 @@ ewl_button_new(char *l)
 
 	__ewl_button_init(b, l);
 
-	if (b->label)
-		b->label_object = ewl_text_new();
-
 	DRETURN_PTR(EWL_WIDGET(b));
 }
 
@@ -61,8 +60,8 @@ __ewl_button_init(Ewl_Button * b, char *label)
 	 * Blank out the structure and initialize it's theme
 	 */
 	memset(b, 0, sizeof(Ewl_Button));
-	ewl_container_init(EWL_CONTAINER(b), EWL_WIDGET_BUTTON, 10, 10,
-			   2048, 2048);
+	ewl_container_init(EWL_CONTAINER(b), 10, 10,
+			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
@@ -119,16 +118,15 @@ ewl_button_set_label(Ewl_Widget * w, const char *l)
 
 	if (!l)
 		__ewl_button_remove_label(w);
-	else
-	  {
-		  b = EWL_BUTTON(w);
+	else {
+		b = EWL_BUTTON(w);
 
-		  IF_FREE(b->label);
+		IF_FREE(b->label);
 
-		  b->label = strdup(l);
+		b->label = strdup(l);
 
-		  __ewl_button_update_label(w);
-	  }
+		__ewl_button_update_label(w);
+	}
 
 	ewl_widget_configure(w);
 
@@ -140,47 +138,38 @@ static void
 __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
+	Evas_Object *clip_box;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	b = EWL_BUTTON(w);
 
-	{
-		Evas_Object *clip_box;
+	clip_box = evas_add_rectangle(w->evas);
+	evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+	evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
+	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+		evas_set_clip(w->evas, clip_box,
+			      EWL_CONTAINER(w->parent)->clip_box);
+	w->fx_clip_box = clip_box;
 
-		clip_box = evas_add_rectangle(w->evas);
-		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
-		evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
-		if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-			evas_set_clip(w->evas, clip_box,
-				      EWL_CONTAINER(w->parent)->clip_box);
-		w->fx_clip_box = clip_box;
 
+	clip_box = evas_add_rectangle(w->evas);
+	evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+	evas_set_layer(w->evas, clip_box, LAYER(w));
+	evas_set_clip(w->evas, clip_box, w->fx_clip_box);
+	evas_show(w->evas, clip_box);
+
+	EWL_CONTAINER(w)->clip_box = clip_box;
+
+	if (b->label) {
+		Ewl_Widget *label_object = ewl_text_new();
+
+		ewl_container_append_child(EWL_CONTAINER(w), label_object);
+		__ewl_button_update_label(w);
 	}
-
-	{
-		Evas_Object *clip_box;
-
-		clip_box = evas_add_rectangle(w->evas);
-		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
-		evas_set_layer(w->evas, clip_box, LAYER(w));
-		evas_set_clip(w->evas, clip_box, w->fx_clip_box);
-		evas_show(w->evas, clip_box);
-
-		EWL_CONTAINER(w)->clip_box = clip_box;
-	}
-
 
 	ewl_widget_theme_update(w);
-
-	if (b->label_object && b->label)
-	  {
-		  ewl_widget_realize(b->label_object);
-		  ewl_container_append_child(EWL_CONTAINER(w),
-					     b->label_object);
-		  __ewl_button_update_label(w);
-	  }
 
 	DLEAVE_FUNCTION;
 }
@@ -224,12 +213,11 @@ __ewl_button_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	b = EWL_BUTTON(w);
 
-	if (w->ebits_object)
-	  {
-		  ebits_hide(w->ebits_object);
-		  ebits_unset_clip(w->ebits_object);
-		  ebits_free(w->ebits_object);
-	  }
+	if (w->ebits_object) {
+		ebits_hide(w->ebits_object);
+		ebits_unset_clip(w->ebits_object);
+		ebits_free(w->ebits_object);
+	}
 
 	evas_hide(w->evas, w->fx_clip_box);
 	evas_unset_clip(w->evas, w->fx_clip_box);
@@ -245,7 +233,8 @@ __ewl_button_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_button_destroy_recursive(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_button_destroy_recursive(Ewl_Widget * w, void *ev_data,
+			       void *user_data)
 {
 	Ewl_Widget *c;
 
@@ -267,53 +256,58 @@ __ewl_button_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Button *b;
 	Ewl_Widget *t;
 	int req_x, req_y, req_w, req_h;
-	int cur_w, cur_h;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	b = EWL_BUTTON(w);
 
+	/*
+	 * Retrieve the child object and make sure the button's minimum size
+	 * is not smaller than the child
+	 */
+	t = ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	if (t) {
+		int cmin_w, cmin_h;
+		int pmin_w, pmin_h;
+
+		ewl_object_get_minimum_size(EWL_OBJECT(t), &cmin_w,
+					    &cmin_h);
+		ewl_object_get_minimum_size(EWL_OBJECT(w), &pmin_w,
+					    &pmin_h);
+
+		if (cmin_w > pmin_w)
+			pmin_w = cmin_w;
+		if (cmin_h > pmin_h)
+			pmin_h = cmin_h;
+
+		ewl_object_set_minimum_size(EWL_OBJECT(w), pmin_w, pmin_h);
+	}
+
+	ewl_object_apply_requested(EWL_OBJECT(w));
+
 	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
 				      &req_w, &req_h);
 
-	if (w->ebits_object)
-	  {
-		  ebits_move(w->ebits_object, req_x, req_y);
-		  ebits_resize(w->ebits_object, req_w, req_h);
-	  }
+	if (w->ebits_object) {
+		ebits_move(w->ebits_object, req_x, req_y);
+		ebits_resize(w->ebits_object, req_w, req_h);
+	}
 
-	if (w->fx_clip_box)
-	  {
-		  evas_move(w->evas, w->fx_clip_box, req_x, req_y);
-		  evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
-	  }
+	if (w->fx_clip_box) {
+		evas_move(w->evas, w->fx_clip_box, req_x, req_y);
+		evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+	}
 
-	if (EWL_CONTAINER(w)->clip_box)
-	  {
-		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
-			    req_y);
-		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
-			      req_h);
-	  }
+	if (EWL_CONTAINER(w)->clip_box) {
+		evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
+			  req_y);
+		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
+			    req_h);
+	}
 
-	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y, req_w,
-					req_h);
-
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	t = ewd_list_current(EWL_CONTAINER(w)->children);
-
-	if (!t)
-		DRETURN;
-
-	ewl_object_get_current_size(EWL_OBJECT(t), &cur_w, &cur_h);
-
-	ewl_object_request_geometry(EWL_OBJECT(t),
-				    req_x + ((req_w / 2) - (cur_w / 2)),
-				    req_y + ((req_h / 2) - (cur_h / 2)),
-				    cur_w, cur_h);
-
-	ewl_widget_configure(t);
+	if (t)
+		ewl_widget_configure(t);
 
 	DLEAVE_FUNCTION;
 }
@@ -398,39 +392,36 @@ __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 				       "/appearance/button/default/base/visible");
 
 
-	if (v && !strncasecmp(v, "yes", 3))
-	  {
-		  char *i;
+	if (v && !strncasecmp(v, "yes", 3)) {
+		char *i;
 
-		  if (w->state & EWL_STATE_PRESSED)
-			  i = ewl_theme_image_get(w,
-						  "/appearance/button/default/clicked");
-		  else if (w->state & EWL_STATE_HILITED)
-			  i = ewl_theme_image_get(w,
-						  "/appearance/button/default/hilited");
-		  else
-			  i = ewl_theme_image_get(w,
-						  "/appearance/button/default/base");
+		if (w->state & EWL_STATE_PRESSED)
+			i = ewl_theme_image_get(w,
+						"/appearance/button/default/clicked");
+		else if (w->state & EWL_STATE_HILITED)
+			i = ewl_theme_image_get(w,
+						"/appearance/button/default/hilited");
+		else
+			i = ewl_theme_image_get(w,
+						"/appearance/button/default/base");
 
-		  if (i)
-		    {
-			    w->ebits_object = ebits_load(i);
-			    FREE(i);
+		if (i) {
+			w->ebits_object = ebits_load(i);
+			FREE(i);
 
-			    if (w->ebits_object)
-			      {
-				      ebits_add_to_evas(w->ebits_object,
-							w->evas);
-				      ebits_set_layer(w->ebits_object,
-						      EWL_OBJECT(w)->layer);
+			if (w->ebits_object) {
+				ebits_add_to_evas(w->ebits_object,
+						  w->evas);
+				ebits_set_layer(w->ebits_object,
+						EWL_OBJECT(w)->layer);
 
-				      ebits_set_clip(w->ebits_object,
-						     w->fx_clip_box);
+				ebits_set_clip(w->ebits_object,
+					       w->fx_clip_box);
 
-				      ebits_show(w->ebits_object);
-			      }
-		    }
-	  }
+				ebits_show(w->ebits_object);
+			}
+		}
+	}
 
 	IF_FREE(v);
 
@@ -446,54 +437,61 @@ static void
 __ewl_button_update_label(Ewl_Widget * w)
 {
 	Ewl_Button *b;
+	char *tmp;
+	int fs;
+
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	b = EWL_BUTTON(w);
 
-	if (b->label)
-	  {
-		  char *tmp;
-		  int fs;
+	if (!b->label)
+		return;
 
-		  if (!b->label_object)
-		    {
-			    b->label_object = ewl_text_new();
-			    ewl_container_append_child(EWL_CONTAINER(w),
-						       b->label_object);
-			    if (REALIZED(w))
-				    ewl_widget_realize(b->label_object);
+	/*
+	 * If the label object has not yet been created then do so and
+	 * add it to the container button
+	 */
+	if (!b->label_object) {
+		b->label_object = ewl_text_new();
+		ewl_container_append_child(EWL_CONTAINER(w),
+					   b->label_object);
+	}
 
-			    if (VISIBLE(w))
-				    ewl_widget_show(b->label_object);
-		    }
+	if (REALIZED(w))
+		ewl_widget_realize(b->label_object);
+
+	if (VISIBLE(w))
+		ewl_widget_show(b->label_object);
 
 
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/font");
+	/*
+	 * Retrieve theme information
+	 */
+	tmp =
+	    ewl_theme_data_get(w, "/appearance/button/default/text/font");
 
-		  if (tmp)
-		    {
-			    ewl_text_set_font(b->label_object, tmp);
-			    FREE(tmp);
-		    }
+	if (tmp) {
+		ewl_text_set_font(b->label_object, tmp);
+		FREE(tmp);
+	}
 
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/font_size");
+	tmp =
+	    ewl_theme_data_get(w,
+			       "/appearance/button/default/text/font_size");
 
-		  if (tmp)
-		    {
-			    fs = atoi(tmp);
-			    FREE(tmp);
-		    }
-		  else
-			  fs = 20;
+	if (tmp) {
+		fs = atoi(tmp);
+		FREE(tmp);
+	} else
+		fs = 20;
 
-		  ewl_text_set_font_size(b->label_object, fs);
-
-		  ewl_text_set_text(b->label_object, b->label);
-	  }
+	/*
+	 * Apply theme info to the text
+	 */
+	ewl_text_set_font_size(b->label_object, fs);
+	ewl_text_set_text(b->label_object, b->label);
 
 	DLEAVE_FUNCTION;
 }
@@ -502,25 +500,20 @@ static void
 __ewl_button_remove_label(Ewl_Widget * w)
 {
 	Ewl_Button *b;
-	Ewl_Widget *c;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	b = EWL_BUTTON(w);
 
-	if (!b->label_object)
+	if (!b->label)
 		DRETURN;
 
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-
-	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
-		if (c == b->label_object)
-			ewd_list_remove(EWL_CONTAINER(w)->children);
-
-	ewl_widget_destroy(b->label_object);
-
-	b->label_object = NULL;
+	if (b->label_object) {
+		ewd_list_goto_first(EWL_CONTAINER(w)->children);
+		ewd_list_remove(EWL_CONTAINER(w)->children);
+		ewl_widget_destroy(b->label_object);
+	}
 
 	DLEAVE_FUNCTION;
 }

@@ -112,14 +112,12 @@ ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 
 	ewd_list_goto_first(w->callbacks[type]);
 
-	while ((cb = ewd_list_next(w->callbacks[type])) != NULL)
-	  {
-		  if (cb->func == func)
-		    {
-			    cb->user_data = user_data;
-			    break;
-		    }
-	  }
+	while ((cb = ewd_list_next(w->callbacks[type])) != NULL) {
+		if (cb->func == func) {
+			cb->user_data = user_data;
+			break;
+		}
+	}
 
 	DLEAVE_FUNCTION;
 }
@@ -153,12 +151,11 @@ ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 		DRETURN;
 
 	while ((cb = ewd_list_next(w->callbacks[t])) != NULL)
-		if (cb->id == cb_id)
-		  {
-			  ewd_list_remove(w->callbacks[t]);
-			  FREE(cb);
-			  break;
-		  }
+		if (cb->id == cb_id) {
+			ewd_list_remove(w->callbacks[t]);
+			FREE(cb);
+			break;
+		}
 
 	DLEAVE_FUNCTION;
 }
@@ -171,11 +168,10 @@ ewl_callback_clear(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	for (i = 0; i < EWL_CALLBACK_MAX; i++)
-	  {
-		  if (w->callbacks[i])
-			  ewd_list_destroy(w->callbacks[i]);
-	  }
+	for (i = 0; i < EWL_CALLBACK_MAX; i++) {
+		if (w->callbacks[i])
+			ewd_list_destroy(w->callbacks[i]);
+	}
 
 
 	DLEAVE_FUNCTION;

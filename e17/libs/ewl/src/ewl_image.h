@@ -4,8 +4,7 @@
 
 typedef enum _ewl_image_type Ewl_Image_Type;
 
-enum _ewl_image_type
-{
+enum _ewl_image_type {
 	EWL_IMAGE_TYPE_NORMAL,
 	EWL_IMAGE_TYPE_EBITS
 };
@@ -13,22 +12,17 @@ enum _ewl_image_type
 typedef struct _ewl_image Ewl_Image;
 #define EWL_IMAGE(image) ((Ewl_Image *) image)
 
-struct _ewl_image
-{
+struct _ewl_image {
 	Ewl_Widget widget;
 	Ewl_Image_Type type;
 	void *image;
 	char *path;
-	struct
-	{
+	struct {
 		int r, g, b, a;
-	}
-	color;
-	struct
-	{
+	} color;
+	struct {
 		int t, b, l, r;
-	}
-	border;
+	} border;
 };
 
 Ewl_Widget *ewl_image_load(const char *i);
@@ -55,4 +49,4 @@ void ewl_image_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a);
 void ewl_image_set_border(Ewl_Widget * w, int t, int b, int l, int r);
 void ewl_image_get_border(Ewl_Widget * w, int *t, int *b, int *l, int *r);
 
-#endif /* __EWL_IMAGE_H__ */
+#endif				/* __EWL_IMAGE_H__ */
