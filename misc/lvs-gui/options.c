@@ -395,7 +395,7 @@ void usage(int exit_status){
   
   fprintf(
     stream, 
-    "Usage: perdition [options]\n"
+    "Usage: lvs-gui [options]\n"
     "  options:\n"
 #ifdef HAVE_GETOPT_LONG    
     "     -c|--rcp_command: \n"
