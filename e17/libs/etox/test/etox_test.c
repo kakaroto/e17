@@ -319,8 +319,6 @@ setup (void)
   /* Callbacks */
   evas_callback_add (evas, o_showpanel, CALLBACK_MOUSE_IN, show_panel, NULL);
   evas_callback_add (evas, o_hidepanel, CALLBACK_MOUSE_IN, hide_panel, NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_DOWN, test_basic,
-		     NULL);
   evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_UP, test_basic,
 		     NULL);
   evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_IN, mouse_in,
