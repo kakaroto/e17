@@ -774,7 +774,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    <title> When using <link linkend="API-efsd-metadata-get-str"><function>
               efsd_metadata_get_str()</function></link> or <link linkend="API-efsd-metadata-get-raw">
               <function>efsd_metadata_get_raw()</function></link>, you need to <function>free()</function>
-	      the string/data you receive.
+	      the string/data you receive.</title>
             <para>
 	      This is because you get a copy of the data whenever you request it. Regardless of
 	      releasing this memory, you still need to call <link linkend="API-efsd-event-cleanup">
@@ -2620,6 +2620,45 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
  <para>
    Convenience function to access the command ID in reply or
    filechange events. Returns -1 if no ID is contained in the event.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-reply-data">efsd_reply_data</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_reply_data</refname>
+ <refpurpose>
+      returns data contained in a reply event
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void          * <function>efsd_reply_data </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function access the data returned in a reply
+   event. Returns NULL if an error occured.
  </para>
 </refsect1>
 </refentry>

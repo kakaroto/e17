@@ -252,8 +252,6 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
   cmd.efsd_set_metadata_cmd.key = strdup(key);
   cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
 
-  printf("SENDING %s\n", cmd.efsd_set_metadata_cmd.file);
-
   if (!cmd.efsd_set_metadata_cmd.file)
     goto error_return;
   

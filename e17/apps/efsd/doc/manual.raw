@@ -774,7 +774,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    <title> When using <link linkend="API-efsd-metadata-get-str"><function>
               efsd_metadata_get_str()</function></link> or <link linkend="API-efsd-metadata-get-raw">
               <function>efsd_metadata_get_raw()</function></link>, you need to <function>free()</function>
-	      the string/data you receive.
+	      the string/data you receive.</title>
             <para>
 	      This is because you get a copy of the data whenever you request it. Regardless of
 	      releasing this memory, you still need to call <link linkend="API-efsd-event-cleanup">

@@ -58,6 +58,8 @@ Requirements:
 
 * Edb, the Enlightenment database library, based on Berkeley DB.
 
+* libxml2, from http://www.xmlsoft.org
+
 To test Efsd:
 =============
 
