@@ -165,8 +165,8 @@ GtkWidget *
 	gtk_widget_show(play_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), play_button, FALSE, FALSE, 0);
 
-	hscale3 = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0,
-				   	0, 0)));
+	hscale3 = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 101, 1,
+				   	1, 1)));
 	gtk_widget_ref(hscale3);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "hscale3", hscale3,
 							 (GtkDestroyNotify) gtk_widget_unref);
@@ -304,8 +304,9 @@ GtkWidget *
 	gtk_widget_show(vbox3);
 	gtk_box_pack_start(GTK_BOX(vbox2), vbox3, TRUE, TRUE, 0);
 
-	hscale2 = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0,
-				   	0, 0)));
+	hscale2 = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 101, 1,
+						                    1, 1)));
+
 	gtk_widget_ref(hscale2);
 	gtk_object_set_data_full(GTK_OBJECT(choose_segment), "hscale2", hscale2,
 							 (GtkDestroyNotify) gtk_widget_unref);
