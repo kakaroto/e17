@@ -43,60 +43,7 @@
 #include "utils.h"
 #include "getopt.h"
 
-#if 0
-#ifdef __GNUC__
-#define D(a) \
-  { \
-      printf("%s +%u %s()     ",__FILE__,__LINE__,__FUNCTION__); \
-      printf a; \
-      fflush(stdout); \
-  }
-#define D_ENTER \
-  { \
-      printf("%s +%u %s() >>> Entering\n",__FILE__,__LINE__,__FUNCTION__); \
-      fflush(stdout); \
-  }
-#define D_RETURN(a) \
-  { \
-      printf("%s +%u %s() <<< Leaving\n",__FILE__,__LINE__,__FUNCTION__); \
-      fflush(stdout); \
-      return (a); \
-  }
-#define D_RETURN_ \
-  { \
-      printf("%s +%u %s() <<< Leaving\n",__FILE__,__LINE__,__FUNCTION__); \
-      fflush(stdout); \
-      return; \
-  }
-#else
-#define D(a) \
-  { \
-      printf("%s +%u : ",__FILE__,__LINE__); \
-      printf a; \
-      fflush(stdout); \
-  }
-#define D_ENTER
-#define D_RETURN(a) \
-  { \
-      return(a); \
-  }
-#define D_RETURN_ \
-  { \
-      return; \
-  }
-#endif
-#else
-#define D(a)
-#define D_ENTER
-#define D_RETURN(a) \
-  { \
-      return (a); \
-  }
-#define D_RETURN_ \
-  { \
-      return; \
-  }
-#endif
+#include "debug.h"
 
 #define CHECK_SIZE 160
 
@@ -333,7 +280,6 @@ void feh_draw_filename(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);
 
-
 feh_file *filelist_addtofront(feh_file * root, feh_file * newfile);
 feh_file *filelist_newitem(char *filename);
 feh_file *filelist_remove_file(feh_file * list, feh_file * file);
@@ -366,7 +312,6 @@ int feh_cmp_size(feh_file * file1, feh_file * file2);
 int feh_cmp_format(feh_file * file1, feh_file * file2);
 feh_file *feh_file_info_preload(feh_file * list);
 
-
 /* Imlib stuff */
 extern Display *disp;
 extern Visual *vis;
@@ -390,3 +335,4 @@ extern feh_file *filelist;
 extern feh_file *current_file;
 extern Screen *scr;
 extern unsigned char reset_output;
+extern int call_level;

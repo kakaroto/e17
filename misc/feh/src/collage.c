@@ -94,6 +94,12 @@ init_collage_mode(void)
 
    if (bg_im)
       imlib_blend_image_onto_image(bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
+   else
+   {
+      /* Colour the background */
+      imlib_context_set_color(0, 0, 0, 255);
+      imlib_image_fill_rectangle(0, 0, w, h);
+   }
 
    for (file = filelist; file; file = file->next)
    {

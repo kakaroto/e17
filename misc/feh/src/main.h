@@ -38,3 +38,4 @@ Imlib_Image *checks = NULL;
 int rectangles_on = 0;
 Window root = 0;
 XContext xid_context = 0;
+int call_level = 0;

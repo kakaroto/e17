@@ -141,7 +141,7 @@ feh_main_iteration(int block)
          if (tval.tv_usec <= 1000)
             tval.tv_usec = 1000;
          errno = 0;
-         D(("oo Performing blocking select - waiting for timer or event\n"));
+         D(("Performing blocking select - waiting for timer or event\n"));
          count = select(fdsize, &fdset, NULL, NULL, &tval);
          if ((count < 0)
              && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
@@ -161,7 +161,7 @@ feh_main_iteration(int block)
       if (block && !XPending(disp))
       {
          errno = 0;
-         D(("oo Performing blocking select - no timers, or zooming\n"));
+         D(("Performing blocking select - no timers, or zooming\n"));
          count = select(fdsize, &fdset, NULL, NULL, NULL);
          if ((count < 0)
              && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))

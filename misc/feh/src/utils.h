@@ -28,7 +28,8 @@
 
 void eprintf(char *fmt, ...) __attribute__ ((noreturn));
 void weprintf(char *fmt, ...);
-char *estrdup(char *s);
-void *emalloc(size_t n);
-void *erealloc(void *ptr, size_t n);
+char *_estrdup(char *s);
+void *_emalloc(size_t n);
+void *_erealloc(void *ptr, size_t n);
 char *estrjoin(const char *separator, ...);
+char *stroflen(char, int);

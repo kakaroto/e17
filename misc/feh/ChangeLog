@@ -1,3 +1,12 @@
+Mon May  8 13:12:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Fun with dmalloc
+
+Mon May  8 13:10:12 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Ensure backgrounds of index and montage images are black by
+	default. Imlib2's behaviour changed in this respect at some point.
+
 Sun May  7 18:42:57 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Fixed breakage (and segfault) when preloading images in verbose

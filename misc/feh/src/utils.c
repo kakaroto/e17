@@ -63,7 +63,7 @@ weprintf(char *fmt, ...)
 
 /* estrdup: duplicate a string, report if error */
 char *
-estrdup(char *s)
+_estrdup(char *s)
 {
    char *t;
 
@@ -76,7 +76,7 @@ estrdup(char *s)
 
 /* emalloc: malloc and report if error */
 void *
-emalloc(size_t n)
+_emalloc(size_t n)
 {
    void *p;
 
@@ -88,7 +88,7 @@ emalloc(size_t n)
 
 /* erealloc: realloc and report if error */
 void *
-erealloc(void *ptr, size_t n)
+_erealloc(void *ptr, size_t n)
 {
    void *p;
 
@@ -145,4 +145,17 @@ estrjoin(const char *separator, ...)
    va_end(args);
 
    return string;
+}
+
+char *
+stroflen(char c, int l)
+{
+   static char buf[1024];
+   int i = 0;
+
+   buf[0] = '\0';
+   while (l--)
+      buf[i++] = c;
+   buf[i] = '\0';
+   return buf;
 }

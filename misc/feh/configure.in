@@ -11,6 +11,7 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 AM_MAINTAINER_MODE
+AM_WITH_DMALLOC
 
 AC_CHECK_LIB(Imlib2, imlib_load_image, , [
 echo "ERROR:  You need libImlib2 to build feh.";

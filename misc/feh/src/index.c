@@ -296,6 +296,13 @@ init_index_mode(void)
 
    if (bg_im)
       imlib_blend_image_onto_image(bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
+   else
+   {
+      /* Colour the background */
+      imlib_context_set_color(0,0,0,255);
+      imlib_image_fill_rectangle(0,0,w, h + title_area_h);
+      imlib_context_set_color(255,255,255,255);
+   }
 
    for (file = filelist; file; file = file->next)
    {
