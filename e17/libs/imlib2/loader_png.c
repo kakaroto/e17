@@ -195,6 +195,8 @@ save (ImlibImage *im,
       char progress_granularity)
 {
    /* if we cant do this - just return 0 */
+	im = NULL;
+	progress = NULL;
    return 0;
 }
 

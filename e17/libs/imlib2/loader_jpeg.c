@@ -202,6 +202,8 @@ save (ImlibImage *im,
 		       int update_w, int update_h),
       char progress_granularity)
 {
+	im = NULL;
+	progress = NULL;
    return 0;
 }
 

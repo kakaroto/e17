@@ -37,6 +37,7 @@ __imlib_GrabDrawableToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
    XColor              cols[256];
 
    /* FIXME: oh isnt used - i wonder if there's a bug looming... */   
+   oh = 0;
    origx = x;
    origy = y;
    origw = w;

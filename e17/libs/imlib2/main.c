@@ -25,6 +25,9 @@ Visual *vis;
 Colormap cm;
 int depth;
 
+void progress(Imlib_Image *im, char percent, int update_x, int update_y,
+			      int update_w, int update_h);
+
 void
 progress(Imlib_Image *im, char percent,
 	 int update_x, int update_y,
@@ -43,7 +46,7 @@ progress(Imlib_Image *im, char percent,
 int main (int argc, char **argv)
 {
    int i, j;
-   Imlib_Image *im;
+   Imlib_Image *im = NULL;
    int sec1, usec1, sec2, usec2;
    int pixels = 0;
    struct timeval timev;
@@ -186,13 +189,15 @@ int main (int argc, char **argv)
      {
 	int wo, ho, px, py, first = 1;
 	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13], im_tmp;
-	Imlib_Border border;
+	/* Imlib_Border border; */
 	Imlib_Updates up = NULL;
-	int x, y, dum, i, j;
+	int x, y, /* dum, */ i, j;
+	/*
 	unsigned int dui;
 	Window rt;
+	*/
 	XEvent ev;
-	Imlib_Font fn;
+	Imlib_Font fn=NULL;
 	
 	/* "ARIAL/30" "COMIC/30" "IMPACT/30" "Prole/30" "Proteron/30" */
 	/* "TIMES/30" "badacid/30" "bajoran/30" "bigfish/30" */
@@ -279,7 +284,8 @@ int main (int argc, char **argv)
 	       {
 		  Imlib_Updates uu;
 		  
-		  uu = __imlib_draw_line(im, 200, 200, x, y, 255, 255, 255, 255, 0);
+		  uu = (Imlib_Updates) __imlib_draw_line(im, 200, 200, x, y, 255, 255,
+				  255, 255, 0);
 		  up = imlib_updates_append_updates(up, uu);
 	       }
 	     if (fon)

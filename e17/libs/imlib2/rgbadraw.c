@@ -6,8 +6,8 @@
 #include "context.h"
 #include "rgba.h"
 #include "blend.h"
-#include "rgbadraw.h"
 #include "updates.h"
+#include "rgbadraw.h"
 
 void
 __imlib_FlipImageHoriz(ImlibImage *im)

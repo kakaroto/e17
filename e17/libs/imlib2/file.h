@@ -10,4 +10,8 @@ void                __imlib_FileDel(char *s);
 time_t              __imlib_FileModDate(char *s);
 char               *__imlib_FileHomeDir(int uid);
 char               *__imlib_FileField(char *s, int field);
+int                 __imlib_FilePermissions(char *s);
+int                 __imlib_FileCanRead(char *s);
+
+
 #endif

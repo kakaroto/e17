@@ -359,6 +359,8 @@ int imlib_get_character_index_and_location_in_text(Imlib_font font,
 
 /* image saving functions */
 void imlib_save_image(Imlib_Image image, char *filename);
+
+
 #endif
 
 #endif

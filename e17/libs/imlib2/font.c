@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include "file.h"
+#include "updates.h"
 #include "rgbadraw.h"
 
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
