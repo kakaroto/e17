@@ -114,8 +114,6 @@ int ewl_tooltip_focus_timer (void *data)
 						    t->y + EWL_TOOLTIP_OFFSET);
 	ewl_widget_show (EWL_WIDGET (t));
 
-	printf ("Opening tooltip after %lf secs\n", t->delay);
-
 	t->timer = NULL;
 
 	return FALSE;
@@ -136,8 +134,6 @@ ewl_tooltip_parent_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ecore_timer_del (t->timer);
 		t->timer = NULL;
 	}
-
-	printf ("Mouse clicked the parent, don't display tooltip\n");
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
