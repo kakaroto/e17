@@ -50,7 +50,7 @@
 #define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASS(o) == SPIF_CLASS_VAR(type)))
 #if DEBUG == 0
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   (1)
-#elsif DEBUG <= 4
+#elif DEBUG <= 4
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   (!SPIF_OBJ_ISNULL(o))
 #else
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   SPIF_OBJ_IS_TYPE(o, type)

@@ -229,3 +229,8 @@ Wed May 22 00:16:31 2002                        Michael Jennings (mej)
 Brought the performance tests up to date and cleaned up some memory
 leaks in them.
 ----------------------------------------------------------------------
+Wed May 22 08:59:38 2002                        Michael Jennings (mej)
+
+Stupid typo.  Doing too much perl, I guess.  cpp uses "#elif," not
+"#elsif."
+----------------------------------------------------------------------
