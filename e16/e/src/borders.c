@@ -591,77 +591,24 @@ AddToFamily(Window win)
 		    }
 		  Efree(blst);
 	       }
-	     if (mode.kde_support)
-	       {
-		  fixed = Erealloc(fixed, sizeof(RectBox) * (j + 2));
-		  ret = Erealloc(ret, sizeof(RectBox) * ((j + 2) + 1));
-
-		  fixed[j].data = NULL;
-		  fixed[j].x = 0;
-		  fixed[j].y = 0;
-		  if (mode.kde_y1 == 0)
-		    {
-		       fixed[j].w = mode.kde_x1;
-		    }
-		  else
-		    {
-		       fixed[j].w = root.w;
-		    }
-		  if (mode.kde_x1 == 0)
-		    {
-		       fixed[j].h = mode.kde_y1;
-		    }
-		  else
-		    {
-		       fixed[j].h = root.h;
-		    }
-		  fixed[j].p = 50;
-		  j++;
-
-		  fixed[j].data = NULL;
-		  if ((mode.kde_x2 == root.w) && (mode.kde_y2 < root.h))
-		     fixed[j].x = 0;
-		  else
-		     fixed[j].x = mode.kde_x2;
-		  fixed[j].w = mode.kde_x2 - root.w;
-		  if (mode.kde_x2 < root.w)
-		    {
-		       fixed[j].y = 0;
-		       fixed[j].h = root.h;
-		    }
-		  else
-		    {
-		       fixed[j].y = mode.kde_y2;
-		       fixed[j].h = mode.kde_y2 - root.h;
-		    }
-		  if (fixed[j].x < 0)
-		    {
-		       fixed[j].w += fixed[j].x;
-		       fixed[j].x = 0;
-		    }
-		  if ((fixed[j].x + fixed[j].w) > root.w)
-		     fixed[j].w = root.w - fixed[j].x;
-		  if (fixed[j].y < 0)
-		    {
-		       fixed[j].h += fixed[j].y;
-		       fixed[j].y = 0;
-		    }
-		  if ((fixed[j].y + fixed[j].h) > root.h)
-		     fixed[j].h = root.h - fixed[j].y;
-		  if ((fixed[j].w > 0) && (fixed[j].h > 0))
-		    {
-		       fixed[j].p = 50;
-		       j++;
-		    }
-	       }
 	     newrect.data = ewin;
 	     newrect.x = 0;
 	     newrect.y = 0;
 	     newrect.w = ewin->w;
 	     newrect.h = ewin->h;
 	     newrect.p = ewin->layer;
-	     ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
-			  ARRANGE_BY_SIZE);
+	     if (mode.kde_support)
+	       {
+		  ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1,
+			       mode.kde_y1, mode.kde_x2, mode.kde_y2,
+			       ARRANGE_BY_SIZE);
+
+	       }
+	     else
+	       {
+		  ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
+			       ARRANGE_BY_SIZE);
+	       }
 	     for (i = 0; i < j + 1; i++)
 	       {
 		  if (ret[i].data == ewin)

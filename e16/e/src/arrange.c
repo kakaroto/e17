@@ -90,8 +90,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 
    EDBUG(7, "ArrangeRects");
 
-   startx = 0;
-   starty = 0;
    switch (policy)
      {
      case ARRANGE_VERBATIM:
@@ -203,9 +201,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	xsize = 0;
 	ysize = 0;
 /* put all the sorted rects into the xy arrays */
-	xsize = ArrangeAddToList(&xarray, xsize, 0);
+	xsize = ArrangeAddToList(&xarray, xsize, startx);
 	xsize = ArrangeAddToList(&xarray, xsize, width);
-	ysize = ArrangeAddToList(&yarray, ysize, 0);
+	ysize = ArrangeAddToList(&yarray, ysize, starty);
 	ysize = ArrangeAddToList(&yarray, ysize, height);
 	for (j = 0; j < num_sorted; j++)
 	  {
@@ -532,10 +530,10 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		sorted[num_sorted].x = width - sorted[num_sorted].w;
 	     if ((sorted[num_sorted].y + sorted[num_sorted].h) > height)
 		sorted[num_sorted].y = height - sorted[num_sorted].h;
-	     if (sorted[num_sorted].x < 0)
-		sorted[num_sorted].x = 0;
-	     if (sorted[num_sorted].y < 0)
-		sorted[num_sorted].y = 0;
+	     if (sorted[num_sorted].x < startx)
+		sorted[num_sorted].x = startx;
+	     if (sorted[num_sorted].y < starty)
+		sorted[num_sorted].y = starty;
 	     num_sorted++;
 	  }
 /* there is no room - put it centered (but dont put top left off screen) */
@@ -546,10 +544,10 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     sorted[num_sorted].y = (height - floating[leftover[i]].h) / 2;
 	     sorted[num_sorted].w = floating[leftover[i]].w;
 	     sorted[num_sorted].h = floating[leftover[i]].h;
-	     if (sorted[num_sorted].x < 0)
-		sorted[num_sorted].x = 0;
-	     if (sorted[num_sorted].y < 0)
-		sorted[num_sorted].y = 0;
+	     if (sorted[num_sorted].x < startx)
+		sorted[num_sorted].x = startx;
+	     if (sorted[num_sorted].y < starty)
+		sorted[num_sorted].y = starty;
 	     num_sorted++;
 	  }
      }
@@ -562,14 +560,14 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
       Efree(leftover);
    for (i = 0; i < num_sorted; i++)
      {
-	if ((sorted[i].x + sorted[i].w) > root.w)
+	if ((sorted[i].x + sorted[i].w) > width)
 	   sorted[i].x = root.w - sorted[i].w;
-	if ((sorted[i].y + sorted[i].h) > root.h)
+	if ((sorted[i].y + sorted[i].h) > height)
 	   sorted[i].y = root.h - sorted[i].h;
-	if (sorted[i].x < 0)
-	   sorted[i].x = 0;
-	if (sorted[i].y < 0)
-	   sorted[i].y = 0;
+	if (sorted[i].x < startx)
+	   sorted[i].x = startx;
+	if (sorted[i].y < starty)
+	   sorted[i].y = starty;
      }
    EDBUG_RETURN_;
 }
@@ -851,77 +849,22 @@ ArrangeEwin(EWin * ewin)
 	       }
 	     Efree(blst);
 	  }
-	if (mode.kde_support)
-	  {
-	     fixed = Erealloc(fixed, sizeof(RectBox) * (j + 2));
-	     ret = Erealloc(ret, sizeof(RectBox) * ((j + 2) + 1));
-
-	     fixed[j].data = NULL;
-	     fixed[j].p = 50;
-	     fixed[j].x = 0;
-	     fixed[j].y = 0;
-	     if (mode.kde_y1 == 0)
-	       {
-		  fixed[j].w = mode.kde_x1;
-	       }
-	     else
-	       {
-		  fixed[j].w = root.w;
-	       }
-	     if (mode.kde_x1 == 0)
-	       {
-		  fixed[j].h = mode.kde_y1;
-	       }
-	     else
-	       {
-		  fixed[j].h = root.h;
-	       }
-	     j++;
-
-	     fixed[j].data = NULL;
-	     if ((mode.kde_x2 == root.w) && (mode.kde_y2 < root.h))
-		fixed[j].x = 0;
-	     else
-		fixed[j].x = mode.kde_x2;
-	     fixed[j].w = mode.kde_x2 - root.w;
-	     if (mode.kde_x2 < root.w)
-	       {
-		  fixed[j].y = 0;
-		  fixed[j].h = root.h;
-	       }
-	     else
-	       {
-		  fixed[j].y = mode.kde_y2;
-		  fixed[j].h = mode.kde_y2 - root.h;
-	       }
-	     if (fixed[j].x < 0)
-	       {
-		  fixed[j].w += fixed[j].x;
-		  fixed[j].x = 0;
-	       }
-	     if ((fixed[j].x + fixed[j].w) > root.w)
-		fixed[j].w = root.w - fixed[j].x;
-	     if (fixed[j].y < 0)
-	       {
-		  fixed[j].h += fixed[j].y;
-		  fixed[j].y = 0;
-	       }
-	     if ((fixed[j].y + fixed[j].h) > root.h)
-		fixed[j].h = root.h - fixed[j].y;
-	     if ((fixed[j].w > 0) && (fixed[j].h > 0))
-	       {
-		  fixed[j].p = 50;
-		  j++;
-	       }
-	  }
 	newrect.data = ewin;
 	newrect.x = 0;
 	newrect.y = 0;
 	newrect.w = ewin->w;
 	newrect.h = ewin->h;
 	newrect.p = ewin->layer;
-	ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
-		     ARRANGE_BY_SIZE);
+	if (mode.kde_support)
+	  {
+	     ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1, mode.kde_y1,
+			  mode.kde_x2, mode.kde_y2, ARRANGE_BY_SIZE);
+	  }
+	else
+	  {
+	     ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
+			  ARRANGE_BY_SIZE);
+	  }
 	for (i = 0; i < j + 1; i++)
 	  {
 	     if (ret[i].data == ewin)

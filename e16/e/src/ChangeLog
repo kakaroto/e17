@@ -3902,3 +3902,12 @@ Sat Nov  6 14:03:54 PST 1999
 (Raster)
 
 fix some clipping code for arrage stuff...
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 15:07:24 PST 1999
+(Mandrake)
+
+
+Fixed a bug in KDE support where windows would place themselves underneath the
+kpanel occasionally.  it shouldn't ever do that again :)
