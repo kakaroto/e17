@@ -20,6 +20,7 @@ struct _imlib_font
    int                 max_ascent;   
    int                 descent;
    int                 ascent;
+   int                 mem_use;
 };
 
 TT_Raster_Map *__imlib_create_font_raster(int width, int height);
@@ -37,5 +38,13 @@ void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx,
 				  DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 				  char dir, int *retw, int *reth, int blur,
 				  int *nextx, int *nexty, ImlibOp op);
-
+int           __imlib_char_pos(ImlibFont *fn, char *text, int x, int y,
+			       int *cx, int *cy, int *cw, int *ch);
+char        **__imlib_list_fonts(int *num_ret);
+int           __imlib_get_cached_font_size(void);
+void          __imlib_flush_font_cache(void);
+void          __imlib_purge_font_cache(void);
+int           __imlib_get_font_cache_size(void);
+void          __imlib_set_font_cache_size(int size);
+void          __imlib_nuke_font(ImlibFont *font);
 #endif

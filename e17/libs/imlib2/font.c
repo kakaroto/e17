@@ -11,9 +11,12 @@
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
 
 /* cached font list and font path */
-static ImlibFont *fonts = NULL;
-static int        fpath_num = 0;
-static char     **fpath = NULL;
+static ImlibFont  *fonts = NULL;
+static int         fpath_num = 0;
+static char      **fpath = NULL;
+static TT_Engine   engine;
+static char        have_engine = 0;
+static int         font_cache_size = 0;
 
 /* lookupt table of raster_map -> RGBA Alpha values */
 static int rend_lut[9] = 
@@ -88,13 +91,24 @@ __imlib_list_font_path(int *num_ret)
 ImlibFont *
 __imlib_find_cached_font(char *fontname)
 {
-   ImlibFont *f;
+   ImlibFont *pf, *f;
    
+   pf = NULL;
    f = fonts;
    while(f)
      {
 	if (!strcmp(f->name, fontname))
-	   return f;
+	  {
+	     /* if it's not the top of the list - move it there */
+	     if (pf)
+	       {
+		  pf->next = f->next;
+		  f->next = fonts;
+		  fonts = f;
+	       }
+	     return f;
+	  }
+	pf = f;
 	f = f->next;
      }
    return NULL;
@@ -108,8 +122,6 @@ __imlib_load_font(char *fontname)
    TT_CharMap          char_map;
    TT_Glyph_Metrics    metrics;
    TT_Instance_Metrics imetrics;
-   static TT_Engine    engine;
-   static char         have_engine = 0;
    int                 dpi = 96;
    unsigned short      i, n, code, load_flags;
    unsigned short      num_glyphs = 0, no_cmap = 0;
@@ -184,6 +196,7 @@ __imlib_load_font(char *fontname)
    f->references = 1;
    /* remember engine */
    f->engine = engine;
+   f->mem_use = 0;
    error = TT_Open_Face(f->engine, file, &f->face);
    if (error)
      {
@@ -290,59 +303,9 @@ __imlib_load_font(char *fontname)
    /* all ent well in loading, so add to head of font list and return */
    f->next = fonts;
    fonts = f;
+   /* we dont need the file handle hanging around so flush it out */
+   TT_Flush_Face(f->face);
    return f;
-}
-
-void
-__imlib_free_font(ImlibFont *font)
-{
-   int                 i;
-   ImlibFont          *f, *pf;
-   
-   /* defererence */
-   font->references--;
-   /* if still referenced exit here */
-   if (font->references > 0)
-      return;
-
-   /* remove form font cache list */
-   pf = NULL;
-   f = fonts;
-   while (f)
-     {
-	if (f == font)
-	  {
-	     if (!pf)
-		fonts = f->next;
-	     else
-		pf->next = f->next;
-	     f = NULL;
-	  }
-	else
-	  {
-	     pf = f;
-	     f = f->next;
-	  }
-     }
-   /* free freetype instance stuff */
-   TT_Done_Instance(font->instance);
-   TT_Close_Face(font->face);
-   /* free all cached glyphs */
-   for (i = 0; i < font->num_glyph; i++)
-     {	
-	if ((font->glyphs_cached_right) && (font->glyphs_cached_right[i]))
-	   __imlib_destroy_font_raster(font->glyphs_cached_right[i]);
-	if (!TT_VALID(font->glyphs[i]))
-	   TT_Done_Glyph(font->glyphs[i]);
-     }
-   /* free glyph info */
-   free(font->glyphs);
-   /* free glyph cache arrays */
-   if (font->glyphs_cached_right)
-      free(font->glyphs_cached_right);
-   /* free font struct & name */
-   free(font->name);
-   free(font);
 }
 
 void
@@ -486,6 +449,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 					       ((ymax - ymin) / 64) + 1);
 	     TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
 	     fn->glyphs_cached_right[j] = rtmp;
+	     fn->mem_use += 
+		(((xmax - xmin) / 64) + 1) *
+		(((ymax - ymin) / 64) + 1);
 	  }
 
 	/* Blit-or the resulting small pixmap into the biggest one */
@@ -606,5 +572,234 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 			      0, NULL, op);
    free(tmp);
    __imlib_destroy_font_raster(rmap);   
+}
+
+int
+__imlib_char_pos(ImlibFont *fn, char *text, int x, int y,
+		 int *cx, int *cy, int *cw, int *ch)
+{
+   int                 i, px, ppx;
+   TT_Glyph_Metrics    gmetrics;
+
+   if ((y < 0) || (y > (fn->ascent + fn->descent)))
+      return -1;
+   if (cy)
+      *cy = 0;
+   if (ch)
+      *ch = fn->ascent + fn->descent;
+   ppx = 0;
+   px = 0;
+   for (i = 0; text[i]; i++)
+     {
+	unsigned char       j;
+	
+	j = text[i];
+	if (!TT_VALID(fn->glyphs[j]))
+	   continue;
+	TT_Get_Glyph_Metrics(fn->glyphs[j], &gmetrics);
+	ppx = px;
+	if (i == 0)
+	   px += ((-gmetrics.bearingX) / 64);
+	if (text[i + 1] == 0)
+	   px += (gmetrics.bbox.xMax / 64);
+	else
+	   px += gmetrics.advance / 64;
+	if ((x >= ppx) && (x < px))
+	  {
+	     if (cx)
+		*cx = ppx;
+	     if (cw)
+		*cw = px - ppx;
+	     return i;
+	  }
+     }
+   return -1;
+}
+
+char **
+__imlib_list_fonts(int *num_ret)
+{
+   int i, j, d, l = 0;
+   char **list = NULL, **dir, *path;
+   TT_Error error;
+   
+   /* if we dont have a truetype font engine yet - make one */
+   if (!have_engine)
+     {
+	error = TT_Init_FreeType(&engine);
+	if (error)
+	   return NULL;
+	have_engine = 1;
+     }
+   for (i = 0; i < fpath_num; i++)
+     {
+	dir = __imlib_FileDir(fpath[i], &d);
+	if (dir)
+	  {
+	     for (j = 0; j < d; j++)
+	       {
+		  if (__imlib_FileIsFile(dir[j]))
+		    {
+		       TT_Face f;
+		       
+		       path = malloc(strlen(fpath[i]) + 1 + strlen(dir[j] + 1));
+		       strcpy(path, fpath[i]);
+		       strcat(path, "/");
+		       strcat(path, dir[j]);
+		       error = TT_Open_Face(engine, path, &f);
+		       free(path);
+		       if (!error)
+			 {
+			    TT_Close_Face(f);
+			    l++;
+			    if (list)
+			       list = realloc(list, sizeof(char *) * l);
+			    else
+			       list = malloc(sizeof(char *));
+			    list[l - 1] = strdup(dir[j]);
+			 }
+		    }
+	       }
+	     free(dir);
+	  }
+     }
+   *num_ret = l;
+   return list;
+}
+
+int
+__imlib_get_cached_font_size(void)
+{
+   ImlibFont *f;
+   int num = 0;
+   
+   f = fonts;
+   while(f)
+     {
+	if (f->references == 0)
+	   num += f->mem_use;
+	f = f->next;
+     }
+   return num;
+}
+
+void
+__imlib_flush_font_cache(void)
+{
+   int size;
+   ImlibFont *flast, *f;
+   
+   size = __imlib_get_cached_font_size();
+   while (size > font_cache_size)
+     {
+	flast = NULL;
+	f = fonts;
+	while (f)
+	  {
+	     if (f->references == 0)
+		flast = f;
+	     f = f->next;
+	  }
+	if (flast)
+	  {
+	     size -= flast->mem_use;
+	     __imlib_nuke_font(flast);
+	  }
+     }
+}
+
+void
+__imlib_purge_font_cache(void)
+{
+   ImlibFont *pf, *f;
+   
+   f = fonts;
+   while(f)
+     {
+	pf = f;
+	f = f->next;
+	if (pf->references == 0)
+	   __imlib_nuke_font(pf);
+     }
+   if (!fonts)
+     {
+	if (have_engine)
+	  {
+	     TT_Done_FreeType(engine);
+	     have_engine = 0;
+	  }
+     }
+}
+
+int
+__imlib_get_font_cache_size(void)
+{
+   return font_cache_size;
+}
+
+void
+__imlib_set_font_cache_size(int size)
+{
+   if (size < 0)
+      size = 0;
+   font_cache_size = size;
+   __imlib_flush_font_cache();
+}
+
+void
+__imlib_free_font(ImlibFont *font)
+{
+   /* defererence */
+   font->references--;
+   /* if still referenced exit here */
+   if (font->references > 0)
+      return;
+   __imlib_flush_font_cache();
+}
+
+void
+__imlib_nuke_font(ImlibFont *font)
+{
+   int                 i;
+   ImlibFont          *f, *pf;
+   
+   /* remove form font cache list */
+   pf = NULL;
+   f = fonts;
+   while (f)
+     {
+	if (f == font)
+	  {
+	     if (!pf)
+		fonts = f->next;
+	     else
+		pf->next = f->next;
+	     f = NULL;
+	  }
+	else
+	  {
+	     pf = f;
+	     f = f->next;
+	  }
+     }
+   /* free freetype instance stuff */
+   TT_Done_Instance(font->instance);
+   TT_Close_Face(font->face);
+   /* free all cached glyphs */
+   for (i = 0; i < font->num_glyph; i++)
+     {	
+	if ((font->glyphs_cached_right) && (font->glyphs_cached_right[i]))
+	   __imlib_destroy_font_raster(font->glyphs_cached_right[i]);
+	if (!TT_VALID(font->glyphs[i]))
+	   TT_Done_Glyph(font->glyphs[i]);
+     }
+   /* free glyph info */
+   free(font->glyphs);
+   /* free glyph cache arrays */
+   if (font->glyphs_cached_right)
+      free(font->glyphs_cached_right);
+   /* free font struct & name */
+   free(font->name);
+   free(font);
 }
 

@@ -277,7 +277,13 @@ void imlib_get_text_size(Imlib_Font font, Imlib_Text_Direction direction,
 void imlib_add_path_to_font_path(char *path);
 void imlib_remove_path_from_font_path(char *path);
 char **imlib_list_font_path(int *number_return);
-
+int  imlib_text_get_index_and_location(Imlib_Font *font, 
+				       Imlib_Text_Direction direction,
+				       char *text, int x, int y,
+				       int *char_x_return, int *char_y_return, 
+				       int *char_width_return, 
+				       int *char_height_return);
+				       
 #if 0
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
 				     Imlib_Image image_destination,

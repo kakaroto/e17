@@ -279,11 +279,11 @@ int main (int argc, char **argv)
 	       }
 	     if (fon)
 	       {
-		  int retw, reth, ty, nx, ny;
+		  int retw, reth, ty, nx, ny, cx, cy, cw, ch, cp;
 		
 		  if (!str)
 		     str = "This is a test string";
-		  ty = y;
+		  ty = 50;
 		  for (i = 0; i < 16; i++)
 		    {
 		       Imlib_Color cl;		       
@@ -297,15 +297,32 @@ int main (int argc, char **argv)
 		       cl.blue = 255;
 		       cl.alpha = al;
 		       
-		       imlib_text_draw_with_return_metrics(fn, im, x, ty, 
+		       imlib_text_draw_with_return_metrics(fn, im, 50, ty, 
 							   IMLIB_TEXT_TO_RIGHT,
 							   str, &cl, 
 							   IMLIB_OP_COPY,
 							   &retw, &reth, 
 							   &nx, &ny);
-		       up = imlib_update_append_rect(up, px, ty + (py - y), retw, reth);
-		       up = imlib_update_append_rect(up, x, ty, retw, reth);
+/*		       up = imlib_update_append_rect(up, px, ty + (py - y), retw, reth);*/
+		       up = imlib_update_append_rect(up, 50, ty, retw, reth);
 		       ty += ny;
+		    }
+		  cp = imlib_text_get_index_and_location(fn, 
+							 IMLIB_TEXT_TO_RIGHT,
+							 str, x - 50, y - 50,
+							 &cx, &cy, &cw, &ch);
+		  if (cp >= 0)
+		    {
+#if 0		  
+		       GC gc;
+		       XGCValues gcv;
+		       
+		       gc = XCreateGC(disp, win, 0, &gcv);
+		       XSetForeground(disp, gc, 0xffff);
+		       XDrawRectangle(disp, win, gc, 50 + cx, 50 + cy, cw, ch);
+		       XFreeGC(disp, gc);
+#endif		  
+		       printf("over char %c\n", str[cp]);
 		    }
 	       }
 	     if ((px != x) || (py != y))
@@ -350,7 +367,7 @@ int main (int argc, char **argv)
 					  0, 0, 50, 50, 
 					  0, 50, 50, h - 50, NULL, IMLIB_OP_COPY);
 	     up = imlib_update_append_rect(up, 0, 50, 50, h - 50);
-	     up = imlib_updates_merge(up, w, h);
+	     up = imlib_updates_merge_for_rendering(up, w, h);
 	     imlib_render_image_updates_on_drawable(im, up, disp, win, vis, cm,
 						    depth, dith, 0, 0, NULL);
 	     if ((px != x) || (py != y))
@@ -371,7 +388,7 @@ int main (int argc, char **argv)
 		       u = imlib_updates_get_next(u);
 		    }
 	       }
-#if 0	     
+#if 0
 	       {
 		  Imlib_Updates up2;
 		  GC gc;

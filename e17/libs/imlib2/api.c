@@ -1055,3 +1055,76 @@ imlib_list_font_path(int *number_return)
 {
    return __imlib_list_font_path(number_return);
 }
+
+int
+imlib_text_get_index_and_location(Imlib_Font *font,
+				  Imlib_Text_Direction direction,
+				  char *text, int x, int y,
+				  int *char_x_return, int *char_y_return,
+				  int *char_width_return,
+				  int *char_height_return)
+{
+   ImlibFont *fn;
+   int w, h, cx, cy, cw, ch, cp, xx, yy;
+   
+   fn = (ImlibFont *)font;
+   switch(direction)
+     {
+     case IMLIB_TEXT_TO_RIGHT:
+	return __imlib_char_pos(fn, text, x, y, char_x_return, char_y_return, 
+				char_width_return, char_height_return);
+	break;
+     case IMLIB_TEXT_TO_LEFT:
+	__imlib_calc_size(fn, &w, &h, text);
+	xx = w - x;
+	yy = h - y;
+	cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
+	cx = 1 + w - cx - cw;
+	if (char_x_return)
+	   *char_x_return = cx;
+	if (char_y_return)
+	   *char_y_return = cy;
+	if (char_width_return)
+	   *char_width_return = cw;
+	if (char_height_return)
+	   *char_height_return = ch;
+	return cp;
+	break;
+     case IMLIB_TEXT_TO_DOWN:
+	__imlib_calc_size(fn, &w, &h, text);
+	xx = h - y;
+	yy = x;
+	cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
+	if (char_x_return)
+	   *char_x_return = cy;
+	if (char_y_return)
+	   *char_y_return = cx;
+	if (char_width_return)
+	   *char_width_return = ch;
+	if (char_height_return)
+	   *char_height_return = cw;
+	return cp;
+	break;
+     case IMLIB_TEXT_TO_UP:
+	__imlib_calc_size(fn, &w, &h, text);
+	xx = w - y;
+	yy = x;
+	cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
+	cy = 1 + h - cy - ch;
+	if (char_x_return)
+	   *char_x_return = cy;
+	if (char_y_return)
+	   *char_y_return = cx;
+	if (char_width_return)
+	   *char_width_return = ch;
+	if (char_height_return)
+	   *char_height_return = cw;
+	return cp;
+	break;
+     default:
+	return -1;
+	break;
+     }
+   return -1;
+}
+
