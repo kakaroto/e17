@@ -19,6 +19,10 @@
 #define FALSE 0
 #endif
 
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 #include <ewd_config.h>
 #include <ewd_macros.h>
 #include <ewd_threads.h>
