@@ -16,7 +16,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = imlib2-config
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN imlib2.spec imlib2.spec.in gendoc \
+EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN gendoc \
              Doxyfile \
 	     README.in README \
 	     imlib2.pc.in \
