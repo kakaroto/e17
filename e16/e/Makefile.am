@@ -1,10 +1,9 @@
-SUBDIRS = \
-        scripts \
+SUBDIRS = intl \
+	scripts \
 	dox \
 	eesh \
 	epp \
-        man \
-	intl \
+	man \
 	src \
 	po \
 	debian
@@ -27,3 +26,5 @@ FAQ \
 INSTALL \
 NEWS \
 README
+
+ACLOCAL_AMFLAGS = -I m4

@@ -1,3 +1,7 @@
+2004-03-08  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* configure.in (AM_GNU_GETTEXT_VERSION): Bump to 0.14.1.
+
 2002-09-04  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* configure.in (AC_OUTPUT): Add intl/Makefile.

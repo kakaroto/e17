@@ -85,7 +85,7 @@ enlightenment_SOURCES = \
 
 
 LDADD = \
-	@INTLLIBS@		\
+	@LIBINTL@		\
 	$(FNLIB_LIBS) 		\
 	$(TTF_LIBS) 		\
 	$(ESD_LIBS) 		\
