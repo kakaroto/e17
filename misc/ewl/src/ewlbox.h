@@ -27,9 +27,17 @@ void       ewl_box_pack_end(EwlWidget *box, EwlWidget *child);
 
 void       ewl_box_remove(EwlWidget *box, EwlWidget *child);
 
+/* private event callback functions */
 EwlBool    ewl_box_handle_realize(EwlWidget *widget,
                                   EwlEvent  *ev,
                                   EwlData   *data);
-/* private functions */
-EwlBool _cb_ewl_box_event_handler(EwlWidget *widget, EwlEvent *ev, EwlData *d);
+EwlBool    ewl_box_handle_resize(EwlWidget *widget,
+                                  EwlEvent  *ev,
+                                  EwlData   *data);
+
+EwlBool    ewl_hbox_resize_children_foreach(EwlLL *node, EwlData *data);
+EwlBool    ewl_vbox_resize_children_foreach(EwlLL *node, EwlData *data);
+EwlBool    ewl_lbox_resize_children_foreach(EwlLL *node, EwlData *data);
+void       ewl_box_handle_resize_children(EwlWidget *widget);
+
 #endif /* _EWL_BOX_H_ */

@@ -28,7 +28,7 @@ struct _EwlContainer	{
 	                           EwlData *data);
 	EwlBool           propagate_events;
 	void             (*propagate)(EwlContainer *c, EwlEvent *ev);
-	void             (*resize_children)(EwlContainer *c);
+	void             (*resize_children)(EwlWidget *widget);
 };
 
 EwlWidget   *ewl_container_new();

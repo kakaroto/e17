@@ -1139,3 +1139,12 @@ itself up top.. screw this, i'm goign home. :)
 together (well, four actually, but you can't see the box doing it's
 thang, so it doesn't count).
 
+-----
+20000912-2209-PDT, pabs
+
+- added handlers for EwlBox child resizing (eg overloaded
+EwlContainer::resize_children()).  
+- got a mystery coredump here at home.. smells like memory corruption,
+but I can't pin it down just yet.
+
+
