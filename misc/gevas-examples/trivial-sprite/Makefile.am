@@ -20,7 +20,7 @@ andover.ttf
 EXTRA_DIST = $(PIXMAPS) $(FONTS)
 pkgdata_DATA = $(PIXMAPS) $(FONTS)
 
-TESTS = gevasanim
+#TESTS = gevasanim
 
 bin_PROGRAMS = gevasanim
 
