@@ -2289,15 +2289,15 @@ Epplet_draw_textbox(Epplet_gadget eg)
                w = im->rgb_width;
                x = (g->w - im->rgb_width) / 2;
              } else {
-               w = g->w;
-               x = 0;
+               w = g->w - 4;
+               x = 2;
              }
              if (g->h > im->rgb_height) {
                h = im->rgb_height;
                y = (g->h - im->rgb_height) / 2;
              } else {
-               h = g->h;
-               y = 0;
+               h = g->h - 4;
+               y = 2;
              }
              Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 	     Imlib_destroy_image(id, im);
@@ -2361,9 +2361,12 @@ Epplet_draw_textbox(Epplet_gadget eg)
    if ((last_gadget == g) || (g->hilited))
       XFillRectangle(disp, g->win, gc, g->to_cursor + g->x_offset + 2, 2,
 		     CRSR_WDTH, g->h - 4);
+#if 0
+   /* That empty cursor is REALLY obnoxious.  Punt it. */
    else
       XDrawRectangle(disp, g->win, gc, g->to_cursor + g->x_offset + 2, 2,
 		     CRSR_WDTH, g->h - 4);
+#endif
 }
 
 int
@@ -2757,15 +2760,15 @@ Epplet_draw_button(Epplet_gadget eg)
                     w = im->rgb_width;
                     x = (g->w - im->rgb_width) / 2;
                   } else {
-                    w = g->w;
-                    x = 0;
+                    w = g->w - 4;
+                    x = 2;
                   }
                   if (g->h > im->rgb_height) {
                     h = im->rgb_height;
                     y = (g->h - im->rgb_height) / 2;
                   } else {
-                    h = g->h;
-                    y = 0;
+                    h = g->h - 4;
+                    y = 2;
                   }
 		  Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 		  Imlib_destroy_image(id, im);
@@ -2800,15 +2803,15 @@ Epplet_draw_button(Epplet_gadget eg)
                     w = im->rgb_width;
                     x = (g->w - im->rgb_width) / 2;
                   } else {
-                    w = g->w;
-                    x = 0;
+                    w = g->w - 4;
+                    x = 2;
                   }
                   if (g->h > im->rgb_height) {
                     h = im->rgb_height;
                     y = (g->h - im->rgb_height) / 2;
                   } else {
-                    h = g->h;
-                    y = 0;
+                    h = g->h - 4;
+                    y = 2;
                   }
 		  Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 		  Imlib_destroy_image(id, im);
@@ -2921,15 +2924,15 @@ Epplet_draw_togglebutton(Epplet_gadget eg)
                w = im->rgb_width;
                x = (g->w - im->rgb_width) / 2;
              } else {
-               w = g->w;
-               x = 0;
+               w = g->w - 4;
+               x = 2;
              }
              if (g->h > im->rgb_height) {
                h = im->rgb_height;
                y = (g->h - im->rgb_height) / 2;
              } else {
-               h = g->h;
-               y = 0;
+               h = g->h - 4;
+               y = 2;
              }
              Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 	     Imlib_destroy_image(id, im);
@@ -3840,15 +3843,15 @@ Epplet_draw_popupbutton(Epplet_gadget eg)
                     w = im->rgb_width;
                     x = (g->w - im->rgb_width) / 2;
                   } else {
-                    w = g->w;
-                    x = 0;
+                    w = g->w - 4;
+                    x = 2;
                   }
                   if (g->h > im->rgb_height) {
                     h = im->rgb_height;
                     y = (g->h - im->rgb_height) / 2;
                   } else {
-                    h = g->h;
-                    y = 0;
+                    h = g->h - 4;
+                    y = 2;
                   }
 		  Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 		  Imlib_destroy_image(id, im);

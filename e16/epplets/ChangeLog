@@ -2136,3 +2136,14 @@ and the ability to check a gadget's type.  And E-Toolbox now has a config
 dialog; it's untested, though, but it might work. :-)
 
 -------------------------------------------------------------------------------
+
+Tue May  2 22:23:09 PDT 2000
+(KainX)
+
+The config dialog should now work for the most part.  It still has problems
+adding new buttons, and it doesn't like removing labels or images.  But it
+works quite well for the most part.  You can even resize it through the GUI.
+:-)
+
+-------------------------------------------------------------------------------
+
