@@ -10,7 +10,7 @@ my %opt = ( deftitle => '%cCAM - %u', bookmarks => "$ENV{HOME}/.cam_bookmarks");
 
 
 sub usage {
-    print while(<DATA>);
+    print while (<DATA>);
     exit -1;
 }
 
@@ -51,8 +51,7 @@ add @ARGV if $opt{add};
 
 open BOOK, "$opt{bookmarks}" or die "Couldn't open $opt{bookmarks}: $!\n";
 while (<BOOK>) {
-    next if /^$/;
-    my ($key, $ref, $url, $title) = /^(.*?)=(\d+),(.*?)(?: "([^"]+)")?$/;
+    next unless my ($key, $ref, $url, $title) = /^(.*?)=(\d+),(.*?)(?: "([^"]+)")?$/;
     $title ||= $opt{deftitle};
     print "$key, $ref, $url, $title\n" if $opt{debug};
 
@@ -60,8 +59,8 @@ while (<BOOK>) {
 }
 close BOOK;
 
-if($opt{list}) {
-    for(sort keys %bookmarks) {
+if ($opt{list}) {
+    for (sort keys %bookmarks) {
     	print "$_: url = $bookmarks{$_}->[0] refresh = $bookmarks{$_}->[1]\n";
     }
 }
@@ -84,9 +83,9 @@ while (my $key = shift @ARGV) {
     print "cmd == ", $cmd, "\n" if $opt{debug};
 
     FORK: {
-    	if(my $pid = fork) {
+    	if (my $pid = fork) {
     		# nop;
-    	} elsif(defined($pid) and !$pid) {
+    	} elsif (defined($pid) and !$pid) {
     		exec $cmd or die "Couldn't exec $prog{app}: $!\n";
     	} elsif ($! =~ /No More Process/) {
     		sleep 3;

@@ -83,8 +83,7 @@ if ($keep)    {
 # load bookmarks
 open(BMF, "$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
 foreach (<BMF>)    {
-    next if /^$/;
-    /^(.*?)=(.*)$/;
+    next unless /^(.*?)=(.*)$/;
     $bms{$1} = $2;
     print "key=$1, url=$2\n" if ($DEBUG);
 }
