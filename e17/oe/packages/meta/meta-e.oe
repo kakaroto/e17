@@ -4,5 +4,22 @@ ALLOW_EMPTY = 1
 
 task-e = "enlightenment edje ecore evas eet embryo imlib2"
 
-DEPENDS ="task-bootstrap diet-x11 xserver-kdrive ttf-bitstream-vera"
+DEPENDS ="task-bootstrap \
+          diet-x11 \
+	  xserver-kdrive \
+	  ttf-bitstream-vera \
+	  xrandr \
+	  xmodmap \
+	  xset \
+	  "
+#	  xpm \
+#	  xcalibrate \
+#	  rxvt \
+#	  rxvt-unicode \
+#	  xtscal \
+#	  xstroke \
+#	  xkbd \
+#	  xfont \
+#	  xfonts-xorg \ 
+	  
 DEPENDS += "${task-e}"
