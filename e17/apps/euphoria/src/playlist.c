@@ -59,6 +59,7 @@ void playlist_remove_all(PlayList *pl) {
 	}
 
 	pl->duration = 0;
+	pl->current_item = NULL;
 }
 
 /**
@@ -74,6 +75,8 @@ void playlist_item_remove(PlayList *pl, PlayListItem *pli) {
 	pl->duration -= playlist_item_duration_get(pli);
 	pl->items = evas_list_remove(pl->items, pli);
 	playlist_item_free(pli);
+	if(pl->current_item == pli)
+	    pl->current_item = NULL;
 }
 
 /**

@@ -588,7 +588,6 @@ XMMS_CB(playlist_remove) {
 
 	if (xmmscs_playback_current_id(e->xmms) == id) {
 		xmmsc_playback_stop(e->xmms);
-		e->playlist->current_item = NULL;
 	}
 
 	pli = playlist_item_find_by_id(e->playlist, id);
