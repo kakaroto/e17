@@ -42,3 +42,8 @@ Mon May  7 19:08:45 PDT 2001	Michael Jennings <mej@eterm.org>
 	be used in the remaining Eterm work I must do before release.
 	
 -------------------------------------------------------------------------------
+Mon May  7 22:16:11 PDT 2001	Michael Jennings <mej@eterm.org>
+
+	Moved chomp() to libast.  It's awfully handy.
+	
+-------------------------------------------------------------------------------

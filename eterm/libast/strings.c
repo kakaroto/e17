@@ -400,11 +400,30 @@ num_words(const char *str)
   return (cnt);
 }
 
+/* chomp() removes leading and trailing whitespace from a string */
+char *
+chomp(char *s)
+{
+
+  register char *front, *back;
+
+  ASSERT_RVAL(s != NULL, NULL);
+  for (front = s; *front && isspace(*front); front++);
+  for (back = s + strlen(s) - 1; *back && isspace(*back) && back > front; back--);
+
+  *(++back) = 0;
+  if (front != s) {
+    memmove(s, front, back - front + 1);
+  }
+  return (s);
+}
+
 char *
 strip_whitespace(register char *str)
 {
   register unsigned long i, j;
 
+  ASSERT_RVAL(str != NULL, NULL);
   if ((j = strlen(str))) {
     for (i = j - 1; isspace(*(str + i)); i--);
     str[j = i + 1] = 0;

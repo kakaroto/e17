@@ -360,6 +360,7 @@ extern char **split_regexp(const char *, const char *);
 extern char *get_word(unsigned long, const char *);
 extern char *get_pword(unsigned long, const char *);
 extern unsigned long num_words(const char *);
+extern char *chomp(char *);
 extern char *strip_whitespace(char *);
 extern char *downcase_str(char *);
 extern char *upcase_str(char *);
