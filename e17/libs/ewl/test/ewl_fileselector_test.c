@@ -30,12 +30,10 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 
 	fs_button = w;
 
-
 	fs_win = ewl_window_new();
 	ewl_callback_append(fs_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_fileselector_test_window, NULL);
 	ewl_widget_show(fs_win);
-
 
 	fs = ewl_fileselector_new(__file_clicked);
 	ewl_object_set_fill_policy(EWL_OBJECT(fs), EWL_FLAG_FILL_FILL);

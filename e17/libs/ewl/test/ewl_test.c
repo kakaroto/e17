@@ -30,6 +30,7 @@ main(int argc, char **argv)
 		{ "Box", __create_box_test_window },
 		{ "Button", __create_button_test_window },
 		{ "Entry", __create_entry_test_window },
+		{ "Filedialog", __create_filedialog_test_window },
 		{ "Floater", __create_floater_test_window },
 		{ "Image", __create_image_test_window },
 		{ "Menu", __create_menu_test_window },

@@ -70,7 +70,6 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Widget * follows,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-
 	ewl_floater_init(EWL_FLOATER(fd), follows);
 	fd->type = type;
 
@@ -100,12 +99,6 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),
 				   EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(fd), fd->selector);
-
-
-	separator = ewl_vseparator_new();
-	ewl_container_append_child(EWL_CONTAINER(fd), separator);
-	ewl_widget_show(separator);
-
 
 	od->box = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
 	ewl_box_set_spacing(EWL_BOX(od->box), 4);
@@ -160,7 +153,6 @@ ewl_filedialog_save_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_container_append_child(EWL_CONTAINER(fd), fd->selector);
 
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -168,7 +160,7 @@ void ewl_filedialog_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *fd;
 
+	/* Destroy the filedialog */
 	fd = w->parent->parent;
-
 	ewl_widget_destroy(fd);
 }
