@@ -2700,12 +2700,16 @@ EwinShade(EWin * ewin)
       EDBUG_RETURN_;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       EDBUG_RETURN_;
+
    pq = Mode.queue_up;
    Mode.queue_up = 0;
+
    speed = Conf.shadespeed;
    spd = 32;
    min = 2;
+
    GrabX();
+
    switch (ewin->border->shadedir)
      {
      case 0:
@@ -2922,18 +2926,24 @@ EwinShade(EWin * ewin)
      default:
 	break;
      }
+
    UngrabX();
+
    if (ewin->client.shaped)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
+
    Mode.queue_up = pq;
+
    HintsSetWindowState(ewin);
+
    if (Mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+
    EDBUG_RETURN_;
 }
 
@@ -2951,14 +2961,18 @@ EwinUnShade(EWin * ewin)
    EDBUG(4, "EwinUnShade");
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
-   if (!ewin->shaded)
+   if (!ewin->shaded || ewin->iconified)
       EDBUG_RETURN_;
+
    pq = Mode.queue_up;
    Mode.queue_up = 0;
+
    speed = Conf.shadespeed;
    spd = 32;
    min = 2;
+
    GrabX();
+
    switch (ewin->border->shadedir)
      {
      case 0:
@@ -3184,18 +3198,24 @@ EwinUnShade(EWin * ewin)
      default:
 	break;
      }
+
    UngrabX();
+
    if (ewin->client.shaped)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
+
    Mode.queue_up = pq;
+
    HintsSetWindowState(ewin);
+
    if (Mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+
    EDBUG_RETURN_;
 }
 
