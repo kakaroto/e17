@@ -873,8 +873,42 @@ on_file_ok_clicked                     (GtkButton       *button,
 		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	e_db_flush();
      }
-   else if (gtk_object_get_data(GTK_OBJECT(top), "bit_image"))
+   else if (gtk_object_get_data(GTK_OBJECT(top), "normal_image"))
      {
+	GtkWidget *w;
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "img_normal");
+	gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	E_DB_STR_SET(etcher_config, "/paths/image", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
+     }
+   else if (gtk_object_get_data(GTK_OBJECT(top), "hilited_image"))
+     {
+	GtkWidget *w;
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "img_hilited");
+	gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	E_DB_STR_SET(etcher_config, "/paths/image", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
+     }
+   else if (gtk_object_get_data(GTK_OBJECT(top), "clicked_image"))
+     {
+	GtkWidget *w;
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "img_clicked");
+	gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	E_DB_STR_SET(etcher_config, "/paths/image", 
+		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	e_db_flush();
+     }
+   else if (gtk_object_get_data(GTK_OBJECT(top), "disabled_image"))
+     {
+	GtkWidget *w;
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "img_disabled");
+	gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	E_DB_STR_SET(etcher_config, "/paths/image", 
 		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	e_db_flush();
@@ -1521,7 +1555,23 @@ void
 on_browse_clicked_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   GtkWidget *file;
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "clicked_image", (void *)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/image", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	e_db_flush();
+     }
+   gtk_widget_show(file);
 }
 
 
@@ -1529,6 +1579,23 @@ void
 on_borwse_hilited_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
+   GtkWidget *file;
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "hilited_image", (void *)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/image", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	e_db_flush();
+     }
+   gtk_widget_show(file);
 
 }
 
@@ -1537,6 +1604,23 @@ void
 on_browse_normal_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
+   GtkWidget *file;
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "normal_image", (void *)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/image", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	e_db_flush();
+     }
+   gtk_widget_show(file);
 
 }
 
@@ -1545,6 +1629,22 @@ void
 on_browse_disabled_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   GtkWidget *file;
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "disabled_image", (void *)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/paths/image", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	e_db_flush();
+     }
+   gtk_widget_show(file);
 }
 
