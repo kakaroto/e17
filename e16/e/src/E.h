@@ -368,6 +368,7 @@ typedef struct
    char                type;
    Pixmap              pmap;
    Pixmap              mask;
+   int                 w, h;
 }
 PmapMask;
 
@@ -1891,6 +1892,10 @@ void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
 					int state, PmapMask * pmm,
 					int make_mask, int image_type);
 void                FreePmapMask(PmapMask * pmm);
+void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
+			    int h, int state, int active, int sticky,
+			    char expose, int image_type, TextClass * tc,
+			    TextState * ts, const char *text);
 
 /* ipc.c */
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
@@ -2133,8 +2138,11 @@ void                TextclassApply(ImageClass * ic, Window win, int w,
 				   const char *text);
 
 /* text.c */
-TextState          *TextGetState(TextClass * tclass, int active, int sticky,
-				 int state);
+TextState          *TextclassGetTextState(TextClass * tclass, int state,
+					  int active, int sticky);
+void                TextstateDrawText(TextState * ts, Window win,
+				      const char *text, int x, int y, int w,
+				      int h, int fsize, int justification);
 void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,
 			     int *height, int fsize);

@@ -662,9 +662,8 @@ static void
 ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		       int make_mask, int w, int h, int image_type)
 {
-   int                 apply, trans;
+   int                 trans;
    int                 ww, hh;
-   PmapMask            pmml;
 
 #ifdef ENABLE_TRANSPARENCY
    Imlib_Image        *ii = NULL;
@@ -716,17 +715,8 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
       flags |= ICLASS_ATTR_USE_CM;
 #endif
 
-   apply = !pmm;
-   if (!pmm)
-      pmm = &pmml;
-
    imlib_context_set_drawable(win);
    imlib_context_set_image(is->im);
-
-#if 1				/* Remove ??? */
-   if (is->border)
-      imlib_image_set_border(is->border);
-#endif
 
    ww = imlib_image_get_width();
    hh = imlib_image_get_height();
@@ -837,6 +827,8 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
 						     w, h);
 #endif /* ENABLE_TRANSPARENCY */
+	pmm->w = w;
+	pmm->h = h;
      }
    else
      {
@@ -868,74 +860,8 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  }
 	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
 						     pw, ph);
-     }
-
-   if (apply)
-     {
-	/* Rendering on drawable */
-	if (is->pixmapfillstyle == FILL_STRETCH || trans)
-	  {
-	     if (pmm->pmap)
-	       {
-		  ESetWindowBackgroundPixmap(disp, win, pmm->pmap);
-		  EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
-				    pmm->mask, ShapeSet);
-	       }
-	  }
-	else
-	  {
-	     if (pmm->pmap)
-	       {
-		  ESetWindowBackgroundPixmap(disp, win, pmm->pmap);
-		  if (pmm->mask)
-		     EShapeCombineMaskTiled(disp, win, ShapeBounding, 0, 0,
-					    pmm->mask, ShapeSet, w, h);
-	       }
-	  }
-	FreePmapMask(pmm);
-	XClearWindow(disp, win);
-     }
-   else
-     {
-	/* Making pmap/mask */
-	if (is->pixmapfillstyle == FILL_STRETCH || trans)
-	  {
-	     /* pmap and mask are already rendered at the correct size */
-	  }
-	else
-	  {
-	     /* Create new full sized pixmaps and fill them with the */
-	     /* pmap and mask tiles                                  */
-	     Pixmap              tp = 0, tm = 0;
-	     GC                  gc;
-	     XGCValues           gcv;
-
-	     tp = ecore_x_pixmap_new(win, w, h, VRoot.depth);
-	     gcv.fill_style = FillTiled;
-	     gcv.tile = pmm->pmap;
-	     gcv.ts_x_origin = 0;
-	     gcv.ts_y_origin = 0;
-	     gc = XCreateGC(disp, tp, GCFillStyle | GCTile |
-			    GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
-	     XFillRectangle(disp, tp, gc, 0, 0, w, h);
-	     XFreeGC(disp, gc);
-	     if (pmm->mask)
-	       {
-		  tm = ecore_x_pixmap_new(win, w, h, 1);
-		  gcv.fill_style = FillTiled;
-		  gcv.tile = pmm->mask;
-		  gcv.ts_x_origin = 0;
-		  gcv.ts_y_origin = 0;
-		  gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
-				 GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
-		  XFillRectangle(disp, tm, gc, 0, 0, w, h);
-		  XFreeGC(disp, gc);
-	       }
-	     FreePmapMask(pmm);
-	     pmm->type = 0;
-	     pmm->pmap = tp;
-	     pmm->mask = tm;
-	  }
+	pmm->w = pw;
+	pmm->h = ph;
      }
 
 #ifdef ENABLE_TRANSPARENCY
@@ -1046,17 +972,17 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 }
 
 void
-ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
-		int sticky, int state, char expose, int image_type)
+ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
+	int active, int sticky, char expose, int image_type, TextClass * tc,
+	TextState * ts, const char *text)
 {
-   ImageState         *is;
-
-   if ((!ic) || (!win))
+   if (win == None || !ic)
       return;
 
-   if (w < 0)
+   /* FIXME - Why? */
+   if (w <= 0 || h <= 0)
       GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
-   if ((w < 0) || (h < 0))
+   if (w <= 0 || h <= 0)
       return;
 
 #if 0				/* Try not using the draw queue here. */
@@ -1093,28 +1019,76 @@ ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
    if (ic->external)
       return;
 
-   is = ImageclassGetImageState(ic, state, active, sticky);
+   if (!is)
+      is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
       return;
 
-   if (!expose)
+   if (tc && text)
+     {
+	if (!ts)
+	   ts = TextclassGetTextState(tc, state, active, sticky);
+     }
+
+   if (!expose)			// FIXME - Hmmm
      {
 	if (is->im == NULL && is->im_file)
 	   ImagestateRealize(is);
 
 	if (is->im)
 	  {
-	     ImagestateMakePmapMask(is, win, NULL, 1, w, h, image_type);
+	     PmapMask            pmm;
+	     int                 decache = 1;
+
+	     ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
+
+	     if (pmm.pmap)
+	       {
+		  if (ts && text)
+		    {
+		       TextstateDrawText(ts, pmm.pmap, text, ic->padding.left,
+					 ic->padding.top,
+					 w - (ic->padding.left +
+					      ic->padding.right),
+					 h - (ic->padding.top +
+					      ic->padding.bottom),
+					 0, tc->justification);
+		       decache = 1;
+		    }
+
+		  /* Set window pixmap */
+		  if (pmm.w == w && pmm.h == h)
+		    {
+		       ESetWindowBackgroundPixmap(disp, win, pmm.pmap);
+		       EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
+					 pmm.mask, ShapeSet);
+		    }
+		  else
+		    {
+		       /* Tiled */
+		       ESetWindowBackgroundPixmap(disp, win, pmm.pmap);
+		       if (pmm.mask)
+			  EShapeCombineMaskTiled(disp, win, ShapeBounding, 0, 0,
+						 pmm.mask, ShapeSet, w, h);
+		    }
+	       }
+
+	     FreePmapMask(&pmm);
+	     XClearWindow(disp, win);
 
 	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
 		  imlib_context_set_image(is->im);
-		  imlib_free_image();
+		  if (decache)
+		     imlib_free_image_and_decache();
+		  else
+		     imlib_free_image();
 		  is->im = NULL;
 	       }
 	  }
 	else
 	  {
+	     /* FIXME - No text */
 	     ESetWindowBackground(disp, win, is->bg.pixel);
 	     XClearWindow(disp, win);
 	  }
@@ -1128,6 +1102,14 @@ ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
 	ImagestateDrawBevel(is, win, gc, w, h);
 	ecore_x_gc_del(gc);
      }
+}
+
+void
+ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
+		int sticky, int state, char expose, int image_type)
+{
+   ITApply(win, ic, NULL, w, h, state, active, sticky, expose, image_type,
+	   NULL, NULL, NULL);
 }
 
 void
@@ -1160,6 +1142,44 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
    if (is->im)
      {
 	ImagestateMakePmapMask(is, win, pmm, make_mask, w, h, image_type);
+
+	if (pmm->pmap)
+	  {
+	     if (pmm->w != w || pmm->h != h)
+	       {
+		  /* Create new full sized pixmaps and fill them with the */
+		  /* pmap and mask tiles                                  */
+		  Pixmap              tp = 0, tm = 0;
+		  XGCValues           gcv;
+
+		  tp = ecore_x_pixmap_new(win, w, h, VRoot.depth);
+		  gcv.fill_style = FillTiled;
+		  gcv.tile = pmm->pmap;
+		  gcv.ts_x_origin = 0;
+		  gcv.ts_y_origin = 0;
+		  gc = XCreateGC(disp, tp, GCFillStyle | GCTile |
+				 GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+		  XFillRectangle(disp, tp, gc, 0, 0, w, h);
+		  XFreeGC(disp, gc);
+		  if (pmm->mask)
+		    {
+		       tm = ecore_x_pixmap_new(win, w, h, 1);
+		       gcv.fill_style = FillTiled;
+		       gcv.tile = pmm->mask;
+		       gcv.ts_x_origin = 0;
+		       gcv.ts_y_origin = 0;
+		       gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
+				      GCTileStipXOrigin | GCTileStipYOrigin,
+				      &gcv);
+		       XFillRectangle(disp, tm, gc, 0, 0, w, h);
+		       XFreeGC(disp, gc);
+		    }
+		  FreePmapMask(pmm);
+		  pmm->type = 0;
+		  pmm->pmap = tp;
+		  pmm->mask = tm;
+	       }
+	  }
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {

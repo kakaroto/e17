@@ -21,12 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "ecompmgr.h"		/* FIXME - Remove */
 
 #define BUTTON_EVENT_MASK \
-  (ExposureMask | KeyPressMask | KeyReleaseMask | \
+  (KeyPressMask | KeyReleaseMask | \
    ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask)
-/* PointerMotionMask */
 
 typedef struct _bgeometry
 {
@@ -328,12 +326,17 @@ ButtonToggle(Button * b)
 void
 ButtonDraw(Button * b)
 {
+#if 0				/* FIXME - Remove? */
    ImageclassApply(b->iclass, EoGetWin(b), EoGetW(b), EoGetH(b), 0, 0, b->state,
 		   0, ST_BUTTON);
 
    if (b->label)
       TextclassApply(b->iclass, EoGetWin(b), EoGetW(b), EoGetH(b), 0, 0,
 		     b->state, 0, b->tclass, b->label);
+#else
+   ITApply(EoGetWin(b), b->iclass, NULL, EoGetW(b), EoGetH(b),
+	   b->state, 0, 0, 0, ST_BUTTON, b->tclass, NULL, b->label);
+#endif
 }
 
 void
@@ -630,12 +633,18 @@ FindButton(Window win)
  * Button event handlers
  */
 
+#if 0				/* FIXME - Remove? */
 static void
 ButtonEventExpose(Button * b, XEvent * ev __UNUSED__)
 {
+#if 1
    if (!ECompMgrActive())	/* FIXME - Remove */
       ButtonDraw(b);
+#else
+   b = NULL;
+#endif
 }
+#endif
 
 static void
 ButtonEventMouseDown(Button * b, XEvent * ev)
@@ -784,9 +793,11 @@ ButtonHandleEvents(XEvent * ev, void *prm)
      case LeaveNotify:
 	ButtonEventMouseOut(b, ev);
 	break;
+#if 0				/* FIXME - Remove? */
      case Expose:
 	ButtonEventExpose(b, ev);
 	break;
+#endif
      }
 }
 

@@ -33,9 +33,9 @@ AwaitIclass;
 
 #define EWIN_BORDER_PART_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
-   EnterWindowMask | LeaveWindowMask | PointerMotionMask | ExposureMask)
+   EnterWindowMask | LeaveWindowMask | PointerMotionMask)
 #define EWIN_BORDER_TITLE_EVENT_MASK \
-  (EWIN_BORDER_PART_EVENT_MASK | ExposureMask)
+  (EWIN_BORDER_PART_EVENT_MASK)
 
 static void         BorderWinpartHandleEvents(XEvent * ev, void *prm);
 static void         BorderFrameHandleEvents(XEvent * ev, void *prm);
@@ -82,42 +82,49 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    EWinBit            *ewb = &ewin->bits[i];
    ImageState         *is;
    TextState          *ts;
-   const char         *title;
+   const char         *txt;
 
    if (ewb->win == None)
       return;
 
-   is = ImageclassGetImageState(ewin->border->part[i].iclass,
-				ewin->bits[i].state,
+   is = ImageclassGetImageState(ewin->border->part[i].iclass, ewb->state,
 				ewin->active, EoIsSticky(ewin));
+
    ts = NULL;
-   if (ewin->border->part[i].tclass)
-      ts = TextGetState(ewin->border->part[i].tclass, ewin->active,
-			EoIsSticky(ewin), ewin->bits[i].state);
-   if (!force && ewin->bits[i].is == is && ewin->bits[i].ts == ts)
-      return;
-   ewin->bits[i].is = is;
-   ewin->bits[i].ts = ts;
-
-   ImageclassApply(ewin->border->part[i].iclass, ewb->win,
-		   ewb->w, ewb->h, ewin->active,
-		   EoIsSticky(ewin), ewb->state, ewb->expose, ST_BORDER);
-
+   txt = NULL;
    switch (ewin->border->part[i].flags)
      {
      case FLAG_TITLE:
-	title = EwinGetName(ewin);
-	if (title)
-	   TextclassApply(ewin->border->part[i].iclass, ewb->win,
-			  ewb->w, ewb->h, ewin->active,
-			  EoIsSticky(ewin), ewb->state, ewb->expose,
-			  ewin->border->part[i].tclass, title);
+	txt = EwinGetName(ewin);
+	if (txt && ewin->border->part[i].tclass)
+	   ts = TextclassGetTextState(ewin->border->part[i].tclass, ewb->state,
+				      ewin->active, EoIsSticky(ewin));
 	break;
      case FLAG_MINIICON:
 	break;
      default:
 	break;
      }
+
+   if (!force && ewb->is == is && ewb->ts == ts)
+      return;
+   ewb->is = is;
+   ewb->ts = ts;
+
+#if 0				/* FIXME - Remove? */
+   ImageclassApply(ewin->border->part[i].iclass, ewb->win,
+		   ewb->w, ewb->h, ewin->active,
+		   EoIsSticky(ewin), ewb->state, ewb->expose, ST_BORDER);
+   if (ts)
+      TextclassApply(ewin->border->part[i].iclass, ewb->win,
+		     ewb->w, ewb->h, ewin->active,
+		     EoIsSticky(ewin), ewb->state, ewb->expose,
+		     ewin->border->part[i].tclass, txt);
+#else
+   ITApply(ewb->win, ewin->border->part[i].iclass, is, ewb->w, ewb->h,
+	   ewb->state, ewin->active, EoIsSticky(ewin), ewb->expose, ST_BORDER,
+	   ewin->border->part[i].tclass, ts, txt);
+#endif
 }
 
 static int
@@ -930,6 +937,7 @@ EwinBorderEventsConfigure(EWin * ewin, int mode)
  */
 #define DEBUG_BORDER_EVENTS 0
 
+#if 0				/* FIXME - Remove? */
 static void
 BorderWinpartEventExpose(EWinBit * wbit, XEvent * ev __UNUSED__)
 {
@@ -941,6 +949,7 @@ BorderWinpartEventExpose(EWinBit * wbit, XEvent * ev __UNUSED__)
    if (BorderWinpartDraw(ewin, part) && IsPropagateEwinOnQueue(ewin))
       EwinPropagateShapes(ewin);
 }
+#endif
 
 static void
 BorderWinpartEventMouseDown(EWinBit * wbit, XEvent * ev)
@@ -1092,9 +1101,11 @@ BorderWinpartHandleEvents(XEvent * ev, void *prm)
      case LeaveNotify:
 	BorderWinpartEventLeave(wbit, ev);
 	break;
+#if 0				/* FIXME - Remove? */
      case Expose:
 	BorderWinpartEventExpose(wbit, ev);
 	break;
+#endif
      }
 }
 

@@ -32,7 +32,7 @@ static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
 				    int w, int h, TextState * ts);
 
 TextState          *
-TextGetState(TextClass * tclass, int active, int sticky, int state)
+TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
 {
    if (active)
      {
@@ -235,7 +235,7 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    if (!text)
       return;
 
-   ts = TextGetState(tclass, active, sticky, state);
+   ts = TextclassGetTextState(tclass, state, active, sticky);
    if (!ts)
       return;
 
@@ -304,25 +304,16 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 }
 
 void
-TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
-	 const char *text, int x, int y, int w, int h, int fsize __UNUSED__,
-	 int justification)
+TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
+		  int w, int h, int fsize __UNUSED__, int justification)
 {
    const char         *str;
    char              **lines;
    int                 i, num_lines;
-   TextState          *ts;
    int                 xx, yy;
    static GC           gc = 0;
    int                 textwidth_limit, offset_x, offset_y;
    Pixmap              drawable;
-
-   if (!tclass || !text)
-      return;
-
-   ts = TextGetState(tclass, active, sticky, state);
-   if (!ts)
-      return;
 
    TextStateLoadFont(ts);
 
@@ -772,6 +763,23 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	  }
      }
    freestrlist(lines, num_lines);
+}
+
+void
+TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
+	 const char *text, int x, int y, int w, int h, int fsize,
+	 int justification)
+{
+   TextState          *ts;
+
+   if (!tclass || !text)
+      return;
+
+   ts = TextclassGetTextState(tclass, state, active, sticky);
+   if (!ts)
+      return;
+
+   TextstateDrawText(ts, win, text, x, y, w, h, fsize, justification);
 }
 
 void
