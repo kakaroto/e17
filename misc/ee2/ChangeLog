@@ -1,0 +1,52 @@
+Mon Feb 7 07:14:08 CST 2000
+(dphase)
+
+Finally got my ChangeLog script back -- figured I need to start putting some
+stuff in here.  Works pretty well right now except for some of gtk/gdk's
+stupidness. I think im going to have two drawing areas now actually - one
+will be a solid white (or gray) pixmap as a background, I'm thinking this
+may fix my exposure problems. Off to school now...
+
+-------------------------------------------------------------------------------
+
+Tue Feb 8 07:27:22 CST 2000
+(dphase)
+
+Well, thanks to KainX calling me a pansie, I started rewriting the gui code
+WITHOUTH using Glade.  This has shown me something.  Glade is overrated.  It
+also fills your code with a bunch of unneeded shit and does some HORRIBLE
+formatting :)  Anyway, this has cut the code down by about 500 lines, and
+most of the functionality is back now.  Talked to raster, have a solution
+for the alpha rendering problem -- this should also speed up image renders a
+good bit.
+
+-------------------------------------------------------------------------------
+
+Tue Feb 8 13:04:28 CST 2000
+(dphase)
+
+Ok, TOTAL rewrite of the code -- decided to screw Glade -- just didn't work
+the way that I wanted.... but thats ok.. anyway -- shortened the code size
+down A LOT.  At least 600 lines.  Fixed bug in opening images from the
+File->Open Image menu.  I now have a new bug though.... happens
+occasionally, will fix soon - should be a big deal.  You still have to run
+ee2 from the ee2 dir, this will be changed by snapshot 3. snapshot 3 will
+also have the 'scratch pad' to render on --- this should speed up rendering
+and fix some of the problems with rendering alpha'd images.
+
+-------------------------------------------------------------------------------
+
+Tue Feb 8 16:12:52 CST 2000
+(dphase)
+
+Ok, I fixed the resizing bug when you go to File->Open Image
+
+-------------------------------------------------------------------------------
+
+Wed Feb 9 12:05:34 CST 2000
+(dphase)
+
+Well, I'm adding it to CVS now :)
+
+-------------------------------------------------------------------------------
+
