@@ -3,7 +3,7 @@ dnl Process this file with autoconf to create configure.
 AC_INIT
 AC_CONFIG_SRCDIR([src/Imlib2.h])
 AC_CANONICAL_TARGET([])
-AM_INIT_AUTOMAKE(imlib2, 1.0.7)
+AM_INIT_AUTOMAKE(imlib2, 1.1.0)
 
 AM_CONFIG_HEADER(config.h)
 
