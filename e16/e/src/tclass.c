@@ -53,8 +53,10 @@ FreeTextState(TextState * ts)
 
    if (ts->fontname)
       Efree(ts->fontname);
+#if USE_FNLIB
    if (ts->font)
-      Fnlib_free_font(fd, ts->font);
+      Fnlib_free_font(pFnlibData, ts->font);
+#endif
    if (ts->xfont)
       XFreeFont(disp, ts->xfont);
    if (ts->efont)
@@ -141,9 +143,11 @@ CreateTextState()
    ts->fontname = NULL;
    ts->style.mode = MODE_WRAP_CHAR;
    ts->style.orientation = FONT_TO_RIGHT;
+#if USE_FNLIB
    ts->style.justification = 0;
    ts->style.spacing = 0;
    ts->font = NULL;
+#endif
    ts->efont = NULL;
    ts->xfont = NULL;
    ts->xfontset = 0;

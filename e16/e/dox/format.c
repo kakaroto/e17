@@ -519,11 +519,13 @@ RenderPage(Window win, int page_num, int w, int h)
    int                 wastext = 0;
 
    ts.fontname = NULL;
+#if USE_FNLIB
    ts.style.orientation = FONT_TO_RIGHT;
    ts.style.mode = MODE_WRAP_WORD;
    ts.style.justification = 0;
    ts.style.spacing = 0;
    ts.font = NULL;
+#endif
    ts.fg_col.r = 0;
    ts.fg_col.g = 0;
    ts.fg_col.b = 0;
@@ -604,13 +606,15 @@ RenderPage(Window win, int page_num, int w, int h)
 	  case FONT:
 	     fn = pg->obj[i].object;
 	     ts.fontname = NULL;
+#if USE_FNLIB
 	     ts.style.orientation = FONT_TO_RIGHT;
 	     ts.style.mode = MODE_WRAP_WORD;
 	     ts.style.justification = 0;
 	     ts.style.spacing = 0;
 	     if (ts.font)
-		Fnlib_free_font(fd, ts.font);
+		Fnlib_free_font(pFnlibData, ts.font);
 	     ts.font = NULL;
+#endif
 	     ts.fg_col.r = 0;
 	     ts.fg_col.g = 0;
 	     ts.fg_col.b = 0;
@@ -980,8 +984,10 @@ RenderPage(Window win, int page_num, int w, int h)
 	  }
      }
 
+#if USE_FNLIB
    if (ts.font)
-      Fnlib_free_font(fd, ts.font);
+      Fnlib_free_font(pFnlibData, ts.font);
+#endif
    if (ts.efont)
       Efont_free(ts.efont);
    if (ts.xfont)

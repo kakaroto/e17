@@ -35,7 +35,9 @@
 /*#include <X11/extensions/XTest.h> */
 #include <X11/extensions/XShm.h>
 #include <Imlib.h>
+#if USE_FNLIB
 #include <Fnlib.h>
+#endif
 
 #define DEBUG_EWMH  0
 
@@ -675,11 +677,30 @@ typedef struct _efont
 }
 Efont;
 
+#if !USE_FNLIB
+#define MODE_VERBATIM  0
+#define MODE_WRAP_CHAR 1
+#define MODE_WRAP_WORD 2
+
+#define FONT_TO_RIGHT 0
+#define FONT_TO_DOWN  1
+#define FONT_TO_UP    2
+#define FONT_TO_LEFT  3
+#endif
+
 typedef struct _textstate
 {
    char               *fontname;
+#if USE_FNLIB
    FnlibStyle          style;
    FnlibFont          *font;
+#else
+   struct
+   {
+      char                mode;
+      char                orientation;
+   } style;
+#endif
    ImlibColor          fg_col;
    ImlibColor          bg_col;
    int                 effect;
@@ -3011,7 +3032,10 @@ extern int          single_screen_mode;
 extern Display     *disp;
 extern ImlibData   *id;
 extern ImlibData   *ird;
-extern FnlibData   *fd;
+
+#if USE_FNLIB
+extern FnlibData   *pFnlibData;
+#endif
 extern List        *lists;
 extern int          event_base_shape;
 extern Window       comms_win;

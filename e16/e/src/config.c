@@ -3665,13 +3665,17 @@ LoadEConfig(char *themelocation)
    mustdel = 0;
 
    Esnprintf(s, sizeof(s), "%s/", UserEDir());
-   Fnlib_add_dir(fd, s);
+#if USE_FNLIB
+   Fnlib_add_dir(pFnlibData, s);
+#endif
 #ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/config/", ENLIGHTENMENT_ROOT);
 #else
    Esnprintf(s, sizeof(s), "%s/config/", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
 #endif
-   Fnlib_add_dir(fd, s);
+#if USE_FNLIB
+   Fnlib_add_dir(pFnlibData, s);
+#endif
    /* save the current theme */
    if ((themelocation) && (themelocation[0] != 0))
      {
@@ -3723,7 +3727,9 @@ LoadEConfig(char *themelocation)
      }
    strcpy(themepath, theme);
    Esnprintf(s, sizeof(s), "%s/", theme);
-   Fnlib_add_dir(fd, s);
+#if USE_FNLIB
+   Fnlib_add_dir(pFnlibData, s);
+#endif
    {
       Progressbar        *p = NULL;
       int                 i;

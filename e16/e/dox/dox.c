@@ -37,7 +37,9 @@
 #endif
 
 #include <Imlib.h>
+#if USE_FNLIB
 #include <Fnlib.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -88,7 +90,9 @@ typedef struct _mwmhints {
 
 Display *disp;
 ImlibData *id;
-FnlibData *fd;
+#if USE_FNLIB
+FnlibData *pFnlibData;
+#endif
 Window win_main, win_title, win_exit, win_next, win_prev, win_text, win_cover;
 int w, h, t;
 ImlibImage *im_text;
@@ -216,7 +220,9 @@ int main(int argc, char **argv)
 	params.pixmapcachesize = (w * h * 3 * 2 * 8);
 	id = Imlib_init_with_params(disp, &params);
 	Imlib_set_render_type(id, RT_DITHER_TRUECOL);
-	fd = Fnlib_init(id);
+#if USE_FNLIB
+	pFnlibData = Fnlib_init(id);
+#endif
 
 	im_title = Imlib_create_image_from_xpm_data(id, title_xpm);
 	ibd.left = 50;
@@ -280,7 +286,9 @@ int main(int argc, char **argv)
 	t = 16;
 	GetObjects(f);
 	fclose(f);
-	Fnlib_add_dir(fd, docdir);
+#if USE_FNLIB
+	Fnlib_add_dir(pFnlibData, docdir);
+#endif
 	wx = (DisplayWidth(disp, DefaultScreen(disp)) - w) / 2;
 	wy = (DisplayHeight(disp, DefaultScreen(disp)) - (h + t)) / 2;
 #ifdef HAS_XINERAMA

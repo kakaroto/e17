@@ -36,7 +36,10 @@ int                 single_screen_mode;
 Display            *disp;
 ImlibData          *id;
 ImlibData          *ird;
-FnlibData          *fd;
+
+#if USE_FNLIB
+FnlibData          *pFnlibData;
+#endif
 List               *lists;
 int                 event_base_shape;
 Window              comms_win;

@@ -34,7 +34,9 @@
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
 #include <Imlib.h>
+#if USE_FNLIB
 #include <Fnlib.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -104,8 +106,10 @@ Efont;
 typedef struct _textstate
   {
      char               *fontname;
+#if USE_FNLIB
      FnlibStyle          style;
      FnlibFont          *font;
+#endif
      ImlibColor          fg_col;
      ImlibColor          bg_col;
      int                 effect;
@@ -249,5 +253,7 @@ Link               *RenderPage(Window win, int page_num, int w, int h);
 
 extern Display     *disp;
 extern ImlibData   *id;
-extern FnlibData   *fd;
+#if USE_FNLIB
+extern FnlibData   *pFnlibData;
+#endif
 extern char        *docdir;

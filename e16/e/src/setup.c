@@ -331,8 +331,9 @@ SetupX()
 	RESET_ALERT;
 	EExit((void *)1);
      }
-   fd = Fnlib_init(id);
-   if (!fd)
+#if USE_FNLIB
+   pFnlibData = Fnlib_init(id);
+   if (!pFnlibData)
      {
 	ASSIGN_ALERT(_("X server setup error"), "", "",
 		     _("Quit Enlightenment"));
@@ -343,6 +344,7 @@ SetupX()
 	RESET_ALERT;
 	EExit((void *)1);
      }
+#endif
    root.win = id->x.root;
    root.vis = Imlib_get_visual(id);
    root.depth = id->x.depth;

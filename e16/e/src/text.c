@@ -139,13 +139,23 @@ void
 TextStateLoadFont(TextState * ts)
 {
    EDBUG(5, "TextStateLoadFont");
+#if USE_FNLIB
    if ((ts->font) || (ts->efont) || (ts->xfont) || (ts->xfontset))
+#else
+   if ((ts->efont) || (ts->xfont) || (ts->xfontset))
+#endif
       EDBUG_RETURN_;
    if (!ts->fontname)
       EDBUG_RETURN_;
+#if USE_FNLIB
    if ((!ts->font) && (!ts->efont))
-      ts->font = Fnlib_load_font(fd, ts->fontname);
+      ts->font = Fnlib_load_font(pFnlibData, ts->fontname);
+#endif
+#if USE_FNLIB
    if ((!ts->font) && (!ts->efont))
+#else
+   if (!ts->efont)
+#endif
      {
 	char                s[4096], w[4046], *dup, *ss;
 
@@ -168,7 +178,11 @@ TextStateLoadFont(TextState * ts)
 	if (dup)
 	   Efree(dup);
      }
+#if USE_FNLIB
    if ((!ts->font) && (!ts->efont))
+#else
+   if (!ts->efont)
+#endif
      {
 	if ((!ts->xfont) && (strchr(ts->fontname, ',') == NULL))
 	  {
@@ -218,21 +232,25 @@ TextSize(TextClass * tclass, int active, int sticky, int state, char *text,
    if (!ts)
       EDBUG_RETURN_;
    TextStateLoadFont(ts);
+#if USE_FNLIB
    if (ts->font)
      {
 	for (i = 0; i < num_lines; i++)
 	  {
 	     int                 high, wid, dummy;
 
-	     Fnlib_measure(fd, ts->font, 0, 0, 999999, 999999, 0, 0, fsize,
-			   &ts->style, (unsigned char *)lines[i], 0, 0, &dummy,
-			   &dummy, &wid, &high, &dummy, &dummy, &dummy, &dummy);
+	     Fnlib_measure(pFnlibData, ts->font, 0, 0, 999999, 999999, 0, 0,
+			   fsize, &ts->style, (unsigned char *)lines[i], 0, 0,
+			   &dummy, &dummy, &wid, &high, &dummy, &dummy, &dummy,
+			   &dummy);
 	     *height += high;
 	     if (wid > *width)
 		*width = wid;
 	  }
      }
-   else if (ts->efont)
+   else
+#endif
+   if (ts->efont)
      {
 	for (i = 0; i < num_lines; i++)
 	  {
@@ -323,25 +341,29 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    else
       textwidth_limit = h;
 
+#if USE_FNLIB
    if (ts->font)
      {
 	for (i = 0; i < num_lines; i++)
 	  {
 	     int                 high, wid, dummy;
 
-	     Fnlib_measure(fd, ts->font, 0, 0, 999999, 999999, 0, 0, fsize,
-			   &ts->style, (unsigned char *)lines[i], 0, 0, &dummy,
-			   &dummy, &wid, &high, &dummy, &dummy, &dummy, &dummy);
+	     Fnlib_measure(pFnlibData, ts->font, 0, 0, 999999, 999999, 0, 0,
+			   fsize, &ts->style, (unsigned char *)lines[i], 0, 0,
+			   &dummy, &dummy, &wid, &high, &dummy, &dummy, &dummy,
+			   &dummy);
 	     if ((ts->style.orientation == FONT_TO_UP)
 		 || (ts->style.orientation == FONT_TO_DOWN))
 		fsize = w;
 	     xx = x + (((w - wid) * justification) >> 10);
-	     Fnlib_draw(fd, ts->font, win, 0, xx, yy, w, h, 0, 0, fsize,
+	     Fnlib_draw(pFnlibData, ts->font, win, 0, xx, yy, w, h, 0, 0, fsize,
 			&ts->style, (unsigned char *)lines[i]);
 	     yy += high;
 	  }
      }
-   else if (ts->efont)
+   else
+#endif
+   if (ts->efont)
      {
 	for (i = 0; i < num_lines; i++)
 	  {

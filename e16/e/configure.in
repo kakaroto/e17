@@ -77,6 +77,8 @@ AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support [default=yes]],, enable_hints_gnome=yes)
 AC_ARG_ENABLE(hints-kde,
   [  --enable-hints-kde      compile with KDE(<2.0) hints support [default=no]],, enable_hints_kde=no)
+AC_ARG_WITH(fnlib,
+  [  --with-fnlib            compile with Fnlib support [default=yes]],, with_fnlib=yes)
 
 if test "x$enable_hints_ewmh" = "xyes"; then AC_DEFINE(ENABLE_EWMH, 1, [Extended Window Manager Hints]) fi
 if test "x$enable_hints_gnome" = "xyes"; then AC_DEFINE(ENABLE_GNOME, 1, [GNOME(<2.0) Hints]) fi
@@ -131,6 +133,7 @@ LDFLAGS="$LDFLAGS `echo $IMLIB_LIBS | sed 's/\(.*\)-lImlib.*/\1/'`"
 LDFLAGS="$LDFLAGS `echo $IMLIB_LIBS | sed 's/.*-lImlib.*\(-L[[^ ]]*\).*$/\1/'`"
 XTST_LIBS=""
 
+if test "x$with_fnlib" = "xyes"; then
 # AC_CHECK_HEADER(Fnlib.h, ,AC_MSG_ERROR([Fatal Error: no Fnlib header detected.]))
 AC_CHECK_LIB(Fnlib, Fnlib_init, FNLIB_LIBS=-lFnlib , [
 echo "ERROR: Enlightenment needs a system with libFnlib.so (Fnlib)"
@@ -140,6 +143,8 @@ echo "ftp://www.rasterman.com/pub/enlightenment/"
 echo "ftp://ftp.labs.redhat.com/pub/fnlib/"
 AC_MSG_ERROR([Fatal Error: no Fnlib detected.])], $IMLIB_LIBS)
 AC_SUBST(FNLIB_LIBS)
+AC_DEFINE(USE_FNLIB, 1, [Fnlib support])
+fi
 
 if test "x$enable_upgrade" = "xyes"; then
 AC_CHECK_LIB(ghttp, ghttp_uri_validate, [AC_DEFINE(AUTOUPGRADE, 1, [Automatic upgrading]) 
