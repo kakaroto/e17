@@ -20,6 +20,16 @@ __destroy_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
+__print_value(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Seeker *s;
+
+	s = EWL_SEEKER(w);
+
+	printf("Seeker set to %g\n", ewl_seeker_get_value(s));
+}
+
+void
 __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *seeker_win;
@@ -31,17 +41,22 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	seeker_button = w;
 
 	seeker_win = ewl_window_new();
+	ewl_object_set_minimum_size(EWL_OBJECT(seeker_win), 300, 300);
 	ewl_callback_append(seeker_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_seeker_test_window, NULL);
 	ewl_widget_show(seeker_win);
 
 	hseeker = ewl_hseeker_new();
-	ewl_object_set_padding(EWL_OBJECT(hseeker), 10, 10, 10, 0);
+	ewl_object_request_position(EWL_OBJECT(hseeker), 30, 0);
+	ewl_callback_append(hseeker, EWL_CALLBACK_VALUE_CHANGED, __print_value,
+			NULL);
 	ewl_container_append_child(EWL_CONTAINER(seeker_win), hseeker);
 	ewl_widget_show(hseeker);
 
 	vseeker = ewl_vseeker_new();
-	ewl_object_set_padding(EWL_OBJECT(vseeker), 10, 10, 10, 10);
+	ewl_object_request_position(EWL_OBJECT(vseeker), 0, 30);
+	ewl_callback_append(vseeker, EWL_CALLBACK_VALUE_CHANGED, __print_value,
+			NULL);
 	ewl_container_append_child(EWL_CONTAINER(seeker_win), vseeker);
 	ewl_widget_show(vseeker);
 

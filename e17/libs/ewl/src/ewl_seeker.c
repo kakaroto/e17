@@ -144,6 +144,9 @@ void ewl_seeker_set_value(Ewl_Seeker * s, double v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
+	if (v == s->value)
+		DRETURN(DLEVEL_STABLE);
+
 	if (v < 0)
 		v = 0;
 
@@ -480,8 +483,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 		scale = (double)(my - dy) / (double)dh;
 	}
 
-	s->value = scale * s->range;
-	ewl_widget_configure(w);
+	ewl_seeker_set_value(s, scale * s->range);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -490,6 +492,7 @@ void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
 	Ecore_Event_Mouse_Down *ev;
+	double          value;
 	int             xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -503,37 +506,26 @@ void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_get_current_geometry(EWL_OBJECT(s->dragbar),
 					&xx, &yy, &ww, &hh);
 
+	value = s->value;
+
 	/*
 	 * Increment or decrement the value based on the position of the click
 	 * relative to the dragbar and the orientation of the seeker.
 	 */
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		if (ev->x < xx)
-			s->value -= s->step;
+			value -= s->step;
 		else if (ev->x > xx + ww)
-			s->value += s->step;
+			value += s->step;
 	}
 	else {
 		if (ev->y < yy)
-			s->value += s->step;
+			value -= s->step;
 		else if (ev->y > yy + hh)
-			s->value -= s->step;
+			value += s->step;
 	}
 
-	if (s->value < 0.0)
-		s->value = 0.0;
-	else if (s->value > s->range)
-		s->value = s->range;
-
-	/*
-	 * Determine the new position of the dragbar and configure it.
-	 */
-	ewl_widget_configure(EWL_WIDGET(s));
-
-	/*
-	 * Now signal that the value of the seeker has changed.
-	 */
-	ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
+	ewl_seeker_set_value(s, value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

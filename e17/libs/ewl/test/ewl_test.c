@@ -1,7 +1,7 @@
 #include <Ewl.h>
 #include <ewl-config.h>
 
-#define BUTTONS 17
+#define BUTTONS 18
 
 void            __close_main_widow(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
@@ -38,6 +38,8 @@ void            __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
 
 void            __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 						void *user_data);
+void            __create_seeker_test_window(Ewl_Widget * w, void *ev_data,
+					      void *user_data);
 
 void            __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
 					     void *user_data);
@@ -191,6 +193,11 @@ main(int argc, char **argv)
 	button[i] = ewl_button_new("Ewl_Notebook");
 	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
 			    __create_notebook_test_window, NULL);
+	i++;
+
+	button[i] = ewl_button_new("Ewl_Seeker");
+	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
+			__create_seeker_test_window, NULL);
 	i++;
 
 	/*

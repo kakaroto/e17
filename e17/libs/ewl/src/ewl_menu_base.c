@@ -118,17 +118,26 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 			EWL_CALLBACK_DESELECT);
 
 	/*
-	 * Create the icon if one is requested.
+	 * Create the icon if one is requested, or a spacer if not, but there is
+	 * text to be displayed.
 	 */
 	if (image)
 		item->icon = ewl_image_new(image);
-	else
+	else if (text)
 		item->icon = ewl_spacer_new();
 
-	ewl_object_set_alignment(EWL_OBJECT(item->icon), EWL_ALIGNMENT_CENTER);
-	ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
-	ewl_container_append_child(EWL_CONTAINER(item), item->icon);
-	ewl_widget_show(item->icon);
+	/*
+	 * Did we create an icon or a placeholder? Goodie, then finish it's
+	 * setup. We don't always want to create one, in the case that a
+	 * separator is going to be packed in here instead.
+	 */
+	if (item->icon) {
+		ewl_object_set_alignment(EWL_OBJECT(item->icon),
+				EWL_ALIGNMENT_CENTER);
+		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
+		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
+		ewl_widget_show(item->icon);
+	}
 
 	/*
 	 * Create the text object for the menu item.
@@ -140,6 +149,54 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 				EWL_ALIGNMENT_LEFT);
 		ewl_widget_show(item->text);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_menu_separator_new - create a separator menu item
+ *
+ * Returns a new menu item separator on success, NULL on failure.
+ */
+Ewl_Menu_Separator *ewl_menu_separator_new()
+{
+	Ewl_Menu_Separator *sep;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	sep = NEW(Ewl_Menu_Separator, 1);
+	if (!sep)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	ZERO(sep, Ewl_Menu_Separator, 1);
+	ewl_menu_separator_init(sep);
+
+	DRETURN_PTR(sep, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_menu_separator_init - initialize a menu separator item
+ * @sep: the menu separator item to initialize
+ *
+ * Returns no value. Sets up the internal fields of the menu separator item to
+ * some sane defaults.
+ */
+void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
+{
+	Ewl_Widget *separator;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("sep", sep);
+
+	ewl_menu_item_init(EWL_MENU_ITEM(sep), NULL, NULL);
+
+	separator = ewl_separator_new(EWL_ORIENTATION_HORIZONTAL);
+	if (!separator)
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_container_append_child(EWL_CONTAINER(sep), separator);
+	ewl_widget_show(separator);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

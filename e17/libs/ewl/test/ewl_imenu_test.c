@@ -79,12 +79,16 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Append some test items
 	 */
-	item = ewl_menu_item_new("/usr/share/pixmaps/dia.xpm", "dia");
+	item = ewl_menu_item_new("/usr/share/pixmaps/dia-diagram.png", "dia");
 	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
 
-	item = ewl_menu_item_new("/usr/share/pixmaps/wilber.xpm", "gimp");
+	item = ewl_menu_separator_new();
+	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new("/usr/share/pixmaps/wilber.png", "gimp");
 	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);

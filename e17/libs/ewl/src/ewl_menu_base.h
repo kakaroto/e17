@@ -29,6 +29,15 @@ struct _ewl_menu_item
 	int             submenu;
 };
 
+typedef struct _ewl_menu_separator Ewl_Menu_Separator;
+
+#define EWL_MENU_SEPARATOR(s) ((Ewl_Menu_Separator *)s)
+
+struct _ewl_menu_separator
+{
+	Ewl_Menu_Item item;
+};
+
 typedef struct _ewl_menu_base Ewl_Menu_Base;
 
 #define EWL_MENU_BASE(menu) ((Ewl_Menu_Base *) menu)
@@ -61,6 +70,9 @@ struct _ewl_menu_base
 Ewl_Widget     *ewl_menu_item_new(char *image, char *title);
 void            ewl_menu_item_init(Ewl_Menu_Item * menu, char *image,
 				   char *title);
+
+Ewl_Menu_Separator *ewl_menu_separator_new();
+void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);
 
 void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,
 				   char *title);

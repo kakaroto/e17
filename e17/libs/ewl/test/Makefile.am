@@ -18,6 +18,7 @@ ewl_test_SOURCES		=	ewl_test.c \
 					ewl_imenu_test.c \
 					ewl_menu_test.c \
 					ewl_notebook_test.c \
+					ewl_seeker_test.c \
 					ewl_selectionbook_test.c \
 					ewl_selectionbar_test.c \
 					ewl_spinner_test.c \
