@@ -98,8 +98,7 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 
 	if (event->data.l[0] == IconicState)
 	  {
-	     if (!(ewin->iconified))
-		IconifyEwin(ewin);
+	     IconifyEwin(ewin);
 	  }
      }
    else if (event->message_type == E_XA_WM_PROTOCOLS)

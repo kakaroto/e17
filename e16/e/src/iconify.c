@@ -210,12 +210,12 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
    EDBUG(6, "IconboxIconifyEwin");
    if (!ewin)
       EDBUG_RETURN_;
+   if (ewin->state != EWIN_STATE_MAPPED)
+      EDBUG_RETURN_;
+
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
    if (ewin->ibox)
-      EDBUG_RETURN_;
-
-   if (ewin->state == EWIN_STATE_ICONIC)
       EDBUG_RETURN_;
 
    if (call_depth > 256)
