@@ -1377,6 +1377,7 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 	ShadeEwin(ewin);
      }
    EDBUG_RETURN(ewin);
+   ptr = NULL;
 }
 
 EWin               *

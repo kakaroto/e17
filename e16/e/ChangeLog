@@ -1880,3 +1880,11 @@ Thu May 22 15:09:11 EDT 2003
 
 Updated .h files so that this sucker actually wants to build on my system.
 Sorry I've been AWOL for so long, life has been quite busy lately.
+
+-------------------------------------------------------------------------------
+
+Thu May 22 15:18:45 EDT 2003
+(Mandrake)
+
+remove a minor warning.  don't know why indent went insane with that last
+commit, either.  oh well.
