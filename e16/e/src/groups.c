@@ -25,8 +25,8 @@
 
 #define DISABLE_PAGER_ICONBOX_GROUPING 0
 
-Group              *
-CreateGroup()
+static Group       *
+GroupCreate(void)
 {
    Group              *g;
    double              t;
@@ -53,17 +53,17 @@ CreateGroup()
    EDBUG_RETURN(g);
 }
 
-void
-FreeGroup(Group * g)
+static void
+GroupDestroy(Group * g)
 {
-   if (g)
-     {
-	if (g == current_group)
-	   current_group = NULL;
-	if (g->members)
-	   Efree(g->members);
-	Efree(g);
-     }
+   if (!g)
+      return;
+
+   if (g == current_group)
+      current_group = NULL;
+   if (g->members)
+      Efree(g->members);
+   Efree(g);
 }
 
 void
@@ -107,7 +107,7 @@ BuildWindowGroup(EWin ** ewins, int num)
    int                 i;
    Group              *g;
 
-   current_group = g = CreateGroup();
+   current_group = g = GroupCreate();
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
 
    for (i = 0; i < num; i++)
@@ -194,81 +194,64 @@ EwinsInGroup(EWin * ewin1, EWin * ewin2)
 void
 RemoveEwinFromGroup(EWin * ewin, Group * g)
 {
-   int                 i, j, k, i2, x, y;
+   int                 i, j, k, i2;
 
-   if (ewin && g)
+   if (!ewin || !g)
+      return;
+
+   for (k = 0; k < ewin->num_groups; k++)
      {
-	if (ewin->groups)
+	/* is the window actually part of the given group */
+	if (ewin->groups[k] != g)
+	   continue;
+
+	for (i = 0; i < g->num_members; i++)
 	  {
-	     for (k = 0; k < ewin->num_groups; k++)
+	     if (g->members[i] != ewin)
+		continue;
+
+	     /* remove it from the group */
+	     for (j = i; j < g->num_members - 1; j++)
+		g->members[j] = g->members[j + 1];
+	     g->num_members--;
+	     if (g->num_members > 0)
+		g->members =
+		   Erealloc(g->members, sizeof(EWin *) * g->num_members);
+	     else
 	       {
-		  /* if the window is actually part of the given group */
-		  if (ewin->groups[k] == g)
-		    {
-		       for (i = 0; i < g->num_members; i++)
-			 {
-			    if (g->members[i] == ewin)
-			      {
-				 /* remove it from the group */
-				 for (j = i; j < g->num_members - 1; j++)
-				    g->members[j] = g->members[j + 1];
-				 g->num_members--;
-				 if (g->num_members > 0)
-				    g->members =
-				       Erealloc(g->members,
-						sizeof(EWin *) *
-						g->num_members);
-				 else
-				   {
-				      RemoveItem((char *)g, 0,
-						 LIST_FINDBY_POINTER,
-						 LIST_TYPE_GROUP);
-				      FreeGroup(g);
-				   }
-				 /* and remove the group from the groups that the window is in */
-				 for (i2 = k; i2 < ewin->num_groups - 1; i2++)
-				    ewin->groups[i2] = ewin->groups[i2 + 1];
-				 ewin->num_groups--;
-				 if (ewin->num_groups <= 0)
-				   {
-				      Efree(ewin->groups);
-				      ewin->groups = NULL;
-				      ewin->num_groups = 0;
-				   }
-				 else
-				    ewin->groups =
-				       Erealloc(ewin->groups,
-						sizeof(Group *) *
-						ewin->num_groups);
-				 SaveGroups();
-
-				 x = ewin->x;
-				 y = ewin->y;
-				 if ((ewin->x + ewin->border->border.left + 1) >
-				     VRoot.w)
-				    x = VRoot.w - ewin->border->border.left - 1;
-				 else if ((ewin->x + ewin->w -
-					   ewin->border->border.right - 1) < 0)
-				    x = 0 - ewin->w +
-				       ewin->border->border.right + 1;
-				 if ((ewin->y + ewin->border->border.top + 1) >
-				     VRoot.h)
-				    y = VRoot.h - ewin->border->border.top - 1;
-				 else if ((ewin->y + ewin->h -
-					   ewin->border->border.bottom - 1) < 0)
-				    y = 0 - ewin->h +
-				       ewin->border->border.bottom + 1;
-
-				 MoveEwin(ewin, x, y);
-
-				 RememberImportantInfoForEwin(ewin);
-				 return;
-			      }
-			 }
-		    }
+		  RemoveItem((char *)g, 0,
+			     LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
+		  GroupDestroy(g);
 	       }
+
+	     /* and remove the group from the groups that the window is in */
+	     for (i2 = k; i2 < ewin->num_groups - 1; i2++)
+		ewin->groups[i2] = ewin->groups[i2 + 1];
+	     ewin->num_groups--;
+	     if (ewin->num_groups <= 0)
+	       {
+		  Efree(ewin->groups);
+		  ewin->groups = NULL;
+		  ewin->num_groups = 0;
+	       }
+	     else
+		ewin->groups =
+		   Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+
+	     SaveGroups();
+	     return;
 	  }
      }
+}
+
+void
+GroupsEwinRemove(EWin * ewin)
+{
+   int                 num, i;
+
+   num = ewin->num_groups;
+   for (i = 0; i < num; i++)
+      RemoveEwinFromGroup(ewin, ewin->groups[0]);
 }
 
 char              **
@@ -452,7 +435,7 @@ LoadGroups(void)
 	     word(s, 1, ss);
 	     if (!strcmp(ss, "NEW:"))
 	       {
-		  g = CreateGroup();
+		  g = GroupCreate();
 		  if (g)
 		    {
 		       word(s, 2, ss);
@@ -568,7 +551,7 @@ ChooseGroup(int val, void *data)
    data = NULL;
 }
 
-void
+static void
 GroupCallback(int val, void *data)
 {
    ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);

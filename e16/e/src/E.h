@@ -1719,6 +1719,7 @@ void                BackgroundsInit(void);
 
 void                EwinRefresh(EWin * ewin);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
+void                EwinFixPosition(EWin * ewin);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                MoveEwin(EWin * ewin, int x, int y);
 void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
@@ -2240,8 +2241,6 @@ int                 GrabThePointer(Window win);
 void                UnGrabTheButtons(void);
 
 /* groups.c */
-Group              *CreateGroup(void);
-void                FreeGroup(Group * g);
 void                CopyGroupConfig(GroupConfig * src, GroupConfig * dest);
 void                BreakWindowGroup(EWin * ewin, Group * g);
 void                BuildWindowGroup(EWin ** ewins, int num);
@@ -2250,14 +2249,12 @@ Group              *EwinsInGroup(EWin * ewin1, EWin * ewin2);
 char              **GetWinGroupMemberNames(Group ** groups, int num);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin, Group * g);
+void                GroupsEwinRemove(EWin * ewin);
 void                ShowHideWinGroups(EWin * ewin, Group * g, char onoff);
 void                ChooseGroupDialog(EWin * ewin, char *message,
 				      char group_select, int action);
 void                SaveGroups(void);
 void                LoadGroups(void);
-void                GroupSelectCallback(int val, void *data);
-void                GroupFeatureChangeCallback(int val, void *data);
-void                GroupCallback(int val, void *data);
 
 /* handlers.c */
 void                SignalsSetup(void);

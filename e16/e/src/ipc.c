@@ -3967,13 +3967,11 @@ IPC_ReloadMenus(const char *params, Client * c)
 }
 
 static void
-IPC_GroupInfo(const char *params, Client * c)
+IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 {
    char                buf[FILEPATH_LEN_MAX];
-   char                buf2[FILEPATH_LEN_MAX];
    Group             **groups = NULL;
    int                 num_groups, i, j;
-   char                tmp[16];
 
    buf[0] = 0;
 
@@ -3991,18 +3989,14 @@ IPC_GroupInfo(const char *params, Client * c)
 
 	if (!group)
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d", gix);
-	     CommsSend(c, buf);
+	     IpcPrintf("Error: no such group: %d", gix);
 	     return;
 	  }
-	groups = (Group **) Emalloc(sizeof(Group **));
 
+	groups = (Group **) Emalloc(sizeof(Group **));
 	if (!groups)
-	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no memory");
-	     CommsSend(c, buf);
-	     return;
-	  }
+	   return;
+
 	groups[0] = group;
 	num_groups = 1;
      }
@@ -4010,21 +4004,16 @@ IPC_GroupInfo(const char *params, Client * c)
      {
 	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
 
-	Esnprintf(buf, sizeof(buf), "Number of groups: %d", num_groups);
+	IpcPrintf("Number of groups: %d\n", num_groups);
      }
 
    for (i = 0; i < num_groups; i++)
      {
 	for (j = 0; j < groups[i]->num_members; j++)
-	  {
-	     Esnprintf(tmp, sizeof(tmp), "%d", groups[i]->index);
-	     strcat(buf, tmp);
-	     strcat(buf, ": ");
-	     strcat(buf, groups[i]->members[j]->icccm.wm_name);
-	     strcat(buf, "\n");
-	  }
-	Esnprintf(buf2, sizeof(buf2),
-		  "        index: %d\n" "  num_members: %d\n"
+	   IpcPrintf("%d: %s\n", groups[i]->index,
+		     groups[i]->members[j]->icccm.wm_name);
+
+	IpcPrintf("        index: %d\n" "  num_members: %d\n"
 		  "      iconify: %d\n" "         kill: %d\n"
 		  "         move: %d\n" "        raise: %d\n"
 		  "   set_border: %d\n" "        stick: %d\n"
@@ -4034,14 +4023,10 @@ IPC_GroupInfo(const char *params, Client * c)
 		  groups[i]->cfg.move, groups[i]->cfg.raise,
 		  groups[i]->cfg.set_border, groups[i]->cfg.stick,
 		  groups[i]->cfg.shade, groups[i]->cfg.mirror);
-	strcat(buf, buf2);
      }
 
    if (groups)
       Efree(groups);
-
-   if (buf)
-      CommsSend(c, buf);
 }
 
 static void

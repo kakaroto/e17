@@ -3988,7 +3988,7 @@ CB_ConfigureGroup(int val, void *data)
    data = NULL;
 }
 
-void
+static void
 GroupSelectCallback(int val, void *data)
 {
    DialogItemCheckButtonSetState(di_border, tmp_cfgs[val].set_border);
@@ -4005,7 +4005,7 @@ GroupSelectCallback(int val, void *data)
    tmp_current_group = val;
 }
 
-void
+static void
 GroupFeatureChangeCallback(int val, void *data)
 {
    switch (val)

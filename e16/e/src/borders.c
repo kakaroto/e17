@@ -1292,16 +1292,6 @@ EwinCreate(Window win)
 }
 
 static void
-EwinRemoveFromGroups(EWin * ewin)
-{
-   int                 num, i;
-
-   num = ewin->num_groups;
-   for (i = 0; i < num; i++)
-      RemoveEwinFromGroup(ewin, ewin->groups[0]);
-}
-
-static void
 EwinDestroy(EWin * ewin)
 {
    EWin               *ewin2;
@@ -1367,7 +1357,7 @@ EwinDestroy(EWin * ewin)
       Efree(ewin->session_id);
    FreePmapMask(&ewin->mini_pmm);
    FreePmapMask(&ewin->icon_pmm);
-   EwinRemoveFromGroups(ewin);
+   GroupsEwinRemove(ewin);
    Efree(ewin);
 
    EDBUG_RETURN_;
@@ -1707,6 +1697,33 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 
    PagerEwinOutsideAreaUpdate(ewin);
    ForceUpdatePagersForDesktop(ewin->desktop);
+}
+
+void
+EwinFixPosition(EWin * ewin __UNUSED__)
+{
+   int                 x, y;
+
+   if (ewin->state != EWIN_STATE_MAPPED)
+      return;
+
+   x = ewin->x;
+   y = ewin->y;
+   if ((ewin->x + ewin->border->border.left + 1) > VRoot.w)
+      x = VRoot.w - ewin->border->border.left - 1;
+   else if ((ewin->x + ewin->w - ewin->border->border.right - 1) < 0)
+      x = 0 - ewin->w + ewin->border->border.right + 1;
+   if ((ewin->y + ewin->border->border.top + 1) > VRoot.h)
+      y = VRoot.h - ewin->border->border.top - 1;
+   else if ((ewin->y + ewin->h - ewin->border->border.bottom - 1) < 0)
+      y = 0 - ewin->h + ewin->border->border.bottom + 1;
+
+   if (x != ewin->x || y != ewin->y)
+      MoveEwin(ewin, x, y);
+
+#if 0
+   RememberImportantInfoForEwin(ewin);
+#endif
 }
 
 #define MR_FLAGS_MOVE   1

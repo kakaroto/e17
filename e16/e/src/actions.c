@@ -1419,7 +1419,7 @@ static void
 DoKill(EWin * ewin, const void *params __UNUSED__, int nogroup)
 {
    EWin              **gwins;
-   int                 num, num_groups, i, j;
+   int                 num, i;
 
    if (!ewin)
       EDBUG_RETURN_;
@@ -1427,9 +1427,6 @@ DoKill(EWin * ewin, const void *params __UNUSED__, int nogroup)
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	num_groups = gwins[i]->num_groups;
-	for (j = 0; j < num_groups; j++)
-	   RemoveEwinFromGroup(gwins[i], gwins[i]->groups[0]);
 	ICCCM_Delete(gwins[i]);
 	SoundPlay("SOUND_WINDOW_CLOSE");
      }
