@@ -195,7 +195,6 @@ _eapp_edit_dialog_changed(Ewl_Widget * w, void *ev_data, void *user_data) {
       iw = ewl_object_current_w_get(EWL_OBJECT(icon));
       ih = ewl_object_current_h_get(EWL_OBJECT(icon));
       ewl_image_file_set(EWL_IMAGE(icon), icon_file, "");
-      ewl_image_scale_to(EWL_IMAGE(icon), iw, ih);
       break;
     case EWL_RESPONSE_CANCEL:
       break;
@@ -322,6 +321,8 @@ main(int argc, char **argv) {
 
   cell = ewl_cell_new();
   icon = ewl_image_new(file, "icon");
+  ewl_image_proportional_set(EWL_IMAGE(icon), TRUE);
+  ewl_image_scale_to(EWL_IMAGE(icon), 32, 32);
   ewl_widget_show(icon);
   ewl_container_child_append(EWL_CONTAINER(cell), icon);
   ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
