@@ -138,7 +138,7 @@ get_module_loader_saver (char *mod,
 		if (v)
 			_gdk_imlib_load_alpha_png = ptr;
 		else
-			_gdk_imlib_load_alpha_png = (gdk_imlib_inline_fn *) load_fail_fn;
+			_gdk_imlib_load_alpha_png = (gdk_imlib_load_alpha_fn) load_fail_fn;
 		g_free (alpha_name);
 	}
 

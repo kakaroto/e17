@@ -5,6 +5,10 @@
 #include "gdk_imlib_private.h"
 #include <locale.h>
 
+#ifdef __EMX__
+extern const char *__XOS2RedirRoot(const char *);
+#endif
+
 char                x_error;
 
 static void
@@ -16,7 +20,7 @@ HandleXError(Display * d, XErrorEvent * ev)
 gint
 gdk_imlib_get_render_type()
 {
-  if (id)
+  if (id->x.disp)
     return id->render_type;
   else
     return -1;
@@ -25,22 +29,17 @@ gdk_imlib_get_render_type()
 void
 gdk_imlib_set_render_type(gint rend_type)
 {
-  if (id)
-    {
-      if (id->x.depth > 8)
-	id->render_type = rend_type;
-      else
-	{
-	  if ((rend_type == RT_PLAIN_TRUECOL) ||
-	      (rend_type == RT_DITHER_TRUECOL))
-	    id->render_type = RT_DITHER_PALETTE_FAST;
-	  else
-	    id->render_type = rend_type;
-	}
-      return;
-    }
+  if (id->x.depth > 8)
+    id->render_type = rend_type;
   else
-    return;
+    {
+      if ((rend_type == RT_PLAIN_TRUECOL) ||
+	  (rend_type == RT_DITHER_TRUECOL))
+	id->render_type = RT_DITHER_PALETTE_FAST;
+      else
+	id->render_type = rend_type;
+    }
+  return;
 }
 
 static void
@@ -113,6 +112,8 @@ int
 
 #endif
 
+static int initialized = 0;
+
 void
 gdk_imlib_init()
 {
@@ -144,14 +145,10 @@ gdk_imlib_init()
     }
   vis = -1;
   loadpal = 0;
-  if (id)
+  if (initialized)
     return;
-  id = (ImlibData *) malloc(sizeof(ImlibData));
-  if (!id)
-    {
-      fprintf(stderr, "gdk_imlib ERROR: Cannot alloc RAM for Initial data struct\n");
-      return;
-    }
+
+  initialized = 1;
   id->palette = NULL;
   id->palette_orig = NULL;
   id->fast_rgb = NULL;
@@ -236,9 +233,17 @@ gdk_imlib_init()
   g_snprintf(s, sizeof(s), "%s/.imrc", homedir);
   old_locale = g_strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
+#ifndef __EMX__
   f = fopen(s, "r");
+#else
+  f = fopen(s, "rt");
+#endif
   if (!f)
+#ifndef __EMX__
     f = fopen(SYSTEM_IMRC, "r");
+#else
+    f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
+#endif
   if (f)
     {
       while (fgets(s, sizeof (s), f))
@@ -542,8 +547,8 @@ gdk_imlib_init()
       if (id->num_colors == 0)
 	{
 	  fprintf(stderr, "gdk_imlib: Cannot Find Palette. A Palette is required for this mode\n");
-	  free(id);
-	  id = NULL;
+	  id->x.disp = NULL;
+	  initialized = 0;
 	  if (palfile)
 	    free(palfile);
 	  return;
@@ -644,14 +649,9 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
     }
   vis = -1;
   loadpal = 0;
-  if (id)
+  if (initialized)
     return;
-  id = (ImlibData *) malloc(sizeof(ImlibData));
-  if (!id)
-    {
-      fprintf(stderr, "gdk_imlib ERROR: Cannot alloc RAM for Initial data struct\n");
-      return;
-    }
+  initialized = 1;
   id->palette = NULL;
   id->palette_orig = NULL;
   id->fast_rgb = NULL;
@@ -731,10 +731,18 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
   
   old_locale = g_strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
-  
+
+#ifndef __EMX__  
   f = fopen(s, "r");
+#else
+  f = fopen(s, "rt");
+#endif
   if (!f)
+#ifndef __EMX__
     f = fopen(SYSTEM_IMRC, "r");
+#else
+    f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
+#endif
   if (f)
     {
       while (fgets(s, sizeof (s), f))
@@ -1074,8 +1082,8 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
       if (id->num_colors == 0)
 	{
 	  fprintf(stderr, "gdk_imlib: Cannot Find Palette. A Palette is required for this mode\n");
-	  free(id);
-	  id = NULL;
+	  id->x.disp = NULL;
+	  initialized = 0;
 	  if (palfile)
 	    free(palfile);
 	  return;
@@ -1302,39 +1310,35 @@ gdk_imlib_set_image_shape(GdkImlibImage * im, GdkImlibColor * color)
 gint
 gdk_imlib_get_fallback()
 {
-  if (!id)
-    return 0;
   return id->fallback;
 }
 
 void
 gdk_imlib_set_fallback(gint fallback)
 {
-  if (!id)
-    return;
   id->fallback = fallback;
 }
 
 GdkVisual          *
 gdk_imlib_get_visual()
 {
-  if (!id)
-    return NULL;
   return gdk_window_get_visual(id->x.gdk_win);
 }
 
 GdkColormap        *
 gdk_imlib_get_colormap()
 {
-  if (!id)
-    return NULL;
   return (id->x.gdk_cmap);
 }
 
 gchar              *
 gdk_imlib_get_sysconfig()
 {
-  if (!id)
+  if (!id->x.disp)
     return NULL;
+#ifndef __EMX__
   return strdup(SYSTEM_IMRC);
+#else
+  return strdup(__XOS2RedirRoot(SYSTEM_IMRC));
+#endif
 }

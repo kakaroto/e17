@@ -4,6 +4,10 @@
 #define id _gdk_imlib_data
 #include "gdk_imlib_private.h"
 
+#ifdef __EMX__
+extern const char *__XOS2RedirRoot(const char *);
+#endif
+
 static int
 PaletteLUTGet(void)
 {
@@ -75,7 +79,7 @@ PaletteLUTSet(void)
 {
   Atom                to_set;
   unsigned char       *prop;
-  int                 i, j, r, g, b;
+  int                 i, j;
   
   to_set = XInternAtom(id->x.disp, "_IMLIB_COLORMAP", False);  
   prop = malloc((id->num_colors * 4) + 1 + (32 * 32 * 32));
@@ -158,8 +162,14 @@ gdk_imlib_load_colors(char *file)
   int                 pal[768];
   int                 r, g, b;
   int                 rr, gg, bb;
-
+#ifndef __EMX__
   f = fopen(file, "r");
+#else
+  if (*file == '/')
+    f = fopen(__XOS2RedirRoot(file), "rt");
+  else
+    f = fopen(file, "rt");
+#endif
   if (!f)
     {
       fprintf(stderr, "GImLib ERROR: Cannot find palette file %s\n", file);

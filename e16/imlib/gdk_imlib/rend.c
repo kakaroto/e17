@@ -46,11 +46,7 @@ gdk_imlib_best_color_match(gint * r, gint * g, gint * b)
   int                 mindif = 0x7fffffff;
 
   col = 0;
-  if (!id)
-    {
-      fprintf(stderr, "ImLib ERROR: No ImlibData initialised\n");
-      return -1;
-    }
+  g_return_val_if_fail(id->x.disp, -1);
   if ((id->render_type == RT_PLAIN_TRUECOL) ||
       (id->render_type == RT_DITHER_TRUECOL))
     {
@@ -142,11 +138,7 @@ _gdk_imlib_index_best_color_match(gint * r, gint * g, gint * b)
   int                 mindif = 0x7fffffff;
 
   col = 0;
-  if (!id)
-    {
-      fprintf(stderr, "ImLib ERROR: No ImlibData initialised\n");
-      return -1;
-    }
+  g_return_val_if_fail(id->x.disp, -1);
   if ((id->render_type == RT_PLAIN_TRUECOL) ||
       (id->render_type == RT_DITHER_TRUECOL))
     {

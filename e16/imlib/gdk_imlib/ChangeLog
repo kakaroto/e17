@@ -1,4 +1,21 @@
-Fri Apr  2 15:28:28 1999  ape@spacetec.no  (Asbjorn Pettersen)
+1999-10-16  Kjartan Maraas  <kmaraas@online.no>
+
+	* colors.c (PaletteLUTSet): Removed unused variables.
+	
+1999-09-02  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* rend.c (gdk_imlib_best_color_match): 
+	Fix typo - `g_return_val_if_fail', not `g_return_val_fail'.
+	(_gdk_imlib_index_best_color_match): Likewise.
+
+1999-09-02  Pavel Machek  <pavel@artax.karlin.mff.cuni.cz>
+
+	* rend.c, globals.c, misc.c: No need to allocate structure
+	dynamically - it is needed, always. 
+	Turned some fprintf(stderr) into g_return_val_if_fail as they 
+	seem much cleaner to me. 
+	
+Fri Apr 2 15:28:28 1999  Asbjorn Pettersen  <ape@spacetec.no>
 
 	* gdk_imlib_private.h: replace <sys/types.h>.
  	Needed for OS/2 version.

@@ -12,8 +12,11 @@
 static char        *
 g_SplitID(char *file)
 {
+#ifndef __EMX__
   char               *p = strrchr(file, ':');
-
+#else
+  char               *p = strrchr(file, ';');
+#endif
   if (p == NULL)
     return "";
   else
@@ -460,7 +463,11 @@ gdk_imlib_load_image(char *file)
       if (!strcmp(file,"-"))
 	p = stdin;
       else
+#ifndef __EMX__
         p = fopen(file, "r");
+#else
+        p = fopen(file, "rt");
+#endif
       if (!p)
 	{
 	  free(im);
@@ -627,7 +634,11 @@ gdk_imlib_save_image_to_ppm(GdkImlibImage * im, char *file)
 
   if ((!id) || (!im) || (!file))
     return 0;
+#ifndef __EMX__
   f = fopen(file, "w");
+#else
+  f = fopen(file, "wb");
+#endif
   if (!f)
     return 0;
 

@@ -81,7 +81,7 @@ libgdk_imlib_la_SOURCES =	\
 	modules.c
 
 
-libgdk_imlib_la_LDFLAGS = -version-info 10:5:9
+libgdk_imlib_la_LDFLAGS = -version-info 10:8:9
 libgdk_imlib_la_LIBADD = $(GMODULE_LIBS)
 
 
