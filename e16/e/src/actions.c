@@ -922,7 +922,7 @@ doMoveNoGroup(EWin * ewin, const void *params)
 static int
 doSwapMove(EWin * ewin, const void *params)
 {
-   Mode.swapmovemode = 1;
+   Mode.move.swap = 1;
    return ActionMoveStart(ewin, params, 0, 0);
 }
 
@@ -1698,7 +1698,6 @@ doDragButtonStart(EWin * edummy, const void *params)
    Mode.start_x = Mode.x;
    Mode.start_y = Mode.y;
    ButtonGetGeometry(b, &Mode.win_x, &Mode.win_y, NULL, NULL);
-   Mode.firstlast = 0;
 
    EDBUG_RETURN(0);
    edummy = NULL;

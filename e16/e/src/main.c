@@ -65,6 +65,7 @@ main(int argc, char **argv)
    memset(&Mode, 0, sizeof(EMode));
    Mode.mode = MODE_NONE;
    Mode.wm.startup = 1;
+   Mode.move.check = 1;
 
 /*  unsetenv("LD_PRELOAD"); */
 

@@ -1269,6 +1269,12 @@ typedef struct
       char                save_ok;
       char                coredump;
    } wm;
+   struct
+   {
+      char                check;	/* Avoid losing windows offscreen */
+      char                swap;
+      int                 swapcoord_x, swapcoord_y;
+   } move;
    int                 debug;
    int                 mode;
    char                place;
@@ -1284,9 +1290,6 @@ typedef struct
    EWin               *focuswin;
    EWin               *mouse_over_win;
    int                 px, py, x, y;
-   char                firstlast;
-   int                 swapmovemode;
-   int                 swapcoord_x, swapcoord_y;
    char                doingslide;
    int                 server_grabbed;
    int                 deskdrag;

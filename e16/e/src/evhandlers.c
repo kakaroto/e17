@@ -830,8 +830,11 @@ HandleConfigureRequest(XEvent * ev)
 	   ewin->client.height.min = h;
 	if (h > ewin->client.height.max)
 	   ewin->client.height.max = h;
+
+	Mode.move.check = 0;	/* Don't restrict client requests */
 	MoveResizeEwin(ewin, x - ewin->border->border.left,
 		       y - ewin->border->border.top, w, h);
+	Mode.move.check = 1;
 	if (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
 	{

@@ -1726,7 +1726,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
       Eprintf("doMoveResizeEwin %#lx %d+%d %d*%d %d %s\n",
 	      ewin->client.win, x, y, w, h, flags, EwinGetTitle(ewin));
 
-   if (Mode.mode == MODE_NONE)
+   if (Mode.mode == MODE_NONE && Mode.move.check)
      {
 	/* Don't throw windows offscreen */
 	sw = VRoot.w;
