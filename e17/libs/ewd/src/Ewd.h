@@ -14,7 +14,6 @@
 #define FALSE 0
 #endif
 
-#include <ewd-config.h>
 #include <ewd_macros.h>
 #include <ewd_threads.h>
 #include <ewd_value.h>
