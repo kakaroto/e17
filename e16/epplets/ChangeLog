@@ -1282,3 +1282,38 @@ too.
 I'd appreciate it if people would poke around and see what they think, I'm
 new at this Xlib stuf...
 
+-------------------------------------------------------------------------------
+
+Sat Dec 04 01:05:38 GMT 1999
+(gilbertt)
+
+So, say hello to Epplet_create_window_config.
+
+It rules.
+
+Here's the definition:
+
+Window Epplet_create_window_config(int w,int h,char *title,
+         void (*ok_func) (void *data),void *ok_data,
+         void (*apply_func) (void *data),void *apply_data,
+         void (*cancel_func) (void *data),void *cancel_data);
+
+You can picture what it does, and check it out in E-ScreenSave. (Press the
+"Lock" button).
+
+The cool thing is that if you supply NULL for any of the callbacks, that
+button won't be added to the dialog. So, for an Ok, Cancel dialog, just
+supply NULL for apply_func.
+
+I have added explanation to the epplet.h file, and would like people to bang
+at this now? I will set my epplets up to use the new functions fully over
+the weekend. This will help me find any problems, as I haven't tested adding
+every type of gadget to config windows yet, there may still be redraw issues
+I missed.
+
+Its pretty nice now though, and I have checked for memory leaks and bad
+handling, please point out anything dubious you see. The api will become
+more rich over the next few days, then it should stabilise.
+
+Any feature suggestions, send 'em now :)
+

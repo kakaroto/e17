@@ -28,6 +28,7 @@
 #include "cloak.h"
 #include "E-ScreenSave.h"
 
+Window confwin = 0;
 
 static void
 choose_random_cloak (void *data)
@@ -320,29 +321,75 @@ cb_out (void *data, Window w)
   w = (Window) 0;
 }
 
+static int
+delete_cb (void *data, Window win)
+{
+  confwin = 0;
+
+  /* Yes, please destroy the window for me... */
+  return 1;
+  win = (Window) 0;
+  data = NULL;
+}
+
+static void
+ok_cb (void *data)
+{
+  printf ("Ok pressed\n");
+  Epplet_window_destroy (confwin);
+  confwin = 0;
+
+  return;
+  data = NULL;
+}
+
+static void
+apply_cb (void *data)
+{
+  printf ("Apply pressed\n");
+
+  return;
+  data = NULL;
+}
+
+static void
+cancel_cb (void *data)
+{
+  printf ("Cancel pressed\n");
+  Epplet_window_destroy (confwin);
+  confwin = 0;
+
+  return;
+  data = NULL;
+}
+
 /* Amongst all the fluff, this is the bit that does the actual work. */
 static void
 cb_shoot (void *data)
 {
-#if 0
-  if (opt.lock_cmd)
-    system (opt.lock_cmd);
-#endif
-
 
   static int temp = 20;
   static int temp2 = 50;
   static int temp3 = 80;
-  Window mywin, mywin2, mywin3;
-  Epplet_gadget sld, sld2, sld3, lbl;
-  mywin =
-    Epplet_create_window (400, 300,
-			  "See! I told you this stuff was easy ;)", 1);
-  Epplet_window_show (mywin);
+  Epplet_gadget sld, sld2, sld3, lbl, lbl2;
+
+  if (confwin)
+    return;
+
+  confwin =
+    Epplet_create_window_config (400, 300, "E-ScreenSave Config", ok_cb,
+				 &confwin, apply_cb, &confwin, cancel_cb,
+				 &confwin);
+
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
-					   "This window was created on its own, and is vertical.",
+					   "This window was created using Epplet_create_window_config.",
 					   2));
+  Epplet_gadget_show (lbl2 =
+		      Epplet_create_label (20, 25,
+					   "I added this text and the sliders myself.",
+					   2));
+
   Epplet_gadget_show (sld =
 		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
 					     NULL, NULL));
@@ -353,45 +400,14 @@ cb_shoot (void *data)
 		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
 					     &temp3, NULL, NULL));
 
+  Epplet_window_show (confwin);
+
   Epplet_window_pop_context ();
 
-  mywin2 =
-    Epplet_create_window (400, 300,
-			  "See! I told you this stuff was easy ;)", 0);
-  Epplet_window_show (mywin2);
-  Epplet_gadget_show (lbl =
-		      Epplet_create_label (20, 10,
-					   "This window was created first of two on the context stack.",
-					   2));
-  Epplet_gadget_show (sld =
-		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
-					     NULL, NULL));
-  Epplet_gadget_show (sld2 =
-		      Epplet_create_hslider (20, 100, 200, 0, 100, 1, 5,
-					     &temp2, NULL, NULL));
-  Epplet_gadget_show (sld3 =
-		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
-					     &temp3, NULL, NULL));
-
-  mywin3 =
-    Epplet_create_window (400, 300,
-			  "See! I told you this stuff was easy ;)", 0);
-  Epplet_window_show (mywin3);
-  Epplet_gadget_show (lbl =
-		      Epplet_create_label (20, 10,
-					   "This window was created second of two on the context stack.",
-					   2));
-  Epplet_gadget_show (sld =
-		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
-					     NULL, NULL));
-  Epplet_gadget_show (sld2 =
-		      Epplet_create_hslider (20, 100, 200, 0, 100, 1, 5,
-					     &temp2, NULL, NULL));
-  Epplet_gadget_show (sld3 =
-		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
-					     &temp3, NULL, NULL));
-  Epplet_window_pop_context ();
-  Epplet_window_pop_context ();
+#if 0
+  if (opt.lock_cmd)
+    system (opt.lock_cmd);
+#endif
 
   return;
   data = NULL;
@@ -552,6 +568,7 @@ create_epplet_layout (void)
     Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
   Epplet_register_mouse_enter_handler (cb_in, (void *) win);
   Epplet_register_mouse_leave_handler (cb_out, NULL);
+  Epplet_register_delete_event_handler (delete_cb, NULL);
 }
 
 static void

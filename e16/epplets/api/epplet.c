@@ -373,7 +373,8 @@ Epplet_Init(char *name,
    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
 }
 
-Window Epplet_create_window(int w, int h, char *title, char vertical)
+Window
+Epplet_create_window(int w, int h, char *title, char vertical)
 {
    XSetWindowAttributes attr;
    Atom                a;
@@ -464,6 +465,55 @@ Window Epplet_create_window(int w, int h, char *title, char vertical)
    XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
 
    return ret->win;
+}
+
+Window
+Epplet_create_window_config(int w, int h, char *title,
+			    void (*ok_func) (void *data),
+			    void *ok_data, void (*apply_func) (void *data),
+			    void *apply_data,
+			    void (*cancel_func) (void *data), void *cancel_data)
+{
+   Window              ret;
+   Epplet_gadget       ok_btn, apply_btn, cancel_btn;
+   int                 dw;
+
+   if (w < 200)
+      w = 200;
+   if (h < 40)
+      h = 40;
+
+   dw = w - 60;
+
+   ret = Epplet_create_window(w, h, title, 0);
+
+   if (cancel_func)
+     {
+	Epplet_gadget_show(cancel_btn =
+			   Epplet_create_button("Cancel", NULL, dw, h - 20, 50,
+						16, NULL, 0, NULL, cancel_func,
+						cancel_data));
+	dw -= 60;
+     }
+
+   if (apply_func)
+     {
+	Epplet_gadget_show(apply_btn =
+			   Epplet_create_button("Apply", NULL, dw, h - 20, 50,
+						16, NULL, 0, NULL, apply_func,
+						apply_data));
+	dw -= 60;
+     }
+
+   if (ok_func)
+     {
+	Epplet_gadget_show(ok_btn =
+			   Epplet_create_button("Ok", NULL, dw, h - 20, 50,
+						16, NULL, 0, NULL, ok_func,
+						ok_data));
+     }
+
+   return ret;
 }
 
 void
@@ -575,7 +625,8 @@ Epplet_window_push_context(Window newwin)
    context_win = win;
 }
 
-Window Epplet_window_pop_context(void)
+Window
+Epplet_window_pop_context(void)
 {
    Epplet_window       ret;
 
@@ -738,8 +789,7 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window
-Epplet_get_main_window(void)
+Window Epplet_get_main_window(void)
 {
    return mainwin->win;
 }
@@ -2464,8 +2514,7 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget
-Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
@@ -2854,8 +2903,7 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget
-Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
@@ -2924,8 +2972,7 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget
-Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
@@ -3085,8 +3132,7 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
-Epplet_gadget
-Epplet_create_popup(void)
+Epplet_gadget Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
@@ -3502,8 +3548,7 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
    Epplet_draw_label(gadget, 0);
 }
 
-Window
-Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -4569,8 +4614,7 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
    XFreeGC(disp, gc);
 }
 
-RGB_buf
-Epplet_make_rgb_buf(int w, int h)
+RGB_buf Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;

@@ -338,17 +338,38 @@ void            Epplet_change_label(Epplet_gadget gadget, char *label);
 /* or other such things                                                     */
 /****************************************************************************/
 
-/* PLEASE DO NOT USE THESE FUNCTIONS YET, THEY ARE NOT STABLE */
-
+/* Create a window of width w, height h, with title title, using the themes
+ * vertical (1), or horizontal (0) background */
 Window Epplet_create_window(int w,int h,char *title, char vertical);
-void Epplet_window_show(Window win);
-void Epplet_window_hide(Window win);
-void Epplet_window_destroy(Window win);
+
+/* Create a config window, of width w, height h, with title title, using the
+ * functions listed for ok, apply and cancel. If you specify any of the
+ * functions as null, the button won't be displayed. This means you can get
+ * just Ok and Cancel by supplying NULL for apply_cb. */
+Window Epplet_create_window_config(int w,int h,char *title,
+         void (*ok_func) (void *data),void *ok_data,
+	 void (*apply_func) (void *data),void *apply_data,
+	 void (*cancel_func) (void *data),void *cancel_data);
+
+/* This is how you add gadgets to specific windows. When you create a
+ * window, its context is automatically pushed for you. This means any
+ * gadgets created with this window in context will go onto this window. In
+ * fact, until you either push another window onto the context, or pop this
+ * one back off, all created gadgets will go on here. A create_window should
+ * always be followed by a pop_context (after gadgets have been added). */
 void Epplet_window_push_context(Window newwin);
 Window Epplet_window_pop_context(void);
 
+/* Show and hide an already created Window win. */
+void Epplet_window_show(Window win);
+void Epplet_window_hide(Window win);
+
+/* Destroy Window win. Any gadgets you have added to the window are
+ * destroyed also */
+void Epplet_window_destroy(Window win);
+
 /****************************************************************************/
-/* baisc line, filled rectangle and box outline drawing functions to make   */
+/* basic line, filled rectangle and box outline drawing functions to make   */
 /* life easy                                                                */
 /****************************************************************************/
 /* draw a line from (x1, y1) to (x2, y2) in window win, in color (r, g, b) */
