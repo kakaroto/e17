@@ -13,15 +13,31 @@
 #include "utils.h"
 
 const char *playlist_item_artist_get(PlayListItem *pli) {
-	return x_hash_lookup(pli->properties, "artist");
+	const char *tmp = x_hash_lookup(pli->properties, "artist");
+
+	return tmp ? tmp : "Unknown";
 }
 
 const char *playlist_item_title_get(PlayListItem *pli) {
-	return x_hash_lookup(pli->properties, "title");
+	const char *title, *url;
+
+	if ((title = x_hash_lookup(pli->properties, "title")))
+		return title;
+
+	/* we don't have a title, so let's try to use the url instead */
+	url = x_hash_lookup(pli->properties, "url");
+	assert(url);
+
+	if (!strncmp(url, "file://", 7))
+		return strrchr(url, '/') + 1;
+	else
+		return strstr(url, "//") + 2;
 }
 
 const char *playlist_item_album_get(PlayListItem *pli) {
-	return x_hash_lookup(pli->properties, "album");
+	const char *tmp = x_hash_lookup(pli->properties, "album");
+
+	return tmp ? tmp : "Unknown";
 }
 
 unsigned int playlist_item_duration_get(PlayListItem *pli) {

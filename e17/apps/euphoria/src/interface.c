@@ -179,24 +179,16 @@ void ui_shutdown(Euphoria *e) {
 }
 
 void ui_fill_track_info(Euphoria *e, PlayListItem *pli) {
-	char *tmp;
 	char buf[32];
 
-	/* XMMS should fill these for us! */
-	if (!(tmp = (char *) playlist_item_title_get(pli)))
-		tmp = "Unknown";
+	edje_object_part_text_set(e->gui.edje, "song_name",
+	                          playlist_item_title_get(pli));
 
-	edje_object_part_text_set(e->gui.edje, "song_name", tmp);
+	edje_object_part_text_set(e->gui.edje, "artist_name",
+	                          playlist_item_artist_get(pli));
 
-	if (!(tmp = (char *) playlist_item_artist_get(pli)))
-		tmp = "Unknown";
-
-	edje_object_part_text_set(e->gui.edje, "artist_name", tmp);
-
-	if (!(tmp = (char *) playlist_item_album_get(pli)))
-		tmp = "Unknown";
-
-	edje_object_part_text_set(e->gui.edje, "album_name", tmp);
+	edje_object_part_text_set(e->gui.edje, "album_name",
+	                          playlist_item_album_get(pli));
 
 	/* sample rate */
 	snprintf(buf, sizeof(buf), "%.1f",
