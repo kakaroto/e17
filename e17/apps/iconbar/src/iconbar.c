@@ -2,6 +2,8 @@
 #include "util.h"
 #include <math.h>
 #include <time.h>
+#include "prefs.h"
+
 /* smart object handlers */
 void iconbar_add(Evas_Object *o);
 void iconbar_del(Evas_Object *o);
@@ -29,14 +31,9 @@ static void cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *
 static void cb_icon(void *data, Evas_Object *o, const char *sig, const char *src);
 static void cb_exec(void *data, Evas_Object *o, const char *sig, const char *src);
 
-static void mouse_down(void *data, Evas *e, Evas_Object *o, void *event_info);
-static void mouse_up(void *data, Evas *e, Evas_Object *o, void *event_info);
-static void mouse_move(void *data, Evas *e, Evas_Object *o, void *event_info);
-
-
 
 /* keep this global, so it only has to be created once */
-Evas_Smart *smart;
+static Evas_Smart *smart = NULL;
 
 
 Evas_Object *
@@ -63,8 +60,9 @@ iconbar_gui_get(Evas_Object *o)
 void
 iconbar_path_set(Evas_Object *obj, char *path)
 {
-  Iconbar *ib = evas_object_smart_data_get(obj);
   char buf[2048];
+  const char *layout = NULL;
+  Iconbar *ib = evas_object_smart_data_get(obj);
 
   if(ib->path) free(ib->path);
   ib->path = (char *)strdup(path);
@@ -82,15 +80,15 @@ iconbar_path_set(Evas_Object *obj, char *path)
   }
   else
   {
-    printf("no bits!\n");
+    printf("Bad Edje File Supplied!\n");
     return;
   }
 
   evas_object_move(ib->cont, 10, 10);
   evas_object_resize(ib->cont, 20, 200);
   evas_object_show(ib->cont);
-  e_container_layout_plugin_set(ib->cont, 
-		    edje_file_data_get(buf, "container_layout"));
+  if((layout = edje_file_data_get(buf, "container_layout")))
+    e_container_layout_plugin_set(ib->cont, layout);
   edje_object_part_swallow(ib->gui, "icons", ib->cont); //was clip
   e_container_callback_order_change_set(ib->cont, write_out_order, ib);
 
@@ -99,7 +97,7 @@ iconbar_path_set(Evas_Object *obj, char *path)
   edje_object_signal_callback_add(ib->gui, "exec*", "*", cb_exec, ib);
 
 
-  snprintf(buf, PATH_MAX, "%s/", path);
+  snprintf(buf, PATH_MAX, "%s/fonts", path);
   evas_font_path_append(evas_object_evas_get(obj), buf);
   iconbar_icons_load(ib);
   evas_object_layer_set(ib->cont, 100);
@@ -323,71 +321,11 @@ iconbar_clip_unset(Evas_Object *o)
   evas_object_clip_unset(ib->gui);
 }
 
-/**************** helpers *************/
-
-static int
-positive_scroll_timer(void *data)
-{
-  Iconbar *ib;
-  double l, r, t, b;
- 
-  ib = (Iconbar *)data;
-
-  if (!ib->scroll_timer)
-      return(0);
-    
-  ib->scroll += 8;
-
-  if (e_container_direction_get(ib->cont))
-  {
-    e_container_padding_get(ib->cont, &l, &r, &t, &b);
-    e_container_padding_set(ib->cont, l, r, ib->scroll, b);
-  }
-  else
-  {
-    e_container_padding_get(ib->cont, &l, &r, &t, &b);
-    e_container_padding_set(ib->cont, ib->scroll, r, t, b);
-  }
-//  iconbar_icons_fix(ib);
-  return(1);
-}
-
-static int
-negative_scroll_timer(void *data)
-{
-  Iconbar *ib;
-  double l, r, t, b;
- 
-  ib = (Iconbar *)data;
- 
-  if (!ib->scroll_timer)
-      return(0);
-    
-  ib->scroll -= 8;
-
-  if (e_container_direction_get(ib->cont))
-  {
-    e_container_padding_get(ib->cont, &l, &r, &t, &b);
-    e_container_padding_set(ib->cont, l, r, ib->scroll, b);
-  }
-  else
-  {
-    e_container_padding_get(ib->cont, &l, &r, &t, &b);
-    e_container_padding_set(ib->cont, ib->scroll, r, t, b);
-  }
-
-
-//  iconbar_icons_fix(ib);
-
-  return(1);
-}
-
 Icon *
 iconbar_icon_new(Iconbar *ib, char *path)
 {
   Evas *evas;
   Icon *ic;
-  double w, h;
 
   evas = evas_object_evas_get(ib->obj);
   ic = (Icon *)malloc(sizeof(Icon));
@@ -439,42 +377,29 @@ iconbar_icons_load(Iconbar *ib)
 
   /* add them to the container as specified in order.txt */
   {
-    FILE *f;
+    Evas_List *l, *ll;
     char buf[PATH_MAX];
-    double count;
-    Evas_List *l;
-    int i = 0;
-
-    snprintf(buf, sizeof(buf), "%s/order.txt", ib->path);
     
-    count = 0;
-    f = fopen(buf, "r");
-
-    if (f)
+    for(ll = iconbar_config_icons_get(); ll; ll = ll->next)
     {
-
-      while (fgets(buf, sizeof(buf) - 1, f))
-      {
-        buf[strlen(buf) - 1] = 0;
-
         for (l = icons; l; l = evas_list_next(l))
         {
           Icon *ic;
           char *p;
-
+	    
+	  snprintf(buf, PATH_MAX, "%s", (char*)ll->data);
           ic = evas_list_data(l);
-          p = strrchr(ic->file, '/');
-          if (p)
+          if (!strcmp(ic->file, (char*)ll->data))
           {
-            p++;
-            if (!strcmp(p, buf))
-            {
-              new = evas_list_append(new, ic);
-            }
+            new = evas_list_append(new, ic);
           }
-        }
-      }
-      fclose(f);
+	  else if((p = strrchr(ic->file, '/')))
+	  {
+            p++;
+	    if (!strcmp(p, buf))
+		new = evas_list_append(new, ic);
+          }
+	}
     }
 
 
@@ -506,17 +431,11 @@ iconbar_icons_load(Iconbar *ib)
 void
 write_out_order(void *data)
 {
-  FILE *f;
-  char buf[PATH_MAX];
-  Evas_List *l, *ll;
   Iconbar *ib = NULL;
+  Evas_List *l = NULL, *ll = NULL;
     
   if((ib = (Iconbar*)data))
   {
-    snprintf(buf, sizeof(buf), "%s/order.txt", ib->path);
-    if ((f = fopen(buf, "w")))
-    {
-	printf("file opened ok\n");
 	for (l = e_container_elements_get(ib->cont); l; l = l->next)
 	{
 	    Evas_Object *obj = l->data;
@@ -527,13 +446,10 @@ write_out_order(void *data)
 	    if (p)
 	    {
 		p++;
-		fputs(p, f);
-		fputs("\n", f);
-		printf("write: %s\n", p);
+		ll = evas_list_append(ll, strdup(p));
 	    }
 	}
-	fclose(f);
-    }
+	iconbar_config_icons_set(ll);
   }
 }
 
@@ -605,7 +521,6 @@ clock_timer(void *data)
 {
     char buf[PATH_MAX];
     Iconbar *ib = NULL; 
-    Evas_Object *o = NULL;
     struct tm *_tm = NULL;
     time_t _time = time(NULL);
 

@@ -14,6 +14,9 @@ void iconbar_config_font_path_append(char *str);
 void iconbar_config_geometry_set(int x, int y, int w, int h);
 void iconbar_config_icons_set(Evas_List *list);
 void iconbar_config_theme_set(const char *theme);
+void iconbar_config_raise_lower_set(int on);
+void iconbar_config_shaped_set(int on);
+void iconbar_config_borderless_set(int on);
 
 /* query */
 const char *iconbar_config_theme_get(void);
@@ -22,4 +25,8 @@ const char *iconbar_config_time_format_get(void);
 Evas_List *iconbar_config_font_path_get(void);
 Evas_List *iconbar_config_icons_get(void);
 void iconbar_config_geometry_get(int *x, int *y, int *w, int *h);
+int iconbar_config_raise_lower_get(void);
+int iconbar_config_shaped_get(void);
+int iconbar_config_borderless_get(void);
+
 #endif

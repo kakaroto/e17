@@ -23,7 +23,6 @@ Ecore_Exe *
 exec_run_in_dir(char *exec, char *dir)
 {
    Ecore_Exe *exe;
-   pid_t               pid;
 
    exe = ecore_exe_run(exec, NULL);
    return exe;

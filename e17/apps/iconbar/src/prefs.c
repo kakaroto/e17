@@ -17,6 +17,8 @@ struct _Iconbar_Prefs {
     int x, y, w, h;
     int shaped;
     int transparent;
+    int raise;
+    int borderless;
 };
 typedef struct _Iconbar_Prefs Iconbar_Prefs;
 
@@ -52,16 +54,20 @@ iconbar_config_init(void)
 		if(ibprefs->home) free(ibprefs->home);
 		ibprefs->home = str;
 	    }
-	    if((str = e_db_str_get(db, "/iconbar/theme")))
-	    {
-		if(ibprefs->theme) free(ibprefs->theme);
-		ibprefs->theme = str;
-	    }
+	    str = e_db_str_get(db, "/iconbar/theme");
+	    iconbar_config_theme_set(str);
+	    if(str) free(str);
 	    if((str = e_db_str_get(db, "/iconbar/time_format")))
 	    {
 		if(ibprefs->time_format) free(ibprefs->time_format);
 		ibprefs->time_format = str;
 	    }
+	    if(!e_db_int_get(db, "/iconbar/raise", &ibprefs->raise))
+		ibprefs->raise = 0;
+	    if(!e_db_int_get(db, "/iconbar/shaped", &ibprefs->shaped))
+		ibprefs->shaped = 1;
+	    if(!e_db_int_get(db, "/iconbar/borderless", &ibprefs->shaped))
+		ibprefs->borderless = 1;
 	    if(!e_db_int_get(db, "/iconbar/x", &ibprefs->x))
 		ibprefs->x = 0;
 	    if(!e_db_int_get(db, "/iconbar/y", &ibprefs->y))
@@ -95,8 +101,7 @@ iconbar_config_init(void)
 void
 iconbar_config_free(void)
 {
-    char *str;
-    int i = 0,count = 0;
+    int i = 0;
     char buf[PATH_MAX];
     Evas_List *l = NULL;
     E_DB_File *db = NULL;
@@ -108,6 +113,9 @@ iconbar_config_free(void)
 	    e_db_str_set(db, "/iconbar/home", ibprefs->home);
 	    e_db_str_set(db, "/iconbar/theme", ibprefs->theme);
 	    e_db_str_set(db, "/iconbar/time_format", ibprefs->time_format);
+	    e_db_int_set(db, "/iconbar/raise", ibprefs->raise);
+	    e_db_int_set(db, "/iconbar/shaped", ibprefs->shaped);
+	    e_db_int_set(db, "/iconbar/borderless", ibprefs->borderless);
 	    e_db_int_set(db, "/iconbar/x", ibprefs->x);
 	    e_db_int_set(db, "/iconbar/y", ibprefs->y);
 	    e_db_int_set(db, "/iconbar/w", ibprefs->w);
@@ -122,6 +130,7 @@ iconbar_config_free(void)
 	    e_db_close(db);
 	    e_db_flush();
 	}
+	_iconbar_prefs_free(ibprefs);
     }
 }
 /* modify */
@@ -172,8 +181,11 @@ iconbar_config_theme_set(const char *theme)
     if(ibprefs)
     {
 	char buf[PATH_MAX];
-	snprintf(buf, PATH_MAX, "%s", theme);
 	if(ibprefs->theme) free(ibprefs->theme);
+	if(theme)
+	    snprintf(buf, PATH_MAX, "%s", theme);
+	else 
+	    snprintf(buf,PATH_MAX,"%s/.e/iconbar/iconbar.eet",getenv("HOME"));
 	ibprefs->theme = strdup(buf);
     }
 }
@@ -193,6 +205,24 @@ iconbar_config_icons_set(Evas_List *list)
 	evas_list_free(ibprefs->icons);
 	ibprefs->icons = list;
     }
+}
+void
+iconbar_config_borderless_set(int on)
+{
+    if(ibprefs)
+	ibprefs->borderless = on;
+}
+void
+iconbar_config_shaped_set(int on)
+{
+    if(ibprefs)
+	ibprefs->shaped = on;
+}
+void
+iconbar_config_raise_lower_set(int on)
+{
+    if(ibprefs)
+	ibprefs->raise = on;
 }
 /* query */
 const char*
@@ -244,6 +274,27 @@ iconbar_config_geometry_get(int *x, int *y, int *w, int *h)
 	if(h) *h = ibprefs->h;
     }
 }
+int
+iconbar_config_raise_lower_get(void)
+{
+    if(ibprefs)
+	return(ibprefs->raise);
+    return(0);
+}
+int
+iconbar_config_shaped_get(void)
+{
+    if(ibprefs)
+	return(ibprefs->shaped);
+    return(0);
+}
+int
+iconbar_config_borderless_get(void)
+{
+    if(ibprefs)
+	return(ibprefs->borderless);
+    return(0);
+}
 /*==========================================================================
  * Private Functions 
  *========================================================================*/
@@ -279,12 +330,11 @@ _iconbar_prefs_free(Iconbar_Prefs *ip)
 static void
 iconbar_config_generate_original_db(char *file)
 {
-    int i = 0,count = 0;
+    int i = 0;
     char buf[PATH_MAX], key[PATH_MAX], buf2[PATH_MAX];
     struct stat status;
-    char *dirs[] = { ".e", ".e/apps", ".e/apps/iconbar",
-    ".e/apps/iconbar/themes", ".e/apps/iconbar/icons",
-    ".e/apps/iconbar/fonts" };
+    char *dirs[] = { ".e", ".e/iconbar", ".e/iconbar/themes",
+	".e/iconbar/icons", ".e/iconbar/fonts" };
     char *icons[] = { "eterm", "xmms", "evolution", "galeon", "gaim", "gimp",
     "irc", "abiword", };
     E_DB_File *db = NULL;
@@ -302,12 +352,16 @@ iconbar_config_generate_original_db(char *file)
 	e_db_str_set(db, "/iconbar/home", buf);
 	e_db_str_set(db, "/iconbar/time_format", "%l:%M %p");
 	snprintf(buf, PATH_MAX, "%s/iconbar.eet", PACKAGE_DATA_DIR);
-	snprintf(buf2, PATH_MAX, "%s/.e/apps/iconbar/iconbar.eet",
+	snprintf(buf2, PATH_MAX, "%s/.e/iconbar/iconbar.eet",
 	getenv("HOME"));
 	if(e_file_cp(buf, buf2))
 	    e_db_str_set(db, "/iconbar/theme", buf2);
 	else
 	    e_db_str_set(db, "/iconbar/theme", buf);
+
+	e_db_int_set(db, "/iconbar/raise", 0);
+	e_db_int_set(db, "/iconbar/shaped", 1);
+	e_db_int_set(db, "/iconbar/borderless", 1);
 
 	e_db_int_set(db, "/iconbar/x", 0);
 	e_db_int_set(db, "/iconbar/y", 0);
@@ -316,7 +370,7 @@ iconbar_config_generate_original_db(char *file)
 
 	e_db_int_set(db, "/iconbar/fonts/count", 2);
 	e_db_str_set(db, "/iconbar/fonts/0/path", PACKAGE_DATA_DIR);
-	snprintf(buf, PATH_MAX, "%s/.e/apps/iconbar/fonts", getenv("HOME"));
+	snprintf(buf, PATH_MAX, "%s/.e/iconbar/fonts", getenv("HOME"));
 	e_db_str_set(db, "/iconbar/fonts/1/path", buf);
 	
 	e_db_int_set(db, "/iconbar/icons/count", 8);
