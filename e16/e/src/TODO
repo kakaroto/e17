@@ -5,6 +5,7 @@ fix to border width handlign in icccm
 fix to warp foucs
 translations into many different languages (de,es,fr,hu,ko,nl,no,ru,and more coming)
 added support for freetype/freetype.h (they moved their header file)
+added extended display to window_list ipc command (see IPC help)
 
 
 The Road to 0.17 (post 0.16.x):
