@@ -232,9 +232,12 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
 void
 geist_document_add_layer(geist_document * doc)
 {
+   geist_layer *layer;
    D_ENTER(3);
 
-   doc->layers = geist_list_add_end(doc->layers, geist_layer_new());
+   layer = geist_layer_new();
+   layer->doc = doc;
+   doc->layers = geist_list_add_end(doc->layers, layer);
 
    D_RETURN_(3);
 }

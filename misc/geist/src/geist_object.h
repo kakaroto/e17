@@ -7,6 +7,7 @@
 extern GtkWidget *obj_list;
 
 #define GEIST_OBJECT(O) ((geist_object *) O)
+#define GEIST_OBJECT_DOC(o) (((geist_object *)o)->layer->doc)
 
 enum __sizemode
 { 
@@ -50,6 +51,7 @@ struct __geist_object
 {
    geist_object_type type;
    char *name;
+   geist_layer *layer;
    /* Object position/size */
    int x;
    int y;

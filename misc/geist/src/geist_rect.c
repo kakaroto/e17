@@ -6,8 +6,6 @@ void refresh_b_cb(GtkWidget * widget, gpointer * obj);
 void refresh_a_cb(GtkWidget * widget, gpointer * obj);
 void obj_addrect_ok_cb(GtkWidget * widget, gpointer * data);
 
-geist_document *current_doc;
-
 geist_object *
 geist_rect_new(void)
 {
@@ -214,8 +212,8 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->r = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
-   geist_document_render_updates(current_doc);
+   geist_document_dirty_object(GEIST_OBJECT_DOC(obj), GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
 void
@@ -223,8 +221,8 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->g = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
-   geist_document_render_updates(current_doc);
+   geist_document_dirty_object(GEIST_OBJECT_DOC(obj), GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
 void
@@ -232,8 +230,8 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->b = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
-   geist_document_render_updates(current_doc);
+   geist_document_dirty_object(GEIST_OBJECT_DOC(obj), GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
 void
@@ -241,8 +239,8 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->a = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-   geist_document_dirty_object(current_doc, GEIST_OBJECT(obj));
-   geist_document_render_updates(current_doc);
+   geist_document_dirty_object(GEIST_OBJECT_DOC(obj), GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
 void
@@ -255,12 +253,10 @@ geist_rect_display_props(geist_document * doc, geist_object * obj)
    char a[4096], r[4096], g[4006], b[4096];
 
 
-   current_doc = doc;
-
-   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
-   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
-   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
-   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 250, 1, 2, 3);
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
 
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    table = gtk_table_new(2, 4, FALSE);
@@ -269,7 +265,7 @@ geist_rect_display_props(geist_document * doc, geist_object * obj)
 
 
 
-   title_l = gtk_label_new("title:");
+   title_l = gtk_label_new("name:");
    gtk_misc_set_alignment(GTK_MISC(title_l), 1.0, 0.5);
    gtk_table_attach(GTK_TABLE(table), title_l, 0, 1, 0, 1,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);

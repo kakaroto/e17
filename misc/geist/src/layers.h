@@ -12,6 +12,7 @@
 struct __geist_layer
 {
    geist_list *objects;
+   geist_document *doc;
    int transparency;
    int x_offset;
    int y_offset;
