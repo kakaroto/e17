@@ -19,7 +19,6 @@
  */
 
 #include "feh.h"
-#include "modify.h"
 
 void
 handle_keypress_event (XEvent * ev, Window win)

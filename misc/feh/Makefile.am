@@ -52,7 +52,7 @@ src/test18_slideshow_no_progressive_loading \
 src/test19_montage_background_quiet \
 src/test20_stress_test_create_massive_image_save_only
 
-EXTRA_DIST = $(testimages) $(testscripts) \
+EXTRA_DIST = \
 README AUTHORS ChangeLog TODO feh.spec
 
 SUBDIRS = src
