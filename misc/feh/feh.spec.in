@@ -41,5 +41,6 @@ make prefix=$RPM_BUILD_ROOT%{prefix} install
 %{prefix}/doc/feh/*
 %{prefix}/man/man1/*
 %{prefix}/share/feh/fonts/*
+%{prefix}/share/feh/images/*
 
 %doc AUTHORS ChangeLog README TODO
