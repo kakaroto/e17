@@ -64,6 +64,7 @@ static void    _engage_bar_frame_resize(Engage_Bar *eb);
 static void    _engage_bar_edge_change(Engage_Bar *eb, int edge);
 static void    _engage_bar_update_policy(Engage_Bar *eb);
 static void    _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my);
+static void    _engage_bar_zoom_factor_set(Engage_Bar *eb, double zoom);
 
 static Engage_Icon *_engage_icon_new(Engage_Bar *eb, E_App *a);
 static void    _engage_icon_free(Engage_Icon *ic);
@@ -109,6 +110,10 @@ static void    _engage_bar_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *m
 static void    _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_zoom_small(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_zoom_medium(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_zoom_large(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_zoom_huge(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int     _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 static int     _engage_border_ignore(E_Border *bd);
@@ -542,6 +547,7 @@ _engage_bar_free(Engage_Bar *eb)
 {
    e_object_unref(E_OBJECT(eb->con));
 
+   e_object_del(E_OBJECT(eb->zoom_menu));
    e_object_del(E_OBJECT(eb->menu));
 
    while (eb->icons)
@@ -574,6 +580,25 @@ _engage_bar_menu_new(Engage_Bar *eb)
    E_Menu_Item *mi;
 
    mn = e_menu_new();
+   eb->zoom_menu = mn;
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Small");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_small, eb);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Medium");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_medium, eb);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Large");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_large, eb);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Huge");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_huge, eb);
+   
+   mn = e_menu_new();
    eb->menu = mn;
 
    mi = e_menu_item_new(mn);
@@ -581,6 +606,10 @@ _engage_bar_menu_new(Engage_Bar *eb)
    e_menu_item_check_set(mi, 1);
    if (eb->conf->zoom == 1) e_menu_item_toggle_set(mi, 1);
      e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom, eb);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Zoom Level");
+   e_menu_item_submenu_set(mi, eb->zoom_menu);
 
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
@@ -1415,6 +1444,13 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 }
 
 static void
+_engage_bar_zoom_factor_set(Engage_Bar *eb, double zoom)
+{
+   eb->conf->zoom_factor = zoom;
+   e_config_save_queue();
+}
+
+static void
 _engage_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
    Engage_Icon *ic;
@@ -1826,6 +1862,42 @@ _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi)
    eb = data;
    eb->conf->zoom = e_menu_item_toggle_get(mi);
    e_config_save_queue();
+}
+
+static void
+_engage_bar_cb_menu_zoom_small(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   _engage_bar_zoom_factor_set(eb, 1.5);
+}
+
+static void
+_engage_bar_cb_menu_zoom_medium(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   _engage_bar_zoom_factor_set(eb, 2.0);
+}
+
+static void
+_engage_bar_cb_menu_zoom_large(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   _engage_bar_zoom_factor_set(eb, 2.3);
+}
+
+static void
+_engage_bar_cb_menu_zoom_huge(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   _engage_bar_zoom_factor_set(eb, 2.6);
 }
 
 

@@ -45,6 +45,7 @@ struct _Engage_Bar
    E_Container *con;
    Evas        *evas;
    E_Menu      *menu;
+   E_Menu      *zoom_menu;
    
    Evas_Object *bar_object;
    Evas_Object *box_object;
