@@ -37,35 +37,25 @@ $(TIFF_L) \
 $(GIF_L) \
 pnm.la argb.la bmp.la xpm.la tga.la #xcf.la
 
-if JPEG_LOADER
 jpeg_la_SOURCES	     = loader_jpeg.c
 jpeg_la_LDFLAGS	     = -no-undefined -module -avoid-version
 jpeg_la_LIBADD	     = @JPEGLIBS@
-endif
 
-if PNG_LOADER
 png_la_SOURCES	     = loader_png.c
 png_la_LDFLAGS	     = -no-undefined -module -avoid-version
 png_la_LIBADD	     = @PNGLIBS@
-endif
 
-if EDB_LOADER
 db_la_SOURCES        = loader_db.c
 db_la_LDFLAGS	     = -no-undefined -module -avoid-version
 db_la_LIBADD	     = @EDBLIBS@ -lz
-endif
 
-if TIFF_LOADER
 tiff_la_SOURCES	     = loader_tiff.c
 tiff_la_LDFLAGS	     = -no-undefined -module -avoid-version
 tiff_la_LIBADD	     = @TIFFLIBS@
-endif
 
-if GIF_LOADER
 gif_la_SOURCES	     = loader_gif.c
 gif_la_LDFLAGS	     = -no-undefined -module -avoid-version
 gif_la_LIBADD	     = @GIFLIBS@
-endif
 
 pnm_la_SOURCES	     = loader_pnm.c
 pnm_la_LDFLAGS	     = -no-undefined -module -avoid-version
