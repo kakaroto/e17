@@ -81,6 +81,14 @@ required by your program.
 </para>
 
 <para>
+If you have a timer that you wish to remove at some point in the future you can call 
+<function>ecore_timer_del(Ecore_Timer *)</function>. If this delete succeeds the pointer 
+will be returned otherwise NULL will be returned.
+After calling the delete function the <literal>Ecore_Timer</literal> structure will be 
+invalid and you should not use it again in your program.
+</para>
+
+<para>
 Compiling the example is as simple as:
 <example>
 <title>Compilation</title>
