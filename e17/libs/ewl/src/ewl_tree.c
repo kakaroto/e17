@@ -137,9 +137,10 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
  *
  * Adds a row to a specified @a tree with a parent row of @a prow and built
  * from the widgets in the array @a children. The created row is nested below
- * @a prow, and will be at the top level if @a prow is NULL. The array @a
- * children must be equal in size to the number of columns in @a tree. It is
- * valid for the entries in @a children to be NULL, this creates an empty cell.
+ * @a prow, and if @a prow is NULL the row is appended to the end of the list
+ * at the top level. The array @a children must be equal in size to the number
+ * of columns in @a tree. It is valid for the entries in @a children to be
+ * NULL, this creates an empty cell.
  */
 Ewl_Widget *
 ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
