@@ -206,70 +206,89 @@ append_merge_dir(char *dir, char ***list, int *count)
 char              **
 ListThemes(int *number)
 {
-   char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL, *def2 =
-      NULL;
+   char                s[FILEPATH_LEN_MAX], **list = NULL;
+   char               *def = NULL, *def2 = NULL;
    int                 count = 0;
 
    Esnprintf(s, sizeof(s), "%s/themes", EDirUser());
    def = append_merge_dir(s, &list, &count);
-   Esnprintf(s, sizeof(s), "%s/themes", EDirRoot());
-   def2 = append_merge_dir(s, &list, &count);
-
-   if ((def) && (def2))
-     {
-	Efree(def2);
-	def2 = NULL;
-     }
-   else if ((!def) && (def2))
-      def = def2;
-   else if ((!def) && (!def2))
-      fprintf(stderr, "errrrrrrrr no default theme?\n");
-
    if (def)
       Efree(def);
+
+   Esnprintf(s, sizeof(s), "%s/themes", EDirRoot());
+   def2 = append_merge_dir(s, &list, &count);
+   if (def2)
+      Efree(def2);
 
    *number = count;
    return list;
 }
 
+static char        *
+ThemeGetPath(const char *path)
+{
+   char                s1[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX];
+   int                 len;
+
+   Esnprintf(s1, sizeof(s1), "%s/epplets/epplets.cfg", path);
+   if (!exists(s1))
+      return NULL;
+
+   /* If link, dereference */
+   len = readlink(path, s2, sizeof(s2) - 1);
+   if (len < 0)
+      return Estrdup(path);
+
+   s2[len] = '\0';
+   if (isabspath(s2))
+      return Estrdup(s2);
+
+   Esnprintf(s1, sizeof(s1), "%s/themes/%s", path, s2);
+   if (isdir(s1))
+      return Estrdup(s1);
+
+   /* We should never get here */
+   return NULL;
+}
+
 char               *
 ThemeGetDefault(void)
 {
-   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
-   char               *def = NULL;
-   int                 count;
+   static const char  *const dts[] = {
+      "DEFAULT", "BrushedMetal-Tigert", "ShinyMetal", "winter"
+   };
+   char                s[FILEPATH_LEN_MAX];
+   char               *path, **lst;
+   int                 i, num;
 
-   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirUser());
-   count = readlink(ss, s, sizeof(s));
-   if ((exists(ss)) && (count > 0))
+   /* First, try out some defaults */
+   num = sizeof(dts) / sizeof(char *);
+   for (i = 0; i < num; i++)
      {
-	s[count] = 0;
-	if (isabspath(s))
-	   def = Estrdup(s);
-	else
-	  {
-	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirUser(), s);
-	     def = Estrdup(ss);
-	  }
-	return def;
+	Esnprintf(s, sizeof(s), "%s/themes/%s", EDirUser(), dts[i]);
+	path = ThemeGetPath(s);
+	if (path)
+	   return path;
+
+	Esnprintf(s, sizeof(s), "%s/themes/%s", EDirRoot(), dts[i]);
+	path = ThemeGetPath(s);
+	if (path)
+	   return path;
      }
 
-   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirRoot());
-   count = readlink(ss, s, sizeof(s));
-   if ((exists(ss)) && (count > 0))
+   /* Then, try out all installed themes */
+   path = NULL;
+   lst = ListThemes(&num);
+   for (i = 0; i < num; i++)
      {
-	s[count] = 0;
-	if (isabspath(s))
-	   def = Estrdup(s);
-	else
-	  {
-	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirRoot(), s);
-	     def = Estrdup(ss);
-	  }
-	return def;
+	path = ThemeGetPath(lst[i]);
+	if (path)
+	   break;
      }
+   if (lst)
+      freestrlist(lst, num);
 
-   return NULL;
+   return path;
 }
 
 void
@@ -367,12 +386,12 @@ ThemeCleanup(void)
 }
 
 char               *
-FindTheme(const char *theme)
+ThemeFind(const char *theme)
 {
    char                s[FILEPATH_LEN_MAX];
    char               *ret = NULL;
 
-   EDBUG(6, "FindTheme");
+   EDBUG(6, "ThemeFind");
 
    if (Conf.theme.name)
       Efree(Conf.theme.name);
@@ -380,10 +399,7 @@ FindTheme(const char *theme)
    badreason = _("Unknown\n");
 
    if (!theme[0])
-     {
-	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", EDirRoot());
-	EDBUG_RETURN(Estrdup(s));
-     }
+      EDBUG_RETURN(ThemeGetDefault());
 
    if (isabspath(theme))
       ret = ThemeExtract(theme);

@@ -2623,8 +2623,8 @@ char               *ThemeGetDefault(void);
 void                ThemeSetDefault(const char *theme);
 void                ThemeCleanup(void);
 void                ThemeBadDialog(void);
+char               *ThemeFind(const char *theme);
 char              **ListThemes(int *number);
-char               *FindTheme(const char *theme);
 
 /* timers.c */
 double              GetTime(void);

@@ -3702,32 +3702,15 @@ LoadEConfig(char *themelocation)
 		   "filesystem permissions.\n"), ss);
      }
 
-   theme = FindTheme(themelocation);
+   theme = ThemeFind(themelocation);
    if (!theme)
      {
-	Alert(_("Enlightenment has just experienced some major problems in\n"
-		"attempting to load the theme you specified or the default\n"
-		"configuration directory:\n" "%s/config/\n"
-		"This will prevent Enlightenment from loading any "
-		"configuration\n" "files at all.\n"
-		"Since this couldn't be found Enlightenment is probably not\n"
-		"going to find any configuration files anywhere on your\n"
-		"system, and so it will have almost no configuration loaded\n"
-		"when it starts up. This is most likely the sign of a bad\n"
-		"installation of Enlightenment if this directory is missing.\n"
-		"The likely causes are that the package was improperly built,\n"
-		"if a binary package, or 'make install' hasn't been typed\n"
-		"or during the installation the directory above was not\n"
-		"able to be copied over for installation perhaps due to\n"
-		"permissions or lack of disk space. It also could be that the\n"
-		"config directory has been inadvertently deleted since\n"
-		"installation.\n"
-		"This is a serious problem and should be rectified immediately\n"
-		"Please contact your system administrator or package "
-		"maintainer.\n"
-		"If you are the administrator of your own system please\n"
-		"consult the documentation that came with Enlightenment for\n"
-		"additional information.\n"), EDirRoot());
+	Alert(_("No themes were found in the default theme directory:\n"
+		" %s/themes/\n"
+		"or in the user theme directory:\n"
+		" %s/themes/\n"
+		"Proceeding from here is mostly pointless.\n"),
+	      EDirRoot(), EDirUser());
 	EDBUG_RETURN(0);
      }
 

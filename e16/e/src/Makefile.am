@@ -107,11 +107,7 @@ INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(ESD_CFLAGS) $(IMLIB_CFLAGS) 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\" -DLOCALEDIR=\"@LOCALEDIR@\"
 
 install-data-local:
-	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes; \
-	rm -f $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/DEFAULT; \
-        $(LN_S) \
-	BrushedMetal-Tigert \
-	$(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/DEFAULT;
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes
 
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \

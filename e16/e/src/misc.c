@@ -27,10 +27,8 @@ static char        *userDir = NULL;
 static char        *cacheDir = NULL;
 
 static const char  *const bins[] = { "eesh", "epp" };
-static const char  *const thms[] = { "themes/DEFAULT/epplets/epplets.cfg" };
 
 #define N_BINS (sizeof(bins)/sizeof(char*))
-#define N_THMS (sizeof(thms)/sizeof(char*))
 
 void
 BlumFlimFrub(void)
@@ -62,23 +60,6 @@ BlumFlimFrub(void)
 		     "This is a fatal error and Enlightenment will cease to run.\n"
 		     "Please rectify this situation and ensure it is installed\n"
 		     "correctly.\n"), s);
-	     EExit(NULL);
-	  }
-     }
-
-   for (i = 0; i < N_THMS; i++)
-     {
-	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), thms[i]);
-	if (!exists(s))
-	  {
-	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		     "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
-		     "configured to be a useful DEFAULT theme.\n" "\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure it is installed\n"
-		     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
-		     "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
-		     "theme.\n"));
 	     EExit(NULL);
 	  }
      }
