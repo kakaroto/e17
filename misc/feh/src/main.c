@@ -223,27 +223,16 @@ feh_handle_event(XEvent * ev)
                    D(("Enabling zoom mode\n"));
                    opt.zoom_mode = 1;
                    winwid->zoom_mode = 1;
+                   winwid->zoom = 1.0;
+                   winwidget_render_image(winwid, 0);
                    winwid->zx = ev->xbutton.x;
                    winwid->zy = ev->xbutton.y;
-                   winwid->zoom = 1.0;
-                   imlib_context_set_anti_alias(0);
-                   imlib_context_set_dither(1);
-                   imlib_context_set_blend(0);
-                   imlib_context_set_drawable(winwid->bg_pmap);
-                   imlib_context_set_image(winwid->im);
-                   if (imlib_image_has_alpha())
-                   {
-                      imlib_context_set_blend(1);
-                      feh_draw_checks(winwid);
-                   }
-                   imlib_context_set_image(winwid->im);
-                   imlib_render_image_on_drawable(0, 0);
-                   XSetWindowBackgroundPixmap(disp, winwid->win,
-                                              winwid->bg_pmap);
-                   XClearWindow(disp, winwid->win);
+                   if (winwid->zx > winwid->im_w)
+                      winwid->zx = winwid->im_w;
+                   if (winwid->zy > winwid->im_h)
+                      winwid->zy = winwid->im_h;
                    if (opt.draw_filename)
                       feh_draw_filename(winwid);
-                   XFlush(disp);
                 }
              }
              break;
@@ -295,6 +284,34 @@ feh_handle_event(XEvent * ev)
         break;
      case ButtonRelease:
         D(("Received ButtonRelease event\n"));
+        if (menu_root)
+        {
+           /* if menus are open, close them, and execute action if needed */
+
+           if (ev->xbutton.window == menu_cover)
+              feh_menu_hide(menu_root);
+           else if (menu_root)
+           {
+              feh_menu *m;
+
+              if (ev->xbutton.window == menu_cover)
+                 feh_menu_hide(menu_root);
+              else if ((m = feh_menu_get_from_window(ev->xbutton.window)))
+              {
+                 feh_menu_item *i = NULL;
+
+                 i = feh_menu_find_selected(m);
+                 /* watch out for this. I put it this way around so the menu
+                    goes away *before* we perform the action, if we start
+                    freeing menus on hiding, it will break ;-) */
+                 feh_menu_hide(menu_root);
+                 feh_main_iteration(0);
+                 if ((i) && (i->func))
+                    (i->func) (m, i, i->data);
+              }
+           }
+           break;
+        }
         switch (ev->xbutton.button)
         {
           case 1:
@@ -316,41 +333,31 @@ feh_handle_event(XEvent * ev)
              D(("Button 3 Release event\n"));
              if (opt.no_menus)
                 winwidget_destroy_all();
-             else if (menu_root)
-             {
-                /* if menus are open, close them, and execute action if
-                   needed */
-
-                if (ev->xbutton.window == menu_cover)
-                   feh_menu_hide(menu_root);
-                else if (menu_root)
-                {
-                   feh_menu *m;
-
-                   if (ev->xbutton.window == menu_cover)
-                      feh_menu_hide(menu_root);
-                   else
-                      if ((m = feh_menu_get_from_window(ev->xbutton.window)))
-                   {
-                      feh_menu_item *i = NULL;
-
-                      i = feh_menu_find_selected(m);
-                      /* watch out for this. I put it this way around so the
-                         menu goes away *before* we perform the action, if we 
-                         start freeing menus on hiding, it will break ;-) */
-                      feh_menu_hide(menu_root);
-                      feh_main_iteration(0);
-                      if ((i) && (i->func))
-                         (i->func) (m, i, i->data);
-                   }
-                }
-             }
              break;
           default:
              break;
         }
         break;
-     case ResizeRequest:
+     case ConfigureNotify:
+        D(("Got ConfigureNotify\n"));
+        if (!menu_root)
+        {
+           winwidget w = winwidget_get_from_window(ev->xconfigure.window);
+
+           if (w)
+           {
+              D(
+                ("configure size %dx%d\n", ev->xconfigure.width,
+                 ev->xconfigure.height));
+              if ((w->w != ev->xconfigure.width)
+                  || (w->h != ev->xconfigure.height))
+              {
+                 w->w = ev->xconfigure.width;
+                 w->h = ev->xconfigure.height;
+                 winwidget_render_image(w, 0);
+              }
+           }
+        }
         break;
      case EnterNotify:
         D(("Got EnterNotify event\n"));
@@ -437,27 +444,29 @@ feh_handle_event(XEvent * ev)
                  {
                     dx = 0;
                     dy = 0;
-                    dw = winwid->im_w;
-                    dh = winwid->im_h;
+                    dw = winwid->w;
+                    dh = winwid->h;
 
                     sx = winwid->zx - (winwid->zx / winwid->zoom);
                     sy = winwid->zy - (winwid->zy / winwid->zoom);
-                    sw = winwid->im_w / winwid->zoom;
-                    sh = winwid->im_h / winwid->zoom;
-                    if (imlib_image_has_alpha())
+                    sw = winwid->w / winwid->zoom;
+                    sh = winwid->h / winwid->zoom;
+                    if (imlib_image_has_alpha()
+                        || ((winwid->w > winwid->im_w)
+                            || (winwid->h > winwid->im_h)))
                        feh_draw_checks(winwid);
                  }
                  else
                  {
                     dx = winwid->zx - (winwid->zx * winwid->zoom);
                     dy = winwid->zy - (winwid->zy * winwid->zoom);
-                    dw = winwid->im_w * winwid->zoom;
-                    dh = winwid->im_h * winwid->zoom;
+                    dw = winwid->w * winwid->zoom;
+                    dh = winwid->h * winwid->zoom;
 
                     sx = 0;
                     sy = 0;
-                    sw = winwid->im_w;
-                    sh = winwid->im_h;
+                    sw = winwid->w;
+                    sh = winwid->h;
                     feh_draw_checks(winwid);
                  }
                  imlib_context_set_drawable(winwid->bg_pmap);
@@ -500,25 +509,27 @@ feh_smooth_image(winwidget w)
    {
       dx = 0;
       dy = 0;
-      dw = w->im_w;
-      dh = w->im_h;
+      dw = w->w;
+      dh = w->h;
 
       sx = w->zx - (w->zx / w->zoom);
       sy = w->zy - (w->zy / w->zoom);
-      sw = w->im_w / w->zoom;
-      sh = w->im_h / w->zoom;
+      sw = w->w / w->zoom;
+      sh = w->h / w->zoom;
    }
    else
    {
+      dw = w->w * w->zoom;
+      dh = w->h * w->zoom;
+
       dx = w->zx - (w->zx * w->zoom);
       dy = w->zy - (w->zy * w->zoom);
-      dw = w->im_w * w->zoom;
-      dh = w->im_h * w->zoom;
 
       sx = 0;
       sy = 0;
-      sw = w->im_w;
-      sh = w->im_h;
+
+      sw = w->w;
+      sh = w->h;
    }
    imlib_context_set_anti_alias(1);
    imlib_context_set_dither(1);
@@ -532,7 +543,7 @@ feh_smooth_image(winwidget w)
                                                dh);
    XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
    XClearWindow(disp, w->win);
-   XFlush(disp);
+   imlib_context_set_anti_alias(0);
    D_RETURN_;
 }
 

@@ -65,7 +65,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
+winwidget
+winwidget_create_from_image(Imlib_Image * im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -88,12 +89,13 @@ winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
       ret->name = estrdup(PACKAGE);
 
    winwidget_create_window(ret, ret->w, ret->h);
-   winwidget_render_image(ret);
+   winwidget_render_image(ret, 1);
 
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -130,7 +132,7 @@ winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
       ret->w = ret->im_w = imlib_image_get_width();
       ret->h = ret->im_h = imlib_image_get_height();
       winwidget_create_window(ret, ret->w, ret->h);
-      winwidget_render_image(ret);
+      winwidget_render_image(ret, 1);
    }
 
    D_RETURN(ret);
@@ -214,6 +216,7 @@ winwidget_create_window(winwidget ret, int w, int h)
       xsz.y = 0;
       XSetWMNormalHints(disp, ret->win, &xsz);
    }
+#if 0
    else
    {
       XSizeHints xsz;
@@ -227,7 +230,9 @@ winwidget_create_window(winwidget ret, int w, int h)
       xsz.max_height = h;
       XSetWMNormalHints(disp, ret->win, &xsz);
    }
-   /* set the icons name property */
+#endif
+   
+   /* set the icon name property */
    XSetIconName(disp, ret->win, "feh");
    /* set the command hint */
    XSetCommand(disp, ret->win, cmdargv, cmdargc);
@@ -275,17 +280,16 @@ winwidget_setup_pixmaps(winwidget winwid)
          XFreePixmap(disp, winwid->bg_pmap);
 
       winwid->bg_pmap =
-         XCreatePixmap(disp, winwid->win, winwid->im_w, winwid->im_h, depth);
+         XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
    }
    D_RETURN_;
 }
 
 void
-winwidget_render_image(winwidget winwid)
+winwidget_render_image(winwidget winwid, int resize)
 {
    int x = 0, y = 0;
    int www, hhh;
-   int smaller = 1;             /* Is the image smaller than screen? */
 
    D_ENTER;
 
@@ -294,68 +298,76 @@ winwidget_render_image(winwidget winwid)
    imlib_context_set_drawable(winwid->bg_pmap);
    imlib_context_set_image(winwid->im);
    imlib_context_set_blend(0);
-   if (!opt.full_screen && imlib_image_has_alpha())
+   if (!opt.full_screen
+       && (imlib_image_has_alpha()
+           || ((winwid->h != winwid->im_h) || (winwid->w != winwid->im_w))))
    {
       feh_draw_checks(winwid);
       imlib_context_set_blend(1);
       imlib_context_set_image(winwid->im);
    }
 
-   smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
-
-   if (opt.full_screen && (!opt.auto_zoom || (smaller && !opt.stretch)))
+   if (opt.full_screen)
    {
-      x = (scr->width - winwid->im_w) >> 1;
-      y = (scr->height - winwid->im_h) >> 1;
-      imlib_render_image_on_drawable(x, y);
-   }
-   else if (opt.auto_zoom && opt.full_screen && !(smaller && !opt.stretch))
-   {
-      www = scr->width;
-      hhh = scr->height;
+      int smaller;              /* Is the image smaller than screen? */
 
-      /* FIXME Very similar code exists in montage.c */
+      smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
 
-      if (opt.aspect)
+      if (opt.auto_zoom && !(smaller && !opt.stretch))
       {
-         double ratio = 0.0;
+         www = scr->width;
+         hhh = scr->height;
 
-         ratio =
-            ((double) winwid->im_w / winwid->im_h) / ((double) www / hhh);
+         /* FIXME Very similar aspect code exists in montage.c */
 
-         if (ratio > 1.0)
+         if (opt.aspect)
          {
-            hhh /= ratio;
-            y = (scr->height - hhh) >> 1;
+            double ratio = 0.0;
+
+            ratio =
+               ((double) winwid->im_w / winwid->im_h) / ((double) www / hhh);
+
+            if (ratio > 1.0)
+            {
+               hhh /= ratio;
+               y = (scr->height - hhh) >> 1;
+            }
+            else if (ratio != 1.0)
+            {
+               www *= ratio;
+               x = (scr->width - www) >> 1;
+            }
          }
-         else if (ratio != 1.0)
-         {
-            www *= ratio;
-            x = (scr->width - www) >> 1;
-         }
+         imlib_render_image_on_drawable_at_size(x, y, www, hhh);
       }
-      imlib_render_image_on_drawable_at_size(x, y, www, hhh);
+      else
+      {
+         x = (scr->width - winwid->im_w) >> 1;
+         y = (scr->height - winwid->im_h) >> 1;
+         imlib_render_image_on_drawable(x, y);
+      }
    }
    else
    {
-      imlib_render_image_on_drawable(x, y);
-   }
-
-
-   if (!opt.full_screen)
-   {
-      /* resize window if the image size has changed */
-      if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
+      /* This centers the window, but is pointless right now, as zooming
+       * doesn't ;-) */
+      /*
+      if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w))
       {
-         winwid->h = winwid->im_h;
-         winwid->w = winwid->im_w;
-         winwidget_resize(winwid, winwid->w, winwid->h);
+         x = (winwid->w - winwid->im_w) >> 1;
+         y = (winwid->h - winwid->im_h) >> 1;
       }
+      */
+      imlib_render_image_on_drawable(x, y);
+
+      /* resize window if the image size has changed */
+      if (resize
+          && ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h)))
+         winwidget_resize(winwid, winwid->im_w, winwid->im_h);
    }
 
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
-   XFlush(disp);
    D_RETURN_;
 }
 
@@ -499,7 +511,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -518,7 +531,8 @@ winwidget_rename(winwidget winwid, char *newname)
    winwidget_update_title(winwid);
 }
 
-void winwidget_free_image(winwidget w)
+void
+winwidget_free_image(winwidget w)
 {
    if (w->im)
    {

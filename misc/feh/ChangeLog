@@ -1,3 +1,11 @@
+Mon May 15 22:49:07 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Hehe. Now I made a release I can break stuff again =P You can
+	resize the window again now, and it works okay, except zooming
+	isn't quite right when the window is bigger than the image right
+	now. I have to redo *all* that zooming code over the next week
+	or so 'cos it was shortsighted to start with :-(
+
 Sun May 14 17:34:48 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* New "Image Info" submenu. It tells you stuff. About the

@@ -118,7 +118,7 @@ feh_reload_image(winwidget w)
          imlib_context_set_image(w->im);
          w->im_w = imlib_image_get_width();
          w->im_h = imlib_image_get_height();
-         winwidget_render_image(w);
+         winwidget_render_image(w, 0);
       }
       if (opt.draw_filename)
          feh_draw_filename(w);
@@ -232,7 +232,7 @@ slideshow_change_image(winwidget winwid, int change)
             imlib_context_set_image(winwid->im);
             winwid->im_w = imlib_image_get_width();
             winwid->im_h = imlib_image_get_height();
-            winwidget_render_image(winwid);
+            winwidget_render_image(winwid,0);
          }
          if (opt.draw_filename)
             feh_draw_filename(winwid);
