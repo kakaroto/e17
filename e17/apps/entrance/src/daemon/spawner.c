@@ -1,8 +1,8 @@
 #include <Ecore.h>
-#include <Ecore_X.h>
-#include <Ecore_Ipc.h>
 #include "Entranced.h"
+#include "auth.h"
 #include "util.h"
+#include "ipc.h"
 
 /* Globals */
 /* Entranced_Display *d; */
@@ -73,16 +73,12 @@ Entranced_Display_New(void)
 {
    Entranced_Display *d;
 
-   d = malloc(sizeof(Entranced_Display));
-   memset(d, 0, sizeof(Entranced_Display));
+   d = calloc(1, sizeof(Entranced_Display));
    /* TODO: Config-ize these parameters */
    d->xprog = strdup(X_SERVER);
    d->attempts = 5;
    d->status = NOT_RUNNING;
-   d->config = NULL;
-   d->e_exe = NULL;
-   d->x_exe = NULL;
-   d->display = NULL;
+   d->auths = ecore_list_new();
    return d;
 }
 
@@ -101,7 +97,7 @@ Entranced_Spawn_X(Entranced_Display * d)
    d->status = NOT_RUNNING;
    while ((i < d->attempts) && (d->status != RUNNING))
    {
-      if ((d->pid.x = Entranced_Start_Server_Once(d)) > 0)
+      if ((d->pid = Entranced_Start_Server_Once(d)) > 0)
          break;
       ++i;
    }
@@ -130,11 +126,20 @@ Entranced_Start_Server_Once(Entranced_Display * d)
 
    x_ready = 0;
 
-   if(d->name)
-      snprintf(x_cmd, PATH_MAX, "%s %s", X_SERVER, d->name);
-   else
-      snprintf(x_cmd, PATH_MAX, "%s", X_SERVER);
+   /* Set display name */
+   if (d->name)
+      free(d->name);
+   d->name = strdup(getenv("DISPLAY"));
 
+   /* Create server auth cookie */
+   if (!entranced_auth_display_secure(d))
+   {
+      syslog(LOG_CRIT, "Failed to generate auth cookie for X Server.");
+      return -1;
+   }
+   
+   snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", X_SERVER, d->authfile, d->name);
+   
    /* x_exe = ecore_exe_run(d->xprog, d); */
    switch (xpid = fork())
    {
@@ -147,9 +152,6 @@ Entranced_Start_Server_Once(Entranced_Display * d)
         syslog(LOG_WARNING, "Could not execute X server.");
         exit(1);
      default:
-        if (d->name)
-           free(d->name);
-        d->name = strdup(getenv("DISPLAY"));
         start_time = ecore_time_get();
 
         while (!x_ready)
@@ -176,17 +178,27 @@ Entranced_Start_Server_Once(Entranced_Display * d)
  * @param d The spawner display context that this session will use
  */
 void
-Entranced_Spawn_Entrance(Entranced_Display * d)
+Entranced_Spawn_Entrance(Entranced_Display *d)
 {
    char entrance_cmd[PATH_MAX];
 
+   d->client.pid = 0;
+   d->client.uid = 0;
+   d->client.gid = 0;
+   if (d->client.homedir)
+      free(d->client.homedir);
+   d->client.homedir = NULL;
+
    snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
    if (d->config)
-      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\"", 
-               ENTRANCE, d->name, d->config);
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\" -z %d", 
+               ENTRANCE, d->name, d->config, getpid());
    else
-      snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -z %d", ENTRANCE, d->name,
+                                                         getpid());
+   printf("Starting command: %s\n", entrance_cmd);
    d->e_exe = ecore_exe_run(entrance_cmd, d);
+   d->client.pid = ecore_exe_pid_get(d->e_exe);
 }
 
 int
@@ -201,7 +213,14 @@ Entranced_Respawn_Reset(void *data)
 int
 Entranced_X_Restart(Entranced_Display * d)
 {
-
+   /* Reinitialize display handle */
+   if (d->e_exe)
+      ecore_exe_free(d->e_exe);
+   d->e_exe = NULL;
+   if (d->x_exe)
+      ecore_exe_free(d->x_exe);
+   d->x_exe = NULL;
+   
    /* Attempt to restart X server */
    d->status = NOT_RUNNING;
 
@@ -281,7 +300,7 @@ Entranced_Exe_Exited(void *data, int type, void *event)
    }
 
    is_respawning = 1;
-   respawn_timer = ecore_timer_add(15.0, Entranced_Respawn_Reset, d);
+   respawn_timer = ecore_timer_add(5.0, Entranced_Respawn_Reset, d);
 
    if (e->exe == d->e_exe && e->pid == ecore_exe_pid_get(d->e_exe))
    {
@@ -300,9 +319,9 @@ Entranced_Exe_Exited(void *data, int type, void *event)
          syslog(LOG_INFO, "The session was terminated with signal %d.",
                 e->exit_signal);
 
-      kill(d->pid.x, SIGHUP);
+      kill(d->pid, SIGHUP);
       sleep(3);
-      if (waitpid(d->pid.x, NULL, WNOHANG) > 0)
+      if (waitpid(d->pid, NULL, WNOHANG) > 0)
       {
          syslog(LOG_INFO, "The X Server apparently died as well.");
          if (!Entranced_X_Restart(d))
@@ -310,7 +329,7 @@ Entranced_Exe_Exited(void *data, int type, void *event)
       }
 
    }
-   else if (e->pid == d->pid.x)
+   else if (e->pid == d->pid)
    {
       /* X terminated for some reason */
       if (e->exited)
@@ -320,7 +339,7 @@ Entranced_Exe_Exited(void *data, int type, void *event)
                 e->exit_signal);
 
       sleep(2);
-      kill(d->pid.x, SIGKILL);
+      kill(d->pid, SIGKILL);
       if (!Entranced_X_Restart(d))
          exit(1);
 
@@ -360,6 +379,8 @@ main(int argc, char **argv)
    int c;
    int nodaemon = 0;            /* TODO: Config-ize this variable */
    Entranced_Display *d;
+   char *str = NULL;
+   char *disp = NULL;
    struct option d_opt[] = {
       {"config", 1, 0, 'c'},
       {"display", 1, 0, 'd'},
@@ -379,6 +400,7 @@ main(int argc, char **argv)
 
    /* Set up a spawner context */
    d = Entranced_Display_New();
+   entranced_ipc_display_set(d);
 
    /* Parse command-line options */
    while (1)
@@ -428,6 +450,16 @@ main(int argc, char **argv)
    /* TODO: Config-ize this */
    if (!getenv("DISPLAY"))
       setenv("DISPLAY", X_DISP, 1);
+   
+   disp = getenv("DISPLAY");
+   str = strstr(disp, ":");
+
+   if(!str || str >= (disp + strlen(disp) - 1))
+      d->dispnum = 0;
+   else
+      d->dispnum = atoi(str + 1);
+
+   entranced_debug("entranced: main: display number is %d\n", d->dispnum);
 
    if (nodaemon)
    {
@@ -456,6 +488,10 @@ main(int argc, char **argv)
       close(1);
       close(2);
    }
+
+   /* Init IPC */
+   if (!entranced_ipc_init(entranced_pid))
+      exit(1);
 
    /* Event filter */
    _e_filter =
@@ -499,14 +535,20 @@ main(int argc, char **argv)
 
    /* Shut down */
    entranced_debug("Exited main loop! Shutting down...\n");
-   ecore_exe_terminate(d->e_exe);
-   kill(d->pid.x, SIGTERM);
+   if (d->e_exe)
+      ecore_exe_terminate(d->e_exe);
+   kill(d->pid, SIGTERM);
    sleep(5);
    /* Die harder */
-   ecore_exe_kill(d->e_exe);
-   kill(d->pid.x, SIGKILL);
+   if (d->e_exe)
+      ecore_exe_kill(d->e_exe);
+   kill(d->pid, SIGKILL);
+
+   if (d->authfile)
+      unlink(d->authfile);
 
    closelog();
+   entranced_ipc_shutdown();
    ecore_shutdown();
    exit(0);
 }

@@ -129,40 +129,39 @@ _entrance_ipc_client_data(void *data, int type, void *event)
 int
 entrance_ipc_init(pid_t server_pid)
 {
-   char buf[80];
+   char buf[PATH_MAX];
 
    /* we definitely fail if we can't connect to ecore_ipc */
    if (ecore_ipc_init() < 1)
       return FALSE;
 
    memset(buf, 0, sizeof(buf));
-   snprintf(buf, 80, "%s_%d", PACKAGE_STATE_DIR "/" IPC_TITLE, server_pid);
+   snprintf(buf, PATH_MAX, "%s_%d", PACKAGE_STATE_DIR"/"IPC_TITLE, server_pid);
    if (ipc_title)
       free(ipc_title);
    ipc_title = strdup(buf);
+   printf("Debug: ipc_title = %s\n", ipc_title);
+   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD,
+                           _entrance_ipc_client_add, NULL);
+
+   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL,
+                           _entrance_ipc_client_del, NULL);
+
+   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA,
+                           _entrance_ipc_client_data, NULL);
+
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
+                           _entrance_ipc_server_data, NULL);
+
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
+                           _entrance_ipc_server_add, NULL);
+
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
+                           _entrance_ipc_server_del, NULL);
 
    if ((server =
-        ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, IPC_TITLE, 0, NULL)))
+        ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, ipc_title, 0, NULL)))
    {
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD,
-                              _entrance_ipc_client_add, NULL);
-
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL,
-                              _entrance_ipc_client_del, NULL);
-
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA,
-                              _entrance_ipc_client_data, NULL);
-
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
-                              _entrance_ipc_server_data, NULL);
-
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
-                              _entrance_ipc_server_add, NULL);
-
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
-                              _entrance_ipc_server_del, NULL);
-
-
       fprintf(stderr, "entrance_ipc_init: Success\n");
    }
    else
@@ -196,8 +195,12 @@ entrance_ipc_session_set(Entrance_Session * session)
 void
 entrance_ipc_request_xauth(char *homedir, uid_t uid, gid_t gid)
 {
-   ecore_ipc_server_send(server, E_XAUTH_REQ, E_UID, 0, 0, (int) uid, "", 0);
-   ecore_ipc_server_send(server, E_XAUTH_REQ, E_GID, 0, 0, (int) gid, "", 0);
-   ecore_ipc_server_send(server, E_XAUTH_REQ, E_HOMEDIR, 0, 0, 0, homedir,
-                         strlen(homedir));
+   int pid;
+   pid = (int) getpid();
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_UID, pid, 0, (int) uid, NULL, 0);
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_GID, pid, 0, (int) gid, NULL, 0);
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_HOMEDIR, pid, 0, 0, homedir,
+                         strlen(homedir) + 1);
+   fprintf(stderr, "entranced: Requesting auth for uid %d (%s)\n", uid, homedir);
 }
+

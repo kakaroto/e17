@@ -415,14 +415,13 @@ entrance_session_start_user_session(Entrance_Session * e)
    }
    _entrance_session_user_list_fix(e);
    /* clear users's password out of memory */
-   entrance_auth_clear_pass(e->auth);
+   if(e->auth)
+      entrance_auth_clear_pass(e->auth);
    /* this bypasses a race condition where entrance loses its x connection */
    /* before the wm gets it and x goes and resets itself */
    sleep(10);
    /* replace this rpcoess with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
-   /* atmos : Could we just free up all of our memory usage at this point
-      instead of exec'ing this other tiny program ? */
    snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
             (int) pid);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);

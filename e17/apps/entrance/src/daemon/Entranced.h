@@ -1,3 +1,6 @@
+#ifndef __ENTRANCED_H
+#define __ENTRANCED_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -28,10 +31,15 @@
 #define EXITCODE 42
 
 /* structs */
-/* FIXME: Deprecate offending namespace foo */
-typedef struct _Entranced_Display Entranced_Display;
+typedef struct _Entranced_Client {
+   pid_t    pid;
+   uid_t    uid;
+   gid_t    gid;
+   char    *homedir;
+   char    *authfile;
+} Entranced_Client;
 
-struct _Entranced_Display
+typedef struct _Entranced_Display
 {
    Display     *display;
    int         dispnum;         /* FIXME */
@@ -39,18 +47,17 @@ struct _Entranced_Display
    char        *xprog;          /* the X execution string */
    int         attempts;
    int         status;
-   struct {
-      pid_t x, client;
-   } pid;
+   pid_t       pid;
    Ecore_List  *auths;
    char        *authfile;
-   char        *user_authfile;
    char        *hostname;
    
    char        *config;         /* Config file for greeter */
-   Ecore_Exe   *e_exe;          /* Exe handle for greeter */
+   Ecore_Exe   *e_exe;          /* Exe handle for Entrance session */
    Ecore_Exe   *x_exe;          /* Exe handle for X server */
-};
+
+   Entranced_Client client;
+} Entranced_Display;
 
 /* Functions */
 int Entranced_Write_Pidfile (pid_t pid);
@@ -64,4 +71,6 @@ void Entranced_Spawn_Entrance(Entranced_Display *d);
 int Entranced_Respawn_Reset(void *data);
 int Entranced_Exe_Exited(void *data, int type, void *event);
 int Entranced_Signal_Exit(void *data, int type, void *event);
+
+#endif
 

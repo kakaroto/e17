@@ -312,10 +312,14 @@ entrance_auth_setup_environment(Entrance_Auth * e)
    extern char **environ;
    int size;
    char *mail;
+   char buf[PATH_MAX];
+
+   snprintf(buf, PATH_MAX, "%s/.Xauthority", e->pw->pw_dir);
 
    if (!e || !e->pw)
       return;
    e->env = environ;
+   setenv("XAUTHORITY", buf, 1);
    setenv("TERM", "vt100", 0);  // TERM=linux?
    setenv("HOME", e->pw->pw_dir, 1);
    setenv("SHELL", e->pw->pw_shell, 1);

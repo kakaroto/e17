@@ -68,7 +68,7 @@ _entranced_auth_purge(Entranced_Display *d, FILE *auth_file)
    if (!d || !auth_file)
       return;
 
-   entranced_debug("entranced_auth_purge: %s", d->name);
+   entranced_debug("entranced_auth_purge: %s\n", d->name);
    fseek (auth_file, 0L, SEEK_SET);
    
    auth_keep = ecore_list_new();
@@ -95,7 +95,7 @@ _entranced_auth_purge(Entranced_Display *d, FILE *auth_file)
    }
 
    /* Write remaining entries to auth file */
-   if (!(auth_file = freopen(d->user_authfile, "w", auth_file)))
+   if (!(auth_file = freopen(d->client.authfile, "w", auth_file)))
    {
       entranced_debug("entranced_auth_purge: Write failed!\n");
       return;
@@ -229,7 +229,7 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
 int
 entranced_auth_display_secure (Entranced_Display *d)
 {
-   FILE              *auth_file;
+   FILE              *auth_file, *host_file;
    char              buf[PATH_MAX];
    char              hostname[1024];
 
@@ -278,10 +278,20 @@ entranced_auth_display_secure (Entranced_Display *d)
    if (!_entranced_auth_entry_add(d, auth_file, d->hostname, 
                                  strlen(d->hostname)))
       return FALSE;
-   
+
    fclose(auth_file);
    setenv("XAUTHORITY", d->authfile, TRUE);
 
+   /* Write host access file */
+   snprintf(buf, PATH_MAX, "/etc/X%d.hosts", d->dispnum);
+   if (!(host_file = fopen(buf, "w")))
+   {
+      entranced_debug("entranced_auth_display_secure: Unable to open %s for writing\n", buf);
+      return FALSE;
+   }
+   fprintf(host_file, "%s\n", d->hostname);
+   fclose(host_file);
+   
    entranced_debug("entranced_auth_display_secure: Successfully set up access for %s (localhost)\n", d->name);
 
    return TRUE;
@@ -305,21 +315,21 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
       umask (077);
 
       if (!homedir)
-         d->user_authfile = NULL;
+         d->client.authfile = NULL;
       else
       {
          snprintf(buf, PATH_MAX, "%s/.Xauthority", homedir);
-         d->user_authfile = strdup(buf);
+         d->client.authfile = strdup(buf);
       }
 
       /* Make sure the file can be written to */
-      if((auth_file = fopen(d->user_authfile, "a+")))
+      if((auth_file = fopen(d->client.authfile, "a+")))
          fclose(auth_file);
       else
       {
-         entranced_debug("entranced_auth_user_add: Unable to write auth file %s", d->user_authfile);
-         free(d->user_authfile);
-         d->user_authfile = NULL;
+         entranced_debug("entranced_auth_user_add: Unable to write auth file %s\n", d->client.authfile);
+         free(d->client.authfile);
+         d->client.authfile = NULL;
          return FALSE;
       }
       /* TODO: May need a permissions/paranoia check */
@@ -328,11 +338,11 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
       /* FIXME: What if for some reason we never succeed in getting
        *        a lock ?
        */
-      if (XauLockAuth(d->user_authfile, 3, 3, 0) != LOCK_SUCCESS)
+      if (XauLockAuth(d->client.authfile, 3, 3, 0) != LOCK_SUCCESS)
       {
-         syslog(LOG_CRIT, "entranced_auth_user_add: Unable to lock auth file %s", d->user_authfile);
-         free(d->user_authfile);
-         d->user_authfile = NULL;
+         syslog(LOG_CRIT, "entranced_auth_user_add: Unable to lock auth file %s", d->client.authfile);
+         free(d->client.authfile);
+         d->client.authfile = NULL;
 
          umask (022);
       }
@@ -341,19 +351,19 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
    }
 
    /* Open file and write auth entries */
-   if(!(auth_file = fopen(d->user_authfile, "a+")))
+   if(!(auth_file = fopen(d->client.authfile, "a+")))
    {
-      syslog(LOG_CRIT, "entranced_auth_user_add: Open auth file %s failed after lock", d->user_authfile);
-      XauUnlockAuth (d->user_authfile);
-      free(d->user_authfile);
-      d->user_authfile = NULL;
+      syslog(LOG_CRIT, "entranced_auth_user_add: Open auth file %s failed after lock", d->client.authfile);
+      XauUnlockAuth (d->client.authfile);
+      free(d->client.authfile);
+      d->client.authfile = NULL;
 
       umask (022);
 
       return FALSE;
    }
 
-   entranced_debug("entranced_auth_user_add: Opened %s for writing cookies\n", d->user_authfile);
+   entranced_debug("entranced_auth_user_add: Opened %s for writing cookies\n", d->client.authfile);
 
    /* Remove any existing old entries for this display */
    _entranced_auth_purge(d, auth_file);
@@ -369,8 +379,8 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
    }
 
    fclose(auth_file);
-   XauUnlockAuth(d->user_authfile);
-   entranced_debug("entranced_auth_user_add: Finished writing auth entries to %s", d->user_authfile);
+   XauUnlockAuth(d->client.authfile);
+   entranced_debug("entranced_auth_user_add: Finished writing auth entries to %s\n", d->client.authfile);
 
    return ret;
       
@@ -381,26 +391,26 @@ entranced_auth_user_remove (Entranced_Display *d)
 {
    FILE     *auth_file;
 
-   if (!d || !d->user_authfile)
+   if (!d || !d->client.authfile)
       return;
 
-   entranced_debug("entranced_auth_user_remove: Removing cookie from %s\n", d->user_authfile);
+   entranced_debug("entranced_auth_user_remove: Removing cookie from %s\n", d->client.authfile);
 
    /* TODO: Permissions check on auth file */
    /* Get a lock */
-   if (XauLockAuth(d->user_authfile, 3, 3, 0) != LOCK_SUCCESS)
+   if (XauLockAuth(d->client.authfile, 3, 3, 0) != LOCK_SUCCESS)
    {
-      free(d->user_authfile);
-      d->user_authfile = NULL;
+      free(d->client.authfile);
+      d->client.authfile = NULL;
       return;
    }
 
    /* Open the file */
-   if (!(auth_file = fopen(d->user_authfile, "a+")))
+   if (!(auth_file = fopen(d->client.authfile, "a+")))
    {
-      XauUnlockAuth(d->user_authfile);
-      free(d->user_authfile);
-      d->user_authfile = NULL;
+      XauUnlockAuth(d->client.authfile);
+      free(d->client.authfile);
+      d->client.authfile = NULL;
       return;
    }
 
@@ -409,10 +419,10 @@ entranced_auth_user_remove (Entranced_Display *d)
    
    /* Close and unlock */
    fclose(auth_file);
-   XauUnlockAuth(d->user_authfile);
+   XauUnlockAuth(d->client.authfile);
 
-   free(d->user_authfile);
-   d->user_authfile = NULL;
+   free(d->client.authfile);
+   d->client.authfile = NULL;
 }
 
 

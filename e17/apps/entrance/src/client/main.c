@@ -652,6 +652,7 @@ main(int argc, char *argv[])
            config = strdup(optarg);
            break;
         case 'z':
+           printf("entrance: main: z optarg = %s\n", optarg);
            server_pid = (pid_t) atoi(optarg);
            break;
         default:
@@ -665,6 +666,8 @@ main(int argc, char *argv[])
    session = entrance_session_new(config);
    if (config)
       free(config);
+
+   printf("entrance: main: XAUTHORITY = %s\n", getenv("XAUTHORITY"));
 
 #if 1
    if (!ecore_x_init(display))
