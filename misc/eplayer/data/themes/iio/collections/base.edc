@@ -1270,3 +1270,58 @@
 		}
 	}
 }
+
+		part {
+	    		name,          "a_a_paused";
+			mouse_events, 0;
+				
+		description {
+	       		state,    "default" 0.0;
+	       		max,      132 67;
+	       		min,      132 67;
+                       	visible, 0;
+	       
+
+		rel1 {
+			relative, 0.0  0.5;
+		  	offset,   0    0;
+			to, "layer_in" 0.0;
+	       	}
+	       
+		rel2 {
+		  	relative, 1.0  0.5;
+		  	offset, 0 0;
+			to, "layer_in" 0.0;
+	       	}
+	      
+		image {
+		  	normal, "a_base.png";
+		  	tween, "a_20.png";
+		}
+	}
+
+		description {
+	       		state,    "default" 1.0;
+	       		max,      132 67;
+	       		min,      132 67;
+                       	visible, 1;
+	       
+
+		rel1 {
+			relative, 0.0  0.5;
+		  	offset,   0    0;
+			to, "layer_in" 0.0;
+	       	}
+	       
+		rel2 {
+		  	relative, 1.0  0.5;
+		  	offset, 0 0;
+			to, "layer_in" 0.0;
+	       	}
+	      
+		image {
+		  	normal, "a_base.png";
+		  	tween, "a_20.png";
+		}
+	}
+}

@@ -95,7 +95,6 @@
 			signal,			"mouse,down,1";
 			source,			"_play_button";
 			action, 			SIGNAL_EMIT "PLAY" "play_button";
-			after,			"mode_animation";
 	}
 
 /* previous_button */
@@ -280,9 +279,37 @@
 	} 
 
 	program { 
+	name,	"mpb_started"; 
+	signal,     "PLAYBACK_STATE_PLAYING"; 
+	source,	"*";
+	action,     STATE_SET "default" 0.0;
+	transition, DECELERATE 5.0;
+	target, 	"count";	
+	after, 	"mode_animation";
+	}
+
+	program { 
+	name,	"mpb_paused"; 
+	signal,     "PLAYBACK_STATE_PAUSED"; 
+	source,	"*";
+	action,     STATE_SET "default" 1.0;
+	transition, DECELERATE 0.5;
+	target, 	"count";	
+	}
+
+	program { 
+	name,	"mpb_stopped"; 
+	signal,     "PLAYBACK_STATE_STOPPED"; 
+	source,	"*";
+	action,     STATE_SET "default" 1.0;
+	transition, DECELERATE 0.5;
+	target, 	"count";	
+	}
+
+	program { 
 	    		name,       		"mode_animation";
 	    		signal,     		"mouse,click,1";
-	    		source,     		"*";
+	    		source,     		"play_button";
 	    		action,     		STATE_SET "default" 0.0;
 	    		transition, 		DECELERATE, 5.0;
 	    		target,     		"count";
@@ -292,10 +319,11 @@
 	program { 
 	    		name,       		"mode_animation_stop";
 	   		signal,     		"mouse,clicked,2";
-	    		source,     		"*";
+	    		source,     		"stop_button";
 	    		action,     		ACTION_STOP;
 	    		target,     		"mode_animation";
 	} 
+	
 	
 	/* Quit */
 

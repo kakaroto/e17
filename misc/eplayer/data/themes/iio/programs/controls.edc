@@ -1,5 +1,10 @@
 
-/* switch mode */
+
+#define PLAYBACK_STATE_PLAYING PB_STARTED
+#define PLAYBACK_STATE_STOPPED PB_STOPPED
+#define PLAYBACK_STATE_PAUSED PB_PAUSED
+
+/* switch:stance */
 
 	program {
 			name, 			"_switch_mode_hilited";
@@ -102,28 +107,67 @@
 			action, 			SIGNAL_EMIT "RAISE", "base";
 	}
 
-	program {
-			name, 			"layer_animate";
-			signal, 			"";
-			//signal, 		"mouse,wheel,0,-1";
-			source, 			"layer_in";
-			action, 			STATE_SET "default" 1.0;
-			transition, 		ACCELERATE 1.0;
-			target, 			"layer_in";	
-			after, 			"aa";
-			target, 			"quit";
+	program { 
+	name,	"pb_started"; 
+	signal,     "PLAYBACK_STATE_PLAYING"; 
+	source,	"*";
+	action,     STATE_SET "default" 1.0;
+	transition, ACCELERATE 0.1;
+	target, 	"layer_in";	
+	after, 	"aa";
+	target, 	"quit";
 	}
 
-	program {
-                        name,   			"layer_deanimate";
-			signal, 			"mouse,clicked,1";
-                        source, 			"layer_in";
-                        action, 			STATE_SET "default" 0.0;
-			transition, 		DECELERATE 1.0;
-                        target, 			"layer_in";
-			target, 			"a_a";
-			target, 			"quit";
-       	}
+	program { 
+	name,	"pb_paused"; 
+	signal,     "PLAYBACK_STATE_PAUSED"; 
+	source,	"*";
+	action,     STATE_SET "default" 1.0;
+	transition, ACCELERATE 1.0;
+	target, 	"layer_in";	
+	after, 	"a_a_stop";
+	target, 	"quit";
+	} 
+
+	program { 
+	name,	"pb_stopped"; 
+	signal,     "PLAYBACK_STATE_STOPPED"; 
+	source,	"*";
+	action, 	STATE_SET "default" 0.0;
+	transition, DECELERATE 0.1;
+	target, 	"layer_in";
+	target, 	"a_a";
+	target, 	"quit";
+	}
+
+	program { 
+	    		name,       		"aa";
+	    		signal,     		"mouse,click,1";
+	    		source,     		"play_button";
+	    		action,     		STATE_SET "default" 1.0;
+	    		transition, 		LINEAR, 1.5;
+	    		target,     		"a_a";
+	    		after,      			"aa"; 
+	}
+
+	program { 
+	    		name,       		"aa_paused";
+	    		signal,     		"mouse,click,1";
+	    		source,     		"paused_button";
+	    		action,     		STATE_SET "default" 1.0;
+	    		transition, 		LINEAR, 1.5;
+	    		target,     		"a_a_paused";
+	    		after,      			"aa_paused"; 
+	}
+	
+	program { 
+	    		name,       		"a_a_stop";
+	   		//signal,     		"mouse,click,2";
+	   		signal,     		"mouse,clicked,2";
+	    		source,     		"a_a";
+	    		action,     		ACTION_STOP;
+	    		target,     		"aa";
+	}
 
 	/* play_button */
 
@@ -168,27 +212,8 @@
 			signal,			"mouse,down,1";
 			source,			"play_button";
 			action, 			SIGNAL_EMIT "PLAY" "play_button";
-			after, "layer_animate";
 	}
 	
-	program { 
-	    		name,       		"aa";
-	    		signal,     		"mouse,click,1";
-	    		source,     		"play_button";
-	    		action,     		STATE_SET "default" 1.0;
-	    		transition, 		LINEAR, 1.5;
-	    		target,     		"a_a";
-	    		after,      			"aa"; 
-	}
-	
-	program { 
-	    		name,       		"a_a_stop";
-	   		//signal,     		"mouse,click,2";
-	   		signal,     		"mouse,clicked,2";
-	    		source,     		"a_a";
-	    		action,     		ACTION_STOP;
-	    		target,     		"aa";
-	}
 
 	/* previous_button */
 
@@ -413,7 +438,6 @@
 			signal,			"mouse,down,1";
 			source,			"stop_button";
 			action, 			SIGNAL_EMIT "STOP" "stop_button";
-			after, "layer_deanimate";
 	} 
 	
 	}

@@ -273,6 +273,32 @@
 		  	}
 
 	    	}
+
+		description {
+			state,	"default" 1.0;
+	       		max,	63 32;
+	       		min,		63 32;
+	       		align,	0.0 0.0;
+			visible, 	1;
+	       
+			rel1 {
+		  			relative, 0.5  1.0;
+		  			offset, 0 0;
+					to, "small_lcd";
+	       		}
+	       		
+			rel2 {
+		  			relative, 1.0 1.0;
+		  			offset, -16 -13;
+					to, "small_lcd";
+	       		}
+	       
+			image {
+		  		normal, "a_s_lcd.png";
+				tween, "a_s_lcd_0132.png";
+		  	}
+
+	    	}
 	}
 
 		part {
