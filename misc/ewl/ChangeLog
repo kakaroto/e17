@@ -693,3 +693,17 @@ the NULL checks.  fixed now.
 - layout is still b0rked in a few places.
 - EwlButton doesn't seem to render rigth now.  hmmmmm.
 
+-----
+20000805-1840-PDT, pabs
+
+- officially in cvs now, thx to giblet.
+- updated TODO and a few other files.
+- santitize child_padding[] for EwlContainers
+- wahoo that fixed the padding problem.
+
+-----
+20000805-2140-PDT, pabs
+
+- fixed the rendering problem -- widgets without backgrounds get a
+transparent one. :)
+

@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 
 	fprintf(stderr,"ewl_theme_find_file(\"images/jesus.gif\") returns %s\n",
 	        ewl_theme_find_file("images/jesus.gif"));
+	fprintf(stderr,"btn->bg = 0x%08x\n", btn->bg);
 
 	fprintf(stderr,"number of layers in btn, box, win: %d, %d, %d\n",
 	        ewl_ll_sizeof((EwlLL*)win->layers),

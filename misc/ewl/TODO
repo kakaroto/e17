@@ -1,9 +1,15 @@
 EWL 0.2 TODO
 ============
+- ewlbutton needs to be a subclass of EWlBox, so we can pack a label
+  and image into it.
 - faster rendering -- rightn ow it rerenders on every EXPOSE -- that's
   slow as hell.
 - fix layout -- borked badly atm.
 - KainX: kainx doesn't like imlib specific drawing api -- he's right.
+- db caching -- right now the db shit is reloaded every time a 
+  query is made -- could be a lot faster by leaving htem open and
+  then flushing later.
+- font path and other goodies added to teh state struct.
 - database abstraction -- there's no reason we have to be accessing a 
   local db for anything other than the initial preferences database.
   for example, we could load information from a mysql database over

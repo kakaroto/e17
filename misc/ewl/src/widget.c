@@ -490,6 +490,10 @@ void   ewl_widget_render(EwlWidget *w)
 			fprintf(stderr, "ewl_widget_render(): old w->rendered = %08x\n",
 			        (unsigned int) w->rendered);
 		/*w->rendered = ewl_imlib_clone_image(w->bg);*/
+		if (!w->bg)	{
+			/* FIX ME */
+			w->bg = imlib_create_image(1,1);
+		}
 		width = ewl_imlib_image_get_width(w->bg);
 		height = ewl_imlib_image_get_height(w->bg);
 		w->rendered = ewl_imlib_create_cropped_scaled_image(
