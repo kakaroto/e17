@@ -77,12 +77,8 @@ engrave_part_state_free(Engrave_Part_State *eps)
   IF_FREE(eps->rel2.to_x);
   IF_FREE(eps->rel2.to_y);
 
-  engrave_image_free(eps->image.normal);
-  for (l = eps->image.tween; l; l = l->next) {
-    Engrave_Image *ei = l->data;
-    eps->image.tween = evas_list_remove(eps->image.tween, ei);
-    engrave_image_free(ei);
-  }
+  /* don't free the image here cuz its freed in the _file code */
+  eps->image.normal = NULL;
   eps->image.tween = evas_list_free(eps->image.tween);
 
   IF_FREE(eps->color_class);
@@ -766,16 +762,11 @@ engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
  *
  * @return Returns the state name, or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_name_get(Engrave_Part_State *eps, double *val)
 {
-  char *str = NULL;
-
-  if (eps)
-    str = (eps->name ? strdup(eps->name) : NULL);
-
   if (val) *val = (eps ? eps->value : 0);
-  return str;
+  return (eps ? eps->name : NULL); 
 }
 
 /**
@@ -914,28 +905,24 @@ engrave_part_state_rel1_offset_get(Engrave_Part_State *eps, int *x, int*y)
  * engrave_part_state_rel1_to_x_get - get the to_x value for rel1
  * @param eps: The Engrave_Part_State to get the value from
  * 
- * @return Returns a pointer to the to_x value or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the to_x value or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_rel1_to_x_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->rel1.to_x ? strdup(eps->rel1.to_x) : NULL);
+  return (eps ? eps->rel1.to_x : NULL);
 }
 
 /**
  * engrave_part_state_rel1_to_y_get - get the to_y value for rel1
  * @param eps: The Engrave_Part_State to get the value from
  * 
- * @return Returns a pointer to the to_y value or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the to_y value or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_rel1_to_y_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->rel1.to_y ? strdup(eps->rel1.to_y) : NULL);
+  return (eps ? eps->rel1.to_y : NULL);
 }
 
 /** 
@@ -973,42 +960,36 @@ engrave_part_state_rel2_offset_get(Engrave_Part_State *eps, int *x, int*y)
  * engrave_part_state_rel2_to_x_get - get the to_x value for rel2
  * @param eps: The Engrave_Part_State to get the value from
  * 
- * @return Returns a pointer to the to_x value or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the to_x value or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_rel2_to_x_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->rel2.to_x ? strdup(eps->rel2.to_x) : NULL);
+  return (eps ? eps->rel2.to_x : NULL);
 }
 
 /**
  * engrave_part_state_rel2_to_y_get - get the to_y value for rel2
  * @param eps: The Engrave_Part_State to get the value from
  * 
- * @return Returns a pointer to the to_y value or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the to_y value or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_rel2_to_y_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->rel2.to_y ? strdup(eps->rel2.to_y) : NULL);
+  return (eps ? eps->rel2.to_y : NULL);
 }
 
 /**
  * engrave_part_state_color_class_get - get the color class for the state
  * @param eps: The Engrave_Part_State to get the colour class from
  * 
- * @return Returns a pointer to the colour class on success or NULL on
- * failure. This pointer must be free'd by the user.
+ * @return Returns the colour class on success or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_color_class_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->color_class ? strdup(eps->color_class) : NULL);
+  return (eps ? eps->color_class : NULL);
 }
 
 /**
@@ -1105,42 +1086,36 @@ engrave_part_state_image_border_get(Engrave_Part_State *eps,
  * engrave_part_state_text_text_get - get the text value
  * @param eps: The Engrave_Part_State to get the text from
  *
- * @return Returns a pointer to the text value on success or NULL on
- * failure. This pointer must be free'd by the user.
+ * @return Returns the text value on success or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_text_text_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->text.text ? strdup(eps->text.text) : NULL);
+  return (eps ? eps->text.text : NULL);
 }
 
 /**
  * engrave_part_state_text_text_class_get - get the text class
  * @param eps: The Engrave_Part_State to get the value from
  *
- * @return Returns a pointer to the text class or NULL on failure. This
- * pointer must be free'd by the user.
+ * @return Returns the text class or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_text_text_class_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->text.text_class ? strdup(eps->text.text_class) : NULL);
+  return (eps ? eps->text.text_class : NULL);
 }
 
 /**
  * engrave_part_state_text_font_get - get the text font
  * @param eps: The Engrave_Part_State to get the font from
  *
- * @return Returns a pointer to the font on success or NULL on failure. This
- * pointer must be free'd by the user.
+ * @return Returns the font on success or NULL on failure.
  */
-char *
+const char *
 engrave_part_state_text_font_get(Engrave_Part_State *eps)
 {
-  if (!eps) return NULL;
-  return (eps->text.font ? strdup(eps->text.font) : NULL);
+  return (eps ? eps->text.font : NULL);
 }
 
 /**

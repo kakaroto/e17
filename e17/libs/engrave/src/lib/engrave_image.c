@@ -59,28 +59,24 @@ engrave_image_dup(Engrave_Image *from)
  * engrave_image_name_get - get the image name
  * @param ei: The Engrave_Image to get the name from
  * 
- * @return Returns a pointer to the name of the image or NULL
- * on error. This pointer must be free'd by the user.
+ * @return Returns the name of the image or NULL on failure.
  */
-char *
+const char *
 engrave_image_name_get(Engrave_Image *ei)
 {
-  if (!ei) return NULL;
-  return (ei->name ? strdup(ei->name) : NULL);
+  return (ei ? ei->name : NULL);
 }
 
 /**
  * engrave_image_path_get - get the image path
  * @param ei: The Engrave_Image to get the path from
  * 
- * @return Returns a pointer to the path of the image or NULL
- * on error. This pointer must be free'd by the user.
+ * @return Returns the path of the image or NULL on failure.
  */
-char *
+const char *
 engrave_image_path_get(Engrave_Image *ei)
 {
-  if (!ei) return NULL;
-  return (ei->path ? strdup(ei->path) : NULL);
+  return (ei ? ei->path : NULL);
 }
 
 /**

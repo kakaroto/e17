@@ -65,24 +65,25 @@ void engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
 void engrave_program_transition_set(Engrave_Program *ep,
                                 Engrave_Transition trans, double duration);
 
-char *engrave_program_name_get(Engrave_Program *ep);
-char *engrave_program_signal_get(Engrave_Program *ep);
-char *engrave_program_source_get(Engrave_Program *ep);
+const char *engrave_program_name_get(Engrave_Program *ep);
+const char *engrave_program_signal_get(Engrave_Program *ep);
+const char *engrave_program_source_get(Engrave_Program *ep);
 void engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
                                     char *state, char *state2, 
+                                    int state_len, int state2_len,
                                     double *value, double *value2);
 void engrave_program_transition_get(Engrave_Program *ep, 
                                     Engrave_Transition *trans, double *duration);
-char *engrave_program_script_get(Engrave_Program *ep);
+const char *engrave_program_script_get(Engrave_Program *ep);
 void engrave_program_in_get(Engrave_Program *ep, double *from, double *range);
 
 int engrave_program_afters_count(Engrave_Program *ep);
 int engrave_program_targets_count(Engrave_Program *ep);
 
 void engrave_program_target_foreach(Engrave_Program *ep,
-                                void (*func)(char *, void *), void *data);
+                                void (*func)(const char *, void *), void *data);
 void engrave_program_after_foreach(Engrave_Program *ep,
-                                void (*func)(char *, void *), void *data);
+                                void (*func)(const char *, void *), void *data);
 
 
 /**

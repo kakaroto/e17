@@ -55,7 +55,7 @@ engrave_parse_group_data(char *key, char *value)
  
   /* XXX why is this put inboth file and group data? */
   data = engrave_data_new(key, value);
-  engrave_file_data_add(engrave_file, data);
+//  engrave_file_data_add(engrave_file, data);
 
   group = engrave_file_group_last_get(engrave_file);
   engrave_group_data_add(group, data);
@@ -253,7 +253,7 @@ engrave_parse_state_inherit(char *name, double val)
   Engrave_Part *part;
   Engrave_Part_State *to;
   Engrave_Part_State *from;
-  char *state_name;
+  const char *state_name;
 
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
@@ -263,20 +263,18 @@ engrave_parse_state_inherit(char *name, double val)
 
   /* must have a name set before we can be inherited into */
   if (!state_name) {
-    char *part_name = engrave_part_name_get(part);
+    const char *part_name = engrave_part_name_get(part);
     fprintf(stderr, "part %s: inherit may only be used after state!\n",
                                                             part_name);
-    free(part_name);
     return;
   }
 
   /* can't inherit into the default part */
   if ((strlen(state_name) == 7) && (!strncmp(state_name, "default", 7))) {
-    char *part_name = engrave_part_name_get(part);
+    const char *part_name = engrave_part_name_get(part);
     fprintf(stderr, "part %s: "
               "inherit may not be used in the default description!\n",
               part_name);
-    free(part_name);
     return;
   }
 

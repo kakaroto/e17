@@ -33,7 +33,6 @@ engrave_group_free(Engrave_Group *eg)
   if (!eg) return;
 
   IF_FREE(eg->name);
-
   for (l = eg->parts; l; l = l->next) {
     Engrave_Part *ep = l->data;
     eg->parts = evas_list_remove(eg->parts, ep);
@@ -253,28 +252,24 @@ engrave_group_data_foreach(Engrave_Group *eg,
  * engrave_group_name_get - get the name attached to the group
  * @param eg: The Engrave_Group to get the name from
  *
- * @return Returns a pointer to the name of the group or NULL on failure.
- * This pointer must be free'd by the user
+ * @return Returns the name of the group or NULL on failure.
  */
-char *
+const char *
 engrave_group_name_get(Engrave_Group *eg)
 {
-  if (!eg) return NULL;
-  return (eg->name ? strdup(eg->name) : NULL);
+  return (eg ? eg->name : NULL);
 }
 
 /**
  * engrave_group_script_get - get the script attached to the group
  * @param eg: The Engrave_Group to get the script from
  * 
- * @return Returns a pointer to the script on success or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the script on success or NULL on failure.
  */
-char *
+const char *
 engrave_group_script_get(Engrave_Group *eg)
 {
-  if (!eg) return NULL;
-  return (eg->script ? strdup(eg->script) : NULL);
+  return (eg ? eg->script : NULL);
 }
 
 /**

@@ -91,14 +91,12 @@ engrave_part_name_set(Engrave_Part *ep, const char *name)
  * engrave_part_name_get - Get the name of the part
  * @param ep: The Engrave_Part to retrieve the name from.
  * 
- * @return Returns a copy of the part name, this pointer must be freed by
- * the application, or NULL if no name found.
+ * @return Returns the name of the part, or NULL on failure.
  */
-char *
+const char *
 engrave_part_name_get(Engrave_Part *ep)
 {
-    if (!ep || !ep->name) return NULL;
-    return strdup(ep->name);
+    return (ep ? ep->name : NULL);
 }
 
 /**
@@ -158,14 +156,12 @@ engrave_part_effect_get(Engrave_Part *ep)
  * engrave_part_clip_to_get - Get the clip_to setting of the part
  * @param ep: The Engrave_Part to get the clip_to from
  *
- * @return Returns a pointer to the clip_to string for the part or
- * NULL on failure. This pointer must be free'd by the user.
+ * @return Returns the clip_to string for the part or NULL on failure. 
  */
-char *
+const char *
 engrave_part_clip_to_get(Engrave_Part *ep)
 {
-  if (!ep) return NULL;
-  return (ep->clip_to ? strdup(ep->clip_to) : NULL);
+  return (ep ? ep->clip_to : NULL);
 }
 
 /**
@@ -228,14 +224,12 @@ engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count)
  * engrave_part_dragable_confine_get - Get the dragable confine setting
  * @param ep: The Engrave_Part to get the confine setting from
  *
- * @return Returns a pointer to the confine setting or NULL on error.
- * This pointer must be free'd by the user.
+ * @return Returns the confine setting or NULL on failure.
  */
-char *
+const char *
 engrave_part_dragable_confine_get(Engrave_Part *ep)
 {
-  if (!ep) return NULL;
-  return (ep->dragable.confine ? strdup(ep->dragable.confine) : NULL);
+  return (ep ? ep->dragable.confine : NULL);
 }
 
 /**
@@ -377,7 +371,7 @@ engrave_part_state_by_name_value_find(Engrave_Part *ep,
   if (!ep || !name) return NULL;
 
   for (l = ep->states; l; l = l->next) {
-    char *state_name;
+    const char *state_name;
     double state_val;
     Engrave_Part_State *eps;
     
@@ -386,10 +380,8 @@ engrave_part_state_by_name_value_find(Engrave_Part *ep,
 
     if ((!strcmp(state_name, name)) && (strlen(name) == strlen(state_name))
         && (state_val == val)) {
-      free(state_name);
       return eps;
     }
-    free(state_name);
   }
 
   return NULL;

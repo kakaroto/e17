@@ -71,15 +71,15 @@ void engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps);
 Engrave_Part_State * engrave_part_state_by_name_value_find(Engrave_Part *ep, 
                                             const char *name, double val);
 
-char *engrave_part_name_get(Engrave_Part *ep);
+const char *engrave_part_name_get(Engrave_Part *ep);
 Engrave_Part_Type engrave_part_type_get(Engrave_Part *ep);
 int engrave_part_mouse_events_get(Engrave_Part *ep);
 int engrave_part_repeat_events_get(Engrave_Part *ep);
 Engrave_Text_Effect engrave_part_effect_get(Engrave_Part *ep);
-char *engrave_part_clip_to_get(Engrave_Part *ep);
+const char *engrave_part_clip_to_get(Engrave_Part *ep);
 void engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count);
 void engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count);
-char *engrave_part_dragable_confine_get(Engrave_Part *ep);
+const char *engrave_part_dragable_confine_get(Engrave_Part *ep);
 
 int engrave_part_states_count(Engrave_Part *ep);
 

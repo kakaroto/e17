@@ -30,8 +30,8 @@ struct _Engrave_Data
 Engrave_Data * engrave_data_new(const char *key, const char *value);
 void engrave_data_free(Engrave_Data *ed);
 
-char *engrave_data_key_get(Engrave_Data *ed);
-char *engrave_data_value_get(Engrave_Data *ed);
+const char *engrave_data_key_get(Engrave_Data *ed);
+const char *engrave_data_value_get(Engrave_Data *ed);
 int engrave_data_int_value_get(Engrave_Data *ed);
 
 /**

@@ -25,7 +25,6 @@ void
 engrave_file_free(Engrave_File *ef)
 {
   Evas_List *l;
-
   if (!ef) return;
 
   for (l = ef->images; l; l = l->next) {

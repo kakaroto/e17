@@ -26,7 +26,7 @@ engrave_program_free(Engrave_Program *ep)
 {
   Evas_List *l;
   if (!ep) return;
-  
+
   IF_FREE(ep->name);
   IF_FREE(ep->signal);
   IF_FREE(ep->source);
@@ -204,50 +204,44 @@ engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
  * engrave_program_name_get - Get the program name
  * @param ep: The Engrave_Program to get the name from
  *
- * @return Returns a pointer to the name of the program or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the name of the program or NULL on failure.
  */
-char *
+const char *
 engrave_program_name_get(Engrave_Program *ep)
 {
-  if (!ep) return NULL;
-  return (ep->name ? strdup(ep->name) : NULL);
+  return (ep ? ep->name : NULL);
 }
 
 /**
  * engrave_program_signal_get - Get the program signal
  * @param ep: The Engrave_Program to get the signal from
  *
- * @return Returns a pointer to the signal of the program or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the signal of the program or NULL on failure.
  */
-char *
+const char *
 engrave_program_signal_get(Engrave_Program *ep)
 {
-  if (!ep) return NULL;
-  return (ep->signal ? strdup(ep->signal) : NULL);
+  return (ep ? ep->signal : NULL);
 }
 
 /**
  * engrave_program_source_get - Get the program source
  * @param ep: The Engrave_Program to get the source from
  *
- * @return Returns a pointer to the source of the program or NULL on failure.
- * This pointer must be free'd by the user.
+ * @return Returns the source of the program or NULL on failure.
  */
-char *
+const char *
 engrave_program_source_get(Engrave_Program *ep)
 {
-  if (!ep) return NULL;
-  return (ep->source ? strdup(ep->source) : NULL);
+  return (ep ? ep->source : NULL);
 }
 
 /** 
  * engrave_program_action_get - Get the action information for the program
  * @param ep: The Engrave_Program to get the action information from
  * @param action: Where to store the action setting
- * @param state: Buffer to put the state value into
- * @param state2: Buffer to put the state2 value into
+ * @param state: Buffer to put state into
+ * @param state2: Buffer to put state2 into
  * @param value: Where to put the value setting
  * @param value2: Where to put the value2 setting
  *
@@ -256,32 +250,16 @@ engrave_program_source_get(Engrave_Program *ep)
 void
 engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
                                     char *state, char *state2, 
+                                    int state_len, int state2_len,
                                     double *value, double *value2)
 {
-  Engrave_Action a;
-  char *s, *s2;
-  double v, v2;
-
-  if (!ep) {
-    a = ENGRAVE_ACTION_NUM;
-    s = NULL;
-    s2 = NULL;
-    v = 0;
-    v2 = 0;
-  } else {
-    a = ep->action;
-    v = ep->value;
-    v2 = ep->value2;
-    s = ep->state;
-    s2 = ep->state2;
-  }
-  if (action) *action = a;
-  if (value) *value = v;
-  if (value2) *value2 = v2;
-  if (state) 
-    snprintf(state, sizeof(state), "%s", (s ? s : NULL));
+  if (action) *action = (ep ? ep->action : ENGRAVE_ACTION_NUM);
+  if (value) *value = (ep ? ep->value : 0);
+  if (value2) *value2 = (ep ? ep->value2 : 0);
+  if (state)
+    snprintf(state, state_len, "%s", (ep ? ep->state : ""));
   if (state2)
-    snprintf(state2, sizeof(state2), "%s", (s2 ? s2 : NULL));
+    snprintf(state2, state2_len, "%s", (ep ? ep->state2 : ""));
 }
 
 /**
@@ -296,32 +274,20 @@ void
 engrave_program_transition_get(Engrave_Program *ep, 
                                     Engrave_Transition *trans, double *duration)
 {
-  Engrave_Transition t;
-  double d;
-
-  if (!ep) {
-    t = ENGRAVE_TRANSITION_NUM;
-    d = 0;
-  } else {
-    t = ep->transition;
-    d = ep->duration;
-  }
-  if (trans) *trans = t;
-  if (duration) *duration = d;
+  if (trans) *trans = (ep ? ep->transition : ENGRAVE_TRANSITION_NUM);
+  if (duration) *duration = (ep ? ep->duration : 0);
 }
 
 /**
  * engrave_program_script_get - Get the script from the program
  * @param ep: The Engrave_Program to get the script from
  *
- * @return Returns a pointer to the script or NULL on failure. This pointer
- * must be free'd by the user.
+ * @return Returns the script or NULL on failure.
  */
-char *
+const char *
 engrave_program_script_get(Engrave_Program *ep)
 {
-  if (!ep) return NULL;
-  return (ep->script ? strdup(ep->script) : NULL);
+  return (ep ? ep->script : NULL);
 }
 
 /**
@@ -385,13 +351,13 @@ engrave_program_afters_count(Engrave_Program *ep)
  */
 void
 engrave_program_target_foreach(Engrave_Program *ep,
-                                void (*func)(char *, void *), void *data)
+                                void (*func)(const char *, void *), void *data)
 {
   Evas_List *l;
 
   if (!engrave_program_targets_count(ep)) return;
   for (l = ep->targets; l; l = l->next) {
-    char *target = l->data;
+    const char *target = l->data;
     if (target) func(target, data);
   }
 }
@@ -406,13 +372,13 @@ engrave_program_target_foreach(Engrave_Program *ep,
  */
 void
 engrave_program_after_foreach(Engrave_Program *ep,
-                               void (*func)(char *, void *), void *data)
+                               void (*func)(const char *, void *), void *data)
 {
   Evas_List *l;
 
   if (!engrave_program_afters_count(ep)) return;
   for (l = ep->afters; l; l = l->next) {
-    char *after = l->data;
+    const char *after = l->data;
     if (after) func(after, data);
   }
 }

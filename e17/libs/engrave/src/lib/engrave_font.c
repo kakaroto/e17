@@ -41,28 +41,24 @@ engrave_font_free(Engrave_Font *ef)
  * engrave_font_name_get - get the font name
  * @param ef: The Engrave_Font to get the name from
  *
- * @return Returns a pointer to the name of the font
- * on success or NULL on error. This pointer must be freed by the user.
+ * @return Returns the name of the font on success or NULL on failure.
  */
-char *
+const char *
 engrave_font_name_get(Engrave_Font *ef)
 {
-  if (!ef) return NULL;
-  return (ef->name ? strdup(ef->name) : NULL);
+  return (ef ? ef->name : NULL);
 }
 
 /**
  * engrave_font_path_get - get the font path
  * @param ef: The Engrave_Font to get the path from 
  *
- * @return Returns a pointer to the path on success 
- * or NULL on error. This pointer must be freed by the user.
+ * @return Returns the path of the font on success or NULL on failure.
  */
-char *
+const char *
 engrave_font_path_get(Engrave_Font *ef)
 {
-  if (!ef) return NULL;
-  return (ef->path ? strdup(ef->path) : NULL);
+  return (ef ? ef->path : NULL);
 }
 
 

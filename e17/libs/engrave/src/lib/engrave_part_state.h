@@ -174,8 +174,6 @@ void engrave_part_state_free(Engrave_Part_State *eps);
 
 void engrave_part_state_name_set(Engrave_Part_State *eps, const char *name, 
                                                           double value);
-char *engrave_part_state_name_get(Engrave_Part_State *eps, double *value);
-
 void engrave_part_state_visible_set(Engrave_Part_State *eps, int visible);
 void engrave_part_state_align_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_step_set(Engrave_Part_State *eps, int x, int y);
@@ -238,7 +236,7 @@ void engrave_part_state_text_align_set(Engrave_Part_State *eps,
 void engrave_part_state_copy(Engrave_Part_State *from, 
                                           Engrave_Part_State *to);
 
-char *engrave_part_state_name_get(Engrave_Part_State *eps, double *val);
+const char *engrave_part_state_name_get(Engrave_Part_State *eps, double *val);
 int engrave_part_state_visible_get(Engrave_Part_State *eps);
 void engrave_part_state_align_get(Engrave_Part_State *eps,
                                                       double *x, double *y);
@@ -254,15 +252,15 @@ void engrave_part_state_rel1_relative_get(Engrave_Part_State *eps,
                                                       double *x, double *y);
 void engrave_part_state_rel1_offset_get(Engrave_Part_State *eps,
                                                       int *x, int*y);
-char *engrave_part_state_rel1_to_x_get(Engrave_Part_State *eps);
-char *engrave_part_state_rel1_to_y_get(Engrave_Part_State *eps);
+const char *engrave_part_state_rel1_to_x_get(Engrave_Part_State *eps);
+const char *engrave_part_state_rel1_to_y_get(Engrave_Part_State *eps);
 void engrave_part_state_rel2_relative_get(Engrave_Part_State *eps, 
                                                       double *x, double *y);
 void engrave_part_state_rel2_offset_get(Engrave_Part_State *eps,
                                                       int *x, int*y);
-char *engrave_part_state_rel2_to_x_get(Engrave_Part_State *eps);
-char *engrave_part_state_rel2_to_y_get(Engrave_Part_State *eps);
-char *engrave_part_state_color_class_get(Engrave_Part_State *eps);
+const char *engrave_part_state_rel2_to_x_get(Engrave_Part_State *eps);
+const char *engrave_part_state_rel2_to_y_get(Engrave_Part_State *eps);
+const char *engrave_part_state_color_class_get(Engrave_Part_State *eps);
 void engrave_part_state_color_get(Engrave_Part_State *eps, 
                                   int *r, int *g, int *b, int *a);
 void engrave_part_state_color2_get(Engrave_Part_State *eps, 
@@ -272,9 +270,9 @@ void engrave_part_state_color3_get(Engrave_Part_State *eps,
 Engrave_Image *engrave_part_state_image_normal_get(Engrave_Part_State *eps);
 void engrave_part_state_image_border_get(Engrave_Part_State *eps,
                                   int *l, int *r, int *t, int *b);
-char *engrave_part_state_text_text_get(Engrave_Part_State *eps);
-char *engrave_part_state_text_text_class_get(Engrave_Part_State *eps);
-char *engrave_part_state_text_font_get(Engrave_Part_State *eps);
+const char *engrave_part_state_text_text_get(Engrave_Part_State *eps);
+const char *engrave_part_state_text_text_class_get(Engrave_Part_State *eps);
+const char *engrave_part_state_text_font_get(Engrave_Part_State *eps);
 int engrave_part_state_text_size_get(Engrave_Part_State *eps);
 void engrave_part_state_text_fit_get(Engrave_Part_State *eps,
                                             int *x, int *y);

@@ -11,8 +11,8 @@ static void _engrave_output_image(Engrave_Image *image, void *data);
 static void _engrave_output_font(Engrave_Font *font, void *data);
 static void _engrave_output_data(Engrave_Data *data, void *udata);
 static void _engrave_output_group(Engrave_Group *group, void *data);
-static void _engrave_program_output_after(char *after, void *data);
-static void _engrave_program_output_target(char *target, void *data);
+static void _engrave_program_output_after(const char *after, void *data);
+static void _engrave_program_output_target(const char *target, void *data);
 static void _engrave_part_state_output_tween(Engrave_Image *ei, void *data);
 
 static int level = 0;
@@ -201,11 +201,7 @@ _engrave_output_group(Engrave_Group *group, void *data)
   int w, h;
 
   engrave_out_start(out, "group");
-
-  tmp = engrave_group_name_get(group);
-  engrave_out_data(out, "name", "\"%s\"", tmp);
-  IF_FREE(tmp);
-
+  engrave_out_data(out, "name", "\"%s\"", engrave_group_name_get(group));
   engrave_group_min_size_get(group, &w, &h);
   if (w != 0 || h != 0)
     engrave_out_data(out, "min", "%d %d", w, h);
@@ -223,13 +219,11 @@ _engrave_output_group(Engrave_Group *group, void *data)
   }
 
   /* script */
-  tmp = engrave_group_script_get(group);
-  if (tmp) {
+  if (engrave_group_script_get(group)) {
     engrave_out_start(out, "script");
     /* FIXME scripts are wierd... */
-    fprintf(out, "%s", tmp);
+    fprintf(out, "%s", engrave_group_script_get(group));
     engrave_out_end(out);
-    FREE(tmp);
   }
 
   /* parts */
@@ -254,11 +248,7 @@ _engrave_output_part(Engrave_Part *part, void *data)
   int y, step_y, count_y;
 
   engrave_out_start(out, "part");
-
-  tmp = engrave_part_name_get(part);
-  engrave_out_data(out, "name", "\"%s\"", tmp);
-  IF_FREE(tmp);
-
+  engrave_out_data(out, "name", "\"%s\"", engrave_part_name_get(part));
   engrave_out_data(out, "type", "%s", 
         _part_type_string[engrave_part_type_get(part)]);
 
@@ -268,18 +258,15 @@ _engrave_output_part(Engrave_Part *part, void *data)
 
   if (engrave_part_repeat_events_get(part))
     engrave_out_data(out, "repeat_events", "%d",
-                  engrave_part_repeat_events_get(part));
+                    engrave_part_repeat_events_get(part));
 
   if (engrave_part_effect_get(part) != ENGRAVE_TEXT_EFFECT_NONE)
     engrave_out_data(out, "effect", "%s", 
-                  _text_effect_string[engrave_part_effect_get(part)]);
+                    _text_effect_string[engrave_part_effect_get(part)]);
 
-  tmp = engrave_part_clip_to_get(part);
-  if (tmp)
-  {
-    engrave_out_data(out, "clip_to", "\"%s\"", tmp);
-    FREE(tmp);
-  }
+  if (engrave_part_clip_to_get(part))
+    engrave_out_data(out, "clip_to", "\"%s\"", 
+                    engrave_part_clip_to_get(part));
 
   engrave_part_dragable_x_get(part, &x, &step_x, &count_x);
   engrave_part_dragable_y_get(part, &y, &step_y, &count_y);
@@ -289,12 +276,9 @@ _engrave_output_part(Engrave_Part *part, void *data)
     engrave_out_data(out, "x", "%d %d %d", x, step_x, count_x);
     engrave_out_data(out, "y", "%d %d %d", y, step_y, count_y);
 
-    tmp = engrave_part_dragable_confine_get(part);
-    if (tmp)
-    {
-      engrave_out_data(out, "confine", "\"%s\"", tmp);
-      FREE(tmp);
-    }
+    if (engrave_part_dragable_confine_get(part))
+      engrave_out_data(out, "confine", "\"%s\"",
+                    engrave_part_dragable_confine_get(part));
     engrave_out_end(out);
   }
   engrave_part_state_foreach(part, _engrave_output_state, out);
@@ -308,24 +292,18 @@ _engrave_output_program(Engrave_Program *program, void *data)
   char *tmp;
   Engrave_Action action;
   double value, value2;
-  char state[125], state2[125];
+  char state[128], state2[128];
 
   engrave_out_start(out, "program");
-
-  tmp = engrave_program_name_get(program);
-  engrave_out_data(out, "name", "\"%s\"", tmp);
-  IF_FREE(tmp);
-
-  tmp = engrave_program_signal_get(program);
-  engrave_out_data(out, "signal", "\"%s\"", tmp);
-  IF_FREE(tmp);
-
-  tmp = engrave_program_source_get(program);
-  engrave_out_data(out, "source", "\"%s\"", tmp);
-  IF_FREE(tmp);
+  engrave_out_data(out, "name", "\"%s\"", 
+                      engrave_program_name_get(program));
+  engrave_out_data(out, "signal", "\"%s\"",
+                      engrave_program_signal_get(program));
+  engrave_out_data(out, "source", "\"%s\"",
+                      engrave_program_source_get(program));
 
   engrave_program_action_get(program, &action, state, 
-                              state2, &value, &value2);
+                              state2, 128, 128, &value, &value2);
   switch (action) {
     case ENGRAVE_ACTION_STOP:
       engrave_out_data(out, "action", "%s", _action_string[action]);
@@ -359,14 +337,12 @@ _engrave_output_program(Engrave_Program *program, void *data)
 
     case ENGRAVE_ACTION_SCRIPT:
       {
-        char *script = engrave_program_script_get(program);
-        if (script)
+        if (engrave_program_script_get(program))
         {
           engrave_out_start(out, "script");
           /* FIXME scripts are wierd ... */
-          fprintf(out, "%s", script);
+          fprintf(out, "%s", engrave_program_script_get(program));
           engrave_out_end(out);
-          FREE(script);
         }
       }
       break;
@@ -396,7 +372,7 @@ static void
 _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 {
   FILE *out = data;
-  char *tmp, *tmp2;
+  const char *tmp, *tmp2;
   double x, y;
   int w, h, ix, iy;
   int r, g, b, a, l, t;
@@ -407,8 +383,6 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 
   tmp = engrave_part_state_name_get(state, &x);
   engrave_out_data(out, "state", "\"%s\" %.2f", tmp, x);
-  IF_FREE(tmp);
-
   engrave_out_data(out, "visible", "%d",
                           engrave_part_state_visible_get(state));
 
@@ -450,7 +424,7 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
   tmp2 = engrave_part_state_rel1_to_y_get(state);
   if (tmp || tmp2)
   {
-    if (!strcmp(tmp, tmp2))
+    if (!tmp || !tmp2 || !strcmp(tmp, tmp2))
       engrave_out_data(out, "to", "\"%s\"", tmp);
     else
     {
@@ -458,8 +432,6 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
       engrave_out_data(out, "to_y", "\"%s\"", tmp2);
     }
   }
-  IF_FREE(tmp);
-  IF_FREE(tmp2);
 
   engrave_out_end(out);
 
@@ -484,16 +456,12 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
       engrave_out_data(out, "to_y", "\"%s\"", tmp2);
     }
   }
-  IF_FREE(tmp);
-  IF_FREE(tmp2);
 
   engrave_out_end(out);
 
-  tmp = engrave_part_state_color_class_get(state);
-  if (tmp) {
-    engrave_out_data(out, "color_class", "\"%s\"", tmp); 
-    FREE(tmp);
-  }
+  if (engrave_part_state_color_class_get(state)) 
+    engrave_out_data(out, "color_class", "\"%s\"",
+                  engrave_part_state_color_class_get(state)); 
 
   engrave_part_state_color_get(state, &r, &g, &b, &a);
   if (r != 255 || g != 255 || b != 255 || a != 255)
@@ -511,10 +479,7 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
   if ((engrave_part_type_get(part) == ENGRAVE_PART_TYPE_IMAGE) && im)
   {
     engrave_out_start(out, "image");
-
-    tmp = engrave_image_name_get(im);
-    engrave_out_data(out, "normal", "\"%s\"", tmp);
-    IF_FREE(tmp);
+    engrave_out_data(out, "normal", "\"%s\"", engrave_image_name_get(im));
 
     engrave_part_state_tween_foreach(state,
                         _engrave_part_state_output_tween, out);
@@ -528,23 +493,17 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
   {
     engrave_out_start(out, "text");
 
-    tmp = engrave_part_state_text_text_get(state);
-    if (tmp) {
-      engrave_out_data(out, "text", "\"%s\"", tmp);
-      FREE(tmp);
-    }
+    if (engrave_part_state_text_text_get(state)) 
+      engrave_out_data(out, "text", "\"%s\"",
+                engrave_part_state_text_text_get(state));
    
-    tmp = engrave_part_state_text_text_class_get(state);
-    if (tmp) {
-      engrave_out_data(out, "text_class", "\"%s\"", tmp);
-      FREE(tmp);
-    }
+    if (engrave_part_state_text_text_class_get(state))
+      engrave_out_data(out, "text_class", "\"%s\"",
+                engrave_part_state_text_text_class_get(state));
   
-    tmp = engrave_part_state_text_font_get(state);
-    if (tmp) {
-      engrave_out_data(out, "font", "\"%s\"", tmp);
-      FREE(tmp);
-    }
+    if (engrave_part_state_text_font_get(state))
+      engrave_out_data(out, "font", "\"%s\"",
+                engrave_part_state_text_font_get(state));
    
     h = engrave_part_state_text_size_get(state);
     if (h)
@@ -570,7 +529,7 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 static void
 _engrave_output_image(Engrave_Image *image, void *data)
 {
-  char *name;
+  const char *name;
   FILE *out;
 
   out = data;
@@ -583,8 +542,6 @@ _engrave_output_image(Engrave_Image *image, void *data)
   else
     engrave_out_data(out, "image", "\"%s\" %s", name,
               _image_type_string[engrave_image_type_get(image)]);
-
-  IF_FREE(name);
 }
 
 static void
@@ -594,43 +551,36 @@ _engrave_output_font(Engrave_Font *font, void *data)
   FILE *out;
 
   out = data;
-  name = engrave_font_name_get(font);
-  path = engrave_font_path_get(font);
-
-  engrave_out_data(out, "font", "\"%s\" \"%s\"", path, name);
-  IF_FREE(name);
-  IF_FREE(path);
+  engrave_out_data(out, "font", "\"%s\" \"%s\"",
+          engrave_font_path_get(font), engrave_font_name_get(font));
 }
 
 static void
 _engrave_output_data(Engrave_Data *data, void *udata)
 {
-  char *key, *value;
+  const char *key;
   FILE *out;
 
   out = udata;
   key = engrave_data_key_get(data);
-  value = engrave_data_value_get(data);
 
-  if (value)
-    engrave_out_data(out, "item", "\"%s\" \"%s\"", key, value);
+  if (engrave_data_value_get(data))
+    engrave_out_data(out, "item", "\"%s\" \"%s\"", key,
+                            engrave_data_value_get(data));
   else
     engrave_out_data(out, "item", "\"%s\" %d",
                             key, engrave_data_int_value_get(data));
-
-  IF_FREE(key);
-  IF_FREE(value);
 }
 
 static void
-_engrave_program_output_target(char *target, void *data)
+_engrave_program_output_target(const char *target, void *data)
 {
     FILE *out = data;
     engrave_out_data(out, "target", "\"%s\"", target);
 }
 
 static void
-_engrave_program_output_after(char *after, void *data)
+_engrave_program_output_after(const char *after, void *data)
 {
   FILE *out = data;
   engrave_out_data(out, "after", "\"%s\"", after);
@@ -640,10 +590,7 @@ static void
 _engrave_part_state_output_tween(Engrave_Image *ei, void *data)
 {
   FILE *out = data;
-  char *name = engrave_image_name_get(ei);
-
-  engrave_out_data(out, "tween", "\"%s\"", name);
-  IF_FREE(name);
+  engrave_out_data(out, "tween", "\"%s\"", engrave_image_name_get(ei));
 }
 
 
