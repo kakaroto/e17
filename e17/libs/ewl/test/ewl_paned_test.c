@@ -20,7 +20,7 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *paned_win, *box, *pane, *o;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_entry_test_window);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_paned_test_window);
 
 	paned_button = w;
 
