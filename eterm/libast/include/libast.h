@@ -1225,117 +1225,347 @@ extern int re_exec();
  * @ingroup DOXGRP_CONF
  */
 #define CONFIG_BUFF                     20480
-#define CONF_BEGIN_CHAR                 ((char) 1)
+
+/**
+ * Special flag character.
+ *
+ * This is the special character value passed to a config context
+ * parser when the @c begin statement for that context is
+ * encountered.
+ *
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
+#define CONF_BEGIN_CHAR                 '\001'
+/**
+ * Special flag character string.
+ *
+ * This is the string representation of CONF_BEGIN_CHAR.
+ *
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
 #define CONF_BEGIN_STRING               "\001"
-#define CONF_END_CHAR                   ((char) 2)
+/**
+ * Special flag character.
+ *
+ * This is the special character value passed to a config context
+ * parser when the @c end statement for that context is encountered.
+ *
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
+#define CONF_END_CHAR                   '\002'
+/**
+ * Special flag character string.
+ *
+ * This is the string representation of CONF_END_CHAR.
+ *
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
 #define CONF_END_STRING                 "\002"
 
+/**
+ * Compares boolean option value to allowed true values.
+ *
+ * This macro compares the value of a boolean option against the
+ * acceptable boolean "true" values ("1", "on", "yes", and "true").
+ *
+ * @param s String value of a boolean option.
+ * @return Non-zero if a match is found, zero if not.
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
 #define BOOL_OPT_ISTRUE(s)  (!strcasecmp((s), true_vals[0]) || !strcasecmp((s), true_vals[1]) \
                              || !strcasecmp((s), true_vals[2]) || !strcasecmp((s), true_vals[3]))
+/**
+ * Compares boolean option value to allowed false values.
+ *
+ * This macro compares the value of a boolean option against the
+ * acceptable boolean "false" values ("0", "off", "no", and "false").
+ *
+ * @param s String value of a boolean option.
+ * @return Non-zero if a match is found, zero if not.
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
 #define BOOL_OPT_ISFALSE(s) (!strcasecmp((s), false_vals[0]) || !strcasecmp((s), false_vals[1]) \
                              || !strcasecmp((s), false_vals[2]) || !strcasecmp((s), false_vals[3]))
 
-/* The context table */
-#define ctx_name_to_id(the_id, n, i) do { \
-                                       for ((i)=0; (i) <= ctx_idx; (i)++) { \
-                                         if (!strcasecmp((n), context[(i)].name)) { \
-                                           (the_id) = (i); \
-                                           break; \
-                                         } \
-                                       } \
-                                       if ((i) > ctx_idx) { \
-                                         print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", \
-                                                     file_peek_path(), file_peek_line(), (n)); \
-                                         (the_id) = 0; \
-                                       } \
-                                     } while (0)
-#define ctx_id_to_name(id)         (context[(id)].name)
-#define ctx_id_to_func(id)         (context[(id)].handler)
-
-/* The context state stack.  This keeps track of the current context and each previous one. */
-#define ctx_push(ctx)              conf_register_context_state(ctx)
-#define ctx_pop()                  (ctx_state_idx--)
-#define ctx_peek()                 (ctx_state[ctx_state_idx])
-#define ctx_peek_id()              (ctx_state[ctx_state_idx].ctx_id)
-#define ctx_peek_state()           (ctx_state[ctx_state_idx].state)
-#define ctx_peek_last_id()         (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].ctx_id)
-#define ctx_peek_last_state()      (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].state)
-#define ctx_poke_state(q)          ((ctx_state[ctx_state_idx].state) = (q))
-#define ctx_get_depth()            (ctx_state_idx)
-#define ctx_begin(idx)             do { \
-                                     char *name; \
-                                     name = get_word(idx, buff); \
-                                     ctx_name_to_id(id, name, i); \
-                                     ctx_push(id); \
-                                     state = (*ctx_id_to_func(id))(CONF_BEGIN_STRING, ctx_peek_last_state()); \
-                                     ctx_poke_state(state); \
-                                     FREE(name); \
-                                   } while (0)
-#define ctx_end()                  do { \
-                                     if (ctx_get_depth()) { \
-                                       state = (*ctx_id_to_func(id))(CONF_END_STRING, ctx_peek_state()); \
-                                       ctx_poke_state(NULL); \
-                                       ctx_pop(); \
-                                       id = ctx_peek_id(); \
-                                       ctx_poke_state(state); \
-                                       file_poke_skip(0); \
-                                     } \
-                                   } while (0)
-
-/* The file state stack */
+/**
+ * Skip-to-end flag.
+ *
+ * This symbol represents the bit in the FSS flags which specifies
+ * that the parser should skip the rest of the file.
+ *
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define FILE_SKIP_TO_END           (0x01)
+/**
+ * Preprocessing flag.
+ *
+ * This symbol represents the bit in the FSS flags which specifies
+ * that this file should be preprocessed.
+ *
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define FILE_PREPROC               (0x02)
+/**
+ * Push info for a new file onto the state stack.
+ *
+ * This macro adds a new file state structure to the top of the stack
+ * and populates it with the information contained in the macro
+ * parameters.  When a new file is opened for parsing, a call is made
+ * to this macro to "push" the new file onto the top of the stack.
+ *
+ * @param f  The file pointer (FILE *) representing the newly-opened
+ *           file.
+ * @param p  The path to the newly-opened file.
+ * @param o  The output file name (for preprocessing).
+ * @param l  The current line number for the file.
+ * @param fl The flag set for the file.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_push(f, p, o, l, fl)  conf_register_fstate(f, p, o, l, fl)
+/**
+ * Pop a state structure off the stack.
+ *
+ * This macro pops a file state structure off the top of the stack.  A
+ * call to this macro occurs once the parsing of the current file is
+ * completed.
+ *
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_pop()                 (fstate_idx--)
+/**
+ * Return the top file state structure on the stack.
+ *
+ * This macro is used to access the file state structure currently on
+ * top of the stack.
+ *
+ * @return The file state structure atop the stack.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek()                (fstate[fstate_idx])
+/**
+ * Examine the file pointer on top of the stack.
+ *
+ * This macro returns the file pointer (FILE *) corresponding to the
+ * file currently being parsed.
+ *
+ * @return The current file pointer.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek_fp()             (fstate[fstate_idx].fp)
+/**
+ * Examine the path of the current file.
+ *
+ * This macro returns the path for the file currently being parsed.
+ *
+ * @return The path of the current file.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek_path()           (fstate[fstate_idx].path)
+/**
+ * Examine the path of the current pre-processing output file.
+ *
+ * This macro returns the path for the preprocessing output file
+ * currently being parsed.
+ *
+ * @return The path of the current preproc output file.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek_outfile()        (fstate[fstate_idx].outfile)
+/**
+ * Examine the line number of the current file.
+ *
+ * This macro returns the current line number within the current
+ * config file.
+ *
+ * @return The line number of the current file.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek_line()           (fstate[fstate_idx].line)
+/**
+ * Check whether or not we're skipping to the end of the current
+ * file.
+ *
+ * This macro returns zero if the current file is being parsed and
+ * non-zero if the parser is skipping to its end.
+ *
+ * @return The skip-to-end flag for the current file.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek_skip()           (fstate[fstate_idx].flags & FILE_SKIP_TO_END)
+/**
+ * Check whether or not the current file was preprocessed.
+ *
+ * This macro returns zero if the current file was not preprocessed
+ * and non-zero if it was.
+ *
+ * @return The preprocessing flag for the current file.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_peek_preproc()        (fstate[fstate_idx].flags & FILE_PREPROC)
 
+/**
+ * Set the file pointer for the current file.
+ *
+ * @internal
+ * @param f The file pointer (FILE *).
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke_fp(f)            ((fstate[fstate_idx].fp) = (f))
+/**
+ * Set the path for the current file.
+ *
+ * @internal
+ * @param p The path.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke_path(p)          ((fstate[fstate_idx].path) = (p))
+/**
+ * Set the outfile for the current file.
+ *
+ * @internal
+ * @param o The outfile.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke_outfile(o)       ((fstate[fstate_idx].outfile) = (o))
+/**
+ * Set the current line number for the current file.
+ *
+ * @internal
+ * @param l The line number.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke_line(l)          ((fstate[fstate_idx].line) = (l))
+/**
+ * Set the skip-to-end flag for the current file.
+ *
+ * @internal
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_skip_to_end()         ((fstate[fstate_idx].flags) |= (FILE_SKIP_TO_END))
+/**
+ * Set/clear the skip-to-end flag for the current file.
+ *
+ * @internal
+ * @param s 0 to clear, non-zero to set.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke_skip(s)          do {if (s) {fstate[fstate_idx].flags |= FILE_SKIP_TO_END;} else {fstate[fstate_idx].flags &= ~(FILE_SKIP_TO_END);} } while (0)
+/**
+ * Set/clear the preprocessing flag for the current file.
+ *
+ * @internal
+ * @param s 0 to clear, non-zero to set.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke_preproc(s)       do {if (s) {fstate[fstate_idx].flags |= FILE_PREPROC;} else {fstate[fstate_idx].flags &= ~(FILE_PREPROC);} } while (0)
+/**
+ * Set all state info for the current file.
+ *
+ * @internal
+ * @param f  The file pointer (FILE *).
+ * @param p  The file path.
+ * @param o  The outfile.
+ * @param l  The line number.
+ * @param fl The flags.
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_poke(f, p, o, l, fl)  do {file_poke_fp(f); file_poke_path(p); file_poke_outfile(o); file_poke_line(l); fstate[fstate_idx].flags = (fl);} while (0)
 
+/**
+ * Increment the line number for the current file.
+ *
+ * @internal
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 #define file_inc_line()            (fstate[fstate_idx].line++)
 
-/* Contexts */
-typedef void * (*ctx_handler_t)(char *, void *);
-typedef struct context_struct {
-  char *name;
-  ctx_handler_t handler;
-} ctx_t;
-typedef struct ctx_state_struct {
-  unsigned char ctx_id;
-  void *state;
-} ctx_state_t;
-
-/* Parser states */
+/**
+ * File state stack structure.
+ *
+ * This structure comprises the individual stack elements on the file
+ * state stack.  One of these structures is present on the stack for
+ * each file being parsed.
+ *
+ * @see DOXGRP_CONF_FSS
+ * @ingroup DOXGRP_CONF_FSS
+ */
 typedef struct file_state_struct {
-  FILE *fp;
-  char *path, *outfile;
-  unsigned long line;
-  unsigned char flags;
+    /**
+     * File pointer.
+     *
+     * Contains an open file pointer used to read data from the
+     * file.
+     */
+    FILE *fp;
+    /**
+     * File path.
+     *
+     * Contains the path to the file.
+     */
+    char *path;
+    /**
+     * Preprocessing output file.
+     *
+     * Contains the path to the file used for preprocessing
+     * output.
+     */
+    char *outfile;
+    /**
+     * Line number.
+     *
+     * Contains the current line number for the file.
+     */
+    unsigned long line;
+    /**
+     * File state flags.
+     *
+     * Contains the skip-to-end (FILE_SKIP_TO_END) and preprocessing
+     * (FILE_PREPROC) flags for the file.
+     */
+    unsigned char flags;
 } fstate_t;
 
-/* Built-in functions */
-typedef char * (*conf_func_ptr_t) (char *);
-typedef struct conf_func_struct {
-  char *name;
-  conf_func_ptr_t ptr;
-} conf_func_t;
-
-typedef struct conf_var_struct {
-  char *var, *value;
-  struct conf_var_struct *next;
-} conf_var_t;
+/**
+ * Typedef for pointers to context handler functions.
+ *
+ * This function pointer type is used for variables, typecasts,
+ * etc. involving context handler functions.  Context handlers must
+ * accept two parameters, a char * containing either the config file
+ * line or a begin/end magic string, and a void * containing state
+ * information; they must return a void * which will be passed to the
+ * next invocation of the handler as the aforementioned state
+ * information parameter.
+ *
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
+typedef void * (*ctx_handler_t)(char *, void *);
 
 extern fstate_t *fstate;
 extern unsigned char fstate_idx;
@@ -1359,9 +1589,9 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_FLAG_DEPRECATED           (1UL << 9)
 
 /* Flags that control the parser's behavior */
-#define SPIFOPT_SETTING_POSTPARSE          (1UL << 0)
+#define SPIFOPT_SETTING_POSTPARSE         (1UL << 0)
 
-#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d,                                             (f), &(p), m }
+#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d,                                             (f),  (p), m }
 #define SPIFOPT_BOOL(s, l, d, v, m)       { s, l, d,                          (SPIFOPT_FLAG_BOOLEAN), &(v), m }
 #define SPIFOPT_BOOL_PP(s, l, d, v, m)    { s, l, d,  (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m }
 #define SPIFOPT_BOOL_LONG(l, d, v, m)     { 0, l, d,                          (SPIFOPT_FLAG_BOOLEAN), &(v), m }
@@ -1418,24 +1648,155 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_HELPHANDLER               ((spifopt_settings.help_handler) ? (spifopt_settings.help_handler) : (spifopt_usage))
 #define SPIFOPT_HELPHANDLER_SET(f)        (spifopt_settings.help_handler = (f))
 
+/**
+ * Typedef for help handler function.
+ *
+ * This type is used for declaring/typecasting function pointers which
+ * will be used for help handlers.  Functions used for this should be
+ * declared as returning void (and in reality does not return at all)
+ * and should take either no parameters, or a single char * parameter.
+ *
+ * @see DOXGRP_OPT, SPIFOPT_HELPHANDLER_SET()
+ * @ingroup DOXGRP_OPT
+ */
 typedef void (*spifopt_helphandler_t)();
+/**
+ * Typedef for abstract option handler function.
+ *
+ * This type is used for declaring/typecasting function pointers which
+ * will be used for abstract option handlers.  Abstract options are
+ * those which require special handling; LibAST implements this by
+ * allowing for an arbitrary user-specified function be invoked when
+ * such an option is encountered.  Functions used for this should be
+ * declared as returning void and should take a single char *
+ * parameter (the value of the option, or NULL if it had no value).
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
 typedef void (*spifopt_abstract_handler_t)(char *);
 
+/**
+ * Option structure.
+ *
+ * This is the structure that holds the data for each of the command
+ * line options for which the parser will be looking.  Client programs
+ * must create an array of these structures (a spifopt_t []) and use
+ * the SPIFOPT_OPTLIST_SET() macro to tell LibAST which variable it
+ * is.
+ *
+ * @note This structure and its members should NEVER be accessed
+ * directly; they are documented solely for informational purposes.
+ * The SPIFOPT_* convenience macros provide a streamlined, easy-to-use
+ * abstraction layer for declaring the option list, setting option
+ * parser parameters, and so forth.  Even the internal code uses these
+ * macros!  Consult the macro documentation and the example code for
+ * further assistance.
+ *
+ * @see DOXGRP_OPT, @link opt_example.c example code @endlink
+ * @ingroup DOXGRP_OPT
+ */
 typedef struct spifopt_t_struct {
+    /**
+     * Short option.
+     *
+     * The short (one char) form of the option.
+     */
     spif_char_t short_opt;
+    /**
+     * Long option.
+     *
+     * The long (string) form of the option.
+     */
     spif_charptr_t long_opt;
+    /**
+     * Description.
+     *
+     * The (brief) description of the option for the help screen.
+     */
     spif_charptr_t desc;
+    /**
+     * Option type/attribute flags.
+     *
+     * The type and attribute flags for this option.
+     */
     spif_uint32_t flags;
+    /**
+     * Value pointer.
+     *
+     * A pointer to where the value for this option should be stored.
+     * Its exact type, and how it is interpreted, depends on the type
+     * of option being defined.
+     */
     void *value;
+    /**
+     * Boolean bitmask.
+     *
+     * For boolean options, this is the bitmask for the option.  For
+     * other option types, it has no meaning.
+     */
     spif_uint32_t mask;
 } spifopt_t;
 
+/**
+ * Option parser settings structure.
+ *
+ * This is the structure that holds the settings and other internal
+ * variables which control how the options parser functions.
+ *
+ * @note This structure and its members should NEVER be accessed
+ * directly; they are documented solely for informational purposes.
+ * The SPIFOPT_* convenience macros provide a streamlined, easy-to-use
+ * abstraction layer for declaring the option list, setting option
+ * parser parameters, and so forth.  Even the internal code uses these
+ * macros!  Consult the macro documentation and the example code for
+ * further assistance.
+ *
+ * @see DOXGRP_OPT, @link opt_example.c example code @endlink
+ * @ingroup DOXGRP_OPT
+ */
 typedef struct spifopt_settings_t_struct {
+    /**
+     * Options list.
+     *
+     * The array of option structures defining the options to look
+     * for.
+     */
     spifopt_t *opt_list;
+    /**
+     * Option count.
+     *
+     * The total number of options in the options list.
+     */
     spif_uint16_t num_opts;
+    /**
+     * Parser flags.
+     *
+     * Flags which control the behavior of the parser.
+     */
     spif_uint32_t flags;
-    spif_uint8_t bad_opts, allow_bad;
-    spif_uint8_t indent;
+    /**
+     * Bad option count.
+     *
+     * Keeps track of the number of bad options (i.e., option syntax
+     * errors, such as missing values or unknown options)
+     * encountered.
+     */
+    spif_uint8_t bad_opts;
+    /**
+     * Bad option limit.
+     *
+     * The maximum number of bad options allowed before giving up and
+     * displaying the help text.
+     */
+    spif_uint8_t allow_bad;
+    spif_uint8_t indent; /**< Unused. */
+    /**
+     * Help handler.
+     *
+     * Pointer to the function which is responsible for displaying the
+     * help text.  If undefined, spifopt_usage() is used.
+     */
     spifopt_helphandler_t help_handler;
 } spifopt_settings_t;
 

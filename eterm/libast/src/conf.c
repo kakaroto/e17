@@ -977,3 +977,28 @@ parse_null(char *buff, void *state)
  * Example code for using the string routines.
  *
  */
+
+/**
+ * @defgroup DOXGRP_CONF_FSS File State Stack
+ * @ingroup DOXGRP_CONF
+ *
+ * @note An understanding of the inner workings of the file state
+ * stack is not necessary to use the config file parser.  If you
+ * aren't interested in understanding the LibAST internals, you should
+ * skip most of this section and simply study the examples.
+ *
+ * Parsers must keep track of various state-related information when
+ * parsing files, things like file name, line number, etc.  And since
+ * LibAST's config file parser supports the inclusion of sub-files via
+ * its %include directive, it must keep track of multiple instances of
+ * this information, one for each file.  LibAST uses a structure array
+ * called the File State Stack.
+ */
+
+/**
+ * @defgroup DOXGRP_CONF_CTX Context Handling
+ * @ingroup DOXGRP_CONF
+ *
+ *
+ */
+

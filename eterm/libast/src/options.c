@@ -21,6 +21,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file options.c
+ * Command Line Option Parser Source File
+ *
+ * This file contains the functions which comprise the command line
+ * option parser.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ */
+
 static const char cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
@@ -438,3 +448,20 @@ spifopt_parse(int argc, char *argv[])
     }
     SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_POSTPARSE);
 }
+
+/**
+ * @defgroup DOXGRP_OPT Command Line Option Parser
+ *
+ * This group of functions/defines/macros comprises the command line
+ * option parser.
+ *
+ *
+ * A small sample program demonstrating some of these routines can be
+ * found @link opt_example.c here @endlink.
+ */
+
+/**
+ * @example opt_example.c
+ * Example code for using the options parser.
+ *
+ */

@@ -65,16 +65,88 @@ typedef struct memrec_struct {
 
 
 
+/******************************** CONF GOOP ***********************************/
+/* The context table */
+#define ctx_name_to_id(the_id, n, i) do { \
+                                       for ((i)=0; (i) <= ctx_idx; (i)++) { \
+                                         if (!strcasecmp((n), context[(i)].name)) { \
+                                           (the_id) = (i); \
+                                           break; \
+                                         } \
+                                       } \
+                                       if ((i) > ctx_idx) { \
+                                         print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", \
+                                                     file_peek_path(), file_peek_line(), (n)); \
+                                         (the_id) = 0; \
+                                       } \
+                                     } while (0)
+#define ctx_id_to_name(id)         (context[(id)].name)
+#define ctx_id_to_func(id)         (context[(id)].handler)
+
+/* The context state stack.  This keeps track of the current context and each previous one. */
+#define ctx_push(ctx)              conf_register_context_state(ctx)
+#define ctx_pop()                  (ctx_state_idx--)
+#define ctx_peek()                 (ctx_state[ctx_state_idx])
+#define ctx_peek_id()              (ctx_state[ctx_state_idx].ctx_id)
+#define ctx_peek_state()           (ctx_state[ctx_state_idx].state)
+#define ctx_peek_last_id()         (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].ctx_id)
+#define ctx_peek_last_state()      (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].state)
+#define ctx_poke_state(q)          ((ctx_state[ctx_state_idx].state) = (q))
+#define ctx_get_depth()            (ctx_state_idx)
+#define ctx_begin(idx)             do { \
+                                     char *name; \
+                                     name = get_word(idx, buff); \
+                                     ctx_name_to_id(id, name, i); \
+                                     ctx_push(id); \
+                                     state = (*ctx_id_to_func(id))(CONF_BEGIN_STRING, ctx_peek_last_state()); \
+                                     ctx_poke_state(state); \
+                                     FREE(name); \
+                                   } while (0)
+#define ctx_end()                  do { \
+                                     if (ctx_get_depth()) { \
+                                       state = (*ctx_id_to_func(id))(CONF_END_STRING, ctx_peek_state()); \
+                                       ctx_poke_state(NULL); \
+                                       ctx_pop(); \
+                                       id = ctx_peek_id(); \
+                                       ctx_poke_state(state); \
+                                       file_poke_skip(0); \
+                                     } \
+                                   } while (0)
+
+typedef struct context_struct {
+  char *name;
+  ctx_handler_t handler;
+} ctx_t;
+
+typedef struct ctx_state_struct {
+  unsigned char ctx_id;
+  void *state;
+} ctx_state_t;
+
+/* Built-in functions */
+typedef char * (*conf_func_ptr_t) (char *);
+typedef struct conf_func_struct {
+  char *name;
+  conf_func_ptr_t ptr;
+} conf_func_t;
+
+typedef struct conf_var_struct {
+  char *var, *value;
+  struct conf_var_struct *next;
+} conf_var_t;
+
+
+
 /******************************* OPTIONS GOOP **********************************/
 
 #define CHECK_BAD()  do { \
                        SPIFOPT_BADOPTS_SET(SPIFOPT_BADOPTS_GET() + 1); \
-	               if (SPIFOPT_BADOPTS_GET() >= SPIFOPT_ALLOWBAD_GET()) { \
-			 print_error("Error threshold exceeded, giving up.\n"); \
-			 SPIFOPT_HELPHANDLER(); \
-		       } else { \
-			 print_error("Attempting to continue, but strange things may happen.\n"); \
-		       } \
+                       if (SPIFOPT_BADOPTS_GET() >= SPIFOPT_ALLOWBAD_GET()) { \
+                         print_error("Error threshold exceeded, giving up.\n"); \
+                         SPIFOPT_HELPHANDLER(); \
+                       } else { \
+                         print_error("Attempting to continue, but strange things may happen.\n"); \
+                       } \
                      } while(0)
 
 
