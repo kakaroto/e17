@@ -62,7 +62,6 @@ init_parse_options (int argc, char **argv)
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
-  opt.cur_slide = 0;
 
   for (i = 1; i < argc; i++)
     {
@@ -164,7 +163,7 @@ init_parse_options (int argc, char **argv)
 	  add_file_to_filelist_recursively (argv[i], 0);
 	}
     }
-  if (file_num == 0)
+  if (filelist_length(filelist) == 0)
     show_mini_usage ();
 
   check_options ();

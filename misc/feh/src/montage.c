@@ -26,12 +26,16 @@ init_montage_mode (void)
 {
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
-  int i, ww, hh, www, hhh, xxx, yyy;
+  int i = 0, ww, hh, www, hhh, xxx, yyy;
   int w = 800, h = 600;
   int x = 0, y = 0;
   int bg_w = 0, bg_h = 0;
   winwidget winwid;
   Imlib_Image *bg_im = NULL;
+  feh_file file;
+  int file_num = 0;
+
+  file_num = filelist_length (filelist);
 
   D (("In init_montage_mode\n"));
 
@@ -39,7 +43,7 @@ init_montage_mode (void)
   if (opt.bg && opt.bg_file)
     {
       D (("Time to apply a background to blend onto\n"));
-      if (feh_load_image (&bg_im, opt.bg_file) != 0)
+      if (feh_load_image_char (&bg_im, opt.bg_file) != 0)
 	{
 	  imlib_context_set_image (bg_im);
 	  bg_w = imlib_image_get_width ();
@@ -112,10 +116,10 @@ init_montage_mode (void)
 		rec_h += opt.thumb_h;
 	    }
 	  weprintf ("The image size you requested (%d by %d) is"
-		   " NOT big\n      enough to fit the number of thumbnails specified"
-		   " (%d).\nNot all images will be shown (only %d). May I recommend a"
-		   " size of %d by %d?",
-		   w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
+		    " NOT big\n      enough to fit the number of thumbnails specified"
+		    " (%d).\nNot all images will be shown (only %d). May I recommend a"
+		    " size of %d by %d?",
+		    w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
 	}
     }
   else if (opt.limit_h)
@@ -158,7 +162,7 @@ init_montage_mode (void)
   im_main = imlib_create_image (w, h);
 
   if (!im_main)
-      eprintf ("Imlib error creating image");
+    eprintf ("Imlib error creating image");
 
   imlib_context_set_image (im_main);
   imlib_context_set_blend (0);
@@ -166,9 +170,10 @@ init_montage_mode (void)
   if (bg_im)
     imlib_blend_image_onto_image (bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
 
-  for (i = 0; i < file_num; i++)
+  for (file = filelist; file; file = file->next)
     {
-      D (("   About to load image %s\n", files[i]));
+      i++;
+      D (("   About to load image %s\n", file->filename));
       if (opt.verbose)
 	{
 	  if (i)
@@ -184,18 +189,18 @@ init_montage_mode (void)
 	  fprintf (stdout, ".");
 	  fflush (stdout);
 	}
-      if (feh_load_image (&im_temp, files[i]) != 0)
+      if (feh_load_image (&im_temp, file) != 0)
 	{
-	  D (("   Successfully loaded %s\n", files[i]));
+	  D (("   Successfully loaded %s\n", file->filename));
 	  www = opt.thumb_w;
 	  hhh = opt.thumb_h;
 	  imlib_context_set_image (im_temp);
 	  ww = imlib_image_get_width ();
 	  hh = imlib_image_get_height ();
-	  if(imlib_image_has_alpha())
-		imlib_context_set_blend (1);
-	  else 
-		imlib_context_set_blend (0);
+	  if (imlib_image_has_alpha ())
+	    imlib_context_set_blend (1);
+	  else
+	    imlib_context_set_blend (0);
 
 	  if (opt.aspect)
 	    {

@@ -56,9 +56,7 @@ handle_keypress_event (XEvent * ev, Window win)
 	{
 	  if (kev->state & ControlMask)
 	    {
-	      unlink (files[opt.cur_slide]);
-	      files[opt.cur_slide] = NULL;
-	      actual_file_num--;
+              feh_file_rm_and_free(current_file);
 	      slideshow_change_image (winwid, SLIDE_NEXT);
 	    }
 	}

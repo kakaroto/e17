@@ -23,35 +23,34 @@
 void
 init_multiwindow_mode (void)
 {
-  int i;
   winwidget w = NULL;
+  feh_file file;
 
   D (("In init_multiwindow_mode\n"));
 
-  actual_file_num = file_num;
-
-  for (i = 0; i < file_num; i++)
+    for (file = filelist; file; file = file->next)
     {
       char *s = NULL;
       int len = 0;
-      len = strlen (PACKAGE " - ") + strlen (files[i]) + 1;
+      len = strlen (PACKAGE " - ") + strlen (file->filename) + 1;
       s = emalloc (len);
-      snprintf (s, len, PACKAGE " - %s", files[i]);
+      snprintf (s, len, PACKAGE " - %s", file->filename);
 
-      if ((w = winwidget_create_from_file (files[i], s)) != NULL)
+      if ((w = winwidget_create_from_file (file, s)) != NULL)
 	{
 	  if (!opt.progressive)
 	    winwidget_show (w);
-	  if (w->filename)
-	    free (w->filename);
-	  w->filename = estrdup (files[i]);
+	  w->file = file;
 	  if (opt.reload > 0)
 	  {
 	      feh_add_unique_timer (cb_reload_timer, w, opt.reload);
 	  }
 	}
       else
-	actual_file_num--;
+      {
+	  D(("EEEK. Couldn't load image in multiwindow mode. ""
+		      I'm not sure if this is a problem\n"));
+      }
       free (s);
     }
 }

@@ -67,27 +67,40 @@ init_x_and_imlib (void)
 }
 
 int
-feh_load_image (Imlib_Image ** im, char *filename)
+feh_load_image_char (Imlib_Image ** im, char * filename)
+{
+  feh_file file;
+  int i;
+
+  file = filelist_newitem (filename);
+  i = feh_load_image (im, file);
+  feh_file_free (file);
+  return i;
+}
+
+int
+feh_load_image (Imlib_Image ** im, feh_file file)
 {
   Imlib_Load_Error err;
   char *tmpname = NULL;
 
-  D (("In feh_load_image: filename %s\n", filename));
+  D (("In feh_load_image: filename %s\n", file->filename));
 
-  if (!filename)
+  if (!file || !file->filename)
     return 0;
 
   /* Url stuff */
-  if (!strncmp (filename, "http://", 7))
+  if (!strncmp (file->filename, "http://", 7))
     {
-      tmpname = http_load_image (filename);
+      tmpname = http_load_image (file->filename);
       if (tmpname == NULL)
 	return 0;
       *im = imlib_load_image_with_error_return (tmpname, &err);
       if ((opt.slideshow) && (opt.reload == 0))
 	{
 	  /* Http, no reload, slideshow. Let's keep this image on hand... */
-	  replace_file_in_filelist (filename, tmpname);
+	  free (file->filename);
+	  file->filename = estrdup (tmpname);
 	}
       else
 	{
@@ -101,7 +114,7 @@ feh_load_image (Imlib_Image ** im, char *filename)
     }
   else
     {
-      *im = imlib_load_image_with_error_return (filename, &err);
+      *im = imlib_load_image_with_error_return (file->filename, &err);
     }
 
   if ((err) || (!im))
@@ -110,53 +123,56 @@ feh_load_image (Imlib_Image ** im, char *filename)
       switch (err)
 	{
 	case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-	  weprintf ("%s - File does not exist", filename);
+	  weprintf ("%s - File does not exist", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-	  weprintf ("%s - Directory specified for image filename", filename);
+	  weprintf ("%s - Directory specified for image filename",
+		    file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
 	  weprintf
-	    ("%s - You don't have read access to that directory", filename);
+	    ("%s - You don't have read access to that directory",
+	     file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
 	  weprintf
 	    ("%s - You don't have an Imlib2 loader for that file format",
-	     filename);
+	     file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-	  weprintf ("%s - Path specified is too long", filename);
+	  weprintf ("%s - Path specified is too long", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-	  weprintf ("%s - Path component does not exist", filename);
+	  weprintf ("%s - Path component does not exist", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-	  weprintf ("%s - Path component is not a directory", filename);
+	  weprintf ("%s - Path component is not a directory", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
 	  /* wtf? :) */
-	  weprintf ("%s - Path points outside address space", filename);
+	  weprintf ("%s - Path points outside address space", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-	  weprintf ("%s - Too many levels of symbolic links", filename);
+	  weprintf ("%s - Too many levels of symbolic links", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-	  eprintf ("While loading %s - Out of memory", filename);
+	  eprintf ("While loading %s - Out of memory", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
-	  eprintf ("While loading %s - Out of file descriptors", filename);
+	  eprintf ("While loading %s - Out of file descriptors",
+		   file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-	  weprintf ("%s - Cannot write to directory", filename);
+	  weprintf ("%s - Cannot write to directory", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-	  weprintf ("%s - Cannot write - out of disk space", filename);
+	  weprintf ("%s - Cannot write - out of disk space", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_UNKNOWN:
 	default:
 	  weprintf
 	    ("While loading %s - Unknown error. Attempting to continue",
-	     filename);
+	     file->filename);
 	  break;
 	}
       return 0;
@@ -237,20 +253,20 @@ http_load_image (char *url)
   char *tmp;
   char *tmpname;
   char num[10];
-  static long int i=1;
-  
-  snprintf(num, sizeof(num),"%04ld_",i++);
+  static long int i = 1;
+
+  snprintf (num, sizeof (num), "%04ld_", i++);
   /* Massive paranoia ;) */
-  if(i>9999)
-	i=1;
-  
+  if (i > 9998)
+    i = 1;
+
   tmp = tempnam ("/tmp", num);
   if (tmp == NULL)
     eprintf ("Error creating unique filename:");
 
   /* Modify tempname to make it a little more useful... */
   tmpname = strjoin ("", tmp, "_feh_", strrchr (url, '/') + 1, NULL);
-  free(tmp);
+  free (tmp);
 
   if ((pid = fork ()) < 0)
     {

@@ -26,23 +26,21 @@ init_slideshow_mode (void)
   winwidget w = NULL;
   int success = 0;
   char *s = NULL;
+  feh_file file = NULL;
 
   D (("In init_slideshow_mode\n"));
 
-  actual_file_num = file_num;
-
-  for (opt.cur_slide = 0; opt.cur_slide < file_num; opt.cur_slide++)
+  for (file = filelist; file; file = file->next)
     {
-      s = slideshow_create_name (files[opt.cur_slide]);
-      if ((w = winwidget_create_from_file (files[opt.cur_slide], s)) != NULL)
+      current_file = file;
+      s = slideshow_create_name (file->filename);
+      if ((w = winwidget_create_from_file (file, s)) != NULL)
 	{
 	  free (s);
 	  success = 1;
 	  if (!opt.progressive)
 	    winwidget_show (w);
-	  if (w->filename)
-	    free (w->filename);
-	  w->filename = estrdup (files[opt.cur_slide]);
+	  w->file = file;
 	  if (opt.slideshow_delay > 0)
 	    feh_add_timer (cb_slide_timer, w, opt.slideshow_delay,
 			   "SLIDE_CHANGE");
@@ -67,7 +65,7 @@ cb_slide_timer (void *data)
 void
 cb_reload_timer (void *data)
 {
-    winwidget w=(winwidget) data;
+  winwidget w = (winwidget) data;
   D (("In cb_reload_timer\n"));
 
   if (w->im)
@@ -88,7 +86,7 @@ cb_reload_timer (void *data)
       w->w = 0;
       w->h = 0;
     }
-  if ((feh_load_image (&(w->im), w->filename)) != 0)
+  if ((feh_load_image (&(w->im), w->file)) != 0)
     {
       w->zoom_mode = 0;
       w->zoom = 0.0;
@@ -103,20 +101,21 @@ cb_reload_timer (void *data)
   else
     eprintf ("Couldn't reload image. Is it still there?");
 
-  feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+  feh_add_unique_timer (cb_reload_timer, w, opt.reload);
 }
 
 void
 slideshow_change_image (winwidget winwid, int change)
 {
-  int i;
   int success = 0;
+  int file_num = filelist_length (filelist);
+  feh_file file;
 
   D (("In slideshow_change_image\n"));
 
   /* Without this, clicking a one-image slideshow reloads it. Not very
    * intelligent behaviour :-) */
-  if (actual_file_num < 2)
+  if (file_num < 2)
     return;
 
   /* Ok. I do this in such an odd way to ensure that if the last or first
@@ -125,17 +124,17 @@ slideshow_change_image (winwidget winwid, int change)
    * then loop forward to find a loadable one. */
   if (change == SLIDE_FIRST)
     {
-      opt.cur_slide = file_num - 1;
+      current_file = filelist_last (filelist);
       change = SLIDE_NEXT;
     }
   else if (change == SLIDE_LAST)
     {
-      opt.cur_slide = 0;
+      current_file = filelist;
       change = SLIDE_PREV;
     }
 
   /* The for loop prevents us looping infinitely */
-  for (i = 0; i < file_num; i++)
+  for (file = filelist; file; file = file->next)
     {
       if (winwid->im)
 	{
@@ -147,18 +146,18 @@ slideshow_change_image (winwidget winwid, int change)
 	}
       if (change == SLIDE_NEXT)
 	{
-	  opt.cur_slide++;
-	  if (opt.cur_slide >= file_num)
-	    opt.cur_slide = 0;
+	  if (current_file->next)
+	    current_file = current_file->next;
+	  else
+	    current_file = filelist;
 	}
       else if (change == SLIDE_PREV)
 	{
-	  opt.cur_slide--;
-	  if (opt.cur_slide < 0)
-	    opt.cur_slide = file_num - 1;
+	  if (current_file->prev)
+	    current_file = current_file->prev;
+	  else
+	    current_file = filelist_last (current_file);
 	}
-
-      D (("file_num %d, currently %d\n", file_num, opt.cur_slide));
       if (opt.progressive)
 	{
 	  /* Yeah, we have to do this stuff for progressive loading, so
@@ -171,26 +170,22 @@ slideshow_change_image (winwidget winwid, int change)
 	  winwid->w = 0;
 	  winwid->h = 0;
 	}
-      if ((feh_load_image (&(winwid->im), files[opt.cur_slide])) != 0)
+      if (winwid->name)
+	free (winwid->name);
+      winwid->name = slideshow_create_name (current_file->filename);
+      winwidget_update_title (winwid);
+      if ((feh_load_image (&(winwid->im), current_file)) != 0)
 	{
 	  success = 1;
 	  winwid->zoom_mode = 0;
 	  winwid->zoom = 0.0;
-	  if (winwid->filename)
-	    free (winwid->filename);
-	  winwid->filename = estrdup (files[opt.cur_slide]);
+	  winwid->file = current_file;
 	  if (!opt.progressive)
 	    {
 	      imlib_context_set_image (winwid->im);
 	      winwid->im_w = imlib_image_get_width ();
 	      winwid->im_h = imlib_image_get_height ();
 	      winwidget_rerender_image (winwid);
-	    }
-	  if (winwid->name)
-	    {
-	      free (winwid->name);
-	      winwid->name = slideshow_create_name (files[opt.cur_slide]);
-	      winwidget_update_title (winwid);
 	    }
 	  break;
 	}
@@ -213,7 +208,8 @@ slideshow_create_name (char *filename)
   int len = 0;
   len = strlen (PACKAGE " [slideshow mode] - ") + strlen (filename) + 1;
   s = emalloc (len);
-  snprintf (s, len, PACKAGE " [%d of %d] - %s", opt.cur_slide + 1,
-	    file_num, filename);
+  snprintf (s, len, PACKAGE " [%d of %d] - %s",
+	    filelist_num (filelist, current_file) + 1,
+	    filelist_length (filelist), filename);
   return s;
 }

@@ -23,32 +23,15 @@
 static int rm_file_num;
 static char **rm_files;
 
-enum filetype
-{ TYPE_REG, TYPE_URL };
-
-typedef struct __feh_file _feh_file;
-typedef _feh_file *feh_file;
-
-struct __feh_file
-{
-  char *filename;
-  char *name;
-  char *path;
-  int type;
-  feh_file next;
-  feh_file prev;
-};
-
-feh_file filelist_addtofront (feh_file root, feh_file newfile);
-feh_file filelist_newitem (char *filename);
-
 feh_file filelist = NULL;
+feh_file current_file = NULL;
 
-feh_file
-filelist_newitem (char *filename)
+feh_file filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
+
+  D(("In filelist_newitem\n"));
 
   newfile = (feh_file) emalloc (sizeof (_feh_file));
   newfile->filename = estrdup (filename);
@@ -56,74 +39,121 @@ filelist_newitem (char *filename)
   if (s)
     newfile->name = estrdup (s + 1);
   newfile->path = estrdup (filename);
-  s = strrchr(newfile->path, '/');
+  s = strrchr (newfile->path, '/');
   if (s)
-	*s='\0';
+    *s = '\0';
   newfile->next = NULL;
   newfile->prev = NULL;
   return newfile;
 }
 
-feh_file
-filelist_addtofront (feh_file root, feh_file newfile)
+void
+feh_file_free (feh_file file)
 {
+    D(("In feh_file_free\n"));
+  if (!file)
+    return;
+  if (file->filename)
+    free (file->filename);
+  if (file->name)
+    free (file->name);
+  if (file->path)
+    free (file->path);
+  free (file);
+}
+
+void
+feh_file_rm_and_free (feh_file file)
+{
+    D(("In feh_file_rm_and_free\n"));
+    unlink(file->filename);
+    feh_file_free(file);
+}
+
+
+feh_file filelist_addtofront (feh_file root, feh_file newfile)
+{
+    D(("In filelist_addtofront\n"));
   newfile->next = root;
   newfile->prev = NULL;
+  if(root)
+	root->prev=newfile;
   return newfile;
+}
+
+int
+filelist_length (feh_file file)
+{
+  int length;
+D(("In filelist_length\n"));
+  length = 0;
+  while (file)
+    {
+      length++;
+      file = file->next;
+    }
+  D(("   length is %d\n", length));
+  return length;
+}
+
+feh_file
+filelist_last (feh_file file)
+{
+    D(("In filelist_last\n"));
+  if (file)
+    {
+      while (file->next)
+	file = file->next;
+    }
+  return file;
+}
+
+feh_file
+filelist_first (feh_file file)
+{
+    D(("In filelist_first\n"));
+  if (file)
+    {
+      while (file->prev)
+	file = file->prev;
+    }
+  return file;
+}
+
+int filelist_num (feh_file list, feh_file file)
+{
+    int i;
+
+    D(("In filelist_num\n"));
+
+  i = 0;
+  while (list)
+    {
+      if (list == file)
+        return i;
+      i++;
+      list = list->next;
+    }
+  return -1;
+}
+
+void
+filelist_remove_file (feh_file file)
+{
+    D(("In filelist_remove_file\n"));
+  if (file->prev)
+    file->prev->next = file->next;
+  if (file->next)
+    file->next->prev = file->prev;
+  feh_file_free (file);
 }
 
 void
 add_file_to_filelist (char *file)
 {
   D (("In add_file_to_filelist\n"));
-  file_num++;
-  if (files)
-    files = erealloc (files, file_num * sizeof (char *));
-  else
-    files = emalloc (file_num * sizeof (char *));
-  files[file_num - 1] = file;
 
-  
-  /* NEW CODE */
-  
-  /* filelist = filelist_addtofront (filelist, filelist_newitem (file)); */
-  
-  /* NEW CODE */
-}
-
-void
-remove_file_from_filelist (char *file)
-{
-  int i;
-  D (("In remove_file_from_filelist, removing %s\n", file));
-  for (i = 0; i < file_num; i++)
-    {
-      if (!strcmp (file, files[i]))
-	{
-	  D (("   Found it. Nulling out\n"));
-	  files[i] = NULL;
-	  actual_file_num--;
-	  /* Maybe remove the next line to get all instances? */
-	  break;
-	}
-    }
-}
-
-void
-replace_file_in_filelist (char *olds, char *news)
-{
-  int i;
-  D (("In replace_file_in_filelist, replacing %s with %s\n", olds, news));
-  for (i = 0; i < file_num; i++)
-    {
-      if (!strcmp (olds, files[i]))
-	{
-	  /* I can't do this, 'cos I don't copy strings into filelist */
-	  /* free (files[i]); */
-	  files[i] = estrdup (news);
-	  break;
-	}
-    }
+  filelist = filelist_addtofront (filelist, filelist_newitem (file));
 }
 
 /* Recursive */

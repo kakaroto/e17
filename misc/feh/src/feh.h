@@ -85,6 +85,19 @@ struct __fehtimer
   fehtimer next;
 };
 
+typedef struct __feh_file _feh_file;
+typedef _feh_file *feh_file;
+
+struct __feh_file
+{
+  char *filename;
+  char *name;
+  char *path;
+  feh_file next;
+  feh_file prev;
+};
+
+
 enum winwidget_type
 { WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
   WINWIDGET_INDEX_IMAGE
@@ -115,7 +128,7 @@ struct __winwidget
   Imlib_Image *im;
   Pixmap bg_pmap;
   char *name;
-  char *filename;
+  feh_file file;
 
   /* Stuff for zooming */
   int zoom_mode;
@@ -163,7 +176,6 @@ typedef struct cmdlineoptions
   int thumb_h;
   int limit_w;
   int limit_h;
-  int cur_slide;
   int slideshow_delay;
   int reload;
 }
@@ -178,25 +190,23 @@ void init_parse_options (int argc, char **argv);
 void init_montage_mode (void);
 void init_index_mode (void);
 void init_slideshow_mode (void);
-int feh_load_image (Imlib_Image ** im, char *filename);
+int feh_load_image (Imlib_Image ** im, feh_file file);
 void add_file_to_filelist_recursively (char *path, unsigned char enough);
 void add_file_to_filelist (char *file);
-void remove_file_from_filelist (char *file);
-void replace_file_in_filelist(char *olds,char *news);
 void show_mini_usage (void);
 void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);
 char *chop_file_from_full_path (char *str);
 void handle_keypress_event (XEvent * ev, Window win);
 
-int winwidget_loadimage (winwidget winwid, char *filename);
+int winwidget_loadimage (winwidget winwid, feh_file filename);
 void winwidget_show (winwidget winwid);
 void winwidget_hide (winwidget winwid);
 void winwidget_destroy_all (void);
 void winwidget_render_image (winwidget winwid);
 void winwidget_update_title (winwidget ret);
 winwidget winwidget_get_from_window (Window win);
-winwidget winwidget_create_from_file (char *filename, char *name);
+winwidget winwidget_create_from_file (feh_file filename, char *name);
 winwidget winwidget_create_from_image (Imlib_Image * im, char *name);
 void winwidget_destroy (winwidget winwid);
 void progress (Imlib_Image im, char percent, int update_x, int update_y,
@@ -215,6 +225,19 @@ void cb_reload_timer(void *data);
 char *http_load_image (char *url);
 void add_file_to_rm_filelist (char *file);
 void delete_rm_files(void);
+int feh_load_image_char (Imlib_Image ** im, char * filename);
+
+
+feh_file filelist_addtofront (feh_file root, feh_file newfile);
+feh_file filelist_newitem (char *filename);
+void filelist_remove_file (feh_file file);
+void feh_file_free (feh_file file);
+int filelist_length (feh_file file);
+feh_file filelist_last (feh_file file);
+feh_file filelist_first (feh_file file);
+void feh_file_rm_and_free (feh_file file);
+int filelist_num (feh_file list, feh_file file);
+
 
 
 /* Imlib stuff */
@@ -229,8 +252,6 @@ extern winwidget *windows;	/* List of windows to loop though */
 extern int cmdargc;
 extern char **cmdargv;
 extern fehoptions opt;
-extern int file_num;
-extern char **files;
 extern winwidget progwin;
 extern int actual_file_num;
 extern Imlib_Image *checks;
@@ -238,3 +259,5 @@ extern int rectangles_on;
 extern Window root;
 extern XContext xid_context;
 extern fehtimer first_timer;
+extern feh_file filelist;
+extern feh_file current_file;

@@ -1,3 +1,12 @@
+Thu Feb 17 21:35:15 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Thank goodness for that :) I totally reworked the file handling
+	code, and things are cleaner internally now. The change shouldn't
+	show to a user, but for me, things are better.
+	* I broke stuff badly with this change, and only now have I got
+	everything back on track. There may be issues still, but it seems
+	good now, and I'll keep playing with it...
+
 Wed Feb  9 21:59:09 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Removed all the image modification code from feh, seeing as

@@ -37,7 +37,7 @@ winwidget_allocate (void)
   ret->bg_pmap = 0;
   ret->im = NULL;
   ret->name = NULL;
-  ret->filename = NULL;
+  ret->file = NULL;
 
   /* Zoom stuff */
   ret->zoom_mode = 0;
@@ -78,20 +78,20 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
 }
 
 winwidget
-winwidget_create_from_file (char *filename, char *name)
+winwidget_create_from_file (feh_file file, char *name)
 {
   winwidget ret = NULL;
 
   D (("In winwidget_create_from_file\n"));
 
-  if (filename == NULL)
+  if (!file || !file->filename)
     return NULL;
 
   ret = winwidget_allocate ();
   if (name)
     ret->name = estrdup (name);
   else
-    ret->name = estrdup (filename);
+    ret->name = estrdup (file->filename);
 
   if (opt.progressive)
     {
@@ -101,7 +101,7 @@ winwidget_create_from_file (char *filename, char *name)
       imlib_context_set_progress_granularity (10);
     }
 
-  if (winwidget_loadimage (ret, filename) == 0)
+  if (winwidget_loadimage (ret, file) == 0)
     {
       if (opt.progressive)
 	winwidget_destroy (ret);
@@ -280,10 +280,10 @@ winwidget_destroy_all (void)
 }
 
 int
-winwidget_loadimage (winwidget winwid, char *filename)
+winwidget_loadimage (winwidget winwid, feh_file file)
 {
-  D (("In winwidget_loadimage: filename %s\n", filename));
-  return feh_load_image (&(winwid->im), filename);
+  D (("In winwidget_loadimage: filename %s\n", file->filename));
+  return feh_load_image (&(winwid->im), file);
 }
 
 void

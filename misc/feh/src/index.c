@@ -30,7 +30,7 @@ init_index_mode (void)
 {
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
-  int w = 800, h = 600, i, ww = 0, hh = 0, www, hhh, xxx, yyy;
+  int w = 800, h = 600, i = 0, ww = 0, hh = 0, www, hhh, xxx, yyy;
   int x = 0, y = 0;
   int bg_w = 0, bg_h = 0;
   winwidget winwid;
@@ -46,6 +46,10 @@ init_index_mode (void)
   int vertical = 0;
   int max_column_w = 0;
   int thumbnailcount = 0;
+  feh_file file = NULL;
+  int file_num = 0;
+
+  file_num = filelist_length (filelist);
 
   D (("In init_index_mode\n"));
 
@@ -91,7 +95,7 @@ init_index_mode (void)
   if (opt.bg && opt.bg_file)
     {
       D (("Time to apply a background to blend onto\n"));
-      if (feh_load_image (&bg_im, opt.bg_file) != 0)
+      if (feh_load_image_char (&bg_im, opt.bg_file) != 0)
 	{
 	  imlib_context_set_image (bg_im);
 	  bg_w = imlib_image_get_width ();
@@ -143,17 +147,18 @@ init_index_mode (void)
        * loop, and recommend the final value instead. Carry on and make
        * the index anyway. */
 
-      for (i = 0; i < file_num; i++)
+      for (file = filelist; file; file = file->next)
 	{
 	  text_area_w = opt.thumb_w;
-	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  imlib_get_text_size (file->name, &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 	  imlib_get_text_size (create_index_dimension_string
 			       (1000, 1000), &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
+			       &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 
@@ -185,18 +190,19 @@ init_index_mode (void)
       vertical = 1;
       h = opt.limit_h;
       /* calc w */
-      for (i = 0; i < file_num; i++)
+      for (file = filelist; file; file = file->next)
 	{
 	  text_area_w = opt.thumb_w;
 	  /* Calc width of text */
-	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  imlib_get_text_size (file->name, &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 	  imlib_get_text_size (create_index_dimension_string
 			       (1000, 1000), &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
+			       &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 
@@ -223,17 +229,18 @@ init_index_mode (void)
       w = opt.limit_w;
       /* calc h */
 
-      for (i = 0; i < file_num; i++)
+      for (file = filelist; file; file = file->next)
 	{
 	  text_area_w = opt.thumb_w;
-	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  imlib_get_text_size (file->name, &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 	  imlib_get_text_size (create_index_dimension_string
 			       (1000, 1000), &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
+			       &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 
@@ -264,10 +271,11 @@ init_index_mode (void)
   if (bg_im)
     imlib_blend_image_onto_image (bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h);
 
-  for (i = 0; i < file_num; i++)
+  for (file = filelist; file; file = file->next)
     {
-      D (("   About to load image %s\n", files[i]));
-      if (feh_load_image (&im_temp, files[i]) != 0)
+      i++;
+      D (("   About to load image %s\n", file->filename));
+      if (feh_load_image (&im_temp, file) != 0)
 	{
 	  if (opt.verbose)
 	    {
@@ -284,7 +292,7 @@ init_index_mode (void)
 	      fprintf (stdout, ".");
 	      fflush (stdout);
 	    }
-	  D (("   Successfully loaded %s\n", files[i]));
+	  D (("   Successfully loaded %s\n", file->filename));
 	  www = opt.thumb_w;
 	  hhh = opt.thumb_h;
 	  imlib_context_set_image (im_temp);
@@ -324,14 +332,15 @@ init_index_mode (void)
 	    }
 	  text_area_w = opt.thumb_w;
 	  /* Now draw on the info text */
-	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  imlib_get_text_size (file->name, &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 	  imlib_get_text_size (create_index_dimension_string
 			       (ww, hh), &fw, &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
+			       &fh);
 	  if (fw > text_area_w)
 	    text_area_w = fw;
 
@@ -383,15 +392,14 @@ init_index_mode (void)
 	  imlib_free_image_and_decache ();
 	  imlib_context_set_image (im_main);
 
-	  imlib_text_draw (x, y + opt.thumb_h + 2,
-			   chop_file_from_full_path (files[i]));
+	  imlib_text_draw (x, y + opt.thumb_h + 2, file->name);
 	  imlib_text_draw (x,
 			   y + opt.thumb_h + (th + 2) +
 			   2, create_index_dimension_string (ww, hh));
 	  imlib_text_draw (x,
 			   y + opt.thumb_h + 2 * (th +
 						  2) +
-			   2, create_index_size_string (files[i]));
+			   2, create_index_size_string (file->filename));
 
 	  if (vertical)
 	    y += tot_thumb_h;
