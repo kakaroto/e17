@@ -180,7 +180,7 @@ od_tray_init()
                                       48);
   ecore_x_window_container_manage(tray_container);
 #if 1 /* Nono */
-  ecore_x_window_background_color_set(tray_container, 0xcccccc);
+  ecore_x_window_background_color_set(tray_container, 0xcccc, 0xcccc, 0xcccc);
 #elif 0 /* ParentRelative */
   XSetWindowBackgroundPixmap(display, tray_container, ParentRelative);
 #else /* XAlloc...Color */
