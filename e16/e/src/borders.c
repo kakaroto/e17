@@ -1028,7 +1028,9 @@ BorderWinpartEventEnter(EWinBit * wbit, XEvent * ev)
 #endif
    if (wbit->state == STATE_CLICKED)
       wbit->left = 0;
+#if 0				/* Hmmm.. */
    else
+#endif
      {
 	wbit->state = STATE_HILITED;
 	BorderWinpartChange(ewin, part, 0);
