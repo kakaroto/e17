@@ -22,10 +22,6 @@
 #endif
 #include <X11/keysymdef.h>
 
-static void         WarpFocusFinish(void);
-static void         WarpFocusShowTitle(EWin * ewin);
-static void         WarpFocusHideTitle(void);
-
 static int          xkbEventNumber = -1;
 static int          warpFocusAltPressed = 0;
 static int          warpFocusIndex = 0;
@@ -156,7 +152,7 @@ WarpFocus(int delta)
    EDBUG_RETURN_;
 }
 
-static void
+void
 WarpFocusFinish(void)
 {
    EWin              **lst, *ewin;
@@ -188,7 +184,7 @@ WarpFocusFinish(void)
    EDBUG_RETURN_;
 }
 
-static void
+void
 WarpFocusShowTitle(EWin * ewin)
 {
    TextClass          *tc;
@@ -285,7 +281,7 @@ WarpFocusShowTitle(EWin * ewin)
    warpFocusTitleShowing = 1;
 }
 
-static void
+void
 WarpFocusHideTitle(void)
 {
    int                 i;

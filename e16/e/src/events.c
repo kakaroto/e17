@@ -664,7 +664,10 @@ HFocusOut(XEvent * ev)
 
 	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
 	if (rt != root.win)
-	   HandleFocusWindowIn(0);
+	  {
+/*           fprintf(stderr, "HandleFocusWindowIn\n"); */
+	     HandleFocusWindowIn(0);
+	  }
      }
    EDBUG_RETURN_;
 }
