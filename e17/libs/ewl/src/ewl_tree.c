@@ -646,6 +646,7 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	}
 
 	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_widget_configure(EWL_WIDGET(c)->parent);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
