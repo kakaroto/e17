@@ -51,7 +51,8 @@ ee2_init(int argc, char **argv)
   /* The drawing area itself */
   area = gtk_drawing_area_new();
   gtk_container_add(GTK_CONTAINER(EventBox), area);
-  gtk_signal_connect_after(GTK_OBJECT(area), "configure_event", GTK_SIGNAL_FUNC(a_config), NULL);
+  gtk_signal_connect_after(GTK_OBJECT(area), "configure_event",
+													 GTK_SIGNAL_FUNC(a_config), NULL);
   gtk_widget_show(area);
 
   FileSel = gtk_file_selection_new("Open Image...");

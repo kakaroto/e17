@@ -73,6 +73,7 @@ void LoadImage(char *imagetoload);
 void DrawChecks(void);
 void Checks(int image_h, int image_w);
 void DrawImage(Imlib_Image * im, int w, int h);
+void prev_draw(Imlib_Image *im, int w, int h);
 void CloseWindow(GtkWidget * widget, gpointer data);
 void CloseFileSel(GtkWidget * widget, gpointer data);
 void FileOpen(GtkWidget * widget, GtkFileSelection * fs);

@@ -11,6 +11,13 @@ static GtkWidget *BrWin, *BrClist, *area2, *infol;
 static void browser_cb(gpointer);
 static gchar *cimg = NULL;
 
+Display *disp_t = NULL;
+Visual *vis_t = NULL;
+Window root_t, win_t;
+Colormap cm_t;
+Pixmap pm_t;
+int d;
+
 void
 browser_init(void)
 {
@@ -141,36 +148,84 @@ browser_sel(GtkWidget *clist, gint row, gint column,
   gchar lblt[255];
   char alp[255];
   int w, h;
-  
+	
   if (cimg) g_free(cimg);
   cimg = NULL;
   gtk_clist_get_text(GTK_CLIST(clist), row, 0, &cimg);
   
   if(cimg){
-         cimg = g_strdup(cimg);
-	 GetFileStats(cimg);
-	 LoadImage(cimg);
-	 DrawImage(im, 0, 0);
+		cimg = g_strdup(cimg);
+		GetFileStats(cimg);
+		LoadImage(cimg);
+		DrawImage(im, 0, 0);
+		prev_draw(im, area2->allocation.width, area2->allocation.height);
+		imlib_context_set_image(im);
+	}
+	if(im){
+		if(imlib_image_has_alpha())
+			sprintf(alp, "YES");
+		else
+			sprintf(alp, "NO");
+		sprintf(lblt, "Resolution: %dx%d\n"
+						"File Size: %d bytes\n"
+						"Last Mod: %s"
+						"Has Alpha: %s",
+						imlib_image_get_width(),
+						imlib_image_get_height(),
+						EFile.Size,
+						(ctime(&EFile.ModTime)),
+						alp);
+		gtk_label_set_text(GTK_LABEL(infol), lblt);
+		prev_draw(im, area2->allocation.width, area2->allocation.height);
   }
-  
-  if(im){
-	 /* FIXME: display kb instead of bytes */
-	 imlib_context_set_image(im);
+}
 
-	 if(imlib_image_has_alpha())
-		sprintf(alp, "YES");
-	 else
-		sprintf(alp, "NO");
-	 
-	 sprintf(lblt, "Resolution: %dx%d\n"
-				"File Size: %d bytes\n"
-				"Last Mod: %s"
-				"Has Alpha: %s",
-				imlib_image_get_width(),
-				imlib_image_get_height(),
-				EFile.Size,
-				ctime(&EFile.ModTime),
-				alp);
-	 gtk_label_set_text(GTK_LABEL(infol), lblt);
-  }
+void
+prev_draw(Imlib_Image *im, int w, int h)
+{
+	Pixmap pm_t, mask, thumb;
+	int ww, hh;
+	
+	if(!disp_t){
+		gtk_widget_realize(area2);
+		disp_t = GDK_WINDOW_XDISPLAY(area2->window);
+		win_t = GDK_WINDOW_XWINDOW(area2->window);
+		vis_t = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area2));
+		cm_t = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(area2));
+		root_t = GDK_WINDOW_XWINDOW(area2->window);
+		d = imlib_get_visual_depth(disp_t, vis_t);
+	}
+	imlib_context_set_display(disp_t);
+	imlib_context_set_visual(vis_t);
+	imlib_context_set_colormap(cm_t);
+	
+	if(!im)
+		return;
+	
+	gtk_widget_set_usize(area2, 125, 125);
+	
+	imlib_context_set_image(im);
+	ww = imlib_image_get_width();
+	hh = imlib_image_get_height();
+	
+	pm_t = XCreatePixmap(disp_t, win_t, w, h, d);
+	imlib_context_set_drawable(pm_t);
+
+	bg = NULL;
+	DrawChecks();
+	if(bimg){
+		imlib_context_set_image(bimg);
+		imlib_free_image();
+	}
+	bimg = imlib_create_image(ww, hh);
+	imlib_context_set_image(bimg);
+	Checks(ww, hh);
+	
+	imlib_blend_image_onto_image(im, 1, 0, 0, ww, hh, 0, 0, ww, hh);
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	
+	XSetWindowBackgroundPixmap(disp_t, win_t, pm_t);
+	XClearWindow(disp_t, win_t);
+	XFreePixmap(disp_t, pm_t);
+	imlib_context_set_drawable(None);
 }

@@ -283,3 +283,12 @@ done today... later for now...
 
 -------------------------------------------------------------------------------
 
+Fri Mar 10 00:18:34 CST 2000
+(dphase)
+
+wheeeeeeeeee! we have the thumbnail window in the image browser working now!
+scales the thumbnail to whatever size the area2 widget is, usually going to
+be around 150 pixels or so.... pretty cool.
+
+-------------------------------------------------------------------------------
+
