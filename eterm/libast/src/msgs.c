@@ -34,68 +34,67 @@ char *libast_program_name = PACKAGE, *libast_program_version = VERSION;
 void
 libast_set_program_name(const char *progname)
 {
-  if (libast_program_name && strcmp(libast_program_name, PACKAGE)) {
-    FREE(libast_program_name);
-  }
-  libast_program_name = STRDUP(progname);
+    if (libast_program_name && strcmp(libast_program_name, PACKAGE)) {
+        FREE(libast_program_name);
+    }
+    libast_program_name = STRDUP(progname);
 }
 
 void
 libast_set_program_version(const char *progversion)
 {
-  if (libast_program_version && strcmp(libast_program_version, VERSION)) {
-    FREE(libast_program_version);
-  }
-  libast_program_version = STRDUP(progversion);
+    if (libast_program_version && strcmp(libast_program_version, VERSION)) {
+        FREE(libast_program_version);
+    }
+    libast_program_version = STRDUP(progversion);
 }
 
 int
 libast_dprintf(const char *format, ...)
 {
-  va_list args;
-  int n;
+    va_list args;
+    int n;
 
-  va_start(args, format);
-  n = vfprintf(LIBAST_DEBUG_FD, format, args);
-  va_end(args);
-  fflush(LIBAST_DEBUG_FD);
-  return (n);
+    va_start(args, format);
+    n = vfprintf(LIBAST_DEBUG_FD, format, args);
+    va_end(args);
+    fflush(LIBAST_DEBUG_FD);
+    return (n);
 }
 
 /* Print a non-terminal error message */
 void
 print_error(const char *fmt, ...)
 {
-  va_list arg_ptr;
+    va_list arg_ptr;
 
-  va_start(arg_ptr, fmt);
-  fprintf(stderr, "%s:  Error:  ", libast_program_name);
-  vfprintf(stderr, fmt, arg_ptr);
-  va_end(arg_ptr);
+    va_start(arg_ptr, fmt);
+    fprintf(stderr, "%s:  Error:  ", libast_program_name);
+    vfprintf(stderr, fmt, arg_ptr);
+    va_end(arg_ptr);
 }
 
 /* Print a simple warning */
 void
 print_warning(const char *fmt, ...)
 {
-  va_list arg_ptr;
+    va_list arg_ptr;
 
-  va_start(arg_ptr, fmt);
-  fprintf(stderr, "%s:  Warning:  ", libast_program_name);
-  vfprintf(stderr, fmt, arg_ptr);
-  va_end(arg_ptr);
+    va_start(arg_ptr, fmt);
+    fprintf(stderr, "%s:  Warning:  ", libast_program_name);
+    vfprintf(stderr, fmt, arg_ptr);
+    va_end(arg_ptr);
 }
 
 /* Print a fatal error message and terminate */
 void
 fatal_error(const char *fmt, ...)
 {
-  va_list arg_ptr;
+    va_list arg_ptr;
 
-  va_start(arg_ptr, fmt);
-  fprintf(stderr, "%s:  FATAL:  ", libast_program_name);
-  vfprintf(stderr, fmt, arg_ptr);
-  va_end(arg_ptr);
-  exit(-1);
+    va_start(arg_ptr, fmt);
+    fprintf(stderr, "%s:  FATAL:  ", libast_program_name);
+    vfprintf(stderr, fmt, arg_ptr);
+    va_end(arg_ptr);
+    exit(-1);
 }
-

@@ -30,16 +30,12 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 spif_const_class_t SPIF_CLASS_VAR(obj) = {
-  SPIF_DECL_CLASSNAME(obj),
-  (spif_newfunc_t) spif_obj_new,
-  (spif_memberfunc_t) spif_obj_init,
-  (spif_memberfunc_t) spif_obj_done,
-  (spif_memberfunc_t) spif_obj_del,
-  (spif_func_t) spif_obj_show,
-  (spif_func_t) spif_obj_comp,
-  (spif_func_t) spif_obj_dup,
-  (spif_func_t) spif_obj_type
-};
+SPIF_DECL_CLASSNAME(obj),
+        (spif_newfunc_t) spif_obj_new,
+        (spif_memberfunc_t) spif_obj_init,
+        (spif_memberfunc_t) spif_obj_done,
+        (spif_memberfunc_t) spif_obj_del,
+        (spif_func_t) spif_obj_show, (spif_func_t) spif_obj_comp, (spif_func_t) spif_obj_dup, (spif_func_t) spif_obj_type};
 
 
 spif_nullobj_t
@@ -131,21 +127,21 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name)
 spif_cmp_t
 spif_obj_comp(spif_obj_t self, spif_obj_t other)
 {
-  return (self == other);
+    return (self == other);
 }
 
 spif_obj_t
 spif_obj_dup(spif_obj_t self)
 {
-  spif_obj_t tmp;
+    spif_obj_t tmp;
 
-  tmp = spif_obj_new();
-  memcpy(tmp, self, SPIF_SIZEOF_TYPE(obj));
-  return tmp;
+    tmp = spif_obj_new();
+    memcpy(tmp, self, SPIF_SIZEOF_TYPE(obj));
+    return tmp;
 }
 
 spif_classname_t
 spif_obj_type(spif_obj_t self)
 {
-  return (SPIF_CAST(classname) (self));
+    return (SPIF_CAST(classname) (self));
 }

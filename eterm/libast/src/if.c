@@ -28,4 +28,3 @@ static const char cvs_ident[] = "$Id$";
 #endif
 
 #include <libast_internal.h>
-

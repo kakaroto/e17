@@ -173,7 +173,7 @@ regexp_match(register const char *str, register const char *pattern)
 }
 
 unsigned char
-regexp_match_r(register const char *str, register const char *pattern, register regex_t ** rexp)
+regexp_match_r(register const char *str, register const char *pattern, register regex_t **rexp)
 {
     register int result;
     char errbuf[256];

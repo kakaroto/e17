@@ -30,16 +30,12 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 spif_const_class_t SPIF_CLASS_VAR(tok) = {
-  SPIF_DECL_CLASSNAME(tok),
-  (spif_newfunc_t) spif_tok_new,
-  (spif_memberfunc_t) spif_tok_init,
-  (spif_memberfunc_t) spif_tok_done,
-  (spif_memberfunc_t) spif_tok_del,
-  (spif_func_t) spif_tok_show,
-  (spif_func_t) spif_tok_comp,
-  (spif_func_t) spif_tok_dup,
-  (spif_func_t) spif_tok_type
-};
+SPIF_DECL_CLASSNAME(tok),
+        (spif_newfunc_t) spif_tok_new,
+        (spif_memberfunc_t) spif_tok_init,
+        (spif_memberfunc_t) spif_tok_done,
+        (spif_memberfunc_t) spif_tok_del,
+        (spif_func_t) spif_tok_show, (spif_func_t) spif_tok_comp, (spif_func_t) spif_tok_dup, (spif_func_t) spif_tok_type};
 
 
 spif_tok_t
@@ -94,7 +90,7 @@ spif_bool_t
 spif_tok_init(spif_tok_t self)
 {
     spif_str_init(SPIF_STR(self));
-    spif_obj_set_class(SPIF_OBJ(self), & SPIF_CLASS_VAR(tok));
+    spif_obj_set_class(SPIF_OBJ(self), &SPIF_CLASS_VAR(tok));
     self->count = 0;
     self->token = ((spif_str_t *) (NULL));
     self->sep = SPIF_NULL_TYPE(str);
@@ -105,7 +101,7 @@ spif_bool_t
 spif_tok_init_from_ptr(spif_tok_t self, spif_charptr_t old)
 {
     spif_str_init_from_ptr(SPIF_STR(self), old);
-    spif_obj_set_class(SPIF_OBJ(self), & SPIF_CLASS_VAR(tok));
+    spif_obj_set_class(SPIF_OBJ(self), &SPIF_CLASS_VAR(tok));
     self->count = 0;
     self->token = ((spif_str_t *) (NULL));
     self->sep = SPIF_NULL_TYPE(str);
@@ -116,7 +112,7 @@ spif_bool_t
 spif_tok_init_from_fp(spif_tok_t self, FILE * fp)
 {
     spif_str_init_from_fp(SPIF_STR(self), fp);
-    spif_obj_set_class(SPIF_OBJ(self), & SPIF_CLASS_VAR(tok));
+    spif_obj_set_class(SPIF_OBJ(self), &SPIF_CLASS_VAR(tok));
     self->count = 0;
     self->token = ((spif_str_t *) (NULL));
     self->sep = SPIF_NULL_TYPE(str);
@@ -127,7 +123,7 @@ spif_bool_t
 spif_tok_init_from_fd(spif_tok_t self, int fd)
 {
     spif_str_init_from_fd(SPIF_STR(self), fd);
-    spif_obj_set_class(SPIF_OBJ(self), & SPIF_CLASS_VAR(tok));
+    spif_obj_set_class(SPIF_OBJ(self), &SPIF_CLASS_VAR(tok));
     self->count = 0;
     self->token = ((spif_str_t *) (NULL));
     self->sep = SPIF_NULL_TYPE(str);
@@ -257,31 +253,31 @@ spif_tok_show(spif_tok_t self, spif_charptr_t name)
 spif_cmp_t
 spif_tok_comp(spif_tok_t self, spif_tok_t other)
 {
-  return spif_obj_comp(SPIF_OBJ(self), SPIF_OBJ(other));
+    return spif_obj_comp(SPIF_OBJ(self), SPIF_OBJ(other));
 }
 
 spif_tok_t
 spif_tok_dup(spif_tok_t self)
 {
-  spif_tok_t tmp;
-  spif_str_t tmp_str;
-  size_t i;
+    spif_tok_t tmp;
+    spif_str_t tmp_str;
+    size_t i;
 
-  tmp = spif_tok_new();
-  tmp_str = spif_str_dup(SPIF_STR(self));
-  memcpy(tmp, tmp_str, SPIF_SIZEOF_TYPE(str));
-  tmp->count = self->count;
-  tmp->sep = spif_str_dup(SPIF_STR(self->sep));
+    tmp = spif_tok_new();
+    tmp_str = spif_str_dup(SPIF_STR(self));
+    memcpy(tmp, tmp_str, SPIF_SIZEOF_TYPE(str));
+    tmp->count = self->count;
+    tmp->sep = spif_str_dup(SPIF_STR(self->sep));
 
-  tmp->token = (spif_str_t *) MALLOC(SPIF_SIZEOF_TYPE(str) * tmp->count);
-  for (i = 0; i < tmp->count; i++) {
-    tmp->token[i] = spif_str_dup(SPIF_STR(self->token[i]));
-  }
-  return tmp;
+    tmp->token = (spif_str_t *) MALLOC(SPIF_SIZEOF_TYPE(str) * tmp->count);
+    for (i = 0; i < tmp->count; i++) {
+        tmp->token[i] = spif_str_dup(SPIF_STR(self->token[i]));
+    }
+    return tmp;
 }
 
 spif_classname_t
 spif_tok_type(spif_tok_t self)
 {
-  return (SPIF_CAST(classname) (self));
+    return (SPIF_CAST(classname) (self));
 }

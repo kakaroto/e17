@@ -33,4 +33,3 @@ static const char cvs_ident[] = "$Id$";
    options parser can handle function pointers. */
 unsigned int libast_debug_level = 0;
 unsigned long libast_debug_flags = 0;
-

@@ -61,7 +61,7 @@ memrec_init(void)
 }
 
 static void
-memrec_add_var(memrec_t * memrec, const char *filename, unsigned long line, void *ptr, size_t size)
+memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void *ptr, size_t size)
 {
     register ptr_t *p;
 
@@ -80,8 +80,7 @@ memrec_add_var(memrec_t * memrec, const char *filename, unsigned long line, void
     p->line = line;
 }
 
-static ptr_t *
-memrec_find_var(memrec_t * memrec, const void *ptr)
+static ptr_t *memrec_find_var(memrec_t *memrec, const void *ptr)
 {
     register ptr_t *p;
     register unsigned long i;
@@ -99,7 +98,7 @@ memrec_find_var(memrec_t * memrec, const void *ptr)
 }
 
 static void
-memrec_rem_var(memrec_t * memrec, const char *var, const char *filename, unsigned long line, const void *ptr)
+memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned long line, const void *ptr)
 {
     register ptr_t *p;
 
@@ -118,7 +117,7 @@ memrec_rem_var(memrec_t * memrec, const char *var, const char *filename, unsigne
 }
 
 static void
-memrec_chg_var(memrec_t * memrec, const char *var, const char *filename, unsigned long line, const void *oldp, void *newp, size_t size)
+memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned long line, const void *oldp, void *newp, size_t size)
 {
     register ptr_t *p;
 
@@ -137,7 +136,7 @@ memrec_chg_var(memrec_t * memrec, const char *var, const char *filename, unsigne
 }
 
 static void
-memrec_dump_pointers(memrec_t * memrec)
+memrec_dump_pointers(memrec_t *memrec)
 {
     register ptr_t *p;
     unsigned long i, j, k, l, total = 0;
@@ -206,7 +205,7 @@ memrec_dump_pointers(memrec_t * memrec)
 }
 
 static void
-memrec_dump_resources(memrec_t * memrec)
+memrec_dump_resources(memrec_t *memrec)
 {
     register ptr_t *p;
     unsigned long i, total;
