@@ -1,3 +1,9 @@
+enlightenment (0.16.1-0-cvs00) unstable; urgency=low
+
+  * mangled version for cvs
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 23 Oct 1999 19:25:48 -0400
+
 enlightenment (0.16.0-6) unstable; urgency=low
 
   * deprecated enlightenment-{sound,nosound,dox,dox,theme-brushedmetal}
