@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include "Etcher.h"
 
 	#define YYDEBUG 1
 
@@ -9,11 +10,14 @@
 
 	extern int lnum;
 	extern int col;
+
 %}
 
 %union {
 	char *string;
 	float val;
+	Etcher_Program_Actions prog_actions;
+	Etcher_Transition_Types transition_type;
 }
 
 %token STRING FLOAT
@@ -26,13 +30,16 @@
 %token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TO
 %token TO_X TO_Y TRANSITION TWEEN TYPE VISIBLE X Y
 %token OPEN_BRACE CLOSE_BRACE RAW COMP LOSSY
-%token COLON QUOTE SEMICOLON
+%token COLON QUOTE SEMICOLON STATE_SET ACTION_STOP SIGNAL_EMIT
+%token DRAG_VAL_SET DRAG_VAL_STEP DRAG_VAL_PAGE LINEAR
+%token SINUSOIDAL ACCELERATE DECELERATE
 
-%type <string> STRING lossless_type lossy_type
+%type <string> STRING lossless_type lossy_type 
 %type <val> FLOAT
+%type <prog_actions> action_type
+%type <transition_type> transition_type
 
 %%
-
 
 edjes: /* blank */ | 
        images edjes |
@@ -90,6 +97,85 @@ data_statement: item
 
 item: ITEM COLON STRING STRING SEMICOLON {
 		printf("got item %s :: %s\n", $3, $4);
+	}
+	;
+
+programs: PROGRAMS OPEN_BRACE program_statement CLOSE_BRACE
+	;
+
+program_statement: program
+	| program program_statement
+	;
+
+program: PROGRAM OPEN_BRACE program_body CLOSE_BRACE
+	;
+
+program_body: /* blank */ 
+	| program_cmd
+	| program_cmd program_body
+	;
+
+program_cmd: program_name
+	| program_signal
+	| program_source
+	| program_in
+	| program_action
+	| program_transition
+	| program_target
+	| program_after
+	;
+
+program_name: NAME COLON STRING SEMICOLON {
+		printf("name: %s\n", $3);
+	}
+	;
+
+program_signal: SIGNAL COLON STRING SEMICOLON {
+		printf("signal: %s\n", $3);
+	}
+	;
+
+program_source: SOURCE COLON STRING SEMICOLON {
+		printf("source: %s\n", $3);
+	}
+	;
+
+program_in: IN COLON FLOAT FLOAT SEMICOLON {
+		printf("in %f %f\n", $3, $4);
+	}
+	;
+
+program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
+		printf("action %d %s %f\n", $3, $4, $5);
+	}
+	;
+
+action_type: SIGNAL_EMIT { $$ = ETCHER_ACTION_SIGNAL_EMIT; }
+	| STATE_SET { $$ = ETCHER_ACTION_STATE_SET; }
+	| ACTION_STOP { $$ = ETCHER_ACTION_ACTION_STOP; }
+	| DRAG_VAL_SET { $$ = ETCHER_ACTION_DRAG_VAL_SET; }
+	| DRAG_VAL_STEP { $$ = ETCHER_ACTION_DRAG_VAL_STEP; }
+	| DRAG_VAL_PAGE { $$ = ETCHER_ACTION_DRAG_VAL_PAGE; }
+	;
+
+program_transition: TRANSITION COLON transition_type FLOAT SEMICOLON {
+		printf("transition %d %f\n", $3, $4);
+	}
+	;
+
+transition_type: LINEAR { $$ = ETCHER_TRANSITION_LINEAR; }
+	| SINUSOIDAL { $$ = ETCHER_TRANSITION_SINUSOIDAL; }
+	| ACCELERATE { $$ = ETCHER_TRANSITION_ACCELERATE; }
+	| DECELERATE { $$ = ETCHER_TRANSITION_DECELERATE; }
+	;
+
+program_target: TARGET COLON STRING SEMICOLON {
+		printf("targeting %s\n", $3);
+	}
+	;
+
+program_after: AFTER COLON STRING SEMICOLON {
+		printf("after %s\n", $3);
 	}
 	;
 

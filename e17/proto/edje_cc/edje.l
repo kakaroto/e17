@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "Etcher.h"
 #include "edje_cc.tab.h"
     
     int yylex(void);
@@ -47,7 +48,9 @@ fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
 floating_constant ((({start_part}{fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|({start_part}[0-9][0-9]*)
 
 %%
+ACCELERATE			{ KEYWORD_RETURN(ACCELERATE); }
 action				{ KEYWORD_RETURN(ACTION); }
+ACTION_STOP			{ KEYWORD_RETURN(ACTION_STOP); }
 after				{ KEYWORD_RETURN(AFTER); }
 align				{ KEYWORD_RETURN(ALIGN); }
 aspect				{ KEYWORD_RETURN(ASPECT); }
@@ -62,7 +65,11 @@ color_class			{ KEYWORD_RETURN(COLOR_CLASS); }
 COMP				{ KEYWORD_RETURN(COMP); }
 confine				{ KEYWORD_RETURN(CONFINE); }
 data				{ KEYWORD_RETURN(DATA); }
+DECELERATE			{ KEYWORD_RETURN(DECELERATE); }
 description			{ KEYWORD_RETURN(DESCRIPTION); }
+DRAG_VAL_PAGE	    { KEYWORD_RETURN(DRAG_VAL_PAGE); }
+DRAG_VAL_SET		{ KEYWORD_RETURN(DRAG_VAL_SET); }
+DRAG_VAL_STEP		{ KEYWORD_RETURN(DRAG_VAL_STEP); }
 dragable			{ KEYWORD_RETURN(DRAGABLE); }
 effect				{ KEYWORD_RETURN(EFFECT); }
 fill				{ KEYWORD_RETURN(FILL); }
@@ -74,6 +81,7 @@ image				{ KEYWORD_RETURN(IMAGE); }
 images				{ KEYWORD_RETURN(IMAGES); }
 in					{ KEYWORD_RETURN(IN); }
 item				{ KEYWORD_RETURN(ITEM); }
+LINEAR				{ KEYWORD_RETURN(LINEAR); }
 LOSSY				{ KEYWORD_RETURN(LOSSY); }
 max					{ KEYWORD_RETURN(MAX); }
 min					{ KEYWORD_RETURN(MIN); }
@@ -93,10 +101,13 @@ relative			{ KEYWORD_RETURN(RELATIVE); }
 repeat_events		{ KEYWORD_RETURN(REPEAT_EVENTS); }
 script				{ KEYWORD_RETURN(SCRIPT); }
 signal				{ KEYWORD_RETURN(SIGNAL); }
+SIGNAL_EMIT			{ KEYWORD_RETURN(SIGNAL_EMIT); }
+SINUSOIDAL			{ KEYWORD_RETURN(SINUSOIDAL); }
 size				{ KEYWORD_RETURN(SIZE); }
 smooth				{ KEYWORD_RETURN(SMOOTH); }
 source				{ KEYWORD_RETURN(SOURCE); }
 state				{ KEYWORD_RETURN(STATE); }
+STATE_SET			{ KEYWORD_RETURN(STATE_SET); }
 step				{ KEYWORD_RETURN(STEP); }
 target				{ KEYWORD_RETURN(TARGET); }
 text				{ KEYWORD_RETURN(TEXT); }

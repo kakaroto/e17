@@ -1,0 +1,23 @@
+#ifndef _ETCHER_H_
+#define _ETCHER_H_
+
+typedef enum Etcher_Program_Actions Etcher_Program_Actions;
+enum Etcher_Program_Actions {
+	ETCHER_ACTION_STATE_SET,
+	ETCHER_ACTION_ACTION_STOP,
+	ETCHER_ACTION_SIGNAL_EMIT,
+	ETCHER_ACTION_DRAG_VAL_SET,
+	ETCHER_ACTION_DRAG_VAL_STEP,
+	ETCHER_ACTION_DRAG_VAL_PAGE
+};
+
+typedef enum Etcher_Transition_Types Etcher_Transition_Types;
+enum Etcher_Transition_Types {
+	ETCHER_TRANSITION_LINEAR,
+	ETCHER_TRANSITION_SINUSOIDAL,
+	ETCHER_TRANSITION_ACCELERATE,
+	ETCHER_TRANSITION_DECELERATE
+};
+
+#endif
+
