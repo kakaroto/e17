@@ -168,7 +168,7 @@ colormod(Imlib_Image im, pIFunctionParam par)
 	return im;
 }
 
-static void
+void
 init(struct imlib_filter_info *info)
 {
    char *filters[] = { "colormod" };
@@ -184,13 +184,13 @@ init(struct imlib_filter_info *info)
    
 }
 
-static void
+void
 deinit()
 {
 	return;
 }
 
-static void *
+void *
 exec(char *filter, void *im, pIFunctionParam par)
 {
 	if (!strcmp(filter, "colormod"))

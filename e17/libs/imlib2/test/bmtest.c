@@ -58,6 +58,7 @@ int main (int argc, char **argv)
    imlib_context_set_visual(vis);
    imlib_context_set_colormap(cm);
    imlib_context_set_drawable(win);
+   imlib_context_set_dither(1);
    imlib_context_set_blend(0);
    imlib_context_set_color_modifier(NULL);
      

@@ -97,7 +97,7 @@ x_ldflags="$X_LDFLAGS"
 x_libs="$X_LIBS $X_EXTRA_LIBS"
 X_OBJS="color.lo context.lo draw.lo grab.lo rend.lo rgba.lo ximage.lo"
   
-AC_CHECK_LIB(X11, XOpenDisplay, x_libs="$x_libs",
+AC_CHECK_LIB(X11, XOpenDisplay, x_libs="-lX11 $x_libs",
   AC_MSG_ERROR([ERROR: libX11 not found.]); exit,
   $X_LDFLAGS $X_EXTRA_LIBS $X_LIBS)
 AC_CHECK_LIB(Xext, XShmAttach, x_libs="-lXext $x_libs",
@@ -155,8 +155,7 @@ echo ""
 AC_MSG_ERROR([Fatal Error: no FreeType header files detected.])
 fi
 fi
-AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl, [
-], -ldl)
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 
 EXTRA_LIBS="-L/usr/local/lib -L/usr/X11R6/lib"
 
@@ -263,7 +262,7 @@ AC_CHECK_LIB(ungif, DGifOpenFileName,
   gif_libs="-lungif"
   gif_ok=yes,
   gif_ok=no,
-  $EXTRA_LIBS)
+  $EXTRA_LIBS -lX11)
 if test "$gif_ok" = yes; then
   AC_MSG_CHECKING([for gif_lib.h])
   AC_TRY_CPP(
