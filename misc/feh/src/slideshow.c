@@ -132,6 +132,7 @@ feh_reload_image(winwidget w, int resize)
             temp = feh_imlib_create_rotated_image(w->im, 0.0);
             w->im_w = feh_imlib_image_get_width(temp);
             w->im_h = feh_imlib_image_get_height(temp);
+            feh_imlib_free_image_and_decache(temp);
          }
          else
          {
