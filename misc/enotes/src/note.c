@@ -34,15 +34,12 @@ new_note(void)
 	return;
 }
 
-/**
- * @param width: Width of the new note.
- * @param height: Height of the new note.
- * @param title: Title text to begin with.
- * @param content: Content text to begin with.
- * @brief: Opens a new note.
- */
-void
-new_note_with_values(int x, int y, int width, int height, char *content)
+void new_note_with_values(int x,int y,int width,int height,char *content){
+	Note *p=new_note_with_values_return(x,y,width,height,content);
+}
+
+Note*
+new_note_with_values_return(int x, int y, int width, int height, char *content)
 {
 	Evas_List      *new;
 
@@ -50,7 +47,7 @@ new_note_with_values(int x, int y, int width, int height, char *content)
 
 	new = append_note();
 	setup_note(&new, x, y, width, height, content);
-	return;
+	return(evas_list_data(new));
 }
 
 /* Lists and Allocation */

@@ -14,6 +14,7 @@
 #include "main.h"
 
 MainConfig     *main_config;
+char *remotecmd;
 
 /* The Main Function */
 
@@ -26,7 +27,7 @@ MainConfig     *main_config;
 int
 main(int argc, char *argv[])
 {
-	char           *spec_conf,*remotecmd=NULL;
+	char           *spec_conf;
 	int             note_count;
 	DIR            *dir;
 	int a;
@@ -34,11 +35,7 @@ main(int argc, char *argv[])
 	/* IPC Check */
 	ecore_ipc_init();
 	dml("IPC Initiated Successfully", 1);
-	/* Check for -R option
-	 * FIXME: Ecore-Config should do this stuff really!
-	 * FIXME: Also, make ecore_config ignore -R, or deal with it! */
-	if(argc>1)for(a=0;a<=argc-1;a++)if(!strcmp(argv[a],"-R"))if(argv[a+1]!=NULL)remotecmd=argv[a+1];
-
+	
 	/* autoload (if on) will increment this if there are notes
 	 * if not we may need to create a blank one */
 	note_count = 0;
@@ -49,16 +46,19 @@ main(int argc, char *argv[])
 	}
 	ecore_app_args_set(argc, (const char **) argv);
 
+	ecore_config_app_describe("E-Notes - Sticky Notes for Enlightenment\n\
+Copyright (c) Thomas Fletcher\n\
+Usage: enotes [options]");
+
 	/* Read the Usage and Configurations */
 	main_config = mainconfig_new();
-/*	if (read_configuration(main_config) != ECORE_CONFIG_PARSE_CONTINUE) {
+	if (read_configuration(main_config) != ECORE_CONFIG_PARSE_CONTINUE) {
 		ecore_config_shutdown();
 		ecore_ipc_shutdown();
 		ecore_shutdown();
 		mainconfig_free(main_config);
 		return (-1);
-	}*/
-	read_configuration(main_config);
+	}
 
 	dml("Successfully Read Configurations and Usage", 1);
 

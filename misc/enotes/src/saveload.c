@@ -36,7 +36,7 @@ setup_saveload(void)
 		setup_saveload_win();
 		fill_saveload_tree();
 	} else {
-		error_msg("Won't Open Another Saveload Window");
+		ewl_window_raise((Ewl_Window*)saveload->win);
 	}
 	return;
 }
@@ -289,9 +289,12 @@ ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 	n->y = y;
 	n->content = strdup(get_content_by_note(p));
 
-	append_note_stor(n);
-
+	if(append_note_stor(n)==1){
+		/* Animation or something */
+		edje_object_signal_emit(note->edje,"enotes,saved","");
+	}
 	free_note_stor(n);
+
 	return;
 }
 
@@ -311,7 +314,7 @@ setup_load(void)
 		setup_load_win();
 		fill_load_tree();
 	} else {
-		error_msg("Won't Open Another Load Note Window");
+		ewl_window_raise((Ewl_Window*)load->win);
 	}
 	return;
 }
@@ -497,7 +500,7 @@ ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 		return;
 	}
 	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), load_selected);
-	note_load(p);
+	note_load(p); /* This function calls the animation */
 	free(p);
 	return;
 }

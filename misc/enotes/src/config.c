@@ -46,10 +46,14 @@ void mainconfig_free(MainConfig * p){
 
 /* LISTENERS */
 
-theme_listener(const char *key, const Ecore_Config_Type type, const int tag,void *data){
+void theme_listener(const char *key, const Ecore_Config_Type type, const int tag,void *data){
 	main_config->theme = ecore_config_theme_get(key);
 	cc_update_theme();
 	notes_update_themes();}
+
+void remotearg(char *val,void *data){
+	remotecmd=val;
+}
 
 /**
  * @param p:  The MainConfig variable to store the read settings into.
@@ -86,9 +90,9 @@ int read_configuration(MainConfig * p){
 	ecore_config_theme_preview_group_set("enotes.theme", "Main");
 	ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
 
-	ecore_config_load();
+	ecore_config_args_callback_str_add('R',"remote","Send a remote command or message.",&remotearg,NULL);
 
-	ecore_config_app_describe("Enotes - The Enlightened Sticky Notes System");
+	ecore_config_load();
 
 	retv=ecore_config_args_parse();
 
@@ -101,6 +105,6 @@ int read_configuration(MainConfig * p){
 	p->ontop = ecore_config_boolean_get("enotes.ontop");
 	p->sticky = ecore_config_boolean_get("enotes.sticky");
 
-	ecore_config_listen("theme", "enotes.theme", theme_listener, 0, NULL);
+	ecore_config_listen("theme", "enotes.theme", (void*)&theme_listener, 0, NULL);
 
 	return (retv);}

@@ -46,7 +46,7 @@ NoteStor       *alloc_note_stor();
 void            free_note_stor(NoteStor * p);
 
 /* One Shot Functions. :-) */
-void            append_note_stor(NoteStor * p);
+int             append_note_stor(NoteStor * p);
 void            append_autosave_note_stor(NoteStor * p);
 void            remove_note_stor(NoteStor * p);
 void            process_note_storage_locations();

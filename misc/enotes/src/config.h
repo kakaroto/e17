@@ -36,10 +36,13 @@ typedef struct {
 } MainConfig;
 
 extern MainConfig *main_config;
+extern char       *remotecmd;
 
 MainConfig     *mainconfig_new(void);
 void            mainconfig_free(MainConfig * p);
 
 int             read_configuration(MainConfig * p);
+void            remotearg(char *val,void *data);
+void            theme_listener(const char *key, const Ecore_Config_Type type, const int tag,void *data);
 
 #endif

@@ -77,13 +77,14 @@ append_autosave_note_stor(NoteStor * p)
  * @brief: Appends a new note to the note storage according to the
  *         information stored in p.
  */
-void
+int
 append_note_stor(NoteStor * p)
 {
 	char           *target = malloc(PATH_MAX);
 	char           *title;
 	char           *string = get_value_from_notestor(p);
 	FILE           *fp;
+	int retval=0;
 
 	title = get_title_by_content(p->content);
 	sprintf(target, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), title);
@@ -93,6 +94,7 @@ append_note_stor(NoteStor * p)
 		if ((fp = fopen(target, "w")) != NULL) {
 			fputs(string, fp);
 			fclose(fp);
+			retval=1;
 		}
 	} else {
 		fclose(fp);
@@ -102,7 +104,7 @@ append_note_stor(NoteStor * p)
 
 	free(string);
 	free(target);
-	return;
+	return(retval);
 }
 
 /**
@@ -133,6 +135,7 @@ note_load(char *target)
 	NoteStor       *p;
 	char           *str = malloc(NOTE_LIMIT);
 	char           *fullstr = malloc(NOTE_LIMIT * 2);
+	Note *note;
 
 	sprintf(fullstr, "");
 	if ((fp = fopen(target, "r")) != NULL) {
@@ -140,9 +143,10 @@ note_load(char *target)
 			sprintf(fullstr, "%s%s", fullstr, str);
 		}
 		if (strcmp("", fullstr))
-			if ((p = get_notestor_from_value(fullstr)) != NULL)
-				new_note_with_values(p->x, p->y, p->width,
-						     p->height, p->content);
+			if ((p = get_notestor_from_value(fullstr)) != NULL){
+				note=new_note_with_values_return(p->x, p->y, p->width, p->height, p->content);
+				edje_object_signal_emit(note->edje,"enotes,loaded","");
+			}
 	}
 
 	free(str);

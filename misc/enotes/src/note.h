@@ -79,6 +79,9 @@ typedef struct _note {
 	/* Comparison Strings and Timer */
 	Ecore_Timer    *timcomp;
 	char           *txt_title;
+
+	/* Animation Vars */
+	int stage;
 } _note;
 
 typedef struct {
@@ -92,6 +95,7 @@ Evas_List      *gbl_notes;
 void            new_note(void);
 void            new_note_with_values(int x, int y, int width, int height,
 				     char *content);
+Note           *new_note_with_values_return(int x, int y, int width, int height,char *content);
 
 /* Lists and Allocation */
 Evas_List      *append_note(void);
