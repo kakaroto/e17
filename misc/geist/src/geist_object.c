@@ -26,14 +26,16 @@ geist_object_init(geist_object * obj)
    geist_object_set_type(obj, GEIST_TYPE_OBJECT);
    obj->free = geist_object_int_free;
    obj->render = geist_object_int_render;
-   obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_object_int_render_partial;
-   obj->get_rendered_image = geist_object_int_get_rendered_image;
+   obj->render_selected = geist_object_int_render_selected;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
+   obj->get_rendered_image = geist_object_int_get_rendered_image;
    obj->part_is_transparent = geist_object_int_part_is_transparent;
    obj->display_props = geist_object_int_display_props;
    obj->resize_event = geist_object_int_resize;
    obj->get_rendered_area = geist_object_int_get_rendered_area;
+   obj->check_resize_click = geist_object_int_check_resize_click;
+   obj->get_resize_box_coords = geist_object_int_get_resize_box_coords;
    obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
@@ -379,9 +381,15 @@ geist_object_int_get_selection_updates(geist_object * obj)
    D_RETURN(5, up);
 }
 
-
 int
 geist_object_check_resize_click(geist_object * obj, int x, int y)
+{
+   D_ENTER(5);
+   D_RETURN(5, obj->check_resize_click(obj, x, y));
+}
+
+int
+geist_object_int_check_resize_click(geist_object * obj, int x, int y)
 {
    D_ENTER(5);
 
@@ -427,6 +435,17 @@ geist_object_check_resize_click(geist_object * obj, int x, int y)
 
 void
 geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
+                                   int *y)
+{
+   D_ENTER(3);
+
+   obj->get_resize_box_coords(obj, resize, x, y);
+
+   D_RETURN_(3);
+}
+
+void
+geist_object_int_get_resize_box_coords(geist_object * obj, int resize, int *x,
                                    int *y)
 {
    D_ENTER(3);

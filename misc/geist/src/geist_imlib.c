@@ -490,12 +490,10 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    return 1;
 }
 
-
-
-void
-geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
-                               int y1, int xmin, int xmax, int ymin, int ymax,
-                               int r, int g, int b, int a)
+int
+geist_imlib_line_clip(int x0, int y0, int x1, int y1, int xmin, int xmax,
+                      int ymin, int ymax, int *clip_x0, int *clip_y0,
+                      int *clip_x1, int *clip_y1)
 {
    outcode outcode0, outcode1, outcode_out;
    unsigned char accept = FALSE, done = FALSE;
@@ -552,8 +550,28 @@ geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
       }
    }
    while (done == FALSE);
-   if (accept)
-      geist_imlib_image_draw_line(dest, x0, y0, x1, y1, 0, r, g, b, a);
+
+   *clip_x0 = x0;
+   *clip_y0 = y0;
+   *clip_x1 = x1;
+   *clip_y1 = y1;
+
+   return accept;
+}
+
+
+void
+geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
+                               int y1, int xmin, int xmax, int ymin, int ymax,
+                               int r, int g, int b, int a)
+{
+   int clip_x0, clip_x1, clip_y0, clip_y1;
+
+   if (geist_imlib_line_clip
+       (x0, y0, x1, y1, xmin, xmax, ymin, ymax, &clip_x0, &clip_x1, &clip_y0,
+        &clip_y1))
+      geist_imlib_image_draw_line(dest, clip_x0, clip_x1, clip_y0, clip_y1, 0,
+                                  r, g, b, a);
 }
 
 outcode

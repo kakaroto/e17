@@ -43,8 +43,8 @@
 #define RECTS_INTERSECT(x, y, w, h, xx, yy, ww, hh) \
 ((SPANS_COMMON((x), (w), (xx), (ww))) && (SPANS_COMMON((y), (h), (yy), (hh))))
 
-#define HALF_SEL_WIDTH 2
-#define HALF_SEL_HEIGHT 2
+#define HALF_SEL_WIDTH 3
+#define HALF_SEL_HEIGHT 3
 
 #ifndef PACKAGE
 #define PACKAGE "geist"
@@ -61,8 +61,8 @@ if (x < (xx)) {w += (x - (xx)); x = (xx);} \
 if (y < (yy)) {h += (y - (yy)); y = (yy);} \
 if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
 if ((y + h) > ((yy) + (hh))) {h = (hh) - y;} \
-if(w<0) {w = 0 -w;} \
-if(h<0) {h = 0 -h;} \
+if (w<0) {x += w; w = 0 -w;} \
+if (h<0) {y += h; h = 0 -h;} \
 }
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))

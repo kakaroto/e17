@@ -1,3 +1,11 @@
+Tue Aug 22 01:15:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Big restructure of object code, made lots more functions members
+	of the object class, as lines etc need to do stuff diferently.
+	* Line selection boxes are now drawn at each end of the line.
+	* Resizing lines *almost* works right now, but needs some tweaking
+	;-)
+
 Mon Aug 21 19:15:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Decent, Working XML check courtesy of Dave J (the powertweak

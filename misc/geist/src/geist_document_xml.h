@@ -6,6 +6,7 @@
 #include "geist_image.h"
 #include "geist_rect.h"
 #include "geist_text.h"
+#include "geist_line.h"
 
 #include <parser.h>
 #include <xmlmemory.h>

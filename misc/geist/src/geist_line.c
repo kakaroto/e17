@@ -32,10 +32,14 @@ geist_line_init(geist_line * line)
    obj->free = geist_line_free;
    obj->render = geist_line_render;
    obj->render_partial = geist_line_render_partial;
+   obj->render_selected = geist_line_render_selected;
+   obj->get_selection_updates = geist_line_get_selection_updates;
    obj->duplicate = geist_line_duplicate;
    obj->part_is_transparent = geist_line_part_is_transparent;
    obj->display_props = geist_line_display_props;
    obj->resize_event = geist_line_resize;
+   obj->get_resize_box_coords = geist_line_get_resize_box_coords;
+   obj->check_resize_click = geist_line_check_resize_click;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
    geist_object_set_type(obj, GEIST_TYPE_LINE);
@@ -124,6 +128,7 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    line = GEIST_LINE(obj);
 
+
 #if 0
    int ox, oy, ow, oh;
 
@@ -197,12 +202,44 @@ geist_line_part_is_transparent(geist_object * obj, int x, int y)
 void
 geist_line_resize(geist_object * obj, int x, int y)
 {
+   geist_line *line;
+   int start_x, start_y, end_x, end_y;
    D_ENTER(5);
+
+   line = GEIST_LINE(obj);
 
    D(5, ("resize to %d,%d\n", x, y));
 
-   /* FIXME update start and end points */
-   geist_object_resize_object(obj, x, y);
+   start_x = line->start.x + obj->x;
+   start_y = line->start.y + obj->y;
+   end_x = line->end.x + obj->x;
+   end_y = line->end.y + obj->y;
+   
+   switch (obj->resize)
+   {
+     case RESIZE_RIGHT:
+        end_x = x;
+        end_y = y;
+        break;
+     case RESIZE_LEFT:
+        start_x = x;
+        start_y = y;
+        break;
+     default:
+        printf("eeeeek\n");
+        break;
+   }
+
+   obj->x = MIN(start_x, end_x);
+   obj->y = MIN(start_y, end_y);
+   obj->w = obj->rendered_w = MAX(start_x, end_x) - obj->x;
+   obj->h = obj->rendered_h = MAX(start_y, end_y) - obj->x;
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
+   line->start.x = start_x - obj->x;
+   line->start.y = start_y - obj->y;
+   line->end.x = end_x - obj->x;
+   line->end.y = end_y - obj->y;
 
    D_RETURN_(5);
 }
@@ -334,4 +371,148 @@ geist_line_display_props(geist_object * obj)
    gtk_widget_show(table);
    return (win);
 
+}
+
+int
+geist_line_get_clipped_line(geist_line * line, int *clip_x0, int *clip_y0,
+                            int *clip_x1, int *clip_y1)
+{
+   geist_object *obj;
+
+   D_ENTER(3);
+   obj = GEIST_OBJECT(line);
+
+   D_RETURN(3,
+            geist_imlib_line_clip(line->start.x + obj->rendered_x + obj->x,
+                                  line->start.y + obj->rendered_y + obj->y,
+                                  line->end.x + obj->rendered_x + obj->x,
+                                  line->end.y + obj->rendered_y + obj->y,
+                                  obj->x, obj->x + obj->w, obj->y,
+                                  obj->y + obj->h, clip_x0, clip_y0, clip_x1,
+                                  clip_y1));
+}
+
+void
+geist_line_render_selected(geist_object * obj, Imlib_Image dest,
+                           unsigned char multiple)
+{
+   int clip_x0, clip_y0, clip_x1, clip_y1;
+   geist_line *line;
+
+   D_ENTER(5);
+
+   line = GEIST_LINE(obj);
+
+   if (!geist_line_get_clipped_line
+       (GEIST_LINE(line), &clip_x0, &clip_y0, &clip_x1, &clip_y1))
+      D_RETURN_(5);
+
+   if (multiple)
+   {
+      geist_imlib_image_draw_rectangle(dest, clip_x0 - HALF_SEL_WIDTH,
+                                       clip_y0 - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest, clip_x1 - HALF_SEL_WIDTH,
+                                       clip_y1 - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+   }
+   else
+   {
+      geist_imlib_image_fill_rectangle(dest, clip_x0 - HALF_SEL_WIDTH,
+                                       clip_y0 - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest, clip_x1 - HALF_SEL_WIDTH,
+                                       clip_y1 - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+   }
+}
+
+Imlib_Updates
+geist_line_get_selection_updates(geist_object * obj)
+{
+   Imlib_Updates up = NULL;
+   int clip_x0, clip_y0, clip_x1, clip_y1;
+   geist_line *line;
+
+   D_ENTER(5);
+
+   line = GEIST_LINE(obj);
+
+   if (!geist_line_get_clipped_line
+       (GEIST_LINE(line), &clip_x0, &clip_y0, &clip_x1, &clip_y1))
+      D_RETURN(5, NULL);
+
+   up =
+      imlib_update_append_rect(up, clip_x0 - HALF_SEL_WIDTH,
+                               clip_y0 - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
+                               2 * HALF_SEL_HEIGHT);
+   up =
+      imlib_update_append_rect(up, clip_x1 - HALF_SEL_WIDTH,
+                               clip_y1 - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
+                               2 * HALF_SEL_HEIGHT);
+
+   D_RETURN(5, up);
+}
+
+void
+geist_line_get_resize_box_coords(geist_object * obj, int resize, int *x,
+                                 int *y)
+{
+   int clip_x0, clip_y0, clip_x1, clip_y1;
+   geist_line *line;
+
+   D_ENTER(3);
+
+   line = GEIST_LINE(obj);
+
+   if (!geist_line_get_clipped_line
+       (GEIST_LINE(line), &clip_x0, &clip_y0, &clip_x1, &clip_y1))
+      D_RETURN_(3);
+
+   switch (resize)
+   {
+     case RESIZE_LEFT:
+        *x = clip_x0;
+        *y = clip_y0;
+        break;
+     case RESIZE_RIGHT:
+        *x = clip_x1;
+        *y = clip_y1;
+        break;
+     default:
+        break;
+   }
+   D_RETURN_(3);
+}
+
+int
+geist_line_check_resize_click(geist_object * obj, int x, int y)
+{
+   int clip_x0, clip_y0, clip_x1, clip_y1;
+   geist_line *line;
+
+   D_ENTER(5);
+
+   line = GEIST_LINE(obj);
+
+   if (!geist_line_get_clipped_line
+       (GEIST_LINE(line), &clip_x0, &clip_y0, &clip_x1, &clip_y1))
+      D_RETURN(5, RESIZE_NONE);
+
+
+   if (XY_IN_RECT
+       (x, y, clip_x0 - HALF_SEL_WIDTH, clip_y0 - HALF_SEL_HEIGHT,
+        2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_LEFT);
+
+   if (XY_IN_RECT
+       (x, y, clip_x1 - HALF_SEL_WIDTH, clip_y1 - HALF_SEL_HEIGHT,
+        2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_RIGHT);
+
+   D_RETURN(5, RESIZE_NONE);
 }

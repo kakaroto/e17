@@ -39,5 +39,17 @@ unsigned char geist_line_part_is_transparent(geist_object * obj, int x,
                                              int y);
 void geist_line_resize(geist_object * obj, int x, int y);
 GtkWidget *geist_line_display_props(geist_object * obj);
+void geist_line_render_selected(geist_object * obj, Imlib_Image dest, 
+                                 unsigned char multiple);
+int
+geist_line_get_clipped_line(geist_line * line, int *clip_x0, int *clip_y0,
+                            int *clip_x1, int *clip_y1);
+Imlib_Updates
+geist_line_get_selection_updates(geist_object * obj);
+void
+geist_line_get_resize_box_coords(geist_object * obj, int resize, int *x,
+                                 int *y);
+int
+geist_line_check_resize_click(geist_object * obj, int x, int y);
 
 #endif

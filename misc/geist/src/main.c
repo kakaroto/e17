@@ -98,6 +98,9 @@ main(int argc, char *argv[])
    geist_document_add_object(doc,
                              geist_line_new_from_to(5, 5, 200, 200, 255,
                                                     0, 0, 0));
+   geist_document_add_object(doc,
+                             geist_line_new_from_to(5, 200, 200, 5, 255,
+                                                    0, 0, 0));
 
    geist_document_render_full(doc, 1);
 

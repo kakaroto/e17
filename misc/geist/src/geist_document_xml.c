@@ -9,6 +9,8 @@ static geist_object *geist_parse_rect_xml(xmlDocPtr doc, xmlNsPtr ns,
 static geist_fill *geist_fill_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
 
                                         xmlNodePtr cur);
+static geist_object *geist_parse_line_xml(xmlDocPtr doc, xmlNsPtr ns,
+                                          xmlNodePtr cur);
 static geist_object *geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                             xmlNodePtr cur,
 
@@ -45,6 +47,9 @@ static void geist_save_rect_xml(geist_rect * rect, xmlNodePtr parent,
 
                                 xmlNsPtr ns);
 static void geist_save_fill_xml(geist_fill * fill, xmlNodePtr parent,
+
+                                xmlNsPtr ns);
+static void geist_save_line_xml(geist_line * line, xmlNodePtr parent,
 
                                 xmlNsPtr ns);
 
@@ -326,6 +331,9 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
      case GEIST_TYPE_IMAGE:
         ret = geist_parse_image_xml(doc, ns, cur);
         break;
+     case GEIST_TYPE_LINE:
+        ret = geist_parse_line_xml(doc, ns, cur);
+        break;
      default:
         weprintf("invalid object type found\n");
         break;
@@ -395,6 +403,29 @@ geist_parse_rect_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 
    D_RETURN(3, ret);
 }
+
+static geist_object *
+geist_parse_line_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+{
+   geist_object *ret;
+   int r, g, b, a, start_x, start_y, end_x, end_y;
+
+   D_ENTER(3);
+
+   a = geist_xml_read_int(cur, "A", 255);
+   r = geist_xml_read_int(cur, "R", 255);
+   g = geist_xml_read_int(cur, "G", 255);
+   b = geist_xml_read_int(cur, "B", 255);
+   start_x = geist_xml_read_int(cur, "Start_X", 0);
+   start_y = geist_xml_read_int(cur, "Start_Y", 0);
+   end_x = geist_xml_read_int(cur, "End_X", 10);
+   end_y = geist_xml_read_int(cur, "End_Y", 10);
+
+   ret = geist_line_new_from_to(start_x, start_y, end_x, end_y, a, r, g, b);
+
+   D_RETURN(3, ret);
+}
+
 
 static geist_object *
 geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
@@ -582,6 +613,9 @@ geist_save_object_xml(geist_object * obj, xmlNodePtr parent, xmlNsPtr ns)
      case GEIST_TYPE_RECT:
         geist_save_rect_xml(GEIST_RECT(obj), newobject, ns);
         break;
+     case GEIST_TYPE_LINE:
+        geist_save_line_xml(GEIST_LINE(obj), newobject, ns);
+        break;
      default:
         printf("IMPLEMENT ME!\n");
         break;
@@ -629,8 +663,34 @@ geist_save_rect_xml(geist_rect * rect, xmlNodePtr parent, xmlNsPtr ns)
    geist_xml_write_int(parent, "A", rect->a);
 
    D_RETURN_(3);
-
 }
+
+static void
+geist_save_line_xml(geist_line * line, xmlNodePtr parent, xmlNsPtr ns)
+{
+   geist_object *obj;
+
+   D_ENTER(3);
+
+   obj = GEIST_OBJECT(line);
+
+   geist_xml_write_int(parent, "R", line->r);
+   geist_xml_write_int(parent, "G", line->g);
+   geist_xml_write_int(parent, "B", line->b);
+   geist_xml_write_int(parent, "A", line->a);
+
+   geist_xml_write_int(parent, "Start_X",
+                       line->start.x + obj->x + obj->rendered_x);
+   geist_xml_write_int(parent, "Start_Y",
+                       line->start.y + obj->y + obj->rendered_y);
+   geist_xml_write_int(parent, "End_X",
+                       line->end.x + obj->x + obj->rendered_x);
+   geist_xml_write_int(parent, "End_Y",
+                       line->end.y + obj->y + obj->rendered_y);
+
+   D_RETURN_(3);
+}
+
 
 static void
 geist_save_fill_xml(geist_fill * fill, xmlNodePtr parent, xmlNsPtr ns)
