@@ -111,6 +111,7 @@ EwinListDelete(EWinList * ewl, EWin * ewin)
 	/* Enables autocleanup at shutdown, if ever implemented */
 	Efree(ewl->list);
 	ewl->list = NULL;
+	ewl->nalloc = 0;
      }
 
    EwinListShow("EwinListDelete", ewl);
