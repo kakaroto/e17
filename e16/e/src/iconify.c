@@ -177,9 +177,8 @@ DeIconifyEwin(EWin * ewin)
 	if (!ewin->sticky)
 	  {
 	     MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
-	     MoveEwinToArea(ewin,
-			    desks.desk[desks.current].current_area_x,
-			    desks.desk[desks.current].current_area_y);
+	     ewin->area_x = desks.desk[desks.current].current_area_x;
+	     ewin->area_y = desks.desk[desks.current].current_area_y;
 	  }
 	else
 	   ConformEwinToDesktop(ewin);

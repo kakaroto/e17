@@ -2225,10 +2225,10 @@ HandleMouseUp(XEvent * ev)
 			   ((ew->desktop == desks.current) ||
 			    (ew->sticky)))
 			 {
-			    if ((mode.x >= (ew->x + ew->border->border.left)) &&
-				(mode.x < (ew->x + ew->w - ew->border->border.right)) &&
-				(mode.y >= (ew->y + ew->border->border.top)) &&
-				(mode.y < (ew->y + ew->h - ew->border->border.bottom)))
+			    if ((ev->xbutton.x_root >= (ew->x + ew->border->border.left)) &&
+				(ev->xbutton.x_root < (ew->x + ew->w - ew->border->border.right)) &&
+				(ev->xbutton.y_root >= (ew->y + ew->border->border.top)) &&
+				(ev->xbutton.y_root < (ew->y + ew->h - ew->border->border.bottom)))
 			      {
 				 ewin = ew;
 				 i = desks.desk[desks.current].num;
@@ -2258,8 +2258,8 @@ HandleMouseUp(XEvent * ev)
 			  (root.h / (pp->h / ay));
 		       if (((x + w) <= px) ||
 			   ((y + h) <= py) ||
-			   (x >= pp->w) ||
-			   (y >= pp->h))
+			   (x >= (px + pp->w)) ||
+			   (y >= (py + pp->h)))
 			 {
 			    int                 ndesk, nx, ny;
 
