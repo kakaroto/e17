@@ -278,6 +278,9 @@ GtkWidget *
 	gtk_object_set_data(GTK_OBJECT(choose_segment), "choose_segment",
 		   	choose_segment);
 	gtk_window_set_title(GTK_WINDOW(choose_segment), "Choose Movie Segment");
+	GTK_WIDGET_SET_FLAGS(choose_segment, GTK_CAN_FOCUS);
+	GTK_WIDGET_SET_FLAGS(choose_segment, GTK_CAN_DEFAULT);
+	gtk_window_set_modal(GTK_WINDOW(choose_segment), TRUE);
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(vbox2);
@@ -357,6 +360,9 @@ GtkWidget *
 	gtk_widget_ref(segment_cancel);
 	gtk_object_set_data_full(GTK_OBJECT(choose_segment), "segment_cancel",
 		   	segment_cancel, (GtkDestroyNotify) gtk_widget_unref);
+	gtk_signal_connect (GTK_OBJECT (segment_cancel), "clicked",
+				            GTK_SIGNAL_FUNC (on_choose_movie_segment1_close),
+						   	NULL);
 	gtk_widget_show(segment_cancel);
 	gtk_box_pack_start(GTK_BOX(hbox5), segment_cancel, FALSE, FALSE, 0);
 
@@ -401,6 +407,11 @@ GtkWidget *
 	Preferences_Window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data(GTK_OBJECT(Preferences_Window), "Preferences_Window",
 		   	Preferences_Window);
+	GTK_WIDGET_SET_FLAGS(Preferences_Window, GTK_CAN_FOCUS);
+	GTK_WIDGET_SET_FLAGS(Preferences_Window, GTK_CAN_DEFAULT);
+	gtk_window_set_modal(GTK_WINDOW(Preferences_Window), TRUE);
+
+
 	gtk_window_set_title(GTK_WINDOW(Preferences_Window),
 		   	"VA Flipbook (Preferences)");
 
@@ -634,6 +645,7 @@ GtkWidget *
 	gtk_widget_ref(button8);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "button8", button8,
 							 (GtkDestroyNotify) gtk_widget_unref);
+
 	gtk_widget_show(button8);
 	gtk_box_pack_start(GTK_BOX(hbox8), button8, FALSE, FALSE, 0);
 
@@ -641,6 +653,9 @@ GtkWidget *
 	gtk_widget_ref(button9);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "button9", button9,
 							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_signal_connect (GTK_OBJECT (button9), "clicked",
+				            GTK_SIGNAL_FUNC (on_preferences1_close), NULL);
+
 	gtk_widget_show(button9);
 	gtk_box_pack_start(GTK_BOX(hbox8), button9, FALSE, FALSE, 0);
 

@@ -43,3 +43,11 @@ Mon Dec 27 15:01:57 PST 1999
 
 Exit works now.  also closing the main window exits the app.
 now you can only have 1 of each window open at a time, also.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 15:40:15 PST 1999
+(Mandrake)
+
+cleaned up a little bit of interface issues.  everything is kinda smoothing
+out now.
