@@ -4,6 +4,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 #include "auth.h"
 #include "util.h"
 #include "md5.h"
@@ -16,7 +20,7 @@
 char * entranced_cookie_new (void) 
 {
    int                     fd;
-   int                     r, i;
+   int                     r;
    unsigned char           buf[BUFSIZE];
    unsigned char           digest[MD5_HASHBYTES];
    double                  ctime;
@@ -47,14 +51,16 @@ char * entranced_cookie_new (void)
    entranced_md5_update(ctx, buf, r);
    entranced_md5_final(digest, ctx);
 
-   cookie = calloc(40, 1);
-   
+   cookie = calloc(1, 16);
+#if 0
    for (i = 0; i < MD5_HASHBYTES; ++i) {
       char tmp[3];
       snprintf(tmp, sizeof(tmp), "%02x", (unsigned int) digest[i]);
-      strncat(cookie, tmp, 2);
+      strcat(cookie, tmp);
    }
+#endif
 
+   memcpy(cookie, digest, MD5_HASHBYTES);
    return cookie;
 }
 
@@ -181,6 +187,79 @@ _entranced_auth_generate(void)
    return auth;
 }
 
+/* I'm trying to figure out exactly why I added this code */
+#if 0
+static void
+_entranced_auth_number_set(Xauth *auth, char *name)
+{
+   char        *colon;
+   char        *dot, *number;
+
+   colon = strrchr(name, ':');
+
+   if (colon)
+   {
+      ++colon;
+      dot = strchr(colon, '.');
+      if (dot)
+         auth->number_length = dot - colon;
+      else
+         auth->number_length = strlen(colon);
+      number = calloc(1, auth->number_length + 1);
+      if (number)
+      {
+         strncpy(number, colon, auth->number_length);
+         number[auth->number_length] = '\0';
+      }
+      else
+      {
+         entranced_debug("_entranced_auth_number_set: Yikes, could not allocate memory!\n");
+         auth->number_length = 0;
+      }
+
+      auth->number = number;
+      entranced_debug("_entranced_auth_number_set: %s (successful)\n", number);
+   }
+}
+#endif
+
+/* This code is needed for authorizing TCP connections */
+#if 0
+static void
+_entranced_auth_name_set(Xauth *auth, const char *hostname)
+{
+   struct hostent          *hp;
+   union {
+      struct sockaddr      sa;
+      struct sockaddr_in   in;
+   } saddr;
+   struct sockaddr_in      *inetaddr;
+
+   entranced_debug("_entranced_auth_name_set: %s\n", hostname);
+
+   hp = gethostbyname(hostname);
+   
+   if (hp)
+   {
+      saddr.sa.sa_family = hp->h_addrtype;
+      inetaddr = (struct sockaddr_in *) (&(saddr.sa));
+      memcpy((char *) &(inetaddr->sin_addr), (char *) hp->h_addr, (int) hp->h_length);
+
+      auth->family = FamilyInternet;
+      auth->address_length = sizeof(inetaddr->sin_addr);
+      auth->address = calloc(1, auth->address_length);
+      if (!auth->address)
+      {
+         auth->address = NULL;
+         return;
+      }
+      memcpy(auth->address, &(inetaddr->sin_addr), auth->address_length);
+   }
+   else
+      entranced_debug("_entranced_auth_name_set: gethostbyname() failed.\n");
+}
+#endif
+
 static int 
 _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *addr, int addrlen) 
 {
@@ -193,6 +272,8 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    /* Generate a new Xauth and set the address */
    if (!(auth = _entranced_auth_generate()))
       return FALSE;
+
+   auth->family = FamilyLocal;
    auth->address = calloc(1, addrlen);
    if(!auth->address)
    {
@@ -202,6 +283,15 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    memcpy(auth->address, addr, addrlen);
    auth->address_length = addrlen;
 
+#if 0
+   _entranced_auth_name_set(auth, addr);
+   if (!auth->address)
+   {
+      free(auth);
+      return FALSE;
+   }
+#endif
+   
    /* Set the display number */
    snprintf(dispnum, 8, "%d", d->dispnum);
    auth->number = strdup(dispnum);
@@ -280,7 +370,7 @@ entranced_auth_display_secure (Entranced_Display *d)
       d->hostname = strdup(hostname);
    }
 
-   /* Add auth entry for localhost */
+   /* Add auth entry for local host */
    if (!_entranced_auth_entry_add(d, auth_file, d->hostname, 
                                  strlen(d->hostname)))
       return FALSE;

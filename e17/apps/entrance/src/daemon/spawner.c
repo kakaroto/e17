@@ -553,6 +553,8 @@ main(int argc, char **argv)
       ecore_exe_kill(d->e_exe);
    kill(d->pid, SIGKILL);
 
+   entranced_auth_user_remove(d);
+
    if (d->authfile)
       unlink(d->authfile);
 
