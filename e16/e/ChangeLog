@@ -2050,3 +2050,16 @@ Wed Jul 23 20:03:28 CEST 2003
 (Kim)
 
 Fix "premature" commit of fix to deiconification problem :)
+
+-------------------------------------------------------------------------------
+
+Sun Aug  3 23:16:17 CEST 2003
+(Kim)
+
+Removed most URL's relating to required libraries.
+Patch from Onur Kucuk <onur@kablonet.com.tr> + additional removals.
+
+Added a new menu generation script that should find GNOME2/KDE3 apps too.
+
+Removed obsolete TODO.
+Added BUGS.

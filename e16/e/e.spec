@@ -1,14 +1,14 @@
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.6
-Release: 0.30
+Release: 0.31
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
 Prefix: %{_prefix}
 Docdir: %{_docdir}
 BuildRoot: /tmp/e-%{version}-root
-Packager: Kim Woelders <kim@woelders.dk>
+Packager: Michael Jennings <mej@eterm.org>
 URL: http://www.enlightenment.org/
 Requires: imlib >= 1.9.8
 Requires: fnlib >= 0.5
