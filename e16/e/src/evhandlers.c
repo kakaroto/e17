@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
@@ -1375,6 +1374,13 @@ HandleResizeRequest(XEvent * ev)
    else
       EResizeWindow(disp, win, ev->xresizerequest.width,
 		    ev->xresizerequest.height);
+   EDBUG_RETURN_;
+}
+
+void
+HandleMap(XEvent * ev)
+{
+   EDBUG(5, "HandleMap");
    EDBUG_RETURN_;
 }
 

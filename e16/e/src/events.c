@@ -493,7 +493,7 @@ static void
 HMapNotify(XEvent * ev)
 {
    EDBUG(7, "HMapNotify");
-   ev = NULL;
+   HandleMap(ev);
    EDBUG_RETURN_;
 }
 

@@ -2266,6 +2266,7 @@ void                HandleCirculate(XEvent * ev);
 void                HandleReparent(XEvent * ev);
 void                HandleConfigureRequest(XEvent * ev);
 void                HandleResizeRequest(XEvent * ev);
+void                HandleMap(XEvent * ev);
 void                HandleUnmap(XEvent * ev);
 void                HandleMapRequest(XEvent * ev);
 void                HandleExpose(XEvent * ev);
