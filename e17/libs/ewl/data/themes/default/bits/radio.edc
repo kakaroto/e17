@@ -1,0 +1,155 @@
+images {
+   image, "radio.png" LOSSY 98;
+   image, "radio-over.png" LOSSY 98;
+   image, "dot.png" LOSSY 98;
+}
+
+collections {
+   group {
+      name, "EWL";
+      data {
+          item, "inset/left" "5";
+          item, "inset/right" "5";
+          item, "inset/top" "3";
+          item, "inset/bottom" "3";
+      }
+      parts {
+	 part {
+	    name,          "base";
+	    mouse_events,  0;
+	    description {
+	       state,    "default" 0.0;
+	       border, 3 3 3 3;
+	       min, 10 10;
+	       max, 10 10;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1   -1;
+	       }
+	       image {
+		  normal, "radio.png";
+	       }
+	    }
+	    description {
+	       state,    "over" 0.0;
+	       border, 3 3 3 3;
+	       min, 10 10;
+	       max, 10 10;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1   -1;
+	       }
+	       image {
+		  normal, "radio-over.png";
+	       }
+	    }
+	    description {
+	       state,    "clicked" 0.0;
+	       border, 3 3 3 3;
+	       min, 10 10;
+	       max, 10 10;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1   -1;
+	       }
+	       image {
+		  normal, "radio.png";
+	       }
+	    }
+	 }
+
+
+	 part {
+	    name,          "dot";
+	    mouse_events,  0;
+	    description {
+	       state,    "default" 0.0;
+	       border, 3 3 3 3;
+	       min, 10 10;
+	       max, 10 10;
+	       visible, 0;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1   -1;
+	       }
+	       image {
+		  normal, "dot.png";
+	       }
+	    }
+	    description {
+	       state,    "checked" 0.0;
+	       border, 3 3 3 3;
+	       min, 4 4;
+	       max, 4 4;
+	       visible, 1;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -1   -1;
+	       }
+	       image {
+		  normal, "dot.png";
+	       }
+	    }
+	 }
+	  
+      }
+
+      programs {
+          program {
+	      name, "normal";
+	      signal, "normal";
+	      source, "*";
+	      action, STATE_SET "default" 0.0;
+	      transition, LINEAR, 0.0;
+	      target, "base";
+	      target, "dot";
+	  }
+          program {
+	      name, "hilited";
+	      signal, "hilited";
+	      source, "*";
+	      action, STATE_SET "over" 0.0;
+	      transition, LINEAR, 0.0;
+	      target, "base";
+	  }
+          program {
+	      name, "clicked";
+	      signal, "clicked";
+	      source, "*";
+	      action, STATE_SET "clicked" 0.0;
+	      transition, LINEAR, 0.0;
+	      target, "base";
+	      target, "dot";
+	  }
+          program {
+	      name, "checked";
+	      signal, "checked";
+	      source, "*";
+	      action, STATE_SET "checked" 0.0;
+	      transition, LINEAR, 0.0;
+	      target, "base";
+	      target, "dot";
+	  }
+      }
+   }
+}
