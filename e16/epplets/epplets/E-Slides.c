@@ -204,6 +204,7 @@ change_image(void *data)
 
   ImlibImage *im = NULL;
   double ratio = 0.0;
+  unsigned long first = idx;
   int new_w = 0, new_h = 0, new_x = 3, new_y = 3;
 
   /* Test-load each image to make sure it's a valid image file. */
@@ -211,6 +212,16 @@ change_image(void *data)
     /* It isn't, so NULL out its name. */
     filenames[idx] = NULL;
     INC_PIC();
+    if (idx == first) {
+      char buff[256];
+
+      /* They're all NULL now.  Time to give up. */
+      Esnprintf(buff, sizeof(buff), "There don't seem to be any images in \"%s\".  Please choose another directory.\n", path);
+      Epplet_dialog_ok(buff);
+      Esync();
+      config_cb(NULL);
+      return;
+    }
   }
   new_w = (w * 16 - 6);
   new_h = (h * 16 - 6);

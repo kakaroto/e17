@@ -1806,3 +1806,10 @@ The beginnings of the OpenGL support is in. Use it, build cool stuff. Mail
 me at wmilas@rarcoa.com if something breaks or you want something
 implemented
 
+-------------------------------------------------------------------------------
+
+Wed Jan 19 12:32:56 PST 2000
+(KainX)
+
+If we run out of images, don't just sit and spin like an idiot.  Tell the user
+there's a problem and let them fix it.
