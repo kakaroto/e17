@@ -138,6 +138,21 @@ struct Ewl_Event_Mouse_Out
 	int y; /**< Y coordinate the mouse left at */
 };
 
+typedef struct Ewl_Event_Mouse_Wheel Ewl_Event_Mouse_Wheel;
+
+/**
+ * @struct Ewl_Event_Mouse_Wheel
+ * Provides information about the mouse wheel scrolling
+ */
+struct Ewl_Event_Mouse_Wheel
+{
+	unsigned int modifiers; /**< Modifiers that were pressed */
+	int x; /**< X coordinate the mouse left at */
+	int y; /**< Y coordinate the mouse left at */
+	int z; /**< Z value of mouse wheel */
+	int dir; /**< Direction mouse wheel scrolled */
+};
+
 int ewl_ev_init(void);
 unsigned int ewl_ev_get_modifiers();
 

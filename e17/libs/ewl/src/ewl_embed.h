@@ -74,6 +74,8 @@ void            ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
 void            ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
+void            ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y,
+					   int z, int dir, unsigned int mods);
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(Ewl_Embed_Evas_Window *win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);

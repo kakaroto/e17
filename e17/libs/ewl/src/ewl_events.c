@@ -29,6 +29,7 @@ int ewl_ev_x_window_delete(void *data, int type, void *_ev);
 int ewl_ev_x_key_down(void *data, int type, void *_ev);
 int ewl_ev_x_key_up(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_down(void *data, int type, void *_ev);
+int ewl_ev_x_mouse_wheel(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_up(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_move(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
@@ -83,6 +84,8 @@ int ewl_ev_init(void)
 					ewl_ev_x_mouse_up, NULL);
 		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
 					ewl_ev_x_mouse_move, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL,
+					ewl_ev_x_mouse_wheel, NULL);
 		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT,
 					ewl_ev_x_mouse_out, NULL);
 
@@ -426,6 +429,31 @@ int ewl_ev_x_mouse_out(void *data, int type, void *e)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	ewl_embed_feed_mouse_out(embed, ev->x, ev->y, key_modifiers);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse wheel event information
+ * @return Returns no value.
+ * @brief Handles the mouse wheel events in windows
+ *
+ * Dispatches the mouse wheel event to the appropriate ewl window.
+ */
+int ewl_ev_x_mouse_wheel(void *data, int type, void *e)
+{
+	Ewl_Embed      *embed;
+	Ecore_X_Event_Mouse_Wheel *ev = e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_embed_feed_mouse_wheel(embed, ev->x, ev->y, ev->z, ev->direction, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

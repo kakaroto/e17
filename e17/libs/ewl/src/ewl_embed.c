@@ -523,6 +523,36 @@ ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y, unsigned int mods)
 }
 
 /**
+ * @param embed: the embed where the mouse event is to occur
+ * @param x: the x coordinate of the mouse out
+ * @param y: the y coordinate of the mouse out
+ * @param mods: the mask of key modifiers currently release
+ * @return Returns no value.
+ * @brief Sends a mouse out event to the last focused widget
+ */
+void
+ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y, int z, int dir, unsigned int mods)
+{
+	Ewl_Event_Mouse_Wheel ev;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev.modifiers = mods;
+	ev.x = x;
+	ev.y = y;
+	ev.z = z;
+	ev.dir = dir;
+
+	while (last_focused) {
+		ewl_callback_call_with_event_data(last_focused,
+						  EWL_CALLBACK_MOUSE_WHEEL,
+						  &ev);
+		last_focused = last_focused->parent;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param path: the font path to add to the embeds
  * @return Returns no value.
  * @brief Add a font path to all embeds after realized
