@@ -240,3 +240,7 @@ Updated performance testing to be scaled.  The default is a quicker
 performance test than before, but now we can also choose to run
 anywhere from scratching the surface to a very thorough pounding.
 ----------------------------------------------------------------------
+Sun Jun  9 14:16:38 2002                        Michael Jennings (mej)
+
+Return on failed assert.
+----------------------------------------------------------------------
