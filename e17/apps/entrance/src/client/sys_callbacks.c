@@ -47,16 +47,14 @@ entrance_select_named_session(Entrance_Session e, char *name)
       }
       ++i;
    }
-   fprintf(stderr,
-           "WARNING: Could not find a matching session after processing %d objects.\n",
-           i);
+   
+   syslog(LOG_WARNING, "Warning: Could not find a matching session after processing %d objects.", i);
 }
 
 void
 entrance_start_x(Entrance_Session e)
 {
    char buf[PATH_MAX];
-   int tmp;
 
    entrance_auth_setup_environment(e->auth);
 
@@ -78,9 +76,7 @@ entrance_start_x(Entrance_Session e)
          snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", e->session->name);
    }
    else
-      snprintf(buf, PATH_MAX, "/etc/X11/Xsession");	/* Default 
-	   Session 
-	 */
+      snprintf(buf, PATH_MAX, "/etc/X11/Xsession");	/* Default session */
 
 #if X_TESTING
    printf("Would have executed: %s\n", buf);
@@ -89,20 +85,29 @@ entrance_start_x(Entrance_Session e)
 
    ecore_sync();
    XCloseDisplay(ecore_display_get());
-   /* Tell PAM that session has begun */
-   if ((tmp = pam_open_session(e->auth->pam.handle, 0)) != PAM_SUCCESS)
-   {
-      fprintf(stderr, "Unable to open PAM session. Aborting.\n");
-      exit(1);
-   }
-   if (initgroups(e->auth->pam.pw->pw_name, e->auth->pam.pw->pw_gid))
-      fprintf(stderr,
-              "Unable to initialize group (is entrance running as root?)\n");
 
-   if (setgid(e->auth->pam.pw->pw_gid))
-      fprintf(stderr, "Unable to set group id\n");
-   if (setuid(e->auth->pam.pw->pw_uid))
-      fprintf(stderr, "Unable to set user id\n");
+   syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
+
+#ifdef HAVE_PAM
+   if (e->config->use_pam_auth)
+   {
+      /* Tell PAM that session has begun */
+      if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
+      {
+         syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
+         exit(1);
+      }
+   }
+#endif
+   
+   if (initgroups(e->auth->pw->pw_name, e->auth->pw->pw_gid))
+      syslog(LOG_CRIT, "Unable to initialize group (is entrance running as root?).");
+
+   if (setgid(e->auth->pw->pw_gid))
+      syslog(LOG_CRIT, "Unable to set group id.");
+	  
+   if (setuid(e->auth->pw->pw_uid))
+      syslog(LOG_CRIT, "Unable to set user id.");
 
    entrance_auth_free(e->auth);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);

@@ -21,22 +21,18 @@ entrance_session_new(void)
    e = (Entrance_Session) malloc(sizeof(struct _Entrance_Session));
 
    e->auth = entrance_auth_new();
-   e->config =
-      entrance_config_parse(PACKAGE_DATA_DIR
-                            "/data/config/entrance_config.db");
+   e->config = entrance_config_parse(PACKAGE_CFG_DIR "/entrance_config.db");
    if (!e->config)
    {
-      fprintf(stderr,
-              "Entrance: Fatal Error: Unable to read configuration.\n");
+      syslog(LOG_CRIT, "Fatal Error: Unable to read configuration.");
       exit(1);
    }
-   snprintf(theme_path, PATH_MAX, PACKAGE_DATA_DIR "/data/themes/%s",
+   snprintf(theme_path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
             e->config->theme);
    e->theme = entrance_theme_parse(e->config->theme, theme_path);
    if (!e->theme)
    {
-      fprintf(stderr,
-              "Entrance: Fatal Error: Unable to load specified theme.\n");
+      syslog(LOG_CRIT, "Fatal Error: Unable to load specified theme.");
       exit(1);
    }
    e->theme->name = strdup(e->config->theme);
@@ -253,7 +249,7 @@ entrance_window_prepare(Entrance_Session e)
       e->bg = e_bg_load(e->theme->bg);
    /* Then try default */
    if (!e->bg)
-      e->bg = e_bg_load(PACKAGE_DATA_DIR "/data/bgs/entrance.bg.db");
+      e->bg = e_bg_load(PACKAGE_DATA_DIR "/bgs/entrance.bg.db");
    /* Bilious barnacles! Blank background. */
    if (!e->bg)
       e->bg = e_bg_new();
@@ -343,7 +339,7 @@ entrance_session_init(Entrance_Session e)
 
    evas_image_cache_set(evas, 0);
    evas_font_cache_set(evas, 0);
-   evas_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts/");
+   evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts/");
    if (e->theme && e->theme->path)
       evas_font_path_append(evas, e->theme->path);
 
@@ -371,11 +367,16 @@ entrance_session_init(Entrance_Session e)
 int
 entrance_session_auth_user(Entrance_Session e)
 {
-   return (entrance_auth_cmp(e->auth));
+#ifdef HAVE_PAM
+   if (e->config->use_pam_auth)
+      return (entrance_auth_cmp_pam(e->auth));
+   else
+#endif
+      return (entrance_auth_cmp_crypt(e->auth, e->config));
 }
 
 /**
- * entrance_session_auth_user: forget what we know about the current user
+ * entrance_session_reset_user: forget what we know about the current user
  */
 void
 entrance_session_reset_user(Entrance_Session e)

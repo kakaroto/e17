@@ -51,7 +51,7 @@ fork_and_exit(void)
      default:
         if (write_entranced_pidfile(entranced_pid))
         {
-           fprintf(stderr, "%d is the pid, but I couldn't write to %s\n",
+           syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
                    entranced_pid, PIDFILE);
            kill(entranced_pid, SIGKILL);
            exit(1);
@@ -147,6 +147,7 @@ main(int argc, char **argv)
    pid_t entranced_pid = getpid();
 
    putenv("DISPLAY");
+   openlog("entranced", LOG_NOWAIT, LOG_DAEMON);
 
    /* get command line arguments */
    while (1)
@@ -192,15 +193,13 @@ main(int argc, char **argv)
    {
       if (write_entranced_pidfile(entranced_pid))
       {
-         fprintf(stderr, "%d is the pid, but I couldn't write to %s\n",
+         syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
                  entranced_pid, PIDFILE);
          exit(1);
       }
    }
    else
-   {
       fork_and_exit();
-   }
 
    /* Set up signals */
    sigemptyset(&d_sig);
@@ -212,8 +211,7 @@ main(int argc, char **argv)
    /* Check to make sure entrance binary is executable */
    if (access(ENTRANCE, X_OK))
    {
-      fprintf(stderr,
-              "Entranced: Fatal Error: Unable to launch entrance binary. Aborting.\n");
+      syslog(LOG_CRIT, "Fatal Error: Unable to launch entrance binary. Aborting.");
       exit(1);
    }
 
@@ -233,25 +231,25 @@ main(int argc, char **argv)
    d = spawner_display_new();
 
    /* run X */
-   printf("INIT: Starting X server.\n");
+   syslog(LOG_INFO, "Starting X server.");
    spawn_x();
 
    if (d->status == NOT_RUNNING)
    {
       free(d);
-      fprintf(stderr, "Entranced: Could not start X server\n");
+      syslog(LOG_CRIT, "Could not start X server.");
       exit(1);
    }
 
    /* run entrance */
-   printf("INIT: Starting Entrance.\n");
+   syslog(LOG_INFO, "Starting Entrance.");
    spawn_entrance();
 
    for (;;)
-   {
       pause();
-   }
 
+   closelog();
+   
    return 0;
 }
 
@@ -307,10 +305,10 @@ spawn_entrance(void)
            /* Then fork again. woohoo */
            if ((pid = fork()) == -1)
            {
-              fprintf(stderr,
-                      "Entranced: FATAL: Could not fork() entrance process\n");
+              syslog(LOG_CRIT, "Fatal erro: Could not fork() entrance process.");
               exit(1);
            }
+		   
 		   /* Process Monitor */
            if (pid)
            {
@@ -344,8 +342,7 @@ spawn_entrance(void)
         }
         break;
      case -1:
-        fprintf(stderr,
-                "Entranced: FATAL: Could not fork() entrance process\n");
+        syslog(LOG_CRIT, "Fatal: Could not fork() entrance process.");
         exit(1);
         break;
      default:
@@ -369,7 +366,7 @@ entrance_exit(int signum)
    /* Terminate X session */
    if (signum == SIGTERM)
    {
-      printf("Received SIGTERM, closing session\n");
+      syslog(LOG_CRIT, "Received SIGTERM, closing session.");
       kill(d->pid.x, SIGTERM);
       sleep(1);
       kill(d->pid.x, SIGKILL);
@@ -391,7 +388,7 @@ entrance_exit(int signum)
    /* The session process has died */
    if (signum == SIGUSR1 && pid != d->pid.x)
    {
-      printf("INFO: Entrance session has apparently ended.\n");
+      syslog(LOG_INFO, "Session has apparently ended.");
       x_server_killall();
 
       /* Attend to any waiting zombies */
@@ -405,7 +402,7 @@ entrance_exit(int signum)
    /* SIGCHLD received. This most likely means that X died. */
    if (pid == d->pid.x)
    {
-      printf("INFO: X Server died.\n");
+      syslog(LOG_CRIT, "X server died.");
 
       /* Die Harder! */
       kill(d->pid.x, SIGTERM);
@@ -420,9 +417,7 @@ entrance_exit(int signum)
       if (d->status == LAUNCHING)
       {
          d->status = NOT_RUNNING;
-         fprintf(stderr,
-                 "Entranced: X died mysteriously whilst launching.\n"
-                 "        Waiting 10 seconds before trying again.\n");
+         syslog(LOG_WARNING, "X died mysteriously whilst launching. Waiting 10 seconds before trying again.");
          sleep(10);
       }
       d->status = NOT_RUNNING;
@@ -431,11 +426,11 @@ entrance_exit(int signum)
       if (d->status == NOT_RUNNING)
       {
          free(d);
-         fprintf(stderr, "Entranced: Could not start X server\n");
+         syslog(LOG_CRIT, "Could not start X server.");
          exit(1);
       }
 
-      printf("Started new X server, spawning entrance...\n");
+      syslog(LOG_INFO, "Started new X server, spawning entrance...");
       spawn_entrance();
    }
    sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
@@ -476,7 +471,7 @@ start_server_once(Spawner_Display * d)
         start_time = get_time();
         break;
      case -1:
-        fprintf(stderr, "Entranced: Could not fork() to spawn X process\n");
+        syslog(LOG_CRIT, "Could not fork() to spawn X process.");
         perror("Entranced");
         exit(0);
         break;

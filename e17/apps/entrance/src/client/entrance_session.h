@@ -8,6 +8,7 @@
 #include<limits.h>
 #include<string.h>
 #include<unistd.h>
+#include<syslog.h>
 
 #include "entrance_auth.h"
 #include "entrance_config.h"

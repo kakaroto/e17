@@ -4,27 +4,42 @@ AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(entrance, 0.0.2)
 AM_CONFIG_HEADER(src/config.h)
 
+dnl init config.h.in
+AH_VERBATIM(HAVE_PAM,
+#undef HAVE_PAM
+)
+AH_VERBATIM(HAVE_SHADOW,
+#undef HAVE_SHADOW
+)
+AH_VERBATIM(PACKAGE_DATA_DIR,
+#undef PACKAGE_DATA_DIR
+)
+AH_VERBATIM(PACKAGE_SOURCE_DIR,
+#undef PACKAGE_SOURCE_DIR
+)
+AH_VERBATIM(PACKAGE_CFG_DIR,
+#undef PACKAGE_CFG_DIR
+)
+AH_VERBATIM(PREFIX,
+#undef PREFIX
+)
+
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
-fi
+AC_EXPAND_DIR(PACKAGE_DATA_DIR, "$datadir/${PACKAGE}")
+AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR")
 
 if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/")
+	AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/")
 else
-    AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
+	AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 fi
+
+AC_EXPAND_DIR(PACKAGE_CFG_DIR, "$sysconfdir")
+AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "$PACKAGE_CFG_DIR")
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
@@ -40,77 +55,21 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-withval=""
-AC_ARG_WITH(pam-prefix,
-[      --with-pam-prefix=<prefix>   specify where pam files go],[
-if test x$withval != x; then
-   AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
-fi])
-if test x$withval != x; then
-	PAM_PREFIX_UNEXPANDED="$withval"
-else
-	PAM_PREFIX_UNEXPANDED="$sysconfdir"
-fi
-PAM_PREFIX=`eval echo $PAM_PREFIX_UNEXPANDED`
-AC_SUBST(PAM_PREFIX)
-
-AC_ARG_WITH(edb,
-	[ --with-edb=DIR		use edb in <DIR>],
-	[ CFLAGS="$CFLAGS -I$withval/include"
-	LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(ebg,
-	[ --with-ebg=DIR		use ebg in <DIR>],
-	[ CFLAGS="$CFLAGS -I$withval/include"
-	LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(evas,
-	[ --with-evas=DIR		use evas in <DIR>],
-	[ CFLAGS="$CFLAGS -I$withval/include"
-	LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(ecore,
-	[ --with-ecore=DIR		use ecore in <DIR>],
-	[ CFLAGS="$CFLAGS -I$withval/include"
-	LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(edb, 1.0.3, [
-	AC_SUBST(edb_libs)
-	AC_SUBST(edb_cflags) ],
-	AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
-edb_libs=`edb-config --libs`
-edb_cflags=`edb-config --cflags`
-AC_SUBST(edb_libs)
-AC_SUBST(edb_cflags)
-
-AC_PATH_GENERIC(ecore, 0.0.2, [
-	AC_SUBST(ecore_libs)
-	AC_SUBST(ecore_cflags) ],
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
-AC_SUBST(ecore_libs)
-AC_SUBST(ecore_cflags)
-
-AC_PATH_GENERIC(evas, 1.0.0, [
-	AC_SUBST(evas_libs)
-	AC_SUBST(evas_cflags) ],
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
-AC_SUBST(evas_libs)
-AC_SUBST(evas_cflags)
-
-AC_PATH_GENERIC(ebg, 1.0.0, [
-	AC_SUBST(ebg_libs)
-	AC_SUBST(ebg_cflags) ],
-	AC_MSG_ERROR(Cannot find ebg: Is ebg-config in path?))
-ebg_libs=`ebg-config --libs`
-ebg_cflags=`ebg-config --cflags`
-AC_SUBST(ebg_libs)
-AC_SUBST(ebg_cflags)
+PKG_CHECK_MODULES(ENTRANCE, edb >= 1.0.3 ecore >= 0.0.2 evas >= 1.0.0 ebg >= 1.0.0)
 
 AC_CHECK_HEADERS(security/pam_appl.h, [
-    LIBS="$LIBS -lpam"
-    VRFY="verify-pam"
+	LIBS="$LIBS -lpam"
+	have_pam=yes
     AC_DEFINE(HAVE_PAM)])
+
+AC_CHECK_LIB(crypt, crypt, [LIBS="$LIBS -lcrypt"])
+AC_CHECK_HEADERS(crypt.h)
+
+have_shadow=no
+AC_CHECK_LIB(shadow, getspnam, [
+	LIBS="$LIBS -lshadow"
+	AC_DEFINE(HAVE_SHADOW)
+	have_shadow=yes])
 
 #AC_CONFIG_FILES([src/daemon/entrance_wrapper:src/daemon/entrance_wrapper.in],
 #				[chmod a+x src/daemon/entrance_wrapper])
@@ -122,5 +81,22 @@ src/client/Makefile
 src/daemon/Makefile
 src/daemon/entrance_wrapper
 config/init.d/entrance
+data/Makefile
+data/config/Makefile
+data/images/Makefile
+data/images/sessions/Makefile
+data/themes/Makefile
+data/themes/BlueCrystal/Makefile
+data/themes/matrix0/Makefile
 ])
 
+AC_OUTPUT
+
+echo
+echo "$PACKAGE $VERSION"
+echo
+echo "Support for shadow authentication... $have_shadow"
+echo "Support for PAM authentication...... $have_pam"
+echo
+echo "Now type 'make' (gmake on some systems) to compile $PACKAGE"
+echo

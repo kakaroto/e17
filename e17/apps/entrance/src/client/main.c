@@ -15,18 +15,19 @@ setup(void)
 int
 main(int argc, char *argv[])
 {
+   char *disp;
+   
+   openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
+
    if (!ecore_display_init(argv[1]))
    {
-      if (getenv("DISPLAY"))
-      {
-         printf("Cannot initialize default display:\n");
-         printf("DISPLAY=%s\n", getenv("DISPLAY"));
-      }
+      disp = getenv("DISPLAY");
+	  
+      if (disp)
+         syslog(LOG_CRIT, "Cannot initialize default display \"%s\". Exiting.", disp);
       else
-      {
-         printf("No DISPLAY variable set!\n");
-      }
-      printf("Exit.\n");
+         syslog(LOG_CRIT, "No DISPLAY variable set! Exiting.");
+      
       exit(-1);
    }
 
@@ -40,5 +41,7 @@ main(int argc, char *argv[])
    setup();
 
    ecore_event_loop();
+   closelog();
+
    return (0);
 }

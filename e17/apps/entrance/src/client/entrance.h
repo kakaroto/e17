@@ -6,11 +6,10 @@
 #include<stdlib.h>
 #include<limits.h>
 #include<string.h>
+#include<syslog.h>
 
 #include "util.h"
 #include "entrance_session.h"
-
-#define ENTRANCE_CONFIG_DATABASE PACKAGE_DATA_DIR"/data/config/entrance_config.db"
 
 #define X_TESTING 0
 

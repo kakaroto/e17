@@ -1,10 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
-	@evas_cflags@ \
-	@ebg_cflags@ \
-	@edb_cflags@ \
-	@ecore_cflags@ 
+INCLUDES = @ENTRANCE_CFLAGS@
 
 bin_PROGRAMS = entrance
 
@@ -22,8 +18,4 @@ entrance_SOURCES = \
 	intro.c \
 	main.c 
 
-entrance_LDADD = \
-	@evas_libs@ \
-	@ebg_libs@ \
-	@edb_libs@ \
-	@ecore_libs@ 
+entrance_LDADD = @ENTRANCE_LIBS@

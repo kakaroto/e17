@@ -43,12 +43,9 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    Evas_List *U = NULL;
    Entrance_User *eu = NULL;
    int num_user;
-   int sys;
-
 
    if ((!e) || (!db))
       return;
-
 
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
@@ -72,7 +69,7 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    {
       evas_list_append(e->users, NULL);
       e->users = NULL;
-      fprintf(stderr, "Warning: No users found\n");
+      syslog(LOG_WARNING, "Warning: No users found.");
    }
 
 
@@ -80,7 +77,7 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    memset(st, 0, sizeof(Entrance_Session_Type));
    st->name = "Default";
    st->path = "default";
-   st->icon = PACKAGE_DATA_DIR "/data/images/sessions/default.png";
+   st->icon = PACKAGE_DATA_DIR "/images/sessions/default.png";
    l = evas_list_append(l, st);
 
    if (!e_db_int_get(db, "/entrance/session/default", &def))
@@ -99,7 +96,7 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
          st->path = e_db_str_get(db, buf);
          snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
          str = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "%s/data/images/sessions/%s",
+         snprintf(buf, PATH_MAX, "%s/images/sessions/%s",
                   PACKAGE_DATA_DIR, str);
          st->icon = strdup(buf);
          l = evas_list_append(l, st);
@@ -116,7 +113,7 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    {
       evas_list_append(e->sessions, NULL);
       e->sessions = NULL;
-      fprintf(stderr, "Warning: No sessions found, using default\n");
+      syslog(LOG_WARNING, "Warning: No sessions found, using default.");
    }
 
    if ((str = e_db_str_get(db, "/entrance/theme")))
@@ -167,6 +164,25 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
 	   e->time_format = str;
    else
 	   e->time_format = strdup("%l:%M:%S %p");
+
+   if (!e_db_int_get(db, "/entrance/use_pam_auth", &(e->use_pam_auth)))
+      e->use_pam_auth = 0;
+
+   if (!e->use_pam_auth)
+   {
+      /* check whether /etc/shadow can be used for authentication */
+	  if (!access("/etc/shadow", R_OK))
+		  e->use_shadow_auth = 1;
+	  else if (!access("/etc/shadow", F_OK))
+      {
+         syslog(LOG_CRIT, "/etc/shadow was found but couldn't be read. Run entrance as root.");
+         exit(-1);
+      }
+   }
+#ifndef HAVE_PAM
+   else
+      syslog(LOG_WARN, "Entrance has been built without PAM support, so PAM isn't used for authentication!");
+#endif
 }
 
 Entrance_Config

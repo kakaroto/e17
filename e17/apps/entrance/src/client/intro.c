@@ -124,7 +124,7 @@ intro_init(Entrance_Session e)
       evas = e->evas;
    else
    {
-      fprintf(stderr, "Evas is NULL yo\n");
+      syslog(LOG_CRIT, "Evas is NULL yo.");
       exit(1);
    }
    if (!config)

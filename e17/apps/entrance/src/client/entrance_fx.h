@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include <syslog.h>
 #include "entrance_theme.h"
 
 struct _Entrance_FX_Fade_Data

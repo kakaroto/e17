@@ -1,0 +1,2 @@
+SUBDIRS = config images themes
+

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <syslog.h>
 
 /* Data Structures */
 struct _E_Font

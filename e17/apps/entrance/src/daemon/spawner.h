@@ -9,6 +9,7 @@
 #include <X11/Xlib.h>
 #include <limits.h>
 #include <getopt.h>
+#include <syslog.h>
 #include "../config.h"
 
 #define X_SERVER "/usr/X11R6/bin/X -terminate -ac -quiet"

@@ -91,7 +91,7 @@ fx_fade(Evas_Object * o, double t, int start_a, int end_a)
 
    if (!d || !obj_color)
    {
-      fprintf(stderr, "WARNING: fx_fade data allocation failed.\n");
+      syslog(LOG_WARNING, "Warning: fx_fade() data allocation failed.");
       return;
    }
 

@@ -71,7 +71,7 @@ update_login_face(Entrance_Session e, char *name)
    /* Attempt to load a default image if luser not found */
    if(!eu) 
       snprintf(buf, PATH_MAX, 
-            PACKAGE_DATA_DIR"/data/images/users/_default.png");
+            PACKAGE_DATA_DIR"/images/users/_default.png");
    
    /* Luser image stored in home dir -- this will not work without nsswitch */
    else if (!eu->sys)
@@ -82,12 +82,12 @@ update_login_face(Entrance_Session e, char *name)
                pfoo->pw_dir, eu->img);
       else
          snprintf(buf, PATH_MAX, "%s/%s", 
-               PACKAGE_DATA_DIR "/data/images/users",
+               PACKAGE_DATA_DIR "/images/users",
                eu->img);
    }
    /* Luser image specified in system config */
    else
-      snprintf(buf, PATH_MAX, "%s/%s", PACKAGE_DATA_DIR "/data/images/users",
+      snprintf(buf, PATH_MAX, "%s/%s", PACKAGE_DATA_DIR "/images/users",
                eu->img);
    
    evas_object_image_file_set(e->face, buf, NULL);
@@ -178,7 +178,8 @@ session_list_clicked_cb(void *_data, Evas * e, Evas_Object * _o,
             return;
          }
       }
-      fprintf(stderr, "Unexpected error: Could not match selected session!");
+      
+	  syslog(LOG_CRIT, "Unexpected error: Could not match selected session!");
    }
 }
 
@@ -278,7 +279,8 @@ entrance_return_key_cb(Entrance_Session e, char *buffer)
         break;
      case 1:
         entrance_auth_set_pass(e->auth, buffer);
-        if (!entrance_auth_cmp(e->auth))
+
+		if (!entrance_session_auth_user(e))
         {
            entrance_start_x(e);
         }
@@ -292,7 +294,8 @@ entrance_return_key_cb(Entrance_Session e, char *buffer)
         return_request = 0;
         break;
      default:
-        fprintf(stderr, "Entrance return request too high");
+        syslog(LOG_DEBUG, "Entrance return request too high.");
+
         evas_object_hide(e->face);
         evas_object_hide(e->face_shadow);
         break;

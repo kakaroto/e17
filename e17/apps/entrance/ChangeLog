@@ -1,3 +1,29 @@
+2003-05-06 Tilman Sauerbeck <tilman@code-monkey.de>
+    * output info/error messages/warnings to syslog
+	instead of stdout/stderr
+
+2003-05-05 Tilman Sauerbeck <tilman@code-monkey.de>
+    * src/client/entrance_theme.c entrance_theme_parse():
+    changed the theme format.
+    added color_parse() offset_parse() size_parse() pos_parse()
+
+2003-05-02 Tilman Sauerbeck <tilman@code-monkey.de>
+    * configure.in: use pkg-config to check for e libs
+    * use automake to install config and data files
+    * check whether to use shadow at runtime
+
+2003-04-25 Tilman Sauerbeck <tilman@code-monkey.de>
+    * configure.in: Check for crypt() and /etc/shadow
+    * configure.in: Use AH_VERBATIM() to create config.h.in
+    instead of acconfig.h
+    * src/client/ui_callbacks.c (entrance_return_key_cb)
+    use entrance_session_auth_user() instead of entrance_auth_cmp()
+    * src/client/entrance_config.[ch]: added option "use_pam_auth"
+    * src/client/sys_callbacks.c (entrance_start_x)
+    only clear PAM session if PAM is used
+    * src/client/entrance_session.c (entrance_session_auth_user)
+    handle entrance_auth_pam() _and_ entrance_auth_crypt()
+	
 New Stuff
 
 - Added a "Default" option to the session list menu

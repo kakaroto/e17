@@ -2,12 +2,15 @@
 #define _ENTRANCE_CONFIG
 
 #include "../config.h"
-#include<Edb.h>
-#include<Evas.h>
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<limits.h>
+#include <Edb.h>
+#include <Evas.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <syslog.h>
 
 struct _Entrance_Config
 {
@@ -26,6 +29,8 @@ struct _Entrance_Config
    void *default_session;
    char *theme;
    char *date_format, *time_format;
+   int use_pam_auth;
+   int use_shadow_auth;
 };
 
 typedef struct _Entrance_Config *Entrance_Config;

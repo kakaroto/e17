@@ -4,6 +4,7 @@
 #include "entrance.h"
 #include <pwd.h>
 #include <sys/types.h>
+#include <syslog.h>
 
 void hide_session_list(Entrance_Session e);
 void show_session_list(Entrance_Session e);

@@ -133,7 +133,7 @@ entrance_theme_parse(char *name, char *path)
    snprintf(buf, PATH_MAX, "%s/%s.db", path, name);
    if (!(db = e_db_open_read(buf)))
    {
-      fprintf(stderr, "Error reading theme db file %s", buf);
+      syslog(LOG_CRIT, "Error reading theme db file %s.", buf);
       return NULL;
    }
 
