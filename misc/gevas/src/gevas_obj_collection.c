@@ -111,7 +111,7 @@ enum {
 static guint signals[SIG_LAST] = { 0 };
 
 
-/*
+/**
  * List of type GtkgEvasObjCollection_T containing all the objects in this collection.
  *
  * Caller must free the return value with evas_list_free();
@@ -119,21 +119,28 @@ static guint signals[SIG_LAST] = { 0 };
 Evas_List
 gevas_obj_collection_to_evas_list( GtkgEvasObjCollection* ev )
 {
-	Evas_List ret = 0;
-    Evas_List tl = ev->selected_objs;
+    Evas_List ret = 0;
+
+    g_return_if_fail (ev != NULL);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
     
-	while(tl)
-	{
-		if( tl->data )
-		{
-			ret = evas_list_append( ret, tl->data );
-		}
-		tl = tl->next;
-	}
+    {
+        Evas_List tl = ev->selected_objs;
+    
+        while(tl)
+        {
+            if( tl->data )
+            {
+                ret = evas_list_append( ret, tl->data );
+            }
+            tl = tl->next;
+        }
+    }
+    
 return ret;
 }
 
-/*
+/**
  * Set the predicate that must pass for items to be added to this collection
  */
 void gevas_obj_collection_set_add_predicate(
@@ -148,6 +155,10 @@ void gevas_obj_collection_set_add_predicate(
     ev->m_pred_udata = udata;
 }
 
+
+/**
+ * Get the element at logical index n in the collection.
+ */
 GtkgEvasObjCollection_T
 gevas_obj_collection_element_n( GtkgEvasObjCollection* ev, gint n )
 {
@@ -169,67 +180,124 @@ gevas_obj_collection_element_n( GtkgEvasObjCollection* ev, gint n )
     return 0;
 }
 
+
+/**
+ *
+ * Given a starting index and name find the logical index of the cell
+ * that has the given name. The comparison looking for name can be
+ * sensitive if case_sensitive==1
+ *
+ * @param ev              this
+ * @param start           the index to start looking from
+ * @param name            the name of the cell to lookup
+ * @param case_sensitive  If true, then the comparison lookup is sensitive to case.
+ *                        Else strcasecmp() is used.
+ *
+ */
+static gint gevas_obj_collection_element_idx_from_name_internal(
+    GtkgEvasObjCollection* ev,
+    gint start,
+    const char* name,
+    gboolean case_sensitive )
+{
+    gint i=0;
+    Evas_List li=0;
+
+    g_return_if_fail (ev != NULL);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
+    g_return_if_fail (name != NULL);
+    g_return_if_fail (start >= 0);
+
+    for( li=ev->selected_objs; li; li = li->next)
+        if(li->data)
+        {
+            if( i >= start )
+            {
+                if( case_sensitive )
+                {
+                    if( !strcmp(name, gevasobj_get_name(li->data)))
+                    {
+                        return i;
+                    }
+                }
+                else
+                {
+                    if( !strcasecmp(name, gevasobj_get_name(li->data)))
+                    {
+                        return i;
+                    }
+                }
+            }
+            ++i;
+        }
+    return -1;
+}
+
+
+/**
+ *
+ * Given a starting index and name find the logical index of the cell
+ * that has the given name. This is a case sensitive lookup.
+ *
+ * @param ev              this
+ * @param start           the index to start looking from
+ * @param name            the name of the cell to lookup
+ *
+ * @see gevas_obj_collection_element_idx_from_namei
+ */
 gint gevas_obj_collection_element_idx_from_name(
     GtkgEvasObjCollection* ev,
     gint start,
     const char* name )
 {
-    gint i=0;
-    Evas_List li=0;
-
-    g_return_if_fail (ev != NULL);
-    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
-
-    for( li=ev->selected_objs; li; li = li->next)
-        if(li->data)
-        {
-            if( i >= start )
-            {
-                if( !strcmp(name, gevasobj_get_name(li->data)))
-                {
-                    return i;
-                }
-            }
-            ++i;
-        }
-    return -1;
+    return gevas_obj_collection_element_idx_from_name_internal(ev,start,name,1);
 }
 
+
+/**
+ *  Get the logical index of the cell with a given name. The name
+ *  comparison is not case sensitive.
+ *
+ *
+ * @param ev    this
+ * @param start index to start looking from
+ * @param name  the name of the cell to find the index of. This is a case
+ *              insensitive compare.
+ *
+ * @see gevas_obj_collection_element_idx_from_name
+ */
 gint gevas_obj_collection_element_idx_from_namei(
     GtkgEvasObjCollection* ev,
     gint start,
     const char* name )
 {
-    gint i=0;
-    Evas_List li=0;
-
-    g_return_if_fail (ev != NULL);
-    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
-
-    for( li=ev->selected_objs; li; li = li->next)
-        if(li->data)
-        {
-            if( i >= start )
-            {
-                if( !strcasecmp(name, gevasobj_get_name(li->data)))
-                {
-                    return i;
-                }
-            }
-            ++i;
-        }
-    return -1;
+    return gevas_obj_collection_element_idx_from_name_internal(ev,start,name,0);
 }
 
 
 
+/**
+ * Add object 'o' to the collection 'ev'. If 'o' is already in 'ev' then
+ * nothing is done. Otherwise 'o' is the last cell in 'ev'.
+ *
+ * Note that object 'o' is not copied, it is inserted into 'ev' as is.
+ *
+ * This function emits the ADD signal.
+ *
+ * @param ev    this
+ * @param o     new object to add to ev.
+ *
+ * @see gevas_obj_collection_add_all
+ */
 void
 gevas_obj_collection_add( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
 {
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
-    if(!o)
-        return;
+
+    /* Should this be an assert or a return... hmm */
+    g_return_if_fail (o != NULL);
+    if(!o) return;
 
     if( !ev->m_pred || ev->m_pred(ev,o,ev->m_pred_udata))
     {
@@ -245,6 +313,20 @@ gevas_obj_collection_add( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
         
 }
 
+
+/**
+ * Set style operation. Add all cells in 's' to 'ev'.
+ * If the cell in 's' already exists in 'ev' then the cell is not added.
+ * All cells from 's' that are added are added in order of appearance from 's'
+ * at the end of 'ev'.
+ *
+ * Note that all objects from 's' are not copied, they are inserted into 'ev' as is.
+ *
+ * @param ev this
+ * @param s  the source for all new cells to add to ev.
+ *
+ * @see gevas_obj_collection_add
+ */
 void
 gevas_obj_collection_add_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s)
 {
@@ -252,6 +334,8 @@ gevas_obj_collection_add_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
+    g_return_if_fail (s != NULL);
+    g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(s));
 
     for( li=s->selected_objs; li; li = li->next)
         if(li->data)
@@ -261,7 +345,20 @@ gevas_obj_collection_add_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s
 }
 
 
-
+/**
+ *  Add all the gevas objects that are in the area defined by a rectangle starting
+ * at x,y and with width(w) and height(h) to 'ev'.
+ *
+ * Note that objects are not copied, they are added as is. ie. shallow copy.
+ *
+ * @param ev   this
+ * @param x    x of top left of rectangle
+ * @param y    y of top left of rectangle
+ * @param w    width of rectangle
+ * @param h    height of rectangle
+ *
+ * @see gevas_obj_collection_add_flood
+ */
 void
 gevas_obj_collection_add_flood_area( GtkgEvasObjCollection* ev,
                                      double x, double y, double w, double h)
@@ -269,7 +366,7 @@ gevas_obj_collection_add_flood_area( GtkgEvasObjCollection* ev,
     Evas_List list;
 	void* data;
 
-    printf("gevas_obj_collection_add_flood_area() x:%f y:%f w:%f h:%f\n",x,y,w,h);
+    /*printf("gevas_obj_collection_add_flood_area() x:%f y:%f w:%f h:%f\n",x,y,w,h);*/
     
     
     if (!(w > 0 && h > 0))
@@ -305,6 +402,18 @@ gevas_obj_collection_add_flood_area( GtkgEvasObjCollection* ev,
 }
 
 
+/**
+ *  Add all the gevas objects that are contained in a rectangle that
+ * is just large enough to contain both of o1 and o2.
+ *
+ * Note that all objects are shallow copied.
+ *
+ * @param ev   this
+ * @param o1   An object to be one corner of the bounding rectangle
+ * @param o2   An object to be one corner of the bounding rectangle
+ *
+ * @see gevas_obj_collection_add_flood_area
+ */
 void
 gevas_obj_collection_add_flood( GtkgEvasObjCollection* ev,
                                 GtkgEvasObjCollection_T o1,
@@ -348,6 +457,14 @@ gevas_obj_collection_add_flood( GtkgEvasObjCollection* ev,
     ev->lastadded = o2;
 }
 
+
+/**
+ *  Get a pointer to the last added object for this collection. This
+ * applies for set based operations aswell.
+ *
+ * @param ev this
+ *
+ */
 GtkgEvasObjCollection_T
 gevas_obj_collection_get_lastadded( GtkgEvasObjCollection* ev )
 {
@@ -359,6 +476,15 @@ gevas_obj_collection_get_lastadded( GtkgEvasObjCollection* ev )
 
 
 
+/**
+ *  Remove the object 'o' from the collection. If 'o' is the last added then
+ * gevas_obj_collection_get_lastadded() will return 0 after this call.
+ *
+ * This function emits the REMOVE signal.
+ *
+ * @param ev this
+ * @param o  object to remove
+ */
 void
 gevas_obj_collection_remove( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
 {
@@ -376,6 +502,17 @@ gevas_obj_collection_remove( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T 
     
 }
 
+
+/**
+ * This is a set based operation. All items that are in 's' and that are in 'ev'
+ * when this function is called are no longer in 'ev' then the function returns.
+ *
+ * For each item that is removed from the collection REMOVE is emitted.
+ *
+ * @param ev this
+ * @param s  the set that contains all the objects that should be removed from ev
+ *
+ */
 void
 gevas_obj_collection_remove_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s)
 {
@@ -399,7 +536,14 @@ gevas_obj_collection_remove_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollectio
 
 
 
-
+/**
+ * Remove all of the objects in 'ev'.
+ *
+ * For each object that is removed from 'ev' REMOVE is emitted.
+ *
+ * @param ev this
+ *
+ */
 void
 gevas_obj_collection_clear(  GtkgEvasObjCollection* ev )
 {
@@ -412,8 +556,17 @@ gevas_obj_collection_clear(  GtkgEvasObjCollection* ev )
 }
 
 
-// need to worry about confine() from selectable in here //
-// need bx,by //
+/**
+ * For each object in the whole collection, move it to x,y.
+ *
+ * @param ev this
+ * @param x  new x location for each object in the collection.
+ * @param y  new y location for each object in the collection.
+ * 
+ */
+/* FIXME: */
+/*  need to worry about confine() from selectable in here  */
+/*  need bx,by  */
 void
 gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y )
 {
@@ -431,6 +584,15 @@ gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y )
 }
 
 
+/**
+ * Shift each object in the collection by dx,dy.
+ *
+ *
+ * @param ev this
+ * @param dx delta of the x value for the move of each object
+ * @param dy delta of the y value for the move of each object
+ *
+ */
 void
 gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32 dy )
 {
@@ -444,20 +606,16 @@ gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32
         if(li->data)
         {
             gevasobj_move_relative( li->data, dx, dy );
-/*            
-            double lx=0, ly=0;
-            gint32 x, y;
-            
-            gevasobj_get_location( li->data, &lx, &ly );
-            x = lx + dx;	
-            y = ly + dy;
-            
-//            printf("gevas_obj_collection_move_relative() x:%d y:%d\n",x,y);
-            gevasobj_move( li->data, x, y );
-*/
         }
 }
 
+
+/**
+ * The number of cells in this collection.
+ *
+ * @param ev this
+ *
+ */
 gint
 gevas_obj_collection_get_size(  GtkgEvasObjCollection* ev )
 {
@@ -478,19 +636,31 @@ gevas_obj_collection_get_size(  GtkgEvasObjCollection* ev )
 }
 
 
-
+/**
+ * Hide every object in the collection
+ */
 void
 gevas_obj_collection_hide( GtkgEvasObjCollection* ev )
 {
     gevas_obj_collection_set_visible( ev, 0 );
 }
 
+/**
+ * Show every object in the collection
+ */
 void
 gevas_obj_collection_show( GtkgEvasObjCollection* ev )
 {
     gevas_obj_collection_set_visible( ev, 1 );
 }
 
+/**
+ * Set the visibiliy of every object in the collection
+ *
+ * @param ev this
+ * @param v  if true then every object in the collection will be visible.
+ *           otherwise every object will be hidden.
+ */
 void
 gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v )
 {
@@ -506,6 +676,10 @@ gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v )
         }
 }
 
+
+/**
+ *  Return true of 'ev' contains the object 'o'.
+ */
 gboolean gevas_obj_collection_contains( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
 {
     Evas_List li = 0;
@@ -524,6 +698,10 @@ gboolean gevas_obj_collection_contains( GtkgEvasObjCollection* ev, GtkgEvasObjCo
 }
 
 
+/**
+ * Debug code. Dumps some meta data about the contents of the collection to
+ * stdout.
+ */
 void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Evas_List li )
 {
     g_return_if_fail (ev != NULL);
@@ -539,8 +717,8 @@ void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Evas_List li )
 }
 
 
-/*
- * is "s" a subset of "ev"
+/**
+ * Set based operation. Returns true of 's' is a subset of 'ev'
  */
 gboolean gevas_obj_collection_contains_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s)
 {
@@ -550,11 +728,6 @@ gboolean gevas_obj_collection_contains_all( GtkgEvasObjCollection* ev, GtkgEvasO
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
 
-/*
-  printf("gevas_obj_collection_contains_all() ev:%p ...\n",ev);
-  printf("us:\n");   gevas_obj_collection_dump( ev, ev->selected_objs );
-  printf("them:\n"); gevas_obj_collection_dump( ev, s->selected_objs );
-*/  
     
     for( li=s->selected_objs; li; li = li->next)
         if(li->data)
@@ -570,6 +743,10 @@ gboolean gevas_obj_collection_contains_all( GtkgEvasObjCollection* ev, GtkgEvasO
 
 
 
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/** Kruft that is needed to make this a Gtk+ Object follows. ******************/
 /******************************************************************************/
 /******************************************************************************/
 /******************************************************************************/
