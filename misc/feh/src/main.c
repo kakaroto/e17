@@ -20,7 +20,6 @@
 
 #include "feh.h"
 #include "main.h"
-#include "modify.h"
 
 int
 main (int argc, char **argv)
@@ -55,7 +54,6 @@ main (int argc, char **argv)
 void
 main_loop (void)
 {
-  static int x = -9999, y = -9999;
   winwidget winwid = NULL;
   XEvent ev;
   int timeout = 0;
@@ -64,10 +62,6 @@ main_loop (void)
   int xfd = 0, count = 0, fdsize = 0, j = 0;
   /* A global zoom mode to save cpu on motionnotify */
   int zoom_mode = 0;
-  int rectangle_drawing_mode = 0;
-  unsigned char rec_set = 0;
-  int rec_x = 0;
-  int rec_y = 0;
   double t3 = 0.0;
   double pt, t1 = 0.0, t2 = 0.0;
   fehtimer ft;
@@ -114,21 +108,7 @@ main_loop (void)
 		  if (winwid != NULL)
 		    {
 		      {
-			/* Draw some selection boundaries */
-			if ((rectangles_on) && (!rectangle_drawing_mode))
-			  {
-			    rectangle_drawing_mode = 1;
-			    winwid->rectangle_drawing_mode = 1;
-			    /* reset the rectangle dimensions */
-			    winwid->rec_x = 0;
-			    winwid->rec_y = 0;
-			    winwid->rec_w = 0;
-			    winwid->rec_h = 0;
-			    rec_set = 0;
-			    rec_x = 0;
-			    rec_y = 0;
-			  }
-			else if (opt.slideshow)
+			if (opt.slideshow)
 			  {
 			    slideshow_change_image (winwid, SLIDE_NEXT);
 			  }
@@ -192,61 +172,7 @@ main_loop (void)
 		{
 		case 1:
 		  D (("Button 1 Release event\n"));
-		  winwid = winwidget_get_from_window (ev.xbutton.window);
-		  if (winwid != NULL)
-		    {
-		      if ((rectangles_on) && (rectangle_drawing_mode))
-			{
-			  rectangle_drawing_mode = 0;
-			  winwid->rectangle_drawing_mode = 0;
-
-			  x = -9999;
-			  y = -9999;
-
-			  /* Maybe we could just redraw the "dirty"
-			   * area, it would be less expensive */
-			  XClearWindow (disp, winwid->win);
-
-			  switch (opt.modify_mode)
-			    {
-			    case MODIFY_MODE_NONE:
-			      break;
-			    case MODIFY_MODE_CROP:
-			      feh_crop_image (winwid, winwid->rec_x,
-					      winwid->rec_y, winwid->rec_w,
-					      winwid->rec_h);
-			      break;
-			    case MODIFY_MODE_BRIGHTNESS:
-			      feh_modify_brightness_to_rectangle (winwid, 0.2,
-								  winwid->
-								  rec_x,
-								  winwid->
-								  rec_y,
-								  winwid->
-								  rec_w,
-								  winwid->
-								  rec_h);
-			      break;
-			    case MODIFY_MODE_GAMMA:
-			      feh_modify_gamma_to_rectangle (winwid, 0.6,
-							     winwid->rec_x,
-							     winwid->rec_y,
-							     winwid->rec_w,
-							     winwid->rec_h);
-			      break;
-			    case MODIFY_MODE_CONTRAST:
-			      feh_modify_contrast_to_rectangle (winwid, 0.4,
-								winwid->rec_x,
-								winwid->rec_y,
-								winwid->rec_w,
-								winwid->
-								rec_h);
-			      break;
-			    default:
-			      break;
-			    }
-			}
-		    }
+		  break;
 		case 2:
 		  D (("Button 2 Release event\n"));
 		  winwid = winwidget_get_from_window (ev.xbutton.window);
@@ -265,86 +191,6 @@ main_loop (void)
 		}
 	      break;
 	    case MotionNotify:
-	      if (rectangle_drawing_mode)
-		{
-		  winwid = winwidget_get_from_window (ev.xmotion.window);
-		  if ((winwid) && (winwid->rectangle_drawing_mode))
-		    {
-		      static GC gc = 0;
-		      static XGCValues gcv;
-		      while (XCheckTypedWindowEvent
-			     (disp, winwid->win, MotionNotify, &ev));
-
-		      if (x == -9999)
-			{
-			  D (("Creating GC\n"));
-			  /* Create/recreate the gc */
-			  if (gc)
-			    XFreeGC (disp, gc);
-			  gcv.function = GXxor;
-			  /* LineSolid, LineDoubleDash, LineOnOffDash */
-			  gcv.line_style = LineOnOffDash;
-			  gcv.foreground =
-			    WhitePixel (disp, DefaultScreen (disp));
-			  gc =
-			    XCreateGC (disp, winwid->win,
-				       GCFunction | GCForeground |
-				       GCLineStyle, &gcv);
-			}
-		      else
-			{
-			  D (("Overwriting old rectangle\n"));
-			  /* Overwrite old rectangle */
-			  XDrawRectangle (disp, winwid->win, gc,
-					  winwid->rec_x, winwid->rec_y,
-					  winwid->rec_w, winwid->rec_h);
-			}
-		      x = ev.xmotion.x;
-		      y = ev.xmotion.y;
-		      if (x < 0)
-			x = 0;
-		      if (y < 0)
-			y = 0;
-		      if (!rec_set)
-			{
-			  rec_x = x;
-			  rec_y = y;
-			  rec_set = 1;
-			}
-		      winwid->rec_x = rec_x;
-		      winwid->rec_y = rec_y;
-		      winwid->rec_w = x - winwid->rec_x;
-		      winwid->rec_h = y - winwid->rec_y;
-		      /* if im drawing, left or up, lets swap */
-		      if (winwid->rec_h < 0)
-			{
-			  winwid->rec_y += winwid->rec_h;
-			  winwid->rec_h += -(2 * winwid->rec_h);
-			}
-		      if (winwid->rec_w < 0)
-			{
-			  winwid->rec_x += winwid->rec_w;
-			  winwid->rec_w += -(2 * winwid->rec_w);
-			}
-		      /* Boundry checking */
-		      /* Yu */
-		      if (winwid->rec_y < 0)
-			winwid->rec_y = 0;
-		      /* Xl */
-		      if (winwid->rec_x < 0)
-			winwid->rec_x = 0;
-		      /* Xr */
-		      if (winwid->rec_x + winwid->rec_w > winwid->im_w)
-			winwid->rec_w = (winwid->im_w - 1) - winwid->rec_x;
-		      /* Yd */
-		      if (winwid->rec_y + winwid->rec_h > winwid->im_h)
-			winwid->rec_h = (winwid->im_h - 1) - winwid->rec_y;
-
-		      XDrawRectangle (disp, winwid->win, gc,
-				      winwid->rec_x, winwid->rec_y,
-				      winwid->rec_w, winwid->rec_h);
-		    }
-		}
 	      /* If zoom mode is set, then a window needs zooming, 'cos
 	       * button 2 is pressed */
 	      if (zoom_mode)

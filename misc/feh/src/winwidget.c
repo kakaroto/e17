@@ -46,12 +46,6 @@ winwidget_allocate (void)
   ret->zoom = 1.0;
   ret->timeout = 0;
 
-  ret->rectangle_drawing_mode = 0;
-  ret->rec_x = 0;
-  ret->rec_y = 0;
-  ret->rec_w = 0;
-  ret->rec_h = 0;
-
   return ret;
 }
 

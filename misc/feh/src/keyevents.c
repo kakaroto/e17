@@ -74,8 +74,6 @@ handle_keypress_event (XEvent * ev, Window win)
       if (opt.slideshow)
 	slideshow_change_image (winwid, SLIDE_LAST);
       break;
-    case XK_Escape:
-      reset_modify_mode();
     default:
       break;
     }
@@ -87,18 +85,6 @@ handle_keypress_event (XEvent * ev, Window win)
 
   switch (*kbuf)
     {
-    case 'c':
-      toggle_modify_mode (MODIFY_MODE_CROP);
-      break;
-    case 'b':
-      toggle_modify_mode (MODIFY_MODE_BRIGHTNESS);
-      break;
-    case 'o':
-      toggle_modify_mode (MODIFY_MODE_CONTRAST);
-      break;
-    case 'g':
-      toggle_modify_mode (MODIFY_MODE_GAMMA);
-      break;
     case 'n':
     case 'N':
     case ' ':
@@ -114,45 +100,6 @@ handle_keypress_event (XEvent * ev, Window win)
     case 'q':
     case 'Q':
       winwidget_destroy_all ();
-      break;
-    case 'r':
-      rectangles_on = !rectangles_on;
-      break;
-    case '1':
-      feh_set_background (winwid, 3);
-      break;
-    case '2':
-      feh_blur (winwid, 10);
-      break;
-    case '3':
-      feh_sharpen (winwid, 10);
-      break;
-    case '4':
-      feh_tile_seamless_v (winwid);
-      break;
-    case '5':
-      feh_tile_seamless_h (winwid);
-      break;
-    case '6':
-      feh_tile_seamless (winwid);
-      break;
-    case '7':
-      feh_rotate_clockwise (winwid);
-      break;
-    case '8':
-      feh_flip_h (winwid);
-      break;
-    case '9':
-      feh_flip_v (winwid);
-      break;
-    case '0':
-      feh_modify_brightness (winwid, 0.1);
-      break;
-    case '-':
-      feh_modify_gamma (winwid, 0.1);
-      break;
-    case '=':
-      feh_modify_contrast (winwid, 0.1);
       break;
     default:
       break;

@@ -1,3 +1,12 @@
+Wed Feb  9 21:59:09 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Removed all the image modification code from feh, seeing as
+	dphase is working on ee2. No point duplicating everything :)
+	* I figure feh can view pr0n, while ee2 modifies it :) Something
+	like that, anyway.
+	* I never wanted the modification stuff in here really, it was
+	just feature creep. Feh is a viewer and montager. That is all :)
+
 Tue Jan 11 21:11:11 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Hrm. Just so you know what order they come in, the images are

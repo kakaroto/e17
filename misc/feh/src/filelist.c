@@ -23,6 +23,55 @@
 static int rm_file_num;
 static char **rm_files;
 
+enum filetype
+{ TYPE_REG, TYPE_URL };
+
+typedef struct __feh_file _feh_file;
+typedef _feh_file *feh_file;
+
+struct __feh_file
+{
+  char *filename;
+  char *name;
+  char *path;
+  int type;
+  feh_file next;
+  feh_file prev;
+};
+
+feh_file filelist_addtofront (feh_file root, feh_file newfile);
+feh_file filelist_newitem (char *filename);
+
+feh_file filelist = NULL;
+
+feh_file
+filelist_newitem (char *filename)
+{
+  feh_file newfile;
+  char *s;
+
+  newfile = (feh_file) emalloc (sizeof (_feh_file));
+  newfile->filename = estrdup (filename);
+  s = strrchr (filename, '/');
+  if (s)
+    newfile->name = estrdup (s + 1);
+  newfile->path = estrdup (filename);
+  s = strrchr(newfile->path, '/');
+  if (s)
+	*s='\0';
+  newfile->next = NULL;
+  newfile->prev = NULL;
+  return newfile;
+}
+
+feh_file
+filelist_addtofront (feh_file root, feh_file newfile)
+{
+  newfile->next = root;
+  newfile->prev = NULL;
+  return newfile;
+}
+
 void
 add_file_to_filelist (char *file)
 {
@@ -33,6 +82,13 @@ add_file_to_filelist (char *file)
   else
     files = emalloc (file_num * sizeof (char *));
   files[file_num - 1] = file;
+
+  
+  /* NEW CODE */
+  
+  /* filelist = filelist_addtofront (filelist, filelist_newitem (file)); */
+  
+  /* NEW CODE */
 }
 
 void
@@ -75,9 +131,7 @@ void
 add_file_to_filelist_recursively (char *path, unsigned char enough)
 {
   struct stat st;
-
   D (("In add_file_to_filelist_recursively file is %s\n", path));
-
   if (!enough)
     {
       /* First time through, sort out pathname */
@@ -98,10 +152,9 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 
   if (stat (path, &st))
     {
-      weprintf ("%s does not exist, or you do not have permission to open it",
-		path);
-      return;
-    }
+      weprintf
+	("%s does not exist, or you do not have permission to open it",
+	 path); return;}
   if (S_ISDIR (st.st_mode))
     {
       D (("   It is a directory\n"));
@@ -118,7 +171,6 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 		{
 		  char *file;
 		  int len = 0;
-
 		  /* Add one for the "/" and one for the '/0' */
 		  len = strlen (path) + strlen (de->d_name) + 2;
 		  file = emalloc (len);
@@ -126,7 +178,6 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 		   * duplicate and we need the filelist for the lifetime of the
 		   * app. */
 		  snprintf (file, len, "%s/%s", path, de->d_name);
-
 		  /* This ensures we only go down one level if not
 		   * recursive */
 		  if (opt.recursive)
