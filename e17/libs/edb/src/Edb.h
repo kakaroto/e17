@@ -11,66 +11,192 @@ typedef void        E_DB_File;
 
 /* Edb Core Functions .............................. */
 
-/* Open a db for read/write - returns NULL if not possible */
+/**
+ * e_db_open - Opens a db for read/write access
+ * @file: name of the db file.
+ *
+ * This function opens an edb database file for read
+ * and write access. It returns NULL if not possible,
+ * a pointer to an E_DB_File otherwise.
+ */
 E_DB_File          *e_db_open(char *file);
 
-/* Open a db for read only - retunr NULL if not possible */ 
+
+/**
+ * e_db_open_read - Opens a database for read access only
+ * @file: name of the database file
+ *
+ * This function opens an edb database file for read access.
+ * It returns NULL if that's not possible, a pointer to an
+ * E_DB_File otherwise.
+ */ 
 E_DB_File          *e_db_open_read(char *file);
 
-/* Close a db handle - does not always close - leaves pending till a flush */
+
+/** 
+ * e_db_close - Closes a db handle
+ * @db: Edb database handle
+ *
+ * This function closes a database. It does not guarantee a
+ * write to disk, it just decrements the use count on the
+ * database. When a database has been closed by all users,
+ * calling e_db_flush() writes the database to disk.
+ */
 void                e_db_close(E_DB_File * db);
 
-/* Get data from the db indexed with the key and return
-   size in bytes. You need to free the returned data.
-*/
+/**
+ * e_db_data_get - Retrieves generic data from the db for a given key
+ * @db: Edb database handle
+ * @key: key for the data item
+ * @size_ret: result parameter that returns the size of the data item
+ *
+ * This function is the generic way to retrieve data from
+ * an Edb database. Use the @size_ret value to find out the
+ * size of the retrieved data. Returns the retrieved data,
+ * which you need to free when you don't need it any longer.
+ */
 void               *e_db_data_get(E_DB_File * db, char *key, int *size_ret);
 
-/* Set the data of the stated size in the db with the stated key */
+/**
+ * e_db_data_set - Writes generic data to a database
+ * @db: Edb database handle
+ * @key: Key through which the data can be retrieved
+ * @data: the data item itself
+ * @size: size of the data item @data
+ *
+ * This function is the generic way to write items of data to a
+ * database. 
+ */
 void                e_db_data_set(E_DB_File * db, char *key, void *data, int size);
 
-/* Delete the data and key with in the db */
+/**
+ * e_db_data_del - Removes a key-data pair in a database
+ * @db: Edb database handle
+ * @key: Key that determines the data item that is removed
+ *
+ * This function removed the key and data in a database that
+ * the given key points to.
+ */
 void                e_db_data_del(E_DB_File * db, char *key);
 
-/* Tells you how many db's this process has open */
+/**
+ * e_db_usage - returns the number of database files a process uses
+ *
+ * This function returns the number of database files the
+ * current process is using at the moment.
+ */
 int                 e_db_usage(void);
 
-/* Flush all pending closes to db's and ensure a write to disk */
+/**
+ * e_db_flush - flushes the contents of unused databases to disk
+ * 
+ * This function checks for which databases the use count has
+ * dropped to zero and writes their contents out to disk.
+ */
 void                e_db_flush(void);
 
-/* Flush db's ONLY if db's have not been accessed in the last 0.5 seconds */
+/**
+ * e_db_runtime_flush - time-sensitive version of @efsd_db_flush
+ *
+ * This function is like @efsd_db_flush, but flushes databases
+ * only if they have not been accessed in the last 0.5 seconds.
+*/
 int                 e_db_runtime_flush(void);
 
 /* High-level convenience functions ................... */
 
-/* Put an integer into the db (handle endianess flip too) */
+
+/**
+ * e_db_int_set - convenience function for writing integers to a database
+ * @db: Edb database handle
+ * @key: key through which the data can be retrieved
+ * @val: the integer value that is to be written to the database
+ *
+ * This function is a convenience wrapper around e_db_data_set() to
+ * set integer values in a database. It also handles endianness
+ * byteorder flips.
+ */
 void                e_db_int_set(E_DB_File * db, char *key, int val);
 
-/* Get the integer value form the bd - handle endianess too - return 1 if ok */
+/**
+ * e_db_int_get - convenience function for retrieving integers from a database
+ * @db: Edb database handle
+ * @key: key for the integer value
+ * @val: result value that points to an integer where the result is stored
+ *
+ * This function retrieves an integer for the given key from a database,
+ * handling endianness flips. It returns 1 if the lookup succeeded, 0 otherwise.
+ */
 int                 e_db_int_get(E_DB_File * db, char *key, int *val);
 
-/* Set a float in the db - handle endianess */
+/**
+ * e_db_float_set - convenience function for writing floats to a database
+ * @db: Edb database handle
+ * @key: key through which the data can be retrieved
+ * @val: the float value that is to be written to the database
+ *
+ * This function is a convenience wrapper around e_db_data_set() to
+ * set float values in a database. It also handles endianness
+ * byteorder flips.
+ */
 void                e_db_float_set(E_DB_File * db, char *key, float val);
 
-/* Get the float from the db - handle endianess - return 1 if ok, 0 if not */
+/**
+ * e_db_float_get - convenience function for retrieving floats from a database
+ * @db: Edb database handle
+ * @key: key for the integer value
+ * @val: result value that points to a float where the result is stored
+ *
+ * This function retrieves a float for the given key from a database,
+ * handling endianness flips. It returns 1 if the lookup succeeded, 0 otherwise.
+ */
 int                 e_db_float_get(E_DB_File * db, char *key, float *val);
 
-/* Set a string in the db */
+/**
+ * e_db_str_set - convenience function for writing strings to a database
+ * @db: Edb database handle
+ * @key: key through which the data can be retrieved
+ * @str: the string that is to be written to the database
+ *
+ * This function is a convenience wrapper around e_db_data_set() to
+ * set character strings in a database.
+ */
 void                e_db_str_set(E_DB_File * db, char *key, char *str);
 
-/* Get a string from the db - you must free it when done using free() */
+/**
+ * e_db_str_get - convenience function for retrieving strings from a database
+ * @db: Edb database handle
+ * @key: key for the integer value
+ *
+ * This function retrieves a string for the given key from a database
+ * and returns it. When an error occurs, NULL is returned. You must free
+ * the string when you're finished using free().
+ */
 char               *e_db_str_get(E_DB_File * db, char *key);
 
-/* Set the encoding type of an entry - types defined are: */
-/* "int"    - integer        */
-/* "str"    - string         */
-/* "float"  - floating point */
-/* All other types are application specific */
-/* You do not need to set the type if you use e_db_int_set(), */
-/* e_db_float_set() and e_db_str_set() routines. edb does this for you. */
+/**
+ * e_db_type_set - sets the encoding of a database item
+ * @db: Edb database handle
+ * @key: key for the data item whose type is to be set
+ * @type: string containing the type of the data item
+ *
+ * This function sets the type of a database entry. The types currently
+ * used are "int" for integers, "str" for strings and "float" for
+ * floats. All other types are application-specific. You do not need to
+ * set the types manually when using e_db_int_set(), e_db_float_set()
+ * and e_db_str_set().
+ */
 void                e_db_type_set(E_DB_File * db, char *key, char *type);
-
-/* Get the ype of an entry - if type is unknown NULL is returned. */
-/* You must free the string returned when you are done using free() */
+  
+/**
+ * e_db_type_get - returns type of a data item
+ * @db: Edb database handle
+ * @key: key for the data item whose type is retrieved
+ *
+ * This function returns the type of a data item in a database. If
+ * the type is unknown, NULL is returned. Otherwise, you need to 
+ * free the result when you're finished, using free().
+ */
 char               *e_db_type_get(E_DB_File * db, char *key);
 
 /* Dump the db as if it were a list of keys and strings as a list of strings */
@@ -83,9 +209,27 @@ char               *e_db_type_get(E_DB_File * db, char *key);
 /* "blah", "hello", "nym", "goodbye", "flim", "boo:" */
 char              **e_db_dump_multi_field(char *file, char *file2, int *num_ret);
 
-/* Return a list of strings of the keys in the db. you must free the list */
-/* and the strings in the list when done */
+/**
+ * e_db_dump_key_list - returns list of keys in a database
+ * @file: name of an Edb database file
+ * @num_ret: result pointer that returns the number of keys in the database
+ *
+ * This function returns a list of strings of the keys in the database.
+ * You must free the list and the strings in the list when done.
+ */
 char              **e_db_dump_key_list(char *file, int *num_ret);
+
+/**
+ * e_db_match_keys - returns list of keys matching a pattern
+ * @file:    name of an Edb database file
+ * @pattern: key pattern to match
+ * @num_ret: result pointer that returns the number of keys in the database
+ *
+ * This function returns a list of strings of the keys in the database
+ * that match the given pattern. The pattern is a shell wildcard pattern.
+ * You must free the list and the strings in the list when done.
+ */
+char              **e_db_match_keys(char *file, char *pattern, int *num_ret);
 
 /* Convenience macros to make setting and getting values form a db easy */ 
 #define E_DB_INT_SET(edb, key, val) \

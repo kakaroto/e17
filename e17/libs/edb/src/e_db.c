@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <netinet/in.h>
+#include <fnmatch.h>
 
 #define DB_DBM_HSEARCH 1
 #include "edb.h"
@@ -645,6 +646,52 @@ e_db_dump_key_list(char *file, int *num_ret)
 	while (key.dptr)
 	  {
 	     if (*((char *)(key.dptr)) != 0)
+	       {
+		  (*num_ret)++;
+		  if (*num_ret > buf_count)
+		    {
+		       buf_count += 256;
+		       REALLOC_PTR(list, buf_count);
+		    }
+		  list[*num_ret - 1] = NEW(char, key.dsize + 1);
+		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
+		  
+		  list[*num_ret - 1][key.dsize] = 0;
+	       }
+	     key = edbm_nextkey(edbf->edbf);
+	  }
+	e_db_close(edb);
+     }
+   last_edb_call = _e_get_time();
+   flush_pending = 1;
+   return list;
+}
+
+char              **
+e_db_match_keys(char *file, char *pattern, int *num_ret)
+{
+   E_DB_File          *edb;
+   _E_DB_File         *edbf;
+   datum               key;
+   char              **list = NULL;
+   int                 buf_count;
+   char                s[8192];
+   
+   *num_ret = 0;
+   buf_count = 0;
+   
+   edb = e_db_open_read(file);
+   edbf = edb;
+   if (edbf)
+     {
+	key = edbm_firstkey(edbf->edbf);
+	while (key.dptr)
+	  {	    
+	     MEMCPY(key.dptr, s, char, key.dsize);
+	     s[key.dsize] = 0;
+
+	     if ((*((char *)(key.dptr)) != 0) &&
+		 (fnmatch(pattern, s, 0) == 0))
 	       {
 		  (*num_ret)++;
 		  if (*num_ret > buf_count)

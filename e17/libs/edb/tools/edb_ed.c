@@ -16,7 +16,7 @@ sort_compare(const void *v1, const void *v2)
 static int
 unescape_string(char *str)
 {
-  int  i, len = 0;
+  int  i, len = 1;
   unsigned char val = 0;
   char c;
   char *s;
@@ -161,7 +161,7 @@ int
 main(int argc, char **argv)
 {
    int i;
-   int add = 0, del = 0, get = 0;
+   int add = 0, del = 0, get = 0, match = 0;
    char *key = NULL;
    char *type = NULL;
    char *data = NULL;
@@ -173,7 +173,7 @@ main(int argc, char **argv)
        key = NULL;
        type = NULL;
        data = NULL;
-       add = del = get = 0;
+       add = del = get = match = 0;
 
        if ((!strcmp(argv[i], "add")) && (i < (argc - 3)))
 	  {
@@ -199,6 +199,12 @@ main(int argc, char **argv)
 	     i++;
 	     key = argv[i];
 	  }
+        else if ((!strcmp(argv[i], "match")) && (i < (argc - 1)))
+	  {
+	     match = 1;
+	     i++;
+	     key = argv[i];
+	  }
 	else if ((!strcmp(argv[i], "-h")) ||
 		 (!strcmp(argv[i], "-help")) ||
 		 (!strcmp(argv[i], "--h")) ||
@@ -210,8 +216,9 @@ main(int argc, char **argv)
 		    "                      [[str|int|float|data] value | data -]\n"
 		    "Get value:         %s database_file.db get [key] [str|int|float|data]\n"
 		    "Delete value:      %s database_file.db del [key]\n"
+		    "Match keys:        %s database_file.db match [key pattern]\n"
 		    ,
-		    argv[0], argv[0], argv[0], argv[0]);
+		    argv[0], argv[0], argv[0], argv[0], argv[0]);
 	     exit(1);
 	  }
 	else
@@ -224,18 +231,26 @@ main(int argc, char **argv)
 	    fprintf(stderr, "No database file specified!\n  %s -h for details\n", argv[0]);
 	    exit(-1);
 	  }
+
 	if (((add) || (del) || (get)) && (dbfile) && (!key))
 	  {
 	    fprintf(stderr, "No key specified!\n  %s -h for details\n", argv[0]);
 	    exit(-1);
 	  }
+
 	if ((add) && (dbfile) && (!data))
 	  {
 	    fprintf(stderr, "No data specified!\n  %s -h for details\n", argv[0]);
 	    exit(-1);
 	  }
 
-	if (!add && !del && !get && argc > 2)
+	if ((match) && (!key))
+	  {
+	    fprintf(stderr, "No key pattern specified!\n  %s -h for details\n", argv[0]);
+	    exit(-1);
+	  }
+
+	if (!add && !del && !get && !match && argc > 2)
 	  continue;
 
 	if ((add) || (del) || (get))
@@ -364,7 +379,7 @@ main(int argc, char **argv)
 		    data = e_db_str_get(db, key);
 		    if (data)
 		      {
-			printf("%s\n", data);
+			printf("'%s'\n", data);
 			free(data);
 		      }
 		    else
@@ -421,6 +436,38 @@ main(int argc, char **argv)
 	      }
 	    e_db_close(db);
 	  }
+	else if (match)
+	  {
+	    char **keys;
+	    int keys_num, j = 0;
+	    
+	    db = e_db_open_read(dbfile);
+	    if (!db)
+	      {
+		fprintf(stderr, "Database file %s cannot be opened!\n  %s -h for details\n", dbfile, argv[0]);
+		exit(-1);
+	      }
+	    keys = e_db_match_keys(dbfile, key, &keys_num);
+	    printf("---------------------------------------------------------------\n");
+	    printf("Keys in database %s matching '%s'\n", dbfile, key);
+	    printf("\n");
+	    printf("[   type   ] key\n");
+	    printf("---------------------------------------------------------------\n");
+	    printf("\n");
+	    qsort(keys, keys_num, sizeof(char *), sort_compare);
+
+	    for (j = 0; j < keys_num; j++)
+	      {
+		char *t;
+		
+		type = e_db_type_get(db, keys[j]);
+		if (type) t = type;
+		else t = "?";
+		printf("[ %8s ] %s\n", t, keys[j]);
+		if (type) free(type);
+	      }
+	    e_db_close(db);
+	  }
 	else
 	  {
 	    char **keys;
@@ -434,7 +481,7 @@ main(int argc, char **argv)
 	      }
 	    keys = e_db_dump_key_list(dbfile, &keys_num);
 	    printf("---------------------------------------------------------------\n");
-	    printf("Keys in Database: %s\n", dbfile);
+	    printf("Keys in database: %s\n", dbfile);
 	    printf("\n");
 	    printf("[   type   ] key\n");
 	    printf("---------------------------------------------------------------\n");
