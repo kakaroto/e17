@@ -28,5 +28,4 @@ ChangeLog \
 FAQ \
 INSTALL \
 NEWS \
-README \
-TODO
+README

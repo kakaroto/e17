@@ -1,6 +1,6 @@
 SUBDIRS = themes
 
-EXTRA_DIST = README ChangeLog
+EXTRA_DIST = README ChangeLog TODO
 
 if FSSTD
 bindir=@bindir@
