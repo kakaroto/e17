@@ -9,7 +9,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <netinet/in.h>
-#include <sys/file.h>
 
 #define DB_DBM_HSEARCH 1
 #include <db.h>
@@ -26,7 +25,6 @@ typedef struct _e_db_file _E_DB_File;
 
 struct _e_db_file
 {
-   int                 fd;
    char               *file;
    DBM                *dbf;
    char                writeable;
@@ -122,8 +120,6 @@ _e_db_close(E_DB_File * db)
 
 		  IF_FREE(dbf->file);
 		  dbm_close(dbf->dbf);
-		  flock(dbf->fd, LOCK_UN);
-		  close(dbf->fd);
 		  FREE(dbf);
 		  return;
 	       }
@@ -139,7 +135,6 @@ e_db_open(char *file)
 {
    _E_DB_File         *dbf;
    DBM                *db = NULL;
-   int                 fd = -1;
    int                 dbs_count = 0;
 
    dbf = _e_db_find(file, 1);
@@ -168,7 +163,7 @@ e_db_open(char *file)
 	  }
      }
    {
-      char               *newfile = NULL, *newfile_db = NULL;
+      char               *newfile = NULL;
       int                 newfilelen;
 
       newfile = strdup(file);
@@ -180,46 +175,14 @@ e_db_open(char *file)
 	       (newfile[newfilelen - 2] == 'd') &&
 	       (newfile[newfilelen - 1] == 'b'))
 	      newfile[newfilelen - 3] = 0;
-
-	   newfile_db = malloc(strlen(newfile) + 3 + 1);
-	   if (newfile_db)
-	     {
-		strcpy(newfile_db, newfile);
-		strcat(newfile_db, ".db");
-		errno = 0;
-		fd = open(newfile_db, O_RDWR);
-		if ((errno == ENOENT) || (fd >= 0))
-		  {
-		     int locked = 0;
-		     
-		     errno = 0;
-		     if ((fd >= 0) && (!locked)) 
-		       {
-			  flock(fd, LOCK_EX);
-			  locked = 1;
-		       }
-		     db = dbm_open(newfile, O_RDWR | O_CREAT, 0664);
-		     if (fd < 0) fd = open(newfile_db, O_RDWR);
-		     if ((fd >= 0) && (!locked)) 
-		       {
-			  flock(fd, LOCK_EX);
-			  locked = 1;
-		       }
-		     if ((fd < 0) && (db))
-		       {
-			  dbm_close(db);
-			  db = NULL;
-		       }
-		  }
-		FREE(newfile_db);
-	     }
+	   
+	   db = dbm_open(newfile, O_RDWR | O_CREAT, 0664);
 	   FREE(newfile);
 	}
    }
    if (db)
      {
 	dbf = NEW(_E_DB_File, 1);
-	dbf->fd = fd;
 	dbf->file = strdup(file);
 	dbf->dbf = db;
 	dbf->writeable = 1;
@@ -238,7 +201,6 @@ e_db_open_read(char *file)
 {
    _E_DB_File         *dbf;
    DBM                *db = NULL;
-   int                 fd = -1;
    int                 dbs_count = 0;
 
    dbf = _e_db_find(file, 0);
@@ -271,7 +233,7 @@ e_db_open_read(char *file)
 	  }
      }
    {
-      char               *newfile = NULL, *newfile_db = NULL;
+      char               *newfile = NULL;
       int                 newfilelen;
 
       newfile = strdup(file);
@@ -284,45 +246,13 @@ e_db_open_read(char *file)
 	       (newfile[newfilelen - 1] == 'b'))
 	      newfile[newfilelen - 3] = 0;
 
-	   newfile_db = malloc(strlen(newfile) + 3 + 1);
-	   if (newfile_db)
-	     {
-		strcpy(newfile_db, newfile);
-		strcat(newfile_db, ".db");
-		errno = 0;
-		fd = open(newfile_db, O_RDWR);
-		if ((errno == ENOENT) || (fd >= 0))
-		  {
-		     int locked = 0;
-		     
-		     errno = 0;
-		     if ((fd >= 0) && (!locked)) 
-		       {
-			  flock(fd, LOCK_EX);
-			  locked = 1;
-		       }
-		     db = dbm_open(newfile, O_RDWR | O_CREAT, 0664);
-		     if (fd < 0) fd = open(newfile_db, O_RDONLY);
-		     if ((fd >= 0) && (!locked)) 
-		       {
-			  flock(fd, LOCK_EX);
-			  locked = 1;
-		       }
-		     if ((fd < 0) && (db))
-		       {
-			  dbm_close(db);
-			  db = NULL;
-		       }
-		  }
-		FREE(newfile_db);
-	     }
+	   db = dbm_open(newfile, O_RDWR | O_CREAT, 0664);
 	   FREE(newfile);
 	}
    }
    if (db)
      {
 	dbf = NEW(_E_DB_File, 1);
-	dbf->fd = fd;
 	dbf->file = strdup(file);
 	dbf->dbf = db;
 	dbf->writeable = 0;
