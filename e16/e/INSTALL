@@ -242,13 +242,13 @@ Window Manager Hints
 ====================
 
 For compatibility with environments supporting the Extended Window Manager 
-Hints (see http://www.freedesktop.org/) such as GNOME2 and KDE3, configure
+Hints (see http://www.freedesktop.org/) such as GNOME2 and KDE2/3, configure
 with --enable-hints-ewmh (default).
 
 For compatibility with GNOME versions prior to 2.0, configure with 
 --enable-hints-gnome and read the section about GNOME below.
 
-For compatibility with KDE versions prior to 3.0, configure with 
+For compatibility with KDE versions prior to 2.0, configure with 
 --enable-hints-kde and read the section about KDE below.
 
 
@@ -281,7 +281,7 @@ have enlightenment relaunch them as the preferred launch method.  To do this,
 once you have launched them by hand, alt-rightclick on them, select "Remember"
 and then choose "Restart Application on Login".
 
-Setting Up Enlightenment To Work with KDE versions prior to 3.0
+Setting Up Enlightenment To Work with KDE versions prior to 2.0
 ===============================================================
 
 By default, Enlightenment does not support the KDE hints.  You can turn them
