@@ -1,6 +1,8 @@
 #ifndef ETCHER_H
 #define ETCHER_H
 
+#include <Evas.h>
+
 typedef enum _Etcher_Image_Type Etcher_Image_Type;
 typedef enum _Etcher_Part_Type Etcher_Part_Type;
 typedef enum _Etcher_Text_Effect Etcher_Text_Effect;
@@ -24,7 +26,7 @@ enum _Etcher_Image_Type
   ETCHER_IMAGE_TYPE_LOSSY,
   ETCHER_IMAGE_TYPE_EXTERNAL
 
-}
+};
 
 enum _Etcher_Part_Type
 {
@@ -32,7 +34,7 @@ enum _Etcher_Part_Type
   ETCHER_PART_TYPE_TEXT,
   ETCHER_PART_TYPE_RECT,
   ETCHER_PART_TYPE_SWALLOW
-}
+};
 
 enum _Etcher_Text_Effect
 {
@@ -43,7 +45,7 @@ enum _Etcher_Text_Effect
   ETCHER_TEXT_EFFECT_OUTLINE_SHADOW,
   ETCHER_TEXT_EFFECT_SOFT_SHADOW,
   ETCHER_TEXT_EFFECT_OUTLINE_SOFT_SHADOW
-}
+};
 
 enum _Etcher_Action
 {
@@ -54,7 +56,7 @@ enum _Etcher_Action
   ETCHER_ACTION_DRAG_VAL_STEP,
   ETCHER_ACTION_DRAG_VAL_PAGE,
   ETCHER_ACTION_SCRIPT
-}
+};
 
 enum _Etcher_Transition
 {
@@ -62,20 +64,20 @@ enum _Etcher_Transition
   ETCHER_TRANSITION_SINUSOIDAL,
   ETCHER_TRANSITION_ACCELERATE,
   ETCHER_TRANSITION_DECELERATE
-}
+};
 
 struct _Etcher_File
 {
   Evas_List *images;
   Evas_List *fonts;
   
-}
+};
 
 struct _Etcher_Data
 {
   char *key;
   char *value;
-}
+};
 
 struct _Etcher_Image
 {
@@ -83,14 +85,14 @@ struct _Etcher_Image
   char *path;
   Etcher_Image_Type type;
   double value;
-}
+};
 
 struct _Etcher_Font
 {
   char *name;
   char *font;
   char *path;
-}
+};
 
 struct _Etcher_Group
 {
@@ -99,7 +101,7 @@ struct _Etcher_Group
 
   Evas_List *parts;
   Evas_List *programs;
-}
+};
 
 struct _Etcher_Part
 {
@@ -113,7 +115,7 @@ struct _Etcher_Part
   /* FIXME dragables */
 
   Evas_List *states;
-}
+};
 
 struct _Etcher_Program 
 {
@@ -128,7 +130,7 @@ struct _Etcher_Program
   Etcher_Action action;
   Etcher_Transition transition;
   
-}
+};
 
 struct _Etcher_Part_State
 {
@@ -173,7 +175,7 @@ struct _Etcher_Part_State
   struct
   {
     int l, r, t, b;
-  }
+  };
 
   struct
   {
@@ -185,7 +187,7 @@ struct _Etcher_Part_State
     double         pos_rel_x, pos_rel_y;
     int            pos_abs_x, pos_abs_y; 
     double         rel_x, rel_y; 
-    int            abs_x, rel_x; 
+    int            abs_x, abs_y; 
   } fill;
 
   struct
@@ -206,6 +208,6 @@ struct _Etcher_Part_State
   } text;
 
 
-}
+};
 
 #endif

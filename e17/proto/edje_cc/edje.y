@@ -16,8 +16,8 @@
 %union {
 	char *string;
 	float val;
-	Etcher_Program_Actions prog_actions;
-	Etcher_Transition_Types transition_type;
+	Etcher_Action prog_actions;
+	Etcher_Transition transition_type;
 }
 
 %token STRING FLOAT
@@ -152,7 +152,7 @@ program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
 
 action_type: SIGNAL_EMIT { $$ = ETCHER_ACTION_SIGNAL_EMIT; }
 	| STATE_SET { $$ = ETCHER_ACTION_STATE_SET; }
-	| ACTION_STOP { $$ = ETCHER_ACTION_ACTION_STOP; }
+	| ACTION_STOP { $$ = ETCHER_ACTION_STOP; }
 	| DRAG_VAL_SET { $$ = ETCHER_ACTION_DRAG_VAL_SET; }
 	| DRAG_VAL_STEP { $$ = ETCHER_ACTION_DRAG_VAL_STEP; }
 	| DRAG_VAL_PAGE { $$ = ETCHER_ACTION_DRAG_VAL_PAGE; }
