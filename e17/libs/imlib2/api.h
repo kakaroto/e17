@@ -70,9 +70,10 @@ struct _imlib_rectangle
    int x, y, width, height;
 };
 
-typedef void (*Imlib_Progress_Function)(Imlib_Image *im, char percent,
+typedef void (*Imlib_Progress_Function)(Imlib_Image im, char percent,
 					int update_x, int update_y,
 					int update_w, int update_h);
+typedef void (*Imlib_Data_Destructor_Function)(Imlib_Image im, void *data);
 
 /* init and setup functions */
 int         imlib_get_cache_size(void);
@@ -362,6 +363,15 @@ void imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y,
 
 void imlib_image_query_pixel(Imlib_Image image, int x, int y, 
 			     Imlib_Color *color_return);
+
+
+void imlib_image_attach_data_value(Imlib_Image image, char *key,
+				   void *data, int value,
+				   Imlib_Data_Destructor_Function destructor_function);
+void *imlib_image_get_attached_data(Imlib_Image image, char *key);
+int  imlib_image_get_attached_value(Imlib_Image image, char *key);
+void imlib_image_remove_attached_data_value(Imlib_Image image, char *key);
+void imlib_image_remove_and_free_attached_data_value(Imlib_Image image, char *key);
 
 # if 0
 /* image saving functions */

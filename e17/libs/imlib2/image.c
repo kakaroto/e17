@@ -1,7 +1,6 @@
 #include "common.h"
 #include <time.h>
 #include <string.h>
-#include <dlfcn.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -16,6 +15,83 @@ static ImlibImage        *images = NULL;
 static ImlibImagePixmap  *pixmaps = NULL;
 static ImlibLoader       *loaders = NULL;
 static int                cache_size = 4096 * 1024;
+
+void
+__imlib_AttachTag(ImlibImage *im, char *key, int val, void *data, 
+		  void (*destructor)(ImlibImage *im, void *data))
+{
+   ImlibImageTag *t;
+   
+   if (!key)
+      return;   
+   
+   t = malloc(sizeof(ImlibImageTag));
+   t->key = strdup(key);
+   t->val = val;
+   t->data = data;
+   t->destructor = destructor;
+   t->next = im->tags;
+   im->tags = t;
+}
+
+ImlibImageTag *
+__imlib_GetTag(ImlibImage *im, char *key)
+{
+   ImlibImageTag *t;
+
+   t = im->tags;
+   while (t)
+     {
+	if (!strcmp(t->key, key))
+	   return t;
+	t = t->next;
+     }
+}
+
+ImlibImageTag *
+__imlib_RemoveTag(ImlibImage *im, char *key)
+{
+   ImlibImageTag *t, *tt;
+   
+   tt = NULL;
+   t = im->tags;
+   while (t)
+     {
+	if (!strcmp(t->key, key))
+	  {
+	     if (tt)
+		tt->next = t->next;
+	     else
+		im->tags = t->next;
+	     return t;
+	  }
+	tt = t;
+	t = t->next;
+     }
+}
+
+void
+__imlib_FreeTag(ImlibImage *im, ImlibImageTag *t)
+{
+   free(t->key);
+   if (t->destructor)
+      t->destructor(im, t->data);
+   free(t);
+}
+
+void
+__imlib_FreeAllTags(ImlibImage *im)
+{
+   ImlibImageTag *t, *tt;
+   
+   t = im->tags;
+   while (t)
+     {
+	tt = t;
+	t = t->next;
+	__imlib_FreeTag(im, tt);
+     }
+}
 
 void
 __imlib_SetCacheSize(int size)
@@ -43,12 +119,14 @@ __imlib_ProduceImage(void)
    im->flags = F_NONE;
    im->loader = NULL;
    im->next = NULL;
+   im->tags = NULL;
    return im;
 }
 
 void
 __imlib_ConsumeImage(ImlibImage *im)
 {
+   __imlib_FreeAllTags(im);
    if (im->file)
       free(im->file);
    if ((IMAGE_FREE_DATA(im)) && (im->data))
@@ -469,7 +547,7 @@ __imlib_ConsumeLoader(ImlibLoader *l)
    if (l->file)
       free(l->file);
    if (l->handle)
-      dlclose(l->handle);
+      lt_dlclose(l->handle);
    if (l->formats)
      {
 	int i;

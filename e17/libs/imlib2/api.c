@@ -47,8 +47,9 @@ if (!(param)) \
   return; \
 }
 
-typedef void (*Imlib_Internal_Progress_Function)(ImlibImage*, char, 
+typedef void (*Imlib_Internal_Progress_Function)(void *, char, 
 						 int, int, int, int);
+typedef void (*Imlib_Internal_Data_Destructor_Function)(void *, void *);
 
 int 
 imlib_get_cache_size(void)
@@ -1797,4 +1798,61 @@ imlib_image_query_pixel(Imlib_Image image, int x, int y,
    color_return->green = ((*p) >> 0) & 0xff;
    color_return->blue = (*p) & 0xff;
    color_return->alpha = ((*p) >> 24) & 0xff;
+}
+
+void 
+imlib_image_attach_data_value(Imlib_Image image, char *key,
+			      void *data, int value,
+			      Imlib_Internal_Data_Destructor_Function destructor_function)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   __imlib_AttachTag(im, key, value, data, destructor_function);
+}
+
+void *
+imlib_image_get_attached_data(Imlib_Image image, char *key)
+{
+   ImlibImageTag *t;
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   t = __imlib_GetTag(im, key);
+   if (t)
+      return t->data;
+   return NULL;
+}
+
+int
+imlib_image_get_attached_value(Imlib_Image image, char *key)
+{
+   ImlibImageTag *t;
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   t = __imlib_GetTag(im, key);
+   if (t)
+      return t->val;
+   return 0;
+}
+
+void 
+imlib_image_remove_attached_data_value(Imlib_Image image, char *key)
+{
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   __imlib_RemoveTag(im, key);
+}
+
+void 
+imlib_image_remove_and_free_attached_data_value(Imlib_Image image, char *key)
+{
+   ImlibImageTag *t;
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   t = __imlib_RemoveTag(im, key);
+   __imlib_FreeTag(im, t);
 }

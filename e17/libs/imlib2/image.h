@@ -7,6 +7,7 @@ typedef struct _imlibimage              ImlibImage;
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
 typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
+typedef struct _imlibimagetag           ImlibImageTag;
 
 enum _load_error
 {
@@ -47,6 +48,15 @@ struct _imlibborder
    int left, right, top, bottom;
 };
 
+struct _imlibimagetag
+{
+   char           *key;
+   int             val;
+   void           *data;
+   void          (*destructor)(ImlibImage *im, void *data);
+   ImlibImageTag  *next;
+};
+
 struct _imlibimage
 {
    char             *file;
@@ -59,6 +69,7 @@ struct _imlibimage
    ImlibLoader      *loader;
    char             *format;
    ImlibImage       *next;
+   ImlibImageTag    *tags;
 };
 
 struct _imlibimagepixmap
@@ -97,6 +108,13 @@ struct _imlibloader
 		       char progress_granularity);
    ImlibLoader  *next;
 };
+
+void              __imlib_AttachTag(ImlibImage *im, char *key, int val, void *data,
+				    void (*destructor)(ImlibImage *im, void *data));
+ImlibImageTag    *__imlib_GetTag(ImlibImage *im, char *key);
+ImlibImageTag    *__imlib_RemoveTag(ImlibImage *im, char *key);
+void              __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t);
+void              __imlib_FreeAllTags(ImlibImage *im);
 
 void              __imlib_SetCacheSize(int size);
 int               __imlib_GetCacheSize(void);
