@@ -529,10 +529,19 @@ we destroy the widget with a call to <function>ewl_widget_destroy()</function>.
 <title>File dialog open button callback</title>
 <programlisting>
 /* the file dialog open button callback */
-static void open_file_cb(Ewl_Widget *win, void *ev, void *data) {
+static void open_file_cb(Ewl_Widget *w, void *ev, void *data) {
     char *text = NULL;
-    text = read_file((char *)ev);
-    
+    int *response = (int *)ev;
+
+    switch (*response) {
+        case EWL_RESPONSE_OPEN:
+            text = read_file(ewl_filedialog_file_get(EWL_FILEDIALOG(w)));
+            break;
+
+        case EWL_RESPONSE_CANCEL:
+            break;
+    }
+
     if (text) {
         ewl_text_text_set(EWL_TEXT(data), text);
         free(text);
@@ -572,7 +581,7 @@ static void home_cb(Ewl_Widget *win, void *ev, void *data) {
     
     home = getenv("HOME");
     if (home)
-        ewl_filedialog_set_directory(fd, home);
+        ewl_filedialog_path_set(fd, home);
 }   
 </programlisting>
 </example>
@@ -581,7 +590,7 @@ If the user clicks on the &quot;Home&quot; button in the file dialog we want to
 display the contents of their home directory to them. We set the
 file dialog as the user data to the callback, so we cast that back to the
 Ewl_Filedialog and grabbing the home directory from the environment. The
-call to <function>ewl_filedialog_set_directory()</function> changes the current directory
+call to <function>ewl_filedialog_path_set()</function> changes the current directory
 the file dialog is displaying to be the users home directory.
 </para>
 
@@ -699,7 +708,7 @@ in the correct direction with the call to ewl_scrollpane_[hv]scrollbar_value_set
 </para>
 
 <example>
-<title>Complication</title>
+<title>Compilation</title>
 <screen>
 zero@oberon [ewl_intro] -&lt; gcc -Wall -o ewl_text main.c \
  `ewl-config --cflags --libs`
