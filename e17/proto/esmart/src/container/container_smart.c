@@ -9,8 +9,8 @@ void _container_raise(Evas_Object *obj);
 void _container_lower(Evas_Object *obj);
 void _container_stack_above(Evas_Object *obj, Evas_Object *above);
 void _container_stack_below(Evas_Object *obj, Evas_Object *below);
-void _container_move(Evas_Object *obj, double x, double y);
-void _container_resize(Evas_Object *obj, double w, double h);
+void _container_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+void _container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 void _container_show(Evas_Object *obj);
 void _container_hide(Evas_Object *obj);
 void _container_color_set(Evas_Object *obj, int r, int g, int b, int a);
@@ -219,7 +219,7 @@ _container_stack_below(Evas_Object *obj, Evas_Object *below)
 }
 
 void
-_container_move(Evas_Object *obj, double x, double y)
+_container_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
   Container *data;
   
@@ -237,7 +237,7 @@ _container_move(Evas_Object *obj, double x, double y)
 }
 
 void
-_container_resize(Evas_Object *obj, double w, double h)
+_container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
   Container *data;
   double old_length;

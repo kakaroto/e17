@@ -48,7 +48,7 @@ _default_layout(Container *cont)
   for (l = cont->elements; l; l = l->next)
   {
     Container_Element *el = l->data;
-    double ew, eh; // old element size
+    Evas_Coord ew, eh; // old element size
 
     if(!el)
     {

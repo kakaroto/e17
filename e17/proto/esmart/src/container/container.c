@@ -262,7 +262,7 @@ esmart_container_elements_length_get(Evas_Object *container)
   for (l = cont->elements; l; l = l->next)
   {
     Container_Element *el = l->data;
-    double w, h;
+    Evas_Coord w, h;
 
     evas_object_geometry_get(el->obj, NULL, NULL, &w, &h);
 
@@ -326,7 +326,7 @@ esmart_container_elements_orig_length_get(Evas_Object *container)
   for (l = cont->elements; l; l = l->next)
   {
     Container_Element *el = l->data;
-    double w, h;
+    Evas_Coord w, h;
 
     evas_object_geometry_get(el->obj, NULL, NULL, &w, &h);
 
@@ -343,7 +343,7 @@ Container_Element *
 _container_element_new(Container *cont, Evas_Object *obj)
 {
   Container_Element *el;
-  double w, h;
+  Evas_Coord w, h;
 
   if (!obj) return NULL;
 
@@ -404,8 +404,8 @@ _container_element_move(Container_Element *el)
   Container_Element *el2;
   Evas_List *l;
   Evas_List *prev;
-  double x, y, w, h;
-  double sx, sy, sw, sh, fx, fy, fw, fh;
+  Evas_Coord x, y, w, h;
+  Evas_Coord sx, sy, sw, sh, fx, fy, fw, fh;
 
   int not_found = 0;
 
@@ -508,7 +508,7 @@ _cb_element_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
   Evas_Event_Mouse_Down *info;
   Container_Element *el;
-  double x, y;
+  Evas_Coord x, y;
 
   info = event_info;
 

@@ -22,10 +22,10 @@ static void _esmart_dragable_object_stack_above (Evas_Object * o,
 						 Evas_Object * above);
 static void _esmart_dragable_object_stack_below (Evas_Object * o,
 						 Evas_Object * below);
-static void _esmart_dragable_object_move (Evas_Object * o, double x,
-					  double y);
-static void _esmart_dragable_object_resize (Evas_Object * o, double w,
-					    double h);
+static void _esmart_dragable_object_move (Evas_Object * o, Evas_Coord x,
+					  Evas_Coord y);
+static void _esmart_dragable_object_resize (Evas_Object * o, Evas_Coord w,
+					    Evas_Coord h);
 static void _esmart_dragable_object_show (Evas_Object * o);
 static void _esmart_dragable_object_hide (Evas_Object * o);
 static void _esmart_dragable_object_color_set (Evas_Object * o, int r, int g,
@@ -284,7 +284,7 @@ _esmart_dragable_object_stack_below (Evas_Object * o, Evas_Object * below)
 }
 
 static void
-_esmart_dragable_object_move (Evas_Object * o, double x, double y)
+_esmart_dragable_object_move (Evas_Object * o, Evas_Coord x, Evas_Coord y)
 {
   Esmart_Draggies *data;
 
@@ -295,7 +295,7 @@ _esmart_dragable_object_move (Evas_Object * o, double x, double y)
 }
 
 static void
-_esmart_dragable_object_resize (Evas_Object * o, double w, double h)
+_esmart_dragable_object_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h)
 {
   Esmart_Draggies *data;
 
