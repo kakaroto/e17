@@ -86,7 +86,7 @@ od_dock_reposition()
     if (dock.sysicons)
       width += options.spacing + 1.0;   // another spacer
   }
-  width += 3; /* expand under tray */
+  width += options.spacing + 3; /* expand under tray */
 
 #define POSITION(__icons) \
 		{ \
