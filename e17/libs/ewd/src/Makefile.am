@@ -12,6 +12,7 @@ installed_headers_DATA = \
 	ewd_macros.h \
 	ewd_path.h \
 	ewd_plugin.h \
+	ewd_strings.h \
 	ewd_threads.h \
 	ewd_tree.h \
 	ewd_value.h
@@ -23,6 +24,7 @@ libewd_la_SOURCES = \
 	ewd_sheap.c \
 	ewd_list.c \
 	ewd_tree.c \
+	ewd_strings.c \
 	ewd_value.c \
 	ewd_path.c \
 	ewd_plugin.c

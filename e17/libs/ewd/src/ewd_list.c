@@ -793,7 +793,6 @@ static void *_ewd_list_next(Ewd_List * list)
  */
 int ewd_list_clear(Ewd_List * list)
 {
-	void *data;
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
 	EWD_WRITE_LOCK(list);

@@ -2,6 +2,8 @@
 #ifndef __EWD_MACROS_H__
 #define __EWD_MACROS_H__
 
+inline void ewd_print_warning(char *function, char *sparam);
+
 /* Wrappers around free() that helps debug free() bugs such as freeing NULL
  * or accessing a pointer that has already been freed */
 #ifndef IF_FREE
@@ -26,14 +28,7 @@ if (debug >= DEBUG_LEVEL) \
 #define   CHECK_PARAM_POINTER_RETURN(sparam, param, ret) \
 if (!(param)) \
 { \
-  fprintf(stderr, "***** Developer Warning ***** :\n" \
-                  "\tThis program is calling:\n\n" \
-                  "\t%s();\n\n" \
-                  "\tWith the parameter:\n\n" \
-                  "\t%s\n\n" \
-                  "\tbeing NULL. Please fix your program.\n", __FUNCTION__,\
-								  sparam); \
-  fflush(stdout); \
+  ewd_print_warning(__FUNCTION__, sparam); \
   return ret; \
 }
 #endif
@@ -42,14 +37,7 @@ if (!(param)) \
 #define   CHECK_PARAM_POINTER(sparam, param) \
 if (!(param)) \
 { \
-  fprintf(stderr, "***** Developer Warning ***** :\n" \
-                  "\tThis program is calling:\n\n" \
-                  "\t%s();\n\n" \
-                  "\tWith the parameter:\n\n" \
-                  "\t%s\n\n" \
-                  "\tbeing NULL. Please fix your program.\n", __FUNCTION__, \
-								 sparam); \
-  fflush(stdout); \
+  ewd_print_warning(__FUNCTION__, sparam); \
   return; \
 }
 #endif

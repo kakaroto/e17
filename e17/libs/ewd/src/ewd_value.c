@@ -31,6 +31,17 @@ const unsigned int ewd_prime_table[] = { 17, 31, 61, 127, 257, 509, 1021,
 	2097143, 4194301, 8388617, 16777213 
 };
 
+inline void ewd_print_warning(char *function, char *sparam)
+{
+	fprintf(stderr, "***** Developer Warning ***** :\n"
+                  "\tThis program is calling:\n\n"
+                  "\t%s();\n\n"
+                  "\tWith the parameter:\n\n"
+                  "\t%s\n\n"
+                  "\tbeing NULL. Please fix your program.\n", function, sparam);
+	fflush(stderr);
+}
+
 /**
  * ewd_direct_hash - just casts the key to an unsigned int
  * @key: the key to return compute a hash value

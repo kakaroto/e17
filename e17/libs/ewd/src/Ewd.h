@@ -29,5 +29,6 @@
 #include <ewd_sheap.h>
 #include <ewd_path.h>
 #include <ewd_plugin.h>
+#include <ewd_strings.h>
 
 #endif
