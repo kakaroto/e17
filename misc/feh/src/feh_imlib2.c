@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh_imlib2.h"
+#include "debug.h"
 #include "utils.h"
 
 
@@ -302,12 +303,21 @@ feh_imlib_image_set_has_alpha(Imlib_Image im, int alpha)
 void
 feh_imlib_save_image(Imlib_Image im, char *file)
 {
-   char *tmp;
+   char *tmp, *p, *pp;
 
    imlib_context_set_image(im);
    tmp = strrchr(file, '.');
    if (tmp)
-      imlib_image_set_format(tmp + 1);
+   {
+     p = estrdup(tmp + 1);
+     pp = p;
+     while(*pp) {
+       *pp = tolower(*pp);
+       pp++;
+     }
+     imlib_image_set_format(p);
+     free(p);
+   }
    imlib_save_image(file);
 }
 

@@ -757,6 +757,8 @@ void feh_edit_inplace_orient(winwidget w, int orientation) {
     feh_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
     feh_imlib_free_image(old);
     feh_reload_image(w, 1);
+  } else {
+    wprintf("failed to load image from disk to edit it in place\n");
   }
   
   D_RETURN_(4);
