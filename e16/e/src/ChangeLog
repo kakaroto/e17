@@ -2430,3 +2430,12 @@ windows, mapping them, and then reparenting them into the control center.  I'm
 not 100% sure why, but I think I'm going to report this as a bug to the kde
 people.  Luckily for me, however, it uncovered a flaw in my "do not manage" kde
 support.  Fixed that all up.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 12:32:58 PDT 1999
+(Mandrake)
+
+I think I've fixed the other two KDE bugs at the bottom of the TODO file now -
+please check and see if anyone else can crash E using either of these things
+now.

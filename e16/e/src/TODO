@@ -4,7 +4,6 @@ cK:		keeping the groups file in sync with the existing groups that need to be re
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 cK              E freezes when I use click-to-focus and select an item from Ganymede's pulldowns.  
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
-mandrake:   Start up kfm and kpanel.  On any of the icons right click and do properties. Go to the execute tab and click browse. The new window should come up. Now click on the previous window, and e quicly focuses the 2 windows back and forth taking up considerable cpu usage, then dies. -- possible bug (haven't investigated yet)
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
@@ -25,3 +24,4 @@ THOUGHTS/IDEAS/UNFIXABLE?:
 cK: 		Some of the group dialogs could work with check- instead of radiobuttons.  Like the one for breaking groups, for example.
 mandrake:   apparently only having one desktop makes the kde taskbar not show any apps  -- THIS is a bug in kpanel, not in E.  ettrich@kde.org has been informed of this, unfortunately it won't be fixed before KDE 2.0
 mandrake:   closing windows on other desktops works, but if you close the last window on another desktop it crashes E for some reason (using kpanel) -- I can't recreate this bug anymore, so I think it's gone, but I didn't specifically fix it.
+mandrake:   Start up kfm and kpanel.  On any of the icons right click and do properties. Go to the execute tab and click browse. The new window should come up. Now click on the previous window, and e quicly focuses the 2 windows back and forth taking up considerable cpu usage, then dies. -- This bug is also not reproducable, please check to see if I've fixed it
