@@ -79,7 +79,7 @@ program { name, "CloseEntice"; signal, "mouse,down,*"; source, "buttonExit";
 }
 
 program { name, "GoodBye"; signal, ""; source, "*";
-	action, SIGNAL_EMIT "entice,quit" "";  in, 1.0 0,0;
+	action, SIGNAL_EMIT "entice,quit" "";  in, 1.0 0.0;
 }
 
 program { name, "Effect.In.NextBt"; signal, "mouse,down,*"; source, "NextBt";

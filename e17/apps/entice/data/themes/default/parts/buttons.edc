@@ -97,7 +97,7 @@
 	    }
 
 #define LEFT_OF_TOGGLE(pname, rel, im1, im2, def, click) \
-     part { name, pname; clip_to, "Buttons", type, IMAGE; mouse_events, 1; \
+     part { name, pname; clip_to, "Buttons"; type, IMAGE; mouse_events, 1; \
      description { state, "default" 0.0; visible, def; \
 	rel1 { relative, 0.0 0.0; offset, -32 0; to, rel; } \
 	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
@@ -107,7 +107,7 @@
 	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
 	image { normal, im1; } } }
 #define LEFT_OF(pname, rel, im1, im2) \
-     part { name, pname; clip_to, "Buttons", type, IMAGE; mouse_events, 1; \
+     part { name, pname; clip_to, "Buttons"; type, IMAGE; mouse_events, 1; \
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 0.0 0.0; offset, -32 0; to, rel; } \
 	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
@@ -117,7 +117,7 @@
 	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
 	image { normal, im2; } } }
 #define SOUTH_OF(pname, rel, im1, im2) \
-     part { name, pname; clip_to, "Buttons", type, IMAGE; mouse_events, 1; \
+     part { name, pname; clip_to, "Buttons"; type, IMAGE; mouse_events, 1; \
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
 	rel2 { relative, 0.0 1.0; offset, 32 32; to, rel; } \
