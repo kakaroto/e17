@@ -412,7 +412,6 @@ int main (int argc, char **argv)
 	     up = imlib_updates_merge_for_rendering(up, w, h);
 	     imlib_render_image_updates_on_drawable(im, up, disp, win, vis, cm,
 						    depth, dith, 0, 0, NULL);
-	     imlib_save_image(im, "out.png");
 	     if ((px != x) || (py != y))
                {
 		  Imlib_Updates u;
