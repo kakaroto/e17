@@ -132,6 +132,10 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
          e->sessions.keys = evas_list_append(e->sessions.keys, key);
       }
    }
+   /* 
+    * FIXME: With embedded fonts in your edjes, do we even wanna bother with
+    * the font path nightmare anymore ?  Unless we use etox or something ...
+    */
    if (e_db_int_get(db, "/entrance/fonts/count", &num_fonts))
    {
       char *value = NULL;
@@ -252,7 +256,12 @@ entrance_config_free(Entrance_Config * e)
 }
 
 /**
- *
+ * entrance_config_user_list_write : Write out the possibly reordered user
+ * list into the config db.  This still needs fixing.
+ * FIXME: Nuke all old keys from the db relating to /entrance/user
+ * FIXME: Check another config parameter whether we should write or not
+ * FIXME: Check another config parameter so we only write n user
+ * @e - a pointer to the config struct we want to write the user list for
  */
 void
 entrance_config_user_list_write(Entrance_Config * e)
