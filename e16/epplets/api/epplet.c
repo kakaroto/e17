@@ -369,6 +369,7 @@ Epplet_unremember(void)
 
    sprintf(s, "remember %x none", (unsigned int)win);
    ECommsSend(s);
+   ESYNC;
 }
 
 Window
