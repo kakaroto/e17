@@ -308,19 +308,19 @@ void
 draw_ewl_start(void)
 {
    main_win = ewl_window_new();
-   ewl_window_set_title(EWL_WINDOW(main_win), "Equate");
-   ewl_window_set_name(EWL_WINDOW(main_win), "Equate");
-   ewl_window_set_class(EWL_WINDOW(main_win), "Equate");
+   ewl_window_title_set(EWL_WINDOW(main_win), "Equate");
+   ewl_window_name_set(EWL_WINDOW(main_win), "Equate");
+   ewl_window_class_set(EWL_WINDOW(main_win), "Equate");
    ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                        destroy_main_window, NULL);
    ewl_callback_append(main_win, EWL_CALLBACK_KEY_DOWN, key_press, NULL);
    ewl_callback_append(main_win, EWL_CALLBACK_KEY_UP, key_un_press, NULL);
    
    main_box = ewl_vbox_new();                        
-   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+   ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
    ewl_object_padding_set(EWL_OBJECT(main_box), 3, 3, 3, 3);
    ewl_object_fill_policy_set(EWL_OBJECT(main_box), EWL_FLAG_FILL_FILL);
-   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+   ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
 
    ewl_widget_show(main_box);
    ewl_widget_show(main_win);
@@ -361,7 +361,7 @@ draw_ewl(Mode draw_mode)
    disp[0] = '\0';
    
    table = ewl_grid_new(cols, rows);
-   ewl_container_append_child(EWL_CONTAINER(main_box), table);
+   ewl_container_child_append(EWL_CONTAINER(main_box), table);
    ewl_widget_show(table);
    displaycell = ewl_cell_new();
    display = ewl_text_new("0");
@@ -379,14 +379,14 @@ draw_ewl(Mode draw_mode)
    eqn_disp = ewl_text_new("");
    if (calc_mode == SCI) {
       ewl_object_alignment_set(EWL_OBJECT(eqn_disp), EWL_FLAG_ALIGN_LEFT);
-      ewl_container_append_child(EWL_CONTAINER(disp_cell[1]), eqn_disp);
+      ewl_container_child_append(EWL_CONTAINER(disp_cell[1]), eqn_disp);
       disp_cell[2] = ewl_cell_new();
-      ewl_container_append_child(EWL_CONTAINER(disp_cell[2]), display);
+      ewl_container_child_append(EWL_CONTAINER(disp_cell[2]), display);
       ewl_widget_show(eqn_disp);
    } else
-      ewl_container_append_child(EWL_CONTAINER(disp_cell[1]), display);
+      ewl_container_child_append(EWL_CONTAINER(disp_cell[1]), display);
    ewl_widget_show(display);
-   ewl_container_append_child(EWL_CONTAINER(displaycell), disp_table);
+   ewl_container_child_append(EWL_CONTAINER(displaycell), disp_table);
    ewl_widget_show(disp_cell[1]);
    ewl_grid_add(EWL_GRID(disp_table), disp_cell[1], 1, 1, 1, 1);
    if (calc_mode == SCI) {
@@ -407,7 +407,7 @@ draw_ewl(Mode draw_mode)
       but->button = button[bc];
       ewl_callback_append(button[bc], EWL_CALLBACK_MOUSE_DOWN,
                           but->callback, but->cmd);
-      ewl_container_append_child(EWL_CONTAINER(cell[bc]), button[bc]);
+      ewl_container_child_append(EWL_CONTAINER(cell[bc]), button[bc]);
       ewl_box_set_homogeneous(EWL_BOX(button[bc]), TRUE);
       ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
                                EWL_FLAG_ALIGN_CENTER);

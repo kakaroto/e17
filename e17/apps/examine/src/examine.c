@@ -76,9 +76,9 @@ main(int argc, char **argv)
   ewl_init(&argc, argv);
 
   main_win = ewl_window_new();
-  ewl_window_set_title(EWL_WINDOW(main_win), "Examine Configuration Client");
-  ewl_window_set_name(EWL_WINDOW(main_win), "Examine");
-  ewl_window_set_class(EWL_WINDOW(main_win), "examine");
+  ewl_window_title_set(EWL_WINDOW(main_win), "Examine Configuration Client");
+  ewl_window_name_set(EWL_WINDOW(main_win), "Examine");
+  ewl_window_class_set(EWL_WINDOW(main_win), "examine");
   ewl_object_size_request(EWL_OBJECT(main_win), 200, 250);
   ewl_object_fill_policy_set((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
@@ -158,7 +158,7 @@ cb_set_int(Ewl_Widget * w, void *ev_data, void *user_data)
   examine_prop   *change;
 
   change = (examine_prop *) user_data;
-  change->value.val = (int) ewl_spinner_get_value(EWL_SPINNER(w));
+  change->value.val = (int) ewl_spinner_value_get(EWL_SPINNER(w));
 }
 
 void
@@ -167,7 +167,7 @@ cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
   examine_prop   *change;
 
   change = (examine_prop *) user_data;
-  change->value.fval = (float) ewl_spinner_get_value(EWL_SPINNER(w));
+  change->value.fval = (float) ewl_spinner_value_get(EWL_SPINNER(w));
 }
 
 void
@@ -182,7 +182,7 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
   theme = strdup(ewl_text_text_get(EWL_TEXT(EWL_CONTAINER(w)->redirect)));
 
   ewl_container_child_iterate_begin(EWL_CONTAINER(w->parent));
-  while (sibling = ewl_container_next_child(EWL_CONTAINER(w->parent))) {
+  while (sibling = ewl_container_child_next(EWL_CONTAINER(w->parent))) {
     sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
     bugfix = ewl_text_text_get(EWL_TEXT(sibling));
     if (strcmp(bugfix, theme))
@@ -261,27 +261,27 @@ draw_tree(examine_prop * prop_item)
     } else if (prop_item->type == PT_INT) {
       entries[1] = ewl_spinner_new();
 
-      ewl_spinner_set_digits(EWL_SPINNER(entries[1]), 0);
-      ewl_spinner_set_step(EWL_SPINNER(entries[1]), 1);
+      ewl_spinner_digits_set(EWL_SPINNER(entries[1]), 0);
+      ewl_spinner_step_set(EWL_SPINNER(entries[1]), 1);
       if (prop_item->bound & BOUND_BOUND) {
-        ewl_spinner_set_min_val(EWL_SPINNER(entries[1]), prop_item->min);
-        ewl_spinner_set_max_val(EWL_SPINNER(entries[1]), prop_item->max);
+        ewl_spinner_min_val_set(EWL_SPINNER(entries[1]), prop_item->min);
+        ewl_spinner_max_val_set(EWL_SPINNER(entries[1]), prop_item->max);
       }
       if (prop_item->bound & BOUND_STEPPED)
-        ewl_spinner_set_step(EWL_SPINNER(entries[1]), prop_item->step);
+        ewl_spinner_step_set(EWL_SPINNER(entries[1]), prop_item->step);
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_int,
                           prop_item);
     } else if (prop_item->type == PT_FLT) {
       entries[1] = ewl_spinner_new();
 
-/*          ewl_spinner_set_digits(EWL_SPINNER(input), 0);
-            ewl_spinner_set_step(EWL_SPINNER(input), 1);*/
+/*          ewl_spinner_digits_set(EWL_SPINNER(input), 0);
+            ewl_spinner_step_set(EWL_SPINNER(input), 1);*/
       if (prop_item->bound & BOUND_BOUND) {
-        ewl_spinner_set_min_val(EWL_SPINNER(entries[1]), prop_item->fmin);
-        ewl_spinner_set_max_val(EWL_SPINNER(entries[1]), prop_item->fmax);
+        ewl_spinner_min_val_set(EWL_SPINNER(entries[1]), prop_item->fmin);
+        ewl_spinner_max_val_set(EWL_SPINNER(entries[1]), prop_item->fmax);
       }
       if (prop_item->bound & BOUND_STEPPED)
-        ewl_spinner_set_step(EWL_SPINNER(entries[1]), prop_item->fstep);
+        ewl_spinner_step_set(EWL_SPINNER(entries[1]), prop_item->fstep);
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
                           prop_item);
     } else if (prop_item->type == PT_RGB) {
@@ -361,13 +361,13 @@ draw_tree(examine_prop * prop_item)
             tmp_col = ewl_vbox_new();
             ewl_widget_show(tmp_col);
 
-            ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp);
-            ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp_text);
-            ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp_col);
+            ewl_container_child_append(EWL_CONTAINER(tmp_col), tmp);
+            ewl_container_child_append(EWL_CONTAINER(tmp_col), tmp_text);
+            ewl_container_child_append(EWL_CONTAINER(entries[1]), tmp_col);
             ewl_callback_append(tmp_col, EWL_CALLBACK_CLICKED, cb_choose_theme,
                                 prop_item);
           
-            ewl_container_set_redirect(EWL_CONTAINER(tmp_col), 
+            ewl_container_redirect_set(EWL_CONTAINER(tmp_col), 
                                        EWL_CONTAINER(tmp_text));
             ewl_object_padding_set(EWL_OBJECT(tmp_col), 2, 2, 0, 0);
             ewl_object_minimum_h_set(EWL_OBJECT(tmp_col), 60);
@@ -389,9 +389,9 @@ draw_tree(examine_prop * prop_item)
 
     tmp_row = ewl_hbox_new();
     ewl_widget_show(tmp_row);
-    ewl_container_append_child(EWL_CONTAINER(tmp_row), entries[0]);
-    ewl_container_append_child(EWL_CONTAINER(tmp_row), entries[1]);
-    ewl_container_append_child(EWL_CONTAINER(tree_box), tmp_row);
+    ewl_container_child_append(EWL_CONTAINER(tmp_row), entries[0]);
+    ewl_container_child_append(EWL_CONTAINER(tmp_row), entries[1]);
+    ewl_container_child_append(EWL_CONTAINER(tree_box), tmp_row);
     prop_item = prop_item->next;
   }
 }
@@ -404,20 +404,20 @@ render_ewl(void)
   char           *headers[2];
 
   main_box = ewl_vbox_new();
-  ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+  ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
   ewl_object_padding_set(EWL_OBJECT(main_box), 2, 2, 2, 2);
   ewl_widget_show(main_box);
 
   notebook = ewl_notebook_new();
   ewl_notebook_set_tabs_position(EWL_NOTEBOOK(notebook), EWL_POSITION_TOP);
   ewl_notebook_set_tabs_alignment(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
-  ewl_container_append_child(EWL_CONTAINER(main_box), notebook);
+  ewl_container_child_append(EWL_CONTAINER(main_box), notebook);
   ewl_widget_show(notebook);
 
   examine_client_theme_search_path_get();
 
   row = ewl_hbox_new();
-  ewl_container_append_child(EWL_CONTAINER(main_box), row);
+  ewl_container_child_append(EWL_CONTAINER(main_box), row);
   ewl_object_fill_policy_set((Ewl_Object *) row, EWL_FLAG_FILL_HFILL);
   ewl_widget_show(row);
 
@@ -428,9 +428,9 @@ render_ewl(void)
   quit = ewl_button_new("Close");
   ewl_callback_append(quit, EWL_CALLBACK_MOUSE_DOWN, cb_quit, NULL);
 
-  ewl_container_append_child(EWL_CONTAINER(row), save);
-  ewl_container_append_child(EWL_CONTAINER(row), revert);
-  ewl_container_append_child(EWL_CONTAINER(row), quit);
+  ewl_container_child_append(EWL_CONTAINER(row), save);
+  ewl_container_child_append(EWL_CONTAINER(row), revert);
+  ewl_container_child_append(EWL_CONTAINER(row), quit);
   ewl_widget_show(save);
   ewl_widget_show(revert);
   ewl_widget_show(quit);

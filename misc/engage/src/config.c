@@ -261,7 +261,7 @@ od_config_menu_init(void)
 
   menu_box = ewl_vbox_new();
   ewl_object_fill_policy_set(EWL_OBJECT(menu_box), EWL_FLAG_FILL_FILL);
-  ewl_container_append_child(EWL_CONTAINER(menu_win), menu_box);
+  ewl_container_child_append(EWL_CONTAINER(menu_win), menu_box);
   ewl_widget_show(menu_box);
 
   menu = ewl_imenu_new(NULL, "config menu");
@@ -269,25 +269,25 @@ od_config_menu_init(void)
                       od_config_menu_move_cb, EWL_MENU_BASE(menu)->popup);
   ewl_callback_append(EWL_MENU_BASE(menu)->popup, EWL_CALLBACK_FOCUS_OUT,
                       od_config_menu_out_cb, NULL);
-  ewl_container_append_child(EWL_CONTAINER(menu_box), menu);
+  ewl_container_child_append(EWL_CONTAINER(menu_box), menu);
   /* *don't* show the menu, we only want the popup */
 
   item = ewl_menu_item_new(NULL, "Icon Zooming");
-  ewl_container_append_child(EWL_CONTAINER(menu), item);
+  ewl_container_child_append(EWL_CONTAINER(menu), item);
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_zoom_cb, NULL);
   ewl_widget_show(item);
 
   item = ewl_menu_item_new(NULL, "Configuration");
-  ewl_container_append_child(EWL_CONTAINER(menu), item);
+  ewl_container_child_append(EWL_CONTAINER(menu), item);
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_config_cb, NULL);
   ewl_widget_show(item);
 
   item = ewl_menu_separator_new();
-  ewl_container_append_child(EWL_CONTAINER(menu), item);
+  ewl_container_child_append(EWL_CONTAINER(menu), item);
   ewl_widget_show(item);
 
   item = ewl_menu_item_new(NULL, "Quit");
-  ewl_container_append_child(EWL_CONTAINER(menu), item);
+  ewl_container_child_append(EWL_CONTAINER(menu), item);
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_quit_cb, NULL);
   ewl_widget_show(item);
 }

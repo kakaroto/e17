@@ -434,20 +434,20 @@ examine_client_get_val_cb(void)
     sscanf(ret, "%d", &tmpi);
     prop->value.val = tmpi;
     prop->oldvalue.val = tmpi;
-    ewl_spinner_set_value(EWL_SPINNER(prop->w), (double) tmpi);
+    ewl_spinner_value_set(EWL_SPINNER(prop->w), (double) tmpi);
     break;
   case PT_FLT:
     sscanf(ret, "%f", &tmpd);
     prop->value.fval = tmpd;
     prop->oldvalue.fval = tmpd;
-    ewl_spinner_set_value(EWL_SPINNER(prop->w), tmpd);
+    ewl_spinner_value_set(EWL_SPINNER(prop->w), tmpd);
     break;
   case PT_THM:
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
 
     ewl_container_child_iterate_begin(EWL_CONTAINER(prop->w));
-    while (sibling = ewl_container_next_child(EWL_CONTAINER(prop->w))) {
+    while (sibling = ewl_container_child_next(EWL_CONTAINER(prop->w))) {
       sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
       bugfix = ewl_text_text_get(EWL_TEXT(sibling));
       if (strcmp(bugfix, ret)) 
