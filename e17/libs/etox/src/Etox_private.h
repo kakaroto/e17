@@ -148,8 +148,7 @@ struct _etox_obstacle
 {
 	Etox *et;
 	Evas_Object *bit;
-	int start_line;
-	int end_line;
+	Evas_List *lines;
 };
 
 /*

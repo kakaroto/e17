@@ -497,14 +497,24 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 
 	l = prevline->next;
 	while (l) {
+		Evas_List *ll;
+
 		line = l->data;
 		if (!(line->flags & ETOX_LINE_WRAPPED))
 			break;
 
 		/* remove the wrap marker bit */
-		marker = line->bits->data;
-		line->bits = evas_list_remove(line->bits, marker);
-		evas_object_del(marker);
+		ll = line->bits;
+		while (ll) {
+			marker = ll->data;
+			if (!estyle_fixed(marker)) {
+				line->bits = evas_list_remove(line->bits,
+						marker);
+				evas_object_del(marker);
+				break;
+			}
+			ll = ll->next;
+		}
 
 		/* remove the line from the list */
 		et->lines = evas_list_remove(et->lines, line);

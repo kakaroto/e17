@@ -117,7 +117,7 @@ int main(int argc, const char **argv)
 
 	etox_append_text(etox, "Fear the boring test text!");
 
-	obstacle = etox_obstacle_add(etox, 20, 20, 20, 20);
+	obstacle = etox_obstacle_add(etox, 20, 20, 80, 20);
 
 	ecore_evas_callback_resize_set(ee, window_resize);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit, NULL);

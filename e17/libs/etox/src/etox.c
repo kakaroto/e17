@@ -930,10 +930,8 @@ etox_obstacle_add(Evas_Object * obj, double x, double y, double w, double h)
 
 	obst = etox_obstacle_new(et, x, y, w, h);
 
-	if (obst) {
+	if (obst)
 		et->obstacles = evas_list_append(et->obstacles, obst);
-		etox_obstacle_place(obst);
-	}
 
 	etox_layout(et);
 
@@ -1197,8 +1195,14 @@ void etox_layout(Etox * et)
 		 */
 		ll = et->obstacles;
 		while (ll) {
+			double ox, oy, ow, oh;
+
 			Etox_Obstacle *obst = ll->data;
-			etox_obstacle_place(obst);
+			evas_object_geometry_get(obst->bit, &ox, &oy, &ow, &oh);
+			if (etox_rect_intersect(ox, oy, ow, oh,
+						line->x, line->y,
+						line->w, line->h))
+				etox_obstacle_line_insert(line, obst);
 			ll = ll->next;
 		}
 

@@ -9,15 +9,16 @@ Todo:
 + obstacle wrapping
 + region selection
 + columnar layout
++ wrapping at word breaks
++ keep wrap marker with first text on line
 
 Progress:
-+ Index selection now gets the correct bits, need to generalize the update
-  mechanism to allow updating all lists when splitting a bit, including when
-  splitting around obstacles.
++ Obstacle wrapping has the basic idea working, but needs improvement, it
+  currently places the obstacle on a line in the correct place, but fails to
+  rewrap around the obstacle correctly on window resize.
 + Also need to write generalized code to wrap/rewrap the lines when bit
   splitting has occurred.
 
 Optimizations
 -------------
 + REDUCE LIST TRAVERSING
-+ Inline (un)wrapping with layout to enable a single list traversal
