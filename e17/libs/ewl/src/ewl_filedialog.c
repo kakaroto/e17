@@ -1,32 +1,4 @@
-
 #include <Ewl.h>
-
-
-static void ewl_filedialog_save_init(Ewl_Filedialog * fd,
-				     Ewl_Callback_Function cb);
-static void ewl_filedialog_open_init(Ewl_Filedialog * fd,
-				     Ewl_Callback_Function cb);
-static void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, 
-						 void *user_data);
-
-
-
-typedef struct _open_dialog Open_Dialog;
-struct _open_dialog {
-	Ewl_Widget     *box;	/* box to hold the buttons */
-
-	Ewl_Widget     *open;	/* open button */
-	Ewl_Widget     *cancel;	/* cancel button */
-};
-
-typedef struct _save_dialog Save_Dialog;
-struct _save_dialog {
-	Ewl_Widget     *inputbox;	/* box to hold text input widgets */
-	Ewl_Widget     *buttonbox;	/* box to hold buttons */
-
-	Ewl_Widget     *save;	/* save button */
-	Ewl_Widget     *cancel;	/* cancel button */
-};
 
 
 /**
@@ -123,8 +95,7 @@ void ewl_filedialog_change_entry (Ewl_Widget * w, void *ev_data,
 }
 
 
-static void
-ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
+void ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Open_Dialog    *od;
 	Ewl_Widget     *vbox;
@@ -191,7 +162,7 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	struct stat          statbuf;
 	Ewl_Filedialog *fd = user_data;
@@ -208,8 +179,7 @@ static void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user
 	}
 }
 
-static void
-ewl_filedialog_save_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
+void ewl_filedialog_save_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Save_Dialog    *sd;
 

@@ -1,17 +1,5 @@
 #include <Ewl.h>
 
-#ifdef HAVE_CONFIG_H
-#include "ewl-config.h"
-#endif
-
-
-static char *ewl_fileselector_directory_adjust (Ewl_Fileselector *fs,
-		    Ewl_Fileselector_Row *d_info);
-static char *ewl_fileselector_path_down (char *dir);
-static int ewl_fileselector_alphasort(const void *a, const void *b);
-
-
-
 /** Addition for Solaris compatablity in scandir dep. -benr **/
 /** Code written originally by Joerg-R. Hill for Viewmol used with permission and covered by GPL **/
 #ifdef HAVE_SUN
@@ -297,7 +285,7 @@ void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static char *ewl_fileselector_path_down (char *dir)
+char *ewl_fileselector_path_down (char *dir)
 {
 	char *ptr;
 	char *tmp;
@@ -318,7 +306,7 @@ static char *ewl_fileselector_path_down (char *dir)
 }
 
 
-static char *ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, 
+char *ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, 
 		Ewl_Fileselector_Row *d_info)
 {
 	char *dir;
@@ -381,7 +369,7 @@ void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int ewl_fileselector_alphasort (const void *a, const void *b)
+int ewl_fileselector_alphasort (const void *a, const void *b)
 {
   struct dirent **ad = (struct dirent **)a;
   struct dirent **bd = (struct dirent **)b;

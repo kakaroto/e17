@@ -59,6 +59,9 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Menu       *menu;
 	Ewl_Embed      *emb;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
 	menu = EWL_MENU(w);
 	emb = ewl_embed_find_by_widget(w);
 
@@ -67,11 +70,12 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * initializing the rest of the fields to avoid the add callback being
 	 * called.
 	 */
+
 	menu->base.popup = ewl_window_new();
 	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
 	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
 				   EWL_FLAG_FILL_NONE);
-
+	
 	/* FIXME: We will need a real function for doing this from the embed
 	 * perspective.
 	ewl_window_get_position(emb, &x, &y);
@@ -80,6 +84,7 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
+
 	if (EWL_MENU_ITEM(w)->submenu) {
 		x += CURRENT_X(w) + CURRENT_W(w);
 		y += CURRENT_Y(w);
@@ -94,4 +99,6 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_realize(EWL_WIDGET(menu->base.popup));
 	ewl_window_move(EWL_WINDOW(menu->base.popup), x, y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
