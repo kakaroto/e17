@@ -13,6 +13,9 @@
 #include "utils.h"
 #include "callbacks.h"
 
+#define FFT_BITS 10
+#define FFT_LEN (1 << FFT_BITS)
+
 typedef enum {
 	PLAYBACK_STATE_STOPPED,
 	PLAYBACK_STATE_PAUSED,
@@ -635,11 +638,34 @@ XMMS_CB(playlist_shuffle) {
 	if (!(ids = xmmscs_playlist_list(e->xmms)))
 		return;
 
-	for (i = 0; ids[i]; i++) {
+	for (i = 0; ids[i]; i++)
 		if ((pli = playlist_item_find_by_id(e->playlist, ids[i]))) {
 			e_container_element_remove(pli->container, pli->edje);
 			e_container_element_append(pli->container, pli->edje);
 		} else
 			fprintf(stderr, "Unable to find %d: %d\n", i, ids[i]);
+}
+
+XMMS_CB(visdata) {
+	double *input = arg;
+	float spec[FFT_LEN / 2], sum, peak = 0.0;
+	int i, j;
+
+	for (i = 0; i < FFT_LEN / 2; i++)
+		spec[i] = input[i + 1];
+
+	for (i = 0; i < FFT_LEN / 32 / 2; i++) {
+		for (sum = 0.0, j = 0; j < 32; j++)
+			sum += spec[i * 16 + j];
+
+		if (sum)
+			sum = log(sum / 32);
+
+		sum = MIN(255, sum * 64);
+		peak = MAX(peak, sum);
 	}
+
+	peak = 1 - (peak / 255);
+
+	edje_object_part_drag_value_set(e->gui.edje, "peak_analyzer", 0, peak);
 }

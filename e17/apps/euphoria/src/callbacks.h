@@ -74,6 +74,7 @@ XMMS_CB(playlist_add);
 XMMS_CB(playlist_remove);
 XMMS_CB(playlist_clear);
 XMMS_CB(playlist_shuffle);
+XMMS_CB(visdata);
 
 #endif
 
