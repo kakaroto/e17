@@ -4,10 +4,73 @@ dnl# $Id$
 dnl#####################################################################
 
 dnl#
+dnl# Check for LibAST and support components
+dnl#    - arg 1 is the env variable to set
+dnl#    - arg 2 is the LIBS variable to use
+dnl#
+AC_DEFUN(AST_CHECK_LIBAST, [
+    AC_CHECK_PROG(LIBAST_CONFIG, libast-config, libast-config, false)
+    if test "$LIBAST_CONFIG" = "false"; then
+        $1=0
+    else
+        $1=1
+        CPPFLAGS="$CPPFLAGS `$LIBAST_CONFIG --cppflags`"
+        LDFLAGS="$LDFLAGS `$LIBAST_CONFIG --ldflags`"
+    fi
+    AC_CHECK_HEADERS(libast.h, [
+        AC_CHECK_LIB(ast, libast_malloc, $1=1, $1=0, ${$2})
+    ], $1=0)
+
+    if test "${$1}" -ne "1"; then
+        echo "ERROR:  You need the LibAST package to build Eterm.  If you already have it,";
+        echo "        you may have it installed in a strange place, or you may need to run";
+        echo "        /sbin/ldconfig.  If you don't have it, I can download it for you.";
+        echo "        Shall I retrieve and build LibAST now (y/n)?";
+        read ANS
+        if test "x$ANS" = "xy" -o "x$ANS" = "xyes" -o "x$ANS" = "xY" -o "x$ANS" = "xYES"; then
+            # Download from CVS server
+            CVSROOT=":pserver:anonymous@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment"
+            test -f $HOME/.cvspass || touch $HOME/.cvspass
+            grep $CVSROOT $HOME/.cvspass >/dev/null 2>&1 || cvs -d $CVSROOT login
+            cvs -z3 -d $CVSROOT co -d libast eterm/libast
+            (cd libast && ./autogen.sh $ac_configure_args && make install && cd .. && rm -rf libast)
+            if test $? -ne 0; then
+                echo 'ERROR:  Unable to auto-get libast, sorry.' 1>&2
+                exit 1
+            fi
+            $1=1
+            AC_CHECK_PROG(LIBAST_CONFIG, libast-config, libast-config, false)
+            test "$LIBAST_CONFIG" = "false" && $1=0
+        fi
+    fi
+    if test "${$1}" -eq "1"; then
+        if test ! -z "$LIBAST_CONFIG"; then
+            $2="-last ${$2}"
+            AC_DEFINE(HAVE_LIBAST)
+            test "$prefix" = "NONE" && prefix="`$LIBAST_CONFIG --prefix`"
+            SUPPORT_FLAGS="`$LIBAST_CONFIG --support`"
+            for i in $SUPPORT_FLAGS ; do
+                case $i in
+                    MMX)
+                        AC_DEFINE(LIBAST_MMX_SUPPORT)
+                        ;;
+                    X11)
+                        AC_DEFINE(LIBAST_X11_SUPPORT)
+                        ;;
+                    Imlib2)
+                        AC_DEFINE(LIBAST_IMLIB2_SUPPORT)
+                        ;;
+                esac
+            done
+        fi
+    fi
+])
+
+dnl#
 dnl# LibAST macro for determining integer types by size
 dnl#
-AC_DEFUN(AST_SIZE_TYPE,
-    [BIT_SIZE=[$1]
+AC_DEFUN(AST_SIZE_TYPE, [
+    BIT_SIZE=[$1]
     BYTE_SIZE=`expr $BIT_SIZE '/' 8`
     case $BYTE_SIZE in
         $ac_cv_sizeof_char)       eval INT_${BIT_SIZE}_TYPE=char ;;
