@@ -64,7 +64,7 @@ part {
 #include "panel.about.edc"
 
 
-TAB(0, "color", "tab-color.png", 11, 5);
-TAB(1, "shots", "tab-shots.png", 7, 7);
-TAB(2, "theme", "tab-theme.png", 7, 7);
-TAB(3, "about", "tab-about.png", 4, 7);
+TAB(0,"color", "tab-color.png", 11, 5);
+TAB(1,"shots", "tab-shots.png", 7, 7);
+TAB(2,"theme", "tab-theme.png", 7, 7);
+TAB(3,"about", "tab-about.png", 4, 7);

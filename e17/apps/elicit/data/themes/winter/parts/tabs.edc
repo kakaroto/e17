@@ -47,7 +47,7 @@
   }
 
 
-TAB(0, "color", "tab-data.png", 6, 7);
-TAB(1, "swatch", "tab-swatch.png", 6, 6);
-TAB(2, "shot", "tab-shot.png", 6, 6);
-TAB(3, "theme", "tab-theme.png", 8, 8);
+TAB(0,"color", "tab-data.png", 6, 7);
+TAB(1,"swatch", "tab-swatch.png", 6, 6);
+TAB(2,"shot", "tab-shot.png", 6, 6);
+TAB(3,"theme", "tab-theme.png", 8, 8);
