@@ -212,7 +212,6 @@ draw_tree(examine_prop * prop_item)
     panel_ptr = panel_ptr->next;
   }
 
-  printf("key is %s\n", prop_item->key);
   while (prop_item) {
     key_tmp = strdup(prop_item->key);
     panel_name = key_tmp;

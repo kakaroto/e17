@@ -25,6 +25,9 @@ char           *examine_client_buf;
 Ecore_Config_Ipc_Server_List *examine_client_server;
 examine_prop   *prop_list;
 
+
+void            examine_client_list_props_cb(void);
+void            examine_client_get_val_cb(void);
 /*****************************************************************************/
 
 
