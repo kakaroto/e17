@@ -21,6 +21,7 @@ data {
 	item, "/button/text/font" "Vera";
 	item, "/check/group" "checkbox";
 	item, "/cursor/group" "cursor";
+	item, "/cell/group" "cell";
 	item, "/embed/group" "embed";
 	item, "/entry/group" "entry";
 	item, "/entry/text/font" "Vera";
@@ -67,6 +68,7 @@ data {
 
 collections {
 #include "skeleton/bits/button-groups.edc"
+#include "skeleton/bits/cell-groups.edc"
 #include "skeleton/bits/checkbox-groups.edc"
 #include "skeleton/bits/entry-groups.edc"
 #include "skeleton/bits/filedialog-groups.edc"
