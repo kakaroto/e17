@@ -21,8 +21,15 @@ static Ewl_Text_Op *ewl_text_op_style_new(Ewl_Text *ta, char *style);
 static void ewl_text_op_style_apply(Ewl_Text *ta, Ewl_Text_Op *op);
 static void ewl_text_op_style_free(void *op);
 
-static Ewl_Text_Op * ewl_text_op_align_new(Ewl_Text *ta, unsigned int align);
+static Ewl_Text_Op *ewl_text_op_align_new(Ewl_Text *ta, unsigned int align);
 static void ewl_text_op_align_apply(Ewl_Text *ta, Ewl_Text_Op *op);
+
+static Ewl_Text_Op *ewl_text_op_text_append_new(Ewl_Text *ta, char *text);
+static Ewl_Text_Op *ewl_text_op_text_prepend_new(Ewl_Text *ta, char *text);
+static Ewl_Text_Op *ewl_text_op_text_insert_new(Ewl_Text *ta, char *text,
+						int index);
+static void ewl_text_op_text_apply(Ewl_Text *ta, Ewl_Text_Op *op);
+static void ewl_text_op_text_free(void *op);
 
 /**
  * @param text: the initial text of the text
@@ -128,6 +135,75 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
 	ewl_callback_call_with_event_data(EWL_WIDGET(ta),
 					  EWL_CALLBACK_VALUE_CHANGED, text);
 	IF_FREE(text);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text area widget to append the text
+ * @param text: the text to append in the text area widget @a ta
+ * @return Returns no value.
+ * @brief Append text to a text area widget
+ *
+ * Appends text to the text area widget @a ta.
+ */
+void ewl_text_text_append(Ewl_Text * ta, char *text)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_text_append_new(ta, text);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text area widget to prepend the text
+ * @param text: the text to prepend in the text area widget @a ta
+ * @return Returns no value.
+ * @brief Append text to a text area widget
+ *
+ * Appends text to the text area widget @a ta.
+ */
+void ewl_text_text_prepend(Ewl_Text * ta, char *text)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_text_prepend_new(ta, text);
+	ecore_dlist_prepend(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text area widget to insert the text
+ * @param text: the text to insert in the text area widget @a ta
+ * @return Returns no value.
+ * @brief Append text to a text area widget
+ *
+ * Appends text to the text area widget @a ta.
+ */
+void ewl_text_text_insert(Ewl_Text * ta, char *text, int index)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_text_insert_new(ta, text, index);
+	ecore_dlist_prepend(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -752,6 +828,96 @@ ewl_text_op_align_apply(Ewl_Text *ta, Ewl_Text_Op *op)
 	etox_context_set_align(ta->context, opa->align);
 
 	opa->align = align;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_text_append_new(Ewl_Text *ta, char *text)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Text_Op_Text *)op;
+		op->type = EWL_TEXT_OP_TYPE_TEXT_APPEND;
+		op->apply = ewl_text_op_text_apply;
+		op->free = ewl_text_op_text_free;
+		ops->text = strdup(text);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_text_prepend_new(Ewl_Text *ta, char *text)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Text_Op_Text *)op;
+		op->type = EWL_TEXT_OP_TYPE_TEXT_PREPEND;
+		op->apply = ewl_text_op_text_apply;
+		op->free = ewl_text_op_text_free;
+		ops->text = strdup(text);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_text_insert_new(Ewl_Text *ta, char *text, int index)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Text_Op_Text *)op;
+		op->type = EWL_TEXT_OP_TYPE_TEXT_INSERT;
+		op->apply = ewl_text_op_text_apply;
+		op->free = ewl_text_op_text_free;
+		ops->text = strdup(text);
+		ops->index = index;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_text_apply(Ewl_Text *ta, Ewl_Text_Op *op)
+{
+	Ewl_Text_Op_Text *opt = (Ewl_Text_Op_Text *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (op->type == EWL_TEXT_OP_TYPE_TEXT_APPEND)
+		etox_append_text(ta->etox, opt->text);
+	else if (op->type == EWL_TEXT_OP_TYPE_TEXT_PREPEND)
+		etox_prepend_text(ta->etox, opt->text);
+	else if (op->type == EWL_TEXT_OP_TYPE_TEXT_INSERT)
+		etox_insert_text(ta->etox, opt->text, opt->index);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_text_free(void *op)
+{
+	Ewl_Text_Op_Text *opt = (Ewl_Text_Op_Text *)op;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(opt->text);
+	FREE(opt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
