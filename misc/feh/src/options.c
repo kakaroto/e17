@@ -376,7 +376,10 @@ feh_parse_option_array(int argc, char **argv)
            show_version();
            break;
         case 'm':
-           opt.montage = 1;
+           opt.index = 1;
+           opt.index_show_name = 0;
+           opt.index_show_size = 0;
+           opt.index_show_dim = 0;
            break;
         case 'c':
            opt.collage = 1;
@@ -607,16 +610,15 @@ static void
 check_options(void)
 {
    D_ENTER;
-   if ((opt.montage + opt.index + opt.collage) > 1)
+   if ((opt.index + opt.collage) > 1)
    {
       weprintf
-         ("you can't use montage mode, collage mode or index mode together.\n"
+         ("you can't use collage mode and index mode together.\n"
           "   I'm going with index");
-      opt.montage = 0;
       opt.collage = 0;
    }
 
-   if (!(opt.montage || opt.index))
+   if (opt.index)
    {
       if (opt.font || opt.title_font)
       {
@@ -635,7 +637,7 @@ check_options(void)
    }
 
    if (opt.list
-       && (opt.multiwindow || opt.montage || opt.index || opt.collage))
+       && (opt.multiwindow || opt.index || opt.collage))
    {
       weprintf("list mode can't be combined with other processing modes,\n"
                "   list mode disabled.");

@@ -86,7 +86,6 @@ int feh_main_iteration(int block);
 void feh_handle_event(XEvent * ev);
 void init_x_and_imlib(void);
 void init_multiwindow_mode(void);
-void init_montage_mode(void);
 void init_thumbnail_mode(void);
 void init_collage_mode(void);
 void init_index_mode(void);

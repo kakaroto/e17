@@ -43,9 +43,7 @@ main(int argc, char **argv)
 
    init_x_and_imlib();
 
-   if (opt.montage)
-      init_montage_mode();
-   else if (opt.index)
+   if (opt.index)
       init_index_mode();
    else if (opt.collage)
       init_collage_mode();
