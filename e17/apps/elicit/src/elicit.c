@@ -112,12 +112,6 @@ setup(int argc, char **argv, Elicit *el)
   el->zoom = elicit_config_zoom_get();
   el->zoom_max = elicit_config_zoom_max_get();
 
-  /* load up the colorclass */
-  {
-    int r, g, b;
-    elicit_config_colorclass_get(&r, &g, &b);
-    edje_object_color_class_set(el->gui, "border", r, g, b, 255, 0, 0, 0, 0, 0, 0, 0, 0);
-  }
   /* create the swatch and shot objects */
   el->shot = evas_object_image_add(el->evas);
   evas_object_name_set(el->shot, "shot");
@@ -211,6 +205,13 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
 
   evas_object_hide(el->gui);
   evas_object_show(el->gui);
+
+  /* load up the colorclass */
+  {
+    int r, g, b;
+    elicit_config_colorclass_get(&r, &g, &b);
+    edje_object_color_class_set(el->gui, "border", r, g, b, 255, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
 }
 
 void

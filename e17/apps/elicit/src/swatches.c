@@ -273,6 +273,8 @@ elicit_swatch_load_cb(void *data, Evas_Object *o, const char *emission, const ch
   el->color.g = sw->g;
   el->color.b = sw->b;
 
+  elicit_util_colors_set_from_rgb(el);
+
   elicit_ui_update(el);
 }
 
