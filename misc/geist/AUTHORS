@@ -2,3 +2,7 @@ Tom Gilbert <gilbertt@linuxbrit.co.uk> Principle author.
 
 Till Adam <Till_Adam@bigfoot.com> Object properties code, multiple interface
                                   tweaks. 
+
+Dave J: Makefile.am fix for libXML.
+
+Nolan:  Opacity support

@@ -46,7 +46,6 @@ geist_image_init(geist_image * img)
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
 
-
    D_RETURN_(5);
 }
 
@@ -189,6 +188,8 @@ geist_image_load_file(geist_image * img, char *filename)
    {
       obj = (geist_object *) img;
 
+      if(img->orig_im)
+         geist_imlib_free_image(img->orig_im);
       obj->w = obj->rendered_w = geist_imlib_image_get_width(img->im);
       obj->h = obj->rendered_h = geist_imlib_image_get_height(img->im);
    }
@@ -196,7 +197,8 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -214,12 +216,15 @@ geist_image_duplicate(geist_object * obj)
    img = GEIST_IMAGE(obj);
 
    ret = geist_image_new_from_file(obj->x, obj->y, img->filename);
-   ret->rendered_x = obj->rendered_x;
-   ret->rendered_y = obj->rendered_y;
-   ret->h = obj->h;
-   ret->w = obj->w;
    if (ret)
    {
+      ret->rendered_x = obj->rendered_x;
+      ret->rendered_y = obj->rendered_y;
+      ret->h = obj->h;
+      ret->w = obj->w;
+      ret->opacity = obj->opacity;
+      if(ret->opacity != FULL_OPACITY)
+         geist_object_alter_image_opacity(ret, ret->opacity);
       ret->state = obj->state;
       ret->alias = obj->alias;
       ret->name =
@@ -246,6 +251,17 @@ geist_image_resize(geist_object * obj, int x, int y)
    geist_object_resize_object(obj, x, y);
 
    D_RETURN_(5);
+}
+
+void
+refresh_image_opacity_cb(GtkWidget * widget, gpointer * obj)
+{
+   int p;
+
+   p = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   geist_object_alter_image_opacity(GEIST_OBJECT(obj), p);
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
 
@@ -282,7 +298,8 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean
+geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -307,12 +324,13 @@ gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 GtkWidget *
 geist_image_display_props(geist_object * obj)
 {
-   char *buf;
    GtkWidget *image_props;
    GtkWidget *table;
    GtkWidget *sel_file_btn;
    GtkWidget *file_entry;
    GtkWidget *antialias_checkb;
+   GtkAdjustment *ao;
+   GtkWidget *imo, *imo_l;
 
    image_props = gtk_hbox_new(FALSE, 0);
 
@@ -340,16 +358,29 @@ geist_image_display_props(geist_object * obj)
    gtk_container_set_border_width(GTK_CONTAINER(antialias_checkb), 10);
 
 
-   buf =
-      (char *)
-      geist_imlib_image_get_filename(geist_object_get_rendered_image(obj));
-   gtk_entry_set_text(GTK_ENTRY(file_entry), buf);
-
-
+   gtk_entry_set_text(GTK_ENTRY(file_entry), GEIST_IMAGE(obj)->filename);
    gtk_signal_connect(GTK_OBJECT(sel_file_btn), "clicked",
                       GTK_SIGNAL_FUNC(geist_image_select_file_cb),
                       (gpointer) obj);
 
+   ao = (GtkAdjustment *) gtk_adjustment_new(0, 0, 100, 1, 1, 1);
+   imo_l = gtk_label_new("Opacity %:");
+   gtk_misc_set_alignment(GTK_MISC(imo_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), imo_l, 1, 2, 4, 5,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(imo_l);
 
+   imo = gtk_spin_button_new(GTK_ADJUSTMENT(ao), 1, 0);
+   gtk_table_attach(GTK_TABLE(table), imo, 2, 3, 4, 5, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(imo);
+
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(imo), obj->opacity);
+   gtk_signal_connect(GTK_OBJECT(imo), "changed",
+                      GTK_SIGNAL_FUNC(refresh_image_opacity_cb),
+                      (gpointer) obj);
+
+   gtk_widget_show(imo);
    return (image_props);
+
 }

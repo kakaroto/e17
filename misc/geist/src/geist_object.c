@@ -36,6 +36,8 @@ geist_object_init(geist_object * obj)
    obj->get_rendered_area = geist_object_int_get_rendered_area;
    obj->check_resize_click = geist_object_int_check_resize_click;
    obj->get_resize_box_coords = geist_object_int_get_resize_box_coords;
+   obj->image_alter_opacity = geist_object_int_alter_image_opacity;
+   obj->opacity = FULL_OPACITY;
    obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
@@ -70,8 +72,7 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type
-geist_object_get_type(geist_object * obj)
+geist_object_type geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -207,8 +208,7 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -216,8 +216,7 @@ geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image
-geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -336,8 +335,7 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates
-geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -446,7 +444,7 @@ geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
 
 void
 geist_object_int_get_resize_box_coords(geist_object * obj, int resize, int *x,
-                                   int *y)
+                                       int *y)
 {
    D_ENTER(3);
 
@@ -490,8 +488,7 @@ geist_object_int_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates
-geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -778,6 +775,53 @@ geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
 
 
 void
+geist_object_alter_image_opacity(geist_object * obj, int p)
+{
+   D_ENTER(5);
+   obj->image_alter_opacity(obj, p);
+   D_RETURN_(5);
+}
+
+void
+geist_object_int_alter_image_opacity(geist_object * obj, int op)
+{
+
+   geist_image *im = NULL;
+   int w, h, i;
+   double ra, ha;
+   DATA8 atab[256];
+
+   im = (geist_image *) obj;
+   if (!im->orig_im)
+   {
+      im->orig_im = geist_imlib_clone_image(im->im);
+   }
+   else
+   {
+      geist_imlib_free_image_and_decache(im->im);
+      im->im = geist_imlib_clone_image(im->orig_im);
+   }
+
+   w = geist_imlib_image_get_width(im->orig_im);
+   h = geist_imlib_image_get_height(im->orig_im);
+
+   geist_imlib_image_set_has_alpha(im->im, 1);
+
+   for (i = 0; i < 256; i++)
+   {
+      if ((ra = modf((double) (i) * ((double) op / (double) 100), &ha)) > 0.5)
+         ha++;
+      atab[i] = (DATA8) (ha);
+   }
+
+   geist_imlib_apply_color_modifier_to_rectangle(im->im, 0, 0, w, h, NULL,
+                                                 NULL, NULL, atab);
+   im->object.opacity = op;
+
+   D_RETURN_(5);
+}
+
+void
 geist_object_dirty(geist_object * obj)
 {
    int x, y, w, h;
@@ -887,9 +931,10 @@ geist_object_debug_print_values(geist_object * obj)
 }
 
 void
-geist_object_get_clipped_render_areas(geist_object * obj, int x, int y, int w, int h,
-                               int *sx, int *sy, int *sw, int *sh, int *dx,
-                               int *dy, int *dw, int *dh)
+geist_object_get_clipped_render_areas(geist_object * obj, int x, int y, int w,
+                                      int h, int *sx, int *sy, int *sw,
+                                      int *sh, int *dx, int *dy, int *dw,
+                                      int *dh)
 {
    D_ENTER(3);
 

@@ -28,6 +28,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <math.h>
 
 #include "config.h"
 #include "debug.h"

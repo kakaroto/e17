@@ -5,12 +5,13 @@
 #include "geist_object.h"
 
 #define GEIST_IMAGE(O) ((geist_image *) O)
+#define FULL_OPACITY 100
 
 struct __geist_image
 {
    geist_object object;
    char *filename;
-   Imlib_Image im;
+   Imlib_Image im, orig_im;
 };
 
 geist_object *geist_image_new(void);
@@ -20,6 +21,7 @@ void geist_image_free(geist_object * obj);
 void geist_image_render(geist_object * obj, Imlib_Image dest);
 void geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x,
                                 int y, int w, int h);
+void refresh_image_opacity_cb(GtkWidget * widget, gpointer * obj);
 int geist_image_load_file(geist_image * img, char *filename);
 Imlib_Image geist_image_get_rendered_image(geist_object * obj);
 geist_object *geist_image_duplicate(geist_object * obj);
