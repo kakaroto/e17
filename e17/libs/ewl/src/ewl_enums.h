@@ -143,11 +143,13 @@ typedef enum _ewl_position Ewl_Position;
 
 enum _ewl_position
 {
-	EWL_POSITION_LEFT,
-	EWL_POSITION_RIGHT,
-	EWL_POSITION_TOP,
-	EWL_POSITION_BOTTOM
+	EWL_POSITION_LEFT = 0x1,
+	EWL_POSITION_RIGHT = 0x2,
+	EWL_POSITION_TOP = 0x4,
+	EWL_POSITION_BOTTOM = 0x8
 };
+
+#define EWL_POSITION_MASK (0xf)
 
 typedef enum _ewl_window_flags Ewl_Window_Flags;
 
@@ -170,7 +172,7 @@ typedef enum _ewl_notebook_flags Ewl_Notebook_Flags;
 
 enum _ewl_notebook_flags
 {
-	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x1
+	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x10
 };
 
 typedef enum _ewl_fx_modifies Ewl_FX_Modifies;

@@ -396,8 +396,8 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 	/*
 	 * We don't really care when the scrollbars are resized.
 	 */
-	if (child != s->box)
-		DRETURN(DLEVEL_STABLE);
+/*	if (child != s->box)
+		DRETURN(DLEVEL_STABLE); */
 
 	/*
 	 * Update the preferred size of the scrollpane to that of the box.

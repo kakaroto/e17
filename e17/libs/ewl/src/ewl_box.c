@@ -338,7 +338,13 @@ __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	num = ewd_list_nodes(EWL_CONTAINER(w)->children);
+	num = 0;
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+		if (VISIBLE(child))
+			num++;
+	}
+
 	if (!num)
 		DRETURN(DLEVEL_STABLE);
 
@@ -371,11 +377,13 @@ __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
 	i = 0;
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
-		i++;
-		if (i == num)
-			*fill_size += remainder;
-		ewl_object_place(child, x, y, width, height);
-		*fill += *fill_size + b->spacing;
+		if (VISIBLE(child)) {
+			i++;
+			if (i == num)
+				*fill_size += remainder;
+			ewl_object_place(child, x, y, width, height);
+			*fill += *fill_size + b->spacing;
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
