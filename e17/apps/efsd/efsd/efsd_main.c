@@ -244,7 +244,7 @@ efsd_handle_fam_events(void)
 	  ee.type = EFSD_EVENT_FILECHANGE;
 	  ee.efsd_filechange_event.changetype = (EfsdFilechangeType)famev.code;
 	  ee.efsd_filechange_event.file = strdup(famev.filename);
-	  		
+
 	  for (cl = efsd_list_head(m->clients); cl; cl = efsd_list_next(cl))
 	    {
 	      EfsdFamRequest *efr;
@@ -297,8 +297,7 @@ efsd_handle_fam_events(void)
 				  efsd_handle_listdir_options(famev.filename, efr);
 				}
 			    }
-			}
-		      
+			}		      
 		    }
 		  break;
 		case EFSD_FAM_MONITOR_INTERNAL:
@@ -319,11 +318,8 @@ efsd_handle_fam_events(void)
 	    }
 	  
 	  if (famev.code == FAMAcknowledge)
-	    {
-	      D(("got FAMAcknowledge -- freeing monitor.\n"));
-	      efsd_fam_remove_monitor(m);
-	    }
-	  
+	    efsd_fam_remove_monitor(m);
+
 	  efsd_event_cleanup(&ee);
 	}
     }

@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_list.h>
 
 typedef struct efsd_hash EfsdHash;
+typedef struct efsd_hash_iterator EfsdHashIterator;
 
 typedef struct efsd_hash_item
 {
@@ -40,18 +41,28 @@ typedef unsigned int (*EfsdHashFunc) (EfsdHash *h, void *data);
 typedef int (*EfsdCmpFunc) (void *d1, void *d2);
 typedef void (*EfsdHashItemFreeFunc) (EfsdHashItem *it);
 
-EfsdHash *efsd_hash_new(int num_buckets, int bucket_size, EfsdHashFunc hash_func,
-			EfsdCmpFunc cmp_func, EfsdHashItemFreeFunc free_func);
+EfsdHash         *efsd_hash_new(int num_buckets, int bucket_size,
+				EfsdHashFunc hash_func, EfsdCmpFunc cmp_func,
+				EfsdHashItemFreeFunc free_func);
 
-void      efsd_hash_free(EfsdHash *h);
-int       efsd_hash_insert(EfsdHash *h, void *key, void *data);
-void     *efsd_hash_find(EfsdHash *h, void *key);
-void      efsd_hash_remove(EfsdHash *h, void *key);
+void              efsd_hash_free(EfsdHash *h);
+int               efsd_hash_insert(EfsdHash *h, void *key, void *data);
 
-int       efsd_hash_num_buckets(EfsdHash *h);
-int       efsd_hash_max_bucket_size(EfsdHash *h);
+/* Returns NULL if item not found or the data of the
+   EfsdHashItem if found. */
+void             *efsd_hash_find(EfsdHash *h, void *key);
+void              efsd_hash_remove(EfsdHash *h, void *key);
+
+int               efsd_hash_num_buckets(EfsdHash *h);
+int               efsd_hash_max_bucket_size(EfsdHash *h);
 
 /* Standard hash functions: */
-unsigned int efsd_hash_string(EfsdHash *h, char *data);
+unsigned int      efsd_hash_string(EfsdHash *h, char *data);
+
+EfsdHashIterator *efsd_hash_it_new(EfsdHash *h);
+void              efsd_hash_it_free(EfsdHashIterator *it);
+EfsdHashItem     *efsd_hash_it_item(EfsdHashIterator *it);
+int               efsd_hash_it_next(EfsdHashIterator *it);
+int               efsd_hash_it_valid(EfsdHashIterator *it);
 
 #endif

@@ -62,6 +62,10 @@ typedef struct efsd_fam_monitor
   /* use count for this monitor     */
   int                   use_count;
 
+  /* whether this monitor is
+     registered internally          */
+  char                  registered;
+
   /* Which clients monitor this file,
      and with what command id.
      list<EfsdFamRequest*>.
@@ -74,11 +78,6 @@ EfsdFamMonitor;
 
 void             efsd_fam_init(void);
 void             efsd_fam_cleanup(void);
-
-/* Allocator and deallocator for a Monitor */
-EfsdFamMonitor  *efsd_fam_new_monitor(EfsdFamMonType type, EfsdCommand *com,
-				      int client);
-void             efsd_fam_free_monitor(EfsdFamMonitor *m);
 
 /* This one frees the monitor and removes
    it from the list of monitors.

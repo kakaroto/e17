@@ -35,31 +35,99 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_globals.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
+#include <efsd_hash.h>
 #include <efsd_fam.h>
 
 
+EfsdHash *monitors = NULL;
 
-EfsdList *monitors = NULL;
+/* Allocator and deallocator for a Monitor */
+static EfsdFamMonitor  *fam_new_monitor(EfsdFamMonType type, EfsdCommand *com,
+					int client, int registered);
+static void             fam_free_monitor(EfsdFamMonitor *m);
 
-static EfsdFamRequest * efsd_fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
+
+static EfsdFamRequest * fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
 					     int num_options, EfsdOption *options);
 
-static void             efsd_fam_free_request(EfsdFamRequest *efr);
+static void             fam_free_request(EfsdFamRequest *efr);
 
 /* Increment use count for file monitor, or start
    new monitor if file is not monitored yet.
  */
-static void             efsd_fam_add_monitor(EfsdFamMonType type, EfsdCommand *com, int client);
+static void             fam_add_client_to_monitor(EfsdFamMonType type, EfsdCommand *com, int client);
 
 /* Decreases use count on file. If count drops to
    zero, monitoring is stopped.
 */
-static int              efsd_fam_del_monitor(EfsdCommand *com, int client);
+static int              fam_del_monitor(EfsdCommand *com, int client);
+
+static void             fam_hash_item_free(EfsdHashItem *it);
+
+static EfsdFamMonitor *         
+fam_new_monitor(EfsdFamMonType type, EfsdCommand *com, int client, int registered)
+{
+  EfsdFamRequest   *efr;
+  EfsdFamMonitor   *m;
+
+  D_ENTER;
+
+  m = NEW(EfsdFamMonitor);
+  memset(m, 0, sizeof(EfsdFamMonitor));
+
+  m->filename   = strdup(com->efsd_file_cmd.file);
+  m->fam_req    = NEW(FAMRequest);
+  m->clients    = NULL;
+  m->registered = registered;
+
+  efr = fam_new_request(type, client, com->efsd_file_cmd.id,
+			com->efsd_file_cmd.num_options,
+			com->efsd_file_cmd.options);
+
+  /* If we have options for a listdir events, unhook (not free)
+     them from the command, so that they don't get freed in the
+     normal command cleanup. They will get cleaned up when we
+     see the acknowledge event and the EfsdFamRequest is freed. */
+     
+  if (com->efsd_file_cmd.num_options > 0)
+    {
+      com->efsd_file_cmd.num_options = 0;
+      com->efsd_file_cmd.options = NULL;
+    }
+  
+  m->clients   = efsd_list_prepend(m->clients, efr);				   
+  m->use_count = 1;
+
+  if (registered)
+    efsd_hash_insert(monitors, m->filename, m);
+
+  D_RETURN_(m);
+}
+
+
+static void             
+fam_free_monitor(EfsdFamMonitor *m)
+{
+  D_ENTER;
+
+  if (!m)
+    D_RETURN;
+
+  if (m->filename)
+    free (m->filename);
+  if (m->fam_req)
+    free (m->fam_req);
+
+  efsd_list_free(m->clients, (EfsdFunc)fam_free_request);
+  free (m);
+
+  D_RETURN;
+}
 
 
 static EfsdFamRequest *
-efsd_fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
-		     int num_options, EfsdOption *options)
+fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
+		int num_options, EfsdOption *options)
 {
   EfsdFamRequest   *efr;
   
@@ -71,12 +139,12 @@ efsd_fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
   /* Okay -- this is tricky -- only the NORMAL monitor type
      actually causes file monitoring events to be sent to
      clients. So the question is what to fill in as client
-     numbers for the others. We just use the monitor types,
+    numbers for the others. We just use the monitor types,
      because they're all defined as negative ints.
 
      We can then check whether we're already monitoring a
      file using a specific type by simply comparing the
-     client numbers in efsd_fam_add_monitor()...
+     client numbers in fam_add_client_to_monitor()...
   */
 
   if (type != EFSD_FAM_MONITOR_NORMAL)
@@ -93,7 +161,7 @@ efsd_fam_new_request(EfsdFamMonType type, int client, EfsdCmdId id,
 
 
 static void             
-efsd_fam_free_request(EfsdFamRequest *efr)
+fam_free_request(EfsdFamRequest *efr)
 {
   int i;
 
@@ -110,6 +178,120 @@ efsd_fam_free_request(EfsdFamRequest *efr)
 }
 
 
+static void             
+fam_hash_item_free(EfsdHashItem *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN;
+
+  /* Key is a string inside the monitor,
+     so we don't need to free it separately.
+  */
+
+  /* Data is an EfsdFamMonitor: */
+  fam_free_monitor(it->data);
+  FREE(it);
+  
+  D_RETURN;
+}
+
+
+static void
+fam_add_client_to_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
+{
+  EfsdList         *l2 = NULL;
+  EfsdFamMonitor   *m;
+
+  D_ENTER;
+
+  m = efsd_hash_find(monitors, com->efsd_file_cmd.file);
+      
+  if (m)
+    {
+      for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
+	{
+	  if (((EfsdFamRequest*)efsd_list_data(l2))->client == client)
+	    break;
+	}
+
+      if (!l2)
+	{	      
+	  EfsdFamRequest *efr;
+	  
+	  m->use_count++;
+
+	  D(("Incrementing usecount for monitoring file %s, now %i.\n",
+	     com->efsd_file_cmd.file, m->use_count));
+	  
+	  efr = fam_new_request(type, client, com->efsd_file_cmd.id,
+				com->efsd_file_cmd.num_options,
+				com->efsd_file_cmd.options);
+	  
+	  m->clients = efsd_list_prepend(m->clients, efr);
+	  efsd_fam_force_startstop_monitor(com, client);
+	}
+    }
+
+  D_RETURN;
+}
+
+
+static int
+fam_del_monitor(EfsdCommand *com, int client)
+{
+  EfsdFamMonitor  *m = NULL;
+
+  D_ENTER;
+
+  if (!com)
+    D_RETURN_(-1);
+
+  efsd_misc_remove_trailing_slashes(com->efsd_file_cmd.file);
+  m = efsd_hash_find(monitors, com->efsd_file_cmd.file);
+
+  if (m)
+    {
+      D(("Decrementing usecount for monitoring file %s.\n",
+	 com->efsd_file_cmd.file));
+
+      if (--(m->use_count) == 0)
+	{
+	  D(("Use count is zero -- stopping monitoring of %s.\n",
+	     com->efsd_file_cmd.file));
+	  
+	  FAMCancelMonitor(&famcon, m->fam_req);
+	  
+	  /* Actual cleanup happens when FAMAcknowledge is seen ... */
+	}
+      else
+	{
+	  EfsdFamRequest    *efr;
+	  EfsdList          *l2;
+	  
+	  /* Use count not zero -- remove given client
+	     from list of monitoring clients. */
+	  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
+	    {
+	      efr = (EfsdFamRequest*)efsd_list_data(l2);
+	      
+	      if (efr->client == client)
+		{
+		  m->clients = efsd_list_remove(m->clients, l2, (EfsdFunc)fam_free_request);
+		  l2 = NULL;
+		  break;
+		}
+	    }
+	}
+
+      D_RETURN_(0);
+    }
+  
+  D_RETURN_(-1);
+}
+
+
 void         
 efsd_fam_init(void)
 {
@@ -121,6 +303,9 @@ efsd_fam_init(void)
       exit(-1);
     }
 
+  monitors = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
+			   (EfsdCmpFunc)strcmp, fam_hash_item_free);
+
   D_RETURN;
 }
 
@@ -129,7 +314,7 @@ void
 efsd_fam_cleanup(void)
 {  
   D_ENTER;
-  efsd_list_free(efsd_list_head(monitors), (EfsdFunc)efsd_fam_free_monitor);
+  efsd_hash_free(monitors);
   D_RETURN;
 }
 
@@ -139,12 +324,16 @@ efsd_fam_start_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
 {
   D_ENTER;
 
+  if (!com)
+    D_RETURN_(-1);
+
+  efsd_misc_remove_trailing_slashes(com->efsd_file_cmd.file);
+
   if (!efsd_fam_is_monitored(com->efsd_file_cmd.file))
     {
       EfsdFamMonitor  *m;
       
-      m = efsd_fam_new_monitor(type, com, client);
-      monitors = efsd_list_prepend(monitors, m);
+      m = fam_new_monitor(type, com, client, TRUE);
 
       if (type == EFSD_FAM_MONITOR_INTERNAL)
 	{
@@ -165,7 +354,7 @@ efsd_fam_start_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
     }
   else
     {
-      efsd_fam_add_monitor(type, com, client);
+      fam_add_client_to_monitor(type, com, client);
     }
 
   D_RETURN_(0);
@@ -176,7 +365,7 @@ int
 efsd_fam_stop_monitor(EfsdCommand *com, int client)
 {
   D_ENTER;
-  D_RETURN_(efsd_fam_del_monitor(com, client));
+  D_RETURN_(fam_del_monitor(com, client));
 }
 
 
@@ -187,6 +376,10 @@ efsd_fam_start_monitor_internal(char *filename)
 
   D_ENTER;
 
+  if (!filename || filename[0] == '\0')
+    D_RETURN_(-1);
+
+  efsd_misc_remove_trailing_slashes(filename);
   memset(&com, 0, sizeof(EfsdCommand));
   com.efsd_file_cmd.file = filename;
 
@@ -201,6 +394,10 @@ efsd_fam_stop_monitor_internal(char *filename)
 
   D_ENTER;
 
+  if (!filename || filename[0] == '\0')
+    D_RETURN_(-1);
+
+  efsd_misc_remove_trailing_slashes(filename);
   memset(&com, 0, sizeof(EfsdCommand));
   com.efsd_file_cmd.file = filename;
 
@@ -211,20 +408,11 @@ efsd_fam_stop_monitor_internal(char *filename)
 int          
 efsd_fam_is_monitored(char *filename)
 {
-  EfsdList *l;
-  EfsdFamMonitor *m;
-
   D_ENTER;
 
-  for (l = efsd_list_head(monitors); l; l = efsd_list_next(l))
-    {
-      m = (EfsdFamMonitor *)efsd_list_data(l);
+  efsd_misc_remove_trailing_slashes(filename);
 
-      if (!strcmp(m->filename, filename))
-	D_RETURN_(1);
-    }
-
-  D_RETURN_(0);
+  D_RETURN_((efsd_hash_find(monitors, filename) != NULL));
 }
 
 
@@ -235,12 +423,17 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 
   D_ENTER;
 
-  m = efsd_fam_new_monitor(EFSD_FAM_MONITOR_NORMAL, com, client);
+  m = fam_new_monitor(EFSD_FAM_MONITOR_NORMAL, com, client, FALSE);
 
   if (efsd_misc_file_is_dir(m->filename))
     FAMMonitorDirectory(&famcon, m->filename, m->fam_req, m);
   else
     FAMMonitorFile(&famcon, m->filename, m->fam_req, m);
+
+  /* This causes at least one or more file-exists events
+     to be sent -- now cancel the monitor to generate
+     them FAMAcknowledge event.
+  */
 
   FAMCancelMonitor(&famcon, m->fam_req);
 
@@ -248,196 +441,25 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 }
 
 
-EfsdFamMonitor *         
-efsd_fam_new_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
-{
-  EfsdFamRequest   *efr;
-  EfsdFamMonitor   *m;
-
-  D_ENTER;
-
-  m = NEW(EfsdFamMonitor);
-  memset(m, 0, sizeof(EfsdFamMonitor));
-
-  m->filename  = strdup(com->efsd_file_cmd.file);
-  m->fam_req   = NEW(FAMRequest);
-  m->clients   = NULL;
-  
-  efr = efsd_fam_new_request(type, client, com->efsd_file_cmd.id,
-			     com->efsd_file_cmd.num_options,
-			     com->efsd_file_cmd.options);
-
-  /* If we have options for a listdir events, unhook (not free)
-     them from the command, so that they don't get freed in the
-     normal command cleanup. They will get cleaned up when we
-     see the acknowledge event and the EfsdFamRequest is freed. */
-     
-  if (com->efsd_file_cmd.num_options > 0)
-    {
-      com->efsd_file_cmd.num_options = 0;
-      com->efsd_file_cmd.options = NULL;
-    }
-  
-  m->clients   = efsd_list_prepend(m->clients, efr);				   
-  m->use_count = 1;
-
-  D_RETURN_(m);
-}
-
-
 void             
-efsd_fam_free_monitor(EfsdFamMonitor *m)
+efsd_fam_remove_monitor(EfsdFamMonitor *m)
 {
   D_ENTER;
 
   if (!m)
     D_RETURN;
 
-  if (m->filename)
-    free (m->filename);
-  if (m->fam_req)
-    free (m->fam_req);
-
-  efsd_list_free(m->clients, (EfsdFunc)efsd_fam_free_request);
-  free (m);
-
-  D_RETURN;
-}
-
-
-static void
-efsd_fam_add_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
-{
-  EfsdList         *l;
-  EfsdList         *l2 = NULL;
-  EfsdFamMonitor   *m;
-  char             *f;
-
-  D_ENTER;
-
-  f = com->efsd_file_cmd.file;
-  l = efsd_list_head(monitors);
-  
-  while (l)
+  if (m->registered)
     {
-      m = (EfsdFamMonitor *)efsd_list_data(l);
-      if (!strcmp(m->filename, f))
-	{
-	  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
-	    {
-	      if (((EfsdFamRequest*)efsd_list_data(l2))->client == client)
-		break;
-	    }
-
-	  if (!l2)
-	    {	      
-	      EfsdFamRequest *efr;
-
-	      D(("Incrementing usecount for monitoring file %s.\n", f));
-	      m->use_count++;
-
-	      efr = efsd_fam_new_request(type, client, com->efsd_file_cmd.id,
-					 com->efsd_file_cmd.num_options,
-					 com->efsd_file_cmd.options);
-
-	      m->clients = efsd_list_prepend(m->clients, efr);
-	      efsd_fam_force_startstop_monitor(com, client);
-	    }
-
-	  /* No need to iterate over the other monitors ... */
-
-	  D_RETURN;
-	}
-
-      l = efsd_list_next(l);
+      D(("Freeing registered monitor for %s.\n", m->filename));
+      efsd_hash_remove(monitors, m->filename);    
     }
-  D_RETURN;
-}
-
-
-static int
-efsd_fam_del_monitor(EfsdCommand *com, int client)
-{
-  EfsdList        *l;
-  int              success;
-  char            *f;
-  EfsdFamMonitor  *m = NULL;
-
-  D_ENTER;
-
-  l = efsd_list_head(monitors);
-  f = com->efsd_file_cmd.file;
-  success = 0;
-
-  while (l)
+  else
     {
-      m = (EfsdFamMonitor *)efsd_list_data(l);
-
-      if (!strcmp(m->filename, f))
-	{
-	  D(("Decrementing usecount for monitoring file %s.\n", f));
-	  if (--(m->use_count) == 0)
-	    {
-	      D(("Use count is zero -- stopping monitoring of %s.\n", f));
-	      FAMCancelMonitor(&famcon, m->fam_req);
-
-	      /* Actual cleanup happens when FAMAcknowledge is seen ... */
-	    }
-	  else
-	    {
-	      EfsdFamRequest    *efr;
-	      EfsdList          *l2;
-
-	      /* Use count not zero -- remove given client
-		 from list of monitoring clients. */
-	      for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
-		{
-		  efr = (EfsdFamRequest*)efsd_list_data(l2);
-
-		  if (efr->client == client)
-		    {
-		      m->clients = efsd_list_remove(m->clients, l2, (EfsdFunc)efsd_fam_free_request);
-		      l2 = NULL;
-		      break;
-		    }
-		}
-	    }
-	  success = 1;
-	  break;
-	}
-      
-      l = efsd_list_next(l);
+      D(("Freeing monitor for %s.\n", m->filename));
+      fam_free_monitor(m);
     }
 
-  if (success)
-    D_RETURN_(0);
-
-  D_RETURN_(-1);
-}
-
-
-void             
-efsd_fam_remove_monitor(EfsdFamMonitor *mon)
-{
-  EfsdList        *l;
-  EfsdFamMonitor  *m;
-  D_ENTER;
-
-  if (mon)
-    {
-      for (l = efsd_list_head(monitors); l; l = efsd_list_next(l))
-	{
-	  m = (EfsdFamMonitor *)efsd_list_data(l);
-
-	  if (m == mon)
-	    {
-	      D(("Removing monitor.\n"));
-	      monitors = efsd_list_remove(monitors, l, (EfsdFunc)efsd_fam_free_monitor);
-	      break;
-	    }
-	}
-    }
-  
   D_RETURN;
 }
 
@@ -445,17 +467,16 @@ efsd_fam_remove_monitor(EfsdFamMonitor *mon)
 int          
 efsd_fam_cleanup_client(int client)
 {
-  EfsdList      *l, *c;
+  EfsdList         *c;
+  EfsdHashIterator *it;
+  EfsdFamMonitor   *m;
 
   D_ENTER;
 
-  l = efsd_list_head(monitors);
-
-  while (l)
+  for (it = efsd_hash_it_new(monitors); efsd_hash_it_valid(it); efsd_hash_it_next(it))
     {
-      EfsdFamMonitor *m;
-      m = (EfsdFamMonitor *)efsd_list_data(l);
-
+      m = (EfsdFamMonitor *) ((efsd_hash_it_item(it))->data);
+      
       c = efsd_list_head(m->clients);
       while (c)
 	{
@@ -486,16 +507,12 @@ efsd_fam_cleanup_client(int client)
 		}
 	      
 	      /* Use count not zero, but remove client from list of users */
-	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)efsd_fam_free_request);
+	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)fam_free_request);
 	    }
-	  /* I *think* m->use_count < 0 can happen in weird cases
-	     when clients die etc. Doing nothing should be the
-	     right thing to do here ...
-	  */
 	}
-
-      l = efsd_list_next(l);
     }
-  D_RETURN_(0);
+
+  efsd_hash_it_free(it);
+  D_RETURN_(FALSE);
 }
 

@@ -50,6 +50,14 @@ struct efsd_hash
 };
 
 
+struct efsd_hash_iterator
+{
+  EfsdHash      *h;
+  EfsdList      *it;
+  int            bucket;
+};
+
+
 EfsdHash *
 efsd_hash_new(int num_buckets, int bucket_size, EfsdHashFunc hash_func,
 	      EfsdCmpFunc cmp_func, EfsdHashItemFreeFunc free_func)
@@ -155,6 +163,10 @@ efsd_hash_find(EfsdHash *h, void *key)
   int           i;
 
   D_ENTER;
+
+  if (!h || !key)
+    D_RETURN_(NULL);
+
   index = h->hash_func(h, key);
 
   for (i = 1, l = h->buckets[index]; l; l = efsd_list_next(l), i++)
@@ -179,6 +191,10 @@ efsd_hash_remove(EfsdHash *h, void *key)
   u_int         index;
 
   D_ENTER;
+
+  if (!h || !key)
+    D_RETURN;
+
   index = h->hash_func(h, key);
 
   for (l = h->buckets[index]; l; l = efsd_list_next(l))
@@ -236,4 +252,109 @@ efsd_hash_string(EfsdHash *h, char *s)
   /* D(("String '%s' hashed to %i\n", ss, hash)); */
 
   D_RETURN_(hash);
+}
+
+
+/* Hash iterator stuff below: */
+
+EfsdHashIterator *
+efsd_hash_it_new(EfsdHash *h)
+{
+  int i;
+  EfsdHashIterator *it = NULL
+
+  D_ENTER;
+
+  if (!h)
+    D_RETURN_(NULL);
+
+  for (i = 0; i < h->num_buckets; i++)
+    {
+      if (h->buckets[i] != NULL)
+	{
+	  it = NEW(EfsdHashIterator);
+
+	  it->h = h;
+	  it->bucket = i;
+	  it->it = h->buckets[i];
+
+	  D_RETURN_(it);
+	}
+    }
+
+  D_RETURN_(NULL);
+}
+
+
+void              
+efsd_hash_it_free(EfsdHashIterator *it)
+{
+  D_ENTER;
+
+  FREE(it);
+
+  D_RETURN;
+}
+
+
+EfsdHashItem     *
+efsd_hash_it_item(EfsdHashIterator *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN_(NULL);
+  
+  D_RETURN_((EfsdHashItem*)efsd_list_data(it->it));
+}
+
+
+int               
+efsd_hash_it_next(EfsdHashIterator *it)
+{
+  int i;
+
+  D_ENTER;
+
+  if (!it)
+    D_RETURN_(FALSE);
+
+  if (it->it)
+    {
+      it->it = efsd_list_next(it->it);
+
+      if (it->it)
+	{
+	  D_RETURN_(TRUE);
+	}
+
+      for (i = it->bucket + 1; i < it->h->num_buckets; i++)
+	{
+	  if (it->h->buckets[i] != NULL)
+	    {
+	      it->bucket = i;
+	      it->it = it->h->buckets[i];
+	      D_RETURN_(TRUE);
+	    }
+	}
+    }
+
+  it->it = NULL;
+
+  D_RETURN_(FALSE);
+}
+
+
+int               
+efsd_hash_it_valid(EfsdHashIterator *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN_(FALSE);
+
+  if (it->it != NULL)
+    D_RETURN_(TRUE);
+
+  D_RETURN_(FALSE);
 }
