@@ -26,6 +26,31 @@ part {
   }
 }
 
+/* layout everything relative to this */
+part {
+  name: "color.box";
+  type: RECT;
+  clip_to: "color.clip";
+  description {
+    state: "default" 0.0;
+    color: 255 255 255 0;
+    min: 91 63;
+    max: 91 63;
+    visible, 0;
+    rel1 {
+      to: "tabs.trough";
+      relative: 0 1;
+      offset: 0 1;
+    }
+    rel2 {
+      to: "panel.clip";
+      relative: 1 1;
+      offset: -2 -2;
+    }
+  }
+}
+
+
 #if 1
 part {
   name: "red.label";
@@ -35,13 +60,13 @@ part {
     state: "default" 0.0;
     color: TEXT_COLOR 255;
     rel1 {
-      to_x: "panel.inset";
+      to_x: "color.box";
       to_y: "tabs.trough";
       relative: 0 1;
       offset: 4 2;
     }
     rel2 {
-      to_x: "panel.inset";
+      to_x: "color.box";
       to_y: "tabs.trough";
       relative: 0 1;
       offset: 12 10;
@@ -162,13 +187,13 @@ part {
     state: "default" 0.0;
     color: TEXT_COLOR 255;
     rel1 {
-      to_x: "panel.inset";
+      to_x: "color.box";
       to_y: "tabs.trough";
       relative: 1 1;
       offset: -13 2;
     }
     rel2 {
-      to_x: "panel.inset";
+      to_x: "color.box";
       to_y: "tabs.trough";
       relative: 1 1;
       offset: -5 10;

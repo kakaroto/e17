@@ -30,11 +30,12 @@ part {
   clip_to: "theme.clip";
   description {
     state: "default" 0.0;
+    min: 91 0;
+    max: 91 9999;
     rel1 {
-      to_x: "tabs.trough";
-      to_y: "theme.label";
+      to: "tabs.trough";
       relative: 0 1;
-      offset: 0 3;
+      offset: 0 13;
     }
     rel2 {
       to_x: "tabs.trough";
@@ -56,12 +57,14 @@ part {
   description {
     color: TEXT_COLOR 255;
     rel1 {
-      to: "tabs.trough";
+      to_x: "theme.trough";
+      to_y: "tabs.trough";
       relative: 0 1;
       offset: 4 3;
     }
     rel2 {
-      to: "tabs.trough";
+      to_x: "theme.trough";
+      to_y: "tabs.trough";
       relative: 1 1;
       offset: -3 9;
     }
