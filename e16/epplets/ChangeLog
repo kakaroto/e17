@@ -2015,3 +2015,9 @@ Tue Mar  7 19:15:00 GMT 2000
 Fix for E-Power from Roger Sherwood <rogersherwood@hotmail.com>
 Now it looks for the pngs in the right place.
 
+-------------------------------------------------------------------------------
+
+Thu Mar  9 21:22:19 CET 2000
+(Christian)
+
+Fixed embarrasing bugs in E-Mountbox. *shame*.

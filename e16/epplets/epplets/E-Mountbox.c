@@ -958,6 +958,9 @@ ParseFstab(void)
           continue;
         }
 
+      for (i=0; i<4; i++)
+	info[i] = NULL;
+
       /* parse out tokens we need */
       i = 0;
       token = strtok(s, " \t");
@@ -976,7 +979,7 @@ ParseFstab(void)
 	    AddMountPoint(info[0], info[1]);
 	  }
 
-      for (i=0; i<5; i++)
+      for (i=0; i<4; i++)
 	if (info[i])
 	  free(info[i]);
     }
