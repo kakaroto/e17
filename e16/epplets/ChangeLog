@@ -1826,3 +1826,13 @@ adjusting the viewport 2 pixels down and left. Oh, also notice the
 pretty colors on teh square. I PROMISE I'll put something more interesting
 to look at in in a day or two. :P
 
+-------------------------------------------------------------------------------
+
+Thu Jan 20 20:15:26 GMT 2000
+(gilbertt)
+
+Argh. Finally got bugged by E-Exec's size not tesselating properly, and so I
+added a --proper-size commandline option to fix that right up =)
+
+Sorry StriderZ ;)
+
