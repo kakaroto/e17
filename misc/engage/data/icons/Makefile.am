@@ -1,2 +1,2 @@
 icondir = $(pkgdatadir)/icons
-icon_DATA = *.png
+#icon_DATA = *.png
