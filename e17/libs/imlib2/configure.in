@@ -6,7 +6,7 @@ AC_CANONICAL_SYSTEM
 
 AC_ARG_WITH(edb,
         [  --with-edb=DIR          use edb rooted at <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
+        [CPPFLAGS="$CPPFLAGS -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
 
 mmx=no
