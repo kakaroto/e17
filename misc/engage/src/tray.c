@@ -1,6 +1,7 @@
 #include "engage.h"
 #include "config.h"
 #include "Ecore_X.h"
+#include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
@@ -8,9 +9,35 @@
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
 #define SYSTEM_TRAY_CANCEL_MESSAGE  2
 
-Display *display;
-Window Root;
-int tray_init;
+#define XEMBED_EMBEDDED_NOTIFY      0
+
+/*
+ * This or something similar should probably go into ecore_x
+ */
+extern Display *_ecore_x_disp;
+
+int
+ecore_x_client_message_send(Window win, Atom type, long d0, long d1,
+                            long d2, long d3, long d4)
+{
+    XEvent xev;
+
+    xev.xclient.window = win;
+    xev.xclient.type = ClientMessage;
+    xev.xclient.message_type = type;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = d0;
+    xev.xclient.data.l[1] = d1;
+    xev.xclient.data.l[2] = d2;
+    xev.xclient.data.l[3] = d3;
+    xev.xclient.data.l[4] = d4;
+
+    XSendEvent(_ecore_x_disp, win, False, NoEventMask, &xev);
+}
+
+static Display *display;
+static Window root;
+static int tray_init;
 
 int
 od_tray_msg_cb(void *data, int type, void *event)
@@ -20,30 +47,34 @@ od_tray_msg_cb(void *data, int type, void *event)
   if (type == ECORE_X_EVENT_CLIENT_MESSAGE) {
     if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_OPCODE")) {
       XEvent xevent;
-      printf("need to add tray icon for win %s\n", ecore_x_window_prop_title_get(ev->data.l[2]));
+      printf("need to add tray icon for win %s\n",
+             ecore_x_window_prop_title_get(ev->data.l[2]));
+      printf("ev->data.l: %#lx %#lx %#lx %#lx\n",
+             ev->data.l[0], ev->data.l[1], ev->data.l[2], ev->data.l[3]);
 
+#if 0
+/*
+ * The window should probably be embedded, not sampled
+ * A reparenting should be done as part of the embedding
+ * but somehow causes trouble atm.
+ */
       XReparentWindow (display, ev->data.l[2], od_window, 0, 0);
       ecore_x_window_resize(ev->data.l[2], options.size, options.size);
-      ecore_x_window_prop_layer_set(ev->data.l[2], ECORE_X_WINDOW_LAYER_BELOW);
 
       OD_Icon *new = od_icon_new_sysicon("","",ev->data.l[2]);
       od_icon_grab(new, ev->data.l[2]);
       od_dock_add_sysicon(new);
+#endif
+      /* Map the window (will go top-level until reparented) */
+      ecore_x_window_show(ev->data.l[2]);
 
-      xevent.xclient.window = ev->data.l[2];
-      xevent.xclient.type = ClientMessage;
-      xevent.xclient.message_type = ecore_x_atom_get("_XEMBED");
-      xevent.xclient.format = 32;
-      xevent.xclient.data.l[0] = CurrentTime;
-      xevent.xclient.data.l[1] = SYSTEM_TRAY_REQUEST_DOCK;
-      xevent.xclient.data.l[2] = 0;
-      xevent.xclient.data.l[3] = od_window;
-      xevent.xclient.data.l[4] = 0;
-      XSendEvent (display, Root, False, NoEventMask, &xevent);
-      
-    }
-    if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_CLIENT_MESSAGE"))
+      /* Should proto be set according to clients _XEMBED_INFO? */
+      ecore_x_client_message_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
+                                  CurrentTime, XEMBED_EMBEDDED_NOTIFY,
+                                  0, od_window, /*proto*/1);
+    } else if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_MESSAGE_DATA")) {
       printf("got message\n");
+    }
   } else if (type == ECORE_X_EVENT_WINDOW_DESTROY ||
              type == ECORE_X_EVENT_WINDOW_HIDE) {
     /* FIXME - WHY are we never called???? */
@@ -85,9 +116,11 @@ void
 od_tray_init()
 {
   Atom selection_atom;
+  int scr;
 
   tray_init = 1;
-  display = (Display *)ecore_x_display_get();
+  display = ecore_x_display_get();
+  root = RootWindow (display, DefaultScreen(display));
 
   selection_atom = ecore_x_atom_get("_NET_SYSTEM_TRAY_S0");
   XSetSelectionOwner (display, selection_atom, od_window, CurrentTime);
@@ -95,29 +128,12 @@ od_tray_init()
   if (XGetSelectionOwner (display, selection_atom) == od_window) {
     printf("am a system tray :) :)\n");
 
-    XClientMessageEvent xev;
-    int scr = DefaultScreen (display);
-    Root = RootWindow (display, scr);
-    xev.type = ClientMessage;
-    xev.window = Root;
-    xev.message_type = XInternAtom (display, "MANAGER", False);
-
-    xev.format = 32;
-    xev.data.l[0] = CurrentTime;
-    xev.data.l[1] = selection_atom;
-    xev.data.l[2] = od_window;
-    xev.data.l[3] = 0;  /* manager specific data */
-    xev.data.l[4] = 0;  /* manager specific data */
-    XSendEvent (display, Root, False, StructureNotifyMask, (XEvent *) & xev);
-
+    ecore_x_client_message_send(root, ecore_x_atom_get("MANAGER"),
+                                CurrentTime, selection_atom,
+                                od_window, 0, 0);
   }
-
 
   ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, od_tray_msg_cb, NULL);
   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, od_tray_msg_cb, NULL);
   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_HIDE, od_tray_msg_cb, NULL);
-
-
 }
-
-
