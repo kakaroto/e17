@@ -255,7 +255,7 @@ MenuEwinInit(EWin * ewin, void *ptr)
    EoSetSticky(ewin, 1);
    EoSetLayer(ewin, 3);
    EoSetFloating(ewin, 1);
-   EoSetOpacity(ewin, OpacityExt(Conf.menus.opacity));
+   ewin->ewmh.opacity = OpacityExt(Conf.menus.opacity);
 }
 
 static void         MenuShowMasker(Menu * m);
@@ -1686,6 +1686,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    Mode.move.check = 0;		/* Bypass on-screen checks */
    MoveEwin(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
    Mode.move.check = 1;
+   FloatEwinAt(ewin2, EoGetX(ewin2), EoGetY(ewin2));
    RaiseEwin(ewin2);
    ShowEwin(ewin2);
 

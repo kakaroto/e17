@@ -98,7 +98,7 @@ EwinCreate(Window win, int type)
    ewin->client.mwm_func_maximize = 1;
    ewin->client.mwm_func_close = 1;
 
-   ewin->ewmh.opacity = 0xFFFFFFFF;
+   ewin->ewmh.opacity = 0;	/* If 0, ignore */
 
    EoSetWin(ewin, ECreateWindow(VRoot.win, -10, -10, 1, 1, 1));
    ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
@@ -530,6 +530,8 @@ Adopt(EWin * ewin, Window win)
    if (Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
 
+   if (ewin->ewmh.opacity == 0)
+      ewin->ewmh.opacity = 0xffffffff;
    EoSetOpacity(ewin, ewin->ewmh.opacity);
    if (!ewin->no_button_grabs)
       GrabButtonGrabs(ewin);
@@ -582,6 +584,8 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
    WindowMatchEwinOps(ewin);	/* Window matches */
    SnapshotEwinMatch(ewin);	/* Saved settings */
 
+   if (ewin->ewmh.opacity == 0)
+      ewin->ewmh.opacity = 0xffffffff;
    EoSetOpacity(ewin, ewin->ewmh.opacity);
    GrabButtonGrabs(ewin);
 
