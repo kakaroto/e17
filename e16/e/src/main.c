@@ -272,7 +272,7 @@ main(int argc, char **argv)
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
-   if (desks.current < (ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
+   if (desks.current < (mode.numdesktops - 1))
      {
 	char                ps = 0;
 

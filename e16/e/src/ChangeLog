@@ -2455,3 +2455,10 @@ Mon Sep 27 23:54:54 PDT 1999
 
 fixed the bug that ganymede would flaunt with spawning menus via buttons
 (using spawnMenu()) with click to raise and/or click to focus enabled.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 28 00:12:05 PDT 1999
+(Mandrake)
+
+fixed the "restart on wrong desktop if it's the last desktop available" bug.
