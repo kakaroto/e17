@@ -228,6 +228,7 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_EWIN_GONE:
 	if (ewin != Mode.focuswin)
 	   EDBUG_RETURN_;
+	Mode.focuswin = NULL;
 	if (Conf.focus.mode == MODE_FOCUS_CLICK)
 	   ewin = FocusEwinSelect();
 	else
