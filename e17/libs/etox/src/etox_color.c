@@ -79,14 +79,14 @@ etox_color_set_member(Etox_Color color, char *member,
   ewd_list_append(color->bits, cb);
 }
 
-void
+int
 etox_color_get_member(Etox_Color color, char *member, 
                       int *r, int *g, int *b, int *a)
 {
   Etox_Color_Bit cb = NULL;
 
   if (!color || !member) 
-    return;
+    return 0;
 
   if (!color->bits)
     {
@@ -106,6 +106,10 @@ etox_color_get_member(Etox_Color color, char *member,
       *r = 0;
       *g = 0;
       *b = 0;
-      *a = 0;
+      *a = 255;
+
+      return 0;
     }
+
+  return 1;
 }
