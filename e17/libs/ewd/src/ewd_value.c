@@ -24,8 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <../config.h>
 #include <Ewd.h>
+
+const unsigned int ewd_prime_table[] = { 17, 31, 61, 127, 257, 509, 1021,
+	2053, 4093, 8191, 16381, 32771, 65537, 131071, 262147, 524287, 1048573,
+	2097143, 4194301, 8388617, 16777213 
+};
 
 /* Direct Hash function, just casts the key to an unsigned int */
 unsigned int ewd_direct_hash(void *key)

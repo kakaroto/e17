@@ -11,7 +11,7 @@ struct _ewd_list_node {
 	void *data;
 	struct _ewd_list_node *next;
 
-	EWD_DECLARE_LOCK;
+	EWD_DECLARE_LOCKS;
 };
 
 struct _ewd_list {
@@ -24,7 +24,7 @@ struct _ewd_list {
 	int nodes;		/* The number of nodes in the list */
 	int index;		/* The position from the front of the
 				   list of current node */
-	EWD_DECLARE_LOCK;
+	EWD_DECLARE_LOCKS;
 };
 
 
@@ -38,11 +38,13 @@ int ewd_list_prepend(Ewd_List * list, void *_data);
 int ewd_list_insert(Ewd_List * list, void *_data);
 
 /* Removing items from the list */
-int ewd_list_remove(Ewd_List * list);
-int ewd_list_remove_first(Ewd_List * list);
-int ewd_list_remove_last(Ewd_List * list);
+int ewd_list_remove_destroy(Ewd_List *list);
+void *ewd_list_remove(Ewd_List * list);
+void *ewd_list_remove_first(Ewd_List * list);
+void *ewd_list_remove_last(Ewd_List * list);
 
 /* Retrieve the current position in the list */
+void *ewd_list_current(Ewd_List * list);
 int ewd_list_index(Ewd_List * list);
 int ewd_list_nodes(Ewd_List * list);
 

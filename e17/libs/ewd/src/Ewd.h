@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -12,15 +13,13 @@
 #define FALSE 0
 #endif
 
-#ifndef PACKAGE
-#define PACKAGE "Ewd"
-#endif
-
+#include <ewd-config.h>
+#include <ewd_macros.h>
 #include <ewd_threads.h>
 #include <ewd_value.h>
 #include <ewd_list.h>
 #include <ewd_dlist.h>
 #include <ewd_tree.h>
-#include <ewd_macros.h>
+#include <ewd_hash.h>
 
 #endif

@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <../config.h>
 #include <Ewd.h>
 
 /* A macro for determining the highest node at given branch */
@@ -86,7 +85,7 @@ int ewd_tree_init(Ewd_Tree * new, Ewd_Compare_Cb compare_func)
 	else
 		new->compare_func = compare_func;
 
-	EWD_INIT_STRUCT_LOCK(new);
+	EWD_INIT_LOCKS(new);
 
 	return TRUE;
 }
@@ -104,9 +103,9 @@ int ewd_tree_set_free_cb(Ewd_Tree * tree, Ewd_Free_Cb free_func)
 {
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_WRITE_LOCK_STRUCT(tree);
 	tree->free_func = free_func;
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_WRITE_UNLOCK_STRUCT(tree);
 
 	return TRUE;
 }
@@ -129,7 +128,7 @@ int ewd_tree_node_init(Ewd_Tree_Node * new)
 
 	new->max_left = new->max_right = 0;
 
-	EWD_INIT_STRUCT_LOCK(new);
+	EWD_INIT_LOCKS(new);
 
 	return TRUE;
 }
@@ -166,12 +165,14 @@ int ewd_tree_node_destroy(Ewd_Tree_Node * node, Ewd_Free_Cb data_free)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
-	EWD_LOCK_STRUCT(node);
+	EWD_WRITE_LOCK_STRUCT(node);
 	if (data_free)
 		data_free(node->value);
-	EWD_UNLOCK_STRUCT(node);
+	EWD_WRITE_UNLOCK_STRUCT(node);
 
-	IF_FREE(node);
+	EWD_DESTROY_LOCKS(node);
+
+	FREE(node);
 
 	return TRUE;
 }
@@ -187,9 +188,9 @@ int ewd_tree_node_value_set(Ewd_Tree_Node * node, void *value)
 	CHECK_PARAM_POINTER_RETURN("node", node,
 				   FALSE);
 
-	EWD_LOCK_STRUCT(node);
+	EWD_WRITE_LOCK_STRUCT(node);
 	node->value = value;
-	EWD_UNLOCK_STRUCT(node);
+	EWD_WRITE_UNLOCK_STRUCT(node);
 
 	return TRUE;
 }
@@ -204,9 +205,9 @@ void *ewd_tree_node_value_get(Ewd_Tree_Node * node)
 	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
-	EWD_LOCK_STRUCT(node);
+	EWD_READ_LOCK_STRUCT(node);
 	ret = node->value;
-	EWD_UNLOCK_STRUCT(node);
+	EWD_READ_UNLOCK_STRUCT(node);
 
 	return ret;
 }
@@ -221,9 +222,9 @@ int ewd_tree_node_key_set(Ewd_Tree_Node * node, void *key)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
-	EWD_LOCK_STRUCT(node);
+	EWD_WRITE_LOCK_STRUCT(node);
 	node->key = key;
-	EWD_UNLOCK_STRUCT(node);
+	EWD_WRITE_UNLOCK_STRUCT(node);
 
 	return TRUE;
 }
@@ -238,9 +239,9 @@ void *ewd_tree_node_key_get(Ewd_Tree_Node * node)
 	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
-	EWD_LOCK_STRUCT(node);
+	EWD_READ_LOCK_STRUCT(node);
 	ret = node->key;
-	EWD_UNLOCK_STRUCT(node);
+	EWD_READ_UNLOCK_STRUCT(node);
 
 	return ret;
 }
@@ -254,12 +255,13 @@ int ewd_tree_destroy(Ewd_Tree * tree)
 {
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_WRITE_LOCK_STRUCT(tree);
 	while (tree->tree)
 		ewd_tree_remove_node(tree, tree->tree);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_WRITE_UNLOCK_STRUCT(tree);
+	EWD_DESTROY_LOCKS(tree);
 
-	IF_FREE(tree);
+	FREE(tree);
 
 	return TRUE;
 }
@@ -274,9 +276,9 @@ Ewd_Tree_Node *ewd_tree_get_node(Ewd_Tree * tree, void *key)
 
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	ret = tree_node_find(tree, key);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_READ_UNLOCK_STRUCT(tree);
 
 	return ret;
 }
@@ -292,13 +294,13 @@ void *ewd_tree_get(Ewd_Tree * tree, void *key)
 
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	node = tree_node_find(tree, key);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_READ_UNLOCK_STRUCT(tree);
 
-	EWD_LOCK_STRUCT(node);
+	EWD_READ_LOCK_STRUCT(node);
 	ret = (node ? node->value : NULL);
-	EWD_UNLOCK_STRUCT(node);
+	EWD_READ_UNLOCK_STRUCT(node);
 
 	return ret;
 }
@@ -313,26 +315,26 @@ void *ewd_tree_get_closest_larger(Ewd_Tree * tree, void *key)
 
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	node = tree_node_find(tree, key);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_READ_UNLOCK_STRUCT(tree);
 
 	if (node)
 		return node;
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	node = tree_node_find_parent(tree, key);
 
 	if (!node) {
-		EWD_UNLOCK_STRUCT(tree);
+		EWD_READ_UNLOCK_STRUCT(tree);
 		return NULL;
 	}
 
-	EWD_LOCK_STRUCT(node);
+	EWD_READ_LOCK_STRUCT(node);
 	if (tree->compare_func(node->key, key) < 0)
 		return NULL;
-	EWD_UNLOCK_STRUCT(node);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_READ_UNLOCK_STRUCT(node);
+	EWD_READ_UNLOCK_STRUCT(tree);
 
 	return node;
 }
@@ -347,16 +349,16 @@ void *ewd_tree_get_closest_smaller(Ewd_Tree * tree, void *key)
 
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	node = tree_node_find(tree, key);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_READ_UNLOCK_STRUCT(tree);
 
 	if (node)
 		return node;
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	node = tree_node_find_parent(tree, key);
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 
 	if (node)
 		node = node->right_child;
@@ -375,9 +377,9 @@ int ewd_tree_set(Ewd_Tree * tree, void *key, void *value)
 
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_READ_LOCK_STRUCT(tree);
 	node = tree_node_find(tree, key);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_READ_UNLOCK_STRUCT(tree);
 
 	if (!node) {
 		node = ewd_tree_node_new();
@@ -387,10 +389,10 @@ int ewd_tree_set(Ewd_Tree * tree, void *key, void *value)
 	}
 	ewd_tree_node_value_set(node, value);
 
-	EWD_LOCK_STRUCT(tree);
+	EWD_WRITE_LOCK_STRUCT(tree);
 	for (; node; node = node->parent)
 		tree_node_balance(tree, node);
-	EWD_UNLOCK_STRUCT(tree);
+	EWD_WRITE_UNLOCK_STRUCT(tree);
 
 	return TRUE;
 }

@@ -27,11 +27,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef _EWD_VALUE_H
 #define _EWD_VALUE_H
 
-typedef void (*Ewd_Free_Cb) (void *data);
-#define EWD_FREE_CB(func) ((Ewd_Free_Cb)func)
+#define PRIME_TABLE_MAX 21
+#define PRIME_MIN 17
+#define PRIME_MAX 16777213
+
+extern const unsigned int ewd_prime_table[];
 
 typedef void (*Ewd_For_Each) (void *value);
 #define EWD_FOR_EACH(function) ((Ewd_For_Each)function)
+
+typedef void (*Ewd_Free_Cb) (void *data);
+#define EWD_FREE_CB(func) ((Ewd_Free_Cb)func)
+
+typedef unsigned int (*Ewd_Hash_Cb) (void *key);
+#define EWD_HASH_CB(function) ((Ewd_Hash_Cb)function)
 
 typedef int (*Ewd_Compare_Cb) (void *data1, void *data2);
 #define EWD_COMPARE_CB(function) ((Ewd_Compare_Cb)function)
@@ -41,4 +50,5 @@ int ewd_str_compare(void *key1, void *key2);
 
 unsigned int ewd_direct_hash(void *key);
 unsigned int ewd_str_hash(void *key);
+
 #endif				/* _EWD_VALUE_H */

@@ -18,7 +18,7 @@ struct _Ewd_Tree_Node {
 	int max_right;
 	int max_left;
 
-	EWD_DECLARE_LOCK;
+	EWD_DECLARE_LOCKS;
 };
 
 typedef struct _Ewd_Tree Ewd_Tree;
@@ -33,7 +33,7 @@ struct _Ewd_Tree {
 	/* Callback for freeing node data, default is NULL */
 	Ewd_Free_Cb free_func;
 
-	EWD_DECLARE_LOCK;
+	EWD_DECLARE_LOCKS;
 };
 
 /* Some basic tree functions */

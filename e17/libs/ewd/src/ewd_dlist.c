@@ -1,5 +1,3 @@
-#include <../config.h>
-
 #include <Ewd.h>
 #include <ewd_list_private.h>
 
@@ -35,7 +33,7 @@ int ewd_dlist_init(Ewd_DList *list)
 
 	memset(list, 0, sizeof(Ewd_DList));
 
-	EWD_INIT_STRUCT_LOCK(list);
+	EWD_INIT_LOCKS(list);
 
 	return TRUE;
 }
@@ -47,16 +45,21 @@ int ewd_dlist_init(Ewd_DList *list)
  */
 void ewd_dlist_destroy(Ewd_DList * list)
 {
+	void *data;
 	CHECK_PARAM_POINTER("list", list);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
-	while (list->first)
-		_ewd_dlist_remove_first(list);
+	while (list->first) {
+		data = _ewd_dlist_remove_first(list);
+		if (list->free_func)
+			list->free_func(data);
+	}
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_DESTROY_LOCKS(list);
 
-	IF_FREE(list);
+	FREE(list);
 }
 
 /*
@@ -124,15 +127,16 @@ int ewd_dlist_append(Ewd_DList * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
 	prev = EWD_LIST(list)->last;
 	ret = _ewd_list_append(EWD_LIST(list), data);
-	if (ret)
+	if (ret) {
 		EWD_DLIST_NODE(EWD_LIST(list)->last)->previous =
 			EWD_DLIST_NODE(prev);
+	}
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -150,7 +154,7 @@ int ewd_dlist_prepend(Ewd_DList * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
 	prev = EWD_LIST(list)->first;
 	ret = _ewd_list_prepend(EWD_LIST(list), data);
@@ -158,7 +162,7 @@ int ewd_dlist_prepend(Ewd_DList * list, void *data)
 		EWD_DLIST_NODE(prev)->previous =
 			EWD_DLIST_NODE(EWD_LIST(list)->first);
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -177,9 +181,9 @@ int ewd_dlist_insert(Ewd_DList * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
-	index = _ewd_list_index(EWD_LIST(list));
+	index = ewd_list_index(EWD_LIST(list));
 	current = EWD_LIST(list)->current;
 
 	ret = _ewd_list_insert(list, data);
@@ -190,7 +194,7 @@ int ewd_dlist_insert(Ewd_DList * list, void *data)
 		_ewd_list_goto_index(EWD_LIST(list), index + 1);
 	}
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -200,14 +204,14 @@ int ewd_dlist_insert(Ewd_DList * list, void *data)
  * Parameters: 1. list - the list to remove the current item
  * Returns: TRUE on success, FALSE on error
  */
-int ewd_dlist_remove(Ewd_DList * list)
+void *ewd_dlist_remove(Ewd_DList * list)
 {
-	int ret;
+	void *ret;
 	Ewd_List_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 
 	if (list->current) {
 		node = list->current->next;
@@ -216,7 +220,7 @@ int ewd_dlist_remove(Ewd_DList * list)
 	}
 	ret = _ewd_list_remove(list);
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -226,22 +230,34 @@ int ewd_dlist_remove(Ewd_DList * list)
  * Parameters: 1. list - the list to remove the current item
  * Returns: TRUE on success, FALSE on error
  */
-int ewd_dlist_remove_first(Ewd_DList * list)
+void *ewd_dlist_remove_first(Ewd_DList * list)
 {
-	int ret;
+	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_dlist_remove_first(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
 
-int _ewd_dlist_remove_first(Ewd_DList *list)
+/*
+ * Description: Remove and destroy the data in the list at current position
+ * Parameters: 1. list - the list to remove the data from
+ * Returns: TRUE on success, FALSE on error
+ */
+int ewd_dlist_remove_destroy(Ewd_DList *list)
 {
-	int ret;
+	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
+
+	return ewd_list_remove_destroy(list);
+}
+
+void *_ewd_dlist_remove_first(Ewd_DList *list)
+{
+	void *ret;
 
 	if (!list)
 		return FALSE;
@@ -250,7 +266,7 @@ int _ewd_dlist_remove_first(Ewd_DList *list)
 	if (ret && EWD_LIST(list)->first)
 		EWD_DLIST_NODE(EWD_LIST(list)->first)->previous = NULL;
 
-	return TRUE;
+	return ret;
 }
 
 /*
@@ -258,15 +274,15 @@ int _ewd_dlist_remove_first(Ewd_DList *list)
  * Parameters: 1. list - the list to remove the last node from
  * Returns: TRUE on success, FALSE on error
  */
-int ewd_dlist_remove_last(Ewd_DList * list)
+void *ewd_dlist_remove_last(Ewd_DList * list)
 {
-	int ret;
+	void *ret;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_remove_last(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -283,9 +299,9 @@ int ewd_dlist_goto_index(Ewd_DList * list, int index)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_dlist_goto_index(list, index);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -299,18 +315,18 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 	if (!list)
 		return FALSE;
 
-	if (_ewd_list_is_empty(EWD_LIST(list)))
+	if (ewd_list_is_empty(EWD_LIST(list)))
 		return FALSE;
 
-	if (index > _ewd_list_nodes(EWD_LIST(list)) || index < 0)
+	if (index > ewd_list_nodes(EWD_LIST(list)) || index < 0)
 		return FALSE;
 
-	if (index < _ewd_list_index(EWD_LIST(list)))
+	if (index < ewd_list_index(EWD_LIST(list)))
 		increment = 1;
 	else
 		increment = -1;
 
-	for (i = _ewd_list_index(EWD_LIST(list)); i != index; i += increment) {
+	for (i = ewd_list_index(EWD_LIST(list)); i != index; i += increment) {
 		if (increment > 0)
 			_ewd_list_next(list);
 		else
@@ -332,9 +348,9 @@ int ewd_dlist_goto(Ewd_DList * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_goto(EWD_LIST(list), data);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -350,9 +366,9 @@ int ewd_dlist_goto_first(Ewd_DList *list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_goto_first(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -368,9 +384,9 @@ int ewd_dlist_goto_last(Ewd_DList * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	ret = _ewd_list_goto_last(EWD_LIST(list));
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -384,9 +400,9 @@ void *ewd_dlist_current(Ewd_DList * list)
 {
 	void *ret;
 
-	EWD_LOCK_STRUCT(list);
+	EWD_READ_LOCK_STRUCT(list);
 	ret = _ewd_list_current(EWD_LIST(list));
-	EWD_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK_STRUCT(list);
 
 	return ret;
 }
@@ -400,9 +416,9 @@ void *ewd_dlist_next(Ewd_DList * list)
 {
 	void *data;
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	data = _ewd_list_next(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return data;
 }
@@ -416,9 +432,9 @@ void *ewd_dlist_previous(Ewd_DList * list)
 {
 	void *data;
 
-	EWD_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK_STRUCT(list);
 	data = _ewd_dlist_previous(list);
-	EWD_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK_STRUCT(list);
 
 	return data;
 }
@@ -453,11 +469,11 @@ int ewd_dlist_for_each(Ewd_DList *list, Ewd_For_Each function)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_LOCK_STRUCT(list);
+	EWD_READ_LOCK_STRUCT(list);
 
 	ret = _ewd_list_for_each(list, function);
 
-	EWD_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK_STRUCT(list);
 
 	return ret;
 }

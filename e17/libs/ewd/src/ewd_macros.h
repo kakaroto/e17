@@ -34,6 +34,7 @@ if (!(param)) \
                   "\tbeing NULL. Please fix your program.\n", PACKAGE, \
 								  __FUNCTION__,\
 								  sparam); \
+  fflush(stdout); \
   return ret; \
 }
 #endif
@@ -50,6 +51,7 @@ if (!(param)) \
                   "\tbeing NULL. Please fix your program.\n", PACKAGE, \
 								 __FUNCTION__, \
 								 sparam); \
+  fflush(stdout); \
   return; \
 }
 #endif
