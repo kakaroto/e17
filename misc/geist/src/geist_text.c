@@ -188,7 +188,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    im = GEIST_TEXT(obj);
    if (!im->im)
       D_RETURN_(5);
-   
+
    geist_object_get_rendered_area(obj, &dx, &dy, &dw, &dh);
    CLIP(dx, dy, dw, dh, x, y, w, h);
    sx = dx - obj->x - obj->rendered_x;
@@ -225,8 +225,10 @@ geist_text_update_image(geist_text * txt, unsigned char resize)
    geist_text_create_image(txt);
    if (resize)
    {
-      obj->w = obj->rendered_w;
-      obj->h = obj->rendered_h;
+      if (obj->w < obj->rendered_w)
+         obj->w = obj->rendered_w;
+      if (obj->h < obj->rendered_h)
+         obj->h = obj->rendered_h;
    }
    obj->rendered_x = 0;
    obj->rendered_y = 0;
@@ -486,8 +488,7 @@ geist_text_calculate_lines(geist_text * txt)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -831,8 +832,8 @@ geist_text_display_props(geist_object * obj)
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry),
                       GEIST_TEXT(obj)->fontname);
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->just)->entry),
-                      geist_text_get_justification_string(GEIST_TEXT(obj)->
-                                                          justification));
+                      geist_text_get_justification_string(GEIST_TEXT
+                                                          (obj)->justification));
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->size),
                              GEIST_TEXT(obj)->fontsize);
    gtk_text_forward_delete(GTK_TEXT(ok_data->text), -1);
@@ -906,7 +907,8 @@ refresh_wordwrap_cb(GtkWidget * widget, gpointer * data)
    D_RETURN_(3);
 }
 
-void geist_text_update_positioning(geist_object *obj)
+void
+geist_text_update_positioning(geist_object * obj)
 {
    D_ENTER(3);
 

@@ -366,6 +366,9 @@ gboolean docwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
    if (doc)
       geist_document_free(doc);
    geist_document_reset_object_list(NULL);
+   geist_clear_obj_props_window();
+   geist_clear_document_props_window();
+   
    D_RETURN(3, FALSE);
 }
 
@@ -381,6 +384,7 @@ gboolean docwin_enter_cb(GtkWidget * widget, GdkEvent * event,
       current_doc = doc;
       geist_document_reset_object_list(doc);
       geist_update_document_props_window();
+      geist_update_props_window();
    }
    D_RETURN(3, FALSE);
 }
