@@ -125,6 +125,20 @@ engrave_libs=`$ENGRAVE_CONFIG --libs`
 AC_SUBST(engrave_cflags)
 AC_SUBST(engrave_libs)
 
+AC_ARG_WITH(imlib2-config,
+[  --with-imlib2-config=IMLIB2_CONFIG    use imlib2-config specified ],
+[
+  IMLIB2_CONFIG=$withval;
+  echo "using "$IMLIB2_CONFIG" for imlib2-config";
+    ],[
+  PROG="imlib2-config";
+  AC_PATH_PROG(IMLIB2_CONFIG, $PROG, "", $PATH)
+])
+imlib2_cflags=`$IMLIB2_CONFIG --cflags`
+imlib2_libs=`$IMLIB2_CONFIG --libs`
+AC_SUBST(imlib2_cflags)
+AC_SUBST(imlib2_libs)
+	
 AC_ARG_WITH(enlightenment-config,
 [  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
 [
