@@ -3882,8 +3882,8 @@ IPC_WinOps(char *params, Client * c)
 				      ewin->client.title = Emalloc((strlen(ptr) + 1) *
 								sizeof(char));
 
-				      XStoreName(disp, ewin->client.win, ewin->client.title);
 				      strcpy(ewin->client.title, ptr);
+				      XStoreName(disp, ewin->client.win, ewin->client.title);
 				      DrawEwin(ewin);
 				   }
 			      }
