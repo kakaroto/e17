@@ -144,7 +144,13 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		Ewl_Container *hdr;
 
 		hdr = EWL_CONTAINER(row->header);
-		ewd_list_goto_first(EWL_CONTAINER(hdr)->children);
+		align = ewd_list_goto_first(EWL_CONTAINER(hdr)->children);
+
+		if (align) {
+			x = MAX(CURRENT_X(align), CURRENT_X(w));
+		}
+		else
+			x = CURRENT_X(w);
 
 		while ((child = ewd_list_next(c->children))) {
 			align = ewd_list_next(EWL_CONTAINER(hdr)->children);
@@ -155,8 +161,7 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 					ewd_list_nodes(c->children);
 			ewl_object_place(child, x, CURRENT_Y(w), width,
 				CURRENT_H(w));
-			x = ewl_object_get_current_x(child) +
-				ewl_object_get_current_w(child);
+			x += width;
 			i++;
 		}
 	}

@@ -25,6 +25,8 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data)
 {
 	int row, col;
+	char buf[PATH_MAX];
+	char *headers[COLS];
 	char *entries[COLS];
 	Ewl_Widget *tree_win;
 	Ewl_Widget *tree;
@@ -41,14 +43,19 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 			    __destroy_tree_test_window, NULL);
 	ewl_widget_show(tree_win);
 
+	for (col = 0; col < COLS; col++) {
+		snprintf(buf, PATH_MAX, "Column %d", col);
+		headers[col] = strdup(buf);
+	}
+
 	tree = ewl_tree_new(COLS);
 	ewl_container_append_child(EWL_CONTAINER(tree_win), tree);
+	ewl_tree_set_headers(EWL_TREE(tree), headers);
 	ewl_widget_show(tree);
 
 	memset(entries, 0, COLS * sizeof(char *));
 
 	for (row = 0; row < ROWS; row++) {
-		char buf[1024];
 
 		/*
 		 * Build the array of entries.
@@ -66,10 +73,15 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 			prow = ewl_tree_add_text_row(EWL_TREE(tree),
 					EWL_ROW(prow), entries);
 		/* ewl_tree_set_row_expanded(EWL_ROW(prow), TRUE); */
+
+		for (col = 0; col < COLS; col++) {
+			IF_FREE(entries[col]);
+		}
 	}
 
-	for (col = 0; col < COLS; col++)
-		IF_FREE(entries[col]);
+	for (col = 0; col < COLS; col++) {
+		IF_FREE(headers[col]);
+	}
 
 	printf("Tree setup complete!!!\n");
 

@@ -191,6 +191,8 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 			break;
 		}
 
+		ewl_object_set_fill_policy(EWL_OBJECT(cell),
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 		ewl_widget_show(cell);
 
 		if (children[i]) {

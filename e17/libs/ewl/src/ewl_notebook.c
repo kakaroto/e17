@@ -102,7 +102,6 @@ void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("p", p);
 
 	w = EWL_WIDGET(n);
@@ -138,7 +137,6 @@ void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("p", p);
 
 	w = EWL_WIDGET(n);
@@ -177,7 +175,6 @@ ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
-	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("p", p);
 
 	w = EWL_WIDGET(n);

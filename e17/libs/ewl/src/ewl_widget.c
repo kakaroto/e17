@@ -1039,7 +1039,7 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (REALIZED(w)) {
 		oevas = evas_object_evas_get(w->fx_clip_box);
 		emb = ewl_embed_find_by_widget(w);
-		if (oevas != emb->evas)
+		if (!emb || oevas != emb->evas)
 			ewl_widget_unrealize(w);
 		else {
 
