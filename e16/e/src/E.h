@@ -929,6 +929,7 @@ typedef struct
 #endif
    struct
    {
+      char                icon_mode;
       char                enable;
       char                showsticky;
       char                showshaded;
@@ -1891,6 +1892,9 @@ void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 			    int h, int state, int active, int sticky,
 			    char expose, int image_type, TextClass * tc,
 			    TextState * ts, const char *text);
+
+/* iconify.c */
+void                UpdateAppIcon(EWin * ewin, int imode);
 
 /* ipc.c */
 void __PRINTF__     IpcPrintf(const char *fmt, ...);

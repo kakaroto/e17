@@ -34,7 +34,6 @@ typedef enum
 typedef struct _iconbox Iconbox;
 
 static void         IconboxesConfigSave(void);
-static void         UpdateAppIcon(EWin * ewin, int imode);
 static Iconbox     *SelectIconboxForEwin(EWin * ewin);
 
 /* Systray stuff */
@@ -944,7 +943,7 @@ IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode)
    Efree(ib);
 }
 
-static void
+void
 UpdateAppIcon(EWin * ewin, int imode)
 {
    /* free whatever we had before */
@@ -998,6 +997,20 @@ UpdateAppIcon(EWin * ewin, int imode)
 	  }
 	if (!ewin->icon_image)
 	   IB_GetAppIcon(ewin);
+	break;
+     case 3:
+	/* try E first, then app */
+	if (!ewin->icon_image)
+	   IB_GetEIcon(ewin);
+	if (!ewin->icon_image)
+	   IB_GetAppIcon(ewin);
+	break;
+     case 4:
+	/* try app first, then E */
+	if (!ewin->icon_image)
+	   IB_GetAppIcon(ewin);
+	if (!ewin->icon_image)
+	   IB_GetEIcon(ewin);
 	break;
      default:
 	break;

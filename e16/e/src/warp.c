@@ -116,7 +116,10 @@ WarpFocusShowTitle(EWin * ewin)
 	       }
 	     Efree(lst);
 	  }
-	w += (ic->padding.left + ic->padding.right);
+	if (Conf.warplist.icon_mode != 0)
+	   w += (ic->padding.left + ic->padding.right + 2 * h);
+	else
+	   w += (ic->padding.left + ic->padding.right);
 	h += (ic->padding.top + ic->padding.bottom);
 	GetPointerScreenAvailableArea(&x, &y, &ww, &hh);
 	x += (ww - w) / 2;
@@ -153,13 +156,46 @@ WarpFocusShowTitle(EWin * ewin)
 	if (warplist[i].ewin)
 	  {
 	     int                 state;
+	     int                 text_h, text_w;
+	     int                 icon_size =
+		mh - ((ic->padding.top + ic->padding.bottom) / 2);
 
 	     state = (ewin == warplist[i].ewin) ? STATE_CLICKED : STATE_NORMAL;
 
 	     ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
 			     ST_WARPLIST);
-	     TextclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0, tc,
-			    warplist[i].txt);
+
+	     /* New icon stuff */
+	     if (Conf.warplist.icon_mode != 0)
+	       {
+		  TextSize(tc, 0, 0, 0, warplist[i].txt, &text_w, &text_h, 17);
+		  TextDraw(tc, warplist[i].win, 0, 0, state, warplist[i].txt,
+			   icon_size + 1.5 * ic->padding.left,
+			   (mh - text_h) / 2, mw, mh, 0, 0);
+
+		  UpdateAppIcon(warplist[i].ewin, Conf.warplist.icon_mode);
+
+		  if (!warplist[i].ewin->icon_image)
+		     return;
+
+		  imlib_context_set_image(warplist[i].ewin->icon_image);
+
+		  imlib_context_set_drawable(warplist[i].win);
+
+		  imlib_context_set_blend(1);
+		  imlib_render_image_on_drawable_at_size(ic->padding.left,
+							 (ic->padding.top +
+							  ic->padding.bottom) /
+							 4, icon_size,
+							 icon_size);
+		  imlib_context_set_blend(0);
+
+	       }
+	     else
+	       {
+		  TextclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
+				 tc, warplist[i].txt);
+	       }
 	  }
      }
 
@@ -325,6 +361,7 @@ WarplistSighan(int sig, void *prm __UNUSED__)
 }
 
 static const CfgItem WarplistCfgItems[] = {
+   CFG_ITEM_INT(Conf.warplist, icon_mode, 3),
    CFG_ITEM_BOOL(Conf.warplist, enable, 1),
    CFG_ITEM_BOOL(Conf.warplist, showsticky, 1),
    CFG_ITEM_BOOL(Conf.warplist, showshaded, 1),

@@ -29,6 +29,7 @@ static char         tmp_popup_focus;
 static char         tmp_owner_popup_focus;
 static char         tmp_raise_focus;
 static char         tmp_warp_focus;
+static int          tmp_warp_icon_mode;
 
 static char         tmp_warp_after_focus;
 static char         tmp_raise_after_focus;
@@ -60,6 +61,7 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.warplist.showshaded = tmp_showshaded;
 	Conf.warplist.showiconified = tmp_showiconified;
 	Conf.warplist.warpfocused = tmp_warpfocused;
+	Conf.warplist.icon_mode = tmp_warp_icon_mode;
 
 	Conf.focus.clickraises = tmp_clickalways;
 	FocusFix();
@@ -71,7 +73,7 @@ void
 SettingsFocus(void)
 {
    Dialog             *d;
-   DItem              *table, *di, *radio;
+   DItem              *table, *di, *radio, *radio2;
 
    if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
@@ -95,6 +97,7 @@ SettingsFocus(void)
    tmp_showshaded = Conf.warplist.showshaded;
    tmp_showiconified = Conf.warplist.showiconified;
    tmp_warpfocused = Conf.warplist.warpfocused;
+   tmp_warp_icon_mode = Conf.warplist.icon_mode;
 
    tmp_clickalways = Conf.focus.clickraises;
 
@@ -276,6 +279,46 @@ SettingsFocus(void)
 				("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetColSpan(di, 2);
+   DialogItemTextSetText(di,
+			 _
+			 ("Focuslist image display policy (if one operation fails, try the next):"));
+
+   radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("First E Icon, then App Icon"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, 3);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("First App Icon, then E Icon"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, 4);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("None"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
