@@ -21,8 +21,6 @@ struct _ewl_tree
 
 	unsigned int **colbases;
 	unsigned int **colbounds;
-
-	int indent;
 };
 
 typedef struct _ewl_tree_node Ewl_Tree_Node;
@@ -36,6 +34,7 @@ struct _ewl_tree_node
 {
 	Ewl_Container container;
 	Ewl_Tree *tree;
+	Ewl_Widget *row;
 	int expanded;
 };
 

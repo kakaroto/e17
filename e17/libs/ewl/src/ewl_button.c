@@ -1,17 +1,6 @@
 
 #include <Ewl.h>
 
-void            __ewl_button_focus_in(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            __ewl_button_focus_out(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-void            __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            __ewl_button_show(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-
 /**
  * ewl_button_new - allocate and initialize a new button
  * @label: the string to use as a label for the button
@@ -60,19 +49,6 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	w->recursive = FALSE;
 
 	/*
-	 * Attach necessary callback mechanisms
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_button_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_button_mouse_up,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, __ewl_button_focus_in,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_button_focus_out,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_button_show, NULL);
-
-	/*
 	 * Create and setup the label for the button if it's desired.
 	 */
 	if (label) {
@@ -80,6 +56,7 @@ void ewl_button_init(Ewl_Button * b, char *label)
 		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
 					 EWL_ALIGNMENT_CENTER);
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
+		ewl_widget_show(b->label_object);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -108,65 +85,6 @@ void ewl_button_set_label(Ewl_Button * b, char *l)
 		ewl_text_set_text(EWL_TEXT(b->label_object), l);
 
 	ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-
-void __ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	if (w->state & EWL_STATE_PRESSED)
-		ewl_widget_update_appearance(w, "clicked");
-	else
-		ewl_widget_update_appearance(w, "hilited");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_widget_update_appearance(w, "normal");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_widget_update_appearance(w, "clicked");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-
-	if (w->state & EWL_STATE_HILITED) {
-		ewl_widget_update_appearance(w, "hilited");
-		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
-	} else
-		ewl_widget_update_appearance(w, "normal");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (EWL_BUTTON(w)->label_object)
-		ewl_widget_show(EWL_BUTTON(w)->label_object);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

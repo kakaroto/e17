@@ -1,18 +1,16 @@
 #include "Ewl.h"
 
-/*
- * FIXME: See fixme below.
- */
-#define DEFAULT_INDENT 30
-
 static void __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 static void __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 static void __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data,
 		void *user_data);
+static void __ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data,
+		void *user_data);
 
 static void __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w);
+static void __ewl_tree_node_remove(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_tree_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 
@@ -71,12 +69,6 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	tree->ncols = columns;
 	tree->colw = NEW(int, columns);
-
-	/*
-	 * FIXME: This should be configurable in the theme, possibly character
-	 * width based.
-	 */
-	tree->indent = DEFAULT_INDENT;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -267,10 +259,12 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	DCHECK_PARAM_PTR_RET("node", node, FALSE);
 
 	ewl_container_init(EWL_CONTAINER(node), "node", __ewl_tree_node_add,
-			__ewl_tree_node_resize, NULL);
+			__ewl_tree_node_resize, __ewl_tree_node_remove);
 
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_node_configure, NULL);
+	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CLICKED,
+			__ewl_tree_node_clicked, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -291,17 +285,16 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	if (!node->expanded)
 		DRETURN(DLEVEL_STABLE);
 
-	node->expanded = FALSE;
-
 	ewd_list_goto_first(EWL_CONTAINER(node)->children);
 	ewd_list_next(EWL_CONTAINER(node)->children);
 
 	while ((w = ewd_list_next(EWL_CONTAINER(node)->children))) {
 		ewl_widget_hide(w);
-		ewl_object_set_preferred_h(EWL_OBJECT(node),
-				PREFERRED_H(node) -
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 	}
+
+	node->expanded = FALSE;
+
+	ewl_widget_update_appearance(EWL_WIDGET(node), "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -329,10 +322,9 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 
 	while ((w = ewd_list_next(EWL_CONTAINER(node)->children))) {
 		ewl_widget_show(w);
-		ewl_object_set_preferred_h(EWL_OBJECT(node),
-				PREFERRED_H(node) +
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 	}
+
+	ewl_widget_update_appearance(EWL_WIDGET(node), "expanded");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -402,7 +394,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Tree_Node *node;
 	Ewl_Container *c;
 	Ewl_Object *child;
-	int x, y, width;
+	int y, width;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -421,18 +413,34 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
 			CURRENT_W(w), ewl_object_get_preferred_h(child));
-	x = CURRENT_X(w);/* + node->tree->indent; */
+	
 	y = CURRENT_Y(w) + ewl_object_get_current_h(child);
-	width = CURRENT_W(w) - x + CURRENT_X(w);
+	width = CURRENT_W(w) - CURRENT_X(w) + CURRENT_X(w);
 
 	/*
 	 * All subsequent children are lower nodes and rows.
 	 */
 	while ((child = ewd_list_next(c->children))) {
-		ewl_object_request_geometry(child, x, y, width,
+		ewl_object_request_geometry(child, CURRENT_X(w), y, width,
 				ewl_object_get_preferred_h(child));
 		y += ewl_object_get_current_h(child);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(w);
+	if (node->expanded)
+		ewl_tree_node_collapse(node);
+	else
+		ewl_tree_node_expand(node);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -447,7 +455,10 @@ __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w)
 
 	node = EWL_TREE_NODE(c);
 
-	if (node->expanded || !ewd_list_nodes(c->children)) {
+	if (!ewd_list_nodes(c->children))
+		node->row = w;
+
+	if (node->expanded || w == node->row) {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) +
 				ewl_object_get_preferred_h(EWL_OBJECT(w)));
@@ -456,6 +467,29 @@ __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w)
 	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
 	if (PREFERRED_W(c) < width)
 		ewl_object_set_preferred_w(EWL_OBJECT(c), width);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_tree_node_remove(Ewl_Container *c, Ewl_Widget *w)
+{
+	int width;
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(c);
+
+	if (node->expanded || w == node->row) {
+		ewl_object_set_preferred_h(EWL_OBJECT(c),
+				PREFERRED_H(c) -
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
+	}
+
+	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	if (PREFERRED_W(c) >= width)
+		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

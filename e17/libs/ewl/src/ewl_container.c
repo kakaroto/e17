@@ -401,17 +401,13 @@ Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 	 */
 	while ((child2 = ewl_container_get_child_at(EWL_CONTAINER(child),
 						    x, y))) {
-		if (child2->recursive) {
-			child = ewl_container_get_child_at(EWL_CONTAINER(child),
-							   x, y);
-
-			if (!child)
-				DRETURN_PTR(child2, DLEVEL_STABLE);
-		} else
+		if (child2->recursive)
+			child = child2;
+		else
 			DRETURN_PTR(child2, DLEVEL_STABLE);
 	}
 
-	DRETURN_PTR((child ? child : NULL), DLEVEL_STABLE);
+	DRETURN_PTR((child2 ? child2 : child), DLEVEL_STABLE);
 }
 
 /**

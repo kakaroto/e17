@@ -7,25 +7,33 @@ extern Ewl_Widget *last_key;
 extern Ewl_Widget *last_focused;
 extern Ewl_Widget *dnd_widget;
 
-void            __ewl_widget_show(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_show(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-void            __ewl_widget_hide(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_hide(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-void            __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_widget_configure(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-void            __ewl_widget_theme_update(Ewl_Widget * w, void *event_data,
+static void     __ewl_widget_theme_update(Ewl_Widget * w, void *event_data,
 					  void *user_data);
-void            __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
-void            __ewl_widget_enable(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_enable(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
-void            __ewl_widget_disable(Ewl_Widget * w, void *ev_data,
+static void     __ewl_widget_disable(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+static void     __ewl_widget_focus_in(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+static void     __ewl_widget_focus_out(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+static void     __ewl_widget_mouse_down(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+static void     __ewl_widget_mouse_up(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 
 static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w);
@@ -83,7 +91,15 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, __ewl_widget_enable,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-			    __ewl_widget_disable, NULL);
+			__ewl_widget_disable, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, __ewl_widget_focus_in,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_widget_focus_out,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_widget_mouse_down,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_widget_mouse_up,
+			    NULL);
 
 	ewl_widget_set_appearance(w, appearance);
 
@@ -845,6 +861,37 @@ void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_update_appearance(w, "disabled");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	if (w->state & EWL_STATE_PRESSED)
+		ewl_widget_update_appearance(w, "clicked");
+	else
+		ewl_widget_update_appearance(w, "hilited");
+}
+
+static void
+__ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	ewl_widget_update_appearance(w, "normal");
+}
+
+static void
+__ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	ewl_widget_update_appearance(w, "clicked");
+}
+
+static void
+__ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	if (w->state & EWL_STATE_HILITED) {
+		ewl_widget_update_appearance(w, "hilited");
+		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
+	} else
+		ewl_widget_update_appearance(w, "normal");
 }
 
 static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w)
