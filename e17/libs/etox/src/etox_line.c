@@ -16,7 +16,7 @@ Etox_Line *etox_line_new(char align)
 	ret = (Etox_Line *) calloc(1, sizeof(Etox_Line));
 	if (ret) {
 		ret->flags |= align;
-		ret->length = 1;
+		ret->length = 0;
 	}
 
 	return ret;
@@ -658,7 +658,7 @@ etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
 		if (h)
 			*h = line->h;
 		if (w)
-			*w = line->w / line->length;
+			*w = line->w / (line->length ? line->length : 1);
 		if (y)
 			*y = line->y;
 		if (x)

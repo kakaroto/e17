@@ -7,7 +7,8 @@
  * of the bits appearance.
  */
 typedef struct _etox_style_style_layer Etox_Style_Style_Layer;
-struct _etox_style_style_layer {
+struct _etox_style_style_layer
+{
 	int stack;
 	Evas_Coord x_offset, y_offset;
 	int size_change;
@@ -22,7 +23,8 @@ struct _etox_style_style_layer {
  * the bits used to display the text.
  */
 typedef struct _etox_style_style_info Etox_Style_Style_Info;
-struct _etox_style_style_info {
+struct _etox_style_style_info
+{
 	char *name;
 	E_DB_File *style_db;
 	Etox_Style_Heap *layers;
@@ -36,7 +38,8 @@ struct _etox_style_style_info {
  * alter the text, and a list of the bits that are created by the style.
  */
 typedef struct _etox_style_style Etox_Style_Style;
-struct _etox_style_style {
+struct _etox_style_style
+{
 	Etox_Style_Style_Info *info;
 	Evas_List *bits;
 };

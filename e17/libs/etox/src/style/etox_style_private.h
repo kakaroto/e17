@@ -16,7 +16,8 @@ typedef struct _etox_style Etox_Style;
 #include <Edb.h>
 
 typedef enum _etox_style_bit_flags Etox_Style_Bit_Flags;
-enum _etox_style_bit_flags {
+enum _etox_style_bit_flags
+{
 	ETOX_STYLE_BIT_FIXED = 1,
 	ETOX_STYLE_BIT_VISIBLE = 2,
 };
@@ -25,14 +26,16 @@ typedef void (*Etox_Style_Callback_Function) (void *_data, Evas_Object * _es,
 					  void *event_info);
 
 typedef struct _etox_style_callback Etox_Style_Callback;
-struct _etox_style_callback {
+struct _etox_style_callback
+{
 	Evas_Object *obj;
 	Evas_Callback_Type type;
 	void *data;
 	Etox_Style_Callback_Function callback;
 };
 
-struct _etox_style {
+struct _etox_style
+{
 	/*
 	 * Keep a pointer in the etox_style to the evas.
 	 */
@@ -102,7 +105,13 @@ struct _etox_style {
 #define D2I_ROUND(d) (int)(d + 0.5)
 #define BIT_MERGEABLE(es1, es2) (es1 && es2 && \
 		!(es1->flags & ETOX_STYLE_BIT_FIXED) && \
-		!(es2->flags & ETOX_STYLE_BIT_FIXED) && es1 != es2)
+		!(es2->flags & ETOX_STYLE_BIT_FIXED) && es1 != es2) && \
+		(es1->color->a == es2->color->a) && \
+		(es1->color->r == es2->color->r) && \
+		(es1->color->g == es2->color->g) && \
+		(es1->color->b == es2->color->b) && \
+		(es1->style) && (es2->style) && \
+		!(strcmp(es1->style->info->name, es2->style->info->name))
 
 void etox_style_free(Evas_Object *obj);
 void etox_style_show(Evas_Object *obj);
