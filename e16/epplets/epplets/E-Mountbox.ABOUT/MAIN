@@ -78,9 +78,11 @@ using the control elements below.
 <page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p>
-E-Mountbox ejects media after unmounting. You can disable this feature in the
-configuration dialog. However, ejecting is available only when the "eject"
-program is available on your system (if not, look at sunsite.unc.edu:/pub/Linux/utils/disk-management).
+By default, E-Mountbox ejects media after unmounting. You can disable
+this feature in the configuration dialog completely or enable manual
+ejecting for unmounted media using the third mouse button.
+Note that ejecting is available only when the "eject" program is
+available on your system (if not, look at sunsite.unc.edu:/pub/Linux/utils/disk-management).
 <p>
 By default E-Mountbox also polls the mountpoints on your system in regular
 intervals to see if their status has changed and updates its display accordingly.

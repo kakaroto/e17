@@ -2030,3 +2030,11 @@ Sat Mar 11 02:30:13 GMT 2000
 E-Net* epplets: Call Epplet_unremember before exiting on failure to find the
 device.
 
+-------------------------------------------------------------------------------
+
+Sat Mar 18 17:15:58 CET 2000
+(Christian)
+
+E-Mountbox: You can now automatically eject media, not eject at all or
+eject manually. Updated docs too.
+

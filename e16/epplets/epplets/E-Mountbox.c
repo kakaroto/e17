@@ -352,6 +352,36 @@ Callback_ConfigInterval(void *data)
 
 
 static void
+Callback_EjectType(void *data)
+{
+  EjectMode ej_mode = (EjectMode)data;
+
+  mode.eject_mode = ej_mode;
+
+  switch (ej_mode)
+    {
+    case NO_EJECT:
+      ejectbuttons[0] = 1; ejectbuttons[1] = 0; ejectbuttons[2] = 0;
+      break;
+    case MANUAL_EJECT:
+      ejectbuttons[0] = 0; ejectbuttons[1] = 1; ejectbuttons[2] = 0;
+      break;
+    case AUTO_EJECT:
+    default:
+      ejectbuttons[0] = 0; ejectbuttons[1] = 0; ejectbuttons[2] = 1;
+      break;
+    }
+  
+  Epplet_gadget_data_changed(togglebutton_no_eject);
+  Epplet_gadget_data_changed(togglebutton_manual_eject);
+  Epplet_gadget_data_changed(togglebutton_auto_eject);
+
+  return;
+  data = NULL;
+}
+
+
+static void
 CallbackConfigure(void *data)
 {
   current_type = types;
@@ -362,7 +392,7 @@ CallbackConfigure(void *data)
       /* on whether eject is available or not ... */
 #ifdef HAVE_EJECT
       config_win =
-	Epplet_create_window_config (420, 240 , "E-Mountbox Configuration",
+	Epplet_create_window_config (420, 280 , "E-Mountbox Configuration",
 				     Callback_ConfigOK, &config_win,
 				     Callback_ConfigApply, &config_win,
 				     Callback_ConfigCancel, &config_win);
@@ -406,13 +436,35 @@ CallbackConfigure(void *data)
       arrow_right = Epplet_create_button(NULL, NULL, 257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, Callback_ConfigRight, NULL);
 
 #ifdef HAVE_EJECT
-      Epplet_gadget_show(Epplet_create_label(170, 160, "Eject media when unmounting", 2));
-      Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 160, 12, 12, &mode.do_eject, NULL, NULL));
-      Epplet_gadget_show(Epplet_create_label(170, 180, "Watch status of mountpoints", 2));
-      Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 180, 12, 12, &mode.do_polling, ConfigUpdateDialog, NULL));
-      Epplet_gadget_show(label_slider = Epplet_create_label(170, 200, "Interval:", 2));
-      Epplet_gadget_show(hslider_interval = Epplet_create_hslider(230, 202, 60, 1, 60, 1, 10, &mode.polling_interval, Callback_ConfigInterval, NULL));
-      Epplet_gadget_show(label_interval = Epplet_create_label(300, 200, "", 2));
+      switch (mode.eject_mode)
+	{ 
+	case NO_EJECT:
+	  ejectbuttons[0] = 1; ejectbuttons[1] = 0; ejectbuttons[2] = 0;
+	  break;
+	case MANUAL_EJECT:
+	  ejectbuttons[0] = 0; ejectbuttons[1] = 1; ejectbuttons[2] = 0;
+	  break;
+	case AUTO_EJECT:
+	default:
+	  ejectbuttons[0] = 0; ejectbuttons[1] = 0; ejectbuttons[2] = 1;
+	  break;
+	}
+
+      Epplet_gadget_show(Epplet_create_label(170, 160, "Don't eject media when unmounting", 2));
+      Epplet_gadget_show((togglebutton_no_eject =
+			  Epplet_create_togglebutton("", NULL, 150, 160, 12, 12, &ejectbuttons[0], Callback_EjectType, (void*)NO_EJECT)));
+      Epplet_gadget_show(Epplet_create_label(170, 180, "Manually eject unmounted media", 2));
+      Epplet_gadget_show((togglebutton_manual_eject =
+			  Epplet_create_togglebutton("", NULL, 150, 180, 12, 12, &ejectbuttons[1], Callback_EjectType, (void*)MANUAL_EJECT)));
+      Epplet_gadget_show(Epplet_create_label(170, 200, "Eject media when unmounting", 2));
+      Epplet_gadget_show((togglebutton_auto_eject =
+			  Epplet_create_togglebutton("", NULL, 150, 200, 12, 12, &ejectbuttons[2], Callback_EjectType, (void*)AUTO_EJECT)));
+
+      Epplet_gadget_show(Epplet_create_label(170, 220, "Watch status of mountpoints", 2));
+      Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 220, 12, 12, &mode.do_polling, ConfigUpdateDialog, NULL));
+      Epplet_gadget_show(label_slider = Epplet_create_label(170, 240, "Interval:", 2));
+      Epplet_gadget_show(hslider_interval = Epplet_create_hslider(230, 242, 60, 1, 60, 1, 10, &mode.polling_interval, Callback_ConfigInterval, NULL));
+      Epplet_gadget_show(label_interval = Epplet_create_label(300, 240, "", 2));
 #else
       Epplet_gadget_show(Epplet_create_label(170, 160, "Watch status of mountpoints", 2));
       Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 160, 12, 12, &mode.do_polling, ConfigUpdateDialog, NULL));
@@ -920,7 +972,7 @@ Umount(MountPoint * mp)
 	      mode.anim_mount = 0;
 	      Epplet_timer(CallbackAnimate, NULL, 0, "Anim");
 #ifdef HAVE_EJECT
-	      if (mode.do_eject)
+	      if (mode.eject_mode == AUTO_EJECT)
 		{
 		  Esnprintf(s, sizeof(s), "%s %s", EJECT, mp->device);
 		  Epplet_run_command(s);
@@ -1253,6 +1305,13 @@ CallbackButtonUp (void *data, Window win, int x, int y, int b)
 	      else
 		Mount(mountpoint);
 	    }
+#ifdef HAVE_EJECT 
+	  else if (b == 3 && mode.eject_mode == MANUAL_EJECT)
+	    {
+	      Esnprintf(s, sizeof(s), "%s %s", EJECT, mountpoint->device);
+	      Epplet_run_command(s);		
+	    }
+#endif
 	  else
 	    {
 	      Epplet_gadget popup = Epplet_create_popup();
@@ -1341,7 +1400,7 @@ SetupDefaults(void)
   Esnprintf(s2, sizeof(s), "%i", ++instance);
   Epplet_modify_config("INSTANCE", s2);
 
-  mode.do_eject = atoi(Epplet_query_config("DO_EJECT"));
+  mode.eject_mode = (EjectMode)atoi(Epplet_query_config("EJECT_MODE"));
   mode.do_polling = atoi(Epplet_query_config("DO_POLL"));
   mode.polling_interval = atoi(Epplet_query_config("POLLINTVAL"));
   mode.anim_mount = 0;
@@ -1515,11 +1574,11 @@ SyncConfigs(void)
   int             i;
   MountPointType *mpt = NULL;
 
+  Esnprintf(s, sizeof(s), "%i", (int)mode.eject_mode);
+  Epplet_modify_config("EJECT_MODE", s);
+
   Esnprintf(s, sizeof(s), "%i", mode.do_polling);
   Epplet_modify_config("DO_POLL", s);
-
-  Esnprintf(s, sizeof(s), "%i", mode.do_eject);
-  Epplet_modify_config("DO_EJECT", s);
 
   Esnprintf(s, sizeof(s), "%i", mode.polling_interval);
   Epplet_modify_config("POLLINTVAL", s);

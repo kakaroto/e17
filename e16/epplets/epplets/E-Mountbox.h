@@ -35,7 +35,7 @@
 ConfigItem defaults[] = {
   {"BG_IMAGE",   EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"},
   {"DEFAULT",    EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"},
-  {"DO_EJECT",   "1"},
+  {"EJECT_MODE", "2"},
   {"DO_POLL",    "1"},
   {"POLLINTVAL", "5"}
 };
@@ -47,13 +47,21 @@ char *default_types[] = {
   "jazz "EROOT"/epplet_data/E-Mountbox/E-Mountbox-jazz.png"
 };
 
+typedef enum eject_mode
+{
+  NO_EJECT,
+  MANUAL_EJECT,
+  AUTO_EJECT
+}
+EjectMode;
+
 typedef struct _tile Tile;
 typedef struct _mountpointtype MountPointType;
 typedef struct _mode Mode;
 
 struct _mode
 {
-  int             do_eject;
+  EjectMode       eject_mode;
   int             do_polling;
   int             polling_interval;
   int             anim_mount;
@@ -101,6 +109,8 @@ Epplet_gadget   action_area, button_close, button_config, button_help;
 Epplet_gadget   tbox_key, tbox_file, tbox_default, tbox_bg;
 Epplet_gadget   arrow_left, arrow_right, button_add, button_del, button_add_long;
 Epplet_gadget   label_key, label_file, label_interval, label_slider, hslider_interval;
+Epplet_gadget   togglebutton_no_eject, togglebutton_manual_eject, togglebutton_auto_eject;
+int             ejectbuttons[3];
 Window          config_win = 0;
 MountPointType *current_type = NULL;
 RGB_buf         window_buf = NULL;            /* the currently displayed mountpoint */
@@ -158,6 +168,7 @@ static void     Callback_ConfigRight(void *data);
 static void     Callback_ConfigAdd(void *data);
 static void     Callback_ConfigDel(void *data);
 static void     Callback_ConfigInterval(void *data);
+static void     Callback_EjectType(void *data);
 
 /* config stuff */
 void            SetupDefaults(void);
