@@ -107,7 +107,7 @@ int ewl_spinner_init(Ewl_Spinner * s)
  *
  * Sets the current value of the spinner @a s to @a value.
  */
-void ewl_spinner_set_value(Ewl_Spinner * s, double value)
+void ewl_spinner_value_set(Ewl_Spinner * s, double value)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -122,7 +122,7 @@ void ewl_spinner_set_value(Ewl_Spinner * s, double value)
  * @return Returns the current value in @a s on success, 0.0 on failure.
  * @brief Get the current value of a spinner widget
  */
-double ewl_spinner_get_value(Ewl_Spinner * s)
+double ewl_spinner_value_get(Ewl_Spinner * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.00);
@@ -138,7 +138,7 @@ double ewl_spinner_get_value(Ewl_Spinner * s)
  *
  * Changes the digits displayed by @a s to @a digits.
  */
-void ewl_spinner_set_digits(Ewl_Spinner * s, unsigned char digits)
+void ewl_spinner_digits_set(Ewl_Spinner * s, unsigned char digits)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -154,7 +154,7 @@ void ewl_spinner_set_digits(Ewl_Spinner * s, unsigned char digits)
  * @brief Retrieves the minimum value for the spinner.
  * @return Returns the currently set minimum value for the specified spinner.
  */
-double ewl_spinner_get_min_val(Ewl_Spinner *s)
+double ewl_spinner_min_val_get(Ewl_Spinner *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
@@ -170,7 +170,7 @@ double ewl_spinner_get_min_val(Ewl_Spinner *s)
  *
  * Sets the smallest value that @a s can obtain to @a val.
  */
-void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
+void ewl_spinner_min_val_set(Ewl_Spinner * s, double val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -186,7 +186,7 @@ void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
  * @brief Retrieves the maximum value for the spinner.
  * @return Returns the currently set maximum value for the specified spinner.
  */
-double ewl_spinner_get_max_val(Ewl_Spinner *s)
+double ewl_spinner_max_val_get(Ewl_Spinner *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 100.0);
@@ -202,7 +202,7 @@ double ewl_spinner_get_max_val(Ewl_Spinner *s)
  *
  * Sets the largest value that @a s can obtain to @a val.
  */
-void ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
+void ewl_spinner_max_val_set(Ewl_Spinner * s, double val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -222,7 +222,7 @@ void ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
  * Changes the increment that @a s changes by with each click of it's spinner
  * buttons to @a step.
  */
-void ewl_spinner_set_step(Ewl_Spinner * s, double step)
+void ewl_spinner_step_set(Ewl_Spinner * s, double step)
 {
 	Ewl_Widget     *w;
 
@@ -566,7 +566,7 @@ static int ewl_spinner_timer(void *data)
 	s = EWL_SPINNER(data);
 
 	dt = ecore_time_get() - s->start_time;
-	value = ewl_spinner_get_value(s);
+	value = ewl_spinner_value_get(s);
 	range = s->max_val - s->min_val;
 
 	/*
@@ -599,7 +599,7 @@ static int ewl_spinner_timer(void *data)
 	printf("\tDelay: %g\n", tmpt);
 	value += (double)(s->direction) * ((1 - exp(-dt)) + tmpt);
 
-	ewl_spinner_set_value(s, value);
+	ewl_spinner_value_set(s, value);
 
 	return 1;
 }
