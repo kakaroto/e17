@@ -19,6 +19,7 @@ collections
 	data {
 	    item, "entice.window.dragable" "true";
 	}
+#include "embryo/globals.edc"
 	parts
 	{
 	    part
@@ -63,6 +64,7 @@ collections
 #include "parts/bg.edc"
 #include "parts/delete_dialog.edc"
 #include "parts/enticeimagepreview.edc"
+#include "parts/status.edc"
 	}
 	programs
 	{
@@ -74,7 +76,7 @@ collections
 #include "programs/tooltip.edc"
 #include "programs/enticeimage.edc"
 #include "programs/delete_dialog.edc"
-
+#include "programs/status.edc"
 	    /* just for looks */
 	    program
 	    {

@@ -1,0 +1,70 @@
+	    part
+	    {
+		name, "statusmessage_clip";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, 20 -25;
+			to_x, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 -25;
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, 20 -50;
+			to_x, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 -25;
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "statusmessage";
+		type, TEXT;
+		effect, OUTLINE;
+		mouse_events, 0;
+		clip_to, "statusmessage_clip";
+		description { 
+		    state, "default" 0.0; 
+		    visible, 1; 
+		    rel1 { 
+			relative, 0.0 0.0; 
+			offset, 0 0; 
+			to, "statusmessage_clip"; 
+		    } rel2 { 
+			relative, 1.0 1.0; 
+			offset, -5 -5; 
+			to, "statusmessage_clip"; 
+		    }
+		    color2, 0 0 0 192; 
+		    color, 229 229 229 255;
+		    text { 
+			text, ""; 
+			font, "Edje.VeraI"; 
+			size, 18; 
+			fit, 0 0; 
+			align, 0.0 0.0;
+		    } 
+		}
+	    }

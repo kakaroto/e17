@@ -1,0 +1,4 @@
+    script {
+	public mouse_x;
+	public mouse_y;
+    }

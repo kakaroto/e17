@@ -1,0 +1,41 @@
+    program {
+	name, "file_saved_fine";
+	signal, "entice,image,save,ok";
+	source, "";
+	script {
+	    text_set(PART:"statusmessage", "File Saved Ok!");
+	}
+    }
+    program {
+	name, "file_saved_fine";
+	signal, "entice,image,save,fail";
+	source, "";
+	script {
+	    text_set(PART:"statusmessage", "Unable to save the file...");
+	}
+    }
+    program {
+	name, "status_changed_fixer";
+	signal, "entice,image,save,*";
+	source, "";
+	action, ACTION_STOP;
+	target, "status_changed_hide";
+	transition, DECELERATE 1.0;
+    }
+    program {
+	name, "status_changed";
+	signal, "entice,image,save,*";
+	source, "";
+	action, STATE_SET "visible" 0.0;
+	target, "statusmessage_clip";
+	transition, DECELERATE 1.0;
+    }
+    program {
+	name, "status_changed_hide";
+	signal, "entice,image,save,*";
+	source, "";
+	action, STATE_SET "default" 0.0;
+	target, "statusmessage_clip";
+	transition, ACCELERATE 1.0;
+	in, 2.5 0.0;
+    }
