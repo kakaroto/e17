@@ -394,20 +394,19 @@ od_icon_mapping_get(const char *winclass, char **name, char **icon_name)
 #endif
   while (item) {
     if (strcmp(winclass, (char *) item->data) == 0) {
-      *name = (char *) item->next->data;
-      *icon_name = (char *) item->next->next->data;
+      if (item->next) {
+        *name = (char *) item->next->data;
+        if (item->next->next) {
+          *icon_name = (char *) item->next->next->data;
+        } else {
+          fprintf(stderr, "corrupt icon mapping for %s (icon_name)\n",winclass);
+        }
+      } else {
+        fprintf(stderr, "corrupt icon mapping for %s (name)\n", winclass);
+      }
       return;
     }
-
-    if (!(item = item->next)) {
-      fprintf(stderr, "corrupt icon mappings, pos 1\n");
-      exit(EXIT_FAILURE);
-    }
-    if (!(item = item->next)) {
-      fprintf(stderr, "corrupt icon mappings, pos 2\n");
-      exit(EXIT_FAILURE);
-    }
-    item = item->next;
+    item = item->next; 
   }
   *name = strdup(winclass);
   *icon_name = strdup(winclass);
