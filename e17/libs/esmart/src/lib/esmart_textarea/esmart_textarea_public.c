@@ -105,6 +105,17 @@ esmart_textarea_cursor_delete_left(Evas_Object *o)
    _esmart_textarea_cursor_delete_left(t);
 }
 
+/* focus / unfocus textarea */
+void
+esmart_textarea_focus_set(Evas_Object *o, Evas_Bool focus)
+{
+   Esmart_Text_Area *t;
+   
+   t = evas_object_smart_data_get(o);   
+   _esmart_textarea_focus_set(t, focus);     
+}
+    
+
 /* override default background with an Evas_Object */
 void
 esmart_textarea_bg_set(Evas_Object *o, Evas_Object *bg) 

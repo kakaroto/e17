@@ -46,6 +46,7 @@ void            esmart_textarea_cursor_move_home(Evas_Object *o);
 void            esmart_textarea_cursor_move_end(Evas_Object *o);
 void            esmart_textarea_cursor_delete_right(Evas_Object *o);
 void            esmart_textarea_cursor_delete_left(Evas_Object *o);
+void            esmart_textarea_focus_set(Evas_Object *o, Evas_Bool focus);  
 void            esmart_textarea_bg_set(Evas_Object *o, Evas_Object *bg);
 void            esmart_textarea_text_insert(Evas_Object *o, const char *text);
 void            esmart_textarea_cursor_set(Evas_Object *o, Evas_Object *c);

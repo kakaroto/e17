@@ -33,7 +33,7 @@ _esmart_textarea_init(Evas_Object *o) {
    //evas_object_textblock_text_del(t->text, 1); // is this needed?
    evas_object_textblock_cursor_pos_set(t->text, 0);   
    evas_object_layer_set(t->text, 2);
-   
+      
    evas_object_focus_set(t->text, 1);
    evas_object_event_callback_add(t->text, EVAS_CALLBACK_KEY_DOWN, 
 				  _esmart_textarea_cb_key_down, t);
@@ -55,6 +55,13 @@ _esmart_textarea_init(Evas_Object *o) {
    evas_object_layer_set(t->cursor, 2);
 
    return t;
+}
+
+/* focus / unfocus (to accept key strokes) textarea */
+void
+_esmart_textarea_focus_set(Esmart_Text_Area *t, Evas_Bool focus)
+{
+   evas_object_focus_set(t->text, focus);
 }
 
 /* override the default bg */
