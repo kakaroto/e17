@@ -23,7 +23,7 @@ struct _Esmart_Thumb
   Epsilon *e;
   Epsilon_Info *info;
   Evas_Object *image;		/* thumb image that's displayed */
-  double x, y, w, h;		/* smart object location/geometry */
+  Evas_Coord x, y, w, h;		/* smart object location/geometry */
   int tw, th;
 };
 typedef struct _Esmart_Thumb Esmart_Thumb;
