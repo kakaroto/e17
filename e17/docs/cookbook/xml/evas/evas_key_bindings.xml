@@ -39,19 +39,10 @@ in exploring keybinds using EVAS event callbacks.  It creates a black
         Evas        *   evas;
         Evas_Object *   base_rect;
 
-
-static int
-main_signal_exit(void *data, int ev_type, void *ev)
+static int main_signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
    return 1;
-}
-
-void mouse(void *data, Evas *e, Evas_Object *obj, void *event_info) {
-        Evas_Event_Mouse_Down *ev;
-
-        ev = (Evas_Event_Mouse_Down *)event_info;
-        printf("You pressed button: %d\n", ev-&gt;button);
 }
 
 void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
@@ -61,25 +52,17 @@ void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
         printf("You hit key: %s\n", ev->keyname);
 }
 
-
-void move(void *data, Evas *e, Evas_Object *obj, void *event_info) {
-        printf("Entered callback: mouse move\n");
-}
-
-
-
 int main(){
         ecore_init();
         ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, 
 			main_signal_exit, NULL);
 
    ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
-        ecore_evas_title_set(ee, "EVAS Callback Test");
+        ecore_evas_title_set(ee, "EVAS KeyBind Example");
         ecore_evas_borderless_set(ee, 0);
         ecore_evas_show(ee);
 
    evas = ecore_evas_get(ee);
-        evas_font_path_append(evas, "data/");
 
    base_rect = evas_object_rectangle_add(evas);
         evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
@@ -87,10 +70,6 @@ int main(){
         evas_object_focus_set(base_rect, 1);
         evas_object_show(base_rect);
 
-        evas_object_event_callback_add(base_rect, 
-			EVAS_CALLBACK_MOUSE_DOWN, mouse, NULL);       
-        evas_object_event_callback_add(base_rect, 
-			EVAS_CALLBACK_MOUSE_MOVE, move, NULL);        
         evas_object_event_callback_add(base_rect, 
 			EVAS_CALLBACK_KEY_DOWN, key_down, NULL);      
 
@@ -115,6 +94,55 @@ gcc `evas-config --libs --cflags` `ecore-config --libs --cflags` \
 > key_test.c -o key_test
 </programlisting>
 </example>
+
+<para>
+In this example the canvas is setup in the usual way using Ecore_Evas to do the dirty work.
+The real magic occurs in the <function>evas_object_event_callback_add()</function> callback.
+</para>
+
+<programlisting>
+        evas_object_event_callback_add(base_rect,
+                        EVAS_CALLBACK_KEY_DOWN, key_down, NULL);
+</programlisting>
+
+<para>
+By adding a callback to the base_rect, which is acting as the canvas background, we
+can execute a function (<function>key_down()</function> in this case) whenever 
+we encounter a key down event, defined in <filename>Evas.h</filename> as EVAS_CALLBACK_KEY_DOWN.
+</para>
+
+<para>
+There is one very important thing to do in addition to defining the callback: setting the focus.
+The <function>evas_object_focus_set()</function> function sets the focus on a given Evas object.
+It is the object that has focus that will actually accept the events, even though you explicitly
+define the Evas object that the callback is attached to.  And only one object can be focused at a time.
+The most common problem encountered with Evas callbacks is forgetting to set focus.
+</para>
+
+<programlisting>
+void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        Evas_Event_Key_Down *ev;
+
+        ev = (Evas_Event_Key_Down *)event_info;
+        printf("You hit key: %s\n", ev->keyname);
+}
+</programlisting>
+
+<para>
+The <function>key_down()</function> function is called anytime a key down event occurs
+after defining it's callback.  The function declaration is that of a standard Evas
+callback (see <filename>Evas.h</filename>).  The important piece of information
+we need to know is what key was pressed, which is contained in the Evas <varname>event_info</varname>
+structure.  After setting up the <varname>Evas_Event_Key_Down</varname> structure for use as seen 
+above we can access the element <varname>keyname</varname> to determine which key was 
+pressed.
+</para>
+
+<para>
+In most cases you'll likely use a <function>switch</function> or nested <function>if</function>'s  to
+define which keys do what, and it's recommended that this functionality be paired with
+an configuration EDB to provide centralization and easy expansion of your applications keybind settings.
+</para>
 
 </section>
 
