@@ -79,6 +79,9 @@ Makefile
 etox-config
 src/Makefile
 test/Makefile
+test/fnt/Makefile
+test/img/Makefile
+test/style/Makefile
 ], [
 chmod +x etox-config
 ]
