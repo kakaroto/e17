@@ -147,10 +147,9 @@ _entrance_auth_pam_initialize(Entrance_Auth * e)
       return ERROR_NO_PAM_INIT;
    }
 
-   /* Set TTY to current DISPLAY variable */
+   /* Set TTY to DISPLAY */
    if ((pamerr =
-        pam_set_item(e->pam.handle, PAM_TTY,
-                     getenv("DISPLAY"))) != PAM_SUCCESS)
+        pam_set_item(e->pam.handle, PAM_TTY, e->display)) != PAM_SUCCESS)
    {
       syslog(LOG_CRIT, "Error: Unable to configure PAM_TTY.");
       return ERROR_PAM_SET;
