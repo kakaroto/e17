@@ -1,12 +1,8 @@
 DESCRIPTION = "Meta-package for Enlightenment X11 Without FrameBuffer"
 PACKAGES = "e"
-
 ALLOW_EMPTY = 1
 
-# task-e-libs = "imlib2 edb eet evas ecore epeg epsilon embryo edje esmart emotion etox ewl"
-
-task-e = "e17-snap"
+task-e = "enlightenment edje ecore evas eet embryo imlib2"
 
 DEPENDS ="task-bootstrap diet-x11 xserver-kdrive ttf-bitstream-vera"
 DEPENDS += "${task-e}"
-
