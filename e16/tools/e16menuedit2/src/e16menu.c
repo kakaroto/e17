@@ -240,8 +240,10 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
   if (!g_path_is_absolute (params))
   {
-    /* Tarnation! A relative path */
-    realfile = g_strjoin (gv.epath, params, NULL);
+    /* Tarnation! A relative path */    
+    //realfile = g_strjoin ("/", gv.epath, params, NULL);
+    realfile = g_strdup_printf ("%s/%s", gv.epath, params);
+    //g_print ("FILE: %s,%s,%s\n", gv.epath, params, realfile);
   }
   else
   {
