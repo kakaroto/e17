@@ -80,7 +80,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	fd->decor_box = ewl_vbox_new();
 	ewl_widget_set_internal(fd->decor_box, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->decor_box),
-				   EWL_FLAG_FILL_VFILL);
+			EWL_FLAG_FILL_VFILL);
 	ewl_box_set_spacing(EWL_BOX(fd->decor_box), 4);
 	ewl_object_set_padding(EWL_OBJECT(fd->decor_box), 10, 10, 10, 10);
 	/*
@@ -149,7 +149,8 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->cancel);
 	ewl_widget_show(fd->cancel);
 
-	ewl_container_set_redirect(EWL_CONTAINER(fd), fd->decor_box);
+	ewl_container_set_redirect(EWL_CONTAINER(fd),
+				   EWL_CONTAINER(fd->decor_box));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

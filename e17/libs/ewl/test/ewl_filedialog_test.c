@@ -82,6 +82,8 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 
 		home_button = ewl_button_new("Home");
+		ewl_object_set_fill_policy(EWL_OBJECT(home_button),
+					   EWL_FLAG_FILL_HFILL);
 		ewl_container_append_child(EWL_CONTAINER(fd), home_button);
 		ewl_widget_show(home_button);
 	}
