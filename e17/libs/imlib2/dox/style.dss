@@ -1,16 +1,17 @@
 <style
 
-  title.font = "brooklyn.ttf",
-  title.size = 35,
+  title.font.name = "brooklyn.ttf",
+  title.font.size = 35,
+  title.font.colour = "#ffffff",
   
   link.normal.colour = "#aaaaff",
-  link.normal.font = "brooklyn.ttf",
-  link.normal.size = 26,
+  link.normal.font.name = "brooklyn.ttf",
+  link.normal.font.size = 26,
   
   link.visited.colour = "#ffaaaa",
-  link.visited.font = "brooklyn.ttf",
-  link.visited.size = 26,
+  link.visited.font.name = "brooklyn.ttf",
+  link.visited.font.size = 26,
   
-  bg.picture = "bg.png",
+  background.picture = "bg.png",
   
 />
