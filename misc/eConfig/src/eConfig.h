@@ -19,7 +19,7 @@
 
 int eConfigAddPath(char *path);
 int eConfigRemovePath(char *path);
-char **eConfigPaths(void);
+char **eConfigPaths(int *num);
 
 
 void eConfigInit(void);

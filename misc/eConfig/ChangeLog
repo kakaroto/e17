@@ -12,3 +12,10 @@ figured out how to make "make test" work in here finally.
 that was bizarre.  why does gnu like "make check" ?
 
 a little work on the library, too, but still not much here yet
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 21:16:05 PDT 1999
+(Mandrake)
+
+now the paths stuff should actually work.
