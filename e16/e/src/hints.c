@@ -33,6 +33,7 @@ void
 HintsInit(void)
 {
    EDBUG(6, "HintsInit");
+   ICCCM_Init();
 #if ENABLE_KDE
    /* ??? */
 #endif
@@ -187,7 +188,6 @@ HintsSetWindowHints(EWin * ewin)
 #if ENABLE_KDE
    int                 kde_support = 0;
 #endif
-
    EDBUG(6, "HintsSetWindowHints");
 #if ENABLE_KDE
    kde_support = mode.kde_support;
@@ -265,16 +265,26 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 void
 HintsProcessClientMessage(XClientMessageEvent * event)
 {
+   char               *name = XGetAtomName(disp, event->message_type);
+
    EDBUG(6, "HintsHandleClientMessage");
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_ProcessClientMessage(event);
+
+   if (!memcmp(name, "WM_", 3))
+      ICCCM_ProcessClientMessage(event);
+#if ENABLE_EWMH
+   else if (!memcmp(name, "_NET_", 5))
+      EWMH_ProcessClientMessage(event);
 #endif
 #if ENABLE_GNOME
-   GNOME_ProcessClientMessage(event);
+   else if (!memcmp(name, "_WIN_", 5))
+      GNOME_ProcessClientMessage(event);
 #endif
-#if ENABLE_EWMH
-   EWMH_ProcessClientMessage(event);
+#if ENABLE_KDE
+   else if (!memcmp(name, "KWM_", 4))
+     {
+	if (mode.kde_support)
+	   KDE_ProcessClientMessage(event);
+     }
 #endif
    EDBUG_RETURN_;
 }

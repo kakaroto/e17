@@ -40,6 +40,8 @@ static Time         last_time = 0;
 static int          last_button = 0;
 static int          pgd_x = 0, pgd_y = 0;
 
+static Atom         xa_ENL_MSG = 0;
+
 static void
 ToolTipTimeout(int val, void *data)
 {
@@ -97,11 +99,7 @@ ToolTipTimeout(int val, void *data)
 void
 HandleClientMessage(XEvent * ev)
 {
-   EWin               *ewin;
-
-   static Atom         a1 = 0, a6 = 0;
-
-#if DEBUG_EWMH
+#if DEBUG_HINTS
    char               *name = XGetAtomName(disp, ev->xclient.message_type);
 
    printf
@@ -111,36 +109,13 @@ HandleClientMessage(XEvent * ev)
        ev->xclient.data.l[3]);
    XFree(name);
 #endif
-
    EDBUG(5, "HandleClientMessage");
-   if (!a1)
-      a1 = XInternAtom(disp, "ENL_MSG", False);
-   if (!a6)
-      a6 = XInternAtom(disp, "WM_CHANGE_STATE", False);
-   if (ev->xclient.message_type == a1)
+
+   if (!xa_ENL_MSG)
+      xa_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
+   if (ev->xclient.message_type == xa_ENL_MSG)
      {
 	HandleComms(ev);
-	EDBUG_RETURN_;
-     }
-   if (ev->xclient.message_type == a6)
-     {
-	ewin =
-	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if (ewin == NULL)
-	   EDBUG_RETURN_;
-	if (ev->xclient.data.l[0] == IconicState)
-	  {
-	     if (!(ewin->iconified))
-		IconifyEwin(ewin);
-	  }
-#if 0
-	else if (ev->xclient.data.l[0] == NormalState)
-	  {
-	     if (ewin->iconified)
-		DeIconifyEwin(ewin);
-	  }
-	HintsSetWindowState(ewin);
-#endif
 	EDBUG_RETURN_;
      }
 
@@ -1145,7 +1120,16 @@ HandleProperty(XEvent * ev)
    char                title[10240];
    int                 desktop;
 
+#if DEBUG_HINTS
+   char               *name = XGetAtomName(disp, ev->xproperty.atom);
+
+   printf("HandleProperty: Atom=%s(%d) id=%#x\n",
+	  name, (unsigned)ev->xproperty.atom, (unsigned)ev->xproperty.window);
+   XFree(name);
+#endif
+
    EDBUG(5, "HandleProperty");
+
    win = ev->xproperty.window;
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)

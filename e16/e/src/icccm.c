@@ -23,6 +23,43 @@
  */
 #include "E.h"
 
+static Atom         xa_WM_CHANGE_STATE = 0;
+
+void
+ICCCM_Init(void)
+{
+   xa_WM_CHANGE_STATE = XInternAtom(disp, "WM_CHANGE_STATE", False);
+}
+
+void
+ICCCM_ProcessClientMessage(XClientMessageEvent * event)
+{
+   EWin               *ewin;
+
+   if (event->message_type == xa_WM_CHANGE_STATE)
+     {
+	ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin == NULL)
+	   goto exit;
+
+	if (event->data.l[0] == IconicState)
+	  {
+	     if (!(ewin->iconified))
+		IconifyEwin(ewin);
+	  }
+#if 0
+	else if (event->data.l[0] == NormalState)
+	  {
+	     if (ewin->iconified)
+		DeIconifyEwin(ewin);
+	  }
+	HintsSetWindowState(ewin);
+#endif
+     }
+ exit:
+   EDBUG_RETURN_;
+}
+
 void
 ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 {

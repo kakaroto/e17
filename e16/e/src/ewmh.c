@@ -675,15 +675,6 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 {
    EWin               *ewin;
 
-#if DEBUG_EWMH
-   char               *name = XGetAtomName(disp, event->message_type);
-
-   printf
-      ("EWMH_ProcessClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08lx %08lx %08lx %08lx\n",
-       name, (unsigned)event->message_type, (unsigned)event->window,
-       event->data.l[0], event->data.l[1], event->data.l[2], event->data.l[3]);
-   XFree(name);
-#endif
    EDBUG(6, "EWMH_ProcessClientMessage");
 
    /*
@@ -692,10 +683,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    if (event->message_type == _NET_CURRENT_DESKTOP)
      {
 	GotoDesktop(event->data.l[0]);
+	goto exit;
      }
    else if (event->message_type == _NET_DESKTOP_VIEWPORT)
      {
 	SetCurrentArea(event->data.l[0] / root.w, event->data.l[1] / root.h);
+	goto exit;
      }
 
    /*
@@ -864,13 +857,6 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 void
 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
-#if DEBUG_EWMH
-   char               *name = XGetAtomName(disp, atom_change);
-
-   printf("EWMH_ProcessPropertyChange: Atom=%s(%d) id=%#x\n",
-	  name, atom_change, (ewin) ? ewin->client.win : 0);
-   XFree(name);
-#endif
    EDBUG(6, "EWMH_ProcessPropertyChange");
 
    if (atom_change == _NET_WM_DESKTOP)

@@ -2064,6 +2064,8 @@ void                BeginNewDeskFocus(void);
 void                NewDeskFocus(void);
 
 /* icccm.c functions */
+void                ICCCM_Init(void);
+void                ICCCM_ProcessClientMessage(XClientMessageEvent * event);
 void                ICCCM_GetTitle(EWin * ewin, Atom atom_change);
 void                ICCCM_GetColormap(EWin * ewin);
 void                ICCCM_Delete(EWin * ewin);
