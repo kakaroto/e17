@@ -153,7 +153,6 @@ get_icon() {
       fi
     fi
     CONVERT=`which convert`
-    echo convert: $CONVERT eiocn: $EICON  $GICON >> 2
     if [ -n "$CONVERT" ]; then
       if [ -n "$GICON" ]; then
         if [ -f "$GICON" ]; then
