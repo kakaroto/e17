@@ -225,7 +225,10 @@ entice_config_init(void)
                      {
                         key = entice_key_new(symbol, signal);
                         entice_keys_up_add(key);
+                        free (signal);
                      }
+
+                     free(symbol);
                   }
                }
             }
@@ -242,7 +245,10 @@ entice_config_init(void)
                      {
                         key = entice_key_new(symbol, signal);
                         entice_keys_down_add(key);
+                        free(signal);
                      }
+
+                     free (symbol);
                   }
                }
             }
