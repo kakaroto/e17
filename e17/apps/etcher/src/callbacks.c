@@ -199,20 +199,23 @@ update_selection_from_widget(void)
 	  }
 	gtk_clist_thaw(GTK_CLIST(w));
      }
-   GET_ALL_SPIN("bit_min_h", min.w);
-   GET_ALL_SPIN("bit_min_v", min.h);
-   GET_ALL_SPIN("bit_max_h", max.w);
-   GET_ALL_SPIN("bit_max_v", max.h);
-   GET_ALL_SPIN("bit_pad_l", padding.l);
-   GET_ALL_SPIN("bit_pad_r", padding.r);
-   GET_ALL_SPIN("bit_pad_t", padding.t);
-   GET_ALL_SPIN("bit_pad_b", padding.b);
-   GET_ALL_SPIN("bit_inset_l", inset.l);
-   GET_ALL_SPIN("bit_inset_r", inset.r);
-   GET_ALL_SPIN("bit_inset_t", inset.t);
-   GET_ALL_SPIN("bit_inset_b", inset.b);
-   GET_ALL_SPIN("bit_step_h", step.x);
-   GET_ALL_SPIN("bit_step_v", step.y);
+   if (bits)
+     {
+       GET_ALL_SPIN("bit_min_h", min.w);
+       GET_ALL_SPIN("bit_min_v", min.h);
+       GET_ALL_SPIN("bit_max_h", max.w);
+       GET_ALL_SPIN("bit_max_v", max.h);
+       GET_ALL_SPIN("bit_pad_l", padding.l);
+       GET_ALL_SPIN("bit_pad_r", padding.r);
+       GET_ALL_SPIN("bit_pad_t", padding.t);
+       GET_ALL_SPIN("bit_pad_b", padding.b);
+       GET_ALL_SPIN("bit_inset_l", inset.l);
+       GET_ALL_SPIN("bit_inset_r", inset.r);
+       GET_ALL_SPIN("bit_inset_t", inset.t);
+       GET_ALL_SPIN("bit_inset_b", inset.b);
+       GET_ALL_SPIN("bit_step_h", step.x);
+       GET_ALL_SPIN("bit_step_v", step.y);
+     }
 }
 
 static void
@@ -370,20 +373,23 @@ update_widget_from_selection(void)
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	gtk_clist_unselect_all(GTK_CLIST(w));	
      }
-   SET_ALL_SPIN("bit_min_h", min.w);
-   SET_ALL_SPIN("bit_min_v", min.h);
-   SET_ALL_SPIN("bit_max_h", max.w);
-   SET_ALL_SPIN("bit_max_v", max.h);
-   SET_ALL_SPIN("bit_pad_l", padding.l);
-   SET_ALL_SPIN("bit_pad_r", padding.r);
-   SET_ALL_SPIN("bit_pad_t", padding.t);
-   SET_ALL_SPIN("bit_pad_b", padding.b);
-   SET_ALL_SPIN("bit_inset_l", inset.l);
-   SET_ALL_SPIN("bit_inset_r", inset.r);
-   SET_ALL_SPIN("bit_inset_t", inset.t);
-   SET_ALL_SPIN("bit_inset_b", inset.b);
-   SET_ALL_SPIN("bit_step_h", step.x);
-   SET_ALL_SPIN("bit_step_v", step.y);
+   if (bits)
+     {
+       SET_ALL_SPIN("bit_min_h", min.w);
+       SET_ALL_SPIN("bit_min_v", min.h);
+       SET_ALL_SPIN("bit_max_h", max.w);
+       SET_ALL_SPIN("bit_max_v", max.h);
+       SET_ALL_SPIN("bit_pad_l", padding.l);
+       SET_ALL_SPIN("bit_pad_r", padding.r);
+       SET_ALL_SPIN("bit_pad_t", padding.t);
+       SET_ALL_SPIN("bit_pad_b", padding.b);
+       SET_ALL_SPIN("bit_inset_l", inset.l);
+       SET_ALL_SPIN("bit_inset_r", inset.r);
+       SET_ALL_SPIN("bit_inset_t", inset.t);
+       SET_ALL_SPIN("bit_inset_b", inset.b);
+       SET_ALL_SPIN("bit_step_h", step.x);
+       SET_ALL_SPIN("bit_step_v", step.y);
+     }
 }
 
 static void
@@ -468,20 +474,23 @@ update_widget_from_simple_selection(void)
 	   gtk_entry_set_text(GTK_ENTRY(w), "Tile Integer");
 	
      }
-   SET_ALL_SPIN("bit_min_h", min.w);
-   SET_ALL_SPIN("bit_min_v", min.h);
-   SET_ALL_SPIN("bit_max_h", max.w);
-   SET_ALL_SPIN("bit_max_v", max.h);
-   SET_ALL_SPIN("bit_pad_l", padding.l);
-   SET_ALL_SPIN("bit_pad_r", padding.r);
-   SET_ALL_SPIN("bit_pad_t", padding.t);
-   SET_ALL_SPIN("bit_pad_b", padding.b);
-   SET_ALL_SPIN("bit_inset_l", inset.l);
-   SET_ALL_SPIN("bit_inset_r", inset.r);
-   SET_ALL_SPIN("bit_inset_t", inset.t);
-   SET_ALL_SPIN("bit_inset_b", inset.b);
-   SET_ALL_SPIN("bit_step_h", step.x);
-   SET_ALL_SPIN("bit_step_v", step.y);
+   if (bits)
+     {
+       SET_ALL_SPIN("bit_min_h", min.w);
+       SET_ALL_SPIN("bit_min_v", min.h);
+       SET_ALL_SPIN("bit_max_h", max.w);
+       SET_ALL_SPIN("bit_max_v", max.h);
+       SET_ALL_SPIN("bit_pad_l", padding.l);
+       SET_ALL_SPIN("bit_pad_r", padding.r);
+       SET_ALL_SPIN("bit_pad_t", padding.t);
+       SET_ALL_SPIN("bit_pad_b", padding.b);
+       SET_ALL_SPIN("bit_inset_l", inset.l);
+       SET_ALL_SPIN("bit_inset_r", inset.r);
+       SET_ALL_SPIN("bit_inset_t", inset.t);
+       SET_ALL_SPIN("bit_inset_b", inset.b);
+       SET_ALL_SPIN("bit_step_h", step.x);
+       SET_ALL_SPIN("bit_step_v", step.y);
+     }
 }
 
 static void
@@ -1197,13 +1206,29 @@ on_file_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
    GtkWidget *top, *w;
+   Ebits_Object newbits = NULL;
    
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    if (gtk_object_get_data(GTK_OBJECT(top), "open"))
      {
+	newbits = ebits_load(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+
+	if (!newbits)
+	  {
+	    return;
+	  }
+
 	selected_state = NULL;
-	if (bits) ebits_free(bits);
-	bits = ebits_load(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+
+	if (bits)
+	  ebits_free(bits);
+
+	bits = newbits;
+
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_clear(GTK_CLIST(w));
+	update_visible_selection();
+
 	if (bits) 
 	   {
 	      Evas_List l;
@@ -1222,7 +1247,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 		   evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
 		   evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
 		}
-	      w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+ 	      w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	      gtk_clist_freeze(GTK_CLIST(w));
 	      gtk_clist_clear(GTK_CLIST(w));
 	      for (l = bits->bits; l; l = l->next)
@@ -1358,6 +1383,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	e_db_flush();
      }
+
    gtk_widget_destroy(top);
 }
 
