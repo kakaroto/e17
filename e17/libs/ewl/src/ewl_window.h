@@ -63,6 +63,24 @@ void            ewl_window_set_borderless(Ewl_Window * win);
 void            ewl_window_move(Ewl_Window * win, int x, int y);
 void            ewl_window_get_position(Ewl_Window * win, int *x, int *y);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void            ewl_window_realize_cb(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+void            ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+void            ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+void            ewl_window_show_cb(Ewl_Widget * w, void *ev_data,
+				  void *user_data);
+void            ewl_window_hide_cb(Ewl_Widget * w, void *ev_data,
+				  void *user_data);
+void            ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+void            ewl_window_configure_cb(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
+
 /**
  * @}
  */
