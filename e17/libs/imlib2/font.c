@@ -1,10 +1,12 @@
 #include "common.h"
 #include <X11/Xlib.h>
+#include "colormod.h"
 #include "image.h"
 #include "blend.h"
 #include <freetype.h>
 #include "font.h"
 #include <sys/types.h>
+#include <string.h>
 #include "file.h"
 #include "rgbadraw.h"
 
@@ -668,7 +670,7 @@ __imlib_list_fonts(int *num_ret)
 }
 
 void
-__imlib_free_font_list(char *list, int num)
+__imlib_free_font_list(char **list, int num)
 {
    __imlib_FileFreeDirList(list, num);
 }

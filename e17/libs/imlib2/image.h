@@ -3,13 +3,10 @@
 
 #include "ltdl.h"		/* for lt_dlhandle definition */
 
-typedef enum   _iflags                  ImlibImageFlags;
 typedef struct _imlibimage              ImlibImage;
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
 typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
-typedef struct _imlib_color_modifier    ImlibColorModifier;
-typedef enum   _load_error              ImlibLoadError;
 
 enum _load_error
 {
@@ -39,13 +36,8 @@ enum _iflags
    F_DONT_FREE_DATA    = (1 << 5)
 };
 
-struct _imlib_color_modifier
-{
-   DATA8     red_mapping[256];
-   DATA8     green_mapping[256];
-   DATA8     blue_mapping[256];
-   long long modification_count;
-};
+typedef enum   _iflags                  ImlibImageFlags;
+typedef enum   _load_error              ImlibLoadError;
 
 struct _imlibborder
 {
@@ -80,7 +72,7 @@ struct _imlibimagepixmap
    ImlibImage       *image;
    char              dirty;
    int               references;
-   long long         modification_count;
+   DATABIG           modification_count;
    ImlibImagePixmap *next;
 };
 
@@ -119,7 +111,7 @@ ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h,
 						int depth, int sx, int sy, 
 						int sw, int sh, Colormap cm,
 						char aa, char hiq, char dmask,
-						long long modification_count);
+						DATABIG modification_count);
 void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
 void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
 void              __imlib_CleanupImagePixmapCache(void);

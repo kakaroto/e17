@@ -1,5 +1,6 @@
 #include "common.h"
 #include <X11/Xlib.h>
+#include "colormod.h"
 #include "image.h"
 #include "blend.h"
 #include "scale.h"
@@ -46,66 +47,133 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
       h = dst_h - dy;   
    if ((w <= 0) || (h <= 0))
       return;
-   switch(op)
+   if (cm)
      {
-     case OP_COPY:
-	if (dalpha == 0)
-	   __imlib_BlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				  dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 1)
-	   __imlib_BlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				   dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 2)
-	   __imlib_CopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				 dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 3)
-	   __imlib_CopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				  dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	break;
-     case OP_ADD:
-	if (dalpha == 0)
-	   __imlib_AddBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				     dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 1)
-	   __imlib_AddBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+	switch(op)
+	  {
+	  case OP_COPY:
+	     if (dalpha == 0)
+		__imlib_BlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					   dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 1)
+		__imlib_BlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					    dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 2)
+		__imlib_CopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					  dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 3)
+		__imlib_CopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					   dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     break;
+	  case OP_ADD:
+	     if (dalpha == 0)
+		__imlib_AddBlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 1)
+		__imlib_AddBlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					       dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 2)
+		__imlib_AddCopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 3)
+		__imlib_AddCopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     break;
+	  case OP_SUBTRACT:
+	     if (dalpha == 0)
+		__imlib_SubBlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 1)
+		__imlib_SubBlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					       dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 2)
+		__imlib_SubCopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 3)
+		__imlib_SubCopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     break;
+	  case OP_RESHADE:
+	     if (dalpha == 0)
+		__imlib_ReBlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 1)
+		__imlib_ReBlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 2)
+		__imlib_ReCopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
+					    dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     else if (dalpha == 3)
+		__imlib_ReCopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
+					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+	     break;
+	  default:
+	     break;
+	  }
+     }
+   else
+     {
+	switch(op)
+	  {
+	  case OP_COPY:
+	     if (dalpha == 0)
+		__imlib_BlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+				       dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 1)
+		__imlib_BlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 2)
+		__imlib_CopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
 				      dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 2)
-	   __imlib_AddCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				    dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 3)
-	   __imlib_AddCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				     dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	break;
-     case OP_SUBTRACT:
-	if (dalpha == 0)
-	   __imlib_SubBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				     dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 1)
-	   __imlib_SubBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				      dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 2)
-	   __imlib_SubCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				    dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 3)
-	   __imlib_SubCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				     dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	break;
-     case OP_RESHADE:
-	if (dalpha == 0)
-	   __imlib_ReBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				    dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 1)
-	   __imlib_ReBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				     dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 2)
-	   __imlib_ReCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				   dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	else if (dalpha == 3)
-	   __imlib_ReCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				    dst + (dy * dst_w) + dx, dst_w - w, w, h);
-	break;
-     default:
-	break;
+	     else if (dalpha == 3)
+		__imlib_CopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+				       dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     break;
+	  case OP_ADD:
+	     if (dalpha == 0)
+		__imlib_AddBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 1)
+		__imlib_AddBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					   dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 2)
+		__imlib_AddCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 3)
+		__imlib_AddCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     break;
+	  case OP_SUBTRACT:
+	     if (dalpha == 0)
+		__imlib_SubBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 1)
+		__imlib_SubBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					   dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 2)
+		__imlib_SubCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 3)
+		__imlib_SubCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     break;
+	  case OP_RESHADE:
+	     if (dalpha == 0)
+		__imlib_ReBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 1)
+		__imlib_ReBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 2)
+		__imlib_ReCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
+					dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     else if (dalpha == 3)
+		__imlib_ReCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
+					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+	     break;
+	  default:
+	     break;
+	  }
      }
 }			
 
@@ -705,6 +773,691 @@ __imlib_ReCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 	  }
      }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* COLORMOD COPY OPS */
+
+void
+__imlib_BlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     if (a == 255)
+		*p2 = *p1;	  
+	     else if (a > 0)
+	       {
+		  b =  (*p1      ) & 0xff;
+		  g =  (*p1 >> 8 ) & 0xff;
+		  r =  (*p1 >> 16) & 0xff;
+		  
+		  CMOD_APPLY_RGB(cm, r, g, b);
+		  
+		  bb = (*p2      ) & 0xff;
+		  gg = (*p2 >> 8 ) & 0xff;
+		  rr = (*p2 >> 16) & 0xff;
+		  
+		  tmp = (r - rr) * a;
+		  nr = rr + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		  tmp = (g - gg) * a;
+		  ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		  tmp = (b - bb) * a;
+		  nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		  *p2 = (nr << 16) | (ng << 8) | nb;
+	       }
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     if (a == 255)
+		*p2 = *p1;	  
+	     else if (a > 0)
+	       {
+		  b =  (*p1      ) & 0xff;
+		  g =  (*p1 >> 8 ) & 0xff;
+		  r =  (*p1 >> 16) & 0xff;
+		  
+		  CMOD_APPLY_RGB(cm, r, g, b);
+		  
+		  bb = (*p2      ) & 0xff;
+		  gg = (*p2 >> 8 ) & 0xff;
+		  rr = (*p2 >> 16) & 0xff;
+		  aa = (*p2 >> 24) & 0xff;
+		  
+		  tmp = (r - rr) * a;
+		  nr = rr + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		  tmp = (g - gg) * a;
+		  ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		  tmp = (b - bb) * a;
+		  nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		  tmp = a + aa;
+		  na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+		  *p2 = (na << 24) | (nr << 16) | 
+		     (ng << 8) | nb;
+	       }
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_CopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   DATA8   r, g, b, a;
+   
+   for (y = 0; y < h; y++)
+     {
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     a =  (*p2 >> 24) & 0xff;
+	     
+	     CMOD_APPLY_RGB(cm, r, g, b);
+	     
+	     *p2 =  (a << 24) | (r << 16) | (g << 8) | b;
+	     p2++;
+	     p1++;
+	  }
+     }
+}
+
+void
+__imlib_CopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   DATA8   r, g, b, a;
+   
+   for (y = 0; y < h; y++)
+     {
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     a =  (*p1 >> 24) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     *p2 =  (a << 24) | (r << 16) | (g << 8) | b;
+	     p2++;
+	     p1++;
+	  }
+     }
+}
+
+/* COLORMOD ADD OPS */
+
+void
+__imlib_AddBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr + ((r * a) >> 8);
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = gg + ((g * a) >> 8);
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = bb + ((b * a) >> 8);
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     *p2 = (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     aa = (*p2 >> 24) & 0xff;
+	     
+	     tmp = rr + ((r * a) >> 8);
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = gg + ((g * a) >> 8);
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = bb + ((b * a) >> 8);
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = a + aa;
+	     na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     *p2 = (na << 24) | (nr << 16) | 
+		(ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_AddCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+             b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGB(cm, r, g, b);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr + r;
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = gg + g;
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = bb + b;
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     *p2 = (*p2 & 0xff000000) | (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_AddCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+             b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGB(cm, r, g, b);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr + r;
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = gg + g;
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     tmp = bb + b;
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     *p2 = (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+/* COLORMOD SUBTRACT OPS */
+
+void
+__imlib_SubBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr - ((r * a) >> 8);
+	     nr = tmp & (~(tmp >> 8));
+	     tmp = gg - ((g * a) >> 8);
+	     ng = tmp & (~(tmp >> 8));
+	     tmp = bb - ((b * a) >> 8);
+	     nb = tmp & (~(tmp >> 8));
+	     *p2 = (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     aa = (*p2 >> 24) & 0xff;
+	     
+	     tmp = rr - ((r * a) >> 8);
+	     nr = tmp & (~(tmp >> 8));
+	     tmp = gg - ((g * a) >> 8);
+	     ng = tmp & (~(tmp >> 8));
+	     tmp = bb - ((b * a) >> 8);
+	     nb = tmp & (~(tmp >> 8));
+	     tmp = a + aa;
+	     na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     *p2 = (na << 24) | (nr << 16) | 
+		(ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_SubCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+             b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     	
+	     CMOD_APPLY_RGB(cm, r, g, b);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr - r;
+	     nr = tmp & (~(tmp >> 8));
+	     tmp = gg - g;
+	     ng = tmp & (~(tmp >> 8));
+	     tmp = bb - b;
+	     nb = tmp & (~(tmp >> 8));
+	     *p2 = (*p2 & 0xff000000) | (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_SubCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+             b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGB(cm, r, g, b);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr - r;
+	     nr = tmp & (~(tmp >> 8));
+	     tmp = gg - g;
+	     ng = tmp & (~(tmp >> 8));
+	     tmp = bb - b;
+	     nb = tmp & (~(tmp >> 8));
+	     *p2 = (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+
+/* COLORMOD RESHADE OPS */
+
+void
+__imlib_ReBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr + (((r - 127) * a) >> 7);
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = gg + (((g - 127) * a) >> 7);
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = bb + (((b - 127) * a) >> 7);
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     *p2 = (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+	DATA8 a, nr, ng, nb, r, g, b, rr, gg, bb, aa, na;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+	     a =  (*p1 >> 24) & 0xff;
+	     b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGBA(cm, r, g, b, a);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     aa = (*p2 >> 24) & 0xff;
+	     
+	     tmp = rr + (((r - 127) * a) >> 7);
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = gg + (((g - 127) * a) >> 7);
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = bb + (((b - 127) * a) >> 7);
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = a + aa;
+	     na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));
+	     *p2 = (na << 24) | (nr << 16) | 
+		(ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_ReCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+             b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+	     
+	     CMOD_APPLY_RGB(cm, r, g, b);
+
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr + ((r - 127) << 1);
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = gg + ((g - 127) << 1);
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = bb + ((b - 127) << 1);
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     *p2 = (*p2 & 0xff000000) | (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+void
+__imlib_ReCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+		       int w, int h, ImlibColorModifier *cm)
+{
+   int x, y;
+   DATA32 *p1, *p2;
+   
+   for (y = 0; y < h; y++)
+     {
+        DATA8 nr, ng, nb, r, g, b, rr, gg, bb;
+	int tmp;
+	
+	p1 = src + (y * (w + src_jump));
+	p2 = dst + (y * (w + dst_jump));
+	for (x = 0; x < w; x++)
+	  {
+             b =  (*p1      ) & 0xff;
+	     g =  (*p1 >> 8 ) & 0xff;
+	     r =  (*p1 >> 16) & 0xff;
+
+	     CMOD_APPLY_RGB(cm, r, g, b);
+	     
+	     bb = (*p2      ) & 0xff;
+	     gg = (*p2 >> 8 ) & 0xff;
+	     rr = (*p2 >> 16) & 0xff;
+	     
+	     tmp = rr + ((r - 127) << 1);
+	     nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = gg + ((g - 127) << 1);
+	     ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     tmp = bb + ((b - 127) << 1);
+	     nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));
+	     *p2 = (nr << 16) | (ng << 8) | nb;
+	     p1++;
+	     p2++;
+	  }
+     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #define LINESIZE 16
 #define CLIP(x, y, w, h, xx, yy, ww, hh) \

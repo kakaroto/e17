@@ -3,6 +3,7 @@
 #include <X11/extensions/shape.h>
 #include <string.h>
 #include "common.h"
+#include "colormod.h"
 #include "scale.h"
 #include "image.h"
 #include "context.h"
@@ -528,7 +529,7 @@ imlib_create_scaled_image_from_drawable(Display *display,
    char        domask = 0, tmpmask = 0;
    int         x, xx;
    XGCValues   gcv;
-   GC          gc, mgc;
+   GC          gc = 0, mgc = 0;
    Pixmap      p, m;
    
    if ((mask) || (get_mask_from_shape))
@@ -1156,4 +1157,79 @@ void
 imlib_flush_font_cache(void)
 {
    __imlib_purge_font_cache();
+}
+
+Imlib_Color_Modifier 
+imlib_create_color_modifier(void)
+{
+   return (Imlib_Color_Modifier)__imlib_CreateCmod();
+}
+
+void 
+imlib_free_color_modifier(Imlib_Color_Modifier color_modifier)
+{
+   __imlib_FreeCmod((ImlibColorModifier *)color_modifier);
+}
+
+void 
+imlib_modify_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
+				  double gamma_value)
+{
+   __imlib_CmodModGamma((ImlibColorModifier *)color_modifier, 
+			gamma_value);
+}
+
+void 
+imlib_modify_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
+				       double brightness_value)
+{
+   __imlib_CmodModBrightness((ImlibColorModifier *)color_modifier, 
+			     brightness_value);
+}
+
+void 
+imlib_modify_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
+				     double contrast_value)
+{
+   __imlib_CmodModContrast((ImlibColorModifier *)color_modifier, 
+			   contrast_value);
+}
+
+void 
+imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
+				DATA8 *red_table,
+				DATA8 *green_table,
+				DATA8 *blue_table,
+				DATA8 *alpha_table)
+{
+   __imlib_CmodSetTables((ImlibColorModifier *)color_modifier,
+			 red_table, green_table, blue_table, alpha_table);
+}
+
+void 
+imlib_get_color_modifier_tables(Imlib_Color_Modifier color_modifier,
+				DATA8 *red_table,
+				DATA8 *green_table,
+				DATA8 *blue_table,
+				DATA8 *alpha_table)
+{
+   __imlib_CmodGetTables((ImlibColorModifier *)color_modifier,
+			 red_table, green_table, blue_table, alpha_table);
+}
+
+void
+imlib_rset_color_modifier(Imlib_Color_Modifier color_modifier)
+{
+   __imlib_CmodReset((ImlibColorModifier *)color_modifier);
+}
+
+void 
+imlib_apply_color_modifier(Imlib_Image image,
+			   Imlib_Color_Modifier color_modifier)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   __imlib_DataCmodApply(im->data, im->w, im->h, 0, 
+			 (ImlibColorModifier *)color_modifier);
 }

@@ -41,7 +41,7 @@ void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx,
 int           __imlib_char_pos(ImlibFont *fn, char *text, int x, int y,
 			       int *cx, int *cy, int *cw, int *ch);
 char        **__imlib_list_fonts(int *num_ret);
-void          __imlib_free_font_list(char *list, int num);
+void          __imlib_free_font_list(char **list, int num);
 int           __imlib_get_cached_font_size(void);
 void          __imlib_flush_font_cache(void);
 void          __imlib_purge_font_cache(void);

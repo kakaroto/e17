@@ -239,7 +239,7 @@ ImlibImagePixmap *
 __imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, Display *d, Visual *v,
 			      int depth, int sx, int sy, int sw, int sh, Colormap cm,
 			      char aa, char hiq, char dmask, 
-			      long long modification_count)
+			      DATABIG modification_count)
 {
    ImlibImagePixmap *ip, *previous_ip;
    
@@ -561,7 +561,7 @@ __imlib_FindBestLoaderForFile(char *file)
    /* use the file extension for a "best guess" as to what loader to try */
    /* first at any rate */
    extension = strdup(__imlib_FileExtension(file));
-   /* change the extensiont o all lwoer case as all "types" are listed as */
+   /* change the extensiont o all lower case as all "types" are listed as */
    /* lower case strings fromt he loader that represent all the possible */
    /* extensions that file format could have */
    lower = extension;
@@ -587,20 +587,27 @@ __imlib_FindBestLoaderForFile(char *file)
      {
 	int i;
 	
+	/* go through all the formats that loader supports */
 	for (i = 0; i < l->num_formats; i++)
 	  {
+	     /* does it match ? */
 	     if (!strcmp(l->formats[i], extension))
 	       {
+		  /* free the memory allocated for the extension */
 		  free(extension);
+		  /* return the loader */
 		  return l;
 	       }
 	  }
 	l = l->next;
      }
+   /* free the memory allocated for the extension */
    free(extension);
+   /* return the loader */
    return l;   
 }
 
+/* set or unset the alpha flag on the umage (alpha = 1 / 0 ) */
 void
 __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha)
 {

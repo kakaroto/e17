@@ -16,25 +16,6 @@ typedef void * Imlib_Font;
 typedef struct _imlib_border Imlib_Border;
 typedef struct _imlib_color Imlib_Color;
 typedef struct _imlib_rectangle Imlib_Rectangle;
-typedef enum _imlib_operation Imlib_Operation;
-typedef enum _imlib_load_error Imlib_Load_Error;
-typedef enum _imlib_text_direction Imlib_Text_Direction;
-
-
-struct _imlib_border
-{
-   int left, right, top, bottom;
-};
-
-struct _imlib_color
-{
-   int alpha, red, green, blue;
-};
-
-struct _imlib_rectangle
-{
-   int x, y, width, height;
-};
 
 enum _imlib_operation
 {
@@ -67,6 +48,25 @@ enum _imlib_load_error
    IMLIB_LOAD_ERROR_OUT_OF_MEMORY,
    IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
    IMLIB_LOAD_ERROR_UNKNOWN
+};
+
+typedef enum _imlib_operation Imlib_Operation;
+typedef enum _imlib_load_error Imlib_Load_Error;
+typedef enum _imlib_text_direction Imlib_Text_Direction;
+
+struct _imlib_border
+{
+   int left, right, top, bottom;
+};
+
+struct _imlib_color
+{
+   int alpha, red, green, blue;
+};
+
+struct _imlib_rectangle
+{
+   int x, y, width, height;
 };
 
 typedef void (*Imlib_Progress_Function)(Imlib_Image *im, char percent,
@@ -289,6 +289,30 @@ int imlib_get_font_cache_size(void);
 void imlib_set_font_cache_size(int bytes);
 void imlib_flush_font_cache(void);
 
+/* image modification - color */
+Imlib_Color_Modifier imlib_create_color_modifier(void);
+void imlib_free_color_modifier(Imlib_Color_Modifier color_modifier);
+void imlib_modify_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
+				       double gamma_value);
+void imlib_modify_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
+					    double brightness_value);
+void imlib_modify_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
+					  double contrast_value);
+void imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
+				     DATA8 *red_table,
+				     DATA8 *green_table,
+				     DATA8 *blue_table,
+				     DATA8 *alpha_table);
+void imlib_get_color_modifier_tables(Imlib_Color_Modifier color_modifier,
+				     DATA8 *red_table,
+				     DATA8 *green_table,
+				     DATA8 *blue_table,
+				     DATA8 *alpha_table);
+void imlib_rset_color_modifier(Imlib_Color_Modifier color_modifier);
+void imlib_apply_color_modifier(Imlib_Image image, 
+				Imlib_Color_Modifier color_modifier);
+
+
 #if 0
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
 				     Imlib_Image image_destination,
@@ -335,26 +359,6 @@ int imlib_get_character_index_and_location_in_text(Imlib_font font,
 
 /* image saving functions */
 void imlib_save_image(Imlib_Image image, char *filename);
-#endif
-
-#if 0
-/* do this later as none of the color lookup code is in the rendering */
-/* backend yet */
-/* image modification - color */
-Imlib_Color_Modifier imlib_create_color_modifier(void);
-void imlib_free_color_modifier(Imlib_Color_Modifier color_modifier);
-void imlib_set_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
-				    double gamma_value);
-void imlib_set_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
-					 double brightness_value);
-void imlib_set_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
-				       double contrast_value);
-void imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
-				     DATA8 *red_table,
-				     DATA8 *green_table,
-				     DATA8 *blue_table);
-void imlib_apply_color_modifier(Imlib_Image image, 
-				Imlib_Color_Modifier color_modifier);
 #endif
 
 #endif

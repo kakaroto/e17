@@ -1,6 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 #include "common.h"
+#include "colormod.h"
 #include "scale.h"
 #include "image.h"
 #include "ximage.h"
@@ -10,6 +11,7 @@
 #include "grab.h"
 #include "blend.h"
 #include "rend.h"
+#include "colormod.h"
 
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
@@ -32,7 +34,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 {
    XImage   *xim = NULL, *mxim = NULL;
    Context *ct;
-   DATA32   *buf = NULL, *pointer, *back = NULL;
+   DATA32   *buf = NULL, *pointer = NULL, *back = NULL;
    int       y, h, hh, jump;
    static GC gc = 0;
    static GC gcm = 0;
@@ -218,11 +220,24 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, dx, dy + y, 0, 0, dw, hh, dw);
 	     jump = 0;
 	     pointer = buf;
+	     if (cmod)
+		__imlib_DataCmodApply(buf, dw, hh, 0, cmod);
 	  }
 	else
 	  {
-	     jump = im->w - sw;
-	     pointer = im->data + ((y + sy) * im->w) + sx;
+	     if (cmod)
+	       {
+		  if (!buf)
+		     buf = malloc(dw * LINESIZE * sizeof(DATA32));
+		  __imlib_DataCmodApply(buf, dw, hh, 0, cmod);
+		  pointer = buf;
+		  jump = 0;
+	       }
+	     else
+	       {
+		  jump = im->w - sw;
+		  pointer = im->data + ((y + sy) * im->w) + sx;
+	       }
 	  }
 	/* if we have a back buffer - we're blending to the bg */
 	if (back)
