@@ -16,7 +16,7 @@
 	    }
 	    program
 	    {
-		name, "preview_shown";
+		name, "preview_shown_and_stuff";
 		signal, "show";
 		source, "";
 		script {
@@ -71,4 +71,13 @@
 			set_int(preview_state, 0);
 		    }
 		}
+		in, 0.1 0.0;
+	    }
+	    program
+	    {
+		name, "ShowPreviewAfterScriptiesDie";
+		signal, "mouse,in";
+		source, "Panel";
+		action, ACTION_STOP;
+		target, "ShowPreviewAfterScripties";
 	    }
