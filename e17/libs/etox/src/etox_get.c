@@ -322,7 +322,24 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
 void            
 etox_get_at(Etox e, int index, double *x, double *y, double *w, double *h)
 {
-  /* TODO */ 
+  Evas_Object * obj;
+
+  if (!e)
+    return;
+
+  if (x) *x = 0;
+  if (y) *y = 0;
+  if (w) *w = 0;
+  if (h) *h = 0;
+
+  ewd_dlist_goto_first(e->evas_objects);
+
+  while ((obj = ewd_dlist_next(e->evas_objects)) != NULL)
+    {
+	evas_text_at(e->evas, obj, index, x, y, w, h);
+	if (x || y || w || h)
+	  break;
+    }
 }
 
 int             
