@@ -2412,16 +2412,43 @@ collections
 		name, "ShowThumb";
 		signal, "mouse,in";
 		source, "EnticeThumb";
-		in, 	0.15 0.0;
+		in, 	0.5 0.0;
 		action, SIGNAL_EMIT "EnticeThumbPreview" "";
 	    }
 	    program
 	    {
-		name, "StopThumb";
+		name, "GrowThumb";
+		signal, "mouse,in";
+		source, "EnticeThumb";
+		action, STATE_SET "selected" 0.0;
+		target, "EnticeThumb";
+		transition, ACCELERATE 0.1;
+	    }
+	    program
+	    {
+		name, "StopShowThumb";
 		signal, "mouse,out";
 		source, "EnticeThumb";
 		action, ACTION_STOP;
 		target, "ShowThumb";
+	    }
+	    program
+	    {
+		name, "StopGrowThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, ACTION_STOP;
+		target, "GrowThumb";
+	    }
+	    program
+	    {
+		name, "ShrinkThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, STATE_SET "default" 0.0;
+		target, "EnticeThumb";
+		transition, DECELERATE 0.4;
+		in, 0.1 0.0;
 	    }
 	    program
 	    {
