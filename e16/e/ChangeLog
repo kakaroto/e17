@@ -2658,3 +2658,14 @@ Thu Apr  8 00:07:11 CEST 2004
 
 A bit more event debug.
 Simplify ewin unmap/destroy handling (fixes "losing windows" bug).
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 00:33:46 CEST 2004
+(Kim)
+
+Introduce debug print function.
+Fix stacking after layer change.
+Fix segv when closing windows.
+Fix stacking after window move.
+Cleanups.

@@ -24,8 +24,6 @@ TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
 - Don't trash the configuration all the time.
-- Floating windows must be restacked properly when "un-floated".
-- Restack properly when window layer is changed.
 - Maximise breaks shaped borders (resize doesn't ?).
 - Desktop switch seems to miss certain transparent border part updates.
 
