@@ -28,7 +28,6 @@ TODO for E 16.7
 
 - Don't trash the configuration all the time.
 - Desktop switch seems to miss certain transparent border part updates.
-- Enabling transparency must invalidate (tiled) backgrounds.
 
 - Remove e/src/themes (now in e/ethemes).
 - Remove e/dox/E-docs (now in e/edox-data).

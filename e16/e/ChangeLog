@@ -2690,3 +2690,13 @@ Fix segv when closing windows.
 Move KillEwin code back where it belongs.
 Revert bad change to Unmap handling. 
 Background code and namespace shuffle.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 12 16:19:21 CEST 2004
+(Kim)
+
+Simplify background code.
+Refresh the desktop backgrounds when transparency is enabled (re-generate
+non full-sized ones).
+Shuffle around some window event configuration code (no functional changes).
