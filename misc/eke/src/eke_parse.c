@@ -13,14 +13,20 @@ enum Eke_Parse_Type {
 
 static void eke_parse_handler(Eke_Feed *feed, Eke_Parse_Type type);
 static void eke_parse_xml(xmlDoc *doc, Eke_Feed *feed);
-static void eke_parse_rss_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
-static void eke_parse_rss_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node);
-static void eke_parse_rss_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
 static void eke_parse_item_free(void *val);
+
+static void eke_parse_rss_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
+static void eke_parse_rss_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
+static void eke_parse_rss_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node);
 
 static void eke_parse_atom_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
 static void eke_parse_atom_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
 static void eke_parse_atom_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node);
+
+static void eke_parse_rdf_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
+static void eke_parse_rdf_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
+static void eke_parse_rdf_channel_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node);
+static void eke_parse_rdf_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node);
 
 static void strtrim(char *str);
 
@@ -85,6 +91,9 @@ eke_parse_xml(xmlDoc *doc, Eke_Feed *feed)
 
     else if (!strcasecmp(node->name, "feed"))
         eke_parse_atom_feed(doc, feed, node);
+
+    else if (!strcasecmp(node->name, "rdf"))
+        eke_parse_rdf_feed(doc, feed, node);
 
     else
         printf("Got a feed of type %s\n", node->name);
@@ -277,6 +286,96 @@ eke_parse_atom_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
             IF_FREE(ptr);
 
         } else if (!strcasecmp(node->name, "modified")) {
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(ptr);
+
+            eke_feed_item_date_set(item, ptr);
+            IF_FREE(ptr);
+        }
+        node = node->next;
+    }
+    ecore_list_append(feed->items, item);
+}
+
+static void
+eke_parse_rdf_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node)
+{
+    feed->rss_version = 0.0;
+    eke_parse_rdf_xml_node(doc, feed, node->xmlChildrenNode);
+}
+
+static void
+eke_parse_rdf_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node)
+{
+    while (node) {
+        if (!strcasecmp(node->name, "channel")) {
+            eke_parse_rdf_channel_parse(feed, doc, node->xmlChildrenNode);
+
+        } else if (!strcasecmp(node->name, "item")) {
+            eke_parse_rdf_item_parse(feed, doc, node->xmlChildrenNode);
+        }
+
+        node = node->next;
+    }
+    feed->data.type = EKE_FEED_DATA_RESPONSE_CHANGED;
+}
+
+static void
+eke_parse_rdf_channel_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
+{
+    xmlNode *tmp;
+    char *ptr;
+
+    while (node) {
+        if (!strcasecmp(node->name, "title")) {
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(ptr);
+            feed->title = ptr;
+
+        } else if (!strcasecmp(node->name, "link")) {
+            ptr = xmlGetProp(node, "href");
+            strtrim(ptr);
+            feed->link = ptr;
+
+        }
+        node = node->next;
+    }
+}
+
+static void
+eke_parse_rdf_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
+{
+    Eke_Feed_Item *item;
+    xmlNode *tmp;
+    char *ptr;
+
+    item = eke_feed_item_new();
+    while (node) {
+        if (!strcasecmp(node->name, "title")) {
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(ptr);
+
+            eke_feed_item_title_set(item, ptr);
+            IF_FREE(ptr);
+
+        } else if (!strcasecmp(node->name, "link")) {
+            ptr = xmlGetProp(node, "href");
+            strtrim(ptr);
+
+            eke_feed_item_link_set(item, ptr);
+            IF_FREE(ptr);
+
+        } else if (!strcasecmp(node->name, "description")) {
+            ptr = xmlNodeGetContent(node);
+            strtrim(ptr);
+
+            eke_feed_item_description_set(item, ptr);
+            IF_FREE(ptr);
+
+        } else if (!strcasecmp(node->name, "dc:date")) {
             tmp = node->xmlChildrenNode;
             ptr = xmlNodeListGetString(doc, tmp, 1);
             strtrim(ptr);
