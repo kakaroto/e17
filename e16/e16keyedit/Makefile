@@ -73,15 +73,6 @@ help:
 	@echo
 	@echo
 
-e16keyedit: e16keyedit
-	@echo 
-	@echo 
-	@echo "Don't bother with 'make install'. It's useless right now."
-	@echo "To run the editor and test stuff out try:"
-	@echo 
-	@echo "./e16keyedit
-	@echo 
-
 bigcompile:
 	$(CC) $(SRCS) -o e16keyedit $(OPTFLAGS) $(EXTRA_CFLAGS) $(INCLUDES) $(EXTRA_INCLUDES) $(LIBS) $(EXTRA_LIBS) $(LIB_DIRS) $(EXTRA_LIB_DIRS)
 	$(STRIP) ./e16keyedit
