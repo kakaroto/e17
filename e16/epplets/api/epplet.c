@@ -30,6 +30,7 @@ static int          epplet_instance = 0;
 
 static int          gad_num = 0;
 static Epplet_gadget *gads = NULL;
+static Epplet_gadget  last_gadget = NULL;
 
 static void        *expose_data = NULL;
 static void        *moveresize_data = NULL;
@@ -149,6 +150,30 @@ Epplet_get_imlib_data(void)
 {
    return (id);
 }
+
+typedef enum gad_type
+{
+   E_BUTTON,
+   E_DRAWINGAREA,
+   E_TEXTBOX,
+   E_HSLIDER,
+   E_VSLIDER,
+   E_TOGGLEBUTTON,
+   E_POPUPBUTTON,
+   E_POPUP,
+   E_IMAGE,
+   E_LABEL,
+   E_HBAR,
+   E_VBAR
+}
+GadType;
+
+typedef struct gad_general
+{
+   GadType             type;
+   char                visible;
+}
+GadGeneral;
 
 void
 Epplet_send_ipc(char *s)
@@ -677,6 +702,15 @@ Epplet_handle_event(XEvent * ev)
 						    0));
 		if (keypress_func)
 		   (*keypress_func) (keypress_data, ev->xkey.window, key);
+		else
+		{
+			if(last_gadget &&
+					((GadGeneral *)last_gadget)->type == E_TEXTBOX)
+			{
+				Epplet_textbox_handle_keyevent(ev, last_gadget);
+				Epplet_draw_textbox(last_gadget);
+			}
+		}
 	     }
 	}
 	break;
@@ -736,8 +770,12 @@ Epplet_handle_event(XEvent * ev)
 	if (XFindContext(disp, ev->xkey.window, xid_context,
 			 (XPointer *) & g) == XCNOENT)
 	   g = NULL;
+
 	if (g)
+	{
+	   last_gadget = g;
 	   Epplet_event(g, ev);
+	}
 	else
 	  {
 	     if (enter_func)
@@ -1278,29 +1316,7 @@ Epplet_get_color(int r, int g, int b)
    return Imlib_best_color_match(id, &rr, &gg, &bb);
 }
 
-typedef enum gad_type
-{
-   E_BUTTON,
-   E_DRAWINGAREA,
-   E_TEXTBOX,
-   E_HSLIDER,
-   E_VSLIDER,
-   E_TOGGLEBUTTON,
-   E_POPUPBUTTON,
-   E_POPUP,
-   E_IMAGE,
-   E_LABEL,
-   E_HBAR,
-   E_VBAR
-}
-GadType;
 
-typedef struct gad_general
-{
-   GadType             type;
-   char                visible;
-}
-GadGeneral;
 
 typedef struct
 {
@@ -1616,7 +1632,8 @@ Epplet_draw_textbox(Epplet_gadget eg)
    XGCValues           gc_values;
    GC                  gc;
 
-   g = (GadTextBox *) eg;
+   if( (g = (GadTextBox *) eg) == NULL)
+	   return;
 
    if (g->hilited)
       state = "hilited";

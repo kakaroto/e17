@@ -944,3 +944,10 @@ Mon Nov 29 01:08:58 GMT 1999
 
 Hrm. A segfault with a certain form of url. Fixed.
 
+-------------------------------------------------------------------------------
+
+Sun Nov 28 20:38:33 EST 1999
+(StriderZ)
+
+Make focusing between an epplet and it's gadget's work a little better. Basically added sloppy-focus. The epplet remembers which gadget last had focus and, if none currently have focus and the last_gadget was a textboxes, passes key events to it. 
+
