@@ -16,6 +16,8 @@ void track_play_chunk(void *udata) {
 	int read;
 	unsigned char *buf = NULL;
 
+	assert(pli);
+
 	while (!player->playback_stop &&
 	       (read = pli->plugin->read(&buf)) != EOF) {
 		player->output->play(buf, read);

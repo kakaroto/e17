@@ -193,8 +193,7 @@ static ePlayer *eplayer_new(const char **args) {
  * @param player
  */
 void eplayer_playback_stop(ePlayer *player) {
-	if (!player)
-		return;
+	assert(player);
 
 	/* stop the timer that updates the time part */
 	if (player->time_timer) {
@@ -233,20 +232,29 @@ static int check_playback_next(void *udata) {
  * @param player
  * @param rewind_track
  */
-void eplayer_playback_start(ePlayer *player, int rewind_track) {
+int eplayer_playback_start(ePlayer *player, int rewind_track) {
+	PlayListItem *pli;
+
+	assert(player);
+	
+	if (!(pli = playlist_current_item_get(player->playlist)))
+		return 0;
+
 	if (rewind_track)
 		track_rewind(player);
 
 	ecore_timer_add(0.5, check_playback_next, player);
 	player->time_timer = ecore_timer_add(0.5, track_update_time,
 	                                     player);
-	
+
 	pthread_mutex_lock(&player->playback_stop_mutex);
 	player->playback_stop = 0;
 	pthread_mutex_unlock(&player->playback_stop_mutex);
 
 	pthread_create(&player->playback_thread, NULL,
 	               (void *) &track_play_chunk, player);
+
+	return 1;
 }
 
 /**

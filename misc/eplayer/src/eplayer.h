@@ -58,7 +58,7 @@ typedef struct {
 } ePlayer;
 
 void eplayer_playback_stop(ePlayer *player);
-void eplayer_playback_start(ePlayer *player, int rewind_track);
+int eplayer_playback_start(ePlayer *player, int rewind_track);
 
 #endif
 

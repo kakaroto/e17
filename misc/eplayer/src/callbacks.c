@@ -22,8 +22,6 @@ typedef enum {
 	PLAYBACK_STATE_PLAYING
 } PlaybackState;
 
-
-/*static int paused = 0;*/
 static PlaybackState state = PLAYBACK_STATE_STOPPED;
 
 /**
@@ -35,23 +33,26 @@ static PlaybackState state = PLAYBACK_STATE_STOPPED;
  * @param event
  */
 EDJE_CB(play) {
+	int res;
+
 	debug(DEBUG_LEVEL_INFO, "Play callback entered\n");
 
 	switch (state) {
 		case PLAYBACK_STATE_STOPPED:
 		case PLAYBACK_STATE_PAUSED: /* continue playback */
-			eplayer_playback_start(player, 0);
+			res = eplayer_playback_start(player, 0);
 			break;
 		case PLAYBACK_STATE_PLAYING: /* restart from beginning */
 			eplayer_playback_stop(player);
-			eplayer_playback_start(player, 1);
+			res = eplayer_playback_start(player, 1);
 			break;
 		default:
 			assert(0);
 			break;
 	}
-	
-	state = PLAYBACK_STATE_PLAYING;
+
+	if (res)
+		state = PLAYBACK_STATE_PLAYING;
 }
 
 /**
@@ -208,8 +209,8 @@ EDJE_CB(playlist_item_play) {
 	eplayer_playback_start(player, 1);
 	state = PLAYBACK_STATE_PLAYING;
 
-        /* pass the signal to the main edje */
-        edje_object_signal_emit(player->gui.edje, "PLAYLIST_PLAY", "ePlayer");
+	/* pass the signal to the main edje */
+	edje_object_signal_emit(player->gui.edje, "PLAYLIST_ITEM_PLAY", "ePlayer");
 }
 
 EDJE_CB(playlist_item_remove) {
