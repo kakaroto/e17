@@ -15,7 +15,7 @@ docs_DATA = example.fehrc README AUTHORS ChangeLog TODO
 docsdir = $(prefix)/doc/feh
 
 EXTRA_DIST = \
-example.fehrc.1 feh.spec feh.1 $(docs_DATA)
+example.fehrc.in feh.spec feh.1 $(docs_DATA)
 
 SUBDIRS = src cam
 

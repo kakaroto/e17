@@ -122,24 +122,26 @@ feh_load_options_for_theme(char *theme)
 {
    FILE *fp = NULL;
    char *home;
-   char *rcpath;
+   char *rcpath = NULL;
    char s[1024], s1[1024], s2[1024];
 
    D_ENTER;
 
    home = getenv("HOME");
    if (!home)
-      weprintf("D'oh! Please define HOME in your environment!"
-               "It would really help me out...\n");
-   else
-   {
-      rcpath = estrjoin("/", home, ".fehrc", NULL);
-      D(("Trying %s for config\n", rcpath));
-      fp = fopen(rcpath, "r");
-      free(rcpath);
-   }
+      eprintf("D'oh! Please define HOME in your environment!"
+              "It would really help me out...\n");
+   rcpath = estrjoin("/", home, ".fehrc", NULL);
+   D(("Trying %s for config\n", rcpath));
+   fp = fopen(rcpath, "r");
+
    if (!fp && ((fp = fopen("/etc/fehrc", "r")) == NULL))
+      feh_create_default_config(rcpath);
+
+   if ((fp = fopen(rcpath, "r")) == NULL)
       D_RETURN_;
+
+   free(rcpath);
 
    /* Oooh. We have an options file :) */
    for (; fgets(s, sizeof(s), fp);)
@@ -829,4 +831,59 @@ show_usage(void)
            "Copyright Tom Gilbert, 1999\n"
            "Email bugs to <gilbertt@btinternet.com>\n");
    exit(0);
+}
+
+void
+feh_create_default_config(char *rcfile)
+{
+   FILE *fp;
+
+   D_ENTER;
+
+   if ((fp = fopen(rcfile, "w")) == NULL)
+   {
+      weprintf("Unable to create default config file %s\n", rcfile);
+      D_RETURN_;
+   }
+
+   fprintf(fp,
+           "# Feh configuration file.\n"
+           "# Lines starting with # are comments. Don't use comments mid-line.\n"
+           "\n" "# Feh expects to find this as ~/.fehrc or /etc/fehrc\n"
+           "# If both are available, ~/.fehrc will be used\n" "\n"
+           "# Options defined in theme_name/options pairs.\n"
+           "# Separate themename and options by whitespace.\n" "\n"
+           "# There are two ways of specifying the theme. Either use feh -C themename,\n"
+           "# or use a symbolic link to feh with the name of the theme. eg\n"
+           "# ln -s `which feh` ~/bin/mkindex\n"
+           "# Now when you run 'mkindex', feh will load the config specified for the\n"
+           "# mkindex theme.\n" "\n" "# ======================\n"
+           "# Some examples of usage\n" "# ======================\n" "\n"
+           "# Set the default feh options to be recursive and verbose\n"
+           "# feh -rV\n" "\n"
+           "# Multiple options can of course be used. They should all be on one line\n"
+           "# imagemap -rV --quiet -W 400 -H 300 --thumb-width 40 --thumb-height 30\n"
+           "\n" "# ================================================\n"
+           "# Here I set some useful themes for you to try out\n"
+           "# ================================================\n" "\n"
+           "# Webcam mode, simply specify the url(s).\n"
+           "# e.g. feh -Cwebcam http://cam1 http://cam2\n"
+           "webcam --multiwindow --keep-http --reload 30\n" "\n"
+           "# Create an index of the current directory. This version uses . as the\n"
+           "# current dir, so you don't even need any commandline arguments.\n"
+           "mkindex -iVO index.jpg .\n" "\n" "# More ambitious version...\n"
+           "imgidx -iVO .fehindex.jpg --limit-width 1200 --thumb-width 90 --thumb-height 90 .\n"
+           "\n" "# Show a presentation\n"
+           "present --full-screen --sort name\n" "\n" "# Booth mode ;-)\n"
+           "booth --full-screen --slideshow-delay 20\n" "\n"
+           "# Screw xscreensaver, use feh =)\n"
+           "screensave --full-screen --randomize --slideshow-delay 5\n" "\n"
+           "# Add <img> tags to your html with ease :-)\n"
+           "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"feh\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
+           "\n" "# Different menus\n"
+           "chrome --menu-bg " PREFIX "/share/feh/images/menubg_chrome.png\n"
+           "brushed --menu-bg "PREFIX "/share/feh/images/menubg_brushed.png\n");
+   fclose(fp);
+
+   D_RETURN_;
 }

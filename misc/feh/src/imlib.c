@@ -226,6 +226,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
                     int update_w, int update_h)
 {
    int dest_x = 0, dest_y = 0;
+   int newwin = 0;
 
    D_ENTER;
    if (!progwin)
@@ -249,6 +250,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {
+         newwin = 1;
          D(("Need to create a window for the image\n"));
          winwidget_create_window(progwin, progwin->im_w, progwin->im_h);
          winwidget_show(progwin);
@@ -269,10 +271,8 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
 
       if (opt.full_screen)
          XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
-      /*
-      else
+      else if (newwin)
          XClearArea(disp, progwin->win, 0, 0, progwin->w, progwin->h, False);
-      */
    }
 
    if (opt.full_screen)
@@ -336,10 +336,12 @@ feh_http_load_image(char *url)
    else if (pid == 0)
    {
       if (opt.verbose)
-          execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname, NULL);
-      else 
-          execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname, NULL);
-      execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname, NULL);
+         execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname, NULL);
+      else
+         execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname,
+                NULL);
+      execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname,
+             NULL);
       eprintf("url: exec failed: wget:");
    }
    else
