@@ -405,7 +405,7 @@ __imlib_TileImageVert(ImlibImage * im)
       }
       else
       {
-         p2 = im->data + ((y - (im->h - (im->h >> 1))) * im->w);
+         p2 = im->data + ((y - (im->h >> 1)) * im->w);
          mix = ((im->h - y) * 255) / (im->h - (im->h >> 1));
       }
       for (x = 0; x < im->w; x++)
