@@ -46,7 +46,7 @@
                                         text {
                                                 text, "envision";
                                                 font, "Edje.Vera";
-                                                size, 8;
+                                                size, 10;
                                                 align,   0.9 1.0;
                                         }
                                 }
@@ -211,7 +211,7 @@
                                                 text, "Video/File Name";  
                                                 //font, "Edje.redensek";
                                                 font, "Edje.Vera";
-                                                size, 8;
+                                                size, 10;
                                                 align, 0.0 0.25;
                                         }
                                 }
@@ -243,7 +243,7 @@
                                         text {
                                                 text, "Chapter... ";
                                                 font, "Edje.redensek";   
-                                                size, 12;       
+                                                size, 14;       
                                                 align, 0.0 0.3;
                                         }
                                 }
@@ -274,7 +274,7 @@
                                         text {
                                                 text, "Somethingname";      
                                                 font, "Edje.redensek"; 
-                                                size, 12;       
+                                                size, 14;       
                                                 align, 0.0 0.5;
                                         }
                                 }
@@ -309,7 +309,7 @@
                                         text {
                                                 text, "0:00";
                                                 font, "Edje.micro"; 
-                                                size, 26;       
+                                                size, 28;       
                                                 align, 1.0 0.5;      
                                         }
                                 }
@@ -783,7 +783,7 @@
                                         text {
                                                 text, "REPEAT";
                                                 font, "Edje.Vera";
-                                                size, 5;
+                                                size, 7;
                                                 align, 0.5 0.6;
                                         }
                                 }
@@ -843,7 +843,7 @@
                                 text {
                                         text, "VOL";       /* Text String */
                                         font, "Edje.Vera";   /* Only font Vera works!  Use other and segv */
-                                        size, 5;        /* Font Size */
+                                        size, 7;        /* Font Size */
                                         align,   0.5 0.6;       /* Text alignment based on rel1/rel2 */
                                 }
                         }
@@ -900,7 +900,7 @@
                                 text {
                                         text, "00";       /* Text String */
                                         font, "Edje.Vera";   /* Only font Vera works!  Use other and segv */
-                                        size, 8;       /* Font Size */
+                                        size, 10;       /* Font Size */
                                         align, 0.5 0.6;       /* Text alignment based on rel1/rel2 */
                                 }
                         }
