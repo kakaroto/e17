@@ -1287,8 +1287,8 @@ __imlib_copy_image_data(ImlibImage *im, int x, int y, int w, int h, int nx,
       return;
 
    /* figure out what our source and destnation start pointers are */
-   p1 = im->data + (y * im->h) + x;
-   p2 = im->data + (ny * im->h) + nx;
+   p1 = im->data + (y * im->w) + x;
+   p2 = im->data + (ny * im->w) + nx;
    /* the pointer jump between lines */
    jump = (im->w - w);
    /* dest < src address - we can copy forwards */
@@ -1311,8 +1311,8 @@ __imlib_copy_image_data(ImlibImage *im, int x, int y, int w, int h, int nx,
    else
      {
 	/* new pointers to start working at (bottom-right of rect) */
-	p1 = im->data + ((y + h - 1) * im->h) + x + w - 1;
-	p2 = im->data + ((ny + h - 1) * im->h) + nx + w - 1;
+	p1 = im->data + ((y + h - 1) * im->w) + x + w - 1;
+	p2 = im->data + ((ny + h - 1) * im->w) + nx + w - 1;
 	/* work our way thru the array */
 	for (yy = 0; yy < h; yy++)
 	  {
