@@ -1,4 +1,5 @@
 #include "Equate.h"
+#include "Ecore_X.h"
 
 void            draw_ewl(Mode draw_mode);
 
