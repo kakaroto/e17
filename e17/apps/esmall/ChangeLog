@@ -11,3 +11,12 @@ Sun Nov 28 10:58:46 PST 1999
 
 applied patch from Gary V. Vaughan <gary@oranda.demon.co.uk>
 fixes some platform interoperability issues.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 11:02:59 PST 1999
+(Mandrake)
+
+added the include directory - necessary for compiler to compile small
+executables.
+
