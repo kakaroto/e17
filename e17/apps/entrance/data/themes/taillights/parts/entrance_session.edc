@@ -11,7 +11,7 @@
 			to, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
-			offset, 59 0;
+			offset, 52 0;
 			to, "bottom_bar";
 		    }
 		    color, 255 255 255 128;
@@ -25,7 +25,7 @@
 			to, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
-			offset, 59 0;
+			offset, 52 0;
 			to, "bottom_bar";
 		    }
 		    color, 255 255 255 225;
@@ -40,12 +40,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, -6 -6;
-			to, "EntranceSession";
+			offset, 13 2;
+			to_y, "bottom_bar";
 		    } rel2 {
-			relative, 0.0 0.0;
-			offset, 42 42;
-			to, "EntranceSession";
+			relative, 0.0 1.0;
+			offset, 61 -4;
+			to_y, "bottom_bar";
 		    }
 		    image
 		    {
@@ -62,12 +62,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, -6 -6;
-			to, "EntranceSession";
+			offset, 13 2;
+			to_y, "bottom_bar";
 		    } rel2 {
-			relative, 0.0 0.0;
-			offset, 42 42;
-			to, "EntranceSession";
+			relative, 0.0 1.0;
+			offset, 61 -4;
+			to_y, "bottom_bar";
 		    }
 		    image
 		    {
@@ -84,12 +84,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, -6 -6;
-			to, "EntranceSession";
+			offset, 13 2;
+			to_y, "bottom_bar";
 		    } rel2 {
-			relative, 0.0 0.0;
-			offset, 42 42;
-			to, "EntranceSession";
+			relative, 0.0 1.0;
+			offset, 61 -4;
+			to_y, "bottom_bar";
 		    }
 		    image
 		    {
@@ -111,13 +111,13 @@
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1 {
-			relative, 0.0 0.5;
-			offset, 10 -20;
-			to, "session_clip";
+			relative, 0.0 0.0;
+			offset, 6 7;
+			to, "entrance_session_button";
 		    } rel2 {
-			relative, 1.0 0.5;
-			offset, 0 20;
-			to, "session_clip";
+			relative, 1.0 1.0;
+			offset, -2 -2;
+			to, "entrance_session_button";
 		    }
 		    color, 255 255 255 0;
 		}

@@ -7,13 +7,13 @@
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1 {
-			relative, 1.0 0.5;
-			offset, 0 -24;
+			relative, 1.0 0.0;
+			offset, 0 2;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    } rel2 {
-			relative, 1.0 0.5;
-			offset, 48 24;
+			relative, 1.0 1.0;
+			offset, 48 -4;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    }
@@ -31,13 +31,13 @@
 		    state, "mousein" 0.0;
 		    visible, 1;
 		    rel1 {
-			relative, 1.0 0.5;
-			offset, 0 -24;
+			relative, 1.0 0.0;
+			offset, 0 2;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    } rel2 {
-			relative, 1.0 0.5;
-			offset, 48 24;
+			relative, 1.0 1.0;
+			offset, 48 -4;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    }
@@ -54,13 +54,13 @@
 		    state, "clicked" 0.0;
 		    visible, 1;
 		    rel1 {
-			relative, 1.0 0.5;
-			offset, 0 -24;
+			relative, 1.0 0.0;
+			offset, 0 2;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    } rel2 {
-			relative, 1.0 0.5;
-			offset, 48 24;
+			relative, 1.0 1.0;
+			offset, 48 -4;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    }
