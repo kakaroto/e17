@@ -25,10 +25,11 @@
 ##############################################################################
 
 # Likely  prefixes
-$Prefixes = "/usr/local:/usr:/opt";
+$Prefixes = "/usr/local:/usr:/opt:/opt/kde";
 
 # Where to look for GNOME2/KDE2,3 stuff
-$AppDirs = MkDirList($Prefixes, "/share/applications");
+$AppDirs = MkDirList($Prefixes, "/share/applications:/share/applications/kde");
+
 $IconDirs = MkDirList($Prefixes, "/share/pixmaps");
 $IconDirsKDE = MkDirList($Prefixes, "/share/icons");
 $Themes = "default.kde:hicolor:locolor";
@@ -64,6 +65,7 @@ $DoConvert = `which convert`;
 
 @CatsRemove = (
 	"Qt",
+	"QT",
 	"GNOME",
 	"KDE",
 	"UtilityApplication",
@@ -73,7 +75,20 @@ $DoConvert = `which convert`;
 	"X-Red-Hat-BaseApplication",
 	"X-Red-Hat-Base",
 	"X-Red-Hat-ServerConfig",
-	"X-Red-Hat-Extra"
+	"X-Red-Hat-Extra",
+	"X-KDE-information",
+	"X-KDE-settings-accessibility",
+	"X-KDE-settings-components",
+	"X-KDE-settings-desktop",
+	"X-KDE-settings-looknfeel",
+	"X-KDE-settings-network",
+	"X-KDE-settings-peripherals",
+	"X-KDE-settings-power",
+	"X-KDE-settings-security",
+	"X-KDE-settings-sound",
+	"X-KDE-settings-system",
+	"X-KDE-settings-webbrowsing"
+	  
 );
 
 @MainMenu = (
@@ -118,8 +133,10 @@ sub MkDirList {
 	local $d;
 	local @r;
 	foreach $p (split(':', $ll)) {
-		$d = "$p$sf";
-		push(@r, "$d") if -d "$d";
+		foreach $q (split(':', $sf)) {
+			$d = "$p$q";
+			push(@r, "$d") if -d "$d";
+		}
 	}
 	return join(':', @r);
 }
