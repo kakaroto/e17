@@ -32,11 +32,11 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
   e = evas_new();
   evas_output_method_set(e, 
 			 evas_render_method_lookup("software_x11"));
-  evas_object_font_path_append(e, font_dir);
+  evas_font_path_append(e, font_dir);
   evas_output_size_set(e, ww, wh);
   evas_output_viewport_set(e, 0, 0, ww, wh);
-  evas_object_font_cache_set(e, font_cache);
-  evas_object_image_cache_set(e, image_cache);
+  evas_font_cache_set(e, font_cache);
+  evas_image_cache_set(e, image_cache);
   {
     Evas_Engine_Info_Software_X11 *einfo;
     XSetWindowAttributes att;
