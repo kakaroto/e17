@@ -2,7 +2,7 @@
 #include <Ewl.h>
 
 #ifdef HAVE_CONFIG_H
-#include "../config.h"
+#include "ewl-config.h"
 #endif
 
 #define EWL_CONFIG_FILE			"config/system.db"
