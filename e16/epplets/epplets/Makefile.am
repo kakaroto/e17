@@ -2,7 +2,7 @@
 
 bindir = $(EBIN)
 
-bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet E-Cpu.epplet EppletTest.epplet
+bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet E-Cpu.epplet EppletTest.epplet E-Biff.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -28,13 +28,17 @@ EppletTest_epplet_SOURCES = TestEpplet.c
 EppletTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
+E_Biff_epplet_SOURCES = E-Biff.c mbox.c
+E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
 INCLUDES = -DEBIN=\"$(EBIN)\" -DEROOT=\"$(EROOT)\" -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 ABOUT_DOCS = E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
 E-Clock.ABOUT/MAIN E-Clock.ABOUT/bg.png E-Clock.ABOUT/aircut3.ttf
-ICONS = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon
-IMAGES = E-Clock-Image.png
+ICONS = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Biff.icon
+IMAGES = E-Clock-Image.png nomail.png newmail.png
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
 
