@@ -4,14 +4,14 @@ part { name, pname".name"; type, TEXT; mouse_events, 0; effect, NONE; \
 	state, "default" 0.0; visible, 1; \
     rel1 { relative, 0.0 0.0; offset, 5 0; } \
     rel2 { relative, 1.0 1.0; offset, -5 0; } \
-    color, 31 31 55 255; text {text,"";font,"Edje.visitor1"; \
-    size, 11; align, talign; fit, 0 0; } } \
+    color, 150 150 160 255; text {text,"";font,"Edje.visitor1"; \
+    size, 7; align, talign; fit, 0 0; } } \
     description { \
 	state, "hilited" 0.0; visible, 1; \
 	rel1 { relative, 0.0 0.0; offset, 5 0; } \
 	rel2 { relative, 1.0 1.0; offset, -5 0; } \
 	color, 31 31 55 255; \
-	text {text,"";font,"Edje.visitor1"; size, 11; align, talign; fit, 0 0; } } \
+	text {text,"";font,"Edje.visitor1"; size, 7; align, talign; fit, 0 0; } } \
      } \
 part { name, "base"; type, RECT; mouse_events, 1; repeat_events, 1; \
     description { state, "default" 0.0; visible, 1; \
@@ -21,7 +21,7 @@ part { name, "base"; type, RECT; mouse_events, 1; repeat_events, 1; \
     description { state, "hilited" 0.0; visible, 1; \
     rel1 { relative, 0.0 0.0; offset, 0 0; } \
     rel2 { relative, 1.0 1.0; offset, 0 0; } \
-    color, 100 100 100 128; } } 
+    color, 100 100 100 0; } } 
 #define FD_ENTITY_PROGS(pname) \
 program { name, pname"_fd_right_clicked"; signal, "mouse,clicked,3"; \
     source, "base"; action, SIGNAL_EMIT "e,fd,"pname",unselected" ""; } \

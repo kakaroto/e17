@@ -46,7 +46,7 @@
 	  image {			\
 	      normal, "lcd_window.png"; \
 	  }				\
-	  border, 8 8 8 8;		\
+	  border, 9 9 14 10;		\
 	}				\
       }					\
       part {				\

@@ -13,6 +13,7 @@
 	}
 
 // author: tokyo
+// esmart.filedialog by atmos
 // iio for euphoria
 
 	collections { 
@@ -41,7 +42,10 @@
 #include "programs/switch.edc" 
 	    } 
 	}
-	group { name, "esmart.filedialog"; min, 420 340; max, 6666 1200;
+
+group { name, "esmart.filedialog"; data { item, "esmart.filedialog" "borderless";
+	item, "esmart.filediloag" "true";  } min, 413 188; max, 413 9999;
+//group { name, "esmart.filedialog"; min, 420 340; max, 6666 1200;
 	data {
 #include "hashes/containers.edc"
 	}
