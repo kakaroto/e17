@@ -360,6 +360,10 @@ __imlib_ProduceImagePixmap(void)
 void
 __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip)
 {
+#ifdef DEBUG_CACHE
+   fprintf(stderr, "[Imlib2]  Deleting pixmap.  Reference count is %d, pixmap 0x%08x, mask 0x%08x\n",
+          ip->references, ip->pixmap, ip->mask);
+#endif
    if (ip->pixmap)
       XFreePixmap(ip->display, ip->pixmap);
    if (ip->mask)
@@ -1126,7 +1130,13 @@ __imlib_FindImlibImagePixmapByID(Display *d, Pixmap p)
      {
 	/* if all the pixmap ID & Display match */
 	if ((ip->pixmap == p) && (ip->display == d))
-	   return ip;
+          {
+#ifdef DEBUG_CACHE
+            fprintf(stderr, "[Imlib2]  Match found.  Reference count is %d, pixmap 0x%08x, mask 0x%08x\n",
+                   ip->references, ip->pixmap, ip->mask);
+#endif
+            return ip;
+          }
 	ip = ip->next;	
      }
    return NULL;
@@ -1170,13 +1180,22 @@ __imlib_FreePixmap(Display *d, Pixmap p)
 	  {
 	     /* dereference it by one */
 	     ip->references--;
+#ifdef DEBUG_CACHE
+             fprintf(stderr, "[Imlib2]  Reference count is now %d for pixmap 0x%08x\n",
+                    ip->references, ip->pixmap);
+#endif
 	     /* if it becaume 0 reference count - clean the cache up */
 	     if (ip->references == 0)
 		__imlib_CleanupImagePixmapCache();
 	  }
      }
    else
-      XFreePixmap(d, p);
+     {
+#ifdef DEBUG_CACHE
+       fprintf(stderr, "[Imlib2]  Pixmap 0x%08x not found.  Freeing.\n", p);
+       XFreePixmap(d, p);
+#endif
+     }
 }
 
 /* mark all pixmaps generated from this image as diryt so the cache code */

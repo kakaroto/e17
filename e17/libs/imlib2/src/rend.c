@@ -112,7 +112,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    if (!xim)
      {
 	__imlib_FreeScaleInfo(scaleinfo);
-	free(back);
+	if (back) free(back);
 	return;
      }
    /* do a double check in 24/32bpp */
@@ -125,7 +125,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	  {
 	     __imlib_ConsumeXImage(d, xim);
 	     __imlib_FreeScaleInfo(scaleinfo);
-	     free(back);
+	     if (back) free(back);
 	     return;
 	  }
      }
@@ -140,7 +140,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     if (m)
 		__imlib_ConsumeXImage(d, mxim);
 	     __imlib_FreeScaleInfo(scaleinfo);
-	     free(back);
+	     if (back) free(back);
 	     return;
 	  }
      }

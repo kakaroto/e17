@@ -2923,3 +2923,12 @@ that'll work sanely.
 I think this is more sane behaviour, having tested it in feh and
 imlib2_view, but feel free to disagree ;-)
 
+_______________________________________________
+
+Wed Jul 12 22:20:53 PDT 2000
+(KainX)
+
+It's generally a good idea to increment the reference count when you
+implement reference counting.  This should fix the mysterious problems
+people have been having with Imlib2 stealing pixmaps out from under
+Eterm.
