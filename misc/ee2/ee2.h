@@ -20,7 +20,8 @@
 
 /* functions */
 void LoadImage(char *imagetoload);
-void DrawChecks(void);
+void DrawChecks(char image_w, char image_h);
+
 void CloseWindow(GtkWidget *widget, gpointer data);
 void CloseFileSel(GtkWidget *widget, gpointer data);
 void FileOpen(GtkWidget *widget, GtkFileSelection *fs);

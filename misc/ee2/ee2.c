@@ -7,8 +7,6 @@
 
 #include "ee2.h"
 
-#define CHECKS 160
-
 GtkWidget *EventBox;
 
 GtkWidget *MainWindow, *FileSel, *SaveSel,
@@ -27,7 +25,8 @@ Window root, win;
 Colormap cm;
 int depth, imgw = 0, imgh = 0;
 int ww = 0, wh = 0;
-int i = 0;
+int i = 0, xx = 0, yy = 0;
+int onoff;
 gint simgw = 0, simgh = 0;
 char currentimage[255];
 char *imagefile = NULL;
@@ -123,7 +122,7 @@ int main(int argc, char **argv)
 							 "clicked", (GtkSignalFunc) CloseFileSel, FileSel);
 	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(FileSel)->ok_button),
 							 "clicked", (GtkSignalFunc) FileOpen, FileSel);
-	
+
 	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->cancel_button),
 							 "clicked", (GtkSignalFunc) CloseSaveSel, SaveSel);
 	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->ok_button),
@@ -221,8 +220,25 @@ void LoadImage(char *imagetoload)
 }
 
 
-void DrawChecks(void)
+void DrawChecks(char image_w, char image_h)
 {
+	/* renders the checkerboard scratch pad a la gimp */
+	bg = imlib_create_image(image_w, image_h);
+	imlib_context_set_image(bg);
+	
+	for(yy = 0; yy < image_w; yy += 8){
+		onoff = (yy / 8) & 0x1;
+		for(xx = 0; xx < image_h; xx += 8){
+			if(onoff)
+			  imlib_context_set_color(144, 144, 144, 255);
+			else
+			  imlib_context_set_color(100, 100, 100, 255);
+			imlib_image_fill_rectangle(xx, yy, 8, 8);
+			onoff++;
+			if(onoff == 2)
+			  onoff = 0;
+		}
+	}
 }
 
 void CloseWindow(GtkWidget *widget, gpointer data)

@@ -93,3 +93,12 @@ Removed some uneeded stuff from the function prototypes
 
 -------------------------------------------------------------------------------
 
+Thu Feb 10 15:04:03 CST 2000
+(dphase)
+
+Finally have some of the checkerboard drawing code in there..... pretty much
+the same way imlib2_view and feh are doing it....  you dont actually see it
+yet though...
+
+-------------------------------------------------------------------------------
+
