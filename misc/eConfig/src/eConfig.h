@@ -17,21 +17,21 @@
  * application
  */
 
-int eConfigAddPath(char *path);
-int eConfigRemovePath(char *path);
+int    eConfigAddPath(char *path);
+int    eConfigRemovePath(char *path);
 char **eConfigPaths(int *num);
 
 
-void  eConfigInit(void);
+void   eConfigInit(void);
 
-void *eConfigGetData(char *loc, int *length);
-void  eConfigUnloadData(char *loc);
-int   eConfigStoreData(char *loc, void *data, int *length, char local);
+void  *eConfigGetData(char *loc, int *length);
+void   eConfigUnloadData(char *loc);
+int    eConfigStoreData(char *loc, void *data, int *length, char local);
 
-int   eConfigExportData(char *loc,char local);
+int    eConfigExportData(char *loc,char local);
 
-int   eConfigSetCacheSize(int newsize);
-int   eConfigGetCacheSize(void);
-int   eConfigGetCacheFilled(void);
-int   eConfigUpdateCache(void);
+int    eConfigSetCacheSize(int newsize);
+int    eConfigGetCacheSize(void);
+int    eConfigGetCacheFilled(void);
+int    eConfigUpdateCache(void);
 
