@@ -1462,7 +1462,7 @@ DesktopHandleEvents(XEvent * ev, void *prm)
 static void
 DeskDragdirSet(const char *params)
 {
-   int                 pd, i;
+   int                 pd;
 
    pd = Conf.desks.dragdir;
 
@@ -1477,7 +1477,8 @@ DeskDragdirSet(const char *params)
 
    if (pd != Conf.desks.dragdir)
      {
-	GotoDesktop(DesksGetCurrent());
+	int                 i;
+
 	for (i = 0; i < Conf.desks.num; i++)
 	   MoveDesktop(i, 0, 0);
 	DesksControlsRefresh();
