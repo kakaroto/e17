@@ -8,7 +8,7 @@ static OggVorbis_File track = {0};
 static char comment[COMMENT_ID_NUM][MAX_COMMENT_LEN] = {{0}};
 static int channels = 0, sample_rate = 0, duration = 0;
 
-void parse_comments(vorbis_comment *vc) {
+static void parse_comments(vorbis_comment *vc) {
 	char *cmt, *key[COMMENT_ID_NUM] = {NULL};
 	int i, j, len[COMMENT_ID_NUM] = {0};
 	

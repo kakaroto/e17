@@ -2,15 +2,75 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <avcodec.h>
+#include <avformat.h>
 #include <assert.h>
 #include "../../plugin.h"
 
+#define BUF_SIZE 2048
+
 static FILE *fp = NULL;
 static AVCodecContext *ctx = NULL;
-static int duration = 0;
-static int sample_rate = 44100;
-static int channels = 2;
+static char comment[COMMENT_ID_NUM][MAX_COMMENT_LEN] = {{0}};
+static int duration = 0, sample_rate = 0, channels = 0;
+
+static void strchomp(char *str) {
+	char *ptr;
+
+	/* remove trailing whitespace */
+	ptr = &str[strlen(str) - 1];
+
+	if (!isspace(*ptr))
+		return;
+	
+	while (isspace(*ptr) && ptr >= str)
+		ptr--;
+
+	ptr[1] = 0;
+}
+
+static void avdec_init() {
+	static unsigned char inbuf[BUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+	static short outbuf[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+	int read, written;
+
+	memset(&inbuf[BUF_SIZE], 0, FF_INPUT_BUFFER_PADDING_SIZE);
+	
+	if (!(read = fread(inbuf, 1, BUF_SIZE, fp)))
+		return;
+
+	avcodec_decode_audio(ctx, outbuf, &written, inbuf, read);
+	
+	sample_rate = ctx->sample_rate;
+	channels = ctx->channels;
+}
+
+static void parse_mp3_comments(const char *file) {
+	AVFormatContext *fmt = NULL;
+	int i;
+
+	for (i = 0; i < COMMENT_ID_NUM; i++)
+		comment[i][0] = 0;
+	
+	if (av_open_input_file(&fmt, file, NULL, 0, NULL))
+		return;
+
+	snprintf(comment[COMMENT_ID_ARTIST], MAX_COMMENT_LEN, "%s",
+	         fmt->author);
+	
+	snprintf(comment[COMMENT_ID_TITLE], MAX_COMMENT_LEN, "%s",
+	         fmt->title);
+	
+	snprintf(comment[COMMENT_ID_ALBUM], MAX_COMMENT_LEN, "%s",
+	         fmt->album);
+
+	for (i = 0; i < COMMENT_ID_NUM; i++)
+		if (comment[i][0])
+			strchomp(comment[i]);
+
+	return;
+}
 
 void avdec_close() {
 	if (fp) {
@@ -52,15 +112,22 @@ int avdec_open(const char *file) {
 		return 0;
 	}
 	
+	/* read a chunk of the file so that we can get the
+	 * sample rate and number of channels
+	 */
+	avdec_init();
+	
+	parse_mp3_comments(file);
+	
 	return 1;
 }
 
 char *avdec_get_comment(CommentID id) {
-	return "Foo Bar";
+	return comment[id];
 }
 
 int avdec_get_duration() {
-	return 190;
+	return duration;
 }
 
 int avdec_get_channels() {
@@ -72,7 +139,6 @@ int avdec_get_sample_rate() {
 }
 
 int avdec_read(unsigned char *outbuf, int outbuf_len) {
-#define BUF_SIZE 2048
 	static unsigned char inbuf[BUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
 	static short tmp[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	char *ptr = inbuf;
@@ -116,7 +182,8 @@ void avdec_set_current_pos(int pos) {
 
 int plugin_init(InputPlugin *ip) {
 	avcodec_init();
-	avcodec_register_all();
+	register_avcodec(&mp3_decoder);
+	av_register_all();
 
 	ip->open = avdec_open;
 	ip->close = ip->shutdown = avdec_close;

@@ -10,7 +10,7 @@
  * @param udata Pointer to an ePlayer struct.
  */
 int track_play_chunk(void *udata) {
-#define BUF_SIZE 18432
+#define BUF_SIZE 65536
 	ePlayer *player = udata;
 	PlayListItem *pli = player->playlist->cur_item->data;
 	InputPlugin *plugin = pli->plugin;

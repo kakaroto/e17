@@ -2,6 +2,8 @@ $Id$
 
 2003-10-24 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/input/avcodec: Added libavcodec input plugin
+        * src/input/avcodec/avcodec.c: Now uses libavformat to read
+          MP3 tags.
 
 2003-10-23 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/input: Added a input plugin system

@@ -72,15 +72,18 @@ dnl Check for libavcodec
 tmp=$LIBS
 
 AC_CHECK_LIB(avcodec, avcodec_init,
-	[
-		have_avcodec="yes"
+	[have_avcodec="yes"; LIBS="$LIBS -lavcodec"], have_avcodec="no")
+
+if test "x$have_avcodec" = "xyes"; then
+	AC_CHECK_LIB(avformat, av_register_all,
+		[
+			AVCODEC_CFLAGS="-I/usr/include/ffmpeg"
+			AVCODEC_LIBS="-lavcodec -lavformat"
 		
-		AVCODEC_CFLAGS="-I/usr/include/ffmpeg"
-		AVCODEC_LIBS="-lavcodec"
-		
-		AC_SUBST(AVCODEC_CFLAGS)
-		AC_SUBST(AVCODEC_LIBS)
-	], have_avcodec="no")
+			AC_SUBST(AVCODEC_CFLAGS)
+			AC_SUBST(AVCODEC_LIBS)
+		], have_avcodec="no")
+fi
 
 LIBS=$tmp
 AM_CONDITIONAL(HAVE_AVCODEC, test "$have_avcodec" = "yes")
