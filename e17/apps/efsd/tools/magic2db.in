@@ -95,7 +95,7 @@ sub to_dec {
 	  $value = oct($value);
 	}
     }
-
+  
   $value;
 }
 
@@ -170,6 +170,8 @@ sub do_it {
 	{
 
 	 # Okay -- it's a magic definition -- parse it.
+
+	 #print "$line";
 	 
 	 if ($line =~ /^(>*)                                # level of the test
 	                ((?:0x)??[0-9a-fA-F]+) \s+          # numerical offset
@@ -284,12 +286,12 @@ sub do_it {
 	       }
 	     else
 	       {
-		 $magic{"test"} = "equal";
+		 $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
 	       }
 
 	     # Write value:
 	     $item = $7;
-	     if ($magic{"type"} eq "string")
+	     if ($magic{"type"} eq $EFSD_MAGIC_STRING)
 	       {
 		 $magic{"value"} = $item;
 	       }
@@ -338,7 +340,7 @@ sub do_it {
 	   }
 	 else
 	   {
-	     print "Dropped line: $line";
+#	     print "Dropped line: $line";
 	     $dropped_level = $level;
 	   } 
 	}
