@@ -80,6 +80,8 @@ Entranced_Display_New(void)
    d->status = NOT_RUNNING;
    d->auth_en = 1;
    d->auths = ecore_list_new();
+   d->client.uid = -1;
+   d->client.gid = -1;
    return d;
 }
 
@@ -191,8 +193,8 @@ Entranced_Spawn_Entrance(Entranced_Display *d)
    char entrance_cmd[PATH_MAX];
 
    d->client.pid = 0;
-   d->client.uid = 0;
-   d->client.gid = 0;
+   d->client.uid = -1;
+   d->client.gid = -1;
    if (d->client.homedir)
       free(d->client.homedir);
    d->client.homedir = NULL;

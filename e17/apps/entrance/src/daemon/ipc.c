@@ -62,8 +62,8 @@ _entranced_ipc_client_data(void *data, int type, void *event)
                    e->minor, _display->client.pid);
       }
 
-      if (_display->client.uid && _display->client.gid 
-            && _display->client.homedir)
+      if ((_display->client.uid >= 0) && (_display->client.gid >= 0)
+            && (_display->client.homedir))
       {
          if (!(_display->auth_en) || entranced_auth_user_add(_display, (const char *)_display->client.homedir))
          {
