@@ -337,13 +337,6 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	/*
-	 * If we don't have a visible ebits object then it's pointless to
-	 * continue
-	 */
-	if (!REALIZED(w))
-		DRETURN(DLEVEL_STABLE);
-
 	s = EWL_SEEKER(w);
 	if (!s->dragbar)
 		DRETURN(DLEVEL_STABLE);
@@ -526,14 +519,6 @@ void __ewl_seeker_value_to_position(Ewl_Seeker * s)
 	w = s->dragbar;
 
 	ewl_object_get_current_geometry(EWL_OBJECT(s), &xx, &yy, &ww, &hh);
-
-	/*
-	 * Adjust the width and height to fit within the insets of the bit
-	 */
-	xx += INSET_LEFT(w);
-	yy += INSET_TOP(w);
-	ww -= INSET_LEFT(w) + INSET_RIGHT(w);
-	hh -= INSET_TOP(w) + INSET_BOTTOM(w);
 
 	/*
 	 * The direction of the dragbar move depends on the orientation of the
