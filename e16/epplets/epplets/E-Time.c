@@ -1,5 +1,5 @@
 #include "epplet.h"
-Epplet_gadget b_close, label1, label2, label3;
+Epplet_gadget b_close, label1, label2, label3, label4;
 
 static void timer_cb(void *data);
 static void close_cb(void *data);
@@ -25,6 +25,8 @@ timer_cb(void *data)
 	Epplet_change_label(label2, tm);
         strftime(tm, 63, "%H:%M:%S", &tim);
 	Epplet_change_label(label3, tm);
+        strftime(tm, 63, "%Z %Y", &tim);
+	Epplet_change_label(label4, tm);
      }      
    Epplet_timer(timer_cb, NULL, 0.5, "TIMER");   
    data = NULL;
@@ -63,13 +65,13 @@ main(int argc, char **argv)
 {
    Epplet_Init("E-Time", "0.1", "Enlightenment Digital Clock Epplet",
 	       3, 3, argc, argv, 0);
-   Epplet_timer(timer_cb, NULL, 0.5, "TIMER");
    b_close = Epplet_create_button(NULL, NULL, 
-				  2, 2, 0, 0, "CLOSE", 0, NULL, 
+				  34, 2, 0, 0, "CLOSE", 0, NULL, 
 				  close_cb, NULL);
-   Epplet_gadget_show(label1 = Epplet_create_label(16, 4, "", 2));
-   Epplet_gadget_show(label2 = Epplet_create_label(6, 17, "", 2));
-   Epplet_gadget_show(label3 = Epplet_create_label(4, 30, "", 2));
+   Epplet_gadget_show(label1 = Epplet_create_label(4, 4, "", 1));
+   Epplet_gadget_show(label2 = Epplet_create_label(4, 15, "", 1));
+   Epplet_gadget_show(label3 = Epplet_create_label(4, 26, "", 1));
+   Epplet_gadget_show(label4 = Epplet_create_label(4, 36, "", 1));
    Epplet_register_focus_in_handler(in_cb, NULL);
    Epplet_register_focus_out_handler(out_cb, NULL);
 

@@ -125,3 +125,11 @@ because it saves resources (we already have both strings to compare) and, due
 to the nature of epplets, the probability is very high that this function
 would only (or at least primarily) be called from a timer callback.  So it
 simplifies client code this way too.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 14:15:39 PDT 1999
+(KainX)
+
+Fixed E-Time to look better.  Should fix the problem with non-BlueSteel
+themes.
