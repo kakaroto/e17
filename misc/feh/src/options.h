@@ -75,6 +75,7 @@ struct __fehoptions
    unsigned char next_button;
    unsigned char zoom_button;
    unsigned char pan_button;
+   unsigned char menu_button;
 
    int thumb_w;
    int thumb_h;

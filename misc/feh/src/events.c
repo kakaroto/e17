@@ -87,7 +87,33 @@ feh_event_handle_ButtonPress(XEvent * ev)
       D_RETURN_;
    }
 
-   if (ev->xbutton.button == opt.next_button)
+   if (!opt.no_menus &&
+       ((ev->xbutton.button==opt.menu_button)||(opt.menu_button==0)) &&
+       ev->xbutton.state&ControlMask) {
+        D(("Menu Button Press event\n"));
+        winwid = winwidget_get_from_window(ev->xbutton.window);
+        if (winwid != NULL)
+        {
+           int x, y, b;
+           unsigned int c;
+           Window r;
+   
+           if (!menu_main)
+              feh_menu_init();
+           if (winwid->type == WIN_TYPE_ABOUT)
+           {
+              XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                            &c);
+              feh_menu_show_at_xy(menu_close, winwid, x, y);
+           }
+           else
+           {
+              XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                            &c);
+              feh_menu_show_at_xy(menu_main, winwid, x, y);
+           }
+        }
+   } else if (ev->xbutton.button == opt.next_button)
    {
         D(("Next Button Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
@@ -106,45 +132,18 @@ feh_event_handle_ButtonPress(XEvent * ev)
            winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
         }
    } else if (ev->xbutton.button == opt.zoom_button) {
-        D(("Button 3 Press event\n"));
+        D(("Zoom Button Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
-           if (ev->xbutton.state & ControlMask)
-           {
-              if (!opt.no_menus)
-              {
-                 int x, y, b;
-                 unsigned int c;
-                 Window r;
-
-                 if (!menu_main)
-                    feh_menu_init();
-                 if (winwid->type == WIN_TYPE_ABOUT)
-                 {
-                    XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
-                                  &c);
-                    feh_menu_show_at_xy(menu_close, winwid, x, y);
-                 }
-                 else
-                 {
-                    XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
-                                  &c);
-                    feh_menu_show_at_xy(menu_main, winwid, x, y);
-                 }
-              }
-           }
-           else
-           {
-              D(("Zoom mode baby!\n"));
-              opt.mode = MODE_ZOOM;
-              winwid->mode = MODE_ZOOM;
-              D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
-              winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
-              winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
-              winwid->zoom = 1.0;
-              winwidget_render_image(winwid, 0, 0);
-           }
+           D(("Zoom mode baby!\n"));
+           opt.mode = MODE_ZOOM;
+           winwid->mode = MODE_ZOOM;
+           D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+           winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
+           winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
+           winwid->zoom = 1.0;
+           winwidget_render_image(winwid, 0, 0);
         }
 	} else if (ev->xbutton.button == 4 /* this is bad */ ) {
         D(("Button 4 Press event\n"));
