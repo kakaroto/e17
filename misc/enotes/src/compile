@@ -13,4 +13,4 @@ gcc *.c `ewl-config --cflags --libs` \
 	`edb-config --cflags --libs` \
 	`xml2-config --cflags --libs` \
 	`esmart-config --cflags --libs` \
-	-o enotes -O0 -g3
+	-lesmart_draggies -o enotes -O0 -g3

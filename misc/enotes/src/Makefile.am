@@ -31,4 +31,4 @@ xml.h \
 debug.c \
 debug.h
 
-enotes_LDADD = @ewl_libs@ @ecore_libs@ @evas_libs@ @edje_libs@ @edb_libs@ @imlib2_libs@ @libxml2_libs@ @esmart_libs@
+enotes_LDADD = @ewl_libs@ @ecore_libs@ @evas_libs@ @edje_libs@ @edb_libs@ @imlib2_libs@ @libxml2_libs@ @esmart_libs@ -lesmart_draggies
