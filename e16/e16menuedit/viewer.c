@@ -29,6 +29,9 @@ create_main_window(void)
 	GtkWidget *table;
 	GtkWidget *frames;
 	GtkWidget *button;
+	GtkWidget *entry;
+	GtkWidget *label;
+	GtkWidget *alignment;
 	GtkWidget *hbox;
 
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -111,11 +114,11 @@ create_main_window(void)
 
 	button = gtk_button_new_with_label(" Insert Menu Entry ");
 	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(hbox),button,FALSE,FALSE,2);
+	gtk_box_pack_start(GTK_BOX(hbox),button,TRUE,FALSE,2);
 
 	button = gtk_button_new_with_label(" Insert New SubMenu ");
 	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(hbox),button,FALSE,FALSE,2);
+	gtk_box_pack_start(GTK_BOX(hbox),button,TRUE,FALSE,2);
 
 	hbox = gtk_hbox_new(FALSE,3);
 	gtk_widget_show(hbox);
