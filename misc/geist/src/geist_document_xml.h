@@ -6,7 +6,12 @@
 #include "geist_image.h"
 #include "geist_rect.h"
 #include "geist_text.h"
+
+#ifdef HAVE_GNOME_XML_PARSER_H
 #include <gnome-xml/parser.h>
+#else
+#include <libxml/parser.h>
+#endif
 
 enum xml_load_err {ERR_NO_FILE, ERR_EMPTY_FILE, ERR_WRONG_TYPE};
 

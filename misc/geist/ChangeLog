@@ -1,3 +1,12 @@
+Fri Aug 18 00:37:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Check for libxml. Test whether it is installed to
+	<gnome-xml/parser.h> or <libxml/parser.h> (it's the same damn lib,
+	the author just got very confused about his loyalties and changed
+	between one minor version and the next :/ And NO, it does not
+	depend on GNOME. You need libxml1 for geist right now. libxml2
+	needs a coupla bugs fixed before I switch....
+
 Thu Aug 17 00:12:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Wheeeee! Geist can load it's own file format now :-)
