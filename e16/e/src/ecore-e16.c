@@ -23,7 +23,15 @@
 /*
  * Stuff for compiling without ecore_x.
  */
-#include "E.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#include "config.h"
+#include "ecore-e16.h"
 
 #define _ATOM_GET(name) \
    XInternAtom(_ecore_x_disp, name, False)
@@ -64,6 +72,8 @@ ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win)
 }
 
 #else /* USE_ECORE_X */
+
+extern Display     *disp;
 
 /*
  * General stuff
@@ -210,9 +220,9 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 	  {
 	     if (items > 0)
 	       {
-		  pstr = Emalloc(items * sizeof(char *));
+		  pstr = malloc(items * sizeof(char *));
 		  for (i = 0; i < items; i++)
-		     pstr[i] = Estrdup(list[i]);
+		     pstr[i] = (list[i]) ? strdup(list[i]) : NULL;
 	       }
 	     if (list)
 		XFreeStringList(list);
@@ -221,8 +231,8 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
      }
 
    /* Bad format or XmbTextPropertyToTextList failed - Now what? */
-   pstr = Emalloc(sizeof(char *));
-   pstr[0] = Estrdup((char *)xtp.value);
+   pstr = malloc(sizeof(char *));
+   pstr[0] = (xtp.value) ? strdup((char *)xtp.value) : NULL;
    items = 1;
 
  done:
@@ -264,14 +274,14 @@ ecore_x_window_prop_string_get(Ecore_X_Window win, Ecore_X_Atom atom)
 	s = XmbTextPropertyToTextList(_ecore_x_disp, &xtp, &list, &items);
 	if ((s == Success) && (items > 0))
 	  {
-	     str = Estrdup(*list);
+	     str = (*list) ? strdup(*list) : NULL;
 	     XFreeStringList(list);
 	  }
 	else
-	   str = Estrdup((char *)xtp.value);
+	   str = (xtp.value) ? strdup((char *)xtp.value) : NULL;
      }
    else
-      str = Estrdup((char *)xtp.value);
+      str = (xtp.value) ? strdup((char *)xtp.value) : NULL;
 
    XFree(xtp.value);
 
@@ -615,29 +625,27 @@ Ecore_X_Atom        ECORE_X_ATOM_WM_SAVE_YOURSELF;
 void
 ecore_x_icccm_init(void)
 {
-   ECORE_X_ATOM_WM_STATE = XInternAtom(disp, "WM_STATE", False);
-   ECORE_X_ATOM_WM_NAME = XInternAtom(disp, "WM_NAME", False);
-   ECORE_X_ATOM_WM_ICON_NAME = XInternAtom(disp, "WM_ICON_NAME", False);
-   ECORE_X_ATOM_WM_CLASS = XInternAtom(disp, "WM_CLASS", False);
-   ECORE_X_ATOM_WM_WINDOW_ROLE = XInternAtom(disp, "WM_WINDOW_ROLE", False);
-   ECORE_X_ATOM_WM_NORMAL_HINTS = XInternAtom(disp, "WM_NORMAL_HINTS", False);
-   ECORE_X_ATOM_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
-   ECORE_X_ATOM_WM_COMMAND = XInternAtom(disp, "WM_COMMAND", False);
-   ECORE_X_ATOM_WM_CLIENT_MACHINE =
-      XInternAtom(disp, "WM_CLIENT_MACHINE", False);
-   ECORE_X_ATOM_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
-   ECORE_X_ATOM_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
+   ECORE_X_ATOM_WM_STATE = _ATOM_GET("WM_STATE");
+   ECORE_X_ATOM_WM_NAME = _ATOM_GET("WM_NAME");
+   ECORE_X_ATOM_WM_ICON_NAME = _ATOM_GET("WM_ICON_NAME");
+   ECORE_X_ATOM_WM_CLASS = _ATOM_GET("WM_CLASS");
+   ECORE_X_ATOM_WM_WINDOW_ROLE = _ATOM_GET("WM_WINDOW_ROLE");
+   ECORE_X_ATOM_WM_NORMAL_HINTS = _ATOM_GET("WM_NORMAL_HINTS");
+   ECORE_X_ATOM_WM_HINTS = _ATOM_GET("WM_HINTS");
+   ECORE_X_ATOM_WM_COMMAND = _ATOM_GET("WM_COMMAND");
+   ECORE_X_ATOM_WM_CLIENT_MACHINE = _ATOM_GET("WM_CLIENT_MACHINE");
+   ECORE_X_ATOM_WM_CLIENT_LEADER = _ATOM_GET("WM_CLIENT_LEADER");
+   ECORE_X_ATOM_WM_TRANSIENT_FOR = _ATOM_GET("WM_TRANSIENT_FOR");
 
-   ECORE_X_ATOM_WM_COLORMAP_WINDOWS =
-      XInternAtom(disp, "WM_COLORMAP_WINDOWS", False);
+   ECORE_X_ATOM_WM_COLORMAP_WINDOWS = _ATOM_GET("WM_COLORMAP_WINDOWS");
 
-   ECORE_X_ATOM_WM_CHANGE_STATE = XInternAtom(disp, "WM_CHANGE_STATE", False);
+   ECORE_X_ATOM_WM_CHANGE_STATE = _ATOM_GET("WM_CHANGE_STATE");
 
-   ECORE_X_ATOM_WM_PROTOCOLS = XInternAtom(disp, "WM_PROTOCOLS", False);
-   ECORE_X_ATOM_WM_DELETE_WINDOW = XInternAtom(disp, "WM_DELETE_WINDOW", False);
-   ECORE_X_ATOM_WM_TAKE_FOCUS = XInternAtom(disp, "WM_TAKE_FOCUS", False);
+   ECORE_X_ATOM_WM_PROTOCOLS = _ATOM_GET("WM_PROTOCOLS");
+   ECORE_X_ATOM_WM_DELETE_WINDOW = _ATOM_GET("WM_DELETE_WINDOW");
+   ECORE_X_ATOM_WM_TAKE_FOCUS = _ATOM_GET("WM_TAKE_FOCUS");
 #if 0
-   ECORE_X_ATOM_WM_SAVE_YOURSELF = XInternAtom(disp, "WM_SAVE_YOURSELF", False);
+   ECORE_X_ATOM_WM_SAVE_YOURSELF = _ATOM_GET("WM_SAVE_YOURSELF");
 #endif
 }
 
@@ -806,7 +814,7 @@ Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO;
 void
 ecore_x_netwm_init(void)
 {
-   ECORE_X_ATOM_UTF8_STRING = XInternAtom(_ecore_x_disp, "UTF8_STRING", False);
+   ECORE_X_ATOM_UTF8_STRING = _ATOM_GET("UTF8_STRING");
 
    ECORE_X_ATOM_NET_SUPPORTED = _ATOM_GET("_NET_SUPPORTED");
    ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK = _ATOM_GET("_NET_SUPPORTING_WM_CHECK");
