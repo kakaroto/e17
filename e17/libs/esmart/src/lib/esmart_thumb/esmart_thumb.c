@@ -74,10 +74,13 @@ esmart_thumb_new (Evas * evas, const char *file)
 	    {
 	      if (epsilon_exists (e->e) == EPSILON_FAIL)
 		{
-		  esmart_thumb_free (result);
-		  result = NULL;
+		  if (epsilon_generate (e->e) == EPSILON_FAIL)
+		    {
+		       esmart_thumb_free(result);
+		       return NULL;
+		    }
 		}
-	      else if ((e->info = epsilon_info_get (e->e)))
+	      if ((e->info = epsilon_info_get (e->e)))
 		{
 		  Imlib_Image im = NULL;
 		  if ((im = imlib_load_image (epsilon_thumb_file_get (e->e))))
