@@ -2,17 +2,17 @@
 #include <Ewl.h>
 
 static void __ewl_spinner_init(Ewl_Spinner * spinner);
-static void __ewl_spinner_realize(Ewl_Widget * widget, void *event_data,
+static void __ewl_spinner_realize(Ewl_Widget * widget, void *ev_data,
 				  void *user_data);
-static void __ewl_spinner_show(Ewl_Widget * widget, void *event_data,
+static void __ewl_spinner_show(Ewl_Widget * widget, void *ev_data,
 			       void *user_data);
-static void __ewl_spinner_hide(Ewl_Widget * widget, void *event_data,
+static void __ewl_spinner_hide(Ewl_Widget * widget, void *ev_data,
 			       void *user_data);
-static void __ewl_spinner_destroy(Ewl_Widget * widget, void *event_data,
+static void __ewl_spinner_destroy(Ewl_Widget * widget, void *ev_data,
 				  void *user_data);
-static void __ewl_spinner_configure(Ewl_Widget * widget, void *event_data,
+static void __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
 				    void *user_data);
-static void __ewl_spinner_key_down(Ewl_Widget * widget, void *event_data,
+static void __ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data,
 				   void *user_data);
 
 static void __ewl_spinner_set_value(Ewl_Widget * widget, double value);
@@ -21,9 +21,9 @@ static void __ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
 static void __ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
 static void __ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
 static void __ewl_spinner_increase_value(Ewl_Widget * widget,
-					 void *event_data, void *user_data);
+					 void *ev_data, void *user_data);
 static void __ewl_spinner_decrease_value(Ewl_Widget * widget,
-					 void *event_data, void *user_data);
+					 void *ev_data, void *user_data);
 
 Ewl_Widget *
 ewl_spinner_new()
@@ -115,7 +115,7 @@ __ewl_spinner_init(Ewl_Spinner * spinner)
 }
 
 static void
-__ewl_spinner_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
 
@@ -167,7 +167,7 @@ __ewl_spinner_realize(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_spinner_show(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_spinner_show(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ewl_Widget *child = NULL;
 
@@ -180,12 +180,10 @@ __ewl_spinner_show(Ewl_Widget * widget, void *event_data, void *user_data)
 		ewl_widget_show(child);
 
 	evas_show(widget->evas, widget->fx_clip_box);
-
-	__ewl_spinner_set_value(widget, EWL_SPINNER(widget)->value);
 }
 
 static void
-__ewl_spinner_hide(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_spinner_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	DCHECK_PARAM_PTR("widget", widget);
 
@@ -193,7 +191,7 @@ __ewl_spinner_hide(Ewl_Widget * widget, void *event_data, void *user_data)
 }
 
 static void
-__ewl_spinner_destroy(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_spinner_destroy(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ewl_Widget *c;
 	DCHECK_PARAM_PTR("widget", widget);
@@ -215,65 +213,51 @@ __ewl_spinner_destroy(Ewl_Widget * widget, void *event_data, void *user_data)
 }
 
 static void
-__ewl_spinner_configure(Ewl_Widget * widget, void *event_data,
+__ewl_spinner_configure(Ewl_Widget * w, void *ev_data,
 			void *user_data)
 {
-	Ewl_Widget *child;
-	int x = 0, y = 0, w = 50;
+	Ewl_Spinner *s;
 
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	ewd_list_goto_first(EWL_CONTAINER(widget)->children);
+	s = EWL_SPINNER(w);
 
-	while ((child =
-		ewd_list_next(EWL_CONTAINER(widget)->children)) != NULL)
-	  {
-		  if (child->type == EWL_WIDGET_ENTRY)
-		    {
-			    EWL_OBJECT(child)->request.x =
-				    EWL_OBJECT(widget)->request.x;
-			    EWL_OBJECT(child)->request.y =
-				    EWL_OBJECT(widget)->request.y;
-			    EWL_OBJECT(child)->request.w =
-				    EWL_OBJECT(widget)->request.w - 12;
-			    REQUEST_H(child) = 20;
-			    ewl_widget_configure(child);
-			    x = EWL_OBJECT(widget)->request.x +
-				    EWL_OBJECT(child)->current.w + 2;
-			    y = EWL_OBJECT(widget)->request.y;
-			    w = EWL_OBJECT(child)->current.w;
-		    }
-		  else if (child->type == EWL_WIDGET_BUTTON)
-		    {
-			    EWL_OBJECT(child)->request.x = x;
-			    EWL_OBJECT(child)->request.y = y;
-			    EWL_OBJECT(child)->custom.w = 10;
-			    EWL_OBJECT(child)->custom.h = 10;
-			    if (y == EWL_OBJECT(widget)->request.y)
-				    y += 10;
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-			    ewl_widget_configure(child);
-		    }
-	  }
+	REQUEST_X(s->entry) = REQUEST_X(w);
+	REQUEST_Y(s->entry) = REQUEST_Y(w);
+	REQUEST_W(s->entry) = REQUEST_W(s->entry) - 12;
+	REQUEST_H(s->entry) = 20;
 
+	REQUEST_X(s->button_increase) = REQUEST_X(s->entry) +
+				REQUEST_W(s->entry) + 2;
+	REQUEST_Y(s->button_increase) = REQUEST_Y(s->entry);
+	REQUEST_W(s->button_increase) = 10;
+	REQUEST_H(s->button_increase) = 10;
 
-	EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
-	EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
-	EWL_OBJECT(widget)->current.w = w + 12;
-	EWL_OBJECT(widget)->current.h = 30;
-	EWL_OBJECT(widget)->request.w = EWL_OBJECT(widget)->current.w;
-	EWL_OBJECT(widget)->request.h = EWL_OBJECT(widget)->current.h;
+        REQUEST_X(s->button_decrease) = REQUEST_X(s->entry) +
+                                REQUEST_W(s->entry) + 2;
+        REQUEST_Y(s->button_decrease) = REQUEST_Y(s->entry) + 10;
+        REQUEST_W(s->button_decrease) = 10;
+        REQUEST_H(s->button_decrease) = 10;
 
-	ewl_fx_clip_box_resize(widget);
+	ewl_widget_configure(s->entry);
+	ewl_widget_configure(s->button_increase);
+	ewl_widget_configure(s->button_decrease);
+
+	ewl_object_set_current_geometry(EWL_OBJECT(w),
+		REQUEST_X(w), REQUEST_Y(w), REQUEST_W(s->entry) + 12, 30);
+
+	ewl_fx_clip_box_resize(w);
 }
 
 static void
-__ewl_spinner_key_down(Ewl_Widget * widget, void *event_data, void *user_data)
+__ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ev_Key_Down *ev;
 	DCHECK_PARAM_PTR("widget", widget);
 
-	ev = (Ev_Key_Down *) event_data;
+	ev = (Ev_Key_Down *) ev_data;
 
 	if (!strcmp(ev->key, "Up"))
 		__ewl_spinner_increase_value(widget, NULL, NULL);
@@ -350,7 +334,7 @@ __ewl_spinner_set_max_val(Ewl_Widget * widget, double val)
 }
 
 static void
-__ewl_spinner_increase_value(Ewl_Widget * widget, void *event_data,
+__ewl_spinner_increase_value(Ewl_Widget * widget, void *ev_data,
 			     void *user_data)
 {
 	double val;
@@ -379,7 +363,7 @@ __ewl_spinner_increase_value(Ewl_Widget * widget, void *event_data,
 }
 
 static void
-__ewl_spinner_decrease_value(Ewl_Widget * widget, void *event_data,
+__ewl_spinner_decrease_value(Ewl_Widget * widget, void *ev_data,
 			     void *user_data)
 {
 	double val;

@@ -63,7 +63,7 @@ ewl_entry_init(Ewl_Widget * widget)
 	 * Initialize the inherited container fields
 	 */
 	ewl_container_init(EWL_CONTAINER(widget), EWL_WIDGET_ENTRY, 300, 35,
-			   640, 130);
+			   640, 35);
 
 	/*
 	 * Attach necessary callbacks

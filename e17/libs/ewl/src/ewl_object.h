@@ -50,10 +50,10 @@ void ewl_object_set_custom_size(Ewl_Object * o, int w, int h);
 void ewl_object_get_custom_size(Ewl_Object * o, int *w, int *h);
 
 void ewl_object_set_realized(Ewl_Object * o, int r);
-void ewl_object_get_realized(Ewl_Object * o, int *r);
+int ewl_object_is_realized(Ewl_Object * o);
 
 void ewl_object_set_visible(Ewl_Object * o, int v);
-void ewl_object_get_visible(Ewl_Object * o, int *v);
+int ewl_object_is_visible(Ewl_Object * o);
 
 void ewl_object_set_layer(Ewl_Object * o, int l);
 int ewl_object_get_layer(Ewl_Object * o);

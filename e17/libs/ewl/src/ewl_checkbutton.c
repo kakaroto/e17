@@ -49,6 +49,19 @@ ewl_checkbutton_new(const char *l)
 	DRETURN_PTR(EWL_WIDGET(b));
 }
 
+int
+ewl_checkbutton_is_checked(Ewl_Widget * w)
+{
+	Ewl_CheckButton *b;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, -1);
+
+	b = EWL_CHECKBUTTON(w);
+
+	DRETURN_INT(b->checked);
+}
+
 static void
 __ewl_checkbutton_init(Ewl_CheckButton * b, const char *l)
 {

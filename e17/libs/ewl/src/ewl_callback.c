@@ -10,6 +10,7 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("w", w, -1);
+	DCHECK_PARAM_PTR_RET("f", f, -1);
 
 	cb = NEW(Ewl_Callback, 1);
 	memset(cb, 0, sizeof(Ewl_Callback));
@@ -37,6 +38,7 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("w", w, -1);
+	DCHECK_PARAM_PTR_RET("f", f, -1);
 
 	cb = NEW(Ewl_Callback, 1);;
 	memset(cb, 0, sizeof(Ewl_Callback));
@@ -70,28 +72,29 @@ ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 	ewd_list_goto_first(w->callbacks[t]);
 
 	while ((cb = ewd_list_next(w->callbacks[t])) != NULL)
-		cb->func(w, cb->event_data, cb->user_data);
+		if (cb->func)
+			cb->func(w, cb->event_data, cb->user_data);
 
 	DLEAVE_FUNCTION;
 }
 
 void
-ewl_callback_call_with_event_data(Ewl_Widget * widget, Ewl_Callback_Type type,
-				  void *event_data)
+ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
+				  void *ev_data)
 {
-	Ewl_Callback *callback;
+	Ewl_Callback *cb;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	if (!widget->callbacks[type] ||
-	    ewd_list_is_empty(widget->callbacks[type]))
+	if (!w->callbacks[t] || ewd_list_is_empty(w->callbacks[t]))
 		DRETURN;
 
-	ewd_list_goto_first(widget->callbacks[type]);
+	ewd_list_goto_first(w->callbacks[t]);
 
-	while ((callback = ewd_list_next(widget->callbacks[type])) != NULL)
-		callback->func(widget, event_data, callback->user_data);
+	while ((cb = ewd_list_next(w->callbacks[t])) != NULL)
+		if (cb->func)
+			cb->func(w, ev_data, cb->user_data);
 
 	DLEAVE_FUNCTION;
 }
