@@ -1,0 +1,5 @@
+/usr/include/*.h
+/usr/bin/*
+/usr/lib/*.so
+/usr/lib/*.la
+/usr/lib/*.a
