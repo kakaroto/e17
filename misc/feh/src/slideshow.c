@@ -110,11 +110,12 @@ feh_reload_image(winwidget w, int resize)
 
    winwidget_free_image(w);
 
+   /* for now, we do reloads *without* progressive loading */
    /*
-   if (opt.progressive)
-       pfunc = progressive_load_cb;
-   */
-   
+      if (opt.progressive)
+      pfunc = progressive_load_cb;
+    */
+
    if ((winwidget_loadimage(w, FEH_FILE(w->file->data), pfunc)) != 0)
    {
       if (!pfunc)
@@ -123,8 +124,19 @@ feh_reload_image(winwidget w, int resize)
          if ((w->im_w != feh_imlib_image_get_width(w->im))
              || (w->im_h != feh_imlib_image_get_height(w->im)))
             w->had_resize = 1;
-         w->im_w = feh_imlib_image_get_width(w->im);
-         w->im_h = feh_imlib_image_get_height(w->im);
+         if (w->has_rotated)
+         {
+            Imlib_Image temp;
+
+            temp = feh_imlib_create_rotated_image(w->im, 0.0);
+            w->im_w = feh_imlib_image_get_width(temp);
+            w->im_h = feh_imlib_image_get_height(temp);
+         }
+         else
+         {
+            w->im_w = feh_imlib_image_get_width(w->im);
+            w->im_h = feh_imlib_image_get_height(w->im);
+         }
          winwidget_render_image(w, resize, 1);
       }
       if (opt.draw_filename)
@@ -263,7 +275,7 @@ slideshow_change_image(winwidget winwid, int change)
 }
 
 char *
-slideshow_create_name(feh_file *file)
+slideshow_create_name(feh_file * file)
 {
    char *s = NULL;
    int len = 0;
@@ -271,17 +283,18 @@ slideshow_create_name(feh_file *file)
    D_ENTER;
    if (!opt.title)
    {
-	  len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
-	  s = emalloc(len);
-	  snprintf(s, len, PACKAGE " [%d of %d] - %s",
-			   feh_list_num(filelist, current_file) + 1,
-			   feh_list_length(filelist), file->filename);
+      len =
+         strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
+      s = emalloc(len);
+      snprintf(s, len, PACKAGE " [%d of %d] - %s",
+               feh_list_num(filelist, current_file) + 1,
+               feh_list_length(filelist), file->filename);
    }
    else
    {
-	  s = estrdup(feh_printf(opt.title, file));
+      s = estrdup(feh_printf(opt.title, file));
    }
-   
+
    D_RETURN(s);
 }
 
