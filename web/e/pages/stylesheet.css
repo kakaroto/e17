@@ -62,37 +62,8 @@ a:hover {
 	font-weight: bold;
 }
 
-/** NAV Bar -- THIS IS CURRENTLY UNUSED!!! **/
-div.nav {
-        border: thin solid #000000;
-        background-color: #ffffff;
-        padding: 1px;
-        text-align: center;
-        vertical-align: center;
-        margin-top: 170px;
-        font-size: 12;
-}
-
-a.nav:link {
-	text-decoration: none;
-	color: #444444;
-	font-weight: normal;
-}
-
-a.nav:visited {
-	text-decoration: none;
-	color: #666666;
-	font-weight: normal;
-}
-
-a.nav:hover {
-	text-decoration: none;
-	color: #000000;
-	font-weight: normal;
-}
-
-/** Qindex Bar **/
-div.qindex {
+/** Side Nav Bar **/
+div.navbar {
         //background-image: url("i/hilite.png");
         background-repeat: no-repeat;
         background-position: left top;
@@ -103,29 +74,45 @@ div.qindex {
         padding: 4px;
         text-align: left;
         vertical-align: center;
-        //font-size: 12;
 }
 
-a.qindex:link {
+a.navelement:link {
 	text-decoration: none;
 	color: #444444;
 	font-weight: normal;
-	font-size: small;
 }
 
-a.qindex:visited {
+a.navelement:visited {
 	text-decoration: none;
 	color: #666666;
 	font-weight: normal;
-	font-size: small;
 }
 
-a.qindex:hover {
+a.navelement:hover {
 	text-decoration: none;
 	color: #000000;
 	font-weight: normal;
-	font-size: small;
 }   
+
+ul.navsection {
+	text-align: right;
+}
+
+ul.navsection li{
+        text-align: right;
+	display: block;
+	font-family: "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+	font-size: 10px; 
+}
+
+p.navtitle {
+	//border: thin solid #888888;
+	//background-color: #eeeeee;
+	
+	font-family: "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+	font-size: 12px; 
+	padding-right: 8px;
+}
 
 /** Content Area - The real stuff **/
 div.content {
