@@ -56,6 +56,5 @@ test -f Makefile.in || \
 
 ) || exit 1
 
-echo
-echo "Type './configure' to configure embrace."
-echo
+echo "Running ./configure with no options."
+./configure
