@@ -2,6 +2,7 @@
 #define _ESTYLE_PRIVATE_H
 
 #include "Estyle.h"
+#include "estyle_heap.h"
 #include <Edb.h>
 
 typedef enum _estyle_bit_flags Estyle_Bit_Flags;
@@ -18,7 +19,7 @@ typedef struct _estyle_style_info Estyle_Style_Info;
 struct _estyle_style_info {
 	char *name;
 	E_DB_File *style_db;
-	Ewd_Sheap *layers;
+	Estyle_Heap *layers;
 	int left_push, right_push, top_push, bottom_push;
 
 	int references;
@@ -31,7 +32,7 @@ struct _estyle_style_info {
 typedef struct _estyle_style Estyle_Style;
 struct _estyle_style {
 	Estyle_Style_Info *info;
-	Ewd_List *bits;
+	Evas_List bits;
 };
 
 #include "estyle_style.h"

@@ -13,7 +13,8 @@ libestyle_la_SOURCES = \
 Estyle.h \
 estyle.c \
 estyle_style.c \
-estyle_color.c
+estyle_color.c \
+estyle_heap.c
 
 
 libestyle_la_LIBADD       = @evas_libs@ @ewd_libs@

@@ -44,9 +44,10 @@ Estyle_Style *estyle_style_instance(char *name)
  * Returns no value. The reference to the style is released and the style is
  * freed if appropriate.
  */
-void estyle_style_release(Estyle_Style * style, Evas ev)
+void estyle_style_release(Estyle_Style *style, Evas ev)
 {
 	Evas_Object ob;
+	Evas_List ptr_list;
 
 	CHECK_PARAM_POINTER("style", style);
 
@@ -56,12 +57,14 @@ void estyle_style_release(Estyle_Style * style, Evas ev)
 	 * Destroy the list of evas_objects
 	 */
 	if (style->bits) {
-		ewd_list_goto_first(style->bits);
 
 		/*
 		 * Destroy all of the objects for this estyle
 		 */
-		while ((ob = ewd_list_next(style->bits))) {
+		for (ptr_list = style->bits; ptr_list; 
+			ptr_list = ptr_list->next) {
+
+			ob = ptr_list->data;
 			evas_hide(ev, ob);
 			evas_del_object(ev, ob);
 		}
@@ -69,7 +72,7 @@ void estyle_style_release(Estyle_Style * style, Evas ev)
 		/*
 		 * Destroy the list that held the objects
 		 */
-		ewd_list_destroy(style->bits);
+		evas_list_free(style->bits);
 	}
 
 	FREE(style);
@@ -84,6 +87,9 @@ void estyle_style_release(Estyle_Style * style, Evas ev)
 void estyle_style_hide(Estyle *es)
 {
 	Evas_Object ob;
+	Evas_List ptr_list;
+	
+	CHECK_PARAM_POINTER("es", es);
 
 	/*
 	 * Check if we need to hide any style bits.
@@ -91,13 +97,15 @@ void estyle_style_hide(Estyle *es)
 	if (!es->style || !es->style->bits)
 		return;
 
-	ewd_list_goto_first(es->style->bits);
-
 	/*
 	 * Hide each bit of the style representation
 	 */
-	while ((ob = ewd_list_next(es->style->bits)))
+	for (ptr_list = es->style->bits; ptr_list; 
+		ptr_list = ptr_list->next ) {
+
+		ob = ptr_list->data;
 		evas_hide(es->evas, ob);
+	}
 }
 
 /*
@@ -109,6 +117,9 @@ void estyle_style_hide(Estyle *es)
 void estyle_style_show(Estyle *es)
 {
 	Evas_Object ob;
+	Evas_List ptr_list;
+
+	CHECK_PARAM_POINTER("es", es);
 
 	/*
 	 * Check if we need to show any style bits.
@@ -116,13 +127,15 @@ void estyle_style_show(Estyle *es)
 	if (!es->style || !es->style->bits)
 		return;
 
-	ewd_list_goto_first(es->style->bits);
-
 	/*
 	 * Hide each bit of the style representation
 	 */
-	while ((ob = ewd_list_next(es->style->bits)))
+	for (ptr_list = es->style->bits; ptr_list; 
+		ptr_list = ptr_list->next ) {
+
+		ob = ptr_list->data;
 		evas_show(es->evas, ob);
+	}
 }
 
 /**
@@ -166,7 +179,7 @@ void estyle_style_remove_path(char *path)
  * Returns no value. Adds the evas objects for the style bits of the main text
  * layer.
  */
-void estyle_style_draw(Estyle * es, char *text)
+void estyle_style_draw(Estyle *es, char *text)
 {
 	int i = 0;
 	Estyle_Style_Info *info;
@@ -184,21 +197,12 @@ void estyle_style_draw(Estyle * es, char *text)
 		return;
 
 	/*
-	 * Make sure there is a list available for storing the evas objects if
-	 * one is necessary.
-	 */
-	if (!((Estyle_Style *)es->style)->bits
-			&& ewd_sheap_item(info->layers, 0)) {
-		((Estyle_Style *)es->style)->bits = ewd_list_new();
-	}
-
-	/*
 	 * Draw each of the lower layers and add their bits to the style
 	 * instance for later manipulation.
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i))) {
+	while ((layer = estyle_heap_item(info->layers, i))) {
 		ob = _estyle_style_layer_draw(layer, es, text);
-		ewd_list_append(((Estyle_Style *)es->style)->bits, ob);
+		((Estyle_Style *) es->style)->bits = evas_list_append( ((Estyle_Style *)es->style)->bits, ob );
 		i++;
 	}
 
@@ -220,6 +224,7 @@ int estyle_style_set_layer_lower(Estyle * es, int l)
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 	Evas_Object ob;
+	Evas_List ptr_list;
 
 	CHECK_PARAM_POINTER_RETURN("es", es, 0);
 
@@ -232,22 +237,16 @@ int estyle_style_set_layer_lower(Estyle * es, int l)
 		return 0;
 
 	/*
-	 * Make sure there is a list available for storing the evas objects if
-	 * one is necessary.
-	 */
-	if (!((Estyle_Style *)es->style)->bits
-			&& ewd_sheap_item(info->layers, 0)) {
-		((Estyle_Style *)es->style)->bits = ewd_list_new();
-	}
-
-	/*
 	 * Move all of the lower layers bits into the correct layer
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i)) && layer->stack < 0) {
-		ewd_list_goto_first(es->style->bits);
+	while ((layer = estyle_heap_item(info->layers, i)) && layer->stack < 0) {
 
-		while ((ob = ewd_list_next(es->style->bits)))
+		for (ptr_list = es->style->bits; ptr_list; 
+			ptr_list = ptr_list->next ) {
+
+			ob = ptr_list->data;
 			evas_set_layer(es->evas, ob, l);
+		}
 		i++;
 	}
 
@@ -263,13 +262,14 @@ int estyle_style_set_layer_lower(Estyle * es, int l)
  * Returns no value. Adds the evas objects for the style bits that are above
  * the main text layer.
  */
-int estyle_style_set_layer_upper(Estyle * es, int l, int start)
+int estyle_style_set_layer_upper(Estyle *es, int l, int start)
 {
 	char *text;
 	int i = start;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 	Evas_Object ob;
+	Evas_List ptr_list;
 
 	CHECK_PARAM_POINTER_RETURN("es", es, 0);
 
@@ -289,11 +289,15 @@ int estyle_style_set_layer_upper(Estyle * es, int l, int start)
 	/*
 	 * Move all of the upper bits into the correct layer
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i)) && layer->stack) {
-		ewd_list_goto_first(es->style->bits);
+	while ((layer = estyle_heap_item(info->layers, i)) && layer->stack) {
 
-		while ((ob = ewd_list_next(es->style->bits)))
+		for (ptr_list = es->style->bits; ptr_list; 
+			ptr_list = ptr_list->next ) {
+
+			ob = ptr_list->data;
 			evas_set_layer(es->evas, ob, l);
+		}
+
 		i++;
 	}
 
@@ -311,6 +315,7 @@ void estyle_style_move(Estyle *es)
 {
 	int i;
 	Evas_Object ob;
+	Evas_List ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -324,7 +329,7 @@ void estyle_style_move(Estyle *es)
 	 * layout.
 	 */
 	info = (Estyle_Style_Info *)es->style->info;
-	ewd_list_goto_first(es->style->bits);
+	ptr_list = es->style->bits;
 	i = 0;
 
 	/*
@@ -333,12 +338,17 @@ void estyle_style_move(Estyle *es)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i++)) &&
-			(ob = ewd_list_next(es->style->bits)))
+	while (ptr_list && 
+		(layer = estyle_heap_item(info->layers, i++)) != NULL &&
+		(ob = ptr_list->data) != NULL) {
+		
 		evas_move(es->evas, ob, (double)(es->x + layer->x_offset +
 					info->left_push),
-				(double)(es->y + layer->y_offset +
-					 info->right_push));
+					(double)(es->y + layer->y_offset +
+					info->right_push));
+
+		ptr_list = ptr_list->next;
+	}
 }
 
 /*
@@ -352,6 +362,7 @@ void estyle_style_set_color(Estyle *es)
 {
 	int i;
 	Evas_Object sob;
+	Evas_List ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -371,7 +382,8 @@ void estyle_style_set_color(Estyle *es)
 	if (!es->style->bits)
 		return;
 
-	ewd_list_goto_first(es->style->bits);
+	ptr_list = es->style->bits;
+
 	i = 0;
 
 	/*
@@ -380,8 +392,10 @@ void estyle_style_set_color(Estyle *es)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i++)) &&
-			(sob = ewd_list_next(es->style->bits))) {
+	while (ptr_list &&
+		(layer = estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
+
 		if (layer->relative_color) {
 			int r, g, b, a;
 
@@ -392,6 +406,8 @@ void estyle_style_set_color(Estyle *es)
 
 			evas_set_color(es->evas, sob, r, g, b, a);
 		}
+
+		ptr_list = ptr_list->next;
 	}
 }
 
@@ -405,11 +421,15 @@ void estyle_style_set_font(Estyle *es, char *font, int size)
 {
 	int i;
 	Evas_Object sob;
+	Evas_List ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("font", font);
+
+	if (!es->style || !es->style->bits)
+		return;
 
 	/*
 	 * Prepare to traverse the list of bits and layers to get the correct
@@ -417,9 +437,8 @@ void estyle_style_set_font(Estyle *es, char *font, int size)
 	 */
 	info = (Estyle_Style_Info *)es->style->info;
 
-	if (!es->style->bits)
-		return;
-	ewd_list_goto_first(es->style->bits);
+	ptr_list = es->style->bits;
+	
 	i = 0;
 
 	/*
@@ -428,9 +447,13 @@ void estyle_style_set_font(Estyle *es, char *font, int size)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i++)) &&
-			(sob = ewd_list_next(es->style->bits)))
+	while (ptr_list &&
+		(layer = estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
+
 		evas_set_font(es->evas, sob, font, size);
+		ptr_list = ptr_list->next;
+	}
 }
 
 /*
@@ -444,10 +467,14 @@ void estyle_style_set_text(Estyle *es)
 	int i;
 	char *text;
 	Evas_Object sob;
+	Evas_List ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
 	CHECK_PARAM_POINTER("es", es);
+
+	if (!es->style || !es->style->bits)
+		return;
 
 	/*
 	 * Prepare to traverse the list of bits and layers to get the correct
@@ -459,10 +486,8 @@ void estyle_style_set_text(Estyle *es)
 
 	info = (Estyle_Style_Info *)es->style->info;
 
-	if (!es->style->bits)
-		return;
+	ptr_list = es->style->bits;
 
-	ewd_list_goto_first(es->style->bits);
 	i = 0;
 
 	/*
@@ -471,9 +496,13 @@ void estyle_style_set_text(Estyle *es)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i++)) &&
-			(sob = ewd_list_next(es->style->bits)))
+	while (ptr_list &&
+		(layer = estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
+			
 		evas_set_text(es->evas, sob, text);
+		ptr_list = ptr_list->next;
+	}
 }
 
 /*
@@ -488,20 +517,23 @@ void estyle_style_set_clip(Estyle *es, Evas_Object ob)
 {
 	int i;
 	Evas_Object sob;
+	Evas_List ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
 	CHECK_PARAM_POINTER("es", es);
+
+	if (!es->style || !es->style->bits)
+		return;
 
 	/*
 	 * Prepare to traverse the list of bits and layers to get the correct
 	 * layout.
 	 */
 	info = (Estyle_Style_Info *)es->style->info;
+	
+	ptr_list = es->style->bits;
 
-	if (!es->style->bits)
-		return;
-	ewd_list_goto_first(es->style->bits);
 	i = 0;
 
 	/*
@@ -510,12 +542,15 @@ void estyle_style_set_clip(Estyle *es, Evas_Object ob)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while ((layer = ewd_sheap_item(info->layers, i++)) &&
-			(sob = ewd_list_next(es->style->bits))) {
+	while (ptr_list &&
+		(layer = estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
 		if (!ob)
 			evas_unset_clip(es->evas, sob);
 		else
 			evas_set_clip(es->evas, sob, ob);
+
+		ptr_list = ptr_list->next;
 	}
 }
 
@@ -528,6 +563,8 @@ void estyle_style_set_clip(Estyle *es, Evas_Object ob)
 Estyle_Style_Info *estyle_style_info_reference(char *name)
 {
 	Estyle_Style_Info *found;
+
+	CHECK_PARAM_POINTER_RETURN("name", name, NULL);
 
 	if (!styles)
 		styles = ewd_hash_new(ewd_str_hash, ewd_str_compare);
@@ -576,7 +613,7 @@ void estyle_style_info_dereference(Estyle_Style_Info *info)
 
 		ewd_hash_remove(styles, info->name);
 		if (info->layers)
-			ewd_sheap_destroy(info->layers);
+			estyle_heap_destroy(info->layers);
 		ewd_string_release(info->name);
 
 		FREE(info);
@@ -588,8 +625,8 @@ void estyle_style_info_dereference(Estyle_Style_Info *info)
  * @layer: the layer to be drawn
  * @es: used to get info about the evas for drawing
  */
-static Evas_Object _estyle_style_layer_draw(Estyle_Style_Layer * layer,
-		Estyle * es, char *text)
+static Evas_Object _estyle_style_layer_draw(Estyle_Style_Layer *layer,
+		Estyle *es, char *text)
 {
 	int r, g, b, a;
 	char *font;
@@ -690,7 +727,7 @@ static void _estyle_style_read(Estyle_Style_Info * info)
 		return;
 	/*
 	   if (info->layers)
-	   ewd_sheap_destroy(info->layers);
+	   estyle_heap_destroy(info->layers);
 	 */
 
 	/*
@@ -705,7 +742,7 @@ static void _estyle_style_read(Estyle_Style_Info * info)
 		return;
 	}
 
-	info->layers = ewd_sheap_new(_estyle_style_stack_compare, layers);
+	info->layers = estyle_heap_new(_estyle_style_stack_compare, layers);
 
 	/*
 	 * Read in each layer
@@ -757,7 +794,7 @@ static void _estyle_style_read(Estyle_Style_Info * info)
 		else if (-layer->y_offset > info->top_push)
 			info->top_push = -layer->y_offset;
 
-		ewd_sheap_insert(info->layers, layer);
+		estyle_heap_insert(info->layers, layer);
 	}
 }
 

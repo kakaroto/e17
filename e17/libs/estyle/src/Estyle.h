@@ -8,7 +8,6 @@
 /*
  * Simple alignment bitfield
  */
-typedef enum _estyle_alignment Estyle_Alignment;
 enum _estyle_alignment {
 	ESTYLE_ALIGN_CENTER = 0,
 	ESTYLE_ALIGN_LEFT = 1,
@@ -16,11 +15,20 @@ enum _estyle_alignment {
 	ESTYLE_ALIGN_TOP = 4,
 	ESTYLE_ALIGN_BOTTOM = 8
 };
+typedef enum _estyle_alignment Estyle_Alignment;
 
 /*
  * The estyle holds all information necessary for display and layout of the text
  */
 typedef struct _estyle Estyle;
+
+
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 
 /*
  * Constructor/destructor
@@ -83,5 +91,11 @@ Estyle *estyle_split(Estyle * es, int index);
 int estyle_merge(Estyle * es1, Estyle * es2);
 
 #define ESTYLE_HASH_COLOR(r, g, b, a) ((r << 24) | (g << 16) | (b << 8) | a)
+
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

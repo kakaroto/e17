@@ -98,7 +98,7 @@ installed_headersdir = $(prefix)/include
 installed_headers_DATA =  Estyle.h
 
 
-libestyle_la_SOURCES =  Estyle.h estyle.c estyle_style.c estyle_color.c
+libestyle_la_SOURCES =  Estyle.h estyle.c estyle_style.c estyle_color.c estyle_heap.c
 
 
 libestyle_la_LIBADD = @evas_libs@ @ewd_libs@
@@ -114,7 +114,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libestyle_la_OBJECTS =  estyle.lo estyle_style.lo estyle_color.lo
+libestyle_la_OBJECTS =  estyle.lo estyle_style.lo estyle_color.lo \
+estyle_heap.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -129,7 +130,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/estyle.P .deps/estyle_color.P .deps/estyle_style.P
+DEP_FILES =  .deps/estyle.P .deps/estyle_color.P .deps/estyle_heap.P \
+.deps/estyle_style.P
 SOURCES = $(libestyle_la_SOURCES)
 OBJECTS = $(libestyle_la_OBJECTS)
 
