@@ -18,3 +18,4 @@ mkinstalldirs
 stamp-h
 stamp-h.in
 config.status
+ewd-config
