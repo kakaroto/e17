@@ -117,6 +117,7 @@ main (int argc, char *argv[])
 {
   Evas *evas = NULL;
   Ecore_Evas *ee = NULL;
+  Ecore_X_Window win = 0;
   Evas_Object *o = NULL;
   Evas_Object *cont = NULL;
   Evas_Object *image = NULL;
@@ -130,6 +131,7 @@ main (int argc, char *argv[])
   if (ecore_evas_init ())
     {
       ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 300, 120);
+      win = ecore_evas_software_x11_window_get(ee);
       ecore_evas_title_set (ee, "Enlightenment Thumbnail Test");
       ecore_evas_callback_delete_request_set (ee, window_del_cb);
       ecore_evas_callback_resize_set (ee, window_resize_cb);
@@ -137,6 +139,7 @@ main (int argc, char *argv[])
 
       evas = ecore_evas_get (ee);
       o = esmart_trans_x11_new (evas);
+      esmart_trans_x11_window_set(o, win);
       evas_object_move (o, 0, 0);
       evas_object_resize (o, 300, 120);
       evas_object_layer_set (o, -5);

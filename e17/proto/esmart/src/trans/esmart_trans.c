@@ -6,7 +6,6 @@
 
 #include <stdlib.h>
 #include "config.h"
-#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <Ecore.h>
@@ -14,6 +13,13 @@
 #include <assert.h>
 
 #include "Esmart_Trans.h"
+
+typedef struct {
+   int x, y, w, h;
+   Evas_Object *obj;
+   Ecore_X_Window win;
+   Ecore_X_Pixmap pmap_id;
+} Esmart_Trans_Object;
 
 static Evas_Smart * _esmart_trans_x11_smart_get(void);
 /* smart object handlers */
@@ -31,39 +37,53 @@ static void _esmart_trans_x11_hide(Evas_Object *o);
 static void _esmart_trans_x11_color_set(Evas_Object *o, int r, int g, int b, int a);
 static void _esmart_trans_x11_clip_set(Evas_Object *o, Evas_Object *clip);
 static void _esmart_trans_x11_clip_unset(Evas_Object *o);
+static int _esmart_trans_x11_property_cb(void *data, int type, void *event);
+
+static Ecore_List       *_objects = NULL;
+static Ecore_X_Window   root;
+static Ecore_X_Atom     rootpmap, rootcolor;
+static Ecore_X_Atom     x_virtual_roots, x_current_desktop, x_num_desktops;
+static Ecore_X_Atom     x_pixmap, x_window, x_cardinal;
+static Ecore_X_Atom     enlightenment_desktop;
+
+static Ecore_Event_Handler *_root_prop_hnd = NULL;
+
+static Esmart_Trans_Object *
+_esmart_trans_x11_object_find(Evas_Object *o)
+{
+   Ecore_List_Node *n;
+   Esmart_Trans_Object *eto = NULL;
+  
+   for (n = _objects->first; n; n = n->next)
+   {
+      eto = (Esmart_Trans_Object *) n->data;
+      if (eto->obj == o)
+         break;
+   }
+
+   return eto;
+}
 
 static Evas_Object *
 _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, int h)
 {
-   int            root_list_num, ret, current_desk;
-   unsigned char  *data;
-   Evas_Object    *new = NULL;
-   Ecore_X_Pixmap p;
-   Ecore_X_Atom   x_pixmap, x_window, x_cardinal;
-   Ecore_X_Atom   rootpmap, rootcolor;
-   Ecore_X_Atom   x_virtual_roots, x_current_desktop;
-   Ecore_X_Window root, *root_list = NULL;
-   int            offscreen = 0;
-
-   int            ox = 0, oy = 0;
+   int                  root_list_num, ret, current_desk;
+   unsigned char        *data;
+   Evas_Object          *new = NULL;
+   Ecore_X_Pixmap       p;
+   Ecore_X_Window       *root_list = NULL;
+   int                  offscreen = 0;
+   int                  ox = 0, oy = 0;
 
    if (old)
       evas_object_del(old);
-   
-   x_pixmap = ecore_x_atom_get("PIXMAP");
-   rootpmap = ecore_x_atom_get("_XROOTPMAP_ID");
-   rootcolor = ecore_x_atom_get("_XROOTCOLOR_PIXEL");
-   x_window = ecore_x_atom_get("WINDOW");
-   x_cardinal = ecore_x_atom_get("CARDINAL");
-   x_virtual_roots = ecore_x_atom_get("_NET_VIRTUAL_ROOTS");
-   x_current_desktop = ecore_x_atom_get("_NET_CURRENT_DESKTOP");
    
    root_list = ecore_x_window_root_list(&root_list_num);
 
    if (root_list_num)
       root = *root_list;
    else
-      root = 0;
+      root = DefaultRootWindow(ecore_x_display_get());
 
    imlib_context_set_display(ecore_x_display_get());
    imlib_context_set_visual(DefaultVisual(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
@@ -76,6 +96,15 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
    {
       current_desk = *((int *) data);
       free (data);
+
+      if (ecore_x_window_prop_property_get(root, x_num_desktops,
+                                           x_cardinal,
+                                           32, &data, &ret))
+      {
+         root_list_num = *((int *) data);
+         free(data);
+      }
+      
       if (ecore_x_window_prop_property_get(root, x_virtual_roots, x_window,
                                            32, &data, &ret))
       {
@@ -85,6 +114,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
 
          if (current_desk < root_list_num)
             root = root_list[current_desk];
+         
       }
       else
       {
@@ -101,6 +131,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
 
    if (rootpmap)
    {
+      /* Fetch the root pixmap */
       ret = ecore_x_window_prop_property_get(root, rootpmap, 
                                              x_pixmap, 32, &data, &ret);
       if (ret && (p = *((Ecore_X_Pixmap *) data)))
@@ -113,7 +144,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
          if (pw && ph) {
             imlib_context_set_drawable(*((Ecore_X_Pixmap *) data));
 
-            /* Check if the trans object will fit within the pixmap's boundaries */
+            /* Check if the object will fit within the pixmap's boundaries */
             if ((x >= px) && (y >= py) && ((x + w) <= (px + ((signed int) pw))) 
                   && ((y + h) <= (py + ((signed int) ph))))
             {
@@ -174,7 +205,8 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             evas_object_image_data_update_add(new, 0, 0, w, h);
             evas_object_show(new);
          } /* if (pw && ph) */
-         else /* This could happen with E16: Try to get pixmap from multiple desktop? */
+         else /* This could happen with E16.5 or lesser:
+                 Try to get pixmap from multiple desktop? */
             fprintf(stderr, "Esmart_Trans Error: Got invalid pixmap from root window! Ignored.\n");
       } /* if ((p = *((Ecore_X_Pixmap *) data))) */
       else
@@ -221,31 +253,137 @@ void
 esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
 {
   Esmart_Trans_X11 *data;
-  if((data = evas_object_smart_data_get(o)))
+  Esmart_Trans_Object *eto;
+
+  Ecore_List_Node *n;
+
+  static Ecore_X_Window old_root = 0;
+
+  /* Search for requested object in list */
+  for (n = _objects->first; n; n = n->next)
   {
-      data->obj =
-      _esmart_trans_x11_pixmap_get(evas_object_evas_get(data->clip),
-	data->obj, x, y, w, h);
-      evas_object_pass_events_set(data->obj, 1);
-      evas_object_clip_set(data->obj, data->clip);
-      evas_object_move(data->clip, data->x, data->y);
-      evas_object_resize(data->clip, data->w, data->h);
+     eto = (Esmart_Trans_Object *) n->data;
+     if (eto->obj == o)
+     {
+        /* Update geometry for callback function(s) */
+        eto->x = x;
+        eto->y = y;
+        eto->w = w;
+        eto->h = h;
+        
+        /* Update the trans object */
+        if((data = evas_object_smart_data_get(o)))
+        {
+           data->obj =
+           _esmart_trans_x11_pixmap_get(evas_object_evas_get(data->clip),
+                                        data->obj, x, y, w, h);
+           evas_object_pass_events_set(data->obj, 1);
+           evas_object_clip_set(data->obj, data->clip);
+           evas_object_move(data->clip, data->x, data->y);
+           evas_object_resize(data->clip, data->w, data->h);
+        }
+        else
+        {
+           fprintf(stderr, "esmart_trans_x11_freshen: Eek, what happened to my object?\n");
+        }
+
+        /* Check for change in desktop, update event masks accordingly */
+        if (root != old_root)
+        {
+           if(_root_prop_hnd)
+              ecore_event_handler_del(_root_prop_hnd);
+           ecore_x_event_mask_unset(old_root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+           ecore_x_event_mask_set(root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+           old_root = root;
+        }
+        
+        _root_prop_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
+                                                 _esmart_trans_x11_property_cb, 
+                                                 NULL);
+        return;
+     }
   }
 
+  fprintf(stderr, "esmart_trans_x11_freshen: I know not this object you speak of.\n");
 }
+
 /*** external API ***/
 
 Evas_Object *
 esmart_trans_x11_new(Evas *e)
 {
   Evas_Object *x11_trans_object;
+  Esmart_Trans_Object *eto = NULL;
 
-  x11_trans_object = evas_object_smart_add(e,
-				_esmart_trans_x11_smart_get());
+  /* Initialize objects, atoms and events if called for the first time */
+  if (!_objects)
+  {
+     _objects = ecore_list_new();
+     x_pixmap = ecore_x_atom_get("PIXMAP");
+     rootpmap = ecore_x_atom_get("_XROOTPMAP_ID");
+     rootcolor = ecore_x_atom_get("_XROOTCOLOR_PIXEL");
+     x_window = ecore_x_atom_get("WINDOW");
+     x_cardinal = ecore_x_atom_get("CARDINAL");
+     x_virtual_roots = ecore_x_atom_get("_NET_VIRTUAL_ROOTS");
+     x_current_desktop = ecore_x_atom_get("_NET_CURRENT_DESKTOP");
+     x_num_desktops = ecore_x_atom_get("_NET_NUMBER_OF_DESKTOPS");
+     enlightenment_desktop = ecore_x_atom_get("ENLIGHTENMENT_DESKTOP");
+  }
+  
+  /* Get the trans object */
+  x11_trans_object = evas_object_smart_add(e, _esmart_trans_x11_smart_get());
+  
+  /* Add to object list */
+  eto = calloc(1, sizeof(Esmart_Trans_Object));
+  eto->obj = x11_trans_object;
+  ecore_list_append(_objects, eto);
+
   return x11_trans_object;
 }
 
+void
+esmart_trans_x11_window_set(Evas_Object *o, Ecore_X_Window win)
+{
+   Esmart_Trans_Object *eto;
+
+   if((eto = _esmart_trans_x11_object_find(o)))
+      eto->win = win;
+}
+
 /*** smart object handler functions ***/
+
+/* Callback to handle property events on the root window */
+static int
+_esmart_trans_x11_property_cb(void *data, int type, void *event)
+{
+   Ecore_X_Event_Window_Property *e;
+   Ecore_List_Node *n;
+
+   if (!_objects)
+      return TRUE;
+   
+   e = (Ecore_X_Event_Window_Property *) event;
+   
+   if (e->win == root && (e->atom == rootpmap || e->atom == rootcolor
+                          || e->atom == x_current_desktop
+                          || e->atom == enlightenment_desktop))
+   {
+      /* Background may have changed: freshen all trans objects */
+      for (n = _objects->first; n; n = n->next)
+      {
+         Esmart_Trans_Object *o;
+         o = (Esmart_Trans_Object *) n->data;
+         /* For desktop changes, do not freshen non-sticky windows */
+         if ((e->atom == x_current_desktop || e->atom == enlightenment_desktop)
+             && !(ecore_x_window_prop_state_isset(e->win, 
+                                                  ECORE_X_WINDOW_STATE_STICKY)))
+            continue;
+         esmart_trans_x11_freshen(o->obj, o->x, o->y, o->w, o->h);
+      }
+   }
+
+   return TRUE;
+}
 
 static Evas_Smart *
 _esmart_trans_x11_smart_get(void)
