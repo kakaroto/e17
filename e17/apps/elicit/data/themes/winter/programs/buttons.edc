@@ -1,0 +1,3 @@
+BUTTON_PROG("x", "", "elicit,quit");
+BUTTON_PROG("dropper", "elicit,pick,start", "elicit,pick,stop");
+BUTTON_PROG("target", "elicit,shoot,start", "elicit,shoot,stop");
