@@ -1,6 +1,7 @@
 
 #include "common.h"
 #include "rotate.h"
+#include "blend.h"
 
 /*\ I have no idea which of these two is faster..
 |*| The first one doesn't branch, the second one doesn't multiply..

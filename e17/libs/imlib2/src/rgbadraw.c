@@ -28,6 +28,9 @@ __imlib_FlipImageHoriz(ImlibImage *im)
 	     p2--;
 	  }
      }
+   x = im->border.left;
+   im->border.left = im->border.right;
+   im->border.right = x;
 }
 
 void
@@ -49,37 +52,107 @@ __imlib_FlipImageVert(ImlibImage *im)
 	     p2++;
 	  }
      }
+   x = im->border.top;
+   im->border.top = im->border.bottom;
+   im->border.bottom = x;
 }
 
 void
-__imlib_FlipImageDiagonal(ImlibImage *im)
+__imlib_FlipImageBoth(ImlibImage *im)
 {
-   DATA32 *p1, *p2, *data;
-   int x, y, tmp;
+   DATA32 *p1, *p2, tmp;
+   int x;
 
-   data = malloc(im->w * im->h * sizeof(DATA32));
    p1 = im->data;
-   for (y = im->h - 1; y >= 0; y--)
-     {
-	p2 = data + y;
-	for (x = 0; x < im->w; x++)
+   p2 = im->data + (im->h * im->w) - 1;
+   for (x = (im->w * im->h) / 2; --x >= 0; )
 	  {
-	     *p2 = *p1;
-	     p2 += im->h;
+	tmp = *p1;
+	*p1 = *p2;
+	*p2 = tmp;
 	     p1++;
+	p2--;
 	  }
+   x = im->border.top;
+   im->border.top = im->border.bottom;
+   im->border.bottom = x;
+   x = im->border.left;
+   im->border.left = im->border.right;
+   im->border.right = x;
      }
-   free(im->data);
-   im->data = data;
-   tmp = im->w;
-   im->w = im->h;
-   im->h = tmp;
+
+/*\ Directions (source is right/down):
+|*| 0 = down/right (flip over ul-dr diagonal)
+|*| 1 = down/left  (rotate 90 degrees clockwise)
+|*| 2 = up/right   (rotate 90 degrees counterclockwise)
+|*| 3 = up/left    (flip over ur-ll diagonal)
+\*/
+void
+__imlib_FlipImageDiagonal(ImlibImage *im, int direction)
+{
+	DATA32 *data, *to, *from;
+	int x, y, w, hw, tmp;
+
+	data = malloc(im->w * im->h * sizeof(DATA32));
+	from = im->data;
+	w = im->h;
+	im->h = im->w;
+	im->w = w;
+	hw = w * im->h;
+	switch (direction) {
+	default:
+	case 0: /*\ DOWN_RIGHT \*/
    tmp = im->border.top;
    im->border.top = im->border.left;
    im->border.left = tmp;
    tmp = im->border.bottom;
    im->border.bottom = im->border.right;
    im->border.right = tmp;
+		to = data;
+		hw = -hw + 1;
+		break;
+	case 1: /*\ DOWN_LEFT \*/
+		tmp = im->border.top;
+		im->border.top = im->border.left;
+		im->border.left = im->border.bottom;
+		im->border.bottom = im->border.right;
+		im->border.right = tmp;
+		to = data + w - 1;
+		hw = -hw - 1;
+		break;
+	case 2: /*\ UP_RIGHT \*/
+		tmp = im->border.top;
+		im->border.top = im->border.right;
+		im->border.right = im->border.bottom;
+		im->border.bottom = im->border.left;
+		im->border.left = tmp;
+		to = data + hw - w;
+		w = -w;
+		hw = hw + 1;
+		break;
+	case 3: /*\ UP_LEFT \*/
+		tmp = im->border.top;
+		im->border.top = im->border.right;
+		im->border.right = tmp;
+		tmp = im->border.bottom;
+		im->border.bottom = im->border.left;
+		im->border.left = tmp;
+		to = data + hw - 1;
+		w = -w;
+		hw = hw - 1;
+		break;
+	}
+	from = im->data;
+	for (x = im->w; --x >= 0; ) {
+		for (y = im->h; --y >= 0; ) {
+			*to = *from;
+			from++;
+			to += w;
+		}
+		to += hw;
+	}
+	free(im->data);
+	im->data = data;
 }
 
 void

@@ -594,10 +594,10 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 		  __imlib_FlipImageVert(&im2);
 		  break;
 	       case 2: /* to down */
-		  __imlib_FlipImageDiagonal(&im2);
+		  __imlib_FlipImageDiagonal(&im2, 0);
 		  break;
 	       case 3: /* to up */
-		  __imlib_FlipImageDiagonal(&im2);
+		  __imlib_FlipImageDiagonal(&im2, 0);
 		  __imlib_FlipImageHoriz(&im2);
 		  __imlib_FlipImageVert(&im2);
 		  break;

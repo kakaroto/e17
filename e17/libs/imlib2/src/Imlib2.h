@@ -163,6 +163,7 @@ Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates, Imlib_Updates 
 void imlib_image_flip_horizontal(void);
 void imlib_image_flip_vertical(void);
 void imlib_image_flip_diagonal(void);
+void imlib_image_orientate(int orientation);
 void imlib_image_blur(int radius);
 void imlib_image_sharpen(int radius);
 void imlib_image_tile_horizontal(void);

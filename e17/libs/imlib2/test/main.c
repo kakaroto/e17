@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 /*
 #include <sys/time.h>
 #include "common.h"
@@ -367,8 +368,8 @@ int main (int argc, char **argv)
 		    {
 		    case Expose:
 		       up = imlib_update_append_rect(up, 
-						     ev.xexpose.x, ev.xexpose.y, 
-						     ev.xexpose.width, ev.xexpose.height);
+				ev.xexpose.x, ev.xexpose.y, 
+				ev.xexpose.width, ev.xexpose.height);
 		       break;
 		    case ButtonRelease:
 		       exit(0);
@@ -411,25 +412,28 @@ int main (int argc, char **argv)
 	     else if (rotate)
 	       {
 		  Imlib_Image rotim;
-		  double ang = (double)x / 100.0;
-		  int rw, rh, rx, ry;
+		  double s, c;
+		  int x1, y1, x2, y2, w, h;
+
+		  w = imlib_image_get_width();
+		  h = imlib_image_get_height();
+		  s = sin(6.2831853 * (double)y / (double)h);
+		  c = cos(6.2831853 * (double)y / (double)h);
+
+		  x1 = (w - w * c + h * s) / 2;
+		  y1 = (h - h * c - w * s) / 2;
+		  x2 = (w + w * c - h * s) / 2;
+		  y2 = (h + h * c + w * s) / 2;
 		  
 		  imlib_context_set_blend(1);
-		  imlib_context_set_image(im_bg);
-		  rotim = imlib_create_rotated_image_test2(ang);
-		  imlib_context_set_image(rotim);
-		  rw = imlib_image_get_width();
-		  rh = imlib_image_get_height();
-		  rx = (w - rw) / 2;
-		  ry = (h - rh) / 2;
-		  imlib_context_set_image(im);
-		  imlib_blend_image_onto_image(rotim, 0,
-					       0, 0, rw, rh,
-					       rx, ry, rw, rh);
-		  imlib_context_set_image(rotim);
-		  imlib_free_image_and_decache();
-		  imlib_context_set_image(im);
-		  up = imlib_update_append_rect(up, rx, ry, rw, rh);
+		  imlib_blend_image_onto_image_at_angle(im_bg, 0,
+						0, 0,
+						imlib_image_get_width(),
+						imlib_image_get_height(),
+					       x1, y1, x2, y2);
+		  up = imlib_update_append_rect(up, 0, 0,
+						imlib_image_get_width(),
+						imlib_image_get_height());
 	       }
 	       {
 		  Imlib_Updates uu;
@@ -554,6 +558,7 @@ int main (int argc, char **argv)
      }
    else
      {
+	pixels = 0;
 	for (i = 0; i < w; i++)
 	  {
 	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
@@ -572,7 +577,7 @@ int main (int argc, char **argv)
 	j += 1000000;
      }
    sec = (double)i + ((double)j / 1000000);
-   printf("%3.3f sec\n", sec);
+   printf("%3.3f sec, %3.3f M pixels (%i)\n", sec, (double)pixels / 1000000, pixels);
    printf("%3.3f Mpixels / sec\n", (double)(pixels) / (sec * 1000000));
    return 0;
 }
