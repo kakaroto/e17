@@ -148,7 +148,7 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 {
    DATA32 *map, *p, v;
    int    *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff  = 0, ww, hh, jump;
-   int     tmp, i;
+   int     tmp, i, divw, divh;
    DATA8   rr, gg, bb, aa, r, g, b, a, nr, ng, nb, na;
    
    ww = w;
@@ -201,25 +201,29 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
    
    xx = (int)(32 * sin(((angle + 180) * 2 * 3.141592654) / 360));
    yy = -(int)(32 * cos(((angle + 180) * 2 * 3.141592654) / 360));
+   divw = ((ww - 1) << 5);
+   divh = ((hh - 1) << 5);
+   if (divw < 1) divw = 1;
+   if (divh < 1) divh = 1;
    if (xx < 0)
      {
 	for (i = 0; i < ww; i++)
-	   hlut[i] = (-xx * (ww - 1 - i) * len) / ((ww - 1) << 5);
+	  hlut[i] = (-xx * (ww - 1 - i) * len) / divw;
      }
    else
      {
 	for (i = 0; i < ww; i++)
-	   hlut[i] = (xx * i * len) / ((ww - 1) << 5);
+	   hlut[i] = (xx * i * len) / divw;
      }
    if (yy < 0)
      {
 	for (i = 0; i < hh; i++)
-	   vlut[i] = (-yy * (hh - 1 - i) * len) / ((hh - 1) << 5);
+	   vlut[i] = (-yy * (hh - 1 - i) * len) / divh;
      }
    else
      {
 	for (i = 0; i < hh; i++)
-	   vlut[i] = (yy * i * len) / ((hh - 1) << 5);
+	   vlut[i] = (yy * i * len) / divh;
      }
    jump = im->w - w;
    
