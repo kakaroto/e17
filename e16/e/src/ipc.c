@@ -105,6 +105,7 @@ static void         IPC_GroupInfo(char *params, Client * c);
 static void         IPC_GroupOps(char *params, Client * c);
 static void         IPC_Group(char *params, Client * c);
 static void         IPC_Hints(char *params, Client * c);
+static void         IPC_Debug(char *params, Client * c);
 
 /* the IPC Array */
 
@@ -564,7 +565,12 @@ IPCStruct           IPCArray[] = {
     IPC_Hints,
     "hints", NULL,
     "Set hint options.",
-    "usage:\n" "  hints xroot <normal/root>"}
+    "usage:\n" "  hints xroot <normal/root>"},
+   {
+    IPC_Debug,
+    "debug", NULL,
+    "Set debug options.",
+    "usage:\n" "  debug events <EvNo>:<EvNo>..."}
 };
 
 static int
@@ -5171,6 +5177,28 @@ IPC_Hints(char *params, Client * c)
 
    Esnprintf(buf, sizeof(buf), "Set _XROOT* hints: %s",
 	     (mode.hints_set_xroot_info_on_root_window) ? "root" : "normal");
+
+   CommsSend(c, buf);
+}
+
+static void
+IPC_Debug(char *params, Client * c)
+{
+   char                buf[FILEPATH_LEN_MAX];
+   char                param1[FILEPATH_LEN_MAX];
+   char                param2[FILEPATH_LEN_MAX];
+
+   buf[0] = 0;
+   param1[0] = 0;
+   param2[0] = 0;
+
+   word(params, 1, param1);
+   word(params, 2, param2);
+
+   if (!strncmp(param1, "event", 2))
+     {
+	EventDebugInit(param2);
+     }
 
    CommsSend(c, buf);
 }

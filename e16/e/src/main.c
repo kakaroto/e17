@@ -73,7 +73,7 @@ main(int argc, char **argv)
 #endif
    str = getenv("EDBUG_FLAGS");
    if (str)
-      debug_flags = strtoul(str, NULL, 0);
+      EventDebugInit(str);
 
    EDBUG(1, "main");
 

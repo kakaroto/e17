@@ -1714,8 +1714,11 @@ void                PastePixmap(Display * d, Drawable w, Pixmap p, Mask m,
 void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
 			      int wd, int ht);
 
+/* events.c */
 void                CheckEvent(void);
 void                WaitEvent(void);
+void                EventDebugInit(const char *s);
+void                EventShow(const XEvent * ev);
 
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 void                SetEInfoOnAll(void);
@@ -2844,7 +2847,3 @@ extern char        *e_machine_name;
 #ifdef HAS_XINERAMA
 extern char         xinerama_active;
 #endif
-
-#define EDBUG_CLIENT_MESSAGES	0x00000001
-#define EDBUG_PROPERTY_CHANGE	0x00000002
-extern int          debug_flags;

@@ -27,6 +27,12 @@
 #include <io.h>			/* EMX select() */
 #endif
 
+#define ENABLE_DEBUG_EVENTS 1
+
+#if ENABLE_DEBUG_EVENTS
+static int          EventDebug(unsigned int type);
+#endif
+
 char                throw_move_events_away = 0;
 
 static char         diddeskaccount = 1;
@@ -102,125 +108,6 @@ NukeBoringevents(XEvent * ev, int num)
    /* FIXME: add resizerequest compression */
    return ok;
 }
-
-#if 0
-static void
-DebugEvent(XEvent * ev)
-{
-   EDBUG(8, "DebugEvent");
-   if (ev->type == event_base_shape + ShapeNotify)
-      fprintf(stderr, "EV: ShapeNotify:\n");
-   else
-     {
-	switch (ev->type)
-	  {
-	  case KeyPress:
-	     fprintf(stderr, "EV: KeyPress:\n");
-	     break;
-	  case KeyRelease:
-	     fprintf(stderr, "EV: KeyRelease:\n");
-	     break;
-	  case ButtonPress:
-	     fprintf(stderr, "EV: ButtonPress:\n");
-	     break;
-	  case ButtonRelease:
-	     fprintf(stderr, "EV: ButtonRelease:\n");
-	     break;
-	  case MotionNotify:
-	     fprintf(stderr, "EV: MotionNotify:\n");
-	     break;
-	  case EnterNotify:
-	     fprintf(stderr, "EV: EnterNotify:\n");
-	     break;
-	  case LeaveNotify:
-	     fprintf(stderr, "EV: LeaveNotify:\n");
-	     break;
-	  case FocusIn:
-	     fprintf(stderr, "EV: FocusIn:\n");
-	     break;
-	  case FocusOut:
-	     fprintf(stderr, "EV: FocusOut:\n");
-	     break;
-	  case KeymapNotify:
-	     fprintf(stderr, "EV: KeymapNotify:\n");
-	     break;
-	  case Expose:
-	     fprintf(stderr, "EV: Expose:\n");
-	     break;
-	  case GraphicsExpose:
-	     fprintf(stderr, "EV: GraphicsExpose:\n");
-	     break;
-	  case NoExpose:
-	     fprintf(stderr, "EV: NoExpose:\n");
-	     break;
-	  case VisibilityNotify:
-	     fprintf(stderr, "EV: VisibilityNotify:\n");
-	     break;
-	  case CreateNotify:
-	     fprintf(stderr, "EV: CreateNotify:\n");
-	     break;
-	  case DestroyNotify:
-	     fprintf(stderr, "EV: DestroyNotify:\n");
-	     break;
-	  case UnmapNotify:
-	     fprintf(stderr, "EV: UnmapNotify:\n");
-	     break;
-	  case MapNotify:
-	     fprintf(stderr, "EV: MapNotify:\n");
-	     break;
-	  case MapRequest:
-	     fprintf(stderr, "EV: MapRequest:\n");
-	     break;
-	  case ReparentNotify:
-	     fprintf(stderr, "EV: ReparentNotify:\n");
-	     break;
-	  case ConfigureNotify:
-	     fprintf(stderr, "EV: ConfigureNotify:\n");
-	     break;
-	  case ConfigureRequest:
-	     fprintf(stderr, "EV: ConfigureRequest:\n");
-	     break;
-	  case GravityNotify:
-	     fprintf(stderr, "EV: GravityNotify:\n");
-	     break;
-	  case ResizeRequest:
-	     fprintf(stderr, "EV: ResizeRequest:\n");
-	     break;
-	  case CirculateNotify:
-	     fprintf(stderr, "EV: CirculateNotify:\n");
-	     break;
-	  case CirculateRequest:
-	     fprintf(stderr, "EV: CirculateRequest:\n");
-	     break;
-	  case PropertyNotify:
-	     fprintf(stderr, "EV: PropertyNotify:\n");
-	     break;
-	  case SelectionClear:
-	     fprintf(stderr, "EV: SelectionClear:\n");
-	     break;
-	  case SelectionRequest:
-	     fprintf(stderr, "EV: SelectionRequest:\n");
-	     break;
-	  case SelectionNotify:
-	     fprintf(stderr, "EV: SelectionNotify:\n");
-	     break;
-	  case ColormapNotify:
-	     fprintf(stderr, "EV: ColormapNotify:\n");
-	     break;
-	  case ClientMessage:
-	     fprintf(stderr, "EV: ClientMessage:\n");
-	     break;
-	  case MappingNotify:
-	     fprintf(stderr, "EV: MappingNotify:\n");
-	     break;
-	  default:
-	     fprintf(stderr, "EV: ???\n");
-	     break;
-	  }
-     }
-   EDBUG_RETURN_;
-}
-#endif
 
 static void
 HKeyPress(XEvent * ev)
@@ -657,6 +544,11 @@ HandleEvent(XEvent * ev)
 
    EDBUG(7, "HandleEvent");
 
+#if ENABLE_DEBUG_EVENTS
+   if (EventDebug(ev->type))
+      EventShow(ev);
+#endif
+
    if (ev->type == event_base_shape + ShapeNotify)
       HandleChildShapeChange(ev);
 
@@ -703,7 +595,7 @@ HandleEvent(XEvent * ev)
 }
 
 void
-CheckEvent()
+CheckEvent(void)
 {
    XEvent              ev;
 
@@ -738,7 +630,7 @@ CheckEvent()
    */
 
 void
-WaitEvent()
+WaitEvent(void)
 {
 /*  XEvent              ev; */
    fd_set              fdset;
@@ -892,3 +784,195 @@ WaitEvent()
 
    EDBUG_RETURN_;
 }
+
+#if ENABLE_DEBUG_EVENTS
+/*
+ * Event debug stuff
+ */
+#define N_DEBUG_FLAGS 64
+static char         ev_debug;
+static char         ev_debug_flags[N_DEBUG_FLAGS];
+
+/*
+ * param is <EventNumber>[:<EventNumber> ... ]
+ */
+void
+EventDebugInit(const char *param)
+{
+   const char         *s;
+   int                 ix, onoff;
+
+   if (!param)
+      return;
+
+   for (;;)
+     {
+	s = strchr(param, ':');
+	if (!param[0])
+	   break;
+	ev_debug = 1;
+	ix = strtol(param, NULL, 0);
+	onoff = (ix >= 0);
+	if (ix < 0)
+	   ix = -ix;
+	if (ix < N_DEBUG_FLAGS)
+	   ev_debug_flags[ix] = onoff;
+	if (!s)
+	   break;
+	param = s + 1;
+     }
+}
+
+static int
+EventDebug(unsigned int type)
+{
+   return ev_debug && (type < sizeof(ev_debug_flags)) && ev_debug_flags[type];
+}
+
+static const char  *const TxtEventNames[] = {
+   "Error", "Reply", "KeyPress", "KeyRelease", "ButtonPress",
+   "ButtonRelease", "MotionNotify", "EnterNotify", "LeaveNotify", "FocusIn",
+   "FocusOut", "KeymapNotify", "Expose", "GraphicsExpose", "NoExpose",
+   "VisibilityNotify", "CreateNotify", "DestroyNotify", "UnmapNotify",
+   "MapNotify",
+   "MapRequest", "ReparentNotify", "ConfigureNotify", "ConfigureRequest",
+   "GravityNotify",
+   "ResizeRequest", "CirculateNotify", "CirculateRequest", "PropertyNotify",
+   "SelectionClear",
+   "SelectionRequest", "SelectionNotify", "ColormapNotify", "ClientMessage",
+   "MappingNotify"
+};
+#define N_EVENT_NAMES (sizeof(TxtEventNames)/sizeof(char*))
+
+static const char  *
+EventName(unsigned int type)
+{
+   if (type < N_EVENT_NAMES)
+      return TxtEventNames[type];
+
+   return "Unknown";
+}
+
+static const char  *const TxtEventNotifyModeNames[] = {
+   "NotifyNormal", "NotifyGrab", "NotifyUngrab", "NotifyWhileGrabbed"
+};
+#define N_EVENT_NOTIFY_MODE_NAMES (sizeof(TxtEventNotifyModeNames)/sizeof(char*))
+
+static const char  *
+EventNotifyModeName(unsigned int mode)
+{
+   if (mode < N_EVENT_NOTIFY_MODE_NAMES)
+      return TxtEventNotifyModeNames[mode];
+
+   return "Unknown";
+}
+
+static const char  *const TxtEventNotifyDetailNames[] = {
+   "NotifyAncestor", "NotifyVirtual", "NotifyInferior", "NotifyNonlinear",
+   "NotifyNonlinearVirtual", "NotifyPointer", "NotifyPointerRoot",
+   "NotifyDetailNone"
+};
+#define N_EVENT_NOTIFY_DETAIL_NAMES (sizeof(TxtEventNotifyDetailNames)/sizeof(char*))
+
+static const char  *
+EventNotifyDetailName(unsigned int detail)
+{
+   if (detail < N_EVENT_NOTIFY_DETAIL_NAMES)
+      return TxtEventNotifyDetailNames[detail];
+
+   return "Unknown";
+}
+
+void
+EventShow(const XEvent * ev)
+{
+   Window              win = ev->xany.window;
+   const char         *name = EventName(ev->type);
+   const char         *txt;
+
+   switch (ev->type)
+     {
+     case KeyPress:
+     case KeyRelease:
+	printf("EV-%s win=%#lx\n", name, win);
+	break;
+     case ButtonPress:
+     case ButtonRelease:
+	printf("EV-%s win=%#lx state=%#x button=%#x\n", name, win,
+	       ev->xbutton.state, ev->xbutton.button);
+	break;
+     case MotionNotify:
+	printf("EV-%s win=%#lx\n", name, win);
+	break;
+     case EnterNotify:
+     case LeaveNotify:
+	printf("EV-%s win=%#lx m=%s d=%s\n", name, win,
+	       EventNotifyModeName(ev->xcrossing.mode),
+	       EventNotifyDetailName(ev->xcrossing.detail));
+	break;
+     case FocusIn:
+     case FocusOut:
+	printf("EV-%s win=%#lx m=%s d=%s\n", name, win,
+	       EventNotifyModeName(ev->xfocus.mode),
+	       EventNotifyDetailName(ev->xfocus.detail));
+	break;
+     case KeymapNotify:
+     case Expose:
+     case GraphicsExpose:
+     case NoExpose:
+     case VisibilityNotify:
+     case CreateNotify:
+     case DestroyNotify:
+     case UnmapNotify:
+     case MapNotify:
+     case MapRequest:
+     case ReparentNotify:
+     case ConfigureNotify:
+     case ConfigureRequest:
+     case GravityNotify:
+     case ResizeRequest:
+     case CirculateNotify:
+     case CirculateRequest:
+	printf("EV-%s win=%#lx\n", name, win);
+	break;
+     case PropertyNotify:
+	txt = XGetAtomName(disp, ev->xproperty.atom);
+	printf("EV-%s: win=%#lx Atom=%s(%ld)\n",
+	       name, win, txt, ev->xproperty.atom);
+	XFree(txt);
+	break;
+     case SelectionClear:
+     case SelectionRequest:
+     case SelectionNotify:
+     case ColormapNotify:
+	printf("EV-%s win=%#lx\n", name, win);
+	break;
+     case ClientMessage:
+	txt = XGetAtomName(disp, ev->xclient.message_type);
+	printf
+	   ("EV-%s win=%#lx ev_type=%s(%ld) data[0-3]= %08lx %08lx %08lx %08lx\n",
+	    name, win, txt, ev->xclient.message_type, ev->xclient.data.l[0],
+	    ev->xclient.data.l[1], ev->xclient.data.l[2],
+	    ev->xclient.data.l[3]);
+	XFree(txt);
+	break;
+     case MappingNotify:
+	printf("EV-%s win=%#lx\n", name, win);
+	break;
+     default:
+	if (ev->type == event_base_shape + ShapeNotify)
+	   printf("EV-ShapeNotify win=%#lx\n", win);
+	else
+	   printf("EV-??? Type=%d win=%#lx\n", ev->type, win);
+	break;
+     }
+}
+
+#else
+
+void
+EventDebugInit(const char *param)
+{
+}
+
+#endif /* INCLUDE_DEBUG_STUFF */
