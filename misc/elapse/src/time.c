@@ -12,9 +12,9 @@ int elapse_time_set(Elapse *elapse)
 		strftime(str, PATH_MAX, elapse->conf.format, ts);
 	} else {
 		strncpy(str, asctime(ts), PATH_MAX);
+		str[strlen(str)-1] = '\0';
 	}
 	
-	str[strlen(str)-1] = '\0';
 	edje_object_part_text_set(elapse->edje, "time", str);
 
 	return 1;
