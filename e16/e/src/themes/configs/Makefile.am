@@ -1,6 +1,13 @@
-SUBDIRS = pix
+SUBDIRS = pix backup
 
 configdata_DATA = \
+backup-actionclasses.cfg \
+backup-borders.cfg \
+backup-colormodifiers.cfg \
+backup-cursors.cfg \
+backup-imageclasses.cfg \
+backup-textclasses.cfg \
+backup-tooltips.cfg \
 definitions \
 control.cfg \
 keybindings.cfg \
