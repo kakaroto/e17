@@ -254,11 +254,16 @@ void *ewd_tree_node_key_get(Ewd_Tree_Node * node)
  */
 int ewd_tree_destroy(Ewd_Tree * tree)
 {
+	Ewd_Tree_Node *node;
+
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 
 	EWD_WRITE_LOCK(tree);
-	while (tree->tree)
-		ewd_tree_remove_node(tree, tree->tree);
+	while ((node = tree->tree)) {
+		printf("Removing value: %d\n", node->key);
+		ewd_tree_remove_node(tree, node);
+		ewd_tree_node_destroy(node, tree->free_func);
+	}
 	EWD_WRITE_UNLOCK(tree);
 	EWD_DESTROY_LOCKS(tree);
 
@@ -463,40 +468,69 @@ int ewd_tree_remove_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 	CHECK_PARAM_POINTER_RETURN("tree", tree, FALSE);
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
-	traverse = node;
-
-	/* If there's a right node we need to start at that point, otherwise
-	 * there's only a single left node. */
-	if (node->left_child)
+	/*
+	 * Find the nearest value to the balanced one.
+	 */
+	if (node->left_child) {
 		traverse = node->left_child;
 
-	/* Now work our way down left side of the traverse node.
-	 * This will give us the node with the next closest value to the
-	 * current node. If node had no right node, then this will stop at
-	 * node's left node. */
-	while (traverse->right_child)
-		traverse = traverse->right_child;
+		/* Now work our way down right side of the traverse node.
+		 * This will give us the node with the next closest value
+		 * to the current node. If traverse had no right node, then
+		 * this will stop at node's left node. */
+		while (traverse->right_child) {
+			traverse = traverse->right_child;
+		}
 
-	if (traverse == node) {
-		if (traverse->parent) {
-			if (traverse->parent->left_child == traverse)
-				traverse->parent->left_child = NULL;
-			else
-				traverse->parent->right_child = NULL;
-		} else
-			tree->tree = NULL;
+		/*
+		 * Hook any dropped leaves into the moved nodes spot
+		 */
+		if (traverse->parent)
+			traverse->parent->left_child = traverse->left_child;
+	}
+	else if (node->right_child) {
+		traverse = node->right_child;
+
+		/* Now work our way down left side of the traverse node.
+		 * This will give us the node with the next closest value
+		 * to the current node. If traverse had no left node, then
+		 * this will stop at node's right node. */
+		while (traverse->left_child) {
+			traverse = traverse->left_child;
+		}
+
+		/*
+		 * Hook any dropped leaves into the moved nodes spot
+		 */
+		if (traverse->right_child)
+			traverse->right_child->parent = traverse->parent;
+
+		if (traverse->parent)
+			traverse->parent->right_child = traverse->right_child;
+		else
+			tree->tree = traverse->right_child;
+	}
+	else
 		traverse = NULL;
-	} else {
-		/* This if ensures that we won't point traverse->right_child back
-		 * to traverse */
-		if (node->right_child != traverse)
+
+	if (traverse) {
+
+		/*
+		 * Ensure that we don't get a recursive reference.
+		 */
+		if (node->right_child && node->right_child != traverse) {
+			node->right_child->parent = traverse;
 			traverse->right_child = node->right_child;
+		}
 
-		/* This if ensures that we won't point traverse->left_child
-		 * back to traverse */
-		if (node->left_child != traverse)
+		if (node->left_child && node->left_child != traverse) {
+			node->left_child->parent = traverse;
 			traverse->left_child = node->left_child;
+		}
 
+		/*
+		 * Hide the 
+		 */
 		if (traverse->parent) {
 			if (traverse->parent->left_child == traverse)
 				traverse->parent->left_child = NULL;
@@ -506,10 +540,25 @@ int ewd_tree_remove_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 		traverse->parent = node->parent;
 	}
 
+	if (node->parent) {
+		if (node == node->parent->left_child)
+			node->parent->left_child = traverse;
+		else
+			node->parent->right_child = traverse;
+	}
+
+	if (tree->tree == node)
+		tree->tree = traverse;
+
 	node->parent = node->left_child = node->right_child = NULL;
 
-	for (; traverse; traverse = traverse->parent)
+	/*
+	 * Rebalance the tree to ensure short search paths.
+	 */
+	while (traverse) {
 		tree_node_balance(tree, traverse);
+		traverse = traverse->parent;
+	}
 
 	return TRUE;
 }
@@ -537,7 +586,6 @@ int ewd_tree_remove(Ewd_Tree * tree, void *key)
 	if (!ewd_tree_remove_node(tree, node))
 		return FALSE;
 
-	node->left_child = node->right_child = NULL;
 	ewd_tree_node_destroy(node, tree->free_func);
 
 	return TRUE;
