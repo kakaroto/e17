@@ -1119,7 +1119,7 @@ void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	e = EWL_ENTRY(w);
 
 	if (e->cursor && e->editable && VISIBLE(e->cursor))
-		ewl_widget_hide(e->cursor)
+		ewl_widget_hide(e->cursor);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
