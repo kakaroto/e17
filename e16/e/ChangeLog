@@ -2465,3 +2465,16 @@ Add some configuration request and focus setting debug stuff.
 Attempt to clean up move/resize code a bit. 
 Remove unused modules.c.
 Remove __EMX__.
+
+-------------------------------------------------------------------------------
+
+Wed Feb 25 00:25:55 CET 2004
+(Kim)
+
+Fix various problems with pager dragging and focus.
+Fix pager update when dragging to other desktop.
+Try to put and end to windows getting lost (off desktop).
+Set skip-focus-list flag on iconboxes, menus, and pagers.
+Include no or all iconified windows in focus list.
+ (patch from Alan Schmitt <alan.schmitt@polytechnique.org>).
+Partial fix to broken click-to-focus.
