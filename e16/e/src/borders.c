@@ -1152,7 +1152,7 @@ EwinBorderSelect(EWin * ewin)
    if (!b)
       b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
-   ewin->border = b;
+   ewin->normal_border = ewin->border = b;
 }
 
 /*
