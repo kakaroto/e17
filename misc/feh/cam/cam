@@ -13,6 +13,11 @@ $key = shift @ARGV;
 
 &print_usage_and_exit if ($key=~/-\?/ or $key=~/-h/ or $key=~/--help/);
 
+if ($key=~/-v/i||$key=~/--verbose/i)	{
+	$PRE.=" -V ";
+	$key = shift @ARGV;
+}
+
 # if requested, add a key/url pair to bookmarks file
 if ($key =~ /\-a/ or $key =~ /\-\-add/)	{
 	open BMF, ">>$bp" or die "Couldn't open bookmarks file \"$bp\".";
@@ -72,6 +77,8 @@ Usage:
     refresh : refresh, in seconds (ex 120)
   cam <-l|--list>
     List each url key in the bookmarks file (\"$bp\").
+  cam [-v|--verbose] options
+    Start feh in verbose mode (feh -V).
   cam <-h|-?|--help>
     Display usage information (this screen).
 
