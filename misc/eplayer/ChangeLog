@@ -1,5 +1,10 @@
 $Id$
 
+2003-12-04 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/eplayer.c: eplayer.db lives in ~/.e/apps/eplayer now
+        * data/themes/default/default.edc: Added repeat mode toggle
+          button
+
 2003-11-30 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/data/eplayer.edc: Added "small" (collapsed) mode
           to the eplayer theme (thanks to digitalfallout!).

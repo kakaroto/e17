@@ -75,6 +75,8 @@ images {
 	image, "small-text-button.png" RAW;
 	image, "button-small-normal.png" RAW;
 	image, "button-small-clicked.png" RAW;
+	image, "button-on.png" RAW;
+	image, "button-off.png" RAW;
 }
 
 collections {
@@ -1880,6 +1882,103 @@ collections {
 				}
 			}
 
+			part {
+				name, "repeat_toggle_disabled_img";
+				type, IMAGE;
+				mouse_events, 1;
+
+				description {
+					state, "default" 0.0;
+					visible, 1;
+					min, 57 20;
+					max, 57 20;
+
+					rel1 {
+						relative, 0.0 1.0;
+						offset, 25 28;
+						to, "button_background";
+					}
+
+					rel2 {
+						relative, 0.25 1.0;
+						offset, 0 0;
+						to, "button_background";
+					}
+
+					image {
+						normal, "button-off.png";
+					}
+				}
+
+				description {
+					state, "disabled" 0.0;
+					visible, 0;
+				}
+			}
+
+			part {
+				name, "repeat_toggle_enabled_img";
+
+				description {
+					state, "default" 0.0;
+					visible, 0;
+				}
+
+				description {
+					state, "enabled" 0.0;
+					visible, 1;
+					min, 57 20;
+					max, 57 20;
+
+					rel1 {
+						relative, 0.0 1.0;
+						offset, 25 28;
+						to, "button_background";
+					}
+
+					rel2 {
+						relative, 0.25 1.0;
+						offset, 0 0;
+						to, "button_background";
+					}
+
+					image {
+						normal, "button-on.png";
+					}
+				}
+			}
+
+			part {
+				name, "repeat_toggle_label";
+				type, TEXT;
+				mouse_events, 0;
+
+				description {
+					state, "default" 0.0;
+
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+						to, "repeat_toggle_disabled_img";
+					}
+
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -1 -1;
+						to, "repeat_toggle_disabled_img";
+					}
+
+					color, 0 0 0 255;
+
+					text {
+						text, "REPEAT";
+						font, "Vera";
+						size, 5;
+						align, 0.5 0.6;
+					}
+				}
+			}
+
 			/********** Volume  Controls ***************************************/
 			part {
 				name, "vol_label";
@@ -2516,6 +2615,33 @@ collections {
 				signal,     "mouse,wheel,0,1";
 				source,     "vol_decr_button";
 				action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
+			}
+
+			program {
+				name, "repeat_toggle_activated";
+				signal, "mouse,clicked,1";
+				source, "repeat_toggle_disabled_img";
+				action, STATE_SET "disabled" 0.0;
+				target, "repeat_toggle_disabled_img";
+				action, STATE_SET "enabled" 0.0;
+				target, "repeat_toggle_enabled_img";
+				after, "repeat_toggle_signal";
+			}
+			
+			program {
+				name, "repeat_toggle_deactivated";
+				signal, "mouse,clicked,1";
+				source, "repeat_toggle_enabled_img";
+				action, STATE_SET "default" 0.0;
+				target, "repeat_toggle_enabled_img";
+				action, STATE_SET "default" 0.0;
+				target, "repeat_toggle_disabled_img";
+				after, "repeat_toggle_signal";
+			}
+			
+			program {
+				name, "repeat_toggle_signal";
+				action, SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
 			}
 		} /* Close Programs */
 	} /* Close Group */
