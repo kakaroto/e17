@@ -52,7 +52,7 @@ changequote([,])dnl
 
 evas_cflags=`evas-config --cflags`
 evas_libs=`evas-config --libs`
-edb_cflagss=`edb-config --cflags`
+edb_cflags=`edb-config --cflags`
 edb_libs=`edb-config --libs`
 
 AC_SUBST(evas_cflags)
