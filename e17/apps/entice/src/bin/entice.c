@@ -339,7 +339,8 @@ entice_file_add_dir_job_cb(void *data)
                 || (dent->d_name[0] == '.'))
                continue;
             snprintf(buf, PATH_MAX, "%s/%s", file, dent->d_name);
-            entice_file_add_job_cb(buf);
+            if (!entice_file_is_dir(buf))
+               entice_file_add_job_cb(buf);
          }
          closedir(d);
       }
