@@ -1596,7 +1596,7 @@ IpcItem             GroupsIpcArray[] = {
     "group operations on a window.\n" "Available group_op commands are:\n"
     "  group_op <windowid> start\n"
     "  group_op <windowid> add [<group_index>]\n"
-    "  group_op <windowid> remove [<group_index>]\n"
+    "  group_op <windowid> del [<group_index>]\n"
     "  group_op <windowid> break [<group_index>]\n"
     "  group_op <windowid> showhide\n"}
    ,
