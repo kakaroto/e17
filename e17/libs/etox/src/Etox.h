@@ -102,7 +102,6 @@ extern "C"
 	Etox_Bit *Etox_Bit_new(void);
 	Etox *Etox_new(char *name);
 	void etox_free(Etox *e);
-	char etox_render(Etox *e);
 	void etox_clean(Etox *e);
 	void etox_move(Etox *e, double x, double y);
 	void etox_resize(Etox *e, double w, double h);

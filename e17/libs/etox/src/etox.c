@@ -419,8 +419,8 @@ char etox_set_text(Etox *e, char *new_text) {
 							o = evas_add_text(e->evas,bit->font,bit->font_size,
 									bit->text);
 
-							evas_move(e->evas,o,bit->x + font_style->bits[i].x,bit->y
-									+ font_style->bits[i].y);
+							evas_move(e->evas,o,bit->x + font_style->bits[i].x,
+									bit->y + font_style->bits[i].y);
 
 							bit->num_evas++;
 
@@ -499,7 +499,8 @@ char etox_set_text(Etox *e, char *new_text) {
 							e->bit_list = realloc(e->bit_list,
 									sizeof(Etox_Bit *) * ++(e->num_bits));
 						} else {
-							e->bit_list = malloc(sizeof(Etox_Bit *) * ++(e->num_bits));
+							e->bit_list = malloc(sizeof(Etox_Bit *) * 
+									++(e->num_bits));
 						}
 
 						e->bit_list[e->num_bits - 1] = bit;
@@ -575,26 +576,6 @@ int etox_get_layer(Etox *e) {
 		return -1;
 
 	return e->layer;
-}
-
-char etox_render(Etox *e) {
-
-	/* calls evas_render on all active Evas components */
-
-	int i,j;
-
-	if(!e)
-		return 0;
-
-	for(i=0;i<e->num_bits;i++) {
-		for(j=0;j<e->bit_list[i]->num_evas;j++) {
-			evas_render(e->bit_list[i]->evas_list[j]);
-		}
-	}
-
-	e->rendered = 1;
-
-	return 1;
 }
 
 char etox_show(Etox *e) {
@@ -730,7 +711,6 @@ void etox_refresh(Etox *e) {
 	etox_set_text(e,tmp);
 	if(tmp)
 		free(tmp);
-	etox_render(e);
 
 }
 
