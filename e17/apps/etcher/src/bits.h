@@ -37,6 +37,7 @@ Ebits_Object_Bit_State ebits_new_bit(Ebits_Object o, char *file);
 Ebits_Object_Description ebits_new_description(void);
 void ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state);
 void ebits_set_state(Ebits_Object o, int st);
+void _ebits_evaluate(Ebits_Object_Bit_State state);
 #endif
 
 struct _Ebits_Object_Description

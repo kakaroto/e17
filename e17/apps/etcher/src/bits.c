@@ -638,7 +638,7 @@ ebits_new_description(void)
    return d;
 }
 
-static void
+void
 _ebits_evaluate(Ebits_Object_Bit_State state)
 {
    if (state->description->normal.image)

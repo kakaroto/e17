@@ -92,6 +92,7 @@ update_selection_from_widget(void)
    if (selected_state)
      {
 	Ebits_Object_Bit_State selected;
+	gchar *prev_i1 = NULL, *prev_i2 = NULL, *prev_i3 = NULL, *prev_i4 = NULL;
 	
 	selected = selected_state;
         GET_SPIN("tl_abs_h", rel1.x);
@@ -165,6 +166,20 @@ update_selection_from_widget(void)
 				      strdup(cell->text));
 	       }
 	  }
+	
+	prev_i1 = NULL;
+	prev_i2 = NULL;
+	prev_i3 = NULL;
+	prev_i4 = NULL;
+	if                   (selected_state->description->normal.image)
+	   prev_i1 = g_strdup(selected_state->description->normal.image);
+	if                   (selected_state->description->hilited.image)
+	   prev_i2 = g_strdup(selected_state->description->hilited.image);
+	if                   (selected_state->description->clicked.image)
+	   prev_i3 = g_strdup(selected_state->description->clicked.image);
+	if                   (selected_state->description->disabled.image)
+	   prev_i4 = g_strdup(selected_state->description->disabled.image);
+	
 	GET_ENTRY("name", name);
 	GET_ENTRY("class", class);
 	GET_ENTRY("img_normal", normal.image);
@@ -175,6 +190,25 @@ update_selection_from_widget(void)
 	GET_SPIN("border_r", border.r);
 	GET_SPIN("border_t", border.t);
 	GET_SPIN("border_b", border.b);
+	
+	if (      (selected_state->description->normal.image) &&
+	                                                     (prev_i1) &&
+	   (strcmp(selected_state->description->normal.image, prev_i1)))
+	  {
+	     selected_state->normal.saved = 0;
+	     if (selected_state->normal.image) 
+		{
+		   imlib_context_set_image(selected_state->normal.image);
+		   imlib_free_image();
+		   selected_state->normal.image = NULL;
+		}
+	  }
+	_ebits_evaluate(selected_state);
+	
+	if (prev_i1) g_free(prev_i1);
+	if (prev_i2) g_free(prev_i2);
+	if (prev_i3) g_free(prev_i3);
+	if (prev_i4) g_free(prev_i4);
 	
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_h");
 	if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Fill"))
