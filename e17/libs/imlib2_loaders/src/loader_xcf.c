@@ -1686,7 +1686,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
      return 0;
    
    /* initialize */
-   if (!xcf_file_init(im->file))
+   if (!xcf_file_init(im->real_file))
      return 0;
 
    /* set the format string member to the lower-case full extension */
