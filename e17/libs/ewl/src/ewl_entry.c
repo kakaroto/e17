@@ -385,7 +385,7 @@ void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
-		index = ewl_text_get_length(EWL_TEXT(e->text)) + 1;
+		index = ewl_text_get_length(EWL_TEXT(e->text));
 	else {
 		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
 				      (CURRENT_Y(e->text) +
