@@ -135,11 +135,21 @@ feh_load_image(Imlib_Image ** im, feh_file * file)
        || (!strncmp(file->filename, "ftp://", 6)))
    {
       char *tmpname = NULL;
+      char *tempcpy;
 
       tmpname = feh_http_load_image(file->filename);
       if (tmpname == NULL)
          D_RETURN(0);
       *im = imlib_load_image_with_error_return(tmpname, &err);
+      if (im)
+      {
+         /* load the info now, in case it's needed after we delete the
+            temporary image file */
+         tempcpy = file->filename;
+         file->filename = tmpname;
+         feh_file_info_load(file, *im);
+         file->filename = tempcpy;
+      }
       if ((opt.slideshow) && (opt.reload == 0))
       {
          /* Http, no reload, slideshow. Let's keep this image on hand... */
@@ -148,8 +158,7 @@ feh_load_image(Imlib_Image ** im, feh_file * file)
       }
       else
       {
-         /* Don't cache the image if we're doing reload + http (webcams *
-            etc) */
+         /* Don't cache the image if we're doing reload + http (webcams etc) */
          if (!opt.keep_http)
             unlink(tmpname);
       }
@@ -239,6 +248,7 @@ feh_load_image(Imlib_Image ** im, feh_file * file)
       D(("Load *failed*\n"));
       D_RETURN(0);
    }
+
    D(("Loaded ok\n"));
    D_RETURN(1);
 }
@@ -285,7 +295,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
       if (new)
          winwidget_show(progwin);
-      if(opt.full_screen)
+      if (opt.full_screen)
          XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
    }
 

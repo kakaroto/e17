@@ -350,6 +350,8 @@ feh_handle_event(XEvent * ev)
              break;
         }
         break;
+     case ResizeRequest:
+        break;
      case EnterNotify:
         D(("Got EnterNotify event\n"));
 

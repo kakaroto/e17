@@ -525,16 +525,16 @@ feh_file_info_preload(feh_file * list)
 }
 
 int
-feh_file_info_load(feh_file * file, Imlib_Image *im)
+feh_file_info_load(feh_file * file, Imlib_Image * im)
 {
    struct stat st;
-   int need_free = 0;
+   int need_free = 1;
 
    D_ENTER;
 
-   if(im)
-      need_free = 1;
-   
+   if (im)
+      need_free = 0;
+
    errno = 0;
    if (stat(file->filename, &st))
    {
@@ -578,10 +578,10 @@ feh_file_info_load(feh_file * file, Imlib_Image *im)
       file->info->pixels = file->info->width * file->info->height;
 
       file->info->format = estrdup(imlib_image_format());
-      
+
       file->info->size = st.st_size;
 
-      if(need_free)
+      if (need_free)
          imlib_free_image_and_decache();
 
       D_RETURN(0);
