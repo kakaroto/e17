@@ -59,6 +59,10 @@ Entrance can work for you. While adding sessions, please note that
 - You do not need to add a default session; that is added automatically.
 - You need to update the session count entry before you finish.
 
+If you wish to use PAM for authentication, set the option
+/entrance/use_pam_auth to 1. THIS IS RECOMMENDED unless you do not have
+PAM (which would be Slackware, LFS and similar braindead distros ;) ).
+
 You may also want to add images for users in the appropriate
 directory so that they come up while you log in. For example, if your
 login was foo, then you would need to add "foo.png" to that directory
@@ -70,14 +74,5 @@ Take a look at buildtheme.sh in the BlueCrystal theme directory as a
 guide to the theme format.
 
 Code contributors and developers needed!
-
-Slackware Note
---------------
-
-It has come to my attention that a certain rogue Linux distro named
-Slackware does not use PAM for authentication by default. Unfortunately
-Entrance presently requires PAM for authentication and session setup, so
-if you're using Slackware, you'll have to find a way to get PAM to work
-on your system to use Entrance.
 
 
