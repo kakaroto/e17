@@ -91,9 +91,9 @@ collections
 		    rel1
 		    {
 			relative, 1.0 0.0;
-			offset, 40 75;
+			offset, 30 75;
 			to_y, "bg";
-			to_x, "EnticeThumbnailArea";
+			to_x, "PanelMouseArea";
 		    }
 		    rel2
 		    {
