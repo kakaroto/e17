@@ -501,6 +501,19 @@ Estyle *estyle_split(Estyle * es, int index)
 }
 
 /**
+ * estyle_length - retrieve the length of the text in an estyle
+ * @es: the estyle to retrieve the length
+ *
+ * Returns the length of the text in the estyle @es.
+ */
+inline int estyle_length(Estyle *es)
+{
+	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+
+	return es->length;
+}
+
+/**
  * estyle_geometry - retrieve the dimensions of the estyle
  * @es: the estyle to retrieve dimensions
  * @x: a pointer to an integer to store the x coordinate of the estyle

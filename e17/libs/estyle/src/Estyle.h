@@ -37,6 +37,7 @@ void estyle_hide(Estyle * es);
 /*
  * Content and appearance manipulators
  */
+void estyle_move(Estyle *es, int x, int y);
 char *estyle_get_text(Estyle * es);
 void estyle_set_text(Estyle * es, char *text);
 int estyle_get_layer(Estyle * es);
@@ -51,6 +52,7 @@ void estyle_set_color_db(Estyle * es, char *name);
 /*
  * Geometry querying
  */
+inline int estyle_length(Estyle *es);
 void estyle_geometry(Estyle *es, int *x, int *y, int *w, int *h);
 void estyle_text_at(Estyle *es, int index, int *char_x, int *char_y,
 		int *char_w, int *char_h);
