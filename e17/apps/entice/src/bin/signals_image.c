@@ -514,3 +514,17 @@ _entice_image_align_drag(void *data, Evas_Object * o, const char *emission,
       entice_image_vertical_align_set(dy);
    }
 }
+
+void
+_entice_image_signal_debug(void *data, Evas_Object * o, const char *emission,
+                           const char *source)
+{
+   fprintf(stderr, "Emission: %s - Source: %s\n", emission, source);
+}
+
+void
+_entice_image_edit(void *data, Evas_Object * o, const char *emission,
+                   const char *source)
+{
+   entice_image_edit();
+}

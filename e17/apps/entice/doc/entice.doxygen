@@ -160,6 +160,7 @@ $ cp winter.eet ~/.e/apps/entice/themes/
 	<li><em>entice,image,current,scroll,start,south</em>:("") start a timer to pan the image viewport image "South"</li>
 	<li><em>entice,image,current,scroll,start,north</em>:("") start a timer to pan the image viewport image "North"</li>
 	<li><em>entice,image,current,scroll,stop</em>:("") stops all image scrolling timers</li>
+	<li><em>entice,image,current,edit</em>:("") try to edit the image with the config opt for editor</li>
 	<li><em>entice,thumbnail,scroll,start,next</em>:("") start scrolling to see additional elements in in the thumbnail containers</li>
 	<li><em>entice,thumbnail,scroll,start,prev</em>:("") start scrolling to see images before those currently displayed in the container </li>
 	<li><em>entice,thumbnail,scroll,stop</em>:("") stops any thumbnail scrolling timers that are currently running.</li>
@@ -190,6 +191,7 @@ $ cp winter.eet ~/.e/apps/entice/themes/
 	<li><em>entice,image,modified</em>:("") When the image in memory is no longer consistent with the image on disk</li>
 	<li><em>entice,preview,show</em>:("") When we have a new image in previewer.  </li>
 	<li><em>entice,preview,show,before</em>:("") When we have a new image coming into the previewer, this is emitted right before the old preview is replaced with the new.  </li>
+	<li><em>entice,image,current,edit,sent</em>:("") When we have successfully requested the file to be loaded in the editor.  </li>
     </ul>
 </li>
 </ul>

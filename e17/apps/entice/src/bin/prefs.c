@@ -10,7 +10,6 @@
 #include <unistd.h>
 
 #include "../config.h"
-/* #define PACKAGE_DATA_DIR "/usr/share/entice" */
 
 static Entice_Config *econfig = NULL;
 
@@ -57,6 +56,20 @@ entice_config_image_cache_get(void)
 
    if ((econfig) && (econfig->cache.image > 0))
       result = econfig->cache.image;
+   return (result);
+}
+
+/**
+ * entice_config_editor_get - get the path to the executable, DO NOT FREE THIS
+ * Returns - absolute path to the editor's executable
+ */
+const char *
+entice_config_editor_get(void)
+{
+   char *result = NULL;
+
+   if (econfig && econfig->editor)
+      result = econfig->editor;
    return (result);
 }
 
@@ -207,6 +220,12 @@ entice_config_init(void)
                   free(econfig->theme);
                econfig->theme = str;
             }
+            if ((str = e_db_str_get(db, "/entice/editor")))
+            {
+               if (econfig->editor)
+                  free(econfig->editor);
+               econfig->editor = str;
+            }
             if (!e_db_int_get(db, "/entice/engine", &econfig->engine))
                econfig->engine = SOFTWARE_X11;
             if (!e_db_int_get
@@ -290,11 +309,12 @@ entice_config_generate_original_db(char *filename)
       "entice,quit", "entice,image,current,rotate,left",
       "entice,image,current,rotate,right",
       "entice,image,current,flip,horizontal",
-      "entice,image,current,flip,vertical", "entice,image,current,remove"
+      "entice,image,current,flip,vertical", "entice,image,current,remove",
+      "entice,image,current,edit"
    };
    char *keys[] =
       { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q", "Left",
-      "Right", "Up", "Down", "d"
+      "Right", "Up", "Down", "d", "e"
    };
    count = sizeof(signals) / sizeof(char *);
 
@@ -311,7 +331,11 @@ entice_config_generate_original_db(char *filename)
       {
          e_db_str_set(db, "/entice/theme", "default.eet");
          e_db_int_set(db, "/entice/engine", 0);
-
+#ifndef GIMP_REMOTE_BIN
+         e_db_str_set(db, "/entice/editor", "");
+#else
+         e_db_str_set(db, "/entice/editor", GIMP_REMOTE_BIN);
+#endif
          for (i = 0; i < count; i++)
          {
             snprintf(buf, PATH_MAX, "/entice/keys/up/%i/symbol", i);

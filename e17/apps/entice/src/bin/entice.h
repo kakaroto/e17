@@ -26,7 +26,7 @@ struct _Entice
 
    Ecore_Evas *ee;              /* the evas window */
    Evas_Object *edje;           /* Main Edje_Object(theme) */
-   Evas_Object *current;        /* Object currently visible */
+   Evas_Object *current;        /* EnticeImage Object currently visible */
    Evas_Object *preview;        /* E_Thumb */
    Evas_Object *scroller;       /* E_Thumb */
    Evas_Object *container;      /* thumbnail container the edje swallows */
@@ -76,5 +76,6 @@ void entice_dragable_image_set(int state);
 
 void entice_image_horizontal_align_set(double align);
 void entice_image_vertical_align_set(double align);
+void entice_image_edit(void);
 
 #endif

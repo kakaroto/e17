@@ -50,6 +50,7 @@ hookup_edje_signals(Evas_Object * o)
       "entice,image,current,remove",
       "entice,image,next",
       "entice,image,prev",
+      "entice,image,current,edit",
       "entice,image,current,zoom,in",
       "entice,image,current,zoom,out",
       "entice,image,current,zoom,in,focused",
@@ -69,21 +70,24 @@ hookup_edje_signals(Evas_Object * o)
       "entice,thumbnail,scroll,stop",
       "entice,window,fit,image",
       "entice,window,fullscreen",
-      "entice,quit", NULL
+      "entice,quit",
+      "entice,debug", NULL
    };
    void (*funcs[]) (void *data, Evas_Object * o, const char *emission,
                     const char *source) =
    {
    _entice_delete_current, _entice_remove_current, _entice_image_next,
-         _entice_image_prev, _entice_zoom_in, _entice_zoom_out,
-         _entice_zoom_in_focused, _entice_zoom_out_focused,
-         _entice_zoom_default, _entice_zoom_fit, _entice_rotate_left,
-         _entice_rotate_right, _entice_flip_horizontal,
-         _entice_flip_vertical, _entice_image_align_seek,
-         _entice_image_align_drag, _entice_image_modified,
-         _entice_image_save, _entice_thumbs_scroll_next_start,
+         _entice_image_prev, _entice_image_edit, _entice_zoom_in,
+         _entice_zoom_out, _entice_zoom_in_focused,
+         _entice_zoom_out_focused, _entice_zoom_default, _entice_zoom_fit,
+         _entice_rotate_left, _entice_rotate_right,
+         _entice_flip_horizontal, _entice_flip_vertical,
+         _entice_image_align_seek, _entice_image_align_drag,
+         _entice_image_modified, _entice_image_save,
+         _entice_thumbs_scroll_next_start,
          _entice_thumbs_scroll_prev_start, _entice_thumbs_scroll_stop,
-         _entice_fit_window, _entice_fullscreen, _entice_quit, NULL};
+         _entice_fit_window, _entice_fullscreen, _entice_quit,
+         _entice_image_signal_debug, NULL};
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "*", funcs[i], NULL);
@@ -964,6 +968,24 @@ entice_rotate_image_left(void)
       if (entice_image_rotate(entice->current, 3))
          edje_object_signal_emit(entice->edje, "entice,image,modified", "");
       edje_thaw();
+   }
+}
+void
+entice_image_edit(void)
+{
+   char buf[PATH_MAX];
+
+   if (entice && entice->current)
+   {
+      if (entice_config_editor_get()
+          && entice_image_file_get(entice->current))
+      {
+         snprintf(buf, PATH_MAX, "%s %s", entice_config_editor_get(),
+                  entice_image_file_get(entice->current));
+         ecore_exe_run(buf, NULL);
+         edje_object_signal_emit(entice->edje,
+                                 "entice,image,current,edit,sent", "");
+      }
    }
 }
 void

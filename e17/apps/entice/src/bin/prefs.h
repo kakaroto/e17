@@ -15,6 +15,8 @@ struct _Entice_Config
 {
    char *theme;
    char *db;
+   char *editor;
+
    int engine;
    int image_quality;
 
@@ -43,5 +45,6 @@ int entice_config_image_cache_get(void);
 void entice_config_geometry_get(int *x, int *y, int *w, int *h);
 void entice_config_geometry_set(int x, int y, int w, int h);
 int entice_config_image_quality_get(void);
+const char *entice_config_editor_get(void);
 
 #endif

@@ -66,4 +66,8 @@ void _entice_image_align_drag(void *data, Evas_Object * o,
                               const char *emission, const char *source);
 void _entice_image_align_seek(void *data, Evas_Object * o,
                               const char *emission, const char *source);
+void _entice_image_signal_debug(void *data, Evas_Object * o,
+                                const char *emission, const char *source);
+void _entice_image_edit(void *data, Evas_Object * o, const char *emission,
+                        const char *source);
 #endif
