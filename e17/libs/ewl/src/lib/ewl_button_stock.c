@@ -161,7 +161,7 @@ ewl_button_stock_with_id_new (char *stock_id,
 
   ewl_callback_append (button,
 		       EWL_CALLBACK_CLICKED,
-		       EWL_CALLBACK_FUNCTION (ewl_button_stock_click_cb),
+		       ewl_button_stock_click_cb,
 		       &(EWL_BUTTON_STOCK (button)->response_id));
   
   DRETURN_PTR(button, DLEVEL_STABLE);

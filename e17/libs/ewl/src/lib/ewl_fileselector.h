@@ -62,10 +62,10 @@ void ewl_fileselector_path_set(Ewl_Fileselector *fs, char *path);
  * Internally used callbacks, override at your own risk.
  */
 
-void ewl_fileselector_select_file_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
-void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
-void ewl_fileselector_go_up_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
-void ewl_fileselector_go_home_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
+void ewl_fileselector_select_file_cb(Ewl_Widget *w, void *ev_data, void *data);
+void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data, void *data);
+void ewl_fileselector_go_up_cb(Ewl_Widget *w, void *ev_data, void *data);
+void ewl_fileselector_go_home_cb(Ewl_Widget *w, void *ev_data, void *data);
 void ewl_fileselector_filter_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
 
 /* Private: data for a file */
