@@ -358,7 +358,6 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
 void
 ewl_entry_text_at_cursor_insert(Ewl_Entry * e, char *text)
 {
-	Ewl_Entry_Op *op;
 	int pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1068,7 +1067,7 @@ void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	if (e->cursor && !VISIBLE(e->cursor))
+	if (e->cursor && e->editable && !VISIBLE(e->cursor))
 		ewl_widget_show(e->cursor);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1083,7 +1082,7 @@ void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	if (e->cursor && VISIBLE(e->cursor))
+	if (e->cursor && e->editable && VISIBLE(e->cursor))
 		ewl_widget_hide(e->cursor)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
