@@ -72,10 +72,12 @@ unsigned long _econf_finddatapointerinpath(char *path,char *loc,
                                            unsigned long *position);
 void * _econf_get_data_from_disk(char *loc,unsigned long *length);
 int _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
-                             char local);
+                             char *path);
 int _econf_purge_data_from_disk(char *loc);
 int _econf_purge_data_from_disk_at_path(char *loc, char *path);
 int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 		        unsigned long length, void *data);
 int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
 unsigned long _econf_timestamp(void);
+int _econf_replace_fat_entry_to_disk(char *loc, unsigned long length,
+                                     char *path);

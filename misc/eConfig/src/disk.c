@@ -160,6 +160,8 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 		tableentry.length = length;
 		tableentry.usage_index = 0;
 		tableentry.updated_on = _econf_timestamp();
+		fseek(FAT_TABLE,0,SEEK_END);
+		fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
 		fclose(FAT_TABLE);
 	} else {
 		/* we failed to open the file for writing properly.
@@ -174,18 +176,66 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 }
 
 int
+_econf_replace_fat_entry_to_disk(char *loc, unsigned long length, char *path)
+{
+	FILE *FAT_TABLE;
+	char tablepath[FILEPATH_LEN_MAX];
+	eConfigFAT tableentry;
+	eConfigFAT oldtableentry;
+
+	if(!path)
+		return 0;
+	if(!loc)
+		return 0;
+	if(!length)
+		return 0;
+
+	sprintf(tablepath,"%s/fat",path);
+	FAT_TABLE = fopen(tablepath,"r+");
+	if(FAT_TABLE) {
+		memset(&tableentry,0,sizeof(eConfigFAT));
+		sprintf(tableentry.loc,"%s",loc);
+		tableentry.length = length;
+		tableentry.usage_index = 0;
+		tableentry.updated_on = _econf_timestamp();
+		while(!feof(FAT_TABLE)) {
+			fread(&oldtableentry,sizeof(eConfigFAT),1,FAT_TABLE);
+			if(!strcmp(oldtableentry.loc,loc)) {
+				fseek(FAT_TABLE,-(sizeof(eConfigFAT)),SEEK_CUR);
+				if(length >
+					   	fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE)) {
+					/* oops, we messed up somehow during the write. */
+					fclose(FAT_TABLE);
+					return 0;
+				}
+				fclose(FAT_TABLE);
+				return 1;
+			}
+		}
+	} else {
+		/* we failed to open the file for writing properly.
+		 * This means we can't write anything to the disk.
+		 * This is an error. :)
+		 */
+		return 0;
+	}
+
+	return 0;
+}
+
+int
 _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
-                         char local)
+                         char *path)
 {
 
-	/* This function is supposed to save data out to disk.  it really needs to
-	 * be slapped since it really isn't doing what I think it should be doing.
-	 * FIXME: this function doesn't work right.
+	/* This function is supposed to save data out to disk.  it takes the *data
+	 * for key *loc of length length and saves it to the theme at *path.
+	 * *path MUST be supplied externally by the application.
 	 * This function is internal to eConfig.
 	 */
 
-	char **paths;
-	int num;
+	unsigned long position;
+	unsigned long newlength;
 
 	if(!data)
 		return 0;
@@ -193,40 +243,20 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 		return 0;
 	if(!length)
 		return 0;
+	if(!path)
+		return 0;
 
-	if((paths = eConfigPaths(&num))) {
-		int i;
-		unsigned long oldlength;
-		unsigned long position;
-		for(i=0;i<num;i++) {
-			if((oldlength =
-				_econf_finddatapointerinpath(paths[i],loc,&position))) {
-				if(oldlength >= length) {
-					if(!_econf_save_data_to_disk_at_position(position,paths[i],
-							length,data)) {
-						/* We failed writing to the disk.  This is probably
-						 * bad.
-						 */
-					} else {
-						/* write successful */
-					}
-				} else {
-					if(_econf_purge_data_from_disk_at_path(loc,paths[i])) {
-						/* purge succeeded */
-					} else {
-						/* We failed purging it somehow, even though we found
-						 * it...  This is probably not a good place to be.
-						 */
-					}
-				}
-			}
+	if((newlength = _econf_finddatapointerinpath(path, loc, &position))) {
+		/* we already exist in this datafile */
+		if(newlength >= length) {
+
+		} else {
+
 		}
-		free(paths);
-	}
+	} else {
+		/* we don't exist in this datafile */
 
-	/* We're somehow trying to save data without HAVING anywhere to save it
-	 * to, which is probably a bad thing
-	 */
+	}
 
 	return 0;
 
