@@ -88,7 +88,7 @@ _econf_snarf_keys_from_fat_table(char *path, char *regex,
 	     char               *current_pointer;
 
 	     fread(&tableentry, sizeof(eConfigFAT), 1, FAT_TABLE);
-	     if (strcmp, tableentry.loc, "dirty")
+	     if (strcmp(tableentry.loc, "dirty"))
 	       {
 		  if (_econf_matchregexp(regex, tableentry.loc))
 		    {

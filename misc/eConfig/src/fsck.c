@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int
+int 
 eConfigFsckPath(char *path)
 {
 
@@ -25,6 +25,7 @@ eConfigFsckPath(char *path)
     */
 
    char                tablepath[FILEPATH_LEN_MAX];
+   FILE               *FAT_TABLE;
 
    if (!path)
       return 0;
@@ -37,7 +38,6 @@ eConfigFsckPath(char *path)
 	  }
 	fclose(FAT_TABLE);
      }
-
    return 1;
 
 }
