@@ -1566,6 +1566,9 @@ typedef struct file_state_struct {
  * @ingroup DOXGRP_CONF_CTX
  */
 typedef void * (*ctx_handler_t)(char *, void *);
+/**
+ */
+typedef char * (*conf_func_ptr_t) (char *);
 
 extern fstate_t *fstate;
 extern unsigned char fstate_idx;

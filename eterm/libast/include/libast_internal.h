@@ -124,7 +124,6 @@ typedef struct ctx_state_struct {
 } ctx_state_t;
 
 /* Built-in functions */
-typedef char * (*conf_func_ptr_t) (char *);
 typedef struct conf_func_struct {
   char *name;
   conf_func_ptr_t ptr;
