@@ -69,18 +69,24 @@ static bool has_changed (MailBox *mb)
 	char *path;
 	struct stat st;
 	time_t *mtime;
+	off_t *size;
 	bool ret;
 
 	assert (mb);
 
 	path = mailbox_property_get (mb, "path");
-	mtime = mailbox_property_get (mb, "mtime");
 
 	if (stat (path, &st))
 		return true;
 
-	ret = (st.st_mtime != *mtime);
+	mtime = mailbox_property_get (mb, "mtime");
+	size = mailbox_property_get (mb, "size");
+
+	/* check whether mtime or size have changed */
+	ret = (st.st_mtime != *mtime || st.st_size != *size);
+
 	*mtime = st.st_mtime;
+	*size = st.st_size;
 
 	return ret;
 }
@@ -114,7 +120,8 @@ static bool mbox_add_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 	int interval;
-	time_t *zero;
+	time_t *tzero;
+	off_t *ozero;
 
 	assert (mb);
 
@@ -125,10 +132,27 @@ static bool mbox_add_mailbox (MailBox *mb)
 
 	mailbox_property_set (mb, "timer", timer);
 
-	zero = malloc (sizeof (time_t));
-	*zero = 0;
+	/* init the mtime and size properties */
+	if (!(tzero = calloc (1, sizeof (time_t)))) {
+		mailbox_property_set (mb, "timer", NULL);
+		ecore_timer_del (timer);
 
-	mailbox_property_set (mb, "mtime", zero);
+		return false;
+	}
+
+	mailbox_property_set (mb, "mtime", tzero);
+
+	if (!(ozero = calloc (1, sizeof (off_t)))) {
+		mailbox_property_set (mb, "timer", NULL);
+		mailbox_property_set (mb, "mtime", NULL);
+
+		ecore_timer_del (timer);
+		free (tzero);
+
+		return false;
+	}
+
+	mailbox_property_set (mb, "size", ozero);
 
 	return true;
 }
@@ -144,6 +168,7 @@ static bool mbox_remove_mailbox (MailBox *mb)
 		ecore_timer_del (timer);
 
 	free (mailbox_property_get (mb, "mtime"));
+	free (mailbox_property_get (mb, "size"));
 
 	return true;
 }

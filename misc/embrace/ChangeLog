@@ -1,5 +1,10 @@
 $Id$
 
+2004-05-03 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/plugins/mbox/mbox: Fixed a file descriptor leak.
+          The plugin will re-check a mbox now if its size or mtime
+          differs.
+
 2004-04-23 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/embrace.c: Added config switch "evas_engine". Set to "gl"
           to make Embrace run off the GL X11 engine.
