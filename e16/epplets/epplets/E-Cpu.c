@@ -176,9 +176,10 @@ draw_flame(void)
 	rptr = rgb + (y * 40 * 3);
 	for (x = 0; x < 40; x++)
 	  {
-	     rptr[0] = rm[ptr[x]];
-	     rptr[1] = gm[ptr[x]];
-	     rptr[2] = bm[ptr[x]];
+	     val1 = ptr[x] & 0xff;
+	     rptr[0] = rm[val1];
+	     rptr[1] = gm[val1];
+	     rptr[2] = bm[val1];
 	     rptr += 3;
 	  }
      }
