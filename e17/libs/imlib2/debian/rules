@@ -15,22 +15,24 @@ export DH_COMPAT=2
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
-build: build-stamp
+configure: configure-stamp
+configure-stamp:
+	./autogen.sh --prefix=/usr || ./configure --prefix=/usr	
+	touch configure-stamp
+
+
+build: configure build-stamp
 build-stamp:
 	dh_testdir
 
-	# Add here commands to compile the package.
-	#$(MAKE)
 
-	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
 	$(MAKE)
 
 	touch build-stamp
 
 clean:
 	dh_testdir
-	dh_testroot
-	rm -f build-stamp 
+	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
