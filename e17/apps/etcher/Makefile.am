@@ -64,4 +64,4 @@ dist-hook:
 	  done \
 	fi
 
-EXTRA_DIST = README AUTHORS COPYING
+EXTRA_DIST = README AUTHORS COPYING etcher.spec etcher.spec.in
