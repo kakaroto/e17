@@ -567,11 +567,14 @@ spawnMenu(EWin * ewin, const void *params)
 {
    char                s[1024];
    char                s2[1024];
+
+#if 0
    int                 x, y, di;
    Window              dw;
    unsigned int        w, h, d;
    char                desk_click = 0;
    int                 i;
+#endif
 
    EDBUG(6, "spawnMenu");
 
@@ -581,6 +584,7 @@ spawnMenu(EWin * ewin, const void *params)
    if (Mode.cur_menu_depth > 0)
       EDBUG_RETURN(0);
 
+#if 0				/* FIXME: Incorrect placement if in deskslide */
    for (i = 0; i < Conf.desks.num; i++)
      {
 	if (Mode.context_win == desks.desk[i].win)
@@ -606,6 +610,7 @@ spawnMenu(EWin * ewin, const void *params)
 	     Mode.context_h = h;
 	  }
      }
+#endif
 
    if (Mode.button)
       clickmenu = 1;

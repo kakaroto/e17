@@ -1255,7 +1255,9 @@ typedef struct
    Menu               *cur_menu[256];
    Window              menu_cover_win;
    Window              menu_win_covered;
+#if 1				/* Should be removed */
    int                 context_w, context_h;
+#endif
    char                constrained;
    char                nogroup;
    char                keybinds_changed;
