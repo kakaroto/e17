@@ -44,7 +44,6 @@ _eapp_edit_save(Ewl_Widget *w, void *ev, void *data) {
 
     eet = engrave_file_new();
     engrave_file_image_dir_set(eet, idir);
-    engrave_file_font_dir_set(eet, idir);
     image = engrave_image_new(ifile, ENGRAVE_IMAGE_TYPE_COMP, 0);
     engrave_file_image_add(eet, image);
 
