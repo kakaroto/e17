@@ -170,8 +170,23 @@ parse_config(void) {
     hacks[1] = "rorschach";
     hacks[2] = "qix -solid -delay 0 -segments 100";
     Epplet_add_config("hack_0", "kaleidescope");
-    Epplet_add_config("hack_1", "rorschach");
+    Epplet_add_config("hack_1", "strange");
     Epplet_add_config("hack_2", "qix -solid -delay 0 -segments 100");
+    Epplet_add_config("hack_3", "demon");
+    Epplet_add_config("hack_4", "bubbles");
+    Epplet_add_config("hack_5", "xflame");
+    Epplet_add_config("hack_6", "compass");
+    Epplet_add_config("hack_7", "drift");
+    Epplet_add_config("hack_8", "flow");
+    Epplet_add_config("hack_9", "galaxy");
+    Epplet_add_config("hack_10", "hypercube");
+    Epplet_add_config("hack_11", "ifs");
+    Epplet_add_config("hack_12", "kumppa -delay 20000");
+    Epplet_add_config("hack_13", "laser");
+    Epplet_add_config("hack_14", "swirl");
+    Epplet_add_config("hack_15", "t3d");
+    Epplet_add_config("hack_16", "triangle");
+    Epplet_add_config("hack_17", "worm");
   }
 }
 
