@@ -1,10 +1,10 @@
 ######################################################################
-# Makefile.am                                            February 2000
+# Makefile.am                                            November 2001
 # Horms                                             horms@vergenet.net
 #
-# perdition
-# Mail retrieval proxy server
-# Copyright (C) 1999-2001  Horms
+# imlib2_tools
+# Clone of ImageMagick command line programmes using Imlib2.
+# Copyright (C) 2001  Horms
 # 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -28,10 +28,5 @@ bin_PROGRAMS = imlib2_convert imlib2_identify
 imlib2_convert_SOURCES = convert.c
 
 imlib2_identify_SOURCES = identify.c
-
-#INCLUDES= 
-
-# Removed because Debian doesn't like it
-#LDFLAGS = -Wl,--rpath -Wl,@prefix@
 
 LDADD = @imlib2_libs@ -lm

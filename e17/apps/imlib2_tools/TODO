@@ -1,0 +1,11 @@
+TODO
+
+imlib2_convert
+Clone of ImageMagick convert programme that uses Imlib2.
+Copyright (C) 2001  Horms <horms@vergenet.net>
+----------------------------------------------------------------------
+
+Resolve some possible bugs in Imlib2
+* Can't save to arbitary file names (the suffix must be correct)
+* imlib_create_rotated_image() uses radians but documentation 
+  specifies degrees

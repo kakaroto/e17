@@ -2,8 +2,10 @@
  * identify.c                                             November 2001
  * Horms                                             horms@vergenet.net
  *
- * imlib2_identify
- * Clone of ImageMagick identify programme that uses Imlib2.
+ * Clone of ImageMagick's identify programme
+ *
+ * imlib2_tools
+ * Clone of ImageMagick command line programmes using Imlib2.
  * Copyright (C) 2001  Horms
  * 
  * Permission is hereby granted, free of charge, to any person

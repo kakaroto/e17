@@ -2,8 +2,10 @@
  * convert.c                                              November 2001
  * Horms                                             horms@vergenet.net
  *
- * imlib2_convert
- * Clone of ImageMagick convert programme that uses Imlib2.
+ * Clone of ImageMagick's convert programme
+ *
+ * imlib2_tools
+ * Clone of ImageMagick command line programmes using Imlib2.
  * Copyright (C) 2001  Horms
  * 
  * Permission is hereby granted, free of charge, to any person
@@ -45,12 +47,10 @@
 #include <popt.h>
 #include <math.h>
 
+#define DEFAULT_CACHE_SIZE 80 /* In megabytes */
+
 #define imlib_context_set_colour(_r, _g, _b, _a) \
 	imlib_context_set_color(_r, _g, _b, _a)
-
-#define __OP_FLIP    0x0001
-#define __OP_FLOP    0x0002
-#define __OP_AVERAGE 0x0004
 
 #define __SAFE_FREE(_ptr) \
 	if(_ptr!=NULL) { \
@@ -58,11 +58,19 @@
 	} \
 	_ptr = NULL;
 
+#define __OP_FLIP        0x0001
+#define __OP_FLOP        0x0002
+#define __OP_FLOP        0x0002
+#define __OP_AVERAGE     0x0004
+#define __OP_NOANTIALIAS 0x0010
+
 typedef struct {
 	const char *blur;
 	const char *border;
 	const char *bordercolour;
 	const char *crop;
+	const char *channel;
+	const char *cache;
 	const char *geometry;
 	const char *gamma;
 	const char *rotate;
@@ -79,19 +87,26 @@ static void usage(int exit_status)
 	fprintf(exit_status ? stderr : stdout,
 		PACKAGE " version " VERSION " Copyright Horms\n\n"
 		"Usage: imlib2_convert [options] source destination\n"
-		"    options:\n"
-		"        -average\n"
-		"        -blur         <radius>[%%]\n"
-		"        -border       <width>[x<height>]\n"
-		"        -bordercolour #<rr><gg><bb>[<aa>]\n"
-		"        -crop         <width>[x<height>][%%]\n"
-		"        -flip\n"
-		"        -flop\n"
-		"        -gamma        <gamma>|<red_gamma>/<green_gamma>/<blue_gamma>\n"
-		"        -geometry     <width>[x<height>][%%][<|>][!]\n"
-		"        -help\n"
-		"        -rotate       <angle>[<|>]\n"
-		"\n");
+		"  options:\n"
+		"    -average\n"
+		"    -[no]antialias\n"
+		"    -blur          <radius>[%%]\n"
+		"    -border        <width>[x<height>]\n"
+		"    -bordercolour  #<rr><gg><bb>[<aa>]\n"
+		"    -cache         megabytes\n"
+		"                   (default is %d)\n"
+		"    -crop          <width>[x<height>][%%]\n"
+		"    -channel       Red|Green|Blue|Alpha\n"
+		"                   Matte has the same meaning as Alpha\n"
+		"    -coalesce      (The same as average)\n"
+		"    -flip\n"
+		"    -flop\n"
+		"    -gamma         <gamma>|<red>/<green>/<blue>[/<alpha>]\n"
+		"    -geometry      <width>[x<height>][%%][<|>][!]\n"
+		"    -help\n"
+		"    -rotate        <angle>[<|>]\n"
+		"\n",
+		DEFAULT_CACHE_SIZE);
 
 	exit(exit_status);
 }
@@ -114,6 +129,9 @@ static options_t *options(int argc, char **argv)
 
 	struct poptOption options[] = {
 		{"average", 'a', POPT_ARGFLAG_ONEDASH, NULL, 'a'},
+		{"coalesce", 'a', POPT_ARGFLAG_ONEDASH, NULL, 'a'},
+		{"antialias", 'A', POPT_ARGFLAG_ONEDASH, NULL, 'A'},
+		{"noantialias", 'n', POPT_ARGFLAG_ONEDASH, NULL, 'n'},
 		{"blur", 'b', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'b'},
 		{"border", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
@@ -124,8 +142,12 @@ static options_t *options(int argc, char **argv)
 		{"bordercolor", '\0',
 		 POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 129},
+		{"cache", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 130},
 		{"crop", 'c', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'c'},
+		{"channel", 'C', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 'C'},
 		{"flip", 'f', POPT_ARGFLAG_ONEDASH, NULL, 'f'},
 		{"flop", 'F', POPT_ARGFLAG_ONEDASH, NULL, 'F'},
 		{"gamma", 'G', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
@@ -140,7 +162,7 @@ static options_t *options(int argc, char **argv)
 
 	opt = (options_t *) malloc(sizeof(options_t));
 	if (opt == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not allocate memory for options.\n");
 		return (NULL);
 	}
 
@@ -164,6 +186,12 @@ static options_t *options(int argc, char **argv)
 		optarg = poptGetOptArg(context);
 
 		switch (c) {
+		case 'A':
+			/* Does nothing as this is the default */
+			break;
+		case 'n':
+			opt->bin_ops |= __OP_NOANTIALIAS;
+			break;
 		case 'a':
 			opt->bin_ops |= __OP_AVERAGE;
 			break;
@@ -176,8 +204,14 @@ static options_t *options(int argc, char **argv)
 		case 129:
 			opt->bordercolour = optarg;
 			break;
+		case 130:
+			opt->cache = optarg;
+			break;
 		case 'c':
 			opt->crop = optarg;
+			break;
+		case 'C':
+			opt->channel = optarg;
 			break;
 		case 'f':
 			opt->bin_ops |= __OP_FLIP;
@@ -204,20 +238,15 @@ static options_t *options(int argc, char **argv)
 		}
 	}
 
-	if ((opt->files = poptGetArgs(context)) == NULL) {
+	if ((opt->files = poptGetArgs(context)) == NULL ||
+			(opt->src = *(opt->files)) == NULL) {
 		fprintf(stderr, "No source or destination file\n\n");
 		usage(-1);
-	}
-
-	if((opt->src = *(opt->files)) == NULL) {
-		fprintf(stderr, "Internal error\n");
-		goto bail;
 	}
 
 	for(file = opt->files, opt->nfiles = 0; *file != NULL; 
 			file++, opt->nfiles++) { 
 		opt->dest = *file; 
-		printf("File: %s\n", *file);
 	}
 	if (opt->dest == opt->src) {
 		fprintf(stderr, "No destination file\n\n");
@@ -225,10 +254,6 @@ static options_t *options(int argc, char **argv)
 	}
 
 	return (opt);
-
-bail:
-	__OPTIONS_SAFE_FREE(opt);
-	return (NULL);
 }
 
 
@@ -403,7 +428,7 @@ static Imlib_Image image_scale(Imlib_Image image, const char *geometry)
 						      imlib_image_get_height
 						      (), w, h);
 	if (out_image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not create scaled image\n");
 		return (NULL);
 	}
 
@@ -542,18 +567,15 @@ static void image_crop_multi(Imlib_Image image, const int w,
 
 	digits = (int)log10(no) + 1;
 	len = strlen(dest) +  digits + 2;
-	if((buf = (char *)malloc(len)) == NULL) {
-		fprintf(stderr, "Internal error\n");
-		exit (-1);
-	}
 
-	if((name = strdup(dest)) == NULL) {
-		fprintf(stderr, "Internal error\n");
+	if((buf = (char *)malloc(len)) == NULL ||
+			(name = strdup(dest)) == NULL) {
+		fprintf(stderr, "Could not allocate memory for filename\n");
 		exit (-1);
 	}
 
 	if((suffix = strrchr(name, '.')) == NULL || *(suffix+1) == '\0') {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "No suffix in filename\n");
 		exit (-1);
 	}
 
@@ -567,7 +589,8 @@ static void image_crop_multi(Imlib_Image image, const int w,
 			out_image = imlib_create_cropped_image(x, y, 
 					ww, hh);
 			if (out_image == NULL) {
-				fprintf(stderr, "Internal error\n");
+				fprintf(stderr, "Could not create cropped "
+						"image\n");
 				exit (-1);
 			}
 			imlib_context_set_image(out_image);
@@ -595,7 +618,7 @@ static Imlib_Image image_crop_single(Imlib_Image image,
 
 	out_image = imlib_create_cropped_image(x, y, w, h);
 	if (out_image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not create cropped image\n");
 		return (NULL);
 	}
 
@@ -641,7 +664,7 @@ static Imlib_Image image_crop_auto(Imlib_Image image, const int x,
 
 	imlib_context_set_image(image);
 	if((data=imlib_image_get_data_for_reading_only()) == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not get image data for autocrop\n");
 		return(NULL);
 	}
 
@@ -784,7 +807,7 @@ static Imlib_Image image_crop(Imlib_Image image, const char *crop,
 	else {
 		image = image_crop_single(image, x, y, w, h);
 		if (image == NULL) {
-			fprintf(stderr, "Internal error\n");
+			fprintf(stderr, "Could not crop image\n");
 			return (NULL);
 		}
 	}
@@ -948,7 +971,7 @@ static Imlib_Image image_border(Imlib_Image image, const char *border,
 	}
 
 	if ((new_image = imlib_create_image(w, h)) < 0) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not create new image with border\n");
 		return (NULL);
 	}
 
@@ -987,14 +1010,16 @@ static Imlib_Image image_flip(Imlib_Image image, const int flip)
 
 
 static int calculate_gamma(const char *spec, double *r, double *g,
-			   double *b)
+			   double *b, double *a)
 {
 	char *end;
 
+	*r = 1.0;
+	*g = 1.0;
+	*b = 1.0;
+	*a = 1.0;
+		
 	if (spec == NULL) {
-		*r = 1.0;
-		*g = 1.0;
-		*b = 1.0;
 		return (0);
 	}
 
@@ -1029,6 +1054,16 @@ static int calculate_gamma(const char *spec, double *r, double *g,
 		return (-1);
 	}
 
+	if (*end == '\0') {
+		return (0);
+	}
+
+	spec = end + 1;
+	*a = strtod(spec, &end);
+	if (*a < 0 || *a > INT_MAX) {
+		return (-1);
+	}
+
 	if (*end != '\0') {
 		return (-1);
 	}
@@ -1037,11 +1072,9 @@ static int calculate_gamma(const char *spec, double *r, double *g,
 }
 
 
-static Imlib_Image image_gamma(Imlib_Image image, const char *spec)
+static Imlib_Image image_gamma_numeric(Imlib_Image image, double r,
+		double g, double b, double a)
 {
-	double r;
-	double g;
-	double b;
 	Imlib_Color_Modifier modifier;
 	DATA8 r_table[256];
 	DATA8 g_table[256];
@@ -1051,43 +1084,51 @@ static Imlib_Image image_gamma(Imlib_Image image, const char *spec)
 
 	imlib_context_set_image(image);
 
-	if (spec == NULL) {
-		return (image);
-	}
-
-	if (calculate_gamma(spec, &r, &g, &b) < 0) {
-		fprintf(stderr, "Invalid gamma\n\n");
-		usage(-1);
-	}
-
-	if (r == 1.0 && g == 1.0 && b == 1.0) {
+	if (r == 1.0 && g == 1.0 && b == 1.0 && a == 1.0) {
 		return (image);
 	}
 
 	if ((modifier = imlib_create_color_modifier()) == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not create colour modifier\n");
 		return (NULL);
 	}
 
 	imlib_context_set_color_modifier(modifier);
 	imlib_reset_color_modifier();
-	if (r == g && r == b) {
+	if (r == g && r == b && r == a) {
 		imlib_modify_color_modifier_gamma(r);
 	} else {
 		imlib_get_color_modifier_tables(r_table, g_table, b_table,
 						a_table);
 
-		imlib_modify_color_modifier_gamma(r);
-		imlib_get_color_modifier_tables(r_table, dummy_table,
-						dummy_table, dummy_table);
+		if(r != 1.0) {
+			imlib_modify_color_modifier_gamma(r);
+			imlib_get_color_modifier_tables(r_table, dummy_table, 
+					dummy_table, dummy_table);
+			imlib_reset_color_modifier();
+		}
 
-		imlib_modify_color_modifier_gamma(g);
-		imlib_get_color_modifier_tables(dummy_table, g_table,
-						dummy_table, dummy_table);
+		if(g != 1.0) {
+			imlib_modify_color_modifier_gamma(g);
+			imlib_get_color_modifier_tables(dummy_table, g_table,
+							dummy_table, 
+							dummy_table);
+			imlib_reset_color_modifier();
+		}
 
-		imlib_modify_color_modifier_gamma(b);
-		imlib_get_color_modifier_tables(dummy_table, dummy_table,
-						b_table, dummy_table);
+		if(b != 1.0) {
+			imlib_modify_color_modifier_gamma(b);
+			imlib_get_color_modifier_tables(dummy_table, 
+					dummy_table, b_table, dummy_table);
+			imlib_reset_color_modifier();
+		}
+
+		if(a != 1.0) {
+			imlib_modify_color_modifier_gamma(a);
+			imlib_get_color_modifier_tables(dummy_table, 
+					dummy_table, dummy_table, a_table);
+			imlib_reset_color_modifier();
+		}
 
 		imlib_set_color_modifier_tables(r_table, g_table, b_table,
 						a_table);
@@ -1097,6 +1138,28 @@ static Imlib_Image image_gamma(Imlib_Image image, const char *spec)
 	imlib_free_color_modifier();
 
 	return (image);
+}
+
+
+static Imlib_Image image_gamma(Imlib_Image image, const char *spec)
+{
+	double r;
+	double g;
+	double b;
+	double a;
+
+	imlib_context_set_image(image);
+
+	if (spec == NULL) {
+		return (image);
+	}
+
+	if (calculate_gamma(spec, &r, &g, &b, &a) < 0) {
+		fprintf(stderr, "Invalid gamma\n\n");
+		usage(-1);
+	}
+
+	return(image_gamma_numeric(image, r, g, b, a));
 }
 
 
@@ -1207,7 +1270,7 @@ static Imlib_Image image_rotate(Imlib_Image image, const char *spec,
 	}
 
 	if ((new_image = imlib_create_rotated_image(angle)) == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not create rotated image\n");
 		return (NULL);
 	}
 
@@ -1217,7 +1280,7 @@ static Imlib_Image image_rotate(Imlib_Image image, const char *spec,
 	h = imlib_image_get_height();
 
 	if ((image = imlib_create_image(w, h)) < 0) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Could not create image for rotation\n");
 		return (NULL);
 	}
 
@@ -1258,7 +1321,7 @@ Imlib_Image image_average(Imlib_Image image, const int average,
 	imlib_context_set_image(image);
 
 	if(!average) {
-		return(0);
+		return(image);
 	}
 
 	w = imlib_image_get_width();
@@ -1267,33 +1330,17 @@ Imlib_Image image_average(Imlib_Image image, const int average,
 
 	size = w*h*sizeof(DATA32);
 
-	if((data_r = (DATA32 *)malloc(size)) == NULL) {
-		fprintf(stderr, "Internal Error\n");
+	if((data_r = (DATA32 *)malloc(size)) == NULL ||
+			(data_g = (DATA32 *)malloc(size)) == NULL ||
+			(data_b = (DATA32 *)malloc(size)) == NULL ||
+			(data_a = (DATA32 *)malloc(size)) == NULL) {
+		fprintf(stderr, "Could not allocate memory for averaging\n");
 		return(NULL);
 	}
 	memset(data_r, 0, size);
-
-	if((data_g = (DATA32 *)malloc(size)) == NULL) {
-		__IMAGE_AVERAGE_CLEAN_UP;
-		fprintf(stderr, "Internal Error\n");
-		return(NULL);
-	}
 	memset(data_g, 0, size);
-
-	if((data_b = (DATA32 *)malloc(size)) == NULL) {
-		__IMAGE_AVERAGE_CLEAN_UP;
-		fprintf(stderr, "Internal Error\n");
-		return(NULL);
-	}
 	memset(data_b, 0, size);
-
-	if((data_a = (DATA32 *)malloc(size)) == NULL) {
-		__IMAGE_AVERAGE_CLEAN_UP;
-		fprintf(stderr, "Internal Error\n");
-		return(NULL);
-	}
 	memset(data_a, 0, size);
-
 
 	size = w*h;
 	for(file = files, nfile = 0 ; *(file + 1) != NULL ;
@@ -1315,7 +1362,8 @@ Imlib_Image image_average(Imlib_Image image, const int average,
 
 		if((data = imlib_image_get_data()) == NULL) {
 			__IMAGE_AVERAGE_CLEAN_UP;
-			fprintf(stderr, "Internal Error\n");
+			fprintf(stderr, "Could not get image data for "
+					"averging\n");
 			return(NULL);
 		}
 
@@ -1332,7 +1380,7 @@ Imlib_Image image_average(Imlib_Image image, const int average,
 	size = w*h*sizeof(DATA32);
 	if((data = (DATA32 *)malloc(size)) == NULL) {
 		__IMAGE_AVERAGE_CLEAN_UP;
-		fprintf(stderr, "Internal Error\n");
+		fprintf(stderr, "Could not allocate memory for averaging\n");
 		return(NULL);
 	}
 	
@@ -1347,7 +1395,7 @@ Imlib_Image image_average(Imlib_Image image, const int average,
 	image = imlib_create_image_using_copied_data(w, h, data);
 	if(image == NULL) {
 		__IMAGE_AVERAGE_CLEAN_UP;
-		fprintf(stderr, "Internal Error\n");
+		fprintf(stderr, "Could not create image for averaging\n");
 		return(NULL);
 	}
 
@@ -1355,6 +1403,96 @@ Imlib_Image image_average(Imlib_Image image, const int average,
 	imlib_context_set_image(image);
 
 	return(image);
+}
+
+
+static int calculate_channel(const char *channel, double *r, double *g, 
+		double *b, double *a) 
+{
+	if(channel == NULL) {
+		return(-1);
+	}
+
+	*r = 0;
+	*g = 0;
+	*b = 0;
+	*a = 0;
+
+	if(strcasecmp("red", channel) == 0) {
+		*r = 1;
+	}
+	else if(strcasecmp("green", channel) == 0) {
+		*g = 1;
+	}
+	else if(strcasecmp("blue", channel) == 0) {
+		*b = 1;
+	}
+	else if(strcasecmp("alpha", channel) == 0 ||
+			strcasecmp("matte", channel) == 0) {
+		*a = 1;
+	}
+	else {
+		return(-1);
+	}
+
+	return(0);
+}
+
+static Imlib_Image image_channel(Imlib_Image image, const char *channel)
+{
+	double r;
+	double g;
+	double b;
+	double a;
+
+	if(calculate_channel(channel, &r, &g, &b, &a) < 0) {
+		return(image);
+	}
+
+	imlib_context_set_image(image);
+
+	image_gamma_numeric(image, r, g, b, a);
+
+	return(image);
+}
+
+
+int calculate_cache(const char *cache) 
+{
+	char *end;
+	long int l;
+
+	if(cache == NULL) {
+		return(DEFAULT_CACHE_SIZE);
+	}
+
+	l = strtol(cache, &end, 10);
+	if (l < 0 || l > INT_MAX) {
+		return (-1);
+	}
+
+	return((int) l);
+}
+
+
+static int set_cache(const char *cache) {
+	int size;
+
+	if((size = calculate_cache(cache)) < 0) {
+		fprintf(stderr, "Could not determine cache size");
+		return(-1);
+	}
+
+	imlib_set_cache_size(size * 1024 * 1024);
+
+	return(0);
+}
+
+
+static int set_antialiasing(const int antialiasing) {
+	imlib_context_set_anti_alias((char)(antialiasing?0:1));
+
+	return(0);
 }
 
 
@@ -1370,6 +1508,19 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
+	/* Set Antialiasing */
+	if (set_antialiasing(opt->bin_ops&__OP_NOANTIALIAS) < 0) {
+		fprintf(stderr, "Could not set antialiasing\n");
+		return (-1);
+	}
+
+	/* Set Cache Size*/
+	if (set_cache(opt->cache) < 0) {
+		fprintf(stderr, "Could not set cache size\n");
+		return (-1);
+	}
+
+	/* Load first image */
 	image = imlib_load_image(opt->src);
 	if (image == NULL) {
 		fprintf(stderr, "Could not load %s\n", opt->src);
@@ -1386,61 +1537,68 @@ int main(int argc, char **argv)
 	image = image_average(image, opt->bin_ops&__OP_AVERAGE,
 			opt->files);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Averaging failed\n");
 		return (-1);
 	}
 
 	/* Blur Image */
 	if ((image = image_blur(image, opt->blur)) == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Bluring failed\n");
 		return (-1);
 	}
 
 	/* Crop Image */
 	image = image_crop(image, opt->crop, opt->dest, opt->bordercolour);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Cropping failed\n");
+		return (-1);
+	}
+
+	/* Channel Image */
+	image = image_channel(image, opt->channel);
+	if (image == NULL) {
+		fprintf(stderr, "Channel selection failed\n");
 		return (-1);
 	}
 
 	/* Scale Image */
 	if ((image = image_scale(image, opt->geometry)) == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Scaling (geometry) failed\n");
 		return (-1);
 	}
 
 	/* Put a Border on the Image */
 	image = image_border(image, opt->border, opt->bordercolour);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Border failed\n");
 		return (-1);
 	}
 
 	/* Flip the Image Vertically */
 	image = image_flip(image, opt->bin_ops&__OP_FLIP);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Flip failed\n");
 		return (-1);
 	}
 
 	/* Flip the Image Horizontally */
 	image = image_flop(image, opt->bin_ops&__OP_FLOP);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Flop failed\n");
 		return (-1);
 	}
 
 	/* Modify the Gamma of the Image*/
 	image = image_gamma(image, opt->gamma);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Gamma correction failed\n");
 		return (-1);
 	}
 
 	/* Rotate the Image */
 	image = image_rotate(image, opt->rotate, opt->bordercolour);
 	if (image == NULL) {
-		fprintf(stderr, "Internal error\n");
+		fprintf(stderr, "Rotation failed\n");
 		return (-1);
 	}
 
