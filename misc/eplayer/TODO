@@ -2,26 +2,14 @@ TO DO for version 0.7:
 
  IMMEDIATE ISSUES :::
 
-X> Previous File callback doesn't work.
-X> Pause Segv's
--> Play list bounds checking.  Player freaks out if you go beyond the 
-	begining of the list, or past the last.
-X> Play button does jack shit (because of pause)
--> You can't hold down seek to keep seeking, you must click it repeatedly
-	-> Same applies to volume controls
--> Interface will not update if cursor isn't over.
-	-> Explicit render fixes, but not prefered.
-X> Time isn't updating every second as it should.
-	-> Fixed with explicit render.
--> Outter edge of interface should move the player
-X> Prevous file callback segv.
-
+-> Use a separate thread/process for the decoding stuff
+-> Add resampling code to the output plugins
 
 -----------------------------------------------------------------
 
  LONG TERM ISSUES :::
 
-X> Add volume control	***
--> Add play list window/dialog
 -> Add file dialog for adding files 
--> Add support for playing play list files (*.pls)
+-> Add support for pls playlists)
+-> Add WinAmp 3 theme converter
+-> Add MP3 input plugin

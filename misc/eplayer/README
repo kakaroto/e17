@@ -1,31 +1,37 @@
-eVorbisPlayer (aka: eplayer) v0.07 [ 07.30.03 ]
-By Ben Rockwood [benr@cuddletech.com]
--------------------------------------
+$Id$
 
-SYNTAX: eplayer /path/to/music/playlist.m3u
+ePlayer v0.7
 
-eVorbisPlayer is an OggVorbis audio player which requires the Xiph Ogg Suite of libraries
-found here:
-http://xiph.org/ogg/vorbis/
+Written by Ben Rockwood [benr@cuddletech.com] and various contributors.
+See AUTHORS for the complete list.
 
-It relies on libvorbis, libvorbisfile and libogg.  Further, it uses
-Ecore(2), EVAS and Edje for the interface.
 
---------------------------------------------------------------------------------------------
+ABOUT
+-------
+
+ePlayer is an audio player which is based on Ecore, Evas and Edje.
+Audio decoding and output is done by plugins.
+At the moment, there's an Ogg Vorbis input plugin and there are output
+plugins for OSS, ALSA and Solaris.
+
+
 FAQ
---------------------------------------------------------------------------------------------
+-------
 
 Q: Why another damned audio player?
-A: -> The purpose of eVorbisPlayer has always been to be used as a vehicle by which to better
-learn the EFL componants.  And audio player was choosen because it's interesting, the OggVorbis
-API is very simple and can easily drawn on Ecore's strengths (ie: idlers and timers) and provides
-a number of interesting interface possibilities.  The intension has never been, and probly
-never will be, to build a robust, functional and flexable audio player.  
+A: -> The purpose of ePlayer has always been to be used as a vehicle
+by which to better learn the EFL components.
+
+An audio player was chosen because it's interesting, the OggVorbis
+API is very simple and can easily drawn on Ecore's strengths
+(ie: idlers and timers) and provides a number of interesting interface
+possibilities.
 
 Q: Will this player ever support MP3 or my other favorite codec?
-A: -> Probly not.  I don't like the SDL and other MP3 decoder libraries
-aren't really appealing.  Xiph is prime for me because their APIs are
-very similar to rasters, making them easier for me to deal with.
+A: -> Probably not.  I don't like the SDL and other MP3 decoder
+libraries aren't really appealing.  Xiph is prime for me because their
+APIs are very similar to rasters, making them easier for me to deal with.
+
 The player is being built as modularly as I can with hopes to add
 more functionality in as much abstraction as possible.  At the moment I'm
 really only hoping to add Xiph codes, namely SPEEX and FLAC.  RIFF WAV
@@ -33,29 +39,33 @@ support will come shortly too.... but as for MP3, I'm not rushing it.
 Personally I don't use MP3 anyway, so I have little reason to care.
 
 Q: Version 0.7!?! Where did all the other versions go!?!
-A: -> Since I'm a relatively inexperienced programmer, I started slowly.  0.1 was a simple
-command line editor using while loops.  0.2 was rebuilt to use Ecore, but still from a CLI.
-In needs of an interface that could update the time dynamically without printing a line for
-each update, I moved to ncurses for version 0.3 and 0.4.  Version 0.5 was rebuilt with a 
-graphical interface in EVAS.  Version 0.6 was a major improvement on the EVAS interface.
-And 0.7 is the current rebuilt to abstract the interface from EVAS by using Edje.
+A: -> Since I'm a relatively inexperienced programmer, I started slowly.
 
-Q: Where is the play list?  Where is the volume control?
-A: -> Not there yet.  I was hoping to wait for a file dialog in EWL to be built, but that
-looks like a good ways off, so I may have to figure it out myself.  As for play lists, I haven't
-found a really solid way of building an interface to the play list.  Currently there is
-basic play list support, in that you can glob files on the command line and then go forward or
-back in that list, but I haven't gotten  around to the interface to it.  And volume control, I 
-just haven't found a good way to handle that yet.  It's coming.
+0.1 was a simple command line editor using while loops.
+0.2 was rebuilt to use Ecore, but still from a CLI.
+
+In needs of an interface that could update the time dynamically without
+printing a line for each update, I moved to ncurses for version 0.3
+and 0.4.
+
+Version 0.5 was rebuilt with a graphical interface in EVAS.
+Version 0.6 was a major improvement on the EVAS interface.
+
+And 0.7 is the current rebuilt to abstract the interface from EVAS by
+using Edje.
 
 Q: Will you support WinAmp skins?
-A: -> Nope.... go use XMMS if you want traditional skins.  Refer to the first question.
-But I will admit that I have considered the possiblity of automating the conversion of WinAmpv3
-skins (.wal's) to Edje.  It doesn't look hard, and Edje can do everything and more that WinAmp
-can do with it's interface, but in a far more general way.  The problem is really just parsing
-all that XML (the WA skin config files are now XML).  With PERL there could probly be an easy 
-conversion but if there is one thing I hate parsing it's XML.  It would instantly make this audio
-player the player to use though!
+A: -> Nope.... go use XMMS if you want traditional skins.
+Refer to the first question.
 
---------------------------------------------------------------------------------------------
-Last Update: 7/30/03
+But I will admit that I have considered the possiblity of automating
+the conversion of WinAmpv3 skins (.wal's) to Edje.
+It doesn't look hard, and Edje can do everything and more that WinAmp
+can do with it's interface, but in a far more general way.
+
+The problem is really just parsing all that XML (the WA skin config
+files are now XML).  With PERL there could probly be an easy conversion,
+but if there is one thing I hate parsing it's XML.
+
+It would instantly make this audio player the player to use though!
+
