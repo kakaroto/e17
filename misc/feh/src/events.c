@@ -142,6 +142,8 @@ feh_event_handle_ButtonPress(XEvent * ev)
               D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
               winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
               winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
+              winwid->zoom = 1.0;
+              winwidget_render_image(winwid, 0, 0);
            }
         }
         break;
@@ -343,7 +345,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
              (disp, ev->xmotion.window, MotionNotify, ev));
 
       winwid = winwidget_get_from_window(ev->xmotion.window);
-      if (0 && winwid)
+      if (winwid)
       {
          winwid->zoom =
             ((double) ev->xmotion.x - (double) winwid->click_offset_x) / 64.0;

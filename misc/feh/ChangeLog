@@ -1,3 +1,9 @@
+Sat Jun 10 21:25:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Zooming is back, and it's as it was before. I'm still not happy
+	with it, but it works again anyhow. Next: fix, fix, fix.
+	* Don't forget, you need to hold control to get menus now...
+
 Sat Jun 10 12:36:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Only render the current viewport. Big optimisation I should have
