@@ -79,6 +79,24 @@ od_icon_new_minwin(Ecore_X_Window win, char *name_override, char *class_override
   return ret;
 }
 
+void
+od_object_resize_intercept_cb(void *data, Evas_Object * o,
+                              Evas_Coord w, Evas_Coord h)
+{
+  if (o) {
+    if (!strcmp("image", evas_object_type_get(o))) {
+      evas_object_image_fill_set(o, 0.0, 0.0, w, h);
+    } else {
+#if 0
+      fprintf(stderr, "Intercepting something other than an image(%s)\n",
+              evas_object_type_get(o));
+#endif
+    }
+  }
+  evas_object_resize(o, w, h);
+}
+									  
+
 #ifdef HAVE_IMLIB
 void
 od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
@@ -121,6 +139,12 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
     edje_object_part_unswallow(icon->icon, icon->pic);
     evas_object_del(icon->pic);
     icon->pic = evas_object_image_add(evas);
+    evas_object_image_alpha_set(icon->pic, 1);
+    evas_object_image_smooth_scale_set(icon->pic, 1);
+    evas_object_pass_events_set(icon->pic, 1);
+    evas_object_intercept_resize_callback_add(icon->pic,
+                                              od_object_resize_intercept_cb,
+                                              NULL);
   }
 
   evas_object_image_size_set(icon->pic, w, h);
@@ -134,23 +158,6 @@ done:
   return;                       // just fix compiler warnings - why do we have an empty done?
 }
 #endif
-
-void
-od_object_resize_intercept_cb(void *data, Evas_Object * o,
-                              Evas_Coord w, Evas_Coord h)
-{
-  if (o) {
-    if (!strcmp("image", evas_object_type_get(o))) {
-      evas_object_image_fill_set(o, 0.0, 0.0, w, h);
-    } else {
-#if 0
-      fprintf(stderr, "Intercepting something other than an image(%s)\n",
-              evas_object_type_get(o));
-#endif
-    }
-  }
-  evas_object_resize(o, w, h);
-}
 
 void
 od_icon_reload(OD_Icon * in)
