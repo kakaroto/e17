@@ -32,7 +32,7 @@ set -x
 for EACHDIR in $SUBDIRS ; do
     cd $THEDIR/$EACHDIR
     aclocal || abort "aclocal"
-    libtoolize --ltdl --force --copy || abort "libtoolize"
+    libtoolize --force --copy || abort "libtoolize"
     autoheader || abort "autoheader"
     automake --foreign --add-missing || abort "automake"
     autoconf || abort "autoconf"
