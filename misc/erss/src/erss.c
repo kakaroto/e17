@@ -173,7 +173,7 @@ int erss_handler_server_add (void *data, int type, void *event)
 		ewd_list_remove (list);
 		list = NULL;
 	}
-	
+
 	item = NULL;
 	list = ewd_list_new ();
 
@@ -187,10 +187,10 @@ int erss_handler_server_add (void *data, int type, void *event)
 	ecore_con_server_send (server, c, strlen (c));
 	snprintf (c, sizeof (c), "Host: %s\r\n", cfg->hostname);
 	ecore_con_server_send (server, c, strlen (c));
-  snprintf (c, sizeof (c), "User-Agent: %s/%s\r\n\r\n",
-			PACKAGE, VERSION);
-  ecore_con_server_send (server, c, strlen (c));
-	
+	snprintf (c, sizeof (c), "User-Agent: %s/%s\r\n\r\n",
+		  PACKAGE, VERSION);
+	ecore_con_server_send (server, c, strlen (c));
+
 	waiting_for_reply = TRUE;
 
 	return 1;
@@ -303,15 +303,15 @@ void erss_window_resize(Ecore_Evas *ee)
 void erss_mouse_click_item (void *data, Evas_Object *o, const char *sig, 
 		const char *src)
 {
-	Erss_Article *item = data;
-	char c[1024];
-
+	char *url = data;
+	char  c[1024];
+printf("clicked: %s\n",url);
 	if (!rc->browser) {
 		fprintf (stderr, "%s error: you have not defined any browser in your config file setting /usr/bin/mozilla as default\n", PACKAGE);
 		rc->browser = strdup ("mozilla");
 	}
 	
-	snprintf (c, sizeof (c), "%s \"%s\"", rc->browser, item->url);
+	snprintf (c, sizeof (c), "%s \"%s\"", rc->browser, url);
 	ecore_exe_run (c, NULL);
 }
 
@@ -549,7 +549,7 @@ int main (int argc, char * const argv[])
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
 	win = ecore_evas_software_x11_window_get(ee);
-  ecore_x_window_prop_window_type_desktop_set(win);
+	ecore_x_window_prop_window_type_desktop_set(win);
 	
 	if (!ee)
 		return -1;
@@ -617,10 +617,20 @@ int main (int argc, char * const argv[])
 		edje_object_part_text_set (header, "header", cfg->header);
 		evas_object_show (header);
 
+		evas_object_event_callback_add (header,
+						EVAS_CALLBACK_MOUSE_IN, erss_mouse_in_cursor_change, NULL);
+		evas_object_event_callback_add (header,
+						EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, NULL);
+
+		edje_object_signal_callback_add (header, "exec*", "*",
+						 erss_mouse_click_item, cfg->hostname);
+		edje_object_signal_emit (header, "mouse,in", "article");
+		edje_object_signal_emit (header, "mouse,out", "article");
+
 		e_container_element_append(cont, header);
 	}
 
-	if (cfg->clock) {
+	if ((rc->clock==1)||((cfg->clock==1)&&(rc->clock!=0))) {
 		tid = edje_object_add (evas);
 		edje_object_file_set (tid, cfg->theme, "erss_clock");
 		edje_object_part_text_set (tid, "clock", "");

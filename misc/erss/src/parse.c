@@ -10,9 +10,9 @@ Erss_Article *item = NULL;
 void erss_story_new ()
 {
 	item = malloc (sizeof (Erss_Article));
-  item->description = NULL;
-  item->url = NULL;
-  memset(item, 0, sizeof (Erss_Article));
+	item->description = NULL;
+	item->url = NULL;
+	memset(item, 0, sizeof (Erss_Article));
 }
 
 void erss_story_end ()
@@ -70,7 +70,7 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 				item->url = strdup (str);
 
 				edje_object_signal_callback_add (item->obj, "exec*", "*",
-						erss_mouse_click_item, item);
+						erss_mouse_click_item, item->url);
 				edje_object_signal_emit (item->obj, "mouse,in", "article");
 				edje_object_signal_emit (item->obj, "mouse,out", "article");
 
@@ -117,7 +117,7 @@ void erss_parse (xmlDocPtr doc)
 
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL) {
-    if (ewd_list_nodes (list) >= cfg->num_stories)
+		if (ewd_list_nodes (list) >= cfg->num_stories)
 			return;
 
 		if (cfg->item_root) {

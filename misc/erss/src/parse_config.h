@@ -33,6 +33,7 @@ struct _erss_rc_config {
 	char *browser;
 	char *proxy;
 	int proxy_port;
+	int clock;
 	double tooltip_delay;
 };
 

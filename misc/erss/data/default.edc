@@ -1,20 +1,20 @@
 
 collections {
-  group {
-    name, "erss";
-    
-    parts {
-    
-      part {
-        name, "header";
+	group {
+		name, "erss";
+
+		parts {
+
+			part {
+				name, "header";
 				type, TEXT;
 				effect, OUTLINE_SHADOW;
 
-        description {
-          state, "default" 0.0;
-          color, 255 255 255 216;
-          color2, 0 0 0 224;
-          color3, 0 0 0 192;
+				description {
+					state, "default" 0.0;
+					color, 255 255 255 216;
+					color2, 0 0 0 224;
+					color3, 0 0 0 192;
 					text {
 						text, "test 1";
 						font, "Vera";
@@ -22,10 +22,19 @@ collections {
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
-        }
+				}
 
 			}
 
+		}
+
+		programs {
+			program {
+				name, "exec";
+				signal, "mouse,clicked,1";
+				source, "header";
+				action, SIGNAL_EMIT "exec" "erss2";
+			}
 		}
 	}
 
@@ -41,8 +50,8 @@ collections {
 				description {
 				state, "default" 0.0;
 				color, 255 255 255 216;
-            color2, 0 0 0 224;
-            color3, 0 0 0 96;
+				color2, 0 0 0 224;
+				color3, 0 0 0 96;
 					text {
 						text, "";
 						font, "Vera";
@@ -52,8 +61,6 @@ collections {
 					}
 				}
 			}
-		
-
 		}
 	}
 
@@ -70,18 +77,18 @@ collections {
 				description {
 					state, "default" 0.0;
 					color, 255 255 255 192;
-               color2, 0 0 0 144;
-               color3, 0 0 0 36;
-               rel1 {
-                  relative, 0.0 0.0;
-                  offset, 0 0;
-               }
-               rel2 {
-                  relative, 1.0 1.0;
-                  offset, 0 0;
-               }
+					color2, 0 0 0 144;
+					color3, 0 0 0 36;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+					}
 					text {
-					  text, "";
+						text, "";
 						font, "Vera";
 						size, 9;
 						fit, 0 0;
@@ -90,18 +97,18 @@ collections {
 				}
         
 				description {
-          state, "over" 0.0;
-          color, 255 255 255 255;
-          color2, 0 0 0 255;
-          color3, 0 0 0 144;
-               rel1 {
-                  relative, 0.0 0.0;
-                  offset, 0 0;
-               }
-               rel2 {
-                  relative, 1.0 1.0;
-                  offset, 0 0;
-               }
+					state, "over" 0.0;
+					color, 255 255 255 255;
+					color2, 0 0 0 255;
+					color3, 0 0 0 144;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+					}
 					text {
 						text, "test 2";
 						font, "Vera";
@@ -109,28 +116,29 @@ collections {
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
-           }
-            description {
-          state, "clicked" 0.0;
-          color, 255 255 255 255;
-          color2, 0 0 0 255;
-          color3, 0 0 0 144;
-          rel1 {
-             relative, 0.0 0.0;
-             offset, 1 1;
-          }
-          rel2 {
-             relative, 1.0 1.0;
-             offset, 1 1;
-          }
-          text {
-             text, "irrelevant";
-             font, "Vera";
-             size, 9;
-             fit, 0 0;
-             align, 0.0 1.0;
-          }
-            }
+				}
+
+				description {
+					state, "clicked" 0.0;
+					color, 255 255 255 255;
+					color2, 0 0 0 255;
+					color3, 0 0 0 144;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 1 1;
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 1 1;
+					}
+					text {
+						text, "irrelevant";
+						font, "Vera";
+						size, 9;
+						fit, 0 0;
+						align, 0.0 1.0;
+					}
+				}
 			}
 		}
 
@@ -141,22 +149,22 @@ collections {
 				source, "article";
 				action, SIGNAL_EMIT "exec" "erss2";
 			}
-         program {
-            name, "item.pressed";
-            signal, "mouse,down,1";
-            source, "article";
-            action, STATE_SET "clicked" 0.0;
-            transition, LINEAR, 0.0;
-            target, "article";
-         }
-         program {
-            name, "item.unpressed";
-            signal, "mouse,up,1";
-            source, "article";
-            action, STATE_SET "over" 0.0;
-            transition, ACCELERATE 0.3;
-            target, "article";
-         }
+			program {
+				name, "item.pressed";
+				signal, "mouse,down,1";
+				source, "article";
+				action, STATE_SET "clicked" 0.0;
+				transition, LINEAR, 0.0;
+				target, "article";
+			}
+			program {
+				name, "item.unpressed";
+				signal, "mouse,up,1";
+				source, "article";
+				action, STATE_SET "over" 0.0;
+				transition, ACCELERATE 0.3;
+				target, "article";
+			}
 			program {
 				name, "item.over";
 				signal, "mouse,in";
@@ -174,6 +182,7 @@ collections {
 				transition, SINUSOIDAL, 0.3;
 				target, "article";
 			}
+		}
 	}
 
 }

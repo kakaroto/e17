@@ -16,5 +16,12 @@
 	<!-- Set your proxy server. Leave blank if none! -->
 	<proxy></proxy>
 	<proxy_port>3128</proxy_port>
-	
+
+	<!-- override site-specific clock-setting.
+	    -1  use setting in site-specific config-file
+	     0  disable
+	     1  enable
+	  -->
+	<clock>1</clock>
+
 </erss>

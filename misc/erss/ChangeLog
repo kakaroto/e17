@@ -1,0 +1,5 @@
+2003-02-03 Azundris <edevel@azundris.com>
+        * clicking the title (site-name) now takes you to the site
+        * <clock> can now also be used in ~/.erssrc; if non-empty,
+          it will override the setting in the site-specific config-
+          file ("global override")

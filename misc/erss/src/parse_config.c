@@ -16,10 +16,12 @@ int erss_parse_rc_file ()
 	snprintf (file, PATH_MAX, "%s/.erssrc", getenv ("HOME"));
 
 	rc = malloc (sizeof (Erss_Rc_Config));
-	memset(rc, 0, sizeof (Erss_Rc_Config));
-	
 	if (!rc)
 		return FALSE;
+	
+	memset(rc, 0, sizeof (Erss_Rc_Config));
+
+	rc->clock=-1;
 	
 	doc = xmlParseFile (file);
 
@@ -48,6 +50,10 @@ int erss_parse_rc_file ()
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 				if (str)
 					rc->proxy_port = atoi (str);
+			} else if (!strcmp(cur->name, "clock")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->clock = atoi (str);
 			} else if (!strcmp(cur->name, "tooltip_delay")) {
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 				if (str)
