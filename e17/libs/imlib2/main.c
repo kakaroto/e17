@@ -48,7 +48,7 @@ int main (int argc, char **argv)
    int pixels = 0;
    struct timeval timev;
    double sec;
-   char *file;
+   char *file = NULL;
    
    int root = 0;
    int scale = 0;
@@ -158,7 +158,6 @@ int main (int argc, char **argv)
 	im2 = imlib_create_image(w, h);
 	w = imlib_image_get_width(im);
 	h = imlib_image_get_height(im);   
-	printf("%i %i\n", w, h);
 	for (i = 0; i < 1024; i++)
 	  {
              imlib_blend_image_onto_image(im, im2,
@@ -172,7 +171,10 @@ int main (int argc, char **argv)
      {
 	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13];
 
-	im_bg = imlib_load_image("test_images/bg.png");
+	if (file)
+	   im_bg = imlib_load_image(file);
+	else
+	   im_bg = imlib_load_image("test_images/bg.png");
 	w = imlib_image_get_width(im_bg);
 	h = imlib_image_get_height(im_bg);   
 	XResizeWindow(disp, win, w, h);
