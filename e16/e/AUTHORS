@@ -128,5 +128,11 @@ David Mason <dave@peckham.net>
 Tom Christiansen <tchrist@jhereg.perl.com>
 		Man / Pod Pages
 
+Ulf Carlsson <ulfc@cthulhu.engr.sgi.com>
+		WarpFocus patch.
+
+Dènis Riedijk <ried@si.tn.tudelft.nl>
+		gettext internationalisation patch for E
+
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
