@@ -50,6 +50,7 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	 * Create the popup menu portion of the widget.
 	 */
 	menu->base.popup = ewl_window_new();
+	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
 	ewl_widget_set_internal(menu->base.popup, TRUE);
 	ewl_widget_set_layer(menu->base.popup, 1000);
 	ewl_widget_set_appearance(EWL_WIDGET(menu->base.popup), "menu");
