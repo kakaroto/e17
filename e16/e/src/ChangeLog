@@ -1074,3 +1074,19 @@ ways for you to change what your (Mandrake) message in ChangeLog shows up as,
 as well as an easy entry point for you to add your own indent style
 (see %names and %indents hashes)
 
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 14:38:58 PDT 1999
+(Mandrake)
+
+minor bug fixes in ecvs.  now it'll show you the commit as it happens, and
+it'll also remove the temporary file CommitLog
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 14:40:22 PDT 1999
+(Mandrake)
+
+a couple of minor bugfixes to ecvs.  now it removes the tempfile CommitLog
+as well as remembers to display the cvs commit as it happens.

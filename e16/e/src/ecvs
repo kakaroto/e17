@@ -34,7 +34,9 @@ if(($ARGV[0] == "commit") || ($ARGV[0] == "ci") || ($ARGV[0] == "com")) {
 	`cat CommitLog >> ChangeLog`;
 }
 
-`cvs -z3 @ARGV`;
+system("cvs -z3 @ARGV");
+
+unlink "CommitLog" if(-f "CommitLog");
 
 if($indents{$ENV{USER}}) {
 	`$indents{$ENV{USER}} *.c *.h >& /dev/null`;
