@@ -4417,25 +4417,40 @@ IPC_Hints(const char *params, Client * c)
 }
 
 static void
-IPC_Debug(const char *params, Client * c)
+IPC_Debug(const char *params, Client * c __UNUSED__)
 {
-   char                buf[FILEPATH_LEN_MAX];
-   char                param1[FILEPATH_LEN_MAX];
-   char                param2[FILEPATH_LEN_MAX];
+   char                param[1024];
+   int                 l;
+   const char         *p;
 
-   buf[0] = 0;
-   param1[0] = 0;
-   param2[0] = 0;
+   p = params;
+   l = 0;
+   sscanf(p, "%1000s %n", param, &l);
+   p += l;
 
-   word(params, 1, param1);
-   word(params, 2, param2);
-
-   if (!strncmp(param1, "event", 2))
+   if (!strncmp(param, "event", 2))
      {
-	EventDebugInit(param2);
+	EventDebugInit(p);
      }
+   else if (!strncmp(param, "grab", 2))
+     {
+	Window              win;
 
-   CommsSend(c, buf);
+	l = 0;
+	sscanf(p, "%1000s %n", param, &l);
+	p += l;
+	if (!strncmp(param, "unset", 2))
+	  {
+	     UnGrabTheButtons();
+	     IpcPrintf("Ungrab\n");
+	  }
+	else
+	  {
+	     sscanf(param, "%li", &win);
+	     GrabConfineThePointer(win, ECSR_ACT_RESIZE);
+	     IpcPrintf("Grab %#lx\n", win);
+	  }
+     }
 }
 
 static void
