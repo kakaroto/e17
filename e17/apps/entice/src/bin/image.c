@@ -775,15 +775,17 @@ next_image_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
    if ((obj == o_showpanel) && (panel_active))
       return;
    if (!current_image)
-      current_image = images;
+     {
+        current_image = images;
+        e_display_current_image();
+     }
    else
      {
-	if ((ev->button == 1) && (current_image->next))
-	   current_image = current_image->next;
+	if (ev->button == 1)
+	   e_load_next_image();
 	else if (ev->button == 3)
-	   current_image = current_image->prev;
+	   e_load_prev_image();
      }
-   e_display_current_image();
 }
 
 void
