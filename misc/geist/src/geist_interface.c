@@ -801,8 +801,8 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
          }
 
          /*draw selection rect */
-         geist_imlib_image_fill_rectangle(doc->im, rect_x, rect_y, w, h, 150,
-                                          150, 150, 100);
+         geist_imlib_image_fill_rectangle(doc->im, rect_x, rect_y, w, h, 170,
+                                          210, 170, 120);
          geist_imlib_image_draw_rectangle(doc->im, rect_x, rect_y, w, h, 0,
                                           0, 0, 255);
 
