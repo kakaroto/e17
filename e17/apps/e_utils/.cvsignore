@@ -10,4 +10,7 @@ depcomp
 install-sh
 libtool
 missing
-stamp-h1
+stamp-h
+stamp-h.in
+config.h.in
+mkinstalldirs
