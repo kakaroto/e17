@@ -20,4 +20,4 @@ dist-hook:
 	fi
 							  
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN iconbar.spec iconbar.c.in gendoc Doxyfile iconbar_docs.tar.gz
+EXTRA_DIST = README AUTHORS COPYING iconbar.spec
