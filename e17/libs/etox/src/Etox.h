@@ -103,7 +103,7 @@ void    etox_set_padding(Etox e, double padding);
 
 void	etox_set_layer(Etox e, int layer);
 void	etox_set_clip(Etox e, Evas_Object clip);
-void    etox_set_unclip(Etox e);
+void    etox_unset_clip(Etox e);
 
 /* these funcs set the defaults.. */
 void    etox_set_align(Etox e, Etox_Align_Type h_align, Etox_Align_Type v_align);
