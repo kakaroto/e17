@@ -123,6 +123,22 @@ filelist_addtofront(feh_file * root, feh_file * newfile)
    D_RETURN(newfile);
 }
 
+feh_file *
+filelist_join(feh_file * root, feh_file * newfile)
+{
+   feh_file *last;
+
+   D_ENTER;
+   if (!newfile)
+      D_RETURN(root);
+   if (!root)
+      D_RETURN(newfile);
+   last = filelist_last(root);
+   last->next = newfile;
+   newfile->prev = last;
+   D_RETURN(root);
+}
+
 int
 filelist_length(feh_file * file)
 {
@@ -306,11 +322,16 @@ filelist_remove_file(feh_file * list, feh_file * file)
 
 /* Recursive */
 void
-add_file_to_filelist_recursively(char *path, unsigned char level)
+add_file_to_filelist_recursively(char *origpath, unsigned char level)
 {
    struct stat st;
+   char *path;
 
    D_ENTER;
+   if (!origpath)
+      return;
+
+   path = estrdup(origpath);
    D(("file is %s\n", path));
 
    if (level == FILELIST_FIRST)
@@ -328,7 +349,23 @@ add_file_to_filelist_recursively(char *path, unsigned char level)
          D(("Adding url %s to filelist\n", path));
          filelist = filelist_addtofront(filelist, filelist_newitem(path));
          /* We'll download it later... */
+         free(path);
          D_RETURN_;
+      }
+      else if (opt.filelistfile && (path[0] != '/'))
+      {
+         char cwd[4096];
+         char *temp;
+
+         /* This path is not relative. We're gonna convert it, so that a
+            filelist file can be saved anywhere and feh will still find the
+            images */
+         D(("Need to convert filename %s to an absolute form\n", path));
+         getcwd(cwd, sizeof(cwd));
+         temp = estrjoin("/", cwd, path, NULL);
+         free(path);
+         path = temp;
+         D(("Converted path to %s\n", path));
       }
    }
 
@@ -358,6 +395,7 @@ add_file_to_filelist_recursively(char *path, unsigned char level)
               weprintf("couldn't open %s ", path);
            break;
       }
+      free(path);
       D_RETURN_;
    }
 
@@ -374,6 +412,7 @@ add_file_to_filelist_recursively(char *path, unsigned char level)
             if (!opt.quiet)
                weprintf("couldn't open directory %s, errno:%d :", path,
                         errno);
+            free(path);
             D_RETURN_;
          }
          de = readdir(dir);
@@ -405,6 +444,7 @@ add_file_to_filelist_recursively(char *path, unsigned char level)
       D(("Adding regular file %s to filelist\n", path));
       filelist = filelist_addtofront(filelist, filelist_newitem(path));
    }
+   free(path);
    D_RETURN_;
 }
 
@@ -422,10 +462,6 @@ delete_rm_files(void)
    feh_file *file;
 
    D_ENTER;
-
-   if (opt.keep_http)
-      D_RETURN_;
-
    for (file = rm_filelist; file; file = file->next)
       unlink(file->filename);
    D_RETURN_;
@@ -692,4 +728,66 @@ feh_prepare_filelist(void)
         break;
    }
    D_RETURN_;
+}
+
+int
+feh_write_filelist(feh_file * list, char *filename)
+{
+   FILE *fp;
+   feh_file *file;
+
+   D_ENTER;
+
+   if (!list || !filename)
+      D_RETURN(0);
+
+   errno = 0;
+   if ((fp = fopen(filename, "w")) == NULL)
+   {
+      weprintf("can't write filelist %s:", filename);
+      D_RETURN(0);
+   }
+
+   for (file = list; file; file = file->next)
+      fprintf(fp, "%s\n", file->filename);
+
+   fclose(fp);
+
+   D_RETURN(1);
+}
+
+feh_file *
+feh_read_filelist(char *filename)
+{
+   FILE *fp;
+   feh_file *list = NULL;
+   char s[1024], s1[1024];
+
+   D_ENTER;
+
+   if (!filename)
+      D_RETURN(NULL);
+
+   errno = 0;
+   if ((fp = fopen(filename, "r")) == NULL)
+   {
+      /* return quietly, as it's okay to specify a filelist file that doesn't
+         exist. In that case we create it on exit. */
+      D_RETURN(NULL);
+   }
+
+   for (; fgets(s, sizeof(s), fp);)
+   {
+      D(("Got line '%s'\n", s));
+      s1[0] = '\0';
+      sscanf(s, "%s", (char *) &s1);
+      if (!(*s1) || (*s1 == '\n'))
+         continue;
+      D(("Got filename %s from filelist file\n", s1));
+      /* Add it to the new list */
+      list = filelist_addtofront(list, filelist_newitem(s1));
+   }
+   fclose(fp);
+
+   D_RETURN(list);
 }

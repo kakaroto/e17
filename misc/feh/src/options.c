@@ -61,6 +61,16 @@ init_parse_options(int argc, char **argv)
    D(("About to check for theme configuration\n"));
    feh_check_theme_options(argc, argv);
 
+   /* If we have a filelist to read, do it now */
+   if (opt.filelistfile)
+   {
+      /* joining two reverse-sorted lists in this manner works nicely for us
+         here, as files specified on the commandline end up at the *end* of
+         the combined filelist, in the specified order. */
+      D(("About to load filelist from file\n"));
+      filelist = filelist_join(filelist, feh_read_filelist(opt.filelistfile));
+   }
+
    D(("Options parsed\n"));
 
    if (filelist_length(filelist) == 0)
@@ -208,13 +218,13 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:Ab:BcC:dD:f:FghH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
+      "a:Ab:BcC:dD:e:f:FghH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
    static struct option lopts[] = {
-      /* actions and macros */
+      /* actions */
       {"help", 0, 0, 'h'},
       {"version", 0, 0, 'v'},
-      {"booth", 0, 0, 'B'},
       /* toggles */
+      {"booth", 0, 0, 'B'},
       {"montage", 0, 0, 'm'},
       {"collage", 0, 0, 'g'},
       {"index", 0, 0, 'i'},
@@ -254,6 +264,7 @@ feh_parse_option_array(int argc, char **argv)
       {"sort", 1, 0, 'S'},
       {"config", 1, 0, 'C'},
       {"fontpath", 1, 0, '='},
+      {"filelist", 1, 0, 'e'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -425,6 +436,9 @@ feh_parse_option_array(int argc, char **argv)
            opt.alpha = 1;
            opt.alpha_level = atoi(optarg);
            break;
+        case 'e':
+           opt.filelistfile = estrdup(optarg);
+           break;
         default:
            break;
       }
@@ -543,6 +557,21 @@ show_usage(void)
            "                            the content of those directories. (Take it easy)\n"
            "  -c, --randomize           When viewing multiple files in a slideshow,\n"
            "                            randomise the file list before displaying\n"
+           "  -e, --filelist FILE       This option is similar to the playlists used by\n"
+           "                            music software. If FILE exists, it will be read\n"
+           "                            for a list of files to load, in the order they\n"
+           "                            appear. The format is a list of image filenames,\n"
+           "                            absolute or relative to the current directory,\n"
+           "                            one filename per line.\n"
+           "                            If FILE doesn't exist, it will be created from the\n"
+           "                            internal filelist at the end of a viewing session.\n"
+           "                            This is best used to store the results of complex\n"
+           "                            sorts (-Spixels for example) for later viewing.\n"
+           "                            Any changes to the internal filelist (such as\n"
+           "                            deleting a file or it being pruned for being\n"
+           "                            unloadable) will be saved to FILE when feh exits.\n"
+           "                            You can add files to filelists by specifying them\n"
+           "                            on the commandline when also specifying the list.\n"
            "  -p, --preload             Preload images. This doesn't mean hold them in\n"
            "                            RAM, it means run through and eliminate unloadable\n"
            "                            images first. Otherwise they will be removed as you\n"

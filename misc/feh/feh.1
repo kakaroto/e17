@@ -26,6 +26,7 @@ can specify sorting modes such as
 .B
 randomize
 or you can sort by filename, image name, width, height, pixels, etc.
+Filelists can also be saved to or loaded from files.
 .SH MODES
 .B Montage mode
 forms a montage from the filelist. The resultant image can be viewed or
@@ -94,6 +95,19 @@ directories, all the way down to the bottom level. (Take it easy)
 .B -c, --randomize
 When viewing multiple files in a slideshow, randomise the file list before
 displaying.
+.TP 5
+.B -e, --filelist FILE
+This option is similar to the playlists used by music software. If FILE
+exists, it will be read for a list of files to load, in the order they
+appear. The format is a list of image filenames, absolute or relative to the
+current directory, one filename per line.
+.br
+If FILE doesn't exist, it will be created from the internal filelist at the
+end of a viewing session.  This is best used to store the results of complex
+sorts (-Spixels for example) for later viewing.  Any changes to the internal
+filelist (such as deleting a file or it being pruned for being unloadable)
+will be saved to FILE when feh exits. You can add files to filelists by
+specifying them on the commandline when also specifying the list.
 .TP 5
 .B -p, --preload
 Preload images. This doesn't mean hold them in RAM, it means run through

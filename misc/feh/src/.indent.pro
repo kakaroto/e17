@@ -16,18 +16,18 @@
 --declaration-indentation 2
 -ndj
 --dont-format-first-column-comments
---format-all-comments
 --ignore-newlines
+--leave-optional-blank-lines
+--format-all-comments
 --indent-level 3
 --parameter-indentation 3
 --continue-at-parentheses
 --no-space-after-function-call-names
 --procnames-start-lines
 --dont-star-comments
---leave-optional-blank-lines
 --comment-line-length 78
 --case-indentation 2
 --case-brace-indentation 0
 --continuation-indentation 3
---tab-size 99
 --line-length 78
+--tab-size 99

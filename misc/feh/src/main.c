@@ -29,7 +29,7 @@ int
 main(int argc, char **argv)
 {
    D_ENTER;
-   atexit(delete_rm_files);
+   atexit(feh_clean_exit);
 
    init_parse_options(argc, argv);
 
@@ -409,4 +409,17 @@ feh_smooth_image(winwidget w)
    XClearWindow(disp, w->win);
    XFlush(disp);
    D_RETURN_;
+}
+
+void feh_clean_exit(void)
+{
+    D_ENTER;
+
+    if (!opt.keep_http)
+          delete_rm_files();
+
+    if(opt.filelistfile)
+          feh_write_filelist(filelist, opt.filelistfile);
+    
+    D_RETURN_;
 }

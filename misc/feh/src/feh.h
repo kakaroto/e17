@@ -259,6 +259,7 @@ typedef struct cmdlineoptions
    char *title_font;
    char *action;
    char *fontpath;
+   char *filelistfile;
 
    int thumb_w;
    int thumb_h;
@@ -286,8 +287,9 @@ void init_slideshow_mode(void);
 void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
+void feh_clean_exit(void);
 int feh_load_image(Imlib_Image ** im, feh_file * file);
-void add_file_to_filelist_recursively(char *path, unsigned char level);
+void add_file_to_filelist_recursively(char *origpath, unsigned char level);
 void feh_prepare_filelist(void);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
@@ -338,8 +340,8 @@ void feh_file_free(feh_file * file);
 int filelist_length(feh_file * file);
 feh_file *filelist_last(feh_file * file);
 feh_file *filelist_first(feh_file * file);
+feh_file *filelist_join(feh_file * root, feh_file * newfile);
 feh_file *filelist_jump(feh_file * list, feh_file * file, int direction,
-
                         int num);
 feh_file *feh_file_rm_and_free(feh_file * list, feh_file * file);
 int filelist_num(feh_file * list, feh_file * file);
@@ -351,8 +353,9 @@ void feh_file_info_free(feh_file_info * info);
 int feh_file_info_load(feh_file * file);
 feh_file *feh_list_sort(feh_file * list, feh_compare_fn cmp);
 feh_file *feh_list_sort_merge(feh_file * l1, feh_file * l2,
-
                               feh_compare_fn cmp);
+int feh_write_filelist(feh_file * list, char *filename);
+feh_file *feh_read_filelist(char *filename);
 int feh_cmp_name(feh_file * file1, feh_file * file2);
 int feh_cmp_filename(feh_file * file1, feh_file * file2);
 int feh_cmp_width(feh_file * file1, feh_file * file2);

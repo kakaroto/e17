@@ -38,7 +38,7 @@ eprintf(char *fmt, ...)
    va_end(args);
 
    if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
-      fprintf(stderr, "%s", strerror(errno));
+      fprintf(stderr, " %s", strerror(errno));
    fprintf(stderr, "\n");
    exit(2);
 }
@@ -57,7 +57,7 @@ weprintf(char *fmt, ...)
    va_end(args);
 
    if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
-      fprintf(stderr, "%s", strerror(errno));
+      fprintf(stderr, " %s", strerror(errno));
    fprintf(stderr, "\n");
 }
 

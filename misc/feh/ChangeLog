@@ -1,3 +1,31 @@
+Sun Apr 30 14:48:04 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Filelists can now be saved to and loaded from files, very much
+	like the playlists used by music players.
+	* Here's the details:
+            -e, --filelist FILE
+            This option is similar to the playlists used by music
+            software. If FILE exists, it will be read for a  list
+            of  files to load, in the order they appear. The for-
+            mat is a list of image filenames, absolute  or  rela-
+            tive to the current directory, one filename per line.
+            If FILE doesn't exist, it will be  created  from  the
+            internal  filelist  at  the end of a viewing session.
+            This is best used to store  the  results  of  complex
+            sorts  (-Spixels for example) for later viewing.  Any
+            changes to the internal filelist (such as deleting  a
+            file or it being pruned for being unloadable) will be
+            saved to FILE when feh exits. You can  add  files  to
+            filelists  by specifying them on the commandline when
+            also specifying the list.
+	* I quite like this option. The reason I added was that I've been
+	testing some boundary conditions by recursing through complex
+	directory trees / sorting 10,000 images by pixel size etc, and
+	that can take a while. Now I can do it once, save the filelist,
+	and refer to that in future. You can of course use it to organise
+	and group pics too. ~/lists/britney.list, ~/lists/laetitia.list.
+	Hmmmmmm.
+
 Sun Apr 30 02:40:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* PageUp/PageDown in slideshows will jump back/forward about
