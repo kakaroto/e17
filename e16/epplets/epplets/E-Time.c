@@ -21,13 +21,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+static const char cvs_ident[] = "$Id$";
+
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <dirent.h>
+#include <unistd.h>
 #include "epplet.h"
-Epplet_gadget b_close, label1, label2, label3, label4;
+
+#if 0
+#  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
+#else
+#  define D(x) ((void) 0)
+#endif
+#define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
+#define NONULL(x)       ((x) ? (x) : (""))
+
+Epplet_gadget close_button, cfg_button, label1, label2, label3, label4;
+Epplet_gadget cfg_tb_line1, cfg_tb_line2, cfg_tb_line3, cfg_tb_line4;
+Window config_win;
+char *line1, *line2, *line3, *line4;
+int just = 1, cfg_just = 1;
 
 static void timer_cb(void *data);
 static void close_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
+static int delete_cb(void *data, Window win);
+static void apply_config(void);
+static void ok_cb(void *data);
+static void apply_cb(void *data);
+static void cancel_cb(void *data);
+static void config_cb(void *data);
 
 static void
 timer_cb(void *data)
@@ -41,16 +71,17 @@ timer_cb(void *data)
   tim2 = localtime(&t2);
   if (tim2) {
     memcpy(&tim, tim2, sizeof(struct tm));
-    strftime(tm, 63, "%A", &tim);
+    strftime(tm, 63, line1, &tim);
     Epplet_change_label(label1, tm);
-    strftime(tm, 63, "%e  %b", &tim);
+    strftime(tm, 63, line2, &tim);
     Epplet_change_label(label2, tm);
-    strftime(tm, 63, "%H:%M:%S", &tim);
+    strftime(tm, 63, line3, &tim);
     Epplet_change_label(label3, tm);
-    strftime(tm, 63, "%Z %Y", &tim);
+    strftime(tm, 63, line4, &tim);
     Epplet_change_label(label4, tm);
   }
   Epplet_timer(timer_cb, NULL, 0.5, "TIMER");
+  return;
   data = NULL;
 }
 
@@ -68,7 +99,8 @@ static void
 in_cb(void *data, Window w)
 {
   if (w == Epplet_get_main_window()) {
-    Epplet_gadget_show(b_close);
+    Epplet_gadget_show(close_button);
+    Epplet_gadget_show(cfg_button);
   }
   return;
   data = NULL;
@@ -78,10 +110,128 @@ static void
 out_cb(void *data, Window w)
 {
   if (w == Epplet_get_main_window()) {
-    Epplet_gadget_hide(b_close);
+    Epplet_gadget_hide(close_button);
+    Epplet_gadget_hide(cfg_button);
   }
   return;
   data = NULL;
+}
+
+static int
+delete_cb(void *data, Window win)
+{
+  config_win = None;
+  return 1;
+  win = (Window) 0;
+  data = NULL;
+}
+
+static void
+apply_config(void)
+{
+  char buff[1024];
+  int tmp;
+
+  tmp = (cfg_just ? -1 : 1);
+  if (just != tmp) {
+    just = tmp;
+    Epplet_gadget_destroy(label1);
+    Epplet_gadget_destroy(label2);
+    Epplet_gadget_destroy(label3);
+    Epplet_gadget_destroy(label4);
+    Epplet_gadget_show(label1 = Epplet_create_label(4 * just, 4, "", 1));
+    Epplet_gadget_show(label2 = Epplet_create_label(4 * just, 15, "", 1));
+    Epplet_gadget_show(label3 = Epplet_create_label(4 * just, 26, "", 1));
+    Epplet_gadget_show(label4 = Epplet_create_label(4 * just, 36, "", 1));
+  }
+
+  strcpy(buff, NONULL(Epplet_textbox_contents(cfg_tb_line1)));
+  Epplet_modify_config("line1", buff);
+  line1 = Epplet_query_config("line1");
+
+  strcpy(buff, NONULL(Epplet_textbox_contents(cfg_tb_line2)));
+  Epplet_modify_config("line2", buff);
+  line2 = Epplet_query_config("line2");
+
+  strcpy(buff, NONULL(Epplet_textbox_contents(cfg_tb_line3)));
+  Epplet_modify_config("line3", buff);
+  line3 = Epplet_query_config("line3");
+
+  strcpy(buff, NONULL(Epplet_textbox_contents(cfg_tb_line4)));
+  Epplet_modify_config("line4", buff);
+  line4 = Epplet_query_config("line4");
+
+  timer_cb(NULL);
+}
+
+static void
+ok_cb(void *data)
+{
+  apply_config();
+  Epplet_save_config();
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  return;
+  data = NULL;
+}
+
+static void
+apply_cb(void *data)
+{
+  apply_config();
+  return;
+  data = NULL;
+}
+
+static void
+cancel_cb(void *data)
+{
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  return;
+  data = NULL;
+}
+
+static void
+config_cb(void *data)
+{
+  if (config_win) {
+    return;
+  }
+
+  config_win = Epplet_create_window_config(200, 230, "E-Time Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+
+  Epplet_gadget_show(Epplet_create_label(4, 4, "First Line:", 2));
+  Epplet_gadget_show(cfg_tb_line1 = Epplet_create_textbox(NULL, line1, 4, 18, 192, 20, 2, NULL, NULL));
+
+  Epplet_gadget_show(Epplet_create_label(4, 50, "Second Line:", 2));
+  Epplet_gadget_show(cfg_tb_line2 = Epplet_create_textbox(NULL, line2, 4, 64, 192, 20, 2, NULL, NULL));
+
+  Epplet_gadget_show(Epplet_create_label(4, 96, "Third Line:", 2));
+  Epplet_gadget_show(cfg_tb_line3 = Epplet_create_textbox(NULL, line3, 4, 110, 192, 20, 2, NULL, NULL));
+
+  Epplet_gadget_show(Epplet_create_label(4, 142, "Fourth Line:", 2));
+  Epplet_gadget_show(cfg_tb_line4 = Epplet_create_textbox(NULL, line4, 4, 156, 192, 20, 2, NULL, NULL));
+
+  cfg_just = ((just == -1) ? 1 : 0);
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 188, 12, 12, &cfg_just, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 188, "Right-justify text?", 2));
+
+  Epplet_window_show(config_win);
+  Epplet_window_pop_context();
+
+  return;
+  data = NULL;
+}
+
+static void
+parse_config(void)
+{
+  line1 = Epplet_query_config_def("line1", "%A");
+  line2 = Epplet_query_config_def("line2", "%e  %b");
+  line3 = Epplet_query_config_def("line3", "%H:%M:%S");
+  line4 = Epplet_query_config_def("line4", "%Z %Y");
+  just = atoi(Epplet_query_config_def("just", "-1"));
 }
 
 int
@@ -90,11 +240,15 @@ main(int argc, char **argv)
   atexit(Epplet_cleanup);
 
   Epplet_Init("E-Time", "0.1", "Enlightenment Digital Clock Epplet", 3, 3, argc, argv, 0);
-  b_close = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  Epplet_gadget_show(label1 = Epplet_create_label(-4, 4, "", 1));
-  Epplet_gadget_show(label2 = Epplet_create_label(-4, 15, "", 1));
-  Epplet_gadget_show(label3 = Epplet_create_label(-4, 26, "", 1));
-  Epplet_gadget_show(label4 = Epplet_create_label(-4, 36, "", 1));
+  Epplet_load_config();
+  parse_config();
+
+  close_button = Epplet_create_std_button("CLOSE", 2, 2, close_cb, NULL);
+  cfg_button = Epplet_create_std_button("CONFIGURE", 33, 2, config_cb, NULL);
+  Epplet_gadget_show(label1 = Epplet_create_label(4 * just, 4, "", 1));
+  Epplet_gadget_show(label2 = Epplet_create_label(4 * just, 15, "", 1));
+  Epplet_gadget_show(label3 = Epplet_create_label(4 * just, 26, "", 1));
+  Epplet_gadget_show(label4 = Epplet_create_label(4 * just, 36, "", 1));
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
 

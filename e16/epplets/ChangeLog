@@ -1470,3 +1470,12 @@ Tue Dec  7 18:02:22 PST 1999
 Fixed a seg fault in E-Mountbox if the images in the config file aren't found.
 It first falls back on the compiled-in defaults, and if that doesn't work
 either, it exits with an error.
+
+-------------------------------------------------------------------------------
+
+Tue Dec  7 20:02:09 PST 1999
+(KainX)
+
+Config file support and a new config dialog for E-Time.  You can set the
+strings passed to strftime() for each line, and you can also set the text
+justification (right or left).
