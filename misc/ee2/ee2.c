@@ -9,6 +9,7 @@
 
 #define CHECKS 160
 
+/* GTK Widgets */
 GtkWidget *EventBox;
 
 GtkWidget *MainWindow, *FileSel, *SaveSel, *area;
@@ -26,10 +27,14 @@ GtkWidget *ImageMenu, *ImageItem, *IRefresh, *ISep1, *IBlur,
 			 *IBlurMore, *ISep2, *ISharpen, *ISharpenMore, *ISep3,
 			 *IFlip1, *IFlip2, *IFlip3, *ISep4, *IScale;
 
+/* Xlib Stuff */
 Display *disp;
 Visual *vis;
 Window root, win;
 Colormap cm;
+Pixmap pm;
+
+/* globals */
 int depth, imgw = 0, imgh = 0;
 int ww = 0, wh = 0;
 int i = 0, xx = 0, yy = 0, c = 1;
@@ -487,18 +492,27 @@ gboolean a_config(GtkWidget *widget,
       vis = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(widget));
       cm = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(widget));
       root = GDK_WINDOW_XWINDOW(widget->window);
-      imlib_get_visual_depth(disp, vis);
+      depth = imlib_get_visual_depth(disp, vis);
 	}
 	
+	if(pm)
+	  XFreePixmap(disp, pm);
+	
 	imlib_context_set_display(disp);
-   imlib_context_set_drawable(win);
+   /*imlib_context_set_drawable(win);*/
+	imlib_context_set_drawable(pm);
    imlib_context_set_visual(vis);
    imlib_context_set_colormap(cm);
 	
 	if(im){
 		imlib_context_set_image(im);
+		imgw = imlib_image_get_width();
+		imgh = imlib_image_get_height();
+		pm = XCreatePixmap(disp, win, imgw, imgh, depth);
 		DrawChecks();
 		Checks(imgw, imgh);
+		XSetWindowBackgroundPixmap(disp, win, pm);
+		XResizeWindow(disp, win, imgw, imgh);
 		imlib_context_set_image(im);
 	}
 	
