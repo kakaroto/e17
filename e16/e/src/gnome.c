@@ -550,7 +550,7 @@ GNOME_SetUsedHints(void)
    list[7] = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
    list[8] = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
    list[9] = XInternAtom(disp, XA_WIN_CLIENT_LIST, False);
-   XChangeProperty(disp, root.win, atom_set, XA_ATOM, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_ATOM, 32, PropModeReplace,
 		   (unsigned char *)list, 10);
    EDBUG_RETURN_;
 }
@@ -568,7 +568,7 @@ GNOME_SetCurrentArea(void)
    GetCurrentArea(&ax, &ay);
    val[0] = ax;
    val[1] = ay;
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)val, 2);
    EDBUG_RETURN_;
 }
@@ -583,7 +583,7 @@ GNOME_SetCurrentDesk(void)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
    val = (CARD32) desks.current;
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
@@ -599,7 +599,7 @@ GNOME_SetWMCheck(Window win_wm_check)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_SUPPORTING_WM_CHECK, False);
    val = win_wm_check;
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL,
 		   32, PropModeReplace, (unsigned char *)&val, 1);
    XChangeProperty(disp, win_wm_check, atom_set, XA_CARDINAL,
 		   32, PropModeReplace, (unsigned char *)&val, 1);
@@ -616,7 +616,7 @@ GNOME_SetDeskCount(void)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
    val = Conf.desks.num;
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
@@ -634,7 +634,7 @@ GNOME_SetAreaCount(void)
    GetAreaSize(&ax, &ay);
    val[0] = ax;
    val[1] = ay;
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)val, 2);
    EDBUG_RETURN_;
 }
@@ -657,7 +657,7 @@ GNOME_SetDeskNames(void)
      }
    if (XStringListToTextProperty(names, Conf.desks.num, &text))
      {
-	XSetTextProperty(disp, root.win, &text, atom_set);
+	XSetTextProperty(disp, VRoot.win, &text, atom_set);
 	XFree(text.value);
      }
    for (i = 0; i < Conf.desks.num; i++)
@@ -690,7 +690,7 @@ GNOME_SetClientList(void)
 		wl[j++] = lst[i]->client.win;
 	  }
      }
-   XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)wl, j);
    if (wl)
       Efree(wl);
@@ -708,11 +708,11 @@ GNOME_SetWMNameVer(void)
    EDBUG(6, "GNOME_SetWMNameVer");
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WM_NAME, False);
-   XChangeProperty(disp, root.win, atom_set, XA_STRING, 8, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)e_wm_name, strlen(e_wm_name));
    if (!atom_set2)
       atom_set2 = XInternAtom(disp, XA_WIN_WM_VERSION, False);
-   XChangeProperty(disp, root.win, atom_set2, XA_STRING, 8, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom_set2, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)wm_version, strlen(wm_version));
    EDBUG_RETURN_;
 }
@@ -772,9 +772,9 @@ GNOME_SetHints(Window win_wm_check)
       CARD32              val;
 
       atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
-      Mode.button_proxy_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
+      Mode.button_proxy_win = ECreateWindow(VRoot.win, -80, -80, 24, 24, 0);
       val = Mode.button_proxy_win;
-      XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32,
+      XChangeProperty(disp, VRoot.win, atom_set, XA_CARDINAL, 32,
 		      PropModeReplace, (unsigned char *)&val, 1);
       XChangeProperty(disp, Mode.button_proxy_win, atom_set, XA_CARDINAL, 32,
 		      PropModeReplace, (unsigned char *)&val, 1);

@@ -440,7 +440,8 @@ IPC_GeneralInfo(const char *params, Client * c)
      {
 	if (!strcmp(params, "screen_size"))
 	  {
-	     Esnprintf(buf, sizeof(buf), "screen_size: %d %d", root.w, root.h);
+	     Esnprintf(buf, sizeof(buf), "screen_size: %d %d", VRoot.w,
+		       VRoot.h);
 	  }
 	else
 	  {

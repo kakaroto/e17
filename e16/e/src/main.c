@@ -308,7 +308,7 @@ main(int argc, char **argv)
    ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
    if (ec)
      {
-	ApplyECursor(root.win, ec);
+	ApplyECursor(VRoot.win, ec);
 	ec->ref_count++;
 	ec->inroot = 1;
      }
@@ -316,7 +316,7 @@ main(int argc, char **argv)
    Mode.startup = 0;
    Mode.save_ok = Mode.wm.master;
    /* ok - paranoia - save current settings to disk */
-   if (root.scr == 0)
+   if (VRoot.scr == 0)
       autosave();
 
    /* let's make sure we set this up and go to our desk anyways */

@@ -292,25 +292,25 @@ TextDraw(TextState * ts, Window win, char *text,
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  EFont_draw_string(disp, win, gc, xx + 1, yy + 1,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  EFont_draw_string(disp, win, gc, xx - 1, yy,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 		  EFont_draw_string(disp, win, gc, xx + 1, yy,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 		  EFont_draw_string(disp, win, gc, xx, yy - 1,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 		  EFont_draw_string(disp, win, gc, xx, yy + 1,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 	       }
 	     EAllocColor(&ts->fg_col);
 	     XSetForeground(disp, gc, ts->fg_col.pixel);
 	     EFont_draw_string(disp, win, gc, xx, yy,
-			       lines[i], ts->efont, root.vis, root.cmap);
+			       lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 	     yy += ascent + descent;
 	  }
      }

@@ -385,7 +385,7 @@ FocusHandleEnter(XEvent * ev)
    EDBUG(5, "FocusHandleEnter");
 
    /* Entering root may mean entering this screen */
-   if (win == root.win &&
+   if (win == VRoot.win &&
        (ev->xcrossing.mode == NotifyNormal &&
 	ev->xcrossing.detail != NotifyInferior))
      {
@@ -425,7 +425,7 @@ FocusHandleLeave(XEvent * ev)
    Window              win = ev->xcrossing.window;
 
    /* Leaving root may mean entering other screen */
-   if (win == root.win &&
+   if (win == VRoot.win &&
        (ev->xcrossing.mode == NotifyNormal &&
 	ev->xcrossing.detail != NotifyInferior))
       FocusToEWin(NULL, FOCUS_SET);
@@ -439,7 +439,7 @@ FocusHandleEnter(XEvent * ev)
     * multi screen handling -- root windows receive
     * enter / leave notify
     */
-   if (ev->xany.window == root.win)
+   if (ev->xany.window == VRoot.win)
      {
 	if (!Mode.focuswin || Conf.focus.mode == MODE_FOCUS_POINTER)
 	   HandleFocusWindow(0);
@@ -458,7 +458,7 @@ FocusHandleLeave(XEvent * ev)
     * screens on a multi screen system - need to unfocus
     * to allow other desk to grab focus...
     */
-   if (ev->xcrossing.window == root.win)
+   if (ev->xcrossing.window == VRoot.win)
      {
 	if (ev->xcrossing.mode == NotifyNormal
 	    && ev->xcrossing.detail != NotifyInferior && Mode.focuswin)

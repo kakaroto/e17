@@ -260,8 +260,8 @@ SetCurrentArea(int ax, int ay)
    tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
    HideToolTip(tt);
 
-   dx = root.w * (ax - desks.desk[desks.current].current_area_x);
-   dy = root.h * (ay - desks.desk[desks.current].current_area_y);
+   dx = VRoot.w * (ax - desks.desk[desks.current].current_area_x);
+   dy = VRoot.h * (ay - desks.desk[desks.current].current_area_y);
 
    if (dx < 0)
       SoundPlay("SOUND_MOVE_AREA_LEFT");

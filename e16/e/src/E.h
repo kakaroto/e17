@@ -56,12 +56,12 @@
 #define IMLIB1_SET_CONTEXT(root_ctx)
 
 #define EAllocColor(pxc) \
-	XAllocColor(disp, root.cmap, pxc)
+	XAllocColor(disp, VRoot.cmap, pxc)
 
 #define IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask) \
 	imlib_free_pixmap_and_mask(pmap)
 
-#define IC_RenderDepth() DefaultDepth(disp, root.scr)
+#define IC_RenderDepth() DefaultDepth(disp, VRoot.scr)
 
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
@@ -164,7 +164,7 @@ extern Drawable     vIcDrw;
 
 #define XSync(d, f) \
 {XImage *__xim; \
-__xim = XGetImage(d, root.win, 0, 0, 1, 1, 0xffffffff, ZPixmap); \
+__xim = XGetImage(d, VRoot.win, 0, 0, 1, 1, 0xffffffff, ZPixmap); \
 if (__xim) XDestroyImage(__xim);}
 
 #ifdef HAS_XINERAMA
@@ -2801,7 +2801,7 @@ extern Imlib_Context *prImlib_Context;
 extern FnlibData   *pFnlibData;
 #endif
 extern List        *lists;
-extern Root         root;
+extern Root         VRoot;
 extern EConf        Conf;
 extern EMode        Mode;
 extern Desktops     desks;

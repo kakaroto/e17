@@ -3344,8 +3344,8 @@ OpenConfigFileForReading(const char *path, char preprocess)
 		  "%s %s/cached/cfg/%s.preparsed",
 		  epp_path, EDirRoot(), themepath, EDirRoot(),
 		  ENLIGHTENMENT_VERSION, EDirRoot(), EDirBin(),
-		  themepath, EDirUser(), EDirUserCache(), root.w, root.h,
-		  root.w, root.h, root.depth, def_user, def_home, def_shell,
+		  themepath, EDirUser(), EDirUserCache(), VRoot.w, VRoot.h,
+		  VRoot.w, VRoot.h, VRoot.depth, def_user, def_home, def_shell,
 		  path, EDirUserCache(), s);
 	system(execline);
 	Esnprintf(execline, sizeof(execline), "%s/cached/cfg/%s.preparsed",

@@ -190,7 +190,7 @@ WarpFocusShowTitle(EWin * ewin)
       return;
 
    if (!warpFocusTitleWindow)
-      warpFocusTitleWindow = ECreateWindow(root.win, 0, 0, 1, 1, 1);
+      warpFocusTitleWindow = ECreateWindow(VRoot.win, 0, 0, 1, 1, 1);
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;

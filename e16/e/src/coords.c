@@ -43,7 +43,7 @@ SetCoords(EWin * ewin)
    tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
    ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (!c_win)
-      c_win = ECreateWindow(root.win, 0, 0, 1, 1, 2);
+      c_win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
    if ((!ic) || (!tc))
       return;
 

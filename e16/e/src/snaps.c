@@ -895,7 +895,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	     if (sn->use_desktop)
 		fprintf(f, "DESKTOP: %i\n", sn->desktop);
 	     if (sn->use_xy)
-		fprintf(f, "RES: %i %i\n", root.w, root.h);
+		fprintf(f, "RES: %i %i\n", VRoot.w, VRoot.h);
 	     if (sn->use_wh)
 		fprintf(f, "WH: %i %i\n", sn->w, sn->h);
 	     if (sn->use_xy)
@@ -932,7 +932,8 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 
    fclose(f);
 
-   Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
+   Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
+	     VRoot.scr);
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("Real_SaveSnapInfo: %s\n", buf);
    E_mv(s, buf);
@@ -971,16 +972,16 @@ LoadSnapInfo(void)
    FILE               *f;
    int                 res_w, res_h;
 
-   Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), root.scr);
+   Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), VRoot.scr);
    if (!exists(buf))
       Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
-		root.scr);
+		VRoot.scr);
    f = fopen(buf, "r");
    if (!f)
       return;
 
-   res_w = root.w;
-   res_h = root.h;
+   res_w = VRoot.w;
+   res_h = VRoot.h;
    while (fgets(buf, sizeof(buf), f))
      {
 	/* nuke \n */
@@ -988,8 +989,8 @@ LoadSnapInfo(void)
 	word(buf, 1, s);
 	if (!strcmp(s, "NEW:"))
 	  {
-	     res_w = root.w;
-	     res_h = root.h;
+	     res_w = VRoot.w;
+	     res_h = VRoot.h;
 	     sn = NewSnapshot(atword(buf, 2));
 	  }
 	else if (sn)
@@ -1034,7 +1035,7 @@ LoadSnapInfo(void)
 		  word(buf, 3, s);
 		  sn->y = atoi(s);
 		  /* we changed reses since we last used this snapshot file */
-		  if (res_w != root.w)
+		  if (res_w != VRoot.w)
 		    {
 		       if (sn->use_wh)
 			 {
@@ -1042,15 +1043,15 @@ LoadSnapInfo(void)
 			       sn->x = 0;
 			    else
 			       sn->x =
-				  (sn->x * (root.w - sn->w)) / (res_w - sn->w);
+				  (sn->x * (VRoot.w - sn->w)) / (res_w - sn->w);
 			 }
 		       else
 			 {
-			    if (sn->x >= root.w)
-			       sn->x = root.w - 32;
+			    if (sn->x >= VRoot.w)
+			       sn->x = VRoot.w - 32;
 			 }
 		    }
-		  if (res_h != root.h)
+		  if (res_h != VRoot.h)
 		    {
 		       if (sn->use_wh)
 			 {
@@ -1058,12 +1059,12 @@ LoadSnapInfo(void)
 			       sn->y = 0;
 			    else
 			       sn->y =
-				  (sn->y * (root.h - sn->h)) / (res_h - sn->h);
+				  (sn->y * (VRoot.h - sn->h)) / (res_h - sn->h);
 			 }
 		       else
 			 {
-			    if (sn->y >= root.h)
-			       sn->y = root.h - 32;
+			    if (sn->y >= VRoot.h)
+			       sn->y = VRoot.h - 32;
 			 }
 		    }
 		  word(buf, 4, s);
@@ -1163,19 +1164,19 @@ MatchEwinToSnapInfo(EWin * ewin)
 	       {
 		  ewin->client.x +=
 		     ((sn->area_x - desks.desk[ewin->desktop].current_area_x) *
-		      root.w);
+		      VRoot.w);
 		  ewin->client.y +=
 		     ((sn->area_y - desks.desk[ewin->desktop].current_area_y) *
-		      root.h);
+		      VRoot.h);
 	       }
 	     else
 	       {
 		  ewin->client.x +=
 		     ((sn->area_x - desks.desk[desks.current].current_area_x) *
-		      root.w);
+		      VRoot.w);
 		  ewin->client.y +=
 		     ((sn->area_y - desks.desk[desks.current].current_area_y) *
-		      root.h);
+		      VRoot.h);
 	       }
 	  }
 	ewin->x = ewin->client.x;

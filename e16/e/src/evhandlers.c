@@ -42,7 +42,7 @@ ToolTipTimeout(int val, void *data)
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (False ==
-       XQueryPointer(disp, root.win, &rt, &ch, &x, &y, &dum, &dum, &mask))
+       XQueryPointer(disp, VRoot.win, &rt, &ch, &x, &y, &dum, &dum, &mask))
       EDBUG_RETURN_;
    /* dont pop up tooltip is mouse button down */
    if (mask &
@@ -385,7 +385,7 @@ HandleMotion(XEvent * ev)
 	     xdist = x_org + menu_scroll_dist - (Mode.x);
 	  }
 
-	if (Mode.y > (root.h - (menu_scroll_dist + 1)))
+	if (Mode.y > (VRoot.h - (menu_scroll_dist + 1)))
 	  {
 	     ydist = -(menu_scroll_dist + (Mode.y - (y_org + my_height)));
 	  }
@@ -535,7 +535,7 @@ HandleMouseIn(XEvent * ev)
    if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
-   if (win == root.win)
+   if (win == VRoot.win)
       goto done;
 
    Mode.context_win = win;
@@ -760,7 +760,7 @@ HandleConfigureNotify(XEvent * ev)
    EDBUG(5, "HandleConfigureNotify");
 
 #ifdef USE_XRANDR
-   if (ev->xconfigure.window == root.win)
+   if (ev->xconfigure.window == VRoot.win)
       DialogOK("Wheee! (ConfigureNotify)",
 	       "Screen size changed to\n%dx%d pixels",
 	       ev->xconfigure.width, ev->xconfigure.height);

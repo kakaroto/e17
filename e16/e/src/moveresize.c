@@ -52,7 +52,7 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
 	GrabX();
      }
    UnGrabTheButtons();
-   GrabConfineThePointer(root.win);
+   GrabConfineThePointer(VRoot.win);
    SoundPlay("SOUND_MOVE_START");
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
@@ -274,7 +274,7 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
    Mode.queue_up = 0;
    SoundPlay("SOUND_RESIZE_START");
    UnGrabTheButtons();
-   GrabConfineThePointer(root.win);
+   GrabConfineThePointer(VRoot.win);
    switch (hv)
      {
      case MODE_RESIZE:
@@ -465,7 +465,7 @@ ActionMoveHandleMotion(void)
       else
 	 ndy = min_dy;
       screen_snap_dist =
-	 Mode.constrained ? (root.w + root.h) : Conf.snap.screen_snap_dist;
+	 Mode.constrained ? (VRoot.w + VRoot.h) : Conf.snap.screen_snap_dist;
       for (i = 0; i < num; i++)
 	{
 	   /* jump out of snap horizontally */
@@ -475,13 +475,13 @@ ActionMoveHandleMotion(void)
 		    (!(IN_RANGE
 		       (gwins[i]->reqx, gwins[i]->x,
 			screen_snap_dist))))
-		   || ((gwins[i]->x == (root.w - gwins[i]->w))
+		   || ((gwins[i]->x == (VRoot.w - gwins[i]->w))
 		       &&
 		       (!(IN_RANGE
 			  (gwins[i]->reqx, gwins[i]->x,
 			   screen_snap_dist))))
 		   || ((gwins[i]->x != 0)
-		       && (gwins[i]->x != (root.w - gwins[i]->w)
+		       && (gwins[i]->x != (VRoot.w - gwins[i]->w)
 			   &&
 			   (!(IN_RANGE
 			      (gwins[i]->reqx, gwins[i]->x,
@@ -497,13 +497,13 @@ ActionMoveHandleMotion(void)
 		    (!(IN_RANGE
 		       (gwins[i]->reqy, gwins[i]->y,
 			screen_snap_dist))))
-		   || ((gwins[i]->y == (root.h - gwins[i]->h))
+		   || ((gwins[i]->y == (VRoot.h - gwins[i]->h))
 		       &&
 		       (!(IN_RANGE
 			  (gwins[i]->reqy, gwins[i]->y,
 			   screen_snap_dist))))
 		   || ((gwins[i]->y != 0)
-		       && (gwins[i]->y != (root.h - gwins[i]->h)
+		       && (gwins[i]->y != (VRoot.h - gwins[i]->h)
 			   &&
 			   (!(IN_RANGE
 			      (gwins[i]->reqy, gwins[i]->y,

@@ -7,7 +7,7 @@ edox_SOURCES = dox.c dox.h file.c format.c text.c ttfont.c
 
 LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) $(X_LIBS) $(XINERAMA_LIBS) -lX11 -lm
 
-INCLUDES = $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(IMLIB_CFLAGS) $(X_CFLAGS)
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\"
 

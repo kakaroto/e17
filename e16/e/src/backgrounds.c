@@ -308,7 +308,7 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph, int setbg)
    else
      {
 	if (!setbg)
-	   w = (imlib_image_get_width() * rw) / root.w;
+	   w = (imlib_image_get_width() * rw) / VRoot.w;
 	else
 	   w = imlib_image_get_width();
      }
@@ -321,7 +321,7 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph, int setbg)
      {
 	if (!setbg)
 	  {
-	     h = (imlib_image_get_height() * rh) / root.h;
+	     h = (imlib_image_get_height() * rh) / VRoot.h;
 	  }
 	else
 	  {
@@ -368,7 +368,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
    if (!WinExists(win))
       EDBUG_RETURN_;
 
-   IMLIB1_SET_CONTEXT(win == root.win);
+   IMLIB1_SET_CONTEXT(win == VRoot.win);
 
    GetWinWH(win, &rw, &rh);
    depth = GetWinDepth(win);

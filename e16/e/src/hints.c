@@ -36,7 +36,7 @@ HintsInit(void)
    Window              win;
 
    EDBUG(6, "HintsInit");
-   win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
+   win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
    ICCCM_Init();
 #if ENABLE_GNOME
    GNOME_SetHints(win);
@@ -45,7 +45,7 @@ HintsInit(void)
    EWMH_Init(win);
 #endif
    atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
-   XChangeProperty(disp, root.win, atom, XA_STRING, 8, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, atom, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)e_wm_version, strlen(e_wm_version));
 
    Conf.hints.set_xroot_info_on_root_window = 0;
@@ -308,15 +308,15 @@ HintsSetRootInfo(Window win, Pixmap pmap, int color)
      }
    if (!alive_win)
      {
-	alive_win = ECreateWindow(root.win, -100, -100, 1, 1, 0);
+	alive_win = ECreateWindow(VRoot.win, -100, -100, 1, 1, 0);
 	XChangeProperty(disp, alive_win, aaa, XA_WINDOW, 32, PropModeReplace,
 			(unsigned char *)&alive_win, 1);
-	XChangeProperty(disp, root.win, aaa, XA_WINDOW, 32, PropModeReplace,
+	XChangeProperty(disp, VRoot.win, aaa, XA_WINDOW, 32, PropModeReplace,
 			(unsigned char *)&alive_win, 1);
      }
 
    if (Conf.hints.set_xroot_info_on_root_window)
-      win = root.win;
+      win = VRoot.win;
    XChangeProperty(disp, win, a, XA_PIXMAP, 32, PropModeReplace,
 		   (unsigned char *)&pmap, 1);
    XChangeProperty(disp, win, aa, XA_CARDINAL, 32, PropModeReplace,

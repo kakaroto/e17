@@ -460,7 +460,7 @@ ICCCM_Cmap(EWin * ewin)
 	       {
 		  if (XGetWindowAttributes(disp, wlist[i], &xwa))
 		    {
-		       if (xwa.colormap != DefaultColormap(disp, root.scr))
+		       if (xwa.colormap != DefaultColormap(disp, VRoot.scr))
 			 {
 			    XInstallColormap(disp, xwa.colormap);
 			    Mode.current_cmap = xwa.colormap;
@@ -488,7 +488,7 @@ ICCCM_Focus(EWin * ewin)
 
    if (!ewin)
      {
-	XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
+	XSetInputFocus(disp, VRoot.win, RevertToPointerRoot, CurrentTime);
 	HintsSetActiveWindow(ewin);
 	EDBUG_RETURN_;
      }
@@ -563,7 +563,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 			  dsk = desks.current;
 		       ewin->client.x -= desks.desk[dsk].x;
 		       ewin->client.y -= desks.desk[dsk].y;
-		       if (ewin->client.x + ewin->client.w >= root.w)
+		       if (ewin->client.x + ewin->client.w >= VRoot.w)
 			 {
 			    ewin->client.x += desks.desk[dsk].x;
 			 }
@@ -571,7 +571,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 			 {
 			    ewin->client.x += desks.desk[dsk].x;
 			 }
-		       if (ewin->client.y + ewin->client.h >= root.h)
+		       if (ewin->client.y + ewin->client.h >= VRoot.h)
 			 {
 			    ewin->client.y += desks.desk[dsk].y;
 			 }
@@ -1049,7 +1049,7 @@ ICCCM_SetIconSizes()
    is->max_height = 48;
    is->width_inc = 1;
    is->height_inc = 1;
-   XSetIconSizes(disp, root.win, is, 1);
+   XSetIconSizes(disp, VRoot.win, is, 1);
    XFree(is);
    EDBUG_RETURN_;
 }
@@ -1098,10 +1098,10 @@ ICCCM_SetMainEInfo(void)
 	cc[(i * 2) + 1] = desks.desk[i].current_area_y;
      }
    a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   XChangeProperty(disp, root.win, a, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)cc, ENLIGHTENMENT_CONF_NUM_DESKTOPS * 2);
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   XChangeProperty(disp, root.win, a, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)(&desks.current), 1);
 }
 
@@ -1116,7 +1116,7 @@ ICCCM_GetMainEInfo(void)
 
    a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
    puc = NULL;
-   XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2,
+   XGetWindowProperty(disp, VRoot.win, a, 0, 10, False, XA_CARDINAL, &a2,
 		      &dummy, &lnum, &ldummy, &puc);
    c = (CARD32 *) puc;
    num = (int)lnum;
@@ -1135,7 +1135,7 @@ ICCCM_GetMainEInfo(void)
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
    puc = NULL;
-   XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2,
+   XGetWindowProperty(disp, VRoot.win, a, 0, 10, False, XA_CARDINAL, &a2,
 		      &dummy, &lnum, &ldummy, &puc);
    c = (CARD32 *) puc;
    num = (int)lnum;

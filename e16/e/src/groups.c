@@ -245,15 +245,15 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				 x = ewin->x;
 				 y = ewin->y;
 				 if ((ewin->x + ewin->border->border.left + 1) >
-				     root.w)
-				    x = root.w - ewin->border->border.left - 1;
+				     VRoot.w)
+				    x = VRoot.w - ewin->border->border.left - 1;
 				 else if ((ewin->x + ewin->w -
 					   ewin->border->border.right - 1) < 0)
 				    x = 0 - ewin->w +
 				       ewin->border->border.right + 1;
 				 if ((ewin->y + ewin->border->border.top + 1) >
-				     root.h)
-				    y = root.h - ewin->border->border.top - 1;
+				     VRoot.h)
+				    y = VRoot.h - ewin->border->border.top - 1;
 				 else if ((ewin->y + ewin->h -
 					   ewin->border->border.bottom - 1) < 0)
 				    y = 0 - ewin->h +
@@ -392,7 +392,7 @@ SaveGroups(void)
 	char                s[1024];
 
 	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", EDirUser(),
-		  root.scr);
+		  VRoot.scr);
 	f = fopen(s, "w");
 	if (f)
 	  {
@@ -437,7 +437,7 @@ LoadGroups(void)
    char                s[1024];
 
    Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", EDirUser(),
-	     root.scr);
+	     VRoot.scr);
    f = fopen(s, "r");
    if (f)
      {

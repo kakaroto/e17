@@ -36,7 +36,7 @@ GrabActionKey(Action * a)
    if (a->anymodifier)
      {
 	mod = AnyModifier;
-	XGrabKey(disp, a->key, mod, root.win, False, GrabModeAsync,
+	XGrabKey(disp, a->key, mod, VRoot.win, False, GrabModeAsync,
 		 GrabModeAsync);
      }
    else
@@ -45,7 +45,7 @@ GrabActionKey(Action * a)
 
 	/* grab the key even if locks are on or not */
 	for (i = 0; i < 8; i++)
-	   XGrabKey(disp, a->key, mod | mask_mod_combos[i], root.win, False,
+	   XGrabKey(disp, a->key, mod | mask_mod_combos[i], VRoot.win, False,
 		    GrabModeAsync, GrabModeAsync);
      }
    EDBUG_RETURN_;
@@ -63,7 +63,7 @@ UnGrabActionKey(Action * a)
    if (a->anymodifier)
      {
 	mod = AnyModifier;
-	XUngrabKey(disp, a->key, mod, root.win);
+	XUngrabKey(disp, a->key, mod, VRoot.win);
      }
    else
      {
@@ -71,7 +71,7 @@ UnGrabActionKey(Action * a)
 
 	/* ungrab the key even if locks are on or not */
 	for (i = 0; i < 8; i++)
-	   XUngrabKey(disp, a->key, mod | mask_mod_combos[i], root.win);
+	   XUngrabKey(disp, a->key, mod | mask_mod_combos[i], VRoot.win);
      }
    EDBUG_RETURN_;
 }

@@ -40,7 +40,7 @@ static char         zoom_can = 0;
 static void
 FillStdVidModes(void)
 {
-   XF86VidModeGetAllModeLines(disp, root.scr, &std_vid_modes_num,
+   XF86VidModeGetAllModeLines(disp, VRoot.scr, &std_vid_modes_num,
 			      &std_vid_modes);
 }
 
@@ -95,28 +95,28 @@ SwitchRes(char inout, int x, int y, int w, int h)
 	XF86VidModeModeLine curmode;
 	int                 dotclock;
 
-	if (!XF86VidModeGetModeLine(disp, root.scr, &dotclock, &curmode))
+	if (!XF86VidModeGetModeLine(disp, VRoot.scr, &dotclock, &curmode))
 	   return mode;
-	XF86VidModeGetViewPort(disp, root.scr, &vp_x, &vp_y);
+	XF86VidModeGetViewPort(disp, VRoot.scr, &vp_x, &vp_y);
 
 	mode = FindMode(w, h);
 	if (mode)
 	  {
-	     XF86VidModeLockModeSwitch(disp, root.scr, 0);
+	     XF86VidModeLockModeSwitch(disp, VRoot.scr, 0);
 	     std_vid_mode_cur = GetModeIndex(dotclock, &curmode);
-	     XF86VidModeSwitchToMode(disp, root.scr, mode);
-	     XF86VidModeSetViewPort(disp, root.scr, x, y);
-	     XF86VidModeLockModeSwitch(disp, root.scr, 1);
+	     XF86VidModeSwitchToMode(disp, VRoot.scr, mode);
+	     XF86VidModeSetViewPort(disp, VRoot.scr, x, y);
+	     XF86VidModeLockModeSwitch(disp, VRoot.scr, 1);
 	  }
      }
    else
      {
 	mode = std_vid_modes[std_vid_mode_cur];
-	XF86VidModeLockModeSwitch(disp, root.scr, 0);
-	XF86VidModeSwitchToMode(disp, root.scr, mode);
-	XF86VidModeSetViewPort(disp, root.scr, vp_x, vp_y);
+	XF86VidModeLockModeSwitch(disp, VRoot.scr, 0);
+	XF86VidModeSwitchToMode(disp, VRoot.scr, mode);
+	XF86VidModeSetViewPort(disp, VRoot.scr, vp_x, vp_y);
 #if 0				/* No, don't lock or we can't switch resolution */
-	XF86VidModeLockModeSwitch(disp, root.scr, 1);
+	XF86VidModeLockModeSwitch(disp, VRoot.scr, 1);
 #endif
      }
    return mode;
@@ -182,9 +182,9 @@ ZoomMask(int x, int y, int w, int h)
    if (x < 0 || y < 0 || w <= 0 || h <= 0)
       return 0;
 
-   win = ECreateWindow(root.win, x, y, w, h, 0);
+   win = ECreateWindow(VRoot.win, x, y, w, h, 0);
    XSetWindowBackgroundPixmap(disp, win, None);
-   XSetWindowBackground(disp, win, BlackPixel(disp, root.scr));
+   XSetWindowBackground(disp, win, BlackPixel(disp, VRoot.scr));
    XRaiseWindow(disp, win);
    XMapWindow(disp, win);
 

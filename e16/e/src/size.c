@@ -76,13 +76,13 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	if (direction & MAX_HOR)
 	  {
 	     x = 0;
-	     w = root.w - ewin->border->border.left -
+	     w = VRoot.w - ewin->border->border.left -
 		ewin->border->border.right;
 	  }
 	if (direction & MAX_VER)
 	  {
 	     y = 0;
-	     h = root.h - ewin->border->border.top -
+	     h = VRoot.h - ewin->border->border.top -
 		ewin->border->border.bottom;
 	  }
 	break;

@@ -284,7 +284,7 @@ MenuShow(Menu * m, char noshow)
 	     if ((wx - ((int)w / 2)) < x_origin)
 		wx = x_origin + (int)b->border.left;
 
-	     if (Mode.y + (int)mh > (int)root.h)
+	     if (Mode.y + (int)mh > (int)VRoot.h)
 		wy = (y_origin + height) - (int)mh - (int)b->border.bottom;
 	     else
 		wy = Mode.y - y - ((int)h / 2);
@@ -304,7 +304,7 @@ MenuShow(Menu * m, char noshow)
      }
    else if ((Mode.x >= 0) && (Mode.y < 0))
      {
-	if (((-Mode.y) + (int)mh) > (int)root.h)
+	if (((-Mode.y) + (int)mh) > (int)VRoot.h)
 	   Mode.y = -((-Mode.y) - Mode.context_h - mh);
 	if (Conf.menusonscreen)
 	   EMoveWindow(disp, m->win, wx, -Mode.y);
@@ -313,7 +313,7 @@ MenuShow(Menu * m, char noshow)
      }
    else if ((Mode.x < 0) && (Mode.y >= 0))
      {
-	if (((-Mode.x) + (int)mw) > (int)root.w)
+	if (((-Mode.x) + (int)mw) > (int)VRoot.w)
 	   Mode.x = -((-Mode.x) - Mode.context_w - mw);
 	if (Conf.menusonscreen)
 	   EMoveWindow(disp, m->win, -Mode.x, wy);
@@ -322,9 +322,9 @@ MenuShow(Menu * m, char noshow)
      }
    else
      {
-	if (((-Mode.x) + (int)mw) > (int)root.w)
+	if (((-Mode.x) + (int)mw) > (int)VRoot.w)
 	   Mode.x = -((-Mode.x) - Mode.context_w - mw);
-	if (((-Mode.y) + (int)mh) > (int)root.h)
+	if (((-Mode.y) + (int)mh) > (int)VRoot.h)
 	   Mode.y = -((-Mode.y) - Mode.context_h - mh);
 	EMoveWindow(disp, m->win, -Mode.x, -Mode.y);
      }
@@ -639,7 +639,7 @@ MenuRealize(Menu * m)
       EDBUG_RETURN_;
 
    if (!m->win)
-      m->win = ECreateWindow(root.win, 0, 0, 1, 1, 0);
+      m->win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 0);
 
    if (m->title)
      {
@@ -888,7 +888,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	     if (!m->style->use_item_bg)
 	       {
 		  mi_pmm->type = 0;
-		  mi_pmm->pmap = ECreatePixmap(disp, mi->win, w, h, root.depth);
+		  mi_pmm->pmap =
+		     ECreatePixmap(disp, mi->win, w, h, VRoot.depth);
 		  gc = XCreateGC(disp, m->pmm.pmap, 0, &gcv);
 		  XCopyArea(disp, m->pmm.pmap, mi_pmm->pmap, gc, x, y, w, h, 0,
 			    0);
@@ -1091,7 +1092,7 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 				 imlib_save_image(s2);
 				 imlib_free_image_and_decache();
 
-				 scr_asp = (root.w << 16) / root.h;
+				 scr_asp = (VRoot.w << 16) / VRoot.h;
 				 im_asp = (width << 16) / height;
 				 if (width == height)
 				   {
@@ -1312,7 +1313,7 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 			    imlib_save_image(s2);
 			    imlib_free_image_and_decache();
 
-			    scr_asp = (root.w << 16) / root.h;
+			    scr_asp = (VRoot.w << 16) / VRoot.h;
 			    im_asp = (width << 16) / height;
 			    if (width == height)
 			      {
@@ -2009,7 +2010,8 @@ MenuShowMasker(Menu * m)
 	Window              wl[2];
 
 	parent = desks.desk[ewin->desktop].win;
-	Mode.menu_cover_win = ECreateEventWindow(parent, 0, 0, root.w, root.h);
+	Mode.menu_cover_win =
+	   ECreateEventWindow(parent, 0, 0, VRoot.w, VRoot.h);
 	Mode.menu_win_covered = ewin->win;
 	wl[0] = Mode.menu_win_covered;
 	wl[1] = Mode.menu_cover_win;
@@ -2593,10 +2595,10 @@ SubmenuShowTimeout(int val, void *dat)
 	     int                 i;
 	     int                 xdist = 0, ydist = 0;
 
-	     if (ewin2->x + ewin2->w > root.w)
-		xdist = root.w - (ewin2->x + ewin2->w);
-	     if (ewin2->y + ewin2->h > root.h)
-		ydist = root.h - (ewin2->y + ewin2->h);
+	     if (ewin2->x + ewin2->w > VRoot.w)
+		xdist = VRoot.w - (ewin2->x + ewin2->w);
+	     if (ewin2->y + ewin2->h > VRoot.h)
+		ydist = VRoot.h - (ewin2->y + ewin2->h);
 	     if ((xdist != 0) || (ydist != 0))
 	       {
 		  for (i = 0; i < Mode.cur_menu_depth; i++)

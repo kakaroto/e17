@@ -46,9 +46,9 @@ CreateECursor(char *name, char *image, int native_id, XColor * fg, XColor * bg)
 	mask = 0;
 	xh = 0;
 	yh = 0;
-	XReadBitmapFile(disp, root.win, msk, &w, &h, &mask, &xh, &yh);
-	XReadBitmapFile(disp, root.win, img, &w, &h, &pmap, &xh, &yh);
-	XQueryBestCursor(disp, root.win, w, h, &ww, &hh);
+	XReadBitmapFile(disp, VRoot.win, msk, &w, &h, &mask, &xh, &yh);
+	XReadBitmapFile(disp, VRoot.win, img, &w, &h, &pmap, &xh, &yh);
+	XQueryBestCursor(disp, VRoot.win, w, h, &ww, &hh);
 	if ((w > ww) || (h > hh))
 	  {
 	     EFreePixmap(disp, pmap);

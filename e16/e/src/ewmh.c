@@ -223,12 +223,12 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_WM_STATE_ABOVE);
    _ATOM_INIT(_NET_WM_STATE_BELOW);
 
-   _ATOM_SET_ATOM(_NET_SUPPORTED, root.win, atom_list, atom_count);
+   _ATOM_SET_ATOM(_NET_SUPPORTED, VRoot.win, atom_list, atom_count);
 
    /* Set WM info properties */
-   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, root.win, e_wm_name);
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, VRoot.win, e_wm_name);
 
-   _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, root.win, &win_wm_check, 1);
+   _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, VRoot.win, &win_wm_check, 1);
    _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, win_wm_check, &win_wm_check, 1);
    _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win_wm_check, e_wm_name);
 
@@ -254,13 +254,13 @@ EWMH_SetDesktopCount(void)
    EDBUG(6, "EWMH_SetDesktopCount");
 
    val = Conf.desks.num;
-   _ATOM_SET_CARD32(_NET_NUMBER_OF_DESKTOPS, root.win, &val, 1);
+   _ATOM_SET_CARD32(_NET_NUMBER_OF_DESKTOPS, VRoot.win, &val, 1);
 
    for (i = 0; i < Conf.desks.num; i++)
      {
 	wl[i] = desks.desk[i].win;
      }
-   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, root.win, &wl, Conf.desks.num);
+   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, VRoot.win, &wl, Conf.desks.num);
 
    EDBUG_RETURN_;
 }
@@ -277,7 +277,7 @@ EWMH_SetDesktopNames(void)
    for (i = 0; i < Conf.desks.num; i++)
       s += sprintf(s, "Desk-%d", i) + 1;
 
-   _ATOM_SET_UTF8_STRING_LIST(_NET_DESKTOP_NAMES, root.win, buf, s - buf);
+   _ATOM_SET_UTF8_STRING_LIST(_NET_DESKTOP_NAMES, VRoot.win, buf, s - buf);
 
    EDBUG_RETURN_;
 }
@@ -290,9 +290,9 @@ EWMH_SetDesktopSize(void)
 
    EDBUG(6, "EWMH_SetDesktopSize");
    GetAreaSize(&ax, &ay);
-   size[0] = ax * root.w;
-   size[1] = ay * root.h;
-   _ATOM_SET_CARD32(_NET_DESKTOP_GEOMETRY, root.win, &size, 2);
+   size[0] = ax * VRoot.w;
+   size[1] = ay * VRoot.h;
+   _ATOM_SET_CARD32(_NET_DESKTOP_GEOMETRY, VRoot.win, &size, 2);
    EDBUG_RETURN_;
 }
 
@@ -312,10 +312,10 @@ EWMH_SetWorkArea(void)
 	  {
 	     p_coord[4 * i] = 0;
 	     p_coord[4 * i + 1] = 0;
-	     p_coord[4 * i + 2] = root.w;
-	     p_coord[4 * i + 3] = root.h;
+	     p_coord[4 * i + 2] = VRoot.w;
+	     p_coord[4 * i + 3] = VRoot.h;
 	  }
-	_ATOM_SET_CARD32(_NET_WORKAREA, root.win, p_coord, n_coord);
+	_ATOM_SET_CARD32(_NET_WORKAREA, VRoot.win, p_coord, n_coord);
 	Efree(p_coord);
      }
    EDBUG_RETURN_;
@@ -328,7 +328,7 @@ EWMH_SetCurrentDesktop(void)
 
    EDBUG(6, "EWMH_SetCurrentDesktop");
    val = desks.current;
-   _ATOM_SET_CARD32(_NET_CURRENT_DESKTOP, root.win, &val, 1);
+   _ATOM_SET_CARD32(_NET_CURRENT_DESKTOP, VRoot.win, &val, 1);
    EDBUG_RETURN_;
 }
 
@@ -345,10 +345,10 @@ EWMH_SetDesktopViewport(void)
      {
 	for (i = 0; i < Conf.desks.num; i++)
 	  {
-	     p_coord[2 * i] = desks.desk[i].current_area_x * root.w;
-	     p_coord[2 * i + 1] = desks.desk[i].current_area_y * root.h;
+	     p_coord[2 * i] = desks.desk[i].current_area_x * VRoot.w;
+	     p_coord[2 * i + 1] = desks.desk[i].current_area_y * VRoot.h;
 	  }
-	_ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, root.win, p_coord, n_coord);
+	_ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, VRoot.win, p_coord, n_coord);
 	Efree(p_coord);
      }
    EDBUG_RETURN_;
@@ -374,12 +374,12 @@ EWMH_SetClientList(void)
 	wl = Emalloc(num * sizeof(Window));
 	for (i = 0; i < num; i++)
 	   wl[i] = lst[i]->client.win;
-	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, wl, num);
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, VRoot.win, wl, num);
 	Efree(wl);
      }
    else
      {
-	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, NULL, 0);
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST, VRoot.win, NULL, 0);
      }
    if (lst)
       Efree(lst);
@@ -403,12 +403,12 @@ EWMH_SetClientStacking(void)
 	wl = Emalloc(num * sizeof(Window));
 	for (i = 0; i < num; i++)
 	   wl[i] = lst[num - i - 1]->client.win;
-	_ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, wl, num);
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, VRoot.win, wl, num);
 	Efree(wl);
      }
    else
      {
-	_ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, NULL, 0);
+	_ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, VRoot.win, NULL, 0);
      }
 
    EDBUG_RETURN_;
@@ -424,7 +424,7 @@ EWMH_SetActiveWindow(const EWin * ewin)
    win = (ewin) ? ewin->client.win : None;
    if (win != win_last_set)
      {
-	_ATOM_SET_WINDOW(_NET_ACTIVE_WINDOW, root.win, &win, 1);
+	_ATOM_SET_WINDOW(_NET_ACTIVE_WINDOW, VRoot.win, &win, 1);
 	win_last_set = win;
      }
    EDBUG_RETURN_;
@@ -737,7 +737,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == _NET_DESKTOP_VIEWPORT)
      {
-	SetCurrentArea(event->data.l[0] / root.w, event->data.l[1] / root.h);
+	SetCurrentArea(event->data.l[0] / VRoot.w, event->data.l[1] / VRoot.h);
 	goto done;
      }
 

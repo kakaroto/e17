@@ -5,7 +5,7 @@ eesh_SOURCES = E.h comms.c globals.c lists.c main.c setup.c memory.c
 
 LDADD = $(X_LIBS) -lX11
 
-INCLUDES = $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(X_CFLAGS)
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\"
 

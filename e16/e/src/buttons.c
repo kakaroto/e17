@@ -191,8 +191,8 @@ ButtonCalc(Button * b)
      }
    else
      {
-	w = ((b->geom.xsizerel * root.w) >> 10) + b->geom.xsizeabs;
-	h = ((b->geom.ysizerel * root.h) >> 10) + b->geom.ysizeabs;
+	w = ((b->geom.xsizerel * VRoot.w) >> 10) + b->geom.xsizeabs;
+	h = ((b->geom.ysizerel * VRoot.h) >> 10) + b->geom.ysizeabs;
      }
    if (w > b->geom.width.max)
       w = b->geom.width.max;
@@ -204,8 +204,8 @@ ButtonCalc(Button * b)
       h = b->geom.height.min;
    xo = (w * b->geom.xorigin) >> 10;
    yo = (h * b->geom.yorigin) >> 10;
-   x = ((b->geom.xrel * root.w) >> 10) + b->geom.xabs - xo;
-   y = ((b->geom.yrel * root.h) >> 10) + b->geom.yabs - yo;
+   x = ((b->geom.xrel * VRoot.w) >> 10) + b->geom.xabs - xo;
+   y = ((b->geom.yrel * VRoot.h) >> 10) + b->geom.yabs - yo;
    b->x = x;
    b->y = y;
    b->w = w;
@@ -328,21 +328,21 @@ ButtonMoveToCoord(Button * b, int x, int y)
    if (b->flags & FLAG_FIXED)
       EDBUG_RETURN_;
 
-   if ((x + (b->w >> 1)) < (root.w / 3))
+   if ((x + (b->w >> 1)) < (VRoot.w / 3))
       relx = 0;
-   else if ((x + (b->w >> 1)) > ((root.w * 2) / 3))
+   else if ((x + (b->w >> 1)) > ((VRoot.w * 2) / 3))
       relx = 1024;
    else
       relx = 512;
-   rx = (relx * root.w) >> 10;
+   rx = (relx * VRoot.w) >> 10;
    absx = x - rx;
-   if ((y + (b->h >> 1)) < (root.h / 3))
+   if ((y + (b->h >> 1)) < (VRoot.h / 3))
       rely = 0;
-   else if ((y + (b->h >> 1)) > ((root.h * 2) / 3))
+   else if ((y + (b->h >> 1)) > ((VRoot.h * 2) / 3))
       rely = 1024;
    else
       rely = 512;
-   ry = (rely * root.h) >> 10;
+   ry = (rely * VRoot.h) >> 10;
    absy = y - ry;
    if (!(b->flags & FLAG_FIXED_HORIZ))
      {

@@ -49,8 +49,8 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
 
    x = 0;
    y = 0;
-   w = root.w;
-   h = root.h;
+   w = VRoot.w;
+   h = VRoot.h;
 
 #ifdef HAS_XINERAMA
    if (xinerama_active)
@@ -96,7 +96,8 @@ GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
    int                 d;
    unsigned int        ud;
 
-   XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y, &d, &d, &ud);
+   XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y, &d, &d,
+		 &ud);
 
    return ScreenGetGeometry(pointer_x, pointer_y, px, py, pw, ph);
 }

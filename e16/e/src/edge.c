@@ -47,25 +47,25 @@ EdgeTimeout(int val, void *data)
      case 0:
 	if (ax == 0 && !Conf.areas.wraparound)
 	   return;
-	dx = root.w - 2;
+	dx = VRoot.w - 2;
 	dax = -1;
 	break;
      case 1:
 	if (ax == (aw - 1) && !Conf.areas.wraparound)
 	   return;
-	dx = -(root.w - 2);
+	dx = -(VRoot.w - 2);
 	dax = 1;
 	break;
      case 2:
 	if (ay == 0 && !Conf.areas.wraparound)
 	   return;
-	dy = root.h - 2;
+	dy = VRoot.h - 2;
 	day = -1;
 	break;
      case 3:
 	if (ay == (ah - 1) && !Conf.areas.wraparound)
 	   return;
-	dy = -(root.h - 2);
+	dy = -(VRoot.h - 2);
 	day = 1;
 	break;
      default:
@@ -94,10 +94,10 @@ ShowEdgeWindows(void)
      }
    if (!w1)
      {
-	w1 = ECreateEventWindow(root.win, 0, 0, 1, root.h);
-	w2 = ECreateEventWindow(root.win, root.w - 1, 0, 1, root.h);
-	w3 = ECreateEventWindow(root.win, 0, 0, root.w, 1);
-	w4 = ECreateEventWindow(root.win, 0, root.h - 1, root.w, 1);
+	w1 = ECreateEventWindow(VRoot.win, 0, 0, 1, VRoot.h);
+	w2 = ECreateEventWindow(VRoot.win, VRoot.w - 1, 0, 1, VRoot.h);
+	w3 = ECreateEventWindow(VRoot.win, 0, 0, VRoot.w, 1);
+	w4 = ECreateEventWindow(VRoot.win, 0, VRoot.h - 1, VRoot.w, 1);
 	XSelectInput(disp, w1,
 		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
 		     ButtonPressMask | ButtonReleaseMask);
@@ -195,11 +195,11 @@ EdgeHandleMotion(XEvent * ev)
    dir = -1;
    if (ev->xmotion.x_root == 0)
       dir = 0;
-   else if (ev->xmotion.x_root == (root.w - 1))
+   else if (ev->xmotion.x_root == (VRoot.w - 1))
       dir = 1;
    else if (ev->xmotion.y_root == 0)
       dir = 2;
-   else if (ev->xmotion.y_root == (root.h - 1))
+   else if (ev->xmotion.y_root == (VRoot.h - 1))
       dir = 3;
 
    if ((lastdir != dir) && (Conf.edge_flip_resistance))

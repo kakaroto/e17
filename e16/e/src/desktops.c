@@ -282,12 +282,13 @@ InitDesktopBgs(void)
 	d->viewable = 0;
 	if (i == 0)
 	  {
-	     d->win = root.win;
+	     d->win = VRoot.win;
 	  }
 	else
 	  {
 	     d->win =
-		ECreateWindow(root.win, -root.w, -root.h, root.w, root.h, 0);
+		ECreateWindow(VRoot.win, -VRoot.w, -VRoot.h, VRoot.w, VRoot.h,
+			      0);
 	     XSelectInput(disp, d->win, EDESK_EVENT_MASK);
 	  }
 	at = XInternAtom(disp, "ENLIGHTENMENT_DESKTOP", False);
@@ -470,7 +471,7 @@ InitDesktopControls(void)
 	  case 0:
 	     w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
 	     if (Conf.desks.dragbar_length == 0)
-		h[2] = root.h - (Conf.desks.dragbar_width * 2);
+		h[2] = VRoot.h - (Conf.desks.dragbar_width * 2);
 	     else
 		h[2] = Conf.desks.dragbar_length;
 	     x[0] = x[1] = x[2] = 0;
@@ -481,10 +482,10 @@ InitDesktopControls(void)
 	  case 1:
 	     w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
 	     if (Conf.desks.dragbar_length == 0)
-		h[2] = root.h - (Conf.desks.dragbar_width * 2);
+		h[2] = VRoot.h - (Conf.desks.dragbar_width * 2);
 	     else
 		h[2] = Conf.desks.dragbar_length;
-	     x[0] = x[1] = x[2] = root.w - Conf.desks.dragbar_width;
+	     x[0] = x[1] = x[2] = VRoot.w - Conf.desks.dragbar_width;
 	     y[m] = 0;
 	     y[n] = y[m] + h[m];
 	     y[o] = y[n] + h[n];
@@ -492,7 +493,7 @@ InitDesktopControls(void)
 	  case 2:
 	     h[0] = h[1] = h[2] = w[0] = w[1] = Conf.desks.dragbar_width;
 	     if (Conf.desks.dragbar_length == 0)
-		w[2] = root.w - (Conf.desks.dragbar_width * 2);
+		w[2] = VRoot.w - (Conf.desks.dragbar_width * 2);
 	     else
 		w[2] = Conf.desks.dragbar_length;
 	     y[0] = y[1] = y[2] = 0;
@@ -503,10 +504,10 @@ InitDesktopControls(void)
 	  case 3:
 	     h[0] = h[1] = h[2] = w[0] = w[1] = Conf.desks.dragbar_width;
 	     if (Conf.desks.dragbar_length == 0)
-		w[2] = root.w - (Conf.desks.dragbar_width * 2);
+		w[2] = VRoot.w - (Conf.desks.dragbar_width * 2);
 	     else
 		w[2] = Conf.desks.dragbar_length;
-	     y[0] = y[1] = y[2] = root.h - Conf.desks.dragbar_width;
+	     y[0] = y[1] = y[2] = VRoot.h - Conf.desks.dragbar_width;
 	     x[m] = 0;
 	     x[n] = x[m] + w[m];
 	     x[o] = x[n] + w[n];
@@ -544,7 +545,7 @@ InitDesktopControls(void)
 		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 				   99999, 0, 0,
-				   desks.desk[i].x + root.w -
+				   desks.desk[i].x + VRoot.w -
 				   Conf.desks.dragbar_width, 0, desks.desk[i].y,
 				   0, 0, 0, 0, 0, 1, 0, 1);
 	       }
@@ -560,7 +561,7 @@ InitDesktopControls(void)
 		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
-				   desks.desk[i].y + root.h -
+				   desks.desk[i].y + VRoot.h -
 				   Conf.desks.dragbar_width, 0, 0, 0, 0, 0, 1,
 				   0, 1);
 	       }
@@ -628,10 +629,10 @@ ConformEwinToDesktop(EWin * ewin)
      {
 	xo = desks.desk[ewin->desktop].x;
 	yo = desks.desk[ewin->desktop].y;
-	if ((ewin->parent != root.win) && (ewin->floating == 2))
+	if ((ewin->parent != VRoot.win) && (ewin->floating == 2))
 	  {
-	     ewin->parent = root.win;
-	     EReparentWindow(disp, ewin->win, root.win, ewin->x, ewin->y);
+	     ewin->parent = VRoot.win;
+	     EReparentWindow(disp, ewin->win, VRoot.win, ewin->x, ewin->y);
 	     ewin->desktop = 0;
 	  }
 	XRaiseWindow(disp, ewin->win);
@@ -665,9 +666,9 @@ DesktopAt(int x, int y)
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
 	if ((x >= desks.desk[desks.order[i]].x)
-	    && (x < (desks.desk[desks.order[i]].x + root.w))
+	    && (x < (desks.desk[desks.order[i]].x + VRoot.w))
 	    && (y >= desks.desk[desks.order[i]].y)
-	    && (y < (desks.desk[desks.order[i]].y + root.h)))
+	    && (y < (desks.desk[desks.order[i]].y + VRoot.h)))
 	   EDBUG_RETURN(desks.order[i]);
      }
 
@@ -691,7 +692,7 @@ MoveStickyWindowsToCurrentDesk(void)
 	ewin->desktop = desks.current;
 	ewin->parent = desks.desk[ewin->desktop].win;
 	EReparentWindow(disp, ewin->win,
-			desks.desk[ewin->desktop].win, root.w, root.h);
+			desks.desk[ewin->desktop].win, VRoot.w, VRoot.h);
 	EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
 	HintsSetWindowArea(ewin);
 	HintsSetWindowDesktop(ewin);
@@ -751,27 +752,27 @@ GotoDesktop(int desk)
 		  switch (Conf.desks.dragdir)
 		    {
 		    case 0:
-		       MoveDesktop(desk, root.w, 0);
+		       MoveDesktop(desk, VRoot.w, 0);
 		       RaiseDesktop(desk);
-		       SlideWindowTo(desks.desk[desk].win, root.w, 0, 0, 0,
+		       SlideWindowTo(desks.desk[desk].win, VRoot.w, 0, 0, 0,
 				     Conf.desks.slidespeed);
 		       break;
 		    case 1:
-		       MoveDesktop(desk, -root.w, 0);
+		       MoveDesktop(desk, -VRoot.w, 0);
 		       RaiseDesktop(desk);
-		       SlideWindowTo(desks.desk[desk].win, -root.w, 0, 0, 0,
+		       SlideWindowTo(desks.desk[desk].win, -VRoot.w, 0, 0, 0,
 				     Conf.desks.slidespeed);
 		       break;
 		    case 2:
-		       MoveDesktop(desk, 0, root.h);
+		       MoveDesktop(desk, 0, VRoot.h);
 		       RaiseDesktop(desk);
-		       SlideWindowTo(desks.desk[desk].win, 0, root.h, 0, 0,
+		       SlideWindowTo(desks.desk[desk].win, 0, VRoot.h, 0, 0,
 				     Conf.desks.slidespeed);
 		       break;
 		    case 3:
-		       MoveDesktop(desk, 0, -root.h);
+		       MoveDesktop(desk, 0, -VRoot.h);
 		       RaiseDesktop(desk);
-		       SlideWindowTo(desks.desk[desk].win, 0, -root.h, 0, 0,
+		       SlideWindowTo(desks.desk[desk].win, 0, -VRoot.h, 0, 0,
 				     Conf.desks.slidespeed);
 		       break;
 		    default:
@@ -997,7 +998,7 @@ HideDesktop(int desk)
    if (desks.desk[desk].viewable)
       BackgroundTouch(desks.desk[desk].bg);
    desks.desk[desk].viewable = 0;
-   EMoveWindow(disp, desks.desk[desk].win, root.w, 0);
+   EMoveWindow(disp, desks.desk[desk].win, VRoot.w, 0);
 
    EDBUG_RETURN_;
 }

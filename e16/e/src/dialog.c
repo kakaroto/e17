@@ -310,7 +310,7 @@ DialogCreate(const char *name)
    d->num_buttons = 0;
    d->win = 0;
    d->button = NULL;
-   d->win = ECreateWindow(root.win, -20, -20, 2, 2, 0);
+   d->win = ECreateWindow(VRoot.win, -20, -20, 2, 2, 0);
 
    d->item = NULL;
    d->exit_func = NULL;

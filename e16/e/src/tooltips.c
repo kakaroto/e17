@@ -53,7 +53,7 @@ CreateToolTip(const char *name, ImageClass * ic0, ImageClass * ic1,
       tooltippic->ref_count++;
 
    tt->dist = dist;
-   tt->win = ECreateWindow(root.win, -10, -100, 1, 1, 1);
+   tt->win = ECreateWindow(VRoot.win, -10, -100, 1, 1, 1);
    tt->iwin = ECreateWindow(tt->win, -10, -100, 1, 1, 1);
 
    for (i = 0; i < 4; i++)
@@ -65,7 +65,7 @@ CreateToolTip(const char *name, ImageClass * ic0, ImageClass * ic1,
 	  {
 	     int                 wh = (i + 1) * 8;
 
-	     win = ECreateWindow(root.win, -10, -100, wh, wh, 1);
+	     win = ECreateWindow(VRoot.win, -10, -100, wh, wh, 1);
 	     tt->s_iclass[i]->ref_count++;
 	  }
 	tt->s_win[i] = win;
@@ -277,8 +277,8 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    else
       EUnmapWindow(disp, tt->iwin);
 
-   dx = x - root.w / 2;
-   dy = y - root.h / 2;
+   dx = x - VRoot.w / 2;
+   dy = y - VRoot.h / 2;
 
    if ((dy == 0) && (dx == 0))
       dy = -1;
@@ -303,23 +303,23 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	ady = ady / dy;
 
 	yy = y - ((ady * 10 * dist) / 100);
-	xx = x - (dist * 10 * dx) / (100 * root.w / 2);
+	xx = x - (dist * 10 * dx) / (100 * VRoot.w / 2);
 	EMoveWindow(disp, tt->s_win[0], xx - 4, yy - 4);
 
 	yy = y - ((ady * 30 * dist) / 100);
-	xx = x - (dist * 30 * dx) / (100 * root.w / 2);
+	xx = x - (dist * 30 * dx) / (100 * VRoot.w / 2);
 	EMoveWindow(disp, tt->s_win[1], xx - 8, yy - 8);
 
 	yy = y - ((ady * 50 * dist) / 100);
-	xx = x - (dist * 50 * dx) / (100 * root.w / 2);
+	xx = x - (dist * 50 * dx) / (100 * VRoot.w / 2);
 	EMoveWindow(disp, tt->s_win[2], xx - 12, yy - 12);
 
 	yy = y - ((ady * 80 * dist) / 100);
-	xx = x - (dist * 80 * dx) / (100 * root.w / 2);
+	xx = x - (dist * 80 * dx) / (100 * VRoot.w / 2);
 	EMoveWindow(disp, tt->s_win[3], xx - 16, yy - 16);
 
 	yy = y - ((ady * 100 * dist) / 100);
-	xx = x - (dist * 100 * dx) / (100 * root.w / 2);
+	xx = x - (dist * 100 * dx) / (100 * VRoot.w / 2);
 	if (ady < 0)
 	  {
 	     hh = 0;
@@ -328,7 +328,7 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	  {
 	     hh = h;
 	  }
-	ww = (w / 2) + ((dx * w) / (root.w / 2));
+	ww = (w / 2) + ((dx * w) / (VRoot.w / 2));
      }
    else
       /*   +-------+   */
@@ -348,19 +348,19 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	dist = tt->dist;
 	adx = adx / dx;
 	xx = x - ((adx * 10 * dist) / 100);
-	yy = y - (dist * 10 * dy) / (100 * root.h / 2);
+	yy = y - (dist * 10 * dy) / (100 * VRoot.h / 2);
 	EMoveWindow(disp, tt->s_win[0], xx - 4, yy - 4);
 	xx = x - ((adx * 30 * dist) / 100);
-	yy = y - (dist * 30 * dy) / (100 * root.h / 2);
+	yy = y - (dist * 30 * dy) / (100 * VRoot.h / 2);
 	EMoveWindow(disp, tt->s_win[1], xx - 8, yy - 8);
 	xx = x - ((adx * 50 * dist) / 100);
-	yy = y - (dist * 50 * dy) / (100 * root.h / 2);
+	yy = y - (dist * 50 * dy) / (100 * VRoot.h / 2);
 	EMoveWindow(disp, tt->s_win[2], xx - 12, yy - 12);
 	xx = x - ((adx * 80 * dist) / 100);
-	yy = y - (dist * 80 * dy) / (100 * root.h / 2);
+	yy = y - (dist * 80 * dy) / (100 * VRoot.h / 2);
 	EMoveWindow(disp, tt->s_win[3], xx - 16, yy - 16);
 	xx = x - ((adx * 100 * dist) / 100);
-	yy = y - (dist * 100 * dy) / (100 * root.h / 2);
+	yy = y - (dist * 100 * dy) / (100 * VRoot.h / 2);
 	if (adx < 0)
 	  {
 	     ww = 0;
@@ -369,7 +369,7 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	  {
 	     ww = w;
 	  }
-	hh = (h / 2) + ((dy * h) / (root.h / 2));
+	hh = (h / 2) + ((dy * h) / (VRoot.h / 2));
      }
 
    EMoveResizeWindow(disp, tt->win, xx - ww, yy - hh, w, h);

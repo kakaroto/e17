@@ -34,13 +34,13 @@ CommsSetup(void)
 
    EDBUG(5, "CommsSetup");
 
-   comms_win = XCreateSimpleWindow(disp, root.win, -100, -100, 5, 5, 0, 0, 0);
+   comms_win = XCreateSimpleWindow(disp, VRoot.win, -100, -100, 5, 5, 0, 0, 0);
    XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
    Esnprintf(s, sizeof(s), "WINID %8x", (int)comms_win);
    XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
    XChangeProperty(disp, comms_win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
 		   PropModeReplace, (unsigned char *)s, strlen(s));
-   XChangeProperty(disp, root.win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
+   XChangeProperty(disp, VRoot.win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
 		   PropModeReplace, (unsigned char *)s, strlen(s));
 
    XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
@@ -64,7 +64,7 @@ CommsFindCommsWindow(void)
    if (a != None)
      {
 	s = NULL;
-	XGetWindowProperty(disp, root.win, a, 0, 14, False, AnyPropertyType,
+	XGetWindowProperty(disp, VRoot.win, a, 0, 14, False, AnyPropertyType,
 			   &ar, &format, &num, &after, &s);
 	if (s)
 	  {

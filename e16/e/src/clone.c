@@ -40,25 +40,25 @@ CloneEwin(EWin * ewin)
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
+	gc = XCreateGC(disp, VRoot.win, GCSubwindowMode, &gcv);
      }
    c = Emalloc(sizeof(Clone));
    c->name = NULL;
    c->ewin = ewin;
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
-   attr.colormap = root.cmap;
+   attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.background_pixmap = None;
    attr.save_under = False;
    c->win =
       XCreateWindow(disp, ewin->parent, ewin->x, ewin->y, ewin->w, ewin->h, 0,
-		    root.depth, InputOutput, root.vis,
+		    VRoot.depth, InputOutput, VRoot.vis,
 		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		    CWColormap | CWBackPixmap | CWBackPixel | CWBorderPixel,
 		    &attr);
-   pmap = XCreatePixmap(disp, c->win, ewin->w, ewin->h, root.depth);
+   pmap = XCreatePixmap(disp, c->win, ewin->w, ewin->h, VRoot.depth);
    XSetWindowBackgroundPixmap(disp, c->win, pmap);
    XCopyArea(disp, ewin->win, pmap, gc, 0, 0, ewin->w, ewin->h, 0, 0);
    XFreePixmap(disp, pmap);

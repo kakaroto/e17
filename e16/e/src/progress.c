@@ -38,15 +38,15 @@ CreateProgressbar(char *name, int width, int height)
    plist = Erealloc(plist, pnum * sizeof(Progressbar *));
    plist[pnum - 1] = p;
    p->name = Estrdup(name);
-   p->x = (root.w - width) / 2;
+   p->x = (VRoot.w - width) / 2;
    p->y = 32 + (pnum * height * 2);
    p->w = width;
    p->h = height;
-   p->win = ECreateWindow(root.win, p->x, p->y, p->w - (p->h * 5), p->h, 1);
+   p->win = ECreateWindow(VRoot.win, p->x, p->y, p->w - (p->h * 5), p->h, 1);
    p->n_win =
-      ECreateWindow(root.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5),
+      ECreateWindow(VRoot.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5),
 		    p->h, 1);
-   p->p_win = ECreateWindow(root.win, p->x, p->y + p->h, 1, p->h, 1);
+   p->p_win = ECreateWindow(VRoot.win, p->x, p->y + p->h, 1, p->h, 1);
    /* FIXME: need to use other image and textclasses */
 
    p->ic = FindItem("PROGRESS_BAR", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);

@@ -96,9 +96,9 @@ PagerUpdateTimeout(int val, void *data)
    yy = cy * hh;
    phase = p->update_phase;
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
-   y2 = (y * root.h) / hh;
+   y2 = (y * VRoot.h) / hh;
 
-   ScaleLine(p->pmap, root.win, xx, yy + y, root.w, ww, y2, (root.h / hh));
+   ScaleLine(p->pmap, VRoot.win, xx, yy + y, VRoot.w, ww, y2, (VRoot.h / hh));
    XClearArea(disp, p->win, xx, yy + y, ww, 1, False);
 
    p->update_phase++;
@@ -186,18 +186,18 @@ PagerCreate(void)
    GetAreaSize(&ax, &ay);
    p = Emalloc(sizeof(Pager));
    p->name = NULL;
-   attr.colormap = root.cmap;
+   attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = False;
-   p->w = ((48 * root.w) / root.h) * ax;
+   p->w = ((48 * VRoot.w) / VRoot.h) * ax;
    p->h = 48 * ay;
-   p->dw = ((48 * root.w) / root.h);
+   p->dw = ((48 * VRoot.w) / VRoot.h);
    p->dh = 48;
-   p->win = ECreateWindow(root.win, 0, 0, p->w, p->h, 0);
-   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
+   p->win = ECreateWindow(VRoot.win, 0, 0, p->w, p->h, 0);
+   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, VRoot.depth);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
-   p->hi_win = ECreateWindow(root.win, 0, 0, 3, 3, 0);
+   p->hi_win = ECreateWindow(VRoot.win, 0, 0, 3, 3, 0);
    p->hi_visible = 0;
    p->hi_ewin = NULL;
    XSelectInput(disp, p->hi_win,
@@ -245,7 +245,7 @@ PagerEwinMoveResize(EWin * ewin, int resize)
    p->h = h;
    p->dw = w / ax;
    p->dh = h / ay;
-   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
+   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, VRoot.depth);
    if (p->visible)
       PagerRedraw(p, 1);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
@@ -254,7 +254,7 @@ PagerEwinMoveResize(EWin * ewin, int resize)
      {
 	double              aspect;
 
-	aspect = ((double)root.w) / ((double)root.h);
+	aspect = ((double)VRoot.w) / ((double)VRoot.h);
 	p->ewin->client.w_inc = ax * 4;
 	p->ewin->client.h_inc = ay * 8;
 	p->ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
@@ -348,7 +348,7 @@ PagerShow(Pager * p)
 	XSelectInput(disp, p->win, ewin->client.event_mask);
 #endif
 
-	aspect = ((double)root.w) / ((double)root.h);
+	aspect = ((double)VRoot.w) / ((double)VRoot.h);
 	GetAreaSize(&ax, &ay);
 	ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
 	ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
@@ -375,8 +375,8 @@ PagerShow(Pager * p)
 	else
 	  {
 	     /* no snapshots ? first time ? make a row on the bottom left up */
-	     MoveResizeEwin(ewin, 0, root.h - (Conf.desks.num -
-					       p->desktop) * ewin->h, w, h);
+	     MoveResizeEwin(ewin, 0, VRoot.h - (Conf.desks.num -
+						p->desktop) * ewin->h, w, h);
 	  }
 	PagerRedraw(p, 1);
 
@@ -512,8 +512,8 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
 
-   w = ((ewin->w) * (p->w / ax)) / root.w;
-   h = ((ewin->h) * (p->h / ay)) / root.h;
+   w = ((ewin->w) * (p->w / ax)) / VRoot.w;
+   h = ((ewin->h) * (p->h / ay)) / VRoot.h;
 
    if (w < 1)
       w = 1;
@@ -540,7 +540,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	  {
 	     ewin->mini_pmm.type = 0;
 	     ewin->mini_pmm.pmap =
-		ECreatePixmap(disp, p->win, w, h, root.depth);
+		ECreatePixmap(disp, p->win, w, h, VRoot.depth);
 	     ScaleRect(ewin->mini_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w,
 		       ewin->h, w, h);
 	  }
@@ -568,10 +568,10 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
-   x = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-   y = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-   w = ((ewin->w) * (p->w / ax)) / root.w;
-   h = ((ewin->h) * (p->h / ay)) / root.h;
+   x = ((ewin->x + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
+   y = ((ewin->y + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
+   w = ((ewin->w) * (p->w / ax)) / VRoot.w;
+   h = ((ewin->h) * (p->h / ay)) / VRoot.h;
    if (!gc)
       gc = XCreateGC(disp, p->pmap, 0, &gcv);
 
@@ -583,7 +583,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 	ewin->mini_w = w;
 	ewin->mini_h = h;
 	ewin->mini_pmm.type = 0;
-	ewin->mini_pmm.pmap = ECreatePixmap(disp, p->win, w, h, root.depth);
+	ewin->mini_pmm.pmap = ECreatePixmap(disp, p->win, w, h, VRoot.depth);
      }
    XCopyArea(disp, p->pmap, ewin->mini_pmm.pmap, gc, x, y, w, h, 0, 0);
 
@@ -689,7 +689,7 @@ PagerRedraw(Pager * p, char newbg)
 			    p->bgpmap.type = 0;
 			    p->bgpmap.pmap =
 			       ECreatePixmap(disp, p->win, p->w / ax, p->h / ay,
-					     root.depth);
+					     VRoot.depth);
 			    p->bgpmap.mask = None;
 			    BackgroundApply(desks.desk[p->desktop].bg,
 					    p->bgpmap.pmap, 0);
@@ -709,12 +709,12 @@ PagerRedraw(Pager * p, char newbg)
 		       p->bgpmap.type = 0;
 		       p->bgpmap.pmap =
 			  ECreatePixmap(disp, p->win, p->w / ax, p->h / ay,
-					root.depth);
+					VRoot.depth);
 		       p->bgpmap.mask = None;
-		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+		       XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
 		       XDrawRectangle(disp, p->bgpmap.pmap, gc, 0, 0, p->dw,
 				      p->dh);
-		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+		       XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
 		       XFillRectangle(disp, p->bgpmap.pmap, gc, 1, 1, p->dw - 2,
 				      p->dh - 2);
 		    }
@@ -737,10 +737,10 @@ PagerRedraw(Pager * p, char newbg)
 	     ewin = lst[i];
 	     if (!ewin->iconified && ewin->visible)
 	       {
-		  wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-		  wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-		  ww = ((ewin->w) * (p->w / ax)) / root.w;
-		  wh = ((ewin->h) * (p->h / ay)) / root.h;
+		  wx = ((ewin->x + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
+		  wy = ((ewin->y + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
+		  ww = ((ewin->w) * (p->w / ax)) / VRoot.w;
+		  wh = ((ewin->h) * (p->h / ay)) / VRoot.h;
 		  PagerEwinUpdateMini(p, ewin);
 		  if (ewin->mini_pmm.pmap)
 		    {
@@ -756,10 +756,10 @@ PagerRedraw(Pager * p, char newbg)
 		    }
 		  else
 		    {
-		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+		       XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
 		       XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1,
 				      wh + 1);
-		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+		       XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
 		       XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
 		    }
 	       }
@@ -826,7 +826,7 @@ PagerForceUpdate(Pager * p)
    xx = cx * ww;
    yy = cy * hh;
 
-   ScaleRect(p->pmap, root.win, 0, 0, xx, yy, root.w, root.h, ww, hh);
+   ScaleRect(p->pmap, VRoot.win, 0, 0, xx, yy, VRoot.w, VRoot.h, ww, hh);
    XClearWindow(disp, p->win);
 
    lst = EwinListGetForDesktop(p->desktop, &num);
@@ -855,7 +855,7 @@ PagerReArea(void)
 	       {
 		  double              aspect;
 
-		  aspect = ((double)root.w) / ((double)root.h);
+		  aspect = ((double)VRoot.w) / ((double)VRoot.h);
 		  pl[i]->ewin->client.w_inc = ax * 4;
 		  pl[i]->ewin->client.h_inc = ay * 8;
 		  pl[i]->ewin->client.aspect_min =
@@ -892,8 +892,8 @@ PagerEwinOutsideAreaUpdate(EWin * ewin)
 	return;
      }
 
-   if ((ewin->x < 0) || (ewin->y < 0) || ((ewin->x + ewin->w) > root.w)
-       || ((ewin->y + ewin->h) > root.h))
+   if ((ewin->x < 0) || (ewin->y < 0) || ((ewin->x + ewin->w) > VRoot.w)
+       || ((ewin->y + ewin->h) > VRoot.h))
       RedrawPagersForDesktop(ewin->desktop, 3);
    ForceUpdatePagersForDesktop(ewin->desktop);
 }
@@ -919,10 +919,10 @@ EwinInPagerAt(Pager * p, int x, int y)
 	ewin = lst[i];
 	if ((ewin->visible) && (!ewin->iconified))
 	  {
-	     wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-	     wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-	     ww = ((ewin->w) * (p->w / ax)) / root.w;
-	     wh = ((ewin->h) * (p->h / ay)) / root.h;
+	     wx = ((ewin->x + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
+	     wy = ((ewin->y + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
+	     ww = ((ewin->w) * (p->w / ax)) / VRoot.w;
+	     wh = ((ewin->h) * (p->h / ay)) / VRoot.h;
 	     if ((x >= wx) && (y >= wy) && (x < (wx + ww)) && (y < (wy + wh)))
 		return ewin;
 	  }
@@ -1282,7 +1282,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	XGCValues           gcv;
 	int                 xx, yy, ww, hh, i;
 
-	pmap = ECreatePixmap(disp, p->hi_win, w * 2, h * 2, root.depth);
+	pmap = ECreatePixmap(disp, p->hi_win, w * 2, h * 2, VRoot.depth);
 	ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
 	if (!gc)
 	   gc = XCreateGC(disp, pmap, 0, &gcv);
@@ -1294,9 +1294,9 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		  hh = (i * h) / w;
 		  xx = x + ((w - ww) / 2);
 		  yy = y + ((h - hh) / 2);
-		  XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+		  XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
 		  XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		  XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+		  XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
 		  XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
 		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		  XClearWindow(disp, p->hi_win);
@@ -1322,9 +1322,9 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		  hh = i;
 		  xx = x + ((w - ww) / 2);
 		  yy = y + ((h - hh) / 2);
-		  XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+		  XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
 		  XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		  XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+		  XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
 		  XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
 		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		  XClearWindow(disp, p->hi_win);
@@ -1397,11 +1397,11 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
 	GetAreaSize(&ax, &ay);
 	cx = desks.desk[p->desktop].current_area_x;
 	cy = desks.desk[p->desktop].current_area_y;
-	wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-	wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-	ww = ((ewin->w) * (p->w / ax)) / root.w;
-	wh = ((ewin->h) * (p->h / ay)) / root.h;
-	XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &cw);
+	wx = ((ewin->x + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
+	wy = ((ewin->y + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
+	ww = ((ewin->w) * (p->w / ax)) / VRoot.w;
+	wh = ((ewin->h) * (p->h / ay)) / VRoot.h;
+	XTranslateCoordinates(disp, p->win, VRoot.win, 0, 0, &px, &py, &cw);
 	PagerShowHi(p, ewin, px + wx, py + wy, ww, wh);
 	PagerShowTt(ewin);
      }
@@ -1672,11 +1672,12 @@ PagersEventMotion(XEvent * ev)
 	     x += dx;
 	     y += dy;
 	     EMoveWindow(disp, p->hi_win, x, y);
-	     XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &dw);
+	     XTranslateCoordinates(disp, p->win, VRoot.win, 0, 0, &px, &py,
+				   &dw);
 	     x -= px + (cx * (p->w / ax));
 	     y -= py + (cy * (p->h / ay));
-	     MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
-		      (y * root.h * ay) / p->h);
+	     MoveEwin(p->hi_ewin, (x * VRoot.w * ax) / p->w,
+		      (y * VRoot.h * ay) / p->h);
 	  }
 
 	gwins =
@@ -1688,8 +1689,8 @@ PagersEventMotion(XEvent * ev)
 		 && (!gwins[i]->fixedpos))
 	       {
 		  GetWinXY(gwins[i]->win, &x, &y);
-		  x += (dx * root.w * ax) / p->w;
-		  y += (dy * root.h * ay) / p->h;
+		  x += (dx * VRoot.w * ax) / p->w;
+		  y += (dy * VRoot.h * ay) / p->h;
 		  MoveEwin(gwins[i], x, y);
 	       }
 	  }
@@ -1758,11 +1759,12 @@ PagersEventMouseDown(XEvent * ev)
 	     GetAreaSize(&ax, &ay);
 	     cx = desks.desk[p->desktop].current_area_x;
 	     cy = desks.desk[p->desktop].current_area_y;
-	     wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-	     wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-	     ww = ((ewin->w) * (p->w / ax)) / root.w;
-	     wh = ((ewin->h) * (p->h / ay)) / root.h;
-	     XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &dw);
+	     wx = ((ewin->x + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
+	     wy = ((ewin->y + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
+	     ww = ((ewin->w) * (p->w / ax)) / VRoot.w;
+	     wh = ((ewin->h) * (p->h / ay)) / VRoot.h;
+	     XTranslateCoordinates(disp, p->win, VRoot.win, 0, 0, &px, &py,
+				   &dw);
 	     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww, wh);
 	     ESetWindowBackgroundPixmap(disp, p->hi_win, ewin->mini_pmm.pmap);
 	     EMapRaised(disp, p->hi_win);
@@ -1851,12 +1853,12 @@ PagersEventMouseUp(XEvent * ev)
 		  GetAreaSize(&ax, &ay);
 		  GetWinXY(p->hi_win, &x, &y);
 		  GetWinWH(p->hi_win, &w, &h);
-		  XTranslateCoordinates(disp, pp->win, root.win, 0, 0, &px,
+		  XTranslateCoordinates(disp, pp->win, VRoot.win, 0, 0, &px,
 					&py, &dw);
 		  wx = ((x - px) -
-			(cx * (pp->w / ax))) * (root.w / (pp->w / ax));
+			(cx * (pp->w / ax))) * (VRoot.w / (pp->w / ax));
 		  wy = ((y - py) -
-			(cy * (pp->h / ay))) * (root.h / (pp->h / ay));
+			(cy * (pp->h / ay))) * (VRoot.h / (pp->h / ay));
 		  if (((x + w) <= px) || ((y + h) <= py)
 		      || (x >= (px + pp->w)) || (y >= (py + pp->h)))
 		    {

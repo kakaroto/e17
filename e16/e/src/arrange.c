@@ -553,9 +553,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    for (i = 0; i < num_sorted; i++)
      {
 	if ((sorted[i].x + sorted[i].w) > width)
-	   sorted[i].x = root.w - sorted[i].w;
+	   sorted[i].x = VRoot.w - sorted[i].w;
 	if ((sorted[i].y + sorted[i].h) > height)
-	   sorted[i].y = root.h - sorted[i].h;
+	   sorted[i].y = VRoot.h - sorted[i].h;
 	if (sorted[i].x < startx)
 	   sorted[i].x = startx;
 	if (sorted[i].y < starty)
@@ -853,15 +853,15 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 		  fixed[j].w += fixed[j].x;
 		  fixed[j].x = 0;
 	       }
-	     if ((fixed[j].x + fixed[j].w) > root.w)
-		fixed[j].w = root.w - fixed[j].x;
+	     if ((fixed[j].x + fixed[j].w) > VRoot.w)
+		fixed[j].w = VRoot.w - fixed[j].x;
 	     if (fixed[j].y < 0)
 	       {
 		  fixed[j].h += fixed[j].y;
 		  fixed[j].y = 0;
 	       }
-	     if ((fixed[j].y + fixed[j].h) > root.h)
-		fixed[j].h = root.h - fixed[j].y;
+	     if ((fixed[j].y + fixed[j].h) > VRoot.h)
+		fixed[j].h = VRoot.h - fixed[j].y;
 	     if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
 		continue;
 
@@ -885,15 +885,15 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 		       fixed[j].w += fixed[j].x;
 		       fixed[j].x = 0;
 		    }
-		  if ((fixed[j].x + fixed[j].w) > root.w)
-		     fixed[j].w = root.w - fixed[j].x;
+		  if ((fixed[j].x + fixed[j].w) > VRoot.w)
+		     fixed[j].w = VRoot.w - fixed[j].x;
 		  if (fixed[j].y < 0)
 		    {
 		       fixed[j].h += fixed[j].y;
 		       fixed[j].y = 0;
 		    }
-		  if ((fixed[j].y + fixed[j].h) > root.h)
-		     fixed[j].h = root.h - fixed[j].y;
+		  if ((fixed[j].y + fixed[j].h) > VRoot.h)
+		     fixed[j].h = VRoot.h - fixed[j].y;
 		  if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
 		     continue;
 
@@ -913,7 +913,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	newrect.h = ewin->h;
 	newrect.p = ewin->layer;
 	ArrangeRects(fixed, j, &newrect, 1, ret,
-		     0, 0, root.w, root.h, ARRANGE_BY_SIZE, 1);
+		     0, 0, VRoot.w, VRoot.h, ARRANGE_BY_SIZE, 1);
 
 	for (i = 0; i < j + 1; i++)
 	  {

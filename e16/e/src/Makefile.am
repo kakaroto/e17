@@ -102,7 +102,7 @@ LDADD = \
 	$(E_X_LIBS) 		\
 	-lX11 -lm
 
-INCLUDES = $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(ESD_CFLAGS) $(IMLIB_CFLAGS) $(X_CFLAGS)
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\" -DLOCALEDIR=\"@LOCALEDIR@\"
 

@@ -183,8 +183,8 @@ MWM_SetInfo()
    EDBUG(6, "MWM_SetInfo");
    a1 = XInternAtom(disp, "_MOTIF_WM_INFO", False);
    mwminfo.flags = 2;
-   mwminfo.win = root.win;
-   XChangeProperty(disp, root.win, a1, a1, 32, PropModeReplace,
+   mwminfo.win = VRoot.win;
+   XChangeProperty(disp, VRoot.win, a1, a1, 32, PropModeReplace,
 		   (unsigned char *)&mwminfo, 2);
    EDBUG_RETURN_;
 }

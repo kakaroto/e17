@@ -271,7 +271,7 @@ FX_ripple_timeout(int val, void *data)
 	fx_ripple_win = desks.desk[desks.current].win;
 
 	fx_ripple_above =
-	   ECreatePixmap(disp, fx_ripple_win, root.w, fx_ripple_waterh * 2,
+	   ECreatePixmap(disp, fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
 			 GetWinDepth(fx_ripple_win));
 	if (gc)
 	   XFreeGC(disp, gc);
@@ -285,7 +285,7 @@ FX_ripple_timeout(int val, void *data)
      }
    if (fx_ripple_count == 0)
       XCopyArea(disp, fx_ripple_win, fx_ripple_above, gc, 0,
-		root.h - (fx_ripple_waterh * 3), root.w, fx_ripple_waterh * 2,
+		VRoot.h - (fx_ripple_waterh * 3), VRoot.w, fx_ripple_waterh * 2,
 		0, 0);
    fx_ripple_count++;
    if (fx_ripple_count > 32)
@@ -311,8 +311,8 @@ FX_ripple_timeout(int val, void *data)
 	yy = (fx_ripple_waterh * 2) - yoff;
 	aa = p * p * 64 + inch;
 	off = (int)(sin(aa) * 10 * (1 - p));
-	XCopyArea(disp, fx_ripple_above, fx_ripple_win, gc1, 0, yy, root.w, 1,
-		  off, root.h - fx_ripple_waterh + y);
+	XCopyArea(disp, fx_ripple_above, fx_ripple_win, gc1, 0, yy, VRoot.w, 1,
+		  off, VRoot.h - fx_ripple_waterh + y);
      }
    DoIn("FX_RIPPLE_TIMEOUT", 0.066, FX_ripple_timeout, 0, NULL);
    return;
@@ -341,7 +341,7 @@ void
 FX_Ripple_Quit(void)
 {
    RemoveTimerEvent("FX_RIPPLE_TIMEOUT");
-   XClearArea(disp, fx_ripple_win, 0, root.h - fx_ripple_waterh, root.w,
+   XClearArea(disp, fx_ripple_win, 0, VRoot.h - fx_ripple_waterh, VRoot.w,
 	      fx_ripple_waterh, False);
 }
 
@@ -519,16 +519,20 @@ FX_raindrops_timeout(int val, void *data)
 		  intersect = 0;
 		  for (j = 0; j < fx_raindrops_number; j++)
 		    {
-		       fx_raindrops[i].x = rand() % (root.w - fx_raindrop_size);
-		       fx_raindrops[i].y = rand() % (root.h - fx_raindrop_size);
+		       fx_raindrops[i].x =
+			  rand() % (VRoot.w - fx_raindrop_size);
+		       fx_raindrops[i].y =
+			  rand() % (VRoot.h - fx_raindrop_size);
 		       if (fx_raindrops[i].x < 0)
 			  fx_raindrops[i].x = 0;
-		       else if (fx_raindrops[i].x > (root.w - fx_raindrop_size))
-			  fx_raindrops[i].x = root.w - fx_raindrop_size;
+		       else if (fx_raindrops[i].x >
+				(VRoot.w - fx_raindrop_size))
+			  fx_raindrops[i].x = VRoot.w - fx_raindrop_size;
 		       if (fx_raindrops[i].y < 0)
 			  fx_raindrops[i].y = 0;
-		       else if (fx_raindrops[i].y > (root.h - fx_raindrop_size))
-			  fx_raindrops[i].y = root.h - fx_raindrop_size;
+		       else if (fx_raindrops[i].y >
+				(VRoot.h - fx_raindrop_size))
+			  fx_raindrops[i].y = VRoot.h - fx_raindrop_size;
 		       if (i != j)
 			 {
 			    if (((fx_raindrops[i].x >= fx_raindrops[j].x)
@@ -640,8 +644,8 @@ FX_Raindrops_Init(const char *name)
    for (i = 0; i < fx_raindrops_number; i++)
      {
 	fx_raindrops[i].count = rand() % fx_raindrop_duration;
-	fx_raindrops[i].x = rand() % (root.w - fx_raindrop_size);
-	fx_raindrops[i].y = rand() % (root.h - fx_raindrop_size);
+	fx_raindrops[i].x = rand() % (VRoot.w - fx_raindrop_size);
+	fx_raindrops[i].y = rand() % (VRoot.h - fx_raindrop_size);
      }
    DoIn("FX_RAINDROPS_TIMEOUT", 0.066, FX_raindrops_timeout, 0, NULL);
    return;
@@ -744,7 +748,7 @@ FX_Wave_timeout(int val, void *data)
 	fx_wave_win = desks.desk[desks.current].win;
 
 	fx_wave_above =
-	   XCreatePixmap(disp, fx_wave_win, root.w, FX_WAVE_WATERH * 2,
+	   XCreatePixmap(disp, fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2,
 			 GetWinDepth(fx_wave_win));
 	if (gc)
 	   XFreeGC(disp, gc);
@@ -761,8 +765,8 @@ FX_Wave_timeout(int val, void *data)
    if (fx_wave_count == 0)
      {
 	XCopyArea(disp, fx_wave_win, fx_wave_above, gc, 0,
-		  root.h - (FX_WAVE_WATERH * 3), root.w, FX_WAVE_WATERH * 2, 0,
-		  0);
+		  VRoot.h - (FX_WAVE_WATERH * 3), VRoot.w, FX_WAVE_WATERH * 2,
+		  0, 0);
      }
 
    /* Increment and roll the counter */
@@ -787,8 +791,8 @@ FX_Wave_timeout(int val, void *data)
    if (fx_wave_count == 0)
      {
 	XCopyArea(disp, fx_wave_above, fx_wave_win, gc1, 0,
-		  root.h - FX_WAVE_GRABH, root.w, FX_WAVE_DEPTH * 2, 0,
-		  root.h - FX_WAVE_GRABH);
+		  VRoot.h - FX_WAVE_GRABH, VRoot.w, FX_WAVE_DEPTH * 2, 0,
+		  VRoot.h - FX_WAVE_GRABH);
      }
 
    /* Go through the bottom couple (FX_WAVE_WATERH) lines of the window */
@@ -811,7 +815,7 @@ FX_Wave_timeout(int val, void *data)
 	incx2 = incx;
 
 	/* Go through the width of the screen, in block sizes */
-	for (x = 0; x < root.w; x += FX_WAVE_WATERW)
+	for (x = 0; x < VRoot.w; x += FX_WAVE_WATERW)
 	  {
 	     /* Variables */
 	     int                 sx;
@@ -828,7 +832,7 @@ FX_Wave_timeout(int val, void *data)
 	     /* Display this block */
 	     XCopyArea(disp, fx_wave_above, fx_wave_win, gc1, x, yy,	/* x, y */
 		       FX_WAVE_WATERW, 1,	/* w, h */
-		       off + x, root.h - FX_WAVE_WATERH + y + sx	/* dx, dy */
+		       off + x, VRoot.h - FX_WAVE_WATERH + y + sx	/* dx, dy */
 		);
 	  }
      }
@@ -865,7 +869,7 @@ void
 FX_Waves_Quit(void)
 {
    RemoveTimerEvent("FX_WAVE_TIMEOUT");
-   XClearArea(disp, fx_wave_win, 0, root.h - FX_WAVE_WATERH, root.w,
+   XClearArea(disp, fx_wave_win, 0, VRoot.h - FX_WAVE_WATERH, VRoot.w,
 	      FX_WAVE_WATERH, False);
 }
 
@@ -945,8 +949,8 @@ FX_imagespinner_timeout(int val, void *data)
 	     w = imlib_image_get_width();
 	     h = imlib_image_get_height();
 	     sscanf(fx_imagespinner_params, "%*s %i %i ", &x, &y);
-	     x = ((root.w * x) >> 10) - ((w * x) >> 10);
-	     y = ((root.h * y) >> 10) - ((h * y) >> 10);
+	     x = ((VRoot.w * x) >> 10) - ((w * x) >> 10);
+	     y = ((VRoot.h * y) >> 10) - ((h * y) >> 10);
 	     imlib_context_set_drawable(fx_imagespinner_win);
 	     imlib_render_image_on_drawable_at_size(x, y, w, h);
 	     imlib_free_image();
@@ -978,7 +982,7 @@ void
 FX_ImageSpinner_Quit(void)
 {
    RemoveTimerEvent("FX_IMAGESPINNER_TIMEOUT");
-   XClearArea(disp, fx_imagespinner_win, 0, 0, root.w, root.h, False);
+   XClearArea(disp, fx_imagespinner_win, 0, 0, VRoot.w, VRoot.h, False);
    if (fx_imagespinner_params)
       Efree(fx_imagespinner_params);
    fx_imagespinner_params = NULL;

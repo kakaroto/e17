@@ -47,10 +47,10 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
    gcv.fill_style = FillOpaqueStippled;
-   gcv.foreground = WhitePixel(disp, root.scr);
+   gcv.foreground = WhitePixel(disp, VRoot.scr);
    if (gcv.foreground == 0)
-      gcv.foreground = BlackPixel(disp, root.scr);
-   gc = XCreateGC(disp, root.win,
+      gcv.foreground = BlackPixel(disp, VRoot.scr);
+   gc = XCreateGC(disp, VRoot.win,
 		  GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
 		  &gcv);
    t1 = GetTime();
@@ -87,20 +87,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
 	     y4 = y + h * cos(i * 6.2831853072);
 
-	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 
 	     XSync(disp, False);
 	     t2 = GetTime();
@@ -108,20 +108,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     t1 = t2;
 	     spd = t / IB_ANIM_TIME;
 
-	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
    else
@@ -157,20 +157,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
 	     y4 = y + h * cos(i * 6.2831853072);
 
-	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 
 	     XSync(disp, False);
 	     t2 = GetTime();
@@ -178,20 +178,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     t1 = t2;
 	     spd = t / IB_ANIM_TIME;
 
-	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
    XFreeGC(disp, gc);
@@ -293,13 +293,13 @@ DeIconifyEwin(EWin * ewin)
 
    dx = ewin->w / 2;
    dy = ewin->h / 2;
-   x = (ewin->x + dx) % root.w;
+   x = (ewin->x + dx) % VRoot.w;
    if (x < 0)
-      x += root.w;
+      x += VRoot.w;
    x -= dx;
-   y = (ewin->y + dy) % root.h;
+   y = (ewin->y + dy) % VRoot.h;
    if (y < 0)
-      y += root.h;
+      y += VRoot.h;
    y -= dy;
 
    dx = x - ewin->x;
@@ -419,7 +419,7 @@ IconboxCreate(char *name)
    ib->scrollbar_hilited = 0;
    ib->scrollbar_clicked = 0;
    ib->scrollbox_clicked = 0;
-   ib->win = ECreateWindow(root.win, 0, 0, 128, 32, 0);
+   ib->win = ECreateWindow(VRoot.win, 0, 0, 128, 32, 0);
    ib->icon_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
    ib->cover_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
    ib->scroll_win = ECreateWindow(ib->win, 6, 26, 116, 6, 0);
@@ -427,7 +427,7 @@ IconboxCreate(char *name)
    ib->arrow2_win = ECreateWindow(ib->win, 122, 26, 6, 6, 0);
    ib->scrollbar_win = ECreateWindow(ib->scroll_win, 122, 26, 6, 6, 0);
    ib->scrollbarknob_win = ECreateWindow(ib->scrollbar_win, -20, -20, 4, 4, 0);
-   ib->pmap = ECreatePixmap(disp, ib->icon_win, 128, 32, root.depth);
+   ib->pmap = ECreatePixmap(disp, ib->icon_win, 128, 32, VRoot.depth);
    XSelectInput(disp, ib->icon_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | PointerMotionMask);
@@ -625,7 +625,7 @@ IconboxShow(Iconbox * ib)
 	else
 	  {
 	     MakeWindowSticky(ewin);
-	     MoveResizeEwin(ewin, root.w - 160, root.h - h, 160, h);
+	     MoveResizeEwin(ewin, VRoot.w - 160, VRoot.h - h, 160, h);
 	  }
 
 	ShowEwin(ewin);
@@ -723,7 +723,7 @@ IB_SnapEWin(EWin * ewin)
    ewin->icon_w = w;
    ewin->icon_h = h;
 
-   ewin->icon_pmm.pmap = ECreatePixmap(disp, ewin->win, w, h, root.depth);
+   ewin->icon_pmm.pmap = ECreatePixmap(disp, ewin->win, w, h, VRoot.depth);
    if (ewin->visible)
      {
 	ScaleRect(ewin->icon_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h,
@@ -732,7 +732,7 @@ IB_SnapEWin(EWin * ewin)
    else
      {
 	gc = XCreateGC(disp, ewin->icon_pmm.pmap, 0, &gcv);
-	XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+	XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
 	XFillRectangle(disp, ewin->icon_pmm.pmap, gc, 0, 0, w, h);
 	XFreeGC(disp, gc);
      }
@@ -790,10 +790,10 @@ IB_GetAppIcon(EWin * ewin)
    ewin->icon_pmm.type = 0;
    ewin->icon_w = (int)w;
    ewin->icon_h = (int)h;
-   ewin->icon_pmm.pmap = ECreatePixmap(disp, root.win, w, h, root.depth);
+   ewin->icon_pmm.pmap = ECreatePixmap(disp, VRoot.win, w, h, VRoot.depth);
    ewin->icon_pmm.mask = 0;
    if (ewin->client.icon_mask)
-      ewin->icon_pmm.mask = ECreatePixmap(disp, root.win, w, h, 1);
+      ewin->icon_pmm.mask = ECreatePixmap(disp, VRoot.win, w, h, 1);
 
    if (depth == 1)
      {
@@ -801,11 +801,11 @@ IB_GetAppIcon(EWin * ewin)
 	XGCValues           gcv;
 
 	gc = XCreateGC(disp, ewin->icon_pmm.pmap, 0, &gcv);
-	XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+	XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
 	XFillRectangle(disp, ewin->icon_pmm.pmap, gc, 0, 0, w, h);
 	XSetClipOrigin(disp, gc, 0, 0);
 	XSetClipMask(disp, gc, ewin->client.icon_pmap);
-	XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+	XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
 	XFillRectangle(disp, ewin->icon_pmm.pmap, gc, 0, 0, w, h);
 	XFreeGC(disp, gc);
      }
@@ -1195,7 +1195,7 @@ SelectIconboxForEwin(EWin * ewin)
 		  dist = (dx * dx) + (dy * dy);
 		  if ((!ib[i]->ewin->sticky)
 		      && (ib[i]->ewin->desktop != ewin->desktop))
-		     dist += (root.w * root.w) + (root.h * root.h);
+		     dist += (VRoot.w * VRoot.w) + (VRoot.h * VRoot.h);
 		  if (dist < min_dist)
 		    {
 		       min_dist = dist;
@@ -2017,19 +2017,19 @@ IconboxRedraw(Iconbox * ib)
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->border->border.top +
-		       ib->ewin->border->border.bottom + add) > root.h)
+		       ib->ewin->border->border.bottom + add) > VRoot.h)
 		     add =
-			root.h - (ib->ewin->border->border.top +
-				  ib->ewin->border->border.bottom);
+			VRoot.h - (ib->ewin->border->border.top +
+				   ib->ewin->border->border.bottom);
 	       }
 	     y += (((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
 	     h = add;
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->y + ib->ewin->border->border.top +
-		       ib->ewin->border->border.bottom + add) > root.h)
-		     y = root.h - (ib->ewin->border->border.top +
-				   ib->ewin->border->border.bottom + add);
+		       ib->ewin->border->border.bottom + add) > VRoot.h)
+		     y = VRoot.h - (ib->ewin->border->border.top +
+				    ib->ewin->border->border.bottom + add);
 	       }
 	  }
 	else
@@ -2040,19 +2040,19 @@ IconboxRedraw(Iconbox * ib)
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->border->border.left +
-		       ib->ewin->border->border.right + add) > root.w)
+		       ib->ewin->border->border.right + add) > VRoot.w)
 		     add =
-			root.w - (ib->ewin->border->border.left +
-				  ib->ewin->border->border.right);
+			VRoot.w - (ib->ewin->border->border.left +
+				   ib->ewin->border->border.right);
 	       }
 	     x += (((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
 	     w = add;
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->x + ib->ewin->border->border.left +
-		       ib->ewin->border->border.right + add) > root.w)
-		     x = root.w - (ib->ewin->border->border.left +
-				   ib->ewin->border->border.right + add);
+		       ib->ewin->border->border.right + add) > VRoot.w)
+		     x = VRoot.w - (ib->ewin->border->border.left +
+				    ib->ewin->border->border.right + add);
 	       }
 	  }
      }
@@ -2065,7 +2065,7 @@ IconboxRedraw(Iconbox * ib)
 	MoveResizeEwin(ib->ewin, x, y, w, h);
 	EResizeWindow(disp, ib->win, w, h);
 	EFreePixmap(disp, ib->pmap);
-	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, root.depth);
+	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, VRoot.depth);
 	RememberImportantInfoForEwins(ib->ewin);
 	ib->force_update = 0;
      }

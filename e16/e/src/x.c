@@ -117,7 +117,7 @@ SetXID(Window win, Window parent, int x, int y, int w, int h, int depth)
    xid->y = y;
    xid->w = w;
    xid->h = h;
-   xid->depth = root.depth;
+   xid->depth = VRoot.depth;
    AddXID(xid);
    return;
    depth = 0;
@@ -148,7 +148,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    EDBUG(6, "ECreateWindow");
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
-   attr.colormap = root.cmap;
+   attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
 /*   attr.background_pixel = 0; */
    attr.background_pixmap = None;
@@ -159,11 +159,11 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    else
       attr.save_under = False;
    win =
-      XCreateWindow(disp, parent, x, y, w, h, 0, root.depth, InputOutput,
-		    root.vis,
+      XCreateWindow(disp, parent, x, y, w, h, 0, VRoot.depth, InputOutput,
+		    VRoot.vis,
 		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		    CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   SetXID(win, parent, x, y, w, h, root.depth);
+   SetXID(win, parent, x, y, w, h, VRoot.depth);
 
    EDBUG_RETURN(win);
 }
@@ -562,7 +562,7 @@ EGetGeometry(Display * d, Window win, Window * root_return, int *x, int *y,
 	if (depth)
 	   *depth = xid->depth;
 	if (root_return)
-	   *root_return = root.win;
+	   *root_return = VRoot.win;
 	ok = 1;
      }
    else
@@ -664,10 +664,10 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
    EDBUG(6, "ECreateEventWindow");
    attr.override_redirect = False;
    win =
-      XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, root.vis,
+      XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, VRoot.vis,
 		    CWOverrideRedirect, &attr);
 #if 0				/* Not yet */
-   SetXID(win, parent, x, y, w, h, root.depth);
+   SetXID(win, parent, x, y, w, h, VRoot.depth);
 #endif
 
    EDBUG_RETURN(win);
@@ -687,7 +687,7 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
 
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
-   attr.colormap = root.cmap;
+   attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = False;
@@ -868,10 +868,10 @@ WindowAtXY(int x, int y)
 
    EDBUG(7, "WindowAtXY");
    GrabX();
-   if (!XQueryTree(disp, root.win, &root_win, &parent_win, &list, &num))
+   if (!XQueryTree(disp, VRoot.win, &root_win, &parent_win, &list, &num))
      {
 	UngrabX();
-	EDBUG_RETURN(root.win);
+	EDBUG_RETURN(VRoot.win);
      }
    if (list)
      {
@@ -895,7 +895,7 @@ WindowAtXY(int x, int y)
 	XFree(list);
      }
    UngrabX();
-   EDBUG_RETURN(root.win);
+   EDBUG_RETURN(VRoot.win);
 }
 
 void
@@ -905,7 +905,7 @@ PointerAt(int *x, int *y)
    int                 dd;
    unsigned int        mm;
 
-   XQueryPointer(disp, root.win, &dw, &dw, &dd, &dd, x, y, &mm);
+   XQueryPointer(disp, VRoot.win, &dw, &dw, &dd, &dd, x, y, &mm);
 }
 
 void

@@ -231,8 +231,8 @@ SaveWindowStates(void)
 	     y = 0;
 	     if (!ewin->sticky)
 	       {
-		  x = desks.desk[ewin->desktop].current_area_x * root.w;
-		  y = desks.desk[ewin->desktop].current_area_y * root.h;
+		  x = desks.desk[ewin->desktop].current_area_x * VRoot.w;
+		  y = desks.desk[ewin->desktop].current_area_y * VRoot.h;
 	       }
 	     fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
 		     ewin->x + x, ewin->y + y, ewin->client.w,
@@ -252,7 +252,7 @@ SaveWindowStates(void)
      }
    fclose(f);
 
-   Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), root.scr);
+   Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), VRoot.scr);
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("SaveWindowStates: %s\n", ss);
    E_mv(s, ss);
@@ -270,7 +270,7 @@ LoadWindowStates(void)
    FILE               *f;
    char                s[4096], s1[4096];
 
-   Esnprintf(s, sizeof(s), "%s.clients.%i", GetSMFile(), root.scr);
+   Esnprintf(s, sizeof(s), "%s.clients.%i", GetSMFile(), VRoot.scr);
    f = fopen(s, "r");
    if (f)
      {
@@ -408,9 +408,9 @@ MatchEwinToSM(EWin * ewin)
 	     if (!((ewin->client.already_placed) && (ewin->session_id)))
 	       {
 		  ewin->client.x = matches[i].x -
-		     (desks.desk[ewin->desktop].current_area_x * root.w);
+		     (desks.desk[ewin->desktop].current_area_x * VRoot.w);
 		  ewin->client.y = matches[i].y -
-		     (desks.desk[ewin->desktop].current_area_y * root.h);
+		     (desks.desk[ewin->desktop].current_area_y * VRoot.h);
 		  ewin->client.w = matches[i].w;
 		  ewin->client.h = matches[i].h;
 		  EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,

@@ -152,7 +152,7 @@ EExit(void *code)
 	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
 	/* I think this is a better way to release the grabs: (felix) */
 	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
-	XSelectInput(disp, root.win, 0);
+	XSelectInput(disp, VRoot.win, 0);
 	XCloseDisplay(disp);
      }
 

@@ -299,11 +299,11 @@ ECreatePixImg(Window win, int w, int h)
    int                 bpp;
    PixImg             *pi;
 
-   if (root.depth <= 8)
+   if (VRoot.depth <= 8)
       bpp = 1;
-   else if (root.depth <= 16)
+   else if (VRoot.depth <= 16)
       bpp = 2;
-   else if (root.depth <= 24)
+   else if (VRoot.depth <= 24)
       bpp = 3;
    else
       bpp = 4;
@@ -322,7 +322,7 @@ ECreatePixImg(Window win, int w, int h)
    pi->shminfo = Emalloc(sizeof(XShmSegmentInfo));
    if (pi->shminfo)
      {
-	pi->xim = XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL,
+	pi->xim = XShmCreateImage(disp, VRoot.vis, VRoot.depth, ZPixmap, NULL,
 				  pi->shminfo, w, h);
 	if (pi->xim)
 	  {
@@ -339,7 +339,7 @@ ECreatePixImg(Window win, int w, int h)
 		       XShmAttach(disp, pi->shminfo);
 		       pi->pmap =
 			  XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
-					   pi->shminfo, w, h, root.depth);
+					   pi->shminfo, w, h, VRoot.depth);
 		       if (pi->pmap)
 			 {
 			    gcv.subwindow_mode = IncludeInferiors;
@@ -426,13 +426,13 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	  }
      }
    if (!mask)
-      mask = ECreatePixmap(disp, root.win, w, h, 1);
+      mask = ECreatePixmap(disp, VRoot.win, w, h, 1);
    if (!gcm)
       gcm = XCreateGC(disp, mask, 0, &gcv);
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
+	gc = XCreateGC(disp, VRoot.win, GCSubwindowMode, &gcv);
 	XSetForeground(disp, gcm, 1);
 	XFillRectangle(disp, mask, gcm, 0, 0, w, h);
 	XSetForeground(disp, gcm, 0);
@@ -442,7 +442,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	XSetClipMask(disp, gc, mask);
      }
    XSetClipOrigin(disp, gc, x, y);
-   XCopyArea(disp, pmap, root.win, gc, x, y, w, h, x, y);
+   XCopyArea(disp, pmap, VRoot.win, gc, x, y, w, h, x, y);
 }
 
 void
@@ -469,7 +469,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
+	gc = XCreateGC(disp, VRoot.win, GCSubwindowMode, &gcv);
      }
    if (!rl)
      {
@@ -483,18 +483,18 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
       XSetClipOrigin(disp, gc, x, y);
    ox = 0;
    oy = 0;
-   if ((x >= root.w) || (y >= root.h))
+   if ((x >= VRoot.w) || (y >= VRoot.h))
       return;
-   if (x + w > root.w)
-      w -= ((x + w) - root.w);
+   if (x + w > VRoot.w)
+      w -= ((x + w) - VRoot.w);
    if (x < 0)
      {
 	ox = -x;
 	w -= ox;
 	x = 0;
      }
-   if (y + h > root.h)
-      h -= ((y + h) - root.h);
+   if (y + h > VRoot.h)
+      h -= ((y + h) - VRoot.h);
    if (y < 0)
      {
 	oy = -y;
@@ -854,11 +854,11 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	     break;
 	  }
 /* workaround since XCopyArea doesnt always work with shared pixmaps */
-	XShmPutImage(disp, root.win, gc, dst->xim, ox, oy, x, y, w, h, False);
-/*      XCopyArea(disp, dst->pmap, root.win, gc, ox, oy, w, h, x, y); */
+	XShmPutImage(disp, VRoot.win, gc, dst->xim, ox, oy, x, y, w, h, False);
+/*      XCopyArea(disp, dst->pmap, VRoot.win, gc, ox, oy, w, h, x, y); */
      }
 /* I dont believe it - you cannot do this to a shared pixmaps to the screen */
-/* XCopyArea(disp, dst->pmap, root.win, dst->gc, x, y, w, h, x, y); */
+/* XCopyArea(disp, dst->pmap, VRoot.win, dst->gc, x, y, w, h, x, y); */
 }
 
 void
@@ -907,7 +907,7 @@ ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
    px_grab = XGetImage(disp, src, 0, sy, sw, 1, 0xffffffff, ZPixmap);
    if (px_grab)
      {
-	px_buf = XCreateImage(disp, root.vis, root.depth, ZPixmap, 0,
+	px_buf = XCreateImage(disp, VRoot.vis, VRoot.depth, ZPixmap, 0,
 			      NULL, pw, 1, 32, 0);
 	if (px_buf)
 	  {
@@ -1053,13 +1053,13 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
    PixImg             *p_grab = NULL, *p_buf = NULL;
    XImage             *px_grab = NULL, *px_buf = NULL;
 
-   if (sw > root.w * 2)
+   if (sw > VRoot.w * 2)
       return;
-   if (sh > root.h * 2)
+   if (sh > VRoot.h * 2)
       return;
-   if (dw > root.w * 2)
+   if (dw > VRoot.w * 2)
       return;
-   if (dh > root.h * 2)
+   if (dh > VRoot.h * 2)
       return;
 
    if (!gc)
@@ -1112,7 +1112,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	  {
 	     Pixmap              pmap;
 
-	     pmap = ECreatePixmap(disp, src, sw, dh * 2, root.depth);
+	     pmap = ECreatePixmap(disp, src, sw, dh * 2, VRoot.depth);
 	     for (y = 0; y < (dh * 2); y++)
 	       {
 		  y2 = (sh * y) / (dh * 2);
@@ -1129,7 +1129,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	  {
 	     Pixmap              pmap;
 
-	     pmap = ECreatePixmap(disp, src, sw, dh, root.depth);
+	     pmap = ECreatePixmap(disp, src, sw, dh, VRoot.depth);
 	     for (y = 0; y < dh; y++)
 	       {
 		  y2 = (sh * y) / dh;
@@ -1143,7 +1143,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	  }
 
 	px_buf =
-	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, dw, dh,
+	   XCreateImage(disp, VRoot.vis, VRoot.depth, ZPixmap, 0, NULL, dw, dh,
 			32, 0);
 	if (!px_buf)
 	  {
@@ -1177,7 +1177,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	  }
 
 	difx = (sw / dw) / 2;
-	switch (root.depth)
+	switch (VRoot.depth)
 	  {
 	  case 24:
 	  case 32:
@@ -1330,11 +1330,11 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
       md = 0;
    if (md == 5)
      {
-	if (root.depth <= 8)
+	if (VRoot.depth <= 8)
 	   bpp = 1;
-	else if (root.depth <= 16)
+	else if (VRoot.depth <= 16)
 	   bpp = 2;
-	else if (root.depth <= 24)
+	else if (VRoot.depth <= 24)
 	   bpp = 3;
 	else
 	   bpp = 4;
@@ -1363,13 +1363,13 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      case 4:
      case 5:
 	if (!b1)
-	   b1 = XCreateBitmapFromData(disp, root.win, flipped_gray_bits,
+	   b1 = XCreateBitmapFromData(disp, VRoot.win, flipped_gray_bits,
 				      flipped_gray_width, flipped_gray_height);
 	if (!b2)
-	   b2 = XCreateBitmapFromData(disp, root.win, gray_bits, gray_width,
+	   b2 = XCreateBitmapFromData(disp, VRoot.win, gray_bits, gray_width,
 				      gray_height);
 	if (!b3)
-	   b3 = XCreateBitmapFromData(disp, root.win, gray3_bits, gray3_width,
+	   b3 = XCreateBitmapFromData(disp, VRoot.win, gray3_bits, gray3_width,
 				      gray3_height);
 	x1 = ewin->x + desks.desk[ewin->desktop].x;
 	y1 = ewin->y + desks.desk[ewin->desktop].y;
@@ -1398,40 +1398,40 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	if (!gc)
 	  {
 	     gcv.function = GXxor;
-	     gcv.foreground = WhitePixel(disp, root.scr);
+	     gcv.foreground = WhitePixel(disp, VRoot.scr);
 	     if (gcv.foreground == 0)
-		gcv.foreground = BlackPixel(disp, root.scr);
+		gcv.foreground = BlackPixel(disp, VRoot.scr);
 	     gcv.subwindow_mode = IncludeInferiors;
-	     gc = XCreateGC(disp, root.win,
+	     gc = XCreateGC(disp, VRoot.win,
 			    GCFunction | GCForeground | GCSubwindowMode, &gcv);
 	  }
 #define DRAW_H_ARROW(x1, x2, y1) \
       if (((x2) - (x1)) >= 12) \
         { \
-          XDrawLine(disp, root.win, gc, x1, y1, (x1) + 6, (y1) - 3); \
-          XDrawLine(disp, root.win, gc, x1, y1, (x1) + 6, (y1) + 3); \
-          XDrawLine(disp, root.win, gc, x2, y1, (x2) - 6, (y1) - 3); \
-          XDrawLine(disp, root.win, gc, x2, y1, (x2) - 6, (y1) + 3); \
+          XDrawLine(disp, VRoot.win, gc, x1, y1, (x1) + 6, (y1) - 3); \
+          XDrawLine(disp, VRoot.win, gc, x1, y1, (x1) + 6, (y1) + 3); \
+          XDrawLine(disp, VRoot.win, gc, x2, y1, (x2) - 6, (y1) - 3); \
+          XDrawLine(disp, VRoot.win, gc, x2, y1, (x2) - 6, (y1) + 3); \
         } \
       if ((x2) >= (x1)) \
         { \
-          XDrawLine(disp, root.win, gc, x1, y1, x2, y1); \
+          XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y1); \
           Esnprintf(str, sizeof(str), "%i", (x2) - (x1) + 1); \
-          XDrawString(disp, root.win, gc, ((x1) + (x2)) / 2, (y1) - 10, str, strlen(str)); \
+          XDrawString(disp, VRoot.win, gc, ((x1) + (x2)) / 2, (y1) - 10, str, strlen(str)); \
         }
 #define DRAW_V_ARROW(y1, y2, x1) \
       if (((y2) - (y1)) >= 12) \
         { \
-          XDrawLine(disp, root.win, gc, x1, y1, (x1) + 3, (y1) + 6); \
-          XDrawLine(disp, root.win, gc, x1, y1, (x1) - 3, (y1) + 6); \
-          XDrawLine(disp, root.win, gc, x1, y2, (x1) + 3, (y2) - 6); \
-          XDrawLine(disp, root.win, gc, x1, y2, (x1) - 3, (y2) - 6); \
+          XDrawLine(disp, VRoot.win, gc, x1, y1, (x1) + 3, (y1) + 6); \
+          XDrawLine(disp, VRoot.win, gc, x1, y1, (x1) - 3, (y1) + 6); \
+          XDrawLine(disp, VRoot.win, gc, x1, y2, (x1) + 3, (y2) - 6); \
+          XDrawLine(disp, VRoot.win, gc, x1, y2, (x1) - 3, (y2) - 6); \
         } \
       if ((y2) >= (y1)) \
         { \
-          XDrawLine(disp, root.win, gc, x1, y1, x1, y2); \
+          XDrawLine(disp, VRoot.win, gc, x1, y1, x1, y2); \
           Esnprintf(str, sizeof(str), "%i", (y2) - (y1) + 1); \
-          XDrawString(disp, root.win, gc, x1 + 10, ((y1) + (y2)) / 2, str, strlen(str)); \
+          XDrawString(disp, VRoot.win, gc, x1 + 10, ((y1) + (y2)) / 2, str, strlen(str)); \
         }
 #define DO_DRAW_MODE_1(aa, bb, cc, dd) \
       if (!font) \
@@ -1446,7 +1446,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
                    aa - 1, \
                    bb + ewin->border->border.top + (dd / 2)); \
       DRAW_H_ARROW(aa + cc + ewin->border->border.left + ewin->border->border.right, \
-                   root.w - 1, \
+                   VRoot.w - 1, \
                    bb + ewin->border->border.top + (dd / 2)); \
       DRAW_V_ARROW(bb + ewin->border->border.top, \
                    bb + ewin->border->border.top + dd - 1, \
@@ -1455,32 +1455,32 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
                    bb - 1, \
                    aa + ewin->border->border.left + (cc / 2)); \
       DRAW_V_ARROW(bb + dd + ewin->border->border.top + ewin->border->border.bottom, \
-                   root.h - 1, \
+                   VRoot.h - 1, \
                    aa + ewin->border->border.left + (cc / 2)); \
-      XDrawLine(disp, root.win, gc, aa, 0, aa, root.h); \
-      XDrawLine(disp, root.win, gc, \
+      XDrawLine(disp, VRoot.win, gc, aa, 0, aa, VRoot.h); \
+      XDrawLine(disp, VRoot.win, gc, \
 		aa + cc + ewin->border->border.left + \
 		ewin->border->border.right - 1, 0, \
 		aa + cc + ewin->border->border.left + \
-		ewin->border->border.right - 1, root.h); \
-      XDrawLine(disp, root.win, gc, 0, bb, root.w, bb); \
-      XDrawLine(disp, root.win, gc, 0, \
+		ewin->border->border.right - 1, VRoot.h); \
+      XDrawLine(disp, VRoot.win, gc, 0, bb, VRoot.w, bb); \
+      XDrawLine(disp, VRoot.win, gc, 0, \
 		bb + dd + ewin->border->border.top + \
-		ewin->border->border.bottom - 1, root.w, \
+		ewin->border->border.bottom - 1, VRoot.w, \
 		bb + dd + ewin->border->border.top + \
 		ewin->border->border.bottom - 1); \
-      XDrawRectangle(disp, root.win, gc, aa + ewin->border->border.left + 1, \
+      XDrawRectangle(disp, VRoot.win, gc, aa + ewin->border->border.left + 1, \
 		     bb + ewin->border->border.top + 1, cc - 3, dd - 3);
 
 #define DO_DRAW_MODE_2(aa, bb, cc, dd) \
       if (cc < 3) cc = 3; \
       if (dd < 3) dd = 3; \
-      XDrawRectangle(disp, root.win, gc, aa, bb, \
+      XDrawRectangle(disp, VRoot.win, gc, aa, bb, \
                      cc + ewin->border->border.left + \
                      ewin->border->border.right - 1, \
                      dd + ewin->border->border.top + \
                      ewin->border->border.bottom - 1); \
-      XDrawRectangle(disp, root.win, gc, aa + ewin->border->border.left + 1, \
+      XDrawRectangle(disp, VRoot.win, gc, aa + ewin->border->border.left + 1, \
 		     bb + ewin->border->border.top + 1, cc - 3, dd - 3);
 
 #define DO_DRAW_MODE_3(aa, bb, cc, dd) \
@@ -1488,35 +1488,35 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
       XSetStipple(disp, gc, b2); \
       if ((cc + ewin->border->border.left + ewin->border->border.right > 0) && \
           (ewin->border->border.top > 0)) \
-      XFillRectangle(disp, root.win, gc, aa, bb, \
+      XFillRectangle(disp, VRoot.win, gc, aa, bb, \
                      cc + ewin->border->border.left + \
                      ewin->border->border.right, \
                      ewin->border->border.top); \
       if ((cc + ewin->border->border.left + ewin->border->border.right > 0) && \
           (ewin->border->border.bottom > 0)) \
-      XFillRectangle(disp, root.win, gc, aa, bb + dd + \
+      XFillRectangle(disp, VRoot.win, gc, aa, bb + dd + \
                      ewin->border->border.top, \
                      cc + ewin->border->border.left + \
                      ewin->border->border.right, \
                      ewin->border->border.bottom); \
       if ((dd > 0) && (ewin->border->border.left > 0)) \
-      XFillRectangle(disp, root.win, gc, aa, bb + ewin->border->border.top, \
+      XFillRectangle(disp, VRoot.win, gc, aa, bb + ewin->border->border.top, \
                      ewin->border->border.left, \
                      dd); \
       if ((dd > 0) && (ewin->border->border.right > 0)) \
-      XFillRectangle(disp, root.win, gc, aa + cc + ewin->border->border.left, \
+      XFillRectangle(disp, VRoot.win, gc, aa + cc + ewin->border->border.left, \
                      bb + ewin->border->border.top, \
                      ewin->border->border.right, \
                      dd); \
       XSetStipple(disp, gc, b3); \
       if ((cc > 0) && (dd > 0)) \
-        XFillRectangle(disp, root.win, gc, aa + ewin->border->border.left + 1, \
+        XFillRectangle(disp, VRoot.win, gc, aa + ewin->border->border.left + 1, \
   		       bb + ewin->border->border.top + 1, cc - 3, dd - 3);
 
 #define DO_DRAW_MODE_4(aa, bb, cc, dd) \
       XSetFillStyle(disp, gc, FillStippled); \
       XSetStipple(disp, gc, b2); \
-      XFillRectangle(disp, root.win, gc, aa, bb, \
+      XFillRectangle(disp, VRoot.win, gc, aa, bb, \
                      cc + ewin->border->border.left + \
                      ewin->border->border.right, \
                      dd + ewin->border->border.top + \
@@ -1600,9 +1600,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  ewin_pi = NULL;
 		  root_pi = NULL;
 		  draw_pi = NULL;
-		  root_pi = ECreatePixImg(root.win, root.w, root.h);
-		  ewin_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
-		  draw_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
+		  root_pi = ECreatePixImg(VRoot.win, VRoot.w, VRoot.h);
+		  ewin_pi = ECreatePixImg(VRoot.win, ewin->w, ewin->h);
+		  draw_pi = ECreatePixImg(VRoot.win, ewin->w, ewin->h);
 		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		    {
 		       Conf.movemode = 0;
@@ -1611,7 +1611,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 				     firstlast);
 		       goto done;
 		    }
-		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
+		  EFillPixmap(VRoot.win, root_pi->pmap, x1, y1, ewin->w,
 			      ewin->h);
 		  gc2 = XCreateGC(disp, root_pi->pmap, 0, &gcv2);
 		  XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc2, x1, y1,
@@ -1640,36 +1640,38 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  if ((adx <= wt) && (ady <= ht))
 		    {
 		       if (dx < 0)
-			  EFillPixmap(root.win, root_pi->pmap, x, y, -dx, ht);
+			  EFillPixmap(VRoot.win, root_pi->pmap, x, y, -dx, ht);
 		       else if (dx > 0)
-			  EFillPixmap(root.win, root_pi->pmap, x + wt - dx, y,
+			  EFillPixmap(VRoot.win, root_pi->pmap, x + wt - dx, y,
 				      dx, ht);
 		       if (dy < 0)
-			  EFillPixmap(root.win, root_pi->pmap, x, y, wt, -dy);
+			  EFillPixmap(VRoot.win, root_pi->pmap, x, y, wt, -dy);
 		       else if (dy > 0)
-			  EFillPixmap(root.win, root_pi->pmap, x, y + ht - dy,
+			  EFillPixmap(VRoot.win, root_pi->pmap, x, y + ht - dy,
 				      wt, dy);
 		    }
 		  else
-		     EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
+		     EFillPixmap(VRoot.win, root_pi->pmap, x, y, wt, ht);
 		  if ((adx <= wt) && (ady <= ht))
 		    {
 		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
 				    ewin->w, ewin->h);
 		       if (dx > 0)
-			  EPastePixmap(root.win, root_pi->pmap, x1, y1, dx, ht);
+			  EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, dx,
+				       ht);
 		       else if (dx < 0)
-			  EPastePixmap(root.win, root_pi->pmap, x1 + wt + dx,
+			  EPastePixmap(VRoot.win, root_pi->pmap, x1 + wt + dx,
 				       y1, -dx, ht);
 		       if (dy > 0)
-			  EPastePixmap(root.win, root_pi->pmap, x1, y1, wt, dy);
+			  EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, wt,
+				       dy);
 		       else if (dy < 0)
-			  EPastePixmap(root.win, root_pi->pmap, x1,
+			  EPastePixmap(VRoot.win, root_pi->pmap, x1,
 				       y1 + ht + dy, wt, -dy);
 		    }
 		  else
 		    {
-		       EPastePixmap(root.win, root_pi->pmap, x1, y1, wt, ht);
+		       EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, wt, ht);
 		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
 				    ewin->w, ewin->h);
 		    }
@@ -1677,7 +1679,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     else if (firstlast == 2)
 	       {
-		  EPastePixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
+		  EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, ewin->w,
 			       ewin->h);
 		  if (ewin_pi)
 		     EDestroyPixImg(ewin_pi);
@@ -1693,7 +1695,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     else if (firstlast == 3)
 	       {
-		  EPastePixmap(root.win, root_pi->pmap, x, y, ewin->w, ewin->h);
+		  EPastePixmap(VRoot.win, root_pi->pmap, x, y, ewin->w,
+			       ewin->h);
 		  if (root_pi)
 		     EDestroyPixImg(root_pi);
 		  root_pi->pmap = 0;
@@ -1704,8 +1707,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
 		  wt = ewin->w;
 		  ht = ewin->h;
-		  root_pi = ECreatePixImg(root.win, root.w, root.h);
-		  EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
+		  root_pi = ECreatePixImg(VRoot.win, VRoot.w, VRoot.h);
+		  EFillPixmap(VRoot.win, root_pi->pmap, x, y, wt, ht);
 		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
 			       ewin->h);
 	       }

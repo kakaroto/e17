@@ -75,7 +75,7 @@ typedef struct _mwmhints
 } MWMHints;
 
 Display            *disp;
-Root                root;
+Root                VRoot;
 
 #if !USE_IMLIB2
 ImlibData          *pI1Ctx;
@@ -110,7 +110,7 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
 
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
-   attr.colormap = root.cmap;
+   attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = False;
@@ -119,8 +119,8 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
    mwm.decorations = 0;
    mwm.inputMode = 0;
 /*   a = XInternAtom(disp, "_MOTIF_WM_HINTS", False); */
-   win = XCreateWindow(disp, parent, x, y, ww, hh, 0, root.depth,
-		       InputOutput, root.vis,
+   win = XCreateWindow(disp, parent, x, y, ww, hh, 0, VRoot.depth,
+		       InputOutput, VRoot.vis,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
    XSetWindowBackground(disp, win, 0);
@@ -254,18 +254,18 @@ main(int argc, char **argv)
    /* I dont want any internationalisation of my numeric input & output */
    setlocale(LC_NUMERIC, "C");
 
-   root.scr = DefaultScreen(disp);
+   VRoot.scr = DefaultScreen(disp);
 #if USE_IMLIB2
-   root.win = DefaultRootWindow(disp);
-   root.vis = DefaultVisual(disp, root.scr);
-   root.depth = DefaultDepth(disp, root.scr);
-   root.cmap = DefaultColormap(disp, root.scr);
+   VRoot.win = DefaultRootWindow(disp);
+   VRoot.vis = DefaultVisual(disp, VRoot.scr);
+   VRoot.depth = DefaultDepth(disp, VRoot.scr);
+   VRoot.cmap = DefaultColormap(disp, VRoot.scr);
 
    imlib_set_color_usage(128);
 
    imlib_context_set_display(disp);
-   imlib_context_set_visual(root.vis);
-   imlib_context_set_colormap(root.cmap);
+   imlib_context_set_visual(VRoot.vis);
+   imlib_context_set_colormap(VRoot.cmap);
    imlib_context_set_dither(1);
    imlib_context_set_dither_mask(0);
 #else
@@ -274,10 +274,10 @@ main(int argc, char **argv)
    params.pixmapcachesize = (w * h * 3 * 2 * 8);
    pI1Ctx = Imlib_init_with_params(disp, &params);
    Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL);
-   root.win = pI1Ctx->x.root;
-   root.vis = Imlib_get_visual(pI1Ctx);
-   root.depth = pI1Ctx->x.depth;
-   root.cmap = Imlib_get_colormap(pI1Ctx);
+   VRoot.win = pI1Ctx->x.root;
+   VRoot.vis = Imlib_get_visual(pI1Ctx);
+   VRoot.depth = pI1Ctx->x.depth;
+   VRoot.cmap = Imlib_get_colormap(pI1Ctx);
 #endif
 #if USE_FNLIB
    pFnlibData = Fnlib_init(pI1Ctx);
@@ -360,7 +360,7 @@ main(int argc, char **argv)
 	   int                 num;
 	   XineramaScreenInfo *screens;
 
-	   XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y,
+	   XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y,
 			 &d, &d, &ud);
 
 	   screens = XineramaQueryScreens(disp, &num);
@@ -390,7 +390,7 @@ main(int argc, char **argv)
 
    }
 #endif
-   win_main = CreateWindow(root.win, wx, wy, w, h + t);
+   win_main = CreateWindow(VRoot.win, wx, wy, w, h + t);
    win_title =
       XCreateSimpleWindow(disp, win_main, 0, 0, (w - 64 - 64 - t), t, 0, 0, 0);
    win_prev =
@@ -408,7 +408,7 @@ main(int argc, char **argv)
    XSelectInput(disp, win_text, ButtonPressMask | ButtonReleaseMask |
 		KeyPressMask | KeyReleaseMask | PointerMotionMask);
 
-   draw = XCreatePixmap(disp, win_text, w, h, root.depth);
+   draw = XCreatePixmap(disp, win_text, w, h, VRoot.depth);
 
    ApplyImage1(win_title, im_title);
    ApplyImage1(win_prev, im_prev1);

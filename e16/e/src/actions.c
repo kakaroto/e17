@@ -63,7 +63,7 @@ RefreshScreen(void)
    attr.backing_store = NotUseful;
 
    win =
-      XCreateWindow(disp, root.win, 0, 0, root.w, root.h, 0, CopyFromParent,
+      XCreateWindow(disp, VRoot.win, 0, 0, VRoot.w, VRoot.h, 0, CopyFromParent,
 		    CopyFromParent, CopyFromParent,
 		    CWBackingStore | CWSaveUnder, &attr);
    XMapRaised(disp, win);
@@ -601,7 +601,7 @@ spawnMenu(EWin * ewin, const void *params)
 	  {
 	     EGetGeometry(disp, Mode.context_win, &dw, &di, &di, &w, &h, &d,
 			  &d);
-	     XTranslateCoordinates(disp, Mode.context_win, root.win, 0, 0, &x,
+	     XTranslateCoordinates(disp, Mode.context_win, VRoot.win, 0, 0, &x,
 				   &y, &dw);
 
 	     if (w >= h)
@@ -1301,15 +1301,15 @@ doCleanup(EWin * edummy, const void *params)
 		       fixed[k].x += fixed[k].w;
 		       fixed[k].x = 0;
 		    }
-		  if ((fixed[k].x + fixed[k].w) > root.w)
-		     fixed[k].w = root.w - fixed[k].x;
+		  if ((fixed[k].x + fixed[k].w) > VRoot.w)
+		     fixed[k].w = VRoot.w - fixed[k].x;
 		  if (fixed[k].y < 0)
 		    {
 		       fixed[k].y += fixed[k].h;
 		       fixed[k].y = 0;
 		    }
-		  if ((fixed[k].y + fixed[k].h) > root.h)
-		     fixed[k].h = root.h - fixed[k].y;
+		  if ((fixed[k].y + fixed[k].h) > VRoot.h)
+		     fixed[k].h = VRoot.h - fixed[k].y;
 		  if ((fixed[k].w > 0) && (fixed[k].h > 0))
 		    {
 		       if (!ewin->never_use_area)
@@ -1336,15 +1336,15 @@ doCleanup(EWin * edummy, const void *params)
 		       fixed[k].x += fixed[k].w;
 		       fixed[k].x = 0;
 		    }
-		  if ((fixed[k].x + fixed[k].w) > root.w)
-		     fixed[k].w = root.w - fixed[k].x;
+		  if ((fixed[k].x + fixed[k].w) > VRoot.w)
+		     fixed[k].w = VRoot.w - fixed[k].x;
 		  if (fixed[k].y < 0)
 		    {
 		       fixed[k].y += fixed[k].h;
 		       fixed[k].y = 0;
 		    }
-		  if ((fixed[k].y + fixed[k].h) > root.h)
-		     fixed[k].h = root.h - fixed[k].y;
+		  if ((fixed[k].y + fixed[k].h) > VRoot.h)
+		     fixed[k].h = VRoot.h - fixed[k].y;
 		  if ((fixed[k].w <= 0) || (fixed[k].h <= 0))
 		     continue;
 
@@ -1357,7 +1357,7 @@ doCleanup(EWin * edummy, const void *params)
 	     Efree(blst);
 	  }
 
-	ArrangeRects(fixed, k, floating, j, ret, 0, 0, root.w, root.h, method,
+	ArrangeRects(fixed, k, floating, j, ret, 0, 0, VRoot.w, VRoot.h, method,
 		     0);
 
 	for (i = 0; i < (j + k); i++)
@@ -1698,7 +1698,7 @@ doDragButtonStart(EWin * edummy, const void *params)
 	EDBUG_RETURN(0);
      }
 
-   GrabThePointer(root.win);
+   GrabThePointer(VRoot.win);
    Mode.mode = MODE_BUTTONDRAG;
    Mode.button_move_pending = 1;
    Mode.start_x = Mode.x;

@@ -420,7 +420,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2,
+		   ECreatePixmap(disp, VRoot.win, wid + 2, ascent + descent + 2,
 				 GetWinDepth(win));
 	     else
 		drawable = win;
@@ -443,25 +443,25 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  EFont_draw_string(disp, drawable, gc, offset_x + 1,
 				    offset_y + 1, lines[i], ts->efont,
-				    root.vis, root.cmap);
+				    VRoot.vis, VRoot.cmap);
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  EFont_draw_string(disp, drawable, gc, offset_x - 1, offset_y,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 		  EFont_draw_string(disp, drawable, gc, offset_x + 1, offset_y,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 		  EFont_draw_string(disp, drawable, gc, offset_x, offset_y - 1,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 		  EFont_draw_string(disp, drawable, gc, offset_x, offset_y + 1,
-				    lines[i], ts->efont, root.vis, root.cmap);
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 	       }
 	     EAllocColor(&ts->fg_col);
 	     XSetForeground(disp, gc, ts->fg_col.pixel);
 	     EFont_draw_string(disp, drawable, gc, offset_x, offset_y, lines[i],
-			       ts->efont, root.vis, root.cmap);
+			       ts->efont, VRoot.vis, VRoot.cmap);
 
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
@@ -562,7 +562,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, root.win, ret2.width + 2,
+		   ECreatePixmap(disp, VRoot.win, ret2.width + 2,
 				 ret2.height + 2, GetWinDepth(win));
 	     else
 		drawable = win;
@@ -658,7 +658,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2,
+		   ECreatePixmap(disp, VRoot.win, wid + 2, ascent + descent + 2,
 				 GetWinDepth(win));
 	     else
 		drawable = win;
@@ -755,7 +755,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2,
+		   ECreatePixmap(disp, VRoot.win, wid + 2, ascent + descent + 2,
 				 GetWinDepth(win));
 	     else
 		drawable = win;

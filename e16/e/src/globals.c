@@ -42,7 +42,7 @@ Drawable            vIcDrw;
 FnlibData          *pFnlibData;
 #endif
 List               *lists;
-Root                root;
+Root                VRoot;
 EConf               Conf;
 EMode               Mode;
 Desktops            desks;

@@ -45,7 +45,7 @@ MapUnmap(int start)
    switch (start)
      {
      case 0:
-	XQueryTree(disp, root.win, &rt, &par, &wlist, &num);
+	XQueryTree(disp, VRoot.win, &rt, &par, &wlist, &num);
 	if (wlist)
 	  {
 	     for (i = 0; i < (int)num; i++)
@@ -140,10 +140,10 @@ SetupX(void)
 	EExit((void *)1);
      }
 
-   root.scr = DefaultScreen(disp);
+   VRoot.scr = DefaultScreen(disp);
    Mode.display.screens = ScreenCount(disp);
 
-   Mode.wm.master_screen = root.scr;
+   Mode.wm.master_screen = VRoot.scr;
 
    /* Start up on multiple heads, if appropriate */
    if ((Mode.display.screens > 1) && (!Mode.wm.single))
@@ -160,7 +160,7 @@ SetupX(void)
 	  {
 	     pid_t               pid;
 
-	     if (i == root.scr)
+	     if (i == VRoot.scr)
 		continue;
 
 	     pid = fork();
@@ -176,7 +176,7 @@ SetupX(void)
 	       {
 		  /* We are a slave */
 		  Mode.wm.master = 0;
-		  root.scr = i;
+		  VRoot.scr = i;
 #ifdef SIGSTOP
 		  kill(getpid(), SIGSTOP);
 #endif
@@ -205,13 +205,13 @@ SetupX(void)
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
    /* Root defaults */
-   root.scr = DefaultScreen(disp);
-   root.win = DefaultRootWindow(disp);
-   root.vis = DefaultVisual(disp, root.scr);
-   root.depth = DefaultDepth(disp, root.scr);
-   root.cmap = DefaultColormap(disp, root.scr);
-   root.w = DisplayWidth(disp, root.scr);
-   root.h = DisplayHeight(disp, root.scr);
+   VRoot.scr = DefaultScreen(disp);
+   VRoot.win = DefaultRootWindow(disp);
+   VRoot.vis = DefaultVisual(disp, VRoot.scr);
+   VRoot.depth = DefaultDepth(disp, VRoot.scr);
+   VRoot.cmap = DefaultColormap(disp, VRoot.scr);
+   VRoot.w = DisplayWidth(disp, VRoot.scr);
+   VRoot.h = DisplayHeight(disp, VRoot.scr);
 
    /* initialise imlib */
 #if USE_IMLIB2
@@ -222,8 +222,8 @@ SetupX(void)
    imlib_context_set_dither(1);
 
    imlib_context_set_display(disp);
-   imlib_context_set_visual(root.vis);
-   imlib_context_set_colormap(root.cmap);
+   imlib_context_set_visual(VRoot.vis);
+   imlib_context_set_colormap(VRoot.cmap);
    imlib_context_set_dither_mask(0);
 #else
    pImlib_Context = Imlib_init(disp);
@@ -249,17 +249,17 @@ SetupX(void)
 	EExit((void *)1);
      }
 #endif
-   root.win = pImlib_Context->x.root;
-   root.vis = Imlib_get_visual(pImlib_Context);
-   root.depth = pImlib_Context->x.depth;
-   root.cmap = Imlib_get_colormap(pImlib_Context);
+   VRoot.win = pImlib_Context->x.root;
+   VRoot.vis = Imlib_get_visual(pImlib_Context);
+   VRoot.depth = pImlib_Context->x.depth;
+   VRoot.cmap = Imlib_get_colormap(pImlib_Context);
    /* warn, if necessary about visual problems */
-   if (DefaultVisual(disp, root.scr) != root.vis)
+   if (DefaultVisual(disp, VRoot.scr) != VRoot.vis)
      {
 	ImlibInitParams     p;
 
 	p.flags = PARAMS_VISUALID;
-	p.visualid = XVisualIDFromVisual(DefaultVisual(disp, root.scr));
+	p.visualid = XVisualIDFromVisual(DefaultVisual(disp, VRoot.scr));
 	prImlib_Context = Imlib_init_with_params(disp, &p);
      }
    else
@@ -279,7 +279,7 @@ SetupX(void)
 
    /* select all the root window events to start managing */
    Mode.xselect = 1;
-   XSelectInput(disp, root.win,
+   XSelectInput(disp, VRoot.win,
 		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		LeaveWindowMask | ButtonMotionMask | PropertyChangeMask |
 		SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
@@ -595,7 +595,7 @@ MakeExtInitWin(void)
 	     sleep(1);
 
 	     puc = NULL;
-	     XGetWindowProperty(disp, root.win, a, 0, 0x7fffffff, True,
+	     XGetWindowProperty(disp, VRoot.win, a, 0, 0x7fffffff, True,
 				XA_CARDINAL, &aa, &format_ret, &num_ret,
 				&bytes_after, &puc);
 	     XSync(disp, False);
@@ -640,25 +640,25 @@ MakeExtInitWin(void)
    IMLIB1_SET_CONTEXT(0);
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
-   attr.colormap = root.cmap;
+   attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = True;
-   win = XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-		       InputOutput, root.vis,
+   win = XCreateWindow(d2, VRoot.win, 0, 0, VRoot.w, VRoot.h, 0, VRoot.depth,
+		       InputOutput, VRoot.vis,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
-   pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);
+   pmap = ECreatePixmap(d2, win, VRoot.w, VRoot.h, VRoot.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(d2, win, GCSubwindowMode, &gcv);
-   XCopyArea(d2, root.win, pmap, gc, 0, 0, root.w, root.h, 0, 0);
+   XCopyArea(d2, VRoot.win, pmap, gc, 0, 0, VRoot.w, VRoot.h, 0, 0);
    ESetWindowBackgroundPixmap(d2, win, pmap);
    EMapRaised(d2, win);
    EFreePixmap(d2, pmap);
    XFreeGC(d2, gc);
    val = win;
    a = XInternAtom(d2, "ENLIGHTENMENT_RESTART_SCREEN", False);
-   XChangeProperty(d2, root.win, a, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(d2, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    XSelectInput(d2, win, StructureNotifyMask);
    XUngrabServer(d2);
@@ -697,8 +697,8 @@ MakeExtInitWin(void)
 	Cursor              cs = 0;
 	XColor              cl;
 
-	w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, root.depth, InputOutput,
-			   root.vis,
+	w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, VRoot.depth, InputOutput,
+			   VRoot.vis,
 			   CWOverrideRedirect | CWBackingStore | CWColormap |
 			   CWBackPixel | CWBorderPixel, &attr);
 	pmap = ECreatePixmap(d2, w2, 16, 16, 1);

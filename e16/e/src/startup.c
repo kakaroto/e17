@@ -189,32 +189,38 @@ CreateStartupDisplay(char start)
 
 	if (bg_sideways)
 	  {
-	     w1 = ECreateWindow(root.win, (root.w / 2), 0, root.w, root.h, 1);
-	     w2 = ECreateWindow(root.win, -(root.w / 2), 0, root.w, root.h, 1);
-	     win1 = ECreateWindow(w1, -(root.w / 2), 0, root.w, root.h, 0);
-	     win2 = ECreateWindow(w2, (root.w / 2), 0, root.w, root.h, 0);
+	     w1 =
+		ECreateWindow(VRoot.win, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 1);
+	     w2 =
+		ECreateWindow(VRoot.win, -(VRoot.w / 2), 0, VRoot.w, VRoot.h,
+			      1);
+	     win1 = ECreateWindow(w1, -(VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
+	     win2 = ECreateWindow(w2, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
 	  }
 	else
 	  {
-	     w1 = ECreateWindow(root.win, 0, -(root.h / 2), root.w, root.h, 1);
-	     w2 = ECreateWindow(root.win, 0, (root.h / 2), root.w, root.h, 1);
-	     win1 = ECreateWindow(w1, 0, (root.h / 2), root.w, root.h, 0);
-	     win2 = ECreateWindow(w2, 0, -(root.h / 2), root.w, root.h, 0);
+	     w1 =
+		ECreateWindow(VRoot.win, 0, -(VRoot.h / 2), VRoot.w, VRoot.h,
+			      1);
+	     w2 =
+		ECreateWindow(VRoot.win, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 1);
+	     win1 = ECreateWindow(w1, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 0);
+	     win2 = ECreateWindow(w2, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 0);
 	  }
 
 	EMapWindow(disp, win1);
 	EMapWindow(disp, win2);
 
-	b1 = ECreateWindow(w1, 0, root.h - Conf.desks.dragbar_width, root.w,
+	b1 = ECreateWindow(w1, 0, VRoot.h - Conf.desks.dragbar_width, VRoot.w,
 			   Conf.desks.dragbar_width, 0);
-	b2 = ECreateWindow(w2, 0, 0, root.w, Conf.desks.dragbar_width, 0);
+	b2 = ECreateWindow(w2, 0, 0, VRoot.w, Conf.desks.dragbar_width, 0);
 	EMapRaised(disp, b1);
 	EMapRaised(disp, b2);
 
 	pq = Mode.queue_up;
 	Mode.queue_up = 0;
-	IclassApply(ic, b1, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
-	IclassApply(ic, b2, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
 	Mode.queue_up = pq;
 	BackgroundApply(bg, win1, 1);
 	BackgroundApply(bg, win2, 1);
@@ -246,7 +252,7 @@ CreateStartupDisplay(char start)
 	  {
 	     if (bg_sideways)
 	       {		/* so we can have two different slide methods */
-		  ty = (root.w / 2);
+		  ty = (VRoot.w / 2);
 		  xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
 		  x = ty;
 		  yOffset = 0;
@@ -254,7 +260,7 @@ CreateStartupDisplay(char start)
 	       }
 	     else
 	       {
-		  ty = (root.h / 2);
+		  ty = (VRoot.h / 2);
 		  xOffset = 0;
 		  x = 0;
 		  yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;

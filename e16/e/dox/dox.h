@@ -58,12 +58,12 @@
 #define IMLIB1_SET_CONTEXT(root_ctx)
 
 #define EAllocColor(pxc) \
-	XAllocColor(disp, root.cmap, pxc)
+	XAllocColor(disp, VRoot.cmap, pxc)
 
 #define IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask) \
 	imlib_free_pixmap_and_mask(pmap)
 
-#define IC_RenderDepth() DefaultDepth(disp, root.scr)
+#define IC_RenderDepth() DefaultDepth(disp, VRoot.scr)
 
 #else
 
@@ -314,7 +314,7 @@ void                GetLinkColors(int page_num, int *r, int *g, int *b);
 Link               *RenderPage(Window win, int page_num, int w, int h);
 
 extern Display     *disp;
-extern Root         root;
+extern Root         VRoot;
 
 #if USE_FNLIB
 extern FnlibData   *pFnlibData;

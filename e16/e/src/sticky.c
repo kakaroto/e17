@@ -60,13 +60,13 @@ MakeWindowSticky(EWin * ewin)
    /* Avoid "losing" windows made sticky while not in the current viewport */
    dx = ewin->w / 2;
    dy = ewin->h / 2;
-   x = (ewin->x + dx) % root.w;
+   x = (ewin->x + dx) % VRoot.w;
    if (x < 0)
-      x += root.w;
+      x += VRoot.w;
    x -= dx;
-   y = (ewin->y + dy) % root.h;
+   y = (ewin->y + dy) % VRoot.h;
    if (y < 0)
-      y += root.h;
+      y += VRoot.h;
    y -= dy;
 
    if (x != ewin->x || y != ewin->y)

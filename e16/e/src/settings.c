@@ -1073,7 +1073,7 @@ CB_DesktopDisplayRedraw(int val, void *data)
 	       {
 		  Pixmap              pmap;
 
-		  pmap = ECreatePixmap(disp, wins[i], 64, 48, root.depth);
+		  pmap = ECreatePixmap(disp, wins[i], 64, 48, VRoot.depth);
 		  ESetWindowBackgroundPixmap(disp, wins[i], pmap);
 		  BackgroundApply(desks.desk[i].bg, pmap, 0);
 		  EFreePixmap(disp, pmap);
@@ -2482,7 +2482,7 @@ CB_ConfigureBG(int val, void *data)
 
 	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", EDirUserCache(),
 		     tmp_bg->name);
-	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
+	   p2 = ECreatePixmap(disp, VRoot.win, 64, 48, VRoot.depth);
 	   BackgroundApply(tmp_bg, p2, 0);
 	   imlib_context_set_drawable(p2);
 	   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
@@ -2532,7 +2532,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 			 tmp_bg->top.yjust, tmp_bg->top.xperc,
 			 tmp_bg->top.yperc);
 
-   pmap = ECreatePixmap(disp, win, w, h, root.depth);
+   pmap = ECreatePixmap(disp, win, w, h, VRoot.depth);
    ESetWindowBackgroundPixmap(disp, win, pmap);
    BackgroundApply(bg, pmap, 0);
    XClearWindow(disp, win);
@@ -2747,9 +2747,9 @@ BG_RedrawView(char nuke_old)
    if (!bglist)
       goto done;
 
-   pmap = ECreatePixmap(disp, win, w, h, root.depth);
+   pmap = ECreatePixmap(disp, win, w, h, VRoot.depth);
    gc = XCreateGC(disp, pmap, 0, &gcv);
-   XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+   XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
    ESetWindowBackgroundPixmap(disp, win, pmap);
    x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
@@ -2807,7 +2807,7 @@ BG_RedrawView(char nuke_old)
 		    {
 		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
 				 EDirUserCache(), bglist[i]->name);
-		       p2 = ECreatePixmap(disp, pmap, 64, 48, root.depth);
+		       p2 = ECreatePixmap(disp, pmap, 64, 48, VRoot.depth);
 		       BackgroundApply(bglist[i], p2, 0);
 		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
 		       imlib_context_set_drawable(p2);

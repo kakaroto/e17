@@ -77,7 +77,7 @@ EventsInit(void)
 		   major, minor, event_base_randr, error_base_randr);
 
 	/* Listen for RandR events */
-	XRRSelectInput(disp, root.win, RRScreenChangeNotifyMask);
+	XRRSelectInput(disp, VRoot.win, RRScreenChangeNotifyMask);
      }
 #endif
 }
@@ -105,7 +105,7 @@ HandleEvent(XEvent * ev)
      case EnterNotify:
      case LeaveNotify:
 	if (((ev->type == KeyPress) || (ev->type == KeyRelease))
-	    && (ev->xkey.root != root.win))
+	    && (ev->xkey.root != VRoot.win))
 	  {
 	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
 			    CurrentTime);

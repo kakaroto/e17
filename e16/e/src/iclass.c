@@ -434,14 +434,14 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	Pixmap              bg;
 	int                 xx, yy;
 
-	XTranslateCoordinates(disp, win, root.win, 0, 0, &xx, &yy, &cr);
+	XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &xx, &yy, &cr);
 /*	Eprintf("ImageStateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
-	if (xx < root.w && yy < root.h && xx + w >= 0 && yy + h >= 0)
+	if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
 	  {
 	     /* Create the background base image */
 	     bg = BackgroundGetPixmap(desks.desk[desks.current].bg);
 	     if ((is->transparent & 0x02) != 0 || bg == None)
-		bg = root.win;
+		bg = VRoot.win;
 	     imlib_context_set_drawable(bg);
 	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
 	     imlib_context_set_image(ii);
@@ -585,7 +585,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     GC                  gc;
 	     XGCValues           gcv;
 
-	     tp = ECreatePixmap(disp, win, w, h, root.depth);
+	     tp = ECreatePixmap(disp, win, w, h, VRoot.depth);
 	     gcv.fill_style = FillTiled;
 	     gcv.tile = pmm->pmap;
 	     gcv.ts_x_origin = 0;
@@ -855,7 +855,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 	if (pmm->pmap)
 	   Eprintf("IclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = ECreatePixmap(disp, win, w, h, root.depth);
+	pmap = ECreatePixmap(disp, win, w, h, VRoot.depth);
 	pmm->type = 0;
 	pmm->pmap = pmap;
 	pmm->mask = 0;

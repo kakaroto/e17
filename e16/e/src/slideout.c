@@ -95,7 +95,7 @@ SlideoutCreate(char *name, char dir)
    s->button = NULL;
    s->w = 0;
    s->h = 0;
-   s->win = ECreateWindow(root.win, -10, -10, 1, 1, 1);
+   s->win = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
    s->from_win = 0;
    s->ref_count = 0;
 
@@ -119,7 +119,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 
    SlideoutCalcSize(s);
    EGetGeometry(disp, win, &dw, &di, &di, &w, &h, &d, &d);
-   XTranslateCoordinates(disp, win, root.win, 0, 0, &x, &y, &dw);
+   XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &x, &y, &dw);
 
    xx = 0;
    yy = 0;
@@ -128,7 +128,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
      case 2:
 	xx = x + ((w - s->w) >> 1);
 	yy = y - s->h;
-	if ((yy < 0) && (s->h < root.h))
+	if ((yy < 0) && (s->h < VRoot.h))
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
@@ -140,7 +140,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
      case 3:
 	xx = x + ((w - s->w) >> 1);
 	yy = y + h;
-	if (((yy + s->h) > root.h) && (s->h < root.h))
+	if (((yy + s->h) > VRoot.h) && (s->h < VRoot.h))
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
@@ -152,7 +152,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
      case 0:
 	xx = x - s->w;
 	yy = y + ((h - s->h) >> 1);
-	if ((xx < 0) && (s->w < root.w))
+	if ((xx < 0) && (s->w < VRoot.w))
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
@@ -164,7 +164,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
      case 1:
 	xx = x + w;
 	yy = y + ((h - s->h) >> 1);
-	if (((xx + s->w) > root.w) && (s->w < root.w))
+	if (((xx + s->w) > VRoot.w) && (s->w < VRoot.w))
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
@@ -179,7 +179,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 
    /* If the slideout is associated with an ewin,
     * put it on the same virtual desktop. */
-   dw = root.win;
+   dw = VRoot.win;
    if (ewin && EwinWinpartIndex(ewin, win) >= 0 &&
        !ewin->floating /* && !ewin->sticky */ )
      {

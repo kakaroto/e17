@@ -65,14 +65,14 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	  {
 	  case 0:
 	     if (((ewin->x + dx < 0) ||
-		  ((ewin->x + dx + ewin->w <= root.w) &&
+		  ((ewin->x + dx + ewin->w <= VRoot.w) &&
 		   ((DesktopAt
 		     (desks.desk[ewin->desktop].x + ewin->x + dx + ewin->w - 1,
 		      desks.desk[ewin->desktop].y) != ewin->desktop)))))
 		dofloat = 1;
 	     break;
 	  case 1:
-	     if (((ewin->x + dx + ewin->w > root.w) ||
+	     if (((ewin->x + dx + ewin->w > VRoot.w) ||
 		  ((ewin->x + dx >= 0) &&
 		   ((DesktopAt
 		     (desks.desk[ewin->desktop].x + ewin->x + dx,
@@ -81,7 +81,7 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	     break;
 	  case 2:
 	     if (((ewin->y + dy < 0) ||
-		  ((ewin->y + dy + ewin->h <= root.h) &&
+		  ((ewin->y + dy + ewin->h <= VRoot.h) &&
 		   ((DesktopAt
 		     (desks.desk[ewin->desktop].x,
 		      desks.desk[ewin->desktop].y + ewin->y + dy + ewin->h -
@@ -89,7 +89,7 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 		dofloat = 1;
 	     break;
 	  case 3:
-	     if (((ewin->y + dy + ewin->h > root.h) ||
+	     if (((ewin->y + dy + ewin->h > VRoot.h) ||
 		  ((ewin->y + dy >= 0) &&
 		   ((DesktopAt
 		     (desks.desk[ewin->desktop].x,
@@ -443,7 +443,7 @@ AddToFamily(Window win)
    if ((!ewin->client.transient) && (Conf.manual_placement)
        && (!ewin->client.already_placed) && (!Mode.startup) && (!Mode.place))
      {
-	cangrab = GrabThePointer(root.win);
+	cangrab = GrabThePointer(VRoot.win);
 	if ((cangrab == GrabNotViewable) || (cangrab == AlreadyGrabbed)
 	    || (cangrab == GrabFrozen))
 	  {
@@ -477,8 +477,8 @@ AddToFamily(Window win)
 	     if (ewin->desktop >= 0)
 		GotoDesktop(ewin->desktop);
 
-	     GrabThePointer(root.win);
-	     XQueryPointer(disp, root.win, &root_return, &junk, &rx, &ry, &wx,
+	     GrabThePointer(VRoot.win);
+	     XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx,
 			   &wy, &mask);
 	     XUngrabPointer(disp, CurrentTime);
 	     Mode.x = rx;
@@ -494,8 +494,8 @@ AddToFamily(Window win)
 		newWinY -= ewin->h / 2;
 
 	     /* keep it all on this screen if possible */
-	     newWinX = MIN(newWinX, root.w - ewin->w);
-	     newWinY = MIN(newWinY, root.h - ewin->h);
+	     newWinX = MIN(newWinX, VRoot.w - ewin->w);
+	     newWinY = MIN(newWinY, VRoot.h - ewin->h);
 	     newWinX = MAX(newWinX, 0);
 	     newWinY = MAX(newWinY, 0);
 
@@ -580,7 +580,7 @@ AddToFamily(Window win)
 	/* the window there */
 	if (ewin->desktop >= 0)
 	   GotoDesktop(ewin->desktop);
-	XQueryPointer(disp, root.win, &root_return, &junk, &rx, &ry, &wx, &wy,
+	XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx, &wy,
 		      &mask);
 	Mode.x = rx;
 	Mode.y = ry;
@@ -594,7 +594,7 @@ AddToFamily(Window win)
 	MoveEwin(ewin, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
-	GrabThePointer(root.win);
+	GrabThePointer(VRoot.win);
 	Mode.have_place_grab = 1;
 	Mode.place = 1;
 	ICCCM_Configure(ewin);
@@ -604,27 +604,27 @@ AddToFamily(Window win)
      }
    else if ((doslide) && (!Mode.doingslide))
      {
-	MoveEwin(ewin, root.w, root.h);
+	MoveEwin(ewin, VRoot.w, VRoot.h);
 	k = rand() % 4;
 	if (k == 0)
 	  {
-	     fx = (rand() % (root.w)) - ewin->w;
+	     fx = (rand() % (VRoot.w)) - ewin->w;
 	     fy = -ewin->h;
 	  }
 	else if (k == 1)
 	  {
-	     fx = (rand() % (root.w));
-	     fy = root.h;
+	     fx = (rand() % (VRoot.w));
+	     fy = VRoot.h;
 	  }
 	else if (k == 2)
 	  {
 	     fx = -ewin->w;
-	     fy = (rand() % (root.h));
+	     fy = (rand() % (VRoot.h));
 	  }
 	else
 	  {
-	     fx = root.w;
-	     fy = (rand() % (root.h)) - ewin->h;
+	     fx = VRoot.w;
+	     fy = (rand() % (VRoot.h)) - ewin->h;
 	  }
 	EwinBorderDraw(ewin, 1, 1);
 	MoveEwinToDesktop(ewin, ewin->desktop);
@@ -1261,7 +1261,7 @@ EwinCreate(Window win)
    ewin->client.mwm_func_close = 1;
    ewin->desktop = desks.current;
    ewin->layer = 4;
-   ewin->win = ECreateWindow(root.win, -10, -10, 1, 1, 1);
+   ewin->win = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
    ewin->win_container = ECreateWindow(ewin->win, 0, 0, 1, 1, 0);
 #if 0				/* ENABLE_GNOME - Not actually used */
    ewin->expanded_width = -1;
@@ -1386,11 +1386,11 @@ EwinWithdraw(EWin * ewin)
       Eprintf("EwinWithdraw %#lx state=%d\n", ewin->client.win, ewin->state);
 
    /* Park the client window on the root */
-   XTranslateCoordinates(disp, ewin->client.win, root.win,
+   XTranslateCoordinates(disp, ewin->client.win, VRoot.win,
 			 -ewin->border->border.left,
 			 -ewin->border->border.top, &ewin->client.x,
 			 &ewin->client.y, &win);
-   EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
+   EReparentWindow(disp, ewin->client.win, VRoot.win, ewin->client.x,
 		   ewin->client.y);
 
    ICCCM_Withdraw(ewin);
@@ -1722,8 +1722,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    if (Mode.mode == MODE_NONE)
      {
 	/* Don't throw windows offscreen */
-	sw = root.w;
-	sh = root.h;
+	sw = VRoot.w;
+	sh = VRoot.h;
 	if (ewin->sticky)
 	  {
 	     x0 = y0 = 0;
@@ -3061,9 +3061,9 @@ DetermineEwinArea(EWin * ewin)
    EDBUG(4, "DetermineEwinArea");
 
    ax = (ewin->x + (ewin->w / 2) +
-	 (desks.desk[ewin->desktop].current_area_x * root.w)) / root.w;
+	 (desks.desk[ewin->desktop].current_area_x * VRoot.w)) / VRoot.w;
    ay = (ewin->y + (ewin->h / 2) +
-	 (desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
+	 (desks.desk[ewin->desktop].current_area_y * VRoot.h)) / VRoot.h;
 
    AreaFix(&ax, &ay);
    EwinSetArea(ewin, ax, ay);
@@ -3076,8 +3076,8 @@ MoveEwinToArea(EWin * ewin, int ax, int ay)
 {
    EDBUG(4, "MoveEwinToArea");
    AreaFix(&ax, &ay);
-   MoveEwin(ewin, ewin->x + (root.w * (ax - ewin->area_x)),
-	    ewin->y + (root.h * (ay - ewin->area_y)));
+   MoveEwin(ewin, ewin->x + (VRoot.w * (ax - ewin->area_x)),
+	    ewin->y + (VRoot.h * (ay - ewin->area_y)));
    EwinSetArea(ewin, ax, ay);
    EDBUG_RETURN_;
 }
@@ -3148,7 +3148,7 @@ EwinIsOnScreen(EWin * ewin)
    w = ewin->w;
    h = ewin->h;
 
-   if (x + w <= 0 || x >= root.w || y + h <= 0 || y >= root.h)
+   if (x + w <= 0 || x >= VRoot.w || y + h <= 0 || y >= VRoot.h)
       return 0;
 
    return 1;
