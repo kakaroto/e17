@@ -13,9 +13,9 @@
 
 typedef struct _Window_List Window_List;
 struct _Window_List {
-  Ecore_X_Window *win;
-  char           *title;
-  Window_List    *next;
+  Ecore_X_Window win;
+  char          *title;
+  Window_List   *next;
 };
 
 int tray_count = 0;
@@ -53,29 +53,45 @@ void
 od_tray_layout() {
   Window_List *tmp;
   int xpos;
+  int oddflag;
 
   tmp = tray_list;
   xpos = 0;
+  oddflag = 0;
   while(tmp) {
     /* this line sets some (skype...) to the correct position in the engage win
        but others (psi...) to the same position rel to the main screen - bum */
-    ecore_x_window_prop_xy_set(tmp->win, xpos, 0);
+    ecore_x_window_prop_xy_set(tmp->win, xpos, options.height - oddflag - 24);
 
     tmp = tmp->next;
-    xpos += 24;
+    if (oddflag) {
+      oddflag = 0;
+      xpos += 24;
+    } else {
+      oddflag = 24;
+    }
   }
   
 }
 
 void
-od_tray_add(Ecore_X_Window *win) {
-  Window_List *new;
-    
+od_tray_add(Ecore_X_Window win) {
+  Window_List *new, *insert_after;
+  
   new = malloc(sizeof(Window_List));
   new->win = win;
   new->title = strdup(ecore_x_window_prop_title_get(win));
-  new->next = tray_list;
-  tray_list = new;
+  new->next = NULL;
+
+  /* we want to insert at the end, so as not to move all icons on each add */
+  insert_after = tray_list;
+  if (insert_after)
+    while(insert_after->next)
+      insert_after = insert_after->next;
+  if (!insert_after)
+    tray_list = new;
+  else
+    insert_after->next = new;
   tray_count++;
   
   printf("adding icon %x for %s\n", win, new->title);
@@ -89,7 +105,7 @@ od_tray_add(Ecore_X_Window *win) {
 }
 
 void
-od_tray_remove(Ecore_X_Window *win) {
+od_tray_remove(Ecore_X_Window win) {
   Window_List *tmp, *ptr;
 
   ptr = NULL;
@@ -125,7 +141,7 @@ od_tray_msg_cb(void *data, int type, void *event)
     if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_OPCODE")) {
       XEvent xevent;
 
-      od_tray_add(ev->data.l[2]);
+      od_tray_add((Ecore_X_Window) ev->data.l[2]);
       
       /* Should proto be set according to clients _XEMBED_INFO? */
       ecore_x_client_message_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
@@ -136,7 +152,7 @@ od_tray_msg_cb(void *data, int type, void *event)
     }
   } else if (type == ECORE_X_EVENT_WINDOW_DESTROY ||
              type == ECORE_X_EVENT_WINDOW_HIDE) {
-    od_tray_remove(dst->win);
+    od_tray_remove((Ecore_X_Window) dst->win);
   }
 
   return 1;
