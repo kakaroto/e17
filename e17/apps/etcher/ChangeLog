@@ -1,3 +1,8 @@
+Sun Mar 03 19:00:54 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* When trying to change image in a loaded ebits, it didn't mark the
+	  bit as unsaved, and therefor the new image was looked for in the
+	  bits.db instead of loading it directly from disk. Fixed.
+
 Sat Mar 02 22:34:48 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Update propagate state sync list when a bit gets selected.
 	* Unselect everything in properties clist when bit gets unselected.

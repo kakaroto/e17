@@ -513,10 +513,6 @@ workspace_update_selection_from_widget(void)
 	     }
 	}
 
-	prev_i1 = NULL;
-	prev_i2 = NULL;
-	prev_i3 = NULL;
-	prev_i4 = NULL;
 	if (selected->description->normal.image)
 	   prev_i1 = selected->description->normal.image;
 	if (selected->description->hilited.image)
@@ -535,27 +531,40 @@ workspace_update_selection_from_widget(void)
 	selected->description->border.t = get_spin("border_t");
 	selected->description->border.b = get_spin("border_b");
 
-	selected->description->normal.image =
-	   g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
-					"properties_state_normal_image"));
-	selected->description->hilited.image =
-	   g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
-					"properties_state_hilited_image"));
-	selected->description->clicked.image =
-	   g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
-					"properties_state_clicked_image"));
-	selected->description->disabled.image =
-	   g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
-					"properties_state_disabled_image"));
+	if (gtk_object_get_data
+	    (GTK_OBJECT(main_win), "properties_state_normal_image"))
+	   selected->description->normal.image =
+	      g_strdup(gtk_object_get_data
+		       (GTK_OBJECT(main_win), "properties_state_normal_image"));
+	if (gtk_object_get_data
+	    (GTK_OBJECT(main_win), "properties_state_hilited_image"))
+	   selected->description->hilited.image =
+	      g_strdup(gtk_object_get_data
+		       (GTK_OBJECT(main_win),
+			"properties_state_hilited_image"));
+	if (gtk_object_get_data
+	    (GTK_OBJECT(main_win), "properties_state_clicked_image"))
+	   selected->description->clicked.image =
+	      g_strdup(gtk_object_get_data
+		       (GTK_OBJECT(main_win),
+			"properties_state_clicked_image"));
+	if (gtk_object_get_data
+	    (GTK_OBJECT(main_win), "properties_state_disabled_image"))
+	   selected->description->disabled.image =
+	      g_strdup(gtk_object_get_data
+		       (GTK_OBJECT(main_win),
+			"properties_state_disabled_image"));
 
 	if (selected->description->normal.image)
 	  {
-	     if (!prev_i1 ||
-		 strcmp(selected->description->normal.image, prev_i1))
+	     if ((!prev_i1 ||
+		  strcmp(selected->description->normal.image, prev_i1)) &&
+		 selected->normal.image)
 	       {
 		  imlib_context_set_image(selected->normal.image);
 		  imlib_free_image();
 		  selected->normal.image = NULL;
+		  selected->normal.saved = 0;
 	       }
 	     else
 		selected->normal.saved = 0;
@@ -563,12 +572,14 @@ workspace_update_selection_from_widget(void)
 
 	if (selected->description->hilited.image)
 	  {
-	     if (!prev_i1 ||
-		 strcmp(selected->description->hilited.image, prev_i1))
+	     if ((!prev_i2 ||
+		  strcmp(selected->description->hilited.image, prev_i2)) &&
+		 selected->hilited.image)
 	       {
 		  imlib_context_set_image(selected->hilited.image);
 		  imlib_free_image();
 		  selected->hilited.image = NULL;
+		  selected->hilited.saved = 0;
 	       }
 	     else
 		selected->hilited.saved = 0;
@@ -576,12 +587,14 @@ workspace_update_selection_from_widget(void)
 
 	if (selected->description->clicked.image)
 	  {
-	     if (!prev_i1 ||
-		 strcmp(selected->description->clicked.image, prev_i1))
+	     if ((!prev_i3 ||
+		  strcmp(selected->description->clicked.image, prev_i3)) &&
+		 selected->clicked.image)
 	       {
 		  imlib_context_set_image(selected->clicked.image);
 		  imlib_free_image();
 		  selected->clicked.image = NULL;
+		  selected->clicked.saved = 0;
 	       }
 	     else
 		selected->clicked.saved = 0;
@@ -589,12 +602,14 @@ workspace_update_selection_from_widget(void)
 
 	if (selected->description->disabled.image)
 	  {
-	     if (!prev_i1 ||
-		 strcmp(selected->description->disabled.image, prev_i1))
+	     if ((!prev_i4 ||
+		  strcmp(selected->description->disabled.image, prev_i4)) &&
+		 selected->disabled.image)
 	       {
 		  imlib_context_set_image(selected->disabled.image);
 		  imlib_free_image();
 		  selected->disabled.image = NULL;
+		  selected->disabled.saved = 0;
 	       }
 	     else
 		selected->disabled.saved = 0;
@@ -618,19 +633,17 @@ workspace_update_selection_from_widget(void)
 
 		  ss_d = ll->data;
 
-		  if (strcmp(ss_d->state_d->image, image))
+		  if ((!ss_d->state_d->image ||
+		       strcmp(ss_d->state_d->image, image)) && ss_d->image)
 		    {
+		       imlib_context_set_image(ss_d->image);
+		       imlib_free_image();
+		       ss_d->image = NULL;
 		       ss_d->saved = 0;
-
-		       if (ss_d->image)
-			 {
-			    imlib_context_set_image(ss_d->image);
-			    imlib_free_image();
-			    ss_d->image = NULL;
-			 }
 		    }
+		  else
+		     ss_d->saved = 0;
 	       }
-
 	     ebits_add_bit_state(selected, l->data, strdup(image));
 	  }
 
@@ -768,16 +781,16 @@ workspace_update_widget_from_selection(void)
 
 	gtk_object_set_data(GTK_OBJECT(main_win),
 			    "properties_state_normal_image",
-			    selected->description->normal.image);
+			    g_strdup(selected->description->normal.image));
 	gtk_object_set_data(GTK_OBJECT(main_win),
 			    "properties_state_hilited_image",
-			    selected->description->hilited.image);
+			    g_strdup(selected->description->hilited.image));
 	gtk_object_set_data(GTK_OBJECT(main_win),
 			    "properties_state_clicked_image",
-			    selected->description->clicked.image);
+			    g_strdup(selected->description->clicked.image));
 	gtk_object_set_data(GTK_OBJECT(main_win),
 			    "properties_state_disabled_image",
-			    selected->description->disabled.image);
+			    g_strdup(selected->description->disabled.image));
 
 	{
 	   Evas_List           l;

@@ -597,10 +597,10 @@ _ebits_image_state_saved(Ebits_Object_Bit_State state, char *s)
      {
 	if (state->description->hilited.image)
 	   return state->hilited.saved;
-	if (state->description->clicked.image)
-	   return state->clicked.saved;
 	if (state->description->normal.image)
 	   return state->normal.saved;
+	if (state->description->clicked.image)
+	   return state->clicked.saved;
 	if (state->description->disabled.image)
 	   return state->disabled.saved;
 
