@@ -1,5 +1,8 @@
 #include <gtk/gtk.h>
 
+int
+pref_init(void);
+
 void
 pref_preferences1_activate               (GtkMenuItem     *menuitem,
 					  gpointer         user_data);

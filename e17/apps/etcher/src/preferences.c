@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <Edb.h>
 #include <gdk/gdkx.h>
 #include "preferences.h"
@@ -19,8 +20,9 @@ Imlib_Image im_old;
 Pixmap pm_old;
 
 Window win;
-DATA8 colors[3] = {255, 255, 255};
-DATA8 colors_old[3];
+DATA8  colors[3] = {255, 255, 255};
+DATA8  colors_old[3];
+char   etcher_config[4096];
 
 static void pref_update_preview(void);
 static void pref_colors_ok(GtkWidget *widget, gpointer data);
@@ -104,6 +106,39 @@ pref_colors_cancel(GtkWidget *widget,  gpointer data)
   pref_update_preview();
 
   gtk_widget_hide(color_dialog);
+}
+
+
+int
+pref_init(void)
+{
+  int config_ok = 0, config_zoom_method, config_render_method;
+  int col_r, col_g, col_b;
+
+  g_snprintf(etcher_config, sizeof(etcher_config), "%s/.etcher.db", getenv("HOME"));
+  E_DB_INT_GET(etcher_config, "/display/zoom_method", 
+	       config_zoom_method, config_ok);
+
+  E_DB_INT_GET(etcher_config, "/display/render_method", 
+	       config_render_method, config_ok);
+
+  if (!config_ok)
+    return 0;
+
+  render_method = config_render_method;
+  zoom_method = config_zoom_method;
+
+  E_DB_INT_GET(etcher_config, "/grid/r", col_r, config_ok);
+  if (config_ok)
+    colors[0] = (DATA8)col_r;
+  E_DB_INT_GET(etcher_config, "/grid/g", col_g, config_ok);
+  if (config_ok)
+    colors[1] = (DATA8)col_g;
+  E_DB_INT_GET(etcher_config, "/grid/b", col_b, config_ok);
+  if (config_ok)
+    colors[2] = (DATA8)col_b;
+
+  return 1;
 }
 
 
@@ -228,6 +263,11 @@ pref_color_changed(GtkWidget *widget, GtkColorSelection * colorsel)
   colors[0] = (DATA8)(255 * color[0]);
   colors[1] = (DATA8)(255 * color[1]);
   colors[2] = (DATA8)(255 * color[2]);
+
+  E_DB_INT_SET(etcher_config, "/grid/r", colors[0]);
+  E_DB_INT_SET(etcher_config, "/grid/g", colors[1]);
+  E_DB_INT_SET(etcher_config, "/grid/b", colors[2]);
+  e_db_flush();
 
   pref_update_preview();
 }

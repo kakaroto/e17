@@ -12,9 +12,9 @@
 
 #include "interface.h"
 #include "support.h"
+#include "preferences.h"
 
 GtkWidget *main_win;
-char etcher_config[4096];
 extern Evas view_evas;
 extern gint render_method;
 extern gint zoom_method;
@@ -26,7 +26,7 @@ GdkColormap *gdk_cmap = NULL;
 int
 main (int argc, char *argv[])
 {
-   int i, config_ok = 0, config_render_method, config_zoom_method;
+   int i;
    
    no_splash = FALSE;
 
@@ -56,13 +56,7 @@ main (int argc, char *argv[])
    gtk_set_locale ();
    gtk_init (&argc, &argv);
 
-   g_snprintf(etcher_config, sizeof(etcher_config), "%s/.etcher.db", getenv("HOME"));
-   E_DB_INT_GET(etcher_config, "/display/zoom_method", 
-		config_zoom_method, config_ok);
-   E_DB_INT_GET(etcher_config, "/display/render_method", 
-		config_render_method, config_ok);
-   e_db_flush();
-   if (!config_ok)
+   if (!pref_init())
      {
 	GtkWidget *dialog;
 	
@@ -71,30 +65,25 @@ main (int argc, char *argv[])
 	
 	gtk_main ();
      }
-   else
-     {
-	render_method = config_render_method;
-	zoom_method = config_zoom_method;
-     }
 
    view_evas = evas_new();
    if (render_method == 1)
-      evas_set_output_method(view_evas, RENDER_METHOD_3D_HARDWARE);
+     evas_set_output_method(view_evas, RENDER_METHOD_3D_HARDWARE);
    else if (render_method == 0)
-      evas_set_output_method(view_evas, RENDER_METHOD_ALPHA_SOFTWARE);
-     {
-	Visual *vis;
-	Colormap cmap;
-	
-	vis = evas_get_optimal_visual(view_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
-	gdk_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
-	cmap = evas_get_optimal_colormap(view_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
-	gdk_cmap = gdkx_colormap_get(cmap);
-	/* workaround for bug in gdk - well oversight in api */
-	((GdkColormapPrivate *)gdk_cmap)->visual = gdk_vis;
-     }
+     evas_set_output_method(view_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+
+   {
+     Visual *vis;
+     Colormap cmap;
+     
+     vis = evas_get_optimal_visual(view_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+     gdk_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
+     cmap = evas_get_optimal_colormap(view_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+     gdk_cmap = gdkx_colormap_get(cmap);
+     /* workaround for bug in gdk - well oversight in api */
+     ((GdkColormapPrivate *)gdk_cmap)->visual = gdk_vis;
+   }
       
-   
    add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
    add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
    
