@@ -114,7 +114,6 @@ int main (int argc, char **argv)
    disp = XOpenDisplay(NULL);
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
-   printf("%i\n", depth);
    cm = DefaultColormap(disp, DefaultScreen(disp));
    if (root)
       win = DefaultRootWindow(disp);
@@ -276,6 +275,12 @@ int main (int argc, char **argv)
 					       0, 0, w, h,
 					       NULL, IMLIB_OP_COPY);
 		  first = 0;
+	       }
+	       {
+		  Imlib_Updates uu;
+		  
+		  uu = __imlib_draw_line(im, 200, 200, x, y, 255, 255, 255, 255, 0);
+		  up = imlib_updates_append_updates(up, uu);
 	       }
 	     if (fon)
 	       {

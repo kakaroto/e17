@@ -6,6 +6,7 @@
 #include "rgba.h"
 #include "blend.h"
 #include "rgbadraw.h"
+#include "updates.h"
 
 void
 __imlib_FlipImageHoriz(ImlibImage *im)
@@ -350,4 +351,249 @@ __imlib_TileImageVert(ImlibImage *im)
    im->data = data;
 }
 
+#define BLEND(r1, g1, b1, a1, dest) \
+bb = ((dest)      ) & 0xff;\
+gg = ((dest) >> 8 ) & 0xff;\
+rr = ((dest) >> 16) & 0xff;\
+aa = ((dest) >> 24) & 0xff;\
+tmp = ((r1) - rr) * (a1);\
+nr = rr + ((tmp + (tmp >> 8) + 0x80) >> 8);\
+tmp = ((g1) - gg) * (a1);\
+ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);\
+tmp = ((b1) - bb) * (a1);\
+nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);\
+tmp = (a1) + aa;\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
 
+ImlibUpdate *
+__imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
+		  DATA8 r, DATA8 g, DATA8 b, DATA8 a, char make_updates)
+{
+   int x, y, dx, dy, yy, xx, am, tmp;
+   DATA32 *p;
+   DATA8 aaa, nr, ng, nb, rr, gg, bb, aa, na;
+
+   /* clip to top edge */
+   if ((y1 < 0) && (y2 < 0))
+      return NULL;
+   if (y1 < 0)
+     {
+	x1 += (y1 * (x1 - x2)) / (y2 - y1);
+	y1 = 0;
+     }
+   if (y2 < 0)
+     {
+	x2 += (y2 * (x1 - x2)) / (y2 - y1);
+	y2 = 0;
+     }
+   /* clip to bottom edge */   
+   if ((y1 >= im->h) && (y2 >= im->h))
+      return NULL;
+   if (y1 >= im->h)
+     {
+	x1 -= ((im->h - y1) * (x1 - x2)) / (y2 - y1);
+	y1 = im->h - 1;
+     }
+   if (y2 >= im->h)
+     {
+	x2 -= ((im->h - y2) * (x1 - x2)) / (y2 - y1);
+	y2 = im->h - 1;
+     }
+   /* clip to top edge */
+   if ((x1 < 0) && (x2 < 0))
+      return NULL;
+   if (x1 < 0)
+     {
+	y1 += (x1 * (y1 - y2)) / (x2 - x1);
+	x1 = 0;
+     }
+   if (x2 < 0)
+     {
+	y2 += (x2 * (y1 - y2)) / (x2 - x1);
+	x2 = 0;
+     }
+   /* clip to bottom edge */   
+   if ((x1 >= im->w) && (x2 >= im->w))
+      return NULL;
+   if (x1 >= im->w)
+     {
+	y1 -= ((im->w - x1) * (y1 - y2)) / (x2 - x1);
+	x1 = im->w - 1;
+     }
+   if (y2 >= im->w)
+     {
+	y2 -= ((im->w - x2) * (y1 - y2)) / (x2 - x1);
+	x2 = im->w - 1;
+     }
+   dx = x2 - x1;
+   dy = y2 - y1;
+   if (x1 > x2)
+     {
+	int tmp;
+	
+	tmp = x1; x1 = x2; x2 = tmp;
+	tmp = y1; y1 = y2; y2 = tmp;
+	dx = x2 - x1;
+	dy = y2 - y1;
+     }
+   /* vertical line */
+   if (dx == 0)
+     {
+	if (y1 < y2)
+	  {
+	     p = &(im->data[(im->w * y1) + x1]);
+	     for (y = y1; y <= y2; y++)
+	       {
+		  BLEND(r, g, b, a, *p);
+		  p += im->w;
+	       }
+             return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
+	  }
+	else
+	  {
+	     p = &(im->data[(im->w * y2) + x1]);
+	     for (y = y2; y <= y1; y++)
+	       {
+		  BLEND(r, g, b, a, *p);
+		  p += im->w;
+	       }
+             return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
+	  }
+     }
+   /* horizontal line */
+   if (dy == 0)
+     {
+	if (x1 < x2)
+	  {
+	     p = &(im->data[(im->w * y1) + x1]);
+	     for (x = x1; x <= x2; x++)
+	       {
+		  BLEND(r, g, b, a, *p);
+		  p++;
+	       }
+             return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
+	  }
+	else
+	  {
+	     p = &(im->data[(im->w * y1) + x2]);
+	     for (x = x2; x <= x1; x++)
+	       {
+		  BLEND(r, g, b, a, *p);
+		  p++;
+	       }
+             return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
+	  }
+     }
+   /* 1    */
+   /*  \   */
+   /*   \  */
+   /*    2 */
+   if (y2 > y1)
+     {
+	/* steep */
+	if (dy > dx)
+	  {
+	     dx = ((dx << 16) / dy);
+	     x = x1 << 16;
+	     for (y = y1; y <= y2; y++)
+	       {
+		  xx = x >> 16;
+		  am = 256 - (((x - (xx << 16)) + 1) >> 8);
+		  aaa = (a * am) >> 8;
+		  p = &(im->data[(im->w * y) + xx]);
+		  BLEND(r, g, b, aaa, *p);
+		  if (xx < (im->w - 1))
+		    {
+		       am = 256 - am;
+		       aaa = (a * am) >> 8;
+		       p ++;
+		       BLEND(r, g, b, aaa, *p);
+		    }
+		  x += dx;
+	       }
+	     return __imlib_AddUpdate(NULL, x1, y1, 
+				      (x2 - x1 + 1), (y2 - y1 + 1));
+	  }
+	/* shallow */
+	else
+	  {
+	     dy = ((dy << 16) / dx);
+	     y = y1 << 16;
+	     for (x = x1; x <= x2; x++)
+	       {
+		  yy = y >> 16;
+		  am = 256 - (((y - (yy << 16)) + 1) >> 8);
+		  aaa = (a * am) >> 8;
+		  p = &(im->data[(im->w * yy) + x]);
+		  BLEND(r, g, b, aaa, *p);
+		  if (yy < (im->h - 1))
+		    {
+		       am = 256 - am;
+		       aaa = (a * am) >> 8;
+		       p += im->w;
+		       BLEND(r, g, b, aaa, *p);
+		    }
+		  y += dy;
+	       }
+	     return __imlib_AddUpdate(NULL, x1, y1, 
+				      (x2 - x1 + 1), (y2 - y1 + 1));
+	  }
+     }
+   /*    2 */
+   /*   /  */
+   /*  /   */
+   /* 1    */
+   else
+     {
+	/* steep */
+	if (-dy > dx)
+	  {
+	     dx = ((dx << 16) / -dy);
+	     x = (x1 + 1) << 16;
+	     for (y = y1; y >= y2; y--)
+	       {
+		  xx = x >> 16;
+		  am = (((x - (xx << 16)) + 1) >> 8);
+		  aaa = (a * am) >> 8;
+		  p = &(im->data[(im->w * y) + xx]);
+		  BLEND(r, g, b, aaa, *p);
+		  if (xx < (im->w - 1))
+		    {
+		       am = 256 - am;
+		       aaa = (a * am) >> 8;
+		       p--;
+		       BLEND(r, g, b, aaa, *p);
+		    }
+		  x += dx;
+	       }
+	     return __imlib_AddUpdate(NULL, x1, y2, 
+				      (x2 - x1 + 1), (y1 - y2 + 1));
+	  }
+	/* shallow */
+	else
+	  {
+	     dy = ((dy << 16) / dx);
+	     y = y1 << 16;
+	     for (x = x1; x <= x2; x++)
+	       {
+		  yy = y >> 16;
+		  am = 256 - (((y - (yy << 16)) + 1) >> 8);
+		  aaa = (a * am) >> 8;
+		  p = &(im->data[(im->w * yy) + x]);
+		  BLEND(r, g, b, aaa, *p);
+		  if (yy < (im->h - 1))
+		    {
+		       am = 256 - am;
+		       aaa = (a * am) >> 8;
+		       p += im->w;
+		       BLEND(r, g, b, aaa, *p);
+		    }
+		  y += dy;
+	       }
+	     return __imlib_AddUpdate(NULL, x1, y2, 
+				      (x2 - x1 + 1), (y1 - y2 + 1));
+	  }
+     }
+   return NULL;
+}
