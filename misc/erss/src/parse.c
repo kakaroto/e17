@@ -15,26 +15,31 @@ char *get_element (char **buffer, char *type)
 	char *ret_val = NULL;
 	int size;
 
-	if (!buffer || !*buffer || !type)
+	if (!buffer || !*buffer || !**buffer || !type)
 		goto err_clean_none;
 
+	/* Allocate string plus enough to add in "</>". */
 	size = strlen (type) + 4;
 	c = malloc (size);
 	if (!c)
 		goto err_clean_none;
 
-	snprintf (c, size, "<%s>", type);
+	/* Locate the opening tag of the type we're looking for. */
+	snprintf (c, size, "<%s", type);
 	start_tmp = strstr (*buffer, c);
 	if (!start_tmp)
 		goto err_clean_c;
 
+	/* Move to the end of the found opening tag. */
 	start_tmp += size - 2;
 
+	/* Locate the closing tag of the specified type. */
 	snprintf (c, size, "</%s>", type);
 	end_tmp = strstr (start_tmp, c);
 	if (!end_tmp)
 		goto err_clean_c;
 
+	/* Copy the data between the tags into a newly allocated buffer. */
 	tmp_char = *end_tmp;
 	*end_tmp = '\0';
 	ret_val = strdup (start_tmp);
@@ -42,6 +47,8 @@ char *get_element (char **buffer, char *type)
 	if (!ret_val)
 		goto err_clean_c;
 
+	/* We were incrementing the buffer past the found tags, may want to do
+	 * this, but we must have a writable string passed in. */
 	/* *buffer = end_tmp + size - 1; */
 
   err_clean_c:
@@ -144,8 +151,7 @@ void parse_data (char *buf)
 		 * We have a new story, allocate an item for it
 		 */
 		item = malloc (sizeof (Article));
-		item->description = NULL;
-		item->url = NULL;
+		memset(item, 0, sizeof(Article));
 
 		return;
 	}
@@ -177,7 +183,7 @@ void parse_data (char *buf)
 		item->obj = edje_object_add (evas);
 		edje_object_file_set (item->obj, cfg->theme, "erss_item");
 		evas_object_show (item->obj);
-		
+
 		evas_object_event_callback_add (item->obj,
 				EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, NULL);
 		evas_object_event_callback_add (item->obj,

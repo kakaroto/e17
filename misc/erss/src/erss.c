@@ -5,16 +5,16 @@ int erss_connect (void *data);
 char *time_format ();
 int set_time (void *data);
 
-Evas *evas;
-Ecore_Evas *ee;
-Ecore_Con_Server *server;
-Evas_Object *bg;
-Evas_Object *cont;
-Evas_Object *tid;
+Evas *evas = NULL;
+Ecore_Evas *ee = NULL;
+Ecore_Con_Server *server = NULL;
+Evas_Object *bg = NULL;
+Evas_Object *cont = NULL;
+Evas_Object *tid = NULL;
 Ewd_List *config_files = NULL;
 
-char *main_buffer;
-char *last_time;
+char *main_buffer = NULL;
+char *last_time = NULL;
 
 int main_bufsize = 0;
 int waiting_for_reply = FALSE;
@@ -77,7 +77,7 @@ char *time_format ()
 	curtime = time(NULL);
 	ts = localtime(&curtime);
 
-	str = malloc (50);
+	str = malloc (21);
 	
 	if (ts->tm_hour < 10 && ts->tm_min < 10 && ts->tm_sec < 10)
 		snprintf (str, 20, "0%d:0%d:0%d", 
@@ -384,7 +384,7 @@ void list_config_files (int output)
 			no_dir = TRUE;
 		} else {
 			if (S_ISDIR(statbuf.st_mode)) {
-		
+
 				if ((num = scandir(ptr, &dentries, 0, erss_alphasort)) < 0) 
 					perror("erss - scandir");
 
