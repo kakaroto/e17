@@ -15,6 +15,93 @@ __destroy_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 }
 
 void
+__toggle_child_fill_policy(Ewl_Widget * w, void * ev_data, void * user_data)
+{
+	Ewl_Fill_Policy f;
+
+	f = ewl_object_get_fill_policy(EWL_OBJECT(w));
+
+	if (f == EWL_FILL_POLICY_NORMAL)
+	  {
+		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
+		ewl_object_set_custom_size(EWL_OBJECT(w), 0, 0);
+		ewl_widget_configure(w->parent);
+		ewl_button_set_label(w, "Fill");
+	  }
+	else
+	  {
+		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NORMAL);
+		ewl_object_set_custom_size(EWL_OBJECT(w), 100, 17);
+		ewl_widget_configure(w->parent);
+		ewl_button_set_label(w, "Normal");
+	  }
+}
+
+void
+__toggle_child_horizontal_align(Ewl_Widget * w, void * ev_data,void * user_data)
+{
+	Ewl_Alignment a;
+	char l[10];
+
+	a = ewl_object_get_alignment(EWL_OBJECT(w));
+
+	if (a == EWL_ALIGNMENT_LEFT)
+	  {
+		a = EWL_ALIGNMENT_CENTER;
+		snprintf(l, 10, "Center");
+	  }
+	else if (a == EWL_ALIGNMENT_CENTER)
+	  {
+		a = EWL_ALIGNMENT_RIGHT;
+		snprintf(l, 10, "Right");
+	  }
+	else if (a == EWL_ALIGNMENT_RIGHT)
+	  {
+		a = EWL_ALIGNMENT_LEFT;
+		snprintf(l, 10, "Left");
+	  }
+
+	ewl_button_set_label(w, l);
+
+	ewl_object_set_alignment(EWL_OBJECT(w), a);
+
+	if (w->parent)
+		ewl_widget_configure(w->parent);
+}
+
+void
+__toggle_child_vertical_align(Ewl_Widget * w, void * ev_data,void * user_data)
+{
+        Ewl_Alignment a;
+	char l[10];
+
+        a = ewl_object_get_alignment(EWL_OBJECT(w));
+
+        if (a == EWL_ALIGNMENT_TOP)
+	  {
+                a = EWL_ALIGNMENT_CENTER;
+		snprintf(l, 10, "Center");
+	  }
+        else if (a == EWL_ALIGNMENT_CENTER)
+	  {
+                a = EWL_ALIGNMENT_BOTTOM;
+		snprintf(l, 10, "Bottom");
+	  }
+        else if (a == EWL_ALIGNMENT_BOTTOM)
+	  {
+                a = EWL_ALIGNMENT_TOP;
+		snprintf(l, 10, "Top");
+	  }
+
+	ewl_button_set_label(w, l);
+
+        ewl_object_set_alignment(EWL_OBJECT(w), a);
+
+        if (w->parent)
+                ewl_widget_configure(w->parent);
+}
+
+void
 __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 {
 	Ewl_Widget * box_win;
@@ -51,6 +138,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	ewl_object_set_custom_size(vbox_button[0][0], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][0]),
 			EWL_ALIGNMENT_LEFT);
+        ewl_callback_append(vbox_button[0][0], EWL_CALLBACK_CLICKED,
+                        __toggle_child_horizontal_align, NULL);
 	ewl_widget_show(vbox_button[0][0]);
 
         vbox_button[0][1] = ewl_button_new("Center");
@@ -58,6 +147,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	ewl_object_set_custom_size(vbox_button[0][1], 100, 17);
         ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][1]),
 			EWL_ALIGNMENT_CENTER);
+        ewl_callback_append(vbox_button[0][1], EWL_CALLBACK_CLICKED,
+                        __toggle_child_horizontal_align, NULL);
         ewl_widget_show(vbox_button[0][1]);
 
         vbox_button[0][2] = ewl_button_new("Right");
@@ -65,6 +156,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	ewl_object_set_custom_size(vbox_button[0][2], 100, 17);
         ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][2]),
 			EWL_ALIGNMENT_RIGHT);
+        ewl_callback_append(vbox_button[0][2], EWL_CALLBACK_CLICKED,
+                        __toggle_child_horizontal_align, NULL);
         ewl_widget_show(vbox_button[0][2]);
 
 	/****************************************************************/
@@ -78,12 +171,18 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(vbox_button[1][0], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][0]),
 			EWL_FILL_POLICY_NORMAL);
+/*	ewl_callback_append(vbox_button[1][0], EWL_CALLBACK_CLICKED,
+			__toggle_child_fill_policy, NULL);
+	FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(vbox_button[1][0]);
 
         vbox_button[1][1] = ewl_button_new("Fill");
         ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][1]);
         ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][1]),
 			EWL_FILL_POLICY_FILL);
+/*	ewl_callback_append(vbox_button[1][1], EWL_CALLBACK_CLICKED,
+                        __toggle_child_fill_policy, NULL);
+	FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(vbox_button[1][1]);
 
         vbox_button[1][2] = ewl_button_new("Normal");
@@ -91,6 +190,9 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(vbox_button[1][2], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][2]),
 			EWL_FILL_POLICY_NORMAL);
+/*	ewl_callback_append(vbox_button[1][2], EWL_CALLBACK_CLICKED,
+		__toggle_child_fill_policy, NULL);
+	FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(vbox_button[1][2]);
 
 	/****************************************************************/
@@ -104,6 +206,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[0][0], 100, 17);
         ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][0]),
 			EWL_ALIGNMENT_TOP);
+        ewl_callback_append(hbox_button[0][0], EWL_CALLBACK_CLICKED,
+                        __toggle_child_vertical_align, NULL);
         ewl_widget_show(hbox_button[0][0]);
 
         hbox_button[0][1] = ewl_button_new("Center");
@@ -111,6 +215,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[0][1], 100, 17);
         ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][1]),
 			EWL_ALIGNMENT_CENTER);
+        ewl_callback_append(hbox_button[0][1], EWL_CALLBACK_CLICKED,
+                        __toggle_child_vertical_align, NULL);
         ewl_widget_show(hbox_button[0][1]);
 
         hbox_button[0][2] = ewl_button_new("Bottom");
@@ -118,6 +224,8 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[0][2], 100, 17);
         ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][2]),
 			EWL_ALIGNMENT_BOTTOM);
+        ewl_callback_append(hbox_button[0][2], EWL_CALLBACK_CLICKED,
+                        __toggle_child_vertical_align, NULL);
         ewl_widget_show(hbox_button[0][2]);
 
 	/****************************************************************/
@@ -131,12 +239,18 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[1][0], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][0]),
 			EWL_FILL_POLICY_NORMAL);
+/*      ewl_callback_append(hbox_button[1][0], EWL_CALLBACK_CLICKED,
+                        __toggle_child_fill_policy, NULL);
+        FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(hbox_button[1][0]);
 
         hbox_button[1][1] = ewl_button_new("Fill");
         ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
         ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][1]),
 			EWL_FILL_POLICY_FILL);
+/*      ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
+                        __toggle_child_fill_policy, NULL);
+        FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(hbox_button[1][1]);
 
         hbox_button[1][2] = ewl_button_new("Normal");
@@ -144,6 +258,9 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_object_set_custom_size(hbox_button[1][2], 100, 17);
         ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][2]),
 			EWL_FILL_POLICY_NORMAL);
+/*      ewl_callback_append(hbox_button[1][2], EWL_CALLBACK_CLICKED,
+                        __toggle_child_fill_policy, NULL);
+        FIXME etox is broken atm, we can use this when its fixed. */
         ewl_widget_show(hbox_button[1][2]);
 
 	box_win_realized = 1;

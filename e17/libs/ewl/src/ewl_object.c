@@ -255,3 +255,20 @@ ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 
 	o->fill = fill;
 }
+
+inline Ewl_Alignment
+ewl_object_get_alignment(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	return o->align;
+
+}
+
+inline Ewl_Fill_Policy
+ewl_object_get_fill_policy(Ewl_Object * o)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	return o->fill;
+}

@@ -516,7 +516,7 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 		  yp = (int) ewl_widget_get_data(c, "/y_padding");
 
 		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < REQUEST_W(w) - ll - rr)
-			  REQUEST_W(c) = MAXIMUM_W(w);
+			  REQUEST_W(c) = MAXIMUM_W(c);
 		  else
 			  REQUEST_W(c) = REQUEST_W(w) - ll - rr - xp;
 
@@ -545,7 +545,7 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
-	y = REQUEST_Y(w) + t;
+	y = REQUEST_Y(w) + t - box->spacing;
 
 	if (!EWL_CONTAINER(w)->children ||
 		ewd_list_is_empty(EWL_CONTAINER(w)->children))
@@ -569,11 +569,11 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
                     {
                             REQUEST_X(c) = REQUEST_X(w) + xp;
                             REQUEST_X(c) += (REQUEST_W(w) / 2) -
-			    			(REQUEST_W(c)) / 2;
+			    			(REQUEST_W(c) / 2);
                     }
 
 		  REQUEST_Y(c) = y + box->spacing + yp;
-		  y += REQUEST_H(c)  + box->spacing + yp;
+		  y += REQUEST_H(c) + box->spacing + yp;
 
 		  ewl_widget_configure(c);
 	  }
@@ -776,7 +776,7 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
-	x = REQUEST_X(w) + l;
+	x = REQUEST_X(w) + l - box->spacing;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 

@@ -62,6 +62,9 @@ int ewl_object_get_layer(Ewl_Object * o);
 inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
 inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill);
 
+inline Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);
+inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
+
 #define CURRENT_X(o) EWL_OBJECT(o)->current.x
 #define CURRENT_Y(o) EWL_OBJECT(o)->current.y
 #define CURRENT_W(o) EWL_OBJECT(o)->current.w

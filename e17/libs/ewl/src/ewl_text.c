@@ -216,7 +216,11 @@ ewl_text_set_text(Ewl_Widget * w, const char *text)
 		t->text = strdup(text);
 
 	if (t->tox)
+	  {
+		etox_resize(t->tox, START_W, START_H);
 		etox_set_text(t->tox, ET_TEXT(t->text), ET_END);
+		ewl_widget_configure(w);
+	  }
 
 	IF_FREE(ot);
 

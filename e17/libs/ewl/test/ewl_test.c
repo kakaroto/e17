@@ -33,7 +33,7 @@ main(int argc, char ** argv)
 		"The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 		__close_main_widow, NULL);
-	ewl_window_resize(main_win, 276, 225);
+	ewl_window_resize(main_win, 275, 79);
 	ewl_widget_show(main_win);
 
 	main_hbox = ewl_hbox_new();

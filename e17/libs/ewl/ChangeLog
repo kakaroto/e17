@@ -1,7 +1,15 @@
+Tue Aug  21 02:18:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Some more typos fixed in the box code
+	* Extended the box test program to be able to change child alignments
+	  dynamically.
+	* Added Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o)
+	  and Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o)
+	  to be able to query the alignment & fill_policy
+
 Mon Aug  20 23:05:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed _LOTS_ of typos in the box widget whiched caused very odd
 	  behaviour.
-	* Also started writing a test program, the Ewl_Box widget test is the
+	* Started writing a test program, the Ewl_Box widget test is the
 	  only one implemented right now.
 
 Mon Aug  20 17:26:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>

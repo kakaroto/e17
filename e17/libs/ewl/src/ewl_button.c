@@ -134,8 +134,6 @@ ewl_button_set_label(Ewl_Widget * w, const char *l)
 		__ewl_button_update_label(w);
 	}
 
-	ewl_widget_configure(w);
-
 	DLEAVE_FUNCTION;
 }
 
@@ -500,33 +498,29 @@ __ewl_button_update_label(Ewl_Widget * w)
 					   b->label_object);
 	}
 
-	if (REALIZED(w))
-		ewl_widget_realize(b->label_object);
-
-	if (VISIBLE(w))
-		ewl_widget_show(b->label_object);
-
-
 	/*
 	 * Retrieve theme information
 	 */
 	tmp =
 	    ewl_theme_data_get(w, "/appearance/button/default/text/font");
 
-	if (tmp) {
+	if (tmp)
 		ewl_text_set_font(b->label_object, tmp);
-		FREE(tmp);
-	}
 
 	tmp =
 	    ewl_theme_data_get(w,
 			       "/appearance/button/default/text/font_size");
 
-	/*
-	 * Apply theme info to the text
-	 */
-	ewl_text_set_font_size(b->label_object, (int) (tmp));
+	if (tmp)
+		ewl_text_set_font_size(b->label_object, (int) (tmp));
+
 	ewl_text_set_text(b->label_object, b->label);
+
+        if (REALIZED(w))
+                ewl_widget_realize(b->label_object);
+
+        if (VISIBLE(w))
+                ewl_widget_show(b->label_object);
 
 	DLEAVE_FUNCTION;
 }
@@ -545,8 +539,8 @@ __ewl_button_remove_label(Ewl_Widget * w)
 		DRETURN;
 
 	if (b->label_object) {
-		ewd_list_goto_first(EWL_CONTAINER(w)->children);
-		ewd_list_remove(EWL_CONTAINER(w)->children);
+		if (ewd_list_goto(EWL_CONTAINER(w)->children, b->label_object))
+			ewd_list_remove(EWL_CONTAINER(w)->children);
 		ewl_widget_destroy(b->label_object);
 	}
 
