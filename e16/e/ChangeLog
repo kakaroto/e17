@@ -1969,3 +1969,26 @@ Fix mem leak and possible segv introduced last time.
 
 Create ENL_MSG atom early (as was probably intended), fixes problem with
 receiving client messages with message_type None (+ cleanups).
+
+-------------------------------------------------------------------------------
+
+Sat Jul 12 07:31:04 CEST 2003
+(Kim)
+
+Enable showing window layer using eesh (patch from BAM <solnul@gmx.de>).
+
+kde.c cleanups: Remove some unused functions, make local functions static.
+
+Minor tooltip thingy (preparing to enable avoiding (un)mapping of unused bubbles).
+
+Remove some obsolete stuff doing nothing (mode.showicons, ShowIcons, HideIcons,
+HandlePager, external_pager_window).
+
+Bring back the maintenance menu.
+
+config.c cosmetics: Make local functions static.
+
+events.c cosmetics: Make local functions static.
+
+ewmh.c: Shut up indent.
+
