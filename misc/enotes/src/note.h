@@ -53,6 +53,7 @@ typedef struct _note {
 	Evas_Object    *eo;
 	Ewl_Widget     *emb;
 	Ewl_Widget     *content;
+	Ewl_Widget     *pane;
 
 	Ewl_Row        *saveload_row;
 

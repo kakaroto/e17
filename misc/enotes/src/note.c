@@ -217,11 +217,16 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	evas_object_focus_set(p->eo, TRUE);
 	ewl_embed_focus_set((Ewl_Embed *) p->emb, TRUE);
 
+	p->pane=ewl_scrollpane_new();
+	ewl_container_child_append((Ewl_Container*)p->emb,p->pane);
+	ewl_widget_show(p->pane);
+
 	p->content = ewl_text_new(fcontent);
-	ewl_container_child_append((Ewl_Container *) p->emb, p->content);
+	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
 	ewl_object_fill_policy_set((Ewl_Object *) p->content, EWL_FLAG_FILL_FILL);
 	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
-                            p->content);
+                            p->pane);
+	
 	ewl_widget_show(p->content);
 
 	/* Ecore Callbacks */
