@@ -656,7 +656,10 @@ SetupDefaults(void)
   int i;
 
   for (i=0; i<(int)(sizeof(defaults)/sizeof(ConfigItem)); i++)
-    Epplet_modify_config(defaults[i].key, defaults[i].value);
+    {
+      if (!Epplet_query_config(defaults[i].key))
+	Epplet_modify_config(defaults[i].key, defaults[i].value);
+    }
 }
 
 
