@@ -172,4 +172,11 @@ overlay_y = 5
 # which give a mirrored image when used with the pwc module.
 # flip_horizontal = 1
 # flip_vertical = 1
+#
+# Change the orientation of the image.
+# Useful if your camera is on its side (for whatever reason).
+# 1 rotates clockwise by 90 degrees, 2, rotates clockwise by 180 degrees, 
+# 3 rotates clockwise by 270 degrees.
+# orientation = 1;
+
 

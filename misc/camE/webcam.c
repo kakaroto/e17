@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 #include <stdarg.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -21,6 +22,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/select.h>
 #include <signal.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
@@ -66,7 +68,7 @@ char *grab_infofile = NULL;
 char *logfile = NULL;
 int grab_width = 320;
 int grab_height = 240;
-int grab_delay = 3;
+float grab_delay = 3.0;
 int grab_quality = 75;
 int lag_reduce = 5;
 int scp_timeout = 30;
@@ -142,6 +144,7 @@ int delay_correct = 0;
 int reinit_device = 0;
 int flip_horizontal = 0;
 int flip_vertical = 0;
+int orientation = 0;
 
 int connections = 0;
 CURL *curl_handle = NULL;
@@ -166,6 +169,44 @@ void alarm_handler(int sig);
 int save_image(Imlib_Image image,
                char *file);
 
+
+struct timeval add_timevals( struct timeval t1, struct timeval t2 )
+{
+  struct timeval tr;
+  tr.tv_usec = t1.tv_usec + t2.tv_usec;
+  tr.tv_sec = t1.tv_sec + t2.tv_sec + tr.tv_usec/1000000;
+  tr.tv_usec = tr.tv_usec%1000000;
+  return tr;
+}
+
+struct timeval sub_timevals( struct timeval t1, struct timeval t2 )
+{
+  struct timeval tr;
+  tr.tv_usec = t1.tv_usec - t2.tv_usec;
+  tr.tv_sec = t1.tv_sec - t2.tv_sec + t1.tv_usec/1000000;
+  while( tr.tv_usec<0 ){
+    tr.tv_sec-=1;
+    tr.tv_usec+=1000000;
+  }
+  return tr;
+}
+
+float float_timeval( struct timeval t )
+{
+  float f = 1e-6 * t.tv_usec;
+  f += t.tv_sec;
+  return f;
+}
+
+struct timeval timeval_float( float f )
+{
+  struct timeval tr;
+  tr.tv_sec = (time_t) floor(f);
+  f -= tr.tv_sec;
+  tr.tv_usec = (suseconds_t) round(1e6*f);
+  return tr;
+}
+
 void
 close_device()
 {
@@ -187,12 +228,12 @@ try_palette(int fd,
   cam_pic.palette = pal;
   cam_pic.depth = depth;
   if (ioctl(fd, VIDIOCSPICT, &cam_pic) < 0)
-    return FALSE;
+    return 0;
   if (ioctl(fd, VIDIOCGPICT, &cam_pic) < 0)
-    return FALSE;
+    return 0;
   if (cam_pic.palette == pal)
-    return TRUE;
-  return FALSE;
+    return 1;
+  return 0;
 }
 
 int
@@ -321,7 +362,7 @@ grab_init()
   grab_size = vid_mbuf.size;
   grab_data =
     mmap(0, grab_size, PROT_READ | PROT_WRITE, MAP_SHARED, grab_fd, 0);
-  if ((grab_data == NULL) || (-1 == (int) grab_data)) {
+  if ((grab_data == NULL) || (MAP_FAILED == grab_data)) {
     fprintf(stderr,
             "couldn't mmap vidcam. your card doesn't support that?\n");
     exit(1);
@@ -852,12 +893,9 @@ draw_overlay(Imlib_Image image)
 };
 
 void
-bw_res_change(int diff)
+bw_res_change(struct timeval diff)
 {
   int temp = 0;
-
-  if (!diff)
-    return;
 
   if (v_curr == -1) {
 
@@ -876,7 +914,7 @@ bw_res_change(int diff)
     }
   }
 
-  if (diff > (grab_delay * bw_percent) / 100) {
+  if (float_timeval(diff) > (grab_delay * bw_percent) / 100) {
     camlog("bw_res_change Not enough bandwidth.\n");
     if (v_force < -1 && v_curr > 0) {
       camlog("bw_res_change Reducing image resolution.\n");
@@ -884,7 +922,7 @@ bw_res_change(int diff)
       grab_buf.width = v_width[v_curr];
     }
     v_force--;
-  } else if (diff < (grab_delay * bw_percent) / 200) {
+  } else if (float_timeval(diff) < (grab_delay * bw_percent) / 200) {
     if (v_force > 1 && v_curr < 5) {
       camlog("bw_res_change Increasing image resolution.\n");
       grab_buf.height = v_height[++v_curr];
@@ -1181,10 +1219,11 @@ main(int argc,
   int width, height, i;
   struct stat st;
   pid_t childpid;
-  time_t start_shot;
-  time_t end_shot;
+  float f;
+  struct timeval start_shot;
+  struct timeval end_shot;
+  struct timeval new_delay;
   int just_shot = 0, upload_successful = 1;
-  int new_delay;
   FILE *fp;
   int ch;
   int dont_fork = 0;
@@ -1338,8 +1377,8 @@ main(int argc,
     grab_width = i;
   if (-1 != (i = cfg_get_int("grab", "height")))
     grab_height = i;
-  if (-1 != (i = cfg_get_int("grab", "delay")))
-    grab_delay = i;
+  if (-1 != (f = cfg_get_float("grab", "delay")))
+    grab_delay = f;
   if (-1 != (i = cfg_get_int("grab", "correct")))
     delay_correct = 1;
   if (-1 != (i = cfg_get_int("grab", "percent")))
@@ -1428,6 +1467,8 @@ main(int argc,
     flip_horizontal = 1;
   if (-1 != (i = cfg_get_int("grab", "flip_vertical")))
     flip_vertical = 1;
+  if (-1 != (i = cfg_get_int("grab", "orientation")))
+    orientation = i;
 
   if (cam_framerate > 60)
     cam_framerate = 60;
@@ -1483,13 +1524,15 @@ main(int argc,
   do {
     just_shot = 0;
     upload_successful = 1;
-    end_shot = 0;
-    start_shot = 0;
+    end_shot.tv_sec = 0;
+    end_shot.tv_usec = 0;
+    start_shot.tv_sec = 0;
+    start_shot.tv_usec = 0;
 
     if (((grab_blockfile && (stat(grab_blockfile, &st) == -1))
          || !grab_blockfile) && check_interface(watch_interface)) {
       offline_done = 0;
-      time(&start_shot);
+      gettimeofday(&start_shot, 0);
       if (action_pre_shot) {
         camlog("running pre-shot action\n");
         system(action_pre_shot);
@@ -1518,6 +1561,11 @@ main(int argc,
         gib_imlib_free_image_and_decache(image);
         image = tmp_image;
         imlib_context_set_image(image);
+	
+	/* Set new values for width and height, else the image's 
+	   text might not show up in the correct position. */
+	width = crop_width;
+	height = crop_height;
       }
 
       if (scale) {
@@ -1552,6 +1600,17 @@ main(int argc,
         imlib_image_flip_vertical();
       }
       
+      if (orientation && orientation > 0 && orientation < 4) {
+        imlib_image_orientate(orientation);
+	/* Changing orientation flips width and height, so we must swap them. */
+	int swap_dimensions;
+	if(orientation == 1 || orientation == 3) {
+	  swap_dimensions = height;
+	  height = width;
+	  width = swap_dimensions;
+	}
+      }
+      
       if (overlay_im)
         draw_overlay(image);
       add_time_text(image, get_message(), width, height);
@@ -1561,7 +1620,7 @@ main(int argc,
       gib_imlib_free_image_and_decache(image);
       upload_successful = do_upload(temp_file);
       just_shot = 1;
-      time(&end_shot);
+      gettimeofday(&end_shot,0);
     } else if (offline_image && !offline_done
                && ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
                    || !upload_blockfile) && check_interface(watch_interface)) {
@@ -1572,22 +1631,24 @@ main(int argc,
     }
 
     if (!single_shot) {
-      new_delay = grab_delay;
+      new_delay = timeval_float(grab_delay);
       if (just_shot && upload_successful) {
-        end_shot = end_shot - start_shot;
+        end_shot = sub_timevals(end_shot, start_shot);
         if (bw_percent < 100)
           bw_res_change(end_shot);
-        if (delay_correct && end_shot) {
-          new_delay -= end_shot;
-          if (new_delay < 0)
-            new_delay = 0;
+        if (delay_correct) {
+          new_delay = sub_timevals(new_delay, end_shot);
+          if (float_timeval(new_delay) < 0) {
+            new_delay.tv_sec = 0;
+            new_delay.tv_usec = 0;
+          }
           camlog("Sleeping %d secs (corrected)\n", new_delay);
         } else {
           camlog("Sleeping %d secs\n", grab_delay);
         }
       }
-      if (upload_successful && (new_delay > 0))
-        sleep(new_delay);
+      if (upload_successful && (float_timeval(new_delay) > 0))
+        select( 0, 0, 0, 0, &new_delay );
     }
   } while(!single_shot);
   return 0;

@@ -27,3 +27,9 @@ Abel Muiño <abel.muinho@mundo-r.com>
 
 Nathan Poznick <poznick@conwaycorp.net>
       upload_every option
+
+James Nichols <webmaster@digitalthunder.net>
+      TRUE/FALSE issues, cropping text bugfix and orientation option
+
+Leon Barrett <lrbarret@artsci.wustl.edu>
+      make grab_delay a float and therefore more granular, log fixes
