@@ -260,6 +260,8 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	gtk_widget_hide(area);
 	LoadImage(imagefile);
 	imlib_context_set_image(im);
+	DrawChecks(imgw, imgh);
+	imlib_context_set_image(im);
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
 	printf("%d - %d\n", imgw, imgh);
@@ -391,6 +393,8 @@ gboolean a_config(GtkWidget *widget,
    imlib_context_set_colormap(cm);
 	
 	if(im){
+		imlib_context_set_image(im);
+		DrawChecks(imgw, imgh);
 		imlib_context_set_image(im);
 	}
 	
