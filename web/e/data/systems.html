@@ -1,6 +1,5 @@
 @top@
 @start@
-<p class="contenttitle">THIS PAGE IS BEING WRITTEN - NOT FINISHED!</p>
 <p class="contenttitle">Enlightenment's Core Systems</p>
 <br>
 
@@ -178,11 +177,156 @@ may provide to let the script interface with the system, and this is the same
 danger inherent in ALL systems. The advantage is that the programmer doesn't
 need to worry about problems outside of this.
 </p><p>
+As an example of what an embryo script would look like, here is a simple
+recursive program with some basic programming constructs and operations:
+</p><p>
+<div class=fragment>
+<pre>
+/* this is exported by the embryo test program so you can output results */
+native printf(format[], ...);
+
+/* in a stand-alone embryo script this is the function that is always called */
+/* first, otherwise it may work like a library where a caller program may */
+/* call specific functions */
+main()
+{
+  new Float:value = randf();
+  
+  if (value > 0.5)
+    {
+       new i;
+       
+       for (i = 0; i < 20; i++)
+         {
+	    printf("value = %f, i = %i\n", value, i);
+	 }
+    }
+  else
+    {
+       new val;
+       
+       val = recurse(3);
+       printf("val = %i\n", val);
+    }
+}
+
+recurse(val)
+{
+   printf("recurse... val = %i\n", val);
+   if (val >= 10) return val;
+   return recurse(val + 1);
+}
+</pre>
+</div>
+</p><p>
+Embryo provides a full Turing-complete and minimal implementation of the
+Small programming language (compiler and virtual machine). It is not intended
+to be a new programing language to write applications in (like Java, .NET/C#,
+Perl, Python etc.), but to be able to augment the core logic of an existing
+application with scripted code fragments to tie logic together in a
+customisable way.
+</p><p>
 <img src=img/sys_eet.png width=318 height=100>
 </p><p>
+Eet is a small and very useful library that does 2 things. It acts as a
+miniature "ZIP FILE" library. It doesn't handle ZIP format files as the ZIP
+format is more complex than is needed, but it does a similar thing where it
+can store multiple "files" within 1 compressed archive file AND randomly
+access every "file" within the archive very quickly, and decompress for you.
+This library can create such files and access them very efficiently. It can
+ALSO encode data within such files. It can save image pixel data in various
+formats as well as encode and decode C structs in memory so it is easy to
+store data and retrieve it as all that is needed is to feed in the pointer to
+a C struct in memory to save, and the reverse to load. It makes storage and
+retrieval of data structures in memory becomes an easy process. It can also
+simply serialize this data for transmission across a network too. Eet is a
+big time-saver and is the workhorse underneath Edje for doing the data
+storage it needs.
 </p><p>
 <img src=img/sys_emotion.png width=318 height=100>
 </p><p>
+<a href=img/sys_emotion_shot1.png><img src=img/sys_emotion_shot1_thm.png width=256 height=205 class=sshot align=left alt="Emotion Test program" hspace=16 vspace=16 border=0></a>
+</p><p>
+Emotion is the one of the newest libraries, but it shows the strength of what
+it is built on by its rapid development. Emotion is a video & media object
+library designed to interface with Evas and Ecore to provide autonomous
+"video" and "audio" objects that can be moved, resized and positioned like any
+normal object, but instead they can play video and audio and can be
+controlled from a high-level control API allowing the programmer to quickly
+piece together a multi-media system with minimal work. Emotion provides a
+modular decoder layer system where a decoder module can be plugged in
+separately to provide decoding resources for Emotion. Emotion currently has 1
+decoder module that uses <a href=http://www.xinehq.de>XINE</a> as the
+decoder, allowing it to play DVD's, MPEG's, AVI's, MOV's, WMV's and much
+more. Its test program is already a useful DVD player (without a lot of the
+fancy control interface) and can play multiple video streams with
+semi-translucency and more.
+</p><p>
+To show how easy Emotion makes it to put a video file, DVD, VCD or other
+media content within a canvas take a look at the following program. It is a
+complete DVD player (very simple with limited mouse controls over the DVD
+menus, no handling of aspect ratio change etc, but it works). This is all of
+56 lines of C code.
+</p><p>
+<div class=fragment>
+<pre>
+#include <Evas.h>
+#include <Ecore.h>
+#include <Ecore_Evas.h>
+#include <Emotion.h>
+
+Evas_Object *video;
+
+/* if the window manager requests a delete - quit cleanly */
+static void
+canvas_delete_request(Ecore_Evas *ee)
+{
+   ecore_main_loop_quit();
+}
+
+/* if the canvas is resized - resize the video too */
+static void
+canvas_resize(Ecore_Evas *ee)
+{
+   Evas_Coord w, h;
+   
+   evas_output_viewport_get(ecore_evas_get(ee), NULL, NULL, &w, &h);
+   evas_object_move(video, 0, 0);
+   evas_object_resize(video, w, h);
+}
+
+/* the main function of the program */
+int main(int argc, char **argv)
+{
+   Ecore_Evas *ee;
+
+   /* create a canvas, display it, set a title, callbacks to call on resize */
+   /* or if the window manager asks it to be deleted */
+   ecore_evas_init();
+   ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 800, 600);
+   ecore_evas_callback_delete_request_set(ee, canvas_delete_request);
+   ecore_evas_callback_resize_set(ee, canvas_resize);   
+   ecore_evas_title_set(ee, "My DVD Player");
+   ecore_evas_name_class_set(ee, "my_dvd_player", "My_DVD_Player");
+   ecore_evas_show(ee);
+
+   /* create a video object */
+   video = emotion_object_add(ecore_evas_get(ee));
+   emotion_object_file_set(video, "dvd:/");
+   emotion_object_play_set(video, 1);
+   evas_object_show(video);
+
+   /* force an initial resize */
+   canvas_resize(ee);
+   
+   /* run the main loop of the program - playing, drawing, handling events */
+   ecore_main_loop_begin();
+   
+   /* if we exit the main loop we will shut down */
+   ecore_evas_shutdown();
+}
+</pre>
+</div>
 </p><p>
 </p>
 
