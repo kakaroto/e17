@@ -1,3 +1,7 @@
+/**
+@file entrance_auth.c
+@brief Variables and data relating to system authentication
+*/
 #include"entrance_auth.h"
 #include "util.h"
 
@@ -57,7 +61,8 @@ _entrance_auth_pam_conv(int num_msg, const struct pam_message **msg,
 }
 #endif
 
-/* entrance_auth_new
+/**
+ * entrance_auth_new
  * Returns a 0'd out Entrance_Auth Struct
  */
 Entrance_Auth *
@@ -72,7 +77,8 @@ entrance_auth_new(void)
    return (e);
 }
 
-/* entrance_auth_free
+/**
+ * entrance_auth_free
  * @e the Entrance_Auth struct to be freed
  */
 void
@@ -94,7 +100,7 @@ entrance_auth_free(Entrance_Auth * e)
 }
 
 #if HAVE_PAM
-/*
+/**
  * _entrance_auth_pam_initialize - initialize PAM session, structures etc.
  * This function will call pam_start() and set the conversation
  * function and others.
@@ -151,7 +157,7 @@ _entrance_auth_pam_initialize(Entrance_Auth * e)
 #endif
 
 #if HAVE_PAM
-/*
+/**
  * entrance_auth_cmp_pam - attempt to auth the user
  * @e The Entrance_Auth struct to attempt to validate on the system
  * Returns - 0 on success, 1 on error
@@ -238,7 +244,7 @@ entrance_auth_set_pass(Entrance_Auth * e, const char *str)
       snprintf(e->pass, PATH_MAX, "%s", str);
 }
 
-/*
+/**
  * entrance_auth_set_user - set the username in the struct
  * @e - the Entrance_Auth to set the user of
  * @str - a string to set the user to, NULL is fine
@@ -272,7 +278,7 @@ entrance_auth_set_user(Entrance_Auth * e, const char *str)
    return (result);
 }
 
-/*
+/**
  * entrance_auth_setup_environment - setup the users environment
  * @e the Entrance_Auth to setup
  * I'm not sure if this is correct, but for now it works.

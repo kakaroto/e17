@@ -1,10 +1,7 @@
 /**
- * Corey Donohoe <atmos@atmos.org>
- * filename: main.c
- * Project: Entrance
- * July 24, 2003
- * 
- */
+@file main.c
+@brief When entrance starts, and ui specific variables
+*/
 #include <time.h>
 #include <sys/types.h>
 #include <signal.h>

@@ -1,5 +1,9 @@
 #include "entrance.h"
 #include "entrance_config.h"
+/**
+@file entrance_config.c
+@brief System-wide configuration options for various settings in Entrance
+*/
 
 #define REMEMBER_USERS 3
 
@@ -16,6 +20,12 @@ entrance_config_new(void)
    return (e);
 }
 
+/**
+ * entrance_config_populate - populate the Entrance_Config struct with
+ * the data provided by the valid E_DB_File
+ * @param e Valid Entrance_Config struct
+ * @param db a valid E_DB_File handle opened for reading
+ */
 static void
 entrance_config_populate(Entrance_Config * e, E_DB_File * db)
 {
@@ -161,6 +171,11 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
 #endif
 }
 
+/**
+ * entrance_config_parse parse the config file named
+ * @param file the file on disk we should load config opts from
+ * @return a valid Entrance_Config file, or NULL on error
+ */
 Entrance_Config *
 entrance_config_parse(char *file)
 {
@@ -196,6 +211,10 @@ entrance_config_print(Entrance_Config e)
            e->passwd.font.a);
 }*/
 
+/**
+ * entrance_config_free Free up an Entrance_Config struct
+ * @param e A Entrance_Config struct pointer
+ */
 void
 entrance_config_free(Entrance_Config * e)
 {

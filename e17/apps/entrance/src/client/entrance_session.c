@@ -2,6 +2,11 @@
 #include "entrance_session.h"
 #include <X11/Xlib.h>
 #include <Esmart/container.h>
+/**
+@file entrance_session.c
+@brief Variables and Data relating to an instance of the interface
+
+*/
 
 extern void session_item_selected_cb(void *data, Evas_Object * o,
                                      const char *emission,
