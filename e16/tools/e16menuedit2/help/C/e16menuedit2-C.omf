@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="no"?>
+<omf>
+  <resource>
+    <creator>
+     linux@brachttal.net (Andreas Volz)
+    </creator>
+    <title>
+     E16 Menu Editor II - Users Guide
+    </title>
+    <date>
+     2004-08-13
+    </date>
+    <version identifier="0.0.2" date="2004-08-13" description="Second Release"/>
+    <subject category="GNOME|Utilities"/>
+    <description>
+      an Enlightenment 0.16.x menu editor
+    </description>
+    <type>
+     manual
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url=""/>
+    <language code="C"/>
+    <relation seriesid=""/>
+    <rights type="BSD" license.version=""
+      license="" holder="Andreas Volz"/>
+  </resource>
+</omf>

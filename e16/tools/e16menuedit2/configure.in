@@ -25,6 +25,9 @@ dnl Add the languages which your application supports here.
 ALL_LINGUAS="de en ko tr"
 AM_GLIB_GNU_GETTEXT
 
+AC_PATH_PROG(SCROLLKEEPER,scrollkeeper-config,0)
+AM_CONDITIONAL(SK, "$SCROLLKEEPER" 2&>/dev/null != 0)
+
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale","")
@@ -93,5 +96,7 @@ Makefile
 src/Makefile
 pixmaps/Makefile
 po/Makefile.in
+help/Makefile
+help/C/Makefile
 ])
 

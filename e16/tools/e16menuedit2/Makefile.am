@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src po pixmaps
+SUBDIRS = src po pixmaps help
 
 e16menuedit2docdir = ${PACKAGE_DOC_DIR}
 e16menuedit2doc_DATA = \
@@ -23,6 +23,7 @@ INTLTOOL_DIST = intltool-extract.in \
                 intltool-update.in
 
 EXTRA_DIST = $(INTLTOOL_DIST) \
-	     $(GLADE_FILES)
+	     $(GLADE_FILES) \
+             xmldocs.make
 
 
