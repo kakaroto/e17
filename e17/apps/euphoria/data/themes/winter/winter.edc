@@ -1,3 +1,9 @@
+#define WINTER_BLUE 229 239 255 255
+#define WINTER_GREEN 229 255 239 255
+#define WINTER_RED 255 229 229 255
+
+#define WINTER_COLOR WINTER_BLUE
+
 #include "macros/macros.inc"
 #include "macros/toggle.inc"
 

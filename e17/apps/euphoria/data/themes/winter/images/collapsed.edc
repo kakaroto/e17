@@ -1,6 +1,8 @@
   image, "small-main.png" LOSSY 98;
   image, "small-right.png" LOSSY 98;
   image, "small-panel.png" LOSSY 98;
+  image, "small-left-grad.png" LOSSY 98;
+  image, "small-right-grad.png" LOSSY 98;
 
   image, "small-seeker-bar.png" LOSSY 98;
   image, "small-seeker-trough.png" LOSSY 98;

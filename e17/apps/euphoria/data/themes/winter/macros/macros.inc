@@ -132,7 +132,26 @@
 	  state, "over" 0.0;		\
 	  min, W H;			\
 	  max, W H; 			\
-	  color, 255 255 255 255;	\
+	  color, WINTER_COLOR;	\
+	  rel1 {			\
+	    to, REL1_TO;		\
+	    relative, REL1_REL;		\
+	    offset, REL1_OFF;		\
+	  }				\
+	  rel2 {			\
+	    to, REL2_TO;		\
+	    relative, REL2_REL;		\
+	    offset, REL2_OFF;		\
+	  }				\
+	  image {			\
+	    normal, IMG;		\
+	  }				\
+	}				\
+	description {			\
+	  state, "down" 0.0;		\
+	  min, W H;			\
+	  max, W H; 			\
+	  color, WINTER_COLOR;	\
 	  rel1 {			\
 	    to, REL1_TO;		\
 	    relative, REL1_REL;		\
@@ -147,10 +166,14 @@
 	    normal, IMG2;		\
 	  }				\
 	}				\
+      }	                                \
+      part {				\
+        name, NAME"-border";		\
+        mouse_events, 0;                \
 	description {			\
-	  state, "down" 0.0;		\
+	  state, "default" 0.0;		\
 	  min, W H;			\
-	  max, W H; 			\
+	  max, W H;			\
 	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, REL1_TO;		\
@@ -166,7 +189,7 @@
 	    normal, IMG3;		\
 	  }				\
 	}				\
-      }					
+      }         
 
 
 
@@ -181,7 +204,7 @@
         signal, "mouse,in";		\
         source, NAME;			\
         action, STATE_SET "over" 0.0;	\
-        transition, LINEAR, 0.0;	\
+        transition, DECELERATE, 0.25;	\
         target, NAME;			\
       }					\
       program {				\
@@ -189,7 +212,7 @@
         signal, "mouse,out";		\
         source, NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, LINEAR, 0.0;	\
+        transition, DECELERATE, 0.25;	\
         target, NAME;			\
       }					\
       program {				\

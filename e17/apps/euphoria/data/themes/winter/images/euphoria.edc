@@ -1,6 +1,8 @@
     image, "main.png" LOSSY 98;
     image, "screen.png" LOSSY 98;
     image, "bot.png" LOSSY 98;
+    image, "bot_grad.png" LOSSY 98;
+    image, "top_grad.png" LOSSY 98;
     image, "shad.png" LOSSY 98;
     image, "panel.png" LOSSY 98;
     image, "prev1.png" LOSSY 98;
@@ -24,9 +26,11 @@
     image, "vol-dn.png" LOSSY 98;
     image, "vol-dn-over.png" LOSSY 98;
     image, "vol-dn-clicked.png" LOSSY 98;
+    image, "vol-dn-border.png" LOSSY 98;
     image, "vol-up.png" LOSSY 98;
     image, "vol-up-over.png" LOSSY 98;
     image, "vol-up-clicked.png" LOSSY 98;
+    image, "vol-up-border.png" LOSSY 98;
 
     image, "plus1.png" LOSSY 98;
     image, "plus2.png" LOSSY 98;
@@ -37,5 +41,6 @@
 
     image, "seeker_trough.png" LOSSY 98;
     image, "seeker_bar.png" LOSSY 98;
+    image, "seeker_bar_grad.png" LOSSY 98;
 
     image, "dot.png" LOSSY 98;

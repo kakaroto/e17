@@ -19,11 +19,11 @@
 	}
       } //part
 
-BUTTON2("vol-dn", "vol-dn.png", "vol-dn-over.png", "vol-dn-clicked.png",
+BUTTON2("vol-dn", "vol-dn.png", "vol-dn-clicked.png", "vol-dn-border.png",
         11, 16,
         "volumeBox", 0 0, -10 0, 
         "volumeBox", 0 1, 0 -1)
-BUTTON2("vol-up", "vol-up.png", "vol-up-over.png", "vol-up-clicked.png",
+BUTTON2("vol-up", "vol-up.png", "vol-up-clicked.png", "vol-up-border.png",
         11, 16,
         "volumeBox", 1 0, -1 0, 
         "volumeBox", 1 1, 10 -1)
