@@ -480,7 +480,7 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
 
    D_ENTER;
 
-   snprintf(bgname, sizeof(bgname), "%d_FEHBG", num);
+   snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
    
    if (fil == NULL)
    {

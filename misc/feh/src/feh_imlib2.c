@@ -82,14 +82,14 @@ feh_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
    Imlib_Image new_im;
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
-   new_im = imlib_create_rotated_image(angle);
-   imlib_context_set_image(new_im);
-   imlib_context_set_drawable(d);
-   imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
    imlib_context_set_angle(angle);
+   imlib_context_set_drawable(d);
+   new_im = imlib_create_rotated_image(angle);
+   imlib_context_set_image(new_im);
    imlib_render_image_on_drawable(x, y);
+   imlib_free_image();
 }
 
 void

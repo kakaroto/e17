@@ -387,7 +387,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    sw = dw / winwid->zoom;
    sh = dh / winwid->zoom;
 
-   fprintf(stderr,"winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle);
+   D((stderr,"winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if( winwid->im_angle>0.05 || winwid->im_angle<-0.05)
         feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->bg_pmap,
                                                    winwid->im, sx, sy, sw, sh,
