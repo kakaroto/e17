@@ -4,3 +4,4 @@ epplet.lo
 .deps
 Makefile
 Makefile.in
+epplet.h
