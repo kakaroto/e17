@@ -50,8 +50,8 @@ void            ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname,
 					unsigned int modifiers);
 void            ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname,
 				      unsigned int modifiers);
-void            ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x,
-					  int y, unsigned int modifiers);
+void            ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks,
+					  int x, int y, unsigned int modifiers);
 void            ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x,
 					int y, unsigned int modifiers);
 void            ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y,

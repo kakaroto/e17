@@ -325,7 +325,8 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
  */
 int ewl_ev_x_mouse_down(void *data, int type, void *e)
 {
-	Ewl_Embed      *embed;
+	int clicks = 1;
+	Ewl_Embed *embed;
 	Ecore_X_Event_Mouse_Button_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -336,7 +337,12 @@ int ewl_ev_x_mouse_down(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_down(embed, ev->button, ev->x, ev->y,
+	if (ev->double_click)
+		clicks = 2;
+	if (ev->triple_click)
+		clicks = 3;
+
+	ewl_embed_feed_mouse_down(embed, ev->button, clicks, ev->x, ev->y,
 				  key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

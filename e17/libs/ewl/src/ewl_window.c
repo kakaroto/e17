@@ -6,6 +6,7 @@
 
 #ifdef HAVE_EVAS_ENGINE_FB_H
 #include <Ecore_Fb.h>
+#include <Evas_Engine_FB.h>
 #endif
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
@@ -408,9 +409,12 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 	else
 #endif
-#ifdef HAVE_EVAS_ENGINE_FB
+#ifdef HAVE_EVAS_ENGINE_FB_H
 	if (!strcmp(render, "fb")) {
 		Evas_Engine_Info_FB *fbinfo;
+
+		fbinfo = (Evas_Engine_Info_FB *)info;
+
 		fbinfo->info.virtual_terminal = 0;
 		fbinfo->info.device_number = 0;
 		fbinfo->info.refresh = 0;
@@ -438,6 +442,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 #endif
 	else {
+		evas_free(evas);
 		DRETURN(DLEVEL_STABLE);
 	}
 

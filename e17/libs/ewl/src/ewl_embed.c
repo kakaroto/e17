@@ -305,10 +305,9 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
  * @brief Sends the event for a mouse button press into an embed.
  */
 void
-ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
-			  int mods)
+ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
+			  unsigned int mods)
 {
-	int double_click = 0;
 	Ewl_Event_Mouse_Down ev;
 	Ewl_Widget *temp = NULL;
 	Ewl_Widget *widget = NULL;
@@ -331,6 +330,7 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
 	ev.x = x;
 	ev.y = y;
 	ev.button = b;
+	ev.clicks = clicks;
 
 	/*
 	 * While the mouse is down the widget has a pressed state, the widget
@@ -347,7 +347,7 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, &ev);
 
-			if (double_click) {
+			if (ev.clicks > 1) {
 				ewl_callback_call_with_event_data(temp,
 						EWL_CALLBACK_DOUBLE_CLICKED,
 						&ev);
@@ -929,7 +929,7 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = evas_object_smart_data_get(obj);
-	ewl_embed_feed_mouse_down(embed, ev->button, ev->canvas.x,
+	ewl_embed_feed_mouse_down(embed, ev->button, 1, ev->canvas.x,
 				  ev->canvas.y, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
