@@ -38,16 +38,22 @@
 
 #include "E.h"
 
+typedef struct
+{
+   EWin               *ewin;
+   Window              win;
+   char               *txt;
+} WarplistItem;
+
 static void         WarpFocusShowTitle(EWin * ewin);
 static void         WarpFocusHideTitle(void);
 
 static int          warpFocusIndex = 0;
 static char         warpFocusTitleShowing = 0;
 static Window       warpFocusTitleWindow = 0;
-static int          warptitles_num = 0;
-static Window      *warptitles = NULL;
-static EWin       **warptitles_ewin = NULL;
 static unsigned int warpFocusKey = 0;
+static int          warplist_num = 0;
+static WarplistItem *warplist;
 
 int
 WarpFocusHandleEvent(XEvent * ev)
@@ -172,6 +178,7 @@ WarpFocusShowTitle(EWin * ewin)
    char                pq;
    int                 i, x, y, w, h, num, ww, hh;
    static int          mw, mh;
+   char                s[1024];
 
    tc = FindItem("WARPFOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
    if (!tc)
@@ -200,17 +207,18 @@ WarpFocusShowTitle(EWin * ewin)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  warptitles_num++;
-		  warptitles =
-		     Erealloc(warptitles, (sizeof(Window) * warptitles_num));
-		  warptitles_ewin =
-		     Erealloc(warptitles_ewin,
-			      (sizeof(EWin *) * warptitles_num));
-		  warptitles[warptitles_num - 1] =
+		  warplist_num++;
+		  warplist = Erealloc(warplist,
+				      warplist_num * sizeof(WarplistItem));
+		  warplist[warplist_num - 1].win =
 		     ECreateWindow(warpFocusTitleWindow, 0, 0, 1, 1, 0);
-		  EMapWindow(disp, warptitles[warptitles_num - 1]);
-		  warptitles_ewin[warptitles_num - 1] = lst[i];
-		  TextSize(tc, 0, 0, 0, EwinGetTitle(lst[i]), &ww, &hh, 17);
+		  EMapWindow(disp, warplist[warplist_num - 1].win);
+		  warplist[warplist_num - 1].ewin = lst[i];
+		  Esnprintf(s, sizeof(s), (lst[i]->iconified) ? "[%s]" : "%s",
+			    EwinGetTitle(lst[i]));
+		  warplist[warplist_num - 1].txt = strdup(s);
+		  TextSize(tc, 0, 0, 0, warplist[warplist_num - 1].txt, &ww,
+			   &hh, 17);
 		  if (ww > w)
 		     w = ww;
 		  if (hh > h)
@@ -222,18 +230,19 @@ WarpFocusShowTitle(EWin * ewin)
 	h += (ic->padding.top + ic->padding.bottom);
 	GetPointerScreenGeometry(&x, &y, &ww, &hh);
 	x += (ww - w) / 2;
-	y += (hh - h * warptitles_num) / 2;
+	y += (hh - h * warplist_num) / 2;
 	mw = w;
 	mh = h;
 	EMoveResizeWindow(disp, warpFocusTitleWindow, x, y, w,
-			  (h * warptitles_num));
-	for (i = 0; i < warptitles_num; i++)
+			  (h * warplist_num));
+	for (i = 0; i < warplist_num; i++)
 	  {
-	     EMoveResizeWindow(disp, warptitles[i], 0, (h * i), mw, mh);
-	     if (ewin == warptitles_ewin[i])
-		IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0);
+	     EMoveResizeWindow(disp, warplist[i].win, 0, (h * i), mw, mh);
+	     if (ewin == warplist[i].ewin)
+		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_CLICKED,
+			    0);
 	     else
-		IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0);
+		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL, 0);
 	  }
 	PropagateShapes(warpFocusTitleWindow);
 	EMapWindow(disp, warpFocusTitleWindow);
@@ -246,19 +255,20 @@ WarpFocusShowTitle(EWin * ewin)
 		      GrabModeAsync, CurrentTime);
      }
 
-   for (i = 0; i < warptitles_num; i++)
+   for (i = 0; i < warplist_num; i++)
      {
-	if (!FindItem((char *)warptitles_ewin[i], 0, LIST_FINDBY_POINTER,
+	if (!FindItem((char *)warplist[i].ewin, 0, LIST_FINDBY_POINTER,
 		      LIST_TYPE_EWIN))
-	   warptitles_ewin[i] = NULL;
-	if (warptitles_ewin[i])
+	   warplist[i].ewin = NULL;
+	if (warplist[i].ewin)
 	  {
-	     int                 state =
-		(ewin == warptitles_ewin[i]) ? STATE_CLICKED : STATE_NORMAL;
+	     int                 state;
 
-	     IclassApply(ic, warptitles[i], mw, mh, 0, 0, state, 0);
-	     TclassApply(ic, warptitles[i], mw, mh, 0, 0, state, 0,
-			 tc, EwinGetTitle(warptitles_ewin[i]));
+	     state = (ewin == warplist[i].ewin) ? STATE_CLICKED : STATE_NORMAL;
+
+	     IclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0);
+	     TclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
+			 tc, warplist[i].txt);
 	  }
      }
 
@@ -276,16 +286,16 @@ WarpFocusHideTitle(void)
    if (warpFocusTitleWindow)
      {
 	EUnmapWindow(disp, warpFocusTitleWindow);
-	for (i = 0; i < warptitles_num; i++)
-	   EDestroyWindow(disp, warptitles[i]);
+	for (i = 0; i < warplist_num; i++)
+	  {
+	     EDestroyWindow(disp, warplist[i].win);
+	     Efree(warplist[i].txt);
+	  }
      }
 
-   if (warptitles)
-      Efree(warptitles);
-   if (warptitles_ewin)
-      Efree(warptitles_ewin);
-   warptitles = NULL;
-   warptitles_ewin = NULL;
-   warptitles_num = 0;
+   if (warplist)
+      Efree(warplist);
+   warplist = NULL;
+   warplist_num = 0;
    warpFocusTitleShowing = 0;
 }
