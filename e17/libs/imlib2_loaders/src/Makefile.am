@@ -20,7 +20,7 @@ CFLAGS_ALL           = $(CFLAGS_EET) $(CFLAGS_EDB) $(CFLAGS_IMLIB2) \
 
 INCLUDES             = $(CFLAGS_ALL)
 
-pkgdir		     = $(libdir)/loaders/image
+pkgdir		     = $(libdir)/imlib2_loaders/image
 
 if XCF_LOADER
 XCF_L               = xcf.la
