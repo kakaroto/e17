@@ -14,6 +14,7 @@
 #include "interface.h"
 #include "support.h"
 #include "ebony.h"
+#include "gtk_util.h"
 
 void
 setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
@@ -77,7 +78,6 @@ main(int argc, char *argv[])
 {
    GtkWidget *win, *w;
    int rx, ry, rw, rh, rd;
-   int ww, wh;
    char bgfile[PATH_MAX];
 
    bgfile[0] = '\0';
@@ -89,6 +89,8 @@ main(int argc, char *argv[])
    add_pixmap_directory(PACKAGE_DATA_DIR "/pixmaps");
    add_pixmap_directory(PACKAGE_SOURCE_DIR "/pixmaps");
 
+   if (argv[1])
+      snprintf(bgfile, PATH_MAX, "%s", argv[1]);
    /* 
     * The following code was added by Glade to create one of each component
     * (except popup menus), just so that you see something after building
@@ -99,18 +101,6 @@ main(int argc, char *argv[])
 
    gdk_window_get_geometry(GDK_ROOT_PARENT(), &rx, &ry, &rw, &rh, &rd);
    gtk_widget_realize(GTK_WIDGET(win));
-
-   if (rw > 1400)               /* wider screen */
-   {
-      ww = rw / 3;
-      wh = rh * 0.75;
-   }
-   else
-   {
-      ww = rw * 0.75;
-      wh = rh * 0.75;
-   }
-   gtk_widget_set_usize(win, ww, wh);
 
    /* realize the drwaing areas */
    w = gtk_object_get_data(GTK_OBJECT(win), "evas");
@@ -147,10 +137,13 @@ main(int argc, char *argv[])
 
    /* load the file passed as argv[1] or create a new bg */
    if (!strlen(bgfile))
-      new_bg(NULL, NULL);
+      open_bg_named(PACKAGE_DATA_DIR "/pixmaps/ebony.bg.db");
    else
       open_bg_named(bgfile);
+      
+   set_spin_value("layer_num", 0);
 
+   gtk_widget_set_usize(win, 600, 380);
 
    gtk_main();
    return 0;

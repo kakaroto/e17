@@ -702,6 +702,12 @@ display_layer_values_for_image(E_Background_Layer _bl)
    w = gtk_object_get_data(GTK_OBJECT(win_ref), "size_abs_w");
    if (w)
       gtk_widget_set_sensitive(w, FALSE);
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_frame");
+   if (w)
+      gtk_widget_hide(w);
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_color_frame");
+   if (w)
+      gtk_widget_hide(w);
    set_toggled_state("size_abs_h", 0);
    set_toggled_state("size_abs_w", 0);
 

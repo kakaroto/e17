@@ -355,7 +355,7 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (evas);
   gtk_box_pack_start (GTK_BOX (hbox3), evas, TRUE, TRUE, 0);
-  gtk_widget_set_usize (evas, 200, 200);
+  gtk_widget_set_usize (evas, 250, 200);
   gtk_widget_set_events (evas, GDK_EXPOSURE_MASK);
 
   vscale1 = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 768, 0, 0, 0)));
