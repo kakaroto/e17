@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <malloc.h>
 #endif
 
-#include <efsd_common.h>
+#include <efsd_misc.h>
 #include <efsd_debug.h>
 #include <efsd_fam.h>
 #include <efsd_globals.h>
@@ -268,7 +268,7 @@ efsd_misc_remove_socket_file(void)
 {
   D_ENTER;
 
-  if (unlink(efsd_common_get_socket_file()) < 0)
+  if (unlink(efsd_misc_get_socket_file()) < 0)
     {
       if (errno != ENOENT)
 	{
@@ -284,22 +284,82 @@ efsd_misc_remove_socket_file(void)
 }
 
 
-int
-efsd_misc_close_connection(int client)
+char *
+efsd_misc_get_user_dir(void)
+{
+  char         *dir = NULL;
+  static char  s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  dir = getenv("HOME");
+
+  /* I'm not using getenv("TMPDIR") --
+   * I don't see TMPDIR on Linux, FreeBSD
+   * or Solaris here...
+   */
+
+  /* FIXME -- I need to properly handle the case
+     where I cannot determine the home directory.
+     This will break if multiple users run E on the
+     same machine:
+  */
+
+  if (!dir)
+    dir = "/tmp";
+
+  snprintf(s, sizeof(s), "%s/.e/efsd", dir);
+
+  D_RETURN_(s);
+}
+
+
+char *
+efsd_misc_get_sys_dir(void)
 {
   D_ENTER;
-  D(("Closing connection %i\n", client));
+  D_RETURN_(PACKAGE_DATA_DIR);
+}
 
-  if (clientfd[client] < 0)
+
+char *
+efsd_misc_get_socket_file(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+#ifndef __EMX__
+  snprintf(s, sizeof(s), "%s/efsd_socket", efsd_misc_get_user_dir());
+#else
+  snprintf(s, sizeof(s), "\\socket\\%s/efsd_socket", efsd_misc_get_user_dir());
+#endif
+  s[sizeof(s)-1] = '\0';
+  D_RETURN_(s);
+}
+
+
+void  *
+efsd_misc_memdup(void *data, int size)
+{
+  void *result = NULL;
+
+  D_ENTER;
+
+  if (!data)
     {
-      D(("Connection already closed ???\n"));
-      D_RETURN_(-1);
+      D_RETURN_(NULL);
     }
 
-  efsd_fam_cleanup_client(client);
-  close(clientfd[client]);
-  clientfd[client] = -1;
-  D_RETURN_(0);
+  result = malloc(size);
+  memcpy(result, data, size);
+
+  D_RETURN_(result);
 }
 
 

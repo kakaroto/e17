@@ -12,10 +12,9 @@ include_HEADERS = \
 	libefsd.h
 
 efsd_SOURCES = \
-	efsd.c \
+	efsd_main.h \
+	efsd_main.c \
 	efsd_macros.h \
-	efsd_common.h \
-	efsd_common.c \
 	efsd_debug.h \
 	efsd_debug.c \
 	efsd_fam.h \
@@ -45,12 +44,12 @@ lib_LTLIBRARIES = libefsd.la
 libefsd_la_SOURCES   = \
 	efsd.h \
 	efsd_macros.h \
-	efsd_common.h \
-	efsd_common.c \
 	efsd_debug.h \
 	efsd_debug.c \
 	efsd_io.h \
 	efsd_io.c \
+	efsd_misc.h \
+	efsd_misc.c \
 	efsd_options.h \
 	efsd_options.c \
 	efsd_types.h \

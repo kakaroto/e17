@@ -47,7 +47,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_misc.h>
-#include <efsd_common.h>
 #include <efsd_magic.h>
 
 
@@ -200,7 +199,7 @@ get_magic_db(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  snprintf(s, sizeof(s), "%s/magic.db", efsd_common_get_sys_dir());
+  snprintf(s, sizeof(s), "%s/magic.db", efsd_misc_get_sys_dir());
   s[sizeof(s)-1] = '\0';
 
   if (efsd_misc_file_exists(s))
@@ -220,7 +219,7 @@ get_sys_patterns_db(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  snprintf(s, sizeof(s), "%s/pattern.db", efsd_common_get_sys_dir());
+  snprintf(s, sizeof(s), "%s/pattern.db", efsd_misc_get_sys_dir());
   s[sizeof(s)-1] = '\0';
 
   if (efsd_misc_file_exists(s))
@@ -240,7 +239,7 @@ get_user_patterns_db(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  snprintf(s, sizeof(s), "%s/pattern.db", efsd_common_get_user_dir());
+  snprintf(s, sizeof(s), "%s/pattern.db", efsd_misc_get_user_dir());
   s[sizeof(s)-1] = '\0';
 
   if (efsd_misc_file_exists(s))

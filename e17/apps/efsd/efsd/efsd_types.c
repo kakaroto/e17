@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd_debug.h>
 #include <efsd_misc.h>
-#include <efsd_common.h>
+#include <efsd_misc.h>
 #include <efsd_macros.h>
 #include <efsd_options.h>
 #include <efsd_types.h>
@@ -71,7 +71,7 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
       break;
     case EFSD_CMD_SETMETA:
       ec_dst->efsd_set_metadata_cmd.data =
-	efsd_common_memdup(ec_src->efsd_set_metadata_cmd.data, ec_src->efsd_set_metadata_cmd.data_len);
+	efsd_misc_memdup(ec_src->efsd_set_metadata_cmd.data, ec_src->efsd_set_metadata_cmd.data_len);
       ec_dst->efsd_set_metadata_cmd.key  = strdup(ec_src->efsd_set_metadata_cmd.key);
       ec_dst->efsd_set_metadata_cmd.file = strdup(ec_src->efsd_set_metadata_cmd.file);
       break;

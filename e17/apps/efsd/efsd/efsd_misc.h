@@ -40,4 +40,11 @@ void    efsd_misc_check_dir(void);
 void    efsd_misc_remove_socket_file(void);
 int     efsd_misc_close_connection(int client);
 
+char   *efsd_misc_get_user_dir(void);
+char   *efsd_misc_get_sys_dir(void);
+char   *efsd_misc_get_socket_file(void);
+
+/* Could somebody tell me if memdup() is portable? */
+void  *efsd_misc_memdup(void *data, int size);
+
 #endif

@@ -333,7 +333,7 @@ main(int argc, char** argv)
 	printf("Couldn't issue getmime command.\n");      
     }
 
-  sleep(10);
+  sleep(2);
 
   /* Create a directory */
   /*

@@ -43,9 +43,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_io.h>
-#include <efsd_common.h>
-#include <efsd_options.h>
 #include <efsd_macros.h>
+#include <efsd_misc.h>
+#include <efsd_options.h>
+#include <efsd_types.h>
 #include <libefsd.h>
 
 struct efsd_connection
@@ -140,19 +141,11 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
 
   if (send_command(ec, &cmd) < 0)
     {
+      efsd_cmd_cleanup(&cmd);
       D_RETURN_(-1);
     }
 
-  if ((num_options > 0) && (ops))
-    {
-      int i;
-
-      for (i = 0; i < num_options; i++)
-	efsd_option_cleanup(&ops[i]);
-
-      FREE(ops);
-    }
-
+  efsd_cmd_cleanup(&cmd);
   D_RETURN_(cmd.efsd_file_cmd.id);
 }
 
@@ -172,6 +165,7 @@ twofile_cmd(EfsdConnection *ec, EfsdCommandType type, char *file1, char *file2)
   cmd.efsd_2file_cmd.file1 = get_full_path(file1);
   cmd.efsd_2file_cmd.file2 = get_full_path(file2);
   
+  efsd_cmd_cleanup(&cmd);
   D_RETURN_(cmd.efsd_2file_cmd.id);
 }
 
@@ -200,7 +194,7 @@ efsd_open(void)
 
   bzero(&cli_sun, sizeof(cli_sun));
   cli_sun.sun_family = AF_UNIX;
-  strncpy(cli_sun.sun_path, efsd_common_get_socket_file(), sizeof(cli_sun.sun_path));
+  strncpy(cli_sun.sun_path, efsd_misc_get_socket_file(), sizeof(cli_sun.sun_path));
 
   if (connect(ec->fd, (struct sockaddr*)&cli_sun, sizeof(cli_sun)) < 0)
     {
@@ -419,7 +413,6 @@ efsd_makedir(EfsdConnection *ec, char *dirname)
 EfsdCmdId      
 efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
 {
-  char        *f;
   EfsdCommand  cmd;
 
   D_ENTER;
@@ -430,9 +423,7 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
   cmd.type = EFSD_CMD_CHMOD;
   cmd.efsd_chmod_cmd.id = get_next_id();
   cmd.efsd_chmod_cmd.mode = mode;
-  f = get_full_path(filename);
-  cmd.efsd_chmod_cmd.file = strdup(f);
-  free(f);
+  cmd.efsd_chmod_cmd.file = get_full_path(filename);
 
   if (send_command(ec, &cmd) < 0)
     {
@@ -446,7 +437,6 @@ EfsdCmdId
 efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
 		     EfsdDatatype datatype, int data_len, void *data)
 {
-  char        *f;
   EfsdCommand  cmd;
 
   D_ENTER;
@@ -461,14 +451,21 @@ efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
   cmd.efsd_set_metadata_cmd.data_len = data_len;
   cmd.efsd_set_metadata_cmd.data = data;
   cmd.efsd_set_metadata_cmd.key = strdup(key);
-  f = get_full_path(filename);
-  cmd.efsd_set_metadata_cmd.file = strdup(f);
-  free(f);
+  cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
+  
+  if (!efsd_misc_file_exists(cmd.efsd_get_metadata_cmd.file))
+    {
+      efsd_cmd_cleanup(&cmd);
+      D_RETURN_(-1);
+    }
   
   if (send_command(ec, &cmd) < 0)
     {
+      efsd_cmd_cleanup(&cmd);
       D_RETURN_(-1);
     }
+
+  efsd_cmd_cleanup(&cmd);
   D_RETURN_(cmd.efsd_set_metadata_cmd.id);
 }
 
@@ -476,7 +473,6 @@ efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
 EfsdCmdId      
 efsd_get_metadata(EfsdConnection *ec, char *key, char *filename)
 {
-  char        *f;
   EfsdCommand  cmd;
 
   D_ENTER;
@@ -488,14 +484,21 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename)
   cmd.type = EFSD_CMD_GETMETA;
   cmd.efsd_get_metadata_cmd.id = get_next_id();
   cmd.efsd_get_metadata_cmd.key = strdup(key);
-  f = get_full_path(filename);
-  cmd.efsd_get_metadata_cmd.file = strdup(f);
-  free(f);
+  cmd.efsd_get_metadata_cmd.file = get_full_path(filename);
+
+  if (!efsd_misc_file_exists(cmd.efsd_get_metadata_cmd.file))
+    {
+      efsd_cmd_cleanup(&cmd);
+      D_RETURN_(-1);
+    }
   
   if (send_command(ec, &cmd) < 0)
     {
+      efsd_cmd_cleanup(&cmd);
       D_RETURN_(-1);
     }
+
+  efsd_cmd_cleanup(&cmd);
   D_RETURN_(cmd.efsd_get_metadata_cmd.id);
 }
 

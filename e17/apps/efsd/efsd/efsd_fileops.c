@@ -38,7 +38,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 
-#include <efsd_common.h>
 #include <efsd_debug.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
@@ -46,6 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_io.h>
 #include <efsd_macros.h>
 #include <efsd_magic.h>
+#include <efsd_main.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
 #include <efsd_types.h>
@@ -82,7 +82,7 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   if (efsd_io_write_event(sockfd, &ee) < 0)
     {
       if (errno == EPIPE)
-	efsd_misc_close_connection(client);
+	efsd_main_close_connection(client);
       else
 	efsd_queue_add_event(sockfd, &ee);
 

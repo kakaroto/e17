@@ -22,15 +22,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_common_h
-#define __efsd_common_h
+#ifndef __efsd_main_h
+#define __efsd_main_h
 
-char   *efsd_common_get_user_dir(void);
-char   *efsd_common_get_sys_dir(void);
-char   *efsd_common_get_socket_file(void);
-
-/* Could somebody tell me if memdup() is portable? */
-void  *efsd_common_memdup(void *data, int size);
-
+int       efsd_main_close_connection(int client);
 
 #endif

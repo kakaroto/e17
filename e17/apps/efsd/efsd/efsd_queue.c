@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_globals.h>
 #include <efsd_macros.h>
 #include <efsd_io.h>
+#include <efsd_main.h>
 #include <efsd_misc.h>
 #include <efsd_list.h>
 #include <efsd_types.h>
@@ -115,7 +116,7 @@ efsd_queue_process(void)
 	  if (errno == EPIPE)
 	    {
 	      D(("Client %i died -- closing connection\n", eqi->client));
-	      efsd_misc_close_connection(eqi->client);
+	      efsd_main_close_connection(eqi->client);
 	      queue = efsd_list_remove(queue, queue, (EfsdFunc)queue_item_free);
 	      done++;
 	    }
