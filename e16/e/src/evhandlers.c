@@ -1486,6 +1486,7 @@ HandleExpose(XEvent * ev)
 }
 
 static int          pwin_px, pwin_py;
+static int         *gwin_px, *gwin_py;
 
 void
 HandleMouseDown(XEvent * ev)
@@ -1755,6 +1756,19 @@ HandleMouseDown(XEvent * ev)
       p = FindPager(ev->xbutton.window);
       if (p)
 	{
+	   EWin              **gwins;
+
+	   gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+					      mode.nogroup, &num);
+	   gwin_px = calloc(num, sizeof(int));
+	   gwin_py = calloc(num, sizeof(int));
+
+	   for (i = 0; i < num; i++)
+	     {
+		gwin_px[i] = gwins[i]->x;
+		gwin_py[i] = gwins[i]->y;
+	     }
+
 	   if (ev->xbutton.window == p->hi_win)
 	     {
 		int                 hx, hy;
@@ -2261,6 +2275,8 @@ HandleMouseUp(XEvent * ev)
 		       int                 wx, wy;
 		       Window              dw;
 
+		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+							  mode.nogroup, &num);
 		       pp = ewin->pager;
 		       cx = desks.desk[pp->desktop].current_area_x;
 		       cy = desks.desk[pp->desktop].current_area_y;
@@ -2301,26 +2317,36 @@ HandleMouseUp(XEvent * ev)
 		    {
 		       char                was_shaded;
 
-		       MoveEwin(p->hi_ewin, pwin_px, pwin_py);
-		       ICCCM_Configure(p->hi_ewin);
-		       was_shaded = p->hi_ewin->shaded;
-		       if (ewin->ibox)
+		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+							  mode.nogroup, &num);
+		       for (i = 0; i < num; i++)
 			 {
-			    IB_Animate(1, p->hi_ewin, ewin->ibox->ewin);
-			    UpdateAppIcon(p->hi_ewin, ewin->ibox->icon_mode);
+			    if (!gwins[i]->pager)
+			      {
+				 MoveEwin(gwins[i], gwin_px[i], gwin_py[i]);
+				 ICCCM_Configure(gwins[i]);
+				 was_shaded = gwins[i]->shaded;
+				 if (ewin->ibox)
+				   {
+				      IB_Animate(1, gwins[i], ewin->ibox->ewin);
+				      UpdateAppIcon(gwins[i], ewin->ibox->icon_mode);
+				   }
+				 HideEwin(gwins[i]);
+				 MoveEwin(gwins[i], gwin_px[i] +
+					  ((desks.desk[gwins[i]->desktop].current_area_x) -
+				    p->hi_ewin->area_x) * root.w, gwin_py[i] +
+					  ((desks.desk[gwins[i]->desktop].current_area_y) -
+					   p->hi_ewin->area_y) * root.h);
+				 if (was_shaded != gwins[i]->shaded)
+				    InstantShadeEwin(gwins[i]);
+				 AddEwinToIconbox(ewin->ibox, gwins[i]);
+				 ICCCM_Iconify(gwins[i]);
+			      }
 			 }
-		       HideEwin(p->hi_ewin);
-		       MoveEwin(p->hi_ewin,
-				pwin_px + ((desks.desk[p->hi_ewin->desktop].current_area_x) - p->hi_ewin->area_x) * root.w,
-				pwin_py + ((desks.desk[p->hi_ewin->desktop].current_area_y) - p->hi_ewin->area_y) * root.h);
-		       if (was_shaded != p->hi_ewin->shaded)
-			  InstantShadeEwin(p->hi_ewin);
-		       AddEwinToIconbox(ewin->ibox, p->hi_ewin);
-		       ICCCM_Iconify(p->hi_ewin);
 		    }
 		  else
 		    {
-		       int                 ndesk, nx, ny;
+		       int                 ndesk, nx, ny, base_x, base_y;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -
@@ -2329,8 +2355,21 @@ HandleMouseUp(XEvent * ev)
 		       ny = (int)ev->xbutton.y_root -
 			  desks.desk[desks.current].y -
 			  ((int)p->hi_ewin->h / 2);
-		       MoveEwin(p->hi_ewin, nx, ny);
-		       MoveEwinToDesktop(p->hi_ewin, ndesk);
+
+		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+							  mode.nogroup, &num);
+		       for (i = 0; i < num; i++)
+			  if (gwins[i] == p->hi_ewin)
+			    {
+			       base_x = gwin_px[i];
+			       base_y = gwin_py[i];
+			    }
+		       for (i = 0; i < num; i++)
+			 {
+			    MoveEwin(gwins[i], nx + (gwin_px[i] - base_x),
+				     ny + (gwin_py[i] - base_y));
+			    MoveEwinToDesktop(gwins[i], ndesk);
+			 }
 		    }
 		  RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
 		  ForceUpdatePagersForDesktop(p->hi_ewin->desktop);
@@ -2355,6 +2394,15 @@ HandleMouseUp(XEvent * ev)
 	  }
      }
    mode.destroy = 0;
+   // unallocate the space that was holding the old positions of the
+   // windows
+   if (gwin_px)
+     {
+	Efree(gwin_px);
+	gwin_px = NULL;
+	Efree(gwin_py);
+	gwin_py = NULL;
+     }
    if ((mode.slideout) && (pslideout))
       HideSlideout(mode.slideout, mode.context_win);
    click_was_in = 0;

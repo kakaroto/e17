@@ -2711,3 +2711,10 @@ Fri Oct  1 17:12:04 PDT 1999
 (Raster)
 
 fixed really obscure focus bug.....
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 18:00:54 PDT 1999
+(Raster)
+
+pager group dnd patch
