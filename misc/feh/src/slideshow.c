@@ -42,10 +42,13 @@ init_slideshow_mode(void)
    D_ENTER(3);
 
    mode = "slideshow";
-   if (opt.start_list_at) {
+   if (opt.start_list_at)
+   {
       l = feh_list_get_num(filelist, opt.start_list_at);
-      opt.start_list_at = 0; /* for next time */
-   } else {
+      opt.start_list_at = 0;                /* for next time */
+   }
+   else
+   {
       l = filelist;
    }
    for (; l; l = l->next)
@@ -123,28 +126,28 @@ feh_reload_image(winwidget w, int resize)
    snprintf(new_title, len, "Reloading: %s", w->name);
    title = estrdup(w->name);
    winwidget_rename(w, new_title);
-   
+
    if ((winwidget_loadimage(w, FEH_FILE(w->file->data))) != 0)
    {
-         w->mode = MODE_NORMAL;
-         if ((w->im_w != feh_imlib_image_get_width(w->im))
-             || (w->im_h != feh_imlib_image_get_height(w->im)))
-            w->had_resize = 1;
-         if (w->has_rotated)
-         {
-            Imlib_Image temp;
+      w->mode = MODE_NORMAL;
+      if ((w->im_w != feh_imlib_image_get_width(w->im))
+          || (w->im_h != feh_imlib_image_get_height(w->im)))
+         w->had_resize = 1;
+      if (w->has_rotated)
+      {
+         Imlib_Image temp;
 
-            temp = feh_imlib_create_rotated_image(w->im, 0.0);
-            w->im_w = feh_imlib_image_get_width(temp);
-            w->im_h = feh_imlib_image_get_height(temp);
-            feh_imlib_free_image_and_decache(temp);
-         }
-         else
-         {
-            w->im_w = feh_imlib_image_get_width(w->im);
-            w->im_h = feh_imlib_image_get_height(w->im);
-         }
-         winwidget_render_image(w, resize, 1);
+         temp = feh_imlib_create_rotated_image(w->im, 0.0);
+         w->im_w = feh_imlib_image_get_width(temp);
+         w->im_h = feh_imlib_image_get_height(temp);
+         feh_imlib_free_image_and_decache(temp);
+      }
+      else
+      {
+         w->im_w = feh_imlib_image_get_width(w->im);
+         w->im_h = feh_imlib_image_get_height(w->im);
+      }
+      winwidget_render_image(w, resize, 1);
       if (opt.draw_filename)
          feh_draw_filename(w);
    }
@@ -247,19 +250,18 @@ slideshow_change_image(winwidget winwid, int change)
       winwidget_rename(winwid, s);
       free(s);
 
-      if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
-          != 0)
+      if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data))) != 0)
       {
          success = 1;
          winwid->mode = MODE_NORMAL;
          winwid->file = current_file;
-            if ((winwid->im_w != feh_imlib_image_get_width(winwid->im))
-                || (winwid->im_h != feh_imlib_image_get_height(winwid->im)))
-               winwid->had_resize = 1;
-            winwidget_reset_image(winwid);
-            winwid->im_w = feh_imlib_image_get_width(winwid->im);
-            winwid->im_h = feh_imlib_image_get_height(winwid->im);
-            winwidget_render_image(winwid, 1, 1);
+         if ((winwid->im_w != feh_imlib_image_get_width(winwid->im))
+             || (winwid->im_h != feh_imlib_image_get_height(winwid->im)))
+            winwid->had_resize = 1;
+         winwidget_reset_image(winwid);
+         winwid->im_w = feh_imlib_image_get_width(winwid->im);
+         winwid->im_h = feh_imlib_image_get_height(winwid->im);
+         winwidget_render_image(winwid, 1, 1);
          if (opt.draw_filename)
             feh_draw_filename(winwid);
          break;
@@ -285,19 +287,22 @@ slideshow_pause_toggle(winwidget w)
    char *title, *new_title;
    int len;
 
-   if (!opt.paused) {
-	  opt.paused = 1;
-	  
-	  len = strlen(w->name) + sizeof(" [Paused]") + 1;
-	  new_title = emalloc(len);
-	  snprintf(new_title, len, "%s [Paused]", w->name);
-	  title = estrdup(w->name);
-	  winwidget_rename(w, new_title);
-   } else {
-	  opt.paused = 0;
+   if (!opt.paused)
+   {
+      opt.paused = 1;
+
+      len = strlen(w->name) + sizeof(" [Paused]") + 1;
+      new_title = emalloc(len);
+      snprintf(new_title, len, "%s [Paused]", w->name);
+      title = estrdup(w->name);
+      winwidget_rename(w, new_title);
+   }
+   else
+   {
+      opt.paused = 0;
    }
 }
-   
+
 char *
 slideshow_create_name(feh_file * file)
 {
@@ -319,7 +324,7 @@ slideshow_create_name(feh_file * file)
       s = estrdup(feh_printf(opt.title, file));
    }
 
-   D_RETURN(4,s);
+   D_RETURN(4, s);
 }
 
 void
@@ -328,7 +333,7 @@ feh_action_run(feh_file * file)
    char *sys;
 
    D_ENTER(4);
-   D(3,("Running action %s\n", opt.action));
+   D(3, ("Running action %s\n", opt.action));
 
    sys = feh_printf(opt.action, file);
 
@@ -357,75 +362,77 @@ feh_printf(char *str, feh_file * file)
          switch (*c)
          {
            case 'f':
-			  if (file)
+              if (file)
                  strcat(ret, file->filename);
               break;
            case 'n':
-			  if (file)
+              if (file)
                  strcat(ret, file->name);
               break;
            case 'w':
-			  if (file)
-			  {
+              if (file)
+              {
                  if (!file->info)
                     feh_file_info_load(file, NULL);
                  snprintf(buf, sizeof(buf), "%d", file->info->width);
                  strcat(ret, buf);
-			  }
+              }
               break;
            case 'h':
-			  if (file)
-			  {
+              if (file)
+              {
                  if (!file->info)
                     feh_file_info_load(file, NULL);
                  snprintf(buf, sizeof(buf), "%d", file->info->height);
                  strcat(ret, buf);
-			  }
+              }
               break;
            case 's':
-			  if (file)
-			  {
+              if (file)
+              {
                  if (!file->info)
                     feh_file_info_load(file, NULL);
                  snprintf(buf, sizeof(buf), "%d", file->info->size);
                  strcat(ret, buf);
-			  }
+              }
               break;
            case 'p':
-			  if (file)
-			  {
-			     if (!file->info)
+              if (file)
+              {
+                 if (!file->info)
                     feh_file_info_load(file, NULL);
                  snprintf(buf, sizeof(buf), "%d", file->info->pixels);
                  strcat(ret, buf);
               }
-			  break;
+              break;
            case 't':
-			  if (file)
-			  {
+              if (file)
+              {
                  if (!file->info)
                     feh_file_info_load(file, NULL);
                  strcat(ret, file->info->format);
               }
-			  break;
-		   case 'P':
-			  strcat(ret, PACKAGE);
-			  break;
-		   case 'v':
-			  strcat(ret, VERSION);	
-			  break;
-		   case 'm':
-			  strcat(ret, mode);
-			  break;
-		   case 'l':
-			  snprintf(buf, sizeof(buf), "%d", feh_list_length(filelist));
-			  strcat(ret, buf);
-			  break;
-		   case 'u':
-			  snprintf(buf, sizeof(buf), "%d", current_file != NULL ?
-					   feh_list_num(filelist, current_file) + 1 : 0);
-			  strcat(ret, buf);
-			  break;
+              break;
+           case 'P':
+              strcat(ret, PACKAGE);
+              break;
+           case 'v':
+              strcat(ret, VERSION);
+              break;
+           case 'm':
+              strcat(ret, mode);
+              break;
+           case 'l':
+              snprintf(buf, sizeof(buf), "%d", feh_list_length(filelist));
+              strcat(ret, buf);
+              break;
+           case 'u':
+              snprintf(buf, sizeof(buf), "%d",
+                       current_file != NULL ? feh_list_num(filelist,
+                                                           current_file) +
+                       1 : 0);
+              strcat(ret, buf);
+              break;
            default:
               strncat(ret, c, 1);
               break;
@@ -447,7 +454,7 @@ feh_printf(char *str, feh_file * file)
       else
          strncat(ret, c, 1);
    }
-   D_RETURN(4,ret);
+   D_RETURN(4, ret);
 }
 
 void

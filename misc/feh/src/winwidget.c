@@ -327,7 +327,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
       feh_draw_checks(winwid);
 
 
-   if ((opt.scale_down)
+   if (!opt.full_screen && opt.scale_down
        && ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
    {
       D(2, ("scaling down image\n"));
