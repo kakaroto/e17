@@ -181,7 +181,7 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    }
 #ifndef HAVE_PAM
    else
-      syslog(LOG_WARN, "Entrance has been built without PAM support, so PAM isn't used for authentication!");
+      syslog(LOG_WARNING, "Entrance has been built without PAM support, so PAM isn't used for authentication!");
 #endif
 }
 

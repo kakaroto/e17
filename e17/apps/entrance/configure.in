@@ -88,12 +88,16 @@ ebg_cflags=`ebg-config --cflags`
 AC_SUBST(ebg_libs)
 AC_SUBST(ebg_cflags)
 
+have_pam=no
 AC_CHECK_HEADERS(security/pam_appl.h, [
 	LIBS="$LIBS -lpam"
 	have_pam=yes
     AC_DEFINE(HAVE_PAM)])
 
-AC_CHECK_LIB(crypt, crypt, [LIBS="$LIBS -lcrypt"])
+have_crypt = no
+AC_CHECK_LIB(crypt, crypt, [
+	LIBS="$LIBS -lcrypt"
+	have_crypt=yes])
 AC_CHECK_HEADERS(crypt.h)
 
 have_shadow=no
@@ -127,11 +131,10 @@ data/themes/BlueCrystal/Makefile
 data/themes/matrix0/Makefile
 ])
 
-#AC_OUTPUT
-
 echo
 echo "$PACKAGE $VERSION"
 echo
+echo "Support for crypt authentication... $have_crypt"
 echo "Support for shadow authentication... $have_shadow"
 echo "Support for PAM authentication...... $have_pam"
 echo
