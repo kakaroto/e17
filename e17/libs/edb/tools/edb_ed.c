@@ -16,7 +16,8 @@ static void
 unescape_string(char *str)
 {
   int  i;
-  char c, val = 0;
+  unsigned char val = 0;
+  char c;
   char *s;
 
   for (s = str ; *str != '\0'; str++, s++)
@@ -81,7 +82,7 @@ unescape_string(char *str)
 		    ptr++;
 		  }
 		
-		str = ptr;
+		str = --ptr;
 	      }
 	      break;
 	    case '0':       /* \nnn -- octal value */
@@ -107,14 +108,15 @@ unescape_string(char *str)
 		    
 		    if (!isdigit(digit))
 		      break;
-		    
+
 		    val *= 8;
-		    val += digit - '0';		    
+		    val += (digit - '0');
+		    
 		    *s = val;
 		    ptr++;
 		  }
 		
-		str = ptr;
+		str = --ptr;
 	      }
 	      break;
 	    default:
