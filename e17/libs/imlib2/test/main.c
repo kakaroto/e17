@@ -310,6 +310,7 @@ int main (int argc, char **argv)
    imlib_polygon_add_point(poly3, 450,300);
    imlib_polygon_add_point(poly3, 350,300);
 
+
    if (loop)
      {
 	printf("loop\n");
@@ -774,12 +775,12 @@ int main (int argc, char **argv)
 	     {
 		  Imlib_Updates uu;
           
+          imlib_context_set_cliprect(0,0,0,0);
 		  imlib_context_set_color(255, 255, 255, 255);
 		  uu = imlib_image_draw_line(200, 200, x, y, 1);
           up = imlib_updates_append_updates(up, uu);          
 		  
           /* test ellipses */
-          imlib_context_set_cliprect(0,0,0,0);
           imlib_context_set_color(255, 255, 255, 255);
           imlib_image_draw_ellipse(50,250,30,40);
           imlib_image_fill_ellipse(50,300,30,40);
@@ -847,7 +848,7 @@ int main (int argc, char **argv)
           up = imlib_update_append_rect(up, 30,120,50,50);
 
           imlib_context_set_cliprect(0,0,0,0);
-          
+
           /* test polygons */
           imlib_context_set_color(255, 0, 0, 128);
           imlib_image_fill_polygon(poly);

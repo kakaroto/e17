@@ -15,9 +15,10 @@
 
 #define round(a) floor(a+0.5)
 
-static void
-span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
-     DATA8 b, DATA8 a, ImlibOp op);
+static void span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2,
+                 DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
+static void spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2,
+                   DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
 
 void
 __imlib_FlipImageHoriz(ImlibImage * im)
@@ -1540,7 +1541,7 @@ __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
    int cx0, cx1, cy0, cy1;
 
    if (imlib_clip_line
-       (x1, y1, x2, y2, clip_xmin, clip_xmax, clip_ymin, clip_ymax, &cx0,
+       (x1, y1, x2, y2, clip_xmin, clip_xmax - 1, clip_ymin, clip_ymax, &cx0,
         &cy0, &cx1, &cy1))
    {
       return __imlib_draw_line(im, cx0, cy0, cx1, cy1, r, g, b, a, op,
@@ -1790,20 +1791,22 @@ __imlib_draw_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
 
 void
 __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
-                             int clip_xmin, int clip_xmax, int clip_ymin,
-                             int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
-                             DATA8 a, ImlibOp op)
+                     int clip_xmin, int clip_xmax, int clip_ymin,
+                     int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
+                     ImlibOp op, unsigned char antialias)
 {
    int a2 = aa * aa;
    int b2 = bb * bb;
-   int i;
-   int x, y, dec;
+   int y;
+   int x, dec;
    int miny, maxy, iy1;
 
    edgeRec *table1, *table2;
 
-   table1 = malloc(sizeof(edgeRec) * im->h);
-   table2 = malloc(sizeof(edgeRec) * im->h);
+   table1 = malloc(sizeof(edgeRec) * (im->h + 1));
+   table2 = malloc(sizeof(edgeRec) * (im->h + 1));
+   memset(table1, 0, sizeof(edgeRec) * (im->h + 1));
+   memset(table2, 0, sizeof(edgeRec) * (im->h + 1));
 
    miny = yc - bb;
    maxy = yc + bb;
@@ -1817,8 +1820,8 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
       table1[yc + y].x = xc - x;
       table2[yc + y].x = xc + x;
 
-      if (dec >= 0)
-         dec += 4 * a2 * (1 - (y--));
+      if (dec >= 0.0)
+         dec += 4.0 * a2 * (1 - (y--));
       dec += b2 * (4 * x + 6);
    }
 
@@ -1837,19 +1840,32 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    }
 
    /* clip spans to screen */
-   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w, 0, im->h);
+   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w - 1, 0, im->h);
 
    /* clip to clip rect if it's there */
    if (clip_xmin != clip_xmax)
       __spanlist_clip(table1, table2, &miny, &maxy, clip_xmin, clip_xmax,
                       clip_ymin, clip_ymax);
 
-   do
+   if (antialias)
    {
-      span(im, miny, &table1[miny], &table2[miny], r, g, b, a, op);
-      miny++;
+      do
+      {
+         spanAA(im, miny, table1, table2, r, g, b, a, op);
+         miny++;
+      }
+      while (miny <= maxy);
    }
-   while (miny < maxy);
+   else
+   {
+
+      do
+      {
+         span(im, miny, &table1[miny], &table2[miny], r, g, b, a, op);
+         miny++;
+      }
+      while (miny <= maxy);
+   }
    free(table1);
    free(table2);
 }
@@ -1904,7 +1920,7 @@ __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
 static void
 edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
 {
-   long x, dx;
+   double x, dx;
    int idy, iy1, iy2;
 
    if (pt2->y < pt1->y)
@@ -1916,14 +1932,14 @@ edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
       return;
    idy = MAX(2, idy - 1);
    x = pt1->x;
-   dx = (pt2->x - pt1->x) / idy;
+   dx = (pt2->x - pt1->x) / (double) idy;
    do
    {
       table[iy1].x = x;
       x += dx;
       iy1++;
    }
-   while (iy1 < iy2);
+   while (iy1 <= iy2);
 }
 
 static void
@@ -1938,56 +1954,353 @@ span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
    ix2 = pt2->x;
    if (ix1 == ix2)
       return;
-   
+
    p = &(im->data[(im->w * y) + ix1]);
    switch (op)
-     {
-	/* unrolled loop - on loop inside each render mode per span */
+   {
+        /* unrolled loop - on loop inside each render mode per span */
      case OP_RESHADE:
-	do
-	  {
-	     BLEND_RE(r, g, b, a, p);
-	     p++;
-	     ix1++;
-	  }
-	while (ix1 < ix2);
-	break;
+        do
+        {
+           BLEND_RE(r, g, b, a, p);
+           p++;
+           ix1++;
+        }
+        while (ix1 <= ix2);
+        break;
      case OP_SUBTRACT:
-	do
-	  {
-	     BLEND_SUB(r, g, b, a, p);
-	     p++;
-	     ix1++;
-	  }
-	while (ix1 < ix2);
-	break;
+        do
+        {
+           BLEND_SUB(r, g, b, a, p);
+           p++;
+           ix1++;
+        }
+        while (ix1 <= ix2);
+        break;
      case OP_ADD:
-	do
-	  {
-	     BLEND_ADD(r, g, b, a, p);
-	     p++;
-	     ix1++;
-	  }
-	while (ix1 < ix2);
-	break;
+        do
+        {
+           BLEND_ADD(r, g, b, a, p);
+           p++;
+           ix1++;
+        }
+        while (ix1 <= ix2);
+        break;
      case OP_COPY:
-	do
-	  {
-	     BLEND(r, g, b, a, p);
-	     p++;
-	     ix1++;
-	  }
-	while (ix1 < ix2);
-	break;
+        do
+        {
+           BLEND(r, g, b, a, p);
+           p++;
+           ix1++;
+        }
+        while (ix1 <= ix2);
+        break;
      default:
-	break;
-     }
+        break;
+   }
+
+}
+
+static void
+spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
+       DATA8 b, DATA8 a, ImlibOp op)
+{
+   int x1, x2;
+   DATA32 *p;
+   int tmp;
+
+   double upramp_gradient = 0.0, downramp_gradient = 0.0;
+   int upramp_len = 0, downramp_len = 0;
+   int upramp_len1 = 0, downramp_len1 = 0;
+   int ux1, ux2, top = 0, bottom = 0;
+
+   x1 = pt1[y].x;
+   x2 = pt2[y].x;
+   if (x1 == x2)
+      return;
+
+   /* see if there is a line above this one */
+   if ((y > 0) && (pt1[y - 1].x != pt2[y - 1].x))
+   {
+      if (pt1[y - 1].x > pt1[y].x)
+      {
+         upramp_len = pt1[y - 1].x - pt1[y].x;
+         upramp_gradient = 1.0 / (pt1[y - 1].x - pt1[y].x);
+      }
+      if (pt2[y].x > pt2[y - 1].x)
+      {
+         downramp_len = pt2[y].x - pt2[y - 1].x;
+         downramp_gradient = 1.0 / (pt2[y - 1].x - pt2[y].x);
+      }
+   }
+   else
+   {
+      /* there isn't - this is a special case for the top of a shape */
+      top = 1;
+   }
+
+   /* see if there is a line below this one */
+   if ((pt1[y + 1].x != pt2[y + 1].x))
+   {
+      if (pt1[y + 1].x > pt1[y].x)
+      {
+         upramp_len1 = pt1[y + 1].x - pt1[y].x;
+         if (upramp_gradient != 0.0)
+            upramp_gradient = 1.0 / (pt1[y].x - pt1[y + 1].x);
+      }
+      if (pt2[y].x > pt2[y + 1].x)
+      {
+         downramp_len1 = pt2[y].x - pt2[y + 1].x;
+         if (downramp_gradient != 0.0)
+            downramp_gradient = 1.0 / (pt2[y].x - pt2[y + 1].x);
+      }
+   }
+   else
+   {
+      /* there isn't - this is a special case for the bottom of a shape */
+      bottom = 1;
+   }
+
+   upramp_len = MAX(upramp_len, upramp_len1);
+   downramp_len = MAX(downramp_len, downramp_len1);
+
+   if (top && !upramp_len && !downramp_len)
+   {
+      if ((pt1[y + 1].x != pt2[y + 1].x))
+      {
+         if (pt1[y + 1].x < pt1[y].x)
+         {
+            upramp_len = pt1[y].x - pt1[y + 1].x;
+            upramp_gradient = 1.0 / (pt1[y + 1].x - pt1[y].x);
+         }
+         if (pt2[y].x < pt2[y + 1].x)
+         {
+            downramp_len = pt2[y + 1].x - pt2[y].x;
+            downramp_gradient = 1.0 / (pt2[y + 1].x - pt2[y].x);
+         }
+      }
+   }
+
+   if (bottom && !upramp_len && !downramp_len)
+   {
+      if ((pt1[y - 1].x != pt2[y - 1].x))
+      {
+         if (pt1[y - 1].x < pt1[y].x)
+         {
+            upramp_len = pt1[y].x - pt1[y - 1].x;
+            upramp_gradient = 1.0 / (pt1[y - 1].x - pt1[y].x);
+         }
+         if (pt2[y].x < pt2[y - 1].x)
+         {
+            downramp_len = pt2[y - 1].x - pt2[y].x;
+            downramp_gradient = 1.0 / (pt2[y - 1].x - pt2[y].x);
+         }
+      }
+   }
+
+   if (upramp_len > 0)
+   {
+      /* need to do an upramp */
+      if (upramp_gradient >= 1.0 || upramp_gradient <= -1.0)
+      {
+         /* it's mostly vertical */
+         double aa, x;
+         DATA8 alpha;
+
+         x = pt1[y].x;
+         aa = x - (double) ((int) x);
+         alpha = (1.0 - aa) * a;
+         p = &(im->data[(im->w * y) + (int) x]);
+         switch (op)
+         {
+           case OP_RESHADE:
+              BLEND_RE(r, g, b, alpha, p);
+              break;
+           case OP_SUBTRACT:
+              BLEND_SUB(r, g, b, alpha, p);
+              break;
+           case OP_ADD:
+              BLEND_ADD(r, g, b, alpha, p);
+              break;
+           case OP_COPY:
+              BLEND(r, g, b, alpha, p);
+              break;
+           default:
+              break;
+         }
+         /* the final span start is shifted right */
+         x1 += 2;
+      }
+      else
+      {
+         /* it's mostly horizontal */
+         int da;                /* change in alpha per pixel */
+         DATA8 alpha;
+
+         if (upramp_len == 1)
+            da = a / 2;
+         else
+            da = a / (upramp_len);
+         alpha = da;
+         /* draw the upramp */
+         for (ux1 = pt1[y].x; ux1 <= (pt1[y].x + upramp_len); ux1++)
+         {
+            p = &(im->data[(im->w * y) + ux1]);
+            switch (op)
+            {
+              case OP_RESHADE:
+                 BLEND_RE(r, g, b, alpha, p);
+                 break;
+              case OP_SUBTRACT:
+                 BLEND_SUB(r, g, b, alpha, p);
+                 break;
+              case OP_ADD:
+                 BLEND_ADD(r, g, b, alpha, p);
+                 break;
+              case OP_COPY:
+                 BLEND(r, g, b, alpha, p);
+                 break;
+              default:
+                 break;
+            }
+            if (alpha + da > 255)
+               alpha = 255;
+            else
+               alpha += da;
+         }
+         /* the final span start is shifted */
+         x1 += upramp_len + 1;
+      }
+   }
+
+   if (downramp_len > 0)
+   {
+      /* need to do a downramp */
+      if (downramp_gradient <= -1.0 || downramp_gradient >= 1.0)
+      {
+         /* it's mostly vertical */
+         double aa, x;
+         DATA8 alpha;
+
+         x = pt2[y].x;
+         aa = x - (double) ((int) x);
+         alpha = (1.0 - aa) * a;
+         p = &(im->data[(im->w * y) + (int) x]);
+         switch (op)
+         {
+           case OP_RESHADE:
+              BLEND_RE(r, g, b, alpha, p);
+              break;
+           case OP_SUBTRACT:
+              BLEND_SUB(r, g, b, alpha, p);
+              break;
+           case OP_ADD:
+              BLEND_ADD(r, g, b, alpha, p);
+              break;
+           case OP_COPY:
+              BLEND(r, g, b, alpha, p);
+              break;
+           default:
+              break;
+         }
+         /* the final span is shorter */
+         x2 -= 2;
+      }
+      else
+      {
+         /* it's mostly horizontal */
+         int da;                /* change in alpha per pixel */
+         DATA8 alpha;
+
+         if (downramp_len == 1)
+            da = a / 2;
+         else
+            da = a / (downramp_len);
+         alpha = a;
+         /* draw the downramp (note: we are drawing right to left) */
+         for (ux1 = pt2[y].x - downramp_len; ux1 <= pt2[y].x; ux1++)
+         {
+            p = &(im->data[(im->w * y) + ux1]);
+            switch (op)
+            {
+              case OP_RESHADE:
+                 BLEND_RE(r, g, b, alpha, p);
+                 break;
+              case OP_SUBTRACT:
+                 BLEND_SUB(r, g, b, alpha, p);
+                 break;
+              case OP_ADD:
+                 BLEND_ADD(r, g, b, alpha, p);
+                 break;
+              case OP_COPY:
+                 BLEND(r, g, b, alpha, p);
+                 break;
+              default:
+                 break;
+            }
+            if (alpha < da)
+               alpha = 0;
+            else
+               alpha -= da;
+         }
+         /* the final span is shorter */
+         x2 -= downramp_len + 1;
+      }
+   }
+   if (x1 == x2)
+      return;
+
+   /* just fill the remaining span */
+   p = &(im->data[(im->w * y) + x1]);
+   switch (op)
+   {
+        /* unrolled loop - on loop inside each render mode per span */
+     case OP_RESHADE:
+        do
+        {
+           BLEND_RE(r, g, b, a, p);
+           p++;
+           x1++;
+        }
+        while (x1 <= x2);
+        break;
+     case OP_SUBTRACT:
+        do
+        {
+           BLEND_SUB(r, g, b, a, p);
+           p++;
+           x1++;
+        }
+        while (x1 <= x2);
+        break;
+     case OP_ADD:
+        do
+        {
+           BLEND_ADD(r, g, b, a, p);
+           p++;
+           x1++;
+        }
+        while (x1 <= x2);
+        break;
+     case OP_COPY:
+        do
+        {
+           BLEND(r, g, b, a, p);
+           p++;
+           x1++;
+        }
+        while (x1 <= x2);
+        break;
+     default:
+        break;
+   }
 }
 
 void
 __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
                             int clip_xmax, int clip_ymin, int clip_ymax,
-                            DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+                            DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op,
+                            unsigned char antialias)
 {
    long maxy, miny;
    int iy1, iy2;
@@ -2001,8 +2314,12 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
       return;
    }
 
-   table1 = malloc(sizeof(edgeRec) * im->h);
-   table2 = malloc(sizeof(edgeRec) * im->h);
+   /* one bigger than needed so the clipping code doesn't need to be told the
+    * max y */
+   table1 = malloc(sizeof(edgeRec) * (im->h + 1));
+   table2 = malloc(sizeof(edgeRec) * (im->h + 1));
+   memset(table1, 0, sizeof(edgeRec) * (im->h + 1));
+   memset(table2, 0, sizeof(edgeRec) * (im->h + 1));
 
    maxy = miny = poly->points[0].y;
    imaxy = iminy = 0;
@@ -2061,20 +2378,32 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    while (pnt1 != iminy);
 
    /* clip spans to screen */
-   __spanlist_clip(table1, table2, &iy1, &iy2, 0, im->w, 0, im->h);
+   __spanlist_clip(table1, table2, &iy1, &iy2, 0, im->w - 1, 0, im->h);
 
    /* clip to clip rect if it's there */
    if (clip_xmin != clip_xmax)
       __spanlist_clip(table1, table2, &iy1, &iy2, clip_xmin, clip_xmax,
                       clip_ymin, clip_ymax);
 
-   do
+   /* fill spans */
+   if (antialias)
    {
-      /* fill spans */
-      span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
-      iy1++;
+      do
+      {
+         spanAA(im, iy1, table1, table2, r, g, b, a, op);
+         iy1++;
+      }
+      while (iy1 <= iy2);
    }
-   while (iy1 < iy2);
+   else
+   {
+      do
+      {
+         span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
+         iy1++;
+      }
+      while (iy1 <= iy2);
+   }
 
    free(table1);
    free(table2);
@@ -2098,12 +2427,13 @@ __spanlist_clip(edgeRec * table1, edgeRec * table2, int *sy, int *ey,
       pt2 = &(table2)[iy1];
 
       if (pt2->x < pt1->x)
-         SWAP(pt2->x, pt1->x);
+         exchange(double, pt2->x, pt1->x);
+
       pt1->x = MAX(pt1->x, xmin);
       pt2->x = MIN(pt2->x, xmax);
       iy1++;
    }
-   while (iy1 < iy2);
+   while (iy1 <= iy2);
 }
 
 unsigned char
