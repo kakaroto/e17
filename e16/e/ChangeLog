@@ -3021,3 +3021,12 @@ Sun Jul 25 01:27:12 CEST 2004
 (Kim)
 
 0.16.7
+
+-------------------------------------------------------------------------------
+
+Sun Jul 25 12:51:32 CEST 2004
+(Kim)
+
+Bye bye Imlib1 and Fnlib.
+Remove unused clone stuff.
+Tidy up a bit (removed ancient ChangeLog's and other obsolete stuff).
